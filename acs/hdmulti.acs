@@ -1,0 +1,438 @@
+
+int deaths_common;
+int deaths[32];
+int wipedout[32];
+int survivingteams[32];
+int maxlives;
+int loseondeathlimit=0;
+int endgame=0;
+int randomsnark;
+int respawninterval=0;
+
+
+
+function void CheckConfig(void)
+{
+	switch (GetPlayerInfo(PlayerNumber(),PLAYERINFO_GENDER))
+	{
+	case 0:
+		GiveInventory("IsMale",1);
+		TakeInventory("IsFemale",1);
+		break;
+	case 1:
+		GiveInventory("IsFemale",1);
+		TakeInventory("IsMale",1);
+		break;
+	default:
+		TakeInventory("IsMale",1);
+		TakeInventory("IsFemale",1);
+		break;
+	}
+
+/*
+	//spawn shards
+	if(
+		(!GetCvar("sv_nomonsters"))&&
+		(ThingCountName("BFGVileShard",0)<6+1*PlayerCount())&&
+		(
+			(GetCvar("hd_grimspawn"))
+			||(GetCvar("sv_monsterrespawn"))
+			||(GameSkill()==4)
+			||(GameSkill()==punisherskill)
+		)
+	){
+		respawninterval++;
+		int respch=1024;
+		if((GetCvar("sv_monsterrespawn"))||(GameSkill()==4)) respch=256;
+		if(respawninterval>=respch){
+			GiveInventory("SkillSharder",1);
+			respawninterval=0;
+		}
+	}
+*/
+
+		//Lives counter
+	TakeInventory("HDLives",999);
+	if ((GameType () == GAME_NET_COOPERATIVE) || (GetCVar("sv_singleplayerrespawn")>0))
+	{
+		GiveInventory("HDLives",maxlives-deaths_common);
+	}
+	else if (GameType () == GAME_NET_DEATHMATCH)
+	{
+		GiveInventory("HDLives",CurrentLives());
+	}
+
+		//Other counters
+	TakeInventory("KickCheckCounter",1);
+	if (CheckInventory("PowerLightAmpP")>0)
+	{
+		TakeInventory("PortableLiteAmpPower",1);
+		if (CheckInventory("PortableLiteAmpPower")<1) GiveInventory("PortableLiteAmpExiter",1);
+	}
+	if (GetUserCVar(PlayerNumber(),"hd_hudsprite")) GiveInventory("HUDSprite",1); else TakeInventory("HUDSprite",1);
+	if (GetUserCVar(PlayerNumber(),"hd_helptext")) TakeInventory("IsTextless",1); else GiveInventory("IsTextless",1);
+	if (GetCVar("hd_nomeds"))
+	{
+		TakeInventory("Injector",999);
+		TakeInventory("PortableBerserkPack",999);
+		TakeInventory("PortableMedikit",999);
+		TakeInventory("PortableStimpack",999);
+		TakeInventory("BluePotion",999);
+		TakeInventory("MedDeployer",999);
+	}
+}
+function int CurrentLives(void)
+{
+	if (GameType () == GAME_NET_DEATHMATCH) return maxlives-deaths[PlayerNumber()];
+	return maxlives-deaths_common;
+}
+function void ReplaceBot(void)
+{
+	if ((GetCVar("hd_nobots")) && (PlayerIsBot(PlayerNumber())))
+	{
+		GiveInventory ("BotSpawner",1);
+		SetActorPosition(0,0x7FFFFFFF,0x7FFFFFFF,0x7FFFFFFF,0);
+	}
+}
+
+
+//	CHECK DEATHMATCH
+
+script "CheckDM" (void)
+{
+	if (GameType () == GAME_NET_DEATHMATCH) SetResultValue(1);
+	else SetResultValue(0);
+}
+
+
+
+//	CHECK LIVES
+
+script "MultiLivesSet" OPEN
+{
+	//the following sets the lives limit based on the fraglimit.
+	//in co-op, if FL exceeds 100, then the game ends the instant you get that many casualties less 100.
+	//	otherwise, if you get as many casualties as FL, you no longer respawn.
+	//in deathmatch, if FL exceeds 100, then you no longer respawn if you or your team gets that many casualties.
+	//	otherwise, FL works normally.
+
+	if (GetCVar("fraglimit")>100)
+	{
+		maxlives=GetCVar("fraglimit")-100;
+		if (GameType () != GAME_NET_DEATHMATCH) loseondeathlimit=1;
+	}
+	else if (GetCVar("fraglimit")>0) maxlives=GetCVar("fraglimit");
+
+}
+
+
+
+//	GENERIC DEATH
+
+script "HDDeath" DEATH
+{
+	TakeInventory("CanPickupItems",999);
+	TakeInventory("UseHud2",999);
+	TakeInventory("NullWeapon",999);
+	TakeInventory("WeaponBusy",999);
+	TakeInventory("JustUnloading",999);
+	TakeInventory("IsSprinting",999);
+	TakeInventory("IsKicking",999);
+	TakeInventory("IsCrouching",999);
+	TakeInventory("IsMoving",999);
+	TakeInventory("IsHit",999);
+	TakeInventory("UsingMeds",999);
+	TakeInventory("Fatigue",999);
+	TakeInventory("LethalDamage",999);
+	TakeInventory("AggravatedDamage",999);
+	TakeInventory("WoundCount",999);
+	TakeInventory("BandageCount",999);
+	TakeInventory("RegenStims",999);
+	TakeInventory("RegenBlues",999);
+	TakeInventory("RegenBers",999);
+	TakeInventory("HasZerked",999);
+	TakeInventory("PressingFire",999);
+	TakeInventory("PressingAltfire",999);
+	TakeInventory("PressingReload",999);
+	TakeInventory("PressingZoom",999);
+	TakeInventory("PressingFireMode",999);
+	TakeInventory("PressingUnload",999);
+
+	if (!CheckInventory("Armor"))
+	{
+		TakeInventory ("GreenArmourFlag",999);
+		TakeInventory ("BlueArmourFlag",999);
+		TakeInventory ("BlackArmourFlag",999);
+		TakeInventory ("SpiritualArmourFlag",999);
+	}
+
+		//update all counters
+
+	deaths[PlayerNumber()]++;
+	deaths_common++;
+	if (!CheckInventory("WipedOut"))
+	{
+		if (GetCVar("teamplay")>0)
+		{
+			for(int i=0;i<PlayerCount();i++)
+			{
+				if((GetPlayerInfo(i,PLAYERINFO_TEAM)==GetPlayerInfo(PlayerNumber(),PLAYERINFO_TEAM)))
+				{
+					if (i!=PlayerNumber()) deaths[i]++;
+				}
+			}
+		}
+	}
+	ACS_NamedExecuteAlways("EndgameCheck",0,0,0);
+
+
+		//conditions for game end
+
+	delay(1);
+	if ((CurrentLives() < 0)&&(maxlives))
+	{
+			//notify others that player is out
+		wipedout[PlayerNumber()]=1;
+		Log (s:"\cb", n:0, s:" is OUT!");
+
+			//reset inventory
+		if (GameType()!=GAME_NET_DEATHMATCH)
+		{
+			ClearInventory();
+			GiveInventory("RebelLoadout",1);
+		}
+		GiveInventory ("WipedOut", 1);
+	}
+}
+
+//		GENERIC RESPAWN
+
+script "HDRespawn" RESPAWN
+{
+	TakeInventory("HDLives",999);
+	TakeInventory("Fatigue",999);
+	TakeInventory("StunCount",999);
+	TakeInventory("WoundCount",999);
+	GiveInventory("HDLives",CurrentLives());
+	CheckConfig();
+	if ((CurrentLives() < 0)&&(maxlives))
+	{
+		GiveInventory("WipedOut",1);
+		MorphActor(0,"DeadHDPlayer","HDSmoke",0x7FFFFFFF,0,"","HDSmoke");
+		wipedout[PlayerNumber()]=1;
+		delay(1);
+		SetPlayerProperty (0, 1, PROP_TOTALLYFROZEN);				//superfreezes player
+
+		if (endgame==0)
+		{
+			setfont("bigfont");
+			HudMessage (
+				s: "Out of lives. Restart or wait until\n\nsurvivors exit or are wiped out.";
+				 2, 4, 0, 1.5, 0.5, 30.0);
+			setfont("smallfont");
+			delay (164);
+			HudMessage (
+				s: "Hit F12 to cycle through other players' views if enabled.";
+				 2, 3, 2, 1.5, 0.62, 26.0);
+		}
+		terminate;
+	}
+	else ReplaceBot();
+	if (GameType () == GAME_NET_DEATHMATCH)
+	{
+		CheckCVars();
+		GiveInventory("IsRespawning",1);
+		delay (6);
+		TakeInventory("WoundCount",999);
+		TakeInventory("Fatigue",999);
+		TakeInventory("IsRespawning",999);
+		terminate;	//everything after this is irrelevant in deathmatch
+	}
+
+	GiveInventory("IsRespawning",1);
+	delay (1);
+	ConsolidateWeapons();	//respawn with full mag, to protect against monster spawncamps
+	delay (1);
+	SetWeapon (GetBestWeapon());
+	delay (6);
+	TakeInventory("IsRespawning",999);
+}
+
+
+//		UPDATES DEATH COUNTER AND CHECK ENDGAME
+
+script "EndgameCheck" (void)
+{
+	if (maxlives<1) terminate;
+	if (endgame!=0) terminate;
+	int i;
+	if ((GameType()==GAME_NET_DEATHMATCH) && (GetCVar("teamplay")>0) && (PlayerCount()>2))
+	{
+		delay(35);
+		if (endgame!=0) terminate;
+		int teamsleft=0;
+		int survivingteam;
+
+		for (i=0;i<32;i++)			//clear surviving teams array
+		{
+			survivingteams[i]=0;
+		}
+		for (i=0;i<PlayerCount();i++)		//add to surviving teams array if survivor found
+		{
+			if(wipedout[i]<1)
+			{
+				survivingteams[GetPlayerInfo(i,PLAYERINFO_TEAM)]++;
+			}
+		}
+		for (i=0;i<32;i++)			//evaluate surviving teams array
+		{
+			if(survivingteams[i]>0)
+			{
+				teamsleft++;
+				survivingteam=i;
+			}
+		}
+
+		if (teamsleft<2)
+		{
+			endgame=1;
+			delay(1);
+			HudMessageBold(s:"";0,4,0,0,0,0);
+			HudMessageBold(s:"";0,3,0,0,0,0);
+			delay(34);
+
+			str winnerteam;
+			switch (survivingteam){
+			case 0: winnerteam="Green";break;
+			case 1: winnerteam="Brown";break;
+			case 2: winnerteam="Black";break;
+			case 3: winnerteam="Blue";break;
+			case 4: winnerteam="White";break;
+			case 5: winnerteam="Foxtrot";break;
+			case 6: winnerteam="Golf";break;
+			case 7: winnerteam="Hotel";break;
+			default: winnerteam="No"; break;}
+
+			setfont("bigfont");
+			if (!teamsleft) HudMessageBold (s:"All teams eliminated!"; 2, 2, 5, 1.5, 0.5, 7.5);
+			else HudMessageBold (s: winnerteam, s: " Team has won the match!"; 2, 2, 5, 1.5, 0.5, 7.5);
+			setfont("smallfont");
+			delay (110);
+			if (!teamsleft)
+				HudMessageBold (s:"You're all incompetent!"; 2, 3, 9, 1.5, 0.62, 3.5);
+			else
+			{
+				randomsnark = random(0,5);
+				if (randomsnark==0) HudMessageBold (s: "Well played, everyone!"; 2, 3, 9, 1.5, 0.62, 3.5);
+				else if (randomsnark==1) HudMessageBold (s: "Good game!"; 2, 3, 9, 1.5, 0.62, 3.5);
+				else if (randomsnark==3) HudMessageBold (s: "Go ", s: winnerteam, s: " team!"; 2, 3, 9, 1.5, 0.62, 3.5);
+				else if (randomsnark==3) HudMessageBold (s: "Everyone else, better luck next time!"; 2, 3, 9, 1.5, 0.62, 3.5);
+				else if (randomsnark==4) HudMessageBold (s: "They're your Die Hard 3!"; 2, 3, 9, 1.5, 0.62, 3.5);
+				else if (randomsnark==5) HudMessageBold (s: "Shit your pants before their awesome."; 2, 3, 9, 1.5, 0.62, 3.5);
+			}
+			delay(280);
+			Exit_Normal(0);
+		}
+		terminate;
+	}
+	else if (GameType()==GAME_NET_DEATHMATCH)
+	{
+		int totalpossibledeaths=maxlives*PlayerCount()+PlayerCount();
+
+				//figure out who the winner is
+		delay(35);
+		if (endgame!=0) terminate;
+		int winnernum;
+		int survivors=0;
+		for (i=0;i<PlayerCount();i++)
+		{
+			if(deaths[i]<maxlives+1)
+			{
+				winnernum=i+1;
+				survivors++;
+			}
+		}
+
+				//if winner exists, announce it
+		if ((winnernum<=PlayerCount())&&(survivors<2))
+		{
+			str posspron="their";
+			if (GetPlayerInfo(winnernum-1,PLAYERINFO_GENDER)==0) posspron="his";
+			if (GetPlayerInfo(winnernum-1,PLAYERINFO_GENDER)==1) posspron="her";
+			
+			str subjispron="They're";
+			if (GetPlayerInfo(winnernum-1,PLAYERINFO_GENDER)==0) subjispron="He's";
+			if (GetPlayerInfo(winnernum-1,PLAYERINFO_GENDER)==1) subjispron="She's";
+
+			endgame=1;
+			delay(1);
+			HudMessageBold(s:"";0,4,0,0,0,0);
+			HudMessageBold(s:"";0,3,0,0,0,0);
+			delay(34);
+			setfont("bigfont");
+			if (deaths_common>=totalpossibledeaths)
+				HudMessageBold (s:"Everybody got wiped out!"; 2, 2, 5, 1.5, 0.5, 7.5);
+			else HudMessageBold (n: winnernum, s: " has won the match!"; 2, 2, 5, 1.5, 0.5, 7.5);
+			setfont("smallfont");
+			delay (110);
+			if (deaths_common>=totalpossibledeaths)
+				HudMessageBold (s:"You're all incompetent!"; 2, 3, 9, 1.5, 0.62, 3.5);
+			else
+			{
+				randomsnark = random(0,4);
+				if (randomsnark==0) HudMessageBold (s: "Well played, everyone!"; 2, 3, 9, 1.5, 0.62, 3.5);
+				else if (randomsnark==1) HudMessageBold (s: "Good game!"; 2, 3, 9, 1.5, 0.62, 3.5);
+				else if (randomsnark==2) HudMessageBold (s: "Everyone else, better luck next time!"; 2, 3, 9, 1.5, 0.62, 3.5);
+				else if (randomsnark==3) HudMessageBold (s: subjispron,s:" your Die Hard 3!"; 2, 3, 9, 1.5, 0.62, 3.5);
+				else if (randomsnark==4) HudMessageBold (s: "Shit your pants before ",s:posspron,s:" awesome."; 2, 3, 9, 1.5, 0.62, 3.5);
+			}
+			delay(280);
+			Exit_Normal(0);
+		}
+		terminate;
+	}
+	else if ((GameType () == GAME_NET_COOPERATIVE) || (GetCVar("sv_singleplayerrespawn")>0))
+	{
+		delay(2);
+		if (deaths_common>=maxlives+PlayerCount())
+		{
+			endgame=1;
+			delay(1);
+			HudMessageBold(s:"";0,4,0,0,0,0);
+			HudMessageBold(s:"";0,3,0,0,0,0);
+			delay(34);
+			setfont("bigfont");
+			HudMessageBold (
+				s: "W I P E D   O U T !";
+				 2, 2, 5, 1.5, 0.5, 6.5);
+			setfont("smallfont");
+			delay (110);
+			HudMessageBold (
+				s: "t r y   a g a i n .";
+				 2, 3, 9, 1.5, 0.62, 3.5);
+			delay(280);
+			Teleport_NewMap (GetLevelInfo(LEVELINFO_LEVELNUM), 0, 0);
+			terminate;
+		}
+		else if ((deaths_common>=maxlives) && (loseondeathlimit==1))
+		{
+			endgame=1;
+			delay(1);
+			HudMessageBold(s:"";0,4,0,0,0,0);
+			HudMessageBold(s:"";0,3,0,0,0,0);
+			delay(34);
+			setfont("bigfont");
+			HudMessageBold (
+				s: "W E   A R E    L E A V I N G !";
+				 2, 2, 5, 1.5, 0.5, 6.5);
+			setfont("smallfont");
+			delay (110);
+			HudMessageBold (
+				s: "Too many casualties, HQ has ordered a retreat!";
+				 2, 3, 9, 1.5, 0.62, 3.5);
+			delay(280);
+			Teleport_NewMap (GetLevelInfo(LEVELINFO_LEVELNUM), 0, 0);
+			terminate;
+		}
+	}
+}

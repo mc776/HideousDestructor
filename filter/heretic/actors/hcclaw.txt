@@ -1,0 +1,216 @@
+actor SyntheticClaw : HDWeapon replaces Blaster
+{
+	game Heretic
+	weapon.selectionorder 500
+	weapon.ammotype1 "SyntheticClawClip"
+	weapon.ammotype2 "BlasterAmmo"
+	weapon.slotnumber 4
+	inventory.pickupMessage "$TXT_WPNBLASTER"
+	tag "$TAG_BLASTER"
+	obituary "$OB_MPBLASTER"
+	weapon.bobstyle normal
+	states
+	{
+	spawn:
+		WBLS A -1
+		stop
+	ready:
+		BLSR A 1 A_WeaponReady(WRF_ALLOWRELOAD)
+		TNT1 A 0 A_JumpIfInventory("IsUsingTome",1,"entome")
+		TNT1 A 0 A_JumpIfInventory("SyntheticClawClip",1,1)
+		loop
+		TNT1 A 0 A_JumpIfInventory("SyntheticClawTomed",1,1)
+		loop
+		BLSR BCB 1 bright A_WeaponReady(WRF_ALLOWRELOAD)
+		TNT1 A 0 A_JumpIfInventory("SyntheticClawClip",0,"ready")
+		TNT1 A 0 A_JumpIfInventory("BlasterAmmo",1,1)
+		loop
+		TNT1 A 0 A_TakeInventory("BlasterAmmo",2,TIF_NOTAKEINFINITE)
+		TNT1 A 0 A_GiveInventory("SyntheticClawClip",2)
+		loop
+	select:
+		TNT1 A 0 A_SetCrosshair(21)
+		TNT1 A 0 A_JumpIfInventory("IsGauntleted",1,2)
+		TNT1 A 0 A_Jump(256,4)
+		TNT1 AA 10 A_PlaySound("weapons/pocket")
+		TNT1 A 0 A_TakeInventory("IsGauntleted")
+		TNT1 A 10
+	select2:
+		BLSR A 1 A_Raise
+		TNT1 AAAA 0 A_Raise
+		loop
+	deselect:
+		BLSR A 1 A_Lower
+		TNT1 AAAA 0 A_Lower
+		loop
+	entome:
+		BLSR A 3 offset (0,38)
+		BLSR A 3 offset (0,48)
+		BLSR A 3 offset (0,60)
+		TNT1 A 20 A_PlayWeaponSound("himp/attack")
+		TNT1 A 40 A_PlayWeaponSound("weapons/staffhit")
+		TNT1 A 0 A_GiveInventory("SyntheticClawTomed",1)
+		BLSR A 3 offset (0,60)
+		BLSR A 3 offset (0,48)
+		BLSR A 3 offset (0,38)
+		TNT1 A 0 A_TakeInventory("IsUsingTome",1)
+		goto ready
+	fire:
+		TNT1 A 0 A_JumpIfInventory("SyntheticClawClip",1,1)
+		goto nofire//altfire
+		TNT1 A 0 A_JumpIfInventory("SyntheticClawTomed",1,3)
+		TNT1 A 0 A_FireCustomMissile("SyntheticClawBlast")
+		TNT1 A 0 A_Jump(256,2)
+		TNT1 A 0 A_FireCustomMissile("SyntheticClawBlastTomed")
+		TNT1 A 0 A_TakeInventory("SyntheticClawClip",1)
+		TNT1 A 0 A_PlayWeaponSound("weapons/blastershoot")
+		TNT1 A 0 A_AlertMonsters
+		BLSR DCB 1 bright A_WeaponReady(WRF_NOFIRE)
+		TNT1 A 0 ACS_NamedExecuteAlways("MuzzleClimb",0,random(-15,15),random(-15,15))
+		TNT1 A 0 A_JumpIfInventory("SyntheticClawTomed",1,2)
+		BLSR A 0 A_Refire("fire")
+		goto ready
+		BLSR A 0 A_ClearRefire
+		loop
+	nofire:
+		TNT1 A 0 A_TakeInventory("SyntheticClawTomed")
+		BLSR A 2 offset(0,36)
+		BLSR A 2 offset(1,40)
+		BLSR A 2 offset(0,42)
+		BLSR A 2 offset(-1,39)
+		BLSR A 2 offset(0,34)
+		goto nope
+	altfire:
+	althold:
+	reload:
+		TNT1 A 0 A_JumpIfInventory("BlasterAmmo",1,1)
+		goto nofire
+//		BLSR A 2 offset(0,36) A_GiveInventory("Reloading",1)
+		TNT1 A 0 A_PlayWeaponSound("weapons/staffcrackle")
+		BLSR BC 1 bright offset(1,38)
+//		BLSR C 1 bright offset(-1,39)
+		BLSR B 1 bright offset(2,37)
+		BLSR C 1 bright offset(-2,39)
+		TNT1 A 0 A_JumpIfInventory("SyntheticClawClip",0,2)
+		TNT1 A 0 A_Jump(256,2)
+		TNT1 A 0 A_FireCustomMissile("SyntheticClawSmoke")
+		TNT1 A 0 A_TakeInventory("BlasterAmmo",1,TIF_NOTAKEINFINITE)
+		TNT1 A 0 A_GiveInventory("SyntheticClawClip",1)
+		TNT1 A 0 A_TakeInventory("Reloading",1)
+		TNT1 A 0 A_JumpIfInventory("PressingAltfire",1,1)
+		goto ready
+		TNT1 A 0 A_Refire
+		BLSR A 2 offset(-1,35)
+		goto ready
+	}
+}
+actor SyntheticClawClip : Ammo
+{
+	+inventory.undroppable
+	ammo.backpackmaxamount 30
+	ammo.backpackamount 0
+	inventory.maxamount 30
+}
+actor SyntheticClawTomed : InventoryFlag {}
+actor SyntheticClawBlast : FastProjectile
+{
+	renderstyle add
+	missileheight 8
+	missiletype "SyntheticClawBlastTail"
+	deathsound "weapons/blastershoot"
+	height 2
+	radius 2
+	speed 1
+	damage (30)
+	states
+	{
+	spawn:
+		TNT1 A 0 nodelay
+		TNT1 A 0 A_JumpIfInTargetInventory("IsMoving",6,2)
+		TNT1 A 0 A_Jump(256,2)
+		TNT1 A 0 A_ChangeVelocity(frandom(-0.08,0.08),frandom(-0.08,0.08),frandom(-0.08,0.08),CVF_RELATIVE)
+		TNT1 A 0 A_ScaleVelocity(300)
+	spawn2:
+		FX17 AB 2 bright
+		loop
+	death:
+		TNT1 A 0 A_AlertMonsters
+		FX17 ABCDE 2 bright
+		stop
+	xdeath:
+		TNT1 A 0 A_AlertMonsters
+		FX17 FGHIJKL 2 bright
+		stop
+	}
+}
+actor SyntheticClawBlastTail
+{
+	+nointeraction
+	renderstyle add
+	states
+	{
+	spawn:
+		TNT1 A 0 nodelay
+		TNT1 A 0 A_ChangeVelocity(frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(-0.6,0.6),CVF_RELATIVE)
+		FX17 ABCDE 2 bright A_FadeOut (0.2)
+		stop
+	}
+}
+actor SyntheticClawBlastStatic : SyntheticClawBlast
+{
+	missiletype "SyntheticClawBlastStaticTail"
+	damage (40)
+	states
+	{
+	spawn:
+		TNT1 A 0 nodelay
+		TNT1 A 0 A_ScaleVelocity(100)
+		goto spawn2
+	}
+}
+actor SyntheticClawBlastStaticTail : SyntheticClawBlastTail
+{
+	+nointeraction
+	renderstyle add
+	states
+	{
+	spawn:
+		TNT1 A 0 nodelay
+		TNT1 A 0 A_Jump(220,1)
+		goto super::spawn
+		TNT1 A 0
+		stop
+	}
+}
+actor SyntheticClawSmoke : FastProjectile
+{
+	+nointeraction
+	speed 16
+	states
+	{
+	spawn:
+		TNT1 A 0 nodelay
+		TNT1 AAA 0 A_SpawnItemEx("SyntheticClawBlastTail",0,0,0,frandom(2,3),frandom(-1,1),frandom(0.5,2),0,SXF_NOCHECKPOSITION)
+		stop
+	}
+}
+actor SyntheticClawBlastTomed
+{
+	projectile
+	speed 1
+	height 1
+	radius 1
+	states
+	{
+	spawn:
+		TNT1 A 0 nodelay
+		TNT1 A 0 A_JumpIfInTargetInventory("IsMoving",1,2)
+		TNT1 A 0 A_Jump(256,2)
+		TNT1 A 0 A_ChangeVelocity(frandom(-0.1,0.1),frandom(-0.1,0.1),frandom(-0.1,0.1),CVF_RELATIVE)
+		TNT1 AAAAA 0 A_SpawnItemEx("SyntheticClawBlastTail",10,0,0,velx*4,vely*4,velz*4,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+		TNT1 A 0 A_SpawnItemEx("SyntheticClawBlastStatic",3,-6,-3,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS)
+		TNT1 A 0 A_SpawnItemEx("SyntheticClawBlastStatic",13,0,2,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS)
+		TNT1 A 0 A_SpawnItemEx("SyntheticClawBlastStatic",3,6,-3,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS)
+		stop
+	}
+}

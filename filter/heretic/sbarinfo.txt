@@ -1,0 +1,74 @@
+
+completeborder true;
+height 0;
+
+
+// NORMAL
+
+statusbar normal, fullscreenoffsets
+{
+ininventory not isdead
+{
+ininventory not wipedout
+{
+	drawbar "STAMBARR","STAMBAR",Fatigue,vertical,interpolate(20),12+center,-8;
+	ininventory not issprinting
+	{
+
+	//basic ammo bar
+	UsesAmmo{
+		drawbar "STAMBAR1","STAMBAR0", ammo1, horizontal, -50+center,-16;
+		drawnumber 3, HUDFONT_HERETIC, gray, ammo2, -52+center,-18;
+	}
+
+	//current inventory
+	drawselectedinventory HUDFONT_RAVEN, 20+center,-27, 60+center,-18, gray;
+	}
+}
+}
+}
+
+
+
+
+// FULLSCREEN
+
+statusbar fullscreen, fullscreenoffsets
+{
+ininventory not isdead
+{
+ininventory not wipedout
+{
+	drawbar "STAMBARR","STAMBAR",Fatigue,vertical,interpolate(20),12+center,-8;
+	ininventory not issprinting
+	{
+
+	//basic ammo bar
+	UsesAmmo{
+		drawbar "STAMBAR1","STAMBAR0", ammo1, horizontal, -50+center,-16;
+		drawnumber 3, HUDFONT_HERETIC, gray, ammo2, -52+center,-18;
+	}
+
+	//current inventory
+	drawselectedinventory HUDFONT_RAVEN, 20+center,-27, 60+center,-18, gray;
+	}
+}
+}
+}
+
+
+
+
+// AUTOMAP
+
+statusbar automap, fullscreenoffsets
+{
+ininventory not wipedout
+{
+
+
+
+
+}
+}
+

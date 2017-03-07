@@ -1,0 +1,495 @@
+actor SyntheticMace : HDWeapon replaces Mace
+{
+	game Heretic
+	weapon.slotnumber 7
+	weapon.yadjust 16
+	weapon.ammotype1 SyntheticMaceLoaded
+	weapon.ammotype2 SyntheticMaceBall
+	weapon.bobstyle normal
+	weapon.bobspeed 1.6
+	inventory.pickupmessage "fire mace"
+	obituary "%o learned that %k's no meant no."
+	states
+	{
+	spawn:
+		WMCE A -1
+		stop
+	select:
+		TNT1 A 0 A_SetCrosshair(21)
+		TNT1 A 0 A_TakeInventory("IsWeaponLong",999)
+		TNT1 A 0 A_TakeInventory("IsWeaponWide",999)
+		TNT1 A 7
+	select2:
+		MACE A 1 A_Raise
+		TNT1 AA 0 A_Raise
+		loop
+	deselect:
+		TNT1 A 0 A_TakeInventory("IsWeaponShort",999)
+		MACE A 1 A_Lower
+		TNT1 AA 0 A_Lower
+		loop
+	ready:
+		TNT1 A 0 A_JumpIfInventory("SyntheticMaceLoaded",1,2)
+		TNT1 A 0 A_Jump(256,2)
+		TNT1 A 0 A_SetCrosshair(0)
+		TNT1 A 0 A_JumpIfInventory("IsUsingTome",1,"entome")
+		TNT1 A 0 A_GiveInventory("IsWeaponShort",1)
+		TNT1 A 0 A_JumpIfInventory("SyntheticMaceLoaded",1,2)
+		TNT1 A 0 A_Jump(256,2)
+		TNT1 A 0 A_JumpIfInventory("SyntheticMaceTomed",1,2)
+		MACE A 1 A_WeaponReady(WRF_ALLOWRELOAD)
+		loop
+		TNT1 A 0 A_JumpIfInventory("SyntheticMaceTomeLoaded",0,2)
+		TNT1 A 0 A_JumpIfInventory("SyntheticMaceLoaded",1,"eat")
+		MACE CDEF 1 A_WeaponReady(WRF_ALLOWRELOAD)
+		loop
+	eat:
+		TNT1 A 0 A_SetCrosshair(21)
+		MACE AB 3 A_WeaponReady(WRF_NOFIRE)
+		MACE CFCFCDEF 1 A_WeaponReady(WRF_NOFIRE)
+		MACE CBAA 3 A_WeaponReady(WRF_NOFIRE)
+		TNT1 A 0 A_TakeInventory("SyntheticMaceLoaded",1)
+		TNT1 A 0 A_GiveInventory("SyntheticMaceTomeLoaded",1)
+		TNT1 AAA 0 A_FireCustomMissile("SyntheticMaceSmoke")
+		goto ready
+	entome:
+		TNT1 E 0 A_JumpIfInventory("SyntheticMaceLoaded",1,3)
+		MACE E 0
+		TNT1 E 0 A_Jump(256,2)
+		MACE A 0
+		TNT1 A 0 A_SetCrosshair(21)
+		MACE "#" 3 offset (0,38)
+		MACE "#" 3 offset (0,48)
+		MACE "#" 3 offset (0,60)
+		TNT1 "#" 20 A_PlayWeaponSound("himp/attack")
+		TNT1 "#" 40 A_PlayWeaponSound("weapons/staffhit")
+		TNT1 "#" 0 A_GiveInventory("SyntheticMaceTomed",1)
+		MACE A 3 offset (0,60)
+		MACE A 3 offset (0,48)
+		MACE B 3 offset (0,38)
+		TNT1 A 0 A_TakeInventory("IsUsingTome",1)
+		goto ready
+	reload:
+		TNT1 A 0 A_JumpIfInventory("SyntheticMaceLoaded",0,"noshot")
+		TNT1 A 0 A_JumpIfInventory("SyntheticMaceBall",1,1)
+		goto noshot
+		TNT1 A 0 A_GiveInventory("Reloading",1)
+		MACE E 3 offset(-1,34) ACS_NamedExecuteAlways("MuzzleClimb",0,random(-12,-24),random(12,24))
+		MACE E 3 offset(-4,37) ACS_NamedExecuteAlways("MuzzleClimb",0,random(-12,-24),random(12,24))
+		MACE E 3 offset(-6,42) ACS_NamedExecuteAlways("MuzzleClimb",0,random(-12,-24),random(12,24))
+
+		MACE E 2 offset(-8,48)
+		MACE E 5 offset(-7,49)
+		MACE E 4 offset(-8,46)
+
+		TNT1 A 0 A_TakeInventory("SyntheticMaceBall",1,TIF_NOTAKEINFINITE)
+		TNT1 A 0 A_GiveInventory("SyntheticMaceLoaded",999)
+
+		MACE E 3 offset(-6,42)
+		TNT1 A 0 A_TakeInventory("Reloading",999)
+		MACE E 3 offset(-4,37)
+		MACE E 3 offset(-2,34)
+		MACE CDEFCBA 1 A_WeaponReady(WRF_NOFIRE)
+		goto ready
+	hold:
+		TNT1 A 0 A_JumpIfInventory("SyntheticMaceLoaded",1,1)
+		goto noshot
+	altpostshot:
+		TNT1 A 0 A_JumpIfInventory("SyntheticMaceStage",4,1)
+		goto stage3
+		TNT1 A 0 A_JumpIfInventory("SyntheticMaceStage",3,1)
+		goto stage2
+		TNT1 A 0 A_JumpIfInventory("SyntheticMaceStage",2,1)
+		goto stage1
+		TNT1 A 0 A_JumpIfInventory("SyntheticMaceStage",1,1)
+		goto stage0
+		TNT1 A 0
+		goto stage4
+	althold:
+	noshot:
+		TNT1 A 0 A_SetCrosshair(21)
+		MACE EF 1 A_WeaponReady(WRF_NOFIRE)
+		TNT1 A 0 A_FireCustomMissile("MaceSand",0,0,0,-1)
+		TNT1 A 0 A_ZoomFactor(1)
+		MACE CD 1 A_WeaponReady(WRF_NOFIRE)
+		TNT1 A 0 A_Refire
+		MACE EFC 2 A_WeaponReady(WRF_NOFIRE)
+	noshot2:
+		MACE BA 3 A_WeaponReady(WRF_NOFIRE)
+		TNT1 A 0 A_Refire
+		goto ready
+	fire:
+		MACE ABCD 3 A_WeaponReady(WRF_NOFIRE)
+		TNT1 A 0 A_JumpIfInventory("SyntheticMaceTomed",1,"tomefire")
+		TNT1 A 0 A_JumpIfInventory("SyntheticMaceLoaded",1,1)
+		goto noshot
+	stage1:
+		MACE E 2
+		TNT1 A 0 A_ZoomFactor(1)
+		MACE E 1
+		MACE FCD 3
+		goto stageend
+	stage2:
+		MACE E 2
+		TNT1 A 0 A_ZoomFactor(1)
+		MACE FCDEFCD 2
+		goto stageend
+	stage3:
+		MACE EF 1
+		TNT1 A 0 A_ZoomFactor(1)
+		MACE CDEFCD 1
+		goto stageend
+	stage4:
+		MACE EC 1 ACS_NamedExecuteAlways("MuzzleClimb",0,random(-4,4),random(-4,4))
+		TNT1 A 0 A_ZoomFactor(1)
+		MACE ECECECEC 1 ACS_NamedExecuteAlways("MuzzleClimb",0,random(-4,4),random(-4,4))
+		goto stageend
+	stage0:
+	stageend:
+		TNT1 A 0 A_JumpIfInventory("SyntheticMaceLoaded",1,1)
+		goto noshot2
+		TNT1 A 0 A_GiveInventory("SyntheticMaceStage",1)
+		TNT1 A 0 A_Refire
+		goto shoot
+	shoot:
+		TNT1 A 0 A_ZoomFactor(0.95)
+		TNT1 A 0 A_FireCustomMissile("MaceMarble",0,0,0,-1)
+		TNT1 A 0 A_TakeInventory("SyntheticMaceLoaded",1)
+		goto altpostshot
+	altfire:
+		MACE AB 2
+		MACE CD 1
+		TNT1 A 0 A_JumpIfInventory("SyntheticMaceTomed",1,"tomefire")
+		TNT1 A 0 A_JumpIfInventory("SyntheticMaceLoaded",1,1)
+		goto noshot
+		MACE EF 1
+		TNT1 A 0 A_ZoomFactor(0.95)
+		TNT1 A 0 A_PlaySound("weapons/macebounce")
+		TNT1 A 0 A_GiveInventory("SyntheticMaceStage",2)
+		TNT1 A 0 A_FireCustomMissile("MaceMarble",0,0,0,-1)
+		TNT1 A 0 A_TakeInventory("SyntheticMaceLoaded",1)
+		goto noshot
+	tomefire:
+		TNT1 A 0 A_JumpIfInventory("SyntheticMaceLoaded",1,1)
+		goto noshot
+		TNT1 A 0 A_JumpIfInventory("SyntheticMaceTomeLoaded",0,1)
+		goto noshot
+		TNT1 A 0 A_ZoomFactor(0.93)
+		TNT1 A 0 A_PlaySound("weapons/macebounce")
+		TNT1 A 0 A_FireCustomMissile("MaceShooterShooter",0,0,0,-1)
+		TNT1 A 0 A_TakeInventory("SyntheticMaceTomeLoaded",999)
+		TNT1 A 0 A_TakeInventory("SyntheticMaceLoaded",999)
+		TNT1 A 0 A_TakeInventory("SyntheticMaceTomed",999)
+		TNT1 A 0 A_ChangeVelocity (Cos(Pitch) * -4, 0, Sin(Pitch) * 4, 1)
+		TNT1 A 0 A_SetCrosshair(21)
+		MACE EC 1
+		TNT1 A 0 A_ZoomFactor(1)
+		MACE ECDEF 1
+		goto noshot
+	}
+}
+actor MaceSand : FastProjectile
+{
+	damage (random(0,1))
+	speed 28
+	+bloodsplatter
+	projectilekickback 120
+	states
+	{
+	spawn:
+		TNT1 A 1
+		stop
+	}
+}
+actor SyntheticMaceTomed : InventoryFlag {}
+actor SyntheticMaceStage : InventoryFlag
+{
+	inventory.maxamount 5
+}
+actor SyntheticMaceTomeLoaded : Ammo
+{
+	+inventory.undroppable
+	inventory.maxamount 5
+	ammo.backpackmaxamount 5
+	ammo.backpackamount 0
+}
+actor SyntheticMaceLoaded : Ammo
+{
+	+inventory.undroppable
+	inventory.maxamount 1
+	ammo.backpackmaxamount 1
+	ammo.backpackamount 0
+}
+actor SyntheticMaceBall : Ammo replaces MaceAmmo
+{
+	inventory.amount 1
+	inventory.maxamount 24
+	ammo.backpackmaxamount 24
+	ammo.backpackamount 0
+	inventory.icon "INAMLOB"
+	inventory.pickupmessage "mace ball"
+	states
+	{
+	spawn:
+		FX02 B -1
+		stop
+	}
+}
+actor SyntheticMaceBalls : SyntheticMaceBall replaces MaceHefty
+{
+	states
+	{
+	spawn:
+		TNT1 A 0 nodelay
+		TNT1 A 0 A_SpawnItemEx("SyntheticMaceBall",-4,-4,0,0,0,0,0,SXF_NOCHECKPOSITION)
+		TNT1 A 0 A_SpawnItemEx("SyntheticMaceBall",-4,4,0,0,0,0,0,SXF_NOCHECKPOSITION)
+		goto super::spawn
+	}
+}
+actor SyntheticMaceSmoke : FastProjectile
+{
+	+nointeraction
+	speed 16
+	states
+	{
+	spawn:
+		TNT1 A 0 nodelay
+		TNT1 A 0 A_SpawnItemEx("SyntheticWandTrail",0,0,0,frandom(2,3),frandom(-1,1),frandom(0.5,2),0,SXF_NOCHECKPOSITION)
+		stop
+	}
+}
+actor SyntheticMaceRecoil : ActionItem
+{
+	states
+	{
+	pickup:
+		TNT1 A 0 A_ChangeVelocity (Cos(Pitch) * -0.3, 0, Sin(Pitch) * 0.3, 1)
+		fail
+	}
+}
+actor MaceMarble : FastProjectile
+{
+	projectile
+	-noteleport
+	-nogravity
+	+forcexybillboard
+	+skyexplode +canbouncewater +bounceonactors
+	speed 1
+	seesound "weapons/macebounce"
+	var int user_count0;
+	var int user_count1;
+	var int user_velx;
+	var int user_vely;
+	var int user_velz;
+	damage (user_count0)
+	height 4
+	radius 4
+	states
+	{
+	spawn:
+		TNT1 A 0 nodelay
+
+		TNT1 A 0 A_JumpIfInTargetInventory("IsMoving",10,2)
+		TNT1 A 0 A_Jump(256,2)
+		TNT1 A 0 A_ChangeVelocity(0,frandom(-0.03,0.03),frandom(-0.04,0.04),CVF_RELATIVE)
+		TNT1 A 0 A_ScaleVelocity(10)
+		TNT1 A 0 A_SetUserVar(user_count0,0)
+		TNT1 A 0 A_SetUserVar(user_count1,0)
+	speedup:
+		TNT1 A 0 A_JumpIfInTargetInventory("SyntheticMaceStage",1,1)
+		goto spawn2
+		TNT1 A 0 A_GiveToTarget("SyntheticMaceRecoil",1)
+		TNT1 A 0 A_ScaleVelocity(2-0.07*user_count0)
+		TNT1 A 0 A_SetUserVar(user_count0,user_count0+1)
+		TNT1 A 0 A_TakeFromTarget("SyntheticMaceStage",1)
+		loop
+	spawn2:
+		TNT1 A 0 A_SetUserVar(user_velx,velx)
+		TNT1 A 0 A_SetUserVar(user_vely,vely)
+		TNT1 A 0 A_SetUserVar(user_velz,velz)
+		FX02 AB 1 A_ChangeVelocity(0,0,-1,CVF_RELATIVE)
+		loop
+	death:
+		TNT1 A 0 A_JumpIf(user_count0>=5,"blast")
+		TNT1 A 0 A_ChangeFlag("missile",0)
+		TNT1 A 0 A_SpawnItemEx("MaceMarble2",-1,0,0,user_velx*0.6,user_vely*0.6,user_velz*0.6,random(-175,-185),SXF_TRANSFERPOINTERS|SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+		stop
+	blast:
+		TNT1 A 0 A_AlertMonsters
+		TNT1 A 0 A_Explode(128,128)
+		TNT1 A 0 A_Quake(2,10,0,256)
+		TNT1 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 0 A_SpawnItemEx("HugeWallChunk",0,0,0,velx+random(-10,10),vely+random(-10,10),velz+random(-5,15),0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
+		TNT1 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 0 A_SpawnItemEx("SyntheticFrag",0,0,0,velx+random(-2,2),vely+random(-2,2),velz+random(-2,2),0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
+		TNT1 A 0 A_ChangeVelocity(0,0,2,CVF_RELATIVE)
+		TNT1 AAA 0 A_SpawnItemEx("HDExplosion",random(-1,1),random(-1,1),random(0,1),velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
+		TNT1 A 0 A_Stop
+		TNT1 A 2 light("PHOENIX_X2")
+		TNT1 A 8
+		stop
+	}
+}
+actor MaceMarble2
+{
+	projectile
+	-noteleport
+	-nogravity
+	+forcexybillboard
+	+doombounce
+	bouncefactor 0.3
+	+skyexplode +canbouncewater +bounceonactors
+	speed 1
+	seesound "weapons/maceshoot"
+	deathsound "weapons/maceshoot"
+	var int user_count1;
+	damage (1)
+	height 4
+	radius 4
+	maxstepheight 1
+	var int user_velx;
+	var int user_vely;
+	var int user_velz;
+	states
+	{
+	spawn:
+		TNT1 A 0 nodelay
+		TNT1 A 0 A_SetUserVar(user_velx,velx)
+		TNT1 A 0 A_SetUserVar(user_vely,vely)
+		TNT1 A 0 A_SetUserVar(user_velz,velz)
+		FX02 AB 2 A_SetUserVar(user_count1,user_count1+1)
+		TNT1 A 0 A_JumpIf(user_count1>=35,"blast")
+		loop
+	death:
+		TNT1 A 0 A_ChangeVelocity(user_velx>>3,user_vely>>3,0,CVF_REPLACE)
+	death2:
+		FX02 A 4 A_SetUserVar(user_count1,user_count1+1)
+		TNT1 A 0 A_JumpIf(user_count1>=random(15,19),"blast")
+		loop
+	blast:
+		TNT1 A 0 A_AlertMonsters
+		TNT1 A 0 A_Explode(128,128)
+		TNT1 A 0 A_Quake(2,10,0,256)
+		TNT1 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 0 A_SpawnItemEx("HugeWallChunk",0,0,0,velx+random(-10,10),vely+random(-10,10),velz+random(-5,15),0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
+		TNT1 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 0 A_SpawnItemEx("SyntheticFrag",0,0,0,velx+random(-2,2),vely+random(-2,2),velz+random(-2,2),0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
+		TNT1 A 0 A_ChangeVelocity(0,0,2,CVF_RELATIVE)
+		TNT1 AAA 0 A_SpawnItemEx("HDExplosion",random(-1,1),random(-1,1),random(0,1),velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
+		TNT1 A 0 A_Stop
+		TNT1 A 2 light("PHOENIX_X2")
+		TNT1 A 8
+		stop
+	}
+}
+actor MaceShooterShooter : FastProjectile
+{
+	+nointeraction
+	speed 24
+	states
+	{
+	spawn:
+		TNT1 A 0 nodelay
+	death:
+		TNT1 A 0 A_SpawnItemEx("MaceShooter",0,0,0,velx>>2,vely>>2,velz>>2,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS,0)
+		stop
+	}
+}
+actor MaceShooter
+{
+	-noteleport
+	height 16
+	radius 16
+	mass 500
+	+friendly
+	var int user_fired;
+	var int user_started;
+	+lookallaround
+	maxstepheight 3
+	+pushable
+	pushfactor 0.2
+	+solid +shootable +nopain
+	damagetype "blunt"
+	health 1000
+	bloodcolor "#444444"
+	bloodtype "SyntheticFrag"
+	states
+	{
+	spawn:
+		TNT1 A 0 nodelay
+		TNT1 A 0 A_JumpIfInventory("Clip",1,"spawn2")
+		TNT1 A 0 A_GiveInventory("Clip",1)
+		TNT1 A 0 A_RearrangePointers(AAPTR_NULL,AAPTR_TARGET,AAPTR_NULL)
+	spawn2:
+		FX02 E 1 A_Look
+		FX02 E 0 A_CheckFloor("drop")
+		FX02 E 0 A_TakeInventory("Shell",999)
+		loop
+	see:
+		FX02 E 1 A_Chase
+
+		FX02 E 0 A_Jump(200,3)
+		FX02 E 0 A_FaceMaster
+		FX02 E 0 A_Recoil(random(1,-2))
+
+		FX02 E 0 A_CheckFloor("drop")
+		FX02 E 0 A_TakeInventory("Shell",999)
+		loop
+	drop:
+		TNT1 A 0 A_JumpIfInventory("Shell",1,7)
+		TNT1 A 0 A_PlaySound("weapons/maceshoot")
+		TNT1 A 0 A_GiveInventory("Shell",1)
+		TNT1 A 0 A_Quake(1,12,0,128,"")
+		TNT1 A 0 A_RearrangePointers(AAPTR_MASTER,AAPTR_NULL,AAPTR_NULL)
+		TNT1 A 0 A_AlertMonsters
+		TNT1 A 0 A_RearrangePointers(AAPTR_NULL,AAPTR_TARGET,AAPTR_NULL)
+		TNT1 A 0
+		goto see
+	missile:
+		FX02 E 0 A_FaceTarget
+		FX02 E 1 A_CustomMissile("SyntheticWandShot",10)
+		FX02 E 0 A_SpidRefire
+		FX02 E 0 A_Recoil(random(1,-2))
+		FX02 E 0 A_ClearTarget
+		FX02 E 0 DamageThing(1)
+		goto spawn2
+	death:
+		TNT1 A 0 A_ChangeFlag("pushable",0)
+		TNT1 A 0 A_RearrangePointers(AAPTR_MASTER,AAPTR_NULL,AAPTR_NULL)
+		FX02 E 30
+		FX02 EEEEEEEE 2 A_SpawnItemEx("HDSmoke",0,0,6,velx+random(-4,4),vely+random(-4,4),velz+random(1,5),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS,0)
+		TNT1 A 0 A_Quake(3,30,0,256)
+		TNT1 A 0 A_Explode
+		TNT1 AAA 0 A_SpawnItemEx("HDExplosion",0,0,6,velx+random(-1,1),vely+random(-1,1),velz+random(0,1),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS,0)
+		TNT1 AAAAAAA 0 A_SpawnItemEx("HDSmoke",0,0,6,velx+random(-4,4),vely+random(-4,4),velz+random(-5,12),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS,0)
+		TNT1 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 0 A_SpawnItemEx("HugeWallChunk",0,0,0,velx+random(-20,20),vely+random(-20,20),velz+random(-5,20),0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
+		TNT1 AAAAAAAAA 0 A_SpawnItemEx("MaceMarble",0,0,6,velx+random(-14,14),vely+random(-14,14),velz+random(5,24),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS,0)
+		TNT1 AAAAAAAAAAAA 1 A_SpawnItemEx("HDSmoke",0,0,6,velx+random(-4,4),vely+random(-4,4),velz+random(1,5),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS,0)
+		TNT1 AAAAAAAAAAAA 5 A_SpawnItemEx("HDSmoke",0,0,6,velx+random(-4,4),vely+random(-4,4),velz+random(1,5),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS,32)
+		stop
+	}
+}
+
+
+actor SyntheticFrag : FastProjectile
+{
+	damage(0)
+	damagetype "piercing"
+	+forceradiusdmg
+	+grenadetrail
+	+bloodsplatter
+	height 1
+	radius 1
+	speed 1
+	states
+	{
+	spawn:
+		TNT1 A 0 nodelay
+		TNT1 A 0 A_RearrangePointers(AAPTR_NULL,AAPTR_NULL,AAPTR_TARGET)
+		TNT1 A 0 A_ScaleVelocity(50)
+	spawn2:
+		TNT1 A 1 A_ChangeVelocity(0,0,-1,CVF_RELATIVE)
+		loop
+	death:
+		TNT1 A 0 A_RearrangePointers(AAPTR_TRACER,AAPTR_NULL,AAPTR_NULL)
+		TNT1 A 0 A_Explode(random(1,40),8,0,0,8)
+		stop
+	}
+}
+

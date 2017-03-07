@@ -1,0 +1,317 @@
+
+int fatc[8];
+int fatf[30]={1,1,2,2,4,5,6,7,6,5,4,2,2,1,1,-1,-1,-2,-2,-4,-5,-6,-7,-6,-5,-4,-2,-2,-1,-1};
+function void FatigueCheck(int ox,int oy,int x,int y)
+{
+	//additional jittering from fatigue
+	if (CheckInventory("Fatigue")>fatcaps[PlayerNumber()]+25)
+	{
+		TakeInventory("Fatigue",25);
+		GiveInventory("StunCount",25);
+	}
+	TakeInventory("StunCount",1);
+
+	int fat=CheckInventory("Fatigue")+CheckInventory("StunCount");
+	if (fat>0){
+		int fat2=fat/3;
+		ChangeActorAngle(0,GetActorAngle(0)+random(-fat2,fat2)/(1+26*CheckInventory("IsSupported")),1);
+		ChangeActorPitch(0,GetActorPitch(0)+random(-fat2,fat2)/(1+22*CheckInventory("IsSupported")),1);
+
+		if(fatc[playernumber()]>=60)fatc[playernumber()]=0;else{
+			fatc[playernumber()]++;
+			if(CheckInventory("StunCount")>0)fatc[playernumber()]+=random(0,1);
+			if(CheckInventory("Health")<80)fatc[playernumber()]+=random(-3,3);
+		}
+		if(fat>20)ChangeActorPitch(0,GetActorPitch(0)+fatf[fatc[playernumber()]/2]*(2+fat/12)/(1+40*CheckInventory("IsSupported")),1);
+	}else{fatc[playernumber()]=0;}
+
+	//make the most of invulnerability
+	if(CheckInventory("PowerInvulnerable")) 
+	{
+		TakeInventory("Fatigue",999);
+		TakeInventory("StunCount",999);
+	}
+
+	if (CheckInventory("Fatigue")>=fatcaps[PlayerNumber()])
+	{
+		TakeInventory("IsSprinting",999);
+		GiveInventory("WasSprinting",1);
+	}
+	if
+	((
+		(abs(GetPlayerInput(-1,MODINPUT_SIDEMOVE))<=6400)
+		 && (abs(GetPlayerInput(-1,MODINPUT_FORWARDMOVE))<=6400)
+		 && !(GetPlayerInput(-1,MODINPUT_BUTTONS)&BT_JUMP)
+		 &&
+		 (
+			!(GetPlayerInput(-1,MODINPUT_BUTTONS)&BT_SPEED)
+			||(CheckInventory("WasSprinting")>0)
+		 )
+
+	)
+	||
+	(
+		(abs(GetPlayerInput(-1,MODINPUT_SIDEMOVE))==0)
+		 && (abs(GetPlayerInput(-1,MODINPUT_FORWARDMOVE))==0)
+		 && !(GetPlayerInput(-1,MODINPUT_BUTTONS)&BT_JUMP)
+	))
+	{
+		if(
+			(100-CheckInventory("Health")>>2<CheckInventory("Fatigue")+10) &&
+			(random(1,1+(CheckInventory("Fatigue")>>3))<=3))
+			{
+				TakeInventory("Fatigue",1);
+				if  (CheckInventory("Fatigue")<maxrunfatigue/2) TakeInventory("WasSprinting",1);
+			}
+		if (CheckInventory("RegenBers")>10) TakeInventory("Fatigue",1);
+	}
+
+//	log(i:CheckInventory("Fatigue")); //debug	
+}
+
+
+
+// 		HEALING ITEM
+
+script "UseMeds" (int type)
+{
+	GiveInventory ("UsingMeds", 1);
+	int duration;
+
+		//healing effect
+
+	SetWeapon("Ring");
+	ActivatorSound("weapons/pocket",127);
+	while(GetActorPitch(0)<5825)
+	{
+		if (CheckInventory("Health")<1) terminate;
+		ChangeActorPitch(0,GetActorPitch(0)+600,1);
+		delay(1);
+	}
+	Delay (12);
+	if (CheckInventory("Health")<1)terminate;
+	faderange (32,0,0,0.8, 0,0,0,0, 2.4);
+	switch(type)
+	{
+	case 1: //stims
+		duration=4;
+		ActivatorSound("*usemeds",127);
+		GiveInventory("StunCount",150);
+		break;
+	case 2: //meds
+		duration=8;
+		ActivatorSound("*usemeds",127);
+		GiveInventory("StunCount",100);
+		break;
+	case 3: //zerk
+		duration=6;
+		ActivatorSound("*usemeds",127);
+		GiveInventory("StunCount",100);
+		HealThing(random(15,20));
+		break;
+	default: break;
+	}
+	GiveInventory ("UsingMeds", 1);
+	Delay (duration);
+	GiveInventory ("UsingMeds", 1);
+	Delay (duration*6);
+	GiveInventory ("UsingMeds", 1);
+	Delay (duration*3);
+	TakeInventory ("UsingMeds", 999);
+	if (CheckInventory("Health")<1)terminate;
+	switch(type)
+	{
+	case 1: //stims
+		if(!CheckInventory("UnBleedableFlag"))
+		{
+			GiveInventory("RegenStims",20);
+			if(CheckInventory("WoundCount")) GiveInventory("WoundCount",random(0,1));
+		}
+		else GiveInventory("RegenStims",10);
+		TakeInventory("Fatigue",50);
+		if(random(1,20)<=1+CheckInventory("RegenStims"))GiveInventory("LethalDamage",1);
+		break;
+	case 2: //meds
+		GiveInventory("Fatigue",100);
+		GiveInventory("RegenStims",10);
+		if(random(1,CheckInventory("RegenStims"))<=2)TakeInventory("LethalDamage",1);
+		if (!CheckInventory("UnBleedableFlag")) GiveInventory("BandageCount",20);
+		else GiveInventory("RegenStims",12);
+		break;
+	case 3: //zerk
+		If (CheckInventory("PowerStrength")) GiveInventory("WoundCount",random(3,7));
+		else GiveInventory("WoundCount",random(0,1));
+		GiveInventory("RegenBers",200);
+		GiveInventory("PowerStrength",1);
+		GiveInventory("HasZerked",1);
+		ActivatorSound("*xdeath", 127);
+		break;
+	default: break;
+	}
+}
+
+script "UseFlask"(void)
+{
+	GiveInventory("UsingMeds",1);
+	SetWeapon("Ring");
+	Delay(9);
+	ActivatorSound("weapons/grenopen",64);
+	Delay(12);
+	while(GetActorPitch(0)>-5825)
+	{
+		if (CheckInventory("Health")<1) terminate;
+		ChangeActorPitch(0,GetActorPitch(0)-400,1);
+		SetWeapon("Ring");
+		delay(1);
+	}
+	if (CheckInventory("Health")<1) terminate;
+	Delay(3);
+	faderange (0,40,120, 0.5, 0,0,0,0, 0.4);
+	ActivatorSound("misc/gibbed", 127);
+	GiveInventory("UsingMeds",1);
+	Delay(36);
+	TakeInventory("UsingMeds", 999);
+	TakeInventory("Fatigue",20);
+	GiveInventory("RegenBlues",25);
+}
+script "UseBigFlask"(void)
+{
+	GiveInventory("UsingMeds",1);
+	SetWeapon("Ring");
+	Delay(9);
+	ActivatorSound("weapons/grenopen",64);
+	Delay(24);
+	while(GetActorPitch(0)>-5825)
+	{
+		if (CheckInventory("Health")<1) terminate;
+		ChangeActorPitch(0,GetActorPitch(0)-400,1);
+		SetWeapon("Ring");
+		delay(1);
+	}
+	if (CheckInventory("Health")<1) terminate;
+	Delay(3);
+	faderange (160,10,120, 0.5, 0,0,0,0, 0.4);
+	ActivatorSound("misc/gibbed", 127);
+	GiveInventory ("UsingMeds", 1);
+	GiveInventory("Fatigue",50);
+	Delay(10);
+	if (CheckInventory("Health")<1) terminate;
+	ActivatorSound("weapons/huntopen",64);
+	Delay(33);
+	GiveInventory("Fatigue",50);
+	GiveInventory("StunCount",20);
+	GiveInventory("RegenBlues",10);
+	Delay(66);
+	TakeInventory("UsingMeds",999);
+	GiveInventory("Fatigue",100);
+	GiveInventory("StunCount",30);
+	GiveInventory("RegenBlues",20);
+}
+
+
+function void RegenCheck(void)
+{
+	int hpcap=100-CheckInventory("LethalDamage")-CheckInventory("AggravatedDamage");
+	if ((CheckInventory("Health")>hpcap)&&(!CheckInventory("UnBleedableFlag"))) Thing_Damage2(0,1,"bleedout");
+	if (!CheckInventory("WoundCount")) TakeInventory("BandageCount",999);
+	else
+	{
+		if ((random(1,7000)<=1+CheckInventory("IsMoving"))) GiveInventory("LethalDamage",1);
+		int maxbleed = CheckInventory("WoundCount");
+		if (maxbleed > 8) maxbleed = 8;
+		if ((random(1,70)<=maxbleed)&&(!CheckInventory("UnBleedableFlag")))
+		{
+			GiveInventory("BleedOutAI",1);
+		}
+		else if (CheckInventory("UnBleedableFlag"))
+		{
+			TakeInventory("WoundCount",999);
+		}
+		if (CheckInventory("RegenBlues")>=4)
+		{
+			if (random(1,16)==1)
+			{
+				TakeInventory("WoundCount",1);
+				TakeInventory("RegenBlues",2);
+			}
+		}
+		else if ((CheckInventory("BandageCount"))&&(random(1,21)==1))
+		{
+			TakeInventory("WoundCount",1);
+			TakeInventory("BandageCount",1);
+		}
+		else if (random(1,280+70*(1+CheckInventory("IsMoving")))==1)
+		{
+			TakeInventory("WoundCount",1);
+		}
+	}
+	if (CheckInventory("RegenBers"))
+	{
+		if (random(1,70+CheckInventory("IsMoving")*2)==1)
+		{
+			if (CheckInventory("RegenBers")==1)
+			{
+				TakeInventory("RegenBers",1);
+				TakeInventory("PowerStrength",999);
+				GiveInventory("Fatigue",500);
+				ActivatorSound("*pain", 127);
+				while (CheckInventory("HasZerked"))
+				{
+					GiveInventory("LethalDamage",random(3,12));
+					GiveInventory("AggravatedDamage",1);
+					TakeInventory("HasZerked",1);
+				}
+			}
+			else{
+				TakeInventory("RegenBers",1);
+				TakeInventory("Fatigue",1);
+			}
+		}
+	}
+	if (CheckInventory("Health")>=hpcap)
+	{
+		TakeInventory("RegenStims",999);
+		if (random(1,1400000+(100000*CheckInventory("IsMoving")))<=1)
+		{
+			TakeInventory("LethalDamage",1);
+		}
+		if ((random(1,1400000)<=1)&&(CheckInventory("LethalDamage")>12))
+		{
+			TakeInventory("LethalDamage",2);
+			GiveInventory("AggravatedDamage",1);
+		}
+	}
+	else
+	{
+		if ((CheckInventory("RegenStims"))&&(random(1,28)==1))
+		{
+			HealThing(1);
+			TakeInventory("Fatigue",1);
+			TakeInventory("RegenStims",1);
+		}
+		if ((CheckInventory("RegenBers"))&&(random(1,2)==1))
+		{
+			HealThing(random(1,random(1,2)));
+			if ((CheckInventory("RegenBers")>1)) TakeInventory("RegenBers",1);
+			TakeInventory("StunCount",5);
+		}
+		int healchance=CheckInventory("Health")/10-6;
+		if((healchance<1)||(CheckInventory("WoundCount"))) healchance=1;
+		if (random(1,140*(1+CheckInventory("IsMoving")))<=healchance)
+		{
+			HealThing(1);
+		}
+	}
+	if (CheckInventory("Health")<100)
+	{
+		if ((CheckInventory("RegenBlues"))&&(random(1,14)==1))
+		{
+			HealThing(1);
+			TakeInventory("RegenBlues",1);
+			TakeInventory("LethalDamage",1);
+			TakeInventory("AggravatedDamage",1);
+			TakeInventory("Fatigue",2);
+			TakeInventory("StunCount",5);
+		}
+	}
+}

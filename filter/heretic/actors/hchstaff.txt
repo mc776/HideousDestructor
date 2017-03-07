@@ -1,0 +1,357 @@
+actor SyntheticHellStaff : HDWeapon replaces SkullRod
+{
+	game Heretic
+	weapon.selectionorder 400
+	weapon.ammotype1 "SyntheticRage"
+	weapon.ammotype2 "SyntheticFieryWrath"
+	weapon.slotnumber 5
+	weapon.yadjust 16
+	weapon.bobstyle normal
+	weapon.bobspeed 1.8
+	inventory.pickupMessage "hellstaff! time to make them burn!"
+	tag "$TAG_SKULLROD"
+	obituary "%o dies, %k laughs."
+	weapon.kickback 0
+	states
+	{
+	spawn:
+		WSKL A -1
+		stop
+	ready:
+		HROD A 0 A_GiveInventory("IsWeaponWide",1)
+		HROD A 0 A_JumpIfInventory("SyntheticRage",1,2)
+		HROD A 0 A_Jump(256,2)
+		HROD A 0 A_JumpIfInventory("SyntheticHellTomed",1,3)
+		HROD A 0 A_JumpIfInventory("IsUsingTome",1,"entome")
+		HROD A 1 A_WeaponReady
+		loop
+		HROD C 1 A_WeaponReady
+		HROD A 0 A_GiveInventory("IsWeaponWide",1)
+		HROD C 1 bright A_WeaponReady
+		loop
+	select0:
+		HROD A 0
+		goto select0small
+	deselect0:
+		HROD "#" 0
+		goto deselect0small
+	entome:
+		HROD A 4 offset (0,38)
+		HROD A 4 offset (0,48)
+		HROD A 3 offset (0,60)
+		TNT1 A 20 A_PlayWeaponSound("himp/attack")
+		TNT1 A 40 A_PlayWeaponSound("weapons/staffhit")
+		TNT1 A 0 A_GiveInventory("SyntheticHellTomed",1)
+		HROD A 4 offset (0,60)
+		HROD A 3 offset (0,48)
+		HROD A 4 offset (0,38)
+		TNT1 A 0 A_TakeInventory("IsUsingTome",1)
+		goto ready
+	tomefire:
+		TNT1 A 0 A_JumpIfInventory("SyntheticRage",1,1)
+		goto altfire
+		TNT1 A 0 A_PlayWeaponSound("weapons/hornrodpowshoot")
+		HROD ACACACCCDDEFG 1 bright
+		TNT1 A 0 ACS_NamedExecuteAlways("MuzzleClimb",0,random(10,-30),random(-10,40))
+		TNT1 A 0 A_TakeInventory("SyntheticHellTomed")
+		TNT1 A 0 A_FireCustomMissile("SyntheticHellRainer")
+		TNT1 A 0 A_Refire
+		goto ready
+	fire:
+		HROD A 0 A_JumpIfInventory("SyntheticHellTomed",1,"tomefire")
+		HROD A 0 A_JumpIf(random(1,countinv("SyntheticFieryWrath"))>40,"oshit")
+	hold:
+		TNT1 A 0 A_JumpIfInventory("SyntheticRage",1,1)
+		goto altfire
+		TNT1 A 0 A_AlertMonsters
+		HROD A 0 A_FireBullets(2,2,1,(0),"SyntheticHellFire",FBF_NOFLASH,65536)
+		HROD A 0 A_GiveInventory("SyntheticFieryWrath",1)
+		HROD BBB 1 A_WeaponReady(WRF_NOFIRE)
+		TNT1 A 0 A_TakeInventory("SyntheticRage",1)
+		TNT1 A 0 A_Refire
+		goto ready
+	oshit:
+		HROD A 0 A_GiveInventory("HDFireStarter",1)
+		HROD A 0 A_TakeInventory("SyntheticFieryWrath",40)
+		HROD A 0 A_JumpIfInventory("SyntheticFieryWrath",1,"oshit")
+		HROD A 0 A_Refire
+		goto ready
+	altfire:
+		HROD A 2 offset (0,38)
+		HROD A 1 offset (0,48)
+		HROD A 1 offset (0,60)
+		TNT1 A 4
+	althold:
+		TNT1 A 0 A_FireCustomMissile("SyntheticHellStickShit")
+		STFF A 2 A_WeaponReady(WRF_NOFIRE)
+		STFF BA 3
+		TNT1 A 0 A_JumpIf(floorz<z,2)
+		TNT1 A 0 A_Recoil(-1)
+		STFF AAAA 2 A_WeaponReady(WRF_NOFIRE)
+		STFF A 0 A_Refire("althold")
+		STFF A 2 offset (0,38)
+		STFF A 1 offset (0,48)
+		STFF A 1 offset (0,60)
+		TNT1 A 4
+		HROD A 1 offset (0,60)
+		HROD A 1 offset (0,48)
+		HROD A 2 offset (0,38)
+		goto ready
+	reload:
+	nofire:
+		HROD A 2 offset(0,36)
+		HROD A 2 offset(1,40)
+		HROD A 2 offset(0,42)
+		HROD A 2 offset(-1,39)
+		HROD A 2 offset(0,34)
+		TNT1 A 0 A_Refire
+		goto ready
+	}
+}
+actor SyntheticHellFire{
+	height 1
+	radius 1
+	+puffgetsowner
+	+hittracer
+	+noblood +puffonactors
+	states
+	{
+	spawn:
+		TNT1 A 0 nodelay
+		TNT1 A 0 A_PlaySound("weapons/phoenixpowshoot")
+		TNT1 A 0 A_FaceTarget
+		TNT1 A 0 A_SpawnItemEx("HDFlameRed",frandom(2,4),frandom(-2,2),frandom(-2,2),frandom(-1,1),frandom(-1,1),frandom(-1,2),0,SXF_TRANSFERPOINTERS|SXF_NOCHECKPOSITION)
+	crash:
+		TNT1 A 1 A_GiveInventory("HDFireStarter",1,AAPTR_TRACER)
+		TNT1 A 0
+		stop
+	}
+}
+
+actor SyntheticHellPain : ActionItem
+{
+	states
+	{
+	pickup:
+		TNT1 A 0 A_JumpIf(health>50,2)
+		TNT1 A 0 A_TakeInventory("SyntheticFieryWrath",(50-health)>>2)
+		TNT1 A 0 A_GiveInventory("SyntheticRage",(100-health)>>2)
+		fail
+	}
+}
+actor SyntheticRage : Ammo
+{
+	+inventory.undroppable
+	inventory.maxamount 666
+	ammo.backpackmaxamount 666
+	ammo.backpackamount 0
+	inventory.icon "INAMRAM"
+}
+actor SyntheticFieryWrath : Ammo
+{
+	+inventory.undroppable
+	inventory.maxamount 144
+	ammo.backpackmaxamount 144
+	ammo.backpackamount 0
+	inventory.icon "INAMRAM"
+}
+actor SyntheticHellTomed : InventoryFlag
+{
+	inventory.maxamount 1
+}
+
+actor SyntheticHellStickShit:SyntheticStickAttackShitty{
+	states{
+	xdeath:
+		TNT1 A 0 {if(random(1,4)>1){A_TakeFromTarget("SyntheticFieryWrath",1);}}
+		goto super::xdeath
+	}
+}
+actor SyntheticHellRainer
+{
+	projectile
+	height 6
+	-nogravity
+	+forcexybillboard
+	+skyexplode
+	speed 30
+	var int user_delay;
+	deathsound "weapons/hornrodpowhit"
+	seesound "weapons/hornrodpowshoot"
+	states
+	{
+	spawn:
+		FX00 ABAB 1 bright
+		loop
+	death:
+		TNT1 A 0 A_ChangeVelocity(0,0,6,CVF_RELATIVE)
+		FX00 CD 1 bright A_JumpIf(z>=ceilingz-6,"seconddeath")
+		TNT1 A 0 A_AlertMonsters
+		loop
+	seconddeath:
+		TNT1 A 0 A_AlertMonsters
+		TNT1 A 0 A_TakeFromTarget("SyntheticRage",999)
+		TNT1 A 0 A_GiveToTarget("SyntheticFieryWrath",999)
+		TNT1 A 0 A_ChangeFlag("nointeraction",1)
+		TNT1 A 0 A_ChangeFlag("missile",0)
+		TNT1 A 0 A_Stop
+		TNT1 A 0 A_PlaySound("weapons/gauntletuse",0,1.0,0,1)
+		TNT1 A 0 A_SetUserVar("user_delay",0)
+	rain:
+		TNT1 A 1 A_SetTics(random(0,user_delay/50))
+		TNT1 AAAA 0 A_SpawnItemEx("SyntheticHellDrop",random(0,256),0,random(0,-2),0,0,-10,random(0,365),SXF_TRANSFERPOINTERS)
+		TNT1 A 0 A_SetUserVar("user_delay",user_delay+1)
+		loop
+	}
+}
+actor SyntheticHellDrop:FastProjectile{
+	renderstyle add
+	+forceybillboard
+	height 2
+	radius 2
+	+hittracer
+	damage(4)
+	damagetype "burning"
+	states
+	{
+	spawn:
+		FX22 A 0
+		FX22 A 0 bright{
+			A_SetScale(frandom(0.4,2.0));
+			A_ChangeVelocity(0,0,random(-15,-30));
+		}
+		FX22 A 1 A_ChangeVelocity(0,0,-1,CVF_RELATIVE)
+		wait
+	xdeath:
+		FX22 H 0{
+			A_GiveInventory("HDFireStarter",1,AAPTR_TRACER);
+			A_TakeInventory("SyntheticFieryWrath",1,0,AAPTR_TARGET);
+		}
+	death:
+		FX22 H 1 bright
+	death2:
+		FX22 G 1 bright{
+			A_SpawnItemEx("HDSmokeChunk",0,0,0,random(2,12),0,random(6,14),random(0,365),SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS,240);
+			if(scalex>1.6){A_RadiusGive("HDFireStarter",64,RGF_PLAYERS|RGF_MONSTERS|RGF_OBJECTS|RGF_CORPSES|RGF_CUBE,1);}
+		}
+		FX22 BCDEF 1 bright A_FadeOut(0.2)
+		stop
+	}
+}
+
+
+actor SyntheticRunes : CustomInventory replaces SkullRodHefty{
+	inventory.pickupmessage "verbose hell runes"
+	states
+	{
+	spawn:
+		AMS1 AB 1 A_SetTics(random(1,5)<<2)
+		loop
+	pickup:
+		TNT1 A 0 A_GiveInventory("SyntheticRune",random(random(6,18),24))
+		stop
+	}
+}
+actor SyntheticRune : CustomInventory replaces SkullRodAmmo{
+	inventory.maxamount 50
+	inventory.amount 6
+	+inventory.invbar
+	inventory.icon "INAMRAM"
+	inventory.pickupmessage "hell runes"
+	states
+	{
+	spawn:
+		AMS1 AB 1 A_SetTics(random(1,5)<<2)
+		loop
+	use:
+		TNT1 A 0 A_JumpIfInventory("SyntheticRune",40,"rage")
+		TNT1 A 0 A_JumpIfInventory("SyntheticRune",20,"froth")
+		TNT1 A 0 A_JumpIfInventory("SyntheticRune",15,"ire")
+		TNT1 A 0 A_JumpIfInventory("SyntheticRune",10,"irk")
+		TNT1 A 0 A_JumpIfInventory("SyntheticRune",5,"annoy")
+		fail
+	rage:
+		TNT1 AAAAA 0 A_FireCustomMissile("SyntheticRuneBlunt")
+		TNT1 A 0 A_GiveInventory("SyntheticRage",random(30,60))
+		TNT1 A 0 A_TakeInventory("SyntheticFieryWrath",random(30,40))
+		TNT1 A 0 A_TakeInventory("SyntheticRune",39)
+		goto waaaugh
+	froth:
+		TNT1 AAA 0 A_FireCustomMissile("SyntheticRuneBlunt")
+		TNT1 A 0 A_GiveInventory("SyntheticRage",random(15,25))
+		TNT1 A 0 A_TakeInventory("SyntheticFieryWrath",random(15,20))
+		TNT1 A 0 A_TakeInventory("SyntheticRune",19)
+		goto aaah
+	ire:
+		TNT1 AA 0 A_FireCustomMissile("SyntheticRuneBlunt")
+		TNT1 A 0 A_GiveInventory("SyntheticRage",random(5,15))
+		TNT1 A 0 A_TakeInventory("SyntheticFieryWrath",random(1,8))
+		TNT1 A 0 A_TakeInventory("SyntheticRune",14)
+		goto aaah
+	irk:
+		TNT1 A 0 A_FireCustomMissile("SyntheticRuneBlunt")
+		TNT1 A 0 A_GiveInventory("SyntheticRage",random(3,8))
+		TNT1 A 0 A_TakeInventory("SyntheticFieryWrath",random(1,5))
+		TNT1 A 0 A_TakeInventory("SyntheticRune",9)
+		goto fools
+	annoy:
+		TNT1 A 0 A_FireCustomMissile("SyntheticRuneBlunt")
+		TNT1 A 0 A_GiveInventory("SyntheticRage",random(2,7))
+		TNT1 A 0 A_TakeInventory("SyntheticRune",4)
+		goto fools
+fools:
+TNT1 A 0 A_SetBlend("a0 10 00",0.3,15)
+TNT1 A 0 A_PlaySound("*taunt")
+TNT1 A 0 A_TakeInventory("PowerFrightener")
+TNT1 A 0 A_AlertMonsters
+TNT1 A 0 A_Jump(256,1,2,3,4,5,6,7)
+TNT1 A 0 A_Print("You read Matthew 5:22.",10.0,"CONFONT") stop
+TNT1 A 0 A_Print("You read a transcript of an abortion debate.",10.0,"CONFONT") stop
+TNT1 A 0 A_Print("You read an exhortation to venerate Tomes\n\nof Power suggesting that ripping pages\n\nout of them to enchant weapons\n\nmay be blasphemous.",10.0,"CONFONT") stop
+TNT1 A 0 A_Print("The runes form a graven image of Jesus.",10.0,"CONFONT") stop
+TNT1 A 0 A_Print("You read a Halloween card.",10.0,"CONFONT") stop
+TNT1 A 0 A_Print("You read a comment about how much better\n\nHideous Destructor is than this mod.",10.0,"CONFONT") stop
+TNT1 A 0 A_Print("You have received an inviation to picket a funeral!\n\nIt was for yesterday.",10.0,"CONFONT") stop
+
+aaah:
+TNT1 A 0 A_SetBlend("a0 10 00",0.8,35)
+TNT1 A 0 A_PlaySound("*death")
+TNT1 A 0 A_TakeInventory("PowerFrightener")
+TNT1 A 0 A_AlertMonsters
+TNT1 A 0 A_Jump(256,1,2,3,4,5,6)
+TNT1 A 0 A_Print("You read a supposedly Christmas card\n\nthat only says 'Happy Holidays'.",10.0,"CONFONT") stop
+TNT1 A 0 A_Print("You read an old Sidhe governor's annual\n\nfinancial report showing charitable gifts to\n\norganizations that support the equality of\n\nthe other races of Parthoris.",10.0,"CONFONT") stop
+TNT1 A 0 A_Print("The runes form a picture of a toilet paper roll\n\nhung up the wrong way.",10.0,"CONFONT") stop
+TNT1 A 0 A_Print("You read a history of the Serpent Rider\n\ninvasion that misuses the word 'decimated'.",10.0,"CONFONT") stop
+TNT1 A 0 A_Print("You read some explicit homosexual pornography\n\nfeaturing one of your heroes from the war.",10.0,"CONFONT") stop
+TNT1 A 0 A_Print("You read an editorial about how Heretic\n\nwould have been much better had there been\n\na canon female protagonist.",10.0,"CONFONT") stop
+
+waaaugh:
+TNT1 A 0 A_SetBlend("a0 10 00",1.0,45)
+TNT1 A 0 A_PlaySound("*crazydeath")
+TNT1 A 0 A_GiveInventory("PowerFrightener",1)
+TNT1 A 0 A_AlertMonsters
+TNT1 A 0 A_Jump(256,1,2,3,4,5,6)
+TNT1 A 0 A_Print("You read a lengthy theological proof that\n\nGod is actually merciful to everyone and forgives\n\nall repentant sinners\n\nof every race and species.",10.0,"CONFONT") stop
+TNT1 A 0 A_Print("You cannot even bear to read this\n\nfor the misplaced apostrophe's.",10.0,"CONFONT") stop
+TNT1 A 0 A_Print("You read a tract about how homosexuality is evil\n\nand all those who enable it will go to Hell.\n\n\n\nYou agree with all of it until at the end\n\nwhere it is revealed that they were just talking\n\nabout the mix of Greek and Latin in coining the word,\n\nfollowed by a graphic ode to how\n\nsatisfying the act itself is.",10.0,"CONFONT") stop
+TNT1 A 0 A_Print("You read r/atheism.",10.0,"CONFONT") stop
+TNT1 A 0 A_Print("The runes form a script that automatically makes your\n\naccount follow several Tumblr social justice blogs.\n\n\n\nWhich you proceed to read.",10.0,"CONFONT") stop
+TNT1 A 0 A_Print("You read an apology by the author\n\nof one of the previous documents,\n\nindicating how sorry they are\n\nthat you were offended.",10.0,"CONFONT") stop
+	}
+}
+actor SyntheticRuneBlunt{
+	height 1 radius 1 speed 1
+	damagetype "burning"
+	projectilekickback 1
+	obituary "%k was JUST... SO... ANGRY!!!!"
+	states
+	{
+	spawn:
+		TNT1 A 0 nodelay
+		TNT1 A 0 A_CustomMeleeAttack((random(1,4)),"none","none","burning",1)
+		stop
+	}
+}
+
+

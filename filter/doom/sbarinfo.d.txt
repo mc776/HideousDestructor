@@ -1,0 +1,765 @@
+
+completeborder true;
+height 0;
+
+
+// NORMAL
+
+statusbar normal, fullscreenoffsets
+{
+ininventory not isdead
+{
+ininventory not wipedout
+{
+	drawbar "STAMBARR","STAMBAR",Fatigue,vertical,interpolate(20),12+center,-8;
+	ininventory not issprinting
+	{
+
+	ininventory HUDSprite
+	{
+	ininventory WeaponBusy{drawimage "HUDLOD1",0+center,-80;}
+	IsSelected Lumberjack{drawimage"CSAWA0",-60+center, -16;}
+	IsSelected HDPistol{
+		ininventory not HDPistolFullAuto,1{drawimage "PISTA0",-60+center, -16;}
+		ininventory HDPistolFullAuto,1{drawimage "PISTC0",-60+center, -16;}
+	}
+	IsSelected HDSMG{drawimage "SMGNA0",-60+center, -16;}
+	IsSelected Slayer{drawimage "SLAYA0",-60+center, -16;}
+	IsSelected Hunter{drawimage "HUNTA0",-60+center, -16;}
+	IsSelected ZM66SemiRifle{drawimage "RIFSA0",-60+center, -16;}
+	IsSelected ZM66GrenadeRifle{drawimage "RIGLA0",-60+center, -16;}
+	IsSelected ZM66Rifle{drawimage "RIFLA0",-60+center, -16;}
+	IsSelected Vulcanette{drawimage "VULCA0",-60+center, -16;}
+	IsSelected RocquetteLauncher{drawimage "LAUNA0",-60+center, -16;}
+	IsSelected Blooper{drawimage "BLOPA0",-64+center,-16;}
+	IsSelected ThunderBuster{drawimage "PLASA0",-60+center, -16;}
+	IsSelected LiberatorRifle{drawimage "BRFLA0",-60+center, -16;}
+	IsSelected LiberatorGrenadeRifle{drawimage "BRFLB0",-60+center, -16;}
+	IsSelected BFG9K{drawimage "BFUGA0",-60+center, -16;}
+	IsSelected Brontornis{drawimage "BLSTA0",-60+center, -16;}
+	IsSelected BossRifle{drawimage "BORFA0",-60+center, -16;}
+	IsSelected HDFragGrenades{drawimage "FRAGA0",-60+center, -16;}
+	IsSelected SelfBandage{drawimage "BLUDA0",-60+center, -16;}
+	IsSelected SelfBandage{drawimage "BLUDA0",-57+center,-32;drawimage "BLUDB0",-62+center,-27;drawimage "BLUDC0",-60+center,-16;}
+	}
+
+	//current weapon ammo
+	IsSelected Slayer
+	{
+		drawswitchableimage ShellChamber1, "nullimage", "SSTAMBAR", -45+center,-16;
+		drawswitchableimage ShellChamber2, "nullimage", "SSTAMBAR", -25+center,-16;
+		drawnumber 3, HUDFONT_DOOM, gray, ammo2, -52+center,-18;
+	}
+	else IsSelected Brontornis
+	{
+		drawswitchableimage BrontornisMag, "nullimage", "STAMBRRR", -45+center,-16;
+		drawnumber 3, HUDFONT_DOOM, gray, ammo2, -52+center,-18;
+	}
+	else IsSelected Blooper
+	{
+		drawswitchableimage BloopChamber, "nullimage", "STAMBRRR", -45+center,-16;
+		drawnumber 3, HUDFONT_DOOM, gray, ammo2, -52+center,-18;
+	}
+	else IsSelected Vulcanette
+	{
+		drawswitchableimage VulcMag5, "STAMBAR", "STAMBARR", -30+center,-16;
+		drawswitchableimage VulcMag4, "STAMBAR", "STAMBARR", -35+center,-16;
+		drawswitchableimage VulcMag3, "STAMBAR", "STAMBARR", -40+center,-16;
+		drawswitchableimage VulcMag2, "STAMBAR", "STAMBARR", -45+center,-16;
+		drawbar "STAMBARR","STAMBAR", ammo1, horizontal,reverse, -50+center,-16;
+		drawnumber 3, HUDFONT_DOOM, gray, ammo2, -52+center,-18;
+	}
+	else IsSelected ThunderBuster
+	{
+		ininventory PlasmaBattery,51{drawimage "STAMBARR",-25+center,-16;}
+		ininventory PlasmaBattery,41{drawimage "STAMBARR",-30+center,-16;}
+		ininventory PlasmaBattery,31{drawimage "STAMBARR",-35+center,-16;}
+		ininventory PlasmaBattery,21{drawimage "STAMBARR",-40+center,-16;}
+		ininventory PlasmaBattery,11{drawimage "STAMBARR",-45+center,-16;}
+		ininventory not PlasmaBattery,51{drawimage "STAMBAR",-25+center,-16;}
+		ininventory not PlasmaBattery,41{drawimage "STAMBAR",-30+center,-16;}
+		ininventory not PlasmaBattery,31{drawimage "STAMBAR",-35+center,-16;}
+		ininventory not PlasmaBattery,21{drawimage "STAMBAR",-40+center,-16;}
+		ininventory not PlasmaBattery,11{drawimage "STAMBAR",-45+center,-16;}
+		drawnumber 3, HUDFONT_DOOM, gray, ammo2, -52+center,-18;
+	}
+	else IsSelected Lumberjack
+	{
+		ininventory LumberCell,1001{drawimage "STAMBARR",-25+center,-16;}
+		ininventory LumberCell,801{drawimage "STAMBARR",-30+center,-16;}
+		ininventory LumberCell,601{drawimage "STAMBARR",-35+center,-16;}
+		ininventory LumberCell,401{drawimage "STAMBARR",-40+center,-16;}
+		ininventory LumberCell,201{drawimage "STAMBARR",-45+center,-16;}
+		ininventory not LumberCell,1001{drawimage "STAMBAR",-25+center,-16;}
+		ininventory not LumberCell,801{drawimage "STAMBAR",-30+center,-16;}
+		ininventory not LumberCell,601{drawimage "STAMBAR",-35+center,-16;}
+		ininventory not LumberCell,401{drawimage "STAMBAR",-40+center,-16;}
+		ininventory not LumberCell,201{drawimage "STAMBAR",-45+center,-16;}
+		drawnumber 3, HUDFONT_DOOM, gray, ammo2, -52+center,-18;
+	}
+	else UsesAmmo
+	{
+		drawbar "STAMBAR1","STAMBAR0", ammo1, horizontal, -50+center,-16;
+		drawnumber 3, HUDFONT_DOOM, gray, ammo2, -52+center,-18;
+	}
+
+	//extras
+	IsSelected HDPistol
+	{
+		InInventory HDPistolChamber,1 {drawimage "RBRSA3A7",-48+center,-14;}
+		InInventory HDSecondPistol,1{
+			InInventory not HDSecondPistolFullAuto,1{drawimage "PISTA0",-36+center,-3;}
+			InInventory HDSecondPistolFullAuto,1{drawimage "PISTC0",-36+center,-3;}
+		}
+		InInventory HDPistolFullAuto,1{
+			InInventory HDPistolFullAuto,2{drawimage "STFULAUT",-42+center,-20;}
+			InInventory not HDPistolFullAuto,2{drawimage "RBRSA3A7",-40+center,-18;}
+		}
+	}
+	IsSelected HDSMG
+	{
+		InInventory HDSMGChamber,1 {drawimage "RBRSA3A7",-48+center,-14;}
+		InInventory SMGFullAuto,2 {drawimage "STFULAUT",-42+center,-20;}
+		InInventory not SMGFullAuto,2 {
+		InInventory SMGFullAuto,1 {drawimage "STBURAUT",-42+center,-20;drawimage "STBURAUT",-34+center,-20;}}
+	}
+	IsSelected Hunter
+	{
+		drawswitchableimage ShotgunAuto, "nullimage", "STFULAUT",-42+center,-20;
+		InInventory ShotgunChamber,1{drawswitchableimage ShotgunChamber, "nullimage","RBRSA3A7", -48+center,-14;}
+	}
+	IsSelected ZM66GrenadeRifle
+	{
+		drawnumber 3, HD_INDEXFONT, red, ZM66RoundCounter, -15+center,-13;
+		drawswitchableimage ZM66GLoaded, "STAMBAR", "STAMBARR", -50+center,-11;
+		drawswitchableimage ZM66GLMode, "nullimage", "STAMBAR", -40+center,-11;
+		InInventory AirburstCount{drawnumber 2, HD_INDEXFONT, grey, AirburstCount, -26+center,-11;}
+	}
+	IsSelected ZM66Rifle,ZM66SemiRifle
+	{
+		drawnumber 3, HD_INDEXFONT, red, ZM66RoundCounter, -15+center,-13;
+		InInventory ZM66Chamber,1 {drawimage "RBRSA3A7",-48+center,-14;}
+	}
+	IsSelected ZM66GrenadeRifle,ZM66Rifle
+	{
+		InInventory ZM66FullAuto,2 {drawimage "STBURAUT",-42+center,-20;drawimage "STBURAUT",-34+center,-20;}
+		InInventory not ZM66FullAuto,2 {
+		InInventory ZM66FullAuto,1 {drawimage "STFULAUT",-42+center,-20;}
+		InInventory not ZM66FullAuto,1 {drawimage "RBRSA3A7",-42+center,-18;}}
+		InInventory ZM66Chamber,1 {drawimage "RBRSA3A7",-48+center,-14;}
+	}
+	IsSelected Vulcanette
+	{
+		ininventory ChaingunOn,1{
+			drawswitchableimage VulcChamber5, "nullimage", "RBRSA3A7", -23+center,-3;
+			drawswitchableimage VulcChamber4, "nullimage", "RBRSA3A7", -20+center,-6;
+			drawswitchableimage VulcChamber3, "nullimage", "RBRSA3A7", -18+center,-9;
+			ininventory not VulcJB1{drawnumber 3, HD_INDEXFONT, red, ammo1, -16+center,-18;}
+			ininventory VulcJB1{drawnumber 3, HD_INDEXFONT, red, 99, -16+center,-18;}
+			ininventory VulcJuice,1751{drawimage "STAMBARR",-30+center,-11;}
+			ininventory VulcJuice,1401{drawimage "STAMBARR",-35+center,-11;}
+			ininventory VulcJuice,1051{drawimage "STAMBARR",-40+center,-11;}
+			ininventory VulcJuice,701{drawimage "STAMBARR",-45+center,-11;}
+			ininventory VulcJuice,351{drawimage "STAMBARR",-50+center,-11;}
+			ininventory not VulcJuice,1751{drawimage "STAMBAR",-30+center,-11;}
+			ininventory not VulcJuice,1401{drawimage "STAMBAR",-35+center,-11;}
+			ininventory not VulcJuice,1051{drawimage "STAMBAR",-40+center,-11;}
+			ininventory not VulcJuice,701{drawimage "STAMBAR",-45+center,-11;}
+			ininventory not VulcJuice,351{drawimage "STAMBAR",-50+center,-11;}
+		}
+		drawswitchableimage ChaingunFast, "nullimage", "STFULAUT",-42+center,-20;
+	}
+	IsSelected LiberatorGrenadeRifle
+	{
+		drawswitchableimage LiberatorGrenadeChamber, "STAMBAR", "STAMBARR", -50+center,-11;
+		drawswitchableimage LiberatorGrenadeMode, "nullimage", "STAMBAR", -40+center,-11;
+		InInventory AirburstCount{drawnumber 2, HD_INDEXFONT, grey, AirburstCount, -26+center,-11;}
+	}
+	IsSelected RocquetteLauncher,Blooper
+	{
+		InInventory AirburstCount{drawnumber 2, HD_INDEXFONT, grey, AirburstCount, -26+center,-11;}
+	}
+	IsSelected RocquetteLauncher
+	{
+		drawswitchableimage IsUsingRocketUnderslung, "nullimage", "STAMBAR", -40+center,-11;
+		drawswitchableimage HEATLoaded, "nullimage", "STAMBRRR", -50+center,-11;
+	}
+	IsSelected LiberatorRifle,LiberatorGrenadeRifle
+	{
+		InInventory LiberatorFullAuto,1 {drawimage "STFULAUT",-42+center,-20;}
+		InInventory LiberatorChamber,1 {drawimage "RBRSA3A7",-48+center,-14;}
+	}
+	IsSelected ThunderBuster
+	{
+		drawswitchableimage PlasmaAlt, "nullimage", "STAMBRRR", -45+center,-11;
+		ininventory PlasmaZoom
+		{drawswitchableimage PlasmaZoomGood, "STAMBAR", "STAMBARR", -34+center,-11;}
+	}
+	IsSelected BFG9k
+	{
+		drawbar "STAMBAR1","STAMBAR0",BFGInternalCharge,horizontal,-50+center,-11;
+	}
+	IsSelected BossRifle
+	{
+		InInventory BossChamber,1 {drawimage "RBRSA3A7",-48+center,-14;}
+		drawnumber 2,HD_INDEXFONT,white,BossMOA,-26+center,-10;
+		drawnumber 1,HD_INDEXFONT,cyan,BossZoomDegree,-36+center,-10;
+	}
+	IsSelected Injector
+	{
+		drawimage "MEDIA0", -110+center, -10; drawnumber 3, SMALLFONT, Gold, PortableMedikit, -100+center,-10;
+		drawimage "STIMA0", -80+center, -10; drawnumber 3, SMALLFONT, Gold, PortableStimpack, -70+center,-10;
+		drawimage "PSTRA0", -50+center, -10; drawnumber 3, SMALLFONT, Gold, PortableBerserkPack, -40+center,-10;
+		drawstring smallfont, red, "\cjFire", -100+center,-32;
+		drawstring smallfont, red, "\cdAlt", -70+center,-32;
+		drawstring smallfont, red, "\cgBoth", -30+center,-32;
+	}
+	IsSelected HDFragGrenades
+	{
+		drawswitchableimage FragOut && SpoonOff, "nullimage","STAMBRRR","STRMBRRR","STRMBRRR", -50+center,-11;
+		drawbar "STAMBAR1","STAMBAR0",GrenadeForce,horizontal,-50+center,-11;
+	}
+
+
+	//current inventory
+	drawselectedinventory HUDFONT_DOOM, 20+center,-27, 60+center,-18, gray;
+	}
+
+
+	//radsuit
+	drawswitchableimage PowerIronFeet,"nullimage","SUITC0",82+center,-18;
+
+	gamemode cooperative, deathmatch, teamgame
+	{
+		drawimage translatable "STARMB", -8+center,-20;
+	}
+
+	ininventory not ismoving
+	{
+	ininventory gimmehud
+	{
+	//encumbrance
+	drawnumber 4,INDEXFONT,olive,Encumbrance,whennotzero|alignment(left),77+center,-10,1,black,100,red,666;
+
+	//keys
+	gamemode singleplayer, cooperative
+	{
+		drawswitchableimage BlueCard && BlueSkull, "nullimage", "STKEYS0", "STKEYS3", "STKEYS6", 66+center, -26;
+		drawswitchableimage YellowCard && YellowSkull, "nullimage", "STKEYS1", "STKEYS4", "STKEYS7", 74+center, -20;
+		drawswitchableimage RedCard && RedSkull, "nullimage", "STKEYS2", "STKEYS5", "STKEYS8", 66+center, -14;
+	}
+
+	InInventory Backpack, 1 {drawimage "BPAKA0",-5+center,-5;}
+
+	//armour
+	InInventory GreenArmourFlag, 1 {drawbar "ARMSA0","ARMER0", armor(160), vertical, 0+center,-2;}
+	InInventory BlueArmourFlag, 1 {drawbar "ARMCA0","ARMER1", armor(160), vertical, 0+center,-2;}
+	InInventory BlackArmourFlag, 1 {drawbar "ARMEA0","ARMER2", armor(160), vertical, 0+center,-2;}
+
+	drawnumber 3, HUDFONT_DOOM, white, "HDLives", whennotzero,alignment(center), -8+center,-18, brick,3,gold,5;
+
+
+
+	//ammo counters
+	isSelected BossRifle{drawbar "MAGRED","MAGSTAT", ammo SevenMilAmmo, vertical, -82+center, -8; drawnumber 3, HD_INDEXFONT, Gold, ammo BossClip, -74+center, -8;}
+	isSelected LiberatorRifle,LiberatorGrenadeRifle{drawbar "MAGRED","MAGSTAT", ammo SevenMilAmmo, vertical, -75+center, -8; drawnumber 3, HD_INDEXFONT, Gold, ammo LiberatorMag, -67+center, -8;}
+	isSelected LiberatorGrenadeRifle{drawimage "ROQPA0", -83+center, -10, center;drawnumber 3, HD_INDEXFONT, Gold, ammo HDRocketAmmo, -77+center, -8;}
+	isSelected ZM66Rifle,ZM66SemiRifle{drawbar "CLIPRED","CLIPC0", ammo FourMilAmmo, vertical, -75+center, -6; drawnumber 3, HD_INDEXFONT, Gold, ammo ZM66RifleMags, -67+center, -8;}
+	isSelected Vulcanette{drawbar "CLIPRED","CLIPC0", ammo FourMilAmmo, vertical, -75+center, -6; drawnumber 3, HD_INDEXFONT, Gold, ammo ZM66RifleMags, -67+center, -8;drawbar "CELLRED","CELLA0", ammo HDCellAmmo, vertical, -86+center,-2;drawnumber 3, HD_INDEXFONT, Gold, ammo HDCellPacks, -80+center,-8;}
+	isSelected ZM66GrenadeRifle{drawbar "CLIPRED","CLIPC0", ammo FourMilAmmo, vertical, -75+center, -6; drawnumber 3, HD_INDEXFONT, Gold, ammo ZM66RifleMags, -67+center,-8;drawimage "ROQPA0", -83+center, -10, center;drawnumber 3, HD_INDEXFONT, Gold, ammo HDRocketAmmo, -77+center, -8;}
+	isSelected Hunter,Slayer{drawimage "SHELA0", -84+center, -10, center;drawnumber 3, HD_INDEXFONT, Gold, ammo HDShellAmmo, -77+center,-8;}
+	isSelected Hunter{ininventory Slayer{drawnumber 3, HD_INDEXFONT, Red, ammo ShotgunQuickAmmo2, -74+center,-16;}}
+	isSelected Slayer{ininventory Hunter{drawnumber 3, HD_INDEXFONT, Red, ammo ShotgunQuickAmmo, -74+center,-16;}}
+	isSelected RocquetteLauncher,Blooper{drawimage "ROQPA0", -83+center,-10, center;drawnumber 3, HD_INDEXFONT, Gold, ammo HDRocketAmmo, -77+center,-8;
+	drawnumber 3, HD_INDEXFONT, Red, ammo DudRocquetteAmmo, whennotzero, -79+center,-16;}
+	isSelected RocquetteLauncher{	drawimage "ROCKB0", -100+center, -10, center;
+	drawnumber 3, HD_INDEXFONT, Gold, ammo HEATAmmo, -92+center,-8;}
+	isSelected ThunderBuster,BFG9K{drawbar "CELLRED","CELLA0", ammo HDCellAmmo, vertical, -77+center,-2;drawnumber 3, HD_INDEXFONT, Gold, ammo HDCellPacks, -67+center,-8;}
+	isSelected Lumberjack{drawbar "CELLRED","CELLA0", ammo HDCellAmmo, vertical, -77+center,-2;drawnumber 3, HD_INDEXFONT, Gold, ammo HDCellPacks, -67+center,-8;}
+	isSelected HDPistol{drawbar "PISARED","HDPISAMO", ammo HDPistolAmmo, vertical, -77+center,-12;drawnumber 3, HD_INDEXFONT, Gold, ammo HDPistolMag, -67+center,-8;drawnumber 3, HD_INDEXFONT, Red, ammo HDSMGMag, -66+center,-16;}
+	isSelected HDSMG{drawbar "PISARED","HDPISAMO", ammo HDPistolAmmo, vertical, -77+center,-12;drawnumber 3, HD_INDEXFONT, Gold, ammo HDSMGMag, -67+center,-8;drawnumber 3, HD_INDEXFONT, Red, ammo HDPistolMag, -66+center,-16;}
+
+	isSelected HDFragGrenades{drawimage "FRAGA0", -84+center,-10, center; drawnumber 3, HD_INDEXFONT, Gold, ammo HDFragGrenadeAmmo, -75+center,-8;}
+	isSelected Brontornis{drawimage "BROCA0", -84+center,-10, center; drawnumber 3, HD_INDEXFONT, Gold, ammo BrontornisRound, -75+center,-8;}
+
+
+	gamemode deathmatch, teamgame
+	{
+		drawnumber 3, HD_STATUSFONT, red, frags, alignment(left), 66+center, -18;
+	}
+
+
+
+	}
+	}
+}
+}
+}
+
+
+
+
+
+// FULLSCREEN
+
+
+statusbar fullscreen,fullscreenoffsets
+{
+ininventory not isdead
+{
+ininventory not wipedout
+{
+	drawbar "STAMBARR","STAMBAR",Fatigue,vertical,interpolate(20),12+center,-8;
+	ininventory not issprinting
+	{
+
+	ininventory HUDSprite
+	{
+	ininventory WeaponBusy{drawimage "HUDLOD1",0+center,-80;}
+	IsSelected Lumberjack{drawimage"CSAWA0",-60+center, -16;}
+	IsSelected HDPistol{
+		ininventory not HDPistolFullAuto,1{drawimage "PISTA0",-60+center, -16;}
+		ininventory HDPistolFullAuto,1{drawimage "PISTC0",-60+center, -16;}
+	}
+	IsSelected HDSMG{drawimage "SMGNA0",-60+center, -16;}
+	IsSelected Slayer{drawimage "SLAYA0",-60+center, -16;}
+	IsSelected Hunter{drawimage "HUNTA0",-60+center, -16;}
+	IsSelected ZM66SemiRifle{drawimage "RIFSA0",-60+center, -16;}
+	IsSelected ZM66GrenadeRifle{drawimage "RIGLA0",-60+center, -16;}
+	IsSelected ZM66Rifle{drawimage "RIFLA0",-60+center, -16;}
+	IsSelected Vulcanette{drawimage "VULCA0",-60+center, -16;}
+	IsSelected RocquetteLauncher{drawimage "LAUNA0",-60+center, -16;}
+	IsSelected Blooper{drawimage "BLOPA0",-64+center,-16;}
+	IsSelected ThunderBuster{drawimage "PLASA0",-60+center, -16;}
+	IsSelected LiberatorRifle{drawimage "BRFLA0",-60+center, -16;}
+	IsSelected LiberatorGrenadeRifle{drawimage "BRFLB0",-60+center, -16;}
+	IsSelected BFG9K{drawimage "BFUGA0",-60+center, -16;}
+	IsSelected Brontornis{drawimage "BLSTA0",-60+center, -16;}
+	IsSelected BossRifle{drawimage "BORFA0",-60+center, -16;}
+	IsSelected HDFragGrenades{drawimage "FRAGA0",-60+center, -16;}
+	IsSelected SelfBandage{drawimage "BLUDA0",-57+center,-32;drawimage "BLUDB0",-62+center,-27;drawimage "BLUDC0",-60+center,-16;}
+	}
+
+	//current weapon ammo
+	IsSelected Slayer
+	{
+		drawswitchableimage ShellChamber1, "nullimage", "SSTAMBAR", -45+center,-16;
+		drawswitchableimage ShellChamber2, "nullimage", "SSTAMBAR", -25+center,-16;
+		drawnumber 3, HUDFONT_DOOM, gray, ammo2, -52+center,-18;
+	}
+	else IsSelected Brontornis
+	{
+		drawswitchableimage BrontornisMag, "nullimage", "STAMBRRR", -45+center,-16;
+		drawnumber 3, HUDFONT_DOOM, gray, ammo2, -52+center,-18;
+	}
+	else IsSelected Blooper
+	{
+		drawswitchableimage BloopChamber, "nullimage", "STAMBRRR", -45+center,-16;
+		drawnumber 3, HUDFONT_DOOM, gray, ammo2, -52+center,-18;
+	}
+	else IsSelected Vulcanette
+	{
+		drawswitchableimage VulcMag5, "STAMBAR", "STAMBARR", -30+center,-16;
+		drawswitchableimage VulcMag4, "STAMBAR", "STAMBARR", -35+center,-16;
+		drawswitchableimage VulcMag3, "STAMBAR", "STAMBARR", -40+center,-16;
+		drawswitchableimage VulcMag2, "STAMBAR", "STAMBARR", -45+center,-16;
+		drawbar "STAMBARR","STAMBAR", ammo1, horizontal,reverse, -50+center,-16;
+		drawnumber 3, HUDFONT_DOOM, gray, ammo2, -52+center,-18;
+	}
+	else IsSelected ThunderBuster
+	{
+		ininventory PlasmaBattery,51{drawimage "STAMBARR",-25+center,-16;}
+		ininventory PlasmaBattery,41{drawimage "STAMBARR",-30+center,-16;}
+		ininventory PlasmaBattery,31{drawimage "STAMBARR",-35+center,-16;}
+		ininventory PlasmaBattery,21{drawimage "STAMBARR",-40+center,-16;}
+		ininventory PlasmaBattery,11{drawimage "STAMBARR",-45+center,-16;}
+		ininventory not PlasmaBattery,51{drawimage "STAMBAR",-25+center,-16;}
+		ininventory not PlasmaBattery,41{drawimage "STAMBAR",-30+center,-16;}
+		ininventory not PlasmaBattery,31{drawimage "STAMBAR",-35+center,-16;}
+		ininventory not PlasmaBattery,21{drawimage "STAMBAR",-40+center,-16;}
+		ininventory not PlasmaBattery,11{drawimage "STAMBAR",-45+center,-16;}
+		drawnumber 3, HUDFONT_DOOM, gray, ammo2, -52+center,-18;
+	}
+	else IsSelected Lumberjack
+	{
+		ininventory LumberCell,1001{drawimage "STAMBARR",-25+center,-16;}
+		ininventory LumberCell,801{drawimage "STAMBARR",-30+center,-16;}
+		ininventory LumberCell,601{drawimage "STAMBARR",-35+center,-16;}
+		ininventory LumberCell,401{drawimage "STAMBARR",-40+center,-16;}
+		ininventory LumberCell,201{drawimage "STAMBARR",-45+center,-16;}
+		ininventory not LumberCell,1001{drawimage "STAMBAR",-25+center,-16;}
+		ininventory not LumberCell,801{drawimage "STAMBAR",-30+center,-16;}
+		ininventory not LumberCell,601{drawimage "STAMBAR",-35+center,-16;}
+		ininventory not LumberCell,401{drawimage "STAMBAR",-40+center,-16;}
+		ininventory not LumberCell,201{drawimage "STAMBAR",-45+center,-16;}
+		drawnumber 3, HUDFONT_DOOM, gray, ammo2, -52+center,-18;
+	}
+	else UsesAmmo
+	{
+		drawbar "STAMBAR1","STAMBAR0", ammo1, horizontal, -50+center,-16;
+		drawnumber 3, HUDFONT_DOOM, gray, ammo2, -52+center,-18;
+	}
+
+	//extras
+	IsSelected HDPistol
+	{
+		InInventory HDPistolChamber,1 {drawimage "RBRSA3A7",-48+center,-14;}
+		InInventory HDSecondPistol,1{
+			InInventory not HDSecondPistolFullAuto,1{drawimage "PISTA0",-36+center,-3;}
+			InInventory HDSecondPistolFullAuto,1{drawimage "PISTC0",-36+center,-3;}
+		}
+		InInventory HDPistolFullAuto,1{
+			InInventory HDPistolFullAuto,2{drawimage "STFULAUT",-42+center,-20;}
+			InInventory not HDPistolFullAuto,2{drawimage "RBRSA3A7",-40+center,-18;}
+		}
+	}
+	IsSelected HDSMG
+	{
+		InInventory HDSMGChamber,1 {drawimage "RBRSA3A7",-48+center,-14;}
+		InInventory SMGFullAuto,2 {drawimage "STFULAUT",-42+center,-20;}
+		InInventory not SMGFullAuto,2 {
+		InInventory SMGFullAuto,1 {drawimage "STBURAUT",-42+center,-20;drawimage "STBURAUT",-34+center,-20;}}
+	}
+	IsSelected Hunter
+	{
+		drawswitchableimage ShotgunAuto, "nullimage", "STFULAUT",-42+center,-20;
+		InInventory ShotgunChamber,1{drawswitchableimage ShotgunChamber, "nullimage","RBRSA3A7", -48+center,-14;}
+	}
+	IsSelected ZM66GrenadeRifle
+	{
+		drawnumber 3, HD_INDEXFONT, red, ZM66RoundCounter, -15+center,-13;
+		drawswitchableimage ZM66GLoaded, "STAMBAR", "STAMBARR", -50+center,-11;
+		drawswitchableimage ZM66GLMode, "nullimage", "STAMBAR", -40+center,-11;
+		InInventory AirburstCount{drawnumber 2, HD_INDEXFONT, grey, AirburstCount, -26+center,-11;}
+	}
+	IsSelected ZM66Rifle,ZM66SemiRifle
+	{
+		drawnumber 3, HD_INDEXFONT, red, ZM66RoundCounter, -15+center,-13;
+		InInventory ZM66Chamber,1 {drawimage "RBRSA3A7",-48+center,-14;}
+	}
+	IsSelected ZM66GrenadeRifle,ZM66Rifle
+	{
+		InInventory ZM66FullAuto,2 {drawimage "STBURAUT",-42+center,-20;drawimage "STBURAUT",-34+center,-20;}
+		InInventory not ZM66FullAuto,2 {
+		InInventory ZM66FullAuto,1 {drawimage "STFULAUT",-42+center,-20;}
+		InInventory not ZM66FullAuto,1 {drawimage "RBRSA3A7",-42+center,-18;}}
+		InInventory ZM66Chamber,1 {drawimage "RBRSA3A7",-48+center,-14;}
+	}
+	IsSelected Vulcanette
+	{
+		ininventory ChaingunOn,1{
+			drawswitchableimage VulcChamber5, "nullimage", "RBRSA3A7", -23+center,-3;
+			drawswitchableimage VulcChamber4, "nullimage", "RBRSA3A7", -20+center,-6;
+			drawswitchableimage VulcChamber3, "nullimage", "RBRSA3A7", -18+center,-9;
+			ininventory not VulcJB1{drawnumber 3, HD_INDEXFONT, red, ammo1, -16+center,-18;}
+			ininventory VulcJB1{drawnumber 3, HD_INDEXFONT, red, 99, -16+center,-18;}
+			ininventory VulcJuice,1751{drawimage "STAMBARR",-30+center,-11;}
+			ininventory VulcJuice,1401{drawimage "STAMBARR",-35+center,-11;}
+			ininventory VulcJuice,1051{drawimage "STAMBARR",-40+center,-11;}
+			ininventory VulcJuice,701{drawimage "STAMBARR",-45+center,-11;}
+			ininventory VulcJuice,351{drawimage "STAMBARR",-50+center,-11;}
+			ininventory not VulcJuice,1751{drawimage "STAMBAR",-30+center,-11;}
+			ininventory not VulcJuice,1401{drawimage "STAMBAR",-35+center,-11;}
+			ininventory not VulcJuice,1051{drawimage "STAMBAR",-40+center,-11;}
+			ininventory not VulcJuice,701{drawimage "STAMBAR",-45+center,-11;}
+			ininventory not VulcJuice,351{drawimage "STAMBAR",-50+center,-11;}
+		}
+		drawswitchableimage ChaingunFast, "nullimage", "STFULAUT",-42+center,-20;
+	}
+	IsSelected LiberatorGrenadeRifle
+	{
+		drawswitchableimage LiberatorGrenadeChamber, "STAMBAR", "STAMBARR", -50+center,-11;
+		drawswitchableimage LiberatorGrenadeMode, "nullimage", "STAMBAR", -40+center,-11;
+		InInventory AirburstCount{drawnumber 2, HD_INDEXFONT, grey, AirburstCount, -26+center,-11;}
+	}
+	IsSelected RocquetteLauncher,Blooper
+	{
+		InInventory AirburstCount{drawnumber 2, HD_INDEXFONT, grey, AirburstCount, -26+center,-11;}
+	}
+	IsSelected RocquetteLauncher
+	{
+		drawswitchableimage IsUsingRocketUnderslung, "nullimage", "STAMBAR", -40+center,-11;
+		drawswitchableimage HEATLoaded, "nullimage", "STAMBRRR", -50+center,-11;
+	}
+	IsSelected LiberatorRifle,LiberatorGrenadeRifle
+	{
+		InInventory LiberatorFullAuto,1 {drawimage "STFULAUT",-42+center,-20;}
+		InInventory LiberatorChamber,1 {drawimage "RBRSA3A7",-48+center,-14;}
+	}
+	IsSelected ThunderBuster
+	{
+		drawswitchableimage PlasmaAlt, "nullimage", "STAMBRRR", -45+center,-11;
+		ininventory PlasmaZoom
+		{drawswitchableimage PlasmaZoomGood, "STAMBAR", "STAMBARR", -34+center,-11;}
+	}
+	IsSelected BFG9k
+	{
+		drawbar "STAMBAR1","STAMBAR0",BFGInternalCharge,horizontal,-50+center,-11;
+	}
+	IsSelected BossRifle
+	{
+		InInventory BossChamber,1 {drawimage "RBRSA3A7",-48+center,-14;}
+		drawnumber 2,HD_INDEXFONT,white,BossMOA,-26+center,-10;
+		drawnumber 1,HD_INDEXFONT,cyan,BossZoomDegree,-36+center,-10;
+	}
+	IsSelected Injector
+	{
+		drawimage "MEDIA0", -110+center, -10; drawnumber 3, SMALLFONT, Gold, PortableMedikit, -100+center,-10;
+		drawimage "STIMA0", -80+center, -10; drawnumber 3, SMALLFONT, Gold, PortableStimpack, -70+center,-10;
+		drawimage "PSTRA0", -50+center, -10; drawnumber 3, SMALLFONT, Gold, PortableBerserkPack, -40+center,-10;
+		drawstring smallfont, red, "\cjFire", -100+center,-32;
+		drawstring smallfont, red, "\cdAlt", -70+center,-32;
+		drawstring smallfont, red, "\cgBoth", -30+center,-32;
+	}
+	IsSelected HDFragGrenades
+	{
+		drawswitchableimage FragOut && SpoonOff, "nullimage","STAMBRRR","STRMBRRR","STRMBRRR", -50+center,-11;
+		drawbar "STAMBAR1","STAMBAR0",GrenadeForce,horizontal,-50+center,-11;
+	}
+
+	//current inventory
+	drawselectedinventory HUDFONT_DOOM, 20+center,-27, 60+center,-18, gray;
+	}
+
+	//radsuit
+	drawswitchableimage PowerIronFeet,"nullimage","SUITC0",82+center,-18;
+
+	gamemode cooperative, deathmatch, teamgame
+	{
+		drawimage translatable "STARMB", 13+center,-26;
+	}
+
+	//mugshot. this is the center of the entire thing.
+	InInventory IsMale {drawmugshot "STF", 5, custom, -18+center, -32;}
+	InInventory IsFemale {drawmugshot "SFF", 5, custom, -18+center, -32;}
+
+
+	ininventory not ismoving
+	{
+	ininventory gimmehud
+	{
+
+	//encumbrance
+	drawnumber 4,INDEXFONT,olive,Encumbrance,whennotzero|alignment(left),77+center,-10,1,black,100,red,666;
+
+	//keys or frags
+	gamemode singleplayer, cooperative
+	{
+		drawswitchableimage BlueCard && BlueSkull, "nullimage", "STKEYS0", "STKEYS3", "STKEYS6", 66+center, -26;
+		drawswitchableimage YellowCard && YellowSkull, "nullimage", "STKEYS1", "STKEYS4", "STKEYS7", 74+center, -20;
+		drawswitchableimage RedCard && RedSkull, "nullimage", "STKEYS2", "STKEYS5", "STKEYS8", 66+center, -14;
+	}
+	gamemode deathmatch, teamgame
+	{
+		drawnumber 3, HD_STATUSFONT, red, frags, 66+center, -18;
+	}
+
+	InInventory Backpack, 1 {drawimage "BPAKA0",-95+center,-5;}
+
+	//armour
+	InInventory GreenArmourFlag, 1 {drawbar "ARMSA0","ARMER0", armor(160), vertical, -90+center,-2;}
+	InInventory BlueArmourFlag, 1 {drawbar "ARMCA0","ARMER1", armor(160), vertical, -90+center,-2;}
+	InInventory BlackArmourFlag, 1 {drawbar "ARMEA0","ARMER2", armor(160), vertical, -90+center,-2;}
+	drawnumber 3, HUDFONT_DOOM, white, "HDLives", whennotzero,alignment(center), -18+center,-18, brick,3,gold,5;
+
+	//arms
+	gamemode cooperative, singleplayer
+	{
+		drawswitchableimage Lumberjack, "nullimage", "CSAWA0",34, -136;
+
+		drawswitchableimage HDPistol, "nullimage", "PISTA0",50, -122;
+		drawswitchableimage HDSMG, "nullimage", "SMGNA0",34, -125;
+
+		drawswitchableimage Hunter, "nullimage", "HUNTA0",40, -116;
+		drawswitchableimage Slayer, "nullimage", "SLAYA0",46, -110;
+
+		drawswitchableimage ZM66SemiRifle, "nullimage", "RIFLA0",34, -100;
+		drawswitchableimage ZM66GrenadeRifle, "nullimage", "RIGLA0",34, -100;
+		drawswitchableimage ZM66Rifle, "nullimage", "RIFLA0",34,-100;
+
+		drawswitchableimage Vulcanette, "nullimage", "VULCA0",34, -80;
+
+		drawswitchableimage RocquetteLauncher, "nullimage", "LAUNA0",34, -66;
+		drawswitchableimage Blooper, "nullimage", "BLOPA0",32, -73;
+
+		drawswitchableimage ThunderBuster, "nullimage", "PLASA0",34, -44;
+		drawswitchableimage LiberatorRifle, "nullimage", "BRFLA0",42, -36;
+		drawswitchableimage LiberatorGrenadeRifle, "nullimage", "BRFLB0",42, -36;
+
+		drawswitchableimage BFG9K, "nullimage", "BFUGA0",34,-12;
+		drawswitchableimage Brontornis, "nullimage", "BLSTA0",42, -4;
+
+		drawswitchableimage BossRifle, "nullimage", "BORFA0",32,-1;
+	}
+
+	//ammo counters
+	drawbar "MAGRED","MAGSTAT", ammo SevenMilAmmo, vertical, -88, -20;
+	drawbar "CLIPRED","CLIPC0", ammo FourMilAmmo, vertical, -68, -20;
+	drawimage "SHELA0", -68, -10, center;
+	drawimage "ROQPA0", -48, -22, center;
+	drawbar "CELLRED","CELLA0", ammo HDCellAmmo, vertical, -48, -2;
+	drawimage "FRAGA0", -28, -10, center;
+	drawbar "PISARED","HDPISAMO", ammo HDPistolAmmo, vertical, -29, -24;
+	drawimage "ROCKB0", -8, -10, center;
+	drawimage "BROCA0", -8, -22, center;
+
+	drawnumber 3, HD_INDEXFONT, Gold, ammo LiberatorMag, -78, -20;
+	drawnumber 3, HD_INDEXFONT, Gold, ammo BossClip, -78, -26;
+	drawnumber 3, HD_INDEXFONT, Gold, ammo ZM66RifleMags, -60, -20;
+	drawnumber 3, HD_INDEXFONT, Gold, ammo HDShellAmmo, -60, -8;
+	ininventory Slayer{drawnumber 3, HD_INDEXFONT, Red, ammo ShotgunQuickAmmo2, -74,-14;}
+	ininventory Hunter{drawnumber 3, HD_INDEXFONT, Red, ammo ShotgunQuickAmmo, -74,-8;}
+	drawnumber 3, HD_INDEXFONT, Red, ammo DudRocquetteAmmo, whennotzero, -40, -26;
+	drawnumber 3, HD_INDEXFONT, Gold, ammo HDRocketAmmo, -40, -20;
+	drawnumber 3, HD_INDEXFONT, Gold, ammo HDCellPacks, -40, -8;
+	drawnumber 3, HD_INDEXFONT, Gold, ammo HDFragGrenadeAmmo, -20, -8;
+	drawnumber 3, HD_INDEXFONT, Gold, ammo HDPistolMag, -20, -20;
+	drawnumber 3, HD_INDEXFONT, Gold, ammo HDSMGMag, -20, -26;
+	drawnumber 3, HD_INDEXFONT, Gold, ammo HEATAmmo, -5, -8;
+	drawnumber 3, HD_INDEXFONT, Gold, ammo BrontornisRound, -5, -20;
+	}
+	}
+}
+}
+}
+
+
+
+
+// AUTOMAP
+
+statusbar automap, fullscreenoffsets
+{
+ininventory not wipedout
+{
+	//arms
+	gamemode cooperative, singleplayer
+	{
+		drawswitchableimage Lumberjack, "nullimage", "CSAWA0",-34, -142;
+
+		drawswitchableimage HDPistol, "nullimage", "PISTA0",-14, -124;
+		drawswitchableimage HDSMG, "nullimage", "SMGNA0",-34, -128;
+
+		drawswitchableimage Hunter, "nullimage", "HUNTA0",-40, -120;
+		drawswitchableimage Slayer, "nullimage", "SLAYA0",-46, -116;
+
+		drawswitchableimage ZM66SemiRifle, "nullimage", "RIFLA0",-34, -104;
+		drawswitchableimage ZM66GrenadeRifle, "nullimage", "RIGLA0",-34, -104;
+		drawswitchableimage ZM66Rifle, "nullimage", "RIFLA0",-34,-104;
+
+		drawswitchableimage Vulcanette, "nullimage", "VULCA0",-34, -94;
+
+		drawswitchableimage RocquetteLauncher, "nullimage", "LAUNA0",-34, -80;
+		drawswitchableimage Blooper, "nullimage", "BLOPA0",-34, -80;
+
+		drawswitchableimage ThunderBuster, "nullimage", "PLASA0",-34, -68;
+		drawswitchableimage LiberatorRifle, "nullimage", "BRFLA0",-42, -64;
+		drawswitchableimage LiberatorGrenadeRifle, "nullimage", "BRFLB0",-42, -64;
+
+		drawswitchableimage BFG9K, "nullimage", "BFUGA0",-34,-40;
+		drawswitchableimage Brontornis, "nullimage", "BLSTA0",-42, -32;
+
+		drawswitchableimage BossRifle, "nullimage", "BORFA0",-32,-28;
+	}
+
+	//mugshot
+	gamemode cooperative, deathmatch, teamgame
+	{
+		drawimage translatable "STARMB", 60, -22;
+	}
+	InInventory IsMale {drawmugshot "STF", 5, custom, 50, -36;}
+	InInventory IsFemale {drawmugshot "SFF", 5, custom, 50, -36;}
+
+	//lives
+	drawnumber 3, HUDFONT_DOOM, white, "HDLives", whennotzero,alignment(right), 180, -44, brick,3,gold,5;
+
+	InInventory HDBackpack, 1 {drawimage "BPAKA0",25,-51;}
+
+	//armour
+	InInventory BasicArmorStored,1{
+		drawimage "ARMER0",33,-44;
+		InInventory BasicArmorStored,160{drawimage "STAMBAR",44,-56;}
+		InInventory BasicArmorStored,120{drawimage "STAMBAR",44,-53;}
+		InInventory BasicArmorStored,90{drawimage "STAMBAR",44,-50;}
+		InInventory BasicArmorStored,60{drawimage "STAMBAR",44,-47;}
+		drawimage "STAMBAR",44,-44;
+	}
+	InInventory GreenArmourFlag, 1 {drawbar "ARMSA0","ARMER0", armor(160), vertical, 30, -48;}
+	InInventory BlueArmourFlag, 1 {drawbar "ARMCA0","ARMER0", armor(160), vertical, 30, -48;}
+	InInventory BlackArmourFlag, 1 {drawbar "ARMEA0","ARMER0", armor(160), vertical, 30, -48;}
+
+	//radsuit
+	drawswitchableimage PowerIronFeet,"nullimage","SUITC0",30,-58;
+
+	//current inventory
+	drawselectedinventory HUDFONT_DOOM, 12, -30, 20,-20, gray;
+
+	//keys
+	gamemode cooperative, singleplayer{
+	drawswitchableimage BlueCard && BlueSkull, "nullimage", "STKEYS0", "STKEYS3", "STKEYS6",148,-18;
+	drawswitchableimage YellowCard && YellowSkull, "nullimage", "STKEYS1", "STKEYS4", "STKEYS7",158,-18;
+	drawswitchableimage RedCard && RedSkull, "nullimage", "STKEYS2", "STKEYS5", "STKEYS8",168,-18;
+	}
+
+	//frags
+	gamemode deathmatch, teamgame{
+		drawnumber 3, HD_STATUSFONT, red, frags, 108, -18;
+	}
+
+
+	//encumbrance
+	drawnumber 4,SMALLFONT,olive,Encumbrance,whennotzero|alignment(right),-90,-17,1,black,100,red,666;
+
+	//ammo counters
+	drawbar "MAGRED","MAGSTAT", ammo SevenMilAmmo, vertical, -88, -20;
+	drawbar "CLIPRED","CLIPC0", ammo FourMilAmmo, vertical, -68, -20;
+	drawimage "SHELA0", -68, -10, center;
+	drawimage "ROQPA0", -48, -22, center;
+	drawbar "CELLRED","CELLA0", ammo HDCellAmmo, vertical, -48, -2;
+	drawimage "FRAGA0", -28, -10, center;
+	drawbar "PISARED","HDPISAMO", ammo HDPistolAmmo, vertical, -29, -24;
+	drawimage "ROCKB0", -8, -10, center;
+	drawimage "BROCA0", -8, -22, center;
+
+	drawnumber 3, HD_INDEXFONT, Gold, ammo LiberatorMag, -78, -20;
+	drawnumber 3, HD_INDEXFONT, Gold, ammo BossClip, -78, -26;
+	drawnumber 3, HD_INDEXFONT, Gold, ammo ZM66RifleMags, -60, -20;
+	drawnumber 3, HD_INDEXFONT, Gold, ammo HDShellAmmo, -60, -8;
+	ininventory Slayer{drawnumber 3, HD_INDEXFONT, Red, ammo ShotgunQuickAmmo2, -74,-14;}
+	ininventory Hunter{drawnumber 3, HD_INDEXFONT, Red, ammo ShotgunQuickAmmo, -74,-8;}
+
+	drawnumber 3, HD_INDEXFONT, Red, ammo DudRocquetteAmmo, whennotzero, -40, -26;
+	drawnumber 3, HD_INDEXFONT, Gold, ammo HDRocketAmmo, -40, -20;
+	drawnumber 3, HD_INDEXFONT, Gold, ammo HDCellPacks, -40, -8;
+	drawnumber 3, HD_INDEXFONT, Gold, ammo HDFragGrenadeAmmo, -20, -8;
+	drawnumber 3, HD_INDEXFONT, Gold, ammo HDPistolMag, -20, -20;
+	drawnumber 3, HD_INDEXFONT, Gold, ammo HDSMGMag, -20, -26;
+	drawnumber 3, HD_INDEXFONT, Gold, ammo HEATAmmo, -5, -8;
+	drawnumber 3, HD_INDEXFONT, Gold, ammo BrontornisRound, -5, -20;
+
+
+	UsesAmmo{
+		drawbar "STAMBAR1","STAMBAR0", ammo1, horizontal, 120,-13;
+	}
+	IsSelected Lumberjack{drawimage"CSAWA0",120,-16;}
+	IsSelected HDPistol{drawimage "PISTA0",120,-16;}
+	IsSelected HDSMG{drawimage "SMGNA0",120,-16;}
+	IsSelected Slayer{drawimage "SLAYA0",120,-16;}
+	IsSelected Hunter{drawimage "HUNTA0",120,-16;}
+	IsSelected ZM66SemiRifle{drawimage "RIFLA0",120,-16;}
+	IsSelected ZM66GrenadeRifle{drawimage "RIGLA0",120,-16;}
+	IsSelected ZM66Rifle{drawimage "RIFLA0",120,-16;}
+	IsSelected Vulcanette{drawimage "VULCA0",120,-16;}
+	IsSelected RocquetteLauncher{drawimage "LAUNA0",120,-16;}
+	IsSelected Blooper{drawimage "BLOPA0",120,-16;}
+	IsSelected ThunderBuster{drawimage "PLASA0",120,-16;}
+	IsSelected LiberatorRifle{drawimage "BRFLA0",120,-16;}
+	IsSelected LiberatorGrenadeRifle{drawimage "BRFLB0",120,-16;}
+	IsSelected BFG9K{drawimage "BFUGA0",120,-16;}
+	IsSelected Brontornis{drawimage "BLSTA0",120,-16;}
+	IsSelected BossRifle{drawimage "BORFA0",120,-16;}
+	IsSelected HDFragGrenades{drawimage "FRAGA0",120,-16;}
+	IsSelected SelfBandage{drawimage "BLUDA0",117, -32;drawimage "BLUDB0",122,-27;drawimage "BLUDC0",124,-16;}
+}
+}
+
