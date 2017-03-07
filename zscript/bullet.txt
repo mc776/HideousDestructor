@@ -1,0 +1,333 @@
+// ------------------------------------------------------------
+//   The Bullet!
+// ------------------------------------------------------------
+
+class HDBullet:HDActor{
+	/*
+		special usages:
+		accuracy: penetration distance.
+		woundhealth: "extra" damage from frangibility, etc.
+	*/
+	double notionalz;
+	bool haspierced;
+	double crksp;
+	double zat;
+	int user_damage;
+		int user_impactangle;int user_impactpitch;
+		int user_bottomz; int user_topz;
+		int user_impactx; int user_impacty; int user_impactz;
+	default{
+		projectile;-nogravity;
+		speed 1; //most gunshot code has bullet only inherit shooter momentum for now
+//		missiletype "BulletTail"; //testing and random eye candy
+		radius 0.51; height 0.51; scale 0.3;
+		+bloodsplatter; +noextremedeath; +cannotpush; +hittracer; +forcexybillboard;
+		missileheight 8; projectilekickback 20; damagetype "SmallArms3";
+		damagefunction(user_damage);
+	}
+	virtual void Effect(){ //modified from canon
+		if (missilename){
+			actor act=spawn(missilename,(pos.xy,pos.z+missileheight),ALLOW_REPLACE);
+			if (act){
+				if (target) act.target=target;
+				else act.target = self;
+
+				act.angle=self.angle;
+				act.pitch=self.pitch;
+			}
+		}
+	}
+	void A_LongArmWobble(){
+		if(countinv("IsMoving",AAPTR_TARGET)>=10){
+			pitch+=random(-2,2);
+			angle+=random(-1,1);
+		}
+	}
+	void A_Gunsmoke(){
+		for(int i=0;i<15;i+=5){
+			A_SpawnItemEx("HDGunSmoke",cos(pitch)*i,0,-sin(pitch)*i,cos(pitch)*4,0,-sin(pitch)*4,0,SXF_NOCHECKPOSITION);
+		}
+	}
+	void A_SetDamage(){
+		int shockwave=0;
+		if(crksp>520){shockwave=mass*0.25;}
+		else if(crksp==0) crksp=speed;
+		double masstenth=mass*0.1;double crk128th=crksp*0.007;
+		user_damage=random(
+			(masstenth)+(crk128th)+woundhealth,
+			(masstenth)*(crk128th)+woundhealth*2+shockwave
+		);
+//		A_LogInt(user_damage);
+	}
+	void A_BulletCrit(){
+		if(
+			blockingmobj is "SatanRobo"
+			||blockingmobj is "KillerBarrel"
+			||blockingmobj is "KillerFireCan"
+		)return;
+		vector3 critspot=self.pos+vel*blockingmobj.radius/vel.length();
+		double xyrange=0.236*blockingmobj.radius;
+		double zrange=0.236*blockingmobj.height;
+		if(
+			abs(critspot.x-blockingmobj.pos.x)<xyrange
+			&& abs(critspot.y-blockingmobj.pos.y)<xyrange
+			&& abs(critspot.z-(blockingmobj.pos.z+blockingmobj.height*0.618))<zrange
+		){
+			double damspd=user_damage*crksp;
+			if(
+			(CheckClass("RiflemanBase",AAPTR_TRACER,true))
+			||(countinv("BlueArmourFlag",AAPTR_TRACER)>0)
+			||(countinv("BlackArmourFlag",AAPTR_TRACER)>0)
+			){
+				user_damage=damspd*0.0004;
+			}else{
+				user_damage=damspd*0.0007;
+			}
+			blockingmobj.damagemobj(self,self.master,user_damage+woundhealth,"SmallArms3",DMG_THRUSTLESS);
+//			A_LogInt(blockingmobj.health);
+		}
+	}
+	override void PostBeginPlay(){
+		super.PostBeginPlay();
+		haspierced=false;
+		notionalz=pos.z;
+		zat=getzat();
+		crksp=speed;
+		A_SetDamage();
+		if(target) master=target;
+	}
+	override void Tick(){
+		ClearInterpolation();
+		if(globalfreeze||level.Frozen) return;
+
+		double oldz = pos.Z;
+
+		//[HD] assume radius 1 for everything
+		int count = speed;
+
+		// Handle movement
+		if(vel!=(0,0,0)){
+			fcheckposition tm;
+
+			// used to calculate sonic booms and damage
+			crksp=vel.length();
+
+			// force some lateral movement so that collision detection works as intended.
+			if (bMissile && vel.x == 0 && vel.y == 0 && !IsZeroDamage()){
+				vel.x = MinVel;
+			}
+			vector3 frac = vel / crksp;
+			for (int i=0;i<crksp;i++){
+				zat=floorz;//getzat(); //WHY IS GETZAT SO RIDICULOUSLY SLOWER
+				if(!TryMove(Pos.XY+frac.XY,true,null,tm)){
+					if(!bSkyExplode){
+						//hack to prevent exploding on lower sky
+						let l = tm.ceilingline;
+						if(l && l.backsector &&
+						l.backsector.GetTexture(sector.ceiling)==skyflatnum){
+							actor a=spawn("idledummy",
+								pos+HDMath.ScaleVector(vel,radius+1));
+							a.stamina=1;
+							if(pos.z>=a.ceilingz){
+								destroy();
+								a.destroy();
+								return;
+							}a.destroy();
+						}
+						// [RH] Don't explode on horizon lines.
+						if (BlockingLine && BlockingLine.special == Line_Horizon){
+							Destroy();
+							return;
+						}
+					}
+					if(blockingmobj){
+						A_SetDamage();
+						if(self.accuracy>1) A_BulletCrit();
+//						A_LogInt(user_damage);
+					}
+					if(!target) target=master;
+					ExplodeMissile(BlockingLine,BlockingMobj);
+					return;
+				}
+				notionalz+=frac.z;
+				if(notionalz+height<=ceilingz){setz(notionalz);}
+
+				UpdateWaterLevel();
+				oldz=pos.z;
+				if (oldz<=zat){ // Hit the floor
+					if (floorpic == skyflatnum && !bSkyExplode){
+						// [RH] Just remove the missile without exploding it
+						// if this is a sky floor.
+						Destroy();
+						return;
+					}
+					setz(zat);
+					hitfloor();
+					ExplodeMissile(NULL,NULL);
+					return;
+				}
+				if(notionalz+height>ceilingz){ // Hit the ceiling - and leave there if sky
+					setz(ceilingz-height);
+					if(ceilingpic!=skyflatnum||bSkyExplode){
+						notionalz=pos.z;
+						explodemissile(null,null);
+						return;
+					}else if(hd_noskybullets){
+						notionalz=pos.z;
+						if(radius>0)explodemissile(null,null);
+						else destroy();
+						return;
+					}else{
+						bInvisible=true;
+					}
+				}
+				if(notionalz==pos.z){bInvisible=false;}
+				if(!(vel.xy~==(0,0)) && pos.z==notionalz){
+					Effect();
+
+					// boom trails and damage type.
+					name b="HDNineMilTrail";
+					if(crksp>1000){
+						A_SetDamageType("SmallArms3");
+						if(mass>80) b="HDSevenMilTrail";
+						else b="HDFourMilTrail";
+					}else if(crksp>800){
+						A_SetDamageType("SmallArms2");
+						b="HDFourMilTrail";
+					}else if(crksp>520){
+						A_SetDamageType("SmallArms1");
+						b="HDBuckTrail";
+					}else if(crksp>100){
+						A_SetDamageType("SmallArms0");
+						b="HDNineMilTrail";
+					}else{
+						A_SetDamageType("SmallArms0");
+					}
+					if(woundhealth>50)
+						A_SetDamageType("SmallArms3");
+					if(damagetype=="SmallArms1" && woundhealth>30)
+						A_SetDamageType("SmallArms2");
+					if(damagetype=="SmallArms0" && woundhealth>30)
+						A_SetDamageType("SmallArms2");
+					else if(damagetype=="SmallArms0" && woundhealth>10)
+						A_SetDamageType("SmallArms1");
+
+					//crack only near non-shooting player
+					bool p;p=false;
+					for(int i=0;!p && i<MAXPLAYERS;i++){
+						if(playeringame[i] && players[i].mo){
+							if(
+								players[i].mo!=target &&
+								distance3d(players[i].mo)<256
+							)p=true;
+						}
+					}
+					if(p)spawn(b,self.pos);
+				}
+			}
+		}
+		//bullet drop again, updating the actual velocity
+		vel.z-=getgravity();
+
+		//thus ends the "handle movement" part
+		if(!CheckNoDelay()) return;
+
+		//bullet wobble
+		vel*=(0.9+0.0009*clamp(mass,0,100));
+		if(mass<100){
+			double wobble=(100-mass)*0.0001;
+			vel.x+=frandom(-wobble,wobble);
+			vel.y+=frandom(-wobble,wobble);
+		}
+		nexttic();
+	}
+	states{
+	spawn2:
+		BLET A 1{
+			if(abs(vel.x)+abs(vel.y)<100)
+				A_ChangeVelocity(cos(pitch)*speed,0,-sin(pitch)*speed,CVF_RELATIVE);
+		}
+		BLET A -1{
+			//so that you can kill yourself by shooting into the sky
+			if(target && !master) master=target;target=null;
+		}
+	death1:
+		BLET A 0{
+			if(random(1,32)==1){return resolvestate("ricochet");}
+			if(haspierced){return resolvestate("null");}
+			if(
+				(CallACS("CheckDM") || hd_penetrate)
+				&& accuracy>0
+			){
+				return resolvestate("pierce");
+			}
+			return resolvestate("null");
+		}
+	ricochet:
+		BLET A 0{
+			A_SetPitch(frandom(-90,90));
+			A_SetAngle(frandom(0,360));
+			speed*=frandom(0.6,0.8);
+			user_damage=user_damage*random(6,8)*0.1;
+			A_SetDamageType("SmallArms1");
+			if(target) target=null;
+			return resolvestate("afterpierce");
+		}
+	pierce:
+		BLET A 0{
+			speed*=0.9;
+		}
+	afterpierce:
+		BLET A 0 A_Warp(AAPTR_DEFAULT,cos(pitch)*accuracy,0,-sin(pitch)*accuracy,0,0,"pierceend");
+		stop;
+	pierceend: 
+		BLET A 0{
+			double cp=cos(pitch);
+			actor b=spawn("HDDecaller",self.pos-(cos(angle)*cp,cos(angle)*cp,-sin(pitch)));
+				b.vel=(b.pos-self.pos)*self.accuracy;
+				b.target=self.master;b.master=self.master;
+			haspierced=1;
+			bmissile=true;
+			bpainless=false;
+			return resolvestate("spawn2");
+		}
+	xdeath1:
+		BLET A 0;
+		stop;
+	}
+}
+class HDDecaller:FastProjectile{
+	vector3 puffvel;
+	default{
+		height 1;radius 1;decal "BulletScratchSmall";
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		puffvel=-vel*0.1;
+	}
+	states{
+	spawn:
+		TNT1 A 1;
+		stop;
+	xdeath:
+		TNT1 A 0;
+		stop;
+	death:
+		TNT1 A 0{
+			actor p=spawn("PenePuff",self.pos-(0,0,2));
+			p.vel=puffvel;
+		}stop;
+	}
+}
+class BulletTail:IdleDummy{
+	default{
+		scale 0.5; renderstyle "add"; alpha 0.3; +forcexybillboard;
+	}
+	states{
+	spawn:
+		BAL7 A 10 A_FadeOut(0.1);
+		wait;
+	}
+}
+
+

@@ -1,0 +1,76 @@
+// ------------------------------------------------------------
+//   Shootmans
+//   What else do you call the humanoid mobs with guns?
+// ------------------------------------------------------------
+
+//arch-shootman
+class HDShootman:HDMOb{
+	double ammo;
+	double spread;
+	//A_HDBAttack("HDFourMilFast",snd:"weapons/rifle");
+	void A_HDBAttack(class<Actor> ms="DoomImpBall",double shootangle=999,double shootpitch=999,sound snd="marine/taunt"){
+		if(shootangle==999) shootangle=self.angle+frandom(-spread,spread);
+		if(shootpitch==999) shootpitch=self.angle+frandom(-spread,spread);
+		A_ShootMissile(ms,self.height-12,0,shootangle,shootpitch);
+		A_PlaySound(snd,CHAN_WEAPON);
+	}
+	//A_MarineTranslate("Rifleman");
+	void A_MarineTranslate(string base="Rifleman"){
+		int blah=random(0,2);
+		if(blah==0) base="Black"..base;
+		else if(blah==1) base="Brown"..base;
+		else if(blah==2) base="White"..base;
+		A_SetTranslation(base);
+	}
+	//presume zombie unless proven alive
+	default{
+		height 52;radius 12;mass 120;missileheight 44;
+		seesound "grunt/sight";activesound "grunt/active";deathsound "grunt/death";
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		ammo=0;spread=0;
+	}
+}
+
+//test dummy
+class tt:hdshootman{
+	override void postbeginplay(){
+		super.postbeginplay();
+		string type[5];
+		type[0]="Tango";type[1]="Rifleman";type[2]="SWAT2";type[3]="SWAT";type[4]="Rocketeer";
+		A_MarineTranslate(type[random(0,4)]);
+	}
+	states{
+	spawn:
+		PLAY E -1;//20 {spread=3;}
+		PLAY F 1 bright light("SHOT"){
+			A_HDBAttack("SuperShotgunBlast",snd:"weapons/hunter");
+		}loop;
+	}
+}
+
+
+//reverse headshot code: how to MISS the head!
+//then all you gotta do is check height for whatever DOES hit...
+class tth:tt{
+	states{
+	spawn:
+		PLAY E -1;
+	}
+	override bool cancollidewith(actor other,bool passive){
+		int dx=floor(abs(other.pos.x-self.pos.x));
+		int dy=floor(abs(other.pos.y-self.pos.y));
+		if(dy>dx) dx=dy;  
+		int dz=floor(other.pos.z-self.pos.z);
+		if(
+			dz>44 //bottom of head
+			&& dx>other.radius+3 //head radius
+		){
+			return false;
+		}
+A_LogInt(dz);
+		return super.cancollidewith(other,passive);
+	}
+}
+

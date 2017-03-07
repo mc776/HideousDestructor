@@ -1,0 +1,339 @@
+
+// ------------------------------------------------------------
+//   H.E.R.P. Robot
+// ------------------------------------------------------------
+
+actor HERPBot : HDUPK
+{
+	obituary "%o went HERP."
+	+ismonster +noblockmonst +shootable +ghost +friendly +standstill +nofear +dontgib
+	height 32 radius 10 mass 400 health 200 +noblood
+	damagefactor "Thermal",0.7 damagefactor "SmallArms3",0.8
+	states
+	{
+	spawn:
+		HERP A 0 A_Stop
+		"----" A 0 A_JumpIfInventory("Clip",1,"spawn2")
+		"----" A 0{
+			A_GiveInventory("Clip",1);
+			A_GiveInventory("HERPAngle",9);
+			if(CheckClass("PlayerPawn",AAPTR_MASTER,true)){return state("take");}
+			A_GiveInventory("HERPAmmo",150);
+			A_GiveInventory("HERPCell",15000);
+			return state("spawn2");
+		}
+	take:
+		"----" A 0{
+			A_GiveInventory("HERPCell",countinv("HERPCell",AAPTR_TARGET));
+			A_TakeFromTarget("HERPCell");
+			A_GiveInventory("HERPAmmo",countinv("HERPAmmo",AAPTR_TARGET));
+			A_TakeFromTarget("HERPAmmo");
+			return state("spawn2");
+		}
+	spawn2:
+		HERP A 0 A_JumpIfHealthLower(1,"dead")
+		HERP A 2 A_ClearTarget
+	idle:
+		HERP A 3{
+			if(countinv("HERPOff",AAPTR_MASTER)>0){return state("off");}  
+			if(countinv("HERPCell")<1){return state("nopower");}
+			if((countinv("HERPAngle")==28)
+			||(countinv("HERPAngle")==19)
+			||(countinv("HERPAngle")==10)
+			||(countinv("HERPAngle")==1))
+			{A_PlaySound("misc/i_pkup");}
+			return state("");
+		}
+	postbeep:
+		HERP A 0 A_LookEx(LOF_NOSOUNDCHECK,0,1024.0,0,12,"alert")
+		HERP A 0{
+			if(countinv("HERPAngle")<18){A_SetAngle(angle-5);}
+			else{A_SetAngle(angle+5);}
+		}goto idle2
+	idle2:
+		HERP A 0 A_JumpIfHealthLower(1,"dead")
+		HERP A 0{
+			A_TakeInventory("HERPCell",1);
+			A_GiveInventory("HERPAngle",1);
+			if(A_JumpIfInventory("HERPAngle",0,"null")){A_TakeInventory("HERPAngle");}
+		}goto idle
+	alert:
+		HERP A 0 A_PlaySound("weapons/vulcanup")
+		HERP AAA 1 A_PlaySound("misc/i_pkup",CHAN_VOICE)
+		HERP A 0 A_GiveInventory("HERPmsgSHOOT",1,AAPTR_MASTER)
+	aim:
+		HERP A 2 A_FaceTarget(3,3,0,0,FAF_TOP,-4)
+		HERP A 0 A_JumpIfTargetInLOS("shoot",0.5,JLOSF_DEADNOJUMP,1024.0,0)
+		HERP A 0 A_JumpIfTargetInLOS("aim",45,JLOSF_DEADNOJUMP,2048.0,0)
+		HERP A 0 A_ClearTarget
+		goto idle
+	shoot:
+		HERP A 0 A_JumpIfHealthLower(1,"dead")
+		HERP A 0 A_JumpIfInventory("HERPAmmo",1,1)
+		goto noammo
+		HERP B 1 bright light("SHOT"){
+			A_TakeInventory("HERPAmmo",1);
+			A_PlaySound("weapons/rifle");
+			pitch+=frandom(-1,1);
+			A_SpawnItemEx("HDFourMilSlow",0,0,7,velx,vely,velz,frandom(-1,1),SXF_TRANSFERPITCH|SXF_SETTARGET|SXF_SETMASTER|SXF_ABSOLUTEMOMENTUM);
+		}
+		HERP A 2{
+			if(A_CheckFlag("friendly","null"))
+			{A_AlertMonsters(0,AMF_TARGETEMITTER);}else
+			{A_AlertMonsters;}
+		}
+		HERP A 0 A_Jump(196,"shoot")
+		goto aim
+	nopower:
+		HERP A 0 A_GiveInventory("HERPmsgNOPOWER",1,AAPTR_MASTER)
+		goto off
+	noammo:
+		HERP A 0 A_GiveInventory("HERPmsgNOAMMO",1,AAPTR_MASTER)
+	off:
+		HERP A 0 A_PlaySound("weapons/vulcandown")
+	off2:
+		HERP A 10
+		HERP A -1 A_JumpIfInventory("HERPCell",1,1)
+		loop
+		HERP A -1 A_JumpIfInventory("HERPAmmo",1,1)
+		loop
+		HERP A 0 A_JumpIfInventory("HERPOff",1,"off2",AAPTR_MASTER)
+		goto idle
+	give:
+		"----" A 0 A_JumpIfHealthLower(1,2)
+		"----" A 0 A_JumpIfInTargetInventory("HERPUsable",1,2)
+		goto givegun
+		"----" A 0 A_JumpIfInTargetInventory("HERPDEAD",1,1)
+		goto givegun
+		"----" A 0{
+			if(countinv("HERPCell")>0){  
+				A_PlaySound("weapons/rifleclick");
+				A_SpawnItemEx("HDCelXD",0,0,0,1,random(-1,1),2,0,SXF_SETTARGET);
+			}return state("spawn");
+		}
+	givegun:
+		"----" A 0{
+			A_PlaySound("misc/w_pkup");
+			if(health<1){A_GiveToTarget("HERPDEAD");}
+			else{A_GiveToTarget("HERPUsable");}
+			return state("givegunloop");
+		}
+	givegunloop:
+		"----" A 0 A_JumpIfInventory("HERPAmmo",50,1)
+		goto givegunloop1
+		"----" A 0 A_TakeInventory("HERPAmmo",50)
+		"----" A 0 A_JumpIfInTargetInventory("ZM66RifleMags",0,2)
+		"----" A 0 A_GiveToTarget("ZM66RifleMags",1)
+		loop
+		"----" A 0 A_SpawnItemEx("ZM66RifleMags",3,random(-3,3),0,0,0,0,0,SXF_NOPOINTERS)
+		loop
+	givegunloop1:
+		"----" A 0 A_JumpIfInventory("HERPAmmo",1,1)
+		goto givegun2
+		"----" A 0 A_GiveToTarget("HERPAmmo",1)
+		"----" A 0 A_TakeInventory("HERPAmmo",1)
+		loop
+	givegun2:
+		"----" A 0 A_JumpIfInventory("HERPCell",15000,1)
+		goto givegunloop3
+		"----" A 0 A_JumpIfInTargetInventory("HDCellPacks",0,2)
+		"----" A 0 A_GiveToTarget("HDCellPacks",1)
+		stop
+		"----" A 0 A_SpawnItemEx("HDCellPacks",3,random(-3,3),0)
+		stop
+	givegunloop3:
+		"----" A 0 A_JumpIfInventory("HERPCell",1,1)
+		goto givegunloopend
+		"----" A 0 A_GiveToTarget("HERPCell",300)
+		"----" A 0 A_TakeInventory("HERPCell",300)
+		loop
+	death:
+		TNT1 A 0 A_CheckFlag("friendly",2)
+		TNT1 A 0 A_Remove(AAPTR_MASTER,RMVF_MISC)
+		TNT1 A 0 A_TakeInventory("HERPAmmo",random(1,50),AAPTR_MASTER)
+		TNT1 A 0 A_TakeInventory("HERPCell",random(1,5000),AAPTR_MASTER)
+		HERP A 0 A_PlaySound("world/shotgunfar",CHAN_BODY,0.4)
+		HERP A 1 A_PlaySound("weapons/bigcrack",5)
+		HERP A 1 A_PlaySound("weapons/bigcrack",6)
+		HERP A 1 A_PlaySound("weapons/bigcrack",7)
+		HERP AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 0 A_SpawnItemEx("HugeWallChunk",random(-6,6),random(-6,6),random(0,6), velx+random(-6,6),vely+random(-6,6),velz+random(1,8),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+		TNT1 A 0 A_PlaySound("weapons/vulcandown",CHAN_WEAPON)
+		TNT1 A 0 A_GiveInventory("HERPmsgDEAD",1,AAPTR_MASTER)
+		HERP AAA 1 A_SpawnItemEx("HDSmoke",random(-2,2),random(-2,2),random(-2,2), velx+random(-2,2),vely+random(-2,2),velz+random(1,4),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+		HERP AAA 3 A_SpawnItemEx("HDSmoke",random(-2,2),random(-2,2),random(-2,2), velx+random(-2,2),vely+random(-2,2),velz+random(1,4),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+		HERP AAA 9 A_SpawnItemEx("HDSmoke",random(-2,2),random(-2,2),random(-2,2), velx+random(-2,2),vely+random(-2,2),velz+random(1,4),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+	dead:
+		HERP A -1
+		TNT1 A 1 A_SpawnItemEx("HERPDEADPickup",0,0,0,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERTRANSLATION)
+		stop
+	}
+}
+actor EnemyHERP : HERPBot
+{
+	-friendly
+	Translation "112:120=152:159","121:127=9:12"
+}
+actor HERPAngle : InventoryFlag {inventory.maxamount 36}
+actor HERPOff : InventoryFlag {}
+actor HERPSwitch : ActionItem
+{
+	states
+	{
+	use:
+		TNT1 A 0 A_JumpIfInventory("HERPAmmo",1,2)
+		TNT1 A 0 A_Jump(256,2)
+		TNT1 A 0 A_JumpIfInventory("HERPOff",1,3)
+		TNT1 A 0 A_GiveInventory("HERPOff",1)
+		TNT1 A 0 A_Print("\cd[HERP]\cj  Shutting down...")
+		fail
+		TNT1 A 0 A_TakeInventory("HERPOff",999)
+		TNT1 A 0 A_Print("\cd[HERP]\cj  Initializing...")
+		fail
+	}
+}
+actor HERPUsable : ActionItem
+{
+	+inventory.invbar
+	+inventory.persistentpower
+	-inventory.untossable
+	inventory.amount 1
+	inventory.maxamount 1
+	inventory.interhubamount 1
+	inventory.icon HERPEX
+	states
+	{
+	use:
+		TNT1 A 0 A_JumpIfInventory("HERPCell",100,"use2")
+		TNT1 A 0 A_JumpIfInventory("HDCellPacks",1,"usefullcell")
+		TNT1 A 0 A_JumpIfInventory("HDCellAmmo",1,"usecrapcell")
+		TNT1 A 0 A_Print("\cd[HERP]\cj  No power. Please load 1 cell pack before deploying.")
+		fail
+	usefullcell:
+		TNT1 A 0{
+			A_TakeInventory("HDCellPacks",1,TIF_NOTAKEINFINITE);
+			A_GiveInventory("HERPCell",15000);
+		}goto use2
+	usecrapcell:
+		TNT1 A 0{
+			A_TakeInventory("Counter");A_GiveInventory("Counter",random(1,19));
+			if(countinv("Counter")>countinv("HDCellAmmo"))    
+				{A_TakeInventory("Counter",countinv("Counter")-countinv("HDCellAmmo"));}
+			A_GiveInventory("HERPCell",countinv("Counter")*300);
+			A_TakeInventory("HDCellAmmo",countinv("Counter"));
+		}goto use2
+	use2:
+		TNT1 A 0 A_JumpIfInventory("HERPAmmo",50,"useend")
+		TNT1 A 0 A_JumpIfInventory("ZM66RifleMags",1,"load")
+		TNT1 A 0 A_Print("\cd[HERP]\cj  Please insert at least 1 fresh, authorized 4.26mm UAC Standard magazine before deploying.")
+		fail
+	load:
+		TNT1 A 0 A_TakeInventory("ZM66RifleMags",1,TIF_NOTAKEINFINITE)
+		TNT1 A 0 A_GiveInventory("HERPAmmo",50)
+		TNT1 A 0 A_JumpIfInventory("HERPAmmo",101,"useend")
+		TNT1 A 0 A_JumpIfInventory("ZM66RifleMags",1,"load")
+	useend:
+		TNT1 A 0 A_TakeInventory("HerpOff",999)
+		TNT1 A 0 A_GiveInventory("HERPSwitch",1)
+		TNT1 A 0 ACS_NamedExecuteAlways("CarryLimit",0,0,0)
+		TNT1 A 0 A_SpawnItemEx("HERPBot",4,0,height-16, velx+2.3*cos(angle)*cos(pitch),vely+2.3*cos(pitch)*sin(angle),-2*sin(pitch), 0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_TRANSFERTRANSLATION|SXF_ABSOLUTEMOMENTUM|SXF_SETMASTER|SXF_SETTARGET)
+		stop
+	spawn:
+		TNT1 A 1
+		TNT1 A 0 A_SpawnItemEx("HERPPickup",0,0,0,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERTRANSLATION)
+		stop
+	}
+}
+actor HERPPickup : HERPBot replaces HERPUsable
+{
+	-ismonster translation 0
+	states
+	{
+	spawn:
+		HERP A 0 A_Stop
+		HERP A 0 A_GiveInventory("Clip",1)
+		HERP A -1
+		stop
+	}
+}
+actor HERPAmmo : Ammo
+{
+	+inventory.ignoreskill
+	+inventory.untossable
+	inventory.maxamount 150
+	ammo.backpackmaxamount 150
+	ammo.backpackamount 0
+}
+actor HERPCell : Ammo
+{
+	+inventory.ignoreskill
+	+inventory.untossable
+	inventory.maxamount 15000
+	ammo.backpackmaxamount 15000
+	ammo.backpackamount 0
+}
+actor HERPDEAD : Inventory
+{
+	+nointeraction
+	states
+	{
+	spawn:
+		TNT1 A 1
+		TNT1 A 0 A_SpawnItemEx("HERPDEADPickup",0,0,0,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_ABSOLUTEMOMENTUM)
+		stop
+	}
+}
+actor HERPDEADPickup : HDUPK
+{
+	states
+	{
+	spawn:
+		HERP A -1 A_Stop
+	give:
+		"----" A 0 A_JumpIfInventory("HERPDEAD",0,"spawn",AAPTR_TARGET)
+		"----" A 0 A_GiveInventory("HERPDEAD",10,AAPTR_TARGET)
+		"----" A 0 A_PlaySound("misc/w_pkup")
+		stop
+	}
+}
+actor HERPmsgSHOOT : CustomInventory
+{
+	states
+	{
+	pickup:
+		TNT1 A 0 A_Print("\cd[HERP]\cj  IFF system alert: enemy pattern recognized.")
+		fail
+	}
+}
+actor HERPmsgNOAMMO : CustomInventory
+{
+	states
+	{
+	pickup:
+		TNT1 A 0 A_Print("\cd[HERP]\cg  Operational fault. Please check your manual for proper maintenance. (ERR-42392-41A) Cartridge empty. Shutting down...")
+		fail
+	}
+}
+actor HERPmsgNOPOWER : CustomInventory
+{
+	states
+	{
+	pickup:
+		TNT1 A 0 A_Print("\cd[HERP]\cg  Operational fault. Please check your manual for proper maintenance. (ERR-4fd92-00B) Power low.")
+		fail
+	}
+}
+actor HERPmsgDEAD : CustomInventory
+{
+	states
+	{
+	pickup:
+		TNT1 A 0 A_Jump(256,1,2,3,4,5,6,7)
+		TNT1 A 0 A_GiveInventory("HERPmsgNOPOWER",1) fail
+		TNT1 A 0 A_Print("\cd[HERP]\cg  Operational fault. Please check your manual for proper maintenance. (ERR-74x29-58A) Unsupported ammunition type.\n\n\cjReloading a 4.26 UAC Standard magazine or its components without the supervision of a Volt UAC Standard Certified Cartridge Professional(tm) is a breach of the Volt End User License Agreement.") fail
+		TNT1 A 0 A_Print("\cd[HERP]\cg  Operational fault. Please check your manual for proper maintenance. (ERR-8w8i7-8VX) No interface detected.") fail
+		TNT1 A 0 A_Print("\cd[HERP]\cg  Illegal operation. Please check your manual for proper maintenance. (ERR-u0H85-6NN) System will restart.") fail
+		TNT1 A 0 A_Print("\cd[HERP]\cg  Illegal operation. Identify Friend/Foe system has been tampered with. Please contact your commanding officer immediately. (ERR-0023j-000) System will halt.") fail
+		TNT1 A 0 A_Print("\cd[HERP]\cj  Formatting C:\\ (DBG-444j2-0A0)") fail
+		TNT1 A 0 A_Print("\cd[HERP]\cj  Testing mode initialized.  (DBG-86nm8-BN5) Cache cleared.") fail
+	}
+}

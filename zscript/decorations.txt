@@ -1,0 +1,29 @@
+// ------------------------------------------------------------
+//   Props, trees, headsicles, etc.
+// ------------------------------------------------------------
+
+
+class HDFloatingSkull:HDActor replaces FloatingSkull{
+	default{
+		height 47;radius 16;+nogravity;+noteleport;+solid;
+		+shootable;+nodamage;+noblooddecals;
+		+pushable;pushfactor 0.3;mass 300;
+		bloodtype "HDSmokeChunk";
+	}
+	states{
+	spawn:
+		FSKU AB random(2,8) bright light("FSKUL"){
+			double ud=frandom(-0.05,0.05);
+			if(pos.z-floorz<4){
+				ud=0.05;
+			}
+			else if(pos.z-floorz>28){
+				ud=-0.05;
+			}
+			vel+=(frandom(-0.05,0.05),frandom(-0.05,0.05),ud);
+		}loop;
+	}
+}
+
+
+

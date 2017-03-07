@@ -1,0 +1,989 @@
+// ------------------------------------------------------------
+//   Rocket Launcher
+// ------------------------------------------------------------
+
+ACTOR RocquetteLauncher : HDWeapon
+{
+	game Doom
+	weapon.selectionorder 205
+	weapon.slotnumber 5
+	+WEAPON.EXPLOSIVE
+	weapon.ammotype2 HDRocketAmmo
+	weapon.ammotype RocketMag
+	scale 0.6
+	inventory.pickupmessage "You got the rocket launcher!"
+	States
+	{
+	select0:
+		MISG B 0 A_JumpIf(countinv("RocketMag")+countinv("HEATLoaded")>0,1)
+		goto select0small
+		MISG A 0 A_JumpIf(countinv("RocketMag")+countinv("HEATLoaded")>3,"select0bfg")
+		goto select0big
+	deselect0:
+		MISG A 0 A_JumpIf(countinv("RocketMag")+countinv("HEATLoaded")>0,"deselect0big")
+		MISG B 0
+		goto deselect0small
+
+	Ready:
+		TNT1 A 0 A_SetCrosshair(21)
+		TNT1 A 0 A_GiveInventory("IsWeaponReady",1)
+		TNT1 A 0 A_GiveInventory("IsWeaponLong",1)
+		MISG A 0 A_JumpIf(countinv("RocketMag")+countinv("HEATLoaded")>0,2)
+		MISG B 0
+		"----" A 1 A_WeaponReady(WRF_ALLOWRELOAD|WRF_ALLOWZOOM|WRF_ALLOWUSER1|WRF_ALLOWUSER2|WRF_ALLOWUSER4)
+	Ready3:
+		MISG "#" 0 A_TakeInventory("IsInterrupting")
+		MISG "#" 0 A_TakeInventory("WeaponBusy")
+		goto ReadyEnd
+
+	user2:
+	abadjust:
+		"----" A 2 A_WeaponReady(WRF_NOFIRE)
+		"----" A 0{
+			A_GiveInventory("WeaponBusy",1);
+			if (countinv("PressingFire")+countinv("PressingAltfire")>0){
+				return state("abclick");
+			}else if(countinv("PressingZoom")>0){
+				A_TakeInventory("AirburstCount");
+				return state("nope");
+			}else if(countinv("PressingFireMode")>0){return state("abadjust");}
+			return state("nope");
+		}
+	abclick:
+		"----" A 0{
+			if (countinv("PressingFire")>0){A_GiveInventory("AirburstCount",1);}
+			else if (countinv("PressingAltFire")>0){A_TakeInventory("AirburstCount",1);}
+			return state("abadjust");
+		}
+
+	Interrupt:
+		MISG "#" 1 A_WeaponReady(WRF_NOFIRE)
+		"----" A 0{
+			if(countinv("PressingUnload")+countinv("PressingReload")+countinv("PressingFire")+countinv("PressingAltfire")>0){return state("interrupt");}
+			return state("");
+		}
+		goto Reload3
+	Fire:
+		MISG A 1
+		goto Shoot
+	AltHold:
+	Hold:
+		MISG A 0 A_JumpIfInventory("RocketMag", 1, "Hold1")
+		MISG B 1 A_WeaponReady(WRF_NOFIRE)
+		TNT1 A 0 A_Refire
+		goto Ready
+	Hold1:
+		MISG A 1 A_WeaponReady(WRF_NOFIRE)
+		TNT1 A 0 A_Refire
+		goto Ready
+	Shoot:
+		MISG A 0 A_JumpIfInventory("IsUsingRocketUnderslung",1,"FireFrag")
+		MISG A 0 A_TakeInventory("IsWeaponReady")
+		MISG A 0 A_JumpIfInventory("HEATLoaded",1,"ReallyShootHEAT")
+		MISG B 8 A_JumpIfInventory("RocketMag", 1, "ReallyShoot")
+		MISG B 4 offset (0,36)
+		MISG B 0 A_Refire
+		goto Ready
+		MISG A 2
+	ReallyShoot:
+		TNT1 A 0{
+			A_SpawnItemEx("GyroGrenade",0,0,height-6,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH|SXF_ISTRACER);
+			A_GiveInventory("HDRocketAmmo",1,AAPTR_TRACER);
+		}
+		MISG A 0 A_TakeInventory("RocketMag",1)
+		goto ReallyShoot2
+	ReallyShootHEAT:
+		TNT1 A 0 A_TakeInventory("AirburstCount")
+		TNT1 A 0 A_SpawnItemEx("HDHEAT",0,0,height-6,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH)
+		MISG A 0 A_TakeInventory("HEATLoaded", 1)
+		goto ReallyShoot2
+	ReallyShoot2:
+		MISG A 0 A_PlaySound("weapons/grenadeshot",CHAN_WEAPON,0.4)
+		MISG A 0 A_ZoomFactor(0.99,ZOOM_INSTANT|ZOOM_NOSCALETURNING)
+		MISG A 1 offset(0,38) A_ZoomFactor(1.0,ZOOM_INSTANT|ZOOM_NOSCALETURNING)
+		MISG B 2 offset(0,40) A_GunFlash
+		MISG BBB 1 A_SpawnItemEx("HDGunSmoker",cos(pitch)*10,0,height+sin(pitch)*10-3,velx+cos(pitch)*cos(angle)*3,vely+cos(pitch)*sin(angle)*3,velz+sin(pitch)*-3,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM,16)
+		MISG BBB 1 offset(0,36){
+			ACS_NamedExecuteAlways("MuzzleClimb",0,random(10,14),random(6,9),0);
+			A_ChangeVelocity(cos(pitch)*-1,0,sin(pitch),CVF_RELATIVE);
+		}
+		MISG BBBBBBBB 1 A_SpawnItemEx("HDGunSmoker",cos(pitch)*10,0,height+sin(pitch)*10-3,velx+cos(pitch)*cos(angle)*-10,vely+cos(pitch)*sin(angle)*-10,velz+sin(pitch)*10,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM,32)
+		MISG B 0 A_Refire
+		goto Ready
+
+	Altfire:
+		TNT1 A 0 A_JumpIfInventory("HEATLoaded",1,"AltHold")
+		TNT1 A 0 A_SetCrosshair(21)
+		TNT1 A 0 A_TakeInventory("AirburstCount")
+		TNT1 A 0 A_TakeInventory("IsWeaponReady")
+		TNT1 A 0 A_JumpIfInventory("IsUsingRocketUnderslung",1,3)
+		TNT1 A 0 A_GiveInventory("IsUsingRocketUnderslung")
+		TNT1 A 0 A_Jump(256,2)
+		TNT1 A 0 A_TakeInventory("IsUsingRocketUnderslung")
+		MISG A 1 offset (0,34)
+		MISG A 2 offset (0,36)
+		MISG A 1 offset (0,34)
+		goto nope
+	FireFrag:
+	AltShoot:
+		MISG A 0 A_JumpIfInventory("HEATLoaded",1,"ReallyShootHEAT")
+		MISG B 6 A_JumpIfInventory("RocketMag",1,2)
+		MISG B 0 A_Refire
+		goto Ready
+		MISG A 0 A_TakeInventory("RocketMag",1)
+		MISG A 0 A_SpawnItemEx("GyroGrenade",0,0,height-6,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH)
+		MISG A 0 A_PlayWeaponSound ("weapons/grenadeshot")
+		MISG A 1 A_ZoomFactor(0.97,ZOOM_INSTANT|ZOOM_NOSCALETURNING)
+		MISG A 1 offset (0,37)
+		TNT1 A 0 A_ZoomFactor(1.0,ZOOM_INSTANT|ZOOM_NOSCALETURNING)
+		MISG B 3 ACS_NamedExecuteAlways("MuzzleClimb", 0, random(38,42), random(20,22), 0)
+		MISG A 0 A_Refire
+		goto Ready
+	Flash:
+		TNT1 A 0 A_PlayWeaponSound("weapons/rockignite")
+		TNT1 A 0 A_ZoomFactor(0.98)
+		MISF A 0 A_JumpIfInventory("IsSupported",1,2)
+		MISF A 0 A_ChangeVelocity(cos(pitch)*-1,0,sin(pitch)*1,CVF_RELATIVE)
+		MISF A 1 BRIGHT A_Light1
+		MISF B 2 BRIGHT A_Light2
+		MISF C 2 BRIGHT A_Light1
+		TNT1 A 0 A_ZoomFactor(1)
+		MISF D 1 BRIGHT A_Light0
+		TNT1 A 0 A_AlertMonsters
+		stop
+	Reload:
+		TNT1 A 0 A_JumpIfInventory("HEATLoaded",1,"AltReload")
+		MISG A 0 A_JumpIfInventory("RocketMag",0,"Ready")
+
+		MISG B 0 A_JumpIfInventory("RocketMag",1,2)
+		MISG B 4
+		MISG B 0 A_JumpIfInventory("HDRocketAmmo",1,1)
+		goto Ready
+
+		TNT1 A 0 A_SetCrosshair(21)
+		TNT1 A 0 A_TakeInventory("IsWeaponReady")
+		MISG B 1 offset(2,34)
+		TNT1 A 0 ACS_NamedExecuteAlways("MuzzleClimb",0,random(-12,-24),random(12,24),0)
+		MISG B 1 offset(4,36)
+		MISG B 1 offset(10,38)
+		TNT1 A 0 ACS_NamedExecuteAlways("MuzzleClimb",0,random(-12,-24),random(12,24),0)
+		TNT1 A 0 A_TakeInventory("IsWeaponLong")
+		MISG B 4 offset(12,40) A_PlaySound("weapons/rifleclick2",7)
+		MISG B 10 offset(11,38) A_PlaySound ("weapons/grenopen",7)
+		Goto Reload2
+	Reload2:
+		MISG B 0 A_JumpIfInventory("HDRocketAmmo", 1, 1)
+		goto Reload3
+		MISG B 0 A_JumpIfInventory("RocketMag", 0, "Reload3")
+
+		MISG B 9 offset(10,38) A_PlayWeaponSound("weapons/pocket")
+		TNT1 A 0 A_JumpIfHealthLower(60,2)
+		TNT1 A 0 A_Jump(256,2)
+		MISG B 3
+		TNT1 A 0 A_JumpIfHealthLower(40,2)
+		TNT1 A 0 A_Jump(256,2)
+		MISG B 4
+		MISG B 2 offset(12,40) A_PlayWeaponSound ("weapons/rockreload")
+		MISG B 3 offset(10,38) ACS_NamedExecuteAlways("Reload", 0, 3, 1, 0)
+
+		MISG BB 1 offset(10,34){
+			if(countinv("PressingUnload")+countinv("PressingReload")+countinv("PressingFire")+countinv("PressingAltfire")>0){return state("interrupt");}return state("");
+		}
+		loop
+	Reload3:
+		MISG B 5 offset(10,36) A_PlayWeaponSound ("weapons/grenopen")
+		MISG B 0 A_PlayWeaponSound ("weapons/rifleclick2")
+		MISG B 1 offset(8,38)
+		MISG B 1 offset(4,36)
+		MISG B 1 offset(2,34)
+		goto Ready
+
+	user1:
+	AltReload:
+		MISG A 0 A_TakeInventory("AirburstCount",999)
+		MISG B 0 A_JumpIfInventory("HEATLoaded",1,"AltReallyReload")
+		MISG B 0 A_JumpIfInventory("HEATAmmo",1,"AltReallyReload")
+		MISG B 4
+		goto Ready
+	AltReallyReload:
+		TNT1 A 0 A_SetCrosshair(21)
+		TNT1 A 0 A_TakeInventory("IsWeaponReady", 999)
+		TNT1 A 0 A_TakeInventory("IsUsingRocketUnderslung",999)
+		MISG B 1 offset(0,34)
+		MISG B 1 offset(0,36)
+		MISG B 1 offset(0,38)
+		MISG B 4 offset(0,40) A_PlayWeaponSound("weapons/rifleclick2")
+		MISG B 10 offset(0,38) A_PlayWeaponSound("weapons/grenopen")
+	AltReload2:
+		MISG B 9 offset(0,38) A_PlayWeaponSound("weapons/pocket")
+		TNT1 A 0 A_JumpIfHealthLower(60,2)
+		TNT1 A 0 A_Jump(256,2)
+		MISG B 3
+		TNT1 A 0 A_JumpIfHealthLower(40,2)
+		TNT1 A 0 A_Jump(256,2)
+		MISG B 4
+		MISG B 10 offset(0,40) A_PlayWeaponSound ("weapons/rockreload")
+
+		MISG B 0 A_JumpIfInventory("RocketMag",0,"AltReload2Full")
+		goto AltReload2a
+	AltReload2Full:
+		TNT1 A 0 A_TakeInventory("RocketMag",1)
+		MISG B 0 A_JumpIfInventory("HDRocketAmmo", 0, 2)
+		TNT1 A 0 A_GiveInventory("HDRocketAmmo",1)
+		goto AltReload2a
+		TNT1 A 0 A_SpawnItemEx("HDRocketAmmo",10,0,10,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION)
+	AltReload2a:
+		MISG B 3 offset(0,38) //ACS_NamedExecuteAlways("Reload", 0, 3, 1, 0)
+		MISG B 2 offset(0,34)
+	AltReload3:
+		TNT1 A 0 A_JumpIfInventory("HEATLoaded",1,"AltReload4")
+		MISG B 0 A_GiveInventory("HEATLoaded",1)
+		MISG B 0 A_TakeInventory("HEATAmmo",1,TIF_NOTAKEINFINITE)
+		goto AltReload5
+	AltReload4:
+		MISG B 0 A_TakeInventory("HEATLoaded",1)
+		MISG B 0 A_JumpIf(countinv("PressingUnload")+countinv("PressingAltReload")<1,"dropheat")
+		MISG B 0 A_JumpIfInventory("HEATAmmo",0,"dropheat")
+		MISG B 10 offset(1,35){
+			A_PlaySound("weapons/pocket",7);
+			A_GiveInventory("HEATAmmo",1);
+		}
+		goto AltReload5
+	dropheat:
+		TNT1 A 0 A_SpawnItemEx("HEATAmmo",10,0,10,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION)
+	AltReload5:
+		MISG B 5 offset(0,36) A_PlayWeaponSound ("weapons/grenopen")
+		MISG B 0 A_PlayWeaponSound ("weapons/rifleclick2")
+		MISG B 1 offset(0,38)
+		MISG B 1 offset(0,36)
+		MISG B 1 offset(0,34)
+		goto nope
+
+	Zoom:
+		MISG A 0 A_TakeInventory("IsWeaponReady")
+		MISG A 1 offset(0,33)
+		MISG A 1 offset(1,34)
+		MISG A 2 offset(1,36)
+		MISG A 1{
+			if(countinv("RocketZoom")>0){A_TakeInventory("RocketZoom");}
+			else{A_GiveInventory("RocketZoom");}
+		}
+		MISG A 1 offset(0,34)
+		MISG A 1 offset(0,33)
+		goto nope
+	user4:
+	Unload:
+		TNT1 A 0 A_JumpIfInventory("HEATLoaded",1,"AltReload")
+		MISG A 0 A_JumpIfInventory("RocketMag",1,2)
+		MISG A 1 A_WeaponReady
+		goto ready
+		MISG B 4
+
+		TNT1 A 0 A_SetCrosshair(21)
+		TNT1 A 0 A_TakeInventory("IsWeaponReady")
+		MISG B 1 offset(2,34)
+		TNT1 A 0 ACS_NamedExecuteAlways("MuzzleClimb",0,random(-12,-24),random(12,24),0)
+		MISG B 1 offset(4,36)
+		MISG B 1 offset(10,38)
+		TNT1 A 0 ACS_NamedExecuteAlways("MuzzleClimb",0,random(-12,-24),random(12,24),0)
+		TNT1 A 0 A_TakeInventory("IsWeaponLong")
+		MISG B 4 offset(12,40) A_PlayWeaponSound ("weapons/rifleclick2")
+		MISG B 2 offset(11,38) A_PlayWeaponSound ("weapons/grenopen")
+	Unload2:
+		MISG B 10 offset(12,40) A_PlayWeaponSound ("weapons/rockreload")
+
+		TNT1 A 0 A_TakeInventory("RocketMag",1)
+		MISG A 0 A_JumpIfInventory("HDRocketAmmo",0,2)
+		TNT1 A 0 A_JumpIfInventory("PressingUnload",1,4)
+		TNT1 A 0 A_JumpIfInventory("PressingZoom",1,3)
+		TNT1 A 0 A_DropItem("HDRocketAmmo")
+		TNT1 A 0 A_Jump(256,3)
+		TNT1 A 0 A_GiveInventory("HDRocketAmmo",1)
+		MISG B 9 offset(10,38) A_PlayWeaponSound ("weapons/pocket")
+		MISG B 5 offset(10,36) A_PlayWeaponSound ("weapons/grenopen")
+		MISG B 0 A_PlayWeaponSound ("weapons/rifleclick2")
+		TNT1 A 0 A_Jump(256,2)
+		MISG B 3
+		TNT1 A 0 A_JumpIfHealthLower(40,2)
+		TNT1 A 0 A_Jump(256,2)
+		MISG B 4
+
+		"----" A 0{
+			if(countinv("RocketMag")<1){return state("UnloadEnd");}
+			if(countinv("PressingUnload")+countinv("PressingReload")+countinv("PressingFire")+countinv("PressingAltfire")>0){return state("unloadend");}return state("");
+		}
+		goto Unload2
+	UnloadEnd:
+		MISG B 1 offset(8,38)
+		TNT1 A 0 A_JumpIfInventory("PressingReload",1,"UnloadEnd")
+		TNT1 A 0 A_JumpIfInventory("PressingUnload",1,"UnloadEnd")
+		MISG B 1 offset(4,36)
+		MISG B 1 offset(2,34)
+		goto nope
+
+	spawn:
+		TNT1 A 1
+		TNT1 A 0 A_CheckProximity("spawndropped","PlayerPawn",20,1, CPXF_COUNTDEAD|CPXF_SETTARGET|CPXF_ANCESTOR|CPXF_CLOSEST|CPXF_NOZ)
+	spawnfresh:
+		TNT1 A 0 A_SpawnItemEx("RocquetteLauncherPickup",0,0,0,velx,vely,velz,0, SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_NOPOINTERS)
+		stop
+	spawndropped:
+		TNT1 A 0 A_JumpIfInTargetInventory("RocquetteLauncher",1,"spawnfresh")
+		TNT1 A 0 A_SpawnItemEx("RocquetteLauncherPickup",0,0,0,velx,vely,velz,0, SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS)
+		stop
+	}
+}
+actor RocketZoom : InventoryFlag {}
+actor RocketMag : Ammo
+{
+	+inventory.ignoreskill
+	+inventory.untossable
+	inventory.maxamount 6
+	ammo.backpackmaxamount 6
+	ammo.backpackamount 0
+	states{spawn:TNT1 A 0 nodelay{return state("null");}stop}
+}
+actor HDRocketAmmo : Ammo replaces RocketAmmo
+{
+	+inventory.ignoreskill
+	inventory.maxamount 16
+	ammo.backpackmaxamount 50
+	ammo.backpackamount 0
+	inventory.pickupmessage "Picked up a rocket grenade."
+	scale 0.5
+	states
+	{
+	spawn:
+		ROQP A 0 nodelay A_SpawnItemEx("RocP",0,0,0,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+		stop
+	}
+}
+actor HEATAmmo : Ammo
+{
+	+inventory.ignoreskill
+	inventory.maxamount 6
+	ammo.backpackmaxamount 50
+	ammo.backpackamount 0
+	inventory.pickupmessage "Picked up a H.E.A.T. round."
+	scale 0.4
+	states
+	{
+	spawn:
+		ROCK A 0 nodelay A_SpawnItemEx("HEATP",0,0,0,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+		stop
+	}
+}
+actor HEATLoaded : InventoryFlag {}
+
+actor AirburstCount : InventoryFlag {inventory.maxamount 24}
+
+actor RocquetteScorcher
+{
+	radius 2 height 2 projectile damage (0)
+	decal "Scorch"
+	states
+	{
+	spawn:
+		TNT1 A 0
+		TNT1 A 0 A_ScaleVelocity(50)
+		TNT1 A 1
+		stop
+	}
+}
+actor RocquetteExploder : IdleDummy
+{
+	+missile +noblockmap
+	states
+	{
+	spawn:
+	death:
+		TNT1 A 0
+		TNT1 A 0 A_RadiusThrust(196,196,RTF_NOIMPACTDAMAGE|RTF_THRUSTZ,24)
+		TNT1 A 0 A_NoGravity
+		TNT1 A 0 A_SpawnItemEx("WallChunker", 0,0,-4, 1,0,-1, 0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
+		TNT1 A 0 A_RadiusGive("BlastGib",16.0,RGF_CUBE|RGF_CORPSES|RGF_MONSTERS,1)
+		TNT1 AA 0 A_SpawnItemEx("HDExplosion", random(-1,1),random(-1,1),2, 0,0,0, 0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
+		TNT1 A 2 A_SpawnItemEx("HDExplosion", 0,0,0, 0,0,2, 0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
+		TNT1 A 0 A_SpawnItemEx("Frags", 0,0,2, 0,0,0, 0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
+		TNT1 AAAAAAAAAAAAAAA 0 A_SpawnItemEx ("BigWallChunk", 0,0,1, random(-1,6),random(-4,4),random(4,18),random(-15,15),160)
+	Death2:
+		TNT1 AA 0 A_SpawnItemEx ("HDSmoke", -1,0,1, random(-2,3),random(-2,2),0, random(-15,15),SXF_NOCHECKPOSITION)
+		TNT1 A 0 A_SetTranslucent (1, 1)
+		TNT1 A 0 A_AlertMonsters
+		TNT1 A 0 A_SpawnItemEx ("DistantRocket", 0,0,0, 0,0,0, 0,32)
+		TNT1 A 21 A_Quake(2,21,0,200,none)
+		stop
+	}
+}
+ACTOR Rocquette : FastProjectile
+{
+	PROJECTILE
+	-NOTELEPORT
+	Decal "Scorch"
+	+forcexybillboard
+	+forcepain
+	+rockettrail
+	+hittracer
+	obituary "%o rode %k's rocket."
+	damagetype "SmallArms1"
+	missileheight -3
+	speed 30
+	radius 2
+	height 2
+	scale 0.5
+	var int user_rocqdamage;
+	var int user_rocqfuel;
+	var int user_timer;
+	var int user_impactangle;
+	reactiontime 0
+	damage (random(10,40)+user_rocqdamage)
+	States
+	{
+	Spawn:
+		ROCQ A 0
+		"####" A 0 A_SetUserVar("user_rocqfuel",30)
+		"####" A 0 A_SetUserVar("user_rocqdamage",random(20,30)*3)
+
+		"####" A 0 A_SetUserVar(user_timer,-1)
+		"####" A 0 A_JumpIfInventory("AirburstCount",1,"timer",AAPTR_TARGET)
+		goto spawn1
+	timer:
+		"####" A 0 A_TakeInventory("AirburstCount",2,0,AAPTR_TARGET)
+		"####" A 0 A_SetUserVar(user_timer,user_timer+1)
+		"####" A 0 A_JumpIfInventory("AirburstCount",1,"timer",AAPTR_TARGET)
+	spawn1:
+		"----" A 0 A_GiveInventory("LongArmWobble")
+		"####" AAAAAA 0 A_SpawnItemEx("HDGunSmoke",0,0,-3,-velx/10+frandom(-1,1),-vely/10+frandom(-1,1),-velz/10+frandom(-1,1),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+		"####" A 0 A_JumpIf(!CheckClass("PlayerPawn",AAPTR_TARGET,true),2)
+		"####" A 0 A_ChangeVelocity(cos(pitch)*cos(angle)*speed,cos(pitch)*sin(angle)*speed,sin(pitch)*-speed)
+		"####" AAAA 0 A_SpawnItemEx("HDGunSmoke",0,0,-3,velx/3,vely/3,velz/3,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM,0)
+		"####" A 0 A_PlaySound("weapons/rocklaunch")
+		"####" A 2 light("ROCKET")
+		"####" AAAA 0 A_SpawnItemEx("HDGunSmoke",0,0,-3,-velx/10+frandom(-1,1),-vely/10+frandom(-1,1),-velz/10+frandom(-1,1),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+		"####" A 0 A_JumpIf(!CheckClass("PlayerPawn",AAPTR_TARGET,true),2)
+		"####" A 0 A_ChangeVelocity(cos(pitch)*cos(angle)*speed,cos(pitch)*sin(angle)*speed,sin(pitch)*-speed)
+		"####" A 2 light("ROCKET")
+		"####" AAAA 0 A_SpawnItemEx("HDGunSmoke",0,0,-3,-velx/10+frandom(-1,1),-vely/10+frandom(-1,1),-velz/10+frandom(-1,1),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+		"####" A 0 A_JumpIf(!CheckClass("PlayerPawn",AAPTR_TARGET,true),2)
+		"####" A 0 A_ChangeVelocity(cos(pitch)*cos(angle)*speed,cos(pitch)*sin(angle)*speed,sin(pitch)*-speed)
+		"####" A 2 light("ROCKET")
+	spawn2:
+		"####" A 0 A_JumpIf(CheckClass("PlayerPawn",AAPTR_TARGET,true),3)
+		"####" A 0 A_ScaleVelocity(1.4)
+		"####" A 0 A_Jump(256,2)
+		"####" A 0 A_ChangeVelocity(cos(pitch)*cos(angle)*speed,cos(pitch)*sin(angle)*speed,sin(pitch)*-speed)
+		"####" A 2 light("ROCKET") A_PlaySound("weapons/rocklaunch",CHAN_AUTO,0.4)
+		"####" A 0 A_SetUserVar("user_rocqfuel",user_rocqfuel-1)
+		"####" A 0 A_JumpIf(user_rocqfuel<1,"spawn3")
+
+		"####" A 0 A_JumpIf(user_timer<0,3)
+		"####" A 0 A_JumpIf(user_timer<1,"det")
+		"####" A 0 A_SetUserVar(user_timer,user_timer-1)
+
+		"####" A 0 A_SetUserVar("user_rocqdamage",user_rocqdamage*random(4,5)/3)
+		"####" A 0 A_JumpIf(user_rocqfuel>10,"spawn2")
+		"####" A 0 A_ChangeVelocity(0,0,-1.2)
+		loop
+	spawn3:
+		"####" A 0 A_ChangeFlag("grenadetrail",1)
+		"####" A 0 A_ChangeFlag("rockettrail",0)
+	spawn4:
+		"####" A 0 A_JumpIf(user_timer<0,3)
+		"####" A 0 A_JumpIf(user_timer<1,"det")
+		"####" A 0 A_SetUserVar(user_timer,user_timer-1)
+		"####" A 2 A_ChangeVelocity(frandom(-1,1),frandom(-1,1),-1)
+		loop
+	det:
+		TNT1 A 0 A_Countdown
+	Death:
+		TNT1 A 0 A_ChangeFlag("nodamagethrust",1)
+		TNT1 A 0 A_JumpIf(user_rocqfuel<10,3)
+		TNT1 A 0 A_SpawnItemEx("RocquetteScorcher",-3,0,1,3,0,0,0,SXF_TRANSFERPOINTERS|SXF_NOCHECKPOSITION)
+		TNT1 A 0 A_Explode(random(160,200+2*user_rocqfuel),random(160,200+2*user_rocqfuel))
+		TNT1 A 0 A_SpawnItemEx("RocquetteExploder",0,0,0,0,0,0,0,SXF_TRANSFERPOINTERS|SXF_NOCHECKPOSITION)
+		TNT1 A 0{
+			A_SetUserVar(user_impactangle,angle);
+			A_FaceTracer(0,0,0,0,FAF_MIDDLE);
+			if(
+			((abs(user_impactangle-angle)<12)||(abs(user_impactangle-angle)>348))
+			&&
+			(6<abs(pitch-270)<14)
+			){
+//test				if(CheckClass("PlayerPawn",AAPTR_TARGET,true)){A_Log("ON TARGET!");}
+				A_SpawnItemEx("RocketShot",5,0,0,10,0,0,0,SXF_TRANSFERPOINTERS|SXF_NOCHECKPOSITION);
+			}
+			return state("");
+		}
+		stop
+	}
+}
+
+ACTOR DudRocquetteAmmo : Ammo
+{
+	inventory.pickupmessage "picked up a defused rocket grenade."
+	inventory.maxamount 6
+	ammo.backpackmaxamount 6
+	+inventory.ignoreskill
+	radius 2 height 2
+	scale 0.5
+	states
+	{
+	spawn:
+		ROCQ A 0 nodelay A_SpawnItemEx("DRAP",0,0,0,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+		stop
+	}
+}
+ACTOR DRAP : HDUPK{
+	scale 0.5
+	states{
+
+	spawn:
+		ROCQ A -1 A_Stop
+	give:
+		"----" A 0 A_JumpIfInTargetInventory("DudRocquetteAmmo",0,"spawn")
+		"----" A 0 A_GiveToTarget("DudRocquetteAmmo",1)
+		"----" A 0 A_PlaySound("weapons/grenopen")
+		stop
+
+	}
+}
+actor DudRocquette:HDUPK{
+	projectile -nogravity -noteleport
+	bouncetype "doom" decal "none" +bounceonactors
+	-noblockmap -grenadetrail -floorclip +forcexybillboard
+	+nodamagethrust +noblood
+	mass 30 pushfactor 3.4 bouncefactor 0.3 gravity 1
+	deathsound "misc/fragknock"
+	bouncesound "misc/fragknock"
+	wallbouncesound "misc/fragknock"
+	obituary "%o was fragged by %k."
+	damage(0)
+	radius 3 height 3 scale 0.5
+	states{
+	spawn:
+		ROCQ A 0 A_Jump(256,"dead")
+		ROCQ AB 2 A_SetAngle(angle+45)
+		loop
+	death:
+		TNT1 A 0 A_ChangeFlag ("missile",0)
+		TNT1 A 0 A_ChangeFlag ("pushable",1)
+		TNT1 A 0 A_ChangeFlag ("shootable",1)
+		TNT1 A 0 A_ChangeFlag ("solid",1)
+	dead:
+		ROCQ A 500 A_Jump (32,"clean")
+		ROCQ A 500 A_Jump (8,"Explode")
+		loop
+	clean:
+		ROCQ A -1
+		stop
+	Explode:
+		"####" A 0 A_NoGravity
+		"####" A 0 A_SpawnItemEx("RocquetteScorcher",-3,0,1,3,0,0,0,SXF_TRANSFERPOINTERS|SXF_NOCHECKPOSITION)
+		TNT1 A 0 A_Explode(random(120,260),random(120,260))
+		TNT1 A 0 A_SpawnItemEx("RocquetteExploder",0,0,0,0,0,0,0,SXF_TRANSFERPOINTERS|SXF_NOCHECKPOSITION)
+		stop
+	give:
+		"----" A 0 A_JumpIfInTargetInventory("DudRocquetteAmmo",0,3)
+		"----" A 0 A_GiveToTarget("DudRocquetteAmmo",1)
+		"----" A 0 A_PlaySound("weapons/grenopen")
+		stop
+		ROCQ A 0 A_Jump(1,"Explode")
+		ROCQ A 0 A_SpawnItemEx("DRAP",2,0,0,0,0,2,0,SXF_NOCHECKPOSITION)
+		stop
+	}
+}
+
+
+
+actor RocketPickupRounds : Ammo
+{
+	+inventory.untossable
+	inventory.maxamount 6
+	ammo.backpackmaxamount 6
+	ammo.backpackamount 0
+	states{spawn:TNT1 A 0 nodelay{return state("null");}stop}
+}
+
+actor IsUsingRocketUnderslung : InventoryFlag {}
+
+
+
+
+//
+//	For direct hits
+//
+
+actor RocketBonus
+{
+	damagetype "SmallArms3" projectile height 2 radius 2 +hittracer +forcepain +nodamagethrust mass 1
+	states
+	{
+	spawn:
+		TNT1 A 0 nodelay A_Warp(AAPTR_TRACER)
+		TNT1 A 2
+		stop
+	xdeath:
+		TNT1 A 1 A_GiveInventory("BlastGib",1,AAPTR_TRACER)
+		TNT1 A 0 A_SetMass(mass-1)
+		TNT1 A 0 A_JumpIf(mass<1,1)
+		loop
+		TNT1 A 0
+		stop
+	}
+}
+actor HEATShot : RocketBonus{damage(random(12,24)*80) mass 7 +extremedeath}
+actor CyberShot : RocketBonus{damage(random(12,24)*40) mass 5}
+actor RocketShot : RocketBonus{damage(random(12,24)*10) damagetype "SmallArms2" mass 3}
+
+
+
+
+// ------------------------------------------------------------
+//   Bloop Launcher
+// ------------------------------------------------------------
+
+actor BloopChamber : Ammo
+{
+	+inventory.ignoreskill
+	+inventory.untossable
+	inventory.maxamount 1
+	ammo.backpackmaxamount 1
+	ammo.backpackamount 0
+	states{spawn:TNT1 A 0 nodelay{return state("null");}stop}
+}
+ACTOR Blooper : HDWeapon
+{
+	game Doom
+	weapon.selectionorder 203
+	weapon.slotnumber 5
+	+WEAPON.EXPLOSIVE
+	weapon.ammotype2 HDRocketAmmo
+	weapon.ammotype BloopChamber
+	scale 0.6
+	inventory.pickupmessage "You got the grenade launcher!"
+	States
+	{
+	select0:
+		BLOG A 0
+		goto select0small
+	deselect0:
+		BLOG A 0
+		goto deselect0small
+
+	Ready:
+		TNT1 A 0 A_SetCrosshair(21)
+		TNT1 A 0 A_GiveInventory("IsWeaponReady",1)
+		TNT1 A 0 A_GiveInventory("IsWeaponShort",1)
+		goto Ready1
+	Ready1:
+		TNT1 A 0 A_JumpIfInventory("PressingUnload",1,"Unload")
+		BLOG A 1 A_WeaponReady(WRF_ALLOWRELOAD|WRF_ALLOWZOOM)
+		BLOG A 0 A_JumpIfInventory("pressingfiremode",1,"abadjust")
+		TNT1 A 0 A_TakeInventory("WeaponBusy")
+		goto ReadyEnd
+	Hold:
+	Altfire:
+		TNT1 A 0 A_TakeInventory("AirburstCount")
+	Althold:
+		BLOG B 1 A_WeaponReady(WRF_NOFIRE)
+		TNT1 A 0 A_Refire
+		goto Ready
+	abadjust:
+		"----" A 2 A_WeaponReady(WRF_NOFIRE)
+		"----" A 0{
+			A_GiveInventory("WeaponBusy",1);
+			if (countinv("PressingFire")+countinv("PressingAltfire")>0){
+				return state("abclick");
+			}else if(countinv("PressingZoom")>0){
+				A_TakeInventory("AirburstCount");
+				return state("nope");
+			}else if(countinv("PressingFireMode")>0){return state("abadjust");}
+			return state("nope");
+		}
+	abclick:
+		"----" A 0{
+			if (countinv("PressingFire")>0){A_GiveInventory("AirburstCount",1);}
+			else if (countinv("PressingAltFire")>0){A_TakeInventory("AirburstCount",1);}
+			return state("abadjust");
+		}
+
+	Fire:
+		BLOG B 0 A_JumpIfInventory("BloopChamber",1,"ReallyShoot")
+		goto Hold
+	ReallyShoot:
+		BLOG A 2
+		BLOG A 0 A_TakeInventory("BloopChamber",1)
+		TNT1 A 0 A_SpawnItemEx("GyroGrenade",0,0,height-6,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH)
+		BLOG A 0 A_PlayWeaponSound("weapons/grenadeshot")
+		BLOG A 1 A_ZoomFactor(0.965,ZOOM_INSTANT|ZOOM_NOSCALETURNING)
+		BLOG A 1 offset (0,37)
+		TNT1 A 0 A_ZoomFactor(1.0,ZOOM_INSTANT|ZOOM_NOSCALETURNING)
+		BLOG B 3 ACS_NamedExecuteAlways("MuzzleClimb", 0, random(34,52), random(20,27), 0)
+		BLOG A 0 A_Refire
+		goto Ready
+	Reload:
+		BLOG B 0 A_JumpIfInventory("HDRocketAmmo",1,1)
+		goto NoReload
+		BLOG B 0 A_JumpIfInventory("BloopChamber",0,"NoReload")
+		goto Reload1
+	NoReload:
+		BLOG B 4 A_WeaponReady(WRF_NOFIRE)
+		goto Ready
+	Reload1:
+		TNT1 A 0 A_SetCrosshair(21)
+		TNT1 A 0 A_TakeInventory("IsWeaponReady",999)
+		BLOG B 1 offset(2,34)
+		TNT1 A 0 ACS_NamedExecuteAlways("MuzzleClimb",0,random(-12,-24),random(12,24),0)
+		BLOG B 1 offset(4,36)
+		BLOG B 1 offset(10,38)
+		TNT1 A 0 ACS_NamedExecuteAlways("MuzzleClimb",0,random(-12,-24),random(12,24),0)
+		TNT1 A 0 A_TakeInventory("IsWeaponLong", 999)
+		BLOG B 8 offset(12,40) A_PlaySound("weapons/rifleclick2",7)
+		BLOG B 14 offset(11,38) A_PlayWeaponSound("weapons/grenopen")
+		Goto Reload2
+	Reload2:
+		BLOG B 0 A_JumpIfInventory("HDRocketAmmo", 1, 1)
+		goto Reload3
+		BLOG B 0 A_JumpIfInventory("BloopChamber",0,"Reload3")
+
+		BLOG B 12 offset(10,38) A_PlayWeaponSound("weapons/pocket")
+		TNT1 A 0 A_JumpIfHealthLower(60,2)
+		TNT1 A 0 A_Jump(256,2)
+		BLOG B 4
+		TNT1 A 0 A_JumpIfHealthLower(40,2)
+		TNT1 A 0 A_Jump(256,2)
+		BLOG B 6
+		BLOG B 4 offset(12,40) A_PlayWeaponSound("weapons/rockreload")
+		BLOG B 3 offset(10,38)
+		TNT1 A 0 A_TakeInventory("HDRocketAmmo",1,TIF_NOTAKEINFINITE)
+		TNT1 A 0 A_GiveInventory("BloopChamber",1)
+	Reload3:
+		BLOG B 5 offset(10,36) A_PlayWeaponSound ("weapons/grenopen")
+		BLOG B 0 A_PlayWeaponSound ("weapons/rifleclick2")
+		BLOG B 1 offset(8,38)
+		BLOG B 1 offset(4,36)
+		BLOG B 1 offset(2,34)
+		goto Ready
+	Unload:
+		BLOG B 0 A_JumpIfInventory("BloopChamber",1,1)
+		goto NoReload
+	Unload1:
+		TNT1 A 0 A_SetCrosshair(21)
+		TNT1 A 0 A_TakeInventory("IsWeaponReady",999)
+		BLOG B 1 offset(2,34)
+		TNT1 A 0 ACS_NamedExecuteAlways("MuzzleClimb",0,random(-12,-24),random(12,24),0)
+		BLOG B 1 offset(4,36)
+		BLOG B 1 offset(10,38)
+		TNT1 A 0 ACS_NamedExecuteAlways("MuzzleClimb",0,random(-12,-24),random(12,24),0)
+		TNT1 A 0 A_TakeInventory("IsWeaponLong", 999)
+		BLOG B 8 offset(12,40) A_PlaySound("weapons/rifleclick2",7)
+		BLOG B 14 offset(11,38) A_PlayWeaponSound("weapons/grenopen")
+		Goto Unload2
+	Unload2:
+		BLOG B 4 offset(12,40) A_PlayWeaponSound("weapons/rockreload")
+		BLOG B 3 offset(10,38)
+		TNT1 A 0 A_TakeInventory("BloopChamber",1)
+		TNT1 A 0 A_JumpIfInventory("HDRocketAmmo",0,"UnloadDrop")
+		TNT1 A 0 A_JumpIfInventory("PressingUnload",1,1)
+		goto UnloadDrop
+		TNT1 A 0 A_GiveInventory("HDRocketAmmo",1)
+		TNT1 A 0 A_JumpIfHealthLower(60,2)
+		TNT1 A 0 A_Jump(256,2)
+		BLOG B 4
+		TNT1 A 0 A_JumpIfHealthLower(40,2)
+		TNT1 A 0 A_Jump(256,2)
+		BLOG B 6
+		BLOG B 12 offset(10,38) A_PlayWeaponSound("weapons/pocket")
+		goto Reload3
+	UnloadDrop:
+		TNT1 A 0 A_SpawnItemEx("HDRocketAmmo",10,0,10,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION)
+		goto Reload3
+
+	spawn:
+		TNT1 A 1
+		TNT1 A 0 A_CheckProximity("spawndropped","PlayerPawn",20,1, CPXF_COUNTDEAD|CPXF_SETTARGET|CPXF_ANCESTOR|CPXF_CLOSEST|CPXF_NOZ)
+	spawnfresh:
+		TNT1 A 0 A_SpawnItemEx("BlooperPickup",0,0,0,velx,vely,velz,0, SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_NOPOINTERS)
+		stop
+	spawndropped:
+		TNT1 A 0 A_JumpIfInTargetInventory("Blooper",1,"spawnfresh")
+		TNT1 A 0 A_SpawnItemEx("BlooperPickup",0,0,0,velx,vely,velz,0, SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS)
+		stop
+	}
+}
+
+
+
+
+
+// ------------------------------------------------------------
+//   <s>Mags and </s>pickups
+// ------------------------------------------------------------
+
+
+actor RocP : HDUPK replaces HDRocketAmmo
+{
+	scale 0.5
+	states
+	{
+	spawn:
+		ROQP A -1 A_Stop
+	give:
+		"----" A 0 A_JumpIfInTargetInventory("HDRocketAmmo",0,"spawn")
+		"----" A 0 A_PlaySound("weapons/grenopen")
+		"----" A 0 A_GiveToTarget("HDRocketAmmo",1)
+	stop
+	}
+}
+actor RocketBigPickup : HDUPK
+{
+	scale 0.5
+	states
+	{
+	spawn:
+		BROK A 0 A_Stop
+		BROK A -1{
+			if(countinv("Clip")<1){
+				A_GiveInventory("Clip");
+				A_SpawnItemEx("HEATAmmo",10,0,0,0,0,0,0,0,220);
+				A_SpawnItemEx("HEATAmmo",13,0,0,0,0,0,0,0,220);
+				A_SpawnItemEx("HEATAmmo",16,0,0,0,0,0,0,0,220);
+			}
+		}
+	give:
+		"----" A 0 A_JumpIfInTargetInventory("HDRocketAmmo",0,"spawn")
+		"----" A 0 A_GiveToTarget("HDRocketAmmo",1)
+		"----" A 0 A_GiveInventory("HDRocketAmmo",1)
+		"----" A 0 A_JumpIfInventory("HDRocketAmmo",5,1)
+		loop
+		"----" A 0 A_PlaySound("weapons/pocket")
+		TNT1 A 0
+		stop
+	}
+}
+actor HEATP : HDUPK replaces HEATAmmo
+{
+	scale 0.4
+	states
+	{
+	spawn:
+		ROCK A -1 A_Stop
+	give:
+		"----" A 0 A_JumpIfInTargetInventory("HEATAmmo",0,"spawn")
+		"----" A 0 A_PlaySound("weapons/grenopen")
+		"----" A 0 A_GiveToTarget("HEATAmmo",1)
+		stop
+	}
+}
+
+actor RocquetteLauncherPickup : HDUPK
+{
+	scale 0.6
+	states
+	{
+	spawn:
+		LAUN A 0 A_Stop
+		"----" A 0 A_JumpIfInventory("Clip",1,"spawn2")
+		"----" A 0 A_GiveInventory("Clip",1)
+		"----" A 0 A_JumpIf(CheckClass("PlayerPawn",AAPTR_TARGET,true),"takeloop")
+		"----" A 0 A_GiveInventory("RocketMag",6)
+		"----" A 0 A_Jump(256,"spawn2")
+	takeloop:
+		"----" A 0 A_JumpIfInTargetInventory("RocketMag",1,1)
+		goto takeloop2
+		"----" A 0 A_TakeFromTarget("RocketMag",1)
+		"----" A 0 A_GiveInventory("RocketMag",1)
+		loop
+	takeloop2:
+		"----" A 0 A_JumpIfInTargetInventory("AirburstCount",1,1)
+		goto take3
+		"----" A 0 A_TakeFromTarget("AirburstCount",1)
+		"----" A 0 A_GiveInventory("AirburstCount",1)
+		loop
+	take3:
+		"----" A 0 A_JumpIfInTargetInventory("HEATLoaded",1,1)
+		goto take4
+		"----" A 0 A_TakeFromTarget("HEATLoaded",1)
+		"----" A 0 A_GiveInventory("HEATLoaded",1)
+		goto take4
+	take4:
+		"----" A 0 A_JumpIfInTargetInventory("IsUsingRocketUnderslung",1,1)
+		goto spawn2
+		"----" A 0 A_TakeFromTarget("IsUsingRocketUnderslung",1)
+		"----" A 0 A_GiveInventory("IsUsingRocketUnderslung",1)
+		goto spawn2
+	give:
+		"----" A 0 A_JumpIfInTargetInventory("RocquetteLauncher",1,"spawn")
+	givegun:
+		"----" A 0 A_PlaySound("misc/w_pkup")
+		"----" A 0 A_GiveToTarget("RocquetteLauncher",1)
+	givegunloop:
+		"----" A 0 A_JumpIfInventory("RocketMag",1,1)
+		goto givegunloop2
+		"----" A 0 A_GiveToTarget("RocketMag",1)
+		"----" A 0 A_TakeInventory("RocketMag",1)
+		loop
+	givegunloop2:
+		"----" A 0 A_JumpIfInventory("AirburstCount",1,1)
+		goto give3
+		"----" A 0 A_GiveToTarget("AirburstCount",1)
+		"----" A 0 A_TakeInventory("AirburstCount",1)
+		loop
+	give3:
+		"----" A 0 A_JumpIfInventory("HEATLoaded",1,1)
+		goto give4
+		"----" A 0 A_GiveToTarget("HEATLoaded",1)
+		"----" A 0 A_TakeInventory("HEATLoaded",1)
+		goto give4
+	give4:
+		"----" A 0 A_JumpIfInventory("IsUsingRocketUnderslung",1,1)
+		goto givegunloopend
+		"----" A 0 A_GiveToTarget("IsUsingRocketUnderslung",1)
+		"----" A 0 A_TakeInventory("IsUsingRocketUnderslung",1)
+		goto givegunloopend
+	}
+}
+
+actor BlooperPickup : HDUPK
+{
+	scale 0.6
+	states
+	{
+	spawn:
+		BLOP A 0 A_Stop
+		"----" A 0 A_JumpIfInventory("Clip",1,"spawn2")
+		"----" A 0 A_GiveInventory("Clip",1)
+		"----" A 0 A_JumpIf(CheckClass("PlayerPawn",AAPTR_TARGET,true),"takeloop")
+		"----" A 0 A_GiveInventory("BloopChamber",6)
+		"----" A 0 A_Jump(256,"spawn2")
+	takeloop:
+		"----" A 0 A_JumpIfInTargetInventory("BloopChamber",1,1)
+		goto takeloop2
+		"----" A 0 A_TakeFromTarget("BloopChamber",1)
+		"----" A 0 A_GiveInventory("BloopChamber",1)
+		goto takeloop2
+	takeloop2:
+		"----" A 0 A_JumpIfInTargetInventory("AirburstCount",1,1)
+		goto spawn2
+		"----" A 0 A_TakeFromTarget("AirburstCount",1)
+		"----" A 0 A_GiveInventory("AirburstCount",1)
+		loop
+	give:
+		"----" A 0 A_JumpIfInTargetInventory("Blooper",1,"spawn")
+	givegun:
+		"----" A 0 A_PlaySound("misc/w_pkup")
+		"----" A 0 A_GiveToTarget("Blooper",1)
+	givegunloop:
+		"----" A 0 A_JumpIfInventory("AirburstCount",1,1)
+		goto givegunloop2
+		"----" A 0 A_GiveToTarget("AirburstCount",1)
+		"----" A 0 A_TakeInventory("AirburstCount",1)
+		loop
+	givegunloop2:
+		"----" A 0 A_JumpIfInventory("BloopChamber",1,1)
+		goto givegunloopend
+		"----" A 0 A_GiveToTarget("BloopChamber",1)
+		"----" A 0 A_TakeInventory("BloopChamber",1)
+		goto givegunloopend
+	}
+}

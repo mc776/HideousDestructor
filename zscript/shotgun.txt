@@ -1,0 +1,94 @@
+// ------------------------------------------------------------
+//   Shotguns, or at least shotgun accessories
+// ------------------------------------------------------------
+
+class HDBuckTrail:IdleDummy{
+	states{
+	spawn:
+		TNT1 A 10 nodelay{
+			if(random(1,5)==1){A_AlertMonsters();}
+			A_PlaySound("weapons/bulletcrack",0,0.08);
+		}stop;
+	}
+}
+class HDBuck:HDBullet{
+	default{
+		obituary "%o was brutally pumped full of %k's hot, manly lead.";
+		decal "BulletScratchSmall";mass 40; accuracy 6; woundhealth 0; speed 550;
+	}
+	states{
+	spawn:
+	spawn1:
+		BLET A 0;
+		goto spawn2;
+	death:
+		TNT1 A 0{
+			actor pf=spawn("BulletPuffSmall",self.pos);
+			pf.target=target;
+		}goto death1;
+	xdeath:
+		TNT1 A 0{
+			user_damage*=2/3;
+			if (random(1,24)==1){A_GiveInventory("SawGib",1,AAPTR_TRACER);}
+		}goto xdeath1;
+	}
+}
+
+class ShotgunBlast:HDBullet{
+	states{
+	spawn:
+		TNT1 A 0 nodelay{
+			ShotgunBlast("HDBuck",7,600,850,0.6);
+		}stop;
+	}
+	void ShotgunBlast(
+		class<actor> type="HDBuck",
+		int balls=7,
+		int minspeed=600,
+		int maxspeed=700,
+		float spread=0.05
+	){
+		spawn("DistantShotgun",pos);
+		A_LongArmWobble();
+		A_Gunsmoke();
+		A_AlertMonsters();
+		actor bck;
+		for(int i=0;i<balls;i++){
+			bck=spawn("HDBuck",self.pos);
+			bck.vel=self.vel+(frandom(-spread,spread),frandom(-spread,spread),frandom(-spread,spread));
+			bck.target=self.target;bck.master=self.target;
+			bck.speed=random(minspeed,maxspeed);
+			bck.pitch=self.pitch+frandom(-spread,spread);
+			bck.angle=self.angle+frandom(-spread,spread);
+		}
+	}
+}
+
+class SuperShotgunBlast:ShotgunBlast{
+	states{
+	spawn:
+		TNT1 A 0 nodelay{
+			ShotgunBlast("HDBuck",7,700,900,0.3);
+		}stop;
+	}
+}
+class SuperShotgunBlast2:ShotgunBlast{
+	states{
+	spawn:
+		TNT1 A 0 nodelay{
+			setorigin(self.pos+(sin(pitch)-0.3,cos(pitch)-0.3,0),false);
+			angle+=0.03;
+			ShotgunBlast("HDBuck",7,700,900,0.2);
+			setorigin(self.pos+(sin(pitch)+0.6,cos(pitch)+0.6,0),false);
+			angle-=0.06;
+			ShotgunBlast("HDBuck",7,700,900,0.2);
+		}stop;
+	}
+}
+
+
+
+
+
+
+

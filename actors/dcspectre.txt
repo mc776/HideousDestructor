@@ -1,0 +1,359 @@
+
+// ------------------------------------------------------------
+//   Spectre
+// ------------------------------------------------------------
+
+ACTOR NinjaPirate //replaces Spectre
+{
+	monster
+	damagefactor "Balefire", 0.3
+	+faster +fastmelee
+	seesound ""
+	painsound "demon/pain"
+	deathsound "demon/death"
+	activesound "demon/active"
+	dropitem YokaiSpawner 16
+	health 160
+	painchance 200
+	height 56
+	radius 20
+	meleerange 36
+	meleethreshold 512
+	maxdropoffheight 48
+	maxstepheight 48
+	speed 14
+	mass 300
+	damage 8
+	obituary " "//%o died."
+	States
+	{
+	Spawn:
+		TNT1 A 0 nodelay{
+			if(countinv("Clip")<1){
+				A_GiveInventory("Clip",1);
+				A_SetScale(scalex*frandom(0.9,1.1));
+				A_SetSize(radius*scalex,height*scaley);
+				mass*=scalex;
+				if(scalex>1.0){
+					A_SetHealth(health*scalex);
+				}
+			}
+		}
+		TNT1 A 0 A_JumpIfInventory("WeaponBusy",1,"SpawnUnCloak")
+	Spawn2:
+		TNT1 A 0 A_CheckFlag("ambush",1)
+		goto spawnwander
+		TNT1 A 0 A_SpawnItemEx("HDSmoke",random(-1,1),random(-1,1),random(4,24),velx,vely,velz+random(1,3),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION,0)
+		TNT1 A 0 A_GiveInventory("WeaponBusy",1)
+	spawnstillcloaked:
+		TNT1 A 0 HealThing(2)
+		TNT1 A 10 A_Look
+		loop
+	spawnwander:
+		TNT1 A 0 A_SpawnItemEx("NinjaPirateBlurA",random(-2,2),random(-2,2),random(-2,2))
+		SARG AA 4 A_Wander
+		TNT1 A 0 A_Look
+		TNT1 A 0 A_SpawnItemEx("NinjaPirateBlurB",random(-2,2),random(-2,2),random(-2,2))
+		SARG BB 4 A_Wander
+		TNT1 A 0 A_Look
+		TNT1 A 0 A_SpawnItemEx("NinjaPirateBlurC",random(-2,2),random(-2,2),random(-2,2))
+		SARG CC 4 A_Wander
+		TNT1 A 0 A_Look
+		TNT1 A 0 A_SpawnItemEx("NinjaPirateBlurD",random(-2,2),random(-2,2),random(-2,2))
+		SARG DD 4 A_Wander
+		TNT1 A 0 A_Jump(48,"spawnstill")
+		TNT1 A 0 A_Jump(48,1)
+		loop
+		TNT1 A 0 A_PlaySound("demon/active")
+		TNT1 A 0 A_SpawnItemEx("HDSmoke",random(-1,1),random(-1,1),random(4,24),velx,vely,velz+random(1,3),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION,0)
+		TNT1 A 0 A_GiveInventory("WeaponBusy",1)
+	spawnwandercloaked:
+		TNT1 A 0 HealThing(2)
+		TNT1 A 0 A_Look
+		TNT1 A 7 A_Wander
+		TNT1 A 0 A_Jump(12,1)
+		loop
+		TNT1 A 0 A_SpawnItemEx("HDSmoke",random(-1,1),random(-1,1),random(4,24),velx,vely,velz+random(1,3),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION,0)
+		TNT1 A 0 A_TakeInventory("WeaponBusy",999)
+		TNT1 A 0 A_PlaySound("demon/active")
+	spawnstill:
+		SARG E 10 A_Jump(48,"spawnwander")
+		TNT1 A 0 A_Look
+		SARG E 10 A_SetAngle(angle+random(-20,20))
+		SARG EEFF 10 A_Look
+		loop
+	SpawnUncloak:
+		SARG GGG 0 A_SpawnItemEx("HDSmoke",random(-1,1),random(-1,1),random(4,24),velx,vely,velz+random(1,3),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION,0)
+		SARG G 0 A_ChangeFlag("frightened",0)
+		SARG G 0 A_ChangeFlag("solid",1)
+		SARG G 0 A_TakeInventory("WeaponBusy",999)
+		SARG G 0 A_ChangeFlag("nopain",0)
+		SARG G 0 A_ChangeFlag("shadow",0)
+		SARG G 0 A_ChangeFlag("notarget",0)
+		SARG B 0 A_SetTranslucent (0,0)
+		SARG B 2 A_SetTranslucent (0.2)
+		SARG B 2 A_SetTranslucent (0.4)
+		SARG B 2 A_SetTranslucent (0.6)
+		SARG B 2 A_SetTranslucent (0.8)
+		SARG B 2 A_SetTranslucent (1)
+		goto Spawn2
+	See:
+		TNT1 A 0 A_JumpIfInventory("WeaponBusy",1,"SeeCloaked")
+		TNT1 A 0 A_ChangeFlag("nopain",0)
+		goto SeeRunnin
+	SeeCloaked:
+		TNT1 A 0 HealThing(1)
+		TNT1 A 0 A_JumpIfHealthLower(90,"SeeCloakedFlee")
+		goto SeeCloakedChase
+	SeeCloakedFlee:
+		TNT1 A 0 A_ChangeFlag("frightened",1)
+		TNT1 AAA 0 A_Chase("","",CHF_NOPLAYACTIVE|CHF_NIGHTMAREFAST)
+		TNT1 A 2
+		goto SeeCloaked2
+	SeeCloakedChase:
+		TNT1 A 0 A_ChangeFlag("frightened",0)
+		TNT1 A 2 A_Chase("Melee","",CHF_NIGHTMAREFAST)
+		TNT1 A 0 A_Jump(8,2)
+		TNT1 A 0 A_JumpIfCloser(600,"SeeCloaked2")
+		TNT1 A 0 A_SetTranslucent(1,2)
+		TNT1 A 0 A_Jump(22,"Flicker1","Flicker2","Flicker3","Flicker4")
+		goto SeeCloaked2
+	SeeCloaked2:
+		TNT1 A 0 A_JumpIfInTargetLOS("SeeCloaked")
+		TNT1 A 0 A_JumpIfHealthLower(110,"SeeCloaked")
+		TNT1 A 0 A_Jump(4,"Uncloak")
+		goto SeeCloaked
+	Flicker1:
+		SARG AA 2 A_Chase("","",CHF_NOPLAYACTIVE|CHF_NIGHTMAREFAST)
+		goto SeeCloaked2
+	Flicker2:
+		SARG BB 2 A_Chase("","",CHF_NOPLAYACTIVE|CHF_NIGHTMAREFAST)
+		goto SeeCloaked2
+	Flicker3:
+		SARG CC 2 A_Chase("","",CHF_NOPLAYACTIVE|CHF_NIGHTMAREFAST)
+		goto SeeCloaked2
+	Flicker4:
+		SARG DD 2 A_Chase("","",CHF_NOPLAYACTIVE|CHF_NIGHTMAREFAST)
+		goto SeeCloaked2
+	SeeRunnin:
+		TNT1 A 0 A_SpawnItemEx("NinjaPirateBlurA",random(-2,2),random(-2,2),random(-2,2))
+		SARG AA 2 A_Chase("Melee","",CHF_NIGHTMAREFAST)
+		TNT1 A 0 A_SpawnItemEx("NinjaPirateBlurB",random(-2,2),random(-2,2),random(-2,2))
+		SARG BB 2 A_Chase("Melee","",CHF_NIGHTMAREFAST)
+		TNT1 A 0 A_SpawnItemEx("NinjaPirateBlurC",random(-2,2),random(-2,2),random(-2,2))
+		SARG CC 2 A_Chase("Melee","",CHF_NIGHTMAREFAST)
+		TNT1 A 0 A_SpawnItemEx("NinjaPirateBlurD",random(-2,2),random(-2,2),random(-2,2))
+		SARG DD 2 A_Chase("Melee","",CHF_NIGHTMAREFAST)
+		TNT1 A 0 HealThing(random(3,6))
+		goto See
+	Uncloak:
+		SARG GGG 0 A_SpawnItemEx("HDSmoke",random(-1,1),random(-1,1),random(4,24),velx,vely,velz+random(1,3),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION,0)
+		SARG G 0 A_ChangeFlag("frightened",0)
+		SARG G 0 A_ChangeFlag("solid",1)
+		SARG G 0 A_TakeInventory("WeaponBusy",999)
+		SARG G 0 A_ChangeFlag("nopain",0)
+		SARG G 0 A_ChangeFlag("shadow",0)
+		SARG G 0 A_ChangeFlag("notarget",0)
+		SARG G 0 A_SetTranslucent (0,0)
+		SARG G 1 A_SetTranslucent (0.2)
+		SARG G 1 A_SetTranslucent (0.4)
+		SARG G 1 A_SetTranslucent (0.6)
+		SARG G 1 A_SetTranslucent (0.8)
+		SARG G 0 A_SetTranslucent (1)
+		goto See
+	Missile:
+		SARG G 0 A_JumpIfInventory("WeaponBusy",1,"Uncloak")
+		SARG GGE 4 A_FaceTarget
+		SARG F 6 BRIGHT A_CustomMissile ("BaleBall", 32, 0, 0)
+		SARG E 5
+		SARG E 4
+		Goto See
+	Melee:
+		SARG G 0 A_JumpIfInventory("WeaponBusy",1,"Uncloak")
+		SARG E 0 A_PlaySound("demon/melee")
+		SARG E 4 A_FaceTarget
+		SARG G 0 A_ChangeFlag("nopain",1)
+		SARG F 5 A_FaceTarget
+		SARG F 0{
+			A_CustomMeleeAttack (random(1,3)*2,"misc/bulletflesh","","SmallArms2", true);
+			A_ChangeFlag("nopain",0);
+			if(
+				(getdistance(true,AAPTR_TARGET)<50)
+				&&(random(1,4)>1)
+			){
+				return state("latch");
+			}
+			return state("");
+		}
+		SARG GGGG 0 A_CustomMeleeAttack (random(1,3)*6,"misc/bulletflesh","","SmallArms2", true)
+	meleeend:
+		SARG G 10
+		goto See
+	latch:
+		SARG EEF 1{
+			A_FaceTarget;
+			A_ChangeVelocity(1,0,0,CVF_RELATIVE);
+			if(random(1,20)==1){A_Pain;}else if(random(1,10)==1){A_PlaySound("babuin/bite");}
+			if(random(1,240)<=1+countinv("IsTurning",AAPTR_TARGET)*2){
+				A_ChangeVelocity(-1,0,0,CVF_RELATIVE);
+				A_ChangeVelocity(-2,0,2,CVF_RELATIVE,AAPTR_TARGET);
+				return state("see");
+			}
+			if(
+				(A_JumpIfHealthLower(1,"null",AAPTR_TARGET))||
+				(getdistance(true,AAPTR_TARGET)>50)
+			){
+					return state("meleeend");
+			}
+			A_ScaleVelocity(0.2,AAPTR_TARGET);
+			A_ChangeVelocity(random(-1,1),random(-1,1),random(-1,1),0,AAPTR_TARGET);
+			A_DamageTarget(random(0,2),"smallarms0",0,"none","none",AAPTR_DEFAULT,AAPTR_DEFAULT);
+			return state("");
+		}loop
+	Pain:
+		SARG G 1 A_ChangeFlag("nopain",1)
+		SARG G 0 A_Jump(48,"DeadRinger")
+		SARG G 3 A_Pain
+		SARG G 0 A_JumpIfHealthLower(120,"Cloak")
+		SARG G 4
+		goto See
+	DeadRinger:
+		SARG G 0 A_Scream
+		SARG G 0 A_SpawnItemEx("DeadRingerNinjaPirate",0,0,0,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION,0)
+		goto Cloak
+	Cloak:
+		SARG GGG 0 A_SpawnItemEx("HDSmoke",random(-1,1),random(-1,1),random(4,24),velx,vely,velz+random(1,3),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION,0)
+		SARG G 0 A_ChangeFlag("nopain",1)
+		SARG G 0 A_ChangeFlag("frightened",1)
+		SARG G 0 A_ChangeFlag("notarget",1)
+		SARG G 0 A_ChangeFlag("shadow",1)
+		SARG G 0 A_GiveInventory("WeaponBusy",1)
+		SARG G 1 A_SetTranslucent (0.8)
+		SARG G 1 A_SetTranslucent (0.6)
+		SARG G 1 A_SetTranslucent (0.4)
+		SARG G 1 A_SetTranslucent (0.2)
+		SARG G 1 A_SetTranslucent (0.2,2)
+		goto see
+	Death:
+		"----" A 0 A_GiveInventory("HDCorpseFlags",1)
+		TNT1 A 0 A_Jump(128,2)
+		TNT1 A 0 A_JumpIfInventory("WeaponBusy",1,"DeathCloaked")
+		SARG GGG 0 A_SpawnItemEx("HDSmoke",random(-1,1),random(-1,1),random(4,24),velx,vely,velz+random(1,3),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION,0)
+		TNT1 A 0 A_GivetoTarget("HDKillCount",1)
+		TNT1 A 0 A_SetTranslucent(1)
+		SARG I 8 A_SpawnItemEx ("tempshield", 0,0,0, velx,vely,velz, 0,40)
+		SARG J 8 A_Scream
+		SARG K 4 A_SpawnItemEx ("tempshield2", 0,0,0, velx,vely,velz, 0,40)
+		SARG L 4 A_NoBlocking
+		SARG M 4
+//		SARG N -1
+//		stop
+	Dead:
+		TNT1 A 0 A_FadeIn(0.01)
+		SARG M 3 canraise A_JumpIf(floorz>z-6,1)
+		loop
+		SARG N 5 canraise A_JumpIf(floorz<=z-6,"Dead")
+		loop
+	DeathCloaked:
+		TNT1 A 0 A_GivetoTarget("HDKillCount",1)
+		TNT1 A 0 A_SetTranslucent(1)
+		TNT1 A 8 A_SpawnItemEx ("tempshield", 0,0,0, velx,vely,velz, 0,40)
+		TNT1 A 8
+		TNT1 A 4 A_SpawnItemEx ("tempshield2", 0,0,0, velx,vely,velz, 0,40)
+		TNT1 A 4 A_NoBlocking
+		TNT1 A 4 A_SetTranslucent(0,0)
+		SARG N 350 A_SetTics(random(10,15)*35)
+		goto dead
+		SARG NNNNNNNNNN 20 A_FadeIn(0.1)
+		SARG N -1
+		stop
+	Raise:
+		"----" A 0 A_GiveInventory("HDCorpseFlags",1)
+		SARG N 4 A_SetTranslucent(1,0)
+		TNT1 A 0 A_JumpIfInventory("WeaponBusy",1,"RaiseCloaked")
+		SARG NMLKJI 6
+		goto See
+	RaiseCloaked:
+		TNT1 AAA 0 A_SpawnItemEx("HDSmoke",random(-1,1),random(-1,1),random(4,24),velx,vely,velz+random(1,3),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION,0)
+		SARG NNNNNN 4 A_FadeOut(0.15)
+		TNT1 A 0 A_SetTranslucent(0,0)
+		goto See
+	}
+}
+actor DeadRingerNinjaPirate
+{
+	-solid
+	states
+	{
+	spawn:
+		TNT1 A 0 A_SetTranslucent(1)
+		SARG J 8
+		SARG KLM 4
+		SARG N 350
+		SARG N 20 A_FadeOut(0.1)
+		wait
+	}
+}
+actor NinjaPirateBlurA
+{
+	+nointeraction
+	alpha 0.6
+	states
+	{
+	spawn:
+		SARG A 0
+	spawn2:
+		SARG "#" 0 A_ChangeVelocity(frandom(-1,3),frandom(-1,1),frandom(-1,1))
+		SARG "#" 1 A_FadeOut(0.05)
+		wait
+	}
+}
+actor NinjaPirateBlurB : NinjaPirateBlurA {states {spawn: SARG B 0
+goto spawn2}}
+actor NinjaPirateBlurC : NinjaPirateBlurA {states {spawn: SARG C 0
+goto spawn2}}
+actor NinjaPirateBlurD : NinjaPirateBlurA {states {spawn: SARG D 0
+goto spawn2}}
+
+
+
+
+// ------------------------------------------------------------
+//   Spectre Spawner
+// ------------------------------------------------------------
+
+actor SpectreSpawner : RandomSpawner replaces Spectre
+{
+	+ismonster
+	dropitem "NinjaPirate" 256 1
+	dropitem "SpecBabuin" 256 4
+}
+
+actor BabuSpectreSpawner : RandomSpawner replaces Demon
+{
+	+ismonster
+	dropitem "Babuin" 256 17
+	dropitem "NinjaPirate" 256 1
+	dropitem "SpecBabuin" 256 2
+}
+
+actor DeadSpectre : NinjaPirate
+{
+	states
+	{
+	spawn:
+		TNT1 A 0
+		TNT1 A 0 A_JumpIfInventory("ShellChamber1",1,3)
+		TNT1 A 0 A_GiveInventory("ShellChamber1",1)
+		TNT1 A 0 A_Die("spawndead")
+		TNT1 A 0
+		goto super::spawn
+	death:spawndead:
+		"----" A 0 A_GiveInventory("HDCorpseFlags",1)
+		TNT1 A 0 A_ChangeFlag("nodropoff", 0)
+		TNT1 A 0 A_NoBlocking
+		TNT1 A 0 A_SetTranslucent(1,0)
+		goto super::dead
+	}
+}
+

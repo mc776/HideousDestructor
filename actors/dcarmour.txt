@@ -1,0 +1,302 @@
+//-------------------------------------------------
+//    Armour
+//-------------------------------------------------
+
+//
+//	basic items
+//
+
+actor GreenArmourFlagStored:InventoryFlag{}
+actor BlueArmourFlagStored:InventoryFlag{inventory.maxamount 20}
+actor BlackArmourFlagStored:InventoryFlag{inventory.maxamount 12}
+actor BasicArmorStored:InventoryFlag{inventory.maxamount 160}
+actor GreenArmour:GreenArmor{
+	inventory.icon ARMSA0
+	armor.saveamount 160
+	armor.savepercent 32
+	damagefactor "Balefire",0.8
+	damagefactor "SmallArms0",0.8
+	damagefactor "SmallArms1",0.9
+}
+actor BlueArmour:GreenArmour{
+	inventory.icon ARMCA0
+	armor.saveamount 160
+	armor.savepercent 36
+	damagefactor "Falling",1.05
+	damagefactor "SmallArms0",0.7
+	damagefactor "SmallArms1",0.85
+	damagefactor "SmallArms2",0.9
+	damagefactor "SmallArms3",0.95
+}
+actor BlackArmour:GreenArmour{
+	inventory.icon ARMEA0
+	armor.saveamount 160
+	armor.savepercent 40
+	damagefactor "Falling",1.2
+	damagefactor "Drowning",1.2
+	damagefactor "SmallArms0",0.65
+	damagefactor "SmallArms1",0.7
+	damagefactor "SmallArms2",0.8
+	damagefactor "SmallArms3",0.85
+}
+actor GreenArmourFlag:Ammo{
+	ammo.backpackmaxamount 1
+	ammo.backpackamount 0 +inventory.untossable
+	states{spawn:TNT1 A 0 nodelay{return state("null");}stop}
+}
+actor BlueArmourFlag:Ammo{
+	inventory.maxamount 20
+	ammo.backpackmaxamount 20
+	ammo.backpackamount 0 +inventory.untossable
+	states{spawn:TNT1 A 0 nodelay{return state("null");}stop}
+}
+actor BlackArmourFlag:Ammo{
+	inventory.maxamount 12
+	ammo.backpackmaxamount 12
+	ammo.backpackamount 0 +inventory.untossable
+	states{spawn:TNT1 A 0 nodelay{return state("null");}stop}
+}
+
+
+
+//
+//	usable pickup
+//
+
+actor GreenArmourStored:ActionItem{
+	+inventory.invbar -inventory.untossable
+	inventory.icon "ARMSB0"
+	states{
+	spawn:
+		TNT1 A 1
+		TNT1 A 0 A_CheckProximity("spawndropped","PlayerPawn",20,1, CPXF_COUNTDEAD|CPXF_SETTARGET|CPXF_ANCESTOR|CPXF_CLOSEST|CPXF_NOZ)
+		stop
+	spawndropped:
+		TNT1 A 0 A_SpawnItemEx("HDArmourDroppedFromInventory",0,0,0,velx,vely,velz,0, SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS)
+		stop
+	use:
+		TNT1 A 0{
+			if(countinv("GreenArmourFlag")+countinv("BlueArmourFlag")+countinv("BlackArmourFlag")+countinv("PowerIronFeet")<1){return state("usebb");}
+			else if(countinv("PowerIronFeet")>0){
+				if(countinv("IsTextless")<1){A_Print("Take off your radiation suit first!");}
+			}else if(countinv("IsTextless")<1){A_Print("You are already wearing armour.\n\nType \cdhd_strip\c- in the console\n\nto remove your current armour.");}
+			return state("");
+		}fail
+	usebb:
+	usegreen:
+		TNT1 A 0{
+			A_SetBlend("00 00 00",1,6,"00 00 00");
+			A_PlaySound("weapons/pocket");
+			A_ChangeVelocity(0,0,2);
+
+			if(countinv("BasicArmorStored")<40)
+			{A_Print("You cover your shameful\n\nnakeness with filthy rags.");}
+			else if(countinv("BasicArmorStored")<80)
+			{A_Print("It's better than nothing.");}
+			else if(countinv("BasicArmorStored")<120)
+			{A_Print("This armour has definitely seen better days.");}
+			else if(countinv("BasicArmorStored")<160)
+			{A_Print("This armour does not pass certification.");}
+
+			A_GiveInventory("GreenArmourFlag");
+			if(countinv("BlackArmourFlag")>0){A_GiveInventory("BlackArmour");}  
+				else if(countinv("BlueArmourFlag")>0){A_GiveInventory("BlueArmour");}
+				else {A_GiveInventory("GreenArmour");}
+			if(countinv("BasicArmorStored")<160)
+				{A_TakeInventory("BasicArmor",160-countinv("BasicArmorStored"));}
+			A_TakeInventory("BasicArmorStored");
+			A_TakeInventory("GreenArmourFlagStored");
+		}stop
+	}
+}
+actor BlueArmourStored:GreenArmourStored{
+	inventory.icon "ARMCB0"
+	states{
+	usebb:
+		TNT1 A 0{
+			if(countinv("BlueArmourFlagStored")>0)  
+			{A_GiveInventory("BlueArmourFlag",countinv("BlueArmourFlagStored"));}
+			if(countinv("BlackArmourFlagStored")>0)  
+			{A_GiveInventory("BlackArmourFlag",countinv("BlackArmourFlagStored"));}
+			A_TakeInventory("BlueArmourFlagStored");
+			A_TakeInventory("BlackArmourFlagStored");
+		}goto usegreen
+	}
+}
+actor BlackArmourStored:BlueArmourStored{
+	inventory.icon "ARMEB0"
+}
+
+
+
+//
+//	stripping
+//
+
+actor HDDropArmour:ActionItem{
+	states{
+	use:
+		TNT1 A 0{
+			if(countinv("PowerIronFeet")>0){
+				if(countinv("IsTextless")<1)
+				{A_Print("Take off your radiation suit first!");}
+			}else if(countinv("GreenArmourFlag")+countinv("BlueArmourFlag")+countinv("BlackArmourFlag")>0){
+				A_SpawnItemEx("HDArmourDropped",0,0,height/2,2,0,4,0,SXF_SETTARGET);
+				A_SetBlend("00 00 00",1,6,"00 00 00");
+				A_ChangeVelocity(0,0,2);
+			}
+		}fail
+	}
+}
+actor HDArmourDropped:HDUPK{
+	states{
+	spawn:
+		TNT1 A 0 A_Stop
+		"----" A 0 A_JumpIfInventory("Clip",1,"spawn2")
+		"----" A 0 A_GiveInventory("Clip",1)
+		"----" A 0 A_JumpIf(CheckClass("PlayerPawn",AAPTR_TARGET,true),"take")
+		stop //there is no reason why this should ever spawn without being dropped
+	take:
+		"----" A 0{
+			if(countinv("BlackArmourFlag",AAPTR_TARGET)>0)
+				{A_GiveInventory("BlackArmourFlag",countinv("BlackArmourFlag",AAPTR_TARGET));}
+			if(countinv("BlueArmourFlag",AAPTR_TARGET)>0)
+				{A_GiveInventory("BlueArmourFlag",countinv("BlueArmourFlag",AAPTR_TARGET));}
+			if(countinv("GreenArmourFlag",AAPTR_TARGET)>0)
+				{A_GiveInventory("GreenArmourFlag",countinv("GreenArmourFlag",AAPTR_TARGET));}
+			if(countinv("BasicArmor",AAPTR_TARGET)>0)
+				{A_GiveInventory("BasicArmorStored",countinv("BasicArmor",AAPTR_TARGET));}      
+			A_TakeFromTarget("BlackArmourFlag");
+			A_TakeFromTarget("BlueArmourFlag");
+			A_TakeFromTarget("GreenArmourFlag");
+			A_TakeFromTarget("BasicArmor");
+		}
+	spawn2:
+		ARMS A -1{
+			if(countinv("BlackArmourFlag")>0){return state("spawne");}      
+			else if(countinv("BlueArmourFlag")>0){return state("spawnc");}
+			return state("");
+		}
+	spawnc:
+		ARMC A -1
+	spawne:
+		ARME A -1
+	give:
+		"----" A 0{
+			if(countinv("GreenArmourStored",AAPTR_TARGET)+countinv("BlueArmourStored",AAPTR_TARGET)+countinv("BlackArmourStored",AAPTR_TARGET)>0)
+			{return state("spawn");}
+			return state("");
+		}
+		"----" A 0{
+			A_PlaySound("weapons/pocket");
+			if(countinv("BlackArmourFlag")>0)
+				{A_GiveToTarget("BlackArmourFlagStored",countinv("BlackArmourFlag"));}
+			if(countinv("BlueArmourFlag")>0)
+				{A_GiveToTarget("BlueArmourFlagStored",countinv("BlueArmourFlag"));}
+			A_GiveToTarget("GreenArmourFlagStored",countinv("GreenArmourFlag"));
+			if(countinv("BasicArmorStored")>0){
+				if(countinv("BlackArmourFlag")>0){A_GiveToTarget("BlackArmourStored");}
+					else if(countinv("BlueArmourFlag")>0){A_GiveToTarget("BlueArmourStored");}
+					else{A_GiveToTarget("GreenArmourStored");}
+				A_GiveToTarget("BasicArmorStored",countinv("BasicArmorStored"));
+			}
+		}stop
+	}
+}
+actor HDArmourDroppedFromInventory:HDArmourDropped{
+	states{
+	spawn:
+		ARMS A 0 A_Stop
+		"----" A 0 A_JumpIfInventory("Clip",1,"spawn2")
+		"----" A 0 A_GiveInventory("Clip",1)
+		"----" A 0 A_JumpIf(CheckClass("PlayerPawn",AAPTR_TARGET,true),"take")
+		"----" A 0 A_JumpIf(CheckClass("RiflemanBase",AAPTR_TARGET,true),"take")
+		stop //there is no reason why this should ever spawn without being dropped
+	take:
+		"----" A 0{
+			if(countinv("BlackArmourFlagStored",AAPTR_TARGET)>0)
+				{A_GiveInventory("BlackArmourFlag",countinv("BlackArmourFlagStored",AAPTR_TARGET));}
+			if(countinv("BlueArmourFlagStored",AAPTR_TARGET)>0)
+				{A_GiveInventory("BlueArmourFlag",countinv("BlueArmourFlagStored",AAPTR_TARGET));}
+			if(countinv("GreenArmourFlagStored",AAPTR_TARGET)>0)
+				{A_GiveInventory("GreenArmourFlag",countinv("GreenArmourFlagStored",AAPTR_TARGET));}
+			if(countinv("BasicArmorStored",AAPTR_TARGET)>0)
+				{A_GiveInventory("BasicArmorStored",countinv("BasicArmorStored",AAPTR_TARGET));}      
+			A_TakeFromTarget("BlackArmourFlagStored");
+			A_TakeFromTarget("BlueArmourFlagStored");
+			A_TakeFromTarget("GreenArmourFlagStored");
+			A_TakeFromTarget("BasicArmorStored");
+		}goto spawn2
+	}
+}
+
+
+
+//
+//	fresh pickups
+//
+
+actor GreenArmourPickup:HDUPK replaces GreenArmour{
+	states{
+	spawn:
+		ARMS A -1 A_Stop
+	give:
+		TNT1 A 0{
+			if(countinv("GreenArmourStored",AAPTR_TARGET)+countinv("BlueArmourStored",AAPTR_TARGET)+countinv("BlackArmourStored",AAPTR_TARGET)>0)
+			{return state("spawn");}
+			return state("give2");
+		}
+	give2:
+		TNT1 A 0 A_GiveToTarget("GreenArmourStored")
+	givecommon:
+		TNT1 A 0{
+			A_PlaySound("weapons/pocket");
+			A_GiveToTarget("GreenArmourFlagStored");
+			A_GiveToTarget("BasicArmorStored",160);
+		}stop
+	}
+}
+actor BlueArmourPickup:GreenArmourPickup replaces BlueArmour{
+	states{
+	spawn:
+		ARMC A -1 A_Stop
+	give2:
+		TNT1 A 0 A_GiveToTarget("BlueArmourStored")
+	giveblue:
+		TNT1 A 0{
+			A_GiveToTarget("BlueArmourFlagStored",999);
+		}goto givecommon
+	}
+}
+actor BlackArmourPickup:BlueArmourPickup replaces BlackArmour{
+	states{
+	spawn:
+		ARME A -1 A_Stop
+		stop
+	give2:
+		TNT1 A 0{
+			A_GiveToTarget("BlackArmourStored");
+			A_GiveToTarget("BlackArmourFlagStored",999);
+		}goto giveblue
+	}
+}
+actor BlackArmor:BlackArmourPickup {}
+
+actor GreenArmourStoredPickup:GreenArmourPickup replaces GreenArmourStored{}
+actor BlueArmourStoredPickup:BlueArmourPickup replaces BlueArmourStored{}
+actor BlackArmourStoredPickup:BlackArmourPickup replaces BlackArmourStored{}
+
+
+actor LittleArmourSpawner:RandomSpawner replaces GreenArmor
+{
+	dropitem "BlueArmourPickup" 256 2
+	dropitem "GreenArmourPickup" 256 9
+}
+actor BigArmourSpawner:RandomSpawner replaces BlueArmor
+{
+	dropitem "BlackArmourPickup" 256 4
+	dropitem "BlueArmourPickup" 256 9
+}
+
+
+

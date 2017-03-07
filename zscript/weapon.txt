@@ -1,0 +1,62 @@
+// ------------------------------------------------------------
+//   Prototype weapon
+// ------------------------------------------------------------
+
+class HDWP:Weapon{
+	int inmag;
+	int zoomlevel;
+	int firemode;
+	int chambered;
+	int chambered2;
+
+	bool selectfire;
+
+	bool brokenround;
+	bool dirtymag;
+
+	/*
+		Special usages:
+		inmag==0: empty mag; inmag<0: no mag loaded at all
+		firemode<0: no fire selector
+		chambered2<0: no secondary chamber
+		BFG: inmag=loaded cell, chambered=internal cell
+		AR: chambered2=GL; SSG: chambered2=right barrel; RL: chambered2=HEAT
+	*/
+	default{
+		+solid;height 10;radius 12;
+	}
+	override void touch(actor toucher){
+		if(toucher!=target) return;
+		super.touch(toucher);
+	}
+}
+
+
+//test thingy
+class invokertest:shotgun{
+	bool rockets;
+	default{
+		+solid;height 10;radius 12;
+	}
+	override void touch(actor toucher){
+		if(toucher!=target) return;
+		super.touch(toucher);
+	}
+	states{
+	fire:
+		SHTG A 0{
+			if(invoker.rockets){
+				A_FireCustomMissile("Rocket");
+			}
+		}goto super::fire;
+	altfire:
+		SHTG A 0{
+			if(invoker.rockets) invoker.rockets=false; else invoker.rockets=true;
+			A_Log("toggled");
+		}
+	althold:
+		SHTG A 1 A_WeaponReady(WRF_NOFIRE);
+		SHTG A 1 A_Refire;
+		goto ready;
+	}
+}

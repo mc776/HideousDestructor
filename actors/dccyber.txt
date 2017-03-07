@@ -1,0 +1,423 @@
+//  Cyberdemon
+
+actor HDSatanSmokeChunk : HDSmokeChunk
+{
+	states
+	{
+	spawn:
+		TNT1 A 0
+		TNT1 A 0 A_Jump(200,2)
+		TNT1 A 0 A_ChangeFlag("rockettrail",1)
+		TNT1 A 0 A_Jump(200,2)
+		TNT1 A 0 A_ChangeFlag("grenadetrail",1)
+	spawn2:
+		TNT1 A 0 A_Explode(8,16,0)
+		goto spawn3
+	}
+}
+actor HDSatanExplosion : HDExplosion
+{
+	states
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 A 0 A_RadiusGive("BlastGib",32.0,RGF_CUBE|RGF_CORPSES|RGF_MONSTERS,1)
+		TNT1 A 0 A_PlaySound ("world/explode")
+		MISX A 0 bright A_SetTranslucent (1, 1)
+		MISX A 2 bright A_Explode (140, random(112,256), 0)
+		MISX AAAAAAAAAAAAA 0 A_SpawnItemEx ("HugeWallChunk", 0,0,0, velx+random(-12,12),vely+random(-12,12),velz+random(8,20),random(0,360),SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
+		MISX AAAAA 0 A_SpawnItemEx ("HDSmoke", random(-6,6),random(-6,6),random(-1,6), velx+random(-1,1),vely+random(-1,1),velz+random(1,2), 0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
+		MISX AAAAAAAAAAAAAAAAAAAAAAA 0 A_SpawnItemEx ("BigWallChunk", random(-6,6),random(-6,6),random(-6,6), velx+random(-6,6),vely+random(-6,6),velz+random(4,18),random(0,360),SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
+		goto Fade
+	}
+}
+ACTOR SatanRocket:FastProjectile
+{
+	damage 30
+	speed 48
+	missileheight 8
+	decal "Scorch"
+	seesound "weapons/rocklf"
+	+rockettrail
+	var int user_rocqfuel;
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 A 0 A_SetUserVar("user_rocqfuel",100)
+		TNT1 A 0 A_PlaySoundEx("weapons/rocklf",CHAN_VOICE)
+	Spawn2:
+		MISL A 2 light("ROCKET") A_PlaySound("weapons/rocklaunch",CHAN_AUTO,0.6)
+		TNT1 A 0 A_JumpIf (user_rocqfuel<=0,"Spawn2")
+		TNT1 A 0 A_ScaleVelocity(1.1)
+		TNT1 A 0 A_SetUserVar("user_rocqfuel",user_rocqfuel-1)
+		loop
+	Spawn3:
+		MISL A 3 light("ROCKET") A_ChangeVelocity(0,0,-1)
+		MISL A 2 light("ROCKET") A_ChangeVelocity(0,0,-1)
+		MISL A 1 light("ROCKET") A_ChangeVelocity(0,0,-1)
+		wait
+	Death:
+		TNT1 A 1 A_SpawnItemEx ("HDSatanExplosion", random(-1,1),random(-1,1),random(-1,1), 0,0,random(1,3), 0,32)
+		TNT1 AAA 0 A_SpawnItemEx ("HDSatanSmokeChunk", random(-1,1),random(-1,1),random(-1,1), random(-6,6),random(-6,6),random(1,6), 0,32)
+		TNT1 A 2 A_Explode (random(180,320),  random(180,320), 0)
+		TNT1 AAAAAAAAAAA 0 A_SpawnItemEx ("HugeWallChunk", 0,0,1, random(-2,18),random(-12,12),random(8,20),random(0,360),160)
+		TNT1 AAA 0 A_SpawnItemEx ("HDSmoke", random(-6,6),random(-6,6),random(-2,6), random(-1,5),0,random(0,1), random(-5,15),160)
+		TNT1 AAAAAAAAAAAAAAAA 0 A_SpawnItemEx ("BigWallChunk", 0, 0, 0, random(-3,20),random(-6,6),random(4,18),random(-15,15),160)
+	Death2:
+		TNT1 A 0 A_SpawnItem ("DistantRocket", 1, 1, 0, 0)
+		TNT1 A 12 A_Quake(3,28,0,256)
+		Stop
+	}
+}
+ACTOR SatanRobo : Cyberdemon replaces Cyberdemon
+{
+	damagefactor "Thermal", 0.5
+	damagefactor "SmallArms0", 0.6
+	damagefactor "SmallArms1", 0.7
+	damagefactor "SmallArms2", 0.8
+	damagefactor "SmallArms3", 0.9
+	gibhealth 900
+	health 4000
+	mass 12000
+	Speed 8
+	deathheight 110
+	painChance 3
+	maxtargetrange 16384
+	+avoidmelee +nofear
+	+seeinvisible
+	+nodropoff
+	-noradiusdmg
+	radiusdamagefactor 0.3
+	obituary "%o was experimented upon by a cyberdemon."
+	var int user_oldpitch;
+	var int user_oldangle;
+	var int user_pitchadjust;
+	var int user_angleadjust;
+	minmissilechance 196
+	States
+	{
+	Spawn:
+		CYBR EE 10 A_Look
+		TNT1 A 0 A_SetAngle(angle+random(-3,3)*5)
+		CYBR EE 10 A_Look
+		TNT1 A 0 A_SetAngle(angle+random(-3,3)*5)
+	Spawn2:
+		TNT1 A 0 A_Look
+		CYBR CDDA 6 A_Wander
+		TNT1 A 0 A_Look
+		CYBR A 6 A_Wander
+		TNT1 A 0 A_PlaySound("spider/walk")
+		CYBR BB 6 A_Wander
+		TNT1 A 0 A_PlaySound("cyber/hoof")
+		CYBR C 6 A_Wander
+		TNT1 A 0 A_Jump(32,"Spawn")
+		loop
+	See:
+		TNT1 A 0 A_AlertMonsters(0,AMF_TARGETNONPLAYER)
+		TNT1 A 0 A_GiveInventory("PowerFrightener",1)
+		CYBR E 0 A_ChangeFlag ("nopain",0)
+		CYBR E 0 A_JumpIfHealthLower (0, "Death")
+		CYBR E 0 A_JumpIfHealthLower (1600, "See2")
+
+		CYBR AAA 1 A_ScaleVelocity(0.9)
+		CYBR A 2 A_Chase
+		CYBR B 0 A_PlaySoundEx ("spider/walk","soundslot5")
+		CYBR BB 2 A_Recoil(-3)
+		CYBR B 1
+
+		CYBR C 0 A_PlaySoundEx ("cyber/hoof","soundslot6")
+		CYBR CCC 1 A_ScaleVelocity(0.9)
+		CYBR C 2 A_Chase
+		CYBR DD 1 A_Recoil(-3)
+		CYBR D 3
+		CYBR E 0 A_Jump(56,"see")
+		CYBR E 0 A_JumpIfTargetInLOS("missile",0)
+		Loop
+	See2:
+		CYBR E 0 A_JumpIfHealthLower (0, "Death")
+		CYBR E 0 A_Jump(48-health/100,2)
+		CYBR E 0 A_JumpIfTargetInLOS("missile",0)
+		CYBR EE 0 A_SpawnItemEx ("HDSmoke", random(-32,32),random(-32,32),random(46,96),0,0,random(2,4),0,160,64)
+		CYBR AA 1 A_ScaleVelocity(0.9)
+		CYBR A 2 A_Chase
+		CYBR B 0 A_PlaySoundEx ("spider/walk","soundslot5")
+		CYBR E 0 A_SpawnItemEx ("HDSmoke", random(-32,32),random(-32,32),random(46,96),0,0,random(2,4),0,160,64)
+		CYBR BB 2 A_Recoil(-3)
+		CYBR B 1
+		CYBR E 0 A_SpawnItemEx ("HDSmoke", random(-32,32),random(-32,32),random(46,96),0,0,random(2,4),0,160,64)
+		CYBR E 0 A_ChangeVelocity(0.6,0,0,CVF_RELATIVE)
+		CYBR C 0 A_PlaySoundEx ("cyber/hoof","soundslot6")
+		CYBR E 0 A_SpawnItemEx ("HDSmoke", random(-32,32),random(-32,32),random(46,96),0,0,random(2,4),0,160,64)
+		CYBR CC 1 A_ScaleVelocity(0.9)
+		CYBR C 2 A_Chase
+		CYBR E 0 A_SpawnItemEx ("HDSmoke", random(-32,32),random(-32,32),random(46,96),0,0,random(2,4),0,160,64)
+		CYBR DD 1 A_Recoil(-3)
+		CYBR D 3 A_Chase
+		Loop
+	Pain:
+		CYBR E 0 A_JumpIfHealthLower (3000,1)
+		goto super::pain
+		CYBR E 0 A_ChangeFlag("missileevenmore",1)
+		CYBR E 0 A_Jump(64,1)
+		goto super::pain
+	missile:
+		CYBR E 0 A_JumpIfTargetInLOS("inposition",20)
+		CYBR A 4 A_FaceTarget(40,40)
+		CYBR B 0 A_PlaySoundEx ("spider/walk","soundslot5")
+		CYBR B 0 A_Recoil(-4)
+		CYBR B 4 A_FaceTarget(40,40)
+		CYBR E 0 A_JumpIfTargetInLOS("inposition",20)
+		CYBR C 0 A_PlaySoundEx ("cyber/hoof","soundslot6")
+		CYBR C 0 A_Recoil(-4)
+		CYBR C 4 A_FaceTarget(40,40)
+		CYBR D 4 A_FaceTarget(40,40)
+		CYBR E random(15,25) A_Recoil(-4)
+		CYBR E 0 A_JumpIfTargetInLOS("missile")
+		CYBR E 0 A_Jump(128,"spray")
+		goto see
+	inposition:
+		CYBR E 0 A_ChangeFlag ("nopain",1)
+		CYBR E 0 A_Recoil(1)
+		TNT1 A 0 A_GiveInventory("PowerFrightener",1)
+		CYBR E 4 A_FaceTarget(12,12)
+		CYBR E 0 A_Stop
+		CYBR E 0 A_JumpIf(health>1600,3)
+		CYBR EE 2 A_SpawnItemEx ("HDSmoke", random(-32,32),random(-32,32),random(46,96),0,0,random(2,4),0,160,64)
+		CYBR E 4
+		TNT1 A 0 A_AlertMonsters(0,AMF_TARGETNONPLAYER)
+		CYBR E 0 A_JumpIfTargetInLOS(1,90)
+		goto missile
+		CYBR E 0 A_JumpIf(health>1600,3)
+		CYBR EE 2 A_SpawnItemEx ("HDSmoke", random(-32,32),random(-32,32),random(46,96),0,0,random(2,4),0,160,64)
+		CYBR E 4 A_FaceTarget(12,12)
+		CYBR E 0 A_JumpIf(health>1600,3)
+		CYBR EE 0 A_SpawnItemEx ("HDSmoke", random(-32,32),random(-32,32),random(46,96),0,0,random(2,4),0,160,64)
+		CYBR E 4
+		TNT1 A 0 A_Jump(48,"Spray")
+		TNT1 A 0 A_Jump(48,2)
+		TNT1 A 0 A_JumpIfCloser(320,"DirectShots")
+	LeadTarget:
+		CYBR F 3 bright light("ROCKET") A_CustomMissile("SatanRocket",42,-24,0)
+		CYBR E 1 A_SetTics(random(1,4))
+		CYBR E 0 A_JumpIf(health>1600,3)
+		CYBR EE 0 A_SpawnItemEx ("HDSmoke", random(-32,32),random(-32,32),random(46,96),0,0,random(2,4),0,160,64)
+		CYBR E 8 A_FaceTarget(12,12)
+
+		//I'd use an actionitem but it takes its own uservars
+		TNT1 A 0 A_SetUserVar("user_oldpitch",pitch)
+		TNT1 A 0 A_SetUserVar("user_oldangle",angle)
+		TNT1 A 0 A_FaceTarget(12,12)
+		TNT1 A 0 A_SetUserVar("user_pitchadjust",pitch-user_oldpitch)
+		TNT1 A 0 A_SetUserVar("user_angleadjust",angle-user_oldangle)
+		goto LeadTarget2
+
+	LeadTarget2:
+		CYBR F 3 bright light("ROCKET") A_CustomMissile("SatanRocket",42,-24,
+			frandom(0,2)*user_angleadjust,0,
+			frandom(0,2)*user_pitchadjust)
+		CYBR E 1 A_SetTics(random(1,8))
+		CYBR E 0 A_JumpIf(health>1600,3)
+		CYBR EE 0 A_SpawnItemEx ("HDSmoke", random(-32,32),random(-32,32),random(46,96),0,0,random(2,4),0,160,64)
+		CYBR E 8 A_FaceTarget(0,0)
+
+		//I'd use an actionitem but it takes its own uservars
+		//should be identical to the above except for the gotos
+		TNT1 A 0 A_SetUserVar("user_oldpitch",pitch)
+		TNT1 A 0 A_SetUserVar("user_oldangle",angle)
+		TNT1 A 0 A_FaceTarget(12,12)
+		TNT1 A 0 A_SetUserVar("user_pitchadjust",pitch-user_oldpitch)
+		TNT1 A 0 A_SetUserVar("user_angleadjust",angle-user_oldangle)
+		goto LeadTarget3
+
+	LeadTarget3:
+		CYBR F 3 bright light("ROCKET") A_CustomMissile("SatanRocket",42,-24,
+			frandom(1,5)*user_angleadjust,0,
+			frandom(1,5)*user_pitchadjust)
+		CYBR E 0 A_JumpIf(health>1600,3)
+		CYBR EE 0 A_SpawnItemEx ("HDSmoke", random(-32,32),random(-32,32),random(46,96),0,0,random(2,4),0,160,64)
+		CYBR E 10
+		goto see
+
+	DirectShots:
+		CYBR F 3 bright light("ROCKET") A_CustomMissile("SatanRocket",42,-24,0)
+		CYBR E 8 A_FaceTarget(12,12)
+		CYBR F 3 bright light("ROCKET") A_CustomMissile("SatanRocket",42,-24,frandom(-1,1),0,frandom(-1,1))
+		CYBR E 8 A_FaceTarget(12,12)
+		CYBR F 3 bright light("ROCKET") A_CustomMissile("SatanRocket",42,-24,frandom(-2,2),0,frandom(-2,2))
+		CYBR E 0 A_JumpIf(health>1600,3)
+		CYBR EE 0 A_SpawnItemEx ("HDSmoke", random(-32,32),random(-32,32),random(46,96),0,0,random(2,4),0,160,64)
+		CYBR E 10
+		goto see
+
+	Spray:
+		CYBR F 3 bright light("ROCKET") A_CustomMissile("SatanRocket",42,-24,frandom(-1,1),CMF_AIMDIRECTION,pitch+frandom(-1,1))
+		CYBR E 6 A_FaceTarget(12,12)
+		CYBR F 3 bright light("ROCKET") A_CustomMissile("SatanRocket",42,-24,frandom(-2,2),CMF_AIMDIRECTION,pitch+frandom(-2,2))
+		CYBR E 6 A_FaceTarget(12,12)
+		CYBR F 3 bright light("ROCKET") A_CustomMissile("SatanRocket",42,-24,frandom(-3,3),CMF_AIMDIRECTION,pitch+frandom(-3,3))
+		CYBR E 0 A_JumpIf(health>1600,3)
+		CYBR EE 0 A_SpawnItemEx ("HDSmoke", random(-32,32),random(-32,32),random(46,96),0,0,random(2,4),0,160,64)
+		CYBR E 10
+		goto see
+
+	Death:
+		TNT1 A 0 A_GiveInventory("NotShot",1)
+		CYBR G 12 A_Pain
+		CYBR DD 6 A_Recoil(-2)
+		CYBR A 12
+		TNT1 A 0 A_FaceTarget(40,0)
+		TNT1 A 0 A_SetAngle(angle+random(-10,10))
+		CYBR B 0 A_PlaySoundEx ("spider/walk","soundslot5")
+		CYBR BB 6 A_Recoil(-2)
+		TNT1 A 0 A_FaceTarget
+		CYBR C 12 A_PlaySoundEx ("cyber/hoof","soundslot6")
+		TNT1 A 0 A_FaceTarget(40,0)
+		TNT1 A 0 A_SetAngle(angle+random(-10,10))
+		CYBR DD 6 A_Recoil(-2)
+		CYBR D 0 A_SpawnItemEx ("HDExplosionBoss", random(-12,12), random(-12,12), random(60,64), random(-1,1),random(-1,1), random(1,3))
+		TNT1 A 0 A_SpawnItemEx("HDSmokeChunk", random(-10,10), random(-10,10), random(38,60), velx+random(-6,6),vely+random(-6,6),velz+random(3,12),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM,144)
+		CYBR A 10 A_PlaySoundEx ("cyber/hoof","soundslot6")
+		CYBR D 0 A_SpawnItemEx ("HDExplosionBoss", random(-12,12), random(-12,12), random(60,64), random(-1,1),random(-1,1), random(1,3))
+
+		TNT1 A 0 A_FaceTarget(40,0)
+		TNT1 A 0 A_SetAngle(angle+random(-10,10))
+		CYBR A 5 A_PlaySound ("cyber/hoof")
+		CYBR B 0 A_PlaySound ("spider/walk")
+		CYBR B 6
+		CYBR D 0 A_SpawnItemEx ("HDExplosionBoss", random(-26,26), random(-26,26), random(60,64), random(-1,1),random(-1,1), random(1,3))
+		TNT1 A 0 A_SpawnItemEx("HDSmokeChunk", random(-10,10), random(-10,10), random(38,60), velx+random(-6,6),vely+random(-6,6),velz+random(3,12),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM,144)
+
+		CYBR B 6
+		TNT1 A 0 A_FaceTarget(40,0)
+		TNT1 A 0 A_SetAngle(angle+random(-10,10))
+		CYBR C 16 A_PlaySoundEx ("cyber/hoof","soundslot6")
+		CYBR DD 6 A_Recoil(-2)
+		CYBR D 6 A_SpawnItemEx ("HDExplosionBoss", random(-26,26), random(-26,26), random(62,68), random(-1,1),random(-1,1), random(1,3))
+		TNT1 A 0 A_SpawnItemEx("HDSmokeChunk", random(-10,10), random(-10,10), random(38,60), velx+random(-6,6),vely+random(-6,6),velz+random(3,12),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM,144)
+
+		CYBR A 20
+		TNT1 A 0 A_FaceTarget(40,0)
+		TNT1 A 0 A_SetAngle(angle+random(-10,10))
+		CYBR B 0 A_PlaySoundEx ("spider/walk","soundslot5")
+		CYBR BB 6 A_Recoil(-1)
+		CYBR D 0 A_SpawnItemEx ("HDExplosionBoss", random(-26,26), random(-26,26), random(70,88), random(-1,1),random(-1,1), random(1,3))
+		CYBR C 24 A_PlaySoundEx ("cyber/hoof","soundslot6")
+		CYBR E 14 A_PlaySoundEx ("spider/walk","soundslot5")
+		CYBR EEEE 6 A_FaceTarget (10,0)
+		CYBR FF 0 A_SpawnItemEx ("HDSmoke", 54, -24, 52, random(-1,1),random(-1,1), random(2,4), 0, 160, 0)
+		CYBR FFFFFF 0 A_SpawnItemEx ("BigWallChunk", 54, -24, 52, random(4,14),random(-3,3), random(1,4), random(0,360), 160, 0)
+		CYBR FFFF 0 A_SpawnItemEx ("HugeWallChunk", 54, -24, 52, random(4,24),random(-3,3), random(1,4), random(0,360), 160, 0)
+		CYBR F 8 BRIGHT A_SpawnItemEx ("HDExplosion", 54, -24, 52)
+		CYBR E 56
+		CYBR EEEEEE 4 A_SpawnItemEx ("HDSmoke", 54, -24, 52, random(-1,1),random(-1,1), random(2,4), 0, 160, 96)
+		CYBR EEEEEE 2 A_SpawnItemEx ("HDSmoke", 54, -24, 52, random(-1,1),random(-1,1), random(3,6), 0, 160, 32)
+	Death2:
+		CYBR EEEEEE 1 A_SpawnItemEx ("HDSmoke", 54, -24, 52, random(-1,1),random(-1,1), random(4,8), 0, 160, 0)
+		CYBR H 6 A_Scream
+		CYBR H 2 bright A_SpawnItemEx ("HDExplosion", random(-26,26), random(-26,26), random(56,64), random(-1,1),random(-1,1), random(1,3))
+		CYBR H 3 bright A_SpawnItemEx ("HDExplosionBoss", random(-36,36), random(-36,36), random(40,46), random(-1,1),random(-1,1), random(1,3))
+		CYBR H 1 bright A_SpawnItemEx ("HDExplosion", random(-26,26), random(-46,46), random(30,36), random(-1,1),random(-1,1), random(1,3))
+
+		CYBR I 2 A_Explode (512, 16)
+		CYBR I 0 A_Quake(6,42,0,512)
+
+		TNT1 AAAAAAA 0 A_SpawnItemEx("HDSmokeChunk", random(-10,10), random(-10,10), random(38,60), velx+random(-6,6),vely+random(-6,6),velz+random(3,12),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+
+		CYBR I 2 bright A_SpawnItemEx ("HDExplosionBoss", random(-36,36), random(-26,26), random(60,78), random(-1,1),random(-1,1), random(1,3))
+		CYBR I 2 bright A_SpawnItemEx ("HDExplosion", random(-36,36), random(-26,26), random(50,68), random(-1,1),random(-1,1), random(1,3))
+		CYBR I 3 bright A_SpawnItemEx ("HDExplosion", random(-26,26), random(-26,26), random(75,82), random(-1,1),random(-1,1), random(1,3))
+
+		TNT1 AA 0 A_SpawnItemEx("CyberGibs", random(-10,10), random(-10,10), random(38,60), velx+random(-6,6),vely+random(-6,6),velz+random(3,12),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+
+		TNT1 A 0 A_QuakeEx(2,random(-2,2),3,96,0,4096,"",QF_RELATIVE|QF_SCALEDOWN|QF_WAVE,9,9,9)
+
+		TNT1 AA 0 A_SpawnItemEx("HDSmokeChunk", random(-10,10), random(-10,10), random(38,60), velx+random(-6,6),vely+random(-6,6),velz+random(6,12),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+
+		CYBR J 3 bright A_SpawnItemEx ("HDExplosionBoss", random(-26,26), random(-46,46), random(45,52), random(-1,1),random(-1,1), random(1,3))
+		TNT1 AA 0 A_SpawnItemEx("CyberGibs", random(-10,10), random(-10,10), random(38,60), velx+random(-6,6),vely+random(-6,6),velz+random(3,12),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+		CYBR J 3 bright A_SpawnItemEx ("HDExplosion", random(-36,36), random(-26,26), random(64,82), random(-1,1),random(-1,1), random(1,3))
+		CYBR J 3 bright A_SpawnItemEx ("HDExplosionBoss", random(-36,36), random(-26,26), random(45,82), random(-1,1),random(-1,1), random(1,3))
+
+		TNT1 AA 0 A_SpawnItemEx("CyberGibs", random(-10,10), random(-10,10), random(38,60), velx+random(-6,6),vely+random(-6,6),velz+random(3,12),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+
+		TNT1 AA 0 A_SpawnItemEx("HDSmokeChunk", random(-10,10), random(-10,10), random(38,60), velx+random(-6,6),vely+random(-6,6),velz+random(3,12),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+
+		CYBR K 4 bright A_SpawnItemEx ("HDExplosion", random(-36,36), random(-46,46), random(48,62), random(-1,1),random(-1,1), random(1,3))
+		CYBR K 4 A_SpawnItemEx ("HDExplosionBoss", random(-66,66), random(-66,66), random(15,42), random(-1,1),random(-1,1), random(1,3))
+
+		CYBR L 4 A_SpawnItemEx ("HDExplosion", random(-36,36), random(-36,36), random(62,82), random(-1,1),random(-1,1), random(1,3))
+		CYBR L 1 A_SpawnItemEx ("HDExplosionBoss", random(-16,16), random(-16,16), random(75,82), random(-1,1),random(-1,1), random(1,3))
+
+		TNT1 AA 0 A_SpawnItemEx("HDSmokeChunk", random(-10,10), random(-10,10), random(38,60), velx+random(-6,6),vely+random(-6,6),velz+random(3,12),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+
+		CYBR LLLL 3 A_SpawnItemEx ("HDSmoke", random(-36,36), random(-36,36), random(24,80), random(-1,1),random(-1,1), random(3,6),0,160)
+
+		CYBR M 0 A_NoBlocking
+		CYBR MMMM 2 A_SpawnItemEx ("HDSmoke", random(-20,20), random(-20,20), random(24,80), random(-1,1),random(-1,1), random(2,4),0,160)
+		CYBR O 0 A_SpawnItemEx("CyberRemains",0,0,0,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION)
+
+		CYBR PPPP 4 A_SpawnItemEx ("HDSmoke", random(-26,26), random(-26,26), random(12,40), random(-1,1),random(-1,1), random(1,3),0,160)
+		TNT1 A 0 A_GivetoTarget("HDKillCount",1)
+		CYBR PPPPPPPPPPPPPPPPP 1 A_SpawnItemEx ("HDSmoke", random(-26,26), random(-26,26), random(32,60), velx+random(-2,2),vely+random(-2,2),velz+random(1,6),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION)
+		CYBR PPPPPPPPPPPPPPPP 5 A_SpawnItemEx ("HDSmoke", random(-26,26), random(-26,26), random(1,14), velx+random(-1,1),vely+random(-1,1),velz+random(2,6),random(0,255),SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION)
+		CYBR P 200
+		CYBR P -1 A_BossDeath
+		Stop
+	XDeath:
+		TNT1 A 0 A_GiveInventory("NotShot",1)
+		goto Death2
+	}
+}
+actor CyberRemains
+{
+	renderstyle add
+	var int user_smokelag;
+	states
+	{
+	spawn:
+		CYBR NO 4
+	spawn2:
+		"####" "##" 1 A_SpawnItemEx ("HDSmoke", random(-30,30), random(-30,30), random(12,14), random(-1,1),random(-1,1),0,0,160)
+		"----" A 0 A_PlaySound("misc/firecrkl",1,1.0-(user_smokelag*0.005))
+		"----" AAA 0 A_SpawnItemEx ("HDFlameRed", random(-66,66), random(-56,56), random(12,14), random(-1,1),random(-1,1), random(1,3),0,160)
+		"----" A 0 A_SpawnItemEx ("HDSmokeChunk", random(-30,30),random(-30,30),random(4,12), random(-3,3),random(-3,3),random(2,8), 0,SXF_NOCHECKPOSITION,160+user_smokelag)
+		"----" AAA 0 A_SpawnItemEx ("HugeWallChunk", random(-30,30),random(-30,30),random(4,12), random(-6,6),random(-6,6),random(5,12), 0,SXF_NOCHECKPOSITION,64+user_smokelag/2)
+		"----" A 0 A_SetTics(random(1,user_smokelag/7))
+		"----" A 0 A_SetUserVar(user_smokelag,user_smokelag+1)
+		"----" A 0 A_JumpIf(alpha<0.2,2)
+		"----" A 0 A_FadeOut(0.04)
+		loop
+		"----" A 0 A_FadeOut(0.002)
+		"----" A 0 A_Jump(256,"spawn3")
+	spawn3:
+		"####" P 0
+		goto spawn2
+
+	}
+}
+ACTOR CyberGibs : RedParticleFountain
+{
+	+rockettrail
+	+grenadetrail
+	+corpse
+	-invisible
+	-nogravity
+	radius 20
+	height 16
+	states
+	{
+	spawn:
+		POSS O 5
+		POSS P -1
+		stop
+	crash:
+		TNT1 AA 0 A_SpawnItemEx("HDExplosion",random(-3,3),random(-3,3),2,velx,vely,velz+1,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM,120)
+		POSS QQRRSSTT 2 A_SpawnItemEx ("HDSmoke", random(-6,6), random(-6,6), random(1,4), random(-1,1),random(-1,1), random(1,3),0,160)
+	bluh:
+		TNT1 A 0 A_SpawnItemEx("HDSmokeChunk", 0,0,0, velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+		POSS U 6 A_FadeOut(0.2)
+		loop
+	}
+}
+

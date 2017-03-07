@@ -1,0 +1,450 @@
+
+// ------------------------------------------------------------
+//   Brontornis Cannon
+// ------------------------------------------------------------
+
+actor TerrorBolt:HDBullet{
+	height 2 radius 2
+	speed 500 mass 500 accuracy 0 woundhealth 100
+	missiletype "HDGunSmoke"
+	-noextremedeath
+	scale 0.08 translation "128:151=%[1,1,1]:[0.2,0.2,0.2]"
+	seesound "weapons/riflecrack"
+	decal "BrontoScorch"
+	obituary "%o played %k's cannon."
+	states{
+	spawn:
+		TNT1 A 0
+		TNT1 AA 0 A_SpawnItemEx("DistantShotgun",0,0,0,0,0,0,0,SXF_NOCHECKPOSITION)
+	spawn1:
+		TNT1 A 0{
+			A_LongArmWobble;
+			A_Gunsmoke;
+			A_SpawnItemEx("TerrorSabotPiece",0,0,0,velx,vely,velz,1,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS);
+			A_SpawnItemEx("TerrorSabotPiece",0,0,0,velx,vely,velz,-1,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS);
+			return state("spawn2");
+		}
+	spawn2:
+		MISL A -1 A_ChangeVelocity(cos(pitch)*speed,0,-sin(pitch)*speed,CVF_RELATIVE)
+	xdeath:
+		TNT1 A 1 A_BulletCrit
+		TNT1 A 0 A_JumpIfInventory("IsGibbed",1,"pierce",AAPTR_TRACER)
+	death:
+		TNT1 A 0{
+			bmissile=false;
+			A_Stop;
+			gravity=0;
+			A_SetUserVar(user_impactangle,angle);
+			A_FaceTracer(0,0,0,0,FAF_MIDDLE);
+			if(
+			((abs(user_impactangle-angle)<12)||(abs(user_impactangle-angle)>348))
+			&&
+			(6<abs(pitch-270)<14)
+			){
+//test				if(CheckClass("PlayerPawn",AAPTR_TARGET,true)){A_Log("ON TARGET!");}
+				A_DamageTracer(random(18,32)*50,"smallarms3",0,"None","None",AAPTR_TARGET,AAPTR_DEFAULT);
+			}
+		}
+		TNT1 AAAAAAAAAAAA 0 A_SpawnItemEx ("HugeWallChunk", 0, 0, 2, random(-1,16),random(-6,6),random(6,18),random(-15,15),160)
+		TNT1 A 2{
+			A_GiveInventory("BlastGib",1,AAPTR_TRACER);
+			A_SetDamageType("SmallArms1");
+			A_SpawnItemEx("HDExplosion", 0,0,0, 0,0,2, 0,32);
+			A_Explode(random(90,140),random(90,140));
+		}
+		TNT1 A 0 A_RadiusGive("HDFireStarter",64, RGF_PLAYERS|RGF_MONSTERS|RGF_OBJECTS|RGF_CORPSES, 1)
+		TNT1 A 0 A_SpawnItemEx ("Frags", 0,0,0, 0,0,0, 0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
+		TNT1 AAAAAAAAAAAAAAAAAAAAAAAAAAAAA 0 A_SpawnItemEx ("BigWallChunk", 0, 0, 2, random(-1,14),random(-4,4),random(4,18),random(-15,15),SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
+		TNT1 AAAA 0 A_SpawnItemEx ("HDSmokeChunk", 0,0,0, random(-8,8),random(-8,8),random(6,12),random(0,360),SXF_NOCHECKPOSITION,64)
+		TNT1 AAAA 0 A_SpawnItemEx ("HDSmoke", random(-6,6),random(-6,6),1, random(-1,4),random(-1,1),0, random(-15,15),SXF_NOCHECKPOSITION)
+		TNT1 A 16{
+			A_SpawnItemEx ("DistantRocket", 0,0,0, 0,0,0, 0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS);
+			A_AlertMonsters;
+			A_Quake(2,21,0,200,none);
+		}stop
+	}
+}
+
+actor TerrorSabotPiece
+{
+	xscale 1 yscale 2.2 height 2 radius 2
+	translation ice
+	projectile damage(0) +cannotpush +forcexybillboard -nogravity +doombounce +bounceonactors
+	seesound "misc/casing2"
+	states
+	{
+	spawn:
+		TNT1 A 0 nodelay{
+			accuracy=random(20,35);
+			A_ChangeVelocity(cos(pitch)*accuracy,frandom(-1,1),-sin(pitch)*accuracy,CVF_RELATIVE);
+		}
+	spawn2:
+		RBRS A 2 A_SetAngle(angle+45)
+		loop
+	death:
+		"----" A -1
+		stop
+	}
+}
+actor TerrorCasing : TerrorSabotPiece
+{
+	scale 0.3 height 4 radius 4
+	translation "none" seesound "misc/casing4"
+	states
+	{
+	spawn:
+		BSHX C 0 nodelay A_ChangeVelocity(random(1,2),0,0,CVF_RELATIVE)
+	spawn2:
+		BSHX ACBC random(1,3)
+		BSHX C 0 A_SetAngle(angle+180)
+		loop
+	death:
+		"----" A 0 A_Jump(200,2)
+		"####" C 0 A_ChangeVelocity(frandom(0,-1),0,0,CVF_RELATIVE)
+		"----" A -1 A_ChangeFlag("missile",0)
+		stop
+	}
+}
+actor BrontornisSpent : InventoryFlag {}
+
+
+ACTOR Brontornis : HDWeapon
+{
+	game Doom
+	Decal "BulletScratchSmall"
+	Weapon.SelectionOrder 202
+	weapon.slotnumber 7
+	weapon.ammotype BrontornisMag
+	weapon.ammotype2 BrontornisRound
+	weapon.kickback 100
+	weapon.bobrangex 0.21
+	weapon.bobrangey 0.86
+	scale 0.6
+	inventory.pickupmessage "You got the Brontornis!"
+	obituary "%o was terrorized by %k's Brontornis cannon."
+	states{
+	select0:
+		BLSG A 0
+		goto select0small
+	deselect0:
+		BLSG A 0
+		goto deselect0small
+	Ready:
+		TNT1 A 0 A_SetCrosshair(21)
+		TNT1 A 0 A_GiveInventory("IsWeaponReady",1)
+		TNT1 A 0 A_GiveInventory("IsWeaponShort",1)
+		TNT1 A 0 A_JumpIfInventory("PressingUnload",1,"Unload")
+		BLSG A 1 A_WeaponReady(16)
+		TNT1 A 0 A_TakeInventory("IsInterrupting",999)
+		TNT1 A 0 A_TakeInventory("WeaponBusy",999)
+		TNT1 A 0 A_JumpIfInventory("BrontornisHeat",1,1)
+		goto ReadyEnd
+		TNT1 A 0 A_TakeInventory("BrontornisHeat",1)
+		TNT1 A 0 A_FireCustomMissile("HDGunSmoke",frandom(-1,1),0,0,0,0,frandom(-1,1))
+		goto ReadyEnd
+	altfire:
+	althold:
+		stop
+	Fire:
+		BLSG A 0 A_JumpIfInventory ("BrontornisMag",1,"Shoot")
+	Hold:
+		BLSG A 0 A_JumpIfInventory("BrontornisHeat",1,1)
+		goto nope
+		BLSG A 0 A_TakeInventory("BrontornisHeat",1)
+		BLSG A 0 A_FireCustomMissile("HDGunSmoke",frandom(-1,1),0,0,0,0,frandom(-1,1))
+		goto nope
+	Interrupt:
+		BLSG B 0 A_GiveInventory("IsInterrupting",1)
+		BLSG B 1 offset(0,34) A_PlayWeaponSound ("weapons/huntopen")
+		BLSG B 1 offset(0,36)
+		BLSG B 1 offset(0,34)
+		BLSG BBA 3
+		goto Ready
+	Shoot:
+		BLSG A 0 A_GunFlash
+		TNT1 A 0 A_SpawnItemEx("TerrorBolt",0,0,height-6,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH)
+		TNT1 A 0 A_GiveInventory("BrontornisSpent",1)
+		TNT1 A 0 A_PlaySound("weapons/bronto",6)
+		TNT1 A 0 A_PlaySound("weapons/bigrifle",7)
+		BLSG A 1 offset(0,34) A_PlayWeaponSound("weapons/bronto")
+		TNT1 A 0 A_GiveInventory("BrontornisHeat",32)
+		BLSG B 2
+	HoldNoChamber:
+	Althold:
+		BLSG "#" 0 A_Jump(256,"nope")
+	Flash:
+		BLSF A 0 A_TakeInventory("BrontornisMag",1)
+/*
+		TNT1 A 0 A_Jump(24,3)
+		TNT1 A 1
+		TNT1 A 0 A_Jump(256,2)
+*/
+		BLSF A 1 bright A_Light1
+		TNT1 A 2 A_ZoomFactor(0.92,ZOOM_INSTANT|ZOOM_NOSCALETURNING)
+		BLSF A 0 A_ZoomFactor(1.0,ZOOM_INSTANT|ZOOM_NOSCALETURNING)
+		TNT1 A 0 A_GiveInventory("IsMoving",2)
+		BLSF A 0 A_ChangeVelocity(Cos(Pitch) * -frandom(0.8,1.4), 0, Sin(Pitch) * frandom(0.8,1.4), 1)
+		TNT1 A 0 A_JumpIfInventory("IsSupported",1,3)
+		TNT1 A 0 A_GiveInventory("IsMoving",3)
+		BLSF A 0 A_ChangeVelocity(Cos(Pitch) * -frandom(1.0,1.8), 0, Sin(Pitch) * frandom(1.0,1.8), 1)
+		TNT1 A 0 ACS_NamedExecuteAlways("MuzzleClimb", 0, random(100,260),((random(0, 1)*2-1)*72), 0)
+		TNT1 A 0 A_CheckFlag("invulnerable","flashend")
+		TNT1 A 0 A_JumpIfInventory("IsMoving",6,"flashpain")
+		TNT1 A 0 A_JumpIfInventory("IsSupported",1,1)
+		goto flashpain
+		TNT1 A 0 A_JumpIf(floorz>=z,"flashend")
+	flashpain:
+		TNT1 A 0 A_GiveInventory("IsMoving",5)
+		TNT1 A 0 A_ChangeFlag("piercearmor",1)
+		TNT1 A 0 HealThing(10)
+		TNT1 A 0 A_Explode(10,1)
+		TNT1 A 0 A_ChangeFlag("piercearmor",0)
+		BLSF A 0 A_ChangeVelocity(Cos(Pitch) * -frandom(2,4), 0, Sin(Pitch) * frandom(2,4), 1)
+	flashend:
+		TNT1 A 0 A_TakeInventory("IsSupported",999)
+		BLSF A 0 bright A_Light0
+		Stop
+	Reload:
+		TNT1 A 0 A_SetCrosshair(21)
+		BLSG A 0 A_JumpIfInventory("BrontornisRound",1,1)
+		goto nope
+		BLSG A 0 A_JumpIfInventory("BrontornisMag",0,"nope")
+		BLSG A 0 A_TakeInventory("BrontornisHeat",5)
+		TNT1 A 0 A_TakeInventory("IsWeaponReady",999)
+		BLSG A 1
+		TNT1 A 0 A_SetPitch(pitch+frandom(1,1.2),SPF_INTERPOLATE)
+		TNT1 A 0 A_SetAngle(angle-frandom(1,1.2),SPF_INTERPOLATE)
+		BLSG B 2
+		TNT1 A 0 A_SetPitch(pitch+frandom(1,1.2),SPF_INTERPOLATE)
+		TNT1 A 0 A_SetAngle(angle-frandom(1,1.2),SPF_INTERPOLATE)
+		TNT1 A 0 A_TakeInventory("IsWeaponShort",999)
+		BLSG BBB 2
+		BLSG B 1 A_PlayWeaponSound ("weapons/rockreload")
+	letoutsteam:
+		TNT1 A 0 A_JumpIfInventory("BrontornisHeat",1,1)
+		goto reload0
+		TNT1 A 0 A_TakeInventory("BrontornisHeat",1)
+		TNT1 A 0 A_FireCustomMissile("HDGunSmoke",frandom(-1,1),0,0,-8,0,frandom(-1,1))
+		loop
+	drop:
+		BLSG B 0 A_TakeInventory("BrontornisSpent",1)
+		BLSG B 0 A_SpawnItemEx("TerrorCasing",cos(pitch)*6,0,height-10-sin(pitch)*6,velx,vely,velz-random(-1,1),random(-3,3),SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH|SXF_TRANSFERTRANSLATION)
+		goto reload0
+	reload0:
+		BLSG B 1 offset(0,34)
+		BLSG B 1 offset(0,36)
+		TNT1 A 0 A_JumpIfInventory("BrontornisSpent",1,"drop")
+		BLSG B 0 offset(0,41) A_PlaySound ("weapons/pocket")
+		BLSG B 1 offset(0,38)
+		BLSG B 3 offset(0,36)
+		BLSG B 3 offset(0,34)
+		BLSG B 3 offset(0,35)
+		TNT1 A 0 A_TakeInventory("BrontornisRound",1,TIF_NOTAKEINFINITE)
+		TNT1 A 0 A_PlaySound("weapons/rifleload")
+		BLSG B 4 offset(0,34) A_GiveInventory("BrontornisMag",1)
+
+		BLSG B 6 offset(0,33) A_WeaponReady(WRF_NOFIRE)
+	Reloadend:
+		BLSG B 6 offset(0,34)
+		BLSG B 2 offset(0,34) A_PlayWeaponSound ("weapons/rockreload")
+		BLSG B 1 offset(0,36)
+		BLSG B 1 offset(0,34)
+		BLSG BA 4
+		BLSG A 0 A_PlayWeaponSound ("weapons/huntopen")
+		goto Ready
+	Unload:
+		TNT1 A 0 A_SetCrosshair(21)
+		BLSG A 0 A_JumpIfInventory("BrontornisMag",1,2)
+		BLSG A 0 A_JumpIfInventory("BrontornisSpent",1,1)
+		goto nope
+		BLSG A 0 A_TakeInventory("BrontornisHeat",5)
+		TNT1 A 0 A_TakeInventory("IsWeaponReady",999)
+		BLSG A 1
+		TNT1 A 0 A_SetPitch(pitch+frandom(1,1.2),SPF_INTERPOLATE)
+		TNT1 A 0 A_SetAngle(angle-frandom(1,1.2),SPF_INTERPOLATE)
+		BLSG B 2
+		TNT1 A 0 A_SetPitch(pitch+frandom(1,1.2),SPF_INTERPOLATE)
+		TNT1 A 0 A_SetAngle(angle-frandom(1,1.2),SPF_INTERPOLATE)
+		TNT1 A 0 A_TakeInventory("IsWeaponShort",999)
+		BLSG BBB 2
+		BLSG B 1 A_PlayWeaponSound("weapons/rockreload")
+	unletoutsteam:
+		TNT1 A 0 A_JumpIfInventory("BrontornisHeat",1,1)
+		goto unload0
+		TNT1 A 0 A_TakeInventory("BrontornisHeat",1)
+		TNT1 A 0 A_FireCustomMissile("HDGunSmoke",frandom(-1,1),0,0,-8,0,frandom(-1,1))
+		loop
+	undrop:
+		BLSG B 0 A_TakeInventory("BrontornisSpent",1)
+		BLSG B 0 A_SpawnItemEx("TerrorCasing",cos(pitch)*6,0,height-10-sin(pitch)*6,velx,vely,velz-random(-1,1),random(-3,3),SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH|SXF_TRANSFERTRANSLATION)
+		goto unloadend
+	unload0:
+		BLSG B 1 offset(0,34)
+		BLSG B 1 offset(0,36)
+		TNT1 A 0 A_JumpIfInventory("BrontornisSpent",1,"undrop")
+		BLSG B 0 offset(0,41) A_PlaySound ("weapons/rifleload")
+		TNT1 A 0 A_TakeInventory("BrontornisMag",1)
+		TNT1 A 0 A_JumpIfInventory("BrontornisRound",0,"unloadd")
+		TNT1 A 0 A_JumpIfInventory("PressingUnload",1,"unloadp")
+	unloadd:
+		TNT1 A 0 A_SpawnItemEx("BrontornisRound",10,0,10,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION)
+		goto unloadend
+	unloadp:
+		TNT1 A 0 A_GiveInventory("BrontornisRound",1)
+		BLSG B 4 offset(2,38) A_PlaySound("weapons/pocket")
+		BLSG B 4 offset(1,39) A_PlaySound("weapons/pocket")
+	unloadend:
+		BLSG B 1 offset(0,38)
+		BLSG B 3 offset(0,36)
+		BLSG B 3 offset(0,34)
+		BLSG B 3 offset(0,35)
+		BLSG B 4 offset(0,34)
+		goto Reloadend
+
+	spawn:
+		TNT1 A 1
+		TNT1 A 0 A_CheckProximity("spawndropped","PlayerPawn",20,1, CPXF_COUNTDEAD|CPXF_SETTARGET|CPXF_ANCESTOR|CPXF_CLOSEST|CPXF_NOZ)
+	spawnfresh:
+		TNT1 A 0 A_SpawnItemEx("BrontornisPickup",0,0,0,velx,vely,velz,0, SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_NOPOINTERS)
+		stop
+	spawndropped:
+		TNT1 A 0 A_JumpIfInTargetInventory("Brontornis",1,"spawnfresh")
+		TNT1 A 0 A_SpawnItemEx("BrontornisPickup",0,0,0,velx,vely,velz,0, SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS)
+		stop
+	}
+}
+actor BrontornisHeat : InventoryFlag
+{
+	inventory.maxamount 60
+}
+actor BrontornisMag : Ammo
+{
+	+inventory.ignoreskill
+	+inventory.untossable
+	inventory.maxamount 1
+	ammo.backpackmaxamount 1
+	ammo.backpackamount 0
+	states{spawn:TNT1 A 0 nodelay{return state("null");}stop}
+}
+ACTOR BrontornisRound:Ammo
+{
+	+inventory.ignoreskill
+	inventory.maxamount 20
+	ammo.backpackmaxamount 40
+	ammo.backpackamount 0
+	inventory.pickupmessage "Picked up a bolt."
+	scale 0.3
+	states
+	{
+	spawn:
+		BROC A 0 nodelay A_SpawnItemEx("BroP",0,0,0,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+		stop
+	}
+}
+
+
+actor BrontoDropped : HDWeaponPickup
+{
+	scale 0.6
+	inventory.pickupmessage "You got the Brontornis!"
+	states
+	{
+	spawn:
+		BLST A -1
+		stop
+	Pickup:
+		TNT1 A 0 A_GiveInventory("Brontornis",1)
+		stop
+	}
+}
+
+
+
+// ------------------------------------------------------------
+//   <s>Mags and </s>pickups
+// ------------------------------------------------------------
+
+actor BroP:HDUPK replaces BrontornisRound
+{
+	scale 0.3
+	states
+	{
+	spawn:
+		BROC A -1 A_Stop
+	give:
+		"----" A 0 A_JumpIfInTargetInventory("BrontornisRound",0,"spawn")
+		"----" A 0 A_PlaySound("weapons/pocket")
+		"----" A 0 A_GiveToTarget("BrontornisRound",1)
+	stop
+	}
+}
+ACTOR BrontornisSpawner:BroP
+{
+	states
+	{
+	spawn:
+		TNT1 A 0 nodelay{
+			A_SpawnItemEx("BroP",3,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
+			A_SpawnItemEx("BroP",1,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
+			A_SpawnItemEx("BroP",-3,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
+			A_SpawnItemEx("BrontornisPickup",0,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
+		}goto super::spawn
+	}
+}
+
+actor BrontornisPickup : HDUPK
+{
+	scale 0.6
+	states
+	{
+	spawn:
+		BLST A 0 A_Stop
+		"----" A 0 A_JumpIfInventory("Clip",1,"spawn2")
+		"----" A 0 A_GiveInventory("Clip",1)
+		"----" A 0 A_JumpIf(CheckClass("PlayerPawn",AAPTR_TARGET,true),"takeloop")
+		"----" A 0 A_GiveInventory("BrontornisMag",1)
+	spawn2:
+		BLST A -1 A_JumpIfInventory("BrontornisHeat",1,1)
+		BLST A 0 A_TakeInventory("BrontornisHeat",1)
+		BLST A 1 A_CustomMissile("HDGunSmoke",6,0,random(-1,1),CMF_AIMDIRECTION)
+		loop
+	takeloop:
+		"----" A 0 A_JumpIfInTargetInventory("BrontornisMag",1,1)
+		goto take2
+		"----" A 0 A_TakeFromTarget("BrontornisMag",1)
+		"----" A 0 A_GiveInventory("BrontornisMag",1)
+		goto take2
+	take2:
+		"----" A 0 A_JumpIfInTargetInventory("BrontornisSpent",1,1)
+		goto takeloop3
+		"----" A 0 A_TakeFromTarget("BrontornisSpent",1)
+		"----" A 0 A_GiveInventory("BrontornisSpent",1)
+	takeloop3:
+		"----" A 0 A_JumpIfInTargetInventory("BrontornisHeat",1,1)
+		goto spawn2
+		"----" A 0 A_TakeFromTarget("BrontornisHeat",1)
+		"----" A 0 A_GiveInventory("BrontornisHeat",1)
+		loop
+	give:
+		"----" A 0 A_JumpIfInTargetInventory("Brontornis",1,"spawn")
+	givegun:
+		"----" A 0 A_PlaySound("misc/w_pkup")
+		"----" A 0 A_GiveToTarget("Brontornis",1)
+	givegun1:
+		"----" A 0 A_JumpIfInventory("BrontornisMag",1,1)
+		goto givegun2
+		"----" A 0 A_GiveToTarget("BrontornisMag",1)
+		"----" A 0 A_TakeInventory("BrontornisMag",1)
+	givegun2:
+		"----" A 0 A_JumpIfInventory("BrontornisSpent",1,1)
+		goto givegunloop3
+		"----" A 0 A_GiveToTarget("BrontornisSpent",1)
+		"----" A 0 A_TakeInventory("BrontornisSpent",1)
+	givegunloop3:
+		"----" A 0 A_JumpIfInventory("BrontornisHeat",1,1)
+		goto givegunloopend
+		"----" A 0 A_GiveToTarget("BrontornisHeat",1)
+		"----" A 0 A_TakeInventory("BrontornisHeat",1)
+		goto givegunloopend
+	}
+}

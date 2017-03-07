@@ -1,0 +1,587 @@
+
+
+ACTOR TheTyrant : BossBrain replaces BossBrain
+{
+	health 1000000
+	-shootable +vulnerable +dontthrust
+	painchance 256
+	var int user_lastmessage;
+	States
+	{
+	BrainExplode:
+		MISL BCD 4 BRIGHT
+		TNT1 A 0 A_BrainExplode
+		Stop
+	Spawn:
+		TNT1 A 0
+		TNT1 A 0 A_TakeInventory("NastyMessageOn",1,0,AAPTR_PLAYER1)
+		TNT1 A 0 A_TakeInventory("NastyMessageOn",1,0,AAPTR_PLAYER2)
+		TNT1 A 0 A_TakeInventory("NastyMessageOn",1,0,AAPTR_PLAYER3)
+		TNT1 A 0 A_TakeInventory("NastyMessageOn",1,0,AAPTR_PLAYER4)
+		TNT1 A 0 A_TakeInventory("NastyMessageOn",1,0,AAPTR_PLAYER5)
+		TNT1 A 0 A_TakeInventory("NastyMessageOn",1,0,AAPTR_PLAYER6)
+		TNT1 A 0 A_TakeInventory("NastyMessageOn",1,0,AAPTR_PLAYER7)
+		TNT1 A 0 A_TakeInventory("NastyMessageOn",1,0,AAPTR_PLAYER8)
+	SpawnWait:
+		BBRN A 20
+		TNT1 A 0 A_JumpIfInventory("NastyMessageOn",1,"SpawnGood",AAPTR_PLAYER1)
+		TNT1 A 0 A_JumpIfInventory("NastyMessageOn",1,"SpawnGood",AAPTR_PLAYER2)
+		TNT1 A 0 A_JumpIfInventory("NastyMessageOn",1,"SpawnGood",AAPTR_PLAYER3)
+		TNT1 A 0 A_JumpIfInventory("NastyMessageOn",1,"SpawnGood",AAPTR_PLAYER4)
+		TNT1 A 0 A_JumpIfInventory("NastyMessageOn",1,"SpawnGood",AAPTR_PLAYER5)
+		TNT1 A 0 A_JumpIfInventory("NastyMessageOn",1,"SpawnGood",AAPTR_PLAYER6)
+		TNT1 A 0 A_JumpIfInventory("NastyMessageOn",1,"SpawnGood",AAPTR_PLAYER7)
+		TNT1 A 0 A_JumpIfInventory("NastyMessageOn",1,"SpawnGood",AAPTR_PLAYER8)
+		loop
+	SpawnGood:
+		BBRN A 150 A_SpawnItemEx("NastyMessageEnd",0,0,0,0,0,0,0,SXF_NOCHECKPOSITION)
+	Spawn2:
+		BBRN A 1000
+		TNT1 A 0 A_JumpIfInventory("NastyMessageOn",1,"Spawn3",AAPTR_PLAYER1)
+		TNT1 A 0 A_JumpIfInventory("NastyMessageOn",1,"Spawn3",AAPTR_PLAYER2)
+		TNT1 A 0 A_JumpIfInventory("NastyMessageOn",1,"Spawn3",AAPTR_PLAYER3)
+		TNT1 A 0 A_JumpIfInventory("NastyMessageOn",1,"Spawn3",AAPTR_PLAYER4)
+		TNT1 A 0 A_JumpIfInventory("NastyMessageOn",1,"Spawn3",AAPTR_PLAYER5)
+		TNT1 A 0 A_JumpIfInventory("NastyMessageOn",1,"Spawn3",AAPTR_PLAYER6)
+		TNT1 A 0 A_JumpIfInventory("NastyMessageOn",1,"Spawn3",AAPTR_PLAYER7)
+		TNT1 A 0 A_JumpIfInventory("NastyMessageOn",1,"Spawn3",AAPTR_PLAYER8)
+		loop
+	Spawn3:
+		TNT1 A 0 A_JumpIfInventory("Clip",5,"Death")
+		TNT1 A 0 A_ChangeFlag("shootable",1)
+		BBRN A 700
+		TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+		TNT1 A 0 A_Jump(256,"msg1","msg2","msg3","msg4","msg5","msg6","msg7","msg8","msg9","msg10","msg11","msg12","msg13","msg14","msg15","msg16","msg17","msg18","msg19","msg20","msg21","msg22")
+		loop
+	Pain:
+		TNT1 A 0
+		TNT1 A 0 A_JumpIfInventory("NastyMessageOn",1,5,AAPTR_PLAYER1)
+		TNT1 A 0 A_JumpIfInventory("NastyMessageOn",1,4,AAPTR_PLAYER2)
+		TNT1 A 0 A_JumpIfInventory("NastyMessageOn",1,3,AAPTR_PLAYER3)
+		TNT1 A 0 A_JumpIfInventory("NastyMessageOn",1,2,AAPTR_PLAYER4)
+		TNT1 A 0 A_Die("PistolHack")
+		TNT1 A 0 HealThing(1000000)
+		TNT1 A 0 A_ChangeFlag("shootable",0)
+		TNT1 A 0 A_GiveInventory("Clip",1)
+		TNT1 A 0 A_SpawnItemEx("HDBBQ",0,0,0,0,0,0,0,SXF_ABSOLUTEANGLE|SXF_NOCHECKPOSITION)
+		TNT1 AAAAAAAAAAAAAAAA 0 A_SpawnItemEx("HDBBOMGosh",random(-30,30),random(100,140),random(64,82),random(-4,4),random(20,30),random(-4,4),0,SXF_ABSOLUTEANGLE|SXF_NOCHECKPOSITION)
+		BBRN B 20 A_BrainPain
+		TNT1 A 0 A_QuakeEx(2,random(-1,1),3,256,0,8192,"",QF_RELATIVE|QF_SCALEDOWN|QF_WAVE,6,6,6)
+		TNT1 A 0 A_JumpIfInventory("Clip",6,"death")
+		TNT1 A 0 A_JumpIfInventory("Clip",5,"msg22")
+		TNT1 A 0 A_Jump(256,"msg1","msg2","msg3","msg4","msg5","msg6","msg7","msg8","msg9","msg10","msg11","msg12","msg13","msg14","msg15","msg16","msg17","msg18","msg19","msg20","msg21","msg22")
+		Goto Spawn3
+	Death:
+		TNT1 A 0 A_ChangeFlag("shootable",0)
+		TNT1 A 0 A_SpawnItemEx("HDBBQ",0,0,0,0,0,0,0,SXF_ABSOLUTEANGLE|SXF_NOCHECKPOSITION)
+		TNT1 AAAAAAA 0 A_SpawnItemEx("HDBBOMG",random(-30,30),random(100,140),random(64,82),random(-4,4),random(20,30),random(-4,4),0,SXF_ABSOLUTEANGLE|SXF_NOCHECKPOSITION)
+		BBRN B 150 A_BrainPain
+		TNT1 A 0 A_GiveToTarget("PowerFrightener",1)
+		BBRN A 20 A_SpawnItemEx("HDBBQ",0,0,0,0,0,0,0,SXF_ABSOLUTEANGLE|SXF_NOCHECKPOSITION)
+		TNT1 A 0 A_SpawnItemEx("HDBBQ",0,0,0,0,0,0,0,SXF_ABSOLUTEANGLE|SXF_NOCHECKPOSITION)
+		BBRN B 50 A_BrainPain
+		TNT1 A 0 A_SpawnItemEx("HDBBQ",0,0,0,0,0,0,0,SXF_ABSOLUTEANGLE|SXF_NOCHECKPOSITION)
+		BBRN B 40 A_BrainPain
+		TNT1 A 0 A_SpawnItemEx("HDBBQ",0,0,0,0,0,0,0,SXF_ABSOLUTEANGLE|SXF_NOCHECKPOSITION)
+		BBRN B 30 A_BrainPain
+		TNT1 A 0 A_SpawnItemEx("HDBBQ",0,0,0,0,0,0,0,SXF_ABSOLUTEANGLE|SXF_NOCHECKPOSITION)
+		BBRN B 20 A_BrainPain
+		TNT1 A 0 A_SpawnItemEx("HDBBQ",0,0,0,0,0,0,0,SXF_ABSOLUTEANGLE|SXF_NOCHECKPOSITION)
+		BBRN B 20 A_BrainPain
+		TNT1 A 0 A_SpawnItemEx("NastyMessageEnd",0,0,0,0,0,0,0,SXF_NOCHECKPOSITION)
+		TNT1 A 0 A_SpawnItemEx("HDBBQ",0,0,0,0,0,0,0,SXF_ABSOLUTEANGLE|SXF_NOCHECKPOSITION)
+		BBRN B 10 A_BrainPain
+		TNT1 A 0 A_SpawnItemEx("HDBBQ",0,0,0,0,0,0,0,SXF_ABSOLUTEANGLE|SXF_NOCHECKPOSITION)
+		BBRN B 10 A_BrainPain
+		TNT1 A 0 A_SpawnItemEx("HDBBQ",0,0,0,0,0,0,0,SXF_ABSOLUTEANGLE|SXF_NOCHECKPOSITION)
+		BBRN B 10 A_BrainPain
+		TNT1 A 0 A_SpawnItemEx("HDBBQ",0,0,0,0,0,0,0,SXF_ABSOLUTEANGLE|SXF_NOCHECKPOSITION)
+		BBRN B 10 A_BrainPain
+		TNT1 A 0 A_SpawnItemEx("HDBBQ",0,0,0,0,0,0,0,SXF_ABSOLUTEANGLE|SXF_NOCHECKPOSITION)
+		BBRN BBBB 6 A_BrainPain
+	XDeath:
+		TNT1 A 0 A_GiveToTarget("HasKilledTyrant",1)
+		BBRN BBBBBB 3 A_BrainPain
+		TNT1 AAAAAAAAAAAAAAAA 0 A_SpawnItemEx("HDBBOMG",random(-30,30),random(100,140),random(64,82),random(-4,4),random(20,30),random(-4,4),0,SXF_ABSOLUTEANGLE|SXF_NOCHECKPOSITION)
+		TNT1 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 0 A_SpawnItemEx("HDBBOMG",random(-100,100),random(100,340),random(-100,156),random(-4,4),random(12,24),random(-4,4),0,SXF_ABSOLUTEANGLE|SXF_NOCHECKPOSITION)
+		BBRN A 0 A_SpawnItemEx("HDBBQ2",0,0,0,0,0,0,0,SXF_NOCHECKPOSITION)
+		BBRN A 0 A_PlaySound("brain/death",CHAN_BODY,1.0,false,ATTN_NONE)
+		BBRN AAAAAAAA 3 A_SpawnItemEx("HDBBOMG",random(-300,300),random(300,440),random(-200,200),random(-4,4),random(12,24),random(-4,4),0,SXF_ABSOLUTEANGLE|SXF_NOCHECKPOSITION)
+		TNT1 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 0 A_SpawnItemEx("HDBBOMG",random(-600,600),random(100,240),random(-300,300),random(-2,2),random(10,20),random(-2,2),0,SXF_ABSOLUTEANGLE|SXF_NOCHECKPOSITION)
+		BBRN AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 1 A_SpawnItemEx("HDBBOMG",random(-500,500),random(100,240),random(-300,300),random(-2,2),random(10,20),random(-2,2),0,SXF_ABSOLUTEANGLE|SXF_NOCHECKPOSITION)
+	Death2:
+		BBRN AAAAAAAAAAAAAAAAA 2 A_SpawnItemEx("HDBBOMG",random(-500,500),random(100,240),random(-300,300),random(-2,2),random(10,20),random(-2,2),0,SXF_ABSOLUTEANGLE|SXF_NOCHECKPOSITION)
+		TNT1 A 0 A_BrainDie
+		BBRN AAAAAAAAAAA 6 A_SpawnItemEx("HDBBOMG",random(-500,500),random(100,240),random(-300,300),random(-2,2),random(10,20),random(-2,2),0,SXF_ABSOLUTEANGLE|SXF_NOCHECKPOSITION,72)
+		BBRN A -1
+		Stop
+	Death.PistolHack:
+		TNT1 A 0 A_BrainDie
+		TNT1 A -1
+		stop
+
+msg1:
+TNT1 A 0 A_JumpIf(user_lastmessage==1,"msg2")
+TNT1 A 0 A_SetUserVar(user_lastmessage,1)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 90 A_PrintBold("\n\n\n\cjI am the violence and hatred\n\n\n\cjthat lives in the hearts of all.",6,BIGFONT)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 0 A_PrintBold("\n\n\cjI am of no age or place.\n\n\n\n\n\n\cjI am that which I Am.",6,BIGFONT) goto spawn3
+msg2:
+TNT1 A 0 A_JumpIf(user_lastmessage==2,"msg3")
+TNT1 A 0 A_SetUserVar(user_lastmessage,2)
+TNT1 A 0 A_PrintBold("\n\n\cjThis is only an icon, a vision.\n\n\n\n\cjMaking present a truth\n\n\n\cjyou cannot begin to grasp.",6,BIGFONT) goto spawn3
+msg3:
+TNT1 A 0 A_JumpIf(user_lastmessage==3,"msg4")
+TNT1 A 0 A_SetUserVar(user_lastmessage,3)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 70 A_PrintBold("\cjYou understand how to destroy\n\n\n\cjwith violence and ruin.",6,BIGFONT)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 0 A_PrintBold("\n\n\n\n\n\n\cjBut not your role in\n\n\n\cjthe new creation.",6,BIGFONT)
+goto spawn3
+msg4:
+TNT1 A 0 A_JumpIf(user_lastmessage==4,"msg5")
+TNT1 A 0 A_SetUserVar(user_lastmessage,4)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 0 A_PrintBold("\cjIn spelling out your\n\n\n\cjsentence of destruction,\n\n\n\n\cjyou foretell merely your doom.",6,BIGFONT) goto spawn3
+msg5:
+TNT1 A 0 A_JumpIf(user_lastmessage==5,"msg6")
+TNT1 A 0 A_SetUserVar(user_lastmessage,5)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 70 A_PrintBold("\n\n\n\n\cjWhat did you think\n\n\n\cjthis was all about?",6,BIGFONT)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 50 A_PrintBold("\n\n\n\n\n\n\cjThis destruction,\n\n\n\n\n\cjthis war,",6,BIGFONT)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 60 A_PrintBold("\n\n\n\n\n\n\cjThis sacrifice,",6,BIGFONT)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 0 A_PrintBold("\n\n\n\cjwas all to remake mankind\n\n\n\n\n\cjfor its true ascension.",6,BIGFONT)
+goto spawn3
+msg6:
+TNT1 A 0 A_JumpIf(user_lastmessage==6,"msg7")
+TNT1 A 0 A_SetUserVar(user_lastmessage,6)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 80 A_PrintBold("\n\n\n\cjYour kind has known me\n\n\n\cjby many names.",4,BIGFONT)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 50 A_PrintBold("\n\n\n\n\n\n\n\n\cjMars.",1,BIGFONT)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 50 A_PrintBold("\n\n\n\n\n\n\n\n\cjWotan.",1,BIGFONT)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 60 A_PrintBold("\n\n\n\n\n\n\n\n\cjXipe Totec.",1,BIGFONT)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 0 A_PrintBold("\n\n\n\n\n\n\n\n\cjJehovah.",6,BIGFONT)
+goto spawn3
+msg7:
+TNT1 A 0 A_JumpIf(user_lastmessage==7,"msg7")
+TNT1 A 0 A_SetUserVar(user_lastmessage,8)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 0 A_PrintBold("\cjYou will slay this form,\n\n\n\cjbut this will not end.\n\n\n\n\n\cjYou will destroy the world,\n\n\n\cjbut this will not end.",6,BIGFONT)
+goto spawn3
+msg8:
+TNT1 A 0 A_JumpIf(user_lastmessage==8,"msg9")
+TNT1 A 0 A_SetUserVar(user_lastmessage,8)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 80 A_PrintBold("\n\n\n\cjYour kind will discover your true nature\n\n\n\cjin wrath and ruin.",6,BIGFONT)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 0 A_PrintBold("\n\n\n\cjYou will take to the stars and\n\n\n\cjburn them out, one by one.",6,BIGFONT)
+goto spawn3
+msg9:
+TNT1 A 0 A_JumpIf(user_lastmessage==9,"msg10")
+TNT1 A 0 A_SetUserVar(user_lastmessage,9)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 0 A_PrintBold("\cjWe are your future.\n\n\n\n\n\cjBear witness to your rebirth.",6,BIGFONT) goto spawn3
+msg10:
+TNT1 A 0 A_JumpIf(user_lastmessage==10,"msg11")
+TNT1 A 0 A_SetUserVar(user_lastmessage,10)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 0 A_PrintBold("\cjThis pain - you feel this.\n\n\n\cjYou feel it to escape death.",6,BIGFONT) goto spawn3
+msg11:
+TNT1 A 0 A_JumpIf(user_lastmessage==11,"msg12")
+TNT1 A 0 A_SetUserVar(user_lastmessage,11)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 80 A_PrintBold("\n\n\n\cjDo you dream in your suffering\n\n\n\cjthat you ever succeed?",6,BIGFONT)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 0 A_PrintBold("\n\n\n\cjDo you really believe that in killing\n\n\n\cjyou might prevail over Hell?",6,BIGFONT)
+goto spawn3
+msg12:
+TNT1 A 0 A_JumpIf(user_lastmessage==12,"msg13")
+TNT1 A 0 A_SetUserVar(user_lastmessage,12)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 80 A_PrintBold("\n\n\n\n\n\n\cjBefore you is\n\n\n\cjyour weapon.",2,BIGFONT)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 80 A_PrintBold("\n\n\n\n\cjWhen were you last\n\n\n\cjaware of any other part of you?",6,BIGFONT)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 0 A_PrintBold("\n\n\n\n\cjDo you recall seeing\n\n\cjthe world in any other way?",6,BIGFONT)
+goto spawn3
+msg13:
+TNT1 A 0 A_JumpIf(user_lastmessage==13,"msg14")
+TNT1 A 0 A_SetUserVar(user_lastmessage,13)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 0 A_PrintBold("\n\n\n\n\cjWeapons are what raised mankind\n\n\n\cjout of the mud,\n\n\n\cjand man is mud commanded\n\n\n\cjby God to become God.",6,BIGFONT)
+goto spawn3
+msg14:
+TNT1 A 0 A_JumpIf(user_lastmessage==14,"msg15")
+TNT1 A 0 A_SetUserVar(user_lastmessage,14)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 80 A_PrintBold("\n\n\n\cjThrough this death\n\n\n\n\cjhumanity is reborn.",6,BIGFONT)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 80 A_PrintBold("\cjProud, noble,\n\n\n\cjconquering,\n\n\n\cjfree.",6,BIGFONT)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 0 A_PrintBold("\n\n\n\cjForged in the fire of\n\n\n\n\n\cjwar, remade and perfect.",6,BIGFONT)
+goto spawn3
+msg15:
+TNT1 A 0 A_JumpIf(user_lastmessage==15,"msg16")
+TNT1 A 0 A_SetUserVar(user_lastmessage,15)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 70 A_PrintBold("\n\n\n\cjThrough the death here\n\n\n\n\cjcomes new life.",6,BIGFONT)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 0 A_PrintBold("\n\n\n\cjThrough the blood shed\n\n\n\n\cjwe are saved.",6,BIGFONT)
+goto spawn3
+msg16:
+TNT1 A 0 A_JumpIf(user_lastmessage==16,"msg17")
+TNT1 A 0 A_SetUserVar(user_lastmessage,16)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 0 A_PrintBold("\cjThe galaxy will burn under\n\n\cjthe new humanity,\n\n\n\n\cjan eternal fire brighter\n\n\cjthan its very stars.",6,BIGFONT) goto spawn3
+msg17:
+TNT1 A 0 A_JumpIf(user_lastmessage==17,"msg18")
+TNT1 A 0 A_SetUserVar(user_lastmessage,17)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 0 A_PrintBold("\cjYou are the conduit:\n\n\n\cjthrough you our deathless fire\n\n\n\cjreaches into your universe\n\n\n\cjwhereby mankind is made whole.",6,BIGFONT) goto spawn3
+msg18:
+TNT1 A 0 A_JumpIf(user_lastmessage==18,"msg19")
+TNT1 A 0 A_SetUserVar(user_lastmessage,18)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 0 A_PrintBold("\n\n\n\cjYou shall be exalted,\n\n\n\n\cjhaving defeated death.",6,BIGFONT) goto spawn3
+msg19:
+TNT1 A 0 A_JumpIf(user_lastmessage==19,"msg20")
+TNT1 A 0 A_SetUserVar(user_lastmessage,19)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 70 A_PrintBold("\n\n\n\cjWe are humanity's\n\n\n\n\cjcure for weakness.",6,BIGFONT)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 80 A_PrintBold("\n\n\n\n\n\n\cjFaith, Hope, Charity\n\n\n\n\n\cjMercy, Understanding,",6,BIGFONT)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 0 A_PrintBold("\n\n\n\cjall will be but\n\n\n\n\cjdust in the wind.",6,BIGFONT)
+goto spawn3
+msg20:
+TNT1 A 0 A_JumpIf(user_lastmessage==20,"msg21")
+TNT1 A 0 A_SetUserVar(user_lastmessage,20)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 0 A_PrintBold("\n\n\n\cjThis is a very elegant solution.\n\n\n\n\cjAnd a path you have already started down.",6,BIGFONT) goto spawn3
+msg21:
+TNT1 A 0 A_JumpIf(user_lastmessage==21,"msg22")
+TNT1 A 0 A_SetUserVar(user_lastmessage,21)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 0 A_PrintBold("\n\n\n\cjWhat you hope to destroy is merely\n\n\n\n\cjthe hard truth of the universe.",6,BIGFONT) goto spawn3
+msg22:
+TNT1 A 0 A_JumpIfInventory("HasSpoilered",1,"msg1")
+TNT1 A 0 A_JumpIf(user_lastmessage==22,"msg1")
+TNT1 A 0 A_SetUserVar(user_lastmessage,22)
+TNT1 A 0 A_GiveInventory("HasSpoilered",1)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 50 A_PrintBold("\n\n\n\n\n\n\cjThey will say of you:",6,BIGFONT)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 100 A_PrintBold("\n\n\n\cjYou descended into Hell,\n\n\n\n\cjand gave justice to those within.",6,BIGFONT)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 100 A_PrintBold("\n\n\n\cjIn the heart of the Abyss\n\n\n\n\cjyou faced down the Devil,",6,BIGFONT)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 100 A_PrintBold("\n\n\n\cjAnd slew him with weapons\n\n\n\n\cjin a triumph of Man alone.",6,BIGFONT)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 100 A_PrintBold("\n\n\n\cjAnd on the third day\n\n\n\n\cjyou rose again from the dead,",6,BIGFONT)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 100 A_PrintBold("\n\n\n\cjAnd are seated at the right hand\n\n\n\n\cjof God the Almighty.",6,BIGFONT)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 50 A_PrintBold("\n\n\n\n\n\n\cjThe risen Christ of\n\n\n\n\cjthe Gospel of Violence.",6,BIGFONT)
+goto spawn3
+
+	}
+}
+ACTOR HDBBQ : IdleDummy
+{
+	states
+	{
+	spawn:
+		TNT1 A 0
+		BAL1 A 26 A_Quake (6, 26, 0, 16000,0)
+		BAL1 A 40 A_Quake (6, 40, 0, 16000,0)
+		stop
+	}
+}
+ACTOR HDBBQ2 : IdleDummy
+{
+	states
+	{
+	spawn:
+		TNT1 A 0
+		BAL1 A 90 A_Quake (9, 90, 0, 16000,0)
+		BAL1 A 120 A_Quake (8, 60, 0, 16000,0)
+		BAL1 A 240 A_Quake (5, 120, 0, 16000,0)
+		stop
+	}
+}
+ACTOR HDBBOMGosh : IdleDummy
+{
+	states
+	{
+	spawn:
+		TNT1 A 1 A_Jump(32,1)
+		wait
+	death:
+		TNT1 A 0 A_SpawnItemEx("HDBBWTH",0,0,0,0,0,random(1,2),0,SXF_ABSOLUTEANGLE|SXF_NOCHECKPOSITION)
+		stop
+	}
+}
+ACTOR HDBBOMG : IdleDummy
+{
+	states
+	{
+	spawn:
+		TNT1 A 1 A_Jump(32,1)
+		wait
+	death:
+		TNT1 A 0 A_Warp(AAPTR_DEFAULT,0,0,random(floorz,ceilingz))
+		TNT1 A 0 A_SpawnItemEx("HDBBWTF",0,0,0,0,0,random(1,2),0,SXF_ABSOLUTEANGLE|SXF_NOCHECKPOSITION)
+		stop
+	}
+}
+ACTOR HDBBWTH : HDExplosion
+{
+	states
+	{
+	Spawn:
+		MISX A 0
+		MISX A 0 A_PlaySound ("world/explode",0,1.0,0,0.8)
+		MISX AAAAA 0 A_SpawnItemEx("HDSmoke", random(-24,24),random(-24,24),random(0,12),velx,vely,velz,0,160)
+		MISL BCDD 3 BRIGHT A_FadeOut (0.2)
+		Stop
+	}
+}
+ACTOR HDBBWTF : HDExplosion
+{
+	states
+	{
+	Spawn:
+		MISX A 0
+		MISX A 0 A_PlaySound ("world/explode",0,1.0,0,0.4)
+		MISX AA 0 A_SpawnItemEx("HDSmokeChunk", 0,0,0,velx+random(-12,12),vely+random(-12,12),velz+random(4,16),0,160,192)
+		MISX AAAAA 0 A_SpawnItemEx("HDSmoke", random(-24,24),random(-24,24),random(0,12),velx,vely,velz,0,160)
+		goto Fade
+	}
+}
+ACTOR HDBBE : BossEye replaces BossEye
+{
+	obituary "%o was educated stupid by the cube."
+	+ismonster +dontthrust
+	States
+	{
+	Spawn:
+		TNT1 A 2
+	Spawn2:
+		TNT1 A 10 A_Look
+		Loop
+	See:
+		TNT1 A 0 A_GiveInventory("NastyMessageOn",1,AAPTR_PLAYER1)
+		TNT1 A 0 A_GiveInventory("NastyMessageOn",1,AAPTR_PLAYER2)
+		TNT1 A 0 A_GiveInventory("NastyMessageOn",1,AAPTR_PLAYER3)
+		TNT1 A 0 A_GiveInventory("NastyMessageOn",1,AAPTR_PLAYER4)
+		TNT1 A 0 A_GiveInventory("NastyMessageOn",1,AAPTR_PLAYER5)
+		TNT1 A 0 A_GiveInventory("NastyMessageOn",1,AAPTR_PLAYER6)
+		TNT1 A 0 A_GiveInventory("NastyMessageOn",1,AAPTR_PLAYER7)
+		TNT1 A 0 A_GiveInventory("NastyMessageOn",1,AAPTR_PLAYER8)
+		TNT1 A 181 A_BrainAwake
+	See2:
+		TNT1 AAAAAAA 20 A_JumpIfInTargetInventory("HasKilledTyrant",1,"Death")
+		TNT1 A 0 A_CustomMissile("HDBBP",6)
+		TNT1 A 0 A_GiveInventory("BFGChamber",random(1,10),AAPTR_PLAYER1)
+		TNT1 A 0 A_GiveInventory("BFGChamber",random(1,10),AAPTR_PLAYER2)
+		TNT1 A 0 A_GiveInventory("BFGChamber",random(1,10),AAPTR_PLAYER3)
+		TNT1 A 0 A_GiveInventory("BFGChamber",random(1,10),AAPTR_PLAYER4)
+		TNT1 A 0 A_GiveInventory("BFGChamber",random(1,10),AAPTR_PLAYER5)
+		TNT1 A 0 A_GiveInventory("BFGChamber",random(1,10),AAPTR_PLAYER6)
+		TNT1 A 0 A_GiveInventory("BFGChamber",random(1,10),AAPTR_PLAYER7)
+		TNT1 A 0 A_GiveInventory("BFGChamber",random(1,10),AAPTR_PLAYER8)
+		loop
+	Death:
+		TNT1 A 0 A_KillChildren
+		TNT1 A 1 A_TakeFromTarget("HasKilledTyrant",1)
+		stop
+	}
+}
+actor HasKilledTyrant : InventoryFlag {}
+actor HasSpoilered : InventoryFlag {}
+actor LastMidMessage : InventoryFlag {inventory.maxamount 999}
+ACTOR HDBBP
+{
+	projectile
+	height 24
+	radius 24
+	speed 12
+	scale 0.6
+	+noclip
+	+shootable
+	-noblockmap
+	+nodamage
+	+nodamagethrust
+	painchance 256
+	damage 1000000
+	ProjectileKickBack 0
+	BloodColor "22 22 24"
+	obituary "%o was educated stupid by the cube."
+	states
+	{
+	spawn:
+		TNT1 A 0
+		TNT1 A 0 A_PlaySound("brain/spit",CHAN_BODY,1,false,0.1) 
+		BOSF ABCD 3
+		TNT1 A 0 A_ChangeFlag("noclip",0)
+		BOSF ABCDABCD 3
+	spawn2:
+		BOSF ABCD 3
+		TNT1 A 0 A_Jump(8,"putti")
+		TNT1 A 0 A_Jump(8,"monster")
+		loop
+	pain:
+		TNT1 A 0 A_UnsetShootable
+		TNT1 A 0 A_ChangeFlag("missile",0)
+		TNT1 A 0 A_RearrangePointers(AAPTR_NULL,AAPTR_TARGET,AAPTR_DEFAULT)
+		TNT1 A 0 A_ClearTarget
+		TNT1 A 0 A_TransferPointer(AAPTR_MASTER,AAPTR_DEFAULT,AAPTR_TARGET,AAPTR_TARGET)
+		TNT1 A 0 A_SpawnItemEx("tempshieldblack",0,0,0,0,0,0,0,SXF_NOCHECKPOSITION)
+		goto vileshards
+	death:
+		TNT1 A 0 A_FaceTarget
+	monster:
+		TNT1 A 0 A_UnsetShootable
+		TNT1 A 0 A_ChangeFlag("missile",0)
+		TNT1 A 0 A_RearrangePointers(AAPTR_NULL,AAPTR_TARGET,AAPTR_DEFAULT)
+		TNT1 A 0 A_ClearTarget
+		TNT1 A 0 A_Jump(1,"angel","imp")
+		TNT1 A 0 A_Jump(8,"knight","spectre","paine")
+		TNT1 A 0 A_Jump(16,"caco","vileshards")
+		TNT1 A 0 A_Jump(256,"imp")
+	angel:
+		TNT1 A 0 A_SpawnItemEx("ArchFiend",random(-12,12),random(-12,12),0,velx,vely,velz+random(1,8),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
+		goto burnout
+	paine:
+		TNT1 A 0 A_SpawnItemEx("AngstElemental",random(-12,12),random(-12,12),0,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
+		goto burnout
+	knight:
+		TNT1 A 0 A_SpawnItemEx("HellKnave",random(-12,12),random(-12,12),0,velx,vely,velz+random(1,8),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
+		goto burnout
+	spectre:
+		TNT1 A 0 A_SpawnItemEx("NinjaPirate",random(-12,12),random(-12,12),0,velx,vely,velz+random(1,8),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
+		goto burnout
+	caco:
+		TNT1 A 0 A_SpawnItemEx("Bakademon",random(-12,12),random(-12,12),0,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
+		goto burnout
+	imp:
+		TNT1 A 0 A_Jump(64,"mage","healer")
+		TNT1 A 0 A_SpawnItemEx("DrunkImp",random(-12,12),random(-12,12),0,velx,vely,velz+random(1,8),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
+		goto burnout
+	mage:
+		TNT1 A 0 A_SpawnItemEx("MageImp",random(-12,12),random(-12,12),0,velx,vely,velz+random(1,8),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
+		goto burnout
+	healer:
+		TNT1 A 0 A_SpawnItemEx("HealerImp",0,0,0,velx,vely,velz+random(1,8),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
+		goto burnout
+	burnout:
+		TNT1 A 0 A_UnsetShootable
+		TNT1 A 0 A_ChangeFlag("missile",0)
+		TNT1 A 0 A_RearrangePointers(AAPTR_NULL,AAPTR_TARGET,AAPTR_DEFAULT)
+		TNT1 A 0 A_ClearTarget
+		TNT1 A 0 A_TransferPointer(AAPTR_MASTER,AAPTR_DEFAULT,AAPTR_TARGET,AAPTR_TARGET)
+		TNT1 A 0 A_ChangeFlag("nointeraction",1)
+		TNT1 A 0 A_SetTranslucent(1,1)
+		FIRE ABCDEFGH 2 BRIGHT A_FadeOut(0.1)
+		stop
+	vileshards:
+		TNT1 A 0 A_UnsetShootable
+		TNT1 A 0 A_ChangeFlag("missile",0)
+		TNT1 A 0 A_RearrangePointers(AAPTR_NULL,AAPTR_TARGET,AAPTR_DEFAULT)
+		TNT1 A 0 A_ClearTarget
+		TNT1 A 0 A_TransferPointer(AAPTR_MASTER,AAPTR_DEFAULT,AAPTR_TARGET,AAPTR_TARGET)
+		BOSF A 1 A_FadeOut(0.2)
+		TNT1 A 0 A_SpawnItemEx("VileShard",0,0,0,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_NOCHECKPOSITION)
+		BOSF B 1 A_FadeOut(0.2)
+		TNT1 A 0 A_SpawnItemEx("VileShard",0,0,0,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_NOCHECKPOSITION)
+		BOSF C 1 A_FadeOut(0.2)
+		TNT1 A 0 A_SpawnItemEx("VileShard",0,0,0,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_NOCHECKPOSITION)
+		BOSF D 1 A_FadeOut(0.2)
+		TNT1 A 0 A_SpawnItemEx("VileShard",0,0,0,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_NOCHECKPOSITION)
+		TNT1 AAAA 0 A_SpawnItemEx("VileGhostShard",0,0,0,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_NOCHECKPOSITION)
+		stop
+	putti:
+		TNT1 A 0 A_UnsetShootable
+		TNT1 A 0 A_ChangeFlag("missile",0)
+		TNT1 A 0 A_RearrangePointers(AAPTR_NULL,AAPTR_TARGET,AAPTR_DEFAULT)
+		TNT1 A 0 A_ClearTarget
+		TNT1 A 0 A_TransferPointer(AAPTR_MASTER,AAPTR_DEFAULT,AAPTR_TARGET,AAPTR_TARGET)
+		TNT1 A 0 A_SpawnItemEx("Putto",0,0,0,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_NOCHECKPOSITION)
+		stop
+	}
+}
+ACTOR HDBBX : RandomSpawner replaces BossTarget
+{
+	dropitem "DoomImp",240,5
+	dropitem "LostSoul",200,3
+	dropitem "RocketBox",80,1
+}
+ACTOR tempshieldblack : tempshield
+{
+
+	BloodColor "22 22 24"
+}
+
+
+actor NastyMessageOn : InventoryFlag{}
+actor NastyMessageEnd : IdleDummy
+{
+states
+{
+spawn:
+TNT1 A 0
+TNT1 A 0 A_JumpIfInventory("NastyMessageOn",1,1,AAPTR_PLAYER1)
+stop
+TNT1 A 0 A_Jump(256,"msg1","msg2","msg3","msg4","msg5","msg6","msg7","msg8","msg9","msg10","msg11","msg12","msg13","msg14")
+msg1:
+TNT1 A 50 A_PrintBold("\n\n\n\n\n\n\cjI am the Way,",6,BIGFONT)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 60 A_PrintBold("\n\n\n\n\n\n\cjI am the Way,\n\n\n\cjthe Truth",6,BIGFONT)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 0 A_PrintBold("\n\n\n\n\n\n\cjI am the Way,\n\n\n\cjthe Truth\n\n\n\cjand the Life.",6,BIGFONT)
+stop
+msg2:
+TNT1 A 0 A_PrintBold("\n\n\cjFor ever and ever.\n\n\n\n\n\n\cjAmen.",6,BIGFONT) stop
+msg3:
+TNT1 A 0 A_PrintBold("\n\n\n\n\n\n\cjYou cannot defeat me.",6,BIGFONT) stop
+msg4:
+TNT1 A 80 A_PrintBold("\cjHumanity is doomed.\n\n\n\n\n\n\cjIt is all your fault.",2,BIGFONT)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 0 A_PrintBold("\cj\n\n\n\n\cjIt is all your glory.",6,BIGFONT) stop
+msg5:
+TNT1 A 0 A_PrintBold("\n\n\n\n\n\n\cjYou cannot stop this.",6,BIGFONT) stop
+msg6:
+TNT1 A 0 A_PrintBold("\cjI have died for your sins.\n\n\n\n\n\cjWhosoever believeth in me\n\n\n\cjshall not perish.",6,BIGFONT) stop
+msg7:
+TNT1 A 0 A_PrintBold("\n\n\cjCongratulations.\n\n\n\n\n\n\n\cjYou have died.",6,BIGFONT) stop
+msg8:
+TNT1 A 90 A_PrintBold("\n\n\n\n\n\n\cjThe harvesting will cease.",6,BIGFONT)
+TNT1 A 0 A_PlaySound("brain/cube",7,1,0,ATTN_NONE)
+TNT1 A 0 A_PrintBold("\n\n\cjIt will be a new ascension,\n\n\n\cjfor demonic and organic life.",6,BIGFONT)
+stop
+msg9:
+TNT1 A 0 A_PrintBold("\n\n\n\n\n\n\cjWhere is your God now?",6,BIGFONT) stop
+msg10:
+TNT1 A 0 A_PrintBold("\n\n\n\n\n\n\cjDo it.",6,BIGFONT) stop
+msg11:
+TNT1 A 0 A_PrintBold("\n\n\n\n\n\n\cjAnd now these three remain:\n\n\n\cjConquest, Vengeance, and Pride.\n\n\n\n\n\n\cjAnd the greatest of these is Pride.",6,BIGFONT)
+msg12:
+TNT1 A 0 A_PrintBold("\n\n\n\n\n\n\cjI am your Father.",6,BIGFONT) stop
+stop
+msg13:
+TNT1 A 0 A_PrintBold("\n\n\cjThere is no God but Me.\n\n\n\n\n\n\n\cjAnd you are my Prophet.",6,BIGFONT) stop
+stop
+msg14:
+TNT1 A 0 A_PrintBold("\n\n\n\n\n\n\cjSuffer with me.",6,BIGFONT) stop
+stop
+}
+}
+

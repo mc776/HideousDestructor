@@ -1,0 +1,233 @@
+
+// ------------------------------------------------------------
+//   Putto and Yokai
+// ------------------------------------------------------------
+
+ACTOR PuttiPutty{
+	PROJECTILE
+	+forcexybillboard
+	Decal "DoomImpScorch"
+	Translation 2
+	Radius 6
+	Height 8
+	Speed 16
+	Damage 2
+	DamageType "Balefire"
+	RenderStyle Add
+	SeeSound "putto/shotf"
+	DeathSound "putto/shotx"
+	Obituary "Putti putti putti putti, everyone let's eat %o, giga-putti!"
+	Scale 0.6
+	States
+	{
+		Spawn:
+			BAL7 ABABAABB 2 BRIGHT
+			"####" A 0 A_GiveInventory("NotShot",1)
+			Goto See
+		See:
+			"####" A 0 A_PlaySound("misc/firecrkl",0,0.1,0,2)
+			BAL7 AB 4 BRIGHT
+			"####" A 0 A_SpawnItemEx("PuttiPuttyTail", -1, 0, 0, 6, 0, 2)
+			"####" A 0 ThrustThingZ(0,random(0,2),random(0,1),1)
+			"####" A 0 ThrustThing(random(0,255), random(0,2),0,0)
+			Loop
+		Death:
+			"####" A 0 A_JumpIfInventory("NotShot",1,"Shatter")
+			BAL7 C 1 bright A_Explode(12, 32)
+			BAL7 C 1 bright A_FadeOut(0.1)
+			BAL7 D 1 bright A_Explode(8, 24)
+			BAL7 DD 1 bright A_FadeOut(0.1)
+			BAL7 E 1 bright A_Explode(6, 20)
+			BAL7 EE 1 bright A_FadeOut(0.1)
+			Stop
+		Shatter:
+			TNT1 A 2 BRIGHT A_Explode(12, 56)
+			TNT1 AAA 1 BRIGHT A_SpawnItemEx("PuttiPuttyTail", -1, 0, 0, random(1,3), random(-3,3), random(1,4))
+			Stop
+	}
+}
+ACTOR PuttiPuttyTail{
+	+nointeraction
+	+forcexybillboard
+	radius 6
+	height 8
+	renderstyle add
+	translation 2
+	scale 0.8
+	states
+	{
+	spawn:
+		BAL7 D 4 bright
+	spawn2:
+		BAL7 E 1 bright A_Explode(8, 24)
+		BAL7 EE 1 bright A_FadeOut(0.1)
+		loop
+	}
+}
+ACTOR Putto{
+	damagefactor "Thermal", 1.2
+	damagefactor "Balefire", 0.1
+	monster +nogravity +float +floatbob
+	+avoidmelee +lookallaround
+	+donthurtspecies +pushable +dontfall +cannotpush +thruspecies
+	-telestomp -solid
+	Health 80
+	Radius 16
+	Height 26
+	Scale 0.666
+	Speed 0.04
+	Mass 60
+	PainChance 80
+	Obituary "Putti putti putti putti, everyone let's eat %o, giga-putti!"
+	BloodColor "22 22 24"
+	SeeSound "putto/sight"
+	PainSound "putto/pain"
+	DeathSound "putto/death"
+	States
+	{
+	Spawn:
+		BOSF ABCD 6 A_Look
+		Loop
+	See:
+		"####" A 0 A_Jump(216,2)
+		"####" A 0 ThrustThingZ(0,random(1,4),random(0,1),1)
+		"####" A 0 A_JumpIf(z-floorz<24,2)
+		"####" AABBCCDD 2 A_Chase
+		"####" A 0 A_Recoil(-1)
+		"####" A 0 A_ScaleVelocity(0.7)
+		Loop
+		"####" A 0 ThrustThingZ(0,random(3,5),0,1)
+		"####" AABBCCDD 1 A_Chase
+		"####" A 0 A_Recoil(-1)
+		"####" A 0 A_ScaleVelocity(0.7)
+		Loop
+	Missile:
+		"####" AB 3 A_FaceTarget
+		"####" CDA 2 A_FaceTarget
+		"####" B 1 A_PlayWeaponSound("putto/spit")
+		"####" C 1 A_CustomMissile("PuttiPutty", 16, 0, 0)
+		"####" DABCD 1
+		"####" ABCD 2
+		"####" ABCD 3
+		Goto See
+	Pain:
+		"####" DAB 1
+		"####" C 1 A_Recoil(4)
+		"####" D 1 A_Pain
+		"####" ABCD 2 A_FastChase
+		"####" ABCD 3
+		Goto Missile
+	Death:
+		"####" AABB 1 A_SpawnItemEx("HDSmoke", random(-2,2),random(-2,2),random(4,8), velx,vely,velz+2, 0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+		TNT1 A 1{
+			A_SpawnItemEx("HDExplosion", 0,0,3, velx,vely,velz+1,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);
+			A_Scream;
+			A_NoBlocking;
+			A_GivetoTarget("HDKillCount",1);
+		}
+		TNT1 AA 1 A_SpawnItemEx("HDSmokeChunk",0,0,3,velx+random(-4,4),vely+random(-4,4),velz+random(1,6),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+		stop
+	}
+}
+
+
+ACTOR Yokai:Putto{
+	renderstyle add maxtargetrange 666 health 66 +nodamagethrust +noblooddecals bloodtype "IdleDummy"
+	obituary "%o watched a yokai."
+	translation "176:191=29:47","192:207=160:167","240:247=188:191"
+	States
+	{
+	spawn:
+		PINS ABCD 6 A_Look
+		loop
+	missile:
+		"####" AB 3 A_FaceTarget
+		"####" CDA 2 A_FaceTarget
+	missile2:
+		"####" B 1 bright A_JumpIfInTargetLOS("hurt")
+		goto posthurt
+	hurt:
+		"####" A 2 bright{
+			if(CheckClass("SquadRiflemanBase",AAPTR_TARGET,true)){A_Die;}
+			A_ChangeFlag("frightened",0);
+			A_ChangeFlag("shootable",1);
+			A_PlaySound("putto/sight",CHAN_AUTO,1,0,0.9);
+			A_SetScale(0.666);
+			HealThing(1);
+			A_DamageTarget(1,"invisiblebleedout");
+			A_GiveToTarget("IsMoving",2);
+		}
+		"####" B 1 bright{
+			A_SetScale(0.680);
+			if(random(1,4)>1){A_DamageTarget(-1);}
+			A_GiveToTarget("Fatigue",random(1,2));
+			if(random(1,40)>1){A_GiveToTarget("StunCount");}
+		}
+	posthurt:
+		"####" C 0 A_JumpIfCloser(random(600,666),1)
+		goto see
+		"####" C 0 A_MonsterRefire(0,"see")
+		"####" C 0 A_JumpIfInTargetLOS("hurt",40)
+		"####" C 0 A_SetScale(0.666)
+		"####" CDA 1 bright
+		"####" C 0 A_JumpIfInTargetLOS("missile2",80)
+		goto see
+	pain:
+		"----" A 0{
+			A_PlaySound("putto/sight");
+			A_SetTranslucent(1,1);
+			A_ChangeFlag("shootable",0);
+		}
+		"####" DABCD 1 A_FadeOut(0.18)
+		TNT1 A 0 A_ChangeFlag("frightened",1)
+		TNT1 A 1{
+			A_Chase("","",CHF_NOPLAYACTIVE);
+			if(random(1,100)==1){return state("unspook");}
+			return state("");
+		}
+		wait
+	unspook:
+		PINS A 0{
+			A_ChangeFlag("frightened",0);
+			A_ChangeFlag("shootable",1);
+		}
+		PINS DABCD 1 A_FadeIn(0.18)
+		goto see
+	death:
+		"####" DABCD 1 A_FadeOut(0.18)
+		TNT1 A 0 A_GiveToTarget("HDKillCount",1)
+		stop
+	}
+}
+ACTOR YokaiSpawner{
+	+ismonster -countkill +noblockmap +frightened
+	+nogravity +float +lookallaround -telestomp
+	speed 32 health 1
+	radius 18 height 24
+	translation "176:191=29:47","192:207=160:167","240:247=188:191"
+	scale 0.666
+	states
+	{
+	spawn:
+		TNT1 A 10 A_Look
+		loop
+	See:
+		TNT1 A 0 A_JumpIfCloser(512,1)
+		goto drop
+		TNT1 A 1 A_Chase
+		TNT1 A 0 ThrustThing(random(0,256),random(1,10),0,0)
+		TNT1 A 0 A_JumpIfInTargetLOS("See",200)
+	Drop:
+		TNT1 A 0 A_FaceTarget
+		TNT1 A 0 ThrustThingZ(0, random(0,3), random(0,1), 1)
+		TNT1 A 1 A_Jump(16,"Create")
+		loop
+	Create:
+		TNT1 A 0 A_Stop
+		TNT1 A 0 A_SetTranslucent(0.1,1)
+		PINS DABCDABCD 3 BRIGHT A_FadeIn(0.1)
+		TNT1 A 1 A_SpawnItemEx("Yokai",0,0,0, 0,0,0, 0,48)
+		TNT1 A 0 A_Jump(32,"spawn")
+		stop
+	}
+}

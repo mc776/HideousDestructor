@@ -1,0 +1,51 @@
+// ------------------------------------------------------------
+//   Thunder Buster
+// ------------------------------------------------------------
+
+class BeamSpotBoom:IdleDummy{
+	default{
+		+forceradiusdmg +nodamagethrust;
+		+seeinvisible;
+		obituary "%o was shocked by %k's particle beam.";
+		decal "Scorch";
+		damagetype "SmallArms0";
+		radius 2;height 2;
+	}
+	states{
+	spawn:
+		TNT1 A 0 nodelay{
+			actor s;
+			A_GiveToTarget("BeamBoltThrower");
+			A_Blast(
+				320,random(128,256),64,"SmallArms0",
+				pushradius:320,pushamount:256,
+				immolateradius:128,immolateamount:random(1,2),immolatechance:70,
+				gibradius:64,gibamount:random(2,4)*30
+			);
+			A_DistantQuake(
+				5,50,2048,8,128,256,256
+			);
+			for(int i=0;i<random(1,3);i++){
+				s=spawn("HDExplosionBeam",self.pos);
+				s.vel+=(random(-3,3),random(-3,3),random(1,3));
+				s.target=self.target;
+				s=spawn("HDSmokeChunk",self.pos);
+				s.vel+=(random(-3,3),random(-3,3),random(2,6));
+				s.target=self.target;
+			}
+			for(int i=0;i<3;i++){
+				s=spawn("DistantRocket",self.pos);
+			}
+			s=spawn("BeamScorcher",self.pos+(cos(angle)*10,sin(angle)*10,0));
+			s.vel-=(cos(angle)*10,sin(angle)*10,0);
+		}
+		TNT1 AAAAA 2{
+			actor s=spawn("HDExplosionBeam",self.pos);
+			s.vel+=(random(-2,2),random(-2,2),random(1,3));
+			s.target=self.target;
+		}
+		TNT1 AAAAA 2 A_GiveInventory("CacoZapper",1);
+		TNT1 A 30;
+		stop;
+	}
+}

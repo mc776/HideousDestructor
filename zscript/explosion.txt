@@ -1,0 +1,166 @@
+// ------------------------------------------------------------
+//   Radius damage effect combos!
+// ------------------------------------------------------------
+
+//need to do a new explosion to immolate things properly
+//...can we do a combo exploder (blast, frags and immolate)?
+extend class HDActor{
+	void A_Blast(
+		int blastradius=0,int blastdamage=0,int fullblastradius=0,name blastdamagetype="None",
+		int pushradius=0,double pushamount=0,int fullpushradius=0,bool pushmass=true,
+		int fragradius=0,int fragdamage=0,name fragdamagetype="SmallArms1",
+		int immolateradius=0,int immolateamount=1,int immolatechance=100,
+		int gibradius=0,int gibamount=1,
+		bool hurtspecies=true,
+		actor inflictor=null
+	){
+		//get the biggest radius
+		int bigradius=blastradius;
+		if(fragradius>bigradius) bigradius=fragradius;
+		if(immolateradius>bigradius) bigradius=immolateradius;
+		if(gibradius>bigradius) bigradius=gibradius;
+
+		//initialize things to be used in the iterator
+		int dist;
+		int dmg;
+		vector3 orig=self.pos+(0,0,self.height*0.5);
+		actor its=spawn("idledummy",self.pos); //top
+		actor itr=spawn("idledummy",self.pos); //bottom
+		its.a_setsize(1,1,1);itr.a_setsize(1,1,1);
+		bool ontop;
+		double divdist;
+		double divmass;
+		double losmul;
+		if(!inflictor){
+			if(target) inflictor=target;else inflictor=self;
+		}
+
+		//do all this from the centre
+		//shouldn't be a huge issue if the thing is getting destroyed anyway
+		self.setz(self.pos.z+height*0.5);
+
+		blockthingsiterator itt=blockthingsiterator.create(self,bigradius);
+		while(itt.Next()){
+
+			if(	//abort all checks if no hurt species
+				(itt.thing.species!=inflictor.species || hurtspecies)
+			){
+
+				actor it=itt.thing;
+				int dist=distance3d(it);
+				if(dist<(it.radius,it.radius,it.height*0.5).length()){
+					ontop=true;
+					divdist=1;
+				}else{
+					ontop=false;
+					divdist=clamp(1.0/dist,0,1.0);
+				}
+
+				//set up top and bottom
+				its.setxyz(it.pos+(0,0,it.height));
+				itr.setxyz(it.pos);
+				losmul=clamp(0.34*(
+					checksight(it)+
+					checksight(its)+
+					checksight(itr)
+				),0,1.0);
+
+				if(it.mass>0) divmass=1.0/it.mass;else divmass=1.0;
+				if(losmul>0 && blastradius>0 && dist<=blastradius && it.bshootable){
+					if(dist>fullblastradius){
+						dmg=clamp(dist-fullblastradius,0,dist);
+						dmg=blastdamage-dmg;
+					}else dmg=blastdamage;
+					it.DamageMobj(self,self.target,dmg,blastdamagetype,DMG_THRUSTLESS,0);
+				}
+				if(losmul>0 && pushradius>0 && dist<=pushradius && it.bshootable && !it.bdontthrust){
+					vector3 push=(it.pos-self.pos)*divdist
+						*clamp(pushamount-clamp(dist-fullpushradius,0,dist),0,pushamount);
+					if(pushmass){
+						if(pushamount<=it.mass) push=(0,0,0);
+						else{
+							push*=divmass;
+							if(push.z>0)push-=(0,0,mass*it.gravity);
+						}
+					}
+					it.vel+=push;
+				}
+				if(losmul>0 && fragradius>0 && dist<=fragradius && (it.bsolid || it.bshootable)){
+					A_Face(it);
+					if(
+						it!=self
+						&& it.bshootable
+						&& it.radius+it.height>0
+					){
+						//determine damage as proportion of distance and size
+						//get lines to centre and one of the corners
+						double ithalfheight=it.height*0.5;
+						vector3 dv=it.pos+(0,0,ithalfheight)-self.pos; //self to centre
+						vector3 dc=dv+(it.radius,it.radius,ithalfheight); //self to corner
+
+						double dvl=dv.length(); //distance to centre
+						double dcl=dc.length(); //distance to corner
+
+						dc*=dvl/dcl; //equalize the two line lengths
+						double dfl=(dv-dc).length(); //corner to middle as "flattened"
+
+						if (dfl==0) return; //target is a 2D plane perpendicular to caller
+						dfl=clamp(dfl,1,fragradius*2); //don't kill Godzilla with firecracker
+
+						double dvld=1/dvl; //used multiple times
+
+						//if inside, double max damage on this guy only
+						if(dvl>dfl){
+							int mindmg=fragdamage*dfl*dvld;
+							dmg=ceil(random(2,3)*mindmg);
+
+							//reduce dmg if partially occluded
+							dmg*=losmul;
+						}else dmg=fragdamage+random(1,dmg);
+//						A_LogInt(dmg);
+						it.DamageMobj(self,self.target,dmg,fragdamagetype,DMG_THRUSTLESS,0);
+
+						//SO MUCH BLOOD
+						A_FaceVector(dv);
+						name bld="FragPuff";
+						if(!it.bnoblood) bld=it.bloodtype;
+						for(int i=0;i<dmg;i+=15){
+							double xymod=frandom(1,4)*dvld;
+							it.A_SpawnItemEx(bld,
+								random(1,it.radius),
+								random(-it.radius,it.radius)*0.5,
+								random(4,it.height),
+								it.vel.x-dv.x*xymod,
+								it.vel.y-dv.y*xymod,
+								it.vel.z+frandom(1,7),
+								-self.angle,SXF_USEBLOODCOLOR|SXF_ABSOLUTEANGLE|
+								SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION);
+						}
+					}
+				}
+				if(losmul>0 && immolateradius>0 && dist<=immolateradius){
+					if(immolatechance>=random(1,100)*losmul){
+						A_Immolate(it,self.target,immolateamount);
+					}
+				}
+				if(losmul>0 && gibradius>0 && dist<=gibradius && it.bcorpse && it.bshootable){
+					it.a_giveinventory("sawgib",gibamount-dist);
+					//can't use A_Bleed on non-HDActor :(
+					//replace (and use Let) once all monsters scriptified
+					for(int i=0;i<gibamount;i+=3){
+					A_SpawnItemEx(it.bloodtype,
+						random(1,it.radius),
+						random(-it.radius,it.radius)*0.5,
+						random(4,it.height),
+						it.vel.x+(random(-4,4)),
+						it.vel.y+(random(-4,4)),
+						it.vel.z+random(1,7),
+						0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION);
+					}
+					if(!it.bdontthrust) it.vel+=(it.pos-self.pos)*divdist*divmass*10;
+				}
+			}
+		}
+		its.destroy();itr.destroy();
+	}
+}

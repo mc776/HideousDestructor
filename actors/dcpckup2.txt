@@ -1,0 +1,911 @@
+
+
+//-------------------------------------------------
+//  Ammo pickups
+//-------------------------------------------------
+
+ACTOR ClipMagPickup : RandomSpawner replaces Clip
+{
+	dropitem ZM66RifleMags 256 12
+	dropitem HDPistolMag 256 2
+	dropitem HDSMGMag 256 1
+	dropitem ArmorBonus 256 1
+}
+ACTOR ClipBoxPickup : RandomSpawner replaces ClipBox
+{
+	dropitem ClipBoxPickup1 256 7
+	dropitem ClipBoxPickup2 256 1
+	dropitem HDAB 256 2
+}
+ACTOR ClipBoxPickup1 : HDPickup
+{
+	inventory.pickupmessage "Picked up a 4.26 UAC Standard magazine."
+	xscale 0.3
+	yscale 0.4
+	states
+	{
+	spawn:
+		TNT1 A 0
+		CLIP A 0 A_Jump (176, 2)
+		CLIP A 0 A_SpawnItemEx ("HDFragGrenadeAmmo", random(-12,12), random(-12,12), random(-4,4))
+		CLIP A 0 A_Jump (186, 2)
+		CLIP A 0 A_SpawnItemEx ("RocketAmmo", random(-8,8), random(-8,8), random(-4,4))
+		CLIP C 0 A_SpawnItemEx ("ZM66RifleSpawner", random(-4,4),random(-4,4),0)
+		stop
+	pickup:
+		TNT1 A 0 A_GiveInventory("ZM66RifleMags",1)
+		stop
+	}
+}
+ACTOR ClipBoxPickup2 : HDPickup
+{
+	xscale 1
+	yscale 1
+	inventory.pickupmessage "Picked up a 30-round 9mm magazine."
+	states
+	{
+	spawn:
+		TNT1 A 0
+		CLIP A 0 A_Jump (176, 2)
+		CLIP A 0 A_SpawnItemEx ("HDFragGrenadeAmmo", random(-12,12), random(-12,12), random(-4,4))
+		CLIP A 0 A_Jump (186, 2)
+		CLIP A 0 A_SpawnItemEx ("HDSMGMag", random(-8,8), random(-8,8), random(-4,4))
+		CLP3 A 0 A_SpawnItemEx ("HDSMG", random(-4,4),random(-4,4),0)
+		stop
+	pickup:
+		TNT1 A 0 A_GiveInventory("HDSMGMag",1)
+		stop
+	}
+}
+actor ShellRandom : RandomSpawner replaces Shell
+{
+	dropitem ShellPickup 256 7
+	dropitem HDFumbledShell 256 2
+	dropitem DecoPusher 200 3
+	dropitem YokaiSpawner 200 1
+	dropitem HDCellpacks 256 1
+	dropitem ZM66RifleMags 256 1
+	dropitem HDAB 196 1
+}
+actor SingleShellPickup : HDShellAmmo
+{
+	inventory.pickupmessage "Picked up a shotgun shell."
+	inventory.amount 1
+	states
+	{
+	spawn:
+		TNT1 A 2
+		TNT1 A 0 A_SpawnItemEx ("HDFumbledShell",0,0,0,0,0,0,0,SXF_NOCHECKPOSITION)
+		stop
+	}
+}
+actor ShellBoxRandom : RandomSpawner replaces ShellBox
+{
+	dropitem ShellBoxPickup 256 10
+	dropitem DecoPusher 200 1
+	dropitem HDCellpacks 256 2
+	dropitem HDAB 256 1
+}
+actor RocketBoxPickup : RandomSpawner replaces RocketBox
+{
+	dropitem RocketBigPickup 256 14
+	dropitem HDFragGrenadePickup 256 3
+}
+Actor YokaiReplacer : RandomSpawner replaces Cell
+{
+	+ismonster
+	dropitem YokaiSpawner 128 1
+	dropitem LiberatorMag 256 3
+	dropitem BrontornisRound 256 2
+	dropitem HDCellpacks 256 7
+}
+Actor YokaiReplacerPack : RandomSpawner replaces CellPack
+{
+	+ismonster
+	dropitem YokaiSpawner 196 1
+	dropitem LiberatorMag 256 3
+	dropitem BrontornisSpawner 256 1
+	dropitem HDCellpacks 256 4
+	dropitem HDAB 256 1
+}
+
+
+
+
+//-------------------------------------------------
+//  The box of MYSTERY!
+//-------------------------------------------------
+
+Actor HDAB : RandomSpawner
+{
+	dropitem HDAmBox 256 1
+	dropitem HDAmBoxUnarmed 256 5
+}
+actor TrapShooter : IdleDummy
+{
+	obituary "%o paid no attention to Admiral Ackbar."
+	+lookallaround
+	states
+	{
+	spawn:
+		TNT1 A 0
+		TNT1 A 0 A_Stop
+		TNT1 AAAAAAAAAA 0 A_Look
+		TNT1 A 1
+		stop
+	see:
+		TNT1 A 0 A_FaceTarget(0,0)
+		TNT1 A 0 A_SetPitch(pitch+frandom(-2,2))
+		TNT1 A 0 A_SetAngle(angle+frandom(-2,2))
+		TNT1 A 0 A_PlaySound("weapons/pistol")
+		TNT1 A 0 A_CustomMissile("HDNineMil")
+		TNT1 A 1 A_CustomMissile("HDSpent9mm")
+		stop
+	}
+}
+actor HDAmBox : switchabledecoration
+{
+	scale 0.6
+	height 16 radius 16
+	+usespecial activation THINGSPEC_Switch|THINGSPEC_ThingTargets
+	health 100 mass 120 +shootable +noblood +nopain radiusdamagefactor 0.5
+	+lookallaround +nofear +ghost
+	meleerange 42
+	states
+	{
+	spawn:
+		AMMO A 1
+		loop
+	tap:
+		AMMO A 0 A_JumpIfInTargetInventory("IsMoving",1,2)
+		AMMO A 0 A_Jump(256,2)
+		AMMO A 20 A_ClearTarget
+		goto spawn
+		AMMO A 0 A_GiveInventory("Clip")
+		AMMO A 0 A_JumpIfInventory("NotShot",random(5,10),"disarm")
+		TNT1 A 0 A_ChangeVelocity(0,0,1)
+		AMMO A 10 A_GiveInventory("NotShot",1)
+		AMMO A 0 A_TakeInventory("Clip")
+		goto spawn
+	inactive:
+	active:
+		AMMO A 0 A_JumpIfInventory("Clip",1,1)
+		goto tap
+		AMMO A 0 A_JumpIfCloser(42,"open")
+		goto spawn
+	open:
+		TNT1 A 0 A_Jump(4,"disarm")
+		TNT1 A 0 A_Jump(4,"trapped")
+		TNT1 A 0 A_JumpIfInventory("RedSkull",1,"disarm")
+		TNT1 A 0 A_JumpIfInventory("BlueSkull",1,"disarm")
+		TNT1 A 0 A_JumpIfInventory("YellowSkull",1,"disarm")
+	death:
+	trapped:
+		TNT1 A 0 A_ChangeFlag("usespecial",0)
+		TNT1 A 0 A_PlaySound("weapons/plasmax")
+		TNT1 A 0 A_PlaySound("weapons/rifleclick",7)
+		TNT1 A 0 A_Jump(250,1,3,4)
+		goto disarm
+		TNT1 A 0 A_SpawnItemEx("HDFragGrenade",0,0,10,1,0,3,0,SXF_NOCHECKPOSITION)
+		TNT1 A 0 A_SpawnItemEx("HDFragSpoon",0,0,10,random(3,6),0,random(8,16),random(-12,12),SXF_NOCHECKPOSITION)
+		goto brokengoodies
+		TNT1 A 0 A_DropItem("YokaiSpawner")
+		goto brokengoodies
+		TNT1 A 0 A_DropItem("TrapShooter")
+		goto brokengoodies
+	disarm:
+		TNT1 A 0 A_Jump(250,1,2,3)
+		goto trapped
+		TNT1 A 0 A_DropItem("HDFragGrenadeAmmo") goto disarm2
+		TNT1 A 0 A_DropItem("BFGVileShard") goto disarm2
+		TNT1 A 0 A_DropItem("HDLoose9mm") goto disarm2
+	disarm2:
+		TNT1 A 0 A_SpawnItemEx("HDAmBoxDisarmed",0,0,1,0,0,0,0,SXF_NOCHECKPOSITION)
+		stop
+	goodies:
+		TNT1 A 0 A_PlaySound("weapons/pocket")
+		TNT1 A 0 A_Jump(256,"zeds","smgs","piss","libs","clip","rocs","bron","cell","shel","ieds")
+		zeds: TNT1 AAA 0 A_DropItem("ZM66RifleMags") stop
+		smgs: TNT1 AAA 0 A_DropItem("HDSMGMag") stop
+		piss: TNT1 AAAAA 0 A_DropItem("HDPistolMag") stop
+		libs: TNT1 AAA 0 A_DropItem("LiberatorMag") stop
+		clip: TNT1 AAAAA 0 A_DropItem("BossClip") stop
+		rocs: TNT1 AAAA 0 A_DropItem("HDRocketAmmo") stop
+		bron: TNT1 AAA 0 A_DropItem("BrontornisRound") stop
+		cell: TNT1 AAA 0 A_DropItem("HDCellPacks") stop
+		shel: TNT1 AAAA 0 A_DropItem("ShellPickup") stop
+		ieds: TNT1 AAAA 0 A_DropItem("HDIEDKits") stop
+	brokengoodies:
+		TNT1 AAA 0 A_SpawnItemEx("HDSmoke",random(-1,1),random(-1,1),random(-1,1),0,0,random(0,2),0,SXF_NOCHECKPOSITION)
+		TNT1 A 0 A_Jump(256,"brokenzeds","brokensmgs","brokenpiss","brokenlibs","brokenclip","brokenrocs","brokenbron","brokencell","brokenshel")
+	brokenzeds:
+		TNT1 A 0 A_DropItem("ZM66RifleMags")
+		TNT1 AA 0 A_DropItem("ZM66RifleEmptyMag")
+		TNT1 A 0 A_SpawnItemEx("HDSmokeChunk",random(-10,10),random(-10,10),random(1,10),random(-4,4),random(-4,4),random(0,2),0,SXF_NOCHECKPOSITION,24)
+		stop
+	brokensmgs:
+		TNT1 A 0 A_DropItem("HDSMGMag")
+		TNT1 AA 0 A_DropItem("HDSMGEmptyMag")
+		TNT1 AAAAAAAAAAAAAAA 0 A_SpawnItemEx("HDSpent9mm",random(-4,4),random(-4,4),5,0,random(1,360),random(-4,4),0,SXF_NOCHECKPOSITION,12)
+		TNT1 AAAAAAAA 0 A_SpawnItemEx("HDLoose9mm",random(-4,4),random(-4,4),5,0,0,random(-4,4),random(1,360),SXF_NOCHECKPOSITION,24)
+		stop
+	brokenpiss:
+		TNT1 A 0 A_DropItem("HDPistolMag")
+		TNT1 AAAA 0 A_DropItem("HDPistolEmptyMag")
+		TNT1 AAAAAAAAAAAAAAA 0 A_SpawnItemEx("HDSpent9mm",random(-4,4),random(-4,4),5,0,0,random(-4,4),random(1,360),SXF_NOCHECKPOSITION,24)
+		TNT1 AAAAAAAA 0 A_SpawnItemEx("HDLoose9mm",random(-4,4),random(-4,4),5,0,0,random(-4,4),random(1,360),SXF_NOCHECKPOSITION,48)
+		stop
+	brokenlibs:
+		TNT1 A 0 A_DropItem("LiberatorMag")
+		TNT1 A 0 A_DropItem("LiberatorEmptyMag")
+		TNT1 AAAAAAAAAA 0 A_SpawnItemEx("HDSpent7mm",random(-4,4),random(-4,4),5,0,0,random(-4,4),random(1,360),SXF_NOCHECKPOSITION,12)
+		TNT1 AAAAAAAAAA 0 A_SpawnItemEx("HDLoose7mm",random(-4,4),random(-4,4),5,0,0,random(-4,4),random(1,360),SXF_NOCHECKPOSITION,36)
+		stop
+	brokenclip:
+		TNT1 A 0 A_DropItem("BossClip")
+		TNT1 AAAAAAAAAAAAAAAAAAAAAAAAA 0 A_SpawnItemEx("HDLoose7mm",random(-4,4),random(-4,4),5,0,0,random(-4,4),random(1,360),SXF_NOCHECKPOSITION)
+		TNT1 AAAAAAAAAAAAAAA 0 A_SpawnItemEx("HDSpent7mm",random(-4,4),random(-4,4),5,0,0,random(-4,4),random(1,360),SXF_NOCHECKPOSITION)
+		stop
+	brokenrocs:
+		TNT1 A 0 A_DropItem("HDRocketAmmo")
+		TNT1 AA 0 A_DropItem("DudRocquette")
+		stop
+	brokenbron:
+		TNT1 A 0 A_DropItem("BrontornisRound")
+		TNT1 AAA 0 A_SpawnItemEx("HDSmoke",random(-10,10),random(-10,10),random(1,10),0,0,random(0,2),0,SXF_NOCHECKPOSITION)
+		TNT1 AAA 0 A_SpawnItemEx("HDGunSmoke",random(-1,1),random(-1,1),random(2,10),0,0,random(0,2),0,SXF_NOCHECKPOSITION)
+		TNT1 A 0 A_SpawnItemEx("HDExplosion",random(-10,10),random(-10,10),random(1,10),0,0,random(0,2),0,SXF_NOCHECKPOSITION)
+		TNT1 AAAA 0 A_SpawnItemEx("HDSmokeChunk",random(-10,10),random(-10,10),random(1,10),random(-6,6),random(-6,6),random(0,4),0,SXF_NOCHECKPOSITION,24)
+		stop
+	brokencell:
+		TNT1 A 0 A_DropItem("HDCellPackEmpty")
+		TNT1 A 0 A_DropItem("HDCellPacks")
+		TNT1 AAA 0 A_SpawnItemEx("HDSmoke",random(-1,1),random(-1,1),random(1,4),0,0,random(0,2),0,SXF_NOCHECKPOSITION)
+		TNT1 AAA 0 A_SpawnItemEx("HDGunSmoke",random(-1,1),random(-1,1),random(1,10),0,0,random(0,2),0,SXF_NOCHECKPOSITION)
+		TNT1 A 0 A_SpawnItemEx("HDExplosion",random(-1,1),random(-1,1),random(3,4),0,0,random(0,2),0,SXF_NOCHECKPOSITION)
+		TNT1 AAAAAA random(1,8) A_GiveInventory("CacoZapper")
+		stop
+	brokenshel:
+		TNT1 A 0 A_DropItem("ShellPickup")
+		TNT1 AAAAAAAAAAA 0 A_SpawnItemEx("HDFumblingShell",random(-4,4),random(-4,4),5,0,0,random(-4,4),random(1,360),SXF_NOCHECKPOSITION)
+		TNT1 AAAAA 0 A_SpawnItemEx("HDSpentShell",random(-4,4),random(-4,4),5,0,0,random(-4,4),random(1,360),SXF_NOCHECKPOSITION)
+		stop
+	}
+}
+actor HDAmBoxUnarmed : HDAmBox
+{
+	states
+	{
+	open:
+		TNT1 A 0 A_Jump(256,"goodies")
+	death:
+	trapped:
+		TNT1 A 0 A_PlaySound("weapons/plasmax")
+		TNT1 A 0 A_PlaySound("weapons/rifleclick",7)
+		goto brokengoodies
+	}
+}
+actor HDAmBoxDisarmed : HDAmBoxUnarmed
+{
+	states
+	{
+	active:
+	inactive:
+		TNT1 A 0 A_Jump(256,"goodies")
+	spawn:
+		OWWV A -1
+		stop
+	}
+}
+
+
+
+//-------------------------------------------------
+// Health/armour bonuses
+//-------------------------------------------------
+
+actor HDFragGrenadePickup : FragP //replaces HDFragGrenades
+{
+	states
+	{
+	spawn:
+		FRAG A 0 A_Stop
+		FRAG A 0 A_JumpIfInventory("Clip",1,"spawn2")
+		FRAG A 0 A_GiveInventory("Clip",1)
+		FRAG A 0 A_SpawnItemEx ("HDFragGrenadeAmmo", -4,0,0, 0,0,0, 0,SXF_NOCHECKPOSITION)
+		FRAG A 0 A_SpawnItemEx ("HDFragGrenadeAmmo", -4,4,0, 0,0,0, 0,SXF_NOCHECKPOSITION)
+		FRAG A 0 A_SpawnItemEx ("HDFragGrenadeAmmo", 0,4,0, 0,0,0, 0,SXF_NOCHECKPOSITION)
+		FRAG A 0 A_SpawnItemEx ("HDFragGrenadeAmmo", 4,0,0, 0,0,0, 0,SXF_NOCHECKPOSITION)
+		FRAG A 0 A_SpawnItemEx ("HDFragGrenadeAmmo", 4,4,0, 0,0,0, 0,SXF_NOCHECKPOSITION)
+		FRAG A -1
+		stop
+	}
+}
+actor SpiritualArmourFlag:InventoryFlag{inventory.maxamount 144}
+actor SpiritualArmour:BasicArmorBonus
+{
+	inventory.icon ARMEA0
+	armor.savepercent 50
+	armor.saveamount 70
+	armor.maxsaveamount 144000
+	damagefactor "Balefire",0.1
+}
+actor GreenHelmet : CustomInventory replaces SpiritualArmour
+{
+	inventory.pickupmessage "Picked up an armour bonus."
+	+inventory.alwayspickup
+	scale 0.8
+	states
+	{
+	spawn:
+		BON2 A 6 A_SetTics(random(7,144))
+		BON2 BC 6 A_SetTics(random(1,2))
+		BON2 C 0 A_Jump(124,2)
+		BON2 D 6 light("ARMORBONUS") A_SetTics(random(1,4))
+		BON2 CB 6 A_SetTics(random(1,3))
+		loop
+	pickup:
+		TNT1 A 0 A_GiveInventory("SpiritualArmour",1)
+		TNT1 A 0 A_GiveInventory("SpiritualArmourFlag",3)
+		TNT1 A 0 A_GiveInventory("PowerFrightener",1)
+		TNT1 A 0 A_TakeInventory("WoundCount",7)
+		TNT1 A 0 A_Jump(256,
+		"Pss003v3",
+		"Pss003v6t7",
+		"Pss005v12",
+		"Pss008v4",
+		"Pss009v20t21",
+		"Pss011v4t5",
+		"Pss011v6t7",
+		"Pss012v8",
+		"Pss013v1",
+		"Pss016v8t10",
+		"Pss017v7",
+		"Pss018v2",
+		"Pss018v3t4",
+		"Pss018v5t6",
+		"Pss018v30t32",
+		"Pss018v33t34",
+		"Pss018v35",
+		"Pss021v3t4",
+		"Pss022v1",
+		"Pss022v23t24",
+		"Pss023v4",
+		"Pss027v1",
+		"Pss027v6",
+		"Pss028v7",
+		"Pss031v2",
+		"Pss031v3",
+		"Pss031v22",
+		"Pss032v1",
+		"Pss032v7",
+		"Pss034v20",
+		"Pss037v35",
+		"Pss037v36",
+		"Pss039v4",
+		"Pss039v7",
+		"Pss039v12t13",
+		"Pss045v4",
+		"Pss045v13",
+		"Pss046v8",
+		"Pss046v9",
+		"Pss046v11",
+		"Pss047v6",
+		"Pss047v9",
+		"Pss048v13t14",
+		"Pss050v14t15",
+		"Pss050v18t19",
+		"Pss058v6t7",
+		"Pss071v7",
+		"Pss077v10",
+		"Pss078v49",
+		"Pss091v5t6",
+		"Pss091v7",
+		"Pss104v33",
+		"Pss104v34",
+		"Pss112v10",
+		"Pss116v15",
+		"Pss118v10",
+		"Pss118v17",
+		"Pss118v22",
+		"Pss118v24",
+		"Pss118v27",
+		"Pss119v1",
+		"Pss119v176",
+		"Pss120v6t7",
+		"Pss122v6t7",
+		"Pss125v2",
+		"Pss137v4t6",
+		"Pss139v8",
+		"Pss140v4",
+		"Pss140v7",
+		"Pss141v8t10",
+		"Pss144v1t2",
+		"Pss147v12t13")
+		TNT1 A 0
+		stop
+Pss003v3: TNT1 A 0 A_Print("But thou, O LORD, \n\nart a shield for me; \n\nmy glory, and the \n\nlifter up of mine head.",8) stop
+Pss003v6t7: TNT1 A 0 A_Print("I will not be afraid of ten thousands of people, \n\nthat have set themselves against me round about. \n\n\n\nArise, O LORD; save me, O my God: for thou hast \n\nsmitten all mine enemies upon the cheek bone; \n\nthou hast broken the teeth of the ungodly.",10) stop
+Pss005v12: TNT1 A 0 A_Print("For thou, LORD, wilt bless the righteous; \n\nwith favour wilt thou compass him as with a shield.",8) stop
+Pss008v4: TNT1 A 0 A_Print("What is man, that thou art mindful of him? \n\nand the son of man, that thou visitest him?",8) stop
+Pss009v20t21: TNT1 A 0 A_Print("Put them in fear, O LORD:\n\nthat the nations may know\n\nthemselves to be but men.\n\n\cuSelah.\c-\n\n\n\nWhy standest thou afar off, O LORD?\n\nwhy hidest thou thyself\n\nin times of trouble?",10) stop
+Pss011v4t5: TNT1 A 0 A_Print("The LORD is in his holy temple, the LORD's throne is in heaven: \n\nhis eyes behold, his eyelids try, the children of men.\n\n\n\nThe LORD trieth the righteous: but the wicked and \n\nhim that loveth violence his soul hateth.",9) stop
+Pss011v6t7: TNT1 A 0 A_Print("Upon the wicked he shall rain snares, fire and brimstone, \n\nand an horrible tempest: this shall be the portion of their cup.\n\n\n\nFor the righteous LORD loveth righteousness; \n\nhis countenance doth behold the upright.",9) stop
+Pss012v8: TNT1 A 0 A_Print("The wicked walk on every side,\n\nwhen the vilest men are exalted.",8) stop
+Pss013v1: TNT1 A 0 A_Print("How long wilt thou\n\nforget me, O LORD?\n\nfor ever?\n\nhow long wilt thou\n\nhide thy face from me?",8) stop
+Pss016v8t10: TNT1 A 0 A_Print("I have set the LORD always before me: \n\nbecause he is at my right hand, I shall not be moved.\n\n\n\nTherefore my heart is glad, and my glory rejoiceth: \n\nmy flesh also shall rest in hope.\n\n\n\nFor thou wilt not leave my soul in hell; \n\nneither wilt thou suffer thine Holy One to see corruption.",12) stop
+Pss017v7: TNT1 A 0 A_Print("Shew thy marvellous lovingkindness, \n\nO thou that savest by thy right hand \n\nthem which put their trust in thee \n\nfrom those that rise up against them.",8) stop
+Pss018v2: TNT1 A 0 A_Print("The LORD is my rock, and my fortress, and my deliverer; \n\nmy God, my strength, in whom I will trust; my buckler, \n\nand the horn of my salvation, and my high tower.",8) stop
+Pss018v3t4: TNT1 A 0 A_Print("I will call upon the LORD, \n\nwho is worthy to be praised: \n\nso shall I be saved from mine enemies.\n\n\n\nThe sorrows of death compassed me, \n\nand the floods of ungodly men made me afraid.",8) stop
+Pss018v5t6: TNT1 A 0 A_Print("The sorrows of hell compassed me about: \n\nthe snares of death prevented me.\n\n\n\nIn my distress I called upon the LORD, \n\nand cried unto my God: \n\nhe heard my voice out of his temple, \n\nand my cry came before him, even into his ears.",10) stop
+Pss018v30t32: TNT1 A 0 A_Print("As for God, his way is perfect: the word of the LORD is tried: \n\nhe is a buckler to all those that trust in him.\n\n\n\nFor who is God save the LORD? \n\nor who is a rock save our God?\n\n\n\nIt is God that girdeth me with strength, \n\nand maketh my way perfect.",10) stop
+Pss018v33t34: TNT1 A 0 A_Print("He maketh my feet like hinds' feet, \n\nand setteth me upon my high places.\n\n\n\nHe teacheth my hands to war, \n\nso that a bow of steel is broken by mine arms.",8) stop
+Pss018v35: TNT1 A 0 A_Print("Thou hast also given me the shield of thy salvation: \n\nand thy right hand hath holden me up, \n\nand thy gentleness hath made me great.",8) stop
+Pss021v3t4: TNT1 A 0 A_Print("For thou preventest him with the blessings of goodness: \n\nthou settest a crown of pure gold on his head.\n\n\n\nHe asked life of thee, and thou gavest it him, \n\neven length of days for ever and ever.",9) stop
+Pss022v1:TNT1 A 0 A_Print("My God, my God, why hast thou forsaken me? \n\nwhy art thou so far from helping me, \n\nand from the words of my roaring?",8) stop
+Pss022v23t24: TNT1 A 0 A_Print("Ye that fear the LORD,\npraise him;\n\nall ye the seed of Jacob,\nglorify him;\n\nand fear him,\nall ye the seed of Israel.\n\n\n\nFor he hath not despised nor abhorred \n\nthe affliction of the afflicted; \n\nneither hath he hid his face from him; \n\nbut when he cried unto him,\n\nhe heard.",12) stop
+Pss023v4: TNT1 A 0 A_Print("Yea, though I walk through the valley \n\nof the shadow of death, I will fear no evil: for thou art with me; \n\nthy rod and thy staff they comfort me.",8) stop
+Pss027v1: TNT1 A 0 A_Print("The LORD is my light \n\nand my salvation; \n\nwhom shall I fear? \n\nthe LORD is the strength \n\nof my life; of whom \n\nshall I be afraid?",8)
+Pss027v6: TNT1 A 0 A_Print("And now shall mine head be lifted up above mine enemies round about me: \n\ntherefore will I offer in his tabernacle sacrifices of joy; \n\nI will sing, yea, I will sing praises unto the LORD.",8) stop
+Pss028v7: TNT1 A 0 A_Print("The LORD is my strength and my shield; my heart trusted \n\nin him, and I am helped: therefore my heart greatly rejoiceth; \n\nand with my song will I praise him.",8) stop
+Pss031v2: TNT1 A 0 A_Print("Bow down thine ear to me;\n\ndeliver me speedily:\n\nbe thou my strong rock,\n\nfor an house of defence\n\nto save me.",8) stop
+Pss031v3: TNT1 A 0 A_Print("For thou art my rock and my fortress;\n\ntherefore for thy name's sake lead me,\n\nand guide me.",8) stop
+Pss031v22: TNT1 A 0 A_Print("For I said in my haste,\n\nI am cut off from\n\nbefore thine eyes:\n\nnevertheless thou heardest\n\nthe voice of my supplications\n\nwhen I cried unto thee.",9) stop
+Pss032v1: TNT1 A 0 A_Print("Blessed is he whose\n\ntransgression is forgiven,\n\nwhose sin is covered.",8) stop 
+Pss032v7: TNT1 A 0 A_Print("Thou art my hiding place;\n\nthou shalt preserve me from trouble;\n\nthou shalt compass me about\n\nwith songs of deliverance.\n\n\cuSelah.",10) stop 
+Pss034v20: TNT1 A 0 A_Print("He keepeth all his bones:\n\nnot one of them is broken.",8) stop 
+Pss037v35: TNT1 A 0 A_Print("I have seen the wicked\n\nin great power, and spreading \n\n himself like a green bay tree.",8) stop 
+Pss037v36: TNT1 A 0 A_Print(" Yet he passed away, \n\n and, lo, he was not: \n\n yea, I sought him, \n\n but he could not be found.",8) stop 
+Pss039v4: TNT1 A 0 A_Print(" LORD, make me to know mine end, \n\n and the measure of my days, \n\n what it is; that I may know \n\n how frail I am. ",8) stop 
+Pss039v7: TNT1 A 0 A_Print(" And now, Lord,\n\nwhat wait I for? \n\n my hope is in thee.",8) stop 
+Pss039v12t13: TNT1 A 0 A_Print(" Hear my prayer, O LORD, and give ear unto my cry; \n\n hold not thy peace at my tears: \n\n for I am a stranger with thee, \n\n and a sojourner, as all my fathers were.\n\n\n\nO spare me, that I may recover \n\n strength, before I go hence, \n\n and be no more." ,12) stop 
+Pss045v4: TNT1 A 0 A_Print("And in thy majesty ride \n\nprosperously because of truth \n\nand meekness and righteousness; \n\nand thy right hand shall \n\nteach thee terrible things.",8) stop
+Pss045v13: TNT1 A 0 A_Print("The king's daughter is \n\nall glorious within: \n\nher clothing is \n\nof wrought gold.",8) stop
+Pss046v8: TNT1 A 0 A_Print("Come, \n\nbehold the works of the LORD, \n\nwhat desolations he hath made \n\nin the earth.",8) stop
+Pss046v9: TNT1 A 0 A_Print("He maketh wars to cease \n\nunto the end of the earth; \n\nhe breaketh the bow, and cutteth \n\nthe spear in sunder; he burneth \n\nthe chariot in the fire.",8) stop
+Pss046v11: TNT1 A 0 A_Print("The LORD of hosts is with us; \n\nthe God of Jacob is our refuge. \n\n\cuSelah.",8) stop
+Pss047v6: TNT1 A 0 A_Print("Sing praises to God, \n\nsing praises: \n\nsing praises unto our King, \n\nsing praises.",8) stop
+Pss047v9: TNT1 A 0 A_Print("The princes of the people \n\nare gathered together, \n\neven the people of \n\nthe God of Abraham: \n\nfor the shields of the earth \n\nbelong unto God: \n\nhe is greatly exalted.",8) stop
+Pss048v13t14: TNT1 A 0 A_Print("Mark ye well her bulwarks, \n\nconsider her palaces; \n\nthat ye may tell it \n\nto the generation following.\n\n\n\nFor this God is our God \n\nfor ever and ever: \n\nhe will be our guide \n\neven unto death.",9) stop
+Pss050v14t15: TNT1 A 0 A_Print("Offer unto God thanksgiving; \n\nand pay thy vows unto the most High:\n\n\n\nAnd call upon me \n\nin the day of trouble: \n\nI will deliver thee, \n\nand thou shalt glorify me.",8) stop
+Pss050v18t19: TNT1 A 0 A_Print("Do good in thy good pleasure unto Zion: \n\nbuild thou the walls of Jerusalem.\n\n\n\nThen shalt thou be pleased with \n\nthe sacrifices of righteousness, \n\nwith burnt offering and whole burnt offering: \n\nthen shall they offer bullocks upon thine altar.",10) stop
+Pss058v6t7: TNT1 A 0 A_Print("Break their teeth, O God, in their mouth: \n\nbreak out the great teeth of the young lions, O LORD. \n\n\n\nLet them melt away as waters which run continually: \n\nwhen he bendeth his bow to shoot his arrows, \n\nlet them be as cut in pieces.",10) stop
+Pss071v7: TNT1 A 0 A_Print("I am as a wonder unto many; \n\nbut thou art my strong refuge.",8) stop
+Pss077v10: TNT1 A 0 A_Print("And I said\n\nThis is my infirmity:\n\n\n\nbut I will remember\n\nthe years of the right\n\nhand of the most High.",8) stop
+Pss078v49: TNT1 A 0 A_Print("He cast upon them the fierceness \n\nof his anger, wrath, \n\nand indignation, and trouble, \n\nby sending evil angels among them.",8) stop
+Pss091v5t6: TNT1 A 0 A_Print("Thou shalt not be afraid for the terror by night; \n\nnor for the arrow that flieth by day; \n\n\n\nNor for the pestilence that walketh in darkness; \n\nnor for the destruction that wasteth at noonday.",8) stop
+Pss091v7: TNT1 A 0 A_Print("A thousand shall fall at thy side, and \n\nten thousand at thy right hand; \n\nbut it shall not come nigh thee.",8) stop
+Pss103v15t16: TNT1 A 0 A_Print("As for man, his days are as grass: \n\nas a flower of the field, so he flourisheth.\n\n\n\nFor the wind passeth over it, and it is gone; \n\nand the place thereof shall know it no more.",8) stop
+Pss104v33: TNT1 A 0 A_Print("I will sing unto the LORD \n\nas long as I live: \n\nI will sing praise to \n\nmy God while I have my being.",8) stop
+Pss104v34: TNT1 A 0 A_Print("My meditation of him shall be sweet: \n\nI will be glad in the LORD.",8) stop
+Pss112v10: TNT1 A 0 A_Print("The wicked shall see it,\n\nand be grieved;\n\nhe shall gnash\n\nwith his teeth,\n\nand melt away:\n\nthe desire of the\n\nwicked shall perish.",9) stop
+Pss116v15: TNT1 A 0 A_Print("Precious in the \n\nsight of the LORD \n\nis the death \n\nof his saints.",8) stop
+Pss118v10: TNT1 A 0 A_Print("All nations compassed me about: \n\nbut in the name of the LORD \n\nwill I destory them.",8) stop
+Pss118v17: TNT1 A 0 A_Print("I shall not die, but live, \n\nand declare the works of the LORD.",8) stop
+Pss118v22: TNT1 A 0 A_Print("The stone which the builders \n\nrefused is become the head \n\nstone of the corner.",8) stop
+Pss118v24: TNT1 A 0 A_Print("This is the day which \n\nthe LORD hath made; \n\nwe will rejoice \n\nand be glad in it.",8) stop
+Pss118v27: TNT1 A 0 A_Print("God is the LORD, which \n\nhath shewed us light: \n\nbind the sacrifice with cords, \n\neven unto the horns \n\nof the altar.",8) stop
+Pss119v1: TNT1 A 0 A_Print("Blessed are the undefiled\n\nin the way, who walk in\n\nthe law of the LORD.",8) stop
+Pss119v176: TNT1 A 0 A_Print("I have gone astray like a lost sheep; \n\nseek thy servant; for I do not \n\nforget thy commandments.",8) stop
+Pss120v6t7: TNT1 A 0 A_Print("My soul hath long dwelt \n\nwith him that hateth peace.\n\n\n\nI am for peace: \n\nbut when I speak, \n\nthey are for war.",8) stop
+Pss122v6t7: TNT1 A 0 A_Print("Pray for the peace of Jerusalem: \n\nthey shall prosper that love thee. \n\n\n\nPeace be within thy walls, \n\nand prosperity within thy palaces.",8) stop
+Pss125v2: TNT1 A 0 A_Print("As the mountains are round about Jerusalem, \n\nso the LORD is round about his people \n\nfrom henceforth even for ever.",8) stop
+Pss137v4t6: TNT1 A 0 A_Print("How shall we sing the LORD's song in a strange land? \n\n\n\nIf I forget thee, O Jerusalem, \n\nlet my right hand forget her cunning. \n\n\n\nIf I do not remember thee, \n\nlet my tongue cleave to the roof of my mouth; \n\nif I prefer not Jerusalem \n\nabove my chief joy.",11) stop
+Pss139v8: TNT1 A 0 A_Print("If I ascend up into heaven, \n\nthou art there: \n\nif I make my bed in hell, \n\nbehold, thou art there.",8) stop
+Pss140v4: TNT1 A 0 A_Print("Keep me, O LORD, from the hands of the wicked; \n\npreserve me from the violent man; \n\nwho have purposed to overthrow my goings.",8) stop
+Pss140v7: TNT1 A 0 A_Print("O GOD the Lord, \n\nthe strength of my salvation, \n\nthou hast covered my head \n\nin the day of battle.",8) stop
+Pss141v8t10: TNT1 A 0 A_Print("But mine eyes are unto thee, O GOD the Lord: \n\nin thee is my trust; leave not my soul destitute. \n\n\n\nKeep me from the snares which they have laid for me, \n\nand the gins of the workers of iniquity. \n\n\n\nLet the wicked fall into their own nets, \n\nwhilst that I withal escape.",12) stop
+Pss144v1t2: TNT1 A 0 A_Print("Blessed be the LORD my strength, which teacheth \n\nmy hands to war, and my fingers to fight: \n\n\n\nMy goodness, and my fortress; my high tower, \n\nand my deliverer; my shield, and he in whom I trust; \n\nwho subdueth my people under me.",10) stop
+Pss147v12t13: TNT1 A 0 A_Print("Praise the LORD, O Jerusalem; \n\npraise thy God, O Zion. \n\n\n\nFor he hath strengthened the bars of thy gates; \n\nhe hath blessed thy children within thee.",8) stop
+
+
+
+
+//Pss: TNT1 A 0 A_Print("",8) stop
+	}
+}
+actor GHP : HDUPK replaces GreenHelmet
+{
+	scale 0.8
+	states
+	{
+	spawn:
+		BON2 A 6 A_SetTics(random(7,144))
+		BON2 BC 6 A_SetTics(random(1,2))
+		BON2 C 0 A_Jump(124,2)
+		BON2 D 6 light("ARMORBONUS") A_SetTics(random(1,4))
+		BON2 CB 6 A_SetTics(random(1,3))
+		loop
+	give:
+		BON2 A 0 A_PlaySound("misc/p_pkup")
+		BON2 A 0 A_GiveToTarget("GreenHelmet",1)
+		stop
+	}
+}
+
+actor BluePotion : HDPickup
+{
+	inventory.amount 1
+	inventory.maxamount 8
+	inventory.interhubamount 8
+	inventory.pickupmessage "Picked up a health bonus."
+	inventory.icon PBONA0
+	states
+	{
+	spawn:
+		BON1 A 0 nodelay A_SpawnItemEx("BPP",0,0,0,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+		stop
+	use:
+		TNT1 A 0 A_JumpIfInventory("UsingMeds",1,2)
+		TNT1 A 0 ACS_NamedExecuteAlways("UseFlask", 0, 2)
+		stop
+		TNT1 A 0
+		fail
+	}
+}
+actor BPP : HDUPK replaces BluePotion
+{
+	scale 0.4
+	states
+	{
+	spawn:
+		BON1 ABCDCB 2 light("HEALTHPOTION") A_SetTics(random(1,3))
+		loop
+	give:
+		BON2 A 0 A_PlaySound("misc/casing")
+		BON2 A 0 A_GiveToTarget("BluePotion",1)
+		stop
+	}
+}
+
+
+actor DecoPusher : IdleDummy
+{
+	states
+	{
+	spawn:
+		TNT1 A 0
+		TNT1 A 0 A_Jump(12,2,3)
+		TNT1 A 0 A_SpawnItemEx("HDGoreBits",random(-4,4),random(-4,4),2,random(1,4),0,0,random(0,365),SXF_NOCHECKPOSITION) stop
+		TNT1 A 0 A_SpawnItemEx("InnocentBarrel",random(-4,4),random(-4,4),0,random(1,4),0,0,random(0,365),SXF_NOCHECKPOSITION) stop
+		TNT1 A 0 A_SpawnItemEx("InnocentFireCan",random(-4,4),random(-4,4),0,random(1,4),0,0,random(0,365),SXF_NOCHECKPOSITION) stop
+	}
+}
+actor HDCasingBits : IdleDummy
+{
+	states
+	{
+	spawn:
+		TNT1 A 0
+		TNT1 A 0 A_SetAngle(random(0,365))
+		TNT1 A 0 A_ChangeVelocity(frandom(-3,6),0,0,CVF_RELATIVE)
+
+		TNT1 A 0 A_Jump(200,"shel")
+		TNT1 A 0 A_Jump(196,"pis")
+		goto lib
+	shel:
+		TNT1 A 0 A_CheckSight(1)
+		stop
+		TNT1 A 0 A_Jump(12,2)
+		TNT1 A 0 A_Jump(256,2)
+		TNT1 A 0 A_SpawnItemEx("HDFumblingShell",0,0,48,random(-2,2),random(-2,2),random(-2,2))
+		TNT1 A 0 A_SpawnItemEx("HDSpentShell",0,0,48,random(-2,2),random(-2,2),random(-2,2))
+		TNT1 A 0 A_SetTics(random(2,30))
+		TNT1 A 0 A_Jump(190,"shel")
+		stop
+	pis:
+		TNT1 A 0 A_CheckSight(1)
+		stop
+		TNT1 A 0 A_SpawnItemEx("HDSpent9mm",0,0,48,random(-2,2),random(-2,2),random(-2,2))
+		TNT1 A 0 A_SetTics(random(1,20))
+		TNT1 A 0 A_Jump(200,"pis")
+		stop
+	lib:
+		TNT1 A 0 A_CheckSight(1)
+		stop
+		TNT1 A 0 A_SpawnItemEx("HDSpent7mm",0,0,48,random(-2,2),random(-2,2),random(-2,2))
+		TNT1 A 0 A_SetTics(random(2,10))
+		TNT1 A 0 A_Jump(190,"lib")
+		stop
+	}
+}
+actor HDGoreBits : RandomSpawner
+{
+	dropitem "DeadDemon" 126 1
+	dropitem "DeadDoomImp" 126 1
+	dropitem "DeadZombieMan" 96 1
+	dropitem "DeadShotgunGuy" 96 1
+	dropitem "DeadRifleman" 96 1
+	dropitem "ReallyDeadRifleman" 46 1
+	dropitem "ColonGibs" 256 4
+	dropitem "Gibs" 256 6
+	dropitem "SmallBloodPool" 256 8
+	dropitem "BarrelGibs" 256 8
+	dropitem "HDCasingBits" 256 32
+	dropitem "HDFumbledShell" 256 8
+	dropitem "HDSMGEmptyMag" 256 3
+	dropitem "HDPistolEmptyMag" 256 3
+	dropitem "LiberatorEmptyMag" 96 1
+	dropitem "ZM66RifleEmptyMag" 256 8
+}
+actor HelmFrag : RandomSpawner replaces ArmorBonus
+{
+	dropitem "DecoPusher" 96 20
+	dropitem "GreenHelmet" 96 2
+	dropitem "HDFragGrenades" 72 1
+	dropitem "LiberatorMag" 48 1
+	dropitem "ZM66RifleMags" 48 1
+	dropitem "BFGVileShard" 96 1
+	dropitem "HDCellPacks" 48 1
+	dropitem "PortableStimpack" 48 1
+	dropitem "ClipBox" 48 1
+	dropitem HDAB 48 1
+}
+actor BlueFrag : RandomSpawner replaces HealthBonus
+{
+	dropitem "DecoPusher" 96 20
+	dropitem "BluePotion" 96 2
+	dropitem "HDFragGrenades" 72 1
+	dropitem "BFGVileShard" 96 1
+	dropitem "HDPistolMag" 48 1
+	dropitem "HDCellPacks" 72 1
+	dropitem "PortableMedikit" 48 1
+	dropitem "PortableStimpack" 48 1
+	dropitem HDAB 48 1
+}
+
+
+// sticking oober spheres in here since they inherit from BluePotion
+
+actor RedSphere : RandomSpawner replaces BlurSphere
+{
+	dropitem "SquadSummoner" 256 7
+	dropitem "HDFragGrenades" 256 3
+	dropitem "MedStation" 256 2
+	dropitem "GreenArmor" 256 1
+	dropitem "BluePotion" 256 1
+}
+actor BlueSphere : switchabledecoration replaces Soulsphere
+{
+	+floatbob
+	+usespecial activation THINGSPEC_Activate|THINGSPEC_ThingTargets
+	alpha 0.8 //renderstyle add
+	scale 0.8
+	states
+	{
+	spawn:
+		SOUL ABCDCB random(2,7) bright light("SOULSPHERE")
+		loop
+	active:
+	inactive:
+		"----" A 0 A_ChangeVelocity(0,0,1)
+		"----" A 0 A_NoGravity
+		"----" A 0 A_PlaySound("misc/p_pkup")
+		"----" A 0 A_Jump(256,"give")
+	give:
+		"----" A 0 A_GiveToTarget("RegenBlues",144)
+	fade:
+		"----" A 1 bright{
+			A_SetScale(scalex*1.01);
+			A_FadeOut(0.1);
+			A_SpawnItemEx("HDGunSmoke",random(-4,4),random(-4,4),random(6,24),random(-1,1),random(-1,1),1,0,SXF_NOCHECKPOSITION);
+		}loop
+	}
+}
+actor BrownSphere : BlueSphere replaces Megasphere
+{
+	states{
+	spawn:
+		MEGA ABCD random(2,7) bright
+		loop
+	give:
+		MEGA "#" 0{
+			A_SetTranslucent(1,1);
+			A_ChangeVelocity(0,0,1);
+			A_NoGravity;
+			A_PlaySound("misc/p_pkup");
+			A_GiveToTarget("RegenBlues",200);
+			A_GiveToTarget("SpiritualArmour");
+			A_GiveToTarget("SpiritualArmour");
+			A_GiveToTarget("GreenHelmet");
+		}goto fade
+	}
+}
+actor GreenSphere : BlueSphere replaces Invulnerabilitysphere
+{
+	+shootable
+	renderstyle normal
+	scale 0.6
+	-floatbob
+	-nogravity
+	health 200
+	mass 1000
+	height 12
+	radius 12
+	states
+	{
+	spawn:
+		PINV ABCD 6 bright
+		loop
+	death.telefrag:
+	give:
+		TNT1 A 0 A_GiveToTarget("HDInvuln",1)
+		stop
+	death:
+		TNT1 A 0 A_SpawnItemEx("HDExplosion",4,-4,20,velx,vely,velz+1,0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_ABSOLUTEMOMENTUM)
+		TNT1 A 0 A_SpawnItemEx("HDExplosion",4,4,20,velx,vely,velz+1,0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_ABSOLUTEMOMENTUM)
+		TNT1 A 0 A_SpawnItemEx("HDExplosion",-4,-4,20,velx,vely,velz+1,0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_ABSOLUTEMOMENTUM)
+		TNT1 AA 0 A_SpawnItemEx("HDSmoke",random(-4,4),random(-4,4),2,0,0,random(1,3),0,SXF_NOCHECKPOSITION)
+		TNT1 A 2 A_SpawnItemEx("HDExplosion",-4,4,20,velx,vely,velz+1,0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_ABSOLUTEMOMENTUM)
+		TNT1 A 0 A_Quake(3,26,0,220,none)
+		TNT1 A 0 A_SpawnItemEx("ArchAngel",0,0,0,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+		TNT1 AAAAA 2 A_SpawnItemEx("HDSmoke",random(-4,4),random(-4,4),2,velx,vely,velz+random(1,3),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+		TNT1 AAAAA 4 A_SpawnItemEx("HDSmoke",random(-4,4),random(-4,4),2,velx,vely,velz+random(1,3),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+		stop
+	}
+}
+actor HDInvuln : ActionItem
+{
+	states
+	{
+	pickup:
+		TNT1 A 0 A_Quake(3,26,0,220,none)
+		TNT1 A 0 A_GiveInventory("HDInvulnP",1)
+		TNT1 A 0 A_RadiusGive ("HDFireStarter", 128, RGF_PLAYERS|RGF_MONSTERS|RGF_OBJECTS|RGF_CORPSES, 1)
+		TNT1 A 0 A_SpawnItemEx("HDExplosion",4,-4,20,velx,vely,velz+1,0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_ABSOLUTEMOMENTUM)
+		TNT1 A 0 A_SpawnItemEx("HDExplosion",4,4,20,velx,vely,velz+1,0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_ABSOLUTEMOMENTUM)
+		TNT1 A 0 A_SpawnItemEx("HDExplosion",-4,-4,20,velx,vely,velz+1,0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_ABSOLUTEMOMENTUM)
+		TNT1 A 0 A_SpawnItemEx("HDExplosion",-4,4,20,velx,vely,velz+1,0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_ABSOLUTEMOMENTUM)
+		MISX AAA 0 A_SpawnItemEx("HDSmokeChunk", 0,0,0,velx+random(-12,12),vely+random(-12,12),velz+random(4,16),0,160,32)
+		TNT1 AAAAA 0 A_GiveInventory("HDFireStarter",1)
+		stop
+	}
+}
+ACTOR HDInvulnP : InvulnerabilitySphere
+{
+	Powerup.Duration -90
+	+inventory.persistentpower
+}
+
+
+
+
+//-------------------------------------------------
+//    Backpack Replacements
+//-------------------------------------------------
+
+actor HDBackpack:Ammo{
+	inventory.maxamount 1 ammo.backpackmaxamount 1 ammo.backpackamount 0
+}
+actor HDEBPPK:HDUPK replaces HDBackpack{
+	states{
+	spawn:
+		BPAK B -1 A_Stop
+	give:
+		BPAK B 0{
+			A_PlaySound("weapons/pocket");
+			if(countinv("HDBackpack",AAPTR_TARGET)<1){
+				A_GiveToTarget("HDBackpack");
+				return state("null");
+			}return state("spawn");
+		}
+	}
+}
+actor HDBPPK:HDUPK replaces Backpack{
+	states{
+	spawn:
+		BPAK A 0 A_Stop
+		BPAK A -1{
+			if(countinv("Clip")<1){
+				A_GiveInventory("Clip");
+				A_SetTics(1);
+			}
+		}
+		BPAK A 0 A_Jump(64,1,2,3,4,5) loop
+		BPAK A 0 A_SpawnItem("BossRifleSpawner",9) loop
+		BPAK A 0 A_SpawnItem("BloopMapPickup",9) loop
+		BPAK A 0 A_SpawnItem("LiberatorGrenadeRiflePickup",9) loop
+		BPAK A 0 A_SpawnItem("LiberatorRiflePickup",9) loop
+		BPAK A 0 A_SpawnItem("HERPPickup",9) loop
+	give:
+		TNT1 A 0{
+			A_GiveInventory("Counter",7);
+			A_PlaySound("weapons/pocket");
+			if(countinv("HDBackpack",AAPTR_TARGET)>0){  
+				A_SpawnItemEx("HDEBPPK",0,0,0,-3,0,1,0,SXF_NOCHECKPOSITION);
+				return state("dropstuff");
+			}else{A_GiveToTarget("HDBackpack");}
+			return state("givestuff");
+		}
+	dropstuff:
+		TNT1 A 0 A_JumpIfInventory("Counter",1,1)
+		stop
+		TNT1 A 1 A_ClearTarget
+		TNT1 A 0 A_TakeInventory("Counter",1)
+		TNT1 A 0 A_Jump(256,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20)
+	d1: TNT1 A 0 A_SpawnItemEx("GreenHelmet",0,0,0,-3,0,1,random(-90,90),SXF_NOCHECKPOSITION) goto dropstuff
+	d2: TNT1 A 0{
+		if(random(1,3)>1){A_SpawnItemEx("GreenArmor",0,0,0,-3,0,1,random(-90,90),SXF_NOCHECKPOSITION);}
+		else {A_SpawnItemEx("BlueArmor",0,0,0,-3,0,1,random(-90,90),SXF_NOCHECKPOSITION);}
+		}goto dropstuff
+	d3: TNT1 A 0{
+		A_SpawnItemEx("BossClip",0,0,0,-3,0,1,random(-90,90),SXF_NOCHECKPOSITION);
+		A_SpawnItemEx("BossClip",0,0,0,-3,0,1,random(-90,90),SXF_NOCHECKPOSITION);
+		A_SpawnItemEx("BossClip",0,0,0,-3,0,1,random(-90,90),SXF_NOCHECKPOSITION);
+		}goto dropstuff
+	d4: TNT1 A 0{
+		A_SpawnItemEx("Clip",0,0,0,-3,0,1,random(-90,90),SXF_NOCHECKPOSITION);
+		A_SpawnItemEx("Clip",0,0,0,-3,0,1,random(-90,90),SXF_NOCHECKPOSITION);
+		}goto dropstuff
+	d5: TNT1 A 0 A_SpawnItemEx("Shell",0,0,0,-3,0,1,random(-90,90),SXF_NOCHECKPOSITION) goto dropstuff
+	d6: TNT1 A 0 A_SpawnItemEx("RocketAmmo",0,0,0,-3,0,1,random(-90,90),SXF_NOCHECKPOSITION) goto dropstuff
+	d7: TNT1 A 0 A_SpawnItemEx("Cell",0,0,0,-3,0,1,random(-90,90),SXF_NOCHECKPOSITION) goto dropstuff
+	d8: TNT1 A 0 A_SpawnItemEx("BlurSphere",0,0,0,-3,0,1,random(-90,90),SXF_NOCHECKPOSITION) goto dropstuff
+	d9: TNT1 A 0 A_SpawnItemEx("BluePotion",0,0,0,-3,0,1,random(-90,90),SXF_NOCHECKPOSITION) goto dropstuff
+	d10: TNT1 A 0 A_SpawnItemEx("Medikit",0,0,0,-3,0,1,random(-90,90),SXF_NOCHECKPOSITION) goto dropstuff
+	d11: TNT1 A 0 A_SpawnItemEx("Berserk",0,0,0,-3,0,1,random(-90,90),SXF_NOCHECKPOSITION) goto dropstuff
+	d12: TNT1 A 0{
+		A_SpawnItemEx("Stimpack",0,0,0,-3,0,1,random(-90,90),SXF_NOCHECKPOSITION);
+		A_SpawnItemEx("Stimpack",0,0,0,-3,0,1,random(-90,90),SXF_NOCHECKPOSITION);
+		}goto dropstuff
+	d13: TNT1 A 0 A_SpawnItemEx("MedDeployer",0,0,0,-3,0,1,random(-90,90),SXF_NOCHECKPOSITION) goto dropstuff
+	d14: TNT1 A 0 A_SpawnItemEx("Radsuit",0,0,0,-3,0,1,random(-90,90),SXF_NOCHECKPOSITION) goto dropstuff
+	d15: TNT1 A 0 A_SpawnItemEx("Infrared",0,0,0,-3,0,1,random(-90,90),SXF_NOCHECKPOSITION) goto dropstuff
+	d16: TNT1 A 0 A_SpawnItemEx("HDSMGPickup",0,0,0,-3,0,1,random(-90,90),SXF_NOCHECKPOSITION) goto dropstuff
+	d17: TNT1 A 0 A_SpawnItemEx("HDPistolPickup",0,0,0,-3,0,1,random(-90,90),SXF_NOCHECKPOSITION) goto dropstuff
+	d18: TNT1 A 0 A_SpawnItemEx("BrontornisSpawner",0,0,0,-3,0,1,random(-90,90),SXF_NOCHECKPOSITION) goto dropstuff
+	d19: TNT1 A 0 A_SpawnItemEx("HDFragGrenadeAmmo",0,0,0,-3,0,1,random(-90,90),SXF_NOCHECKPOSITION) goto dropstuff
+	d20: TNT1 A 0 A_SpawnItemEx("HEATAmmo",0,0,0,-3,0,1,random(-90,90),SXF_NOCHECKPOSITION) goto dropstuff
+
+	givestuff:
+		TNT1 A 0 A_JumpIfInventory("Counter",1,1)
+		stop
+		TNT1 A 0 A_TakeInventory("Counter",1)
+		TNT1 A 0 A_Jump(256,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33)
+	g1: TNT1 A 0 A_GiveToTarget("HDCellPacks") goto givestuff
+	g2: TNT1 A 0 A_GiveToTarget("HDCellAmmo",random(1,20)) goto givestuff
+	g3: TNT1 A 0 A_GiveToTarget("HDSMGMag") goto givestuff
+	g4: TNT1 A 0 A_GiveToTarget("HDPistolMag",random(1,2)) goto givestuff
+	g5: TNT1 A 0 A_GiveToTarget("HDPistolAmmo",random(10,30)) goto givestuff
+	g6: TNT1 A 0 A_GiveToTarget("HDShellAmmo",random(4,8)) goto givestuff
+	g7: TNT1 A 0 A_GiveToTarget("ZM66RifleMags") goto givestuff
+	g8: TNT1 A 0 A_GiveToTarget("FourMilAmmo",random(1,50)) goto givestuff
+	g9: TNT1 A 0 A_GiveToTarget("HDRocketAmmo") goto givestuff
+	g10: TNT1 A 0 A_GiveToTarget("HEATAmmo") goto givestuff
+	g11: TNT1 A 0 A_GiveToTarget("LiberatorMag") goto givestuff
+	g12: TNT1 A 0 A_GiveToTarget("BossClip",random(1,3)) goto givestuff
+	g13: TNT1 A 0 A_GiveToTarget("SevenMilAmmo",random(10,30)) goto givestuff
+	g14: TNT1 A 0 A_GiveToTarget("HDCellPackEmpty") goto givestuff
+	g15: TNT1 A 0 A_GiveToTarget("BrontornisRound",random(3,6)) goto givestuff
+	g16: TNT1 A 0 A_GiveToTarget("HDFragGrenadeAmmo",random(1,2)) goto givestuff
+	g17: TNT1 A 0{
+		A_GiveToTarget("HDSecondPistol");
+		A_GiveToTarget("HDSecondPistolLoaded",15);
+		A_GiveToTarget("HDSecondPistolChamber");
+		}goto givestuff
+	g18: TNT1 A 0{
+		A_GiveToTarget("HDSMG");
+		A_GiveToTarget("HDSMGLoaded",30);
+		A_GiveToTarget("HDSMGChamber");
+		}goto givestuff
+	g19: TNT1 A 0{
+		A_GiveToTarget("Brontornis");
+		A_GiveToTarget("BrontornisMag");
+		A_GiveToTarget("BrontornisRound",random(1,3));
+		}goto givestuff
+	g20: TNT1 A 0 A_GiveToTarget("PortableStimpack") goto givestuff
+	g21: TNT1 A 0 A_GiveToTarget("PortableMedikit",random(1,2)) goto givestuff
+	g22: TNT1 A 0 A_GiveToTarget("PortableBerserkPack",random(1,2)) goto givestuff
+	g23: TNT1 A 0 A_GiveToTarget("PortableLiteAmp") goto givestuff
+	g24: TNT1 A 0 A_GiveToTarget("PortableRadsuit") goto givestuff
+	g25: TNT1 A 0 A_GiveToTarget("MedDeployer") goto givestuff
+	g26: TNT1 A 0 A_GiveToTarget("DERPUsable") goto givestuff
+	g27: TNT1 A 0 A_GiveToTarget("BluePotion") goto givestuff
+	g28: TNT1 A 0 A_GiveToTarget("SquadSummoner") goto givestuff
+	g29: TNT1 A 0 A_GiveToTarget("HDIEDKit",random(4,8)) goto givestuff
+	g30: TNT1 A 0 A_SpawnItemEx("GreenHelmet",0,0,0,-3,0,1,random(-4,4),SXF_NOCHECKPOSITION) goto givestuff
+	g31: TNT1 A 0 A_SpawnItemEx("GreenArmourPickup",0,0,0,-3,0,1,random(-4,4),SXF_NOCHECKPOSITION) goto givestuff
+	g32: TNT1 A 0 A_SpawnItemEx("BlueArmourPickup",0,0,0,-3,0,1,random(-4,4),SXF_NOCHECKPOSITION) goto givestuff
+	g33: TNT1 A 0 A_SpawnItemEx("BlackArmourPickup",0,0,0,-3,0,1,random(-4,4),SXF_NOCHECKPOSITION) goto givestuff
+	}
+}

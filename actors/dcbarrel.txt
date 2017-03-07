@@ -1,0 +1,442 @@
+/*
+
+// ------------------------------------------------------------
+//   Killer Barrel
+// ------------------------------------------------------------
+
+actor BarrelGibs{
+	translation "176:191=96:111","64:79=104:111"
+	states
+	{
+	spawn:
+		POB1 A -1
+		stop
+	}
+}
+ACTOR tempshieldbarrel : tempshield
+{
+	+noblood
+}
+ACTOR KillerBarrel:HDActor{// replaces ExplosiveBarrel{
+	damagefactor "Thermal", 1.2
+	damagefactor "Balefire", 0.1
+	damagetype "Thermal"
+	damage 1
+	Health 60
+	Radius 11
+	Height 34
+	deathheight 34
+	Health 100
+	Speed 1
+	Mass 100
+	MissileType "BaleBall"
+	PainChance 120
+	monster
+	-ismonster
+	+ambush
+	+ghost
+	bloodcolor "ba ff 86"
+	bloodtype "NotQuiteBloodSplat"
+	+FIXMAPTHINGPOS
+	+dontgib
+	+pushable
+	pushfactor 0.1
+	PainSound "barrel/pain"
+	DeathSound "world/barrelx"
+	Obituary "%o was mutated by an evil barrel."
+	Translation "176:191=96:111","64:79=104:111"
+	States{
+	spawn:
+		TNT1 A 0 nodelay{
+			if(A_CheckFlag("ismonster","null")){return state("spawn2");}
+			else if(
+				(random(1,100)>getcvar("hd_killerbarrels"))
+				||(getcvar("sv_nomonsters")>0)
+			){
+				A_SpawnItemEx("InnocentBarrel",0,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
+				return state("null");
+			}
+			A_ChangeFlag("ismonster",1);
+			return state("spawn2");
+		}
+	Spawn2:
+		BAR1 AB 10 A_Look
+		loop
+	See:
+		BAR1 AB 10
+		BAR1 A 0 A_JumpIfCloser(96,3)
+		BAR1 A 0 A_JumpIfInTargetLOS("see",90,0,65536,0)
+		BAR1 A 0 A_Jump(20,"see2")
+		loop
+		BAR1 A 0 A_Jump(160,"see")
+	See2:
+		TNT1 AAA 0 A_Chase("missile","missile",CHF_DONTMOVE)
+		BAR1 B 0 A_PlaySound ("barrel/walk")
+		BAR1 ABABAB 3 A_Chase
+		TNT1 AAAA 0 A_Chase("missile","missile",CHF_DONTMOVE)
+		goto See
+	Missile:
+	Melee:
+		BAR1 A 0 A_PlaySound ("misc/bloodchunks")
+		BEXP B 8 BRIGHT A_FaceTarget
+		BAR1 A 4 BRIGHT A_MissileAttack
+		Goto See
+	Pain:
+		BAR1 A 5 A_Pain
+		BAR1 B 5
+		Goto See
+	Death:
+		TNT1 A 0 A_GivetoTarget("HDKillCount",1)
+	Death1:
+		TNT1 AAAAAAA 0 A_SpawnItemEx("BFGSpark",0,0,36,random(-4,4),random(-4,4),random(-4,4),0,SXF_TRANSFERPOINTERS,32)
+	Death2:
+		TNT1 A 0 A_SpawnItemEx("tempshieldbarrel",0,0,0,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEVELOCITY)
+		TNT1 A 0 A_NoBlocking
+	Death2a:
+		BAR1 A 0{
+			A_SetSolid;
+			A_SetShootable;
+		}
+		BAR1 AB random(3,5)
+		BEXP B random(3,5) A_CheckProximity("Death2a","BarrelExplodeMarker",360,2,CPXF_ANCESTOR|CPXF_NOZ)
+		BEXP B 0{
+			A_UnsetSolid;
+			A_UnsetShootable;
+			A_NoBlocking;
+			A_SpawnItemEx("BarrelExplodeMarker",0,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
+		}
+		TNT1 A 0 A_CheckProximity("death2b","BarrelExplodeMarker",512,2,CPXF_ANCESTOR|CPXF_NOZ)
+		TNT1 AAAAAAAAAAAAAAAAAAAAA 0 A_SpawnItemEx ("HugeWallChunk", random(-4,4),random(-4,4),random(4,24), velx+random(-10,10),vely+random(-10,10),velz+random(5,12), 0,SXF_ABSOLUTEMOMENTUM)
+	death2b:
+		BEXP CCC 1 bright A_SpawnItemEx ("HDExplosion", random(-2,2),random(-2,2),random(12,32), velx+random(-1,1),vely+random(-1,1),velz+random(1,2), 0,168)
+		BEXP C 0 A_Blast(
+			random(2,4)*64,random(2,4)*64,0,"Balefire",
+			256,256,0,true,
+			256,96,"Thermal",
+			128,random(10,40),36,
+			24,random(1,2)
+		)
+		BEXP C 0 A_Jump(90,2)
+		BEXP C 0 A_RadiusGive("AggravatedDamage",128.0,RGF_PLAYERS|RGF_CUBE,1)
+		TNT1 A 0 A_SpawnItemEx ("HDSmokeChunk", 0,0,0, velx+random(-20,20),vely+random(-20,20),velz+random(5,12), random(0,360),168,196)
+		BEXP D 2 BRIGHT A_Scream
+		TNT1 A 0 A_Quake(2,20,0,200,none)
+		TNT1 A 0 A_SpawnItemEx ("DistantRocket",0,0,0,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION)
+
+		TNT1 AAAAAAA 0 A_SpawnItemEx ("HDSmoke", random(-6,6),random(-6,6),random(12,32), velx+random(-1,1),vely+random(-1,1),velz+random(1,2), 0,168)
+		BEXP EEE 2 BRIGHT A_FadeOut(0.3)
+		TNT1 A 0 A_SetScale(0.7)
+		POB1 A 0 A_SetTranslucent(1,0)
+		TNT1 A 0 A_PlaySound("misc/firecrkl",1,1.0,1)
+		TNT1 A 0 A_GiveInventory("NotShot",random(10,20))
+		TNT1 AA 0 A_SpawnItemEx ("HDFlameRed", random(-3,3),random(-3,3),random(1,3), velx+random(-1,1),vely+random(-1,1),velz+random(2,4), 0)
+	burnout:
+//		TNT1 A 0 A_Explode(10,32)
+		POB1 AAAAA 3 A_SpawnItemEx ("HDFlameRed", random(-3,3),random(-3,3),random(1,3), velx+random(-1,1),vely+random(-1,1),velz+random(2,4), 0,168)
+		TNT1 A 0 A_TakeInventory("NotShot",1)
+		TNT1 A 0 A_JumpIfInventory("NotShot",1,"burnout")
+		TNT1 A 0 A_PlaySound("misc/firecrkl",1,0.1,1)
+		TNT1 A 0 A_Explode(10,32)
+		POB1 AAAAA 4 A_SpawnItemEx ("HDFlameRed", random(-3,3),random(-3,3),random(1,3), velx+random(-1,1),vely+random(-1,1),velz+random(2,4), 0,168,64)
+		TNT1 AAAA 0 A_SpawnItemEx ("HDSmoke", random(-3,3),random(-3,3),random(1,3), frandom(0,1),0,frandom(1,2), random(0,360),0,128)
+		POB1 AA 6 A_SpawnItemEx ("HDFlameRed", random(-3,3),random(-3,3),random(1,3), velx+random(-1,1),vely+random(-1,1),velz+random(2,4), 0,168,128)
+		TNT1 A 0 A_PlaySound("misc/firecrkl",1,0.2,0)
+	burntout:
+		TNT1 A 0 A_SetScale(0.7)
+		TNT1 A 0 A_SetTranslucent(1,0)
+		POB1 A -1
+		stop
+	Raise:
+		Stop
+		BEXP EDCAB 6 BRIGHT
+		Goto See
+	}
+}
+actor InnocentBarrel : KillerBarrel
+{
+	-ismonster	//keep this flag on or the sprite clips through the floor - GZDoom bug I think
+	-countkill
+	-CANPUSHWALLS
+	-CANUSEWALLS
+	-ACTIVATEMCROSS
+	-CANPASS
+	painchance 255
+	PainSound "misc/bloodchunks"
+	Obituary "%o was fried by an exploding barrel."
+	states
+	{
+	Spawn:
+	See:
+	Missile:
+	FastChase:
+		BAR1 AB 10
+		loop
+	Pain:
+		BAR1 A 0 A_Pain
+		BAR1 ABABAB 2
+		BAR1 ABAB 4
+		goto Spawn
+	Death:
+		TNT1 A 0 A_Jump(196,"Death1")
+		TNT1 A 0 A_SpawnItemEx("BFGVileShard",0,0,36,0,0,10,0,SXF_TRANSFERPOINTERS,128)
+		goto Death2
+	Raise:
+		Stop
+	}
+}
+actor BarrelExplodeMarker : IdleDummy
+{
+	+cannotpush
+	states
+	{
+	spawn:
+		TNT1 A random(10,60)
+		stop
+	}
+}
+
+
+
+// ------------------------------------------------------------
+//   Killer Fire Can
+// ------------------------------------------------------------
+
+ACTOR BarrelFlame
+{
+	damagetype "Thermal"
+	projectile +hittracer
+	Renderstyle add
+	Decal "RevenantScorch"
+	Alpha 0.7
+	Radius 4
+	Height 4
+	Scale 0.3
+	Speed 6
+	Damage (random(1,4))
+	SeeSound "misc/firecrkl"
+	States
+	{
+	Spawn:
+		FIRE ABABABCD 3 BRIGHT A_SetTics(random(1,4))
+	Death:
+		TNT1 A 0 A_Jump(230,2)
+		TNT1 A 0 A_GiveInventory("HDFireStarter",1,AAPTR_TRACER)
+		FIRE EFEFGH 4 BRIGHT A_SetTics(random(1,4))
+		Stop
+	}
+}
+
+ACTOR KillerFireCan replaces BurningBarrel{
+	damagefactor "Thermal", 0.4
+	Health 100
+	Radius 11
+	Height 34
+	DeathHeight 34
+	Speed 2
+	Mass 100
+	MissileType "BarrelFlame"
+	MissileHeight 30
+	PainChance 40
+	monster
+	-ismonster
+	+ghost
+	+AMBUSH
+	+NOBLOOD
+	+lookallaround
+	+pushable
+	pushfactor 0.1
+	PainSound "barrel/pain"
+	DeathSound "world/barrelx"
+	Obituary "%o was burned by a demonic barrel that was on fire."
+	Translation "176:191=96:111","64:79=104:111"
+	States
+	{
+	spawn:
+		TNT1 A 0 nodelay{
+			if(A_CheckFlag("ismonster","null")){return state("spawn2");}
+			else if(
+				(random(1,100)>getcvar("hd_killerbarrels"))
+				||(getcvar("sv_nomonsters")>0)
+			){
+				A_SpawnItemEx("InnocentFireCan",0,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
+				return state("null");
+			}
+			A_ChangeFlag("ismonster",1);
+			return state("spawn2");
+		}
+	Spawn2:
+		FCAN A 0 bright A_Look
+		"----" A 0 A_PlaySound("misc/firecrkl",0,0.04)
+		"----" A 0 A_SpawnItemEx("HDSmoke",random(-1,1),random(-1,1),32,velx+frandom(-1,1),vely+frandom(-1,1),velz+frandom(3,6),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEVELOCITY)
+		FCAN AB random(1,3) bright
+		loop
+	See:
+		"----" A 0 A_PlaySound("misc/firecrkl",0,0.1)
+		FCAN AB 6 bright A_SpawnItemEx("HDSmoke",random(-1,1),random(-1,1),32,velx+frandom(-1,1),vely+frandom(-1,1),velz+frandom(3,6),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEVELOCITY)
+		FCAN A 0 A_JumpIfCloser(128,3)
+		FCAN A 0 A_JumpIfInTargetLOS("see",90,0,65536,0)
+		FCAN A 0 A_Jump(20,"see2")
+		loop
+		FCAN A 0 A_Jump(160,"see")
+	see2:
+		FCAN B 0 A_PlaySound("barrel/walk",7)
+		"----" A 0 A_PlaySound("misc/firecrkl",0,0.1)
+		FCAN B 6 bright A_SpawnItemEx("HDSmoke",random(-1,1),random(-1,1),32,velx+frandom(-1,1),vely+frandom(-1,1),velz+frandom(3,6),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEVELOCITY)
+		FCAN A 0 A_SpawnItemEx("HDSmoke",random(-1,1),random(-1,1),32,velx+frandom(-1,1),vely+frandom(-1,1),velz+frandom(3,6),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEVELOCITY)
+		FCAN AAB 2 bright A_Chase
+		FCAN A 0 A_SpawnItemEx("HDSmoke",random(-1,1),random(-1,1),32,velx+frandom(-1,1),vely+frandom(-1,1),velz+frandom(3,6),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEVELOCITY)
+		FCAN BCC 2 bright A_Chase
+		goto see
+	Missile:
+		"----" A 0 A_PlaySound("misc/firecrkl",0,0.1)
+		FCAN ABCB 4 bright A_SpawnItemEx("HDSmoke",random(-1,1),random(-1,1),32,velx+frandom(-1,1),vely+frandom(-1,1),velz+frandom(3,6),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEVELOCITY)
+		FCAN A 0 A_FaceTarget
+		FCAN A 0 BRIGHT A_JumpIfCloser(192,"Melee")
+		"----" A 0 A_PlaySound("misc/firecrkl",0,0.1)
+		FCAN CBAB 2 bright A_SpawnItemEx("HDSmoke",random(-1,1),random(-1,1),32,velx+frandom(-1,1),vely+frandom(-1,1),velz+frandom(3,6),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEVELOCITY)
+		FCAN ABC 2 A_CustomMissile("HeckFire",56,0,random(-20, 20))
+		"----" A 0 A_PlaySound("misc/firecrkl",0,0.1)
+		FCAN ABC 4 BRIGHT A_SpawnItemEx("HDSmoke",random(-1,1),random(-1,1),32,velx+frandom(-1,1),vely+frandom(-1,1),velz+frandom(3,6),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEVELOCITY)
+		Goto See
+	Melee:
+		"----" A 0 A_PlaySound("misc/firecrkl",0,0.1)
+		FCAN A 0 A_SpawnItemEx("HDSmoke",random(-1,1),random(-1,1),32,velx+frandom(-1,1),vely+frandom(-1,1),velz+frandom(3,6),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEVELOCITY)
+		FCAN A 1 BRIGHT A_MissileAttack
+		FCAN A 0 A_SpawnItemEx("HDSmoke",random(-1,1),random(-1,1),32,velx+frandom(-1,1),vely+frandom(-1,1),velz+frandom(3,6),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEVELOCITY)
+		FCAN B 1 BRIGHT A_MissileAttack
+		FCAN B 0 A_CPosRefire
+		Goto Missile+5
+	Pain:
+		"----" A 0 A_PlaySound("misc/firecrkl",0,0.1)
+		FCAN A 4 BRIGHT A_Pain
+		FCAN A 0 A_SpawnItemEx("HDSmoke",random(-1,1),random(-1,1),32,velx+frandom(-1,1),vely+frandom(-1,1),velz+frandom(3,6),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEVELOCITY)
+		FCAN BABAB 4 bright A_SpawnItemEx("HDSmoke",random(-1,1),random(-1,1),32,velx+frandom(-1,1),vely+frandom(-1,1),velz+frandom(3,6),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEVELOCITY)
+		Goto missile
+	Death:
+		TNT1 A 0 A_GivetoTarget("HDKillCount",1)
+		TNT1 AAAAA 0 A_CustomMissile("HeckFire",56,0,random(0,360))
+	Death2:
+		TNT1 A 0 A_NoBlocking
+	Death2a:
+		TNT1 A 0 A_SetSolid
+		TNT1 A 0 A_SetShootable
+		FCAN AB random(2,3) bright A_SpawnItemEx("HDSmoke",random(-1,1),random(-1,1),32,velx+frandom(-1,1),vely+frandom(-1,1),velz+frandom(3,6),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEVELOCITY)
+		BEXP B 1 A_CheckProximity("Death2a","BarrelExplodeMarker",512,2,CPXF_ANCESTOR|CPXF_NOZ)
+		TNT1 A 0 A_UnsetSolid
+		TNT1 A 0 A_UnsetShootable
+		TNT1 A 0 A_NoBlocking
+		TNT1 A 0 A_SpawnItemEx("BarrelExplodeMarker",0,0,0,0,0,0,0,SXF_NOCHECKPOSITION)
+		TNT1 A 0 A_SpawnItemEx("tempshieldbarrel",0,0,0,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEVELOCITY)
+		TNT1 AAAAAAAAAAAAAAAAA 0 A_SpawnItemEx ("HugeWallChunk", 0,0,0, velx+random(-20,20),vely+random(-20,20),velz+random(5,12), random(0,360),168)
+		TNT1 AAAAAAAA 0 A_SpawnItemEx ("HDSmokeChunk", 0,0,0, velx+random(-8,8),vely+random(-8,8),velz+random(8,20), random(0,360),32)
+		TNT1 AAA 0 A_SpawnItemEx ("HDExplosion", random(-2,2),random(-2,2),random(12,32), velx+random(-1,1),vely+random(-1,1),velz+random(1,2), 0,168)
+		TNT1 AAAAAAAAAAAAAAAAAAA 0 A_SpawnItemEx ("BigWallChunk", 0,0,0, velx+random(-24,24),vely+random(-24,24),velz+random(5,18), random(0,360),168)
+		BEXP C 0 A_RadiusGive("BlastGib",18.0,RGF_CUBE|RGF_CORPSES|RGF_MONSTERS,1)
+		BEXP C 0 A_Jump(90,2)
+		BEXP C 0 A_RadiusGive("AggravatedDamage",128.0,RGF_PLAYERS,1)
+		BEXP C 2 BRIGHT A_Explode
+		BEXP D 2 BRIGHT A_Scream
+		TNT1 A 0 A_RadiusGive ("HDFireStarter", random(100,160), RGF_PLAYERS|RGF_MONSTERS|RGF_OBJECTS|RGF_CORPSES, random(1,2))
+		TNT1 A 0 A_Quake(2,20,0,200,none)
+		TNT1 A 0 A_SpawnItemEx ("DistantRocket",0,0,0,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION)
+		TNT1 AAAAAA 0 A_SpawnItemEx ("HDSmoke", random(-6,6),random(-6,6),random(12,32), velx+random(-1,1),vely+random(-1,1),velz+random(1,2), 0,168)
+		TNT1 A 0 A_PlaySound("misc/firecrkl")
+		BEXP EEE 2 BRIGHT A_FadeOut(0.3)
+		POB1 A 0 A_SetTranslucent(1,0)
+		POB1 A 0 A_SetScale(0.7)
+		TNT1 A 0 A_PlaySound("misc/firecrkl",1,1.0,1)
+	burnout:
+		POB1 AAAAA 2 A_SpawnItemEx ("HDFlameRed", random(-3,3),random(-3,3),random(1,3), velx+random(-1,1),vely+random(-1,1),velz+random(1,2), 0,168)
+		TNT1 A 0 A_GiveInventory("NotShot",1)
+		TNT1 A 0 A_JumpIfInventory("NotShot",40,1)
+		loop
+		TNT1 A 0 A_PlaySound("misc/firecrkl",1,0.6,1)
+		TNT1 A 0 A_Explode(10,32)
+		POB1 AAAAAAAAAAAA 3 A_SpawnItemEx ("HDFlameRed", random(-3,3),random(-3,3),random(1,3), velx+random(-1,1),vely+random(-1,1),velz+random(2,4), 0,168,64)
+		POB1 AA 4 A_SpawnItemEx ("HDFlameRed", random(-3,3),random(-3,3),random(1,3), velx+random(-1,1),vely+random(-1,1),velz+random(2,4), 0,168,128)
+		TNT1 A 0 A_PlaySound("misc/firecrkl",1,0.2,0)
+		POB1 A -1
+		stop
+	Raise:
+		Stop
+		BEXP EDC 6 BRIGHT
+		FCAN AB 6 BRIGHT
+		Goto See
+	}
+}
+actor InnocentFireCan : KillerFireCan 
+{
+	-ismonster
+	-countkill
+	-CANPUSHWALLS
+	-CANUSEWALLS
+	-ACTIVATEMCROSS
+	-CANPASS
+	+nopain
+	Obituary "%o was smoked by an exploding barrel."
+	States
+	{
+	Spawn:
+	Melee:
+	See:
+	Missile:
+	Pain:
+		"----" A 0 A_PlaySound("misc/firecrkl",0,0.04)
+		"----" A 0 A_SpawnItemEx("HDSmoke",random(-1,1),random(-1,1),32,velx+frandom(-1,1),vely+frandom(-1,1),velz+frandom(3,6),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEVELOCITY)
+		FCAN ABC random(1,3) bright
+		loop
+	Death:
+		TNT1 A 0 A_NoBlocking
+		TNT1 A 0 A_SpawnItemEx("BFGVileShard",0,0,36,0,0,10,0,SXF_TRANSFERPOINTERS,208)
+		goto Death2
+	Raise:
+		Stop
+	}
+}
+
+
+// ------------------------------------------------------------
+//   Keen
+// ------------------------------------------------------------
+
+actor HideousKeen : CommanderKeen replaces CommanderKeen{
+	states{
+	Death:
+		KEEN M 5
+	XDeath:
+		TNT1 A 0 A_NoBlocking
+		TNT1 AAAAAAAAAAAAAAAAAAAA 0 A_SpawnItemEx ("HugeWallChunk", 0,0,0, velx+random(-20,20),vely+random(-20,20),velz+random(5,12), random(0,360),168)
+		TNT1 AAA 0 A_SpawnItemEx ("HDExplosion", random(-2,2),random(-2,2),random(12,32), velx+random(-1,1),vely+random(-1,1),velz+random(1,2), 0,168)
+		TNT1 AAAAAAAAAAAAAAAAAAA 0 A_SpawnItemEx ("BigWallChunk", 0,0,0, velx+random(-24,24),vely+random(-24,24),velz+random(5,18), random(0,360),168)
+		TNT1 AAAAA 0 A_SpawnItemEx("HDSmokeChunk",0,0,0,velx+random(-8,8),vely+random(-8,8),velz+random(8,18),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION)
+		BEXP C 0 A_RadiusGive("BlastGib",8.0,RGF_CUBE|RGF_CORPSES|RGF_MONSTERS,1)
+		KEEN B 2 A_Explode
+		BEXP D 2 BRIGHT A_Scream
+		TNT1 A 0 A_RadiusGive ("HDFireStarter", 200, RGF_PLAYERS|RGF_MONSTERS|RGF_OBJECTS|RGF_CORPSES, 1)
+		TNT1 A 0 A_Quake(2,20,0,200,none)
+		TNT1 A 0 A_SpawnItemEx ("DistantRocket",0,0,0,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION)
+		TNT1 AAAAAA 0 A_SpawnItemEx ("HDSmoke", random(-6,6),random(-6,6),random(12,32), velx+random(-1,1),vely+random(-1,1),velz+random(1,2), 0,168)
+		BEXP EEE 2 BRIGHT A_FadeOut(0.3)
+		TNT1 A 0 A_SetScale(0.4)
+		POB1 A 0 A_SetTranslucent(1,0)
+		TNT1 A 0 A_PlaySound("misc/firecrkl",1,1.0,1)
+	burnout:
+		TNT1 A 0 A_Explode(10,32)
+		TNT1 AA 0 A_SpawnItemEx ("HDFlameRed", random(-3,3),random(-3,3),random(1,3), velx+random(-1,1),vely+random(-1,1),velz+random(2,4), 0,168)
+		POB1 AAAAA 3 A_SpawnItemEx ("HDFlameRed", random(-3,3),random(-3,3),random(1,3), velx+random(-1,1),vely+random(-1,1),velz+random(2,4), 0,168)
+		TNT1 A 0 A_GiveInventory("NotShot",1)
+		TNT1 A 0 A_JumpIfInventory("NotShot",8,1)
+		loop
+		TNT1 A 0 A_PlaySound("misc/firecrkl",1,0.6,1)
+		TNT1 A 0 A_Explode(10,32)
+		POB1 AAAAA 3 A_SpawnItemEx ("HDFlameRed", random(-3,3),random(-3,3),random(1,3), velx+random(-1,1),vely+random(-1,1),velz+random(2,4), 0,168,64)
+		TNT1 AAAA 0 A_SpawnItemEx ("HDSmoke", random(-3,3),random(-3,3),random(1,3), frandom(0,1),0,frandom(1,2), random(0,360),0,128)
+		POB1 AA 4 A_SpawnItemEx ("HDFlameRed", random(-3,3),random(-3,3),random(1,3), velx+random(-1,1),vely+random(-1,1),velz+random(2,4), 0,168,128)
+		TNT1 A 0 A_PlaySound("misc/firecrkl",1,0.2,0)
+		POB1 A -1 A_KeenDie
+		stop
+	}
+}
+
+
+*/

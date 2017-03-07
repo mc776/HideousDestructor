@@ -1,0 +1,237 @@
+// ------------------------------------------------------------
+//   Arachnotron
+// ------------------------------------------------------------
+
+actor KranglingPBShot : ActionItem
+{
+	states
+	{
+	pickup:
+		TNT1 A 0 A_JumpIfCloser(500,"closerange")
+		TNT1 A 0 A_PlayWeaponSound("weapons/plasidle")
+		TNT1 A 0 A_CustomBulletAttack(0,-pitch,1,(random(1,2)),"BeamSpot",0,CBAF_AIMFACING|CBAF_NORANDOM|CBAF_EXPLICITANGLE|CBAF_NOPITCH)
+		stop
+	closerange:
+		TNT1 A 0 A_PlayWeaponSound("weapons/plasidle")
+		TNT1 A 0 A_CustomBulletAttack(frandom(-2,2),-pitch+frandom(-2,2),1,(random(1,2)),"BeamSpotFlash",1024,CBAF_AIMFACING|CBAF_NORANDOM|CBAF_EXPLICITANGLE|CBAF_NOPITCH)
+		stop
+	}
+}
+actor KrangBeamSpot : BeamSpot
+{
+	obituary "%o was fried by the Wrath of Krang."
+}
+ACTOR Krangling : Arachnotron replaces Arachnotron
+{
+	obituary "%o was fried by the Wrath of Krang."
+	Speed 14
+	DeathHeight 18
+	DropItem HDCellPacks 96
+	DropItem HDCellPacks 64
+	DropItem Putto 8
+	+DONTHARMSPECIES
+	+MISSILEMORE
+	+noblooddecals bloodtype "NotQuiteBloodSplat"
+	+FASTER
+	maxtargetrange 2048
+	radius 40
+	damagefactor "SmallArms0", 0.8
+	damagefactor "SmallArms1", 0.8
+	damagefactor "SmallArms2", 0.9
+	States
+	{
+	ambushrotate:
+		TNT1 A 0 A_PlaySound ("baby/walk")
+		BSPI A 8 A_Look
+		BSPI B 8 A_SetAngle(angle+random(-1,1)*12)
+		BSPI C 8 A_Look
+		BSPI D 8 A_SetAngle(angle+random(-1,1)*12)
+	ambush:
+		BSPI C 10 A_Look
+		TNT1 A 0 A_Jump(28,"ambushrotate")
+	spawn:
+		TNT1 A 0 A_CheckFlag("ambush","ambush")
+		BSPI CCC 10 A_Look
+		TNT1 A 0 A_Jump(192,"spawn","ambushrotate")
+	spawnwander:
+		TNT1 A 0 A_Look
+		TNT1 A 0 A_PlaySound ("baby/walk")
+		BSPI AA 4 A_Wander
+		TNT1 A 0 A_Look
+		BSPI BB 4 A_Wander
+		TNT1 A 0 A_Recoil(-1)
+		BSPI C 4 A_Wander
+		TNT1 A 0 A_Recoil(1)
+		BSPI C 4 A_Look
+		TNT1 A 0 A_SetAngle(angle+random(-1,1)*4)
+		TNT1 A 0 A_PlaySound ("baby/walk")
+		BSPI DD 4 A_Wander
+		TNT1 A 0 A_Look
+		BSPI EE 4 A_Wander
+		TNT1 A 0 A_Recoil(-1)
+		BSPI F 4 A_Wander
+		TNT1 A 0 A_Recoil(1)
+		BSPI F 4 A_Look
+		TNT1 A 0 A_SetAngle(angle+random(-1,1)*4)
+		TNT1 A 0 A_Jump(28,"spawn")
+		loop
+
+	see:
+		TNT1 A 0 A_ChangeFlag("frightened",1)
+		TNT1 A 0 A_ChangeFlag("missileevenmore",1)
+		TNT1 A 0 A_JumpIfCloser(500,3)
+		TNT1 A 0 A_ChangeFlag("frightened",0)
+		TNT1 A 0 A_ChangeFlag("missilemore",0)
+		TNT1 A 0 A_TakeInventory("PlasmaBattery",2)
+		TNT1 A 0 A_ChangeFlag("ambush",0)
+		TNT1 A 0 A_PlaySound ("baby/walk")
+		TNT1 A 0 A_Recoil(-1)
+		BSPI AAABBB 2 A_Chase
+		TNT1 A 0 A_PlaySound ("baby/walk")
+		TNT1 A 0 A_Recoil(-1)
+		BSPI CCCDDD 2 A_Chase
+		TNT1 A 0 A_PlaySound ("baby/walk")
+		TNT1 A 0 A_Recoil(-1)
+		BSPI EEEFFF 2 A_Chase
+		TNT1 A 0 A_JumpIfTargetInLOS(1)
+	roam:
+		TNT1 A 0 A_PlaySound ("baby/walk")
+		BSPI AABB 3 A_Wander
+		TNT1 A 0 A_PlaySound ("baby/walk")
+		BSPI CC 3 A_Wander
+		TNT1 A 0 A_Jump(48,"roamc")
+	roam2:
+		BSPI DD 3 A_Wander
+		TNT1 A 0 A_PlaySound ("baby/walk")
+		BSPI EEFF 3 A_Wander
+		TNT1 A 0 A_Jump(48,"roamf")
+		TNT1 A 0 A_JumpIfTargetInLOS(1)
+		goto roam
+	roamc:
+		TNT1 A 0 A_Recoil(-1)
+		BSPI CC 2 A_Chase("missile","missile",CHF_DONTMOVE)
+		TNT1 A 0 A_Recoil(1)
+	roamc2:
+		BSPI CCCCCC 1 A_Chase("missile","missile",CHF_DONTMOVE)
+		TNT1 A 0 A_Jump(48,1)
+		loop
+		TNT1 A 0 A_PlaySound ("baby/walk")
+		goto roam2
+	roamf:
+		TNT1 A 0 A_Recoil(-1)
+		BSPI FF 2 A_Chase("missile","missile",CHF_DONTMOVE)
+		TNT1 A 0 A_Recoil(1)
+	roamf2:
+		BSPI FFFFFF 1 A_Chase("missile","missile",CHF_DONTMOVE)
+		TNT1 A 0 A_Jump(48,"roam")
+		loop
+
+	Missile:
+		TNT1 A 0 A_JumpIfTargetInLOS("Shoot",15)
+
+		TNT1 A 0 A_JumpIfTargetInLOS(1)
+		goto see
+		TNT1 A 0 A_PlaySound ("baby/walk")
+		BSPI AA 3 A_FaceTarget(20,0)
+		TNT1 A 0 A_JumpIfTargetInLOS("Shoot",15)
+		TNT1 A 0 A_JumpIfTargetInLOS(1)
+		goto see
+		BSPI BB 3 A_FaceTarget(20,0)
+		TNT1 A 0 A_JumpIfTargetInLOS("Shoot",15)
+
+		TNT1 A 0 A_JumpIfTargetInLOS(1)
+		goto see
+		TNT1 A 0 A_PlaySound ("baby/walk")
+		BSPI CC 3 A_FaceTarget(20,0)
+		TNT1 A 0 A_JumpIfTargetInLOS("Shoot",15)
+		TNT1 A 0 A_JumpIfTargetInLOS(1)
+		goto see
+		BSPI DD 3 A_FaceTarget(20,0)
+		TNT1 A 0 A_JumpIfTargetInLOS("Shoot",15)
+
+		TNT1 A 0 A_JumpIfTargetInLOS(1)
+		goto see
+		TNT1 A 0 A_PlaySound ("baby/walk")
+		BSPI EE 3 A_FaceTarget(20,0)
+		TNT1 A 0 A_JumpIfTargetInLOS("Shoot",15)
+		TNT1 A 0 A_JumpIfTargetInLOS(1)
+		goto see
+		BSPI FF 3 A_FaceTarget(20,0)
+		loop
+	Shoot:
+		TNT1 A 0 A_JumpIfInventory("VileCount",1,"NotVileEnough")
+		BSPI A 10 A_FaceTarget(20,20)
+shootpb:
+TNT1 A 0 A_CheckLOF("see",CLOFF_JUMPNONHOSTILE|CLOFF_SKIPTARGET|CLOFF_JUMPOBJECT|CLOFF_MUSTBESOLID|CLOFF_SKIPENEMY,320,0, 0,0, 32,0)
+TNT1 A 0 A_JumpIfInventory("PlasmaBattery",0,"see")
+BSPI A 10
+BSPI GGGGG 3 bright light("PLAZMABX2") A_PlayWeaponSound("weapons/plasidle")
+shootpb2:
+BSPI GGGGGGGGGGGGG 2 bright light("PLAZMABX2") A_GiveInventory("KranglingPBShot",1)
+TNT1 A 0 A_GiveInventory("PlasmaBattery",3)
+TNT1 A 0 A_Jump(48,1)
+goto see
+TNT1 A 0 A_CheckLOF("see",CLOFF_JUMPNONHOSTILE|CLOFF_SKIPTARGET|CLOFF_JUMPOBJECT|CLOFF_MUSTBESOLID|CLOFF_SKIPENEMY,320,0, 0,0, 32,0)
+TNT1 A 0 A_FaceTarget(2,2)
+goto shootpb2
+	Missile2:
+		BSPI GG 5 A_FaceTarget(20,20)
+		TNT1 A 0 A_SetPitch(pitch+frandom(-0.6,0.6))
+		TNT1 A 0 A_SetAngle(angle+frandom(-1,1))
+		BSPI H 1 bright A_CustomMissile ("PlasmaBalle",28,0,0,CMF_AIMDIRECTION,pitch)
+		BSPI G 2 A_SpawnItemEx ("DistantPlasma", 0,0,0, 0,0,0, 0,32)
+		BSPI H 1 bright A_CustomMissile ("PlasmaBalle",28,0,0,CMF_AIMDIRECTION,pitch)
+		BSPI G 2 A_SpawnItemEx ("DistantPlasma", 0,0,0, 0,0,0, 0,32)
+		BSPI H 1 bright A_CustomMissile ("PlasmaBalle",28,0,0,CMF_AIMDIRECTION,pitch)
+		BSPI G 2 A_SpawnItemEx ("DistantPlasma", 0,0,0, 0,0,0, 0,32)
+		BSPI H 1 bright A_CustomMissile ("PlasmaBalle",28,0,0,CMF_AIMDIRECTION,pitch)
+		BSPI G 2 A_SpawnItemEx ("DistantPlasma", 0,0,0, 0,0,0, 0,32)
+		BSPI H 1 bright A_CustomMissile ("PlasmaBalle",28,0,0,CMF_AIMDIRECTION,pitch)
+		BSPI G 2 A_SpawnItemEx ("DistantPlasma", 0,0,0, 0,0,0, 0,32)
+		BSPI G 4
+		BSPI G 0 A_Jump (56, "See")
+		BSPI G 0 A_SpidRefire
+		goto Missile2
+	Death:
+	XDeath:
+
+		"----" A 0 A_GiveInventory("HDCorpseFlags",1)
+		TNT1 AAAAAAAA 0 A_SpawnItemEx ("HugeWallChunk",random(-4,4),random(-4,4),random(28,34), random(-6,6),random(-6,6),random(-2,16), 0,160,0)
+		TNT1 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 0 A_SpawnItemEx ("BigWallChunk",random(-3,3),random(-3,3),random(28,34), random(-2,2),random(-2,2),random(2,14), 0,160,0)
+		TNT1 A 0 A_SpawnItemEx ("tempshield", 0,0,0, velx,vely,velz, 0,40)
+		BSPI J 4 A_Scream
+		BSPI J 6 A_SpawnItemEx ("MegaBloodSplatter",random(-10,10),random(-10,10),32, 0,0,0, 0,160,0)
+		BSPI J 10 A_SpawnItemEx ("MegaBloodSplatter",random(-4,4),random(-4,4),32, 0,0,0, 0,160,0)
+		TNT1 A 0 A_NoBlocking
+		TNT1 A 0 A_SpawnItemEx ("tempshield2", 0,0,0, velx,vely,velz, 0,40)
+		BSPI KLMN 7 A_SpawnItemEx ("MegaBloodSplatter",0,0,28, 0,0,0, 0,160,0)
+		TNT1 A 0 A_SpawnItemEx ("MegaBloodSplatter",0,0,14, 0,0,0, 0,160,0)
+		BSPI O 7
+		TNT1 A 0 A_JumpIfInventory("VileCount",1,"NeededMoreVile")
+		TNT1 A 0 A_GivetoTarget("HDKillCount",1)
+		BSPI P -1 A_BossDeath
+		stop
+	Raise:
+
+		"----" A 0 A_GiveInventory("HDCorpseFlags",1)
+		TNT1 A 0 A_GiveInventory("VileCount",1)
+		BSPI PONMLKJ 5
+		TNT1 A 0 A_JumpIfInventory("VileCount",3,"ReallyRaise")
+		BSPI I 8
+		BSPI I 0 A_PlaySound("baby/sight")
+		BSPI I 0 A_FaceTarget
+
+		BSPI AAABB 3 A_Chase("NotVileEnough","NotVileEnough")
+	NotVileEnough:
+		BSPI H 0 A_StopSound(CHAN_BODY)
+		BSPI I 0 A_Die
+	NeededMoreVile:
+
+		"----" A 0 A_GiveInventory("HDCorpseFlags",1)
+		BSPI P -1
+	ReallyRaise:
+		BSPI I 5 A_TakeInventory("VileCount")
+		BSPI I 0 A_PlaySound("baby/sight")
+		goto see
+	}
+}

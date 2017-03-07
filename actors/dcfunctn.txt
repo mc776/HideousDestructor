@@ -1,0 +1,626 @@
+// ------------------------------------------------------------
+//   Inventory flags
+// ------------------------------------------------------------
+
+actor Timer:InventoryFlag{inventory.maxamount 400}
+actor Counter:InventoryFlag{inventory.maxamount 65536}
+
+actor JustStarted:InventoryFlag{}
+actor IsInGame:InventoryFlag{}
+actor JustUnloading:InventoryFlag{inventory.interhubamount 0}
+actor WeaponBusy:InventoryFlag{}
+actor IsSprinting:InventoryFlag{inventory.interhubamount 0}
+actor WasSprinting:InventoryFlag{inventory.interhubamount 0}
+actor IsWalking:InventoryFlag{inventory.interhubamount 0}
+actor IsJumping:InventoryFlag{inventory.interhubamount 0}
+actor IsTurning:InventoryFlag{inventory.interhubamount 0}
+actor IsCrouching:InventoryFlag{inventory.interhubamount 0}
+actor IsSupported:InventoryFlag{inventory.interhubamount 0}
+actor IsRespawning:InventoryFlag{inventory.interhubamount 0}
+actor IsInterrupting:InventoryFlag{inventory.interhubamount 0}
+actor IsHurt:InventoryFlag{}
+actor IsGibbed:InventoryFlag{}
+actor EvadeNow:InventoryFlag{}
+actor IsMale:InventoryFlag{}
+actor IsFemale:InventoryFlag{}
+actor IsMoving:InventoryFlag{inventory.maxamount 20 inventory.interhubamount 0}
+actor IsZoomed:InventoryFlag{inventory.interhubamount 0}
+
+
+actor IsHit:InventoryFlag{}
+
+actor Encumbrance:InventoryFlag{inventory.maxamount 99999 inventory.interhubamount 0}
+actor Fatigue:InventoryFlag{inventory.maxamount 200 inventory.interhubamount 0}
+actor StunCount:InventoryFlag{inventory.maxamount 3500 inventory.interhubamount 0}
+
+actor UsingMeds:InventoryFlag{inventory.maxamount 4  inventory.interhubamount 0}
+
+
+actor PressingAltfire:InventoryFlag{}
+actor PressingFire:InventoryFlag{}
+actor PressingReload:InventoryFlag{}
+actor PressingZoom:InventoryFlag{}
+actor PressingUnload:InventoryFlag{}
+actor PressingAltReload:InventoryFlag{}
+actor PressingFireMode:InventoryFlag{}
+
+actor LethalDamage:InventoryFlag{inventory.maxamount 200}
+actor AggravatedDamage:LethalDamage{}
+actor HasZerked:LethalDamage{inventory.interhubamount 0}
+actor WoundCount:InventoryFlag{inventory.maxamount 36}
+actor BandageCount:WoundCount{}
+actor RegenStims:InventoryFlag{inventory.maxamount 25}
+actor RegenBlues:InventoryFlag{inventory.maxamount 200}
+actor RegenBers:RegenBlues{inventory.interhubamount 0}
+
+
+actor HDKillCount:InventoryFlag{inventory.maxamount 99999}
+
+actor ShittyReloadDummy:InventoryFlag{inventory.maxamount 600}
+
+actor NotShot:InventoryFlag{inventory.maxamount 7000}
+
+actor VileCount:InventoryFlag{inventory.maxamount 7}
+
+actor HDLives:InventoryFlag{inventory.maxamount 999}
+
+actor HasDroppedGun:InventoryFlag{}
+
+
+
+// ------------------------------------------------------------
+//   Action items
+// ------------------------------------------------------------
+
+actor GimmeHud:InventoryFlag{}
+actor UseHud2:InventoryFlag{inventory.maxamount 10}
+actor UseHud:ActionItem{
+	states{
+	pickup:
+		TNT1 A 0 A_JumpIfInventory("UseHud2",0,2)
+		TNT1 A 0 A_GiveInventory("UseHud2",1)
+		fail
+		TNT1 A 0 A_GiveInventory("GimmeHud",1)
+		fail
+		TNT1 A 0 A_TakeInventory("GimmeHud")
+		fail
+	}
+}
+actor CanPickUpItems:ActionItem{
+	states{
+	pickup:
+		TNT1 A 0 ACS_NamedExecuteAlways("CarryLimit")
+		TNT1 A 0 A_ChangeFlag("pickup",1)
+		fail
+	}
+}
+actor CantPickUpItems:ActionItem{
+	states{
+	pickup:
+		TNT1 A 0 A_TakeInventory("UseHud2",999)
+		TNT1 A 0 A_TakeInventory("GimmeHud",999)
+		TNT1 A 0 A_ChangeFlag("pickup",0)
+		fail
+	}
+}
+
+actor HDCorpseFlags:ActionItem{
+	states{
+	pickup:
+		TNT1 A 0{
+			if(health<=0){
+				A_ChangeFlag("alwaystelefrag",1);
+				A_ChangeFlag("shootable",1);
+				A_ChangeFlag("notautoaimed",1);
+			}
+			else{
+				A_ChangeFlag("alwaystelefrag",0);
+				A_ChangeFlag("notautoaimed",0);
+			}
+			A_TakeInventory("SawGibs");
+		}
+		fail
+	}
+}
+
+
+// ------------------------------------------------------------
+//   Damage types
+// ------------------------------------------------------------
+
+DamageType Falling{
+	NoArmor
+}
+DamageType Bleedout{
+	NoArmor
+}
+DamageType InvisibleBleedout{
+	NoArmor
+}
+
+// ------------------------------------------------------------
+//   Bleeding actors
+// ------------------------------------------------------------
+
+actor UnBleedableFlag:InventoryFlag{}
+actor UnBleedableFlagGiver:ActionItem
+{
+	states
+	{
+	Pickup:
+		TNT1 A 0 A_JumpIfInventory("UnBleedableFlag",1,"off")
+		TNT1 A 0 A_GiveInventory("UnBleedableFlag",1)
+		TNT1 A 0 A_TakeInventory("WoundCount")
+		TNT1 A 0 A_TakeInventory("LethalDamage")
+		TNT1 A 0 A_TakeInventory("AggravatedDamage")
+		TNT1 A 0 A_Print("No bleeding mode on")
+		stop
+	off:
+		TNT1 A 0 A_TakeInventory("UnBleedableFlag")
+		TNT1 A 0 A_Print("No bleeding mode off")
+		stop
+	}
+}
+actor BleedOutAI:ActionItem
+{
+	states
+	{
+	pickup:
+		TNT1 A 0 A_FireCustomMissile("BleedOutDummy",0,0)
+		stop
+	}
+}
+actor BleedOutDummy:IdleDummy
+{
+	obituary "%o may have required medical aid."
+	-nointeraction
+	+ismonster
+	+piercearmor
+	+nodamagethrust
+	damagetype "bleedout"
+	states
+	{
+	spawn:
+		TNT1 A 0
+		TNT1 A 0 A_CustomMeleeAttack((1),"none","none","bleedout",1)
+		stop
+	}
+}
+
+
+
+// ------------------------------------------------------------
+//   Blocker to prevent shotguns from overpenetrating multiple targets
+// ------------------------------------------------------------
+
+//		TNT1 A 0 A_SpawnItemEx ("tempshield", 0,0,0, velx,vely,velz, 0,40)
+//		TNT1 A 0 A_SpawnItemEx ("tempshield2", 0,0,0, velx,vely,velz, 0,40)
+actor tempshield
+{
+	-solid
+	+shootable
+	mass 10000
+	+nodamage
+	radius 16
+	height 50
+	states
+	{
+	spawn:
+		TNT1 A 16
+		stop
+	}
+}
+actor tempshield2:tempshield
+{
+	radius 18
+	height 26
+	states
+	{
+	spawn:
+		TNT1 A 10
+		stop
+	}
+}
+actor tempshieldyellow:tempshield
+{
+	bloodcolor "aa 99 22"
+}
+actor tempshieldgreen:tempshield
+{
+	bloodcolor "44 99 22"
+}
+actor tempshield2green:tempshield2
+{
+	bloodcolor "44 99 22"
+}
+actor tempshieldblue:tempshield
+{
+	bloodcolor "00 00 99"
+}
+actor tempshield2blue:tempshield2
+{
+	bloodcolor "00 00 99"
+}
+actor tempshieldpuff:tempshield
+{
+	+noblood
+}
+actor tempshield2puff:tempshield2
+{
+	+noblood
+}
+
+
+actor bleedout
+{
+	+missile
+	damagetype "BleedOut"
+	height 2
+	radius 2
+	damage (random(1,3))
+	states
+	{
+	spawn:
+		TNT1 A 1
+		stop
+	}
+}
+
+
+
+// ------------------------------------------------------------
+//   Pistol Only "Cheat"
+// ------------------------------------------------------------
+
+actor HDRealDoomGuy:ActionItem{
+	states{
+	use:
+		TNT1 A 0 ACS_NamedExecuteAlways("HDDoomguy")
+		fail
+	}
+}
+actor HDWeaponPurge:ActionItem{
+	states{
+	use:
+		TNT1 A 0 ACS_NamedExecuteAlways("PurgeWeapons")
+		fail
+	}
+}
+actor HDDropOne:ActionItem{
+	states{
+	use:
+		TNT1 A 0 ACS_NamedExecuteAlways("DropOneAmmo")
+		fail
+	}
+}
+
+// ------------------------------------------------------------
+//   Pickup and Weapon Archetype
+// ------------------------------------------------------------
+
+actor HDPickup:CustomInventory{
+	+inventory.invbar
+	+inventory.persistentpower
+	inventory.interhubamount 99999
+	radius 20
+	height 16
+	scale 0.8
+}
+
+actor HDUPK:switchabledecoration{
+	//do NOT use this for pickupable casings, 1x1 is intolerably pixelbitchy!
+	height 8 radius 8
+	activation THINGSPEC_Switch|THINGSPEC_ThingTargets
+	+usespecial
+	states{
+	active:
+	inactive:
+	grab:
+		"----" A 0 A_JumpIfCloser(42,2)
+		"----" A 0 A_Jump(256,"spawn")
+		"----" A 0 A_FaceTarget(0,0,0,0,FAF_TOP)
+		"####" "##" 2 A_ChangeVelocity(cos(-pitch)*6,-1,sin(-pitch)*7+4,CVF_RELATIVE)
+		"----" A 0 A_JumpIfHealthLower(1,"spawn",AAPTR_TARGET) //in case you die mid-pickup
+		"----" A 0 A_JumpIf(getdistance(true,AAPTR_TARGET)>64,"spawn") //in case you teleport mid-pickup
+		"----" A 0 A_Warp(AAPTR_TARGET,4,0,24)
+		"----" A 0 A_Jump(256,"give")
+	give:
+		//put here everything that needs to be given to the player
+		//remember to like do sounds and shit too
+		"----" A 0 A_JumpIfInventory("Clip",0,"spawn",AAPTR_TARGET)
+		"----" A 0 A_GiveInventory("Clip",10,AAPTR_TARGET)
+		stop
+	spawn:
+		CLIP A -1 A_Stop
+	spawn2:
+		"----" A -1
+	givegunloopend:
+		"----" A 0 A_Warp(AAPTR_TARGET)
+		"----" A 0 A_PlaySound("misc/w_pkup")
+		stop
+	}
+}
+/*
+actor __:HDUPK{
+	states{
+	spawn:
+		CLIP A -1 A_Stop
+	give:
+		//put here everything that needs to be given to the player
+		//remember to like do sounds and shit too
+		"----" A 0 A_JumpIfInventory("Clip",0,"spawn",AAPTR_TARGET)
+		"----" A 0 A_GiveInventory("Clip",10,AAPTR_TARGET)
+		stop
+	}
+}
+
+*/
+
+
+
+actor HDWeapon:Weapon{
+	Weapon.AmmoGive 0
+	Weapon.AmmoGive2 0
+	weapon.ammouse1 0
+	weapon.ammouse2 0
+	weapon.bobstyle Alpha
+	weapon.bobspeed 2.4
+	weapon.bobrangex 0.2
+	weapon.bobrangey 0.8
+	+weapon.ammo_optional
+	+weapon.alt_ammo_optional
+	+weapon.noalert
+	+weapon.noautoaim
+	Inventory.PickupSound "misc/w_pkup"
+	radius 20
+	height 16
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		stop
+	select:
+		TNT1 A 0{
+				//these two don't actually work???
+			A_OverlayFlags(PSP_WEAPON,PSPF_CVARFAST|PSPF_POWDOUBLE,false);
+			A_OverlayFlags(PSP_FLASH,PSPF_CVARFAST|PSPF_POWDOUBLE,false);
+
+			A_TakeInventory("IsZoomed");
+			A_TakeInventory("IsWeaponShort");
+			A_TakeInventory("IsWeaponLong");
+			A_TakeInventory("IsWeaponWide");
+			A_TakeInventory("IsWeaponBFG");
+			A_TakeInventory("IsWeaponReady");
+			A_GiveInventory("WeaponBusy");
+			A_SetCrosshair(21);
+			return state("select0");
+		}
+	select0:
+		"----" A 0 A_Raise
+		wait
+	deselect:
+		TNT1 A 0{
+			A_TakeInventory("IsWeaponShort");
+			A_TakeInventory("IsWeaponLong");
+			A_TakeInventory("IsWeaponWide");
+			A_TakeInventory("IsWeaponBFG");
+			A_TakeInventory("IsWeaponPistol");
+			A_TakeInventory("IsWeaponReady");
+			A_GiveInventory("WeaponBusy");
+			A_TakeInventory("IsKicking");
+			A_SetCrosshair(21);
+			return state("deselect0");
+		}
+	deselect0:
+		"----" A 0 A_Lower
+		wait
+
+	select0big:
+		"----" A 2 A_JumpIfInventory("NulledWeapon",1,"select1big")
+		"----" A 0 A_TakeInventory("NulledWeapon")
+		"----" A 1 A_Raise(30)
+		"----" A 1 A_Raise(30)
+		"----" A 1 A_Raise(24)
+		"----" A 1 A_Raise(11)
+		"----" A 1 A_WeaponOffset(0,-4,WOF_ADD)
+		"----" A 1 A_WeaponOffset(0,1,WOF_ADD)
+		"----" A 1 A_WeaponOffset(0,2,WOF_ADD)
+		"----" A 1 A_Raise(0)
+		wait
+	deselect0big:
+		"----" A 0 A_JumpIfInventory("NulledWeapon",1,"deselect1big")
+		"----" A 1 A_Lower(-2)
+		"----" A 1 A_Lower(0)
+		"----" AA 1 A_Lower(2)
+		"----" A 1 A_Lower(3)
+		"----" AA 1 A_Lower
+		"----" A 1 A_Lower(12)
+		"----" A 1 A_Lower(24)
+		"----" A 1 A_Lower(30)
+		"----" A 1 A_Lower
+		wait
+	deselect1big:
+		"----" AA 1 A_Lower(-2)
+		"----" AA 1 A_Lower
+		"----" A 1 A_Lower(24)
+		"----" A 1 A_Lower(24)
+		"----" A 1 A_Lower(30)
+		wait
+	select1big:
+		"----" A 0 A_TakeInventory("NulledWeapon")
+		"----" A 1 A_Raise(36)
+		"----" A 1 A_Raise(35)
+		"----" A 1 A_Raise(24)
+		"----" A 1 A_WeaponOffset(0,-4,WOF_ADD)
+		"----" A 1 A_WeaponOffset(0,1,WOF_ADD)
+		"----" A 1 A_WeaponOffset(0,2,WOF_ADD)
+		"----" A 1 A_Raise(0)
+		wait
+	select0small:
+		"----" A 1 A_JumpIfInventory("NulledWeapon",1,"select1small")
+		"----" A 0 A_TakeInventory("NulledWeapon")
+		"----" A 1 A_Raise(10)
+		"----" A 1 A_Raise(36)
+		"----" A 1 A_Raise(30)
+		"----" A 1 A_Raise(12)
+		"----" A 1 A_Raise(6)
+		"----" A 1 A_WeaponOffset(0,-2,WOF_ADD)
+		"----" A 1 A_WeaponOffset(0,1,WOF_ADD)
+		"----" A 1 A_Raise(1)
+		wait
+	deselect0small:
+		"----" A 0 A_JumpIfInventory("NulledWeapon",1,"deselect1small")
+		"----" A 1 A_Lower(-1)
+		"----" AA 1 A_Lower(2)
+		"----" AA 1 A_Lower
+		"----" A 1 A_Lower(12)
+		"----" A 1 A_Lower(30)
+		"----" A 1 A_Lower(36)
+		"----" A 1 A_Lower
+		wait
+	deselect1small:
+		"----" A 1 A_Lower(-3)
+		"----" A 1 A_Lower
+		"----" A 1 A_Lower(12)
+		"----" A 1 A_Lower(24)
+		"----" A 1 A_Lower(30)
+		"----" A 1 A_Lower(36)
+		wait
+	select1small:
+		"----" A 0 A_TakeInventory("NulledWeapon")
+		"----" A 1 A_Raise(36)
+		"----" A 1 A_Raise(30)
+		"----" A 1 A_Raise(16)
+		"----" A 1 A_Raise(12)
+		"----" A 1 A_WeaponOffset(0,-4,WOF_ADD)
+		"----" A 1 A_WeaponOffset(0,2,WOF_ADD)
+		"----" A 1 A_Raise(1)
+		wait
+	select0bfg:
+		"----" A 3 A_JumpIfInventory("NulledWeapon",1,"select1bfg")
+		"----" A 0 A_TakeInventory("NulledWeapon")
+		"----" A 1 A_Raise
+		"----" A 1 A_Raise(24)
+		"----" A 1 A_Raise(18)
+		"----" A 1 A_Raise(12)
+		"----" AAA 1 A_Raise
+		"----" A 1 A_Raise(-2)
+		"----" AA 1 A_Raise(-1)
+		"----" AA 1 {
+			ACS_NamedExecuteAlways("MuzzleClimb",0,-8,-3);
+			A_Raise(-1);
+		}
+		"----" AA 1 ACS_NamedExecuteAlways("MuzzleClimb",0,4,1)
+		"----" AA 1 A_Raise
+		"----" A 1 A_Raise
+		"----" A 1 A_Raise(12)
+		"----" A 1 A_Raise(12)
+		wait
+	deselect0bfg:
+		"----" A 0 A_JumpIfHealthLower(1,"deselect1big")
+		"----" A 0 A_JumpIfInventory("NulledWeapon",1,"deselect1bfg")
+		"----" AA 1 A_Lower(-1)
+		"----" AA 1 A_Lower
+		"----" A 1 A_Lower(-2)
+		"----" AA 1 A_Lower(-1)
+		"----" AA 1{
+			ACS_NamedExecuteAlways("MuzzleClimb",0,-8,-3);
+			A_Lower(-1);
+		}
+		"----" AA 1{
+			ACS_NamedExecuteAlways("MuzzleClimb",0,4,1);
+			A_Lower(2);
+		}
+		"----" AAAA 1 A_Lower
+		"----" A 1 A_Lower(12)
+		"----" A 1 A_Lower(18)
+		"----" A 1 A_Lower(18)
+		"----" A 1 A_Lower(24)
+		wait
+	deselect1bfg:
+		"----" AA 1 A_Lower(-2)
+		"----" A 1 A_Lower(0)
+		"----" AAA 1 A_Lower
+		"----" A 1 A_Lower(18)
+		"----" A 1 A_Lower(18)
+		"----" A 1 A_Lower(24)
+		wait
+	select1bfg:
+		"----" A 0 A_TakeInventory("NulledWeapon")
+		"----" A 1 A_Raise(36)
+		"----" A 1 A_Raise(30)
+		"----" A 1 A_Raise(16)
+		"----" A 1 A_Raise(12)
+		"----" A 1{
+			A_WeaponOffset(0,-6,WOF_ADD);
+			ACS_NamedExecuteAlways("MuzzleClimb",0,10,1);
+		}
+		"----" AA 1 A_WeaponOffset(0,2,WOF_ADD)
+		"----" A 1 A_Raise(1)
+		wait
+
+
+	Ready:
+		TNT1 A 1 A_WeaponReady
+	ReadyEnd:
+		"----" A 0 {
+			A_TakeInventory("WeaponBusy");
+			A_TakeInventory("JustUnloading");
+		}
+		"----" A 0 A_Jump(256,"ready")
+	Fire:
+	AltFire:
+	Hold:
+	AltHold:
+	nope:
+		"----" A 1 A_WeaponReady(WRF_NOFIRE)
+		"----" A 0{
+		A_Refire("nope");
+		if(
+			countinv("PressingReload")+
+			countinv("PressingZoom")+
+			countinv("PressingFire")+
+			countinv("PressingAltFire")+
+			countinv("PressingFireMode")+
+			countinv("PressingAltReload")+
+			countinv("PressingUnload")
+			>0  
+		){
+			return state("nope");
+		}
+		return state("");
+		}
+		"----" A 0 A_Jump(256,"ready")
+	}
+}
+actor HDWeaponPickup:HDPickup
+{
+	scale 0.65
+	height 16
+	radius 20
+//	+usespecial
+	inventory.pickupsound "misc/w_pkup"
+}
+
+actor IsWeaponReady:InventoryFlag{}
+
+actor HUDSprite:InventoryFlag{}
+
+
+actor LongArmWobble:ActionItem{
+	states{
+	pickup:
+		TNT1 A 0{
+			if(countinv("IsMoving",AAPTR_TARGET)>=10){
+				A_SetPitch(pitch+random(-2,2));
+				A_SetAngle(angle+random(-1,1));
+			}
+		}
+		fail
+	}
+}
+
+
+
+
+

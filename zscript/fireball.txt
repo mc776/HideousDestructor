@@ -1,0 +1,181 @@
+// ------------------------------------------------------------
+//   Fireball
+//   a pocket of almost-lighter-than-air hot charged gas,
+//   held together by magic and capable of propelling itself
+// ------------------------------------------------------------
+
+//persistent tail actor that need not be spawned constantly
+class HDTail:IdleDummy{
+	default{
+		+forcexybillboard +rollsprite +rollcenter +bright
+		renderstyle "add";
+		speed -0.3;height 1.0;radius 0.6;deathheight 0.7;friction 1.1;
+	}
+	override void tick(){
+		clearinterpolation();
+		if(!master){
+			destroy();return;
+		}
+		if(globalfreeze||level.Frozen) return;
+		if(alpha<0.3){
+			setxyz(master.pos);
+			vel=master.vel*speed+(frandom(-0.1,0.1),frandom(-0.1,0.1),frandom(0.5,1));
+			alpha=height;
+			scale.x=radius;scale.y=radius;
+			roll=random(0,7)*45;
+		}else{
+			alpha*=deathheight;
+			scale*=friction;
+		}
+		trymove(self.pos.xy+vel.xy,true);
+		addz(vel.z);
+		nexttic();
+	}
+}
+
+//a pocket of almost-lighter-than-air hot charged gas, held together by magic
+//capable of propelling itself
+//damage would be balefire, electro, radioactivity or heat/immolation
+class HDFireball:HDActor{
+	vector3 oldvel;
+	vector3 frac;
+	int fracc;
+	vector3 totracer;
+	int disttotracer;
+	double seekspeed;
+	double zat;
+	default{
+		+missile +noblockmap +dropoff +activateimpact +activatepcross +hittracer
+		+forcexybillboard +rollsprite +rollcenter +bright
+		renderstyle "add";
+		radius 4;height 4;speed 10;gravity 0.05;deathheight 64;
+		damagetype "thermal";damagefunction(1);
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		seekspeed=speed*0.618;
+		fracc=speed/radius;
+		frac=vel/fracc;
+		A_PlaySound(activesound,CHAN_BODY,0.7,true,6);
+	}
+	void A_SimpleSeek(
+		int seekradius=0,
+		bool inlosonly=false
+	){
+		if(!tracer) return;
+		totracer=tracer.pos+(0,0,tracer.height)-self.pos;
+		disttotracer=totracer.length();
+		if(
+			(!inlosonly || checksight(tracer))
+			&&
+			(seekradius<=0 || disttotracer<seekradius)
+		)
+		vel+=HDMath.ScaleVector(totracer,seekspeed);
+	}
+	void A_FBFloat(
+		double jitter=0.02
+	){
+		if(jitter){
+			vel+=(
+				frandom(-radius,radius)*jitter,
+				frandom(-radius,radius)*jitter,
+				frandom(-height,height)*jitter
+			);
+			zat=pos.z-floorz;
+		}
+		if(vel.length()>speed) vel*=0.9;
+		if(zat<deathheight && vel.z<0) vel.z+=(deathheight-zat)*0.03;
+	}
+	void A_Tail(){
+		if(!missilename) return;
+		actor a=spawn(missilename,pos);
+		a.master=self;a.vel=self.vel*0.9;
+	}
+	override void Tick(){
+		ClearInterpolation();
+		if(globalfreeze||level.Frozen) return;
+		if(!bmissile){
+			//I don't anticipate any use other than death state...
+			trymove(vel.xy,true);
+			if(pos.z<floorz) setz(floorz);
+			else if(pos.z+height>ceilingz) setz(ceilingz-height);
+			else addz(vel.z);
+			nexttic();
+			return;
+		}
+		if(vel==(0,0,0)) vel.x=minvel;
+
+		//update frac
+		if(oldvel!=vel){
+			oldvel=vel;
+			fracc=clamp(vel.length(),1,256);
+			if(fracc>radius){
+				fracc/=radius;
+				frac=vel/fracc;
+			}else{
+				//am I trying too hard to minimize divisions here?
+				fracc=1;
+				frac=vel;
+			}
+		}
+
+		//the iterator
+		for(int i=0;i<fracc;i++){
+			fcheckposition tm;
+
+			//hit something while moving horizontally
+			if(!TryMove(Pos.XY+frac.XY,true,NULL,tm)){
+				if(!bSkyExplode){
+					let l = tm.ceilingline;
+					if (BlockingLine != NULL && BlockingLine.special == Line_Horizon){
+						destroy();
+						return;
+					}
+				}
+				if(!target) target=master;
+				ExplodeMissile(BlockingLine,BlockingMobj);
+				return;
+			}
+			addz(frac.z);
+
+			//hit floor
+			zat=floorz;
+			//check skyfloor first before usual
+			if(
+				!bSkyExplode
+				&& floorpic==skyflatnum
+				&& pos.z<floorz
+			){
+				destroy();
+				return;
+			}else if(pos.z<zat){
+				setz(zat);
+				hitfloor();
+				explodemissile(null,null);
+				return;
+			}
+
+			//hit ceiling
+			zat=ceilingz;
+			//by the time it comes back down it would have dissipated!
+			//(this rationalization is subject to change)
+			if(
+				!bSkyExplode
+				&& ceilingpic==skyflatnum
+				&& pos.z+height>ceilingz
+			){
+				destroy();
+				return;
+			}else if(pos.z+height>zat){
+				setz(zat-height);
+				explodemissile(null,null);
+				return;
+			}
+		}
+		if(gravity)vel.z-=getgravity();
+		nexttic();
+	}
+}
+
+
+
