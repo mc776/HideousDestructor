@@ -1,4 +1,4 @@
-# HideousDestructor
+# Hideous Destructor
 A gameplay modification for GZDoom https://github.com/coelckers/gzdoom
 
 To use:
