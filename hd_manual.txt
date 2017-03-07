@@ -1,0 +1,1185 @@
+
+  HIDEOUS DESTRUCTOR - A WEAPONS AND MONSTERS MOD FOR GZDOOM
+
+
+	   QUICKSTART
+
+		* Bright red haze means you're bleeding to death.
+
+		* Use medikits (or, if no medikits, weapon slot 9) to stop bleeding.
+
+		* Hit the reload key to reload. Hold to keep the mag.
+
+		* Hit the unload key to take ammo out of a weapon.
+
+		* Use items to pick them up, and enemies to melee them.
+
+		* Hold the jump key in front of a low ledge to climb over it.
+
+		* Hold the run/walk key to sprint. Use run/walk toggle to switch from walk and run.
+
+		* Stop moving and hold the use/open door key to view all inventory.
+
+
+
+	CONTENTS
+
+		   I. INTRODUCTION
+
+		  II. GETTING STARTED
+
+		 III. CONTROLS
+
+		  IV. COMMANDS AND CVARS
+
+		   V. ITEMS
+
+		  VI. LIVES
+
+		 VII. WEAPONS
+
+		VIII. MONSTERS
+
+
+
+	   I. INTRODUCTION
+
+The Hideous Destructor weapons and monsters mod is, among other things, a "gameplay re-imagining" of Doom. The basic premise goes something like this: what if Doom, with its demons and zombies and 80s-metal horrors and ridiculous firepower, didn't hold anything back for the benefit of the player? What if a lone zombie coming at you with an assault rifle became a cause of concern *now*, rather than ten minutes later when your health suddenly dips to single digits because your teammate ran in front of your rocket? What if your guns actually had some serious range and stopping power - as did the enemy's, creating opportunities and risks that would have been much harder to model before? What if, on Phobos, you had to face a force that was much more plausibly capable of wiping out an entire platoon of space marines?
+
+To accomplish this design objective, HD makes three main changes:
+
+- Taking all the monsters and weapons up a few notches, exaggerating both their strengths and their (relative) weaknesses.
+- Creating more incentives for the player not to get hit, while making it a lot harder to avoid damage without some coherent attack plan and proper use of cover.
+- Adding an inventory system to give the player more control over what they collect and use and when.
+
+The result is a tense, frustrating, and brutal experience where everyone is fighting at a much more equal level than before and nothing can be taken for granted. Have fun.
+
+
+	Using Hideous Destructor with other wads
+
+Hideous Destructor is designed to be run on any map that does not define its own weapons and monsters. Running with other weapon or monster mods is not supported.
+
+
+	  II. GETTING STARTED
+
+To play Hideous Destructor in Windows, just drag the hd.pk7 file onto gzdoom.exe or go to the command line (Start -> Run or Windows key + R) and use the -file command line parameter on the pk7 as you would a normal wad.
+
+If you are want to play HD in Doom 1/Ultimate Doom, you must do one of the following:
+
+1. Use WadSmoosh http://forum.zdoom.org/viewtopic.php?f=19&t=52757 to combine all your D1 and D2 IWADs.
+2. Load hdd1p.pk7 after hd.pk7. This replaces some actors and textures and changes some item behaviours so that there are no missing graphics or sounds and you get a relatively seamless gameplay experience.
+3. Load a Doom II IWAD (D2, Evilution or Plutonia, doesn't really matter which) as a PWAD before hd.pk7 (e.g., "gzdoom -file DOOM2.WAD hd.pk7").
+
+If GZDoom aborts with an error message saying that something has already been defined, then there is a conflict between HD and some other wad you are loading. In that case, unless you know how to go into the mods themselves and mess around with them you'll only be able to run one of those mods at a time. Please e-mail me at vaecrius@shaw.ca or post on the ZDoom forums to let me know about the problem so I can rename the actor in future revisions.
+
+The first thing you should do after starting is to check your key bindings. Make sure your run/walk key is set to something you can hold down comfortably while moving, and Reload, Zoom, Drop Weapon and the additional buttons Alt. Reload, Fire Mode and Unload (user buttons 1, 2 and 4 respectively), somewhere easily accessible without being too easy to hit by accident. More about these controls can be found in Part III of this text.
+
+With that done, you're ready to begin.
+
+If you want to try out some of the weapons, type "map range" in the console and try shooting a few things.
+
+
+	The bleeding system
+
+When you get hit in HD, you not only lose health right away, you also add to a hidden counter that determines how quickly your injuries worsen. This is an abstract system meant to cover everything from body envelope violations to toxicity and radiation poisoning to magical corruption and smoke inhalation, but for convenience I'll refer to this as the bleeding system.
+
+When you see your view in a red haze when you're still, you are bleeding badly. If you're in relatively good health and you still see a red haze, you are bleeding. Bleeding means you are losing health and will eventually die if it is not stopped. Like health, you slowly recover from bleeding injuries, but for most things you'll likely bleed out before you heal.
+
+Armour not only blocks damage but also reduces the bleeding rate of any injury it blocks. Of course, it does not reduce the amount by which you'll bleed on any existing injury.
+
+Supernatural healing bonuses instantly seal up wounds as needed, buying you time to escape and naturally recuperate. If after you manage to stop bleeding you're still charged up with supernatural healing, it will be used to replenish your health at a much faster than normal rate.
+
+Of the mundane tech items, only medikits can help with bleeding directly. Stimpacks and berserk packs only give you more hitpoints; the former exacerbate existing wounds while the latter may create new ones. If your existing wounds are not too bad, stims and berserk packs may still be worthwhile in buying you a bit more time to heal or find healing.
+
+Absent a proper medikit, you can try to bandage yourself, remove toxins, excise necrotic tissue, etc. using improvised objects. This is abstracted into weapon #9: just stand still and hold the fire button until the help text tells you you're done. You take some minor damage and no attempt is guaranteed to work. You can do this to someone else, which has a much lower change of causing damage and is much more reliable.
+
+At low health red haze, without any flickering or fading to black, will occur even when you're stable and recovering.
+
+Side note about being on fire: As you cannot truly "stop, drop and roll" in the Doom engine, there is an option of spinning around or turning left and right very quickly to try to put out a fire earlier. Doing so* in liquids**, sand or gooey snake floors while crouched greatly increase your chances of putting out the flames in time.
+
+*or any rapid movement
+**other than nukage or lava
+
+
+	The damage system 
+
+In addition to regular damage, Hideous Destructor tracks "lethal" damage and "aggravated" damage. Both accumulate to the detriment of your maximum HP.
+
+Lethal damage represents long-term damage that cannot be readily healed. It may occasionally be treatable with medikits.
+
+You arbitrarily recover from one point of lethal damage every level change. (You can also recover from some lethal damage over the course of a few days, if for whatever reason you decide to stay on one level that long.)
+
+Aggravated damage represents long-term damage that cannot be readily healed due to fundamental interference with your body's metaphysical pattern. It can only be healed by supernatural means, but may be inflicted by both supernatural and technological means (most notably balefire and the berserk pack's aftereffects).
+
+Soul sphere and blue potion magic will remove lethal and aggravated damage at the same rate as it helps you recover health.
+
+
+	Difficulty levels
+
+Homely: You take 30% damage and you don't bleed from injuries, nor suffer from aggravated or lethal damage, but monsters spawn at Ultra-Violence rates.
+
+Ugly: You take 100% damage and spawn at ITYTD/HNTR rates.
+Grotesque: You take 100% damage and spawn at Hurt Me Plenty rates. (Default)
+Hideous: You take 100% damage and spawn at Ultra-Violence rates.
+Nightmare!: As Hideous, but with fast monsters. Shortcut key N.
+
+Grimdark: You take 120% damage and monsters move fast and spawn at Ultra-Violence rates. Megaspheres are replaced with major armour pickups, stimpacks are replaced with medikits, and health bonuses are replaced with armour bonuses. Encumbrance is mandatory. Shortcut key G.
+
+Monster respawn works differently in HD. Instead of resetting killed monsters randomly, the map will slowly leak wandering shards of Frag energy that enter into corpses and raise them. This only happens if there are fewer active shards than there are players plus 6. This happens 4 times faster on Nightmare (or with sv_monsterrespawn on) than on Grimdark.
+
+
+	Player classes
+
+When you start a new game, you will be asked to select a player class. The classes all have the same inherent properties and differ only in starting equipment.
+
+	Rifleman
+	Standard rifleman's loadout.
+	Primary: Assault rifle +grenade launcher, 5 mags, 8 grenades
+	Hand grenades: 8
+	Armour: Green
+	Meds: 4 medikits
+	Extra: DERP
+
+	Classic Rifleman
+	Equivalent to a standard rifleman's loadout from an older, braver age.
+	Primary: Battle rifle +grenade launcher, 5 mags, 20 spare rounds, 8 grenades
+	Hand grenades: 8
+	Armour: Green
+	Meds: 4 medikits
+
+	Enforcer
+	Police-style loadout for fighting in built-up areas.
+	Primary: Pump shotgun, full ammo
+	Hand grenades: 12
+	Armour: Green
+	Meds: 4 medikits
+	Extra: Blooper with 4+1 grenades; DERP
+
+	Infiltrator
+	Also, unfortunately, worthy of the same description. The joy of civil forfeiture and gun lobbies.
+	Primary: SMG, full ammo
+	Hand grenades: 6
+	Armour: Green
+	Meds: 4 medikits
+	Extra: Blooper with 4+1 grenades; DERP
+
+	Support Gunner
+	Squad assist gunner.
+	Primary: Vulcanette, full ammo with 1 spare cell pack
+	Hand Grenades: 8
+	Armour: Green
+	Meds: 4 medikits
+	Extra: DERP
+
+	Grenadier
+	Additional firepower to flush out entrenched enemies.
+	Primary: Rocket/grenade launcher, full ammo
+	Hand Grenades: full
+	Armour: Green
+	Meds: 4 medikits
+	Extra: DERP
+
+	Bombardier
+	Additional firepower for surgical precision strikes.
+	Primary: Brontornis, full ammo
+	Hand Grenades: 6
+	Armour: Green
+	Meds: 4 medikits
+	Extra: DERP, SMG with 1 extra mag
+
+	Specialist
+	Field tester for a dangerous new weapon.
+	Primary: Particle beam gun, full ammo
+	Hand Grenades: 6
+	Armour: Green
+	Meds: 4 medikits
+	Extra: DERP
+
+	Hideous Destructor
+	Field tester for an insanely dangerous new weapon.
+	Primary: BFG9K, full ammo
+	Hand Grenades: 6
+	Armour: Green
+	Meds: 4 medikits
+	Extra: DERP
+
+	Marksman
+	Specialist against unsuspecting soft targets at long range.
+	Primary: Boss rifle, 10 clips
+	Hand Grenades: 6
+	Armour: Green
+	Meds: 4 medikits
+	Extra: DERP, full-auto pistol
+
+	Medic
+	Well equipped rescuer with provisions and a chainsaw to extract people from sticky situations.
+	Primary: Full-auto pistol
+	Hand Grenades: 4
+	Armour: Green
+	Meds: 8 medikits, 8 stimpacks, 8 berserk packs, 1 med station, 6 cell packs
+	Additional Weapon: Chainsaw, DERP
+
+	Roboticist
+	Specialist loaded with artificially intelligent weaponry.
+	Primary: Pistol
+	Hand Grenades: 4
+	Armour: Green
+	Meds: 5 medikits, 5 stimpacks, 1 med station, 6 cell packs
+	Additional Weapon: HERP, DERP, 12 IED kits with 6 duds
+
+	Contractor
+	Civilian "security" employee with a higher budget than your typical grunt.
+	Primary: Side-by-side shotgun (or bolt-action rifle), full ammo, spare pistol with 2 extra mags
+	Hand Grenades: 8
+	Armour: Black
+	Meds: 8 medikits, 8 stimpacks
+	Extra: Blooper with 4+1 grenades; second pistol; DERP
+
+	Insurgent
+	Rebel fighter who has whatever La Résistance managed to scrounge up for the mission.
+	Primary: Any
+	Hand Grenades: Possibly
+	Armour: Maybe green if you're lucky
+	Meds: Some, usually
+	Additional Weapon: Pistol(s) and/or DERP, if you get them
+
+	Security Guard
+	Actual security officer. Licenced to carry (from those freedom-hating places where that matters).
+	Weapons: Pistol, spare mag
+	Armour: Green
+	Meds: 2 medikits
+
+	Naturist
+	You're naked!
+	Primary: fist
+	Hand Grenades: none
+	Armour: none
+	Meds: none
+	Additional Weapon: Balls
+
+	Doomed Guy
+	Yay, you're doomed!
+	Primary: pistol with 50 rounds
+	Hand Grenades: none
+	Armour: none
+	Meds: none
+	Additional Weapon: Fist, gumption
+
+
+
+	 III. CONTROLS
+
+Hideous Destructor adds a couple non-standard functions. Please read carefully as you will spend most of your gameplay hours unarmed and dead if you do not learn how these things work.
+
+
+	Reloading
+
+Console commands: +reload, +hd_altreload (or +user1)
+Default keys: r, j
+
+Description: Hit the reload key to refill your weapon with your spare ammo. The reload key also serves a few secondary weapon functions (e.g., aborting a hand grenade toss and starting an alternate fist attack) - see those weapon descriptions for details.
+
+When you reload a fixed-magazine weapon like a shotgun or grenade launcher, you load one unit at a time. You will automatically load as many units as you can until you are out of spare units, the gun is full, or you have interrupted the process because you needed to shoot right then (i.e., hold the attack button until you stop reloading).
+
+When you reload a detachable-magazine weapon like a pistol, you will load one full mag, and whatever was in the gun before is either dropped or (by holding the reload key until you hear yourself going through your pockets) added to an abstract miscellaneous-rounds collection (indicated as a bar next to your mag count). If you have no full mags and the weapon permits it, you will load a random "mystery mag" that may contain any number of those miscellaneous rounds.
+
+When you reload a multiple-detachable-magazine weapon like a chaingun (which is designed for modularity reasons to take 5 rifle mags), the same detachable-magazine rules apply as between any newly loaded magazine and the gun, and the sequence of loading mags can be interrupted the same way as loading individual rounds in a fixed-magazine weapon.
+
+If you have a detached-mag weapon out that allows such things (i.e., not UAC Standard caseless) and are not shooting, you are presumed to be busy loading as many full mags of that weapon as you can. For example, if you have a pistol out with no spare full mags (15 rounds each) and 20 miscellaneous rounds, and start wandering around for a while looking for a secret, after some time you will notice those 20 rounds be gradually replaced by 1 full mag and 5 rounds. The speed of conversion is based on a hidden counter that resets when you attack (but NOT when you merely switch weapons - this may be used to your advantage).
+
+Similarly, the shotguns have side saddles that let you quickly load up to 12 shells. Keeping a shotgun out without shooting lets you replenish those quick-draw shells from those kept on your person.
+
+The alternate reload key lets you:
+- with a grenade rifle, reload the underslung grenade;
+- with either of the shotguns, load shells from your pockets without touching the ones in the side saddles;
+- with the chaingun, load a cell; and
+- with the plasma rifle and BFG, unload one cell.
+
+
+	Fire Mode
+
+Console command: +hd_firemode (or +user2)
+Default key: h
+
+Description: A couple weapons have alternate fire modes in addition to their primary and secondary attacks.
+
+The assault rifle and SMG have semi, burst and full auto modes. When in burst or full auto, you will see a small yellow bullet icon above the mag counter. Same goes for the battle rifle but without the burst.
+
+The chaingun has 2 rates of fire, 2100 and 700 RPM. Setting 2100 RPM will show the same yellow "bullet spam" indicator as the rifle's full-auto mode.
+
+The rocket launcher can load up to one HEAT round at a time, always as the very next rocket to be fired. The fire mode key may be used to load and unload a HEAT round if one is available.
+
+
+	Unload
+
+Console command: +hd_unload (or +user4)
+Default key: l
+
+Description: Strips some ammo off the weapon you are carrying. For the shotguns you take the side saddles first; for the vulcanette you take the mags first before the cell.
+
+With both reload and unload, if you hold down the key you will pocket whatever it is you are extracting. However, holding down (or interrupting a sequence by tapping) the reload or unload key in a multi-sequence unload (Vulcanette, rocket launcher, shotgun) will abort the sequence, meaning that with the non-shotguns you can either spill everything everywhere in your haste, or pocket one mag or rocket at a time. (The shotguns will be pocketed whenever possible since you have to pull them out and they'll be in hand anyway.)
+
+
+	Taunt
+
+Console command: hd_taunt
+Default key: b
+
+Description: Yells at the monsters, waking them and causing them to attack you. Sound, depending on player's gender, is either Kuni from the movie UHF (Wheel of Fish scene), or Jay's mom from Jay & Silent Bob Strike Back (opening).
+
+
+	Sprinting
+
+Console command: +speed
+Default key: Whatever you have set it to
+
+Description: Your normal movement speed, with "always run" off, is a walk of about 5 km/h (if unencumbered by armour, gear, etc.). To make a quick dash at full speed (comparable to Usain Bolt), hold on to the +speed key while moving. You will put away your weapon as you sprint (except in the case of your fist and hand grenades).
+
+If you have "always run" on, your normal speed increases to about 18 km/h, but you cannot recover from fatigue while moving at that speed.
+
+Holding sprint and crouch at the same time has you scrambling along the ground, unable to shoot but achieving something close to your normal, unencumbered moving speed.
+
+Your fatigue only increases while you are moving; merely holding the sprint key will not drain your energy.
+
+You can sprint forward continuously for about 100m before tiring out. If at any time you stop sprinting, you must substantially recover from your fatigue before you can start again.
+
+Protip: Holding a lighter weapon lets you start sprinting sooner. If you know you'll have to make a break for it very soon, don't bring out that BFG! (But if you're stuck with it anyway and you absolutely must begin sprinting immediately, dropping the weapon can give you a split second of time.)
+
+
+	Jumping
+
+Console command: +jump
+Default key: Whatever you have set it to
+
+Description: If you walk right up to a ledge between waist and shoulder height, you can press and hold the jump key for about half a second to hoist yourself onto that ledge. You will briefly be unable to fire while doing this. This action cannot be done while crouching.
+
+If you jump while moving forward and the way ahead of you is clear, you will leap forward. Good for crossing gaps and closing in for a beatdown.
+
+If you hit the jump key in any other situation, you will make a normal vertical leap.
+
+Your jumping/mantling and your sprinting run from the same fatigue counter.
+
+
+	Using
+
+Console command: +use
+Default key: Whatever you have set it to
+
+Description: You can open doors with it, as usual. But you also get two other functions:
+
+Pickups: For most things, you must "use" an item to pick it up. If you cannot carry the item, you will put it back on the floor in front of you. For smaller items like loose ammo, you must hold the use key while moving over it to pick it up.
+
+Kicking: pressing use in front of an enemy lets you kick them. (There is no animation for this; this mod is called hideous for a reason.) You can also kick away corpses if they're in the way.
+
+If encumbrance (hd_carrylimit) is on, then you can press and hold use to see how many arbitrary "blocks'" worth of equipment you are carrying.
+
+
+	Aiming and Turning
+
+If you are standing still have some map geometry right underneath where your weapon is pointing, you will be assumed to be trying to use it to support your weapon on each shot. This can be done by standing right behind a ledge, or by crouching and using the floor. (The ZDoom crouching doomguy is a very low crouch!)
+
+If you must make a very wide turn, you will automatically step to the side as you adjust your body. Turning while already moving ignores this function.
+
+Your turning speed is capped and, depending on your weapon, subject to a bit of inertia. In addition, your turn may be stopped by the muzzle of your weapon colliding with a wall; hold the sprint key or switch to fist or pistol to avoid this.
+
+
+
+	  IV. COMMANDS AND CVARS
+
+	Commands
+
+hd_strip: You do not automatically "overwrite" your currently worn armour by picking up and using new armour. Use the hd_strip command to take off what you're wearing first.
+
+hd_dropone: This will drop drop one unit of each type of ammo that applies to your current weapon. If you have both full mags and loose ammo, you drop all your loose ammo first.
+
+hd_purge: This will drop all ammunition for which you do not have an appropriate weapon, along with empty cells (in the absence of a BFG) and broken robots.
+
+hd_drop: Equivalent to dropping your weapon and immediately switching to fist every time. Note that attempting to drop your fist results in dropping all miscellaneous usable items that can't be dropped using either of the above two commands.
+
+hd_nobleedcheat: Toggles the bleeding system on and off. Normally only the easiest skill level has no bleeding system.
+
+hd_doomguy: This command, available anytime and not considered a cheat, will set you back to the good old naked marine with a pistol and 50 bullets. Only available if hd_carrylimit is off, or you have not attempted to use or pick up anything yet.
+
+hd_clearcvs: Resets all archived CVars (other than loadout cvars) to their defaults.
+
+
+	CVars (host only)
+
+hd_forcepistolstart: This has the same effect as if everyone voluntarily picked the Doomed Guy class, with more griping.
+
+hd_nobfg: This prevents you from spawning with a BFG. If you pick the appropriate class to spawn with one, you spawn with a Thunder Buster instead. If you try to pick one up on the map, you will either get the Thunder Buster or (if you already have the Thunder Buster) some spare ammo.
+
+hd_norockets: This prevents you from spawning with a rocket launcher, giving you a Brontornis instead.
+
+hd_nobronto: This prevents you from spawning with a Brontornis, giving you a rocket launcher instead. If both of these cvars are true, both weapons are replaced with the grenade rifle.
+
+hd_carrylimit: Normally you have a hard limit to each type of item you may carry, and can have every weapon available on your person, as is the case in Doom. When this server cvar is on, not only do you get these limits but you are also subject to a global encumbrance limit, one for weapons and one for everything including weapons. Generally this will prevent you from having any more than 2 primary weapons plus 2 pistols.
+
+hd_nobots: This causes bots to be replaced with riflemen. Can be used for coop and deathmatch. Generally far more competent, but cannot use customized loadouts and can sometimes appear in odd places.
+
+hd_nomeds: Removes all healing items except the soul sphere, megasphere and spiritual armour.
+
+hd_penetrate: In deathmatch, bullets can penetrate through walls. This is disabled in single and coop since the AI can't handle it at all. Enabling this option turns on penetration in all games.
+
+hd_noskybullets: Normally, if you launch a hard projectile like a bullet or grenade into the sky, that projectile will persist even after it has disappeared into the sector's "sky" ceiling and eventually come down. With this cvar on, these projectiles just disappear. Useful if you're suffering frame rate stutters while launching explosives in open areas.
+
+hd_grimspawn: Causes raise shards to spawn as though one were playing Grimdark difficulty in all game modes. If this cvar is on and either sv_monsterrespawn is on or you are playing nightmare, then the faster nightmare spawn rate applies instead.
+
+hd_killerbarrels: Sets the percentage chance that any barrel (nukage or flaming) will be a killer barrel. Default 5.
+
+
+	CVars (user-based)
+
+hd_helptext: Some events (e.g., picking up a rifle variant, pulling the pin and lighting the fuze on a grenade) generate text messages on your screen that remind you of certain non-obvious events. By setting this cvar to false, you turn those reminders off. At your own risk.
+
+hd_hudsprite: Displays your current weapon as a pickup sprite graphic inside your HUD, Ghost Recon-style.
+
+
+	CVars (user-based): weapon default options
+
+The following cvars affect how some of your weapons are set up when you first spawn with them in your loadout. Default setting in parentheses.
+
+hd_startzoomed (0): When you raise your weapon, you normally start out with the non-scoped or non-zoomed sight picture for your crosshair. Setting this to 1 has you start with the scoped, zoomed view instead.
+
+hd_derpmode (0): Sets the starting mode for the DERP. 0=turret; 1=ambush; 2=patrol; 3=follow.
+
+hd_smgfiremode, hd_zmfiremode, hd_libauto (0): Set semi or full automatic for the SMG, ZM66 and Liberator. 1=full auto for the rifles, but burst for the SMG. 2=burst for the ZM66, but full auto for the SMG.
+
+hd_huntauto (0): If set to 1, starts in semiauto instead of pump.
+
+hd_vulcsuper (0): If set to 1, starts in 2100 RPM mode rather than 700.
+
+hd_rlmode (0): If set to 1, starts in grenade rather than rocket mode. If set to 2, you lose 1 loaded rocket and start with a HEAT loaded instead.
+
+hd_zmzoom, hd_libzoom (0): If set to 1, starts with the ZM66 or Liberator optic set to high zoom (equivalent to zoom level 1 for the Boss).
+
+hd_tbmode (0): If set to 1, starts the Thunder Buster in its alternate CQB spray setting.
+
+hd_bossmoa (0): Presets the Boss reticle bullet drop adjustment. See the Boss description in this manual for details.
+
+hd_bosszoom (0): Starts with the Boss scope at higher zoom levels, up to a maximum of 2.
+
+hd_bossstartzoomed (0): If set to 1, this causes the Boss to start with the scope raised as though hd_startzoomed were on. If set to 0, the Boss obeys hd_startzoomed like the other weapons.
+
+hd_clearcvs: Resets all archived weapon default options to their defaults.
+
+
+All the above cvars can be changed in ZDoom's gameplay options menu.
+
+
+
+	   V. ITEMS
+
+To pick up an item, use it as you would use a door or switch. Even if you do not pick it up, you will bring it towards yourself, so this can also be done to get an unwanted item out of the way of another (or an actual door or switch) that you do want.
+
+Armour comes in three flavours: Kevlar green, titanium-derivative blue, and ceramic-and-nanofibre black. All three types knock off the same portion of initial damage, while blue and black last longer generally and are equipped with extra layers that stop more shots from penetrating or causing other long-term damage and degradation. All armour restricts movement very slightly, with the encumbrance increasing with more powerful protection.
+
+Supernatural health bonuses (potions, soul spheres, megaspheres) are stored and gradually "leak" into your system whenever you are injured, allowing recovery from nearly anything that does not immediately kill you.
+
+Some items can be picked up and saved for later, as described below.
+
+Stimpack
+ZDoom actor name: PortableStimpack
+These can boost your endurance somewhat.
+WARNING: Do not use while bleeding from open wounds.
+
+Medikit
+ZDoom actor name: PortableMedikit
+Some injuries require more help than a stimpack could provide. Wounds can bleed or tear or become necrotic and infected, toxins can begin running through your system, and all other sorts of nastiness await in the Hellish depths below - these can all slowly drain away your health. You can naturally recover from some of the damage, but often you'll need a medikit to deal with worse injuries. When your display begins flickering black for no apparent reason, try using a medikit.
+
+Medical Station
+ZDoom actor name: MedDeployer
+This machine, once set up, can provide aid to wounded players, stopping bleeding and patching up wounds quickly and efficiently.
+To use, stand right in front of it while wounded, stare at the blinking lights and don't do anything else. Requires 1 medikit, 2 stimpacks and 1 full cell to deploy. Use the station to dismantle and recover it.
+
+Berserk Pack
+ZDoom actor name: PortableBerserkPack
+It doesn't quite make your punch ten times as strong, but when you've got more monsters than time to reload, this thing is a godsend. The burst of strength also lets you carry heavy weapons more efficiently. The effect only lasts a very short while, so use it while you've got it!
+WARNING: Not a substitute for proper medical treatment.
+CAUTION: May require proper medical treatment after use.
+DANGER: DO NOT OVERDOSE.
+
+Administration
+ZDoom actor name: Injector
+All three of the above healing items can be used on someone else. Select the "Injector" weapon (slot 9, second from self-bandage), then walk up to your victim/patient, and while you're right up to them press and hold until you hear the sound:
+FIRE: administer the contents of 1 medikit.
+ALTFIRE: administer the contents of 1 stimpack.
+BOTH: administer the contents of 1 berserk pack.
+Healing items are generally better when applied against another than attempting to self-medicate.
+
+Light Amplification Visor
+ZDoom actor name: PortableLiteAmp
+Use to turn on and off. You cannot use sights on long weapons while the goggles are on. Uses cell power, one cell pack being worth about 40 minutes' worth of light amplification. Rapidly switching on and off drains power.
+
+Radiation Shielding Suit
+ZDoom actor name: PortableRadSuit
+Doubles as a fire retardant suit. Lasts until damaged by excessive fire.
+
+Backpack
+ZDoom actor name: HDBackpack
+Greatly increases your maximum ammo capacity for any type, and if hd_carrylimit is on you can pick up more things generally. Slight mobility restriction even if not actually in use.
+
+Defence, Engagement, Reconnaissance and Patrol Robot
+ZDoom actor name: DERPBot
+The gun that runs around killing people by itself!
+Basically a pistol wired to a webcam and treads, made of bullets, aggression and shitty programmer art. Must be manually recovered after use. They can't climb and run out of ammo quickly, but you can pick them back up anytime as you would an ordinary item for later redeployment. Uses up one pistol mag each time you deploy, and any unused ammo is recovered on pickup.
+The DERP can be programmed to one of several behaviours. Type the following into the console to set what mode it will engage in at any time.
+	derpt = TURRET: Default. Stand ground and engage targets from wherever it is.
+	derpp = PATROL: Move about on its own, generally following the player, pursue and engage targets as acquired.
+	derptz = AMBUSH: As turret, but will not shoot.
+	derppz = FOLLOW: As patrol, but will not shoot.
+"derp" in the above can be shortened to "d", e.g. "dtz" for ambush mode.
+CAUTION: If it breaks, you will not be able to use it again until you start a new level.
+
+Heavy Engagement Rotary Platform Robot
+ZDoom actor name: HERPBot
+In the wake of the stunning success of the D.E.R.P. project, the Brojira Robotics and Human Development Foundation soon secured a second grant from the Israeli military to build a scaled-up version for high-accuracy automated targeting in heavy urban engagements. This was met with some setbacks early on in the project when it was discovered that Brojira's CEO at the time, Dr. Branson Icke, had supported a local mayoral candidate in his hometown eight years before whose platform included "ending the politically correct war on Christmas by passing a bylaw that every mall Santa shall be a real Santa with HIS beard and HIS wife Mrs. Claus who is a woman". A great and terrible media cycle ensued and Dr. Icke, one of the chief coders and designers behind the original D.E.R.P. project, was forced to resign from all further positions with Brojira, and the H.E.R.P. project was substantially completed without his guidance and programming virtuosity. The resulting product remains functional, if a bit bloated, slow and unwieldy.
+Once deployed, the HERP will begin doing sweeps of the 90-degree view in front of its starting position. The new IFF detection system* means it can only focus on a narrow band in front of it, meaning that it will only target enemies that cross a 12-degree FOV directly in front of the sensor.
+*(which contains a few additional safeguards after numerous class action lawsuits resulting from fatalities when local American police forces were found to be deploying units in inner-city schools)
+To switch the HERP on and off while it is deployed, type "herp" in the console.
+The HERP takes up to 3 mags and 1 cell to deploy.
+Note: the HERP is bulky enough to count as its own weapon when encumbrance limits are enabled.
+
+IED Kit
+ZDoom actor name: HDIEDKit
+The OpenTerror Working Group's brief lifespan included what turned out to be an ingenious adaptation of the Heckler & Mok Real-Time Adaptable Hybrid Gyro-Grenade for securing a building against certain passing threats. The open-source schematics have allowed numerous aftermarket companies to develop the Simple Idiotproof Improvised Explosive Device Kit for various military, police and private security contracts long after the original inventors were captured, tortured and their remains presumably disposed of in an undisclosed location by various government and other* agencies. (*A lawsuit against Heckler & Mok by the families was dismissed with costs after an eighteen-day motion was heard. The families settled for an undisclosed amount and were never heard from again.)
+To activate the IED, make sure you have at least one IED kit and one live or dud rocquette. (You can pick duds up from any botched grenade launch assuming they don't spontaneously detonate on you first.) The IED takes 5 seconds to come online, during which you may decide to flee. They will generally not target friendlies. An IED may be picked up and its components reused; the disarming process, however, ruins the rocket grenade such that it can no longer be launched and is only good for planting another IED.
+To toggle IED passive or active mode, type "iedpassive" in the console. This message applies to all IEDs that you have set.
+To detonate all your outstanding IEDs, type "detonate" in the console. This message is ignored by IEDs that are still booting up, so you may need to wait a moment (or time your deployments and detonations carefully).
+
+Relic of the Ancients
+ZDoom actor name: SquadSummoner
+Not all the magics that escaped through the gates are evil. Every so often you may run into an ancient piece of arms and armour that serves as a talisman to bring back the spirits of long-departed warriors to aid your quest - if only for a little while. Their damage is almost entirely illusory and placebo-effect, but they can be very useful for routing and isolating an otherwise overwhelming force.
+
+Potion of Goodness
+ZDoom actor name: BluePotion
+Another supernatural artifact of questionably non-Hellish origin. Heals you over time. In fact, it can "over-heal" you so that if you're hurt later, you can recover faster because of your prior drinking!
+
+Spiritual Armour
+ZDoom actor name: GreenHelmet
+Another supernatural artifact of even more questionably non-Hellish origin. Stops any and all bleeding on the spot and grants you additional protection from damage.
+
+Suspiciously Generic Ammo Box
+ZDoom actor name: HDAmBox, HDAmBoxUnarmed, HDAmBoxDisarmed, HDAB
+These ammo boxes are actually full of ammo, though they may also contain other lovely surprises. To disarm the trap, tap use once to attempt to disarm. You will automatically flip disarmed boxes over to mark them as checked. Rapidly double-tap use on the box to open it immediately without completing the trap check. Not all boxes are trapped in such a way as to allow disarm, and you may want to shoot them open from a safe distance instead.
+
+
+
+	 VI. LIVES
+
+If you set the fraglimit to certain values in a multiplayer game, you can play a last-man- or last-team-standing deathmatch game, or play co-op without the temptation to send wave after wave of yourself into the enemy until they eventually thin out.
+
+Only the host needs to set the fraglimit. You must allow exits for the level end to work.
+
+Deathmatch FL <100: Same as usual.
+
+FFA Deathmatch FL 100+:
+- Each player has a number of lives equal to fraglimit.
+- If you run out of lives, next time you die you are out and respawn frozen and unable to interact.
+- Last person still alive is deemed to win the match.
+
+Team Deathmatch FL 100+:
+- Each team has a pool of lives equal to fraglimit.
+- If your team runs out of lives, next time you die you are out and respawn frozen and unable to interact.
+- Last team with at least one surviving member is deemed to win the match.
+
+Co-op FL <=0:
+- There is no lives pool, and you respawn infinitely subject to your usual dmflags.
+
+Co-op FL <100:
+- All players share a single lives pool, equal to fraglimit.
+- If you run out of lives, next time you die you are out and respawn frozen and unable to interact.
+- If everyone is out, the game over message appears and the map restarts after a few seconds.
+- If the map restarts, all players' loadouts are randomized as Insurgents.
+
+Co-op FL 100+:
+- All players share a single lives pool, 100 less than fraglimit.
+- If you run out of lives, the game over message appears and the map restarts after a few seconds.
+- If you manage to die during these few seconds, you are out as in FL <100.
+- If the map restarts, "outed" players' loadouts are randomized as Insurgents.
+
+
+
+	VII. WEAPONS
+
+
+Unarmed
+
+ZDoom actor name: Ring
+Default weapon slot: 1
+
+Description: Punching people and things.
+
+Instructions: Fire button is a straight-up punch. Altfire lunges forward. Reload performs a finger-jab-hook combo. Hold the Use key to start kicking someone in front of you. You are assumed to be trying to cause maximum damage with every attack and it will only take a few hits to take down weaker enemies.
+
+Protip: The Use key kick is available with any weapon.
+
+
+Chainsaw
+
+ZDoom actor name: Lumberjack
+Default weapon slot: 1
+
+Description: A heavy, rugged chainsaw.
+
+Instructions: Press fire to cut things. Eats cell power like popcorn; reload as any other weapon.
+
+Hold altfire and point up while the chainsaw is off to raise it. Release fire to smash it down into whatever's in front of you for a surprising amount of damage.
+
+Protip: This, berserk fist and explosives are the only remotely efficient ways to gib corpses. Keep changing your angle and distance as you cut as the blade will slip out of position from time to time.
+
+
+Pistol
+
+ZDoom actor name: HDPistol
+ZDoom droppable ammo actor names: HDPistolMags, HDPistolAmmo
+Default weapon slot: 2
+
+Description: With its compact high-capacity design and extremely powerful 9mm Magnum round, the Mouletta 99FX has followed and surpassed the tradition of its forebears as the standard complement to any arsenal. There was also a limited production of a full-auto variant that may occasionally be found as a PDW.
+
+Instructions: Press the fire button to further your effort to bust as many caps in your target's body part of choice as possible. Fire mode works if you have the lucky pistol that allows it.
+
+While both the pistol and the SMG use the same rounds, the magazines are not cross-compatible. With your pistol out, hit the Zoom key to dump out all the rounds in one full SMG mag into your general 9mm inventory so that those rounds may be used in filling pistol mags.
+
+The pistol's reload time is possibly the fastest of all the weapons, but you can make it faster still by picking up a second pistol and simply continuing to fire instead of reloading. To swap pistols, use alt reload or (if the current pistol cannot or need not be chambered manually) altfire. If you hit the fire button while your current pistol is completely dry and you have a second, you will automatically drop the current pistol and switch to the next one.
+
+Protip: Keep your pistols loaded early and often.
+
+
+SMG
+
+ZDoom actor name: HDSMG
+ZDoom droppable ammo actor names: HDSMGMags, HDPistolAmmo
+Default weapon slot: 2
+
+Description: The Heckler and Mok MP-46 heavy automatic pistol - nicknamed the "Sexy Manly Guy" in reference to a rather untimely scandal involving one of the company's directors (then a senator) who was supervising the development, an 18-year-old male intern, allegations of insider trading, an unidentified leather object found with some early prototype drawings and some saucy emails revealed during a deposition - fills that niche where a rifle is too noisy and unwieldy, a shotgun is too bulky and lethal, and a pistol just can't hit fast enough. Mostly bought by collectors and casing-loving hipsters, as well as law enforcement looking for a weapon with less kick and noise than the ZM66 but better suppressive capability (both tactical and PR-strategic) for use while keeping us all safe from alleged drug dealers and their alleged drug money.
+
+Instructions: Press and hold the fire button to further your effort to bust as many caps in your target's body part of choice as possible. Use the fire mode key to switch between semi, burst and full-auto. Note that the order is different between the MP-46 and the ZM66 due to conflicting manufacturing standards.
+
+With your SMG out, hit the Zoom key to dump out all the rounds in one full pistol mag into your general 9mm inventory so that those rounds may be used in filling SMG mags.
+
+Protip: The SMG is a little quieter than the pistol. It is the best stealth weapon over beating someone over the head with an unpowered chainsaw!
+
+
+Shotgun
+
+ZDoom actor name: Hunter
+ZDoom droppable ammo actor names: HDShellAmmo
+Default weapon slot: 3
+
+Description: The DiFranco SCATS-21 scattergun is easily the most widespread firearm in known space. Formerly marketed as the "Man-Hunter" before the liberals got the name banned in eleven states after a spate of shooting sprees, the Hunter's reliability, (relative) safety while firing in pressurized quarters, and ability to take just about any ammo given to it are unsurpassed by any current weapon. Also good for home defence and hunting big game - up close.
+
+The Tyrant has been strangely fond of this weapon and has armed most of his zombies with it; while officially Metallian Holdings Ltd. (DiFranco's parent company) denies any dealings with the Tyrant or any of his known dealers, or in the alternative at least having never profited from such transactions, or in the further alternative having never received any such funds from DiFranco, unofficially we all know there's no such thing as bad publicity.
+
+Instructions: Altfire cycles the next round; make sure you press hard and long enough that the round actually cycles. Primary fire is what you do to something until it dies.
+
+To stop reloading earlier, hold on to the reload key until you hear the click of the loading port closing.
+
+To reload quickly from the shotgun's side saddles, press the reload key. To slowly fish a shell or two from somewhere in your pockets to load those, press the secondary reload key. To reload the side saddles, hit the reload key while the Hunter is full.
+
+To enable semiauto mode, hit the fire mode key. There is no guarantee as to the quality of the ammo you find and not every round may be strong enough to cycle properly, so altfire is still available to force cycle a round if necessary.
+
+If you have the Slayer, pressing the Zoom key will remove up to 3 shells at a time from the Slayer's side saddles and place them in your general inventory for loading into the Hunter as needed.
+
+Protip: Try to develop a rhythm for your shooting, as it is possible to jam the Hunter by firing too quickly but you don't want to lower your damage output unnecessarily. People will develop personal preferences for pump or auto and it's probably best to train and stick with one.
+
+
+Super Shotgun
+
+ZDoom actor name: Slayer
+ZDoom droppable ammo actor names: HDShellAmmo
+Default weapon slot: 3
+
+Description: Accurate, ergonomic and compact, deceptively primitive yet rugged enough to withstand anything the bad guys might ever think to throw at you, the ambidextrously designed Calvary Arms SL41 "Slayer" side-by-side is an instant classic among big game hunters throughout the solar system. Big, armoured, bipedal game.
+
+Instructions: Each of fire and altfire represents the trigger for one barrel. You can fire them in as rapid a succession as you want, even simultaneously.
+
+When you reload, both shells eject at once, even if only one shell has been fired. Provided you are in good health, have space in your inventory, and (if you are distracted by anything less than near-perfect health) aren't moving about at the same time, you should be able to catch the unspent shell; otherwise, you must find out where it's dropped.
+
+Secondary reload works in a similar manner to the Hunter. Side saddles work identically.
+
+If you have the Hunter, pressing the Zoom key will remove up to 3 shells at a time from the Hunter's side saddles and place them in your general inventory for loading into the Slayer as needed.
+
+Protip: Protip: tap the sprint key to momentarily lower the Slayer, then hold on to both fire buttons to shoot both barrels at once.
+
+
+Assault Rifle
+
+ZDoom actor names: ZM66Rifle, ZM66GrenadeRifle, ZM66SemiRifle
+ZDoom droppable ammo actor names: ZM66RifleMags, HDRocketAmmo
+Default weapon slot: 4
+
+Description: The basic infantryman's weapon of the 22nd century. A very lightweight select-fire weapon that fires up to 2100 rounds per minute, the Volt ZM66 represents the highest evolution of its state-of-the-art ammunition. As a refinement of the principles behind the old 5.56 NATO, the 4.26mm UAC Standard round packs an incredible amount of punch for its size, while shooting a bullet light and frangible enough not to penetrate the hull of a spacefaring ship. The 4.26mm UAC Standard round is protected by a special non-terminating legislative patent and a 99-year automatically renewed confidential exclusive contract with the militaries of all developed Western nations worth mentioning, guaranteeing a safe and reliable supply.
+
+To get around prior overheating issues with the caseless 4.26mm round, the ZM66 chamber and barrel are lined with a patented heat-sink polymer that contracts when placed under extreme stress and heat, returning to its original form after having a chance to cool down. This reduces friction with subsequent bullets and allows for vastly increased tolerance thresholds that let the ZM66 continue firing where most rifles will have broken down. This temporary warping sacrifices some accuracy and power under sustained fire, but if you're in that spray-and-pray situation to begin with, chances are you won't even notice it (a handwritten note reads: or the ensuing cookoff).
+
+You may occasionally find some old variants of the ZM66 that were made for the civilian market shortly before private consumer assault weapon bans were prohibited by treaty in all APEC nations thanks to the efforts of many freedom-loving lobbyists back home, sponsored by the Volt Strategic Systems Group (and the 2/3 of Congress that have sat in their and UAC's various boards of directors). Some people actually prefer the semi variant for its reportedly greater reliability, though numerous UAC-sponsored independent reviews have found no evidence for it.
+
+The ZM66 has iron sights and a telescopic sight.
+
+The ZM66 may be fitted with an underslung grenade launcher capable of taking the Heckler & Mok Real-Time Adaptable Hybrid Gyro-Grenade; however, for safety reasons the launcher is designed only to fire in grenade mode.
+
+Instructions: Press the fire button to shoot, altfire to switch to and from the grenade launcher. If your rifle has no grenade launcher, altfire also toggles the telescopic sight; otherwise, use the zoom button to toggle sights.
+
+To switch to maximum zoom, hold down the zoom key and tap fire. Hold down the zoom key and tap altfire to reset to normal zoom. (When you do this it is assumed that you want to return to a scoped view.)
+
+The grenade does not arm for the first 15 feet or so. While usually firing at close range would leave you with a dud grenade, there is no guarantee the projectile will not arm and detonate at some later point!
+
+Reload key reloads the rifle. Alt reload reloads the grenade launcher. If you are using the rifle and it is jammed, press reload to try to clear the jam.
+
+Tap fire mode when using the rifle to cycle through semi, fullauto and 3-round burst. When using the grenade launcher, hold fire mode and press fire and altfire to program airburst as with the dedicated grenade/rocket launchers.
+
+Protip: when you switch to the rifle from any other weapon, you're set to shoot the rifle not the grenade launcher. This is NOT the case with the rocket launcher which remembers your setting.
+
+You can only carry one rifle at a time, but if you pick up a rifle of another kind than the one you have you drop your current rifle which can then be picked up later.
+
+Dud grenades can be kicked out of the way by moving into them, if you do not have the time to pick up and disarm.
+
+
+Chaingun
+
+ZDoom actor name: Vulcanette
+ZDoom droppable ammo actor names: ZM66RifleMags
+Default weapon slot: 4
+
+Description: At the same time as the ZM66's development, the UAC was experimenting with its own designs for a 4.26 Standard support weapon. One method of overcoming the heat issue was to cycle multiple barrels at slightly looser tolerances, which led to the UAC Standard Mk. III "Vulcanette".
+
+Thus far no stable single-barrel 4.26 SAW design capable of sustained full-auto fire has been found, and the Vulcanette model remains in production today throughout the world. Despite its bulk, it provides an advanced but rugged and durable support weapon heavy enough to manage its own recoil with enough heat radiating from its greater surface area to allow limited support fire in space. And it's pretty intimidating-looking, to boot.
+
+Instructions: The Vulcanette must have be on to shoot full-auto. Hit altfire to manually turn the weapon on and off; while restarting the Vulcanette drains a bit of power, you may want to turn it off to conserve power if you are not about to shoot for more than a few minutes.
+
+Use the fire mode key to switch between 700 RPM and 2100 RPM. The higher firing rate is unavailable when your battery power is low (around the last notch of the indicator).
+
+When the active mag has run out, the Vulcanette will automatically cycle the next mag. When unloading the weapon, you will unload, in descending order of priority: the second mag in the queue (and bringing up the remaining mags to replace it); the active mag; the cell.
+
+Use the alternate reload key to load a cell. One cell will provide for 8 hours without shooting, or about 2000 rounds' worth of shots.
+
+Protip: The Vulcanette is extremely bulky and will slow you down considerably when in use. Try to establish a good firing position before pulling it out.
+
+
+Rocket Launcher
+
+ZDoom actor name: RocquetteLauncher
+ZDoom droppable ammo actor names: HDRocketAmmo, HEATAmmo
+Default weapon slot: 5
+
+Description: The Heckler and Mok Urban Artillery series was developed as a response to a growing need for more powerful but more containable infantry firepower for fighting in built-up areas. While the grenade launcher still prevails in ease of use and responsiveness, sometimes one simply hasn't the luxury of arcing a grenade under the low ceilings - or dispersing the heat of a non-self-propelled projectile in the vacuum - of a rebel base. The patented Real-Time Adaptable Hybrid Gyro-Grenades, known colloquially as "Rocquettes", combine the functions of both RPG and fragmentation grenade in a single neat and deadly package.
+
+(There was some brief scandal in the People's Republic of China when illegal foreign-funded underground media sources reported extensive use of this technology in a brutal suppression of a student protest in a gathering place now known as Anquanmen (安圈門, Peaceful Circle Gate) which also allegedly involved numerous people being scalded to death with some unremembered weapon. Official sources say that the current Chairman, the Head in control of the Socialist People's Institute of Co-ordinated Experiments, has scientifically established that only the criminals of the worst sort were neutralized there in an emergency and no students were harmed. However, astute readers would also note that certain unrelated rumours about a "successor head" crisis in the S.P.I.C.E. (colloquially referred to as 替光頭gate) in the preceding months were also very quickly silenced following the incident.)
+
+Instructions: Press fire to launch a rocket. The rocket will accelerate and maintain a straight trajectory until it runs out of propellant or hits something.
+
+Altfire switches to and from grenade mode, as with the rifle's underslung grenade launcher.
+
+The zoom function is limited to rocket mode only and cannot be adjusted.
+
+Reloading the launcher works the same way as reloading the Hunter, except the launcher can only hold six rockets.
+
+Press zoom to unload rockets. Hold to pocket them instead of dropping them if your inventory limit allows for it.
+
+To set the airburst timer, hold down the fire mode key and use fire and altfire to increase and decrease time accordingly (zero being no airburst). This setting is reset every time you shoot, switch between grenade and rocket mode, or load/unload a HEAT round.
+
+You may occasionally run into high-explosive anti-tank (HEAT) rockets that can be loaded into the launcher. These are oversize and once loaded you cannot cycle through the 6-chamber cylinder, so it must be used or unloaded before you may use normal rockets again. To load one, hit the alternate reload key; to unload it, hit that key again or the reload key. If you load a HEAT round while the launcher is fully loaded, the first normal rocket will be unloaded and pocketed or dropped depending on space in your inventory.
+
+Protip: When the rocquette is fired as a grenade, it contains some unused propellant which can cause serious burns in addition to the blast damage. However, the grenade also lacks the direct impact damage that a rocket can do at greater distances, damaging some monsters that can otherwise shrug off an explosion. The bigger the monster and the longer the range, the more likely a rocket would be preferable to a grenade.
+
+Unless you have just killed the last boss of the episode, never use the HEAT rounds on anything that can be killed by a single rocquette: the psychological trauma of having wasted one never, ever heals. Ever.
+
+
+Grenade Launcher
+
+ZDoom actor name: Blooper
+ZDoom droppable ammo actor names: HDRocketAmmo
+Default weapon slot: 5
+
+Description: Eventually demand for a simpler, more portable weapon compatible with the new standard Real-Time Adaptable Hybrid Gyro-Grenades resulted in the production of a much simpler weapon from previous centuries. Name and all, it seems.
+
+Instructions: Press fire to launch a grenade. As with the rocket launcher, the fire mode key let you program airburst. There is no rocket mode, but altfire can still be used to quickly reset the airburst.
+
+Protip: The blooper takes slightly longer to load than it takes to load a single rocket into the rocket launcher.
+
+
+Hand Grenade
+
+ZDoom actor name: HDFragGrenades
+ZDoom droppable ammo actor names: HDFragGrenadeAmmo
+Default weapon slot: 0
+
+Description: The M67.1A fragmentation grenade hasn't changed much from its predecessors over the years. Pull the pin, drop the spoon, chuck it in a window, roll it along the floor, it blows up, everyone left standing is happy.
+
+Instructions: Press and hold fire to set the force of the throw. A quick tap drops the grenade in front of your feet; a long hold risks bouncing the grenade off a wall back towards you (and possibly rolling well past you into safety, but don't assume that). If you've gone over the desired force, hit reload to put the pin back in and let go of the fire button once you hear the click to restart.
+
+Hold altfire for just under a second to pull the pin. Once the pin has been pulled, you can throw it normally or press altfire again to release the spoon and begin the timer.
+
+Grenade fuze delay is four seconds.
+
+Protip: Grenades on the ground can be kicked out of the way as with duds from a launcher. This may save your life one day - or end it, timing being the secret to this as with any other comedy.
+
+
+Pulsed Particle Beam Projector
+
+ZDoom actor name: ThunderBuster
+ZDoom droppable ammo actor names: HDCellPacks
+Default weapon slot: 6
+
+Description: In recent years Heckler & Mok were going through their typical occasional experimental infantry energy weapons research kick. Their latest casualty of common sense is the Atmospheric Mk.XI "Thunder Buster", an adaptation of the big phased particle beam cannons found in large Bishop-class high-orbital patrollers. It is indeed a fine and powerful weapon, but nonetheless based on something shooting through space at massive inanimate objects with highly predictable trajectories. For want of any commercial application they somehow sold the specs to the UAC at an exorbitant price, officially as part of a settlement amid accusations of corporate espionage and stealing of trade secrets in UAC's old, scrapped Martian weapons project.
+
+Instructions: Press and hold fire to shoot the beam. The beam must be focussed on a single spot until you see the plasma ball. Keep holding the beam there - you'll know when something has happened. Warning: For best results, only engage targets more than 10 metres and less than 150 metres away.
+
+Press zoom to toggle the sight's zoom function. This will eventually drain the battery over time.
+
+Press altfire to activate the "hacked" version of the Thunder Buster which breaks the beam into a scattered, chaotic mess that does not (usually) trigger the critical explosion but causes much more damage to everything overall. This is extremely energy inefficient, but oddly cathartic.
+
+You are assumed to attempt to consolidate cells as much as possible between maps, as with other ammunition. However, because this isn't a simple matter of moving literal "juice" from one container to another, this process is always highly imperfect.
+
+Protip: Exposure to the beam itself can cause severe damage to soft tissue, metal and electronic components, even if the atmospheric chain reaction is not triggered.
+
+
+Battle Rifle
+
+ZDoom actor names: LiberatorRifle, LiberatorGrenadeRifle
+ZDoom droppable ammo actor names: LiberatorMag, LiberatorSpareRounds
+Default weapon slot: 6
+
+Description: Back before the days of the ZM66, the Volt-Shepard Arms Group (at the time independent of UAC) had in limited production an extremely durable, almost jam-free long-range automatic rifle chambered for its 7.76mm full-power cased round that could be produced by virtually anyone. A few government contracts, failed bids and five US Supreme Court appeals resolved against Volt-Shepard later (all 5/4 splits along Democrat/Republican lines and despite extensive advocacy by several military intervenors) the UAC Standard was fully recognized and the Volt-Shepard companies were subject to a systematic hostile takeover by UAC. Heckler & Mok then bought the rights to the patent, rebranded it as the "ZM7 Liberator", and made a killing selling it at a huge markup to people who resented the virtual UAC/Volt monopoly over their right to bear arms. A vague rumour on the Internet that the government was going to ban future production to regulate the copper supply and/or prevent future spree killings (a murderer would not be stopped by a jam or overheat!) also helped sales.
+
+Today a few are still made for the civilian market and can be found used by special forces personnel from Canada and several African states. Its biggest drawback, besides market share, is cost: the rate of barrel foulings, breakages and jams more than quintuples if the casings are not made from real brass rather than ordinary plastic or steel.
+
+Instructions: As with the ZM66 unless noted otherwise. There is no 3-round burst, the idea being that the much more powerful 7.76mm round should be enough without the spray-and-pray often encouraged by the burst function.
+
+If you have Boss rifle clips, you will passively convert them into loose rounds as necessary to fill more mags.
+
+Protip: Your ZM66 tactical reloads will leave you with a lot of unusable caseless powder and lead. Firing the Liberator leaves a lot of cases without powder or lead, while one of the official reasons the Volt-Shepard 7.76mm was not adopted was due to its lack of frangibility. The game environment is full of things that can grind or melt things. At this point, the worst Volt UAC's lawyers can do is drag you in front of The Honourable Mr. Justice Rotting-Head-On-A-Stick and his clerk Mrs. Caco, and as a natural person you don't recognize their jurisdiction.
+
+If you have both guns, you will be assumed to figure out what to do in the downtime between levels.
+
+
+BFG9K
+
+ZDoom actor name: BFG9K
+ZDoom droppable ammo actor names: HDCellPacks / HDCellPackEmpty
+Default weapon slot: 7
+
+Description: An attempt to merge conventional human technology with the power of the Anomalies before the invasion of Phobos, the Botis Field Glyph, Mark 9 was part a greater work that would have made Union Aerospace the single biggest player in the energy market for centuries.
+
+Unluckily for them, the proposed energy source caused the rout of civilization and the massacre of mankind - with the resulting lawsuits likely to result in a slightly smaller profit than imagined. Luckily for you, the weaponized "Kurz" version of the device is just small enough for one space marine to carry and deliver the horror the horror back to the enemy.
+
+Background: The BFG works by drawing into itself the unexplained energies of the Anomalies. According to the UAC's internal documents*, the Botis fields were discovered by Dr. Graf Botis in a freak particle beam weapons testing accident on Mars, while Deimos was directly overhead. The field appeared to generate some kind of plasma-like or energy-like substance that seemed to behave alternately like a gas and a subatomic particle. Unable to properly characterize it, it was mentioned in Dr. Botis' notes as "Gretchenfrage" as a placeholder pending further study. (This was shortened in later notes to "Frage" and eventually "Frag" in common anglophone parlance.)
+
+Under certain conditions (Dr. Botis found the shape and alignment of the lab to be a major factor) it was discovered that Botis fields could be used to recharge power cells almost indefinitely, as though time itself were being reversed; Union Aerospace kept the specifics substantially out of the public eye for years while trillions were diverted to energy research and an entire infrastructure was built with the Anomalies as their heart - and subsequent discovery of large-scale teleportation near and between the Anomalies, on top of the clean, renewable energy source, surpassed the wildest dreams of researchers and executives alike.
+
+*Leaked by a rogue articled student during discovering in one of many class action suits following the invasion (with the result that residents of Denmark, Ghana, Wyoming and the city of Kelowna were unable to recover against UAC or any of its subsidiaries or affiliates under any proceedings respecting these invasions). Nothing is known about where this student went afterwards.
+
+Instructions: The BFG needs the equivalent of 40 cell power unit (i.e., 2 cell packs) to fire. The BFG has a built-in cell that cannot be removed, plus space for one removable one; either of these must have at least 30% power to start the charge sequence. To charge it up, simply press fire and remain in an area where there is an influx of Frag. After the invasion, that means just about anywhere. You can stop the charging process at its earlier stages by hitting the reload button, and you get to keep what charge you've already accrued. Note that as a side effect of its Hellish nature, the BFG may drain your life energies while you're already under stress (i.e., to exacerbate already low health). This may be an asset (faster charge) or a liability (higher risk).
+
+Once you've got your charge built up, hold the fire key for a second or so to fire. The fire sequence requires a final few moments of charging, after which the Frag will attain critical mass and the firing process will become irreversible. After about a second you will see a large globule of green goo emanating from the BFG, which will then spontaneously send out tendrils to attack hostiles as it travels along its serpentine path.
+
+Reloading the BFG works the same way as for the particle beam gun. You are assumed to load and charge the BFG to full capacity in the downtime between maps.
+
+Use zoom to load a completely depleted cell into the BFG. If the BFG's internal cell is charged, it can be used to charge the depleted cell.
+
+There is a slight momentary green glow as a charged cell is removed; leaked UAC studies confirm this is not a sign of radioactivity and exposure to this light will not hurt you. By repeatedly charging and unloading, you can soon replenish all your cell ammunition.
+
+Protip: Long shots beat point blank, as the ball gets more time to launch secondary attacks at hostiles before exploding.
+
+
+Cannon
+
+ZDoom actor name: Brontornis
+ZDoom droppable ammo actor names: BrontornisRound
+Default weapon slot: 7
+
+Description: The Freeley "Brontornis" series Mk.VII Ultralight Cannon was one of the candidates for the military's Urban Artillery project, ultimately losing out to Heckler & Mok's bid for its versatility and wide-area firepower. It fires a heavy, non-self-propelled caseless 35mm hi-ex anti-materiel/incendiary round (colloquially known as a "bolt") that can punch through most hard targets while remaining highly effective at decisively neutralizing soft targets on impact (colloquially known as "gibbing people").
+
+In the wake of the demon invasion, where surprise teleportations of heavily armoured infantry units into sensitive populated areas is a routine enemy tactic and there is a renewed interest in concentrated, maneuverable firepower in urban combat regularly blurring the line between anti-personnel and anti-materiel, the Freeley Intellectual Properties Group have announced plans on bringing the Brontornis back into production but thus far supply has not met demand.
+
+Instructions: Point, shoot, kill. Adjust for range in the rare event it is necessary as there is still an arc.
+To ensure operator safety and comfort, the Brontornis cannon should only be fired from a secure position.
+
+Protip: The Brontornis shell is pointy and can overpenetrate softer targets. Line them up.
+
+
+Bolt-Action Rifle
+
+ZDoom actor names: BossRifle
+ZDoom droppable ammo actor names: BossClip, LiberatorSpareRounds
+Default weapon slot: 8
+
+The Boss Mk. IV marksman's rifle is a deadly accurate weapon. Its long barrel, tighter reinforced chamber and manual action allow much greater muzzle velocity than an identical load in the Liberator, letting the bullet hit just hard enough to dramatically increase fragmentation inside the target and inflict significantly more damage. Its traditional action and extremely tight trigger allow pinpoint accuracy. The Boss rifle requires perfectly clean ammunition to prevent jamming. Good luck!
+
+Instructions: Point, shoot, hope it dies. Altfire works the bolt, similar to the Hunter's pump. DO NOT SHORT STROKE.
+
+Clip reload is only available to fill the entire mag, for reasons.
+
+When it jams, hold altfire to keep trying to unjam it. It's a little less finicky than the ZM66 that way.
+
+Alternate reload strips a clip to get loose rounds (which then may be loaded individually into the Boss or used to fill a Liberator mag). If no clips are available, a Liberator magazine is cannibalized instead.
+
+The Boss scope has 3 zoom levels. To change, hold the zoom key down and tap fire to increase the zoom and altfire to decrease it. Zoom level 1 is equivalent to the automatic rifles.
+
+You can also adjust the bullet drop compensation. Hold fire mode, then hold the fire and altfire buttons (unload the weapon, pull the bolt and keep it pointed downrange!) to bring the number up and down respectively. Zero means no adjustment and your shot will start parallel with your view. The best numbers are 7 for up to 100m, 11 for 200m, and 30 for 300m (standard).
+
+Protip: It is nothing short of murder to send out men against the enemy with such a weapon. Find a Liberator.
+
+
+
+	VIII. MONSTERS
+
+
+Stormtrooper
+
+ZDoom actor name: ZombieStormtrooper, ZombieSemiStormtrooper, ZombieSMGStormtrooper
+Replaces: ZombieMan
+
+Description: "The green flash in the sky. His demons were here all along - in our hearts and souls - just waiting for a sign from him. And now they're destroying our world." Twisted and corrupted by the Hellish energies now uncontrollably pouring into this world, these shambling husks wander out to the front, hoping to infiltrate enemy lines and tenderize hostile forces a bit before the Tyrant's real army steamrolls its way in.
+
+Protip: They dish out a lot more than they can take, so the one that kills you is rarely the one you see. Check all exits early and often and don't be shy about deploying your DERP bot.
+
+
+Jack-Booted Thug
+
+ZDoom actor name: Jackboot, JackAndJillBoot, UndeadJackbootman
+Replaces: ShotgunGuy
+
+Description: "They carry their full context with them, self-contained, like a badge of honor, and represent the most uncomplicated relationship between Occupier and Occupied: unabashed traitor, become converted to the cause. And thus they also become evidence put forward by the Occupier that their will is supported within the city, for the Partial wants only to be Whole: to be the Occupier." Mobs of the Tyrant's black-clad, jack-booted undead thugs now wander the countryside, burning and killing and bludgeoning without care or reason except to terrorize what's left of humanity into submission.
+
+Protip: If caught standing in the open, you can sometimes time your duck perfectly to avoid a shot.
+
+
+Red Dragon Guard
+
+ZDoom actor name: DragonGuard
+Replaces: ChaingunGuy
+
+Description: "He's like a bear. He's like a big shaved bear that hates people." These bloated, crimson-clad abominations form the Tyrant's elite personal guard and serve as commanders of the jackboots and stormtroopers beneath them. No expense was spared, apparently, when the Tyrant got each and every one of them a Vulcanette.
+
+Protip: When you run for cover, the Dragon Guard's typical first reaction is to wait where he's shooting until you come back out, but he doesn't have much patience. Wait for the wind-down noise of his gun to know when you can catch him off guard.
+
+
+Marines
+
+ZDoom actor names: Rifleman, SWAT, Rocketeer; Tango, ShotTango, RocketTango, SquadRifleman, UndeadRifleman
+Replaces: Rifleman/UndeadRifleman: Player (on reanimation); Rocketeer, Tango, ShotTango, RocketTango: none
+
+Description: Some people you meet are soldiers just like yourself in the war against the Tyrant. Others are less lucky, and appear as reanimated demon-possessed remains of the fallen. Yet others still turn against humanity of their own free will, selling their souls to the Tyrant for a small piece of his hellish dominion that they can call their own. In game terms, the last three in the list are identical to the first three, except without the +friendly flag.
+
+Protip: In a normal Doom map you'll only see these guys if they've been raised by a healer imp or an archvile. They are far deadlier than any of the zombies, so try not to let the enemy create too many of them. If you end up with one anyway, one double-barreled hit from the Slayer should do the trick, though explosives are generally safer.
+
+The good news is that normal, non-hellspawn humans can't be raised without some degeneration. After a few cycles undead marines become indistinguishable from ordinary zombies.
+
+
+Imps
+
+ZDoom actor names: DrunkImp, HealerImp, MageImp
+Replaces: DoomImp
+
+Description: These toothy, spiny hominids are the dominant species from the Tyrant's homeworld, making up for what they lack in intelligence with sheer brutality and an innate knowledge of arcane magic. They are now often seen bustling about in disorganized bands, unthinkingly eating anything edible-looking they find and burning the rest.
+
+Imps come in three distinct types: the fighter, the mage, and the healer. Fighters are the most common and are also the most vicious. Mages are the rarest, but both their sharper talons and superior fireball-casting more than make up for such shortcomings. But worst of all are the healers: have enough of these in a group coming your way with a few fighters to soak up the shots, and you can watch your easy fight turn into a gruelling, siege-like ordeal.
+
+Protip: Healers have priority in any situation where something else is not posing an immediate danger of killing or incapacitating you. In some worse situations the only option may be to flee.
+
+Though their hands can't reach inside the trigger guards to shoot properly, some imps keep pistols taken off their victims as war trophies - a fact to keep in mind when ammo is scarce and enemies must be prioritized.
+
+
+Babuin
+
+ZDoom actor name: Babuin
+Replaces: Demon
+
+Description: Of course these evil godless Communists don't have dogs. Instead, they have these little devils who would like nothing more than to chew your gonads off and vomit them into your eyes.
+
+Protip: Crouch, then shoot. Keep both shotguns fully loaded at all times. Range is your friend.
+
+
+Spectre
+
+ZDoom actor name: SpecBabuin
+Replaces: Spectre
+
+Description: Some babuins are capable of minor cloaking magic.
+
+
+NinjaPirate
+
+ZDoom actor name: NinjaPirate
+Replaces: Spectre... sometimes
+
+Description: As the imps were his enforcers, the great spectres served as the Tyrant's storm troops before contact with humanity. They strike only from close range, their tusked maws a septic mess of pain and death.
+
+Protip: The only time a spectre moves faster than your sprint (at least at full health) is while cloaked and fleeing you. Conversely, it gets a bit lazy with its cloak when it is outside of crucial killing range. Oftentimes the best strategy is a retreat, however undignified.
+
+
+Killer Barrel
+
+ZDoom actor name: KillerBarrel
+Replaces: ExplosiveBarrel (actual replacing actor: SuspiciousBarrel; never-animate actor: InnocentBarrel)
+
+Description: Throughout the Phobos and Deimos installations the UAC had stored hundreds of barrels of a special compound designed to hold Frag in a concentrated and transportable form. The Tyrant's minions took a liking to this practice, forced the recipe out of the technicians they captured, and starting putting it everywhere to help them establish a foothold on Earth. Now there are millions and millions of barrels of this volatile substance (nicknamed "nukage") stashed across the Earth. It may be decades before anyone can even begin to fathom the ecological damage. And now it seems that the hellish properties of Frag can take possession of the barrels themselves. Which means that among all these polluting barrels of crap, we've also got thousands of shuffling metal monstrosities with balefire attacks and an agenda to kill all humans...
+
+Protip: Killer barrels generally lose their "life"-"giving" potential through animating their container, so they are generally safe to destroy.
+
+
+Killer Burning Oil Barrel
+
+ZDoom actor name: KillerFireCan
+Replaces: BurningBarrel (actual replacing actor: SuspiciousFireCan; never-animate actor: InnocentFireCan)
+
+Description: Nukage and crude oil mix. When the resulting mixture is put into a barrel, it tends to spontaneously combust. Sometimes, the resulting mix of Hell energy, fossil fuel, and decaying metal melds into a freakish fire-belching abomination against all that is good and true. Fortunately, it is quite destructible.
+
+Protip: They explode a lot sooner than a nukage barrel and can set one off nearby, so if you see them together shoot the burning barrel first.
+
+
+Putto
+
+ZDoom actor name: Putto
+Replaces: some boss cubes
+
+Description: These ghostly little four-faced metal terrors drift through the polluted air, flinging toxic balls of smokeless flame at you. Where these flames come from no one knows, since the source is instantly destroyed in a searing fireball once the monster has been damaged beyond its ability to function in combat.
+
+Protip: Getting caught by the blast of a bursting fireball may prevent you from returning fire long enough for the putto to hit you again. The best strategy is to remain on the move until you can land a good, clean hit with a rifle or shotgun.
+
+
+Yokai
+
+ZDoom actor name: Yokai
+Replaces: CellPack
+
+Description: These floating evil eyes latch onto you with their gaze and lock you into their twisted, numbing reality, slowly doing damage and wearing you out. They seem to have an affinity for energy weapons and often appear where such might be found.
+
+Protip: Ready, fire. Do not aim. Do not look at it.
+
+
+Fire Dancer
+
+ZDoom actor names: FireDancer, DisappearingFireDancer
+Replaces: LostSoul
+
+Description: Nothing like a few screeching, flaming horned and fanged animate skulls to ruin your day. The good news is they come at you closer to eye level and are well lit so theoretically they're a little easier to hit than the babuins.
+
+Protip: Treat the fire dancer as a weaker babuin that just happens to be capable of flight. Unlike the babuin it actually pauses in the air every so often, making it easier to hit as long as you can adjust for aiming in one more dimension.
+
+
+Revenant
+
+ZDoom actor name: Boner
+Replaces: Revenant
+
+Description: These tall, rigid warriors stand at attention ready to slap you around and shoot their load all over your face. The bad news is that the innuendo is unwarranted, and these undead, un-sexy fleshless skeletal automatons of average height are only after some distinctly un-erotic murder. And their posture is just awful.
+
+Protip: Shotguns fare somewhat better than rifles against revenants. The spread may also be helpful against their missiles, which are one of the rare projectiles that can be shot down.
+
+
+Pain Elemental
+
+ZDoom actor name: AngstElemental
+Replaces: PainElemental
+
+Description: Few changes from vanilla Doom, except for the addition of a bite attack.
+
+Protip: Engaging up close isn't as good a tactic as before. Not only does it have a melee attack, any lost souls that it does spit explode if they die after spawning in a bad place. Needless to say, the pain elemental itself also explodes.
+
+
+Cacodemon
+
+ZDoom actor name: BakaDemon
+Replaces; Cacodemon
+Description: One thing is for sure: the Tyrant did not attack us to steal our plasma rifle technology. These monsters send swathes of vaporizingly hot charged material that gently drift towards the target, scorching anything in its path. To make things worse, sometimes it follows this up with a savage power attack that can send you flying one piece at a time.
+
+Protip: Once you see the flash, you have two options: duck and cover, or shoot it until it dies. A single rifle magazine is plenty enough firepower to make sure that a cacodemon is dead: full auto is your friend.
+
+
+Arachnotron
+
+ZDoom actor name: Krangling
+Replaces: Arachnotron
+
+Description: These brain repletes are armed with particle beam guns - quiet as a mouse and able to stomp you like one. When you hear its signature screech, take all steps necessary to neutralize the threat immediately.
+
+Protip: To spend time aiming at the arachnotron is to tempt fate. The surest way to kill one is to lure it into your grenade. They are vulnerable up close as long as you do not approach them head-on.
+
+
+Mancubus
+
+ZDoom actor name: Mancubus
+Replaces: Fatso
+
+Description: The Tyrant feels no shame in mocking the defeated. Originally built from the corpses of morbidly obese humans captured after the invasion of Earth, armed with a pair of grossly inefficient gasoline-fueled plasma launchers, these sweaty, greasy, smoky cyborgs stand tall and proud as a shining symbol of humanity's perpetual need for cheap energy and resources that got us tampering with the horrors of the Anomalies to begin with.
+
+Protip: The mancubus is so slow and fat that even an alert one with a clear path to you can be taken out with an uncooked hand grenade. Which can be quite useful for something you really don't want line of sight with for any period of time.
+
+
+Hell Knave
+
+ZDoom actor name: HellKnave
+Replaces: HellKnight
+
+Description: These petty officers of the Tyrant's legions saturate their immediate vicinity with balefire to make sure that whatever they hate is going to be dead. They can summon putti to their aid if necessary.
+
+Protip: Unlike its bigger cousin the hell knave is not resistant to explosives. A grenade around the corner can take one out, or at least soften it up enough for you to pop in and finish it off with a double-barreled hit of the Slayer. If that is not enough, retreat immediately.
+
+
+Hell Prince
+
+ZDoom actor name: HellPrince
+Replaces: BaronOfHell
+
+Description: The Tyrant's trusted lieutenants in the Phobos war. Able to withstand ludicrous amounts of damage without slowing down, the hell prince supplements its balefire attack by summoning a secondary projectile that resembles (and sometimes is) a charging lost soul.
+
+Protip: The hell prince's skull shot looks scary, but it's mostly a distraction from the fan of seeking missiles around it. It is the only boss monster that can regenerate so don't take your time.
+
+
+Archfiend
+
+ZDoom actor name: ArchFiend
+Replaces: ArchVile
+
+Description: A miserable shadow of their once glorious past, these fallen angels now know only destruction and hatred and the fires of Hell. They detest the Tyrant they serve, forever bound by a blood oath made as a condition of being freed from the Abyss. Their only remaining creative power is to restore life and limb to the fallen, for the sole purpose of continuing their own dark master's battle.
+
+Protip: Unlike all other monsters, who are taken down after suffering a certain amount of gross damage, the archfiend must feel pain a certain number of times to be destroyed. When the archvile finally does die do try to stay away from dead mancubi and hell princes for a while until you can escape the map...
+
+
+Archangel
+
+ZDoom actor name: ArchAngel
+Replaces: None
+
+Description: There are rumours about that some of the fallen angels have gone turncoat, possibly realizing the error of their ways after eons of timeless damnation. Others say that these are not fallen at all, but actual angels sent to mankind's aid under certain limitations. Or perhaps these are not limitations at all, and that the fallen are less degraded than once thought. Then again, they may be double agents, or tempters of another sort. Perhaps none of the proposed answers is true; perhaps they are all true, or there are as many answers as there are these friendly angels. They're not saying anything, though.
+
+Protip: Get out of the way and let them do their work. They are somewhat more maneuverable than their fallen brethren, so should you happen across one you shouldn't find it too difficult to make sure it's still by your side.
+
+
+Ultimate Purgatory Eschaton Satan Robo X
+
+ZDoom actor name: SatanRobo
+Replaces: Cyberdemon
+
+Description: "Dear Santa: I want a giant fucking robot for Christmas. To get rid of all these other horrible problems I have to deal with. Like other giant fucking robots. Especially the ones that like nothing more than to send a barrage of rockets at the slightest suggestion of line of sight with me, each the size of a grown man's torso. I would say I've been a really good boy this year just by putting up with this shit. Yours truly, Doomguy."
+
+Protip: The odds really are against you winning this one alone. Try to get a buddy to distract it so you can have a moment to shoot. Ideally the cyberdemon's attention will be kept alternating, at which point you are somewhat more free to shoot it until someone dies. It resists centre-shot critical hits from small arms fire but is vulnerable to same from rockets.
+
+
+Spiderdemon
+
+ZDoom actor name: Spiderdemon
+Replaces: SpiderMastermind
+
+Description: Galloping trigger-happy freak with a full-length-round version of the Vulcanette. Combat being a secondary function of this telepathic controller, its accuracy is fortunately quite bad. It tries to make up for it with babuin-like aggression, but isn't anywhere near maneuverable enough to be a serious threat as long as you've got a sturdy pillar or something to hide behind.
+
+Protip: The spiderdemon is weak against anything and everything. If you can corner it without it shooting anyone, two players should be able to punch it to death with minimal risk. (Note: If this succeeds, the instant you hear its death sound disengage and run away immediately.) At longer ranges, at which it can't attack you effectively, a single BFG shot is far more than enough. For reference, on Map12 co-op the chaingun, rocket launcher (without HEAT rounds) and BFG can all stop it before it gets into killing range.
+
+
+The Tyrant
+
+ZDoom actor name: TheTyrant, HDBBE
+Replaces: BossBrain, BossEye
+
+Description: If only the source of all evil in the world were so singular and killable. This is the mortal avatar of the Tyrant, a vast demonic force that births its nightmare armies from its invincible stone skull like a billion spined, hissing Pallas Athenae.
+
+Protip: Don't bother with that stupid platform, just aim and shoot and hope and be ready to shoot again if your first shot was blocked by a cube. The Thunder Buster is a powerful asset if you can keep the defenders from throwing off your aim. As with the archvile, the Tyrant must feel pain a certain number of times before its avatar will depart this world (or whichever one its form happens to be inhabiting).
+
+
+
+
+http://members.shaw.ca/vaecrius/hd/
+vaecrius@shaw.ca

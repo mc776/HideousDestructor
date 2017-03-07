@@ -1,0 +1,181 @@
+grunt/bleedout1			dspodth1
+grunt/bleedout2			dspodth2
+
+babuin/sight			dssgtsit
+babuin/active			dsdmact
+babuin/pain			dsdmpain
+babuin/bite			dssgtatk
+babuin/melee			dsclaw
+babuin/attack			dsfirsht
+babuin/shotx			dsfirxpl
+babuin/death			dssgtdth
+
+derp/crawl			dsdrpcrl
+
+putto/shotf			dsfirsht
+putto/shotx			dsfirxpl
+putto/spit			dsbospit
+	$volume putto/spit 0.2
+putto/sight			dsboscub
+putto/pain			dsdmpain
+putto/death			dsbarexp
+
+barrel/pain			dsbspact
+barrel/walk			dsmetal
+
+tree/pain1			dspodth1
+tree/pain2			dspodth2
+tree/pain3			dspodth3
+tree/pain4			dspopain
+tree/pain5			dspdiehi
+tree/pain6			dsfdiehi
+tree/pain7			dspfdeth
+tree/pain8			dspldeth
+
+baka/attack			dsfirsht
+baka/shotx			dsfirxpl
+bakaslave/attack		dscacsit
+bakaslave/shoot			dsfwoosh
+bakaslave/death			dsbarexp
+
+prince/attack			dsfirsht
+prince/shotx			dsfirxpl
+
+weapons/pocket			dspocket
+weapons/subfwoosh		dswoofsh
+weapons/vulcanup		dsvulcup
+weapons/vulcandown		dsvulcdn
+weapons/vulcanon		dsbelt
+
+weapons/rifle			dsrifle
+weapons/bigrifle		dsbrifle
+weapons/boltback		dsbarbwd
+weapons/boltfwd		dsbarfwd
+weapons/rifleclick		dsrifclk
+weapons/rifleclick2		dsrifck2
+weapons/rifleload		dsriflod
+weapons/grenopen		dsgopen
+weapons/hunter			dsshotg//dshuntf
+weapons/huntopen		dsfclk
+weapons/huntreload		dsdbload
+weapons/slayersingle		dsshotg//dsslayf
+weapons/bronto			dsdshtgn//dsbronto
+weapons/vulcanette		dsrifle
+weapons/vulcbelt		dsbelt
+weapons/smack			dspunch
+weapons/grenadeshot		dsgresht
+weapons/rockignite		dsrlaunc//dsrignit
+weapons/rocklaunch		dsfwoosh
+weapons/rockreload		dsrlload
+weapons/plasmas			dsfwoosh
+weapons/plasidle		dsplsidl
+weapons/fragpinin		dssgcock
+weapons/fragpinout		dsrifclk
+weapons/fragspoonoff		dstink
+weapons/bulletcrack		dsrifsbm
+weapons/bigcrack		dsthubm
+
+world/riflefar			dsriffar
+world/shotgunfar		dsshtfar
+world/chaingunfar		dsriffar
+world/rocketfar			dsrktfar
+world/plasmafar			dsplsfar
+world/bfgfar			dsbfgfar
+world/explode			dsbarexp
+
+marine/sight			dssgcock
+marine/pain			dsplpain
+marine/death			dspldeth
+marine/taunt			dstauntm
+marinef/pain			dsflpain
+marinef/death			dsfldeth
+marinef/taunt			dstauntf
+
+misc/fragknock			dsknock
+misc/fragroll			dsfrgrol
+misc/punch			dspunch
+misc/bullethit			dspunch
+misc/bulletflesh		dschlp
+misc/wallchunks			dsdust
+misc/smallslop			dsslp
+misc/firecrkl			dsflame
+misc/bfgrail			dsfwoosh
+misc/casing			dsding
+	$volume misc/casing 0.4
+misc/casing2			dsrifck2
+	$volume misc/casing2 0.3
+misc/casing3			dsrifck2
+	$volume misc/casing3 0.2
+misc/casing4			dsding
+	$volume misc/casing4 0.9
+
+
+
+$random misc/bloodchunks {misc/smallslop null}
+$random grunt/bleedout {grunt/bleedout1 grunt/bleedout2}
+
+$random tree/pain {tree/pain1 tree/pain2 tree/pain3 tree/pain4 tree/pain5 tree/pain6 tree/pain7 tree/pain8}
+$pitchshift tree/pain 7
+
+$limit world/riflefar 0
+$limit world/shotgunfar 0
+$limit world/chaingunfar 0
+$limit world/plasmafar 0
+$limit world/explode 0
+$limit weapons/plasmas 0
+$limit weapons/plasidle 4
+
+$limit weapons/rifle 0
+$limit weapons/subfwoosh 20
+$limit weapons/hunter 0
+$limit weapons/slayersingle 0
+$limit weapons/bigrifle 0
+$limit weapons/bulletcrack 40
+$limit weapons/bigcrack 0
+$limit weapons/pistol 0
+$limit weapons/plasmax 0
+$limit weapons/plasmaf 0
+$limit weapons/sawhit 0
+$limit weapons/sawfull 0
+$limit weapons/plasmaf 0
+
+$limit misc/bfgrail 0
+
+$limit misc/firecrkl 0
+$limit misc/wallchunks 4
+$limit misc/bloodchunks 4
+$limit misc/wallchunks 1
+$limit misc/bullethit 24
+$limit misc/bulletflesh 6
+$limit misc/casing 0
+$limit misc/casing2 0
+$limit misc/casing3 0
+$limit skeleton/tracex 0
+$limit weapons/rocklaunch 0
+
+$playersound	player	male	*usefail		null
+$playersound	player	male	*usemeds		dsplpain
+$playersound	player	male	*land		dsland
+$playersound	player	male	*taunt		dstauntm
+
+$playersound	player	female	*usefail		null
+$playersound	player	female	*usemeds		dsflpain
+$playersound	player	female	*land		dsland
+$playersound	player	female	*taunt		dstauntf
+
+$playersound	player	other	*usefail		null
+$playersound	player	other	*pain100		dsplsidl
+$playersounddup	player	other	*pain75		*pain100
+$playersounddup	player	other	*pain50		*pain100
+$playersounddup	player	other	*pain25		*pain100
+$playersound	player	other	*usemeds		dsdrpcrl
+$playersound	player	other	*land		dsland
+$playersound	player	other	*taunt		dssawful
+$playersound	player	other	*death		dsvulcdn
+$playersound	player	other	*xdeath		dsbarexp
+
+
+
+/*
+
+*/

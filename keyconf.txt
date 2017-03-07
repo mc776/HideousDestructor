@@ -1,0 +1,75 @@
+
+
+addkeysection "Hideous Destructor" HideousDestructor
+
+addmenukey "Secondary Reload" +user1
+addmenukey "Switch Fire Mode" +user2
+addmenukey "Unload Weapon" +user4
+addmenukey "Purge Weaponless Ammo" hd_purge
+addmenukey "Drop One Ammo Unit" hd_dropone
+addmenukey "Strip Armour" hd_strip
+addmenukey "Drop Weapon and Free Hands" hd_drop
+addmenukey "Taunt" hd_taunt
+addmenukey "Use Pistol" hd_pistol
+addmenukey "Use Grenades" hd_frags
+addmenukey "Use Rocket Launcher" hd_rock
+addmenukey "Attempt To Bandage Wound" hd_band
+addmenukey "Detonate all IEDs" detonate
+addmenukey "Toggle passive IEDs" iedpassive
+addmenukey "Toggle DERP ambush/turret mode" derpat
+
+defaultbind j +hd_altreload
+defaultbind h +hd_firemode
+defaultbind l +hd_unload
+defaultbind b hd_taunt
+
+alias +hd_altreload +user1;
+alias -hd_altreload -user1;
+alias +hd_firemode +user2;
+alias -hd_firemode -user2;
+alias +hd_unload +user4;
+alias -hd_unload -user4;
+
+alias hd_scoresoff "set hd_showscores -1; archivecvar hd_showscores";
+alias hd_scoreson "set hd_showscores 0; archivecvar hd_showscores";
+
+alias hd_nobleedcheat "give UnBleedableFlagGiver";
+
+alias hd_doomguy "give HDRealDoomGuy;wait 1;use HDRealDoomGuy";
+alias hd_purge "use HDWeaponPurge";
+alias hd_drop "weapdrop;use ring";	//deprecated
+alias hd_dropone "use HDDropOne";
+alias hd_taunt "use Taunter";
+alias hd_strip "use HDDropArmour";
+
+alias hd_pistol "use HDPistol";
+alias hd_frags "use HDFragGrenades";
+alias hd_rock "use RocquetteLauncher";
+alias hd_band "use SelfBandage";
+
+alias hd_clearcv "hd_forcepistolstart 0;hd_nobfg 0;hd_nobronto 0;hd_norockets 0;hd_nobots 0;hd_nomeds 0;hd_carrylimit 0;hd_penetrate false;hd_killerbarrels 5;hd_helptext 1;hd_hudsprite 0;hd_grimspawn 0;echo Hideous Destructor CVars reset"
+
+alias hd_clearwepcv "hd_startzoomed 0;hd_derpmode 0;hd_smgfiremode 0;hd_huntauto 0;hd_zmfiremode 0;hd_zmzoom 0;hd_vulcsuper 0;hd_rlmode 0;hd_libauto 0;hd_libzoom 0;hd_tbmode 0;hd_bossmoa 30;hd_bosszoom 1;echo Hideous Destructor Weapon CVars reset"
+
+
+
+alias derp "use DERPterm";
+alias derpat "use DERPATTog";
+alias derpt "use DERPtermTURRET";
+alias derptz "use DERPtermAMBUSH";
+alias derpp "use DERPtermPATROL";
+alias derppz "use DERPtermFOLLOW";
+
+alias dt "derpt";
+alias dtz "derptz";
+alias dp "derpp";
+alias dpz "derppz";
+
+alias detonate "use HDIEDDet";
+alias iedpassive "use IEDSetPassive;"
+
+alias herp "use HERPSwitch";
+
+
+
+
