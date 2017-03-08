@@ -17,9 +17,9 @@ class HDDebris:HDActor{
 		stopped=false;
 	}
 	override void Tick(){
-		if(globalfreeze||level.Frozen) return;
-		clearinterpolation();
 		if(!stopped){
+			if(globalfreeze||level.Frozen) return;
+			clearinterpolation();
 			vel.z-=getgravity();
 			int spd=abs(vel.x);if(abs(vel.y)>spd)spd=abs(vel.y);
 			vector2 frac=self.vel.xy*radius/spd;
@@ -47,21 +47,15 @@ class HDDebris:HDActor{
 					vel.z*=-bouncefactor;
 				}
 			}
-			if(abs(vel.x)+abs(vel.y)+abs(vel.z)<1){
+			if(vel.length()<1){
 				stopped=true;
 				setz(floorz);
 				bmovewithsector=true;
 				setstatelabel("death");
 				if(bdestroyed) return; //if nexttic() is called below, it would crash
 			}
-		}else{
-			if(floorz!=pos.z){
-				stopped=false;
-				bmovewithsector=false;
-				setstatelabel("spawn");
-			}
-		}
-		nexttic();
+			nexttic();
+		}else Actor.Tick();
 	}
 }
 
