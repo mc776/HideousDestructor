@@ -1,3 +1,4 @@
+version "2.4"
 
 const HDCONST_MINDISTANTSOUND = 128;
 const HDCONST_SPEEDOFSOUND = 512;
@@ -246,6 +247,7 @@ struct HDMath{
 #include "zscript/plasma.txt"
 #include "zscript/grenade.txt"
 #include "zscript/battlerifle.txt"
+#include "zscript/brontornis.txt"
 
 #include "zscript/imp.txt"
 #include "zscript/shootman.txt"
@@ -259,11 +261,13 @@ struct HDMath{
 //native: 1442ms; hdlib.(as class): 11185ms;
 //in actor itself: 9959ms; load struct: 8860ms; hdlib2.(as struct): 8900ms;
 //basically: do not attempt to optimize unless you're expecting 10-15x better results
+//as general rule, 2 lines of native functions >> 20 lines of simple VM instructions
 struct HDLib2{
 	static int OnePlusOne(){
 		return 1+1;
 	}
 }
+
 
 
 /*
