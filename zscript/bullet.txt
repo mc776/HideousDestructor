@@ -99,6 +99,10 @@ class HDBullet:HDActor{
 	override void Tick(){
 		ClearInterpolation();
 		if(globalfreeze||level.Frozen) return;
+		if(!bmissile){
+			nexttic();
+			return;
+		}
 
 		double oldz = pos.Z;
 

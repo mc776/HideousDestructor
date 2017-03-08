@@ -51,8 +51,10 @@ class HDFireStarter:ActionItem{
 	pickup:
 		TNT1 A 0{
 			if(!self) return;
-			//A_Immolate(self,self);
-			a_log("deprecated fire. please use hdlib.immolate() directly.");
+			a_log("deprecated fire. please use A_Immolate() directly.");
+			actor f=spawn("HDFire",pos);
+			f.target=self;f.master=self.target;
+			f.stamina=random(40,80);
 			return;
 		}fail;
 	}

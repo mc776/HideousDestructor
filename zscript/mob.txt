@@ -97,7 +97,7 @@ class HDMOb:HDActor{
 		targetdistance=distance3d(attacktarget);
 
 		//if within melee range, forget it just beat them
-		if(targetdistance-target.radius<meleerange){
+		if(checksight(target) && distance3d(target)-target.radius<meleerange){
 			setstatelabel("melee");
 			return;
 		}

@@ -180,7 +180,7 @@ class HDSmoke:HDPuff{
 }
 class HDGunSmoke:HDSmoke{
 	default{
-		scale 0.1;renderstyle "add";alpha 0.6;
+		scale 0.3;renderstyle "add";alpha 0.4;
 	}
 	override void postbeginplay(){
 		HDActor.postbeginplay();
@@ -452,7 +452,7 @@ class FragShard:IdleDummy{
 	}
 }
 extend class HDActor{
-	//A_ShardSuck(self,HDLib.AimPoint(self,18,height-12));
+	//A_ShardSuck(self.pos+(0,0,32),20);
 	virtual void A_ShardSuck(vector3 aop,int range=4){
 		actor a=self.spawn("FragShard",aop);
 		a.setxyz(aop+(random(-range,range)*6,random(-range,range)*6,random(-range,range)*6));

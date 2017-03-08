@@ -7,7 +7,7 @@
 //persistent tail actor that need not be spawned constantly
 class HDTail:IdleDummy{
 	default{
-		+forcexybillboard +rollsprite +rollcenter +bright
+		+forcexybillboard +rollsprite +rollcenter +bright +noclip
 		renderstyle "add";
 		speed -0.3;height 1.0;radius 0.6;deathheight 0.7;friction 1.1;
 	}
@@ -68,7 +68,7 @@ class HDFireball:HDActor{
 		if(
 			(!inlosonly || checksight(tracer))
 			&&
-			(seekradius<=0 || disttotracer<seekradius)
+			(seekradius>0 && disttotracer<seekradius)
 		)
 		vel+=HDMath.ScaleVector(totracer,seekspeed);
 	}
@@ -96,10 +96,11 @@ class HDFireball:HDActor{
 		if(globalfreeze||level.Frozen) return;
 		if(!bmissile){
 			//I don't anticipate any use other than death state...
-			trymove(vel.xy,true);
-			if(pos.z<floorz) setz(floorz);
+			trymove(pos.xy+vel.xy,true);
+			if(pos.z<floorz)setz(floorz);
 			else if(pos.z+height>ceilingz) setz(ceilingz-height);
 			else addz(vel.z);
+			vel*=0.9;
 			nexttic();
 			return;
 		}
@@ -108,15 +109,8 @@ class HDFireball:HDActor{
 		//update frac
 		if(oldvel!=vel){
 			oldvel=vel;
-			fracc=clamp(vel.length(),1,256);
-			if(fracc>radius){
-				fracc/=radius;
-				frac=vel/fracc;
-			}else{
-				//am I trying too hard to minimize divisions here?
-				fracc=1;
-				frac=vel;
-			}
+			fracc=clamp(vel.length(),1,256)/radius;
+			frac=vel/fracc;
 		}
 
 		//the iterator
@@ -133,7 +127,7 @@ class HDFireball:HDActor{
 					}
 				}
 				if(!target) target=master;
-				ExplodeMissile(BlockingLine,BlockingMobj);
+				explodemissile(BlockingLine,BlockingMobj);
 				return;
 			}
 			addz(frac.z);

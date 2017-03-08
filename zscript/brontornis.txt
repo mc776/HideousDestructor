@@ -1,0 +1,58 @@
+// ------------------------------------------------------------
+//   Brontornis Cannon
+// ------------------------------------------------------------
+
+class TerrorBolt:HDBullet{
+	default{
+		-noextremedeath
+		height 2;radius 2;
+		speed 500;mass 500;accuracy 0;woundhealth 100;
+		missiletype "HDGunSmoke";
+		scale 0.08;translation "128:151=%[1,1,1]:[0.2,0.2,0.2]";
+		seesound "weapons/riflecrack";
+		decal "BrontoScorch";
+		obituary "%o played %k's cannon.";
+	}
+	override void Effect(){ //modified for cannon
+		if(random(1,5)>1) return;
+		actor a=spawn("HDGunSmoke",pos,ALLOW_REPLACE);
+		a.vel=vel*0.01+(random(-4,4),random(-4,4),random(-4,4));
+	}
+	states{
+	spawn:
+		MISL A 0 nodelay{
+			Spawn("DistantShotgun",pos,ALLOW_REPLACE);
+			Spawn("DistantShotgun",pos,ALLOW_REPLACE);
+			A_LongArmWobble();
+			A_Gunsmoke();
+			A_SpawnItemEx("TerrorSabotPiece",0,0,0,velx,vely,velz,1,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS);
+			A_SpawnItemEx("TerrorSabotPiece",0,0,0,velx,vely,velz,-1,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS);
+		}
+		MISL A -1 A_ChangeVelocity(cos(pitch)*speed,0,-sin(pitch)*speed,CVF_RELATIVE);
+	xdeath:
+		TNT1 A 1{
+			A_BulletCrit();
+			A_PlaySound("weapons/bigcrack");
+		}
+		TNT1 A 0 A_JumpIfInventory("IsGibbed",1,"pierce",AAPTR_TRACER);
+	death:
+		TNT1 A 16{
+			bmissile=false;
+			actor a=Spawn("WallChunker",pos,ALLOW_REPLACE);
+			a.angle=angle;a.A_ChangeVelocity(0.1,0,-0.1,CVF_RELATIVE);
+			A_Blast(
+				fragradius:256,fragdamage:64,fragdamagetype:"SmallArms1",
+				immolateradius:64,immolateamount:random(4,20),immolatechance:32,
+				gibradius:16,gibamount:random(4,20)
+			);
+			A_SpawnChunks("BigWallChunk",20,4,20);
+			A_SpawnChunks("HDSmoke",4,1,7);
+			a=spawn("HDExplosion",pos,ALLOW_REPLACE);a.vel.z=2;
+			spawn("DistantRocket",pos,ALLOW_REPLACE);
+			A_DistantQuake(3,35,256,12);
+			vel.z+=10;
+			A_SpawnChunks("HDSmokeChunk",random(3,4),6,12);
+		}stop;
+	}
+}
+
