@@ -1,0 +1,221 @@
+// ------------------------------------------------------------
+//   Basic functional stuff
+// ------------------------------------------------------------
+
+//because "extend class Actor" doesn't work
+class HDActor:Actor{
+	//advance to the next tic without doing anything
+	void nexttic(){
+		if(!CheckNoDelay()) return;
+		if(tics!=-1){
+			if(tics>0)tics--;
+			while(!tics){
+				if(!SetState(CurState.NextState)){
+					return;
+				}
+			}
+		}
+	}
+	//shoot a missile without changing pitch and angle; missile inherits momentum
+	//A_ShootMissile("ShotgunBlast",44,0);
+	virtual void A_ShootMissile(
+		class<Actor> ms="DoomImpBall",
+		double shootheight=-1,
+		double shootspeed=-1,
+		double shootangle=999,
+		double shootpitch=999,
+		bool seeker=false
+	){
+		//the real defaults
+		if(shootangle==999) shootangle=self.angle;
+		if(shootpitch==999) shootpitch=self.pitch;
+		if(shootheight<0){
+			if(self is "PlayerPawn") shootheight=self.height-12;
+			else shootheight=self.missileheight;
+		}
+		actor prj=spawnmissileanglezspeed(
+			self.pos.z+shootheight,
+			ms,
+			shootangle,
+			-sin(pitch),
+			shootspeed,
+			self,
+			false
+		);
+		if(shootspeed<=0) //default to projectile's own speed
+			prj.A_ChangeVelocity(cos(pitch)*prj.speed,0,-sin(pitch)*prj.speed,CVF_RELATIVE);
+		prj.vel+=self.vel;prj.pitch=shootpitch;
+		prj.master=self;
+		if(seeker) prj.tracer=self.target;
+		//prj.playspawnsound(prj);
+	}
+	//generic function to spawn actors coming out of an explosion
+	//for frags: A_SpawnChunks("HDFrag",42,100,700);
+	virtual void A_SpawnChunks(
+		class<actor> chunk,
+		int number=12,
+		double minvel=10,
+		double maxvel=20
+	){
+		int airb=0;
+		vector3 burstpoint=self.pos+(0,0,self.height*0.5);
+		if(burstpoint.z-self.floorz<56) airb=-1;
+			else if(self.ceilingz-burstpoint.z<56) airb=1;
+		for(int i=0;i<number;i++){
+			actor frg=spawn(chunk,burstpoint);
+			frg.vel=self.vel;
+
+			//if it's a bullet, point it and let it accelerate itself
+			let fgr=HDBullet(frg);let slf=HDBullet(self);
+			if(fgr){
+				frg.speed=random(minvel,maxvel);
+				frg.angle=frandom(0,360);
+				if(airb<0) frg.pitch=frandom(-90,10);
+					else if(airb>0) frg.pitch=frandom(-10,90);
+					else frg.pitch=frandom(-90,90);
+				frg.master=self.target;
+				frg.target=self;
+				//if frags are spawning in the sky
+				if(slf){
+					fgr.notionalz=slf.notionalz;
+					if(fgr.notionalz>fgr.pos.z)fgr.setz(fgr.ceilingz-2);
+				}
+			}else{
+				vector3 bp=(
+					frandom(-1,1),
+					frandom(-1,1),
+					0
+				);
+				if(airb<0) bp.z=frandom(0.01,1);
+					else if(airb>0) bp.z=-frandom(0.01,1);
+					else bp.z=frandom(-1,1);
+				if(bp==(0,0,0))bp.z=1;
+				bp*=random(minvel,maxvel);
+				frg.vel+=bp;
+			}
+		}
+	}
+	//face a specified vector. NEGATIVE Z IS DOWN.
+	//A_FaceVector((-20,90,-10),10,10,true);
+	void A_FaceVector(vector3 v,double maxangle=0,double maxpitch=0,bool relative=false){
+		double nangle=atan2(v.y,v.x);
+		vector2 v2=(v.x,v.y);
+		double abshorz=v2.length();
+		double npitch=-atan2(v.z,abshorz);
+
+		//cap angle
+		double dangle=nangle-self.angle;
+		if((abs(dangle)<360-maxangle)&&(abs(dangle)>maxangle)&&(maxangle>0)){
+			if(abs(dangle)>180) dangle-=360;
+			dangle=clamp(dangle,-maxangle,maxangle);
+			nangle=self.angle+dangle;
+		}
+
+		//cap pitch
+		dangle=npitch-self.pitch;
+		if((abs(dangle)>maxpitch)&&(maxpitch>0)){
+			dangle=clamp(dangle,-maxpitch,maxpitch);
+			npitch=self.pitch+dangle;
+		}
+
+		//apply: add if relative, replace if not
+		if(relative){
+			self.angle+=nangle;
+			self.pitch+=npitch;
+		}else{
+			self.angle=nangle;
+			self.pitch=npitch;
+		}
+	}
+	//very crude way to tell if someone's back is turned
+	//A_CheckBackTurned(self,self.pos,target.pos,target.angle)
+	bool A_CheckBackTurned(vector3 ownpos,vector3 tpos,double tangle){
+		if(
+			((tangle>314 || tangle<46) && ownpos.x<tpos.x) ||
+			((tangle>45 && tangle<136) && ownpos.y<tpos.y) ||
+			((tangle>135 && tangle<226) && ownpos.x>tpos.x) ||
+			((tangle>225 && tangle<316) && ownpos.y>tpos.y)
+		)return true;else return false;
+	}
+	//set a feartarget for nearby mobs
+	//A_Frighten(256); maybe 128 for bullet and 512 for plasma and bfg
+	virtual void A_Frighten(double fraidius){
+		//copypasted from Xaser's StunBomb
+		//the actual fear effect is not defined here - that's up to the mob in question
+		blockthingsiterator it=blockthingsiterator.create(self,fraidius);
+		while(it.Next()){
+			let hir=HDMOb(it.thing);
+			if(hir
+				&& hir.bIsMonster
+				&& hir.health > 0
+				&& hir.CheckSight(self)
+			){
+				hir.feartarget=self;
+			}
+		}
+	}
+}
+
+class InventoryFlag:Inventory{
+	default{
+		+inventory.untossable;+nointeraction;+noblockmap;
+		inventory.maxamount 1;inventory.amount 1;
+	}
+	states{
+	spawn:
+		TNT1 A 0;
+		stop;
+	}
+}
+class ActionItem:CustomInventory{
+	default{
+		+inventory.untossable -inventory.invbar +noblockmap
+	}
+	states{
+	nope:
+		TNT1 A 0;fail;
+	spawn:
+		TNT1 A 0;stop;
+	}
+}
+class IdleDummy:HDActor{
+	default{
+		+noclip +nointeraction +noblockmap
+		height 0;radius 0;
+	}
+	states{
+	spawn:
+		TNT1 A -1 nodelay{
+			if(stamina>0) A_SetTics(stamina);
+		}stop;
+	}
+}
+
+
+//collection of generic math functions
+//generally should copypaste rather than using directly
+//if replaceable with native function, DO SO even if the math seems more complex
+struct HDMath{
+	//why does ZS not have a native round function?????
+	//or ceiling, for that matter????????
+	static int Round(double input){
+		int r=floor(input);if(input-r>=0.5) r++;
+		return r;
+	}
+	//returns how much MINIMUM to turn to get from one angle to another
+	//because i am so sick of re-learning how to do it every time
+	//HDMath.AngleChange(90,-42)
+	static double AngleChange(double a1, double a2){
+		while(a1<0){a1+=360;} while(a1>=360){a1-=360;}
+		while(a2<0){a2+=360;} while(a2>360){a2-=360;}
+		if(a1==0) return a2; //shortcut
+		double ad=a2-a1;
+		if(ad>180) ad-=360;
+		return ad;
+	}
+	//return a vector roughly as long as the desired length
+	//HDMath.ScaleVector(vel,4);
+	static vector3 ScaleVector(vector3 src,double length=1){
+		return src*length/src.length();
+	}
+}
