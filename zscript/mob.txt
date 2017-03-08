@@ -275,21 +275,8 @@ class HDMOb:HDActor{
 		if(mv.x!=0 && mv.y!=0) mv*=HDCONST_ONEOVERSQRTTWO;
 		if(bfloat) mv.z=random(-1,1);
 		mv*=amount;
-
-		vel+=mv;return; //below is only relevant if we're not relying on +nodropoff
-		//avoid ledges
-		if(
-			!bfloat
-			&& pos.z-getzat(
-				pos.x+vel.x+mv.x,pos.y+vel.y+mv.y,
-				flags:GZF_ABSOLUTEPOS)
-				>maxdropoffheight  
-			&& getzat()-pos.z==0
-		){
-			return;
-		}else{
-			vel+=mv;
-		}
+		vel+=mv;
+		return;
 	}
 	//A_MChase does not contain checks for going into missile state.
 	//all of that stuff goes here. decide where to go and whether to attack.

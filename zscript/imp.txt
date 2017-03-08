@@ -306,7 +306,8 @@ class HDMImp:HDImp{
 		TROO A 0 {if(fatigue>0)fatigue-=6;}
 		goto super::spawn;
 	podshot:
-		TROO HHHHHH 3 {
+		TROO H 3;
+		TROO HHHHHH 3{
 			if(vel.z<0) vel.z=random(3,4);
 			else vel.z+=3;
 			vel.xy*=0.6;
@@ -320,43 +321,44 @@ class HDMImp:HDImp{
 				cos(angle+140),
 				sin(angle+140),
 				0.1
-			)*3;
+			)*5;
 			a=spawn("HDDMImpBall",pos+(0,0,32)+b*8);a.target=self;a.tracer=target;a.vel=b;
 			b=(
 				cos(angle-140),
 				sin(angle-140),
 				0.1
-			)*3;
+			)*5;
 			a=spawn("HDDMImpBall",pos+(0,0,32)+b*8);a.target=self;a.tracer=target;a.vel=b;
 			b=(
 				cos(angle+120),
 				sin(angle+120),
 				-0.2
-			)*2;
+			)*3;
 			a=spawn("HDDMImpBall",pos+(0,0,30)+b*6);a.target=self;a.tracer=target;a.vel=b;
 			b=(
 				cos(angle-120),
 				sin(angle-120),
 				-0.2
-			)*2;
+			)*3;
 			a=spawn("HDDMImpBall",pos+(0,0,30)+b*6);a.target=self;a.tracer=target;a.vel=b;
 			b=(
 				cos(angle+160),
 				sin(angle+160),
 				+0.3
-			)*2;
+			)*3;
 			a=spawn("HDDMImpBall",pos+(0,0,34)+b*4);a.target=self;a.tracer=target;a.vel=b;
 			b=(
 				cos(angle-160),
 				sin(angle-160),
 				+0.3
-			)*2;
+			)*3;
 			a=spawn("HDDMImpBall",pos+(0,0,34)+b*4);a.target=self;a.tracer=target;a.vel=b;
 		}
-		TROO HHHHHH 3 {
+		TROO HHH 3 {
 			if(vel.z<0) vel.z=2;
 			else vel.z+=2;
 		}
+		TROO H 10;
 		goto shootend;
 	shoot:
 		TROO F 0{
@@ -636,7 +638,7 @@ class HDDMImpBall:HDImpBall{
 			vel+=forward;
 		}
 		BAL1 ABA 2 A_Tail();
-		BAL1 BABAB 2;
+		BAL1 BABAB 2 A_FBFloat();
 		goto see;
 	}
 }
