@@ -38,6 +38,10 @@ class TerrorBolt:HDBullet{
 	death:
 		TNT1 A 16{
 			bmissile=false;
+			if(blockingmobj)blockingmobj.damagemobj( //warhead damage
+				self,self.master,
+				random(12,24)*60,
+				"SmallArms3",DMG_THRUSTLESS);
 			actor a=Spawn("WallChunker",pos,ALLOW_REPLACE);
 			a.angle=angle;a.A_ChangeVelocity(0.1,0,-0.1,CVF_RELATIVE);
 			A_Blast(
