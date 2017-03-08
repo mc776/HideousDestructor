@@ -486,7 +486,7 @@ class HDHImpBallTail:HDImpBallTail{
 class HDHImpBall:HDImpBall{
 	default{
 		+noblood -noblockmap +shootable;
-		height 14;radius 12;speed 20;health 1;
+		height 14;radius 12;health 1;speed 7;
 		scale 1.6;missiletype "HDHImpBallTail";
 		damagefactor "thermal",0;
 	}
@@ -518,6 +518,9 @@ class HDHImpBall:HDImpBall{
 		BAL1 CCCDDDEEEE 1 bright{
 			A_SpawnChunks("HDSmoke",3,3,6);
 			alpha*=0.9;
+		}
+		TNT1 A 0{
+			bshootable=false;bnointeraction=true;
 		}
 		TNT1 AAAAAAAAAAAAA 3 bright{
 			A_SpawnChunks("HDSmoke",3,3,6);

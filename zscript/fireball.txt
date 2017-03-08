@@ -70,7 +70,7 @@ class HDFireball:HDActor{
 			&&
 			(seekradius>0 && disttotracer<seekradius)
 		)
-		vel+=HDMath.ScaleVector(totracer,seekspeed);
+		vel+=totracer*seekspeed/totracer.length();
 	}
 	void A_FBFloat(
 		double jitter=0.02
@@ -109,7 +109,8 @@ class HDFireball:HDActor{
 		//update frac
 		if(oldvel!=vel){
 			oldvel=vel;
-			fracc=clamp(vel.length(),1,256)/radius;
+			if(radius) fracc=clamp(vel.length()/radius,1,256);
+				else fracc=vel.length();
 			frac=vel/fracc;
 		}
 
@@ -118,7 +119,7 @@ class HDFireball:HDActor{
 			fcheckposition tm;
 
 			//hit something while moving horizontally
-			if(!TryMove(Pos.XY+frac.XY,true,NULL,tm)){
+			if(!TryMove(Pos.XY+frac.XY,true,true,tm)){
 				if(!bSkyExplode){
 					let l = tm.ceilingline;
 					if (BlockingLine != NULL && BlockingLine.special == Line_Horizon){
