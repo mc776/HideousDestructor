@@ -25,8 +25,8 @@ class TerrorBolt:HDBullet{
 			Spawn("DistantShotgun",pos,ALLOW_REPLACE);
 			A_LongArmWobble();
 			A_Gunsmoke();
-			A_SpawnItemEx("TerrorSabotPiece",0,0,0,velx,vely,velz,1,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS);
-			A_SpawnItemEx("TerrorSabotPiece",0,0,0,velx,vely,velz,-1,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS);
+			A_SpawnItemEx("TerrorSabotPiece",0,0,0,vel.x,vel.y,vel.z,1,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS);
+			A_SpawnItemEx("TerrorSabotPiece",0,0,0,vel.x,vel.y,vel.z,-1,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS);
 		}
 		MISL A -1 A_ChangeVelocity(cos(pitch)*speed,0,-sin(pitch)*speed,CVF_RELATIVE);
 	xdeath:
