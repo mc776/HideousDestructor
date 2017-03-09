@@ -97,11 +97,15 @@ class HDPlayerPawn:PlayerPawn{
 		lastangle=angle;
 		lastpitch=pitch;
 
+		if(getcvar("gender")==0) A_GiveInventory("IsMale");
+		else if(getcvar("gender")==1){A_GiveInventory("IsFemale");A_TakeInventory("IsMale");}
+		else {A_TakeInventory("IsFemale");A_TakeInventory("IsMale");}
+
 		super.Tick();
 		//gotta translate everything from all those acs loops. yaaaaaaayyyy
 
 		//only do anything below this while the player is alive!
-		if(health<1) return;
+		if(bkilled) return;
 
 		//move pivot point a little behind the player's view
 		if(getzat()-pos.z==0){
