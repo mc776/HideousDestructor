@@ -72,7 +72,7 @@ class HDImp:HDMOb{
 		TROO G 6{
 			if(random(0,1)==1)A_FaceLeadTarget(10);
 			if(random(0,1)==1)A_ShootMissile("hdimpball",
-				shootangle:angle+frandom(-2,2),shootpitch:pitch+frandom(-4,1));
+				shootangle:angle+frandom(-2,2),shootpitch:pitch+frandom(-2,1));
 			else A_ShootMissile("hdimpball",seeker:random(0,1));
 		}
 		TROO F 3{
@@ -100,7 +100,7 @@ class HDImp:HDMOb{
 			accuracy=0;
 			if(random(0,1)==1)A_FaceLeadTarget(15);
 			for (int i=0;i<2;i++){A_ShootMissile("hdimpball",-1,15,
-				shootangle:angle+frandom(-5,5),shootpitch:pitch+frandom(-5,4),seeker:true);}
+				shootangle:angle+frandom(-5,5),shootpitch:pitch+frandom(-2,1),seeker:true);}
 			A_ShootMissile("hdimpball",-1,16,seeker:false);
 		}goto shootend;
 	shootend:
@@ -115,7 +115,7 @@ class HDImp:HDMOb{
 		}
 		TROO G 6{
 			if(random(0,1)==1)A_ShootMissile("hdimpball",
-				shootangle:angle+frandom(-2,2),shootpitch:pitch+frandom(-2,1));
+				shootangle:angle+frandom(-2,2),shootpitch:pitch+frandom(-2,0));
 			else A_ShootMissile("hdimpball",seeker:random(0,1));
 		}
 		TROO F 3{
@@ -390,7 +390,7 @@ class HDMImp:HDImp{
 			fatigue+=9;
 			if(random(0,1)==1)A_FaceLeadTarget(15);
 			for (int i=0;i<6;i++){A_ShootMissile("hdimpball",-1,shootspeed:random(10,30),
-				shootangle:angle-18+i*3,shootpitch:pitch+frandom(-3,2),seeker:true);}
+				shootangle:angle-18+i*3,shootpitch:pitch+frandom(-2,1),seeker:true);}
 			A_ShootMissile("hdmimpball",-1,24,seeker:false);
 		}goto shootend;
 	glyphattack:
@@ -449,7 +449,7 @@ class HDImpBall:HDFireball{
 	see:
 		BAL1 ABA 2 bright A_FBFloat();
 		BAL1 B 2 bright{
-			if(random(0,1)) A_SimpleSeek(128,true);
+			if(random(0,1)) A_SimpleSeek(256,true);
 		}
 		loop;
 	death:
@@ -465,7 +465,7 @@ class HDImpBall:HDFireball{
 				)target=null;
 				A_Immolate(blockingmobj,self.target,random(0,4)*10);
 			}else{
-				actor a=spawn("idledummy",pos+HDMath.ScaleVector(oldvel,radius*0.7));
+				actor a=spawn("PersistentDamager",pos+HDMath.ScaleVector(oldvel,radius*0.7));
 				a.a_setsize(4,4);
 				A_Immolate(a,self.target,random(1,6)*10);
 			}
