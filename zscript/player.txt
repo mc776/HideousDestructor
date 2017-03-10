@@ -97,7 +97,7 @@ class HDPlayerPawn:PlayerPawn{
 		lastangle=angle;
 		lastpitch=pitch;
 
-		if(getcvar("gender")==0) A_GiveInventory("IsMale");
+		if(getcvar("gender")==0){A_GiveInventory("IsMale");A_TakeInventory("IsFemale");}
 		else if(getcvar("gender")==1){A_GiveInventory("IsFemale");A_TakeInventory("IsMale");}
 		else {A_TakeInventory("IsFemale");A_TakeInventory("IsMale");}
 
