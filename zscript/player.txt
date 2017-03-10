@@ -103,10 +103,12 @@ class HDPlayerPawn:PlayerPawn{
 
 		super.Tick();
 		//gotta translate everything from all those acs loops. yaaaaaaayyyy
-JumpCheck();
 
 		//only do anything below this while the player is alive!
 		if(bkilled) return;
+
+		//jumping/mantling
+		JumpCheck();
 
 		//move pivot point a little behind the player's view
 		if(getzat()-pos.z==0){
