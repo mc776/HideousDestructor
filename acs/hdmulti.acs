@@ -13,44 +13,6 @@ int respawninterval=0;
 
 function void CheckConfig(void)
 {
-	switch (GetPlayerInfo(PlayerNumber(),PLAYERINFO_GENDER))
-	{
-	case 0:
-		GiveInventory("IsMale",1);
-		TakeInventory("IsFemale",1);
-		break;
-	case 1:
-		GiveInventory("IsFemale",1);
-		TakeInventory("IsMale",1);
-		break;
-	default:
-		TakeInventory("IsMale",1);
-		TakeInventory("IsFemale",1);
-		break;
-	}
-
-/*
-	//spawn shards
-	if(
-		(!GetCvar("sv_nomonsters"))&&
-		(ThingCountName("BFGVileShard",0)<6+1*PlayerCount())&&
-		(
-			(GetCvar("hd_grimspawn"))
-			||(GetCvar("sv_monsterrespawn"))
-			||(GameSkill()==4)
-			||(GameSkill()==punisherskill)
-		)
-	){
-		respawninterval++;
-		int respch=1024;
-		if((GetCvar("sv_monsterrespawn"))||(GameSkill()==4)) respch=256;
-		if(respawninterval>=respch){
-			GiveInventory("SkillSharder",1);
-			respawninterval=0;
-		}
-	}
-*/
-
 		//Lives counter
 	TakeInventory("HDLives",999);
 	if ((GameType () == GAME_NET_COOPERATIVE) || (GetCVar("sv_singleplayerrespawn")>0))
