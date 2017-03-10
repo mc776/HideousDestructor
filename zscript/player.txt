@@ -137,29 +137,6 @@ class HDPlayerPawn:PlayerPawn{
 		}
 	}
 }
-extend class HDPlayerPawn{
-	//toggle an inventory flag
-	void A_ToggleIF(class<Inventory> item,int max=1){
-		if(countinv(item)==max) A_TakeInventory(item);
-		else A_GiveInventory(item,1);
-	}
-	//if second pistol present but not first, move everything to first
-	void A_SecondPistolFirst(){
-		if(countinv("HDPistol")) return;
-		if(countinv("HDSecondPistol")){
-			A_GiveInventory("HDPistol");
-			A_SetInventory("HDPistolLoaded",countinv("HDSecondPistolLoaded"));
-			A_SetInventory("HDPistolChamber",countinv("HDSecondPistolChamber"));
-			A_SetInventory("HDPistolNoMag",countinv("HDSecondPistolNoMag"));
-			A_SetInventory("HDPistolFullAuto",countinv("HDSecondPistolFullAuto"));
-			A_TakeInventory("HDSecondPistol");
-			A_TakeInventory("HDSecondPistolLoaded");
-			A_TakeInventory("HDSecondPistolChamber");
-			A_TakeInventory("HDSecondPistolNoMag");
-			A_TakeInventory("HDSecondPistolFullAuto");
-		}
-	}
-}
 
 
 

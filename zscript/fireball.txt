@@ -63,7 +63,7 @@ class HDFireball:HDActor{
 		bool inlosonly=false
 	){
 		if(!tracer) return;
-		if(pos.z>tracer.z+tracer.height) totracer=(0,0,0);
+		if(pos.z>tracer.pos.z+tracer.height) totracer=(0,0,0);
 			else totracer=(0,0,tracer.height);
 		totracer+=tracer.pos-self.pos;
 		disttotracer=totracer.length();
