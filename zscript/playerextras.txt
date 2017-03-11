@@ -1,0 +1,139 @@
+// ------------------------------------------------------------
+//   Additional player functions
+// ------------------------------------------------------------
+
+extend class HDPlayerPawn{
+	actor antenna;
+	void A_MoveAntenna(vector3 newpos){
+		if(!antenna){
+			antenna=spawn("IdleDummy");
+			antenna.A_SetSize(3,3,3);
+		}
+		antenna.setorigin(newpos,false);
+	}
+	//check mantling
+	//returns: -1 cannot mantle; 0 cannot mantle but on ground; 1 can mantle
+	int MantleCheck(){
+		double zat=getzat();
+		bool onground;
+		int res=-1;
+		if(zat==pos.z){
+			onground=true;
+			res=0;
+		}
+
+		//determine max height
+		int mantlemax=36;
+		if((player.readyweapon is "NullWeapon" || player.readyweapon is "Ring") && health>30){
+			if(onground) mantlemax=64;
+			else mantlemax=56;
+		}
+		//place the antenna
+		A_MoveAntenna(pos+vel+(cos(angle)*18,sin(angle)*18,mantlemax));
+		//check if blocked
+		mantlemax=antenna.getzat();
+		if((mantlemax-pos.z)<=maxstepheight) return res; //don't mantle steppables
+		if(antenna.getzat(flags:GZF_CEILING)-mantlemax<1) return res; //can't squeeze fingers in
+		if(antenna.pos.z<mantlemax) return res; //too high to reach and grab
+
+		//thrust player upwards and forwards
+		if(
+			onground
+			&& !(getplayerinput(MODINPUT_OLDBUTTONS) && BT_JUMP)
+		)vel.z+=7;
+		else vel.z+=3;
+		return 1;
+	}
+	void JumpCheck(){
+		if(
+			getplayerinput(MODINPUT_BUTTONS) & BT_JUMP //replace with event asap
+			&& !MantleCheck()
+			&& !(getplayerinput(MODINPUT_OLDBUTTONS) & BT_JUMP)
+		){
+			A_Log("insert jump code here lol");
+		}
+	}
+}
+
+
+
+
+const HDCONST_MINHEARTTICS = 7; //35/7*60=300 beats per minute!
+
+extend class HDPlayerPawn{
+	int beatcount;
+	int beatmax;
+	int beatcap;
+	int beatcounter;
+	int stimcount;
+	int regenblues;
+	int woundcount;
+	int newwoundcount;
+	int oldwoundcount;
+	int aggravateddamage;
+	void HeartTicker(){
+		if(bkilled) return; //don't really need this...
+
+		//on every beat
+		if(beatcount>0) beatcount--; else{    
+			//limit beatmax
+			beatmax=clamp(beatmax,HDCONST_MINHEARTTICS,35);
+
+			//reset beatcount, subject to stims
+			if(stimcount) beatcount=beatmax-random(1,2);
+				else beatcount=beatmax;
+			beatcounter++;
+
+			//adrenalized vessels begin to relax...
+			if(newwoundcount>0 && (beatmax>32||beatmax>=beatcap)){    
+				newwoundcount--;woundcount++;
+			}
+
+			//magical healing stops imminent danger first
+			if(regenblues>0 && woundcount+newwoundcount>0){      
+				newwoundcount--;woundcount--;
+				regenblues--;
+			}
+
+			//don't go negative wound
+			if(newwoundcount<0)newwoundcount=0;
+			if(woundcount<0)woundcount=0;
+
+			if(beatcounter%12==0){	//every 12 beats
+				//you're either gaining or losing health
+				if(woundcount)A_DamageSelf(random(1,woundcount),"bleedout");
+				else healthing(1);
+
+				if(stimcount>0)stimcount--;
+				if(regenblues>0 && oldwoundcount+aggravateddamage>0){      
+					oldwoundcount-=2;aggravateddamage--;
+					regenblues--;
+					if(oldwoundcount<0)oldwoundcount=0;
+					if(aggravateddamage<0)aggravateddamage=0;
+				}
+				if(woundcount>0 && beatmax<26 && random(1,7==1)){      
+					newwoundcount++;woundcount--;
+				}
+
+				//recovering heart rate
+				if(beatmax<beatcap) beatmax++;	//recovering
+			}
+			if(beatcounter%20==0){	//every 20 beats
+				//updating beatcap (minimum heart rate)
+				if(health<40) beatcap=clamp(beatcap,1,24);
+				else if(health<60) beatcap=clamp(beatcap,1,32);
+				if(woundcount>10) beatcap=clamp(beatcap,1,12);    
+				else if(woundcount>5) beatcap=clamp(beatcap,1,24);
+
+				//keep stim below cap as long as it's above 12
+				if(stimcount>0 && beatcap>12)    
+					beatcap=clamp(beatcap,12,beatcap-1);
+			}
+			if(beatcounter==120){	//every 120 beats
+				beatcounter=0;	//reset
+				if(random(70,health)==100-aggravateddamage)oldwoundcount--;
+			}
+		}
+	}
+}
+
