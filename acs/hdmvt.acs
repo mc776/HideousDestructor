@@ -35,16 +35,11 @@ function void CheckInput(int nb,int ob,int sm,int fm){
 
 	//sprint check
 	if (nb & BT_SPEED){
-		GiveInventory("IsSprinting",1);
-		if ((CheckInventory("UsingMeds")==0))
-		{
-			SetWeapon(DisableWeapon());
-		}
+		//snip - all done in acs now
 	}else{
 		if (CheckWeapon("NullWeapon")) SetWeapon(lastweapon[PlayerNumber()]);
 		if ((ob & BT_SPEED)&&(CheckInventory("Fatigue")>60)) GiveInventory("WasSprinting",1);
 	}
-
 
 	//use check
 	if (nb & BT_USE){
