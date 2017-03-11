@@ -50,7 +50,29 @@ extend class HDPlayerPawn{
 			&& !MantleCheck()
 			&& !(getplayerinput(MODINPUT_OLDBUTTONS) & BT_JUMP)
 		){
-			A_Log("insert jump code here lol");
+			double jumppower=7;
+			double jz=jumppower*0.6;
+			double fm=getplayerinput(MODINPUT_FORWARDMOVE);
+			double sm=getplayerinput(MODINPUT_SIDEMOVE);
+			if(!sm){
+				if(!fm) vel.z+=jz; //straight up
+				else if(fm>0){ //forwards
+					jumppower*=1.5;
+					A_ChangeVelocity(jumppower,0,jz,CVF_RELATIVE);
+				}else{ //backwards
+					A_ChangeVelocity(-jumppower,0,jz,CVF_RELATIVE);
+				}
+			}else if(!fm){ //side jump
+				if(sm>0) jumppower*=-1;
+				A_ChangeVelocity(0,jumppower,jz,CVF_RELATIVE);
+			}else{ //diagonal jump
+				int smult=1;
+				int fmult=1;
+				if(fm<0) fmult=-1;
+				if(sm>0) smult=-1;
+				jumppower*=HDCONST_ONEOVERSQRTTWO;
+				A_ChangeVelocity(jumppower*fmult,jumppower*smult,jz,CVF_RELATIVE);
+			}
 		}
 	}
 }

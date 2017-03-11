@@ -117,8 +117,8 @@ class HDPlayerPawn:PlayerPawn{
 				if(anglechange<0) dir=-90;
 				trymove(self.pos.xy+(cos(angle+dir)*0.8,sin(angle+dir)*0.8),false);
 			}
-			if(abs(pitchchange)>1){
-				double rate=0.05;
+			if(abs(pitchchange)>1 && -30<pitch<30){
+				double rate=0.1;
 				trymove(self.pos.xy-(cos(angle)*rate*pitchchange,
 				sin(angle)*rate*pitchchange),false);
 			}
