@@ -11,6 +11,7 @@ extend class HDPlayerPawn{
 		}
 		antenna.setorigin(newpos,false);
 	}
+
 	//check mantling
 	//returns: -1 cannot mantle; 0 cannot mantle but on ground; 1 can mantle
 	int MantleCheck(){
@@ -47,6 +48,7 @@ extend class HDPlayerPawn{
 		}else vel.z+=3;
 		return 1;
 	}
+	//and jump. don't separate from mantling.
 	void JumpCheck(){
 		if(
 			beatmax>14
@@ -82,14 +84,94 @@ extend class HDPlayerPawn{
 			beatmax-=2;
 		}
 	}
-}
+
+	//constant polling for weapon inertia and muzzle climb
+	double driftleft;
+	double driftdown;
+	vector3 muzzlevel;
+	void Gunertia(){
+		double mult=0.01;
+		double dec=0.9;
+		double yaw=getplayerinput(MODINPUT_YAW);
+		double ptch=getplayerinput(MODINPUT_PITCH);
+
+		//reduced turning while crouched.
+		if(height<40){
+			A_SetAngle(angle-yaw*HDCONST_YAWTODEGREE*0.3,SPF_INTERPOLATE);
+			dec*=0.6;
+		}
+
+		//reduced drift while supported.
+		if(countinv("issupported")){
+			A_SetAngle(angle-yaw*HDCONST_YAWTODEGREE*0.3,SPF_INTERPOLATE);
+			A_SetAngle(angle-ptch*HDCONST_YAWTODEGREE*0.6,SPF_INTERPOLATE);
+			dec*=0.6;
+		}
+
+		//replace this section once weapons are scriptified
+		name wp=player.readyweapon.getclassname();
+		if(barehanded) mult=0;
+		else if(wp=="Vulcanette")mult*=7;
+		else if(wp=="Brontornis")mult*=3;
+		else if(wp=="BossRifle")mult*=8;
+
+		yaw*=HDCONST_YAWTODEGREE*mult;
+		ptch*=HDCONST_YAWTODEGREE*mult;
+
+		//resistance from weapon
+		angle-=yaw*HDCONST_YAWTODEGREE*mult;
+
+		//apply the drift
+		if(driftleft){
+			A_SetAngle(angle+driftleft,SPF_INTERPOLATE);
+			driftleft*=dec;
+		}
+		if(driftdown){
+			A_SetPitch(pitch+driftdown,SPF_INTERPOLATE);
+			driftdown*=dec;
+		}
+
+		//add to inertia
+		driftleft+=yaw;
+		driftdown-=ptch;
+
+		//even more inertia
+		if(muzzlevel!=vel){
+			vector3 diff=muzzlevel-vel;
+			muzzlevel=vel;
+			if(diff.length()<30){
+				vector3 notionalpos=(
+					cos(pitch)*cos(angle),
+					cos(pitch)*sin(angle),
+					-sin(pitch)
+				)*24+diff;
+				double abshorz=notionalpos.xy.length();
+				double nangle=atan2(notionalpos.y,notionalpos.x);
+				if(nangle<0)nangle+=360;
+				double npitch=-atan2(notionalpos.z,abshorz);
+				nangle=hdmath.anglechange(angle,nangle);
+
+				if(abs(npitch)<60)driftleft+=nangle*mult*4;
+				driftdown+=(npitch-pitch)*mult*4;
+			}
+		}
+	}
+
+	//Muzzle climb!
+	void MuzzleClimb(
+		double down,
+		double left,
+		bool doublemoving=true
+	){
+		if(doublemoving && countinv("ismoving")){down*=2;left*=2;}
+		driftdown+=down;
+		driftleft+=left;
+	}
 
 
 
-
-const HDCONST_MINHEARTTICS = 7; //35/7*60=300 beats per minute!
-
-extend class HDPlayerPawn{
+	//the heart
+	const HDCONST_MINHEARTTICS = 7; //35/7*60=300 beats per minute!
 	int beatcount;
 	int beatmax;
 	int beatcap;
@@ -106,7 +188,7 @@ extend class HDPlayerPawn{
 		//on every beat
 		if(beatcount>0){
 			beatcount--;
-			pitch-=0.0001*beatcount*(1+(35-beatmax));
+			pitch-=0.00001*beatcount*(1+2*(35-beatmax));
 		}else{
 			//limit beatmax
 			beatmax=clamp(beatmax,HDCONST_MINHEARTTICS,35);

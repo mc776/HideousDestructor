@@ -99,7 +99,7 @@ class HDBullet:HDActor{
 	override void Tick(){
 		ClearInterpolation();
 		if(globalfreeze||level.Frozen) return;
-		if(!bmissile){
+		if(!bmissile){ //!bmissile ALWAYS returns true here and I have no idea why!
 			nexttic();
 			return;
 		}
@@ -116,13 +116,14 @@ class HDBullet:HDActor{
 			// used to calculate sonic booms and damage
 			crksp=vel.length();
 
+
 			// force some lateral movement so that collision detection works as intended.
 			if (bMissile && vel.x == 0 && vel.y == 0 && !IsZeroDamage()){
 				vel.x = MinVel;
 			}
 			vector3 frac = vel / crksp;
 			for (int i=0;i<crksp;i++){
-				zat=floorz;//getzat(); //WHY IS GETZAT SO RIDICULOUSLY SLOWER
+				zat=floorz;
 				if(!TryMove(Pos.XY+frac.XY,true,null,tm)){
 					if(!bSkyExplode){
 						//hack to prevent exploding on lower sky
@@ -248,8 +249,9 @@ class HDBullet:HDActor{
 	states{
 	spawn2:
 		BLET A 1{
-			if(abs(vel.x)+abs(vel.y)<100)
+			if(vel.length()<speed){
 				A_ChangeVelocity(cos(pitch)*speed,0,-sin(pitch)*speed,CVF_RELATIVE);
+			}
 		}
 		BLET A -1{
 			//so that you can kill yourself by shooting into the sky
@@ -260,7 +262,7 @@ class HDBullet:HDActor{
 			if(random(1,32)==1){return resolvestate("ricochet");}
 			if(haspierced){return resolvestate("null");}
 			if(
-				(CallACS("CheckDM") || hd_penetrate)
+				(deathmatch || hd_penetrate)
 				&& accuracy>0
 			){
 				return resolvestate("pierce");
@@ -293,7 +295,7 @@ class HDBullet:HDActor{
 			haspierced=1;
 			bmissile=true;
 			bpainless=false;
-			return resolvestate("spawn2");
+			setstatelabel("spawn2");
 		}
 	xdeath1:
 		BLET A 0;

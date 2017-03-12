@@ -7,6 +7,10 @@ class HDPlayerPawn:PlayerPawn{
 	vector3 poschange;double anglechange;double pitchchange;
 	actor playercorpse;
 	name lastweapon;
+	bool barehanded;
+	default{
+		+interpolateangles
+	}
 	states{
 	see0:
 		"----" A 0{
@@ -109,19 +113,24 @@ class HDPlayerPawn:PlayerPawn{
 		if(bkilled) return;
 		HeartTicker();
 
+		//check if hands free
+		if(
+			(player.readyweapon is "Ring")
+			||(player.readyweapon is "HDFragGrenades")
+			||(player.readyweapon is "NullWeapon")
+		)barehanded=true;else barehanded=false;
+
 		//jumping/mantling
 		JumpCheck();
+
+		Gunertia();
 
 		//lowering weapon
 		if(
 			getplayerinput(MODINPUT_BUTTONS) & BT_SPEED
 			|| getplayerinput(MODINPUT_BUTTONS) & BT_JUMP
 		){
-			if(
-				!(player.readyweapon is "Ring")
-				&& !(player.readyweapon is "HDFragGrenades")
-				&& !(player.readyweapon is "NullWeapon")
-			){
+			if(!barehanded){
 				lastweapon=player.readyweapon.getclassname();
 				if(!countinv("NullWeapon"))A_GiveInventory("NullWeapon");
 				A_GiveInventory("NulledWeapon");
@@ -221,5 +230,21 @@ class userpickerupper:hdactor{
 				addz(vel.z);
 			}
 		}stop;
+	}
+}
+
+class HDMuzzle:Actor{
+	default{
+		+solid +nogravity
+		height 1;radius 2;maxstepheight 1;
+	}
+	states{
+		spawn:
+			BLUD A 1{if(vel.length()<1)vel*=0.6;}
+			wait;
+	}
+	override bool cancollidewith(actor other,bool passive){
+		if(other==master) return false;
+		return super.cancollidewith(other,passive);
 	}
 }

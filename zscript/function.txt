@@ -99,8 +99,7 @@ class HDActor:Actor{
 	//A_FaceVector((-20,90,-10),10,10,true);
 	void A_FaceVector(vector3 v,double maxangle=0,double maxpitch=0,bool relative=false){
 		double nangle=atan2(v.y,v.x);
-		vector2 v2=(v.x,v.y);
-		double abshorz=v2.length();
+		double abshorz=v.xy.length();
 		double npitch=-atan2(v.z,abshorz);
 
 		//cap angle
@@ -206,12 +205,11 @@ struct HDMath{
 	//because i am so sick of re-learning how to do it every time
 	//HDMath.AngleChange(90,-42)
 	static double AngleChange(double a1, double a2){
-		while(a1<0){a1+=360;} while(a1>=360){a1-=360;}
-		while(a2<0){a2+=360;} while(a2>360){a2-=360;}
-		if(a1==0) return a2; //shortcut
-		double ad=a2-a1;
-		if(ad>180) ad-=360;
-		return ad;
+		double a=a2-a1;
+		while(a<0) a+=360;
+		while(a>=360) a-=360;
+		if(a>180)a-=360;
+		return a;
 	}
 	//return a vector roughly as long as the desired length
 	//HDMath.ScaleVector(vel,4);
