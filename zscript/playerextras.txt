@@ -15,7 +15,6 @@ extend class HDPlayerPawn{
 	//check mantling
 	//returns: -1 cannot mantle; 0 cannot mantle but on ground; 1 can mantle
 	int MantleCheck(){
-		double zat=getzat();
 		bool onground;
 		int res=-1;
 		if(zat==pos.z){
@@ -81,7 +80,8 @@ extend class HDPlayerPawn{
 				jumppower*=HDCONST_ONEOVERSQRTTWO;
 				A_ChangeVelocity(jumppower*fmult,jumppower*smult,jz,CVF_RELATIVE);
 			}
-			beatmax-=2;
+			if(height<40)beatmax-=5;
+			else beatmax-=2;
 		}
 	}
 
@@ -92,31 +92,32 @@ extend class HDPlayerPawn{
 	void Gunertia(){
 		double mult=0.01;
 		double dec=0.9;
-		double yaw=getplayerinput(MODINPUT_YAW);
-		double ptch=getplayerinput(MODINPUT_PITCH);
-
-		//reduced turning while crouched.
-		if(height<40){
-			A_SetAngle(angle-yaw*HDCONST_YAWTODEGREE*0.3,SPF_INTERPOLATE);
-			dec*=0.6;
-		}
+		double yaw=getplayerinput(MODINPUT_YAW)*HDCONST_YAWTODEGREE;
+		double ptch=getplayerinput(MODINPUT_PITCH)*HDCONST_YAWTODEGREE;
 
 		//reduced drift while supported.
-		if(countinv("issupported")){
-			A_SetAngle(angle-yaw*HDCONST_YAWTODEGREE*0.3,SPF_INTERPOLATE);
-			A_SetAngle(angle-ptch*HDCONST_YAWTODEGREE*0.6,SPF_INTERPOLATE);
+		if(countinv("issupported") && yaw<5){
+			A_SetAngle(angle-yaw*0.3,SPF_INTERPOLATE);
+			A_SetPitch(pitch+ptch*0.3,SPF_INTERPOLATE);
+			dec*=0.6;
+		}
+		//reduced turning while crouched.
+		else if(height<40 && abs(yaw)>3){
+			A_SetAngle(angle-yaw*0.3,SPF_INTERPOLATE);
 			dec*=0.6;
 		}
 
 		//replace this section once weapons are scriptified
 		name wp=player.readyweapon.getclassname();
-		if(barehanded) mult=0;
+		if(barehanded){
+			mult=0;
+			dec=0.1;
+		}
 		else if(wp=="Vulcanette")mult*=7;
 		else if(wp=="Brontornis")mult*=3;
 		else if(wp=="BossRifle")mult*=8;
 
-		yaw*=HDCONST_YAWTODEGREE*mult;
-		ptch*=HDCONST_YAWTODEGREE*mult;
+		yaw*=mult;ptch*=mult;
 
 		//resistance from weapon
 		angle-=yaw*HDCONST_YAWTODEGREE*mult;
