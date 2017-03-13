@@ -40,10 +40,7 @@ class HDPlayerPawn:PlayerPawn{
 				viewbob=1.4;
 				return resolvestate("seestun");
 			}
-			else if(
-				runwalksprint>0 &&
-				countinv("WasSprinting")>0
-			){
+			else if(cansprint && runwalksprint>0){
 				viewbob=1.2;
 				return resolvestate("seesprint");
 			}
@@ -74,9 +71,7 @@ class HDPlayerPawn:PlayerPawn{
 		}
 		"----" A 0{return resolvestate("spawn");}
 	seesprint:
-		"----" A 4 {
-			A_TakeInventory("PowerFrightener");
-		}
+		"----" A 4 A_TakeInventory("PowerFrightener");
 		"####" B 2;
 		"####" C 4;
 		"####" D 2;
@@ -154,8 +149,12 @@ class HDPlayerPawn:PlayerPawn{
 		//conditions for allowing sprint
 		if(
 			!mustwalk
-			&& player.readyweapon.getclassname()=="NullWeapon"
-			&& (beatmax>20 || (beatmax>12 && getplayerinput(MODINPUT_OLDBUTTONS) & BT_SPEED) || countinv("PowerStrength"))
+			&& barehanded
+			&& (
+				beatmax>20 ||
+				(beatmax>12 && getplayerinput(MODINPUT_OLDBUTTONS) & BT_SPEED) ||
+				countinv("PowerStrength")
+			)
 		)cansprint=true;else cansprint=false;
 
 		//apply all movement speed modifiers
