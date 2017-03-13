@@ -9,8 +9,19 @@ class HDPlayerPawn:PlayerPawn{
 	actor playercorpse;
 	name lastweapon;
 	bool barehanded;
+	bool mustwalk;bool cansprint;
+	double feetangle;
+	int runwalksprint;
 	default{
 		+interpolateangles
+	}
+	override void PostBeginPlay(){
+		super.PostBeginPlay();
+		lastpos=pos;
+		lastangle=angle;
+		lastpitch=pitch;
+		beatcap=35;beatmax=35;
+		feetangle=angle;
 	}
 	states{
 	see0:
@@ -30,13 +41,13 @@ class HDPlayerPawn:PlayerPawn{
 				return resolvestate("seestun");
 			}
 			else if(
-				(countinv("IsSprinting")>0)&&
-				(countinv("WasSprinting")>0)
+				runwalksprint>0 &&
+				countinv("WasSprinting")>0
 			){
 				viewbob=1.2;
 				return resolvestate("seesprint");
 			}
-			else if(countinv("IsWalking")>0){
+			else if(runwalksprint<0){
 				return resolvestate("seewalk");
 			}
 			return resolvestate(null);
@@ -53,7 +64,7 @@ class HDPlayerPawn:PlayerPawn{
 		"----" A 0{return resolvestate("spawn");}
 	seewalk:
 		"####" ABCD 6 {
-			if((height>30)&&(countinv("IsWalking")>0)){
+			if(height>30 && runwalksprint<0){
 				A_TakeInventory("IsMoving",5);
 				if(viewbob>1.2){viewbob=1.2;}
 				else if(viewbob>0.2){viewbob-=0.1;}
@@ -70,13 +81,6 @@ class HDPlayerPawn:PlayerPawn{
 		"####" C 4;
 		"####" D 2;
 		"----" A 0{return resolvestate("spawn");}
-	}
-	override void PostBeginPlay(){
-		super.PostBeginPlay();
-		lastpos=pos;
-		lastangle=angle;
-		lastpitch=pitch;
-		beatcap=35;beatmax=35;
 	}
 	//HIGHLY EXPERIMENTAL: ignore some collisions in the space between head and shoulders
 	override bool cancollidewith(actor other,bool passive){
@@ -115,6 +119,12 @@ class HDPlayerPawn:PlayerPawn{
 		if(bkilled) return;
 		HeartTicker();
 
+		//see if player is intentionally walking, running or sprinting
+		//-1 = walk, 0 = run, 1 = sprint
+		if(getplayerinput(MODINPUT_BUTTONS) & BT_SPEED) runwalksprint=1;
+		else if(getcvar("cl_run"))runwalksprint=0;
+		else runwalksprint=-1;
+
 		//check if hands free
 		if(
 			(player.readyweapon is "Ring")
@@ -122,10 +132,40 @@ class HDPlayerPawn:PlayerPawn{
 			||(player.readyweapon is "NullWeapon")
 		)barehanded=true;else barehanded=false;
 
+		//don't know where to put this: reduce stepheight if crouched
+		if(height<40 && !barehanded) maxstepheight=12;
+		else maxstepheight=24;
+
 		//jumping/mantling
 		JumpCheck();
 
+		//turning mods
 		Gunertia();
+
+		//conditions for forcing walk
+		if(
+			StumbleCheck()
+			|| (beatmax<14 && !(getplayerinput(MODINPUT_OLDBUTTONS) & BT_SPEED))
+		){
+			mustwalk=true;
+			runwalksprint=-1;
+		}else mustwalk=false;
+
+		//conditions for allowing sprint
+		if(
+			!mustwalk
+			&& player.readyweapon.getclassname()=="NullWeapon"
+			&& (beatmax>20 || (beatmax>12 && getplayerinput(MODINPUT_OLDBUTTONS) & BT_SPEED) || countinv("PowerStrength"))
+		)cansprint=true;else cansprint=false;
+
+		//apply all movement speed modifiers
+		if(mustwalk || runwalksprint<0) speed=0.4;
+		else if(runwalksprint>0 && cansprint){
+			if(!getplayerinput(MODINPUT_SIDEMOVE))speed=2.2;
+			else if(getplayerinput(MODINPUT_FORWARDMOVE)<0)speed=1.6;
+		}
+		else speed=1;
+		if(countinv("PowerStrength"))speed*=1.5;
 
 		//lowering weapon
 		if(
@@ -138,15 +178,11 @@ class HDPlayerPawn:PlayerPawn{
 				A_GiveInventory("NulledWeapon");
 				A_SelectWeapon("NullWeapon");
 			}
-			if(!getplayerinput(MODINPUT_BUTTONS) & BT_JUMP){ //sprinting only
-				A_GiveInventory("IsSprinting");
-			}
 		}else if(
 			player.readyweapon is "NullWeapon"
 			&& countinv(lastweapon)>0
 		){
 			A_SelectWeapon(lastweapon);
-			A_TakeInventory("IsSprinting");
 		}
 
 		//move pivot point a little behind the player's view

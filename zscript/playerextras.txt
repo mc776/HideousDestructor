@@ -182,6 +182,16 @@ extend class HDPlayerPawn{
 				driftdown+=(npitch-pitch)*mult*4;
 			}
 		}
+
+		//feet angle
+		dec=hdmath.anglechange(angle,feetangle); //we won't be using dec after this
+		if(pos.z==zat && abs(dec)>50-20*countinv("IsCrouching")){
+			A_SetAngle(angle-yaw*0.3,SPF_INTERPOLATE);
+			A_ChangeVelocity(0,dec/abs(dec)*0.1,0,CVF_RELATIVE);
+			A_GiveInventory("IsMoving",2);
+			feetangle+=clamp(angle-feetangle,-10,10);
+			resolvestate("see");
+		}
 	}
 
 	//Muzzle climb!
@@ -195,10 +205,25 @@ extend class HDPlayerPawn{
 		driftleft+=left;
 	}
 
+	//not actually checking to stumble, but to slow down on bad terrain
+	bool StumbleCheck(){
+		if(zat!=pos.z) return false;
+		vector2 p=rotatevector((
+			getplayerinput(MODINPUT_FORWARDMOVE)*0.005,
+			getplayerinput(MODINPUT_SIDEMOVE)*-0.005
+		),angle);
+		if(p==(0,0)) return false;
+		//if trying to sprint, quardruple effective input
+		if(runwalksprint>0) p*=4;
+		A_MoveAntenna(pos+(p.x,p.y,zat));
+		if(zat-antenna.getzat()>16) return true;
+		return false;
+	}
+
 
 
 	//the heart
-	const HDCONST_MINHEARTTICS = 7; //35/7*60=300 beats per minute!
+	const HDCONST_MINHEARTTICS = 5; //35/5*60=420 beats per minute!
 	int beatcount;
 	int beatmax;
 	int beatcap;
@@ -218,7 +243,10 @@ extend class HDPlayerPawn{
 			pitch-=0.00001*beatcount*(1+2*(35-beatmax));
 		}else{
 			//limit beatmax
-			beatmax=clamp(beatmax,HDCONST_MINHEARTTICS,35);
+			if(countinv("PowerStrength")) beatmax=clamp(beatmax,4,14);
+			else beatmax=clamp(beatmax,HDCONST_MINHEARTTICS,35);
+
+			if(beatmax<8)DamageMobj(self,self,1,"internal");
 
 			//reset beatcount, subject to stims
 			if(stimcount) beatcount=beatmax-random(1,2);
@@ -226,6 +254,9 @@ extend class HDPlayerPawn{
 			A_SetBlend("66 10 12",0.3-0.3*(health*0.01),beatcount);
 			pitch+=0.002*beatcount*(1+(35-beatmax));
 			beatcounter++;
+
+			//sprinting
+			if(cansprint && runwalksprint>0)beatmax--;
 
 			//adrenalized vessels begin to relax...
 			if(newwoundcount>0 && (beatmax>32||beatmax>=beatcap)){
