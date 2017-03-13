@@ -190,7 +190,9 @@ extend class HDPlayerPawn{
 			A_ChangeVelocity(0,dec/abs(dec)*0.1,0,CVF_RELATIVE);
 			A_GiveInventory("IsMoving",2);
 			feetangle+=clamp(angle-feetangle,-10,10);
-			resolvestate("see");
+			if(
+				instatesequence(curstate,resolvestate("spawn"))
+			)setstatelabel("see");
 		}
 	}
 
