@@ -126,7 +126,11 @@ extend class HDPlayerPawn{
 			+0.2*(countinv("RocketMag"))
 			+0.5*(countinv("HEATLoaded"));
 		else if(wp=="BossRifle")mult*=5;
-		else if(wp=="ThunderBuster")mult*=4+0.2*(countinv("PlasmaBattery")+countinv("PlasmaEmptyCell"));
+		else if(wp=="ThunderBuster"){
+			//isn't there a shorthand for this???
+			if(countinv("PlasmaBattery")||countinv("PlasmaEmptyCell")) mult*=4+0.2;
+			else mult*=4+0.2;
+		}
 		else if(wp=="Lumberjack")mult*=4+0.2*(countinv("LumberCell")+countinv("LumberEmptyCell"));
 		else if(wp=="Hunter"){
 			if(countinv("ShotgunTube")>3)mult*=countinv("ShotgunTube")*0.2;
