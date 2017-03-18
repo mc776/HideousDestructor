@@ -316,6 +316,7 @@ extend class HDPlayerPawn{
 
 	//not actually checking to stumble, but to slow down on bad terrain
 	bool StumbleCheck(){
+		if(runwalksprint>0) return false;
 		if(zat!=pos.z) return false;
 		vector2 p=rotatevector((
 			getplayerinput(MODINPUT_FORWARDMOVE)*0.005,
@@ -323,7 +324,7 @@ extend class HDPlayerPawn{
 		),angle);
 		if(p==(0,0)) return false;
 		//if trying to sprint, quardruple effective input
-		if(runwalksprint>0) p*=4;
+//		if(runwalksprint>0) p*=4;
 		A_MoveAntenna(pos+(p.x,p.y,zat));
 		if(zat-antenna.getzat()>16) return true;
 		return false;

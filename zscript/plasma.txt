@@ -2,8 +2,45 @@
 //   Thunder Buster
 // ------------------------------------------------------------
 
-class BeamSpot:IdleDummy{
-	
+class BeamSpotZS:IdleDummy{
+	default{
+		+puffonactors +hittracer +puffgetsowner
+		renderstyle "add";
+	}
+	override void postbeginplay(){
+		changetid(666123);
+		bextremedeath=random(0,1);
+		stamina++;
+		actoriterator it=actoriterator.create(666123,"BeamSpotZS");
+		while(master=it.Next()){
+			if(master.distance3d(self)<4){
+				stamina+=master.stamina;
+			}
+		}
+		if(!tracer) tracer=self;
+		else damagemobj(
+			self,target,random(1,stamina),"electro"
+		);
+		A_Immolate(tracer,target,clamp(stamina,0,100));
+		if(stamina>=random(24,48)){
+			A_SpawnItemEx("BeamSpotBoom",
+			flags:
+				SXF_NOCHECKPOSITION|
+				SXF_TRANSFERPOINTERS
+			);
+			destroy();
+			return;
+		}
+		if(stamina>=random(8,12)) setstatelabel("fuzz");
+	}
+	states{
+	spawn:
+		TNT1 A random(4,6);
+		stop;
+	fuzz:
+		PLSE AAAAA 1 A_FadeOut(0.2);
+		stop;
+	}
 }
 class BeamSpotBoom:IdleDummy{
 	default{
@@ -14,35 +51,39 @@ class BeamSpotBoom:IdleDummy{
 		damagetype "SmallArms0";
 		radius 2;height 2;
 	}
+	override void postbeginplay(){
+		actoriterator it=actoriterator.create(666123,"BeamSpotZS");
+		while(master=it.Next()){
+			if(master.distance3d(self)<64){
+				master.changetid(0);
+			}
+		}
+		actor s;
+		A_GiveToTarget("BeamBoltThrower");
+		A_Blast(
+			320,random(128,256),64,"SmallArms0",
+			pushradius:320,pushamount:256,
+			immolateradius:128,immolateamount:random(1,2),immolatechance:70,
+			gibradius:64,gibamount:random(2,4)*30
+		);
+		A_DistantQuake(
+			5,50,2048,8,128,256,256
+		);
+		for(int i=0;i<random(1,3);i++){
+			s=spawn("HDExplosionBeam",self.pos);
+			s.vel+=(random(-3,3),random(-3,3),random(1,3));
+			s.target=self.target;
+			s=spawn("HDSmokeChunk",self.pos);
+			s.vel+=(random(-3,3),random(-3,3),random(2,6));
+			s.target=self.target;
+		}
+		spawn("DistantRocket",self.pos);
+		s=spawn("BeamScorcher",self.pos+(cos(angle)*10,sin(angle)*10,0));
+			s.vel-=(cos(angle)*10,sin(angle)*10,0);
+	}
 	states{
 	spawn:
-		TNT1 A 0 nodelay{
-			actor s;
-			A_GiveToTarget("BeamBoltThrower");
-			A_Blast(
-				320,random(128,256),64,"SmallArms0",
-				pushradius:320,pushamount:256,
-				immolateradius:128,immolateamount:random(1,2),immolatechance:70,
-				gibradius:64,gibamount:random(2,4)*30
-			);
-			A_DistantQuake(
-				5,50,2048,8,128,256,256
-			);
-			for(int i=0;i<random(1,3);i++){
-				s=spawn("HDExplosionBeam",self.pos);
-				s.vel+=(random(-3,3),random(-3,3),random(1,3));
-				s.target=self.target;
-				s=spawn("HDSmokeChunk",self.pos);
-				s.vel+=(random(-3,3),random(-3,3),random(2,6));
-				s.target=self.target;
-			}
-			for(int i=0;i<3;i++){
-				s=spawn("DistantRocket",self.pos);
-			}
-			s=spawn("BeamScorcher",self.pos+(cos(angle)*10,sin(angle)*10,0));
-			s.vel-=(cos(angle)*10,sin(angle)*10,0);
-		}
-		TNT1 AAAAA 2{
+		TNT1 AAAAA 2 nodelay{
 			actor s=spawn("HDExplosionBeam",self.pos);
 			s.vel+=(random(-2,2),random(-2,2),random(1,3));
 			s.target=self.target;

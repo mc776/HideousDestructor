@@ -67,8 +67,8 @@ ACTOR ThunderBuster : HDWeapon
 		goto shootend
 	ShootStraight:
 		PLSG A 0{
-			if (countinv("PlasmaBattery")>random(-2,6)){
-				A_FireBullets(0,0,clamp(countinv("PlasmaBattery")/14,0,3),(random(0,1)),"BeamSpot",FBF_NORANDOM,16384);
+			if (countinv("PlasmaBattery")>random(-2,3)){
+				A_FireBullets(0,0,clamp(countinv("PlasmaBattery")/14,0,3),(random(0,1)),"BeamSpotZS",FBF_NORANDOM,16384);
 				A_TakeInventory("PlasmaBattery",1);
 			}
 		}
