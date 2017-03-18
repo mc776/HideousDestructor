@@ -92,7 +92,7 @@ extend class HDPlayerPawn{
 		if(!muzzle){
 			muzzle=spawn("HDMuzzleBlocker",pos);
 		}
-		double barrellength=24;
+		double barrellength=0;
 
 		//replace this section once weapons are scriptified
 		name wp=player.readyweapon.getclassname();
@@ -112,7 +112,6 @@ extend class HDPlayerPawn{
 		else if(wp=="Slayer")barrellength=20;
 		else if(wp=="HDSMG")barrellength=20;
 		else if(wp=="Blooper")barrellength=18;
-		else if(wp=="HDPistol")barrellength=3;
 
 		barrellength-=radius; //don't bother checking within the player!
 		vector3 frac=(cos(pitch),0,-sin(pitch));
