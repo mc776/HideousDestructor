@@ -119,11 +119,11 @@ class HDActor:Actor{
 
 		//apply: add if relative, replace if not
 		if(relative){
-			self.angle+=nangle;
-			self.pitch+=npitch;
+			A_SetAngle(angle+nangle,true);
+			A_SetPitch(pitch+npitch,true);
 		}else{
-			self.angle=nangle;
-			self.pitch=npitch;
+			A_SetAngle(nangle,true);
+			A_SetPitch(npitch,true);
 		}
 	}
 	//very crude way to tell if someone's back is turned

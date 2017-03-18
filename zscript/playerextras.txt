@@ -85,6 +85,99 @@ extend class HDPlayerPawn{
 		}
 	}
 
+	//
+	actor muzzle;
+	bool MuzzleBlock(){
+		if(barehanded) return false;
+		if(!muzzle){
+			muzzle=spawn("HDMuzzleBlocker",pos);
+		}
+		double barrellength=24;
+
+		//replace this section once weapons are scriptified
+		name wp=player.readyweapon.getclassname();
+		if(wp=="Vulcanette")barrellength=28;
+		else if(wp=="BFG9k")barrellength=26;
+		else if(wp=="RocquetteLauncher")barrellength=28;
+		else if(wp=="BossRifle")barrellength=32;
+		else if(wp=="ThunderBuster")barrellength=26;
+		else if(wp=="Lumberjack")barrellength=26;
+		else if(wp=="Hunter")barrellength=28;
+		else if(wp=="LiberatorGrenadeRifle")barrellength=25;
+		else if(wp=="LiberatorRifle")barrellength=25;
+		else if(wp=="ZM66GrenadeRifle")barrellength=23;
+		else if(wp=="ZM66Rifle")barrellength=23;
+		else if(wp=="ZM66SemiRifle")barrellength=23;
+		else if(wp=="Brontornis")barrellength=22;
+		else if(wp=="Slayer")barrellength=20;
+		else if(wp=="HDSMG")barrellength=20;
+		else if(wp=="Blooper")barrellength=18;
+		else if(wp=="HDPistol")barrellength=3;
+
+		barrellength-=radius; //don't bother checking within the player!
+		vector3 frac=(cos(pitch),0,-sin(pitch));
+		frac.xy=rotatevector(frac.xy,angle);
+
+		bool hitleft;bool hitright;bool hittop;bool hitbottom;
+		double bump=max(0.3,abs(hdmath.anglechange(lastangle,angle))*0.05);
+
+		muzzle.setorigin(pos+(cos(angle+90)*2,sin(angle+90)*2,height-12)+frac*radius,false);
+		for(int i=0;i<barrellength;i++){
+			muzzle.addz(frac.z);
+			if(
+				!muzzle.trymove(muzzle.pos.xy+frac.xy,true,true)
+				||muzzle.pos.z<muzzle.floorz
+			){
+				driftleft-=bump;
+				hitleft=true;
+			}
+		}
+		muzzle.setorigin(pos+(cos(angle-90)*2,sin(angle-90)*2,height-12)+frac*radius,false);
+		for(int i=0;i<barrellength;i++){
+			muzzle.addz(frac.z);
+			if(
+				!muzzle.trymove(muzzle.pos.xy+frac.xy,true,true)
+				||muzzle.pos.z<muzzle.floorz
+			){
+				driftleft+=bump;
+				hitright=true;
+			}
+		}
+		muzzle.setorigin(pos+(0,0,height-11)+frac*radius,false);
+		for(int i=0;i<barrellength;i++){
+			muzzle.addz(frac.z);
+			if(
+				!muzzle.trymove(muzzle.pos.xy+frac.xy,true,true)
+				||muzzle.pos.z<muzzle.floorz
+			){
+				driftdown+=bump;
+				hittop=true;
+			}
+		}
+		muzzle.setorigin(pos+(0,0,height-14)+frac*radius,false);
+		for(int i=0;i<barrellength;i++){
+			muzzle.addz(frac.z);
+			if(
+				!muzzle.trymove(muzzle.pos.xy+frac.xy,true,true)
+				||muzzle.pos.z<muzzle.floorz
+			){
+				driftdown-=bump;
+				hitbottom=true;
+			}
+		}
+		if(hitright || hitleft || hittop || hitbottom){
+			if(hitright&&hitleft&&hittop&&hitbottom){
+				A_ChangeVelocity(-1,0,0,CVF_RELATIVE);
+				A_GiveInventory("IsMoving",2);
+				if(
+					instatesequence(curstate,resolvestate("spawn"))
+				)setstatelabel("see");
+			}
+			return true;
+		}
+		return false;
+	}
+
 	//constant polling for weapon inertia and muzzle climb
 	double driftleft;
 	double driftdown;
@@ -97,13 +190,13 @@ extend class HDPlayerPawn{
 
 		//reduced drift while supported.
 		if(countinv("issupported") && yaw<5){
-			A_SetAngle(lastangle+yaw*0.1,SPF_INTERPOLATE);
+			A_SetAngle(lastangle-yaw*0.1,SPF_INTERPOLATE);
 			A_SetPitch(lastpitch-ptch*0.1,SPF_INTERPOLATE);
 			mult*=0.4;dec*=0.6;
 		}
 		//reduced turning while crouched.
 		else if(height<40 && abs(yaw)>3){
-			A_SetAngle(lastangle+yaw*0.3,SPF_INTERPOLATE);
+			A_SetAngle(lastangle-yaw*0.2,SPF_INTERPOLATE);
 			mult*=0.6;dec*=0.6;
 		}
 
@@ -139,6 +232,7 @@ extend class HDPlayerPawn{
 		else if(wp=="LiberatorRifle")mult*=3.6-0.2*countinv("LiberatorNoMag");
 		else if(wp=="ZM66GrenadeRifle")mult*=3.8-0.2*countinv("ZM66NoMag")+0.2*countinv("ZM66GLoaded");
 		else if(wp=="ZM66Rifle")mult*=3.4-0.2*countinv("ZM66NoMag");
+		else if(wp=="ZM66SemiRifle")mult*=3.4-0.2*countinv("ZM66NoMag");
 		else if(wp=="Brontornis")mult*=3.5;
 		else if(wp=="Slayer")mult*=3;
 		else if(wp=="HDSMG")mult*=3-0.3*countinv("HDSMGNoMag");
@@ -319,3 +413,9 @@ extend class HDPlayerPawn{
 	}
 }
 
+class HDMuzzleBlocker:HDActor{
+	default{
+		-solid -nogravity -shootable
+		height 1;radius 1;
+	}
+}
