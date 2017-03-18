@@ -87,6 +87,7 @@ extend class HDPlayerPawn{
 
 	//
 	actor muzzle;
+	bool muzzlehit;
 	bool MuzzleBlock(){
 		if(barehanded) return false;
 		if(!muzzle){
@@ -119,54 +120,63 @@ extend class HDPlayerPawn{
 
 		bool hitleft;bool hitright;bool hittop;bool hitbottom;
 		double bump=max(0.3,abs(hdmath.anglechange(lastangle,angle))*0.05);
+		vector3 fracradius=frac*radius;
 
-		muzzle.setorigin(pos+(cos(angle+90)*2,sin(angle+90)*2,height-12)+frac*radius,false);
+		muzzle.setorigin(pos+(cos(angle+90)*2,sin(angle+90)*2,height-12)+fracradius,false);
 		for(int i=0;i<barrellength;i++){
 			muzzle.addz(frac.z);
 			if(
 				!muzzle.trymove(muzzle.pos.xy+frac.xy,true,true)
 				||muzzle.pos.z<muzzle.floorz
 			){
-				driftleft-=bump;
+				if(driftleft>0)driftleft=-bump*0.01;
+				A_SetAngle(angle-bump,SPF_INTERPOLATE);
 				hitleft=true;
 			}
 		}
-		muzzle.setorigin(pos+(cos(angle-90)*2,sin(angle-90)*2,height-12)+frac*radius,false);
+		muzzle.setorigin(pos+(cos(angle-90)*2,sin(angle-90)*2,height-12)+fracradius,false);
 		for(int i=0;i<barrellength;i++){
 			muzzle.addz(frac.z);
 			if(
 				!muzzle.trymove(muzzle.pos.xy+frac.xy,true,true)
 				||muzzle.pos.z<muzzle.floorz
 			){
-				driftleft+=bump;
+				if(driftleft<0)driftleft=bump*0.01;
+				A_SetAngle(angle+bump,SPF_INTERPOLATE);
 				hitright=true;
 			}
 		}
-		muzzle.setorigin(pos+(0,0,height-11)+frac*radius,false);
+		muzzle.setorigin(pos+(0,0,height-11)+fracradius,false);
 		for(int i=0;i<barrellength;i++){
 			muzzle.addz(frac.z);
 			if(
 				!muzzle.trymove(muzzle.pos.xy+frac.xy,true,true)
 				||muzzle.pos.z<muzzle.floorz
 			){
-				driftdown+=bump;
+				if(driftdown>0)driftdown=bump*0.01;
+				A_SetPitch(pitch+bump,SPF_INTERPOLATE);
 				hittop=true;
 			}
 		}
-		muzzle.setorigin(pos+(0,0,height-14)+frac*radius,false);
+		muzzle.setorigin(pos+(0,0,height-14)+fracradius,false);
 		for(int i=0;i<barrellength;i++){
 			muzzle.addz(frac.z);
 			if(
 				!muzzle.trymove(muzzle.pos.xy+frac.xy,true,true)
 				||muzzle.pos.z<muzzle.floorz
 			){
-				driftdown-=bump;
+				if(driftdown>0)driftdown=-bump*0.01;
+				A_SetPitch(pitch-bump,SPF_INTERPOLATE);
 				hitbottom=true;
 			}
 		}
 		if(hitright || hitleft || hittop || hitbottom){
+			if(!muzzlehit){
+				A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
+				muzzlehit=true;
+			}
 			if(hitright&&hitleft&&hittop&&hitbottom){
-				A_ChangeVelocity(-1,0,0,CVF_RELATIVE);
+				A_ChangeVelocity(-0.5,0,0,CVF_RELATIVE);
 				A_GiveInventory("IsMoving",2);
 				if(
 					instatesequence(curstate,resolvestate("spawn"))
@@ -174,6 +184,7 @@ extend class HDPlayerPawn{
 			}
 			return true;
 		}
+		muzzlehit=false;
 		return false;
 	}
 
