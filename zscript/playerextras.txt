@@ -319,13 +319,14 @@ extend class HDPlayerPawn{
 		if(runwalksprint>0) return false;
 		if(zat!=pos.z) return false;
 		vector2 p=rotatevector((
-			getplayerinput(MODINPUT_FORWARDMOVE)*0.005,
-			getplayerinput(MODINPUT_SIDEMOVE)*-0.005
+			getplayerinput(MODINPUT_FORWARDMOVE)*0.004,
+			getplayerinput(MODINPUT_SIDEMOVE)*-0.004
 		),angle);
 		if(p==(0,0)) return false;
 		//if trying to sprint, quardruple effective input
 //		if(runwalksprint>0) p*=4;
 		A_MoveAntenna(pos+(p.x,p.y,zat));
+spawn("BulletTail",pos);
 		if(zat-antenna.getzat()>16) return true;
 		return false;
 	}
