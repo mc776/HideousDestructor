@@ -2,25 +2,29 @@
 //   Thunder Buster
 // ------------------------------------------------------------
 
-class BeamSpotZS:IdleDummy{
+//main vibro puff and exploder
+class BeamSpot:IdleDummy{
 	default{
-		+puffonactors +hittracer +puffgetsowner
-		renderstyle "add";
+		+puffonactors +hittracer +puffgetsowner +rollsprite +rollcenter +forcexybillboard
+		renderstyle "add"; decal "PlasmaShock";
+		obituary "%o was shocked by %k's particle beam.";
 	}
 	override void postbeginplay(){
+		scalex*=randompick(-1,1);roll=random(0,3)*90;
 		changetid(666123);
 		bextremedeath=random(0,1);
 		stamina++;
-		actoriterator it=actoriterator.create(666123,"BeamSpotZS");
+		actoriterator it=actoriterator.create(666123,"BeamSpot");
 		while(master=it.Next()){
 			if(master.distance3d(self)<4){
 				stamina+=master.stamina;
 			}
 		}
-		if(!tracer) tracer=self;
-		else damagemobj(
-			self,target,random(1,stamina),"electro"
-		);
+		if(!tracer) tracer=self;else{
+			if(!tracer.bcorpse) damagemobj(
+				self,target,random(1,stamina),"Electro"
+			); else tracer.A_GiveInventory("SawGib",4);
+		}
 		A_Immolate(tracer,target,clamp(stamina,0,100));
 		if(stamina>=random(24,48)){
 			A_SpawnItemEx("BeamSpotBoom",
@@ -31,6 +35,10 @@ class BeamSpotZS:IdleDummy{
 			destroy();
 			return;
 		}
+
+		if(A_JumpIfCloser(256,"null")) A_Frighten(256);
+		A_PlaySound("weapons/plasidle");
+
 		if(stamina>=random(8,12)) setstatelabel("fuzz");
 	}
 	states{
@@ -52,7 +60,7 @@ class BeamSpotBoom:IdleDummy{
 		radius 2;height 2;
 	}
 	override void postbeginplay(){
-		actoriterator it=actoriterator.create(666123,"BeamSpotZS");
+		actoriterator it=actoriterator.create(666123,"BeamSpot");
 		while(master=it.Next()){
 			if(master.distance3d(self)<64){
 				master.changetid(0);
@@ -93,6 +101,52 @@ class BeamSpotBoom:IdleDummy{
 		stop;
 	}
 }
+
+//alt fire puff
+class BeamSpotFlash:BeamSpot{
+	default{
+		-alwayspuff
+		obituary "%o was roasted by %k's particle splatter.";
+		decal "Scorch";
+		seesound "weapons/plasmaf";
+		deathsound "weapons/plasmaf";
+	}
+	override void postbeginplay(){
+		double d=distance3d(target);
+		if(d>1000){
+			destroy();
+			return;
+		}
+
+		super.postbeginplay();
+		bextremedeath=0;
+
+		scale*=(1000-d)*0.001;
+		alpha=scale.y+0.3;
+		vel=(frandom(-1,1),frandom(-1,1),frandom(1,3));
+
+		int n=clamp((1000-d)*0.1,2,100);
+		int n1=n*0.6;
+		int n2=n*0.4;
+		A_Blast(
+			n2,n1,0,"Electro",
+			pushradius:n2,pushamount:n2,
+			immolateradius:n1,immolateamount:random(4,8)*n2,immolatechance:n
+		);
+
+		A_SpawnChunks("HDGunSmoke",clamp(n2*0.6,4,7),3,6);
+		A_PlaySound("weapons/plasmaf");
+	}
+	states{
+	spawn:
+		PLSS AB 1 bright nodelay A_SpawnItemEx("PlasmaBallTail",0,0,0,(vel.x*0.12),(vel.y*0.12),(vel.z*0.12),0,40,0);
+		PLSE AAA 1 bright A_FadeIn(0.1);
+		PLSE BCDE 1 bright A_FadeOut(0.1);
+		stop;
+	}
+}
+
+
 class BeamScorcher:HDActor{
 	default{
 		projectile; +ripper

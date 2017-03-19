@@ -89,10 +89,11 @@ extend class HDPlayerPawn{
 	actor muzzle;
 	bool muzzlehit;
 	bool MuzzleBlock(){
-		if(barehanded) return false;
 		if(!muzzle){
 			muzzle=spawn("HDMuzzleBlocker",pos);
 		}
+		muzzle.A_GiveInventory("HDFireEnder");
+		if(barehanded) return false;
 		double barrellength=0;
 
 		//replace this section once weapons are scriptified
@@ -326,7 +327,6 @@ extend class HDPlayerPawn{
 		//if trying to sprint, quardruple effective input
 //		if(runwalksprint>0) p*=4;
 		A_MoveAntenna(pos+(p.x,p.y,zat));
-spawn("BulletTail",pos);
 		if(zat-antenna.getzat()>16) return true;
 		return false;
 	}
@@ -427,7 +427,7 @@ spawn("BulletTail",pos);
 
 class HDMuzzleBlocker:HDActor{
 	default{
-		-solid -nogravity -shootable
+		-solid -nogravity -shootable +noblockmonst +noblockmap
 		height 1;radius 1;
 	}
 }
