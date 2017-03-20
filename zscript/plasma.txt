@@ -25,7 +25,7 @@ class BeamSpot:IdleDummy{
 				self,target,random(1,stamina),"Electro"
 			); else tracer.A_GiveInventory("SawGib",4);
 		}
-		A_Immolate(tracer,target,clamp(stamina,0,100));
+		if(random(1,3)>1)A_Immolate(tracer,target,clamp(stamina,0,100));
 		if(stamina>=random(24,48)){
 			A_SpawnItemEx("BeamSpotBoom",
 			flags:
@@ -88,6 +88,8 @@ class BeamSpotBoom:IdleDummy{
 		spawn("DistantRocket",self.pos);
 		s=spawn("BeamScorcher",self.pos+(cos(angle)*10,sin(angle)*10,0));
 			s.vel-=(cos(angle)*10,sin(angle)*10,0);
+		s=spawn("WallChunker",self.pos-(0,0,3),ALLOW_REPLACE);
+			s.target=target;s.master=master;s.vel=(minvel,0,-1);
 	}
 	states{
 	spawn:
@@ -134,6 +136,8 @@ class BeamSpotFlash:BeamSpot{
 			immolateradius:n1,immolateamount:random(4,8)*n2,immolatechance:n
 		);
 
+		pitch=random(80,90);
+		angle=random(0,359);
 		A_SpawnChunks("HDGunSmoke",clamp(n2*0.6,4,7),3,6);
 		A_PlaySound("weapons/plasmaf");
 	}
