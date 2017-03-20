@@ -301,6 +301,21 @@ extend class HDPlayerPawn{
 			if(
 				instatesequence(curstate,resolvestate("spawn"))
 			)setstatelabel("see");
+
+			int chancetodouse=63;
+			//if on appropriate terrain, easier to quench a fire
+			if(CallACS("CheckFloorLiquid"))chancetodouse*=0.4;
+			if(waterlevel>0) chancetodouse*=0.4;
+			if(height<30 && floorz==pos.z && !random(0,chancetodouse)){
+				if(A_CheckProximity("null","HDFire",20,1,CPXF_SETTRACER)){
+					tracer.A_SpawnItemEx("HDSmoke",
+						random(-3,3),random(-3,3),random(3,7),
+						vel.x,vel.y,vel.z,
+						flags:SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM
+					);
+					tracer.destroy();
+				}
+			}
 		}
 	}
 

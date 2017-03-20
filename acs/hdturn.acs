@@ -1,4 +1,19 @@
 
+script "CheckFloorLiquid"(void){
+	if ((
+	(CheckActorFloorTexture(0,"MFLR8_4"))
+	||(CheckActorFloorTexture(0,"MFLR8_2"))
+	||(CheckActorFloorTexture(0,"SFLR6_1"))||(CheckActorFloorTexture(0,"SFLR6_4"))||(CheckActorFloorTexture(0,"SFLR7_1"))||(CheckActorFloorTexture(0,"SFLR7_4"))
+	||(CheckActorFloorTexture(0,"FWATER1"))||(CheckActorFloorTexture(0,"FWATER2"))||(CheckActorFloorTexture(0,"FWATER3"))||(CheckActorFloorTexture(0,"FWATER4"))
+	||(CheckActorFloorTexture(0,"BLOOD1"))||(CheckActorFloorTexture(0,"BLOOD2"))||(CheckActorFloorTexture(0,"BLOOD3"))
+	||(CheckActorFloorTexture(0,"SLIME1"))||(CheckActorFloorTexture(0,"SLIME1"))||(CheckActorFloorTexture(0,"SLIME2"))||(CheckActorFloorTexture(0,"SLIME3"))||(CheckActorFloorTexture(0,"SLIME4"))||(CheckActorFloorTexture(0,"SLIME5"))||(CheckActorFloorTexture(0,"SLIME6"))||(CheckActorFloorTexture(0,"SLIME7"))||(CheckActorFloorTexture(0,"SLIME8"))
+	)&&(CheckInventory("IsMoving")>4)&&(random(1,(100-15*CheckInventory("IsCrouching")))==1)&&(CheckInventory("HDFireEnder")<1))
+	{
+		setresultvalue(1);
+	}
+}
+
+
 function void TurnCheck(int op,int oa,int np,int na,int ox,int oy,int sm,int osm)
 {
 
