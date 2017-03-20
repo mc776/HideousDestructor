@@ -85,7 +85,7 @@ class HDFire:IdleDummy{
 	override void postbeginplay(){
 		super.postbeginplay();
 		if(target) stamina=target.ApplyDamageFactor("Thermal",stamina);
-		if(A_CheckProximity("null","HDFire",64,7,CPXF_CHECKSIGHT|CPXF_SETTRACER)){
+		if(A_CheckProximity("null","HDFire",64,12,CPXF_CHECKSIGHT|CPXF_SETTRACER)){
 			tracer.stamina+=stamina;
 			destroy();
 			if(target && target is "PersistentDamager") target.destroy();

@@ -189,12 +189,13 @@ class PersistentDamager:HDActor{
 	actor oldother;
 	vector3 relpos;
 	default{
-		+solid
+		-solid
 		height 8;radius 8;threshold 35;damage 5;accuracy 0;gibhealth 5;
 		damagetype "thermal";
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
+		bsolid=true;
 		if(master) relpos=self.pos-master.pos;
 	}
 	override void tick(){
@@ -212,14 +213,14 @@ class PersistentDamager:HDActor{
 				}
 			}
 		}
-		else{
+		else if(other.bshootable && !other.bkilled){
 			oldother=other;
 			accuracy=0;
 		}
 		return false;
 	}
 	states{
-		spawn:
+	spawn:
 		TNT1 A -1;
 	}
 }
