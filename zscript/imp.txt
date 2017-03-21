@@ -219,7 +219,7 @@ class HDHImp:HDImp{
 				else{
 					movetarget.setxyz(healtarget.pos);
 					healseektimer--;
-					decision&=HDMCT_COVERFIRE;
+					decision&=~HDMCT_COVERFIRE;
 					decision=HDMCT_ADVANCE;
 				}
 			}
@@ -297,8 +297,8 @@ class HDMImp:HDImp{
 	}
 	override void A_MChaseThink(int flankdistance=128,int nofear=false){
 		super.A_MChaseThink(256,nofear);
-		if(fatigue>8)decision&=HDMCT_AIMSHOOT;
-		if(fatigue>4)decision&=HDMCT_COVERFIRE;
+		if(fatigue>8)decision&=~HDMCT_AIMSHOOT;
+		if(fatigue>4)decision&=~HDMCT_COVERFIRE;
 		if(fatigue>0)fatigue--;
 	}
 	states{
@@ -315,7 +315,7 @@ class HDMImp:HDImp{
 		TROO HHH 6{
 			A_FaceTarget(1,4);
 			vel.z*=0.1;
-			fatigue+=9;
+			fatigue+=5;
 			actor a;
 			vector3 b=(
 				cos(angle+140),
@@ -368,7 +368,7 @@ class HDMImp:HDImp{
 		TROO F 5 A_Strafe(2);
 		TROO E 6 A_Jump(66,"shoot3");
 		TROO G 6{
-			fatigue+=6;
+			fatigue+=3;
 			A_ShootMissile("hdmimpball",seeker:true);
 		}
 		goto shootend;
@@ -387,7 +387,7 @@ class HDMImp:HDImp{
 			else A_StartLeadTarget();
 		}
 		TROO G 8{
-			fatigue+=9;
+			fatigue+=4;
 			if(random(0,1)==1)A_FaceLeadTarget(15);
 			for (int i=0;i<6;i++){A_ShootMissile("hdimpball",-1,shootspeed:random(10,30),
 				shootangle:angle-18+i*3,shootpitch:pitch+frandom(-2,1),seeker:true);}
@@ -397,7 +397,7 @@ class HDMImp:HDImp{
 		TROO F 3;
 		TROO G 10{
 			A_PlaySound(seesound);
-			fatigue+=14;
+			fatigue+=9;
 			actor a;
 			vector3 glyphadd;
 			for (int i=0;i<5;i++){
