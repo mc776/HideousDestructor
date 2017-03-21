@@ -420,7 +420,7 @@ extend class HDPlayerPawn{
 				}
 			}
 			if(beatcounter%20==0){	//every 20 beats
-				beatcap=35;
+				beatcap=clamp(beatcap+8,1,35);
 
 				//updating beatcap (minimum heart rate)
 				if(health<40) beatcap=clamp(beatcap,1,24);

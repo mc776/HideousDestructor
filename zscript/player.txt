@@ -3,7 +3,7 @@
 // ------------------------------------------------------------
 
 class HDPlayerPawn:PlayerPawn{
-	vector3 lastpos;double lastangle;double lastpitch;
+	vector3 lastpos;vector3 lastvel;double lastangle;double lastpitch;
 	vector3 poschange;double anglechange;double pitchchange;
 	double zat;
 	actor playercorpse;
@@ -12,6 +12,7 @@ class HDPlayerPawn:PlayerPawn{
 	bool mustwalk;bool cansprint;
 	double feetangle;
 	int runwalksprint;
+	int stunned;
 	default{
 		+interpolateangles
 	}
@@ -20,6 +21,7 @@ class HDPlayerPawn:PlayerPawn{
 		lastpos=pos;
 		lastangle=angle;
 		lastpitch=pitch;
+		lastvel=vel;
 		beatcap=35;beatmax=35;
 		feetangle=angle;
 	}
@@ -36,7 +38,7 @@ class HDPlayerPawn:PlayerPawn{
 					A_ScaleVelocity(frandom(0.9,1.0));
 				}
 			}
-			if(countinv("StunCount")>0){
+			if(stunned>0){
 				viewbob=1.4;
 				return resolvestate("seestun");
 			}
@@ -108,11 +110,28 @@ class HDPlayerPawn:PlayerPawn{
 		else {A_TakeInventory("IsFemale");A_TakeInventory("IsMale");}
 
 		super.Tick();
-		//gotta translate everything from all those acs loops. yaaaaaaayyyy
 
 		//only do anything below this while the player is alive!
 		if(bkilled) return;
 		HeartTicker();
+
+		//"falling" damage
+		int fall=(lastvel-vel).length();
+		if(1==0 && fall>10){
+			A_PlaySound("weapons/smack",CHAN_AUTO);
+			if(barehanded)fall-=4;
+			if(fall>15){
+				if(countinv("PowerStrength"))fall*=0.5;
+				damagemobj(self,self,fall*random(1,4),"falling");
+				stunned+=fall*random(5,10)*4;
+				beatmax-=fall*0.5;
+				if(!barehanded && random(1,fall)>7){
+					A_DropInventory(player.readyweapon.getclassname());
+				}
+			}
+		}
+		lastvel=vel;
+		if(stunned>0)stunned--;
 
 		//see if player is intentionally walking, running or sprinting
 		//-1 = walk, 0 = run, 1 = sprint
@@ -140,8 +159,9 @@ class HDPlayerPawn:PlayerPawn{
 
 		//conditions for forcing walk
 		if(
-			StumbleCheck()
-			|| (beatmax<14 && !(getplayerinput(MODINPUT_OLDBUTTONS) & BT_SPEED))
+			stunned>0
+			||(beatmax<14 && !(getplayerinput(MODINPUT_OLDBUTTONS) & BT_SPEED))
+			||StumbleCheck()
 		){
 			mustwalk=true;
 			runwalksprint=-1;
