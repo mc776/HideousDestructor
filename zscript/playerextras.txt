@@ -339,8 +339,6 @@ extend class HDPlayerPawn{
 			getplayerinput(MODINPUT_SIDEMOVE)*-0.004
 		),angle);
 		if(p==(0,0)) return false;
-		//if trying to sprint, quardruple effective input
-//		if(runwalksprint>0) p*=4;
 		A_MoveAntenna(pos+(p.x,p.y,zat));
 		if(zat-antenna.getzat()>16) return true;
 		return false;
@@ -382,7 +380,10 @@ extend class HDPlayerPawn{
 			beatcounter++;
 
 			//sprinting
-			if(cansprint && runwalksprint>0)beatmax--;
+			if(cansprint && runwalksprint>0){
+				beatmax--;
+				if(beatmax<=HDCONST_SPRINTMAXHEARTRATE)beatmax-=10;
+			}
 
 			//adrenalized vessels begin to relax...
 			if(newwoundcount>0 && (beatmax>32||beatmax>=beatcap)){

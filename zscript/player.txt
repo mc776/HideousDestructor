@@ -2,6 +2,7 @@
 //   The player!
 // ------------------------------------------------------------
 
+const HDCONST_SPRINTMAXHEARTRATE=20;
 class HDPlayerPawn:PlayerPawn{
 	vector3 lastpos;vector3 lastvel;double lastangle;double lastpitch;
 	vector3 poschange;double anglechange;double pitchchange;
@@ -157,10 +158,11 @@ class HDPlayerPawn:PlayerPawn{
 		MuzzleBlock();
 		Gunertia();
 
+
 		//conditions for forcing walk
 		if(
 			stunned>0
-			||(beatmax<14 && !(getplayerinput(MODINPUT_OLDBUTTONS) & BT_SPEED))
+			||beatmax<14
 			||StumbleCheck()
 		){
 			mustwalk=true;
@@ -172,9 +174,8 @@ class HDPlayerPawn:PlayerPawn{
 			!mustwalk
 			&& barehanded
 			&& (
-				beatmax>20 ||
-				countinv("PowerStrength") ||
-				(beatmax>12 && getplayerinput(MODINPUT_OLDBUTTONS) & BT_SPEED)
+				beatmax>HDCONST_SPRINTMAXHEARTRATE ||
+				countinv("PowerStrength")
 			)
 		)cansprint=true;else cansprint=false;
 
@@ -186,6 +187,7 @@ class HDPlayerPawn:PlayerPawn{
 		}
 		else speed=1;
 		if(countinv("PowerStrength"))speed*=1.5;
+
 
 		//lowering weapon
 		if(
