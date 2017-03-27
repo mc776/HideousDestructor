@@ -117,7 +117,7 @@ class HDPlayerPawn:PlayerPawn{
 
 		//"falling" damage
 		int fall=(lastvel-vel).length();
-		if(1==0 && fall>10){
+		if(fall>10){
 			A_PlaySound("weapons/smack",CHAN_AUTO);
 			if(barehanded)fall-=4;
 			if(fall>15){
@@ -173,8 +173,8 @@ class HDPlayerPawn:PlayerPawn{
 			&& barehanded
 			&& (
 				beatmax>20 ||
-				(beatmax>12 && getplayerinput(MODINPUT_OLDBUTTONS) & BT_SPEED) ||
-				countinv("PowerStrength")
+				countinv("PowerStrength") ||
+				(beatmax>12 && getplayerinput(MODINPUT_OLDBUTTONS) & BT_SPEED)
 			)
 		)cansprint=true;else cansprint=false;
 
