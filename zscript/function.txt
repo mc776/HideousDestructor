@@ -207,7 +207,7 @@ struct HDMath{
 	static double AngleChange(double a1, double a2){
 		double a=a2-a1;
 		while(a<0) a+=360;
-		while(a>=360) a-=360;
+		a%=360;
 		if(a>180)a-=360;
 		return a;
 	}

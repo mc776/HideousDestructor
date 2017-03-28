@@ -295,7 +295,7 @@ extend class HDPlayerPawn{
 		dec=hdmath.anglechange(angle,feetangle); //we won't be using dec after this
 		if(pos.z==zat && abs(dec)>50-20*countinv("IsCrouching")){
 			A_SetAngle(angle-yaw*0.3,SPF_INTERPOLATE);
-			A_ChangeVelocity(0,dec/abs(dec)*0.1,0,CVF_RELATIVE);
+			vel+=rotatevector((0,dec/abs(dec)*0.1),angle);
 			A_GiveInventory("IsMoving",2);
 			feetangle+=clamp(angle-feetangle,-10,10);
 			if(
