@@ -8,15 +8,11 @@
 
 script "HDEnterRepeat" ENTER
 {
+
+
+
 	//stall the script while wiped out
 	if ((CheckInventory("WipedOut"))||(CheckInventory("Health")<1)) {delay(1);restart;}
-
-	//force non-selected guns to cool down
-	int nonsel=GetWeaponInt();
-	if ((nonsel!=21)&&(nonsel!=22)&&(nonsel!=23)) TakeInventory("ZM66Heat",1);
-	if (nonsel!=40) TakeInventory("ChaingunHeat",1);
-	if (nonsel!=90) TakeInventory("BrontornisHeat",1);
-	if ((nonsel!=100)&&(nonsel!=101)) TakeInventory("LiberatorHeat",1);
 
 	//set all relevant variables
 	int nb=GetPlayerInput(-1,MODINPUT_BUTTONS);

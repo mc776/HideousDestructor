@@ -1,7 +1,7 @@
 
 function void CrossHairs(void)
 {
-	if ((CheckInventory("Fatigue")>maxrunfatigue)&&(CheckInventory("IsSupported")<1)) return;
+//	if ((CheckInventory("Fatigue")>maxrunfatigue)&&(CheckInventory("IsSupported")<1)) return;
 	if ((GetPlayerInfo(PlayerNumber(),PLAYERINFO_DESIREDFOV)>=80)&&(GetPlayerInfo(PlayerNumber(),PLAYERINFO_DESIREDFOV)<=120)&&(!GetCvar("crosshairforce"))&&(CheckInventory("IsWeaponReady"))&&(CheckInventory("PowerInvulnerable")<1)&&(CheckInventory("WeaponBusy")<1)&&(CheckInventory("PressingZoom")<1)&&((CheckInventory("PowerLightAmpP")<1)||(CheckWeapon("HDPistol"))))
 	{
 		sethudsize(319,239,1);

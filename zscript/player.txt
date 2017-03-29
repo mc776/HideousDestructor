@@ -112,6 +112,9 @@ class HDPlayerPawn:PlayerPawn{
 
 		super.Tick();
 
+		//passive inventory checks
+		GunHeatSmoke(player.readyweapon.getclassname());
+
 		//only do anything below this while the player is alive!
 		if(bkilled) return;
 		HeartTicker();
@@ -189,7 +192,7 @@ class HDPlayerPawn:PlayerPawn{
 		if(countinv("PowerStrength"))speed*=1.5;
 
 
-		//lowering weapon
+		//lowering weapon for sprint/mantle/jump
 		if(
 			getplayerinput(MODINPUT_BUTTONS) & BT_SPEED
 			|| getplayerinput(MODINPUT_BUTTONS) & BT_JUMP

@@ -344,6 +344,57 @@ extend class HDPlayerPawn{
 		return false;
 	}
 
+	//If you've got a weapon check going on for something unselected, put it here.
+	//GunHeatSmoke(player.readyweapon.getclassname());
+	void GunHeatSmoke(name w){
+		int pg=0;
+		if(countinv("ZM66Heat")){
+			pg++;
+			A_TakeInventory("ZM66Heat",1);
+			if(
+				w=="ZM66Rifle"||
+				w=="ZM66GrenadeRifle"||
+				w=="ZM66SemiRifle"
+			)pg+=1000;
+		}
+		if(countinv("ChaingunHeat")){
+			pg++;
+			A_TakeInventory("ChaingunHeat",1);
+			if(w=="Vulcanette")pg+=1000;
+		}
+		if(countinv("BrontornisHeat")){
+			pg++;
+			A_TakeInventory("BrontornisHeat",1);
+			if(w=="Brontornis")pg+=1000;
+		}
+		if(countinv("LiberatorHeat")){
+			pg++;
+			A_TakeInventory("LiberatorHeat",1);
+			if(
+				w=="LiberatorRifle"||
+				w=="LiberatorGrenadeRifle"
+			)pg+=1000;
+		}
+		if(!pg)return;
+		if(pg>1000){	//one of these puffs must emerge from muzzle
+			pg-=1001;
+			A_SpawnItemEx("HDGunSmoke",
+				cos(pitch)*4,0,-sin(pitch)*4,
+				cos(pitch)*4,0,-sin(pitch)*4,
+				flags:SXF_NOCHECKPOSITION
+			);
+		}
+		double ht=height*0.7;
+		actor a;
+		while(pg>0){
+			pg--;
+			a=spawn("HDGunSmoke",pos+(0,0,ht));
+			a.pitch=-80;
+			a.angle=angle-90;
+			a.vel+=vel;
+		}
+	}
+
 
 
 	//the heart
