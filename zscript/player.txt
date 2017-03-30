@@ -165,7 +165,7 @@ class HDPlayerPawn:PlayerPawn{
 		//conditions for forcing walk
 		if(
 			stunned>0
-			||beatmax<14
+			||(beatmax<14 && !countinv("PowerStrength"))
 			||StumbleCheck()
 		){
 			mustwalk=true;
