@@ -86,6 +86,17 @@ actor ZM66GrenadeRifle : HDWeapon
 		RIFG A 0 A_JumpIfInventory("ZM66GrenadeRifle",1,"select0big")
 		goto select0small
 	deselect0:
+		RIFG A 0{
+			if(
+				countinv("ZM66Heat")>27
+				&&!countinv("ZM66BrokenRound")
+				&&(countinv("ZM66Loaded")+countinv("ZM66Chamber"))
+			){
+				if(countinv("ZM66GrenadeRifle")){A_DropInventory("ZM66GrenadeRifle");}
+				if(countinv("ZM66SemiRifle")){A_DropInventory("ZM66SemiRifle");}
+				if(countinv("ZM66Rifle")){A_DropInventory("ZM66Rifle");}
+			}
+		}
 		RIFG A 0 A_JumpIfInventory("ZM66GrenadeRifle",1,"deselect0big")
 		goto deselect0small
 	gunrecoil:
