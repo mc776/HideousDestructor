@@ -411,6 +411,7 @@ extend class HDPlayerPawn{
 	int aggravateddamage;
 	void HeartTicker(){
 		if(bkilled) return; //don't really need this...
+		A_SetInventory("HeartBeatCounter",beatcount);
 
 		//on every beat
 		if(beatcount>0){
