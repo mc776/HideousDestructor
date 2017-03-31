@@ -117,8 +117,40 @@ class HDPlayerPawn:PlayerPawn{
 		GunHeatSmoke(player.readyweapon.getclassname());
 
 		//only do anything below this while the player is alive!
-		if(bkilled) return;
+		if(bkilled||countinv("WipedOut")) return;
 		HeartTicker();
+
+
+		//add inventory flags for inputs
+		//remove ONLY once all of these deprecated inventory flags have been removed!
+		A_TakeInventory("IsSprinting");
+		A_TakeInventory("IsCrouching");
+		A_TakeInventory("PressingFire");
+		A_TakeInventory("PressingAltfire");
+		A_TakeInventory("PressingReload");
+		A_TakeInventory("PressingZoom");
+		A_TakeInventory("PressingFireMode");
+		A_TakeInventory("PressingAltReload");
+		A_TakeInventory("PressingUnload");
+		if(getplayerinput(MODINPUT_BUTTONS)&BT_ATTACK)A_GiveInventory("PressingFire");
+		if(getplayerinput(MODINPUT_BUTTONS)&BT_ALTATTACK)A_GiveInventory("PressingAltfire");
+		if(getplayerinput(MODINPUT_BUTTONS)&BT_RELOAD){
+			A_GiveInventory("PressingReload",1);A_GiveInventory("WeaponBusy");}
+		if(getplayerinput(MODINPUT_BUTTONS)&BT_ZOOM){
+			A_GiveInventory("PressingZoom",1);A_GiveInventory("WeaponBusy");}
+		if(getplayerinput(MODINPUT_BUTTONS)&BT_USER1){
+			A_GiveInventory("PressingAltReload",1);A_GiveInventory("WeaponBusy");}
+		if(getplayerinput(MODINPUT_BUTTONS)&BT_USER2){
+			A_GiveInventory("PressingFireMode",1);A_GiveInventory("WeaponBusy");}
+		if(getplayerinput(MODINPUT_BUTTONS)&BT_USER4){
+			A_GiveInventory("PressingUnload",1);A_GiveInventory("WeaponBusy");}
+		if(countinv("WeaponBusy"))A_TakeInventory("IsWeaponReady");
+		if(height<40)A_GiveInventory("IsCrouching");
+		if(getplayerinput(MODINPUT_BUTTONS)&BT_SPEED)A_GiveInventory("IsSprinting");
+
+		//gotta keep this one for the crosshairs
+		if(getplayerinput(MODINPUT_FORWARDMOVE)||getplayerinput(MODINPUT_SIDEMOVE))A_GiveInventory("IsMoving");
+
 
 		//"falling" damage
 		int fall=(lastvel-vel).length();
@@ -186,11 +218,12 @@ class HDPlayerPawn:PlayerPawn{
 		//apply all movement speed modifiers
 		if(mustwalk || runwalksprint<0) speed=0.4;
 		else if(runwalksprint>0 && cansprint){
-			if(!getplayerinput(MODINPUT_SIDEMOVE))speed=2.2;
+			if(!getplayerinput(MODINPUT_SIDEMOVE))speed=2.8;
 			else if(getplayerinput(MODINPUT_FORWARDMOVE)<0)speed=1.6;
 		}
 		else speed=1;
 		if(countinv("PowerStrength"))speed*=1.5;
+		if(height<40)speed*=0.6;
 
 
 		//lowering weapon for sprint/mantle/jump
@@ -249,19 +282,19 @@ class HDPlayerPawn:PlayerPawn{
 		}
 
 		//check use key
-		if(
-			getplayerinput(MODINPUT_BUTTONS) & BT_USE
-			&& !(getplayerinput(MODINPUT_OLDBUTTONS) & BT_USE)
-		){
-			vector3 ap=(
-				cos(pitch)*cos(angle),
-				cos(pitch)*sin(angle),
-				-sin(pitch)
-			);
-			actor a=spawn("userpickerupper",ap+(0,0,height-12));
-			a.target=self;
-			a.vel=ap*4;
-		}
+		if(getplayerinput(MODINPUT_BUTTONS) & BT_USE){
+			bpickup=true;
+			if(!(getplayerinput(MODINPUT_OLDBUTTONS) & BT_USE)){
+				vector3 ap=(
+					cos(pitch)*cos(angle),
+					cos(pitch)*sin(angle),
+					-sin(pitch)
+				);
+				actor a=spawn("userpickerupper",ap+(0,0,height-12));
+				a.target=self;
+				a.vel=ap*4;
+			}
+		}else bpickup=false;
 	}
 }
 

@@ -9,7 +9,12 @@
 script "HDEnterRepeat" ENTER
 {
 
-
+	if (!CheckWeapon("NullWeapon")) weapon[PlayerNumber()]=GetWeaponInt();
+	if (!CheckInventory("Ring")){
+		GiveInventory("BasicLoadout",1);
+		SetWeapon("Ring");
+	}
+	delay(10);restart;
 
 	//stall the script while wiped out
 	if ((CheckInventory("WipedOut"))||(CheckInventory("Health")<1)) {delay(1);restart;}
@@ -39,18 +44,12 @@ script "HDEnterRepeat" ENTER
 	int np=GetActorPitch(0);
 	int na=GetActorAngle(0);
 
-	if (!CheckWeapon("NullWeapon")) weapon[PlayerNumber()]=GetWeaponInt();
-	if (!CheckInventory("Ring")){
-		GiveInventory("BasicLoadout",1);
-		SetWeapon("Ring");
-	}
-
 
 	//all additional functions and scripts go here
 //	int spd=SpeedCheck(nb,ob,sm,fm);
 //	CheckConfig();
 //	SecondPistolFirst();
-	CheckInput(nb,ob,sm,fm);
+//	CheckInput(nb,ob,sm,fm);
 //	if (nb & BT_JUMP) JumpCheck(ob,spd,x,y,z,fm,ox,oy,sm,nb);
 //	if ((abs(ox-x)<100.0)&&(abs(oy-y)<100.0)) AccDamage(ovx-vx,ovy-vy,ovz-vz);
 //	TurnCheck(op,oa,np,na,ox,oy,sm,osm);
