@@ -14,6 +14,7 @@ class HDPlayerPawn:PlayerPawn{
 	double feetangle;
 	int runwalksprint;
 	int stunned;
+	int nocrosshair;
 	default{
 		+interpolateangles
 	}
@@ -222,6 +223,29 @@ class HDPlayerPawn:PlayerPawn{
 				trymove(self.pos.xy-(cos(angle)*rate*pitchchange,
 				sin(angle)*rate*pitchchange),false);
 			}
+		}
+
+		//display crosshair
+		//replace with reference in ready state as weapons are replaced
+		if(!crosshairforce){
+			if(
+				countinv("WeaponBusy")||
+				countinv("PowerInvulnerable")||
+				(getplayerinput(MODINPUT_BUTTONS)&BT_RELOAD)||
+				(getplayerinput(MODINPUT_BUTTONS)&BT_ZOOM)||
+				(getplayerinput(MODINPUT_BUTTONS)&BT_USER1)||
+				(getplayerinput(MODINPUT_BUTTONS)&BT_USER2)||
+				(getplayerinput(MODINPUT_BUTTONS)&BT_USER3)||
+				(getplayerinput(MODINPUT_BUTTONS)&BT_USER4)||
+				(getplayerinput(MODINPUT_BUTTONS)&BT_SPEED)||
+				(getplayerinput(MODINPUT_BUTTONS)&BT_JUMP)||
+				abs(getplayerinput(MODINPUT_YAW))>4096
+			)nocrosshair=12;
+			else if(
+				player.fov>120||player.fov<80
+			)nocrosshair=1;
+			else if(!nocrosshair)CallACS("CrossHairs");
+			else nocrosshair--;
 		}
 
 		//check use key

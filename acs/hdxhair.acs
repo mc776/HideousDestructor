@@ -1,9 +1,10 @@
 
-function void CrossHairs(void)
-{
-//	if ((CheckInventory("Fatigue")>maxrunfatigue)&&(CheckInventory("IsSupported")<1)) return;
-	if ((GetPlayerInfo(PlayerNumber(),PLAYERINFO_DESIREDFOV)>=80)&&(GetPlayerInfo(PlayerNumber(),PLAYERINFO_DESIREDFOV)<=120)&&(!GetCvar("crosshairforce"))&&(CheckInventory("IsWeaponReady"))&&(CheckInventory("PowerInvulnerable")<1)&&(CheckInventory("WeaponBusy")<1)&&(CheckInventory("PressingZoom")<1)&&((CheckInventory("PowerLightAmpP")<1)||(CheckWeapon("HDPistol"))))
-	{
+script "CrossHairs"(void){
+	if(
+		//these are the only checks that can't be done on ZScript
+		(80<=GetPlayerInfo(PlayerNumber(),PLAYERINFO_DESIREDFOV)<=120)&&
+		((!CheckInventory("PowerLightAmpP")&&(!CheckInventory("PowerLightAmp")))||(CheckWeapon("HDPistol")))
+	){
 		sethudsize(319,239,1);
 		switch(weapon[PlayerNumber()])
 		{
