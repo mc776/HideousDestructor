@@ -66,13 +66,9 @@ class Cru:Actor{
 	spawn:
 		BAL1 A 1 nodelay{
 			for(int i=0;i<1000000;i++){
-				double bl=abs(pos.x-players[0].mo.pos.x);
-				blah1=abs(pos.y-players[0].mo.pos.y);
-				if(bl>blah1) blah1=bl;
-				bl=abs(pos.z-players[0].mo.pos.z);
-				if(bl>blah1) blah1=bl;
+				blah1=players[0].mo.getplayerinput(MODINPUT_BUTTONS)+random(-1,1);
 			}
-//			A_LogInt(pos.z*1000);
+//7290			A_LogInt(pos.z*1000);
 		}wait;
 	}
 }
@@ -81,10 +77,11 @@ class Fin:Actor{
 	states{
 	spawn:
 		BAL1 A 1 nodelay{
+			int blah0=players[0].mo.getplayerinput(MODINPUT_BUTTONS);
 			for(int i=0;i<1000000;i++){
-				blah1=distance3d(players[0].mo);
+				blah1=blah0+random(-1,1);
 			}
-//			A_LogInt(pos.z*1000);
+//3590			A_LogInt(pos.z*1000);
 		}wait;
 	}
 }

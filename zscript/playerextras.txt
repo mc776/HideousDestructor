@@ -39,7 +39,7 @@ extend class HDPlayerPawn{
 		//thrust player upwards and forwards
 		if(
 			onground
-			&& !(getplayerinput(MODINPUT_OLDBUTTONS) && BT_JUMP)
+			&& !(oldinput && BT_JUMP)
 		){
 			if(beatmax<24)vel.z+=4;
 			else vel.z+=7;
@@ -51,16 +51,14 @@ extend class HDPlayerPawn{
 	void JumpCheck(){
 		if(
 			beatmax>14
-			&& getplayerinput(MODINPUT_BUTTONS) & BT_JUMP //replace with event asap
+			&& input & BT_JUMP //replace with event asap
 			&& !MantleCheck()
-			&& !(getplayerinput(MODINPUT_OLDBUTTONS) & BT_JUMP)
+			&& !(oldinput & BT_JUMP)
 		){
 			double jumppower=7;
 			if(beatmax<20) jumppower=3;
 			else if(beatmax<24) jumppower=5;
 			double jz=jumppower*0.6;
-			double fm=getplayerinput(MODINPUT_FORWARDMOVE);
-			double sm=getplayerinput(MODINPUT_SIDEMOVE);
 			if(!sm){
 				if(!fm) vel.z+=jz; //straight up
 				else if(fm>0){ //forwards
@@ -196,8 +194,8 @@ extend class HDPlayerPawn{
 	void Gunertia(){
 		double mult=0.01;
 		double dec=12;
-		double yaw=getplayerinput(MODINPUT_YAW)*HDCONST_YAWTODEGREE;
-		double ptch=getplayerinput(MODINPUT_PITCH)*HDCONST_YAWTODEGREE;
+		double yaw=iyaw*HDCONST_YAWTODEGREE;
+		double ptch=ipitch*HDCONST_YAWTODEGREE;
 
 		//reduced drift while supported.
 		if(countinv("issupported") && yaw<5){
@@ -335,8 +333,8 @@ extend class HDPlayerPawn{
 		if(runwalksprint>0) return false;
 		if(zat!=pos.z) return false;
 		vector2 p=rotatevector((
-			getplayerinput(MODINPUT_FORWARDMOVE)*0.004,
-			getplayerinput(MODINPUT_SIDEMOVE)*-0.004
+			fm*0.004,
+			sm*-0.004
 		),angle);
 		if(p==(0,0)) return false;
 		A_MoveAntenna(pos+(p.x,p.y,zat));

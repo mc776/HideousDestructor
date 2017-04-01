@@ -15,6 +15,9 @@ class HDPlayerPawn:PlayerPawn{
 	int runwalksprint;
 	int stunned;
 	int nocrosshair;
+	int input;int oldinput;
+	double fm;double sm;
+	int iyaw;int ipitch;
 	default{
 		+interpolateangles
 	}
@@ -107,6 +110,14 @@ class HDPlayerPawn:PlayerPawn{
 		lastpitch=pitch;
 		zat=getzat();
 
+		//log all inputs
+		input=getplayerinput(MODINPUT_BUTTONS);
+		oldinput=getplayerinput(MODINPUT_OLDBUTTONS);
+		fm=getplayerinput(MODINPUT_FORWARDMOVE);
+		sm=getplayerinput(MODINPUT_SIDEMOVE);
+		iyaw=getplayerinput(MODINPUT_YAW);
+		ipitch=getplayerinput(MODINPUT_PITCH);
+
 		if(getcvar("gender")==0){A_GiveInventory("IsMale");A_TakeInventory("IsFemale");}
 		else if(getcvar("gender")==1){A_GiveInventory("IsFemale");A_TakeInventory("IsMale");}
 		else {A_TakeInventory("IsFemale");A_TakeInventory("IsMale");}
@@ -132,24 +143,24 @@ class HDPlayerPawn:PlayerPawn{
 		A_TakeInventory("PressingFireMode");
 		A_TakeInventory("PressingAltReload");
 		A_TakeInventory("PressingUnload");
-		if(getplayerinput(MODINPUT_BUTTONS)&BT_ATTACK)A_GiveInventory("PressingFire");
-		if(getplayerinput(MODINPUT_BUTTONS)&BT_ALTATTACK)A_GiveInventory("PressingAltfire");
-		if(getplayerinput(MODINPUT_BUTTONS)&BT_RELOAD){
+		if(input&BT_ATTACK)A_GiveInventory("PressingFire");
+		if(input&BT_ALTATTACK)A_GiveInventory("PressingAltfire");
+		if(input&BT_RELOAD){
 			A_GiveInventory("PressingReload",1);A_GiveInventory("WeaponBusy");}
-		if(getplayerinput(MODINPUT_BUTTONS)&BT_ZOOM){
+		if(input&BT_ZOOM){
 			A_GiveInventory("PressingZoom",1);A_GiveInventory("WeaponBusy");}
-		if(getplayerinput(MODINPUT_BUTTONS)&BT_USER1){
+		if(input&BT_USER1){
 			A_GiveInventory("PressingAltReload",1);A_GiveInventory("WeaponBusy");}
-		if(getplayerinput(MODINPUT_BUTTONS)&BT_USER2){
+		if(input&BT_USER2){
 			A_GiveInventory("PressingFireMode",1);A_GiveInventory("WeaponBusy");}
-		if(getplayerinput(MODINPUT_BUTTONS)&BT_USER4){
+		if(input&BT_USER4){
 			A_GiveInventory("PressingUnload",1);A_GiveInventory("WeaponBusy");}
 		if(countinv("WeaponBusy"))A_TakeInventory("IsWeaponReady");
 		if(height<40)A_GiveInventory("IsCrouching");
-		if(getplayerinput(MODINPUT_BUTTONS)&BT_SPEED)A_GiveInventory("IsSprinting");
+		if(input&BT_SPEED)A_GiveInventory("IsSprinting");
 
 		//gotta keep this one for the crosshairs
-		if(getplayerinput(MODINPUT_FORWARDMOVE)||getplayerinput(MODINPUT_SIDEMOVE))A_GiveInventory("IsMoving");
+		if(fm||sm)A_GiveInventory("IsMoving");
 
 
 		//"falling" damage
@@ -172,7 +183,7 @@ class HDPlayerPawn:PlayerPawn{
 
 		//see if player is intentionally walking, running or sprinting
 		//-1 = walk, 0 = run, 1 = sprint
-		if(getplayerinput(MODINPUT_BUTTONS) & BT_SPEED) runwalksprint=1;
+		if(input & BT_SPEED) runwalksprint=1;
 		else if(getcvar("cl_run"))runwalksprint=0;
 		else runwalksprint=-1;
 
@@ -218,8 +229,8 @@ class HDPlayerPawn:PlayerPawn{
 		//apply all movement speed modifiers
 		if(mustwalk || runwalksprint<0) speed=0.4;
 		else if(runwalksprint>0 && cansprint){
-			if(!getplayerinput(MODINPUT_SIDEMOVE))speed=2.8;
-			else if(getplayerinput(MODINPUT_FORWARDMOVE)<0)speed=1.6;
+			if(!sm)speed=2.8;
+			else if(fm<0)speed=1.6;
 		}
 		else speed=1;
 		if(countinv("PowerStrength"))speed*=1.5;
@@ -228,8 +239,8 @@ class HDPlayerPawn:PlayerPawn{
 
 		//lowering weapon for sprint/mantle/jump
 		if(
-			getplayerinput(MODINPUT_BUTTONS) & BT_SPEED
-			|| getplayerinput(MODINPUT_BUTTONS) & BT_JUMP
+			input & BT_SPEED
+			|| input & BT_JUMP
 		){
 			if(!barehanded){
 				lastweapon=player.readyweapon.getclassname();
@@ -264,7 +275,7 @@ class HDPlayerPawn:PlayerPawn{
 			if(
 				countinv("WeaponBusy")||
 				countinv("PowerInvulnerable")||
-				getplayerinput(MODINPUT_BUTTONS)&(
+				input&(
 					BT_RELOAD
 					||BT_ZOOM
 					||BT_USER1
@@ -273,7 +284,8 @@ class HDPlayerPawn:PlayerPawn{
 					||BT_USER4
 					||BT_JUMP
 				)||
-				abs(getplayerinput(MODINPUT_YAW))>4096
+				abs(iyaw)>4096||
+				!(80<getcvar("fov")<120)
 			)nocrosshair=12;
 			else if(
 				player.fov>120||player.fov<80
@@ -283,9 +295,9 @@ class HDPlayerPawn:PlayerPawn{
 		}
 
 		//check use key
-		if(getplayerinput(MODINPUT_BUTTONS) & BT_USE){
+		if(input & BT_USE){
 			bpickup=true;
-			if(!(getplayerinput(MODINPUT_OLDBUTTONS) & BT_USE)){
+			if(!(oldinput & BT_USE)){
 				vector3 ap=(
 					cos(pitch)*cos(angle),
 					cos(pitch)*sin(angle),
