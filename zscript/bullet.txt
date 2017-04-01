@@ -337,3 +337,94 @@ class BulletTail:IdleDummy{
 }
 
 
+//testing performance when spamming
+class nbb:PlasmaBall replaces PlasmaBall{
+	default{
+		speed 900;
+	}
+	override void postbeginplay(){
+		for (int i=0;i<40;i++){
+		A_SpawnItemEx("nb",0,0,0,velx+frandom(-1,1),vely+frandom(-1,1),velz+frandom(-1,1),0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_ABSOLUTEMOMENTUM);
+		}
+		destroy();
+	}
+}
+
+
+class nb:HDActor{
+	actor a;int b;
+	double grav;
+	double hitdist;
+	int dmg;
+	default{
+		projectile; -nogravity
+		+bloodsplatter +noextremedeath +cannotpush +hittracer +forcexybillboard
+		height 0.05;radius 0.05;
+//		scale 0.3;
+		maxstepheight 0;
+		missileheight 8; projectilekickback 20; damagetype "SmallArms3";
+		damagefunction(dmg);
+
+		speed 40;
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		if(vel==(0,0,0))A_ChangeVelocity(1,0,0,CVF_RELATIVE|CVF_REPLACE);
+		grav=getgravity();
+		if(target)vel+=target.vel;
+	}
+	states{
+	spawn:
+		BAL1 A -1;
+	}
+	override void tick(){
+		ClearInterpolation();
+		if(globalfreeze||level.Frozen) return;
+		if(!bmissile){
+			nexttic();
+			return;
+		}
+
+		//if it's in the sky, do a separate thing instead
+
+		//move based on hitscan result
+		A_FaceVector(vel);
+		speed=vel.length();
+		if(target)target.bshootable=false;
+		setxyz((pos.x,pos.y,pos.z-8));
+		[a,b]=LineAttack(angle,speed,pitch,0,"none","NewBulletMovePuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT);
+		setxyz((pos.x,pos.y,pos.z+8));
+		hitdist=distance3d(a);
+		if(a)setorigin(a.pos,true);
+		if(target)target.bshootable=true;
+
+		//NOW test for impacts
+		if(a && abs(hitdist-speed)>radius){
+			if(!a.tracer) A_Log("HIT!"); else A_Log(a.tracer.getclassname());
+			bmissile=false;
+		}
+
+		//apply gravity
+		vel.z-=grav;
+
+		nexttic();
+	}
+}
+class NewBulletMovePuff:IdleDummy{
+	default{
+		+puffgetsowner +alwayspuff +puffonactors +bloodlessimpact +hittracer
+		+skyexplode //OR we could take advantage of -skyexplode to check for notionalpos
+	}
+	states{
+	spawn:
+		PUFF A 40;
+		stop;
+	}
+}
+
+
+
+
+
+
+
