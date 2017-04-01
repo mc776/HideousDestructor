@@ -95,6 +95,11 @@ class HDFire:IdleDummy{
 	states{
 	spawn:
 		TNT1 A 4{
+			if(waterlevel){
+				destroy();
+				if(waterlevel<2)spawn("HDSmoke",pos);
+				return;
+			}
 			if(!master) master=self;
 			if(!target){
 				target=spawn("PersistentDamager",self.pos);
@@ -126,11 +131,9 @@ class HDFire:IdleDummy{
 			}
 
 			//spawn the flame
-			if(1){
-				setorigin(target.pos+(random(-halfrad,halfrad),random(-halfrad,halfrad),random(minz,maxz)),false);
-				actor sp=spawn("HDRedFlame",pos);
-				sp.vel+=target.vel+(frandom(-2,2),frandom(-2,2),frandom(-1,3));
-			}
+			setorigin(target.pos+(random(-halfrad,halfrad),random(-halfrad,halfrad),random(minz,maxz)),false);
+			actor sp=spawn("HDRedFlame",pos);
+			sp.vel+=target.vel+(frandom(-2,2),frandom(-2,2),frandom(-1,3));
 			A_PlaySound("misc/firecrkl",CHAN_AUTO,0.4,0,6);
 
 			//check if player has spawned a corpse
