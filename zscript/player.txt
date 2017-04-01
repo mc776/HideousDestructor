@@ -264,14 +264,15 @@ class HDPlayerPawn:PlayerPawn{
 			if(
 				countinv("WeaponBusy")||
 				countinv("PowerInvulnerable")||
-				(getplayerinput(MODINPUT_BUTTONS)&BT_RELOAD)||
-				(getplayerinput(MODINPUT_BUTTONS)&BT_ZOOM)||
-				(getplayerinput(MODINPUT_BUTTONS)&BT_USER1)||
-				(getplayerinput(MODINPUT_BUTTONS)&BT_USER2)||
-				(getplayerinput(MODINPUT_BUTTONS)&BT_USER3)||
-				(getplayerinput(MODINPUT_BUTTONS)&BT_USER4)||
-				(getplayerinput(MODINPUT_BUTTONS)&BT_SPEED)||
-				(getplayerinput(MODINPUT_BUTTONS)&BT_JUMP)||
+				getplayerinput(MODINPUT_BUTTONS)&(
+					BT_RELOAD
+					||BT_ZOOM
+					||BT_USER1
+					||BT_USER2
+					||BT_USER3
+					||BT_USER4
+					||BT_JUMP
+				)||
 				abs(getplayerinput(MODINPUT_YAW))>4096
 			)nocrosshair=12;
 			else if(
