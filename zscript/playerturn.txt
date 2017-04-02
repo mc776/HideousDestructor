@@ -248,7 +248,7 @@ extend class HDPlayerPawn{
 	};
 	bool standingonliquid;
 	bool CheckLiquidTexture(){
-		int lqlength=21; //lq.length();
+		int lqlength=lq.size();
 		for (int i=0; i<lqlength; i++){
 			TextureID tx = TexMan.CheckForTexture(lq[i], TexMan.Type_Flat);
 			if (tx && floorpic == tx){

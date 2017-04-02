@@ -84,21 +84,6 @@ class HDPlayerPawn:PlayerPawn{
 		"####" D 2;
 		"----" A 0{return resolvestate("spawn");}
 	}
-	//HIGHLY EXPERIMENTAL: ignore some collisions in the space between head and shoulders
-	override bool cancollidewith(actor other,bool passive){
-		if(height<40) return super.cancollidewith(other,passive); //ignore if crouched
-		int dx=floor(abs(other.pos.x-self.pos.x));
-		int dy=floor(abs(other.pos.y-self.pos.y));
-		if(dy>dx) dx=dy;  
-		int dz=floor(other.pos.z-self.pos.z);
-		if(
-			dz>44 //bottom of head
-			&& dx>other.radius+3 //head radius
-		){
-			return false;
-		}
-		return super.cancollidewith(other,passive);
-	}
 	override void Tick(){
 		if (!player||!player.mo||player.mo!= self){Super.Tick();return;} //anti-voodoodoll
 

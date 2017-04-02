@@ -353,6 +353,7 @@ class nbb:PlasmaBall replaces PlasmaBall{
 
 class nb:HDActor{
 	actor a;int b;
+	vector3 crackvel;
 	double grav;
 	double hitdist;
 	int dmg;
@@ -364,15 +365,18 @@ class nb:HDActor{
 //		scale 0.3;
 		maxstepheight 0;
 		missileheight 8; projectilekickback 20; damagetype "SmallArms3";
-		damagefunction(dmg);
+		damagefunction(0);
 
-		speed 100;
+		mass 100; //40 426, 50 00, 80 776, 90 9mil, 600 40mm
+		speed 1420;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		if(vel==(0,0,0))A_ChangeVelocity(1,0,0,CVF_RELATIVE|CVF_REPLACE);
 		grav=getgravity();
-		if(target)vel+=target.vel;
+		if(target){
+			A_ChangeVelocity(speed*cos(pitch),0,speed*sin(-pitch),CVF_RELATIVE|CVF_REPLACE);
+			vel+=target.vel;
+		}
 	}
 	states{
 	spawn:
@@ -416,22 +420,70 @@ class nb:HDActor{
 			else{
 				setorigin(a.pos,true);
 
+				//damage
+				dmg=mass*speed*speed*0.000001;
+				A_LogInt(dmg);
+
+				//find points close to players and spawn crackers
+				if(speed>256){
+					crackvel=vel/hitdist*64;
+					int k=hitdist*1/64;
+					name b="HDFourMilTrail";
+					for(int j=0;j<k;j++){
+						a.setxyz(a.pos-crackvel);
+						bool p;p=false;
+						for(int i=0;!p && i<MAXPLAYERS;i++){
+							if(playeringame[i] && players[i].mo){
+								if(
+									a.distance3d(players[i].mo)<256
+								){
+									p=true;
+									spawn(b,a.pos);
+								}
+							}
+						}
+					}
+				}
+
 				//NOW test for impacts
-				if(a && abs(hitdist-speed)>radius){
-					if(!a.tracer) A_Log("HIT!"); else A_Log(a.tracer.getclassname());
+				if((floorz>pos.z) || (a && abs(hitdist-speed)>radius)){
 					bmissile=false;
+					if(a.tracer){
+						A_Log(a.tracer.getclassname());
+
+						//damage and blood
+					}
+					else{
+						A_Log("HIT!");
+						Puff();
+
+						//decal
+
+						//ricochet
+						//pierce
+					}
 				}
 			}
+		}
+		if(!a || floorz>pos.z && ceilingpic==skyflatnum){
+			destroy();
+			return;
 		}
 
 		vel.z-=grav;
 		nexttic();
 	}
+	void Puff(){
+		name pufftype="BulletPuffBig";
+		A_SpawnItemEx(pufftype,flags:
+			SXF_NOCHECKPOSITION
+		);
+	}
 }
 class NewBulletMovePuff:IdleDummy{
 	default{
 		+puffgetsowner +alwayspuff +puffonactors +bloodlessimpact +hittracer
-		-skyexplode //important!
+		+skyexplode //important!
 	}
 	states{
 	spawn:

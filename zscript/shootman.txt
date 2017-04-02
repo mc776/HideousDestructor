@@ -51,26 +51,3 @@ class tt:hdshootman{
 }
 
 
-//reverse headshot code: how to MISS the head!
-//then all you gotta do is check height for whatever DOES hit...
-class tth:tt{
-	states{
-	spawn:
-		PLAY E -1;
-	}
-	override bool cancollidewith(actor other,bool passive){
-		int dx=floor(abs(other.pos.x-self.pos.x));
-		int dy=floor(abs(other.pos.y-self.pos.y));
-		if(dy>dx) dx=dy;  
-		int dz=floor(other.pos.z-self.pos.z);
-		if(
-			dz>44 //bottom of head
-			&& dx>other.radius+3 //head radius
-		){
-			return false;
-		}
-A_LogInt(dz);
-		return super.cancollidewith(other,passive);
-	}
-}
-

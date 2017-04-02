@@ -8,7 +8,8 @@
 class HDDebris:HDActor{
 	bool stopped;
 	default{
-		+noblockmap;-solid;-shootable;+dontgib;height 2;radius 2;+forcexybillboard;
+		+noblockmap -solid -shootable +dontgib +forcexybillboard +noblockmonst
+		height 2;radius 2;
 		bouncesound "misc/casing2";bouncefactor 0.8;maxstepheight 2;
 		+rollsprite;+rollcenter;
 	}
