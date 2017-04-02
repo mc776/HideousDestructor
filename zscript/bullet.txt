@@ -356,6 +356,7 @@ class nb:HDActor{
 	double grav;
 	double hitdist;
 	int dmg;
+	bool inthesky;
 	default{
 		projectile; -nogravity
 		+bloodsplatter +noextremedeath +cannotpush +hittracer +forcexybillboard
@@ -365,7 +366,7 @@ class nb:HDActor{
 		missileheight 8; projectilekickback 20; damagetype "SmallArms3";
 		damagefunction(dmg);
 
-		speed 40;
+		speed 100;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -386,34 +387,51 @@ class nb:HDActor{
 		}
 
 		//if it's in the sky, do a separate thing instead
+		if(inthesky){
+			setxyz(pos+vel);
+			if(ceilingz>pos.z) inthesky=false;
+			vel.z-=grav;
+			nexttic();
+			return;
+		}
 
 		//move based on hitscan result
 		A_FaceVector(vel);
 		speed=vel.length();
+
+		//so hacky
 		if(target)target.bshootable=false;
 		setxyz((pos.x,pos.y,pos.z-8));
 		[a,b]=LineAttack(angle,speed,pitch,0,"none","NewBulletMovePuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT);
 		setxyz((pos.x,pos.y,pos.z+8));
-		hitdist=distance3d(a);
-		if(a)setorigin(a.pos,true);
 		if(target)target.bshootable=true;
 
-		//NOW test for impacts
-		if(a && abs(hitdist-speed)>radius){
-			if(!a.tracer) A_Log("HIT!"); else A_Log(a.tracer.getclassname());
-			bmissile=false;
+		if(a){
+			hitdist=distance3d(a);
+
+			//it got shot into the sky!
+			if(ceilingpic==skyflatnum && a.ceilingz-a.pos.z<height){
+				inthesky=true;
+			}
+			else{
+				setorigin(a.pos,true);
+
+				//NOW test for impacts
+				if(a && abs(hitdist-speed)>radius){
+					if(!a.tracer) A_Log("HIT!"); else A_Log(a.tracer.getclassname());
+					bmissile=false;
+				}
+			}
 		}
 
-		//apply gravity
 		vel.z-=grav;
-
 		nexttic();
 	}
 }
 class NewBulletMovePuff:IdleDummy{
 	default{
 		+puffgetsowner +alwayspuff +puffonactors +bloodlessimpact +hittracer
-		+skyexplode //OR we could take advantage of -skyexplode to check for notionalpos
+		-skyexplode //important!
 	}
 	states{
 	spawn:
