@@ -151,9 +151,10 @@ class HDPlayerPawn:PlayerPawn{
 		//"falling" damage
 		int fall=(lastvel-vel).length();
 		if(fall>10){
-			A_PlaySound("weapons/smack",CHAN_AUTO);
 			if(barehanded)fall-=4;
+			if(fall<=15)A_PlaySound("weapons/smack",CHAN_AUTO,0.4);
 			if(fall>15){
+				A_PlaySound("weapons/smack",CHAN_AUTO);
 				if(countinv("PowerStrength"))fall*=0.5;
 				damagemobj(self,self,fall*random(1,4),"falling");
 				stunned+=fall*random(5,10)*4;
