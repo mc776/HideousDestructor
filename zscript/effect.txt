@@ -19,8 +19,8 @@ class HDDebris:HDActor{
 	}
 	override void Tick(){
 		if(!stopped){
-			if(globalfreeze||level.Frozen) return;
 			clearinterpolation();
+			if(globalfreeze||level.Frozen) return;
 			vel.z-=getgravity();
 			int spd=abs(vel.x);if(abs(vel.y)>spd)spd=abs(vel.y);
 			vector2 frac=self.vel.xy*radius/spd;
@@ -80,8 +80,8 @@ class HDPuff:HDActor{
 		vel.z+=2;
 	}
 	override void Tick(){
-		if(globalfreeze||level.Frozen) return;
 		clearinterpolation();
+		if(globalfreeze||level.Frozen) return;
 		scale.x+=grow;scale.y=scale.x;
 		if(stamina>0) stamina--;
 		else{

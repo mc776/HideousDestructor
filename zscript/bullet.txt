@@ -356,9 +356,9 @@ class nb:HDActor{
 	vector3 crackvel;
 	double grav;
 	double hitdist;
+	double oneoverspeed;
 	int dmg;
 	bool inthesky;
-	bool haspierced;
 	default{
 		projectile; -nogravity
 		+bloodsplatter +noextremedeath +cannotpush +hittracer +forcexybillboard
@@ -370,7 +370,7 @@ class nb:HDActor{
 
 		decal "BulletScratch";
 		mass 100; //40 426, 50 00, 80 776, 90 9mil, 600 40mm
-		speed 20;
+		speed 20;accuracy 20;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -405,6 +405,7 @@ class nb:HDActor{
 		//move based on hitscan result
 		A_FaceVector(vel);
 		speed=vel.length();
+		oneoverspeed=1/speed;
 
 		//so hacky
 		if(target)target.bshootable=false;
@@ -443,14 +444,14 @@ class nb:HDActor{
 						Puff();
 
 						//decal
-						if(vel!=(0,0,0)){
+						if(vel.xy!=(0,0)){
 							actor d=spawn("NewBulletDecaller",pos);
 							d.target=target;
 							d.vel.xy=(vel.xy/vel.xy.length());
 						}
 
 						//ricochet
-						if(!random(0,1)){
+						if(!random(1,1)){
 							bmissile=true;
 							vel.xy=rotatevector(vel.xy,frandom(0,360));
 							vel.z=frandom(-vel.z,vel.z*0.8);
@@ -458,8 +459,27 @@ class nb:HDActor{
 						}
 
 						//pierce
-						else if(!haspierced){
-							haspierced=true;
+						else if(accuracy){
+							actor e;
+							vector3 velbak=vel;
+							vel*=oneoverspeed*accuracy;
+							setorigin(pos+vel,false);
+							angle+=180;pitch*=-1;
+							addz(-8);
+							[e,b]=LineAttack(
+								angle,accuracy*2,pitch,0,"none","NewBulletMovePuff",
+								flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT);
+							if(e && vel.xy!=(0,0)){
+								actor d=spawn("NewBulletDecaller",e.pos);
+								d.target=target;
+								d.vel.xy=(-vel.xy/vel.xy.length());
+							}
+							setorigin((e.pos+pos)*0.5,false);
+							Puff();
+							angle+=180;pitch*=-1;
+							vel=velbak*0.9;
+							accuracy=0;
+							bmissile=true;
 						}
 					}
 				}
