@@ -417,7 +417,7 @@ class nb:HDActor{
 			hitdist=distance3d(a);
 
 			//it got shot into the sky!
-			if(ceilingpic==skyflatnum && a.ceilingz-a.pos.z<height){
+			if(a.ceilingpic==skyflatnum && a.ceilingz-a.pos.z<height){
 				inthesky=true;
 			}
 			else{
@@ -459,7 +459,8 @@ class nb:HDActor{
 						dmg=random(dmg,maxdmg);
 						A_LogInt(dmg);
 						a.tracer.damagemobj(self,self.target,dmg,damagetype);//,DMG_THRUSTLESS);
-						for(int i=0;i<dmg;i+=40){
+						if(!a.tracer.bshootable||a.tracer.bnoblood) Puff();
+						else for(int i=0;i<dmg;i+=40){
 							a.tracer.A_SpawnItemEx(
 								a.tracer.bloodtype,
 								0,0,a.pos.z-a.tracer.pos.z,//a.pos.x,a.pos.y,a.pos.z,
