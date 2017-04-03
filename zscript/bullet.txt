@@ -340,11 +340,11 @@ class BulletTail:IdleDummy{
 //testing performance when spamming
 class nbb:PlasmaBall replaces PlasmaBall{
 	default{
-		speed 900;
+		speed 20;
 	}
 	override void postbeginplay(){
 		for (int i=0;i<40;i++){
-		A_SpawnItemEx("nb",0,0,0,velx+frandom(-1,1),vely+frandom(-1,1),velz+frandom(-1,1),0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_ABSOLUTEMOMENTUM);
+		A_SpawnItemEx("nb",0,0,0,vel.x+frandom(-1,1),vel.y+frandom(-1,1),vel.z+frandom(-1,1),0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_ABSOLUTEMOMENTUM);
 		}
 		destroy();
 	}
@@ -358,22 +358,25 @@ class nb:HDActor{
 	double hitdist;
 	int dmg;
 	bool inthesky;
+	bool haspierced;
 	default{
 		projectile; -nogravity
 		+bloodsplatter +noextremedeath +cannotpush +hittracer +forcexybillboard
 		height 0.05;radius 0.05;
 //		scale 0.3;
 		maxstepheight 0;
-		missileheight 8; projectilekickback 20; damagetype "SmallArms3";
+		missileheight 0; projectilekickback 20;
 		damagefunction(0);
 
+		decal "BulletScratch";
 		mass 100; //40 426, 50 00, 80 776, 90 9mil, 600 40mm
-		speed 1420;
+		speed 20;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		grav=getgravity();
 		if(target){
+			pitch=target.pitch;
 			A_ChangeVelocity(speed*cos(pitch),0,speed*sin(-pitch),CVF_RELATIVE|CVF_REPLACE);
 			vel+=target.vel;
 		}
@@ -425,30 +428,12 @@ class nb:HDActor{
 				A_LogInt(dmg);
 
 				//find points close to players and spawn crackers
-				if(speed>256){
-					crackvel=vel/hitdist*64;
-					int k=hitdist*1/64;
-					name b="HDFourMilTrail";
-					for(int j=0;j<k;j++){
-						a.setxyz(a.pos-crackvel);
-						bool p;p=false;
-						for(int i=0;!p && i<MAXPLAYERS;i++){
-							if(playeringame[i] && players[i].mo){
-								if(
-									a.distance3d(players[i].mo)<256
-								){
-									p=true;
-									spawn(b,a.pos);
-								}
-							}
-						}
-					}
-				}
+				CrackType();
 
 				//NOW test for impacts
 				if((floorz>pos.z) || (a && abs(hitdist-speed)>radius)){
 					bmissile=false;
-					if(a.tracer){
+					if(a.tracer && a.tracer.bshootable){
 						A_Log(a.tracer.getclassname());
 
 						//damage and blood
@@ -458,9 +443,24 @@ class nb:HDActor{
 						Puff();
 
 						//decal
+						if(vel!=(0,0,0)){
+							actor d=spawn("NewBulletDecaller",pos);
+							d.target=target;
+							d.vel.xy=(vel.xy/vel.xy.length());
+						}
 
 						//ricochet
+						if(!random(0,1)){
+							bmissile=true;
+							vel.xy=rotatevector(vel.xy,frandom(0,360));
+							vel.z=frandom(-vel.z,vel.z*0.8);
+							vel.xy*=0.9;
+						}
+
 						//pierce
+						else if(!haspierced){
+							haspierced=true;
+						}
 					}
 				}
 			}
@@ -473,11 +473,71 @@ class nb:HDActor{
 		vel.z-=grav;
 		nexttic();
 	}
+	//generate puff
 	void Puff(){
 		name pufftype="BulletPuffBig";
 		A_SpawnItemEx(pufftype,flags:
 			SXF_NOCHECKPOSITION
 		);
+	}
+	//sets crack sound and damage type
+	void CrackType(){
+		if(speed>256){
+			name b="HDNineMilTrail";
+			if(speed>1000){
+				A_SetDamageType("SmallArms3");
+				if(mass>80) b="HDSevenMilTrail";
+				else b="HDFourMilTrail";
+			}else if(speed>800){
+				A_SetDamageType("SmallArms2");
+				b="HDFourMilTrail";
+			}else if(speed>520){
+				A_SetDamageType("SmallArms1");
+				b="HDBuckTrail";
+			}else if(speed>100){
+				A_SetDamageType("SmallArms0");
+				b="HDNineMilTrail";
+			}else{
+				A_SetDamageType("SmallArms0");
+			}
+			if(woundhealth>50)
+				A_SetDamageType("SmallArms3");
+			if(damagetype=="SmallArms1" && woundhealth>30)
+				A_SetDamageType("SmallArms2");
+			if(damagetype=="SmallArms0" && woundhealth>30)
+				A_SetDamageType("SmallArms2");
+			else if(damagetype=="SmallArms0" && woundhealth>10)
+				A_SetDamageType("SmallArms1");
+
+			crackvel=vel/hitdist*64;
+			int k=hitdist*1/64;
+			for(int j=0;j<k;j++){
+				a.setxyz(a.pos-crackvel);
+				bool p;p=false;
+				for(int i=0;!p && i<MAXPLAYERS;i++){
+					if(playeringame[i] && players[i].mo){
+						if(
+							a.distance3d(players[i].mo)<256
+						){
+							p=true;
+							spawn(b,a.pos);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+class NewBulletDecaller:HDActor{
+	default{
+		projectile;height 1;radius 3;
+		decal "BulletScratch";
+	}
+	states{
+	spawn:
+	death:
+		TNT1 A 1;
+		stop;
 	}
 }
 class NewBulletMovePuff:IdleDummy{
