@@ -339,11 +339,8 @@ class BulletTail:IdleDummy{
 
 //testing performance when spamming
 class nbb:PlasmaBall replaces PlasmaBall{
-	default{
-		speed 20;
-	}
 	override void postbeginplay(){
-		for (int i=0;i<40;i++){
+		for (int i=0;i<140;i++){
 		A_SpawnItemEx("nb",0,0,0,vel.x+frandom(-1,1),vel.y+frandom(-1,1),vel.z+frandom(-1,1),0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_ABSOLUTEMOMENTUM);
 		}
 		destroy();
@@ -383,7 +380,9 @@ class nb:HDActor{
 	}
 	states{
 	spawn:
+	spawn2: //delete later
 		BAL1 A -1;
+		BLET A -1;
 	}
 	override void tick(){
 		ClearInterpolation();
@@ -434,32 +433,67 @@ class nb:HDActor{
 				//NOW test for impacts
 				if((floorz>pos.z) || (a && abs(hitdist-speed)>radius)){
 					bmissile=false;
-					if(a.tracer && a.tracer.bshootable){
-						A_Log(a.tracer.getclassname());
+					if(a.tracer){// && a.tracer.bshootable){
+						dmg+=woundhealth;
+						int maxdmg=dmg*2;
+
+						//supersonic shockwave
+						if(speed>HDCONST_SPEEDOFSOUND)maxdmg*=1.2;
+
+						//crit
+						double cang=angle;
+						double cpi=pitch;
+						A_FaceTracer();
+						if(HDMath.AngleChange(cang,angle)<10){
+							double th=a.tracer.height;
+							double pz=pos.z-sin(cpi)*a.tracer.radius;
+							pz=abs(a.tracer.pos.z+(th*0.61)-pz);
+							if(pz*5<th){
+								A_Log("CRIT!");
+								maxdmg*=2;
+							}
+						}
+						angle=cang;pitch=cpi;
 
 						//damage and blood
+						dmg=random(dmg,maxdmg);
+						A_LogInt(dmg);
+						a.tracer.damagemobj(self,self.target,dmg,damagetype);//,DMG_THRUSTLESS);
+						for(int i=0;i<dmg;i+=40){
+							a.tracer.A_SpawnItemEx(
+								a.tracer.bloodtype,
+								0,0,a.pos.z-a.tracer.pos.z,//a.pos.x,a.pos.y,a.pos.z,
+								random(3,6),random(-1,1),random(1,3),
+								angle-180,
+								SXF_USEBLOODCOLOR|
+								SXF_NOCHECKPOSITION|
+								SXF_ABSOLUTEPOSITION|
+								SXF_ABSOLUTEANGLE
+							);
+						}
+
+						destroy();return;
 					}
 					else{
-						A_Log("HIT!");
-						Puff();
-
 						//decal
 						if(vel.xy!=(0,0)){
 							actor d=spawn("NewBulletDecaller",pos);
 							d.target=target;
-							d.vel.xy=(vel.xy/vel.xy.length());
+							d.vel.xy=vel.xy/vel.xy.length();
 						}
 
 						//ricochet
-						if(!random(1,1)){
+						if(!random(0,9)){
 							bmissile=true;
 							vel.xy=rotatevector(vel.xy,frandom(0,360));
 							vel.z=frandom(-vel.z,vel.z*0.8);
 							vel.xy*=0.9;
+							Puff(speed*0.9);
 						}
 
 						//pierce
 						else if(accuracy){
+							Puff(speed*0.4);
 							actor e;
 							vector3 velbak=vel;
 							vel*=oneoverspeed*accuracy;
@@ -470,16 +504,22 @@ class nb:HDActor{
 								angle,accuracy*2,pitch,0,"none","NewBulletMovePuff",
 								flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT);
 							if(e && vel.xy!=(0,0)){
-								actor d=spawn("NewBulletDecaller",e.pos);
+								actor d=spawn("NewBulletDecallerSmall",e.pos);
 								d.target=target;
 								d.vel.xy=(-vel.xy/vel.xy.length());
 							}
 							setorigin((e.pos+pos)*0.5,false);
-							Puff();
+							Puff(speed*0.9);
 							angle+=180;pitch*=-1;
 							vel=velbak*0.9;
 							accuracy=0;
 							bmissile=true;
+						}
+
+						//final puff
+						else{
+							Puff();
+							destroy();return;
 						}
 					}
 				}
@@ -494,8 +534,18 @@ class nb:HDActor{
 		nexttic();
 	}
 	//generate puff
-	void Puff(){
+	void Puff(int sp=0){
+		if(!sp)sp=speed;
 		name pufftype="BulletPuffBig";
+		if(sp>800){
+			pufftype="BulletPuffBig";
+		}else if(sp>512){
+			pufftype="BulletPuffMedium";
+		}else if(sp>256){
+			pufftype="BulletPuffSmall";
+		}else{
+			pufftype="FragPuff";
+		}
 		A_SpawnItemEx(pufftype,flags:
 			SXF_NOCHECKPOSITION
 		);
@@ -511,7 +561,7 @@ class nb:HDActor{
 			}else if(speed>800){
 				A_SetDamageType("SmallArms2");
 				b="HDFourMilTrail";
-			}else if(speed>520){
+			}else if(speed>HDCONST_SPEEDOFSOUND){
 				A_SetDamageType("SmallArms1");
 				b="HDBuckTrail";
 			}else if(speed>100){
@@ -560,6 +610,11 @@ class NewBulletDecaller:HDActor{
 		stop;
 	}
 }
+class NewBulletDecallerSmall:NewBulletDecaller{
+	default{
+		decal "BulletScratchSmall";
+	}
+}
 class NewBulletMovePuff:IdleDummy{
 	default{
 		+puffgetsowner +alwayspuff +puffonactors +bloodlessimpact +hittracer
@@ -567,7 +622,7 @@ class NewBulletMovePuff:IdleDummy{
 	}
 	states{
 	spawn:
-		PUFF A 40;
+		TNT1 A 1;
 		stop;
 	}
 }
