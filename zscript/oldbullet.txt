@@ -1,5 +1,5 @@
 // ------------------------------------------------------------
-//   The (old, deprecated) Bullet!
+// The (old, deprecated) Bullet!
 // ------------------------------------------------------------
 
 class HDBullet:HDActor{
@@ -38,7 +38,7 @@ class HDBullet:HDActor{
 		}
 	}
 	void A_LongArmWobble(){
-		if(countinv("IsMoving",AAPTR_TARGET)>=10){  
+		if(countinv("IsMoving",AAPTR_TARGET)>=10){
 			pitch+=random(-2,2);
 			angle+=random(-1,1);
 		}
@@ -50,7 +50,7 @@ class HDBullet:HDActor{
 	}
 	void A_SetDamage(){
 		int shockwave=0;
-		if(crksp>520){shockwave=mass*0.25;}  
+		if(crksp>520){shockwave=mass*0.25;}
 		else if(crksp==0) crksp=speed;
 		double masstenth=mass*0.1;double crk128th=crksp*0.007;
 		user_damage=random(
@@ -77,7 +77,7 @@ class HDBullet:HDActor{
 			if(
 			(CheckClass("RiflemanBase",AAPTR_TRACER,true))
 			||(countinv("BlueArmourFlag",AAPTR_TRACER)>0)
-			||(countinv("BlackArmourFlag",AAPTR_TRACER)>0)  
+			||(countinv("BlackArmourFlag",AAPTR_TRACER)>0)
 			){
 				user_damage=damspd*0.0004;
 			}else{
@@ -133,7 +133,7 @@ class HDBullet:HDActor{
 							actor a=spawn("idledummy",
 								pos+HDMath.ScaleVector(vel,radius+1));
 							a.stamina=1;
-							if(pos.z>=a.ceilingz){  
+							if(pos.z>=a.ceilingz){
 								destroy();
 								a.destroy();
 								return;
@@ -147,7 +147,7 @@ class HDBullet:HDActor{
 					}
 					if(blockingmobj){
 						A_SetDamage();
-						if(self.accuracy>1) A_BulletCrit();  
+						if(self.accuracy>1) A_BulletCrit();
 //						A_LogInt(user_damage);
 					}
 					if(!target) target=master;
@@ -171,7 +171,7 @@ class HDBullet:HDActor{
 					ExplodeMissile(NULL,NULL);
 					return;
 				}
-				if(notionalz+height>ceilingz){ // Hit the ceiling - and leave there if sky  
+				if(notionalz+height>ceilingz){ // Hit the ceiling - and leave there if sky
 					setz(ceilingz-height);
 					if(ceilingpic!=skyflatnum||bSkyExplode){
 						notionalz=pos.z;
@@ -179,7 +179,7 @@ class HDBullet:HDActor{
 						return;
 					}else if(hd_noskybullets){
 						notionalz=pos.z;
-						if(radius>0)explodemissile(null,null);  
+						if(radius>0)explodemissile(null,null);
 						else destroy();
 						return;
 					}else{
@@ -192,9 +192,9 @@ class HDBullet:HDActor{
 
 					// boom trails and damage type.
 					name b="HDNineMilTrail";
-					if(crksp>1000){  
+					if(crksp>1000){
 						A_SetDamageType("SmallArms3");
-						if(mass>80) b="HDSevenMilTrail";  
+						if(mass>80) b="HDSevenMilTrail";
 						else b="HDFourMilTrail";
 					}else if(crksp>800){
 						A_SetDamageType("SmallArms2");
@@ -208,7 +208,7 @@ class HDBullet:HDActor{
 					}else{
 						A_SetDamageType("SmallArms0");
 					}
-					if(woundhealth>50)  
+					if(woundhealth>50)
 						A_SetDamageType("SmallArms3");
 					if(damagetype=="SmallArms1" && woundhealth>30)
 						A_SetDamageType("SmallArms2");

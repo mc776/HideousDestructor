@@ -1,5 +1,5 @@
 // ------------------------------------------------------------
-//   The Bullet!
+// The Bullet!
 // ------------------------------------------------------------
 
 #include "zscript/oldbullet.txt"
@@ -65,7 +65,7 @@ class nb:HDActor{
 		//if it's in the sky, do a separate thing instead
 		if(inthesky){
 			setxyz(pos+vel);
-			if(ceilingz>pos.z) inthesky=false;  
+			if(ceilingz>pos.z) inthesky=false;
 			vel.z-=grav;
 			nexttic();
 			return;
@@ -104,7 +104,7 @@ class nb:HDActor{
 				//NOW test for impacts
 				if(floorz>pos.z || ceilingz<=pos.z+height){
 					Puff();destroy();return;
-				}else if((a && abs(hitdist-speed)>radius)){  
+				}else if((a && abs(hitdist-speed)>radius)){
 					BulletImpact();
 					if(bdestroyed)return;
 				}
@@ -182,7 +182,7 @@ class nb:HDActor{
 		int maxdmg=dmg*2;
 
 		//supersonic shockwave damage
-		if(speed>HDCONST_SPEEDOFSOUND)maxdmg*=1.2;  
+		if(speed>HDCONST_SPEEDOFSOUND)maxdmg*=1.2;
 
 		//crit
 		double cang=angle;
@@ -224,7 +224,7 @@ class nb:HDActor{
 	void Puff(int sp=0){
 		if(!sp)sp=speed;
 		name pufftype="BulletPuffBig";
-		if(sp>800){  
+		if(sp>800){
 			pufftype="BulletPuffBig";
 		}else if(sp>512){
 			pufftype="BulletPuffMedium";
@@ -239,11 +239,11 @@ class nb:HDActor{
 	}
 	//sets crack sound and damage type
 	void CrackType(){
-		if(speed>256){  
+		if(speed>256){
 			name b="HDNineMilTrail";
-			if(speed>1000){  
+			if(speed>1000){
 				A_SetDamageType("SmallArms3");
-				if(mass>80) b="HDSevenMilTrail";  
+				if(mass>80) b="HDSevenMilTrail";
 				else b="HDFourMilTrail";
 			}else if(speed>800){
 				A_SetDamageType("SmallArms2");
@@ -257,7 +257,7 @@ class nb:HDActor{
 			}else{
 				A_SetDamageType("SmallArms0");
 			}
-			if(woundhealth>50)  
+			if(woundhealth>50)
 				A_SetDamageType("SmallArms3");
 			if(damagetype=="SmallArms1" && woundhealth>30)
 				A_SetDamageType("SmallArms2");
