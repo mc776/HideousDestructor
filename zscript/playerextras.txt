@@ -24,7 +24,10 @@ extend class HDPlayerPawn{
 
 		//determine max height
 		int mantlemax=36;
-		if((player.readyweapon is "NullWeapon" || player.readyweapon is "Ring") && beatmax>18){
+		if(
+			barehanded &&
+			(beatmax>18||countinv("PowerStrength"))
+		){
 			if(onground) mantlemax=64;
 			else mantlemax=56;
 		}
@@ -41,7 +44,7 @@ extend class HDPlayerPawn{
 			onground
 			&& !(oldinput && BT_JUMP)
 		){
-			if(beatmax<24)vel.z+=4;
+			if(!countinv("PowerStrength") && beatmax<24)vel.z+=4;
 			else vel.z+=7;
 			beatmax--;
 		}else vel.z+=3;
@@ -50,14 +53,16 @@ extend class HDPlayerPawn{
 	//and jump. don't separate from mantling.
 	void JumpCheck(){
 		if(
-			beatmax>14
+			(countinv("PowerStrength") || beatmax>14)
 			&& input & BT_JUMP //replace with event asap
 			&& !MantleCheck()
 			&& !(oldinput & BT_JUMP)
 		){
 			double jumppower=7;
-			if(beatmax<20) jumppower=3;
-			else if(beatmax<24) jumppower=5;
+			if(countinv("PowerStrength"))jumppower=10;else{
+				if(beatmax<20) jumppower=3;
+				else if(beatmax<24) jumppower=5;
+			}
 			double jz=jumppower*0.6;
 			if(!sm){
 				if(!fm) vel.z+=jz; //straight up
