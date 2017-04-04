@@ -2,340 +2,7 @@
 //   The Bullet!
 // ------------------------------------------------------------
 
-class HDBullet:HDActor{
-	/*
-		special usages:
-		accuracy: penetration distance.
-		woundhealth: "extra" damage from frangibility, etc.
-	*/
-	double notionalz;
-	bool haspierced;
-	double crksp;
-	double zat;
-	int user_damage;
-		int user_impactangle;int user_impactpitch;
-		int user_bottomz; int user_topz;
-		int user_impactx; int user_impacty; int user_impactz;
-	default{
-		projectile;-nogravity;
-		speed 1; //most gunshot code has bullet only inherit shooter momentum for now
-//		missiletype "BulletTail"; //testing and random eye candy
-		radius 0.51; height 0.51; scale 0.3;
-		+bloodsplatter; +noextremedeath; +cannotpush; +hittracer; +forcexybillboard;
-		missileheight 8; projectilekickback 20; damagetype "SmallArms3";
-		damagefunction(user_damage);
-	}
-	virtual void Effect(){ //modified from canon
-		if (missilename){
-			actor act=spawn(missilename,(pos.xy,pos.z+missileheight),ALLOW_REPLACE);
-			if (act){
-				if (target) act.target=target;
-				else act.target = self;
-
-				act.angle=self.angle;
-				act.pitch=self.pitch;
-			}
-		}
-	}
-	void A_LongArmWobble(){
-		if(countinv("IsMoving",AAPTR_TARGET)>=10){
-			pitch+=random(-2,2);
-			angle+=random(-1,1);
-		}
-	}
-	void A_Gunsmoke(){
-		for(int i=0;i<15;i+=5){
-			A_SpawnItemEx("HDGunSmoke",cos(pitch)*i,0,-sin(pitch)*i,cos(pitch)*4,0,-sin(pitch)*4,0,SXF_NOCHECKPOSITION);
-		}
-	}
-	void A_SetDamage(){
-		int shockwave=0;
-		if(crksp>520){shockwave=mass*0.25;}
-		else if(crksp==0) crksp=speed;
-		double masstenth=mass*0.1;double crk128th=crksp*0.007;
-		user_damage=random(
-			(masstenth)+(crk128th)+woundhealth,
-			(masstenth)*(crk128th)+woundhealth*2+shockwave
-		);
-//		A_LogInt(user_damage);
-	}
-	void A_BulletCrit(){
-		if(
-			blockingmobj is "SatanRobo"
-			||blockingmobj is "KillerBarrel"
-			||blockingmobj is "KillerFireCan"
-		)return;
-		vector3 critspot=self.pos+vel*blockingmobj.radius/vel.length();
-		double xyrange=0.236*blockingmobj.radius;
-		double zrange=0.236*blockingmobj.height;
-		if(
-			abs(critspot.x-blockingmobj.pos.x)<xyrange
-			&& abs(critspot.y-blockingmobj.pos.y)<xyrange
-			&& abs(critspot.z-(blockingmobj.pos.z+blockingmobj.height*0.618))<zrange
-		){
-			double damspd=user_damage*crksp;
-			if(
-			(CheckClass("RiflemanBase",AAPTR_TRACER,true))
-			||(countinv("BlueArmourFlag",AAPTR_TRACER)>0)
-			||(countinv("BlackArmourFlag",AAPTR_TRACER)>0)
-			){
-				user_damage=damspd*0.0004;
-			}else{
-				user_damage=damspd*0.0007;
-			}
-			blockingmobj.damagemobj(self,self.master,user_damage+woundhealth,"SmallArms3",DMG_THRUSTLESS);
-//			A_LogInt(blockingmobj.health);
-		}
-	}
-	override void PostBeginPlay(){
-		super.PostBeginPlay();
-		haspierced=false;
-		notionalz=pos.z;
-		zat=getzat();
-		crksp=speed;
-		A_SetDamage();
-		if(target) master=target;
-	}
-	override void Tick(){
-		ClearInterpolation();
-		if(globalfreeze||level.Frozen) return;
-		if(!bmissile){ //!bmissile ALWAYS returns true here and I have no idea why!
-			nexttic();
-			return;
-		}
-
-		double oldz = pos.Z;
-
-		//[HD] assume radius 1 for everything
-		int count = speed;
-
-		// Handle movement
-		if(vel!=(0,0,0)){
-			fcheckposition tm;
-
-			// used to calculate sonic booms and damage
-			crksp=vel.length();
-
-
-			// force some lateral movement so that collision detection works as intended.
-			if (bMissile && vel.x == 0 && vel.y == 0 && !IsZeroDamage()){
-				vel.x = MinVel;
-			}
-			vector3 frac = vel / crksp;
-			for (int i=0;i<crksp;i++){
-				zat=floorz;
-				if(!TryMove(Pos.XY+frac.XY,true,null,tm)){
-					if(!bSkyExplode){
-						//hack to prevent exploding on lower sky
-						let l = tm.ceilingline;
-						if(l && l.backsector &&
-						l.backsector.GetTexture(sector.ceiling)==skyflatnum){
-							actor a=spawn("idledummy",
-								pos+HDMath.ScaleVector(vel,radius+1));
-							a.stamina=1;
-							if(pos.z>=a.ceilingz){
-								destroy();
-								a.destroy();
-								return;
-							}a.destroy();
-						}
-						// [RH] Don't explode on horizon lines.
-						if (BlockingLine && BlockingLine.special == Line_Horizon){
-							Destroy();
-							return;
-						}
-					}
-					if(blockingmobj){
-						A_SetDamage();
-						if(self.accuracy>1) A_BulletCrit();
-//						A_LogInt(user_damage);
-					}
-					if(!target) target=master;
-					ExplodeMissile(BlockingLine,BlockingMobj);
-					return;
-				}
-				notionalz+=frac.z;
-				if(notionalz+height<=ceilingz){setz(notionalz);}
-
-				UpdateWaterLevel();
-				oldz=pos.z;
-				if (oldz<=zat){ // Hit the floor
-					if (floorpic == skyflatnum && !bSkyExplode){
-						// [RH] Just remove the missile without exploding it
-						// if this is a sky floor.
-						Destroy();
-						return;
-					}
-					setz(zat);
-					hitfloor();
-					ExplodeMissile(NULL,NULL);
-					return;
-				}
-				if(notionalz+height>ceilingz){ // Hit the ceiling - and leave there if sky
-					setz(ceilingz-height);
-					if(ceilingpic!=skyflatnum||bSkyExplode){
-						notionalz=pos.z;
-						explodemissile(null,null);
-						return;
-					}else if(hd_noskybullets){
-						notionalz=pos.z;
-						if(radius>0)explodemissile(null,null);
-						else destroy();
-						return;
-					}else{
-						bInvisible=true;
-					}
-				}
-				if(notionalz==pos.z){bInvisible=false;}
-				if(!(vel.xy~==(0,0)) && pos.z==notionalz){
-					Effect();
-
-					// boom trails and damage type.
-					name b="HDNineMilTrail";
-					if(crksp>1000){
-						A_SetDamageType("SmallArms3");
-						if(mass>80) b="HDSevenMilTrail";
-						else b="HDFourMilTrail";
-					}else if(crksp>800){
-						A_SetDamageType("SmallArms2");
-						b="HDFourMilTrail";
-					}else if(crksp>520){
-						A_SetDamageType("SmallArms1");
-						b="HDBuckTrail";
-					}else if(crksp>100){
-						A_SetDamageType("SmallArms0");
-						b="HDNineMilTrail";
-					}else{
-						A_SetDamageType("SmallArms0");
-					}
-					if(woundhealth>50)
-						A_SetDamageType("SmallArms3");
-					if(damagetype=="SmallArms1" && woundhealth>30)
-						A_SetDamageType("SmallArms2");
-					if(damagetype=="SmallArms0" && woundhealth>30)
-						A_SetDamageType("SmallArms2");
-					else if(damagetype=="SmallArms0" && woundhealth>10)
-						A_SetDamageType("SmallArms1");
-
-					//crack only near non-shooting player
-					bool p;p=false;
-					for(int i=0;!p && i<MAXPLAYERS;i++){
-						if(playeringame[i] && players[i].mo){
-							if(
-								players[i].mo!=target &&
-								distance3d(players[i].mo)<256
-							)p=true;
-						}
-					}
-					if(p)spawn(b,self.pos);
-				}
-			}
-		}
-		//bullet drop again, updating the actual velocity
-		vel.z-=getgravity();
-
-		//thus ends the "handle movement" part
-		if(!CheckNoDelay()) return;
-
-		//bullet wobble
-		vel*=(0.9+0.0009*clamp(mass,0,100));
-		if(mass<100){
-			double wobble=(100-mass)*0.0001;
-			vel.x+=frandom(-wobble,wobble);
-			vel.y+=frandom(-wobble,wobble);
-		}
-		nexttic();
-	}
-	states{
-	spawn2:
-		BLET A 1{
-			if(vel.length()<speed){
-				A_ChangeVelocity(cos(pitch)*speed,0,-sin(pitch)*speed,CVF_RELATIVE);
-			}
-		}
-		BLET A -1{
-			//so that you can kill yourself by shooting into the sky
-			if(target && !master) master=target;target=null;
-		}
-	death1:
-		BLET A 0{
-			if(random(1,32)==1){return resolvestate("ricochet");}
-			if(haspierced){return resolvestate("null");}
-			if(
-				(deathmatch || hd_penetrate)
-				&& accuracy>0
-			){
-				return resolvestate("pierce");
-			}
-			return resolvestate("null");
-		}
-	ricochet:
-		BLET A 0{
-			A_SetPitch(frandom(-90,90));
-			A_SetAngle(frandom(0,360));
-			speed*=frandom(0.6,0.8);
-			user_damage=user_damage*random(6,8)*0.1;
-			A_SetDamageType("SmallArms1");
-			if(target) target=null;
-			return resolvestate("afterpierce");
-		}
-	pierce:
-		BLET A 0{
-			speed*=0.9;
-		}
-	afterpierce:
-		BLET A 0 A_Warp(AAPTR_DEFAULT,cos(pitch)*accuracy,0,-sin(pitch)*accuracy,0,0,"pierceend");
-		stop;
-	pierceend: 
-		BLET A 0{
-			double cp=cos(pitch);
-			actor b=spawn("HDDecaller",self.pos-(cos(angle)*cp,cos(angle)*cp,-sin(pitch)));
-				b.vel=(b.pos-self.pos)*self.accuracy;
-				b.target=self.master;b.master=self.master;
-			haspierced=1;
-			bmissile=true;
-			bpainless=false;
-			setstatelabel("spawn2");
-		}
-	xdeath1:
-		BLET A 0;
-		stop;
-	}
-}
-class HDDecaller:FastProjectile{
-	vector3 puffvel;
-	default{
-		height 1;radius 1;decal "BulletScratchSmall";
-	}
-	override void postbeginplay(){
-		super.postbeginplay();
-		puffvel=-vel*0.1;
-	}
-	states{
-	spawn:
-		TNT1 A 1;
-		stop;
-	xdeath:
-		TNT1 A 0;
-		stop;
-	death:
-		TNT1 A 0{
-			actor p=spawn("PenePuff",self.pos-(0,0,2));
-			p.vel=puffvel;
-		}stop;
-	}
-}
-class BulletTail:IdleDummy{
-	default{
-		scale 0.5; renderstyle "add"; alpha 0.3; +forcexybillboard;
-	}
-	states{
-	spawn:
-		BAL7 A 10 A_FadeOut(0.1);
-		wait;
-	}
-}
-
+#include "zscript/oldbullet.txt"
 
 //testing performance when spamming
 class nbb:PlasmaBall replaces PlasmaBall{
@@ -347,8 +14,12 @@ class nbb:PlasmaBall replaces PlasmaBall{
 	}
 }
 
-
 class nb:HDActor{
+	/*
+		special usages:
+		accuracy: penetration distance.
+		woundhealth: "extra" damage from frangibility, etc.
+	*/
 	actor a;int b;
 	vector3 crackvel;
 	double grav;
@@ -365,7 +36,6 @@ class nb:HDActor{
 		missileheight 0; projectilekickback 20;
 		damagefunction(0);
 
-		decal "BulletScratch";
 		mass 100; //40 426, 50 00, 80 776, 90 9mil, 600 40mm
 		speed 20;accuracy 20;
 	}
@@ -395,7 +65,7 @@ class nb:HDActor{
 		//if it's in the sky, do a separate thing instead
 		if(inthesky){
 			setxyz(pos+vel);
-			if(ceilingz>pos.z) inthesky=false;
+			if(ceilingz>pos.z) inthesky=false;  
 			vel.z-=grav;
 			nexttic();
 			return;
@@ -404,14 +74,15 @@ class nb:HDActor{
 		//move based on hitscan result
 		A_FaceVector(vel);
 		speed=vel.length();
-		oneoverspeed=1/speed;
 
 		//so hacky
-		if(target)target.bshootable=false;
+		if(!bseeinvisible && target)target.bshootable=false;
 		setxyz((pos.x,pos.y,pos.z-8));
-		[a,b]=LineAttack(angle,speed,pitch,0,"none","NewBulletMovePuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT);
+		[a,b]=LineAttack(angle,speed,pitch,0,"none",
+			"NewBulletMovePuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT);
 		setxyz((pos.x,pos.y,pos.z+8));
-		if(target)target.bshootable=true;
+		if(!bseeinvisible && target)target.bshootable=true;
+		bseeinvisible=true;
 
 		if(a){
 			hitdist=distance3d(a);
@@ -431,98 +102,11 @@ class nb:HDActor{
 				CrackType();
 
 				//NOW test for impacts
-				if((floorz>pos.z) || (a && abs(hitdist-speed)>radius)){
-					bmissile=false;
-					if(a.tracer){// && a.tracer.bshootable){
-						dmg+=woundhealth;
-						int maxdmg=dmg*2;
-
-						//supersonic shockwave
-						if(speed>HDCONST_SPEEDOFSOUND)maxdmg*=1.2;
-
-						//crit
-						double cang=angle;
-						double cpi=pitch;
-						A_FaceTracer();
-						if(HDMath.AngleChange(cang,angle)<10){
-							double th=a.tracer.height;
-							double pz=pos.z-sin(cpi)*a.tracer.radius;
-							pz=abs(a.tracer.pos.z+(th*0.61)-pz);
-							if(pz*5<th){
-								A_Log("CRIT!");
-								maxdmg*=2;
-							}
-						}
-						angle=cang;pitch=cpi;
-
-						//damage and blood
-						dmg=random(dmg,maxdmg);
-						A_LogInt(dmg);
-						a.tracer.damagemobj(self,self.target,dmg,damagetype);//,DMG_THRUSTLESS);
-						if(!a.tracer.bshootable||a.tracer.bnoblood) Puff();
-						else for(int i=0;i<dmg;i+=40){
-							a.tracer.A_SpawnItemEx(
-								a.tracer.bloodtype,
-								0,0,a.pos.z-a.tracer.pos.z,//a.pos.x,a.pos.y,a.pos.z,
-								random(3,6),random(-1,1),random(1,3),
-								angle-180,
-								SXF_USEBLOODCOLOR|
-								SXF_NOCHECKPOSITION|
-								SXF_ABSOLUTEPOSITION|
-								SXF_ABSOLUTEANGLE
-							);
-						}
-
-						destroy();return;
-					}
-					else{
-						//decal
-						if(vel.xy!=(0,0)){
-							actor d=spawn("NewBulletDecaller",pos);
-							d.target=target;
-							d.vel.xy=vel.xy/vel.xy.length();
-						}
-
-						//ricochet
-						if(!random(0,9)){
-							bmissile=true;
-							vel.xy=rotatevector(vel.xy,frandom(0,360));
-							vel.z=frandom(-vel.z,vel.z*0.8);
-							vel.xy*=0.9;
-							Puff(speed*0.9);
-						}
-
-						//pierce
-						else if(accuracy){
-							Puff(speed*0.4);
-							actor e;
-							vector3 velbak=vel;
-							vel*=oneoverspeed*accuracy;
-							setorigin(pos+vel,false);
-							angle+=180;pitch*=-1;
-							addz(-8);
-							[e,b]=LineAttack(
-								angle,accuracy*2,pitch,0,"none","NewBulletMovePuff",
-								flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT);
-							if(e && vel.xy!=(0,0)){
-								actor d=spawn("NewBulletDecallerSmall",e.pos);
-								d.target=target;
-								d.vel.xy=(-vel.xy/vel.xy.length());
-							}
-							setorigin((e.pos+pos)*0.5,false);
-							Puff(speed*0.9);
-							angle+=180;pitch*=-1;
-							vel=velbak*0.9;
-							accuracy=0;
-							bmissile=true;
-						}
-
-						//final puff
-						else{
-							Puff();
-							destroy();return;
-						}
-					}
+				if(floorz>pos.z || ceilingz<=pos.z+height){
+					Puff();destroy();return;
+				}else if((a && abs(hitdist-speed)>radius)){  
+					BulletImpact();
+					if(bdestroyed)return;
 				}
 			}
 		}
@@ -534,11 +118,113 @@ class nb:HDActor{
 		vel.z-=grav;
 		nexttic();
 	}
+
+	//impact
+	void BulletImpact(){
+		bmissile=false;
+		if(a.tracer){
+			BulletImpactDamage();
+			destroy();return;
+		}
+		else{
+			//decal
+			name decal="BulletChip";
+			if(speed<400)decal="BulletChipSmall";
+			A_SprayDecal(decal);
+
+			//ricochet
+			if(!random(0,9)){
+				bmissile=true;
+				vel.xy=rotatevector(vel.xy,frandom(0,360));
+				vel.z=frandom(-vel.z,vel.z*0.8);
+				vel.xy*=0.9;
+				Puff(speed*0.9);
+			}
+
+			//pierce
+			else if(accuracy){
+				Puff(speed*0.4);
+				actor e;
+				vector3 velp;
+				velp.xy=rotatevector((cos(pitch),0),angle);
+				velp.z=-sin(pitch);
+				velp*=accuracy;
+				setorigin(pos+velp,false);
+				if(ceilingz<pos.z||floorz>pos.z){ //abort if inside ceiling or floor
+					destroy();return;
+				}
+				angle+=180;pitch*=-1;
+				addz(-8);
+				[e,b]=LineAttack(
+					angle,accuracy*2,pitch,0,"none","NewBulletMovePuff",
+					flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT
+				);
+				addz(8);
+				if((pos-e.pos).length()<accuracy-1)A_SprayDecal(decal);
+				setorigin((e.pos+pos)*0.5,false);
+				Puff(speed*1.4);
+				angle+=180;pitch*=-1;
+				vel*=0.9;
+				accuracy=random(0,accuracy);
+				bmissile=true;
+			}
+
+			//final puff
+			else{
+				Puff();
+				destroy();return;
+			}
+		}
+	}
+	//apply damage and blood
+	void BulletImpactDamage(){
+		dmg+=woundhealth;
+		int maxdmg=dmg*2;
+
+		//supersonic shockwave damage
+		if(speed>HDCONST_SPEEDOFSOUND)maxdmg*=1.2;  
+
+		//crit
+		double cang=angle;
+		double cpi=pitch;
+		A_Face(a.tracer);
+		if(HDMath.AngleChange(cang,angle)<20){
+			double th=a.tracer.height;
+			double pz=pos.z-sin(cpi)*a.tracer.radius;
+			pz=abs(a.tracer.pos.z+(th*0.61)-pz);
+			if(pz*5<th){
+				A_Log("CRIT!");
+				maxdmg*=2;
+			}
+		}
+		angle=cang;pitch=cpi;
+
+		//apply damage
+		dmg=random(dmg,maxdmg);
+		A_LogInt(dmg);
+		a.tracer.damagemobj(self,self.target,dmg,damagetype);//,DMG_THRUSTLESS);
+
+		//puff or bleed as appropriate
+		if(bbloodlessimpact)return;
+		else if(!a.tracer.bshootable||a.tracer.bnoblood) Puff();
+		else for(int i=0;i<dmg;i+=40){
+			a.tracer.A_SpawnItemEx(
+				a.tracer.bloodtype,
+				0,0,a.pos.z-a.tracer.pos.z,//a.pos.x,a.pos.y,a.pos.z,
+				random(3,6),random(-1,1),random(1,3),
+				angle-180,
+				SXF_USEBLOODCOLOR|
+				SXF_NOCHECKPOSITION|
+				SXF_ABSOLUTEPOSITION|
+				SXF_ABSOLUTEANGLE
+			);
+		}
+	}
 	//generate puff
 	void Puff(int sp=0){
 		if(!sp)sp=speed;
 		name pufftype="BulletPuffBig";
-		if(sp>800){
+		if(sp>800){  
 			pufftype="BulletPuffBig";
 		}else if(sp>512){
 			pufftype="BulletPuffMedium";
@@ -553,11 +239,11 @@ class nb:HDActor{
 	}
 	//sets crack sound and damage type
 	void CrackType(){
-		if(speed>256){
+		if(speed>256){  
 			name b="HDNineMilTrail";
-			if(speed>1000){
+			if(speed>1000){  
 				A_SetDamageType("SmallArms3");
-				if(mass>80) b="HDSevenMilTrail";
+				if(mass>80) b="HDSevenMilTrail";  
 				else b="HDFourMilTrail";
 			}else if(speed>800){
 				A_SetDamageType("SmallArms2");
@@ -571,7 +257,7 @@ class nb:HDActor{
 			}else{
 				A_SetDamageType("SmallArms0");
 			}
-			if(woundhealth>50)
+			if(woundhealth>50)  
 				A_SetDamageType("SmallArms3");
 			if(damagetype=="SmallArms1" && woundhealth>30)
 				A_SetDamageType("SmallArms2");

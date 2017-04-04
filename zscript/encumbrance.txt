@@ -1,0 +1,160 @@
+// ------------------------------------------------------------
+//   Encumbrance
+// ------------------------------------------------------------
+
+/*
+for the see state before any other check:
+		overloaded=CheckEncumbrance();
+		A_LogInt(overloaded);
+for the ticker:
+	if(hd_carrylimit && overloaded){
+		//these are cumulative
+		if(overloaded>400){  
+			speed*=0.4;
+		}
+		if(overloaded>300){  
+			movebob*=1.2;
+			speed*=0.8;
+		}
+		if(overloaded>200){  
+			movebob*=1.1;
+			mustwalk=true;
+		}
+		if(overloaded>100){  
+			cansprint=false;
+		}
+	}
+*/
+extend class HDPlayerPawn{
+	int overloaded;
+	int CheckEncumbrance(){
+		int blox=
+
+		//weapons
+		(
+		(countinv("Slayer")-CheckWeapon("Slayer"))*4
+		+(countinv("Blooper")-CheckWeapon("Blooper"))*3
+		+(countinv("Brontornis")-CheckWeapon("Brontornis"))*3
+		+(countinv("HDSMG")-CheckWeapon("HDSMG"))*4
+			-(countinv("HDSMGNoMag")*countinv("HDSMG"))
+		+(countinv("ZM66SemiRifle")-CheckWeapon("ZM66SemiRifle"))*4
+		+(countinv("ZM66Rifle")-CheckWeapon("ZM66Rifle"))*4
+		+(countinv("LiberatorRifle")-CheckWeapon("LiberatorRifle"))*5
+		+(countinv("ZM66GrenadeRifle")-CheckWeapon("ZM66GrenadeRifle"))*5
+		+(countinv("LiberatorGrenadeRifle")-CheckWeapon("LiberatorGrenadeRifle"))*6
+		+(countinv("Lumberjack")-CheckWeapon("Lumberjack"))*6
+		+(countinv("Hunter")-CheckWeapon("Hunter"))*5
+		+(countinv("BossRifle")-CheckWeapon("BossRifle"))*7
+		+(countinv("RocquetteLauncher")-CheckWeapon("RocquetteLauncher"))*6
+		+(countinv("ThunderBuster")-CheckWeapon("ThunderBuster"))*5
+		+(countinv("Vulcanette")-CheckWeapon("Vulcanette"))*7
+		+(countinv("BFG9k")-CheckWeapon("BFG9k"))*8
+		+(countinv("HERPUsable")-CheckWeapon("HERPUsable"))*5
+		+(countinv("HERPDEAD")-CheckWeapon("HERPDEAD"))*5
+		)*25
+
+		//armour
+		+countinv("GreenArmourStored")*21
+		+countinv("BlueArmourStored")*27
+		+countinv("BlackArmourStored")*35
+
+		//usables
+		+countinv("HDIEDKit")*3
+		+countinv("SquadSummoner")*5
+		+countinv("PortableStimpack")*5
+		+countinv("PortableBerserkPack")*8
+		+countinv("PortableMedikit")*10
+		+countinv("PortableLiteAmp")*12
+		+countinv("PortableRadsuit")*25
+		+countinv("BluePotion")*8
+		+countinv("HDSecondPistol")*30
+		+countinv("DERPUsable")*35
+		+countinv("DERPDEAD")*35
+		+countinv("MedDeployer")*50
+
+		//loose/magged ambiguous ammo
+		+countinv("HDPistolAmmo")*1
+		+countinv("SevenMilAmmo")*3*0.5
+		+countinv("FourMilAmmo")*0.3
+		+countinv("HDCellAmmo")*0.5
+
+		//single loose ammo
+		+countinv("HDShellAmmo")*3
+		+countinv("BrontornisRound")*6
+		+countinv("HDFragGrenadeAmmo")*13
+		+countinv("HDRocketAmmo")*13
+		+countinv("DudRocquetteAmmo")*13
+		+countinv("HEATAmmo")*15
+
+		//full mags
+		+countinv("HDPistolMag")*10
+		+countinv("BossClip")*12
+		+countinv("ZM66RifleMags")*17
+		+countinv("HDCellPacks")*18
+		+countinv("HDCellPackEmpty")*18
+		+countinv("HDSMGMag")*18
+		+countinv("LiberatorMag")*21
+
+		//loaded into gun
+		+(
+			countinv("LumberEmptyCell")
+			+sign(countinv("LumberCell"))
+			+countinv("VulcEmptyCell")
+			+sign(countinv("VulcJuice"))
+			+countinv("PlasmaEmptyCell")
+			+sign(countinv("PlasmaBattery"))
+			+countinv("BFGLoaded")
+			+sign(countinv("HERPCell"))
+		)*8
+		+(
+			countinv("HDPistolChamber")
+			+countinv("HDPistolLoaded")
+			+countinv("HDSecondPistolChamber")
+			+countinv("HDSecondPistolLoaded")
+			+countinv("DERPAmmo")
+			+countinv("HDSMGLoaded")
+		)*0.3
+		+(
+			countinv("ZM66Loaded")
+			+countinv("HERPAmmo")
+			+countinv("VulcLoaded1")
+			+countinv("VulcLoaded2")
+			+countinv("VulcLoaded3")
+			+countinv("VulcLoaded4")
+			+countinv("VulcLoaded5")
+		)*0.2
+		+(
+			countinv("RocketMag")
+			+countinv("BloopChamber")
+			+countinv("ZM66GLoaded")
+			+countinv("LiberatorGrenadeChamber")
+		)*3
+		+(
+			countinv("BossMag")
+			+countinv("LiberatorLoaded")
+		)*0.3
+		+countinv("ShotgunTube")
+		+countinv("ShotgunChamber")
+		+countinv("ShellChamber1")
+		+countinv("ShellChamber2")
+		+countinv("ShotgunQuickAmmo")
+		+countinv("ShotgunQuickAmmo2")
+
+		+countinv("HEATLoaded")*4
+		+countinv("BrontornisMag")*2
+		;
+
+		if (countinv("HDBackpack")) GiveInventory("Backpack",1);
+		int carrymax=
+			550+
+			countinv("PowerStrength")*500+
+			countinv("RegenBlues")*2+
+			countinv("RegenStims")*3+
+			countinv("HDBackpack")*300
+		;
+		if (blox<=carrymax) return 0;
+		else return blox*100/carrymax;
+		}
+	}
+}
+
