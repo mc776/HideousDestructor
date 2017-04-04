@@ -43,8 +43,8 @@ class nb:HDActor{
 		super.postbeginplay();
 		grav=getgravity();
 		if(target){
-			pitch=target.pitch;
-			A_ChangeVelocity(speed*cos(pitch),0,speed*sin(-pitch),CVF_RELATIVE|CVF_REPLACE);
+//			pitch=target.pitch;
+//			A_ChangeVelocity(speed*cos(pitch),0,speed*sin(-pitch),CVF_RELATIVE|CVF_REPLACE);
 			vel+=target.vel;
 		}
 	}
@@ -188,7 +188,7 @@ class nb:HDActor{
 		double cang=angle;
 		double cpi=pitch;
 		A_Face(a.tracer);
-		if(HDMath.AngleChange(cang,angle)<20){
+		if(abs(HDMath.AngleChange(cang,angle))<12){
 			double th=a.tracer.height;
 			double pz=pos.z-sin(cpi)*a.tracer.radius;
 			pz=abs(a.tracer.pos.z+(th*0.61)-pz);
