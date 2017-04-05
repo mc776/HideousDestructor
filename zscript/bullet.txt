@@ -37,7 +37,8 @@ class nb:HDActor{
 		damagefunction(0);
 
 		mass 100; //40 426, 50 00, 80 776, 90 9mil, 600 40mm
-		speed 20;accuracy 20;
+		speed 50;accuracy 20;
+		pushfactor 0.1;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -116,6 +117,11 @@ class nb:HDActor{
 		}
 
 		vel.z-=grav;
+		if(pushfactor)A_Changevelocity(
+			-frandom(0,pushfactor)*0.01*speed,
+			frandom(-pushfactor,pushfactor),
+			0,CVF_RELATIVE
+		);
 		nexttic();
 	}
 
