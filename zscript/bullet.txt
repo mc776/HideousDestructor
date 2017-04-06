@@ -36,16 +36,16 @@ class nb:HDActor{
 		missileheight 0; projectilekickback 20;
 		damagefunction(0);
 
-		mass 100; //40 426, 50 00, 80 776, 90 9mil, 600 40mm
-		speed 50;accuracy 20;
+		mass 40; //40 426, 50 00, 80 776, 90 9mil, 600 40mm
+		speed 1100;//accuracy 20;
 		pushfactor 0.1;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		grav=getgravity();
 		if(target){
-//			pitch=target.pitch;
-//			A_ChangeVelocity(speed*cos(pitch),0,speed*sin(-pitch),CVF_RELATIVE|CVF_REPLACE);
+			pitch=target.pitch;
+			A_ChangeVelocity(speed*cos(pitch),0,speed*sin(-pitch),CVF_RELATIVE|CVF_REPLACE);
 			vel+=target.vel;
 		}
 	}
@@ -94,10 +94,6 @@ class nb:HDActor{
 			}
 			else{
 				setorigin(a.pos,true);
-
-				//damage
-				dmg=mass*speed*speed*0.000001;
-				A_LogInt(dmg);
 
 				//find points close to players and spawn crackers
 				CrackType();
@@ -184,7 +180,7 @@ class nb:HDActor{
 	}
 	//apply damage and blood
 	void BulletImpactDamage(){
-		dmg+=woundhealth;
+		dmg=mass*speed*speed*0.0000005+woundhealth;
 		int maxdmg=dmg*2;
 
 		//supersonic shockwave damage
@@ -207,7 +203,7 @@ class nb:HDActor{
 
 		//apply damage
 		dmg=random(dmg,maxdmg);
-		A_LogInt(dmg);
+		if(hd_debug)A_LogInt(dmg);
 		a.tracer.damagemobj(self,self.target,dmg,damagetype);//,DMG_THRUSTLESS);
 
 		//puff or bleed as appropriate
