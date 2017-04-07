@@ -7,7 +7,7 @@
 //testing performance when spamming
 class nbb:PlasmaBall replaces PlasmaBall{
 	override void postbeginplay(){
-		for (int i=0;i<140;i++){
+		for (int i=14;i;i--){
 		A_SpawnItemEx("nb",0,0,0,vel.x+frandom(-1,1),vel.y+frandom(-1,1),vel.z+frandom(-1,1),0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_ABSOLUTEMOMENTUM);
 		}
 		destroy();
@@ -135,7 +135,7 @@ class nb:HDActor{
 			A_SprayDecal(decal);
 
 			//ricochet
-			if(!random(0,9)){
+			if(!random(0,19)){
 				bmissile=true;
 				vel.xy=rotatevector(vel.xy,frandom(0,360));
 				vel.z=frandom(-vel.z,vel.z*0.8);
