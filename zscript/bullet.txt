@@ -7,8 +7,9 @@
 //testing performance when spamming
 class nbb:PlasmaBall replaces PlasmaBall{
 	override void postbeginplay(){
+		if(!hd_debug){super.postbeginplay();return;}
 		for (int i=14;i;i--){
-		A_SpawnItemEx("nb",0,0,0,vel.x+frandom(-1,1),vel.y+frandom(-1,1),vel.z+frandom(-1,1),0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_ABSOLUTEMOMENTUM);
+			A_SpawnItemEx("nb",0,0,0,vel.x+frandom(-1,1),vel.y+frandom(-1,1),vel.z+frandom(-1,1),0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_ABSOLUTEMOMENTUM);
 		}
 		destroy();
 	}
