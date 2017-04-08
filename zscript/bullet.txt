@@ -191,7 +191,10 @@ class nb:HDActor{
 				addz(8);
 				if((pos-e.pos).length()<accuracy-1)A_SprayDecal(decal);
 				setorigin((e.pos+pos)*0.5,false);
-				Puff(speed*1.4);
+				if(speed>500){
+					actor pp=spawn("PenePuff",pos,ALLOW_REPLACE);
+					pp.vel=vel*0.003;
+				}else Puff(speed*1.4);
 				angle+=180;pitch*=-1;
 				vel*=0.9;
 				accuracy=random(0,accuracy);
