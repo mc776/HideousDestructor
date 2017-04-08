@@ -7,13 +7,13 @@ class frags:idledummy{
 	states{
 	spawn:
 		TNT1 A 1 nodelay {
-			A_SpawnChunks("HDFrag",242,100,700);
+			A_SpawnChunks("nbfrag",242,100,700);
 			if(hd_debug)A_Log("deprecated frags. Please use A_SpawnChunks directly.");
 		}stop;
 	}
 }
 
-//grenade fragment
+//grenade fragment - old, to delete
 class HDFrag:HDBullet{
 	default{
 //		missiletype "bullettail";
@@ -99,7 +99,8 @@ class HDFragGrenadeRoller:HDActor{
 			A_PlaySound("world/explode",1,7);
 		}
 		TNT1 AAA 2{
-			A_SpawnChunks("HDFrag",40,400,800);
+//			A_SpawnChunks("HDFrag",40,400,800);
+			A_SpawnChunks("nbfrag",120,400,800);
 		}
 		stop;
 	}
