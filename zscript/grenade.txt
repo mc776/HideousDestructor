@@ -132,7 +132,8 @@ class HDFragGrenade:HDBullet{
 				gr.target=self.target;gr.master=self.master;gr.vel=self.vel;
 				gr.setstatelabel("destroy");
 			}else{
-				A_SpawnChunks("HDFrag",70,500,900);
+//				A_SpawnChunks("HDFrag",70,500,900);
+				A_SpawnChunks("nbfrag",120,400,800);
 				actor xpl=Spawn("DistantRocket",self.pos,ALLOW_REPLACE);
 			}
 			destroy();
