@@ -41,15 +41,23 @@ class nb:HDActor{
 		speed 1240;//accuracy 20;
 		pushfactor 0.1;
 	}
+	void A_Gunsmoke(){
+		int j=max(1,speed*min(mass,100)*0.0001);
+		for(int i=j;i;i--){
+			A_SpawnItemEx("HDGunSmoke",cos(pitch)*i,0,-sin(pitch)*i,
+				cos(pitch)*2,0,-sin(pitch)*2,flags:SXF_NOCHECKPOSITION
+			);
+		}
+	}
 	override void postbeginplay(){
 		super.postbeginplay();
+		A_Gunsmoke();
 		grav=getgravity();
 		if(target && !pitch)pitch=target.pitch;
 		A_ChangeVelocity(speed*cos(pitch),0,speed*sin(-pitch),CVF_RELATIVE);
 	}
 	states{
 	spawn:
-	spawn2: //delete later
 		BAL1 A -1 nodelay{
 			if(!hd_debug){
 				tics=0;
@@ -221,7 +229,7 @@ class nb:HDActor{
 			double pz=pos.z-sin(cpi)*a.tracer.radius;
 			pz=abs(a.tracer.pos.z+(th*0.61)-pz);
 			if(pz*5<th){
-				A_Log("CRIT!");
+				if(hd_debug)A_Log("CRIT!");
 				maxdmg*=2;
 			}
 		}
@@ -313,23 +321,6 @@ class nb:HDActor{
 		}
 	}
 }
-class NewBulletDecaller:HDActor{
-	default{
-		projectile;height 1;radius 3;
-		decal "BulletScratch";
-	}
-	states{
-	spawn:
-	death:
-		TNT1 A 1;
-		stop;
-	}
-}
-class NewBulletDecallerSmall:NewBulletDecaller{
-	default{
-		decal "BulletScratchSmall";
-	}
-}
 class NewBulletMovePuff:IdleDummy{
 	default{
 		+puffgetsowner +alwayspuff +puffonactors +bloodlessimpact +hittracer
@@ -345,10 +336,9 @@ class NewBulletMovePuff:IdleDummy{
 
 
 
-// transitional
+// transitional?
 
-
-
+//special usage:accuracy=variation
 //A_GiveInventory("DecoBulleter");
 class DecoBulleter:ActionItem{
 	default{
@@ -364,9 +354,12 @@ class DecoBulleter:ActionItem{
 				if(invoker.speed)p.speed=invoker.speed;
 				double pf=invoker.accuracy;
 				if(p){
-					if(pf)p.vel+=(
-						frandom(-pf,pf),frandom(-pf,pf),frandom(-pf,pf)
-					);
+					if(pf){
+						p.vel+=(
+							frandom(-pf,pf),frandom(-pf,pf),frandom(-pf,pf)
+						);
+						p.speed+=10*frandom(-pf,pf);
+					}
 					p.vel+=self.vel;
 				}
 			}
@@ -402,7 +395,8 @@ class DecoBulleter9:DecoBulleter{
 }
 class DecoBulleter9f:DecoBulleter9{
 	default{
-		speed 600;
+		speed 500;
+		accuracy 1;
 	}
 }
 class DecoBulleter00:DecoBulleter{
@@ -448,7 +442,7 @@ class nb9:nb{
 	default{
 		pushfactor 0.5;
 		mass 90;
-		speed 500;
+		speed 480;
 		accuracy 4;
 	}
 }
