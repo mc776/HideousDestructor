@@ -38,22 +38,24 @@ class nb:HDActor{
 		damagefunction(0);
 
 		mass 40; //40 426, 50 00, 80 776, 90 9mil, 600 40mm
-		speed 1100;//accuracy 20;
+		speed 1240;//accuracy 20;
 		pushfactor 0.1;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		grav=getgravity();
-		if(target){
-			pitch=target.pitch;
-			A_ChangeVelocity(speed*cos(pitch),0,speed*sin(-pitch),CVF_RELATIVE|CVF_REPLACE);
-			vel+=target.vel;
-		}
+		if(target && !pitch)pitch=target.pitch;
+		A_ChangeVelocity(speed*cos(pitch),0,speed*sin(-pitch),CVF_RELATIVE);
 	}
 	states{
 	spawn:
 	spawn2: //delete later
-		BAL1 A -1;
+		BAL1 A -1 nodelay{
+			if(!hd_debug){
+				tics=0;
+				scale=(0.3,0.3);
+			}
+		}
 		BLET A -1;
 	}
 	override void tick(){
@@ -99,7 +101,29 @@ class nb:HDActor{
 				//find points close to players and spawn crackers
 				CrackType();
 
-				//NOW test for impacts
+
+				//NOW test for impacts...
+
+				//lower sky ceiling check
+				vector3 backcheck=(cos(angle),sin(angle),0);
+				a.setxyz(a.pos+backcheck);
+				if(a.ceilingpic==skyflatnum && a.ceilingz-a.pos.z<height){
+					setorigin(a.pos,false);
+					inthesky=true;
+					return;
+				}else a.setxyz(a.pos-backcheck);
+
+				//SUPER HACKY horizon line check
+				vector3 posbak=pos;
+				a_setsize(12,4);
+				if(!trymove(posbak.xy+1*(cos(angle),sin(angle)),true,true)){
+					if(blockingline && blockingline.special == Line_Horizon){
+						destroy();return;
+					}
+				}else setorigin(posbak,false);
+				a_setsize(0.05,0.05);
+
+				//finally, the "real" impacts
 				if(floorz>pos.z || ceilingz<=pos.z+height){
 					Puff();destroy();return;
 				}else if((a && abs(hitdist-speed)>radius)){
@@ -108,11 +132,12 @@ class nb:HDActor{
 				}
 			}
 		}
-		if(!a || floorz>pos.z && ceilingpic==skyflatnum){
+		if(!a || (floorz>pos.z && floorpic==skyflatnum)){
 			destroy();
 			return;
 		}
 
+		//drop and wobble
 		vel.z-=grav;
 		if(pushfactor)A_Changevelocity(
 			-frandom(0,pushfactor)*0.01*speed,
@@ -320,6 +345,112 @@ class NewBulletMovePuff:IdleDummy{
 
 
 
+// transitional
 
+
+
+//A_GiveInventory("DecoBulleter");
+class DecoBulleter:ActionItem{
+	default{
+		missiletype "nb";
+	}
+	states{
+	pickup:
+		TNT1 A 0{
+			int numbu=max(invoker.stamina,1);
+			for (int i=numbu;i;i--){
+				actor p=Spawn(invoker.missilename,pos+(0,0,height-6));
+				p.target=self;p.angle=angle;p.pitch=pitch;
+				if(invoker.speed)p.speed=invoker.speed;
+				double pf=invoker.accuracy;
+				if(p){
+					if(pf)p.vel+=(
+						frandom(-pf,pf),frandom(-pf,pf),frandom(-pf,pf)
+					);
+					p.vel+=self.vel;
+				}
+			}
+		}fail;
+	}
+}
+class DecoBulleter426:DecoBulleter{
+	default{
+		missiletype "nb426";
+	}
+}
+class DecoBulleter426s:DecoBulleter426{
+	default{
+		speed 1100;
+		accuracy 2;
+	}
+}
+class DecoBulleter776:DecoBulleter{
+	default{
+		missiletype "nb776";
+	}
+}
+class DecoBulleter776f:DecoBulleter776{
+	default{
+		speed 1200;
+	}
+}
+class DecoBulleter9:DecoBulleter{
+	default{
+		missiletype "nb9";
+		accuracy 5;
+	}
+}
+class DecoBulleter9f:DecoBulleter9{
+	default{
+		speed 600;
+	}
+}
+class DecoBulleter00:DecoBulleter{
+	default{
+		missiletype "nb00";
+		stamina 7;
+		accuracy 6;
+	}
+}
+class DecoBulleter00f:DecoBulleter00{
+	default{
+		speed 900;
+		accuracy 4;
+	}
+}
+
+
+class nb426:nb{
+	default{
+		pushfactor 0.6;
+		mass 40;
+		speed 1200;
+		accuracy 4;
+	}
+}
+class nb00:nb{
+	default{
+		pushfactor 0.9;
+		mass 50;
+		speed 800;
+		accuracy 7;
+	}
+}
+class nb776:nb{
+	default{
+		pushfactor 0.3;
+		mass 80;
+		speed 1100;
+		accuracy 17;
+	}
+}
+class nb9:nb{
+	default{
+		pushfactor 0.5;
+		mass 90;
+		speed 500;
+		accuracy 4;
+	}
+}
 
 
