@@ -684,11 +684,15 @@ actor VulcShoot:ActionItem{
 				A_GiveInventory("JuiceVulc");
 			}else{A_GiveInventory("VulcJuicer",1);}
 
+/*
 			//shoot
 			if(countinv("ChaingunHeat")<7){A_SpawnItemEx("HDFourMil",0,0,height-6,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH);}
 			else if(countinv("ChaingunHeat")<13){A_SpawnItemEx("HDFourMil",0,0,height-6,velx,vely,velz+frandom(-0.1,0.1),frandom(-0.2,0.2),SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH);}
 			else if(countinv("ChaingunHeat")<19){A_SpawnItemEx("HDFourMil",0,0,height-6,velx+frandom(-0.8,0.8),vely+frandom(-0.8,0.8),velz+frandom(-0.8,0.8),frandom(-0.2,0.2),SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH);}
 			else{A_SpawnItemEx("HDFourMil",0,0,height-6,velx+frandom(-0.12,0.12),vely+frandom(-0.12,0.12),velz+frandom(-0.12,0.12),frandom(-0.3,0.3),SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH);}
+*/
+			if(countinv("ChaingunHeat")<7){A_GiveInventory("DecoBulleter426");}
+			else{A_GiveInventory("DecoBulleter426s");}
 
 			//shoot sound
 			if(countinv("VulcChannel")<3){A_GiveInventory("VulcChannel");}
