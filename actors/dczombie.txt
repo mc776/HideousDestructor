@@ -240,7 +240,9 @@ actor ZombieStormtrooper:ZombieMan //replaces ZombieMan
 		"####" F 0 A_PlayWeaponSound("weapons/rifle")
 		"####" F 1 bright light("SHOT"){
 			pitch+=frandom(-user_spread,user_spread);
-			A_SpawnItemEx("HDFourMilFast",0,0,44,velx,vely,velz,frandom(-user_spread,user_spread),SXF_TRANSFERPITCH|SXF_SETTARGET|SXF_SETMASTER|SXF_ABSOLUTEMOMENTUM);
+			angle+=frandom(-user_spread,user_spread);
+			A_GiveInventory("DecoBulleter426");
+//			A_SpawnItemEx("HDFourMilFast",0,0,44,velx,vely,velz,frandom(-user_spread,user_spread),SXF_TRANSFERPITCH|SXF_SETTARGET|SXF_SETMASTER|SXF_ABSOLUTEMOMENTUM);
 		}
 		"####" A 0 A_GiveInventory("ZM66Loaded",1)
 		"####" A 0 A_SetUserVar("user_spread",user_spread+1)

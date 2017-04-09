@@ -97,10 +97,7 @@ class HDFragGrenadeRoller:HDActor{
 			);
 			A_DistantQuake(4,35,512,10);
 			A_PlaySound("world/explode",1,7);
-		}
-		TNT1 AAA 2{
-//			A_SpawnChunks("HDFrag",40,400,800);
-			A_SpawnChunks("nbfrag",120,400,800);
+			A_SpawnChunks("nbfrag",360,100,800);
 		}
 		stop;
 	}
@@ -113,64 +110,63 @@ class HDFragGrenadeRoller:HDActor{
 		}
 	}
 }
-class HDFragGrenade:HDBullet{
+class HDFragGrenade:nb{
 	int fuze;
 	vector3 keeprolling;
 	default{
-		radius 4;height 4;damagetype "none";
+//		radius 4;height 4;damagetype "none";
 		scale 0.3;
 		obituary "%o was fragged by %k.";
-		radiusdamagefactor 0.04; pushfactor 3;
 		-noextremedeath;-floorclip;+noblood;+bloodlessimpact;
 		mass 500;
 		+activatemcross;-noteleport;
 	}
 	override void tick(){
-		if(fuze>=140){
-			if(notionalz<=pos.z){
-				actor gr=spawn("HDFragGrenadeRoller",self.pos);
-				gr.target=self.target;gr.master=self.master;gr.vel=self.vel;
-				gr.setstatelabel("destroy");
-			}else{
-//				A_SpawnChunks("HDFrag",70,500,900);
-				A_SpawnChunks("nbfrag",120,400,800);
-				actor xpl=Spawn("DistantRocket",self.pos,ALLOW_REPLACE);
-			}
-			destroy();
-		}else{
-			if(globalfreeze||level.Frozen) return;
-			super.tick();
-			user_damage*=0.1;
+		if(fuze<140){
 			fuze++;
+			keeprolling=vel;
+			super.tick();
+		}else{
+			if(ceilingpic==skyflatnum && pos.z>ceilingz){
+				spawn("DistantRocket",pos);
+				A_SpawnChunks("nbfrag",360,400,800);
+				destroy();return;
+			}
+			actor gr=spawn("HDFragGrenadeRoller",pos);
+			gr.target=self.target;gr.master=self.master;gr.vel=self.vel;
+			gr.setstatelabel("destroy");
+			destroy();return;
 		}
 	}
 	override void postbeginplay(){
-		super.postbeginplay();
-		if(!target) return;
-		self.speed=2+target.countinv("grenadeforce");
-		if(target.countinv("powerstrength")) speed*=2;
-		fuze=target.countinv("fragtimer");
-		target.A_TakeInventory("fragtimer");
-		target.A_TakeInventory("grenadeforce");
-		a_changevelocity(cos(pitch)*speed,0,-sin(pitch)*speed,CVF_RELATIVE);
+		actor.postbeginplay();
+		grav=getgravity();
+		if(target){
+			speed=2+target.countinv("grenadeforce");
+			pitch=target.pitch;
+			if(target.countinv("powerstrength")) speed*=2;
+			fuze=target.countinv("fragtimer");
+			target.A_TakeInventory("fragtimer");
+			target.A_TakeInventory("grenadeforce");
+			a_changevelocity(cos(pitch)*speed,0,-sin(pitch)*speed,CVF_RELATIVE);
+		}
+	}
+	override void BulletImpact(){
+		let gr=HDActor(spawn("HDFragGrenadeRoller",self.pos));
+		gr.target=self.target;gr.master=self.master;gr.vel=self.keeprolling;
+		gr.A_Frighten(256);
+		let gre=HDFragGrenadeRoller(gr);
+		if(gre){
+			gre.fuze=self.fuze;
+			gre.keeprolling=self.keeprolling;
+		}
+		gr.A_PlaySound("misc/fragknock",CHAN_BODY);
+		destroy();return;
 	}
 	states{
-	death:
-		"----" A 0{
-			let gr=HDActor(spawn("HDFragGrenadeRoller",self.pos));
-			gr.target=self.target;gr.master=self.master;gr.vel=self.keeprolling;
-			gr.A_Frighten(256);
-			let gre=HDFragGrenadeRoller(gr);
-			if(gre){
-				gre.fuze=self.fuze;
-				gre.keeprolling=self.keeprolling;
-			}
-			gr.A_PlaySound("misc/fragknock",CHAN_BODY);
-		}stop;
 	spawn:
-		FRAG BCD 2{
-			keeprolling=vel;
-		}loop;
+		FRAG BCD 2;
+		loop;
 	}
 }
 
