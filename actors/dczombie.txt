@@ -691,7 +691,12 @@ actor Jackboot:ShotgunGuy //replaces ShotgunGuy
 		"####" A 0 A_JumpIfInventory("ShotgunTube",0,"ohforfuckssake")
 		"####" A 0 A_PlayWeaponSound("weapons/hunter")
 
-		"####" F 1 bright light("SHOT") A_SpawnProjectile("ShotgunBlast",44,0,frandom(-user_spread,user_spread),CMF_AIMDIRECTION|CMF_SAVEPITCH,pitch+frandom(-user_spread,user_spread))
+		"####" F 1 bright light("SHOT"){
+			angle+=frandom(-user_spread,user_spread);
+			pitch+=frandom(-user_spread,user_spread);
+			A_GiveInventory("DecoBulleter00");
+//A_SpawnProjectile("ShotgunBlast",44,0,frandom(-user_spread,user_spread),CMF_AIMDIRECTION|CMF_SAVEPITCH,pitch+frandom(-user_spread,user_spread))
+		}
 
 		"####" E 0 A_GiveInventory("ShotgunTube",1)
 		"####" E 2 A_GiveInventory("HunterSpentShell",1)
@@ -917,11 +922,21 @@ actor JackAndJillBoot:Jackboot
 
 		"####" E 0 A_GiveInventory("ZedChamber",1)
 		"####" A 0 A_PlaySound("weapons/slayersingle",5)
-		"####" F 1 bright light("SHOT") A_SpawnProjectile("SuperShotgunBlast",44,-1,0,CMF_AIMDIRECTION|CMF_SAVEPITCH,pitch)
+		"####" F 1 bright light("SHOT"){
+			angle+=frandom(-user_spread,user_spread);
+			pitch+=frandom(-user_spread,user_spread);
+			A_GiveInventory("DecoBulleter00f");
+		}
+//		"####" F 1 bright light("SHOT") A_SpawnProjectile("SuperShotgunBlast",44,-1,0,CMF_AIMDIRECTION|CMF_SAVEPITCH,pitch)
 
 		"####" E 0 A_GiveInventory("ZedChamber",1)
 		"####" A 0 A_PlaySound("weapons/slayersingle",6)
-		"####" F 1 bright light("SHOT") A_SpawnProjectile("SuperShotgunBlast",44,0,0,CMF_AIMDIRECTION|CMF_SAVEPITCH,pitch)
+		"####" F 1 bright light("SHOT"){
+			angle+=frandom(-user_spread,user_spread);
+			pitch+=frandom(-user_spread,user_spread);
+			A_GiveInventory("DecoBulleter00f");
+		}
+//		"####" F 1 bright light("SHOT") A_SpawnProjectile("SuperShotgunBlast",44,0,0,CMF_AIMDIRECTION|CMF_SAVEPITCH,pitch)
 
 		"####" E 0 A_JumpIfInventory("ZedChamber",1,2)
 		"####" E 2 A_Jump(32,"missile")

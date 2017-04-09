@@ -158,7 +158,7 @@ class nb:HDActor{
 		else{
 			//decal
 			name decal="BulletChip";
-			if(speed<600)decal="BulletChipSmall";
+			if(dmg<80)decal="BulletChipSmall";
 			A_SprayDecal(decal);
 
 			//ricochet
@@ -357,21 +357,18 @@ class DecoBulleter:ActionItem{
 	states{
 	pickup:
 		TNT1 A 0{
-			int numbu=max(invoker.stamina,1);
-			for (int i=numbu;i;i--){
-				actor p=Spawn(invoker.missilename,pos+(0,0,height-6));
-				p.target=self;p.angle=angle;p.pitch=pitch;
-				if(invoker.speed)p.speed=invoker.speed;
-				double pf=invoker.accuracy;
-				if(p){
-					if(pf){
-						p.vel+=(
-							frandom(-pf,pf),frandom(-pf,pf),frandom(-pf,pf)
-						);
-						p.speed+=10*frandom(-pf,pf);
-					}
-					p.vel+=self.vel;
+			actor p=Spawn(invoker.missilename,pos+(0,0,height-6));
+			p.target=self;p.angle=angle;p.pitch=pitch;
+			if(invoker.speed)p.speed=invoker.speed;
+			double pf=invoker.accuracy;
+			if(p){
+				if(pf){
+					p.vel+=(
+						frandom(-pf,pf),frandom(-pf,pf),frandom(-pf,pf)
+					);
+					p.speed+=10*frandom(-pf,pf);
 				}
+				p.vel+=self.vel;
 			}
 		}fail;
 	}
@@ -411,15 +408,37 @@ class DecoBulleter9f:DecoBulleter9{
 }
 class DecoBulleter00:DecoBulleter{
 	default{
-		missiletype "nb00";
-		stamina 7;
-		accuracy 6;
+		missiletype "nb00b";
+		accuracy 1;
 	}
 }
 class DecoBulleter00f:DecoBulleter00{
 	default{
-		speed 900;
-		accuracy 4;
+		missiletype "nb00bf";
+		accuracy 0;
+	}
+}
+class DecoBulleter00f2:DecoBulleter00f{
+	states{
+	pickup:
+		TNT1 A 0{
+			for(double i=-1;i<2;i+=2){
+				actor p=Spawn(invoker.missilename,pos+(0,0,height-6));
+				p.setorigin(p.pos+(cos(angle-90),sin(angle+90),0)*i,false);
+				p.target=self;p.angle=angle;p.pitch=pitch;
+				if(invoker.speed)p.speed=invoker.speed;
+				double pf=invoker.accuracy;
+				if(p){
+					if(pf){
+						p.vel+=(
+							frandom(-pf,pf),frandom(-pf,pf),frandom(-pf,pf)
+						);
+						p.speed+=10*frandom(-pf,pf);
+					}
+					p.vel+=self.vel;
+				}
+			}
+		}fail;
 	}
 }
 
@@ -430,14 +449,48 @@ class nb426:nb{
 		mass 40;
 		speed 1200;
 		accuracy 4;
+		woundhealth 6;
 	}
 }
 class nb00:nb{
 	default{
 		pushfactor 0.9;
 		mass 50;
-		speed 800;
 		accuracy 7;
+		woundhealth 0;
+	}
+	override void postbeginplay(){
+		HDActor.postbeginplay();
+		Gunsmoke();
+		grav=getgravity();
+	}
+}
+class nb00b:nb00{
+	default{
+		stamina 7; //claymores in the future?
+		speed 700;
+		pushfactor 0.5;
+	}
+	override void postbeginplay(){
+		LongArmWobble();
+		actor bb;
+		double p=pushfactor;
+		if(target && !pitch)pitch=target.pitch;
+		for(int i=stamina;i;i--){
+			bb=spawn("nb00",pos,ALLOW_REPLACE);
+			bb.target=target;bb.pitch=pitch;bb.angle=angle;if(target)bb.vel=target.vel;
+			bb.speed=speed+speed*frandom(-p,p);
+			bb.pitch+=frandom(-p,p);
+			bb.angle+=frandom(-p,p);
+			bb.A_ChangeVelocity(bb.speed*cos(bb.pitch),0,bb.speed*sin(-bb.pitch),CVF_RELATIVE);
+		}
+		destroy();
+	}
+}
+class nb00bf:nb00b{
+	default{
+		speed 800;
+		pushfactor 0.3;
 	}
 }
 class nb776:nb{
@@ -446,6 +499,7 @@ class nb776:nb{
 		mass 80;
 		speed 1100;
 		accuracy 17;
+		woundhealth 4;
 	}
 }
 class nb9:nb{
@@ -453,12 +507,12 @@ class nb9:nb{
 		pushfactor 0.5;
 		mass 90;
 		speed 480;
-		accuracy 4;
+		accuracy 5;
 	}
 }
 class nbfrag:nb{
 	default{
-		woundhealth 4;
+		woundhealth 2;
 	}
 	override void postbeginplay(){
 		HDActor.PostBeginPlay();

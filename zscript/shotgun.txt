@@ -38,6 +38,7 @@ class ShotgunBlast:HDBullet{
 	states{
 	spawn:
 		TNT1 A 0 nodelay{
+			target.A_GiveInventory("decobulleter00");return;
 			ShotgunBlast("HDBuck",7,600,850,0.6);
 		}stop;
 	}
@@ -68,6 +69,7 @@ class SuperShotgunBlast:ShotgunBlast{
 	states{
 	spawn:
 		TNT1 A 0 nodelay{
+			target.A_GiveInventory("decobulleter00f");return;
 			ShotgunBlast("HDBuck",7,700,900,0.3);
 		}stop;
 	}
@@ -76,6 +78,8 @@ class SuperShotgunBlast2:ShotgunBlast{
 	states{
 	spawn:
 		TNT1 A 0 nodelay{
+			target.A_GiveInventory("decobulleter00f2");return;
+
 			setorigin(self.pos+(sin(pitch)-0.3,cos(pitch)-0.3,0),false);
 			angle+=0.03;
 			ShotgunBlast("HDBuck",7,700,900,0.2);
