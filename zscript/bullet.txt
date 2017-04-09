@@ -38,13 +38,14 @@ class nb:HDActor{
 		damagefunction(0);
 
 		mass 40; //40 426, 50 00, 80 776, 90 9mil, 600 40mm
-		speed 1240;//accuracy 20;
+		speed 40;//accuracy 20;
 		pushfactor 0.1;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		LongArmWobble();
 		Gunsmoke();
+		if(missilename)spawn(missilename,pos,ALLOW_REPLACE);
 		grav=getgravity();
 		if(target && !pitch)pitch=target.pitch;
 		A_ChangeVelocity(speed*cos(pitch),0,speed*sin(-pitch),CVF_RELATIVE);
@@ -107,12 +108,12 @@ class nb:HDActor{
 
 				//lower sky ceiling check
 				vector3 backcheck=(cos(angle),sin(angle),0);
-				a.setxyz(a.pos+backcheck);
+				a.setorigin(a.pos+backcheck,false);
 				if(a.ceilingpic==skyflatnum && a.ceilingz-a.pos.z<height){
 					setorigin(a.pos,false);
 					inthesky=true;
 					return;
-				}else a.setxyz(a.pos-backcheck);
+				}else a.setorigin(a.pos-backcheck,false);
 
 				//SUPER HACKY horizon line check
 				vector3 posbak=pos;
@@ -162,7 +163,7 @@ class nb:HDActor{
 			A_SprayDecal(decal);
 
 			//ricochet
-			if(!random(0,19)){
+			if(!random(10,19)){
 				bmissile=true;
 				vel.xy=rotatevector(vel.xy,frandom(0,360));
 				vel.z=frandom(-vel.z,vel.z*0.8);
@@ -174,30 +175,39 @@ class nb:HDActor{
 			else if(hd_penetrate && accuracy){
 				Puff(speed*0.4);
 				actor e;
-				vector3 velp;
-				velp.xy=rotatevector((cos(pitch),0),angle);
-				velp.z=-sin(pitch);
+				vector3 velp=(cos(pitch)*cos(angle),cos(pitch)*sin(angle),-sin(pitch));
+				vector3 velpp=velp*2;
 				velp*=accuracy;
+				double oz=pos.z;
 				setorigin(pos+velp,false);
-				if(ceilingz<pos.z||floorz>pos.z){ //abort if inside ceiling or floor
+
+				//disappear if stuck inside the floor or ceiling.
+				//I have no idea why this doesn't work.
+				if(ceilingz<pos.z||floorz>pos.z){
 					destroy();return;
 				}
-				angle+=180;pitch*=-1;
-				addz(-8);
-				[e,b]=LineAttack(
+
+				//find exact point of exit.
+				angle+=180;pitch*=-1;addz(-8);[e,b]=LineAttack(
 					angle,accuracy+2,pitch,0,"none","NewBulletMovePuff",
 					flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT
-				);
-				addz(8);
-				if((pos-e.pos).length()<accuracy-1)A_SprayDecal(decal);
-				setorigin((e.pos+pos)*0.5,false);
+				);addz(8);angle+=180;pitch*=-1;
+
+				//exit hole.
+				//I have no idea why this won't work for raised floors.
+				if((pos-e.pos).length()<accuracy){
+					e.angle=angle+180;
+					e.A_SprayDecal(decal);
+				}
+
+				//place at point of exit, puff, continue.
+				setorigin(e.pos+velpp,false);
 				if(speed>500){
-					actor pp=spawn("PenePuff",pos,ALLOW_REPLACE);
+					actor pp=spawn("PenePuff",e.pos+velpp,ALLOW_REPLACE);
 					pp.vel=vel*0.003;
 				}else Puff(speed*1.4);
-				angle+=180;pitch*=-1;
 				vel*=0.9;
-				accuracy=random(0,accuracy);
+				accuracy=0;
 				bmissile=true;
 			}
 
@@ -260,10 +270,8 @@ class nb:HDActor{
 			pufftype="BulletPuffBig";
 		}else if(sp>512){
 			pufftype="BulletPuffMedium";
-		}else if(sp>256){
-			pufftype="BulletPuffSmall";
 		}else{
-			pufftype="FragPuff";
+			pufftype="BulletPuffSmall";
 		}
 		A_SpawnItemEx(pufftype,flags:
 			SXF_NOCHECKPOSITION
@@ -301,7 +309,7 @@ class nb:HDActor{
 			crackvel=vel/hitdist*64;
 			int k=hitdist*1/64;
 			for(int j=0;j<k;j++){
-				a.setxyz(a.pos-crackvel);
+				a.setorigin(a.pos-crackvel,false);
 				bool p;p=false;
 				for(int i=0;!p && i<MAXPLAYERS;i++){
 					if(playeringame[i] && players[i].mo){
@@ -448,15 +456,16 @@ class nb426:nb{
 		pushfactor 0.6;
 		mass 40;
 		speed 1200;
-		accuracy 4;
+		accuracy 6;
 		woundhealth 6;
+		missiletype "DistantRifle";
 	}
 }
 class nb00:nb{
 	default{
 		pushfactor 0.9;
 		mass 50;
-		accuracy 7;
+		accuracy 8;
 		woundhealth 0;
 	}
 	override void postbeginplay(){
@@ -473,6 +482,7 @@ class nb00b:nb00{
 	}
 	override void postbeginplay(){
 		LongArmWobble();
+		spawn("DistantShotgun",pos,ALLOW_REPLACE);
 		actor bb;
 		double p=pushfactor;
 		if(target && !pitch)pitch=target.pitch;
@@ -500,6 +510,7 @@ class nb776:nb{
 		speed 1100;
 		accuracy 17;
 		woundhealth 4;
+		missiletype "DoubleDistantRifle";
 	}
 }
 class nb9:nb{
@@ -507,7 +518,7 @@ class nb9:nb{
 		pushfactor 0.5;
 		mass 90;
 		speed 480;
-		accuracy 5;
+		accuracy 9;
 	}
 }
 class nbfrag:nb{
@@ -519,7 +530,7 @@ class nbfrag:nb{
 		grav=getgravity();
 		pushfactor=frandom(0.1,1);
 		mass=random(1,4)*20;
-		accuracy=random(0,6);
+		accuracy=random(0,2)*6;
 	}
 	override void Puff(int sp=0){
 		A_SpawnItemEx("FragPuff",flags:

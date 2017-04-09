@@ -292,6 +292,12 @@ class DistantPlasma:DistantDummy{
 class DistantBFG:DistantDummy{
 	default{deathsound "world/bfgfar";mass 44;}
 }
+class DoubleDistantRifle:IdleDummy{
+	override void postbeginplay(){
+		for(int i=2;i;i--)spawn("DistantRifle",pos,ALLOW_REPLACE);
+		destroy();
+	}
+}
 
 
 //Quake effect affecting each player differently depending on distance
