@@ -1,0 +1,133 @@
+// ------------------------------------------------------------
+// The heart
+// ------------------------------------------------------------
+
+extend class HDPlayerPawn{
+	const HDCONST_MINHEARTTICS = 5; //35/5*60=420 beats per minute!
+	int beatcount;
+	int beatmax;
+	int beatcap;
+	int beatcounter;
+	int stimcount;
+	int regenblues;
+	int regenbers;
+	int woundcount;
+	int newwoundcount;
+	int oldwoundcount;
+	int aggravateddamage;
+	void HeartTicker(){
+		if(bkilled) return; //don't really need this...
+		A_SetInventory("HeartBeatCounter",beatcount);
+
+		//zerk!!!!
+		if(regenbers){
+			regenbers--;
+			healthing(1);
+		}else if(countinv("PowerStrength") && !countinv("RegenBers"))A_TakeInventory("PowerStrength");
+
+		//on every beat
+		if(beatcount>0){
+			beatcount--;
+			pitch-=0.00001*beatcount*(1+2*(35-beatmax));
+		}else{
+			//remove these once we're done with them
+			//lethal didn't mean the same as oldwoundcount but oh well
+			if(countinv("RegenBlues")){
+				regenblues+=countinv("RegenBlues");
+				A_TakeInventory("RegenBlues");
+			}
+			if(countinv("RegenBers")){
+				regenbers+=countinv("RegenBers")*4;
+				A_TakeInventory("RegenBers");
+			}
+			if(countinv("RegenStims")){
+				stimcount+=countinv("RegenStims");
+				A_TakeInventory("RegenStims");
+			}
+			if(countinv("AggravatedDamage")){
+				aggravateddamage+=countinv("AggravatedDamage");
+				A_TakeInventory("AggravatedDamage");
+			}
+			if(countinv("LethalDamage")){
+				oldwoundcount+=countinv("LethalDamage");
+				A_TakeInventory("LethalDamage");
+			}
+
+			//limit beatmax
+			if(countinv("PowerStrength")) beatmax=clamp(beatmax,4,14);
+			else beatmax=clamp(beatmax,HDCONST_MINHEARTTICS,35);
+
+			if(beatmax<8)DamageMobj(self,self,1,"internal");
+
+			//reset beatcount, subject to stims
+			if(stimcount) beatcount=beatmax-random(1,2);
+				else beatcount=beatmax;
+			A_SetBlend("66 10 12",0.3-0.3*(health*0.01),beatcount);
+			pitch+=0.002*beatcount*(1+(35-beatmax));
+			beatcounter++;
+
+			//sprinting
+			if(cansprint && runwalksprint>0){
+				beatmax--;
+				if(beatmax<=HDCONST_SPRINTMAXHEARTRATE)beatmax-=10;
+			}
+
+			//adrenalized vessels begin to relax...
+			if(newwoundcount>0 && (beatmax>32||beatmax>=beatcap)){
+				newwoundcount--;woundcount++;
+			}
+
+			//magical healing stops imminent danger first
+			if(regenblues>0 && woundcount+newwoundcount>0){
+				newwoundcount--;woundcount--;
+				regenblues--;
+			}
+
+			//don't go negative wound
+			if(newwoundcount<0)newwoundcount=0;
+			if(woundcount<0)woundcount=0;
+
+			if(beatcounter%4==0){	//every 4 beats
+				//recovering heart rate
+				if(beatmax<beatcap) beatmax++;
+			}
+			if(beatcounter%12==0){	//every 12 beats
+				//you're either gaining or losing health
+//this is the real one, but we can't use it until the weapons are replaced
+//				if(woundcount)A_DamageSelf(random(1,woundcount),"bleedout");
+//this is the transitional one
+if(countinv("WoundCount"))A_DamageSelf(random(1,woundcount),"bleedout");
+				else healthing(1);
+
+				if(stimcount>0)stimcount--;
+				if(regenblues>0 && oldwoundcount+aggravateddamage>0){
+					oldwoundcount-=2;aggravateddamage--;
+					regenblues--;
+					if(oldwoundcount<0)oldwoundcount=0;
+					if(aggravateddamage<0)aggravateddamage=0;
+				}
+				if(woundcount>0 && beatmax<26 && random(1,7==1)){
+					newwoundcount++;woundcount--;
+				}
+			}
+			if(beatcounter%20==0){	//every 20 beats
+				beatcap=clamp(beatcap+8,1,35);
+
+				//updating beatcap (minimum heart rate)
+				if(health<40) beatcap=clamp(beatcap,1,24);
+				else if(health<60) beatcap=clamp(beatcap,1,32);
+				if(woundcount>10) beatcap=clamp(beatcap,1,12);    
+				else if(woundcount>5) beatcap=clamp(beatcap,1,24);
+
+				//keep stim below cap as long as it's above 12
+				if(stimcount>0 && beatcap>12)    
+					beatcap=clamp(beatcap,12,beatcap-1);
+			}
+			if(beatcounter==120){	//every 120 beats
+				beatcounter=0;	//reset
+				if(random(70,health)==100-aggravateddamage)oldwoundcount--;
+			}
+		}
+	}
+}
+
