@@ -12,9 +12,9 @@ extend class HDPlayerPawn{
 	int regenblues;
 	int regenbers;
 	int woundcount;
-	int newwoundcount;
 	int oldwoundcount;
 	int aggravateddamage;
+	int bloodpressure;
 	void HeartTicker(){
 		if(bkilled) return; //don't really need this...
 		A_SetInventory("HeartBeatCounter",beatcount);
@@ -25,13 +25,31 @@ extend class HDPlayerPawn{
 			healthing(1);
 		}else if(countinv("PowerStrength") && !countinv("RegenBers"))A_TakeInventory("PowerStrength");
 
+		//MY ORIFICE IS BLEEDING!!!
+		if(countinv("WoundCount")){
+			if(random(1,35+bloodpressure)<=countinv("WoundCount"))
+			damagemobj(self,null,1,"bleedout");
+		}
+
+		//good old jitters!
+		if(
+			bloodpressure>20||
+			health<33
+		){
+			double jitter=0.3;
+			if(health<20) jitter=1;
+			A_SetPitch(pitch+frandom(-jitter,jitter),true);
+			A_SetAngle(angle+frandom(-jitter,jitter),true);
+		}
+
 		//on every beat
 		if(beatcount>0){
 			beatcount--;
-			pitch-=0.00001*beatcount*(1+2*(35-beatmax));
+			pitch-=0.00001*beatcount*bloodpressure;
 		}else{
 			//remove these once we're done with them
 			//lethal didn't mean the same as oldwoundcount but oh well
+			woundcount=countinv("WoundCount");
 			if(countinv("RegenBlues")){
 				regenblues+=countinv("RegenBlues");
 				A_TakeInventory("RegenBlues");
@@ -58,6 +76,7 @@ extend class HDPlayerPawn{
 			else beatmax=clamp(beatmax,HDCONST_MINHEARTTICS,35);
 
 			if(beatmax<8)DamageMobj(self,self,1,"internal");
+			else healthing(1);
 
 			//reset beatcount, subject to stims
 			if(stimcount) beatcount=beatmax-random(1,2);
@@ -72,19 +91,18 @@ extend class HDPlayerPawn{
 				if(beatmax<=HDCONST_SPRINTMAXHEARTRATE)beatmax-=10;
 			}
 
-			//adrenalized vessels begin to relax...
-			if(newwoundcount>0 && (beatmax>32||beatmax>=beatcap)){
-				newwoundcount--;woundcount++;
-			}
+			//blood pressure
+			if(stimcount>0 && bloodpressure<12)bloodpressure++;
+			if(stimcount<1 && bloodpressure>0)bloodpressure--;
 
 			//magical healing stops imminent danger first
-			if(regenblues>0 && woundcount+newwoundcount>0){
-				newwoundcount--;woundcount--;
+			if(regenblues>0 && woundcount>0){
+				A_TakeInventory("WoundCount",1);
+				woundcount--;
 				regenblues--;
 			}
 
 			//don't go negative wound
-			if(newwoundcount<0)newwoundcount=0;
 			if(woundcount<0)woundcount=0;
 
 			if(beatcounter%4==0){	//every 4 beats
@@ -92,22 +110,13 @@ extend class HDPlayerPawn{
 				if(beatmax<beatcap) beatmax++;
 			}
 			if(beatcounter%12==0){	//every 12 beats
-				//you're either gaining or losing health
-//this is the real one, but we can't use it until the weapons are replaced
-//				if(woundcount)A_DamageSelf(random(1,woundcount),"bleedout");
-//this is the transitional one
-if(countinv("WoundCount"))A_DamageSelf(random(1,woundcount),"bleedout");
-				else healthing(1);
-
 				if(stimcount>0)stimcount--;
+				if(bloodpressure>0)bloodpressure--;
 				if(regenblues>0 && oldwoundcount+aggravateddamage>0){
 					oldwoundcount-=2;aggravateddamage--;
 					regenblues--;
 					if(oldwoundcount<0)oldwoundcount=0;
 					if(aggravateddamage<0)aggravateddamage=0;
-				}
-				if(woundcount>0 && beatmax<26 && random(1,7==1)){
-					newwoundcount++;woundcount--;
 				}
 			}
 			if(beatcounter%20==0){	//every 20 beats

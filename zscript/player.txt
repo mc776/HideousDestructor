@@ -200,6 +200,8 @@ class HDPlayerPawn:PlayerPawn{
 			stunned>0
 			||(beatmax<14 && !countinv("PowerStrength"))
 			||StumbleCheck()
+			|| health<25
+			|| woundcount>10
 		){
 			mustwalk=true;
 			runwalksprint=-1;
@@ -209,7 +211,7 @@ class HDPlayerPawn:PlayerPawn{
 		if(
 			!mustwalk
 			&& barehanded
-			&& (
+			&&(
 				beatmax>HDCONST_SPRINTMAXHEARTRATE ||
 				countinv("PowerStrength")
 			)
