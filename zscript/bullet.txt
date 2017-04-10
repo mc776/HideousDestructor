@@ -221,7 +221,7 @@ class nb:HDActor{
 	}
 	//apply damage and blood
 	void BulletImpactDamage(){
-		dmg=mass*speed*speed*0.0000005+woundhealth;
+		dmg+=mass*speed*speed*0.0000005+woundhealth;
 		int maxdmg=dmg*2;
 
 		//supersonic shockwave damage
@@ -337,6 +337,16 @@ class nb:HDActor{
 		if(countinv("IsMoving",AAPTR_TARGET)>=10){
 			pitch+=random(-2,2);
 			angle+=random(-1,1);
+		}
+	}
+	virtual void Effect(class<Actor> trailtype="HDGunSmoke",int numactors=12,double spacing=4,double velmul=0.6){
+		if(!bmissile || !speed) return;
+		vector3 frac=-vel/speed*spacing;
+		vector3 trvel=vel*0.6+(0,0,2);
+		for(int i=numactors;i;i--){
+			actor tr=spawn(trailtype,pos);
+			tr.setorigin(pos+frac*i,true);
+			tr.vel=trvel;
 		}
 	}
 }

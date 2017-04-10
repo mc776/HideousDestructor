@@ -4,7 +4,7 @@
 
 extend class HDPlayerPawn{
 	double CheckEncumbrance(){
-		if(hd_carrylimit){
+		if(!hd_carrylimit){
 			A_TakeInventory("Backpack");
 			return 0;
 		}

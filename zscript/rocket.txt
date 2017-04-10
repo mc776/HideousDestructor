@@ -20,7 +20,14 @@ class GyroGrenade:nb{
 	override void BulletImpact(){
 		if(!bmissile) return;
 		bmissile=false;
-		if(a && a.tracer) BulletImpactDamage();
+		if(a && a.tracer){
+			if(primed){
+				dmg+=clamp((42-stamina)*20,0,400);
+			}
+			BulletImpactDamage();
+		}else{
+			if(fuze!=1 && primed)A_SprayDecal("Scorch");
+		}
 		setstatelabel("death");
 	}
 	states{
@@ -41,7 +48,7 @@ class GyroGrenade:nb{
 		#### BA 1{
 			if(fuze>0){
 				fuze--;
-				if(fuze==1) BulletImpact();;
+				if(fuze==1) BulletImpact();
 			}
 		}loop;
 	spawnrocket:
@@ -53,7 +60,6 @@ class GyroGrenade:nb{
 				tracer=target.tracer;
 			}
 			brockettrail=true;
-			primed=true;
 			if(fuze>1)fuze+=5; //idiotproofing the rocket timer
 			Gunsmoke();
 			A_PlaySound("weapons/rocklaunch");
@@ -61,7 +67,7 @@ class GyroGrenade:nb{
 	spawnrocket2:
 		#### BA 1{
 			if(stamina>0){
-				if(stamina>25) Gunsmoke();
+				Effect();
 				if(tracer) A_FaceTracer(20,20);
 				A_ChangeVelocity(cos(pitch)*(stamina>>2),0,sin(-pitch)*(stamina>>2)+1,CVF_RELATIVE);
 				accuracy++;
@@ -77,13 +83,14 @@ class GyroGrenade:nb{
 				if(fuze==1) BulletImpact();
 			}
 			stamina--;
-		}loop;
+		}
+		---- A 0{primed=true;}
+		loop;
 	death:
 		TNT1 A 1{
 			if(!primed) A_SpawnItemEx("DudRocquette",0,0,0,random(30,60),random(-10,10),random(-10,10),random(0,360),SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS,0);
 			else{
 				//explosion
-				A_SprayDecal("Scorch");
 				A_SpawnChunks("nbfrag",80,100,500+4*stamina);
 				if(!inthesky){
 					actor xpl=Spawn("Gyrosploder",self.pos-(0,0,1),ALLOW_REPLACE);
@@ -95,15 +102,14 @@ class GyroGrenade:nb{
 }
 class HDHEAT:GyroGrenade{
 	default{
+		+forcepain
 		scale 0.4; woundhealth 1800;
-		+forcepain; decal "BrontoScorch";
+		decal "BrontoScorch";
 	}
 	states{
 	spawn:
 		HEAT A 0;
 		goto spawn1;
-	spawn2:
-		goto spawn2g;
 	death:
 		TNT1 AAA 0 A_SpawnItemEx ("HDSmokeChunk", 0,0,1, random(-3,3),random(-3,3),random(2,6),random(-15,15),SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS,32);
 		TNT1 A 1{
