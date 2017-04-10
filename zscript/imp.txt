@@ -156,7 +156,10 @@ class HDImp:HDMOb{
 		TROO KKL 2 A_Bleed();
 	dead:
 		TROO L 2 A_Bleed();
-		TROO M 2 canraise A_JumpIf(vel.z!=0,"dead");
+		TROO M 2 canraise{
+			if(countinv("SawGibs")>70)setstatelabel("xdeath");
+			else if(vel.z)setstatelabel("dead");
+		}
 		wait;
 	xdeath:
 		TROO N 4;
