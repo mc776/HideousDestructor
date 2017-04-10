@@ -2,48 +2,49 @@
 //   Gyro-Grenades and H.E.A.T. derived from bullet
 // ------------------------------------------------------------
 
-class GyroGrenade:HDBullet{
+class GyroGrenade:nb{
 	int fuze;bool primed;
 	default{
+		-noextremedeath -noteleport +bloodlessimpact
 		height 3; radius 3; scale 0.5;
 		speed 80; mass 600; accuracy 0; woundhealth 0;
 		obituary "%o was fragged by %k.";
-		-noextremedeath;-noteleport;+bloodlessimpact;
 		stamina 42; //used for fuel
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		fuze=0;
 	}
-	override void tick(){
-		super.tick();
-		if(!primed) user_damage/=7;
+	override void Puff(int sp=0){
+		BulletImpact();
+	}
+	override void BulletImpact(){
+		if(!bmissile) return;
+		bmissile=false;
+		if(a && a.tracer) BulletImpactDamage();
+		setstatelabel("death");
 	}
 	states{
 	spawn:
 		ROCQ A 0;
 	spawn1:
 		#### A 0{
-			A_LongArmWobble();
-			A_Gunsmoke();
-			fuze=1+countinv("AirburstCount",AAPTR_TARGET);
-			A_TakeInventory("AirburstCount",giveto:AAPTR_TARGET);
-			if(countinv("HDRocketAmmo")>0) return resolvestate("spawn2g");
-			return resolvestate("spawn2");
+			if(target){
+				fuze=target.countinv("AirburstCount");
+				if(fuze)fuze++;
+				A_TakeInventory("AirburstCount",giveto:AAPTR_TARGET);
+			}
+			if(countinv("HDRocketAmmo")) setstatelabel("spawnrocket");
 		}
-	spawn2:
-		#### A 0 A_ChangeVelocity(cos(pitch)*speed,0,-sin(pitch)*speed,CVF_RELATIVE);
-	spawn3:
 		#### ABA 1;
 		#### A 0{primed=true;}
-	spawn4:
+	spawn2:
 		#### BA 1{
 			if(fuze>0){
 				fuze--;
-				if(fuze==1) ExplodeMissile(NULL,NULL);
+				if(fuze==1) BulletImpact();;
 			}
 		}loop;
-	spawn2g:
+	spawnrocket:
 		#### A 0{
 			if(
 				target.A_CheckLOF("null",CLOFF_JUMPENEMY|CLOFF_JUMPFRIEND|CLOFF_JUMPOBJECT|CLOFF_JUMPNONHOSTILE|CLOFF_ALLOWNULL|CLOFF_SETTRACER|CLOFF_FROMBASE|CLOFF_NOAIM,65536,512,0,0,target.height-12,0,AAPTR_NULL)
@@ -54,13 +55,13 @@ class GyroGrenade:HDBullet{
 			brockettrail=true;
 			primed=true;
 			if(fuze>1)fuze+=5; //idiotproofing the rocket timer
-			A_Gunsmoke();
+			Gunsmoke();
 			A_PlaySound("weapons/rocklaunch");
 		}
-	spawn3g:
+	spawnrocket2:
 		#### BA 1{
 			if(stamina>0){
-				if(stamina>25) A_Gunsmoke();
+				if(stamina>25) Gunsmoke();
 				if(tracer) A_FaceTracer(20,20);
 				A_ChangeVelocity(cos(pitch)*(stamina>>2),0,sin(-pitch)*(stamina>>2)+1,CVF_RELATIVE);
 				accuracy++;
@@ -73,28 +74,18 @@ class GyroGrenade:HDBullet{
 			}
 			if(fuze>0){
 				fuze--;
-				if(fuze==1) ExplodeMissile(NULL,NULL);
-			}
-			if(notionalz!=pos.z){
-				brockettrail=false;
-				bgrenadetrail=false;
+				if(fuze==1) BulletImpact();
 			}
 			stamina--;
 		}loop;
-	xdeath:
-		TNT1 A 0{
-			A_BulletCrit();
-			if(accuracy>0) A_DamageTracer(accuracy*12,"smallarms3",0,"None","None",AAPTR_TARGET,AAPTR_DEFAULT);
-			return resolvestate("death");
-		}
 	death:
 		TNT1 A 1{
 			if(!primed) A_SpawnItemEx("DudRocquette",0,0,0,random(30,60),random(-10,10),random(-10,10),random(0,360),SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS,0);
 			else{
 				//explosion
-//				A_SpawnChunks("HDFrag",42,100,500+4*stamina);
+				A_SprayDecal("Scorch");
 				A_SpawnChunks("nbfrag",80,100,500+4*stamina);
-				if(notionalz<=pos.z){
+				if(!inthesky){
 					actor xpl=Spawn("Gyrosploder",self.pos-(0,0,1),ALLOW_REPLACE);
 					xpl.target=target;xpl.master=master;xpl.stamina=stamina;
 				}else{actor xpl=Spawn("DistantRocket",self.pos,ALLOW_REPLACE);}

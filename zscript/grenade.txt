@@ -127,7 +127,7 @@ class HDFragGrenade:nb{
 			keeprolling=vel;
 			super.tick();
 		}else{
-			if(ceilingpic==skyflatnum && pos.z>ceilingz){
+			if(inthesky){
 				spawn("DistantRocket",pos);
 				A_SpawnChunks("nbfrag",360,400,800);
 				destroy();return;

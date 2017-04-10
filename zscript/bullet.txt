@@ -116,13 +116,15 @@ class nb:HDActor{
 
 				//SUPER HACKY horizon line check
 				vector3 posbak=pos;
+				vector2 sizbak=(radius,height);
 				a_setsize(12,4);
 				if(!trymove(posbak.xy+1*(cos(angle),sin(angle)),true,true)){
 					if(blockingline && blockingline.special == Line_Horizon){
 						destroy();return;
 					}
-				}else setorigin(posbak,false);
-				a_setsize(0.05,0.05);
+				}
+				setorigin(posbak,false);
+				a_setsize(sizbak.x,sizbak.y);
 
 				//finally, the "real" impacts
 				if(floorz>pos.z || ceilingz<=pos.z+height){

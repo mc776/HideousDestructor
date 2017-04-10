@@ -84,26 +84,6 @@ actor HDPlayer:HDPlayerPawn{
 		PLAY FEEFEEF 1
 		PLAY E 35
 		loop
-	missile:
-		"####" E 4{
-			A_TakeInventory("NotShot");
-			A_TakeInventory("PowerFrightener");
-			if(health<1){return state("death");}
-			else if(health<40){ACS_NamedExecuteAlways("Pain",0,0,0,2);}
-			return state("");
-		}
-		"----" A 0 A_Jump(256,"spawn2")
-	melee:
-		"----" A 0{
-			A_TakeInventory("NotShot");
-			A_TakeInventory("JustStarted");
-			A_TakeInventory("PowerFrightener");
-			if(random(1,6)==1){A_GiveInventory("EvadeNow",1,AAPTR_PLAYER_GETTARGET);}
-		}
-		"####" E 2 A_Jump(24,1)
-		goto missile
-		"####" F 2 bright light("SHOT")
-		goto missile
 
 	pain:
 	pain.nowound:

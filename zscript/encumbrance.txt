@@ -4,6 +4,11 @@
 
 extend class HDPlayerPawn{
 	double CheckEncumbrance(){
+		if(hd_carrylimit){
+			A_TakeInventory("Backpack");
+			return 0;
+		}
+
 		int blox=
 
 		//weapons
