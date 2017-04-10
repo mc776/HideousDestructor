@@ -2,48 +2,63 @@
 //   Brontornis Cannon
 // ------------------------------------------------------------
 
-class TerrorBolt:HDBullet{
+class TerrorBolt:nb{
 	default{
 		-noextremedeath
 		height 2;radius 2;
 		speed 500;mass 500;accuracy 0;woundhealth 100;
-		missiletype "HDGunSmoke";
+		missiletype "DoubleDistantShotgun";
 		scale 0.08;translation "128:151=%[1,1,1]:[0.2,0.2,0.2]";
 		seesound "weapons/riflecrack";
 		decal "BrontoScorch";
 		obituary "%o played %k's cannon.";
 	}
-	override void Effect(){ //modified for cannon
-		if(random(1,5)>1) return;
-		actor a=spawn("HDGunSmoke",pos,ALLOW_REPLACE);
-		a.vel=vel*0.01+(random(-4,4),random(-4,4),random(-4,4));
+	override void Puff(int sp=0){
+		if(sp<0)setstatelabel("death");
+	}
+	override void BulletImpact(){
+		if(!bmissile) return;
+		if(a && a.tracer){
+			A_PlaySound("weapons/bigcrack");
+			BulletImpactDamage();
+			if(a.tracer.gibhealth && a.tracer.health>-a.tracer.gibhealth) Puff(-1);
+			else{
+				bmissile=true;
+				vel*=0.9;
+				vel+=(random(-3,3),random(-3,3),random(-3,3));
+				return;
+			}
+		}else{
+			bmissile=false;
+			A_SprayDecal("Scorch");
+			Puff(-1);
+		}
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		vector3 pvel=vel*0.02;
+		for(int i=2;i;i--){
+			A_SpawnItemEx("TerrorSabotPiece",0,0,0,
+				speed*cos(pitch)*0.01,(i==2?3:-3),speed*sin(pitch)*0.01,0,
+				SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS
+			);
+		}
 	}
 	states{
 	spawn:
 		MISL A 0 nodelay{
-			Spawn("DistantShotgun",pos,ALLOW_REPLACE);
-			Spawn("DistantShotgun",pos,ALLOW_REPLACE);
-			A_LongArmWobble();
-			A_Gunsmoke();
-			A_SpawnItemEx("TerrorSabotPiece",0,0,0,vel.x,vel.y,vel.z,1,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS);
-			A_SpawnItemEx("TerrorSabotPiece",0,0,0,vel.x,vel.y,vel.z,-1,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS);
 		}
-		MISL A -1 A_ChangeVelocity(cos(pitch)*speed,0,-sin(pitch)*speed,CVF_RELATIVE);
-	xdeath:
-		TNT1 A 1{
-			A_BulletCrit();
-			A_PlaySound("weapons/bigcrack");
-		}
-		TNT1 A 0 A_JumpIfInventory("IsGibbed",1,"pierce",AAPTR_TRACER);
+		MISL AAAAAAAAAAAAAAAAAAAA 1{Effect();}
+		MISL A -1;
 	death:
 		TNT1 A 16{
 			bmissile=false;
-			if(blockingmobj)blockingmobj.damagemobj( //warhead damage
+			vel*=0.01;
+			if(a.tracer)a.tracer.damagemobj( //warhead damage
 				self,self.master,
 				random(12,24)*60,
 				"SmallArms3",DMG_THRUSTLESS);
 			actor a=Spawn("WallChunker",pos,ALLOW_REPLACE);
-			a.angle=angle;a.A_ChangeVelocity(0.1,0,-0.1,CVF_RELATIVE);
 			A_Blast(
 				fragradius:256,fragdamage:64,fragdamagetype:"SmallArms1",
 				immolateradius:64,immolateamount:random(4,20),immolatechance:32,

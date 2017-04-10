@@ -292,10 +292,16 @@ class DistantPlasma:DistantDummy{
 class DistantBFG:DistantDummy{
 	default{deathsound "world/bfgfar";mass 44;}
 }
-class DoubleDistantRifle:IdleDummy{
+class DoubleDistantRifle:DistantRifle{
 	override void postbeginplay(){
-		for(int i=2;i;i--)spawn("DistantRifle",pos,ALLOW_REPLACE);
-		destroy();
+		super.postbeginplay();
+		spawn("DistantRifle",pos,ALLOW_REPLACE);
+	}
+}
+class DoubleDistantShotgun:DistantShotgun{
+	override void postbeginplay(){
+		super.postbeginplay();
+		spawn("DistantShotgun",pos,ALLOW_REPLACE);
 	}
 }
 
