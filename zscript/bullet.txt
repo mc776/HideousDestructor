@@ -48,6 +48,13 @@ class nb:HDActor{
 		if(missilename)spawn(missilename,pos,ALLOW_REPLACE);
 		grav=getgravity();
 		if(target && !pitch)pitch=target.pitch;
+
+		/*
+			this is included in initialization because all pre-ZScript weapon code
+			would A_SpawnItemEx the bullets adding only the shooter's own momentum,
+			leaving the bullet to set its own state.
+			summoning a bullet will cause it to go twice as fast.
+		*/
 		A_ChangeVelocity(speed*cos(pitch),0,speed*sin(-pitch),CVF_RELATIVE);
 	}
 	states{
@@ -77,15 +84,19 @@ class nb:HDActor{
 			return;
 		}
 
-		//move based on hitscan result
-		A_FaceVector(vel);
+		//point actor in velocity
+		A_FaceMovementDirection();
 		speed=vel.length();
 
-		//so hacky
-		if(!bseeinvisible && target)target.bshootable=false;
+		//LineAttack always has a zoffset of 8.
+		//b is never used.
+		if(!bseeinvisible && target)target.bshootable=false; //hack to escape shooter
 		setxyz((pos.x,pos.y,pos.z-8));
 		[a,b]=LineAttack(angle,speed,pitch,0,"none",
-			"NewBulletMovePuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT);
+			"NewBulletMovePuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT
+		);
+
+		//reset hacks
 		setxyz((pos.x,pos.y,pos.z+8));
 		if(!bseeinvisible && target)target.bshootable=true;
 		bseeinvisible=true;
@@ -189,10 +200,10 @@ class nb:HDActor{
 				}
 
 				//find exact point of exit.
-				angle+=180;pitch*=-1;addz(-8);[e,b]=LineAttack(
+				angle+=180;pitch*=-1;setxyz((pos.x,pos.y,pos.z-8));[e,b]=LineAttack(
 					angle,accuracy+2,pitch,0,"none","NewBulletMovePuff",
 					flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT
-				);addz(8);angle+=180;pitch*=-1;
+				);setxyz((pos.x,pos.y,pos.z+8));angle+=180;pitch*=-1;
 
 				//exit hole.
 				//I have no idea why this won't work for raised floors.

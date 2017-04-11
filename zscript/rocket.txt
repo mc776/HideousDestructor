@@ -26,7 +26,10 @@ class GyroGrenade:nb{
 			}
 			BulletImpactDamage();
 		}else{
-			if(fuze!=1 && primed)A_SprayDecal("Scorch");
+			if(fuze!=1){
+				if(primed)A_SprayDecal("Scorch");
+				else super.Puff();
+			}
 		}
 		setstatelabel("death");
 	}
@@ -88,7 +91,7 @@ class GyroGrenade:nb{
 		loop;
 	death:
 		TNT1 A 1{
-			if(!primed) A_SpawnItemEx("DudRocquette",0,0,0,random(30,60),random(-10,10),random(-10,10),random(0,360),SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS,0);
+			if(!primed)A_SpawnItemEx("DudRocquette",0,0,0,random(30,60),random(-10,10),random(-10,10),random(0,360),SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS,0);
 			else{
 				//explosion
 				A_SpawnChunks("nbfrag",180,100,500+4*stamina);
