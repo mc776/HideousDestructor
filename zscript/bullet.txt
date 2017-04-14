@@ -172,7 +172,8 @@ class nb:HDActor{
 			//decal
 			name decal="BulletChip";
 			if(dmg<80)decal="BulletChipSmall";
-			A_SprayDecal(decal);
+			A_SprayDecal(decal,radius+4); //dunno why minimum is +4
+				//if anyone knows how to prevent this from showing up on the wrong side, let me know!
 
 			//ricochet
 			if(!random(10,19)){
@@ -200,17 +201,18 @@ class nb:HDActor{
 				}
 
 				//find exact point of exit.
-				angle+=180;pitch*=-1;setxyz((pos.x,pos.y,pos.z-8));[e,b]=LineAttack(
+				angle+=180;pitch*=-1;
+				setxyz((pos.x,pos.y,pos.z-8));[e,b]=LineAttack(
 					angle,accuracy+2,pitch,0,"none","NewBulletMovePuff",
 					flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT
-				);setxyz((pos.x,pos.y,pos.z+8));angle+=180;pitch*=-1;
+				);setxyz((pos.x,pos.y,pos.z+8));
 
 				//exit hole.
 				//I have no idea why this won't work for raised floors.
-				if((pos-e.pos).length()<accuracy){
-					e.angle=angle+180;
-					e.A_SprayDecal(decal);
-				}
+				A_SprayDecal(decal,max(5,accuracy+2));
+
+				//reorient bullet.
+				angle+=180;pitch*=-1;
 
 				//place at point of exit, puff, continue.
 				setorigin(e.pos+velpp,false);
