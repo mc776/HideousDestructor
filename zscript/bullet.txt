@@ -79,7 +79,7 @@ class nb:HDActor{
 		if(inthesky){
 			setxyz(pos+vel);
 			if(ceilingz>pos.z) inthesky=false;
-			vel.z-=grav;
+			if(vel.z>-277)vel.z-=grav;
 			nexttic();
 			return;
 		}
