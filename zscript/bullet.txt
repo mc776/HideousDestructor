@@ -45,7 +45,10 @@ class nb:HDActor{
 		super.postbeginplay();
 		LongArmWobble();
 		Gunsmoke();
-		if(missilename)spawn(missilename,pos,ALLOW_REPLACE);
+		if(missilename){
+			actor m=spawn(missilename,pos,ALLOW_REPLACE);
+			m.target=target;
+		}
 		grav=getgravity();
 		if(target && !pitch)pitch=target.pitch;
 
