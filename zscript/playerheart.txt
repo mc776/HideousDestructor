@@ -8,14 +8,20 @@ extend class HDPlayerPawn{
 	int beatmax;
 	int beatcap;
 	int beatcounter;
+
+	int bloodpressure;
+
 	int stimcount;
 	int regenblues;
 	int regenbers;
+
 	int woundcount;
+	int burncount;
 	int oldwoundcount;
 	int aggravateddamage;
-	int bloodpressure;
+
 	void HeartTicker(){
+
 		if(bkilled) return; //don't really need this...
 		A_SetInventory("HeartBeatCounter",beatcount); //for sbarinfo
 
