@@ -315,17 +315,16 @@ class HDPlayerPawn:PlayerPawn{
 			if(
 				countinv("WeaponBusy")||
 				countinv("PowerInvulnerable")||
-				input&(
-					BT_RELOAD
-					||BT_ZOOM
-					||BT_USER1
-					||BT_USER2
-					||BT_USER3
-					||BT_USER4
-					||BT_JUMP
+				(
+					input&BT_RELOAD
+					||input&BT_ZOOM
+					||input&BT_USER1
+					||input&BT_USER2
+					||input&BT_USER3
+					||input&BT_USER4
+					||input&BT_JUMP
 				)||
-				abs(iyaw)>4096||
-				!(80<getcvar("fov")<120)
+				abs(iyaw)>4096
 			)nocrosshair=12;
 			else if(
 				player.fov>120||player.fov<80
