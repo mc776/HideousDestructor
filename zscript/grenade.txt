@@ -140,6 +140,7 @@ class HDFragGrenade:nb{
 	}
 	override void postbeginplay(){
 		actor.postbeginplay();
+		shootz = height*0.5+8;
 		grav=getgravity();
 		if(target){
 			speed=2+target.countinv("grenadeforce");

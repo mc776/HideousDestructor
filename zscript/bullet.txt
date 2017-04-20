@@ -44,14 +44,13 @@ class nb:HDActor{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		shootz = height*0.5+8;
-
 		LongArmWobble();
 		Gunsmoke();
 		if(missilename){
 			actor m=spawn(missilename,pos,ALLOW_REPLACE);
 			m.target=target;
 		}
+		shootz = height*0.5+8;
 		grav=getgravity();
 		if(target && !pitch)pitch=target.pitch;
 
@@ -501,6 +500,7 @@ class nb00:nb{
 	override void postbeginplay(){
 		HDActor.postbeginplay();
 		Gunsmoke();
+		shootz = height*0.5+8;
 		grav=getgravity();
 	}
 }
@@ -557,6 +557,7 @@ class nbfrag:nb{
 	}
 	override void postbeginplay(){
 		HDActor.PostBeginPlay();
+		shootz = height*0.5+8;
 		grav=getgravity();
 		pushfactor=frandom(0.1,1);
 		mass=random(1,4)*20;
