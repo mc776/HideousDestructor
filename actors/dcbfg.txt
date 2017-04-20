@@ -98,7 +98,7 @@ actor BFG9K : HDWeapon
 			if (countinv("BFGChamber")==20) {A_SetTics(4);}
 			if (health<40) {
 				A_SetTics(3);
-				if(health>16) {A_FireCustomMissile("BleedOutDummy",0,0);}
+				if(health>16){A_GiveInventory("BleedOutAI");}
 			}
 			A_TakeInventory("WeaponBusy",1);
 			A_PlaySoundEx("weapons/plasidle",5);
