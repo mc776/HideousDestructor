@@ -84,13 +84,17 @@ class HDFire:IdleDummy{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		if(target) stamina=target.ApplyDamageFactor("Thermal",stamina);
+		if(target){
+			stamina=target.ApplyDamageFactor("Thermal",stamina);
+			if((!skill || hd_babymode) && target is "PlayerPawn") stamina=max(1,stamina*0.3);
+		}
 		if(A_CheckProximity("null","HDFire",64,12,CPXF_CHECKSIGHT|CPXF_SETTRACER)){
 			tracer.stamina+=stamina;
 			destroy();
 			if(target && target is "PersistentDamager") target.destroy();
 			return;
 		}
+A_LogInt(stamina);
 	}
 	states{
 	spawn:

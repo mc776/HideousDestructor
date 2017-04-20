@@ -184,7 +184,6 @@ function void ConsolidateWeapons(void)
 	int tempnum;
 
 	CheckCVars();
-	if(GameSkill()==noobdamageskill) GiveInventory("UnBleedableFlag",1);
 
 	tempnum=CheckInventory("HDPistolChamber")+CheckInventory("HDPistolLoaded")+CheckInventory("HDPistolAmmo")+(CheckInventory("HDPistolMag")*mag_pistol);
 	if ((tempnum>0)&&(CheckInventory("HDPistol")))

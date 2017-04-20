@@ -139,55 +139,6 @@ DamageType InvisibleBleedout{
 	NoArmor
 }
 
-// ------------------------------------------------------------
-//   Bleeding actors
-// ------------------------------------------------------------
-
-actor UnBleedableFlag:InventoryFlag{}
-actor UnBleedableFlagGiver:ActionItem
-{
-	states
-	{
-	Pickup:
-		TNT1 A 0 A_JumpIfInventory("UnBleedableFlag",1,"off")
-		TNT1 A 0 A_GiveInventory("UnBleedableFlag",1)
-		TNT1 A 0 A_TakeInventory("WoundCount")
-		TNT1 A 0 A_TakeInventory("LethalDamage")
-		TNT1 A 0 A_TakeInventory("AggravatedDamage")
-		TNT1 A 0 A_Print("No bleeding mode on")
-		stop
-	off:
-		TNT1 A 0 A_TakeInventory("UnBleedableFlag")
-		TNT1 A 0 A_Print("No bleeding mode off")
-		stop
-	}
-}
-actor BleedOutAI:ActionItem
-{
-	states
-	{
-	pickup:
-		TNT1 A 0 A_FireCustomMissile("BleedOutDummy",0,0)
-		stop
-	}
-}
-actor BleedOutDummy:IdleDummy
-{
-	obituary "%o may have required medical aid."
-	-nointeraction
-	+ismonster
-	+piercearmor
-	+nodamagethrust
-	damagetype "bleedout"
-	states
-	{
-	spawn:
-		TNT1 A 0
-		TNT1 A 0 A_CustomMeleeAttack((1),"none","none","bleedout",1)
-		stop
-	}
-}
-
 
 
 // ------------------------------------------------------------

@@ -1,15 +1,16 @@
-/*
-keep working on this...
 
 extend class HDPlayerPawn{
-	int playerdmob(//override int DamageMobj(
-		Actor inflictor,
-		Actor source,
+//	int playerdmob(
+	override int DamageMobj(
+		actor inflictor,
+		actor source,
 		int damage,
-		Name mod,
+		name mod,
 		int flags=0,
 		double angle=0
 	){
+		if(!skill || hd_babymode)damage*=0.3;
+
 		int towound=0;
 		int toburn=0;
 
@@ -30,6 +31,14 @@ extend class HDPlayerPawn{
 			)
 		){
 			//bleeding
+			if(!skill || hd_babymode || hd_nobleed){
+				A_TakeInventory("WoundCount");
+				woundcount=0;
+				return 0;
+			}
+			if(!checkliquidtexture() && !waterlevel){
+				spawn("HDBloodTrailFloor",pos+(random(-2,2),random(-2,2),0),ALLOW_REPLACE);
+			}
 		}else if(
 			mod=="smallarms0"||
 			mod=="smallarms1"||
@@ -126,16 +135,56 @@ extend class HDPlayerPawn{
 			A_GiveInventory("stuncount",damage);
 		}
 
+		if(hd_debug){
+			A_Log(string.format("%s took %d %s damage",
+				player.getusername(),
+				damage,
+				mod
+			));
+		}
+
 		//finally call the real one but ignore all armour
-		super.DamageMobj(
+		return super.DamageMobj(
 			inflictor,
 			source,
 			damage,
 			mod,
-			flags|DMG_NO_ARMOR,
+			flags,//|DMG_NO_ARMOR,
 			angle
 		);
 	}
+	states{
+	pain.bleedout:
+	pain.invisiblebleedout:
+		"----" A 0{
+			if(random(1,128)==1){A_GiveInventory("LethalDamage",1);}
+			A_GiveInventory("Fatigue",2);
+			if(health<40){A_GiveInventory("IsHurt",1);}
+			if(countinv("Fatigue")<30){A_GiveInventory("Fatigue",20);}
+			if(countinv("IsMoving")){setstatelabel("see");}
+			else setstatelabel("spawn");
+		}
+	pain:
+	pain.drowning:
+	pain.falling:
+	pain.internal:
+		"----" A 0{
+			if(random(1,128)==1){A_GiveInventory("LethalDamage",1);}
+			A_GiveInventory("Fatigue",2);
+		}
+	painend:
+		"####" G 1;
+		"####" G 2{
+			A_SetBlend("00 00 00",0.8,40,"00 00 00");
+			A_SetPitch(pitch+random(-4,4),SPF_FORCECLAMP|SPF_INTERPOLATE);
+			A_SetAngle(angle+random(-4,4),SPF_INTERPOLATE);
+			A_TakeInventory("PowerFrightener");
+			A_TakeInventory("NotShot");
+			if(health<40){A_GiveInventory("IsHurt");}
+			A_TakeInventory("SpiritualArmourFlag",1);
+		}
+		"####" G 3 A_Pain();
+		"----" A 0 A_Jump(256,"spawn");
+	}
 }
 
-*/

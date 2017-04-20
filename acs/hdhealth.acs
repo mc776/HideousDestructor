@@ -122,7 +122,7 @@ script "UseMeds" (int type)
 	switch(type)
 	{
 	case 1: //stims
-		if(!CheckInventory("UnBleedableFlag"))
+		if(!GetCVar("hd_nobleed"))
 		{
 			GiveInventory("RegenStims",20);
 			if(CheckInventory("WoundCount")) GiveInventory("WoundCount",random(0,1));
@@ -135,7 +135,7 @@ script "UseMeds" (int type)
 		GiveInventory("Fatigue",100);
 		GiveInventory("RegenStims",10);
 		if(random(1,CheckInventory("RegenStims"))<=2)TakeInventory("LethalDamage",1);
-		if (!CheckInventory("UnBleedableFlag")) GiveInventory("BandageCount",20);
+		if (!GetCVar("hd_nobleed")) GiveInventory("BandageCount",20);
 		else GiveInventory("RegenStims",12);
 		break;
 	case 3: //zerk
@@ -212,18 +212,18 @@ script "UseBigFlask"(void)
 function void RegenCheck(void)
 {
 	int hpcap=100-CheckInventory("LethalDamage")-CheckInventory("AggravatedDamage");
-	if ((CheckInventory("Health")>hpcap)&&(!CheckInventory("UnBleedableFlag"))) Thing_Damage2(0,1,"bleedout");
+	if ((CheckInventory("Health")>hpcap)&&(!GetCVar("hd_nobleed"))) Thing_Damage2(0,1,"bleedout");
 	if (!CheckInventory("WoundCount")) TakeInventory("BandageCount",999);
 	else
 	{
 		if ((random(1,7000)<=1+CheckInventory("IsMoving"))) GiveInventory("LethalDamage",1);
 		int maxbleed = CheckInventory("WoundCount");
 		if (maxbleed > 8) maxbleed = 8;
-		if ((random(1,70)<=maxbleed)&&(!CheckInventory("UnBleedableFlag")))
+		if ((random(1,70)<=maxbleed)&&(!GetCVar("hd_nobleed")))
 		{
 			GiveInventory("BleedOutAI",1);
 		}
-		else if (CheckInventory("UnBleedableFlag"))
+		else if (GetCVar("hd_nobleed"))
 		{
 			TakeInventory("WoundCount",999);
 		}

@@ -437,6 +437,28 @@ class MegaBloodSplatter:HDPuff{
 		}
 	}
 }
+class HDBloodTrailFloor:Actor{
+	default{
+		+flatsprite +noblockmap
+		height 0;radius 0;alpha 0.6;
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		angle=random(0,3)*90;
+		scale*=frandom(0.6,1.2);
+	}
+	override void tick(){
+		super.tick();
+	}
+	states{
+	spawn:
+		BLUD A 0 nodelay A_Jump(256,1,2,3,4);
+		BLUD ABCD 0 A_Jump(256,"spawn2");
+	spawn2:
+		---- A 100 A_FadeOut(0.1);
+		wait;
+	}
+}
 
 
 //Ominous shards of green energy
