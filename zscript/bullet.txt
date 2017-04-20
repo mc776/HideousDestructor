@@ -26,6 +26,7 @@ class nb:HDActor{
 	double grav;
 	double hitdist;
 	double oneoverspeed;
+	double shootz;
 	int dmg;
 	bool inthesky;
 	default{
@@ -43,6 +44,8 @@ class nb:HDActor{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
+		shootz = height*0.5+8;
+
 		LongArmWobble();
 		Gunsmoke();
 		if(missilename){
@@ -94,13 +97,13 @@ class nb:HDActor{
 		//LineAttack always has a zoffset of 8.
 		//b is never used.
 		if(!bseeinvisible && target)target.bshootable=false; //hack to escape shooter
-		setxyz((pos.x,pos.y,pos.z-8));
+		setxyz((pos.x,pos.y,pos.z-shootz));
 		[a,b]=LineAttack(angle,speed,pitch,0,"none",
 			"NewBulletMovePuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT
 		);
 
 		//reset hacks
-		setxyz((pos.x,pos.y,pos.z+8));
+		setxyz((pos.x,pos.y,pos.z+shootz));
 		if(!bseeinvisible && target)target.bshootable=true;
 		bseeinvisible=true;
 
@@ -205,10 +208,10 @@ class nb:HDActor{
 
 				//find exact point of exit.
 				angle+=180;pitch*=-1;
-				setxyz((pos.x,pos.y,pos.z-8));[e,b]=LineAttack(
+				setxyz((pos.x,pos.y,pos.z-shootz));[e,b]=LineAttack(
 					angle,accuracy+2,pitch,0,"none","NewBulletMovePuff",
 					flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT
-				);setxyz((pos.x,pos.y,pos.z+8));
+				);setxyz((pos.x,pos.y,pos.z+shootz));
 
 				//exit hole.
 				//I have no idea why this won't work for raised floors.
