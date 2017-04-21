@@ -92,7 +92,7 @@ class HDFire:IdleDummy{
 		super.postbeginplay();
 		if(target){
 			stamina=target.ApplyDamageFactor("Thermal",stamina);
-			if((!skill || hd_babymode) && target is "PlayerPawn") stamina=max(1,stamina*0.3);
+			if((!skill || hd_lowdamage) && target is "PlayerPawn") stamina=max(1,stamina*0.3);
 		}
 		if(A_CheckProximity("null","HDFire",64,12,CPXF_CHECKSIGHT|CPXF_SETTRACER)){
 			tracer.stamina+=stamina;
