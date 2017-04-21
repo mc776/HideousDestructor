@@ -44,8 +44,6 @@ class nb:HDActor{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		LongArmWobble();
-		Gunsmoke();
 		if(missilename){
 			actor m=spawn(missilename,pos,ALLOW_REPLACE);
 			m.target=target;
@@ -54,6 +52,9 @@ class nb:HDActor{
 		grav=getgravity();
 		if(target && !pitch)pitch=target.pitch;
 
+		//these are particular to true bullets and not grenades.
+		LongArmWobble();
+		Gunsmoke();
 		/*
 			this is included in initialization because all pre-ZScript weapon code
 			would A_SpawnItemEx the bullets adding only the shooter's own momentum,
@@ -96,13 +97,13 @@ class nb:HDActor{
 		//LineAttack always has a zoffset of 8.
 		//b is never used.
 		if(!bseeinvisible && target)target.bshootable=false; //hack to escape shooter
-		setxyz((pos.x,pos.y,pos.z-shootz));
+		addz(-shootz);
 		[a,b]=LineAttack(angle,speed,pitch,0,"none",
 			"NewBulletMovePuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT
 		);
 
 		//reset hacks
-		setxyz((pos.x,pos.y,pos.z+shootz));
+		addz(shootz);
 		if(!bseeinvisible && target)target.bshootable=true;
 		bseeinvisible=true;
 
@@ -207,10 +208,10 @@ class nb:HDActor{
 
 				//find exact point of exit.
 				angle+=180;pitch*=-1;
-				setxyz((pos.x,pos.y,pos.z-shootz));[e,b]=LineAttack(
+				addz(-shootz);[e,b]=LineAttack(
 					angle,accuracy+2,pitch,0,"none","NewBulletMovePuff",
 					flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT
-				);setxyz((pos.x,pos.y,pos.z+shootz));
+				);addz(shootz);
 
 				//exit hole.
 				//I have no idea why this won't work for raised floors.
