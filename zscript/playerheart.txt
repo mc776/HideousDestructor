@@ -114,10 +114,10 @@ extend class HDPlayerPawn{
 			if(beatcounter%4==0){	//every 4 beats
 				//recovering heart rate
 				if(beatmax<beatcap) beatmax++;
+				if(bloodpressure>0)bloodpressure--;
 			}
 			if(beatcounter%12==0){	//every 12 beats
 				if(stimcount>0)stimcount--;
-				if(bloodpressure>0)bloodpressure--;
 				if(regenblues>0 && oldwoundcount+aggravateddamage>0){
 					oldwoundcount-=2;aggravateddamage--;
 					regenblues--;

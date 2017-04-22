@@ -10,7 +10,7 @@ extend class HDPlayerPawn{
 		double angle=0
 	){
 		if(player.cheats&CF_GODMODE2 || player.cheats&CF_GODMODE || binvulnerable || !bshootable) return 0;
-		if(!skill || hd_lowdamage)damage*=0.3;
+		if(!skill || hd_lowdamage)damage=max(1,damage*0.3);
 
 		int towound=0;
 		int toburn=0;
@@ -154,7 +154,6 @@ extend class HDPlayerPawn{
 			damage*=(1-(armourlevel*0.2));
 		}
 
-
 		//abort if damage is less than zero
 		if(damage<0) return 0;
 
@@ -211,6 +210,7 @@ extend class HDPlayerPawn{
 	painend:
 		"####" G 1;
 		"####" G 2{
+			if(bloodpressure<50)bloodpressure+=10;
 			A_SetBlend("00 00 00",0.8,40,"00 00 00");
 			A_SetPitch(pitch+random(-4,4),SPF_FORCECLAMP|SPF_INTERPOLATE);
 			A_SetAngle(angle+random(-4,4),SPF_INTERPOLATE);
