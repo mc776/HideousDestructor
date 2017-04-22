@@ -21,9 +21,10 @@ class TerrorBolt:nb{
 		if(a && a.tracer){
 			A_PlaySound("weapons/bigcrack");
 			BulletImpactDamage();
-			if(a.tracer.gibhealth && a.tracer.health>-a.tracer.gibhealth) Puff(-1);
+			if(a.tracer.health>-a.tracer.gibhealth) Puff(-1);
 			else{
 				bmissile=true;
+				dmg=0;
 				vel*=0.9;
 				vel+=(random(-3,3),random(-3,3),random(-3,3));
 				return;

@@ -9,7 +9,7 @@ extend class HDPlayerPawn{
 		int flags=0,
 		double angle=0
 	){
-		if(binvulnerable || !bshootable) return 0;
+		if(player.cheats&CF_GODMODE2 || player.cheats&CF_GODMODE || binvulnerable || !bshootable) return 0;
 		if(!skill || hd_lowdamage)damage*=0.3;
 
 		int towound=0;

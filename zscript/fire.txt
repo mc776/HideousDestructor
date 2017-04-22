@@ -100,7 +100,7 @@ class HDFire:IdleDummy{
 			if(target && target is "PersistentDamager") target.destroy();
 			return;
 		}
-A_LogInt(stamina);
+		if(hd_debug)A_Log(string.format("fire duration \ci%i",stamina));
 	}
 	states{
 	spawn:
