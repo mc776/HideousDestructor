@@ -84,8 +84,14 @@ extend class HDPlayerPawn{
 				jumppower*=HDCONST_ONEOVERSQRTTWO;
 				A_ChangeVelocity(jumppower*fmult,jumppower*smult,jz,CVF_RELATIVE);
 			}
-			if(height<40)beatmax-=5;
-			else beatmax-=2;
+			if(height<40){
+				if(bloodpressure<40)bloodpressure+=8;
+				beatmax-=5;
+			}
+			else{
+				if(bloodpressure<40)bloodpressure+=5;
+				beatmax-=2;
+			}
 		}
 	}
 
