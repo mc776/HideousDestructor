@@ -57,6 +57,7 @@ extend class HDPlayerPawn{
 			&& input & BT_JUMP //replace with event asap
 			&& !MantleCheck()
 			&& !(oldinput & BT_JUMP)
+			&& !countinv("PowerIronFeet")
 		){
 			double jumppower=7;
 			if(countinv("PowerStrength"))jumppower=10;else{
