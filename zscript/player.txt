@@ -345,7 +345,7 @@ class HDPlayerPawn:PlayerPawn{
 					cos(pitch)*sin(angle),
 					-sin(pitch)
 				);
-				actor a=spawn("userpickerupper",pos+ap+(0,0,height-12));
+				actor a=spawn("userpickerupper",pos-ap+(0,0,height-12));
 				a.target=self;
 				a.vel=ap*4;
 			}
@@ -366,7 +366,7 @@ class userpickerupper:hdactor{
 	}
 	override void postbeginplay(){
 		if(vel.xy==(0,0))vel.x=minvel;
-		for(int i=0;i<10;i++){
+		for(int i=0;i<12;i++){
 			if(!trymove(pos.xy+vel.xy,true)){
 				if(blockingmobj){
 					if(
