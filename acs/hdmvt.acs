@@ -84,9 +84,9 @@ function int SpeedCheck(int nb,int ob,int sm,int fm){
 	if ((CheckInventory("Fatigue")>fatcapr[PlayerNumber()])||(CheckInventory("WoundCount"))) spd=spd-0.2;
 	if (CheckInventory("WeaponBusy")>0) spd-=0.2;
 	if ((CheckInventory("IsCrouching")>0)&&(CheckInventory("IsSprinting")<1)) spd=spd-0.1;
-	if (CheckInventory("GreenArmourFlag")>0) spd=spd-0.03;
-	if (CheckInventory("BlueArmourFlag")>0) spd=spd-0.05;
-	if (CheckInventory("BlackArmourFlag")>0) spd=spd-0.06;
+	if (CheckInventory("GreenArmour")>0) spd=spd-0.03;
+	if (CheckInventory("BlueArmour")>0) spd=spd-0.05;
+	if (CheckInventory("BlackArmour")>0) spd=spd-0.06;
 	if (CheckInventory("PowerIronFeet")>0){
 		if (CheckInventory("PortableRadsuit")) spd=spd-0.2;
 		else TakeInventory("PowerIronFeet",999);

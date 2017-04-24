@@ -2,13 +2,15 @@
 //    Armour
 //-------------------------------------------------
 
+/*
+
 //
 //	basic items
 //
 
-actor GreenArmourFlagStored:InventoryFlag{}
-actor BlueArmourFlagStored:InventoryFlag{inventory.maxamount 20}
-actor BlackArmourFlagStored:InventoryFlag{inventory.maxamount 12}
+actor GreenArmourFlagStored:InventoryFlag{inventory.maxamount 100}
+actor BlueArmourFlagStored:InventoryFlag{inventory.maxamount 40}
+actor BlackArmourFlagStored:InventoryFlag{inventory.maxamount 33}
 actor BasicArmorStored:InventoryFlag{inventory.maxamount 160}
 actor GreenArmour:GreenArmor{
 	inventory.icon ARMSA0
@@ -40,19 +42,20 @@ actor BlackArmour:GreenArmour{
 	damagefactor "SmallArms3",0.85
 }
 actor GreenArmourFlag:Ammo{
-	ammo.backpackmaxamount 1
+	inventory.maxamount 100
+	ammo.backpackmaxamount 100
 	ammo.backpackamount 0 +inventory.untossable
 	states{spawn:TNT1 A 0 nodelay{return state("null");}stop}
 }
 actor BlueArmourFlag:Ammo{
-	inventory.maxamount 20
-	ammo.backpackmaxamount 20
+	inventory.maxamount 40
+	ammo.backpackmaxamount 40
 	ammo.backpackamount 0 +inventory.untossable
 	states{spawn:TNT1 A 0 nodelay{return state("null");}stop}
 }
 actor BlackArmourFlag:Ammo{
-	inventory.maxamount 12
-	ammo.backpackmaxamount 12
+	inventory.maxamount 33
+	ammo.backpackmaxamount 33
 	ammo.backpackamount 0 +inventory.untossable
 	states{spawn:TNT1 A 0 nodelay{return state("null");}stop}
 }
@@ -98,7 +101,7 @@ actor GreenArmourStored:ActionItem{
 			else if(countinv("BasicArmorStored")<160)
 			{A_Print("This armour does not pass certification.");}
 
-			A_GiveInventory("GreenArmourFlag");
+			A_GiveInventory("GreenArmourFlag",countinv("GreenArmourFlagStored"));
 			if(countinv("BlackArmourFlag")>0){A_GiveInventory("BlackArmour");}  
 				else if(countinv("BlueArmourFlag")>0){A_GiveInventory("BlueArmour");}
 				else {A_GiveInventory("GreenArmour");}
@@ -300,3 +303,4 @@ actor BigArmourSpawner:RandomSpawner replaces BlueArmor
 
 
 
+*/

@@ -114,7 +114,7 @@ actor NoBlockWepDrop:ActionItem{
 				if(countinv("HasDroppedGun")<1){
 					A_GiveInventory("BasicArmorStored",random(1,60));
 					if(countinv("BasicArmorStored")>random(1,60)){
-						A_GiveInventory("GreenArmourFlagStored");
+						A_GiveInventory("GreenArmourStored");
 						A_SpawnItemEx("HDArmourDroppedFromInventory",0,0,28,velx,vely,velz+1,0,SXF_SETTARGET|SXF_ABSOLUTEMOMENTUM);
 					}
 				}

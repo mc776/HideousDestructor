@@ -1,0 +1,50 @@
+//-------------------------------------------------
+// Armour
+//-------------------------------------------------
+
+//instead of basicarmour, we just use these:
+class GreenArmour:Ammo{
+	default{
+		inventory.maxamount 144;
+		ammo.backpackmaxamount 144;
+		ammo.backpackamount 0;+inventory.untossable
+	}
+}
+class BlueArmour:Ammo{
+	default{
+		inventory.maxamount 70;
+		ammo.backpackmaxamount 70;
+		ammo.backpackamount 0;+inventory.untossable
+	}
+}
+class BlackArmour:Ammo{
+	default{
+		inventory.maxamount 33;
+		ammo.backpackmaxamount 33;
+		ammo.backpackamount 0;+inventory.untossable
+	}
+}
+
+//and these are for the stored items:
+class GreenArmourStored:InventoryFlag{
+	default{
+		inventory.maxamount 144;
+	}
+}
+class BlueArmourStored:InventoryFlag{
+	default{
+		inventory.maxamount 70;
+	}
+}
+class BlackArmourStored:InventoryFlag{
+	default{
+		inventory.maxamount 33;
+	}
+}
+
+//here is the armour pickup
+class HDArmourPickup:HDUPK{
+	
+}
+
+
