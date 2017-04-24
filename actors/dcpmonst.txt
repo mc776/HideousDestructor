@@ -156,7 +156,8 @@ ACTOR RiflemanBase
 		PLAY F 0 A_PlayWeaponSound("weapons/rifle")
 		PLAY F 1 bright light("SHOT"){
 			pitch+=frandom(-user_spread,user_spread);
-			A_SpawnItemEx("HDFourMilFast",0,0,44,velx,vely,velz,frandom(-user_spread,user_spread),SXF_TRANSFERPITCH|SXF_SETTARGET|SXF_SETMASTER|SXF_ABSOLUTEMOMENTUM);
+			angle+=frandom(-user_spread,user_spread);
+			A_GiveInventory("DecoBulleter426");
 		}
 		TNT1 A 0 A_GiveInventory("ZM66Loaded",1)
 		PLAY E 2 A_SetUserVar("user_spread",user_spread+0.2)
@@ -309,7 +310,11 @@ actor SWAT2Base : RiflemanBase
 	gunshot:
 		"----" A 0 A_JumpIfInventory("ZM66Loaded",30,"ohforfuckssake")
 		"----" A 0 A_PlaySound("weapons/pistol",CHAN_WEAPON,0.7)
-		PLAY F 1 bright light("SHOT") A_SpawnProjectile("HDNineMilFast",44,0,frandom(-user_spread,user_spread),CMF_AIMDIRECTION|CMF_SAVEPITCH,pitch+frandom(-user_spread,user_spread))
+		"####" F 1 bright light("SHOT"){
+			pitch+=frandom(-user_spread,user_spread);
+			angle+=frandom(-user_spread,user_spread);
+			A_GiveInventory("DecoBulleter9f");
+		}
 		TNT1 A 0 A_GiveInventory("ZM66Loaded",1)
 		PLAY E 2 A_SetUserVar("user_spread",user_spread+0.2)
 		TNT1 A 0 A_CheckFlag("friendly",2)
@@ -444,10 +449,12 @@ ACTOR SWATBase : RiflemanBase
 		POSS E 0 A_JumpIf(velx*velx+vely*vely>64,"see")
 		PLAY E 0 A_JumpIfInventory("HunterSpentShell",1,"Chamber")
 		TNT1 A 0 A_JumpIfInventory("ShotgunTube",0,"ohforfuckssake")
-		TNT1 A 0 A_PlayWeaponSound("weapons/hunter")
-
-		PLAY F 1 bright light("SHOT") A_SpawnProjectile("ShotgunBlast",44,0,frandom(-user_spread,user_spread),CMF_AIMDIRECTION|CMF_SAVEPITCH,pitch+frandom(-user_spread,user_spread))
-
+		"####" F 1 bright light("SHOT"){
+			A_PlayWeaponSound("weapons/hunter");
+			angle+=frandom(-user_spread,user_spread);
+			pitch+=frandom(-user_spread,user_spread);
+			A_GiveInventory("DecoBulleter00");
+		}
 		PLAY E 0 A_GiveInventory("ShotgunTube",1)
 		PLAY E 2 A_GiveInventory("HunterSpentShell",1)
 		TNT1 A 0 A_AlertMonsters(0,AMF_TARGETEMITTER)
@@ -548,7 +555,7 @@ actor RocketeerBase : RiflemanBase
 		TNT1 A 0 A_JumpIfInventory("NoRocketsForYou",1,"see_evade2")
 		PLAY F 6 BRIGHT light("SHOT"){
 			A_PlayWeaponSound("weapons/rockignite");
-			A_SpawnProjectile("Rocquette",42,0,0,CMF_AIMDIRECTION|CMF_SAVEPITCH,pitch);
+			A_SpawnProjectile("GyroGrenade",42,0,0,CMF_AIMDIRECTION|CMF_SAVEPITCH,pitch);
 			A_TakeInventory("NoRocketsForYou",1);
 		}
 		TNT1 A 0 A_CheckFlag("friendly",2)

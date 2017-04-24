@@ -112,10 +112,9 @@ actor NoBlockWepDrop:ActionItem{
 				//marines drop armour!
 			if(CheckClass("RiflemanBase",AAPTR_DEFAULT,true)){
 				if(countinv("HasDroppedGun")<1){
-					A_GiveInventory("BasicArmorStored",random(1,60));
-					if(countinv("BasicArmorStored")>random(1,60)){
-						A_GiveInventory("GreenArmourStored");
-						A_SpawnItemEx("HDArmourDroppedFromInventory",0,0,28,velx,vely,velz+1,0,SXF_SETTARGET|SXF_ABSOLUTEMOMENTUM);
+					A_GiveInventory("GreenArmour",random(1,HDCONST_GREENARMOUR));
+					if(countinv("GreenArmour")>60){
+						A_GiveInventory("HDDropArmour");
 					}
 				}
 			}
