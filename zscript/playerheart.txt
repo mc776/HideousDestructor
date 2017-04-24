@@ -53,6 +53,8 @@ extend class HDPlayerPawn{
 			beatcount--;
 			pitch-=0.00001*beatcount*bloodpressure;
 		}else{
+			beatmax=min(beatmax,beatcap);
+
 			//remove these once we're done with them
 			//lethal didn't mean the same as oldwoundcount but oh well
 			woundcount=countinv("WoundCount");

@@ -231,6 +231,7 @@ extend class HDPlayerPawn{
 		"####" G 1;
 		"####" G 2{
 			if(bloodpressure<50)bloodpressure+=10;
+			if(beatcap>20)beatcap-=max(randompick(10,20),HDCONST_MINHEARTTICS);
 			A_SetBlend("00 00 00",0.8,40,"00 00 00");
 			A_SetPitch(pitch+random(-4,4),SPF_FORCECLAMP|SPF_INTERPOLATE);
 			A_SetAngle(angle+random(-4,4),SPF_INTERPOLATE);
