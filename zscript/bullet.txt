@@ -479,6 +479,11 @@ class DecoBulleter00f2:DecoBulleter00f{
 		}fail;
 	}
 }
+class DecoBulleterGhost:DecoBulleter{
+	default{
+		missiletype "GhostBullet";
+	}
+}
 
 
 class nb426:nb{
@@ -570,7 +575,17 @@ class nbfrag:nb{
 		);
 	}
 }
-
+class GhostBullet:nb426{
+	override void BulletImpact(){
+		bmissile=false;
+		spawn("FragPuff",pos,ALLOW_REPLACE); //no debris spawned
+		if(a.tracer && a.tracer.bshootable && !a.tracer.bkilled){
+			a.tracer.damagemobj(self,target,-1,"none");
+			a.tracer.damagemobj(self,target,1,"none");
+		}
+		destroy();return;
+	}
+}
 
 
 
