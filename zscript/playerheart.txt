@@ -88,7 +88,10 @@ extend class HDPlayerPawn{
 			else beatmax=clamp(beatmax,HDCONST_MINHEARTTICS,35);
 
 			if(beatmax<8)DamageMobj(self,self,1,"internal");
-			else healthing(1);
+			else{
+				if(health<100-aggravateddamage-burncount-oldwoundcount-unstablewoundcount)
+				healthing(1);
+			}
 
 			//reset beatcount, subject to stims
 			if(stimcount) beatcount=beatmax-random(1,2);
@@ -143,6 +146,11 @@ extend class HDPlayerPawn{
 				//keep stim below cap as long as it's above 12
 				if(stimcount>0 && beatcap>12)    
 					beatcap=clamp(beatcap,12,beatcap-1);
+
+				if(unstablewoundcount && countinv("IsMoving")>random(0,12)){
+					unstablewoundcount--;
+					if(!random(0,1))oldwoundcount++;else woundcount++;
+				}
 			}
 			if(beatcounter==120){	//every 120 beats
 				beatcounter=0;	//reset

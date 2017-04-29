@@ -83,7 +83,7 @@ If you want to try out some of the weapons, type "map range" in the console and 
 
 When you get hit in HD, you not only lose health right away, you also add to a hidden counter that determines how quickly your injuries worsen. This is an abstract system meant to cover everything from body envelope violations to toxicity and radiation poisoning to magical corruption and smoke inhalation, but for convenience I'll refer to this as the bleeding system.
 
-When you see your view in a red haze when you're still, you are bleeding badly. If you're in relatively good health and you still see a red haze, you are bleeding. Bleeding means you are losing health and will eventually die if it is not stopped. Like health, you slowly recover from bleeding injuries, but for most things you'll likely bleed out before you heal.
+Look down every so often to see if you are leaving a blood trail, or check what message comes up when you use weapon slot 9. Bleeding means you are losing health and will eventually die if it is not stopped. You might randomly recover from bleeding injuries, but for most things you'll likely bleed out before you heal.
 
 Armour not only blocks damage but also reduces the bleeding rate of any injury it blocks. Of course, it does not reduce the amount by which you'll bleed on any existing injury.
 
@@ -93,8 +93,6 @@ Of the mundane tech items, only medikits can help with bleeding directly. Stimpa
 
 Absent a proper medikit, you can try to bandage yourself, remove toxins, excise necrotic tissue, etc. using improvised objects. This is abstracted into weapon #9: just stand still and hold the fire button until the help text tells you you're done. You take some minor damage and no attempt is guaranteed to work. You can do this to someone else, which has a much lower change of causing damage and is much more reliable.
 
-At low health red haze, without any flickering or fading to black, will occur even when you're stable and recovering.
-
 Side note about being on fire: As you cannot truly "stop, drop and roll" in the Doom engine, there is an option of spinning around or turning left and right very quickly to try to put out a fire earlier. Doing so* in liquids**, sand or gooey snake floors while crouched greatly increase your chances of putting out the flames in time.
 
 *or any rapid movement
@@ -103,11 +101,9 @@ Side note about being on fire: As you cannot truly "stop, drop and roll" in the 
 
 	The damage system 
 
-In addition to regular damage, Hideous Destructor tracks "lethal" damage and "aggravated" damage. Both accumulate to the detriment of your maximum HP.
+In addition to regular damage, Hideous Destructor tracks burn damage and "aggravated" damage, as well as non-bleeding but still existent wounds. All accumulate to the detriment of your maximum HP.
 
-Lethal damage represents long-term damage that cannot be readily healed. It may occasionally be treatable with medikits.
-
-You arbitrarily recover from one point of lethal damage every level change. (You can also recover from some lethal damage over the course of a few days, if for whatever reason you decide to stay on one level that long.)
+You slowly heal from all but aggravated damage over time.
 
 Aggravated damage represents long-term damage that cannot be readily healed due to fundamental interference with your body's metaphysical pattern. It can only be healed by supernatural means, but may be inflicted by both supernatural and technological means (most notably balefire and the berserk pack's aftereffects).
 

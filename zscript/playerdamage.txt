@@ -118,6 +118,7 @@ extend class HDPlayerPawn{
 						if(p)p.vel+=vel;
 					}
 				}
+				damage=max(1,damage);
 			}
 			//radsuit completely envelops you so it will always get it
 			if(countinv("PowerIronFeet")){
@@ -211,6 +212,7 @@ extend class HDPlayerPawn{
 	states{
 	pain.bleedout:
 	pain.invisiblebleedout:
+	pain.internal:
 		"----" A 0{
 			if(random(1,128)==1){A_GiveInventory("LethalDamage",1);}
 			A_GiveInventory("Fatigue",2);
@@ -222,7 +224,6 @@ extend class HDPlayerPawn{
 	pain:
 	pain.drowning:
 	pain.falling:
-	pain.internal:
 		"----" A 0{
 			if(random(1,128)==1){A_GiveInventory("LethalDamage",1);}
 			A_GiveInventory("Fatigue",2);
