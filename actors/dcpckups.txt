@@ -62,30 +62,6 @@ actor PortableBerserkPackBigPickup : HDUPK replaces Berserk
 		stop
 	}
 }
-actor PortableMedikit : HDPickup
-{
-	inventory.amount 1
-	inventory.maxamount 8
-	inventory.interhubamount 8
-	inventory.pickupmessage "Picked up a medikit."
-	inventory.icon PMEDA0
-	states
-	{
-	spawn:
-		TNT1 A 1
-		TNT1 A 0 A_SpawnItemEx("PortableMedikitSingle",0,0,0,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
-		stop
-	use:
-		TNT1 A 0 A_JumpIfInventory("WoundCount",1,2)
-		TNT1 A 0 A_JumpIfHealthLower(76, 1)
-		fail
-		TNT1 A 0 A_JumpIfInventory("UsingMeds",1,2)
-		TNT1 A 0 ACS_NamedExecuteAlways("UseMeds",0,2)
-		stop
-		TNT1 A 0
-		fail
-	}
-}
 actor PortableMedikitSingle : HDUPK replaces PortableMedikit
 {
 	scale 0.4

@@ -62,6 +62,14 @@ class HDDropArmour:ActionItem{
 		}fail;
 	}
 }
+//required because "UseInventory" is a lie
+class HDDropArmourRTFN:HDDropArmour{
+	states{
+	pickup:
+		TNT1 A 0;
+		goto use;
+	}
+}
 
 //here is the armour pickup
 class HDArmourPickup:HDUPK{

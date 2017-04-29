@@ -281,23 +281,6 @@ ACTOR BrontornisRound:Ammo
 }
 
 
-actor BrontoDropped : HDWeaponPickup
-{
-	scale 0.6
-	inventory.pickupmessage "You got the Brontornis!"
-	states
-	{
-	spawn:
-		BLST A -1
-		stop
-	Pickup:
-		TNT1 A 0 A_GiveInventory("Brontornis",1)
-		stop
-	}
-}
-
-
-
 // ------------------------------------------------------------
 //   <s>Mags and </s>pickups
 // ------------------------------------------------------------

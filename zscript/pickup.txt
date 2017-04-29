@@ -77,3 +77,25 @@ class HDUPK:HDActor{
 		stop;
 	}
 }
+
+
+//just so I don't have to redefine these every time
+class HDPickup:CustomInventory{
+	default{
+		+inventory.invbar +inventory.persistentpower
+		inventory.interhubamount 999999;
+		radius 20; height 16; scale 0.8;
+	}
+	states{
+	spawn:
+		TNT1 A 0 nodelay{
+			if(missilename){
+				actor a=spawn(missilename,pos,ALLOW_REPLACE);
+				a.vel=vel;destroy();return;
+			}
+		}stop;
+	}
+}
+
+
+

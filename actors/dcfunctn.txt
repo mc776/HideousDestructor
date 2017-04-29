@@ -216,44 +216,9 @@ actor HDDropOne:ActionItem{
 	}
 }
 
-// ------------------------------------------------------------
-//   Pickup and Weapon Archetype
-// ------------------------------------------------------------
-
-actor HDPickup:CustomInventory{
-	+inventory.invbar
-	+inventory.persistentpower
-	radius 20
-	height 16
-	scale 0.8
-}
-
-/*
-actor __:HDUPK{
-	states{
-	spawn:
-		CLIP A -1 A_Stop
-	give:
-		//put here everything that needs to be given to the player
-		//remember to like do sounds and shit too
-		"----" A 0 A_JumpIfInventory("Clip",0,"spawn",AAPTR_TARGET)
-		"----" A 0 A_GiveInventory("Clip",10,AAPTR_TARGET)
-		stop
-	}
-}
-
-*/
 
 
 
-actor HDWeaponPickup:HDPickup
-{
-	scale 0.65
-	height 16
-	radius 20
-//	+usespecial
-	inventory.pickupsound "misc/w_pkup"
-}
 
 actor IsWeaponReady:InventoryFlag{}
 
@@ -265,8 +230,8 @@ actor LongArmWobble:ActionItem{
 	pickup:
 		TNT1 A 0{
 			if(countinv("IsMoving",AAPTR_TARGET)>=10){
-				A_SetPitch(pitch+random(-2,2));
-				A_SetAngle(angle+random(-1,1));
+				A_SetPitch(pitch+random(-2,2),true);
+				A_SetAngle(angle+random(-1,1),true);
 			}
 		}
 		fail
