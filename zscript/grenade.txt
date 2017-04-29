@@ -13,35 +13,6 @@ class frags:idledummy{
 	}
 }
 
-//grenade fragment - old, to delete
-class HDFrag:HDBullet{
-	default{
-//		missiletype "bullettail";
-		damagefunction(0); -painless;
-		mass 30; accuracy 2; woundhealth 0;
-		decal "BulletScratchSmall"; obituary "%o was fragged.";
-	}
-	override void postbeginplay(){
-		super.postbeginplay();
-		master=target;target=null;
-		mass=random(20,40);
-	}
-	states{
-	spawn:
-		TNT1 A 0;
-		goto spawn2;
-	death:
-		TNT1 A 0{
-			actor pf=Spawn("FragPuff",pos,ALLOW_REPLACE);
-			pf.target=self.master;
-		}goto death1;
-	xdeath:
-		TNT1 A 1{
-			if(user_damage<3) user_damage=random(3,14);
-			A_DamageTracer(user_damage,"smallarms0",DMSS_AFFECTARMOR,"None","None",AAPTR_MASTER);
-		}stop;
-	}
-}
 class HDFragGrenadeRoller:HDActor{
 	int fuze;
 	vector3 keeprolling;

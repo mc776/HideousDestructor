@@ -12,46 +12,6 @@ class HDFourMilTrail:IdleDummy{
 	}
 }
 
-class HDFourMil:HDBullet{
-	default{
-		obituary "%o was shot up by %k.";
-		decal "BulletScratch";
-		speed 1100;mass 45;accuracy 5;woundhealth 3;
-	}
-	override void postbeginplay(){
-		super.postbeginplay();
-		A_LongArmWobble();
-		spawn("DistantRifle",pos);
-		A_Gunsmoke();
-	}
-	states{
-	spawn:
-	spawn1:
-		TNT1 A 0;
-		goto spawn2;
-	death:
-		TNT1 A 0{
-			A_AlertMonsters();
-			actor pf=spawn("BulletPuffSmall",self.pos);
-			pf.target=target;
-		}goto death1;
-	xdeath:
-		TNT1 A 0{
-			if (random(1,10)==1){A_GiveInventory("SawGib",1,AAPTR_TRACER);}
-		}goto xdeath1;
-	}
-}
-class HDFourMilFast:HDFourMil{
-	default{
-		speed 1200;accuracy 6;
-	}
-}
-class HDFourMilSlow:HDFourMil{
-	default{
-		speed 1000;accuracy 4;
-	}
-}
-
 class ZM66RifleEmptyMag:HDDebris{
 	default{
 		translation "160:167=104:111";

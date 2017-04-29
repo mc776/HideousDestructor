@@ -36,35 +36,6 @@ actor HDEffectSprite{
 	-solid +noblockmap +noteleport +cannotpush +randomize +forcexybillboard
 	radius 1 height 1
 }
-actor HDGunSmoke_:HDSmoke{
-	scale 0.1 alpha 0.06 speed 4 renderstyle "add"
-	states
-	{
-	spawn:
-		SMOK A 1 nodelay{
-			A_SetScale((random(0,1)*2-1)*scalex,scaley);
-			A_ChangeVelocity(frandom(-1,1),frandom(-1,1),frandom(-0.5,1),CVF_RELATIVE);
-		}
-		SMOK B 1 A_ScaleVelocity (0.9)
-	death:
-		SMOK C 0 A_SetTranslucent(0.2,1)
-		SMOK C 2{
-			A_FadeOut(0.02);
-			A_ScaleVelocity(0.8);
-			if(scalex<0.2){A_SetScale(scalex*1.2,scalex*1.2);}
-		}
-		wait
-	}
-}
-actor HDGunSmoker:HDBullet{
-	speed 1 height 0 radius 0 +nointeraction
-	states{
-	spawn:
-	death:
-		TNT1 A 1 nodelay A_Gunsmoke
-		stop
-	}
-}
 actor HDFlameRed
 {
 	renderstyle add

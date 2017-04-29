@@ -29,52 +29,6 @@ actor HDNineMilTrail:IdleDummy{
 		stop
 	}
 }
-actor HDNineMil:HDBullet
-{
-	obituary "%o got capped by %k's pea shooter."
-	decal "BulletScratchSmall"
-	speed 420 mass 90 accuracy 7 woundhealth 3
-	states{
-	spawn:
-		TNT1 A 0
-		TNT1 A 0{
-			if(countinv("IsMoving",AAPTR_TARGET)>=4){
-				if(countinv("HDPistolFullAuto",AAPTR_TARGET)>1){
-					A_SetPitch(pitch+frandom(-5,5));
-					A_SetAngle(angle+frandom(-4,4));
-				}else{
-					A_SetPitch(pitch+frandom(-4,4));
-					A_SetAngle(angle+frandom(-3,3));
-				}
-			}
-		}
-	spawn1:
-		TNT1 A 0{
-			A_SpawnItemEx("HDNineMilNoisemaker",0,0,0,10,0,0,0,SXF_NOCHECKPOSITION,224);
-			A_SpawnItemEx("HDGunSmoke",cos(-pitch)*4,0,sin(-pitch)*4-6,velx+cos(-pitch)*cos(angle)*4,vely+cos(-pitch)*sin(angle)*4,velz+sin(-pitch)*4,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM,94);
-		}goto spawn2
-	xdeath:
-		TNT1 A 0 A_Jump(252,"xdeath1")
-		TNT1 A 0 A_GiveInventory("SawGib",1,AAPTR_TRACER)
-		goto xdeath1
-	death:
-		BLET A 0 A_SpawnItemEx("BulletPuffMedium",0,0,0,0,0,0,0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_SETMASTER)
-		goto death1
-	}
-}
-
-actor HDNineMilFast:HDNineMil
-{
-	speed 450 accuracy 9
-	obituary "%o was soaked by %k's pea stream."
-	states
-	{
-	spawn:
-		BLET A 0 nodelay{
-			A_LongArmWobble;
-		}goto spawn1
-	}
-}
 
 
 

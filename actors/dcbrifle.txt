@@ -11,36 +11,6 @@ actor HDSevenMilTrail : IdleDummy{
 		stop
 	}
 }
-actor HDSevenMil:HDBullet{
-	speed 1000 mass 95 accuracy 13 woundhealth 2
-	decal "BulletScratch"
-	var int user_adjust;
-	states{
-	spawn:
-		TNT1 A 0 nodelay{
-			A_SetUserVar(user_adjust,1);
-		}
-	spawn1:
-		BLET A 0{
-			A_LongArmWobble;
-			A_SpawnItemEx("DistantRifle",0,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
-			A_SpawnItemEx("DistantRifle",0,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
-			A_Gunsmoke;
-			A_AlertMonsters;
-			A_ChangeVelocity(0,0,user_adjust);
-			return state("spawn2");
-		}
-	death:
-		TNT1 A 0 A_AlertMonsters
-		TNT1 AA 0 A_SpawnItemEx("BulletPuffBig",0,0,0,0,0,0,0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
-		goto death1
-	xdeath:
-		TNT1 A 0{
-			if (random(1,8)==1){A_GiveInventory("SawGib",1,AAPTR_TRACER);}
-		}goto xdeath1
-	}
-}
-
 
 actor LiberatorChamber : Ammo
 {

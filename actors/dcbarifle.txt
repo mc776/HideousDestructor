@@ -2,20 +2,6 @@
 //   Bolt-Action Rifle
 // ------------------------------------------------------------
 
-actor HDSevenMilFast : HDSevenMil
-{
-	speed 1100 accuracy 17 woundhealth 4
-	Obituary "%o sure showed %k who was the boss!"
-	states
-	{
-	spawn:
-		TNT1 A 0 nodelay{
-			A_SetPitch(pitch-(countinv("BossMOA",AAPTR_TARGET))*0.0083333);
-			A_SetUserVar(user_adjust,1);
-		}
-		goto spawn1
-	}
-}
 actor BossMOA:InventoryFlag{inventory.maxamount 36}
 actor BossZoomDegree:InventoryFlag{inventory.maxamount 2}
 actor BossChamber : Ammo
