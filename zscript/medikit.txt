@@ -35,6 +35,7 @@ class HDMedikitter:HDWoundFixer{
 	default{
 		+inventory.untossable +weapon.cheatnotweapon
 	}
+	bool hasusedflesh;
 	void patchwound(int amt=1){
 		let slf=HDPlayerPawn(owner);
 		if(!slf)return;
@@ -50,6 +51,9 @@ class HDMedikitter:HDWoundFixer{
 		slf.oldwoundcount+=amt;
 	}
 	states{
+	deselect:
+		TNT1 A 0 A_DropInventory("HDMedikitter");
+		goto super::deselect;
 	select:
 		TNT1 A 10{
 			A_PlaySound("weapons/pocket",CHAN_WEAPON);
