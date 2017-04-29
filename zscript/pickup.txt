@@ -2,41 +2,48 @@
 // Pickup Archetypes
 //-------------------------------------------------
 
+/*
+ special uses:
+ painsound: pickup sound
+*/
 class HDUPK:HDActor{
 	//do NOT use this for pickupable casings, 1x1 is intolerably pixelbitchy!
 	default{
 		+solid
 		height 8;radius 8;
+		activesound "misc/i_pkup";
 	}
 	override bool cancollidewith(actor other,bool passive){
 		if(other is "userpickerupper") return true;
 		return false;
 	}
 	states{
-	active:
-	inactive:
 	grab:
-		"----" A 0 A_JumpIfCloser(42,2);
-		"----" A 0 A_Jump(256,"spawn");
-		"----" A 0 A_FaceTarget(0,0,0,0,FAF_TOP);
-		"####" "##" 2 A_ChangeVelocity(cos(-pitch)*6,-1,sin(-pitch)*7+4,CVF_RELATIVE);
-		"----" A 0 A_JumpIfHealthLower(1,"spawn",AAPTR_TARGET); //in case you die mid-pickup
-		"----" A 0 A_JumpIf(getdistance(true,AAPTR_TARGET)>64,"spawn"); //in case you teleport mid-pickup
-		"----" A 0 A_Warp(AAPTR_TARGET,4,0,24);
-		"----" A 0 A_Jump(256,"give");
+		---- A 0 A_FaceTarget(0,0,0,0,FAF_TOP);
+		#### ## 2 A_ChangeVelocity(cos(-pitch)*6,-1,sin(-pitch)*7+4,CVF_RELATIVE);
+		---- A 0{
+			//in case of death or teleport mid-grab
+			if(target.bkilled || getdistance(target)>64) setstatelabel("spawn");
+			else{
+				setorigin(target.pos+(0,0,target.height-24),true);
+				A_PlaySound(activesound);
+				setstatelabel("give");
+			}
+		}
 	give:
 		//put here everything that needs to be given to the player
 		//remember to like do sounds and shit too
-		"----" A 0 A_JumpIfInventory("Clip",0,"spawn",AAPTR_TARGET);
-		"----" A 0 A_GiveInventory("Clip",10,AAPTR_TARGET);
+		---- A 0 A_JumpIfInventory("Clip",0,"spawn",AAPTR_TARGET);
+		---- A 0 A_GiveInventory("Clip",10,AAPTR_TARGET);
 		stop;
 	spawn:
-		CLIP A -1 {vel=(0,0,0);}
+		CLIP A -1{vel=(0,0,0);}
 	spawn2:
-		"----" A -1;
+		---- A -1;
 	givegunloopend:
-		"----" A 0 A_Warp(AAPTR_TARGET);
-		"----" A 0 A_PlaySound("misc/w_pkup");
+		---- A 0{
+			setorigin(target.pos+(0,0,target.height-24),true);
+		}
 		stop;
 	}
 }
