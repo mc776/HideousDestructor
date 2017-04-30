@@ -36,6 +36,8 @@ class userpickerupper:hdactor{
 */
 class HDUPK:HDActor{
 	//do NOT use this for pickupable casings, 1x1 is intolerably pixelbitchy!
+	name hdupktype;
+	property pickuptype:hdupktype;
 	default{
 		+solid
 		height 8;radius 8;
@@ -80,6 +82,7 @@ class HDUPK:HDActor{
 
 
 //just so I don't have to redefine these every time
+//special use: amount becomes hdupk's stamina
 class HDPickup:CustomInventory{
 	default{
 		+inventory.invbar +inventory.persistentpower
@@ -91,7 +94,8 @@ class HDPickup:CustomInventory{
 		TNT1 A 0 nodelay{
 			if(missilename){
 				actor a=spawn(missilename,pos,ALLOW_REPLACE);
-				a.vel=vel;destroy();return;
+				a.vel=vel;a.stamina=invoker.amount;
+				destroy();return;
 			}
 		}stop;
 	}

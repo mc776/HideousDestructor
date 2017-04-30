@@ -7,7 +7,7 @@ class PortableMedikit:HDPickup{
 		inventory.maxamount 8;
 		inventory.pickupmessage "Picked up a medikit.";
 		inventory.icon "PMEDA0";
-		missiletype "PortableMedikitSingle";
+		missiletype "PortableMedikitPickup";
 	}
 	states{
 	use:
@@ -19,6 +19,55 @@ class PortableMedikit:HDPickup{
 			A_PlaySound("weapons/pocket",CHAN_WEAPON);
 		}
 		fail;
+	}
+}
+class PortableMedikitPickup:HDUPK replaces PortableMedikit{
+	default{
+		activesound "weapons/pocket";
+		hdupk.pickuptype "PortableMedikit";
+		accuracy 2;
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		int doublemax=2*accuracy;
+		while(stamina>accuracy){
+			actor a=spawn(getclassname(),pos,ALLOW_REPLACE);
+			if(stamina>=doublemax){
+				a.stamina=accuracy;
+				stamina-=accuracy;
+			}else{
+				a.stamina=1;
+				stamina--;
+			}
+			a.vel=vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
+		}
+		if(stamina>1){
+			scale=(0.51,0.39);
+		}else{
+			stamina=1;
+			scale=(0.4,0.4);
+		}
+	}
+	states{
+	spawn:
+		MEDI A -1 A_Stop();
+	give:
+		"----" A 0{
+			int increase=target.countinv(hdupktype);
+			A_GiveToTarget(hdupktype,stamina);
+			increase=target.countinv(hdupktype)-increase;
+			if(!increase){ //didn't pick any up
+				setstatelabel("spawn");
+				return;
+			}
+			stamina-=increase;
+			if(stamina){ //only picked some up
+				scale=(0.4,0.4);
+				setstatelabel("spawn");
+				return;
+			}
+		}
+		stop;
 	}
 }
 
