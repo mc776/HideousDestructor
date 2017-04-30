@@ -13,8 +13,11 @@ class PortableMedikit:HDPickup{
 	use:
 		TNT1 A 0{
 			if(player.readyweapon && player.readyweapon is "HDMedikitter") return;
+			A_TakeInventory("HDMedikitter");
 			A_GiveInventory("HDMedikitter");
 			A_SelectWeapon("HDMedikitter");
+			A_TakeInventory("PortableMedikit",1);
+			A_PlaySound("weapons/pocket",CHAN_WEAPON);
 		}
 		fail;
 	}
@@ -36,9 +39,11 @@ class HDWoundFixer:HDWeapon{
 class HDMedikitter:HDWoundFixer{
 	default{
 		+inventory.untossable +weapon.cheatnotweapon
+		weapon.slotnumber 9;
 	}
 	bool useonother;
 	bool usedflesh;
+	int usedpatches;
 	void patchwound(int amt,actor targ){
 		let slf=HDPlayerPawn(targ);
 		if(!slf)return;
@@ -55,9 +60,10 @@ class HDMedikitter:HDWoundFixer{
 	}
 	states{
 	select:
+		TNT1 A 0{
+			if(invoker.usedflesh && invoker.usedpatches>100) A_SelectWeapon("SelfBandage");
+		}
 		TNT1 A 10{
-			A_TakeInventory("PortableMedikit",1);
-			A_PlaySound("weapons/pocket",CHAN_WEAPON);
 			if(!getcvar("hd_helptext")) return;
 			if(invoker.checkwoundcount())A_Print("Press and hold Fire\n\nto try to not die.",5);
 			else A_Print("Use this to patch yourself up.\n\n\n\nYou're fine now, so go\n\ndo something else.\n\n\n\n(Altfire deploys that nasty accelerated healing thing.)",5);
@@ -137,6 +143,7 @@ class HDMedikitter:HDWoundFixer{
 		}goto nope;
 	applythatshit:
 		TNT1 A 0 A_JumpIf(getplayerinput(MODINPUT_BUTTONS)&BT_ALTATTACK,"applythathotshit");
+		TNT1 A 0{invoker.usedpatches++;}
 		TNT1 A 0 A_Jump(112,"applythatstaplershit");
 	applythatinjectorshit:
 		TNT1 A 10{
@@ -172,9 +179,20 @@ class HDMedikitter:HDWoundFixer{
 			}
 		}
 		goto nope;
-	fire:
 	altfire:
-		TNT1 A 0 A_JumpIf(invoker.useonother,"fireother");
+		TNT1 A 0{
+			if(invoker.usedflesh){
+				A_Print("You are out of Second Flesh.");
+				A_Refire("nope");
+			}else A_Refire("althold");
+		}
+	fire:
+		TNT1 A 0{
+			if(invoker.usedpatches>100){
+				A_Print("You are out of Auto-Sutures.");
+				A_Refire("nope");
+			}else A_Refire("hold");
+		}
 	hold:
 	althold:
 		TNT1 A 0 A_JumpIf(invoker.useonother,"fireother");
@@ -196,9 +214,6 @@ class HDMedikitter:HDWoundFixer{
 					if(a.oldwoundcount+a.burncount+a.unstablewoundcount<1){
 						A_Print("You have no stabilized injuries to treat.");
 						A_Refire("nope");
-					}else if(invoker.usedflesh){
-						A_Print("You are out of Second Flesh.");
-						A_Refire("nope");
 					}else{
 						A_Refire("secondflesh");
 					}
@@ -214,6 +229,7 @@ class HDMedikitter:HDWoundFixer{
 		goto nope;
 	patchup:
 		TNT1 A 10;
+		TNT1 A 0{invoker.usedpatches++;}
 		TNT1 A 0 A_Jump(112,"stapler");
 	injector:
 		TNT1 A 0 A_Overlay(3,"flashtampon");
