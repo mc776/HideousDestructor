@@ -83,19 +83,20 @@ extend class HDPlayerPawn{
 				A_TakeInventory("LethalDamage");
 			}
 
-			//limit beatmax
+			//limit beatmax subject to zerk
 			if(countinv("PowerStrength")) beatmax=clamp(beatmax,4,14);
 			else beatmax=clamp(beatmax,HDCONST_MINHEARTTICS,35);
 
 			if(beatmax<8)DamageMobj(self,self,1,"internal");
 			else{
-				if(health<100-aggravateddamage-burncount-oldwoundcount-unstablewoundcount)
-				healthing(1);
+				if(health<100-aggravateddamage-burncount-oldwoundcount-unstablewoundcount){
+					healthing(1);
+					if(random(1,20)<stimcount)healthing(1);
+				}
 			}
 
-			//reset beatcount, subject to stims
-			if(stimcount) beatcount=beatmax-random(1,2);
-				else beatcount=beatmax;
+			//reset beatcount
+			beatcount=beatmax;
 			A_SetBlend("66 10 12",0.3-0.3*(health*0.01),beatcount);
 			pitch+=0.002*beatcount*(1+(35-beatmax));
 			beatcounter++;
@@ -122,6 +123,12 @@ extend class HDPlayerPawn{
 				regenblues-=2;
 			}
 
+			//apply stims
+			if(stimcount){
+				beatcap=clamp(beatcap,beatcap-4,35-stimcount);
+				if(bloodpressure<stimcount)bloodpressure+=4;
+			}
+
 			if(beatcounter%4==0){	//every 4 beats
 				//recovering heart rate
 				if(beatmax<beatcap) beatmax++;
@@ -142,10 +149,6 @@ extend class HDPlayerPawn{
 				else if(health<60) beatcap=clamp(beatcap,1,32);
 				if(woundcount>10) beatcap=clamp(beatcap,1,12);    
 				else if(woundcount>5) beatcap=clamp(beatcap,1,24);
-
-				//keep stim below cap as long as it's above 12
-				if(stimcount>0 && beatcap>12)    
-					beatcap=clamp(beatcap,12,beatcap-1);
 
 				if(unstablewoundcount && countinv("IsMoving")>random(0,12)){
 					unstablewoundcount--;
