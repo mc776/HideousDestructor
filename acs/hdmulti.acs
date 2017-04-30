@@ -50,10 +50,12 @@ function int CurrentLives(void)
 }
 function void ReplaceBot(void)
 {
-	if ((GetCVar("hd_nobots")) && (PlayerIsBot(PlayerNumber())))
-	{
+	if(!PlayerIsBot(PlayerNumber())) return;
+	if ((GetCVar("hd_nobots"))){
 		GiveInventory ("BotSpawner",1);
 		SetActorPosition(0,0x7FFFFFFF,0x7FFFFFFF,0x7FFFFFFF,0);
+	}else{
+		GiveInventory("IsBot",1);
 	}
 }
 
