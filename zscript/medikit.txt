@@ -107,18 +107,16 @@ class HDMedikitter:HDWoundFixer{
 	fireother:
 		TNT1 A 10{
 			actor a;int b;
-			bshootable=false;
 			[a,b]=LineAttack(angle,42,pitch,0,"none",
 				"NewBulletMovePuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT
 			);
-			bshootable=true;
 			let c=HDPlayerPawn(a.tracer);
 			if(!c){
 				A_Print("Nothing to be done here.\n\nHeal thyself? (press zoom)",2);
 				return resolvestate("nope");
 			}
 			if(c.countinv("IsMoving")>4){
-				c.A_Print("Stop squirming!\n\nThey're trying to heal you\n\nnot bugger you...");
+				c.A_Print(string.format("Stop squirming!\n\n%s is trying to heal you\n\nnot bugger you...",player.getusername()));
 				A_Print("You'll need them to stay still...");
 				return resolvestate("nope");
 			}
@@ -280,8 +278,8 @@ class SelfBandage:HDWoundFixer{
 	default{
 		weapon.slotnumber 9; weapon.selectionorder 999;
 	}
-	void patchwound(int amt=1){
-		let slf=HDPlayerPawn(owner);
+	void patchwound(int amt,actor targ){
+		let slf=HDPlayerPawn(targ);
 		if(!slf)return;
 		int wound=max(slf.woundcount,0);
 		amt=min(amt,wound);
@@ -291,6 +289,7 @@ class SelfBandage:HDWoundFixer{
 			slf.unstablewoundcount+=amt;
 		}
 	}
+	int targetlock;
 	states{
 	select:
 		TNT1 A 0{
@@ -378,28 +377,60 @@ class SelfBandage:HDWoundFixer{
 		TNT1 A 0 A_JumpIf(invoker.checkwoundcount(),3);
 		TNT1 A 0 A_JumpIfInventory("IsTextless",1,2);
 		TNT1 A 0 A_Print("Despite your best efforts\n\nyou seem to be stable.",5); goto nope;
+		TNT1 A 0 A_Jump(64,2);
+		TNT1 A 0 A_JumpIf(countinv("GreenArmour")+countinv("BlueArmour")+countinv("BlackArmour"),2);
 		TNT1 A 4 A_Jump(160,2,3,4);
-		TNT1 A 0 {invoker.patchwound(random(1,2));}
+		TNT1 A 0 {invoker.patchwound(random(1,2),self);}
 		TNT1 A 0 A_GiveInventory("BleedOutAI",1);
 		TNT1 A 0 ACS_NamedExecuteAlways("MuzzleClimb",0,random(-24,-24),random(-24,24),0);
 		TNT1 A 0 A_Refire("try2");
 		goto ready;
+	nope:
+		TNT1 A 0{invoker.targetlock=0;}
+		goto super::nope;
 	altfire:
 	althold:
-		TNT1 A random(1,10) A_Jump(128,1,2);
-		TNT1 A random(1,10);
-		TNT1 A random(1,10) A_PlaySound("weapons/pocket");
-		TNT1 A 0 A_FireProjectile("InjectorChecker");
-		TNT1 A 0 A_JumpIfInventory("InjectorCheckerFlag",0,"injectbandage"); //heh
-		TNT1 A 0 A_Refire();
-		TNT1 A 0 A_TakeInventory("InjectorCheckerFlag");
-		goto ready;
+		TNT1 A 1;
+		TNT1 A 0{
+			actor a;int b;
+			[a,b]=LineAttack(angle,42,pitch,0,"none",
+				"NewBulletMovePuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT
+			);
+			let c=HDPlayerPawn(a.tracer);
+			if(!c){
+				A_Print("Nothing to be done here.\n\nHeal thyself? (press zoom)",2);
+				return resolvestate("nope");
+			}
+			if(c.countinv("IsMoving")>4){
+				c.A_Print(string.format("Stop squirming!\n\n%s is trying to bandage you\n\nnot bugger you...",player.getusername()));
+				A_Print("You'll need them to stay still...");
+				return resolvestate("nope");
+			}
+			if(c.woundcount<1){
+				A_Print("They're not bleeding.");
+				return resolvestate("nope");
+			}
+			invoker.target=c;
+			invoker.targetlock++;
+			if(invoker.targetlock>10){
+				A_Refire("injectbandage");
+			}else A_Refire();
+			return resolvestate(null);
+		}goto nope;
 	injectbandage:
-		TNT1 A 0 A_FireProjectile("BandageInjector");
-		TNT1 A 0 A_TakeInventory("InjectorCheckerFlag");
-		TNT1 A 20;
-		TNT1 A 0 A_Refire();
-		goto ready;
+		TNT1 A random(7,14){
+			if(invoker.target){
+				if(random(0,2)){
+					if(!random(0,2))invoker.target.A_PlaySound("weapons/pocket",CHAN_BODY);
+					return;
+				}
+				invoker.target.A_PlaySound("weapons/pocket",CHAN_BODY);
+				invoker.patchwound(1,invoker.target);
+			}
+		}goto ready;
+
+
+
 	spawn:
 		TNT1 A 1;
 		TNT1 A 0 A_CheckProximity("spawndropped","PlayerPawn",20,1, CPXF_COUNTDEAD|CPXF_SETTARGET|CPXF_ANCESTOR|CPXF_CLOSEST|CPXF_NOZ);
