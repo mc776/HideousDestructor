@@ -29,18 +29,6 @@ class PortableMedikitPickup:HDUPK replaces PortableMedikit{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		int doublemax=2*accuracy;
-		while(stamina>accuracy){
-			actor a=spawn(getclassname(),pos,ALLOW_REPLACE);
-			if(stamina>=doublemax){
-				a.stamina=accuracy;
-				stamina-=accuracy;
-			}else{
-				a.stamina=1;
-				stamina--;
-			}
-			a.vel=vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
-		}
 		if(stamina>1){
 			scale=(0.51,0.39);
 		}else{
@@ -52,21 +40,7 @@ class PortableMedikitPickup:HDUPK replaces PortableMedikit{
 	spawn:
 		MEDI A -1 A_Stop();
 	give:
-		"----" A 0{
-			int increase=target.countinv(hdupktype);
-			A_GiveToTarget(hdupktype,stamina);
-			increase=target.countinv(hdupktype)-increase;
-			if(!increase){ //didn't pick any up
-				setstatelabel("spawn");
-				return;
-			}
-			stamina-=increase;
-			if(stamina){ //only picked some up
-				scale=(0.4,0.4);
-				setstatelabel("spawn");
-				return;
-			}
-		}
+		"----" A 0 A_GivePickupType();
 		stop;
 	}
 }

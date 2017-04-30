@@ -33,6 +33,8 @@ class userpickerupper:hdactor{
 /*
  special uses:
  painsound: pickup sound
+ hdupk.pickuptype: default type of inventory item it replaces
+ accuracy: max # of pickuptype a single unit can store
 */
 class HDUPK:HDActor{
 	//do NOT use this for pickupable casings, 1x1 is intolerably pixelbitchy!
@@ -46,6 +48,43 @@ class HDUPK:HDActor{
 	override bool cancollidewith(actor other,bool passive){
 		if(other is "userpickerupper") return true;
 		return false;
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		if(!accuracy) return;
+		int doublemax=2*accuracy;
+		while(stamina>accuracy){
+			actor a=spawn(getclassname(),pos,ALLOW_REPLACE);
+			if(stamina>=doublemax){
+				a.stamina=accuracy;
+				stamina-=accuracy;
+			}else{
+				a.stamina=1;
+				stamina--;
+			}
+			a.vel=vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
+		}
+		if(stamina>1){
+			scale=(0.51,0.39);
+		}else{
+			stamina=1;
+			scale=(0.4,0.4);
+		}
+	}
+	virtual void A_GivePickupType(){
+		int increase=target.countinv(hdupktype);
+		A_GiveToTarget(hdupktype,stamina);
+		increase=target.countinv(hdupktype)-increase;
+		if(!increase){ //didn't pick any up
+			setstatelabel("spawn");
+			return;
+		}
+		stamina-=increase;
+		if(stamina){ //only picked some up
+			scale=(0.4,0.4);
+			setstatelabel("spawn");
+			return;
+		}
 	}
 	states{
 	inactive:
