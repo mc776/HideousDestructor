@@ -129,44 +129,44 @@ extend class HDPlayerPawn{
 		}
 
 		//replace this section once weapons are scriptified
-		name wp=player.readyweapon.getclassname();
 		if(barehanded){
 			mult=0;
 			dec=0.1;
+		}else{
+			name wp=player.readyweapon.getclassname();
+			if(wp=="Vulcanette")mult*=5
+				+((countinv("VulcJuice")||countinv("VulcEmptyCell"))?0.2:0)
+				+0.001*(
+				+countinv("VulcMag1")+countinv("VulcLoaded1")
+				+countinv("VulcMag2")+countinv("VulcLoaded2")
+				+countinv("VulcMag3")+countinv("VulcLoaded3")
+				+countinv("VulcMag4")+countinv("VulcLoaded4")
+				+countinv("VulcMag5")+countinv("VulcLoaded5")
+			);
+			else if(wp=="BFG9k")mult*=5.5+0.6*countinv("BFGLoaded");
+			else if(wp=="RocquetteLauncher")mult*=4
+				+0.2*(countinv("RocketMag"))
+				+0.5*(countinv("HEATLoaded"));
+			else if(wp=="BossRifle")mult*=5;
+			else if(wp=="ThunderBuster")
+				mult*=4+((countinv("PlasmaBattery")||countinv("PlasmaEmptyCell"))?0.2:0);
+			else if(wp=="Lumberjack")
+				mult*=4+((countinv("LumberCell")>0||countinv("LumberEmptyCell")>0)?0.3:0);
+			else if(wp=="Hunter"){
+				if(countinv("ShotgunTube")>3)mult*=countinv("ShotgunTube")*0.2;
+				else mult*=4;
+			}
+			else if(wp=="LiberatorGrenadeRifle")mult*=4.2-0.25*countinv("LiberatorNoMag")+0.2*countinv("LiberatorGrenadeChamber");
+			else if(wp=="LiberatorRifle")mult*=3.6-0.2*countinv("LiberatorNoMag");
+			else if(wp=="ZM66GrenadeRifle")mult*=3.8-0.2*countinv("ZM66NoMag")+0.2*countinv("ZM66GLoaded");
+			else if(wp=="ZM66Rifle")mult*=3.4-0.2*countinv("ZM66NoMag");
+			else if(wp=="ZM66SemiRifle")mult*=3.4-0.2*countinv("ZM66NoMag");
+			else if(wp=="Brontornis")mult*=3.5;
+			else if(wp=="Slayer")mult*=3;
+			else if(wp=="HDSMG")mult*=3-0.3*countinv("HDSMGNoMag");
+			else if(wp=="Blooper")mult*=2.5+0.5*countinv("BloopChamber");
+			else if(wp=="HDPistol")mult*=2;
 		}
-		else if(wp=="Vulcanette")mult*=5
-			+((countinv("VulcJuice")||countinv("VulcEmptyCell"))?0.2:0)
-			+0.001*(
-			+countinv("VulcMag1")+countinv("VulcLoaded1")
-			+countinv("VulcMag2")+countinv("VulcLoaded2")
-			+countinv("VulcMag3")+countinv("VulcLoaded3")
-			+countinv("VulcMag4")+countinv("VulcLoaded4")
-			+countinv("VulcMag5")+countinv("VulcLoaded5")
-		);
-		else if(wp=="BFG9k")mult*=5.5+0.6*countinv("BFGLoaded");
-		else if(wp=="RocquetteLauncher")mult*=4
-			+0.2*(countinv("RocketMag"))
-			+0.5*(countinv("HEATLoaded"));
-		else if(wp=="BossRifle")mult*=5;
-		else if(wp=="ThunderBuster")
-			mult*=4+((countinv("PlasmaBattery")||countinv("PlasmaEmptyCell"))?0.2:0);
-		else if(wp=="Lumberjack")
-			mult*=4+((countinv("LumberCell")>0||countinv("LumberEmptyCell")>0)?0.3:0);
-		else if(wp=="Hunter"){
-			if(countinv("ShotgunTube")>3)mult*=countinv("ShotgunTube")*0.2;
-			else mult*=4;
-		}
-		else if(wp=="LiberatorGrenadeRifle")mult*=4.2-0.25*countinv("LiberatorNoMag")+0.2*countinv("LiberatorGrenadeChamber");
-		else if(wp=="LiberatorRifle")mult*=3.6-0.2*countinv("LiberatorNoMag");
-		else if(wp=="ZM66GrenadeRifle")mult*=3.8-0.2*countinv("ZM66NoMag")+0.2*countinv("ZM66GLoaded");
-		else if(wp=="ZM66Rifle")mult*=3.4-0.2*countinv("ZM66NoMag");
-		else if(wp=="ZM66SemiRifle")mult*=3.4-0.2*countinv("ZM66NoMag");
-		else if(wp=="Brontornis")mult*=3.5;
-		else if(wp=="Slayer")mult*=3;
-		else if(wp=="HDSMG")mult*=3-0.3*countinv("HDSMGNoMag");
-		else if(wp=="Blooper")mult*=2.5+0.5*countinv("BloopChamber");
-		else if(wp=="HDPistol")mult*=2;
-
 		dec=clamp(dec*mult,0,0.9);
 		yaw*=mult;ptch*=mult;
 
