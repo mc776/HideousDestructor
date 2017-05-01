@@ -282,7 +282,7 @@ class SecondFleshBeast:IdleDummy{
 		TNT1 A 12{target.A_Scream();}
 		TNT1 A 4{
 			let tgt=HDPlayerPawn(target);
-			if(!tgt || tgt.oldwoundcount<1 || stamina<1){destroy();return;}
+			if(!tgt || tgt.bkilled || tgt.oldwoundcount<1 || stamina<1){destroy();return;}
 			if(tgt.health>10)tgt.damagemobj(tgt,tgt,min(tgt.health-10,10),"internal",DMG_NO_ARMOR);
 			tgt.A_Pain();
 			tgt.stunned+=10;
