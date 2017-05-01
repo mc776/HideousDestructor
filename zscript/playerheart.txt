@@ -21,6 +21,30 @@ extend class HDPlayerPawn{
 	int oldwoundcount;
 	int aggravateddamage;
 
+	void ResetHealth(bool downtimeonly=true){
+		beatcount=0;beatcounter=0;
+		bloodpressure=0;
+		stimcount=0;regenbers=0;A_TakeInventory("PowerStrength");
+		stunned=0;
+
+		if(downtimeonly){
+			//wounds stabilize during downtime
+			unstablewoundcount+=woundcount;
+			woundcount=0;
+			oldwoundcount+=min(5,unstablewoundcount);
+			unstablewoundcount=max(unstablewoundcount-5,0);
+			oldwoundcount=max(oldwoundcount-2,0);
+		}else{
+			//just reset everything
+			beatmax=35;beatcap=35;
+			healthing(100-health);
+			regenblues=0;
+			woundcount=0;unstablewoundcount=0;oldwoundcount=0;
+			burncount=0;
+			aggravateddamage=0;
+		}
+	}
+
 	void HeartTicker(){
 
 		if(bkilled) return; //don't really need this...
