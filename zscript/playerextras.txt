@@ -59,10 +59,10 @@ extend class HDPlayerPawn{
 			&& !(oldinput & BT_JUMP)
 			&& !countinv("PowerIronFeet")
 		){
-			double jumppower=7;
+			double jumppower=5;
 			if(countinv("PowerStrength"))jumppower=10;else{
 				if(beatmax<20) jumppower=3;
-				else if(beatmax<24) jumppower=5;
+				else if(beatmax<24) jumppower=3.5;
 			}
 			double jz=jumppower*0.6;
 			if(!sm){
