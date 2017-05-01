@@ -38,8 +38,8 @@ class userpickerupper:hdactor{
 */
 class HDUPK:HDActor{
 	//do NOT use this for pickupable casings, 1x1 is intolerably pixelbitchy!
-	name hdupktype;
-	property pickuptype:hdupktype;
+	name pickuptype;
+	property pickuptype:pickuptype;
 	default{
 		+solid
 		height 8;radius 8;
@@ -72,13 +72,13 @@ class HDUPK:HDActor{
 		}
 	}
 	virtual void A_HDUPKGive(){
-		if(!hdupktype){
+		if(!pickuptype){
 			setstatelabel("give");
 			return;
 		}
-		int increase=target.countinv(hdupktype);
-		A_GiveToTarget(hdupktype,stamina);
-		increase=target.countinv(hdupktype)-increase;
+		int increase=target.countinv(pickuptype);
+		A_GiveToTarget(pickuptype,stamina);
+		increase=target.countinv(pickuptype)-increase;
 		if(!increase){ //didn't pick any up
 			setstatelabel("spawn");
 			return;
