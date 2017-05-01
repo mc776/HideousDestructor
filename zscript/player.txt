@@ -250,20 +250,18 @@ class HDPlayerPawn:PlayerPawn{
 
 		//...except encumbrance which goes here
 		if(overloaded){
+			speed*=1-(overloaded*0.2);
 			if(overloaded>3){
-				speed*=0.4;
 				viewbob=clamp(viewbob+0.2,0,1.4);
 				mustwalk=true;
 				cansprint=false;
 			}
 			if(overloaded>2.5){
-				speed*=0.6;
 				viewbob=clamp(viewbob+0.1,0,1.3);
 				mustwalk=true;
 				cansprint=false;
 			}
 			if(overloaded>2){
-				speed*=0.8;
 				viewbob=clamp(viewbob+0.1,0,1.2);
 				mustwalk=true;
 				cansprint=false;
