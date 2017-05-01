@@ -270,7 +270,7 @@ class HDMedikitter:HDWoundFixer{
 			A_PlaySound("misc/smallslop",CHAN_VOICE);
 			actor a=spawn("SecondFleshBeast",pos);
 			a.target=self;
-			a.stamina=15;
+			a.stamina=100;
 		}
 		goto nope;
 	}
@@ -286,8 +286,14 @@ class SecondFleshBeast:IdleDummy{
 			if(tgt.health>10)tgt.damagemobj(tgt,tgt,min(tgt.health-10,10),"internal",DMG_NO_ARMOR);
 			tgt.A_Pain();
 			tgt.stunned+=10;
-			if(!random(0,4))tgt.oldwoundcount--;
-			if(!random(0,999))tgt.aggravateddamage--;
+			if(!random(0,7))tgt.oldwoundcount--;
+			else if(!random(0,4))tgt.burncount--;
+			else if(tgt.unstablewoundcount && !random(0,2)){
+				tgt.unstablewoundcount--;
+				tgt.aggravateddamage++;
+			}
+			if(!random(0,999))tgt.aggravateddamage++;
+			stamina--;
 		}wait;
 	}
 }
