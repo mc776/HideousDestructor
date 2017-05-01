@@ -64,6 +64,7 @@ extend class HDPlayerPawn{
 				if(beatmax<20) jumppower=3;
 				else if(beatmax<24) jumppower=3.5;
 			}
+			if(overloaded)jumppower/=overloaded;
 			double jz=jumppower*0.6;
 			if(!sm){
 				if(!fm) vel.z+=jz; //straight up
