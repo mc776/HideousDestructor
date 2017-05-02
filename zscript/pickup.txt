@@ -10,7 +10,7 @@ class userpickerupper:hdactor{
 	}
 	override void postbeginplay(){
 		if(vel.xy==(0,0))vel.x=minvel;
-		for(int i=0;i<12;i++){
+		for(int i=0;i<14;i++){
 			if(!trymove(pos.xy+vel.xy,true)){
 				if(blockingmobj){
 					if(
@@ -19,12 +19,13 @@ class userpickerupper:hdactor{
 					){
 						blockingmobj.target=self.target;
 						blockingmobj.setstatelabel("grab");
-						return;
+						destroy();return;
 					}
+					else if(blockingline){A_Log("LINE");destroy();return;}
 				}
-				else if(blockingline)return;
 			}
-			else addz(vel.z);
+			addz(vel.z);
+			if(floorz>pos.z && floorz<target.height+target.pos.z)setz(floorz);
 		}
 		destroy();
 	}
