@@ -1,7 +1,6 @@
 // ------------------------------------------------------------
 // All damage that affects the player goes here.
 // ------------------------------------------------------------
-
 extend class HDPlayerPawn{
 	override int DamageMobj(
 		actor inflictor,
@@ -191,6 +190,7 @@ extend class HDPlayerPawn{
 
 		//add to wounds and burns
 		if(towound){
+			lastthingthatwoundedyou=source;
 			A_GiveInventory("WoundCount",towound);
 			woundcount+=towound;
 		}
@@ -228,7 +228,6 @@ extend class HDPlayerPawn{
 			if(random(1,128)==1){A_GiveInventory("LethalDamage",1);}
 			A_GiveInventory("Fatigue",2);
 			if(health<40){A_GiveInventory("IsHurt",1);}
-			if(countinv("Fatigue")<30){A_GiveInventory("Fatigue",20);}
 			if(countinv("IsMoving")){setstatelabel("see");}
 			else setstatelabel("spawn");
 		}
@@ -242,8 +241,8 @@ extend class HDPlayerPawn{
 	painend:
 		#### G 1;
 		#### G 2{
-			if(bloodpressure<50)bloodpressure+=10;
-			if(beatcap>20)beatcap=max(beatcap-randompick(10,20),HDCONST_MINHEARTTICS);
+			if(bloodpressure<100)bloodpressure+=20;
+			if(beatcap>20)beatcap=max(beatcap-randompick(10,20),12);
 			A_SetBlend("00 00 00",0.8,40,"00 00 00");
 			A_SetPitch(pitch+random(-4,4),SPF_FORCECLAMP|SPF_INTERPOLATE);
 			A_SetAngle(angle+random(-4,4),SPF_INTERPOLATE);

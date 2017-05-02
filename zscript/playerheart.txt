@@ -15,6 +15,8 @@ extend class HDPlayerPawn{
 	int regenblues;
 	int regenbers;
 
+	actor lastthingthatwoundedyou;
+
 	int woundcount;
 	int burncount;
 	int unstablewoundcount;
@@ -56,12 +58,6 @@ extend class HDPlayerPawn{
 			healthing(1);
 		}else if(countinv("PowerStrength") && !countinv("RegenBers"))A_TakeInventory("PowerStrength");
 
-		//MY ORIFICE IS BLEEDING!!!
-		if(woundcount){
-			if(random(1,35+bloodpressure)<=woundcount)
-			damagemobj(self,null,1,"bleedout",DMG_THRUSTLESS);
-		}
-
 		//good old jitters!
 		if(
 			bloodpressure>20||
@@ -76,9 +72,16 @@ extend class HDPlayerPawn{
 		//on every beat
 		if(beatcount>0){
 			beatcount--;
-			pitch-=0.00001*beatcount*bloodpressure;
+			pitch-=0.001*bloodpressure;
 		}else{
+			pitch+=0.001*beatmax*bloodpressure;
 			beatmax=min(beatmax,beatcap);
+
+			//MY ORIFICE IS BLEEDING!!!
+			if(woundcount){
+				int dm=(random(10,woundcount)-random(0,bloodpressure))*0.4;
+				if(dm>0)damagemobj(self,lastthingthatwoundedyou,dm,"bleedout",DMG_THRUSTLESS);
+			}
 
 			//remove these once we're done with them
 			//lethal didn't mean the same as oldwoundcount but oh well
@@ -121,8 +124,7 @@ extend class HDPlayerPawn{
 
 			//reset beatcount
 			beatcount=beatmax;
-			A_SetBlend("66 10 12",0.3-0.3*(health*0.01),beatcount);
-			pitch+=0.002*beatcount*(1+(35-beatmax));
+			A_SetBlend("20 12 0f",0.005*min(bloodpressure,100),beatcount);
 			beatcounter++;
 
 			//sprinting
@@ -171,8 +173,6 @@ extend class HDPlayerPawn{
 				//updating beatcap (minimum heart rate)
 				if(health<40) beatcap=clamp(beatcap,1,24);
 				else if(health<60) beatcap=clamp(beatcap,1,32);
-				if(woundcount>10) beatcap=clamp(beatcap,1,12);    
-				else if(woundcount>5) beatcap=clamp(beatcap,1,24);
 
 				if(unstablewoundcount && countinv("IsMoving")>random(0,12)){
 					unstablewoundcount--;
