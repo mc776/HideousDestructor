@@ -238,7 +238,7 @@ class nb:HDActor{
 	}
 	//apply damage and blood
 	void BulletImpactDamage(){
-		dmg+=mass*speed*speed*0.0000005+woundhealth;
+		dmg+=mass*speed*speed*0.0000003+woundhealth;
 		int maxdmg=dmg*2;
 
 		//supersonic shockwave damage
@@ -262,7 +262,7 @@ class nb:HDActor{
 		//apply damage
 		dmg=random(dmg,maxdmg);
 		if(hd_debug)A_Log(string.format("%s \ca%i \cj%s",self.getclassname(),dmg,a.tracer.getclassname()));
-		a.tracer.damagemobj(self,self.target,dmg,damagetype);//,DMG_THRUSTLESS);
+		a.tracer.damagemobj(self,self.target,dmg,damagetype,DMG_THRUSTLESS);
 
 		//puff or bleed as appropriate
 		if(bbloodlessimpact)return;
