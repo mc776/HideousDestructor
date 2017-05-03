@@ -22,14 +22,19 @@ extend class HDPlayerPawn{
 		}
 
 		//factor in cheats and skills
-		if(player.cheats&CF_GODMODE2 || player.cheats&CF_GODMODE || binvulnerable || !bshootable) return 0;
-		if(!skill || hd_lowdamage)damage=max(1,damage*0.3);
+		if(!(flags&DMG_FORCED)){
+			if(player.cheats&CF_GODMODE2 || player.cheats&CF_GODMODE || binvulnerable || !bshootable) return 0;
+			if(!skill || hd_lowdamage)damage=max(1,damage*0.3);
+		}
 
 		int towound=0;
 		int toburn=0;
 
-		int armourlevel=0;
-		if(countinv("BlackArmour")){
+		int armourlevel;
+		if(flags&DMG_NO_ARMOR||flags&DMG_FORCED){
+			armourlevel=0;
+		}
+		else if(countinv("BlackArmour")){
 			armourlevel=3;
 		}
 		else if(countinv("BlueArmour")){
@@ -175,8 +180,7 @@ extend class HDPlayerPawn{
 			mod=="internal"||
 			mod=="falling"||
 			mod=="invisiblebleedout"||
-			mod=="drowning"||
-			flags & DMG_NO_ARMOR
+			mod=="drowning"
 		){
 			//noarmour
 			//do nothing
