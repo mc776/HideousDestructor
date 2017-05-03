@@ -48,6 +48,7 @@ class HDUPK:HDActor{
 		activesound "misc/i_pkup";
 	}
 	override bool cancollidewith(actor other,bool passive){
+		if(bpushable)return super.cancollidewith(other,passive);
 		if(other is "userpickerupper") return true;
 		return false;
 	}
