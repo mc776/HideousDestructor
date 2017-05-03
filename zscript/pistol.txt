@@ -2,6 +2,40 @@
 //   Pistol
 // ------------------------------------------------------------
 
+class HDPistolSelector:HDWeapon{
+	default{
+		+inventory.untossable
+		weapon.slotnumber 2;
+	}
+	states{
+	select:
+		TNT1 A 0{
+			bool haspistol1=countinv("HDPistol");
+			bool haspistol2=countinv("HDSecondPistol");
+			if(haspistol1){
+				A_SelectWeapon("HDPistol");
+				return;
+			}else if(!haspistol2){
+				if(countinv("HDSMG"))A_SelectWeapon("HDSMG");
+				else A_SelectWeapon("Ring");
+				return;
+			}
+			A_SetInventory("HDPistolChamber",countinv("HDSecondPistolChamber"));
+			A_SetInventory("HDPistolNoMag",countinv("HDSecondPistolNoMag"));
+			A_SetInventory("HDPistolLoaded",countinv("HDSecondPistolLoaded"));
+			A_SetInventory("HDPistolFullAuto",countinv("HDSecondPistolFullAuto"));
+			A_GiveInventory("HDPistol");
+			A_TakeInventory("HDSecondPistol");
+			A_TakeInventory("HDSecondPistolChamber");
+			A_TakeInventory("HDSecondPistolNoMag");
+			A_TakeInventory("HDSecondPistolLoaded");
+			A_TakeInventory("HDSecondPistolFullAuto");
+			A_SelectWeapon("HDPistol");
+		}
+		goto super::select;
+	}
+}
+
 class HDSpent9mm:HDDebris{
 	override void postbeginplay(){
 		super.postbeginplay();
