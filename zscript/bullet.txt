@@ -119,17 +119,21 @@ class nb:HDActor{
 
 				//NOW test for impacts...
 
+				//used for a few things
+				vector3 posbak;
+
 				//lower sky ceiling check
-				vector3 backcheck=(cos(angle),sin(angle),0);
-				a.setorigin(a.pos+backcheck,false);
+				posbak=a.pos;
+				a.setorigin(a.pos+(cos(angle),sin(angle),0)*4,false);
 				if(a.ceilingpic==skyflatnum && a.ceilingz-a.pos.z<height){
 					setorigin(a.pos,false);
 					inthesky=true;
 					return;
-				}else a.setorigin(a.pos-backcheck,false);
+				}
+				a.setorigin(posbak,false);
 
 				//SUPER HACKY horizon line check
-				vector3 posbak=pos;
+				posbak=pos;
 				vector2 sizbak=(radius,height);
 				a_setsize(12,4);
 				if(!trymove(posbak.xy+1*(cos(angle),sin(angle)),true,true)){
@@ -139,6 +143,7 @@ class nb:HDActor{
 				}
 				setorigin(posbak,false);
 				a_setsize(sizbak.x,sizbak.y);
+
 
 				//finally, the "real" impacts
 				if(floorz>pos.z || ceilingz<=pos.z+height){
@@ -327,20 +332,22 @@ class nb:HDActor{
 
 			crackvel=vel/hitdist*64;
 			int k=hitdist*1/64;
+			actor cracker=spawn("idledummy",pos);
 			for(int j=0;j<k;j++){
-				a.setorigin(a.pos-crackvel,false);
+				cracker.setorigin(cracker.pos-crackvel,false);
 				bool p;p=false;
 				for(int i=0;!p && i<MAXPLAYERS;i++){
 					if(playeringame[i] && players[i].mo){
 						if(
-							a.distance3d(players[i].mo)<256
+							cracker.distance3d(players[i].mo)<256
 						){
 							p=true;
-							spawn(b,a.pos);
+							spawn(b,cracker.pos);
 						}
 					}
 				}
 			}
+			cracker.destroy();
 		}
 	}
 	virtual void Gunsmoke(){
