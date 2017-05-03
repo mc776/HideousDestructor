@@ -9,7 +9,7 @@ extend class HDPlayerPawn{
 			return 0;
 		}
 
-		int blox=
+		double blox=
 
 		//weapons
 		(
@@ -133,8 +133,10 @@ extend class HDPlayerPawn{
 			countinv("RegenStims")*3+
 			countinv("HDBackpack")*300
 		;
-		if (blox<=carrymax) return 0;
-		else return blox*1.0/carrymax;
+		A_SetInventory("Encumbrance",blox);
+		blox/=carrymax;
+		if(blox<1) return 0;
+		else return blox;
 	}
 }
 
