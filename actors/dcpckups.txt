@@ -62,42 +62,6 @@ actor PortableBerserkPackBigPickup : HDUPK replaces Berserk
 		stop
 	}
 }
-actor PortableMedikitSingle : HDUPK replaces PortableMedikit
-{
-	scale 0.4
-	states
-	{
-	spawn:
-		MEDI A -1 A_Stop
-	give:
-		"----" A 0 A_JumpIfInTargetInventory("PortableMedikit",0,"spawn")
-		"----" A 0 A_GiveToTarget("PortableMedikit",1)
-		"----" A 0 A_PlaySound("weapons/pocket")
-		stop
-	}
-}
-actor PortableMedikitPickup : HDUPK
-{
-	xscale 0.51 yscale 0.39
-	states
-	{
-	spawn:
-		MEDI A 0 A_Stop
-		"----" A 0 A_JumpIfInventory("Clip",1,"spawn2")
-		"----" A 0 A_GiveInventory("Clip",1)
-		"----" A 0 A_GiveInventory("PortableMedikit",2)
-		goto spawn2
-	give:
-		"----" A 0 A_JumpIfInTargetInventory("PortableMedikit",0,"spawn")
-		"----" A 0 A_Jump(256,"giveloop")
-	giveloop:
-		"----" A 0 A_GiveToTarget("PortableMedikit",1)
-		"----" A 0 A_TakeInventory("PortableMedikit",1)
-		"----" A 0 A_JumpIfInventory("PortableMedikit",1,"give")
-		"----" A 0 A_PlaySound("weapons/pocket")
-		stop
-	}
-}
 actor PortableStimpack : HDPickup
 {
 	inventory.amount 1

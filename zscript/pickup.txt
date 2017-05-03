@@ -19,6 +19,7 @@ class userpickerupper:hdactor{
 					){
 						blockingmobj.target=self.target;
 						blockingmobj.setstatelabel("grab");
+						let ppp=HDPlayerPawn(target);if(ppp)ppp.hasgrabbed=true;
 						destroy();return;
 					}
 					else if(blockingline){A_Log("LINE");destroy();return;}

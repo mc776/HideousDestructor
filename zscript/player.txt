@@ -5,19 +5,29 @@ const HDCONST_SPRINTMAXHEARTRATE=20;
 class HDPlayerPawn:PlayerPawn{
 	vector3 lastpos;vector3 lastvel;double lastangle;double lastpitch;
 	vector3 poschange;double anglechange;double pitchchange;
-	double zat;
-	actor playercorpse;
-	name lastweapon;
-	bool barehanded;
-	bool mustwalk;bool cansprint;
-	double feetangle;
-	double overloaded;
-	int runwalksprint;
-	int stunned;
-	int nocrosshair;
-	int input;int oldinput;
 	double fm;double sm;
 	int iyaw;int ipitch;
+	double zat;
+
+	actor playercorpse;
+
+	name lastweapon;
+	bool barehanded;
+	double overloaded;
+
+	bool mustwalk;bool cansprint;
+	int runwalksprint;
+
+	double feetangle;
+
+	int stunned;
+	int nocrosshair;
+
+	int input;int oldinput;
+
+	bool hasgrabbed;
+	int corpsekicktimer;
+
 	default{
 		+interpolateangles
 	}
@@ -337,6 +347,10 @@ class HDPlayerPawn:PlayerPawn{
 			bpickup=true;
 			A_GiveInventory("GimmeHud");
 			if(!(oldinput & BT_USE)){
+				hasgrabbed=false;
+			}
+			//pickerupper
+			if(!hasgrabbed){
 				vector3 ap=(
 					cos(pitch)*cos(angle),
 					cos(pitch)*sin(angle),
@@ -346,10 +360,24 @@ class HDPlayerPawn:PlayerPawn{
 				a.target=self;
 				a.vel=ap*4;
 			}
+			if(!corpsekicktimer){
+				actor k=spawn("fastprojectile",pos);k.angle=angle;
+				k.A_ChangeVelocity(3,0,0,CVF_RELATIVE);
+				k.A_SetSize(6,10);k.target=self;
+				for(int i=7;i;i--){
+					if(!k.TryMove(k.pos.xy+k.vel.xy,true) && k.blockingmobj && k.blockingmobj.bcorpse){
+						i=1;
+						corpsekicktimer=20+unstablewoundcount*0.5;
+						k.blockingmobj.vel+=(k.vel+(0,0,4))*80/k.blockingmobj.mass;
+						k.blockingmobj.A_PlaySound("misc/punch");
+					}
+				}
+			}
 		}else{
 			bpickup=false;
 			A_TakeInventory("GimmeHud");
 		}
+		if(corpsekicktimer>0)corpsekicktimer--;
 	}
 }
 
