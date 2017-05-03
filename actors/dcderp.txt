@@ -242,8 +242,7 @@ actor DERPBot:HDUPK{
 			else{A_GiveInventory("DERPmsgDEAD",1,AAPTR_MASTER);}
 			A_PlaySound("weapons/bigcrack",CHAN_AUTO);
 			A_SpawnItemEx("HDSmoke",0,0,1, velx,vely,velz+1, 0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);
-			A_NoBlocking;
-			A_UnsetShootable;
+			A_SetSolid;
 		}
 		DERP AAAAAAAAAAAAAAAAAAAAAA 0 A_SpawnItemEx("BigWallChunk",random(-6,6),random(-6,6),random(0,6), velx+random(-3,3),vely+random(-3,3),velz+random(1,4),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
 	dead:

@@ -31,7 +31,6 @@ class nb:HDActor{
 		projectile; -nogravity
 		+bloodsplatter +noextremedeath +cannotpush +hittracer +forcexybillboard
 		height 0.05;radius 0.05;
-//		scale 0.3;
 		maxstepheight 0;
 		missileheight 0; projectilekickback 20;
 		damagefunction(0);
@@ -81,7 +80,7 @@ class nb:HDActor{
 
 		//if it's in the sky, do a separate thing instead
 		if(inthesky){
-			setxyz(pos+vel);
+			setorigin(pos+vel,false);
 			if(ceilingz>pos.z) inthesky=false;
 			if(vel.z>-277)vel.z-=grav;
 			nexttic();
@@ -89,10 +88,10 @@ class nb:HDActor{
 		}
 
 		//point actor in velocity
-		A_FaceMovementDirection();
 		speed=vel.length();
+		A_FaceMovementDirection();
 
-		//LineAttack always has a zoffset of 8.
+		//LineAttack always has a zoffset of centre+8.
 		//b is never used.
 		if(!bseeinvisible && target)target.bshootable=false; //hack to escape shooter
 		addz(-shootz);
@@ -143,8 +142,8 @@ class nb:HDActor{
 
 				//finally, the "real" impacts
 				if(floorz>pos.z || ceilingz<=pos.z+height){
-					Puff();destroy();return;
-				}else if((a && abs(hitdist-speed)>radius)){
+					setz(floorz);Puff();destroy();return;
+				}else if(abs(hitdist-speed)>radius){
 					BulletImpact();
 					if(bdestroyed)return;
 				}

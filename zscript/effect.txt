@@ -5,6 +5,18 @@
 //debris actor: simplified physics, just bounce until dead and lie still, +noblockmap
 //basically we just need to account for conveyors and platforms
 
+class nbtail:HDActor{
+	default{
+		+nointeraction
+		renderstyle "add";
+	}
+	states{
+	spawn:
+		BAL7 C 10 bright A_FadeOut(0.1);
+		wait;
+	}
+}
+
 class HDDebris:HDActor{
 	bool stopped;
 	default{
