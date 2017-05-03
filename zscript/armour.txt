@@ -134,6 +134,18 @@ class BlackArmourPickup:HDArmourPickup replaces BlackArmour{
 		stamina=HDCONST_BLACKARMOUR;
 	}
 }
+class GreenArmorPickup:RandomSpawner replaces GreenArmor{
+	default{
+		dropitem "BlueArmourPickup",256,2;
+		dropitem "GreenArmourPickup",256,4;
+	}
+}
+class BlueArmorPickup:RandomSpawner replaces BlueArmor{
+	default{
+		dropitem "BlueArmourPickup",256,3;
+		dropitem "BlackArmourPickup",256,1;
+	}
+}
 
 
 //and the usable item

@@ -261,7 +261,6 @@ class nb:HDActor{
 		//apply damage
 		dmg=random(dmg,maxdmg);
 		if(hd_debug)A_Log(string.format("%s \ca%i \cj%s",self.getclassname(),dmg,a.tracer.getclassname()));
-		a.tracer.damagemobj(self,self.target,dmg,damagetype,DMG_THRUSTLESS);
 
 		//puff or bleed as appropriate
 		if(bbloodlessimpact)return;
@@ -278,6 +277,9 @@ class nb:HDActor{
 				SXF_ABSOLUTEANGLE
 			);
 		}
+
+		//do this last, as it can destroy some actors leading to an address zero crash
+		a.tracer.damagemobj(self,self.target,dmg,damagetype,DMG_THRUSTLESS);
 	}
 	//generate puff
 	virtual void Puff(int sp=0){
