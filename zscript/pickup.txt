@@ -8,21 +8,34 @@ class userpickerupper:hdactor{
 		projectile;
 		height 4;radius 3;
 	}
+	override bool cancollidewith(actor other,bool passive){
+		if(other is "HDUPK") return true;
+		if(other is "CustomInventory") return true;
+		if(other is "Inventory") return true;
+		if(other is "Ammo") return true;
+		return false;
+	}
 	override void postbeginplay(){
 		if(vel.xy==(0,0))vel.x=minvel;
 		for(int i=0;i<14;i++){
 			if(!trymove(pos.xy+vel.xy,true)){
 				if(blockingmobj){
 					if(
-						blockingmobj.findstate("grab",true) &&
 						blockingmobj is "HDUPK"
 					){
 						blockingmobj.target=self.target;
-						blockingmobj.setstatelabel("grab");
+						if(blockingmobj.findstate("grab",true))blockingmobj.setstatelabel("grab");
 						let ppp=HDPlayerPawn(target);if(ppp)ppp.hasgrabbed=true;
 						destroy();return;
 					}
-					else if(blockingline){A_Log("LINE");destroy();return;}
+					else if(
+						blockingmobj is "CustomInventory"||
+						blockingmobj is "Inventory"||
+						blockingmobj is "Ammo"
+					){
+						blockingmobj.touch(self.target);
+					}
+					else if(blockingline){destroy();return;}
 				}
 			}
 			addz(vel.z);
