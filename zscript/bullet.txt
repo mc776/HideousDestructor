@@ -147,7 +147,7 @@ class nb:HDActor{
 
 				//finally, the "real" impacts
 				if(floorz>pos.z || ceilingz<=pos.z+height){
-					setz(floorz);Puff();destroy();return;
+					Puff();destroy();return;
 				}else if(abs(hitdist-speed)>radius){
 					BulletImpact();
 					if(bdestroyed)return;
@@ -242,7 +242,7 @@ class nb:HDActor{
 	}
 	//apply damage and blood
 	void BulletImpactDamage(){
-		dmg+=mass*speed*speed*0.0000003+woundhealth;
+		dmg+=mass*speed*speed*0.0000002+woundhealth;
 		int maxdmg=dmg*2;
 
 		//supersonic shockwave damage
