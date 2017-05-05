@@ -174,9 +174,17 @@ extend class HDPlayerPawn{
 				if(health<40) beatcap=clamp(beatcap,1,24);
 				else if(health<60) beatcap=clamp(beatcap,1,32);
 
+				//bandages come undone
 				if(unstablewoundcount && countinv("IsMoving")>random(0,12)){
 					unstablewoundcount--;
 					if(!random(0,1))oldwoundcount++;else woundcount++;
+				}
+
+				//wounds start settling
+				if(!random(0,unstablewoundcount+woundcount)){
+					if(unstablewoundcount>0)unstablewoundcount--;  
+					else if(woundcount>0)woundcount--;
+					oldwoundcount++;
 				}
 			}
 			if(beatcounter==120){	//every 120 beats
