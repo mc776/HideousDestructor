@@ -293,9 +293,9 @@ class HDMedikitter:HDWoundFixer{
 			int ww=slf.woundcount;
 			int ow=slf.oldwoundcount;
 			int bb=slf.burncount;
-			int ag=slf.aggravateddamage*0.5+countinv("IsMoving");
+			int ag=slf.aggravateddamage*0.2+countinv("IsMoving");
 			int wg=0;
-			if(ww||uw)wg+=5;
+			if(ww||uw)wg+=2;
 			if(countinv("GreenArmour")+countinv("BlueArmour")+countinv("BlackArmour"))wg+=5;
 			ow=max(ow+random(-ag,ag),0);
 			bb=max(bb+random(-ag,ag),0);
