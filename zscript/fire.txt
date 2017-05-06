@@ -24,7 +24,7 @@ class HDSmokeSmall:HDPuff{
 	}
 	states{
 	spawn:
-		BAL1 FGH 10;
+		SMOK BCD 10;
 		wait;
 	}
 }
@@ -41,7 +41,7 @@ class HDRedFlame:HDPuff{
 		decel=0.8;
 		vel.z+=4;
 		tracer=spawn("HDSmokeSmall",pos,ALLOW_REPLACE);
-		tracer.vel+=self.vel+(0,0,1);
+		tracer.vel+=self.vel*0.4+(0,0,0.05);
 		minalpha=0.15;
 	}
 	states{
