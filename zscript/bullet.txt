@@ -3,17 +3,17 @@
 // ------------------------------------------------------------
 
 //testing performance when spamming
-class nbb:PlasmaBall replaces PlasmaBall{
+class HDBulletb:PlasmaBall replaces PlasmaBall{
 	override void postbeginplay(){
 		if(!hd_debug){super.postbeginplay();return;}
 		for (int i=14;i;i--){
-			A_SpawnItemEx("nb",0,0,0,vel.x+frandom(-1,1),vel.y+frandom(-1,1),vel.z+frandom(-1,1),0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_ABSOLUTEMOMENTUM);
+			A_SpawnItemEx("HDBullet",0,0,0,vel.x+frandom(-1,1),vel.y+frandom(-1,1),vel.z+frandom(-1,1),0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_ABSOLUTEMOMENTUM);
 		}
 		destroy();
 	}
 }
 
-class nb:HDActor{
+class HDBullet:HDActor{
 	/*
 		special usages:
 		accuracy: penetration distance.
@@ -396,7 +396,7 @@ class NewBulletMovePuff:IdleDummy{
 //A_GiveInventory("DecoBulleter");
 class DecoBulleter:ActionItem{
 	default{
-		missiletype "nb";
+		missiletype "HDBullet";
 	}
 	states{
 	pickup:
@@ -419,7 +419,7 @@ class DecoBulleter:ActionItem{
 }
 class DecoBulleter426:DecoBulleter{
 	default{
-		missiletype "nb426";
+		missiletype "HDBullet426";
 	}
 }
 class DecoBulleter426s:DecoBulleter426{
@@ -430,7 +430,7 @@ class DecoBulleter426s:DecoBulleter426{
 }
 class DecoBulleter776:DecoBulleter{
 	default{
-		missiletype "nb776";
+		missiletype "HDBullet776";
 	}
 }
 class DecoBulleter776f:DecoBulleter776{
@@ -459,7 +459,7 @@ class DecoBulleter776f:DecoBulleter776{
 }
 class DecoBulleter9:DecoBulleter{
 	default{
-		missiletype "nb9";
+		missiletype "HDBullet9";
 		accuracy 5;
 	}
 }
@@ -471,13 +471,13 @@ class DecoBulleter9f:DecoBulleter9{
 }
 class DecoBulleter00:DecoBulleter{
 	default{
-		missiletype "nb00b";
+		missiletype "HDBullet00b";
 		accuracy 1;
 	}
 }
 class DecoBulleter00f:DecoBulleter00{
 	default{
-		missiletype "nb00bf";
+		missiletype "HDBullet00bf";
 		accuracy 0;
 	}
 }
@@ -511,7 +511,7 @@ class DecoBulleterGhost:DecoBulleter{
 }
 
 
-class nb426:nb{
+class HDBullet426:HDBullet{
 	default{
 		pushfactor 0.6;
 		mass 40;
@@ -521,7 +521,7 @@ class nb426:nb{
 		missiletype "DistantRifle";
 	}
 }
-class nb00:nb{
+class HDBullet00:HDBullet{
 	default{
 		pushfactor 0.9;
 		mass 50;
@@ -535,7 +535,7 @@ class nb00:nb{
 		grav=getgravity();
 	}
 }
-class nb00b:nb00{
+class HDBullet00b:HDBullet00{
 	default{
 		stamina 7; //claymores in the future?
 		speed 700;
@@ -548,7 +548,7 @@ class nb00b:nb00{
 		double p=pushfactor;
 		if(target && !pitch)pitch=target.pitch;
 		for(int i=stamina;i;i--){
-			bb=spawn("nb00",pos,ALLOW_REPLACE);
+			bb=spawn("HDBullet00",pos,ALLOW_REPLACE);
 			bb.target=target;bb.pitch=pitch;bb.angle=angle;if(target)bb.vel=target.vel;
 			bb.speed=speed+speed*frandom(-p,p);
 			bb.pitch+=frandom(-p,p);
@@ -558,13 +558,13 @@ class nb00b:nb00{
 		destroy();
 	}
 }
-class nb00bf:nb00b{
+class HDBullet00bf:HDBullet00b{
 	default{
 		speed 800;
 		pushfactor 0.3;
 	}
 }
-class nb776:nb{
+class HDBullet776:HDBullet{
 	default{
 		pushfactor 0.3;
 		mass 80;
@@ -574,7 +574,7 @@ class nb776:nb{
 		missiletype "DoubleDistantRifle";
 	}
 }
-class nb9:nb{
+class HDBullet9:HDBullet{
 	default{
 		pushfactor 0.5;
 		mass 90;
@@ -582,7 +582,7 @@ class nb9:nb{
 		accuracy 9;
 	}
 }
-class nbfrag:nb{
+class HDBulletFrag:HDBullet{
 	default{
 		woundhealth 2;
 	}
@@ -600,7 +600,7 @@ class nbfrag:nb{
 		);
 	}
 }
-class GhostBullet:nb426{
+class GhostBullet:HDBullet426{
 	override void BulletImpact(){
 		bmissile=false;
 		spawn("FragPuff",pos,ALLOW_REPLACE); //no debris spawned

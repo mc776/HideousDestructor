@@ -7,7 +7,7 @@ class frags:idledummy{
 	states{
 	spawn:
 		TNT1 A 1 nodelay {
-			A_SpawnChunks("nbfrag",242,100,700);
+			A_SpawnChunks("HDBulletFrag",242,100,700);
 			if(hd_debug)A_Log("deprecated frags. Please use A_SpawnChunks directly.");
 		}stop;
 	}
@@ -68,7 +68,7 @@ class HDFragGrenadeRoller:HDActor{
 			);
 			A_DistantQuake(4,35,512,10);
 			A_PlaySound("world/explode",1,7);
-			A_SpawnChunks("nbfrag",360,100,800);
+			A_SpawnChunks("HDBulletFrag",360,100,800);
 		}
 		stop;
 	}
@@ -81,7 +81,7 @@ class HDFragGrenadeRoller:HDActor{
 		}
 	}
 }
-class HDFragGrenade:nb{
+class HDFragGrenade:HDBullet{
 	int fuze;
 	vector3 keeprolling;
 	default{
@@ -100,7 +100,7 @@ class HDFragGrenade:nb{
 		}else{
 			if(inthesky){
 				spawn("DistantRocket",pos);
-				A_SpawnChunks("nbfrag",360,400,800);
+				A_SpawnChunks("HDBulletFrag",360,400,800);
 				destroy();return;
 			}
 			actor gr=spawn("HDFragGrenadeRoller",pos);

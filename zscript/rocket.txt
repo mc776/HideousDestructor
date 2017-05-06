@@ -2,7 +2,7 @@
 //   Gyro-Grenades and H.E.A.T. derived from bullet
 // ------------------------------------------------------------
 
-class GyroGrenade:nb{
+class GyroGrenade:HDBullet{
 	int fuze;bool primed;
 	default{
 		-noextremedeath -noteleport +bloodlessimpact
@@ -94,7 +94,7 @@ class GyroGrenade:nb{
 			if(!primed)A_SpawnItemEx("DudRocquette",0,0,0,random(30,60),random(-10,10),random(-10,10),random(0,360),SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS,0);
 			else{
 				//explosion
-				A_SpawnChunks("nbfrag",180,100,500+4*stamina);
+				A_SpawnChunks("HDBulletFrag",180,100,500+4*stamina);
 				if(!inthesky){
 					actor xpl=Spawn("Gyrosploder",self.pos-(0,0,1),ALLOW_REPLACE);
 					xpl.target=target;xpl.master=master;xpl.stamina=stamina;
