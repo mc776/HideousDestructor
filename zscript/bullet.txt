@@ -3,7 +3,7 @@
 // ------------------------------------------------------------
 
 //testing performance when spamming
-class HDBulletb:PlasmaBall replaces PlasmaBall{
+class HDBulletb:PlasmaBall{//replaces PlasmaBall{
 	override void postbeginplay(){
 		if(!hd_debug){super.postbeginplay();return;}
 		for (int i=14;i;i--){
@@ -435,25 +435,16 @@ class DecoBulleter776:DecoBulleter{
 }
 class DecoBulleter776f:DecoBulleter776{
 	default{
-		speed 1200;
+		speed 1400;
 	}
 	states{
 	pickup:
 		TNT1 A 0{
-			actor p=Spawn(invoker.missilename,pos+(0,0,height-6));
+			actor p=Spawn("HDBullet776",pos+(0,0,height-6));
 			p.target=self;p.angle=angle;p.pitch=pitch;
-			if(invoker.speed)p.speed=invoker.speed;
-			double pf=invoker.accuracy;
-			if(p){
-				if(pf){
-					p.vel+=(
-						frandom(-pf,pf),frandom(-pf,pf),frandom(-pf,pf)
-					);
-					p.speed+=10*frandom(-pf,pf);
-				}
-				p.vel+=self.vel;
-				p.pitch-=countinv("BossMOA")*0.0083333;
-			}
+			p.speed=1400;
+			p.vel+=self.vel;
+			p.pitch-=countinv("BossMOA")*0.0083333;
 		}fail;
 	}
 }

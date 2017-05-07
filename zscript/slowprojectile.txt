@@ -1,0 +1,154 @@
+// ------------------------------------------------------------
+// HD's modified FastProjectile
+// Because "fast" means something else entirely
+// For reference, the rocket can go up to just under 400
+// ------------------------------------------------------------
+
+class SlowProjectile:HDBullet{
+	/*
+		special usages:
+		woundhealth: extra damage other than raw impact.
+	*/
+	double divrad;
+	default{
+		+bloodlessimpact -noteleport
+//		missiletype "BulletTail"; //testing and random eye candy
+
+		radius 5;height 5;
+		missileheight 8; projectilekickback 20; damagetype "SmallArms0";
+		speed 150;
+	}
+	override void PostBeginPlay(){
+		HDActor.PostBeginPlay();
+		grav=getgravity();
+		LongArmWobble();
+		Gunsmoke();
+		double rad=max(radius*1.9,1);
+		divrad=1/rad;
+		if(target)master=target;
+	}
+	override void Tick(){
+		ClearInterpolation();
+		if(globalfreeze||level.Frozen) return;
+		if(!bmissile){
+			nexttic();
+			return;
+		}
+
+		//point actor in velocity
+		if(hd_debug && speed>400)A_Log(String.Format("%s is over speed 400. Consider using HDBullet for this.",getclassname()));
+
+		// force some lateral movement so that collision detection works as intended.
+		if(vel.xy==(0,0))vel.x = MinVel;
+
+		// Handle movement
+		fcheckposition tm;
+		speed=vel.length();
+
+		int count=max(1,speed*divrad);
+		vector3 frac=vel/count;
+		for(int i=0;i<count;i++){
+			if(inthesky){
+				setorigin(pos+frac-(0,0,frac.z),true);
+			}
+			else if(!TryMove(pos.xy+frac.xy,true,null,tm)){
+
+				//hack to prevent exploding on lower sky
+				let l = tm.ceilingline;
+				if(l && l.backsector){
+					actor a=spawn("idledummy",pos+(frac.xy,0)*2);
+					if(ceilingpic==skyflatnum && a.ceilingpic==skyflatnum && a.pos.z>=a.ceilingz){
+						destroy();
+						a.destroy();
+						return;
+					}a.destroy();
+				}
+
+				//[RH] Don't explode on horizon lines.
+				if(BlockingLine && BlockingLine.special == Line_Horizon){
+					destroy();
+					return;
+				}
+
+				//upon hitting an actor
+				if(!target)target=master;
+				if(blockingmobj){
+					tracer=blockingmobj;
+					tracer.damagemobj(self,target,speed*speed*mass*0.000005,"none");
+					if(hd_debug)A_Log(String.Format("%s hit %s",getclassname(),blockingmobj.getclassname()));
+				}
+				explodeslowmissile(blockingline,blockingmobj);
+				return;
+			}
+
+			addz(frac.z);
+			UpdateWaterLevel();
+
+			//hit the floor
+			if(pos.z<=floorz){
+				if(floorpic==skyflatnum){
+					destroy();return;
+				}
+				setz(floorz);
+				hitfloor();
+				explodeslowmissile(null,null);
+				return;
+			}
+			//hit the ceiling or sky
+			else if(pos.z+height>ceilingz){
+				if(ceilingpic!=skyflatnum){
+					setz(ceilingz-height);
+					explodeslowmissile(null,null);
+					return;
+				}else{
+					if(grav<=0){destroy();return;} //it's not coming back down
+					inthesky=true;
+					binvisible=true;
+				}
+			}else{
+				inthesky=false;
+				binvisible=false;
+			}
+
+			if(speed && !inthesky)SlowEffect();
+		}
+		//bullet drop again, updating the actual velocity
+		vel.z-=getgravity();
+
+		//thus ends the "handle movement" part
+		if(!CheckNoDelay())return;
+
+		nexttic();
+	}
+	virtual void SlowEffect(){
+		if(!bmissile || !missilename || speed*radius<240)return;
+		actor tr=spawn(missilename,pos,ALLOW_REPLACE);
+		tr.vel=vel*0.4;
+	}
+	virtual void ExplodeSlowMissile(line blockingline,actor blockingobject){
+		if(speed>50)painsound="misc/punch";else painsound="misc/fragknock";
+		actor a=spawn("IdleDummy",pos);a.stamina=10;a.A_PlaySound(painsound,CHAN_AUTO);
+		explodemissile(null,null);
+	}
+	states{
+	spawn:
+		BAL1 A 1 nodelay;
+		BAL1 A -1{
+			//so that you can kill yourself by shooting into the sky
+			if(target && !master) master=target;target=null;
+		}
+	death:
+		BAL1 BCD 4;
+		stop;
+	}
+}
+class BulletTail:IdleDummy{
+	default{
+		scale 0.5; renderstyle "add"; alpha 0.3; +forcexybillboard;
+	}
+	states{
+	spawn:
+		BAL7 A 10 A_FadeOut(0.1);
+		wait;
+	}
+}

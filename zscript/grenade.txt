@@ -81,7 +81,7 @@ class HDFragGrenadeRoller:HDActor{
 		}
 	}
 }
-class HDFragGrenade:HDBullet{
+class HDFragGrenade:SlowProjectile{
 	int fuze;
 	vector3 keeprolling;
 	default{
@@ -139,6 +139,9 @@ class HDFragGrenade:HDBullet{
 	spawn:
 		FRAG BCD 2;
 		loop;
+	death:
+		FRAG A 0 BulletImpact();
+		stop;
 	}
 }
 
