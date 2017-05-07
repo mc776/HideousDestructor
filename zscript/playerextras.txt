@@ -53,7 +53,8 @@ extend class HDPlayerPawn{
 	//and jump. don't separate from mantling.
 	void JumpCheck(){
 		if(
-			(countinv("PowerStrength") || beatmax>14)
+			!stunned
+			&& (countinv("PowerStrength") || beatmax>14)
 			&& input & BT_JUMP //replace with event asap
 			&& !MantleCheck()
 			&& !(oldinput & BT_JUMP)

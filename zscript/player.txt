@@ -55,7 +55,7 @@ class HDPlayerPawn:PlayerPawn{
 					A_ScaleVelocity(frandom(0.9,1.0));
 				}
 			}
-			if(stunned>0){
+			if(stunned){
 				viewbob=1.4;
 				return resolvestate("seestun");
 			}
@@ -197,7 +197,7 @@ class HDPlayerPawn:PlayerPawn{
 			}
 		}
 		lastvel=vel;
-		if(stunned>0)stunned--;
+		stunned=max(stunned-1,0);
 
 		//see if player is intentionally walking, running or sprinting
 		//-1 = walk, 0 = run, 1 = sprint
@@ -227,7 +227,7 @@ class HDPlayerPawn:PlayerPawn{
 
 		//conditions for forcing walk
 		if(
-			stunned>0
+			stunned
 			||(beatmax<14 && !countinv("PowerStrength"))
 			||StumbleCheck()
 			||health<25
