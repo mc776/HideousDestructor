@@ -54,8 +54,14 @@ extend class HDPlayerPawn{
 
 		//zerk!!!!
 		if(regenbers){
-			regenbers--;
+			regenbers=clamp(regenbers-1,0,1000);
 			healthing(1);
+			if(!regenbers){
+				A_SetBlend("20 0a 0f",0.8,35);
+				A_Pain();
+				stunned+=350;
+				beatcap=max(beatcap-40,4);
+			}
 		}else if(countinv("PowerStrength") && !countinv("RegenBers"))A_TakeInventory("PowerStrength");
 
 		//good old jitters!

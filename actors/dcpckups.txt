@@ -4,8 +4,7 @@
 //    Usable items
 //-------------------------------------------------
 
-actor PortableBerserkPack : HDPickup
-{
+actor PortableBerserkPack:HDPickup{
 	inventory.amount 1
 	inventory.maxamount 8
 	inventory.interhubamount 8
@@ -26,8 +25,7 @@ actor PortableBerserkPack : HDPickup
 		fail
 	}
 }
-actor PortableBerserkPackPickup : HDUPK
-{
+actor PortableBerserkPackPickup:HDUPK{
 	xscale 0.32 yscale 0.37
 	states
 	{
@@ -40,8 +38,7 @@ actor PortableBerserkPackPickup : HDUPK
 		stop
 	}
 }
-actor PortableBerserkPackBigPickup : HDUPK replaces Berserk
-{
+actor PortableBerserkPackBigPickup:HDUPK replaces Berserk{
 	xscale 0.42 yscale 0.36
 	states
 	{
@@ -62,8 +59,7 @@ actor PortableBerserkPackBigPickup : HDUPK replaces Berserk
 		stop
 	}
 }
-actor PortableStimpack : HDPickup
-{
+actor PortableStimpack:HDPickup{
 	inventory.amount 1
 	inventory.maxamount 8
 	inventory.interhubamount 8
@@ -83,8 +79,7 @@ actor PortableStimpack : HDPickup
 		fail
 	}
 }
-actor PortableStimPick : HDUPK replaces PortableStimpack
-{
+actor PortableStimPick:HDUPK replaces PortableStimpack{
 	scale 0.37
 	states
 	{
@@ -99,8 +94,8 @@ actor PortableStimPick : HDUPK replaces PortableStimpack
 }
 actor PortableHealingItem : RandomSpawner replaces Stimpack
 {
-	dropitem "PortableStimpack" 256 3
-	dropitem "PortableMedikit" 256 1
+	dropitem "PortableStimpack" 256 4
+	dropitem "PortableMedikitPickup" 256 1
 }
 actor PortableHealingItemBig : RandomSpawner replaces Medikit
 {

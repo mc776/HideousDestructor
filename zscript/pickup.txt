@@ -151,10 +151,11 @@ class HDPickup:CustomInventory{
 	}
 	states{
 	spawn:
-		TNT1 A 0 nodelay{
+		TNT1 A 1;
+		TNT1 A 0{
 			if(missilename){
 				actor a=spawn(missilename,pos,ALLOW_REPLACE);
-				a.vel=vel;a.stamina=invoker.amount;
+				a.vel=vel;if(invoker.amount>1)a.stamina=invoker.amount;
 				destroy();return;
 			}
 		}stop;
