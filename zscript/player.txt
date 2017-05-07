@@ -368,8 +368,9 @@ class HDPlayerPawn:PlayerPawn{
 				for(int i=7;i;i--){
 					if(!k.TryMove(k.pos.xy+k.vel.xy,true) && k.blockingmobj && k.blockingmobj.bcorpse){
 						i=1;
+						int forc=80;if(regenbers>0)forc*=3;
 						corpsekicktimer=20+unstablewoundcount*0.5;
-						k.blockingmobj.vel+=(k.vel+(0,0,4))*80/k.blockingmobj.mass;
+						k.blockingmobj.vel+=(k.vel+(0,0,4))*forc/k.blockingmobj.mass;
 						k.blockingmobj.A_PlaySound("misc/punch");
 					}
 				}
