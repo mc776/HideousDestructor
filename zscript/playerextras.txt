@@ -127,7 +127,7 @@ extend class HDPlayerPawn{
 		int pg=0;
 		if(countinv("ZM66Heat")){
 			pg++;
-			A_TakeInventory("ZM66Heat",1);
+			if(random(0,2))A_TakeInventory("ZM66Heat",1);
 			if(
 				w=="ZM66Rifle"||
 				w=="ZM66GrenadeRifle"||
@@ -146,7 +146,7 @@ extend class HDPlayerPawn{
 		}
 		if(countinv("LiberatorHeat")){
 			pg++;
-			A_TakeInventory("LiberatorHeat",1);
+			if(random(0,2))A_TakeInventory("LiberatorHeat",1);
 			if(
 				w=="LiberatorRifle"||
 				w=="LiberatorGrenadeRifle"

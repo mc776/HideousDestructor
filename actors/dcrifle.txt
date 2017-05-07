@@ -3,8 +3,7 @@
 //   Rifle
 // ------------------------------------------------------------
 
-actor ZM66GrenadeRifle : HDWeapon
-{
+actor ZM66GrenadeRifle:HDWeapon{
 	game Doom
 	Weapon.SelectionOrder 200
 	weapon.ammotype1 ZM66Loaded
@@ -28,7 +27,7 @@ actor ZM66GrenadeRifle : HDWeapon
 		RIFG A 1{
 			A_GiveInventory("IsWeaponShort",1);
 			if(
-				(countinv("ZM66Heat")>random(27,35))    
+				(countinv("ZM66Heat")>21)
 				&&(countinv("ZM66BrokenRound")<1)
 				&&(countinv("ZM66Chamber")>0)    
 			){return state("cookoff");}
@@ -81,7 +80,7 @@ actor ZM66GrenadeRifle : HDWeapon
 		RIFG A 0{
 			A_TakeInventory("ZM66RoundCounter");
 			A_TakeInventory("ZM66GLMode");
-			A_Overlay(2,"heatvent");
+//			A_Overlay(2,"heatvent");
 		}
 		RIFG A 0 A_JumpIfInventory("ZM66GrenadeRifle",1,"select0big")
 		goto select0small
@@ -110,7 +109,7 @@ actor ZM66GrenadeRifle : HDWeapon
 		RIFF A 0{
 			A_PlaySound("weapons/rifle",1);
 			A_Overlay(random(11,19),"gunrecoil");
-			A_GiveInventory("ZM66Shoot",1);
+			A_GiveInventory("ZM66Shoot");
 			A_TakeInventory("ZM66Chamber",1);
 			A_AlertMonsters;
 		}
@@ -547,8 +546,7 @@ actor ZM66Loaded:Ammo{
 	ammo.backpackamount 0
 	states{spawn:TNT1 A 0 nodelay{return state("null");}stop}
 }
-actor ZM66GLoaded : Ammo
-{
+actor ZM66GLoaded:Ammo{
 	+inventory.ignoreskill
 	+inventory.untossable
 	inventory.maxamount 1
@@ -556,35 +554,28 @@ actor ZM66GLoaded : Ammo
 	ammo.backpackamount 0
 	states{spawn:TNT1 A 0 nodelay{return state("null");}stop}
 }
-actor ZM66Shoot : CustomInventory
-{
-	states
-	{
+actor ZM66Shoot:ActionItem{
+	states{
 	pickup:
-		RIFF A 0 A_GiveInventory("ZM66Heat",random(1,2))
-		RIFG A 0 A_JumpIfInventory("ZM66Heat",14,"Shoot4")
-		RIFG A 0 A_JumpIfInventory("ZM66Heat",10,"Shoot3")
-		RIFG A 0 A_JumpIfInventory("ZM66Heat",4,"Shoot2")
+		RIFF A 0 A_GiveInventory("ZM66Heat",random(2,4))
+		RIFG A 0 A_JumpIfInventory("ZM66Heat",14,"shoot3")
+		RIFG A 0 A_JumpIfInventory("ZM66Heat",10,"shoot2")
 		TNT1 A 0 A_GiveInventory("DecoBulleter426")
 		fail
-	Shoot2:
-		TNT1 A 0 A_GiveInventory("DecoBulleter426")
-		fail
-	Shoot3:
-		TNT1 A 0 A_Jump(64,2)
-		TNT1 A 0 A_SpawnItemEx("HDGunSmoke",0,0,height-6,cos(pitch)*cos(angle)*4+velx+frandom(-1,1),cos(pitch)*sin(angle)*4+vely+frandom(-1,1),-sin(pitch)*4+velz+frandom(-1,1),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH)
-		TNT1 A 0 A_GiveInventory("DecoBulleter426")
-		fail
-	Shoot4:
-		TNT1 A 0 A_SpawnItemEx("HDGunSmoke",0,0,height-6,cos(pitch)*cos(angle)*4+velx+frandom(-1,1),cos(pitch)*sin(angle)*4+vely+frandom(-1,1),-sin(pitch)*4+velz+frandom(-1,1),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH)
-		TNT1 A 0 A_GiveInventory("DecoBulleter426s")
-		fail
+	shoot2:
+		TNT1 A 0{
+			A_SpawnItemEx("HDGunSmoke",0,0,height-6,cos(pitch)*cos(angle)*4+velx+frandom(-1,1),cos(pitch)*sin(angle)*4+vely+frandom(-1,1),-sin(pitch)*4+velz+frandom(-1,1),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH,64);
+			A_GiveInventory("DecoBulleter426");
+		}fail
+	shoot3:
+		TNT1 A 0{
+			A_SpawnItemEx("HDGunSmoke",0,0,height-6,cos(pitch)*cos(angle)*4+velx+frandom(-1,1),cos(pitch)*sin(angle)*4+vely+frandom(-1,1),-sin(pitch)*4+velz+frandom(-1,1),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH);
+			A_GiveInventory("DecoBulleter426s");
+		}fail
 	}
 }
-actor ZM66HeatVent : CustomInventory
-{
-	states
-	{
+actor ZM66HeatVent:CustomInventory{
+	states{
 	pickup:
 		RIFG A 0 A_TakeInventory("ZM66Heat",1)
 		RIFG A 0 A_JumpIfInventory("ZM66Heat",random(12,36),1)
