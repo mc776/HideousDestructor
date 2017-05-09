@@ -131,8 +131,8 @@ extend class HDPlayerPawn{
 			if(beatmax<8)DamageMobj(self,self,1,"internal");
 			else{
 				if(health<100-aggravateddamage-burncount-oldwoundcount-unstablewoundcount){
-					healthing(1);
-					if(random(1,20)<stimcount)healthing(1);
+					if(random(1,30)+countinv("IsMoving")<beatmax)healthing(1);
+					if(random(1,40)<stimcount)healthing(1);
 				}
 			}
 
