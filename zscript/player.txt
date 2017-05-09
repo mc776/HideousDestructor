@@ -4,8 +4,9 @@
 const HDCONST_SPRINTMAXHEARTRATE=20;
 class HDPlayerPawn:PlayerPawn{
 	vector3 lastpos;vector3 lastvel;double lastangle;double lastpitch;
-	vector3 poschange;double anglechange;double pitchchange;
+	vector3 poschange;
 	double fm;double sm;
+	double oldfm;double oldsm;
 	int iyaw;int ipitch;
 	double zat;
 
@@ -120,11 +121,7 @@ class HDPlayerPawn:PlayerPawn{
 		if (!player||!player.mo||player.mo!= self){Super.Tick();return;} //anti-voodoodoll
 
 		poschange=lastpos-pos;
-		anglechange=HDMath.AngleChange(lastangle,angle);
-		pitchchange=lastpitch-pitch;
 		lastpos=pos;
-		lastangle=angle;
-		lastpitch=pitch;
 		zat=getzat();
 
 		//log all inputs
@@ -140,6 +137,7 @@ class HDPlayerPawn:PlayerPawn{
 		else {A_TakeInventory("IsFemale");A_TakeInventory("IsMale");}
 
 		super.Tick();
+
 
 		//passive inventory checks
 		GunHeatSmoke(player.readyweapon.getclassname());
@@ -221,8 +219,7 @@ class HDPlayerPawn:PlayerPawn{
 		JumpCheck();
 
 		//turning mods
-		MuzzleBlock();
-		Gunertia();
+		TurnCheck();
 
 
 		//conditions for forcing walk
@@ -304,20 +301,6 @@ class HDPlayerPawn:PlayerPawn{
 			A_SelectWeapon(lastweapon);
 		}
 
-		//move pivot point a little behind the player's view
-		if(zat-pos.z==0){
-			if(abs(anglechange)>1){
-				int dir=90;
-				if(anglechange<0) dir=-90;
-				trymove(self.pos.xy+(cos(angle+dir)*0.8,sin(angle+dir)*0.8),false);
-			}
-			if(abs(pitchchange)>1 && -30<pitch<30){
-				double rate=0.1;
-				trymove(self.pos.xy-(cos(angle)*rate*pitchchange,
-				sin(angle)*rate*pitchchange),false);
-			}
-		}
-
 		//display crosshair
 		//replace with reference in ready state as weapons are replaced
 		if(!crosshairforce){
@@ -380,6 +363,10 @@ class HDPlayerPawn:PlayerPawn{
 			A_TakeInventory("GimmeHud");
 		}
 		if(corpsekicktimer>0)corpsekicktimer--;
+
+
+		oldfm=getplayerinput(MODINPUT_FORWARDMOVE);
+		oldsm=getplayerinput(MODINPUT_SIDEMOVE);
 	}
 }
 

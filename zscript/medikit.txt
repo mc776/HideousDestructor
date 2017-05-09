@@ -12,10 +12,13 @@ class PortableMedikit:HDPickup{
 	states{
 	use:
 		TNT1 A 0{
-			A_TakeInventory("HDMedikitter");
-			A_GiveInventory("HDMedikitter");
+			let md=HDMedikitter(FindInventory("HDMedikitter"));
+			if(!md || md.usedflesh || md.usedpatches){
+				A_TakeInventory("HDMedikitter");
+				A_GiveInventory("HDMedikitter");
+				A_TakeInventory("PortableMedikit",1);
+			}
 			A_SelectWeapon("HDMedikitter");
-			A_TakeInventory("PortableMedikit",1);
 			A_PlaySound("weapons/pocket",CHAN_WEAPON);
 		}
 		fail;
@@ -257,7 +260,10 @@ class HDMedikitter:HDWoundFixer{
 					}
 				}
 			}else{
-				if(!invoker.checkwoundcount(true)){
+				if(invoker.usedpatches>100){
+					A_Print("You are out of Auto-Sutures.");
+					A_Refire("nope");
+				}else if(!invoker.checkwoundcount(true)){
 					A_Print("You are not bleeding.");
 					A_Refire("nope");
 				}

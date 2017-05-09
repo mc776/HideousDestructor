@@ -97,17 +97,6 @@ extend class HDPlayerPawn{
 		}
 	}
 
-	//Muzzle climb!
-	void MuzzleClimb(
-		double down,
-		double left,
-		bool doublemoving=true
-	){
-		if(doublemoving && countinv("ismoving")){down*=2;left*=2;}
-		driftdown+=down;
-		driftleft+=left;
-	}
-
 	//not actually checking to stumble, but to slow down on bad terrain
 	bool StumbleCheck(){
 		if(runwalksprint>0) return false;

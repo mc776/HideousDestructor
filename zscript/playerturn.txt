@@ -1,218 +1,62 @@
 // ------------------------------------------------------------
 //   Stuff related to player turning
 // ------------------------------------------------------------
+
 extend class HDPlayerPawn{
-	//muzzleblock
-	actor muzzle;
-	bool muzzlehit;
-	bool MuzzleBlock(){
-		if(!muzzle){
-			muzzle=spawn("HDMuzzleBlocker",pos);
-		}
-		muzzle.A_GiveInventory("HDFireEnder");
-		if(barehanded) return false;
-		double barrellength=0;
+	vector2 muzzledrift;
 
-		//replace this section once weapons are scriptified
-		name wp=player.readyweapon.getclassname();
-		if(wp=="Vulcanette")barrellength=28;
-		else if(wp=="BFG9k")barrellength=26;
-		else if(wp=="RocquetteLauncher")barrellength=28;
-		else if(wp=="BossRifle")barrellength=32;
-		else if(wp=="ThunderBuster")barrellength=26;
-		else if(wp=="Lumberjack")barrellength=26;
-		else if(wp=="Hunter")barrellength=28;
-		else if(wp=="LiberatorGrenadeRifle")barrellength=25;
-		else if(wp=="LiberatorRifle")barrellength=25;
-		else if(wp=="ZM66GrenadeRifle")barrellength=23;
-		else if(wp=="ZM66Rifle")barrellength=23;
-		else if(wp=="ZM66SemiRifle")barrellength=23;
-		else if(wp=="Brontornis")barrellength=22;
-		else if(wp=="Slayer")barrellength=20;
-		else if(wp=="HDSMG")barrellength=20;
-		else if(wp=="Blooper")barrellength=18;
+	void TurnCheck(){
 
-		barrellength-=radius; //don't bother checking within the player!
-		vector3 frac=(cos(pitch),0,-sin(pitch));
-		frac.xy=rotatevector(frac.xy,angle);
+		//temporary variables
+		double anglechange=0;
+		double pitchchange=0;
 
-		bool hitleft;bool hitright;bool hittop;bool hitbottom;
-		double bump=max(0.7,abs(hdmath.anglechange(lastangle,angle))*0.05);
-		vector3 fracradius=frac*radius;
+		//get input
+		double yaw=iyaw*(360./65536.);
+		double ptch=ipitch*(360./65536.);
 
-		muzzle.setorigin(pos+(cos(angle+90)*2,sin(angle+90)*2,height-12)+fracradius,false);
-		for(int i=0;i<barrellength;i++){
-			muzzle.addz(frac.z);
-			if(
-				!muzzle.trymove(muzzle.pos.xy+frac.xy,true,true)
-				||muzzle.pos.z<muzzle.floorz
-			){
-				if(driftleft>0)driftleft=-bump*0.01;
-				A_SetAngle(angle-bump,SPF_INTERPOLATE);
-				hitleft=true;
-			}
-		}
-		muzzle.setorigin(pos+(cos(angle-90)*2,sin(angle-90)*2,height-12)+fracradius,false);
-		for(int i=0;i<barrellength;i++){
-			muzzle.addz(frac.z);
-			if(
-				!muzzle.trymove(muzzle.pos.xy+frac.xy,true,true)
-				||muzzle.pos.z<muzzle.floorz
-			){
-				if(driftleft<0)driftleft=bump*0.01;
-				A_SetAngle(angle+bump,SPF_INTERPOLATE);
-				hitright=true;
-			}
-		}
-		muzzle.setorigin(pos+(0,0,height-11)+fracradius,false);
-		for(int i=0;i<barrellength;i++){
-			muzzle.addz(frac.z);
-			if(
-				!muzzle.trymove(muzzle.pos.xy+frac.xy,true,true)
-				||muzzle.pos.z<muzzle.floorz
-			){
-				if(driftdown>0)driftdown=bump*0.01;
-				A_SetPitch(pitch+bump,SPF_INTERPOLATE);
-				hittop=true;
-			}
-		}
-		muzzle.setorigin(pos+(0,0,height-14)+fracradius,false);
-		for(int i=0;i<barrellength;i++){
-			muzzle.addz(frac.z);
-			if(
-				!muzzle.trymove(muzzle.pos.xy+frac.xy,true,true)
-				||muzzle.pos.z<muzzle.floorz
-			){
-				if(driftdown>0)driftdown=-bump*0.01;
-				A_SetPitch(pitch-bump,SPF_INTERPOLATE);
-				hitbottom=true;
-			}
-		}
-		if(hitright || hitleft || hittop || hitbottom){
-			if(!muzzlehit){
-				A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
-				muzzlehit=true;
-			}
-			if(hitright&&hitleft&&hittop&&hitbottom){
-				A_ChangeVelocity(-0.5,0,0,CVF_RELATIVE);
-				A_GiveInventory("IsMoving",2);
-				if(
-					instatesequence(curstate,resolvestate("spawn"))
-				)setstatelabel("see");
-			}
-			return true;
-		}
-		muzzlehit=false;
-		return false;
-	}
 
-	//constant polling for weapon inertia and muzzle climb
-	double driftleft;
-	double driftdown;
-	vector3 muzzlevel;
-	void Gunertia(){
-		double mult=0.01;
-		double dec=12;
-		double yaw=iyaw*HDCONST_YAWTODEGREE;
-		double ptch=ipitch*HDCONST_YAWTODEGREE;
+		//delete when overriding directly
+		//revisit jitter issue when this is gone
+		lastangle=angle-yaw;
+		lastpitch=pitch+ptch;
+		A_SetAngle(lastangle,SPF_INTERPOLATE);
+		A_SetPitch(lastpitch,SPF_INTERPOLATE);
 
-		//reduced drift while supported.
-		if(countinv("issupported") && yaw<5){
-			A_SetAngle(lastangle-yaw*0.1,SPF_INTERPOLATE);
-			A_SetPitch(lastpitch-ptch*0.1,SPF_INTERPOLATE);
-			mult*=0.4;dec*=0.6;
+
+		//reduced turning while supported.
+		if(countinv("IsSupported") && abs(yaw)<8 && !countinv("IsMoving")){
+			yaw*=0.1;ptch*=0.1;
 		}
 		//reduced turning while crouched.
-		else if(height<40 && abs(yaw)>3){
-			A_SetAngle(lastangle-yaw*0.2,SPF_INTERPOLATE);
-			mult*=0.6;dec*=0.6;
+		else if(height<40 && abs(yaw)>5){
+			yaw*=0.6;ptch*=0.6;
+		}
+		anglechange+=yaw;pitchchange-=ptch;
+
+
+		//muzzle inertia
+		if(!barehanded){
+			int amt=36;
 		}
 
-		//replace this section once weapons are scriptified
-		if(barehanded){
-			mult=0;
-			dec=0.1;
-		}else{
-			name wp=player.readyweapon.getclassname();
-			if(wp=="Vulcanette")mult*=5
-				+((countinv("VulcJuice")||countinv("VulcEmptyCell"))?0.2:0)
-				+0.001*(
-				+countinv("VulcMag1")+countinv("VulcLoaded1")
-				+countinv("VulcMag2")+countinv("VulcLoaded2")
-				+countinv("VulcMag3")+countinv("VulcLoaded3")
-				+countinv("VulcMag4")+countinv("VulcLoaded4")
-				+countinv("VulcMag5")+countinv("VulcLoaded5")
-			);
-			else if(wp=="BFG9k")mult*=5.5+0.6*countinv("BFGLoaded");
-			else if(wp=="RocquetteLauncher")mult*=4
-				+0.2*(countinv("RocketMag"))
-				+0.5*(countinv("HEATLoaded"));
-			else if(wp=="BossRifle")mult*=5;
-			else if(wp=="ThunderBuster")
-				mult*=4+((countinv("PlasmaBattery")||countinv("PlasmaEmptyCell"))?0.2:0);
-			else if(wp=="Lumberjack")
-				mult*=4+((countinv("LumberCell")>0||countinv("LumberEmptyCell")>0)?0.3:0);
-			else if(wp=="Hunter"){
-				if(countinv("ShotgunTube")>3)mult*=countinv("ShotgunTube")*0.2;
-				else mult*=4;
-			}
-			else if(wp=="LiberatorGrenadeRifle")mult*=4.2-0.25*countinv("LiberatorNoMag")+0.2*countinv("LiberatorGrenadeChamber");
-			else if(wp=="LiberatorRifle")mult*=3.6-0.2*countinv("LiberatorNoMag");
-			else if(wp=="ZM66GrenadeRifle")mult*=3.8-0.2*countinv("ZM66NoMag")+0.2*countinv("ZM66GLoaded");
-			else if(wp=="ZM66Rifle")mult*=3.4-0.2*countinv("ZM66NoMag");
-			else if(wp=="ZM66SemiRifle")mult*=3.4-0.2*countinv("ZM66NoMag");
-			else if(wp=="Brontornis")mult*=3.5;
-			else if(wp=="Slayer")mult*=3;
-			else if(wp=="HDSMG")mult*=3-0.3*countinv("HDSMGNoMag");
-			else if(wp=="Blooper")mult*=2.5+0.5*countinv("BloopChamber");
-			else if(wp=="HDPistol")mult*=2;
-		}
-		dec=clamp(dec*mult,0,0.9);
-		yaw*=mult;ptch*=mult;
 
-		//resistance from weapon
-		angle-=yaw*HDCONST_YAWTODEGREE*mult;
 
-		//apply the drift
-		if(driftleft){
-			A_SetAngle(angle+driftleft,SPF_INTERPOLATE);
-			driftleft*=dec;
-		}
-		if(driftdown){
-			A_SetPitch(pitch+driftdown,SPF_INTERPOLATE);
-			driftdown*=dec;
-		}
 
-		//add to inertia
-		driftleft+=yaw;
-		driftdown-=ptch;
+//if(anglechange)A_LogFloat(anglechange);
 
-		//even more inertia
-		if(muzzlevel!=vel){
-			vector3 diff=muzzlevel-vel;
-			muzzlevel=vel;
-			if(diff.length()<30){
-				vector3 notionalpos=(
-					cos(pitch)*cos(angle),
-					cos(pitch)*sin(angle),
-					-sin(pitch)
-				)*24+diff;
-				double abshorz=notionalpos.xy.length();
-				double nangle=atan2(notionalpos.y,notionalpos.x);
-				if(nangle<0)nangle+=360;
-				double npitch=-atan2(notionalpos.z,abshorz);
-				nangle=hdmath.anglechange(angle,nangle);
 
-				if(abs(npitch)<60)driftleft+=nangle*mult*4;
-				driftdown+=(npitch-pitch)*mult*4;
-			}
-		}
+
+
+		//set everything and update old
+		A_SetAngle(lastangle+anglechange,SPF_INTERPOLATE);
+		A_SetPitch(lastpitch+pitchchange,SPF_FORCECLAMP|SPF_INTERPOLATE);
+
 
 		//feet angle
-		dec=hdmath.anglechange(angle,feetangle); //we won't be using dec after this
-		if(pos.z==zat && abs(dec)>50-20*countinv("IsCrouching")){
-			A_SetAngle(angle-yaw*0.3,SPF_INTERPOLATE);
-			vel+=rotatevector((0,dec/abs(dec)*0.1),angle);
+		double fac=hdmath.anglechange(angle,feetangle);
+		if(pos.z==zat && abs(fac)>50-(height<40?20:0)){
+			vel+=rotatevector((0,fac/abs(fac)*0.1),angle);
 			A_GiveInventory("IsMoving",2);
 			feetangle+=clamp(angle-feetangle,-10,10);
 			if(
@@ -222,7 +66,7 @@ extend class HDPlayerPawn{
 			int chancetodouse=63;
 			//if on appropriate terrain, easier to quench a fire
 			if(CheckLiquidTexture())chancetodouse*=0.4;
-			if(height<30 && floorz==pos.z && !random(0,chancetodouse)){
+			if(height<40 && floorz==pos.z && !random(0,chancetodouse)){
 				if(A_CheckProximity("null","HDFire",20,1,CPXF_SETTRACER)){
 					tracer.A_SpawnItemEx("HDSmoke",
 						random(-3,3),random(-3,3),random(3,7),
@@ -233,7 +77,25 @@ extend class HDPlayerPawn{
 				}
 			}
 		}
+
+		//move pivot point a little behind the player's view
+		anglechange=HDMath.AngleChange(lastangle,angle);
+		if(zat-pos.z==0){
+			if(abs(anglechange)>1){
+				int dir=90;
+				if(anglechange<0) dir=-90;
+				trymove(self.pos.xy+(cos(angle+dir)*0.8,sin(angle+dir)*0.8),false);
+			}
+			if(abs(pitchchange)>1 && -30<pitch<30){
+				double rate=0.1;
+				trymove(self.pos.xy-(cos(angle)*rate*pitchchange,
+				sin(angle)*rate*pitchchange),false);
+			}
+		}
 	}
+
+
+
 
 	//seeing if you're standing on a liquid texture
 	static const String lq[]={
@@ -255,6 +117,17 @@ extend class HDPlayerPawn{
 			}
 		}
 		return false;
+	}
+
+	//Muzzle climb!
+	void MuzzleClimb(
+		double down,
+		double left,
+		bool doublemoving=true
+	){
+		if(doublemoving && countinv("ismoving")){down*=2;left*=2;}
+//		driftdown+=down;
+//		driftleft+=left;
 	}
 }
 
