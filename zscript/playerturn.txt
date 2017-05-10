@@ -34,17 +34,97 @@ extend class HDPlayerPawn{
 		}
 		anglechange+=yaw;pitchchange-=ptch;
 
-
 		//muzzle inertia
 		if(!barehanded){
-			int amt=36;
+			//set the amount based on the weapon
+			int amt=20;
+
+			//how much to scale movement
+			double proportion=1.-min(0.042*amt,0.99);
+			double proportion2=0.03*amt;
+
+			//take the proportion and use that OR crouch+support, whichever is LESS
+			double yawcap=abs(yaw*proportion);
+			double ptchcap=abs(ptch*proportion);
+			anglechange=clamp(anglechange,-yawcap,yawcap);
+			pitchchange=clamp(pitchchange,-ptchcap,ptchcap);
+
+/*
+			//see if there's any change in velocity overall
+			vector3 muzzlevel=lastvel-vel;
+
+			//apply velocity-based horizontal drift (incl. crouch/jump)
+			double curheight=pos.z+height;
+			muzzlevel.z-=lastheight-curheight;
+			lastheight=curheight;
+
+			//apply velocity-based horizontal drift
+			//how to tell if it is to left or right?
+			//rotate vector so that player is facing east
+			//the y value is what we need
+			muzzlevel.xy=rotatevector(muzzlevel.xy,-angle);
+			muzzlevel.x-=muzzlevel.y;
+
+*/
+
+			//NOW apply the drift!
+			muzzledrift+=(anglechange,pitchchange);
+			anglechange+=muzzledrift.x*proportion2;
+			pitchchange+=muzzledrift.y*proportion2;
+			muzzledrift*=-(proportion-1);
 		}
+
+
+
+		//weapon collision
+		//temporarily set attackzoffset
+		double azobak=attackzoffset;
+		attackzoffset=height*0.5-6;
+
+		//get barrel length
+		int barrellength=20;
+
+		//test shot directly forwards at new angle, if clear do nothing more
+		actor muzpuf;
+		int stuff;
+		[muzpuf,stuff]=LineAttack(lastangle+anglechange,barrellength,
+			lastpitch+pitchchange,0,"none",
+			"MuzzleBlockerPuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT
+		);
+		if(muzpuf){
+			//check previous
+			muzpuf.destroy();
+			[muzpuf,stuff]=LineAttack(lastangle+anglechange,barrellength,
+				lastpitch+pitchchange,0,"none",
+				"MuzzleBlockerPuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT
+			);
+			if(!muzpuf){ //if previous is NOT blocked
+				//always do 20, this way it will be finer or coarser as needed.
+				int reps=20;
+				int lastrep=0;
+				double acf=anglechange/reps;
+				double pcf=pitchchange/reps;
+				for(int i=0;i<reps;i++){
+					muzpuf.destroy();
+					[muzpuf,stuff]=LineAttack(lastangle+acf,barrellength,
+						lastpitch+pcf,0,"none",
+						"MuzzleBlockerPuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT
+					);
+					if(!muzpuf)lastrep=i;else i=reps+1;
+				}
+				if(muzpuf)muzpuf.destroy();
+				anglechange=acf*lastrep;
+				pitchchange=pcf*lastrep;
+			}
+		}
+
+		//reset attackzoffset
+		attackzoffset=azobak;
 
 
 
 
 //if(anglechange)A_LogFloat(anglechange);
-
 
 
 
@@ -81,12 +161,12 @@ extend class HDPlayerPawn{
 		//move pivot point a little behind the player's view
 		anglechange=HDMath.AngleChange(lastangle,angle);
 		if(zat-pos.z==0){
-			if(abs(anglechange)>1){
+			if(abs(anglechange)>1){  
 				int dir=90;
 				if(anglechange<0) dir=-90;
 				trymove(self.pos.xy+(cos(angle+dir)*0.8,sin(angle+dir)*0.8),false);
 			}
-			if(abs(pitchchange)>1 && -30<pitch<30){
+			if(abs(pitchchange)>1 && -30<pitch<30){  
 				double rate=0.1;
 				trymove(self.pos.xy-(cos(angle)*rate*pitchchange,
 				sin(angle)*rate*pitchchange),false);
@@ -136,5 +216,11 @@ class HDMuzzleBlocker:HDActor{
 	default{
 		-solid -nogravity -shootable +noblockmonst +noblockmap
 		height 1;radius 1;
+	}
+}
+
+class MuzzleBlockerPuff:IdleDummy{
+	default{
+		+puffonactors
 	}
 }
