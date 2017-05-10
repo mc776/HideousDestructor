@@ -49,23 +49,23 @@ extend class HDPlayerPawn{
 			anglechange=clamp(anglechange,-yawcap,yawcap);
 			pitchchange=clamp(pitchchange,-ptchcap,ptchcap);
 
-/*
+
 			//see if there's any change in velocity overall
 			vector3 muzzlevel=lastvel-vel;
 
-			//apply velocity-based horizontal drift (incl. crouch/jump)
-			double curheight=pos.z+height;
-			muzzlevel.z-=lastheight-curheight;
+			//apply crouch/jump
+			double curheight=height;
+			muzzlevel.z-=(lastheight-curheight)*0.3;
 			lastheight=curheight;
 
-			//apply velocity-based horizontal drift
+			//determine velocity-based horizontal drift
 			//how to tell if it is to left or right?
 			//rotate vector so that player is facing east
 			//the y value is what we need
 			muzzlevel.xy=rotatevector(muzzlevel.xy,-angle);
-			muzzlevel.x-=muzzlevel.y;
 
-*/
+			muzzledrift+=(muzzlevel.y,muzzlevel.z)*proportion2;
+
 
 			//NOW apply the drift!
 			muzzledrift+=(anglechange,pitchchange);

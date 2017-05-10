@@ -38,6 +38,7 @@ class HDPlayerPawn:PlayerPawn{
 		lastangle=angle;
 		lastpitch=pitch;
 		lastvel=vel;
+		lastheight=height;
 		beatcap=35;beatmax=35;
 		feetangle=angle;
 	}
@@ -194,7 +195,6 @@ class HDPlayerPawn:PlayerPawn{
 				}
 			}
 		}
-		lastvel=vel;
 		stunned=max(stunned-1,0);
 
 		//see if player is intentionally walking, running or sprinting
@@ -367,6 +367,7 @@ class HDPlayerPawn:PlayerPawn{
 
 		oldfm=getplayerinput(MODINPUT_FORWARDMOVE);
 		oldsm=getplayerinput(MODINPUT_SIDEMOVE);
+		lastvel=vel;
 	}
 }
 
