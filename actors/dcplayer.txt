@@ -50,27 +50,6 @@ actor HDPlayer:HDPlayerPawn{
 	player.displayname "Marine"
 	player.crouchsprite "PLYC" //this is number 3 according to zscript
 	states{
-	spawn:
-		//SARG A 0 nodelay A_JumpIfInventory("IsFemale",1,2) //if this ever got working...
-		PLAY A 0
-		"----" A 4{
-			A_GiveInventory("IsInGame",1);
-			A_TakeInventory("IsDead");
-		}
-	spawn2:
-		"----" A 0 A_JumpIfHealthLower(0,"death") //needed because ACS calls spawn
-		"####" E 5{
-			A_GiveInventory("SupportChecker",1);
-			A_TakeInventory("IsTurning",1);
-			A_TakeInventory("IsHit");
-			A_TakeInventory("IsJumping");
-		}
-		"----" A 30{
-			if(getdistance(1,AAPTR_PLAYER_GETTARGET)<256){A_GiveInventory("EvadeNow",1,AAPTR_PLAYER_GETTARGET);}
-			if(health>40){A_TakeInventory("IsHurt");}  
-			A_TakeInventory("IsMoving");
-		}
-		loop
 	see:
 		//this state is needed for the player setup preview to work
 		"----" A 0 A_Jump(256,"see0")

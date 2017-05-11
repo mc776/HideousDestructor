@@ -25,7 +25,7 @@ extend class HDPlayerPawn{
 
 
 		//reduced turning while supported.
-		if(countinv("IsSupported") && abs(yaw)<8 && !countinv("IsMoving")){
+		if(countinv("IsSupported") && !getcvar("cl_run") && abs(yaw)<8 && !countinv("IsMoving")){
 			yaw*=0.1;ptch*=0.1;
 		}
 		//reduced turning while crouched.
@@ -77,50 +77,88 @@ extend class HDPlayerPawn{
 
 
 		//weapon collision
+
+		//get barrel size
+		int barrellength=30;
+		int barrelwidth=2;
+		int barreldepth=3;
+
 		//temporarily set attackzoffset
 		double azobak=attackzoffset;
+		vector3 posbak=pos;
+		vector3 posgunorigin=pos+(0,0,height-6);
 		attackzoffset=height*0.5-6;
+		vector3 posadj=(cos(angle+90),sin(angle+90),0)*barrelwidth; //starts to the LEFT
 
-		//get barrel length
-		int barrellength=20;
-
-		//test shot directly forwards at new angle, if clear do nothing more
+		//and now uh do stuff
 		actor muzpuf;
 		int stuff;
+
+
+		double distleft=barrellength;;
+		double distright=barrellength;;
+		double disttop=barrellength;
+		double distbottom=barrellength;
+
+		//left
+		setxyz(posbak+posadj);
 		[muzpuf,stuff]=LineAttack(lastangle+anglechange,barrellength,
 			lastpitch+pitchchange,0,"none",
-			"MuzzleBlockerPuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT
+			"MuzzleBlockerPuff",flags:LAF_NORANDOMPUFFZ
 		);
 		if(muzpuf){
-			//check previous
-			muzpuf.destroy();
-			[muzpuf,stuff]=LineAttack(lastangle+anglechange,barrellength,
-				lastpitch+pitchchange,0,"none",
-				"MuzzleBlockerPuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT
-			);
-			if(!muzpuf){ //if previous is NOT blocked
-				//always do 20, this way it will be finer or coarser as needed.
-				int reps=20;
-				int lastrep=0;
-				double acf=anglechange/reps;
-				double pcf=pitchchange/reps;
-				for(int i=0;i<reps;i++){
-					muzpuf.destroy();
-					[muzpuf,stuff]=LineAttack(lastangle+acf,barrellength,
-						lastpitch+pcf,0,"none",
-						"MuzzleBlockerPuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT
-					);
-					if(!muzpuf)lastrep=i;else i=reps+1;
-				}
-				if(muzpuf)muzpuf.destroy();
-				anglechange=acf*lastrep;
-				pitchchange=pcf*lastrep;
-			}
+			distleft=(muzpuf.pos-(posgunorigin+posadj)).length();
+		}
+		//right
+		setxyz(posbak-posadj);
+		[muzpuf,stuff]=LineAttack(lastangle+anglechange,barrellength,
+			lastpitch+pitchchange,0,"none",
+			"MuzzleBlockerPuff",flags:LAF_NORANDOMPUFFZ
+		);
+		if(muzpuf){
+			distright=(muzpuf.pos-(posgunorigin-posadj)).length();
+		}
+		setxyz(posbak);
+
+
+		//top
+		[muzpuf,stuff]=LineAttack(lastangle+anglechange,barrellength,
+			lastpitch+pitchchange,0,"none",
+			"MuzzleBlockerPuff",flags:LAF_NORANDOMPUFFZ
+		);
+		if(muzpuf){
+			disttop=(muzpuf.pos-posgunorigin).length();
+		}
+		//bottom
+		attackzoffset-=barreldepth;
+		[muzpuf,stuff]=LineAttack(lastangle+anglechange,barrellength,
+			lastpitch+pitchchange,0,"none",
+			"MuzzleBlockerPuff",flags:LAF_NORANDOMPUFFZ
+		);
+		if(muzpuf){
+			distbottom=(muzpuf.pos-(posgunorigin-(0,0,barreldepth))).length();
+		}
+		attackzoffset+=barreldepth;
+
+		//set angles
+		//FIGURE OUT WHICH WAY GOES WHICH
+
+		int halfbarrel=barrellength*0.5;
+		if(distleft<distright){
+			anglechange=max(distleft-barrellength,distleft>halfbarrel?-abs(anglechange):-90);
+		}else if(distleft>distright){
+			anglechange=min(barrellength-distright,distright>halfbarrel?abs(anglechange):90);
+		}
+		if(disttop<distbottom){
+			pitchchange=max(barrellength-disttop,distbottom>halfbarrel?abs(pitchchange):90);
+		}else if(disttop>distbottom){
+			pitchchange=min(distbottom-barrellength,distbottom>halfbarrel?abs(pitchchange):-90);
 		}
 
-		//reset attackzoffset
-		attackzoffset=azobak;
 
+		//reset attackzoffset and position
+		setxyz(posbak);
+		attackzoffset=azobak;
 
 
 
@@ -161,12 +199,12 @@ extend class HDPlayerPawn{
 		//move pivot point a little behind the player's view
 		anglechange=HDMath.AngleChange(lastangle,angle);
 		if(zat-pos.z==0){
-			if(abs(anglechange)>1){  
+			if(abs(anglechange)>1){    
 				int dir=90;
 				if(anglechange<0) dir=-90;
 				trymove(self.pos.xy+(cos(angle+dir)*0.8,sin(angle+dir)*0.8),false);
 			}
-			if(abs(pitchchange)>1 && -30<pitch<30){  
+			if(abs(pitchchange)>1 && -30<pitch<30){    
 				double rate=0.1;
 				trymove(self.pos.xy-(cos(angle)*rate*pitchchange,
 				sin(angle)*rate*pitchchange),false);
@@ -206,21 +244,20 @@ extend class HDPlayerPawn{
 		bool doublemoving=true
 	){
 		if(doublemoving && countinv("ismoving")){down*=2;left*=2;}
-//		driftdown+=down;
-//		driftleft+=left;
+		muzzledrift+=(left,down);
 	}
 }
 
-
-class HDMuzzleBlocker:HDActor{
-	default{
-		-solid -nogravity -shootable +noblockmonst +noblockmap
-		height 1;radius 1;
-	}
-}
 
 class MuzzleBlockerPuff:IdleDummy{
 	default{
 		+puffonactors
 	}
 }
+class MuzzleBlockerMissile:IdleDummy{
+	default{
+		projectile;
+		decal "none";
+	}
+}
+
