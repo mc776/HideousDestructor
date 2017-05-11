@@ -34,10 +34,17 @@ extend class HDPlayerPawn{
 		}
 		anglechange+=yaw;pitchchange-=ptch;
 
-		//muzzle inertia
 		if(!barehanded){
-			//set the amount based on the weapon
+			//get weapon mass (for weapon inertia)
 			int amt=20;
+
+			//get barrel size (for weapon collision)
+			int barrellength=30;
+			int barrelwidth=2;
+			int barreldepth=3;
+
+
+			//muzzle inertia
 
 			//how much to scale movement
 			double proportion=1.-min(0.042*amt,0.99);
@@ -72,15 +79,9 @@ extend class HDPlayerPawn{
 			anglechange+=muzzledrift.x*proportion2;
 			pitchchange+=muzzledrift.y*proportion2;
 			muzzledrift*=-(proportion-1);
-		}
 
 
-		//weapon collision
-		if(!barehanded){
-			//get barrel size
-			int barrellength=30;
-			int barrelwidth=2;
-			int barreldepth=3;
+			//weapon collision
 
 			//temporarily set attackzoffset
 			double azobak=attackzoffset;
@@ -140,20 +141,20 @@ extend class HDPlayerPawn{
 			//set angles
 			//FIGURE OUT WHICH WAY GOES WHICH
 	
-			int halfbarrel=barrellength*0.5;
+			bool mvng;if(vel.length()<0.5)mvng=true;
 			if(distleft<distright){
-				anglechange=max(distleft-barrellength,distleft>halfbarrel?-abs(anglechange):-3);
+				anglechange=max(distleft-barrellength,mvng?-abs(anglechange):-3);
 			}else if(distleft>distright){
-				anglechange=min(barrellength-distright,distright>halfbarrel?abs(anglechange):3);
+				anglechange=min(barrellength-distright,mvng?abs(anglechange):3);
 			}
 			else if(distleft<barrellength){
 				A_ChangeVelocity(-1,0,0,CVF_RELATIVE);
 			}
 
 			if(disttop<distbottom){
-				muzzledrift.y+=min(barrellength-disttop,distbottom>halfbarrel?abs(pitchchange):3);
+				muzzledrift.y+=min(barrellength-disttop,mvng?abs(pitchchange):3);
 			}else if(disttop>distbottom){
-				muzzledrift.y-=max(distbottom-barrellength,distbottom>halfbarrel?abs(pitchchange):-3);
+				muzzledrift.y-=max(distbottom-barrellength,mvng?abs(pitchchange):-3);
 			}
 
 			//reset attackzoffset and position
