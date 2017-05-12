@@ -35,13 +35,125 @@ extend class HDPlayerPawn{
 		anglechange+=yaw;pitchchange-=ptch;
 
 		if(!barehanded){
-			//get weapon mass (for weapon inertia)
-			int amt=20;
+			//get weapon size
+			double amt=0;
+			int barrellength=0;
+			int barrelwidth=0;
+			int barreldepth=0;
+			let wp=HDWeapon(player.readyweapon);
+			if(wp && wp.gunmass>0){
+				amt=wp.gunmass;
+				barrellength=wp.barrellength;
+				barrelwidth=wp.barrelwidth;
+				barreldepth=wp.barreldepth;
+			}else if(wp is "Lumberjack"){
+				amt=8+
+					(countinv("LumberCell")||countinv("LumberEmptyCell")?1:0)
+				;
+				barrellength=30;
+				barrelwidth=1;
+				barreldepth=2;
+			}else if(wp is "HDSMG"){
+				amt=5+
+					countinv("HDSMGLoaded")*0.02+
+					(countinv("HDSMGNoMag")?0:0.5)
+				;
+				barrellength=26;
+				barrelwidth=1;
+				barreldepth=1;
+			}else if(wp is "Hunter"){
+				amt=8+
+					countinv("ShotgunTube")*0.1+
+					countinv("ShotgunQuickAmmo")*0.05
+				;
+				barrellength=30;
+				barrelwidth=1;
+				barreldepth=2;
+			}else if(wp is "Slayer"){
+				amt=6+countinv("ShotgunQuickAmmo2")*0.05;
+				barrellength=26;
+				barrelwidth=2;
+				barreldepth=1;
+			}else if(wp is "ZM66Rifle" || wp is "ZM66SemiRifle"){
+				amt=7+countinv("ZM66Loaded")*0.02;
+				barrellength=25;
+				barrelwidth=1;
+				barreldepth=1;
+			}else if(wp is "ZM66GrenadeRifle"){
+				amt=8+
+					countinv("ZM66Loaded")*0.02+
+					countinv("ZM66GLoaded")
+				;
+				barrellength=28;
+				barrelwidth=2;
+				barreldepth=3;
+			}else if(wp is "Vulcanette"){
+				amt=14+
+					(countinv("VulcLoaded1")?1:0)+
+					(countinv("VulcLoaded2")?1:0)+
+					(countinv("VulcLoaded3")?1:0)+
+					(countinv("VulcLoaded4")?1:0)+
+					(countinv("VulcLoaded5")?1:0)+
+					(countinv("VulcJuice")?1:0)+
+					(countinv("VulcEmptyCell")?1:0)
+				;
+				barrellength=30;
+				barrelwidth=4;
+				barreldepth=7;
+			}else if(wp is "RocquetteLauncher"){
+				amt=10+
+					countinv("RocketMag")+
+					countinv("HEATLoaded")*3
+				;
+				barrellength=32;
+				barrelwidth=4;
+				barreldepth=8;
+			}else if(wp is "Blooper"){
+				amt=4+countinv("BloopChamber");
+				barrellength=24;
+				barrelwidth=3;
+				barreldepth=3;
+			}else if(wp is "LiberatorRifle"){
+				amt=9+
+					countinv("LiberatorLoaded")*0.02
+				;
+				barrellength=26;
+				barrelwidth=1;
+				barreldepth=1;
+			}else if(wp is "LiberatorGrenadeRifle"){
+				amt=10+
+					countinv("LiberatorLoaded")*0.02+
+					(countinv("LiberatorGrenadeChamber")?1:0)
+				;
+				barrellength=29;
+				barrelwidth=2;
+				barreldepth=3;
+			}else if(wp is "ThunderBuster"){
+				amt=10+
+					(countinv("PlasmaBattery")||countinv("PlasmaEmptyCell")?2:0)
+				;
+				barrellength=28;
+				barrelwidth=3;
+				barreldepth=3;
+			}else if(wp is "Brontornis"){
+				amt=6+countinv("BrontornisMag");
+				barrellength=24;
+				barrelwidth=2;
+				barreldepth=2;
+			}else if(wp is "BFG9k"){
+				amt=19+
+					(countinv("BFGLoaded")||countinv("BFGChamber")?1:0)
+				;
+				barrellength=32;
+				barrelwidth=6;
+				barreldepth=12;
+			}else if(wp is "BossRifle"){
+				amt=12;
+				barrellength=40;
+				barrelwidth=2;
+				barreldepth=2;
+			}
 
-			//get barrel size (for weapon collision)
-			int barrellength=30;
-			int barrelwidth=2;
-			int barreldepth=3;
 
 
 			//muzzle inertia
