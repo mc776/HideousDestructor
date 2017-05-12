@@ -264,9 +264,9 @@ extend class HDPlayerPawn{
 			}
 
 			if(disttop<distbottom){
-				muzzledrift.y+=min(barrellength-disttop,mvng?abs(pitchchange):3);
+				pitchchange=min(barrellength-disttop,mvng?abs(pitchchange):3);
 			}else if(disttop>distbottom){
-				muzzledrift.y-=max(distbottom-barrellength,mvng?abs(pitchchange):-3);
+				pitchchange=max(distbottom-barrellength,mvng?-abs(pitchchange):-3);
 			}
 
 			//reset attackzoffset and position
