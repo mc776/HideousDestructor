@@ -3,6 +3,11 @@
 // ------------------------------------------------------------
 
 class HDWeapon:Weapon{
+	double gunmass;
+	int barrellength;
+	int barrelwidth;
+	int barreldepth;
+	property GunDimensions: gunmass,barrellength,barrelwidth,barreldepth;
 	default{
 		+weapon.ammo_optional +weapon.alt_ammo_optional +weapon.noalert +weapon.noautoaim
 		weapon.AmmoGive 0;weapon.AmmoGive2 0;
@@ -214,9 +219,15 @@ class HDWeapon:Weapon{
 	reload:
 	zoom:
 	user1:
+		---- A 0 A_Jump(256,"altreload");
 	user2:
+		---- A 0 A_Jump(256,"firemode");
 	user3:
 	user4:
+		---- A 0 A_Jump(256,"unload");
+	altreload:
+	firemode:
+	unload:
 	nope:
 		---- A 1 A_WeaponReady(WRF_NOFIRE);
 		---- A 0{
