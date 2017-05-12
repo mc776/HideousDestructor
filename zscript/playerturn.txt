@@ -251,7 +251,6 @@ extend class HDPlayerPawn{
 			attackzoffset+=barreldepth;
 
 			//set angles
-			//FIGURE OUT WHICH WAY GOES WHICH
 	
 			bool mvng;if(vel.length()<0.5)mvng=true;
 			if(distleft<distright){
@@ -362,16 +361,9 @@ extend class HDPlayerPawn{
 	}
 }
 
-
 class MuzzleBlockerPuff:IdleDummy{
 	default{
 		+puffonactors
-	}
-}
-class MuzzleBlockerMissile:IdleDummy{
-	default{
-		projectile;
-		decal "none";
 	}
 }
 
