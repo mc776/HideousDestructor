@@ -62,7 +62,7 @@ actor Lumberjack : HDWeapon //replaces Chainsaw
 	Saw:
 		SAWG AB 1{
 			A_GiveInventory("SawOn",1);
-			A_TakeInventory("LumberCell",1);
+			if(!random(0,3)){A_TakeInventory("LumberCell",1);}
 			if(countinv("LumberCell")<61){A_GiveInventory("LumberEmptyCell",1);}
 			if((countinv("LumberCell")>450)&&(countinv("SawOn")>11)){  
 				ACS_NamedExecuteAlways("MuzzleClimb",0,(random(0,1)*2-1)*random(3,8),(random(0,1)*2-1)*random(3,12));
@@ -279,6 +279,7 @@ actor LumberjackPickup : HDUPK replaces Chainsaw
 actor HDSawPuff
 {
 	damagetype "SmallArms1"
+	decal "BulletChipSmall"
 	+puffonactors
 	+bloodsplatter
 	+puffgetsowner
