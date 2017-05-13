@@ -223,6 +223,7 @@ extend class HDPlayerPawn{
 			);
 			if(muzpuf){
 				distleft=(muzpuf.pos-(posgunorigin+posadj)).length();
+				muzpuf.destroy();
 			}
 			//right
 			setxyz(posbak-posadj);
@@ -232,6 +233,7 @@ extend class HDPlayerPawn{
 			);
 			if(muzpuf){
 				distright=(muzpuf.pos-(posgunorigin-posadj)).length();
+				muzpuf.destroy();
 			}
 			setxyz(posbak);
 
@@ -242,6 +244,7 @@ extend class HDPlayerPawn{
 			);
 			if(muzpuf){
 				disttop=(muzpuf.pos-posgunorigin).length();
+				muzpuf.destroy();
 			}
 			//bottom
 			attackzoffset-=barreldepth;
@@ -251,6 +254,7 @@ extend class HDPlayerPawn{
 			);
 			if(muzpuf){
 				distbottom=(muzpuf.pos-(posgunorigin-(0,0,barreldepth))).length();
+				muzpuf.destroy();
 			}
 			attackzoffset+=barreldepth;
 
