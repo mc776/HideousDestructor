@@ -222,7 +222,7 @@ ininventory not wipedout
 
 
 	//current inventory
-	drawselectedinventory HUDFONT_DOOM, 20+center,-27, 60+center,-18, gray;
+	drawselectedinventory HUDFONT_DOOM, 27+center,-27, 67+center,-18, gray;
 	}
 
 
@@ -259,10 +259,6 @@ ininventory not wipedout
 	drawnumber 3, HUDFONT_DOOM, white, "HDLives", whennotzero,alignment(center), -8+center,-18, brick,3,gold,5;
 
 
-	//health
-	drawnumber 4,INDEXFONT,yellow,Health,alignment(center),0+center,-10,1,red,33,olive,70;
-
-
 	//ammo counters
 	isSelected BossRifle{drawbar "MAGRED","MAGSTAT", ammo SevenMilAmmo, vertical, -82+center, -8; drawnumber 3, HD_INDEXFONT, Gold, ammo BossClip, -74+center, -8;}
 	isSelected LiberatorRifle,LiberatorGrenadeRifle{drawbar "MAGRED","MAGSTAT", ammo SevenMilAmmo, vertical, -75+center, -8; drawnumber 3, HD_INDEXFONT, Gold, ammo LiberatorMag, -67+center, -8;}
@@ -295,6 +291,10 @@ ininventory not wipedout
 
 	}
 	}
+
+	//health
+	drawnumber 4,INDEXFONT,yellow,Health,alignment(left),12+center,-17,1,red,33,olive,70;
+
 }
 }
 }
