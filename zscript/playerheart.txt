@@ -72,16 +72,7 @@ extend class HDPlayerPawn{
 			}
 		}
 
-		//good old jitters!
-		if(
-			bloodpressure>20||
-			health<33
-		){
-			double jitter=0.3;
-			if(health<20) jitter=1;
-			A_SetPitch(pitch+frandom(-jitter,jitter),true);
-			A_SetAngle(angle+frandom(-jitter,jitter),true);
-		}
+
 
 		//on every beat
 		if(beatcount>0){

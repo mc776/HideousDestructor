@@ -34,7 +34,7 @@ extend class HDPlayerPawn{
 		}
 		anglechange+=yaw;pitchchange-=ptch;
 
-		if(!barehanded||stunned){
+		if(1){
 			//get weapon size
 			double amt=0;
 			int barrellength=0;
@@ -205,6 +205,24 @@ extend class HDPlayerPawn{
 			anglechange+=muzzledrift.x*proportion2;
 			pitchchange+=muzzledrift.y*proportion2;
 			muzzledrift*=proportion3;
+
+
+
+			//good old jitters!
+			//gotta do this after inertia and before collision,
+			//to keep this from clipping your gun into the geometry.
+			if(
+				bloodpressure>20||
+				health<33
+			){
+				double jitter=0.3;
+				if(countinv("IsSupported"))jitter=0.05;
+				else if(health<20)jitter=1;
+				anglechange+=frandom(-jitter,jitter);
+				pitchchange+=frandom(-jitter,jitter);
+			}
+
+
 
 
 			//weapon collision
