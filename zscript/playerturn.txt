@@ -34,7 +34,7 @@ extend class HDPlayerPawn{
 		}
 		anglechange+=yaw;pitchchange-=ptch;
 
-		if(!barehanded){
+		if(!barehanded||stunned){
 			//get weapon size
 			double amt=0;
 			int barrellength=0;
@@ -157,6 +157,12 @@ extend class HDPlayerPawn{
 			//"width" not "radius"
 			barrelwidth*=0.5;
 
+			//inertia adjustments for other things
+			if(stunned){
+				amt=max(17,amt);
+			}else if(countinv("PowerStrength")||countinv("PowerInvulnerable")){
+				amt*=0.2;
+			}
 			if(countinv("WeaponBusy")){
 				barrellength=0;
 				amt=min(amt*1.5,20);
