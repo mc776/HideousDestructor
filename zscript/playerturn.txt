@@ -157,6 +157,10 @@ extend class HDPlayerPawn{
 			//"width" not "radius"
 			barrelwidth*=0.5;
 
+			if(countinv("WeaponBusy")){
+				barrellength=0;
+				amt=min(amt*1.5,20);
+			}
 
 
 			//muzzle inertia

@@ -50,15 +50,29 @@ class HDPlayerPawn:PlayerPawn{
 		}
 	spawn2:
 		#### E 5{
-			if(!barehanded && !getcvar("cl_run"))A_GiveInventory("SupportChecker",1);
 			A_TakeInventory("IsTurning",1);
 			A_TakeInventory("IsHit");
 			A_TakeInventory("IsJumping");
 		}
-		---- A 30{
+		---- A 0{
 			if(getdistance(1,AAPTR_PLAYER_GETTARGET)<256) A_GiveInventory("EvadeNow",1,AAPTR_PLAYER_GETTARGET);
 			if(health>40) A_TakeInventory("IsHurt");
 			A_TakeInventory("IsMoving");
+		}
+		---- AAAAAA 5{
+			if(!barehanded && !getcvar("cl_run") && zat==pos.z && !countinv("IsSupported")){
+				vector3 posbak=pos;
+				setxyz(pos+(cos(angle),sin(angle),0)*16);
+				double zat2=getzat();
+				setxyz(posbak);
+				zat2-=(zat+height);
+				if(-26<zat2 && zat2<0){
+					A_GiveInventory("IsSupported");
+					A_SetPitch(pitch-0.5,SPF_FORCECLAMP|SPF_INTERPOLATE);
+					A_PlaySound("weapons/rifleclick2",CHAN_WEAPON,0.3);
+//					A_PrintBold("THE GUN IS GOOD");
+				}else A_TakeInventory("IsSupported");
+			}else if(countinv("WeaponBusy"))A_TakeInventory("IsSupported");
 		}
 		loop;
 	see0:
@@ -104,7 +118,7 @@ class HDPlayerPawn:PlayerPawn{
 			if(height>30 && runwalksprint<0){
 				A_TakeInventory("IsMoving",5);
 				if(viewbob>1.2){viewbob=1.2;}
-				else if(viewbob>0.2){viewbob-=0.1;}
+				else if(viewbob>0.3){viewbob-=0.1;}
 			}
 			else if(height<30){viewbob=1.8;}
 			else if(viewbob<0.8){viewbob+=0.1;}
