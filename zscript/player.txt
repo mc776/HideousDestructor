@@ -44,8 +44,8 @@ class HDPlayerPawn:PlayerPawn{
 	}
 	states{
 	spawn:
-		PLAY A 4{
-			A_GiveInventory("IsInGame",1);
+		PLAY A 4 nodelay{
+			A_GiveInventory("IsInGame");
 			A_TakeInventory("IsDead");
 		}
 	spawn2:
