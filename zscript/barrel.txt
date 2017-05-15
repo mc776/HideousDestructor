@@ -214,10 +214,10 @@ class BarrelGibs:IdleDummy{
 	}
 	states{
 	spawn:
-		POB1 A 0 nodelay{
+		POB1 A 10 nodelay{
 			if(floorz<pos.z) setz(floorz);
 		}
-		POB1 A -1;
+		POB1 A -1 A_Stop();
 		stop;
 	}
 }
