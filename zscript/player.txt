@@ -42,6 +42,22 @@ class HDPlayerPawn:PlayerPawn{
 		beatcap=35;beatmax=35;
 		feetangle=angle;
 	}
+
+	//reset various... things.
+	void levelreset(){
+		lastpos=pos;
+		lastangle=angle;
+		lastpitch=pitch;
+		lastvel=vel;
+		lastheight=height;
+		beatcap=35;beatmax=35;
+		feetangle=angle;
+		hasgrabbed=false;
+		beatmax=35;beatcap=35;bloodpressure=0;beatcounter=0;
+		stimcount=0;regenbers=0;
+		oldwoundcount+=woundcount+unstablewoundcount;aggravateddamage=0;
+		oldwoundcount--;burncount--;woundcount=0;unstablewoundcount=0;
+	}
 	states{
 	spawn:
 		PLAY A 4 nodelay{
@@ -428,6 +444,18 @@ class ViewDummy:IdleDummy{
 	}
 }
 
+
+
+//because I don't know wtf the zs equivalent to an acs enter script is
+class HDLevelResetter:ActionItem{
+	states{
+	pickup:
+		TNT1 A 0{
+			let p=HDPlayerPawn(self);
+			if(p)p.levelreset();
+		}fail;
+	}
+}
 
 
 
