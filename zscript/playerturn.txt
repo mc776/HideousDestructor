@@ -231,6 +231,7 @@ extend class HDPlayerPawn{
 			vector3 posgunorigin=pos+(0,0,height-6);
 			attackzoffset=height*0.5-6;
 			vector3 posadj=(cos(angle+90),sin(angle+90),0)*barrelwidth; //starts to the LEFT
+			vector3 posadj2=(-cos(angle)*cos(pitch+90),-sin(angle)*cos(pitch+90),-sin(pitch+90))*barreldepth;
 
 			//and now uh do stuff
 			actor muzpuf;
@@ -262,9 +263,9 @@ extend class HDPlayerPawn{
 				distright=(muzpuf.pos-(posgunorigin-posadj)).length();
 				muzpuf.destroy();
 			}else muzhit++;
-			setxyz(posbak);
 
 			//top
+			setxyz(posbak);
 			[muzpuf,stuff]=LineAttack(lastangle+anglechange,barrellength,
 				lastpitch+pitchchange,0,"none",
 				"MuzzleBlockerPuff",flags:LAF_NORANDOMPUFFZ
@@ -274,6 +275,7 @@ extend class HDPlayerPawn{
 				muzpuf.destroy();
 			}else muzhit++;
 			//bottom
+			setxyz(posbak+posadj2);
 			attackzoffset-=barreldepth;
 			[muzpuf,stuff]=LineAttack(lastangle+anglechange,barrellength,
 				lastpitch+pitchchange,0,"none",
@@ -285,25 +287,28 @@ extend class HDPlayerPawn{
 			}else muzhit++;
 			attackzoffset+=barreldepth;
 
+			//restore position
+			setxyz(posbak);
+
 			//set angles
 	
-			bool mvng;if(vel.length()<0.5)mvng=true;
+			bool mvng;if(lastheight!=height || vel.length()<0.5)mvng=true;
 			bool hitsnd;
 			if(max(abs(anglechange),abs(pitchchange))>1)hitsnd=true;
+
 			if(distleft<distright){
-				anglechange=max(distleft-barrellength,mvng?0:-3);
+				anglechange=max(distleft-barrellength,mvng?0:-6);
 			}else if(distleft>distright){
-				anglechange=min(barrellength-distright,mvng?0:3);
-			}
-			else if(distleft<barrellength){
-				A_ChangeVelocity(-1,0,0,CVF_RELATIVE);
+				anglechange=min(barrellength-distright,mvng?0:6);
 			}
 
-			if(disttop<distbottom){
-				pitchchange=min(barrellength-disttop,mvng?0:3);
-			}else if(disttop>distbottom){
-				pitchchange=max(distbottom-barrellength,mvng?0:-3);
+			if(disttop>distbottom){
+				pitchchange=max(distbottom-barrellength,mvng?0:-6);
+			}else if(disttop<distbottom){
+				pitchchange=min(barrellength-disttop,mvng?0:6);
 			}
+
+
 
 			//bump
 			if(muzhit>=4){
