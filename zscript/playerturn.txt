@@ -288,27 +288,28 @@ extend class HDPlayerPawn{
 			//set angles
 	
 			bool mvng;if(vel.length()<0.5)mvng=true;
+			bool hitsnd;
+			if(max(abs(anglechange),abs(pitchchange))>1)hitsnd=true;
 			if(distleft<distright){
-				anglechange=max(distleft-barrellength,mvng?-abs(anglechange):-3);
+				anglechange=max(distleft-barrellength,mvng?0:-3);
 			}else if(distleft>distright){
-				anglechange=min(barrellength-distright,mvng?abs(anglechange):3);
+				anglechange=min(barrellength-distright,mvng?0:3);
 			}
 			else if(distleft<barrellength){
 				A_ChangeVelocity(-1,0,0,CVF_RELATIVE);
 			}
 
 			if(disttop<distbottom){
-				pitchchange=min(barrellength-disttop,mvng?abs(pitchchange):3);
+				pitchchange=min(barrellength-disttop,mvng?0:3);
 			}else if(disttop>distbottom){
-				pitchchange=max(distbottom-barrellength,mvng?-abs(pitchchange):-3);
+				pitchchange=max(distbottom-barrellength,mvng?0:-3);
 			}
 
 			//bump
 			if(muzhit>=4){
 				muzzlehit=false;
 			}else if(!muzzlehit){
-				if(max(abs(anglechange),abs(pitchchange))>2)
-					A_PlaySound("weapons/rifleclick2",CHAN_AUTO,0.6);
+				if(hitsnd)A_PlaySound("weapons/rifleclick2",CHAN_AUTO,0.6);
 				muzzlehit=true;
 			}
 
