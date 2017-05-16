@@ -297,17 +297,21 @@ extend class HDPlayerPawn{
 			if(max(abs(anglechange),abs(pitchchange))>1)hitsnd=true;
 
 			if(distleft<distright){
-				anglechange=max(distleft-barrellength,mvng?0:-6);
+				anglechange=max(distleft-barrellength,mvng?0:-4);
 			}else if(distleft>distright){
-				anglechange=min(barrellength-distright,mvng?0:6);
+				anglechange=min(barrellength-distright,mvng?0:4);
 			}
 
 			if(disttop>distbottom){
-				pitchchange=max(distbottom-barrellength,mvng?0:-6);
+				pitchchange=max(distbottom-barrellength,mvng?0:-4);
 			}else if(disttop<distbottom){
-				pitchchange=min(barrellength-disttop,mvng?0:6);
+				pitchchange=min(barrellength-disttop,mvng?0:4);
 			}
 
+			if(!muzhit){
+				double blah=(barrellength-disttop)*0.02;
+				A_Recoil(blah);
+			}
 
 
 			//bump
