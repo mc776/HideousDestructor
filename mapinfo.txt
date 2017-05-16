@@ -1,5 +1,4 @@
-gameinfo
-{
+gameinfo{
 	playerclasses = "HDP_AR", "HDP_BR", "HDP_SG", "HDP_SM", "HDP_MG", "HDP_GL", "HDP_BO", "HDP_PR", "HDP_BF", "HDP_BA", "HDP_BS", "HDP_BT", "HDP_SS", "HDP_RB", "HDP_SC", "HDP_NK", "HDP_DG"
 	defaultbloodcolor="40 0a 00"
 	defaultbloodparticlecolor="68 00 00"
@@ -7,19 +6,20 @@ gameinfo
 	drawreadthis=true
 	advisorytime=0
 	addquitmessages="Run, baby! Run home to\nyour tiny baby guns!","Shall every man fall?","And as you perish each of you\nShall scream as you are sought!"
-}
-episode range {name="Hideous Firing Range" noskillmenu}
 
-adddefaultmap
-{
+	eventhandlers="HDHandlers"
+}
+episode range{name="Hideous Firing Range" noskillmenu}
+
+
+adddefaultmap{
 	sucktime=0
 	aircontrol=0
 	allowjump
 	allowcrouch
 	evenlighting
 }
-map range "Firing Range"
-{
+map range "Firing Range"{
 	sky1="sky1"
 	music=""
 	resetinventory
@@ -31,38 +31,33 @@ map range "Firing Range"
 
 
 clearskills
-skill "hd_nocover"
-{
+skill "hd_nocover"{
 //	DamageFactor=0.3 //commenting out because it's now built right into player's damagemobj function
 	SpawnFilter="Hard"
 	ACSReturn=0
 	Name="Homely"
 }
-skill "hd_easy"
-{
+skill "hd_easy"{
 	DamageFactor=1.0
 	SpawnFilter="Easy"
 	ACSReturn=1
 	Name="Ugly"
 	EasyBossBrain
 }
-skill "hd_normal"
-{
+skill "hd_normal"{
 	DamageFactor=1.0
 	SpawnFilter="Normal"
 	ACSReturn=2
 	Name="Grotesque"
 	defaultskill
 }
-skill "hd_hard"
-{
+skill "hd_hard"{
 	DamageFactor=1.0
 	SpawnFilter="Hard"
 	ACSReturn=3
 	Name="Hideous"
 }
-skill "hd_nitemare"
-{
+skill "hd_nitemare"{
 	AmmoFactor=2
 	FastMonsters
 	RespawnTime=12
@@ -72,8 +67,7 @@ skill "hd_nitemare"
 	Key="n"
 	mustconfirm
 }
-skill "hd_grimdark"
-{
+skill "hd_grimdark"{
 	DamageFactor=1.3
 	SpawnFilter="Hard"
 	FastMonsters
@@ -84,8 +78,7 @@ skill "hd_grimdark"
 	ReplaceActor="megasphere","bluearmor"
 	Name="Grimdark"
 }
-skill "hd_spooky"
-{
+skill "hd_spooky"{
 	DamageFactor=1.3
 	SpawnFilter="Easy"
 	FastMonsters

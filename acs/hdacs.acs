@@ -594,53 +594,15 @@ script "Reload" (int type, int amount)	//reload partial
 
 script "HDEnterOnce" ENTER
 {
-	SpawnForced("ViewDummy", GetActorX(0), GetActorY(0), GetActorZ(0), (mincamtid+PlayerNumber()), (GetActorAngle(0)>>8));
-Thing_Hate(mincamtid+PlayerNumber(),0);
+//	SpawnForced("ViewDummy", GetActorX(0), GetActorY(0), GetActorZ(0), (mincamtid+PlayerNumber()), (GetActorAngle(0)>>8));
+//Thing_Hate(mincamtid+PlayerNumber(),0);
 
-	lastheight[PlayerNumber()]=GetActorZ(0)>>16;
 
 	TakeInventory("LethalDamage",1);
 
 	ReplaceBot();
 					// Removes status flags to give player a fresh start
 
-	GiveInventory("HDLevelResetter",1);
-	TakeInventory("NullWeapon",999);
-	TakeInventory("WeaponBusy",999);
-	TakeInventory("IsSprinting",999);
-	TakeInventory("IsMoving",999);
-	TakeInventory("JustUnloading",999);
-	TakeInventory("IsHit",999);
-	TakeInventory("IsInHell",999);
-	TakeInventory("UsingMeds",999);
-	TakeInventory("WipedOut",999);
-	TakeInventory("RegenBers",999);
-	TakeInventory("PressingFire",999);
-	TakeInventory("PressingAltfire",999);
-	TakeInventory("PressingReload",999);
-	TakeInventory("PressingZoom",999);
-	TakeInventory("PressingFireMode",999);
-	TakeInventory("PressingUnload",999);
-	TakeInventory("HDMap",999);
-	TakeInventory("Fatigue",999);
-	TakeInventory("WoundCount",999);	// Because you usually load from autosave rather than resetting
-
-	if ((CheckInventory("DERPDEAD"))&&(CheckInventory("DERPUsable")<1))
-	{
-		TakeInventory("DERPDEAD", 999);
-		GiveInventory("DERPUsable",1);
-	}
-	if ((CheckInventory("HERPDEAD"))&&(CheckInventory("HERPUsable")<1))
-	{
-		TakeInventory("HERPDEAD", 999);
-		GiveInventory("HERPUsable",1);
-	}
-
-
-	standingangle[PlayerNumber()]=GetActorAngle(0);
-
-	GiveInventory("JustStarted",1);
-	GiveInventory("PowerFrightener",1);
 
 
 	SetPlayerProperty (0, 0, PROP_NOTARGET);				//unnotargets player
@@ -651,7 +613,6 @@ Thing_Hate(mincamtid+PlayerNumber(),0);
 	TakeInventory ("WipedOut", 999);		//takes away wiped out null weapon/inventory flag
 
 	ConsolidateWeapons();
-//	ACS_NamedExecuteAlways("CarryLimit",0,0,0);
 
 	//set weapon if taken away last level
 	if (GetWeaponInt()==0) SetWeapon(GetBestWeapon());

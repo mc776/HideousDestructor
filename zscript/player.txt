@@ -42,22 +42,6 @@ class HDPlayerPawn:PlayerPawn{
 		beatcap=35;beatmax=35;
 		feetangle=angle;
 	}
-
-	//reset various... things.
-	void levelreset(){
-		lastpos=pos;
-		lastangle=angle;
-		lastpitch=pitch;
-		lastvel=vel;
-		lastheight=height;
-		beatcap=35;beatmax=35;
-		feetangle=angle;
-		hasgrabbed=false;
-		beatmax=35;beatcap=35;bloodpressure=0;beatcounter=0;
-		stimcount=0;regenbers=0;
-		oldwoundcount+=woundcount+unstablewoundcount;aggravateddamage=0;
-		oldwoundcount--;burncount--;woundcount=0;unstablewoundcount=0;
-	}
 	states{
 	spawn:
 		PLAY A 4 nodelay{
@@ -446,17 +430,62 @@ class ViewDummy:IdleDummy{
 
 
 
-//because I don't know wtf the zs equivalent to an acs enter script is
-class HDLevelResetter:ActionItem{
-	states{
-	pickup:
-		TNT1 A 0{
-			let p=HDPlayerPawn(self);
-			if(p)p.levelreset();
-		}fail;
+
+//stuff to reset upon entering a new level
+class HDHandlers:EventHandler{
+	override void PlayerEntered(PlayerEvent e){
+		let p=HDPlayerPawn(players[e.PlayerNumber].mo);
+		if(p){
+			p.levelreset();
+		}
 	}
 }
+extend class HDPlayerPawn{
+	//reset various... things.
+	void levelreset(){
+		actor cam=spawn("ViewDummy",pos);
+		cam.changetid(playernumber()-32000);
+		cam.target=self;
 
+		lastpos=pos;
+		lastangle=angle;
+		lastpitch=pitch;
+		lastvel=vel;
+		lastheight=height;
+		beatcap=35;beatmax=35;
+		feetangle=angle;
+		hasgrabbed=false;
+		beatmax=35;beatcap=35;bloodpressure=0;beatcounter=0;
+		stimcount=0;regenbers=0;
+		oldwoundcount+=woundcount+unstablewoundcount;aggravateddamage=0;
+		oldwoundcount--;burncount--;woundcount=0;unstablewoundcount=0;
+
+		overloaded=CheckEncumbrance();
+
+		A_TakeInventory("WeaponBusy");
+		A_TakeInventory("IsMoving");
+		A_TakeInventory("IsSprinting");
+		A_TakeInventory("IsHit");
+		A_TakeInventory("JustUnloading");
+		A_TakeInventory("IsInHell");
+		A_TakeInventory("UsingMeds");
+		A_TakeInventory("WipedOut");
+		A_TakeInventory("RegenBers");
+		A_TakeInventory("IsSupported");
+
+		if (countinv("DERPDEAD")&&!countinv("DERPUsable")){
+			A_TakeInventory("DERPDEAD");
+			A_GiveInventory("DERPUsable");
+		}
+		if (countinv("HERPDEAD")&&!countinv("HERPUsable")){
+			A_TakeInventory("HERPDEAD");
+			A_GiveInventory("HERPUsable");
+		}
+
+		A_GiveInventory("JustStarted",1);
+		A_GiveInventory("PowerFrightener",1);
+	}
+}
 
 
 
