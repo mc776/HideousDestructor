@@ -125,7 +125,7 @@ actor DERPBot:ZEDDERP{
 		}
 		DERP A 0{
 			if(countinv("HDKillCount")){
-				A_GiveInventory("DERPmsgTANGODOWN",1,AAPTR_MASTER);
+				DerpAlert("\cf  Hostile eliminated.");
 				A_TakeInventory("HDKillCount");
 				return state("patrol");
 			}
@@ -184,7 +184,7 @@ actor DERPBot:ZEDDERP{
 			if(!countinv("IsWeaponReady")){return state("noshot");}
 			return state("");
 		}
-		DERP A 0 A_GiveInventory("DERPmsgSHOOT",1,AAPTR_MASTER)
+		DERP A 0 DerpAlert("\cj  Engaging hostile.")
 	missile2:
 		DERP A 0 A_JumpIfHealthLower(1,"dead")
 		DERP A 0 A_JumpIfInventory("DERPAmmo",1,1)
@@ -200,7 +200,7 @@ actor DERPBot:ZEDDERP{
 		DERP A 1{
 			A_FaceTarget(10,10,0,0,FAF_TOP,-4);
 			if(countinv("HDKillCount")){
-				A_GiveInventory("DERPmsgTANGODOWN",1,AAPTR_MASTER);
+				DerpAlert("\cf  Hostile eliminated.");
 				A_TakeInventory("HDKillCount");
 			}
 		}
@@ -214,7 +214,7 @@ actor DERPBot:ZEDDERP{
 	death:
 		DERP A 0{
 			if(checkclass("EnemyDERP",AAPTR_MASTER)){A_Remove(AAPTR_MASTER,RMVF_MISC);}
-			else{A_GiveInventory("DERPmsgDEAD",1,AAPTR_MASTER);}
+			else{DerpAlert("\cg  Operational fault.\cj Standby for repairs.");}
 			A_PlaySound("weapons/bigcrack",CHAN_AUTO);
 			A_SpawnItemEx("HDSmoke",0,0,1, velx,vely,velz+1, 0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);
 			A_SetSolid;
@@ -227,7 +227,7 @@ actor DERPBot:ZEDDERP{
 	noammo:
 		DERP A 10{
 			A_ClearTarget;
-			A_GiveInventory("DERPmsgNOAMMO",1,AAPTR_MASTER);
+			DerpAlert("\cj  Out of ammo. Await retrieval.");
 			A_ChangeFlag("nodropoff",1);
 		}
 	chasemaster:
@@ -351,41 +351,6 @@ actor DERPDEADPickup:HDUPK{
 		"----" A 0 A_GiveInventory("DERPDEAD",1,AAPTR_TARGET)
 		"----" A 0 A_PlaySound("weapons/grenopen")
 		stop
-	}
-}
-actor DERPmsgCLEAR:CustomInventory{
-	states{
-	pickup:
-		TNT1 A 0 A_Print("\cd[DERP]\cj  <No target available>")
-		fail
-	}
-}
-actor DERPmsgSHOOT:CustomInventory{
-	states{
-	pickup:
-		TNT1 A 0 A_Print("\cd[DERP]\cj  Engaging hostile.")
-		fail
-	}
-}
-actor DERPmsgNOAMMO:CustomInventory{
-	states{
-	pickup:
-		TNT1 A 0 A_Print("\cd[DERP]\cj  Out of ammo. Await retrieval.")
-		fail
-	}
-}
-actor DERPmsgTANGODOWN:CustomInventory{
-	states{
-	pickup:
-		TNT1 A 0 A_Print("\cd[DERP]\cf  Hostile eliminated.")
-		fail
-	}
-}
-actor DERPmsgDEAD:CustomInventory{
-	states{
-	pickup:
-		TNT1 A 0 A_Print("\cd[DERP]\cg  Operational fault.\cj Standby for repairs.")
-		fail
 	}
 }
 
