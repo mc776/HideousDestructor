@@ -1,0 +1,93 @@
+// this one gets its own file because it's sooooo sprawly.
+
+extend class HDPlayerPawn{
+	void ConsolidateWeapons(){
+		int sparepowder=countinv("FourMilAmmo");
+		int usablebrass=countinv("HDSpent7mmPickup");
+
+		//misc. maintenance
+		A_TakeInventory("BossJam");
+		if(countinv("ZM66BrokenRound")){
+			A_TakeInventory("ZM66BrokenRound");
+			sparepowder++;
+		}
+		A_TakeInventory("ZM66Heat");
+		A_TakeInventory("ChaingunHeat");
+		A_TakeInventory("BrontornisHeat");
+		A_TakeInventory("HunterSpentShell");
+		A_TakeInventory("SlayerSpentShell1");
+		A_TakeInventory("SlayerSpentShell2");
+		A_TakeInventory("BrontornisSpent");
+		if(countinv("BossSpentChamber")){
+			A_TakeInventory("BossSpentChamber");
+			usablebrass++;
+		}
+		if(countinv("LiberatorSpentChamber")){
+			A_TakeInventory("LiberatorSpentChamber");
+			usablebrass++;
+		}
+
+		//make as many mags and clips as possible to make room for more 7mm
+		if(countinv("SevenMilAmmo")>10){  
+			while(
+				countinv("SevenMilAmmo")>29 &&  
+				!A_JumpIfInventory("LiberatorMag",0,"null")
+			){
+				A_TakeInventory("SevenMilAmmo",30);
+				A_GiveInventory("LiberatorMag");
+			}
+			if(countinv("BossRifle")){
+				while(
+					countinv("SevenMilAmmo")>10 &&  
+					!A_JumpIfInventory("BossClip",0,"null")
+				){
+					A_TakeInventory("SevenMilAmmo",10);
+					A_GiveInventory("BossClip");
+				}
+			}
+		}
+		//reload brass
+		if(
+			usablebrass && sparepowder>=3 &&
+			countinv("LiberatorRifle")+countinv("LiberatorGrenadeRifle")+countinv("BossRifle")>0  
+		){
+			int newbullets=min(
+				usablebrass,
+				sparepowder*0.3,
+				countinv("Backpack")?80:40
+			);
+			A_GiveInventory("SevenMilAmmo",newbullets);
+			//then subtract used supplies
+			A_TakeInventory("HDSpent7mmPickup",newbullets);
+			A_TakeInventory("FourMilAmmo",newbullets*random(2,5));
+		}
+
+		//downtime-only: recharge cells
+
+		//fill up p1
+		//fill up p2
+		//fill up SMG
+
+		//fill up bronto
+		if(!countinv("BrontornisMag")&&countinv("BrontornisRound")){
+			A_TakeInventory("BrontornisRound",1);
+			A_GiveInventory("BrontornisMag");
+		}
+		//just max out the bfg who cares
+		if(countinv("BFGInternalCharge")>6||countinv("BFGChamber")>6){
+			A_GiveInventory("BFGInternalCharge",20);
+			A_GiveInventory("BFGChamber",20);
+		}
+
+		//zm66 and vulc
+		//if zm has less than 10 bullets, reload zm
+		//if vulc has less than 10 bullets, reload vulc - one mag only
+
+		//fill up liberator with whatever mags or spares are present
+		//fill up boss with whatever clips or spares are left
+
+		//fill up shotguns using whatever spares are present
+		//dbs chambers first, then shotguntube
+		//if 24+ left, fill both saddles, else split between saddles
+	}
+}
