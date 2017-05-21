@@ -70,23 +70,23 @@ class WallChunk:HDDebris{
 		super.postbeginplay();
 		scale.x*=randompick(-1,1)*frandom(0.6,1.3);
 		scale.y*=frandom(0.6,1.3);
-		bwallsprite=randompick(0,0,0,1);
+//		bwallsprite=randompick(0,0,0,1);
 		roll=random(0,3)*90;
-		flip=random(1,4);
+		flip=max(random(1,4),1);
 		if(!random(0,9))A_PlaySound("misc/wallchunks");
 		frame=random(0,3);
 	}
 	states{
 	spawn:
-		DUST # 1{
+		DUST A 1{
 			A_SetScale(-scale.x,scale.y);
 			A_SetTics(flip);
 			angle=angle+45*flip;
 			if(pos.z-floorz<1)A_Countdown();
 		}wait;
-		DUST BCD 0;
 	death:
 		---- A 1 A_SetTics(random(10,20)<<3);
+		---- BCD 0;
 		stop;
 	}
 }
@@ -147,6 +147,7 @@ class HDBulletPuff:HDPuff{
 		A_PlaySound("misc/bullethit",0,0.02*stamina*stamina);
 		A_ChangeVelocity(-0.4,0,frandom(0.1,0.4),CVF_RELATIVE);
 		trymove(pos.xy+vel.xy,false);
+		int stm=stamina;
 		for(int i=0;i<stamina;i++){
 			actor ch=spawn(missilename,self.pos,ALLOW_REPLACE);
 			ch.vel=self.vel+(random(-stamina,stamina),random(-stamina,stamina),random(-2,12));
