@@ -78,15 +78,15 @@ class WallChunk:HDDebris{
 	}
 	states{
 	spawn:
-		DUST A 1{
+		DUST # 1{
 			A_SetScale(-scale.x,scale.y);
 			A_SetTics(flip);
 			angle=angle+45*flip;
 			if(pos.z-floorz<1)A_Countdown();
 		}wait;
+		---- BCD 0;
 	death:
 		---- A 1 A_SetTics(random(10,20)<<3);
-		---- BCD 0;
 		stop;
 	}
 }
