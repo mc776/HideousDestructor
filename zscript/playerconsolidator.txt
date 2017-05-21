@@ -173,11 +173,50 @@ extend class HDPlayerPawn{
 			A_TakeInventory("BrontornisRound",1);
 			A_GiveInventory("BrontornisMag");
 		}
-		//just max out the bfg who cares
-		if(countinv("BFGInternalCharge")>6||countinv("BFGChamber")>6){
+
+		//if bfg, max out everything
+		if(
+			countinv("BFG9k")&&(
+				countinv("BFGInternalCharge")>6||
+				countinv("BFGChamber")>6||
+				countinv("HDCellPacks")
+			)&&(
+				countinv("BFGLoaded")||
+				countinv("HDCellPacks")||
+				countinv("HDCellPackEmpty")
+			)
+		){
+			if(!countinv("BFGLoaded")){
+				A_GiveInventory("BFGLoaded");
+				if(countinv("HDCellPackEmpty"))A_TakeInventory("HDCellPackEmpty",1);
+				else A_TakeInventory("HDCellPacks",1);
+			}
 			A_GiveInventory("BFGInternalCharge",20);
 			A_GiveInventory("BFGChamber",20);
+			A_GiveInventory("PlasmaBattery",60);
+			A_GiveInventory("LumberCell",1200);
+			A_GiveInventory("VulcJuice",2100);
+		}else{
+			if(countinv("ThunderBuster")){
+				if(countinv("PlasmaBattery")<10&&countinv("HDCellPacks")){
+					A_GiveInventory("PlasmaBattery",60);
+					A_TakeInventory("HDCellPacks",1);
+				}
+			}
+			if(countinv("Lumberjack")){
+				if(countinv("LumberCell")<400&&countinv("HDCellPacks")){
+					A_GiveInventory("LumberCell",1200);
+					A_TakeInventory("HDCellPacks",1);
+				}
+			}
+			if(countinv("Vulcanette")){
+				if(countinv("VulcJuice")<120&&countinv("HDCellPacks")){
+					A_GiveInventory("VulcJuice",2100);
+					A_TakeInventory("HDCellPacks",1);
+				}
+			}
 		}
+
 
 		//zm66 and vulc
 		//if zm has less than 10 bullets, reload zm
@@ -195,25 +234,8 @@ extend class HDPlayerPawn{
 				A_GiveInventory("VulcLoaded1",50);
 				A_TakeInventory("ZM66RifleMags",1);
 			}
-			if(countinv("VulcJuice")<120&&countinv("HDCellPacks")){
-				A_GiveInventory("VulcJuice",2100);
-				A_TakeInventory("HDCellPacks",1);
-			}
 		}
 
-		//plasma and chainsaw
-		if(countinv("ThunderBuster")){
-			if(countinv("PlasmaBattery")<10&&countinv("HDCellPacks")){
-				A_GiveInventory("PlasmaBattery",60);
-				A_TakeInventory("HDCellPacks",1);
-			}
-		}
-		if(countinv("Lumberjack")){
-			if(countinv("LumberCell")<400&&countinv("HDCellPacks")){
-				A_GiveInventory("LumberCell",1200);
-				A_TakeInventory("HDCellPacks",1);
-			}
-		}
 
 		//fill up liberator with whatever mags or spares are present
 		//fill up boss with whatever clips or spares are left
