@@ -84,6 +84,7 @@ class HDMedikitter:HDWoundFixer{
 	bool useonother;
 	bool usedflesh;
 	int usedpatches;
+	actor usedon;
 	void patchwound(int amt,actor targ){
 		let slf=HDPlayerPawn(targ);
 		if(!slf)return;
@@ -136,6 +137,7 @@ class HDMedikitter:HDWoundFixer{
 		stop;
 	zoom:
 		TNT1 A 1{
+			if(invoker.usedon)A_Log("THIS IS USED");
 			if(invoker.useonother){
 				invoker.useonother=false;
 				A_Print("Using this on yourself.");
@@ -155,7 +157,10 @@ class HDMedikitter:HDWoundFixer{
 				A_Print("Nothing to be done here.\n\nHeal thyself? (press zoom)",2);
 				return resolvestate("nope");
 			}
-			if(c.countinv("IsMoving")>4){
+			if(invoker.usedon && c!=invoker.usedon){
+				c.A_Print(string.format("Get the hell away!\n\n%s is trying to stab you\n\nwith a used syringe!!!",player.getusername()));
+				A_Print("Why are you attacking your teammate\n\nwith used medical equipment!?");
+			}else if(c.countinv("IsMoving")>4){
 				c.A_Print(string.format("Stop squirming!\n\n%s is trying to heal you\n\nnot bugger you...",player.getusername()));
 				A_Print("You'll need them to stay still...");
 				return resolvestate("nope");
@@ -180,6 +185,9 @@ class HDMedikitter:HDWoundFixer{
 			return resolvestate("applythatshit");
 		}goto nope;
 	applythatshit:
+		TNT1 A 0{
+			if(invoker.target)invoker.usedon=invoker.target;
+		}
 		TNT1 A 0 A_JumpIf(getplayerinput(MODINPUT_BUTTONS)&BT_ALTATTACK,"applythathotshit");
 		TNT1 A 0{invoker.usedpatches++;}
 		TNT1 A 0 A_Jump(112,"applythatstaplershit");
@@ -273,7 +281,10 @@ class HDMedikitter:HDWoundFixer{
 		goto nope;
 	patchup:
 		TNT1 A 10;
-		TNT1 A 0{invoker.usedpatches++;}
+		TNT1 A 0{
+			if(!invoker.usedon)invoker.usedon=self;
+			invoker.usedpatches++;
+		}
 		TNT1 A 0 A_Jump(112,"stapler");
 	injector:
 		TNT1 A 0 A_Overlay(3,"flashtampon");
@@ -291,6 +302,7 @@ class HDMedikitter:HDWoundFixer{
 		TNT1 A 10;
 		TNT1 A 10{
 			if(!(self is "HDPlayerPawn"))return;
+			invoker.usedon=self;
 			invoker.usedflesh=true;
 			A_PlaySound("misc/punch",CHAN_WEAPON);
 			A_PlaySound("misc/bulletflesh",CHAN_BODY);
