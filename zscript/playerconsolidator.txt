@@ -89,6 +89,47 @@ extend class HDPlayerPawn{
 		//fill up shotguns using whatever spares are present
 		//dbs chambers first, then shotguntube
 		//if 24+ left, fill both saddles, else split between saddles
+		A_TakeInventory("HunterSpentShell");
+		A_TakeInventory("SlayerSpentShell1");
+		A_TakeInventory("SlayerSpentShell2");
+		if(countinv("HDShellAmmo")){
+			if(countinv("Slayer")){
+				if(!countinv("ShellChamber1")){
+					A_TakeInventory("HDShellAmmo",1);
+					A_GiveInventory("ShellChamber1");
+				}
+				if(countinv("HDShellAmmo")&&!countinv("ShellChamber2")){
+					A_TakeInventory("HDShellAmmo",1);
+					A_GiveInventory("ShellChamber2");
+				}
+			}
+			if(countinv("Hunter")&&countinv("HDShellAmmo")){
+				if(!countinv("ShotgunChamber")){
+					A_TakeInventory("HDShellAmmo",1);
+					A_GiveInventory("ShotgunChamber");
+				}
+				int gs=min(7-countinv("ShotgunTube"),countinv("HDShellAmmo"));
+				if(gs){
+					A_GiveInventory("ShotgunTube",gs);
+					A_TakeInventory("HDShellAmmo",gs);
+				}
+			}
+		}
+		if(countinv("HDShellAmmo")){
+			int g1=0;int g2=0;
+			int hsa=countinv("HDShellAmmo");
+			if(countinv("Hunter"))g1=12-countinv("ShotgunQuickAmmo");
+			if(countinv("Slayer"))g2=12-countinv("ShotgunQuickAmmo2");
+			int gt=g1+g2;
+			if(gt>hsa){
+				hsa*=0.5;
+				g1=min(hsa,g1);g2=min(hsa,g2);
+				gt=g1+g2;
+			}
+			if(g1)A_GiveInventory("ShotgunQuickAmmo",g1);
+			if(g2)A_GiveInventory("ShotgunQuickAmmo2",g2);
+			if(gt)A_TakeInventory("HDShellAmmo",gt);
+		}
 
 		//reload rocket weapons
 		//blooper > zm66 > liberator > RL ONLY if no HEAT loaded
