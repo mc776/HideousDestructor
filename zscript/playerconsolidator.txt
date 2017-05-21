@@ -182,6 +182,38 @@ extend class HDPlayerPawn{
 		//zm66 and vulc
 		//if zm has less than 10 bullets, reload zm
 		//if vulc has less than 10 bullets, reload vulc - one mag only
+		int inzedmag=countinv("ZM66Loaded");
+		if(inzedmag<10&&countinv("ZM66RifleMags") 
+			&&(countinv("ZM66Rifle")||countinv("ZM66SemiRifle")||countinv("ZM66GrenadeRifle"))
+		){
+			A_GiveInventory("ZM66Loaded",50);
+			A_TakeInventory("ZM66RifleMags",1);
+		}
+		if(countinv("Vulcanette")){
+			inzedmag=countinv("VulcLoaded1");
+			if(inzedmag<10&&countinv("ZM66RifleMags")){
+				A_GiveInventory("VulcLoaded1",50);
+				A_TakeInventory("ZM66RifleMags",1);
+			}
+			if(countinv("VulcJuice")<120&&countinv("HDCellPacks")){
+				A_GiveInventory("VulcJuice",2100);
+				A_TakeInventory("HDCellPacks",1);
+			}
+		}
+
+		//plasma and chainsaw
+		if(countinv("ThunderBuster")){
+			if(countinv("PlasmaBattery")<10&&countinv("HDCellPacks")){
+				A_GiveInventory("PlasmaBattery",60);
+				A_TakeInventory("HDCellPacks",1);
+			}
+		}
+		if(countinv("Lumberjack")){
+			if(countinv("LumberCell")<400&&countinv("HDCellPacks")){
+				A_GiveInventory("LumberCell",1200);
+				A_TakeInventory("HDCellPacks",1);
+			}
+		}
 
 		//fill up liberator with whatever mags or spares are present
 		//fill up boss with whatever clips or spares are left
