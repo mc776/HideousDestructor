@@ -69,7 +69,7 @@ extend class HDPlayerPawn{
 		//fill up SMG
 
 		//fill up bronto
-		if(!countinv("BrontornisMag")&&countinv("BrontornisRound")){
+		if(countinv("Brontornis")&&!countinv("BrontornisMag")&&countinv("BrontornisRound")){
 			A_TakeInventory("BrontornisRound",1);
 			A_GiveInventory("BrontornisMag");
 		}
@@ -89,5 +89,29 @@ extend class HDPlayerPawn{
 		//fill up shotguns using whatever spares are present
 		//dbs chambers first, then shotguntube
 		//if 24+ left, fill both saddles, else split between saddles
+
+		//reload rocket weapons
+		//blooper > zm66 > liberator > RL ONLY if no HEAT loaded
+		if(countinv("Blooper")&&!countinv("BloopChamber")&&countinv("HDRocketAmmo")){
+			A_TakeInventory("HDRocketAmmo",1);
+			A_GiveInventory("BloopChamber");
+		}
+		if(countinv("ZM66GrenadeRifle")&&!countinv("ZM66GLoaded")&&countinv("HDRocketAmmo")){
+			A_TakeInventory("HDRocketAmmo",1);
+			A_GiveInventory("ZM66GLoaded");
+		}
+		if(countinv("LiberatorGrenadeRifle")&&!countinv("LiberatorGrenadeChamber")&&countinv("HDRocketAmmo")){
+			A_TakeInventory("HDRocketAmmo",1);
+			A_GiveInventory("LiberatorGrenadeChamber");
+		}
+		if(countinv("RocquetteLauncher")&&!countinv("HEATLoaded")){
+			while(countinv("RocketMag")<6&&countinv("HDRocketAmmo")){
+				A_TakeInventory("HDRocketAmmo",1);
+				A_GiveInventory("RocketMag");
+			}
+		}
 	}
 }
+
+
+
