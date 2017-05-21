@@ -473,15 +473,6 @@ extend class HDPlayerPawn{
 		A_TakeInventory("RegenBers");
 		A_TakeInventory("IsSupported");
 
-		if (countinv("DERPDEAD")&&!countinv("DERPUsable")){
-			A_TakeInventory("DERPDEAD");
-			A_GiveInventory("DERPUsable");
-		}
-		if (countinv("HERPDEAD")&&!countinv("HERPUsable")){
-			A_TakeInventory("HERPDEAD");
-			A_GiveInventory("HERPUsable");
-		}
-
 		A_GiveInventory("JustStarted",1);
 		A_GiveInventory("PowerFrightener",1);
 
