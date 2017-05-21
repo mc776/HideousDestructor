@@ -4,6 +4,7 @@ extend class HDPlayerPawn{
 	void ConsolidateWeapons(){
 		int sparepowder=countinv("FourMilAmmo");
 		int usablebrass=countinv("HDSpent7mmPickup");
+		bool backpack=countinv("Backpack");
 
 		//misc. maintenance
 		A_TakeInventory("BossJam");
@@ -46,7 +47,7 @@ extend class HDPlayerPawn{
 				}
 			}
 		}
-		//reload brass
+		//downtime-only: reload brass
 		if(
 			usablebrass && sparepowder>=3 &&
 			countinv("LiberatorRifle")+countinv("LiberatorGrenadeRifle")+countinv("BossRifle")>0  
@@ -54,7 +55,7 @@ extend class HDPlayerPawn{
 			int newbullets=min(
 				usablebrass,
 				sparepowder*0.3,
-				countinv("Backpack")?80:40
+				backpack?80:40
 			);
 			A_GiveInventory("SevenMilAmmo",newbullets);
 			//then subtract used supplies
@@ -184,6 +185,76 @@ extend class HDPlayerPawn{
 
 		//fill up liberator with whatever mags or spares are present
 		//fill up boss with whatever clips or spares are left
+		if(
+			countinv("SevenMilAmmo")||countinv("LiberatorMag")||countinv("BossClip")||
+			countinv("LiberatorRifle")||countinv("LiberatorGrenadeRifle")||countinv("BossRifle")
+		){
+			int totalspare=
+				countinv("LiberatorMag")*30+
+				countinv("BossClip")*10+
+				countinv("SevenMilAmmo");
+			if(totalspare){
+				bool boss=countinv("BossRifle");
+				bool liberator=countinv("LiberatorGrenadeRifle");
+				if(countinv("LiberatorRifle"))liberator=true;
+				int originalmags=countinv("LiberatorMag");
+				int originalclips=countinv("BossClip");
+				int toload=totalspare;
+
+				if(boss){
+					if(!countinv("BossChamber")){
+						A_GiveInventory("BossChamber");
+						totalspare--;
+					}
+					toload=min(10-countinv("BossMag"),totalspare);
+					if(toload){
+						A_GiveInventory("BossMag",toload);
+						totalspare-=toload;
+					}
+				}
+				if(totalspare && liberator){
+					if(!countinv("LiberatorChamber")){
+						A_GiveInventory("LiberatorChamber");
+						totalspare--;
+					}
+					toload=min(30-countinv("LiberatorLoaded"),totalspare);
+					if(toload){
+						A_GiveInventory("LiberatorLoaded",toload);
+						totalspare--;
+					}
+				}
+
+				//load original clips
+				A_TakeInventory("BossClip");
+				while(totalspare>=10 && countinv("BossClip")<originalclips){
+					A_GiveInventory("BossClip");
+					totalspare-=10;
+				}
+
+				//load original mags
+				A_TakeInventory("LiberatorMag");
+				int maxmags=backpack?12:5;
+				while(totalspare>=30 && countinv("LiberatorMag")<originalmags){
+					A_GiveInventory("LiberatorMag");
+					totalspare-=30;
+				}
+
+				//load more clips or mags
+				if(player.readyweapon is "BossRifle" || !liberator){
+					int maxclips=backpack?30:12;
+					while(totalspare>=10 && countinv("BossClip")<maxclips){
+						A_GiveInventory("BossClip");
+						totalspare-=10;
+					}
+				}else while(totalspare>=30 && countinv("LiberatorMag")<originalmags){
+					A_GiveInventory("LiberatorMag");
+					totalspare-=30;
+				}
+
+				A_SetInventory("SevenMilAmmo",totalspare);
+			}
+		}
+
 
 		//fill up shotguns using whatever spares are present
 		//dbs chambers first, then shotguntube
