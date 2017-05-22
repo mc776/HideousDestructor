@@ -73,32 +73,12 @@ actor DropMisc : ActionItem
 		fail
 	}
 }
-actor DropMeds : ActionItem
-{
-	states
-	{
+actor DropMeds:ActionItem{
+	states{
 	pickup:
-		TNT1 A 0 A_JumpIfInventory("PortableBerserkPack",4,1)
-		goto pickup2
-		TNT1 A 0 A_TakeInventory("PortableBerserkPack",4)
-		TNT1 A 0 A_SpawnItemEx("PortableBerserkPackBigPickup",random(8,12),random(-4,4),24,random(3,5),0,0,random(4,-4))
-		loop
-	pickup2:
-		TNT1 A 0 A_JumpIfInventory("PortableBerserkPack",1,1)
-		goto pickup3
-		TNT1 A 0 A_TakeInventory("PortableBerserkPack",1)
-		TNT1 A 0 A_SpawnItemEx("PortableBerserkPack",random(8,12),random(-4,4),24,random(3,5),0,0,random(4,-4))
-		loop
-	pickup3:
-		TNT1 A 0{
-			A_DropInventory("PortableMedikit",8);
-		}goto pickup5 //pickup4 used to be also for portablemedikit
-	pickup5:
-		TNT1 A 0 A_JumpIfInventory("PortableStimpack",1,1)
-		goto pickup6
-		TNT1 A 0 A_TakeInventory("PortableStimpack",1)
-		TNT1 A 0 A_SpawnItemEx("PortableStimpack",random(8,12),random(0,-12),24,random(3,6),0,0,random(0,12))
-		loop
+		TNT1 A 0 A_DropInventory("PortableBerserkPack",8)
+		TNT1 A 0 A_DropInventory("PortableMedikit",8)
+		TNT1 A 0 A_DropInventory("PortableStimpack",8)
 	pickup6:
 		TNT1 A 0 A_JumpIfInventory("MedDeployer",1,1)
 		goto pickup7
