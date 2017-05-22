@@ -50,7 +50,7 @@ class HDStimpacker:HDWoundFixer{
 			if(!countinv(invoker.inventorytype)){
 				A_Print(invoker.noerror);
 				A_SelectWeapon("Ring");
-			}else A_Print("Stimpacks help reduce\nbleeding temporarily.\n\n\Press altfire to use on someone else.\n\n\cgDO NOT OVERDOSE.");
+			}else A_Print("\cd<<< \cjSTIMPACK \cd>>>\n\n\nStimpacks help reduce\nbleeding temporarily.\n\n\Press altfire to use on someone else.\n\n\cgDO NOT OVERDOSE.");
 		}
 		goto super::select;
 	fire:
@@ -181,7 +181,7 @@ class HDBerserker:HDStimpacker{
 			if(!countinv(invoker.inventorytype)){
 				A_Print(invoker.noerror);
 				A_SelectWeapon("Ring");
-			}else A_Print("Berserk packs help increase\ncombat capabilities temporarily.\n\n\Press altfire to use on someone else.");
+			}else A_Print("\cr*** \caBERSERK \cr***\n\n\nBerserk packs help increase\ncombat capabilities temporarily.\n\n\Press altfire to use on someone else.");
 		}
 		goto HDWoundFixer::select;
 	}

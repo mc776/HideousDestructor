@@ -103,8 +103,8 @@ class HDMedikitter:HDWoundFixer{
 		}
 		TNT1 A 10{
 			if(!getcvar("hd_helptext")) return;
-			if(invoker.checkwoundcount())A_Print("Press and hold Fire\n\nto try to not die.",5);
-			else A_Print("Use this to patch yourself up.\n\n\n\nYou're fine now, so go\n\ndo something else.\n\n\n\n(Altfire deploys that nasty accelerated healing thing.\nwhile fire mode runs a diagnostic.)",5);
+			if(invoker.checkwoundcount())A_Print("\cg+++ \cjMEDIKIT \cg+++\n\n\nPress and hold Fire\n\nto try to not die.",5);
+			else A_Print("\cg+++ \cjMEDIKIT \cg+++\n\n\nUse this to patch yourself up.\n\n\n\nYou're fine now, so go\n\ndo something else.\n\n\n\n(Altfire deploys that nasty accelerated healing thing.\nwhile fire mode runs a diagnostic.)",5);
 		}
 		goto super::select;
 	reload:
@@ -395,8 +395,8 @@ class SelfBandage:HDWoundFixer{
 	select:
 		TNT1 A 0{
 			if(!getcvar("hd_helptext")) return;
-			if(invoker.checkwoundcount())A_Print("Press and hold Fire\n\nwhile standing still\n\nto try to not die.",5);
-			else A_Print("Use this to bandage yourself\n\nwhen you have no meds.\n\n\n\nYou're fine now, so go\n\ndo something else.\n\n\n\n(Altfire can still be used to \n\nbandage someone else, of course.)",5);
+			if(invoker.checkwoundcount())A_Print("\cu--- \ccBANDAGING \cu---\n\n\nPress and hold Fire\n\nwhile standing still\n\nto try to not die.",5);
+			else A_Print("\cu--- \ccBANDAGING \cu---\n\n\nUse this to bandage yourself\n\nwhen you have no meds.\n\n\n\nYou're fine now, so go\n\ndo something else.\n\n\n\n(Altfire can still be used to \n\nbandage someone else, of course.)",5);
 		}
 		goto super::select;
 	silentselect:
