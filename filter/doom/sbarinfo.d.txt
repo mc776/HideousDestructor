@@ -687,20 +687,25 @@ ininventory not wipedout
 	//lives
 	drawnumber 3, HUDFONT_DOOM, white, "HDLives", whennotzero,alignment(right), 180, -44, brick,3,gold,5;
 
-	InInventory HDBackpack, 1 {drawimage "BPAKA0",25,-51;}
 
 	//armour
 	InInventory StoredArmour,1{
-		drawimage "ARMER0",33,-44;
-		InInventory StoredArmour,120{drawimage "STAMBAR",44,-56;}
-		InInventory StoredArmour,90{drawimage "STAMBAR",44,-53;}
-		InInventory StoredArmour,60{drawimage "STAMBAR",44,-50;}
-		InInventory StoredArmour,30{drawimage "STAMBAR",44,-47;}
-		drawimage "STAMBAR",44,-44;
+		InInventory GreenArmourStored,1{drawimage "ARMSA0",45,-54;}
+		InInventory BlueArmourStored,1{drawimage "ARMCA0",45,-54;}
+		InInventory BlackArmourStored,1{drawimage "ARMEA0",45,-54;}
+
+		InInventory StoredArmour,120{drawimage "STAMBAR",50,-72;}
+		InInventory StoredArmour,90{drawimage "STAMBAR",50,-69;}
+		InInventory StoredArmour,60{drawimage "STAMBAR",50,-66;}
+		InInventory StoredArmour,30{drawimage "STAMBAR",50,-63;}
+		drawimage "STAMBAR",50,-60;
 	}
-	InInventory GreenArmour, 1 {drawbar "ARMSA0","ARMER0", armor(160), vertical, 30, -48;}
-	InInventory BlueArmour, 1 {drawbar "ARMCA0","ARMER0", armor(160), vertical, 30, -48;}
-	InInventory BlackArmour, 1 {drawbar "ARMEA0","ARMER0", armor(160), vertical, 30, -48;}
+
+	InInventory HDBackpack, 1 {drawimage "BPAKA0",25,-51;}
+
+	InInventory GreenArmour,1{drawbar "ARMSA0","ARMER0",GreenArmour,vertical,30,-48;}
+	InInventory BlueArmour,1{drawbar "ARMCA0","ARMER1",BlueArmour,vertical,30,-48;}
+	InInventory BlackArmour,1{drawbar "ARMEA0","ARMER2",BlackArmour,vertical,30,-48;}
 
 	//radsuit
 	drawswitchableimage PowerIronFeet,"nullimage","SUITC0",30,-58;
