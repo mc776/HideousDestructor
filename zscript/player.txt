@@ -41,6 +41,9 @@ class HDPlayerPawn:PlayerPawn{
 		lastheight=height;
 		beatcap=35;beatmax=35;
 		feetangle=angle;
+		if(!getcvar("r_drawplayersprites")||getcvar("hd_hudsprite"))
+			A_GiveInventory("HUDSprite");
+			else A_TakeInventory("HUDSprite");
 	}
 	states{
 	spawn:
@@ -360,6 +363,9 @@ class HDPlayerPawn:PlayerPawn{
 		if(input & BT_USE){
 			bpickup=true;
 			A_GiveInventory("GimmeHud");
+			if(!getcvar("r_drawplayersprites")||getcvar("hd_hudsprite"))
+				A_GiveInventory("HUDSprite");
+				else A_TakeInventory("HUDSprite");
 			if(!(oldinput & BT_USE)){
 				hasgrabbed=false;
 			}
