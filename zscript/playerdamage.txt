@@ -21,6 +21,13 @@ extend class HDPlayerPawn{
 			A_TakeInventory("BasicArmor");
 		}
 
+		//abort if zero team damage, otherwise save factor for wounds and burns
+		double tmd=1.;
+		if(source is "PlayerPawn" && source.designatedteam==self.designatedteam){
+			if(!teamdamage) return 0;
+			else tmd=teamdamage;
+		}
+
 		//factor in cheats and skills
 		if(!(flags&DMG_FORCED)){
 			if(player.cheats&CF_GODMODE2 || player.cheats&CF_GODMODE || binvulnerable || !bshootable) return 0;
@@ -192,7 +199,10 @@ extend class HDPlayerPawn{
 		//abort if damage is less than zero
 		if(damage<0) return 0;
 
-		//add to wounds and burns
+		//add to wounds and burns after team damage multiplier
+		//(super.damagemobj() takes care of the actual damage amount)
+		towound*=tmd;
+		toburn*=tmd;
 		if(towound){
 			lastthingthatwoundedyou=source;
 			A_GiveInventory("WoundCount",towound);
@@ -220,7 +230,7 @@ extend class HDPlayerPawn{
 			source,
 			damage,
 			mod,
-			flags,//|DMG_NO_ARMOR,
+			flags,
 			angle
 		);
 	}
