@@ -28,6 +28,8 @@ class PortableMedikitPickup:HDUPK replaces PortableMedikit{
 	default{
 		activesound "weapons/pocket";
 		hdupk.pickuptype "PortableMedikit";
+		hdupk.pickupscale 0.4,0.4;
+		hdupk.bigpickupscale 0.51,0.39;
 		accuracy 2;
 	}
 	override void postbeginplay(){
@@ -35,12 +37,6 @@ class PortableMedikitPickup:HDUPK replaces PortableMedikit{
 		if(vel==(0,0,0)){
 			stamina=1;
 			A_GiveInventory("PortableStimpack",1);
-		}
-		if(stamina>1){
-			scale=(0.51,0.39);
-		}else{
-			stamina=1;
-			scale=(0.4,0.4);
 		}
 	}
 	states{
@@ -66,7 +62,7 @@ class PortableMedikitPickup:HDUPK replaces PortableMedikit{
 class HDWoundFixer:HDWeapon{
 	default{
 		+weapon.wimpy_weapon +weapon.no_auto_switch +weapon.cheatnotweapon
-		weapon.slotnumber 9;weapon.selectionorder 999;
+		weapon.selectionorder 999;
 	}
 	int checkwoundcount(bool checkunstable=false){
 		let slf=HDPlayerPawn(owner);
@@ -80,6 +76,7 @@ class HDWoundFixer:HDWeapon{
 class HDMedikitter:HDWoundFixer{
 	default{
 		+inventory.untossable
+		weapon.slotnumber 9;
 	}
 	bool useonother;
 	bool usedflesh;
@@ -380,7 +377,7 @@ class SecondFleshBeast:IdleDummy{
 
 class SelfBandage:HDWoundFixer{
 	default{
-		weapon.slotnumber 9; weapon.selectionorder 999;
+		weapon.slotnumber 9;
 	}
 	void patchwound(int amt,actor targ){
 		let slf=HDPlayerPawn(targ);

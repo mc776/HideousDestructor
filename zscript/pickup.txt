@@ -46,14 +46,23 @@ class userpickerupper:hdactor{
 
 /*
  special uses:
- painsound: pickup sound
+ activesound: pickup sound
  hdupk.pickuptype: default type of inventory item it replaces
+ hdupk.[big]pickupscale: default scale and bloated scale, as 2 numbers
  accuracy: max # of pickuptype a single unit can store
 */
 class HDUPK:HDActor{
 	//do NOT use this for pickupable casings, 1x1 is intolerably pixelbitchy!
 	name pickuptype;
 	property pickuptype:pickuptype;
+	double pickupscale1;
+	double pickupscale2;
+	double bigpickupscale1;
+	double bigpickupscale2;
+	vector2 pickupscale;
+	vector2 bigpickupscale;
+	property pickupscale:pickupscale1,pickupscale2;
+	property bigpickupscale:bigpickupscale1,bigpickupscale2;
 	default{
 		+solid
 		height 8;radius 8;
@@ -66,6 +75,15 @@ class HDUPK:HDActor{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
+
+		if(!pickupscale1)pickupscale1=scale.x;
+		if(!pickupscale2)pickupscale2=pickupscale1;
+		pickupscale=(pickupscale1,pickupscale2);
+
+		if(!bigpickupscale1)bigpickupscale1=pickupscale1;
+		if(!bigpickupscale2)bigpickupscale2=pickupscale2;
+		bigpickupscale=(bigpickupscale1,bigpickupscale2);
+
 		if(!accuracy) return;
 		int doublemax=2*accuracy;
 		while(stamina>accuracy){
@@ -80,10 +98,10 @@ class HDUPK:HDActor{
 			a.vel=vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
 		}
 		if(stamina>1){
-			scale=(0.51,0.39);
+			scale=bigpickupscale;
 		}else{
 			stamina=1;
-			scale=(0.4,0.4);
+			scale=pickupscale;
 		}
 	}
 	virtual void A_HDUPKGive(){
@@ -101,7 +119,7 @@ class HDUPK:HDActor{
 		A_PlaySound(activesound);
 		stamina-=increase;
 		if(stamina){ //only picked some up
-			scale=(0.4,0.4);
+			if(stamina>1)scale=bigpickupscale;else scale=pickupscale;
 			setstatelabel("spawn");
 			return;
 		}
