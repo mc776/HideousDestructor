@@ -1,64 +1,6 @@
-
-
 //-------------------------------------------------
-//    Usable items
+// Usable items
 //-------------------------------------------------
-
-actor PortableBerserkPack:HDPickup{
-	inventory.amount 1
-	inventory.maxamount 8
-	inventory.interhubamount 8
-	inventory.icon PPSTA0
-	inventory.pickupsound "misc/p_pkup"
-	inventory.pickupmessage "Picked up a berserk pack."
-	states
-	{
-	spawn:
-		TNT1 A 1
-		TNT1 A 0 A_SpawnItemEx("PortableBerserkPackPickup",0,0,0,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
-		stop
-	use:
-		TNT1 A 0 A_JumpIfInventory("UsingMeds",1,2)
-		TNT1 A 0 ACS_NamedExecuteAlways("UseMeds", 0, 3)
-		stop
-		TNT1 A 0
-		fail
-	}
-}
-actor PortableBerserkPackPickup:HDUPK{
-	xscale 0.32 yscale 0.37
-	states
-	{
-	spawn:
-		PSTR A -1 A_Stop
-	give:
-		"----" A 0 A_JumpIfInTargetInventory("PortableBerserkPack",0,"spawn")
-		"----" A 0 A_GiveToTarget("PortableBerserkPack",1)
-		"----" A 0 A_PlaySound("weapons/pocket")
-		stop
-	}
-}
-actor PortableBerserkPackBigPickup:HDUPK replaces Berserk{
-	xscale 0.42 yscale 0.36
-	states
-	{
-	spawn:
-		PSTR A 0 A_Stop
-		"----" A 0 A_JumpIfInventory("Clip",1,"spawn2")
-		"----" A 0 A_GiveInventory("Clip",1)
-		"----" A 0 A_GiveInventory("PortableBerserkPack",4)
-		goto spawn2
-	give:
-		"----" A 0 A_JumpIfInTargetInventory("PortableBerserkPack",0,"spawn")
-		"----" A 0 A_Jump(256,"giveloop")
-	giveloop:
-		"----" A 0 A_GiveToTarget("PortableBerserkPack",1)
-		"----" A 0 A_TakeInventory("PortableBerserkPack",1)
-		"----" A 0 A_JumpIfInventory("PortableBerserkPack",1,"give")
-		"----" A 0 A_PlaySound("weapons/pocket")
-		stop
-	}
-}
 actor PortableHealingItem : RandomSpawner replaces Stimpack
 {
 	dropitem "PortableStimpack" 256 4
