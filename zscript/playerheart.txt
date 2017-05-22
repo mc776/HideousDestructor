@@ -119,7 +119,7 @@ extend class HDPlayerPawn{
 			if(countinv("PowerStrength")) beatmax=clamp(beatmax,4,14);
 			else beatmax=clamp(beatmax,HDCONST_MINHEARTTICS,35);
 
-			if(beatmax<8)DamageMobj(self,self,1,"internal");
+			if(beatmax<HDCONST_MINHEARTTICS+1)DamageMobj(self,self,1,"internal");
 			else{
 				if(health<100-aggravateddamage-burncount-oldwoundcount-unstablewoundcount){
 					if(random(1,30)+countinv("IsMoving")<beatmax)healthing(1);
@@ -144,15 +144,19 @@ extend class HDPlayerPawn{
 			if(stimcount<1 && bloodpressure>0)bloodpressure--;
 
 			//don't go negatives
+			if(regenblues<0)regenblues=0;
 			if(woundcount<0)woundcount=0;
 			if(unstablewoundcount<0)unstablewoundcount=0;
 			if(burncount<0)burncount=0;
 			if(aggravateddamage<0)aggravateddamage=0;
 
 			//magical healing stops imminent danger first
-			if(regenblues>0 && unstablewoundcount+woundcount>0){
-				if(woundcount)woundcount--;else unstablewoundcount--;
-				regenblues-=2;
+			if(regenblues){
+				if(unstablewoundcount>0||woundcount>0){
+					if(woundcount)woundcount--;else unstablewoundcount--;
+					regenblues-=2;
+				}
+				beatcap=max(beatcap,HDCONST_MINHEARTTICS+1);
 			}
 
 			//apply stims
@@ -165,13 +169,30 @@ extend class HDPlayerPawn{
 				//recovering heart rate
 				if(beatmax<beatcap) beatmax++;
 				if(bloodpressure>0)bloodpressure--;
-				if(regenblues>0 && oldwoundcount+burncount+aggravateddamage>0){
+				if(regenblues>0 && (oldwoundcount>0||burncount>0||aggravateddamage>0)){
 					oldwoundcount-=2;burncount-=2;aggravateddamage--;
 					regenblues--;
 				}
 			}
 			if(beatcounter%12==0){	//every 12 beats
 				if(stimcount>0)stimcount--;
+
+				//twitchy zerk
+				if(regenbers>0 && !countinv("IsMoving")){
+					if(floorz>=pos.z)A_ChangeVelocity(frandom(-2,3),frandom(-2,2),1,CVF_RELATIVE);
+					muzzledrift+=(random(-4,4),random(-4,4));
+					if(!random(0,2)){
+						int stupid=random(1,100);
+						if(stupid<30)A_PlaySound("*grunt",CHAN_VOICE);
+						else if(stupid<50)A_PlaySound("*pain",CHAN_VOICE);
+						else if(stupid<70)A_PlaySound("*death",CHAN_VOICE);
+						else if(stupid<90)A_PlaySound("*xdeath",CHAN_VOICE);
+						else if(stupid<100){
+							A_PlaySound("*taunt",CHAN_VOICE);
+							A_AlertMonsters();
+						}
+					}
+				}
 			}
 			if(beatcounter%20==0){	//every 20 beats
 				beatcap=clamp(beatcap+8,1,35);

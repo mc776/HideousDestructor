@@ -65,10 +65,9 @@ class HDWoundFixer:HDWeapon{
 		weapon.selectionorder 999;
 	}
 	int checkwoundcount(bool checkunstable=false){
-		let slf=HDPlayerPawn(owner);
-		if(slf){
-			if(checkunstable)return slf.woundcount+slf.unstablewoundcount;
-			else return slf.woundcount;
+		if(onr){
+			if(checkunstable)return onr.woundcount+onr.unstablewoundcount;
+			else return onr.woundcount;
 		}
 		return 0;
 	}

@@ -8,15 +8,14 @@ class HDPistolSelector:HDWeapon{
 		weapon.slotnumber 2;weapon.selectionorder 999;
 	}
 	states{
-	select:
+	ready:
 		TNT1 A 0{
-			let slf=HDPlayerPawn(self);
-			if(slf)slf.PistolConsolidator();
+			if(invoker.onr)invoker.onr.PistolConsolidator();
 			if(countinv("HDPistol"))A_SelectWeapon("HDPistol");
 			else if(countinv("HDSMG"))A_SelectWeapon("HDSMG");
 			else A_SelectWeapon("Ring");
 		}
-		goto super::select;
+		goto super::ready;
 	}
 }
 extend class HDPlayerPawn{

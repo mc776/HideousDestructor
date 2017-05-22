@@ -7,6 +7,7 @@ class HDWeapon:Weapon{
 	int barrellength;
 	int barrelwidth;
 	int barreldepth;
+	hdplayerpawn onr;
 	property GunDimensions: gunmass,barrellength,barrelwidth,barreldepth;
 	default{
 		+weapon.ammo_optional +weapon.alt_ammo_optional +weapon.noalert +weapon.noautoaim
@@ -38,6 +39,9 @@ class HDWeapon:Weapon{
 			A_TakeInventory("IsWeaponReady");
 			A_GiveInventory("WeaponBusy");
 			A_SetCrosshair(21);
+
+			invoker.onr=HDPlayerPawn(self);
+
 			return resolvestate("select0");
 		}
 	select0:
