@@ -85,16 +85,10 @@ class HDUPK:HDActor{
 		bigpickupscale=(bigpickupscale1,bigpickupscale2);
 
 		if(!accuracy) return;
-		int doublemax=2*accuracy;
 		while(stamina>accuracy){
 			actor a=spawn(getclassname(),pos,ALLOW_REPLACE);
-			if(stamina>=doublemax){
-				a.stamina=accuracy;
-				stamina-=accuracy;
-			}else{
-				a.stamina=1;
-				stamina--;
-			}
+			a.stamina=accuracy;
+			stamina-=accuracy;
 			a.vel=vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
 		}
 		if(stamina>1){
