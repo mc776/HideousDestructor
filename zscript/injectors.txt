@@ -48,9 +48,9 @@ class HDStimpacker:HDWoundFixer{
 	select:
 		TNT1 A 0{
 			if(!countinv(invoker.inventorytype)){
-				A_Print(invoker.noerror);
+				if(getcvar("hd_helptext"))A_Print(invoker.noerror);
 				A_SelectWeapon("Ring");
-			}else A_Print("\cd<<< \cjSTIMPACK \cd>>>\n\n\nStimpacks help reduce\nbleeding temporarily.\n\n\Press altfire to use on someone else.\n\n\cgDO NOT OVERDOSE.");
+			}else if(getcvar("hd_helptext"))A_Print("\cd<<< \cjSTIMPACK \cd>>>\c-\n\n\nStimpacks help reduce\nbleeding temporarily.\n\n\Press altfire to use on someone else.\n\n\cgDO NOT OVERDOSE.");
 		}
 		goto super::select;
 	fire:
@@ -58,7 +58,7 @@ class HDStimpacker:HDWoundFixer{
 		TNT1 A 1;
 		TNT1 A 0{
 			if(!countinv(invoker.inventorytype)){
-				A_Print(invoker.noerror);
+				if(getcvar("hd_helptext"))A_Print(invoker.noerror);
 				A_SelectWeapon("Ring");
 				A_Refire("nope");
 			}else if(pitch<60){
@@ -92,16 +92,16 @@ class HDStimpacker:HDWoundFixer{
 			let c=HDPlayerPawn(a.tracer);
 			a.destroy();
 			if(!c){
-				A_Print("Nothing to be done here.\n\nStimulate thyself? (press fire)",2);
+				if(getcvar("hd_helptext"))A_Print("Nothing to be done here.\n\nStimulate thyself? (press fire)",2);
 				return resolvestate("nope");
 			}
 			if(c.countinv("IsMoving")>4){
 				if(c.stimcount){
-					c.A_Print(string.format("Run away!!!\n\n%s is trying to overdose you\n\n(and possibly bugger you)...",player.getusername()));
-					A_Print("They seem a bit fidgety...");
+					if(c.getcvar("hd_helptext"))c.A_Print(string.format("Run away!!!\n\n%s is trying to overdose you\n\n(and possibly bugger you)...",player.getusername()));
+					if(getcvar("hd_helptext"))A_Print("They seem a bit fidgety...");
 				}else{
-					c.A_Print(string.format("Stop squirming!\n\n%s only wants to\n\ngive you some drugs...",player.getusername()));
-					A_Print("You'll need them to stay still...");
+					if(c.getcvar("hd_helptext"))c.A_Print(string.format("Stop squirming!\n\n%s only wants to\n\ngive you some drugs...",player.getusername()));
+					if(getcvar("hd_helptext"))A_Print("You'll need them to stay still...");
 				}
 				return resolvestate("nope");
 			}
@@ -179,9 +179,9 @@ class HDBerserker:HDStimpacker{
 	select:
 		TNT1 A 0{
 			if(!countinv(invoker.inventorytype)){
-				A_Print(invoker.noerror);
+				if(getcvar("hd_helptext"))A_Print(invoker.noerror);
 				A_SelectWeapon("Ring");
-			}else A_Print("\cr*** \caBERSERK \cr***\n\n\nBerserk packs help increase\ncombat capabilities temporarily.\n\n\Press altfire to use on someone else.");
+			}else if(getcvar("hd_helptext"))A_Print("\cr*** \caBERSERK \cr***\c-\n\n\nBerserk packs help increase\ncombat capabilities temporarily.\n\n\Press altfire to use on someone else.");
 		}
 		goto HDWoundFixer::select;
 	}
@@ -250,9 +250,9 @@ class HDBlueBottler:HDWoundFixer{
 	select:
 		TNT1 A 0{
 			if(!countinv("BluePotion")){
-				A_Print("No potion.");
+				if(getcvar("hd_helptext"))A_Print("No potion.");
 				A_SelectWeapon("Ring");
-			}else A_Print("\ct\(\(\( \cnPOTION \ct\)\)\)\n\n\nNot made\nby human hands.\n\nBeware.");
+			}else if(getcvar("hd_helptext"))A_Print("\ct\(\(\( \cnPOTION \ct\)\)\)\c-\n\n\nNot made\nby human hands.\n\nBeware.");
 		}
 		goto super::select;
 	fire:
@@ -260,7 +260,7 @@ class HDBlueBottler:HDWoundFixer{
 		TNT1 A 1;
 		TNT1 A 0{
 			if(!countinv("BluePotion")){
-				A_Print("No potion.");
+				if(getcvar("hd_helptext"))A_Print("No potion.");
 				A_SelectWeapon("Ring");
 				A_Refire("nope");
 			}else if(pitch>-60){
