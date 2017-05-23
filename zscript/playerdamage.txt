@@ -213,7 +213,6 @@ extend class HDPlayerPawn{
 		//stun the player randomly
 		if(damage>60 || (!random(0,5) && damage>20)){    
 			stunned+=damage;
-			A_GiveInventory("stuncount",damage);
 		}
 
 		if(hd_debug){
@@ -235,28 +234,32 @@ extend class HDPlayerPawn{
 		);
 	}
 	states{
+	pain.yokai:
+		---- A 0{
+			beatmax-=random(1,3);
+			bloodpressure+=1;
+		}
 	pain.bleedout:
 	pain.invisiblebleedout:
 	pain.internal:
-		"----" A 0{
+		---- A 0{
 			if(random(1,128)==1){A_GiveInventory("LethalDamage",1);}
-			A_GiveInventory("Fatigue",2);
+			if(beatcap>20)beatmax-=-random(1,2);
 			if(health<40){A_GiveInventory("IsHurt",1);}
-			if(countinv("IsMoving")){setstatelabel("see");}
+			if(countinv("IsMoving"))setstatelabel("see");
 			else setstatelabel("spawn");
 		}
 	pain:
 	pain.drowning:
 	pain.falling:
 		"----" A 0{
-			if(random(1,128)==1){A_GiveInventory("LethalDamage",1);}
-			A_GiveInventory("Fatigue",2);
+			if(!random(0,128))oldwoundcount++;
 		}
 	painend:
 		#### G 1;
 		#### G 2{
 			if(bloodpressure<100)bloodpressure+=20;
-			if(beatcap>20)beatcap=max(beatcap-randompick(10,20),12);
+			if(beatmax>20)beatmax=max(beatmax-randompick(10,20),12);
 			A_SetBlend("00 00 00",0.8,40,"00 00 00");
 			A_SetPitch(pitch+random(-4,4),SPF_FORCECLAMP|SPF_INTERPOLATE);
 			A_SetAngle(angle+random(-4,4),SPF_INTERPOLATE);

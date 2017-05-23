@@ -114,6 +114,10 @@ extend class HDPlayerPawn{
 				oldwoundcount+=countinv("LethalDamage");
 				A_TakeInventory("LethalDamage");
 			}
+			if(countinv("StunCount")){
+				stunned+=countinv("StunCount");
+				A_TakeInventory("StunCount");
+			}
 
 			//limit beatmax subject to zerk
 			if(countinv("PowerStrength")) beatmax=clamp(beatmax,4,14);
