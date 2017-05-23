@@ -7,7 +7,7 @@
 class HDDebris:HDActor{
 	bool stopped;
 	default{
-		+noblockmap -solid -shootable +dontgib +forcexybillboard +noblockmonst
+		+noblockmap -solid -shootable +dontgib +forcexybillboard +notrigger
 		height 2;radius 2;
 		bouncesound "misc/casing2";bouncefactor 0.8;maxstepheight 2;
 		+rollsprite;+rollcenter;
@@ -17,9 +17,9 @@ class HDDebris:HDActor{
 		stopped=false;
 	}
 	override void Tick(){
+		clearinterpolation();
+		if(globalfreeze||level.Frozen) return;
 		if(!stopped){
-			clearinterpolation();
-			if(globalfreeze||level.Frozen) return;
 			vel.z-=getgravity();
 			int spd=abs(vel.x);if(abs(vel.y)>spd)spd=abs(vel.y);
 			vector2 frac=self.vel.xy*radius/spd;
@@ -34,8 +34,8 @@ class HDDebris:HDActor{
 			if(pos.z<floorz)setz(floorz);
 			if(pos.z+height>ceilingz)setz(ceilingz-height);
 			if(
-				pos.z==getzat()
-				||pos.z+height==getzat(flags:GZF_CEILING)
+				pos.z==floorz
+				||pos.z+height==ceilingz
 			){
 				if(abs(vel.z)>2){
 					A_PlaySound(bouncesound);
@@ -55,7 +55,9 @@ class HDDebris:HDActor{
 				if(bdestroyed) return; //if nexttic() is called below, it would crash
 			}
 			nexttic();
-		}else Actor.Tick();
+		}else{
+			Actor.Tick();
+		}
 	}
 }
 
@@ -70,7 +72,7 @@ class WallChunk:HDDebris{
 		super.postbeginplay();
 		scale.x*=randompick(-1,1)*frandom(0.6,1.3);
 		scale.y*=frandom(0.6,1.3);
-//		bwallsprite=randompick(0,0,0,1);
+//		bwallsprite=randompick(0,0,0,1); //+wallsprite crashes software
 		roll=random(0,3)*90;
 		flip=random(1,4);
 		if(!random(0,9))A_PlaySound("misc/wallchunks");

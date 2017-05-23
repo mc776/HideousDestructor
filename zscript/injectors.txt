@@ -29,15 +29,72 @@ class PortableStimPick:HDUPK replaces PortableStimpack{
 		STIM A -1 A_Stop();
 	}
 }
+class SpentStim:HDDebris{
+	default{
+		translation "176:191=80:95";
+		bouncesound "misc/fragknock";bouncefactor 0.8;scale 0.6;radius 4;height 4;
+	}
+	states{
+	spawn:
+		SYRG A 0;
+	spawn2:
+		---- A 1{
+			A_SetRoll(roll+60,SPF_INTERPOLATE);
+		}wait;
+	death:
+		---- A -1{
+			roll=randompick(0,0,0,0,0,0,90);
+			if(!roll && !random(0,1))scale.x*=-1;
+		}stop;
+	}
+}
+class SpentZerk:SpentStim{
+	default{
+		translation "112:127=107:111";
+	}
+}
+class SpentBottle:SpentStim{
+	default{
+		alpha 0.6;renderstyle "translucent";
+		bouncesound "misc/casing";bouncefactor 0.7;scale 0.3;radius 4;height 4;
+	}
+	states{
+	spawn:
+		BON1 A 0;
+		goto spawn2;
+	death:
+		---- A -1{
+			if(random(0,7))roll=randompick(90,270);else roll=0;
+			if(roll==270)scale.x*=-1;
+		}stop;
+	}
+}
+class SpentCork:HDDebris{
+	default{
+		bouncesound "misc/casing3";scale 0.6;
+		translation "224:231=64:71";
+	}
+	states{
+	spawn:
+		PBRS A 2{
+			A_SetRoll(roll+90,SPF_INTERPOLATE);
+		}loop;
+	death:
+		PBRS "#" -1;
+	}
+}
 class HDStimpacker:HDWoundFixer{
 	class<actor> injecttype;
+	class<actor> spentinjecttype;
 	class<inventory> inventorytype;
 	string noerror;
 	property injecttype:injecttype;
+	property spentinjecttype:spentinjecttype;
 	property inventorytype:inventorytype;
 	property noerror:noerror;
 	default{
 		hdstimpacker.injecttype "InjectStimDummy";
+		hdstimpacker.spentinjecttype "SpentStim";
 		hdstimpacker.inventorytype "PortableStimpack";
 		hdstimpacker.noerror "No stimpacks.";
 	}
@@ -74,10 +131,17 @@ class HDStimpacker:HDWoundFixer{
 			A_SetBlend("7a 3a 18",0.1,4);
 			A_SetPitch(pitch+2,SPF_FORCECLAMP|SPF_INTERPOLATE);
 			A_PlaySound("*usemeds",CHAN_VOICE);
+			A_PlaySound("misc/bulletflesh",CHAN_WEAPON);
 			actor a=spawn(invoker.injecttype,pos);
 			a.accuracy=40;a.target=self;
 		}
 		TNT1 AAAA 1 A_SetPitch(pitch-0.5,SPF_FORCECLAMP|SPF_INTERPOLATE);
+		TNT1 A 6;
+		TNT1 A 0{
+			actor a=spawn(invoker.spentinjecttype,pos+(0,0,height-8));
+			a.angle=angle;a.vel=vel;a.A_ChangeVelocity(3,1,2,CVF_RELATIVE);
+			a.A_PlaySound("weapons/grenopen",CHAN_VOICE);
+		}
 		goto nope;
 	altfire:
 		TNT1 A 10;
@@ -172,6 +236,7 @@ class PortableBerserkPick:HDUPK replaces PortableBerserkPack{
 class HDBerserker:HDStimpacker{
 	default{
 		hdstimpacker.injecttype "InjectZerkDummy";
+		hdstimpacker.spentinjecttype "SpentZerk";
 		hdstimpacker.inventorytype "PortableBerserkPack";
 		hdstimpacker.noerror "No berserk packs.";
 	}
@@ -229,7 +294,7 @@ class BluePotion:HDPickup{
 }
 class BlueBottle:HDUPK replaces BluePotion{
 	default{
-		scale 0.4;
+		scale 0.3;
 		activesound "misc/casing";
 		hdupk.pickuptype "BluePotion";
 		accuracy 1;
@@ -257,8 +322,15 @@ class HDBlueBottler:HDWoundFixer{
 		}
 		goto super::select;
 	fire:
-		TNT1 A 4;
 		TNT1 A 0{
+			if(!countinv("BluePotion")){
+				if(getcvar("hd_helptext"))A_Print("No potion.");
+				A_SelectWeapon("Ring");
+				A_Refire("nope");
+			}
+		}
+		TNT1 A 4 A_WeaponReady(WRF_NOFIRE);
+		TNT1 A 1{
 			A_PlaySound("weapons/grenopen",CHAN_WEAPON);
 			A_Refire();
 		}
@@ -289,6 +361,13 @@ class HDBlueBottler:HDWoundFixer{
 			if(invoker.onr)invoker.onr.regenblues+=300;
 		}
 		TNT1 AAAA 1 A_SetPitch(pitch+0.5,SPF_FORCECLAMP|SPF_INTERPOLATE);
+		TNT1 A 6;
+		TNT1 A 0{
+			actor a=spawn("SpentBottle",pos+(0,0,height-4));
+			a.angle=angle+2;a.vel=vel;a.A_ChangeVelocity(3,1,4,CVF_RELATIVE);
+			a=spawn("SpentCork",pos+(0,0,height-4));
+			a.angle=angle+3;a.vel=vel;a.A_ChangeVelocity(5,3,4,CVF_RELATIVE);
+		}
 		goto nope;
 	}
 }
