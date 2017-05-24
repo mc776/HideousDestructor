@@ -63,7 +63,7 @@ class HDPlayerPawn:PlayerPawn{
 			A_TakeInventory("IsMoving");
 		}
 		---- AAAAAA 5{
-			if(!barehanded && !getcvar("cl_run") && zat==pos.z && !countinv("IsSupported")){
+			if(!barehanded && zat==pos.z && !countinv("IsSupported") && !countinv("IsMoving")){
 				vector3 posbak=pos;
 				setxyz(pos+(cos(angle),sin(angle),0)*16);
 				double zat2=getzat();
@@ -168,9 +168,10 @@ class HDPlayerPawn:PlayerPawn{
 		iyaw=getplayerinput(MODINPUT_YAW);
 		ipitch=getplayerinput(MODINPUT_PITCH);
 
-		if(getcvar("gender")==0){A_GiveInventory("IsMale");A_TakeInventory("IsFemale");}
-		else if(getcvar("gender")==1){A_GiveInventory("IsFemale");A_TakeInventory("IsMale");}
-		else {A_TakeInventory("IsFemale");A_TakeInventory("IsMale");}
+		int gender=player.getgender();
+		if(!gender){A_GiveInventory("IsMale");A_TakeInventory("IsFemale");}
+		else if(gender==1){A_GiveInventory("IsFemale");A_TakeInventory("IsMale");}
+		else{A_TakeInventory("IsFemale");A_TakeInventory("IsMale");}
 
 		super.Tick();
 
@@ -364,7 +365,7 @@ class HDPlayerPawn:PlayerPawn{
 		if(input & BT_USE){
 			bpickup=true;
 			A_GiveInventory("GimmeHud");
-			if(!getcvar("r_drawplayersprites")||getcvar("hd_hudsprite"))
+			if(getcvar("hd_hudsprite"))
 				A_GiveInventory("HUDSprite");
 				else A_TakeInventory("HUDSprite");
 			if(!(oldinput & BT_USE)){
