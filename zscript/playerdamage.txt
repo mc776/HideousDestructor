@@ -70,7 +70,11 @@ extend class HDPlayerPawn{
 				return 0;
 			}
 			if(!checkliquidtexture() && !waterlevel){
-				spawn("HDBloodTrailFloor",pos+(random(-12,12),random(-12,12),0),ALLOW_REPLACE);
+				a_spawnitemex("HDBloodTrailFloor",
+					random(-12,12),random(-12,12),0,
+					0,0,0,
+					0,SXF_NOCHECKPOSITION|SXF_USEBLOODCOLOR
+				);
 			}
 		}else if(
 			mod=="smallarms0"||
