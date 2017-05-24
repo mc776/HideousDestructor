@@ -41,7 +41,7 @@ class HDPlayerPawn:PlayerPawn{
 		lastheight=height;
 		beatcap=35;beatmax=35;
 		feetangle=angle;
-		if(!getcvar("r_drawplayersprites")||getcvar("hd_hudsprite"))
+		if(getcvar("hd_hudsprite"))
 			A_GiveInventory("HUDSprite");
 			else A_TakeInventory("HUDSprite");
 	}

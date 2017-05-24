@@ -26,7 +26,7 @@ extend class HDPlayerPawn{
 
 
 		//reduced turning while supported.
-		if(countinv("IsSupported") && !getcvar("cl_run") && abs(yaw)<8 && !countinv("IsMoving")){
+		if(countinv("IsSupported") && (getplayerinput(MODINPUT_BUTTONS)&BT_USE) && abs(yaw)<8 && !countinv("IsMoving")){
 			yaw*=0.1;ptch*=0.1;
 		}
 		//reduced turning while crouched.
