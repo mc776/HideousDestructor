@@ -141,21 +141,14 @@ script "HDDeath" DEATH
 
 
 		//conditions for game end
-
 	delay(1);
 	if ((CurrentLives() < 0)&&(maxlives))
 	{
 			//notify others that player is out
 		wipedout[PlayerNumber()]=1;
-		Log (s:"\cb", n:0, s:" is OUT!");
+		Log(s:"\cb", n:0, s:" is OUT!");
 
-			//reset inventory
-		if (GameType()!=GAME_NET_DEATHMATCH)
-		{
-			ClearInventory();
-			GiveInventory("RebelLoadout",1);
-		}
-		GiveInventory ("WipedOut", 1);
+		GiveInventory("WipedOut",1);
 	}
 }
 
