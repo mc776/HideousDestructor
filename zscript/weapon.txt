@@ -21,6 +21,13 @@ class HDWeapon:Weapon{
 		weapon.bobrangex 0.2;
 		weapon.bobrangey 0.8;
 	}
+	override void AttachToOwner(Actor user){
+		super.attachtoowner(user);
+		if(user){
+			target=user;
+			if(user is "HDPlayerPawn")onr=HDPlayerPawn(user);
+		}
+	}
 	states{
 	spawn:
 		TNT1 A 0;
@@ -39,8 +46,6 @@ class HDWeapon:Weapon{
 			A_TakeInventory("IsWeaponReady");
 			A_GiveInventory("WeaponBusy");
 			A_SetCrosshair(21);
-
-			invoker.onr=HDPlayerPawn(self);
 
 			return resolvestate("select0");
 		}
