@@ -174,5 +174,36 @@ class HDPickup:CustomInventory{
 	}
 }
 
+/*
+experimental, ignore
+extend class HDPickup{
+	hdplayerpawn onr;
+	override void AttachToOwner(Actor user){
+		//this is already done for weapons.
+		super.attachtoowner(user);
+		if(user){
+			target=onr;
+			if(user is "HDPlayerPawn")onr=HDPlayerPawn(user);
+		}
+		if(onr)A_Log(string.format("%s picked up %s",onr.player.getusername(),getclassname()));
+	}
+	override inventory CreateTossable(int amount){
+		A_Log("CreateTossable called.");
+		return super.createtossable(amount);
+	}
+	override inventory CreateCopy(actor other){
+		A_Log("CreateCopy called.");
+		return super.createcopy(other);
+	}
+	override bool SpecialDropAction(actor dropper){
+		A_Log("SpecialDropAction called.");
+		return super.specialdropaction(dropper);
+	}
+	override void DetachFromOwner(){
+		A_Log("DetachFromOwner called.");
+		super.detachfromowner();
+	}
+}
 
+*/
 
