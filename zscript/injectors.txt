@@ -119,7 +119,7 @@ class HDStimpacker:HDWoundFixer{
 				if(getcvar("hd_helptext"))A_Print(invoker.noerror);
 				A_SelectWeapon("Ring");
 				A_Refire("nope");
-			}else if(pitch<60){
+			}else if(pitch<55){
 				A_SetPitch(pitch+8,SPF_INTERPOLATE);
 				A_Refire();
 			}else{
@@ -350,7 +350,7 @@ class HDBlueBottler:HDWoundFixer{
 				if(getcvar("hd_helptext"))A_Print("No potion.");
 				A_SelectWeapon("Ring");
 				A_Refire("nope");
-			}else if(pitch>-60){
+			}else if(pitch>-55){
 				A_SetPitch(pitch-8,SPF_INTERPOLATE);
 				A_Refire();
 			}else{

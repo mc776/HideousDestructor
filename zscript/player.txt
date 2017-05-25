@@ -41,8 +41,7 @@ class HDPlayerPawn:PlayerPawn{
 		lastheight=height;
 		beatcap=35;beatmax=35;
 		feetangle=angle;
-		if(getcvar("hd_hudsprite"))
-			A_GiveInventory("HUDSprite");
+		if(getcvar("hd_hudsprite"))A_GiveInventory("HUDSprite");
 			else A_TakeInventory("HUDSprite");
 	}
 	states{
@@ -226,8 +225,10 @@ class HDPlayerPawn:PlayerPawn{
 				damagemobj(self,self,fall*random(1,4),"falling");
 				stunned+=fall*random(5,10)*4;
 				beatmax-=fall*0.5;
-				if(!barehanded && random(1,fall)>7){
-					A_DropInventory(player.readyweapon.getclassname());
+				if(random(1,fall)>7 && player.readyweapon){
+					if(!(player.readyweapon is "Ring"))
+						A_DropInventory(player.readyweapon.getclassname());
+						else A_SelectWeapon("Ring");
 				}
 			}
 		}
