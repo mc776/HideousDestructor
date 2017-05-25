@@ -269,11 +269,13 @@ class InjectZerkDummy:InjectStimDummy{
 			tg.stimcount+=1;
 		}
 		TNT1 A 1{
-			if(tg.regenbers<100)tg.A_PlaySound("*xdeath",CHAN_VOICE);
 			tg.regenbers=2000;
-			tg.A_GiveInventory("PowerStrength");
-			if(!(tg.player.readyweapon is "Ring"))
-				tg.A_DropInventory(tg.player.readyweapon.getclass());
+			if(tg.regenbers<100){
+				tg.A_PlaySound("*xdeath",CHAN_VOICE);
+				tg.A_GiveInventory("PowerStrength");
+				if(!(tg.player.readyweapon is "Ring"))
+					tg.A_DropInventory(tg.player.readyweapon.getclass());
+			}
 		}stop;
 	}
 }
