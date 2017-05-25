@@ -226,106 +226,108 @@ extend class HDPlayerPawn{
 
 			//weapon collision
 
-			//temporarily set attackzoffset
-			double azobak=attackzoffset;
-			vector3 posbak=pos;
-			vector3 posgunorigin=pos+(0,0,height-6);
-			attackzoffset=height*0.5-6;
-			vector3 posadj=(cos(angle+90),sin(angle+90),0)*barrelwidth; //starts to the LEFT
-			vector3 posadj2=(-cos(angle)*cos(pitch+90),-sin(angle)*cos(pitch+90),-sin(pitch+90))*barreldepth;
-
-			//and now uh do stuff
-			actor muzpuf;
-			int stuff;
-			int muzhit=0;
-
-			double distleft=barrellength;;
-			double distright=barrellength;;
-			double disttop=barrellength;
-			double distbottom=barrellength;
-
-			//left
-			setxyz(posbak+posadj);
-			[muzpuf,stuff]=LineAttack(lastangle+anglechange,barrellength,
-				lastpitch+pitchchange,0,"none",
-				"MuzzleBlockerPuff",flags:LAF_NORANDOMPUFFZ
-			);
-			if(muzpuf){
-				distleft=(muzpuf.pos-(posgunorigin+posadj)).length();
-				muzpuf.destroy();
-			}else muzhit++;
-			//right
-			setxyz(posbak-posadj);
-			[muzpuf,stuff]=LineAttack(lastangle+anglechange,barrellength,
-				lastpitch+pitchchange,0,"none",
-				"MuzzleBlockerPuff",flags:LAF_NORANDOMPUFFZ
-			);
-			if(muzpuf){
-				distright=(muzpuf.pos-(posgunorigin-posadj)).length();
-				muzpuf.destroy();
-			}else muzhit++;
-
-			//top
-			setxyz(posbak);
-			[muzpuf,stuff]=LineAttack(lastangle+anglechange,barrellength,
-				lastpitch+pitchchange,0,"none",
-				"MuzzleBlockerPuff",flags:LAF_NORANDOMPUFFZ
-			);
-			if(muzpuf){
-				disttop=(muzpuf.pos-posgunorigin).length();
-				muzpuf.destroy();
-			}else muzhit++;
-			//bottom
-			setxyz(posbak+posadj2);
-			attackzoffset-=barreldepth;
-			[muzpuf,stuff]=LineAttack(lastangle+anglechange,barrellength,
-				lastpitch+pitchchange,0,"none",
-				"MuzzleBlockerPuff",flags:LAF_NORANDOMPUFFZ
-			);
-			if(muzpuf){
-				distbottom=(muzpuf.pos-(posgunorigin-(0,0,barreldepth))).length();
-				muzpuf.destroy();
-			}else muzhit++;
-			attackzoffset+=barreldepth;
-
-			//restore position
-			setxyz(posbak);
-
-			//set angles
+			if(!(player.cheats&CF_NOCLIP2 || player.cheats&CF_NOCLIP)){
+				//temporarily set attackzoffset
+				double azobak=attackzoffset;
+				vector3 posbak=pos;
+				vector3 posgunorigin=pos+(0,0,height-6);
+				attackzoffset=height*0.5-6;
+				vector3 posadj=(cos(angle+90),sin(angle+90),0)*barrelwidth; //starts to the LEFT
+				vector3 posadj2=(-cos(angle)*cos(pitch+90),-sin(angle)*cos(pitch+90),-sin(pitch+90))*barreldepth;
 	
-			bool mvng;if(lastheight!=height || vel.length()<0.5)mvng=true;
-			bool hitsnd;
-			if(max(abs(anglechange),abs(pitchchange))>1)hitsnd=true;
-
-			if(distleft<distright){
-				anglechange=max(distleft-barrellength,mvng?0:-4);
-			}else if(distleft>distright){
-				anglechange=min(barrellength-distright,mvng?0:4);
+				//and now uh do stuff
+				actor muzpuf;
+				int stuff;
+				int muzhit=0;
+	
+				double distleft=barrellength;;
+				double distright=barrellength;;
+				double disttop=barrellength;
+				double distbottom=barrellength;
+	
+				//left
+				setxyz(posbak+posadj);
+				[muzpuf,stuff]=LineAttack(lastangle+anglechange,barrellength,
+					lastpitch+pitchchange,0,"none",
+					"MuzzleBlockerPuff",flags:LAF_NORANDOMPUFFZ
+				);
+				if(muzpuf){
+					distleft=(muzpuf.pos-(posgunorigin+posadj)).length();
+					muzpuf.destroy();
+				}else muzhit++;
+				//right
+				setxyz(posbak-posadj);
+				[muzpuf,stuff]=LineAttack(lastangle+anglechange,barrellength,
+					lastpitch+pitchchange,0,"none",
+					"MuzzleBlockerPuff",flags:LAF_NORANDOMPUFFZ
+				);
+				if(muzpuf){
+					distright=(muzpuf.pos-(posgunorigin-posadj)).length();
+					muzpuf.destroy();
+				}else muzhit++;
+	
+				//top
+				setxyz(posbak);
+				[muzpuf,stuff]=LineAttack(lastangle+anglechange,barrellength,
+					lastpitch+pitchchange,0,"none",
+					"MuzzleBlockerPuff",flags:LAF_NORANDOMPUFFZ
+				);
+				if(muzpuf){
+					disttop=(muzpuf.pos-posgunorigin).length();
+					muzpuf.destroy();
+				}else muzhit++;
+				//bottom
+				setxyz(posbak+posadj2);
+				attackzoffset-=barreldepth;
+				[muzpuf,stuff]=LineAttack(lastangle+anglechange,barrellength,
+					lastpitch+pitchchange,0,"none",
+					"MuzzleBlockerPuff",flags:LAF_NORANDOMPUFFZ
+				);
+				if(muzpuf){
+					distbottom=(muzpuf.pos-(posgunorigin-(0,0,barreldepth))).length();
+					muzpuf.destroy();
+				}else muzhit++;
+				attackzoffset+=barreldepth;
+	
+				//restore position
+				setxyz(posbak);
+	
+				//set angles
+		
+				bool mvng;if(lastheight!=height || vel.length()<0.5)mvng=true;
+				bool hitsnd;
+				if(max(abs(anglechange),abs(pitchchange))>1)hitsnd=true;
+	
+				if(distleft<distright){
+					anglechange=max(distleft-barrellength,mvng?0:-4);
+				}else if(distleft>distright){
+					anglechange=min(barrellength-distright,mvng?0:4);
+				}
+	
+				if(disttop>distbottom){
+					pitchchange=max(distbottom-barrellength,mvng?0:-4);
+				}else if(disttop<distbottom){
+					pitchchange=min(barrellength-disttop,mvng?0:4);
+				}
+	
+				if(!muzhit){
+					double blah=(barrellength-disttop)*0.02;
+					A_Recoil(blah);
+				}
+	
+	
+				//bump
+				if(muzhit>=4){
+					muzzlehit=false;
+				}else if(!muzzlehit){
+					if(hitsnd)A_PlaySound("weapons/rifleclick2",CHAN_AUTO,0.6);
+					muzzlehit=true;
+				}
+	
+				//reset attackzoffset and position
+				setxyz(posbak);
+				attackzoffset=azobak;
 			}
-
-			if(disttop>distbottom){
-				pitchchange=max(distbottom-barrellength,mvng?0:-4);
-			}else if(disttop<distbottom){
-				pitchchange=min(barrellength-disttop,mvng?0:4);
-			}
-
-			if(!muzhit){
-				double blah=(barrellength-disttop)*0.02;
-				A_Recoil(blah);
-			}
-
-
-			//bump
-			if(muzhit>=4){
-				muzzlehit=false;
-			}else if(!muzzlehit){
-				if(hitsnd)A_PlaySound("weapons/rifleclick2",CHAN_AUTO,0.6);
-				muzzlehit=true;
-			}
-
-			//reset attackzoffset and position
-			setxyz(posbak);
-			attackzoffset=azobak;
 		}
 
 
