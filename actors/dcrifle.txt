@@ -307,7 +307,7 @@ actor ZM66GrenadeRifle:HDWeapon{
 				if(countinv("ZM66Loaded")>=50){A_GiveInventory("ZM66RifleMags",1);}        
 				else{
 					A_GiveInventory("FourMilAmmo",countinv("ZM66Loaded"));
-					A_Log("Reloading a 4.26 UAC Standard magazine into another firearm without authorization is a breach of the Volt End User License Agreement.");
+					A_Log("Reloading a 4.26 UAC Standard magazine into another firearm without authorization is a breach of the Volt End User License Agreement.",true);
 				}
 				A_TakeInventory("ZM66Loaded");
 			}
@@ -352,7 +352,7 @@ actor ZM66GrenadeRifle:HDWeapon{
 			A_PlaySound("weapons/rifleclick2",6);
 			A_PlaySound("weapons/smack",7);
 		}
-		RIFG A 4 offset(-17,49) A_Log("Reloading a 4.26 UAC Standard magazine into another firearm without auth--\cgFUCK YOURSELF.\c- Sincerely, management.")
+		RIFG A 4 offset(-17,49) A_Log("Reloading a 4.26 UAC Standard magazine into another firearm without auth--\cgFUCK YOURSELF.\c- Sincerely, management.",true)
 	chamber_manual:
 		RIFG A 4 offset(-15,43){
 			if(countinv("ZM66Chamber")<1){
