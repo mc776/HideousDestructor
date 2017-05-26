@@ -174,7 +174,7 @@ actor HDSMG:HDWeapon{
 			){
 				A_GiveInventory("HDSMGMag",1);
 				A_TakeInventory("HDPistolAmmo",30);
-				A_TakeInventory("NotShot",9999);
+				A_TakeInventory("NotShot");
 			}
 		}
 		goto readyend
@@ -350,11 +350,11 @@ actor HDSMG:HDWeapon{
 	user3:
 	cannibalize:
 		SMGG A 0 A_SetCrosshair(21)
-		SMGG A 0 A_TakeInventory("IsWeaponReady",999)
+		SMGG A 0 A_TakeInventory("IsWeaponReady")
 		SMGG A 0 A_JumpIfInventory("HDPistolMag",1,1)
 		goto nope
 		SMGG B 4 offset(0,34)
-		TNT1 A 0 A_TakeInventory("IsWeaponShort",999)
+		TNT1 A 0 A_TakeInventory("IsWeaponShort")
 		SMGG B 2 offset(0,44)
 		SMGG B 2 offset(0,70)
 
@@ -514,7 +514,7 @@ actor HDPistol:HDWeapon
 		PISG A 0 A_JumpIfInventory("NotShot",210,"FillMag")
 		goto ReadyEnd
 	FillMag:
-		PISG A 0 A_TakeInventory("NotShot",9999)
+		PISG A 0 A_TakeInventory("NotShot")
 		PISG A 0 A_JumpIfInventory("HDPistolAmmo",15,1)
 		goto ReadyEnd
 		PISG A 0 A_GiveInventory("HDPistolMag",1)
@@ -636,7 +636,7 @@ actor HDPistol:HDWeapon
 	unmag:
 		"----" A 1 offset(0,34){
 			A_SetCrosshair(21);
-			A_TakeInventory("IsWeaponReady", 999);
+			A_TakeInventory("IsWeaponReady");
 		}
 		"----" A 1 offset(1,38)
 		"----" A 2 offset(2,42)
@@ -714,7 +714,7 @@ actor HDPistol:HDWeapon
 	user3:
 	cannibalize:
 		"----" A 0 A_SetCrosshair(21)
-		"----" A 0 A_TakeInventory("IsWeaponReady",999)
+		"----" A 0 A_TakeInventory("IsWeaponReady")
 		"----" A 0 A_JumpIfInventory("HDSMGMag",1,1)
 		goto nope
 		"----" A 4 offset(0,34)

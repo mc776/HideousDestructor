@@ -10,6 +10,12 @@ extend class HDPlayerPawn{
 		int flags=0,
 		double angle=0
 	){
+
+		//"You have to be aware of recursively called code pointers in death states.
+		//It can easily happen that Actor A dies, calling function B in its death state,
+		//which in turn nukes the data which is being checked in DamageMobj."
+		if(!self || !(self is "HDPlayerPawn"))return 0;
+
 		//replace all armour with custom HD stuff
 		if(countinv("BasicArmor")){
 			int a=countinv("BasicArmor");
@@ -31,9 +37,8 @@ extend class HDPlayerPawn{
 		//factor in cheats and skills
 		if(!(flags&DMG_FORCED)){
 			if(
-				(player.cheats && (player.cheats&CF_GODMODE2 || player.cheats&CF_GODMODE))
-				|| binvulnerable
-				|| !bshootable
+				player.cheats&CF_GODMODE2 || player.cheats&CF_GODMODE
+				|| binvulnerable || !bshootable
 			)return 0;
 			if(!skill || hd_lowdamage)damage=max(1,damage*0.3);
 		}

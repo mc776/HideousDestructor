@@ -201,7 +201,8 @@ actor HDEvilEye:SwitchableDecoration replaces EvilEye{
 actor HDStalagmite:Stalagmite replaces Stalagmite{
 	+shootable +nodamage +noblood
 	+forceybillboard
-	mass 9999999999999999
+	+dontthrust
+	mass MAXINT
 	states{
 	spawn:
 		SMT2 A -1 nodelay{
@@ -214,7 +215,8 @@ actor HDStalagmite:Stalagmite replaces Stalagmite{
 actor HDBigTree:BigTree replaces BigTree{
 	+shootable +nodamage +dontthrust
 	+forceybillboard +rollsprite
-	mass 9999999999999999
+	+dontthrust
+	mass MAXINT
 	painchance 48
 	radius 32 height 100
 	states

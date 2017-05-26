@@ -312,9 +312,9 @@ ACTOR ArchFiend : Archvile replaces ArchVile
 		VILE F 0 A_JumpIfInventory("NotShot",600,2)
 		VILE F 0 A_Jump(2,1)
 		loop
-		VILE F 0 A_TakeInventory("NotShot",9999)
-		VILE F 0 A_ChangeFlag("FRIGHTENED", 0)
-		VILE F 0 A_ChangeFlag("SHOOTABLE", 1)
+		VILE F 0 A_TakeInventory("NotShot")
+		VILE F 0 A_ChangeFlag("FRIGHTENED",0)
+		VILE F 0 A_ChangeFlag("SHOOTABLE",1)
 		goto See
 	PainFriendly:
 		TNT1 A 0 A_JumpIfInventory("Clip",7, "Dying")
