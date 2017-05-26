@@ -591,31 +591,10 @@ script "Reload" (int type, int amount)	//reload partial
 
 
 //		GENERIC ENTER-ONCE
-
-script "HDEnterOnce" (void)//ENTER
-{
-//	SpawnForced("ViewDummy", GetActorX(0), GetActorY(0), GetActorZ(0), (mincamtid+PlayerNumber()), (GetActorAngle(0)>>8));
-//Thing_Hate(mincamtid+PlayerNumber(),0);
-
-
+script "HDEnterOnce" ENTER{
 	TakeInventory("LethalDamage",1);
-
 	ReplaceBot();
-					// Removes status flags to give player a fresh start
-
-
-
-	SetPlayerProperty (0, 0, PROP_NOTARGET);				//unnotargets player
-	SetPlayerProperty (0, 0, PROP_FLY);				//gravitates player
-	SetActorProperty (0, APROP_Invulnerable, 0);		//uninvulnerablizes player
-	SetActorProperty (0, APROP_RenderStyle, STYLE_Normal);		//rerenders player
 	SetPlayerProperty (0, 0, PROP_TOTALLYFROZEN);				//unsuperfreezes player
-	TakeInventory ("WipedOut", 999);		//takes away wiped out null weapon/inventory flag
-
-//	ConsolidateWeapons();
-
-	//set weapon if taken away last level
-	if (GetWeaponInt()==0) SetWeapon(GetBestWeapon());
 }
 
 
