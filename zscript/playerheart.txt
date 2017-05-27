@@ -189,7 +189,8 @@ extend class HDPlayerPawn{
 				//twitchy zerk
 				if(regenbers>0 && !countinv("IsMoving")){
 					if(floorz>=pos.z)A_ChangeVelocity(frandom(-2,3),frandom(-2,2),1,CVF_RELATIVE);
-					muzzledrift+=(random(-14,14),random(-24,14))*20;
+					if(!(input&BT_ATTACK))muzzledrift+=(random(-14,14),random(-24,14));
+					else muzzledrift+=(frandom(-2,2),frandom(-3,2));
 					if(!random(0,2)){
 						int stupid=random(1,100);
 						if(stupid<30)A_PlaySound("*grunt",CHAN_VOICE);
