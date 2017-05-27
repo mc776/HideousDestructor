@@ -197,10 +197,6 @@ script "HDRespawn" RESPAWN
 	}
 
 	GiveInventory("IsRespawning",1);
-	delay (1);
-	ConsolidateWeapons();	//respawn with full mag, to protect against monster spawncamps
-	delay (1);
-	SetWeapon (GetBestWeapon());
 	delay (6);
 	TakeInventory("IsRespawning",999);
 }

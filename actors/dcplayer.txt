@@ -64,47 +64,7 @@ actor HDPlayer:HDPlayerPawn{
 		PLAY E 35
 		loop
 
-	death:
-		"----" A 0{
-			A_PlayerScream;
-			if(countinv("AggravatedDamage")>=66){return state("xdeath");}
-			else if(countinv("IsCrouching")>0){return state("deathcrouched");}
-			return state("deathcontinued");
-		}goto deathcontinued
-	death.bleedout:
-	death.invisiblebleedout:
-		"####" H 0 A_JumpIfInventory("IsCrouching",1,"deathcrouched")
-		goto deathcontinued
-	deathcontinued:
-		"----" A 0{
-			A_GiveInventory("CheckLiveRound");
-			A_GiveInventory("IsDead");
-			A_SpawnItemEx("tempshield",0,0,0, velx,vely,velz, 0,40);
-		}
-		"####" H 5
-		"####" H 5 A_SpawnItemEx("tempshield",0,0,0, velx,vely,velz, 0,40)
-		"####" IJ 8
-		"####" KLM 5
-		"####" N 0 A_NoBlocking
-		"####" N 0 A_HideThing
-		"####" N 0 A_SpawnItemEx("DeadRifleman",-1,0,0,velx,vely,velz,0,SXF_TRANSFERTRANSLATION|SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
-	dead:
-		"####" N 20 A_CheckPlayerDone
-		wait
-	deathcrouched: //copypaste from death
-		PLYC A 0 A_GiveInventory("IsDead",1)
-		"----" A 0 A_GiveInventory("CheckLiveRound",1)
-		"----" A 0 A_JumpIfInventory("IsBot",1,"dead")
-		"----" A 0 A_spawnItemEx("tempshield",0,0,0, velx,vely,velz, 0,40)
-		"####" H 5
-		"####" H 5 A_spawnItemEx("tempshield",0,0,0, velx,vely,velz, 0,40)
-		"####" IJ 8
-		"####" KLM 5
-		"####" N 0 A_NoBlocking
-		"####" N 0 A_HideThing
-		"####" N 0 A_SpawnItemEx("DeadRiflemanCrouched",-1,0,0,velx,vely,velz,0,SXF_TRANSFERTRANSLATION|SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
-		goto dead
-	xdeath:
+	___xdeath:
 		"----" A 0 A_GiveInventory("IsDead",1)
 		"----" A 0 A_GiveInventory("CheckLiveRound",1)
 		"----" A 0 A_JumpIfInventory("IsBot",1,"botxdead")

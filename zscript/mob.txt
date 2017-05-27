@@ -455,21 +455,6 @@ class HDMOb:HDActor{
 		if(dh<0) dh=spawnheight/4;
 		A_SetSize(radius,dh);
 	}
-	//raise - must manually enter :(
-	//DELETE LATER IF NO LONGER USED
-	void A_HDMRaise(){
-		A_SetSize(radius,spawnheight);
-		maxstepheight=livestepheight;
-		bcorpse=null;
-		bkilled=null;
-		A_SetHealth(starthealth*scale.x);
-		bsolid=true;
-		bshootable=true;
-		balwaystelefrag=false;
-		bnotautoaimed=false;
-		if(!bfloat) bnodropoff=true;
-		setstatelabel("raise");
-	}
 }
 
 class HDScary:HDMOb{

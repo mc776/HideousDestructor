@@ -43,6 +43,7 @@ class HDPlayerPawn:PlayerPawn{
 		feetangle=angle;
 		if(getcvar("hd_hudsprite"))A_GiveInventory("HUDSprite");
 			else A_TakeInventory("HUDSprite");
+		killoldfires();
 	}
 	states{
 	spawn:
@@ -179,7 +180,7 @@ class HDPlayerPawn:PlayerPawn{
 		GunHeatSmoke(player.readyweapon.getclassname());
 
 		//only do anything below this while the player is alive!
-		if(bkilled||countinv("WipedOut")) return;
+		if(bkilled||health<1||countinv("WipedOut")) return;
 		HeartTicker();
 
 

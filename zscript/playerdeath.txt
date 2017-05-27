@@ -1,0 +1,105 @@
+//why the fuck is everything so complicated :(
+
+extend class HDPlayerPawn{
+	states{
+	death:
+	xdeath:
+		---- A 2{
+			A_GiveInventory("IsDead");
+			A_GiveInventory("CheckLiveRound");
+			binvisible=true;
+			A_NoBlocking();
+		}
+		---- A 0 killoldfires();
+		---- A 20 A_CheckPlayerDone();
+		wait;
+	}
+	override void Die(actor source,actor inflictor,int dmgflags=0){
+		playercorpse=spawn("HDPlayerCorpse",pos,ALLOW_REPLACE);
+		playercorpse.vel=vel;playercorpse.master=self;
+		playercorpse.A_PlaySound(health>-50?"*death":"*xdeath",CHAN_VOICE);  
+		if(height<40)playercorpse.sprite=GetSpriteIndex("PLYCA0");
+		else playercorpse.sprite=GetSpriteIndex("PLAYA0");
+		playercorpse.translation=translation;
+		playercorpse.A_SetSize(12,52);
+		if(-health>gibhealth) playercorpse.A_Die("extreme");
+		else playercorpse.A_Die();
+
+		killoldfires();
+		super.die(source,inflictor,dmgflags);
+	}
+	void killoldfires(){
+		actoriterator it=actoriterator.create(-7677,"HDFire");
+		actor fff;
+		while(fff=it.next()){
+			if(fff.target==self){
+				if(playercorpse)fff.target=playercorpse;
+				else fff.destroy();
+			}
+		}
+	}
+}
+
+//corpse substituter
+class HDPlayerCorpse:HDActor{
+	default{
+		monster; -countkill +solid
+		height 52;radius 12;health 1;mass 100;
+	}
+	override void Die(actor source,actor inflictor,int dmgflags=0){
+		super.die(source,inflictor,dmgflags);
+		A_SetSize(12,52);
+		A_NoBlocking();
+		scale.x*=randompick(-1,1);
+	}
+	states{
+	spawn:
+		#### A -1 nodelay A_Die();
+	death:
+		#### H 10{
+			bshootable=true;
+		}
+		#### IJ 8;
+		#### K 3 A_SetSize(12,13);
+	deadfall:
+		#### K 2;
+		#### LM 4 A_JumpIf(abs(vel.z)>1,"deadfall");
+	dead:
+		#### N 2 canraise A_JumpIf(abs(vel.z)>2,"deadfall");
+		wait;
+	xdeath:
+		#### O 0 A_XScream();
+		#### OPQRSTUV 5;
+		---- A 0{
+			A_SpawnItemEx("ReallyDeadRifleman",flags:
+					SXF_NOCHECKPOSITION|
+					SXF_TRANSFERPOINTERS|
+					SXF_TRANSFERTRANSLATION
+			);
+		}
+		stop;
+	raise:
+		#### MLKJIH 5;
+		---- A 0{
+			A_SpawnItemEx("UndeadRifleman",flags:
+					SXF_NOCHECKPOSITION|
+					SXF_TRANSFERPOINTERS|
+					SXF_TRANSFERTRANSLATION
+			);
+		}
+		stop;
+	}
+	override void Tick(){
+		if(master){ //keep the corpse just behind the player's view
+			let p=PlayerPawn(master);
+			if(p && p.player && p.player.mo==p){
+				if(p.getplayerinput(MODINPUT_BUTTONS)&BT_USE){
+					master=null;
+				}else{
+					setorigin(master.pos+(-cos(master.angle),-sin(master.angle),0),true);
+				}
+			}
+		}
+		super.Tick();
+	}
+}
