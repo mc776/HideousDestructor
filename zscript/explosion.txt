@@ -64,23 +64,23 @@ extend class HDActor{
 					checksight(its)+
 					checksight(itr)
 				),0,1.0);
-				if(losmul<=0) return;
 
-				if(it.mass>0) divmass=1.0/it.mass;else divmass=1.0;
+				if(it.mass>0) divmass=1./it.mass;else divmass=1.;
+
 				//do this before direct damage stuff, to avoid bypassing some checks
-				if(immolateradius>0 && dist<=immolateradius){
+				if(losmul>0 && immolateradius>0 && dist<=immolateradius){
 					if(immolatechance>=random(1,100)*losmul){
-						A_Immolate(it,self.target,immolateamount);
+						A_Immolate(it,target,immolateamount);
 					}
 				}
-				if(blastradius>0 && dist<=blastradius && it.bshootable){
+				if(losmul>0 && blastradius>0 && dist<=blastradius && it.bshootable){
 					if(dist>fullblastradius){
 						dmg=clamp(dist-fullblastradius,0,dist);
 						dmg=blastdamage-dmg;
 					}else dmg=blastdamage;
 					it.DamageMobj(self,self.target,dmg,blastdamagetype,DMG_THRUSTLESS,0);
 				}
-				if(pushradius>0 && dist<=pushradius && it.bshootable && !it.bdontthrust){
+				if(losmul>0 && pushradius>0 && dist<=pushradius && it.bshootable && !it.bdontthrust){
 					vector3 push=(it.pos-self.pos)*divdist
 						*clamp(pushamount-clamp(dist-fullpushradius,0,dist),0,pushamount);
 					if(pushmass){
@@ -92,7 +92,7 @@ extend class HDActor{
 					}
 					it.vel+=push;
 				}
-				if(fragradius>0 && dist<=fragradius && (it.bsolid || it.bshootable)){
+				if(losmul>0 && fragradius>0 && dist<=fragradius && (it.bsolid || it.bshootable)){
 					A_Face(it);
 					if(
 						it!=self
@@ -145,7 +145,7 @@ extend class HDActor{
 						}
 					}
 				}
-				if(gibradius>0 && dist<=gibradius && it.bcorpse && it.bshootable){
+				if(losmul>0 && gibradius>0 && dist<=gibradius && it.bcorpse && it.bshootable){
 					it.a_giveinventory("sawgib",gibamount-dist);
 					//can't use A_Bleed on non-HDActor :(
 					//replace (and use Let) once all monsters scriptified

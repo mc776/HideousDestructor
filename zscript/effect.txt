@@ -115,6 +115,7 @@ class HDPuff:HDActor{
 	override void Tick(){
 		clearinterpolation();
 		if(globalfreeze||level.Frozen) return;
+
 		scale.x+=grow;scale.y=scale.x;
 		if(stamina>0) stamina--;
 		else{
@@ -122,14 +123,16 @@ class HDPuff:HDActor{
 			vel.z-=getgravity();
 		}
 		vel*=decel;
-		if(!trymove(pos.xy+vel.xy,true)) vel.xy=(0,0);
-		setz(pos.z+vel.z);
+		if(vel.xy!=(0,0)){
+			if(!trymove(pos.xy+vel.xy,true))vel.xy=(0,0);
+		}
 		if(vel.z!=0){
+			setz(pos.z+vel.z);
 			if(pos.z+8>ceilingz && vel.z>0) vel.z=0;
 			else if(pos.z<floorz && vel.z<0) vel.z=0;
 		}
-		if(pos.z>ceilingz) setz(ceilingz-8);
-		else if(pos.z<floorz) setz(floorz);
+		if(pos.z>ceilingz)setz(ceilingz-8);
+		else if(pos.z<floorz)setz(floorz);
 		if(alpha<=minalpha){
 			destroy();
 			return;
@@ -152,7 +155,7 @@ class HDBulletPuff:HDPuff{
 		int stm=stamina;
 		for(int i=0;i<stamina;i++){
 			actor ch=spawn(missilename,self.pos,ALLOW_REPLACE);
-			ch.vel=self.vel+(random(-stamina,stamina),random(-stamina,stamina),random(-2,12));
+			ch.vel=self.vel+(random(-stm,stm),random(-stm,stm),random(-2,12));
 		}
 	}
 	states{

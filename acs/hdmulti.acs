@@ -339,18 +339,16 @@ script "EndgameCheck" (void)
 	else if ((GameType () == GAME_NET_COOPERATIVE) || (GetCVar("sv_singleplayerrespawn")>0))
 	{
 		delay(2);
-		if (deaths_common>=maxlives+PlayerCount())
+		if (!endgame && deaths_common>=maxlives+PlayerCount())
 		{
 
-			if(!endgame){
+			//fancy text will crash. Seems related to bots.
 				Log(s:"Wiped out! Try again.");
 				endgame=1;
 				delay(1);
 				Teleport_NewMap(GetLevelInfo(LEVELINFO_LEVELNUM),0,0);
 				terminate;
-			}
-			terminate;
-			//fancy text will crash. I don't know why. I give up.
+			//fancy text will crash. Seems related to bots.
 
 			HudMessageBold(s:"";0,4,0,0,0,0);
 			HudMessageBold(s:"";0,3,0,0,0,0);
@@ -368,17 +366,16 @@ script "EndgameCheck" (void)
 			Teleport_NewMap(GetLevelInfo(LEVELINFO_LEVELNUM),0,0);
 			terminate;
 		}
-		else if ((deaths_common>=maxlives) && (loseondeathlimit==1))
+		else if (!endgame && (deaths_common>=maxlives) && (loseondeathlimit==1))
 		{
-			if(!endgame){
+			endgame=1;
+
+			//fancy text will crash. Seems related to bots.
 				Log(s:"Too many casualties. HQ has ordered a retreat!");
-				endgame=1;
 				delay(1);
 				Teleport_NewMap(GetLevelInfo(LEVELINFO_LEVELNUM),0,0);
 				terminate;
-			}
-			terminate;
-			//fancy text will crash. I don't know why. I give up.
+			//fancy text will crash. Seems related to bots.
 
 
 			HudMessageBold(s:"";0,4,0,0,0,0);

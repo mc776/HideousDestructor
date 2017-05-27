@@ -186,27 +186,34 @@ class HDFireball:HDActor{
 	gibhealth = % chance to immolate
 */
 class PersistentDamager:HDActor{
-	actor oldother;
 	vector3 relpos;
 	default{
-		-solid
+		+noblockmap +missile
 		height 8;radius 8;threshold 35;damage 1;accuracy 0;gibhealth 5;
 		damagetype "thermal";
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		bsolid=true;
 		if(master) relpos=self.pos-master.pos;
 	}
 	override void tick(){
+		clearinterpolation();
+		if(globalfreeze||level.Frozen) return;
+
 		if(master) setorigin(master.pos+relpos,false);
 		trymove(pos.xy+(minvel,0),true);
+
+		nexttic();
 	}
-	override bool CanCollideWith(actor other, bool passive){
+	override bool CanCollideWith(actor other,bool passive){
 		if(
-			target &&
-			target.bdontharmspecies &&
-			other.getspecies()==target.getspecies()
+			passive
+			||!other.bsolid
+			||(
+				target &&
+				target.bdontharmspecies &&
+				other.getspecies()==target.getspecies()
+			)
 		){
 			return false;
 		}
