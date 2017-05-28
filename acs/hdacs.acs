@@ -17,15 +17,16 @@ function void CheckCVars(void){
 		SetWeapon("HDPistol");
 	}
 	else{
-		if ((GetCVar("hd_nobfg"))&&(CheckInventory("BFG9k"))){
+		if((GetCVar("hd_nobfg"))&&(CheckInventory("BFG9k"))){
 			TakeInventory("BFG9k",999);
 			GiveInventory("ThunderBuster",1);
 			GiveInventory("PlasmaBattery",60);
 			SetWeapon("ThunderBuster");
 		}
-		if ((GetCVar("hd_nobronto"))&&(GetCVar("hd_norockets"))){
-			if ((CheckInventory("Brontornis"))||(CheckInventory("RocquetteLauncher")))
-			{
+		//nobronto will replace bronto with rockets, and vice versa.
+		//this replaces either with a ZM66-GL if both cvars are true.
+		if((GetCVar("hd_nobronto"))&&(GetCVar("hd_norockets"))){
+			if((CheckInventory("Brontornis"))||(CheckInventory("RocquetteLauncher"))){
 				TakeInventory("RocquetteLauncher",999);
 				TakeInventory("RocketMag",999);
 				TakeInventory("HDRocketAmmo",999);
@@ -44,7 +45,7 @@ function void CheckCVars(void){
 			}
 		}
 		else{
-			if ((GetCVar("hd_nobronto"))&&(CheckInventory("Brontornis"))){
+			if((GetCVar("hd_nobronto"))&&(CheckInventory("Brontornis"))){
 				TakeInventory("Brontornis",999);
 				TakeInventory("BrontornisMag",999);
 				TakeInventory("BrontornisRound",999);
