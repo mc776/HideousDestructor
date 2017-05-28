@@ -286,12 +286,12 @@ class HDPlayerPawn:PlayerPawn{
 		)cansprint=true;else cansprint=false;
 
 		//apply all movement speed modifiers
+		speed=1.;
 		if(mustwalk || runwalksprint<0) speed=0.4;
 		else if(runwalksprint>0 && cansprint){
 			if(!sm)speed=2.8;
 			else if(fm<0)speed=1.6;
 		}
-		else speed=1;
 		if(countinv("PowerStrength"))speed*=1.5;
 		if(height<40)speed*=0.6;
 
