@@ -9,48 +9,36 @@ int endgame=0;
 int randomsnark;
 int respawninterval=0;
 
-
-function void CheckConfig(void)
-{
-		//Lives counter
+function void CheckConfig(void){
+	//Lives counter
 	TakeInventory("HDLives",999);
-	if ((GameType () == GAME_NET_COOPERATIVE) || (GetCVar("sv_singleplayerrespawn")>0))
-	{
+	if ((GameType () == GAME_NET_COOPERATIVE) || (GetCVar("sv_singleplayerrespawn")>0)){
 		GiveInventory("HDLives",maxlives-deaths_common);
 	}
-	else if (GameType () == GAME_NET_DEATHMATCH)
-	{
+	else if (GameType () == GAME_NET_DEATHMATCH){
 		GiveInventory("HDLives",CurrentLives());
 	}
 
-		//Other counters
-	TakeInventory("KickCheckCounter",1);
-	if (CheckInventory("PowerLightAmpP")>0)
-	{
+	//Other counters
+	if(CheckInventory("PowerLightAmpP")>0){
 		TakeInventory("PortableLiteAmpPower",1);
-		if (CheckInventory("PortableLiteAmpPower")<1) GiveInventory("PortableLiteAmpExiter",1);
+		if(CheckInventory("PortableLiteAmpPower")<1)GiveInventory("PortableLiteAmpExiter",1);
 	}
-	if (GetUserCVar(PlayerNumber(),"hd_hudsprite")) GiveInventory("HUDSprite",1); else TakeInventory("HUDSprite",1);
-	if (GetUserCVar(PlayerNumber(),"hd_helptext")) TakeInventory("IsTextless",1); else GiveInventory("IsTextless",1);
-	if (GetCVar("hd_nomeds"))
-	{
-		TakeInventory("Injector",999);
+	if(GetCVar("hd_nomeds")){
 		TakeInventory("PortableBerserkPack",999);
 		TakeInventory("PortableMedikit",999);
 		TakeInventory("PortableStimpack",999);
 		TakeInventory("BluePotion",999);
 	}
 }
-function int CurrentLives(void)
-{
+function int CurrentLives(void){
 	if (GameType () == GAME_NET_DEATHMATCH) return maxlives-deaths[PlayerNumber()];
 	return maxlives-deaths_common;
 }
-function void ReplaceBot(void)
-{
+function void ReplaceBot(void){
 	if(!PlayerIsBot(PlayerNumber())) return;
 	if ((GetCVar("hd_nobots"))){
-		GiveInventory ("BotSpawner",1);
+		GiveInventory("BotSpawner",1);
 		SetActorPosition(0,0x7FFFFFFF,0x7FFFFFFF,0x7FFFFFFF,0);
 	}else{
 		GiveInventory("IsBot",1);
@@ -58,28 +46,21 @@ function void ReplaceBot(void)
 }
 
 
-//	CHECK DEATHMATCH
-
-script "CheckDM" (void)
-{
+//CHECK DEATHMATCH
+script "CheckDM" (void){
 	if (GameType () == GAME_NET_DEATHMATCH) SetResultValue(1);
 	else SetResultValue(0);
 }
 
-
-
-//	CHECK LIVES
-
-script "MultiLivesSet" OPEN
-{
+// CHECK LIVES
+script "MultiLivesSet" OPEN{
 	//the following sets the lives limit based on the fraglimit.
 	//in co-op, if FL exceeds 100, then the game ends the instant you get that many casualties less 100.
 	//	otherwise, if you get as many casualties as FL, you no longer respawn.
 	//in deathmatch, if FL exceeds 100, then you no longer respawn if you or your team gets that many casualties.
 	//	otherwise, FL works normally.
 
-	if (GetCVar("fraglimit")>100)
-	{
+	if(GetCVar("fraglimit")>100){
 		maxlives=GetCVar("fraglimit")-100;
 		if (GameType () != GAME_NET_DEATHMATCH) loseondeathlimit=1;
 	}
@@ -89,10 +70,8 @@ script "MultiLivesSet" OPEN
 
 
 
-//	GENERIC DEATH
-
-script "HDDeath" DEATH
-{
+// GENERIC DEATH
+script "HDDeath" DEATH{
 	TakeInventory("NullWeapon",999);
 	TakeInventory("WeaponBusy",999);
 	TakeInventory("JustUnloading",999);
@@ -118,18 +97,13 @@ script "HDDeath" DEATH
 	TakeInventory("PressingFireMode",999);
 	TakeInventory("PressingUnload",999);
 
-		//update all counters
-
+	//update all counters
 	deaths[PlayerNumber()]++;
 	deaths_common++;
-	if (!CheckInventory("WipedOut"))
-	{
-		if (GetCVar("teamplay")>0)
-		{
-			for(int i=0;i<PlayerCount();i++)
-			{
-				if((GetPlayerInfo(i,PLAYERINFO_TEAM)==GetPlayerInfo(PlayerNumber(),PLAYERINFO_TEAM)))
-				{
+	if(!CheckInventory("WipedOut")){
+		if(GetCVar("teamplay")>0){
+			for(int i=0;i<PlayerCount();i++){
+				if((GetPlayerInfo(i,PLAYERINFO_TEAM)==GetPlayerInfo(PlayerNumber(),PLAYERINFO_TEAM))){
 					if (i!=PlayerNumber()) deaths[i]++;
 				}
 			}
@@ -137,11 +111,9 @@ script "HDDeath" DEATH
 	}
 	ACS_NamedExecuteAlways("EndgameCheck",0,0,0);
 
-
-		//conditions for game end
+	//conditions for game end
 	delay(1);
-	if ((CurrentLives() < 0)&&(maxlives))
-	{
+	if((CurrentLives() < 0)&&(maxlives)){
 			//notify others that player is out
 		wipedout[PlayerNumber()]=1;
 		Log(s:"\cb", n:0, s:" is OUT!");
@@ -150,26 +122,22 @@ script "HDDeath" DEATH
 	}
 }
 
-//		GENERIC RESPAWN
-
-script "HDRespawn" RESPAWN
-{
+// GENERIC RESPAWN
+script "HDRespawn" RESPAWN{
 	TakeInventory("HDLives",999);
 	TakeInventory("Fatigue",999);
 	TakeInventory("StunCount",999);
 	TakeInventory("WoundCount",999);
 	GiveInventory("HDLives",CurrentLives());
 	CheckConfig();
-	if ((CurrentLives() < 0)&&(maxlives))
-	{
+	if ((CurrentLives()<0)&&(maxlives)){
 		GiveInventory("WipedOut",1);
 		MorphActor(0,"DeadHDPlayer","HDSmoke",0x7FFFFFFF,0,"","HDSmoke");
 		wipedout[PlayerNumber()]=1;
 		delay(1);
-		SetPlayerProperty (0, 1, PROP_TOTALLYFROZEN);				//superfreezes player
+		SetPlayerProperty(0,1,PROP_TOTALLYFROZEN); //without this they can still use stuff
 
-		if (endgame==0)
-		{
+		if(!endgame){
 			setfont("bigfont");
 			HudMessage (
 				s: "Out of lives. Restart or wait until\n\nsurvivors exit or are wiped out.";
@@ -183,17 +151,15 @@ script "HDRespawn" RESPAWN
 		terminate;
 	}
 	else ReplaceBot();
-	if (GameType () == GAME_NET_DEATHMATCH)
-	{
+	if(GameType() == GAME_NET_DEATHMATCH){
 		CheckCVars();
 		GiveInventory("IsRespawning",1);
 		delay (6);
 		TakeInventory("WoundCount",999);
 		TakeInventory("Fatigue",999);
 		TakeInventory("IsRespawning",999);
-		terminate;	//everything after this is irrelevant in deathmatch
+		terminate;
 	}
-
 	GiveInventory("IsRespawning",1);
 	delay (6);
 	TakeInventory("IsRespawning",999);
@@ -204,31 +170,29 @@ script "HDRespawn" RESPAWN
 
 //		UPDATES DEATH COUNTER AND CHECK ENDGAME
 
-script "EndgameCheck" (void)
-{
+script "EndgameCheck" (void){
 	if (maxlives<1) terminate;
-	if (endgame!=0) terminate;
+	if (endgame) terminate;
 	int i;
-	if ((GameType()==GAME_NET_DEATHMATCH) && (GetCVar("teamplay")>0) && (PlayerCount()>2))
-	{
+	if ((GameType()==GAME_NET_DEATHMATCH) && (GetCVar("teamplay")>0) && (PlayerCount()>2)){
 		delay(35);
 		if (endgame!=0) terminate;
 		int teamsleft=0;
 		int survivingteam;
 
-		for (i=0;i<32;i++)			//clear surviving teams array
-		{
+		//clear surviving teams array
+		for (i=0;i<32;i++){
 			survivingteams[i]=0;
 		}
-		for (i=0;i<PlayerCount();i++)		//add to surviving teams array if survivor found
-		{
+		//add to surviving teams array if survivor found
+		for (i=0;i<PlayerCount();i++){
 			if(wipedout[i]<1)
 			{
 				survivingteams[GetPlayerInfo(i,PLAYERINFO_TEAM)]++;
 			}
 		}
-		for (i=0;i<32;i++)			//evaluate surviving teams array
-		{
+		//evaluate surviving teams array
+		for (i=0;i<32;i++){
 			if(survivingteams[i]>0)
 			{
 				teamsleft++;
@@ -236,8 +200,7 @@ script "EndgameCheck" (void)
 			}
 		}
 
-		if (teamsleft<2)
-		{
+		if (teamsleft<2){
 			endgame=1;
 			delay(1);
 			HudMessageBold(s:"";0,4,0,0,0,0);
@@ -278,8 +241,7 @@ script "EndgameCheck" (void)
 		}
 		terminate;
 	}
-	else if (GameType()==GAME_NET_DEATHMATCH)
-	{
+	else if (GameType()==GAME_NET_DEATHMATCH){
 		int totalpossibledeaths=maxlives*PlayerCount()+PlayerCount();
 
 				//figure out who the winner is
@@ -287,18 +249,15 @@ script "EndgameCheck" (void)
 		if (endgame!=0) terminate;
 		int winnernum;
 		int survivors=0;
-		for (i=0;i<PlayerCount();i++)
-		{
-			if(deaths[i]<maxlives+1)
-			{
+		for (i=0;i<PlayerCount();i++){
+			if(deaths[i]<maxlives+1){
 				winnernum=i+1;
 				survivors++;
 			}
 		}
 
 				//if winner exists, announce it
-		if ((winnernum<=PlayerCount())&&(survivors<2))
-		{
+		if((winnernum<=PlayerCount())&&(survivors<2)){
 			str posspron="their";
 			if (GetPlayerInfo(winnernum-1,PLAYERINFO_GENDER)==0) posspron="his";
 			if (GetPlayerInfo(winnernum-1,PLAYERINFO_GENDER)==1) posspron="her";
@@ -334,15 +293,13 @@ script "EndgameCheck" (void)
 		}
 		terminate;
 	}
-	else if ((GameType () == GAME_NET_COOPERATIVE) || (GetCVar("sv_singleplayerrespawn")>0))
-	{
+	else if (!endgame && (GameType () == GAME_NET_COOPERATIVE) || (GetCVar("sv_singleplayerrespawn")>0)){
 		delay(2);
-		if (!endgame && deaths_common>=maxlives+PlayerCount())
-		{
+		if (deaths_common>=maxlives+PlayerCount()){
+			endgame=1;
 
 			//fancy text will crash. Seems related to bots.
 				Log(s:"Wiped out! Try again.");
-				endgame=1;
 				delay(1);
 				Teleport_NewMap(GetLevelInfo(LEVELINFO_LEVELNUM),0,0);
 				terminate;
@@ -364,8 +321,7 @@ script "EndgameCheck" (void)
 			Teleport_NewMap(GetLevelInfo(LEVELINFO_LEVELNUM),0,0);
 			terminate;
 		}
-		else if (!endgame && (deaths_common>=maxlives) && (loseondeathlimit==1))
-		{
+		else if ((deaths_common>=maxlives) && (loseondeathlimit==1)){
 			endgame=1;
 
 			//fancy text will crash. Seems related to bots.
@@ -374,7 +330,6 @@ script "EndgameCheck" (void)
 				Teleport_NewMap(GetLevelInfo(LEVELINFO_LEVELNUM),0,0);
 				terminate;
 			//fancy text will crash. Seems related to bots.
-
 
 			HudMessageBold(s:"";0,4,0,0,0,0);
 			HudMessageBold(s:"";0,3,0,0,0,0);

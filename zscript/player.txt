@@ -183,9 +183,15 @@ class HDPlayerPawn:PlayerPawn{
 		if(bkilled||health<1||countinv("WipedOut")) return;
 		HeartTicker();
 
+		//prevent odd screwups that leave you unable to throw grenades or something
+		if(!countinv("Ring")){
+			A_GiveInventory("BasicLoadout",1);
+			A_SelectWeapon("Ring");
+		}
+
 
 		//add inventory flags for inputs
-		//remove ONLY once all of these deprecated inventory flags have been removed!
+		//remove ONLY when a deprecated inventory flags has been removed from all code!
 		A_TakeInventory("IsSprinting");
 		A_TakeInventory("IsCrouching");
 		A_TakeInventory("PressingFire");
@@ -210,8 +216,6 @@ class HDPlayerPawn:PlayerPawn{
 		if(countinv("WeaponBusy"))A_TakeInventory("IsWeaponReady");
 		if(height<40)A_GiveInventory("IsCrouching");
 		if(input&BT_SPEED)A_GiveInventory("IsSprinting");
-
-		//gotta keep this one for the crosshairs
 		if(fm||sm)A_GiveInventory("IsMoving");
 
 
@@ -238,7 +242,6 @@ class HDPlayerPawn:PlayerPawn{
 		//see if player is intentionally walking, running or sprinting
 		//-1 = walk, 0 = run, 1 = sprint
 		if(input & BT_SPEED) runwalksprint=1;
-//		else if(getcvar("cl_run"))runwalksprint=0; //doing it this way desyncs
 		else if(6400<max(abs(fm),abs(sm)))runwalksprint=0;
 		else runwalksprint=-1;
 
@@ -484,6 +487,8 @@ extend class HDPlayerPawn{
 
 		A_GiveInventory("JustStarted",1);
 		A_GiveInventory("PowerFrightener",1);
+
+		A_TakeInventory("LethalDamage",1);
 
 		ConsolidateWeapons();
 	}

@@ -144,16 +144,9 @@ script "HDDoomguy" (void){
 
 //MAIN LOOP
 script "HDEnter" ENTER{
-	TakeInventory("LethalDamage",1);
 	ReplaceBot();
+	CheckConfig();
 	SetPlayerProperty(0,0,PROP_TOTALLYFROZEN);	//unsuperfreezes player
-	while(1){
-		if(!CheckInventory("Ring")){
-			GiveInventory("BasicLoadout",1);
-			SetWeapon("Ring");
-		}
-		delay(1);
-	}
 }
 
 
