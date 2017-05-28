@@ -41,7 +41,7 @@ ACTOR RocquetteLauncher : HDWeapon
 		"----" A 2 A_WeaponReady(WRF_NOFIRE)
 		"----" A 0{
 			A_GiveInventory("WeaponBusy",1);
-			if (countinv("PressingFire")+countinv("PressingAltfire")>0){
+			if(countinv("PressingFire")+countinv("PressingAltfire")>0){
 				return state("abclick");
 			}else if(countinv("PressingZoom")>0){
 				A_TakeInventory("AirburstCount");
@@ -51,8 +51,8 @@ ACTOR RocquetteLauncher : HDWeapon
 		}
 	abclick:
 		"----" A 0{
-			if (countinv("PressingFire")>0){A_GiveInventory("AirburstCount",1);}
-			else if (countinv("PressingAltFire")>0){A_TakeInventory("AirburstCount",1);}
+			if(countinv("PressingFire")>0){A_GiveInventory("AirburstCount",1);}
+			else if(countinv("PressingAltFire")>0){A_TakeInventory("AirburstCount",1);}
 			return state("abadjust");
 		}
 
@@ -81,7 +81,7 @@ ACTOR RocquetteLauncher : HDWeapon
 		MISG A 0 A_TakeInventory("IsWeaponReady")
 		MISG A 0 A_JumpIfInventory("HEATLoaded",1,"ReallyShootHEAT")
 		MISG B 8 A_JumpIfInventory("RocketMag", 1, "ReallyShoot")
-		MISG B 4 offset (0,36)
+		MISG B 4 offset(0,36)
 		MISG B 0 A_Refire
 		goto Ready
 		MISG A 2
@@ -120,9 +120,9 @@ ACTOR RocquetteLauncher : HDWeapon
 		TNT1 A 0 A_GiveInventory("IsUsingRocketUnderslung")
 		TNT1 A 0 A_Jump(256,2)
 		TNT1 A 0 A_TakeInventory("IsUsingRocketUnderslung")
-		MISG A 1 offset (0,34)
-		MISG A 2 offset (0,36)
-		MISG A 1 offset (0,34)
+		MISG A 1 offset(0,34)
+		MISG A 2 offset(0,36)
+		MISG A 1 offset(0,34)
 		goto nope
 	FireFrag:
 	AltShoot:
@@ -132,9 +132,9 @@ ACTOR RocquetteLauncher : HDWeapon
 		goto Ready
 		MISG A 0 A_TakeInventory("RocketMag",1)
 		MISG A 0 A_SpawnItemEx("GyroGrenade",0,0,height-6,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH)
-		MISG A 0 A_PlayWeaponSound ("weapons/grenadeshot")
+		MISG A 0 A_PlayWeaponSound("weapons/grenadeshot")
 		MISG A 1 A_ZoomFactor(0.97,ZOOM_INSTANT|ZOOM_NOSCALETURNING)
-		MISG A 1 offset (0,37)
+		MISG A 1 offset(0,37)
 		TNT1 A 0 A_ZoomFactor(1.0,ZOOM_INSTANT|ZOOM_NOSCALETURNING)
 		MISG B 3 ACS_NamedExecuteAlways("MuzzleClimb", 0, random(38,42), random(20,22), 0)
 		MISG A 0 A_Refire
@@ -169,12 +169,12 @@ ACTOR RocquetteLauncher : HDWeapon
 		TNT1 A 0 ACS_NamedExecuteAlways("MuzzleClimb",0,random(-12,-24),random(12,24),0)
 		TNT1 A 0 A_TakeInventory("IsWeaponLong")
 		MISG B 4 offset(12,40) A_PlaySound("weapons/rifleclick2",7)
-		MISG B 10 offset(11,38) A_PlaySound ("weapons/grenopen",7)
+		MISG B 10 offset(11,38) A_PlaySound("weapons/grenopen",7)
 		Goto Reload2
 	Reload2:
 		MISG B 0 A_JumpIfInventory("HDRocketAmmo", 1, 1)
 		goto Reload3
-		MISG B 0 A_JumpIfInventory("RocketMag", 0, "Reload3")
+		MISG B 0 A_JumpIfInventory("RocketMag",0,"Reload3")
 
 		MISG B 9 offset(10,38) A_PlayWeaponSound("weapons/pocket")
 		TNT1 A 0 A_JumpIfHealthLower(60,2)
@@ -183,16 +183,19 @@ ACTOR RocquetteLauncher : HDWeapon
 		TNT1 A 0 A_JumpIfHealthLower(40,2)
 		TNT1 A 0 A_Jump(256,2)
 		MISG B 4
-		MISG B 2 offset(12,40) A_PlayWeaponSound ("weapons/rockreload")
-		MISG B 3 offset(10,38) ACS_NamedExecuteAlways("Reload", 0, 3, 1, 0)
+		MISG B 2 offset(12,40) A_PlayWeaponSound("weapons/rockreload")
+		MISG B 3 offset(10,38){
+			A_TakeInventory("HDRocketAmmo",1,TIF_NOTAKEINFINITE);
+			A_GiveInventory("RocketMag");
+		}
 
 		MISG BB 1 offset(10,34){
 			if(countinv("PressingUnload")+countinv("PressingReload")+countinv("PressingFire")+countinv("PressingAltfire")>0){return state("interrupt");}return state("");
 		}
 		loop
 	Reload3:
-		MISG B 5 offset(10,36) A_PlayWeaponSound ("weapons/grenopen")
-		MISG B 0 A_PlayWeaponSound ("weapons/rifleclick2")
+		MISG B 5 offset(10,36) A_PlayWeaponSound("weapons/grenopen")
+		MISG B 0 A_PlayWeaponSound("weapons/rifleclick2")
 		MISG B 1 offset(8,38)
 		MISG B 1 offset(4,36)
 		MISG B 1 offset(2,34)
@@ -222,7 +225,7 @@ ACTOR RocquetteLauncher : HDWeapon
 		TNT1 A 0 A_JumpIfHealthLower(40,2)
 		TNT1 A 0 A_Jump(256,2)
 		MISG B 4
-		MISG B 10 offset(0,40) A_PlayWeaponSound ("weapons/rockreload")
+		MISG B 10 offset(0,40) A_PlayWeaponSound("weapons/rockreload")
 
 		MISG B 0 A_JumpIfInventory("RocketMag",0,"AltReload2Full")
 		goto AltReload2a
@@ -233,7 +236,7 @@ ACTOR RocquetteLauncher : HDWeapon
 		goto AltReload2a
 		TNT1 A 0 A_SpawnItemEx("HDRocketAmmo",10,0,10,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION)
 	AltReload2a:
-		MISG B 3 offset(0,38) //ACS_NamedExecuteAlways("Reload", 0, 3, 1, 0)
+		MISG B 3 offset(0,38)
 		MISG B 2 offset(0,34)
 	AltReload3:
 		TNT1 A 0 A_JumpIfInventory("HEATLoaded",1,"AltReload4")
@@ -252,8 +255,8 @@ ACTOR RocquetteLauncher : HDWeapon
 	dropheat:
 		TNT1 A 0 A_SpawnItemEx("HEATAmmo",10,0,10,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION)
 	AltReload5:
-		MISG B 5 offset(0,36) A_PlayWeaponSound ("weapons/grenopen")
-		MISG B 0 A_PlayWeaponSound ("weapons/rifleclick2")
+		MISG B 5 offset(0,36) A_PlayWeaponSound("weapons/grenopen")
+		MISG B 0 A_PlayWeaponSound("weapons/rifleclick2")
 		MISG B 1 offset(0,38)
 		MISG B 1 offset(0,36)
 		MISG B 1 offset(0,34)
@@ -287,10 +290,10 @@ ACTOR RocquetteLauncher : HDWeapon
 		MISG B 1 offset(10,38)
 		TNT1 A 0 ACS_NamedExecuteAlways("MuzzleClimb",0,random(-12,-24),random(12,24),0)
 		TNT1 A 0 A_TakeInventory("IsWeaponLong")
-		MISG B 4 offset(12,40) A_PlayWeaponSound ("weapons/rifleclick2")
-		MISG B 2 offset(11,38) A_PlayWeaponSound ("weapons/grenopen")
+		MISG B 4 offset(12,40) A_PlayWeaponSound("weapons/rifleclick2")
+		MISG B 2 offset(11,38) A_PlayWeaponSound("weapons/grenopen")
 	Unload2:
-		MISG B 10 offset(12,40) A_PlayWeaponSound ("weapons/rockreload")
+		MISG B 10 offset(12,40) A_PlayWeaponSound("weapons/rockreload")
 
 		TNT1 A 0 A_TakeInventory("RocketMag",1)
 		MISG A 0 A_JumpIfInventory("HDRocketAmmo",0,2)
@@ -299,9 +302,9 @@ ACTOR RocquetteLauncher : HDWeapon
 		TNT1 A 0 A_DropItem("HDRocketAmmo")
 		TNT1 A 0 A_Jump(256,3)
 		TNT1 A 0 A_GiveInventory("HDRocketAmmo",1)
-		MISG B 9 offset(10,38) A_PlayWeaponSound ("weapons/pocket")
-		MISG B 5 offset(10,36) A_PlayWeaponSound ("weapons/grenopen")
-		MISG B 0 A_PlayWeaponSound ("weapons/rifleclick2")
+		MISG B 9 offset(10,38) A_PlayWeaponSound("weapons/pocket")
+		MISG B 5 offset(10,36) A_PlayWeaponSound("weapons/grenopen")
+		MISG B 0 A_PlayWeaponSound("weapons/rifleclick2")
 		TNT1 A 0 A_Jump(256,2)
 		MISG B 3
 		TNT1 A 0 A_JumpIfHealthLower(40,2)
@@ -379,7 +382,7 @@ actor AirburstCount : InventoryFlag {inventory.maxamount 24}
 
 actor RocquetteScorcher
 {
-	radius 2 height 2 projectile damage (0)
+	radius 2 height 2 projectile damage(0)
 	decal "Scorch"
 	states
 	{
@@ -405,12 +408,12 @@ actor RocquetteExploder : IdleDummy
 		TNT1 AA 0 A_SpawnItemEx("HDExplosion", random(-1,1),random(-1,1),2, 0,0,0, 0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
 		TNT1 A 2 A_SpawnItemEx("HDExplosion", 0,0,0, 0,0,2, 0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
 		TNT1 A 0 A_SpawnItemEx("Frags", 0,0,2, 0,0,0, 0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
-		TNT1 AAAAAAAAAAAAAAA 0 A_SpawnItemEx ("BigWallChunk", 0,0,1, random(-1,6),random(-4,4),random(4,18),random(-15,15),160)
+		TNT1 AAAAAAAAAAAAAAA 0 A_SpawnItemEx("BigWallChunk", 0,0,1, random(-1,6),random(-4,4),random(4,18),random(-15,15),160)
 	Death2:
-		TNT1 AA 0 A_SpawnItemEx ("HDSmoke", -1,0,1, random(-2,3),random(-2,2),0, random(-15,15),SXF_NOCHECKPOSITION)
-		TNT1 A 0 A_SetTranslucent (1, 1)
+		TNT1 AA 0 A_SpawnItemEx("HDSmoke", -1,0,1, random(-2,3),random(-2,2),0, random(-15,15),SXF_NOCHECKPOSITION)
+		TNT1 A 0 A_SetTranslucent(1, 1)
 		TNT1 A 0 A_AlertMonsters
-		TNT1 A 0 A_SpawnItemEx ("DistantRocket", 0,0,0, 0,0,0, 0,32)
+		TNT1 A 0 A_SpawnItemEx("DistantRocket", 0,0,0, 0,0,0, 0,32)
 		TNT1 A 21 A_Quake(2,21,0,200,none)
 		stop
 	}
@@ -436,7 +439,7 @@ ACTOR Rocquette : FastProjectile
 	var int user_timer;
 	var int user_impactangle;
 	reactiontime 0
-	damage (random(10,40)+user_rocqdamage)
+	damage(random(10,40)+user_rocqdamage)
 	States
 	{
 	Spawn:
@@ -565,13 +568,13 @@ actor DudRocquette:HDUPK{
 		ROCQ AB 2 A_SetAngle(angle+45)
 		loop
 	death:
-		TNT1 A 0 A_ChangeFlag ("missile",0)
-		TNT1 A 0 A_ChangeFlag ("pushable",1)
-		TNT1 A 0 A_ChangeFlag ("shootable",1)
-		TNT1 A 0 A_ChangeFlag ("solid",1)
+		TNT1 A 0 A_ChangeFlag("missile",0)
+		TNT1 A 0 A_ChangeFlag("pushable",1)
+		TNT1 A 0 A_ChangeFlag("shootable",1)
+		TNT1 A 0 A_ChangeFlag("solid",1)
 	dead:
-		ROCQ A 500 A_Jump (32,"clean")
-		ROCQ A 500 A_Jump (8,"Explode")
+		ROCQ A 500 A_Jump(32,"clean")
+		ROCQ A 500 A_Jump(8,"Explode")
 		loop
 	clean:
 		ROCQ A -1
@@ -692,7 +695,7 @@ ACTOR Blooper : HDWeapon
 		"----" A 2 A_WeaponReady(WRF_NOFIRE)
 		"----" A 0{
 			A_GiveInventory("WeaponBusy",1);
-			if (countinv("PressingFire")+countinv("PressingAltfire")>0){
+			if(countinv("PressingFire")+countinv("PressingAltfire")>0){
 				return state("abclick");
 			}else if(countinv("PressingZoom")>0){
 				A_TakeInventory("AirburstCount");
@@ -702,8 +705,8 @@ ACTOR Blooper : HDWeapon
 		}
 	abclick:
 		"----" A 0{
-			if (countinv("PressingFire")>0){A_GiveInventory("AirburstCount",1);}
-			else if (countinv("PressingAltFire")>0){A_TakeInventory("AirburstCount",1);}
+			if(countinv("PressingFire")>0){A_GiveInventory("AirburstCount",1);}
+			else if(countinv("PressingAltFire")>0){A_TakeInventory("AirburstCount",1);}
 			return state("abadjust");
 		}
 
@@ -716,7 +719,7 @@ ACTOR Blooper : HDWeapon
 		TNT1 A 0 A_SpawnItemEx("GyroGrenade",0,0,height-6,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH)
 		BLOG A 0 A_PlayWeaponSound("weapons/grenadeshot")
 		BLOG A 1 A_ZoomFactor(0.965,ZOOM_INSTANT|ZOOM_NOSCALETURNING)
-		BLOG A 1 offset (0,37)
+		BLOG A 1 offset(0,37)
 		TNT1 A 0 A_ZoomFactor(1.0,ZOOM_INSTANT|ZOOM_NOSCALETURNING)
 		BLOG B 3 ACS_NamedExecuteAlways("MuzzleClimb", 0, random(34,52), random(20,27), 0)
 		BLOG A 0 A_Refire
@@ -758,8 +761,8 @@ ACTOR Blooper : HDWeapon
 		TNT1 A 0 A_TakeInventory("HDRocketAmmo",1,TIF_NOTAKEINFINITE)
 		TNT1 A 0 A_GiveInventory("BloopChamber",1)
 	Reload3:
-		BLOG B 5 offset(10,36) A_PlayWeaponSound ("weapons/grenopen")
-		BLOG B 0 A_PlayWeaponSound ("weapons/rifleclick2")
+		BLOG B 5 offset(10,36) A_PlayWeaponSound("weapons/grenopen")
+		BLOG B 0 A_PlayWeaponSound("weapons/rifleclick2")
 		BLOG B 1 offset(8,38)
 		BLOG B 1 offset(4,36)
 		BLOG B 1 offset(2,34)

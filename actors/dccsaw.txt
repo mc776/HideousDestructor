@@ -169,7 +169,7 @@ actor Lumberjack : HDWeapon //replaces Chainsaw
 			A_PlayWeaponSound("weapons/grenopen");
 			if(
 				(countinv("PressingUnload")+countinv("PressingReload")<1)
-				||(countinv("HDCellAmmo")>CallACS("AmmoCap",2)-countinv("LumberCell")/60)      
+				||(countinv("HDCellAmmo")>AmmoCap("HDCellAmmo")-countinv("LumberCell")/60)      
 				||(
 					(countinv("LumberCell")>=1200)  
 					&&(A_JumpIfInventory("HDCellPacks",0,"null"))

@@ -310,7 +310,7 @@ ACTOR Hunter : HDWeapon
 			A_TakeInventory("ShotgunQuickAmmo",countinv("ShotgunHand"));
 		}
 		SHTG A 3 offset(5,37){	//pocket if there's space
-			if(countinv("HDSHellAmmo")+countinv("ShotgunHand")<=CallACS("AmmoCap",3)){
+			if(countinv("HDSHellAmmo")+countinv("ShotgunHand")<=AmmoCap("HDShellAmmo")){
 				A_SetTics(8);
 				A_WeaponReady(WRF_NOFIRE);
 				A_PlaySound("weapons/pocket");
@@ -857,7 +857,7 @@ ACTOR Slayer : HDWeapon
 			A_TakeInventory("ShotgunQuickAmmo2",countinv("ShotgunHand"));
 		}
 		SHT2 A 3 offset(5,37){	//pocket if not full
-			if(countinv("HDSHellAmmo")+countinv("ShotgunHand")<=CallACS("AmmoCap",3)){
+			if(countinv("HDSHellAmmo")+countinv("ShotgunHand")<=AmmoCap("HDShellAmmo")){
 				A_SetTics(8);
 				A_WeaponReady(WRF_NOFIRE);
 				A_PlaySound("weapons/pocket");

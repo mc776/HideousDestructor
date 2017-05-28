@@ -1,4 +1,27 @@
 
+function int GetWeaponInt(void){
+	if (CheckWeapon("Ring")) return 10;
+	if (CheckWeapon("Lumberjack")) return 11;
+	if (CheckWeapon("HDPistol")) return 20;
+	if (CheckWeapon("ZM66SemiRifle")) return 21;
+	if (CheckWeapon("ZM66Rifle")) return 22;
+	if (CheckWeapon("ZM66GrenadeRifle")) return 23;
+	if (CheckWeapon("Hunter")) return 30;
+	if (CheckWeapon("Slayer")) return 31;
+	if (CheckWeapon("Vulcanette")) return 40;
+	if (CheckWeapon("HDSMG")) return 41;
+	if (CheckWeapon("HDFragGrenades")) return 50;
+	if (CheckWeapon("RocquetteLauncher")) return 51;
+	if (CheckWeapon("Blooper")) return 52;
+	if (CheckWeapon("ThunderBuster")) return 60;
+	if (CheckWeapon("BFG9K")) return 70;
+	if (CheckWeapon("Injector")) return 80;
+	if (CheckWeapon("Brontornis")) return 90;
+	if (CheckWeapon("LiberatorRifle")) return 100;
+	if (CheckWeapon("LiberatorGrenadeRifle")) return 101;
+	if (CheckWeapon("BossRifle")) return 102;
+	return 0;
+}
 script "CrossHairs"(void){
 	if(
 		//these are the only checks that can't be done on ZScript
@@ -9,9 +32,10 @@ script "CrossHairs"(void){
 			)||(CheckWeapon("HDPistol"))
 		)
 	){
+		int mincamtid=-32000;
+		int wep=GetWeaponInt();
 		sethudsize(319,239,1);
-		switch(weapon[PlayerNumber()])
-		{
+		switch(wep){
 		case 20: if(CheckInventory("IsMoving")<4){
 			setfont("xh26");
 			HudMessage (s:"a"; HUDMSG_PLAIN|HUDMSG_ALPHA|HUDMSG_NOTWITHFULLMAP,4,0,

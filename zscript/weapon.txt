@@ -21,6 +21,9 @@ class HDWeapon:Weapon{
 		weapon.bobrangex 0.2;
 		weapon.bobrangey 0.8;
 	}
+	int AmmoCap(class<inventory> inv){
+		return HDMath.MaxInv(self,inv);
+	}
 	override void AttachToOwner(Actor user){
 		super.attachtoowner(user);
 		if(user){

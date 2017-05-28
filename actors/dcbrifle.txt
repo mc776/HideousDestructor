@@ -421,7 +421,7 @@ actor LiberatorRifle : HDWeapon
 				)||(
 					//partial mag and you have more spares than you can fit
 					(!A_JumpIfInventory("LiberatorLoaded",0,"null"))
-					&&(countinv("SevenMilAmmo")>CallACS("AmmoCap",7)-countinv("LiberatorLoaded"))
+					&&(countinv("SevenMilAmmo")>AmmoCap("SevenMilAmmo")-countinv("LiberatorLoaded"))
 				)||(
 					//nothing worth keeping in this mag
 					(countinv("LiberatorLoaded")<1)

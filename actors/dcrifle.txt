@@ -292,7 +292,7 @@ actor ZM66GrenadeRifle:HDWeapon{
 				(countinv("PressingUnload")+countinv("PressingReload")<1)
 				||(
 					(countinv("ZM66Loaded")<50)
-					&&(countinv("FourMilAmmo")>CallACS("AmmoCap",4)-countinv("ZM66Loaded"))    
+					&&(countinv("FourMilAmmo")>AmmoCap("FourMilAmmo")-countinv("ZM66Loaded"))    
 				)
 				||(
 					(countinv("ZM66Loaded")>49)    

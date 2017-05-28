@@ -1,53 +1,6 @@
 #library "HDACS"
 #include "zcommon.acs"
 
-str pickuptype[3]={"PortableBerserkPack","PortableMedikit","PortableStimpack"};
-int pickupadd[3]={100,30,15};
-
-int mincamtid=-32000;
-
-str ammotype[12]={"ZM66Loaded", "ShotgunTube", "ChaingunBox", "RocketMag", "PlasmaBattery", "BFGChamber", "ShellChamber1", "ZM66GLoaded", "HDPistolLoaded", "BrontornisMag", "LiberatorLoaded", "HDSMGLoaded"};
-str ammosupplytype[12]={"FourMilAmmo", "HDShellAmmo", "FourMilAmmo", "HDRocketAmmo", "HDCellAmmo", "HDCellAmmo", "HDShellAmmo", "HDRocketAmmo", "HDPistolAmmo", "BrontornisRound", "LiberatorMag", "HDPistolAmmo"};
-
-int turnanglemomentum[8];
-int turnpitchmomentum[8];
-int standingangle[8];
-int weapon[8];
-int overloaded[8];
-int lastangle[8];
-int lastpitch[8];
-int lastheight[8];
-str lastweapon[8];
-str headheight[8];
-str headforward[8];
-str speed[8];
-
-int fatcaps[8];
-int fatcapr[8];
-int maxsprintfatigue=50; //+health
-int maxrunfatigue=40; //+health/2
-
-
-int noobdamageskill = 0;
-int punisherskill = 5;
-
-bool playingd2 = false;
-
-
-//ammo capacities for maintenance-friendliness
-int mag_fourmil = 50;
-int mag_pistol = 15;
-int mag_shotty = 7;
-int mag_ssg = 2;
-int mag_rocket = 6;
-int mag_cell = 20;
-int mag_bronto = 1;
-int mag_lib = 30;
-int mag_smg = 30;
-int mag_vcell = 30000;
-int mag_bos = 10;
-
-
 function int abs (int x){
 	if(x<0) return -x;
 	return x;
@@ -57,85 +10,20 @@ function int sign(int x){
 	if(x<0) return -1;
 	return 0;
 }
-function int GetWeaponInt(void)
-{
-	if (CheckWeapon("Ring")) return 10;
-	if (CheckWeapon("Lumberjack")) return 11;
-	if (CheckWeapon("HDPistol")) return 20;
-	if (CheckWeapon("ZM66SemiRifle")) return 21;
-	if (CheckWeapon("ZM66Rifle")) return 22;
-	if (CheckWeapon("ZM66GrenadeRifle")) return 23;
-	if (CheckWeapon("Hunter")) return 30;
-	if (CheckWeapon("Slayer")) return 31;
-	if (CheckWeapon("Vulcanette")) return 40;
-	if (CheckWeapon("HDSMG")) return 41;
-	if (CheckWeapon("HDFragGrenades")) return 50;
-	if (CheckWeapon("RocquetteLauncher")) return 51;
-	if (CheckWeapon("Blooper")) return 52;
-	if (CheckWeapon("ThunderBuster")) return 60;
-	if (CheckWeapon("BFG9K")) return 70;
-	if (CheckWeapon("Injector")) return 80;
-	if (CheckWeapon("Brontornis")) return 90;
-	if (CheckWeapon("LiberatorRifle")) return 100;
-	if (CheckWeapon("LiberatorGrenadeRifle")) return 101;
-	if (CheckWeapon("BossRifle")) return 102;
-	return 0;
-}
-script "CurrWepNo" (void)
-{
-	SetResultValue(GetWeaponInt());
-}
-function str GetBestWeapon(void)
-{
-	if ((CheckInventory("LiberatorGrenadeRifle"))&&(CheckInventory("LiberatorLoaded")>=10)) return "LiberatorGrenadeRifle";
-	if ((CheckInventory("LiberatorRifle"))&&(CheckInventory("LiberatorLoaded")>=10)) return "LiberatorRifle";
-	if ((CheckInventory("ZM66Rifle"))&&(CheckInventory("ZM66Loaded")>=10)) return "ZM66Rifle";
-	if ((CheckInventory("ZM66GrenadeRifle"))&&(CheckInventory("ZM66Loaded")>=10)) return "ZM66GrenadeRifle";
-	if ((CheckInventory("HDSMG"))&&(CheckInventory("HDSMGLoaded")>=10)) return "HDSMG";
-	if ((CheckInventory("Hunter"))&&(CheckInventory("ShotgunTube")>=4)) return "Hunter";
-	if ((CheckInventory("Slayer"))&&(CheckInventory("ShellChamber1")>0)&&(CheckInventory("ShellChamber2")>0)) return "Slayer";
-	if ((CheckInventory("ZM66SemiRifle"))&&(CheckInventory("ZM66Loaded")>=10)) return "ZM66SemiRifle";
-	if ((CheckInventory("HDSMG"))&&(CheckInventory("HDSMGLoaded")>=5)) return "HDSMG";
-	if ((CheckInventory("BossRifle"))&&(CheckInventory("BossMag")>=3)) return "BossRifle";
-	if ((CheckInventory("HDPistol"))&&(CheckInventory("HDPistolLoaded")>=5)) return "HDPistol";
-	if ((CheckInventory("Vulcanette"))&&(CheckInventory("ChaingunBox")>=30)) return "Vulcanette";
-	if ((CheckInventory("RocquetteLauncher"))&&(CheckInventory("RocketMag")>=5)) return "RocquetteLauncher";
-	if ((CheckInventory("Brontornis"))&&(CheckInventory("BrontornisMag")>=1)) return "Brontornis";
-	if ((CheckInventory("ThunderBuster"))&&(CheckInventory("PlasmaBattery")>=10)) return "ThunderBuster";
-	if ((CheckInventory("BFG9K"))&&(CheckInventory("BFGChamber")>=20)&&(CheckInventory("BFGInternalCharge")>=20)) return "BFG9K";
-	if (CheckInventory("PowerStrength")) return "Ring";
-	if (CheckInventory("Lumberjack")) return "Lumberjack";
-	return "Ring";
-}
-function str DisableWeapon(void)
-{
-	GiveInventory("NulledWeapon",1);
-	if (GetWeapon()!="NullWeapon") lastweapon[PlayerNumber()]=GetWeapon();
-	if ((GetWeapon()!="Ring")&&(GetWeapon()!="HDFragGrenades"))
-	{
-		GiveInventory ("NullWeapon",1);
-		return "NullWeapon";
-	}
-	return lastweapon[PlayerNumber()];
-}
-function void CheckCVars(void)
-{
-	if (GetCVar("hd_forcepistolstart"))
-	{
+
+function void CheckCVars(void){
+	if (GetCVar("hd_forcepistolstart")){
 		UseInventory("HDRealDoomGuy");
 		SetWeapon("HDPistol");
 	}
-	else
-	{
-		if ((GetCVar("hd_nobfg"))&&(CheckInventory("BFG9k")))
-		{
+	else{
+		if ((GetCVar("hd_nobfg"))&&(CheckInventory("BFG9k"))){
 			TakeInventory("BFG9k",999);
 			GiveInventory("ThunderBuster",1);
-			GiveInventory("PlasmaBattery",mag_cell*3);
+			GiveInventory("PlasmaBattery",60);
 			SetWeapon("ThunderBuster");
 		}
-		if ((GetCVar("hd_nobronto"))&&(GetCVar("hd_norockets")))
-		{
+		if ((GetCVar("hd_nobronto"))&&(GetCVar("hd_norockets"))){
 			if ((CheckInventory("Brontornis"))||(CheckInventory("RocquetteLauncher")))
 			{
 				TakeInventory("RocquetteLauncher",999);
@@ -148,402 +36,46 @@ function void CheckCVars(void)
 				GiveInventory("ZM66GrenadeRifle",1);
 				GiveInventory("ZM66GLoaded",1);
 				GiveInventory("ZM66RifleMags",5);
-				GiveInventory("ZM66Loaded",mag_fourmil);
+				GiveInventory("ZM66Loaded",50);
+				GiveInventory("ZM66Chamber",1);
 				GiveInventory("HDRocketAmmo",8);
 				GiveInventory("HDFragGrenadeAmmo",8);
 				SetWeapon("ZM66GrenadeRifle");
 			}
 		}
-		else
-		{
-			if ((GetCVar("hd_nobronto"))&&(CheckInventory("Brontornis")))
-			{
+		else{
+			if ((GetCVar("hd_nobronto"))&&(CheckInventory("Brontornis"))){
 				TakeInventory("Brontornis",999);
 				TakeInventory("BrontornisMag",999);
 				TakeInventory("BrontornisRound",999);
 				GiveInventory("RocquetteLauncher",1);
-				GiveInventory("RocketMag",mag_rocket);
+				GiveInventory("RocketMag",6);
 				GiveInventory("HDRocketAmmo",16);
 				SetWeapon("RocquetteLauncher");
 			}
-			if ((GetCVar("hd_norockets"))&&(CheckInventory("RocquetteLauncher")))
-			{
+			if ((GetCVar("hd_norockets"))&&(CheckInventory("RocquetteLauncher"))){
 				TakeInventory("RocquetteLauncher",999);
 				TakeInventory("RocketMag",999);
 				TakeInventory("HDRocketAmmo",999);
 				GiveInventory("Brontornis",1);
 				GiveInventory("BrontornisRound",12);
-				GiveInventory("BrontornisMag",mag_bronto);
+				GiveInventory("BrontornisMag",1);
 				SetWeapon("Brontornis");
 			}
 		}
 	}
 }
-function void ConsolidateWeapons(void)
-{
-	int tempnum;
-
-	CheckCVars();
-
-	tempnum=CheckInventory("HDPistolChamber")+CheckInventory("HDPistolLoaded")+CheckInventory("HDPistolAmmo")+(CheckInventory("HDPistolMag")*mag_pistol);
-	if ((tempnum>0)&&(CheckInventory("HDPistol")))
-	{
-		TakeInventory("HDPistolLoaded",999);
-		TakeInventory("HDPistolMag",999);
-		TakeInventory("HDPistolAmmo",999);
-
-		//if supply does not exceed 1 fully tac-loaded pistol
-		if (tempnum<=mag_pistol+1)
-		{
-			GiveInventory("HDPistolChamber",1);
-			GiveInventory("HDPistolLoaded",tempnum-1);
-		}
-		else
-		{
-			GiveInventory("HDPistolLoaded",mag_pistol);
-			GiveInventory("HDPistolChamber",1);
-			tempnum=tempnum-mag_pistol-1;
-			while ((CheckInventory("HDPistolMag")<GetAmmoCapacity("HDPistolMag"))&&(tempnum>=mag_pistol))
-			{
-				tempnum=tempnum-mag_pistol;
-				GiveInventory("HDPistolMag",1);
-			}
-			GiveInventory("HDPistolAmmo",tempnum);
-		}
-	}
-
-	tempnum=CheckInventory("HDSecondPistolChamber")+CheckInventory("HDSecondPistolLoaded")+CheckInventory("HDPistolAmmo")+(CheckInventory("HDPistolMag")*mag_pistol);
-	if ((tempnum>0)&&(CheckInventory("HDSecondPistol")))
-	{
-		TakeInventory("HDSecondPistolLoaded",999);
-		TakeInventory("HDPistolMag",999);
-		TakeInventory("HDPistolAmmo",999);
-
-		//if supply does not exceed 1 fully tac-loaded pistol
-		if (tempnum<=mag_pistol+1)
-		{
-			GiveInventory("HDSecondPistolChamber",1);
-			GiveInventory("HDSecondPistolLoaded",tempnum-1);
-		}
-		else
-		{
-			GiveInventory("HDSecondPistolLoaded",mag_pistol);
-			GiveInventory("HDSecondPistolChamber",1);
-			tempnum=tempnum-mag_pistol-1;
-			while ((CheckInventory("HDPistolMag")<GetAmmoCapacity("HDPistolMag"))&&(tempnum>=mag_pistol))
-			{
-				tempnum=tempnum-mag_pistol;
-				GiveInventory("HDPistolMag",1);
-			}
-			GiveInventory("HDPistolAmmo",tempnum);
-		}
-	}
-
-	tempnum=CheckInventory("HDSMGChamber")+CheckInventory("HDSMGLoaded")+CheckInventory("HDPistolAmmo")+CheckInventory("HDSMGMag")*mag_smg;
-	if ((tempnum>0)&&(CheckInventory("HDSMG")))
-	{
-		TakeInventory("HDSMGMag",999);
-		TakeInventory("HDSMGLoaded",999);
-		TakeInventory("HDSMGChamber",999);
-		TakeInventory("HDPistolAmmo",999);
-		if (tempnum<=mag_smg+1)
-		{
-			TakeInventory("HDPistolAmmo",999);
-			GiveInventory("HDSMGLoaded",tempnum-1);
-			GiveInventory("HDSMGChamber",1);
-		}
-		else
-		{
-			GiveInventory("HDSMGLoaded",mag_smg);
-			GiveInventory("HDSMGChamber",1);
-			tempnum=tempnum-mag_smg-1;
-			while ((CheckInventory("HDSMGMag")<GetAmmoCapacity("HDSMGMag"))&&(tempnum>=mag_smg))
-			{
-				tempnum=tempnum-mag_smg;
-				GiveInventory("HDSMGMag",1);
-			}
-			GiveInventory("HDPistolAmmo",tempnum);
-		}
-	}
-	tempnum=CheckInventory("LiberatorChamber")+CheckInventory("LiberatorLoaded")+CheckInventory("SevenMilAmmo")+(CheckInventory("LiberatorMag")*mag_lib);
-	if ((tempnum>0)&&(CheckInventory("HDSpent7mmPickup")))
-	{
-		int reloadratio=3;
-		int reloaderrounds=CheckInventory("FourMilAmmo")/reloadratio;
-		if (reloaderrounds>CheckInventory("HDSpent7mmPickup")) reloaderrounds=CheckInventory("HDSpent7mmPickup");
-		if (reloaderrounds>0) {
-			tempnum=tempnum+reloaderrounds;
-			TakeInventory("HDSpent7mmPickup",reloaderrounds);
-			TakeInventory("FourMilAmmo",reloaderrounds*reloadratio);
-		}
-	}
-	if ((tempnum>0)&&((CheckInventory("LiberatorRifle"))||(CheckInventory("LiberatorGrenadeRifle"))))
-	{
-		TakeInventory("SevenMilAmmo",999);
-		TakeInventory("LiberatorLoaded",999);
-		TakeInventory("LiberatorMag",999);
-		TakeInventory("SevenMilAmmo",999);
-
-		GiveInventory("LiberatorChamber",1);tempnum-=1;
-		if (tempnum<=mag_lib)
-		{
-			GiveInventory ("LiberatorLoaded",tempnum);
-		}
-		else
-		{
-			GiveInventory("LiberatorLoaded",mag_lib);
-			tempnum=tempnum-mag_lib;
-			while ((CheckInventory("LiberatorMag")<GetAmmoCapacity("LiberatorMag"))&&(tempnum>=mag_lib))
-			{
-				tempnum=tempnum-mag_lib;
-				GiveInventory("LiberatorMag",1);
-			}
-			GiveInventory("SevenMilAmmo",tempnum);
-		}
-
-		if ((CheckInventory("LiberatorGrenadeRifle"))&&(CheckInventory("HDRocketAmmo"))&&(!CheckInventory("LiberatorGrenadeChamber")))
-		{
-			GiveInventory("LiberatorGrenadeChamber",1);
-			TakeInventory("HDRocketAmmo",1);
-		}
-	}
-	tempnum=CheckInventory("BossMag")+CheckInventory("BossChamber")+CheckInventory("SevenMilAmmo")+CheckInventory("BossClip")*mag_bos;
-	if ((tempnum>0)&&(CheckInventory("BossRifle")))
-	{
-		TakeInventory("BossChamber",999);
-		TakeInventory("BossClip",999);
-		TakeInventory("BossMag",999);
-		TakeInventory("SevenMilAmmo",999);
-		GiveInventory("BossChamber",1);tempnum=tempnum-1;
-		if (tempnum<=mag_bos)
-		{
-			TakeInventory("SevenMilAmmo",999);
-			GiveInventory("BossMag",tempnum);
-		}
-		else
-		{
-			GiveInventory("BossMag",mag_bos);
-			tempnum=tempnum-mag_bos;
-			while ((CheckInventory("BossClip")<GetAmmoCapacity("BossClip"))&&(tempnum>=mag_bos))
-			{
-				tempnum=tempnum-mag_bos;
-				GiveInventory("BossClip",1);
-			}
-			GiveInventory("SevenMilAmmo",tempnum);
-		}
-		TakeInventory("BossJam",999);
-	}
-
-	if ((CheckInventory("ZM66SemiRifle"))||(CheckInventory("ZM66Rifle"))||(CheckInventory("ZM66GrenadeRifle")))
-	{
-		if ((CheckInventory("ZM66Loaded")<10) && (CheckInventory("ZM66RifleMags")))
-		{
-			GiveInventory("FourMilAmmo",CheckInventory("ZM66Loaded"));
-			GiveInventory("ZM66Loaded",mag_fourmil);
-			TakeInventory("ZM66RifleMags",1);
-			if(CheckInventory("ZM66Chamber")<1){
-				TakeInventory("ZM66Loaded",1);
-				GiveInventory("ZM66Chamber",1);
-			}
-		}
-		TakeInventory("ZM66BrokenRound",999);
-	}
-	if ((CheckInventory("ZM66GrenadeRifle"))&&(CheckInventory("HDRocketAmmo"))&&(!CheckInventory("ZM66GLoaded")))
-	{
-		GiveInventory("ZM66GLoaded",CheckInventory("HDRocketAmmo"));
-		TakeInventory("HDRocketAmmo",1);
-	}
-
-	tempnum=CheckInventory("ShotgunQuickAmmo")+CheckInventory("ShotgunQuickAmmo2")+CheckInventory("HDShellAmmo")+CheckInventory("ShellChamber1")+CheckInventory("ShellChamber2")+CheckInventory("ShotgunTube")+CheckInventory("ShotgunChamber");
-	if(tempnum>0)
-	{
-		TakeInventory("ShotgunQuickAmmo",999);
-		TakeInventory("ShotgunQuickAmmo2",999);
-		TakeInventory("ShellChamber1",999);
-		TakeInventory("ShellChamber2",999);
-		TakeInventory("ShotgunTube",999);
-		TakeInventory("HDShellAmmo",999);
-		TakeInventory("HunterSpentShell",999);
-		TakeInventory("ShotgunChamber",999);
-		if (CheckInventory("Slayer"))
-		{
-			if (tempnum>=2) {GiveInventory("ShellChamber2",1);tempnum=tempnum-1;}
-			if (tempnum>=1) {GiveInventory("ShellChamber1",1);tempnum=tempnum-1;}
-		}
-		if ((CheckInventory("Hunter"))&&(tempnum>0))
-		{
-			GiveInventory("ShotgunChamber",1);tempnum-=1;
-
-			if(tempnum<=mag_shotty) {GiveInventory("ShotgunTube",tempnum);tempnum=0;}
-			else {GiveInventory("ShotgunTube",mag_shotty);tempnum=tempnum-mag_shotty;}
-
-			if(tempnum<=12) {GiveInventory("ShotgunQuickAmmo",tempnum);tempnum=0;}
-			else {GiveInventory("ShotgunQuickAmmo",12);tempnum=tempnum-12;}
-		}
-		if ((CheckInventory("Slayer"))&&(tempnum>0))
-		{
-			if (tempnum<=12) {GiveInventory("ShotgunQuickAmmo2",tempnum);tempnum=0;}
-			else {GiveInventory("ShotgunQuickAmmo2",12);tempnum=tempnum-12;}
-		}
-		if (tempnum>0) GiveInventory("HDShellAmmo",tempnum);
-	}
-	if (CheckInventory ("Vulcanette"))
-	{
-		if ((CheckInventory("VulcLoaded1")<10)&&(CheckInventory("ZM66RifleMags"))){
-			GiveInventory("VulcLoaded1",mag_fourmil);
-			GiveInventory("VulcMag1",1);
-			TakeInventory("ZM66RifleMags",1);
-			TakeInventory("VulcJB1",1);
-		}
-		if ((CheckInventory("VulcLoaded2")<10)&&(CheckInventory("ZM66RifleMags"))){
-			GiveInventory("VulcLoaded2",mag_fourmil);
-			GiveInventory("VulcMag2",1);
-			TakeInventory("ZM66RifleMags",1);
-			TakeInventory("VulcJB2",1);
-		}
-		if ((CheckInventory("VulcLoaded3")<10)&&(CheckInventory("ZM66RifleMags"))){
-			GiveInventory("VulcLoaded3",mag_fourmil);
-			GiveInventory("VulcMag3",1);
-			TakeInventory("ZM66RifleMags",1);
-			TakeInventory("VulcJB3",1);
-		}
-	}
-	if ((CheckInventory("RocquetteLauncher")>0)&&(CheckInventory("HDRocketAmmo")>0)){
-		tempnum=CheckInventory("RocketMag")+CheckInventory("HEATLoaded");
-		GiveInventory("RocketMag",mag_rocket-tempnum);
-		TakeInventory("HDRocketAmmo",mag_rocket-tempnum);
-	}
-	if ((CheckInventory("Blooper")>0)&&(CheckInventory("HDRocketAmmo")>0)&&(CheckInventory("BloopChamber")<1)){
-		GiveInventory("BloopChamber",1);
-		TakeInventory("HDRocketAmmo",1);
-	}
-	if (CheckInventory("Brontornis"))
-	{
-		tempnum=CheckInventory("BrontornisMag");
-		GiveInventory ("BrontornisMag", CheckInventory("BrontornisRound"));
-		TakeInventory ("BrontornisRound", (mag_bronto-tempnum));
-	}
-	if (CheckInventory ("BFG9K"))
-	{
-		if (CheckInventory("BFGLoaded")<1)
-		{
-			if (CheckInventory("HDCellPackEmpty")>0)
-			{
-				TakeInventory("HDCellPackEmpty",1);
-				GiveInventory("BFGLoaded",1);
-			}
-			else if (CheckInventory("HDCellPack")>0)
-			{
-				TakeInventory("HDCellPackEmpty",1);
-				GiveInventory("BFGLoaded",1);
-				GiveInventory("BFGChamber",1);
-			}
-		}
-		if ((CheckInventory("BFGChamber")>=6)||(CheckInventory("BFGInternalCharge")>=6))
-		{
-			if (CheckInventory("BFGLoaded")>0) GiveInventory("BFGChamber",20);
-			GiveInventory("BFGInternalCharge",20);
-		}
-	}
-	if (CheckInventory ("ThunderBuster"))
-	{
-		if ((CheckInventory("PlasmaBattery")<10)&&(CheckInventory("HDCellPacks")>=1))
-		{
-			TakeInventory("HDCellPacks",1);
-			GiveInventory("PlasmaBattery",60);
-		}
-	}
-	while ((CheckInventory("HDCellAmmo")>=40)&&(CheckInventory("HDCellPacks")<6))
-	{
-		GiveInventory("HDCellPacks",1);
-		TakeInventory("HDCellAmmo",30);
-	}
-	if ((CheckInventory("Vulcanette")) && (CheckInventory("VulcJuice")<200))
-	{
-		if (CheckInventory("HDCellPacks")>=1)
-		{
-			TakeInventory("HDCellPacks",1);
-			GiveInventory("VulcJuice",mag_vcell);
-		}
-		else if (CheckInventory("HDCellAmmo")>=1)
-		{
-			tempnum=random(1,CheckInventory("HDCellAmmo"));
-			tempnum=tempnum*(mag_vcell/20);
-			TakeInventory("HDCellAmmo",tempnum);
-			GiveInventory("VulcJuice",tempnum);
-		}
-	}
-}
 
 
-//		PAIN
-
-script "Pain" (int pain, int dontthrustdown, int duration)
-{
-	if ((duration) && (GameSkill()>noobdamageskill) && (!CheckInventory("UsingMeds")))
-	{
-		int dipamount = 0;
-		if(CheckInventory("WoundCount")){
-			if (CheckInventory("WoundCount")>7) FadeRange(random(100,140),4,4,0.8,0,0,0,0,12.0); 
-			else FadeRange(random(100,140),4,4,0.1*CheckInventory("WoundCount"),0,0,0,0,12.0);
-			dipamount = random(3,-20);
-		}
-		else if(CheckInventory("Health")<random(35,45)){
-			FadeRange(30,4,4,0.35,0,0,0,0,6.0);
-			dipamount = random(-3,-9);
-		}
-		else if(CheckInventory("Health")<random(60,65)){
-			FadeRange(40,20,20,0.35,0,0,0,0,6.0);
-			dipamount = random(-1,-3);
-		}
-		dipamount=dipamount*(5+CheckInventory("IsMoving")/2);
-		ChangeActorPitch(0,GetActorPitch(0)-dipamount,1);ChangeActorAngle(0,GetActorAngle(0)+random(-10,10),1);
-		delay(duration/4);
-		ChangeActorPitch(0,GetActorPitch(0)-dipamount,1);ChangeActorAngle(0,GetActorAngle(0)+random(-10,10),1);
-		delay(duration/4);
-		ChangeActorPitch(0,GetActorPitch(0)+dipamount,1);ChangeActorAngle(0,GetActorAngle(0)+random(-10,10),1);
-		delay(duration/4);
-		ChangeActorPitch(0,GetActorPitch(0)+dipamount,1);ChangeActorAngle(0,GetActorAngle(0)+random(-10,10),1);
-	}
-	if (duration) terminate;
-	GiveInventory("Fatigue",4);
-	if (!CheckInventory("Armor"))
-	{
-		TakeInventory ("GreenArmour",999);
-		TakeInventory ("BlueArmour",999);
-		TakeInventory ("BlackArmour",999);
-		TakeInventory ("SpiritualArmour",999);
-	}
-	if (CheckInventory("RegenBers")>20) terminate;
-	GiveInventory ("IsHit", 1);
-	delay (3);
-	int changepitch = ((random(0,1)*2)-1)*random(1, 24);
-	int changeangle = ((random(0,1)*2)-1)*random(1, 24);
-	for (int i=0;i<pain;i=i+4)
-	{
-		int playerpitch = GetActorPitch(0) + changepitch;
-		int playerangle = GetActorAngle(0) + changeangle;
-		if ((playerpitch > -5825)&&(playerpitch < 5825))
-		{
-			ChangeActorPitch (0,playerpitch,1);
-		}
-		ChangeActorAngle (0,playerangle,1);
-		if (random(1,8)==1) delay(1);
-	}
-}
 
 
-//		MUZZLE CLIMB
-
-script "MuzzleClimb" (int climb, int twist)
-{
-	if((climb)&&((CheckInventory("IsMoving"))||(CheckInventory("IsJumping"))||(CheckInventory("IsHit"))))
-	{
+// MUZZLE CLIMB
+script "MuzzleClimb"(int climb, int twist){
+	if((climb)&&((CheckInventory("IsMoving"))||(CheckInventory("IsJumping"))||(CheckInventory("IsHit")))){
 		climb=climb*random(2,3)+random(4,16)*CheckInventory("IsJumping");
 		twist=twist*random(3,4)+random(2,8)*CheckInventory("IsJumping");
 	}
-	else if(CheckInventory("IsSupported"))
-	{
+	else if(CheckInventory("IsSupported")){
 		climb=climb/3;
 		twist=twist/3;
 	}
@@ -557,107 +89,97 @@ script "MuzzleClimb" (int climb, int twist)
 
 
 
-//		RELOAD
 
-script "Reload" (int type, int amount)	//reload partial
-{
-	if ((GetCVar("DMFlags") & 2048) == 2048)
-	{
-		GiveInventory(ammotype[type], amount);
-		terminate;
-	}
-	int max = GetAmmoCapacity(ammotype[type]);
-	int curr = CheckInventory(ammotype[type]);
-	int held = CheckInventory(ammosupplytype[type]);
-	int diff = max - curr;
-	if (held < amount) amount = held;
-	if (diff > amount)
-	{
-		if ((GetCVar("DMFlags") & 2048) != 2048) TakeInventory(ammosupplytype[type], amount);
-		GiveInventory(ammotype[type], 999);
-		TakeInventory(ammotype[type], max-amount-curr);
-	}
-	else
-	{
-		TakeInventory(ammosupplytype[type], diff);
-		GiveInventory(ammotype[type], 999);
-	}
+// DROP ONE UNIT OF YOUR CURRENT AMMO
+script "DropOneAmmo"(void){
+	if(getcvar("hd_debug"))Log(s:"DropOneAmmo can easily be replaced in ZScript.");
+	if(CheckWeapon("HDPistol")) GiveInventory("DropOnePistolMag",1);
+	else if(CheckWeapon("HDSMG")) GiveInventory("DropOneSMGMag",1);
+	else if((CheckWeapon("Hunter"))
+		||(CheckWeapon("Slayer"))
+		) GiveInventory("DropFourSG",1);
+	else if((CheckWeapon("ZM66Rifle"))
+		||(CheckWeapon("ZM66SemiRifle"))
+		) GiveInventory("DropOneZMag",1);
+	else if(CheckWeapon("ZM66GrenadeRifle")) GiveInventory("DropOneZMagFrag",1);
+	else if(CheckWeapon("Vulcanette")) GiveInventory("DropOneZMagCell",1);
+	else if(CheckWeapon("RocquetteLauncher")) GiveInventory("DropOneRocketHEAT",1);
+	else if(CheckWeapon("Blooper")) GiveInventory("DropOneRocket",1);
+	else if(CheckWeapon("HDFragGrenades")) GiveInventory("DropOneFrag",1);
+	else if(CheckWeapon("LiberatorRifle")) GiveInventory("DropOneLib",1);
+	else if(CheckWeapon("LiberatorGrenadeRifle")) GiveInventory("DropOneLibFrag",1);
+	else if(CheckWeapon("Brontornis")) GiveInventory("DropOneBronto",1);
+	else if(CheckWeapon("BossRifle")) GiveInventory("DropOneBoss",1);
+	else if((CheckWeapon("ThunderBuster"))
+		||(CheckWeapon("BFG9k"))
+		||(CheckWeapon("Lumberjack"))
+		) GiveInventory("DropOneCell",1);
+	else if(CheckWeapon("Injector")) GiveInventory("DropOneMedStimZerk",1);
+	else GiveInventory("DropExtra",1);
+//	ACS_NamedExecuteAlways("CarryLimit",0,0,0);
+}
+
+// DOOMGUY MODE
+script "HDDoomguy" (void){
+	if(getcvar("hd_debug"))Log(s:"HDDoomguy can easily be replaced in ZScript.");
+	bool rk = CheckInventory("RedCard");
+	bool bk = CheckInventory("BlueCard");
+	bool yk = CheckInventory("YellowCard");
+	bool rs = CheckInventory("RedSkull");
+	bool bs = CheckInventory("BlueSkull");
+	bool ys = CheckInventory("YellowSkull");
+	ClearInventory();
+	GiveInventory("DoomguyLoadout",1);
+	if (rk) GiveInventory("RedCard",1);
+	if (bk) GiveInventory("BlueCard",1);
+	if (yk) GiveInventory("YellowCard",1);
+	if (rs) GiveInventory("RedSkull",1);
+	if (bs) GiveInventory("BlueSkull",1);
+	if (ys) GiveInventory("YellowSkull",1);
 }
 
 
-#include "hdencumb.acs"
 
 
-
-
-//		GENERIC ENTER-ONCE
-script "HDEnterOnce" ENTER{
+//MAIN LOOP
+script "HDEnter" ENTER{
 	TakeInventory("LethalDamage",1);
 	ReplaceBot();
-	SetPlayerProperty (0, 0, PROP_TOTALLYFROZEN);				//unsuperfreezes player
+	SetPlayerProperty(0,0,PROP_TOTALLYFROZEN);	//unsuperfreezes player
+	while(1){
+		if(!CheckInventory("Ring")){
+			GiveInventory("BasicLoadout",1);
+			SetWeapon("Ring");
+		}
+		delay(1);
+	}
 }
 
 
 
 
-//
-//	MISCELLANEOUS CHECKS
-//
-
-
-//	check if tree is on a hellish floor
-script "CheckHellFloor" (void)
-{
-	if (
+// HELL FLOOR - FOR SCREAMING TREES
+// (zscript equivalent is not noticeably less clunky)
+script "CheckHellFloor" (void){
+	if(
 	(CheckActorFloorTexture(0,"SFLR6_1"))||(CheckActorFloorTexture(0,"SFLR6_4"))||(CheckActorFloorTexture(0,"SFLR7_1"))||(CheckActorFloorTexture(0,"SFLR7_4"))
 	||(CheckActorFloorTexture(0,"BLOOD1"))||(CheckActorFloorTexture(0,"BLOOD2"))||(CheckActorFloorTexture(0,"BLOOD3"))
 //	||(CheckActorFloorTexture(0,"NUKAGE1"))||(CheckActorFloorTexture(0,"NUKAGE2"))||(CheckActorFloorTexture(0,"NUKAGE3"))
 	||(CheckActorFloorTexture(0,"LAVA1"))||(CheckActorFloorTexture(0,"LAVA2"))||(CheckActorFloorTexture(0,"LAVA3"))||(CheckActorFloorTexture(0,"LAVA4"))
 	)
-		GiveInventory("IsInHell",1);
+	GiveInventory("IsInHell",1);
 }
 
-//	check light level
+// LIGHT LEVEL
+// (no zscript equivalent known)
 script "LightCheck"(void){
 	SetResultValue(GetActorLightLevel(0));
 }
 
-//	check ammo capacity
-script "AmmoCap"(int a){
-	switch(a){
-	case 2: setresultvalue(GetAmmoCapacity("HDCellAmmo"));break;
-	case 3: setresultvalue(GetAmmoCapacity("HDShellAmmo"));break;
-	case 4: setresultvalue(GetAmmoCapacity("FourMilAmmo"));break;
-	case 7: setresultvalue(GetAmmoCapacity("SevenMilAmmo"));break;
-	case 8: setresultvalue(GetAmmoCapacity("BossClip"));break;
-	case 9: setresultvalue(GetAmmoCapacity("HDPistolAmmo"));break;
-	default: setresultvalue(0);break;
-	}
-}
 
-//check if ceiling is sky
-script "CheckSky"(void){
-	SetResultValue(CheckActorFloorTexture(0,"F_SKY1"));
-}
-
-
-//		if second pistol but no first, make second first
-
-function void SecondPistolFirst(void){
-	if((CheckInventory("HDSecondPistol")>0)&&(CheckInventory("HDPistol")<1))
-		GiveInventory("HDPistolSelector",1);
-}
-script "SetPistol"(void){
-	SetWeapon("HDPistol");
-}
-
-//sv_dropweapons check
-script "CheckSVWeaponDrop"(void){
-	SetResultValue(GetCVar("sv_weapondrop"));
-}
 
 
 
 #include "hdmulti.acs"
-#include "hdloop.acs"
+#include "hdxhair.acs"
 

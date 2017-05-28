@@ -279,7 +279,7 @@ actor HDSMG:HDWeapon{
 			A_GiveInventory("HDSMGNoMag",1);
 			if(
 				(countinv("PressingUnload")+countinv("PressingReload")<1)
-				||(countinv("HDPistolAmmo")>CallACS("AmmoCap",9)-countinv("HDSMGLoaded"))      
+				||(countinv("HDPistolAmmo")>AmmoCap("HDPistolAmmo")-countinv("HDSMGLoaded"))      
 				||(
 					(countinv("HDSMGLoaded")==30)
 					&&(A_JumpIfInventory("HDSMGMag",0,"null"))
@@ -646,7 +646,7 @@ actor HDPistol:HDWeapon
 			A_GiveInventory("HDPistolNoMag",1);
 			if(
 				(countinv("HDPistolLoaded")<1)
-				||(countinv("HDPistolAmmo")>CallACS("AmmoCap",9)-countinv("HDPistolLoaded"))      
+				||(countinv("HDPistolAmmo")>AmmoCap("HDPistolAmmo")-countinv("HDPistolLoaded"))      
 				||(countinv("PressingUnload")+countinv("PressingReload")<1)
 			){
 				A_SpawnItemEx("HD9mPmag",12,0,height-12,1,0,-1,0,SXF_SETTARGET);

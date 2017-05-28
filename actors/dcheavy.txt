@@ -395,7 +395,7 @@ ACTOR Vulcanette:HDWeapon{
 		VULG A 0{
 			if(
 				(countinv("PressingUnload")+countinv("PressingAltReload")+countinv("PressingReload")<1)
-				||(countinv("HDCellAmmo")>CallACS("AmmoCap",2)-(countinv("VulcJuice")/150))  
+				||(countinv("HDCellAmmo")>AmmoCap("HDCellAmmo")-(countinv("VulcJuice")/150))  
 				||(
 					(countinv("VulcJuice")>=2050)  
 					&&(A_JumpIfInventory("HDCellPacks",0,"null"))
@@ -515,7 +515,7 @@ ACTOR Vulcanette:HDWeapon{
 		VULC A 0{
 			if(
 				(countinv("PressingUnload")+countinv("PressingReload")<1)
-				||(countinv("FourMilAmmo")>CallACS("AmmoCap",4)-countinv("VulcLoaded2"))      
+				||(countinv("FourMilAmmo")>AmmoCap("FourMilAmmo")-countinv("VulcLoaded2"))      
 				||(
 					(countinv("VulcLoaded2")==50)  
 					&&(A_JumpIfInventory("ZM66RifleMags",0,"null"))
@@ -536,7 +536,7 @@ ACTOR Vulcanette:HDWeapon{
 			A_TakeInventory("VulcMag1");
 			if(
 				(countinv("PressingUnload")+countinv("PressingReload")<1)
-				||(countinv("FourMilAmmo")>CallACS("AmmoCap",4)-countinv("VulcLoaded1"))      
+				||(countinv("FourMilAmmo")>AmmoCap("FourMilAmmo")-countinv("VulcLoaded1"))      
 				||(
 					(countinv("VulcLoaded1")==50)  
 					&&(A_JumpIfInventory("ZM66RifleMags",0,"null"))
