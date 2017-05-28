@@ -157,19 +157,18 @@ class HDImp:HDMOb{
 	dead:
 		TROO L 2 A_Bleed();
 		TROO M 2 canraise{
-			if(countinv("SawGibs")>70)setstatelabel("xdeath");
-			else if(vel.z)setstatelabel("dead");
+			if(vel.z)setstatelabel("dead");
 		}
 		wait;
 	xdeath:
-		TROO N 4;
+		TROO N 4{gibbed=true;}
 		TROO O 1 A_JumpIf(getzat()>=pos.z,1);
 		wait;
 		TROO P 4 A_PlaySound("misc/gibbed");
 		TROO PQRST 4;
 		TROO U -1;
 	raise:
-		"----" A 5;
+		---- A 5;
 		TROO M 5 {if(gibbed) setstatelabel("ungib");else A_PlaySound("misc/gibbed");}
 		TROO LKJIH 5;
 		goto spawn;

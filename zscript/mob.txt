@@ -13,6 +13,7 @@ class HDMOb:HDActor{
 	actor targbak;
 	int spawnheight;
 	int starthealth;
+	int corpsedamage;
 	int livestepheight;
 	int handedness;
 	int lasthealth;
@@ -33,12 +34,71 @@ class HDMOb:HDActor{
 		if(!bfloat) bnodropoff=true;
 		livestepheight=maxstepheight;
 		handedness=randompick(1,1,1,-1);
-		gibbed=false;
 	}
 	override void ondestroy(){
 		super.ondestroy();
 		if(movetarget) movetarget.destroy();
 		if(attacktarget) attacktarget.destroy();
+	}
+	override int DamageMobj(
+		actor inflictor,
+		actor source,
+		int damage,
+		name mod,
+		int flags=0,
+		double angle=0
+	){
+		if(!bcorpse||health>0){
+			corpsedamage=0;
+			return super.damagemobj(inflictor,source,damage,mod,flags,angle);
+		}
+		if(
+			mod=="chainsaw"
+		){
+			damage*=3;
+		}else if(
+			mod=="smallarms0"||
+			mod=="smallarms1"||
+			mod=="smallarms2"||
+			mod=="smallarms3"||
+			mod=="bullet"||
+			mod=="gunshot"
+		){
+			damage*=0.4;
+			if(damage<1)damage=1;
+		}else if(
+			mod=="thermal"||
+			mod=="fire"||
+			mod=="ice"||
+			mod=="cold"||
+			mod=="plasma"||
+			mod=="burning"||
+			mod=="electro"||
+			mod=="electrical"||
+			mod=="lightning"||
+			mod=="bolt"||
+			mod=="balefire"||
+			mod=="hellfire"||
+			mod=="unholy"
+		){
+			damage*=0.1;
+			if(damage<1){
+				if(!random(0,5))damage=1;
+				else return 0;
+			}
+		}
+		corpsedamage+=damage;
+		if(hd_debug)A_Log(string.format("A corpse took %i damage for a total of %i/%i.",damage,corpsedamage,gibhealth));
+		if(
+			findstate("xdeath",false)
+			&&(damage>=gibhealth||corpsedamage>max(gibhealth,mass)*10)
+		){
+			bshootable=false;
+			bsolid=false;
+			gibbed=true;
+			setstatelabel("xdeath");
+		}
+		return damage;
 	}
 	//adjust sprite scale, hitbox, mass and health all at once
 	void A_Resize(double sx=1,double sy=-1){
@@ -422,6 +482,7 @@ class HDMOb:HDActor{
 	}
 	//death override
 	override void Die(Actor source,Actor inflictor,int dmgflags=0){
+		corpsedamage=0;
 		super.Die(source,inflictor,dmgflags);
 		bnodropoff=false;
 		maxstepheight=livestepheight/6;
@@ -442,6 +503,7 @@ class HDMOb:HDActor{
 		A_SetSize(radius,spawnheight);
 		A_TakeInventory("IsGibbed");
 		A_TakeInventory("SawGib");
+		gibbed=false;
 		bshootable=true;
 		balwaystelefrag=true;
 		bnotautoaimed=true;
