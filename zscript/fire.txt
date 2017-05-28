@@ -229,3 +229,65 @@ class PersistentDamager:HDActor{
 		TNT1 A -1;
 	}
 }
+
+
+
+
+//This is as yet unused: a different way of setting things on fire.
+class fffire:inventory{
+	int tttimer;
+	default{
+		+inventory.untossable
+		inventory.maxamount 10000;
+		obituary "Everyone! %o was on fire!";
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		if(!master)master=self;
+	}
+	override void attachtoowner(actor user){
+		if(!user.bsolid){destroy();return;}
+		super.attachtoowner(user);
+	}
+	override void doeffect(){
+		if(!tttimer){
+			tttimer=min(4,100/amount);
+			int times=clamp(amount*0.01,1,20); //adjust numbers to taste
+			while(times){
+				times--;
+				int rad=max(4,owner.radius*0.5);
+				int hit=max(8,owner.height*0.6);
+				actor p=spawn("HDFlameRed",
+					owner.pos+(
+						random(-rad,rad),
+						random(-rad,rad),
+						random(1,hit)
+					),ALLOW_REPLACE
+				);
+				p.vel+=owner.vel*0.7+(0,0,4);
+				owner.A_PlaySound("vile/firecrkl",CHAN_AUTO,max(1.,amount*0.01));
+				owner.damagemobj(self,master,1,"fire",DMG_NO_ARMOR|DMG_THRUSTLESS);
+				if(!owner){goawayanddie();return;}
+
+				//because obituaries and respawn :(
+				if(owner.health<1){
+					let onr=PlayerPawn(owner);
+					if(onr){
+						goawayanddie();
+						return;
+					}
+				}
+			}
+			amount--;
+			if(owner.waterlevel>1){
+				amount-=10*owner.waterlevel;
+				if(owner.waterlevel<2)spawn("HDSmoke",owner.pos);
+			}
+			if(!amount)goawayanddie();
+		}
+		else tttimer--;
+	}
+}
+
+
+
