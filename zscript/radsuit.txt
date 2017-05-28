@@ -1,0 +1,55 @@
+//-------------------------------------------------
+// Radiation Suit
+//-------------------------------------------------
+class HDRadSuit:RadSuit{
+	default{
+		+inventory.persistentpower
+		Powerup.Duration -0x7FFFFFFF;
+	}
+}
+class PortableRadsuit:HDPickup{
+	default{
+		inventory.amount 1;
+		inventory.maxamount 2;
+		inventory.interhubamount 2;
+		inventory.pickupmessage "Radiation shielding suit.";
+		inventory.pickupsound "weapons/pocket";
+		inventory.icon "SUITB0";
+		missiletype "PortableRadsuitPickup";
+	}
+	states{
+	use:
+		TNT1 A 0{
+			if(countinv("PowerIronFeet")<1){
+				A_GiveInventory("HDRadSuit");
+			}else{
+				A_SpawnItemEx("PortableRadsuitPickup",0,0,height/2,2,0,4);
+				A_TakeInventory("PowerIronFeet");
+				A_TakeInventory("HDRadSuit");
+				A_TakeInventory("PortableRadsuit",1);
+			}
+			A_SetBlend("00 00 00",1,6,"00 00 00");
+			A_PlaySound("weapons/pocket");
+			A_ChangeVelocity(0,0,2);
+			let onr=HDPlayerPawn(self);
+			if(onr)onr.stunned+=60;
+			A_SelectWeapon("Ring");
+		}fail;
+	}
+}
+class PortableRadsuitPickup:HDUPK replaces RadSuit{
+	default{
+		activesound "weapons/pocket";
+		hdupk.pickuptype "PortableRadsuit";
+		hdupk.pickupscale 1.,1.;
+		accuracy 2;
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		if(vel==(0,0,0))stamina=2;
+	}
+	states{
+	spawn:
+		SUIT A -1 A_Stop();
+	}
+}

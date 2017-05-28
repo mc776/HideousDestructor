@@ -61,7 +61,7 @@ class HDDropArmour:ActionItem{
 			A_TakeInventory("GreenArmour");
 			let onr=HDPlayerPawn(self);
 			if(onr)onr.stunned+=40;
-			A_SelectWeapon("Ring");
+			if(!onr.barehanded)A_SelectWeapon("Ring");
 		}fail;
 	}
 }
@@ -188,7 +188,7 @@ class GreenArmourStored:ActionItem{
 	use:
 		TNT1 A 0{
 			if(countinv("PowerIronFeet")){
-				if(getcvar("hd_helptext")) A_Print("Take off your radiation suit first!");
+				if(getcvar("hd_helptext")) A_Log("Take off your radiation suit first!",true);
 			}else if(countinv("BlackArmour")+countinv("BlueArmour")+countinv("GreenArmour")){
 				if(invoker.stamina>25||getcvar("hd_autostrip")){
 					if(getcvar("hd_helptext")) A_Log("Taking off armour first.",true);
@@ -205,7 +205,7 @@ class GreenArmourStored:ActionItem{
 				A_ChangeVelocity(0,0,2);
 				let onr=HDPlayerPawn(self);
 				if(onr)onr.stunned+=40;
-				A_SelectWeapon("Ring");
+				if(!onr.barehanded)A_SelectWeapon("Ring");
 	
 				double qual;
 				int stored=countinv("StoredArmour");
