@@ -154,6 +154,21 @@ class HDUPK:HDActor{
 }
 
 
+//some people put keys in the weirdest of sectors.
+//One particular Oblige trick makes them impossible to pick up as HDUPKs.
+class HDHPK:HDUPK{
+	override bool cancollidewith(actor other,bool passive){
+		if(other is "userpickerupper") return true;
+		if(other is "playerpawn" && other.bpickup){
+			target=other;
+			let ppp=HDPlayerPawn(target);if(ppp)ppp.hasgrabbed=true;
+			if(findstate("grab",true))setstatelabel("grab");
+			return false;
+		}return false;
+	}
+}
+
+
 //just so I don't have to redefine these every time
 //special use: amount becomes hdupk's stamina
 class HDPickup:CustomInventory{
