@@ -43,7 +43,7 @@ extend class HDActor{
 		while(itt.Next()){
 
 			if(	//abort all checks if no hurt species
-				(itt.thing.species!=inflictor.species || hurtspecies)
+				(!itt.thing || itt.thing.species!=inflictor.species || hurtspecies)
 			){
 
 				actor it=itt.thing;
@@ -73,14 +73,14 @@ extend class HDActor{
 						A_Immolate(it,target,immolateamount);
 					}
 				}
-				if(losmul>0 && blastradius>0 && dist<=blastradius && it.bshootable){
+				if(it && losmul>0 && blastradius>0 && dist<=blastradius && it.bshootable){
 					if(dist>fullblastradius){
 						dmg=clamp(dist-fullblastradius,0,dist);
 						dmg=blastdamage-dmg;
 					}else dmg=blastdamage;
 					it.DamageMobj(self,self.target,dmg,blastdamagetype,DMG_THRUSTLESS,0);
 				}
-				if(losmul>0 && pushradius>0 && dist<=pushradius && it.bshootable && !it.bdontthrust){
+				if(it && losmul>0 && pushradius>0 && dist<=pushradius && it.bshootable && !it.bdontthrust){
 					vector3 push=(it.pos-self.pos)*divdist
 						*clamp(pushamount-clamp(dist-fullpushradius,0,dist),0,pushamount);
 					if(pushmass){
@@ -92,7 +92,7 @@ extend class HDActor{
 					}
 					it.vel+=push;
 				}
-				if(losmul>0 && fragradius>0 && dist<=fragradius && (it.bsolid || it.bshootable)){
+				if(it && losmul>0 && fragradius>0 && dist<=fragradius && (it.bsolid || it.bshootable)){
 					A_Face(it);
 					if(
 						it!=self
@@ -145,7 +145,7 @@ extend class HDActor{
 						}
 					}
 				}
-				if(losmul>0 && gibradius>0 && dist<=gibradius && it.bcorpse && it.bshootable){
+				if(it && losmul>0 && gibradius>0 && dist<=gibradius && it.bcorpse && it.bshootable){
 					it.a_giveinventory("sawgib",gibamount-dist);
 					//can't use A_Bleed on non-HDActor :(
 					//replace (and use Let) once all monsters scriptified
