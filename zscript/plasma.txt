@@ -16,7 +16,7 @@ class BeamSpot:IdleDummy{
 		stamina++;
 		actoriterator it=actoriterator.create(666123,"BeamSpot");
 		while(master=it.Next()){
-			if(master.distance3d(self)<4){
+			if(master && master.distance3d(self)<4){
 				stamina+=master.stamina;
 			}
 		}

@@ -300,10 +300,12 @@ class DistantDummy:IdleDummy{
 					dist=(players[i].mo.pos-pos).length();
 					if(dist>HDCONST_MINDISTANTSOUND){ //don't bother if too close
 						actor id=spawn("DistantNoisemaker",pos);
-						id.target=players[i].mo;
-						id.deathsound=self.deathsound;
-						id.stamina=dist/HDCONST_SPEEDOFSOUND;
-						id.mass=self.mass;
+						if(id){
+							id.target=players[i].mo;
+							id.deathsound=self.deathsound;
+							id.stamina=dist/HDCONST_SPEEDOFSOUND;
+							id.mass=self.mass;
+						}
 					}
 				}
 			}
@@ -317,17 +319,15 @@ class DistantNoisemaker:IdleDummy{
 	}
 	states{
 	spawn:
-		TNT1 A 0;
-		TNT1 A 1{
-			A_SetTics(stamina);
-		}
+		TNT1 A 1 nodelay A_SetTics(stamina);
 		TNT1 A 0 A_Jump(256,"spawn2");
 	spawn2:
 		TNT1 A 0 A_PlaySound(deathsound,CHAN_AUTO,1,0,24);
 		TNT1 A 1{
-			if(self.mass<=0){destroy();return;}
-			self.mass--;
-			setxyz(target.pos);
+			if(target && mass>0){
+				self.mass--;
+				setxyz(target.pos);
+			}else{destroy();return;}
 		}wait;
 	}
 }
@@ -383,12 +383,12 @@ extend class HDActor{
 			}
 		}
 
+
 		for(int i=0;i<MAXPLAYERS;i++){
 			if(playeringame[i] && players[i].mo){
 				dist=(players[i].mo.pos-self.pos).length();
 				if(dist<=quakeradius){
-					actor itt=self.spawn("DistantQuaker",players[i].mo.pos);
-					let it=DistantQuaker(itt);
+					let it=DistantQuaker(spawn("DistantQuaker",players[i].mo.pos));
 					if(it){
 						if(dist<=dropoffrate) it.intensity=intensity;
 							else it.intensity=clamp(intensity-floor(dist/dropoffrate),1,9);
@@ -415,7 +415,7 @@ class DistantQuaker:IdleDummy{
 		TNT1 A 0{
 			if(wave){
 				A_PlaySound("weapons/subfwoosh",CHAN_AUTO,0.1*intensity);
-				if(target.pos.z<target.floorz+8)
+				if(target && target.pos.z<target.floorz+8)
 					A_QuakeEx(0,0,intensity,mass,0,16,deathsound,
 					QF_SCALEDOWN|QF_WAVE,0,0,frequency,0,mass*0.62);
 			}else{
@@ -424,7 +424,7 @@ class DistantQuaker:IdleDummy{
 			}
 		}
 		TNT1 A 1{
-			if(mass>0){
+			if(target && mass>0){
 				mass--;
 				setxyz(target.pos);
 			}else{
