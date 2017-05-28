@@ -6,12 +6,11 @@ actor KickProjectile : FastProjectile
 	projectile
 	height 16
 	radius 2
-	damage 3
+	damage 2
 	speed 40
 	+thrughost
 	+hittracer
-	states
-	{
+	states{
 	spawn:
 		TNT1 A 0 nodelay
 		TNT1 A 0 A_Jump(200,2)
@@ -23,7 +22,6 @@ actor KickProjectile : FastProjectile
 		stop
 	xdeath:
 		TNT1 A 0 A_PlaySound("weapons/smack")
-		TNT1 A 0 A_GiveToTarget("Fatigue",6)
 		TNT1 A 0 A_RadiusThrust(80,8,RTF_NOIMPACTDAMAGE|RTF_AFFECTSOURCE)
 		TNT1 A 0 A_JumpIfInTargetInventory("PowerStrength",1,"zerkspawn")
 		goto xdeathfinal

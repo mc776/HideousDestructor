@@ -388,17 +388,31 @@ class HDPlayerPawn:PlayerPawn{
 				a.target=self;
 				a.vel=ap*4;
 			}
-			if(!corpsekicktimer){
+			if(!corpsekicktimer && beatmax>10 && floorz==pos.z){
 				actor k=spawn("fastprojectile",pos);k.angle=angle;
-				k.A_ChangeVelocity(3,0,0,CVF_RELATIVE);
+				k.A_SetSize(4,12);k.bfloorhugger=true;
+				k.A_ChangeVelocity(5,0,0,CVF_RELATIVE);
 				k.A_SetSize(6,10);k.target=self;
 				for(int i=7;i;i--){
-					if(!k.TryMove(k.pos.xy+k.vel.xy,true) && k.blockingmobj && k.blockingmobj.bcorpse){
+					if(!k.TryMove(k.pos.xy+k.vel.xy,true) && k.blockingmobj){
 						i=1;
-						int forc=80;if(regenbers>0)forc*=3;
-						corpsekicktimer=20+unstablewoundcount*0.5;
-						k.blockingmobj.vel+=(k.vel+(0,0,4))*forc/k.blockingmobj.mass;
-						k.blockingmobj.A_PlaySound("misc/punch");
+						if(k.blockingmobj.bcorpse){
+							int forc=80;if(regenbers>0)forc*=3;
+							corpsekicktimer=20+unstablewoundcount*0.5;
+							k.blockingmobj.vel+=(k.vel+(0,0,4))*forc/k.blockingmobj.mass;
+							k.blockingmobj.A_PlaySound("misc/punch");
+						}else if(
+							k.blockingmobj.bismonster
+							||(
+								k.blockingmobj is "PlayerPawn"
+								&& !isteammate(k.blockingmobj)
+							)
+						){
+							corpsekicktimer=17+unstablewoundcount*0.5;
+							A_SpawnItemEx("KickProjectile",0,0,4,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);
+						}
+						if(!random(0,4))beatmax--;bloodpressure++;
+						stunned+=2;
 					}
 				}
 			}
