@@ -206,6 +206,13 @@ class InvReset:Inventory{
 		goawayanddie();
 	}
 }
+class InvResetDG:Inventory{
+	override void attachtoowner(actor other){
+		let o=HDPlayerPawn(other);
+		if(o)o.ResetInventory(1);
+		goawayanddie();
+	}
+}
 
 
 

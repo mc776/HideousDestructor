@@ -120,25 +120,6 @@ script "DropOneAmmo"(void){
 //	ACS_NamedExecuteAlways("CarryLimit",0,0,0);
 }
 
-// DOOMGUY MODE
-script "HDDoomguy" (void){
-	if(getcvar("hd_debug"))Log(s:"HDDoomguy can easily be replaced in ZScript.");
-	bool rk = CheckInventory("RedCard");
-	bool bk = CheckInventory("BlueCard");
-	bool yk = CheckInventory("YellowCard");
-	bool rs = CheckInventory("RedSkull");
-	bool bs = CheckInventory("BlueSkull");
-	bool ys = CheckInventory("YellowSkull");
-	ClearInventory();
-	GiveInventory("DoomguyLoadout",1);
-	if (rk) GiveInventory("RedCard",1);
-	if (bk) GiveInventory("BlueCard",1);
-	if (yk) GiveInventory("YellowCard",1);
-	if (rs) GiveInventory("RedSkull",1);
-	if (bs) GiveInventory("BlueSkull",1);
-	if (ys) GiveInventory("YellowSkull",1);
-}
-
 
 
 

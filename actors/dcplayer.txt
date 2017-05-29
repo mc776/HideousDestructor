@@ -4,7 +4,7 @@
 // ------------------------------------------------------------
 
 // KEEP SCROLLING TO GET TO THE NORMAL PLAYER PAWN
-actor DeadHDPlayer:PlayerPawn{
+actor DeadHDPlayer:HDPlayerPawn{
 	-shootable +nointeraction +notelefrag +nevertarget +invisible +dontthrust +nosector +noskin
 	player.forwardmove 0 0 player.sidemove 0 0 player.jumpz 0 player.viewheight 0
 	player.morphweapon "WipedOut" player.startitem "RebelLoadout" species "Player"
@@ -849,7 +849,7 @@ actor NullWeapon:Weapon
 	}
 }
 
-actor WipedOut:NullWeapon
+actor WipedOut:HDWeapon
 {
 	states
 	{
