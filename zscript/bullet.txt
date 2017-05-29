@@ -172,11 +172,10 @@ class HDBullet:HDActor{
 	//impact
 	virtual void BulletImpact(){
 		bmissile=false;
-		if(a.tracer){
+		if(a && a.tracer){
 			BulletImpactDamage();
 			destroy();return;
-		}
-		else{
+		}else{
 			//decal
 			name decal="BulletChip";
 			if(dmg<80)decal="BulletChipSmall";
