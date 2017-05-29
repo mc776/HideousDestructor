@@ -80,11 +80,6 @@ extend class HDPlayerPawn{
 		//fuck this is complicated
 		PistolConsolidator();
 		if(countinv("HDPistol")){
-			if(!countinv("HDPistolChamber")){
-				if(countinv("HDPistolLoaded"))A_TakeInventory("HDPistolLoaded",1);
-				else if(countinv("HDPistolAmmo"))A_TakeInventory("HDPistolAmmo",1);
-				A_GiveInventory("HDPistolChamber");
-			}
 			if(countinv("HDPistolLoaded")<15){
 				if(countinv("HDPistolMag")){
 					A_TakeInventory("HDPistolMag",1);
@@ -95,6 +90,13 @@ extend class HDPlayerPawn{
 					A_GiveInventory("HDPistolLoaded",30);
 				}
 			}
+			if(!countinv("HDPistolChamber")){
+				bool noch;
+				if(countinv("HDPistolAmmo"))A_TakeInventory("HDPistolAmmo",1);
+				else if(countinv("HDPistolLoaded"))A_TakeInventory("HDPistolLoaded",1);
+				else noch=true;
+				if(!noch)A_GiveInventory("HDPistolChamber");
+			}
 			int btg=min(15-countinv("HDPistolLoaded"),countinv("HDPistolAmmo"));
 			if(btg){
 				A_TakeInventory("HDPistolAmmo",btg);
@@ -102,11 +104,6 @@ extend class HDPlayerPawn{
 			}
 		}
 		if(countinv("HDSecondPistol")){
-			if(!countinv("HDSecondPistolChamber")){
-				if(countinv("HDSecondPistolLoaded"))A_TakeInventory("HDSecondPistolLoaded",1);
-				else if(countinv("HDPistolAmmo"))A_TakeInventory("HDPistolAmmo",1);
-				A_GiveInventory("HDSecondPistolChamber");
-			}
 			if(countinv("HDSecondPistolLoaded")<15){
 				if(countinv("HDPistolMag")){
 					A_TakeInventory("HDPistolMag",1);
@@ -116,6 +113,13 @@ extend class HDPlayerPawn{
 					A_TakeInventory("HDSMGMag",1);
 					A_GiveInventory("HDSecondPistolLoaded",30);
 				}
+			}
+			if(!countinv("HDSecondPistolChamber")){
+				bool noch;
+				if(countinv("HDPistolAmmo"))A_TakeInventory("HDPistolAmmo",1);
+				else if(countinv("HDSecondPistolLoaded"))A_TakeInventory("HDSecondPistolLoaded",1);
+				else noch=true;
+				if(!noch)A_GiveInventory("HDSecondPistolChamber");
 			}
 			int btg=min(15-countinv("HDSecondPistolLoaded"),countinv("HDPistolAmmo"));
 			if(btg){
@@ -135,11 +139,6 @@ extend class HDPlayerPawn{
 			}
 		}
 		if(countinv("HDSMG")){
-			if(!countinv("HDSMGChamber")){
-				if(countinv("HDSMGLoaded"))A_TakeInventory("HDSMGLoaded",1);
-				else if(countinv("HDPistolAmmo"))A_TakeInventory("HDPistolAmmo",1);
-				A_GiveInventory("HDSMGChamber");
-			}
 			if(countinv("HDSMGLoaded")<30){
 				if(countinv("HDSMGMag")){
 					A_TakeInventory("HDSMGMag",1);
@@ -149,6 +148,13 @@ extend class HDPlayerPawn{
 					A_TakeInventory("HDPistolMag",2);
 					A_GiveInventory("HDPistolAmmo",30);
 				}
+			}
+			if(!countinv("HDSMGChamber")){
+				bool noch;
+				if(countinv("HDPistolAmmo"))A_TakeInventory("HDPistolAmmo",1);
+				else if(countinv("HDSMGLoaded"))A_TakeInventory("HDSMGLoaded",1);
+				else noch=true;
+				if(!noch)A_GiveInventory("HDSMGChamber");
 			}
 			int btg=min(30-countinv("HDSMGLoaded"),countinv("HDPistolAmmo"));
 			if(btg){
@@ -223,11 +229,15 @@ extend class HDPlayerPawn{
 		//if zm has less than 10 bullets, reload zm
 		//if vulc has less than 10 bullets, reload vulc - one mag only
 		int inzedmag=countinv("ZM66Loaded");
-		if(inzedmag<10&&countinv("ZM66RifleMags") 
-			&&(countinv("ZM66Rifle")||countinv("ZM66SemiRifle")||countinv("ZM66GrenadeRifle"))
+		if((countinv("ZM66Rifle")||countinv("ZM66SemiRifle")||countinv("ZM66GrenadeRifle"))
+			&&inzedmag<10&&countinv("ZM66RifleMags")
 		){
 			A_GiveInventory("ZM66Loaded",50);
 			A_TakeInventory("ZM66RifleMags",1);
+			if(!countinv("ZM66Chamber")){
+				A_GiveInventory("ZM66Chamber",1);
+				A_TakeInventory("ZM66Loaded",1);
+			}
 		}
 		if(countinv("Vulcanette")){
 			inzedmag=countinv("VulcLoaded1");
