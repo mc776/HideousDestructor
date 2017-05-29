@@ -43,7 +43,8 @@ extend class HDActor{
 		while(itt.Next()){
 
 			if(	//abort all checks if no hurt species
-				(!itt.thing || itt.thing.species!=inflictor.species || hurtspecies)
+				itt.thing &&
+				(hurtspecies || (inflictor && itt.thing.species!=inflictor.species))
 			){
 
 				actor it=itt.thing;
