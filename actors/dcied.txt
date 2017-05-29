@@ -1,7 +1,7 @@
 actor HDIED : DudRocquette
 {
-	-missile +ismonster +friendly +lookallaround +nosplashalert maxtargetrange 96
-	-pushable -solid +shootable +noblood +nodamage painchance 256
+	-missile +friendly +lookallaround +nosplashalert maxtargetrange 96
+	-pushable +shootable +noblood +nodamage painchance 256
 	obituary "%o was blown up by an anonymous %k."
 //	inventory.pickupmessage "Picked up and disabled an improvised explosive device."
 	states
@@ -47,9 +47,7 @@ actor HDIED : DudRocquette
 		TNT1 A 0 A_ChangeFlag("friendly",0)
 		TNT1 A 0 A_RearrangePointers(AAPTR_MASTER,AAPTR_DEFAULT)
 		TNT1 A 0 A_SpawnItemEx("DudRocquette",0,0,1,velx,vely,velz+2,random(1,360),SXF_TRANSFERPOINTERS|SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
-	inactive:
-		stop
-	active:
+	grab:
 		TNT1 A 0 A_SpawnItemEx("HDIEDKit",0,0,height-12,velx,vely,velz+4,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
 		TNT1 A 0 A_SpawnItemEx("DudRocquette",0,0,height-12,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
 		stop
