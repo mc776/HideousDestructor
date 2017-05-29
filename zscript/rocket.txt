@@ -33,7 +33,7 @@ class GyroGrenade:SlowProjectile{
 		#### BA 1{
 			if(fuze>0){
 				fuze--;
-				if(fuze==1) BulletImpact();
+				if(fuze==1)ExplodeMissile();
 			}
 		}loop;
 	spawnrocket:
@@ -65,7 +65,7 @@ class GyroGrenade:SlowProjectile{
 			}
 			if(fuze>0){
 				fuze--;
-				if(fuze==1) BulletImpact();
+				if(fuze==1)ExplodeMissile();
 			}
 			stamina--;
 			if(stamina<39)primed=true;
