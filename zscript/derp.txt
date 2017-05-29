@@ -39,7 +39,7 @@ class ZEDDERP:HDUPK{
 	void DerpAlert(string msg="Derpy derp!"){
 		if(!master)return;
 		int time=max(con_midtime,msg.length()*3);
-		master.A_Print(string.format("%s  %s","\cd[DERP]",msg,time));
+		master.A_Log(string.format("%s  %s","\cd[DERP]",msg,time),true);
 	}
 	void DerpShot(){
 		A_PlaySound("weapons/pistol",0,1,0,4);
