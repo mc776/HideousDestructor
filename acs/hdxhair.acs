@@ -39,12 +39,12 @@ script "CrossHairs"(void){
 			TakeInventory("IsZoomed",1);
 		}
 	}
-	else if(ismoving<4&&CheckWeapon("Brontornis")){
+	else if(ismoving<10&&CheckWeapon("Brontornis")){
 		setfont("xh24");
 		HudMessage (s:"a"; HUDMSG_PLAIN|HUDMSG_ALPHA|HUDMSG_NOTWITHFULLMAP,4,0,
 		159.0,120.0, 0.03,1.0);
 	}
-	else if(ismoving<3&&CheckWeapon("ThunderBuster")){
+	else if(ismoving<5&&CheckWeapon("ThunderBuster")){
 		if(CheckInventory("PlasmaZoom") && CheckInventory("PlasmaBattery")){
 			sethudsize(401,301,1);
 			GiveInventory("PlasmaZoomBatteryDrainage",1);
@@ -70,29 +70,31 @@ script "CrossHairs"(void){
 		}
 	}
 	else if(
-		(ismoving<5)&&
-		((CheckWeapon("HDSMG"))||(CheckWeapon("Hunter")))
+		ismoving<6 &&
+		(CheckWeapon("HDSMG")||CheckWeapon("Hunter"))
 	){
 		setfont("xh23");
 		HudMessage (s:"a"; HUDMSG_PLAIN|HUDMSG_ALPHA|HUDMSG_NOTWITHFULLMAP,4,0,
 		159.0,124.0, 0.03,1.0);
 	}
-	else if((ismoving<11)&&(CheckWeapon("Slayer"))){
+	else if(ismoving<10 && CheckWeapon("Slayer")){
 		setfont("xh23");
 		HudMessage (s:"a"; HUDMSG_PLAIN|HUDMSG_ALPHA|HUDMSG_NOTWITHFULLMAP,4,0,
 		159.0,124.0, 0.03,1.0);
 	}
 	else if(
 		//ismoving is checked below. too much overlap to separate GL.
-		(CheckWeapon("ZM66Rifle"))||
-		(CheckWeapon("ZM66SemiRifle"))||
-		(CheckWeapon("ZM66GrenadeRifle"))
+		CheckWeapon("ZM66Rifle")||
+		CheckWeapon("ZM66SemiRifle")||
+		CheckWeapon("ZM66GrenadeRifle")
 	){
 		if(CheckWeapon("ZM66GrenadeRifle"))ismoving+=2;
-		if((CheckInventory("ZM66GLMode"))&&(ismoving+1<7)){
-			setfont("xh27");
-			HudMessage (s:"a"; HUDMSG_PLAIN|HUDMSG_ALPHA|HUDMSG_NOTWITHFULLMAP,4,0,
-			159.0,140.0, 0.03,1.0);
+		if(CheckInventory("ZM66GLMode")){
+			if(ismoving+1<7){
+				setfont("xh27");
+				HudMessage (s:"a"; HUDMSG_PLAIN|HUDMSG_ALPHA|HUDMSG_NOTWITHFULLMAP,4,0,
+				159.0,140.0, 0.03,1.0);
+			}
 		}else if(ismoving<7){
 			if(CheckInventory("ZM66Zoom")){
 				sethudsize(1561,1171,1);
@@ -114,7 +116,7 @@ script "CrossHairs"(void){
 			}
 		}
 	}
-	else if((ismoving<6)&&(CheckWeapon("RocquetteLauncher"))){
+	else if(ismoving<6&&CheckWeapon("RocquetteLauncher")){
 		if(!CheckInventory("IsUsingRocketUnderslung")){
 			if(CheckInventory("RocketZoom")){
 			sethudsize(1423,1033,1);
@@ -139,20 +141,22 @@ script "CrossHairs"(void){
 			159.0,140.0, 0.03,1.0);
 		}
 	}
-	else if((ismoving<11)&&(CheckWeapon("Blooper"))){
+	else if(ismoving<11&&CheckWeapon("Blooper")){
 		setfont("xh27");
 		HudMessage (s:"a"; HUDMSG_PLAIN|HUDMSG_ALPHA|HUDMSG_NOTWITHFULLMAP,4,0,
 		159.0,140.0, 0.03,1.0);
 	}
 	else if(
-		(CheckWeapon("LiberatorRifle"))||
-		(CheckWeapon("LiberatorGrenadeRifle"))
+		CheckWeapon("LiberatorRifle")||
+		CheckWeapon("LiberatorGrenadeRifle")
 	){
 		if(CheckWeapon("LiberatorGrenadeRifle"))ismoving+=1;
-		if((CheckInventory("LiberatorGrenadeMode"))&&(ismoving+1<7)){
-			setfont("xh27");
-			HudMessage (s:"a"; HUDMSG_PLAIN|HUDMSG_ALPHA|HUDMSG_NOTWITHFULLMAP,4,0,
-			159.0,140.0, 0.03,1.0);
+		if(CheckInventory("LiberatorGrenadeMode")){
+			if(ismoving+1<7){
+				setfont("xh27");
+				HudMessage (s:"a"; HUDMSG_PLAIN|HUDMSG_ALPHA|HUDMSG_NOTWITHFULLMAP,4,0,
+				159.0,140.0, 0.03,1.0);
+			}
 		}else if(ismoving<7){
 			if(CheckInventory("LiberatorZoom")){
 				sethudsize(1801,1351,1);
@@ -173,7 +177,7 @@ script "CrossHairs"(void){
 			}
 		}
 	}
-	else if((ismoving<8)&&(CheckWeapon("BossRifle"))){
+	else if(ismoving<5&&CheckWeapon("BossRifle")){
 		if(CheckInventory("BossZoom")){
 			sethudsize(1601,1201,1);
 			SetCameraToTexture(camtid,"TCAMTEX3",3-CheckInventory("BossZoomDegree"));
