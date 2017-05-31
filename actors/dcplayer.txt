@@ -840,9 +840,11 @@ actor NullWeapon:Weapon
 		TNT1 A 0 A_Lower
 		wait
 	ready:
-		TNT1 A 1 A_WeaponReady(WRF_NOFIRE)
-		TNT1 A 0 A_TakeInventory("WeaponBusy")
-		loop
+		TNT1 A 1{
+			A_SetCrosshair(21);
+			A_WeaponReady(WRF_NOFIRE);
+			A_TakeInventory("WeaponBusy");
+		}loop
 	fire:
 		TNT1 A 1
 		goto ready

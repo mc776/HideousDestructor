@@ -1,0 +1,49 @@
+//Spectator playerpawn
+//I have no idea why this always crashes on map start
+class specmorph:ActionItem{
+	states{
+	pickup:
+		TNT1 A 0{
+			setz(pos.z+50);
+			A_Morph("HDSpectator",int.MAX,MRF_FULLHEALTH,"HDBloodTrailFloor","TeleportFog");
+		}fail;
+	}
+}
+class HDSpectator:HDPlayerPawn{
+	default{
+		-solid -shootable +invisible +notarget +nogravity +noblockmap
+		-telestomp +alwaystelefrag -pickup +notrigger
+		player.viewbob 0;
+		player.soundclass "spectator";
+		player.userange 0;player.jumpz 0;maxstepheight 1;
+		player.morphweapon "NullWeapon";
+		player.forwardmove 0.3;player.sidemove 0.3;
+		player.startitem "NullWeapon";
+		player.viewheight 1;player.attackzoffset 0;
+		height 4;radius 4;
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		A_Log(string.format("%s is now a spectator.",player.getusername()));
+	}
+	override void tick(){
+		A_GiveInventory("IsDead");
+		playerpawn.tick();
+		input=getplayerinput(MODINPUT_BUTTONS);
+		vel*=0.9;
+		if(input&BT_CROUCH)vel.z-=1;
+	}
+	states{
+		spawn:
+		see:
+		melee:
+		missile:
+		pain:
+			TNT1 A -1;
+		death:
+		xdeath:
+			TNT1 A 0 A_NoBlocking();
+			TNT1 A 10 A_CheckPlayerDone();
+			wait;
+	}
+}
