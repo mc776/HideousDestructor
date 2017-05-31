@@ -1,3 +1,33 @@
+// ------------------------------------------------------------
+// Multiplayer scripts.
+// ------------------------------------------------------------
+
+
+//LEVEL RESET SCRIPT
+bool ending;
+script "CoopFail"(void){
+	if(!ending){
+		ending=true;
+		Log(s:"Respawn limit reached.");
+		HudMessageBold(s:" ";0,3,0,0,0,0);
+		delay(34);
+		setfont("bigfont");
+		HudMessageBold (
+			s: "W E   A R E    L E A V I N G !";
+			 2, 2, 5, 1.5, 0.3, 5.6, 0.05);
+		setfont("smallfont");
+		delay(80);
+		HudMessageBold(
+			s: "Too many casualties. HQ has ordered a retreat!";
+			 2, 3, 9, 1.5, 0.4, 2.0, 0.06);
+		delay(200);
+		Teleport_NewMap(GetLevelInfo(LEVELINFO_LEVELNUM),0,0);
+	}
+}
+
+
+
+//old pure ACS stuff below...
 
 int deaths_common;
 int deaths[32];
@@ -272,14 +302,6 @@ script "EndgameCheck" (void){
 		delay(2);
 		if (deaths_common>=maxlives+PlayerCount()){
 			endgame=1;
-
-			//fancy text will crash. Seems related to bots.
-				Log(s:"Wiped out! Try again.");
-				delay(1);
-				Teleport_NewMap(GetLevelInfo(LEVELINFO_LEVELNUM),0,0);
-				terminate;
-			//fancy text will crash. Seems related to bots.
-
 			HudMessageBold(s:"";0,4,0,0,0,0);
 			HudMessageBold(s:"";0,3,0,0,0,0);
 			delay(34);
@@ -298,27 +320,21 @@ script "EndgameCheck" (void){
 		}
 		else if ((deaths_common>=maxlives) && (loseondeathlimit==1)){
 			endgame=1;
-
-			//fancy text will crash. Seems related to bots.
-				Log(s:"Too many casualties. HQ has ordered a retreat!");
-				delay(1);
-				Teleport_NewMap(GetLevelInfo(LEVELINFO_LEVELNUM),0,0);
-				terminate;
-			//fancy text will crash. Seems related to bots.
-
+			Log(s:"Respawn limit reached.");
 			HudMessageBold(s:"";0,4,0,0,0,0);
 			HudMessageBold(s:"";0,3,0,0,0,0);
+			HudMessageBold(s:" ";0,3,0,0,0,0);
 			delay(34);
 			setfont("bigfont");
 			HudMessageBold (
 				s: "W E   A R E    L E A V I N G !";
-				 2, 2, 5, 1.5, 0.5, 6.5);
+				 2, 2, 5, 1.5, 0.3, 5.6, 0.05);
 			setfont("smallfont");
-			delay (110);
-			HudMessageBold (
+			delay(80);
+			HudMessageBold(
 				s: "Too many casualties. HQ has ordered a retreat!";
-				 2, 3, 9, 1.5, 0.62, 3.5);
-			delay(280);
+				 2, 3, 9, 1.5, 0.4, 2.0, 0.06);
+			delay(200);
 			Teleport_NewMap(GetLevelInfo(LEVELINFO_LEVELNUM),0,0);
 			terminate;
 		}
