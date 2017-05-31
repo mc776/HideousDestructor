@@ -83,12 +83,6 @@ ACTOR HDPistolChamber:Ammo{
 	states{spawn:TNT1 A 0 nodelay{return state("null");}stop}
 }
 actor HDPistolNoMag:InventoryFlag{}
-actor HDSecondPistol:Ammo{
-	inventory.maxamount 1
-	ammo.backpackmaxamount 1
-	+inventory.ignoreskill +inventory.untossable ammo.backpackamount 0
-	states{spawn:TNT1 A 0 nodelay{return state("null");}stop}
-}
 actor HDSecondPistolLoaded:Ammo{
 	inventory.maxamount 15
 	ammo.backpackmaxamount 15
@@ -481,7 +475,6 @@ actor HDPistol:HDWeapon
 	states
 	{
 	select0:
-		PISG A 0 A_TakeInventory("HDPistolSelector")
 		PISG A 0 A_JumpIfInventory("HDPistolChamber",1,2)
 		PISG C 0
 		"----" A 1 A_Raise
@@ -859,9 +852,6 @@ actor HDPistol:HDWeapon
 		stop
 	spawndropped:
 		TNT1 A 0 A_JumpIfInTargetInventory("HDPistol",1,"spawnfresh")
-		TNT1 A 0{
-			if(countinv("HDSecondPistol",AAPTR_TARGET)){A_GiveInventory("HDPistolSelector",1,AAPTR_TARGET);}
-		}
 		TNT1 A 0 A_SpawnItemEx("HDPistolPickup",0,0,0,velx,vely,velz,0, SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS)
 		stop
 	}

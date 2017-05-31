@@ -2,20 +2,25 @@
 //   Pistol
 // ------------------------------------------------------------
 
-class HDPistolSelector:HDWeapon{
+class HDSecondPistol:Ammo{
+	hdplayerpawn onr;
+	override void attachtoowner(actor user){
+		super.attachtoowner(user);
+		if(owner is "HDPlayerPawn")onr=HDPlayerPawn(owner);
+	}
+	override void doeffect(){
+		super.doeffect();
+		if(onr && !onr.countinv("HDPistol")){
+			onr.PistolConsolidator();
+		}
+	}
 	default{
-		+inventory.untossable
-		weapon.slotnumber 2;weapon.selectionorder 999;
+		+inventory.ignoreskill +inventory.untossable
+		inventory.maxamount 1;ammo.backpackmaxamount 1;ammo.backpackamount 0;
 	}
 	states{
-	ready:
-		TNT1 A 0{
-			if(invoker.onr)invoker.onr.PistolConsolidator();
-			if(countinv("HDPistol"))A_SelectWeapon("HDPistol");
-			else if(countinv("HDSMG"))A_SelectWeapon("HDSMG");
-			else A_SelectWeapon("Ring");
-		}
-		goto super::ready;
+		spawn:TNT1 A 0 nodelay;
+		stop;
 	}
 }
 extend class HDPlayerPawn{
