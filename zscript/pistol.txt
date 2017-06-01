@@ -10,6 +10,7 @@ class HDSecondPistol:Ammo{
 	}
 	override void doeffect(){
 		super.doeffect();
+return;
 		if(onr && !onr.countinv("HDPistol")){
 			onr.PistolConsolidator();
 		}
@@ -88,3 +89,27 @@ class HDPistolEmptyMag:HDDebris{
 		}stop;
 	}
 }
+class HDZPistol:HDWeapon{
+	states{
+	spawn:
+		TNT1 A 1;
+		TNT1 A 0{
+			actor a=spawn("HDPistolPickup",pos);
+			a.vel=vel;
+			actor o=invoker.onr;
+			if(o && !o.countinv("HDPistol")){
+				a.A_SetInventory("HDPistolLoaded",o.countinv("HDPistolLoaded"));
+				a.A_SetInventory("HDPistolChamber",o.countinv("HDPistolChamber"));
+				a.A_SetInventory("HDPistolFullAuto",o.countinv("HDPistolFullAuto"));
+				a.A_SetInventory("HDPistolNoMag",o.countinv("HDPistolNoMag"));
+				if(o.countinv("HDSecondPistol")){
+					let oo=HDPlayerPawn(o);
+					if(oo)oo.PistolConsolidator();
+				}
+			}
+		}
+		stop;
+	}
+}
+
+

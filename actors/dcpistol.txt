@@ -457,7 +457,7 @@ actor HDSecondPistolFullAuto:Ammo{
 	+inventory.untossable ammo.backpackamount 0
 	inventory.maxamount 2 ammo.backpackmaxamount 2
 }
-actor HDPistol:HDWeapon
+actor HDPistol:HDZPistol
 {
 	game Doom
 	obituary "%o got capped by %k's pea shooter."
@@ -842,18 +842,6 @@ actor HDPistol:HDWeapon
 			A_WeaponReady(WRF_NOFIRE);
 		}
 		goto nope
-
-
-	spawn:
-		TNT1 A 1
-		TNT1 A 0 A_CheckProximity("spawndropped","PlayerPawn",20,1, CPXF_COUNTDEAD|CPXF_SETTARGET|CPXF_ANCESTOR|CPXF_CLOSEST|CPXF_NOZ)
-	spawnfresh:
-		TNT1 A 0 A_SpawnItemEx("HDPistolPickup",0,0,0,velx,vely,velz,0, SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_NOPOINTERS)
-		stop
-	spawndropped:
-		TNT1 A 0 A_JumpIfInTargetInventory("HDPistol",1,"spawnfresh")
-		TNT1 A 0 A_SpawnItemEx("HDPistolPickup",0,0,0,velx,vely,velz,0, SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS)
-		stop
 	}
 }
 
