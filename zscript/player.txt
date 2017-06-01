@@ -325,6 +325,13 @@ class HDPlayerPawn:PlayerPawn{
 			}
 		}
 
+		//...and capping speeds
+		if(multiplayer && hd_3speed){
+			if(speed>2.)speed=2.6;  
+			else if(speed>0.6)speed=1.;
+			else speed=0.4;
+		}
+
 
 		//lowering weapon for sprint/mantle/jump
 		if(
