@@ -36,7 +36,6 @@ actor SD_Base:HDPlayer{
 		goto deathcontinued
 	deathcontinued:
 		"----" A 0 A_GiveInventory("CheckLiveRound",1)
-		"----" A 0 A_GiveInventory("IsDead",1)
 		"----" A 0 A_JumpIfInventory("IsBot",1,"dead")
 		"----" A 0 A_spawnItemEx("tempshield",0,0,0, velx,vely,velz, 0,40)
 		"####" H 5
@@ -51,7 +50,6 @@ actor SD_Base:HDPlayer{
 		"####" P 20 A_CheckPlayerDone
 		wait
 	xdeath:
-		"----" A 0 A_GiveInventory("IsDead",1)
 		"----" A 0 A_GiveInventory("CheckLiveRound",1)
 		"----" A 0 A_JumpIfInventory("IsBot",1,"botxdead")
 		"####" Q 5

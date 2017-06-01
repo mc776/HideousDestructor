@@ -5,7 +5,6 @@ extend class HDPlayerPawn{
 	death:
 	xdeath:
 		---- A 2{
-			A_GiveInventory("IsDead");
 			A_GiveInventory("CheckLiveRound");
 			binvisible=true;
 			A_NoBlocking();
@@ -26,6 +25,7 @@ extend class HDPlayerPawn{
 		else playercorpse.A_Die();
 
 		killoldfires();
+		A_TakeInventory("IsAlive");
 		super.die(source,inflictor,dmgflags);
 	}
 	void killoldfires(){

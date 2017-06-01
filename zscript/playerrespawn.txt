@@ -24,10 +24,10 @@ class HDSpectator:HDPlayerPawn{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
+		A_TakeInventory("IsAlive");
 		A_Log(string.format("%s is now a spectator.",player.getusername()));
 	}
 	override void tick(){
-		A_GiveInventory("IsDead");
 		playerpawn.tick();
 		input=getplayerinput(MODINPUT_BUTTONS);
 		vel*=0.9;

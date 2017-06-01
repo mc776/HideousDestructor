@@ -49,9 +49,8 @@ class HDPlayerPawn:PlayerPawn{
 	states{
 	spawn:
 		PLAY A 1;
-		PLAY A 3{
-			A_GiveInventory("IsInGame");
-			A_TakeInventory("IsDead");
+		---- A 3{
+			A_GiveInventory("IsAlive");
 		}
 	spawn2:
 		#### E 5{
@@ -501,7 +500,6 @@ extend class HDPlayerPawn{
 		A_TakeInventory("IsMoving");
 		A_TakeInventory("IsSprinting");
 		A_TakeInventory("IsHit");
-		A_TakeInventory("IsDead");
 		A_TakeInventory("JustUnloading");
 		A_TakeInventory("IsInHell");
 		A_TakeInventory("UsingMeds");
