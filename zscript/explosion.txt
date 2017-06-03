@@ -22,14 +22,6 @@ extend class HDActor{
 			immolateradius,
 			gibradius
 		);
-		/*
-		//might as well type this out now
-		//get the biggest radius
-		int bigradius=max(
-			max(blastradius,fragradius),
-			max(immolateradius,gibradius)
-		);
-		*/
 
 		//initialize things to be used in the iterator
 		int dist;
@@ -43,6 +35,7 @@ extend class HDActor{
 		double losmul;
 		if(!source){
 			if(target)source=target;
+			else if(master)source=master;
 			else source=self;
 		}
 
@@ -83,16 +76,16 @@ extend class HDActor{
 					its.destroy();itr.destroy();
 				}
 
-				if(it.mass>0) divmass=1./it.mass;else divmass=1.;  
+				if(it.mass>0) divmass=1./it.mass;else divmass=1.;
 
 				//immolate before all damage, to avoid bypassing player death transfer
 				if(it && losmul && dist<=immolateradius){
-					if(immolatechance>=random(1,100)*losmul){  
+					if(immolatechance>=random(1,100)*losmul){
 						A_Immolate(it,target,immolateamount);
 					}
 				}
 				if(it && losmul && dist<=blastradius && it.bshootable){
-					if(dist>fullblastradius){  
+					if(dist>fullblastradius){
 						dmg=clamp(dist-fullblastradius,0,dist);
 						dmg=blastdamage-dmg;
 					}else dmg=blastdamage;
@@ -106,7 +99,7 @@ extend class HDActor{
 						if(pushamount<=it.mass) push=(0,0,0);
 						else{
 							push*=divmass;
-							if(push.z>0)push-=(0,0,mass*it.gravity);  
+							if(push.z>0)push-=(0,0,mass*it.gravity);
 						}
 					}
 					it.vel+=push;
