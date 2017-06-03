@@ -1253,11 +1253,18 @@ actor SSP:HDUPK replaces SquadSummoner{
 
 
 
-actor BotSpawner:ActionItem{
+actor BotSpawner_:ActionItem{
 	states{
 	pickup:
 		TNT1 A 0{
 			A_GiveInventory("IsBot",1);
+			if(countinv("IsFemale")<1){
+				A_SpawnItemEx("BotBot",0,0,0,0,0,0,0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_SETMASTER|SXF_TRANSFERTRANSLATION);
+			}else{
+				A_SpawnItemEx("BotBotF",0,0,0,0,0,0,0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_SETMASTER|SXF_TRANSFERTRANSLATION);
+			}
+			A_GiveInventory("specmorph");
+return;
 			A_TakeInventory("ZM66Rifle");
 			A_TakeInventory("ZM66GrenadeRifle");
 			A_TakeInventory("ZM66SemiRifle");
@@ -1280,7 +1287,6 @@ actor BotSpawner:ActionItem{
 			A_ChangeFlag("shootable",0);
 			A_ChangeFlag("noblockmap",1);
 			A_ChangeFlag("nointeraction",1);
-			A_ChangeFlag("notarget",1);
 			if(countinv("IsFemale")<1){
 				A_SpawnItemEx("BotBot",0,0,0,0,0,0,0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_SETMASTER|SXF_TRANSFERTRANSLATION);
 			}else{
@@ -1289,13 +1295,6 @@ actor BotSpawner:ActionItem{
 			A_ChangeFlag("invisible",1);
 			A_SetTranslucent(0,0);
 		}fail
-	}
-}
-actor BotKill : ActionItem{
-	states{
-	pickup:
-		TNT1 A 0 A_ChangeFlag("shootable",1)
-		fail
 	}
 }
 actor BotBot:RiflemanBase{
@@ -1338,7 +1337,7 @@ actor BotBot:RiflemanBase{
 		"----" A 0 A_TakeInventory("NotSeen")
 		"----" A 0 A_Jump(256,3)
 		"----" A 0 A_GiveInventory("NotSeen",1)
-		"----" A 0 A_JumpIfInventory("NotSeen",12,"warpandwait")
+		"----" A 0 //A_JumpIfInventory("NotSeen",12,"warpandwait")
 		TNT1 A 0 A_Look
 		TNT1 A 0 A_Jump(60,"spawn")
 		TNT1 A 0 A_SetAngle(angle+random(-30,30))
@@ -1355,7 +1354,7 @@ actor BotBot:RiflemanBase{
 		"----" A 0 A_TakeInventory("NotSeen")
 		"----" A 0 A_Jump(256,3)
 		"----" A 0 A_GiveInventory("NotSeen",1)
-		"----" A 0 A_JumpIfInventory("NotSeen",7,"warpandwait")
+		"----" A 0 //A_JumpIfInventory("NotSeen",7,"warpandwait")
 		PLAY AA 3 A_Wander
 		TNT1 A 0 A_Chase("melee","missile",CHF_DONTMOVE)
 		PLAY BB 3 A_Wander
