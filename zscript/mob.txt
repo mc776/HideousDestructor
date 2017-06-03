@@ -528,3 +528,37 @@ class HDScary:HDMOb{
 	}
 }
 
+
+//for corpse-gibbing for things not inheriting from HDMOb
+class SawGib:InventoryFlag{
+	default{
+		inventory.maxamount int.MAX;
+	}
+	override void attachtoowner(actor user){
+		super.attachtoowner(user);
+		actor o=owner;
+		if(owner){
+			stamina=max(o.gibhealth,o.spawnhealth());
+		}else goawayanddie();
+	}
+	override void doeffect(){
+		if(bmissileevenmore)return;
+		if(amount>stamina){  
+			bmissileevenmore=true;
+			actor o=owner;
+			if(
+				!owner.bcorpse
+				||!owner.bshootable
+				||owner.health>0  
+				||!o.findstate("xdeath")
+			)goawayanddie();
+			else{
+				owner.bshootable=false;
+				//use the old death state first
+				if(o.findstate("XDeathBrewtleLulz"))o.setstatelabel("XDeathBrewtleLulz");else
+				if(o.findstate("XXDeath"))o.setstatelabel("XXDeath");else
+				owner.setstatelabel("xdeath");
+			}
+		}
+	}
+}

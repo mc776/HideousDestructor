@@ -402,7 +402,6 @@ actor ZombieStormtrooper:ZombieMan //replaces ZombieMan
 		"####" J 5 A_GiveInventory("NoBlockWepDrop")
 		"####" K 5
 	Dead:
-		"####" A 0 A_JumpIfInventory("SawGibs",60,"XDeathBrewtleLulz")
 		"####" K 3 canraise A_JumpIf(abs(velz)<2,1)
 		loop
 		"####" L 5 canraise A_JumpIf(abs(velz)>=2,"Dead")
@@ -850,7 +849,6 @@ actor Jackboot:ShotgunGuy //replaces ShotgunGuy
 		"####" J 5 A_GiveInventory("NoBlockWepDrop")
 		"####" K 5
 	Dead:
-		"####" A 0 A_JumpIfInventory("SawGibs",70,"XDeathBrewtleLulz")
 		"####" K 3 canraise A_JumpIf(abs(velz)<2,1)
 		loop
 		"####" L 5 canraise A_JumpIf(abs(velz)>=2,"Dead")
@@ -1436,7 +1434,6 @@ actor DragonGuard:ChaingunGuy
 		CPOS KL 5
 		CPOS M 5
 	Dead:
-		"####" A 0 A_JumpIfInventory("SawGibs",90,"XDeathBrewtleLulz")
 		CPOS M 3 canraise A_JumpIf(abs(velz)<2,1)
 		loop
 		CPOS N 5 canraise A_JumpIf(abs(velz)>=2,"Dead")
@@ -1669,7 +1666,6 @@ actor HoopBubble:WolfensteinSS replaces WolfensteinSS
 		TNT1 A 0 A_GiveInventory("NoBlockWepDrop")
 		SSWV KL 5
 	Dead:
-		"####" A 0 A_JumpIfInventory("SawGibs",100,"XDeathBrewtleLulz")
 		SSWV L 3 canraise A_JumpIf(abs(velz)<2,1)
 		loop
 		SSWV M 5 A_JumpIf(abs(velz)>=2,"Dead")
