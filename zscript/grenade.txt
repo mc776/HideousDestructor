@@ -34,17 +34,17 @@ class HDFragGrenadeRoller:HDActor{
 	spawn2:
 		FRAG BCD 2{
 			keeprolling=vel;
-			if(abs(vel.x)<2 && abs(vel.y)<2) setstatelabel("death");
+			if(abs(vel.x)<0.4 && abs(vel.y)<0.4) setstatelabel("death");
 			if(floorz>=pos.z) A_PlaySound("misc/fragroll");
 			if(abs(vel.z-keeprolling.z)>10) A_PlaySound("misc/fragknock",CHAN_BODY);
 		}loop;
 	bounce:
-		"----" A 0{
+		---- A 0{
 			bmissile=false;bbounceonactors=false;busebouncestate=false;
 			vel*=0.3;
 		}goto spawn2;
 	death:
-		"----" A 2{
+		---- A 2{
 			if(abs(vel.z-keeprolling.z)>5){
 				A_PlaySound("misc/fragknock",CHAN_BODY);
 				keeprolling=vel;
