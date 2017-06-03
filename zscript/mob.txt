@@ -55,7 +55,7 @@ class HDMOb:HDActor{
 		if(
 			mod=="chainsaw"
 		){
-			damage*=3;
+			damage*=2;
 		}else if(
 			mod=="smallarms0"||
 			mod=="smallarms1"||
@@ -91,7 +91,7 @@ class HDMOb:HDActor{
 		if(hd_debug)A_Log(string.format("A corpse took %i damage for a total of %i/%i.",damage,corpsedamage,gibhealth));
 		if(
 			findstate("xdeath",false)
-			&&(damage>=gibhealth||corpsedamage>max(gibhealth,mass)*10)
+			&&(damage>=gibhealth||corpsedamage>max(gibhealth,mass)*7)
 		){
 			bshootable=false;
 			bsolid=false;

@@ -2,6 +2,7 @@
 
 extend class HDPlayerPawn{
 	void ConsolidateWeapons(){
+		if(sv_infiniteammo)return;
 		int sparepowder=countinv("FourMilAmmo");
 		int usablebrass=countinv("HDSpent7mmPickup");
 
