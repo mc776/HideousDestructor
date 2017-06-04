@@ -75,14 +75,16 @@ class HDFragGrenadeRoller:HDActor{
 	override void tick(){
 		ClearInterpolation();
 		if(globalfreeze||level.Frozen) return;
-		if(fuze>=140 && !bnointeraction){
-			setstatelabel("destroy");
+		else if(bnointeraction){
 			nexttic();
-		}else if(bnointeraction){
-			nexttic();
+			return;
 		}else{
 			fuze++;
-			super.tick();
+			if(fuze>=140 && !bnointeraction){
+				setstatelabel("destroy");
+				nexttic();
+				return;
+			}else super.tick();
 		}
 	}
 }
@@ -98,6 +100,8 @@ class HDFragGrenade:SlowProjectile{
 		+activatemcross;-noteleport;
 	}
 	override void tick(){
+		ClearInterpolation();
+		if(globalfreeze||level.Frozen) return;
 		if(fuze<140){
 			fuze++;
 			keeprolling=vel;
