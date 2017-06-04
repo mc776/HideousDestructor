@@ -586,7 +586,7 @@ actor HDFumbledShell : HDPickup
 //   Super Shotgun
 // ------------------------------------------------------------
 
-ACTOR Slayer : HDWeapon
+ACTOR Slayer : ZSSlayer
 {
 	game Doom
 	weapon.selectionorder 203
@@ -1099,7 +1099,14 @@ actor SlayerPickup : HDUPK
 	spawn:
 		SLAY A 0 A_Stop
 		"----" A 0 A_JumpIfInventory("Clip",1,"spawn2")
-		"----" A 0 A_GiveInventory("Clip",1)
+		"----" A 0{
+			if(!CheckLump("SHT2A0")){
+				A_SpawnItemEx("HunterPickup",0,0,0,velx,vely,velz,0,
+				SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS);
+				destroy();return;
+			}
+			else{A_GiveInventory("Clip",1);}
+		}
 		"----" A 0 A_JumpIf(CheckClass("PlayerPawn",AAPTR_TARGET,true),"takeloop")
 		"----" A 0 A_GiveInventory("ShellChamber1",1)
 		"----" A 0 A_GiveInventory("ShellChamber2",1)

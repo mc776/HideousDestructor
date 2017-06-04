@@ -14,7 +14,37 @@ class HDBuckTrail:IdleDummy{
 
 
 
-
-
+class ZSSlayer:HDWeapon{
+	override void AttachToOwner(actor user){
+		if(Wads.CheckNumForName("SHT2A0",wads.ns_sprites,-1,false)<0){
+			if(hd_debug)user.A_Log("doom 1 shotty lol",true);
+			if(!user.countinv("Hunter")){
+				user.A_GiveInventory("Hunter");
+			}
+			A_SelectWeapon("Hunter");
+			destroy();return;
+		}
+		else super.AttachToOwner(user);
+	}
+}
+class SlayerOrBoss:ActionItem{
+	states{
+	pickup:
+		TNT1 A 0{
+			if(HDMath.CheckLump("SHT2A0")){
+				A_GiveInventory("Slayer");
+				A_GiveInventory("ShellChamber1");
+				A_GiveInventory("ShellChamber2");
+				A_GiveInventory("ShotgunQuickAmmo2",12);
+				A_GiveInventory("HDShellAmmo",36);
+			}else{
+				A_GiveInventory("BossRifle");
+				A_GiveInventory("BossChamber");
+				A_GiveInventory("BossMag",10);
+				A_GiveInventory("BossClip",10);
+			}
+		}fail;
+	}
+}
 
 

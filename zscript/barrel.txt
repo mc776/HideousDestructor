@@ -244,6 +244,21 @@ class SuspiciousFireCan:IdleDummy replaces BurningBarrel{
 
 class KillerFireCan:KillerBarrel{
 	int fireticker;
+	override void postbeginplay(){
+		if(!checklump("FCANA0")||!checklump("FIREC0")){ //apparently D1 *has* FCAN just not FIRE!?
+			actor a;
+			if(
+				(random(1,100)<=hd_killerbarrels)
+				&& !sv_nomonsters
+			){
+				a=spawn("KillerBarrel",pos,ALLOW_REPLACE);
+			}
+			else a=spawn("InnocentBarrel",pos,ALLOW_REPLACE);
+			a.master=self.master;a.target=self.target;
+			destroy();return;
+		}
+		super.postbeginplay();
+	}
 	default{
 		+bright
 		health 100;

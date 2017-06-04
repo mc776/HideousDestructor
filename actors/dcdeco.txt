@@ -2,73 +2,83 @@
 //   Misc. decorations
 // ------------------------------------------------------------
 
-actor HDTechPillar : TechPillar replaces TechPillar{+dontthrust +shootable +nodamage +noblood +forceybillboard}
-actor HDColumn : Column replaces Column{radius 6 +dontthrust +shootable +nodamage +noblood +forceybillboard}
-actor HDTechLamp : TechLamp replaces TechLamp{radius 6 +dontthrust +shootable +nodamage +noblood +forceybillboard}
-actor HDTechLamp2 : TechLamp2 replaces TechLamp2{radius 6 +dontthrust +shootable +nodamage +noblood +forceybillboard}
+actor HDTechPillar:TechPillar replaces TechPillar{+dontthrust +shootable +nodamage +noblood +forceybillboard}
+actor HDColumn:Column replaces Column{radius 6 +dontthrust +shootable +nodamage +noblood +forceybillboard}actor HDTechLamp:TechLamp replaces TechLamp{radius 6 +dontthrust +shootable +nodamage +noblood +forceybillboard}
+actor HDTechLamp_:HDActor replaces TechLamp{ //used in the range, so gotta check
+	radius 6 +dontthrust +shootable +nodamage +noblood +forceybillboard
+	states{
+	spawn:
+		TNT1 A 0 nodelay{
+			if(CheckLump("TLMPA0"))
+			{A_SpawnItemEx("HDTechLamp",0,0,0,0,0,0,0,SXF_NOCHECKPOSITION);}
+			else{A_SpawnItemEx("HDColumn",0,0,0,0,0,0,0,SXF_NOCHECKPOSITION);}
+		}stop
+	}
+}
+actor HDTechLamp2:TechLamp2 replaces TechLamp2{radius 6 +dontthrust +shootable +nodamage +noblood +forceybillboard}
 
-actor HDBlueTorch : BlueTorch replaces BlueTorch{radius 2 +dontthrust +shootable +nodamage +noblood +forceybillboard states{spawn: TNT1 A 0 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) spawn2: TBLU ABCD random(1,2) bright light("BIGBLUETORCH")
+actor HDBlueTorch:BlueTorch replaces BlueTorch{radius 2 +dontthrust +shootable +nodamage +noblood +forceybillboard states{spawn: TNT1 A 0 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) spawn2: TBLU ABCD random(1,2) bright light("BIGBLUETORCH")
 loop}}
-actor HDGreenTorch : HDBlueTorch replaces GreenTorch{states{spawn: TNT1 A 0 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) spawn2: TGRN ABCD random(1,2) bright light("BIGGREENTORCH")
+actor HDGreenTorch:HDBlueTorch replaces GreenTorch{states{spawn: TNT1 A 0 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) spawn2: TGRN ABCD random(1,2) bright light("BIGGREENTORCH")
 loop}}
-actor HDRedTorch : HDBlueTorch replaces RedTorch{states{spawn: TNT1 A 0 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) spawn2: TRED ABCD random(1,2) bright light("BIGREDTORCH")
-loop}}
-
-
-actor HDShortBlueTorch : HDBlueTorch replaces ShortBlueTorch{projectilepassheight -16 height 37 states{spawn: TNT1 A 0 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) spawn2: SMBT ABCD random(1,2) bright light("SMALLBLUETORCH")
-loop}}
-actor HDShortGreenTorch : HDShortBlueTorch replaces ShortGreenTorch{states{spawn: TNT1 A 0 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) spawn2: SMGT ABCD random(1,2) bright light("SMALLGREENTORCH")
-loop}}
-actor HDShortRedTorch : HDShortBlueTorch replaces ShortRedTorch{states{spawn: TNT1 A 0 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) spawn2: SMRT ABCD random(1,2) bright light("SMALLREDTORCH")
-loop}}
-
-
-actor HDHeadCandles : HeadCandles replaces HeadCandles{radius 12 height 27 scale 0.75 +shootable +dontthrust +nodamage +noblood states {spawn: POL3 AB random(1,6) bright light("DRUNKBALL")
+actor HDRedTorch:HDBlueTorch replaces RedTorch{states{spawn: TNT1 A 0 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) spawn2: TRED ABCD random(1,2) bright light("BIGREDTORCH")
 loop}}
 
-actor HDCandle : CandleStick replaces CandleStick{states{spawn:CAND A -1 light("HDCANDLE") nodelay A_SetScale((random(0,1)*2-1)*frandom(0.9,1.1),frandom(0.7,1.2))
+
+actor HDShortBlueTorch:HDBlueTorch replaces ShortBlueTorch{projectilepassheight -16 height 37 states{spawn: TNT1 A 0 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) spawn2: SMBT ABCD random(1,2) bright light("SMALLBLUETORCH")
+loop}}
+actor HDShortGreenTorch:HDShortBlueTorch replaces ShortGreenTorch{states{spawn: TNT1 A 0 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) spawn2: SMGT ABCD random(1,2) bright light("SMALLGREENTORCH")
+loop}}
+actor HDShortRedTorch:HDShortBlueTorch replaces ShortRedTorch{states{spawn: TNT1 A 0 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) spawn2: SMRT ABCD random(1,2) bright light("SMALLREDTORCH")
+loop}}
+
+
+actor HDHeadCandles:HeadCandles replaces HeadCandles{radius 12 height 27 scale 0.75 +shootable +dontthrust +nodamage +noblood states {spawn: POL3 AB random(1,6) bright light("DRUNKBALL")
+loop}}
+
+actor HDCandle:CandleStick replaces CandleStick{states{spawn:CAND A -1 light("HDCANDLE") nodelay A_SetScale((random(0,1)*2-1)*frandom(0.9,1.1),frandom(0.7,1.2))
 loop}}
 
 
 actor HDStickDeco {radius 2 +solid height 50 projectilepassheight -16 +dontthrust +shootable +nodamage +noblood +forceybillboard}
 
-actor HDCandelabra : HDStickDeco replaces Candelabra{states{spawn:CBRA A -1 light("CANDELABRA")
+actor HDCandelabra:HDStickDeco replaces Candelabra{states{spawn:CBRA A -1 light("CANDELABRA")
 loop}}
 
-actor HDHeadsStickBase : HDStickDeco{scale 0.75 states{spawn: POL2 A -1 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) stop}}
-actor HDHeadsStickOld : HDHeadsStickBase{translation "58:66=128:136","214:223=141:148", "176:191=24:47","16:34=68:79"}
-actor HDHeadsStick : RandomSpawner replaces HeadsOnAStick{dropitem "HDHeadsStickBase" 256 dropitem "HDHeadsStickOld" 256}
-actor HDHeadStickBase : HDStickDeco{scale 0.75 states{spawn: POL4 A -1 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) stop}}
-actor HDHeadStickBlack : HDHeadStickBase{translation "112:120=152:159","121:127=9:12", "48:79=66:79", "18:21=68:68", "213:213=66:66"}
-actor HDHeadStickOld : HDHeadStickBase{translation "58:66=128:136","214:223=141:148", "176:191=24:47","16:34=68:79"}
-actor HDHeadStick : RandomSpawner replaces HeadOnAStick{dropitem "HDHeadStickBase" 256 dropitem "HDHeadStickOld" 256 dropitem "HDHeadStickBlack" 256}
+actor HDHeadsStickBase:HDStickDeco{scale 0.75 states{spawn: POL2 A -1 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) stop}}
+actor HDHeadsStickOld:HDHeadsStickBase{translation "58:66=128:136","214:223=141:148", "176:191=24:47","16:34=68:79"}
+actor HDHeadsStick:RandomSpawner replaces HeadsOnAStick{dropitem "HDHeadsStickBase" 256 dropitem "HDHeadsStickOld" 256}
+actor HDHeadStickBase:HDStickDeco{scale 0.75 states{spawn: POL4 A -1 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) stop}}
+actor HDHeadStickBlack:HDHeadStickBase{translation "112:120=152:159","121:127=9:12", "48:79=66:79", "18:21=68:68", "213:213=66:66"}
+actor HDHeadStickOld:HDHeadStickBase{translation "58:66=128:136","214:223=141:148", "176:191=24:47","16:34=68:79"}
+actor HDHeadStick:RandomSpawner replaces HeadOnAStick{dropitem "HDHeadStickBase" 256 dropitem "HDHeadStickOld" 256 dropitem "HDHeadStickBlack" 256}
 
-actor HDDeadStick : HDStickDeco replaces DeadStick{radius 16 scale 0.9 -noblood translation "58:66=128:136","214:223=141:148", "176:191=24:47","16:34=68:79" states{spawn: POL1 A -1
+actor HDDeadStick:HDStickDeco replaces DeadStick{radius 16 scale 0.9 -noblood translation "58:66=128:136","214:223=141:148", "176:191=24:47","16:34=68:79" states{spawn: POL1 A -1
 stop}}
-actor HDTwitchStick : HDDeadStick replaces LiveStick{painchance 32 translation "none" states{spawn: POL6 A random(1,60)nodelay A_SetAngle(random(1,360)) POL6 AAAAA 1 A_SpawnItemEx("BloodTrail",0,0,random(32,40),random(-2,2),0,random(-2,-4),random(-1,1),SXF_NOCHECKPOSITION) POL6 B random(2,6)
+actor HDTwitchStick:HDDeadStick replaces LiveStick{painchance 32 translation "none" states{spawn: POL6 A random(1,60)nodelay A_SetAngle(random(1,360)) POL6 AAAAA 1 A_SpawnItemEx("BloodTrail",0,0,random(32,40),random(-2,2),0,random(-2,-4),random(-1,1),SXF_NOCHECKPOSITION) POL6 B random(2,6)
 loop pain: POL6 BABABABABAABB random(3,4)
 goto spawn}}
 
-actor HDTwitchHang : HDTwitchStick replaces BloodyTwitch{+nogravity +spawnceiling scale  0.8 states{spawn: GOR1 ABCB random(8,30) nodelay A_SetAngle(random(1,360))
+actor HDTwitchHang:HDTwitchStick replaces BloodyTwitch{+nogravity +spawnceiling scale  0.8 states{spawn: GOR1 ABCB random(8,30) nodelay A_SetAngle(random(1,360))
 loop pain: GOR1 CABCABCBAACBB random(3,4)
 goto spawn}}
-actor HDTwitchHangNS : HDTwitchHang replaces NonsolidTwitch {-solid -shootable}
+actor HDTwitchHangNS:HDTwitchHang replaces NonsolidTwitch {-solid -shootable}
 
-actor HDHTNoGuts : HDDeadStick replaces HangNoGuts{+nogravity +spawnceiling radius 8 height 79 states{spawn: HDB1 A -1 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) stop}}
-actor HDHTLkDown : HDHTNoGuts replaces HangTLookingDown{radius 12 height 12 height 51 states{spawn: HDB3 A -1 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) stop}}
-actor HDHTLkUp : HDHTLkDown replaces HangTLookingUp{height 51 states{spawn: HDB5 A -1 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) stop}}
-actor HDHTNoBrain : HDHTLkDown replaces HangTNoBrain{height 56 states{spawn: HDB6 A -1 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) stop}}
-actor HDHTSkull : HDHTLkDown replaces HangTSkull{height 57 states{spawn: HDB4 A -1 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) stop}}
+actor HDHTNoGuts:HDDeadStick replaces HangNoGuts{+nogravity +spawnceiling radius 8 height 79 states{spawn: HDB1 A -1 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) stop}}
+actor HDHTLkDown:HDHTNoGuts replaces HangTLookingDown{radius 12 height 12 height 51 states{spawn: HDB3 A -1 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) stop}}
+actor HDHTLkUp:HDHTLkDown replaces HangTLookingUp{height 51 states{spawn: HDB5 A -1 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) stop}}
+actor HDHTNoBrain:HDHTLkDown replaces HangTNoBrain{height 56 states{spawn: HDB6 A -1 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) stop}}
+actor HDHTSkull:HDHTLkDown replaces HangTSkull{height 57 states{spawn: HDB4 A -1 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) stop}}
 
-actor HDMt2 : HDHTNoGuts replaces Meat2 {radius 12 height 68 scale 0.8 translation "none" states{spawn: GOR2 A -1
+actor HDMt2:HDHTNoGuts replaces Meat2 {radius 12 height 68 scale 0.8 translation "none" states{spawn: GOR2 A -1
 stop}}
-actor HDMt3 : HDMt2 replaces Meat3 {height 68 states{spawn: GOR3 A -1 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) stop}}
-actor HDMt4 : HDMt2 replaces Meat4 {height 54 states{spawn: GOR4 A -1 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) stop}}
-actor HDMt5 : HDMt2 replaces Meat5 {height 41 states{spawn: GOR5 A -1 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) stop}}
-actor HDMt2NS : HDMt2 replaces NonsolidMeat2 {-solid -shootable}
-actor HDMt3NS : HDMt3 replaces NonsolidMeat3 {-solid -shootable}
-actor HDMt4NS : HDMt4 replaces NonsolidMeat4 {-solid -shootable}
-actor HDMt5NS : HDMt5 replaces NonsolidMeat5 {-solid -shootable}
+actor HDMt3:HDMt2 replaces Meat3 {height 68 states{spawn: GOR3 A -1 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) stop}}
+actor HDMt4:HDMt2 replaces Meat4 {height 54 states{spawn: GOR4 A -1 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) stop}}
+actor HDMt5:HDMt2 replaces Meat5 {height 41 states{spawn: GOR5 A -1 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) stop}}
+actor HDMt2NS:HDMt2 replaces NonsolidMeat2 {-solid -shootable}
+actor HDMt3NS:HDMt3 replaces NonsolidMeat3 {-solid -shootable}
+actor HDMt4NS:HDMt4 replaces NonsolidMeat4 {-solid -shootable}
+actor HDMt5NS:HDMt5 replaces NonsolidMeat5 {-solid -shootable}
 
 
 
