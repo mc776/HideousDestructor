@@ -66,13 +66,14 @@ class HDActor:Actor{
 	){
 		int airb=0;
 		vector3 burstpoint=self.pos+(0,0,self.height*0.5);
-		if(burstpoint.z-self.floorz<56) airb=-1;
-			else if(self.ceilingz-burstpoint.z<56) airb=1;
+		if(burstpoint.z-floorz<56) airb=-1;
+			else if(ceilingz-burstpoint.z<56) airb=1;
+		actor frg;vector3 bp;
 		for(int i=0;i<number;i++){
-			actor frg=spawn(chunk,burstpoint);
-			frg.vel=self.vel;
+			frg=spawn(chunk,burstpoint);
+			frg.vel=vel;
 
-			vector3 bp=(
+			bp=(
 				frandom(-1,1),
 				frandom(-1,1),
 				0
@@ -80,8 +81,8 @@ class HDActor:Actor{
 			if(airb<0) bp.z=frandom(0.01,1);
 				else if(airb>0) bp.z=-frandom(0.01,1);
 				else bp.z=frandom(-1,1);
-			if(bp==(0,0,0))bp.z=1;
-			bp*=random(minvel,maxvel);
+			if(bp==(0,0,0))bp=(minvel,0,1);
+			bp*=frandom(minvel,maxvel);
 			frg.vel+=bp;
 		}
 	}
