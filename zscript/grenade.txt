@@ -49,35 +49,40 @@ class HDFragGrenadeRoller:HDActor{
 				A_PlaySound("misc/fragknock",CHAN_BODY);
 				keeprolling=vel;
 			}
-			if(abs(vel.x)>2 || abs(vel.y)>2) setstatelabel("spawn");
+			if(abs(vel.x)>0.4 || abs(vel.y)>0.4) setstatelabel("spawn");
 		}wait;
 	destroy:
 		TNT1 A 1{
-			bsolid=false;bpushable=false;bmissile=false;bnointeraction=true;
+			bsolid=false;bpushable=false;bmissile=false;bnointeraction=true;bshootable=false;
 			spawn("DistantRocket",pos);
-			A_SpawnChunks("BigWallChunk",14,4,12);
+			A_DistantQuake(4,35,512,10);
+			A_PlaySound("world/explode",1,7);
+			A_AlertMonsters();
 			actor xpl=spawn("WallChunker",self.pos-(0,0,1),ALLOW_REPLACE);
 				xpl.target=target;xpl.master=master;xpl.stamina=stamina;
 			xpl=spawn("HDExplosion",self.pos-(0,0,1),ALLOW_REPLACE);
 				xpl.target=target;xpl.master=master;xpl.stamina=stamina;
-			A_AlertMonsters();
+			A_SpawnChunks("BigWallChunk",14,4,12);
+			A_SpawnChunks("HDBulletFrag",360,100,800);
 			A_Blast(
 				pushradius:256,pushamount:128,fullpushradius:96,
 				fragradius:256,fragdamage:256,
 				gibradius:24,gibamount:random(2,9)*10
 			);
-			A_DistantQuake(4,35,512,10);
-			A_PlaySound("world/explode",1,7);
-			A_SpawnChunks("HDBulletFrag",360,100,800);
 		}
 		stop;
 	}
 	override void tick(){
-		if(fuze>=140 && !bnointeraction) setstatelabel("destroy");
-		else{
-			if(globalfreeze||level.Frozen) return;
-			super.tick();
+		ClearInterpolation();
+		if(globalfreeze||level.Frozen) return;
+		if(fuze>=140 && !bnointeraction){
+			setstatelabel("destroy");
+			nexttic();
+		}else if(bnointeraction){
+			nexttic();
+		}else{
 			fuze++;
+			super.tick();
 		}
 	}
 }
