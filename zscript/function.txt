@@ -81,7 +81,7 @@ class HDActor:Actor{
 			if(airb<0) bp.z=frandom(0.01,1);
 				else if(airb>0) bp.z=-frandom(0.01,1);
 				else bp.z=frandom(-1,1);
-			if(bp==(0,0,0))bp=(minvel,0,1);
+			bp.x=max(bp.x,minvel);
 			bp*=frandom(minvel,maxvel);
 			frg.vel+=bp;
 		}
