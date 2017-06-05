@@ -65,13 +65,13 @@ extend class HDPlayerPawn{
 			}else if(wp is "Hunter"){
 				amt=8+
 					countinv("ShotgunTube")*0.4+
-					countinv("ShotgunQuickAmmo")*0.07
+					countinv("ShotgunQuickAmmo")*0.08
 				;
 				barrellength=30;
 				barrelwidth=0.5;
 				barreldepth=2;
 			}else if(wp is "Slayer"){
-				amt=6+countinv("ShotgunQuickAmmo2")*0.08;
+				amt=6+countinv("ShotgunQuickAmmo2")*0.06;
 				barrellength=26;
 				barrelwidth=1;
 				barreldepth=1;
@@ -89,14 +89,14 @@ extend class HDPlayerPawn{
 				barrelwidth=1;
 				barreldepth=3;
 			}else if(wp is "Vulcanette"){
-				amt=14+
+				amt=12+
 					(countinv("VulcLoaded1")?1:0)+
 					(countinv("VulcLoaded2")?1:0)+
 					(countinv("VulcLoaded3")?1:0)+
 					(countinv("VulcLoaded4")?1:0)+
 					(countinv("VulcLoaded5")?1:0)+
-					(countinv("VulcJuice")?1:0)+
-					(countinv("VulcEmptyCell")?1:0)
+					(countinv("VulcJuice")?0.6:0)+
+					(countinv("VulcEmptyCell")?0.6:0)
 				;
 				barrellength=30;
 				barrelwidth=2;
