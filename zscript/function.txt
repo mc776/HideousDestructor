@@ -81,8 +81,8 @@ class HDActor:Actor{
 			if(airb<0) bp.z=frandom(0.01,1);
 				else if(airb>0) bp.z=-frandom(0.01,1);
 				else bp.z=frandom(-1,1);
-			bp.x=max(bp.x,minvel);
 			bp*=frandom(minvel,maxvel);
+			if(bp==(0,0,0))bp.z=1;
 			frg.vel+=bp;
 		}
 	}
@@ -137,7 +137,7 @@ class HDActor:Actor{
 			let hir=HDMOb(it.thing);
 			if(hir
 				&& hir.bIsMonster
-				&& hir.health > 0
+				&& hir.health>0
 				&& hir.CheckSight(self)
 			){
 				hir.feartarget=self;

@@ -62,13 +62,13 @@ class HDFragGrenadeRoller:HDActor{
 				xpl.target=target;xpl.master=master;xpl.stamina=stamina;
 			xpl=spawn("HDExplosion",self.pos-(0,0,1),ALLOW_REPLACE);
 				xpl.target=target;xpl.master=master;xpl.stamina=stamina;
-			A_SpawnChunks("BigWallChunk",14,4,12);
-			A_SpawnChunks("HDBulletFrag",360,100,800);
 			A_Blast(
 				pushradius:256,pushamount:128,fullpushradius:96,
 				fragradius:256,fragdamage:256,
 				gibradius:24,gibamount:random(2,9)*10
 			);
+			A_SpawnChunks("BigWallChunk",14,4,12);
+			A_SpawnChunks("HDBulletFrag",360,100,800);
 		}
 		stop;
 	}
@@ -134,14 +134,12 @@ class HDFragGrenade:SlowProjectile{
 		}
 	}
 	override void BulletImpact(){
-		let gr=HDActor(spawn("HDFragGrenadeRoller",self.pos));
+		let gr=HDFragGrenadeRoller(spawn("HDFragGrenadeRoller",self.pos));
+		if(!gr)return;
 		gr.target=self.target;gr.master=self.master;gr.vel=self.keeprolling;
+		gr.fuze=self.fuze;
+		gr.keeprolling=self.keeprolling;
 		gr.A_Frighten(256);
-		let gre=HDFragGrenadeRoller(gr);
-		if(gre){
-			gre.fuze=self.fuze;
-			gre.keeprolling=self.keeprolling;
-		}
 		gr.A_PlaySound("misc/fragknock",CHAN_BODY);
 		destroy();return;
 	}
