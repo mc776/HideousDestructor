@@ -396,7 +396,7 @@ class HDPlayerPawn:PlayerPawn{
 				a.target=self;
 				a.vel=ap*4;
 			}
-			if(!corpsekicktimer && beatmax>10 && floorz==pos.z){
+			if(!corpsekicktimer && height>45 && beatmax>10 && floorz==pos.z){
 				actor k=spawn("fastprojectile",pos);k.angle=angle;
 				k.A_SetSize(4,12);k.bfloorhugger=true;
 				k.A_ChangeVelocity(5,0,0,CVF_RELATIVE);
