@@ -14,9 +14,9 @@ class SlowProjectile:HDBullet{
 		+bloodlessimpact -noteleport
 //		missiletype "BulletTail"; //testing and random eye candy
 
-		radius 5;height 5;
+		radius 4;height 4;
 		missileheight 8; projectilekickback 20; damagetype "SmallArms0";
-		speed 150;
+		speed 4;
 	}
 	override void PostBeginPlay(){
 		HDActor.PostBeginPlay();
@@ -32,6 +32,10 @@ class SlowProjectile:HDBullet{
 		if(globalfreeze||level.Frozen) return;
 		if(!bmissile){
 			nexttic();
+			return;
+		}
+		if(max(vel.x,vel.y)<20 && ceilingz>pos.z){
+			hdactor.tick();
 			return;
 		}
 

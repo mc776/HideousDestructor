@@ -58,7 +58,7 @@ class HDActor:Actor{
 	}
 	//generic function to spawn actors coming out of an explosion
 	//for frags: A_SpawnChunks("HDFrag",42,100,700);
-	virtual void A_SpawnChunks(
+	void A_SpawnChunks(
 		class<actor> chunk,
 		int number=12,
 		double minvel=10,
@@ -71,8 +71,6 @@ class HDActor:Actor{
 		actor frg;vector3 bp;
 		for(int i=0;i<number;i++){
 			frg=spawn(chunk,burstpoint);
-			frg.vel=vel;
-
 			bp=(
 				frandom(-1,1),
 				frandom(-1,1),
@@ -83,7 +81,7 @@ class HDActor:Actor{
 				else bp.z=frandom(-1,1);
 			bp*=frandom(minvel,maxvel);
 			if(bp==(0,0,0))bp.z=1;
-			frg.vel+=bp;
+			frg.vel=vel+bp;
 		}
 	}
 	//face a specified vector. NEGATIVE Z IS DOWN.

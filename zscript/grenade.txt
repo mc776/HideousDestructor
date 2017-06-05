@@ -32,20 +32,20 @@ class HDFragGrenadeRoller:HDActor{
 			A_Frighten(256);
 		}
 	spawn2:
-		FRAG BCD 2{
+		#### BCD 2{
+			if(abs(vel.z-keeprolling.z)>10)A_PlaySound("misc/fragknock",CHAN_BODY);
+			else if(floorz>=pos.z)A_PlaySound("misc/fragroll");
 			keeprolling=vel;
 			if(abs(vel.x)<0.4 && abs(vel.y)<0.4) setstatelabel("death");
-			if(floorz>=pos.z) A_PlaySound("misc/fragroll");
-			if(abs(vel.z-keeprolling.z)>10) A_PlaySound("misc/fragknock",CHAN_BODY);
 		}loop;
 	bounce:
 		---- A 0{
-			bmissile=false;bbounceonactors=false;busebouncestate=false;
+			bmissile=false;
 			vel*=0.3;
 		}goto spawn2;
 	death:
 		---- A 2{
-			if(abs(vel.z-keeprolling.z)>5){
+			if(abs(vel.z-keeprolling.z)>3){
 				A_PlaySound("misc/fragknock",CHAN_BODY);
 				keeprolling=vel;
 			}
@@ -92,7 +92,7 @@ class HDFragGrenade:SlowProjectile{
 	int fuze;
 	vector3 keeprolling;
 	default{
-//		radius 4;height 4;damagetype "none";
+		radius 5;height 5;damagetype "none";
 		scale 0.3;
 		obituary "%o was fragged by %k.";
 		-noextremedeath;-floorclip;+noblood;+bloodlessimpact;
@@ -101,7 +101,7 @@ class HDFragGrenade:SlowProjectile{
 	}
 	override void tick(){
 		ClearInterpolation();
-		if(globalfreeze||level.Frozen) return;
+		if(globalfreeze||level.Frozen)return;
 		if(fuze<140){
 			fuze++;
 			keeprolling=vel;
@@ -133,23 +133,23 @@ class HDFragGrenade:SlowProjectile{
 			if(CountProximity("HDFragGrenade",1))vel+=(frandom(-2,2),frandom(-2,2),frandom(-2,2));
 		}
 	}
-	override void BulletImpact(){
-		let gr=HDFragGrenadeRoller(spawn("HDFragGrenadeRoller",self.pos));
-		if(!gr)return;
-		gr.target=self.target;gr.master=self.master;gr.vel=self.keeprolling;
-		gr.fuze=self.fuze;
-		gr.keeprolling=self.keeprolling;
-		gr.A_Frighten(256);
-		gr.A_PlaySound("misc/fragknock",CHAN_BODY);
-		destroy();return;
-	}
 	states{
 	spawn:
 		FRAG BCD 2;
 		loop;
 	death:
-		FRAG A 0 BulletImpact();
-		stop;
+		TNT1 A 10{
+if(floorz<pos.z)A_Log("HIT");
+			bmissile=false;
+			let gr=HDFragGrenadeRoller(spawn("HDFragGrenadeRoller",self.pos));
+			if(!gr)return;
+			gr.vel=self.vel;
+			gr.target=self.target;gr.master=self.master;gr.vel=self.keeprolling;
+			gr.fuze=self.fuze;
+			gr.keeprolling=self.keeprolling;
+			gr.A_Frighten(256);
+			gr.A_PlaySound("misc/fragknock",CHAN_BODY);
+		}stop;
 	}
 }
 
