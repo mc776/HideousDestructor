@@ -6,7 +6,7 @@ actor Timer:InventoryFlag{inventory.maxamount 400}
 actor Counter:InventoryFlag{inventory.maxamount 65536}
 
 actor JustStarted:InventoryFlag{}
-actor IsAlive:InventoryFlag{}
+actor IsAlive:InventoryFlag{+inventory.undroppable} //the only +undroppable thing that should ever be in HD
 actor JustUnloading:InventoryFlag{inventory.interhubamount 0}
 actor WeaponBusy:InventoryFlag{}
 actor IsSprinting:InventoryFlag{inventory.interhubamount 0}

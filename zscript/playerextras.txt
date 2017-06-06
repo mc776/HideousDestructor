@@ -178,7 +178,7 @@ extend class HDPlayerPawn{
 		ClearInventory();
 		if(doomrebel==1)A_GiveInventory("DoomguyLoadout");
 		else if(doomrebel==2)A_GiveInventory("RebelLoadout");
-		else A_GiveInventory("BasicLoadout");
+		GiveBasics();
 
 		if(keys&RKF_REDCARD)A_GiveInventory("RedCard");
 		if(keys&RKF_REDSKULL)A_GiveInventory("RedSkull");

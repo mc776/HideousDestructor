@@ -1,0 +1,107 @@
+// ------------------------------------------------------------
+// Loadout-related stuff!
+// ------------------------------------------------------------
+
+//basic stuff every player should have
+extend class HDPlayerPawn{
+	void GiveBasics(){
+		class<weapon> curr;
+		if(player.readyweapon)curr=player.readyweapon.getclass();
+		A_GiveInventory("Ring");
+		A_GiveInventory("SelfBandage");
+		A_GiveInventory("HDFragGrenades");
+		A_GiveInventory("HDRealDoomGuy");
+		A_GiveInventory("HDWeaponPurge");
+		A_GiveInventory("HDDropOne");
+		A_GiveInventory("Taunter");
+		A_GiveInventory("HDDropArmour");
+
+		//now for configs!
+		if(getcvar("hd_startzoomed")){  
+			A_GiveInventory("ZM66Zoom");
+			A_GiveInventory("ChaingunZoom");
+			A_GiveInventory("RocketZoom");
+			A_GiveInventory("PlasmaZoom");
+			A_GiveInventory("LiberatorZoom");
+			A_GiveInventory("BossZoom");
+		}
+		A_SetInventory("DERPMode",getcvar("hd_derpmode"));
+		if(countinv("HDSMGChamber"))
+			A_SetInventory("SMGFullAuto",getcvar("hd_smgfiremode"));
+		if(countinv("HDPistolFullAuto")&&getcvar("hd_pistauto"))
+			A_GiveInventory("HDPistolFullAuto",2);
+		if(countinv("Hunter"))
+			A_SetInventory("ShotgunAuto",getcvar("hd_huntauto"));
+		if(countinv("ZM66Chamber")>0){  
+			A_SetInventory("ZM66FullAuto",getcvar("hd_zmfiremode"));
+			A_SetInventory("ZM66ZoomDegree",getcvar("hd_zmzoom"));
+		}
+		if(countinv("Vulcanette"))
+			A_SetInventory("ChaingunFast",getcvar("hd_vulcsuper"));
+		if(countinv("RocquetteLauncher")){  
+			if(getcvar("hd_rlmode")==1){ //GL
+				A_GiveInventory("IsUsingRocketUnderslung");
+			}else if(getcvar("hd_rlmode")==2){ //HEAT
+				A_TakeInventory("RocketMag",1);
+				A_GiveInventory("HEATLoaded");
+			}
+		}
+		if(countinv("LiberatorChamber")){
+			A_SetInventory("LiberatorFullAuto",getcvar("hd_libauto"));
+			A_SetInventory("LiberatorZoomDegree",getcvar("hd_libzoom"));
+		}
+		if(countinv("ThunderBuster")){
+			if(getcvar("hd_tbmode"))A_GiveInventory("PlasmaAlt");
+		}
+		if(countinv("BossRifle")){
+			A_SetInventory("BossZoomDegree",getcvar("hd_bosszoom"));
+			A_SetInventory("BossMOA",getcvar("hd_bossmoa"));
+		}
+		if(getcvar("hd_bossstartzoomed"))A_GiveInventory("BossZoom");
+
+		//so you don't start out with the fist all the time
+		if(player.readyweapon){
+			weapon a=player.readyweapon;
+			a.detachfromowner();
+			a.attachtoowner(self);
+		}
+	}
+}
+
+//loadout common to all soldier classes
+class SoldierExtras:ActionItem{
+	states{
+	pickup:
+		TNT1 A 0{
+			A_GiveInventory("PortableMedikit");
+			A_GiveInventory("PortableStimpack",2);
+			A_GiveInventory("GreenArmour",144);
+
+			A_GiveInventory("HDPistol");
+			A_GiveInventory("HDPistolLoaded",15);
+			A_GiveInventory("HDPistolChamber");
+			A_GiveInventory("HDPistolMag",3);
+
+			A_GiveInventory("HDFragGrenadeAmmo",3);
+			A_GiveInventory("HDFragGrenadeAmmo",3);
+			A_GiveInventory("DERPUsable");
+		}
+	}
+}
+
+//be doomed.
+class DoomguyLoadout:ActionItem{
+	states{
+	pickup:
+		TNT1 A 0{
+			ClearInventory();
+			let d=HDPlayerPawn(self);
+			if(d)d.GiveBasics();
+			A_GiveInventory("HDPistol");
+			A_GiveInventory("HDPistolLoaded",15);
+			A_GiveInventory("HDPistolChamber");
+			A_GiveInventory("HDPistolMag",2);
+			A_GiveInventory("HDPistolAmmo",4);
+		}fail;
+	}
+}
