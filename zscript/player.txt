@@ -45,8 +45,6 @@ class HDPlayerPawn:PlayerPawn{
 			else A_TakeInventory("HUDSprite");
 		killoldfires();
 		consolidateweapons();
-		if(countinv("CustomLoadout"))GiveCustomLoadout();
-		GiveBasics();
 	}
 	states{
 	spawn:
@@ -473,8 +471,11 @@ class HDHandlers:EventHandler{
 		let p=HDPlayerPawn(players[e.PlayerNumber].mo);
 		if(p){
 			p.levelreset();
-			if(p.countinv("CustomLoadout"))p.GiveCustomLoadout();
-			p.GiveBasics();
+			if(p.countinv("CustomLoadout")){
+				p.GiveCustomLoadout();
+				p.A_TakeInventory("CustomLoadout");
+			}
+			if(!p.countinv("Ring"))p.GiveBasics();
 		}
 	}
 }
