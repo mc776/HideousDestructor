@@ -473,6 +473,8 @@ class HDHandlers:EventHandler{
 		let p=HDPlayerPawn(players[e.PlayerNumber].mo);
 		if(p){
 			p.levelreset();
+			if(p.countinv("CustomLoadout"))p.GiveCustomLoadout();
+			p.GiveBasics();
 		}
 	}
 }
