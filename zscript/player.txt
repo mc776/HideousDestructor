@@ -45,8 +45,8 @@ class HDPlayerPawn:PlayerPawn{
 			else A_TakeInventory("HUDSprite");
 		killoldfires();
 		consolidateweapons();
-		GiveBasics();
 		if(countinv("CustomLoadout"))GiveCustomLoadout();
+		GiveBasics();
 	}
 	states{
 	spawn:
@@ -189,7 +189,6 @@ class HDPlayerPawn:PlayerPawn{
 		//prevent odd screwups that leave you unable to throw grenades or something
 		if(!countinv("Ring"))GiveBasics();
 
-
 		//add inventory flags for inputs
 		//remove ONLY when a deprecated inventory flags has been removed from all code!
 		A_TakeInventory("IsSprinting");
@@ -230,10 +229,10 @@ class HDPlayerPawn:PlayerPawn{
 				damagemobj(self,self,fall*random(1,4),"falling");
 				stunned+=fall*random(5,10)*4;
 				beatmax-=fall*0.5;
-				if(random(1,fall)>7 && player.readyweapon){
-					if(!(player.readyweapon is "Ring"))
+				if(random(1,fall)>7){
+					if(player.readyweapon && !(player.readyweapon is "Ring"))
 						A_DropInventory(player.readyweapon.getclassname());
-						else A_SelectWeapon("Ring");
+					A_SelectWeapon("Ring");
 				}
 			}
 		}
