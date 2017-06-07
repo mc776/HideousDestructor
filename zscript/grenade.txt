@@ -142,9 +142,9 @@ class HDFragGrenade:SlowProjectile{
 			bmissile=false;
 			let gr=HDFragGrenadeRoller(spawn("HDFragGrenadeRoller",self.pos));
 			if(!gr)return;
-			gr.vel=self.vel;
-			gr.target=self.target;gr.master=self.master;gr.vel=self.keeprolling;
+			gr.target=self.target;gr.master=self.master;
 			gr.fuze=self.fuze;
+			gr.vel=self.keeprolling;
 			gr.keeprolling=self.keeprolling;
 			gr.A_Frighten(256);
 			gr.A_PlaySound("misc/fragknock",CHAN_BODY);
