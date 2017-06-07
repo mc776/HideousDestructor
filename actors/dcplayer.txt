@@ -269,7 +269,6 @@ actor HDP_BF:HDPlayer{
 	}
 }
 
-
 actor HDP_SS:HDPlayer{
 	player.DisplayName "Contractor"
 	player.startitem BlackArmour 999
@@ -444,6 +443,13 @@ actor HDP_NK:HDPlayer{
 		loop
 	}
 }
+
+actor HDP_Custom:HDPlayer{
+	player.DisplayName "Custom"
+	player.startitem Ring
+	player.startitem CustomLoadout
+}
+actor CustomLoadout:InventoryFlag{}
 
 actor RebelLoadout:ActionItem{
 	states{
