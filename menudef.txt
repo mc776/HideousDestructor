@@ -44,6 +44,8 @@ OptionValue "DERPModes"{
 	3, "Follow"
 }
 
+
+
 ListMenu "PlayerMenu"{
 	StaticTextCentered 160, 6, "$MNU_PLAYERSETUP"
 	Font "SmallFont"
@@ -65,73 +67,15 @@ ListMenu "PlayerMenu"{
 	ValueText "Pronoun", "Gender", "Gender"
 	ValueText "Switch on pickup", "Switch", "OffOn"
 
+	Linespacing 10
+	Font "SmallFont","White","Gold"
+	TextItem "User Settings...","U","HDUserOptionsMenu"
+	TextItem "Customize Loadout...","L","CustomLoadoutMenu"
+
 	Class "PlayerMenu"
 }
 
-OptionMenu GameplayOptions{
-	Title 	"GAMEPLAY OPTIONS"
-	//Indent 222
-	Option "Teamplay",				"teamplay",	"OnOff"
-	Slider	"Team damage scalar",	"teamdamage", 0, 1, 0.05
-	StaticText " "
-	Option "Smart Autoaim",			"sv_smartaim", "SmartAim"
-	StaticText " "
-	Option "Falling damage",		"sv_fallingdamage", "FallingDM"
-	Option "Drop weapon",			"sv_weapondrop", "YesNo"
-	Option "Double ammo",			"sv_doubleammo", "YesNo"
-	Option "Infinite ammo",			"sv_infiniteammo", "YesNo"
-	Option "Infinite inventory",	"sv_infiniteinventory", "YesNo"
-	Option "No monsters",			"sv_nomonsters", "YesNo"
-	Option "No monsters to exit",	"sv_killallmonsters", "YesNo"
-	Option "Monsters respawn",		"sv_monsterrespawn", "YesNo"
-	Option "No respawn",			"sv_norespawn", "YesNo"
-	Option "Items respawn",			"sv_itemrespawn", "YesNo"
-	Option "Big powerups respawn",	"sv_respawnsuper", "YesNo"
-	Option "Fast monsters",			"sv_fastmonsters", "YesNo"
-	Option "Degeneration",			"sv_degeneration", "YesNo"
-	Option "Allow Autoaim",			"sv_noautoaim", "NoYes"
-	Option "Allow Suicide",			"sv_disallowsuicide", "NoYes"
-	Option "Allow jump",			"sv_jump", "JumpCrouchFreeLook"
-	Option "Allow crouch",			"sv_crouch", "JumpCrouchFreeLook"
-	Option "Allow freelook",		"sv_freelook", "JumpCrouchFreeLook"
-	Option "Allow FOV",				"sv_nofov", "NoYes"
-	Option "Allow BFG aiming",		"sv_nobfgaim", "NoYes"
-	Option "Allow automap",			"sv_noautomap", "NoYes"
-	Option "Automap allies",		"sv_noautomapallies", "NoYes"
-	Option "Allow spying",			"sv_disallowspying", "NoYes"
-	Option "Chasecam cheat",		"sv_chasecam", "YesNo"
-	Option "Check ammo for weapon switch",	"sv_dontcheckammo", "NoYes"
-	Option "Icon's death kills its spawns",	"sv_killbossmonst", "YesNo"
-	Option "End sector counts for kill %",	"sv_nocountendmonst", "NoYes"
-
-	StaticText " "
-	StaticText "Deathmatch Settings",1
-	Option "Weapons stay",			"sv_weaponstay", "YesNo"
-	Option "Allow powerups",		"sv_noitems", "NoYes"
-	Option "Allow health",			"sv_nohealth", "NoYes"
-	Option "Allow armor",			"sv_noarmor", "NoYes"
-	Option "Spawn farthest",		"sv_spawnfarthest", "YesNo"
-	Option "Same map",				"sv_samelevel", "YesNo"
-	Option "Force respawn",			"sv_forcerespawn", "YesNo"
-	Option "Allow exit",			"sv_noexit", "NoYes"
-	Option "Barrels respawn",		"sv_barrelrespawn", "YesNo"
-	Option "Respawn protection",	"sv_respawnprotect", "YesNo"
-	Option "Lose frag if fragged",	"sv_losefrag", "YesNo"
-	Option "Keep frags gained",		"sv_keepfrags", "YesNo"
-	Option "No team switching",		"sv_noteamswitch", "YesNo"
-
-	StaticText " "
-	StaticText "Cooperative Settings",1
-	Option "Spawn multi. weapons", 	"sv_noweaponspawn", "NoYes"
-	Option "Lose entire inventory",	"sv_cooploseinventory", "YesNo"
-	Option "Keep keys",				"sv_cooplosekeys", "NoYes"
-	Option "Keep weapons",			"sv_cooploseweapons", "NoYes"
-	Option "Keep armor",			"sv_cooplosearmor", "NoYes"
-	Option "Keep powerups",			"sv_cooplosepowerups", "NoYes"
-	Option "Keep ammo",				"sv_cooploseammo", "NoYes"
-	Option "Lose half ammo",		"sv_coophalveammo", "YesNo"
-	Option "Spawn where died",		"sv_samespawnspot", "YesNo"
-
+AddOptionMenu GameplayOptions{
 	StaticText " "
 	StaticText "Hideous Destructor Server Settings",1
 	Option "No BFG spawn","hd_nobfg","YesNo"
@@ -146,16 +90,28 @@ OptionMenu GameplayOptions{
 	Option "No bleeding in all skill levels","hd_nobleed","YesNo"
 	Slider "Killer barrel spawn rate","hd_killerbarrels",0,100,5
 	Option "Only 3 movement speeds in multiplayer","hd_3speed","YesNo"
+	Command "Reset all HD server settings","hd_clearscv"
 
+	StaticText " "
+	SubMenu "Hideous Destructor User Settings...","HDUserOptionsMenu"
+
+	Class "GameplayMenu"
+}
+
+
+//user options
+OptionMenu "HDUserOptionsMenu"{
+	Title "USER OPTIONS"
 	StaticText " "
 	StaticText "Hideous Destructor User Settings",1
 	Option "Contextual help","hd_helptext","YesNo"
 	Option "HUD weapon sprite","hd_hudsprite","YesNo"
 	Option "Auto-strip for medikit","hd_autostrip","YesNo"
-	Command "Reset all HD server and user settings","hd_clearcv"
+	Command "Reset all HD user settings","hd_clearucv"
 
 	StaticText " "
 	StaticText "Hideous Destructor User Loadout Settings",1
+	Submenu "Set Custom Loadout...","CustomLoadoutMenu"
 	Option "All weapons start scoped","hd_startzoomed","YesNo"
 	Option "DERP mode","hd_derpmode","DERPModes"
 	Option "Pistol full-auto","hd_pistauto","OnOff"
@@ -171,7 +127,80 @@ OptionMenu GameplayOptions{
 	Slider "Boss drop adjust","hd_bossmoa",0,36,1
 	NumberField "Boss zoom level","hd_bosszoom",0,3
 	Option "Boss starts scoped","hd_bossstartzoomed","YesNo"
-	Command "Reset all HD loadout settings","hd_clearwepcv"
-
-	Class "GameplayMenu"
+	Command "Reset all HD weapon settings","hd_clearwepcv"
 }
+
+//loadout spamghetti
+OptionMenu "CustomLoadoutMenu"{
+	Title "CUSTOMIZE LOADOUT"
+
+	Option "Item 0",hd_load0,"CustomLoadoutItems"
+	NumberField "amount","hd_load0a"
+	StaticText""
+	Option "Item 1",hd_load1,"CustomLoadoutItems"
+	NumberField "amount","hd_load1a"
+	StaticText""
+	Option "Item 2",hd_load2,"CustomLoadoutItems"
+	NumberField "amount","hd_load2a"
+	StaticText""
+	Option "Item 3",hd_load3,"CustomLoadoutItems"
+	NumberField "amount","hd_load3a"
+	StaticText""
+	Option "Item 4",hd_load4,"CustomLoadoutItems"
+	NumberField "amount","hd_load4a"
+	StaticText""
+	Option "Item 5",hd_load5,"CustomLoadoutItems"
+	NumberField "amount","hd_load5a"
+	StaticText""
+	Option "Item 6",hd_load6,"CustomLoadoutItems"
+	NumberField "amount","hd_load6a"
+	StaticText""
+	Option "Item 7",hd_load7,"CustomLoadoutItems"
+	NumberField "amount","hd_load7a"
+	StaticText""
+	Option "Item 8",hd_load8,"CustomLoadoutItems"
+	NumberField "amount","hd_load8a"
+	StaticText""
+	Option "Item 9",hd_load9,"CustomLoadoutItems"
+	NumberField "amount","hd_load9a"
+
+}
+OptionValue "CustomLoadoutItems"{
+	0,"Nothing"
+
+	210,"Chainsaw"
+	220,"Pistol"221,"Automatic Pistol"222,"SMG"
+	230,"Shotgun"31,"Double-Barreled Shotgun"
+	242,"GL-Mounted ZM66 AR"241,"ZM66 AR"240,"ZM66 Marksman"
+	243,"Vulcanette"
+	251,"Rocket Launcher"250,"Grenade Launcher"
+	261,"GL-Mounted Liberator Battle Rifle"260,"Liberator Battle Rifle"
+	262,"Pulsed Particle Beam Projector"
+	271,"Botis Field Glyph 9(Kurz)"270,"Brontornis Ultralight Cannon"
+	280,"Boss Mk. IV Marksman's Rifle"
+
+	290,"Unwrapped Medikit"
+	200,"(More) Frag Grenades"
+
+	100,"Power Cell"
+	101,"9mm Magazine (15rd)"
+	102,"9mm Magazine (30rd)"
+	103,"Shotgun Shell"
+	104,"4.26mm Magazine"
+	105,"Gyro-Rocket Grenade"
+	106,"H.E.A.T. Rocket"
+	107,"7.76mm Magazine"
+	108,"7.76mm Clip"
+	109,"Brontornis Round"
+	110,"Fragmentation Hand Grenade"
+
+	99,"Basic Soldier Kit"
+	1,"Green Armour"2,"Blue Armour"3,"Black Armour"
+	4,"Medikit"5,"Stimpack"6,"Berserk"7,"Radiation Suit"
+	8,"Light Amp"9,"Backpack"10,"D.E.R.P."11,"H.E.R.P."12,"IED Kit"
+	13,"Automap"14,"Red Keycard"15,"Blue Keycard"16,"Yellow Keycard"
+	17,"Green Armour (stored)"18,"Blue Armour (stored)"19,"Black Armour (stored)"
+}
+
+
+
