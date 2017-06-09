@@ -37,6 +37,10 @@ OptionValue "SemiBurstAuto"{
 	1, "Burst"
 	2, "Auto"
 }
+OptionValue "LoHi"{
+	0, "Low"
+	1, "High"
+}
 OptionValue "DERPModes"{
 	0, "Turret"
 	1, "Ambush"
@@ -118,14 +122,14 @@ OptionMenu "HDUserOptionsMenu"{
 	Option "SMG fire mode","hd_smgfiremode","SemiBurstAuto"
 	Option "Hunter semiauto","hd_huntauto","OnOff"
 	Option "ZM66 fire mode","hd_zmfiremode","SemiAutoSalvo"
-	NumberField "ZM66 zoom level","hd_zmzoom",0,1
+	Option "ZM66 zoom level","hd_zmzoom","LoHi"
 	Option "Vulcanette high RPM","hd_vulcsuper","OnOff"
 	Option "Rocket launcher mode","hd_rlmode","RLMode"
 	Option "Liberator full-auto","hd_libauto","OnOff"
-	NumberField "Liberator zoom level","hd_libzoom",0,1
+	Option "Liberator zoom level","hd_libzoom","LoHi"
 	Option "Thunder Buster starts on spray","hd_tbmode","YesNo"
-	Slider "Boss drop adjust","hd_bossmoa",0,36,1
-	NumberField "Boss zoom level","hd_bosszoom",0,3
+	Slider "Boss drop adjust","hd_bossmoa",0,36,1,0
+	Slider "Boss zoom level","hd_bosszoom",0,3,1,0
 	Option "Boss starts scoped","hd_bossstartzoomed","YesNo"
 	Command "Reset all HD weapon settings","hd_clearwepcv"
 }
@@ -135,34 +139,34 @@ OptionMenu "CustomLoadoutMenu"{
 	Title "CUSTOMIZE LOADOUT"
 
 	Option "Item 0",hd_load0,"CustomLoadoutItems"
-	NumberField "amount","hd_load0a"
+	Slider"amount","hd_load0a",0,20,1,0
 	StaticText""
 	Option "Item 1",hd_load1,"CustomLoadoutItems"
-	NumberField "amount","hd_load1a"
+	Slider"amount","hd_load1a",0,20,1,0
 	StaticText""
 	Option "Item 2",hd_load2,"CustomLoadoutItems"
-	NumberField "amount","hd_load2a"
+	Slider"amount","hd_load2a",0,20,1,0
 	StaticText""
 	Option "Item 3",hd_load3,"CustomLoadoutItems"
-	NumberField "amount","hd_load3a"
+	Slider"amount","hd_load3a",0,20,1,0
 	StaticText""
 	Option "Item 4",hd_load4,"CustomLoadoutItems"
-	NumberField "amount","hd_load4a"
+	Slider"amount","hd_load4a",0,20,1,0
 	StaticText""
 	Option "Item 5",hd_load5,"CustomLoadoutItems"
-	NumberField "amount","hd_load5a"
+	Slider"amount","hd_load5a",0,20,1,0
 	StaticText""
 	Option "Item 6",hd_load6,"CustomLoadoutItems"
-	NumberField "amount","hd_load6a"
+	Slider"amount","hd_load6a",0,20,1,0
 	StaticText""
 	Option "Item 7",hd_load7,"CustomLoadoutItems"
-	NumberField "amount","hd_load7a"
+	Slider"amount","hd_load7a",0,20,1,0
 	StaticText""
 	Option "Item 8",hd_load8,"CustomLoadoutItems"
-	NumberField "amount","hd_load8a"
+	Slider"amount","hd_load8a",0,20,1,0
 	StaticText""
 	Option "Item 9",hd_load9,"CustomLoadoutItems"
-	NumberField "amount","hd_load9a"
+	Slider"amount","hd_load9a",0,20,1,0
 
 }
 OptionValue "CustomLoadoutItems"{
@@ -170,7 +174,7 @@ OptionValue "CustomLoadoutItems"{
 
 	210,"Chainsaw"
 	220,"Pistol"221,"Automatic Pistol"222,"SMG"
-	230,"Shotgun"31,"Double-Barreled Shotgun"
+	231,"Shotgun"230,"Double-Barreled Shotgun"
 	242,"GL-Mounted ZM66 AR"241,"ZM66 AR"240,"ZM66 Marksman"
 	243,"Vulcanette"
 	251,"Rocket Launcher"250,"Grenade Launcher"

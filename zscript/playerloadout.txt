@@ -124,13 +124,13 @@ extend class HDPlayerPawn{
 		bool hasweapon;
 		for(int i=9;i>=0;i--){ //reverse order so top weapons are added last
 			ldt=getcvar(string.format("hd_load%i",i));
-			lda=max(1,getcvar(string.format("hd_load%ia",i)));
+			lda=max(0,getcvar(string.format("hd_load%ia",i)));
 
 			NumForInv(ldt,lda);
 		}
 	}
 	void NumForInv(int num,int amt){
-		if(!num)return;
+		if(!num||!amt)return;
 		else if(num>=HDCONST_CUSTOMWEPOFFSET){ //weapons
 			num-=HDCONST_CUSTOMWEPOFFSET;
 			switch(num){
