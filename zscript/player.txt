@@ -64,7 +64,7 @@ class HDPlayerPawn:PlayerPawn{
 			A_TakeInventory("IsMoving");
 		}
 		---- AAAAAA 5{
-			if(!barehanded && zat==pos.z && !countinv("IsSupported") && !countinv("IsMoving")){
+			if(!barehanded && regenbers<1 && zat==pos.z && !countinv("IsSupported") && !countinv("IsMoving")){
 				vector3 posbak=pos;
 				setxyz(pos+(cos(angle),sin(angle),0)*16);
 				double zat2=getzat();

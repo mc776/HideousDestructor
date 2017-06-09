@@ -220,6 +220,8 @@ class HDWeapon:Weapon{
 		TNT1 A 1 A_WeaponReady(WRF_ALLOWRELOAD|WRF_ALLOWZOOM|WRF_ALLOWUSER1|WRF_ALLOWUSER2|WRF_ALLOWUSER3|WRF_ALLOWUSER4);
 	readyend:
 		---- A 0 {
+			let p=HDPlayerPawn(self);
+			if(p&&p.regenbers>900&&!random(0,(invoker is "Ring")?70:700))player.SetPsprite(PSP_WEAPON,player.ReadyWeapon.FindState("Fire"));
 			A_TakeInventory("WeaponBusy");
 			A_TakeInventory("JustUnloading");
 		}
