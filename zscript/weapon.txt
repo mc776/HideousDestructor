@@ -221,7 +221,13 @@ class HDWeapon:Weapon{
 	readyend:
 		---- A 0 {
 			let p=HDPlayerPawn(self);
-			if(p&&p.regenbers>900&&!random(0,(invoker is "Ring")?70:700))player.SetPsprite(PSP_WEAPON,player.ReadyWeapon.FindState("Fire"));
+			if(
+				p&&!p.beatcount&&p.regenbers>900
+				&&!random(0,(invoker is "Ring")?20:100)
+			)player.SetPsprite(
+				PSP_WEAPON,
+				invoker.FindState("Fire")
+			);
 			A_TakeInventory("WeaponBusy");
 			A_TakeInventory("JustUnloading");
 		}
