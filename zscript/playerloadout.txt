@@ -121,24 +121,28 @@ class CustomLoadout:InventoryFlag{}
 extend class HDPlayerPawn{
 	void GiveCustomLoadout(){
 		int ldt;int lda;
-		bool hasweapon;
+		class<weapon> newwep;
 		for(int i=9;i>=0;i--){ //reverse order so top weapons are added last
 			ldt=getcvar(string.format("hd_load%i",i));
 			lda=max(0,getcvar(string.format("hd_load%ia",i)));
 
-			NumForInv(ldt,lda);
+			class<weapon> nw=NumForInv(ldt,lda);
+			if(nw)newwep=nw;
 		}
+		if(newwep)A_SelectWeapon(newwep,SWF_SELECTPRIORITY);
 	}
-	void NumForInv(int num,int amt){
-		if(!num||!amt)return;
+	class<weapon> NumForInv(int num,int amt){
+		class<weapon> nw;
+		if(!num||!amt)return null;
 		else if(num>=HDCONST_CUSTOMWEPOFFSET){ //weapons
 			num-=HDCONST_CUSTOMWEPOFFSET;
 			switch(num){
 			case 0:
+				nw="HDFragGrenades";
 				A_GiveInventory("HDFragGrenadeAmmo",3);
 				break;
 			case 10:
-				A_GiveInventory("Lumberjack");
+				nw="Lumberjack";A_GiveInventory(nw);
 				A_GiveInventory("LumberCell",99999);
 				break;
 			case 20:
@@ -148,44 +152,50 @@ extend class HDPlayerPawn{
 					A_GiveInventory("HDSecondPistol");
 					A_GiveInventory("HDSecondPistolChamber");
 					A_GiveInventory("HDSecondPistolLoaded",15);
-					if(num==21)A_GiveInventory("HDSecondPistolFullAuto");
+					if(num==21){
+						if(!countinv("HDPistolFullAuto"))
+							A_GiveInventory("HDPistolFullAuto");
+						else
+							A_GiveInventory("HDSecondPistolFullAuto");
+					}
 				}else{
-					A_GiveInventory("HDPistol");
+					nw="HDPistol";A_GiveInventory(nw);
 					A_GiveInventory("HDPistolChamber");
 					A_GiveInventory("HDPistolLoaded",15);
 					if(num==21)A_GiveInventory("HDPistolFullAuto");
 				}
 				break;
 			case 22:
-				A_GiveInventory("HDSMG");
+				nw="HDSMG";A_GiveInventory(nw);
 				A_GiveInventory("HDSMGChamber");
 				A_GiveInventory("HDSMGLoaded",30);
 				break;
 			case 30:
-				A_GiveInventory("Slayer");
+				nw="Slayer";A_GiveInventory(nw);
 				A_GiveInventory("ShellChamber1");
 				A_GiveInventory("ShellChamber2");
 				A_GiveInventory("ShotgunQuickAmmo2",12);
 				break;
 			case 31:
-				A_GiveInventory("Hunter");
+				nw="Hunter";A_GiveInventory(nw);
 				A_GiveInventory("ShotgunTube",8);
 				A_GiveInventory("ShotgunQuickAmmo",12);
 				break;
 			case 40:
 			case 41:
 			case 42:
-				if(num==40)A_GiveInventory("ZM66SemiRifle");
-				else if(num==41)A_GiveInventory("ZM66Rifle");
+				if(num==40)nw="ZM66SemiRifle";
+				else if(num==41)nw="ZM66Rifle";
 				else if(num==42){
-					A_GiveInventory("ZM66GrenadeRifle");
+					nw="ZM66GrenadeRifle";
 					A_GiveInventory("ZM66GLoaded");
 				}
 				A_GiveInventory("ZM66Chamber");
 				A_GiveInventory("ZM66Loaded",50);
+				A_GiveInventory(nw);
 				break;
 			case 43:
-				A_GiveInventory("Vulcanette");
+				nw="Vulcanette";A_GiveInventory(nw);
 				A_GiveInventory("VulcJuice",99999);
 				A_GiveInventory("VulcChamber5");
 				A_GiveInventory("VulcChamber4");
@@ -197,47 +207,49 @@ extend class HDPlayerPawn{
 				A_GiveInventory("VulcLoaded5",50);
 				break;
 			case 50:
-				A_GiveInventory("Blooper");
+				nw="Blooper";A_GiveInventory(nw);
 				A_GiveInventory("BloopChamber",1);
 				break;
 			case 51:
-				A_GiveInventory("RocquetteLauncher");
+				nw="RocquetteLauncher";A_GiveInventory(nw);
 				A_GiveInventory("RocketMag",6);
 				break;
 			case 60:
 			case 61:
-				if(num==60)A_GiveInventory("LiberatorRifle");
+				if(num==60)nw="LiberatorRifle";
 				else{
-					A_GiveInventory("LiberatorGrenadeRifle");
+					nw="LiberatorGrenadeRifle";
 					A_GiveInventory("LiberatorGrenadeChamber");
 				}
 				A_GiveInventory("LiberatorChamber");
 				A_GiveInventory("LiberatorLoaded",30);
+				A_GiveInventory(nw);
 				break;
 			case 62:
-				A_GiveInventory("ThunderBuster");
+				nw="ThunderBuster";A_GiveInventory(nw);
 				A_GiveInventory("PlasmaBattery",99999);
 				break;
 			case 70:
-				A_GiveInventory("Brontornis");
+				nw="Brontornis";A_GiveInventory(nw);
 				A_GiveInventory("BrontornisMag");
 			case 71:
-				A_GiveInventory("BFG9k");
+				nw="BFG9k";A_GiveInventory(nw);
 				A_GiveInventory("BFGLoaded");
 				A_GiveInventory("BFGChamber",99999);
 				A_GiveInventory("BFGInternalCharge",99999);
 				break;
 			case 80:
-				A_GiveInventory("BossRifle");
+				nw="BossRifle";A_GiveInventory(nw);
 				A_GiveInventory("BossChamber");
 				A_GiveInventory("BossMag",10);
 				break;
 			case 90:
-				A_GiveInventory("HDMedikitter");
+				nw="HDMedikitter";A_GiveInventory(nw);
 				break;
 			default:
 				break;
 			}
+			return nw;
 		}
 		else if(num>=100){ //ammo
 			switch(num){
@@ -287,9 +299,13 @@ extend class HDPlayerPawn{
 				case 18: A_GiveInventory("BlueArmourStored");break;
 				case 19: A_GiveInventory("BlackArmourStored");break;
 
-				case 99: A_GiveInventory("SoldierExtras",amt);break;
+				case 99:
+					A_GiveInventory("SoldierExtras",amt);
+					return "HDPistol";
+					break;
 				default:break;
 			}
 		}
+		return null;
 	}
 }
