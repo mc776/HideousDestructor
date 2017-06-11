@@ -360,13 +360,13 @@ class SecondFleshBeast:IdleDummy{
 			if(tgt.health>10)tgt.damagemobj(tgt,tgt,min(tgt.health-10,10),"internal",DMG_NO_ARMOR);
 			tgt.A_Pain();
 			tgt.stunned+=10;
-			if(!random(0,12))tgt.oldwoundcount--;
-			else if(!random(0,7))tgt.burncount--;
+			if(!random(0,10))tgt.oldwoundcount--;
+			else if(!random(0,6))tgt.burncount--;
 			else if(tgt.unstablewoundcount && !random(0,2)){
 				tgt.unstablewoundcount--;
 				tgt.aggravateddamage++;
 			}
-			if(!random(0,144))tgt.aggravateddamage++;
+			if(!random(0,200))tgt.aggravateddamage++;
 			stamina--;
 		}wait;
 	}
