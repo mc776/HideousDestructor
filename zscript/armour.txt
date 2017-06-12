@@ -71,14 +71,6 @@ class HDDropArmour:ActionItem{
 		}fail;
 	}
 }
-//required because "UseInventory" is a lie
-class HDDropArmourRTFN:HDDropArmour{
-	states{
-	pickup:
-		TNT1 A 0;
-		goto use;
-	}
-}
 
 //here is the armour pickup
 class HDArmourPickup:HDUPK{
@@ -199,7 +191,7 @@ class GreenArmourStored:ActionItem{
 				if(invoker.stamina>25||getcvar("hd_autostrip")){
 					if(getcvar("hd_helptext")) A_Log("Taking off armour first.",true);
 					invoker.stamina=0;
-					A_GiveInventory("HDDropArmourRTFN");
+					UseInventory(FindInventory("HDDropArmour"));
 				}else{
 					if(getcvar("hd_helptext")&&!invoker.stamina) A_Log("You are already wearing armour. \cdhd_strip\c- in the console or double-tap the inventory icon to remove your current armour.",true);
 					invoker.stamina+=35;

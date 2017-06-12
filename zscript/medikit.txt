@@ -107,7 +107,7 @@ class HDMedikitter:HDWoundFixer{
 		}
 		goto super::select;
 	reload:
-		TNT1 A 14{A_GiveInventory("HDDropArmourRTFN");A_ClearRefire();}
+		TNT1 A 14{UseInventory(FindInventory("HDDropArmour"));A_ClearRefire();}
 		goto ready;
 	flashstaple:
 		TNT1 A 1{
