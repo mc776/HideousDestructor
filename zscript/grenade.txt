@@ -122,6 +122,8 @@ class HDFragGrenade:SlowProjectile{
 	override void postbeginplay(){
 		actor.postbeginplay();
 		shootz = height*0.5+8;
+		divrad=max(radius*1.9,1);
+		divrad=1./divrad;
 		grav=getgravity();
 		if(target){
 			speed=2+target.countinv("grenadeforce");

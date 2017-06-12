@@ -16,15 +16,15 @@ class SlowProjectile:HDBullet{
 
 		radius 4;height 4;
 		missileheight 8; projectilekickback 20; damagetype "SmallArms0";
-		speed 4;
+		speed 18;
 	}
 	override void PostBeginPlay(){
 		HDActor.PostBeginPlay();
 		grav=getgravity();
 		LongArmWobble();
 		Gunsmoke();
-		double rad=max(radius*1.9,1);
-		divrad=1/rad;
+		divrad=max(radius*1.9,1);
+		divrad=1./divrad;
 		if(target)master=target;
 	}
 	override void Tick(){
@@ -32,10 +32,6 @@ class SlowProjectile:HDBullet{
 		if(globalfreeze||level.Frozen) return;
 		if(!bmissile){
 			nexttic();
-			return;
-		}
-		if(max(vel.x,vel.y)<20 && ceilingz>pos.z){
-			hdactor.tick();
 			return;
 		}
 
@@ -49,7 +45,7 @@ class SlowProjectile:HDBullet{
 		fcheckposition tm;
 		speed=vel.length();
 
-		int count=max(1,speed*divrad);
+		int count=max(2,speed*divrad);
 		vector3 frac=vel/count;
 		for(int i=0;i<count;i++){
 			if(inthesky){
