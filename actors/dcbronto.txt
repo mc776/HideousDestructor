@@ -100,7 +100,6 @@ ACTOR Brontornis : HDWeapon
 	Shoot:
 		BLSG A 0 A_GunFlash
 		TNT1 A 0 A_SpawnItemEx("TerrorBolt",0,0,height-6,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH)
-		TNT1 A 0 A_GiveInventory("BrontornisSpent",1)
 		TNT1 A 0 A_PlaySound("weapons/bronto",6)
 		TNT1 A 0 A_PlaySound("weapons/bigrifle",7)
 		BLSG A 1 offset(0,34) A_PlayWeaponSound("weapons/bronto")
@@ -110,13 +109,12 @@ ACTOR Brontornis : HDWeapon
 	Althold:
 		BLSG "#" 0 A_Jump(256,"nope")
 	Flash:
-		BLSF A 0 A_TakeInventory("BrontornisMag",1)
-/*
-		TNT1 A 0 A_Jump(24,3)
-		TNT1 A 1
-		TNT1 A 0 A_Jump(256,2)
-*/
-		BLSF A 1 bright A_Light1
+		BLSF A 1 bright{
+			A_TakeInventory("BrontornisMag");
+			A_GiveInventory("BrontornisSpent");
+			HDFlashAlpha(0,true);
+			A_Light1();
+		}
 		TNT1 A 2 A_ZoomFactor(0.92,ZOOM_INSTANT|ZOOM_NOSCALETURNING)
 		BLSF A 0 A_ZoomFactor(1.0,ZOOM_INSTANT|ZOOM_NOSCALETURNING)
 		TNT1 A 0 A_GiveInventory("IsMoving",2)

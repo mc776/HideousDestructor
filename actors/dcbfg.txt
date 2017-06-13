@@ -56,12 +56,19 @@ actor BFG9K : HDWeapon
 		BFGG A 1 A_Refire
 		goto Ready
 	flash:
-		BFGF B 2 bright A_Light1
-		BFGF A 2 bright A_Light2
+		BFGF B 3 bright{
+			A_Light1();
+			HDFlashAlpha(0,true);
+		}
+		BFGF A 2 bright{
+			A_Light2();
+			HDFlashAlpha(200);
+		}
+		BFGF A 2 bright HDFlashAlpha(128)
 		goto lightdone
 
 	Fire:
-		BFGG C 0 A_TakeInventory("Timer",999)
+		BFGG C 0 A_TakeInventory("Timer")
 	Hold:
 		BFGG C 0
 		{
@@ -162,7 +169,7 @@ actor BFG9K : HDWeapon
 			A_SpawnItemEx("BFGBallTail",0,0,height-12,cos(pitch)*cos(angle)*4+velx,cos(pitch)*sin(angle)*4+vely,-sin(pitch)*4+velz,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH);
 			A_SpawnItemEx("BFGBalle",0,0,height-12,cos(pitch)*cos(angle)*13+velx,cos(pitch)*sin(angle)*13+vely,-sin(pitch)*13+velz,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH|SXF_SETMASTER);
 		}
-		BFGG A 3
+		BFGG B 3
 		{
 			A_GiveInventory("PowerFrightener",1);
 			ThrustThingZ(0,62,1,0);

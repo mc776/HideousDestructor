@@ -218,10 +218,10 @@ actor HDSMG:HDWeapon{
 			A_TakeInventory("HDSMGChamber");
 		}goto EndFlash
 	EndFlash:
-		TNT1 A 0 A_Jump(CallACS("LightCheck")*5/2,3)
-		SMGF A 1 BRIGHT A_Light1
-		TNT1 A 0 A_Jump(256,2)
-		TNT1 A 1
+		SMGF A 1 bright{
+			HDFlashAlpha(-200);
+			A_Light1();
+		}
 		TNT1 A 0 A_Light0
 		TNT1 A 0 A_ZoomFactor(1.0,ZOOM_INSTANT|ZOOM_NOSCALETURNING)
 		TNT1 A 0{
@@ -581,14 +581,12 @@ actor HDPistol:HDZPistol
 			}else{A_Refire;}
 		}goto ready
 	Flash:
-		PISF A 0 ACS_NamedExecuteAlways("MuzzleClimb", 0, random(4,16), random(4, 12), 0)
-		goto EndFlash
-	EndFlash:
-		TNT1 A 0 A_Jump(CallACS("LightCheck")*3/4,3)
-		PISF A 1 BRIGHT A_Light1
-		TNT1 A 0 A_Jump(256,2)
-		TNT1 A 1
-		TNT1 A 0 A_PlaySound("weapons/pistol",CHAN_WEAPON,1.0)
+		PISF A 1 bright{
+			HDFlashAlpha(64);
+			ACS_NamedExecuteAlways("MuzzleClimb",0,random(4,16),random(4,12),0);
+			A_Light1();
+		}
+		PISF A 0 A_PlaySound("weapons/pistol",CHAN_WEAPON,1.0)
 		PISF A 0 A_ZoomFactor(1.0,ZOOM_INSTANT|ZOOM_NOSCALETURNING)
 		PISF A 0 A_Light0
 		PISF A 0 A_TakeInventory("HDPistolChamber",1)

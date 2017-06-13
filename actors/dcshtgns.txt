@@ -146,10 +146,10 @@ ACTOR Hunter : HDWeapon
 		SHTG A 0 A_Refire("HoldSemiAuto")
 		goto Ready
 	Flash:
-		TNT1 A 0 A_Jump(CallACS("LightCheck")/3,3)
-		SHTF B 1 bright A_Light2
-		TNT1 A 0 A_Jump(256,2)
-		TNT1 A 1
+		SHTF B 1 bright{
+			A_Light2();
+			HDFlashAlpha(-32);
+		}
 		TNT1 A 1 A_ZoomFactor(0.98,ZOOM_INSTANT|ZOOM_NOSCALETURNING)
 		SHTF B 0 A_ZoomFactor(1.0,ZOOM_INSTANT|ZOOM_NOSCALETURNING)
 		SHTF B 0 A_AlertMonsters
@@ -663,10 +663,10 @@ ACTOR Slayer : ZSSlayer
 		TNT1 A 0 A_GiveInventory("DecoBulleter00f")
 		TNT1 A 0 A_TakeInventory("ShellChamber1",1)
 		TNT1 A 0 A_GiveInventory("SlayerSpentShell1",1)
-		TNT1 A 0 A_Jump(CallACS("LightCheck")/3,3)
-		SHT1 J 1 bright A_Light2
-		TNT1 A 0 A_Jump(256,2)
-		TNT1 A 1
+		SHT1 J 1 bright{
+			A_Light2();
+			HDFlashAlpha(64,false,overlayid());
+		}
 		TNT1 A 0 A_ZoomFactor(1.0,ZOOM_INSTANT|ZOOM_NOSCALETURNING)
 		TNT1 A 1 A_Light0
 		TNT1 AA 1 ACS_NamedExecuteAlways("MuzzleClimb",0,39,-16,0)
@@ -677,10 +677,10 @@ ACTOR Slayer : ZSSlayer
 		TNT1 A 0 A_GiveInventory("DecoBulleter00f")
 		TNT1 A 0 A_TakeInventory("ShellChamber2",1)
 		TNT1 A 0 A_GiveInventory("SlayerSpentShell2",1)
-		TNT1 A 0 A_Jump(CallACS("LightCheck")/3,3)
-		SHT1 N 1 bright A_Light2
-		TNT1 A 0 A_Jump(256,2)
-		TNT1 A 1
+		SHT1 N 1 bright{
+			A_Light2();
+			HDFlashAlpha(64,false,overlayid());
+		}
 		TNT1 A 0 A_ZoomFactor(1.0,ZOOM_INSTANT|ZOOM_NOSCALETURNING)
 		TNT1 A 1 A_Light0
 		TNT1 AA 1 ACS_NamedExecuteAlways("MuzzleClimb",0,39,16,0)
@@ -697,10 +697,10 @@ ACTOR Slayer : ZSSlayer
 		TNT1 A 0 A_TakeInventory("ShellChamber2",1)
 		TNT1 A 0 A_GiveInventory("SlayerSpentShell1",1)
 		TNT1 A 0 A_GiveInventory("SlayerSpentShell2",1)
-		TNT1 A 0 A_Jump(CallACS("LightCheck")/3,3)
-		SH2G J 1 bright A_Light2
-		TNT1 A 0 A_Jump(256,2)
-		TNT1 A 1
+		SHT2 J 1 bright{
+			A_Light2();
+			HDFlashAlpha(128);
+		}
 		TNT1 A 0 A_ZoomFactor(1.0,ZOOM_INSTANT|ZOOM_NOSCALETURNING)
 		TNT1 A 1 A_Light0
 		TNT1 AA 1 ACS_NamedExecuteAlways("MuzzleClimb",0, 80,-15,0)

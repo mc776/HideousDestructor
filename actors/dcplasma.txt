@@ -85,7 +85,11 @@ ACTOR ThunderBuster : HDWeapon
 		PLSG A 1 A_ReFire
 		Goto Ready
 	Flash:
-		PLSF A 1 bright A_Light2
+		PLSF A 0 HDFlashAlpha(64)
+		PLSF A 1 bright{
+			A_Light2();
+			A_SetTics(random(0,1));
+		}
 		PLSF BA 1 bright
 		PLSF B 1 bright A_Light1
 		PLSF AB 1 bright

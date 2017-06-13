@@ -144,11 +144,14 @@ ACTOR RocquetteLauncher : HDWeapon
 		TNT1 A 0 A_ZoomFactor(0.98)
 		MISF A 0 A_JumpIfInventory("IsSupported",1,2)
 		MISF A 0 A_ChangeVelocity(cos(pitch)*-1,0,sin(pitch)*1,CVF_RELATIVE)
-		MISF A 1 BRIGHT A_Light1
-		MISF B 2 BRIGHT A_Light2
-		MISF C 2 BRIGHT A_Light1
+		MISF A 1 bright{
+			HDFlashAlpha(128);
+			A_Light1();
+		}
+		MISF B 2 bright A_Light2
+		MISF C 2 bright A_Light1
 		TNT1 A 0 A_ZoomFactor(1)
-		MISF D 1 BRIGHT A_Light0
+		MISF D 1 bright A_Light0
 		TNT1 A 0 A_AlertMonsters
 		stop
 	Reload:

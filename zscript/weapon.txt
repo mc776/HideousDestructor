@@ -24,6 +24,19 @@ class HDWeapon:Weapon{
 	int AmmoCap(class<inventory> inv){
 		return HDMath.MaxInv(self,inv);
 	}
+	action void HDFlashAlpha(int variance=0,int noalpha=false,int layer=PSP_FLASH){
+		A_OverlayFlags(layer,PSPF_ALPHA|PSPF_ADDBOB|PSPF_RENDERSTYLE,true);
+		A_OverlayRenderstyle(layer,STYLE_Add);
+		double fa;
+		if(noalpha){
+			A_OverlayAlpha(layer,1.);
+		}else{
+			int lg=CallACS("LightCheck")-variance*frandom(0.6,1.);
+			fa=1.-(lg*0.003);
+			A_OverlayAlpha(layer,fa);
+		}
+		if(noalpha||fa>0.1)setstatelabel("melee");  
+	}
 	override void AttachToOwner(Actor user){
 		super.attachtoowner(user);
 		if(user){
