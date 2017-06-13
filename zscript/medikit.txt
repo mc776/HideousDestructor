@@ -12,11 +12,11 @@ class PortableMedikit:HDPickup{
 	states{
 	use:
 		TNT1 A 0{
-			let md=HDMedikitter(FindInventory("HDMedikitter"));
-			if(!md || md.usedflesh || md.usedpatches){
-				A_TakeInventory("HDMedikitter");
+			if(!FindInventory("HDMedikitter")){
 				A_GiveInventory("HDMedikitter");
 				A_TakeInventory("PortableMedikit",1);
+			}else{
+				A_Log("You pull out the medikit you've already unwrapped.",true);
 			}
 			A_SelectWeapon("HDMedikitter");
 			A_PlaySound("weapons/pocket",CHAN_WEAPON);
@@ -74,7 +74,6 @@ class HDWoundFixer:HDWeapon{
 }
 class HDMedikitter:HDWoundFixer{
 	default{
-		+inventory.untossable
 		weapon.slotnumber 9;
 	}
 	bool useonother;
@@ -347,6 +346,40 @@ class HDMedikitter:HDWoundFixer{
 			ww,uw,ow,bb),8);
 		}
 		goto nope;
+	spawn:
+		TNT1 A 1;
+		TNT1 A 0{
+			let k=HDOpenedMedikit(invoker.spawn("HDOpenedMedikit",invoker.pos));
+			if(k){
+				k.vel=invoker.vel;
+				k.usedflesh=invoker.usedflesh;
+				k.usedpatches=invoker.usedpatches;
+				k.usedon=invoker.usedon;
+			}
+		}stop;
+	}
+}
+class HDOpenedMedikit:HDUPK{
+	bool usedflesh;
+	int usedpatches;
+	actor usedon;
+	default{
+		scale 0.3;
+	}
+	states{
+	spawn:
+		CELP A -1 A_Stop();
+	}
+	override void A_HDUPKGive(){
+		if(!target||target.countinv("HDMedikitter")){
+			setstatelabel("spawn");
+			return;
+		}
+		target.A_GiveInventory("HDMedikitter");
+		let k=HDMedikitter(target.FindInventory("HDMedikitter"));
+		k.usedflesh=usedflesh;
+		k.usedpatches=usedpatches;
+		k.usedon=usedon;
 	}
 }
 class SecondFleshBeast:IdleDummy{
