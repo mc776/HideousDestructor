@@ -335,14 +335,14 @@ class HDPlayerPawn:PlayerPawn{
 			|| input & BT_JUMP
 		){
 			if(!barehanded){
-				lastweapon=player.readyweapon.getclassname();
+				if(player.readyweapon)lastweapon=player.readyweapon.getclassname();
 				if(!countinv("NullWeapon"))A_GiveInventory("NullWeapon");
 				A_GiveInventory("NulledWeapon");
 				A_SelectWeapon("NullWeapon");
 			}
 		}else if(
 			player.readyweapon is "NullWeapon"
-			&& countinv(lastweapon)>0
+			&&lastweapon&&countinv(lastweapon)
 		){
 			A_SelectWeapon(lastweapon);
 		}

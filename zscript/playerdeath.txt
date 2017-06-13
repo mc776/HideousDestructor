@@ -9,19 +9,21 @@ extend class HDPlayerPawn{
 			binvisible=true;
 			A_NoBlocking();
 		}
-		---- A 0 killoldfires();
+		---- A 40{
+			A_PlayerScream();
+			killoldfires();
+		}
 		---- A 20 A_CheckPlayerDone();
 		wait;
 	}
 	override void Die(actor source,actor inflictor,int dmgflags=0){
 		playercorpse=spawn("HDPlayerCorpse",pos,ALLOW_REPLACE);
 		playercorpse.vel=vel;playercorpse.master=self;
-		playercorpse.A_PlaySound(health>-50?"*death":"*xdeath",CHAN_VOICE);  
 		if(height<40)playercorpse.sprite=GetSpriteIndex("PLYCA0");
 		else playercorpse.sprite=GetSpriteIndex("PLAYA0");
 		playercorpse.translation=translation;
 		playercorpse.A_SetSize(12,52);
-		if(-health>gibhealth) playercorpse.A_Die("extreme");
+		if(-health>gibhealth||aggravateddamage>40) playercorpse.A_Die("extreme");
 		else playercorpse.A_Die();
 
 		killoldfires();

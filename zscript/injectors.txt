@@ -1,4 +1,4 @@
-//-------------------------------------------------
+ //-------------------------------------------------
 // Stims and berserk
 //-------------------------------------------------
 class PortableStimpack:HDPickup{
@@ -194,6 +194,7 @@ class InjectStimDummy:IdleDummy{
 		TNT1 A 6 nodelay{
 			tg=HDPlayerPawn(target);
 			if(!tg||tg.bkilled){destroy();return;}
+			if(tg.regenbers)tg.aggravateddamage+=ceil(stamina*0.05*random(1,3));
 		}
 		TNT1 A 1{
 			if(target.bkilled||accuracy<1){destroy();return;}
@@ -266,7 +267,6 @@ class InjectZerkDummy:InjectStimDummy{
 		}
 		TNT1 AAAAAAAAAAAAAAAAAAAAAAAAA 1{
 			if(!tg||tg.bkilled){destroy();return;}
-			tg.stimcount+=1;
 		}
 		TNT1 A 1{
 			if(tg.regenbers<100){
@@ -276,9 +276,10 @@ class InjectZerkDummy:InjectStimDummy{
 					tg.A_DropInventory(tg.player.readyweapon.getclass());
 				tg.A_SelectWeapon("Ring");
 			}
-			tg.regenbers=4000;
+			tg.regenbers+=4000;
 			tg.haszerked++;
-			tg.aggravateddamage++;
+			if(tg.stimcount)tg.aggravateddamage+=ceil(tg.stimcount*0.05*random(1,3));
+			else tg.aggravateddamage++;
 		}stop;
 	}
 }
