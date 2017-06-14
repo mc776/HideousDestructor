@@ -64,13 +64,21 @@ class SpentBottle:SpentStim{
 		BON1 A 0;
 		goto spawn2;
 	death:
-		---- A -1{
+		---- A 100{
 			if(random(0,7))roll=randompick(90,270);else roll=0;
 			if(roll==270)scale.x*=-1;
-		}stop;
+		}
+		---- A random(2,4){
+			if(frandom(0.1,0.9)<alpha){
+				angle+=random(-12,12);pitch=random(45,90);
+				actor a=spawn("HDGunSmoke",pos);
+				a.scale=(0.4,0.4);a.angle=angle;
+			}
+			A_FadeOut(frandom(-0.03,0.032));
+		}wait;
 	}
 }
-class SpentCork:HDDebris{
+class SpentCork:SpentBottle{
 	default{
 		bouncesound "misc/casing3";scale 0.6;
 		translation "224:231=64:71";
@@ -80,8 +88,6 @@ class SpentCork:HDDebris{
 		PBRS A 2{
 			A_SetRoll(roll+90,SPF_INTERPOLATE);
 		}loop;
-	death:
-		PBRS "#" -1;
 	}
 }
 class HDStimpacker:HDWoundFixer{
