@@ -6,6 +6,9 @@
 //basically we just need to account for conveyors and platforms
 class HDDebris:HDActor{
 	bool stopped;
+	bool deathstate;
+	int grav;
+	double wdth;
 	default{
 		+noblockmap -solid -shootable +dontgib +forcexybillboard +notrigger
 		height 2;radius 2;
@@ -14,49 +17,48 @@ class HDDebris:HDActor{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
+		if(findstate("death"))deathstate=true;
 		stopped=false;
+		grav=getgravity();
+		if(bwallsprite)grav*=frandom(0.4,0.7);
+		wdth=radius*1.8;
 	}
 	override void Tick(){
 		clearinterpolation();
-		if(globalfreeze||level.Frozen) return;
-		if(!stopped){
-			vel.z-=getgravity();
-			int spd=abs(vel.x);if(abs(vel.y)>spd)spd=abs(vel.y);
-			vector2 frac=self.vel.xy*radius/spd;
-			for(int i=0;i<spd;i+=radius){
-				if(!trymove(self.pos.xy+frac,true)){
+		if(globalfreeze||level.Frozen)return;
+		if(stopped)actor.tick();else{
+			vel.z-=grav;
+			double spd=max(abs(vel.x),abs(vel.y))/wdth;
+			vector2 frac=vel.xy/spd;
+			if(bwallsprite)vel.xy+=(frandom(-1,1),frandom(-1,1));
+			for(int i=0;i<spd;i++){
+				if(!trymove(pos.xy+frac,true)){
 					A_PlaySound(bouncesound);
-					vel.xy*=-1;
-					vel.xy+=(random(-1,1),random(-1,1));
+					vel.xy*=-bouncefactor;
+					vel.xy+=(frandom(-spd,spd),frandom(-spd,spd));
 				}
 			}
-			setz(pos.z+vel.z);
-			if(pos.z<floorz)setz(floorz);
-			if(pos.z+height>ceilingz)setz(ceilingz-height);
+			addz(vel.z);
 			if(
-				pos.z==floorz
-				||pos.z+height==ceilingz
+				pos.z<=floorz
+				||pos.z+height>ceilingz
 			){
+				vel.xy*=bouncefactor;
+				vel.z*=-bouncefactor;
+				if(pos.z<floorz)setz(floorz);else setz(ceilingz-height);
 				if(abs(vel.z)>2){
 					A_PlaySound(bouncesound);
-					vel.xy+=(random(-1,1),random(-1,1));
-					vel.xy*=bouncefactor;
-					vel.z*=-bouncefactor;
-				}else{
-					vel.xy*=bouncefactor;
-					vel.z*=-bouncefactor;
+					vel.xy+=(frandom(-spd,spd),frandom(-spd,spd));
 				}
 			}
-			if(vel.length()<1){
+			if(floorz==pos.z && max(abs(vel.x),abs(vel.y),abs(vel.z))<1){
 				stopped=true;
 				setz(floorz);
 				bmovewithsector=true;
-				setstatelabel("death");
-				if(bdestroyed) return; //if nexttic() is called below, it would crash
+				if(deathstate)setstatelabel("death");else destroy();
+				if(bdestroyed)return; //if nexttic() is called below, it would crash
 			}
 			nexttic();
-		}else{
-			Actor.Tick();
 		}
 	}
 }
