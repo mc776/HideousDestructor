@@ -21,7 +21,7 @@ class TerrorBolt:HDBullet{
 		if(a && a.tracer){
 			A_PlaySound("weapons/bigcrack");
 			BulletImpactDamage();
-			if(a.tracer.health>-a.tracer.gibhealth) Puff(-1);
+			if(a && a.tracer.health>-a.tracer.gibhealth) Puff(-1);
 			else{
 				bmissile=true;
 				dmg=0;
