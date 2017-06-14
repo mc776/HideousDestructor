@@ -143,15 +143,15 @@ extend class HDPlayerPawn{
 			)pg+=1000;
 		}
 		if(!pg)return;
+		double ht=height*0.7;
 		if(pg>1000){	//one of these puffs must emerge from muzzle
 			pg-=1001;
 			A_SpawnItemEx("HDGunSmoke",
-				cos(pitch)*4,0,-sin(pitch)*4,
+				cos(pitch)*4,0,-sin(pitch)*4+ht,
 				cos(pitch)*4,0,-sin(pitch)*4,
 				flags:SXF_NOCHECKPOSITION
 			);
 		}
-		double ht=height*0.7;
 		actor a;
 		while(pg>0){
 			pg--;

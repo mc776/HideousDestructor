@@ -88,6 +88,8 @@ ACTOR Brontornis : HDWeapon
 		BLSG A 0 A_JumpIfInventory("BrontornisHeat",1,1)
 		goto nope
 		BLSG A 0 A_TakeInventory("BrontornisHeat",1)
+
+		//REPLACE THIS (AND THE OTHERS) WITH DOEFFECT()
 		BLSG A 0 A_FireCustomMissile("HDGunSmoke",frandom(-1,1),0,0,0,0,frandom(-1,1))
 		goto nope
 	Interrupt:
