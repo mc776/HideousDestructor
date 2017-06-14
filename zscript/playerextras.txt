@@ -28,7 +28,7 @@ extend class HDPlayerPawn{
 			barehanded &&
 			cansprint
 		){
-			if(onground) mantlemax=64;
+			if(regenbers||onground) mantlemax=64;
 			else mantlemax=56;
 		}
 		//place the antenna
@@ -55,13 +55,13 @@ extend class HDPlayerPawn{
 		if(
 			!stunned
 			&& cansprint
-			&& input & BT_JUMP //replace with event asap
+			&& input & BT_JUMP
 			&& !MantleCheck()
 			&& !(oldinput & BT_JUMP)
 			&& !countinv("PowerIronFeet")
 		){
 			double jumppower=5;
-			if(countinv("PowerStrength"))jumppower=10;else{
+			if(regenbers)jumppower=10;else{
 				if(beatmax<20) jumppower=3;
 				else if(beatmax<24) jumppower=3.5;
 			}

@@ -34,8 +34,8 @@ class HDDebris:HDActor{
 			for(int i=0;i<spd;i++){
 				if(!trymove(pos.xy+frac,true)){
 					A_PlaySound(bouncesound);
-					vel.xy*=-bouncefactor;
 					vel.xy+=(frandom(-spd,spd),frandom(-spd,spd));
+					vel.xy*=-bouncefactor;
 				}
 			}
 			addz(vel.z);
@@ -43,13 +43,13 @@ class HDDebris:HDActor{
 				pos.z<=floorz
 				||pos.z+height>ceilingz
 			){
-				vel.xy*=bouncefactor;
-				vel.z*=-bouncefactor;
-				if(pos.z<floorz)setz(floorz);else setz(ceilingz-height);
+				if(pos.z<=floorz)setz(floorz);else setz(ceilingz-height);
 				if(abs(vel.z)>2){
 					A_PlaySound(bouncesound);
 					vel.xy+=(frandom(-spd,spd),frandom(-spd,spd));
 				}
+				vel.xy*=bouncefactor;
+				vel.z*=-bouncefactor;
 			}
 			if(floorz==pos.z && max(abs(vel.x),abs(vel.y),abs(vel.z))<1){
 				stopped=true;
