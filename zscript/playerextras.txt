@@ -26,7 +26,7 @@ extend class HDPlayerPawn{
 		int mantlemax=36;
 		if(
 			barehanded &&
-			(beatmax>18||countinv("PowerStrength"))
+			cansprint
 		){
 			if(onground) mantlemax=64;
 			else mantlemax=56;
@@ -54,7 +54,7 @@ extend class HDPlayerPawn{
 	void JumpCheck(){
 		if(
 			!stunned
-			&& (countinv("PowerStrength") || beatmax>14)
+			&& cansprint
 			&& input & BT_JUMP //replace with event asap
 			&& !MantleCheck()
 			&& !(oldinput & BT_JUMP)

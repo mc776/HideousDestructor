@@ -178,7 +178,7 @@ extend class HDPlayerPawn{
 
 			//blood pressure
 			if(stimcount>0 && bloodpressure<12)bloodpressure++;
-			if(stimcount<1 && bloodpressure>0)bloodpressure--;
+			else if(bloodpressure>0)bloodpressure--;
 
 			//don't go negatives
 			if(regenblues<0)regenblues=0;
@@ -190,7 +190,7 @@ extend class HDPlayerPawn{
 
 			//apply stims
 			if(stimcount){
-				beatcap=clamp(beatcap,beatcap-4,35-stimcount);
+				beatcap=clamp(beatcap,beatcap-1,35-stimcount);
 				if(bloodpressure<stimcount)bloodpressure+=4;
 				stunned--;
 			}

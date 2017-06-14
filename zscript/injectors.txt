@@ -194,7 +194,7 @@ class InjectStimDummy:IdleDummy{
 		TNT1 A 6 nodelay{
 			tg=HDPlayerPawn(target);
 			if(!tg||tg.bkilled){destroy();return;}
-			if(tg.regenbers)tg.aggravateddamage+=ceil(stamina*0.05*random(1,3));
+			if(tg.regenbers)tg.aggravateddamage+=ceil(accuracy*0.01*random(1,3));
 		}
 		TNT1 A 1{
 			if(target.bkilled||accuracy<1){destroy();return;}

@@ -264,7 +264,7 @@ class HDPlayerPawn:PlayerPawn{
 		//conditions for forcing walk
 		if(
 			stunned
-			||(beatmax<14 && !countinv("PowerStrength"))
+			||(!regenbers && beatmax<14 && stimcount<8)
 			||StumbleCheck()
 			||health<25
 		){
@@ -277,8 +277,9 @@ class HDPlayerPawn:PlayerPawn{
 			!mustwalk
 			&& barehanded
 			&&(
-				beatmax>HDCONST_SPRINTMAXHEARTRATE ||
-				countinv("PowerStrength")
+				regenbers ||
+				stimcount>10 ||
+				beatmax>HDCONST_SPRINTMAXHEARTRATE
 			)
 			&&!countinv("PowerIronFeet")
 		)cansprint=true;else cansprint=false;
