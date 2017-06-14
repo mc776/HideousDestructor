@@ -192,7 +192,8 @@ extend class HDPlayerPawn{
 			if(stimcount){
 				beatcap=clamp(beatcap,beatcap-1,35-stimcount);
 				if(bloodpressure<stimcount)bloodpressure+=4;
-				stunned--;
+				if(regenbers)stunned=10;
+				else stunned--;
 			}
 
 			//magical healing every heartbeat
