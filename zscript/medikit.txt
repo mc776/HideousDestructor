@@ -364,11 +364,14 @@ class HDOpenedMedikit:HDUPK{
 	int usedpatches;
 	actor usedon;
 	default{
-		scale 0.3;
+		scale 0.27;
 	}
 	states{
 	spawn:
-		CELP A -1 A_Stop();
+		MEDI B 0 A_Stop();
+		MEDI B -1{
+			if(usedon)frame=2;
+		}
 	}
 	override void A_HDUPKGive(){
 		if(!target||target.countinv("HDMedikitter")){

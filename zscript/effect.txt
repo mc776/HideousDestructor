@@ -10,7 +10,7 @@ class HDDebris:HDActor{
 	int grav;
 	double wdth;
 	default{
-		+noblockmap -solid -shootable +dontgib +forcexybillboard +notrigger
+		+noblockmap -solid -shootable +dontgib +forcexybillboard +notrigger +cannotpush
 		height 2;radius 2;
 		bouncesound "misc/casing2";bouncefactor 0.8;maxstepheight 2;
 		+rollsprite;+rollcenter;
@@ -100,9 +100,9 @@ class WallChunk:HDDebris{
 class HDPuff:HDActor{
 	double decel;double fade;double grow;int fadeafter;double minalpha;
 	default{
-		+puffgetsowner;+hittracer;
-		+noblockmap;-solid;+rollsprite;+rollcenter;+forcexybillboard;height 0;radius 0;
-		renderstyle "translucent";gravity 0.1;
+		+puffgetsowner +hittracer +cannotpush
+		+noblockmap -solid +rollsprite +rollcenter +forcexybillboard
+		height 0;radius 0;renderstyle "translucent";gravity 0.1;
 	}
 	override void postbeginplay(){
 		HDActor.postbeginplay(); //for all future puffs use this, not super
