@@ -3,6 +3,10 @@
 // ------------------------------------------------------------
 
 extend class HDPlayerPawn{
+	vector2 muzzleclimb1;
+	vector2 muzzleclimb2;
+	vector2 muzzleclimb3;
+	vector2 muzzleclimb4;
 	vector2 muzzledrift;
 	bool muzzlehit;
 
@@ -34,6 +38,14 @@ extend class HDPlayerPawn{
 			yaw*=0.6;ptch*=0.6;
 		}
 		anglechange+=yaw;pitchchange-=ptch;
+
+		//muzzle climb - gotta keep this here to make it subject to caps
+		pitchchange+=muzzleclimb1.y;
+		anglechange+=muzzleclimb1.x;
+		muzzleclimb1=muzzleclimb2;
+		muzzleclimb2=muzzleclimb3;
+		muzzleclimb3=muzzleclimb4;
+		muzzleclimb4=(0,0);
 
 		if(1){
 			//get weapon size
@@ -408,13 +420,11 @@ extend class HDPlayerPawn{
 	}
 
 	//Muzzle climb!
-	void MuzzleClimb(
-		double down,
-		double left,
-		bool doublemoving=true
-	){
-		if(doublemoving && countinv("ismoving")){down*=2;left*=2;}
-		muzzledrift+=(left,down);
+	void A_MuzzleClimb(vector2 mc1,vector2 mc2,vector2 mc3,vector2 mc4){
+		muzzleclimb1+=mc1;
+		muzzleclimb2+=mc2;
+		muzzleclimb3+=mc3;
+		muzzleclimb4+=mc4;
 	}
 }
 

@@ -54,7 +54,11 @@ extend class HDPlayerPawn{
 	void JumpCheck(){
 		if(
 			!stunned
-			&& cansprint
+			&&(
+				beatmax>18
+				||regenbers
+				||cansprint
+			)
 			&& input & BT_JUMP
 			&& !MantleCheck()
 			&& !(oldinput & BT_JUMP)
