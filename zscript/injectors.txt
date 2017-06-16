@@ -126,7 +126,7 @@ class HDStimpacker:HDWoundFixer{
 				A_SelectWeapon("Ring");
 				A_Refire("nope");
 			}else if(pitch<55){
-				A_SetPitch(pitch+8,SPF_INTERPOLATE);
+				A_MuzzleClimb(0,8);
 				A_Refire();
 			}else{
 				A_TakeInventory(invoker.inventorytype,1);
@@ -136,13 +136,13 @@ class HDStimpacker:HDWoundFixer{
 	inject:
 		TNT1 A 1{
 			A_SetBlend("7a 3a 18",0.1,4);
-			A_SetPitch(pitch+2,SPF_FORCECLAMP|SPF_INTERPOLATE);
+			A_MuzzleClimb(0,2);
 			A_PlaySound("*usemeds",CHAN_VOICE);
 			A_PlaySound("misc/bulletflesh",CHAN_WEAPON);
 			actor a=spawn(invoker.injecttype,pos);
 			a.accuracy=40;a.target=self;
 		}
-		TNT1 AAAA 1 A_SetPitch(pitch-0.5,SPF_FORCECLAMP|SPF_INTERPOLATE);
+		TNT1 AAAA 1 A_MuzzleClimb(0,-0.5);
 		TNT1 A 6;
 		TNT1 A 0{
 			actor a=spawn(invoker.spentinjecttype,pos+(0,0,height-8));
@@ -381,7 +381,7 @@ class HDBlueBottler:HDWoundFixer{
 				A_SelectWeapon("Ring");
 				A_Refire("nope");
 			}else if(pitch>-55){
-				A_SetPitch(pitch-8,SPF_INTERPOLATE);
+				A_MuzzleClimb(0,-8);
 				A_Refire();
 			}else{
 				A_Refire("inject");
@@ -393,11 +393,11 @@ class HDBlueBottler:HDWoundFixer{
 		TNT1 A 1{
 			A_TakeInventory("BluePotion",1);
 			A_SetBlend("5a 6a a0",0.1,8);
-			A_SetPitch(pitch-2,SPF_FORCECLAMP|SPF_INTERPOLATE);
+			A_MuzzleClimb(0,-2);
 			A_PlaySound("misc/gibbed",CHAN_VOICE);
 			if(invoker.onr)invoker.onr.regenblues+=300;
 		}
-		TNT1 AAAA 1 A_SetPitch(pitch+0.5,SPF_FORCECLAMP|SPF_INTERPOLATE);
+		TNT1 AAAA 1 A_MuzzleClimb(0,0.5);
 		TNT1 A 6;
 		TNT1 A 0{
 			actor a=spawn("SpentBottle",pos+(0,0,height-4));

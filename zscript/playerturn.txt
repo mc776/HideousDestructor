@@ -39,14 +39,6 @@ extend class HDPlayerPawn{
 		}
 		anglechange+=yaw;pitchchange-=ptch;
 
-		//muzzle climb - gotta keep this here to make it subject to caps
-		pitchchange+=muzzleclimb1.y;
-		anglechange+=muzzleclimb1.x;
-		muzzleclimb1=muzzleclimb2;
-		muzzleclimb2=muzzleclimb3;
-		muzzleclimb3=muzzleclimb4;
-		muzzleclimb4=(0,0);
-
 		if(1){
 			//get weapon size
 			double amt=0;
@@ -217,7 +209,6 @@ extend class HDPlayerPawn{
 			muzzledrift*=proportion3;
 
 
-
 			//good old jitters!
 			//gotta do this after inertia and before collision,
 			//to keep this from clipping your gun into the geometry.
@@ -234,10 +225,16 @@ extend class HDPlayerPawn{
 			}
 
 
+			//muzzle climb - gotta keep this here to make it subject to caps
+			pitchchange+=muzzleclimb1.y;
+			anglechange+=muzzleclimb1.x;
+			muzzleclimb1=muzzleclimb2;
+			muzzleclimb2=muzzleclimb3;
+			muzzleclimb3=muzzleclimb4;
+			muzzleclimb4=(0,0);
 
 
 			//weapon collision
-
 			if(!(player.cheats&CF_NOCLIP2 || player.cheats&CF_NOCLIP)){
 				//temporarily set attackzoffset
 				double azobak=attackzoffset;

@@ -41,12 +41,17 @@ class HDWeapon:Weapon{
 	}
 	//wrapper for HDWeapon and ActionItem
 	//remember: LEFT and DOWN
-	action void A_MuzzleClimb(vector2 mc1,vector2 mc2,vector2 mc3,vector2 mc4){
+	action void A_MuzzleClimb(
+		double mc10=0,double mc11=0,
+		double mc20=0,double mc21=0,
+		double mc30=0,double mc31=0,
+		double mc40=0,double mc41=0
+	){
 		let hdp=HDPlayerPawn(self);
 		if(hdp){
-			hdp.A_MuzzleClimb(mc1,mc2,mc3,mc4);
+			hdp.A_MuzzleClimb((mc10,mc11),(mc20,mc21),(mc30,mc31),(mc40,mc41));
 		}else{ //I don't even know why
-			vector2 mc0=mc1+mc2+mc3+mc4;
+			vector2 mc0=(mc10,mc11)+(mc20,mc21)+(mc30,mc31)+(mc40,mc41);
 			A_SetPitch(pitch+mc0.y,SPF_INTERPOLATE);
 			A_SetAngle(angle+mc0.x,SPF_INTERPOLATE);
 		}
