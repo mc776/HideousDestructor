@@ -159,6 +159,18 @@ class ActionItem:CustomInventory{
 	default{
 		+inventory.untossable -inventory.invbar +noblockmap
 	}
+	//wrapper for HDWeapon and ActionItem
+	//remember: LEFT and DOWN
+	action void A_MuzzleClimb(vector2 mc1,vector2 mc2,vector2 mc3,vector2 mc4){
+		let hdp=HDPlayerPawn(self);
+		if(hdp){
+			hdp.A_MuzzleClimb(mc1,mc2,mc3,mc4);
+		}else{ //I don't even know why
+			vector2 mc0=mc1+mc2+mc3+mc4;
+			A_SetPitch(pitch+mc0.y,SPF_INTERPOLATE);
+			A_SetAngle(angle+mc0.x,SPF_INTERPOLATE);
+		}
+	}
 	states{
 	nope:
 		TNT1 A 0;fail;

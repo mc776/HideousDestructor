@@ -21,9 +21,11 @@ class HDWeapon:Weapon{
 		weapon.bobrangex 0.2;
 		weapon.bobrangey 0.8;
 	}
+	//wrapper for hdmath.maxinv because we're gonna need this a lot
 	int AmmoCap(class<inventory> inv){
 		return HDMath.MaxInv(self,inv);
 	}
+	//use this to set flash translucency and make it additive
 	action void HDFlashAlpha(int variance=0,int noalpha=false,int layer=PSP_FLASH){
 		A_OverlayFlags(layer,PSPF_ALPHA|PSPF_ADDBOB|PSPF_RENDERSTYLE,true);
 		A_OverlayRenderstyle(layer,STYLE_Add);
@@ -36,6 +38,18 @@ class HDWeapon:Weapon{
 			A_OverlayAlpha(layer,fa);
 		}
 		if(noalpha||fa>0.1)setstatelabel("melee");  
+	}
+	//wrapper for HDWeapon and ActionItem
+	//remember: LEFT and DOWN
+	action void A_MuzzleClimb(vector2 mc1,vector2 mc2,vector2 mc3,vector2 mc4){
+		let hdp=HDPlayerPawn(self);
+		if(hdp){
+			hdp.A_MuzzleClimb(mc1,mc2,mc3,mc4);
+		}else{ //I don't even know why
+			vector2 mc0=mc1+mc2+mc3+mc4;
+			A_SetPitch(pitch+mc0.y,SPF_INTERPOLATE);
+			A_SetAngle(angle+mc0.x,SPF_INTERPOLATE);
+		}
 	}
 	override void AttachToOwner(Actor user){
 		super.attachtoowner(user);
@@ -50,7 +64,7 @@ class HDWeapon:Weapon{
 		stop;
 	select:
 		TNT1 A 0{
-				//these two don't actually work???
+			//these two don't actually work???
 			A_OverlayFlags(PSP_WEAPON,PSPF_CVARFAST|PSPF_POWDOUBLE,false);
 			A_OverlayFlags(PSP_FLASH,PSPF_CVARFAST|PSPF_POWDOUBLE,false);
 
