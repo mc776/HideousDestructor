@@ -7,7 +7,6 @@ class HDWeapon:Weapon{
 	int barrellength;
 	int barrelwidth;
 	int barreldepth;
-	hdplayerpawn onr;
 	property GunDimensions: gunmass,barrellength,barrelwidth,barreldepth;
 	default{
 		+weapon.ammo_optional +weapon.alt_ammo_optional +weapon.noalert +weapon.noautoaim
@@ -20,6 +19,11 @@ class HDWeapon:Weapon{
 		weapon.bobspeed 2.4;
 		weapon.bobrangex 0.2;
 		weapon.bobrangey 0.8;
+	}
+	//use target to help a dropped weapon remember its immediately prior owner
+	override void detachfromowner(){
+		target=owner;
+		super.detachfromowner();
 	}
 	//wrapper for hdmath.maxinv because we're gonna need this a lot
 	int AmmoCap(class<inventory> inv){
@@ -54,13 +58,6 @@ class HDWeapon:Weapon{
 			vector2 mc0=(mc10,mc11)+(mc20,mc21)+(mc30,mc31)+(mc40,mc41);
 			A_SetPitch(pitch+mc0.y,SPF_INTERPOLATE);
 			A_SetAngle(angle+mc0.x,SPF_INTERPOLATE);
-		}
-	}
-	override void AttachToOwner(Actor user){
-		super.attachtoowner(user);
-		if(user){
-			target=user;
-			if(user is "HDPlayerPawn")onr=HDPlayerPawn(user);
 		}
 	}
 	states{

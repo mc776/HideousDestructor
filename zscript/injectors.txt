@@ -395,7 +395,8 @@ class HDBlueBottler:HDWoundFixer{
 			A_SetBlend("5a 6a a0",0.1,8);
 			A_MuzzleClimb(0,-2);
 			A_PlaySound("misc/gibbed",CHAN_VOICE);
-			if(invoker.onr)invoker.onr.regenblues+=300;
+			let onr=HDPlayerPawn(self);
+			if(onr)onr.regenblues+=300;
 		}
 		TNT1 AAAA 1 A_MuzzleClimb(0,0.5);
 		TNT1 A 6;

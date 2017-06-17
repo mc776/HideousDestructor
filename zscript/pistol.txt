@@ -3,18 +3,6 @@
 // ------------------------------------------------------------
 
 class HDSecondPistol:Ammo{
-	hdplayerpawn onr;
-	override void attachtoowner(actor user){
-		super.attachtoowner(user);
-		if(owner is "HDPlayerPawn")onr=HDPlayerPawn(owner);
-	}
-	override void doeffect(){
-		super.doeffect();
-return;
-		if(onr && !onr.countinv("HDPistol")){
-			onr.PistolConsolidator();
-		}
-	}
 	default{
 		+inventory.ignoreskill +inventory.untossable
 		inventory.maxamount 1;ammo.backpackmaxamount 1;ammo.backpackamount 0;
@@ -92,12 +80,12 @@ class HDPistolEmptyMag:HDDebris{
 class HDZPistol:HDWeapon{
 	states{
 	spawn:
-		TNT1 A 1;
+		TNT1 A 1 nodelay;
 		TNT1 A 0{
 			actor a=spawn("HDPistolPickup",pos);
 			a.vel=vel;
-			actor o=invoker.onr;
-			if(o && !o.countinv("HDPistol")){
+			actor o=invoker.target;
+			if(o && !invoker.target.countinv("HDPistol")){
 				a.A_SetInventory("HDPistolLoaded",o.countinv("HDPistolLoaded"));
 				a.A_SetInventory("HDPistolChamber",o.countinv("HDPistolChamber"));
 				a.A_SetInventory("HDPistolFullAuto",o.countinv("HDPistolFullAuto"));

@@ -927,22 +927,14 @@ actor HDPistolPickup:HDUPK replaces Pistol
 		PIST C -1
 	takeloop:
 		"----" A 0{
-			if(countinv("HDPistolLoaded",AAPTR_TARGET)>0){  
-				A_GiveInventory("HDPistolLoaded",countinv("HDPistolLoaded",AAPTR_TARGET));
-				A_TakeFromTarget("HDPistolLoaded");
-			}
-			if(countinv("HDPistolChamber",AAPTR_TARGET)>0){  
-				A_GiveInventory("HDPistolChamber");
-				A_TakeFromTarget("HDPistolChamber");
-			}
-			if(countinv("HDPistolNoMag",AAPTR_TARGET)>0){  
-				A_GiveInventory("HDPistolNoMag");
-				A_TakeFromTarget("HDPistolNoMag");
-			}
-			if(countinv("HDPistolFullAuto",AAPTR_TARGET)>0){  
-				A_GiveInventory("HDPistolFullAuto",countinv("HDPistolFullAuto",AAPTR_TARGET));
-				A_TakeFromTarget("HDPistolFullAuto");
-			}
+			A_SetInventory("HDPistolLoaded",countinv("HDPistolLoaded",AAPTR_TARGET));
+			A_SetInventory("HDPistolChamber",countinv("HDPistolChamber",AAPTR_TARGET));
+			A_SetInventory("HDPistolNoMag",countinv("HDPistolNoMag",AAPTR_TARGET));
+			A_SetInventory("HDPistolFullAuto",countinv("HDPistolFullAuto",AAPTR_TARGET));
+			A_TakeFromTarget("HDPistolLoaded");
+			A_TakeFromTarget("HDPistolChamber");
+			A_TakeFromTarget("HDPistolNoMag");
+			A_TakeFromTarget("HDPistolFullAuto");
 		}goto spawn2
 	give:
 		"----" A 0{
@@ -954,44 +946,20 @@ actor HDPistolPickup:HDUPK replaces Pistol
 	givegun:
 		"----" A 0{
 			A_PlaySound("misc/w_pkup");
-			A_GiveToTarget("HDPistol",1);
-			if(countinv("HDPistolLoaded")>0){  
-				A_GiveToTarget("HDPistolLoaded",countinv("HDPistolLoaded"));
-				A_TakeInventory("HDPistolLoaded");
-			}
-			if(countinv("HDPistolChamber")>0){  
-				A_GiveToTarget("HDPistolChamber");
-				A_TakeInventory("HDPistolChamber");
-			}
-			if(countinv("HDPistolNoMag")>0){  
-				A_GiveToTarget("HDPistolNoMag");
-				A_TakeInventory("HDPistolNoMag");
-			}
-			if(countinv("HDPistolFullAuto")>0){  
-				A_GiveToTarget("HDPistolFullAuto",countinv("HDPistolFullAuto"));
-				A_TakeInventory("HDPistolFullAuto");
-			}
+			A_GiveToTarget("HDPistol");
+			A_SetInventory("HDPistolLoaded",countinv("HDPistolLoaded"),AAPTR_TARGET);
+			A_SetInventory("HDPistolChamber",countinv("HDPistolChamber"),AAPTR_TARGET);
+			A_SetInventory("HDPistolNoMag",countinv("HDPistolNoMag"),AAPTR_TARGET);
+			A_SetInventory("HDPistolFullAuto",countinv("HDPistolFullAuto"),AAPTR_TARGET);
 		}stop
 	givesecondgun:
 		"----" A 0{
 			A_PlaySound("misc/w_pkup");
-			A_GiveToTarget("HDSecondPistol",1);
-			if(countinv("HDPistolLoaded")>0){  
-				A_GiveToTarget("HDSecondPistolLoaded",countinv("HDPistolLoaded"));
-				A_TakeInventory("HDPistolLoaded");
-			}
-			if(countinv("HDPistolChamber")>0){  
-				A_GiveToTarget("HDSecondPistolChamber");
-				A_TakeInventory("HDPistolChamber");
-			}
-			if(countinv("HDPistolNoMag")>0){  
-				A_GiveToTarget("HDSecondPistolNoMag");
-				A_TakeInventory("HDPistolNoMag");
-			}
-			if(countinv("HDPistolFullAuto")>0){  
-				A_GiveToTarget("HDSecondPistolFullAuto",countinv("HDPistolFullAuto"));
-				A_TakeInventory("HDPistolFullAuto");
-			}
+			A_GiveToTarget("HDSecondPistol");
+			A_SetInventory("HDSecondPistolLoaded",countinv("HDPistolLoaded"),AAPTR_TARGET);
+			A_SetInventory("HDSecondPistolChamber",countinv("HDPistolChamber"),AAPTR_TARGET);
+			A_SetInventory("HDSecondPistolNoMag",countinv("HDPistolNoMag"),AAPTR_TARGET);
+			A_SetInventory("HDSecondPistolFullAuto",countinv("HDPistolFullAuto"),AAPTR_TARGET);
 		}stop
 	}
 }

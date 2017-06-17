@@ -65,6 +65,7 @@ class HDWoundFixer:HDWeapon{
 		weapon.selectionorder 999;
 	}
 	int checkwoundcount(bool checkunstable=false){
+		let onr=HDPlayerPawn(owner);
 		if(onr){
 			if(checkunstable)return onr.woundcount+onr.unstablewoundcount;
 			else return onr.woundcount;
