@@ -166,78 +166,83 @@ actor BloopMapPickup
 // Keys
 //-------------------------------------------------
 
-actor HDRedKey : HDHPK replaces RedCard
-{
+actor HDRedKey:HDHPK replaces RedCard{
 	scale 0.4
 	radius 20
-	translation "176:191=96:111"
-	states
-	{
+	states{
 	spawn:
 		RKEY A 0 A_Stop
-		RKEY ABABABAB 2
-		RKEY ABABABABABABABABAABBAABBAABB 3
+	spawn1:
+		"####" ABABABAB 2
+		"####" ABABABABABABABAB 3
+		"####" ABABAB 6
 	spawn2:
-		RKEY A 1 A_SetTics(random(1,1000))
+		"----" A 1 A_SetTics(random(1,1000))
 	spawn3:
-		RKEY AB 1 A_SetTics(random(1,5))
-		TNT1 A 0 A_Jump(16,"spawn2")
+		"####" AB 1 A_SetTics(random(1,5))
+		"----" A 0 A_Jump(16,"spawn2")
 		loop
 	give:
-		RKEY A 0 A_JumpIfInTargetInventory("RedCard",1,"spawn")
-		RKEY A 0 A_GiveToTarget("RedCard",1)
-		RKEY A 0 A_GiveInventory("RedCard",1,AAPTR_PLAYER1)
-		RKEY A 0 A_GiveInventory("RedCard",1,AAPTR_PLAYER2)
-		RKEY A 0 A_GiveInventory("RedCard",1,AAPTR_PLAYER3)
-		RKEY A 0 A_GiveInventory("RedCard",1,AAPTR_PLAYER4)
-		RKEY A 0 A_GiveInventory("RedCard",1,AAPTR_PLAYER5)
-		RKEY A 0 A_GiveInventory("RedCard",1,AAPTR_PLAYER6)
-		RKEY A 0 A_GiveInventory("RedCard",1,AAPTR_PLAYER7)
-		RKEY A 0 A_GiveInventory("RedCard",1,AAPTR_PLAYER8)
-		RKEY A 0 A_Log("\crRED\c- local area clearance code downloaded.")
+		"----" A 0 A_JumpIfInTargetInventory("RedCard",1,"spawn")
+		"----" A 0{
+			A_GiveToTarget("RedCard",1);
+			A_GiveInventory("RedCard",1,AAPTR_PLAYER1);
+			A_GiveInventory("RedCard",1,AAPTR_PLAYER2);
+			A_GiveInventory("RedCard",1,AAPTR_PLAYER3);
+			A_GiveInventory("RedCard",1,AAPTR_PLAYER4);
+			A_GiveInventory("RedCard",1,AAPTR_PLAYER5);
+			A_GiveInventory("RedCard",1,AAPTR_PLAYER6);
+			A_GiveInventory("RedCard",1,AAPTR_PLAYER7);
+			A_GiveInventory("RedCard",1,AAPTR_PLAYER8);
+			A_Log("\crRED\c- local area clearance code downloaded.");
+		}
 	beep:
-		RKEY A 0 A_PlaySound("misc/i_pkup",0,1,0,0)
-		goto spawn
+		"----" A 0{
+			A_PlaySound("misc/i_pkup",0,1,0,0);
+			A_Stop();
+		}goto spawn1
 	}
 }
-actor HDBlueKey : HDRedKey replaces BlueCard
-{
-	translation "176:191=96:111","32:47=200:207"
-	states
-	{
+actor HDBlueKey:HDRedKey replaces BlueCard{
+	states{
+	spawn:
+		BKEY A 0
+		goto spawn1
 	give:
-		TNT1 A 0 A_JumpIfInventory("BlueCard",1,"spawn")
-		TNT1 A 0 A_GiveToTarget("BlueCard",1)
-		TNT1 A 0 A_GiveInventory("BlueCard",1,AAPTR_PLAYER1)
-		TNT1 A 0 A_GiveInventory("BlueCard",1,AAPTR_PLAYER2)
-		TNT1 A 0 A_GiveInventory("BlueCard",1,AAPTR_PLAYER3)
-		TNT1 A 0 A_GiveInventory("BlueCard",1,AAPTR_PLAYER4)
-		TNT1 A 0 A_GiveInventory("BlueCard",1,AAPTR_PLAYER5)
-		TNT1 A 0 A_GiveInventory("BlueCard",1,AAPTR_PLAYER6)
-		TNT1 A 0 A_GiveInventory("BlueCard",1,AAPTR_PLAYER7)
-		TNT1 A 0 A_GiveInventory("BlueCard",1,AAPTR_PLAYER8)
-		RKEY A 0 A_Log("\cnBLUE\c- local area clearance code downloaded.")
-		goto beep
+		"----" A 0 A_JumpIfInTargetInventory("BlueCard",1,"spawn")
+		"----" A 0{
+			A_GiveToTarget("BlueCard",1);
+			A_GiveInventory("BlueCard",1,AAPTR_PLAYER1);
+			A_GiveInventory("BlueCard",1,AAPTR_PLAYER2);
+			A_GiveInventory("BlueCard",1,AAPTR_PLAYER3);
+			A_GiveInventory("BlueCard",1,AAPTR_PLAYER4);
+			A_GiveInventory("BlueCard",1,AAPTR_PLAYER5);
+			A_GiveInventory("BlueCard",1,AAPTR_PLAYER6);
+			A_GiveInventory("BlueCard",1,AAPTR_PLAYER7);
+			A_GiveInventory("BlueCard",1,AAPTR_PLAYER8);
+			A_Log("\cnBLUE\c- local area clearance code downloaded.");
+		}goto beep
 	}
 }
-actor HDYellowKey : HDRedKey replaces YellowCard
-{
-	translation "176:191=96:111","32:47=64:79"
-	states
-	{
+actor HDYellowKey:HDRedKey replaces YellowCard{
+	states{
+	spawn:
+		YKEY A 0
+		goto spawn1
 	give:
-		TNT1 A 0 A_JumpIfInventory("YellowCard",1,"spawn")
-		TNT1 A 0 A_GiveToTarget("YellowCard",1)
-		TNT1 A 0 A_GiveInventory("YellowCard",1,AAPTR_PLAYER1)
-		TNT1 A 0 A_GiveInventory("YellowCard",1,AAPTR_PLAYER2)
-		TNT1 A 0 A_GiveInventory("YellowCard",1,AAPTR_PLAYER3)
-		TNT1 A 0 A_GiveInventory("YellowCard",1,AAPTR_PLAYER4)
-		TNT1 A 0 A_GiveInventory("YellowCard",1,AAPTR_PLAYER5)
-		TNT1 A 0 A_GiveInventory("YellowCard",1,AAPTR_PLAYER6)
-		TNT1 A 0 A_GiveInventory("YellowCard",1,AAPTR_PLAYER7)
-		TNT1 A 0 A_GiveInventory("YellowCard",1,AAPTR_PLAYER8)
-		RKEY A 0 A_Log("\cfYELLOW\c- local area clearance code downloaded.")
-		goto beep
+		"----" A 0 A_JumpIfInTargetInventory("YellowCard",1,"spawn")
+		"----" A 0{
+			A_GiveToTarget("YellowCard",1);
+			A_GiveInventory("YellowCard",1,AAPTR_PLAYER1);
+			A_GiveInventory("YellowCard",1,AAPTR_PLAYER2);
+			A_GiveInventory("YellowCard",1,AAPTR_PLAYER3);
+			A_GiveInventory("YellowCard",1,AAPTR_PLAYER4);
+			A_GiveInventory("YellowCard",1,AAPTR_PLAYER5);
+			A_GiveInventory("YellowCard",1,AAPTR_PLAYER6);
+			A_GiveInventory("YellowCard",1,AAPTR_PLAYER7);
+			A_GiveInventory("YellowCard",1,AAPTR_PLAYER8);
+			A_Log("\cfYELLOW\c- local area clearance code downloaded.");
+		}goto beep
 	}
 }
 
@@ -305,17 +310,11 @@ actor HDMap : HDUPK replaces Allmap
 	states
 	{
 	give:
-		TNT1 A 0 A_GiveToTarget("MapRevealer",1)
-		TNT1 A 0 A_GiveInventory("MapRevealer",1,AAPTR_PLAYER1)
-		TNT1 A 0 A_GiveInventory("MapRevealer",1,AAPTR_PLAYER2)
-		TNT1 A 0 A_GiveInventory("MapRevealer",1,AAPTR_PLAYER3)
-		TNT1 A 0 A_GiveInventory("MapRevealer",1,AAPTR_PLAYER4)
-		TNT1 A 0 A_GiveInventory("MapRevealer",1,AAPTR_PLAYER5)
-		TNT1 A 0 A_GiveInventory("MapRevealer",1,AAPTR_PLAYER6)
-		TNT1 A 0 A_GiveInventory("MapRevealer",1,AAPTR_PLAYER7)
-		TNT1 A 0 A_GiveInventory("MapRevealer",1,AAPTR_PLAYER8)
-		PMAP A 0 A_Log("\c-Local area map downloaded.")
-		PMAP A 0 A_PlaySound("misc/i_pkup",0,1,0,0)
+		PMAP A 0{
+			A_GiveToTarget("MapRevealer",1);
+			A_Log("\c-Local area map downloaded.");
+			A_PlaySound("misc/i_pkup",0,1,0,0);
+		}//fallthrough to spawn
 	spawn:
 		PMAP A 0 A_Stop
 		PMAP A 0 A_Jump(256,"a","b","c","d")
