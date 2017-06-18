@@ -67,7 +67,14 @@ class HDDropArmour:ActionItem{
 			A_TakeInventory("BlueArmour");
 			A_TakeInventory("GreenArmour");
 			let onr=HDPlayerPawn(self);
-			if(onr)onr.stunned+=40;
+			if(onr){
+				onr.stunned+=40;
+				if(!random(1,3)){
+					int unband=min(random(1,10),onr.unstablewoundcount);
+					onr.unstablewoundcount-=unband;
+					onr.woundcount+=unband;
+				}
+			}
 		}fail;
 	}
 }
