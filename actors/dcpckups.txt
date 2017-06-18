@@ -167,6 +167,7 @@ actor BloopMapPickup
 //-------------------------------------------------
 
 actor HDRedKey:HDHPK replaces RedCard{
+	+wallsprite
 	scale 0.4
 	radius 20
 	states{
@@ -182,8 +183,16 @@ actor HDRedKey:HDHPK replaces RedCard{
 		"####" AB 1 A_SetTics(random(1,5))
 		"----" A 0 A_Jump(16,"spawn2")
 		loop
+	grab:
+		"----" A 0{
+			A_FaceTarget(0,0);
+			pitch=random(0,-3);
+		}
+		goto super::grab
 	give:
 		"----" A 0 A_JumpIfInTargetInventory("RedCard",1,"spawn")
+		"----" A 0 A_Jump(256,"give2")
+	give2:
 		"----" A 0{
 			A_GiveToTarget("RedCard",1);
 			A_GiveInventory("RedCard",1,AAPTR_PLAYER1);
@@ -206,10 +215,9 @@ actor HDRedKey:HDHPK replaces RedCard{
 actor HDBlueKey:HDRedKey replaces BlueCard{
 	states{
 	spawn:
-		BKEY A 0
+		BKEY A 0 A_Stop
 		goto spawn1
-	give:
-		"----" A 0 A_JumpIfInTargetInventory("BlueCard",1,"spawn")
+	give2:
 		"----" A 0{
 			A_GiveToTarget("BlueCard",1);
 			A_GiveInventory("BlueCard",1,AAPTR_PLAYER1);
@@ -227,10 +235,9 @@ actor HDBlueKey:HDRedKey replaces BlueCard{
 actor HDYellowKey:HDRedKey replaces YellowCard{
 	states{
 	spawn:
-		YKEY A 0
+		YKEY A 0 A_Stop
 		goto spawn1
-	give:
-		"----" A 0 A_JumpIfInTargetInventory("YellowCard",1,"spawn")
+	give2:
 		"----" A 0{
 			A_GiveToTarget("YellowCard",1);
 			A_GiveInventory("YellowCard",1,AAPTR_PLAYER1);
