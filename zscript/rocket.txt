@@ -27,10 +27,10 @@ class GyroGrenade:SlowProjectile{
 			}
 			if(countinv("HDRocketAmmo")) setstatelabel("spawnrocket");
 		}
-		#### ABA 1;
+		#### AB 1;
 		#### A 0{primed=true;}
 	spawn2:
-		#### BA 1{
+		#### AB 1{
 			if(fuze>0){
 				fuze--;
 				if(fuze==1)ExplodeMissile();
@@ -68,7 +68,7 @@ class GyroGrenade:SlowProjectile{
 				if(fuze==1)ExplodeMissile();
 			}
 			stamina--;
-			if(stamina<39)primed=true;
+			if(!primed && stamina<41)primed=true;
 		}
 		loop;
 	death:
