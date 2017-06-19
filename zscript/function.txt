@@ -199,8 +199,6 @@ class IdleDummy:HDActor{
 
 
 //collection of generic math functions
-//generally should copypaste rather than using directly
-//if replaceable with native function, DO SO even if the math seems more complex
 struct HDMath play{
 	//why does ZS not have a native round function?????
 	//or ceiling, for that matter????????
@@ -230,15 +228,17 @@ struct HDMath play{
 		if(Wads.CheckNumForName(lumpname,wads.ns_sprites,-1,false)<0)return false;
 		return true;
 	}
+}
+struct HDStuff play{
 	//return the maximum capacity for this actor and this inventory
 	//force give-and-take to register if absent
-	//HDMath.MaxInv(self,"FourMilAmmo")
+	//HDStuff.MaxInv(self,"FourMilAmmo")
 	static int MaxInv(actor holder,class<inventory> inv){
 		if(holder.findinventory(inv)) return holder.findinventory(inv).maxamount;
 		holder.A_GiveInventory(inv);
 		if(!holder.findinventory(inv)){
 			if(hd_debug)
-			holder.A_Log(string.format("Invalid type for hdmath.maxinv: %s",inv.getclassname()));
+			holder.A_Log(string.format("Invalid type for hdstuff.maxinv: %s",inv.getclassname()));
 			return -1;
 		}
 		int max=holder.findinventory(inv).maxamount;
