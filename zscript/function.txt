@@ -199,7 +199,7 @@ class IdleDummy:HDActor{
 
 
 //collection of generic math functions
-struct HDMath play{
+struct HDMath{
 	//why does ZS not have a native round function?????
 	//or ceiling, for that matter????????
 	static int Round(double input){
@@ -229,21 +229,44 @@ struct HDMath play{
 		return true;
 	}
 }
-struct HDStuff play{
+struct HDF play{
 	//return the maximum capacity for this actor and this inventory
 	//force give-and-take to register if absent
-	//HDStuff.MaxInv(self,"FourMilAmmo")
+	//HDF.MaxInv(self,"FourMilAmmo")
 	static int MaxInv(actor holder,class<inventory> inv){
 		if(holder.findinventory(inv)) return holder.findinventory(inv).maxamount;
 		holder.A_GiveInventory(inv);
 		if(!holder.findinventory(inv)){
 			if(hd_debug)
-			holder.A_Log(string.format("Invalid type for hdstuff.maxinv: %s",inv.getclassname()));
+			holder.A_Log(string.format("Invalid type for HDF.maxinv: %s",inv.getclassname()));
 			return -1;
 		}
 		int max=holder.findinventory(inv).maxamount;
 		holder.A_TakeInventory(inv);
 		return max;
+	}
+	//transfer inventory: one gets, the other loses
+	static int TransferInventory(
+		actor giver,
+		actor receiver,
+		class<inventory> item,
+		int amt=0,
+		bool overwrite=false
+	){
+		if(overwrite){
+			amt=max(amt,giver.countinv(item));
+			receiver.A_SetInventory(item,amt);
+			giver.A_TakeInventory(item);
+			return amt;
+		}else{
+			if(!amt)amt=giver.countinv(item);
+			else amt=min(amt,giver.countinv(item),maxinv(receiver,item)-receiver.countinv(item));
+			if(amt){
+				giver.A_TakeInventory(item,amt);
+				receiver.A_GiveInventory(item,amt);
+			}
+		}
+		return amt;
 	}
 }
 

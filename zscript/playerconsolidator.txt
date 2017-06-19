@@ -30,7 +30,7 @@ extend class HDPlayerPawn{
 
 		//make as many mags and clips as possible to make room for more 7mm
 		if(countinv("SevenMilAmmo")>10){
-			int maxclag=hdstuff.maxinv(self,"LiberatorMag");
+			int maxclag=HDF.maxinv(self,"LiberatorMag");
 			while(
 				countinv("SevenMilAmmo")>29 &&  
 				countinv("LiberatorMag")<maxclag
@@ -39,7 +39,7 @@ extend class HDPlayerPawn{
 				A_GiveInventory("LiberatorMag");
 			}
 			if(countinv("BossRifle")){
-				maxclag=hdstuff.maxinv(self,"BossClip");
+				maxclag=HDF.maxinv(self,"BossClip");
 				while(
 					countinv("SevenMilAmmo")>10 &&  
 					countinv("BossClip")<maxclag
@@ -57,7 +57,7 @@ extend class HDPlayerPawn{
 			int newbullets=min(
 				usablebrass,
 				sparepowder*0.3,
-				hdstuff.maxinv(self,"SevenMilAmmo")
+				HDF.maxinv(self,"SevenMilAmmo")
 			);
 			A_GiveInventory("SevenMilAmmo",newbullets);
 			//then subtract used supplies
@@ -299,7 +299,7 @@ extend class HDPlayerPawn{
 
 				//load original mags
 				A_TakeInventory("LiberatorMag");
-				int maxmags=hdstuff.maxinv(self,"LiberatorMag");
+				int maxmags=HDF.maxinv(self,"LiberatorMag");
 				while(totalspare>=30 && countinv("LiberatorMag")<originalmags){
 					A_GiveInventory("LiberatorMag");
 					totalspare-=30;
@@ -307,7 +307,7 @@ extend class HDPlayerPawn{
 
 				//load more clips or mags
 				if(player.readyweapon is "BossRifle" || !liberator){
-					int maxclips=hdstuff.maxinv(self,"BossClip");
+					int maxclips=HDF.maxinv(self,"BossClip");
 					while(totalspare>=10 && countinv("BossClip")<maxclips){
 						A_GiveInventory("BossClip");
 						totalspare-=10;

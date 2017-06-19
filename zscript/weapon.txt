@@ -25,9 +25,9 @@ class HDWeapon:Weapon{
 		target=owner;
 		super.detachfromowner();
 	}
-	//wrapper for hdstuff.maxinv because we're gonna need this a lot
+	//wrapper for HDF.maxinv because we're gonna need this a lot
 	int AmmoCap(class<inventory> inv){
-		return HDStuff.MaxInv(self,inv);
+		return HDF.MaxInv(self,inv);
 	}
 	//use this to set flash translucency and make it additive
 	action void HDFlashAlpha(int variance=0,int noalpha=false,int layer=PSP_FLASH){
@@ -252,7 +252,7 @@ class HDWeapon:Weapon{
 		---- A 0 {
 			let p=HDPlayerPawn(self);
 			if(
-				p&&!p.beatcount&&p.regenbers>900
+				p&&!p.beatcount&&p.zerk>900
 				&&!random(0,(invoker is "Ring")?20:100)
 			)player.SetPsprite(
 				PSP_WEAPON,

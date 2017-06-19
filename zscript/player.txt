@@ -64,7 +64,7 @@ class HDPlayerPawn:PlayerPawn{
 			A_TakeInventory("IsMoving");
 		}
 		---- AAAAAA 5{
-			if(!barehanded && regenbers<1 && zat==pos.z && !countinv("IsSupported") && !countinv("IsMoving")){
+			if(!barehanded && zerk<1 && zat==pos.z && !countinv("IsSupported") && !countinv("IsMoving")){
 				vector3 posbak=pos;
 				setxyz(pos+(cos(angle),sin(angle),0)*16);
 				double zat2=getzat();
@@ -264,7 +264,7 @@ class HDPlayerPawn:PlayerPawn{
 		//conditions for forcing walk
 		if(
 			stunned
-			||(!regenbers && beatmax<14 && stimcount<8)
+			||(!zerk && beatmax<14 && stimcount<8)
 			||StumbleCheck()
 			||health<25
 		){
@@ -277,7 +277,7 @@ class HDPlayerPawn:PlayerPawn{
 			!mustwalk
 			&& barehanded
 			&&(
-				regenbers ||
+				zerk ||
 				stimcount>10 ||
 				beatmax>HDCONST_SPRINTMAXHEARTRATE
 			)
@@ -407,7 +407,7 @@ class HDPlayerPawn:PlayerPawn{
 							||k.blockingmobj is "HDFragGrenade"
 							||k.blockingmobj is "HDFragGrenadeRoller"
 						){
-							int forc=80;if(regenbers>0)forc*=3;
+							int forc=80;if(zerk>0)forc*=3;
 							corpsekicktimer=20+unstablewoundcount*0.5;
 							k.blockingmobj.vel+=(k.vel+(0,0,4))*forc/k.blockingmobj.mass;
 							k.blockingmobj.A_PlaySound("misc/punch");
@@ -497,7 +497,7 @@ extend class HDPlayerPawn{
 		feetangle=angle;
 		hasgrabbed=false;
 		beatmax=35;beatcap=35;bloodpressure=0;beatcounter=0;
-		stimcount=0;regenbers=0;
+		stimcount=0;zerk=0;
 		oldwoundcount+=woundcount+unstablewoundcount;aggravateddamage=0;
 		oldwoundcount--;burncount--;woundcount=0;unstablewoundcount=0;
 
@@ -511,7 +511,7 @@ extend class HDPlayerPawn{
 		A_TakeInventory("IsInHell");
 		A_TakeInventory("UsingMeds");
 		A_TakeInventory("WipedOut");
-		A_TakeInventory("RegenBers");
+		A_TakeInventory("Zerk");
 		A_TakeInventory("IsSupported");
 
 		A_GiveInventory("JustStarted",1);
