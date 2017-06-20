@@ -66,8 +66,8 @@ extend class HDPlayerPawn{
 		){
 			double jumppower=5;
 			if(zerk)jumppower=10;else{
-				if(fatigue>60) jumppower=3;  
-				else if(fatigue>30) jumppower=3.5;
+				if(fatigue>30) jumppower=3;  
+				else if(fatigue>20) jumppower=3.5;
 			}
 			if(overloaded)jumppower/=overloaded;
 			double jz=jumppower*0.6;
@@ -92,11 +92,11 @@ extend class HDPlayerPawn{
 			}
 			if(height<40){
 				if(bloodpressure<40)bloodpressure+=7;
-				fatigue+=12;
+				fatigue+=7;
 			}
 			else{
 				if(bloodpressure<40)bloodpressure+=4;
-				fatigue+=6;
+				fatigue+=4;
 			}
 		}
 	}

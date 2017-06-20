@@ -183,7 +183,7 @@ A_LogInt(fatigue);
 			//sprinting
 			if(cansprint && runwalksprint>0 && (fm||sm)){
 				fatigue+=2;
-				if(!stimcount && !zerk && fatigue>=HDCONST_SPRINTFATIGUE)fatigue+=40;
+				if(!stimcount && !zerk && fatigue>=HDCONST_SPRINTFATIGUE)fatigue+=20;
 				if(!random(0,35))bloodpressure++;
 			}
 
@@ -228,6 +228,8 @@ A_LogInt(fatigue);
 				//recovering heart rate
 				if(fatigue){
 					beatmax=min(beatmax,33-fatigue);
+					if(fatigue>20)stunned=clamp(stunned,stunned+10,fatigue*10);
+					if(bloodpressure<fatigue)bloodpressure=fatigue;
 				}
 				if(beatmax<beatcap) beatmax++;
 				if(bloodpressure>0)bloodpressure--;
