@@ -2,6 +2,9 @@
 //   The player!
 // ------------------------------------------------------------
 const HDCONST_SPRINTMAXHEARTRATE=20;
+const HDCONST_SPRINTFATIGUE=30;
+const HDCONST_WALKFATIGUE=40;
+const HDCONST_DAMAGEFATIGUE=80;
 class HDPlayerPawn:PlayerPawn{
 	vector3 lastpos;vector3 lastvel;double lastangle;double lastpitch;double lastheight;
 	vector3 poschange;
@@ -22,6 +25,7 @@ class HDPlayerPawn:PlayerPawn{
 	double feetangle;
 
 	int stunned;
+	int fatigue;
 	int nocrosshair;
 
 	int input;int oldinput;
@@ -264,7 +268,7 @@ class HDPlayerPawn:PlayerPawn{
 		//conditions for forcing walk
 		if(
 			stunned
-			||(!zerk && beatmax<14 && stimcount<8)
+			||(!zerk && fatigue>HDCONST_WALKFATIGUE && stimcount<8)
 			||StumbleCheck()
 			||health<25
 		){
@@ -278,8 +282,8 @@ class HDPlayerPawn:PlayerPawn{
 			&& barehanded
 			&&(
 				zerk ||
-				stimcount>10 ||
-				beatmax>HDCONST_SPRINTMAXHEARTRATE
+				stimcount>10 ||  
+				fatigue<HDCONST_SPRINTFATIGUE
 			)
 			&&!countinv("PowerIronFeet")
 		)cansprint=true;else cansprint=false;
@@ -421,7 +425,7 @@ class HDPlayerPawn:PlayerPawn{
 							corpsekicktimer=17+unstablewoundcount*0.5;
 							A_SpawnItemEx("KickProjectile",0,0,4,vel.x,vel.y,vel.z,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);
 						}
-						if(!random(0,4))beatmax--;bloodpressure++;
+						fatigue++;bloodpressure++;
 						stunned+=2;
 					}
 				}

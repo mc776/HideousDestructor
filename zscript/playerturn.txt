@@ -214,10 +214,12 @@ extend class HDPlayerPawn{
 			//to keep this from clipping your gun into the geometry.
 			if(
 				beatmax<10||
+				fatigue>20||
 				bloodpressure>20||
 				health<33
 			){
 				double jitter=0.3;
+				if(fatigue)jitter=clamp(0.01*fatigue,0.3,6.);
 				if(countinv("IsSupported"))jitter=0.05;
 				else if(health<20)jitter=1;
 				anglechange+=frandom(-jitter,jitter);

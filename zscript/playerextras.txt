@@ -44,9 +44,9 @@ extend class HDPlayerPawn{
 			onground
 			&& !(oldinput && BT_JUMP)
 		){
-			if(!countinv("PowerStrength") && beatmax<24)vel.z+=4;
+			if(!countinv("PowerStrength") && fatigue<HDCONST_SPRINTFATIGUE)vel.z+=4;
 			else vel.z+=7;
-			beatmax--;
+			fatigue+=2;
 		}else vel.z+=3;
 		return 1;
 	}
@@ -55,7 +55,7 @@ extend class HDPlayerPawn{
 		if(
 			!stunned
 			&&(
-				beatmax>18
+				fatigue<HDCONST_SPRINTFATIGUE
 				||zerk
 				||cansprint
 			)
@@ -66,8 +66,8 @@ extend class HDPlayerPawn{
 		){
 			double jumppower=5;
 			if(zerk)jumppower=10;else{
-				if(beatmax<20) jumppower=3;
-				else if(beatmax<24) jumppower=3.5;
+				if(fatigue>60) jumppower=3;  
+				else if(fatigue>30) jumppower=3.5;
 			}
 			if(overloaded)jumppower/=overloaded;
 			double jz=jumppower*0.6;
@@ -92,11 +92,11 @@ extend class HDPlayerPawn{
 			}
 			if(height<40){
 				if(bloodpressure<40)bloodpressure+=7;
-				beatmax-=5;
+				fatigue+=12;
 			}
 			else{
 				if(bloodpressure<40)bloodpressure+=4;
-				beatmax-=2;
+				fatigue+=6;
 			}
 		}
 	}

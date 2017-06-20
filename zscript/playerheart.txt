@@ -112,6 +112,7 @@ extend class HDPlayerPawn{
 			beatcount--;
 			pitch-=0.0005*bloodpressure;
 		}else{
+A_LogInt(fatigue);
 			pitch+=0.0005*beatmax*bloodpressure;
 			beatmax=min(beatmax,beatcap);
 
@@ -156,9 +157,19 @@ extend class HDPlayerPawn{
 			if(countinv("PowerStrength")) beatmax=clamp(beatmax,4,14);
 			else beatmax=clamp(beatmax,HDCONST_MINHEARTTICS,35);
 
-			if(beatmax<HDCONST_MINHEARTTICS+3)DamageMobj(self,self,1,"internal");
+			if(fatigue>0)fatigue--;
+			if(
+				beatmax<HDCONST_MINHEARTTICS+3
+				||fatigue>HDCONST_DAMAGEFATIGUE  
+			)DamageMobj(self,self,1,"internal");
 			else{
-				if(health<100-aggravateddamage-burncount-oldwoundcount-unstablewoundcount){
+				if(health<100
+					-aggravateddamage
+					-burncount
+					-oldwoundcount
+					-unstablewoundcount
+					+max(fatigue-HDCONST_SPRINTFATIGUE,0)
+				){
 					if(random(1,30)+countinv("IsMoving")<beatmax)healthing(1);
 					if(random(1,40)<stimcount)healthing(1);
 				}
@@ -171,8 +182,8 @@ extend class HDPlayerPawn{
 
 			//sprinting
 			if(cansprint && runwalksprint>0 && (fm||sm)){
-				beatmax--;
-				if(beatmax<=HDCONST_SPRINTMAXHEARTRATE)beatmax-=10;
+				fatigue+=2;
+				if(!stimcount && !zerk && fatigue>=HDCONST_SPRINTFATIGUE)fatigue+=40;
 				if(!random(0,35))bloodpressure++;
 			}
 
@@ -199,7 +210,7 @@ extend class HDPlayerPawn{
 			//magical healing every heartbeat
 			if(regenblues){
 				if(unstablewoundcount>0||woundcount>0){  
-					if(woundcount>0)woundcount--;else unstablewoundcount--;  
+					if(woundcount>0)woundcount--;else unstablewoundcount--;
 					regenblues-=2;
 				}
 				if(beatcap<HDCONST_MINHEARTTICS){
@@ -215,9 +226,12 @@ extend class HDPlayerPawn{
 			//every 4 beats
 			if(beatcounter%4==0){
 				//recovering heart rate
+				if(fatigue){
+					beatmax=min(beatmax,33-fatigue);
+				}
 				if(beatmax<beatcap) beatmax++;
 				if(bloodpressure>0)bloodpressure--;
-				if(regenblues>0 && (oldwoundcount>0||burncount>0||aggravateddamage>0)){  
+				if(regenblues>0 && (oldwoundcount>0||burncount>0||aggravateddamage>0)){    
 					oldwoundcount-=2;burncount-=2;aggravateddamage--;
 					regenblues--;
 				}
@@ -261,7 +275,7 @@ extend class HDPlayerPawn{
 				//wounds start settling
 				if(!random(0,unstablewoundcount+woundcount)){
 					if(unstablewoundcount+woundcount>0)oldwoundcount++;
-					if(unstablewoundcount>0)unstablewoundcount--;  
+					if(unstablewoundcount>0)unstablewoundcount--;
 					else if(woundcount>0)woundcount--;
 				}
 			}
