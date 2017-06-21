@@ -210,7 +210,7 @@ A_LogInt(fatigue);
 			if(stimcount){
 				beatcap=clamp(beatcap,beatcap-1,35-stimcount);
 				if(bloodpressure<stimcount)bloodpressure+=4;
-				if(zerk)stunned=10;
+				if(zerk && stimcount>18)stunned=10;
 				else stunned--;
 			}
 
