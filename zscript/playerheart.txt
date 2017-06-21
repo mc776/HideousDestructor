@@ -122,6 +122,13 @@ A_LogInt(fatigue);
 				if(dm>0)damagemobj(self,lastthingthatwoundedyou,dm,"bleedout",DMG_THRUSTLESS);
 			}
 
+			//ZERK IS NO SUBSTITUTE FOR OXYGEN TO BRAIN
+			if(fatigue>HDCONST_DAMAGEFATIGUE*1.4){
+				if(zerk)damagemobj(self,self,beatmax+6,"internal");
+				else damagemobj(self,self,2,"internal");
+				stunned=min(10,stunned);
+			}
+
 			//remove these once we're done with them
 			//lethal didn't mean the same as oldwoundcount but oh well
 			if(countinv("WoundCount")){
