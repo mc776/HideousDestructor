@@ -11,6 +11,7 @@ class userpickerupper:hdactor{
 	override bool cancollidewith(actor other,bool passive){
 		if(
 			other is "HDUPK"
+			||other is "HDUsablePickup"
 		)return true;
 		return false;
 	}
@@ -21,6 +22,7 @@ class userpickerupper:hdactor{
 				if(blockingmobj){
 					if(
 						blockingmobj is "HDUPK"
+						||blockingmobj is "HDUsablePickup"
 					){
 						blockingmobj.target=self.target;
 						if(blockingmobj.findstate("grab",true))blockingmobj.setstatelabel("grab");
@@ -191,5 +193,64 @@ class HDPickup:CustomInventory{
 		}stop;
 	}
 }
+
+
+
+
+//new prototype: using itself as an inventory
+class HDUsablePickup:Inventory{
+	default{
+		+inventory.transfer +solid
+		inventory.pickupmessage "Picked up some shit.";
+		inventory.pickupsound "misc/i_pkup";
+		inventory.maxamount 3;
+	}
+	override bool cancollidewith(actor other,bool passive){
+		if(bpushable)return super.cancollidewith(other,passive);
+		if(other is "userpickerupper") return true;
+		return false;
+	}
+	override void Touch(actor toucher){}
+	states{
+	spawn:
+		CLIP A -1;
+	grab:
+		---- AA 2{
+			vel+=(
+				target.pos.x-pos.x,
+				target.pos.y-pos.y,
+				target.pos.z+target.height*0.6-pos.z+2
+			)*0.3;
+		}
+		---- A 0{
+			//in case of death or teleport mid-grab
+			if(!target || target.bkilled || getdistance(target)>64){
+				A_Stop();
+				setstatelabel("spawn");
+			}else{
+				if(target)HDUPKAttach();
+			}
+		}goto spawn;
+	}
+	virtual void HDUPKAttach(){
+		int cmt=target.countinv(getclass());
+		if(
+			!cmt||
+			cmt<hdf.maxinv(target,getclass())
+		){
+			setorigin(target.pos+(0,0,target.height-24),true);
+			if(!cmt)attachtoowner(target);else{
+				let a=target.findinventory(getclass());
+				if(a)a.amount+=amount;
+			}
+			target.A_PlaySound(pickupsound,CHAN_AUTO);
+			target.A_Log(string.format("\cg%s",pickupmessage()),true);
+		}else{
+			A_Stop();
+			setstatelabel("spawn");
+		}
+	}
+}
+
 
 
