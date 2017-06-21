@@ -6,7 +6,7 @@
 class userpickerupper:hdactor{
 	default{
 		+solid
-		height 4;radius 3;
+		height 2;radius 2;
 	}
 	override bool cancollidewith(actor other,bool passive){
 		if(
@@ -198,9 +198,11 @@ class HDPickup:CustomInventory{
 
 
 //new prototype: using itself as an inventory
-class HDUsablePickup:Inventory{
+class HDUsablePickup:CustomInventory{
 	default{
 		+inventory.transfer +solid
+		height 8;radius 8;
+
 		inventory.pickupmessage "Picked up some shit.";
 		inventory.pickupsound "misc/i_pkup";
 		inventory.maxamount 3;
@@ -217,34 +219,42 @@ class HDUsablePickup:Inventory{
 	grab:
 		---- AA 2{
 			vel+=(
-				target.pos.x-pos.x,
-				target.pos.y-pos.y,
-				target.pos.z+target.height*0.6-pos.z+2
+				invoker.target.pos.x-pos.x,
+				invoker.target.pos.y-pos.y,
+				invoker.target.pos.z+target.height*0.6-pos.z+2
 			)*0.3;
 		}
 		---- A 0{
 			//in case of death or teleport mid-grab
-			if(!target || target.bkilled || getdistance(target)>64){
-				A_Stop();
-				setstatelabel("spawn");
+			if(
+				!invoker.target
+				||invoker.target.bkilled
+				||invoker.getdistance(invoker.target)>64
+			){
+				invoker.A_Stop();
+				invoker.setstatelabel("spawn");
 			}else{
-				if(target)HDUPKAttach();
+				if(invoker.target)invoker.HDUPKAttach(invoker.target);
 			}
 		}goto spawn;
 	}
-	virtual void HDUPKAttach(){
-		int cmt=target.countinv(getclass());
+	virtual void HDUPKAttach(actor other){
+		inventory a=other.findinventory(getclass());
+		int cmt=other.countinv(getclass());
+		int cmx;if(a)cmx=hdf.maxinv(other,getclass());
 		if(
 			!cmt||
-			cmt<hdf.maxinv(target,getclass())
+			cmt<cmx
 		){
-			setorigin(target.pos+(0,0,target.height-24),true);
-			if(!cmt)attachtoowner(target);else{
-				let a=target.findinventory(getclass());
-				if(a)a.amount+=amount;
+			setorigin(other.pos+(0,0,other.height-24),true);
+			if(!a)attachtoowner(other);else{
+				int giveamt=min(amount,cmx-cmt);
+				a.amount+=giveamt;
+				amount-=giveamt;
+				if(amount<1)destroy();
 			}
-			target.A_PlaySound(pickupsound,CHAN_AUTO);
-			target.A_Log(string.format("\cg%s",pickupmessage()),true);
+			other.A_PlaySound(pickupsound,CHAN_AUTO);
+			other.A_Log(string.format("\cg%s",pickupmessage()),true);
 		}else{
 			A_Stop();
 			setstatelabel("spawn");
