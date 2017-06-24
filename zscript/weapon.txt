@@ -23,6 +23,7 @@ class HDWeapon:Weapon{
 	//use target to help a dropped weapon remember its immediately prior owner
 	override void detachfromowner(){
 		target=owner;
+		target.A_SelectWeapon("Ring");
 		super.detachfromowner();
 	}
 	//wrapper for HDF.maxinv because we're gonna need this a lot
