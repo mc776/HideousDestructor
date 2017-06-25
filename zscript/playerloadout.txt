@@ -122,7 +122,7 @@ extend class HDPlayerPawn{
 	void GiveCustomLoadout(){
 		int ldt;int lda;
 		class<weapon> newwep;
-		for(int i=9;i>=0;i--){ //reverse order so top weapons are added last
+		for(int i=100;i>=0;i--){ //reverse order so top weapons are added last
 			ldt=getcvar(string.format("hd_load%i",i));
 			lda=max(0,getcvar(string.format("hd_load%ia",i)));
 
