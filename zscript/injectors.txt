@@ -148,6 +148,7 @@ class HDStimpacker:HDWoundFixer{
 			actor a=spawn(invoker.spentinjecttype,pos+(0,0,height-8));
 			a.angle=angle;a.vel=vel;a.A_ChangeVelocity(3,1,2,CVF_RELATIVE);
 			a.A_PlaySound("weapons/grenopen",CHAN_VOICE);
+			if(!countinv(invoker.inventorytype))A_SelectWeapon("Ring");
 		}
 		goto nope;
 	altfire:
@@ -405,6 +406,7 @@ class HDBlueBottler:HDWoundFixer{
 			a.angle=angle+2;a.vel=vel;a.A_ChangeVelocity(3,1,4,CVF_RELATIVE);
 			a=spawn("SpentCork",pos+(0,0,height-4));
 			a.angle=angle+3;a.vel=vel;a.A_ChangeVelocity(5,3,4,CVF_RELATIVE);
+			if(!countinv("BluePotion"))A_SelectWeapon("Ring");
 		}
 		goto nope;
 	}
