@@ -84,14 +84,6 @@ extend class HDActor{
 						A_Immolate(it,target,immolateamount);
 					}
 				}
-				if(it && losmul && dist<=blastradius && it.bshootable){
-					if(dist>fullblastradius){
-						dmg=clamp(dist-fullblastradius,0,dist);
-						dmg=blastdamage-dmg;
-					}else dmg=blastdamage;
-					dmg*=losmul;
-					it.DamageMobj(self,source,dmg,blastdamagetype,DMG_THRUSTLESS,0);
-				}
 				if(it && losmul>0 && dist<=pushradius && it.bshootable && !it.bdontthrust){
 					vector3 push=(it.pos-self.pos)*divdist
 						*clamp(pushamount-clamp(dist-fullpushradius,0,dist),0,pushamount);
@@ -103,6 +95,14 @@ extend class HDActor{
 						}
 					}
 					it.vel+=push;
+				}
+				if(it && losmul && dist<=blastradius && it.bshootable){
+					if(dist>fullblastradius){
+						dmg=clamp(dist-fullblastradius,0,dist);
+						dmg=blastdamage-dmg;
+					}else dmg=blastdamage;
+					dmg*=losmul;
+					it.DamageMobj(self,source,dmg,blastdamagetype,DMG_THRUSTLESS,0);
 				}
 				if(it && losmul && dist<=fragradius && (it.bsolid || it.bshootable)){
 					A_Face(it);
