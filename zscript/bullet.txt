@@ -359,8 +359,8 @@ class HDBullet:HDActor{
 	}
 	virtual void LongArmWobble(){
 		if(countinv("IsMoving",AAPTR_TARGET)>=10){
-			pitch+=random(-2,2);
-			angle+=random(-1,1);
+			pitch+=frandom(-2,2);
+			angle+=frandom(-1,1);
 		}
 	}
 	virtual void Effect(class<Actor> trailtype="HDGunSmoke",int numactors=12,double spacing=4,double velmul=0.6){
