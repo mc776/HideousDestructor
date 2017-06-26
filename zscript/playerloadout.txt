@@ -293,13 +293,17 @@ extend class HDPlayerPawn{
 				case 16: A_GiveInventory("YellowCard",amt);break;
 
 				case 17:
-				case 18:
-				case 19:
 					A_GiveInventory("StoredArmour",HDCONST_GREENARMOUR);
-				case 17: A_GiveInventory("GreenArmourStored");break;
-				case 18: A_GiveInventory("BlueArmourStored");break;
-				case 19: A_GiveInventory("BlackArmourStored");break;
-
+					A_GiveInventory("GreenArmourStored");
+					break;
+				case 18:
+					A_GiveInventory("StoredArmour",HDCONST_BLUEARMOUR);
+					A_GiveInventory("BlueArmourStored");
+					break;
+				case 19:
+					A_GiveInventory("StoredArmour",HDCONST_BLACKARMOUR);
+					A_GiveInventory("BlackArmourStored");
+					break;
 				case 99:
 					A_GiveInventory("SoldierExtras",amt);
 					return "HDPistol";
