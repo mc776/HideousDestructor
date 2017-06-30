@@ -24,10 +24,8 @@ class HDStatusBar:DoomStatusBar{
 	}
 	void DrawCommonStuff(){
 		if(CPlayer.mo.InvSel && !level.NoInventoryBar){
-			DrawInventoryIcon(CPlayer.mo.InvSel,(160,-4));
-			if(CPlayer.mo.InvSel.Amount>0){
-				DrawString(mAmountFont, FormatNumber(CPlayer.mo.InvSel.Amount), (175, -4-mIndexFont.mFont.GetHeight()), DI_TEXT_ALIGN_RIGHT, Font.CR_GOLD);
-			}
+			DrawInventoryIcon(CPlayer.mo.InvSel,(0,-4),DI_SCREEN_CENTER_BOTTOM);
+			DrawString(mAmountFont, FormatNumber(CPlayer.mo.InvSel.Amount), (15, -4-mIndexFont.mFont.GetHeight()), DI_TEXT_ALIGN_RIGHT|DI_SCREEN_CENTER_BOTTOM, Font.CR_GOLD);
 		}
 	}
 }
