@@ -1,0 +1,33 @@
+class HDStatusBar:DoomStatusBar{
+	override void Init(){
+		BaseStatusBar.Init();
+		SetSize(0,320,200);
+
+		// Create the font used for the fullscreen HUD
+		Font fnt = "HUDFONT_DOOM";
+		mHUDFont = HUDFont.Create(fnt, fnt.GetCharWidth("0"), true, 1, 1);
+		fnt = "INDEXFONT_DOOM";
+		mIndexFont = HUDFont.Create(fnt, fnt.GetCharWidth("0"), true);
+		mAmountFont = HUDFont.Create("INDEXFONT");
+		diparms = InventoryBarState.Create();
+	}
+	override void Draw(int state,double TicFrac){
+		cplayer.inventorytics=0;
+		if(state==HUD_StatusBar){
+			BeginHUD();
+			DrawCommonStuff();
+		}
+		else if(state==HUD_Fullscreen){
+			BeginHUD();
+			DrawCommonStuff();
+		}
+	}
+	void DrawCommonStuff(){
+		if(CPlayer.mo.InvSel && !level.NoInventoryBar){
+			DrawInventoryIcon(CPlayer.mo.InvSel,(160,-4));
+			if(CPlayer.mo.InvSel.Amount>0){
+				DrawString(mAmountFont, FormatNumber(CPlayer.mo.InvSel.Amount), (175, -4-mIndexFont.mFont.GetHeight()), DI_TEXT_ALIGN_RIGHT, Font.CR_GOLD);
+			}
+		}
+	}
+}
