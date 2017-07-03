@@ -231,11 +231,11 @@ actor LiberatorRifle : HDWeapon
 		BRFG A 1 A_Gunflash
 		goto chamber
 	hold:
-		BRFG A 0 A_JumpIfInventory("LiberatorFullAuto",1,1)
-		goto nope
-		BRFG A 0 A_JumpIfInventory("LiberatorChamber",1,1)
-		goto nope
-		BRFG A 1
+		BRFG A 2{
+			if(countinv("LiberatorFullAuto")&&countinv("LiberatorChamber"))
+			{return state("");}
+			return state("nope");
+		}
 		goto shoot
 	gunrecoil:
 		TNT1 A 1 A_ZoomFactor(0.97,ZOOM_INSTANT|ZOOM_NOSCALETURNING)
@@ -267,6 +267,7 @@ actor LiberatorRifle : HDWeapon
 				A_TakeInventory("LiberatorLoaded",1);
 			}
 		}
+		BRFG B 0 A_Refire
 		goto nope
 	chamber_manual:
 		BRFG B 1{
@@ -538,13 +539,13 @@ actor LiberatorGrenadeRifle : LiberatorRifle
 		BRFG "#" 1 A_WeaponReady(WRF_NOFIRE)
 		goto ready
 	fire:
-		TNT1 A 0 A_JumpIfInventory("LiberatorGrenadeMode",1,1)
+		BRFG A 0 A_JumpIfInventory("LiberatorGrenadeMode",1,1)
 		goto firegun
-		TNT1 A 0 A_JumpIfInventory("LiberatorGrenadeChamber",1,1)
+		BRFG A 0 A_JumpIfInventory("LiberatorGrenadeChamber",1,1)
 		goto nope
-		TNT1 A 0 A_PlayWeaponSound ("weapons/grenadeshot")
-		TNT1 A 0 A_SpawnItemEx("GyroGrenade",0,0,height-6,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH)
-		TNT1 A 0 A_TakeInventory("LiberatorGrenadeChamber",1)
+		BRFG A 0 A_PlayWeaponSound ("weapons/grenadeshot")
+		BRFG A 0 A_SpawnItemEx("GyroGrenade",0,0,height-6,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH)
+		BRFG A 0 A_TakeInventory("LiberatorGrenadeChamber",1)
 		BRFG B 2 A_ZoomFactor(0.99,ZOOM_INSTANT|ZOOM_NOSCALETURNING)
 		BRFG B 2 A_ZoomFactor(1.0,ZOOM_INSTANT|ZOOM_NOSCALETURNING)
 		BRFG A 0 A_Refire
