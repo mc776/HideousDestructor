@@ -13,7 +13,9 @@ class HDStatusBar:DoomStatusBar{
 	}
 	override void Draw(int state,double TicFrac){
 		cplayer.inventorytics=0;
-		if(state==HUD_StatusBar){
+		if(automapactive){
+			DrawAutomapHUD(ticfrac);
+		}else if(state==HUD_StatusBar){
 			BeginHUD();
 			DrawCommonStuff();
 		}
