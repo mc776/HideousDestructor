@@ -50,12 +50,20 @@ class HDStatusBar:DoomStatusBar{
 		let w=cplayer.readyweapon;
 		if(w){
 			int loaded=cp.countinv(cplayer.readyweapon.ammotype1);
-			int maxloaded=50;
+			int maxloaded=cp.findinventory(cplayer.readyweapon.ammotype1).maxamount;
+			int loaded2=cp.countinv(cplayer.readyweapon.ammotype2);
+			int maxloaded2=cp.findinventory(cplayer.readyweapon.ammotype2).maxamount;
 			DrawImage(
 				"GREENPXL",
-				(-12,-7),
+				(-16,-6),
 				DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE|DI_ITEM_RIGHT,
-				0.6,scale:(loaded*20/maxloaded,3)
+				0.6,scale:(loaded*20/maxloaded,2)
+			);
+			DrawImage(
+				"GREENPXL",
+				(-16,-10),
+				DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE|DI_ITEM_RIGHT,
+				0.6,scale:(loaded2*20/maxloaded2,2)
 			);
 		}
 	}
