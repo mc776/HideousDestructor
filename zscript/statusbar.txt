@@ -12,6 +12,7 @@ class HDStatusBar:DoomStatusBar{
 		diparms = InventoryBarState.Create();
 	}
 	override void Draw(int state,double TicFrac){
+		if(cplayer.health<1)return;
 		cplayer.inventorytics=0;
 		if(automapactive){
 			DrawAutomapHUD(ticfrac);
@@ -25,9 +26,9 @@ class HDStatusBar:DoomStatusBar{
 		}
 	}
 	void DrawCommonStuff(){
-		if(CPlayer.mo.InvSel && !level.NoInventoryBar){
-			DrawInventoryIcon(CPlayer.mo.InvSel,(0,-4),DI_SCREEN_CENTER_BOTTOM);
-			DrawString(mAmountFont, FormatNumber(CPlayer.mo.InvSel.Amount), (15, -4-mIndexFont.mFont.GetHeight()), DI_TEXT_ALIGN_RIGHT|DI_SCREEN_CENTER_BOTTOM, Font.CR_GOLD);
+		if(CPlayer.mo.InvSel){
+			DrawInventoryIcon(CPlayer.mo.InvSel,(0,-4),DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE);
+			DrawString(mAmountFont, FormatNumber(CPlayer.mo.InvSel.Amount), (15, -4-mIndexFont.mFont.GetHeight()),DI_TEXT_ALIGN_RIGHT|DI_SCREEN_CENTER_BOTTOM, Font.CR_GOLD);
 		}
 	}
 }
