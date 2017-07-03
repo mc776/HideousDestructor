@@ -26,9 +26,39 @@ class HDStatusBar:DoomStatusBar{
 		}
 	}
 	void DrawCommonStuff(){
+		int mxht=-4-mIndexFont.mFont.GetHeight();
 		if(CPlayer.mo.InvSel){
-			DrawInventoryIcon(CPlayer.mo.InvSel,(0,-4),DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE);
-			DrawString(mAmountFont, FormatNumber(CPlayer.mo.InvSel.Amount), (15, -4-mIndexFont.mFont.GetHeight()),DI_TEXT_ALIGN_RIGHT|DI_SCREEN_CENTER_BOTTOM, Font.CR_GOLD);
+			DrawInventoryIcon(CPlayer.mo.InvSel,(25,-4),DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE);
+			DrawString(mAmountFont, FormatNumber(CPlayer.mo.InvSel.Amount), (35,mxht),DI_TEXT_ALIGN_RIGHT|DI_SCREEN_CENTER_BOTTOM, Font.CR_GOLD);
+		}
+
+		let cp=HDPlayerPawn(CPlayer.mo);if(!cp)return;
+
+		//health
+		DrawString(
+			mAmountFont,FormatNumber(CPlayer.mo.health),
+			(6,mxht),DI_TEXT_ALIGN_RIGHT|DI_SCREEN_CENTER_BOTTOM,
+			Font.CR_OLIVE,alpha:(cp.beatcount*1./cp.beatmax)
+		);
+
+		//heartbeat/playercolour tracker
+		if(cp.beatmax)DrawImage(
+			"GREENPXL",(-8,-7),DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE,
+			(cp.beatcount*1./cp.beatmax),scale:(3,3)
+		);
+
+		let w=cplayer.readyweapon;
+		if(w){
+			int loaded=cp.countinv(cplayer.readyweapon.ammotype1);
+			int maxloaded=50;
+			DrawImage(
+				"GREENPXL",
+				(-12,-7),
+				DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE|DI_ITEM_RIGHT,
+				0.6,scale:(loaded*20/maxloaded,3)
+			);
 		}
 	}
 }
+
+
