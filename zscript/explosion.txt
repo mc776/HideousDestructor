@@ -96,7 +96,7 @@ extend class HDActor{
 					}
 					it.vel+=push;
 				}
-				if(it && losmul && dist<=blastradius && it.bshootable){
+				if(it && losmul && dist<=blastradius && (it.bshootable||it.bvulnerable)){
 					if(dist>fullblastradius){
 						dmg=clamp(dist-fullblastradius,0,dist);
 						dmg=blastdamage-dmg;
