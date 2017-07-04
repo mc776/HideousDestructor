@@ -18,14 +18,18 @@ class HDStatusBar:DoomStatusBar{
 			DrawAutomapHUD(ticfrac);
 		}else if(state==HUD_StatusBar){
 			BeginHUD();
-			DrawCommonStuff();
+			DrawCommonStuff(state);
 		}
 		else if(state==HUD_Fullscreen){
 			BeginHUD();
-			DrawCommonStuff();
+			DrawCommonStuff(state);
+			DrawFullScreenStuff();
 		}
 	}
-	void DrawCommonStuff(){
+	void DrawFullScreenStuff(){
+		DrawTexture(GetMugShot(5),(0,-14),DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM);
+	}
+	void DrawCommonStuff(int state){
 		int mxht=-4-mIndexFont.mFont.GetHeight();
 		if(CPlayer.mo.InvSel){
 			DrawInventoryIcon(CPlayer.mo.InvSel,(25,-4),DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE);
@@ -47,24 +51,54 @@ class HDStatusBar:DoomStatusBar{
 			(cp.beatcount*1./cp.beatmax),scale:(3,3)
 		);
 
+		int armour;int maxarmour;string armoursprite;
+		class<Inventory> armourtype;
+		if(cp.countinv("GreenArmour")){
+			armour=0;armoursprite="ARMSA0";
+			armourtype="GreenArmour";
+			maxarmour=HDCONST_GREENARMOUR;
+		}else if(cp.countinv("BlackArmour")){
+			armour=1;armoursprite="ARMEA0";
+			armourtype="BlackArmour";
+			maxarmour=HDCONST_BLACKARMOUR;
+		}else if(cp.countinv("BlueArmour")){
+			armour=2;armoursprite="ARMCA0";
+			armourtype="BlueArmour";
+			maxarmour=HDCONST_BLUEARMOUR;
+		}
+		if(armourtype){
+			vector2 armourcoords=(0,-mIndexFont.mFont.GetHeight()*2);
+			if(state==HUD_Fullscreen)armourcoords=(-55,-4);
+			drawbar(
+				armoursprite,string.format("ARMER%i",armour),
+				cp.countinv(armourtype),maxarmour,
+				armourcoords,-1,
+				SHADER_VERT,DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM
+			);
+		}
+
 		let w=cplayer.readyweapon;
 		if(w){
-			int loaded=cp.countinv(cplayer.readyweapon.ammotype1);
-			int maxloaded=cp.findinventory(cplayer.readyweapon.ammotype1).maxamount;
-			int loaded2=cp.countinv(cplayer.readyweapon.ammotype2);
-			int maxloaded2=cp.findinventory(cplayer.readyweapon.ammotype2).maxamount;
-			DrawImage(
-				"GREENPXL",
-				(-16,-6),
-				DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE|DI_ITEM_RIGHT,
-				0.6,scale:(loaded*20/maxloaded,2)
-			);
-			DrawImage(
-				"GREENPXL",
-				(-16,-10),
-				DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE|DI_ITEM_RIGHT,
-				0.6,scale:(loaded2*20/maxloaded2,2)
-			);
+			if(cplayer.readyweapon.ammotype1){
+				int loaded=cp.countinv(cplayer.readyweapon.ammotype1);
+				int maxloaded=cp.findinventory(cplayer.readyweapon.ammotype1).maxamount;
+				DrawImage(
+					"GREENPXL",
+					(-16,-6),
+					DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE|DI_ITEM_RIGHT,
+					0.6,scale:(loaded*20/maxloaded,2)
+				);
+			}
+			if(cplayer.readyweapon.ammotype2){
+				int loaded2=cp.countinv(cplayer.readyweapon.ammotype2);
+				int maxloaded2=cp.findinventory(cplayer.readyweapon.ammotype2).maxamount;
+				DrawImage(
+					"GREENPXL",
+					(-16,-10),
+					DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE|DI_ITEM_RIGHT,
+					0.6,scale:(loaded2*20/maxloaded2,2)
+				);
+			}
 		}
 	}
 }
