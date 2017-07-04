@@ -77,6 +77,7 @@ class HDStatusBar:DoomStatusBar{
 			);
 		}
 
+		//weapon readouts!
 		let w=cplayer.readyweapon;
 		if(w){
 			if(cplayer.readyweapon.ammotype1){
@@ -100,7 +101,44 @@ class HDStatusBar:DoomStatusBar{
 				);
 			}
 		}
+
+
+		//full hud consequences
+		if(cp.countinv("GimmeHud")>9){
+			drawwep("HDSMG","SMGNA0",-133);
+			drawwep("HDPistol","PISTA0",-135);
+			drawwep("Hunter","HUNTA0",-120);
+			drawwep("Slayer","SLAYA0",-112);
+			drawwep("Vulcanette","VULCA0",-100);
+			drawwep("ZM66Rifle","RIFLA0",-95);
+			drawwep("ZM66SemiRifle","RIFSA0",-95);
+			drawwep("ZM66GrenadeRifle","RIGLA0",-95);
+			drawwep("RocquetteLauncher","LAUNA0",-75);
+			drawwep("Blooper","BLOPA0",-70);
+			drawwep("ThunderBuster","PLASA0",-55);
+			drawwep("LiberatorRifle","BRFLA0",-45);
+			drawwep("LiberatorGrenadeRifle","BRFLB0",-45);
+			drawwep("BFG9k","BFUGA0",-20);
+			drawwep("Brontornis","BLSTA0",-15);
+			drawwep("BossRifle","BORFA0",-8);
+			if(
+				cplayer.mo.countinv("HDFragGrenadeAmmo")
+				&&!(cplayer.readyweapon is "HDFragGrenades")
+			)drawimage(
+				"FRAGA0",(-8,-3),
+				DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT,
+				scale:(0.6,0.6)
+			);
+		}
+	}
+	void drawwep(class<inventory> type,string img,int zoffs){
+		if(cplayer.mo.countinv(type) && !(cplayer.readyweapon is type)){
+			drawimage(img,(-8,zoffs),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT);
+		}
 	}
 }
+
+
+
 
 
