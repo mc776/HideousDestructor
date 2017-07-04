@@ -190,9 +190,6 @@ actor HDRedKey:HDHPK replaces RedCard{
 		}
 		goto super::grab
 	give:
-		"----" A 0 A_JumpIfInTargetInventory("RedCard",1,"spawn")
-		"----" A 0 A_Jump(256,"give2")
-	give2:
 		"----" A 0{
 			A_GiveToTarget("RedCard",1);
 			A_GiveInventory("RedCard",1,AAPTR_PLAYER1);
@@ -217,7 +214,7 @@ actor HDBlueKey:HDRedKey replaces BlueCard{
 	spawn:
 		BKEY A 0 A_Stop
 		goto spawn1
-	give2:
+	give:
 		"----" A 0{
 			A_GiveToTarget("BlueCard",1);
 			A_GiveInventory("BlueCard",1,AAPTR_PLAYER1);
@@ -237,7 +234,7 @@ actor HDYellowKey:HDRedKey replaces YellowCard{
 	spawn:
 		YKEY A 0 A_Stop
 		goto spawn1
-	give2:
+	give:
 		"----" A 0{
 			A_GiveToTarget("YellowCard",1);
 			A_GiveInventory("YellowCard",1,AAPTR_PLAYER1);
