@@ -143,19 +143,18 @@ class HDStatusBar:DoomStatusBar{
 				cp.overloaded<1.5?Font.CR_OLIVE:(cp.overloaded>2?Font.CR_RED:Font.CR_GOLD)
 			);
 
-			int mxhtplus=mxht-20;
-			drawambar("MAGRED","MAGSTAT","SevenMilAmmo",(-84,mxhtplus));
+			//ammo counters
+			int mxhtplus=mxht-24;
+			drawambar("PISARED","HDPISAMO","HDPistolAmmo",(-84,mxhtplus-1));
 			drawambar("CLIPRED","CLIPC0","FourMilAmmo",(-64,mxhtplus));
-			drawimage("ROQPA0",(-44,mxhtplus),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM);
-			drawambar("PISARED","HDPISAMO","HDPistolAmmo",(-24,mxhtplus));
-			drawimage("BROCA0",(-4,mxhtplus),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM);
+			drawambar("MAGRED","MAGSTAT","SevenMilAmmo",(-47,mxhtplus-1));
+			drawimage("SHELA0",(-20,mxhtplus-1),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM);
+			drawimage("BROCA0",(-6,mxhtplus),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM);
 		
-			drawimage("SHELA0",(-64,mxht),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM);
-			drawambar("CELLRED","CELLA0","HDCellAmmo",(-44,mxht));
-			drawimage("FRAGA0",(-24,mxht),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM,scale:(0.7,0.7));
-			drawimage("ROCKB0",(-4,mxht),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM);
-		
-			drawimage("",(-4,mxht),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT);
+			drawimage("ROQPA0",(-70,mxht),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM,scale:(0.8,0.8));
+			drawimage("ROCKB0",(-52,mxht),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM);
+			drawambar("CELLRED","CELLA0","HDCellAmmo",(-24,mxht));
+			drawimage("FRAGA0",(-4,mxht),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM,scale:(0.7,0.7));
 		}
 	}
 	void drawwep(class<inventory> type,string img,int zoffs){
