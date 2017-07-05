@@ -32,24 +32,27 @@ class HDStatusBar:DoomStatusBar{
 	void DrawCommonStuff(int state){
 		int mxht=-4-mIndexFont.mFont.GetHeight();
 		if(CPlayer.mo.InvSel){
-			DrawInventoryIcon(CPlayer.mo.InvSel,(25,-4),DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE);
-			DrawString(mAmountFont, FormatNumber(CPlayer.mo.InvSel.Amount), (35,mxht),DI_TEXT_ALIGN_RIGHT|DI_SCREEN_CENTER_BOTTOM, Font.CR_GOLD);
+			DrawInventoryIcon(cplayer.mo.InvSel,(25,-4),DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE);
+			DrawString(mAmountFont,FormatNumber(CPlayer.mo.InvSel.Amount), (42,mxht),DI_TEXT_ALIGN_RIGHT|DI_SCREEN_CENTER_BOTTOM,Font.CR_OLIVE);
 		}
 
 		let cp=HDPlayerPawn(CPlayer.mo);if(!cp)return;
 
 		//health
-		DrawString(
+		drawstring(
 			mAmountFont,FormatNumber(CPlayer.mo.health),
-			(6,mxht),DI_TEXT_ALIGN_RIGHT|DI_SCREEN_CENTER_BOTTOM,
-			Font.CR_OLIVE,alpha:(cp.beatcount*1./cp.beatmax)
+			(0,mxht),DI_TEXT_ALIGN_CENTER|DI_SCREEN_CENTER_BOTTOM,
+			cp.health>70?Font.CR_OLIVE:(cp.health>33?Font.CR_GOLD:Font.CR_RED)
 		);
 
 		//heartbeat/playercolour tracker
-		if(cp.beatmax)DrawImage(
-			"GREENPXL",(-8,-7),DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE,
-			(cp.beatcount*1./cp.beatmax),scale:(3,3)
-		);
+		if(cp.beatmax){
+			float cpb=cp.beatcount*1./cp.beatmax;
+			drawimage(
+				"GREENPXL",(-8,-6-cpb*2),DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE,
+				cpb,scale:(3,3+cp.bloodpressure*0.03)
+			);
+		}
 
 		int armour;int maxarmour;string armoursprite;
 		class<Inventory> armourtype;
@@ -104,7 +107,7 @@ class HDStatusBar:DoomStatusBar{
 
 
 		//full hud consequences
-		if(cp.countinv("GimmeHud")>9){
+		if(!cp.countinv("IsMoving") && cp.countinv("GimmeHud")>9){
 			drawwep("HDSMG","SMGNA0",-133);
 			drawwep("HDPistol","PISTA0",-135);
 			drawwep("Hunter","HUNTA0",-120);
@@ -125,16 +128,44 @@ class HDStatusBar:DoomStatusBar{
 				cplayer.mo.countinv("HDFragGrenadeAmmo")
 				&&!(cplayer.readyweapon is "HDFragGrenades")
 			)drawimage(
-				"FRAGA0",(-8,-3),
-				DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT,
+				"FRAGA0",(8,-3),
+				DI_SCREEN_LEFT_BOTTOM|DI_ITEM_LEFT,
 				scale:(0.6,0.6)
 			);
+			int mxhtplus=mxht-20;
+			drawambar("MAGRED","MAGSTAT","SevenMilAmmo",(-84,mxhtplus));
+			drawambar("CLIPRED","CLIPC0","FourMilAmmo",(-64,mxhtplus));
+			drawimage("ROQPA0",(-44,mxhtplus),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM);
+			drawambar("PISARED","HDPISAMO","HDPistolAmmo",(-24,mxhtplus));
+			drawimage("BROCA0",(-4,mxhtplus),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM);
+		
+			drawimage("SHELA0",(-64,mxht),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM);
+			drawambar("CELLRED","CELLA0","HDCellAmmo",(-44,mxht));
+			drawimage("FRAGA0",(-24,mxht),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM,scale:(0.7,0.7));
+			drawimage("ROCKB0",(-4,mxht),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM);
+		
+			drawimage("",(-4,mxht),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT);
 		}
 	}
 	void drawwep(class<inventory> type,string img,int zoffs){
 		if(cplayer.mo.countinv(type) && !(cplayer.readyweapon is type)){
-			drawimage(img,(-8,zoffs),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT);
+			drawimage(img,(8,zoffs),DI_SCREEN_LEFT_BOTTOM|DI_ITEM_LEFT);
 		}
+	}
+	void drawambar(
+		string ongfx,string offgfx,
+		class<inventory> type,
+		vector2 coords
+	){
+		inventory inv=cplayer.mo.findinventory(type);
+		if(!inv||!inv.amount){
+			drawimage(offgfx,coords,DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM);
+		}else drawbar(
+				ongfx,offgfx,
+				inv.amount,inv.maxamount,
+				coords,-1,
+				SHADER_VERT,DI_ITEM_RIGHT_BOTTOM|DI_SCREEN_RIGHT_BOTTOM
+		);
 	}
 }
 
