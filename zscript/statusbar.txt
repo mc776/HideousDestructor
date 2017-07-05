@@ -108,36 +108,38 @@ class HDStatusBar:DoomStatusBar{
 
 		//full hud consequences
 		if(!cp.countinv("IsMoving") && cp.countinv("GimmeHud")>9){
-			drawwep("HDSMG","SMGNA0",-133);
-			drawwep("HDPistol","PISTA0",-135);
-			drawwep("Hunter","HUNTA0",-120);
-			drawwep("Slayer","SLAYA0",-112);
-			drawwep("Vulcanette","VULCA0",-100);
-			drawwep("ZM66Rifle","RIFLA0",-95);
-			drawwep("ZM66SemiRifle","RIFSA0",-95);
-			drawwep("ZM66GrenadeRifle","RIGLA0",-95);
-			drawwep("RocquetteLauncher","LAUNA0",-75);
-			drawwep("Blooper","BLOPA0",-70);
-			drawwep("ThunderBuster","PLASA0",-55);
-			drawwep("LiberatorRifle","BRFLA0",-45);
-			drawwep("LiberatorGrenadeRifle","BRFLB0",-45);
-			drawwep("BFG9k","BFUGA0",-20);
-			drawwep("Brontornis","BLSTA0",-15);
-			drawwep("BossRifle","BORFA0",-8);
+
+			//weapons
+			drawwep("Lumberjack","CSAWA0",-163);
+			drawwep("HDSMG","SMGNA0",-141);
+			drawwep("HDPistol","PISTA0",-143);
+			drawwep("Hunter","HUNTA0",-128);
+			drawwep("Slayer","SLAYA0",-120);
+			drawwep("Vulcanette","VULCA0",-108);
+			drawwep("ZM66Rifle","RIFLA0",-103);
+			drawwep("ZM66SemiRifle","RIFSA0",-103);
+			drawwep("ZM66GrenadeRifle","RIGLA0",-103);
+			drawwep("RocquetteLauncher","LAUNA0",-83);
+			drawwep("Blooper","BLOPA0",-78);
+			drawwep("ThunderBuster","PLASA0",-63);
+			drawwep("LiberatorRifle","BRFLA0",-53);
+			drawwep("LiberatorGrenadeRifle","BRFLB0",-53);
+			drawwep("BFG9k","BFUGA0",-28);
+			drawwep("Brontornis","BLSTA0",-23);
+			drawwep("BossRifle","BORFA0",-16);
 			if(
 				cplayer.mo.countinv("HDFragGrenadeAmmo")
 				&&!(cplayer.readyweapon is "HDFragGrenades")
 			)drawimage(
-				"FRAGA0",(8,-3),
+				"FRAGA0",(8,-11),
 				DI_SCREEN_LEFT_BOTTOM|DI_ITEM_LEFT,
 				scale:(0.6,0.6)
 			);
 
-
 			//encumbrance
 			if(hd_carrylimit)drawstring(
 				mAmountFont,string.format("%.2f",cp.overloaded),
-				(100,mxht),DI_TEXT_ALIGN_LEFT|DI_SCREEN_LEFT_BOTTOM,
+				(8,mxht),DI_TEXT_ALIGN_LEFT|DI_SCREEN_LEFT_BOTTOM,
 				cp.overloaded<1.5?Font.CR_OLIVE:(cp.overloaded>2?Font.CR_RED:Font.CR_GOLD)
 			);
 
