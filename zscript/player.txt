@@ -288,17 +288,7 @@ class HDPlayerPawn:PlayerPawn{
 			&&!countinv("PowerIronFeet")
 		)cansprint=true;else cansprint=false;
 
-		//apply all movement speed modifiers
-		speed=1.;
-		if(mustwalk || runwalksprint<0) speed=0.4;
-		else if(cansprint && runwalksprint>0){
-			if(!sm && fm>0)speed=2.8;
-			else speed=1.6;
-		}
-		if(countinv("PowerStrength"))speed*=1.5;
-		if(height<40)speed*=0.6;
-
-		//...except encumbrance which goes here
+		//encumbrance
 		if(overloaded){
 			speed*=max(1-(overloaded*0.2),0.1);
 			if(overloaded>3){
@@ -318,15 +308,21 @@ class HDPlayerPawn:PlayerPawn{
 			}
 			else if(overloaded>1.5){
 				viewbob=clamp(viewbob+0.1,0,1.1);
-				mustwalk=true;
-				cansprint=false;
-			}
-			else if(overloaded>1){
 				cansprint=false;
 			}
 		}
 
-		//...and capping speeds
+		//apply all movement speed modifiers
+		speed=1.;
+		if(mustwalk || runwalksprint<0) speed=0.4;
+		else if(cansprint && runwalksprint>0){
+			if(!sm && fm>0)speed=2.8;
+			else speed=1.6;
+		}
+		if(countinv("PowerStrength"))speed*=1.5;
+		if(height<40)speed*=0.6;
+
+		//...except capping speeds
 		if(multiplayer && hd_3speed){
 			if(speed>2.)speed=2.6;  
 			else if(speed>0.6)speed=1.;

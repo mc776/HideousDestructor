@@ -132,6 +132,15 @@ class HDStatusBar:DoomStatusBar{
 				DI_SCREEN_LEFT_BOTTOM|DI_ITEM_LEFT,
 				scale:(0.6,0.6)
 			);
+
+
+			//encumbrance
+			if(hd_carrylimit)drawstring(
+				mAmountFont,string.format("%.2f",cp.overloaded),
+				(100,mxht),DI_TEXT_ALIGN_LEFT|DI_SCREEN_LEFT_BOTTOM,
+				cp.overloaded<1.5?Font.CR_OLIVE:(cp.overloaded>2?Font.CR_RED:Font.CR_GOLD)
+			);
+
 			int mxhtplus=mxht-20;
 			drawambar("MAGRED","MAGSTAT","SevenMilAmmo",(-84,mxhtplus));
 			drawambar("CLIPRED","CLIPC0","FourMilAmmo",(-64,mxhtplus));

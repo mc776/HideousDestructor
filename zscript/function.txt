@@ -228,6 +228,21 @@ struct HDMath{
 		if(Wads.CheckNumForName(lumpname,wads.ns_sprites,-1,false)<0)return false;
 		return true;
 	}
+	//gets how many of an inventory are attached to a given owner.
+	//can get number of thinkers or total amount.
+	//HDMath.supercountinv(target,"parasite")
+	static int SuperCountInv(actor slf,class<inventory> type,bool geteachamount=false){
+		thinkeriterator invfinder=thinkeriterator.create("Inventory");
+		inventory mo;
+		int count=0;
+		while(mo=inventory(invfinder.next())){
+			if(mo is type && mo.owner==slf){
+				if(geteachamount)count+=mo.amount;
+				else count++;
+			}
+		}
+		return count;
+	}
 }
 struct HDF play{
 	//return the maximum capacity for this actor and this inventory
