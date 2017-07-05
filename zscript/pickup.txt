@@ -181,6 +181,9 @@ class HDPickup:CustomInventory{
 		inventory.interhubamount int.MAX;
 		radius 20; height 16; scale 0.8;
 	}
+	override void doeffect(){
+		if(!amount)goawayanddie();
+	}
 	states{
 	spawn:
 		TNT1 A 1;
