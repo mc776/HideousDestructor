@@ -341,9 +341,9 @@ class HDPlayerPawn:PlayerPawn{
 			}
 		}else if(
 			player.readyweapon is "NullWeapon"
-			&&lastweapon&&countinv(lastweapon)
 		){
-			A_SelectWeapon(lastweapon);
+			if(lastweapon&&countinv(lastweapon))A_SelectWeapon(lastweapon);
+			else A_SelectWeapon("Ring");
 		}
 
 		//display crosshair

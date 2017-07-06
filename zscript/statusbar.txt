@@ -27,7 +27,8 @@ class HDStatusBar:DoomStatusBar{
 		}
 	}
 	void DrawFullScreenStuff(){
-		DrawTexture(GetMugShot(5),(0,-14),DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM);
+		if(cplayer.getgender()==0)DrawTexture(GetMugShot(5),(0,-14),DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM);
+		else if(cplayer.getgender()==1)DrawTexture(GetMugShot(5,Mugshot.CUSTOM,"SFF"),(0,-14),DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM);
 	}
 	void DrawCommonStuff(int state){
 		int mxht=-4-mIndexFont.mFont.GetHeight();
@@ -80,6 +81,13 @@ class HDStatusBar:DoomStatusBar{
 			DI_SCREEN_CENTER_BOTTOM
 		);
 
+		//backpack
+		if(cplayer.mo.countinv("Backpack"))drawimage("BPAKA0",(-55,-4),DI_SCREEN_CENTER_BOTTOM|DI_ITEM_CENTER_BOTTOM);
+
+		//radsuit
+		if(cplayer.mo.countinv("PowerIronFeet"))drawimage("SUITC0",(64,-4),DI_SCREEN_CENTER_BOTTOM|DI_ITEM_CENTER_BOTTOM);
+
+
 		//health
 		drawstring(
 			mAmountFont,FormatNumber(CPlayer.mo.health),
@@ -91,7 +99,7 @@ class HDStatusBar:DoomStatusBar{
 		//frags
 		if(deathmatch)drawstring(
 			mHUDFont,FormatNumber(CPlayer.fragcount),
-			(57,mhht),DI_TEXT_ALIGN_LEFT|DI_SCREEN_CENTER_BOTTOM,
+			(74,mhht),DI_TEXT_ALIGN_LEFT|DI_SCREEN_CENTER_BOTTOM,
 			Font.CR_RED
 		);
 
@@ -103,7 +111,7 @@ class HDStatusBar:DoomStatusBar{
 			int liv=cplayer.mo.countinv("HDLives");
 			drawstring(
 				mHUDFont,FormatNumber(liv),
-				(-70,mhht),DI_TEXT_ALIGN_RIGHT|DI_SCREEN_CENTER_BOTTOM,
+				(-74,mhht),DI_TEXT_ALIGN_RIGHT|DI_SCREEN_CENTER_BOTTOM,
 				liv>3?Font.CR_GOLD:(liv?Font.CR_BRICK:Font.CR_DARKGRAY)
 			);
 			
@@ -121,6 +129,7 @@ class HDStatusBar:DoomStatusBar{
 			);
 		}
 
+		//armour
 		int armour;int maxarmour;string armoursprite;
 		class<Inventory> armourtype;
 		if(cp.countinv("GreenArmour")){
@@ -146,6 +155,7 @@ class HDStatusBar:DoomStatusBar{
 				SHADER_VERT,DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM
 			);
 		}
+
 
 		//weapon readouts!
 		let w=cplayer.readyweapon;
