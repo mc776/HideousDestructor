@@ -31,19 +31,86 @@ class HDStatusBar:DoomStatusBar{
 	}
 	void DrawCommonStuff(int state){
 		int mxht=-4-mIndexFont.mFont.GetHeight();
+		int mhht=-4-mHUDFont.mFont.getheight();
+
+		//inventory
 		if(CPlayer.mo.InvSel){
-			DrawInventoryIcon(cplayer.mo.InvSel,(25,-4),DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE);
-			DrawString(mAmountFont,FormatNumber(CPlayer.mo.InvSel.Amount), (42,mxht),DI_TEXT_ALIGN_RIGHT|DI_SCREEN_CENTER_BOTTOM,Font.CR_OLIVE);
+			drawinventoryicon(cplayer.mo.InvSel,(25,-4),
+				DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE
+			);
+			drawstring(mAmountFont,FormatNumber(CPlayer.mo.InvSel.Amount),
+				(42,mxht),
+				DI_TEXT_ALIGN_RIGHT|DI_SCREEN_CENTER_BOTTOM,
+				Font.CR_OLIVE
+			);
 		}
 
-		let cp=HDPlayerPawn(CPlayer.mo);if(!cp)return;
+		//keys
+		string keytype="";
+		if(cplayer.mo.countinv("BlueCard"))keytype="STKEYS0";
+		if(cplayer.mo.countinv("BlueSkull")){
+			if(keytype=="")keytype="STKEYS3";
+			else keytype="STKEYS6";
+		}
+		if(keytype!="")drawimage(
+			keytype,
+			(50,-16),
+			DI_SCREEN_CENTER_BOTTOM
+		);
+		keytype="";
+		if(cplayer.mo.countinv("YellowCard"))keytype="STKEYS1";
+		if(cplayer.mo.countinv("YellowSkull")){
+			if(keytype=="")keytype="STKEYS4";
+			else keytype="STKEYS7";
+		}
+		if(keytype!="")drawimage(
+			keytype,
+			(50,-10),
+			DI_SCREEN_CENTER_BOTTOM
+		);
+		keytype="";
+		if(cplayer.mo.countinv("RedCard"))keytype="STKEYS2";
+		if(cplayer.mo.countinv("RedSkull")){
+			if(keytype=="")keytype="STKEYS5";
+			else keytype="STKEYS8";
+		}
+		if(keytype!="")drawimage(
+			keytype,
+			(50,-4),
+			DI_SCREEN_CENTER_BOTTOM
+		);
 
 		//health
 		drawstring(
 			mAmountFont,FormatNumber(CPlayer.mo.health),
 			(0,mxht),DI_TEXT_ALIGN_CENTER|DI_SCREEN_CENTER_BOTTOM,
-			cp.health>70?Font.CR_OLIVE:(cp.health>33?Font.CR_GOLD:Font.CR_RED)
+			cplayer.mo.health>70?Font.CR_OLIVE:(cplayer.mo.health>33?Font.CR_GOLD:Font.CR_RED)
 		);
+
+
+		//frags
+		if(deathmatch)drawstring(
+			mHUDFont,FormatNumber(CPlayer.fragcount),
+			(57,mhht),DI_TEXT_ALIGN_LEFT|DI_SCREEN_CENTER_BOTTOM,
+			Font.CR_RED
+		);
+
+		//lives
+		if(
+			fraglimit>100||
+			(fraglimit>0 && !deathmatch)
+		){
+			int liv=cplayer.mo.countinv("HDLives");
+			drawstring(
+				mHUDFont,FormatNumber(liv),
+				(-70,mhht),DI_TEXT_ALIGN_RIGHT|DI_SCREEN_CENTER_BOTTOM,
+				liv>3?Font.CR_GOLD:(liv?Font.CR_BRICK:Font.CR_DARKGRAY)
+			);
+			
+		}
+
+
+		let cp=HDPlayerPawn(CPlayer.mo);if(!cp)return;
 
 		//heartbeat/playercolour tracker
 		if(cp.beatmax){
@@ -90,7 +157,7 @@ class HDStatusBar:DoomStatusBar{
 					"GREENPXL",
 					(-16,-6),
 					DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE|DI_ITEM_RIGHT,
-					0.6,scale:(loaded*20/maxloaded,2)
+					1,scale:(loaded*20/maxloaded,2)
 				);
 			}
 			if(cplayer.readyweapon.ammotype2){
@@ -100,7 +167,7 @@ class HDStatusBar:DoomStatusBar{
 					"GREENPXL",
 					(-16,-10),
 					DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE|DI_ITEM_RIGHT,
-					0.6,scale:(loaded2*20/maxloaded2,2)
+					1,scale:(loaded2*20/maxloaded2,2)
 				);
 			}
 		}
