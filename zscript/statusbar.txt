@@ -145,22 +145,63 @@ class HDStatusBar:DoomStatusBar{
 
 			//ammo counters
 			int mxhtplus=mxht-24;
-			drawambar("PISARED","HDPISAMO","HDPistolAmmo",(-84,mxhtplus-1));
-			drawambar("CLIPRED","CLIPC0","FourMilAmmo",(-64,mxhtplus));
-			drawambar("MAGRED","MAGSTAT","SevenMilAmmo",(-47,mxhtplus-1));
-			drawimage("SHELA0",(-20,mxhtplus-1),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM);
-			drawimage("BROCA0",(-6,mxhtplus),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM);
-		
-			drawimage("ROQPA0",(-70,mxht),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM,scale:(0.8,0.8));
-			drawimage("ROCKB0",(-52,mxht),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM);
-			drawambar("CELLRED","CELLA0","HDCellAmmo",(-24,mxht));
-			drawimage("FRAGA0",(-4,mxht),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM,scale:(0.7,0.7));
+			drawambar("PISARED","HDPISAMO","HDPistolAmmo",(-76,mxhtplus-1));
+			drawambar("CLIPRED","CLIPC0","FourMilAmmo",(-52,mxhtplus));
+			drawambar("MAGRED","MAGSTAT","SevenMilAmmo",(-38,mxhtplus-1));
+			drawimage("SHELA0",(-10,mxhtplus-1),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM);
+
+			drawimage("BROCA0",(-81,mxht),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM);		
+			drawimage("ROCKB0",(-58,mxht-2),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM);
+			drawimage("ROQPA0",(-62,mxht+2),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM,scale:(0.85,0.85));
+			drawambar("CELLRED","CELLA0","HDCellAmmo",(-30,mxht));
+			drawimage("FRAGA0",(-10,mxht),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM,scale:(0.7,0.7));
+
+			drawnum(cp.countinv("HDPistolMag"),-75,mxhtplus-6);
+			drawnum(cp.countinv("HDSMGMag"),-75,mxhtplus);
+
+			drawnum(cp.countinv("ZM66RifleMags"),-54,mxhtplus);
+
+			drawnum(cp.countinv("BossClip"),-37,mxhtplus-6);
+			drawnum(cp.countinv("LiberatorMag"),-37,mxhtplus);
+
+			if(cp.countinv("Slayer"))drawnum(
+				cp.countinv("ShotgunQuickAmmo2"),-4,mxhtplus-14,
+				DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_BOTTOM,
+				Font.CR_BROWN
+			);
+			if(cp.countinv("Hunter"))drawnum(
+				cp.countinv("ShotgunQuickAmmo"),-4,mxhtplus-8,
+				DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_BOTTOM,
+				fnt:Font.CR_BROWN
+			);
+			drawnum(cp.countinv("HDShellAmmo"),-5,mxhtplus,
+				DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_BOTTOM
+			);
+
+			drawnum(cp.countinv("BrontornisRound"),-80,mxht);
+
+			drawnum(cp.countinv("HEATAmmo"),-60,mxht-6);
+			drawnum(cp.countinv("HDRocketAmmo"),-60,mxht);
+
+			drawnum(cp.countinv("HDCellPacks"),-30,mxht,
+				DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_BOTTOM
+			);
+			drawnum(cp.countinv("HDFragGrenadeAmmo"),-6,mxht,
+				DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_BOTTOM
+			);
 		}
 	}
 	void drawwep(class<inventory> type,string img,int zoffs){
 		if(cplayer.mo.countinv(type) && !(cplayer.readyweapon is type)){
 			drawimage(img,(8,zoffs),DI_SCREEN_LEFT_BOTTOM|DI_ITEM_LEFT);
 		}
+	}
+	void drawnum(int num,int xpos,int ypos,int flags=-1,int fnt=Font.CR_OLIVE){
+		drawstring(
+			mAmountFont,formatnumber(num),
+			(xpos,ypos),flags<0?DI_TEXT_ALIGN_LEFT|DI_SCREEN_RIGHT_BOTTOM:flags,
+			fnt
+		);
 	}
 	void drawambar(
 		string ongfx,string offgfx,
