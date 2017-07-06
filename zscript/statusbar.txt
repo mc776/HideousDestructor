@@ -36,10 +36,21 @@ class HDStatusBar:DoomStatusBar{
 
 		//inventory
 		if(CPlayer.mo.InvSel){
-			drawinventoryicon(cplayer.mo.InvSel,(25,-4),
+			inventory ivs=cplayer.mo.invsel;
+			drawinventoryicon(ivs,(25,-4),
 				DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE
 			);
-			drawstring(mAmountFont,FormatNumber(CPlayer.mo.InvSel.Amount),
+			if(
+				ivs is "GreenArmourStored"||
+				ivs is "BlueArmourStored"||
+				ivs is "BlackArmourStored"
+			)drawstring(
+				mAmountFont,FormatNumber(cplayer.mo.countinv("StoredArmour")),
+				(42,mxht),
+				DI_TEXT_ALIGN_RIGHT|DI_SCREEN_CENTER_BOTTOM,
+				Font.CR_OLIVE
+			);
+			else drawstring(mAmountFont,FormatNumber(ivs.amount),
 				(42,mxht),
 				DI_TEXT_ALIGN_RIGHT|DI_SCREEN_CENTER_BOTTOM,
 				Font.CR_OLIVE
