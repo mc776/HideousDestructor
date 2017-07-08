@@ -123,7 +123,7 @@ class HDStatusBar:DoomStatusBar{
 			drawstring(
 				mHUDFont,FormatNumber(liv),
 				(-74,mhht),DI_TEXT_ALIGN_RIGHT|DI_SCREEN_CENTER_BOTTOM,
-				liv>3?Font.CR_GOLD:(liv?Font.CR_BRICK:Font.CR_DARKGRAY)
+				liv>3?Font.CR_GOLD:(liv?Font.CR_BRICK:Font.CR_OLIVE)
 			);
 			
 		}
@@ -170,27 +170,30 @@ class HDStatusBar:DoomStatusBar{
 
 		//weapon readouts!
 		let w=cplayer.readyweapon;
-		if(w){
-			if(cplayer.readyweapon.ammotype1){
-				int loaded=cp.countinv(cplayer.readyweapon.ammotype1);
-				int maxloaded=cp.findinventory(cplayer.readyweapon.ammotype1).maxamount;
-				DrawImage(
-					"GREENPXL",
-					(-16,-6),
-					DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE|DI_ITEM_RIGHT,
-					1,scale:(loaded*20/maxloaded,2)
-				);
+		if(w is "ZM66Rifle" || w is "ZM66GrenadeRifle" || w is "ZM66SemiRifle"){
+			drawwepcounter(cplayer.mo.countinv("ZM66FullAuto"),
+				-22,-10,"blank","STFULAUT","STBURAUT"
+			);
+			if(cplayer.mo.countinv("ZM66GLoaded"))drawwepdot(-16,-13,(4,2.6));
+			int lod=cplayer.mo.countinv("ZM66Loaded");
+			drawwepnum(cplayer.mo.countinv("ZM66Loaded"),50);
+			if(cplayer.mo.countinv("ZM66Chamber")){
+				drawwepdot(-16,-10,(3,1));
+				lod++;
 			}
-			if(cplayer.readyweapon.ammotype2){
-				int loaded2=cp.countinv(cplayer.readyweapon.ammotype2);
-				int maxloaded2=cp.findinventory(cplayer.readyweapon.ammotype2).maxamount;
-				DrawImage(
-					"GREENPXL",
-					(-16,-10),
-					DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE|DI_ITEM_RIGHT,
-					1,scale:(loaded2*20/maxloaded2,2)
-				);
-			}
+			if(cplayer.mo.countinv("ZM66JailbrokenMag"))lod=random(0,99);
+			drawnum(lod,-16,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_RED);
+		}
+		else if(w){
+			if(cplayer.readyweapon.ammotype1)drawwepnum(
+				cplayer.mo.countinv(cplayer.readyweapon.ammotype1),
+				cplayer.mo.findinventory(cplayer.readyweapon.ammotype1).maxamount
+			);
+			if(cplayer.readyweapon.ammotype2)drawwepnum(
+				cplayer.mo.countinv(cplayer.readyweapon.ammotype2),
+				cplayer.mo.findinventory(cplayer.readyweapon.ammotype2).maxamount,
+				posy:-10
+			);
 		}
 
 
@@ -304,6 +307,55 @@ class HDStatusBar:DoomStatusBar{
 				inv.amount,inv.maxamount,
 				coords,-1,
 				SHADER_VERT,DI_ITEM_RIGHT_BOTTOM|DI_SCREEN_RIGHT_BOTTOM
+		);
+	}
+
+	//for drawing weapon bits
+	void drawwepdot(int posx,int posy,vector2 dotscale=(3.,3.)){
+		drawimage(
+			"GREENPXL",(posx,posy),
+			DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE|DI_ITEM_RIGHT,
+			1,scale:dotscale
+		);
+	}
+	void drawwepnum(int value,int maxvalue,int posx=-16,int posy=-6,bool num=false){
+		hdplayerpawn cp=hdplayerpawn(cplayer.mo);if(!cp)return;
+		if(num){
+			drawstring(
+				mAmountFont,formatnumber(value),
+				(posx,posy),DI_TEXT_ALIGN_RIGHT|DI_TRANSLATABLE|DI_SCREEN_CENTER_BOTTOM,
+				cp.overloaded<1.5?Font.CR_OLIVE:(cp.overloaded>2?Font.CR_RED:Font.CR_GREEN)
+			);
+		}else drawimage(
+			"GREENPXL",
+			(posx,posy),
+			DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE|DI_ITEM_RIGHT,
+			1,scale:(value*20/maxvalue,2)
+		);
+	}
+	//"" means ignore this value and move on to the next check.
+	//"blank" means stop here and render nothing.
+	//(do we really need 6???)
+	void drawwepcounter(
+		int input,
+		int posx,int posy,
+		string zero="",string one="",string two="",string three="",
+		string four="",string five="",string six=""
+	){
+		string types[7];types[0]=zero;types[1]=one;types[2]=two;
+		types[3]=three;types[4]=four;types[5]=five;types[6]=six;
+		input=min(input,7);
+		string result="";
+		for(int i=7;i>=0;i--){
+			if(input==i && types[i]!=""){
+				if(types[i]=="blank")return;
+				else result=types[i];
+			}
+		}
+		if(result!="")drawimage(
+			result,
+			(posx,posy),
+			DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE|DI_ITEM_RIGHT
 		);
 	}
 }
