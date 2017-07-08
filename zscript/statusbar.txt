@@ -182,6 +182,20 @@ class HDStatusBar:DoomStatusBar{
 			drawwepnum(cplayer.mo.countinv("HDPistolLoaded"),15);
 			if(cplayer.mo.countinv("HDPistolChamber"))drawwepdot(-16,-10,(3,1));
 		}
+		if(w is "HDFragGrenades"){
+			if(cplayer.mo.countinv("HDFragGrenadeAmmo"))drawwepnum(
+				cplayer.mo.countinv("HDFragGrenadeAmmo"),
+				cplayer.mo.findinventory("HDFragGrenadeAmmo").maxamount
+			);
+			drawwepnum(cplayer.mo.countinv("GrenadeForce"),50,posy:-10);
+			if(!cplayer.mo.countinv("SpoonOff")){
+				drawwepdot(-19,-15,(5,3));
+				if(!cplayer.mo.countinv("FragOut"))drawwepdot(-16,-15,(2,3));
+			}else{
+				int timer=cplayer.mo.countinv("FragTimer");
+				if(timer%3)drawwepnum(140-timer,140,posy:-15);
+			}
+		}
 		else if(w is "Slayer"){
 			if(cplayer.mo.countinv("ShellChamber1")){
 				drawwepdot(-28,-10,(3,5));
@@ -204,7 +218,7 @@ class HDStatusBar:DoomStatusBar{
 				drawwepdot(-19,-11,(5,3));
 				drawwepdot(-16,-11,(2,3));
 			}
-			if(cplayer.mo.countinv("HunterSpentShell")){
+			else if(cplayer.mo.countinv("HunterSpentShell")){
 				drawwepdot(-16,-11,(2,3));
 			}
 			drawwepcounter(cplayer.mo.countinv("ShotgunAuto"),
