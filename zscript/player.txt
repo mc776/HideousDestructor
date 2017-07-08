@@ -317,6 +317,12 @@ class HDPlayerPawn:PlayerPawn{
 			if(!sm && fm>0)speed=2.8;
 			else speed=1.6;
 		}
+		if(
+			//weapons so bulky they get in the way physically
+			//as a rule of thumb, anything that uses the "swinging" weapon bob
+			player.readyweapon is "Vulcanette"||
+			player.readyweapon is "BFG9k"
+		)speed=min(speed,speed,0.8);
 		if(countinv("PowerStrength"))speed*=1.5;
 		if(height<40)speed*=0.6;
 
