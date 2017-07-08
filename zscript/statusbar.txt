@@ -195,6 +195,11 @@ class HDStatusBar:DoomStatusBar{
 			}
 			if(cplayer.mo.countinv("ZM66JailbrokenMag"))lod=random(10,99);
 			drawnum(lod,-16,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_RED);
+			if(cplayer.mo.countinv("ZM66GLMode"))drawnum(cplayer.mo.countinv("AirburstCount"),
+				-30,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
+			);else drawnum(cplayer.mo.countinv("ZM66ZoomDegree"),
+				-30,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
+			);
 		}
 		else if(w){
 			if(cplayer.readyweapon.ammotype1)drawwepnum(
