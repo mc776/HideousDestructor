@@ -193,7 +193,7 @@ class HDStatusBar:DoomStatusBar{
 				drawwepdot(-16,-10,(3,1));
 				lod++;
 			}
-			if(cplayer.mo.countinv("ZM66JailbrokenMag"))lod=random(0,99);
+			if(cplayer.mo.countinv("ZM66JailbrokenMag"))lod=random(10,99);
 			drawnum(lod,-16,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_RED);
 		}
 		else if(w){
@@ -210,7 +210,7 @@ class HDStatusBar:DoomStatusBar{
 
 
 		//full hud consequences
-		if(!cp.countinv("IsMoving") && cp.countinv("GimmeHud")>9){
+		if(cp.countinv("GimmeHud")>9){
 
 			//weapons
 			drawwep("Lumberjack","CSAWA0",-163);
