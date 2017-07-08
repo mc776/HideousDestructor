@@ -170,9 +170,21 @@ class HDStatusBar:DoomStatusBar{
 
 		//weapon readouts!
 		let w=cplayer.readyweapon;
-		if(w is "ZM66Rifle" || w is "ZM66GrenadeRifle" || w is "ZM66SemiRifle"){
-			drawwepcounter(cplayer.mo.countinv("ZM66FullAuto"),
-				-22,-10,"blank","STFULAUT","STBURAUT"
+		if(w is "HDPistol"){
+			drawwepcounter(cplayer.mo.countinv("HDPistolFullAuto"),
+				-22,-10,"blank","RBRSA3A7","STFULAUT"
+			);
+			if(cplayer.mo.countinv("HDSecondPistol")){
+				drawwepdot(-16,-13,(4,2.6));
+				if(cplayer.mo.countinv("HDSecondPistolFullAuto"))
+					drawwepdot(-21,-13,(2,2.6));
+			}
+			drawwepnum(cplayer.mo.countinv("HDPistolLoaded"),15);
+			if(cplayer.mo.countinv("HDPistolChamber"))drawwepdot(-16,-10,(3,1));
+		}
+		else if(w is "ZM66Rifle" || w is "ZM66GrenadeRifle" || w is "ZM66SemiRifle"){
+			if(!(w is "ZM66SemiRifle"))drawwepcounter(cplayer.mo.countinv("ZM66FullAuto"),
+				-22,-10,"RBRSA3A7","STFULAUT","STBURAUT"
 			);
 			if(cplayer.mo.countinv("ZM66GLoaded"))drawwepdot(-16,-13,(4,2.6));
 			int lod=cplayer.mo.countinv("ZM66Loaded");
@@ -203,7 +215,16 @@ class HDStatusBar:DoomStatusBar{
 			//weapons
 			drawwep("Lumberjack","CSAWA0",-163);
 			drawwep("HDSMG","SMGNA0",-141);
-			drawwep("HDPistol","PISTA0",-143);
+			if(cplayer.mo.countinv("HDPistol")){
+				string pispr="PISTA0";
+				if(cplayer.mo.countinv("HDSecondPistolFullAuto"))pispr="PISTC0";
+				if(cplayer.mo.countinv("HDSecondPistol"))drawimage(
+					pispr,(16,-139),
+					DI_SCREEN_LEFT_BOTTOM|DI_ITEM_LEFT
+				);
+				if(cplayer.mo.countinv("HDPistolFullAuto"))pispr="PISTC0";else pispr="PISTA0";
+				drawwep("HDPistol",pispr,-143);
+			}
 			drawwep("Hunter","HUNTA0",-128);
 			drawwep("Slayer","SLAYA0",-120);
 			drawwep("Vulcanette","VULCA0",-108);
@@ -330,7 +351,7 @@ class HDStatusBar:DoomStatusBar{
 			"GREENPXL",
 			(posx,posy),
 			DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE|DI_ITEM_RIGHT,
-			1,scale:(value*20/maxvalue,2)
+			1,scale:(value*25/maxvalue,2)
 		);
 	}
 	//"" means ignore this value and move on to the next check.
