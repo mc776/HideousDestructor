@@ -86,14 +86,36 @@ extend class HDStatusBar{
 				-30,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
 			);
 		}
+		else if(w is "Vulcanette"){
+			if(pp.countinv("VulcLoaded5"))drawwepdot(-32,-13,(3,2));
+			if(pp.countinv("VulcLoaded4"))drawwepdot(-28,-13,(3,2));
+			if(pp.countinv("VulcLoaded3"))drawwepdot(-24,-13,(3,2));
+			if(pp.countinv("VulcLoaded2"))drawwepdot(-20,-13,(3,2));
+			drawwepnum(pp.countinv("VulcLoaded1"),50,posy:-10);
+			drawwepcounter(pp.countinv("ChaingunFast"),
+				-28,-16,"blank","STFULAUT"
+			);
+			drawwepcounter(pp.countinv("VulcChamber3"),-14,-15,"blank","RBRSA3A7");
+			drawwepcounter(pp.countinv("VulcChamber4"),-14,-17,"blank","RBRSA3A7");
+			drawwepcounter(pp.countinv("VulcChamber5"),-14,-19,"blank","RBRSA3A7");
+			if(pp.countinv("ChaingunOn")){
+				int lod=random(10,99);
+				if(!pp.countinv("VulcJB1"))lod=pp.countinv("VulcLoaded1");
+				drawnum(lod,-20,-22,
+					DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_RED
+				);
+				if(pp.countinv("VulcJuice"))drawwepnum(pp.countinv("VulcJuice"),2100);
+			}
+			if(pp.countinv("VulcEmptyCell"))drawstring(
+				mamountfont,"00000",(-16,-8),
+				DI_TEXT_ALIGN_RIGHT|DI_TRANSLATABLE|DI_SCREEN_CENTER_BOTTOM,
+				Font.CR_DARKGRAY
+			);
+		}
 		else if(w is "Blooper"){
 			if(pp.countinv("BloopChamber"))drawwepdot(-16,-10,(5,3));
 			drawnum(pp.countinv("AirburstCount"),
 				-28,-15,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
-			);
-			drawwepnum(
-				pp.countinv("HDRocketAmmo"),
-				pp.findinventory("HDRocketAmmo").maxamount
 			);
 		}
 		else if(w is "RocquetteLauncher"){
@@ -105,9 +127,7 @@ extend class HDStatusBar{
 			drawnum(pp.countinv("AirburstCount"),
 				-32,-15,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
 			);
-			drawwepnum(
-				pp.countinv("RocketMag"),6
-			);
+			drawwepnum(pp.countinv("RocketMag"),6);
 		}
 		else if(w is "LiberatorRifle" || w is "LiberatorGrenadeRifle"){
 			drawwepcounter(pp.countinv("LiberatorFullAuto"),
@@ -210,15 +230,17 @@ extend class HDStatusBar{
 		int input,
 		int posx,int posy,
 		string zero="",string one="",string two="",string three="",
-		string four="",string five="",string six=""
+		string four="",string five="",string six="",
+		bool binary=false
 	){
 		string types[7];types[0]=zero;types[1]=one;types[2]=two;
 		types[3]=three;types[4]=four;types[5]=five;types[6]=six;
-		input=min(input,7);
+		input=min(input,6);
 		string result="";
-		for(int i=7;i>=0;i--){
-			if(input==i && types[i]!=""){
-				if(types[i]=="blank")return;
+		for(int i=input;i>0;i--){
+			if(input==i){
+				if(types[i]=="blank")break;
+				else if(types[i]=="")input--;
 				else result=types[i];
 			}
 		}
