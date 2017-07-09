@@ -212,7 +212,6 @@ actor BFG9K : HDWeapon
 		BFGG C 12 offset(0,42) A_PlayWeaponSound("weapons/rifleload")
 		BFGG C 10 offset(0,36) A_PlayWeaponSound("weapons/grenopen")
 		BFGG C 0{
-			A_TakeInventory("ShittyReloadDummy");
 			if(countinv("BFGChamber")||countinv("BFGLoaded")){A_GiveInventory("BFGUnloader",1);}
 			if(countinv("BFGLoadingEmpty")){
 				A_TakeInventory("BFGLoadingEmpty");
@@ -222,13 +221,12 @@ actor BFG9K : HDWeapon
 				A_TakeInventory("HDCellPacks",1,TIF_NOTAKEINFINITE);
 				A_GiveInventory("BFGChamber",20);
 			}else if(countinv("HDCellAmmo")){
-				A_SetInventory("ShittyReloadDummy",
-					min(countinv("HDCellAmmo"),random(1,20))
+				A_SetInventory("BFGChamber",
+					min(countinv("HDCellAmmo"),random(1,19))
 				);
 				A_TakeInventory("HDCellAmmo",
-					countinv("ShittyReloadDummy"),TIF_NOTAKEINFINITE
+					countinv("BFGChamber"),TIF_NOTAKEINFINITE
 				);
-				A_GiveInventory("BFGChamber",countinv("ShittyReloadDummy"));
 			}
 		}
 	Reload3:
