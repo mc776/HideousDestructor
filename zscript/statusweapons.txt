@@ -197,10 +197,12 @@ extend class HDStatusBar{
 			);
 		}
 		else if(w is "HDMedikitter"){
+			drawwepdot(-27,-11,(2,6));
+			drawwepdot(-25,-13,(6,2));
 			hdmedikitter ww=hdmedikitter(w);
 			if(ww.useonother){
-				drawwepdot(-26,-17,(5,6));
-				drawwepdot(-28,-22,(1,7));
+				drawwepdot(-22,-20,(5,6));
+				drawwepdot(-24,-25,(1,7));
 				if(ww.usedon)drawimage(
 					"BLUDC0",(-22,-19),
 					DI_SCREEN_CENTER_BOTTOM|DI_ITEM_RIGHT,
@@ -214,6 +216,24 @@ extend class HDStatusBar{
 			);
 			drawwepnum(100-ww.usedpatches,100);
 			if(!ww.usedflesh)drawwepdot(-16,-10,(4,3));
+		}
+		else if(w is "HDBlueBottler"){
+			drawimage(
+				"BON1A0",(-14,-7),
+				DI_SCREEN_CENTER_BOTTOM|DI_ITEM_RIGHT
+			);
+		}
+		else if(w is "HDBerserker"){
+			drawimage(
+				"PSTRA0",(-14,-7),
+				DI_SCREEN_CENTER_BOTTOM|DI_ITEM_RIGHT
+			);
+		}
+		else if(w is "HDStimpacker"){
+			drawimage(
+				"STIMA0",(-14,-7),
+				DI_SCREEN_CENTER_BOTTOM|DI_ITEM_RIGHT
+			);
 		}
 		else{
 			if(cplayer.readyweapon.ammotype1)drawwepnum(

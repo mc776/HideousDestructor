@@ -77,7 +77,7 @@ class HDStatusBar:DoomStatusBar{
 		if(cplayer.mo.countinv("PowerIronFeet"))drawimage("SUITC0",(14,120),DI_TOPLEFT);
 
 		//guns
-		//ammo
+		drawselectedweapon(-14,-24,DI_BOTTOMRIGHT);
 	}
 	void DrawFullScreenStuff(){
 		if(cplayer.getgender()==0)DrawTexture(GetMugShot(5),(0,-14),DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM);
@@ -193,6 +193,13 @@ class HDStatusBar:DoomStatusBar{
 		//weapon readouts!
 		if(cplayer.readyweapon)drawweaponstatus(cplayer.readyweapon);
 
+		//weapon sprite
+		if(!r_drawplayersprites)
+		drawselectedweapon(0,
+			state==HUD_Fullscreen?-55:-35,
+			DI_SCREEN_CENTER_BOTTOM|DI_ITEM_CENTER_BOTTOM
+		);
+
 
 		//full hud consequences
 		if(cp.countinv("GimmeHud")>9){
@@ -213,8 +220,8 @@ class HDStatusBar:DoomStatusBar{
 			drawwep("Hunter","HUNTA0",-128);
 			drawwep("Slayer","SLAYA0",-120);
 			drawwep("Vulcanette","VULCA0",-108);
-			drawwep("ZM66Rifle","RIFLA0",-103);
 			drawwep("ZM66SemiRifle","RIFSA0",-103);
+			drawwep("ZM66Rifle","RIFLA0",-103);
 			drawwep("ZM66GrenadeRifle","RIGLA0",-103);
 			drawwep("RocquetteLauncher","LAUNA0",-83,scl:0.9);
 			drawwep("Blooper","BLOPA0",-78);
@@ -332,7 +339,7 @@ class HDStatusBar:DoomStatusBar{
 	void DrawInvSel(int posx,int posy,int numposx,int numposy,int flags){
 		if(CPlayer.mo.InvSel){
 			inventory ivs=cplayer.mo.invsel;
-			drawinventoryicon(ivs,(posx,posy),flags|DI_TRANSLATABLE);
+			drawinventoryicon(ivs,(posx,posy),flags|DI_ITEM_CENTER_BOTTOM|DI_TRANSLATABLE);
 			if(
 				ivs is "GreenArmourStored"||
 				ivs is "BlueArmourStored"||
@@ -345,6 +352,38 @@ class HDStatusBar:DoomStatusBar{
 				(numposx,numposy),flags|DI_TEXT_ALIGN_RIGHT,Font.CR_OLIVE
 			);
 		}
+	}
+	void drawselectedweapon(int posx,int posy,int flags){
+		weapon w=cplayer.readyweapon;
+		string wx="";
+		if(w is "")wx="";
+		else if(w is "Lumberjack")wx="CSAWA0";
+		else if(w is "HDPistol"){
+			if(cplayer.mo.countinv("HDPistolFullAuto"))wx="PISTC0";else wx="PISTA0";
+		}
+		else if(w is "HDSMG")wx="SMGNA0";
+		else if(w is "Slayer")wx="SLAYA0";
+		else if(w is "Hunter")wx="HUNTA0";
+		else if(w is "ZM66SemiRifle")wx="RIFSA0";
+		else if(w is "ZM66Rifle")wx="RIFLA0";
+		else if(w is "ZM66GrenadeRifle")wx="RIGLA0";
+		else if(w is "Vulcanette")wx="VULCA0";
+		else if(w is "Blooper")wx="BLOPA0";
+		else if(w is "RocquetteLauncher")wx="LAUNA0";
+		else if(w is "LiberatorGrenadeRifle")wx="BRFLB0";
+		else if(w is "LiberatorRifle")wx="BRFLA0";
+		else if(w is "ThunderBuster")wx="PLASA0";
+		else if(w is "Brontornis")wx="BLSTA0";
+		else if(w is "BFG9k")wx="BFUGA0";
+		else if(w is "BossRifle")wx="BORFA0";
+		else if(w is "HDFragGrenades")wx="FRAGA0";
+		else if(w is "HDMedikitter")wx="MEDIB0";
+		else if(w is "HDBerserker")wx="PSTRA0";
+		else if(w is "HDBlueBottler")wx="BON1A0";
+		else if(w is "HDStimpacker")wx="STIMA0";
+		if(wx!="")drawimage(wx,(posx,posy),flags,
+			scale:wx=="CSAWA0"?(0.7,0.7):(wx=="FRAGA0"||wx=="MEDIB0"?(0.6,0.6):(1,1))
+		);
 	}
 }
 
