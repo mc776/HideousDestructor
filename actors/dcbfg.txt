@@ -186,7 +186,10 @@ actor BFG9K : HDWeapon
 		BFGG A 0 A_GiveInventory("BFGLoadingEmpty",1)
 		goto Reload
 	Reload:
-		BFGG A 4
+		BFGG A 4{
+			if(!countinv("HDCellPacks")&&!countinv("HDCellAmmo")&&countinv("HDCellPackEmpty"))
+			{A_GiveInventory("BFGLoadingEmpty");}
+		}
 		BFGG A 0 A_JumpIfInventory("BFGLoadingEmpty",1,4)
 		BFGG A 0 A_JumpIfInventory("BFGChamber",0,"nope")
 		BFGG A 0 A_JumpIfInventory("HDCellPacks",1,2)
@@ -206,8 +209,6 @@ actor BFG9K : HDWeapon
 		BFGG C 12
 
 	Reload2:
-		BFGG C 0 A_JumpIfInventory("BFGChamber",0,"Reload3")
-
 		BFGG C 12 offset(0,42) A_PlayWeaponSound("weapons/rifleload")
 		BFGG C 10 offset(0,36) A_PlayWeaponSound("weapons/grenopen")
 		BFGG C 0{
