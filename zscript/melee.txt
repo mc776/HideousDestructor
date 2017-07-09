@@ -1,0 +1,22 @@
+class HDFistPuff:BulletPuffMedium{
+	default{
+		+bloodlessimpact
+		damagetype "SmallArms0";
+		stamina 6;scale 0.5;
+	}
+	states{
+	xdeath:
+		TNT1 A 0{
+			if(target){
+				let ppr=target.findinventory("Ring");
+				if(ppr){
+					if(!tracer || tracer.health<1){
+						ppr.tracer=null;
+						return;
+					}else ppr.tracer=tracer;
+				}
+			}
+			tracer.A_GiveInventory("FistTurner");
+		}stop;
+	}
+}

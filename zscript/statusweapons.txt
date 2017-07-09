@@ -1,7 +1,18 @@
 extend class HDStatusBar{
 	void drawweaponstatus(weapon w){
 		playerpawn pp=cplayer.mo;
-		if(w is "HDPistol"){
+		if(w is "Ring"){
+			if(w.tracer && w.tracer.health>0)drawwepnum(w.tracer.health,w.tracer.spawnhealth());
+		}
+		else if(w is "Lumberjack"){
+			if(pp.countinv("LumberEmptyCell"))drawstring(
+				mamountfont,"00000",
+				(-16,-9),DI_TEXT_ALIGN_RIGHT|DI_TRANSLATABLE|DI_SCREEN_CENTER_BOTTOM,
+				Font.CR_DARKGRAY
+			);
+			drawwepnum(pp.countinv("LumberCell"),1200);
+		}
+		else if(w is "HDPistol"){
 			drawwepcounter(pp.countinv("HDPistolFullAuto"),
 				-22,-10,"blank","RBRSA3A7","STFULAUT"
 			);
@@ -117,6 +128,10 @@ extend class HDStatusBar{
 			drawnum(pp.countinv("AirburstCount"),
 				-28,-15,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
 			);
+			drawwepnum(
+				pp.countinv("HDRocketAmmo"),
+				pp.findinventory("HDRocketAmmo").maxamount
+			);
 		}
 		else if(w is "RocquetteLauncher"){
 			if(!pp.countinv("IsUsingRocketUnderslung")){
@@ -141,14 +156,6 @@ extend class HDStatusBar{
 			);else drawnum(pp.countinv("LiberatorZoomDegree"),
 				-30,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
 			);
-		}
-		else if(w is "Lumberjack"){
-			if(pp.countinv("LumberEmptyCell"))drawstring(
-				mamountfont,"00000",
-				(-16,-9),DI_TEXT_ALIGN_RIGHT|DI_TRANSLATABLE|DI_SCREEN_CENTER_BOTTOM,
-				Font.CR_DARKGRAY
-			);
-			drawwepnum(pp.countinv("LumberCell"),1200);
 		}
 		else if(w is "ThunderBuster"){
 			drawwepcounter(pp.countinv("PlasmaAlt"),
@@ -188,6 +195,25 @@ extend class HDStatusBar{
 			drawnum(pp.countinv("BossMOA"),
 				-16,-18,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_WHITE
 			);
+		}
+		else if(w is "HDMedikitter"){
+			hdmedikitter ww=hdmedikitter(w);
+			if(ww.useonother){
+				drawwepdot(-26,-17,(5,6));
+				drawwepdot(-28,-22,(1,7));
+				if(ww.usedon)drawimage(
+					"BLUDC0",(-22,-19),
+					DI_SCREEN_CENTER_BOTTOM|DI_ITEM_RIGHT,
+					0.4
+				);
+			}
+			if(ww.usedon)drawimage(
+				"BLUDC0",(-14,-7),
+				DI_SCREEN_CENTER_BOTTOM|DI_ITEM_RIGHT,
+				0.8
+			);
+			drawwepnum(100-ww.usedpatches,100);
+			if(!ww.usedflesh)drawwepdot(-16,-10,(4,3));
 		}
 		else{
 			if(cplayer.readyweapon.ammotype1)drawwepnum(

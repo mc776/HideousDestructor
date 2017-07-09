@@ -55,15 +55,6 @@ actor KickProjectile2:KickProjectile{
 //   Fist
 // ------------------------------------------------------------
 
-actor HDFistPuff:BulletPuffMedium{
-	damagetype "SmallArms0" +bloodlessimpact
-	stamina 6 scale 0.5
-	states{
-	xdeath:
-		TNT1 A 0 A_GiveInventory("FistTurner",1,AAPTR_TRACER)
-		stop
-	}
-}
 actor FistTurner:ActionItem{
 	states{
 	pickup:
