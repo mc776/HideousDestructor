@@ -1,10 +1,7 @@
 extend class HDStatusBar{
 	void drawweaponstatus(weapon w){
 		playerpawn pp=cplayer.mo;
-		if(w is "Ring"){
-			if(w.tracer && w.tracer.health>0)drawwepnum(w.tracer.health,w.tracer.spawnhealth());
-		}
-		else if(w is "Lumberjack"){
+		if(w is "Lumberjack"){
 			if(pp.countinv("LumberEmptyCell"))drawstring(
 				mamountfont,"00000",
 				(-16,-9),DI_TEXT_ALIGN_RIGHT|DI_TRANSLATABLE|DI_SCREEN_CENTER_BOTTOM,
@@ -30,20 +27,6 @@ extend class HDStatusBar{
 			);
 			drawwepnum(pp.countinv("HDSMGLoaded"),30);
 			if(pp.countinv("HDSMGChamber"))drawwepdot(-16,-10,(3,1));
-		}
-		else if(w is "HDFragGrenades" && pp.countinv("HDFragGrenadeAmmo")){
-			drawwepnum(
-				pp.countinv("HDFragGrenadeAmmo"),
-				pp.findinventory("HDFragGrenadeAmmo").maxamount
-			);
-			drawwepnum(pp.countinv("GrenadeForce"),50,posy:-10);
-			if(!pp.countinv("SpoonOff")){
-				drawwepdot(-16,-15,(5,4));
-				if(!pp.countinv("FragOut"))drawwepdot(-22,-16,(3,2));
-			}else{
-				int timer=pp.countinv("FragTimer");
-				if(timer%3)drawwepnum(140-timer,140,posy:-15);
-			}
 		}
 		else if(w is "Slayer"){
 			if(pp.countinv("ShellChamber1")){
@@ -195,6 +178,23 @@ extend class HDStatusBar{
 			drawnum(pp.countinv("BossMOA"),
 				-16,-18,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_WHITE
 			);
+		}
+		else if(w is "HDFragGrenades" && pp.countinv("HDFragGrenadeAmmo")){
+			drawwepnum(
+				pp.countinv("HDFragGrenadeAmmo"),
+				pp.findinventory("HDFragGrenadeAmmo").maxamount
+			);
+			drawwepnum(pp.countinv("GrenadeForce"),50,posy:-10);
+			if(!pp.countinv("SpoonOff")){
+				drawwepdot(-16,-15,(5,4));
+				if(!pp.countinv("FragOut"))drawwepdot(-22,-16,(3,2));
+			}else{
+				int timer=pp.countinv("FragTimer");
+				if(timer%3)drawwepnum(140-timer,140,posy:-15);
+			}
+		}
+		else if(w is "Ring"){
+			if(w.tracer && w.tracer.health>0)drawwepnum(w.tracer.health,w.tracer.spawnhealth());
 		}
 		else if(w is "HDMedikitter"){
 			drawwepdot(-27,-11,(2,6));
