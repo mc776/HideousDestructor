@@ -16,6 +16,8 @@ class HDStatusBar:DoomStatusBar{
 		cplayer.inventorytics=0;
 		if(automapactive){
 			DrawAutomapHUD(ticfrac);
+			BeginHUD();
+			DrawAutomapStuff();
 		}else if(state==HUD_StatusBar){
 			BeginHUD();
 			DrawCommonStuff(state);
@@ -26,6 +28,57 @@ class HDStatusBar:DoomStatusBar{
 			DrawFullScreenStuff();
 		}
 	}
+	void DrawAutomapStuff(){
+		playerpawn cp=playerpawn(cplayer.mo);
+		int DI_TOPRIGHT=DI_SCREEN_RIGHT_TOP|DI_ITEM_RIGHT_TOP;
+		int DI_TOPLEFT=DI_SCREEN_LEFT_TOP|DI_ITEM_LEFT_TOP;
+		int DI_BOTTOMLEFT=DI_SCREEN_LEFT_BOTTOM|DI_ITEM_LEFT_BOTTOM;
+		int DI_BOTTOMRIGHT=DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM;
+		//KEYS!
+		if(cp.countinv("BlueCard"))drawimage("BKEYB0",(10,24),DI_TOPLEFT);
+		if(cp.countinv("YellowCard"))drawimage("YKEYB0",(10,44),DI_TOPLEFT);
+		if(cp.countinv("RedCard"))drawimage("RKEYB0",(10,64),DI_TOPLEFT);
+		if(cp.countinv("BlueSkull"))drawimage("BSKUA0",(6,30),DI_TOPLEFT);
+		if(cp.countinv("YellowSkull"))drawimage("YSKUA0",(6,50),DI_TOPLEFT);
+		if(cp.countinv("RedSkull"))drawimage("RSKUB0",(6,70),DI_TOPLEFT);
+
+		//lives
+		drawlives(30,deathmatch?44:24,DI_TOPLEFT|DI_TEXT_ALIGN_LEFT);
+
+		//frags
+		if(deathmatch)drawstring(
+			mHUDFont,FormatNumber(CPlayer.fragcount),
+			(30,24),DI_TOPLEFT|DI_TEXT_ALIGN_LEFT,
+			Font.CR_RED
+		);
+
+		//mugshot
+		if(cplayer.getgender()==0)DrawTexture(GetMugShot(5),(6,-14),DI_BOTTOMLEFT);
+		else if(cplayer.getgender()==1)DrawTexture(GetMugShot(5,Mugshot.CUSTOM,"SFF"),(6,-14),DI_BOTTOMLEFT);
+
+		//heartbeat/playercolour tracker
+		let hcp=HDPlayerPawn(cplayer.mo);
+		if(hcp && hcp.beatmax){
+			float cpb=hcp.beatcount*1./hcp.beatmax;
+			drawimage(
+				"GREENPXL",(32,-24-cpb*3),DI_BOTTOMLEFT|DI_TRANSLATABLE,
+				cpb,scale:(4,4+hcp.bloodpressure*0.05)
+			);
+		}
+		//health
+		drawstring(
+			mAmountFont,FormatNumber(CPlayer.mo.health),
+			(34,-24),DI_BOTTOMLEFT|DI_TEXT_ALIGN_CENTER,
+			cplayer.mo.health>70?Font.CR_OLIVE:(cplayer.mo.health>33?Font.CR_GOLD:Font.CR_RED)
+		);
+
+		//inventory
+		DrawInvSel(6,90,36,106,DI_TOPLEFT);
+		if(cplayer.mo.countinv("PowerIronFeet"))drawimage("SUITC0",(14,120),DI_TOPLEFT);
+
+		//guns
+		//ammo
+	}
 	void DrawFullScreenStuff(){
 		if(cplayer.getgender()==0)DrawTexture(GetMugShot(5),(0,-14),DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM);
 		else if(cplayer.getgender()==1)DrawTexture(GetMugShot(5,Mugshot.CUSTOM,"SFF"),(0,-14),DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM);
@@ -35,27 +88,7 @@ class HDStatusBar:DoomStatusBar{
 		int mhht=-4-mHUDFont.mFont.getheight();
 
 		//inventory
-		if(CPlayer.mo.InvSel){
-			inventory ivs=cplayer.mo.invsel;
-			drawinventoryicon(ivs,(25,-4),
-				DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE
-			);
-			if(
-				ivs is "GreenArmourStored"||
-				ivs is "BlueArmourStored"||
-				ivs is "BlackArmourStored"
-			)drawstring(
-				mAmountFont,FormatNumber(cplayer.mo.countinv("StoredArmour")),
-				(42,mxht),
-				DI_TEXT_ALIGN_RIGHT|DI_SCREEN_CENTER_BOTTOM,
-				Font.CR_OLIVE
-			);
-			else drawstring(mAmountFont,FormatNumber(ivs.amount),
-				(42,mxht),
-				DI_TEXT_ALIGN_RIGHT|DI_SCREEN_CENTER_BOTTOM,
-				Font.CR_OLIVE
-			);
-		}
+		DrawInvSel(25,-4,42,mxht,DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE);
 
 		//keys
 		string keytype="";
@@ -115,18 +148,7 @@ class HDStatusBar:DoomStatusBar{
 		);
 
 		//lives
-		if(
-			fraglimit>100||
-			(fraglimit>0 && !deathmatch)
-		){
-			int liv=cplayer.mo.countinv("HDLives");
-			drawstring(
-				mHUDFont,FormatNumber(liv),
-				(-74,mhht),DI_TEXT_ALIGN_RIGHT|DI_SCREEN_CENTER_BOTTOM,
-				liv>3?Font.CR_GOLD:(liv?Font.CR_BRICK:Font.CR_OLIVE)
-			);
-			
-		}
+		drawlives(-74,mhht,DI_TEXT_ALIGN_RIGHT|DI_SCREEN_CENTER_BOTTOM);
 
 
 		let cp=HDPlayerPawn(CPlayer.mo);if(!cp)return;
@@ -278,6 +300,20 @@ class HDStatusBar:DoomStatusBar{
 			fnt
 		);
 	}
+	void drawlives(int posx,int posy,int flags){
+		if(
+			fraglimit>100||
+			(fraglimit>0 && !deathmatch)
+		){
+			int liv=cplayer.mo.countinv("HDLives");
+			drawstring(
+				mHUDFont,FormatNumber(liv),
+				(posx,posy),flags,
+				liv>3?Font.CR_GOLD:(liv?Font.CR_BRICK:Font.CR_DARKGRAY)
+			);
+			
+		}
+	}
 	void drawambar(
 		string ongfx,string offgfx,
 		class<inventory> type,
@@ -292,6 +328,23 @@ class HDStatusBar:DoomStatusBar{
 				coords,-1,
 				SHADER_VERT,DI_ITEM_RIGHT_BOTTOM|DI_SCREEN_RIGHT_BOTTOM
 		);
+	}
+	void DrawInvSel(int posx,int posy,int numposx,int numposy,int flags){
+		if(CPlayer.mo.InvSel){
+			inventory ivs=cplayer.mo.invsel;
+			drawinventoryicon(ivs,(posx,posy),flags|DI_TRANSLATABLE);
+			if(
+				ivs is "GreenArmourStored"||
+				ivs is "BlueArmourStored"||
+				ivs is "BlackArmourStored"
+			)drawstring(
+				mAmountFont,FormatNumber(cplayer.mo.countinv("StoredArmour")),
+				(numposx,numposy),flags|DI_TEXT_ALIGN_RIGHT,Font.CR_OLIVE
+			);
+			else drawstring(mAmountFont,FormatNumber(ivs.amount),
+				(numposx,numposy),flags|DI_TEXT_ALIGN_RIGHT,Font.CR_OLIVE
+			);
+		}
 	}
 }
 
