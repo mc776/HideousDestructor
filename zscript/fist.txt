@@ -1,0 +1,170 @@
+// ------------------------------------------------------------
+//   Fist
+// ------------------------------------------------------------
+
+class FistTurner:ActionItem{
+	states{
+	pickup:
+		TNT1 A 0{
+			if(radius<50){
+				A_SetAngle(angle+random(-4,4)*30,SPF_INTERPOLATE);
+				A_SetPitch(randompick(-90,90),SPF_INTERPOLATE);
+				if(mass<50)vel.z+=0.1;
+			}
+		}fail;
+	}
+}
+class HDNullPuff:HDFistPuff{
+	default{
+		+puffonactors
+		stamina 0;
+	}
+	states{
+	spawn:
+		TNT1 A 0 nodelay;
+		stop;
+	}
+}
+class HDZerkGibber:FastProjectile{
+	default{
+		+hittarget
+		projectile;speed 1;height 2;radius 2;
+	}
+	states{
+	spawn:
+		TNT1 A 0 nodelay{vel*=64;}
+		TNT1 A 1;
+		stop;
+	xdeath:
+		TNT1 A 1 A_GiveInventory("ZerkGib",1,AAPTR_TARGET);
+		stop;
+	}
+}
+class Ring:HDWeapon replaces Fist{
+	default{
+		+WEAPON.WIMPY_WEAPON +WEAPON.MELEEWEAPON +WEAPON.NOALERT +WEAPON.NO_AUTO_SWITCH
+		+forcepain
+		obituary "%o made %k take the kid gloves off.";
+		attacksound "*fist";
+		weapon.selectionorder 1;
+		weapon.kickback 120;
+		weapon.bobstyle "Alpha";
+		weapon.bobspeed 2.6;
+		weapon.bobrangex 0.1;
+		weapon.bobrangey 0.5;
+		weapon.slotnumber 1;
+	}
+	states{
+	ready:
+		TNT1 A 1{
+			A_WeaponReady(WRF_ALLOWRELOAD);
+			A_TakeInventory("IsKicking");
+		}goto readyend;
+	reload:
+		PUNF A 0 A_JumpIfInventory("IsFemale",1,3);
+		PUNG A 0 A_JumpIfInventory("IsMale",1,2);
+		TNT1 A 0;
+		#### A 1 offset(0,50){
+			if(floorz==pos.z)A_Recoil(-3);
+		}
+		#### A 1 offset(0,36);
+		#### A 0 A_JumpIfInventory("PowerStrength",1,"ZerkFlick");
+		#### AAAAAAA 0 A_CustomPunch((1),1,CPF_PULLIN,"HDNullPuff",36);
+		goto flickend;
+	zerkflick:
+		#### AAAAAAA 0 A_CustomPunch((random(1,3)),1,CPF_PULLIN,"HDNullPuff",36);
+	flickend:
+		#### AA 1 offset(0,38);
+		#### A 1 offset(0,42);
+		#### A 1 offset(0,50);
+		goto fire;
+	fire:
+	hold:
+	althold:
+		PUNF A 0 A_JumpIfInventory("IsFemale",1,3);
+		PUNG A 0 A_JumpIfInventory("IsMale",1,2);
+		TNT1 A 0;
+		#### A 0 A_GiveInventory("IsKicking");
+		#### A 0 A_JumpIfInventory("PowerStrength",1,"zerkpunch");
+		goto punch;
+	punch:
+		#### B 1 offset(0,32);
+		#### DDDDD 0 A_CustomPunch(1,0,0,"HDNullPuff",46);
+		#### D 0 A_CustomPunch(1,0,0,"HDFistPuff",46);
+		#### D 6;
+		#### CB 3;
+		TNT1 A 3;
+		TNT1 A 1 A_ReFire();
+		goto ready;
+	zerkpunch:
+		#### D 0 A_Recoil(-1);
+		#### D 0 A_CustomPunch(36,0,0,"HDFistPuff",46);
+		#### DDDDDDD 0 A_CustomPunch(1,0,0,"HDNullPuff",46);
+		#### D 0 A_CustomPunch(1,0,1,"HDSawPuff",36);
+		#### D 0 A_CustomPunch(1,0,0,"HDFistPuff",46);
+		#### D 0 A_SpawnProjectile("HDSawGibber");
+		#### D 3;
+		#### CB 1;
+		TNT1 A 5;
+		TNT1 A 2 A_ReFire();
+		goto ready;
+	altfire:
+		#### A 1 offset(0,36);
+		#### A 1 offset(0,50);
+		TNT1 A 0 A_GiveInventory("IsKicking",1);
+		TNT1 A 2 A_CheckFloor("lunge");
+		goto kick;
+	lunge:
+		TNT1 A 0 A_JumpIfInventory("Fatigue",30,"hold");
+		TNT1 A 0 A_GiveInventory("Fatigue",3);
+		TNT1 A 0 A_JumpIfInventory("PowerStrength",1,2);
+		TNT1 A 0 A_Jump(256,3);
+		TNT1 AA 1 A_Recoil(-random(4,8)*(countinv("PowerStrength")*2+1));
+		TNT1 A 0 offset(0,50) A_Recoil(-4);
+		TNT1 A 1 offset(0,70) A_Recoil(-4);
+	kick:
+		TNT1 A 0 A_GiveInventory("Fatigue",2);
+		TNT1 A 8 A_SpawnItemEx("KickProjectile",0,0,4,vel.x,vel.y,vel.z,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);
+		TNT1 A 5 A_JumpIfInventory("PowerStrength",1,1);
+		PUNF A 0 A_Refire();
+		goto ready;
+	spawn:
+		TNT1 A 1;
+		TNT1 A 0 A_GiveToTarget("DropMisc");
+		stop;
+	//delete the stuff below if the above works
+		TNT1 A 0 A_CheckProximity("spawndropped","PlayerPawn",20,1, CPXF_COUNTDEAD|CPXF_SETTARGET|CPXF_ANCESTOR|CPXF_CLOSEST|CPXF_NOZ);
+	spawnfresh:
+		TNT1 A 0;
+		stop;
+	spawndropped:
+		TNT1 A 0 A_GiveToTarget("DropMisc");
+		stop;
+	}
+}
+class IsKicking:InventoryFlag{}
+
+
+
+class HDFistPuff:BulletPuffMedium{
+	default{
+		+bloodlessimpact
+		damagetype "SmallArms0";
+		stamina 6;scale 0.5;
+	}
+	states{
+	xdeath:
+		TNT1 A 0{
+			if(target){
+				let ppr=target.findinventory("Ring");
+				if(ppr){
+					if(!tracer || tracer.health<1){
+						ppr.tracer=null;
+						return;
+					}else ppr.tracer=tracer;
+				}
+			}
+			tracer.A_GiveInventory("FistTurner");
+		}stop;
+	}
+}

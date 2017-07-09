@@ -346,9 +346,9 @@ actor LumberCell : Ammo
 	+inventory.ignoreskill +inventory.untossable ammo.backpackamount 0
 	states{spawn:TNT1 A 0 nodelay{return state("null");}stop}
 }
-actor HDSawGibber : fastprojectile
+actor HDSawGibber : HDZerkGibber
 {
-	projectile speed 1 height 2 radius 2 +hittarget +bloodsplatter
+	+bloodsplatter
 	states
 	{
 	spawn:
