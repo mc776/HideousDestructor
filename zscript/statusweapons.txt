@@ -194,7 +194,8 @@ extend class HDStatusBar{
 			}
 		}
 		else if(w is "Ring"){
-			if(w.tracer && w.tracer.health>0)drawwepnum(w.tracer.health,w.tracer.spawnhealth());
+			let ww=Ring(w);
+			if(ww && ww.targethealth)drawwepnum(ww.targethealth,ww.targetspawnhealth);
 		}
 		else if(w is "HDMedikitter"){
 			drawwepdot(-27,-11,(2,6));
