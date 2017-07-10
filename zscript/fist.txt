@@ -85,10 +85,10 @@ class Ring:HDWeapon replaces Fist{
 		if(onr){
 			int iy=onr.iyaw;
 			int ip=onr.ipitch;
-			if(abs(ip)>abs(iy))iy=ip;
-			if(iy>0)iy*=0.005;
+			if(abs(ip)>abs(iy))iy=-ip;
+			if(iy>0)iy*=0.01;
 			else if(iy<0)iy*=0.02;
-			dmg+=clamp(abs(iy),-dmg*2,dmg*2);
+			dmg+=min(abs(iy),dmg*2);
 		}
 
 		//need to be well grounded
