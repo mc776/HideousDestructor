@@ -317,16 +317,18 @@ class HDPlayerPawn:PlayerPawn{
 			if(!sm && fm>0)speed=2.8;
 			else speed=1.6;
 		}
-		if(
+		//cap speed depending on weapon status
+		if(countinv("WeaponBusy"))speed=min(speed,0.6);
+		else if(
 			//weapons so bulky they get in the way physically
 			//as a rule of thumb, anything that uses the "swinging" weapon bob
 			player.readyweapon is "Vulcanette"||
 			player.readyweapon is "BFG9k"
-		)speed=min(speed,speed,0.8);
+		)speed=min(speed,0.8);
 		if(countinv("PowerStrength"))speed*=1.5;
 		if(height<40)speed*=0.6;
 
-		//...except capping speeds
+		//...except snapping speeds
 		if(multiplayer && hd_3speed){
 			if(speed>2.)speed=2.6;  
 			else if(speed>0.6)speed=1.;
