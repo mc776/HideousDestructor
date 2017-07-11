@@ -197,6 +197,21 @@ extend class HDStatusBar{
 			let ww=Ring(w);
 			if(ww && ww.targethealth)drawwepnum(ww.targethealth,ww.targetspawnhealth);
 		}
+		else if(w is "SelfBandage"){
+			int of=0;
+			let hp=hdplayerpawn(pp);
+			if(hp && hp.woundcount){
+				drawimage(
+					"BLUDC0",(-17,-6),
+					DI_SCREEN_CENTER_BOTTOM|DI_ITEM_RIGHT,
+					0.6
+				);
+				of=clamp(hp.woundcount*0.2,1,3);
+				of=random(-of,of);
+			}
+			drawwepdot(-22,-8+of,(2,10));
+			drawwepdot(-17,-12+of,(12,2));
+		}
 		else if(w is "HDMedikitter"){
 			drawwepdot(-27,-11,(2,6));
 			drawwepdot(-25,-13,(6,2));
