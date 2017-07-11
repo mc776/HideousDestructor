@@ -1,9 +1,7 @@
 // ------------------------------------------------------------
 //   Mancubus
 // ------------------------------------------------------------
-
-ACTOR ManJuice : FatShot replaces FatShot
-{
+ACTOR ManJuice:FatShot replaces FatShot{
 	DamageType "Thermal"
 	Decal "Scorch"
 	+forcexybillboard
@@ -30,8 +28,7 @@ ACTOR ManJuice : FatShot replaces FatShot
 	}
 }
 
-ACTOR Mancubus : Fatso replaces Fatso
-{
+ACTOR Mancubus:Fatso replaces Fatso{
 	deathheight 20
 	radius 38
 	damagefactor "Thermal", 0.7
@@ -39,8 +36,7 @@ ACTOR Mancubus : Fatso replaces Fatso
 	+DONTHURTSPECIES
 	obituary "%o learned the hard way that, in Soviet Russia, fatty smoke YOU!"
 	painchance 16
-	States
-	{
+	states{
 	See:
 		FATT AABBCCDDEEFF 4 A_Chase
 		loop
@@ -50,29 +46,37 @@ ACTOR Mancubus : Fatso replaces Fatso
 		FATT GGGGGG 1 BRIGHT A_SpawnItemEx ("HDSmoke", 24, ((random(0,1)*2-1)*24), 18, random(2,4), 0,0,0, 0,160)	
 		FATT H 0 A_Jump (256, "Missile1", "Missile2", "Missile3")
 	Missile1:
-		FATT H 0 A_CustomMissile ("ManJuice",32,-24,random(0,12),CMF_AIMDIRECTION,pitch+frandom(1,4))
-		FATT H 0 A_CustomMissile ("ManJuice",32,24,random(0,-12),CMF_AIMDIRECTION,pitch+frandom(1,4))
-		goto MissilePost
+		FATT H 0{
+			A_SpawnProjectile("ManJuice",32,-24,random(0,12),
+				CMF_AIMDIRECTION,pitch-frandom(1,4));
+			A_SpawnProjectile("ManJuice",32,24,random(0,-12),
+				CMF_AIMDIRECTION,pitch-frandom(1,4));
+		}goto MissilePost
 	Missile2:
-		FATT H 0 A_CustomMissile ("ManJuice",32,-24,random(8,24),CMF_AIMDIRECTION,pitch+frandom(1,4))
-		FATT H 0 A_CustomMissile ("ManJuice",32,24,random(0,-2),CMF_AIMDIRECTION,pitch+frandom(1,4))
-		goto MissilePost
+		FATT H 0{
+			A_SpawnProjectile("ManJuice",32,-24,random(8,24),
+				CMF_AIMDIRECTION,pitch-frandom(1,4));
+			A_SpawnProjectile("ManJuice",32,24,random(0,-2),
+				CMF_AIMDIRECTION,pitch-frandom(1,4));
+		}goto MissilePost
 	Missile3:
-		FATT H 0 A_CustomMissile ("ManJuice",32,-24,random(0,2),CMF_AIMDIRECTION,pitch+frandom(1,4))
-		FATT H 0 A_CustomMissile ("ManJuice",32,24,random(-8,-24),CMF_AIMDIRECTION,pitch+frandom(1,4))
-		goto MissilePost
+		FATT H 0{
+			A_SpawnProjectile("ManJuice",32,-24,random(0,2),
+				CMF_AIMDIRECTION,pitch-frandom(1,4));
+			A_SpawnProjectile("ManJuice",32,24,random(-8,-24),
+				CMF_AIMDIRECTION,pitch-frandom(1,4));
+		}goto MissilePost
 	MissilePost:
-		FATT H 10 bright A_GiveInventory ("Clip", 1)
-		FATT H 0 A_JumpIfInventory ("Clip", 3, "MissileStop")
+		FATT H 10 bright A_GiveInventory("Clip",1)
+		FATT H 0 A_JumpIfInventory("Clip",3,"MissileStop")
 		FATT IG 5 A_FaceTarget(20,20)
-		FATT H 0 A_Jump (256, "Missile2", "Missile3")
+		FATT H 0 A_Jump(256,"Missile2","Missile3")
 	MissileStop:
 		FATT GGGG 1 BRIGHT A_SpawnItemEx ("HDSmoke", 24, ((random(0,1)*2-1)*24), 18, random(2,4), 0, 0)	
 		FATT I 5 A_FaceTarget(20,20)
 		FATT G 5 A_TakeInventory ("Clip")
 		goto See
 	Death:
-
 		"####" A 0 A_GiveInventory("HDCorpseFlags",1)
 		TNT1 A 0 A_SpawnItemEx ("tempshield", 0,0,0, velx,vely,velz, 0,40)
 		FATT K 6 A_SpawnItemEx ("HDExplosion", 0, 0, 36)
@@ -95,7 +99,6 @@ ACTOR Mancubus : Fatso replaces Fatso
 		FATT TTSSRRQPONMLK 5
 		goto see
 	Death.NotVileEnough:
-
 		"####" A 0 A_GiveInventory("HDCorpseFlags")
 		TNT1 A 0 A_NoBlocking
 		TNT1 A 0 A_GiveInventory("VileCount")
