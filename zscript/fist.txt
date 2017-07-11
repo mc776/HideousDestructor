@@ -89,10 +89,10 @@ class Ring:HDWeapon replaces Fist{
 			if(iy>0)iy*=0.01;
 			else if(iy<0)iy*=0.02;
 			dmg+=min(abs(iy),dmg*2);
-		}
 
-		//need to be well grounded
-		if(floorz<pos.z)dmg*=0.5;
+			//need to be well grounded
+			if(onr.zat<pos.z)dmg*=0.5;
+		}
 
 		//shit happens
 		dmg*=frandom(0.6,1.6);

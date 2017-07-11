@@ -194,7 +194,7 @@ class HDStatusBar:DoomStatusBar{
 		if(cplayer.readyweapon)drawweaponstatus(cplayer.readyweapon);
 
 		//weapon sprite
-		if(!r_drawplayersprites)
+		if(!r_drawplayersprites||cvar.getcvar("hd_hudsprite",cplayer))
 		drawselectedweapon(0,
 			state==HUD_Fullscreen?-55:-35,
 			DI_SCREEN_CENTER_BOTTOM|DI_ITEM_CENTER_BOTTOM
