@@ -107,8 +107,11 @@ class HDMedikitter:HDWoundFixer{
 		}
 		goto super::select;
 	reload:
-		TNT1 A 14{UseInventory(FindInventory("HDDropArmour"));A_ClearRefire();}
-		goto ready;
+		TNT1 A 14{
+			if(countinv("PowerIronFeet"))useinventory(findinventory("portableradsuit"));
+			else UseInventory(FindInventory("HDDropArmour"));
+			A_ClearRefire();
+		}goto ready;
 	flashstaple:
 		TNT1 A 1{
 			A_PlaySound("weapons/bigcrack",CHAN_WEAPON);

@@ -1,12 +1,6 @@
 //-------------------------------------------------
 // Radiation Suit
 //-------------------------------------------------
-class HDRadSuit:RadSuit{
-	default{
-		+inventory.persistentpower
-		Powerup.Duration -0x7FFFFFFF;
-	}
-}
 class PortableRadsuit:HDPickup{
 	default{
 		inventory.amount 1;
@@ -17,15 +11,27 @@ class PortableRadsuit:HDPickup{
 		inventory.icon "SUITB0";
 		missiletype "PortableRadsuitPickup";
 	}
+	bool worn;
+	override void DoEffect(){
+		super.DoEffect();
+		if(owner){
+			if(worn)owner.A_GiveInventory("PowerIronFeet");
+			else owner.A_TakeInventory("PowerIronFeet");
+		}
+		if(!amount)GoAwayAndDie();
+	}
+	override void DetachFromOwner(){
+		owner.A_TakeInventory("PowerIronFeet");
+		super.DetachFromOwner();
+	}
 	states{
 	use:
 		TNT1 A 0{
 			if(countinv("PowerIronFeet")<1){
-				A_GiveInventory("HDRadSuit");
+				invoker.worn=true;
 			}else{
+				invoker.worn=false;
 				A_SpawnItemEx("PortableRadsuitPickup",0,0,height/2,2,0,4);
-				A_TakeInventory("PowerIronFeet");
-				A_TakeInventory("HDRadSuit");
 				A_TakeInventory("PortableRadsuit",1);
 			}
 			A_SetBlend("00 00 00",1,6,"00 00 00");
