@@ -28,8 +28,12 @@ extend class HDPlayerPawn{
 		A_SetInventory("DERPMode",getcvar("hd_derpmode"));
 		if(countinv("HDSMGChamber"))
 			A_SetInventory("SMGFullAuto",getcvar("hd_smgfiremode"));
-		if(countinv("HDPistolFullAuto")&&getcvar("hd_pistauto"))
-			A_GiveInventory("HDPistolFullAuto",2);
+		if(getcvar("hd_pistauto")){
+			if(countinv("HDPistolFullAuto"))
+				A_GiveInventory("HDPistolFullAuto",2);
+			if(countinv("HDSecondPistolFullAuto"))
+				A_GiveInventory("HDSecondPistolFullAuto",2);
+		}
 		if(countinv("Hunter"))
 			A_SetInventory("ShotgunAuto",getcvar("hd_huntauto"));
 		if(countinv("ZM66Chamber")>0){  
@@ -77,10 +81,17 @@ class SoldierExtras:ActionItem{
 			A_GiveInventory("PortableStimpack",2);
 			A_GiveInventory("GreenArmour",144);
 
-			A_GiveInventory("HDPistol");
-			A_GiveInventory("HDPistolLoaded",15);
-			A_GiveInventory("HDPistolChamber");
-			A_GiveInventory("HDPistolMag",3);
+			if(!countinv("HDPistol")){
+				A_GiveInventory("HDPistol");
+				A_GiveInventory("HDPistolLoaded",15);
+				A_GiveInventory("HDPistolChamber");
+			}
+			else if(!countinv("HDSecondPistol")){
+				A_GiveInventory("HDSecondPistol");
+				A_GiveInventory("HDSecondPistolLoaded",15);
+				A_GiveInventory("HDSecondPistolChamber");
+			}
+			A_SetInventory("HDPistolMag",max(countinv("HDPistolMag"),3));
 
 			A_GiveInventory("HDFragGrenadeAmmo",3);
 			A_GiveInventory("DERPUsable");
