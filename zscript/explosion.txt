@@ -108,9 +108,11 @@ extend class HDActor{
 					A_Face(it);
 					if(
 						it!=self
-						&& it.bshootable
-						&& it.radius
-						&& it.height
+						&&(it.bvulnerable ||(
+							it.bshootable
+							&& it.radius
+							&& it.height
+						)
 					){
 						//determine damage as proportion of distance and size
 						//get lines to centre and one of the corners
