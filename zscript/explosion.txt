@@ -108,10 +108,12 @@ extend class HDActor{
 					A_Face(it);
 					if(
 						it!=self
-						&&(it.bvulnerable ||(
-							it.bshootable
-							&& it.radius
-							&& it.height
+						&&(
+							it.bvulnerable ||(
+								it.bshootable
+								&& it.radius
+								&& it.height
+							)
 						)
 					){
 						//determine damage as proportion of distance and size
