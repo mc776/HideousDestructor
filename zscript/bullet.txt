@@ -309,13 +309,13 @@ class HDBullet:HDActor{
 				if(mass>80) b="HDSevenMilTrail";
 				else b="HDFourMilTrail";
 			}else if(speed>800){
-				A_SetDamageType("SmallArms2");
+				A_SetDamageType("SmallArms3");
 				b="HDFourMilTrail";
 			}else if(speed>HDCONST_SPEEDOFSOUND){
-				A_SetDamageType("SmallArms1");
+				A_SetDamageType("SmallArms2");
 				b="HDBuckTrail";
 			}else if(speed>100){
-				A_SetDamageType("SmallArms0");
+				A_SetDamageType("SmallArms1");
 				b="HDNineMilTrail";
 			}else{
 				A_SetDamageType("SmallArms0");
@@ -450,7 +450,7 @@ class DecoBulleter776f:DecoBulleter776{
 class DecoBulleter9:DecoBulleter{
 	default{
 		missiletype "HDBullet9";
-		accuracy 5;
+		accuracy 2;
 	}
 }
 class DecoBulleter9f:DecoBulleter9{
