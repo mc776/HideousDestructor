@@ -123,15 +123,6 @@ class HDFragGrenade:SlowProjectile{
 		shootz = height*0.5+8;
 		divrad=1./(radius*1.9);
 		grav=getgravity();
-		if(target){
-			speed=2+target.countinv("grenadeforce");
-			pitch=target.pitch;
-			if(target.countinv("powerstrength")) speed*=2;
-			fuze=target.countinv("fragtimer");
-			target.A_TakeInventory("fragtimer");
-			target.A_TakeInventory("grenadeforce");
-			a_changevelocity(cos(pitch)*speed,0,-sin(pitch)*speed,CVF_RELATIVE);
-		}
 	}
 	states{
 	spawn:
@@ -168,6 +159,51 @@ class HDFragSpoon:HDDebris{
 	}
 }
 
+
+class HDGrenadeToss:ActionItem{
+	action vector3 SwingThrow(){
+		vector2 iyy=(angle,pitch);
+		double cosp=cos(iyy.y);
+		vector3 oldpos=24*(
+			cosp*cos(iyy.x),
+			cosp*sin(iyy.x),
+			sin(iyy.y)
+		);
+		iyy+=(getplayerinput(MODINPUT_YAW),getplayerinput(MODINPUT_PITCH))*(360./65536.);
+		cosp=cos(iyy.y);
+		vector3 newpos=24*(
+			cosp*cos(iyy.x),
+			cosp*sin(iyy.x),
+			sin(iyy.y)
+		);
+		return newpos-oldpos;
+	}
+	states{
+	pickup:
+		TNT1 A 0{
+			if(countinv("SpoonOff")<1){A_SpawnItemEx("HDFragSpoon",cos(pitch)*-4,-3,height-6-sin(pitch)*-4,cos(pitch)*cos(angle-random(30,45))*3+vel.x,cos(pitch)*sin(angle-random(30,45))*3+vel.y,-sin(pitch+random(10,20))*3+vel.z,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH);}
+			int garbage;actor gg;
+			[garbage,gg]=A_SpawnItemEx("HDFragGrenade",0,0,height-6,cos(pitch)*cos(angle)*4+vel.x,cos(pitch)*sin(angle)*4+vel.y,-sin(pitch)*4+vel.z,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH);
+
+			A_TakeInventory("HDFragGrenadeAmmo",1,TIF_NOTAKEINFINITE);
+			int gforce=clamp(countinv("GrenadeForce"),2,40+health*0.1);
+
+			let grenade=HDFragGrenade(gg);if(!grenade) return;
+			if(countinv("powerstrength"))speed*=2;
+			grenade.pitch=pitch;grenade.angle=angle;
+			grenade.fuze=countinv("fragtimer");
+
+			let wp=HDFragGrenades(player.readyweapon);
+			if(wp){
+				grenade.vel+=SwingThrow();
+			}
+
+			grenade.a_changevelocity(cos(pitch)*gforce,0,-sin(pitch)*gforce,CVF_RELATIVE);
+			A_TakeInventory("fragtimer");
+			A_TakeInventory("grenadeforce");
+		}fail;
+	}
+}
 
 
 

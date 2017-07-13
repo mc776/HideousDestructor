@@ -34,21 +34,6 @@ actor HDFragGrenadeAmmo : Ammo
 		stop
 	}
 }
-actor HDGrenadeToss:ActionItem{
-	states{
-	pickup:
-		TNT1 A 0{ 
-			if(countinv("SpoonOff")<1){A_SpawnItemEx("HDFragSpoon",cos(pitch)*-4,-3,height-6-sin(pitch)*-4,cos(pitch)*cos(angle-random(30,45))*3+velx,cos(pitch)*sin(angle-random(30,45))*3+vely,-sin(pitch+random(10,20))*3+velz,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH);}
-			A_SpawnItemEx("HDFragGrenade",0,0,height-6,cos(pitch)*cos(angle)*4+velx,cos(pitch)*sin(angle)*4+vely,-sin(pitch)*4+velz,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH);
-			A_TakeInventory("HDFragGrenadeAmmo",1,TIF_NOTAKEINFINITE);
-			A_SetInventory("Counter",
-				+(100-health)*0.1
-			);
-			if(countinv("GrenadeForce")>50-countinv("Counter")){
-				A_TakeInventory("GrenadeForce",countinv("GrenadeForce")-(50-countinv("Counter")));}
-		}stop
-	}
-}
 actor FragP : HDUPK replaces HDFragGrenadeAmmo
 {
 	scale 0.3 +forcexybillboard
