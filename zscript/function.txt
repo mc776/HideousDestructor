@@ -243,6 +243,17 @@ struct HDMath{
 		}
 		return count;
 	}
+	//calculate the speed at which 2 actors are moving towards each other
+	//surely there's got to be a faster way to do this x_x
+	static double TowardsEachOther(actor a1, actor a2){
+		vector3 oldpos1=a1.pos;
+		vector3 oldpos2=a2.pos;
+		vector3 newpos1=oldpos1+a1.vel;
+		vector3 newpos2=oldpos2+a2.vel;
+		double l1=(oldpos1-oldpos2).length();
+		double l2=(newpos1-newpos2).length();
+		return l1-l2;
+	}
 }
 struct HDF play{
 	//return the maximum capacity for this actor and this inventory

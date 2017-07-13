@@ -80,6 +80,10 @@ class Ring:HDWeapon replaces Fist{
 		if(!a.tracer)return;
 		actor punchee=a.tracer;
 
+		//charge!
+		if(invoker.flicked)dmg*=1.5;
+		else dmg+=HDMath.TowardsEachOther(self,punchee)*2;
+
 		//come in swinging
 		let onr=hdplayerpawn(invoker.owner);
 		if(onr){
@@ -169,7 +173,7 @@ class Ring:HDWeapon replaces Fist{
 		goto punch;
 	punch:
 		#### B 1 offset(0,32);
-		#### D 0 HDPunch(invoker.flicked?30:20);
+		#### D 0 HDPunch(12);
 		#### D 6;
 		#### CB 3;
 		TNT1 A 3;
