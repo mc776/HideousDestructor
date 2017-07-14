@@ -129,6 +129,7 @@ class Ring:HDWeapon replaces Fist{
 		}
 
 		if(hd_debug)A_Log(string.format("Punched %s for %i damage!",punchee.getclassname(),dmg));
+		if(dmg*2>punchee.health)punchee.A_PlaySound("misc/bulletflesh",CHAN_BODY);  
 		punchee.damagemobj(a,self,dmg,"SmallArms0");
 
 		if(!punchee)invoker.targethealth=0;else{
