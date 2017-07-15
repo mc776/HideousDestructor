@@ -8,7 +8,6 @@ class PortableMedikit:HDPickup{
 		inventory.maxamount 4;
 		inventory.pickupmessage "Picked up a medikit.";
 		inventory.icon "PMEDA0";
-		inventory.pickupsound "weapons/pocket";
 		scale 0.4;
 	}
 	override void postbeginplay(){
@@ -42,40 +41,6 @@ class PortableMedikit:HDPickup{
 			A_PlaySound("weapons/pocket",CHAN_WEAPON);
 		}
 		fail;
-	}
-}
-class PortableMedikitPickup:HDUPK{
-	default{
-		activesound "weapons/pocket";
-		hdupk.pickuptype "PortableMedikit";
-		hdupk.pickupscale 0.4,0.4;
-		hdupk.bigpickupscale 0.51,0.39;
-		accuracy 2;
-	}
-	override void postbeginplay(){
-		super.postbeginplay();
-		if(vel==(0,0,0)){
-			stamina=1;
-			A_GiveInventory("PortableStimpack",1);
-		}
-	}
-	states{
-	spawn:
-		MEDI A -1 A_Stop();
-	}
-	override void A_HDUPKGive(){
-		if(target && countinv("PortableStimpack")){
-			int cur=target.countinv("PortableStimpack");
-			target.A_GiveInventory("PortableStimpack",countinv("PortableStimpack"));
-			int sub=target.countinv("PortableStimpack")-cur;
-			if(sub)A_TakeInventory("PortableStimpack",sub);
-			angle=target.angle;
-			while(countinv("PortableStimpack")){
-				A_TakeInventory("PortableStimpack",1);
-				A_SpawnItemEx("PortableStimpack",0,0,0,3,0,1,0,SXF_NOCHECKPOSITION);
-			}
-		}
-		super.A_HDUPKGive();
 	}
 }
 

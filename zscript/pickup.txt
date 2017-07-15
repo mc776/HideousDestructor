@@ -162,8 +162,8 @@ class HDUPK:HDActor{
 			vel+=(
 				target.pos.x-pos.x,
 				target.pos.y-pos.y,
-				target.pos.z+target.height*0.6-pos.z+2
-			)*0.3;
+				target.pos.z+target.height*0.6-pos.z
+			)*0.3+(0,0,2);
 		}
 		---- A 0{
 			//in case of death or teleport mid-grab
@@ -206,13 +206,15 @@ class HDHPK:HDUPK{
 }
 
 
-//just so I don't have to redefine these every time
-//special use: amount becomes hdupk's stamina
+
 class HDPickup:CustomInventory{
 	default{
 		+inventory.invbar +inventory.persistentpower +solid
 		inventory.interhubamount int.MAX;
+
 		radius 8; height 10; scale 0.8;
+		inventory.pickupsound "weapons/pocket";
+		accuracy 1;
 	}
 	override void doeffect(){
 		if(!amount)goawayanddie();
