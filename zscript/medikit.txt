@@ -4,12 +4,32 @@
 
 class PortableMedikit:HDPickup{
 	default{
+		+inventory.transfer
 		inventory.maxamount 4;
 		inventory.pickupmessage "Picked up a medikit.";
 		inventory.icon "PMEDA0";
-		missiletype "PortableMedikitPickup";
+		inventory.pickupsound "weapons/pocket";
+		scale 0.4;
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		if(!owner)A_GiveInventory("PortableStimpack");
+	}
+	override void actualpickup(actor other){
+		if(other &&
+			other.A_JumpIfInventory("PortableStimpack",0,"null")
+		){
+			angle=other.angle;
+			while(countinv("PortableStimpack")){
+				A_TakeInventory("PortableStimpack",1);
+				A_SpawnItemEx("PortableStimpack",0,0,0,3,0,1,0,SXF_NOCHECKPOSITION);
+			}
+		}
+		super.actualpickup(other);
 	}
 	states{
+	spawn:
+		MEDI A -1;
 	use:
 		TNT1 A 0{
 			if(!FindInventory("HDMedikitter")){
@@ -24,7 +44,7 @@ class PortableMedikit:HDPickup{
 		fail;
 	}
 }
-class PortableMedikitPickup:HDUPK replaces PortableMedikit{
+class PortableMedikitPickup:HDUPK{
 	default{
 		activesound "weapons/pocket";
 		hdupk.pickuptype "PortableMedikit";

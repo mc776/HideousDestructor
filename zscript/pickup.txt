@@ -11,7 +11,7 @@ class userpickerupper:hdactor{
 	override bool cancollidewith(actor other,bool passive){
 		if(
 			other is "HDUPK"
-			||other is "HDUsablePickup"
+			||other is "Inventory"
 		)return true;
 		return false;
 	}
@@ -22,19 +22,19 @@ class userpickerupper:hdactor{
 				if(blockingmobj){
 					if(
 						blockingmobj is "HDUPK"
-						||blockingmobj is "HDUsablePickup"
 					){
 						blockingmobj.target=self.target;
 						if(blockingmobj.findstate("grab",true))blockingmobj.setstatelabel("grab");
 						let ppp=HDPlayerPawn(target);if(ppp)ppp.hasgrabbed=true;
+if(hd_debug)A_Log("Consider HDPickup for this.");
 						destroy();return;
 					}
 					else if(
-						blockingmobj is "CustomInventory"||
-						blockingmobj is "Inventory"||
-						blockingmobj is "Ammo"
+						blockingmobj is "HDPickup"
 					){
-						blockingmobj.touch(self.target);
+						tracer=blockingmobj;
+						let ppp=HDPlayerPawn(target);if(ppp)ppp.hasgrabbed=true;
+						setstatelabel("grabpickup");return;
 					}
 					else if(blockingline){destroy();return;}
 				}
@@ -43,6 +43,39 @@ class userpickerupper:hdactor{
 			if(floorz>pos.z && floorz<target.height+target.pos.z)setz(floorz);
 		}
 		destroy();
+	}
+	states{
+	grabpickup:
+		TNT1 A 0{bsolid=false;}
+		TNT1 AA 2{
+			tracer.vel+=(
+				target.pos.x-tracer.pos.x,
+				target.pos.y-tracer.pos.y,
+				target.pos.z+target.height*0.6-tracer.pos.z+2
+			)*0.3;
+		}
+		TNT1 A 0{
+			tracer.A_Stop();
+			//in case of death or teleport mid-grab
+			if(
+				target
+				&&!target.bkilled
+				&&target.health>0        
+				&&tracer.getdistance(target)<64
+			){
+				let ht=hdupk(master);
+				if(ht){
+					ht.target=target;
+					ht.a_hdupkgive();
+				}
+
+				let pt=hdpickup(tracer);
+				if(pt)pt.actualpickup(target);
+
+				let tt=inventory(tracer);
+				if(tt)tt.touch(target);
+			}
+		}stop;
 	}
 }
 
@@ -177,18 +210,28 @@ class HDHPK:HDUPK{
 //special use: amount becomes hdupk's stamina
 class HDPickup:CustomInventory{
 	default{
-		+inventory.invbar +inventory.persistentpower
+		+inventory.invbar +inventory.persistentpower +solid
 		inventory.interhubamount int.MAX;
-		radius 20; height 16; scale 0.8;
+		radius 8; height 10; scale 0.8;
 	}
 	override void doeffect(){
 		if(!amount)goawayanddie();
+	}
+	override void touch(actor toucher){}
+	virtual void actualpickup(actor other){
+		inventory.touch(other);
+	}
+	override bool cancollidewith(actor other,bool passive){
+		if(other is "userpickerupper")return true;
+		else if(bpushable)return super.cancollidewith(other,passive);
+		return false;
 	}
 	states{
 	spawn:
 		TNT1 A 1;
 		TNT1 A 0{
 			if(missilename){
+if(hd_debug)A_Log("Deprecated pickup.");
 				actor a=spawn(missilename,pos,ALLOW_REPLACE);
 				a.vel=vel;if(invoker.amount>1)a.stamina=invoker.amount;
 				destroy();return;
@@ -196,74 +239,4 @@ class HDPickup:CustomInventory{
 		}stop;
 	}
 }
-
-
-
-
-//new prototype: using itself as an inventory
-class HDUsablePickup:CustomInventory{
-	default{
-		+inventory.transfer +solid +noblockmonst +notrigger
-		height 8;radius 8;
-
-		inventory.pickupmessage "Picked up some shit.";
-		inventory.pickupsound "misc/i_pkup";
-		inventory.maxamount 3;
-	}
-	override bool cancollidewith(actor other,bool passive){
-		if(bpushable)return super.cancollidewith(other,passive);
-		if(other is "userpickerupper") return true;
-		return false;
-	}
-	override void Touch(actor toucher){}
-	states{
-	spawn:
-		CLIP A -1;
-	grab:
-		---- AA 2{
-			vel+=(
-				invoker.target.pos.x-pos.x,
-				invoker.target.pos.y-pos.y,
-				invoker.target.pos.z+target.height*0.6-pos.z+2
-			)*0.3;
-		}
-		---- A 0{
-			//in case of death or teleport mid-grab
-			if(
-				!invoker.target
-				||invoker.target.bkilled
-				||invoker.getdistance(invoker.target)>64
-			){
-				invoker.A_Stop();
-				invoker.setstatelabel("spawn");
-			}else{
-				if(invoker.target)invoker.HDUPKAttach(invoker.target);
-			}
-		}goto spawn;
-	}
-	virtual void HDUPKAttach(actor other){
-		inventory a=other.findinventory(getclass());
-		int cmt=other.countinv(getclass());
-		int cmx;if(a)cmx=hdf.maxinv(other,getclass());
-		if(
-			!cmt||
-			cmt<cmx
-		){
-			setorigin(other.pos+(0,0,other.height-24),true);
-			if(!a)attachtoowner(other);else{
-				int giveamt=min(amount,cmx-cmt);
-				a.amount+=giveamt;
-				amount-=giveamt;
-				if(amount<1)destroy();
-			}
-			other.A_PlaySound(pickupsound,CHAN_AUTO);
-			other.A_Log(string.format("\cg%s",pickupmessage()),true);
-		}else{
-			A_Stop();
-			setstatelabel("spawn");
-		}
-	}
-}
-
-
 
