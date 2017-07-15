@@ -160,6 +160,9 @@ extend class HDActor{
 								);
 							}
 
+							//limit damage to non-gibbing levels
+							if(dmg>it.health+it.gibhealth)dmg-=it.gibhealth;
+
 							//and finally the good stuff
 							it.DamageMobj(self,source,dmg,fragdamagetype,DMG_THRUSTLESS,0);
 						}
