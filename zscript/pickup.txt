@@ -235,8 +235,16 @@ class HDPickup:CustomInventory{
 			if(missilename){
 if(hd_debug)A_Log("Deprecated pickup.");
 				actor a=spawn(missilename,pos,ALLOW_REPLACE);
-				a.vel=vel;if(invoker.amount>1)a.stamina=invoker.amount;
-				destroy();return;
+				a.vel=invoker.vel;if(invoker.amount>1)a.stamina=invoker.amount;
+				invoker.destroy();return;
+			}else{
+				while(invoker.amount>invoker.accuracy){
+					actor a=spawn(invoker.getclassname(),invoker.pos,ALLOW_REPLACE);
+					inventory aa=inventory(a);
+					aa.amount=invoker.accuracy;invoker.amount-=invoker.accuracy;
+					aa.vel=invoker.vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
+				}
+				invoker.setstatelabel("spawn2");
 			}
 		}stop;
 	}
