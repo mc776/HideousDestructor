@@ -13,12 +13,7 @@ actor DropFrag:ActionItem{
 actor DropMisc:ActionItem{
 	states{
 	pickup:
-		TNT1 A 0{
-			if(countinv("PortableLiteAmp")){
-				A_TakeInventory("PortableLiteAmp",1);
-				A_SpawnItemEx("PortableLiteAmpPickup",random(8,12),random(-4,4),24,random(3,5),0,0,random(-16,16),SXF_SETTARGET);
-			}
-		}
+		TNT1 A 0 A_DropInventory("PortableLiteAmp")
 		TNT1 AAA 0{
 			if(countinv("PortableRadsuit")){
 				A_TakeInventory("PortableRadsuit",1);

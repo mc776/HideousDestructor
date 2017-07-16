@@ -265,6 +265,13 @@ class HDStatusBar:DoomStatusBar{
 				mAmountFont,FormatNumber(cplayer.mo.countinv("StoredArmour")),
 				(numposx,numposy),flags|DI_TEXT_ALIGN_RIGHT,Font.CR_OLIVE
 			);
+			else if(ivs is "PortableLiteAmp"){
+				let pla=PortableLiteAmp(ivs);
+				if(pla)drawstring(
+					mAmountFont,FormatNumber((84000-pla.spent)/840),
+					(numposx,numposy),flags|DI_TEXT_ALIGN_RIGHT,Font.CR_OLIVE
+				);
+			}
 			else drawstring(mAmountFont,FormatNumber(ivs.amount),
 				(numposx,numposy),flags|DI_TEXT_ALIGN_RIGHT,Font.CR_OLIVE
 			);
