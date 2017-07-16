@@ -9,11 +9,10 @@ class userpickerupper:hdactor{
 		height 2;radius 2;
 	}
 	override bool cancollidewith(actor other,bool passive){
-		if(
+		return(
 			other is "HDUPK"
 			||other is "Inventory"
-		)return true;
-		return false;
+		)
 	}
 	override void postbeginplay(){
 		if(vel.xy==(0,0))vel.x=minvel;
@@ -224,9 +223,7 @@ class HDPickup:CustomInventory{
 		inventory.touch(other);
 	}
 	override bool cancollidewith(actor other,bool passive){
-		if(other is "userpickerupper")return true;
-		else if(bpushable)return super.cancollidewith(other,passive);
-		return false;
+		return(other is "userpickerupper");
 	}
 	states{
 	spawn:
