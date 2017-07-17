@@ -225,7 +225,14 @@ class HDPickup:CustomInventory{
 	}
 	override void touch(actor toucher){}
 	virtual void actualpickup(actor other){
-		inventory.touch(other);
+		name gcn=getclassname();
+		int maxtake=HDF.MaxInv(other,gcn)-other.countinv(gcn);
+		if(maxtake<amount){
+			amount-=maxtake;
+			other.A_GiveInventory(gcn,maxtake);
+			setstatelabel("spawn2");
+		}
+		else trypickup(other);
 	}
 	override bool cancollidewith(actor other,bool passive){
 		return(other is "userpickerupper");
@@ -275,7 +282,7 @@ class HDAmmo:Ammo{
 				aa.amount=accuracy;invoker.amount-=accuracy;
 				aa.vel=vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
 			}
-			invoker.setstatelabel("spawn2");
+			setstatelabel("spawn2");
 		}stop;
 	}
 }

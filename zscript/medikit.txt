@@ -4,7 +4,6 @@
 
 class PortableMedikit:HDPickup{
 	default{
-		+inventory.transfer
 		inventory.maxamount 4;
 		inventory.pickupmessage "Picked up a medikit.";
 		inventory.icon "PMEDA0";
@@ -15,20 +14,27 @@ class PortableMedikit:HDPickup{
 		if(!owner)A_GiveInventory("PortableStimpack");
 	}
 	override void actualpickup(actor other){
-		if(other &&
-			other.A_JumpIfInventory("PortableStimpack",0,"null")
-		){
-			angle=other.angle;
-			while(countinv("PortableStimpack")){
-				A_TakeInventory("PortableStimpack",1);
-				A_SpawnItemEx("PortableStimpack",0,0,0,3,0,1,0,SXF_NOCHECKPOSITION);
+		if(countinv("PortableStimpack")){
+			if(other &&
+				other.A_JumpIfInventory("PortableStimpack",0,"null")
+			){
+				angle=other.angle;
+				while(countinv("PortableStimpack")){
+					A_TakeInventory("PortableStimpack",1);
+					A_SpawnItemEx("PortableStimpack",0,0,0,3,0,1,0,SXF_NOCHECKPOSITION);
+				}
+			}else{
+				other.A_GiveInventory("PortableStimpack");
 			}
 		}
 		super.actualpickup(other);
 	}
 	states{
-	spawn:
-		MEDI A -1;
+	spawn2:
+		MEDI A -1{
+			if(invoker.countinv("PortableStimpack"))invoker.scale=(0.47,0.4);
+			else invoker.scale=(0.4,0.4);
+		}
 	use:
 		TNT1 A 0{
 			if(!FindInventory("HDMedikitter")){
