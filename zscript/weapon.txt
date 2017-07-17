@@ -10,6 +10,7 @@ class HDWeapon:Weapon{
 	property GunDimensions: gunmass,barrellength,barrelwidth,barreldepth;
 	default{
 		+weapon.ammo_optional +weapon.alt_ammo_optional +weapon.noalert +weapon.noautoaim
+		+solid +noblockmonst +notrigger
 		weapon.AmmoGive 0;weapon.AmmoGive2 0;
 		weapon.ammouse1 0;weapon.ammouse2 0;
 		weapon.bobstyle "Alpha";
@@ -61,6 +62,16 @@ class HDWeapon:Weapon{
 			A_SetPitch(pitch+mc0.y,SPF_INTERPOLATE);
 			A_SetAngle(angle+mc0.x,SPF_INTERPOLATE);
 		}
+	}
+	override void touch(actor toucher){}
+	virtual void actualpickup(actor other){
+		if(other.countinv(getclassname()))return;
+		other.A_Log(string.format("\cg%s",pickupmessage()),true);
+		trypickup(other);
+		other.A_PlaySound(pickupsound,CHAN_AUTO);
+	}
+	override bool cancollidewith(actor other,bool passive){
+		return(other is "userpickerupper");
 	}
 	states{
 	spawn:

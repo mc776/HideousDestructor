@@ -29,6 +29,7 @@ class userpickerupper:hdactor{
 					}
 					else if(
 						blockingmobj is "HDPickup"
+						||blockingmobj is "HDWeapon"
 					){
 						tracer=blockingmobj;
 						let ppp=HDPlayerPawn(target);if(ppp)ppp.hasgrabbed=true;
@@ -70,6 +71,9 @@ class userpickerupper:hdactor{
 
 				let pt=hdpickup(tracer);
 				if(pt){pt.actualpickup(target);return;}
+
+				let wt=hdweapon(tracer);
+				if(wt){wt.actualpickup(target);return;}
 
 				let tt=inventory(tracer);
 				if(tt){tt.touch(target);return;}
@@ -213,6 +217,8 @@ class HDPickup:CustomInventory{
 			setstatelabel("spawn2");
 		}
 		else trypickup(other);
+		other.A_PlaySound(pickupsound,CHAN_AUTO);
+		other.A_Log(string.format("\cg%s",pickupmessage()),true);
 	}
 	override bool cancollidewith(actor other,bool passive){
 		return(other is "userpickerupper");
