@@ -164,14 +164,14 @@ class HDGrenadeToss:ActionItem{
 	action vector3 SwingThrow(){
 		vector2 iyy=(angle,pitch);
 		double cosp=cos(iyy.y);
-		vector3 oldpos=24*(
+		vector3 oldpos=(
 			cosp*cos(iyy.x),
 			cosp*sin(iyy.x),
 			sin(iyy.y)
 		);
 		iyy+=(getplayerinput(MODINPUT_YAW),getplayerinput(MODINPUT_PITCH))*(360./65536.);
 		cosp=cos(iyy.y);
-		vector3 newpos=24*(
+		vector3 newpos=(
 			cosp*cos(iyy.x),
 			cosp*sin(iyy.x),
 			sin(iyy.y)
@@ -189,16 +189,15 @@ class HDGrenadeToss:ActionItem{
 			int gforce=clamp(countinv("GrenadeForce"),2,40+health*0.1);
 
 			let grenade=HDFragGrenade(gg);if(!grenade) return;
-			if(countinv("powerstrength"))speed*=2;
+			if(countinv("powerstrength"))gforce*=2;
 			grenade.pitch=pitch;grenade.angle=angle;
 			grenade.fuze=countinv("fragtimer");
 
 			let wp=HDFragGrenades(player.readyweapon);
 			if(wp){
-				grenade.vel+=SwingThrow();
+				grenade.vel+=SwingThrow()*gforce;
 			}
-
-			grenade.a_changevelocity(cos(pitch)*gforce,0,-sin(pitch)*gforce,CVF_RELATIVE);
+			grenade.a_changevelocity(cos(pitch)*gforce*0.5,0,-sin(pitch)*gforce*0.5,CVF_RELATIVE);
 			A_TakeInventory("fragtimer");
 			A_TakeInventory("grenadeforce");
 		}fail;
