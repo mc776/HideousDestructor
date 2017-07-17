@@ -235,7 +235,7 @@ class HDPickup:CustomInventory{
 		TNT1 A 1;
 		TNT1 A 0{
 			if(missilename){
-if(hd_debug)A_Log("Deprecated pickup.");
+				if(hd_debug)A_Log("Deprecated pickup.");
 				actor a=spawn(missilename,pos,ALLOW_REPLACE);
 				a.vel=invoker.vel;if(invoker.amount>1)a.stamina=invoker.amount;
 				invoker.destroy();return;
@@ -252,6 +252,7 @@ if(hd_debug)A_Log("Deprecated pickup.");
 }
 
 //sadly we can't just let this inherit from HDPickup...
+//(except this doesn't work because of that horrible inheritance rule)
 class HDAmmo:Ammo{
 	default{
 		radius 8; height 10; scale 0.8;
@@ -269,10 +270,10 @@ class HDAmmo:Ammo{
 	spawn:
 		TNT1 A 1;
 		TNT1 A 0{
-			while(invoker.amount>invoker.accuracy){
-				inventory aa=inventory(spawn(invoker.getclassname(),invoker.pos));
-				aa.amount=invoker.accuracy;invoker.amount-=invoker.accuracy;
-				aa.vel=invoker.vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
+			while(amount>accuracy){
+				inventory aa=inventory(spawn(getclassname(),pos));
+				aa.amount=accuracy;invoker.amount-=accuracy;
+				aa.vel=vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
 			}
 			invoker.setstatelabel("spawn2");
 		}stop;

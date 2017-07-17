@@ -299,11 +299,9 @@ actor HDAmBoxDisarmed:HDAmBoxUnarmed{
 // Health/armour bonuses
 //-------------------------------------------------
 
-actor HDFragGrenadePickup : FragP //replaces HDFragGrenades
-{
-	states
-	{
-	spawn:
+actor HDFragGrenadePickup:HDFragGrenadeAmmo{
+	states{
+	spawn2:
 		FRAG A 0 A_Stop
 		FRAG A 0 A_JumpIfInventory("Clip",1,"spawn2")
 		FRAG A 0 A_GiveInventory("Clip",1)

@@ -440,3 +440,66 @@ class HDFragGrenades:HDWeapon{
 		stop;
 	}
 }
+
+
+
+class FragOut:InventoryFlag{}
+class SpoonOff:InventoryFlag{}
+class ReallyPull:InventoryFlag{
+	default{
+		inventory.maxamount 28;
+	}
+}
+class FragTimer:InventoryFlag{
+	default{
+		inventory.maxamount 140;
+	}
+}
+class GrenadeForce:InventoryFlag{
+	default{
+		inventory.maxamount 50;
+	}
+}
+class JustThrew:InventoryFlag{}
+class HDFragGrenadeAmmo:Ammo{
+	default{
+		+forcexybillboard
+		inventory.icon "FRAGA0";
+		inventory.amount 1;
+		inventory.maxamount 16;
+		ammo.backpackamount 0;
+		ammo.backpackmaxamount 60;
+		scale 0.3;
+		inventory.pickupmessage "Picked up a hand grenade.";
+		inventory.pickupsound "weapons/pocket";
+	}
+	states{
+	spawn:
+		FRAG A 0 nodelay{
+			while(amount>0){
+				amount--;
+				A_SpawnItemEx("FragP",0,0,0,
+					vel.x+frandom(-1,1),vel.y+frandom(-1,1),vel.z+frandom(-1,1),
+					0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM
+				);
+			}
+		}stop;
+	}
+}
+class FragP:HDUPK replaces HDFragGrenadeAmmo{
+	default{
+		+forcexybillboard
+		scale 0.3;
+	}
+	states{
+	spawn:
+		FRAG A -1 A_Stop();
+	give:
+		---- A 0 A_JumpIfInTargetInventory("HDFragGrenadeAmmo",0,"spawn");
+		---- A 0{
+			A_PlaySound("weapons/pocket");
+			ammo g=ammo(spawn("HDFragGrenadeAmmo",pos));
+			g.touch(target);
+		}stop;
+	}
+}
