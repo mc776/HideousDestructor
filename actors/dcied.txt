@@ -5,7 +5,7 @@ actor HDIED : DudRocquette
 	height 7 radius 4
 	painchance 256 maxtargetrange 96
 	obituary "%o was blown up by an anonymous %k."
-//	inventory.pickupmessage "Picked up and disabled an improvised explosive device."
+	inventory.pickupmessage "Picked up and disabled an improvised explosive device."
 	states
 	{
 	spawn:
@@ -57,8 +57,7 @@ actor HDIED : DudRocquette
 		goto super::explode
 	}
 }
-actor HDIEDKit : HDPickup
-{
+actor HDIEDKit:HDPickup{
 	inventory.amount 1
 	inventory.maxamount 24
 	inventory.interhubamount 24
@@ -67,9 +66,8 @@ actor HDIEDKit : HDPickup
 	height 4 radius 4 scale 0.5
 	states
 	{
-	spawn:
-		IEDK A 0 nodelay A_SpawnItemEx("HDIEDPickup",0,0,0,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
-		stop
+	spawn2:
+		IEDK A -1
 	use:
 		TNT1 A 0 A_JumpIfInventory("DudRocquetteAmmo",1,"usedud")
 		TNT1 A 0 A_JumpIfInventory("HDRocketAmmo",1,"userocket")
@@ -88,21 +86,7 @@ actor HDIEDKit : HDPickup
 		stop
 	}
 }
-actor HDIEDPickup : HDUPK replaces HDIEDKit
-{
-	xscale 0.32 yscale 0.37
-	states
-	{
-	spawn:
-		IEDK A -1 A_Stop
-	give:
-		"####" "#" 0 A_JumpIfInTargetInventory("HDIEDKit",0,"spawn")
-		"####" "#" 0 A_GiveToTarget("HDIEDKit",1)
-		"####" "#" 0 A_PlaySound("weapons/pocket")
-		stop
-	}
-}
-actor HDIEDKits : HDIEDPickup
+actor HDIEDKits:HDIED
 {
 	height 4 radius 4 scale 0.5
 	states
@@ -113,7 +97,7 @@ actor HDIEDKits : HDIEDPickup
 		TNT1 A 0 A_SpawnItemEx("HDIEDKit",-2,-4,0)
 		TNT1 A 0 A_SpawnItemEx("HDIEDKit",0,-2,0)
 		TNT1 A 0 A_SpawnItemEx("HDIEDKit",0,-4,0)
-		IEDK A -1
+		TNT1 A 0 A_SpawnItemEx("HDIEDKit",0,0,0)
 		stop
 	pickup:
 		TNT1 A 0 A_GiveInventory("HDIEDKit",1)

@@ -1216,15 +1216,19 @@ actor SquadSummoner:HDPickup{
 	+inventory.fancypickupsound
 	+forcexybillboard
 	states{
-	spawn:
-		TNT1 A 1
-		TNT1 A 0 A_SpawnItemEx("SSP",0,0,0,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
-		stop
+	spawn2:
+		PRIF A -1
 	use:
-		TNT1 A 0 A_AlertMonsters
-		TNT1 A 0 A_SpawnItemEx("SquadRifleman", 0,0,0, 8,0,0, 0,SXF_NOCHECKPOSITION)
-		TNT1 A 0 A_SpawnItemEx("SquadRifleman", 0,0,0, 0,5,0, 0,SXF_NOCHECKPOSITION)
-		TNT1 A 0 A_SpawnItemEx("SquadRifleman", 0,0,0, 0,-5,0, 0,SXF_NOCHECKPOSITION)
+		TNT1 A 0{
+			A_PlaySound("misc/p_pkup",CHAN_AUTO);
+			A_AlertMonsters;
+			A_SpawnItemEx("SquadRifleman", 0,0,0, 8,0,0, 0,SXF_NOCHECKPOSITION);
+			A_SpawnItemEx("SquadRifleman", 0,0,0, 0,5,0, 0,SXF_NOCHECKPOSITION);
+			A_SpawnItemEx("SquadRifleman", 0,0,0, 0,-5,0, 0,SXF_NOCHECKPOSITION);
+			A_SpawnItemEx("HDSmoke", 0,0,0, 8,0,0, 0,SXF_NOCHECKPOSITION);
+			A_SpawnItemEx("HDSmoke", 0,0,0, 0,5,0, 0,SXF_NOCHECKPOSITION);
+			A_SpawnItemEx("HDSmoke", 0,0,0, 0,-5,0, 0,SXF_NOCHECKPOSITION);
+		}
 		TNT1 A 0 A_Jump(256,1,2,3,4)
 		TNT1 A 0 A_PrintBold("\cj'They shall stand again and hear there\n\cja horn in the hills ringing.\n\n\cjWhose shall the horn be?'",8)
 		stop
@@ -1233,19 +1237,6 @@ actor SquadSummoner:HDPickup{
 		TNT1 A 0 A_PrintBold("\cj'Faint cries I heard, and dim horns blowing,\n\n\cjand a murmur as of countless far voices:\n\n\n\cjit was like the echo of some forgotten battle\n\n\cjin the Dark Years long ago.'",8)
 		stop
 		TNT1 A 0 A_PrintBold("\cj'Pale swords were drawn; but I know not\n\n\cjwhether their blades would still bite,\n\n\n\cjfor the Dead needed no longer\n\n\cjany weapon but fear.'",8)
-	}
-}
-actor SSP:HDUPK replaces SquadSummoner{
-	+forcexybillboard
-	states
-	{
-	spawn:
-		PRIF A -1
-		stop
-	give:
-		PRIF A 0 A_PlaySound("misc/pkup")
-		PRIF A 0 A_GiveToTarget("SquadSummoner",1)
-		stop
 	}
 }
 

@@ -66,13 +66,17 @@ if(hd_debug)A_Log("Consider HDPickup for this.");
 				if(ht){
 					ht.target=target;
 					ht.a_hdupkgive();
+					return;
 				}
 
 				let pt=hdpickup(tracer);
-				if(pt)pt.actualpickup(target);
+				if(pt){pt.actualpickup(target);return;}
+
+				let at=hdammo(tracer);
+				if(at){at.actualpickup(target);return;}
 
 				let tt=inventory(tracer);
-				if(tt)tt.touch(target);
+				if(tt){tt.touch(target);return;}
 			}
 		}stop;
 	}
@@ -206,6 +210,7 @@ class HDHPK:HDUPK{
 
 
 
+//the real hdpickup.
 class HDPickup:CustomInventory{
 	default{
 		+inventory.invbar +inventory.persistentpower +solid
@@ -236,13 +241,40 @@ if(hd_debug)A_Log("Deprecated pickup.");
 				invoker.destroy();return;
 			}else{
 				while(invoker.amount>invoker.accuracy){
-					actor a=spawn(invoker.getclassname(),invoker.pos,ALLOW_REPLACE);
-					inventory aa=inventory(a);
+					inventory aa=inventory(spawn(invoker.getclassname(),invoker.pos));
 					aa.amount=invoker.accuracy;invoker.amount-=invoker.accuracy;
 					aa.vel=invoker.vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
 				}
 				invoker.setstatelabel("spawn2");
 			}
+		}stop;
+	}
+}
+
+//sadly we can't just let this inherit from HDPickup...
+class HDAmmo:Ammo{
+	default{
+		radius 8; height 10; scale 0.8;
+		inventory.pickupsound "weapons/pocket";
+		accuracy 1;
+	}
+	override void touch(actor toucher){}
+	virtual void actualpickup(actor other){
+		ammo.touch(other);
+	}
+	override bool cancollidewith(actor other,bool passive){
+		return(other is "userpickerupper");
+	}
+	states{
+	spawn:
+		TNT1 A 1;
+		TNT1 A 0{
+			while(invoker.amount>invoker.accuracy){
+				inventory aa=inventory(spawn(invoker.getclassname(),invoker.pos));
+				aa.amount=invoker.accuracy;invoker.amount-=invoker.accuracy;
+				aa.vel=invoker.vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
+			}
+			invoker.setstatelabel("spawn2");
 		}stop;
 	}
 }
