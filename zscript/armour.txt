@@ -166,22 +166,15 @@ class GreenArmourStored:ActionItem{
 	override void doeffect(){
 		if(stamina>0)stamina--;
 	}
+	override void detachfromowner(){
+		target=owner;
+		super.detachfromowner();
+	}
 	states{
 	spawn:
 		//under no circumstances should this be spawned except by player dropping it
 		TNT1 A 1;
 		TNT1 A 0{
-			bool p=false;
-			for(int i=0;!p && i<MAXPLAYERS;i++){
-				if(playeringame[i] && players[i].mo){
-					if(
-						distance3d(players[i].mo)<=64
-					){
-						p=true;
-						target=players[i].mo;
-					}
-				}
-			}
 			if(target){
 				actor a=spawn("HDArmourPickup",pos,ALLOW_REPLACE);a.vel=vel;
 				name arm=missilename;

@@ -25,7 +25,6 @@ class userpickerupper:hdactor{
 						blockingmobj.target=self.target;
 						if(blockingmobj.findstate("grab",true))blockingmobj.setstatelabel("grab");
 						let ppp=HDPlayerPawn(target);if(ppp)ppp.hasgrabbed=true;
-if(hd_debug)A_Log("Consider HDPickup for this.");
 						destroy();return;
 					}
 					else if(
@@ -72,9 +71,6 @@ if(hd_debug)A_Log("Consider HDPickup for this.");
 				let pt=hdpickup(tracer);
 				if(pt){pt.actualpickup(target);return;}
 
-				let at=hdammo(tracer);
-				if(at){at.actualpickup(target);return;}
-
 				let tt=inventory(tracer);
 				if(tt){tt.touch(target);return;}
 			}
@@ -91,16 +87,8 @@ if(hd_debug)A_Log("Consider HDPickup for this.");
 */
 class HDUPK:HDActor{
 	//do NOT use this for pickupable casings, 1x1 is intolerably pixelbitchy!
-	name pickuptype;
+	class<inventory> pickuptype;
 	property pickuptype:pickuptype;
-	double pickupscale1;
-	double pickupscale2;
-	double bigpickupscale1;
-	double bigpickupscale2;
-	vector2 pickupscale;
-	vector2 bigpickupscale;
-	property pickupscale:pickupscale1,pickupscale2;
-	property bigpickupscale:bigpickupscale1,bigpickupscale2;
 	default{
 		+solid +noblockmonst +notrigger
 		height 8;radius 8;
@@ -108,19 +96,10 @@ class HDUPK:HDActor{
 	}
 	override bool cancollidewith(actor other,bool passive){
 		if(bpushable)return super.cancollidewith(other,passive);
-		if(other is "userpickerupper") return true;
-		return false;
+		return(other is "userpickerupper");
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-
-		if(!pickupscale1)pickupscale1=scale.x;
-		if(!pickupscale2)pickupscale2=pickupscale1;
-		pickupscale=(pickupscale1,pickupscale2);
-
-		if(!bigpickupscale1)bigpickupscale1=pickupscale1;
-		if(!bigpickupscale2)bigpickupscale2=pickupscale2;
-		bigpickupscale=(bigpickupscale1,bigpickupscale2);
 
 		if(!accuracy) return;
 		if(accuracy<0) accuracy*=-1;
@@ -131,10 +110,8 @@ class HDUPK:HDActor{
 			a.vel=vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
 		}
 		if(stamina>1){
-			scale=bigpickupscale;
 		}else{
 			stamina=1;
-			scale=pickupscale;
 		}
 	}
 	virtual void A_HDUPKGive(){
@@ -152,7 +129,6 @@ class HDUPK:HDActor{
 		A_PlaySound(activesound);
 		stamina-=increase;
 		if(stamina){ //only picked some up
-			if(stamina>1)scale=bigpickupscale;else scale=pickupscale;
 			setstatelabel("spawn");
 			return;
 		}
@@ -170,21 +146,24 @@ class HDUPK:HDActor{
 		}
 		---- A 0{
 			//in case of death or teleport mid-grab
-			if(target.bkilled || getdistance(target)>64) setstatelabel("spawn");
-			else{
+			if(target.bkilled || getdistance(target)>64){
+				A_Stop();
+				setstatelabel("spawn");
+			}else{
 				setorigin(target.pos+(0,0,target.height-24),true);
 				A_HDUPKGive();
 			}
 		}
 	give:
-		"----" A 0;
+		---- A 0;
 		stop;
 	spawn:
-		CLIP A -1 A_Stop();
+		CLIP A -1;
 	spawn2:
 		---- A -1;
 	givegunloopend:
 		---- A 0{
+			if(hd_debug)A_Log("Deprecated givegunloopend found in %s",getclassname());
 			setorigin(target.pos+(0,0,target.height-24),true);
 		}
 		stop;
@@ -213,7 +192,8 @@ class HDHPK:HDUPK{
 //the real hdpickup.
 class HDPickup:CustomInventory{
 	default{
-		+inventory.invbar +inventory.persistentpower +solid
+		+inventory.invbar +inventory.persistentpower
+		+solid +noblockmonst +notrigger
 		inventory.interhubamount int.MAX;
 
 		radius 8; height 10; scale 0.8;
@@ -241,49 +221,15 @@ class HDPickup:CustomInventory{
 	spawn:
 		TNT1 A 1;
 		TNT1 A 0{
-			if(missilename){
-				if(hd_debug)A_Log("Deprecated pickup.");
-				actor a=spawn(missilename,pos,ALLOW_REPLACE);
-				a.vel=invoker.vel;if(invoker.amount>1)a.stamina=invoker.amount;
-				invoker.destroy();return;
-			}else{
-				while(invoker.amount>invoker.accuracy){
-					inventory aa=inventory(spawn(invoker.getclassname(),invoker.pos));
-					aa.amount=invoker.accuracy;invoker.amount-=invoker.accuracy;
-					aa.vel=invoker.vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
-				}
-				invoker.setstatelabel("spawn2");
+			while(invoker.amount>invoker.accuracy){
+				inventory aa=inventory(spawn(invoker.getclassname(),invoker.pos));
+				aa.amount=invoker.accuracy;invoker.amount-=invoker.accuracy;
+				aa.vel=invoker.vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
 			}
+			invoker.setstatelabel("spawn2");
 		}stop;
 	}
 }
 
-//sadly we can't just let this inherit from HDPickup...
-//(except this doesn't work because of that horrible inheritance rule)
-class HDAmmo:Ammo{
-	default{
-		radius 8; height 10; scale 0.8;
-		inventory.pickupsound "weapons/pocket";
-		accuracy 1;
-	}
-	override void touch(actor toucher){}
-	virtual void actualpickup(actor other){
-		ammo.touch(other);
-	}
-	override bool cancollidewith(actor other,bool passive){
-		return(other is "userpickerupper");
-	}
-	states{
-	spawn:
-		TNT1 A 1;
-		TNT1 A 0{
-			while(amount>accuracy){
-				inventory aa=inventory(spawn(getclassname(),pos));
-				aa.amount=accuracy;invoker.amount-=accuracy;
-				aa.vel=vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
-			}
-			setstatelabel("spawn2");
-		}stop;
-	}
-}
+
 
