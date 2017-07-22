@@ -1,0 +1,77 @@
+//-------------------------------------------------
+// [insert homestar reference here]
+//-------------------------------------------------
+extend class HDPlayerPawn{
+	override void CheatGive(string name, int amount){
+		Class<Inventory> type;
+		let player = self.player;
+		if(!player.mo||player.health<1)return;
+
+		//cheats to give bad shit for testing shit
+		if(name~=="wounds"||name~=="woundcount"){
+			woundcount+=amount;return;
+		}
+		if(name~=="oldwounds"||name~=="oldwoundcount"){
+			oldwoundcount+=amount;return;
+		}
+		if(name~=="unstablewounds"||name~=="unstablewoundcount"){
+			unstablewoundcount+=amount;return;
+		}
+		if(name~=="burns"||name~=="burncount"){
+			burncount+=amount;return;
+		}
+		if(name~=="aggro"||name~=="aggravateddamage"){
+			aggravateddamage+=amount;return;
+		}
+		if(name~=="stun"||name~=="stuncount"){
+			stunned+=amount;return;
+		}
+
+		//apply giveammo principles to HDAmmo
+		if(name~=="ammo"){
+			if(hd_carrylimit)A_GiveInventory("Backpack");
+			for(int i=0;i<AllActorClasses.Size();++i){
+				type=(class<Inventory>)(AllActorClasses[i]);
+				if (type&&type.GetParentClass()=="HDAmmo"){
+					let ammoitem=FindInventory(type);
+					if(!ammoitem){
+						ammoitem=Inventory(Spawn(type));
+						ammoitem.AttachToOwner(self);
+						ammoitem.Amount=ammoitem.MaxAmount;
+					}
+					else if(ammoitem.Amount<ammoitem.MaxAmount){
+						ammoitem.Amount=ammoitem.MaxAmount;
+					}
+				}
+			}
+		}
+		//just work around armour
+		if(name~=="armor"||name~=="armour"){
+			A_GiveInventory("BlackArmour",HDCONST_BLACKARMOUR);
+			A_TakeInventory("GreenArmour");
+			A_TakeInventory("BlueArmour");
+			A_TakeInventory("BasicArmor");
+			return;
+		}
+
+		//pistol hack part 1
+		int p1auto=max(1,countinv("HDPistolFullAuto"));
+		int p2auto=max(1,countinv("HDSecondPistolFullAuto"));
+
+		//super call
+		super.cheatgive(name,amount);
+
+		//pistol hack part 2
+		inventory ppp=findinventory("HDPistolFullAuto");
+		if(ppp)ppp.amount=p1auto;
+		ppp=findinventory("HDSecondPistolFullAuto");
+		if(ppp)ppp.amount=p2auto;
+
+		//clean up some stuff
+		if(!hd_carrylimit)A_TakeInventory("backpack");
+		A_TakeInventory("BasicArmor");
+	}
+//	override void CheatTake(string name, int amount){
+//		//copypaste everything from the above and adjust accordingly
+//	}
+}
