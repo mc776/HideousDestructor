@@ -1,0 +1,134 @@
+//-------------------------------------------------
+// Frag on a string: the real IED
+//-------------------------------------------------
+class TripwirePlacerPuff:IdleDummy{
+	default{
+		-alwayspuff -puffonactors
+	}
+}
+class TripwireCheckerPuff:IdleDummy{
+	default{
+		-alwayspuff +puffonactors +hittracer
+	}
+}
+class Tripwire:HDWeapon{
+	actor grenade;
+	actor gumspot;
+	action void UndoAll(){
+		if(invoker.grenade){
+			invoker.grenade.master=null;
+			invoker.grenade=null;
+		}
+		if(invoker.gumspot){
+			invoker.gumspot.destroy();
+			A_Log("Setup aborted.",true);
+		}
+	}
+	states{
+	altfire:
+		TNT1 A 0 UndoAll();
+		goto nope;
+	deselect:
+		TNT1 A 0 UndoAll();
+		goto super::deselect;
+	ready:
+		TNT1 A 1{
+			if(!countinv("HDFragGrenades"))A_SelectWeapon("Ring");
+			else A_SetCrosshair(0);
+			A_WeaponReady();
+		}wait;
+	fire:
+		TNT1 A 0{
+			actor a;int b;actor aaa;
+			if(!invoker.gumspot){
+				[a,b]=LineAttack(angle,64,pitch,0,"none",
+					"TripwirePlacerPuff",flags:LAF_NORANDOMPUFFZ
+				);
+				if(!a){
+					A_Log("You need to stick the wire on to something stable.",true);
+					return;
+				}
+				aaa=spawn("GumAndString",a.pos);
+				aaa.target=self;aaa.master=self;
+				aaa.A_PlaySound("misc/bulletflesh",CHAN_BODY);
+				invoker.gumspot=aaa;
+				A_Log("Wire end secured. Now to set the grenade...",true);
+			}else{
+				[a,b]=LineAttack(angle,64,pitch,0,"none",
+					"TripwirePlacerPuff",flags:LAF_NORANDOMPUFFZ
+				);
+				if(!a){
+					A_Log("You need to stick the grenade on to something stable.",true);
+					return;
+				}
+				aaa=spawn("TrippingFrag",a.pos);
+				aaa.target=self;aaa.master=self;
+				aaa.A_PlaySound("weapons/rifleclick2",CHAN_BODY);
+				invoker.grenade=aaa;
+				invoker.gumspot.tracer=invoker.grenade;
+				invoker.grenade.tracer=invoker.gumspot;
+				A_Log("Grenade secured! Now be very, very careful...",true);
+				invoker.gumspot=null;
+			}
+		}goto nope;
+	}
+}
+class GumAndString:IdleDummy{
+	bool trapisset;
+	int stringlength;
+	default{
+		scale 0.1;translation 1;
+	}
+	states{
+	spawn:
+		BAL7 A 1{
+			if(
+				!tracer&&
+				(!master||master.health<1)
+			){
+				destroy();
+				return;
+			}
+			//figure out what stage it's at
+			//has target = wire sticking out
+			//has master = player still busy planting
+			//tracer = the grenade on the other end
+			//if tracer, shoot towards tracer
+			//if master, shoot towards master
+
+			vector3 ddd;
+			if(tracer)ddd=tracer.pos+(0,0,4);
+			else ddd=master.pos+(0,0,master.height-8);
+
+			ddd-=pos;
+			int bbb=max(pos.length(),1);
+			ddd/=bbb;
+			for(int i=0;i<bbb;i++){
+				vector3 ccc=ddd*i;
+				A_SpawnParticle(
+					"gray",
+					lifetime:1,size:0.2,
+					xoff:ccc.x,yoff:ccc.y,zoff:ccc.z,
+					startalphaf:frandom(0.9,1.0)
+				);
+			}
+		}wait;
+	}
+}
+class TrippingFrag:FragP{
+	default{
+		+nogravity
+	}
+	override bool cancollidewith(actor other,bool passive){
+		if(other is "userpickerupper"){
+			spawn("FragP",pos);
+			if(tracer)tracer.destroy();
+			destroy();return false;
+		}
+		return false;
+	}
+}
+
+
+
+
