@@ -4,18 +4,21 @@
 class TripwirePlacerPuff:IdleDummy{
 	default{
 		-alwayspuff -puffonactors +bloodlessimpact
-		stamina 1;
+		stamina 1;radius 0.1;height 0.1;
 	}
 }
 class TripwireCheckerPuff:IdleDummy{
 	default{
 		-alwayspuff +puffonactors +hittracer +bloodlessimpact
-		stamina 1;
+		stamina 1;radius 0.1;height 0.1;
 	}
 }
 class Tripwire:HDWeapon{
 	actor grenade;
 	actor gumspot;
+	default{
+		weapon.ammotype1 "HDFragGrenadeAmmo";
+	}
 	action void UndoAll(){
 		if(invoker.grenade){
 			invoker.grenade.master=null;
@@ -31,12 +34,21 @@ class Tripwire:HDWeapon{
 		TNT1 A 0 UndoAll();
 		goto nope;
 	deselect:
-		TNT1 A 0 UndoAll();
-		goto super::deselect;
+		TNT1 A 10{
+			UndoAll();
+			A_PlaySound("weapons/pocket",CHAN_WEAPON);
+			if(countinv("NulledWeapon"))A_SetTics(0);
+		}goto super::deselect;
+	select:
+		TNT1 A 10{
+			A_PlaySound("weapons/pocket",CHAN_WEAPON);
+			if(countinv("NulledWeapon"))A_SetTics(0);
+		}goto super::select;
 	ready:
 		TNT1 A 1{
 			if(!countinv("HDFragGrenades"))A_SelectWeapon("Ring");
 			else A_SetCrosshair(0);
+			if(!invoker.gumspot)A_TakeInventory("WeaponBusy");else A_GIveInventory("WeaponBusy");
 			A_WeaponReady();
 		}wait;
 	fire:
@@ -72,9 +84,10 @@ class Tripwire:HDWeapon{
 				invoker.grenade.master=self;
 				invoker.grenade.target=self;
 				A_Log("Grenade secured! Now be very, very careful...",true);
+				A_TakeInventory("HDFragGrenadeAmmo",1,TIF_NOTAKEINFINITE);
 				invoker.gumspot=null;
 			}
-			if(a)a.destroy();
+			a.destroy();
 		}goto nope;
 	}
 }
@@ -82,11 +95,14 @@ class GumAndString:IdleDummy{
 	bool trapisset;
 	int stringlength;
 	default{
-		scale 0.1;translation 1;
+		+spriteangle
+		spriteangle 0;
+		scale 0.1;translation 2;
+		radius 0.5;height 1;
 	}
 	states{
 	spawn:
-		BAL7 A 1{
+		BAL7 A 1 nodelay{
 			if(
 				!tracer&&
 				(!master||master.health<1)
@@ -96,23 +112,26 @@ class GumAndString:IdleDummy{
 			}
 
 			//check for the actual thing
-			A_FaceTracer(0,0,flags:FAF_TOP);
+			if(tracer)A_FaceTracer(0,0,flags:FAF_TOP);
+			else if(master)A_FaceMaster(0,0,flags:FAF_TOP);
 			actor a;int b;
-			[a,b]=LineAttack(angle,1024,pitch,0,"none",
+			[a,b]=LineAttack(angle,512,pitch,0,"none",
 				"TripwireCheckerPuff",
 				flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ
 			);
 			if(a){
-				if(a.tracer){
-					if(a.tracer==tracer)master=null;
-					else if(a.tracer==master && tracer){
-						A_PlaySound("weapons/bigcrack");
-						tracer.A_PlaySound("weapons/bigcrack");
-						master.A_Log("Welp, there goes that one. Try again?",true);
-						destroy();return;
-					}
+				bool carefulplayer;
+				let atpl=HDPlayerPawn(a.tracer);
+				if(
+					atpl && atpl!=master && atpl.runwalksprint<0
+					&& a.pos.z-atpl.pos.z<24
+					&& max(abs(atpl.vel.x),abs(atpl.vel.y),abs(atpl.vel.z))<5
+				){
+					carefulplayer=true;
+					atpl.stunned+=3;
 				}
-				if(tracer && a.tracer!=tracer){
+
+				if(!master && !carefulplayer && tracer && a.tracer!=tracer){
 					actor ggg=tracer.spawn("HDFragGrenadeRoller",tracer.pos);
 					ggg.target=tracer.target;
 					ggg.vel+=(pos-ggg.pos);
@@ -124,11 +143,25 @@ class GumAndString:IdleDummy{
 					tracer.destroy();
 					destroy();return;
 				}
+				else if(tracer && a.tracer==tracer)master=null;
+
+				if(
+					!a.tracer
+					||(tracer && a.tracer==master)
+					||(!tracer && a.tracer!=master)
+				){
+					ForceAbort();
+					return;
+				}
 				a.destroy();
+			}else{
+				ForceAbort();
+				destroy();return;
 			}
 
 
 			//draw a line of particles
+			if(!tracer && !master)return;
 			vector3 ddd;
 			if(tracer)ddd=tracer.pos+(0,0,4);
 			else ddd=master.pos+(0,0,master.height-8);
@@ -146,6 +179,13 @@ class GumAndString:IdleDummy{
 				);
 			}
 		}wait;
+	}
+	void ForceAbort(){
+		A_PlaySound("weapons/bigcrack");
+		if(tracer)tracer.A_PlaySound("weapons/bigcrack");
+		else if(master)master.A_PlaySound("weapons/bigcrack");
+		master.A_Log("Welp, there goes that one. Try again?",true);
+		destroy();
 	}
 }
 class TrippingFrag:FragP{

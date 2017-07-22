@@ -275,13 +275,20 @@ class HDFragGrenades:HDWeapon{
 		}
 		TNT1 A 0 A_JumpIfInventory("HDFragGrenadeAmmo",1,"ready2");
 		TNT1 A 0 A_JumpIf(!countinv("HDFragGrenadeAmmo"),"selectinstant");
-		FRGG B 1 A_WeaponReady();
+		FRGG B 1 A_WeaponReady(WRF_ALLOWZOOM);
 		goto ready3;
 	ready3:
 		TNT1 A 0{
 			A_TakeInventory("JustThrew");
 			A_TakeInventory("WeaponBusy");
 		}goto readyend;
+
+	zoom:
+		TNT1 A 0{
+			A_GiveInventory("Tripwire");
+			A_SelectWeapon("Tripwire");
+			A_WeaponReady(WRF_NOFIRE);
+		}goto nope;
 
 	pinout:
 		FRGG A 1 A_WeaponReady(WRF_ALLOWRELOAD);
