@@ -2,30 +2,34 @@
 // [insert homestar reference here]
 //-------------------------------------------------
 extend class HDPlayerPawn{
+	//cheats to give or take away bad stuff
+	bool cheatgivestatusailments(string name,int amount){
+		if(name~=="wounds"||name~=="woundcount"){
+			woundcount+=amount;return true;
+		}
+		if(name~=="oldwounds"||name~=="oldwoundcount"){
+			oldwoundcount+=amount;return true;
+		}
+		if(name~=="unstablewounds"||name~=="unstablewoundcount"){
+			unstablewoundcount+=amount;return true;
+		}
+		if(name~=="burns"||name~=="burncount"){
+			burncount+=amount;return true;
+		}
+		if(name~=="aggro"||name~=="aggravateddamage"){
+			aggravateddamage+=amount;return true;
+		}
+		if(name~=="stun"||name~=="stuncount"){
+			stunned+=amount;return true;
+		}
+		return false;
+	}
 	override void CheatGive(string name, int amount){
 		Class<Inventory> type;
 		let player=self.player;
 		if(!player.mo||player.health<1)return;
 
-		//cheats to give bad shit for testing shit
-		if(name~=="wounds"||name~=="woundcount"){
-			woundcount+=amount;return;
-		}
-		if(name~=="oldwounds"||name~=="oldwoundcount"){
-			oldwoundcount+=amount;return;
-		}
-		if(name~=="unstablewounds"||name~=="unstablewoundcount"){
-			unstablewoundcount+=amount;return;
-		}
-		if(name~=="burns"||name~=="burncount"){
-			burncount+=amount;return;
-		}
-		if(name~=="aggro"||name~=="aggravateddamage"){
-			aggravateddamage+=amount;return;
-		}
-		if(name~=="stun"||name~=="stuncount"){
-			stunned+=amount;return;
-		}
+		if(cheatgivestatusailments(name,amount)) return;
 
 		//apply giveammo principles to HDAmmo
 		if(name~=="ammo"){
@@ -75,7 +79,7 @@ extend class HDPlayerPawn{
 		if(!hd_carrylimit)A_TakeInventory("backpack");
 		A_TakeInventory("BasicArmor");
 	}
-//	override void CheatTake(string name, int amount){
-//		//copypaste everything from the above and adjust accordingly
-//	}
+	override void CheatTake(string name, int amount){
+		if(!cheatgivestatusailments(name,-amount))super.cheattake(name,amount);
+	}
 }
