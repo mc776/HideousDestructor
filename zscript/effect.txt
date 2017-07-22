@@ -26,7 +26,14 @@ class HDDebris:HDActor{
 	override void Tick(){
 		clearinterpolation();
 		if(globalfreeze||level.Frozen)return;
-		if(stopped)actor.tick();else{
+		if(stopped){
+			actor.tick();
+			if(vel==(0,0,0)){
+				brelativetofloor=true;
+				bnointeraction=true;
+			}
+			return;
+		}else{
 			vel.z-=grav;
 			double spd=max(abs(vel.x),abs(vel.y))/wdth;
 			vector2 frac=vel.xy/spd;
@@ -52,11 +59,11 @@ class HDDebris:HDActor{
 				vel.z*=-bouncefactor;
 			}
 			if(floorz==pos.z && max(abs(vel.x),abs(vel.y),abs(vel.z))<1){
+				if(deathstate)setstatelabel("death");else destroy();
+				if(bdestroyed)return; //if nexttic() is called below, it would crash
 				stopped=true;
 				setz(floorz);
 				bmovewithsector=true;
-				if(deathstate)setstatelabel("death");else destroy();
-				if(bdestroyed)return; //if nexttic() is called below, it would crash
 			}
 			nexttic();
 		}
