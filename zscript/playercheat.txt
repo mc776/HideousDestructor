@@ -4,7 +4,7 @@
 extend class HDPlayerPawn{
 	override void CheatGive(string name, int amount){
 		Class<Inventory> type;
-		let player = self.player;
+		let player=self.player;
 		if(!player.mo||player.health<1)return;
 
 		//cheats to give bad shit for testing shit
@@ -55,8 +55,12 @@ extend class HDPlayerPawn{
 		}
 
 		//pistol hack part 1
-		int p1auto=max(1,countinv("HDPistolFullAuto"));
-		int p2auto=max(1,countinv("HDSecondPistolFullAuto"));
+		int p1auto=countinv("HDPistolFullAuto");
+		int p2auto=countinv("HDSecondPistolFullAuto");
+		if(name~=="weapons"||name~=="all"||name~=="everything"){
+			p1auto=max(p1auto,1);
+			p2auto=max(p2auto,1);
+		}
 
 		//super call
 		super.cheatgive(name,amount);
