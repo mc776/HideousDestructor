@@ -82,6 +82,10 @@ class HDActor:Actor{
 			bp*=frandom(minvel,maxvel);
 			if(bp==(0,0,0))bp.z=1;
 			frg.vel=vel+bp;
+			if(frg is "HDBullet"){
+				frg.target=target;
+				frg.bseeinvisible=true;
+			}
 		}
 	}
 	//face a specified vector. NEGATIVE Z IS DOWN.

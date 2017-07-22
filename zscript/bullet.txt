@@ -94,13 +94,11 @@ class HDBullet:HDActor{
 		//LineAttack always has a zoffset of centre+8.
 		//b is never used.
 		if(!bseeinvisible && target)target.bshootable=false; //hack to escape shooter
-		addz(-shootz);
 		[a,b]=LineAttack(angle,speed,pitch,0,"none",
-			"NewBulletMovePuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT
+			"NewBulletMovePuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT|LAF_OVERRIDEZ
 		);
 
 		//reset hacks
-		addz(shootz);
 		if(!bseeinvisible && target)target.bshootable=true;
 		bseeinvisible=true;
 
@@ -110,8 +108,7 @@ class HDBullet:HDActor{
 			//it got shot into the sky!
 			if(a.ceilingpic==skyflatnum && a.ceilingz-a.pos.z<height){
 				inthesky=true;
-			}
-			else{
+			}else{
 				setorigin(a.pos,true);
 
 				//find points close to players and spawn crackers

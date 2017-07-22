@@ -3,12 +3,14 @@
 //-------------------------------------------------
 class TripwirePlacerPuff:IdleDummy{
 	default{
-		-alwayspuff -puffonactors
+		-alwayspuff -puffonactors +bloodlessimpact
+		stamina 1;
 	}
 }
 class TripwireCheckerPuff:IdleDummy{
 	default{
-		-alwayspuff +puffonactors +hittracer
+		-alwayspuff +puffonactors +hittracer +bloodlessimpact
+		stamina 1;
 	}
 }
 class Tripwire:HDWeapon{
@@ -67,9 +69,12 @@ class Tripwire:HDWeapon{
 				invoker.grenade=aaa;
 				invoker.gumspot.tracer=invoker.grenade;
 				invoker.grenade.tracer=invoker.gumspot;
+				invoker.grenade.master=self;
+				invoker.grenade.target=self;
 				A_Log("Grenade secured! Now be very, very careful...",true);
 				invoker.gumspot=null;
 			}
+			if(a)a.destroy();
 		}goto nope;
 	}
 }
@@ -89,27 +94,55 @@ class GumAndString:IdleDummy{
 				destroy();
 				return;
 			}
-			//figure out what stage it's at
-			//has target = wire sticking out
-			//has master = player still busy planting
-			//tracer = the grenade on the other end
-			//if tracer, shoot towards tracer
-			//if master, shoot towards master
 
+			//check for the actual thing
+			A_FaceTracer(0,0,flags:FAF_TOP);
+			actor a;int b;
+			[a,b]=LineAttack(angle,1024,pitch,0,"none",
+				"TripwireCheckerPuff",
+				flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ
+			);
+			if(a){
+				if(a.tracer){
+					if(a.tracer==tracer)master=null;
+					else if(a.tracer==master && tracer){
+						A_PlaySound("weapons/bigcrack");
+						tracer.A_PlaySound("weapons/bigcrack");
+						master.A_Log("Welp, there goes that one. Try again?",true);
+						destroy();return;
+					}
+				}
+				if(tracer && a.tracer!=tracer){
+					actor ggg=tracer.spawn("HDFragGrenadeRoller",tracer.pos);
+					ggg.target=tracer.target;
+					ggg.vel+=(pos-ggg.pos);
+					ggg.vel/=max(1,ggg.vel.length());
+					actor hhh=tracer.spawn("HDFragSpoon",tracer.pos);
+					hhh.vel=ggg.vel*5;
+					ggg.vel*=3;ggg.vel.z++;
+					ggg.A_PlaySound("weapons/rifleclick");
+					tracer.destroy();
+					destroy();return;
+				}
+				a.destroy();
+			}
+
+
+			//draw a line of particles
 			vector3 ddd;
 			if(tracer)ddd=tracer.pos+(0,0,4);
 			else ddd=master.pos+(0,0,master.height-8);
 
 			ddd-=pos;
-			int bbb=max(pos.length(),1);
+			int bbb=max(pos.length(),1)*3;
 			ddd/=bbb;
 			for(int i=0;i<bbb;i++){
 				vector3 ccc=ddd*i;
 				A_SpawnParticle(
-					"gray",
-					lifetime:1,size:0.2,
+					"white",
+					lifetime:1,size:0.4,
 					xoff:ccc.x,yoff:ccc.y,zoff:ccc.z,
-					startalphaf:frandom(0.9,1.0)
+					startalphaf:0.8
 				);
 			}
 		}wait;
@@ -117,7 +150,7 @@ class GumAndString:IdleDummy{
 }
 class TrippingFrag:FragP{
 	default{
-		+nogravity
+		+nogravity +shootable +noblood
 	}
 	override bool cancollidewith(actor other,bool passive){
 		if(other is "userpickerupper"){
