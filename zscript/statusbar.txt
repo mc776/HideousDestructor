@@ -15,7 +15,7 @@ class HDStatusBar:DoomStatusBar{
 		diparms = InventoryBarState.Create();
 	}
 	override void Draw(int state,double TicFrac){
-		if(cplayer.health<1)return;
+		if(cplayer.health<1||cplayer.mo.countinv("WipedOut"))return;
 		cplayer.inventorytics=0;
 		if(automapactive){
 			DrawAutomapHUD(ticfrac);

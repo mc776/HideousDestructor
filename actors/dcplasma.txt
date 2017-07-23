@@ -29,10 +29,12 @@ ACTOR ThunderBuster : HDWeapon
 		PLSG A 0 A_GiveInventory("PlasmaZoomBatteryDrainage",1)
 		PLSG A 1 A_WeaponReady(WRF_ALLOWZOOM|WRF_ALLOWRELOAD)
 		TNT1 A 0 A_TakeInventory("WeaponBusy")
-		PLSG A 0 A_JumpIfInventory("PlasmaZoomBatteryDrainage",0,1)
-		goto ReadyEnd
-		PLSG A 0 A_TakeInventory("PlasmaBattery",1)
-		PLSG A 0 A_TakeInventory("PlasmaZoomBatteryDrainage",126000)
+		PLSG A 0{
+			if(A_JumpIfInventory("PlasmaZoomBatteryDrainage",0,"null")){
+				A_TakeInventory("PlasmaBattery",1);
+				A_TakeInventory("PlasmaZoomBatteryDrainage");
+			}
+		}
 		goto ReadyEnd
 	Fire:
 		PLSG A 0 A_TakeInventory("PlasmaZoomGood",1)

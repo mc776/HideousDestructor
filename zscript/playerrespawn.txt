@@ -37,6 +37,16 @@ class BotKill:ActionItem{
 		}fail;
 	}
 }
+//hack given by ACS map restart
+class RestartMap:ActionItem{
+	states{
+	pickup:
+		TNT1 A 0{
+			level.nextmap=level.mapname;
+			Exit_Normal(0);
+		}fail;
+	}
+}
 class HDBotSpectator:HDSpectator{
 	default{
 		+nointeraction

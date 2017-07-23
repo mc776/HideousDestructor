@@ -21,7 +21,7 @@ script "CoopFail"(void){
 			s: "Too many casualties. HQ has ordered a retreat!";
 			 2, 3, 9, 1.5, 0.4, 2.0, 0.06);
 		delay(200);
-		Teleport_NewMap(GetLevelInfo(LEVELINFO_LEVELNUM),0,0);
+		GiveInventory("RestartMap",1);
 	}
 }
 
@@ -311,7 +311,7 @@ script "EndgameCheck" (void){
 				s: "t r y   a g a i n .";
 				 2, 3, 9, 1.5, 0.62, 3.5);
 			delay(280);
-			Teleport_NewMap(GetLevelInfo(LEVELINFO_LEVELNUM),0,0);
+			GiveInventory("RestartMap",1);
 			terminate;
 		}
 		else if ((deaths_common>=maxlives) && (loseondeathlimit==1)){
@@ -331,7 +331,7 @@ script "EndgameCheck" (void){
 				s: "Too many casualties. HQ has ordered a retreat!";
 				 2, 3, 9, 1.5, 0.4, 2.0, 0.06);
 			delay(200);
-			Teleport_NewMap(GetLevelInfo(LEVELINFO_LEVELNUM),0,0);
+			GiveInventory("RestartMap",1);
 			terminate;
 		}
 	}
