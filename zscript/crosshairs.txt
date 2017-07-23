@@ -15,22 +15,96 @@ extend class HDStatusBar{
 
 		actor hpc=hpl.scopecamera;
 
-		if(wp is "BossRifle"&&ismoving<5){
+		if((wp is "HDPistol")&&ismoving<5){
 			drawimage(
-				"XH23",(0,4),
-				DI_SCREEN_CENTER|DI_ITEM_VCENTER,
+				"XH26",(0,0),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
+				scale:(2,2)
+			);
+		}
+		else if((wp is "HDSMG"||wp is "Hunter")&&ismoving<6){
+			drawimage(
+				"XH23",(0,1.8),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
+				scale:(1.6,1.7)
+			);
+		}
+		else if((wp is "Slayer")&&ismoving<10){
+			drawimage(
+				"XH23",(0,1.4),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
+				scale:(1.8,1.6)
+			);
+		}
+		else if(
+			(wp is "ZM66GrenadeRifle"&&ismoving<6)||
+			((wp is "ZM66Rifle"||wp is "ZM66SemiRifle")&&ismoving<7)
+		){
+			if(hpl.countinv("ZM66GLMode")){
+				if(ismoving>4)return;
+				drawimage(
+					"XH27",(0,1.8),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
+					scale:(2,2)
+				);
+			}else{
+				drawimage(
+					"XH22",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					scale:(1.6,1.7)
+				);
+				if(hpl.countinv("ZM66Zoom")){
+					texman.setcameratotexture(hpc,"TCAMTEX3",
+						3-hpl.countinv("ZM66ZoomDegree")
+					);
+					drawimage(
+						"TCAMTEX3",(0,-60),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+						scale:(0.3,0.3)
+					);
+					drawimage(
+						"XH29",(0,-60),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+						scale:(0.8,0.8)
+					);
+				}
+			}
+		}
+		else if(
+			((wp is "LiberatorRifle"||wp is "LiberatorGrenadeRifle")&&ismoving<6)
+		){
+			if(hpl.countinv("LiberatorGrenadeMode")){
+				if(ismoving>4)return;
+				drawimage(
+					"XH27",(0,1.8),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
+					scale:(2,2)
+				);
+			}else{
+				drawimage(
+					"XH22",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					scale:(1.6,1.7)
+				);
+				if(hpl.countinv("LiberatorZoom")){
+					texman.setcameratotexture(hpc,"TCAMTEX3",
+						3-hpl.countinv("LiberatorZoomDegree")
+					);
+					drawimage(
+						"TCAMTEX3",(0,-60),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+						scale:(0.3,0.3)
+					);
+					drawimage(
+						"XH30",(0,-60),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+						scale:(0.8,0.8)
+					);
+				}
+			}
+		}
+		else if(wp is "BossRifle"&&ismoving<5){
+			drawimage(
+				"XH23",(0,-0.5),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 				scale:(1.6,1.6)
 			);
 			texman.setcameratotexture(hpc,"TCAMTEX3",3-hpl.countinv("BossZoomDegree"));
 			drawimage(
-				"TCAMTEX3",(0,44),
-				DI_SCREEN_CENTER|DI_ITEM_CENTER,
-				scale:(0.32,0.32)
+				"TCAMTEX3",(0,54),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+				scale:(0.4,0.4)
 			);
 			drawimage(
-				"XH31",(0,44),
-				DI_SCREEN_CENTER|DI_ITEM_CENTER,
-				scale:(0.8,0.8)
+				"XH31",(0,54),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+				scale:(1,1)
 			);
 		}
 	}
