@@ -77,9 +77,12 @@ class SoldierExtras:ActionItem{
 	states{
 	pickup:
 		TNT1 A 0{
-			A_GiveInventory("PortableMedikit");
-			A_GiveInventory("PortableStimpack",2);
-			A_GiveInventory("GreenArmour",144);
+			A_SetInventory("PortableMedikit",max(1,countinv("PortableMedikit")));
+			A_SetInventory("PortableStimpack",max(2,countinv("PortableStimpack")));
+			if(
+				!countinv("BlackArmour")
+				&&!countinv("BlueArmour")
+			)A_SetInventory("GreenArmour",HDCONST_GREENARMOUR);
 
 			if(!countinv("HDPistol")){
 				A_GiveInventory("HDPistol");
@@ -93,8 +96,8 @@ class SoldierExtras:ActionItem{
 			}
 			A_SetInventory("HDPistolMag",max(countinv("HDPistolMag"),3));
 
-			A_GiveInventory("HDFragGrenadeAmmo",3);
-			A_GiveInventory("DERPUsable");
+			A_SetInventory("HDFragGrenadeAmmo",max(3,countinv("HDFragGrenadeAmmo")));
+			A_SetInventory("DERPUsable",max(1,countinv("DERPUsable")));
 		}
 	}
 }
@@ -150,7 +153,7 @@ extend class HDPlayerPawn{
 			switch(num){
 			case 0:
 				nw="HDFragGrenades";A_GiveInventory(nw);
-				A_GiveInventory("HDFragGrenadeAmmo",3);
+				A_GiveInventory("HDFragGrenadeAmmo",max(1,amt));
 				break;
 			case 10:
 				nw="Lumberjack";A_GiveInventory(nw);
@@ -281,9 +284,15 @@ extend class HDPlayerPawn{
 		}
 		else{ //all other shit
 			switch(num){
-				case 1: A_GiveInventory("GreenArmour",HDCONST_GREENARMOUR);break;
-				case 2: A_GiveInventory("BlueArmour",HDCONST_BLUEARMOUR);break;
-				case 3: A_GiveInventory("BlackArmour",HDCONST_BLACKARMOUR);break;
+				case 1:
+					A_TakeInventory("BlackArmour");A_TakeInventory("BlueArmour");
+					A_GiveInventory("GreenArmour",HDCONST_GREENARMOUR);break;
+				case 2:
+					A_TakeInventory("BlackArmour");A_TakeInventory("GreenArmour");
+					A_GiveInventory("BlueArmour",HDCONST_BLUEARMOUR);break;
+				case 3:
+					A_TakeInventory("GreenArmour");A_TakeInventory("BlueArmour");
+					A_GiveInventory("BlackArmour",HDCONST_BLACKARMOUR);break;
 
 				case 4: A_GiveInventory("PortableMedikit",amt);break;
 				case 5: A_GiveInventory("PortableStimpack",amt);break;

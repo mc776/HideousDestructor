@@ -98,6 +98,7 @@ class Tripwire:HDWeapon{
 class GumAndString:IdleDummy{
 	bool trapisset;
 	int stringlength;
+	vector3 ddd;int bbb;
 	default{
 		+spriteangle
 		spriteangle 0;
@@ -166,13 +167,19 @@ class GumAndString:IdleDummy{
 
 			//draw a line of particles
 			if(!tracer && !master)return;
-			vector3 ddd;
-			if(tracer)ddd=tracer.pos+(0,0,4);
-			else ddd=master.pos+(0,0,master.height-8);
 
-			ddd-=pos;
-			int bbb=max(pos.length(),1)*0.4;
-			ddd/=bbb;
+			//set all the numbers
+			if(!trapisset){
+				if(tracer)ddd=tracer.pos+(0,0,4);
+				else ddd=master.pos+(0,0,master.height-8);
+
+				ddd-=pos;
+				bbb=max(pos.length(),1)*0.4;
+				ddd/=bbb;
+
+				if(tracer && !master)trapisset=true;
+			}
+
 			vector3 ccc;
 			for(int i=0;i<bbb;i++){
 				ccc=ddd*i;
