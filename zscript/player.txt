@@ -193,6 +193,12 @@ class HDPlayerPawn:PlayerPawn{
 		if(!countinv("Ring"))GiveBasics();
 		if(!player.readyweapon)A_SelectWeapon("Ring");
 
+		//same thing with scope camera
+		actor cam=spawn("ViewDummy",pos);
+		cam.changetid(playernumber()-32000);
+		cam.target=self;
+		scopecamera=cam;
+
 		//add inventory flags for inputs
 		//remove ONLY when a deprecated inventory flags has been removed from all code!
 		A_TakeInventory("IsSprinting");
@@ -497,11 +503,6 @@ class HDHandlers:EventHandler{
 extend class HDPlayerPawn{
 	//reset various... things.
 	void levelreset(){
-		actor cam=spawn("ViewDummy",pos);
-		cam.changetid(playernumber()-32000);
-		cam.target=self;
-		scopecamera=cam;
-
 		lastpos=pos;
 		lastangle=angle;
 		lastpitch=pitch;
