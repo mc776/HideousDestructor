@@ -301,15 +301,15 @@ actor HDAmBoxDisarmed:HDAmBoxUnarmed{
 
 actor HDFragGrenadePickup:HDFragGrenadeAmmo{
 	states{
-	spawn2:
+	spawn:
 		FRAG A 0 A_Stop
 		FRAG A 0 A_JumpIfInventory("Clip",1,"spawn2")
 		FRAG A 0 A_GiveInventory("Clip",1)
-		FRAG A 0 A_SpawnItemEx ("HDFragGrenadeAmmo", -4,0,0, 0,0,0, 0,SXF_NOCHECKPOSITION)
-		FRAG A 0 A_SpawnItemEx ("HDFragGrenadeAmmo", -4,4,0, 0,0,0, 0,SXF_NOCHECKPOSITION)
-		FRAG A 0 A_SpawnItemEx ("HDFragGrenadeAmmo", 0,4,0, 0,0,0, 0,SXF_NOCHECKPOSITION)
-		FRAG A 0 A_SpawnItemEx ("HDFragGrenadeAmmo", 4,0,0, 0,0,0, 0,SXF_NOCHECKPOSITION)
-		FRAG A 0 A_SpawnItemEx ("HDFragGrenadeAmmo", 4,4,0, 0,0,0, 0,SXF_NOCHECKPOSITION)
+		FRAG A 0 A_SpawnItemEx("HDFragGrenadeAmmo",-4,0,0,0,0,0,0,SXF_NOCHECKPOSITION)
+		FRAG A 0 A_SpawnItemEx("HDFragGrenadeAmmo",-4,4,0,0,0,0,0,SXF_NOCHECKPOSITION)
+		FRAG A 0 A_SpawnItemEx("HDFragGrenadeAmmo",0,4,0,0,0,0,0,SXF_NOCHECKPOSITION)
+		FRAG A 0 A_SpawnItemEx("HDFragGrenadeAmmo",4,0,0,0,0,0,0,SXF_NOCHECKPOSITION)
+		FRAG A 0 A_SpawnItemEx("HDFragGrenadeAmmo",4,4,0,0,0,0,0,SXF_NOCHECKPOSITION)
 		FRAG A -1
 		stop
 	}
