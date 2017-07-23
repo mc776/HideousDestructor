@@ -174,18 +174,18 @@ class GumAndString:IdleDummy{
 				else ddd=master.pos+(0,0,master.height-8);
 
 				ddd-=pos;
-				bbb=max(pos.length(),1)*0.4;
+				bbb=max(ddd.length(),1)*0.3;
 				ddd/=bbb;
 
 				if(tracer && !master)trapisset=true;
 			}
 
-			vector3 ccc;
+			vector3 ccc;float ii=min(bbb,40)*0.0001;ii=frandom(1-ii,1+ii);
 			for(int i=0;i<bbb;i++){
-				ccc=ddd*i;
+				ccc=ddd*i*ii;
 				A_SpawnParticle(
 					"white",
-					lifetime:1,size:0.8,
+					lifetime:1,size:0.5,
 					xoff:ccc.x,yoff:ccc.y,zoff:ccc.z,
 					startalphaf:0.8
 				);
