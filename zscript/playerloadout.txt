@@ -161,22 +161,38 @@ extend class HDPlayerPawn{
 				break;
 			case 20:
 			case 21:
-				PistolConsolidator();
-				if(countinv("HDPistol")){
+				if(amt>1){
+					if(num==21){
+						A_GiveInventory("HDPistolFullAuto");
+						A_GiveInventory("HDSecondPistolFullAuto");
+					}else{
+						A_TakeInventory("HDPistolFullAuto");
+						A_TakeInventory("HDSecondPistolFullAuto");
+					}
 					A_GiveInventory("HDSecondPistol");
 					A_GiveInventory("HDSecondPistolChamber");
 					A_GiveInventory("HDSecondPistolLoaded",15);
-					if(num==21){
-						if(!countinv("HDPistolFullAuto"))
-							A_GiveInventory("HDPistolFullAuto");
-						else
-							A_GiveInventory("HDSecondPistolFullAuto");
-					}
-				}else{
 					nw="HDPistol";A_GiveInventory(nw);
 					A_GiveInventory("HDPistolChamber");
 					A_GiveInventory("HDPistolLoaded",15);
-					if(num==21)A_GiveInventory("HDPistolFullAuto");
+				}else{
+					PistolConsolidator();
+					if(countinv("HDPistol")){
+						A_GiveInventory("HDSecondPistol");
+						A_GiveInventory("HDSecondPistolChamber");
+						A_GiveInventory("HDSecondPistolLoaded",15);
+						if(num==21){
+							if(!countinv("HDPistolFullAuto"))
+								A_GiveInventory("HDPistolFullAuto");
+							else
+								A_GiveInventory("HDSecondPistolFullAuto");
+						}
+					}else{
+						nw="HDPistol";A_GiveInventory(nw);
+						A_GiveInventory("HDPistolChamber");
+						A_GiveInventory("HDPistolLoaded",15);
+						if(num==21)A_GiveInventory("HDPistolFullAuto");
+					}
 				}
 				break;
 			case 22:
