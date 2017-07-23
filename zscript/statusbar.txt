@@ -1,3 +1,6 @@
+// ------------------------------------------------------------
+// HD HUD. HUD for HD. Hdhdhdhdhhdhdhhdhd
+// ------------------------------------------------------------
 class HDStatusBar:DoomStatusBar{
 	override void Init(){
 		BaseStatusBar.Init();
@@ -87,6 +90,7 @@ class HDStatusBar:DoomStatusBar{
 		else if(cplayer.getgender()==1)DrawTexture(GetMugShot(5,Mugshot.CUSTOM,"SFF"),(0,-14),DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM);
 	}
 	void DrawCommonStuff(int state){
+
 		int mxht=-4-mIndexFont.mFont.GetHeight();
 		int mhht=-4-mHUDFont.mFont.getheight();
 
@@ -155,6 +159,11 @@ class HDStatusBar:DoomStatusBar{
 
 
 		let cp=HDPlayerPawn(CPlayer.mo);if(!cp)return;
+
+
+		//draw the crosshair.
+		if(hd_debug)DrawHDXHair(cp);
+
 
 		//heartbeat/playercolour tracker
 		if(cp.beatmax){

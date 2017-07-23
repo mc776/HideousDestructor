@@ -1,0 +1,37 @@
+// ------------------------------------------------------------
+// We'll miss you, ACS. (not really)
+// ------------------------------------------------------------
+extend class HDStatusBar{
+	void DrawHDXHair(hdplayerpawn hpl){
+
+		if(
+			crosshairforce
+			||hpl.barehanded
+			||hpl.nocrosshair>0
+		)return;
+
+		weapon wp=cplayer.readyweapon;
+		int ismoving=hpl.countinv("IsMoving");
+
+		actor hpc=hpl.scopecamera;
+
+		if(wp is "BossRifle"&&ismoving<5){
+			drawimage(
+				"XH23",(0,4),
+				DI_SCREEN_CENTER|DI_ITEM_VCENTER,
+				scale:(1.6,1.6)
+			);
+			texman.setcameratotexture(hpc,"TCAMTEX3",3-hpl.countinv("BossZoomDegree"));
+			drawimage(
+				"TCAMTEX3",(0,44),
+				DI_SCREEN_CENTER|DI_ITEM_CENTER,
+				scale:(0.32,0.32)
+			);
+			drawimage(
+				"XH31",(0,44),
+				DI_SCREEN_CENTER|DI_ITEM_CENTER,
+				scale:(0.8,0.8)
+			);
+		}
+	}
+}

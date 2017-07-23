@@ -1,5 +1,5 @@
 // ------------------------------------------------------------
-//   The player!
+// The player!
 // ------------------------------------------------------------
 const HDCONST_SPRINTMAXHEARTRATE=20;
 const HDCONST_SPRINTFATIGUE=30;
@@ -8,6 +8,7 @@ const HDCONST_DAMAGEFATIGUE=80;
 class HDPlayerPawn:PlayerPawn{
 	vector3 lastpos;vector3 lastvel;double lastangle;double lastpitch;double lastheight;
 	vector3 poschange;
+	actor scopecamera;
 	double fm;double sm;
 	double oldfm;double oldsm;
 	int iyaw;int ipitch;
@@ -375,7 +376,7 @@ class HDPlayerPawn:PlayerPawn{
 			else if(
 				player.fov>120||player.fov<80
 			)nocrosshair=1;
-			else if(!nocrosshair && !barehanded)CallACS("CrossHairs");
+			else if(!nocrosshair && !barehanded && !hd_debug)CallACS("CrossHairs");
 			else nocrosshair--;
 		}
 
@@ -458,19 +459,24 @@ class ViewDummy:IdleDummy{
 		if(!master){
 			destroy();
 			return;
-		}else{
-			angle=master.angle;
-			pitch=master.pitch;
-			setxyz(master.pos+(
-				cos(pitch)*cos(angle)*6,
-				cos(pitch)*sin(angle)*6,
-				sin(-pitch)*6+master.height-4
-			));
-			nexttic();
 		}
+		A_SetInventory("PowerGreenVision",master.countinv("PowerIronFeet"));
+		angle=master.angle;
+		pitch=master.pitch;
+		setxyz(master.pos+(
+			cos(pitch)*cos(angle)*6,
+			cos(pitch)*sin(angle)*6,
+			sin(-pitch)*6+master.height-4
+		));
+		nexttic();
 	}
 }
-
+class PowerGreenVision:Powerup{
+	default{
+		powerup.duration 0x7FFFFFFF;
+		powerup.color "Green", 0.3;
+	}
+}
 
 
 
@@ -494,6 +500,7 @@ extend class HDPlayerPawn{
 		actor cam=spawn("ViewDummy",pos);
 		cam.changetid(playernumber()-32000);
 		cam.target=self;
+		scopecamera=cam;
 
 		lastpos=pos;
 		lastangle=angle;
