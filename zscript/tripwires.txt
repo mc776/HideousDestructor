@@ -41,6 +41,10 @@ class Tripwire:HDWeapon{
 		}goto super::deselect;
 	select:
 		TNT1 A 10{
+			if(!countinv("HDFragGrenadeAmmo")){
+				if(getcvar("hd_helptext"))A_Print("No grenades.");
+				A_SelectWeapon("Ring");
+			}else if(getcvar("hd_helptext"))A_Print("\cp\--- \cqTRIPWIRES \cp---\c-\n\n\nHit fire to set one end of the line,\n\nthen hit fire again to plant the grenade.\nby human hands.\n\nMove carefully.");
 			A_PlaySound("weapons/pocket",CHAN_WEAPON);
 			if(countinv("NulledWeapon"))A_SetTics(0);
 		}goto super::select;
@@ -128,7 +132,7 @@ class GumAndString:IdleDummy{
 					&& max(abs(atpl.vel.x),abs(atpl.vel.y),abs(atpl.vel.z))<5
 				){
 					carefulplayer=true;
-					atpl.stunned+=3;
+					atpl.stunned=max(atpl.stunned,10);
 				}
 
 				if(!master && !carefulplayer && tracer && a.tracer!=tracer){
@@ -167,13 +171,14 @@ class GumAndString:IdleDummy{
 			else ddd=master.pos+(0,0,master.height-8);
 
 			ddd-=pos;
-			int bbb=max(pos.length(),1)*3;
+			int bbb=max(pos.length(),1)*0.4;
 			ddd/=bbb;
+			vector3 ccc;
 			for(int i=0;i<bbb;i++){
-				vector3 ccc=ddd*i;
+				ccc=ddd*i;
 				A_SpawnParticle(
 					"white",
-					lifetime:1,size:0.4,
+					lifetime:1,size:0.8,
 					xoff:ccc.x,yoff:ccc.y,zoff:ccc.z,
 					startalphaf:0.8
 				);
@@ -190,7 +195,8 @@ class GumAndString:IdleDummy{
 }
 class TrippingFrag:FragP{
 	default{
-		+nogravity +shootable +noblood
+		+nogravity +shootable +noblood +nodamage +notargetswitch
+		health 1;painchance 256;
 	}
 	override bool cancollidewith(actor other,bool passive){
 		if(other is "userpickerupper"){
@@ -200,8 +206,25 @@ class TrippingFrag:FragP{
 		}
 		return false;
 	}
+	states{
+	pain:
+		---- A 0{
+			if(!random(0,9)){
+				actor ggg=spawn("HDFragGrenadeRoller",pos);
+				ggg.target=target;
+				ggg.vel+=(pos-ggg.pos);
+				ggg.vel/=max(1,ggg.vel.length());
+				actor hhh=spawn("HDFragSpoon",tracer.pos);
+				hhh.vel=ggg.vel*5;
+				ggg.vel*=3;ggg.vel.z++;
+				ggg.A_PlaySound("weapons/rifleclick");
+				tracer.destroy();
+				destroy();return;
+			}else if(!random(0,4)){
+				tracer.destroy();
+				spawn("FragP",pos);
+				destroy();return;
+			}
+		}goto spawn;
+	}
 }
-
-
-
-
