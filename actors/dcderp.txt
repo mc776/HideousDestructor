@@ -170,12 +170,12 @@ actor DERPBot:ZEDDERP{
 			if(countinv("DERPmode",AAPTR_MASTER)==3){return state("patrol");}
 			return state("");
 		}
-		DERP A 0 A_CheckLOF("noshot",CLOFF_SKIPTARGET|CLOFF_JUMPFRIEND|CLOFF_JUMPNONHOSTILE|CLOFF_JUMPOBJECT|CLOFF_NOAIM, 0,0, 0,0, 7,0)
 	missile1:
 		DERP A 0 A_PlaySound("derp/crawl",CHAN_BODY,0.6)
 		DERP AAA 1 A_FaceTarget(30,30,0,0,FAF_TOP,-4)
 		DERP A 0 A_JumpIfTargetInLOS(1,1)
 		loop
+		DERP A 0 A_JumpIf(!DerpTargetCheck(false),"noshot")
 		DERP A 2{
 			if(DerpTargetCheck(false)){A_GiveInventory("IsWeaponReady");}
 			else{A_TakeInventory("IsWeaponReady");}
