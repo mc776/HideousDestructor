@@ -217,17 +217,24 @@ enum HDResetInventoryKeyFlags{
 	RKF_YELLOWCARD=16,
 	RKF_YELLOWSKULL=32,
 }
-class InvReset:Inventory{
-	override void attachtoowner(actor other){
-		let o=HDPlayerPawn(other);
-		if(o)o.ResetInventory(2);
-		goawayanddie();
-	}
-}
 class InvResetDG:Inventory{
 	override void attachtoowner(actor other){
 		let o=HDPlayerPawn(other);
 		if(o)o.ResetInventory(1);
+		goawayanddie();
+	}
+}
+class InvReset:Inventory{
+	override void attachtoowner(actor other){
+		other.clearinventory();
+		//stolen from Ed the Bat's eventhandler in Blade of Agony
+		let drop=other.getdropitems();
+		if(drop){
+			for(dropitem di=drop;di;di=di.Next){
+				if(di.Name=='None')continue;
+				other.A_GiveInventory(di.Name,di.Amount);
+			}
+		}
 		goawayanddie();
 	}
 }
