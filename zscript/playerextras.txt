@@ -51,52 +51,66 @@ extend class HDPlayerPawn{
 		return 1;
 	}
 	//and jump. don't separate from mantling.
-	void JumpCheck(){
+	override void CheckJump(){
+		let player = self.player;
 		if(
-			!stunned
-			&&(
-				fatigue<HDCONST_SPRINTFATIGUE
-				||zerk
-				||cansprint
-			)
-			&& input & BT_JUMP
-			&& !MantleCheck()
-			&& !(oldinput & BT_JUMP)
-			&& !countinv("PowerIronFeet")
+			player.cmd.buttons & BT_JUMP
 		){
+			if(player.crouchoffset){
+				// Jumping while crouching will force an un-crouch but not jump
+				player.crouching=1;
+			}
+			else if(waterlevel>=2){
+				vel.z=4*speed;
+			}
+			else if(bnogravity){
+				vel.z=3;
+			}
+			else if(
+				!stunned
+				&&(
+					fatigue<HDCONST_SPRINTFATIGUE
+					||zerk
+					||cansprint
+				)
+				&&!MantleCheck()
+				&&!countinv("PowerIronFeet")
+				&&!(oldinput & BT_JUMP)
+			){
 			double jumppower=5;
 			if(zerk)jumppower=10;else{
 				if(fatigue>30) jumppower=3;  
 				else if(fatigue>20) jumppower=3.5;
 			}
-			if(overloaded)jumppower/=overloaded;
-			double jz=jumppower*0.6;
-			if(!sm){
-				if(!fm) vel.z+=jz; //straight up
-				else if(fm>0){ //forwards
-					jumppower*=1.5;
-					A_ChangeVelocity(jumppower,0,jz,CVF_RELATIVE);
-				}else{ //backwards
-					A_ChangeVelocity(-jumppower,0,jz,CVF_RELATIVE);
+				if(overloaded)jumppower/=overloaded;
+				double jz=jumppower*0.6;
+				if(!sm){
+					if(!fm) vel.z+=jz; //straight up
+					else if(fm>0){ //forwards
+						jumppower*=1.5;
+						A_ChangeVelocity(jumppower,0,jz,CVF_RELATIVE);
+					}else{ //backwards
+						A_ChangeVelocity(-jumppower,0,jz,CVF_RELATIVE);
+					}
+				}else if(!fm){ //side jump
+					if(sm>0) jumppower*=-1;
+					A_ChangeVelocity(0,jumppower,jz,CVF_RELATIVE);
+				}else{ //diagonal jump
+					int smult=1;
+					int fmult=1;
+					if(fm<0) fmult=-1;
+					if(sm>0) smult=-1;
+					jumppower*=HDCONST_ONEOVERSQRTTWO;
+					A_ChangeVelocity(jumppower*fmult,jumppower*smult,jz,CVF_RELATIVE);
 				}
-			}else if(!fm){ //side jump
-				if(sm>0) jumppower*=-1;
-				A_ChangeVelocity(0,jumppower,jz,CVF_RELATIVE);
-			}else{ //diagonal jump
-				int smult=1;
-				int fmult=1;
-				if(fm<0) fmult=-1;
-				if(sm>0) smult=-1;
-				jumppower*=HDCONST_ONEOVERSQRTTWO;
-				A_ChangeVelocity(jumppower*fmult,jumppower*smult,jz,CVF_RELATIVE);
-			}
-			if(height<40){
-				if(bloodpressure<40)bloodpressure+=7;
-				fatigue+=7;
-			}
-			else{
-				if(bloodpressure<40)bloodpressure+=4;
-				fatigue+=4;
+				if(height<40){
+					if(bloodpressure<40)bloodpressure+=7;
+					fatigue+=7;
+				}
+				else{
+					if(bloodpressure<40)bloodpressure+=4;
+					fatigue+=4;
+				}
 			}
 		}
 	}
