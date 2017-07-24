@@ -20,26 +20,19 @@ class ZEDDERP:HDUPK{
 	bool DerpTargetCheck(bool face=false){
 		if(!target)return false;
 		if(face){
-			//play sound
-			A_FaceTarget(2,2);
+			A_PlaySound("derp/crawl");
+			A_FaceTarget(2,2,FAF_TOP);
 		}
 		actor derpuf;int garbage;
-		addz(-lineattackheight);
 		[derpuf,garbage]=lineattack(
 			angle,256,pitch,0,"none",
-			"NewBulletMovePuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT
+			"CheckPuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT|LAF_OVERRIDEZ,
+			offsetz:2
 		);
-		addz(lineattackheight);
-		if(derpuf && derpuf.tracer==target){
-			return true;
-		}else{
-			return false;
-		}
+		return (derpuf && derpuf.tracer==target);
 	}
-	void DerpAlert(string msg="Derpy derp!"){
-		if(!master)return;
-		int time=max(con_midtime,msg.length()*3);
-		master.A_Log(string.format("%s  %s","\cd[DERP]",msg,time),true);
+	void A_DerpMessage(string msg="Derpy derp!"){
+		if(master)master.A_Log(string.format("\cd[DERP]  %s",msg),true);
 	}
 	void DerpShot(){
 		A_PlaySound("weapons/pistol",0,1,0,4);
@@ -49,6 +42,11 @@ class ZEDDERP:HDUPK{
 		}
 		actor b=spawn("HDBullet9",pos+(0,0,2));
 		b.pitch=pitch;b.angle=angle;b.target=self;b.vel+=vel;
+	}
+	void A_DerpAttack(){
+		if(DerpTargetCheck(false))DerpShot();
+	}
+	states{
 	}
 }
 
