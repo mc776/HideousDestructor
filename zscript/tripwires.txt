@@ -259,6 +259,9 @@ class GumAndString:IdleDummy{
 	}
 }
 class TrippingFrag:FragP{
+	sector stuckto;
+	double stucktoheight;
+	bool stuckfloor;
 	default{
 		+nogravity +shootable +noblood +nodamage +notargetswitch
 		health 1;painchance 256;
@@ -270,6 +273,52 @@ class TrippingFrag:FragP{
 			destroy();return false;
 		}
 		return false;
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+
+		//and now a BIG FUCKING HACK to find some shit!
+		actor tm=spawn("TMChecker",pos);
+		if(master && !tm.trymove(pos.xy+(pos.xy-master.pos.xy).unit(),true)){
+			if(tm.blockingline.backsector){
+				stuckto=tm.blockingline.backsector;
+
+				int sflr=stuckto.centerfloor();
+				int sceil=stuckto.centerceiling();
+				if(pos.z<sceil) stuckfloor=true;
+
+				if(stuckfloor){
+					stucktoheight=sflr-pos.z;
+				}else{
+					stucktoheight=pos.z-sceil;
+				}
+				A_LogInt(stucktoheight);
+			}
+		}else if(
+			master.pitch>0
+		){
+			bmovewithsector=true;
+			brelativetofloor=true;
+		}else if(
+			master.pitch<0
+		){
+			bmovewithsector=true;
+			bceilinghugger=true;
+		}
+	}
+	override void tick(){
+		if(stuckto){
+			if(stuckfloor)setz(stuckto.centerfloor()-stucktoheight);
+			else setz(stuckto.centerceiling()+stucktoheight);
+
+			//if gone into floor or ceiling, abort
+			if(floorz>pos.z||ceilingz<pos.z){
+				A_PlaySound("misc/fragknock");
+				bnogravity=false;
+				stuckto=null;
+			}
+		}
+		super.tick();
 	}
 	states{
 	pain:
