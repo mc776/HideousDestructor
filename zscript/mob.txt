@@ -232,7 +232,7 @@ class HDMOb:HDActor{
 		if(tryvec==(0,0,0)){ //by default, try shooting in current direction
 			s.A_ChangeVelocity(cos(self.pitch)*shotradius,0,-sin(self.pitch)*shotradius,CVF_RELATIVE);
 		}else{
-			s.vel=tryvec/tryvec.length()*shotradius;
+			s.vel=tryvec.unit()*shotradius;
 		}
 		distance=ceil(distance/shotradius);
 		for(int i=0;i<distance;i++){
@@ -562,3 +562,56 @@ class SawGib:InventoryFlag{
 		}
 	}
 }
+
+
+
+
+
+struct HDMobStatic play{
+	static void HDA_Chase(actor self,actor movetarget=null){
+		vector3 posbak=self.pos;
+		vector2 facebak=(self.angle,self.pitch);
+		actor targbak=self.target;
+		if(!movetarget)movetarget=self.target;
+		self.A_Chase();
+
+		self.angle=facebak.x;
+		self.pitch=facebak.y;
+
+		if(self.pos!=posbak){
+			self.vel*=0.8;
+			self.vel+=(self.pos-posbak)/8;
+			self.A_FaceMovementDirection(0,20,20);
+		}
+
+		self.setorigin(posbak,false);
+		self.target=targbak;
+		if(!targbak||targbak.health<1)self.target=null;
+	}
+}
+
+class exzo:zombieman{
+	void HDA_Chase(actor movetarget=null){
+		if(A_CheckBlock("null"))A_Wander();
+		else HDMobStatic.HDA_Chase(self,movetarget);
+	}
+	states{
+	see:
+		POSS AABBCCDD 4 HDA_Chase();
+		loop;
+	missile:
+		POSS E 10 A_FaceTarget();
+		POSS F 8 A_PosAttack();
+		POSS E 8;
+		goto see;
+	pain:
+		POSS G 3;
+		POSS G 3 A_Pain();
+		goto see;
+	raise:
+		POSS KJIH 5;
+		goto see;
+	}
+}
+
+

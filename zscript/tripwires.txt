@@ -139,8 +139,7 @@ class GumAndString:IdleDummy{
 				if(!master && !carefulplayer && tracer && a.tracer!=tracer){
 					actor ggg=tracer.spawn("HDFragGrenadeRoller",tracer.pos);
 					ggg.target=tracer.target;
-					ggg.vel+=(pos-ggg.pos);
-					ggg.vel/=max(1,ggg.vel.length());
+					ggg.vel=(pos-ggg.pos).unit();
 					actor hhh=tracer.spawn("HDFragSpoon",tracer.pos);
 					hhh.vel=ggg.vel*5;
 					ggg.vel*=3;ggg.vel.z++;
@@ -221,8 +220,7 @@ class TrippingFrag:FragP{
 			if(!random(0,9)){
 				actor ggg=spawn("HDFragGrenadeRoller",pos);
 				ggg.target=target;
-				ggg.vel+=(pos-ggg.pos);
-				ggg.vel/=max(1,ggg.vel.length());
+				ggg.vel=(pos-ggg.pos).unit();
 				actor hhh=spawn("HDFragSpoon",tracer.pos);
 				hhh.vel=ggg.vel*5;
 				ggg.vel*=3;ggg.vel.z++;
