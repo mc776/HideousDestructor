@@ -206,6 +206,17 @@ class CheckPuff:IdleDummy{
 		stamina 1;
 	}
 }
+//mostly for doing TryMove checks to grab blockingline data
+class TMChecker:HDActor{
+	default{
+		radius 3;height 1;maxstepheight 0;
+	}
+	states{
+	spawn:
+		TNT1 A 1;
+		stop;
+	}
+}
 
 
 //collection of generic math functions

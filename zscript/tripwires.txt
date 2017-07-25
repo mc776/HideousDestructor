@@ -4,7 +4,7 @@
 class TripwirePlacerPuff:IdleDummy{
 	default{
 		-alwayspuff -puffonactors +bloodlessimpact
-		stamina 1;radius 0.1;height 0.1;
+		stamina 1;radius 0;height 0;
 	}
 }
 class TripwireCheckerPuff:IdleDummy{
@@ -99,23 +99,53 @@ class GumAndString:IdleDummy{
 	bool trapisset;
 	int stringlength;
 	vector3 ddd;int bbb;float ii;
+	sector stuckto;
+	double stucktoheight;
+	bool stuckfloor;
 	default{
 		+spriteangle
 		spriteangle 0;
 		scale 0.1;translation 2;
-		radius 5;height 2;
+		radius 0.1;height 0.1;
+	}
+	override void tick(){
+		if(stuckto){
+			if(stuckfloor)setz(stuckto.centerfloor()-stucktoheight);
+			else setz(stuckto.centerceiling()+stucktoheight);
+		}
+		super.tick();
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
 
 		//and now a BIG FUCKING HACK to find some shit!
-		vector3 posbak=pos;
-		bmissile=true;bnointeraction=false;bnoclip=false;
-		if(master && !trymove(pos.xy+(pos.xy-master.pos.xy).unit(),true,true)){
-			if(blockingline.backsector)A_Log("YAY");
+		actor tm=spawn("TMChecker",pos);
+		if(master && !tm.trymove(pos.xy+(pos.xy-master.pos.xy).unit(),true)){
+			if(tm.blockingline.backsector){
+				stuckto=tm.blockingline.backsector;
+
+				int sflr=stuckto.centerfloor();
+				int sceil=stuckto.centerceiling();
+				if(pos.z<sceil) stuckfloor=true;
+
+				if(stuckfloor){
+					stucktoheight=sflr-pos.z;
+				}else{
+					stucktoheight=pos.z-sceil;
+				}
+				A_LogInt(stucktoheight);
+			}
+		}else if(
+			master.pitch>0
+		){
+			bmovewithsector=true;
+			brelativetofloor=true;
+		}else if(
+			master.pitch<0
+		){
+			bmovewithsector=true;
+			bceilinghugger=true;
 		}
-		bmissile=false;bnointeraction=true;bnoclip=true;
-		setorigin(posbak,false);
 	}
 	states{
 	spawn:
@@ -125,6 +155,12 @@ class GumAndString:IdleDummy{
 				(!master||master.health<1)
 			){
 				destroy();
+				return;
+			}
+
+			//if gone into floor or ceiling, abort
+			if(floorz>pos.z||ceilingz<pos.z){
+				ForceAbort();
 				return;
 			}
 
@@ -149,15 +185,8 @@ class GumAndString:IdleDummy{
 				}
 
 				if(!master && !carefulplayer && tracer && a.tracer!=tracer){
-					actor ggg=tracer.spawn("HDFragGrenadeRoller",tracer.pos);
-					ggg.target=tracer.target;
-					ggg.vel=(pos-ggg.pos).unit();
-					actor hhh=tracer.spawn("HDFragSpoon",tracer.pos);
-					hhh.vel=ggg.vel*5;
-					ggg.vel*=3;ggg.vel.z++;
-					ggg.A_PlaySound("weapons/rifleclick");
-					tracer.destroy();
-					destroy();return;
+					PullPin();
+					return;
 				}
 				else if(tracer && a.tracer==tracer)master=null;
 
@@ -185,12 +214,16 @@ class GumAndString:IdleDummy{
 				else ddd=master.pos+(0,0,master.height-8);
 
 				ddd-=pos;
-				bbb=max(ddd.length(),1)*0.3;
+				stringlength=max(ddd.length(),1);
+				bbb=stringlength*0.3;
 				ddd/=bbb;
 
 				ii=min(bbb,40)*0.0001;
 
 				if(tracer && !master)trapisset=true;
+			}else if(tracer && (tracer.pos+(0,0,4)-pos).length()>stringlength+1){
+				PullPin();
+				return;
 			}
 
 			vector3 ccc;
@@ -204,6 +237,18 @@ class GumAndString:IdleDummy{
 				);
 			}
 		}wait;
+	}
+	void PullPin(){
+		if(!tracer)return;
+		actor ggg=tracer.spawn("HDFragGrenadeRoller",tracer.pos);
+		ggg.target=tracer.target;
+		ggg.vel=(pos-ggg.pos).unit();
+		actor hhh=tracer.spawn("HDFragSpoon",tracer.pos);
+		hhh.vel=ggg.vel*5;
+		ggg.vel*=3;ggg.vel.z++;
+		ggg.A_PlaySound("weapons/rifleclick");
+		tracer.destroy();
+		destroy();
 	}
 	void ForceAbort(){
 		A_PlaySound("weapons/bigcrack");
