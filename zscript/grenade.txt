@@ -186,7 +186,7 @@ class HDGrenadeToss:ActionItem{
 			[garbage,gg]=A_SpawnItemEx("HDFragGrenade",0,0,height-6,cos(pitch)*cos(angle)*4+vel.x,cos(pitch)*sin(angle)*4+vel.y,-sin(pitch)*4+vel.z,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH);
 
 			A_TakeInventory("HDFragGrenadeAmmo",1,TIF_NOTAKEINFINITE);
-			int gforce=clamp(countinv("GrenadeForce"),2,40+health*0.1);
+			int gforce=clamp(countinv("GrenadeForce"),4,40+health*0.1);
 
 			let grenade=HDFragGrenade(gg);if(!grenade) return;
 			if(countinv("powerstrength"))gforce*=2;
@@ -197,7 +197,7 @@ class HDGrenadeToss:ActionItem{
 			if(wp){
 				grenade.vel+=SwingThrow()*gforce;
 			}
-			grenade.a_changevelocity(cos(pitch)*gforce*0.5,0,-sin(pitch)*gforce*0.5,CVF_RELATIVE);
+			grenade.a_changevelocity(cos(pitch)*gforce*0.6,0,-sin(pitch)*gforce*0.6,CVF_RELATIVE);
 			A_TakeInventory("fragtimer");
 			A_TakeInventory("grenadeforce");
 		}fail;
