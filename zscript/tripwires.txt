@@ -103,7 +103,19 @@ class GumAndString:IdleDummy{
 		+spriteangle
 		spriteangle 0;
 		scale 0.1;translation 2;
-		radius 0.5;height 1;
+		radius 5;height 2;
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+
+		//and now a BIG FUCKING HACK to find some shit!
+		vector3 posbak=pos;
+		bmissile=true;bnointeraction=false;bnoclip=false;
+		if(master && !trymove(pos.xy+(pos.xy-master.pos.xy).unit(),true,true)){
+			if(blockingline.backsector)A_Log("YAY");
+		}
+		bmissile=false;bnointeraction=true;bnoclip=true;
+		setorigin(posbak,false);
 	}
 	states{
 	spawn:
