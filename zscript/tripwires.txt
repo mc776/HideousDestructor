@@ -265,6 +265,7 @@ class TrippingFrag:FragP{
 	default{
 		+nogravity +shootable +noblood +nodamage +notargetswitch
 		health 1;painchance 256;
+		radius 2;height 2;
 	}
 	override bool cancollidewith(actor other,bool passive){
 		if(other is "userpickerupper"){
@@ -292,7 +293,6 @@ class TrippingFrag:FragP{
 				}else{
 					stucktoheight=pos.z-sceil;
 				}
-				A_LogInt(stucktoheight);
 			}
 		}else if(
 			master.pitch>0
