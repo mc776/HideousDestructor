@@ -569,24 +569,64 @@ class SawGib:InventoryFlag{
 
 struct HDMobStatic play{
 	static void HDA_Chase(actor self,actor movetarget=null){
-		vector3 posbak=self.pos;
-		vector2 facebak=(self.angle,self.pitch);
-		actor targbak=self.target;
-		if(!movetarget)movetarget=self.target;
-		self.A_Chase();
-
-		self.angle=facebak.x;
-		self.pitch=facebak.y;
-
-		if(self.pos!=posbak){
-			self.vel*=0.8;
-			self.vel+=(self.pos-posbak)/8;
-			self.A_FaceMovementDirection(0,20,20);
+		if(!self.target||self.target.health<random(-5,1)){
+			self.target=null;
+//			self.setstatelabel("spawn");
+			return;
 		}
+		if(!movetarget)movetarget=self.target;
+		vector3 totarget=self.target.pos-self.pos;
+		vector2 tomovetarget=movetarget.pos.xy-self.pos.xy;
+		vector2 thisway;
+		int quickdist=max(abs(totarget.x),abs(totarget.y),abs(totarget.z))-self.target.radius;
 
-		self.setorigin(posbak,false);
-		self.target=targbak;
-		if(!targbak||targbak.health<1)self.target=null;
+/*
+		//attack
+		if(self.checksight(self.target)){
+			if(quickdist<self.meleerange && self.findstate("melee")){
+				self.setstatelabel("melee");
+				return;
+			}else if(self.findstate("missile") && random(0,255)<self.minmissilechance){
+				self.setstatelabel("missile");
+				return;
+			}
+		}
+*/
+
+		if(self.floorz<self.pos.z && !self.bfloat)return; //abort if can't propel self
+		self.vel*=0.8; //slow down
+		int spd=max(1,self.speed*0.2); //usually A_Chase is called every 4 tics
+		if(self.bfloat && (totarget.z<10 || !random(0,4)))self.vel.z+=spd; //DEATH FROM ABOVE
+
+		//if can't move further, set a random direction AWAY from where it's going
+		if(!self.trymove(self.pos.xy+self.vel.xy*4,false)){
+			if(self.vel.x>0)thisway.x=randompick(-1,-1,0,1);  
+			else thisway.x=randompick(1,1,0,-1);
+			if(self.vel.y>0)thisway.y=randompick(-1,-1,0,1);  
+			else thisway.y=randompick(1,1,0,-1);
+		}
+		//randomly set a random direction skewed in favour of the MOVEtarget
+		else if(!random(0,32)){
+			if(tomovetarget.x<0)thisway.x=randompick(-1,-1,0,1);
+			else thisway.x=randompick(1,1,0,-1);
+			if(tomovetarget.y<0)thisway.y=randompick(-1,-1,0,1);
+			else thisway.y=randompick(1,1,0,-1);
+		}
+		//keep going in current direction
+		else{
+			if(tomovetarget.x<-2)thisway.x=randompick(-1,-1,-1,-1,0);
+			else if(tomovetarget.x>2) thisway.x=randompick(1,1,1,1,0);
+			else thisway.x=0;
+			if(tomovetarget.y<-2)thisway.y=randompick(-1,-1,-1,-1,0);
+			else if(tomovetarget.y>2) thisway.y=randompick(1,1,1,1,0);
+			else thisway.y=0;
+		}
+		if(thisway!=(0,0))self.vel+=thisway.unit()*spd;
+
+
+		//if too close to target, keep facing them
+		if(quickdist<self.meleerange*2)self.A_FaceTarget(20,20);
+		else self.A_FaceMovementDirection(5,5);
 	}
 }
 
