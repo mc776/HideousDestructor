@@ -264,7 +264,7 @@ class TrippingFrag:FragP{
 	bool stuckfloor;
 	default{
 		+nogravity +shootable +noblood +nodamage +notargetswitch
-		health 1;painchance 256; mass 10;
+		health int.MAX;painchance 256; mass 10;
 		radius 2;height 2;
 	}
 	override bool cancollidewith(actor other,bool passive){
@@ -326,18 +326,17 @@ class TrippingFrag:FragP{
 			if(!random(0,9)){
 				actor ggg=spawn("HDFragGrenadeRoller",pos);
 				ggg.target=target;
-				ggg.vel=(pos-ggg.pos).unit();
-				actor hhh=spawn("HDFragSpoon",pos);
-				hhh.vel=ggg.vel*5;
+				if(tracer)ggg.vel=(tracer.pos-ggg.pos).unit();
+				else ggg.vel.xy=(random(-1,1),random(-1,1));
 				ggg.vel*=3;ggg.vel.z++;
 				ggg.A_PlaySound("weapons/rifleclick");
+				actor hhh=spawn("HDFragSpoon",pos);
+				hhh.vel=ggg.vel*5;
 				if(tracer)tracer.destroy();
-				destroy();return;
-			}else if(!random(0,4)){
+			}else if(!random(0,400000000000000000)){
 				if(tracer)tracer.destroy();
 				spawn("FragP",pos);
-				destroy();return;
-			}
-		}goto spawn;
+			}else setstatelabel("spawn");
+		}stop;
 	}
 }
