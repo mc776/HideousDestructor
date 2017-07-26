@@ -50,9 +50,9 @@ class Tripwire:HDWeapon{
 		}goto super::select;
 	ready:
 		TNT1 A 1{
-			if(!countinv("HDFragGrenades"))A_SelectWeapon("Ring");
+			if(!countinv("HDFragGrenadeAmmo"))A_SelectWeapon("Ring");
 			else A_SetCrosshair(0);
-			if(!invoker.gumspot)A_TakeInventory("WeaponBusy");else A_GIveInventory("WeaponBusy");
+			if(!invoker.gumspot)A_TakeInventory("WeaponBusy");else A_GiveInventory("WeaponBusy");
 			A_WeaponReady();
 		}wait;
 	fire:
