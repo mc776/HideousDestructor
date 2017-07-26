@@ -86,7 +86,6 @@ class userpickerupper:hdactor{
  special uses:
  activesound: pickup sound
  hdupk.pickuptype: default type of inventory item it replaces
- hdupk.[big]pickupscale: default scale and bloated scale, as 2 numbers
  accuracy: max # of pickuptype a single unit can store
 */
 class HDUPK:HDActor{
@@ -244,5 +243,6 @@ class HDAmmo:HDPickup{
 	default{
 		-inventory.invbar
 	}
+	states{use:TNT1 A 0;fail;}
 }
 
