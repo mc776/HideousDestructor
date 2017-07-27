@@ -282,9 +282,10 @@ extend class HDPlayerPawn{
 
 				//wounds start settling
 				if(!random(0,unstablewoundcount+woundcount)){
-					if(unstablewoundcount+woundcount>0)oldwoundcount++;
-					if(unstablewoundcount>0)unstablewoundcount--;
-					else if(woundcount>0)woundcount--;
+					if(unstablewoundcount>0){
+						unstablewoundcount--;
+						oldwoundcount++;
+					}else if(woundcount>0)woundcount--;
 				}
 			}
 			if(beatcounter==120){	//every 120 beats
