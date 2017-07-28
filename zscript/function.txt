@@ -71,13 +71,16 @@ class HDActor:Actor{
 		double minvel=10,
 		double maxvel=20
 	){
-		if((
+		if(
 			chunk=="WallChunk"
 			||chunk.getparentclass()=="WallChunk"
 			||chunk.getparentclass().getparentclass()=="WallChunk"
-		)&&countwallchunks()>500){
-			A_Log(string.format("%i is too many chunks",countwallchunks()));
-			return;
+		){
+			int ch=countwallchunks();
+			if(ch>500){
+				if(hd_debug)A_Log(string.format("%i is too many chunks",ch));
+				return;
+			}
 		}
 		int airb=0;
 		vector3 burstpoint=self.pos+(0,0,self.height*0.5);
