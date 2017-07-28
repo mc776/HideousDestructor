@@ -237,8 +237,9 @@ void ResetInventory(actor resetee)
 		inv=inventory(it.Next())
 	){
 		let invv=inventory(inv);
-		if(invv && invv!=self && invv.owner == resetee)invv.goawayanddie();
+		invv.bundroppable=false;
 	}
+	resetee.clearinventory();
 
 	//now get all the "dropitems" (i.e. player's startitems) and give them
 	let drop=resetee.getdropitems();
@@ -252,19 +253,9 @@ void ResetInventory(actor resetee)
 	}
 }
 	override void attachtoowner(actor other){
-resetinventory(other);
-goawayanddie();
-return;
-		other.clearinventory();
-		//stolen from Ed the Bat's eventhandler in Blade of Agony
-		let drop=other.getdropitems();
-		if(drop){
-			for(dropitem di=drop;di;di=di.Next){
-				if(di.Name=='None')continue;
-				other.A_GiveInventory(di.Name,di.Amount);
-			}
-		}
+		resetinventory(other);
 		goawayanddie();
+		return;
 	}
 }
 
