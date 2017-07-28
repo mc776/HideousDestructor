@@ -225,7 +225,36 @@ class InvResetDG:Inventory{
 	}
 }
 class InvReset:Inventory{
+
+//Remove all inventory from an actor and give it whatever is on its class's drop/startitems list.
+void ResetInventory(actor resetee)
+{
+	//can't use ClearInventory since we want to get all the +undroppables too
+	thinkeriterator it=thinkeriterator.create("Inventory");
+	actor inv;
+	while
+	(
+		inv=inventory(it.Next())
+	){
+		let invv=inventory(inv);
+		if(invv && invv!=self && invv.owner == resetee)invv.goawayanddie();
+	}
+
+	//now get all the "dropitems" (i.e. player's startitems) and give them
+	let drop=resetee.getdropitems();
+	if(drop)
+	{
+		for(dropitem di=drop;di;di=di.Next)
+		{
+			if(di.Name=='None') continue;
+			resetee.A_GiveInventory(di.Name,di.Amount);
+		}
+	}
+}
 	override void attachtoowner(actor other){
+resetinventory(other);
+goawayanddie();
+return;
 		other.clearinventory();
 		//stolen from Ed the Bat's eventhandler in Blade of Agony
 		let drop=other.getdropitems();
