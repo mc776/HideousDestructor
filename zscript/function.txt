@@ -58,12 +58,27 @@ class HDActor:Actor{
 	}
 	//generic function to spawn actors coming out of an explosion
 	//for frags: A_SpawnChunks("HDFrag",42,100,700);
+	//CountWallChunks is to lower the number
+	int CountWallChunks(){
+		int count=0;
+		thinkeriterator it=thinkeriterator.create("WallChunk");
+		while(WallChunk(it.Next(exact:false)))count++;
+		return count;
+	}
 	void A_SpawnChunks(
 		class<actor> chunk,
 		int number=12,
 		double minvel=10,
 		double maxvel=20
 	){
+		if((
+			chunk=="WallChunk"
+			||chunk.getparentclass()=="WallChunk"
+			||chunk.getparentclass().getparentclass()=="WallChunk"
+		)&&countwallchunks()>500){
+			A_Log(string.format("%i is too many chunks",countwallchunks()));
+			return;
+		}
 		int airb=0;
 		vector3 burstpoint=self.pos+(0,0,self.height*0.5);
 		if(burstpoint.z-floorz<56) airb=-1;
