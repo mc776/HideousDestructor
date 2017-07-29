@@ -120,7 +120,11 @@ class GumAndString:IdleDummy{
 
 		//and now a BIG FUCKING HACK to find some shit!
 		actor tm=spawn("TMChecker",pos);
-		if(master && !tm.trymove(pos.xy+(pos.xy-master.pos.xy).unit(),true)){
+		if(
+			master
+			&&!tm.trymove(pos.xy+(pos.xy-master.pos.xy).unit(),true)
+			&&tm.blockingline
+		){
 			if(tm.blockingline.backsector){
 				stuckto=tm.blockingline.backsector;
 
@@ -185,7 +189,9 @@ class GumAndString:IdleDummy{
 				}
 
 				if(!master && !carefulplayer && tracer && a.tracer!=tracer){
-					PullPin();
+					vector3 vvv;
+					if(a.tracer)vvv=a.tracer.vel*0.5;
+					PullPin(vvv.x,vvv.y,vvv.z);
 					return;
 				}
 				else if(tracer && a.tracer==tracer)master=null;
@@ -238,7 +244,7 @@ class GumAndString:IdleDummy{
 			}
 		}wait;
 	}
-	void PullPin(){
+	void PullPin(double vvx=0,double vvy=0,double vvz=0){
 		if(!tracer)return;
 		actor ggg=tracer.spawn("HDFragGrenadeRoller",tracer.pos);
 		ggg.target=tracer.target;
@@ -247,7 +253,9 @@ class GumAndString:IdleDummy{
 		hhh.vel=ggg.vel*5;
 		ggg.vel*=3;ggg.vel.z++;
 		ggg.A_PlaySound("weapons/rifleclick");
-		tracer.destroy();
+		ggg.vel+=(vvx,vvy,vvz);
+		hhh.vel+=(vvx,vvy,vvz);
+		if(tracer)tracer.destroy();
 		destroy();
 	}
 	void ForceAbort(){
@@ -323,20 +331,22 @@ class TrippingFrag:FragP{
 	states{
 	pain:
 		---- A 0{
-			if(!random(0,9)){
+//			if(!random(0,9)){
+			if(1){ //testing
 				actor ggg=spawn("HDFragGrenadeRoller",pos);
 				ggg.target=target;
-				if(tracer)ggg.vel=(tracer.pos-ggg.pos).unit();
-				else ggg.vel.xy=(random(-1,1),random(-1,1));
-				ggg.vel*=3;ggg.vel.z++;
+				if(tracer){
+					ggg.vel=(tracer.pos-ggg.pos).unit()*3+(0,0,1);
+					tracer.destroy();
+				}else ggg.vel=(random(-1,1),random(-1,1),1);
 				ggg.A_PlaySound("weapons/rifleclick");
 				actor hhh=spawn("HDFragSpoon",pos);
 				hhh.vel=ggg.vel*5;
+				destroy();return;
+			}else if(!random(0,4)){
 				if(tracer)tracer.destroy();
-			}else if(!random(0,400000000000000000)){
-				if(tracer)tracer.destroy();
-				spawn("FragP",pos);
+				bnogravity=false;
 			}else setstatelabel("spawn");
-		}stop;
+		}goto spawn;
 	}
 }
