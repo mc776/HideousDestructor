@@ -90,9 +90,25 @@ class HDStatusBar:DoomStatusBar{
 		else if(cplayer.getgender()==1)DrawTexture(GetMugShot(5,Mugshot.CUSTOM,"SFF"),(0,-14),DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM);
 	}
 	void DrawCommonStuff(int state){
+		let cp=HDPlayerPawn(CPlayer.mo);
+		if(!cp)return;
 
 		int mxht=-4-mIndexFont.mFont.GetHeight();
 		int mhht=-4-mHUDFont.mFont.getheight();
+
+
+		//draw the crosshair.
+		DrawHDXHair(cp);
+
+
+		let hdla=portableliteamp(cp.findinventory("PortableLiteAmp"));
+		if(hdla && hdla.worn){
+			drawimage(
+				"GOGGA0",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+				scale:(4,4)
+			);
+		}
+
 
 		//inventory
 		DrawInvSel(25,-4,42,mxht,DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE);
@@ -156,14 +172,6 @@ class HDStatusBar:DoomStatusBar{
 
 		//lives
 		drawlives(-74,mhht,DI_TEXT_ALIGN_RIGHT|DI_SCREEN_CENTER_BOTTOM);
-
-
-		let cp=HDPlayerPawn(CPlayer.mo);if(!cp)return;
-
-
-		//draw the crosshair.
-//		if(hd_debug)
-		DrawHDXHair(cp);
 
 
 		//heartbeat/playercolour tracker

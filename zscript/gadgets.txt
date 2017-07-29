@@ -50,32 +50,6 @@ class PortableRadsuit:HDPickup replaces RadSuit{
 //-------------------------------------------------
 // Light Amplification Visor
 //-------------------------------------------------
-class HDLA:Powerup{
-	default{powerup.duration -120;}
-	override void doeffect(){
-		super.doeffect();
-		let player=owner.player;
-		if(player&& player.fixedcolormap<PlayerInfo.NUMCOLORMAPS){
-//player.fixedlightlevel=1;
-player.fixedcolormap=playerinfo.NUMCOLORMAPS;
-//player.fixedcolormap=2;
-return;
-			if (!isBlinking()){	
-				player.fixedlightlevel = 1;
-			}
-			else{
-				player.fixedlightlevel = -1;
-			}
-		}
-	}
-	override void endeffect(){
-		super.endeffect();
-		if(owner&&owner.player&&owner.player.fixedcolormap<PlayerInfo.NUMCOLORMAPS){
-			owner.player.fixedlightlevel = -1;
-		}
-	}
-	
-}
 class PortableLiteAmp:HDPickup replaces Infrared{
 	default{
 		inventory.maxamount 1;
@@ -88,7 +62,8 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 	int spent;bool worn;
 	const LITEBAT=84000;
 	override void DetachFromOwner(){
-		owner.A_TakeInventory("PowerLightAmp");
+		if(owner.countinv("powerinvulnerable"))owner.player.fixedcolormap=0;
+		else owner.player.fixedcolormap=-1;
 		worn=false;
 		super.DetachFromOwner();
 	}
@@ -96,10 +71,12 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 		super.DoEffect();
 		if(owner){
 			if(worn){
-				owner.A_GiveInventory("PowerLightAmp");
+				if(owner.countinv("powerinvulnerable"))owner.player.fixedcolormap=0;
+				else owner.player.fixedcolormap=5;
 				spent++;
 				if(spent>LITEBAT)worn=false;
-			}else owner.A_TakeInventory("PowerLightAmp");
+			}else if(owner.player&&owner.player.fixedcolormap<PlayerInfo.NUMCOLORMAPS)
+				owner.player.fixedcolormap=-1;
 		}
 	}
 	states{
