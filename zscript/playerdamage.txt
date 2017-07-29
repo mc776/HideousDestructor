@@ -45,6 +45,21 @@ extend class HDPlayerPawn{
 			if(!skill || hd_lowdamage)damage=max(1,damage*0.3);
 		}
 
+		bool radsuit;
+		let hdrs=portableradsuit(findinventory("PortableRadsuit"));
+		if(countinv("PowerIronFeet")||(
+			hdrs&&hdrs.worn
+		))radsuit=true;
+		if(radsuit && mod=="slime"){
+			if(damage>=20 && !random(0,99)){
+				A_TakeInventory("PowerIronFeet");
+				if(hdrs&&hdrs.worn){
+					hdrs.worn=false;
+					A_TakeInventory("PortableRadsuit",1);
+				}
+			}else return 0;
+		}
+
 		int towound=0;
 		int toburn=0;
 
@@ -149,7 +164,7 @@ extend class HDPlayerPawn{
 				damage=max(1,damage);
 			}
 			//radsuit completely envelops you so it will always get it
-			if(countinv("PowerIronFeet")){
+			if(radsuit){
 				if(type>1 || type && random(1,4)){
 					A_PlaySound("imp/melee");
 					A_TakeInventory("PowerIronFeet");

@@ -299,15 +299,16 @@ struct HDF play{
 	//force give-and-take to register if absent
 	//HDF.MaxInv(self,"FourMilAmmo")
 	static int MaxInv(actor holder,class<inventory> inv){
-		if(holder.findinventory(inv)) return holder.findinventory(inv).maxamount;
+		if(holder.findinventory(inv))return holder.findinventory(inv).maxamount;
 		holder.A_GiveInventory(inv);
-		if(!holder.findinventory(inv)){
+		let hh=holder.findinventory(inv);
+		if(!hh){
 			if(hd_debug)
 			holder.A_Log(string.format("Invalid type for HDF.maxinv: %s",inv.getclassname()));
 			return -1;
 		}
-		int max=holder.findinventory(inv).maxamount;
-		holder.A_TakeInventory(inv);
+		int max=hh.maxamount;
+		hh.destroy();
 		return max;
 	}
 	//transfer inventory: one gets, the other loses

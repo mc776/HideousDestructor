@@ -11,15 +11,7 @@ class PortableRadsuit:HDPickup replaces RadSuit{
 		accuracy 1;
 	}
 	bool worn;
-	override void DoEffect(){
-		super.DoEffect();
-		if(owner){
-			if(worn)owner.A_GiveInventory("PowerIronFeet");
-			else owner.A_TakeInventory("PowerIronFeet");
-		}
-	}
 	override void DetachFromOwner(){
-		owner.A_TakeInventory("PowerIronFeet");
 		worn=false;
 		super.DetachFromOwner();
 	}
@@ -33,7 +25,7 @@ class PortableRadsuit:HDPickup replaces RadSuit{
 			A_ChangeVelocity(0,0,2);
 			let onr=HDPlayerPawn(self);
 			if(onr)onr.stunned+=60;
-			if(countinv("PowerIronFeet")<1){
+			if(!invoker.worn){
 				invoker.worn=true;
 			}else{
 				invoker.worn=false;

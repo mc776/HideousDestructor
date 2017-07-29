@@ -495,18 +495,14 @@ class HDFragGrenadeAmmo:Ammo{
 class FragP:HDUPK replaces HDFragGrenadeAmmo{
 	default{
 		+forcexybillboard
-		scale 0.3;
-		height 3;radius 3;
+		scale 0.3;height 3;radius 3;
+		hdupk.pickuptype "HDFragGrenadeAmmo";
+		activesound "weapons/rifleclick2";
+		hdupk.pickupmessage "Picked up a hand grenade.";
+		stamina 1;
 	}
 	states{
 	spawn:
 		FRAG A -1 A_Stop();
-	give:
-		---- A 0 A_JumpIfInTargetInventory("HDFragGrenadeAmmo",0,"spawn");
-		---- A 0{
-			A_PlaySound("weapons/pocket");
-			ammo g=ammo(spawn("HDFragGrenadeAmmo",pos));
-			g.touch(target);
-		}stop;
 	}
 }

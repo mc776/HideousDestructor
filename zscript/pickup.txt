@@ -86,16 +86,20 @@ class userpickerupper:hdactor{
  special uses:
  activesound: pickup sound
  hdupk.pickuptype: default type of inventory item it replaces
+ hdupk.pickupmessage: self-explanatory
  accuracy: max # of pickuptype a single unit can store
 */
 class HDUPK:HDActor{
 	//do NOT use this for pickupable casings, 1x1 is intolerably pixelbitchy!
 	class<inventory> pickuptype;
 	property pickuptype:pickuptype;
+	string pickupmessage;
+	property pickupmessage:pickupmessage;
 	default{
 		+solid +noblockmonst +notrigger
 		height 8;radius 8;
 		activesound "misc/i_pkup";
+		hdupk.pickupmessage "Picked up a fake inventory item";
 	}
 	override bool cancollidewith(actor other,bool passive){
 		if(bpushable)return super.cancollidewith(other,passive);
@@ -130,6 +134,7 @@ class HDUPK:HDActor{
 			return;
 		}
 		A_PlaySound(activesound);
+		target.A_Log(string.format("\cg%s",pickupmessage),true);
 		stamina-=increase;
 		if(stamina){ //only picked some up
 			setstatelabel("spawn");
@@ -210,12 +215,13 @@ class HDPickup:CustomInventory{
 	virtual void actualpickup(actor other){
 		name gcn=getclassname();
 		int maxtake=HDF.MaxInv(other,gcn)-other.countinv(gcn);
-		if(maxtake<amount){
+		if(maxtake<1){
+			setstatelabel("spawn2");return;
+		}else if(maxtake<amount){
 			amount-=maxtake;
 			other.A_GiveInventory(gcn,maxtake);
-			setstatelabel("spawn2");
-		}
-		else trypickup(other);
+			if(amount>0)setstatelabel("spawn2");
+		}else trypickup(other);
 		other.A_PlaySound(pickupsound,CHAN_AUTO);
 		other.A_Log(string.format("\cg%s",pickupmessage()),true);
 	}

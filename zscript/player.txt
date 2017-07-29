@@ -295,6 +295,10 @@ class HDPlayerPawn:PlayerPawn{
 				fatigue<HDCONST_SPRINTFATIGUE
 			)
 			&&!countinv("PowerIronFeet")
+			&&(
+				!countinv("PortableRadsuit")||
+				portableradsuit(findinventory("PortableRadsuit")).worn==false
+			)
 		)cansprint=true;else cansprint=false;
 
 		//encumbrance
