@@ -113,6 +113,7 @@ class GumAndString:IdleDummy{
 			if(stuckfloor)setz(stuckto.centerfloor()-stucktoheight);
 			else setz(stuckto.centerceiling()+stucktoheight);
 		}
+		else if(bceilinghugger)setz(ceilingz-height);
 		super.tick();
 	}
 	override void postbeginplay(){
@@ -326,6 +327,7 @@ class TrippingFrag:FragP{
 				stuckto=null;
 			}
 		}
+		else if(bceilinghugger)setz(ceilingz-height);
 		super.tick();
 	}
 	states{
