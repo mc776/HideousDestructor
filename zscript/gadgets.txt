@@ -50,6 +50,32 @@ class PortableRadsuit:HDPickup replaces RadSuit{
 //-------------------------------------------------
 // Light Amplification Visor
 //-------------------------------------------------
+class HDLA:Powerup{
+	default{powerup.duration -120;}
+	override void doeffect(){
+		super.doeffect();
+		let player=owner.player;
+		if(player&& player.fixedcolormap<PlayerInfo.NUMCOLORMAPS){
+//player.fixedlightlevel=1;
+player.fixedcolormap=playerinfo.NUMCOLORMAPS;
+//player.fixedcolormap=2;
+return;
+			if (!isBlinking()){	
+				player.fixedlightlevel = 1;
+			}
+			else{
+				player.fixedlightlevel = -1;
+			}
+		}
+	}
+	override void endeffect(){
+		super.endeffect();
+		if(owner&&owner.player&&owner.player.fixedcolormap<PlayerInfo.NUMCOLORMAPS){
+			owner.player.fixedlightlevel = -1;
+		}
+	}
+	
+}
 class PortableLiteAmp:HDPickup replaces Infrared{
 	default{
 		inventory.maxamount 1;
