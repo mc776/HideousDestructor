@@ -661,5 +661,27 @@ class exzo:zombieman{
 		goto see;
 	}
 }
-
+class exim:doomimp{
+	void HDA_Chase(actor movetarget=null){
+		if(A_CheckBlock("null"))A_Wander();
+		else HDMobStatic.HDA_Chase(self,movetarget);
+	}
+	states{
+	see:
+		TROO AABBCCDD 4 HDA_Chase();
+		loop;
+	missile:
+		TROO E 10 A_FaceTarget();
+		TROO F 8 A_TroopAttack();
+		TROO G 8;
+		goto see;
+	pain:
+		TROO H 3;
+		TROO H 3 A_Pain();
+		goto see;
+	raise:
+		TROO LKJI 5;
+		goto see;
+	}
+}
 

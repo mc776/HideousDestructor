@@ -27,11 +27,10 @@ class HDStatusBar:DoomStatusBar{
 
 		if(automapactive){
 			DrawAutomapHUD(ticfrac);
-			BeginHUD();
 			DrawAutomapStuff();
 		}else{
-			BeginHUD();
 			DrawAlwaysStuff();
+			BeginHUD();
 			if(state==HUD_StatusBar){
 				DrawCommonStuff(state);
 			}
@@ -104,8 +103,10 @@ class HDStatusBar:DoomStatusBar{
 		if(!cp)return;
 
 		//draw the crosshair.
+		BeginHUD();
 		DrawHDXHair(cp);
 
+		BeginHUD(forcescaled:true);
 		if(radsuit){
 			radsuit=true;
 			drawimage(
@@ -119,7 +120,7 @@ class HDStatusBar:DoomStatusBar{
 		if(hdla && hdla.worn){
 			drawimage(
 				"GOGGA0",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-				scale:(4,4)
+				scale:(2.2,2.4)
 			);
 		}
 	}
