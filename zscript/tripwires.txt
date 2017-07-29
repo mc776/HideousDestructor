@@ -333,8 +333,8 @@ class TrippingFrag:FragP{
 	states{
 	pain:
 		---- A 0{
-//			if(!random(0,9)){
-			if(1){ //testing
+			if(!random(0,9)){
+//			if(1){ //testing
 				actor ggg=spawn("HDFragGrenadeRoller",pos);
 				ggg.target=target;
 				if(tracer){
@@ -343,7 +343,7 @@ class TrippingFrag:FragP{
 				}else ggg.vel=(random(-1,1),random(-1,1),1);
 				ggg.A_PlaySound("weapons/rifleclick");
 				actor hhh=spawn("HDFragSpoon",pos);
-				hhh.vel=ggg.vel*5;
+				hhh.vel=ggg.vel*2;
 				destroy();return;
 			}else if(!random(0,4)){
 				if(tracer)tracer.destroy();
