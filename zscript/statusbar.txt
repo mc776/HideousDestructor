@@ -29,14 +29,16 @@ class HDStatusBar:DoomStatusBar{
 			DrawAutomapHUD(ticfrac);
 			BeginHUD();
 			DrawAutomapStuff();
-		}else if(state==HUD_StatusBar){
+		}else{
 			BeginHUD();
-			DrawCommonStuff(state);
-		}
-		else if(state==HUD_Fullscreen){
-			BeginHUD();
-			DrawCommonStuff(state);
-			DrawFullScreenStuff();
+			DrawAlwaysStuff();
+			if(state==HUD_StatusBar){
+				DrawCommonStuff(state);
+			}
+			else if(state==HUD_Fullscreen){
+				DrawCommonStuff(state);
+				DrawFullScreenStuff();
+			}
 		}
 	}
 	void DrawAutomapStuff(){
@@ -97,13 +99,9 @@ class HDStatusBar:DoomStatusBar{
 		if(cplayer.getgender()==0)DrawTexture(GetMugShot(5),(0,-14),DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM);
 		else if(cplayer.getgender()==1)DrawTexture(GetMugShot(5,Mugshot.CUSTOM,"SFF"),(0,-14),DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM);
 	}
-	void DrawCommonStuff(int state){
+	void DrawAlwaysStuff(){
 		let cp=HDPlayerPawn(CPlayer.mo);
 		if(!cp)return;
-
-		int mxht=-4-mIndexFont.mFont.GetHeight();
-		int mhht=-4-mHUDFont.mFont.getheight();
-
 
 		//draw the crosshair.
 		DrawHDXHair(cp);
@@ -124,7 +122,13 @@ class HDStatusBar:DoomStatusBar{
 				scale:(4,4)
 			);
 		}
+	}
+	void DrawCommonStuff(int state){
+		let cp=HDPlayerPawn(CPlayer.mo);
+		if(!cp)return;
 
+		int mxht=-4-mIndexFont.mFont.GetHeight();
+		int mhht=-4-mHUDFont.mFont.getheight();
 
 		//inventory
 		DrawInvSel(25,-4,42,mxht,DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE);
