@@ -10,7 +10,6 @@ extend class HDPlayerPawn{
 		A_GiveInventory("Ring");
 		A_GiveInventory("SelfBandage");
 		A_GiveInventory("HDFragGrenades");
-		A_GiveInventory("HDRealDoomGuy");
 		A_GiveInventory("HDWeaponPurge");
 		A_GiveInventory("HDDropOne");
 		A_GiveInventory("Taunter");
@@ -102,23 +101,56 @@ class SoldierExtras:ActionItem{
 	}
 }
 
-//be doomed.
-class DoomguyLoadout:ActionItem{
-	states{
-	pickup:
-		TNT1 A 0{
-			ClearInventory();
-			let d=HDPlayerPawn(self);
-			if(d)d.GiveBasics();
-			A_GiveInventory("HDPistol");
-			A_GiveInventory("HDPistolLoaded",15);
-			A_GiveInventory("HDPistolChamber");
-			A_GiveInventory("HDPistolMag",2);
-			A_GiveInventory("HDPistolAmmo",4);
-		}fail;
+
+
+//reset inventory
+class InvReset:Inventory{
+	void ReallyClearInventory(actor resetee,bool keepkeys=false){
+		//can't just use ClearInventory since we want to get all the +undroppables too
+		thinkeriterator it=thinkeriterator.create("Inventory");
+		actor inv;
+		while(
+			inv=inventory(it.Next())
+		){
+			let invv=inventory(inv);
+			if(
+				invv
+				&& (!keepkeys || !(inv is "Key"))
+				&& invv.owner==resetee
+			)invv.destroy();
+		}
+	}
+	void GiveStartItems(actor resetee){
+		//now get all the "dropitems" (i.e. player's startitems) and give them
+		let drop=resetee.getdropitems();
+		if(drop){
+			for(dropitem di=drop;di;di=di.Next){
+				if(di.Name=='None')continue;
+				resetee.A_GiveInventory(di.Name,di.Amount);
+			}
+		}
+	}
+	override void attachtoowner(actor other){
+		reallyclearinventory(other);
+		givestartitems(other);
+		goawayanddie();
+		return;
 	}
 }
-
+class DoomguyLoadout:InvReset{
+	override void attachtoowner(actor other){
+		reallyclearinventory(other,true);
+		let d=HDPlayerPawn(self);
+		if(d)d.GiveBasics();
+		other.A_GiveInventory("HDPistol");
+		other.A_GiveInventory("HDPistolLoaded",15);
+		other.A_GiveInventory("HDPistolChamber");
+		other.A_GiveInventory("HDPistolMag",2);
+		other.A_GiveInventory("HDPistolAmmo",4);
+		goawayanddie();
+		return;
+	}
+}
 
 
 
