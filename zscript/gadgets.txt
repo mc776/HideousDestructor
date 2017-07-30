@@ -2,8 +2,11 @@
 // Radiation Suit
 //-------------------------------------------------
 class WornRadsuit:InventoryFlag{
+	override void attachtoowner(actor owner){	
+		if(!owner.countinv("PortableRadsuit"))owner.A_GiveInventory("PortableRadsuit");
+		super.attachtoowner(owner);
+	}
 	override void DetachFromOwner(){
-		owner.A_TakeInventory("PowerIronFeet");
 		owner.A_TakeInventory("PortableRadsuit",1);
 		owner.A_PlaySound("weapons/pocket",CHAN_AUTO);
 		super.DetachFromOwner();
@@ -13,7 +16,7 @@ class PortableRadsuit:HDPickup replaces RadSuit{
 	default{
 		inventory.maxamount 2;
 		inventory.interhubamount 2;
-		inventory.pickupmessage "Radiation shielding suit.";
+		inventory.pickupmessage "Environmental shielding suit.";
 		inventory.pickupsound "weapons/pocket";
 		inventory.icon "SUITB0";
 		accuracy 1;

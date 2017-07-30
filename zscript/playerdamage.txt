@@ -50,7 +50,8 @@ extend class HDPlayerPawn{
 
 		//radsuit
 		bool radsuit;
-		if(countinv("PowerIronFeet")||countinv("WornRadsuit"))radsuit=true;
+		if(countinv("PowerIronFeet"))A_GiveInventory("WornRadsuit");
+		if(countinv("WornRadsuit"))radsuit=true;
 		if(radsuit && mod=="slime"){
 			if(damage>5 && !random(0,5*damage)){
 				A_TakeInventory("WornRadsuit");
