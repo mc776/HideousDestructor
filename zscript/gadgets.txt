@@ -1,6 +1,16 @@
 //-------------------------------------------------
 // Radiation Suit
 //-------------------------------------------------
+class WornRadsuit:InventoryFlag{
+	override void DetachFromOwner(){
+		owner.A_TakeInventory("PowerIronFeet");
+		owner.A_TakeInventory("PortableRadsuit",1);
+		owner.A_PlaySound("imp/melee",CHAN_AUTO);
+		owner.A_PlaySound("misc/fwoosh",CHAN_AUTO);
+		owner.A_PlaySound("weapons/pocket",CHAN_AUTO);
+		super.DetachFromOwner();
+	}
+}
 class PortableRadsuit:HDPickup replaces RadSuit{
 	default{
 		inventory.maxamount 2;
@@ -10,9 +20,8 @@ class PortableRadsuit:HDPickup replaces RadSuit{
 		inventory.icon "SUITB0";
 		accuracy 1;
 	}
-	bool worn;
 	override void DetachFromOwner(){
-		worn=false;
+		owner.A_TakeInventory("WornRadsuit");
 		super.DetachFromOwner();
 	}
 	states{
@@ -25,12 +34,11 @@ class PortableRadsuit:HDPickup replaces RadSuit{
 			A_ChangeVelocity(0,0,2);
 			let onr=HDPlayerPawn(self);
 			if(onr)onr.stunned+=60;
-			if(!invoker.worn){
-				invoker.worn=true;
+			if(!countinv("WornRadsuit")){
+				A_GiveInventory("WornRadsuit");
 			}else{
-				invoker.worn=false;
+				A_TakeInventory("WornRadsuit");
 				A_SpawnItemEx("PortableRadsuit",0,0,height/2,2,0,4);
-				A_TakeInventory("PortableRadsuit",1);
 			}
 		}fail;
 	}

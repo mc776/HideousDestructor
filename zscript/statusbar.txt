@@ -2,7 +2,6 @@
 // HD HUD. HUD for HD. Hdhdhdhdhhdhdhhdhd
 // ------------------------------------------------------------
 class HDStatusBar:DoomStatusBar{
-	bool radsuit;
 	override void Init(){
 		BaseStatusBar.Init();
 		SetSize(0,320,200);
@@ -18,12 +17,6 @@ class HDStatusBar:DoomStatusBar{
 	override void Draw(int state,double TicFrac){
 		if(cplayer.health<1||cplayer.mo.countinv("WipedOut"))return;
 		cplayer.inventorytics=0;
-
-		radsuit=false;
-		if(cplayer.mo.countinv("PowerIronFeet"))radsuit=true;else{
-			let hdrs=portableradsuit(cplayer.mo.findinventory("PortableRadsuit"));
-			if(hdrs && hdrs.worn)radsuit=true;
-		}
 
 		if(automapactive){
 			DrawAutomapHUD(ticfrac);
@@ -86,7 +79,7 @@ class HDStatusBar:DoomStatusBar{
 
 		//inventory
 		DrawInvSel(6,90,36,106,DI_TOPLEFT);
-		if(radsuit)drawimage("SUITC0",(14,120),DI_TOPLEFT);
+		if(cp.countinv("WornRadsuit"))drawimage("SUITC0",(14,120),DI_TOPLEFT);
 
 		//guns
 		drawselectedweapon(-100,-24,DI_BOTTOMRIGHT);
@@ -107,13 +100,10 @@ class HDStatusBar:DoomStatusBar{
 		DrawHDXHair(cp);
 
 		BeginHUD(forcescaled:true);
-		if(radsuit){
-			radsuit=true;
-			drawimage(
-				"GREENPXL",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-				alpha:0.2,scale:(1000,600)
-			);
-		}
+		if(cp.countinv("WornRadsuit"))drawimage(
+			"GREENPXL",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+			alpha:0.2,scale:(1000,600)
+		);
 
 		//draw the goggles when they do something.
 		let hdla=portableliteamp(cp.findinventory("PortableLiteAmp"));
@@ -173,7 +163,9 @@ class HDStatusBar:DoomStatusBar{
 		if(cplayer.mo.countinv("Backpack"))drawimage("BPAKA0",(-55,-4),DI_SCREEN_CENTER_BOTTOM|DI_ITEM_CENTER_BOTTOM);
 
 		//radsuit
-		if(radsuit)drawimage("SUITC0",(64,-4),DI_SCREEN_CENTER_BOTTOM|DI_ITEM_CENTER_BOTTOM);
+		if(cp.countinv("WornRadsuit"))drawimage(
+			"SUITC0",(64,-4),DI_SCREEN_CENTER_BOTTOM|DI_ITEM_CENTER_BOTTOM
+		);
 
 
 		//health
