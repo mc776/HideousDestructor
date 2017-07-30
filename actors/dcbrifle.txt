@@ -303,10 +303,12 @@ actor LiberatorRifle : HDWeapon
 			if(countinv("LiberatorZoom")>0){A_TakeInventory("LiberatorZoom");}  
 			else{A_GiveInventory("LiberatorZoom");}
 		}
+/*
 		BRFG A 1 offset(0,38)
 		BRFG A 1 offset(0,42)
 		BRFG A 1 offset(0,38)
 		BRFG A 1 offset(0,34)
+*/
 		BRFG A 0 A_JumpIfInventory("PressingZoom",1,"zoomadjust")
 		BRFG A 0 A_WeaponReady
 		goto nope

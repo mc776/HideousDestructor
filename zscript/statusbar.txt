@@ -95,6 +95,8 @@ class HDStatusBar:DoomStatusBar{
 		let cp=HDPlayerPawn(CPlayer.mo);
 		if(!cp)return;
 
+		if(cp.countinv("PowerInvisibility"))return;
+
 		//draw the crosshair.
 		BeginHUD();
 		DrawHDXHair(cp);

@@ -429,12 +429,13 @@ actor ZM66GrenadeRifle:HDWeapon{
 	toggleend:
 		RIFG A 1 offset(0,34){
 			A_SetCrosshair(21);
-			A_TakeInventory("IsWeaponReady");
 		}
+/*
 		RIFG A 1 offset(0,38)
 		RIFG A 1 offset(0,42)
 		RIFG A 1 offset(0,38)
 		RIFG A 1 offset(0,34)
+*/
 		RIFG A 0 A_JumpIfInventory("PressingZoom",1,"zoomadjust")
 		goto nope
 	zoomadjust:

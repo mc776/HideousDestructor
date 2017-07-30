@@ -58,13 +58,6 @@ class HDActor:Actor{
 	}
 	//generic function to spawn actors coming out of an explosion
 	//for frags: A_SpawnChunks("HDFrag",42,100,700);
-	//CountWallChunks is to lower the number
-	int CountWallChunks(){
-		int count=0;
-		thinkeriterator it=thinkeriterator.create("WallChunk");
-		while(WallChunk(it.Next(exact:false)))count++;
-		return count;
-	}
 	void A_SpawnChunks(
 		class<actor> chunk,
 		int number=12,
@@ -76,7 +69,7 @@ class HDActor:Actor{
 			||chunk.getparentclass()=="WallChunk"
 			||chunk.getparentclass().getparentclass()=="WallChunk"
 		){
-			int ch=countwallchunks();
+			int ch=hdmath.count("WallChunk");
 			if(ch>500){
 				if(hd_debug)A_Log(string.format("%i is too many chunks",ch));
 				return;
@@ -266,6 +259,14 @@ struct HDMath{
 	static bool CheckLump(string lumpname){
 		if(Wads.CheckNumForName(lumpname,wads.ns_sprites,-1,false)<0)return false;
 		return true;
+	}
+	//counts stuff
+	//HDMath.Count("IdleDummy")
+	static int Count(name type,bool exactmatch=false){
+		int count=0;
+		thinkeriterator it=thinkeriterator.create(type);
+		while(it.Next(exact:exactmatch))count++;
+		return count;
 	}
 	//gets how many of an inventory are attached to a given owner.
 	//can get number of thinkers or total amount.

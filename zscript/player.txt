@@ -77,7 +77,9 @@ class HDPlayerPawn:PlayerPawn{
 				zat2-=(zat+height);
 				if(-27<zat2 && zat2<0){
 					A_GiveInventory("IsSupported");
-					A_SetPitch(pitch-0.5,SPF_FORCECLAMP|SPF_INTERPOLATE);
+					muzzleclimb1.y-=0.1;
+					muzzleclimb2.y+=0.05;
+					muzzleclimb3.y+=0.05;
 					A_PlaySound("weapons/rifleclick2",CHAN_WEAPON,0.3);
 //					A_PrintBold("THE GUN IS GOOD");
 				}else A_TakeInventory("IsSupported");
@@ -371,7 +373,7 @@ class HDPlayerPawn:PlayerPawn{
 				countinv("PowerInvulnerable")||
 				(
 					input&BT_RELOAD
-					||input&BT_ZOOM
+//					||input&BT_ZOOM
 					||input&BT_USER1
 					||input&BT_USER2
 					||input&BT_USER3
