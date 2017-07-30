@@ -206,6 +206,11 @@ class HDSmoke:HDPuff{
 		scale 1;gravity 0.05;alpha 0.7;
 	}
 	override void postbeginplay(){
+		int count=hdmath.count("HDSmoke");
+		if(count>100){
+//			if(hd_debug)A_Log(string.format("%i is too many smoke",count));
+			destroy();return;
+		}
 		HDActor.postbeginplay();
 		scale.x*=randompick(-1,1);
 		roll=random(0,3)*90;vel.z+=random(1,3);fadeafter=10;
