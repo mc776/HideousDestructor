@@ -91,7 +91,6 @@ class HDBullet:HDActor{
 		speed=vel.length();
 		A_FaceMovementDirection();
 
-		//LineAttack always has a zoffset of centre+8.
 		//b is never used.
 		if(!bseeinvisible && target)target.bshootable=false; //hack to escape shooter
 		[a,b]=LineAttack(angle,speed,pitch,0,"none",
@@ -133,17 +132,18 @@ class HDBullet:HDActor{
 				posbak=pos;
 				vector2 sizbak=(radius,height);
 				a_setsize(12,4);
-				if(!trymove(posbak.xy+1*(cos(angle),sin(angle)),true,true)){
-					if(blockingline && blockingline.special == Line_Horizon){
-						destroy();return;
-					}
+				if(
+					!trymove(posbak.xy+1*(cos(angle),sin(angle)),true,true)
+					&& blockingline && blockingline.special==Line_Horizon
+				){
+					destroy();return;
 				}
 				setorigin(posbak,false);
 				a_setsize(sizbak.x,sizbak.y);
 
 
 				//finally, the "real" impacts
-				if(floorz>pos.z || ceilingz<=pos.z+height){
+				if(floorz>pos.z||ceilingz<=pos.z+height){
 					Puff();destroy();return;
 				}else if(abs(hitdist-speed)>radius){
 					BulletImpact();
@@ -151,9 +151,9 @@ class HDBullet:HDActor{
 				}
 			}
 		}
-		if(!a || (floorz>pos.z && floorpic==skyflatnum)){
-			destroy();
-			return;
+		//destroy immediately if on a sky floor.
+		if(!a||(floorz>pos.z&&floorpic==skyflatnum)){
+			destroy();return;
 		}
 
 		//drop and wobble
@@ -244,7 +244,7 @@ class HDBullet:HDActor{
 		//supersonic shockwave damage
 		if(speed>HDCONST_SPEEDOFSOUND)maxdmg*=1.2;
 
-		//crit
+		//extra damage for hitting ~center of mass
 		double cang=angle;
 		double cpi=pitch;
 		A_Face(a.tracer);
@@ -259,17 +259,16 @@ class HDBullet:HDActor{
 		}
 		angle=cang;pitch=cpi;
 
-		//apply damage
+		//determine net damage
 		dmg=random(dmg,maxdmg);
 		if(hd_debug)A_Log(string.format("%s \ca%i \cj%s",self.getclassname(),dmg,a.tracer.getclassname()));
 
 		//puff or bleed as appropriate
-		if(bbloodlessimpact)return;
-		else if(!a.tracer.bshootable||a.tracer.bnoblood) Puff();
+		if(bbloodlessimpact||!a.tracer.bshootable||a.tracer.bnoblood)Puff();
 		else for(int i=0;i<dmg;i+=40){
 			a.tracer.A_SpawnItemEx(
 				a.tracer.bloodtype,
-				0,0,a.pos.z-a.tracer.pos.z, //comes out of actor itself. actually looks decent.
+				0,0,a.pos.z-a.tracer.pos.z, //comes out of actor itself
 				random(3,6),random(-1,1),random(1,3),
 				angle-180,
 				SXF_USEBLOODCOLOR|
