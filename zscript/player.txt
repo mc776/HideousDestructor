@@ -294,7 +294,6 @@ class HDPlayerPawn:PlayerPawn{
 				stimcount>10 ||  
 				fatigue<HDCONST_SPRINTFATIGUE
 			)
-			&&!countinv("PowerIronFeet")
 			&&!countinv("WornRadsuit")
 		)cansprint=true;else cansprint=false;
 
@@ -468,7 +467,6 @@ class ViewDummy:IdleDummy{
 			destroy();
 			return;
 		}
-		A_SetInventory("PowerGreenVision",master.countinv("PowerIronFeet"));
 		angle=master.angle;
 		pitch=master.pitch;
 		setxyz(master.pos+(
@@ -477,12 +475,6 @@ class ViewDummy:IdleDummy{
 			sin(-pitch)*6+master.height-4
 		));
 		nexttic();
-	}
-}
-class PowerGreenVision:Powerup{
-	default{
-		powerup.duration 0x7FFFFFFF;
-		powerup.color "Green", 0.3;
 	}
 }
 

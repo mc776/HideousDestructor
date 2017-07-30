@@ -99,7 +99,7 @@ class HDMedikitter:HDWoundFixer{
 		goto super::select;
 	reload:
 		TNT1 A 14{
-			if(countinv("PowerIronFeet"))useinventory(findinventory("portableradsuit"));
+			if(countinv("WornRadsuit"))useinventory(findinventory("portableradsuit"));
 			else UseInventory(FindInventory("HDDropArmour"));
 			A_ClearRefire();
 		}goto ready;
@@ -154,7 +154,7 @@ class HDMedikitter:HDWoundFixer{
 				if(getcvar("hd_helptext"))A_Print("You'll need them to stay still...");
 				return resolvestate("nope");
 			}
-			if(!c.countinv("IsBot") && c.countinv("PowerIronFeet") && c.countinv("PortableRadsuit")){
+			if(!c.countinv("IsBot") && c.countinv("WornRadsuit") && c.countinv("PortableRadsuit")){
 				if(getcvar("hd_helptext"))A_Print("Get them to take off their environment suit first!\n\n(toggle it in the inventory)");
 				return resolvestate("nope");
 			}
@@ -236,8 +236,8 @@ class HDMedikitter:HDWoundFixer{
 	althold:
 		TNT1 A 0 A_JumpIf(invoker.useonother,"fireother");
 		TNT1 A 1{
-			if(countinv("PowerIronFeet")){
-				if(!countinv("PortableRadsuit"))A_TakeInventory("PowerIronFeet");
+			if(countinv("WornRadsuit")){
+				if(!countinv("PortableRadsuit"))A_TakeInventory("WornRadsuit");
 				else if(getcvar("hd_autostrip"))A_Refire("reload");
 				else{
 					if(getcvar("hd_helptext"))A_Print("Take off your environment suit first!\n\n(toggle it in your inventory or hit reload)");
@@ -450,7 +450,7 @@ class SelfBandage:HDWoundFixer{
 	fire:
 		TNT1 A 0{
 			bool nope;
-			if(countinv("PortableRadsuit") && countinv("PowerIronFeet")){
+			if(countinv("PortableRadsuit") && countinv("WornRadsuit")){
 				if(getcvar("hd_helptext"))A_Print("Take off your environment suit first!",2);
 				nope=true;
 			}

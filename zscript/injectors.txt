@@ -121,7 +121,7 @@ class HDStimpacker:HDWoundFixer{
 			if(!countinv(invoker.inventorytype)){
 				if(getcvar("hd_helptext"))A_Print(invoker.noerror);
 				A_Refire("deselecthold");
-			}else if(countinv("PortableRadsuit") && countinv("PowerIronFeet")){
+			}else if(countinv("PortableRadsuit") && countinv("WornRadsuit")){
 				if(getcvar("hd_helptext"))A_Print("Take off your environment suit first!",2);
 				A_Refire("nope");
 			}else if(pitch<55){
@@ -342,7 +342,7 @@ class HDBlueBottler:HDWoundFixer{
 			if(!countinv("BluePotion")){
 				if(getcvar("hd_helptext"))A_Print("No potion.");
 				A_Refire("deselecthold");
-			}else if(countinv("PortableRadsuit") && countinv("PowerIronFeet")){
+			}else if(countinv("PortableRadsuit") && countinv("WornRadsuit")){
 				if(getcvar("hd_helptext"))A_Print("Take off your environment suit first!",2);
 				A_Refire("nope");
 			}
@@ -360,7 +360,7 @@ class HDBlueBottler:HDWoundFixer{
 			if(!countinv("BluePotion")){
 				if(getcvar("hd_helptext"))A_Print("No potion.");
 				A_Refire("deselecthold");
-			}else if(countinv("PortableRadsuit") && countinv("PowerIronFeet")){
+			}else if(countinv("PortableRadsuit") && countinv("WornRadsuit")){
 				if(getcvar("hd_helptext"))A_Print("Take off your environment suit first!",2);
 				A_Refire("nope");
 			}else if(pitch>-55){

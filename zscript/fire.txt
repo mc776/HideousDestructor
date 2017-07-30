@@ -160,14 +160,6 @@ class HDFire:IdleDummy{
 				A_TakeFromTarget("IsWeaponReady");
 				A_GiveToTarget("IsHurt",1);
 				A_GiveToTarget("IsMoving",4);
-				//radsuit stops fire
-				if(tgt.countinv("PowerIronFeet")>0){
-					if(random(1,256)>250){
-						A_TakeFromTarget("PowerIronFeet");
-						A_TakeFromTarget("PortableRadSuit");
-					}
-					if(stamina>3)stamina=random(0,3);
-				}
 			}
 		}wait;
 	}
