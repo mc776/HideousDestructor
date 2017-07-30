@@ -5,8 +5,6 @@ class WornRadsuit:InventoryFlag{
 	override void DetachFromOwner(){
 		owner.A_TakeInventory("PowerIronFeet");
 		owner.A_TakeInventory("PortableRadsuit",1);
-		owner.A_PlaySound("imp/melee",CHAN_AUTO);
-		owner.A_PlaySound("misc/fwoosh",CHAN_AUTO);
 		owner.A_PlaySound("weapons/pocket",CHAN_AUTO);
 		super.DetachFromOwner();
 	}
