@@ -598,12 +598,9 @@ class HDMobStatic:Actor{
 			}
 		}
 
-		//remember original position
+		//remember original position, etc.
 		vector3 pg=caller.pos;
-
-		//remember other shit
 		bool fraid=caller.bfrightened;
-		double maxtargetrange=caller.maxtargetrange;
 
 		//chase the move target and record the resulting position
 		caller.target=movetarget;
@@ -616,7 +613,6 @@ class HDMobStatic:Actor{
 		caller.SetOrigin(pg,false);
 		caller.target=attacktarget;
 		caller.bfrightened=fraid;
-		caller.maxtargetrange=maxtargetrange;
 
 		if(!caller.bfloat && caller.floorz<caller.pos.z)return; //abort if can't propel caller
 		caller.vel.xy*=0.7; //slow down
@@ -670,6 +666,11 @@ class exim:doomimp{
 	see:
 		TROO AABBCCDD 4 HDA_Chase();
 		loop;
+	melee:
+		TROO E 10 A_FaceTarget();
+		TROO F 8 A_SargAttack();
+		TROO G 8;
+		goto see;
 	missile:
 		TROO E 10 A_FaceTarget();
 		TROO F 8 A_TroopAttack();

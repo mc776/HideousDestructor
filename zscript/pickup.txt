@@ -99,11 +99,10 @@ class HDUPK:HDActor{
 		+solid +noblockmonst +notrigger
 		height 8;radius 8;
 		activesound "misc/i_pkup";
-		hdupk.pickupmessage "Picked up a fake inventory item";
+		hdupk.pickupmessage "Picked something up.";
 	}
 	override bool cancollidewith(actor other,bool passive){
-		if(bpushable)return super.cancollidewith(other,passive);
-		return(other is "userpickerupper");
+		return(bpushable || other is "userpickerupper");
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -142,8 +141,6 @@ class HDUPK:HDActor{
 		}
 	}
 	states{
-	inactive:
-	active:
 	grab:
 		---- AA 2{
 			vel+=(
