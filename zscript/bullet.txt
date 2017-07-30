@@ -174,17 +174,16 @@ class HDBullet:HDActor{
 			destroy();return;
 		}else{
 			//decal
+			//if anyone knows how to prevent this from showing up on the wrong side, let me know!
 			name decal="BulletChip";
 			if(dmg<80)decal="BulletChipSmall";
 			A_SprayDecal(decal,radius+4); //dunno why minimum is +4
-				//if anyone knows how to prevent this from showing up on the wrong side, let me know!
 
 			//ricochet
-			if(!random(10,19)){
+			if(!random(0,15)){
 				bmissile=true;
-				vel.xy=rotatevector(vel.xy,frandom(0,360));
+				vel.xy=rotatevector(vel.xy,frandom(0,360))*0.9;
 				vel.z=frandom(-vel.z,vel.z*0.8);
-				vel.xy*=0.9;
 				Puff(speed*0.9);
 			}
 
@@ -326,7 +325,7 @@ class HDBullet:HDActor{
 				A_SetDamageType("SmallArms1");
 
 			crackvel=vel/hitdist*64;
-			int k=hitdist*1/64;
+			int k=hitdist*(1/64);
 			actor cracker=spawn("idledummy",pos);
 			for(int j=0;j<k;j++){
 				cracker.setorigin(cracker.pos-crackvel,false);
@@ -346,11 +345,13 @@ class HDBullet:HDActor{
 		}
 	}
 	virtual void Gunsmoke(){
-		int j=max(1,speed*min(mass,100)*0.00001);
+		actor gs;
+		double j=cos(pitch);
+		vector3 vk=(j*cos(angle),j*sin(angle),-sin(pitch));
+		j=max(1,speed*min(mass,100)*0.00001);
 		for(int i=0;i<j;i++){
-			A_SpawnItemEx("HDGunSmoke",cos(pitch)*i,0,-sin(pitch)*i,
-				cos(pitch)*2,0,-sin(pitch)*2,flags:SXF_NOCHECKPOSITION
-			);
+			gs=spawn("HDGunSmoke",pos+i*vk,ALLOW_REPLACE);
+			gs.pitch=pitch;gs.angle=angle;gs.vel=vk*j;
 		}
 	}
 	virtual void LongArmWobble(){
@@ -359,28 +360,31 @@ class HDBullet:HDActor{
 			angle+=frandom(-1,1);
 		}
 	}
-	virtual void Effect(class<Actor> trailtype="HDGunSmoke",int numactors=12,double spacing=4,double velmul=0.6){
-		if(!bmissile || !speed) return;
-		vector3 frac=-vel/speed*spacing;
+	virtual void Effect(
+		class<Actor> trailtype="HDGunSmoke",
+		int numactors=12,
+		double spacing=4,
+		double velmul=0.6
+	){
+		if(!bmissile||!speed) return;
+		vector3 frac=-vel.unit()*spacing;
 		vector3 trvel=vel*0.6+(0,0,2);
 		for(int i=numactors;i;i--){
-			actor tr=spawn(trailtype,pos);
+			actor tr=spawn(trailtype,pos,ALLOW_REPLACE);
 			tr.setorigin(pos+frac*i,true);
 			tr.vel=trvel;
 		}
 	}
 }
-class NewBulletMovePuff:IdleDummy{
+class NewBulletMovePuff:CheckPuff{
 	default{
-		+puffgetsowner +alwayspuff +puffonactors +bloodlessimpact +hittracer
 		+skyexplode //important!
 	}
-	states{
-	spawn:
-		TNT1 A 1;
-		stop;
-	}
 }
+
+
+
+
 
 
 
