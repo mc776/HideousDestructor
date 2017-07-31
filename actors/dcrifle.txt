@@ -735,14 +735,13 @@ actor ZM66GrenadeRiflePickup : HDUPK
 			else{A_TakeInventory("ZM66Loaded",1);}
 		}
 		"----" A 0 A_Jump(256,"spawn2")
-	active:
-	inactive:
+	grab:
 		"####" "A" 0 A_JumpIfInventory("ZM66BrokenRound",1,2)
 		"----" A 0 A_JumpIfInventory("ZM66Loaded",1,2)
 		"----" A 0 A_Jump(256,2)
 		"----" A 0 A_JumpIfInventory("ZM66Heat",27,"spawn2")
 		"----" A 0
-		goto super::active
+		goto super::grab
 	takeloop:
 		"----" A 0{
 			if(countinv("ZM66Loaded",AAPTR_TARGET)>0){  
