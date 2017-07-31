@@ -435,9 +435,12 @@ class HDStatusBar:DoomStatusBar{
 	void drawammocounters(int mxht){
 		int mxhtplus=mxht-24;
 		actor cp=cplayer.mo;
+		drawimage("CLP3A0",(-78,mxhtplus+4),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM,scale:(2.4,2.4));
+		drawimage("CLP2A0",(-74,mxhtplus),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM,scale:(2.4,2.4));
 		drawambar("PISARED","HDPISAMO","HDPistolAmmo",(-76,mxhtplus-1));
-		drawambar("CLIPRED","CLIPC0","FourMilAmmo",(-52,mxhtplus));
-		drawambar("MAGRED","MAGSTAT","SevenMilAmmo",(-38,mxhtplus-1));
+		drawambar("CLIPRED","CLIPC0","FourMilAmmo",(-54,mxhtplus));
+		drawimage("RMAGA0",(-32,mxhtplus+3),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM,scale:(1.5,1.5));
+		drawambar("MAGRED","MAGSTAT","SevenMilAmmo",(-35,mxhtplus-1));
 		drawimage("SHELA0",(-10,mxhtplus-1),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM);
 
 		drawimage("BROCA0",(-81,mxht),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM);		
@@ -449,7 +452,7 @@ class HDStatusBar:DoomStatusBar{
 		drawnum(cp.countinv("HDPistolMag"),-75,mxhtplus-6);
 		drawnum(cp.countinv("HDSMGMag"),-75,mxhtplus);
 
-		drawnum(cp.countinv("ZM66RifleMags"),-54,mxhtplus);
+		drawnum(cp.countinv("ZM66RifleMags"),-56,mxhtplus);
 
 		drawnum(cp.countinv("BossClip"),-37,mxhtplus-6);
 		drawnum(cp.countinv("LiberatorMag"),-37,mxhtplus);
