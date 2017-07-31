@@ -232,7 +232,7 @@ class HDStatusBar:DoomStatusBar{
 		if(cplayer.readyweapon)drawweaponstatus(cplayer.readyweapon);
 
 		//weapon sprite
-		if(!r_drawplayersprites||cp.countinv("HUDSprite"))
+		if(!r_drawplayersprites||cp.countinv("HUDSprite")||cp.countinv("GimmeHud")>9)
 		drawselectedweapon(58,-6,DI_SCREEN_CENTER_BOTTOM|DI_ITEM_LEFT_BOTTOM);
 
 
