@@ -78,13 +78,15 @@ ACTOR Hunter : HDWeapon
 	AltHold:
 	Fire:
 	Hold:
-		SHTG A 0 A_JumpIfInventory("ShotgunChamber",1,"Shoot")
-		SHTG E 4
+		SHTG E 4 A_JumpIfInventory("ShotgunChamber",1,"Shoot")
 		SHTG A 0 A_Refire
 		goto Ready
 	Interrupt:
-		TNT1 A 0 A_GiveInventory("ShotgunEmptyHand",1)
-		SHTG D 1 offset(0,34) A_PlayWeaponSound ("weapons/huntopen")
+		SHTG D 1 offset(0,34){
+			A_GiveInventory("ShotgunEmptyHand",1);
+			A_TakeInventory("ShotgunPocketLoading");
+			A_PlaySound("weapons/huntopen",CHAN_WEAPON);
+		}
 	xloadabort:
 		"----" A 1 A_WeaponReady(WRF_NOFIRE)
 		"----" A 0{
@@ -267,8 +269,11 @@ ACTOR Hunter : HDWeapon
 			return state("");
 		}goto reloadashell
 	Reload3:
-		SHTG D 0 A_TakeInventory("ShotgunHand",999)
-		SHTG D 0 A_TakeInventory("ShotgunPocketLoading",999)
+		SHTG D 0{
+			A_TakeInventory("ShotgunHand");
+			A_TakeInventory("ShotgunPocketLoading");
+			A_TakeInventory("ShotgunPocketLoading");
+		}
 		SHTG D 6 offset(0,34)
 		SHTG D 2 offset(0,34) A_PlayWeaponSound ("weapons/huntopen")
 		SHTG D 1 offset(0,36)
