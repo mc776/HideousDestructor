@@ -54,9 +54,7 @@ class HDPlayerPawn:PlayerPawn{
 	states{
 	spawn:
 		PLAY A 1;
-		---- A 3{
-			A_GiveInventory("IsAlive");
-		}
+		---- A 3 A_GiveInventory("IsAlive");
 	spawn2:
 		#### E 5{
 			A_TakeInventory("IsTurning",1);
@@ -190,6 +188,7 @@ class HDPlayerPawn:PlayerPawn{
 		//only do anything below this while the player is alive!
 		if(bkilled||health<1||countinv("WipedOut")) return;
 		HeartTicker();
+		if(inpain>0)inpain--;
 
 		//prevent odd screwups that leave you unable to throw grenades or something
 		if(!countinv("Ring"))GiveBasics();

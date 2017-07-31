@@ -1,7 +1,6 @@
 // ------------------------------------------------------------
-//   Additional player functions
+// Additional player functions
 // ------------------------------------------------------------
-
 extend class HDPlayerPawn{
 	actor antenna;
 	void A_MoveAntenna(vector3 newpos){
@@ -46,7 +45,7 @@ extend class HDPlayerPawn{
 		){
 			if(!countinv("PowerStrength") && fatigue<HDCONST_SPRINTFATIGUE)vel.z+=4;
 			else vel.z+=7;
-			fatigue+=2;
+			fatigue+=random(1,2);
 		}else vel.z+=3;
 		return 1;
 	}

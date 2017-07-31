@@ -1,7 +1,6 @@
 // ------------------------------------------------------------
 // The heart
 // ------------------------------------------------------------
-
 extend class HDPlayerPawn{
 	const HDCONST_MINHEARTTICS = 5; //35/5*60=420 beats per minute!
 	int beatcount;
@@ -115,6 +114,13 @@ extend class HDPlayerPawn{
 			pitch+=0.0005*beatmax*bloodpressure;
 			beatmax=min(beatmax,beatcap);
 
+			//heartbeat sound
+			if(bloodpressure>5||health<30||beatmax<20){
+				float bp=0.05*bloodpressure;
+				if(beatmax<15||health<30)bp*=2;
+				A_PlaySound("misc/heart",CHAN_BODY,0.05*bloodpressure,false,30);
+			}
+
 			//MY ORIFICE IS BLEEDING!!!
 			if(woundcount){
 				int dm=(random(10,woundcount)-random(0,bloodpressure))*0.4;
@@ -189,7 +195,10 @@ extend class HDPlayerPawn{
 			//sprinting
 			if(cansprint && runwalksprint>0 && (fm||sm)){
 				fatigue+=2;
-				if(!stimcount && !zerk && fatigue>=HDCONST_SPRINTFATIGUE)fatigue+=20;
+				if(!stimcount && !zerk && fatigue>=HDCONST_SPRINTFATIGUE){
+					fatigue+=20;
+					A_Pain();
+				}
 				if(!random(0,35))bloodpressure++;
 			}
 
