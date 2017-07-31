@@ -7,7 +7,8 @@ class TerrorBolt:HDBullet{
 		-noextremedeath
 		height 2;radius 2;
 		speed 500;mass 500;accuracy 0;woundhealth 100;
-		missiletype "DoubleDistantShotgun";
+		hdbullet.distantsounder "DoubleDistantShotgun";
+		missiletype "HDGunsmoke";
 		scale 0.08;translation "128:151=%[1,1,1]:[0.2,0.2,0.2]";
 		seesound "weapons/riflecrack";
 		decal "BrontoScorch";
@@ -47,9 +48,6 @@ class TerrorBolt:HDBullet{
 	}
 	states{
 	spawn:
-		MISL A 0 nodelay{
-		}
-		MISL AAAAAAAAAAAAAAAAAAAA 1{Effect();}
 		MISL A -1;
 	death:
 		TNT1 A 16{

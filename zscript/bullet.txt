@@ -27,6 +27,9 @@ class HDBullet:HDActor{
 	double shootz;
 	int dmg;
 	bool inthesky;
+	line firstblockingline;
+	class<actor> distantsounder;
+	property distantsounder:distantsounder;
 	default{
 		projectile; -nogravity
 		+bloodsplatter +noextremedeath +cannotpush +hittracer +forcexybillboard
@@ -41,8 +44,8 @@ class HDBullet:HDActor{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		if(missilename){
-			actor m=spawn(missilename,pos,ALLOW_REPLACE);
+		if(distantsounder){
+			actor m=spawn(distantsounder,pos,ALLOW_REPLACE);
 			m.target=target;
 		}
 		shootz = height*0.5+8;
@@ -113,6 +116,8 @@ class HDBullet:HDActor{
 				//find points close to players and spawn crackers
 				CrackType();
 
+				if(missilename)Effect();
+
 				//NOW test for impacts...
 
 				//used for a few things
@@ -140,6 +145,11 @@ class HDBullet:HDActor{
 				}
 				setorigin(posbak,false);
 				a_setsize(sizbak.x,sizbak.y);
+
+				//save the blockingline info for future reference
+				if(blockingline){
+					firstblockingline=blockingline;
+				}
 
 
 				//finally, the "real" impacts
@@ -191,8 +201,8 @@ class HDBullet:HDActor{
 			else if(hd_penetrate && accuracy){
 				Puff(speed*0.4);
 				actor e;
-				vector3 velp=(cos(pitch)*cos(angle),cos(pitch)*sin(angle),-sin(pitch));
-				vector3 velpp=velp*2;
+				vector3 velp=vel.unit();
+				vector3 velpp=velp;
 				velp*=accuracy;
 				double oz=pos.z;
 				setorigin(pos+velp,false);
@@ -205,10 +215,15 @@ class HDBullet:HDActor{
 
 				//find exact point of exit.
 				angle+=180;pitch*=-1;
-				addz(-shootz);[e,b]=LineAttack(
+				[e,b]=LineAttack(
 					angle,accuracy+2,pitch,0,"none","NewBulletMovePuff",
-					flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT
-				);addz(shootz);
+					flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT|LAF_OVERRIDEZ
+				);
+
+				//if there's any place to put a check for the void, place it here.
+				//basically: check of firstblockingline is the same as what e hits,
+				//and if e.blockingline has no front sector.
+
 
 				//exit hole.
 				//I have no idea why this won't work for raised floors.
@@ -221,7 +236,7 @@ class HDBullet:HDActor{
 				setorigin(e.pos+velpp,false);
 				if(speed>500){
 					actor pp=spawn("PenePuff",e.pos+velpp,ALLOW_REPLACE);
-					pp.vel=vel*0.003;
+					pp.vel=vel*0.006;
 				}else Puff(speed*1.4);
 				vel*=0.9;
 				accuracy=0;
@@ -361,14 +376,17 @@ class HDBullet:HDActor{
 		}
 	}
 	virtual void Effect(
-		class<Actor> trailtype="HDGunSmoke",
+		class<Actor> trailtype="None",
 		int numactors=12,
 		double spacing=4,
 		double velmul=0.6
 	){
 		if(!bmissile||!speed) return;
+		if(trailtype=="None")trailtype=missilename;
+		if(!trailtype)return;
 		vector3 frac=-vel.unit()*spacing;
 		vector3 trvel=vel*0.6+(0,0,2);
+		numactors=speed/spacing;
 		for(int i=numactors;i;i--){
 			actor tr=spawn(trailtype,pos,ALLOW_REPLACE);
 			tr.setorigin(pos+frac*i,true);
@@ -508,7 +526,7 @@ class HDBullet426:HDBullet{
 		speed 1200;
 		accuracy 6;
 		woundhealth 6;
-		missiletype "DistantRifle";
+		hdbullet.distantsounder "DistantRifle";
 	}
 }
 class HDBullet776:HDBullet{
@@ -518,7 +536,7 @@ class HDBullet776:HDBullet{
 		speed 1100;
 		accuracy 17;
 		woundhealth 7;
-		missiletype "DoubleDistantRifle";
+		hdbullet.distantsounder "DoubleDistantRifle";
 	}
 }
 class HDBullet00:HDBullet{

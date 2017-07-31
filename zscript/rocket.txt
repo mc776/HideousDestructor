@@ -1,7 +1,6 @@
 // ------------------------------------------------------------
-//   Gyro-Grenades and H.E.A.T. derived from bullet
+// Gyro-Grenades and H.E.A.T.
 // ------------------------------------------------------------
-
 class GyroGrenade:SlowProjectile{
 	int fuze;bool primed;
 	default{
@@ -43,6 +42,7 @@ class GyroGrenade:SlowProjectile{
 			){
 				target.A_PlaySound("misc/chat2",CHAN_AUTO,1,0,24);
 				tracer=target.tracer;
+				target.A_Log(string.format("tracking %s",target.tracer.getclassname()),true);
 			}
 			brockettrail=true;
 			if(fuze>1)fuze+=5; //idiotproofing the rocket timer
@@ -52,8 +52,8 @@ class GyroGrenade:SlowProjectile{
 	spawnrocket2:
 		#### BA 1{
 			if(stamina>0){
-				Effect();
-				if(tracer) A_FaceTracer(20,20);
+				Effect("HDGunsmoke");
+				if(tracer)A_FaceTracer(20,20);
 				A_ChangeVelocity(cos(pitch)*(stamina>>2),0,sin(-pitch)*(stamina>>2)+1,CVF_RELATIVE);
 				accuracy++;
 			}else if(stamina>-20){
