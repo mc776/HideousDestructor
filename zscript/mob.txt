@@ -13,7 +13,6 @@ class HDMOb:HDActor{
 	actor targbak;
 	int spawnheight;
 	int starthealth;
-	int corpsedamage;
 	int livestepheight;
 	int handedness;
 	int lasthealth;
@@ -49,7 +48,6 @@ class HDMOb:HDActor{
 		double angle=0
 	){
 		if(!bcorpse||health>0){
-			corpsedamage=0;
 			return super.damagemobj(inflictor,source,damage,mod,flags,angle);
 		}
 		if(
@@ -87,11 +85,11 @@ class HDMOb:HDActor{
 				else return 0;
 			}
 		}
-		corpsedamage+=damage;
-		if(hd_debug)A_Log(string.format("A corpse took %i damage for a total of %i/%i.",damage,corpsedamage,gibhealth));
+		health-=damage;
+		if(hd_debug)A_Log(string.format("A corpse took %i damage for a total of %i/%i.",damage,-health,gibhealth));
 		if(
 			findstate("xdeath",false)
-			&&(damage>=gibhealth||corpsedamage>max(gibhealth,mass)*7)
+			&&(damage>=gibhealth||-health>max(gibhealth,mass)*7)
 		){
 			bshootable=false;
 			bsolid=false;
@@ -482,7 +480,6 @@ class HDMOb:HDActor{
 	}
 	//death override
 	override void Die(Actor source,Actor inflictor,int dmgflags=0){
-		corpsedamage=0;
 		super.Die(source,inflictor,dmgflags);
 		bnodropoff=false;
 		maxstepheight=livestepheight/6;
