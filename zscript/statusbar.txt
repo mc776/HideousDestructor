@@ -2,6 +2,7 @@
 // HD HUD. HUD for HD. Hdhdhdhdhhdhdhhdhd
 // ------------------------------------------------------------
 class HDStatusBar:DoomStatusBar{
+	double gogbob;
 	override void Init(){
 		BaseStatusBar.Init();
 		SetSize(0,320,200);
@@ -110,10 +111,14 @@ class HDStatusBar:DoomStatusBar{
 		);
 
 		//draw the goggles when they do something.
+		if(gogbob||cp.countinv("IsMoving")>4){  
+			gogbob+=18;
+			if(gogbob>360.)gogbob=0;
+		}
 		let hdla=portableliteamp(cp.findinventory("PortableLiteAmp"));
 		if(hdla && hdla.worn){
 			drawimage(
-				"GOGGA0",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+				"GOGGA0",(sin(gogbob*0.5)*5,sin(gogbob)*10),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 				scale:(2.2,2.4)
 			);
 		}
