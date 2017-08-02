@@ -253,9 +253,9 @@ class HDStatusBar:DoomStatusBar{
 
 			//encumbrance
 			if(hd_carrylimit)drawstring(
-				mAmountFont,string.format("%.2f",cp.overloaded),
+				mAmountFont,formatnumber(cp.blox),
 				(8,mxht),DI_TEXT_ALIGN_LEFT|DI_SCREEN_LEFT_BOTTOM,
-				cp.overloaded<1.5?Font.CR_OLIVE:(cp.overloaded>2?Font.CR_RED:Font.CR_GOLD)
+				cp.overloaded<1.2?Font.CR_OLIVE:(cp.overloaded>2?Font.CR_RED:Font.CR_GOLD)
 			);
 		}
 	}

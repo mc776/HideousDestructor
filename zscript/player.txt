@@ -18,7 +18,9 @@ class HDPlayerPawn:PlayerPawn{
 
 	name lastweapon;
 	bool barehanded;
+	
 	double overloaded;
+	int blox;int carrymax;
 
 	bool mustwalk;bool cansprint;
 	int runwalksprint;
@@ -299,23 +301,23 @@ class HDPlayerPawn:PlayerPawn{
 		)cansprint=true;else cansprint=false;
 
 		//encumbrance
-		if(overloaded){
+		if(overloaded>1){
 			speed*=max(1-(overloaded*0.25),0.1);
-			if(overloaded>3){
+			if(overloaded>2.8){
 				viewbob=clamp(viewbob+0.2,0,1.4);
 				mustwalk=true;
 				cansprint=false;
 			}
-			else if(overloaded>2.5){
+			else if(overloaded>2.4){
 				viewbob=clamp(viewbob+0.1,0,1.3);
 				mustwalk=true;
 				cansprint=false;
 			}
-			else if(overloaded>2){
+			else if(overloaded>2.0){
 				viewbob=clamp(viewbob+0.1,0,1.2);
 				cansprint=false;
 			}
-			else if(overloaded>1.5){
+			else if(overloaded>1.2){
 				viewbob=clamp(viewbob+0.1,0,1.1);
 			}
 		}

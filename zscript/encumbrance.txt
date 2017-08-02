@@ -9,7 +9,7 @@ extend class HDPlayerPawn{
 			return 0;
 		}
 
-		double blox=
+		blox=
 
 		//weapons
 		(
@@ -124,18 +124,15 @@ extend class HDPlayerPawn{
 		+countinv("BrontornisMag")*2
 		;
 
-		if (countinv("HDBackpack")) GiveInventory("Backpack",1);
-		int carrymax=
+		if (countinv("HDBackpack"))A_GiveInventory("Backpack");
+		carrymax=
 			550+
-			countinv("PowerStrength")*500+
+			countinv("PowerStrength")*200+
 			countinv("RegenBlues")*2+
 			countinv("RegenStims")*3+
-			countinv("HDBackpack")*300
+			+countinv("HDBackpack")*100
 		;
-		A_SetInventory("Encumbrance",blox);
-		blox/=carrymax;
-		if(blox<1) return 0;
-		else return blox;
+		return blox*1./carrymax;
 	}
 }
 
