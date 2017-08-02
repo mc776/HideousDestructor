@@ -209,7 +209,7 @@ extend class HDPlayerPawn{
 				damage=1;
 				if(!random(0,31))toburn++;
 			}else toburn+=damage*frandom(0.1,0.6);
-			if(!random(0,10))towound+=max(1,damage*0.03);
+			if(!random(0,30+armourlevel*3))towound+=max(1,damage*0.03);
 		}else if(
 			mod=="electro"||
 			mod=="electrical"||
@@ -223,7 +223,7 @@ extend class HDPlayerPawn{
 				damage*=0.8;
 			}
 			toburn+=damage*frandom(0.2,0.5);
-			if(!random(0,10))towound+=max(1,damage*0.03);
+			if(!random(0,40))towound+=max(1,damage*0.05);
 			if(!random(0,1))stunned+=damage;
 		}else if(
 			mod=="balefire"||
@@ -232,7 +232,7 @@ extend class HDPlayerPawn{
 		){
 			//balefired
 			toburn+=damage*frandom(0.6,1.1);
-			towound+=max(1,damage*0.06);
+			if(!random(0,1+armourlevel))towound+=max(1,damage*0.06);
 			A_AlertMonsters();
 		}else if(
 			mod=="internal"||
