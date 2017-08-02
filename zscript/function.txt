@@ -261,7 +261,7 @@ struct HDMath{
 		return true;
 	}
 	//counts stuff
-	//HDMath.Count("IdleDummy")
+	//HDMath.CountThinkers("IdleDummy")
 	static int Count(name type,bool exactmatch=false){
 		int count=0;
 		thinkeriterator it=thinkeriterator.create(type);
@@ -271,17 +271,26 @@ struct HDMath{
 	//gets how many of an inventory are attached to a given owner.
 	//can get number of thinkers or total amount.
 	//HDMath.supercountinv(target,"parasite")
-	static int SuperCountInv(actor slf,class<inventory> type,bool geteachamount=false){
+	static int SuperCountInv(actor caller,class<inventory> type,bool geteachamount=false){
+		int count=0;
+
+		//new, unreliable? version
+		for(let probe=caller.inv;probe;probe=probe.inv){
+			if(probe is type){
+				if(geteachamount)count+=probe.amount;
+				else count++;
+			}
+		}return count;
+
+		//old version
 		thinkeriterator invfinder=thinkeriterator.create("Inventory");
 		inventory mo;
-		int count=0;
 		while(mo=inventory(invfinder.next())){
-			if(mo is type && mo.owner==slf){
+			if(mo is type && mo.owner==caller){
 				if(geteachamount)count+=mo.amount;
 				else count++;
 			}
-		}
-		return count;
+		}return count;
 	}
 	//calculate the speed at which 2 actors are moving towards each other
 	//surely there's got to be a faster way to do this x_x
@@ -336,8 +345,6 @@ struct HDF play{
 		return amt;
 	}
 }
-
-
 
 
 
