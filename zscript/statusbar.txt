@@ -111,17 +111,22 @@ class HDStatusBar:DoomStatusBar{
 		);
 
 		//draw the goggles when they do something.
-		if(gogbob||cp.countinv("IsMoving")>4){  
-			gogbob+=18;
-			if(gogbob>360.)gogbob=0;
-		}
 		let hdla=portableliteamp(cp.findinventory("PortableLiteAmp"));
 		if(hdla && hdla.worn){
+			int vv=max(abs(cp.vel.x),abs(cp.vel.y),1.8);
+			if(gogbob!=90||cp.vel!=(0,0,0)){
+				gogbob+=9;
+				if(vv<2&&(80<gogbob<90||260<gogbob<270))gogbob=90;
+				else if(gogbob>360)gogbob=0;
+			}
 			drawimage(
-				"GOGGA0",(sin(gogbob*0.5)*5,sin(gogbob)*10),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+				"GOGGA0",(
+					cos(gogbob)*vv,
+					sin(gogbob*2)*vv*2
+				),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 				scale:(2.2,2.4)
 			);
-		}
+		}else gogbob=90;
 	}
 	void DrawCommonStuff(int state){
 		let cp=HDPlayerPawn(CPlayer.mo);
