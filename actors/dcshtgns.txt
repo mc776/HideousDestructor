@@ -562,7 +562,7 @@ actor HDFumblingShell : HDSpentShell
 		stop
 	}
 }
-actor HDFumbledShell : HDPickup
+actor HDFumbledShell:HDShellAmmo
 {
 	scale 0.3
 	+cannotpush
@@ -578,9 +578,6 @@ actor HDFumbledShell : HDPickup
 		ESHL C -1
 		stop
 		ESHL G -1
-		stop
-	pickup:
-		TNT1 A 0 A_GiveInventory("HDShellAmmo", 1)
 		stop
 	}
 }
