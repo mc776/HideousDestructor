@@ -1,7 +1,7 @@
 //-------------------------------------------------
 // Medikit
 //-------------------------------------------------
-
+const HD_MEDPATCHLIMIT 42;
 class PortableMedikit:HDPickup{
 	default{
 		inventory.maxamount 4;
@@ -89,7 +89,7 @@ class HDMedikitter:HDWoundFixer{
 	states{
 	select:
 		TNT1 A 0{
-			if(invoker.usedflesh && invoker.usedpatches>100) A_SelectWeapon("SelfBandage");
+			if(invoker.usedflesh && invoker.usedpatches>HD_MEDPATCHLIMIT) A_SelectWeapon("SelfBandage");
 		}
 		TNT1 A 10{
 			if(!getcvar("hd_helptext")) return;
@@ -227,7 +227,7 @@ class HDMedikitter:HDWoundFixer{
 		}
 	fire:
 		TNT1 A 0{
-			if(invoker.usedpatches>100){
+			if(invoker.usedpatches>HD_MEDPATCHLIMIT){
 				A_Print("You are out of Auto-Sutures.");
 				A_Refire("nope");
 			}else A_Refire("hold");
@@ -269,7 +269,7 @@ class HDMedikitter:HDWoundFixer{
 					}
 				}
 			}else{
-				if(invoker.usedpatches>100){
+				if(invoker.usedpatches>HD_MEDPATCHLIMIT){
 					A_Print("You are out of Auto-Sutures.");
 					A_Refire("nope");
 				}else if(!invoker.checkwoundcount(true)){
