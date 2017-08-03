@@ -1,0 +1,106 @@
+// ------------------------------------------------------------
+// "I call the big one Bitey!"
+// ------------------------------------------------------------
+class ZBabuin:HDActor{
+	vector3 lastpos;
+	vector3 latchpos;
+	double targangle;
+	bool latched;
+	double latchforce;
+	void TryLatch(){
+		if(
+			!target
+			||target.health<1
+			||distance3d(target)-target.radius<meleerange*0.6
+		){
+			latched=false;
+			return;
+		}else{
+			latched=true;
+			bnotargetswitch=true;
+			latchpos.xy=
+				rotatevector(target.pos.xy-pos.xy,-target.angle).unit()
+				*(target.radius+radius)
+			;
+			latchpos.z=random(8,target.height-12);
+			targangle=target.angle;
+			latchforce=mass/max(1,target.mass);
+			lastpos=pos;
+			setstatelabel("latched");
+		}
+	}
+	void A_BabuChase(){
+		//let it phase through walls it would otherwise be stuck in
+		if(A_CheckBlock("null"))bnoclip=true;else bnoclip=false;
+		A_Chase();
+	}
+	override bool cancollidewith(actor other,bool passive){
+		return !(latched&&other==target);
+	}
+	override void Die(actor source,actor inflictor,int dmgflags=0){
+		latched=false;
+		bnoclip=false;
+		super.Die(source,inflictor,dmgflags);
+	}
+	override void Tick(){
+		if(!latched||!target||target.health<1){
+			latched=false;
+			bnotargetswitch=false;
+		}
+		if(latched){
+			A_FaceTarget();
+			vector3 lp=target.pos;
+			targangle=(targangle+target.angle)*0.5;
+			lp.xy+=rotatevector(latchpos.xy,target.angle);
+			latchpos.z=clamp(latchpos.z+random(-2,2),12,target.height-12);
+			lp.z+=latchpos.z;
+			//don't interpolate teleport
+			if(
+				abs(lp.x-pos.x)>100||
+				abs(lp.y-pos.y)>100||
+				abs(lp.z-pos.z)>100
+			){
+				setorigin(lp,false);
+			}else setorigin((lp+pos)*0.5,true);
+
+			//can try to bump or shake it off
+			if(
+				abs(targangle-target.angle)>random(40,120)||
+				floorz>pos.z||  
+				ceilingz<pos.z+height||
+				(!trymove(pos.xy,true)&&(
+						blockingmobj!=target
+					)
+				)
+			){
+				latched=false;
+			}else{
+				//fun!
+				target.A_SetAngle(frandom(
+					target.angle,targangle)+frandom(-2,2),SPF_INTERPOLATE
+				);
+				target.A_SetPitch(target.pitch+frandom(-4,8),SPF_INTERPOLATE);
+				target.vel+=(pos-lastpos)*latchforce;
+				lastpos=pos;
+				if(!random(0,10))target.damagemobj(
+					self,self,2,"teeth"
+				);
+			}
+		}
+		if(bnoclip && !A_CheckBlock("null")){
+			bnoclip=false;
+		}
+		super.Tick();
+	}
+	states{
+	latched:
+		#### EF random(1,2){
+			if(latched){
+				if(!random(0,30))A_Pain();
+				//___damage target here
+			}else{
+				setstatelabel("pain");
+			}
+		}loop;
+	}
+}
