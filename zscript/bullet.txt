@@ -385,10 +385,11 @@ class HDBullet:HDActor{
 		if(trailtype=="None")trailtype=missilename;
 		if(!trailtype)return;
 		vector3 frac=-vel.unit()*spacing;
-		vector3 trvel=vel*0.6+(0,0,2);
+		vector3 trvel=vel*0.006+(0,0,2);
 		numactors=speed/spacing;
 		for(int i=numactors;i;i--){
 			actor tr=spawn(trailtype,pos,ALLOW_REPLACE);
+			if(tr.pos.z>tr.ceilingz-10)tr.destroy();
 			tr.setorigin(pos+frac*i,true);
 			tr.vel=trvel;
 		}

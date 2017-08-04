@@ -52,7 +52,7 @@ class GyroGrenade:SlowProjectile{
 	spawnrocket2:
 		#### BA 1{
 			if(stamina>0){
-				Effect("HDGunsmoke");
+				if(!inthesky)Effect("HDGunsmoke");
 				if(tracer)A_FaceTracer(20,20);
 				A_ChangeVelocity(cos(pitch)*(stamina>>2),0,sin(-pitch)*(stamina>>2)+1,CVF_RELATIVE);
 				accuracy++;
