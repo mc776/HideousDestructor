@@ -7,11 +7,15 @@ class ZBabuin:HDActor{
 	double targangle;
 	bool latched;
 	double latchforce;
+	override void postbeginplay(){
+		hdmobai.resize(self,0.8,1.4);
+		super.postbeginplay();
+	}
 	void TryLatch(){
 		if(
 			!target
 			||target.health<1
-			||distance3d(target)-target.radius<meleerange*0.6
+			||distance3d(target)-target.radius-radius<8
 		){
 			latched=false;
 			return;
@@ -29,13 +33,25 @@ class ZBabuin:HDActor{
 			setstatelabel("latched");
 		}
 	}
-	void A_BabuChase(){
+	void A_BabuMove(bool wander=false){
 		//let it phase through walls it would otherwise be stuck in
-		if(A_CheckBlock("null"))bnoclip=true;else bnoclip=false;
-		A_Chase();
+		if(
+			!trymove(pos.xy,false)
+			||(!random(0,20)&&A_CheckSight("null"))
+		)bnoclip=true;else if(!A_CheckSight("null")) bnoclip=false;
+		if(wander)A_Wander();else A_Chase();
 	}
 	override bool cancollidewith(actor other,bool passive){
-		return !(latched&&other==target);
+		return(
+			other!=target
+			||(
+				!latched
+				&&max(
+					abs(other.pos.x-pos.x),
+					abs(other.pos.y-pos.y)
+				)>=other.radius+radius
+			)
+		);
 	}
 	override void Die(actor source,actor inflictor,int dmgflags=0){
 		latched=false;
@@ -53,7 +69,7 @@ class ZBabuin:HDActor{
 			targangle=(targangle+target.angle)*0.5;
 			lp.xy+=rotatevector(latchpos.xy,target.angle);
 			latchpos.z=clamp(latchpos.z+random(-2,2),12,target.height-12);
-			lp.z+=latchpos.z;
+			lp.z+=latchpos.z+frandom(-0.1,0.1);
 			//don't interpolate teleport
 			if(
 				abs(lp.x-pos.x)>100||
@@ -85,6 +101,13 @@ class ZBabuin:HDActor{
 				if(!random(0,10))target.damagemobj(
 					self,self,2,"teeth"
 				);
+				//lift the victim as circumstances permit
+				if(
+					floorz>=pos.z
+					&&mass>target.mass
+				){
+					target.addz(random(-1,2));
+				}
 			}
 		}
 		if(bnoclip && !A_CheckBlock("null")){

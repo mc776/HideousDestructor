@@ -564,7 +564,15 @@ class SawGib:InventoryFlag{
 
 
 
-class HDMobStatic:Actor{
+class HDMobAI:Inventory{
+	static void resize(actor caller,double minscl=0.9,double maxscl=1.){
+		double scl=frandom(minscl,maxscl);
+		caller.scale*=scl;
+		caller.mass*=scl;
+		caller.speed*=scl;
+		caller.A_SetSize(caller.radius*scl,caller.height*scl);
+		caller.health*=max(scl,1);
+	}
 	static void HDA_Chase(actor caller,actor movetarget=null,bool res=false,bool flee=true){
 		actor attacktarget=caller.target;
 		if(!attacktarget||attacktarget.health<random(-5,1)){
@@ -634,7 +642,7 @@ class HDMobStatic:Actor{
 class exzo:zombieman{
 	void HDA_Chase(actor movetarget=null){
 		if(A_CheckBlock("null"))A_Wander();
-		else HDMobStatic.HDA_Chase(self,movetarget);
+		else HDMobAI.HDA_Chase(self,movetarget);
 	}
 	states{
 	see:
@@ -657,7 +665,7 @@ class exzo:zombieman{
 class exim:doomimp{
 	void HDA_Chase(actor movetarget=null){
 		if(A_CheckBlock("null"))A_Wander();
-		else HDMobStatic.HDA_Chase(self,movetarget);
+		else HDMobAI.HDA_Chase(self,movetarget);
 	}
 	states{
 	see:
