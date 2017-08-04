@@ -17,13 +17,19 @@ class HDFragGrenadeRoller:HDActor{
 	vector3 keeprolling;
 	default{
 		-noextremedeath -floorclip +shootable +noblood +forcexybillboard
-		+activatemcross;-noteleport;
+		+activatemcross -noteleport +noblockmonst
 		+missile +bounceonactors +usebouncestate 
 			bouncetype "doom";bouncesound "misc/fragknock";
-		radius 4;height 4;damagetype "none";
+		radius 2;height 2;damagetype "none";
 		scale 0.3;
 		obituary "%o was fragged by %k.";
 		radiusdamagefactor 0.04;pushfactor 1.4;maxstepheight 2;mass 30;
+	}
+	override bool used(actor user){
+		angle=user.angle;
+		A_PlaySound(bouncesound);
+		A_ChangeVelocity(12,0,4,CVF_RELATIVE);
+		return true;
 	}
 	states{
 	spawn:
