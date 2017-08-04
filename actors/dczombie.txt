@@ -490,6 +490,7 @@ actor ZombieSMGStormtrooper:ZombieStormTrooper //replaces Zombieman
 		"####" A 0 A_JumpIfInventory("ZM66Loaded",30,"ohforfuckssake")
 		"####" F 0 A_PlaySound("weapons/pistol",CHAN_WEAPON,0.7)
 		"####" F 1 bright light("SHOT"){
+			A_GiveInventory("HDSMG");
 			pitch+=frandom(-user_spread,user_spread);
 			angle+=frandom(-user_spread,user_spread);
 			A_GiveInventory("DecoBulleter9f");
