@@ -15,7 +15,7 @@ class ZBabuin:HDActor{
 		if(
 			!target
 			||target.health<1
-			||distance3d(target)-target.radius-radius<8
+			||distance3d(target)-target.radius-radius>8
 		){
 			latched=false;
 			return;
@@ -90,6 +90,7 @@ class ZBabuin:HDActor{
 				)
 			){
 				latched=false;
+				A_ChangeVelocity(-4,random(-2,2),3,CVF_RELATIVE);
 			}else{
 				//fun!
 				target.A_SetAngle(frandom(

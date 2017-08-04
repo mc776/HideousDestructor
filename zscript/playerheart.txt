@@ -118,7 +118,7 @@ extend class HDPlayerPawn{
 			if(bloodpressure>5||health<30||beatmax<20){
 				float bp=0.05*bloodpressure;
 				if(beatmax<15||health<30)bp*=2;
-				A_PlaySound("misc/heart",CHAN_BODY,0.05*bloodpressure,false,30);
+				A_PlaySound("misc/heart",CHAN_BODY,0.05*max(bloodpressure,22-beatmax),false,30);
 			}
 
 			//MY ORIFICE IS BLEEDING!!!

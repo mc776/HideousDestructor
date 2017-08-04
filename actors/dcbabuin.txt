@@ -81,8 +81,10 @@ actor Babuin:ZBabuin{
 		SRG2 E 7 A_PlaySound ("demon/melee")
 		SRG2 F 0 A_FaceTarget
 		SRG2 F 6 A_ChangeVelocity(Cos(Pitch)*4, 0, Sin(Pitch)*4, 1)
-		SRG2 G 2 A_CustomMeleeAttack(random(5,15),null,null,"Teeth",true)
-		SRG2 G 0 TryLatch
+		SRG2 G 2{
+			A_CustomMeleeAttack(random(5,15),null,null,"Teeth",true);
+			TryLatch;
+		}
 	PostMelee:
 		SRG2 G 6
 		goto see
@@ -98,15 +100,12 @@ actor Babuin:ZBabuin{
 		SRG2 E 0 A_ChangeVelocity(Cos(Pitch)*16,0,Sin(Pitch)*16+random(3,6),1)
 		goto fly
 	Fly:
-		SRG2 F 0 A_JumpIfCloser(36,"latch")
+		SRG2 F 0 TryLatch
 		SRG2 F 1 A_JumpIf(velz==0,1)
 		loop
 		SRG2 FEH 4 A_ScaleVelocity(0.8)
 		SRG2 D 6 A_Stop
 		Goto See
-	latch:
-		SRG2 E 0 TryLatch
-		goto see
 	Pain:
 		SRG2 H 2 A_SetSolid
 		SRG2 H 6 A_Pain
