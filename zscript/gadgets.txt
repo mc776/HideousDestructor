@@ -23,11 +23,20 @@ class PortableRadsuit:HDPickup replaces RadSuit{
 	}
 	override void DetachFromOwner(){
 		owner.A_TakeInventory("WornRadsuit");
+		target=owner;
 		super.DetachFromOwner();
+	}
+	override void actualpickup(actor user){
+		HDF.TransferFire(self,user);
+		super.actualpickup(user);
 	}
 	states{
 	spawn2:
-		SUIT A -1;
+		SUIT A 1;
+		SUIT A -1{
+			if(!target)return;
+			HDF.TransferFire(target,self);
+		}
 	use:
 		TNT1 A 0{
 			A_SetBlend("00 00 00",1,6,"00 00 00");
@@ -36,6 +45,20 @@ class PortableRadsuit:HDPickup replaces RadSuit{
 			let onr=HDPlayerPawn(self);
 			if(onr)onr.stunned+=60;
 			if(!countinv("WornRadsuit")){
+				int fff=HDF.TransferFire(self,self);
+				if(fff){
+					if(random(1,fff)>30){
+						A_PlaySound("misc/fwoosh",CHAN_AUTO);
+						A_TakeInventory("PortableRadsuit",1);
+						return;
+					}else{
+						HDF.TransferFire(self,null);
+						if(onr){
+							onr.fatigue+=fff;
+							onr.stunned+=fff;
+						}
+					}
+				}
 				A_GiveInventory("WornRadsuit");
 			}else{
 				A_TakeInventory("WornRadsuit");

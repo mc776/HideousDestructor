@@ -31,14 +31,7 @@ extend class HDPlayerPawn{
 		super.die(source,inflictor,dmgflags);
 	}
 	void killoldfires(){
-		actoriterator it=actoriterator.create(-7677,"HDFire");
-		actor fff;
-		while(fff=it.next()){
-			if(fff.target==self){
-				if(playercorpse)fff.target=playercorpse;
-				else fff.destroy();
-			}
-		}
+		HDF.TransferFire(self,playercorpse);
 	}
 }
 

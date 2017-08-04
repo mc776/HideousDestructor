@@ -63,6 +63,7 @@ class HDDropArmour:ActionItem{
 			a.addz(height*0.6);a.vel=vel+(cos(angle),sin(angle),4);
 			a.A_GiveInventory(arm);
 			a.stamina=amt;
+			HDF.TransferFire(self,a,random(0,3));
 			A_TakeInventory("BlackArmour");
 			A_TakeInventory("BlueArmour");
 			A_TakeInventory("GreenArmour");
@@ -100,19 +101,16 @@ class HDArmourPickup:HDUPK{
 	spawn:
 		---- A 0 A_Stop();
 		ARMS A -1{
-			if(countinv("BlackArmour")) setstatelabel("spawne");
-			else if(countinv("BlueArmour")) setstatelabel("spawnc");
+			if(countinv("BlackArmour"))sprite=getspriteindex("ARMEA0");
+			else if(countinv("BlueArmour"))sprite=getspriteindex("ARMCA0");
 		}
-	spawnc:
-		ARMC A -1;
-	spawne:
-		ARME A -1;
 	give:
 		---- A 0{
 			if(target.countinv("StoredArmour")){
 				setstatelabel("spawn");
 				return;
 			}
+			HDF.TransferFire(self,target);
 			A_PlaySound("weapons/pocket");
 			if(countinv("BlackArmour"))target.A_GiveInventory("BlackArmourStored");
 			else if(countinv("BlueArmour"))target.A_GiveInventory("BlueArmourStored");

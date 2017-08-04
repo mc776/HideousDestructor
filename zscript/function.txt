@@ -344,6 +344,21 @@ struct HDF play{
 		}
 		return amt;
 	}
+	//transfer fire. returns # of fire actors affected.
+	static int TransferFire(actor ror,actor ree,int maxfires=-1){
+		actoriterator it=actoriterator.create(-7677,"HDFire");
+		actor fff;int counter;
+		bool eee;if(ree)eee=true;
+		while(maxfires && (fff=it.next())){
+			maxfires--;
+			if(fff.target==ror){
+				counter+=fff.stamina;
+				if(eee)fff.target=ree;
+				else fff.destroy();
+			}
+		}
+		return counter;
+	}
 }
 
 
