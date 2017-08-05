@@ -321,7 +321,17 @@ class HDStatusBar:DoomStatusBar{
 	}
 	string huntersprite;string slayersprite;
 	string smgsprite;string zm66sprite;string liberatorsprite;
+	string medisprite;string pistolsprite;string pistolsprite2;
 	void setwepsprites(playerpawn cp){
+		if(cp.countinv("HDPistolChamber")){
+			if(cp.countinv("HDPistolFullAuto"))
+				pistolsprite="PISTC0";else pistolsprite="PISTA0";
+		}else{
+			if(cp.countinv("HDPistolFullAuto"))
+				pistolsprite="PISTD0";else pistolsprite="PISTB0";
+		}
+		if(cp.countinv("HDSecondPistolChamber"))pistolsprite2="PISTA0";else pistolsprite2="PISTB0";
+
 		//smg
 		if(cp.countinv("HDSMGNoMag"))smgsprite="SMGNB0";else smgsprite="SMGNA0";
 
@@ -351,7 +361,7 @@ class HDStatusBar:DoomStatusBar{
 		else if(shl)huntersprite="HUNTF0";
 		else huntersprite="HUNTG0";
 
-		//hunter
+		//slayer
 		shl=cp.countinv("ShotgunQuickAmmo2");
 		if(shl>10)slayersprite="SLAYA0";
 		else if(shl>8)slayersprite="SLAYB0";
@@ -360,6 +370,13 @@ class HDStatusBar:DoomStatusBar{
 		else if(shl>2)slayersprite="SLAYE0";
 		else if(shl)slayersprite="SLAYF0";
 		else slayersprite="SLAYG0";
+
+		//medikit
+		HDMedikitter mdk=HDMedikitter(cp.findinventory("HDMedikitter"));
+		if(mdk){
+			if(mdk.usedon)medisprite="MEDIC0";
+			else medisprite="MEDIB0";
+		}
 	}
 	void drawselectedweapon(int posx,int posy,int flags){
 		weapon w=cplayer.readyweapon;
@@ -367,7 +384,8 @@ class HDStatusBar:DoomStatusBar{
 		if(w is "")wx="";
 		else if(w is "Lumberjack")wx="CSAWA0";
 		else if(w is "HDPistol"){
-			if(cplayer.mo.countinv("HDPistolFullAuto"))wx="PISTC0";else wx="PISTA0";
+			wx=pistolsprite;
+			if(cplayer.mo.countinv("HDPistolChamber"))posx+=2;
 		}
 		else if(w is "HDSMG")wx=smgsprite;
 		else if(w is "Slayer")wx=slayersprite;
@@ -382,13 +400,13 @@ class HDStatusBar:DoomStatusBar{
 		else if(w is "BFG9k")wx="BFUGA0";
 		else if(w is "BossRifle")wx="BORFA0";
 		else if(w is "HDFragGrenades" || w is "Tripwire")wx="FRAGA0";
-		else if(w is "HDMedikitter")wx="MEDIB0";
+		else if(w is "HDMedikitter")wx=medisprite;
 		else if(w is "HDBerserker")wx="PSTRA0";
 		else if(w is "HDBlueBottler")wx="BON1A0";
 		else if(w is "HDStimpacker")wx="STIMA0";
 		else if(w is "SelfBandage")wx="BLUDC0";
 		if(wx!="")drawimage(wx,(posx,posy),flags,
-			scale:wx=="CSAWA0"?(0.7,0.7):(wx=="FRAGA0"||wx=="MEDIB0"?(0.6,0.6):(1,1))
+			scale:wx=="CSAWA0"?(0.7,0.7):(wx=="FRAGA0"||wx==medisprite?(0.6,0.6):(1,1))
 		);
 	}
 	void drawwep(class<inventory> type,string img,int zoffs,float scl=1.,bool right=false){
@@ -403,18 +421,8 @@ class HDStatusBar:DoomStatusBar{
 	void drawweaponstash(bool rt=false,int yofs=0){
 		drawwep("Lumberjack","CSAWA0",-163+yofs,scl:0.6,right:rt);
 		drawwep("HDSMG",smgsprite,-141+yofs,scl:0.8,right:rt);
-		if(cplayer.mo.countinv("HDPistol")){
-			string pispr="PISTA0";
-			if(cplayer.mo.countinv("HDSecondPistolFullAuto"))pispr="PISTC0";
-			if(cplayer.mo.countinv("HDSecondPistol"))drawimage(
-				pispr,(16,-139+yofs),
-				(rt?DI_SCREEN_RIGHT_BOTTOM:DI_SCREEN_LEFT_BOTTOM)|
-				(rt?DI_ITEM_RIGHT:DI_ITEM_LEFT),
-				scale:(0.7,0.7)
-			);
-			if(cplayer.mo.countinv("HDPistolFullAuto"))pispr="PISTC0";else pispr="PISTA0";
-			drawwep("HDPistol",pispr,-143+yofs,scl:0.7,right:rt);
-		}
+		drawwep("HDSecondPistol",pistolsprite2,-139+yofs,scl:0.7,right:rt);
+		drawwep("HDPistol",pistolsprite,-143+yofs,scl:0.7,right:rt);
 		drawwep("Hunter",huntersprite,-128+yofs,right:rt);
 		drawwep("Slayer",slayersprite,-120+yofs,right:rt);
 		drawwep("Vulcanette","VULCA0",-108+yofs,right:rt);
