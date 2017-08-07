@@ -615,22 +615,26 @@ class HDMobAI:Inventory{
 		caller.A_Chase(flags:CHF_NODIRECTIONTURN|CHF_NOPOSTATTACKTURN|(res?CHF_RESURRECT:0));
 		vector3 pp=caller.pos;
 
-		//reset everything
-		caller.SetOrigin(pg,false);
+		//reset target and fear
 		caller.target=attacktarget;
 		caller.bfrightened=fraid;
 
 		if(!caller.bfloat && caller.floorz<caller.pos.z)return; //abort if can't propel caller
 		caller.vel.xy*=0.7; //slow down
 
-		//move in chase direction
+		//reset position and move in chase direction
 		if(pp!=pg){
-			if(caller.bfloat){
-				caller.vel+=(pp-pg)*0.2;
-				if(caller.pos.z-attacktarget.pos.z<attacktarget.height)
-					caller.vel.z+=frandom(0,0.1); //floaty death from above
+			if(hd_debug){
+				caller.SetOrigin(pg,false);
+				if(caller.bfloat){
+					caller.vel+=(pp-pg)*0.2;
+					if(caller.pos.z-attacktarget.pos.z<attacktarget.height)
+						caller.vel.z+=frandom(0,0.1); //floaty death from above
+				}else{
+					caller.vel.xy+=(pp.xy-pg.xy)*0.16;
+				}
 			}else{
-				caller.vel.xy+=(pp.xy-pg.xy)*0.2;
+				caller.vel+=(pp-pg).unit()*0.01;
 			}
 		}
 
