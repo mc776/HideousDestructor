@@ -1,5 +1,5 @@
 //-------------------------------------------------
-// Radiation Suit
+// Environment/Radiation Suit
 //-------------------------------------------------
 class WornRadsuit:InventoryFlag{
 	override void attachtoowner(actor owner){	
@@ -9,7 +9,12 @@ class WornRadsuit:InventoryFlag{
 	override void DetachFromOwner(){
 		owner.A_TakeInventory("PortableRadsuit",1);
 		owner.A_PlaySound("weapons/pocket",CHAN_AUTO);
+		let onr=HDPlayerPawn(self);
+		if(onr)onr.stunned+=60;
 		super.DetachFromOwner();
+	}
+	override void DoEffect(){
+		if(stamina>0)stamina--;
 	}
 }
 class PortableRadsuit:HDPickup replaces RadSuit{
@@ -61,8 +66,14 @@ class PortableRadsuit:HDPickup replaces RadSuit{
 				}
 				A_GiveInventory("WornRadsuit");
 			}else{
+				actor a;int b;
+				inventory wrs=findinventory("wornradsuit");
+				[b,a]=A_SpawnItemEx("PortableRadsuit",0,0,height/2,2,0,4);
+				if(a && wrs.stamina){
+					let aa=HDActor(a);
+					if(aa)aa.A_Immolate(a,self,wrs.stamina);
+				}
 				A_TakeInventory("WornRadsuit");
-				A_SpawnItemEx("PortableRadsuit",0,0,height/2,2,0,4);
 			}
 		}fail;
 	}

@@ -3,7 +3,16 @@
 //-------------------------------------------------
 extend class HDPlayerPawn{
 	//cheats to give or take away bad stuff
-	bool cheatgivestatusailments(string name,int amount){
+	bool cheatgivestatusailments(string name,int amount=1){
+		if(name~=="fire"){
+			if(!scopecamera){
+				scopecamera=spawn("ViewDummy",pos);
+				scopecamera.changetid(playernumber()-32000);
+				scopecamera.target=self;
+			}
+			let hdsc=hdactor(scopecamera);
+			if(hdsc)hdsc.A_Immolate(self,self,amount);
+		}
 		if(name~=="wound"||name~=="wounds"||name~=="woundcount"){
 			woundcount+=amount;return true;
 		}

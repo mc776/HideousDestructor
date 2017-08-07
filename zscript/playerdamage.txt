@@ -50,14 +50,18 @@ extend class HDPlayerPawn{
 		int toburn=0;
 
 		//radsuit
-		bool radsuit;
 		if(countinv("PowerIronFeet"))A_GiveInventory("WornRadsuit");
-		if(countinv("WornRadsuit"))radsuit=true;
-		if(radsuit && mod=="slime"){
-			if(damage>5 && !random(0,5*damage)){
-				A_TakeInventory("WornRadsuit");
-				A_PlaySound("misc/fwoosh",CHAN_AUTO);
-			}else return 0;
+		wornradsuit radsuit=wornradsuit(findinventory("WornRadsuit"));
+		if(radsuit&&flags|~DMG_NO_ARMOR){
+			radsuit.stamina+=damage;
+			if(mod=="slime"){
+				if(damage>5 && radsuit.stamina>45+random(20,50)){
+					A_TakeInventory("WornRadsuit");
+					A_PlaySound("misc/fwoosh",CHAN_AUTO);
+				}else if(damage>random(1,5)*10){
+					damage=1;
+				}else return 0;
+			}
 		}
 
 		//regular armour
@@ -167,7 +171,7 @@ extend class HDPlayerPawn{
 			}
 			//radsuit completely envelops you so it will always get it
 			if(radsuit){
-				if(type>1||(type && !random(0,4))){
+				if(type>1||(type && !random(0,3))){
 					A_TakeInventory("WornRadsuit");
 					A_PlaySound("imp/melee",CHAN_AUTO);
 				}
@@ -183,12 +187,13 @@ extend class HDPlayerPawn{
 			//burned
 			//the heat still has to hit the armour
 			if(radsuit){
+				radsuit.stamina+=damage*10;
 				if(damage<random(0,6))return 0;else{
 					damage*=0.4;
-					if(!random(0,100-damage)){
+					if(radsuit.stamina>40&&!random(0,max(0,160-damage-radsuit.stamina))){
 						A_TakeInventory("WornRadsuit");
 						A_PlaySound("misc/fwoosh",CHAN_AUTO);
-					}
+					}else if(damage<4)mod="slime";
 				}
 			}
 			if(random(0,5)){
@@ -244,7 +249,7 @@ extend class HDPlayerPawn{
 		){
 
 			//radsuit
-			if(random(1,damage)>10){  
+			if(random(1,damage)>20){
 				A_TakeInventory("WornRadsuit");
 				A_PlaySound("imp/melee",CHAN_AUTO);
 				damage-=5;
@@ -309,7 +314,7 @@ extend class HDPlayerPawn{
 			source,
 			damage,
 			mod,
-			flags,
+			flags|DMG_NO_ARMOR,
 			angle
 		);
 	}
@@ -350,6 +355,16 @@ extend class HDPlayerPawn{
 				if(health<40){A_GiveInventory("IsHurt");}
 				A_TakeInventory("SpiritualArmour",1);
 			}
+		}
+		#### G 3 A_Pain();
+		---- A 0 setstatelabel("spawn");
+	pain.slime:
+		#### G 3{
+			if(bloodpressure<40)bloodpressure+=2;
+			if(beatmax>20)beatmax=max(beatmax-2,18);
+			A_SetBlend("00 00 00",0.8,40,"00 00 00");
+			A_TakeInventory("NotShot");
+			if(health<40){A_GiveInventory("IsHurt");}
 		}
 		#### G 3 A_Pain();
 		---- A 0 setstatelabel("spawn");
