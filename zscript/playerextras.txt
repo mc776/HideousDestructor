@@ -24,10 +24,15 @@ extend class HDPlayerPawn{
 		//determine max height
 		int mantlemax=36;
 		if(
-			barehanded &&
-			cansprint
+			!mustwalk
+			&&barehanded
+			&&(
+				zerk||
+				stimcount>10||
+				fatigue<HDCONST_SPRINTFATIGUE
+			)
 		){
-			if(zerk||onground) mantlemax=64;
+			if(zerk||onground)mantlemax=64;
 			else mantlemax=56;
 		}
 		//place the antenna
