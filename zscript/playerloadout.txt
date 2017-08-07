@@ -22,7 +22,6 @@ extend class HDPlayerPawn{
 			A_GiveInventory("RocketZoom");
 			A_GiveInventory("PlasmaZoom");
 			A_GiveInventory("LiberatorZoom");
-			A_GiveInventory("BossZoom");
 		}
 		A_SetInventory("DERPMode",getcvar("hd_derpmode"));
 		if(countinv("HDSMGChamber"))
@@ -60,7 +59,6 @@ extend class HDPlayerPawn{
 			A_SetInventory("BossZoomDegree",getcvar("hd_bosszoom"));
 			A_SetInventory("BossMOA",getcvar("hd_bossmoa"));
 		}
-		if(getcvar("hd_bossstartzoomed"))A_GiveInventory("BossZoom");
 
 		//so you don't start out with the fist all the time
 		if(player.readyweapon){

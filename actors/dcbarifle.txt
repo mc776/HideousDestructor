@@ -279,7 +279,7 @@ actor BossRifle : HDWeapon
 	altfire:
 		TNT1 A 0 A_TakeInventory("IsWeaponReady")
 		BARG A 2 offset(0,34)
-		BARG B 1 offset(2,36)
+		BARG B 1 offset(2,36) A_GiveInventory("WeaponBusy")
 		TNT1 A 0 A_JumpIfInventory("BossJam",1,"jamderp")
 		BARG B 1 offset(4,38) A_Refire("chamber")
 		TNT1 A 0 A_JumpIfInventory("BossChamber",1,3)
