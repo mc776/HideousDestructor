@@ -6,8 +6,8 @@ extend class HDStatusBar{
 		weapon wp=cplayer.readyweapon;
 
 		if(
-			crosshairforce
-			||!wp
+//			crosshairforce||
+			!wp
 			||hpl.barehanded
 			||hpl.nocrosshair>0
 		)return;
@@ -49,12 +49,12 @@ extend class HDStatusBar{
 					scale:(1.6,1.7)
 				);
 				if(hpl.countinv("ZM66Zoom")){
-					texman.setcameratotexture(hpc,"TCAMTEX3",
-						3-hpl.countinv("ZM66ZoomDegree")
-					);
+					int fv=7-hpl.countinv("ZM66ZoomDegree");
+					if(fv<7)fv-=3;
+					texman.setcameratotexture(hpc,"TCAMTEX3",fv);
 					drawimage(
 						"TCAMTEX3",(0,-53),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-						alpha:0.8,scale:(0.3,0.3)
+						alpha:0.9,scale:(0.3,0.3)
 					);
 					drawimage(
 						"XH29",(0,-53),DI_SCREEN_CENTER|DI_ITEM_CENTER,
@@ -94,18 +94,20 @@ extend class HDStatusBar{
 				scale:(1.6,1.6)
 			);
 			else{
-				if(hpl.countinv("RocketZoom")){
-					texman.setcameratotexture(hpc,"TCAMTEX3",
-						2
-					);
-					drawimage(
-						"TCAMTEX3",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-						alpha:0.8,scale:(0.4,0.4)
-					);
-				}
 				drawimage(
-					"XH32",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-					alpha:0.9,scale:(1.1,1.1)
+					"XH25",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					alpha:0.9,scale:(2.,2.)
+				);
+				texman.setcameratotexture(hpc,"TCAMTEX3",
+					hpl.countinv("RocketZoom")?2:5
+				);
+				drawimage(
+					"TCAMTEX3",(0,58),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					alpha:0.9,scale:(0.4,0.4)
+				);
+				drawimage(
+					"XH32",(0,58),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					alpha:1.0,scale:(1.0,1.0)
 				);
 			}
 		}
@@ -139,12 +141,12 @@ extend class HDStatusBar{
 					scale:(1.6,1.7)
 				);
 				if(hpl.countinv("LiberatorZoom")){
-					texman.setcameratotexture(hpc,"TCAMTEX3",
-						3-hpl.countinv("LiberatorZoomDegree")
-					);
+					int fv=7-hpl.countinv("LiberatorZoomDegree");
+					if(fv<7)fv-=3;
+					texman.setcameratotexture(hpc,"TCAMTEX3",fv);
 					drawimage(
 						"TCAMTEX3",(0,-53),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-						alpha:0.8,scale:(0.3,0.3)
+						alpha:0.9,scale:(0.3,0.3)
 					);
 					drawimage(
 						"XH30",(0,-53),DI_SCREEN_CENTER|DI_ITEM_CENTER,
@@ -164,7 +166,7 @@ extend class HDStatusBar{
 				"XH23",(0,-0.5),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 				scale:(3,1.6)
 			);
-			texman.setcameratotexture(hpc,"TCAMTEX3",3-hpl.countinv("BossZoomDegree"));
+			texman.setcameratotexture(hpc,"TCAMTEX3",6-hpl.countinv("BossZoomDegree"));
 			drawimage(
 				"TCAMTEX3",(0,54),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 				scale:(0.4,0.4)

@@ -442,9 +442,9 @@ actor ZM66GrenadeRifle:HDWeapon{
 		RIFG A 1 A_WeaponReady(WRF_NOFIRE)
 		RIFG A 0{
 			A_GiveInventory("WeaponBusy",1);
-			if (countinv("PressingFire")+countinv("PressingAltfire")>0){
+			if(countinv("PressingFire")+countinv("PressingAltfire")>0){
 				A_GiveInventory("ZM66Zoom");return state("zoomclick");
-			} else if(countinv("PressingFireMode")>0){return state("zoomadjust");}
+			}else if(countinv("PressingFireMode")>0){return state("zoomadjust");}
 			if(countinv("PressingZoom")>0){return state("zoomadjust");}  
 			return state("nope");
 		}
@@ -452,8 +452,14 @@ actor ZM66GrenadeRifle:HDWeapon{
 		RIFG A 0{
 			if (countinv("PressingFire")>0){A_GiveInventory("ZM66ZoomDegree",1);}
 			else if (countinv("PressingAltFire")>0){A_TakeInventory("ZM66ZoomDegree",1);}
+		}
+	zoomclicked:
+		RIFG A 1{
+			A_WeaponReady(WRF_NOFIRE);
+			if(countinv("PressingFire")+countinv("PressingAltfire")>0){return state("");}
 			return state("zoomadjust");
 		}
+		goto zoomclicked
 
 	user1:
 	altreload:
@@ -521,7 +527,7 @@ actor ZM66Zoom:InventoryFlag{}
 actor ZM66BrokenRound:InventoryFlag{}
 actor ZM66JailbrokenMag:InventoryFlag{}
 actor ZM66NoMag:InventoryFlag{}
-actor ZM66ZoomDegree:InventoryFlag{}
+actor ZM66ZoomDegree:InventoryFlag{inventory.maxamount 2}
 actor ZM66Ratchet:InventoryFlag{Inventory.MaxAmount 3}
 actor ZM66Heat:InventoryFlag{Inventory.MaxAmount 80}
 actor ZM66FullAuto:InventoryFlag{Inventory.MaxAmount 2}
@@ -769,7 +775,7 @@ actor ZM66GrenadeRiflePickup : HDUPK
 				A_TakeFromTarget("ZM66Chamber");
 			}
 			if(countinv("ZM66ZoomDegree",AAPTR_TARGET)>0){  
-				A_GiveInventory("ZM66ZoomDegree");
+				A_GiveInventory("ZM66ZoomDegree",countinv("ZM66ZoomDegree",AAPTR_TARGET));
 				A_TakeFromTarget("ZM66ZoomDegree");
 			}
 			return state("takeFA");
@@ -825,7 +831,7 @@ actor ZM66GrenadeRiflePickup : HDUPK
 				A_TakeInventory("ZM66Chamber");
 			}
 			if(countinv("ZM66ZoomDegree")>0){  
-				A_GiveToTarget("ZM66ZoomDegree");
+				A_GiveToTarget("ZM66ZoomDegree",countinv("ZM66ZoomDegree"));
 				A_TakeInventory("ZM66ZoomDegree");
 			}
 			return state("giveFA");

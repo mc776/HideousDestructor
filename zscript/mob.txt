@@ -50,7 +50,7 @@ class HDMobAI:Inventory{
 		caller.A_SetSize(caller.radius*scl,caller.height*scl);
 		if(minhealth<1)caller.health*=max(scl,1);else caller.health=max(caller.health*scl,1);
 	}
-	static void HDA_Chase(actor caller,actor movetarget=null,bool res=false,bool flee=true){
+	static void Chase(actor caller,actor movetarget=null,bool res=false,bool flee=true){
 		if(caller.A_CheckBlock("null")){
 			caller.A_Wander();
 			return;
@@ -200,13 +200,9 @@ class HDMobAI:Inventory{
 }
 
 class exzo:zombieman{
-	void HDA_Chase(actor movetarget=null){
-		if(A_CheckBlock("null"))A_Wander();
-		else HDMobAI.HDA_Chase(self,movetarget);
-	}
 	states{
 	see:
-		POSS AABBCCDD 4 HDA_Chase();
+		POSS AABBCCDD 4{HDMobAI.Chase(self);}
 		loop;
 	missile:
 		POSS E 10 A_FaceTarget();
@@ -224,12 +220,11 @@ class exzo:zombieman{
 }
 class exim:doomimp{
 	void HDA_Chase(actor movetarget=null){
-//		if(A_CheckBlock("null"))A_Wander();else 
-HDMobAI.HDA_Chase(self,movetarget);
+		HDMobAI.Chase(self,movetarget);
 	}
 	states{
 	see:
-		TROO AABBCCDD 4 HDA_Chase();
+		TROO AABBCCDD 4{HDMobAI.Chase(self);}
 		loop;
 	melee:
 		TROO E 10 A_FaceTarget();

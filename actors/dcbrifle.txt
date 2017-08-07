@@ -1,7 +1,6 @@
 // ------------------------------------------------------------
 //   Liberator Battle Rifle
 // ------------------------------------------------------------
-
 actor HDSevenMilTrail : IdleDummy{
 	states{
 	spawn:
@@ -78,7 +77,7 @@ actor LiberatorHeat:InventoryFlag{inventory.maxamount 50}
 actor LiberatorFullAuto:InventoryFlag{}
 actor LiberatorGrenadeMode:InventoryFlag{}
 actor LiberatorZoom:InventoryFlag{}
-actor LiberatorZoomDegree:InventoryFlag{}
+actor LiberatorZoomDegree:InventoryFlag{inventory.maxamount 3}
 actor LiberatorNoMag:InventoryFlag{}
 actor LiberatorSpentChamber:InventoryFlag{}
 actor LiberatorVentHeat:ActionItem{
@@ -326,8 +325,14 @@ actor LiberatorRifle : HDWeapon
 		BRFG A 0{
 			if (countinv("PressingFire")>0){A_GiveInventory("LiberatorZoomDegree",1);}
 			else if (countinv("PressingAltFire")>0){A_TakeInventory("LiberatorZoomDegree",1);}
+		}
+	zoomclicked:
+		BRFG A 1{
+			A_WeaponReady(WRF_NOFIRE);
+			if(countinv("PressingFire")+countinv("PressingAltfire")>0){return state("");}
 			return state("zoomadjust");
 		}
+		goto zoomclicked
 
 
 	unloadchamber:
@@ -681,7 +686,7 @@ actor LiberatorGrenadeRiflePickup : HDUPK
 				A_TakeFromTarget("LiberatorSpentChamber");
 			}
 			if(countinv("LiberatorZoomDegree",AAPTR_TARGET)>0){
-				A_GiveInventory("LiberatorZoomDegree");
+				A_GiveInventory("LiberatorZoomDegree",countinv("LiberatorZoomDegree",AAPTR_TARGET));
 				A_TakeFromTarget("LiberatorZoomDegree");
 			}
 			if(countinv("LiberatorFullAuto",AAPTR_TARGET)>0){
@@ -732,7 +737,7 @@ actor LiberatorGrenadeRiflePickup : HDUPK
 				A_TakeInventory("LiberatorFullAuto");
 			}
 			if(countinv("LiberatorZoomDegree")>0){
-				A_GiveToTarget("LiberatorZoomDegree");
+				A_GiveToTarget("LiberatorZoomDegree",countinv("LiberatorZoomDegree"));
 				A_TakeInventory("LiberatorZoomDegree");
 			}
 			return state("giveGL");

@@ -68,10 +68,9 @@ actor Babuin:ZBabuin{
 		goto Roam
 	Roam:
 		TNT1 A 0 A_Jump(160,"See")
-		TNT1 A 0 A_JumpIfTargetInLOS ("See")
+		TNT1 A 0 A_JumpIfTargetInLOS("See")
 		Goto See
 		SRG2 AABBCCDD 2 A_BabuMove(true)
-		TNT1 AAAA 0 A_Chase("Melee","Missile",16)
 		TNT1 A 0 A_Jump (120, 2)
 		TNT1 A 0 A_AlertMonsters
 		TNT1 A 0 HealThing (random(2,8))
@@ -84,8 +83,8 @@ actor Babuin:ZBabuin{
 		}
 		SRG2 F 6
 		SRG2 G 2{
-			A_CustomMeleeAttack(random(5,15),null,null,"Teeth",true);
 			TryLatch;
+			A_CustomMeleeAttack(random(5,15),null,null,"Teeth",true);
 		}
 	PostMelee:
 		SRG2 G 6
