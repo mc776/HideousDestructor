@@ -75,10 +75,6 @@ class HDSpectator:HDPlayerPawn{
 		vel*=0.9;
 		if(input&BT_CROUCH)vel.z-=1;
 	}
-	override void Die(actor source,actor inflictor,int dmgflags=0){
-		killoldfires();
-		playerpawn.die(source,inflictor,dmgflags);
-	}
 	states{
 	spawn:
 	see:

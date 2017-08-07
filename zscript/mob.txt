@@ -637,6 +637,15 @@ class HDMobAI:Inventory{
 		if(caller.distance3d(attacktarget)<caller.meleerange*2)caller.A_FaceTarget(10,10);
 		else caller.A_FaceMovementDirection(5,40);
 	}
+	static void TrySHoot(
+		actor caller,
+		double shootheight=-1,
+		double pradius=0,
+		double pheight=0
+	){
+		if(shootheight<0)shootheight=caller.height-6;
+//		then do the checks, etc.
+	}
 }
 
 class exzo:zombieman{

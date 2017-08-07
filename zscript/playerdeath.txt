@@ -11,7 +11,6 @@ extend class HDPlayerPawn{
 		}
 		---- A 40{
 			A_PlayerScream();
-			killoldfires();
 		}
 		---- A 20 A_CheckPlayerDone();
 		wait;
@@ -26,14 +25,21 @@ extend class HDPlayerPawn{
 		if(-health>gibhealth||aggravateddamage>40) playercorpse.A_Die("extreme");
 		else playercorpse.A_Die();
 
-		killoldfires();
 		A_TakeInventory("IsAlive");
 		super.die(source,inflictor,dmgflags);
 	}
-	void killoldfires(){
-		HDF.TransferFire(self,playercorpse);
+}
+
+//transfer fires to corpse
+extend class HDHandlers{
+	override void PlayerDied(PlayerEvent e){
+		actor pc;
+		let hde=HDPlayerPawn(players[e.playernumber].mo);
+		if(hde)pc=hde.playercorpse;
+		HDF.TransferFire(players[e.playernumber].mo,pc);
 	}
 }
+
 
 //corpse substituter
 class HDPlayerCorpse:HDActor{
