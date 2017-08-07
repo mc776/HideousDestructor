@@ -67,14 +67,17 @@ class Ring:HDWeapon replaces Fist{
 	}
 	action void HDPunch(int dmg){
 		actor a;int b;
-		[a,b]=LineAttack(angle,64,pitch,0,"none",
-			"HDFistPuncher",flags:LAF_NORANDOMPUFFZ
+		[a,b]=LineAttack(angle,48,pitch,0,"none",
+			"HDFistPuncher",flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ,
+			offsetz:height-12
 		);
 		if(!a)return;
 
 		//actual puff effect if the shot connects
-		LineAttack(angle,64,pitch,0,"none",
-			countinv("PowerStrength")?"HDZerkPuff":"HDFistPuff"
+		LineAttack(angle,48,pitch,0,"none",
+			countinv("PowerStrength")?"BulletPuffBig":"BulletPuffSmall",
+			flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ,
+			offsetz:height-12
 		);
 
 		if(!a.tracer)return;
@@ -124,6 +127,7 @@ class Ring:HDWeapon replaces Fist{
 			&& punchee.findstate("pain")
 			&& a.pos.z>punchee.pos.z+punchee.height*0.75
 		){
+			if(hd_debug)A_Log("HEAD SHOT");
 			punchee.setstatelabel("pain");
 			dmg*=frandom(1.1,1.8);
 		}
@@ -233,7 +237,7 @@ class HDFistPuff:BulletPuffMedium{
 		TNT1 A 6{
 			if(hd_debug)sprite=(GetSpriteIndex("BAL2A0"));
 			A_PlaySound("misc/punch");
-			tracer.A_GiveInventory("FistTurner");
+			if(tracer)tracer.A_GiveInventory("FistTurner");
 		}stop;
 	}
 }
