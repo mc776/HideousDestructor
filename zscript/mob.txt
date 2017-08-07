@@ -516,17 +516,11 @@ class HDMOb:HDActor{
 	}
 }
 
-class HDScary:HDMOb{
-	states{
-	spawn:
-		BAL2 A -1 nodelay{
-			A_Frighten(512);
-		}
-	}
-}
 
 
-//for corpse-gibbing for things not inheriting from HDMOb
+
+
+//general corpse-gibbing
 class SawGib:InventoryFlag{
 	default{
 		inventory.maxamount int.MAX;
@@ -565,6 +559,7 @@ class SawGib:InventoryFlag{
 
 
 class HDMobAI:Inventory{
+	actor feartarget;
 	static void resize(actor caller,double minscl=0.9,double maxscl=1.){
 		double scl=frandom(minscl,maxscl);
 		caller.scale*=scl;

@@ -36,10 +36,10 @@ extend class HDPlayerPawn{
 }
 
 //corpse substituter
-class HDPlayerCorpse:HDMob{
+class HDPlayerCorpse:HDActor{
 	default{
 		monster; -countkill +solid
-		height 52;radius 12;health 1;mass 100;
+		height 52;radius 12;health 100;mass 100;
 	}
 	override void Die(actor source,actor inflictor,int dmgflags=0){
 		super.die(source,inflictor,dmgflags);

@@ -479,7 +479,7 @@ class ViewDummy:IdleDummy{
 
 
 //stuff to reset upon entering a new level
-class HDHandlers:EventHandler{
+extend class HDHandlers{
 	override void PlayerEntered(PlayerEvent e){
 		let p=HDPlayerPawn(players[e.PlayerNumber].mo);
 		if(p){
