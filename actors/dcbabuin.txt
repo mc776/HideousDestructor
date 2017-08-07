@@ -77,10 +77,12 @@ actor Babuin:ZBabuin{
 		TNT1 A 0 HealThing (random(2,8))
 		Loop
 	Melee:
-		SRG2 E 0 A_FaceTarget
-		SRG2 E 7 A_PlaySound ("demon/melee")
-		SRG2 F 0 A_FaceTarget
-		SRG2 F 6 A_ChangeVelocity(Cos(Pitch)*4, 0, Sin(Pitch)*4, 1)
+		SRG2 E 7{
+			A_FaceTarget(0,0);
+			A_PlaySound("demon/melee");
+			A_ChangeVelocity(cos(pitch)*4,0,sin(-pitch)*4,CVF_RELATIVE);
+		}
+		SRG2 F 6
 		SRG2 G 2{
 			A_CustomMeleeAttack(random(5,15),null,null,"Teeth",true);
 			TryLatch;
@@ -89,15 +91,16 @@ actor Babuin:ZBabuin{
 		SRG2 G 6
 		goto see
 	Missile:
-		SRG2 D 0 A_TakeInventory("NoBabusForYou")
-		SRG2 D 0 A_FaceTarget(0,0)
-		SRG2 D 3 A_ChangeVelocity(Cos(Pitch)*3, 0, Sin(Pitch)*3, 1)
-		SRG2 E 3 A_ChangeVelocity(Cos(Pitch)*3, 0, Sin(Pitch)*3, 1)
-		SRG2 E 3 A_CustomMissile("BabuDummy",42,0,0,CMF_AIMDIRECTION,pitch)
+		SRG2 D 0{
+			A_TakeInventory("NoBabusForYou");
+			A_FaceTarget(0,0);
+		}
+		SRG2 DE 3 A_ChangeVelocity(cos(pitch)*3,0,sin(-pitch)*3,CVF_RELATIVE)
+		SRG2 E 3 A_SpawnProjectile("BabuDummy",42,0,0,CMF_AIMDIRECTION,-pitch)
 
 		SRG2 A 0 A_JumpIfInventory("NoBabusForYou",1,"see")
 		SRG2 E 2 A_PlaySound("babuin/sight")
-		SRG2 E 0 A_ChangeVelocity(Cos(Pitch)*16,0,Sin(Pitch)*16+random(3,6),1)
+		SRG2 E 0 A_ChangeVelocity(cos(pitch)*16,0,sin(-pitch)*16+random(3,6),CVF_RELATIVE)
 		goto fly
 	Fly:
 		SRG2 F 0 TryLatch
