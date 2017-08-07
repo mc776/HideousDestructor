@@ -3,523 +3,6 @@
 // Shame if something happened to them.
 // ------------------------------------------------------------
 
-class HDMOb:HDActor{
-	vector3 lastpos;
-	vector3 lasttargetpos;
-	double targetdistance;
-	actor attacktarget;
-	actor movetarget;
-	actor feartarget;
-	actor targbak;
-	int spawnheight;
-	int starthealth;
-	int livestepheight;
-	int handedness;
-	int lasthealth;
-	int decision;
-	bool gibbed;
-	default{
-		+solid;+shootable;+canpass;-noblockmonst;
-		mass 100;health 100;gibhealth 200;
-		height 54;radius 16;speed 12;
-		missileheight 32;
-	}
-	override void postbeginplay(){
-		super.postbeginplay();
-		attacktarget=spawn("idledummy",pos);
-		movetarget=spawn("idledummy",pos);
-		spawnheight=height;
-		starthealth=health;
-		if(!bfloat) bnodropoff=true;
-		livestepheight=maxstepheight;
-		handedness=randompick(1,1,1,-1);
-	}
-	override void ondestroy(){
-		super.ondestroy();
-		if(movetarget) movetarget.destroy();
-		if(attacktarget) attacktarget.destroy();
-	}
-	override int DamageMobj(
-		actor inflictor,
-		actor source,
-		int damage,
-		name mod,
-		int flags=0,
-		double angle=0
-	){
-		if(!bcorpse||health>0){
-			return super.damagemobj(inflictor,source,damage,mod,flags,angle);
-		}
-		if(
-			mod=="chainsaw"
-		){
-			damage*=2;
-		}else if(
-			mod=="smallarms0"||
-			mod=="smallarms1"||
-			mod=="smallarms2"||
-			mod=="smallarms3"||
-			mod=="bullet"||
-			mod=="gunshot"
-		){
-			damage*=0.4;
-			if(damage<1)damage=1;
-		}else if(
-			mod=="thermal"||
-			mod=="fire"||
-			mod=="ice"||
-			mod=="cold"||
-			mod=="plasma"||
-			mod=="burning"||
-			mod=="electro"||
-			mod=="electrical"||
-			mod=="lightning"||
-			mod=="bolt"||
-			mod=="balefire"||
-			mod=="hellfire"||
-			mod=="unholy"
-		){
-			damage*=0.1;
-			if(damage<1){
-				if(!random(0,5))damage=1;
-				else return 0;
-			}
-		}
-		health-=damage;
-		if(hd_debug)A_Log(string.format("A corpse took %i damage for a total of %i/%i.",damage,-health,gibhealth));
-		if(
-			findstate("xdeath",false)
-			&&(damage>=gibhealth||-health>max(gibhealth,mass)*7)
-		){
-			bshootable=false;
-			bsolid=false;
-			gibbed=true;
-			setstatelabel("xdeath");
-		}
-		return damage;
-	}
-	//adjust sprite scale, hitbox, mass and health all at once
-	void A_Resize(double sx=1,double sy=-1){
-		if(sy<0) sy=sx;
-		if(sy>1 && self.ceilingz-self.floorz<self.height){
-			sx*=1/sy;
-			sy=1;
-		}
-		scale.x*=sx;scale.y*=sy;
-		A_SetSize(radius*sx,height*sy);
-		if(scale.x>1.0){
-			A_SetHealth(health*scale.x);
-		}
-	}
-	//just so I don't call the same thing every time
-	void A_HDLook(int soundchance=40){
-		A_Look();
-		if(!bambush) angle+=random(-10,10);
-		if(random(1,soundchance)==1) A_PlaySound(activesound);
-	}
-	//the simple aimless version of A_MChase
-	virtual void A_MWander(bool facemvt=true){
-		if(A_CheckBlock("null")){ //if stuck, call a normal A_Chase to get unstuck
-			A_Wander();
-			return;
-		}
-		targbak=target;
-		vector3 oldpos=pos; //set starting position
-		target=self; //just to get rid of that warning
-		if(!TryWalk()) NewChaseDir(); //basic trywalk
-
-		if(random(1,mass/40)+4==1) NewChaseDir();
-
-		vector3 moveto=pos; //set destination
-		setorigin(oldpos,false); //revert to starting position
-
-		//move and start facing
-		if(facemvt) A_FaceVector(moveto-pos,40);
-		if(vel.length()<=speed){
-			moveto-=pos;
-			if(moveto!=(0,0,0)) moveto/=moveto.length();
-			vel+=moveto*speed/10;
-		}
-		//revert target
-		target=targbak;
-	}
-	//a chase function kludged into giving actual velocity
-	virtual void A_MChase(){
-		//abort if target dead
-		if(!target || target.health<1){
-			target=null;
-			if(findstate("idle",true)) setstatelabel("idle");
-			else setstatelabel("spawn");
-			return;
-		}
-		targetdistance=distance3d(attacktarget);
-
-		//if within melee range, forget it just beat them
-		if(checksight(target) && distance3d(target)-target.radius<meleerange){
-			setstatelabel("melee");
-			return;
-		}
-
-		//if stuck, call a normal A_Chase to get unstuck
-		if(A_CheckBlock("null")){
-			A_Chase(null,null);
-			return;
-		}
-
-		vector3 oldpos=pos; //set starting position
-
-		//"Chase" using the movetarget
-		if(!movetarget) movetarget=spawn("idledummy",target.pos); //failsafe
-		targbak=target; target=movetarget;
-		if(!TryWalk()) NewChaseDir(); //basic trywalk
-
-		target=targbak; //reset this for the A_JumpIfTargetInLOS calls
-		//randomly change direction
-		if(
-			(random(1,mass/40)+1==1) //random direction change
-			||(
-				(!A_JumpIfTargetInLOS("null")) //more change if in LOS
-				&&(random(1,mass/10)==1)
-			)
-			||(
-				(!A_JumpIfTargetInLOS("null",180)) //if back to target and out of range
-				&&(targetdistance<(radius+target.radius)*2)
-			)
-		){
-			targbak=target; target=movetarget;
-			NewChaseDir();
-			target=targbak;
-		}
-
-		//translate the above to movement
-		vector3 moveto=pos; //set destination
-		setorigin(oldpos,false); //revert to starting position
-
-		//start facing
-		A_FaceVector(moveto-pos,40);
-		pitch=0; //apparently the forced vec3 above screws up subsequent projectile aiming, lol
-
-		if(vel.length()<=speed){
-			moveto-=pos;
-			double movetolength=moveto.length();
-			if(movetolength!=0) moveto/=movetolength;
-			vel+=moveto*speed*0.1;
-		}
-	}
-	//a more gradual A_FaceTarget designed to loop
-	void A_TurntoFace(int turnspeed=60,int ontargetangle=5){
-		A_FaceTarget(turnspeed,turnspeed);
-		if(!A_JumpIfTargetInLOS("null")) setstatelabel("see");
-		else if(A_JumpIfTargetInLOS("null",ontargetangle)) setstatelabel("shoot");
-	}
-	//tests area in front of LOF, returns true if clear or hit target
-	//A_TryShoot(target.pos-self.pos,128,height-12,4,4)
-	virtual bool A_TryShoot(
-		vector3 tryvec=(0,0,0),
-		int distance=256,
-		int shotspawnheight=32,
-		int shotradius=8,
-		int shotheight=-1
-	){
-		if(shotradius<1) shotradius=1;
-		if(shotheight<1) shotheight=shotradius;
-		actor s=spawn("IdleDummy",pos+(0,0,shotspawnheight));
-		s.a_setsize(shotradius,shotheight);
-		s.bmissile=true;s.target=self;s.bnoclip=false;
-		s.stamina=5;
-		if(tryvec==(0,0,0)){ //by default, try shooting in current direction
-			s.A_ChangeVelocity(cos(self.pitch)*shotradius,0,-sin(self.pitch)*shotradius,CVF_RELATIVE);
-		}else{
-			s.vel=tryvec.unit()*shotradius;
-		}
-		distance=ceil(distance/shotradius);
-		for(int i=0;i<distance;i++){
-			if(!s.trymove(s.pos.xy+s.vel.xy,true)){
-				if(s.blockingmobj && s.blockingmobj==self.target){ //hit target
-					return true;
-				}
-				else return false;
-			}
-			s.setz(s.pos.z+s.vel.z); //hit floor or ceiling
-			if(
-				s.pos.z<=s.floorz ||
-				s.pos.z>=s.ceilingz-s.height
-			)return false;
-//			spawn("bullettail",s.pos);
-		}
-		return true; //area clear
-	}
-	//see if there's a point at which fire can be reasonably construed as supressive
-	bool A_TryCoverFire(){
-		if(!target) return false;
-		actor a=spawn("idledummy",self.pos+(0,0,self.missileheight));
-		a.stamina=1;
-		vector3 dir=(cos(self.angle),sin(self.angle),target.pos.z-self.pos.z)*256;
-		for(int i=0;i<128;i++){
-			a.setxyz(a.pos+dir);
-			if(
-				//find point with LOS with target and self, within 256 of target
-				a.checksight(self)
-				&& a.distance3d(target)<=256
-			){
-				//yes you may fire
-				return true;
-			}
-		}
-		return false;
-	}
-	/*
-		trial and error:
-		divide distance to target by pspeed
-		advance target by that many steps
-
-		divide distance to target new position by pspeed
-		advance target from original position by that many steps
-
-		compare x, y and z positions of target new and old positions
-		if they x and y differences are both < target.radius and z diff < target.height, GOOD
-	*/
-	//set up last position to lead target
-	void A_StartLeadTarget(){
-		if(!target) return;
-		if(!self.checksight(target)) return;
-		attacktarget.setorigin(target.pos,false);
-		lasttargetpos=target.pos;
-	}
-	//lead target
-	void A_FaceLeadTarget(int pspeed=10,int mindist=20,int maxdist=2048,double aimheight=32){
-		if(!target) return;
-		if(!self.checksight(target)) return;
-		maxdist=pspeed*140; //don't bother leading by more than 4 seconds
-		targetdistance=distance3d(target);
-		if((targetdistance>maxdist)||(targetdistance<mindist)) return;
-		vector3 hypo0=target.pos;
-			hypo0.z+=target.height*0.62;
-		vector3 hypo1=hypo0;
-		double shotdist=(pos-hypo1).length()/pspeed;
-
-		//calculate based on previous targetpos if possible
-		//this adjusts for chasing monsters and targets on platforms - neither has velocity
-		vector3 tvel=target.vel;
-		if(attacktarget.distance3d(target)<100) tvel=target.pos-lasttargetpos;
-
-		vector3 hypo2=hypo0+tvel*shotdist;
-
-		double trad=target.radius;
-		if(trad<1) trad=1;
-		double thei=target.height;
-		if(thei<1) thei=1;
-
-		int overflow=0;
-		while(
-			((abs(hypo1.x-hypo2.x)>trad)
-			||(abs(hypo1.y-hypo2.y)>trad)
-			||(abs(hypo1.z-hypo2.z)>thei))
-			&& overflow<12
-		){
-			hypo1=hypo2;
-			shotdist=(pos-hypo1).length()/pspeed;
-			hypo2=hypo0+tvel*shotdist;
-			overflow++;
-		}
-		//face hypo2
-		attacktarget.setorigin(hypo2,false);
-		A_Face(attacktarget,90,90);
-	}
-	//used for random movement while attacking.
-	void A_Strafe(int amount=1){
-		vector3 mv=(random(-1,1),0,0);
-		if(mv.x==0)mv.y=randompick(-1,1);else mv.y=random(-1,1);
-		if(mv.x!=0 && mv.y!=0) mv*=HDCONST_ONEOVERSQRTTWO;
-		if(bfloat) mv.z=random(-1,1);
-		mv*=amount;
-		vel+=mv;
-		return;
-	}
-	//A_MChase does not contain checks for going into missile state.
-	//all of that stuff goes here. decide where to go and whether to attack.
-	virtual void A_MChaseThink(int flankdistance=128,int nofear=false){
-		if(!bfloat) bnodropoff=true;
-		if(A_CheckBlock("null")){ //if stuck, call a normal A_Chase to get unstuck
-			A_Wander();
-			return;
-		}
-
-		if(bnofear) nofear=true;
-		decision=0; //reset
-
-		if(!target || target.health<1){
-			target=null;
-		}
-		else{
-			if(checksight(target)){
-				attacktarget.setorigin(target.pos,false);
-				lasttargetpos=attacktarget.pos;
-			}
-			targetdistance=distance3d(attacktarget);
-
-			//if melee, don't think
-			if(
-				findstate("melee",true)
-				&& targetdistance<meleerange
-				&& !A_CheckBackTurned(target.pos,self.pos,self.angle)
-			){
-				setstatelabel("melee");
-				return;
-			}
-		}
-
-		//set move goal depending on whether retreat or advance
-		if(
-			!nofear
-			&& feartarget
-			&& self.checksight(feartarget)
-			&& distance2d(feartarget)<512
-		){
-			decision|=HDMCT_RETREAT;
-		}else if(target){
-			movetarget.setorigin(lasttargetpos+(
-				cos(angle+90*handedness)*flankdistance,
-				sin(angle+90*handedness)*flankdistance,
-				lasttargetpos.z
-				),false);
-			decision|=HDMCT_ADVANCE;
-		}
-//		spawn("BulletTail",movetarget.pos);
-
-		if(target){
-			if(A_TryShoot(
-				(target.pos+(0,0,target.height*0.5))
-				-(self.pos+(0,0,self.missileheight))
-			))
-				decision|=HDMCT_AIMSHOOT;
-
-			if(A_TryCoverFire() && A_TryShoot()) decision|=HDMCT_COVERFIRE;
-		}
-
-//		A_LogInt(decision);
-	}
-	//applying the results of A_MChaseThink.
-	void A_MChaseThinkSetState(
-			int fleechance=90,
-			int shootchance=90,
-			int coverchance=90,
-			int wanderchance=20,
-			statelabel chasestate="chase",
-			statelabel missilestate="missile",
-			statelabel coverstate="coverfire",
-			statelabel fleestate="flee",
-			statelabel wanderstate="wander",
-			statelabel holdstate="hold"
-		){
-		if(!target){
-			if(findstate("idle",true)) setstatelabel("idle");
-			else setstatelabel("spawn");
-			return;
-		}
-
-		//some fallbacks
-		//note that missile and flee MUST be present
-		if(!findstate(fleestate,true)) fleestate=chasestate;
-		if(!findstate(coverstate,true)) coverstate=missilestate;
-		if(!findstate(wanderstate,true)) wanderstate=chasestate;
-		if(!findstate(holdstate,true)) holdstate=wanderstate;
-
-		//make the decision!
-		if((decision & HDMCT_RETREAT) && random(1,100)<=fleechance){
-			movetarget.setxyz(feartarget.pos);
-			bfrightened=true;
-			if(findstate(fleestate,true))setstatelabel(fleestate);
-			return;
-		}
-		bfrightened=false;
-		if((decision & HDMCT_AIMSHOOT)){
-			if(findstate(missilestate,true) && random(1,100)<=shootchance)
-				setstatelabel(missilestate);
-			return;
-		}
-		else if((decision & HDMCT_COVERFIRE) && random(1,100)<=coverchance){
-			if(findstate(coverstate,true))setstatelabel(coverstate);
-			return;
-		}
-		if((decision & HDMCT_ADVANCE) && random(1,100)>wanderchance){
-			if(findstate(chasestate,true))setstatelabel(chasestate);
-			return;
-		}
-		if(decision == HDMCT_HOLD){
-			if(target && checksight(target)) setstatelabel(missilestate);
-			if(!bambush && random(1,100)<=wanderchance && findstate(wanderstate,true))
-				setstatelabel(wanderstate);
-			else if(findstate(holdstate,true))setstatelabel(holdstate);
-			return;
-		}
-	}
-
-	//SO MUCH BLOOD
-	void A_Bleed(int amount=1,double force=0,double bleedangle=0,double spread=0){
-		for (int i=0;i<amount;i++){
-			A_SpawnItemEx(self.bloodtype,
-				random(1,self.radius),
-				random(-self.radius,self.radius)*0.5,
-				random(4,self.height),
-				self.vel.x+cos(bleedangle)*(force+random(-spread,spread)),
-				self.vel.y+sin(bleedangle)*(force+random(-spread,spread)),
-				self.vel.z+frandom(1,7)+random(-spread,spread),
-				bleedangle+random(-spread,spread),
-				SXF_USEBLOODCOLOR|SXF_ABSOLUTEANGLE|
-				SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION);
-		}
-	}
-
-
-	//tic override
-	override void Tick(){
-		lasthealth=health;
-		lastpos=pos;
-		super.Tick();
-	}
-	//death override
-	override void Die(Actor source,Actor inflictor,int dmgflags=0){
-		super.Die(source,inflictor,dmgflags);
-		bnodropoff=false;
-		maxstepheight=livestepheight/6;
-		if(FindState("xdeath",true)&&(
-			(health<-gibhealth)
-			||(lasthealth-health>gibhealth)
-			)
-		){
-			A_GiveInventory("IsGibbed");
-			gibbed=true;
-			A_PlaySound("misc/gibbed");
-			A_NoBlocking();
-			setstatelabel("xdeath");
-			return;
-		}
-		//note to self: change this for the cyberdemon
-		//Actor.Die(source,inflictor,dmgflags); then do the real stuff
-		A_SetSize(radius,spawnheight);
-		A_TakeInventory("IsGibbed");
-		A_TakeInventory("SawGib");
-		gibbed=false;
-		bshootable=true;
-		balwaystelefrag=true;
-		bnotautoaimed=true;
-	}
-	//virtual "scream"/"noblocking" functions to set a bunch of flags
-	//if it won't fit into the Die() override, it goes here
-	void A_HDNoBlocking(){
-		A_Scream();
-		A_NoBlocking();
-		double dh=deathheight;
-		if(dh<0) dh=spawnheight/4;
-		A_SetSize(radius,dh);
-	}
-}
-
-
-
-
-
 //general corpse-gibbing
 class SawGib:InventoryFlag{
 	default{
@@ -554,22 +37,24 @@ class SawGib:InventoryFlag{
 	}
 }
 
-
-
-
-
+//A generic mob controller.
+//Stick this onto an actor for all sorts of fun effects!
 class HDMobAI:Inventory{
 	actor feartarget;
-	static void resize(actor caller,double minscl=0.9,double maxscl=1.){
+	static void resize(actor caller,double minscl=0.9,double maxscl=1.,int minhealth=0){
 		double scl=frandom(minscl,maxscl);
 		caller.scale*=scl;
 		caller.mass*=scl;
 		caller.speed*=scl;
 		caller.meleerange*=scl;
 		caller.A_SetSize(caller.radius*scl,caller.height*scl);
-		caller.health*=max(scl,1);
+		if(minhealth<1)caller.health*=max(scl,1);else caller.health=max(caller.health*scl,1);
 	}
 	static void HDA_Chase(actor caller,actor movetarget=null,bool res=false,bool flee=true){
+		if(caller.A_CheckBlock("null")){
+			caller.A_Wander();
+			return;
+		}
 		actor attacktarget=caller.target;
 		if(!attacktarget||attacktarget.health<random(-5,1)){
 			caller.target=null;
@@ -637,14 +122,80 @@ class HDMobAI:Inventory{
 		if(caller.distance3d(attacktarget)<caller.meleerange*2)caller.A_FaceTarget(10,10);
 		else caller.A_FaceMovementDirection(5,40);
 	}
-	static void TrySHoot(
+	static bool TryShoot(
 		actor caller,
 		double shootheight=-1,
+		int range=256,
 		double pradius=0,
 		double pheight=0
 	){
+		if(!caller.target)return false;
 		if(shootheight<0)shootheight=caller.height-6;
-//		then do the checks, etc.
+		actor a;int b;
+		int bottomdist;int topdist;int leftdist;int rightdist;
+		vector3 oldpos=caller.pos;
+		range=min(caller.distance3d(caller.target),range);
+		int range2=range*2;
+
+		//bottom centre - always done
+		caller.addz(shootheight);
+		[a,b]=caller.LineAttack(caller.angle,range,caller.pitch,0,"none",
+			"CheckPuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT|LAF_OVERRIDEZ);
+		if(!a)bottomdist=range2;else{
+			if(a.tracer==caller.target)bottomdist=range2;else
+			bottomdist=a.distance3d(caller);
+			a.spawn("BulletPuff",a.pos);
+		}
+
+
+		//top centre
+		if(pheight){
+			caller.addz(pheight);
+			[a,b]=caller.LineAttack(caller.angle,range,caller.pitch,0,"none",
+				"CheckPuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT|LAF_OVERRIDEZ);
+			if(!a)topdist=range2;else{
+				if(a.tracer==caller.target)topdist=range2;else
+				topdist=a.distance3d(caller);
+				a.spawn("BulletPuff",a.pos);
+			}
+			caller.addz(-pheight);
+		}else topdist=range2; //if no check, impact deemed to be beyond range
+
+		//left and right
+		if(pradius){
+			double pht=pheight*0.5;
+			caller.addz(pht);
+
+			vector3 adj=(cos(caller.angle+90),sin(caller.angle+90),0)*pradius;
+			caller.setxyz(caller.pos+adj);
+			[a,b]=caller.LineAttack(caller.angle,range,caller.pitch,0,"none",
+				"CheckPuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT|LAF_OVERRIDEZ);
+			if(!a)leftdist=range2;else{
+				if(a.tracer==caller.target)leftdist=range2;else
+				leftdist=a.distance3d(caller);
+				a.spawn("BulletPuff",a.pos);
+			}
+
+			caller.setxyz(caller.pos-adj*2);
+			[a,b]=caller.LineAttack(caller.angle,range,caller.pitch,0,"none",
+				"CheckPuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT|LAF_OVERRIDEZ);
+			if(!a)rightdist=range2;else{
+				if(a.tracer==caller.target)rightdist=range2;else
+				rightdist=a.distance3d(caller);
+				a.spawn("BulletPuff",a.pos);
+			}
+
+			caller.addz(-pht);
+		}else{
+			leftdist=range2;rightdist=range2;
+		}
+
+		//important
+		caller.setxyz(oldpos);
+
+		if(min(bottomdist,topdist,leftdist,rightdist)+5<range)return false;
+
+		return true;
 	}
 }
 
@@ -673,8 +224,8 @@ class exzo:zombieman{
 }
 class exim:doomimp{
 	void HDA_Chase(actor movetarget=null){
-		if(A_CheckBlock("null"))A_Wander();
-		else HDMobAI.HDA_Chase(self,movetarget);
+//		if(A_CheckBlock("null"))A_Wander();else 
+HDMobAI.HDA_Chase(self,movetarget);
 	}
 	states{
 	see:

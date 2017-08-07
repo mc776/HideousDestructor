@@ -145,18 +145,20 @@ class HDActor:Actor{
 	}
 	//set a feartarget for nearby mobs
 	//A_Frighten(256); maybe 128 for bullet and 512 for plasma and bfg
-	virtual void A_Frighten(double fraidius){
-		//copypasted from Xaser's StunBomb
-		//the actual fear effect is not defined here - that's up to the mob in question
+	void A_Frighten(double fraidius,actor fearsome=null){
+		if(!fearsome)fearsome=self;
+		actor hir;
 		blockthingsiterator it=blockthingsiterator.create(self,fraidius);
 		while(it.Next()){
-			let hir=HDMOb(it.thing);
+			hir=it.thing;
 			if(hir
 				&& hir.bIsMonster
 				&& hir.health>0
-				&& hir.CheckSight(self)
+				&& hir.CheckSight(fearsome)
 			){
-				hir.feartarget=self;
+				hir.A_GiveInventory("HDMobAI");
+				HDMobAI hirai=HDMobAI(hir.findinventory("HDMobAI"));
+				if(hirai)hirai.feartarget=fearsome;
 			}
 		}
 	}

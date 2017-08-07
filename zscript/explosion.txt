@@ -169,8 +169,7 @@ extend class HDActor{
 					}
 				}
 				if(it && losmul && dist<=gibradius && it.bcorpse && it.bshootable){
-					//HDMob has its own corpse-gibbing so no sawgib for it
-					if(!(it is "HDMob"))it.a_giveinventory("sawgib",gibamount-dist);
+					it.a_giveinventory("sawgib",gibamount-dist);
 					for(int i=0;i<gibamount;i+=3){
 						A_SpawnItemEx(it.bloodtype,
 							random(1,it.radius),

@@ -1,4 +1,4 @@
-
+ 
 // ------------------------------------------------------------
 //   Killer Barrel
 // ------------------------------------------------------------
@@ -21,13 +21,14 @@ class SuspiciousBarrel:IdleDummy replaces ExplosiveBarrel{
 class KillerBarrel:HDActor{
 	default{
 		+ismonster //sprite clips differently whether this is on or not
+		+solid +shootable
 		+countkill +canpushwalls +activatemcross +canpass +nodropoff
 		+ambush +ghost +lookallaround
 		+fixmapthingpos +dontgib +pushable
 		damagefactor "Thermal",1.2;
 		damagefactor "Balefire",0.1;
 		radius 11;height 34;deathheight 34;
-		health 100;speed 1;mass 100;
+		health 100;speed 1;mass 100;gibhealth 200;
 		painchance 120;
 		pushfactor 0.1;
 		painsound "barrel/pain";deathsound "world/barrelx";
@@ -59,8 +60,9 @@ class KillerBarrel:HDActor{
 					)
 				)
 			){
+				A_FaceTarget(0,0);
 				if(
-1//					A_TryShoot(target.pos-self.pos,128,height-12,4,4)
+					HDMobAI.TryShoot(self,32,128,9,9)
 				){
 					//shoot
 					A_FaceTarget(0,0);
@@ -295,8 +297,7 @@ class KillerFireCan:KillerBarrel{
 					setstatelabel("flamethrow");
 					return;
 				}else if(
-//REPLACE TRYSHOOT
-1//					A_TryShoot(target.pos-self.pos,128,height-12,4,4)
+					HDMobAI.TryShoot(self,32,128,9,9)
 				){
 					//shoot
 					A_PlaySound(attacksound);
@@ -472,9 +473,11 @@ class BarrelFlame:HDFireball{
 		stop;
 	}
 }
-class BarrelFireCrawler:HDMOb{
+class BarrelFireCrawler:HDActor{
 	actor a;
 	default{
+		+shootable;+canpass;-noblockmonst;
+		height 54;radius 16;speed 12;
 		+noblooddecals -solid +nofear +bright
 		radius 8;height 10;meleerange 12;renderstyle "add";maxstepheight 64;maxdropoffheight 64;
 		speed 5;health 20;bloodtype "HDSmokeSmall";
@@ -515,13 +518,14 @@ class BarrelFireCrawler:HDMOb{
 	death:
 		FIRE A 0{
 			A_NoBlocking();
-			destroy();
 			for(int i=0;i<4;i++){
-				if(scale.x>=0.4 && random(1,3)==1){
+				if(scale.x>=0.4 && !random(0,2)){
 					a=spawn("BarrelFireCrawler",pos);
-					if(target)a.target=target.target;a.master=target;
-					let b=HDMOb(a);
-					if(b)b.A_Resize(self.scale.x*0.6);
+					HDMobAI.Resize(a,self.scale.x*0.6,0.1);
+					if(target){
+						a.target=target.target;
+						a.master=target;
+					}
 					a.vel=self.vel+(random(-2,2),random(-2,2),random(1,3));
 				}else{
 					a=spawn("HDSmokeChunk",pos);
@@ -531,6 +535,7 @@ class BarrelFireCrawler:HDMOb{
 			}
 			a=spawn("HDSmoke",pos);
 			a.vel.z+=2;
+			destroy();
 		}stop;
 	death.burnout:
 		FIRE A 0{
