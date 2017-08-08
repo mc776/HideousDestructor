@@ -1,7 +1,6 @@
 // ------------------------------------------------------------
-//   Stuff related to player turning
+// Stuff related to player turning
 // ------------------------------------------------------------
-
 extend class HDPlayerPawn{
 	vector2 muzzleclimb1;
 	vector2 muzzleclimb2;
@@ -11,23 +10,19 @@ extend class HDPlayerPawn{
 	bool muzzlehit;
 
 	void TurnCheck(){
+		UserCmd cmd = player.cmd;
 
 		//temporary variables
 		double anglechange=0;
 		double pitchchange=0;
 
 		//get input
-		double yaw=iyaw*(360./65536.);
-		double ptch=ipitch*(360./65536.);
+		double yaw=cmd.yaw*(360./65536.);
+		double ptch=cmd.pitch*(360./65536.);
 
-
-		//delete when overriding directly
-		//revisit jitter issue when this is gone
-		lastangle=angle-yaw;
-		lastpitch=pitch+ptch;
-		A_SetAngle(lastangle,SPF_INTERPOLATE);
-		A_SetPitch(lastpitch,SPF_INTERPOLATE);
-
+		//get prior angle and pitch
+		lastangle=angle;
+		lastpitch=pitch;
 
 		//reduced turning while supported.
 		if(countinv("IsSupported") && (getplayerinput(MODINPUT_BUTTONS)&BT_USE) && abs(yaw)<8 && !countinv("IsMoving")){
@@ -166,10 +161,10 @@ extend class HDPlayerPawn{
 				amt*=0.2;
 			}
 			if(countinv("WeaponBusy")){
-				barrellength=0;
+				barrellength=radius+2;
+				barrelwidth=2;
 				amt=min(amt*1.5,20);
 			}
-
 
 			//muzzle inertia
 
@@ -383,12 +378,11 @@ extend class HDPlayerPawn{
 			if(abs(anglechange)>1){    
 				int dir=90;
 				if(anglechange<0) dir=-90;
-				trymove(self.pos.xy+(cos(angle+dir)*0.8,sin(angle+dir)*0.8),false);
+				trymove(self.pos.xy+(cos(angle+dir),sin(angle+dir))*0.8,false);
 			}
-			if(abs(pitchchange)>1 && -30<pitch<30){    
-				double rate=0.1;
-				trymove(self.pos.xy-(cos(angle)*rate*pitchchange,
-				sin(angle)*rate*pitchchange),false);
+			if(abs(pitchchange)>1 && -30<pitch<30){
+				trymove(self.pos.xy-(cos(angle)*pitchchange,
+					sin(angle)*pitchchange)*0.1,false);
 			}
 		}
 	}

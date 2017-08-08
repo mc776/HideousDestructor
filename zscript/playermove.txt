@@ -1,0 +1,137 @@
+extend class HDPlayerPawn{
+	//input is no longer considered in CheckPitch since it's already in HD's TurnCheck.
+	override void CheckPitch(){
+		if(player.centering){
+			if (abs(Pitch)>2.){
+				Pitch*=(2./3.);
+			}else{
+				Pitch=0.;
+				player.centering = false;
+				if(PlayerNumber()==consoleplayer){
+					LocalViewPitch = 0;
+				}
+			}
+		}else pitch=clamp(pitch,player.minpitch,player.maxpitch);
+	}
+	override void CrouchMove(int direction){
+		let player = self.player;
+		
+		double defaultheight = FullHeight;
+		double savedheight = Height;
+		double crouchspeed = direction*CROUCHSPEED;
+		double oldheight = player.viewheight;
+
+		//the only thing I'm adding for HD
+		crouchspeed*=clamp(
+			health-fatigue-overloaded*0.2+stimcount+zerk*0.01,
+			40,zerk?288:144
+		)*0.01;
+		if(crouchspeed>0.06&&!random(0,4))fatigue++;
+
+		player.crouchdir=direction;
+		player.crouchfactor+=crouchspeed;
+
+		// check whether the move is ok
+		Height  = defaultheight * player.crouchfactor;
+		if (!TryMove(Pos.XY, false, NULL)){
+			Height = savedheight;
+			if (direction > 0){
+				// doesn't fit
+				player.crouchfactor -= crouchspeed;
+				return;
+			}
+		}
+		Height = savedheight;
+
+		player.crouchfactor = clamp(player.crouchfactor, 0.5, 1.);
+		player.viewheight = ViewHeight * player.crouchfactor;
+		player.crouchviewdelta = player.viewheight - ViewHeight;
+
+		// Check for eyes going above/below fake floor due to crouching motion.
+		CheckFakeFloorTriggers(pos.Z + oldheight, true);
+	}
+	override void MovePlayer(){
+		let player = self.player;
+		UserCmd cmd = player.cmd;
+
+		//replace all original input with this
+		TurnCheck();
+
+		player.onground = (pos.z <= floorz) || bOnMobj || bMBFBouncer || (player.cheats & CF_NOCLIP2);
+
+		// killough 10/98:
+		//
+		// We must apply thrust to the player and bobbing separately, to avoid
+		// anomalies. The thrust applied to bobbing is always the same strength on
+		// ice, because the player still "works just as hard" to move, while the
+		// thrust applied to the movement varies with 'movefactor'.
+
+		if(cmd.forwardmove|cmd.sidemove){
+			double forwardmove,sidemove;
+			double bobfactor;
+			double friction, movefactor;
+			double fm, sm;
+
+			[friction, movefactor] = GetFriction();
+			bobfactor = friction < ORIG_FRICTION ? movefactor : ORIG_FRICTION_FACTOR;
+
+			//bobbing adjustments
+			if(stunned)bobfactor*=4.;
+			else if(cansprint && runwalksprint>0)bobfactor*=1.6;
+			else if(runwalksprint<0||mustwalk){
+				if(player.crouchfactor==1)bobfactor*=0.4;
+				else bobfactor*=0.7;
+			}
+
+			if(!player.onground && !bNoGravity && !waterlevel){
+				// [RH] allow very limited movement if not on ground.
+				movefactor*=level.aircontrol;
+				bobfactor*=level.aircontrol;
+			}
+
+			//"override double,double TweakSpeeds()"...
+			if(cmd.forwardmove)fm=12*speed;if(cmd.forwardmove<0)fm=-fm;
+			if(cmd.sidemove)sm=12*speed;if(cmd.sidemove<0)sm=-sm;
+			if(!player.morphTics){
+				double factor=1.;
+				for(let it=Inv;it;it=it.Inv){
+					factor *= it.GetSpeedFactor();
+				}
+				fm*=factor;
+				sm*=factor;
+			}
+
+			// When crouching, speed <s>and bobbing</s> have to be reduced
+			if(CanCrouch() && player.crouchfactor != 1 && runwalksprint>=0){
+				fm *= player.crouchfactor;
+				sm *= player.crouchfactor;
+			}
+
+			forwardmove = fm * movefactor * (35 / TICRATE);
+			sidemove = sm * movefactor * (35 / TICRATE);
+
+			if (forwardmove)
+			{
+				Bob(Angle, cmd.forwardmove * bobfactor / 256., true);
+				ForwardThrust(forwardmove, Angle);
+			}
+			if (sidemove)
+			{
+				let a = Angle - 90;
+				Bob(a, cmd.sidemove * bobfactor / 256., false);
+				Thrust(sidemove, a);
+			}
+
+			if (!(player.cheats & CF_PREDICTING) && (forwardmove != 0 || sidemove != 0))
+			{
+				PlayRunning ();
+			}
+
+			if (player.cheats & CF_REVERTPLEASE)
+			{
+				player.cheats &= ~CF_REVERTPLEASE;
+				player.camera = player.mo;
+			}
+		}
+	}
+}

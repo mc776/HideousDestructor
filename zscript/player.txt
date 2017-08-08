@@ -101,11 +101,9 @@ class HDPlayerPawn:PlayerPawn{
 				}
 			}
 			if(stunned){
-				viewbob=1.4;
 				return resolvestate("seestun");
 			}
 			else if(cansprint && runwalksprint>0){
-				viewbob=1.2;
 				if(bloodpressure<30)bloodpressure+=2;
 				return resolvestate("seesprint");
 			}
@@ -114,10 +112,7 @@ class HDPlayerPawn:PlayerPawn{
 			}
 			return resolvestate(null);
 		}
-		#### ABCD 4{
-			if(viewbob>0.8){viewbob-=0.1;}
-			else if(viewbob<0.8){viewbob+=0.1;}
-		}
+		#### ABCD 4;
 		---- A 0{return resolvestate("spawn");}
 	seestun:
 		#### ABCD random(2,10) {
@@ -126,13 +121,7 @@ class HDPlayerPawn:PlayerPawn{
 		---- A 0{return resolvestate("spawn");}
 	seewalk:
 		#### ABCD 6 {
-			if(height>30 && runwalksprint<0){
-				A_TakeInventory("IsMoving",5);
-				if(viewbob>1.2){viewbob=1.2;}
-				else if(viewbob>0.3){viewbob-=0.1;}
-			}
-			else if(height<30){viewbob=1.8;}
-			else if(viewbob<0.8){viewbob+=0.1;}
+			if(height>30 && runwalksprint<0)A_TakeInventory("IsMoving",5);
 		}
 		---- A 0{return resolvestate("spawn");}
 	seesprint:
@@ -229,7 +218,7 @@ class HDPlayerPawn:PlayerPawn{
 		if(countinv("WeaponBusy"))A_TakeInventory("IsWeaponReady");
 		if(height<40)A_GiveInventory("IsCrouching");
 		if(input&BT_SPEED)A_GiveInventory("IsSprinting");
-		if(fm||sm)A_GiveInventory("IsMoving");
+		if(runwalksprint>=0&&(fm||sm))A_GiveInventory("IsMoving");
 
 
 		//"falling" damage
@@ -269,9 +258,6 @@ class HDPlayerPawn:PlayerPawn{
 		//don't know where to put this: reduce stepheight if crouched
 		if(height<40 && !barehanded) maxstepheight=12;
 		else maxstepheight=24;
-
-		//turning mods
-		TurnCheck();
 
 
 		//conditions for forcing walk
@@ -321,7 +307,7 @@ class HDPlayerPawn:PlayerPawn{
 
 		//apply all movement speed modifiers
 		speed=1.;
-		if(mustwalk || runwalksprint<0) speed=0.4;
+		if(mustwalk||runwalksprint<0)speed=0.4;
 		else if(cansprint && runwalksprint>0){
 			if(!sm && fm>0)speed=2.8;
 			else speed=1.6;
@@ -348,7 +334,7 @@ class HDPlayerPawn:PlayerPawn{
 		//lowering weapon for sprint/mantle/jump
 		if(
 			input & BT_SPEED
-			|| input & BT_JUMP
+			||input & BT_JUMP
 		){
 			if(!barehanded){
 				if(player.readyweapon)lastweapon=player.readyweapon.getclassname();
@@ -364,26 +350,23 @@ class HDPlayerPawn:PlayerPawn{
 		}
 
 		//display crosshair
-		//replace with reference in ready state as weapons are replaced
-		if(!crosshairforce){
-			if(
-				countinv("WeaponBusy")||
-				countinv("PowerInvulnerable")||
-				(
-					input&BT_RELOAD
-					||input&BT_USER1
-					||input&BT_USER2
-					||input&BT_USER3
-					||input&BT_USER4
-					||input&BT_JUMP
-				)||
-				abs(iyaw)>4096
-			)nocrosshair=12;
-			else if(
-				player.fov>120||player.fov<80
-			)nocrosshair=1;
-			else nocrosshair--;
-		}
+		if(
+			countinv("WeaponBusy")||
+			countinv("PowerInvulnerable")||
+			(
+				input&BT_RELOAD
+				||input&BT_USER1
+				||input&BT_USER2
+				||input&BT_USER3
+				||input&BT_USER4
+				||input&BT_JUMP
+			)||
+			abs(iyaw)>4096
+		)nocrosshair=12;
+		else if(
+			player.fov>120||player.fov<80
+		)nocrosshair=1;
+		else nocrosshair--;
 
 		//check use key
 		if(input & BT_USE){
@@ -465,9 +448,14 @@ class ViewDummy:IdleDummy{
 			destroy();
 			return;
 		}
+		clearinterpolation();
 		angle=master.angle;
 		pitch=master.pitch;
-		setxyz(master.pos+(
+		if(abs(pitch)>89)setxyz(master.pos+(
+			cos(angle)*2,
+			sin(angle)*2,
+			sin(-pitch)*6+master.height-4
+		));else setxyz(master.pos+(
 			cos(pitch)*cos(angle)*6,
 			cos(pitch)*sin(angle)*6,
 			sin(-pitch)*6+master.height-4
