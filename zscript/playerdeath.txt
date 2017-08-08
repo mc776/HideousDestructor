@@ -8,7 +8,7 @@ extend class HDPlayerPawn{
 	death.invisiblebleedout:
 	death.internal:
 		---- A 0{
-			playercorpse.A_StopSound(CHAN_VOICE);
+			if(playercorpse)playercorpse.A_StopSound(CHAN_VOICE);
 		}
 	death:
 	xdeath:
@@ -21,7 +21,7 @@ extend class HDPlayerPawn{
 		wait;
 	}
 	override void Die(actor source,actor inflictor,int dmgflags=0){
-		playercorpse=spawn("HDPlayerCorpse",pos,ALLOW_REPLACE);
+		playercorpse=spawn("HDPlayerCorpse",pos);
 		playercorpse.vel=vel;playercorpse.master=self;
 		if(height<40)playercorpse.sprite=GetSpriteIndex("PLYCA0");
 			else playercorpse.sprite=GetSpriteIndex("PLAYA0");
