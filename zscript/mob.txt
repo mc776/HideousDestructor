@@ -18,6 +18,7 @@ class SawGib:InventoryFlag{
 	override void doeffect(){
 		if(bmissileevenmore)return;
 		if(amount>stamina){
+A_Log("OH YEAH");
 			bmissileevenmore=true;
 			actor o=owner;
 			if(
@@ -27,11 +28,11 @@ class SawGib:InventoryFlag{
 				||!o.findstate("xdeath")
 			)goawayanddie();
 			else{
-				owner.bshootable=false;
+				o.bshootable=false;
 				//use the old death state first
 				if(o.findstate("XDeathBrewtleLulz"))o.setstatelabel("XDeathBrewtleLulz");else
 				if(o.findstate("XXDeath"))o.setstatelabel("XXDeath");else
-				owner.setstatelabel("xdeath");
+				o.setstatelabel("xdeath");
 			}
 		}
 	}
