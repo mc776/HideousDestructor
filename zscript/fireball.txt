@@ -28,7 +28,7 @@ class HDTail:IdleDummy{
 			scale*=friction;
 		}
 		trymove(self.pos.xy+vel.xy,true);
-		addz(vel.z);
+		addz(vel.z,true);
 		nexttic();
 	}
 }
@@ -104,7 +104,7 @@ class HDFireball:HDActor{
 			trymove(pos.xy+vel.xy,true);
 			if(pos.z<floorz)setz(floorz);
 			else if(pos.z+height>ceilingz) setz(ceilingz-height);
-			else addz(vel.z);
+			else addz(vel.z,true);
 			vel*=0.9;
 			nexttic();
 			return;
@@ -136,7 +136,7 @@ class HDFireball:HDActor{
 				explodemissile(BlockingLine,BlockingMobj);
 				return;
 			}
-			addz(frac.z);
+			addz(frac.z,true);
 
 			//hit floor
 			zat=floorz;

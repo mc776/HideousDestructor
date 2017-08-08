@@ -107,14 +107,14 @@ class HDBullet:HDActor{
 		if(a){
 			hitdist=distance3d(a);
 
+			//find points close to players and spawn crackers
+			CrackType();
+
 			//it got shot into the sky!
 			if(a.ceilingpic==skyflatnum && a.ceilingz-a.pos.z<height){
 				inthesky=true;
 			}else{
 				setorigin(a.pos,true);
-
-				//find points close to players and spawn crackers
-				CrackType();
 
 				if(missilename)Effect();
 
@@ -313,7 +313,7 @@ class HDBullet:HDActor{
 	//sets crack sound and damage type
 	void CrackType(){
 		if(speed>256){
-			name b="HDNineMilTrail";
+			name b="";
 			if(speed>1000){
 				A_SetDamageType("SmallArms3");
 				if(mass>80) b="HDSevenMilTrail";
@@ -339,12 +339,15 @@ class HDBullet:HDActor{
 			else if(damagetype=="SmallArms0" && woundhealth>10)
 				A_SetDamageType("SmallArms1");
 
-			crackvel=vel/hitdist*64;
-			int k=hitdist*(1/64);
+			if(b=="")return;
+
+			crackvel=vel*64/hitdist;
+			int k=hitdist*(1./64);
+
 			actor cracker=spawn("idledummy",pos);
 			for(int j=0;j<k;j++){
-				cracker.setorigin(cracker.pos-crackvel,false);
-				bool p;p=false;
+				cracker.setorigin(cracker.pos+crackvel,false);
+				bool p=false;
 				for(int i=0;!p && i<MAXPLAYERS;i++){
 					if(playeringame[i] && players[i].mo){
 						if(

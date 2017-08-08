@@ -45,7 +45,7 @@ class HDDebris:HDActor{
 					vel.xy*=-bouncefactor;
 				}
 			}
-			addz(vel.z);
+			addz(vel.z,true);
 			if(
 				pos.z<=floorz
 				||pos.z+height>ceilingz
@@ -540,7 +540,7 @@ class FragShard:IdleDummy{
 		if(globalfreeze||level.Frozen) return;
 		trymove(self.pos.xy+vel.xy,true);
 		if(alpha<1)alpha+=0.05;
-		addz(vel.z);
+		addz(vel.z,true);
 		nexttic();
 	}
 	states{

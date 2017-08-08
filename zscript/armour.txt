@@ -59,8 +59,8 @@ class HDDropArmour:ActionItem{
 			int amt=countinv(arm);
 			A_SetBlend("00 00 00",1,6,"00 00 00");
 			vel.z+=2;
-			actor a=spawn("HDArmourPickup",pos,ALLOW_REPLACE);
-			a.addz(height*0.6);a.vel=vel+(cos(angle),sin(angle),4);
+			actor a=spawn("HDArmourPickup",pos+(0,0,height*0.6),ALLOW_REPLACE);
+			a.vel=vel+(cos(angle),sin(angle),4);
 			a.A_GiveInventory(arm);
 			a.stamina=amt;
 			HDF.TransferFire(self,a,random(0,3));
