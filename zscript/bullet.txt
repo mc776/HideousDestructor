@@ -275,7 +275,12 @@ class HDBullet:HDActor{
 
 		//determine net damage
 		dmg=random(dmg,maxdmg);
-		if(hd_debug)A_Log(string.format("%s \ca%i \cj%s",self.getclassname(),dmg,a.tracer.getclassname()));
+		if(hd_debug){
+			string targ;
+			if(a.tracer.player)targ=a.tracer.player.getusername();
+				else targ=a.tracer.getclassname();
+			A_Log(string.format("%s \ca%i \cj%s",self.getclassname(),dmg,targ));
+		}
 
 		//puff or bleed as appropriate
 		if(bbloodlessimpact||!a.tracer.bshootable||a.tracer.bnoblood)Puff();
@@ -316,17 +321,17 @@ class HDBullet:HDActor{
 			name b="";
 			if(speed>1000){
 				A_SetDamageType("SmallArms3");
-				if(mass>80) b="HDSevenMilTrail";
-				else b="HDFourMilTrail";
+				if(mass>80) b="SupersonicTrailBig";
+				else b="SupersonicTrail";
 			}else if(speed>800){
 				A_SetDamageType("SmallArms3");
-				b="HDFourMilTrail";
+				b="SupersonicTrail";
 			}else if(speed>HDCONST_SPEEDOFSOUND){
 				A_SetDamageType("SmallArms2");
-				b="HDBuckTrail";
+				b="SupersonicTrailSmall";
 			}else if(speed>100){
 				A_SetDamageType("SmallArms1");
-				b="HDNineMilTrail";
+				b="SubsonicTrail";
 			}else{
 				A_SetDamageType("SmallArms0");
 			}
@@ -401,6 +406,34 @@ class HDBullet:HDActor{
 class NewBulletMovePuff:CheckPuff{
 	default{
 		+skyexplode //important!
+	}
+}
+class SupersonicTrail:IdleDummy{
+	states{
+	spawn:
+		TNT1 A 10;stop;
+	}
+	override void postbeginplay(){
+		if(!random(0,2))A_AlertMonsters();
+		A_PlaySound("weapons/bulletcrack",CHAN_AUTO,0.32);
+	}
+}
+class SupersonicTrailBig:SupersonicTrail{
+	override void postbeginplay(){
+		A_AlertMonsters();
+		A_RadiusGive("EvadeNow",96,RGF_MONSTERS,1);
+		A_PlaySound("weapons/bulletcrack",CHAN_AUTO,0.42);
+	}
+}
+class SupersonicTrailSmall:SupersonicTrail{
+	override void postbeginplay(){
+		if(!random(0,4))A_AlertMonsters();
+		A_PlaySound("weapons/bulletcrack",0,0.1);
+	}
+}
+class SubsonicTrail:SupersonicTrail{
+	override void postbeginplay(){
+		A_PlaySound("weapons/subfwoosh",0,0.03);
 	}
 }
 

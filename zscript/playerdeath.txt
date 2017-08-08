@@ -1,16 +1,21 @@
 //why the fuck is everything so complicated :(
 
 extend class HDPlayerPawn{
+	bool silentdeath;
 	states{
+	death.yokai:
+	death.bleedout:
+	death.invisiblebleedout:
+	death.internal:
+		---- A 0{
+			playercorpse.A_StopSound(CHAN_VOICE);
+		}
 	death:
 	xdeath:
 		---- A 2{
 			A_GiveInventory("CheckLiveRound");
 			binvisible=true;
 			A_NoBlocking();
-		}
-		---- A 40{
-			A_PlayerScream();
 		}
 		---- A 20 A_CheckPlayerDone();
 		wait;
@@ -19,12 +24,14 @@ extend class HDPlayerPawn{
 		playercorpse=spawn("HDPlayerCorpse",pos,ALLOW_REPLACE);
 		playercorpse.vel=vel;playercorpse.master=self;
 		if(height<40)playercorpse.sprite=GetSpriteIndex("PLYCA0");
-		else playercorpse.sprite=GetSpriteIndex("PLAYA0");
+			else playercorpse.sprite=GetSpriteIndex("PLAYA0");
 		playercorpse.translation=translation;
 		playercorpse.A_SetSize(12,52);
 		if(-health>gibhealth||aggravateddamage>40) playercorpse.A_Die("extreme");
-		else playercorpse.A_Die();
-
+		else{
+			playercorpse.A_Die();
+			if(!silentdeath)playercorpse.A_PlaySound(health>-50?"*death":"*xdeath",CHAN_VOICE);
+		}
 		A_TakeInventory("IsAlive");
 		super.die(source,inflictor,dmgflags);
 	}

@@ -1,19 +1,6 @@
 // ------------------------------------------------------------
 //   Shotguns, or at least shotgun accessories
 // ------------------------------------------------------------
-
-class HDBuckTrail:IdleDummy{
-	states{
-	spawn:
-		TNT1 A 10 nodelay{
-			if(random(1,5)==1){A_AlertMonsters();}
-			A_PlaySound("weapons/bulletcrack",0,0.08);
-		}stop;
-	}
-}
-
-
-
 class ZSSlayer:HDWeapon{
 	override void AttachToOwner(actor user){
 		if(Wads.CheckNumForName("SHT2A0",wads.ns_sprites,-1,false)<0){
