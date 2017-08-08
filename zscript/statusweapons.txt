@@ -134,7 +134,7 @@ extend class HDStatusBar{
 		}
 		else if(w is "LiberatorRifle" || w is "LiberatorGrenadeRifle"){
 			drawwepcounter(pp.countinv("LiberatorFullAuto"),
-				-22,-10,"blank","STFULAUT"
+				-22,-10,"RBRSA3A7","STFULAUT"
 			);
 			if(pp.countinv("LiberatorGrenadeChamber"))drawwepdot(-16,-13,(4,2.6));
 			drawwepnum(pp.countinv("LiberatorLoaded"),30);
@@ -304,7 +304,7 @@ extend class HDStatusBar{
 		types[3]=three;types[4]=four;types[5]=five;types[6]=six;
 		input=min(input,6);
 		string result="";
-		for(int i=input;i>0;i--){
+		for(int i=input;i>=0;i--){
 			if(input==i){
 				if(types[i]=="blank")break;
 				else if(types[i]=="")input--;
