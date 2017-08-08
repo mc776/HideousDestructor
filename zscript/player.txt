@@ -241,6 +241,8 @@ class HDPlayerPawn:PlayerPawn{
 		}
 		stunned=max(stunned-1,0);
 
+
+
 		//see if player is intentionally walking, running or sprinting
 		//-1 = walk, 0 = run, 1 = sprint
 		if(input & BT_SPEED) runwalksprint=1;
@@ -307,7 +309,7 @@ class HDPlayerPawn:PlayerPawn{
 
 		//apply all movement speed modifiers
 		speed=1.;
-		if(mustwalk||runwalksprint<0)speed=0.4;
+		if(mustwalk||runwalksprint<0)speed=0.36;
 		else if(cansprint && runwalksprint>0){
 			if(!sm && fm>0)speed=2.8;
 			else speed=1.6;
@@ -323,12 +325,15 @@ class HDPlayerPawn:PlayerPawn{
 		if(countinv("PowerStrength"))speed*=1.5;
 		if(height<40)speed*=0.6;
 
-		//...except snapping speeds
+		//then snap to 1 of only 3 speeds if necessary
 		if(multiplayer && hd_3speed){
 			if(speed>2.)speed=2.6;  
-			else if(speed>0.6)speed=1.;
-			else speed=0.4;
+			else if(speed>0.5)speed=1.;
+			else speed=0.36;
 		}
+
+
+
 
 
 		//lowering weapon for sprint/mantle/jump
