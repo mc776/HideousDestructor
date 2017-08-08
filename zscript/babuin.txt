@@ -15,7 +15,7 @@ class ZBabuin:HDActor{
 		if(
 			!target
 			||target.health<1
-			||distance3d(target)-target.radius-radius>8
+			||distance3d(target)-target.radius-radius>12
 		){
 			latched=false;
 			return;
@@ -23,7 +23,7 @@ class ZBabuin:HDActor{
 			latched=true;
 			bnotargetswitch=true;
 			latchpos.xy=
-				rotatevector(target.pos.xy-pos.xy,-target.angle).unit()
+				rotatevector(pos.xy-target.pos.xy,-target.angle).unit()
 				*(target.radius+radius)
 			;
 			latchpos.z=random(8,target.height-12);
@@ -34,13 +34,6 @@ class ZBabuin:HDActor{
 		}
 	}
 	void A_BabuMove(bool wander=false){
-/*
-		//let it phase through walls it would otherwise be stuck in
-		if(
-			!trymove(pos.xy,false)
-			||(!random(0,20)&&A_CheckSight("null"))
-		)bnoclip=true;else if(!A_CheckSight("null")) bnoclip=false;
-*/
 		if(wander)A_Wander();else A_Chase();
 	}
 	override bool cancollidewith(actor other,bool passive){
@@ -84,7 +77,7 @@ class ZBabuin:HDActor{
 
 			//can try to bump or shake it off
 			if(
-				abs(targangle-target.angle)>random(42,180)||
+				abs(HDMath.AngleChange(targangle,target.angle))>random(42,180)||
 				floorz>pos.z||  
 				ceilingz<pos.z+height||
 				(!trymove(pos.xy,true)&&(
