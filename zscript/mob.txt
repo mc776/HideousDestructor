@@ -18,14 +18,13 @@ class SawGib:InventoryFlag{
 	override void doeffect(){
 		if(bmissileevenmore)return;
 		if(amount>stamina){
-A_Log("OH YEAH");
 			bmissileevenmore=true;
 			actor o=owner;
 			if(
 				!owner.bcorpse
 				||!owner.bshootable
 				||owner.health>0
-				||!o.findstate("xdeath")
+				||!o.findstate("xdeath",true)
 			)goawayanddie();
 			else{
 				o.bshootable=false;
