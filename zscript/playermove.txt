@@ -23,10 +23,10 @@ extend class HDPlayerPawn{
 
 		//the only thing I'm adding for HD
 		crouchspeed*=clamp(
-			health-fatigue-overloaded*0.2+stimcount+zerk*0.04,
+			health-fatigue*1.5-overloaded*0.2+stimcount+zerk*0.04,
 			40,zerk>0?999:144
 		)*0.01;
-		if(crouchspeed>0.06&&!random(0,4))fatigue++;
+		if(crouchspeed>0.03&&!random(0,3))fatigue++;
 		if(player.onground && zerk>0 && direction>0 && height<fullheight*0.6)vel.z+=4;
 
 		player.crouchdir=direction;
