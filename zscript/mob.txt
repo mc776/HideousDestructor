@@ -40,7 +40,23 @@ class SawGib:InventoryFlag{
 //A generic mob controller.
 //Stick this onto an actor for all sorts of fun effects!
 class HDMobAI:Inventory{
+	override void detachfromowner(){
+		if(feartarget)feartarget.destroy();
+		if(movetarget)movetarget.destroy();
+		super.detachfromowner();
+	}
+	override void doeffect(){
+		if(!owner||owner.health<1){
+			if(feartarget)feartarget.destroy();
+			if(movetarget)movetarget.destroy();
+			destroy();
+		}
+	}
+
 	actor feartarget;
+	actor movetarget;
+
+	//consolidate diversification
 	static void resize(actor caller,double minscl=0.9,double maxscl=1.,int minhealth=0){
 		double scl=frandom(minscl,maxscl);
 		caller.scale*=scl;
@@ -50,6 +66,24 @@ class HDMobAI:Inventory{
 		caller.A_SetSize(caller.radius*scl,caller.height*scl);
 		if(minhealth<1)caller.health*=max(scl,1);else caller.health=max(caller.health*scl,1);
 	}
+
+	//taking all the same flags as A_LookEx
+	static void look(
+		actor caller,
+		int flags=0,
+		float minseedist=0,
+		float maxseedist=0,
+		float maxheardist=0,
+		double fov=0,
+		statelabel label="see",
+		int soundchance=40
+	){
+		caller.A_LookEx(flags,minseedist,maxseedist,maxheardist,fov,label);
+		if(!caller.bambush)caller.angle+=random(-10,10);
+		if(!random(1,soundchance))caller.A_PlaySound(caller.activesound);
+	}
+
+	//smooth chase
 	static void Chase(actor caller,actor movetarget=null,bool res=false,bool flee=true){
 		if(caller.A_CheckBlock("null")){
 			caller.A_Wander();
@@ -122,6 +156,8 @@ class HDMobAI:Inventory{
 		if(caller.distance3d(attacktarget)<caller.meleerange*2)caller.A_FaceTarget(10,10);
 		else caller.A_FaceMovementDirection(5,40);
 	}
+
+	//check if shot is clear
 	static bool TryShoot(
 		actor caller,
 		double shootheight=-1,
@@ -196,6 +232,23 @@ class HDMobAI:Inventory{
 		if(min(bottomdist,topdist,leftdist,rightdist)+5<range)return false;
 
 		return true;
+	}
+
+	//setting targets, etc.
+	static void setfeartarget(actor caller,actor frightener){
+		caller.A_GiveInventory("HDMobAI");
+		HDMobAI a=HDMobAI(caller.findinventory("HDMobAI"));
+		if(a)a.feartarget=frightener;
+	}
+	static void setmovetarget(actor caller,vector3 mtpos){
+		caller.A_GiveInventory("HDMobAI");
+		HDMobAI a=HDMobAI(caller.findinventory("HDMobAI"));
+		if(a){
+			if(!a.movetarget)a.feartarget=caller.spawn("IdleDummy",caller.pos);
+			if(a.movetarget){
+				a.movetarget.setorigin(mtpos,false);
+			}
+		}
 	}
 }
 
