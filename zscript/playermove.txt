@@ -43,7 +43,7 @@ extend class HDPlayerPawn{
 		double oldheight = player.viewheight;
 
 		crouchspeed*=clamp(
-			health
+			(health+100)*0.6
 			-(direction==1?overloaded*3:overloaded*random(1,3))
 			-(fatigue>20?fatigue*2:fatigue)
 			-((stunned&&direction==1)?80:0)
