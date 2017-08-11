@@ -9,7 +9,7 @@ extend class HDPlayerPawn{
 	vector2 muzzledrift;
 	bool muzzlehit;
 
-	void TurnCheck(){
+	void TurnCheck(bool onlyinput=false){
 		UserCmd cmd = player.cmd;
 
 		//temporary variables
@@ -24,6 +24,13 @@ extend class HDPlayerPawn{
 		lastangle=angle;
 		lastpitch=pitch;
 
+		if(onlyinput){
+			angle+=yaw;
+			pitch-=ptch;
+			return;
+		}
+
+
 		//reduced turning while supported.
 		if(countinv("IsSupported") && (getplayerinput(MODINPUT_BUTTONS)&BT_USE) && abs(yaw)<8 && !countinv("IsMoving")){
 			yaw*=0.1;ptch*=0.1;
@@ -33,6 +40,8 @@ extend class HDPlayerPawn{
 			yaw*=0.6;ptch*=0.6;
 		}
 		anglechange+=yaw;pitchchange-=ptch;
+
+
 
 		if(1){
 			//get weapon size
@@ -343,8 +352,8 @@ extend class HDPlayerPawn{
 
 
 		//set everything and update old
-		A_SetAngle(lastangle+anglechange,SPF_INTERPOLATE);
-		A_SetPitch(lastpitch+pitchchange,SPF_FORCECLAMP|SPF_INTERPOLATE);
+		A_SetAngle(angle+anglechange,SPF_INTERPOLATE);
+		A_SetPitch(pitch+pitchchange,SPF_FORCECLAMP|SPF_INTERPOLATE);
 
 
 		//feet angle
@@ -386,7 +395,6 @@ extend class HDPlayerPawn{
 			}
 		}
 	}
-
 
 
 
