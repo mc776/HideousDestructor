@@ -46,7 +46,7 @@ extend class HDPlayerPawn{
 		//thrust player upwards and forwards
 		if(
 			onground
-			&& !(oldinput & BT_JUMP)
+			&& !(oldinput && BT_JUMP)
 		){
 			if(!countinv("PowerStrength") && fatigue<HDCONST_SPRINTFATIGUE)vel.z+=4;
 			else vel.z+=7;

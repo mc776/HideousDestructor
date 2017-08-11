@@ -328,12 +328,11 @@ extend class HDPlayerPawn{
 	pain.invisiblebleedout:
 	pain.internal:
 		---- A 0{
-			if(random(1,128)==1){A_GiveInventory("LethalDamage",1);}
+			if(random(0,127))A_GiveInventory("LethalDamage",1);
 			if(beatcap>20)beatmax-=-random(1,2);
-			if(health<40){A_GiveInventory("IsHurt",1);}
-			if(countinv("IsMoving"))setstatelabel("see");
-			else setstatelabel("spawn");
+			if(health<40)A_GiveInventory("IsHurt",1);
 		}
+		---- A 0 A_Jump(256,"see");
 	pain:
 	pain.drowning:
 	pain.falling:
