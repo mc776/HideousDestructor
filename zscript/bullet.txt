@@ -650,8 +650,8 @@ class GhostBullet:HDBullet426{
 		bmissile=false;
 		spawn("FragPuff",pos,ALLOW_REPLACE); //no debris spawned
 		if(a.tracer && a.tracer.bshootable && !a.tracer.bkilled){
-			a.tracer.damagemobj(self,target,-1,"none");
-			a.tracer.damagemobj(self,target,1,"none");
+			a.tracer.damagemobj(self,target,-1,"GhostSquadAttack");
+			a.tracer.damagemobj(self,target,1,"GhostSquadAttack");
 		}
 		destroy();return;
 	}
