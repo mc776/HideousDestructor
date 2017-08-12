@@ -162,6 +162,16 @@ class DoomguyLoadout:InvReset{
 */
 const HDCONST_CUSTOMWEPOFFSET=200;
 class CustomLoadout:InventoryFlag{}
+class CustomLoadoutWeaponSelector:IdleDummy{ //GROSS! HACK!!!
+	class<weapon> newwep;
+	states{
+	spawn:
+		TNT1 A 1;
+		TNT1 A 0{
+			if(master)master.A_SelectWeapon(newwep,SWF_SELECTPRIORITY);
+		}stop;
+	}
+}
 extend class HDPlayerPawn{
 	void GiveCustomLoadout(){
 		if(!countinv("CustomLoadout"))return;
@@ -175,7 +185,13 @@ extend class HDPlayerPawn{
 			class<weapon> nw=NumForInv(ldt,lda);
 			if(nw)newwep=nw;
 		}
-		if(newwep)A_SelectWeapon(newwep,SWF_SELECTPRIORITY);
+		if(newwep){
+			//GROSS! HACK!!!
+			actor a=spawn("CustomLoadoutWeaponSelector",pos);
+			let aa=CustomLoadoutWeaponSelector(a);
+			if(aa)aa.newwep=newwep;
+			aa.master=self;
+		}
 	}
 	class<weapon> NumForInv(int num,int amt){
 		class<weapon> nw;
