@@ -403,7 +403,7 @@ class SecondFleshBeast:IdleDummy{
 			if(tgt.health>10)tgt.damagemobj(tgt,tgt,min(tgt.health-10,10),"internal",DMG_NO_ARMOR);
 			tgt.A_Pain();
 			tgt.stunned+=10;
-			if(!random(0,10))tgt.oldwoundcount--;
+			if(!random(0,6))tgt.oldwoundcount--;
 			else if(!random(0,6))tgt.burncount--;
 			else if(tgt.unstablewoundcount && !random(0,2)){
 				tgt.unstablewoundcount--;
@@ -411,6 +411,7 @@ class SecondFleshBeast:IdleDummy{
 			}
 			if(!random(0,200))tgt.aggravateddamage++;
 			stamina--;
+			if(hd_debug)A_Log(string.format("aggro %i  old %i  unstable %i",tgt.aggravateddamage,tgt.oldwoundcount,tgt.unstablewoundcount));
 		}wait;
 	}
 }

@@ -97,13 +97,13 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 	int spent;bool worn;
 	const LITEBAT=84000;
 	override void DetachFromOwner(){
-		if(owner.player.fixedcolormap==5)owner.player.fixedcolormap=-1;
+		if(owner && owner.player && owner.player.fixedcolormap==5)owner.player.fixedcolormap=-1;
 		worn=false;
 		super.DetachFromOwner();
 	}
 	override void DoEffect(){
 		super.DoEffect();
-		if(owner){
+		if(owner && owner.player){
 			if(
 				worn
 				&&!owner.countinv("PowerInvisibility")
@@ -113,7 +113,7 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 				if(!random(0,LITEBAT-spent))owner.player.fixedcolormap=-1;
 				spent++;
 				if(spent>LITEBAT)worn=false;
-			}else if(owner.player&&owner.player.fixedcolormap==5)
+			}else if(owner.player.fixedcolormap==5)
 				owner.player.fixedcolormap=-1;
 		}
 	}
