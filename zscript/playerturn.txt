@@ -9,7 +9,7 @@ extend class HDPlayerPawn{
 	vector2 muzzledrift;
 	bool muzzlehit;
 
-	void TurnCheck(bool onlyinput=false){
+	void TurnCheck(){
 		UserCmd cmd = player.cmd;
 
 		//temporary variables
@@ -17,18 +17,19 @@ extend class HDPlayerPawn{
 		double pitchchange=0;
 
 		//get input
-		double yaw=cmd.yaw*(360./65536.);
+		double yaw;
+		if(player.turnticks){
+			player.turnticks--;
+			yaw=(180./TURN180_TICKS);
+		}else yaw=cmd.yaw*(360./65536.);
 		double ptch=cmd.pitch*(360./65536.);
 
 		//get prior angle and pitch
 		lastangle=angle;
 		lastpitch=pitch;
 
-		if(onlyinput){
-			angle+=yaw;
-			pitch-=ptch;
-			return;
-		}
+
+
 
 
 		//reduced turning while supported.

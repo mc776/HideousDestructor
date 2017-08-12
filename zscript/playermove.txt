@@ -74,6 +74,7 @@ extend class HDPlayerPawn{
 		// Check for eyes going above/below fake floor due to crouching motion.
 		CheckFakeFloorTriggers(pos.Z + oldheight, true);
 	}
+	//as far as I know this is still safe to override directly since we're not making any changes
 	override void MovePlayer(){
 		let player = self.player;
 		UserCmd cmd = player.cmd;
