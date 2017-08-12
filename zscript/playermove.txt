@@ -11,8 +11,9 @@ extend class HDPlayerPawn{
 			}
 		}else pitch=clamp(pitch,player.minpitch,player.maxpitch);
 	}
-	override void CheckCrouch(bool totallyfrozen){
-		if(totallyfrozen)return;
+	override void CheckCrouch(bool totallyfrozen){}
+	void CrouchCheck(){
+		if(CheckFrozen())return;
 		let player=self.player;
 		UserCmd cmd=player.cmd;
 		if(CanCrouch()&&player.health>0){ //guess what i deleted lololol
