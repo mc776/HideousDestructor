@@ -363,9 +363,7 @@ extend class HDPlayerPawn{
 			vel+=rotatevector((0,fac/abs(fac)*0.1),angle);
 			A_GiveInventory("IsMoving",2);
 			feetangle+=clamp(angle-feetangle,-10,10);
-			if(
-				instatesequence(curstate,resolvestate("spawn"))
-			)setstatelabel("see");
+			PlayRunning();
 
 			int douse=2;
 			//if on appropriate terrain, easier to quench a fire
