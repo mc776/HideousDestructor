@@ -1004,7 +1004,8 @@ actor SquadRiflemanBase
 	speed 8
 	damage(1)
 	dropitem SquadSummoner 8
-	+shootable +noblockmonst +ghost +shadow -solid -pushable +nopain +nofear +seeinvisible +nodamage +noclip +nonshootable
+	+shootable +noblockmonst +ghost +shadow -solid -pushable
+	+nopain +nofear +seeinvisible +nodamage +noclip +nonshootable
 	States
 	{
 	Spawn:
@@ -1165,7 +1166,7 @@ actor BrownSquadRifleman : SquadRiflemanBase{
 }
 actor WhiteSquadRifleman:SquadRiflemanBase{}
 actor SquadRifleman:RandomSpawner{
-	+friendly height 52 radius 12
+	+ismonster +friendly height 52 radius 12
 	DropItem "BlackSquadRifleman"
 	DropItem "BrownSquadRifleman"
 	DropItem "WhiteSquadRifleman"
