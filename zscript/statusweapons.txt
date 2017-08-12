@@ -79,7 +79,7 @@ extend class HDStatusBar{
 				drawwepdot(-16,-10,(3,1));
 				lod++;
 			}
-			if(pp.countinv("ZM66JailbrokenMag"))lod=99;
+			if(pp.countinv("ZM66JailbrokenMag"))lod=random[shitgun](10,99);
 			drawnum(lod,-16,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_RED);
 			if(pp.countinv("ZM66GLMode"))drawnum(pp.countinv("AirburstCount"),
 				-30,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
@@ -100,7 +100,7 @@ extend class HDStatusBar{
 			drawwepcounter(pp.countinv("VulcChamber4"),-14,-17,"blank","RBRSA3A7");
 			drawwepcounter(pp.countinv("VulcChamber5"),-14,-19,"blank","RBRSA3A7");
 			if(pp.countinv("ChaingunOn")){
-				int lod=99;
+				int lod=random[shitgun](10,99);
 				if(!pp.countinv("VulcJB1"))lod=pp.countinv("VulcLoaded1");
 				drawnum(lod,-20,-22,
 					DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_RED
