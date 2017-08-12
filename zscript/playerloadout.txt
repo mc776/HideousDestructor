@@ -164,6 +164,8 @@ const HDCONST_CUSTOMWEPOFFSET=200;
 class CustomLoadout:InventoryFlag{}
 extend class HDPlayerPawn{
 	void GiveCustomLoadout(){
+		if(!countinv("CustomLoadout"))return;
+		A_TakeInventory("CustomLoadout");
 		int ldt;int lda;
 		class<weapon> newwep;
 		for(int i=100;i>=0;i--){ //reverse order so top weapons are added last
