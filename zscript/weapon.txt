@@ -1,7 +1,6 @@
 // ------------------------------------------------------------
 //   Prototype weapon
 // ------------------------------------------------------------
-
 class HDWeapon:Weapon{
 	double gunmass;
 	int barrellength;
@@ -39,7 +38,7 @@ class HDWeapon:Weapon{
 		if(noalpha){
 			A_OverlayAlpha(layer,1.);
 		}else{
-			int lg=CallACS("LightCheck")-variance*frandom(0.6,1.);
+			int lg=cursector.lightlevel-variance*frandom(0.6,1.);
 			fa=1.-(lg*0.003);
 			A_OverlayAlpha(layer,fa);
 		}
