@@ -159,11 +159,11 @@ class HDPlayerPawn:PlayerPawn{
 		zat=getzat();
 
 		//log all new inputs
-		input=getplayerinput(MODINPUT_BUTTONS);
-		fm=getplayerinput(MODINPUT_FORWARDMOVE);
-		sm=getplayerinput(MODINPUT_SIDEMOVE);
-		iyaw=getplayerinput(MODINPUT_YAW);
-		ipitch=getplayerinput(MODINPUT_PITCH);
+		input=player.cmd.buttons;
+		fm=player.cmd.forwardmove;
+		sm=player.cmd.sidemove;
+		iyaw=player.cmd.yaw;
+		ipitch=player.cmd.pitch;
 
 		int gender=player.getgender();
 		if(!gender){A_GiveInventory("IsMale");A_TakeInventory("IsFemale");}
@@ -187,6 +187,7 @@ class HDPlayerPawn:PlayerPawn{
 
 		//if this is put into playermove bad things happen
 		TurnCheck();
+		JumpCheck();
 
 		//same thing with scope camera
 		if(!scopecamera){
