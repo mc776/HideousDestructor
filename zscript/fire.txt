@@ -136,6 +136,8 @@ class HDFire:IdleDummy{
 			if(target.bsolid)
 				target.damagemobj(self,master,1,"Thermal",flags:DMG_NO_FACTOR);
 
+			if(!target)return;
+
 			//set flame spawn point
 			if(lastheight!=target.height){ //poll only height
 				lastheight=target.height;
