@@ -79,7 +79,8 @@ class HDFire:IdleDummy{
 	}
 	states{
 	spawn:
-		TNT1 A 4{
+		TNT1 A 1 A_Warp(AAPTR_TARGET);
+		TNT1 A 3{
 			if(waterlevel){
 				destroy();
 				if(waterlevel<2)spawn("HDSmoke",pos);
@@ -113,19 +114,7 @@ class HDFire:IdleDummy{
 				maxz=max(lastheight*0.75,4);
 			}
 
-A_LogInt(stamina);
-/*
-			//spawn the flame
-			setorigin(
-				target.pos+(
-					random(-halfrad,halfrad),
-					random(-halfrad,halfrad),
-					random(minz,maxz)
-				),false
-			);
-*/
-//			actor sp=spawn("HDFlameRed",pos);
-//			A_PlaySound("misc/firecrkl",CHAN_AUTO,0.4,0,6);
+//			A_Warp(AAPTR_TARGET); //crashes software mode. Reinstate ASAP.
 			actor sp=spawn("HDFlameRed",pos+(
 					random(-halfrad,halfrad),
 					random(-halfrad,halfrad),
@@ -152,8 +141,7 @@ A_LogInt(stamina);
 			if(target.bsolid)
 				target.damagemobj(self,master,1,"Thermal",flags:DMG_NO_FACTOR);
 		}
-		TNT1 A 0 A_Warp(AAPTR_TARGET);
-		loop;
+		wait;
 	}
 }
 
