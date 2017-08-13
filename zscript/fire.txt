@@ -79,8 +79,9 @@ class HDFire:IdleDummy{
 	}
 	states{
 	spawn:
-		TNT1 A 1 A_Warp(AAPTR_TARGET);
 		TNT1 A 3{
+A_LogInt(stamina);
+A_Warp(AAPTR_TARGET);
 			if(waterlevel){
 				destroy();
 				if(waterlevel<2)spawn("HDSmoke",pos);
@@ -95,7 +96,7 @@ class HDFire:IdleDummy{
 			A_SetTics(clamp(random(8,30-stamina*0.1),4,12));
 			if(stamina<=0 || target.countinv("HDFireEnder")){
 				A_TakeFromTarget("HDFireEnder");
-				spawn("HDSmoke",pos);
+//				spawn("HDSmoke",pos);
 				destroy();
 				return;
 			}
@@ -114,17 +115,16 @@ class HDFire:IdleDummy{
 				maxz=max(lastheight*0.75,4);
 			}
 
-//			A_Warp(AAPTR_TARGET); //crashes software mode. Reinstate ASAP.
-			actor sp=spawn("HDFlameRed",pos+(
+/*
+*/
+			setorigin(pos+(
 					random(-halfrad,halfrad),
 					random(-halfrad,halfrad),
 					random(minz,maxz)
-				)
-			);
-			sp.A_PlaySound("misc/firecrkl",CHAN_AUTO,0.4,0,6);
+			),false);
+			actor sp=spawn("WallChunk",pos);
 			sp.vel+=target.vel+(frandom(-2,2),frandom(-2,2),frandom(-1,3));
-
-
+			A_PlaySound("misc/firecrkl",CHAN_AUTO,0.4,0,6);
 
 			//check if player
 			let tgt=HDPlayerPawn(target);
@@ -135,7 +135,6 @@ class HDFire:IdleDummy{
 				A_GiveToTarget("IsHurt",1);
 				A_GiveToTarget("IsMoving",4);
 			}
-
 			//damage the target
 			//don't touch the bsolid, else crash trying to hurt the plasma beamspot
 			if(target.bsolid)
