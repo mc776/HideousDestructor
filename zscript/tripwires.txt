@@ -44,7 +44,7 @@ class Tripwire:HDWeapon{
 			if(!countinv("HDFragGrenadeAmmo")){
 				if(getcvar("hd_helptext"))A_Print("No grenades.");
 				A_SelectWeapon("Ring");
-			}else if(getcvar("hd_helptext"))A_Print("\cp\--- \cqTRIPWIRES \cp---\c-\n\n\nHit fire to set one end of the line,\n\nthen hit fire again to plant the grenade.\nby human hands.\n\nMove carefully.");
+			}else if(getcvar("hd_helptext"))A_Print("\cp\--- \cqTRIPWIRES \cp---\c-\n\n\nHit fire to set one end of the line,\n\nthen hit fire again to plant the grenade.\nby human hands.\n\nMove carefully.\n\n\n\cg(DO NOT TRY TO HANG THE GRENADE\n\cgOFF THE CEILING. IT NEVER WORKS.)");
 			A_PlaySound("weapons/pocket",CHAN_WEAPON);
 			if(countinv("NulledWeapon"))A_SetTics(0);
 		}goto super::select;
@@ -170,8 +170,8 @@ class GumAndString:IdleDummy{
 			}
 
 			//check for the actual thing
-			if(tracer)A_FaceTracer(0,0,flags:FAF_TOP);
-			else if(master)A_FaceMaster(0,0,flags:FAF_TOP);
+			if(tracer)A_FaceTracer(0,0,flags:FAF_TOP,-1);
+			else if(master)A_FaceMaster(0,0,flags:FAF_TOP,-1);
 			actor a;int b;
 			[a,b]=LineAttack(angle,512,pitch,0,"none",
 				"TripwireCheckerPuff",
@@ -316,6 +316,7 @@ class TrippingFrag:FragP{
 		}
 	}
 	override void tick(){
+		ClearInterpolation();
 		if(stuckto){
 			if(stuckfloor)setz(stuckto.centerfloor()-stucktoheight);
 			else setz(stuckto.centerceiling()+stucktoheight);
@@ -324,6 +325,7 @@ class TrippingFrag:FragP{
 			if(floorz>pos.z||ceilingz<pos.z){
 				A_PlaySound("misc/fragknock");
 				bnogravity=false;
+				bceilinghugger=false;
 				stuckto=null;
 			}
 		}
@@ -348,6 +350,8 @@ class TrippingFrag:FragP{
 			}else if(!random(0,4)){
 				if(tracer)tracer.destroy();
 				bnogravity=false;
+				bceilinghugger=false;
+				stuckto=null;
 				A_UnsetShootable();
 			}else setstatelabel("spawn");
 		}goto spawn;
