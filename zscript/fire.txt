@@ -157,7 +157,6 @@ class PersistentDamager:HDActor{
 		if(master) relpos=self.pos-master.pos;
 	}
 	override void tick(){
-		clearinterpolation();
 		if(globalfreeze||level.Frozen) return;
 
 		if(master) setorigin(master.pos+relpos,false);

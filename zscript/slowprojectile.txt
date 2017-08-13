@@ -27,7 +27,6 @@ class SlowProjectile:HDBullet{
 		if(target)master=target;
 	}
 	override void Tick(){
-		ClearInterpolation();
 		if(globalfreeze||level.Frozen) return;
 		if(!bmissile){
 			nexttic();
@@ -108,6 +107,7 @@ class SlowProjectile:HDBullet{
 				inthesky=false;
 				binvisible=false;
 			}
+//			CheckPortalTransition(); //this is in the post-3.1.0 dev version of GZDoom
 
 			if(speed && !inthesky)SlowEffect();
 		}

@@ -12,6 +12,7 @@ class HDActor:Actor{
 	}
 	//advance to the next tic without doing anything
 	void nexttic(){
+		ClearInterpolation(); //after 3.1.0 this may be unnecessary
 		if(!CheckNoDelay()) return;
 		if(tics!=-1){
 			if(tics>0)tics--;

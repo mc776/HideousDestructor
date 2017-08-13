@@ -24,7 +24,6 @@ class HDDebris:HDActor{
 		wdth=radius*1.8;
 	}
 	override void Tick(){
-		clearinterpolation();
 		if(globalfreeze||level.Frozen)return;
 		if(stopped){
 			actor.tick();
@@ -122,7 +121,6 @@ class HDPuff:HDActor{
 		vel.z+=2;
 	}
 	override void Tick(){
-		clearinterpolation();
 		if(globalfreeze||level.Frozen) return;
 
 		scale.x+=grow;scale.y=scale.x;
@@ -306,7 +304,6 @@ class HDCopyTrail:IdleDummy{
 	spawn:"####" A -1;stop;
 	}
 	override void Tick(){
-		clearinterpolation();
 		if(globalfreeze||level.Frozen) return;
 		scale.x+=frandom(-0.01,0.01);scale.y=scale.x;
 		accuracy++;
@@ -575,7 +572,6 @@ class FragShard:IdleDummy{
 		renderstyle "add";+forcexybillboard;scale 0.3;alpha 0;
 	}
 	override void tick(){
-		ClearInterpolation();
 		if(globalfreeze||level.Frozen) return;
 		trymove(self.pos.xy+vel.xy,true);
 		if(alpha<1)alpha+=0.05;
