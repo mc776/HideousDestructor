@@ -87,7 +87,7 @@ extend class HDPlayerPawn{
 				if(fatigue>30) jumppower=3;  
 				else if(fatigue>20) jumppower=3.5;
 			}
-				if(overloaded)jumppower/=overloaded;
+				if(overloaded)jumppower/=max(1,overloaded);
 				double jz=jumppower*0.6;
 				if(!sm){
 					if(!fm) vel.z+=jz; //straight up

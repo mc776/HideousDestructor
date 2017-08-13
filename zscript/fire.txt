@@ -7,6 +7,14 @@ class HDFireEnder:InventoryFlag{
 		inventory.maxamount 5;
 	}
 }
+class HDFireDouse:InventoryFlag{
+	default{
+		inventory.maxamount 70;
+	}
+	override void DoEffect(){
+		if(amount>0)amount--;
+	}
+}
 
 
 class HDFireStarter:ActionItem{
@@ -78,13 +86,19 @@ class HDFire:IdleDummy{
 			if(!target){
 				target=spawn("PersistentDamager",self.pos);
 				target.target=master;
-				if(stamina>20) stamina=20;
+				if(stamina>20)stamina=20;
 			}
 			A_SetTics(clamp(random(8,30-stamina*0.1),4,12));
-			if(stamina<=0 || target.countinv("HDFireEnder")>0){
+			if(stamina<=0 || target.countinv("HDFireEnder")){
 				A_TakeFromTarget("HDFireEnder");
+				spawn("HDSmoke",pos);
 				destroy();
 				return;
+			}
+			int ds=target.countinv("HDFireDouse");
+			if(ds){
+				target.A_TakeInventory("HDFireDouse",ds);
+				stamina-=ds;
 			}
 			stamina--;
 
@@ -100,8 +114,7 @@ class HDFire:IdleDummy{
 
 			//spawn the flame
 			setorigin(target.pos+(random(-halfrad,halfrad),random(-halfrad,halfrad),random(minz,maxz)),false);
-			actor sp=spawn("HDFlameRed",pos);
-			sp.vel+=target.vel+(frandom(-2,2),frandom(-2,2),frandom(-1,3));
+			actor sp=spawn("HDFlameRed",pos);sp.vel+=target.vel+(frandom(-2,2),frandom(-2,2),frandom(-1,3));
 			A_PlaySound("misc/firecrkl",CHAN_AUTO,0.4,0,6);
 
 			//check if player
@@ -182,6 +195,7 @@ class PersistentDamager:HDActor{
 
 
 //This is as yet unused: a different way of setting things on fire.
+//Apparently it causes immediate desync.
 class fffire:inventory{
 	int tttimer;
 	default{

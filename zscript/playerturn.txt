@@ -24,10 +24,11 @@ extend class HDPlayerPawn{
 		}else yaw=cmd.yaw*(360./65536.);
 		double ptch=cmd.pitch*(360./65536.);
 
+		yaw=clamp(yaw,-360*5/35,360*5/35);
+
 		//get prior angle and pitch
 		lastangle=angle;
 		lastpitch=pitch;
-
 
 
 
@@ -368,15 +369,8 @@ extend class HDPlayerPawn{
 			int douse=2;
 			//if on appropriate terrain, easier to quench a fire
 			if(CheckLiquidTexture())douse=5;
-			if(height<40 && floorz==pos.z){
-				if(A_CheckProximity("null","HDFire",20,1,CPXF_SETTRACER)){
-					tracer.A_SpawnItemEx("HDSmoke",
-						random(-3,3),random(-3,3),random(3,7),
-						vel.x,vel.y,vel.z,
-						flags:SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM
-					);
-					tracer.stamina-=random(1,douse);
-				}
+			if(height<40){
+				A_GiveInventory("HDFireDouse",douse);
 			}
 		}
 
