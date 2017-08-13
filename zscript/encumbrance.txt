@@ -74,7 +74,6 @@ extend class HDPlayerPawn{
 		+countinv("HDCellPackEmpty")*18
 		+countinv("HDSMGMag")*18
 		+countinv("LiberatorMag")*21
-
 		//loaded into gun
 		+(
 			countinv("LumberEmptyCell")
@@ -84,19 +83,32 @@ extend class HDPlayerPawn{
 			+countinv("PlasmaEmptyCell")
 			+(countinv("PlasmaBattery")?1:0)
 			+countinv("BFGLoaded")
-			+(countinv("HERPCell")?1:0)
+			+(
+				(
+					(countinv("HERPDEAD")||countinv("HERPUsable"))
+					&&countinv("HERPCell")
+				)?1:0
+			)
 		)*8
 		+(
 			countinv("HDPistolChamber")
 			+countinv("HDPistolLoaded")
 			+countinv("HDSecondPistolChamber")
 			+countinv("HDSecondPistolLoaded")
-			+countinv("DERPAmmo")
+			+(
+				(
+					countinv("DERPDEAD")||countinv("DERPUsable")
+				)?countinv("DERPAmmo"):0
+			)
 			+countinv("HDSMGLoaded")
 		)*0.3
 		+(
 			countinv("ZM66Loaded")
-			+countinv("HERPAmmo")
+			+(
+				(
+					countinv("HERPDEAD")||countinv("HERPUsable")
+				)?countinv("HERPAmmo"):0
+			)
 			+countinv("VulcLoaded1")
 			+countinv("VulcLoaded2")
 			+countinv("VulcLoaded3")
