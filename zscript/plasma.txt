@@ -143,7 +143,7 @@ class BeamSpotFlash:BeamSpot{
 	}
 	states{
 	spawn:
-		PLSS AB 1 bright nodelay A_SpawnItemEx("PlasmaBallTail",0,0,0,(vel.x*0.12),(vel.y*0.12),(vel.z*0.12),0,40,0);
+		PLSS AB 1 bright nodelay A_SpawnItemEx("PlasmaBallTail",0,0,0,(vel.x*0.12),(vel.y*0.12),(vel.z*0.12),0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_ABSOLUTEMOMENTUM);
 		PLSE AAA 1 bright A_FadeIn(0.1);
 		PLSE BCDE 1 bright A_FadeOut(0.1);
 		stop;
