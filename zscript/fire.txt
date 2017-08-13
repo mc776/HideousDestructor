@@ -107,18 +107,27 @@ class HDFire:IdleDummy{
 
 			//set flame spawn point
 			if(lastheight!=target.height){ //poll only height
+				halfrad=max(4,target.radius*0.5);
 				lastheight=target.height;
-				if(target.radius<8) halfrad=4;
-				else halfrad=ceil(target.radius*0.5);
-				minz=floor(target.height*0.2);
-				if(target.height<4) maxz=4;
-				else maxz=ceil(target.height*0.75);
+				minz=lastheight*0.2;
+				maxz=max(lastheight*0.75,4);
 			}
 
+A_LogInt(stamina);
+/*
 			//spawn the flame
-			setorigin(target.pos+(random(-halfrad,halfrad),random(-halfrad,halfrad),random(minz,maxz)),false);
-			actor sp=spawn("HDFlameRed",pos);sp.vel+=target.vel+(frandom(-2,2),frandom(-2,2),frandom(-1,3));
+			setorigin(
+				target.pos+(
+					random(-halfrad,halfrad),
+					random(-halfrad,halfrad),
+					random(minz,maxz)
+				),false
+			);
+*/
+			actor sp=spawn("HDFlameRed",pos);
+			sp.vel+=target.vel+(frandom(-2,2),frandom(-2,2),frandom(-1,3));
 			A_PlaySound("misc/firecrkl",CHAN_AUTO,0.4,0,6);
+
 
 			//check if player
 			let tgt=HDPlayerPawn(target);
