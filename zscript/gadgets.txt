@@ -164,18 +164,6 @@ As doomguy, I need to:
 */
 class Flickerer:Inventory replaces Infrared{
     override void DoEffect(){
-
-stamina++;
-if(stamina>=45){
-	stamina=0;
-	owner.player.fixedcolormap=accuracy;
-	A_LogInt(accuracy);
-	accuracy++;
-	if(accuracy>10)accuracy=-1;
-}
-return;
-
-
         super.DoEffect();
         if(owner && owner.player){
             if(

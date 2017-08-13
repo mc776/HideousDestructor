@@ -20,6 +20,7 @@ extend class HDPlayerPawn{
 		wait;
 	}
 	override void Die(actor source,actor inflictor,int dmgflags=0){
+		if(player.attacker is "HDFire")player.attacker=null;
 		playercorpse=spawn("HDPlayerCorpse",pos);
 		playercorpse.vel=vel;playercorpse.master=self;
 		if(height<40)playercorpse.sprite=GetSpriteIndex("PLYCA0");
