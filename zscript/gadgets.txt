@@ -99,6 +99,7 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 	override void DetachFromOwner(){
 		if(owner && owner.player && owner.player.fixedcolormap==5)owner.player.fixedcolormap=-1;
 		worn=false;
+		owner.player.fixedlightlevel=-1;
 		super.DetachFromOwner();
 	}
 	override void DoEffect(){
@@ -110,11 +111,17 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 				&&(owner.player.fixedcolormap<0||owner.player.fixedcolormap==5)
 			){
 				owner.player.fixedcolormap=5;
-				if(!random[rand1](0,LITEBAT-spent))owner.player.fixedcolormap=-1;
+				owner.player.fixedlightlevel=1;
+				if(!random[rand1](0,LITEBAT-spent)){
+					owner.player.fixedcolormap=-1;
+					owner.player.fixedlightlevel=-1;
+				}
 				spent++;
 				if(spent>LITEBAT)worn=false;
-			}else if(owner.player.fixedcolormap==5)
-				owner.player.fixedcolormap=-1;
+			}else{
+				if(owner.player.fixedcolormap==5)owner.player.fixedcolormap=-1;
+				owner.player.fixedlightlevel=-1;
+			}
 		}
 	}
 	states{
@@ -157,6 +164,18 @@ As doomguy, I need to:
 */
 class Flickerer:Inventory replaces Infrared{
     override void DoEffect(){
+
+stamina++;
+if(stamina>=45){
+	stamina=0;
+	owner.player.fixedcolormap=accuracy;
+	A_LogInt(accuracy);
+	accuracy++;
+	if(accuracy>10)accuracy=-1;
+}
+return;
+
+
         super.DoEffect();
         if(owner && owner.player){
             if(
