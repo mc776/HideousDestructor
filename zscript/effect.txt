@@ -6,7 +6,6 @@
 //basically we just need to account for conveyors and platforms
 class HDDebris:HDActor{
 	bool stopped;
-	bool deathstate;
 	int grav;
 	double wdth;
 	default{
@@ -17,7 +16,6 @@ class HDDebris:HDActor{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		if(findstate("death"))deathstate=true;
 		stopped=false;
 		grav=getgravity();
 		if(bwallsprite)grav*=frandom(0.4,0.7);
@@ -58,7 +56,7 @@ class HDDebris:HDActor{
 				vel.z*=-bouncefactor;
 			}
 			if(floorz==pos.z && max(abs(vel.x),abs(vel.y),abs(vel.z))<1){
-				if(deathstate)setstatelabel("death");else destroy();
+				if(findstate("death"))setstatelabel("death");else destroy();
 				if(bdestroyed)return; //if nexttic() is called below, it would crash
 				stopped=true;
 				setz(floorz);
@@ -311,11 +309,11 @@ class HDSmokeSmall:HDFlameRed{
 //deathheight = amount to fade every 4 tics
 class HDCopyTrail:IdleDummy{
 	default{
-		+noclip +rollsprite +rollcenter
+		+noclip +rollsprite +rollcenter +nointeraction
 		deathheight 0.6;
 	}
 	states{
-	spawn:"####" A -1;stop;
+	spawn:#### A -1;stop;
 	}
 	override void Tick(){
 		if(globalfreeze||level.Frozen) return;
@@ -620,31 +618,23 @@ class TeleFog:IdleDummy replaces TeleportFog{
 	}
 	override void postbeginplay(){
 		actor.postbeginplay();
-		scale.x=randompick(-1,1)*scale.x;
+		scale.x*=randompick(-1,1);
 		A_PlaySound("misc/teleport");
-		spawn("TeleportSmoke",pos,ALLOW_REPLACE);
-		if(!A_CheckSight("null")) setstatelabel("nope");
 	}
 	states{
 	spawn:
-		TFOG AA 2 bright light("BFS1") A_FadeIn(0.2);
+		TFOG AA 2 nodelay bright light("BFS1") A_FadeIn(0.2);
 		TFOG BBCCCDDEEFGHII 2 bright light("BFS1"){
 			A_ShardSuck(self.pos+(0,0,random(1,4)*12+24));
 		}
 		TFOG JJJJ random(2,3) bright light("BFS1"){
 			alpha-=0.2;
 			A_ShardSuck(self.pos+(0,0,random(1,4)*12+24));
-		}
-		TNT1 AAAAA random(4,12){
-			A_ShardSuck(self.pos+(0,0,36));
 		}stop;
 	nope:
 		TNT1 A 20 light("BFS1");
 		stop;
 	}
 }
-
-
-
 
 
