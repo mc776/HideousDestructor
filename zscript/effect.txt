@@ -254,6 +254,45 @@ class HDGunSmoker:IdleDummy{
 		stop;
 	}
 }
+class HDFlameRed:HDPuff{
+	default{
+		renderstyle "add";
+		alpha 0.6;scale 0.3;gravity 0.05;
+	}
+	override void postbeginplay(){
+		hdactor.postbeginplay();
+		roll=random(0,3)*90;
+		fadeafter=3;
+		grow=-0.01;
+		fade=0.8;
+		decel=0.8;
+		vel.z+=4;
+	}
+	states{
+	spawn:
+		BAL1 ABCDE 1 bright light("REDFIRE");
+	death:
+		TNT1 A 0{
+			grow=0.01;
+			fade=0.9;
+			decel=0.9;
+			vel.z+=2;
+			minalpha=0.1;
+			addz(-vel.z*4);
+			A_SetTranslucent(0.6,0);
+			scale=(0.4,0.4);gravity=0.1;
+			vel*=0.6;
+		}
+		SMOK CD -1{frame=random(0,3);}
+		wait;
+	}
+}
+class HDSmokeSmall:HDFlameRed{
+	override void postbeginplay(){
+		hdactor.postbeginplay();
+		setstatelabel("death");
+	}
+}
 
 
 //transfer sprite frame fader

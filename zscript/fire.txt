@@ -8,49 +8,6 @@ class HDFireEnder:InventoryFlag{
 	}
 }
 
-class HDSmokeSmall:HDPuff{
-	default{
-		scale 0.6;gravity 0.1;
-	}
-	override void postbeginplay(){
-	hdactor.postbeginplay();
-		roll=random(0,3)*90;
-		fadeafter=0;
-		grow=0.01;
-		fade=0.9;
-		decel=0.9;
-		vel.z+=2;
-		minalpha=0.1;
-	}
-	states{
-	spawn:
-		SMOK BCD 10;
-		wait;
-	}
-}
-class HDRedFlame:HDPuff{
-	default{
-		scale 0.5;gravity 0;renderstyle "add";
-	}
-	override void postbeginplay(){
-		hdactor.postbeginplay();
-		roll=random(0,3)*90;
-		fadeafter=3;
-		grow=-0.01;
-		fade=0.8;
-		decel=0.8;
-		vel.z+=4;
-		tracer=spawn("HDSmokeSmall",pos,ALLOW_REPLACE);
-		tracer.vel+=self.vel*0.4+(0,0,0.05);
-		minalpha=0.15;
-	}
-	states{
-	spawn:
-		BAL1 ABCDE 2 bright light("REDFIRE");
-		wait;
-	}
-}
-
 
 class HDFireStarter:ActionItem{
 	states{
@@ -131,13 +88,6 @@ class HDFire:IdleDummy{
 			}
 			stamina--;
 
-			//damage the target
-			//don't touch the bsolid, else crash trying to hurt the plasma beamspot
-			if(target.bsolid)
-				target.damagemobj(self,master,1,"Thermal",flags:DMG_NO_FACTOR);
-
-			if(!target)return;
-
 			//set flame spawn point
 			if(lastheight!=target.height){ //poll only height
 				lastheight=target.height;
@@ -150,7 +100,7 @@ class HDFire:IdleDummy{
 
 			//spawn the flame
 			setorigin(target.pos+(random(-halfrad,halfrad),random(-halfrad,halfrad),random(minz,maxz)),false);
-			actor sp=spawn("HDRedFlame",pos);
+			actor sp=spawn("HDFlameRed",pos);
 			sp.vel+=target.vel+(frandom(-2,2),frandom(-2,2),frandom(-1,3));
 			A_PlaySound("misc/firecrkl",CHAN_AUTO,0.4,0,6);
 
@@ -162,9 +112,12 @@ class HDFire:IdleDummy{
 				A_TakeFromTarget("IsWeaponReady");
 				A_GiveToTarget("IsHurt",1);
 				A_GiveToTarget("IsMoving",4);
-
-				
 			}
+
+			//damage the target
+			//don't touch the bsolid, else crash trying to hurt the plasma beamspot
+			if(target.bsolid)
+				target.damagemobj(self,master,1,"Thermal",flags:DMG_NO_FACTOR);
 		}wait;
 	}
 }
@@ -241,10 +194,19 @@ class fffire:inventory{
 		if(!master)master=self;
 	}
 	override void attachtoowner(actor user){
-		if(!user.bsolid){destroy();return;}
+		if(!user.bsolid&&!user.bshootable){destroy();return;}
 		super.attachtoowner(user);
 	}
 	override void doeffect(){
+		//because obituaries and respawn :(
+		if(owner.health<1){
+			let onr=HDPlayerPawn(owner);
+			if(onr){
+				if(onr.playercorpse)owner=onr.playercorpse;
+				else goawayanddie();
+				return;
+			}
+		}
 		if(!tttimer){
 			tttimer=min(4,100/amount);
 			int times=clamp(amount*0.01,1,20); //adjust numbers to taste
@@ -254,24 +216,15 @@ class fffire:inventory{
 				int hit=max(8,owner.height*0.6);
 				actor p=spawn("HDFlameRed",
 					owner.pos+(
-						random(-rad,rad),
-						random(-rad,rad),
-						random(1,hit)
+						random[fff](-rad,rad),
+						random[fff](-rad,rad),
+						random[fff](1,hit)
 					),ALLOW_REPLACE
 				);
 				p.vel+=owner.vel*0.7+(0,0,4);
 				owner.A_PlaySound("vile/firecrkl",CHAN_AUTO,max(1.,amount*0.01));
 				owner.damagemobj(self,master,1,"fire",DMG_NO_ARMOR|DMG_THRUSTLESS);
 				if(!owner){goawayanddie();return;}
-
-				//because obituaries and respawn :(
-				if(owner.health<1){
-					let onr=PlayerPawn(owner);
-					if(onr){
-						goawayanddie();
-						return;
-					}
-				}
 			}
 			amount--;
 			if(owner.waterlevel>1){

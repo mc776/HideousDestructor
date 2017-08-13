@@ -21,7 +21,7 @@ class BeamSpot:IdleDummy{
 			}
 		}
 		if(!tracer)tracer=self;else{
-			if(!tracer.bcorpse) damagemobj(
+			if(tracer.health>0) damagemobj(
 				self,target,random(1,stamina),"Electro"
 			); else tracer.A_GiveInventory("SawGib",4);
 			if(random(1,3)>1)A_Immolate(tracer,target,clamp(stamina,0,100));

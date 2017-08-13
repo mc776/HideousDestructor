@@ -306,10 +306,11 @@ extend class HDPlayerPawn{
 		}
 
 		if(hd_debug){
-			A_Log(string.format("%s took %d %s damage",
+			A_Log(string.format("%s took %d %s damage from %s",
 				player.getusername(),
 				damage,
-				mod
+				mod,
+				inflictor.getclassname()
 			));
 		}
 

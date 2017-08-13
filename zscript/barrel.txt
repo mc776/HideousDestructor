@@ -426,7 +426,7 @@ class BarrelFlame2:HDFireball{
 			if(blockingmobj)A_Immolate(blockingmobj,target,random(stamina,stamina+4));
 			actor a;
 			for(int i=0;i<3;i++){
-				a=spawn("HDSmokeSmall",pos+(random(-2,2),random(-2,2),random(1,3)));
+				a=spawn("HDSmoke",pos+(random(-2,2),random(-2,2),random(1,3)));
 				a.vel+=(random(-1,1),random(-1,1),3);
 			}
 		}
@@ -480,7 +480,7 @@ class BarrelFireCrawler:HDActor{
 		height 54;radius 16;speed 12;
 		+noblooddecals -solid +nofear +bright
 		radius 8;height 10;meleerange 12;renderstyle "add";maxstepheight 64;maxdropoffheight 64;
-		speed 5;health 20;bloodtype "HDSmokeSmall";
+		speed 5;health 20;bloodtype "HDSmoke";
 	}
 	override void postbeginplay(){
 		super.postbeginplay();

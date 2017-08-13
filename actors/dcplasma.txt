@@ -59,7 +59,7 @@ ACTOR ThunderBuster : HDWeapon
 			A_SpawnItemEx("DistantPlasma",0,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
 			A_ZoomFactor(1.01,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
 			if (countinv("PlasmaBattery")>random(-2,10)){
-				A_FireBullets(1,1,countinv("PlasmaBattery")/18,(random(1,2)),"BeamSpotFlash",FBF_NORANDOM,1024);
+				A_FireBullets(1,1,countinv("PlasmaBattery")*0.055,(random(1,2)),"BeamSpotFlash",FBF_NORANDOM,1024);
 				A_TakeInventory("PlasmaBattery",randompick(1,1,1,2));
 			}
 		}
