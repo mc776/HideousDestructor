@@ -91,6 +91,10 @@ class HDZPistol:HDWeapon{
 				a.A_SetInventory("HDPistolFullAuto",o.countinv("HDPistolFullAuto"));
 				a.A_SetInventory("HDPistolNoMag",o.countinv("HDPistolNoMag"));
 				a.A_SetInventory("Clip",1);
+				o.A_TakeInventory("HDPistolLoaded");
+				o.A_TakeInventory("HDPistolChamber");
+				o.A_TakeInventory("HDPistolFullAuto");
+				o.A_TakeInventory("HDPistolNoMag");
 				if(o.countinv("HDSecondPistol")){
 					let oo=HDPlayerPawn(o);
 					if(oo)oo.PistolConsolidator();

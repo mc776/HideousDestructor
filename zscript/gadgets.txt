@@ -141,3 +141,35 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 }
 
 
+
+/*
+testing a potential GZDoom bug
+
+So far:
+It's not the status bar, as commenting it out in MAPINFO does not prevent this.
+It's not something inherent to HDPlayerPawn, as changing playerclasses in MAPINFO to Doomplayer does not prevent this.
+
+As doomguy, I need to:
+- get the flickerer
+- get an HDWeapon descendant
+- do something that causes an interaction with the world
+
+*/
+class Flickerer:Inventory replaces Infrared{
+    override void DoEffect(){
+        super.DoEffect();
+        if(owner && owner.player){
+            if(
+                !owner.countinv("PowerInvisibility")
+                &&(owner.player.fixedcolormap<0||owner.player.fixedcolormap==5)
+            ){
+                owner.player.fixedcolormap=5;
+                if(!random(0,10))owner.player.fixedcolormap=-1;
+            }else if(owner.player.fixedcolormap==5)
+                owner.player.fixedcolormap=-1;
+        }
+    }
+}
+
+
+
