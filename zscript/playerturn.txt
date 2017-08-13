@@ -360,16 +360,15 @@ extend class HDPlayerPawn{
 
 		//feet angle
 		double fac=hdmath.anglechange(angle,feetangle);
-		if(pos.z==zat && abs(fac)>50-(height<40?20:0)){
-			vel+=rotatevector((0,fac/abs(fac)*0.1),angle);
+		if(player.onground && abs(fac)>(player.crouchfactor<0.7?30:50)){
+			vel+=rotatevector((0,fac>0?0.1:-0.1),angle);
 			A_GiveInventory("IsMoving",2);
-			feetangle+=clamp(angle-feetangle,-10,10);
 			PlayRunning();
 
-			int douse=2;
 			//if on appropriate terrain, easier to quench a fire
-			if(CheckLiquidTexture())douse=5;
-			if(height<40){
+			if(player.crouchfactor<0.7){
+				int douse=2;
+				if(CheckLiquidTexture())douse=5;
 				A_GiveInventory("HDFireDouse",douse);
 			}
 		}
