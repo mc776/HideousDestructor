@@ -154,6 +154,12 @@ class HDStimpacker:HDWoundFixer{
 		TNT1 A 0 A_Refire();
 		goto nope;
 	althold:
+		TNT1 A 0{
+			if(!countinv(invoker.inventorytype)){
+				if(getcvar("hd_helptext"))A_Print(invoker.noerror);
+				A_Refire("deselecthold");
+			}
+		}
 		TNT1 A 8{
 			actor a;int b;
 			[a,b]=LineAttack(angle,40,pitch,0,"none",
@@ -197,6 +203,7 @@ class HDStimpacker:HDWoundFixer{
 				c.A_SetBlend("7a 3a 18",0.1,4);
 				a=spawn(invoker.injecttype,c.pos);
 				a.accuracy=40;a.target=c;
+				if(!countinv(invoker.inventorytype))return resolvestate("deselecthold");
 				return resolvestate("injected");
 			}
 		}
