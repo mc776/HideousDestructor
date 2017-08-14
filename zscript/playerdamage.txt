@@ -28,13 +28,6 @@ extend class HDPlayerPawn{
 			A_TakeInventory("BasicArmor");
 		}
 
-		//abort if zero team damage, otherwise save factor for wounds and burns
-		double tmd=1.;
-		if(source is "PlayerPawn" && source!=self && isteammate(source)){
-			if(!teamdamage) return 0;
-			else tmd=teamdamage;
-		}
-
 		//factor in cheats and skills
 		if(!(flags&DMG_FORCED)){
 			if(
@@ -44,6 +37,13 @@ extend class HDPlayerPawn{
 				|| binvulnerable || !bshootable
 			)return 0;
 			if(!skill || hd_lowdamage)damage=max(1,damage*0.3);
+		}
+
+		//abort if zero team damage, otherwise save factor for wounds and burns
+		double tmd=1.;
+		if(source is "PlayerPawn" && source!=self && isteammate(source)){
+			if(!teamdamage) return 0;
+			else tmd=teamdamage;
 		}
 
 		int towound=0;

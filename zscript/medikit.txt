@@ -190,8 +190,6 @@ class HDMedikitter:HDWoundFixer{
 				invoker.target.A_PlaySound("misc/punch",CHAN_WEAPON);
 				invoker.target.A_PlaySound("misc/bulletflesh",CHAN_BODY);
 				invoker.patchwound(random(1,3),invoker.target);
-				invoker.target.damagemobj(invoker,self,-1,"none");
-				invoker.target.damagemobj(invoker,self,1,"smallarms0");
 			}
 		}goto patchupend;
 	applythatstaplershit:
@@ -201,8 +199,8 @@ class HDMedikitter:HDWoundFixer{
 				invoker.target.A_PlaySound("misc/smallslop",CHAN_BODY);
 				invoker.patchwound(1,invoker.target);
 				if(!random(0,3))invoker.setstatelabel("patchupend");
-				invoker.target.damagemobj(invoker,self,-1,"none");
-				invoker.target.damagemobj(invoker,self,1,"smallarms0");
+				invoker.target.health++;
+				invoker.target.damagemobj(invoker,null,1,"staples",DMG_FORCED);
 			}
 		}goto patchupend;
 	applythathotshit:
