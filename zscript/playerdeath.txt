@@ -11,7 +11,7 @@ extend class HDPlayerPawn{
 		}
 	death:
 	xdeath:
-		---- A 2{
+		---- A 50{
 			A_GiveInventory("CheckLiveRound");
 			binvisible=true;
 			A_NoBlocking();
@@ -30,7 +30,9 @@ extend class HDPlayerPawn{
 		if(-health>gibhealth||aggravateddamage>40) playercorpse.A_Die("extreme");
 		else{
 			playercorpse.A_Die();
-			if(!silentdeath)playercorpse.A_PlaySound(health>-50?"*death":"*xdeath",CHAN_VOICE);
+			if(!silentdeath){
+				A_PlayerScream();
+			}
 		}
 		A_TakeInventory("IsAlive");
 		super.die(source,inflictor,dmgflags);

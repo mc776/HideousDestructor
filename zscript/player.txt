@@ -188,17 +188,16 @@ class HDPlayerPawn:PlayerPawn{
 		if(!countinv("Ring"))GiveBasics();
 		if(!player.readyweapon)A_SelectWeapon("Ring");
 
-		//if this is put into playermove bad things happen
-		TurnCheck();
-		JumpCheck();
-		CrouchCheck();
-
 		//same thing with scope camera
 		if(!scopecamera){
 			scopecamera=spawn("ViewDummy",pos);
 			scopecamera.changetid(playernumber()-32000);
-			scopecamera.target=self;
-		}
+		}else scopecamera.target=self;
+
+		//if this is put into playermove bad things happen
+		TurnCheck();
+		JumpCheck();
+		CrouchCheck();
 
 		//add inventory flags for inputs
 		//remove ONLY when a deprecated inventory flags has been removed from all code!

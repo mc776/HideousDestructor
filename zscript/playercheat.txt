@@ -88,6 +88,7 @@ extend class HDPlayerPawn{
 		if(ppp)ppp.amount=p2auto;
 
 		//clean up some stuff
+		if(countinv("LiberatorRifle")&&countinv("LiberatorGrenadeRifle"))A_TakeInventory("LiberatorRifle");
 		if(!hd_carrylimit)A_TakeInventory("backpack");
 		A_TakeInventory("BasicArmor");
 	}
