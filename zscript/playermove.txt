@@ -49,14 +49,12 @@ extend class HDPlayerPawn{
 			+stimcount+zerk*0.04,
 			40,zerk>0?999:144
 		)*0.01;
-		if(crouchspeed>0.03&&!random(0,3))fatigue++;
-		if(player.onground && zerk>0 && direction>0 && height<fullheight*0.6)vel.z+=4;
 
 		player.crouchdir=direction;
 		player.crouchfactor+=crouchspeed;
 
 		// check whether the move is ok
-		Height  = defaultheight * player.crouchfactor;
+		Height = defaultheight * player.crouchfactor;
 		if (!TryMove(Pos.XY, false, NULL)){
 			Height = savedheight;
 			if (direction > 0){
@@ -64,6 +62,9 @@ extend class HDPlayerPawn{
 				player.crouchfactor -= crouchspeed;
 				return;
 			}
+		}else{
+			if(crouchspeed>0.03&&!random(0,3))fatigue++;
+			if(player.onground && zerk>0 && direction>0 && height<fullheight*0.6)vel.z+=4;
 		}
 		Height = savedheight;
 
