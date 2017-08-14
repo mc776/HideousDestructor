@@ -55,6 +55,7 @@ extend class HDActor{
 class HDFire:IdleDummy{
 	int halfrad;int minz;int maxz;int lastheight;
 	default{
+		+bloodlessimpact
 		obituary "%o was burned by %k.";
 	}
 	override void postbeginplay(){
@@ -65,8 +66,12 @@ class HDFire:IdleDummy{
 				changetid(-7677);
 				if(!skill||hd_lowdamage)stamina=max(1,stamina*0.3);
 			}
+			if(!target.bshootable && stamina>20)stamina=20;
 		}
-		if(A_CheckProximity("null","HDFire",64,12,CPXF_CHECKSIGHT|CPXF_SETTRACER)){
+		if(
+			A_CheckProximity("null","HDFire",64,12,CPXF_CHECKSIGHT|CPXF_SETTRACER)
+			&&(!target||tracer.target==target)
+		){
 			tracer.stamina+=stamina;
 			destroy();
 			return;

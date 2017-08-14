@@ -113,7 +113,7 @@ class HDPuff:HDActor{
 		+puffgetsowner +hittracer
 		+noblockmap -solid +cannotpush +nointeraction
 		+rollsprite +rollcenter +forcexybillboard
-		height 3;radius 3;renderstyle "translucent";gravity 0.1;
+		height 0;radius 0;renderstyle "translucent";gravity 0.1;
 
 		hdpuff.decel 0.9;
 		hdpuff.fade 0.98;
@@ -150,7 +150,7 @@ class HDPuff:HDActor{
 				(vel.z>0 && pos.z+8>ceilingz)||
 				(vel.z<0 && pos.z<floorz)
 			)vel.z=0;
-			else addz(vel.z);
+			addz(vel.z);
 		}
 		if(pos.z>ceilingz)setz(ceilingz-8);
 		else if(pos.z<floorz)setz(floorz);
@@ -161,12 +161,13 @@ class HDBulletPuff:HDPuff{
 	default{
 		stamina 5;missiletype "WallChunk";alpha 0.8;
 
-		hdpuff.decel 0.09;
+		hdpuff.decel 0.7;
 		hdpuff.fadeafter 0;
-		hdpuff.fade 0.8;
-		hdpuff.grow 0.2;
+		hdpuff.fade 0.9;
+		hdpuff.grow 0.1;
 		hdpuff.minalpha 0.1;
 		hdpuff.startvelz 4;
+		gravity 0.1;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -175,6 +176,7 @@ class HDBulletPuff:HDPuff{
 		trymove(pos.xy+vel.xy,false);
 		int stm=stamina;
 		fadeafter=frandom(0,1);
+		scale*=frandom(0.9,1.1);
 		for(int i=0;i<stamina;i++){
 			actor ch=spawn(missilename,self.pos,ALLOW_REPLACE);
 			ch.vel=self.vel+(random(-stm,stm),random(-stm,stm),random(-2,12));
