@@ -183,7 +183,7 @@ class HDMedikitter:HDWoundFixer{
 		}
 		TNT1 A 0 A_JumpIf(getplayerinput(MODINPUT_BUTTONS)&BT_ALTATTACK,"applythathotshit");
 		TNT1 A 0{invoker.usedpatches++;}
-		TNT1 A 0 A_Jump(112,"applythatstaplershit");
+		TNT1 A 1 A_Jump(112,"applythatstaplershit");
 	applythatinjectorshit:
 		TNT1 A 10{
 			if(invoker.target){
@@ -196,7 +196,7 @@ class HDMedikitter:HDWoundFixer{
 		}goto patchupend;
 	applythatstaplershit:
 		TNT1 AAAAA 3{
-			A_PlaySound("weapons/pistol",CHAN_WEAPON);
+			A_PlaySound("weapons/bigcrack",CHAN_WEAPON);
 			if(invoker.target){
 				invoker.target.A_PlaySound("misc/smallslop",CHAN_BODY);
 				invoker.patchwound(1,invoker.target);
