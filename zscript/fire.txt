@@ -80,7 +80,6 @@ class HDFire:IdleDummy{
 	states{
 	spawn:
 		TNT1 A 3{
-			A_Warp(AAPTR_TARGET);
 			if(waterlevel){
 				destroy();
 				if(waterlevel<2)spawn("HDSmoke",pos);
@@ -92,6 +91,7 @@ class HDFire:IdleDummy{
 				target.target=master;
 				if(stamina>20)stamina=20;
 			}
+			setorigin(target.pos,false);
 			A_SetTics(clamp(random(8,30-stamina*0.1),4,12));
 			if(stamina<=0 || target.countinv("HDFireEnder")){
 				A_TakeFromTarget("HDFireEnder");

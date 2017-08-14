@@ -110,9 +110,10 @@ class HDPuff:HDActor{
 	property minalpha:minalpha;
 	property startvelz:startvelz;
 	default{
-		+puffgetsowner +hittracer +cannotpush
-		+noblockmap -solid +rollsprite +rollcenter +forcexybillboard
-		height 0;radius 0;renderstyle "translucent";gravity 0.1;
+		+puffgetsowner +hittracer
+		+noblockmap -solid +cannotpush +nointeraction
+		+rollsprite +rollcenter +forcexybillboard
+		height 3;radius 3;renderstyle "translucent";gravity 0.1;
 
 		hdpuff.decel 0.9;
 		hdpuff.fade 0.98;
@@ -137,13 +138,12 @@ class HDPuff:HDActor{
 			destroy();
 			return;
 		}
-
 		scale.x+=grow;scale.y=scale.x;
 		vel*=decel;
 		vel.z-=grav;
 		if(
-			(vel.x||vel.y)&&
-			!trymove(pos.xy+vel.xy,true)
+			(vel.x||vel.y)
+			&&!trymove(pos.xy+vel.xy,true)
 		)vel.xy=(0,0);
 		if(vel.z){
 			if(
