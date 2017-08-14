@@ -235,8 +235,8 @@ class HDSmoke:HDPuff{
 	}
 	states{
 	spawn:
-		SMOK A 4;
-		SMOK BCD -1{frame=random(1,3);}wait;
+PUFF B 4;//		SMOK A 4;
+		---- BCD -1{frame=random(1,3);}wait;
 	}
 }
 class HDGunSmoke:HDSmoke{
@@ -295,7 +295,7 @@ class HDFlameRed:HDPuff{
 			A_SetTranslucent(0.6,0);
 			scale=(0.4,0.4);gravity=0.1;
 		}
-		SMOK CD -1{frame=random(0,3);}
+PUFF C -1;		SMOK CD -1{frame=random(0,3);}
 		wait;
 	}
 }
