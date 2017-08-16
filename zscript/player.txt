@@ -176,11 +176,11 @@ class HDPlayerPawn:PlayerPawn{
 		//passive inventory checks
 		if(player.readyweapon)GunHeatSmoke(player.readyweapon.getclassname());
 
+
+		super.Tick();
+
 		//only do anything below this while the player is alive!
-		if(bkilled||health<1||countinv("WipedOut")){
-			super.Tick();
-			return;
-		}
+		if(bkilled||health<1||countinv("WipedOut"))return;
 		HeartTicker();
 		if(inpain>0)inpain--;
 
@@ -444,9 +444,6 @@ class HDPlayerPawn:PlayerPawn{
 		lastvel=vel;
 
 		oldinput=input;
-
-		//don't touch this
-		super.Tick();
 	}
 }
 
