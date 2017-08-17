@@ -110,6 +110,7 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 				&&!owner.countinv("PowerInvisibility")
 				&&(owner.player.fixedcolormap<0||owner.player.fixedcolormap==5)
 			){
+				owner.player.fov=min(owner.player.fov,90);
 				owner.player.fixedcolormap=5;
 				owner.player.fixedlightlevel=1;
 				if(!random[rand1](0,LITEBAT-spent)){
