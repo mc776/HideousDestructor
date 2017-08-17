@@ -74,6 +74,7 @@ class HDSpectator:PlayerPawn{
 		setz(min(floorz+64,ceilingz-4));
 		A_Print("Now spectating.\n\n\n\ccpress fire and altfire to\n\n\ccwarp to remaining players\n\n\cc(if any).",6,"SMALLFONT");
 	}
+	override bool cancollidewith(actor other,bool passive){return false;}
 	override void checkcrouch(bool totallyfrozen){}
 	int destplayer;
 	override void tick(){
@@ -108,11 +109,9 @@ class HDSpectator:PlayerPawn{
 						"Now viewing %s.",
 						players[destplayer].getusername()
 					));
-					setorigin(pmo.pos+(
-						0,0,pmo.height-4
-					),true);
+					setorigin(pmo.pos,true);
 					angle=pmo.angle;pitch=10;
-					A_ChangeVelocity(-5,0,7,CVF_RELATIVE|CVF_REPLACE);
+					A_ChangeVelocity(-6,0,12,CVF_RELATIVE|CVF_REPLACE);
 					break;
 				}
 			}
