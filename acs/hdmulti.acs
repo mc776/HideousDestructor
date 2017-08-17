@@ -134,21 +134,19 @@ script "HDRespawn" RESPAWN{
 	CheckConfig();
 	if ((CurrentLives()<0)&&(maxlives)){
 		GiveInventory("WipedOut",1);
-		MorphActor(0,"DeadHDPlayer","HDSmoke",0x7FFFFFFF,0,"","HDSmoke");
+		GiveInventory("SpecMorph",1);
 		wipedout[PlayerNumber()]=1;
-		delay(1);
-		SetPlayerProperty(0,1,PROP_TOTALLYFROZEN); //without this they can still use stuff
 
 		if(!endgame){
 			setfont("bigfont");
 			HudMessage (
-				s: "Out of lives. Restart or wait until\n\nsurvivors exit or are wiped out.";
-				 2, 4, 0, 1.5, 0.5, 30.0);
+				s:"Out of lives. Restart or wait until\n\nsurvivors exit or are wiped out.";
+				 HUDMSG_FADEINOUT,4,0,1.5,0.5,10.5);
 			setfont("smallfont");
-			delay (164);
-			HudMessage (
-				s: "Hit F12 to cycle through other players' views if enabled.";
-				 2, 3, 2, 1.5, 0.62, 26.0);
+			delay(12);
+			if(!endgame)HudMessage(
+				s:"Hit fire and altfire to cycle through other players' views.";
+				HUDMSG_FADEINOUT,3,2,1.5,0.62,10.0);
 		}
 		terminate;
 	}
@@ -156,14 +154,14 @@ script "HDRespawn" RESPAWN{
 	if(GameType() == GAME_NET_DEATHMATCH){
 		CheckCVars();
 		GiveInventory("IsRespawning",1);
-		delay (6);
+		delay(6);
 		TakeInventory("WoundCount",999);
 		TakeInventory("Fatigue",999);
 		TakeInventory("IsRespawning",999);
 		terminate;
 	}
 	GiveInventory("IsRespawning",1);
-	delay (6);
+	delay(6);
 	TakeInventory("IsRespawning",999);
 }
 
