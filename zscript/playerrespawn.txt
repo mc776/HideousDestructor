@@ -6,6 +6,7 @@ class SpecMorph:ActionItem{
 			setz(pos.z+50);
 			A_Log(string.format("%s is now a spectator.",player.getusername()));
 			A_Morph("HDSpectator",int.MAX,MRF_FULLHEALTH,"HDBloodTrailFloor","TeleportFog");
+			
 		}fail;
 	}
 }
@@ -71,6 +72,7 @@ class HDSpectator:PlayerPawn{
 		super.postbeginplay();
 		A_TakeInventory("IsAlive");
 		setz(min(floorz+64,ceilingz-4));
+		A_Print("Now spectating.\n\n\n\ccpress fire and altfire to\n\n\ccwarp to remaining players\n\n\cc(if any).",6,"SMALLFONT");
 	}
 	override void checkcrouch(bool totallyfrozen){}
 	int destplayer;
@@ -102,15 +104,15 @@ class HDSpectator:PlayerPawn{
 					pmo &&
 					!(pmo is "HDSpectator")
 				){
-					A_Log(players[destplayer].getusername(),true);
-					A_Log(string.format(
+					A_Print(string.format(
 						"Now viewing %s.",
 						players[destplayer].getusername()
 					));
 					setorigin(pmo.pos+(
-						0,0,min(pmo.height+10,pmo.ceilingz-4)
+						0,0,pmo.height-4
 					),true);
-					angle=pmo.angle;
+					angle=pmo.angle;pitch=10;
+					A_ChangeVelocity(-5,0,7,CVF_RELATIVE|CVF_REPLACE);
 					break;
 				}
 			}
