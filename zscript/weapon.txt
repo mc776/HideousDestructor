@@ -62,6 +62,15 @@ class HDWeapon:Weapon{
 			A_SetAngle(angle+mc0.x,SPF_INTERPOLATE);
 		}
 	}
+	//for things like loaded ammo, etc.
+	void TransferInventory(actor source,actor dest,class<inventory>item,bool deletesource=false){
+		if(hd_debug && dest.countinv(item))A_Log(
+			string.format("WARNING: %s had %i %s, now overwritten from %s.",
+			dest.getclassname(),dest.countinv(item),item.getclassname(),source.getclassname()
+		));
+		dest.A_SetInventory(item,source.countinv(item));
+		if(deletesource)source.A_TakeInventory(item);
+	}
 	override void touch(actor toucher){}
 	virtual void actualpickup(actor other){
 		if(other.countinv(getclassname()))return;
