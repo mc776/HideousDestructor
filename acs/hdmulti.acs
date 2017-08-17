@@ -136,18 +136,6 @@ script "HDRespawn" RESPAWN{
 		GiveInventory("WipedOut",1);
 		GiveInventory("SpecMorph",1);
 		wipedout[PlayerNumber()]=1;
-
-		if(!endgame){
-			setfont("bigfont");
-			HudMessage (
-				s:"Out of lives. Restart or wait until\n\nsurvivors exit or are wiped out.";
-				 HUDMSG_FADEINOUT,4,0,1.5,0.5,10.5);
-			setfont("smallfont");
-			delay(12);
-			if(!endgame)HudMessage(
-				s:"Hit fire and altfire to cycle through other players' views.";
-				HUDMSG_FADEINOUT,3,2,1.5,0.62,10.0);
-		}
 		terminate;
 	}
 	else ReplaceBot();
