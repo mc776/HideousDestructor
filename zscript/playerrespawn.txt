@@ -52,7 +52,7 @@ class HDBotSpectator:HDSpectator{
 		+nointeraction
 	}
 }
-class HDSpectator:HDPlayerPawn{
+class HDSpectator:PlayerPawn{
 	default{
 		-solid -shootable +invisible +notarget +nogravity +noblockmap
 		-telestomp +alwaystelefrag -pickup +notrigger
@@ -69,9 +69,10 @@ class HDSpectator:HDPlayerPawn{
 		super.postbeginplay();
 		A_TakeInventory("IsAlive");
 	}
+	override void checkcrouch(bool totallyfrozen){}
 	override void tick(){
 		playerpawn.tick();
-		input=getplayerinput(MODINPUT_BUTTONS);
+		int input=getplayerinput(MODINPUT_BUTTONS);
 		vel*=0.9;
 		if(input&BT_CROUCH)vel.z-=1;
 	}
