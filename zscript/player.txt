@@ -481,6 +481,10 @@ extend class HDHandlers{
 		if(p){
 			p.levelreset();
 			if(!p.countinv("Ring"))p.GiveBasics();
+			if(fraglimit>100||(fraglimit&&!deathmatch)){
+				int fl=fraglimit>100?fraglimit-100:fraglimit;
+				p.A_SetInventory("HDLives",fl-coopdeaths);
+			}
 		}
 	}
 }

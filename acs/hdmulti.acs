@@ -74,15 +74,6 @@ int randomsnark;
 int respawninterval=0;
 
 function void CheckConfig(void){
-	//Lives counter
-	TakeInventory("HDLives",999);
-	if ((GameType () == GAME_NET_COOPERATIVE) || (GetCVar("sv_singleplayerrespawn")>0)){
-		GiveInventory("HDLives",maxlives-deaths_common);
-	}
-	else if (GameType () == GAME_NET_DEATHMATCH){
-		GiveInventory("HDLives",CurrentLives());
-	}
-
 	//Other counters
 	if(GetCVar("hd_nomeds")){
 		TakeInventory("PortableBerserkPack",999);
