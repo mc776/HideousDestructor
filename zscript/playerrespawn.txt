@@ -39,6 +39,26 @@ class RestartMap:ActionItem{
 }
 
 
+
+
+extend class HDHandlers{
+	override void PlayerRespawned(PlayerEvent e){
+		let hde=HDPlayerPawn(players[e.playernumber].mo);
+		if(!hde)return;
+
+		HDF.TransferFire(hde,hde.playercorpse);
+
+		hde.consolidateweapons();
+
+		if(hde.countinv("WipedOut")){
+			hde.A_GiveInventory("SpecMorph");
+		}
+	}
+}
+
+
+
+
 //Spectator playerpawn
 class SpecMorph:ActionItem{
 	states{

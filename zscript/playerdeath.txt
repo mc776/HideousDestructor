@@ -45,7 +45,6 @@ extend class HDHandlers{
 	bool endgame;
 	int coopdeaths;
 	override void PlayerDied(PlayerEvent e){
-		actor pc;
 		let hde=HDPlayerPawn(players[e.playernumber].mo);
 		if(!hde)return;
 
@@ -53,7 +52,7 @@ extend class HDHandlers{
 		hde.A_TakeInventory("LethalDamage");
 
 		//transfer fires to corpse
-		pc=hde.playercorpse;
+		actor pc=hde.playercorpse;
 		HDF.TransferFire(players[e.playernumber].mo,pc);
 
 		if(fraglimit && !deathmatch){

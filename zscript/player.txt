@@ -50,11 +50,6 @@ class HDPlayerPawn:PlayerPawn{
 		feetangle=angle;
 		if(getcvar("hd_hudsprite"))A_GiveInventory("HUDSprite");
 			else A_TakeInventory("HUDSprite");
-		HDF.TransferFire(self,playercorpse);
-		consolidateweapons();
-		if(countinv("WipedOut")){
-			A_GiveInventory("SpecMorph");
-		}
 	}
 	states{
 	spawn:
