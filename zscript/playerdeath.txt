@@ -1,4 +1,7 @@
-//why the fuck is everything so complicated :(
+// ------------------------------------------------------------
+// Death and corpses
+// ------------------------------------------------------------
+
 extend class HDPlayerPawn{
 	bool silentdeath;
 	states{
@@ -8,6 +11,7 @@ extend class HDPlayerPawn{
 	death.internal:
 		---- A 0{
 			if(playercorpse)playercorpse.A_StopSound(CHAN_VOICE);
+			A_StopSound(CHAN_VOICE);
 		}
 	death:
 	xdeath:

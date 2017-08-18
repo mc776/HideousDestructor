@@ -1,3 +1,6 @@
+// ------------------------------------------------------------
+// Respawn, including bot replacements and endgame
+// ------------------------------------------------------------
 
 class BotSpawner:ActionItem{
 	states{
@@ -40,7 +43,7 @@ class RestartMap:ActionItem{
 
 
 
-
+//respawn event
 extend class HDHandlers{
 	override void PlayerRespawned(PlayerEvent e){
 		let hde=HDPlayerPawn(players[e.playernumber].mo);
