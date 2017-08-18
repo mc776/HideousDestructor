@@ -27,7 +27,7 @@ script "CoopFail"(void){
 script "CoopWipe"(void){
 	if(!ending){
 		ending=true;
-		Log(s:"Respawn limit reached.");
+		Log(s:"Players eliminated.");
 		HudMessageBold(s:" ";0,3,0,0,0,0);
 		delay(34);
 		setfont("bigfont");
@@ -37,7 +37,7 @@ script "CoopWipe"(void){
 		setfont("smallfont");
 		delay(80);
 		HudMessageBold(
-			s: "Try again.";
+			s: "T r y   a g a i n .";
 			HUDMSG_TYPEON,3,CR_GRAY,1.5,0.62,2.0,0.06);
 		delay(200);
 		GiveInventory("RestartMap",1);
