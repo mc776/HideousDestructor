@@ -11,6 +11,9 @@ actor SyntheticPhoenixRod : HDWeapon replaces PhoenixRod
 	obituary "%o tasted %k's clean, orangey zest for vengeance."
 	states
 	{
+	spawn:
+		WPHX A -1
+		stop
 	select:
 		TNT1 A 0 A_SetCrosshair(21)
 		TNT1 A 0 A_TakeInventory("IsWeaponLong")
