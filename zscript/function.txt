@@ -328,25 +328,30 @@ struct HDF play{
 		return max;
 	}
 	//transfer inventory: one gets, the other loses
+	enum TransferInventoryFlags{
+		ITRF_ADD=1,
+		ITRF_KEEPGIVER=2,
+	};
 	static int TransferInventory(
 		actor giver,
 		actor receiver,
 		class<inventory> item,
-		int amt=0,
-		bool overwrite=false
+		int flags=0,
+		int amt=0
 	){
-		if(overwrite){
-			amt=max(amt,giver.countinv(item));
-			receiver.A_SetInventory(item,amt);
-			giver.A_TakeInventory(item);
-			return amt;
-		}else{
-			if(!amt)amt=giver.countinv(item);
-			else amt=min(amt,giver.countinv(item),maxinv(receiver,item)-receiver.countinv(item));
-			if(amt){
-				giver.A_TakeInventory(item,amt);
-				receiver.A_GiveInventory(item,amt);
-			}
+		//set the amount
+		if(amt<1)amt=giver.countinv(item);
+		else amt=min(amt,giver.countinv(item));
+
+		//give the amount as appropriate
+		if(flags & ITRF_ADD){
+			amt=min(amt,maxinv(receiver,item)-receiver.countinv(item));
+			if(amt)receiver.A_GiveInventory(item,amt);
+		}else receiver.A_SetInventory(item,amt);
+
+		//remove from giver if true
+		if(!(flags & ITRF_KEEPGIVER)){
+			giver.A_TakeInventory(item,amt);
 		}
 		return amt;
 	}
