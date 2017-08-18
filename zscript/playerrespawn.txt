@@ -1,15 +1,4 @@
-//Spectator playerpawn
-class SpecMorph:ActionItem{
-	states{
-	pickup:
-		TNT1 A 0{
-			setz(pos.z+50);
-			A_Log(string.format("%s is now a spectator.",player.getusername()));
-			A_Morph("HDSpectator",int.MAX,MRF_FULLHEALTH,"HDBloodTrailFloor","TeleportFog");
-			
-		}fail;
-	}
-}
+
 class BotSpawner:ActionItem{
 	states{
 	pickup:
@@ -48,6 +37,20 @@ class RestartMap:ActionItem{
 		}fail;
 	}
 }
+
+
+//Spectator playerpawn
+class SpecMorph:ActionItem{
+	states{
+	pickup:
+		TNT1 A 0{
+			setz(pos.z+50);
+			A_Log(string.format("%s is now a spectator.",player.getusername()));
+			A_Morph("HDSpectator",int.MAX,MRF_FULLHEALTH,"HDBloodTrailFloor","TeleportFog");
+			
+		}fail;
+	}
+}
 class HDBotSpectator:HDSpectator{
 	default{
 		+nointeraction
@@ -72,7 +75,8 @@ class HDSpectator:PlayerPawn{
 		super.postbeginplay();
 		A_TakeInventory("IsAlive");
 		setz(min(floorz+64,ceilingz-4));
-		A_Print("Now spectating.\n\n\n\ccpress fire and altfire to\n\n\ccwarp to remaining players\n\n\cc(if any).",6,"SMALLFONT");
+		if(countinv("WipedOut"))ACS_NamedExecuteAlways("WipedSpecMessage");
+		else A_Print("Now spectating.\n\n\n\ccpress fire and altfire to\n\n\ccwarp to remaining players\n\n\cc(if any).",6,"SMALLFONT");
 	}
 	override bool cancollidewith(actor other,bool passive){return false;}
 	override void checkcrouch(bool totallyfrozen){}

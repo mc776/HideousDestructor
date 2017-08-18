@@ -161,7 +161,13 @@ class DoomguyLoadout:InvReset{
 	200s: ammo, no spares allowed
 */
 const HDCONST_CUSTOMWEPOFFSET=200;
-class CustomLoadout:InventoryFlag{}
+class CustomLoadout:InventoryFlag{
+	override void attachtoowner(actor other){
+		let hdp=HDPlayerPawn(other);
+		if(hdp)hdp.GiveCustomLoadout();
+		goawayanddie();
+	}
+}
 class CustomLoadoutWeaponSelector:IdleDummy{ //GROSS! HACK!!!
 	class<weapon> newwep;
 	states{
@@ -174,8 +180,6 @@ class CustomLoadoutWeaponSelector:IdleDummy{ //GROSS! HACK!!!
 }
 extend class HDPlayerPawn{
 	void GiveCustomLoadout(){
-		if(!countinv("CustomLoadout"))return;
-		A_TakeInventory("CustomLoadout");
 		int ldt;int lda;
 		class<weapon> newwep;
 		for(int i=100;i>=0;i--){ //reverse order so top weapons are added last

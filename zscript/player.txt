@@ -52,7 +52,9 @@ class HDPlayerPawn:PlayerPawn{
 			else A_TakeInventory("HUDSprite");
 		HDF.TransferFire(self,playercorpse);
 		consolidateweapons();
-		GiveCustomLoadout();
+		if(countinv("WipedOut")){
+			A_GiveInventory("SpecMorph");
+		}
 	}
 	states{
 	spawn:
@@ -180,7 +182,7 @@ class HDPlayerPawn:PlayerPawn{
 		super.Tick();
 
 		//only do anything below this while the player is alive!
-		if(bkilled||health<1||countinv("WipedOut"))return;
+		if(bkilled||health<1)return;
 		HeartTicker();
 		if(inpain>0)inpain--;
 
@@ -509,24 +511,26 @@ extend class HDPlayerPawn{
 
 		overloaded=CheckEncumbrance();
 
-		A_TakeInventory("WeaponBusy");
-		A_TakeInventory("IsMoving");
-		A_TakeInventory("IsSprinting");
-		A_TakeInventory("IsHit");
-		A_TakeInventory("JustUnloading");
-		A_TakeInventory("IsInHell");
-		A_TakeInventory("UsingMeds");
-		A_TakeInventory("WipedOut");
-		A_TakeInventory("Zerk");
-		A_TakeInventory("IsSupported");
+		if(countinv("WipedOut"))A_GiveInventory("InvReset");
+		else{
+			A_TakeInventory("WeaponBusy");
+			A_TakeInventory("IsMoving");
+			A_TakeInventory("IsSprinting");
+			A_TakeInventory("IsHit");
+			A_TakeInventory("JustUnloading");
+			A_TakeInventory("IsInHell");
+			A_TakeInventory("UsingMeds");
+			A_TakeInventory("WipedOut");
+			A_TakeInventory("Zerk");
+			A_TakeInventory("IsSupported");
+			A_TakeInventory("LethalDamage");
+			A_TakeInventory("WoundCount");
+		}
 
 		A_GiveInventory("JustStarted",1);
 		A_GiveInventory("PowerFrightener",1);
 
-		A_TakeInventory("LethalDamage",1);
-
 		ConsolidateWeapons();
-		GiveCustomLoadout();
 	}
 }
 
