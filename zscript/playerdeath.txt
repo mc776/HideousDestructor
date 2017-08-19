@@ -76,7 +76,7 @@ extend class HDHandlers{
 				wiped[e.playernumber]=true;
 				hde.A_GiveInventory("WipedOut");
 				if(!endgame){
-					if(fraglimit>100){
+					if(fraglimit<=100){
 						endgame=true;
 						hde.ACS_NamedExecuteAlways("CoopFail",0,0,0);
 					}else{
