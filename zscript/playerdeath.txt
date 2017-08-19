@@ -121,7 +121,7 @@ extend class HDHandlers{
 					gtmi=players[i].getteam();
 					players[i].fragcount=max(0,fl-teamdeaths[gtmi]);
 					if(players[i].getteam()==gtm)
-						players[i].mo.A_SetInventory("HDLives",lives);
+						players[i].mo.A_SetInventory("HDLives",players[i].fragcount);
 	
 					//figure out which teams remain
 					if(!wiped[i]){
@@ -135,6 +135,42 @@ extend class HDHandlers{
 				endgame=true;
 				if(standingteam<0)hde.ACS_NamedExecuteAlways("CoopWipe",0,0,0);
 				else hde.ACS_NamedExecuteAlways("TDMEndWin",0,standingteam,0);
+			}
+		}
+		else if(deathmatch && !teamplay && fraglimit>100){
+			int gpn=e.playernumber;
+			if(fl<=ffadeaths[gpn]){
+				wiped[gpn]=true;
+				hde.A_Log(string.format("%s is OUT!",players[gpn].getusername()));
+			}
+
+			ffadeaths[gpn]++;
+			int lives=fl-ffadeaths[gpn];
+			hde.A_Log(string.format("%s has %i %s left.",
+				players[gpn].getusername(),
+				lives,
+				lives==1?"life":"lives"
+			));
+
+			//update counters for each player
+			int standingplayer=-1;bool twoplayers;
+			for(int i=0;i<MAXPLAYERS;i++){
+				if(playeringame[i]){
+					//don't set fragcount - so individualistic!
+					players[i].mo.A_SetInventory("HDLives",max(0,fl-ffadeaths[i]));
+
+					//see if any other players remain
+					if(!wiped[i]){
+						if(standingplayer<0)standingplayer=i;
+						else if(standingplayer!=i)twoplayers=true;
+if(!twoplayers)hde.A_Log(players[standingplayer].getusername());
+					}
+				}
+			}
+			if(standingplayer<0||(!endgame&&!twoplayers)){
+				endgame=true;
+				if(standingplayer<0)hde.ACS_NamedExecuteAlways("CoopWipe",0,0,0);
+				else hde.A_Log(string.format("\ca%s has won the match!",players[standingplayer].getusername()));
 			}
 		}
 	}

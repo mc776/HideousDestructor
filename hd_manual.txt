@@ -559,14 +559,16 @@ If you set the fraglimit to certain values in a multiplayer game, you can play a
 
 Only the host needs to set the fraglimit. You must allow exits for the level end to work.
 
-Deathmatch FL <100: Same as usual.
+Generally: FL up to and including 100 = points; FL over 100 = elimination.
 
-FFA Deathmatch FL 100+:
+Deathmatch FL <=100: Same as usual.
+
+FFA Deathmatch FL >100:
 - Each player has a number of lives equal to fraglimit.
 - If you run out of lives, next time you die you are out and respawn frozen and unable to interact.
 - Last person still alive is deemed to win the match.
 
-Team Deathmatch FL 100+:
+Team Deathmatch FL >100:
 - Each team has a pool of lives equal to fraglimit.
 - If your team runs out of lives, next time you die you are out and respawn frozen and unable to interact.
 - Last team with at least one surviving member is deemed to win the match.
@@ -574,13 +576,13 @@ Team Deathmatch FL 100+:
 Co-op FL <=0:
 - There is no lives pool, and you respawn infinitely subject to your usual dmflags.
 
-Co-op FL 100+:
+Co-op FL >100:
 - All players share a single lives pool, equal to fraglimit.
 - If you run out of lives, next time you die you are out and respawn frozen and unable to interact.
 - If everyone is out, the game over message appears and the map restarts after a few seconds.
 - If the map restarts, "outed" players' loadouts are reset.
 
-Co-op FL <100:
+Co-op FL <=100:
 - All players share a single lives pool, 100 less than fraglimit.
 - If you run out of lives, the game over message appears and the map restarts after a few seconds.
 - If you manage to die during these few seconds, you are out as in FL <100.
