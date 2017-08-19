@@ -1,7 +1,6 @@
 // ------------------------------------------------------------
 // Death and corpses
 // ------------------------------------------------------------
-
 extend class HDPlayerPawn{
 	bool silentdeath;
 	states{
@@ -24,6 +23,7 @@ extend class HDPlayerPawn{
 		wait;
 	}
 	override void Die(actor source,actor inflictor,int dmgflags=0){
+		if(deathmatch && !sv_weapondrop)A_DropInventory(player.readyweapon.getclassname());
 		if(player.attacker is "HDFire")player.attacker=null;
 		playercorpse=spawn("HDPlayerCorpse",pos);
 		playercorpse.vel=vel;playercorpse.master=self;
