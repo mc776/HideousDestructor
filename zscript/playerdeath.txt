@@ -48,7 +48,12 @@ extend class HDPlayerPawn{
 extend class HDHandlers{
 	bool endgame;
 	int coopdeaths;
+	int teamdeaths[255];
+	int ffadeaths[MAXPLAYERS];
+	int fl;
+	bool wiped[MAXPLAYERS];
 	override void PlayerDied(PlayerEvent e){
+		fl=fraglimit>100?fraglimit-100:fraglimit;
 		let hde=HDPlayerPawn(players[e.playernumber].mo);
 		if(!hde)return;
 
@@ -61,7 +66,6 @@ extend class HDHandlers{
 
 		if(fraglimit && !deathmatch){
 			coopdeaths++;
-			int fl=fraglimit>100?fraglimit-100:fraglimit;
 
 			//update counter for each player
 			for(int i=0;i<MAXPLAYERS;i++){
@@ -69,13 +73,14 @@ extend class HDHandlers{
 			}
 
 			if(fl<coopdeaths){
+				wiped[e.playernumber]=true;
 				hde.A_GiveInventory("WipedOut");
 				if(!endgame){
 					if(fraglimit>100){
 						endgame=true;
 						hde.ACS_NamedExecuteAlways("CoopFail",0,0,0);
 					}else{
-						int wiped=0;actor pmo;
+						int wipecount=0;actor pmo;
 						int playercount=0; //what is the REAL way to do this???
 						for(int i=0;i<MAXPLAYERS;i++){
 							if(playeringame[i]){
@@ -83,15 +88,36 @@ extend class HDHandlers{
 								pmo=players[i].mo;
 								if(
 									pmo.countinv("WipedOut")
-								)wiped++;
+								)wipecount++;
 							}
 						}
-						if(wiped>=playercount){
+						if(wipecount>=playercount){
 							endgame=true;
 							hde.ACS_NamedExecuteAlways("CoopWipe",0,0,0);
 						}
 					}
 				}
+			}
+		}
+		else if(deathmatch && teamplay && fraglimit>100){
+			int gtm=players[e.playernumber].getteam();
+			if(fl<=teamdeaths[gtm]){
+				wiped[e.playernumber]=true;
+				hde.A_Log(string.format("%s is OUT!",players[e.playernumber].getusername()));
+			}
+
+			teamdeaths[gtm]++;
+			int lives=fl-teamdeaths[gtm];
+			hde.A_Log(string.format("Team %i has %i %s left.",
+				gtm,
+				lives,
+				lives==1?"life":"lives"
+			));
+
+			//update counter for each player
+			for(int i=0;i<MAXPLAYERS;i++){
+				if(players[i].getteam()==gtm)
+					players[i].mo.A_SetInventory("HDLives",lives);
 			}
 		}
 	}

@@ -53,7 +53,8 @@ extend class HDHandlers{
 
 		hde.consolidateweapons();
 
-		if(hde.countinv("WipedOut")){
+		if(wiped[e.playernumber]){
+			hde.A_GiveInventory("WipedOut");
 			hde.A_GiveInventory("SpecMorph");
 		}
 	}
