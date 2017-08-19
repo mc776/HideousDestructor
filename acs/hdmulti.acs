@@ -5,6 +5,23 @@
 
 //LEVEL RESET SCRIPT
 bool ending;
+script "WipedSpecMessage"(void){
+	if(ending)terminate;
+	setfont("bigfont");
+	HudMessage(
+		s:"Out of lives. Restart or wait until\n\nsurvivors exit or are wiped out.";
+		HUDMSG_FADEINOUT,4,CR_BRICK,1.5,0.5,10.0
+	);
+	delay(24);
+	if(ending)terminate;
+	setfont("smallfont");
+	HudMessage(
+		s:"Hit fire and altfire to cycle through the remaining players (if any).";
+		HUDMSG_FADEINOUT,3,CR_GRAY,1.5,0.62,8.0
+	);
+}
+
+
 script "CoopFail"(void){
 	if(!ending){
 		ending=true;
@@ -43,22 +60,6 @@ script "CoopWipe"(void){
 		GiveInventory("RestartMap",1);
 	}
 }
-script "WipedSpecMessage"(void){
-	if(ending)terminate;
-	setfont("bigfont");
-	HudMessage(
-		s:"Out of lives. Restart or wait until\n\nsurvivors exit or are wiped out.";
-		HUDMSG_FADEINOUT,4,CR_BRICK,1.5,0.5,10.0
-	);
-	delay(24);
-	if(ending)terminate;
-	setfont("smallfont");
-	HudMessage(
-		s:"Hit fire and altfire to cycle through the remaining players (if any).";
-		HUDMSG_FADEINOUT,3,CR_GRAY,1.5,0.62,8.0
-	);
-}
-
 
 
 function str byline(void){
@@ -97,7 +98,7 @@ script "TDMEndWin"(int survivingteam){
 		s:byline();
 		HUDMSG_TYPEON,3,CR_GRAY,1.5,0.62,2.0,0.06);
 	delay(280);
-	GiveInventory("RestartMap",1);
+	Exit_Normal(0);
 }
 script "FFAWin"(int survivingplayer){
 	HudMessageBold(s:"";0,4,0,0,0,0);
@@ -114,7 +115,7 @@ script "FFAWin"(int survivingplayer){
 		s:byline();
 		HUDMSG_TYPEON,3,CR_GRAY,1.5,0.62,2.0,0.06);
 	delay(280);
-	GiveInventory("RestartMap",1);
+	Exit_Normal(0);
 }
 
 
