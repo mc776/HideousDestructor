@@ -72,6 +72,7 @@ function str byline(void){
 	return "Well played, everyone!";
 }
 script "TDMEndWin"(int survivingteam){
+	ending=true;
 	HudMessageBold(s:"";0,4,0,0,0,0);
 	HudMessageBold(s:"";0,3,0,0,0,0);
 	delay(34);
@@ -101,6 +102,7 @@ script "TDMEndWin"(int survivingteam){
 	Exit_Normal(0);
 }
 script "FFAWin"(int survivingplayer){
+	ending=true;
 	HudMessageBold(s:"";0,4,0,0,0,0);
 	HudMessageBold(s:"";0,3,0,0,0,0);
 	delay(34);
