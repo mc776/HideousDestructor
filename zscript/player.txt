@@ -38,6 +38,9 @@ class HDPlayerPawn:PlayerPawn{
 
 	default{
 		+interpolateangles
+		-telestomp
+		telefogsourcetype "";
+		telefogdesttype "";
 	}
 	override void PostBeginPlay(){
 		super.PostBeginPlay();
@@ -50,6 +53,7 @@ class HDPlayerPawn:PlayerPawn{
 		feetangle=angle;
 		if(getcvar("hd_hudsprite"))A_GiveInventory("HUDSprite");
 			else A_TakeInventory("HUDSprite");
+		A_SetTeleFog("TeleportFog","TeleportFog");
 	}
 	states{
 	spawn:
@@ -482,6 +486,7 @@ extend class HDHandlers{
 			p.levelreset();
 			if(!p.countinv("Ring"))p.GiveBasics();
 			setplayerlives(e.playernumber);
+			if(deathmatch)p.spawn("TeleFog",p.pos);
 		}
 	}
 }

@@ -17,7 +17,7 @@ class BotSpawner:ActionItem{
 			}
 			setz(pos.z+50);
 			A_Log(string.format("Bot %s replaced with rifleman.",player.getusername()));
-			A_Morph("HDBotSpectator",int.MAX,MRF_FULLHEALTH,"HDBloodTrailFloor","TeleportFog");
+			A_Morph("HDBotSpectator",int.MAX,MRF_FULLHEALTH,"HDBloodTrailFloor","TeleFog");
 		}fail;
 	}
 }
@@ -56,8 +56,10 @@ extend class HDHandlers{
 		if(wiped[e.playernumber]){
 			hde.A_GiveInventory("WipedOut");
 			hde.A_GiveInventory("SpecMorph");
+		}else{
+			setplayerlives(e.playernumber);
+			hde.spawn("TeleFog",hde.pos); //HDPP only sets telefog in postbeginplay
 		}
-		else setplayerlives(e.playernumber);
 	}
 	void setplayerlives(int pnum){
 		if(fraglimit&&!deathmatch){
