@@ -114,10 +114,26 @@ extend class HDHandlers{
 				lives==1?"life":"lives"
 			));
 
-			//update counter for each player
+			//update counters for each player
+			int standingteam=-1;bool twoteamsleft;int gtmi;
 			for(int i=0;i<MAXPLAYERS;i++){
-				if(players[i].getteam()==gtm)
-					players[i].mo.A_SetInventory("HDLives",lives);
+				if(playeringame[i]){
+					gtmi=players[i].getteam();
+					players[i].fragcount=max(0,fl-teamdeaths[gtmi]);
+					if(players[i].getteam()==gtm)
+						players[i].mo.A_SetInventory("HDLives",lives);
+	
+					//figure out which teams remain
+					if(!wiped[i]){
+						if(standingteam<0)standingteam=gtmi;else{
+							if(standingteam!=gtmi)twoteamsleft=true;
+						}
+					}
+				}
+			}
+			if(!endgame&&!twoteamsleft){
+				endgame=true;
+				hde.A_PrintBold(string.format("Team %i has won!",gtmi));
 			}
 		}
 	}
