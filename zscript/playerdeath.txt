@@ -53,7 +53,7 @@ extend class HDHandlers{
 	int fl;
 	bool wiped[MAXPLAYERS];
 	override void PlayerDied(PlayerEvent e){
-		fl=fraglimit>100?fraglimit-100:fraglimit;
+		fl=fraglimit>=100?fraglimit-100:fraglimit;
 		let hde=HDPlayerPawn(players[e.playernumber].mo);
 		if(!hde)return;
 
@@ -76,7 +76,7 @@ extend class HDHandlers{
 				wiped[e.playernumber]=true;
 				hde.A_GiveInventory("WipedOut");
 				if(!endgame){
-					if(fraglimit<=100){
+					if(fraglimit<100){
 						endgame=true;
 						hde.ACS_NamedExecuteAlways("CoopFail",0,0,0);
 					}else{
@@ -99,7 +99,7 @@ extend class HDHandlers{
 				}
 			}
 		}
-		else if(deathmatch && teamplay && fraglimit>100){
+		else if(deathmatch && teamplay && fraglimit>=100){
 			int gtm=players[e.playernumber].getteam();
 			if(fl<=teamdeaths[gtm]){
 				wiped[e.playernumber]=true;
@@ -137,7 +137,7 @@ extend class HDHandlers{
 				else hde.ACS_NamedExecuteAlways("TDMEndWin",0,standingteam,0);
 			}
 		}
-		else if(deathmatch && !teamplay && fraglimit>100){
+		else if(deathmatch && !teamplay && fraglimit>=100){
 			int gpn=e.playernumber;
 			if(fl<=ffadeaths[gpn]){
 				wiped[gpn]=true;

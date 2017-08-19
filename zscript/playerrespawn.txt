@@ -61,7 +61,7 @@ extend class HDHandlers{
 	}
 	void setplayerlives(int pnum){
 		if(fraglimit&&!deathmatch){
-			int fl=fraglimit>100?fraglimit-100:fraglimit;
+			int fl=fraglimit>=100?fraglimit-100:fraglimit;
 			players[pnum].mo.A_SetInventory("HDLives",fl-coopdeaths);
 		}
 		else if(deathmatch&&fraglimit>100){
