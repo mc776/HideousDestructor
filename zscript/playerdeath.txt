@@ -108,7 +108,7 @@ extend class HDHandlers{
 
 			teamdeaths[gtm]++;
 			int lives=fl-teamdeaths[gtm];
-			hde.A_Log(string.format("Team %i has %i %s left.",
+			if(hd_debug)hde.A_Log(string.format("Team %i has %i %s left.",
 				gtm,
 				lives,
 				lives==1?"life":"lives"
@@ -146,7 +146,7 @@ extend class HDHandlers{
 
 			ffadeaths[gpn]++;
 			int lives=fl-ffadeaths[gpn];
-			hde.A_Log(string.format("%s has %i %s left.",
+			if(hd_debug)hde.A_Log(string.format("%s has %i %s left.",
 				players[gpn].getusername(),
 				lives,
 				lives==1?"life":"lives"
@@ -169,7 +169,7 @@ extend class HDHandlers{
 			if(standingplayer<0||(!endgame&&!twoplayers)){
 				endgame=true;
 				if(standingplayer<0)hde.ACS_NamedExecuteAlways("CoopWipe",0,0,0);
-				else hde.A_Log(string.format("\ca%s has won the match!",players[standingplayer].getusername()));
+				else players[standingplayer].mo.ACS_NamedExecuteAlways("FFAWin",0,standingplayer+1,0);
 			}
 		}
 	}
