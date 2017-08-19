@@ -60,6 +60,46 @@ script "WipedSpecMessage"(void){
 }
 
 
+script "TDMEndWin"(int survivingteam){
+	HudMessageBold(s:"";0,4,0,0,0,0);
+	HudMessageBold(s:"";0,3,0,0,0,0);
+	delay(34);
+
+	str winnerteam;
+	switch(survivingteam){
+	case 0: winnerteam="Green";break;
+	case 1: winnerteam="Brown";break;
+	case 2: winnerteam="Black";break;
+	case 3: winnerteam="Blue";break;
+	case 4: winnerteam="White";break;
+	case 5: winnerteam="Pink";break;
+	case 6: winnerteam="Golf";break;
+	case 7: winnerteam="Hotel";break;
+	default: winnerteam="No"; break;}
+
+	setfont("bigfont");
+	HudMessageBold (
+		s:winnerteam,s:" Team has won the match!";
+		HUDMSG_TYPEON,4,CR_GOLD,1.5,0.5,5.6,0.05);
+	setfont("smallfont");
+	delay(110);
+
+	str randomsnark;
+	switch(random(0,5)){
+	case 1: randomsnark="Good game!";break;
+	case 2: randomsnark="Everyone else, better luck next time!";break;
+	case 3: randomsnark="Shit your pants before their awesome!";break;
+	case 4: randomsnark="Congratulations on being sufficiently hideous!";break;
+	case 5: randomsnark="And now to survive the sudden death cyber-cyberdemons...";break;
+	default: randomsnark="Well played, everyone!"; break;}
+	HudMessageBold(
+		s:randomsnark;
+		HUDMSG_TYPEON,3,CR_GRAY,1.5,0.62,2.0,0.06);
+	delay(280);
+	GiveInventory("RestartMap",1);
+}
+
+
 
 //old pure ACS stuff below...
 

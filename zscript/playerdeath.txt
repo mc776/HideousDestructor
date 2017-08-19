@@ -131,9 +131,10 @@ extend class HDHandlers{
 					}
 				}
 			}
-			if(!endgame&&!twoteamsleft){
+			if(standingteam<0||(!endgame&&!twoteamsleft)){
 				endgame=true;
-				hde.A_PrintBold(string.format("Team %i has won!",gtmi));
+				if(standingteam<0)hde.ACS_NamedExecuteAlways("CoopWipe",0,0,0);
+				else hde.ACS_NamedExecuteAlways("TDMEndWin",0,standingteam,0);
 			}
 		}
 	}
