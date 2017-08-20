@@ -32,7 +32,7 @@ extend class HDPlayerPawn{
 				fatigue<HDCONST_SPRINTFATIGUE
 			)
 		){
-			if(zerk||onground)mantlemax=64;
+			if(zerk>0||onground)mantlemax=64;
 			else mantlemax=56;
 		}
 		//place the antenna
@@ -83,7 +83,7 @@ extend class HDPlayerPawn{
 				&&!(oldinput & BT_JUMP)
 			){
 			double jumppower=5;
-			if(zerk)jumppower=10;else{
+			if(zerk>0)jumppower=10;else{
 				if(fatigue>30) jumppower=3;  
 				else if(fatigue>20) jumppower=3.5;
 			}
