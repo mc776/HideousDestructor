@@ -51,6 +51,7 @@ class HDStatusBar:DoomStatusBar{
 		if(cp.countinv("RedSkull"))drawimage("RSKUB0",(6,70),DI_TOPLEFT);
 
 		//lives
+		if(!(deathmatch&&teamplay)) //TDM just uses your frags anyway
 		drawlives(30,deathmatch?44:24,DI_TOPLEFT|DI_TEXT_ALIGN_LEFT);
 
 		//frags
@@ -199,6 +200,7 @@ class HDStatusBar:DoomStatusBar{
 
 
 		//lives
+		if(!(deathmatch&&teamplay)) //TDM just uses your frags anyway
 		drawlives(-74,mhht,DI_TEXT_ALIGN_RIGHT|DI_SCREEN_CENTER_BOTTOM);
 
 

@@ -5,6 +5,7 @@
 
 //LEVEL RESET SCRIPT
 bool ending;
+bool wiped;
 script "WipedSpecMessage"(void){
 	if(ending)terminate;
 	setfont("bigfont");
@@ -42,23 +43,22 @@ script "CoopFail"(void){
 	}
 }
 script "CoopWipe"(void){
-	if(!ending){
-		ending=true;
-		Log(s:"Players eliminated.");
-		HudMessageBold(s:" ";0,3,0,0,0,0);
-		delay(34);
-		setfont("bigfont");
-		HudMessageBold (
-			s: "W I P E D   O U T !";
-			HUDMSG_TYPEON,4,CR_GOLD,1.5,0.5,5.6,0.05);
-		setfont("smallfont");
-		delay(80);
-		HudMessageBold(
-			s: "T r y   a g a i n .";
-			HUDMSG_TYPEON,3,CR_GRAY,1.5,0.62,2.0,0.06);
-		delay(200);
-		GiveInventory("RestartMap",1);
-	}
+	ending=true;
+	wiped=true;
+	Log(s:"Players eliminated.");
+	HudMessageBold(s:" ";0,3,0,0,0,0);
+	delay(34);
+	setfont("bigfont");
+	HudMessageBold (
+		s: "W I P E D   O U T !";
+		HUDMSG_TYPEON,4,CR_GOLD,1.5,0.5,5.6,0.05);
+	setfont("smallfont");
+	delay(80);
+	HudMessageBold(
+		s: "T r y   a g a i n .";
+		HUDMSG_TYPEON,3,CR_GRAY,1.5,0.62,2.0,0.06);
+	delay(200);
+	GiveInventory("RestartMap",1);
 }
 
 
@@ -73,9 +73,6 @@ function str byline(void){
 }
 script "TDMEndWin"(int survivingteam){
 	ending=true;
-	HudMessageBold(s:"";0,4,0,0,0,0);
-	HudMessageBold(s:"";0,3,0,0,0,0);
-	delay(34);
 
 	str winnerteam;
 	switch(survivingteam){
@@ -88,6 +85,11 @@ script "TDMEndWin"(int survivingteam){
 	case 6: winnerteam="Golf";break;
 	case 7: winnerteam="Hotel";break;
 	default: winnerteam="No"; break;}
+	Log(s:winnerteam,s:" team alone remains.");
+
+	HudMessageBold(s:"";0,4,0,0,0,0);
+	HudMessageBold(s:"";0,3,0,0,0,0);
+	delay(34);
 
 	setfont("bigfont");
 	HudMessageBold (
@@ -99,10 +101,12 @@ script "TDMEndWin"(int survivingteam){
 		s:byline();
 		HUDMSG_TYPEON,3,CR_GRAY,1.5,0.62,2.0,0.06);
 	delay(280);
-	Exit_Normal(0);
+	if(!wiped)Exit_Normal(0);
 }
 script "FFAWin"(int survivingplayer){
 	ending=true;
+	Log(n:survivingplayer,s:" alone remains.");
+
 	HudMessageBold(s:"";0,4,0,0,0,0);
 	HudMessageBold(s:"";0,3,0,0,0,0);
 	delay(34);
@@ -117,7 +121,7 @@ script "FFAWin"(int survivingplayer){
 		s:byline();
 		HUDMSG_TYPEON,3,CR_GRAY,1.5,0.62,2.0,0.06);
 	delay(280);
-	Exit_Normal(0);
+	if(!wiped)Exit_Normal(0);
 }
 
 
