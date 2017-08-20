@@ -55,14 +55,15 @@ extend class HDHandlers{
 	bool wiped[MAXPLAYERS];
 	override void PlayerDied(PlayerEvent e){
 		fl=fraglimit>=100?fraglimit-100:fraglimit;
-		let hde=HDPlayerPawn(players[e.playernumber].mo);
-		if(!hde)return;
+		let eee=PlayerPawn(players[e.playernumber].mo);
+		if(!eee)return;
+		let hde=HDPlayerPawn(eee);
 
-		hde.A_TakeInventory("WoundCount");
-		hde.A_TakeInventory("LethalDamage");
+		eee.A_TakeInventory("WoundCount");
+		eee.A_TakeInventory("LethalDamage");
 
 		//transfer fires to corpse
-		actor pc=hde.playercorpse;
+		if(hde)actor pc=hde.playercorpse;
 		HDF.TransferFire(players[e.playernumber].mo,pc);
 
 		if(fraglimit && !deathmatch){
@@ -75,11 +76,11 @@ extend class HDHandlers{
 
 			if(fl<coopdeaths){
 				wiped[e.playernumber]=true;
-				hde.A_GiveInventory("WipedOut");
+				eee.A_GiveInventory("WipedOut");
 				if(!endgame){
 					if(fraglimit<100){
 						endgame=true;
-						hde.ACS_NamedExecuteAlways("CoopFail",0,0,0);
+						eee.ACS_NamedExecuteAlways("CoopFail",0,0,0);
 					}else{
 						int wipecount=0;actor pmo;
 						int playercount=0; //what is the REAL way to do this???
@@ -94,7 +95,7 @@ extend class HDHandlers{
 						}
 						if(wipecount>=playercount){
 							endgame=true;
-							hde.ACS_NamedExecuteAlways("CoopWipe",0,0,0);
+							eee.ACS_NamedExecuteAlways("CoopWipe",0,0,0);
 						}
 					}
 				}
@@ -104,12 +105,12 @@ extend class HDHandlers{
 			int gtm=players[e.playernumber].getteam();
 			if(fl<=teamdeaths[gtm]){
 				wiped[e.playernumber]=true;
-				hde.A_Log(string.format("%s is OUT!",players[e.playernumber].getusername()));
+				eee.A_Log(string.format("%s is OUT!",players[e.playernumber].getusername()));
 			}
 
 			teamdeaths[gtm]++;
 			int lives=fl-teamdeaths[gtm];
-			if(hd_debug)hde.A_Log(string.format("Team %i has %i %s left.",
+			if(hd_debug)eee.A_Log(string.format("Team %i has %i %s left.",
 				gtm,
 				lives,
 				lives==1?"life":"lives"
@@ -134,20 +135,20 @@ extend class HDHandlers{
 			}
 			if(standingteam<0||(!endgame&&!twoteamsleft)){
 				endgame=true;
-				if(standingteam<0)hde.ACS_NamedExecuteAlways("CoopWipe",0,0,0);
-				else hde.ACS_NamedExecuteAlways("TDMEndWin",0,standingteam,0);
+				if(standingteam<0)eee.ACS_NamedExecuteAlways("CoopWipe",0,0,0);
+				else eee.ACS_NamedExecuteAlways("TDMEndWin",0,standingteam,0);
 			}
 		}
 		else if(deathmatch && !teamplay && fraglimit>=100){
 			int gpn=e.playernumber;
 			if(fl<=ffadeaths[gpn]){
 				wiped[gpn]=true;
-				hde.A_Log(string.format("%s is OUT!",players[gpn].getusername()));
+				eee.A_Log(string.format("%s is OUT!",players[gpn].getusername()));
 			}
 
 			ffadeaths[gpn]++;
 			int lives=fl-ffadeaths[gpn];
-			if(hd_debug)hde.A_Log(string.format("%s has %i %s left.",
+			if(hd_debug)eee.A_Log(string.format("%s has %i %s left.",
 				players[gpn].getusername(),
 				lives,
 				lives==1?"life":"lives"
@@ -169,7 +170,7 @@ extend class HDHandlers{
 			}
 			if(standingplayer<0||(!endgame&&!twoplayers)){
 				endgame=true;
-				if(standingplayer<0)hde.ACS_NamedExecuteAlways("CoopWipe",0,0,0);
+				if(standingplayer<0)eee.ACS_NamedExecuteAlways("CoopWipe",0,0,0);
 				else players[standingplayer].mo.ACS_NamedExecuteAlways("FFAWin",0,standingplayer+1,0);
 			}
 		}

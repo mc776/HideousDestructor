@@ -1268,7 +1268,7 @@ actor BotBot:RiflemanBase{
 		"----" A 0 A_TakeInventory("NotSeen")
 		goto super::pain
 	spawn2:
-		"----" A 0 A_JumpIf(CallACS("CheckDM")>0,2)
+		"----" A 0 A_JumpIf(deathmatch,2)
 		"----" A 0 A_CheckSight(3)
 		"----" A 0 A_TakeInventory("NotSeen")
 		"----" A 0 A_Jump(256,3)
@@ -1285,7 +1285,7 @@ actor BotBot:RiflemanBase{
 		loop
 	spwander:
 		PLAY E 0 A_ClearTarget
-		"----" A 0 A_JumpIf(CallACS("CheckDM")>0,2)
+		"----" A 0 A_JumpIf(deathmatch,2)
 		"----" A 0 A_CheckSight(3)
 		"----" A 0 A_TakeInventory("NotSeen")
 		"----" A 0 A_Jump(256,3)
