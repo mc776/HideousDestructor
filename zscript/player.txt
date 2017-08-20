@@ -53,6 +53,9 @@ class HDPlayerPawn:PlayerPawn{
 		feetangle=angle;
 
 		if(player&&player.bot&&hd_nobots&&!countinv("WipedOut"))ReplaceBot();
+		else if(hd_forcepistolstart){
+			A_GiveInventory("DoomguyLoadout");
+		}
 
 		if(getcvar("hd_hudsprite"))A_GiveInventory("HUDSprite");
 			else A_TakeInventory("HUDSprite");

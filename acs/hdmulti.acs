@@ -1,9 +1,6 @@
 // ------------------------------------------------------------
 // Multiplayer scripts.
 // ------------------------------------------------------------
-
-
-//LEVEL RESET SCRIPT
 bool ending;
 bool wiped;
 script "WipedSpecMessage"(void){
@@ -46,7 +43,8 @@ script "CoopWipe"(void){
 	ending=true;
 	wiped=true;
 	Log(s:"Players eliminated.");
-	HudMessageBold(s:" ";0,3,0,0,0,0);
+	HudMessageBold(s:"";0,4,0,0,0,0);
+	HudMessageBold(s:"";0,3,0,0,0,0);
 	delay(34);
 	setfont("bigfont");
 	HudMessageBold (
@@ -123,36 +121,4 @@ script "FFAWin"(int survivingplayer){
 	delay(280);
 	if(!wiped)Exit_Normal(0);
 }
-
-
-
-//old pure ACS stuff below...
-
-int deaths_common;
-int deaths[32];
-int wipedout[32];
-int survivingteams[32];
-int maxlives;
-int loseondeathlimit=0;
-int endgame=0;
-int randomsnark;
-int respawninterval=0;
-
-function void CheckConfig(void){
-	//Other counters
-	if(GetCVar("hd_nomeds")){
-		TakeInventory("PortableBerserkPack",999);
-		TakeInventory("PortableMedikit",999);
-		TakeInventory("PortableStimpack",999);
-		TakeInventory("BluePotion",999);
-	}
-}
-function int CurrentLives(void){
-	if (GameType () == GAME_NET_DEATHMATCH) return maxlives-deaths[PlayerNumber()];
-	return maxlives-deaths_common;
-}
-
-
-
-
 

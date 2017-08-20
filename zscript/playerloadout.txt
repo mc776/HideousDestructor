@@ -5,6 +5,7 @@
 //basic stuff every player should have
 extend class HDPlayerPawn{
 	void GiveBasics(){
+		if(!player)return;
 		class<weapon> curr;
 		if(player.readyweapon)curr=player.readyweapon.getclass();
 		A_GiveInventory("Ring");
@@ -138,7 +139,7 @@ class InvReset:Inventory{
 class DoomguyLoadout:InvReset{
 	override void attachtoowner(actor other){
 		reallyclearinventory(other,true);
-		let d=HDPlayerPawn(self);
+		let d=HDPlayerPawn(other);
 		if(d)d.GiveBasics();
 		other.A_GiveInventory("HDPistol");
 		other.A_GiveInventory("HDPistolLoaded",15);
