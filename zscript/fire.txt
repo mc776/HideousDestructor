@@ -44,6 +44,10 @@ extend class HDActor{
 		actor perpetrator,
 		int duration=0
 	){
+		if(!victim){
+			victim=spawn("PersistentDamager",self.pos);
+			victim.target=perpetrator;
+		}
 		actor f=victim.spawn("HDFire",victim.pos);
 		f.target=victim;f.master=perpetrator;
 		if(duration<1) f.stamina=random(40,80);
