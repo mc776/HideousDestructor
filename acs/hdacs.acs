@@ -1,7 +1,7 @@
 #library "HDACS"
 #include "zcommon.acs"
 
-// MUZZLE CLIMB
+//legacy muzzle climb
 script "MuzzleClimb"(int climb, int twist){
 	if((climb)&&((CheckInventory("IsMoving"))||(CheckInventory("IsJumping"))||(CheckInventory("IsHit")))){
 		climb=climb*random(2,3)+random(4,16)*CheckInventory("IsJumping");
@@ -18,42 +18,6 @@ script "MuzzleClimb"(int climb, int twist){
 	int playerangle = GetActorAngle(0)-((random(1,2)+4)*twist);
 	ChangeActorAngle(0,playerangle,1);
 }
-
-
-
-
-// DROP ONE UNIT OF YOUR CURRENT AMMO
-script "DropOneAmmo"(void){
-	if(getcvar("hd_debug"))Log(s:"DropOneAmmo can easily be replaced in ZScript.");
-	if(CheckWeapon("HDPistol")) GiveInventory("DropOnePistolMag",1);
-	else if(CheckWeapon("HDSMG")) GiveInventory("DropOneSMGMag",1);
-	else if((CheckWeapon("Hunter"))
-		||(CheckWeapon("Slayer"))
-		) GiveInventory("DropFourSG",1);
-	else if((CheckWeapon("ZM66Rifle"))
-		||(CheckWeapon("ZM66SemiRifle"))
-		) GiveInventory("DropOneZMag",1);
-	else if(CheckWeapon("ZM66GrenadeRifle")) GiveInventory("DropOneZMagFrag",1);
-	else if(CheckWeapon("Vulcanette")) GiveInventory("DropOneZMagCell",1);
-	else if(CheckWeapon("RocquetteLauncher")) GiveInventory("DropOneRocketHEAT",1);
-	else if(CheckWeapon("Blooper")) GiveInventory("DropOneRocket",1);
-	else if(CheckWeapon("HDFragGrenades")) GiveInventory("DropOneFrag",1);
-	else if(CheckWeapon("LiberatorRifle")) GiveInventory("DropOneLib",1);
-	else if(CheckWeapon("LiberatorGrenadeRifle")) GiveInventory("DropOneLibFrag",1);
-	else if(CheckWeapon("Brontornis")) GiveInventory("DropOneBronto",1);
-	else if(CheckWeapon("BossRifle")) GiveInventory("DropOneBoss",1);
-	else if((CheckWeapon("ThunderBuster"))
-		||(CheckWeapon("BFG9k"))
-		||(CheckWeapon("Lumberjack"))
-		) GiveInventory("DropOneCell",1);
-	else if(CheckWeapon("Injector")) GiveInventory("DropOneMedStimZerk",1);
-	else GiveInventory("DropExtra",1);
-//	ACS_NamedExecuteAlways("CarryLimit",0,0,0);
-}
-
-
-
-
 
 #include "hdmulti.acs"
 

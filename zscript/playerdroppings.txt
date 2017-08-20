@@ -1,0 +1,29 @@
+//-------------------------------------------------
+// heh
+//-------------------------------------------------
+class HDDropOne:ActionItem{
+	states{
+	use:
+		TNT1 A 0{
+			if(!player||!player.readyweapon)return;
+			name cw=player.readyweapon.getclassname();
+			if(cw=="HDPistol")A_GiveInventory("DropOnePistolMag");
+			else if(cw=="HDSMG")A_GiveInventory("DropOneSMGMag");
+			else if(cw=="Hunter"||cw=="Slayer")A_GiveInventory("DropFourSG");
+			else if(cw=="ZM66Rifle"||cw=="ZM66SemiRifle")A_GiveInventory("DropOneZMag");
+			else if(cw=="ZM66GrenadeRifle")A_GiveInventory("DropOneZMagFrag");
+			else if(cw=="Vulcanette")A_GiveInventory("DropOneZMagCell");
+			else if(cw=="RocquetteLauncher")A_GiveInventory("DropOneRocketHEAT");
+			else if(cw=="Blooper")A_GiveInventory("DropOneRocket");
+			else if(cw=="HDFragGrenades")A_GiveInventory("DropOneFrag");
+			else if(cw=="LiberatorRifle")A_GiveInventory("DropOneLib");
+			else if(cw=="LiberatorGrenadeRifle")A_GiveInventory("DropOneLibFrag");
+			else if(cw=="Brontornis")A_GiveInventory("DropOneBronto");
+			else if(cw=="BossRifle")A_GiveInventory("DropOneBoss");
+			else if(cw=="ThunderBuster"||cw=="BFG9k"||cw=="Lumberjack")
+				A_GiveInventory("DropOneCell",1);
+			else if(cw=="SelfBandage")A_GiveInventory("DropOneMedStimZerk");
+			else A_GiveInventory("DropExtra");
+		}fail;
+	}
+}
