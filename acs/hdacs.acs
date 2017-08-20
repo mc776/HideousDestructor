@@ -55,22 +55,5 @@ script "DropOneAmmo"(void){
 
 
 
-// HELL FLOOR - FOR SCREAMING TREES
-// (zscript equivalent is not noticeably less clunky)
-script "CheckHellFloor" (void){
-	if(
-	(CheckActorFloorTexture(0,"SFLR6_1"))||(CheckActorFloorTexture(0,"SFLR6_4"))||(CheckActorFloorTexture(0,"SFLR7_1"))||(CheckActorFloorTexture(0,"SFLR7_4"))
-	||(CheckActorFloorTexture(0,"BLOOD1"))||(CheckActorFloorTexture(0,"BLOOD2"))||(CheckActorFloorTexture(0,"BLOOD3"))
-//	||(CheckActorFloorTexture(0,"NUKAGE1"))||(CheckActorFloorTexture(0,"NUKAGE2"))||(CheckActorFloorTexture(0,"NUKAGE3"))
-	||(CheckActorFloorTexture(0,"LAVA1"))||(CheckActorFloorTexture(0,"LAVA2"))||(CheckActorFloorTexture(0,"LAVA3"))||(CheckActorFloorTexture(0,"LAVA4"))
-	)
-	GiveInventory("IsInHell",1);
-}
-
-
-
-
-
-
 #include "hdmulti.acs"
 
