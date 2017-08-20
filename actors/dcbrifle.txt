@@ -157,7 +157,7 @@ actor HDSpent7mmPickup : Ammo
 
 actor LiberatorRifle : HDWeapon
 {
-	game Doom
+	+weapon.cheatnotweapon
 	weapon.slotnumber 6
 	weapon.ammotype1 "LiberatorLoaded"
 	weapon.ammotype2 "LiberatorMag"
@@ -169,7 +169,6 @@ actor LiberatorRifle : HDWeapon
 	weapon.bobrangey 0.9
 	scale 0.7
 	Obituary "%o was liberated by %k."
-	+weapon.cheatnotweapon
 	states
 	{
 	select0:
@@ -285,7 +284,6 @@ actor LiberatorRifle : HDWeapon
 		}goto nope
 
 	zoom:
-//	altfire:
 		BRFG A 1 offset(0,34){
 			A_SetCrosshair(21);
 			A_TakeInventory("IsWeaponReady",999);
@@ -491,7 +489,7 @@ actor LiberatorGrenadeRifle : LiberatorRifle
 {
 	game Doom
 	weapon.slotnumber 6
-	weapon.selectionorder 199
+	weapon.selectionorder 198
 	inventory.pickupmessage "You got the GL-mounted battle rifle!"
 	-weapon.cheatnotweapon
 	states
