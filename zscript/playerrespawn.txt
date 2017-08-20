@@ -123,7 +123,6 @@ class HDSpectator:PlayerPawn{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		A_TakeInventory("IsAlive");
 		setz(min(floorz+64,ceilingz-4));
 		if(countinv("WipedOut"))ACS_NamedExecuteAlways("WipedSpecMessage");
 		else A_Print("Now spectating.\n\n\n\ccpress fire and altfire to\n\n\ccwarp to remaining players\n\n\cc(if any).",6,"SMALLFONT");
