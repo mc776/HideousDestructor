@@ -1,11 +1,11 @@
 // ------------------------------------------------------------
-//   Fireball
-//   a pocket of almost-lighter-than-air hot charged gas,
-//   held together by magic and capable of propelling itself
+// Fireball
+// a pocket of almost-lighter-than-air hot charged gas,
+// held together by magic and capable of propelling itself
 // ------------------------------------------------------------
 
 //persistent tail actor that need not be spawned constantly
-class HDTail:IdleDummy{
+class HDFireballTail:IdleDummy{
 	default{
 		+forcexybillboard +rollsprite +rollcenter +bright +noclip
 		renderstyle "add";
@@ -15,7 +15,10 @@ class HDTail:IdleDummy{
 		if(!master){
 			destroy();return;
 		}
-		if(globalfreeze||level.Frozen) return;
+		if(globalfreeze||level.Frozen){
+			clearinterpolation();
+			return;
+		}
 		if(alpha<0.3){
 			setxyz(master.pos);
 			vel=master.vel*speed+(frandom(-0.1,0.1),frandom(-0.1,0.1),frandom(0.5,1));
@@ -32,46 +35,46 @@ class HDTail:IdleDummy{
 	}
 }
 
-//a pocket of almost-lighter-than-air hot charged gas, held together by magic
-//capable of propelling itself
 //damage would be balefire, electro, radioactivity or heat/immolation
 class HDFireball:HDActor{
 	vector3 oldvel;
 	vector3 frac;
 	int fracc;
-	vector3 totracer;
-	int disttotracer;
 	double seekspeed;
 	double zat;
 	default{
 		+missile +noblockmap +dropoff +activateimpact +activatepcross +hittracer
 		+forcexybillboard +rollsprite +rollcenter +bright
+
 		renderstyle "add";
 		radius 4;height 4;speed 10;gravity 0.05;deathheight 24;
 		damagetype "thermal";damagefunction(1);
+
+		seesound "imp/attack";deathsound "imp/shotx";
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		seekspeed=speed*0.618;
 		fracc=speed/radius;
 		frac=vel/fracc;
-		A_PlaySound(activesound,CHAN_BODY,0.7,true,6);
+		A_PlaySound(seesound,CHAN_BODY);
 	}
-	void A_SimpleSeek(
+	void A_FBSeek(
 		int seekradius=0,
 		bool inlosonly=false
 	){
-		if(!tracer) return;
-		if(pos.z>tracer.pos.z+tracer.height) totracer=(0,0,0);
-			else totracer=(0,0,tracer.height);
+		if(!tracer)return;
+		vector3 totracer;
+		if(pos.z>tracer.pos.z+tracer.height)totracer.z=0;
+			else totracer.z=tracer.height;
 		totracer+=tracer.pos-self.pos;
-		disttotracer=totracer.length();
+		double disttotracer=distance3d(tracer);
 		if(
 			(!inlosonly || checksight(tracer))
 			&&
 			(seekradius>0 && disttotracer<seekradius)
 		){
-			totracer*=seekspeed/disttotracer;
+			totracer=totracer.unit()*seekspeed;
 			totracer.z*=1.6;
 			vel+=totracer;
 		}
@@ -90,19 +93,21 @@ class HDFireball:HDActor{
 		if(vel.length()>speed) vel*=0.9;
 		if(zat<deathheight && vel.z<0) vel.z+=(deathheight-zat)*0.03;
 	}
-	void A_Tail(){
+	void A_FBTail(){
 		if(!missilename) return;
 		actor a=spawn(missilename,pos);
 		a.master=self;a.vel=self.vel*0.9;
 	}
 	override void Tick(){
-		ClearInterpolation();
-		if(globalfreeze||level.Frozen) return;
+		if(globalfreeze||level.frozen){
+			clearinterpolation();
+			return;
+		}
 		if(!bmissile){
 			//I don't anticipate any use other than death state...
 			trymove(pos.xy+vel.xy,true);
 			if(pos.z<floorz)setz(floorz);
-			else if(pos.z+height>ceilingz) setz(ceilingz-height);
+			else if(pos.z+height>ceilingz)setz(ceilingz-height);
 			else addz(vel.z,true);
 			vel*=0.9;
 			nexttic();
@@ -113,8 +118,7 @@ class HDFireball:HDActor{
 		//update frac
 		if(oldvel!=vel){
 			oldvel=vel;
-			if(radius) fracc=clamp(vel.length()/radius,1,256);
-				else fracc=vel.length();
+			fracc=max(vel.length()/radius,1);
 			frac=vel/fracc;
 		}
 
@@ -137,8 +141,6 @@ class HDFireball:HDActor{
 			}
 			addz(frac.z,true);
 
-			//hit floor
-			zat=floorz;
 			//check skyfloor first before usual
 			if(
 				!bSkyExplode
@@ -147,15 +149,13 @@ class HDFireball:HDActor{
 			){
 				destroy();
 				return;
-			}else if(pos.z<zat){
-				setz(zat);
+			}else if(pos.z<floorz){
+				setz(floorz);
 				hitfloor();
 				explodemissile(null,null);
 				return;
 			}
 
-			//hit ceiling
-			zat=ceilingz;
 			//by the time it comes back down it would have dissipated!
 			//(this rationalization is subject to change)
 			if(
@@ -165,14 +165,46 @@ class HDFireball:HDActor{
 			){
 				destroy();
 				return;
-			}else if(pos.z+height>zat){
-				setz(zat-height);
+			}else if(pos.z+height>ceilingz){
+				setz(ceilingz-height);
 				explodemissile(null,null);
 				return;
 			}
 		}
-		if(gravity && !tracer)vel.z-=getgravity();
+		if(gravity&&!tracer)vel.z-=getgravity();
 		nexttic();
+	}
+}
+
+
+
+class dimpbd:hdfireballtail{
+	default{
+		translation "ice";
+		renderstyle "subtract";
+		deathheight 0.9;
+	}
+	states{
+	spawn:
+		BAL1 CDE 5{
+			roll=random(0,7)*45;
+			scale.x*=randompick(-1,1);
+		}loop;
+	}
+}
+class dimpb:hdfireball{
+	default{
+		missiletype "dimpbd";
+	}
+	states{
+	spawn:
+		BAL1 ABAB 3 A_FBTail();
+	spawn2:
+		BAL1 AB 3;
+		loop;
+	death:
+		BAL1 CDE 4;
+		stop;
 	}
 }
 

@@ -320,7 +320,8 @@ class HDCopyTrail:IdleDummy{
 	spawn:#### A -1;stop;
 	}
 	override void Tick(){
-		if(globalfreeze||level.Frozen) return;
+		clearinterpolation();
+		if(globalfreeze||level.Frozen)return;
 		scale.x+=frandom(-0.01,0.01);scale.y=scale.x;
 		accuracy++;
 		if(accuracy>=4){
