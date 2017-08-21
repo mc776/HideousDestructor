@@ -48,9 +48,6 @@ extend class HDPlayerPawn{
 	}
 
 	void HeartTicker(){
-		if(bkilled) return; //don't really need this...
-		if(beatmax)A_SetInventory("HeartBeatCounter",beatcount*35/beatmax); //for sbarinfo
-
 		//zerk!!!!
 		if(zerk){
 			if(zerk>0){
@@ -134,7 +131,6 @@ extend class HDPlayerPawn{
 			}
 
 			//remove these once we're done with them
-			//lethal didn't mean the same as oldwoundcount but oh well
 			if(countinv("WoundCount")){
 				woundcount+=countinv("WoundCount");
 				A_TakeInventory("WoundCount");
@@ -143,21 +139,9 @@ extend class HDPlayerPawn{
 				regenblues+=countinv("RegenBlues")*12;
 				A_TakeInventory("RegenBlues");
 			}
-			if(countinv("Zerk")){
-				zerk+=countinv("Zerk")*10;
-				A_TakeInventory("Zerk");
-			}
 			if(countinv("RegenStims")){
 				stimcount+=countinv("RegenStims");
 				A_TakeInventory("RegenStims");
-			}
-			if(countinv("AggravatedDamage")){
-				aggravateddamage+=countinv("AggravatedDamage");
-				A_TakeInventory("AggravatedDamage");
-			}
-			if(countinv("LethalDamage")){
-				oldwoundcount+=countinv("LethalDamage");
-				A_TakeInventory("LethalDamage");
 			}
 			if(countinv("StunCount")){
 				stunned+=countinv("StunCount");

@@ -24,15 +24,12 @@ actor IsMale:InventoryFlag{}
 actor IsFemale:InventoryFlag{}
 actor IsMoving:InventoryFlag{inventory.maxamount 20 inventory.interhubamount 0}
 actor IsZoomed:InventoryFlag{inventory.interhubamount 0}
-actor HeartBeatCounter:InventoryFlag{inventory.maxamount 35}
 
 
 actor IsHit:InventoryFlag{}
 
 actor Fatigue:InventoryFlag{inventory.maxamount 200 inventory.interhubamount 0}
 actor StunCount:InventoryFlag{inventory.maxamount 3500 inventory.interhubamount 0}
-
-actor UsingMeds:InventoryFlag{inventory.maxamount 4  inventory.interhubamount 0}
 
 
 actor PressingAltfire:InventoryFlag{}
@@ -43,14 +40,11 @@ actor PressingUnload:InventoryFlag{}
 actor PressingAltReload:InventoryFlag{}
 actor PressingFireMode:InventoryFlag{}
 
-actor LethalDamage:InventoryFlag{inventory.maxamount 200}
-actor AggravatedDamage:LethalDamage{}
-actor HasZerked:LethalDamage{inventory.interhubamount 0}
+actor HasZerked:InventoryFlag{inventory.interhubamount 0}
 actor WoundCount:InventoryFlag{inventory.maxamount 36}
 actor BandageCount:WoundCount{}
 actor RegenStims:InventoryFlag{inventory.maxamount 25}
 actor RegenBlues:InventoryFlag{inventory.maxamount 200}
-actor Zerk:RegenBlues{inventory.interhubamount 0}
 
 
 actor HDKillCount:InventoryFlag{inventory.maxamount MAXINT}
@@ -65,14 +59,13 @@ actor HDLives:InventoryFlag{inventory.maxamount 999}
 
 actor HasDroppedGun:InventoryFlag{}
 
-
-
-// ------------------------------------------------------------
-//   Action items
-// ------------------------------------------------------------
-
 actor GimmeHud:InventoryFlag{inventory.maxamount 10}
 
+
+
+// ------------------------------------------------------------
+// Action items
+// ------------------------------------------------------------
 actor HDCorpseFlags:ActionItem{
 	states{
 	pickup:
@@ -91,22 +84,6 @@ actor HDCorpseFlags:ActionItem{
 		fail
 	}
 }
-
-
-// ------------------------------------------------------------
-//   Damage types
-// ------------------------------------------------------------
-
-DamageType Falling{
-	NoArmor
-}
-DamageType Bleedout{
-	NoArmor
-}
-DamageType InvisibleBleedout{
-	NoArmor
-}
-
 
 
 // ------------------------------------------------------------
@@ -195,7 +172,6 @@ actor HDWeaponPurge:ActionItem{
 		fail
 	}
 }
-
 
 
 

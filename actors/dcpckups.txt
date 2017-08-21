@@ -20,40 +20,29 @@ actor PortableHealingItemBigger:RandomSpawner replaces Berserk{
 }
 
 
-
-
 //-------------------------------------------------
 // Other Replacements
 //-------------------------------------------------
-
-actor PlasmaReplaces : RandomSpawner replaces PlasmaRifle
-{
+actor PlasmaReplaces:RandomSpawner replaces PlasmaRifle{
 	dropitem "LiberatorRiflePickup" 256 2
 	dropitem "LiberatorGrenadeRiflePickup" 256 1
 	dropitem "PlasmaPickup" 256 5
 }
-
-actor ChaingunReplaces : RandomSpawner replaces Chaingun
-{
+actor ChaingunReplaces:RandomSpawner replaces Chaingun{
 	dropitem "LiberatorRiflePickup" 256 1
 	dropitem "HERPPickup" 256 2
 	dropitem "VulcPickup" 256 9
 }
-
-actor SSGReplaces : RandomSpawner replaces SuperShotgun
-{
+actor SSGReplaces:RandomSpawner replaces SuperShotgun{
 	dropitem "BloopMapPickup" 256 2
 	dropitem "SlayerPickup" 256 5
 }
-actor RLReplaces : RandomSpawner replaces RocketLauncher
-{
+actor RLReplaces:RandomSpawner replaces RocketLauncher{
 	dropitem "BloopMapPickup" 256 1
 	dropitem "RocquetteLauncherPickup" 256 4
 }
-actor BloopMapPickup
-{
-	states
-	{
+actor BloopMapPickup{
+	states{
 	spawn:
 		TNT1 A 0 nodelay{
 			A_SpawnItemEx("Blooper");
@@ -67,7 +56,6 @@ actor BloopMapPickup
 //-------------------------------------------------
 // Keys
 //-------------------------------------------------
-
 actor HDRedKey:HDHPK replaces RedCard{
 	+wallsprite
 	scale 0.4
@@ -151,15 +139,12 @@ actor HDYellowKey:HDRedKey replaces YellowCard{
 		}goto beep
 	}
 }
-
-actor HDRedSkull : HDHPK replaces RedSkull
-{
+actor HDRedSkull:HDHPK replaces RedSkull{
 	scale 0.6
 	radius 20
 	renderstyle translucent
 	alpha 0.75
-	states
-	{
+	states{
 	spawn:
 		RSKU A 0 A_Stop
 		"----" A 0 A_Jump(256,"spawn2")
@@ -181,10 +166,8 @@ actor HDRedSkull : HDHPK replaces RedSkull
 		"----" A 0 A_Jump(256,"spawn")
 	}
 }
-actor HDBlueSkull : HDRedSkull replaces BlueSkull
-{
-	states
-	{
+actor HDBlueSkull:HDRedSkull replaces BlueSkull{
+	states{
 	give:
 		"----" A 0 A_JumpIfInTargetInventory("BlueSkull",1,"spawn")
 		"----" A 0 A_GiveToTarget("BlueSkull",1)
@@ -195,10 +178,8 @@ actor HDBlueSkull : HDRedSkull replaces BlueSkull
 		loop
 	}
 }
-actor HDYellowSkull : HDRedSkull replaces YellowSkull
-{
-	states
-	{
+actor HDYellowSkull:HDRedSkull replaces YellowSkull{
+	states{
 	give:
 		"----" A 0 A_JumpIfInTargetInventory("YellowSkull",1,"spawn")
 		"----" A 0 A_GiveToTarget("YellowSkull",1)
@@ -210,11 +191,9 @@ actor HDYellowSkull : HDRedSkull replaces YellowSkull
 	}
 }
 
-actor HDMap : HDUPK replaces Allmap
-{
+actor HDMap:HDUPK replaces Allmap{
 	scale 0.3
-	states
-	{
+	states{
 	give:
 		PMAP A 0{
 			A_GiveToTarget("MapRevealer",1);
