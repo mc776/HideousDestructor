@@ -92,13 +92,15 @@ class HDMobAI:Inventory{
 		actor attacktarget=caller.target;
 		if(!attacktarget||attacktarget.health<random(-5,1)){
 			caller.target=null;
-			caller.setstatelabel("spawn");
-			return;
+			if(!caller.bfriendly){
+				caller.setstatelabel("spawn");
+				return;
+			}else if(caller.LookForEnemies(false))attacktarget=caller.target;
 		}
 		if(!movetarget)movetarget=attacktarget;
 
-		//call A_Chase once for targeting purposes
-		if(caller.checksight(attacktarget)){
+		//attack as appropriate
+		if(attacktarget&&caller.checksight(attacktarget)){
 			if(
 				caller.findstate("melee")
 				&&attacktarget.distance3d(caller)<caller.meleerange
@@ -126,7 +128,8 @@ class HDMobAI:Inventory{
 		caller.target=movetarget;
 		caller.bfrightened=flee;
 		caller.maxtargetrange=0;
-		caller.A_Chase(flags:CHF_NODIRECTIONTURN|CHF_NOPOSTATTACKTURN|(res?CHF_RESURRECT:0));
+		if(movetarget)caller.A_Chase(flags:CHF_NODIRECTIONTURN|CHF_NOPOSTATTACKTURN|(res?CHF_RESURRECT:0));
+		else caller.A_Wander(flags:CHF_NODIRECTIONTURN);
 		vector3 pp=caller.pos;
 
 		//reset target and fear
@@ -153,7 +156,8 @@ class HDMobAI:Inventory{
 		}
 
 		//face appropriate direction
-		if(caller.distance3d(attacktarget)<caller.meleerange*2)caller.A_FaceTarget(10,10);
+		if(attacktarget&&caller.distance3d(attacktarget)<caller.meleerange*2)
+			caller.A_FaceTarget(10,10);
 		else caller.A_FaceMovementDirection(5,40);
 	}
 

@@ -35,8 +35,13 @@ class dimpb:hdfireball{
 	death:
 		BAL1 A 0{
 			if(!blockingmobj)A_SpawnChunks("HDSmokeChunk",2,frandom(2,4));
-			else if(target && blockingmobj.species==target.species)return;
+			else if(target&&
+				blockingmobj.health>0&&target.health>0&&
+				blockingmobj.getspecies()==target.getspecies()&&
+				!(blockingmobj.ishostile(target))
+			)return;
 			A_Immolate(blockingmobj,target,random(20,50));
+			if(blockingmobj)blockingmobj.damagemobj(self,target,random(5,15),"Thermal");
 		}
 		BAL1 CDE 4;
 		stop;
@@ -55,7 +60,7 @@ class dimp:doomimp{
 	}
 	states{
 	see:
-		TROO AABBCCDD 4{HDMobAI.Chase(self);}
+		TROO AABBCCDD 4 {HDMobAI.Chase(self);}
 		loop;
 	melee:
 		TROO ABCD 4{
@@ -102,7 +107,7 @@ class dimp:doomimp{
 			a.tracer=target;
 		}
 		TROO G 0{
-			if(!random(0,checksight(target)?2:6)){
+			if(target&&!random(0,checksight(target)?2:6)){
 				spamming=true;
 				setstatelabel("shoot");
 			}
