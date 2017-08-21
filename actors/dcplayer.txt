@@ -576,7 +576,6 @@ actor DelayedTaunter{
 // ------------------------------------------------------------
 // Null weapon
 // ------------------------------------------------------------
-
 actor NulledWeapon:InventoryFlag{}
 actor NullWeapon:Weapon{
 	+weapon.wimpy_weapon
@@ -617,18 +616,3 @@ actor NullWeapon:Weapon{
 		goto ready
 	}
 }
-
-actor WipedOut:HDWeapon{
-	states{
-	ready:
-		TNT1 A 0 A_ChangeFlag("pickup",0)
-		TNT1 A 0 A_SetCrosshair(21)
-		TNT1 A 1
-		wait
-	fire:
-		TNT1 A 1
-		goto ready
-	}
-}
-
-
