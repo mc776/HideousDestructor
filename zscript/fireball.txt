@@ -48,14 +48,14 @@ class HDFireball:HDActor{
 		+forcexybillboard +rollsprite +rollcenter +bright
 
 		renderstyle "add";
-		radius 4;height 4;speed 10;gravity 0.05;deathheight 24;
+		radius 4;height 4;speed 12;gravity 0.05;deathheight 30;
 		damagetype "thermal";damagefunction(1);
 
 		seesound "imp/attack";deathsound "imp/shotx";
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		seekspeed=speed*0.0618;
+		seekspeed=speed*0.2;
 		grav=getgravity();
 		fracc=speed/radius;
 		frac=vel/fracc;
@@ -94,7 +94,7 @@ class HDFireball:HDActor{
 			);
 		}
 		zat=pos.z-floorz;
-		if(zat<deathheight&&vel.z<0)vel.z+=(deathheight-zat)*0.03;
+		if(zat<deathheight&&vel.z<0)vel.z+=(deathheight-zat)*0.06;
 	}
 	void A_FBTail(){
 		if(!missilename) return;
@@ -174,79 +174,9 @@ class HDFireball:HDActor{
 				return;
 			}
 		}
-		vel.z-=grav;
+		if(grav)vel.z-=grav;
 		nexttic();
 	}
 }
-
-
-
-class dimpbd:hdfireballtail{
-	default{
-		translation "ice";
-		renderstyle "subtract";
-		deathheight 0.9;
-	}
-	states{
-	spawn:
-		BAL1 CDE 5{
-			roll=random(0,359);
-			scale.x*=randompick(-1,1);
-		}loop;
-	}
-}
-class dimpb:hdfireball{
-	default{
-		missiletype "dimpbd";
-		damagetype "thermal";
-		decal "scorch";
-	}
-	states{
-	spawn:
-		BAL1 ABAB 3 A_FBTail();
-	spawn2:
-		BAL1 AB 3 {if(!A_FBSeek())A_FBFloat();}
-		loop;
-	death:
-		BAL1 A 0{
-			if(!blockingmobj)A_SpawnChunks("HDSmokeChunk",2,frandom(2,4));
-			A_Immolate(blockingmobj,target,random(25,35));
-		}
-		BAL1 CDE 4;
-		stop;
-	}
-}
-class dimp:doomimp{
-	vector2 lead1;
-	vector2 lead2;
-	states{
-	missile:
-		TROO EE 6 A_FaceTarget(60,60);
-		TROO E 4 A_FaceTarget(20,20);
-		TROO F 2 A_FaceTarget(20,20);
-		TROO F 1{
-			A_FaceTarget(20,20);
-			lead1=(angle,pitch);
-		}
-		TROO F 1{
-			A_FaceTarget(20,20);
-			lead2=(angle,pitch);
-		}
-		TROO G 10{
-			if(target){
-				double dist=distance2d(target);
-				pitch-=dist*0.01;
-				pitch-=(lead2.y-lead1.y)*dist*0.02;
-				angle+=(lead2.x-lead1.x)*dist*frandom(0,0.06);
-			}
-			actor a;bool b;
-			[b,a]=A_SpawnItemEx("dimpb",0,0,32,cos(pitch)*12,0,sin(-pitch)*12,0,SXF_SETTARGET);
-			a.tracer=target;
-		}
-		goto see;
-	}
-}
-
-
 
 

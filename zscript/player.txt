@@ -41,6 +41,23 @@ class HDPlayerPawn:PlayerPawn{
 		-telestomp
 		telefogsourcetype "";
 		telefogdesttype "";
+
+		-playerpawn.nothrustwheninvul
+		-pickup
+		+forceybillboard //zoom actor will fuck up otherwise
+
+		height 52;radius 12;
+		mass 150;gibhealth 180;
+
+		player.viewheight 48;
+		player.attackzoffset 21;
+		player.damagescreencolor "12 06 04";
+		player.jumpz 0;
+		player.colorrange 112,127;
+		maxstepheight 24;
+		player.gruntspeed 16.0;
+		player.displayname "Marine";
+		player.crouchsprite "PLYC";
 	}
 	override void PostBeginPlay(){
 		super.PostBeginPlay();
@@ -93,6 +110,19 @@ class HDPlayerPawn:PlayerPawn{
 				}else A_TakeInventory("IsSupported");
 			}else if(countinv("WeaponBusy"))A_TakeInventory("IsSupported");
 		}
+		loop;
+	see:
+		//this state is needed for the player setup preview to work
+		---- A 0 {setstatelabel("see0");}
+	seepreview:
+		PLAY ABCDABCDABCDABCDABCD 4;
+		PLAY E 25;
+		PLAY FEEF 1;
+		PLAY E 15;
+		PLAY F 1;
+		PLAY E 15;
+		PLAY FEEFEEF 1;
+		PLAY E 35;
 		loop;
 	see0:
 		---- A 0{

@@ -158,6 +158,7 @@ class HDMobAI:Inventory{
 	}
 
 	//check if shot is clear
+	//hdmobai.tryshoot(self,pradius:6,pheight:6)
 	static bool TryShoot(
 		actor caller,
 		double shootheight=-1,
@@ -271,31 +272,3 @@ class exzo:zombieman{
 		goto see;
 	}
 }
-class exim:doomimp{
-	void HDA_Chase(actor movetarget=null){
-		HDMobAI.Chase(self,movetarget);
-	}
-	states{
-	see:
-		TROO AABBCCDD 4{HDMobAI.Chase(self);}
-		loop;
-	melee:
-		TROO E 10 A_FaceTarget();
-		TROO F 8 A_SargAttack();
-		TROO G 8;
-		goto see;
-	missile:
-		TROO E 10 A_FaceTarget();
-		TROO F 8 A_TroopAttack();
-		TROO G 8;
-		goto see;
-	pain:
-		TROO H 3;
-		TROO H 3 A_Pain();
-		goto see;
-	raise:
-		TROO LKJI 5;
-		goto see;
-	}
-}
-

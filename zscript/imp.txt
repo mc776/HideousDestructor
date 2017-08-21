@@ -1,0 +1,120 @@
+// ------------------------------------------------------------
+// Imp
+// ------------------------------------------------------------
+class dimpbd:hdfireballtail{
+	default{
+		translation "ice";
+		renderstyle "subtract";
+		deathheight 0.9;
+		gravity 0;
+	}
+	states{
+	spawn:
+		BAL1 CDE 5{
+			roll+=10;
+			scale.x*=randompick(-1,1);
+		}loop;
+	}
+}
+class dimpb:hdfireball{
+	default{
+		missiletype "dimpbd";
+		damagetype "thermal";
+		decal "scorch";
+		gravity 0;
+	}
+	states{
+	spawn:
+		BAL1 ABAB 3 A_FBTail();
+	spawn2:
+		BAL1 AB 3 {
+			roll+=10;
+			if(!A_FBSeek())A_FBFloat();
+		}
+		loop;
+	death:
+		BAL1 A 0{
+			if(!blockingmobj)A_SpawnChunks("HDSmokeChunk",2,frandom(2,4));
+			else if(target && blockingmobj.species==target.species)return;
+			A_Immolate(blockingmobj,target,random(20,50));
+		}
+		BAL1 CDE 4;
+		stop;
+	}
+}
+class dimp:doomimp{
+	vector2 lead1;
+	vector2 lead2;
+	bool spamming;
+	default{
+		translation "64:72=50:71";
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		hdmobai.resize(self,0.8,1.0);
+	}
+	states{
+	see:
+		TROO AABBCCDD 4{HDMobAI.Chase(self);}
+		loop;
+	melee:
+		TROO ABCD 4{
+			A_FaceTarget(40,40);
+			if(A_JumpIfTargetInLOS("null",20))setstatelabel("claw");
+		}
+	claw:
+		TROO E 8 A_FaceTarget(20);
+		TROO F 4 A_CustomMeleeAttack(random(10,30),"imp/melee","","claws",true);
+		TROO G 10;
+		goto see;
+	missile:
+		TROO ABCD 4{
+			spamming=false;
+			A_FaceTarget(40,40);
+			if(A_JumpIfTargetInLOS("null",20))setstatelabel("shoot");
+		}
+	shoot:
+		TROO E 10{
+			if(!spamming)A_FaceTarget(20,20);
+		}
+		TROO F 2 {if(!spamming)A_FaceTarget(20,20);}
+		TROO F 1{
+			if(spamming)return;
+			A_FaceTarget(20,20);
+			lead1=(angle,pitch);
+		}
+		TROO F 1{
+			if(spamming)return;
+			A_FaceTarget(20,20);
+			lead2=(angle,pitch);
+		}
+		TROO G 10{
+			if(spamming){
+				pitch+=frandom(-0.2,0.2);
+				angle+=frandom(-0.2,0.2);
+			}else if(target){
+				double dist=min(distance2d(target),1024)*frandom(0,0.06);
+				pitch-=(lead2.y-lead1.y)*dist;
+				angle+=(lead2.x-lead1.x)*dist;
+			}
+			actor a;bool b;
+			[b,a]=A_SpawnItemEx("dimpb",0,0,32,cos(pitch)*12,0,sin(-pitch)*12,0,SXF_SETTARGET);
+			a.tracer=target;
+		}
+		TROO G 0{
+			if(!random(0,checksight(target)?2:6)){
+				spamming=true;
+				setstatelabel("shoot");
+			}
+		}
+		goto see;
+	pain:
+		TROO H 3 A_GiveInventory("HDFireDouse",60);
+		TROO H 3 A_Pain();
+		goto see;
+	raise:
+		TROO LKJI 5;
+		goto see;
+	}
+}
+
