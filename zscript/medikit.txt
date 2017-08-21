@@ -154,11 +154,11 @@ class HDMedikitter:HDWoundFixer{
 				if(getcvar("hd_helptext"))A_Print("You'll need them to stay still...");
 				return resolvestate("nope");
 			}
-			if(!c.countinv("IsBot") && c.countinv("WornRadsuit") && c.countinv("PortableRadsuit")){
+			if(!c.player.bot && c.countinv("WornRadsuit") && c.countinv("PortableRadsuit")){
 				if(getcvar("hd_helptext"))A_Print("Get them to take off their environment suit first!\n\n(toggle it in the inventory)");
 				return resolvestate("nope");
 			}
-			if(!c.countinv("IsBot") && c.countinv("GreenArmour")+c.countinv("BlueArmour")+c.countinv("BlackArmour")){
+			if(!c.player.bot && c.countinv("GreenArmour")+c.countinv("BlueArmour")+c.countinv("BlackArmour")){
 				if(getcvar("hd_helptext"))A_Print("Get them to take off their armour first!\n\n(\cdhd_strip\c- in the console)");
 				return resolvestate("nope");
 			}
