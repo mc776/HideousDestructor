@@ -66,8 +66,8 @@ class HDWeapon:Weapon{
 	virtual void actualpickup(actor other){
 		if(other.countinv(getclassname()))return;
 		other.A_Log(string.format("\cg%s",pickupmessage()),true);
-		trypickup(other);
 		other.A_PlaySound(pickupsound,CHAN_AUTO);
+		attachtoowner(other);
 	}
 	override bool cancollidewith(actor other,bool passive){
 		return(other is "userpickerupper");

@@ -1,7 +1,7 @@
 // ------------------------------------------------------------
 // Chainsaw
 // ------------------------------------------------------------
-class Lumberjack:HDWeapon{
+class Lumberjack:HDWeapon replaces Chainsaw{
 	default{
 		weapon.selectionorder 801;
 		weapon.slotnumber 1;
@@ -12,7 +12,7 @@ class Lumberjack:HDWeapon{
 		weapon.ammotype1 "LumberCell";
 		weapon.ammotype2 "HDCellPacks";
 		weapon.kickback 2;
-		scale 0.6;
+		scale 0.4;
 		inventory.pickupmessage "You got the chainsaw! Go find some meat!";
 	}
 	states{
@@ -222,14 +222,26 @@ class Lumberjack:HDWeapon{
 
 
 	spawn:
-		TNT1 A 1;
-		TNT1 A 0 A_CheckProximity("spawndropped","PlayerPawn",20,1, CPXF_COUNTDEAD|CPXF_SETTARGET|CPXF_ANCESTOR|CPXF_CLOSEST|CPXF_NOZ);
-	spawnfresh:
-		TNT1 A 0 A_SpawnItemEx("LumberjackPickup",0,0,0,vel.x,vel.y,vel.z,0, SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_NOPOINTERS);
-		stop;
-	spawndropped:
-		TNT1 A 0 A_JumpIfInTargetInventory("Lumberjack",1,"spawnfresh");
-		TNT1 A 0 A_SpawnItemEx("LumberjackPickup",0,0,0,vel.x,vel.y,vel.z,0, SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS);
-		stop;
+		CSAW A -1;
+	}
+
+
+	int loadedcell;
+	override void postbeginplay(){
+		loadedcell=1200;
+		super.postbeginplay();
+	}
+	override void attachtoowner(actor user){
+		user.A_SetInventory("LumberCell",loadedcell);
+		super.attachtoowner(user);
+	}
+	override void detachfromowner(){
+		loadedcell=owner.countinv("LumberCell");
+		owner.A_TakeInventory("LumberCell");
+		super.detachfromowner();
 	}
 }
+
+
+
+

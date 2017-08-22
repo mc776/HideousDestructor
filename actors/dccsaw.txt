@@ -1,39 +1,6 @@
 // ------------------------------------------------------------
-//   Chainsaw
+// Chainsaw
 // ------------------------------------------------------------
-actor LumberjackPickup : HDUPK replaces Chainsaw
-{
-	scale 0.4
-	states
-	{
-	spawn:
-		CSAW A 0 A_Stop
-		"----" A 0 A_JumpIfInventory("Clip",1,"spawn2")
-		"----" A 0 A_GiveInventory("Clip",1)
-		"----" A 0 A_JumpIf(CheckClass("PlayerPawn",AAPTR_TARGET,true),"takeloop")
-		"----" A 0 A_GiveInventory("LumberCell",1200)
-		"----" A 0 A_Jump(256,"spawn2")
-	takeloop:
-		"----" A 0{
-			if(countinv("LumberCell",AAPTR_TARGET)>0){            
-				A_GiveInventory("LumberCell",countinv("LumberCell",AAPTR_TARGET));
-				A_TakeFromTarget("LumberCell",countinv("LumberCell",AAPTR_TARGET));
-			}
-		}goto spawn2
-	give:
-		"----" A 0 A_JumpIfInTargetInventory("Lumberjack",1,"spawn")
-	givegun:
-		"----" A 0 A_PlaySound("misc/w_pkup")
-		"----" A 0 A_GiveToTarget("Lumberjack",1)
-	givegunloop:
-		"----" A 0{
-			if(countinv("LumberCell")>0){  
-				A_GiveToTarget("LumberCell",countinv("LumberCell"));
-				A_TakeInventory("LumberCell",countinv("LumberCell"));
-			}
-		}goto givegunloopend
-	}
-}
 actor HDSawPuff
 {
 	damagetype "Chainsaw"
