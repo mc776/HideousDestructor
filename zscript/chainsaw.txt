@@ -225,19 +225,22 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 		CSAW A -1;
 	}
 
-
+	//for tracking ammo in drops and pickups
 	int loadedcell;
 	override void postbeginplay(){
-		loadedcell=1200;
 		super.postbeginplay();
+		loadedcell=1200;
 	}
 	override void attachtoowner(actor user){
-		user.A_SetInventory("LumberCell",loadedcell);
+		if(loadedcell>0)user.A_SetInventory("LumberCell",loadedcell);
+		else if(loadedcell<0)user.A_GiveInventory("LumberEmptyCell");
 		super.attachtoowner(user);
 	}
 	override void detachfromowner(){
 		loadedcell=owner.countinv("LumberCell");
+		if(!loadedcell)loadedcell=-owner.countinv("LumberEmptyCell");
 		owner.A_TakeInventory("LumberCell");
+		owner.A_TakeInventory("LumberEmptyCell");
 		super.detachfromowner();
 	}
 }
