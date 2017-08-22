@@ -162,7 +162,7 @@ class ThunderBuster:HDWeapon{
 
 	dropmag:
 		---- A 0{
-			if(countinv("PlasmaBattery")+countinv("PlasmaEmptyCell")){
+			if(countinv("PlasmaBattery")||countinv("PlasmaEmptyCell")){
 				actor a;int b;
 				[b,a]=A_SpawnItemEx("HDCellPickup",
 					cos(pitch)*10,0,height-10-10*sin(pitch),
@@ -232,14 +232,6 @@ class ThunderBuster:HDWeapon{
 
 	spawn:
 		PLAS A -1;
-		TNT1 A 1;
-		TNT1 A 0 A_CheckProximity("spawndropped","PlayerPawn",20,1, CPXF_COUNTDEAD|CPXF_SETTARGET|CPXF_ANCESTOR|CPXF_CLOSEST|CPXF_NOZ);
-	spawnfresh:
-		TNT1 A 0 A_SpawnItemEx("PlasmaPickup",0,0,0,vel.x,vel.y,vel.z,0, SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_NOPOINTERS);
-		stop;
-	spawndropped:
-		TNT1 A 0 A_JumpIfInTargetInventory("ThunderBuster",1,"spawnfresh");
-		TNT1 A 0 A_SpawnItemEx("PlasmaPickup",0,0,0,vel.x,vel.y,vel.z,0, SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS);
 		stop;
 	}
 
