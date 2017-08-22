@@ -186,7 +186,7 @@ actor DropExtra:CustomInventory{
 		TNT1 A 0 A_SpawnItemEx("HDCellPacks",random(8,12),random(0,12),24,5,0,0,random(-6,-12))
 		loop
 	cellp:
-		TNT1 A 0 A_SpawnItemEx("HDCelXDr",random(8,12),random(0,12),24,5,0,0,random(-6,-12),SXF_SETTARGET)
+		TNT1 A 0 A_GiveInventory("HDSpareCellDropper")
 	thun:
 		TNT1 A 0 A_JumpIfInventory("PlasmaBattery",20,1)
 		goto celle
@@ -358,7 +358,7 @@ actor DropOneZMagCell : ActionItem
 		TNT1 A 0 A_SpawnItemEx("HDCellPacks",0,0,height-12,cos(pitch)*cos(angle-6)*5,cos(pitch)*sin(angle-6)*5,sin(pitch)*-5,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
 		fail
 	dropcp:
-		TNT1 A 0 A_SpawnItemEx("HDCelXDr",0,0,height-12,cos(pitch)*cos(angle-6)*5,cos(pitch)*sin(angle-6)*5,sin(pitch)*-5,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_SETTARGET)
+		TNT1 A 0 A_GiveInventory("HDSpareCellDropper")
 		fail
 	}
 }
@@ -493,7 +493,7 @@ actor DropOneCell : ActionItem
 		TNT1 A 0 A_SpawnItemEx("HDCellPacks",0,0,height-12,cos(pitch)*cos(angle)*5,cos(pitch)*sin(angle+6)*5,sin(pitch)*-5,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
 		goto pickup2
 	dropcp:
-		TNT1 A 0 A_SpawnItemEx("HDCelXDr",0,0,height-12,cos(pitch)*cos(angle)*5,cos(pitch)*sin(angle)*5,sin(pitch)*-5,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_SETTARGET)
+		TNT1 A 0 A_GiveInventory("HDSpareCellDropper")
 		goto pickup2
 	pickup2:
 		TNT1 A 0 A_JumpIfInventory("HDCellPackEmpty",1,1)

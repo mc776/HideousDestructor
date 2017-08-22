@@ -158,40 +158,22 @@ ACTOR Krangling : Arachnotron replaces Arachnotron
 		goto see
 		BSPI FF 3 A_FaceTarget(20,0)
 		loop
-	Shoot:
+	shoot:
 		TNT1 A 0 A_JumpIfInventory("VileCount",1,"NotVileEnough")
 		BSPI A 10 A_FaceTarget(20,20)
-shootpb:
-TNT1 A 0 A_CheckLOF("see",CLOFF_JUMPNONHOSTILE|CLOFF_SKIPTARGET|CLOFF_JUMPOBJECT|CLOFF_MUSTBESOLID|CLOFF_SKIPENEMY,320,0, 0,0, 32,0)
-TNT1 A 0 A_JumpIfInventory("PlasmaBattery",0,"see")
-BSPI A 10
-BSPI GGGGG 3 bright light("PLAZMABX2") A_PlayWeaponSound("weapons/plasidle")
-shootpb2:
-BSPI GGGGGGGGGGGGG 2 bright light("PLAZMABX2") A_GiveInventory("KranglingPBShot",1)
-TNT1 A 0 A_GiveInventory("PlasmaBattery",3)
-TNT1 A 0 A_Jump(48,1)
-goto see
-TNT1 A 0 A_CheckLOF("see",CLOFF_JUMPNONHOSTILE|CLOFF_SKIPTARGET|CLOFF_JUMPOBJECT|CLOFF_MUSTBESOLID|CLOFF_SKIPENEMY,320,0, 0,0, 32,0)
-TNT1 A 0 A_FaceTarget(2,2)
-goto shootpb2
-	Missile2:
-		BSPI GG 5 A_FaceTarget(20,20)
-		TNT1 A 0 A_SetPitch(pitch+frandom(-0.6,0.6))
-		TNT1 A 0 A_SetAngle(angle+frandom(-1,1))
-		BSPI H 1 bright A_CustomMissile ("PlasmaBalle",28,0,0,CMF_AIMDIRECTION,pitch)
-		BSPI G 2 A_SpawnItemEx ("DistantPlasma", 0,0,0, 0,0,0, 0,32)
-		BSPI H 1 bright A_CustomMissile ("PlasmaBalle",28,0,0,CMF_AIMDIRECTION,pitch)
-		BSPI G 2 A_SpawnItemEx ("DistantPlasma", 0,0,0, 0,0,0, 0,32)
-		BSPI H 1 bright A_CustomMissile ("PlasmaBalle",28,0,0,CMF_AIMDIRECTION,pitch)
-		BSPI G 2 A_SpawnItemEx ("DistantPlasma", 0,0,0, 0,0,0, 0,32)
-		BSPI H 1 bright A_CustomMissile ("PlasmaBalle",28,0,0,CMF_AIMDIRECTION,pitch)
-		BSPI G 2 A_SpawnItemEx ("DistantPlasma", 0,0,0, 0,0,0, 0,32)
-		BSPI H 1 bright A_CustomMissile ("PlasmaBalle",28,0,0,CMF_AIMDIRECTION,pitch)
-		BSPI G 2 A_SpawnItemEx ("DistantPlasma", 0,0,0, 0,0,0, 0,32)
-		BSPI G 4
-		BSPI G 0 A_Jump (56, "See")
-		BSPI G 0 A_SpidRefire
-		goto Missile2
+	shootpb:
+		TNT1 A 0 A_CheckLOF("see",CLOFF_JUMPNONHOSTILE|CLOFF_SKIPTARGET|CLOFF_JUMPOBJECT|CLOFF_MUSTBESOLID|CLOFF_SKIPENEMY,320,0, 0,0, 32,0)
+		TNT1 A 0 A_JumpIfInventory("PlasmaBattery",0,"see")
+		BSPI A 10
+		BSPI GGGGG 3 bright light("PLAZMABX2") A_PlayWeaponSound("weapons/plasidle")
+	shootpb2:
+		BSPI GGGGGGGGGGGGG 2 bright light("PLAZMABX2") A_GiveInventory("KranglingPBShot",1)
+		TNT1 A 0 A_GiveInventory("PlasmaBattery",3)
+		TNT1 A 0 A_Jump(48,1)
+		goto see
+		TNT1 A 0 A_CheckLOF("see",CLOFF_JUMPNONHOSTILE|CLOFF_SKIPTARGET|CLOFF_JUMPOBJECT|CLOFF_MUSTBESOLID|CLOFF_SKIPENEMY,320,0, 0,0, 32,0)
+		TNT1 A 0 A_FaceTarget(2,2)
+		goto shootpb2
 	Death:
 	XDeath:
 

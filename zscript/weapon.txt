@@ -1,5 +1,5 @@
 // ------------------------------------------------------------
-//   Prototype weapon
+// Prototype weapon
 // ------------------------------------------------------------
 class HDWeapon:Weapon{
 	double gunmass;
@@ -27,7 +27,7 @@ class HDWeapon:Weapon{
 		super.detachfromowner();
 	}
 	//wrapper for HDF.maxinv because we're gonna need this a lot
-	int AmmoCap(class<inventory> inv){
+	action int AmmoCap(class<inventory> inv){
 		return HDF.MaxInv(self,inv);
 	}
 	//use this to set flash translucency and make it additive
