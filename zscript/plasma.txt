@@ -501,7 +501,8 @@ class HDSpareCellDropper:ActionItem{
 					random(8,12),random(0,12),24,5,0,0,random(-6,-12)
 				);a.vel+=vel;
 				b=min(countinv("HDCellAmmo"),random(1,19));
-				a.A_GiveInventory("HDCellAmmo",b);
+				a.A_SetInventory("HDCellAmmo",b);
+				a.A_GiveInventory("Clip");
 				A_TakeInventory("HDCellAmmo",b);
 			}
 		}fail;
