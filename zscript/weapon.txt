@@ -32,7 +32,7 @@ class HDWeapon:Weapon{
 		return HDF.MaxInv(self,inv);
 	}
 	//use this to set flash translucency and make it additive
-	action void HDFlashAlpha(int variance=0,int noalpha=false,int layer=PSP_FLASH){
+	action void HDFlashAlpha(int variance=0,bool noalpha=false,int layer=PSP_FLASH){
 		A_OverlayFlags(layer,PSPF_ALPHA|PSPF_ADDBOB|PSPF_RENDERSTYLE,true);
 		A_OverlayRenderstyle(layer,STYLE_Add);
 		double fa;
@@ -43,7 +43,7 @@ class HDWeapon:Weapon{
 			fa=1.-(lg*0.003);
 			A_OverlayAlpha(layer,fa);
 		}
-		if(noalpha||fa>0.1)setstatelabel("melee");  
+		if(noalpha||fa>0.1)setstatelabel("melee");
 	}
 	//wrapper for HDWeapon and ActionItem
 	//remember: LEFT and DOWN
@@ -61,6 +61,43 @@ class HDWeapon:Weapon{
 			vector2 mc0=(mc10,mc11)+(mc20,mc21)+(mc30,mc31)+(mc40,mc41);
 			A_SetPitch(pitch+mc0.y,SPF_INTERPOLATE);
 			A_SetAngle(angle+mc0.x,SPF_INTERPOLATE);
+		}
+	}
+	//for smoking barrels
+	void drainheat(int ref,int smklength=18){
+		if(globalfreeze||level.Frozen)return;
+		if(weaponstatus[ref]>0){
+			weaponstatus[ref]--;
+			if(random(1,10)>weaponstatus[ref])return;
+			vector3 smkpos=pos;
+			vector3 smkvel=vel;
+			double smkang=angle;
+			if(owner){
+				smkpos=owner.pos;
+				if(owner.player && owner.player.readyweapon==self){
+					//spawn smoke from muzzle
+					smkang=owner.angle;
+					smkpos.z+=owner.height-9-sin(owner.pitch)*smklength;
+					smkpos.xy+=smklength*(cos(smkang),sin(smkang));
+				}else{
+					//spawn smoke from behind owner
+					smkang=owner.angle+180;
+					smkpos.z+=owner.height*0.6;
+					smkpos.xy-=10*(cos(smkang),sin(smkang));
+				}
+				smkvel=owner.vel;
+			}
+			actor a=spawn("HDGunsmoke",smkpos);
+			smkvel*=0.4;
+			a.angle=smkang;a.vel+=smkvel;
+			a.A_ChangeVelocity(3,0,0,CVF_RELATIVE);
+			for(int i=30;i<weaponstatus[ref];i+=30){
+				if(!random(0,3)){
+					a=spawn("HDGunsmoke",smkpos);
+					a.angle=smkang;a.vel+=smkvel;
+					a.A_ChangeVelocity(3,frandom(-2,2),frandom(-2,2),CVF_RELATIVE);
+				}
+			}
 		}
 	}
 	override void touch(actor toucher){}

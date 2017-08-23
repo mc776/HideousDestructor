@@ -11,6 +11,10 @@ class ThunderBuster:HDWeapon{
 		scale 0.6;
 		inventory.pickupmessage "You got the particle beam gun!";
 	}
+	override void tick(){
+		super.tick();
+		drainheat(3,12);
+	}
 	states{
 	ready:
 		PLSG A 1{
@@ -316,6 +320,9 @@ class BeamBoltThrower:ActionItem{
 				sin(pitch)*frandom(1,3),
 				CVF_RELATIVE
 			);
+			if(!player)return;
+			let tb=ThunderBuster(player.readyweapon);
+			if(tb)tb.weaponstatus[3]+=60;
 		}fail;
 	}
 }
