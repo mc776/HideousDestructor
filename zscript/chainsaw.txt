@@ -236,19 +236,18 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 	}
 
 	//for tracking ammo in drops and pickups
-	int loadedcell;
 	override void postbeginplay(){
 		super.postbeginplay();
-		loadedcell=1200;
+		weaponstatus[0]=1200;
 	}
 	override void attachtoowner(actor user){
-		if(loadedcell>0)user.A_SetInventory("LumberCell",loadedcell);
-		else if(loadedcell<0)user.A_GiveInventory("LumberEmptyCell");
+		if(weaponstatus[0]>0)user.A_SetInventory("LumberCell",weaponstatus[0]);
+		else user.A_SetInventory("LumberEmptyCell",-weaponstatus[0]);
 		super.attachtoowner(user);
 	}
 	override void detachfromowner(){
-		loadedcell=owner.countinv("LumberCell");
-		if(!loadedcell)loadedcell=-owner.countinv("LumberEmptyCell");
+		weaponstatus[0]=owner.countinv("LumberCell");
+		if(!weaponstatus[0])weaponstatus[0]=-owner.countinv("LumberEmptyCell");
 		owner.A_TakeInventory("LumberCell");
 		owner.A_TakeInventory("LumberEmptyCell");
 		super.detachfromowner();
