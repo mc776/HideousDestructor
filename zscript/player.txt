@@ -236,6 +236,9 @@ class HDPlayerPawn:PlayerPawn{
 		JumpCheck();
 		CrouchCheck();
 
+		//prevent some support exploits
+		if(max(abs(vel.x),abs(vel.y),abs(vel.z))>1)A_TakeInventory("IsSupported");
+
 		//add inventory flags for inputs
 		//remove ONLY when a deprecated inventory flags has been removed from all code!
 		A_TakeInventory("IsSprinting");
