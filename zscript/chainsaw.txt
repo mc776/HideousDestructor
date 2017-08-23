@@ -208,13 +208,9 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 				A_GiveInventory("LumberCell",1200);
 				A_TakeInventory("HDCellPacks",1,TIF_NOTAKEINFINITE);
 			}else{
-				A_TakeInventory("Counter");
-				A_GiveInventory("Counter",random(1,20));
-				if(countinv("Counter")>countinv("HDCellAmmo")){          
-					A_TakeInventory("Counter",countinv("Counter")-countinv("HDCellAmmo"));
-				}
-				A_GiveInventory("LumberCell",countinv("Counter")*60);
-				A_TakeInventory("HDCellAmmo",countinv("Counter"),TIF_NOTAKEINFINITE);
+				int rld=min(random(1,19),countinv("HDCellAmmo"));
+				A_SetInventory("LumberCell",rld*60);
+				A_TakeInventory("HDCellAmmo",rld,TIF_NOTAKEINFINITE);
 			}
 			A_TakeInventory("LumberEmptyCell");
 		}

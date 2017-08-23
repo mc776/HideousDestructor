@@ -223,7 +223,7 @@ class ThunderBuster:HDWeapon{
 				//reload a partial one
 				int rld=min(random(1,19),countinv("HDCellAmmo"));
 				A_SetInventory("PlasmaBattery",rld*3);
-				A_TakeInventory("HDCellAmmo",rld);
+				A_TakeInventory("HDCellAmmo",rld,TIF_NOTAKEINFINITE);
 			}
 		}goto reload3;
 
