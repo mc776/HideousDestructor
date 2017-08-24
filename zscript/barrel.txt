@@ -136,7 +136,7 @@ class KillerBarrel:HDActor{
 		BEXP D 2 bright{
 			A_SpawnChunks("HDSmokeChunk",random(2,5),7,16);
 			A_Scream();
-			A_DistantQuake(6,42,512,10);
+			HDF.DistantQuake(self,6,42,512,10);
 			A_PlaySound("world/explode");
 			Spawn("DistantRocket",self.pos,ALLOW_REPLACE);
 		}

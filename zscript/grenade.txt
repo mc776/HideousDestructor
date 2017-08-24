@@ -60,7 +60,7 @@ class HDFragGrenadeRoller:HDActor{
 		TNT1 A 1{
 			bsolid=false;bpushable=false;bmissile=false;bnointeraction=true;bshootable=false;
 			spawn("DistantRocket",pos);
-			A_DistantQuake(4,35,512,10);
+			HDF.DistantQuake(self,4,35,512,10);
 			A_PlaySound("world/explode",1,7);
 			A_AlertMonsters();
 			actor xpl=spawn("WallChunker",self.pos-(0,0,1),ALLOW_REPLACE);
