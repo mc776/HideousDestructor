@@ -112,6 +112,7 @@ ACTOR RocquetteLauncher : HDWeapon
 		goto Ready
 
 	Altfire:
+		TNT1 A 0 A_JumpIfInventory("IsUsingRocketUnderslung",1,2) //need to get OUT of this mode
 		TNT1 A 0 A_JumpIfInventory("HEATLoaded",1,"AltHold")
 		TNT1 A 0 A_SetCrosshair(21)
 		TNT1 A 0 A_TakeInventory("AirburstCount")

@@ -88,8 +88,8 @@ actor HDLoaded:ActionItem{
 					A_GiveInventory("RocketMag",6);
 				}else{
 					A_GiveInventory("HEATLoaded");
-					A_TakeInventory("RocketMag");
-					A_GiveInventory("RocketMag",5);
+					A_TakeInventory("IsUsingRocketUnderslung");
+					A_SetInventory("RocketMag",5);
 				}
 			}
 			if(countinv("Blooper")>0){A_GiveInventory("BloopChamber");}
