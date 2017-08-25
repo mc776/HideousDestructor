@@ -125,9 +125,12 @@ extend class HDStatusBar{
 		}
 		else if(w is "RocquetteLauncher"){
 			if(!pp.countinv("IsUsingRocketUnderslung")){
-				drawwepdot(-22,-11,(4,3));
 				drawwepdot(-19,-12,(3,1));
 				drawwepdot(-16,-12,(2,1));
+				if(pp.countinv("HEATLoaded")){
+					drawwepdot(-22,-10.5,(4,4));
+					drawwepdot(-26,-11.5,(4,2));
+				}else drawwepdot(-22,-11,(4,3));
 			}
 			drawnum(pp.countinv("AirburstCount"),
 				-32,-15,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
@@ -270,7 +273,7 @@ extend class HDStatusBar{
 			);
 		}
 	}
-	void drawwepdot(int posx,int posy,vector2 dotscale=(3.,3.)){
+	void drawwepdot(float posx,float posy,vector2 dotscale=(3.,3.)){
 		drawimage(
 			"GREENPXL",(posx,posy),
 			DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE|DI_ITEM_RIGHT,
