@@ -372,48 +372,6 @@ struct HDF play{
 		}
 		return counter;
 	}
-	//Quake effect affecting each player differently depending on distance
-	//here because GZDoom can't handle an extension of this struct for some reason
-	//see effect.txt for the rest of it
-	//HDF.DistantQuake(self,8,40,4096,10,256,512,256);
-	static void DistantQuake(
-		actor caller,
-		int intensity=3,
-		int duration=35,
-		int quakeradius=1024,
-		int frequency=10,
-		int speed=HDCONST_SPEEDOFSOUND,
-		int minwaveradius=HDCONST_MINDISTANTSOUND,
-		int dropoffrate=HDCONST_MINDISTANTSOUND
-	){
-		if(
-			caller.ceilingpic==skyflatnum
-			||caller.ceilingz-caller.floorz>HDCONST_MINDISTANTSOUND
-		){
-			intensity=clamp(intensity-1,1,9);
-			duration*=0.9;
-		}
-		double dist;
-		for(int i=0;i<MAXPLAYERS;i++){
-			if(playeringame[i] && players[i].mo){
-				dist=players[i].mo.distance3d(caller);
-				if(dist<=quakeradius){
-					let it=DistantQuaker(caller.spawn("DistantQuaker",players[i].mo.pos));
-					if(it){
-						if(dist<=dropoffrate) it.intensity=intensity;
-							else it.intensity=clamp(intensity-floor(dist/dropoffrate),1,9);
-						if(dist>minwaveradius) it.wave=true; else it.wave=false;  
-						if(it.intensity<3)it.deathsound="null";
-							else it.deathsound="world/quake";
-						it.stamina=floor(dist/speed);
-						it.mass=duration;
-						it.frequency=frequency;
-						it.target=players[i].mo;
-					}
-				}
-			}
-		}
-	}
 }
 
 

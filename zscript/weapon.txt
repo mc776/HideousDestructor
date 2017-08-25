@@ -21,6 +21,10 @@ class HDWeapon:Weapon{
 		weapon.bobrangex 0.2;
 		weapon.bobrangey 0.8;
 	}
+	//wrapper for setpsprite
+	action void SetWeaponState(statelabel st,int layer=PSP_WEAPON){
+		if(player)player.setpsprite(layer,invoker.findstate(st));
+	}
 	//use target to help a dropped weapon remember its immediately prior owner
 	override void detachfromowner(){
 		target=owner;
