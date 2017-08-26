@@ -1,6 +1,7 @@
 // ------------------------------------------------------------
 // Thunder Buster
 // ------------------------------------------------------------
+const HDCONST_TBMAXRANGE=8192;
 class ThunderBuster:HDWeapon{
 	default{
 		weapon.selectionorder 600;
@@ -63,7 +64,7 @@ class ThunderBuster:HDWeapon{
 				A_FireBullets(0,0,
 					clamp(countinv("PlasmaBattery")*0.08,1,3),
 					(random(0,1)),
-					"BeamSpot",FBF_NORANDOM,16384
+					"BeamSpot",FBF_NORANDOM,HDCONST_TBMAXRANGE
 				);
 				if(random(0,2))A_TakeInventory("PlasmaBattery",1);
 			}
@@ -94,6 +95,32 @@ class ThunderBuster:HDWeapon{
 		PLSF B 0 bright A_Light0();
 		stop;
 	altfire:
+		PLSG A 0{
+			if(countinv("PlasmaBattery")){
+				if(!random(0,126000))A_TakeInventory("PlasmaBattery",1);
+				A_PlaySound("weapons/plasidle",CHAN_WEAPON,0.6);
+				actor a;int b;
+				[a,b]=lineattack(
+					angle,HDCONST_TBMAXRANGE*2,pitch,0,"none",
+					"PlasmaCheckPuff",flags:LAF_NORANDOMPUFFZ
+				);
+				if(a){
+					a.addz(6-height);
+					int distraw=distance3d(a);
+					if(distraw>HDCONST_TBMAXRANGE*2){
+						A_Log("\cd[\cuThunderBuster\cd]\cj target out of range",true);
+					}
+					else{
+						float dist=distraw*1./HDCONST_ONEMETRE;
+						string ss=string.format("\cd[\cuThunderBuster\cd]\cj target at \cf%.2f\cj metre%s",dist,dist==1?"":"s");
+						if(distraw>=HDCONST_TBMAXRANGE)
+							ss=string.format("%s - \caOUT OF RANGE",ss);
+						A_Log(ss,true);
+					}
+				}else A_Log("\cd[\cuThunderBuster\cd]\cj target out of range",true);
+			}
+		}goto nope;
+	firemode:
 		PLSG C 1 offset(1,32){
 			A_TakeInventory("IsWeaponReady");
 		}
@@ -262,6 +289,11 @@ class ThunderBuster:HDWeapon{
 		owner.A_TakeInventory("PlasmaAlt");
 		owner.A_TakeInventory("PlasmaZoom");
 		super.detachfromowner();
+	}
+}
+class PlasmaCheckPuff:CheckPuff{
+	default{
+		-alwayspuff
 	}
 }
 class PlasmaBattery:Ammo{
