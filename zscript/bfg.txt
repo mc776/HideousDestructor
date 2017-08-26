@@ -47,24 +47,6 @@ class BFG9K:HDWeapon{
 	altfire:
 	althold:
 		stop;
-	altreload:
-	unload:
-		BFGG A 3;
-		BFGG C 2 offset(0,36);
-		BFGG C 2 offset(0,38);
-		BFGG C 4 offset(0,40)A_PlaySound("weapons/rifleclick2");
-		BFGG C 8 offset(0,42)A_PlaySound("weapons/huntopen");
-		BFGG C 8 offset(0,43)A_PlaySound("weapons/rifleload");
-
-		BFGG C 0 A_GiveInventory("BFGUnloader");
-
-		BFGG C 4 offset(0,37) A_PlaySound("weapons/rifleclick2");
-		BFGG C 2 offset(0,38);
-		BFGG C 2 offset(0,36);
-		BFGG A 2 offset(0,34);
-		BFGG A 6;
-		BFGG A 1 A_Refire();
-		goto ready;
 	flash:
 		BFGF B 3 bright{
 			A_Light1();
@@ -105,7 +87,7 @@ class BFG9K:HDWeapon{
 				invoker.weaponstatus[3]=0;
 				if (countinv("BFGChamber")<20){
 					A_GiveInventory("BFGChamber");
-					if(countinv("BFGChamber")==20)invoker.weaponstatus[0]|=BFGF_DEMON;
+					if(countinv("BFGChamber")==20)A_GiveInventory("BFGDemonSummoned");
 				}
 				else A_GiveInventory("BFGInternalCharge");
 			}
@@ -168,7 +150,7 @@ class BFG9K:HDWeapon{
 			A_TakeInventory("BFGChamber");
 			invoker.weaponstatus[0]&=~BFGF_CRITICAL;
 			A_GunFlash();
-			if(random(0,7))invoker.weaponstatus[0]&=~BFGF_DEMON;
+			if(random(0,7))A_TakeInventory("BFGDemonSummoned");
 			A_SpawnItemEx("BFGBallTail",0,0,height-12,cos(pitch)*cos(angle)*4+vel.x,cos(pitch)*sin(angle)*4+vel.y,-sin(pitch)*4+vel.z,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH);
 			A_SpawnItemEx("BFGBalle",0,0,height-12,cos(pitch)*cos(angle)*13+vel.x,cos(pitch)*sin(angle)*13+vel.y,-sin(pitch)*13+vel.z,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH|SXF_SETMASTER);
 		}
@@ -196,15 +178,15 @@ class BFG9K:HDWeapon{
 			)setweaponstate("nope");
 			invoker.weaponstatus[4]=1;
 		}goto reload1;
-	zoom:
+	altreload:
 	reloadempty:
 		BFGG A 0{
 			if(
-				countinv("BFGChamber")>19    
-				||(
-					!countinv("HDCellAmmo")
-					&&!countinv("HDCellPacks")
+				(
+					!countinv("BFGChamber")
+					&&countinv("BFGLoaded")
 				)
+				||!countinv("HDCellPackEmpty")
 			)setweaponstate("nope");
 			invoker.weaponstatus[4]=0;
 		}goto reload1;
@@ -234,11 +216,9 @@ class BFG9K:HDWeapon{
 				);
 				a.A_SetInventory("HDCellAmmo",countinv("BFGChamber"));
 			}
-			if(invoker.weaponstatus[0]&BFGF_DEMON
-				&&(countinv("BFGChamber")||countinv("BFGLoaded"))
-			){
+			if(countinv("BFGDemonSummoned")){
 				A_GiveInventory("BFGUnloader"); //too many repeat-frames to add here!
-				invoker.weaponstatus[0]&=~BFGF_DEMON;
+				A_TakeInventory("BFGDemonSummoned");
 			}
 			A_TakeInventory("BFGChamber");
 			A_TakeInventory("BFGLoaded");
@@ -331,6 +311,7 @@ class BFG9K:HDWeapon{
 		weaponstatus[2]=20;
 	}
 	override void attachtoowner(actor user){
+		user.A_SetInventory("BFGDemonSummoned",weaponstatus[0]&BFGF_DEMON);
 		user.A_SetInventory("BFGLoaded",weaponstatus[0]&BFGF_LOADED);
 		user.A_SetInventory("BFGInternalCharge",weaponstatus[1]);
 		user.A_SetInventory("BFGChamber",weaponstatus[2]);
@@ -340,7 +321,9 @@ class BFG9K:HDWeapon{
 		weaponstatus[1]=owner.countinv("BFGInternalCharge");
 		weaponstatus[2]=owner.countinv("BFGChamber");
 		if(owner.countinv("BFGLoaded"))weaponstatus[0]|=BFGF_LOADED;
-			else weaponstatus[0]&=~BFGF_LOADED;
+			else weaponstatus[0]&=~BFGF_LOADED;;
+		if(owner.countinv("BFGDemonSummoned"))weaponstatus[0]|=BFGF_DEMON;
+			else weaponstatus[0]&=~BFGF_DEMON;
 		if(weaponstatus[0]&BFGF_CRITICAL){
 			master=owner;
 			bfriendly=true;
@@ -348,7 +331,7 @@ class BFG9K:HDWeapon{
 		super.detachfromowner();
 	}
 }
-class BFGLoadingEmpty:InventoryFlag{}
+class BFGDemonSummoned:InventoryFlag{}
 class BFGLoaded:Ammo{
 	default{
 		+inventory.untossable
