@@ -470,8 +470,8 @@ class BFGBalle:FastProjectile{
 	spawn2:
 		BFS1 AB 2 A_SpawnItemEx("BFGBallTail",0,0,0,vel.x*0.2,vel.y*0.2,vel.z*0.2,0,168,0);
 		---- A 0{
-			if(pos.z-floorz<12)vel.z+=4;
-			else if(ceilingz-pos.z<19)vel.z-=4;
+			if(pos.z-floorz<12)vel.z+=1;
+			else if(ceilingz-pos.z<19)vel.z-=1;
 			A_BishopMissileWeave();
 			A_SpawnItemEx("BFGBoll",0,0,4,
 				vel.x,vel.y,vel.z,0,
