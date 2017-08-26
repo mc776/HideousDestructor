@@ -60,9 +60,9 @@ class userpickerupper:hdactor{
 				target
 				&&!target.bkilled
 				&&target.health>0        
-				&&tracer.getdistance(target)<64
+				&&tracer.distance3d(target)<64
 			){
-				let ht=hdupk(master);
+				let ht=hdupk(tracer);
 				if(ht){
 					ht.target=target;
 					ht.a_hdupkgive();
@@ -151,7 +151,7 @@ class HDUPK:HDActor{
 		}
 		---- A 0{
 			//in case of death or teleport mid-grab
-			if(target.bkilled || getdistance(target)>64){
+			if(target.bkilled||distance3d(target)>64){
 				A_Stop();
 				setstatelabel("spawn");
 			}else{
