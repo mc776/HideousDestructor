@@ -124,7 +124,7 @@ class BFG9K:HDWeapon{
 			invoker.weaponstatus[3]=0;
 			invoker.weaponstatus[0]|=BFGF_CRITICAL;
 			invoker.weaponstatus[5]=15;
-			A_PlaySound("weapons/bfgf");
+			A_PlaySound("weapons/bfgf",CHAN_WEAPON);
 			A_GiveInventory("PowerFrightener");
 		}
 		BFGG B 3{
@@ -283,7 +283,7 @@ class BFG9K:HDWeapon{
 
 			if(random(0,7))invoker.weaponstatus[0]&=~BFGF_DEMON;
 			A_SpawnItemEx("BFGBallTail",0,0,height-12,cos(pitch)*cos(angle)*4+vel.x,cos(pitch)*sin(angle)*4+vel.y,-sin(pitch)*4+vel.z,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH);
-			A_SpawnItemEx("BFGBalle",0,0,height-12,cos(pitch)*cos(angle)*13+vel.x,cos(pitch)*sin(angle)*13+vel.y,-sin(pitch)*13+vel.z,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH|SXF_SETMASTER);
+			A_SpawnItemEx("BFGBalle",0,0,height-12,cos(pitch)*cos(angle)*13+vel.x,cos(pitch)*sin(angle)*13+vel.y,-sin(pitch)*13+vel.z,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH|SXF_TRANSFERPOINTERS);
 		}
 		BFUG A 0{
 			invoker.A_ChangeVelocity(-cos(pitch)*4,0,sin(pitch)*4,CVF_RELATIVE);
