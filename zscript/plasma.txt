@@ -21,8 +21,6 @@ class ThunderBuster:HDWeapon{
 		PLSG A 1{
 			A_SetCrosshair(21);
 			A_GiveInventory("IsWeaponReady");
-			if(!countinv("PlasmaBattery"))A_TakeInventory("PlasmaZoom");
-			else if(countinv("PlasmaZoom")&&!random(0,126000))A_TakeInventory("PlasmaBattery",1);
 			A_WeaponReady(WRF_ALLOWZOOM|WRF_ALLOWRELOAD|
 				WRF_ALLOWUSER1|WRF_ALLOWUSER2|WRF_ALLOWUSER3|WRF_ALLOWUSER4
 			);
@@ -133,15 +131,7 @@ class ThunderBuster:HDWeapon{
 		PLSG C 2 offset(0,34){
 			if(countinv("PlasmaAlt"))A_TakeInventory("PlasmaAlt");
 			else A_GiveInventory("PlasmaAlt");
-		}goto zoom2;
-	zoom:
-		PLSG A 1 offset(1,33)A_TakeInventory("IsWeaponReady");
-		PLSG A 1 offset(0,34);
-		PLSG A 2 offset(-1,36){
-			if(countinv("PlasmaZoom"))A_TakeInventory("PlasmaZoom");
-			else A_GiveInventory("PlasmaZoom");
-		}goto zoom2;
-	zoom2:
+		}
 		PLSG A 1;
 		PLSG A 1 offset(0,34);
 		PLSG A 1 offset(1,33);
@@ -266,8 +256,7 @@ class ThunderBuster:HDWeapon{
 	}
 
 	enum tbfiremodes{
-		TBFM_ZOOM=1,
-		TBFM_ALT=2,
+		TBFM_ALT=1,
 	};
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -283,11 +272,9 @@ class ThunderBuster:HDWeapon{
 		weaponstatus[0]=owner.countinv("PlasmaBattery");
 		if(!weaponstatus[0])weaponstatus[0]=-owner.countinv("PlasmaEmptyCell");
 		if(owner.countinv("PlasmaAlt"))weaponstatus[1]|=TBFM_ALT;
-		weaponstatus[1]&=~TBFM_ZOOM;
 		owner.A_TakeInventory("PlasmaBattery");
 		owner.A_TakeInventory("PlasmaEmptyCell");
 		owner.A_TakeInventory("PlasmaAlt");
-		owner.A_TakeInventory("PlasmaZoom");
 		super.detachfromowner();
 	}
 }
@@ -309,7 +296,6 @@ class PlasmaBattery:Ammo{
 		stop;
 	}
 }
-class PlasmaZoom:InventoryFlag{}
 class PlasmaAlt:InventoryFlag{}
 class PlasmaEmptyCell:InventoryFlag{}
 

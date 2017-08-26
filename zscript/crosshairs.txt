@@ -6,7 +6,6 @@ extend class HDStatusBar{
 		weapon wp=cplayer.readyweapon;
 
 		if(
-//			crosshairforce||
 			!wp
 			||hpl.barehanded
 			||hpl.nocrosshair>0
@@ -66,21 +65,19 @@ extend class HDStatusBar{
 		else if((wp is "Vulcanette")&&ismoving<4){
 			drawimage(
 				"XH25",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-				alpha:0.8,scale:(2.4,2.4)
+				alpha:0.8,scale:(1.7,1.7)
 			);
-			if(hpl.countinv("ChaingunZoom")&&hpl.countinv("VulcJuice")){
-				texman.setcameratotexture(hpc,"TCAMTEX1",
-					8
-				);
-				drawimage(
-					"TCAMTEX1",(0,42),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-					alpha:0.8,scale:(1,1)
-				);
-				drawimage(
-					"XH28",(0,42),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-					alpha:0.8,scale:(1,1)
-				);
-			}
+			int fv=7-hpl.countinv("ChaingunZoom");
+			if(fv<7)fv-=3;
+			texman.setcameratotexture(hpc,"TCAMTEX3",fv);
+			drawimage(
+				"TCAMTEX3",(0,47),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+				alpha:0.9,scale:(0.28,0.28)
+			);
+			drawimage(
+				"XH29",(0,47),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+				scale:(0.7,0.7)
+			);
 		}
 		else if((wp is "Blooper")&&ismoving<10){
 			drawimage(
@@ -112,15 +109,6 @@ extend class HDStatusBar{
 			}
 		}
 		else if((wp is "ThunderBuster")&&ismoving<6){
-			if(hpl.countinv("PlasmaZoom")&&hpl.countinv("PlasmaBattery")){
-				texman.setcameratotexture(hpc,"TCAMTEX1",
-					3
-				);
-				drawimage(
-					"TCAMTEX1",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-					alpha:0.6,scale:(1,1)
-				);
-			}
 			drawimage(
 				"XH28",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 				scale:(1,1)
