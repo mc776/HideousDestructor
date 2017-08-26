@@ -100,16 +100,18 @@ actor HDLoaded:ActionItem{
 			}
 			if(countinv("LiberatorGrenadeRifle")>0){A_GiveInventory("LiberatorGrenadeChamber");}
 			if(countinv("ThunderBuster")>0){
+				A_TakeInventory("ThunderBuster");
+				A_GiveInventory("ThunderBuster");
 				A_GiveInventory("PlasmaBattery",60);
 				A_TakeInventory("PlasmaEmptyCell");
 			}
 			if(countinv("Brontornis")>0){A_GiveInventory("BrontornisMag");}
 			if(countinv("BFG9k")>0){
-				A_GiveInventory("BFGLoaded");
+				A_TakeInventory("BFG9k");
+				A_GiveInventory("BFG9k");
 				A_GiveInventory("BFGChamber",20);
 				A_GiveInventory("BFGInternalCharge",20);
-				A_TakeInventory("BFGDemonSummoned");
-				A_TakeInventory("BFGCycled");
+				A_GiveInventory("BFGLoaded");
 			}
 			if(countinv("BossRifle")>0){
 				A_GiveInventory("BossMag",10);
