@@ -40,7 +40,10 @@ class userpickerupper:hdactor{
 				if(blockingline){destroy();return;}
 			}
 			addz(vel.z);
-			if(floorz>pos.z && floorz<target.height+target.pos.z)setz(floorz);
+			if(floorz>pos.z && floorz<target.height+target.pos.z){
+				setz(floorz);
+				vel.z=0;
+			}
 		}
 		destroy();
 	}
@@ -61,7 +64,7 @@ class userpickerupper:hdactor{
 				target
 				&&!target.bkilled
 				&&target.health>0        
-				&&tracer.distance2d(target)<32
+				&&tracer.distance3d(target)<64
 			){
 				let ht=hdupk(tracer);
 				if(ht){
