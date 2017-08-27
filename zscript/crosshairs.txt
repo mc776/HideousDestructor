@@ -62,7 +62,7 @@ extend class HDStatusBar{
 				}
 			}
 		}
-		else if((wp is "Vulcanette")&&ismoving<4){
+		else if((wp is "Vulcanette")&&ismoving<3){
 			drawimage(
 				"XH25",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 				alpha:0.8,scale:(1.7,1.7)
@@ -110,7 +110,16 @@ extend class HDStatusBar{
 		}
 		else if((wp is "ThunderBuster")&&ismoving<6){
 			drawimage(
-				"XH28",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+				"XH26",(0,0),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
+				scale:(2,2)
+			);
+			texman.setcameratotexture(hpc,"TCAMTEX1",3);
+			drawimage(
+				"TCAMTEX1",(0,36),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+				alpha:0.9,scale:(1,1)
+			);
+			drawimage(
+				"XH28",(0,36),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 				scale:(1,1)
 			);
 		}
