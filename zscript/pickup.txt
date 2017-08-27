@@ -16,14 +16,15 @@ class userpickerupper:hdactor{
 	}
 	override void postbeginplay(){
 		if(vel.xy==(0,0))vel.x=minvel;
-		for(int i=0;i<14;i++){
+		for(int i=0;i<10;i++){
 			if(!trymove(pos.xy+vel.xy,true,true)){
 				if(blockingmobj){
 					if(
 						blockingmobj is "HDUPK"
 					){
 						blockingmobj.target=self.target;
-						if(blockingmobj.findstate("grab",true))blockingmobj.setstatelabel("grab");
+						if(blockingmobj.findstate("grab",true))
+							blockingmobj.setstatelabel("grab");
 						let ppp=HDPlayerPawn(target);if(ppp)ppp.hasgrabbed=true;
 						destroy();return;
 					}
@@ -35,8 +36,8 @@ class userpickerupper:hdactor{
 						let ppp=HDPlayerPawn(target);if(ppp)ppp.hasgrabbed=true;
 						setstatelabel("grabpickup");return;
 					}
-					else if(blockingline){destroy();return;}
 				}
+				if(blockingline){destroy();return;}
 			}
 			addz(vel.z);
 			if(floorz>pos.z && floorz<target.height+target.pos.z)setz(floorz);
@@ -60,7 +61,7 @@ class userpickerupper:hdactor{
 				target
 				&&!target.bkilled
 				&&target.health>0        
-				&&tracer.distance3d(target)<64
+				&&tracer.distance2d(target)<32
 			){
 				let ht=hdupk(tracer);
 				if(ht){
