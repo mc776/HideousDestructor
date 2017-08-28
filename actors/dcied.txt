@@ -79,8 +79,8 @@ actor HDIEDKit:HDPickup{
 		TNT1 A 0 A_TakeInventory("HDRocketAmmo",1,TIF_NOTAKEINFINITE)
 	dropied:
 		TNT1 A 0 A_GiveInventory("IEDSetPassive",1)
-		TNT1 A 0 A_TakeInventory("HDIEDDetNow",999)
-		TNT1 A 0 A_GiveInventory("HDIEDDet",1)
+		TNT1 A 0 A_TakeInventory("HDIEDDetNow")
+		TNT1 A 0 A_GiveInventory("HDIEDDet")
 		TNT1 A 0 A_SpawnItemEx("HDIED",0,0,height-12,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_SETMASTER|SXF_TRANSFERPITCH)
 		stop
 	}

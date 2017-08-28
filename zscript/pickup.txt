@@ -51,6 +51,7 @@ class userpickerupper:hdactor{
 	grabpickup:
 		TNT1 A 0{bsolid=false;}
 		TNT1 AA 2{
+			if(!tracer){destroy();return;}
 			tracer.vel+=(
 				target.pos.x-tracer.pos.x,
 				target.pos.y-tracer.pos.y,
@@ -58,6 +59,7 @@ class userpickerupper:hdactor{
 			)*0.3;
 		}
 		TNT1 A 0{
+			if(!tracer){destroy();return;}
 			tracer.A_Stop();
 			//in case of death or teleport mid-grab
 			if(
@@ -85,6 +87,65 @@ class userpickerupper:hdactor{
 		}stop;
 	}
 }
+
+
+//Usable pickup.
+class HDPickup:CustomInventory{
+	default{
+		+inventory.invbar +inventory.persistentpower
+		+solid +noblockmonst +notrigger
+		inventory.interhubamount int.MAX;
+
+		radius 8; height 10; scale 0.8;
+		inventory.pickupsound "weapons/pocket";
+		accuracy 1;
+	}
+	override void doeffect(){
+		if(!amount)goawayanddie();
+	}
+	override void touch(actor toucher){}
+	virtual void actualpickup(actor other){
+		name gcn=getclassname();
+		int maxtake=HDF.MaxInv(other,gcn)-other.countinv(gcn);
+		if(maxtake<1){
+			setstatelabel("spawn2");return;
+		}else if(maxtake<amount){
+			amount-=maxtake;
+			other.A_GiveInventory(gcn,maxtake);
+			if(amount>0)setstatelabel("spawn2");
+		}else trypickup(other);
+		other.A_PlaySound(pickupsound,CHAN_AUTO);
+		other.A_Log(string.format("\cg%s",pickupmessage()),true);
+	}
+	override bool cancollidewith(actor other,bool passive){
+		return(other is "userpickerupper");
+	}
+	states{
+	spawn:
+		TNT1 A 1;
+		TNT1 A 0{
+			while(invoker.amount>invoker.accuracy){
+				inventory aa=inventory(spawn(invoker.getclassname(),invoker.pos));
+				aa.amount=invoker.accuracy;invoker.amount-=invoker.accuracy;
+				aa.vel=invoker.vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
+			}
+			invoker.setstatelabel("spawn2");
+		}stop;
+	}
+}
+
+//custom ammotype
+class HDAmmo:HDPickup{
+	int basemaxamount;
+	property basemaxamount:basemaxamount;
+	default{
+		-inventory.invbar
+	}
+	states{use:TNT1 A 0;fail;}
+}
+
+
+
 
 /*
  special uses:
@@ -195,61 +256,3 @@ class HDHPK:HDUPK{
 		}return false;
 	}
 }
-
-
-
-//the real hdpickup.
-class HDPickup:CustomInventory{
-	default{
-		+inventory.invbar +inventory.persistentpower
-		+solid +noblockmonst +notrigger
-		inventory.interhubamount int.MAX;
-
-		radius 8; height 10; scale 0.8;
-		inventory.pickupsound "weapons/pocket";
-		accuracy 1;
-	}
-	override void doeffect(){
-		if(!amount)goawayanddie();
-	}
-	override void touch(actor toucher){}
-	virtual void actualpickup(actor other){
-		name gcn=getclassname();
-		int maxtake=HDF.MaxInv(other,gcn)-other.countinv(gcn);
-		if(maxtake<1){
-			setstatelabel("spawn2");return;
-		}else if(maxtake<amount){
-			amount-=maxtake;
-			other.A_GiveInventory(gcn,maxtake);
-			if(amount>0)setstatelabel("spawn2");
-		}else trypickup(other);
-		other.A_PlaySound(pickupsound,CHAN_AUTO);
-		other.A_Log(string.format("\cg%s",pickupmessage()),true);
-	}
-	override bool cancollidewith(actor other,bool passive){
-		return(other is "userpickerupper");
-	}
-	states{
-	spawn:
-		TNT1 A 1;
-		TNT1 A 0{
-			while(invoker.amount>invoker.accuracy){
-				inventory aa=inventory(spawn(invoker.getclassname(),invoker.pos));
-				aa.amount=invoker.accuracy;invoker.amount-=invoker.accuracy;
-				aa.vel=invoker.vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
-			}
-			invoker.setstatelabel("spawn2");
-		}stop;
-	}
-}
-
-//custom ammotype
-class HDAmmo:HDPickup{
-	int basemaxamount;
-	property basemaxamount:basemaxamount;
-	default{
-		-inventory.invbar
-	}
-	states{use:TNT1 A 0;fail;}
-}
-
