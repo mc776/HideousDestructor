@@ -58,11 +58,10 @@ class ThunderBuster:HDWeapon{
 		goto shootend;
 	shootstraight:
 		PLSG A 0{
-			if (countinv("PlasmaBattery")>random(-2,3)){
+			if(countinv("PlasmaBattery")>random(-2,3)){
 				A_FireBullets(0,0,
-					clamp(countinv("PlasmaBattery")*0.08,1,3),
-					(random(0,1)),
-					"BeamSpot",FBF_NORANDOM,HDCONST_TBMAXRANGE
+					clamp(countinv("PlasmaBattery")*0.08,1,3),(0),
+					"BeamSpot",FBF_NORANDOM,HDCONST_TBMAXRANGE*2
 				);
 				if(random(0,2))A_TakeInventory("PlasmaBattery",1);
 			}
@@ -432,13 +431,18 @@ class BeamSpotFlash:BeamSpot{
 class BeamSpot:IdleDummy{
 	default{
 		+puffonactors +hittracer +puffgetsowner +rollsprite +rollcenter +forcexybillboard
-		renderstyle "add"; decal "PlasmaShock";
+		renderstyle "add";
 		obituary "%o was shocked by %k's particle beam.";
 	}
 	override void postbeginplay(){
-		scale.x*=randompick(-1,1);roll=random(0,3)*90;
+		int dtd=frandom(0.8,1.2)*distance3d(target);
+		A_LogInt(dtd);
+		if(!target||dtd>HDCONST_TBMAXRANGE){
+			destroy();
+			return;
+		}
+		scale.x*=randompick(-1,1);roll=random(0,359);
 		changetid(666123);
-		bextremedeath=random(0,1);
 		stamina++;
 		actoriterator it=actoriterator.create(666123,"BeamSpot");
 		while(master=it.Next()){
@@ -447,9 +451,9 @@ class BeamSpot:IdleDummy{
 			}
 		}
 		if(!tracer)tracer=self;else{
-			if(tracer.health>0) damagemobj(
+			if(tracer.health>0) tracer.damagemobj(
 				self,target,random(1,stamina),"Electro"
-			); else tracer.A_GiveInventory("SawGib",4);
+			);else tracer.A_GiveInventory("SawGib",4);
 			if(random(1,3)>1)A_Immolate(tracer,target,clamp(stamina,0,100));
 		}
 		if(stamina>=random(24,48)){
@@ -462,10 +466,15 @@ class BeamSpot:IdleDummy{
 			return;
 		}
 
-		if(A_JumpIfCloser(256,"null")) A_Frighten(256);
+		if(A_JumpIfCloser(256,"null"))A_Frighten(256);
 		A_PlaySound("weapons/plasidle");
 
-		if(stamina>=random(8,12)) setstatelabel("fuzz");
+		if(stamina>random(3,12)){
+			angle=target.angle;
+			A_SprayDecal("PlasmaShock",4);
+			bextremedeath=randompick(0,1,1);
+			setstatelabel("fuzz");
+		}
 	}
 	states{
 	spawn:
