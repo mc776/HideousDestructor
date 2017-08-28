@@ -19,7 +19,6 @@ extend class HDPlayerPawn{
 		//now for configs!
 		if(getcvar("hd_startzoomed")){  
 			A_GiveInventory("ZM66Zoom");
-			A_GiveInventory("ChaingunZoom");
 			A_GiveInventory("RocketZoom");
 			A_GiveInventory("LiberatorZoom");
 		}
@@ -40,6 +39,7 @@ extend class HDPlayerPawn{
 		}
 		if(countinv("Vulcanette"))
 			A_SetInventory("ChaingunFast",getcvar("hd_vulcsuper"));
+			A_SetInventory("ChaingunZoom",getcvar("hd_vulczoom"));
 		if(countinv("RocquetteLauncher")){  
 			if(getcvar("hd_rlmode")==1){ //GL
 				A_GiveInventory("IsUsingRocketUnderslung");
