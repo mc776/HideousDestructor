@@ -435,9 +435,7 @@ class BeamSpot:IdleDummy{
 		obituary "%o was shocked by %k's particle beam.";
 	}
 	override void postbeginplay(){
-		int dtd=frandom(0.8,1.2)*distance3d(target);
-		A_LogInt(dtd);
-		if(!target||dtd>HDCONST_TBMAXRANGE){
+		if(!target||frandom(1.0,1.8)*distance3d(target)>HDCONST_TBMAXRANGE){
 			destroy();
 			return;
 		}
