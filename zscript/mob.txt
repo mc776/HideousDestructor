@@ -67,6 +67,20 @@ class HDMobAI:Inventory{
 		if(minhealth<1)caller.health*=max(scl,1);else caller.health=max(caller.health*scl,1);
 	}
 
+	//set and unset shootable corpse
+	//"HDCorpseFlags" item is a wrapper for this now
+	static void CorpseFlags(actor caller){
+		caller.A_TakeInventory("SawGib");
+		if(caller.health>0){  
+			caller.bnotautoaimed=false;
+			caller.balwaystelefrag=false;
+		}else{
+			caller.bshootable=true;
+			caller.bnotautoaimed=true;
+			caller.balwaystelefrag=true;
+		}
+	}
+
 	//taking all the same flags as A_LookEx
 	static void look(
 		actor caller,
@@ -256,6 +270,15 @@ class HDMobAI:Inventory{
 		}
 	}
 }
+class HDCorpseFlags:ActionItem{
+	states{
+	pickup:
+		TNT1 A 0{
+			hdmobai.CorpseFlags(self);
+		}fail;
+	}
+}
+
 
 class exzo:zombieman{
 	states{

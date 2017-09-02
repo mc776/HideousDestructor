@@ -63,28 +63,6 @@ actor GimmeHud:InventoryFlag{inventory.maxamount 10}
 
 
 
-// ------------------------------------------------------------
-// Action items
-// ------------------------------------------------------------
-actor HDCorpseFlags:ActionItem{
-	states{
-	pickup:
-		TNT1 A 0{
-			if(health<=0){
-				A_ChangeFlag("alwaystelefrag",1);
-				A_ChangeFlag("shootable",1);
-				A_ChangeFlag("notautoaimed",1);
-			}
-			else{
-				A_ChangeFlag("alwaystelefrag",0);
-				A_ChangeFlag("notautoaimed",0);
-			}
-			A_TakeInventory("SawGib");
-		}
-		fail
-	}
-}
-
 
 // ------------------------------------------------------------
 //   Blocker to prevent shotguns from overpenetrating multiple targets
