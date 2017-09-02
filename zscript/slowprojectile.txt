@@ -109,7 +109,12 @@ class SlowProjectile:HDBullet{
 			}
 //			CheckPortalTransition(); //after 3.1.0
 
-			if(speed && !inthesky)SlowEffect();
+			if(speed && !inthesky
+				&& bmissile && missilename && speed*radius>=240
+			){
+				actor tr=spawn(missilename,pos,ALLOW_REPLACE);
+				tr.vel=vel*0.4;
+			}
 		}
 		//bullet drop again, updating the actual velocity
 		vel.z-=getgravity();
@@ -118,11 +123,6 @@ class SlowProjectile:HDBullet{
 		if(!CheckNoDelay())return;
 
 		nexttic();
-	}
-	virtual void SlowEffect(){
-		if(!bmissile || !missilename || speed*radius<240)return;
-		actor tr=spawn(missilename,pos,ALLOW_REPLACE);
-		tr.vel=vel*0.4;
 	}
 	virtual void ExplodeSlowMissile(line blockingline,actor blockingobject){
 		if(speed>50)painsound="misc/punch";else painsound="misc/fragknock";

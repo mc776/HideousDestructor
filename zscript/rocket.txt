@@ -47,12 +47,19 @@ class GyroGrenade:SlowProjectile{
 			brockettrail=true;
 			if(fuze>1)fuze+=5; //idiotproofing the rocket timer
 			Gunsmoke();
+			for(int i=0;i<3;i++){
+				actor sss=spawn("HDSmoke",pos-vel*0.1+(0,0,-4));
+				sss.vel=vel*-0.06+(frandom(-2,2),frandom(-2,2),frandom(-2,2));
+			}
 			A_PlaySound("weapons/rocklaunch");
 		}
 	spawnrocket2:
 		#### BA 1{
 			if(stamina>0){
-				if(!inthesky)Effect("HDGunsmoke");
+				if(!inthesky){
+					actor sss=spawn("HDGunsmoke",pos);
+					sss.vel=vel*0.1;
+				}
 				if(tracer)A_FaceTracer(20,20);
 				A_ChangeVelocity(cos(pitch)*(stamina>>2),0,sin(-pitch)*(stamina>>2)+1,CVF_RELATIVE);
 				accuracy++;
