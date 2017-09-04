@@ -1,0 +1,135 @@
+// ------------------------------------------------------------
+// 4.26 UAC Standard ammo
+// ------------------------------------------------------------
+class FourMilAmmo:Ammo{
+	default{
+		+inventory.ignoreskill
+		inventory.maxamount 60;
+		ammo.backpackmaxamount 120;
+		ammo.backpackamount 0;
+		xscale 0.5; yscale 0.6; height 2; radius 2; translation "ice";
+		inventory.pickupmessage "Picked up a stray 4.26 UAC Standard round. Reloading a 4.26 UAC Standard magazine into another firearm without authorization is a breach of the Volt End User License Agreement.";
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		if(owner)return;
+		if(amount==1)return;
+		while(amount>1){  
+			int ld=min(amount,random(1,49));
+			actor a=spawn("HD4mmMag",pos);
+			a.vel+=vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
+			a.stamina=ld;
+			amount-=ld;
+		}if(amount<1)destroy();
+	}
+	states{
+	spawn:
+		RBRS A -1;
+	}
+}
+class ZM66RifleMags:Ammo replaces Clip{
+	default{
+		+inventory.ignoreskill
+		+nointeraction
+		inventory.maxamount 6;
+		ammo.backpackmaxamount 18;
+		ammo.backpackamount 0;
+		inventory.pickupmessage "Picked up a 4.26 UAC Standard magazine.";
+		xscale 0.3;yscale 0.4;
+	}
+	states{
+	spawn:
+		CLIP C 1;
+		CLIP C 0{
+			actor a=spawn("HD4mmMag",pos);
+			if(a){
+				a.vel=vel;
+			}
+		}stop;
+	}
+}
+class HD4mmMag:HDUPK replaces ZM66RifleMags{
+	default{
+		translation "160:167=144:151";
+		xscale 0.3;yscale 0.4;
+
+		stamina 51; //51 means FRESH AND SEALED
+	}
+	void SetAmmo(class<inventory> invtype="FourMilAmmo"){
+		if(target is "PlayerPawn"){
+			stamina=target.countinv(invtype);
+			A_TakeFromTarget(invtype);
+		}
+		if(stamina<1){
+			actor a=spawn("HD4mmMagEmpty",pos);
+			if(a){
+				a.vel=vel;
+			}
+			destroy();return;
+		}
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		if(stamina<1){
+			actor emg=spawn("HD4mmMagEmpty",pos);
+			if(emg)emg.vel=vel;
+			destroy();return;
+		}
+	}
+	states{
+	spawn:
+		CLIP A 0 A_Stop();
+	spawn2:
+		---- A -1{
+			if(stamina>50)frame=2;
+		}
+	give:
+		---- A 0{
+			if(stamina>50){  
+				if(A_JumpIfInTargetInventory("ZM66RifleMags",0,"null")){
+					setstatelabel("spawn");return;
+				}else{
+					target.A_GiveInventory("ZM66RifleMags",1);
+					destroy();return;
+				}
+			}else{
+				int al=target.countinv("FourMilAmmo");
+				target.A_GiveInventory("FourMilAmmo",stamina);
+				stamina-=target.countinv("FourMilAmmo")-al;
+				if(!stamina){destroy();return;}
+				else setstatelabel("spawn");
+			}
+		}stop;
+	}
+}
+class HD4mMag:HD4mmMag{
+	override void postbeginplay(){SetAmmo("ZM66Loaded");super.postbeginplay();}
+}
+class HD4mDMagMaker:ActionItem{
+	states{
+	pickup:
+		TNT1 A 0{ 
+			A_Log("Reduce this with the DropOne stuff.");
+			A_DropInventory("FourMilAmmo",countinv("FourMilAmmo"));
+		}stop;
+	}
+}
+
+class HD4mmMagEmpty:HDDebris{
+	default{
+		translation "160:167=104:111";
+		bouncesound "misc/casing2";bouncefactor 0.6;xscale 0.4;yscale 0.3;radius 2;height 2;
+	}
+	states{
+	spawn:
+		CLIP B 2{
+			A_SetRoll(roll+30,SPF_INTERPOLATE);
+		}loop;
+	death:
+		CLIP B -1{
+			roll=randompick(0,0,0,0,180,180,180,180,90,270);
+		}stop;
+	}
+}
+
+
