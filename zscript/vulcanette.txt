@@ -57,10 +57,10 @@ class Vulcanette:HDWeapon{
 			if(pitch<5&&(!countinv("IsSupported"))){
 				if(countinv("IsMoving")>2 && countinv("PowerStrength")<1){  
 					A_MuzzleClimb(frandom(-0.1,0.1),
-						frandom(0.1,clamp(1-pitch,0.2,0.5)));
+						frandom(0.1,clamp(1-pitch,0.1,0.3)));
 				}else{
 					A_MuzzleClimb(frandom(-0.06,0.06),
-						frandom(0.1,clamp(1-pitch,0.1,0.3)));
+						frandom(0.1,clamp(1-pitch,0.06,0.12)));
 				}
 			}
 		}loop;

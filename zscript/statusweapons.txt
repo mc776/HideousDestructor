@@ -93,7 +93,7 @@ extend class HDStatusBar{
 				for(int i=1;i<5;i++){
 					if(vvv.vulcmag[i]>=0)drawwepdot(-16-i*4,-13,(3,2));
 				}
-				drawwepnum(vvv.vulcmag[0],50,posy:-10);
+				drawwepnum(vvv.vulcmag[0]<100?vvv.vulcmag[0]:vvv.vulcmag[0]-100,50,posy:-10);
 				drawwepcounter(vvv.weaponstatus[0]&VULCF_FAST,
 					-28,-16,"blank","STFULAUT"
 				);
