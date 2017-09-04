@@ -55,19 +55,6 @@ class HD4mmMag:HDUPK replaces ZM66RifleMags{
 
 		stamina 51; //51 means FRESH AND SEALED
 	}
-	void SetAmmo(class<inventory> invtype="FourMilAmmo"){
-		if(target is "PlayerPawn"){
-			stamina=target.countinv(invtype);
-			A_TakeFromTarget(invtype);
-		}
-		if(stamina<1){
-			actor a=spawn("HD4mmMagEmpty",pos);
-			if(a){
-				a.vel=vel;
-			}
-			destroy();return;
-		}
-	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		if(stamina<1){
@@ -103,7 +90,18 @@ class HD4mmMag:HDUPK replaces ZM66RifleMags{
 	}
 }
 class HD4mMag:HD4mmMag{
-	override void postbeginplay(){SetAmmo("ZM66Loaded");super.postbeginplay();}
+	override void postbeginplay(){
+		HDUPK.postbeginplay();
+		if(target is "PlayerPawn"){
+			stamina=target.countinv("ZM66Loaded");
+			A_TakeFromTarget("ZM66Loaded");
+		}
+		if(stamina<1){
+			actor emg=spawn("HD4mmMagEmpty",pos);
+			if(emg)emg.vel=vel;
+			destroy();return;
+		}
+	}
 }
 class HD4mDMagMaker:ActionItem{
 	states{
