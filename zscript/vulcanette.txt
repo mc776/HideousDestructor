@@ -28,6 +28,7 @@ class FourMilAmmo:Ammo{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
+		if(owner)return;
 		if(amount==1)return;
 		while(amount>1){  
 			int ld=min(amount,random(1,49));
@@ -95,7 +96,9 @@ class HD4mmMag:HDUPK replaces ZM66RifleMags{
 	spawn:
 		CLIP A 0 A_Stop();
 	spawn2:
-		---- A -1;
+		---- A -1{
+			if(stamina>50)frame=2;
+		}
 	give:
 		---- A 0{
 			if(stamina>50){  
@@ -108,18 +111,15 @@ class HD4mmMag:HDUPK replaces ZM66RifleMags{
 			}else{
 				int al=target.countinv("FourMilAmmo");
 				target.A_GiveInventory("FourMilAmmo",stamina);
-				al=target.countinv("FourMilAmmo")-al-stamina;
-				if(!al){destroy();return;}
-				else{
-					A_SetInventory("FourMilAmmo",al);
-					setstatelabel("spawn");
-				}
+				stamina-=target.countinv("FourMilAmmo")-al;
+				if(!stamina){destroy();return;}
+				else setstatelabel("spawn");
 			}
 		}stop;
 	}
 }
 class HD4mMag:HD4mmMag{
-	override void postbeginplay(){super.postbeginplay();SetAmmo("ZM66Loaded");}
+	override void postbeginplay(){SetAmmo("ZM66Loaded");super.postbeginplay();}
 }
 class HD4mDMagMaker:ActionItem{
 	states{
@@ -378,19 +378,9 @@ class Vulcanette:HDWeapon{
 		}
 	unload:
 		VULG A 0{
-			//abort if no mags to unload
-			if(
-				invoker.vulcmag[0]<0||
-				invoker.vulcmag[1]<0||
-				invoker.vulcmag[2]<0||
-				invoker.vulcmag[3]<0||
-				invoker.vulcmag[4]<0
-			)
-			setweaponstate("nope");else{
-				invoker.weaponstatus[0]&=~VULCF_LOADCELL;
-				invoker.weaponstatus[0]|=VULCF_JUSTUNLOAD;
-				setweaponstate("lowertoopen");
-			}
+			invoker.weaponstatus[0]&=~VULCF_LOADCELL;
+			invoker.weaponstatus[0]|=VULCF_JUSTUNLOAD;
+			setweaponstate("lowertoopen");
 		}
 	//what key to use for cellunload???
 	cellunload:
@@ -415,9 +405,9 @@ class Vulcanette:HDWeapon{
 			A_PlaySound("weapons/rifleload");
 			A_MuzzleClimb(-frandom(1.2,1.8),-frandom(1.8,2.4));
 		}
-		VULG A 6 offset(9,41) A_PlaySound("weapons/pocket");
-		VULG A 8 offset(12,43) A_PlaySound("weapons/huntreload");
-		VULG A 5 offset(10,41) A_PlaySound("weapons/grenopen");
+		VULG A 6 offset(9,41)A_PlaySound("weapons/pocket");
+		VULG A 8 offset(12,43)A_PlaySound("weapons/huntreload");
+		VULG A 5 offset(10,41)A_PlaySound("weapons/grenopen");
 		VULG A 0{
 			if(invoker.weaponstatus[0]&VULCF_LOADCELL)setweaponstate("uncell");
 			else if(invoker.weaponstatus[0]&VULCF_JUSTUNLOAD)setweaponstate("unmag");
@@ -501,10 +491,10 @@ class Vulcanette:HDWeapon{
 		//if not even battery, remove rounds from chambers
 		VULG A 0{
 			if(
-				invoker.vulcmag[0]<0||
-				invoker.vulcmag[1]<0||
-				invoker.vulcmag[2]<0||
-				invoker.vulcmag[3]<0||
+				invoker.vulcmag[0]<0&&
+				invoker.vulcmag[1]<0&&
+				invoker.vulcmag[2]<0&&
+				invoker.vulcmag[3]<0&&
 				invoker.vulcmag[4]<0
 			){
 				if(invoker.weaponstatus[1]>=0)setweaponstate("cellunload");  
@@ -520,7 +510,7 @@ class Vulcanette:HDWeapon{
 			A_MuzzleClimb(-frandom(1.2,1.8),-frandom(1.8,2.4));
 		}
 		VULG A 6 offset(10,40){
-			if(!countinv("JustUnloading"))setweaponstate("loadmag");
+			if(!(invoker.weaponstatus[0]&VULCF_JUSTUNLOAD))setweaponstate("loadmag");
 			A_PlaySound("weapons/rifleload");
 			A_MuzzleClimb(-frandom(1.2,1.8),-frandom(1.8,2.4));
 		}
@@ -529,8 +519,6 @@ class Vulcanette:HDWeapon{
 		VULG A 0{
 			if(invoker.vulcmag[1]>=0)setweaponstate("unmag2");  
 			else if(
-				invoker.vulcmag[0]>=0||
-				invoker.vulcmag[1]>=0||
 				invoker.vulcmag[2]>=0||
 				invoker.vulcmag[3]>=0||
 				invoker.vulcmag[4]>=0
@@ -538,14 +526,14 @@ class Vulcanette:HDWeapon{
 			else if(
 				invoker.vulcmag[0]>=0  
 			)setweaponstate("unmag1");
-		}goto nope;
+		}goto reload3;
 	unmagshunt:
 		VULG A 0{
 			VulcNextMag();
 			A_PlaySound("weapons/grenopen",CHAN_BODY);
 		}
 		VULG AB 2 A_MuzzleClimb(-frandom(0.4,0.6),frandom(0.4,0.6));
-		goto nope;
+		goto ready;
 
 	unmag2:
 		VULC A 0{
@@ -629,9 +617,9 @@ class Vulcanette:HDWeapon{
 					||countinv("PressingUnload")
 					||countinv("PressingFire")
 				)||(
-					invoker.vulcmag[1]<0|| //intentionally no [0] check
-					invoker.vulcmag[2]<0||
-					invoker.vulcmag[3]<0||
+					invoker.vulcmag[1]<0&& //intentionally no [0] check
+					invoker.vulcmag[2]<0&&
+					invoker.vulcmag[3]<0&&
 					invoker.vulcmag[4]<0
 				)
 			)setweaponstate("reloadend");
@@ -658,7 +646,7 @@ class Vulcanette:HDWeapon{
 			else if(invoker.vulcmag[4]<0)magslot=4;
 
 			if(lod<51)invoker.vulcmag[magslot]=100+lod;
-			else invoker.vulcmag[magslot]=50;
+			else invoker.vulcmag[magslot]=51;
 
 			A_MuzzleClimb(-frandom(1.,1.2),-frandom(0.5,0.7));
 		}
