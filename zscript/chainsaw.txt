@@ -1,6 +1,7 @@
 // ------------------------------------------------------------
 // Chainsaw
 // ------------------------------------------------------------
+const LUMBERJACKDRAIN=1023;
 class Lumberjack:HDWeapon replaces Chainsaw{
 	default{
 		weapon.selectionorder 801;
@@ -9,7 +10,6 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 		weapon.bobrangex 0.3;
 		weapon.bobrangey 1.4;
 		weapon.bobspeed 2.1;
-		weapon.ammotype1 "LumberCell";
 		weapon.ammotype2 "HDCellPacks";
 		weapon.kickback 2;
 		scale 0.4;
@@ -18,18 +18,17 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 	states{
 	ready:
 		BEVG C 0 A_TakeInventory("WasChoppingFlesh");
-		BEVG C 0 A_JumpIfInventory("SawOn",1,"ready2");
+		BEVG C 0 A_JumpIf(invoker.weaponstatus[2],"ready2");
 		BEVG C 1{
 			A_WeaponReady(WRF_ALLOWRELOAD|WRF_ALLOWUSER4);
 		}goto ReadyEnd;
 	ready2:
 		BEVG CD 3{
-			A_GiveInventory("IsWeaponBFG",1);
-			A_TakeInventory("SawOn",1);
-			if((countinv("SawOn")>4)&&(countinv("LumberCell")>400)){  
+			if(invoker.weaponstatus[2]>0)invoker.weaponstatus[2]--;
+			if((invoker.weaponstatus[2]>4)&&(invoker.weaponstatus[1]>4)){
 				A_SetTics(2);
 				A_PlaySound("weapons/sawfull",CHAN_WEAPON);
-			}else if((countinv("SawOn")>1)&&(countinv("LumberCell")>100)){
+			}else if((invoker.weaponstatus[2]>1)&&(invoker.weaponstatus[1]>2)){
 				A_PlaySound("weapons/sawidle",CHAN_WEAPON);
 			}else{
 				A_SetTics(random(2,4));
@@ -39,57 +38,60 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 		}
 		goto ReadyEnd;
 	select0:
-		BEVG A 0 A_TakeInventory("SawOn");
+		BEVG A 0{invoker.weaponstatus[2]=0;}
 		goto select0big;
 	deselect0:
-		BEVG A 0 A_TakeInventory("SawOn");
+		BEVG A 0{invoker.weaponstatus[2]=0;}
 		goto deselect0big;
 	hold:
-		BEVG A 0 A_JumpIfInventory("LumberCell",1,"saw");
+		BEVG A 0 A_JumpIf(invoker.weaponstatus[1]>0,"saw");
 		goto nope;
 	fire:
 		BEVG C 2;
-		BEVG C 4 A_JumpIfInventory("LumberCell",1,"saw");
+		BEVG C 4 A_JumpIf(invoker.weaponstatus[1]>0,"saw");
 		goto beatdown;
 	saw:
 		BEVG AB 1{
-			A_GiveInventory("SawOn",1);
-			if(!random(0,3))A_TakeInventory("LumberCell",1);
-			if(countinv("LumberCell")<61)A_GiveInventory("LumberEmptyCell");
-			if((countinv("LumberCell")>450)&&(countinv("SawOn")>11)){  
-				ACS_NamedExecuteAlways("MuzzleClimb",0,(random(0,1)*2-1)*random(3,8),(random(0,1)*2-1)*random(3,12));
+			int drainprob=LUMBERJACKDRAIN;
+			if(invoker.weaponstatus[2]<12)invoker.weaponstatus[2]++;
+			if((invoker.weaponstatus[1]>random(5,8))&&(invoker.weaponstatus[2]>11)){
+				A_MuzzleClimb(
+					randompick(-1,1)*frandom(-0.3,-1.2),
+					randompick(-1,1)*frandom(0.3,0.8)
+				);
 				A_Saw("weapons/sawfull","weapons/sawhit",5,"HDSawPuff");
-				A_FireProjectile("HDSawGibber");
 				A_AlertMonsters();
-			}else if((countinv("LumberCell")>150)&&(countinv("SawOn")>6)){
-				ACS_NamedExecuteAlways("MuzzleClimb",0,(random(0,1)*2-1)*random(1,4),(random(0,1)*2-1)*random(2,6));
+			}else if((invoker.weaponstatus[1]>random(2,4))&&(invoker.weaponstatus[2]>6)){
+				A_MuzzleClimb(
+					randompick(-1,1)*frandom(-0.2,-0.6),
+					randompick(-1,1)*frandom(0.1,0.4)
+				);
 				A_Saw("weapons/sawfull","weapons/sawhit",3,"HDSawPuff");
-				A_FireProjectile("HDSawGibber");
 				A_SetTics(2);
 				A_AlertMonsters();
-			}else if((countinv("LumberCell")>40)&&(countinv("SawOn")>1)){
-				ACS_NamedExecuteAlways("MuzzleClimb",0,(random(0,1)*2-1)*random(1,4),(random(0,1)*2-1)*random(2,6));
+			}else if((invoker.weaponstatus[1]>random(1,4))&&(invoker.weaponstatus[2]>1)){
+				drainprob*=1.5;
+				A_MuzzleClimb(
+					randompick(-1,1)*frandom(-0.2,-0.6),
+					randompick(-1,1)*frandom(0.1,0.4)
+				);
 				A_Saw("weapons/sawfull","weapons/sawhit",1,"HDSawPuff");
-				if(random(1,2)==1){A_FireProjectile("HDSawGibber");}
 				A_SetTics(random(2,4));
 				A_AlertMonsters();
 			}else{
-				ACS_NamedExecuteAlways("MuzzleClimb",0,random(-2,2),random(-2,2));
+				drainprob*=4;
+				A_MuzzleClimb(frandom(-0.2,0.2),frandom(-0.2,0.2));
 				A_PlaySound("weapons/sawidle",CHAN_WEAPON);
 				A_FireProjectile("HDSawPuffShitty");
 				A_SetTics(random(3,6));
-				//slow drain
-				if(!random(0,2))A_SetInventory(
-					"LumberCell",min(countinv("LumberCell"),countinv("LumberCell")+1)
-				);
 			}
+			if(!random(0,drainprob)&&invoker.weaponstatus[1]>0)invoker.weaponstatus[1]--;
 		}
 		BEVG B 1 A_Refire();
 		goto ready;
 
 	altfire:
 	beatdown:
-		BEVG C 0 A_TakeInventory("IsWeaponBFG");
 		BEVG C 0 A_JumpIfInventory("PowerStrength",1,"beatdownstrong");
 		BEVG C 1 offset(0,33);
 		BEVG C 1 offset(0,32);
@@ -132,8 +134,8 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 	reload:
 		BEVG C 0{
 			if(
-				(countinv("LumberCell")>1140)  
-				||(countinv("HDCellPacks")+countinv("HDCellAmmo")<1)
+				(invoker.weaponstatus[1]>=20)
+				||(!countinv("HDCellPacks")&&!countinv("HDCellAmmo"))
 			){return resolvestate("nope");}
 			return resolvestate("unmag");
 		}
@@ -141,7 +143,7 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 	user4:
 	unload:
 		BEVG C 0{
-			if(countinv("LumberCell")+countinv("LumberEmptyCell")<1){
+			if(invoker.weaponstatus[1]<0){
 				return resolvestate("nope");
 			}A_GiveInventory("JustUnloading");return resolvestate(null);
 		}
@@ -159,12 +161,12 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 			A_PlaySound("weapons/grenopen",CHAN_WEAPON);
 			if(
 				(countinv("PressingUnload")+countinv("PressingReload")<1)
-				||(countinv("HDCellAmmo")>invoker.AmmoCap("HDCellAmmo")-countinv("LumberCell")/60)      
+				||(countinv("HDCellAmmo")>invoker.AmmoCap("HDCellAmmo")-invoker.weaponstatus[1])      
 				||(
-					(countinv("LumberCell")>=1200)  
+					(invoker.weaponstatus[1]>=20)  
 					&&(A_JumpIfInventory("HDCellPacks",0,"null"))
 				)
-				||((countinv("LumberCell")<1)&&(A_JumpIfInventory("HDCellPackEmpty",0,"null")))
+				||(!invoker.weaponstatus[1]&&A_JumpIfInventory("HDCellPackEmpty",0,"null"))
 			){
 				return resolvestate("dropmag");
 			}
@@ -172,47 +174,54 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 		}
 	dropmag:
 		BEVG A 0{
-			if(countinv("LumberEmptyCell")||countinv("LumberCell")){
+			if(invoker.weaponstatus[1]>=0){
 				actor a;int b;
 				[b,a]=A_SpawnItemEx("HDCellPickup",
 					cos(pitch)*10,0,height-10-10*sin(pitch),
 					vel.x,vel.y,vel.z,
 					0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
 				);
-				a.A_SetInventory("HDCellAmmo",countinv("LumberCell")/60);
+				a.A_SetInventory("HDCellAmmo",invoker.weaponstatus[1]);
 			}
-			A_TakeInventory("LumberCell");
-			A_TakeInventory("LumberEmptyCell");
+			invoker.weaponstatus[1]=-1;
 		}goto magout;
 	pocketmag:
 		BEVG A 6 offset(7,80){
 			A_PlaySound("weapons/pocket");
-			ACS_NamedExecuteAlways("MuzzleClimb",0,(random(0,1)*2-1)*random(3,8),(random(0,1)*2-1)*random(3,12));
-			if(countinv("LumberCell")>1140){A_GiveInventory("HDCellPacks");}
-			else if(countinv("LumberCell")>60){A_GiveInventory("HDCellAmmo",countinv("LumberCell")/60);}          
-			else{A_GiveInventory("HDCellPackEmpty");}
-			A_TakeInventory("LumberCell");
+			A_MuzzleClimb(
+				randompick(-1,1)*frandom(-0.3,-1.2),
+				randompick(-1,1)*frandom(0.3,1.8)
+			);
+			if(invoker.weaponstatus[1]>=20)A_GiveInventory("HDCellPacks");
+			else if(invoker.weaponstatus[1])
+				A_GiveInventory("HDCellAmmo",invoker.weaponstatus[1]);
+			else A_GiveInventory("HDCellPackEmpty");
+			invoker.weaponstatus[1]=-1;
 		}
 		BEVG A 7 offset(6,81) A_PlaySound("weapons/pocket");
 		goto magout;
 
 	magout:
-		BEVG A 0 A_TakeInventory("LumberEmptyCell");
 		BEVG A 0 A_JumpIfInventory("JustUnloading",1,"reloadend");
 	loadmag:
-		BEVG A 4 offset(7,79) ACS_NamedExecuteAlways("MuzzleClimb",0,(random(0,1)*2-1)*random(3,8),(random(0,1)*2-1)*random(3,12));
+		BEVG A 4 offset(7,79) A_MuzzleClimb(
+			randompick(-1,1)*frandom(-0.3,-1.2),
+			randompick(-1,1)*frandom(0.3,0.8)
+		);
 		BEVG A 2 offset(6,78) A_PlaySound("weapons/pocket");
-		BEVG AA 5 offset(5,76) ACS_NamedExecuteAlways("MuzzleClimb",0,(random(0,1)*2-1)*random(3,8),(random(0,1)*2-1)*random(3,12));
+		BEVG AA 5 offset(5,76) A_MuzzleClimb(
+			randompick(-1,1)*frandom(-0.3,-1.2),
+			randompick(-1,1)*frandom(0.3,0.8)
+		);
 		BEVG A 0{
 			if(countinv("HDCellPacks")>0){          
-				A_GiveInventory("LumberCell",1200);
+				invoker.weaponstatus[1]=20;
 				A_TakeInventory("HDCellPacks",1,TIF_NOTAKEINFINITE);
 			}else{
 				int rld=min(random(1,19),countinv("HDCellAmmo"));
-				A_SetInventory("LumberCell",rld*60);
+				invoker.weaponstatus[1]=rld;
 				A_TakeInventory("HDCellAmmo",rld,TIF_NOTAKEINFINITE);
 			}
-			A_TakeInventory("LumberEmptyCell");
 		}
 	reloadend:
 		BEVG A 6 offset(5,72);
@@ -225,31 +234,55 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 		BEVG C 1 offset(0,33);
 		goto ready;
 
-
-
 	spawn:
 		CSAW A -1;
 	}
 
 	//for tracking ammo in drops and pickups
-	override void postbeginplay(){
-		super.postbeginplay();
-		weaponstatus[0]=1200;
-	}
-	override void attachtoowner(actor user){
-		if(weaponstatus[0]>0)user.A_SetInventory("LumberCell",weaponstatus[0]);
-		else user.A_SetInventory("LumberEmptyCell",-weaponstatus[0]);
-		super.attachtoowner(user);
-	}
-	override void detachfromowner(){
-		weaponstatus[0]=owner.countinv("LumberCell");
-		if(!weaponstatus[0])weaponstatus[0]=-owner.countinv("LumberEmptyCell");
-		owner.A_TakeInventory("LumberCell");
-		owner.A_TakeInventory("LumberEmptyCell");
-		super.detachfromowner();
+	override void initializewepstats(bool idfa=false){
+		weaponstatus[1]=20;
 	}
 }
 
 
+
+
+class HDSawPuff:IdleDummy{
+	default{
+		+puffonactors +bloodsplatter +puffgetsowner +hittracer
+		damagetype "Chainsaw";decal "BulletChipSmall";
+	}
+	lumberjack lmb;
+	states{
+	spawn:
+		TNT1 A 0 nodelay{
+			A_ChangeVelocity(1,0,-1,CVF_RELATIVE);
+			A_GiveInventory("WasChoppingFlesh",1,AAPTR_TARGET);
+			if(tracer && tracer.bcorpse){
+				tracer.A_GiveInventory("SawGib",random(5,10));
+			}
+		}stop;
+	crash:
+		TNT1 A 0{
+			if(target){
+				if(!random(0,LUMBERJACKDRAIN)){
+					lmb=lumberjack(target.findinventory("lumberjack"));
+					if(lmb && lmb.weaponstatus[1]>0)lmb.weaponstatus[1]--;
+				}
+				if(target.countinv("WasChoppingFlesh")){
+					let tgt=HDPlayerPawn(target);
+					if(tgt){
+						tgt.muzzleclimb1.x+=random(-30,10);
+						tgt.muzzleclimb1.y+=random(-10,6);
+					}
+					target.A_Recoil(random(-1,2));
+					target.damagemobj(self,target,1,"chainsaw");
+				}
+			}
+			spawn("BulletPuffMedium",pos);
+			if(lmb && lmb.weaponstatus[1]>0 && !random(0,LUMBERJACKDRAIN*3))lmb.weaponstatus[1]--;
+		}stop;
+	}
+}
 
 

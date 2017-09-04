@@ -9,12 +9,15 @@ extend class HDStatusBar{
 		oddtic++;if(oddtic>6)oddtic=0;
 
 		if(w is "Lumberjack"){
-			if(pp.countinv("LumberEmptyCell"))drawstring(
-				mamountfont,"00000",
-				(-16,-9),DI_TEXT_ALIGN_RIGHT|DI_TRANSLATABLE|DI_SCREEN_CENTER_BOTTOM,
-				Font.CR_DARKGRAY
-			);
-			drawwepnum(pp.countinv("LumberCell"),1200);
+			let wpn=lumberjack(w);
+			if(wpn){
+				if(!wpn.weaponstatus[1])drawstring(
+					mamountfont,"00000",(-16,-9),DI_TEXT_ALIGN_RIGHT|
+					DI_TRANSLATABLE|DI_SCREEN_CENTER_BOTTOM,
+					Font.CR_DARKGRAY
+				);else if(wpn.weaponstatus[1]>0)
+					drawwepnum(wpn.weaponstatus[1],20);
+			}
 		}
 		else if(w is "HDPistol"){
 			drawwepcounter(pp.countinv("HDPistolFullAuto"),
