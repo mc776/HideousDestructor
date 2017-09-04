@@ -202,7 +202,8 @@ extend class HDPlayerPawn{
 			A_GiveInventory("BFGChamber",20);
 			A_GiveInventory("PlasmaBattery",60);
 			A_GiveInventory("LumberCell",1200);
-			A_GiveInventory("VulcJuice",2100);
+			hdweapon hdw=hdweapon(findinventory("vulcanette"));
+			if(hdw)hdw.weaponstatus[1]=20;
 		}else{
 			if(countinv("ThunderBuster")){
 				if(countinv("PlasmaBattery")<10&&countinv("HDCellPacks")){

@@ -83,7 +83,7 @@ class HDWeapon:Weapon{
 					//spawn smoke from muzzle
 					smkang=owner.angle;
 					smkpos.z+=owner.height-9-sin(owner.pitch)*smklength;
-					smkpos.xy+=smklength*(cos(smkang),sin(smkang));
+					smkpos.xy+=cos(owner.pitch)*smklength*(cos(smkang),sin(smkang));
 				}else{
 					//spawn smoke from behind owner
 					smkang=owner.angle+180;

@@ -116,7 +116,7 @@ class HDCellPickup:HDUPK{
 		}stop;
 	}
 }
-class HDCelXV:HDCellPickup{
+class HDCelXD:HDCellPickup{
 	states{
 	spawn:
 		CELL C 0 A_Stop();
@@ -130,12 +130,6 @@ class HDCelXV:HDCellPickup{
 		}goto spawn2;
 	}
 	virtual void ExtractAmmo(){
-		A_SetInventory("HDCellAmmo",target.countinv("VulcJuice")/150);
-		target.A_TakeInventory("VulcJuice");
-	}
-}
-class HDCelXD:HDCelXV{
-	override void ExtractAmmo(){
 		A_SetInventory("HDCellAmmo",target.countinv("HERPCell")/750);
 		target.A_TakeInventory("HERPCell");
 	}
