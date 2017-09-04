@@ -1,24 +1,28 @@
-actor HDLoadBox:switchabledecoration{
-	height 20 radius 20 gravity 0.8
-	activation THINGSPEC_Switch|THINGSPEC_ThingTargets
-	+usespecial
-	states
-	{
-	spawn:
-		AMMO A -1 A_TakeInventory("Clip")
+class HDLoadBox:switchabledecoration{
+	default{
+		+usespecial
+		height 20;radius 20;gravity 0.8;
+		activation THINGSPEC_Switch|THINGSPEC_ThingTargets;
+	}
+	states{
 	active:
 	inactive:
-		AMMO A 0 A_JumpIfInventory("Clip",1,"spawn")
-		AMMO A 5 A_PlaySound("misc/chat2",CHAN_AUTO)
+		AMMO A 5{
+			A_PlaySound("misc/chat2",CHAN_AUTO);
+			busespecial=false;
+		}
 		OWWV AA 4{
 			A_GiveInventory("Clip");
-			A_ChangeVelocity(0,0,3);
+			vel.z+=3;
 		}
-		OWWV A 18 A_GiveToTarget("HDLoaded")
-		goto spawn
+		OWWV A 18 A_GiveToTarget("HDLoaded");
+	spawn:
+		AMMO A -1{
+			busespecial=true;
+		}
 	}
 }
-actor HDLoaded:ActionItem{
+class HDLoaded:ActionItem{
 	states{
 	pickup:
 		TNT1 A 0{
@@ -59,29 +63,12 @@ actor HDLoaded:ActionItem{
 				A_TakeInventory("ZM66NoMag");
 			}
 			if(countinv("ZM66GrenadeRifle")>0){A_GiveInventory("ZM66GLoaded");}
-			if(countinv("Vulcanette")>0){
-				A_GiveInventory("VulcJuice",2100);
-				A_GiveInventory("VulcLoaded1",50);
-				A_GiveInventory("VulcLoaded2",50);
-				A_GiveInventory("VulcLoaded3",50);
-				A_GiveInventory("VulcLoaded4",50);
-				A_GiveInventory("VulcLoaded5",50);
-				A_GiveInventory("VulcMag1");
-				A_GiveInventory("VulcMag2");
-				A_GiveInventory("VulcMag3");
-				A_GiveInventory("VulcMag4");
-				A_GiveInventory("VulcMag5");
-				A_GiveInventory("VulcChamber1");
-				A_GiveInventory("VulcChamber2");
-				A_GiveInventory("VulcChamber3");
-				A_GiveInventory("VulcChamber4");
-				A_GiveInventory("VulcChamber5");
-				A_TakeInventory("VulcJB1");
-				A_TakeInventory("VulcJB2");
-				A_TakeInventory("VulcJB3");
-				A_TakeInventory("VulcJB4");
-				A_TakeInventory("VulcJB5");
-				A_TakeInventory("VulcEmptyCell");
+			if(countinv("Vulcanette")){
+				vulcanette vvv=vulcanette(findinventory("vulcanette"));
+				if(vvv){
+					vvv.initializewepstats();
+					for(int i=0;i<5;i++)vvv.vulcchamber[i]=1;
+				}
 			}
 			if(countinv("RocquetteLauncher")>0){
 				if(countinv("RocketMag")<6){
@@ -119,46 +106,51 @@ actor HDLoaded:ActionItem{
 				A_TakeInventory("HDFragGrenadeAmmo");
 				A_GiveInventory("HDFragGrenadeAmmo",3);
 			}
-
-/*
-			if(countinv("")>0){
-				A_GiveInventory("",);
-				A_GiveInventory("");
-				A_TakeInventory("");
-			}
-*/
-		}fail
+		}fail;
 	}
 }
 
 
 
-actor TargetBarrel
-{
-	+ismonster +nevertarget +shootable +quicktoretaliate +float +nogravity +nodamage +noblood
-	height 34 radius 16 mass 25 painchance 256 speed 2
-	states
-	{
+class TargetBarrel:Actor{
+	default{
+		+ismonster +nevertarget +shootable +quicktoretaliate +float +nogravity +nodamage +noblood
+		height 34;radius 16;mass 25;painchance 256;speed 2;
+	}
+	states{
 	spawn:
-		TNT1 A 0 A_ChangeVelocity(frandom(-0.4,0.4),frandom(-0.4,0.4),frandom(-1,1))
-		BEXP B 2 A_Wander
-		TNT1 A 0 A_JumpIf(velx>4||vely>4||velz>4,"spawn")
-		BEXP B 1 A_SetTics(random(10,100))
-		loop
+		BEXP B 2{
+			A_ChangeVelocity(frandom(-0.4,0.4),frandom(-0.4,0.4),frandom(-1,1));
+			A_Wander();
+		}
+		TNT1 A 0 A_JumpIf(vel.x>4||vel.y>4||vel.z>4,"spawn");
+		BEXP B 1 A_SetTics(random(10,100));
+		loop;
 	pain:
-		TNT1 A 0 A_ChangeVelocity(0,0,10)
-		TNT1 A 0 A_ChangeFlag("nopain",1)
-		TNT1 A 0 A_SpawnItemEx("HDExplosion",0,0,16,0,0,0,0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
-		TNT1 A 0 bright A_Gravity
-		BEXP B 3 A_SpawnItemEx("HDSmoke",0,0,32,velx+frandom(-2,2),vely+frandom(-2,2),0,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
-		TNT1 A 0 A_ChangeFlag("nopain",0)
-		TNT1 A 0 A_SpawnItemEx("DistantRocket",0,0,0,0,0,0,0,SXF_NOCHECKPOSITION)
+		BEXP B 3{
+			bnopain=true;
+			vel.x+=10;
+			bnogravity=false;
+			spawn("HDExplosion",pos+(0,0,16));
+			spawn("HDSmoke",pos+(0,0,16));
+		}
+		TNT1 A 0{
+			bnopain=0;
+			spawn("DistantRocket",pos);
+		}
 	pain2:
-		BEXP B 1 A_SpawnItemEx("HDSmoke",0,0,16,0,0,0,0,SXF_NOCHECKPOSITION)
-		TNT1 A 0 A_JumpIf(floorz<z,"pain2")
-		TNT1 A 0 A_PlaySound("weapons/smack")
-		BEXP B 10 A_ChangeVelocity(0,0,5)
-		TNT1 A 0 A_NoGravity
-		goto spawn 
+		BEXP B 1{
+			spawn("HDSmoke",pos+(0,0,16));
+			if(floorz>=pos.z)setstatelabel("pain3");
+		}wait;
+	pain3:
+		BEXP B 10{
+			vel.z*=-0.3;
+			bnogravity=true;
+			A_PlaySound("weapons/smack");
+		}goto spawn;
 	}
 }
+
+
+
