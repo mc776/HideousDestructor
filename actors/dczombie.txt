@@ -52,8 +52,8 @@ actor NoBlockWepDrop:ActionItem{
 				}
 			}
 			else if(CheckClass("DragonGuard",AAPTR_DEFAULT,true)){
-				if(countinv("HasDroppedGun")<1){
-					//A_DropItem("VulcPickupDropped"); //see the actor itself
+				if(!countinv("HasDroppedGun")){
+					//see the actor itself for the weapon drop
 					A_DropItem("HDCellPacks",16);
 				}else{
 					A_DropItem("ZM66RifleMags",0,96);
