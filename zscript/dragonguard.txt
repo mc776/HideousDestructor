@@ -1,0 +1,252 @@
+// ------------------------------------------------------------
+// Red Dragon Guard
+// ------------------------------------------------------------
+class VulcanetteGuy:Chaingunguy{
+	int burstcount;
+	int vulcammo; //0-250, just play an animation on hitting a multiple of 50
+	int vulcchambers; //0-5
+	default{
+		dropitem "";
+		translation "60:69=128:135","70:79=144:151","176:191=32:47";
+		health 75;gibhealth 100;
+		height 54;radius 16;
+		deathheight 50;
+		obituary "%o met the budda-budda-budda on the street,and it killed %h.";
+	}
+	states{
+	reload:
+		CPOS A 0{
+			if(!checksight(target))setstatelabel("loadamag");
+			bfrightened=true;
+		}
+		CPOS AABBCCDD 3 A_Chase(null,null);
+	loadamag:
+		CPOS E 9{
+			if(vulcammo>=250){  
+				vulcammo=250;
+				setstatelabel("see");
+			}else A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		}
+		CPOS E 7 A_PlaySound("weapons/rifleload");
+		CPOS E 10{
+			A_PlaySound("weapons/rifleclick2");
+			vulcammo+=50;
+		}loop;
+	see:
+		CPOS AABBCCDD 4 A_Chase();
+		CPOS A 0{
+			if(!target||!checksight(target))healthing(random(1,6));
+			if(!vulcammo)setstatelabel("reload");
+			else bfrightened=0;
+		}loop;
+	see2:
+		CPOS E 8 A_FaceTarget(8,0);
+		CPOS E 0 A_CheckLOF(1,CLOFF_JUMPNONHOSTILE|CLOFF_SKIPTARGET|CLOFF_JUMPOBJECT|CLOFF_SKIPENEMY|CLOFF_MUSTBESOLID,0,0,0,0,32,9);
+		goto ready;
+		CPOS E 0 A_Jump(64,"WindDown");
+		loop;
+	missile:
+		CPOS E 0{
+			if(!vulcammo)setstatelabel("reload");
+			else{
+				bfrightened=0;
+				A_CheckLOF("see",
+					CLOFF_JUMPNONHOSTILE|CLOFF_SKIPTARGET|CLOFF_JUMPOBJECT|
+					CLOFF_SKIPENEMY|CLOFF_MUSTBESOLID,
+					0,0,0,0,32,9
+				);
+			}
+		}
+	ready:
+		CPOS ABCD 4{
+			if(A_JumpIfTargetInLOS("aim",6))setstatelabel("aim");
+			else A_FaceTarget(16,16);
+		}loop;
+	aim:
+		CPOS E 0 A_JumpIfTargetInLOS(2);
+		CPOS E 0 A_Jump(256,"see","waitforlos","waitforlos","waitforlos","waitforlos");
+		CPOS E 0 A_JumpIfTargetInLOS(1,20);
+		goto ready;
+		CPOS EE 3 A_FaceTarget(4,4);
+		CPOS E 2 A_JumpIfTargetInLOS(1,12);
+		loop;
+	fire:
+		CPOS E 3{
+			if(random(1,5)<2)bmissilemore=true;else bmissilemore=false;
+			A_SetPitch(pitch+frandom(-2,2));A_SetAngle(angle+frandom(-2,2));
+			burstcount=min(vulcammo,bmissilemore?random(9,90):random(3,30));
+		}
+	cycle:
+		CPOS E 10{
+			if(vulcchambers<5 && vulcammo){
+				vulcammo--;
+				vulcchambers++;
+				A_PlaySound("weapons/rifleclick2",CHAN_AUTO);
+			}
+			if(vulcchambers)setstatelabel("shoot");
+		}goto reload;
+	shoot:
+		CPOS F 1 bright light("SHOT"){
+			A_PlaySound("weapons/vulcanette",CHAN_AUTO);
+			if(vulcchambers>0)vulcchambers--;  
+			burstcount--;
+			pitch+=frandom(-0.5,0.5);angle+=frandom(-0.5,0.5);
+			actor p=Spawn(invoker.missilename,pos+(0,0,height-6));
+			if(p){
+				p.target=self;p.angle=angle;p.pitch=pitch;
+				p.vel+=(
+					frandom(-2,2),frandom(-2,2),frandom(-2,2)
+				);
+				p.speed+=10*frandom(-2,2);
+				p.vel+=vel;
+			}
+		}
+		CPOS E 2{
+			if(
+				!(vulcammo%50)
+			){
+				A_SpawnItemEx(
+					"HD4mmMagEmpty",0,4,32,3,
+					random(-3,2),random(0,-2),0,SXF_NOCHECKPOSITION
+				);
+				A_SetTics(7);
+			}
+			else if(bmissilemore)A_SetTics(0);
+			if(!vulcammo||!burstcount)setstatelabel("winddown");
+		}goto cycle;
+	winddown:
+		CPOS E 6{
+			burstcount=0;
+			if(bmissilemore)A_SetTics(12);
+		}
+		CPOS E 0{if(!vulcammo)setstatelabel("reload");}
+	waitforlos:
+		CPOS EE 4 A_Jump(2,"fire");
+		CPOS E 0{
+			if(target.health<random(-50,1))
+				return resolvestate("winddown");
+			if(A_JumpIfTargetInLOS("null"))A_FaceTarget(1,1);
+			if(A_CheckLOF("null",
+				CLOFF_JUMPNONHOSTILE|CLOFF_SKIPTARGET|CLOFF_JUMPOBJECT|
+				CLOFF_SKIPENEMY|CLOFF_MUSTBESOLID,0,0,0,0,32,9)
+			)return resolvestate("waitforlos");
+			if(A_JumpIfTargetInLOS("null",1))return resolvestate("fire");
+			if(A_JumpIfTargetInLOS("null",90))return resolvestate("aim");
+			if(!random(0,22))return resolvestate("winddown");
+			if(A_JumpIfTargetInLOS("null"))return resolvestate("ready");
+			return resolvestate("waitforlos");
+		}
+
+	death:
+		CPOS H 5{
+			A_GivetoTarget("HDKillCount",1);
+			hdmobai.CorpseFlags(self);
+			A_SpawnItemEx("tempshield",0,0,0,vel.x,vel.y,vel.z,0,40);
+		}
+		CPOS I 5{
+			A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
+			A_Scream();
+		}
+
+		CPOS J 5{
+			A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
+			A_SpawnItemEx("tempshield2",0,0,0,vel.x,vel.y,vel.z,0,40);
+			A_VulcNoBlocking();
+		}
+		CPOS KL 5;
+		CPOS M 5;
+	dead:
+		CPOS M 3;
+		loop;
+		CPOS N 5 canraise{
+			if(abs(vel.z)>1)setstatelabel("dead");  
+		}wait;
+	xdeathbrewtlelulz:
+		CPOS L 3{
+			bshootable=false;
+			A_GiveInventory("IsGibbed");
+		}
+		CPOS KO 3;
+		CPOS P 3{
+			A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
+			A_XScream();
+		}
+		CPOS R 2 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
+		CPOS QRS 5 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
+		goto xdead;
+	xdeath:
+		CPOS O 5{
+			bshootable=false;
+			A_GiveInventory("IsGibbed");
+			A_GivetoTarget("HDKillCount",1);
+		}
+		CPOS P 3{
+			A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
+			A_XScream();
+		}
+		CPOS R 2 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
+		CPOS Q 5 A_VulcNoBlocking();
+		CPOS Q 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
+		CPOS RS 5 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
+	xdead:
+		CPOS S 3;
+		loop;
+		CPOS T 5 canraise{
+			if(abs(vel.z)>1)setstatelabel("dead");  
+		}wait;
+	raise:
+		CPOS N 2{
+			hdmobai.CorpseFlags(self);
+			if(countinv("IsGibbed"))setstatelabel("raisegibbed");
+			else A_SpawnItemEx("MegaBloodSplatter",0,0,4,0,0,3,0,SXF_NOCHECKPOSITION);
+		}
+		CPOS NML 6;
+		CPOS KJIH 4;
+		goto see;
+	raisegibbed:
+		CPOS T 6{
+			A_TakeInventory("IsGibbed");
+			A_SpawnItemEx("MegaBloodSplatter",0,0,4,0,0,3,0,SXF_NOCHECKPOSITION);
+		}
+		CPOS TS 12 A_SpawnItemEx("MegaBloodSplatter",0,0,4,0,0,3,0,SXF_NOCHECKPOSITION);
+		CPOS RQ 7;
+		CPOS POH 5;
+		CPOS H 5 A_Die("ungibbed");
+	death.ungibbed:
+		CPOS H 5{
+			hdmobai.CorpseFlags(self);
+		}
+		CPOS I 5 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
+		CPOS J 5 A_NoBlocking();
+		CPOS KLM 5;
+		goto dead;
+	}
+	void A_VulcNoBlocking(){
+		A_GiveInventory("NoBlockWepDrop");
+		vulcanette vvv=vulcanette(spawn("vulcanette",pos+(0,0,32)));
+		if(!vvv)return;
+		vvv.vel=vel;vvv.angle=angle;
+		vvv.A_ChangeVelocity(1,0,2,CVF_RELATIVE);
+		for(int i=0;i<4;i++){
+			if(i==0){
+				int rem=vulcammo%50;
+				if(rem){
+					vvv.vulcmag[i]=rem;
+					vulcammo-=rem;
+				}
+			}else if(vulcammo>0){
+				vvv.vulcmag[i]=50;
+				vulcammo-=50;
+			}
+			if(vulcchambers>0){  
+				vvv.vulcchamber[i]=randompick(1,1,2);
+				vulcchambers--;
+			}
+		}
+		if(bmissilemore)vvv.weaponstatus[0]|=VULCF_FAST;
+		bmissilemore=false;
+		vvv.weaponstatus[1]=random(1,20);
+	}
+}
+
+

@@ -3,7 +3,7 @@
 // ------------------------------------------------------------
 extend class HDStatusBar{
 	void DrawHDXHair(hdplayerpawn hpl){
-		weapon wp=cplayer.readyweapon;
+		hdweapon wp=hdweapon(cplayer.readyweapon);
 
 		if(
 			!wp
@@ -67,7 +67,7 @@ extend class HDStatusBar{
 				"XH25",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 				alpha:0.8,scale:(1.7,1.7)
 			);
-			int fv=7-hpl.countinv("ChaingunZoom");
+			int fv=7-wp.weaponstatus[2];
 			if(fv<7)fv-=3;
 			texman.setcameratotexture(hpc,"TCAMTEX3",fv);
 			drawimage(

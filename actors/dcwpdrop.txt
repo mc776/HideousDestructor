@@ -137,7 +137,7 @@ actor DropExtra:CustomInventory{
 		TNT1 A 0 A_SpawnItemEx("ZM66RifleMags",random(8,12),random(0,12),24,5,0,0,random(-6,-12))
 		loop
 	fourmil:
-		TNT1 A 0 A_SpawnItemEx("HD4mDMag",random(8,12),random(0,12),24,5,0,0,random(-6,-12),SXF_SETTARGET)
+		TNT1 A 0 A_GiveInventory("HD4mDMagMaker")
 	rocket:
 		TNT1 A 0 A_JumpIfInventory("RocquetteLauncher",1,"lib")
 		TNT1 A 0 A_JumpIfInventory("ZM66GrenadeRifle",1,"heat")
@@ -307,7 +307,7 @@ actor DropOneZMag : ActionItem
 		TNT1 A 0 A_SpawnItemEx("ZM66RifleMags",0,0,height-12,cos(pitch)*cos(angle)*5,cos(pitch)*sin(angle)*5,sin(pitch)*-5,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
 		fail
 	dropp:
-		TNT1 A 0 A_SpawnItemEx("HD4mDMag",0,0,height-12,cos(pitch)*cos(angle)*5,cos(pitch)*sin(angle)*5,sin(pitch)*-5,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_SETTARGET)
+		TNT1 A 0 A_GiveInventory("HD4mDMagMaker")
 		fail
 	}
 }
@@ -324,7 +324,7 @@ actor DropOneZMagFrag : ActionItem
 		TNT1 A 0 A_SpawnItemEx("ZM66RifleMags",0,0,height-12,cos(pitch)*cos(angle+6)*5,cos(pitch)*sin(angle+6)*5,sin(pitch)*-5,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
 		goto pickup2
 	dropp:
-		TNT1 A 0 A_SpawnItemEx("HD4mDMag",0,0,height-12,cos(pitch)*cos(angle)*5,cos(pitch)*sin(angle)*5,sin(pitch)*-5,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_SETTARGET)
+		TNT1 A 0 A_GiveInventory("HD4mDMagMaker")
 		goto pickup2
 	pickup2:
 		TNT1 A 0 A_JumpIfInventory("HDRocketAmmo",1,1)
@@ -347,7 +347,7 @@ actor DropOneZMagCell : ActionItem
 		TNT1 A 0 A_SpawnItemEx("ZM66RifleMags",0,0,height-12,cos(pitch)*cos(angle+6)*5,cos(pitch)*sin(angle+6)*5,sin(pitch)*-5,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
 		goto pickup2
 	dropp:
-		TNT1 A 0 A_SpawnItemEx("HD4mDMag",0,0,height-12,cos(pitch)*cos(angle+6)*5,cos(pitch)*sin(angle+6)*5,sin(pitch)*-5,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_SETTARGET)
+		TNT1 A 0 A_GiveInventory("HD4mDMagMaker")
 		goto pickup2
 	pickup2:
 		TNT1 A 0 A_JumpIfInventory("HDCellAmmo",1,"dropcp")

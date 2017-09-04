@@ -99,15 +99,11 @@ extend class HDPlayerPawn{
 				barrelwidth=1;
 				barreldepth=3;
 			}else if(wp is "Vulcanette"){
-				amt=12+
-					(countinv("VulcLoaded1")?1:0)+
-					(countinv("VulcLoaded2")?1:0)+
-					(countinv("VulcLoaded3")?1:0)+
-					(countinv("VulcLoaded4")?1:0)+
-					(countinv("VulcLoaded5")?1:0)+
-					(countinv("VulcJuice")?0.6:0)+
-					(countinv("VulcEmptyCell")?0.6:0)
-				;
+				vulcanette vvv=vulcanette(wp);
+				if(vvv)amt=12+vvv.weaponstatus[1]<0?0:0.6;
+				for(int i=0;i<4;i++){
+					if(vvv.vulcmag[0]>=0)amt++;
+				}
 				barrellength=30;
 				barrelwidth=2;
 				barreldepth=4;

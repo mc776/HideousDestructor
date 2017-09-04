@@ -13,7 +13,6 @@ extend class HDPlayerPawn{
 			sparepowder++;
 		}
 		A_TakeInventory("ZM66Heat");
-		A_TakeInventory("ChaingunHeat");
 		A_TakeInventory("BrontornisHeat");
 		A_TakeInventory("HunterSpentShell");
 		A_TakeInventory("SlayerSpentShell1");
@@ -218,9 +217,10 @@ extend class HDPlayerPawn{
 				}
 			}
 			if(countinv("Vulcanette")){
-				if(countinv("VulcJuice")<120&&countinv("HDCellPacks")){
-					A_GiveInventory("VulcJuice",2100);
+				vulcanette vvv=vulcanette(findinventory("Vulcanette"));
+				if(vvv && vvv.weaponstatus[1]<2 && countinv("HDCellPacks")){
 					A_TakeInventory("HDCellPacks",1);
+					vvv.weaponstatus[1]=20;
 				}
 			}
 		}
@@ -241,10 +241,10 @@ extend class HDPlayerPawn{
 			}
 		}
 		if(countinv("Vulcanette")){
-			inzedmag=countinv("VulcLoaded1");
-			if(inzedmag<10&&countinv("ZM66RifleMags")){
-				A_GiveInventory("VulcLoaded1",50);
-				A_TakeInventory("ZM66RifleMags",1);
+			vulcanette vvv=vulcanette(findinventory("Vulcanette"));
+			if(vvv && vvv.weaponstatus[0]>0 && countinv("ZM66RifleMags")){
+				A_TakeInventory("HDCellPacks",1);
+				vvv.weaponstatus[0]=50;
 			}
 		}
 

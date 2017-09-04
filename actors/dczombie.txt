@@ -53,7 +53,7 @@ actor NoBlockWepDrop:ActionItem{
 			}
 			else if(CheckClass("DragonGuard",AAPTR_DEFAULT,true)){
 				if(countinv("HasDroppedGun")<1){
-					A_DropItem("VulcPickupDropped");
+					//A_DropItem("VulcPickupDropped"); //see the actor itself
 					A_DropItem("HDCellPacks",16);
 				}else{
 					A_DropItem("ZM66RifleMags",0,96);
@@ -114,7 +114,7 @@ actor NoBlockWepDrop:ActionItem{
 			if(CheckClass("RiflemanBase",AAPTR_DEFAULT,true)){
 				if(countinv("HasDroppedGun")<1){
 					A_GiveInventory("GreenArmour",random(1,HDCONST_GREENARMOUR));
-					if(countinv("GreenArmour")>60){
+					if(countinv("GreenArmour")>60){  
 						A_GiveInventory("HDDropArmour");
 					}
 				}
@@ -285,7 +285,7 @@ actor ZombieStormtrooper:ZombieMan //replaces ZombieMan
 		"####" AA 1 A_Chase("melee","")
 		"####" A 0 A_PlaySound("weapons/rifleload")
 		"####" A 0 A_JumpIfInventory("HDSMG",1,3)
-		"####" A 0 A_SpawnProjectile("ZM66RifleEmptyMag",38,0,random(90,120))
+		"####" A 0 A_SpawnProjectile("HD4mmMagEmpty",38,0,random(90,120))
 		"####" A 0 A_Jump(256,2)
 		"####" A 0 A_SpawnProjectile("HDSMGEmptyMag",38,0,random(90,120))
 		"####" BBCCDD 1 A_Chase("melee","")
@@ -385,7 +385,7 @@ actor ZombieStormtrooper:ZombieMan //replaces ZombieMan
 		"####" D 0 A_ChangeFlag("frightened",0)
 		Goto See
 	Death.BleedOut:
-		"####" A 0 A_GiveInventory("HDCorpseFlags",1)
+		"####" A 0 A_GiveInventory("HDCorpseFlags")
 		"####" A 0 A_GivetoTarget("HDKillCount",1)
 		"####" H 5 A_SpawnItemEx("tempshield",0,0,0,velx,vely,velz,0,40)
 		"####" A 0 A_Jump(96,2)
@@ -988,7 +988,7 @@ actor UndeadJackbootman:Jackboot
 			A_SetPitch(pitch+frandom(-user_spread,user_spread));
 		}
 		"####" FFF 1 bright light("SHOT"){
-			if(countinv("ZM66Loaded")>49){
+			if(countinv("ZM66Loaded")>49){  
 				A_SetTics(0);
 				return state("");
 			}
@@ -1031,7 +1031,7 @@ actor UndeadJackbootman:Jackboot
 		"####" A 0{
 			if(countinv("ZM66NoMag")<1){
 				A_PlaySound("weapons/rifleload");
-				A_SpawnProjectile("ZM66RifleEmptyMag",38,0,random(90,120));
+				A_SpawnProjectile("HD4mmMagEmpty",38,0,random(90,120));
 				A_GiveInventory("ZM66NoMag");
 			}
 		}
@@ -1228,301 +1228,67 @@ actor DeadUndeadJackbootman:UndeadJackbootman
 //   Former Human Commando
 // ------------------------------------------------------------
 
-actor HDChainReplacer:RandomSpawner replaces ChaingunGuy
-{
+actor HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 	dropitem "DragonGuard" 256 6
 	dropitem "UndeadRifleman" 256 2
 	dropitem "EnemyHERP" 256 1
 	dropitem "EnemyDERP" 256 1
 }
-actor chaingunbox:inventoryflag{inventory.maxamount 253}
-actor dgburst:inventoryflag{inventory.maxamount 50}
-actor DragonGuard:ChaingunGuy
-{
-	dropitem ""
-	Translation "60:69=128:135","70:79=144:151","176:191=32:47"
-	Health 75
-	gibhealth 100
-	Height 54
-	Radius 16
-	Decal "BulletScratch"
-	AttackSound "weapons/rifle"
-	Obituary "%o met the budda-budda-budda on the street,and it killed %h."
-	+missileevenmore
-	+doharmspecies
-	States
-	{
+actor DragonGuard:VulcanetteGuy{
+	states{
 	spawn:
-		TNT1 A 0
-		TNT1 A 0 A_Look
-		TNT1 A 0 A_Recoil(random(-1,1)*0.1)
-		CPOS B 1 A_SetTics(random(10,40))
-		TNT1 A 0 A_Look
-		CPOS B 1 A_SetTics(random(10,40))
-		TNT1 A 0 A_Look
-		TNT1 A 0 A_Recoil(random(-1,1)*0.1)
-		CPOS B 1 A_SetTics(random(10,40))
-		CPOS A 0 A_Jump(132,2,5,5,5,5)
+		CPOS B 1 nodelay{
+			A_Look;
+			A_Recoil(random(-1,1)*0.1);
+			A_SetTics(random(10,40));
+		}
+		CPOS BB 1{
+			A_Look;
+			A_SetTics(random(10,40));
+		}
+		CPOS A 0 A_Jump(132,"spawnstill","spawnambushcheck")
+	spawnnothing:
 		CPOS A 8 A_Recoil(random(-1,1)*0.2)
 		loop
-		TNT1 A 0 A_Recoil(random(-1,1)*0.4)
-		CPOS G 1 A_SetTics(random(30,80))
-		TNT1 A 0 A_PlaySound("grunt/active")
+	spawnhold:
+		CPOS G 1{
+			A_Recoil(random(-1,1)*0.4);
+			A_SetTics(random(30,80));
+			A_PlaySound("grunt/active");
+		}
 		loop
-		TNT1 A 0 A_CheckFlag("ambush","spawnstill")
+	spawnambushcheck:
+		CPOS A 0 A_CheckFlag("ambush","spawnhold")
 		goto spawnwander
 	spawnstill:
-		TNT1 A 0 A_Look
-		TNT1 A 0 A_Recoil(random(-1,1)*0.4)
+		CPOS C 0{
+			A_Look;
+			A_Recoil(random(-1,1)*0.4);
+		}
 		CPOS CD 5 A_SetAngle(angle+random(-4,4))
-		TNT1 A 0 A_Look
-		TNT1 A 0 A_Jump(216,2)
-		TNT1 A 0 A_PlaySound("grunt/active")
-		CPOS AB 5 A_SetAngle(angle+random(-4,4))
+		CPOS AB 5{
+			A_Look;
+			if(!random(0,15)){A_PlaySound("grunt/active");}
+			A_SetAngle(angle+random(-4,4));
+		}
 		CPOS B 1 A_SetTics(random(10,40))
 		goto spawn
 	spawnwander:
-		TNT1 A 0 A_Look
+		CPOS A 0 A_Look
 		CPOS CD 5 A_Wander
-		TNT1 A 0 A_Look
-		TNT1 A 0 A_Jump(192,2)
-		TNT1 A 0 A_PlaySound("grunt/active")
-		CPOS AB 5 A_Wander
-		TNT1 A 0 A_Jump(196,"spawn")
+		CPOS AB 5{
+			A_Look;
+			if(!random(0,15)){A_PlaySound("grunt/active");}
+			A_Wander;
+		}
+		CPOS A 0 A_Jump(196,"spawn")
 		loop
-	Reload:
-		TNT1 A 0 A_ChangeFlag("frightened",1)
-		CPOS AABBCCDD 3 A_Chase("","")
-		CPOS E 9 A_PlaySound("weapons/pocket",CHAN_WEAPON)
-		CPOS E 7 A_PlaySound("weapons/rifleload")
-		CPOS E 0 A_PlaySound("weapons/rifleclick2")
-		TNT1 A 0 A_TakeInventory("ChaingunBox",50)
-		CPOS E 0 A_JumpIfInventory("ChaingunBox",1,1)
-		goto reloadend
-		CPOS E 9 A_PlaySound("weapons/pocket")
-		CPOS E 7 A_PlaySound("weapons/rifleload")
-		CPOS E 0 A_PlaySound("weapons/rifleclick2")
-		TNT1 A 0 A_TakeInventory("ChaingunBox",50)
-		CPOS E 0 A_JumpIfInventory("ChaingunBox",1,1)
-		goto reloadend
-		CPOS E 9 A_PlaySound("weapons/pocket")
-		CPOS E 7 A_PlaySound("weapons/rifleload")
-		CPOS E 0 A_PlaySound("weapons/rifleclick2")
-		TNT1 A 0 A_TakeInventory("ChaingunBox",50)
-		CPOS E 0 A_JumpIfInventory("ChaingunBox",1,1)
-		goto reloadend
-		CPOS E 9 A_PlaySound("weapons/pocket")
-		CPOS E 7 A_PlaySound("weapons/rifleload")
-		CPOS E 0 A_PlaySound("weapons/rifleclick2")
-		TNT1 A 0 A_TakeInventory("ChaingunBox",50)
-		CPOS E 0 A_JumpIfInventory("ChaingunBox",1,1)
-		goto reloadend
-		CPOS E 9 A_PlaySound("weapons/pocket")
-		CPOS E 7 A_PlaySound("weapons/rifleload")
-		CPOS E 0 A_PlaySound("weapons/rifleclick2")
-		TNT1 A 0 A_TakeInventory("ChaingunBox",50)
-	reloadend:
-		TNT1 A 0 A_ChangeFlag("frightened",0)
-	see:
-		CPOS AABBCCDD 4 A_Chase
-		TNT1 A 0 A_JumpIfTargetInLOS(3)
-		TNT1 A 0 A_Jump(210,2)
-		TNT1 A 0 A_JumpIfInventory("ChaingunBox",200,"Reload")
-		TNT1 A 0 HealThing(random(2,6))
-		TNT1 A 0 A_ChangeFlag("frightened",0)
-		loop
-	see2:
-		CPOS E 8 A_FaceTarget(8,0)
-		CPOS E 0 A_CheckLOF(1,CLOFF_JUMPNONHOSTILE|CLOFF_SKIPTARGET|CLOFF_JUMPOBJECT|CLOFF_SKIPENEMY|CLOFF_MUSTBESOLID,0,0,0,0,32,9)
-		goto ready
-		CPOS E 0 A_Jump(64,"WindDown")
-		loop
-	Pain:
+	pain:
 		CPOS G 3
 		CPOS G 3 A_Pain
-		TNT1 A 0 A_AlertMonsters
+		CPOS A 0 A_AlertMonsters
 		CPOS ABCD 4 A_Wander
 		goto see
-	Missile:
-		CPOS E 0 A_JumpIfInventory("ChaingunBox",0,"Reload")
-		CPOS E 0 A_ChangeFlag("frightened",0)
-		CPOS E 0 A_CheckLOF("see",CLOFF_JUMPNONHOSTILE|CLOFF_SKIPTARGET|CLOFF_JUMPOBJECT|CLOFF_SKIPENEMY|CLOFF_MUSTBESOLID,0,0,0,0,32,9)
-	ready:
-		CPOS ABCD 4{
-			if(A_JumpIfTargetInLOS("aim",6)){return state("aim");}
-			A_FaceTarget(16,16);
-			return state("");
-		}loop
-	aim:
-		CPOS E 0 A_JumpIfTargetInLOS(2)
-		CPOS E 0 A_Jump(256,"see","waitforlos","waitforlos","waitforlos","waitforlos")
-		CPOS E 0 A_JumpIfTargetInLOS(1,20)
-		goto ready
-		CPOS EE 3 A_FaceTarget(4,4)
-		CPOS E 2 A_JumpIfTargetInLOS(1,12)
-		loop
-
-	fire:
-		CPOS E 3{
-			A_TakeInventory("ChaingunFast");if(random(1,5)<2){A_GiveInventory("ChaingunFast");}
-			A_SetPitch(pitch+frandom(-2,2));A_SetAngle(angle+frandom(-2,2));
-			A_TakeInventory("dgburst");A_GiveInventory("dgburst",random(3,12)+random(1,4)*countinv("chaingunfast")*6);
-			if(countinv("ChaingunBox")>2){return state("shoot");}
-			A_PlaySound("weapons/rifleclick2",1);
-			return state("postshot");
-		}
-	shoot:
-		CPOS F 1 bright light("SHOT"){
-			A_SpawnItemEx("ZedNoisemaker",0,0,32,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);
-			A_GiveInventory("ChaingunBox",1);
-			A_TakeInventory("dgburst",1);
-			pitch+=frandom(-0.5,0.5);
-			angle+=frandom(-0.5,0.5);
-			A_GiveInventory("DecoBulleter426");
-		}
-		CPOS E 2 A_JumpIfInventory("ChaingunFast",1,1)
-		CPOS E 0{
-			if(
-				(countinv("ChaingunBox")==53)||
-				(countinv("ChaingunBox")==103)||
-				(countinv("ChaingunBox")==153)||
-				(countinv("ChaingunBox")==203)||
-				(countinv("ChaingunBox")==253)
-			){A_SpawnItemEx("ZM66RifleEmptyMag",0,4,32,3,random(-3,2),random(0,-2),0,SXF_NOCHECKPOSITION);}
-			if(countinv("ChaingunBox")>=253){return state("WindDown");}
-			return state("");
-		}
-	postshot:
-		CPOS E 0{
-			if(countinv("dgburst")>0){
-				if((A_JumpIfTargetInLOS("null"))&&(!A_JumpIfTargetInLOS("null",2))){A_FaceTarget(1,1);A_SetPitch(pitch+frandom(-1,1));A_SetAngle(angle+frandom(-1,1));}
-				return state("shoot");
-			}
-			return state("waitforlos");
-		}
-	waitforlos:
-		CPOS EE 4 A_Jump(2,"fire")
-		CPOS E 0{
-			if(A_JumpIfHealthLower(1,"null",AAPTR_TARGET)){return state("winddown");}
-			if(A_JumpIfTargetInLOS("null")){A_FaceTarget(1,1);}
-			if(A_CheckLOF("null",CLOFF_JUMPNONHOSTILE|CLOFF_SKIPTARGET|CLOFF_JUMPOBJECT|CLOFF_SKIPENEMY|CLOFF_MUSTBESOLID,0,0,0,0,32,9)){return state("waitforlos");}
-			if(A_JumpIfTargetInLOS("null",1)){return state("fire");}
-			else if(A_JumpIfTargetInLOS("null",90)){return state("aim");}
-			else if(random(1,50)<2){return state("winddown");}
-			else if(A_JumpIfTargetInLOS("null")){return state("ready");}
-			return state("waitforlos");
-		}
-	WindDown:
-		TNT1 A 0 A_TakeInventory("ChaingunOn")
-		CPOS E 8
-		CPOS E 0 A_JumpIfInventory("ChaingunBox",0,"Reload")
-		goto See
-	Death:
-		"####" A 0 A_GiveInventory("HDCorpseFlags",1)
-		TNT1 A 0 A_GivetoTarget("HDKillCount",1)
-		CPOS H 5 A_SpawnItemEx("tempshield",0,0,0,velx,vely,velz,0,40)
-		CPOS H 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160)
-		CPOS I 5 A_Scream
-		TNT1 A 0 A_SpawnItemEx("tempshield2",0,0,0,velx,vely,velz,0,40)
-		CPOS I 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160)
-
-		TNT1 A 0 A_JumpIfInventory("ChaingunOn",1,2)
-		TNT1 A 0 A_Jump(256,3)
-		TNT1 A 0 A_TakeInventory("ChaingunOn")
-		TNT1 A 0 A_PlaySoundEx("weapons/vulcandown","soundslot5")
-
-		CPOS J 5 A_GiveInventory("NoBlockWepDrop")
-		CPOS KL 5
-		CPOS M 5
-	Dead:
-		CPOS M 3 canraise A_JumpIf(abs(velz)<2,1)
-		loop
-		CPOS N 5 canraise A_JumpIf(abs(velz)>=2,"Dead")
-		loop
-	XDeathBrewtleLulz:
-		"####" A 0 A_ChangeFlag("shootable",0)
-		TNT1 A 0 A_GiveInventory("IsGibbed",1)
-		CPOS LKO 3
-		CPOS O 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160)
-		CPOS P 3 A_XScream
-		CPOS P 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160)
-		CPOS R 2 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160)
-
-		TNT1 A 0 A_JumpIfInventory("ChaingunOn",1,2)
-		TNT1 A 0 A_Jump(256,3)
-		TNT1 A 0 A_TakeInventory("ChaingunOn")
-		TNT1 A 0 A_PlaySoundEx("weapons/vulcandown","soundslot5")
-
-		CPOS Q 5
-		CPOS Q 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160)
-		CPOS R 5 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160)
-		CPOS R 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160)
-		CPOS S 5 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160)
-		goto XDead
-	XDeath:
-		"####" A 0 A_ChangeFlag("shootable",0)
-		TNT1 A 0 A_GiveInventory("IsGibbed",1)
-		TNT1 A 0 A_GivetoTarget("HDKillCount",1)
-		CPOS O 5
-		CPOS O 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160)
-		CPOS P 3 A_XScream
-		CPOS P 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160)
-		CPOS R 2 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160)
-
-		TNT1 A 0 A_JumpIfInventory("ChaingunOn",1,2)
-		TNT1 A 0 A_Jump(256,3)
-		TNT1 A 0 A_TakeInventory("ChaingunOn",999)
-		TNT1 A 0 A_PlaySoundEx("weapons/vulcandown","soundslot5")
-
-		CPOS Q 5 A_GiveInventory("NoBlockWepDrop")
-		CPOS Q 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160)
-		CPOS R 5 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160)
-		CPOS R 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160)
-		CPOS S 5 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160)
-	XDead:
-		CPOS S 3 canraise A_JumpIf(abs(velz)<2,1)
-		wait
-		CPOS T 5 canraise A_JumpIf(abs(velz)>=2,"XDead")
-		wait
-	Raise:
-		"####" A 0 A_GiveInventory("HDCorpseFlags",1)
-		TNT1 A 0 A_JumpIfInventory("IsGibbed",1,"RaiseGibbed")
-		CPOS N 2 A_SpawnItemEx("MegaBloodSplatter",0,0,4,velx,vely,velz+3,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
-		CPOS NML 6
-		CPOS KJIH 4
-		goto see
-	RaiseGibbed:
-		TNT1 A 0 A_TakeInventory("IsGibbed")
-		CPOS T 6 A_SpawnItemEx("MegaBloodSplatter",0,0,4,velx,vely,velz+3,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
-		CPOS TS 12 A_SpawnItemEx("MegaBloodSplatter",0,0,4,velx,vely,velz+3,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
-		CPOS RQ 7
-		CPOS POH 5
-		CPOS H 5 A_Die("Ungibbed")
-	Death.Ungibbed:
-		"####" A 0 A_GiveInventory("HDCorpseFlags",1)
-		CPOS H 5 A_SpawnItemEx("tempshield",0,0,0,velx,vely,velz,0,40)
-		CPOS H 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160)
-		CPOS I 5
-		TNT1 A 0 A_SpawnItemEx("tempshield2",0,0,0,velx,vely,velz,0,40)
-		CPOS I 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160)
-
-		TNT1 A 0 A_JumpIfInventory("ChaingunOn",1,2)
-		TNT1 A 0 A_Jump(256,3)
-		TNT1 A 0 A_TakeInventory("ChaingunOn")
-		TNT1 A 0 A_PlaySoundEx("weapons/vulcandown","soundslot5")
-
-		CPOS J 5 A_NoBlocking
-		CPOS KLM 5
-		goto Dead
-	}
-}
-actor ZedNoisemaker:IdleDummy
-{
-	states{
-	spawn:
-		TNT1 A 0 nodelay
-		TNT1 A 0 A_PlaySound("weapons/rifle")
-		stop
 	}
 }
 
@@ -1721,8 +1487,5 @@ actor HoopBubble:WolfensteinSS replaces WolfensteinSS
 		goto Dead
 	}
 }
-
-
-
 
 

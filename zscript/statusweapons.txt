@@ -88,33 +88,35 @@ extend class HDStatusBar{
 			);
 		}
 		else if(w is "Vulcanette"){
-			if(pp.countinv("VulcLoaded5"))drawwepdot(-32,-13,(3,2));
-			if(pp.countinv("VulcLoaded4"))drawwepdot(-28,-13,(3,2));
-			if(pp.countinv("VulcLoaded3"))drawwepdot(-24,-13,(3,2));
-			if(pp.countinv("VulcLoaded2"))drawwepdot(-20,-13,(3,2));
-			drawwepnum(pp.countinv("VulcLoaded1"),50,posy:-10);
-			drawwepcounter(pp.countinv("ChaingunFast"),
-				-28,-16,"blank","STFULAUT"
-			);
-			drawwepcounter(pp.countinv("VulcChamber3"),-14,-15,"blank","RBRSA3A7");
-			drawwepcounter(pp.countinv("VulcChamber4"),-14,-17,"blank","RBRSA3A7");
-			drawwepcounter(pp.countinv("VulcChamber5"),-14,-19,"blank","RBRSA3A7");
-			if(pp.countinv("ChaingunOn")){
+			let vvv=vulcanette(w);
+			if(vvv){
+				for(int i=1;i<4;i++){
+					if(vvv.vulcmag[i])drawwepdot(-16+i*4,-13,(3,2));
+				}
+				drawwepnum(vvv.vulcmag[0],50,posy:-10);
+				drawwepcounter(vvv.weaponstatus[0]&VULCF_FAST,
+					-28,-16,"blank","STFULAUT"
+				);
+				for(int i=0;i<4;i++){
+					drawwepcounter(vvv.vulcchamber[i],-14,-11-i*2,"blank","RBRSA3A7");
+				}
 				int lod=random[shitgun](10,99);
-				if(!pp.countinv("VulcJB1"))lod=pp.countinv("VulcLoaded1");
+				if(vvv.vulcmag[0]<100)lod=vvv.vulcmag[0];
 				drawnum(lod,-20,-22,
 					DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_RED
 				);
-				if(pp.countinv("VulcJuice"))drawwepnum(pp.countinv("VulcJuice"),2100);
+				if(vvv.weaponstatus[1]>0)drawwepnum(vvv.weaponstatus[1],20);
+				else if(!vvv.weaponstatus[1])drawstring(
+					mamountfont,"00000",(-16,-8),
+					DI_TEXT_ALIGN_RIGHT|DI_TRANSLATABLE|DI_SCREEN_CENTER_BOTTOM,
+					Font.CR_DARKGRAY
+				);
+				drawnum(vvv.weaponstatus[2],
+					-30,-22,
+					DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,
+					Font.CR_DARKGRAY
+				);
 			}
-			if(pp.countinv("VulcEmptyCell"))drawstring(
-				mamountfont,"00000",(-16,-8),
-				DI_TEXT_ALIGN_RIGHT|DI_TRANSLATABLE|DI_SCREEN_CENTER_BOTTOM,
-				Font.CR_DARKGRAY
-			);
-			drawnum(pp.countinv("ChaingunZoom"),
-				-30,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
-			);
 		}
 		else if(w is "Blooper"){
 			if(pp.countinv("BloopChamber"))drawwepdot(-16,-10,(5,3));

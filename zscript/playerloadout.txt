@@ -38,8 +38,11 @@ extend class HDPlayerPawn{
 			A_SetInventory("ZM66ZoomDegree",getcvar("hd_zmzoom"));
 		}
 		if(countinv("Vulcanette"))
-			A_SetInventory("ChaingunFast",getcvar("hd_vulcsuper"));
-			A_SetInventory("ChaingunZoom",getcvar("hd_vulczoom"));
+			vulcanette vvv=vulcanette(findinventory("vulcanette"));
+			if(vvv){
+				if(getcvar("hd_vulcsuper"))vvv.weaponstatus[0]|=VULCF_FAST;
+				if(getcvar("hd_vulczoom"))vvv.weaponstatus[2]=getcvar("hd_vulczoom");
+			}
 		if(countinv("RocquetteLauncher")){  
 			if(getcvar("hd_rlmode")==1){ //GL
 				A_GiveInventory("IsUsingRocketUnderslung");
