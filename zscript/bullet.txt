@@ -296,6 +296,13 @@ class HDBullet:HDActor{
 			);
 		}
 
+		//gibbing
+		if(a.tracer.bcorpse){
+			int gibs=max(randompick(0,0,0,1),dmg*0.05);
+			A_LogInt(gibs);
+			a.tracer.A_GiveInventory("SawGib",gibs);
+		}
+
 		//do this last, as it can destroy some actors leading to an address zero crash
 		a.tracer.damagemobj(self,self.target,dmg,damagetype,DMG_THRUSTLESS);
 	}
