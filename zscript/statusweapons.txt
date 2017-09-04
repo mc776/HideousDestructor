@@ -97,16 +97,19 @@ extend class HDStatusBar{
 				drawwepcounter(vvv.weaponstatus[0]&VULCF_FAST,
 					-28,-16,"blank","STFULAUT"
 				);
-				for(int i=0;i<5;i++){
-					drawwepcounter(vvv.vulcchamber[i],-14,-11-i*2,"blank","RBRSA3A7");
-				}
-				int lod=random[shitgun](10,99);
-				if(vvv.vulcmag[0]<100)lod=clamp(vvv.vulcmag[0],0,50);
-				drawnum(lod,-20,-22,
-					DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_RED
-				);
-				if(vvv.weaponstatus[1]>0)drawwepnum(vvv.weaponstatus[1],20);
-				else if(!vvv.weaponstatus[1])drawstring(
+				if(vvv.weaponstatus[1]>0){
+					for(int i=0;i<5;i++){
+						drawwepcounter(vvv.vulcchamber[i],-14,
+							-11-i*2,"blank","RBRSA3A7"
+						);
+					}
+					int lod=random[shitgun](10,99);
+					if(vvv.vulcmag[0]<100)lod=clamp(vvv.vulcmag[0],0,50);
+					drawnum(lod,-20,-22,
+						DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_RED
+					);
+					drawwepnum(vvv.weaponstatus[1],20);
+				}else if(!vvv.weaponstatus[1])drawstring(
 					mamountfont,"00000",(-16,-8),
 					DI_TEXT_ALIGN_RIGHT|DI_TRANSLATABLE|DI_SCREEN_CENTER_BOTTOM,
 					Font.CR_DARKGRAY

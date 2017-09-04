@@ -359,6 +359,7 @@ extend class HDPlayerPawn{
 		if(player.onground && abs(fac)>(player.crouchfactor<0.7?30:50)){
 			vel+=rotatevector((0,fac>0?0.1:-0.1),angle);
 			A_GiveInventory("IsMoving",2);
+			feetangle=angle;
 			PlayRunning();
 
 			//if on appropriate terrain, easier to quench a fire

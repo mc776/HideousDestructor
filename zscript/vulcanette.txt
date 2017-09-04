@@ -262,7 +262,7 @@ class Vulcanette:HDWeapon{
 		VULG A 2{
 			if(
 				invoker.weaponstatus[1]>0  
-				&&!random(0,invoker.weaponstatus[0]&VULCF_SPINNINGFAST?2060:2100)
+				&&!random(0,invoker.weaponstatus[0]&VULCF_SPINNINGFAST?200:210)
 			)invoker.weaponstatus[1]--;
 			invoker.weaponstatus[0]&=~VULCF_SPINNINGFAST;
 
@@ -401,10 +401,6 @@ class Vulcanette:HDWeapon{
 			A_PlaySound("weapons/rifleclick2");
 			A_MuzzleClimb(-frandom(1.2,1.8),-frandom(1.8,2.4));
 		}
-		VULG A 6 offset(10,40){
-			A_PlaySound("weapons/rifleload");
-			A_MuzzleClimb(-frandom(1.2,1.8),-frandom(1.8,2.4));
-		}
 		VULG A 6 offset(9,41)A_PlaySound("weapons/pocket");
 		VULG A 8 offset(12,43)A_PlaySound("weapons/huntreload");
 		VULG A 5 offset(10,41)A_PlaySound("weapons/grenopen");
@@ -452,17 +448,11 @@ class Vulcanette:HDWeapon{
 			else if(!invoker.weaponstatus[1])A_GiveInventory("HDCellPackEmpty",1);
 			else A_GiveInventory("HDCellAmmo",invoker.weaponstatus[1]);
 			invoker.weaponstatus[1]=-1;
-		}
-		VULG AA 6 offset(9,40) A_MuzzleClimb(frandom(0.5,0.6),-frandom(0.5,0.6));
-		goto cellout;
+		}goto cellout;
 
 	cellout:
-		VULG A 0 A_TakeInventory("VulcEmptyCell");
 		VULG A 0 offset(10,40) A_JumpIf(invoker.weaponstatus[0]&VULCF_JUSTUNLOAD,"reloadend");
 	loadcell:
-		VULG A 8 offset(11,42)A_PlaySound("weapons/pocket",CHAN_WEAPON);
-		VULG A 5 offset(10,41)A_PlaySound("weapons/grenopen",CHAN_WEAPON);
-		VULG A 8 offset(12,43)A_PlaySound("weapons/huntreload",CHAN_WEAPON);
 		VULG A 0{
 			if(countinv("HDCellPacks")){
 				invoker.weaponstatus[1]=20;
@@ -472,13 +462,13 @@ class Vulcanette:HDWeapon{
 				invoker.weaponstatus[1]=lod;
 				A_TakeInventory("HDCellAmmo",lod,TIF_NOTAKEINFINITE);
 			}
-		}
+		}goto reloadend;
 
 	reloadend:
 		VULG A 3 offset(9,41);
 		VULG A 2 offset(6,38);
 		VULG A 3 offset(2,34);
-		goto nope;
+		goto ready;
 
 
 	unchamber:
@@ -504,11 +494,6 @@ class Vulcanette:HDWeapon{
 		//first, check if there's a mag2-5.
 		//if there's no mag2 but stuff after that, shunt everything over until there is.
 		//if there's nothing but mag1, unload mag1.
-		VULG A 2 offset(0,36);
-		VULG A 2 offset(4,38){
-			A_PlaySound("weapons/rifleclick2");
-			A_MuzzleClimb(-frandom(1.2,1.8),-frandom(1.8,2.4));
-		}
 		VULG A 6 offset(10,40){
 			if(!(invoker.weaponstatus[0]&VULCF_JUSTUNLOAD))setweaponstate("loadmag");
 			A_PlaySound("weapons/rifleload");
@@ -526,10 +511,13 @@ class Vulcanette:HDWeapon{
 			else if(
 				invoker.vulcmag[0]>=0  
 			)setweaponstate("unmag1");
-		}goto reload3;
+		}goto reloadend;
 	unmagshunt:
 		VULG A 0{
-			VulcNextMag();
+			for(int i=1;i<4;i++){
+				invoker.vulcmag[i]=invoker.vulcmag[i+1];
+			}
+			invoker.vulcmag[4]=-1;
 			A_PlaySound("weapons/grenopen",CHAN_BODY);
 		}
 		VULG AB 2 A_MuzzleClimb(-frandom(0.4,0.6),frandom(0.4,0.6));
@@ -594,34 +582,27 @@ class Vulcanette:HDWeapon{
 				else A_GiveInventory("FourMilAmmo",mg0);
 				setweaponstate("pocketmag");
 			}
-		}goto mag1out;
-
+		}goto reloadend;
 	pocketmag:
 		VULG A 0 A_PlaySound("weapons/pocket");
 		VULG AA 6 A_MuzzleClimb(frandom(0.4,0.6),-frandom(0.4,0.6));
 		VULG A 0 A_JumpIf(invoker.vulcmag[0]<1,"mag1out");
 		goto mag2out;
-
 	mag2out:
-		VULG A 1;
-		VULG A 0{
-			VulcNextMag();
+		VULG A 1{
+			for(int i=1;i<4;i++){
+				invoker.vulcmag[i]=invoker.vulcmag[i+1];
+			}
+			invoker.vulcmag[4]=-1;
 			A_PlaySound("weapons/grenopen",CHAN_BODY);
 		}
 		VULG AB 2 A_MuzzleClimb(-frandom(0.4,0.6),frandom(0.4,0.6));
-	mag1out:
 		VULG A 6{
 			if(
-				(
-					countinv("PressingReload")
-					||countinv("PressingUnload")
-					||countinv("PressingFire")
-				)||(
-					invoker.vulcmag[1]<0&& //intentionally no [0] check
-					invoker.vulcmag[2]<0&&
-					invoker.vulcmag[3]<0&&
-					invoker.vulcmag[4]<0
-				)
+				invoker.vulcmag[1]<0&&
+				invoker.vulcmag[2]<0&&
+				invoker.vulcmag[3]<0&&
+				invoker.vulcmag[4]<0
 			)setweaponstate("reloadend");
 		}goto unmag0;
 
@@ -760,14 +741,11 @@ class Vulcanette:HDWeapon{
 		}
 		invoker.vulcchamber[4]=0;
 		if(invoker.vulcmag[0]==51)invoker.vulcmag[0]=50; //open the seal
+		if(invoker.vulcmag[0]==100)invoker.vulcmag[0]=0; //jailbroken but empty
 
 		//figure out what's in the mag and load it to the final chamber
 		int inmag=max(0,invoker.vulcmag[0]);
-		if(inmag>100)inmag-=100;  
-		else if(inmag==100){ //set the mag to merely empty not jailbroken
-			invoker.vulcmag[0]=0;
-			inmag=0;
-		}
+		if(inmag>100)inmag-=100;
 		if(inmag>0){  
 			A_PlaySound("weapons/rifleclick2",CHAN_BODY);
 			invoker.vulcchamber[4]++;
