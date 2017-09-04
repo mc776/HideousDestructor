@@ -115,6 +115,12 @@ class HDWeapon:Weapon{
 	override bool cancollidewith(actor other,bool passive){
 		return(other is "userpickerupper");
 	}
+	//because weapons don't use proper "ammo" anymore for loaded items
+	virtual void InitializeWepStats(bool idfa=false){}
+	override void beginplay(){
+		initializewepstats();
+		super.beginplay();
+	}
 	states{
 	spawn:
 		TNT1 A 0;

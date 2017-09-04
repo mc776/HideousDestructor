@@ -82,6 +82,21 @@ extend class HDPlayerPawn{
 		//super call
 		super.cheatgive(name,amount);
 
+		//load weapons that use variables instead of ammo types
+		if(name~=="ammo"){
+			thinkeriterator it=thinkeriterator.create("HDWeapon");
+			actor hdw;
+			while(
+				hdw=inventory(it.Next())
+			){
+				let hdww=hdweapon(hdw);
+				if(
+					hdww
+					&& hdww.owner==self
+				)hdww.initializewepstats(true);
+			}
+		}
+
 		//pistol hack part 2
 		inventory ppp=findinventory("HDPistolFullAuto");
 		if(ppp)ppp.amount=p1auto;

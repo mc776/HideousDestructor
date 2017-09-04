@@ -692,15 +692,10 @@ class Vulcanette:HDWeapon{
 	int vulcmag[5]; //-1 is no mag loaded; 100+ is jailbroken mag
 	int vulcchamber[5]; //2 is broken round
 
-	override void beginplay(){
-		initializewepstats();
-		super.beginplay();
-	}
-	void InitializeWepStats(){
-		for(int i=0;i<5;i++){
-			vulcmag[i]=51;
-		}
+	override void InitializeWepStats(bool idfa=false){
 		weaponstatus[1]=20;
+		for(int i=0;i<5;i++)vulcmag[i]=51;
+		if(idfa)for(int i=0;i<5;i++)vulcchamber[i]=1;
 	}
 
 	//shooting and cycling actions
