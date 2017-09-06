@@ -58,6 +58,8 @@ actor BloopMapPickup{
 //-------------------------------------------------
 actor HDRedKey:HDHPK replaces RedCard{
 	+wallsprite
+	+usespecial
+	activation THINGSPEC_ClearSpecial
 	scale 0.4
 	radius 20
 	states{
@@ -140,6 +142,8 @@ actor HDYellowKey:HDRedKey replaces YellowCard{
 	}
 }
 actor HDRedSkull:HDHPK replaces RedSkull{
+	+usespecial
+	activation THINGSPEC_ClearSpecial
 	scale 0.6
 	radius 20
 	renderstyle translucent
