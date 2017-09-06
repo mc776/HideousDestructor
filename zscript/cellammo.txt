@@ -123,15 +123,12 @@ class HDCelXD:HDCellPickup{
 		---- A 0{
 			if(!countinv("Clip")){
 				A_GiveInventory("Clip");
-				if(target is "PlayerPawn"){
-					ExtractAmmo();
+				if(target is "PlayerPawn" || target is "HERPBot"){
+					A_SetInventory("HDCellAmmo",target.countinv("HERPCell")/750);
+					target.A_TakeInventory("HERPCell");
 				}else A_GiveInventory("HDCellAmmo",20);
 			}
 		}goto spawn2;
-	}
-	virtual void ExtractAmmo(){
-		A_SetInventory("HDCellAmmo",target.countinv("HERPCell")/750);
-		target.A_TakeInventory("HERPCell");
 	}
 }
 

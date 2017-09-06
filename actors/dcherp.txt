@@ -1,16 +1,13 @@
-
 // ------------------------------------------------------------
 //   H.E.R.P. Robot
 // ------------------------------------------------------------
-
 actor HERPBot : HDUPK
 {
-	obituary "%o went HERP."
 	+ismonster +noblockmonst +shootable +ghost +friendly +standstill +nofear +dontgib
 	height 32 radius 10 mass 400 health 200 +noblood
 	damagefactor "Thermal",0.7 damagefactor "SmallArms3",0.8
-	states
-	{
+	obituary "%o went HERP."
+	states{
 	spawn:
 		HERP A 0 A_Stop
 		"----" A 0 A_JumpIfInventory("Clip",1,"spawn2")
@@ -106,7 +103,7 @@ actor HERPBot : HDUPK
 		"----" A 0 A_JumpIfInTargetInventory("HERPDEAD",1,1)
 		goto givegun
 		"----" A 0{
-			if(countinv("HERPCell")>0){  
+			if(countinv("HERPCell")){  
 				A_PlaySound("weapons/rifleclick");
 				A_SpawnItemEx("HDCelXD",0,0,0,1,random(-1,1),2,0,SXF_SETTARGET);
 			}return state("spawn");
