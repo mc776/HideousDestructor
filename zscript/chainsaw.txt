@@ -56,26 +56,26 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 			if(invoker.weaponstatus[2]<12)invoker.weaponstatus[2]++;
 			if((invoker.weaponstatus[1]>random(5,8))&&(invoker.weaponstatus[2]>11)){
 				A_MuzzleClimb(
-					randompick(-1,1)*frandom(-0.3,-1.2),
-					randompick(-1,1)*frandom(0.3,0.8)
+					randompick(-1,1)*frandom(-0.2,-0.3),
+					randompick(-1,1)*frandom(0.2,0.4)
 				);
-				A_Saw("weapons/sawfull","weapons/sawhit",5,"HDSawPuff");
+				A_Saw("weapons/sawfull","weapons/sawhit",5,"HDSawPuff",SF_NOPULLIN);
 				A_AlertMonsters();
 			}else if((invoker.weaponstatus[1]>random(2,4))&&(invoker.weaponstatus[2]>6)){
 				A_MuzzleClimb(
-					randompick(-1,1)*frandom(-0.2,-0.6),
+					randompick(-1,1)*frandom(-0.1,-0.3),
 					randompick(-1,1)*frandom(0.1,0.4)
 				);
-				A_Saw("weapons/sawfull","weapons/sawhit",3,"HDSawPuff");
+				A_Saw("weapons/sawfull","weapons/sawhit",3,"HDSawPuff",SF_NOPULLIN);
 				A_SetTics(2);
 				A_AlertMonsters();
 			}else if((invoker.weaponstatus[1]>random(1,4))&&(invoker.weaponstatus[2]>1)){
 				drainprob*=1.5;
 				A_MuzzleClimb(
-					randompick(-1,1)*frandom(-0.2,-0.6),
-					randompick(-1,1)*frandom(0.1,0.4)
+					randompick(-1,1)*frandom(-0.05,-0.6),
+					randompick(-1,1)*frandom(0.05,0.2)
 				);
-				A_Saw("weapons/sawfull","weapons/sawhit",1,"HDSawPuff");
+				A_Saw("weapons/sawfull","weapons/sawhit",1,"HDSawPuff",SF_NOPULLIN);
 				A_SetTics(random(2,4));
 				A_AlertMonsters();
 			}else{
