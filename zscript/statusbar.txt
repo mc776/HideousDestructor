@@ -214,7 +214,7 @@ class HDStatusBar:DoomStatusBar{
 		}
 
 		//armour
-		int armour;int maxarmour;string armoursprite;
+		int armour=-1;int maxarmour;string armoursprite;
 		class<Inventory> armourtype;
 		if(cp.countinv("GreenArmour")){
 			armour=0;armoursprite="ARMSA0";
@@ -229,7 +229,7 @@ class HDStatusBar:DoomStatusBar{
 			armourtype="BlueArmour";
 			maxarmour=HDCONST_BLUEARMOUR;
 		}
-		if(armourtype){
+		if(armour>=0){
 			vector2 armourcoords=(0,-mIndexFont.mFont.GetHeight()*2);
 			if(state==HUD_Fullscreen)armourcoords=(-55,-4);
 			drawbar(

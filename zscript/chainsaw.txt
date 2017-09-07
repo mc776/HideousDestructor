@@ -249,27 +249,26 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 
 class HDSawPuff:IdleDummy{
 	default{
-		+puffonactors +bloodsplatter +puffgetsowner +hittracer
+		+puffonactors +bloodsplatter +puffgetsowner +hittracer +nointeraction
 		damagetype "Chainsaw";decal "BulletChipSmall";
 	}
 	lumberjack lmb;
 	states{
 	spawn:
-		TNT1 A 0 nodelay{
-			A_ChangeVelocity(1,0,-1,CVF_RELATIVE);
+		TNT1 A 1 nodelay{
 			A_GiveInventory("WasChoppingFlesh",1,AAPTR_TARGET);
 			if(tracer && tracer.bcorpse){
 				tracer.A_GiveInventory("SawGib",random(5,10));
 			}
 		}stop;
 	crash:
-		TNT1 A 0{
+		TNT1 A 1{
 			if(target){
 				if(!random(0,LUMBERJACKDRAIN)){
 					lmb=lumberjack(target.findinventory("lumberjack"));
 					if(lmb && lmb.weaponstatus[1]>0)lmb.weaponstatus[1]--;
 				}
-				if(target.countinv("WasChoppingFlesh")){
+				if(target && target.countinv("WasChoppingFlesh")){
 					let tgt=HDPlayerPawn(target);
 					if(tgt){
 						tgt.muzzleclimb1.x+=random(-30,10);

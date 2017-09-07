@@ -1,35 +1,27 @@
 //-------------------------------------------------
 // Armour
 //-------------------------------------------------
-
 const HDCONST_BLACKARMOUR=33;
 const HDCONST_BLUEARMOUR=70;
 const HDCONST_GREENARMOUR=144;
 
 //instead of basicarmour, we just use these:
-class GreenArmour:Ammo{
+class GreenArmour:InventoryFlag{
 	default{
+		+inventory.untossable
 		inventory.maxamount HDCONST_GREENARMOUR;
-		ammo.backpackmaxamount HDCONST_GREENARMOUR;
-		ammo.backpackamount 0;+inventory.untossable
 	}
 	states{spawn:TNT1 A 0;stop;}
 }
-class BlueArmour:Ammo{
+class BlueArmour:GreenArmour{
 	default{
 		inventory.maxamount HDCONST_BLUEARMOUR;
-		ammo.backpackmaxamount HDCONST_BLUEARMOUR;
-		ammo.backpackamount 0;+inventory.untossable
 	}
-	states{spawn:TNT1 A 0;stop;}
 }
-class BlackArmour:Ammo{
+class BlackArmour:GreenArmour{
 	default{
 		inventory.maxamount HDCONST_BLACKARMOUR;
-		ammo.backpackmaxamount HDCONST_BLACKARMOUR;
-		ammo.backpackamount 0;+inventory.untossable
 	}
-	states{spawn:TNT1 A 0;stop;}
 }
 
 //since you can only carry one suit, we only need one flag
