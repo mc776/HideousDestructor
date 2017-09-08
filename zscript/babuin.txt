@@ -77,7 +77,8 @@ class ZBabuin:HDActor{
 
 			//can try to bump or shake it off
 			if(
-				abs(HDMath.AngleChange(targangle,target.angle))>random(30,180)||
+//				abs(HDMath.AngleChange(targangle,target.angle))>random(30,180)||
+				abs(deltaangle(target.angle,targangle))>random(30,180)||
 				floorz>pos.z||  
 				ceilingz<pos.z+height||
 				(!trymove(pos.xy,true)&&(

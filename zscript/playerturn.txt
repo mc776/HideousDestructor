@@ -355,7 +355,8 @@ extend class HDPlayerPawn{
 
 
 		//feet angle
-		double fac=hdmath.anglechange(angle,feetangle);
+//		double fac=hdmath.anglechange(angle,feetangle);
+		double fac=deltaangle(feetangle,angle);
 		if(player.onground && abs(fac)>(player.crouchfactor<0.7?30:50)){
 			vel+=rotatevector((0,fac>0?0.1:-0.1),angle);
 			A_GiveInventory("IsMoving",2);
@@ -371,7 +372,8 @@ extend class HDPlayerPawn{
 		}
 
 		//move pivot point a little behind the player's view
-		anglechange=HDMath.AngleChange(lastangle,angle);
+//		anglechange=HDMath.AngleChange(lastangle,angle);
+		anglechange=deltaangle(angle,lastangle);
 		if(zat-pos.z==0){
 			if(abs(anglechange)>1){    
 				int dir=90;
