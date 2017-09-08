@@ -72,14 +72,10 @@ actor ZM66GrenadeRifle:HDWeapon{
 			return state("abadjust");
 		}
 
-	heatvent:
-		TNT1 A 5 A_GiveInventory("ZM66HeatVent")
-		loop
 	select0:
 		RIFG A 0{
 			A_TakeInventory("ZM66RoundCounter");
 			A_TakeInventory("ZM66GLMode");
-//			A_Overlay(2,"heatvent");
 		}
 		RIFG A 0 A_JumpIfInventory("ZM66GrenadeRifle",1,"select0big")
 		goto select0small
@@ -575,17 +571,6 @@ actor ZM66Shoot:ActionItem{
 			A_SpawnItemEx("HDGunSmoke",0,0,height-6,cos(pitch)*cos(angle)*4+velx+frandom(-1,1),cos(pitch)*sin(angle)*4+vely+frandom(-1,1),-sin(pitch)*4+velz+frandom(-1,1),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH);
 			A_GiveInventory("DecoBulleter426s");
 		}fail
-	}
-}
-actor ZM66HeatVent:CustomInventory{
-	states{
-	pickup:
-		RIFG A 0 A_TakeInventory("ZM66Heat",1)
-		RIFG A 0 A_JumpIfInventory("ZM66Heat",random(12,36),1)
-		fail
-		TNT1 A 0 A_FireCustomMissile("HDGunSmoke",frandom(-1,1),0,0,0,0,frandom(-1,1))
-		TNT1 A 0 A_CustomMissile("HDGunSmoke",6,0,random(-1,1),CMF_AIMDIRECTION)
-		fail
 	}
 }
 
