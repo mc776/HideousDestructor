@@ -33,10 +33,7 @@ class BFG9K:HDWeapon{
 	ready:
 		BFGG A 1{
 			if(invoker.weaponstatus[0]&BFGF_CRITICAL)setweaponstate("shoot");
-			A_WeaponReady(
-				WRF_ALLOWRELOAD|WRF_ALLOWZOOM|
-				WRF_ALLOWUSER1|WRF_ALLOWUSER2|WRF_ALLOWUSER3|WRF_ALLOWUSER4
-			);
+			A_WeaponReady(WRF_ALL);
 		}goto readyend;
 	select0:
 		BFGG A 0 {if(!countinv("BFGLoaded"))A_TakeInventory("BFGChamber");}

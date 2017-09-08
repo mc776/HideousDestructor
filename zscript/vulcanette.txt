@@ -101,15 +101,13 @@ class Vulcanette:HDWeapon{
 		VULG A 1{
 			A_SetCrosshair(21);
 			A_GiveInventory("IsWeaponReady");
-			A_WeaponReady(WRF_ALLOWRELOAD|WRF_ALLOWZOOM|
-				WRF_ALLOWUSER1|WRF_ALLOWUSER2|WRF_ALLOWUSER4
-			);
+			A_WeaponReady(WRF_ALL);
 		}
 		goto readyend;
 
 	fire:
 		VULG A 1{
-			A_WeaponReady(WRF_NOFIRE|WRF_DISABLESWITCH);
+			A_WeaponReady(WRF_NONE);
 			if(invoker.weaponstatus[1]>0 && !random(0,700))invoker.weaponstatus[1]--;  
 		}goto shoot;
 	hold:
@@ -118,7 +116,7 @@ class Vulcanette:HDWeapon{
 		}
 	shoot:
 		VULG A 2{
-			A_WeaponReady(WRF_NOFIRE|WRF_DISABLESWITCH);
+			A_WeaponReady(WRF_NONE);
 			if(
 				invoker.weaponstatus[1]>0  
 				&&!random(0,invoker.weaponstatus[0]&VULCF_SPINNINGFAST?200:210)
@@ -142,7 +140,7 @@ class Vulcanette:HDWeapon{
 			VulcNextRound();
 		}
 		VULG B 1{
-			A_WeaponReady(WRF_NOFIRE|WRF_DISABLESWITCH);
+			A_WeaponReady(WRF_NONE);
 			//check speed and then shoot
 			if(
 				invoker.weaponstatus[0]&VULCF_SPINNINGFAST&&
@@ -158,7 +156,7 @@ class Vulcanette:HDWeapon{
 			}
 		}
 		VULG B 1{
-			A_WeaponReady(WRF_NOFIRE|WRF_DISABLESWITCH);
+			A_WeaponReady(WRF_NONE);
 			if(invoker.weaponstatus[1]<1)setweaponstate("spindown");
 			else A_Refire("holdswap");
 		}goto spindown;
@@ -176,7 +174,7 @@ class Vulcanette:HDWeapon{
 			invoker.weaponstatus[0]&=~VULCF_SPINNINGFAST;
 		}
 		VULG AB 1{
-			A_WeaponReady(WRF_NOFIRE|WRF_DISABLESWITCH);
+			A_WeaponReady(WRF_NONE);
 			A_MuzzleClimb(frandom(0.4,0.6),-frandom(0.4,0.6));
 		}
 		VULG ABAABB 2 A_WeaponReady(WRF_NOFIRE|WRF_NOSWITCH);

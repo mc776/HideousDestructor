@@ -21,9 +21,7 @@ class ThunderBuster:HDWeapon{
 		PLSG A 1{
 			A_SetCrosshair(21);
 			A_GiveInventory("IsWeaponReady");
-			A_WeaponReady(WRF_ALLOWZOOM|WRF_ALLOWRELOAD|
-				WRF_ALLOWUSER1|WRF_ALLOWUSER2|WRF_ALLOWUSER3|WRF_ALLOWUSER4
-			);
+			A_WeaponReady(WRF_ALL);
 		}goto readyend;
 	fire:
 		PLSG A 3 offset(0,35);
