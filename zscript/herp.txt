@@ -78,10 +78,9 @@ class HERPBot:HDUPK{
 		//if nothing, keep moving (add angle depending on scanright)
 		angle+=scanright?-3:3;
 
-		//if anglechange>45, start turning right
-		//else if anglechange<-45, start turning left
+		//if anglechange is too far, start moving the other way
 		double chg=deltaangle(angle,startangle);
-		if(abs(chg)>45){
+		if(abs(chg)>40){
 			if(chg<0)scanright=true;
 			else scanright=false;
 			setstatelabel("postbeep");
@@ -95,7 +94,7 @@ class HERPBot:HDUPK{
 		HERP A 0 A_JumpIfHealthLower(1,"dead");
 		HERP A 2 A_ClearTarget();
 	idle:
-		HERP A 1 scanturn();
+		HERP A 2 scanturn();
 		wait;
 	postbeep:
 		HERP A 6 A_PlaySound("misc/i_pkup");
@@ -299,6 +298,9 @@ class HERPUsable:HDPickup{
 		super.beginplay();
 	}
 	states{
+	nope:
+		TNT1 A 0;
+		fail;
 	use:
 		TNT1 A 0{
 			int loadcell;
@@ -336,7 +338,8 @@ class HERPUsable:HDPickup{
 			hhhh.ammo=invoker.ammo;
 			hhhh.mags=loadmags;
 			hhhh.battery=loadcell;
-		}stop;
+			invoker.goawayanddie();
+		}fail;
 	spawn:
 		HERP A 0 A_Stop();
 		HERP A 0 A_GiveInventory("Clip",1);
