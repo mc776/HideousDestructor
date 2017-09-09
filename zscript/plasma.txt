@@ -14,7 +14,7 @@ class ThunderBuster:HDWeapon{
 	}
 	override void tick(){
 		super.tick();
-		drainheat(3,12);
+		drainheat(2,12);
 	}
 	states{
 	ready:
@@ -252,23 +252,27 @@ class ThunderBuster:HDWeapon{
 		stop;
 	}
 
+	/*
+		[0] flags
+		[1] ammo
+		[2] heat
+	*/
 	enum tbfiremodes{
 		TBFM_ALT=1,
 	};
-	override void postbeginplay(){
-		super.postbeginplay();
-		weaponstatus[0]=60;
+	override void initializewepstats(bool idfa=false){
+		weaponstatus[1]=60;
 	}
 	override void attachtoowner(actor user){
-		if(weaponstatus[0]>0)user.A_SetInventory("PlasmaBattery",weaponstatus[0]);
-		else user.A_SetInventory("PlasmaEmptyCell",-weaponstatus[0]);
-		user.A_SetInventory("PlasmaAlt",weaponstatus[1]&TBFM_ALT);
+		if(weaponstatus[1]>0)user.A_SetInventory("PlasmaBattery",weaponstatus[1]);
+		else user.A_SetInventory("PlasmaEmptyCell",-weaponstatus[1]);
+		user.A_SetInventory("PlasmaAlt",weaponstatus[0]&TBFM_ALT);
 		super.attachtoowner(user);
 	}
 	override void detachfromowner(){
-		weaponstatus[0]=owner.countinv("PlasmaBattery");
-		if(!weaponstatus[0])weaponstatus[0]=-owner.countinv("PlasmaEmptyCell");
-		if(owner.countinv("PlasmaAlt"))weaponstatus[1]|=TBFM_ALT;
+		weaponstatus[1]=owner.countinv("PlasmaBattery");
+		if(!weaponstatus[1])weaponstatus[1]=-owner.countinv("PlasmaEmptyCell");
+		if(owner.countinv("PlasmaAlt"))weaponstatus[0]|=TBFM_ALT;
 		owner.A_TakeInventory("PlasmaBattery");
 		owner.A_TakeInventory("PlasmaEmptyCell");
 		owner.A_TakeInventory("PlasmaAlt");
@@ -329,7 +333,7 @@ class BeamBoltThrower:ActionItem{
 			);
 			if(!player)return;
 			let tb=ThunderBuster(player.readyweapon);
-			if(tb)tb.weaponstatus[3]+=60;
+			if(tb)tb.weaponstatus[2]+=60;
 		}fail;
 	}
 }

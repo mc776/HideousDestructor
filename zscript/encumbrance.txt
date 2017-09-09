@@ -3,9 +3,11 @@
 // ------------------------------------------------------------
 
 const BLOX_426MAG=10;
+const BLOX_426MAG_LOADED=BLOX_426MAG*0.4;
 const BLOX_776MAG=27;
 const BLOX_9mag=9;
 const BLOX_BATTERY=12;
+const BLOX_BATTERY_LOADED=BLOX_BATTERY*0.4;
 
 extend class HDPlayerPawn{
 	double CheckEncumbrance(){
@@ -30,8 +32,10 @@ extend class HDPlayerPawn{
 					blox+=175;
 				}else if(hdw is "ThunderBuster"){
 					blox+=125;
+					if(hdw.weaponstatus[1]>=0)blox+=BLOX_BATTERY_LOADED;
 				}else if(hdw is "BFG9k"){
 					blox+=200;
+					if(hdw.weaponstatus[2]>=0)blox+=BLOX_BATTERY_LOADED;
 				}
 			}
 			if(hdw.owner==self.player.readyweapon)blox+=blx*0.7;
@@ -40,8 +44,6 @@ extend class HDPlayerPawn{
 
 		let herp=HERPUsable(findinventory("HERPUsable"));
 		if(herp)blox+=125+herp.ammo<0?0:BLOX_426MAG*0.4;
-
-		return blox;
 
 
 		blox+=
@@ -106,21 +108,6 @@ extend class HDPlayerPawn{
 		+countinv("LiberatorMag")*21
 		//loaded into gun
 		+(
-			countinv("LumberEmptyCell")
-			+(countinv("LumberCell")?1:0)
-			+countinv("VulcEmptyCell")
-			+(countinv("VulcJuice")?1:0)
-			+countinv("PlasmaEmptyCell")
-			+(countinv("PlasmaBattery")?1:0)
-			+countinv("BFGLoaded")
-			+(
-				(
-					(countinv("HERPDEAD")||countinv("HERPUsable"))
-					&&countinv("HERPCell")
-				)?1:0
-			)
-		)*8
-		+(
 			countinv("HDPistolChamber")
 			+countinv("HDPistolLoaded")
 			+countinv("HDSecondPistolChamber")
@@ -166,7 +153,7 @@ extend class HDPlayerPawn{
 		+countinv("BrontornisMag")*2
 		;
 
-		if (countinv("HDBackpack"))A_GiveInventory("Backpack");
+		A_SetInventory("Backpack",countinv("HDBackpack"));
 		carrymax=
 			550+
 			countinv("PowerStrength")*200+
