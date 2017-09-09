@@ -11,6 +11,7 @@ class HERPBot:HDUPK{
 		height 32;radius 10;mass 400;health 200;
 		damagefactor "Thermal",0.7;damagefactor "SmallArms3",0.8;
 		obituary "%o went HERP.";
+		scale 0.8;
 	}
 
 	//it is now canon: the mag and seal checkers are built inextricably into the AI.
@@ -258,6 +259,7 @@ class HERPBot:HDUPK{
 			case 8:
 				yay="*** Fatal Error *** Segmentation fault (signal 11) Address: (nil)";break;
 			}
+			if(!random(0,3))yay="\cg"..yay;
 			message(yay);
 		}
 		HERP AAA 1 A_SpawnItemEx("HDSmoke",random(-2,2),random(-2,2),random(-2,2), vel.x+random(-2,2),vel.y+random(-2,2),vel.z+random(1,4),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);
@@ -349,24 +351,13 @@ class HERPUsable:HDPickup{
 		stop;
 	}
 }
-/*
-class HERPDEAD:Inventory{
-	override void postbeginplay(){
-		super.postbeginplay();
-		A_SpawnItemEx("HERPDEADPickup",0,0,0,vel.x,vel.y,vel.z,
-			0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_ABSOLUTEMOMENTUM
-		);
-		destroy();
-	}
-}
-class HERPDEADPickup:HDUPK{
-*/
 class HERPDEAD:HDPickup{
 	default{
 		inventory.amount 1;
 		inventory.maxamount 1;
 		inventory.icon "HERPEX";
 		inventory.pickupmessage "Picked up a Heavy Engagement Rotary Platform robot. It is damaged.";
+		scale 0.8;
 	}
 	states{
 	spawn:

@@ -2,6 +2,11 @@
 // Encumbrance
 // ------------------------------------------------------------
 
+const BLOX_426MAG=10;
+const BLOX_776MAG=27;
+const BLOX_9mag=9;
+const BLOX_BATTERY=12;
+
 extend class HDPlayerPawn{
 	double CheckEncumbrance(){
 		if(!hd_carrylimit){
@@ -9,9 +14,39 @@ extend class HDPlayerPawn{
 			return 0;
 		}
 
-		blox=
 
-		//weapons
+		//scriptified weapons
+		blox=0;
+		thinkeriterator it=thinkeriterator.create("HDWeapon");
+		HDweapon hdw;
+		while(
+			hdw=HDWeapon(it.Next())
+		){
+			int blx;
+			if(hdw.owner==self){
+				if(hdw is "Lumberjack"){
+					blox+=100;
+				}else if(hdw is "Vulcanette"){
+					blox+=175;
+				}else if(hdw is "ThunderBuster"){
+					blox+=125;
+				}else if(hdw is "BFG9k"){
+					blox+=200;
+				}
+			}
+			if(hdw.owner==self.player.readyweapon)blox+=blx*0.7;
+			else blox+=blx;
+		}
+
+		let herp=HERPUsable(findinventory("HERPUsable"));
+		if(herp)blox+=125+herp.ammo<0?0:BLOX_426MAG*0.4;
+
+		return blox;
+
+
+		blox+=
+
+		//legacy weapons
 		(
 		countinv("Slayer")*4
 		+countinv("Blooper")*3
@@ -23,14 +58,9 @@ extend class HDPlayerPawn{
 		+countinv("LiberatorRifle")*5
 		+countinv("ZM66GrenadeRifle")*5
 		+countinv("LiberatorGrenadeRifle")*6
-		+countinv("Lumberjack")*4
 		+countinv("Hunter")*5
 		+countinv("BossRifle")*7
 		+countinv("RocquetteLauncher")*6
-		+countinv("ThunderBuster")*5
-		+countinv("Vulcanette")*7
-		+countinv("BFG9k")*8
-		+countinv("HERPUsable")*5
 		+countinv("HERPDEAD")*5
 		)*25
 
