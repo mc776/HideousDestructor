@@ -302,14 +302,14 @@ class HDWeapon:Weapon{
 		---- A 1 A_Raise(12);
 		---- A 1{
 			A_WeaponOffset(0,-6,WOF_ADD);
-			ACS_NamedExecuteAlways("MuzzleClimb",0,10,1);
+			A_MuzzleClimb(-0.1,-1.);
 		}
 		---- AA 1 A_WeaponOffset(0,2,WOF_ADD);
 		---- A 1 A_Raise(1);
 		wait;
 
 	ready:
-		TNT1 A 1 A_WeaponReady(WRF_ALLOWRELOAD|WRF_ALLOWZOOM|WRF_ALLOWUSER1|WRF_ALLOWUSER2|WRF_ALLOWUSER3|WRF_ALLOWUSER4);
+		TNT1 A 1 A_WeaponReady(WRF_ALL);
 	readyend:
 		---- A 0 {
 			let p=HDPlayerPawn(self);

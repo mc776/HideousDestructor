@@ -17,11 +17,11 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 	}
 	states{
 	ready:
-		BEVG C 0 A_TakeInventory("WasChoppingFlesh");
-		BEVG C 0 A_JumpIf(invoker.weaponstatus[2],"ready2");
 		BEVG C 1{
-			A_WeaponReady(WRF_ALLOWRELOAD|WRF_ALLOWUSER4);
-		}goto ReadyEnd;
+			A_TakeInventory("WasChoppingFlesh");
+			if(invoker.weaponstatus[2]>0)setweaponstate("ready2");
+			else A_WeaponReady(WRF_ALLOWRELOAD|WRF_ALLOWUSER4);
+		}goto readyend;
 	ready2:
 		BEVG CD 3{
 			if(invoker.weaponstatus[2]>0)invoker.weaponstatus[2]--;
@@ -34,14 +34,13 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 				A_SetTics(random(2,4));
 				A_PlaySound("weapons/sawidle",CHAN_WEAPON);
 			}
-			A_WeaponReady();
-		}
-		goto ReadyEnd;
+			A_WeaponReady(WRF_NOSECONDARY);
+		}goto readyend;
 	select0:
 		BEVG A 0{invoker.weaponstatus[2]=0;}
 		goto select0big;
 	deselect0:
-		BEVG A 0{invoker.weaponstatus[2]=0;}
+		BEVG A 0;
 		goto deselect0big;
 	hold:
 		BEVG A 0 A_JumpIf(invoker.weaponstatus[1]>0,"saw");
@@ -92,12 +91,15 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 
 	altfire:
 /*
-//testing ignore
-BEVG A 10{
-	actor bbb=spawn("DrunkImp",pos);
-	bbb.bfriendly=true;bbb.master=self;
-}
 */
+//testing ignore
+---- A 10{
+	actor bbb=spawn("demon",pos);
+	bbb.bfriendly=true;
+	bbb.master=self;
+	bbb.friendplayer=AAPTR_DEFAULT;
+	bbb.designatedteam=self.player.getteam();
+}
 goto nope;
 	beatdown:
 		BEVG C 0 A_JumpIfInventory("PowerStrength",1,"beatdownstrong");

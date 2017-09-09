@@ -1,0 +1,354 @@
+// ------------------------------------------------------------
+// H.E.R.P. Robot
+// ------------------------------------------------------------
+class HERPBot:HDUPK{
+	default{
+		+ismonster +noblockmonst +friendly +standstill +nofear
+		+shootable +ghost +noblood +dontgib
+		height 32;radius 10;mass 400;health 200;
+		damagefactor "Thermal",0.7;damagefactor "SmallArms3",0.8;
+		obituary "%o went HERP.";
+	}
+
+	//it is now canon: the mag and seal checkers are built inextricably into the AI.
+	//if you tried to use a jailbroken mag, the whole robot just segfaults.
+	int ammo; //the mag being used, -1-51, -1 no mag, 0 empty, 51 sealed
+	int mags; //the mags in the ammo bay, 0-2
+	int battery; //the battery, -1-20
+	double startangle;
+	bool scanright;
+
+	override void postbeginplay(){
+		super.postbeginplay();
+		startangle=angle;
+		scanright=false;
+		if(!master){
+			ammo=51;
+			mags=2;
+			battery=20;
+		}
+	}
+	void message(string msg){
+		if(!master)return;
+		master.A_Log(string.format("\cd[HERP]\cj  %s",msg),true);
+	}
+	void scanturn(){
+		if(battery<1){
+			message("Operational fault. Please check your manual for proper maintenance. (ERR-4fd92-00B) Power low.");
+			setstatelabel("nopower");
+			return;
+		}
+		if(health<1||countinv("HERPOff",AAPTR_MASTER))return;
+		if(!random(0,8192))battery--;
+		A_ClearTarget();
+
+		//shoot 3 lines for at least some z-axis awareness
+		actor a;int b;int c=-1;
+		while(
+			&&c<=1
+		){
+			c++;
+			//shoot a line out
+			[a,b]=lineattack(
+				angle,4096,0,0,"none",
+				"CheckPuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT|LAF_OVERRIDEZ,
+				offsetz:12
+			);
+
+			//if the line hits a valid target, go into shooting state
+			if(
+				a
+				&&a.tracer
+				&&isHostile(a.tracer)
+			){
+				target=a.tracer;
+				setstatelabel("missile");
+				message("IFF system alert: enemy pattern recognized.");
+				if(hd_debug)A_Log(string.format("HERP targeted %s",a.tracer.getclassname()));
+				return;
+			}
+		}
+
+		//if nothing, keep moving (add angle depending on scanright)
+		angle+=scanright?-3:3;
+
+		//if anglechange>45, start turning right
+		//else if anglechange<-45, start turning left
+		double chg=anglechange(startangle,angle);
+		if(abs(chg)>45){
+			if(chg>0)scanright=true;
+			else if(chg<0)scanright=false;
+			setstatelabel("postbeep");
+		}
+	}
+
+	states{
+	spawn:
+		HERP A 0 A_Stop();
+	spawn2:
+		HERP A 0 A_JumpIfHealthLower(1,"dead");
+		HERP A 2 A_ClearTarget();
+	idle:
+		HERP A 2 scanturn();
+	postbeep:
+		HERP A 3 A_PlaySound("misc/i_pkup");
+		goto idle;
+	alert:
+		HERP A 0 A_PlaySound("weapons/vulcanup",CHAN_BODY);
+		HERP AAA 1 A_PlaySound("misc/i_pkup",CHAN_VOICE);
+	aim:
+		HERP A 2 A_FaceTarget(3,3,0,0,FAF_TOP,-4);
+	shoot:
+		HERP B 1 bright light("SHOT"){
+			if(ammo<1){
+				message("Operational fault. Please check your manual for proper maintenance. (ERR-42392-41A) Cartridge empty. Shutting down...");
+				setstatelabel("noammo");
+				return;
+			}
+			if(ammo>50)ammo=50;
+			ammo--;
+			A_PlaySound("weapons/rifle",CHAN_WEAPON);
+			actor p=Spawn("HDBullet426",pos+(0,0,6));
+			if(p){
+				p.target=self;p.angle=angle;p.pitch=pitch;
+				p.vel+=(
+					frandom(-1,1),frandom(-1,1),frandom(-1,1)
+				);
+				p.vel+=vel;
+			}
+		}
+		HERP A 2{
+			if(bfriendly)A_AlertMonsters(0,AMF_TARGETEMITTER);
+			else A_AlertMonsters();
+		}
+		HERP A 0{
+			if(master && master.countinv("HERPOff")){
+				message("Shutting down.");
+				A_PlaySound("weapons/vulcandown");
+				setstatelabel("off");
+			}else if(ammo<1){
+				setstatelabel("swapmag");
+			}else if(target && target.health>random(-30,30)){
+				setstatelabel("shoot");
+			}
+		}goto idle;
+	swapmag:
+		HERP A 3{
+			if(mags<1){
+				message("Out of ammo. Shutting down.");
+				A_PlaySound("weapons/vulcandown");
+				setstatelabel("off");
+			}else{
+				//create a thrown empty, then...
+				ammo=51;
+				mags--;
+			}
+		}goto idle;
+	nopower:
+		HERP A -1;
+	off:
+		HERP A 10;
+		HERP A 0 A_JumpIfInventory("HERPOff",1,"off",AAPTR_MASTER);
+		goto idle;
+	give:
+		---- A 0{
+			if(
+				(health<1 && !target.countinv("HERPDEAD"))||
+				(health>0 && !target.countinv("HERPUsable"))
+			){
+				A_PlaySound("misc/w_pkup");
+				if(health<1)A_GiveToTarget("HERPDEAD");
+					else A_GiveToTarget("HERPUsable");
+				if(ammo==51){
+					mags++;
+				}else{
+					let hu=HERPUsable(target.findinventory("HERPUsable"));
+					if(hu)hu.ammo=ammo;
+				}
+				ammo=0;
+				while(mags>0){
+					mags--;
+					if(A_JumpIfInTargetInventory("ZM66RifleMags",0,"null"))
+						A_SpawnItemEx("ZM66RifleMags",3,random(-3,3),0,0,0,0,
+							0,SXF_NOPOINTERS
+						);
+					else A_GiveToTarget("ZM66RifleMags",1);
+				}
+				if(battery>=0){
+					A_PlaySound("weapons/rifleclick");
+					if(
+						(
+							battery==20 &&
+							A_JumpIfInTargetInventory("HDCellPacks",0,"null")
+						)||(
+							battery<20 &&
+							HDF.MaxInv(target,"HDCellAmmo")
+							-target.countinv("HDCellAmmo")<battery
+						)
+					){
+						actor a=spawn("HDCellPickup",pos);
+						a.vel=vel;a.stamina=battery;
+					}else{
+						if(battery==20)A_GiveToTarget("HDCellPacks",1);
+						else A_GiveToTarget("HDCellAmmo",battery);
+					}
+				}
+				destroy();return;
+			}
+		}
+		---- A 0{
+			if(battery>=0){
+				A_PlaySound("weapons/rifleclick");
+				actor a=spawn("HDCellPickup",pos);
+				a.vel=vel;a.stamina=battery;
+				battery=-1;
+			}
+		}goto spawn;
+	death:
+		HERP A 0{
+			ammo=random(0,ammo);
+			mags=random(0,mags);
+			A_NoBlocking();
+			A_PlaySound("world/shotgunfar",CHAN_BODY,0.4);
+		}
+		HERP A 1 A_PlaySound("weapons/bigcrack",5);
+		HERP A 1 A_PlaySound("weapons/bigcrack",6);
+		HERP A 1 A_PlaySound("weapons/bigcrack",7);
+		HERP AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 0 A_SpawnItemEx("HugeWallChunk",random(-6,6),random(-6,6),random(0,6), vel.x+random(-6,6),vel.y+random(-6,6),vel.z+random(1,8),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);
+		HERP A 0{
+			A_PlaySound("weapons/vulcandown",CHAN_WEAPON);
+			string yay;
+			switch(random(0,8)){
+			case 0:
+				yay="Operational fault. Please check your manual for proper maintenance. (ERR-4fd92-00B) Power low.";break;
+			case 1:
+				yay="Operational fault. Please check your manual for proper maintenance. (ERR-74x29-58A) Unsupported ammunition type.\n\n\cjPlease note: Reloading a 4.26 UAC Standard magazine or its components without the supervision of a Volt UAC Standard Certified Cartridge Professional(tm) is a breach of the Volt End User License Agreement.";break;
+			case 2:
+				yay="Operational fault. Please check your manual for proper maintenance. (ERR-8w8i7-8VX) No interface detected.";break;
+			case 3:
+				yay="Illegal operation. Please check your manual for proper maintenance. (ERR-u0H85-6NN) System will restart.";break;
+			case 4:
+				yay="Illegal operation. Identify Friend/Foe system has been tampered with. Please contact your commanding officer immediately. (ERR-0023j-000) System will halt.";break;
+			case 5:
+				yay="Formatting C:\\ (DBG-444j2-0A0)";break;
+			case 6:
+				yay="Testing mode initialized.  (DBG-86nm8-BN5) Cache cleared.";break;
+			case 7:
+				yay="*** Fatal Error *** Address not mapped to object (signal 11) Address: 0x8";break;
+			case 8:
+				yay="*** Fatal Error *** Segmentation fault (signal 11) Address: (nil)";break;
+			}
+			message(yay);
+		}
+		HERP AAA 1 A_SpawnItemEx("HDSmoke",random(-2,2),random(-2,2),random(-2,2), vel.x+random(-2,2),vel.y+random(-2,2),vel.z+random(1,4),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);
+		HERP AAA 3 A_SpawnItemEx("HDSmoke",random(-2,2),random(-2,2),random(-2,2), vel.x+random(-2,2),vel.y+random(-2,2),vel.z+random(1,4),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);
+		HERP AAA 9 A_SpawnItemEx("HDSmoke",random(-2,2),random(-2,2),random(-2,2), vel.x+random(-2,2),vel.y+random(-2,2),vel.z+random(1,4),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+		TNT1 A 1 A_SpawnItemEx("HERPDEAD",0,0,0,vel.x,vel.y,vel.z,0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERTRANSLATION);
+		stop;
+	}
+}
+class EnemyHERP:HERPBot{
+	default{
+		-friendly
+		translation "112:120=152:159","121:127=9:12";
+	}
+}
+class HERPOff:InventoryFlag{}
+class HERPSwitch:ActionItem{
+	states{
+	use:
+		TNT1 A 0{
+			if(countinv("HERPOff")){
+				A_TakeInventory("HERPOff");
+				A_Log("\cd[HERP]\cj  Initializing...",true);
+			}else{
+				A_GiveInventory("HERPOff");
+				A_Log("\cd[HERP]\cj  Shutting down...",true);
+			}
+		}fail;
+	}
+}
+class HERPUsable:HDPickup{
+	int ammo;
+	default{
+		inventory.amount 1;
+		inventory.maxamount 1;
+		inventory.icon "HERPEX";
+		inventory.pickupmessage "Picked up a Heavy Engagement Rotary Platform robot."
+	}
+	override void beginplay(){
+		ammo=51;
+		super.beginplay();
+	}
+	states{
+	use:
+		TNT1 A 0{
+			int loadcell;
+			if(countinv("HDCellPacks"))loadcell=20;
+			else if(countinv("HDCellAmmo"))loadcell=min(countinv("HDCellAmmo"),random(1,19));
+			else{
+				A_Log("\cd[HERP]\cj  No power. Please load 1 cell pack before deploying.",true);
+				return;
+			}
+			if(!invoker.ammo){
+				if(!countinv("ZM66RifleMags")){
+					A_Log("\cd[HERP]\cj  Please load at least 1 fresh 4.26mm UAC Standard magazine before deploying.",true);
+					return;
+				}else{
+					A_TakeInventory("ZM66RifleMags",1,TIF_NOTAKEINFINITE);
+					invoker.ammo=51;
+				}
+			}
+			int loadmags=0;
+			while(loadmags<2 && countinv("ZM66RifleMags")){
+				loadmags++;
+				A_TakeInventory("ZM66RifleMags",1,TIF_NOTAKEINFINITE);
+			}
+			A_TakeInventory("HerpOff");
+			A_GiveInventory("HERPSwitch");
+			actor hhh;int iii;
+			[iii,hhh]=A_SpawnItemEx("HERPBot",4,0,height-16,
+				2*cos(angle)*cos(pitch),2*cos(pitch)*sin(angle),-2*sin(pitch),
+				0,SXF_NOCHECKPOSITION|SXF_TRANSFERTRANSLATION
+				|SXF_TRANSFERPOINTERS|SXF_SETMASTER
+			);
+			hhh.vel+=vel;
+			let hhhh=HERPBot(hhh);
+			hhhh.ammo=invoker.ammo;
+			hhhh.mags=loadmags;
+			hhhh.battery=loadcell;
+		}stop;
+	spawn:
+		HERP A 0 A_Stop();
+		HERP A 0 A_GiveInventory("Clip",1);
+		HERP A -1;
+		stop;
+	}
+}
+/*
+class HERPDEAD:Inventory{
+	override void postbeginplay(){
+		super.postbeginplay();
+		A_SpawnItemEx("HERPDEADPickup",0,0,0,vel.x,vel.y,vel.z,
+			0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_ABSOLUTEMOMENTUM
+		);
+		destroy();
+	}
+}
+class HERPDEADPickup:HDUPK{
+*/
+class HERPDEAD:HDPickup{
+	default{
+		inventory.amount 1;
+		inventory.maxamount 1;
+		inventory.icon "HERPEX";
+		hdupk.pickupmessage "Picked up a Heavy Engagement Rotary Platform robot. It is damaged."
+	}
+	states{
+	spawn:
+		HERP A -1 A_Stop();
+	use:
+		TNT1 A 0 A_Log(string.format("\cd[HERP]\cj  :("),true);
+		fail;
+	}
+}

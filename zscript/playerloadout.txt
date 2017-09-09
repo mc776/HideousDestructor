@@ -86,19 +86,19 @@ class SoldierExtras:ActionItem{
 
 			if(!countinv("HDPistol")){
 				A_GiveInventory("HDPistol");
-				A_GiveInventory("HDPistolLoaded",15);
-				A_GiveInventory("HDPistolChamber");
 			}
 			else if(!countinv("HDSecondPistol")){
 				A_GiveInventory("HDSecondPistol");
 				A_GiveInventory("HDSecondPistolLoaded",15);
 				A_GiveInventory("HDSecondPistolChamber");
 			}
+			A_GiveInventory("HDPistolLoaded",15);
+			A_GiveInventory("HDPistolChamber");
 			A_SetInventory("HDPistolMag",max(countinv("HDPistolMag"),3));
 
 			A_SetInventory("HDFragGrenadeAmmo",max(3,countinv("HDFragGrenadeAmmo")));
 			A_SetInventory("DERPUsable",max(1,countinv("DERPUsable")));
-		}
+		}fail;
 	}
 }
 
