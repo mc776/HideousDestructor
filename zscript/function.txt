@@ -27,39 +27,6 @@ class HDActor:Actor{
 	bool CheckLump(string lumpname){
 		return HDMath.CheckLump(lumpname);
 	}
-	//shoot a missile without changing pitch and angle; missile inherits momentum
-	//A_ShootMissile("ShotgunBlast",44,0);
-	virtual void A_ShootMissile(
-		class<Actor> ms="DoomImpBall",
-		double shootheight=-1,
-		double shootspeed=-1,
-		double shootangle=999,
-		double shootpitch=999,
-		bool seeker=false
-	){
-		//the real defaults
-		if(shootangle==999) shootangle=self.angle;
-		if(shootpitch==999) shootpitch=self.pitch;
-		if(shootheight<0){
-			if(self is "PlayerPawn") shootheight=self.height-12;
-			else shootheight=self.missileheight;
-		}
-		actor prj=spawnmissileanglezspeed(
-			self.pos.z+shootheight,
-			ms,
-			shootangle,
-			-sin(pitch),
-			shootspeed,
-			self,
-			false
-		);
-		if(shootspeed<=0) //default to projectile's own speed
-			prj.A_ChangeVelocity(cos(pitch)*prj.speed,0,-sin(pitch)*prj.speed,CVF_RELATIVE);
-		prj.vel+=self.vel;prj.pitch=shootpitch;
-		prj.master=self;
-		if(seeker) prj.tracer=self.target;
-		//prj.playspawnsound(prj);
-	}
 	//generic function to spawn actors coming out of an explosion
 	//for frags: A_SpawnChunks("HDFrag",42,100,700);
 	void A_SpawnChunks(

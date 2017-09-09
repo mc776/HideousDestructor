@@ -15,6 +15,7 @@ class VulcanetteGuy:Chaingunguy{
 	override void postbeginplay(){
 		super.postbeginplay();
 		vulcammo=250;
+		vulcchambers=5;
 	}
 	override void die(actor source,actor inflictor,int dmgflags=0){
 		A_GiveInventory("HasDroppedGun");
@@ -119,7 +120,7 @@ class VulcanetteGuy:Chaingunguy{
 				A_SetTics(7);
 			}
 			else if(bmissilemore)A_SetTics(0);
-			if(!vulcammo||!burstcount)setstatelabel("winddown");
+			if(!vulcchambers||!burstcount)setstatelabel("winddown");
 		}goto cycle;
 	winddown:
 		CPOS E 6{

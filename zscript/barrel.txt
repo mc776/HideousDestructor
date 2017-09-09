@@ -65,7 +65,7 @@ class KillerBarrel:HDActor{
 					//shoot
 					A_FaceTarget(0,0);
 					A_PlaySound(attacksound);
-					A_ShootMissile("BaleBall",40,10);
+					A_SpawnProjectile("BaleBall",40,flags:CMF_AIMDIRECTION);
 				}
 				else{
 					//move
@@ -289,15 +289,16 @@ class KillerFireCan:KillerBarrel{
 			){
 				A_FaceTarget(0,0);
 				pitch-=random(1,12);
-				if((target.pos-pos).length()<256){
-					setstatelabel("flamethrow");
-					return;
-				}else if(
+				if(
 					HDMobAI.TryShoot(self,32,128,9,9)
 				){
-					//shoot
-					A_PlaySound(attacksound);
-					A_ShootMissile("BarrelFlame",40,10);
+					if(distance3d(target)<256){
+						setstatelabel("flamethrow");
+						return;
+					}else{
+						A_PlaySound(attacksound);
+						A_SpawnProjectile("BarrelFlame",40,flags:CMF_AIMDIRECTION);
+					}
 				}
 				else{
 					//move
@@ -313,7 +314,7 @@ class KillerFireCan:KillerBarrel{
 	flamethrow:
 		FCAN ABABABAB 2 bright{
 			A_PlaySound("misc/firecrkl");
-			A_ShootMissile("BarrelFlame2",40,10);
+			A_SpawnProjectile("BarrelFlame2",40,flags:CMF_AIMDIRECTION);
 		}
 		FCAN A 0 A_Jump(256,"see");
 	dying:

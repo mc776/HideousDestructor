@@ -131,3 +131,17 @@ class HD4mmMagEmpty:HDDebris{
 }
 
 
+class ZM66DroppedRound:FourMilAmmo{
+	default{
+		projectile;
+		+cannotpush +forcexybillboard -nogravity +doombounce +bounceonactors
+		damagefunction(0);bouncefactor 0.2;seesound "misc/casing3";
+	}
+	states{
+	spawn:
+		RBRS A 2 A_SetAngle(angle+45);
+		wait;
+	death:
+		---- A -1;
+	}
+}
