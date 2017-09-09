@@ -176,10 +176,11 @@ class HERPBot:HDUPK{
 				A_PlaySound("misc/w_pkup");
 				if(health<1)A_GiveToTarget("HERPDEAD");
 					else A_GiveToTarget("HERPUsable");
+				let hu=HERPUsable(target.findinventory("HERPUsable"));
 				if(ammo==51){
 					mags++;
+					if(hu)hu.ammo=0;
 				}else{
-					let hu=HERPUsable(target.findinventory("HERPUsable"));
 					if(hu)hu.ammo=ammo;
 				}
 				ammo=0;
@@ -298,9 +299,6 @@ class HERPUsable:HDPickup{
 		super.beginplay();
 	}
 	states{
-	nope:
-		TNT1 A 0;
-		fail;
 	use:
 		TNT1 A 0{
 			int loadcell;
@@ -319,6 +317,8 @@ class HERPUsable:HDPickup{
 					invoker.ammo=51;
 				}
 			}
+			if(loadcell==20)A_TakeInventory("HDCellPacks",1);
+				else A_TakeInventory("HDCellAmmo",loadcell);
 			int loadmags=0;
 			while(loadmags<2 && countinv("ZM66RifleMags")){
 				loadmags++;
