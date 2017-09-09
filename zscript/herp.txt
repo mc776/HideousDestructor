@@ -65,10 +65,10 @@ class HERPBot:HDUPK{
 				&&isHostile(a.tracer)
 				&&a.tracer.bshootable
 				&&(a.tracer.bismonster||a.tracer is "PlayerPawn")
-				&&a.tracer.health>random(-30,30)
+				&&a.tracer.health>random(-10,20)
 			){
 				target=a.tracer;
-				setstatelabel("aim");
+				setstatelabel("ready");
 				message("IFF system alert: enemy pattern recognized.");
 				if(hd_debug)A_Log(string.format("HERP targeted %s",a.tracer.getclassname()));
 				return;
@@ -99,8 +99,8 @@ class HERPBot:HDUPK{
 	postbeep:
 		HERP A 6 A_PlaySound("misc/i_pkup");
 		goto idle;
-	alert:
-		HERP A 0 A_PlaySound("weapons/vulcanup",CHAN_BODY);
+	ready:
+		HERP A 7 A_PlaySound("weapons/vulcanup",CHAN_BODY);
 		HERP AAA 1 A_PlaySound("misc/i_pkup",CHAN_VOICE);
 	aim:
 		HERP A 2 A_FaceTarget(3,3,0,0,FAF_TOP,-4);
