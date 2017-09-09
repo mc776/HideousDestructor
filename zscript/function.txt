@@ -244,16 +244,6 @@ struct HDMath{
 		int r=floor(input);if(input-r>=0.5) r++;
 		return r;
 	}
-	//returns how much MINIMUM to turn to get from one angle to another
-	//don't use this, it's identical to deltaangle but with the parameters backwards
-	//HDMath.AngleChange(90,-42)
-	static double AngleChange(double a1, double a2){
-		double a=a2-a1;
-		while(a<0) a+=360;
-		a%=360;
-		if(a>180)a-=360;
-		return a;
-	}
 	//return true if lump exists
 	//mostly for seeing if we're playing D1 or D2
 	//HDMath.CheckLump("SHT2A0")
