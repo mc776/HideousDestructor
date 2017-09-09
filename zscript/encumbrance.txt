@@ -2,12 +2,34 @@
 // Encumbrance
 // ------------------------------------------------------------
 
-const BLOX_426MAG=10;
-const BLOX_426MAG_LOADED=BLOX_426MAG*0.4;
-const BLOX_776MAG=27;
-const BLOX_9mag=9;
+//a battery should be about the size of your old flip phone but significantly heavier.
 const BLOX_BATTERY=12;
 const BLOX_BATTERY_LOADED=BLOX_BATTERY*0.4;
+
+//a ZM66 mag should be roughly the size of a battery.
+const BLOX_426MAG=10;
+const BLOX_426MAG_LOADED=BLOX_426MAG*0.4;
+//50 single rounds should inconvenience you far more than a single mag.
+const BLOX_426=BLOX_426MAG*0.03;
+const BLOX_426_LOADED=BLOX_426*0.3;
+
+const BLOX_776MAG=22;
+const BLOX_776MAG_LOADED=BLOX_776MAG*0.5;
+//cased rounds are easier to keep in your pocket and fit where a mag will not.
+const BLOX_776=BLOX_776MAG*0.035;
+const BLOX_776_LOADED=BLOX_776*0.3;
+//clips take up more space than 10 assorted rounds.
+const BLOX_776_CLIP=BLOX_776*12;
+
+const BLOX_9MAG=9;
+//it's almost entirely inside the handle!
+const BLOX_9MAG_LOADED=BLOX_9MAG*0.2;
+const BLOX_9MAG30=23;
+//the opposite of that...
+const BLOX_9MAG30_LOADED=BLOX_9MAG30*0.6;
+const BLOX_9=BLOX_9MAG*0.07;
+const BLOX_9_LOADED=BLOX_9*0.3;
+
 
 extend class HDPlayerPawn{
 	double CheckEncumbrance(){
@@ -28,46 +50,57 @@ extend class HDPlayerPawn{
 			if(hdw.owner==self){
 				if(hdw is "Lumberjack"){
 					blox+=100;
+					if(hdw.weaponstatus[1]>=0)blox+=BLOX_BATTERY_LOADED;
+				}else if(hdw is "HDSMG"){
+					blox+=100;
+					if(countinv("HDSMGNoMag"))blox-=BLOX_9MAG30_LOADED;
+					else blox+=BLOX_9_LOADED;
+				}else if(hdw is "Hunter"){
+					blox+=125;
+				}else if(hdw is "Slayer"){
+					blox+=100;
+				}else if(hdw is "ZM66GrenadeRifle"){
+					if(hdw is "ZM66Rifle")blox+=100;
+					else blox+=125;
 				}else if(hdw is "Vulcanette"){
 					blox+=175;
+					if(hdw.weaponstatus[1]>=0)blox+=BLOX_BATTERY_LOADED;
+					let vvv=vulcanette(hdw);
+					for(int i=0;i<5;i++){
+						if(vvv.vulcmag[i]>=0)blox+=BLOX_426MAG_LOADED;
+					}
+				}else if(hdw is "Blooper"){
+					blox+=75;
+				}else if(hdw is "RocquetteLauncher"){
+					blox+=150;
+				}else if(hdw is "LiberatorRifle"){
+					if(hdw is "LiberatorGrenadeRifle")blox+=150;
+					else blox+=125;
 				}else if(hdw is "ThunderBuster"){
 					blox+=125;
 					if(hdw.weaponstatus[1]>=0)blox+=BLOX_BATTERY_LOADED;
+				}else if(hdw is "Brontornis"){
+					blox+=75;
 				}else if(hdw is "BFG9k"){
 					blox+=200;
 					if(hdw.weaponstatus[2]>=0)blox+=BLOX_BATTERY_LOADED;
+				}else if(hdw is "BossRifle"){
+					blox+=175;
 				}
 			}
-			if(hdw.owner==self.player.readyweapon)blox+=blx*0.7;
+			if(hdw.owner==self.player.readyweapon)blox+=blx*0.6;
 			else blox+=blx;
 		}
 
+		//because herps are special
 		let herp=HERPUsable(findinventory("HERPUsable"));
 		if(herp)blox+=125+herp.ammo<0?0:BLOX_426MAG*0.4;
 
 
 		blox+=
 
-		//legacy weapons
-		(
-		countinv("Slayer")*4
-		+countinv("Blooper")*3
-		+countinv("Brontornis")*3
-		+countinv("HDSMG")*4
-			-(countinv("HDSMGNoMag")*countinv("HDSMG"))
-		+countinv("ZM66SemiRifle")*4
-		+countinv("ZM66Rifle")*4
-		+countinv("LiberatorRifle")*5
-		+countinv("ZM66GrenadeRifle")*5
-		+countinv("LiberatorGrenadeRifle")*6
-		+countinv("Hunter")*5
-		+countinv("BossRifle")*7
-		+countinv("RocquetteLauncher")*6
-		+countinv("HERPDEAD")*5
-		)*25
-
 		//armour
-		+countinv("GreenArmourStored")*21
+		countinv("GreenArmourStored")*21
 		+countinv("BlueArmourStored")*27
 		+countinv("BlackArmourStored")*35
 
@@ -83,6 +116,7 @@ extend class HDPlayerPawn{
 		+countinv("HDSecondPistol")*30
 		+countinv("DERPUsable")*35
 		+countinv("DERPDEAD")*35
+		+countinv("HERPDEAD")*125
 
 		//loose/magged ambiguous ammo
 		+countinv("HDPistolAmmo")*1
@@ -126,12 +160,7 @@ extend class HDPlayerPawn{
 					countinv("HERPDEAD")||countinv("HERPUsable")
 				)?countinv("HERPAmmo"):0
 			)
-			+countinv("VulcLoaded1")
-			+countinv("VulcLoaded2")
-			+countinv("VulcLoaded3")
-			+countinv("VulcLoaded4")
-			+countinv("VulcLoaded5")
-		)*0.2
+		)*BLOX_426_LOADED
 		+(
 			countinv("RocketMag")
 			+countinv("BloopChamber")
