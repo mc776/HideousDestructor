@@ -55,8 +55,8 @@ extend class HDPlayerPawn{
 		while(
 			hdw=HDWeapon(it.Next())
 		){
-			int blx;
 			if(hdw.owner==self){
+				int blx;
 				if(hdw is "Lumberjack"){
 					blx+=100;
 					if(hdw.weaponstatus[1]>=0)blx+=BLOX_BATTERY_LOADED;
@@ -111,9 +111,9 @@ extend class HDPlayerPawn{
 				}else if(hdw is "BossRifle"){
 					blx+=175+countinv("BossMag")*BLOX_776_LOADED;
 				}
+				if(hdw==hdweapon(player.readyweapon))blox+=blx*0.6;
+				else blox+=blx;
 			}
-			if(hdw==hdweapon(player.readyweapon))blox+=blx*0.6;
-			else blox+=blx;
 		}
 
 		//because herps are special
