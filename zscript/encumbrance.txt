@@ -58,61 +58,61 @@ extend class HDPlayerPawn{
 			int blx;
 			if(hdw.owner==self){
 				if(hdw is "Lumberjack"){
-					blox+=100;
-					if(hdw.weaponstatus[1]>=0)blox+=BLOX_BATTERY_LOADED;
+					blx+=100;
+					if(hdw.weaponstatus[1]>=0)blx+=BLOX_BATTERY_LOADED;
 				}else if(hdw is "HDPistol"){
-					blox+=30+countinv("HDPistolLoaded")*BLOX_9MAG_LOADED;
+					blx+=30+countinv("HDPistolLoaded")*BLOX_9MAG_LOADED;
 				}else if(hdw is "HDSMG"){
-					if(countinv("HDSMGNoMag"))blox+=120-BLOX_9MAG30_LOADED;
-					else blox+=120+countinv("HDSMGLoaded")*BLOX_9_LOADED;
+					if(countinv("HDSMGNoMag"))blx+=120-BLOX_9MAG30_LOADED;
+					else blx+=120+countinv("HDSMGLoaded")*BLOX_9_LOADED;
 				}else if(hdw is "Hunter"){
-					blox+=125
+					blx+=125
 						+countinv("ShotgunTube")
 						+countinv("ShotgunChamber")
 						+countinv("ShotgunQuickAmmo");
 				}else if(hdw is "Slayer"){
-					blox+=100
+					blx+=100
 						+countinv("ShellChamber1")
 						+countinv("ShellChamber2")
 						+countinv("ShotgunQuickAmmo2");
 				}else if(hdw is "ZM66GrenadeRifle"){
-					if(hdw is "ZM66Rifle")blox+=100;
-					else blox+=125+countinv("ZM66GLoaded")*BLOX_ROCKETLOADED;
-					blox+=countinv("ZM66Loaded")*BLOX_426_LOADED;
+					if(hdw is "ZM66Rifle")blx+=100;
+					else blx+=125+countinv("ZM66GLoaded")*BLOX_ROCKETLOADED;
+					blx+=countinv("ZM66Loaded")*BLOX_426_LOADED;
 				}else if(hdw is "Vulcanette"){
-					blox+=225;
-					if(hdw.weaponstatus[1]>=0)blox+=BLOX_BATTERY_LOADED;
+					blx+=225;
+					if(hdw.weaponstatus[1]>=0)blx+=BLOX_BATTERY_LOADED;
 					let vvv=vulcanette(hdw);
 					for(int i=0;i<5;i++){
-						if(vvv.vulcmag[i]>=0)blox+=BLOX_426MAG_LOADED;
+						if(vvv.vulcmag[i]>=0)blx+=BLOX_426MAG_LOADED;
 					}
 				}else if(hdw is "Blooper"){
-					blox+=75+countinv("BloopChamber")*BLOX_ROCKETLOADED;
+					blx+=75+countinv("BloopChamber")*BLOX_ROCKETLOADED;
 				}else if(hdw is "RocquetteLauncher"){
-					blox+=175
+					blx+=175
 						+countinv("RocketMag")*BLOX_ROCKETLOADED
 						+countinv("HEATLoaded")*BLOX_HEATROCKETLOADED;
 				}else if(hdw is "LiberatorRifle"){
 					if(hdw is "LiberatorGrenadeRifle")
-						blox+=150
+						blx+=150
 							+countinv("LiberatorGrenadeChamber")
 								*BLOX_ROCKETLOADED
 							+countinv("LiberatorLoaded")
 								*BLOX_776_LOADED;
-						else blox+=125+countinv("LiberatorLoaded")*BLOX_776_LOADED;
+						else blx+=125+countinv("LiberatorLoaded")*BLOX_776_LOADED;
 				}else if(hdw is "ThunderBuster"){
-					blox+=175;
-					if(hdw.weaponstatus[1]>=0)blox+=BLOX_BATTERY_LOADED;
+					blx+=175;
+					if(hdw.weaponstatus[1]>=0)blx+=BLOX_BATTERY_LOADED;
 				}else if(hdw is "Brontornis"){
-					blox+=75+countinv("BrontornisMag")*BLOX_BRONTOSHELLLOADED;
+					blx+=75+countinv("BrontornisMag")*BLOX_BRONTOSHELLLOADED;
 				}else if(hdw is "BFG9k"){
-					blox+=220;
-					if(hdw.weaponstatus[2]>=0)blox+=BLOX_BATTERY_LOADED;
+					blx+=220;
+					if(hdw.weaponstatus[2]>=0)blx+=BLOX_BATTERY_LOADED;
 				}else if(hdw is "BossRifle"){
-					blox+=175+countinv("BossMag")*BLOX_776_LOADED;
+					blx+=175+countinv("BossMag")*BLOX_776_LOADED;
 				}
 			}
-			if(hdw.owner==self.player.readyweapon)blox+=blx*0.6;
+			if(hdw==hdweapon(player.readyweapon))blox+=blx*0.6;
 			else blox+=blx;
 		}
 
