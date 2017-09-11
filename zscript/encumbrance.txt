@@ -19,7 +19,7 @@ const BLOX_776MAG_LOADED=BLOX_776MAG*0.5;
 const BLOX_776=BLOX_776MAG*0.035;
 const BLOX_776_LOADED=BLOX_776*0.3;
 //clips take up more space than 10 assorted rounds.
-const BLOX_776_CLIP=BLOX_776*12;
+const BLOX_776CLIP=BLOX_776*12;
 
 const BLOX_9MAG=9;
 //it's almost entirely inside the handle!
@@ -31,14 +31,16 @@ const BLOX_9=BLOX_9MAG*0.07;
 const BLOX_9_LOADED=BLOX_9*0.3;
 
 //other things
-const BLOX_SHELL=2;
-const BLOX_SHELLLOADED=1;
+const BLOX_SHELL=1;
+const BLOX_SHELLLOADED=0.6;
 const BLOX_ROCKET=BLOX_426MAG;
 const BLOX_ROCKETLOADED=BLOX_ROCKET*0.5;
 const BLOX_HEATROCKET=BLOX_ROCKET*1.2;
 const BLOX_HEATROCKETLOADED=BLOX_ROCKETLOADED;
 const BLOX_BRONTOSHELL=BLOX_426MAG*0.4;
 const BLOX_BRONTOSHELLLOADED=BLOX_BRONTOSHELL*0.4;
+const BLOX_FRAG=BLOX_ROCKET*1.2;
+
 
 
 extend class HDPlayerPawn{
@@ -66,15 +68,12 @@ extend class HDPlayerPawn{
 					if(countinv("HDSMGNoMag"))blx+=120-BLOX_9MAG30_LOADED;
 					else blx+=120+countinv("HDSMGLoaded")*BLOX_9_LOADED;
 				}else if(hdw is "Hunter"){
-					blx+=125
-						+countinv("ShotgunTube")
-						+countinv("ShotgunChamber")
-						+countinv("ShotgunQuickAmmo");
+					blx+=125+(
+							countinv("ShotgunTube")
+							+countinv("ShotgunQuickAmmo")
+						)*BLOX_SHELLLOADED;
 				}else if(hdw is "Slayer"){
-					blx+=100
-						+countinv("ShellChamber1")
-						+countinv("ShellChamber2")
-						+countinv("ShotgunQuickAmmo2");
+					blx+=100+countinv("ShotgunQuickAmmo2")*BLOX_SHELLLOADED;
 				}else if(hdw is "ZM66GrenadeRifle"){
 					if(hdw is "ZM66Rifle")blx+=100;
 					else blx+=125+countinv("ZM66GLoaded")*BLOX_ROCKETLOADED;
@@ -123,7 +122,7 @@ extend class HDPlayerPawn{
 
 		//let's make the derp special too
 		if(countinv("DERPUsable")||countinv("DERPDEAD"))
-			blox+=35+countinv("DERPAmmo")*BLOX_9MAG_LOADED;
+			blox+=45+countinv("DERPAmmo")*BLOX_9MAG_LOADED;
 
 
 		//and now for stuff that should just be listed
@@ -148,27 +147,27 @@ extend class HDPlayerPawn{
 		+countinv("BluePotion")*8
 
 		//loose/magged ambiguous ammo
-		+countinv("HDPistolAmmo")*1
-		+countinv("SevenMilAmmo")*3*0.5
-		+countinv("FourMilAmmo")*0.3
-		+countinv("HDCellAmmo")*0.5
+		+countinv("HDPistolAmmo")*BLOX_9
+		+countinv("SevenMilAmmo")*BLOX_776
+		+countinv("FourMilAmmo")*BLOX_426
+		+countinv("HDCellAmmo")*BLOX_BATTERY*0.3
 
 		//single loose ammo
-		+countinv("HDShellAmmo")*3
-		+countinv("BrontornisRound")*6
-		+countinv("HDFragGrenadeAmmo")*13
-		+countinv("HDRocketAmmo")*13
-		+countinv("DudRocquetteAmmo")*13
-		+countinv("HEATAmmo")*15
+		+countinv("HDShellAmmo")*BLOX_SHELL
+		+countinv("BrontornisRound")*BLOX_BRONTOSHELL
+		+countinv("HDFragGrenadeAmmo")*BLOX_FRAG
+		+countinv("HDRocketAmmo")*BLOX_ROCKET
+		+countinv("DudRocquetteAmmo")*BLOX_ROCKET
+		+countinv("HEATAmmo")*BLOX_HEATROCKET
 
 		//full mags
-		+countinv("HDPistolMag")*10
-		+countinv("BossClip")*12
-		+countinv("ZM66RifleMags")*17
-		+countinv("HDCellPacks")*18
-		+countinv("HDCellPackEmpty")*18
-		+countinv("HDSMGMag")*18
-		+countinv("LiberatorMag")*21
+		+countinv("HDPistolMag")*BLOX_9MAG
+		+countinv("BossClip")*BLOX_776CLIP
+		+countinv("ZM66RifleMags")*BLOX_426MAG
+		+countinv("HDCellPacks")*BLOX_BATTERY
+		+countinv("HDCellPackEmpty")*BLOX_BATTERY
+		+countinv("HDSMGMag")*BLOX_9MAG30
+		+countinv("LiberatorMag")*BLOX_776MAG
 		;
 
 		A_SetInventory("Backpack",countinv("HDBackpack"));
