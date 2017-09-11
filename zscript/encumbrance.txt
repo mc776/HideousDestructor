@@ -42,10 +42,9 @@ const BLOX_BRONTOSHELLLOADED=BLOX_BRONTOSHELL*0.4;
 const BLOX_FRAG=BLOX_ROCKET*1.2;
 
 
-
 extend class HDPlayerPawn{
 	double CheckEncumbrance(){
-		if(!hd_carrylimit){
+		if(!deathmatch && !hd_carrylimit){
 			A_TakeInventory("Backpack");
 			return 0;
 		}
@@ -110,7 +109,10 @@ extend class HDPlayerPawn{
 				}else if(hdw is "BossRifle"){
 					blx+=175+countinv("BossMag")*BLOX_776_LOADED;
 				}
-				if(hdw==hdweapon(player.readyweapon))blox+=blx*0.6;
+				if(
+					hdw==lastweapon||
+					hdw==player.readyweapon
+				)blox+=blx*0.6;
 				else blox+=blx;
 			}
 		}
@@ -172,13 +174,13 @@ extend class HDPlayerPawn{
 
 		A_SetInventory("Backpack",countinv("HDBackpack"));
 		carrymax=
-			550+
-			countinv("PowerStrength")*200+
-			countinv("RegenBlues")*2+
-			countinv("RegenStims")*3+
+			360+
+			countinv("PowerStrength")*100+
+			countinv("RegenBlues")+
+			countinv("RegenStims")*2+
 			+countinv("HDBackpack")*100
 		;
-		return blox*1./carrymax;
+		return blox/carrymax;
 	}
 }
 

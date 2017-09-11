@@ -16,7 +16,7 @@ class HDPlayerPawn:PlayerPawn{
 
 	actor playercorpse;
 
-	name lastweapon;
+	weapon lastweapon;
 	bool barehanded;
 	
 	double overloaded;
@@ -386,7 +386,7 @@ class HDPlayerPawn:PlayerPawn{
 			||input & BT_JUMP
 		){
 			if(!barehanded){
-				if(player.readyweapon)lastweapon=player.readyweapon.getclassname();
+				if(player.readyweapon)lastweapon=player.readyweapon;
 				if(!countinv("NullWeapon"))A_GiveInventory("NullWeapon");
 				A_GiveInventory("NulledWeapon");
 				A_SelectWeapon("NullWeapon");
@@ -394,9 +394,9 @@ class HDPlayerPawn:PlayerPawn{
 		}else if(
 			player.readyweapon is "NullWeapon"
 		){
-			if(lastweapon&&countinv(lastweapon))A_SelectWeapon(lastweapon);
+			if(lastweapon&&lastweapon.owner==self)A_SelectWeapon(lastweapon.getclassname());
 			else A_SelectWeapon("Ring");
-		}
+		}else if(player.readyweapon is "Ring")lastweapon=null;
 
 		//display crosshair
 		if(
