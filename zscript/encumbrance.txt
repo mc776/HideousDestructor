@@ -134,19 +134,18 @@ extend class HDPlayerPawn{
 		(countinv("HDSecondPistol")?(30+countinv("HDSecondPistolLoaded")*BLOX_9MAG_LOADED):0)
 
 		//armour
-		+countinv("GreenArmourStored")*35
-		+countinv("BlueArmourStored")*55
-		+countinv("BlackArmourStored")*65
+		+countinv("PortableRadsuit")*50
+		+countinv("GreenArmourStored")*60
+		+countinv("BlueArmourStored")*80
+		+countinv("BlackArmourStored")*100
 
 		//usables
 		+countinv("HDIEDKit")*3
-		+countinv("SquadSummoner")*5
-		+countinv("PortableStimpack")*5
-		+countinv("PortableBerserkPack")*8
-		+countinv("PortableMedikit")*10
-		+countinv("PortableLiteAmp")*12
-		+countinv("PortableRadsuit")*25
-		+countinv("BluePotion")*8
+		+(countinv("PortableStimpack")+countinv("PortableBerserkPack"))*5
+		+countinv("SquadSummoner")*7
+		+countinv("BluePotion")*10
+		+countinv("PortableLiteAmp")*20
+		+countinv("PortableMedikit")*45
 
 		//loose/magged ambiguous ammo
 		+countinv("HDPistolAmmo")*BLOX_9
@@ -158,16 +157,14 @@ extend class HDPlayerPawn{
 		+countinv("HDShellAmmo")*BLOX_SHELL
 		+countinv("BrontornisRound")*BLOX_BRONTOSHELL
 		+countinv("HDFragGrenadeAmmo")*BLOX_FRAG
-		+countinv("HDRocketAmmo")*BLOX_ROCKET
-		+countinv("DudRocquetteAmmo")*BLOX_ROCKET
+		+(countinv("HDRocketAmmo")+countinv("DudRocquetteAmmo"))*BLOX_ROCKET
 		+countinv("HEATAmmo")*BLOX_HEATROCKET
 
 		//full mags
 		+countinv("HDPistolMag")*BLOX_9MAG
 		+countinv("BossClip")*BLOX_776CLIP
 		+countinv("ZM66RifleMags")*BLOX_426MAG
-		+countinv("HDCellPacks")*BLOX_BATTERY
-		+countinv("HDCellPackEmpty")*BLOX_BATTERY
+		+(countinv("HDCellPacks")+countinv("HDCellPackEmpty"))*BLOX_BATTERY
 		+countinv("HDSMGMag")*BLOX_9MAG30
 		+countinv("LiberatorMag")*BLOX_776MAG
 		;
