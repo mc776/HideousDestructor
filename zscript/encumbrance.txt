@@ -44,7 +44,7 @@ const BLOX_FRAG=BLOX_ROCKET*1.2;
 
 extend class HDPlayerPawn{
 	double CheckEncumbrance(){
-		if(!deathmatch && !hd_carrylimit){
+		if(!deathmatch && !hd_carrylimit && skill<5){
 			A_TakeInventory("Backpack");
 			return 0;
 		}
