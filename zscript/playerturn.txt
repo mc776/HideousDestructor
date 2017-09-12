@@ -12,10 +12,6 @@ extend class HDPlayerPawn{
 	void TurnCheck(){
 		UserCmd cmd = player.cmd;
 
-		//temporary variables
-		double anglechange=0;
-		double pitchchange=0;
-
 
 		//get input based on previous input
 		double yaw=deltaangle(lastangle,angle);
@@ -35,8 +31,11 @@ extend class HDPlayerPawn{
 		else if(height<40 && abs(yaw)>5){
 			yaw*=0.6;ptch*=0.6;
 		}
-		anglechange+=yaw;pitchchange-=ptch;
 
+
+		//temporary variables
+		double anglechange=yaw;
+		double pitchchange=ptch;
 
 
 		//get weapon size

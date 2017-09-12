@@ -221,8 +221,8 @@ class HDPlayerPawn:PlayerPawn{
 		if(player.turnticks){
 			player.turnticks--;
 			angle+=(180./TURN180_TICKS);
-		}else angle+=player.cmd.yaw*(360./65536.);
-		pitch=clamp(pitch+player.cmd.pitch*(360./65536.),player.minpitch,player.maxpitch);
+		}else angle+=iyaw*(360./65536.);
+		pitch=clamp(pitch-ipitch*(360./65536.),player.minpitch,player.maxpitch);
 
 
 		super.Tick();
