@@ -41,11 +41,11 @@ class HDDropArmour:ActionItem{
 			else if(countinv("BlueArmour"))arm="BlueArmour";
 			else if(countinv("GreenArmour"))arm="GreenArmour";
 			else{
-				class<Inventory> as=null;
+				class<Inventory> as="";
 				if(countinv("BlackArmourStored"))as="BlackArmourStored";
 				else if(countinv("BlueArmourStored"))as="BlueArmourStored";
 				else if(countinv("GreenArmourStored"))as="GreenArmourStored";
-				if(as)UseInventory(findinventory(as));
+				if(as!="")UseInventory(findinventory(as));
 				return;
 			}
 			int amt=countinv(arm);
