@@ -215,8 +215,7 @@ struct HDMath{
 	//mostly for seeing if we're playing D1 or D2
 	//HDMath.CheckLump("SHT2A0")
 	static bool CheckLump(string lumpname){
-		if(Wads.CheckNumForName(lumpname,wads.ns_sprites,-1,false)<0)return false;
-		return true;
+		return Wads.CheckNumForName(lumpname,wads.ns_sprites,-1,false)>=0;
 	}
 	//counts stuff
 	//HDMath.CountThinkers("IdleDummy")
