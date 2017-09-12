@@ -17,18 +17,20 @@ extend class HDPlayerPawn{
 		double pitchchange=0;
 
 		//get input
-		double yaw;
+		double yawraw;
 		if(player.turnticks){
 			player.turnticks--;
-			yaw=(180./TURN180_TICKS);
-		}else yaw=cmd.yaw*(360./65536.);
-		double ptch=cmd.pitch*(360./65536.);
+			yawraw=(180./TURN180_TICKS);
+		}else yawraw=cmd.yaw*(360./65536.);
+		double pitchraw=cmd.pitch*(360./65536.);
 
-		yaw=clamp(yaw,-360*5/35,360*5/35);
+		double yaw=clamp(yawraw,-360*5/35,360*5/35);
+		double ptch=clamp(pitchraw,-90/35,90/35);
 
 		//get prior angle and pitch
-		lastangle=angle;
-		lastpitch=pitch;
+		//no longer used here - see hdplayer.tick()
+//		lastangle=angle;
+//		lastpitch=pitch;
 
 
 
@@ -45,302 +47,305 @@ extend class HDPlayerPawn{
 
 
 
-		if(1){
-			//get weapon size
-			double amt=0;
-			int barrellength=0;
-			double barrelwidth=0;
-			int barreldepth=0;
-			let wp=HDWeapon(player.readyweapon);
-			if(wp && wp.gunmass>0){
-				amt=wp.gunmass;
-				barrellength=wp.barrellength;
-				barrelwidth=wp.barrelwidth;
-				barreldepth=wp.barreldepth;
-			}else if(wp is "Lumberjack"){
-				amt=5+
-					(countinv("LumberCell")||countinv("LumberEmptyCell")?1:0)
-				;
-				barrellength=26;
-				barrelwidth=1.;
-				barreldepth=2;
-			}else if(wp is "HDSMG"){
-				amt=5+
-					countinv("HDSMGLoaded")*0.02+
-					(countinv("HDSMGNoMag")?0:0.5)
-				;
-				barrellength=26;
-				barrelwidth=0.5;
-				barreldepth=1;
-			}else if(wp is "Hunter"){
-				amt=8+
-					countinv("ShotgunTube")*0.4+
-					countinv("ShotgunQuickAmmo")*0.08
-				;
-				barrellength=30;
-				barrelwidth=0.5;
-				barreldepth=2;
-			}else if(wp is "Slayer"){
-				amt=6+countinv("ShotgunQuickAmmo2")*0.06;
-				barrellength=26;
-				barrelwidth=1;
-				barreldepth=1;
-			}else if(wp is "ZM66Rifle" || wp is "ZM66SemiRifle"){
-				amt=7+countinv("ZM66Loaded")*0.03;
-				barrellength=25;
-				barrelwidth=0.5;
-				barreldepth=1;
-			}else if(wp is "ZM66GrenadeRifle"){
-				amt=8+
-					countinv("ZM66Loaded")*0.03+
-					countinv("ZM66GLoaded")
-				;
-				barrellength=28;
-				barrelwidth=1;
-				barreldepth=3;
-			}else if(wp is "Vulcanette"){
-				vulcanette vvv=vulcanette(wp);
-				if(vvv)amt=12+vvv.weaponstatus[1]<0?0:0.6;
-				for(int i=0;i<4;i++){
-					if(vvv.vulcmag[0]>=0)amt++;
-				}
-				barrellength=30;
-				barrelwidth=2;
-				barreldepth=4;
-			}else if(wp is "RocquetteLauncher"){
-				amt=10+
-					countinv("RocketMag")+
-					countinv("HEATLoaded")*2
-				;
-				barrellength=32;
-				barrelwidth=2.5;
-				barreldepth=5;
-			}else if(wp is "Blooper"){
-				amt=4+countinv("BloopChamber");
-				barrellength=24;
-				barrelwidth=1.6;
-				barreldepth=3;
-			}else if(wp is "LiberatorRifle"){
-				amt=9+
-					countinv("LiberatorLoaded")*0.1
-				;
-				barrellength=26;
-				barrelwidth=0.5;
-				barreldepth=1;
-			}else if(wp is "LiberatorGrenadeRifle"){
-				amt=10+
-					countinv("LiberatorLoaded")*0.02+
-					(countinv("LiberatorGrenadeChamber")?1:0)
-				;
-				barrellength=29;
-				barrelwidth=1;
-				barreldepth=3;
-			}else if(wp is "ThunderBuster"){
-				amt=10+
-					(countinv("PlasmaBattery")||countinv("PlasmaEmptyCell")?2:0)
-				;
-				barrellength=28;
-				barrelwidth=1.6;
-				barreldepth=3;
-			}else if(wp is "Brontornis"){
-				amt=6+countinv("BrontornisMag");
-				barrellength=24;
-				barrelwidth=1;
-				barreldepth=2;
-			}else if(wp is "BFG9k"){
-				amt=19+
-					(countinv("BFGLoaded")||countinv("BFGChamber")?1:0)
-				;
-				barrellength=32;
-				barrelwidth=3.5;
-				barreldepth=7;
-			}else if(wp is "BossRifle"){
-				amt=12;
-				barrellength=40;
-				barrelwidth=1;
-				barreldepth=2;
+		//get weapon size
+		double amt=0;
+		int barrellength=0;
+		double barrelwidth=0;
+		int barreldepth=0;
+		let wp=HDWeapon(player.readyweapon);
+		if(wp && wp.gunmass>0){
+			amt=wp.gunmass;
+			barrellength=wp.barrellength;
+			barrelwidth=wp.barrelwidth;
+			barreldepth=wp.barreldepth;
+		}else if(wp is "Lumberjack"){
+			amt=5+
+				(countinv("LumberCell")||countinv("LumberEmptyCell")?1:0)
+			;
+			barrellength=26;
+			barrelwidth=1.;
+			barreldepth=2;
+		}else if(wp is "HDSMG"){
+			amt=5+
+				countinv("HDSMGLoaded")*0.02+
+				(countinv("HDSMGNoMag")?0:0.5)
+			;
+			barrellength=26;
+			barrelwidth=0.5;
+			barreldepth=1;
+		}else if(wp is "Hunter"){
+			amt=8+
+				countinv("ShotgunTube")*0.4+
+				countinv("ShotgunQuickAmmo")*0.08
+			;
+			barrellength=30;
+			barrelwidth=0.5;
+			barreldepth=2;
+		}else if(wp is "Slayer"){
+			amt=6+countinv("ShotgunQuickAmmo2")*0.06;
+			barrellength=26;
+			barrelwidth=1;
+			barreldepth=1;
+		}else if(wp is "ZM66Rifle" || wp is "ZM66SemiRifle"){
+			amt=7+countinv("ZM66Loaded")*0.03;
+			barrellength=25;
+			barrelwidth=0.5;
+			barreldepth=1;
+		}else if(wp is "ZM66GrenadeRifle"){
+			amt=8+
+				countinv("ZM66Loaded")*0.03+
+				countinv("ZM66GLoaded")
+			;
+			barrellength=28;
+			barrelwidth=1;
+			barreldepth=3;
+		}else if(wp is "Vulcanette"){
+			vulcanette vvv=vulcanette(wp);
+			if(vvv)amt=12+vvv.weaponstatus[1]<0?0:0.6;
+			for(int i=0;i<4;i++){
+				if(vvv.vulcmag[0]>=0)amt++;  
+			}
+			barrellength=30;
+			barrelwidth=2;
+			barreldepth=4;
+		}else if(wp is "RocquetteLauncher"){
+			amt=10+
+				countinv("RocketMag")+
+				countinv("HEATLoaded")*2
+			;
+			barrellength=32;
+			barrelwidth=2.5;
+			barreldepth=5;
+		}else if(wp is "Blooper"){
+			amt=4+countinv("BloopChamber");
+			barrellength=24;
+			barrelwidth=1.6;
+			barreldepth=3;
+		}else if(wp is "LiberatorRifle"){
+			amt=9+
+				countinv("LiberatorLoaded")*0.1
+			;
+			barrellength=26;
+			barrelwidth=0.5;
+			barreldepth=1;
+		}else if(wp is "LiberatorGrenadeRifle"){
+			amt=10+
+				countinv("LiberatorLoaded")*0.02+
+				(countinv("LiberatorGrenadeChamber")?1:0)
+			;
+			barrellength=29;
+			barrelwidth=1;
+			barreldepth=3;
+		}else if(wp is "ThunderBuster"){
+			amt=10+
+				(countinv("PlasmaBattery")||countinv("PlasmaEmptyCell")?2:0)
+			;
+			barrellength=28;
+			barrelwidth=1.6;
+			barreldepth=3;
+		}else if(wp is "Brontornis"){
+			amt=6+countinv("BrontornisMag");
+			barrellength=24;
+			barrelwidth=1;
+			barreldepth=2;
+		}else if(wp is "BFG9k"){
+			amt=19+
+				(countinv("BFGLoaded")||countinv("BFGChamber")?1:0)
+			;
+			barrellength=32;
+			barrelwidth=3.5;
+			barreldepth=7;
+		}else if(wp is "BossRifle"){
+			amt=12;
+			barrellength=40;
+			barrelwidth=1;
+			barreldepth=2;
+		}
+
+		//inertia adjustments for other things
+		if(stunned){
+			amt=max(17,amt);
+		}else if(countinv("PowerStrength")||countinv("PowerInvulnerable")){
+			amt*=0.2;
+		}
+		if(countinv("WeaponBusy")){
+			barrellength=radius+2;
+			barrelwidth=2;
+			amt=min(amt*1.5,20);
+		}
+
+
+		//muzzle inertia
+
+		//how much to scale movement
+		double proportion=1-min(0.042*amt,0.99);
+		double proportion2=0.05*amt;
+		double proportion3=1-proportion*0.7;
+
+		//take the proportion and use that OR crouch+support, whichever is LESS
+		double yawcap=abs(yaw*proportion);
+		double ptchcap=abs(ptch*proportion);
+		anglechange=clamp(anglechange,-yawcap,yawcap);
+		pitchchange=clamp(pitchchange,-ptchcap,ptchcap);
+
+
+		//see if there's any change in velocity overall
+		vector3 muzzlevel=lastvel-vel;
+
+		//apply crouch/jump
+		double curheight=height;
+		muzzlevel.z-=(lastheight-curheight)*0.3;
+		lastheight=curheight;
+
+		//determine velocity-based horizontal drift
+		//how to tell if it is to left or right?
+		//rotate vector so that player is facing east
+		//the y value is what we need
+		muzzlevel.xy=rotatevector(muzzlevel.xy,-angle);
+
+		muzzledrift+=(muzzlevel.y,muzzlevel.z)*proportion2;
+
+
+		//NOW apply the drift!
+		muzzledrift+=(anglechange,pitchchange);
+		anglechange+=muzzledrift.x*proportion2;
+		pitchchange+=muzzledrift.y*proportion2;
+		muzzledrift*=proportion3;
+
+
+		//good old jitters!
+		//gotta do this after inertia and before collision,
+		//to keep this from clipping your gun into the geometry.
+		if(
+			beatmax<10||
+			fatigue>20||
+			bloodpressure>20||  
+			health<33
+		){
+			double jitter=0.3;
+			if(fatigue)jitter=clamp(0.01*fatigue,0.3,6.);
+			if(countinv("IsSupported"))jitter=0.05;
+			else if(health<20)jitter=1;
+			anglechange+=frandom(-jitter,jitter);
+			pitchchange+=frandom(-jitter,jitter);
+		}
+
+
+		//muzzle climb - gotta keep this here to make it subject to caps
+		pitchchange+=muzzleclimb1.y;
+		anglechange+=muzzleclimb1.x;
+		muzzleclimb1=muzzleclimb2;
+		muzzleclimb2=muzzleclimb3;
+		muzzleclimb3=muzzleclimb4;
+		muzzleclimb4=(0,0);
+
+
+		//weapon collision
+		if(!(player.cheats&CF_NOCLIP2 || player.cheats&CF_NOCLIP)){
+			//temporarily set attackzoffset
+			double azobak=attackzoffset;
+			vector3 posbak=pos;
+			vector3 posgunorigin=pos+(0,0,height-6);
+			attackzoffset=height*0.5-6;
+			vector3 posadj=(cos(angle+90),sin(angle+90),0)*barrelwidth; //starts to the LEFT
+			vector3 posadj2=(
+					-cos(angle)*cos(pitch+90),
+					-sin(angle)*cos(pitch+90),
+					-sin(pitch+90)
+				)*barreldepth;
+
+			//and now uh do stuff
+			actor muzpuf;
+			int stuff;
+			int muzhit=0;
+
+			double distleft=barrellength;;
+			double distright=barrellength;;
+			double disttop=barrellength;
+			double distbottom=barrellength;
+
+			//left
+			setxyz(posbak+posadj);
+			[muzpuf,stuff]=LineAttack(lastangle+anglechange,barrellength,
+				lastpitch+pitchchange,0,"none",
+				"MuzzleBlockerPuff",flags:LAF_NORANDOMPUFFZ
+			);
+			if(muzpuf){
+				distleft=(muzpuf.pos-(posgunorigin+posadj)).length();
+				muzpuf.destroy();
+			}else muzhit++;
+			//right
+			setxyz(posbak-posadj);
+			[muzpuf,stuff]=LineAttack(lastangle+anglechange,barrellength,
+				lastpitch+pitchchange,0,"none",
+				"MuzzleBlockerPuff",flags:LAF_NORANDOMPUFFZ
+			);
+			if(muzpuf){
+				distright=(muzpuf.pos-(posgunorigin-posadj)).length();
+				muzpuf.destroy();
+			}else muzhit++;
+
+			//top
+			setxyz(posbak);
+			[muzpuf,stuff]=LineAttack(lastangle+anglechange,barrellength,
+				lastpitch+pitchchange,0,"none",
+				"MuzzleBlockerPuff",flags:LAF_NORANDOMPUFFZ
+			);
+			if(muzpuf){
+				disttop=(muzpuf.pos-posgunorigin).length();
+				muzpuf.destroy();
+			}else muzhit++;
+			//bottom
+			setxyz(posbak+posadj2);
+			attackzoffset-=barreldepth;
+			[muzpuf,stuff]=LineAttack(lastangle+anglechange,barrellength,
+				lastpitch+pitchchange,0,"none",
+				"MuzzleBlockerPuff",flags:LAF_NORANDOMPUFFZ
+			);
+			if(muzpuf){
+				distbottom=(muzpuf.pos-(posgunorigin-(0,0,barreldepth))).length();
+				muzpuf.destroy();
+			}else muzhit++;
+			attackzoffset+=barreldepth;
+
+			//restore position
+			setxyz(posbak);
+
+			//set angles
+	
+			bool mvng;if(lastheight!=height || vel.length()<0.5)mvng=true;
+			bool hitsnd;
+			if(max(abs(anglechange),abs(pitchchange))>1)hitsnd=true;  
+
+			if(distleft<distright){
+				anglechange=max(distleft-barrellength,mvng?0:-4);
+			}else if(distleft>distright){
+				anglechange=min(barrellength-distright,mvng?0:4);
 			}
 
-			//inertia adjustments for other things
-			if(stunned){
-				amt=max(17,amt);
-			}else if(countinv("PowerStrength")||countinv("PowerInvulnerable")){
-				amt*=0.2;
-			}
-			if(countinv("WeaponBusy")){
-				barrellength=radius+2;
-				barrelwidth=2;
-				amt=min(amt*1.5,20);
+			if(disttop>distbottom){  
+				pitchchange=max(distbottom-barrellength,mvng?0:-4);
+			}else if(disttop<distbottom){
+				pitchchange=min(barrellength-disttop,mvng?0:4);
 			}
 
-			//muzzle inertia
-
-			//how much to scale movement
-			double proportion=1-min(0.042*amt,0.99);
-			double proportion2=0.05*amt;
-			double proportion3=1-proportion*0.7;
-
-			//take the proportion and use that OR crouch+support, whichever is LESS
-			double yawcap=abs(yaw*proportion);
-			double ptchcap=abs(ptch*proportion);
-			anglechange=clamp(anglechange,-yawcap,yawcap);
-			pitchchange=clamp(pitchchange,-ptchcap,ptchcap);
-
-
-			//see if there's any change in velocity overall
-			vector3 muzzlevel=lastvel-vel;
-
-			//apply crouch/jump
-			double curheight=height;
-			muzzlevel.z-=(lastheight-curheight)*0.3;
-			lastheight=curheight;
-
-			//determine velocity-based horizontal drift
-			//how to tell if it is to left or right?
-			//rotate vector so that player is facing east
-			//the y value is what we need
-			muzzlevel.xy=rotatevector(muzzlevel.xy,-angle);
-
-			muzzledrift+=(muzzlevel.y,muzzlevel.z)*proportion2;
-
-
-			//NOW apply the drift!
-			muzzledrift+=(anglechange,pitchchange);
-			anglechange+=muzzledrift.x*proportion2;
-			pitchchange+=muzzledrift.y*proportion2;
-			muzzledrift*=proportion3;
-
-
-			//good old jitters!
-			//gotta do this after inertia and before collision,
-			//to keep this from clipping your gun into the geometry.
-			if(
-				beatmax<10||
-				fatigue>20||
-				bloodpressure>20||
-				health<33
-			){
-				double jitter=0.3;
-				if(fatigue)jitter=clamp(0.01*fatigue,0.3,6.);
-				if(countinv("IsSupported"))jitter=0.05;
-				else if(health<20)jitter=1;
-				anglechange+=frandom(-jitter,jitter);
-				pitchchange+=frandom(-jitter,jitter);
+			if(!muzhit){
+				double blah=(barrellength-disttop)*0.02;
+				A_Recoil(blah);
 			}
 
 
-			//muzzle climb - gotta keep this here to make it subject to caps
-			pitchchange+=muzzleclimb1.y;
-			anglechange+=muzzleclimb1.x;
-			muzzleclimb1=muzzleclimb2;
-			muzzleclimb2=muzzleclimb3;
-			muzzleclimb3=muzzleclimb4;
-			muzzleclimb4=(0,0);
-
-
-			//weapon collision
-			if(!(player.cheats&CF_NOCLIP2 || player.cheats&CF_NOCLIP)){
-				//temporarily set attackzoffset
-				double azobak=attackzoffset;
-				vector3 posbak=pos;
-				vector3 posgunorigin=pos+(0,0,height-6);
-				attackzoffset=height*0.5-6;
-				vector3 posadj=(cos(angle+90),sin(angle+90),0)*barrelwidth; //starts to the LEFT
-				vector3 posadj2=(-cos(angle)*cos(pitch+90),-sin(angle)*cos(pitch+90),-sin(pitch+90))*barreldepth;
-	
-				//and now uh do stuff
-				actor muzpuf;
-				int stuff;
-				int muzhit=0;
-	
-				double distleft=barrellength;;
-				double distright=barrellength;;
-				double disttop=barrellength;
-				double distbottom=barrellength;
-	
-				//left
-				setxyz(posbak+posadj);
-				[muzpuf,stuff]=LineAttack(lastangle+anglechange,barrellength,
-					lastpitch+pitchchange,0,"none",
-					"MuzzleBlockerPuff",flags:LAF_NORANDOMPUFFZ
-				);
-				if(muzpuf){
-					distleft=(muzpuf.pos-(posgunorigin+posadj)).length();
-					muzpuf.destroy();
-				}else muzhit++;
-				//right
-				setxyz(posbak-posadj);
-				[muzpuf,stuff]=LineAttack(lastangle+anglechange,barrellength,
-					lastpitch+pitchchange,0,"none",
-					"MuzzleBlockerPuff",flags:LAF_NORANDOMPUFFZ
-				);
-				if(muzpuf){
-					distright=(muzpuf.pos-(posgunorigin-posadj)).length();
-					muzpuf.destroy();
-				}else muzhit++;
-	
-				//top
-				setxyz(posbak);
-				[muzpuf,stuff]=LineAttack(lastangle+anglechange,barrellength,
-					lastpitch+pitchchange,0,"none",
-					"MuzzleBlockerPuff",flags:LAF_NORANDOMPUFFZ
-				);
-				if(muzpuf){
-					disttop=(muzpuf.pos-posgunorigin).length();
-					muzpuf.destroy();
-				}else muzhit++;
-				//bottom
-				setxyz(posbak+posadj2);
-				attackzoffset-=barreldepth;
-				[muzpuf,stuff]=LineAttack(lastangle+anglechange,barrellength,
-					lastpitch+pitchchange,0,"none",
-					"MuzzleBlockerPuff",flags:LAF_NORANDOMPUFFZ
-				);
-				if(muzpuf){
-					distbottom=(muzpuf.pos-(posgunorigin-(0,0,barreldepth))).length();
-					muzpuf.destroy();
-				}else muzhit++;
-				attackzoffset+=barreldepth;
-	
-				//restore position
-				setxyz(posbak);
-	
-				//set angles
-		
-				bool mvng;if(lastheight!=height || vel.length()<0.5)mvng=true;
-				bool hitsnd;
-				if(max(abs(anglechange),abs(pitchchange))>1)hitsnd=true;
-	
-				if(distleft<distright){
-					anglechange=max(distleft-barrellength,mvng?0:-4);
-				}else if(distleft>distright){
-					anglechange=min(barrellength-distright,mvng?0:4);
-				}
-	
-				if(disttop>distbottom){
-					pitchchange=max(distbottom-barrellength,mvng?0:-4);
-				}else if(disttop<distbottom){
-					pitchchange=min(barrellength-disttop,mvng?0:4);
-				}
-	
-				if(!muzhit){
-					double blah=(barrellength-disttop)*0.02;
-					A_Recoil(blah);
-				}
-	
-	
-				//bump
-				if(muzhit>=4){
-					muzzlehit=false;
-				}else if(!muzzlehit){
-					if(hitsnd)A_PlaySound("weapons/rifleclick2",CHAN_AUTO,0.6);
-					muzzlehit=true;
-				}
-	
-				//reset attackzoffset and position
-				setxyz(posbak);
-				attackzoffset=azobak;
+			//bump
+			if(muzhit>=4){  
+				muzzlehit=false;
+			}else if(!muzzlehit){
+				if(hitsnd)A_PlaySound("weapons/rifleclick2",CHAN_AUTO,0.6);
+				muzzlehit=true;
 			}
+
+			//reset attackzoffset and position
+			setxyz(posbak);
+			attackzoffset=azobak;
 		}
 
 
@@ -350,15 +355,17 @@ extend class HDPlayerPawn{
 
 
 		//set everything and update old
-		A_SetAngle(angle+anglechange,SPF_INTERPOLATE);
-		A_SetPitch(pitch+pitchchange,SPF_FORCECLAMP|SPF_INTERPOLATE);
-//		angle+=anglechange;pitch+=pitchchange;
+		A_SetAngle(lastangle+anglechange,SPF_INTERPOLATE);
+		A_SetPitch(
+			clamp(lastpitch+pitchchange,player.minpitch,player.maxpitch),
+			SPF_INTERPOLATE
+		);
 
 
 		//feet angle
 		double fac=deltaangle(feetangle,angle);
 		if(player.onground && abs(fac)>(player.crouchfactor<0.7?30:50)){
-			vel+=rotatevector((0,fac>0?0.1:-0.1),angle);
+			vel+=rotatevector((0,fac>0?0.1:-0.1),angle);  
 			A_GiveInventory("IsMoving",2);
 			feetangle=angle;
 			PlayRunning();
@@ -366,21 +373,26 @@ extend class HDPlayerPawn{
 			//if on appropriate terrain, easier to quench a fire
 			if(player.crouchfactor<0.7){
 				int douse=2;
-				if(CheckLiquidTexture())douse=5;
+				//the below is equivalent to "if(CheckLiquidTexture())douse=5;"
+				//replicated because of the virtual subfunction processing problem
+				int lqlength=lq.size();
+				for(int i=0;i<lqlength;i++){
+					TextureID tx=TexMan.CheckForTexture(lq[i],TexMan.Type_Flat);
+					if (tx && floorpic==tx)douse=5;
+				}
 				A_GiveInventory("HDFireDouse",douse);
 			}
 		}
 
 		//move pivot point a little behind the player's view
-//		anglechange=HDMath.AngleChange(lastangle,angle);
 		anglechange=deltaangle(angle,lastangle);
 		if(zat-pos.z==0){
-			if(abs(anglechange)>1){    
+			if(abs(anglechange)>1){      
 				int dir=90;
 				if(anglechange<0) dir=-90;
 				trymove(self.pos.xy+(cos(angle+dir),sin(angle+dir))*0.8,false);
 			}
-			if(abs(pitchchange)>1 && -30<pitch<30){
+			if(abs(pitchchange)>1 && -30<pitch<30){  
 				trymove(self.pos.xy-(cos(angle)*pitchchange,
 					sin(angle)*pitchchange)*0.1,false);
 			}
@@ -402,7 +414,7 @@ extend class HDPlayerPawn{
 	bool standingonliquid;
 	bool CheckLiquidTexture(){
 		int lqlength=lq.size();
-		for (int i=0; i<lqlength; i++){
+		for(int i=0; i<lqlength; i++){
 			TextureID tx = TexMan.CheckForTexture(lq[i], TexMan.Type_Flat);
 			if (tx && floorpic == tx){
 				return true;

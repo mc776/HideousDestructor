@@ -214,6 +214,19 @@ class HDPlayerPawn:PlayerPawn{
 		if(player.readyweapon)GunHeatSmoke(player.readyweapon.getclassname());
 
 
+		//set pitch and angle based on raw input to be modified later
+		lastangle=angle;
+		lastpitch=pitch;
+		//move to raw result first to reduce lagjitters
+		if(multiplayer){
+			if(player.turnticks){
+				player.turnticks--;
+				angle+=(180./TURN180_TICKS);
+			}else angle+=player.cmd.yaw*(360./65536.);
+			pitch=clamp(pitch-player.cmd.pitch*(360./65536.),player.minpitch,player.maxpitch);
+		}
+
+
 		super.Tick();
 
 		//only do anything below this while the player is alive!
