@@ -36,7 +36,7 @@ class HDDropArmour:ActionItem{
 	states{
 	use:
 		TNT1 A 0{
-			name arm;
+			name arm="";
 			if(countinv("BlackArmour"))arm="BlackArmour";
 			else if(countinv("BlueArmour"))arm="BlueArmour";
 			else if(countinv("GreenArmour"))arm="GreenArmour";
@@ -195,7 +195,7 @@ class GreenArmourStored:ActionItem{
 				let onr=HDPlayerPawn(self);
 				if(onr)onr.stunned+=40;
 	
-				double qual;
+				double qual=0;
 				int stored=countinv("StoredArmour");
 				A_TakeInventory("StoredArmour");
 				if(invoker.missilename=="BlackArmour"){

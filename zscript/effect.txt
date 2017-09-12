@@ -484,9 +484,9 @@ class DistantQuaker:IdleDummy{
 				if(dist<=quakeradius){
 					let it=DistantQuaker(caller.spawn("DistantQuaker",players[i].mo.pos));
 					if(it){
-						if(dist<=dropoffrate) it.intensity=intensity;
+						if(dist<=dropoffrate)it.intensity=intensity;
 							else it.intensity=clamp(intensity-floor(dist/dropoffrate),1,9);
-						if(dist>minwaveradius) it.wave=true; else it.wave=false;  
+						if(dist>minwaveradius)it.wave=true;else it.wave=false;  
 						if(it.intensity<3)it.deathsound="null";
 							else it.deathsound="world/quake";
 						it.stamina=floor(dist/speed);

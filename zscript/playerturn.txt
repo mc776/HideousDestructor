@@ -416,7 +416,7 @@ extend class HDPlayerPawn{
 
 	//Muzzle climb!
 	void A_MuzzleClimb(vector2 mc1,vector2 mc2,vector2 mc3,vector2 mc4){
-		double mult;
+		double mult=1.;
 		if(countinv("IsSupported"))mult=0.2;
 		else if(countinv("IsMoving"))mult=1.6;
 		if(stunned)mult*=1.6;

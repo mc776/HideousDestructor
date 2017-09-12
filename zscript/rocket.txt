@@ -12,6 +12,7 @@ class GyroGrenade:SlowProjectile{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
+		fuze=0;primed=false;
 		A_ChangeVelocity(speed*cos(pitch),0,speed*sin(-pitch),CVF_RELATIVE);
 	}
 	states{

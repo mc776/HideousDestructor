@@ -90,10 +90,10 @@ extend class HDPlayerPawn{
 		// thrust applied to the movement varies with 'movefactor'.
 
 		if(cmd.forwardmove|cmd.sidemove){
-			double forwardmove,sidemove;
-			double bobfactor;
-			double friction, movefactor;
-			double fm, sm;
+			double forwardmove=0;double sidemove=0;
+			double bobfactor=0;
+			double friction=0;double movefactor=0;
+			double fm=0;double sm=0;
 
 			[friction, movefactor] = GetFriction();
 			bobfactor = friction < ORIG_FRICTION ? movefactor : ORIG_FRICTION_FACTOR;

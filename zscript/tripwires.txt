@@ -118,6 +118,7 @@ class GumAndString:IdleDummy{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
+		trapisset=false;
 
 		//and now a BIG FUCKING HACK to find some shit!
 		actor tm=spawn("TMChecker",pos);
@@ -131,7 +132,7 @@ class GumAndString:IdleDummy{
 
 				int sflr=stuckto.centerfloor();
 				int sceil=stuckto.centerceiling();
-				if(pos.z<sceil) stuckfloor=true;
+				if(pos.z<sceil)stuckfloor=true;else stuckfloor=false;
 
 				if(stuckfloor){
 					stucktoheight=sflr-pos.z;
@@ -178,7 +179,7 @@ class GumAndString:IdleDummy{
 				flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ
 			);
 			if(a){
-				bool carefulplayer;
+				bool carefulplayer=false;
 				let atpl=HDPlayerPawn(a.tracer);
 				if(
 					atpl && atpl!=master && atpl.runwalksprint<0
@@ -295,7 +296,7 @@ class TrippingFrag:FragP{
 
 				int sflr=stuckto.centerfloor();
 				int sceil=stuckto.centerceiling();
-				if(pos.z<sceil) stuckfloor=true;
+				if(pos.z<sceil)stuckfloor=true;else stuckfloor=false;
 
 				if(stuckfloor){
 					stucktoheight=sflr-pos.z;

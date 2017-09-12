@@ -120,6 +120,7 @@ class HDWeapon:Weapon{
 	//because weapons don't use proper "ammo" anymore for loaded items
 	virtual void InitializeWepStats(bool idfa=false){}
 	override void beginplay(){
+		for(int i=0;i<8;i++)weaponstatus[i]=0;
 		initializewepstats();
 		super.beginplay();
 	}

@@ -24,15 +24,15 @@ extend class HDActor{
 		);
 
 		//initialize things to be used in the iterator
-		int dist;
-		int dmg;
+		int dist=0;
+		int dmg=0;
 		vector3 orig=self.pos+(0,0,self.height*0.5);
-		actor its; //top
-		actor itr; //bottom
-		bool ontop;
-		double divdist;
-		double divmass;
-		double losmul;
+		actor its=null; //top
+		actor itr=null; //bottom
+		bool ontop=false;
+		double divdist=0;
+		double divmass=0;
+		double losmul=0;
 		if(!source){
 			if(target)source=target;
 			else if(master)source=master;

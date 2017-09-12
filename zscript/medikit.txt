@@ -72,6 +72,10 @@ class HDMedikitter:HDWoundFixer{
 	bool usedflesh;
 	int usedpatches;
 	actor usedon;
+	override void beginplay(){
+		usedflesh=false;useonother=false;usedpatches=0;usedon=null;
+		super.beginplay();
+	}
 	void patchwound(int amt,actor targ){
 		let slf=HDPlayerPawn(targ);
 		if(!slf)return;
@@ -448,7 +452,7 @@ class SelfBandage:HDWoundFixer{
 		}goto nope;
 	fire:
 		TNT1 A 0{
-			bool nope;
+			bool nope=false;
 			if(countinv("PortableRadsuit") && countinv("WornRadsuit")){
 				if(getcvar("hd_helptext"))A_Print("Take off your environment suit first!",2);
 				nope=true;
