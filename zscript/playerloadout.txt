@@ -182,12 +182,12 @@ class CustomLoadoutWeaponSelector:IdleDummy{ //GROSS! HACK!!!
 extend class HDPlayerPawn{
 	void GiveCustomLoadout(){
 		int ldt;int lda;
-		class<weapon> newwep="";
+		name newwep="";
 		for(int i=100;i>=0;i--){ //reverse order so top weapons are added last
 			ldt=getcvar(string.format("hd_load%i",i));
 			lda=max(0,getcvar(string.format("hd_load%ia",i)));
 
-			class<weapon> nw=NumForInv(ldt,lda);
+			name nw=NumForInv(ldt,lda);
 			if(nw!="")newwep=nw;
 		}
 		if(newwep!=""){
@@ -197,9 +197,9 @@ extend class HDPlayerPawn{
 			aa.master=self;
 		}
 	}
-	class<weapon> NumForInv(int num,int amt){
-		class<weapon> nw="";
-		if(!num||!amt)return null;
+	name NumForInv(int num,int amt){
+		name nw="";
+		if(!num||!amt)return "";
 		else if(num>=HDCONST_CUSTOMWEPOFFSET){ //weapons
 			num-=HDCONST_CUSTOMWEPOFFSET;
 			switch(num){
@@ -340,13 +340,13 @@ extend class HDPlayerPawn{
 			switch(num){
 				case 1:
 					A_TakeInventory("BlackArmour");A_TakeInventory("BlueArmour");
-					A_GiveInventory("GreenArmour",HDCONST_GREENARMOUR);break;
+					A_SetInventory("GreenArmour",HDCONST_GREENARMOUR);break;
 				case 2:
 					A_TakeInventory("BlackArmour");A_TakeInventory("GreenArmour");
-					A_GiveInventory("BlueArmour",HDCONST_BLUEARMOUR);break;
+					A_SetInventory("BlueArmour",HDCONST_BLUEARMOUR);break;
 				case 3:
 					A_TakeInventory("GreenArmour");A_TakeInventory("BlueArmour");
-					A_GiveInventory("BlackArmour",HDCONST_BLACKARMOUR);break;
+					A_SetInventory("BlackArmour",HDCONST_BLACKARMOUR);break;
 
 				case 4: A_GiveInventory("PortableMedikit",amt);break;
 				case 5: A_GiveInventory("PortableStimpack",amt);break;
@@ -384,6 +384,6 @@ extend class HDPlayerPawn{
 				default:break;
 			}
 		}
-		return null;
+		return "";
 	}
 }

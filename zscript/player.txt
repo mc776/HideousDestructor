@@ -214,6 +214,13 @@ class HDPlayerPawn:PlayerPawn{
 		if(player.readyweapon)GunHeatSmoke(player.readyweapon.getclassname());
 
 
+		//only do anything below this while the player is alive!
+		if(bkilled||health<1){
+			super.Tick();
+			return;
+		}
+
+
 		//set pitch and angle based on raw input to be modified later
 		lastangle=angle;
 		lastpitch=pitch;
@@ -227,8 +234,7 @@ class HDPlayerPawn:PlayerPawn{
 
 		super.Tick();
 
-		//only do anything below this while the player is alive!
-		if(bkilled||health<1)return;
+
 		HeartTicker();
 		if(inpain>0)inpain--;
 
