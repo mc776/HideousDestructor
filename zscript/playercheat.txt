@@ -37,13 +37,13 @@ extend class HDPlayerPawn{
 		return false;
 	}
 	override void CheatGive(string name, int amount){
-		Class<Inventory> type;
 		let player=self.player;
 		if(!player.mo||player.health<1)return;
 
 		if(cheatgivestatusailments(name,amount)) return;
 
 		//apply giveammo principles to HDAmmo
+		class<inventory> type;
 		if(name~=="ammo"){
 			if(hd_carrylimit)A_GiveInventory("Backpack");
 			for(int i=0;i<AllActorClasses.Size();++i){

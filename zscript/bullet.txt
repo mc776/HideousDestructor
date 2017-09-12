@@ -37,6 +37,7 @@ class HDBullet:HDActor{
 		maxstepheight 0;
 		missileheight 0; projectilekickback 20;
 		damagefunction(0);
+		hdbullet.distantsounder "";
 
 		mass 40; //40 426, 50 00, 80 776, 90 9mil, 600 40mm
 		speed 40;//accuracy 20;
@@ -44,7 +45,7 @@ class HDBullet:HDActor{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		if(distantsounder){
+		if(distantsounder!=""){
 			actor m=spawn(distantsounder,pos,ALLOW_REPLACE);
 			m.target=target;
 		}

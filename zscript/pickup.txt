@@ -165,6 +165,7 @@ class HDUPK:HDActor{
 		height 8;radius 8;
 		activesound "misc/i_pkup";
 		hdupk.pickupmessage "Picked something up.";
+		hdupk.pickuptype "";
 	}
 	override bool cancollidewith(actor other,bool passive){
 		return(bpushable || other is "userpickerupper");
@@ -186,7 +187,7 @@ class HDUPK:HDActor{
 		}
 	}
 	virtual void A_HDUPKGive(){
-		if(!pickuptype){
+		if(pickuptype==""){
 			setstatelabel("give");
 			return;
 		}

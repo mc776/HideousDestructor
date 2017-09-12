@@ -6,8 +6,6 @@
 extend class HDPlayerPawn{
 	void GiveBasics(){
 		if(!player)return;
-		class<weapon> curr;
-		if(player.readyweapon)curr=player.readyweapon.getclass();
 		A_GiveInventory("Ring");
 		A_GiveInventory("SelfBandage");
 		A_GiveInventory("HDFragGrenades");
@@ -184,24 +182,23 @@ class CustomLoadoutWeaponSelector:IdleDummy{ //GROSS! HACK!!!
 extend class HDPlayerPawn{
 	void GiveCustomLoadout(){
 		int ldt;int lda;
-		class<weapon> newwep;
+		class<weapon> newwep="";
 		for(int i=100;i>=0;i--){ //reverse order so top weapons are added last
 			ldt=getcvar(string.format("hd_load%i",i));
 			lda=max(0,getcvar(string.format("hd_load%ia",i)));
 
 			class<weapon> nw=NumForInv(ldt,lda);
-			if(nw)newwep=nw;
+			if(nw!="")newwep=nw;
 		}
-		if(newwep){
+		if(newwep!=""){
 			//GROSS! HACK!!!
-			actor a=spawn("CustomLoadoutWeaponSelector",pos);
-			let aa=CustomLoadoutWeaponSelector(a);
+			let aa=CustomLoadoutWeaponSelector(spawn("CustomLoadoutWeaponSelector",pos));
 			if(aa)aa.newwep=newwep;
 			aa.master=self;
 		}
 	}
 	class<weapon> NumForInv(int num,int amt){
-		class<weapon> nw;
+		class<weapon> nw="";
 		if(!num||!amt)return null;
 		else if(num>=HDCONST_CUSTOMWEPOFFSET){ //weapons
 			num-=HDCONST_CUSTOMWEPOFFSET;
