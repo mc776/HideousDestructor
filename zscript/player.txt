@@ -540,7 +540,6 @@ extend class HDHandlers{
 		let p=HDPlayerPawn(players[e.PlayerNumber].mo);
 		if(p){
 			p.levelreset();
-			if(!p.countinv("Ring"))p.GiveBasics();
 			setplayerlives(e.playernumber);
 			if(deathmatch)p.spawn("TeleFog",p.pos);
 		}
