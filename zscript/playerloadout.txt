@@ -21,26 +21,29 @@ extend class HDPlayerPawn{
 			A_GiveInventory("LiberatorZoom");
 		}
 		A_SetInventory("DERPMode",getcvar("hd_derpmode"));
-		if(countinv("HDSMGChamber"))
+		if(countinv("HDSMGChamber")){
 			A_SetInventory("SMGFullAuto",getcvar("hd_smgfiremode"));
+		}
 		if(getcvar("hd_pistauto")){
 			if(countinv("HDPistolFullAuto"))
 				A_GiveInventory("HDPistolFullAuto",2);
 			if(countinv("HDSecondPistolFullAuto"))
 				A_GiveInventory("HDSecondPistolFullAuto",2);
 		}
-		if(countinv("Hunter"))
+		if(countinv("Hunter")){
 			A_SetInventory("ShotgunAuto",getcvar("hd_huntauto"));
+		}
 		if(countinv("ZM66Chamber")>0){  
 			A_SetInventory("ZM66FullAuto",getcvar("hd_zmfiremode"));
 			A_SetInventory("ZM66ZoomDegree",getcvar("hd_zmzoom"));
 		}
-		if(countinv("Vulcanette"))
-			vulcanette vvv=vulcanette(findinventory("vulcanette"));
+		if(countinv("Vulcanette")){
+			let vvv=vulcanette(findinventory("vulcanette"));
 			if(vvv){
 				if(getcvar("hd_vulcsuper"))vvv.weaponstatus[0]|=VULCF_FAST;
 				if(getcvar("hd_vulczoom"))vvv.weaponstatus[2]=getcvar("hd_vulczoom");
 			}
+		}
 		if(countinv("RocquetteLauncher")){  
 			if(getcvar("hd_rlmode")==1){ //GL
 				A_GiveInventory("IsUsingRocketUnderslung");
