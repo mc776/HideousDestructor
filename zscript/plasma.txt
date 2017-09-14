@@ -20,7 +20,6 @@ class ThunderBuster:HDWeapon{
 	ready:
 		PLSG A 1{
 			A_SetCrosshair(21);
-			A_GiveInventory("IsWeaponReady");
 			A_WeaponReady(WRF_ALL);
 		}goto readyend;
 	fire:
@@ -116,9 +115,7 @@ class ThunderBuster:HDWeapon{
 			}
 		}goto nope;
 	firemode:
-		PLSG C 1 offset(1,32){
-			A_TakeInventory("IsWeaponReady");
-		}
+		PLSG C 1 offset(1,32)
 		PLSG C 2 offset(2,32);
 		PLSG C 1 offset(1,33);
 		PLSG C 2 offset(0,34);
@@ -154,7 +151,6 @@ class ThunderBuster:HDWeapon{
 	unmag:
 		PLSG A 2 offset(0,33){
 			A_SetCrosshair(21);
-			A_TakeInventory("IsWeaponReady");
 			A_MuzzleClimb(frandom(-1.2,-2.4),frandom(1.2,2.4));
 		}
 		PLSG A 3 offset(0,35);
@@ -314,7 +310,6 @@ class BeamBoltThrower:ActionItem{
 	states{
 	pickup:
 		TNT1 AA 0 A_FireProjectile("HDGunSmoker",0,0,0,-4);
-		TNT1 A 0 A_TakeInventory("IsWeaponReady");
 		TNT1 A 0 A_CustomRailgun(random(120,240),0,"","azure",RGF_SILENT|RGF_NOPIERCING|RGF_FULLBRIGHT,0,40.0,"HDExplosionBeam",0,0,65536,12,0.4,2.0,"",-4);
 		TNT1 AAAAAAAAAA 0 A_SpawnItemEx("HDThunderTrail",12,0,40,0,0,0,0,SXF_NOCHECKPOSITION);
 		TNT1 AAAAAAAAAA 0 A_SpawnItemEx("DistantShotgun",12,0,40,0,0,0,0,SXF_NOCHECKPOSITION);

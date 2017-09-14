@@ -338,7 +338,6 @@ extend class HDPlayerPawn{
 		---- A 0{
 			if(!random(0,127))oldwoundcount++;
 			if(beatcap>20)beatmax-=-random(1,2);
-			if(health<40)A_GiveInventory("IsHurt",1);
 		}
 		---- A 0 A_Jump(256,"see");
 	pain:
@@ -359,7 +358,6 @@ extend class HDPlayerPawn{
 				A_SetAngle(angle+random(-4,4),SPF_INTERPOLATE);
 				A_TakeInventory("PowerFrightener");
 				A_TakeInventory("NotShot");
-				if(health<40){A_GiveInventory("IsHurt");}
 				A_TakeInventory("SpiritualArmour",1);
 			}
 		}
@@ -371,7 +369,6 @@ extend class HDPlayerPawn{
 			if(beatmax>20)beatmax=max(beatmax-2,18);
 			A_SetBlend("00 00 00",0.8,40,"00 00 00");
 			A_TakeInventory("NotShot");
-			if(health<40){A_GiveInventory("IsHurt");}
 		}
 		#### G 3 A_Pain();
 		---- A 0 setstatelabel("spawn");

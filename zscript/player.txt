@@ -90,7 +90,6 @@ class HDPlayerPawn:PlayerPawn{
 		}
 		---- A 0{
 			if(getdistance(1,AAPTR_PLAYER_GETTARGET)<256) A_GiveInventory("EvadeNow",1,AAPTR_PLAYER_GETTARGET);
-			if(health>40) A_TakeInventory("IsHurt");
 			A_TakeInventory("IsMoving");
 		}
 		---- AAAAAA 5{
@@ -279,7 +278,6 @@ class HDPlayerPawn:PlayerPawn{
 			A_GiveInventory("PressingFireMode",1);A_GiveInventory("WeaponBusy");}
 		if(input&BT_USER4){
 			A_GiveInventory("PressingUnload",1);A_GiveInventory("WeaponBusy");}
-		if(countinv("WeaponBusy"))A_TakeInventory("IsWeaponReady");
 		if(height<40)A_GiveInventory("IsCrouching");
 		if(input&BT_SPEED)A_GiveInventory("IsSprinting");
 		if(runwalksprint>=0&&(fm||sm))A_GiveInventory("IsMoving");
