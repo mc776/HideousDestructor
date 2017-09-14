@@ -380,9 +380,11 @@ extend class HDPlayerPawn{
 				if(anglechange<0) dir=-90;
 				trymove(self.pos.xy-(cos(angle+dir),sin(angle+dir))*0.8,false);
 			}
-			if(abs(pitchchange)>1 && -30<pitch<30){  
-				trymove(self.pos.xy-(cos(angle)*pitchchange,
-					sin(angle)*pitchchange)*0.1,false);
+			int ptchch=abs(pitchchange);
+			if(ptchch>1 && -30<pitch<30){  
+				trymove(self.pos.xy-(cos(angle)*ptchch,
+					sin(angle)*ptchch)*0.1,false);
+				PlayRunning();
 			}
 		}
 	}
