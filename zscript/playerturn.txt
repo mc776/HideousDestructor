@@ -12,18 +12,15 @@ extend class HDPlayerPawn{
 	void TurnCheck(){
 		UserCmd cmd = player.cmd;
 
-
 		//get input based on previous input
 		double yaw=iyaw;
 		double ptch=-ipitch;
-
 
 		//reduced turning while supported.
 		if(
 			cmd.buttons&BT_USE&&
 			countinv("IsSupported")&&
-			!countinv("IsMoving")&&
-			abs(yaw)<8
+			!countinv("IsMoving")
 		){
 			yaw*=0.1;ptch*=0.1;
 		}
@@ -381,7 +378,7 @@ extend class HDPlayerPawn{
 			if(abs(anglechange)>1){      
 				int dir=90;
 				if(anglechange<0) dir=-90;
-				trymove(self.pos.xy+(cos(angle+dir),sin(angle+dir))*0.8,false);
+				trymove(self.pos.xy-(cos(angle+dir),sin(angle+dir))*0.8,false);
 			}
 			if(abs(pitchchange)>1 && -30<pitch<30){  
 				trymove(self.pos.xy-(cos(angle)*pitchchange,
