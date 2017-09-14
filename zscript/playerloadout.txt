@@ -165,10 +165,11 @@ class DoomguyLoadout:InvReset{
 */
 const HDCONST_CUSTOMWEPOFFSET=200;
 class CustomLoadout:InventoryFlag{
-	override void attachtoowner(actor other){
-		let hdp=HDPlayerPawn(other);
-		if(hdp)hdp.GiveCustomLoadout();
-		goawayanddie();
+	override void tick(){
+		if(owner){
+			let hdp=HDPlayerPawn(owner);
+			if(hdp)hdp.GiveCustomLoadout();
+		}destroy();
 	}
 }
 class CustomLoadoutWeaponSelector:IdleDummy{ //GROSS! HACK!!!
@@ -177,7 +178,9 @@ class CustomLoadoutWeaponSelector:IdleDummy{ //GROSS! HACK!!!
 	spawn:
 		TNT1 A 1;
 		TNT1 A 0{
-			if(master)master.A_SelectWeapon(newwep,SWF_SELECTPRIORITY);
+			if(master){
+				master.A_SelectWeapon(newwep,SWF_SELECTPRIORITY);
+			}
 		}stop;
 	}
 }
@@ -195,8 +198,10 @@ extend class HDPlayerPawn{
 		if(newwep!=""){
 			//GROSS! HACK!!!
 			let aa=CustomLoadoutWeaponSelector(spawn("CustomLoadoutWeaponSelector",pos));
-			if(aa)aa.newwep=newwep;
-			aa.master=self;
+			if(aa){
+				aa.newwep=newwep;
+				aa.master=self;
+			}
 		}
 	}
 	name NumForInv(int num,int amt){
