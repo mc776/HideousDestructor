@@ -93,8 +93,8 @@ class Ring:HDWeapon replaces Fist{
 			int iy=onr.iyaw;
 			int ip=onr.ipitch;
 			if(abs(ip)>abs(iy))iy=-ip;
-			if(iy>0)iy*=0.01;
-			else if(iy<0)iy*=0.02;
+			if(iy>0)iy*=100;
+			else if(iy<0)iy*=200;
 			dmg+=min(abs(iy),dmg*2);
 
 			//need to be well grounded
@@ -115,10 +115,10 @@ class Ring:HDWeapon replaces Fist{
 				)
 			)
 		){
-			if(abs(onr.iyaw)>100){
+			if(abs(onr.iyaw)>0.5){
 				punchee.A_SetAngle(punchee.angle-onr.iyaw*0.01,SPF_INTERPOLATE);
 			}
-			if(abs(onr.ipitch)>100){
+			if(abs(onr.ipitch)>0.5){
 				punchee.A_SetPitch(punchee.angle+onr.ipitch*0.01,SPF_INTERPOLATE);
 			}
 		}

@@ -19,9 +19,9 @@ actor ZM66Rifle:HDWeapon{
 	ready:
 		RIFG A 1{
 			if(
-				(countinv("ZM66Heat")>HDCONST_ZM66COOKOFF)  
-				&&(!countinv("ZM66BrokenRound"))
-				&&(countinv("ZM66Chamber"))
+				countinv("ZM66Heat")>HDCONST_ZM66COOKOFF
+				&&!countinv("ZM66BrokenRound")
+				&&countinv("ZM66Chamber")
 			){
 				setweaponstate("cookoff");
 				return;

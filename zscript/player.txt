@@ -200,8 +200,8 @@ class HDPlayerPawn:PlayerPawn{
 		input=player.cmd.buttons;
 		fm=player.cmd.forwardmove;
 		sm=player.cmd.sidemove;
-		iyaw=player.cmd.yaw;
-		ipitch=player.cmd.pitch;
+		iyaw=player.cmd.yaw*(360./65536.);
+		ipitch=player.cmd.pitch*(360./65536.);
 
 		int gender=player.getgender();
 		if(!gender){A_GiveInventory("IsMale");A_TakeInventory("IsFemale");}
@@ -219,7 +219,6 @@ class HDPlayerPawn:PlayerPawn{
 			return;
 		}
 
-
 		//set pitch and angle based on raw input to be modified later
 		lastangle=angle;
 		lastpitch=pitch;
@@ -227,11 +226,13 @@ class HDPlayerPawn:PlayerPawn{
 		if(player.turnticks){
 			player.turnticks--;
 			angle+=(180./TURN180_TICKS);
-		}else angle+=iyaw*(360./65536.);
-		pitch=clamp(pitch-ipitch*(360./65536.),player.minpitch,player.maxpitch);
+		}else angle+=iyaw;
+		pitch=clamp(pitch-ipitch,player.minpitch,player.maxpitch);
+
 
 
 		super.Tick();
+
 
 
 		HeartTicker();
