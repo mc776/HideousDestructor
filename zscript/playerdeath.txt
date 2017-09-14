@@ -80,7 +80,8 @@ extend class HDHandlers{
 		eee.A_TakeInventory("WoundCount");
 
 		//transfer fires to corpse
-		if(hde)actor pc=hde.playercorpse;
+		actor pc=null;
+		if(hde)pc=hde.playercorpse;
 		HDF.TransferFire(players[e.playernumber].mo,pc);
 
 		if(fraglimit && !deathmatch){

@@ -198,9 +198,11 @@ class HDGrenadeToss:ActionItem{
 			grenade.pitch=pitch;grenade.angle=angle;
 			grenade.fuze=countinv("fragtimer");
 
-			if(player)let wp=HDFragGrenades(player.readyweapon);
-			if(wp){
-				grenade.vel+=SwingThrow()*gforce;
+			if(player){
+				let wp=HDFragGrenades(player.readyweapon);
+				if(wp){
+					grenade.vel+=SwingThrow()*gforce;
+				}
 			}
 			grenade.a_changevelocity(cos(pitch)*gforce*0.6,0,-sin(pitch)*gforce*0.6,CVF_RELATIVE);
 			A_TakeInventory("fragtimer");
