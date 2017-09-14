@@ -173,18 +173,6 @@ class CustomLoadout:InventoryFlag{
 		}destroy();
 	}
 }
-class CustomLoadoutWeaponSelector:IdleDummy{ //GROSS! HACK!!!
-	class<weapon> newwep;
-	states{
-	spawn:
-		TNT1 A 1;
-		TNT1 A 0{
-			if(master){
-				master.A_SelectWeapon(newwep,SWF_SELECTPRIORITY);
-			}
-		}stop;
-	}
-}
 extend class HDPlayerPawn{
 	void GiveCustomLoadout(){
 		int ldt;int lda;
@@ -196,13 +184,9 @@ extend class HDPlayerPawn{
 			name nw=NumForInv(ldt,lda);
 			if(nw!="")newwep=nw;
 		}
-		if(newwep!=""){
-			//GROSS! HACK!!!
-			let aa=CustomLoadoutWeaponSelector(spawn("CustomLoadoutWeaponSelector",pos));
-			if(aa){
-				aa.newwep=newwep;
-				aa.master=self;
-			}
+		if(player && newwep!=""){
+			player.pendingweapon=weapon(findinventory(newwep));
+			return;
 		}
 	}
 	name NumForInv(int num,int amt){
