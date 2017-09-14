@@ -42,9 +42,11 @@ extend class HDPlayerPawn{
 
 		if(cheatgivestatusailments(name,amount)) return;
 
+		bool allthings=(name~=="all"||name~=="everything");
+
 		//apply giveammo principles to HDAmmo
 		class<inventory> type;
-		if(name~=="ammo"){
+		if(allthings||name~=="ammo"){
 			if(hd_carrylimit)A_GiveInventory("Backpack");
 			for(int i=0;i<AllActorClasses.Size();++i){
 				type=(class<Inventory>)(AllActorClasses[i]);
@@ -63,7 +65,7 @@ extend class HDPlayerPawn{
 		}
 
 		//just work around armour
-		if(name~=="armor"||name~=="armour"){
+		if(allthings||name~=="armor"||name~=="armour"){
 			A_GiveInventory("BlackArmour",HDCONST_BLACKARMOUR);
 			A_TakeInventory("GreenArmour");
 			A_TakeInventory("BlueArmour");
@@ -71,19 +73,11 @@ extend class HDPlayerPawn{
 			return;
 		}
 
-		//pistol hack part 1
-		int p1auto=countinv("HDPistolFullAuto");
-		int p2auto=countinv("HDSecondPistolFullAuto");
-		if(name~=="weapons"||name~=="all"||name~=="everything"){
-			p1auto=max(p1auto,1);
-			p2auto=max(p2auto,1);
-		}
-
 		//super call
 		super.cheatgive(name,amount);
 
 		//load weapons that use variables instead of ammo types
-		if(name~=="ammo"){
+		if(allthings||name~=="ammo"){
 			thinkeriterator it=thinkeriterator.create("HDWeapon");
 			actor hdw;
 			while(
@@ -97,11 +91,11 @@ extend class HDPlayerPawn{
 			}
 		}
 
-		//pistol hack part 2
-		inventory ppp=findinventory("HDPistolFullAuto");
-		if(ppp)ppp.amount=p1auto;
-		ppp=findinventory("HDSecondPistolFullAuto");
-		if(ppp)ppp.amount=p2auto;
+		//pistol hack
+		if(allthings||name~=="weapons"){
+			A_SetInventory("HDPistolFullAuto",max(1,countinv("HDPistolFullAuto")));
+			A_SetInventory("HDSecondPistolFullAuto",max(1,countinv("HDSecondPistolFullAuto")));
+		}
 
 		//clean up some stuff
 		if(!hd_carrylimit)A_TakeInventory("backpack");

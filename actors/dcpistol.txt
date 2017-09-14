@@ -446,17 +446,10 @@ ACTOR HDSMGChamber:Ammo
 
 
 // ------------------------------------------------------------
-//   Pistol
+// Pistol
 // ------------------------------------------------------------
-
-actor HDPistolFullAuto:Ammo{
-	+inventory.untossable ammo.backpackamount 0
-	inventory.maxamount 2 ammo.backpackmaxamount 2
-}
-actor HDSecondPistolFullAuto:Ammo{
-	+inventory.untossable ammo.backpackamount 0
-	inventory.maxamount 2 ammo.backpackmaxamount 2
-}
+actor HDPistolFullAuto:InventoryFlag{inventory.maxamount 2}
+actor HDSecondPistolFullAuto:HDPistolFullAuto{}
 actor HDPistol:HDZPistol
 {
 	game Doom
