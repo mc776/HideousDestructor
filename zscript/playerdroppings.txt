@@ -27,3 +27,53 @@ class HDDropOne:ActionItem{
 		}fail;
 	}
 }
+
+
+class HDBlursphere:Inventory{
+	override void DoEffect(){
+		owner.bshadow=true;
+		hdplayerpawn(owner).nocrosshair=10;
+		if(
+			owner.vel==(0,0,0)&&
+			owner.player&&
+			!owner.player.cmd.pitch&&
+			!owner.player.cmd.yaw&&
+			(!owner.player.cmd.buttons||owner.player.cmd.buttons==BT_CROUCH)
+		){
+			owner.A_SetRenderStyle(0,Style_Translucent);
+			owner.binvisible=true;
+		}else{
+			owner.A_SetRenderStyle(1,STYLE_Fuzzy);
+			owner.binvisible=false;
+		}
+		stamina--;
+		if(stamina<1){
+			EndEffect();
+			destroy();
+		}
+	}
+	override void OwnerDied(){
+		EndEffect();
+	}
+	void EndEffect(){
+		if(!owner)return;
+		owner.binvisible=false;
+		owner.bshadow=false;
+		owner.A_SetRenderStyle(1,STYLE_Normal);
+	}
+	default{
+		+countitem +visibilitypulse +floatbob +nogravity
+		+inventory.alwayspickup +inventory.bigpowerup
+		inventory.maxamount 1;
+		stamina 35*60;
+		renderstyle "translucent";alpha 0.4;
+		inventory.pickupmessage "$GOTINVIS";
+	}
+	states{
+	spawn:
+		PINS ABCD 6 bright;
+		loop;
+	}
+}
+
+
