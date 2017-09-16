@@ -105,7 +105,6 @@ class HDPlayerPawn:PlayerPawn{
 					muzzleclimb2.y+=0.05;
 					muzzleclimb3.y+=0.05;
 					A_PlaySound("weapons/rifleclick2",CHAN_WEAPON,0.3);
-//					A_PrintBold("THE GUN IS GOOD");
 				}else A_TakeInventory("IsSupported");
 			}else if(countinv("WeaponBusy"))A_TakeInventory("IsSupported");
 		}
@@ -200,8 +199,6 @@ class HDPlayerPawn:PlayerPawn{
 		input=player.cmd.buttons;
 		fm=player.cmd.forwardmove;
 		sm=player.cmd.sidemove;
-		iyaw=player.cmd.yaw*(360./65536.);
-		ipitch=player.cmd.pitch*(360./65536.);
 
 		int gender=player.getgender();
 		if(!gender){A_GiveInventory("IsMale");A_TakeInventory("IsFemale");}
@@ -218,16 +215,6 @@ class HDPlayerPawn:PlayerPawn{
 			super.Tick();
 			return;
 		}
-
-		//set pitch and angle based on raw input to be modified later
-		lastangle=angle;
-		lastpitch=pitch;
-		//move to raw result first to reduce lagjitters
-		if(player.turnticks){
-			player.turnticks--;
-			angle+=(180./TURN180_TICKS);
-		}else angle+=iyaw;
-		pitch=clamp(pitch-ipitch,player.minpitch,player.maxpitch);
 
 
 
