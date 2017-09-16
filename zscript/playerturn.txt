@@ -153,6 +153,8 @@ extend class HDPlayerPawn{
 		//inertia adjustments for other things
 		if(stunned){
 			amt=max(17,amt);
+		}else if(hd_noturninertia){
+			amt=0;
 		}else if(countinv("PowerStrength")||countinv("PowerInvulnerable")){
 			amt*=0.2;
 		}

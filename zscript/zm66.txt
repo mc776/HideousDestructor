@@ -152,11 +152,9 @@ actor ZM66Rifle:HDWeapon{
 	chamber:
 		RIFG B 2 offset(0,32){
 			if(!countinv("ZM66Loaded")){setweaponstate("nope");}
-			if(!random(0,
-				2000
-				-countinv("ZM66FullAuto")***
-				-countinv("ZM66JailbrokenMag")*5
-				)
+			if(random(0,2000)<
+				countinv("ZM66FullAuto")***
+				+countinv("ZM66JailbrokenMag")*5
 			){
 				setweaponstate("jam");
 				return;
