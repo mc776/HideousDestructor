@@ -3,7 +3,7 @@
 // ------------------------------------------------------------
 class BFG9K:HDWeapon{
 	default{
-		weapon.selectionorder 700;
+		weapon.selectionorder 91;
 		weapon.slotnumber 7;
 		weapon.kickback 200;
 		weapon.ammotype "BFGChamber";
@@ -126,7 +126,7 @@ class BFG9K:HDWeapon{
 		}
 		BFGG B 3{
 			invoker.weaponstatus[5]--;
-			A_PlaySound("weapons/plasidle",CHAN_AUTO);
+			A_PlaySound("weapons/plasidle",random(5,6));
 			BFG9k.Spark(self,1,height-10);
 			if(invoker.weaponstatus[5]<1){
 				invoker.weaponstatus[5]=0;
