@@ -84,7 +84,7 @@ extend class HDPlayerPawn{
 			player.turnticks--;
 			angle+=(180./TURN180_TICKS);
 		}else angle+=cmd.yaw*(360./65536.);
-		pitch=clamp(pitch-cmd.yaw*(360./65536.),player.minpitch,player.maxpitch);
+		pitch=clamp(pitch-cmd.pitch*(360./65536.),player.minpitch,player.maxpitch);
 
 
 		player.onground = (pos.z <= floorz) || bOnMobj || bMBFBouncer || (player.cheats & CF_NOCLIP2);
