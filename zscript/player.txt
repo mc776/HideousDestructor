@@ -217,6 +217,11 @@ class HDPlayerPawn:PlayerPawn{
 			return;
 		}
 
+		//set pitch and angle based on raw input to be modified later
+		//DO NOT use these with MovePlayer
+		iyaw=player.cmd.yaw*(360./65536.);
+		ipitch=player.cmd.pitch*(360./65536.);
+
 
 
 		super.Tick();
@@ -486,6 +491,8 @@ class HDPlayerPawn:PlayerPawn{
 		oldfm=fm;
 		oldsm=sm;
 		lastvel=vel;
+		lastangle=angle;
+		lastpitch=pitch;
 
 		oldinput=input;
 	}

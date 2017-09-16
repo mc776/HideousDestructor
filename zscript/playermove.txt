@@ -79,19 +79,12 @@ extend class HDPlayerPawn{
 		let player = self.player;
 		UserCmd cmd = player.cmd;
 
-
-		//set pitch and angle based on raw input to be modified later
-		iyaw=player.cmd.yaw*(360./65536.);
-		ipitch=player.cmd.pitch*(360./65536.);
-		lastangle=angle;
-		lastpitch=pitch;
-
 		//move to raw result first to reduce lagjitters
 		if(player.turnticks){
 			player.turnticks--;
 			angle+=(180./TURN180_TICKS);
-		}else angle+=iyaw;
-		pitch=clamp(pitch-ipitch,player.minpitch,player.maxpitch);
+		}else angle+=cmd.yaw*(360./65536.);
+		pitch=clamp(pitch-cmd.yaw*(360./65536.),player.minpitch,player.maxpitch);
 
 
 		player.onground = (pos.z <= floorz) || bOnMobj || bMBFBouncer || (player.cheats & CF_NOCLIP2);
