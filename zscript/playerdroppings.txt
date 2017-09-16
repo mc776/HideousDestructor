@@ -29,6 +29,7 @@ class HDDropOne:ActionItem{
 }
 
 
+//experimental, ignore
 class HDBlursphere:Inventory{
 	override void DoEffect(){
 		owner.bshadow=true;
@@ -40,9 +41,18 @@ class HDBlursphere:Inventory{
 			!owner.player.cmd.yaw&&
 			(!owner.player.cmd.buttons||owner.player.cmd.buttons==BT_CROUCH)
 		){
-			owner.A_SetRenderStyle(0,Style_Translucent);
-			owner.binvisible=true;
+			if(!bjustattacked){
+				owner.A_SetRenderStyle(0,Style_Translucent);
+				owner.binvisible=true;
+				actor aaa=spawn("idledummy",pos);
+				aaa.health=10;
+				aaa.bshootable=true;
+				aaa.A_AlertMonsters(0,AMF_TARGETEMITTER);
+				aaa.stamina=10;
+				bjustattacked=true;
+			}
 		}else{
+			bjustattacked=false;
 			owner.A_SetRenderStyle(1,STYLE_Fuzzy);
 			owner.binvisible=false;
 		}

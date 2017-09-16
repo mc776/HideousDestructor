@@ -1,18 +1,14 @@
 //-------------------------------------------------------------------------------------------
-//
 // The player menu
-//
 //-------------------------------------------------------------------------------------------
 
-OptionValue "Gender"
-{
+OptionValue "Gender"{
 	0, "He"
 	1, "She"
 	2, "It"
 }
 
-OptionValue "Autoaim"
-{
+OptionValue "Autoaim"{
 	0, "Never"
 	1, "Very low"
 	2, "Low"
@@ -46,6 +42,11 @@ OptionValue "DERPModes"{
 	1, "Ambush"
 	2, "Patrol"
 	3, "Follow"
+}
+OptionValue "TurnInertia"{
+	0, "Normal"
+	1, "All Disabled"
+	2, "Accelerate Only"
 }
 
 
@@ -90,7 +91,7 @@ AddOptionMenu GameplayOptions{
 	Option "No bleeding in all skill levels","hd_nobleed","YesNo"
 	Slider "Killer barrel spawn rate","hd_killerbarrels",0,100,5,0
 	Option "Only 3 movement speeds in multiplayer","hd_3speed","YesNo"
-	Option "Disable weapon inertia","hd_noturninertia","YesNo"
+	Option "Weapon inertia","hd_noturninertia","TurnInertia"
 	Command "Reset all HD server settings","hd_clearscv"
 
 	StaticText " "

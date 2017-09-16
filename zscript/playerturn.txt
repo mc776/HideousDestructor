@@ -153,7 +153,7 @@ extend class HDPlayerPawn{
 		//inertia adjustments for other things
 		if(stunned){
 			amt=max(17,amt);
-		}else if(hd_noturninertia){
+		}else if(hd_noturninertia==1){
 			amt=0;
 		}else if(countinv("PowerStrength")||countinv("PowerInvulnerable")){
 			amt*=0.2;
@@ -166,18 +166,18 @@ extend class HDPlayerPawn{
 
 
 		//muzzle inertia
-
 		//how much to scale movement
 		double proportion=1-min(0.042*amt,0.99);
 		double proportion2=0.05*amt;
 		double proportion3=1-proportion*0.7;
 
 		//take the proportion and use that OR crouch+support, whichever is LESS
-		double yawcap=abs(yaw*proportion);
-		double ptchcap=abs(ptch*proportion);
-		anglechange=clamp(anglechange,-yawcap,yawcap);
-		pitchchange=clamp(pitchchange,-ptchcap,ptchcap);
-
+		if(hd_noturninertia==2)proportion2*=0.1;else{
+				double yawcap=abs(yaw*proportion);
+				double ptchcap=abs(ptch*proportion);
+				anglechange=clamp(anglechange,-yawcap,yawcap);
+				pitchchange=clamp(pitchchange,-ptchcap,ptchcap);
+		}
 
 		//see if there's any change in velocity overall
 		vector3 muzzlevel=lastvel-vel;
