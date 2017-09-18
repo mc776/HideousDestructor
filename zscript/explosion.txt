@@ -27,6 +27,7 @@ extend class HDActor{
 		int dist=0;
 		int dmg=0;
 		vector3 orig=self.pos+(0,0,self.height*0.5);
+		actor it=null;
 		actor its=null; //top
 		actor itr=null; //bottom
 		bool ontop=false;
@@ -50,7 +51,7 @@ extend class HDActor{
 				(hurtspecies || (itt.thing.species!=source.species))
 			){
 
-				actor it=itt.thing;
+				it=itt.thing;
 				int dist=distance3d(it);
 				int ithalfheight=it.height*0.5;
 				if(!dist || dist<(it.radius,it.radius,ithalfheight).length()){
@@ -84,6 +85,7 @@ extend class HDActor{
 						A_Immolate(it,target,immolateamount);
 					}
 				}
+				//push
 				if(it && losmul>0 && dist<=pushradius && it.bshootable && !it.bdontthrust){
 					vector3 push=(it.pos-self.pos)*divdist
 						*clamp(pushamount-clamp(dist-fullpushradius,0,dist),0,pushamount);
@@ -96,6 +98,7 @@ extend class HDActor{
 					}
 					it.vel+=push;
 				}
+				//blast damage
 				if(it && losmul && dist<=blastradius && (it.bshootable||it.bvulnerable)){
 					if(dist>fullblastradius){
 						dmg=clamp(dist-fullblastradius,0,dist);
@@ -104,6 +107,7 @@ extend class HDActor{
 					dmg*=losmul;
 					it.DamageMobj(self,source,dmg,blastdamagetype,DMG_THRUSTLESS,0);
 				}
+				//frag damage
 				if(it && losmul && dist<=fragradius && (it.bsolid || it.bshootable)){
 					A_Face(it);
 					if(
@@ -168,6 +172,7 @@ extend class HDActor{
 						}
 					}
 				}
+				//gibbing
 				if(it && losmul && dist<=gibradius && it.bcorpse && it.bshootable){
 					it.a_giveinventory("sawgib",gibamount-dist);
 					for(int i=0;i<gibamount;i+=3){
