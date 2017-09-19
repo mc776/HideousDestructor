@@ -135,7 +135,8 @@ extend class HDActor{
 							//don't kill Godzilla with firecracker
 							dfl=clamp(dfl,1,fragradius*2);
 
-							double dvld=1/dvl; //used multiple times
+							double dvld=0; //used multiple times
+							if(dvl)dvld=1/dvl;
 
 							//if inside, double max damage on this guy only
 							if(dvl>dfl){  
@@ -149,16 +150,16 @@ extend class HDActor{
 							//SO MUCH BLOOD
 							A_FaceVector(dv);
 							name bld="FragPuff";
-							if(!it.bnoblood)bld=it.bloodtype;
-							for(int i=0;i<dmg;i+=15){
+							if(!it.bnoblood&&it.bloodtype)bld=it.bloodtype;
+							for(int i=0;i<dmg;i+=8){
 								double xymod=frandom(1,4)*dvld;
 								it.A_SpawnItemEx(bld,
-									random(1,it.radius),
+									random(-1,it.radius),
 									random(-it.radius,it.radius)*0.5,
 									random(4,it.height),
 									it.vel.x-dv.x*xymod,
 									it.vel.y-dv.y*xymod,
-									it.vel.z+frandom(1,7),
+									it.vel.z+frandom(1,4),
 									-self.angle,SXF_USEBLOODCOLOR|SXF_ABSOLUTEANGLE|
 									SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION
 								);

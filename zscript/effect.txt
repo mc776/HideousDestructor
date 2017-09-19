@@ -528,22 +528,24 @@ class DistantQuaker:IdleDummy{
 //SO MUCH BLOOD
 class BloodSplatSilent:HDPuff{
 	default{
-		alpha 0.8;gravity 0.7;
+		alpha 0.8;gravity 0.3;scale 0.7;
 
-		hdpuff.startvelz 2;
-		hdpuff.fadeafter 4;
-		hdpuff.decel 0.9;
-		hdpuff.fade 0.8;
-		hdpuff.grow 0.06;
+		hdpuff.startvelz 1;
+		hdpuff.fadeafter 0;
+		hdpuff.decel 0.87;
+		hdpuff.fade 0.9;
+		hdpuff.grow 0.03;
 		hdpuff.minalpha 0.1;
-	}
-	override void postbeginplay(){
-		super.postbeginplay();
-		A_ChangeVelocity(-0.4,0,frandom(0.1,0.4),CVF_RELATIVE);
 	}
 	states{
 	spawn:
-		BLUD ABC 4;wait;
+		BLUD ABC 4{
+			if(floorz==z){
+//				actor aaa=spawn("HDBloodTrailFloor",pos); //maybe???
+//				if(aaa){aaa.scale=scale;aaa.alpha=alpha;}
+				destroy();
+			}
+		}wait;
 	}
 }
 class BloodSplat:BloodSplatSilent replaces Blood{
