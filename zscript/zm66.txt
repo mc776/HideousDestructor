@@ -5,8 +5,6 @@ const HDCONST_ZM66COOKOFF=21;
 actor ZM66Rifle:HDWeapon{
 	default{
 		weapon.selectionOrder 20;
-		weapon.ammotype1 "ZM66Loaded";
-		weapon.ammotype2 "ZM66RifleMags";
 		weapon.slotnumber 4;
 		inventory.pickupsound "misc/w_pkup";
 		inventory.pickupmessage "You got the assault rifle!";
@@ -19,35 +17,47 @@ actor ZM66Rifle:HDWeapon{
 		super.tick();
 		drainheat(6,12);
 	}
+	action void brokenround(){
+		if(!(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBERBROKEN)){
+			int rnd=1;
+			int sq=invoker.weaponstatus[ZM66S_AUTO];
+			if(sq)rnd+=sq**;
+			rnd-=invoker.weaponstatus[ZM66S_MAG]/2; //int, leave it as division
+			if(random(0,2000)<rnd){
+				invoker.weaponstatus[ZM66S_FLAGS]|=ZM66F_CHAMBERBROKEN;
+			}
+		}return invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBERBROKEN;
+	}
 	states{
 	ready:
 		RIFG A 1{
 			if(
-				countinv("ZM66Heat")>HDCONST_ZM66COOKOFF  
-				&&!countinv("ZM66BrokenRound")
-				&&countinv("ZM66Chamber")
+				invoker.weaponstatus[ZM66S_HEAT]>HDCONST_ZM66COOKOFF    
+				!(invoker.weaponstatus[0]&ZM66F_CHAMBERBROKEN)
+				&&invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBER
 			){
 				setweaponstate("cookoff");
 				return;
 			}else{
 				A_WeaponReady(WRF_ALL);
-				A_TakeInventory("ZM66Ratchet");
+				if(invoker.weaponstatus[ZM66S_AUTO]>2)invoker.weaponstatus[ZM66S_AUTO]=2;  
 				A_GiveInventory("NotShot",1);
 			}
 
-			//delete this after updating weaponstatus
+			//delete this after updating invoker.weaponstatus
 			if(countinv("ZM66JailbrokenMag"))A_SetInventory(
-				"ZM66RoundCounter",random(10,99)
+				"ZM66RoundCounter",random(10,99);
 			);
 			else A_SetInventory(
-				"ZM66RoundCounter",countinv("ZM66Loaded")+countinv("ZM66Chamber")
+				"ZM66RoundCounter",invoker.weaponstatus[ZM66S_MAG]
+				+(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBER>0);  
 			);
 		}goto readyend;
 	firemode:
-		RIFG A 0 A_JumpIfInventory("ZM66GLMode",1,"abadjust");
+		RIFG A 0 A_JumpIf(invoker.weaponstatus[0]&ZM66F_GLMODE,"abadjust");
 		RIFG A 1{
-			if(countinv("ZM66FullAuto")==2)A_TakeInventory("ZM66FullAuto");
-			else A_GiveInventory("ZM66FullAuto",1);
+			if(invoker.weaponstatus[ZM66S_AUTO]>=2)invoker.weaponstatus[ZM66S_AUTO]=0;  
+			else invoker.weaponstatus[ZM66S_AUTO]++;
 			A_WeaponReady(WRF_NONE);
 		}goto nope;
 	abadjust:
@@ -57,28 +67,31 @@ actor ZM66Rifle:HDWeapon{
 			if (countinv("PressingFire")||countinv("PressingAltfire")){
 				setweaponstate("abclick");
 			}else if(countinv("PressingZoom")){
-				A_TakeInventory("AirburstCount");
+				invoker.weaponstatus[ZM66S_AIRBURST]=-1;
 				setweaponstate("nope");
 			}else if(countinv("PressingFireMode"))setweaponstate("abadjust");
 			setweaponstate("nope");
 		}
 	abclick:
 		RIFG A 0{
-			if (countinv("PressingFire")>0){A_GiveInventory("AirburstCount",1);}
-			else if (countinv("PressingAltFire")>0){A_TakeInventory("AirburstCount",1);}
+			if(countinv("PressingFire"))invoker.weaponstatus[ZM66S_AIRBURST]++;
+			else invoker.weaponstatus[ZM66S_AIRBURST]--;
 			setweaponstate("abadjust");
 		}
 
 	select0:
-		RIFG A 0 A_TakeInventory("ZM66GLMode");
+		RIFG A 0 {invoker.weaponstatus[0]&=~ZM66F_GLMODE;}
 		RIFG A 0 A_JumpIfInventory("ZM66GrenadeRifle",1,"select0big");
 		goto select0small;
 	deselect0:
 		RIFG A 0{
 			if(
-				countinv("ZM66Heat")>HDCONST_ZM66COOKOFF    
-				&&!countinv("ZM66BrokenRound")
-				&&(countinv("ZM66Loaded")||countinv("ZM66Chamber"))
+				invoker.weaponstatus[ZM66S_HEAT]>HDCONST_ZM66COOKOFF      
+				&&!(invoker.weaponstatus[0]&ZM66F_CHAMBERBROKEN)
+				&&(
+					invoker.weaponstatus[ZM66S_MAG]||
+					invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBER
+				)
 			){
 				if(countinv("ZM66GrenadeRifle")){A_DropInventory("ZM66GrenadeRifle");}
 				if(countinv("ZM66SemiRifle")){A_DropInventory("ZM66SemiRifle");}
@@ -92,13 +105,25 @@ actor ZM66Rifle:HDWeapon{
 			A_Light1();
 			HDFlashAlpha(-16);
 			A_PlaySound("weapons/rifle",CHAN_WEAPON);
-			A_ZoomFactor(0.99-0.01*countinv("ZM66Ratchet"),ZOOM_INSTANT|ZOOM_NOSCALETURNING);
+			A_ZoomFactor(1.01-0.01*invoker.weaponstatus[ZM66S_AUTO],ZOOM_INSTANT|ZOOM_NOSCALETURNING);
 			A_MuzzleClimb(
 				-0.2,-0.3,
 				-frandom(0.4,1.4),-frandom(1.3,2.6)
 			);
-			A_GiveInventory("ZM66Shoot");
-			A_TakeInventory("ZM66Chamber",1);
+
+			//shoot the bullet
+			//copypaste any changes to spawnshoot as well!
+			actor bbb=spawn("HDBullet426",pos+(0,0,height-8));
+			bbb.target=self;bbb.vel+=vel;
+			double brnd=invoker.weaponstatus[ZM66S_HEAT];
+			if(brnd>12.){  
+				bbb.angle=angle+frandom(-brnd,brnd)*0.1;
+				bbb.pitch=pitch+frandom(-brnd,brnd)*0.1;
+				bbb.speed-=brnd*10.;
+			}
+
+			invoker.weaponstatus[ZM66S_FLAGS]&=~ZM66F_CHAMBER;
+			invoker.weaponstatus[ZM66S_HEAT]+=random(2,4);
 			A_AlertMonsters();
 		}
 		RIFF A 0 A_ZoomFactor(1.0,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
@@ -106,19 +131,19 @@ actor ZM66Rifle:HDWeapon{
 
 
 	fire:
-		RIFG A 0 A_JumpIfInventory("ZM66GLMode",1,"FireFrag");
-		RIFG A 2{if(countinv("ZM66FullAuto"))A_SetTics(3);}
+		RIFG A 0 A_JumpIf(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_GLMODE,"FireFrag");
+		RIFG A 2{if(invoker.weaponstatus[ZM66S_AUTO])A_SetTics(3);}
 		goto shootgun;
 	hold:
-		RIFG A 0 A_JumpIfInventory("ZM66GLMode",1,"FireFrag");
-		RIFG A 0 A_JumpIfInventory("ZM66Ratchet",0,"nope");
-		RIFG A 0 A_JumpIfInventory("ZM66FullAuto",1,"shootgun");
+		RIFG A 0 A_JumpIf(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_GLMODE,"FireFrag");
+		RIFG A 0 A_JumpIf(invoker.weaponstatus[ZM66S_AUTO]>=4,"nope");
+		RIFG A 0 A_JumpIf(invoker.weaponstatus[ZM66S_AUTO],"shootgun");
 	althold:
 		---- A 1{
 			if(
-				countinv("ZM66Heat")>HDCONST_ZM66COOKOFF    
-				&& !countinv("ZM66BrokenRound")
-				&& countinv("ZM66Chamber")
+				invoker.weaponstatus[ZM66S_HEAT]>HDCONST_ZM66COOKOFF      
+				&&!(invoker.weaponstatus[0]&ZM66F_CHAMBERBROKEN)
+				&&invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBER
 			)setweaponstate("cookoff");
 			else A_WeaponReady(WRF_NOFIRE);
 		}
@@ -127,8 +152,8 @@ actor ZM66Rifle:HDWeapon{
 	jam:
 		RIFG B 1 offset(-1,36){
 			A_PlaySound("weapons/rifleclick");
-			A_GiveInventory("ZM66BrokenRound",1);
-			A_TakeInventory("ZM66Chamber",1);
+			invoker.weaponstatus[0]|=ZM66F_CHAMBERBROKEN;
+			invoker.weaponstatus[ZM66S_FLAGS]&=~ZM66F_CHAMBER;
 		}
 		RIFG B 1 offset(1,30) A_PlaySound("weapons/rifleclick",7);
 		goto nope;
@@ -137,42 +162,45 @@ actor ZM66Rifle:HDWeapon{
 		RIFG A 1{
 			if(
 				//can neither shoot nor chamber
-				(countinv("ZM66BrokenRound")>0)    
-				||(countinv("ZM66Chamber")+countinv("ZM66Loaded")<1)
+				invoker.weaponstatus[0]&ZM66F_CHAMBERBROKEN
+				&&!(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBER)
+				&&!invoker.weaponstatus[ZM66S_MAG]
 			){
 				setweaponstate("nope");
-			}else if(!countinv("ZM66Chamber")){
+			}else if(!(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBER)){
 				//no shot but can chamber
 				setweaponstate("chamber_premanual");
 			}else{
 				A_GunFlash();
-				if(countinv("ZM66FullAuto")==2)A_GiveInventory("ZM66Ratchet");
+				if(invoker.weaponstatus[ZM66S_AUTO]>=2)invoker.weaponstatus[ZM66S_AUTO]++;  
 			}
 		}
 	chamber:
 		RIFG B 2 offset(0,32){
-			if(!countinv("ZM66Loaded")){setweaponstate("nope");}
-			if(random(0,2000)<
-				countinv("ZM66FullAuto")***
-				+countinv("ZM66JailbrokenMag")*5
-			){
+			if(invoker.weaponstatus[ZM66S_MAG]<1){
+				setweaponstate("nope");
+				return;
+			}
+			if(brokenround()){
 				setweaponstate("jam");
 				return;
 			}
-			if(countinv("ZM66Loaded")){
-				A_TakeInventory("ZM66Loaded",1);
-				A_GiveInventory("ZM66Chamber",1);
+			if(invoker.weaponstatus[ZM66S_MAG]%100>0){  
+				invoker.weaponstatus[ZM66S_MAG]--;
+				invoker.weaponstatus[ZM66S_FLAGS]|=ZM66F_CHAMBER;
 			}else{
-				A_PlaySound("weapons/rifleclick",5);
+				A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
 			}
-			if(!countinv("ZM66FullAuto"))A_SetTics(1);
-			else if(countinv("ZM66FullAuto")==2)A_SetTics(0);
+			if(!invoker.weaponstatus[ZM66S_AUTO])A_SetTics(1);
+			else if(invoker.weaponstatus[ZM66S_AUTO]>1)A_SetTics(0);
 
+			//DELETE ONCE STATUSBAR UPDATED
 			if(countinv("ZM66JailbrokenMag")){
 				A_SetInventory("ZM66RoundCounter",random(10,99));
 			}else{
 				A_GiveInventory("ZM66RoundCounter",
-					countinv("ZM66Loaded")+countinv("ZM66Chamber")
+					invoker.weaponstatus[ZM66S_MAG]
+					+(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBER>0)  
 				);
 			}
 		}
@@ -186,14 +214,14 @@ actor ZM66Rifle:HDWeapon{
 			A_GiveInventory("IsMoving",5);
 			if(
 				(countinv("PressingReload")||countinv("PressingUnload"))	//trying to detach
-				&&(!countinv("ZM66NoMag")||countinv("ZM66Loaded"))	//something to detach
+				&&(invoker.weaponstatus[ZM66S_MAG]>=0)	//something to detach  
 			){
 				A_SpawnItemEx("HD4mMag",
 					cos(pitch)*8,0,height-10-8*sin(pitch),
 					vel.x,vel.y,vel.z,0,
 					SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
 				);
-				A_GiveInventory("ZM66NoMag");
+				invoker.weaponstatus[ZM66S_MAG]=-1;
 			}
 			else if(countinv("PressingAltfire")){
 				A_Gunflash("nadeflash");
@@ -214,17 +242,17 @@ actor ZM66Rifle:HDWeapon{
 		RIFG A 0{
 			A_GiveInventory("JustUnloading");
 			if(
-				countinv("ZM66GLMode")
+				invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_GLMODE
 			){
 				setweaponstate("unloadgrenade");
 			}
 			else if(
-				!countinv("ZM66NoMag")
+				invoker.weaponstatus[ZM66S_MAG]>=0  
 			){
 				setweaponstate("unloadmag");
 			}
 			else if(
-				countinv("ZM66Chamber")
+				invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBER
 			){
 				setweaponstate("unloadchamber");
 			}
@@ -233,13 +261,14 @@ actor ZM66Rifle:HDWeapon{
 	reload:
 		RIFG A 0{
 			if(	//full mag, no jam, not unload-only - why hit reload at all?
-				(countinv("ZM66BrokenRound")<1)
-				&&(countinv("ZM66Loaded")>=50)    
-				&&(countinv("JustUnloading")<1)
+				!(invoker.weaponstatus[0]&ZM66F_CHAMBERBROKEN)
+				&& invoker.weaponstatus[ZM66S_MAG]%100==50
+				&& !countinv("JustUnloading")
 			){
 				setweaponstate("nope");
 			}else if(	//if jammed, treat as unloading
-				(countinv("ZM66NoMag")+countinv("ZM66BrokenRound")==2)
+				invoker.weaponstatus[ZM66S_MAG]<0
+				&& invoker.weaponstatus[0]&ZM66F_CHAMBERBROKEN
 			){
 				A_GiveInventory("JustUnloading",1);
 				setweaponstate("unloadchamber");
@@ -252,11 +281,11 @@ actor ZM66Rifle:HDWeapon{
 		RIFG A 1 offset(-8,37);
 		RIFG B 2 offset(-11,39){
 			if(	//no mag, skip unload
-				countinv("ZM66NoMag") && !countinv("ZM66Loaded")
+				invoker.weaponstatus[ZM66S_MAG]<0
 			){
 				setweaponstate("magout");
 			}
-			if(countinv("ZM66BrokenRound"))A_GiveInventory("JustUnloading");
+			if(invoker.weaponstatus[0]&ZM66F_CHAMBERBROKEN)A_GiveInventory("JustUnloading");
 			A_SetPitch(pitch-0.3,SPF_INTERPOLATE);
 			A_SetAngle(angle-0.3,SPF_INTERPOLATE);
 			A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
@@ -271,25 +300,25 @@ actor ZM66Rifle:HDWeapon{
 				(
 					!countinv("PressingUnload")&&!countinv("PressingReload")
 				)||(
-					(countinv("ZM66Loaded")<50)
-					&&(countinv("FourMilAmmo")>AmmoCap("FourMilAmmo")-countinv("ZM66Loaded"))    
+					(invoker.weaponstatus[ZM66S_MAG]<50)
+					&&(countinv("FourMilAmmo")>AmmoCap("FourMilAmmo")-invoker.weaponstatus[ZM66S_MAG])      
 				)||(
-					(countinv("ZM66Loaded")>49)    
+					(invoker.weaponstatus[ZM66S_MAG]>49)      
 					&&(A_JumpIfInventory("ZM66RifleMags",0,"null"))
-				)||(!countinv("ZM66Loaded"))
+				)||(!invoker.weaponstatus[ZM66S_MAG])
 			){
 				A_SpawnItemEx("HD4mMag",12,0,height-12,1,0,-1,0,SXF_SETTARGET);
 				A_SetTics(1);
 			}else{
 				A_PlaySound("weapons/pocket",CHAN_WEAPON);
-				if(countinv("ZM66Loaded")>=50)A_GiveInventory("ZM66RifleMags",1);    
+				if(invoker.weaponstatus[ZM66S_MAG]>=50)A_GiveInventory("ZM66RifleMags",1);      
 				else{
-					A_GiveInventory("FourMilAmmo",countinv("ZM66Loaded"));
+					A_GiveInventory("FourMilAmmo",invoker.weaponstatus[ZM66S_MAG]);
 					A_Log("Reloading a 4.26 UAC Standard magazine into another firearm without authorization is a breach of the Volt End User License Agreement.",true);
 				}
-				A_TakeInventory("ZM66Loaded");
+				invoker.weaponstatus[ZM66S_MAG]=-1;
 			}
-			A_GiveInventory("ZM66NoMag");
+			invoker.weaponstatus[ZM66S_MAG]=-1;
 		}
 	magout:
 		RIFG B 0{
@@ -308,16 +337,13 @@ actor ZM66Rifle:HDWeapon{
 		}
 		---- A 2{
 			if(countinv("ZM66RifleMags")){
-				A_GiveInventory("ZM66Loaded",50);
+				invoker.weaponstatus[ZM66S_MAG]=50;
 				A_TakeInventory("ZM66RifleMags",1,TIF_NOTAKEINFINITE);
-				A_TakeInventory("ZM66JailbrokenMag");
 			}else{
 				int lod=min(random(1,50),countinv("FourMilAmmo"));
-				A_GiveInventory("ZM66Loaded",lod);
+				invoker.weaponstatus[ZM66S_MAG]=lod+100;
 				A_TakeInventory("FourMilAmmo",lod,TIF_NOTAKEINFINITE);
-				A_GiveInventory("ZM66JailbrokenMag");
 			}
-			A_TakeInventory("ZM66NoMag");
 		}
 		RIFG B 8 offset(-15,45)A_PlaySound("weapons/rifleload",CHAN_WEAPON);
 		RIFG B 1 offset(-14,44)A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
@@ -332,10 +358,14 @@ actor ZM66Rifle:HDWeapon{
 		RIFG A 4 offset(-17,49) A_Log("Reloading a 4.26 UAC Standard magazine into another firearm without auth--\cgFUCK YOURSELF.\c- Sincerely, management.",true);
 	chamber_manual:
 		RIFG A 4 offset(-15,43){
-			if(!countinv("ZM66Chamber")){
+			if(
+				!(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBER)
+				&& invoker.weaponstatus[ZM66S_MAG]%100>0
+			){
 				A_PlaySound("weapons/rifleclick");
-				A_TakeInventory("ZM66Loaded",1);
-				A_GiveInventory("ZM66Chamber",1);
+				invoker.weaponstatus[ZM66S_MAG]--;
+				invoker.weaponstatus[ZM66S_FLAGS]|=ZM66F_CHAMBER;
+				brokenround();
 			}else setweaponstate("reloadend");
 		}
 		RIFG B 4 offset(-14,45);
@@ -358,18 +388,18 @@ actor ZM66Rifle:HDWeapon{
 		RIFG A 2 offset(-16,42) A_MuzzleClimb(frandom(-0.4,0.4),frandom(-0.4,0.4));
 		RIFG A 0{
 			if(
-				countinv("ZM66Chamber")
-				&&!countinv("ZM66BrokenRound")
+				invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBER
+				&&!(invoker.weaponstatus[0]&ZM66F_CHAMBERBROKEN)
 			){
 				A_SpawnItemEx("ZM66DroppedRound",0,0,20,
 					random(4,7),random(-2,2),random(-2,1),0,
 					SXF_NOCHECKPOSITION
 				);
-				A_TakeInventory("ZM66Chamber");
+				invoker.weaponstatus[ZM66S_FLAGS]&=~ZM66F_CHAMBER;
 				A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
 			}else if(!random(0,4)){
-				A_TakeInventory("ZM66BrokenRound");
-				A_TakeInventory("ZM66Chamber");
+				invoker.weaponstatus[0]&=~ZM66F_CHAMBERBROKEN;
+				invoker.weaponstatus[ZM66S_FLAGS]&=~ZM66F_CHAMBER;
 				A_PlaySound("weapons/rifleclick");
 				for(int i=0;i<3;i++)A_SpawnItemEx("TinyWallChunk",0,0,20,
 					random(4,7),random(-2,2),random(-2,1),0,SXF_NOCHECKPOSITION
@@ -378,14 +408,15 @@ actor ZM66Rifle:HDWeapon{
 		}goto reloadend;
 
 	nadeflash:
-		RIFG A 0 A_JumpIfInventory("ZM66GLoaded",1,1);
+		RIFG A 0 A_JumpIf(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_GRENADELOADED,1);
 		stop;
 		RIFG A 2{
+			A_SetInventory("AirburstCount",invoker.weaponstatus[ZM66S_AIRBURST]);
 			A_SpawnItemEx("GyroGrenade",0,0,height-6,
 				vel.x,vel.y,vel.z,0,
 				SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
 			);
-			A_TakeInventory("ZM66GLoaded");
+			invoker.weaponstatus[ZM66S_FLAGS]&=~ZM66F_GRENADELOADED;
 			A_PlaySound("weapons/grenadeshot",CHAN_WEAPON);
 			A_ZoomFactor(0.99,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
 		}
@@ -400,15 +431,10 @@ actor ZM66Rifle:HDWeapon{
 
 	altfire:
 		RIFG A 0{
-			A_TakeInventory("AirburstCount");
-			if(countinv("ZM66GLMode"))A_TakeInventory("ZM66GLMode");
-			else A_GiveInventory("ZM66GLMode");
+			invoker.weaponstatus[ZM66S_AIRBURST]=-1;
+			invoker.weaponstatus[ZM66S_FLAGS]^=ZM66F_GLMODE;
 		}goto toggleend;
 	zoom:
-		RIFG A 0{
-			if(countinv("ZM66Zoom"))A_TakeInventory("ZM66Zoom");
-			else A_GiveInventory("ZM66Zoom");
-		}
 	toggleend:
 		RIFG A 1 offset(0,34){
 			A_SetCrosshair(21);
@@ -419,7 +445,6 @@ actor ZM66Rifle:HDWeapon{
 		RIFG A 1 A_WeaponReady(WRF_NOFIRE);
 		RIFG A 0{
 			if(countinv("PressingFire")||countinv("PressingAltfire")){
-				A_GiveInventory("ZM66Zoom");
 				setweaponstate("zoomclick");
 			}else if(countinv("PressingZoom")){
 				setweaponstate("zoomadjust");
@@ -427,8 +452,9 @@ actor ZM66Rifle:HDWeapon{
 		}
 	zoomclick:
 		RIFG A 0{
-			if(countinv("PressingFire"))A_GiveInventory("ZM66ZoomDegree",1);
-			else if(countinv("PressingAltFire"))A_TakeInventory("ZM66ZoomDegree",1);
+			if(countinv("PressingFire"))invoker.weaponstatus[ZM66S_ZOOM]++;
+			else invoker.weaponstatus[ZM66S_ZOOM]--;
+			invoker.weaponstatus[ZM66S_ZOOM]=clamp(invoker.weaponstatus[ZM66S_ZOOM],0,2);
 		}
 	zoomclicked:
 		RIFG A 1{
@@ -442,7 +468,7 @@ actor ZM66Rifle:HDWeapon{
 	altreload:
 		RIFG A 0{
 			if(
-				!countinv("ZM66GLoaded")
+				!(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_GRENADELOADED)
 				&&countinv("HDRocketAmmo")
 			)setweaponstate("unloadgrenade");
 		}goto nope;
@@ -460,11 +486,11 @@ actor ZM66Rifle:HDWeapon{
 			A_MuzzleClimb(-0.3,-0.3);
 		}
 		RIFG B 3 offset(10,49){
-			if(!countinv("ZM66GLoaded")){
+			if(!(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_GRENADELOADED)){
 				A_SetTics(0);
 				return;
 			}
-			A_TakeInventory("ZM66GLoaded");
+			invoker.weaponstatus[ZM66S_FLAGS]&=~ZM66F_GRENADELOADED;
 			if(
 				!countinv("PressingUnload")
 				||A_JumpIfInventory("HDRocketAmmo",0,"null")
@@ -486,7 +512,7 @@ actor ZM66Rifle:HDWeapon{
 		RIFG BBB 8 offset(10,50) A_MuzzleClimb(frandom(-0.2,0.8),frandom(-0.2,0.4));
 		RIFG B 18 offset(8,50){
 			A_TakeInventory("HDRocketAmmo",1,TIF_NOTAKEINFINITE);
-			A_GiveInventory("ZM66GLoaded",1);
+			invoker.weaponstatus[ZM66S_FLAGS]|=ZM66F_GRENADELOADED;
 			A_PlaySound("weapons/rockreload",CHAN_WEAPON);
 		}
 	greloadend:
@@ -495,18 +521,72 @@ actor ZM66Rifle:HDWeapon{
 		RIFG A 1 offset(0,34) A_MuzzleClimb(frandom(-2.4,0.2),frandom(-1.4,0.2));
 		goto nope;
 
+	/*
+		Frame reference:
+		ZM66 A select-fire GL normal
+		ZM66 BC select-fire GL shooting
+		ZM66 D select-fire no-GL normal
+		ZM66 EF select-fire no-GL shooting
+		ZM66 G semi no-GL normal
+		[ZM66 H semi GL normal???]
+	*/
 	spawn:
-		RIGL A -1;
+		ZM66 A 0 A_Stop();
+	spawn2:
+		ZM66 A -1{
+			if(
+				invoker.weaponstatus[0]&ZM66F_CHAMBER
+				&&!(invoker.weaponstatus[0]&ZM66F_CHAMBERBROKEN)
+				&&invoker.weaponstatus[ZM66S_HEAT]>HDCONST_ZM66COOKOFF  
+			){
+				setstatelabel("spawnshoot");
+			}else if(invoker.weaponstatus[0]&ZM66F_NOLAUNCHER){
+				if(invoker.weaponstatus[0]&ZM66F_NOFIRESELECT)frame=6;
+				else frame=3;
+			}
+		}
+	spawnshoot:
+		ZM66 A 1 light("SHOT"){
+			if(invoker.weaponstatus[0]&ZM66F_NOLAUNCHER)frame=4;else frame=1;
+
+			//shoot the bullet
+			//copy any changes to flash as well!
+			actor bbb=spawn("HDBullet426",pos+(0,0,8);
+			bbb.target=self;bbb.vel+=vel;
+			double brnd=invoker.weaponstatus[ZM66S_HEAT];
+			if(brnd>12.){  
+				bbb.angle=angle+frandom(-brnd,brnd)*0.1;
+				bbb.pitch=pitch+frandom(-brnd,brnd)*0.1;
+				bbb.speed-=brnd*10.;
+			}
+
+			A_ChangeVelocity(frandom(-0.4,0.1),frandom(-0.1,0.08),1,CVF_RELATIVE);
+			A_PlaySound("weapons/rifle",CHAN_VOICE);
+			invoker.weaponstatus[ZM66S_HEAT]+=random(2,4);
+			angle+=frandom(4,-14);
+			pitch+=frandom(-8,8);
+		}
+		ZM66 A 2{
+			frame++;
+			if(invoker.weaponstatus[ZM66S_AUTO]>1)A_SetTics(0);  
+			invoker.weaponstatus[0]&=~(ZM66F_CHAMBER|ZM66F_CHAMBERBROKEN);
+			if(invoker.weaponstatus[ZM66S_MAG]%100>0){  
+				invoker.weaponstatus[ZM66S_MAG]--;
+				invoker.weaponstatus[0]|=ZM66F_CHAMBER;
+				brokenround();
+			}
+		}
+		goto spawn2;
 	}
 
 	/*
 		[0]status
 		[1]mag, -1 is emptymag
-		[3]firemode
+		[3]firemode/ratchet (0=semi;1=auto;2=burst (if 2+, add 1 on each shot;>3, no shot))
 		[4]zoomlevel
 		[5]airburst
 		[6]heat
-		[[7]moa]
+		[[7]moa?]
 	*/
 	enum zm66status{
 		ZM66F_CHAMBER=1,
@@ -515,61 +595,35 @@ actor ZM66Rifle:HDWeapon{
 		ZM66F_GRENADELOADED=8,
 		ZM66F_NOLAUNCHER=16,
 		ZM66F_NOFIRESELECT=32,
+		ZM66F_GLMODE=64,
+		ZM66F_JUSTUNLOAD=128,
+
+		ZM66S_FLAGS=0,
+		ZM66S_MAG=1, //-1 is ampty
+		ZM66S_AUTO=2, //2 is burst, 2-5 counts ratchet
+		ZM66S_ZOOM=3,
+		ZM66S_AIRBURST=4,
+		ZM66S_HEAT=5,
 	};
-}
-
-actor ZM66GLMode:InventoryFlag{}
-actor ZM66Zoom:InventoryFlag{}
-actor ZM66BrokenRound:InventoryFlag{}
-actor ZM66JailbrokenMag:InventoryFlag{}
-actor ZM66NoMag:InventoryFlag{}
-actor ZM66ZoomDegree:InventoryFlag{inventory.maxamount 2}
-actor ZM66Ratchet:InventoryFlag{Inventory.MaxAmount 3}
-actor ZM66Heat:InventoryFlag{Inventory.MaxAmount 80}
-actor ZM66FullAuto:InventoryFlag{Inventory.MaxAmount 2}
-actor ZM66RoundCounter:InventoryFlag{inventory.maxamount 99} //remove this in favour of hud
-//BUT TEST MULTI BEFORE COMMIT
-
-actor ZM66Chamber:Ammo{
-	+inventory.ignoreskill
-	+inventory.untossable
-	inventory.maxamount 1
-	ammo.backpackmaxamount 1
-	ammo.backpackamount 0
-	states{spawn:TNT1 A 0 nodelay{setweaponstate("null");}stop}
-}
-actor ZM66Loaded:Ammo{
-	+inventory.ignoreskill
-	+inventory.untossable
-	inventory.maxamount 50
-	ammo.backpackmaxamount 50
-	ammo.backpackamount 0
-	states{spawn:TNT1 A 0 nodelay{setweaponstate("null");}stop}
-}
-actor ZM66GLoaded:Ammo{
-	+inventory.ignoreskill
-	+inventory.untossable
-	inventory.maxamount 1
-	ammo.backpackmaxamount 1
-	ammo.backpackamount 0
-	states{spawn:TNT1 A 0 nodelay{setweaponstate("null");}stop}
-}
-actor ZM66Shoot:ActionItem{
-	states{
-	pickup:
-		RIFF A 0{
-			A_GiveInventory("ZM66Heat",random(2,4));
-			if(countinv("ZM66Heat")<14){
-				A_GiveInventory("DecoBulleter426");
-			}else A_GiveInventory("DecoBulleter426s");
-			A_Log("Replace this with a proper bullet spawn before release!")
-		}fail;
+	override void beginplay(){
+		invoker.weaponstatus[ZM66S_FLAGS]=ZM66F_CHAMBER|ZM66F_GRENADELOADED;
+		invoker.weaponstatus[ZM66S_MAG]=50;
+		invoker.weaponstatus[ZM66S_AUTO]=0;
+		invoker.weaponstatus[ZM66S_ZOOMLEVEL]=0;
+		invoker.weaponstatus[ZM66S_AIRBURST]=0;
+		invoker.weaponstatus[ZM66S_HEAT]=0;
+		super.beginplay();
 	}
 }
 
 
-actor ZM66RifleSpawner
-{
+class ZM66RoundCounter:InventoryFlag{inventory.maxamount 99}
+//remove this in favour of hud
+//BUT TEST MULTI BEFORE COMMIT
+
+
+
+class ZM66RifleSpawner:IdleDummy{
 	health 1
 	+invisible
 	states
@@ -592,292 +646,3 @@ actor ZM66RifleSpawner
 	}
 }
 
-
-
-// ------------------------------------------------------------
-// Mags and pickups
-// ------------------------------------------------------------
-
-/*
- Frame reference:
- RIGL GL select-fire rifle
- RIFL non-GL select-fire rifle
- RIFS non-GL semi-only rifle
- A no angles
- B angled
- C muzzle flash
- D no angles, no mag
-*/
-
-
-actor ZM66GrenadeRiflePickup : HDUPK
-{
-	//*** NOTE TO SELF: COPY THAT A_WARP BELOW BEFORE DELETING THE TAKELOOP WHILE SCRIPTIFYING ***
-
-	scale 0.65 height 10
-	obituary "People don't kill %o! Guns kill %o!"
-	states
-	{
-	spawn:
-		RIGL A 0 A_Stop
-		---- A 0 A_JumpIfInventory("Clip",1,"spawn2")
-		---- A 0 A_GiveInventory("Clip",1)
-		---- A 0 A_JumpIf(CheckClass("PlayerPawn",AAPTR_TARGET,true),"takeloop")
-		---- A 0 A_GiveInventory("ZM66Loaded",50)
-		---- A 0 A_GiveInventory("ZM66GLoaded",12)
-//		---- A 0 A_GiveInventory("ZM66Chamber")
-		---- A 0 A_Jump(256,"spawn2")
-	spawn2:
-		---- A 0 A_JumpIfInventory("ZM66BrokenRound",1,3)
-		---- A 0 A_JumpIfInventory("ZM66Loaded",1,3)
-		---- A 0 A_JumpIfInventory("ZM66Chamber",1,2)
-		---- A 0 A_Jump(256,2)
-		---- A 0 A_JumpIfInventory("ZM66Heat",27,"spawnshoot")
-		---- D 0 A_JumpIfInventory("ZM66NoMag",1,2)
-		---- A 0
-		---- A 1
-		loop
-	spawnshoot:
-		---- B 0 A_GiveInventory("ZM66Chamber")
-		---- B 0 A_PlaySound("weapons/rifle",1)
-		---- A 0 A_ChangeVelocity(frandom(-0.4,0.1),frandom(-0.1,0.08),1,CVF_RELATIVE)
-		---- A 0 A_SetPitch(random(-4,14))
-		---- A 0 A_SetAngle(angle+random(-8,8))
-		---- A 0 A_GiveInventory("ZM66Heat",1)
-		---- C 1 light("SHOT") A_GiveInventory("DecoBulleter426s")
-		---- B 2{
-			A_SpawnItemEx("HDGunSmoke",0,0,4,cos(pitch)*cos(angle)*4+vel.x+frandom(-1,1),cos(pitch)*sin(angle)*4+vel.y+frandom(-1,1),-sin(pitch)*4+vel.z+frandom(-1,1),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH);
-			if(countinv("ZM66FullAuto")==2){A_SetTics(0);}
-		}
-		---- B 0{
-			if(countinv("ZM66Loaded")<1){A_TakeInventory("ZM66Chamber",1);}
-			else{A_TakeInventory("ZM66Loaded",1);}
-		}
-		---- A 0 A_Jump(256,"spawn2")
-	grab:
-		---- "A" 0 A_JumpIfInventory("ZM66BrokenRound",1,2)
-		---- A 0 A_JumpIfInventory("ZM66Loaded",1,2)
-		---- A 0 A_Jump(256,2)
-		---- A 0 A_JumpIfInventory("ZM66Heat",27,"spawn2")
-		---- A 0
-		goto super::grab
-	takeloop:
-		---- A 0{
-			if(countinv("ZM66Loaded",AAPTR_TARGET)>0){    
-				A_GiveInventory("ZM66Loaded",countinv("ZM66Loaded",AAPTR_TARGET));
-				A_TakeFromTarget("ZM66Loaded");
-			}
-			if(countinv("ZM66Heat",AAPTR_TARGET)>0){    
-				A_GiveInventory("ZM66Heat",countinv("ZM66Heat",AAPTR_TARGET));
-				A_TakeFromTarget("ZM66Heat");
-			}
-			if(countinv("ZM66NoMag",AAPTR_TARGET)>0){    
-				A_GiveInventory("ZM66NoMag");
-				A_TakeFromTarget("ZM66NoMag");
-			}
-			if(countinv("ZM66JailBrokenMag",AAPTR_TARGET)>0){    
-				A_GiveInventory("ZM66JailBrokenMag");
-				A_TakeFromTarget("ZM66JailBrokenMag");
-			}
-			if(countinv("ZM66BrokenRound",AAPTR_TARGET)>0){    
-				A_GiveInventory("ZM66BrokenRound");
-				A_TakeFromTarget("ZM66BrokenRound");
-			}
-			if(countinv("ZM66Chamber",AAPTR_TARGET)>0){    
-				A_GiveInventory("ZM66Chamber");
-				A_TakeFromTarget("ZM66Chamber");
-			}
-			if(countinv("ZM66ZoomDegree",AAPTR_TARGET)>0){    
-				A_GiveInventory("ZM66ZoomDegree",countinv("ZM66ZoomDegree",AAPTR_TARGET));
-				A_TakeFromTarget("ZM66ZoomDegree");
-			}
-
-			//warp the gun ahead when it cooks off so it doesn't shoot you
-			if(countinv("ZM66Heat")>=27){    
-				A_Warp(AAPTR_TARGET,20,0,32,0,WARPF_INTERPOLATE);
-			}
-			setweaponstate("takeFA");
-		}
-	takeFA:
-		---- A 0{
-			if(countinv("ZM66FullAuto",AAPTR_TARGET)>0){    
-				A_GiveInventory("ZM66FullAuto",countinv("ZM66FullAuto",AAPTR_TARGET));
-				A_TakeFromTarget("ZM66FullAuto");
-			}
-			setweaponstate("takeGL");
-		}
-	takeGL:
-		---- A 0{
-			if(countinv("ZM66GLoaded",AAPTR_TARGET)>0){    
-				A_GiveInventory("ZM66GLoaded");
-				A_TakeFromTarget("ZM66GLoaded");
-			}
-			setweaponstate("spawn2");
-		}
-	give:
-		---- A 0 A_JumpIfInTargetInventory("ZM66SemiRifle",1,"spawn")
-		---- A 0 A_JumpIfInTargetInventory("ZM66Rifle",1,"spawn")
-		---- A 0 A_JumpIfInTargetInventory("ZM66GrenadeRifle",1,"spawn")
-		---- A 0 A_PlaySound("misc/w_pkup")
-		---- A 0 A_Jump(256,"give2")
-	give2:
-		---- A 0 A_GiveToTarget("ZM66GrenadeRifle",1)
-	givegunloop:
-		---- A 0{
-			if(countinv("ZM66Loaded")>0){    
-				A_GiveToTarget("ZM66Loaded",countinv("ZM66Loaded"));
-				A_TakeInventory("ZM66Loaded");
-			}
-			if(countinv("ZM66Heat")>0){    
-				A_GiveToTarget("ZM66Heat",countinv("ZM66Heat"));
-				A_TakeInventory("ZM66Heat");
-			}
-			if(countinv("ZM66NoMag")>0){    
-				A_GiveToTarget("ZM66NoMag");
-				A_TakeInventory("ZM66NoMag");
-			}
-			if(countinv("ZM66JailBrokenMag")>0){    
-				A_GiveToTarget("ZM66JailBrokenMag");
-				A_TakeInventory("ZM66JailBrokenMag");
-			}
-			if(countinv("ZM66BrokenRound")>0){    
-				A_GiveToTarget("ZM66BrokenRound");
-				A_TakeInventory("ZM66BrokenRound");
-			}
-			if(countinv("ZM66Chamber")>0){    
-				A_GiveToTarget("ZM66Chamber");
-				A_TakeInventory("ZM66Chamber");
-			}
-			if(countinv("ZM66ZoomDegree")>0){    
-				A_GiveToTarget("ZM66ZoomDegree",countinv("ZM66ZoomDegree"));
-				A_TakeInventory("ZM66ZoomDegree");
-			}
-			setweaponstate("giveFA");
-		}
-	giveFA:
-		---- A 0{
-			if(countinv("ZM66FullAuto")>0){    
-				A_GiveToTarget("ZM66FullAuto",countinv("ZM66FullAuto"));
-				A_TakeInventory("ZM66FullAuto");
-			}
-			setweaponstate("giveGL");
-		}
-	giveGL:
-		---- A 0{
-			if(countinv("ZM66GLoaded")>0){    
-				A_GiveToTarget("ZM66GLoaded");
-				A_TakeInventory("ZM66GLoaded");
-			}
-			setweaponstate("givegunloopend");
-		}
-	}
-}
-actor ZM66RiflePickup : ZM66GrenadeRiflePickup
-{
-	states
-	{
-	spawn:
-		RIFL A 0 A_Stop
-		---- A 0 A_JumpIfInventory("Clip",1,"spawn2")
-		---- A 0 A_GiveInventory("Clip",1)
-		---- A 0 A_JumpIf(CheckClass("PlayerPawn",AAPTR_TARGET,true),"takeloop")
-		---- A 0 A_GiveInventory("ZM66Loaded",50)
-//		---- A 0 A_GiveInventory("ZM66Chamber",1)
-		---- A 0 A_Jump(256,"spawn2")
-	takeGL:
-		---- A 0 A_Jump(256,"spawn2")
-	give2:
-		---- A 0 A_GiveToTarget("ZM66Rifle",1)
-		goto givegunloop
-	giveGL:
-		---- A 0 A_Jump(256,"givegunloopend")
-	}
-}
-actor ZM66SemiRiflePickup : ZM66RiflePickup
-{
-	states
-	{
-	spawn2:
-		---- A 0 A_JumpIfInventory("ZM66BrokenRound",1,3)
-		---- A 0 A_JumpIfInventory("ZM66Loaded",1,3)
-		---- A 0 A_JumpIfInventory("ZM66Chamber",1,2)
-		---- A 0 A_Jump(256,2)
-		RIFL A 0 A_JumpIfInventory("ZM66Heat",27,"spawnshoot")
-		RIFS D 0 A_JumpIfInventory("ZM66NoMag",1,2)
-		RIFS A 0
-		---- A 1
-		loop
-	takeFA:
-		---- A 0 A_Jump(256,"spawn2")
-	give2:
-		---- A 0 A_GiveToTarget("ZM66SemiRifle",1)
-		goto givegunloop
-	giveFA:
-		---- A 0 A_Jump(256,"givegunloopend")
-	}
-}
-actor ZM66RiflePickupDropped : ZM66RiflePickup
-{
-	states
-	{
-	spawn:
-		RIFL A 0 A_Stop
-		---- A 0 A_JumpIfInventory("Clip",1,"spawn2")
-		---- A 0 A_GiveInventory("Clip",1)
-		---- A 0 A_JumpIf(random(0,51)==0,"spawn2")
-		---- A 0 A_GiveInventory("ZM66Loaded",random(1,50))
-		---- A 0 A_GiveInventory("ZM66Chamber",1)
-		---- A 0 A_Jump(256,"spawn2")
-	give2:
-		---- A 0 A_GiveToTarget("ZM66Rifle",1)
-		goto givegunloop
-	}
-}
-actor ZM66SemiRiflePickupDropped : ZM66RiflePickup
-{
-	states
-	{
-	spawn2:
-		---- A 0 A_JumpIfInventory("ZM66BrokenRound",1,3)
-		---- A 0 A_JumpIfInventory("ZM66Loaded",1,3)
-		---- A 0 A_JumpIfInventory("ZM66Chamber",1,2)
-		---- A 0 A_Jump(256,2)
-		RIFL A 0 A_JumpIfInventory("ZM66Heat",27,"spawnshoot")
-		RIFS D 0 A_JumpIfInventory("ZM66NoMag",1,2)
-		RIFS A 0
-		---- A 1
-		loop
-	spawn:
-		RIFL A 0 A_Stop
-		RIFL D 0 A_JumpIfInventory("ZM66NoMag",1,2)
-		RIFL A 0
-		---- A 0 A_JumpIfInventory("Clip",1,"spawn2")
-		---- A 0 A_GiveInventory("Clip",1)
-		---- A 0 A_JumpIf(random(0,51)==0,"spawn2")
-		---- A 0 A_GiveInventory("ZM66Loaded",random(1,50))
-		---- A 0 A_GiveInventory("ZM66Chamber",1)
-		---- A 0 A_Jump(256,"spawn2")
-	give2:
-		---- A 0 A_GiveToTarget("ZM66SemiRifle",1)
-		goto givegunloop
-	}
-}
-actor ZM66GrenadeRiflePickupDropped : ZM66RiflePickup
-{
-	states
-	{
-	spawn:
-		RIGL A 0 A_Stop
-		---- A 0 A_JumpIfInventory("Clip",1,"spawn2")
-		---- A 0 A_GiveInventory("Clip",1)
-		---- A 0 A_JumpIf(random(0,51)==0,3)
-		---- A 0 A_GiveInventory("ZM66Loaded",random(1,50))
-		---- A 0 A_GiveInventory("ZM66Chamber",1)
-		---- A 0 A_Jump(200,2)
-		---- A 0 A_GiveInventory("ZM66GLoaded",1)
-		---- A 0 A_Jump(256,"spawn2")
-	give2:
-		---- A 0 A_GiveToTarget("ZM66GrenadeRifle",1)
-		goto givegunloop
-	}
-}
