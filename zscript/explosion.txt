@@ -43,165 +43,166 @@ extend class HDActor{
 		while(itt.Next()){
 			it=itt.thing;
 			double losmul=0;
+
 			if(	//abort all checks if no hurt species
-				it && it!=self &&
-				(hurtspecies || (source && it.species!=source.species))
-			){
-				it=itt.thing;
-				double ithalfheight=it.height*0.5;
-				it.addz(ithalfheight); //get the middle not the bottom
-				double dist=distance3d(it);
-				it.addz(-ithalfheight); //reset its position
+				!it || it==self ||
+				(!hurtspecies && (source && it.species!=source.species))
+			)continue;
 
-				if(!dist || dist<min(it.radius,ithalfheight)){
-					ontop=true;
-					divdist=1;
-				}else{
-					ontop=false;
-					divdist=clamp(1./dist,0.,1.);
-				}
+			it=itt.thing;
+			double ithalfheight=it.height*0.5;
+			it.addz(ithalfheight); //get the middle not the bottom
+			double dist=distance3d(it);
+			it.addz(-ithalfheight); //reset its position
 
-				//check LOS
-				if(passwalls)losmul=1.;
-				else{
-					its=spawn("idledummy",it.pos);
-					if(its){
-						its.a_setsize(1,1);if(checksight(its))losmul+=0.34;
-						its.addz(ithalfheight);if(checksight(its))losmul+=0.34;
-						its.addz(ithalfheight);if(checksight(its))losmul+=0.34;
-						its.destroy();
-					}losmul=min(losmul,1.);
-				}
+			if(!dist || dist<min(it.radius,ithalfheight)){
+				ontop=true;
+				divdist=1;
+			}else{
+				ontop=false;
+				divdist=clamp(1./dist,0.,1.);
+			}
+
+			//check LOS
+			if(passwalls)losmul=1.;
+			else{
+				its=spawn("idledummy",it.pos);
+				if(its){
+					its.a_setsize(1,1);if(checksight(its))losmul+=0.34;
+					its.addz(ithalfheight);if(checksight(its))losmul+=0.34;
+					its.addz(ithalfheight);if(checksight(its))losmul+=0.34;
+					its.destroy();
+				}losmul=min(losmul,1.);
+			}
 //				if(losmul){A_Log(it.getclassname());A_LogFloat(losmul);}
 
-				if(!losmul)continue;
-				double divmass=1.;if(it.mass>0)divmass=1./it.mass;
+			if(!losmul)continue;
+			double divmass=1.;if(it.mass>0)divmass=1./it.mass;
 
-				//immolate before all damage, to avoid bypassing player death transfer
-				if(it && losmul && dist<=immolateradius){
-					if(immolatechance>=random(1,100)*losmul){
-						A_Immolate(it,target,immolateamount);
+			//immolate before all damage, to avoid bypassing player death transfer
+			if(it && losmul && dist<=immolateradius){
+				if(immolatechance>=random(1,100)*losmul){
+					A_Immolate(it,target,immolateamount);
+				}
+			}
+			//push
+			if(it && losmul && dist<=pushradius && it.bshootable && !it.bdontthrust){
+				vector3 push=(it.pos-self.pos)*divdist
+					*clamp(pushamount-clamp(dist-fullpushradius,0,dist),0,pushamount);
+				if(pushmass){
+					if(pushamount<=it.mass)push=(0,0,0);
+					else{
+						push*=divmass;
+						if(push.z>0)push-=(0,0,mass*it.gravity);
 					}
 				}
-				//push
-				if(it && losmul && dist<=pushradius && it.bshootable && !it.bdontthrust){
-					vector3 push=(it.pos-self.pos)*divdist
-						*clamp(pushamount-clamp(dist-fullpushradius,0,dist),0,pushamount);
-					if(pushmass){
-						if(pushamount<=it.mass)push=(0,0,0);
-						else{
-							push*=divmass;
-							if(push.z>0)push-=(0,0,mass*it.gravity);
-						}
-					}
-					it.vel+=push;
-				}
-				//blast damage
-				if(it && losmul && dist<=blastradius && (it.bshootable||it.bvulnerable)){
-					if(dist>fullblastradius){
-						dmg=clamp(dist-fullblastradius,0,dist);
-						dmg=blastdamage-dmg;
-					}else dmg=blastdamage;
-					dmg*=losmul;
-					it.DamageMobj(self,source,dmg,blastdamagetype,DMG_THRUSTLESS,0);
-				}
-				//frag damage
-				if(it && losmul && dist<=fragradius && (it.bsolid || it.bshootable)){
-					A_Face(it);
-					if(
-						it!=self
-						&&(
-							it.bvulnerable ||(
-								it.bshootable
-								&& it.radius
-								&& it.height
-							)
+				it.vel+=push;
+			}
+			//blast damage
+			if(it && losmul && dist<=blastradius && (it.bshootable||it.bvulnerable)){
+				if(dist>fullblastradius){
+					dmg=clamp(dist-fullblastradius,0,dist);
+					dmg=blastdamage-dmg;
+				}else dmg=blastdamage;
+				dmg*=losmul;
+				it.DamageMobj(self,source,dmg,blastdamagetype,DMG_THRUSTLESS,0);
+			}
+			//frag damage
+			if(it && losmul && dist<=fragradius && (it.bsolid || it.bshootable)){
+				A_Face(it);
+				if(
+					it!=self
+					&&(
+						it.bvulnerable ||(
+							it.bshootable
+							&& it.radius
+							&& it.height
 						)
-					){
-						//determine damage as proportion of distance and size
-						//get lines to centre and one of the corners
-						vector3 dv=it.pos+(0,0,ithalfheight)-self.pos; //self to centre
-						vector3 dc=dv+(it.radius,it.radius,ithalfheight); //self to corner
+					)
+				){
+					//determine damage as proportion of distance and size
+					//get lines to centre and one of the corners
+					vector3 dv=it.pos+(0,0,ithalfheight)-self.pos; //self to centre
+					vector3 dc=dv+(it.radius,it.radius,ithalfheight); //self to corner
 
-						double dvl=dv.length(); //distance to centre
-						double dcl=dc.length(); //distance to corner
+					double dvl=dv.length(); //distance to centre
+					double dcl=dc.length(); //distance to corner
 
-						if(dcl)dc*=dvl/dcl; //equalize the two line lengths
-						double dfl=(dv-dc).length(); //corner to middle as "flattened"
+					if(dcl)dc*=dvl/dcl; //equalize the two line lengths
+					double dfl=(dv-dc).length(); //corner to middle as "flattened"
 
-						if(dfl){ //target must have some surface area exposed!
-							//don't kill Godzilla with firecracker
-							dfl=clamp(dfl,1,fragradius*2);
+					if(dfl){ //target must have some surface area exposed!
+						//don't kill Godzilla with firecracker
+						dfl=clamp(dfl,1,fragradius*2);
 
-							double dvld=0; //used multiple times
-							if(dvl)dvld=1/dvl;
+						double dvld=0; //used multiple times
+						if(dvl)dvld=1/dvl;
 
-							//if inside, double max damage on this guy only
-							if(dvl<dfl)dmg=fragdamage+random(1,dmg);
-							else{
-								int mindmg=fragdamage*dfl*dvld;
-								dmg=ceil(random(2,3)*mindmg);
+						//if inside, double max damage on this guy only
+						if(dvl<dfl)dmg=fragdamage+random(1,dmg);
+						else{
+							int mindmg=fragdamage*dfl*dvld;
+							dmg=ceil(random(2,3)*mindmg);
 
-								//reduce dmg if partially occluded
-								dmg*=losmul;
-							}
+							//reduce dmg if partially occluded
+							dmg*=losmul;
+						}
 
-							//SO MUCH BLOOD
-							A_FaceVector(dv);
-							name bld="FragPuff";
-							if(!it.bnoblood&&it.bloodtype)bld=it.bloodtype;
-							for(int i=0;i<dmg;i+=12){
-								double xymod=frandom(1,4)*dvld;
-								it.A_SpawnItemEx(bld,
-									random(-1,it.radius),
-									random(-it.radius,it.radius)*0.5,
-									random(4,it.height),
-									it.vel.x-dv.x*xymod,
-									it.vel.y-dv.y*xymod,
-									it.vel.z+frandom(1,4),
-									-self.angle,SXF_USEBLOODCOLOR
-									|SXF_ABSOLUTEANGLE
-									|SXF_ABSOLUTEMOMENTUM
-									|SXF_NOCHECKPOSITION
-								);
-							}
-
-							//limit damage to non-gibbing levels
-							//can still gib, just takes a lot more
-							if(
-								it.health>0&&
-								it.gibhealth>0&&
-								dmg>it.health+it.gibhealth
-							)dmg-=it.gibhealth;
-
-							//and finally the good stuff
-							if(hd_debug)A_Log(
-								string.format("%s fragged for %i damage",
-									it.getclassname(),dmg
-								)
-							);
-							it.DamageMobj(self,source,dmg,
-								fragdamagetype,DMG_THRUSTLESS,0
+						//SO MUCH BLOOD
+						A_FaceVector(dv);
+						name bld="FragPuff";
+						if(!it.bnoblood&&it.bloodtype)bld=it.bloodtype;
+						for(int i=0;i<dmg;i+=12){
+							double xymod=frandom(1,4)*dvld;
+							it.A_SpawnItemEx(bld,
+								random(-1,it.radius),
+								random(-it.radius,it.radius)*0.5,
+								random(4,it.height),
+								it.vel.x-dv.x*xymod,
+								it.vel.y-dv.y*xymod,
+								it.vel.z+frandom(1,4),
+								-self.angle,SXF_USEBLOODCOLOR
+								|SXF_ABSOLUTEANGLE
+								|SXF_ABSOLUTEMOMENTUM
+								|SXF_NOCHECKPOSITION
 							);
 						}
-					}
-				}
-				//gibbing
-				if(it && losmul && dist<=gibradius && it.bcorpse && it.bshootable){
-					it.a_giveinventory("sawgib",gibamount-dist);
-					for(int i=0;i<gibamount;i+=3){
-						A_SpawnItemEx(it.bloodtype,
-							random(1,it.radius),
-							random(-it.radius,it.radius)*0.5,
-							random(4,it.height),
-							it.vel.x+(random(-4,4)),
-							it.vel.y+(random(-4,4)),
-							it.vel.z+random(1,7),
-							0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION
+
+						//limit damage to non-gibbing levels
+						//can still gib, just takes a lot more
+						if(
+							it.health>0&&
+							it.gibhealth>0&&
+							dmg>it.health+it.gibhealth
+						)dmg-=it.gibhealth;
+
+						//and finally the good stuff
+						if(hd_debug)A_Log(
+							string.format("%s fragged for %i damage",
+								it.getclassname(),dmg
+							)
+						);
+						it.DamageMobj(self,source,dmg,
+							fragdamagetype,DMG_THRUSTLESS,0
 						);
 					}
-					if(!it.bdontthrust)it.vel+=(it.pos-self.pos)*divdist*divmass*10;
 				}
+			}
+			//gibbing
+			if(it && losmul && dist<=gibradius && it.bcorpse && it.bshootable){
+				it.a_giveinventory("sawgib",gibamount-dist);
+				for(int i=0;i<gibamount;i+=3){
+					A_SpawnItemEx(it.bloodtype,
+						random(1,it.radius),
+						random(-it.radius,it.radius)*0.5,
+						random(4,it.height),
+						it.vel.x+(random(-4,4)),
+						it.vel.y+(random(-4,4)),
+						it.vel.z+random(1,7),
+						0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION
+					);
+				}
+				if(!it.bdontthrust)it.vel+=(it.pos-self.pos)*divdist*divmass*10;
 			}
 		}
 		//reset position
