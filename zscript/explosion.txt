@@ -24,16 +24,12 @@ extend class HDActor{
 		);
 
 		//initialize things to be used in the iterator
-		int dist=0;
 		int dmg=0;
 		vector3 orig=self.pos+(0,0,self.height*0.5);
 		actor it=null;
-		actor its=null; //top
-		actor itr=null; //bottom
+		actor its=null;
 		bool ontop=false;
 		double divdist=0;
-		double divmass=0;
-		double halfheight=0;
 		if(!source){
 			if(target)source=target;
 			else if(master)source=master;
@@ -57,8 +53,7 @@ extend class HDActor{
 				double dist=distance3d(it);
 				it.addz(-ithalfheight); //reset its position
 
-				if(dist>bigradius)continue;
-				else if(!dist || dist<min(it.radius,ithalfheight)){
+				if(!dist || dist<min(it.radius,ithalfheight)){
 					ontop=true;
 					divdist=1;
 				}else{
@@ -79,7 +74,8 @@ extend class HDActor{
 				}
 //				if(losmul){A_Log(it.getclassname());A_LogFloat(losmul);}
 
-				if(it.mass>0) divmass=1./it.mass;else divmass=1.;
+				if(!losmul)continue;
+				double divmass=1.;if(it.mass>0)divmass=1./it.mass;
 
 				//immolate before all damage, to avoid bypassing player death transfer
 				if(it && losmul && dist<=immolateradius){
@@ -88,11 +84,11 @@ extend class HDActor{
 					}
 				}
 				//push
-				if(it && losmul>0 && dist<=pushradius && it.bshootable && !it.bdontthrust){
+				if(it && losmul && dist<=pushradius && it.bshootable && !it.bdontthrust){
 					vector3 push=(it.pos-self.pos)*divdist
 						*clamp(pushamount-clamp(dist-fullpushradius,0,dist),0,pushamount);
 					if(pushmass){
-						if(pushamount<=it.mass) push=(0,0,0);
+						if(pushamount<=it.mass)push=(0,0,0);
 						else{
 							push*=divmass;
 							if(push.z>0)push-=(0,0,mass*it.gravity);
@@ -154,7 +150,7 @@ extend class HDActor{
 							A_FaceVector(dv);
 							name bld="FragPuff";
 							if(!it.bnoblood&&it.bloodtype)bld=it.bloodtype;
-							for(int i=0;i<dmg;i+=8){
+							for(int i=0;i<dmg;i+=12){
 								double xymod=frandom(1,4)*dvld;
 								it.A_SpawnItemEx(bld,
 									random(-1,it.radius),
@@ -163,17 +159,30 @@ extend class HDActor{
 									it.vel.x-dv.x*xymod,
 									it.vel.y-dv.y*xymod,
 									it.vel.z+frandom(1,4),
-									-self.angle,SXF_USEBLOODCOLOR|SXF_ABSOLUTEANGLE|
-									SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION
+									-self.angle,SXF_USEBLOODCOLOR
+									|SXF_ABSOLUTEANGLE
+									|SXF_ABSOLUTEMOMENTUM
+									|SXF_NOCHECKPOSITION
 								);
 							}
 
 							//limit damage to non-gibbing levels
 							//can still gib, just takes a lot more
-							if(dmg>it.health+it.gibhealth)dmg-=it.gibhealth;
+							if(
+								it.health>0&&
+								it.gibhealth>0&&
+								dmg>it.health+it.gibhealth
+							)dmg-=it.gibhealth;
 
 							//and finally the good stuff
-							it.DamageMobj(self,source,dmg,fragdamagetype,DMG_THRUSTLESS,0);
+							if(hd_debug)A_Log(
+								string.format("%s fragged for %i damage",
+									it.getclassname(),dmg
+								)
+							);
+							it.DamageMobj(self,source,dmg,
+								fragdamagetype,DMG_THRUSTLESS,0
+							);
 						}
 					}
 				}
@@ -191,7 +200,7 @@ extend class HDActor{
 							0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION
 						);
 					}
-					if(!it.bdontthrust) it.vel+=(it.pos-self.pos)*divdist*divmass*10;
+					if(!it.bdontthrust)it.vel+=(it.pos-self.pos)*divdist*divmass*10;
 				}
 			}
 		}
