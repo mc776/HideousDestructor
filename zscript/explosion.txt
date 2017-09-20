@@ -33,7 +33,7 @@ extend class HDActor{
 		bool ontop=false;
 		double divdist=0;
 		double divmass=0;
-		double losmul=0;
+		double halfheight=0;
 		if(!source){
 			if(target)source=target;
 			else if(master)source=master;
@@ -45,16 +45,20 @@ extend class HDActor{
 
 		blockthingsiterator itt=blockthingsiterator.create(self,bigradius);
 		while(itt.Next()){
-
+			it=itt.thing;
+			double losmul=0;
 			if(	//abort all checks if no hurt species
-				itt.thing &&
-				(hurtspecies || (itt.thing.species!=source.species))
+				it && it!=self &&
+				(hurtspecies || (source && it.species!=source.species))
 			){
-
 				it=itt.thing;
-				int dist=distance3d(it);
-				int ithalfheight=it.height*0.5;
-				if(!dist || dist<(it.radius,it.radius,ithalfheight).length()){
+				double ithalfheight=it.height*0.5;
+				it.addz(ithalfheight); //get the middle not the bottom
+				double dist=distance3d(it);
+				it.addz(-ithalfheight); //reset its position
+
+				if(dist>bigradius)continue;
+				else if(!dist || dist<min(it.radius,ithalfheight)){
 					ontop=true;
 					divdist=1;
 				}else{
@@ -65,17 +69,15 @@ extend class HDActor{
 				//check LOS
 				if(passwalls)losmul=1.;
 				else{
-					its=spawn("idledummy",it.pos+(0,0,it.height)); //top
-					itr=spawn("idledummy",it.pos+(0,0,ithalfheight)); //middle
-					its.a_setsize(1,1,1);itr.a_setsize(1,1,1);
-					losmul=clamp(0.34*(
-						checksight(it)+
-						checksight(its)+
-						checksight(itr)
-					),0,1.0);
-					//destroy these now, they won't be used again
-					its.destroy();itr.destroy();
+					its=spawn("idledummy",it.pos);
+					if(its){
+						its.a_setsize(1,1);if(checksight(its))losmul+=0.34;
+						its.addz(ithalfheight);if(checksight(its))losmul+=0.34;
+						its.addz(ithalfheight);if(checksight(its))losmul+=0.34;
+						its.destroy();
+					}losmul=min(losmul,1.);
 				}
+//				if(losmul){A_Log(it.getclassname());A_LogFloat(losmul);}
 
 				if(it.mass>0) divmass=1./it.mass;else divmass=1.;
 
@@ -139,13 +141,14 @@ extend class HDActor{
 							if(dvl)dvld=1/dvl;
 
 							//if inside, double max damage on this guy only
-							if(dvl>dfl){  
+							if(dvl<dfl)dmg=fragdamage+random(1,dmg);
+							else{
 								int mindmg=fragdamage*dfl*dvld;
 								dmg=ceil(random(2,3)*mindmg);
 
 								//reduce dmg if partially occluded
 								dmg*=losmul;
-							}else dmg=fragdamage+random(1,dmg);
+							}
 
 							//SO MUCH BLOOD
 							A_FaceVector(dv);
