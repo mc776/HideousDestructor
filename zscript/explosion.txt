@@ -80,13 +80,13 @@ extend class HDActor{
 			double divmass=1.;if(it.mass>0)divmass=1./it.mass;
 
 			//immolate before all damage, to avoid bypassing player death transfer
-			if(it && losmul && dist<=immolateradius){
+			if(it && dist<=immolateradius){
 				if(immolatechance>=random(1,100)*losmul){
 					A_Immolate(it,target,immolateamount);
 				}
 			}
 			//push
-			if(it && losmul && dist<=pushradius && it.bshootable && !it.bdontthrust){
+			if(it && dist<=pushradius && it.bshootable && !it.bdontthrust){
 				vector3 push=(it.pos-self.pos)*divdist
 					*clamp(pushamount-clamp(dist-fullpushradius,0,dist),0,pushamount);
 				if(pushmass){
@@ -99,7 +99,7 @@ extend class HDActor{
 				it.vel+=push;
 			}
 			//blast damage
-			if(it && losmul && dist<=blastradius && (it.bshootable||it.bvulnerable)){
+			if(it && dist<=blastradius && (it.bshootable||it.bvulnerable)){
 				if(dist>fullblastradius){
 					dmg=clamp(dist-fullblastradius,0,dist);
 					dmg=blastdamage-dmg;
@@ -108,7 +108,7 @@ extend class HDActor{
 				it.DamageMobj(self,source,dmg,blastdamagetype,DMG_THRUSTLESS,0);
 			}
 			//frag damage
-			if(it && losmul && dist<=fragradius && (it.bsolid || it.bshootable)){
+			if(it && dist<=fragradius && (it.bsolid || it.bshootable || it.bvulnerable)){
 				A_Face(it);
 				if(
 					it!=self
@@ -189,7 +189,7 @@ extend class HDActor{
 				}
 			}
 			//gibbing
-			if(it && losmul && dist<=gibradius && it.bcorpse && it.bshootable){
+			if(it && dist<=gibradius && it.bcorpse && it.bshootable){
 				it.a_giveinventory("sawgib",gibamount-dist);
 				for(int i=0;i<gibamount;i+=3){
 					A_SpawnItemEx(it.bloodtype,
