@@ -435,22 +435,21 @@ actor ZM66GrenadeRifle:HDWeapon{
 	zoomadjust:
 		RIFG A 1 A_WeaponReady(WRF_NOFIRE)
 		RIFG A 0{
-			A_GiveInventory("WeaponBusy",1);
-			if(countinv("PressingFire")+countinv("PressingAltfire")>0){
+			if(countinv("PressingFire")||countinv("PressingAltfire")){
 				A_GiveInventory("ZM66Zoom");return state("zoomclick");
-			}else if(countinv("PressingFireMode")>0){return state("zoomadjust");}
-			if(countinv("PressingZoom")>0){return state("zoomadjust");}  
+			}else if(countinv("PressingFireMode")){return state("zoomadjust");}
+			if(countinv("PressingZoom")){return state("zoomadjust");}  
 			return state("nope");
 		}
 	zoomclick:
 		RIFG A 0{
-			if (countinv("PressingFire")>0){A_GiveInventory("ZM66ZoomDegree",1);}
-			else if (countinv("PressingAltFire")>0){A_TakeInventory("ZM66ZoomDegree",1);}
+			if(countinv("PressingFire")){A_GiveInventory("ZM66ZoomDegree",1);}
+			else if(countinv("PressingAltFire")){A_TakeInventory("ZM66ZoomDegree",1);}
 		}
 	zoomclicked:
 		RIFG A 1{
 			A_WeaponReady(WRF_NOFIRE);
-			if(countinv("PressingFire")+countinv("PressingAltfire")>0){return state("");}
+			if(countinv("PressingFire")||countinv("PressingAltfire")){return state("");}
 			return state("zoomadjust");
 		}
 		goto zoomclicked

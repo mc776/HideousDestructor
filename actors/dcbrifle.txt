@@ -284,25 +284,17 @@ actor LiberatorRifle : HDWeapon
 		}goto nope
 
 	zoom:
-		BRFG A 1 offset(0,34){
+		BRFG A 1{
+			A_WeaponReady(WRF_NOFIRE);
 			A_SetCrosshair(21);
-			A_TakeInventory("IsWeaponReady",999);
-			if(countinv("LiberatorZoom")>0){A_TakeInventory("LiberatorZoom");}  
+			if(countinv("LiberatorZoom")){A_TakeInventory("LiberatorZoom");}  
 			else{A_GiveInventory("LiberatorZoom");}
 		}
-/*
-		BRFG A 1 offset(0,38)
-		BRFG A 1 offset(0,42)
-		BRFG A 1 offset(0,38)
-		BRFG A 1 offset(0,34)
-*/
 		BRFG A 0 A_JumpIfInventory("PressingZoom",1,"zoomadjust")
-		BRFG A 0 A_WeaponReady
 		goto nope
 	zoomadjust:
 		BRFG A 1 A_WeaponReady(WRF_NOFIRE)
 		BRFG A 0{
-			A_GiveInventory("WeaponBusy",1);
 			if (countinv("PressingFire")+countinv("PressingAltfire")>0){
 				A_GiveInventory("LiberatorZoom");return state("zoomclick");
 			} else if(countinv("PressingFireMode")>0){return state("zoomadjust");}

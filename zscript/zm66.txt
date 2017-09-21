@@ -19,7 +19,7 @@ actor ZM66AssaultRifle:HDWeapon{
 	}
 	action void brokenround(){
 		if(!(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBERBROKEN)){
-			int rnd=1;
+			int rnd=owner==null?10:1;
 			int sq=invoker.weaponstatus[ZM66S_AUTO];
 			if(sq)rnd+=sq*sq;
 			rnd+=invoker.weaponstatus[ZM66S_MAG]/3; //int, leave it as division
@@ -334,10 +334,11 @@ actor ZM66AssaultRifle:HDWeapon{
 		}
 		RIFG B 8 offset(-15,45)A_PlaySound("weapons/rifleload",CHAN_WEAPON);
 		RIFG B 1 offset(-14,44)A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
-		RIFG B 0{
-			if(!countinv("ZM66JailbrokenMag"))setweaponstate("chamber_manual");
-		}
 		RIFG A 8 offset(-18,50){
+			if(invoker.weaponstatus[ZM66S_MAG]<100){
+				setweaponstate("chamber_manual");
+				return;
+			}
 			A_MuzzleClimb(frandom(2.3,3.6),frandom(2.4,3.8));
 			A_PlaySound("weapons/rifleclick2",6);
 			A_PlaySound("weapons/smack",7);
@@ -350,8 +351,8 @@ actor ZM66AssaultRifle:HDWeapon{
 				&& invoker.weaponstatus[ZM66S_MAG]%100>0
 			){
 				A_PlaySound("weapons/rifleclick");
-				if(invoker.weaponstatus[ZM66S_MAG]==51)invoker.weaponstatus[ZM66S_MAG]=50;
-				invoker.weaponstatus[ZM66S_MAG]--;
+				if(invoker.weaponstatus[ZM66S_MAG]==51)invoker.weaponstatus[ZM66S_MAG]=49;
+				else invoker.weaponstatus[ZM66S_MAG]--;
 				invoker.weaponstatus[ZM66S_FLAGS]|=ZM66F_CHAMBER;
 				brokenround();
 			}else setweaponstate("reloadend");
