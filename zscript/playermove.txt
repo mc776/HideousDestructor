@@ -82,8 +82,10 @@ extend class HDPlayerPawn{
 		//move to raw result first to reduce lagjitters
 		if(player.turnticks){
 			player.turnticks--;
-			angle+=(180./TURN180_TICKS);
-		}else angle+=cmd.yaw*(360./65536.);
+//			angle+=(180./TURN180_TICKS);
+			cmd.yaw+=(32768./TURN180_TICKS);
+		}
+		angle+=cmd.yaw*(360./65536.);
 		pitch=clamp(pitch-cmd.pitch*(360./65536.),player.minpitch,player.maxpitch);
 
 
