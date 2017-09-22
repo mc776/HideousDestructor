@@ -443,14 +443,15 @@ class HDFragGrenades:HDWeapon{
 		goto ready;
 	spawn:
 		TNT1 A 1;
-		TNT1 A 0 A_JumpIfInTargetInventory("HDFragGrenades",1,"spawnfresh");
 		TNT1 A 0{
-			A_GiveToTarget("HDFragGrenades");
-			A_GiveToTarget("DropFrag");
+			if(!target||target.countinv("HDFragGrenades")){
+				actor aaa=spawn("FragP",invoker.pos);
+				aaa.vel=invoker.vel;
+			}else{
+				A_GiveToTarget("HDFragGrenades");
+				A_GiveToTarget("DropFrag");
+			}
 		}stop;
-	spawnfresh:
-		TNT1 A 0 A_SpawnItemEx("HDFragGrenadePickup",0,0,0,vel.x,vel.y,vel.z,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);
-		stop;
 	}
 }
 

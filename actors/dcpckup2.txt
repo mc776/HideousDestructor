@@ -298,30 +298,25 @@ actor HDAmBoxDisarmed:HDAmBoxUnarmed{
 //-------------------------------------------------
 // Health/armour bonuses
 //-------------------------------------------------
-
-actor HDFragGrenadePickup:HDFragGrenadeAmmo{
+actor HDFragGrenadePickup:FragP{
 	states{
 	spawn:
-		FRAG A 0 A_Stop
-		FRAG A 0 A_JumpIfInventory("Clip",1,"spawn2")
-		FRAG A 0 A_GiveInventory("Clip",1)
-		FRAG A 0 A_SpawnItemEx("HDFragGrenadeAmmo",-4,0,0,0,0,0,0,SXF_NOCHECKPOSITION)
-		FRAG A 0 A_SpawnItemEx("HDFragGrenadeAmmo",-4,4,0,0,0,0,0,SXF_NOCHECKPOSITION)
-		FRAG A 0 A_SpawnItemEx("HDFragGrenadeAmmo",0,4,0,0,0,0,0,SXF_NOCHECKPOSITION)
-		FRAG A 0 A_SpawnItemEx("HDFragGrenadeAmmo",4,0,0,0,0,0,0,SXF_NOCHECKPOSITION)
-		FRAG A 0 A_SpawnItemEx("HDFragGrenadeAmmo",4,4,0,0,0,0,0,SXF_NOCHECKPOSITION)
-		FRAG A -1
-		stop
+		FRAG A 0 nodelay{
+			A_SpawnItemEx("FragP",0,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
+			A_SpawnItemEx("FragP",-4,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
+			A_SpawnItemEx("FragP",-4,4,0,0,0,0,0,SXF_NOCHECKPOSITION);
+			A_SpawnItemEx("FragP",0,4,0,0,0,0,0,SXF_NOCHECKPOSITION);
+			A_SpawnItemEx("FragP",4,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
+			A_SpawnItemEx("FragP",4,4,0,0,0,0,0,SXF_NOCHECKPOSITION);
+		}stop
 	}
 }
 actor SpiritualArmour:InventoryFlag{inventory.maxamount 144}
-actor GreenHelmet : CustomInventory replaces SpiritualArmour
-{
+actor GreenHelmet:CustomInventory replaces SpiritualArmour{
 	inventory.pickupmessage "Picked up an armour bonus."
 	+inventory.alwayspickup
 	scale 0.8
-	states
-	{
+	states{
 	spawn:
 		BON2 A 6 A_SetTics(random(7,144))
 		BON2 BC 6 A_SetTics(random(1,2))
