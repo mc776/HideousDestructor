@@ -12,9 +12,10 @@ extend class HDPlayerPawn{
 	void TurnCheck(){
 		UserCmd cmd = player.cmd;
 
-		//get input based on previous input
-		double yaw=iyaw;
-		double ptch=-ipitch;
+		//get input based on previous angle
+		//do NOT use input because that breaks recoil
+		double yaw=deltaangle(lastangle,angle);
+		double ptch=deltaangle(lastpitch,pitch);
 
 		//reduced turning while supported.
 		if(
