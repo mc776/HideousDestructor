@@ -23,11 +23,11 @@ extend class HDPlayerPawn{
 			countinv("IsSupported")&&
 			!countinv("IsMoving")
 		){
-			yaw*=0.1;ptch*=0.1;
+			yaw-=iyaw*0.9;ptch+=ipitch*0.9;
 		}
 		//reduced turning while crouched.
 		else if(height<40 && abs(yaw)>5){
-			yaw*=0.6;ptch*=0.6;
+			yaw-=iyaw*0.4;ptch-=ipitch*0.4;
 		}
 
 
