@@ -10,7 +10,7 @@ extend class HDPlayerPawn{
 	bool muzzlehit;
 
 	void TurnCheck(){
-		UserCmd cmd = player.cmd;
+//		UserCmd cmd = player.cmd; //commented out as it's only ever used once here
 
 		//get input based on previous angle
 		//do NOT use input because that breaks recoil
@@ -19,7 +19,7 @@ extend class HDPlayerPawn{
 
 		//reduced turning while supported.
 		if(
-			cmd.buttons&BT_USE&&
+			player.cmd.buttons&BT_USE&&
 			countinv("IsSupported")&&
 			!countinv("IsMoving")
 		){

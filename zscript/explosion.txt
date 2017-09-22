@@ -131,6 +131,25 @@ extend class HDActor{
 					if(dcl)dc*=dvl/dcl; //equalize the two line lengths
 					double dfl=(dv-dc).length(); //corner to middle as "flattened"
 
+
+					//determine size of arc exposed to frags
+					double apr=it.radius;
+					it.setxyz(it.pos+(apr,apr,0));
+					A_Face(it,0,0,flags:FAF_BOTTOM,z_ofs:0);
+					double pitchcover=pitch;double angcover=angle;
+					it.setxyz(it.pos-2*(apr,apr,0));
+					A_Face(it,0,0,flags:FAF_TOP,z_ofs:0);
+					angcover=(
+							deltaangle(pitchcover,pitch),
+							deltaangle(angcover,angle)
+						).length();
+					it.setxyz(it.pos+(apr,apr,0));
+
+dmg=ceil(angcover*(1./360.)*fragdamage*losmul);
+if(dmg<fragdamage*0.1)dmg+=random(1,fragdamage*0.5);
+if(hd_debug)A_LogInt(dmg);
+
+
 					if(dfl){ //target must have some surface area exposed!
 						//don't kill Godzilla with firecracker
 						dfl=clamp(dfl,1,fragradius*2);
