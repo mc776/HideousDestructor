@@ -145,9 +145,8 @@ extend class HDActor{
 						).length();
 					it.setxyz(it.pos+(apr,apr,0));
 
-dmg=ceil(angcover*(1./360.)*fragdamage*losmul);
-if(dmg<fragdamage*0.1)dmg+=random(1,fragdamage*0.5);
-if(hd_debug)A_LogInt(dmg);
+double dmg2= fragdamage * losmul * angcover*(1./360.) * random(1,dist)/max(1,random(1,dist));
+A_LogFloat(dmg2);
 
 
 					if(dfl){ //target must have some surface area exposed!
@@ -193,7 +192,7 @@ if(hd_debug)A_LogInt(dmg);
 							it.health>0&&
 							it.gibhealth>0&&
 							dmg>it.health+it.gibhealth
-						)dmg-=it.gibhealth;
+						)dmg=max(health+gibhealth,dmg-gibhealth*3);
 
 						//and finally the good stuff
 						if(hd_debug)A_Log(
