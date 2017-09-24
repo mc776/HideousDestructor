@@ -92,7 +92,8 @@ class GyroGrenade:SlowProjectile{
 			if(!inthesky){
 				A_Blast(
 					pushradius:256,pushamount:128,fullpushradius:96,
-					fragradius:256,fragdamage:random(160,200+2*stamina),
+					fragradius:HDCONST_SPEEDOFSOUND,
+					fragdamage:random(160,200+2*stamina),
 					gibradius:16,gibamount:random(1,8)*10
 				);
 				actor xpl=Spawn("Gyrosploder",self.pos-(0,0,1),ALLOW_REPLACE);
@@ -122,7 +123,8 @@ class HDHEAT:GyroGrenade{
 			if(!inthesky){
 				A_Blast(
 					pushradius:256,pushamount:128,fullpushradius:96,
-					fragradius:256,fragdamage:random(160,200+2*stamina),
+					fragradius:HDCONST_SPEEDOFSOUND,
+					fragdamage:random(160,200+2*stamina),
 					gibradius:16,gibamount:random(1,8)*10
 				);
 				actor xpl=Spawn("Gyrosploder",self.pos-(0,0,1),ALLOW_REPLACE);

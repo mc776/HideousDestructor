@@ -145,8 +145,9 @@ extend class HDActor{
 						).length();
 					it.setxyz(it.pos+(apr,apr,0));
 
-double dmg2= fragdamage * losmul * angcover*(1./360.) * random(1,dist)/max(1,random(1,dist));
-A_LogFloat(dmg2);
+angcover*=losmul;
+int dmg2=fragdamage*min(1.,angcover*(1./90.));
+if(random(1,720)<angcover)dmg2=max(dmg2,random(1,fragdamage));
 
 
 					if(dfl){ //target must have some surface area exposed!
@@ -157,7 +158,7 @@ A_LogFloat(dmg2);
 						if(dvl)dvld=1/dvl;
 
 						//if inside, double max damage on this guy only
-						if(dvl<dfl)dmg=fragdamage+random(1,dmg);
+						if(dvl<dfl)dmg=fragdamage;
 						else{
 							int mindmg=fragdamage*dfl*dvld;
 							dmg=ceil(random(2,3)*mindmg);
@@ -165,6 +166,7 @@ A_LogFloat(dmg2);
 							//reduce dmg if partially occluded
 							dmg*=losmul;
 						}
+dmg=dmg2;
 
 						//SO MUCH BLOOD
 						A_FaceVector(dv);
