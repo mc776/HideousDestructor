@@ -139,8 +139,7 @@ extend class HDActor{
 					)
 				){
 					//determine size of arc exposed to frags
-					double apr=it.radius;
-					vector3 badpos=(rotatevector((0,apr),angle),0);
+					vector3 badpos=(rotatevector((0,it.radius),angle),0);
 
 					it.setxyz(it.pos+badpos);
 					A_Face(it,0,0,flags:FAF_BOTTOM,z_ofs:0);
