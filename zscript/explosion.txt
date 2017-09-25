@@ -140,16 +140,18 @@ extend class HDActor{
 				){
 					//determine size of arc exposed to frags
 					double apr=it.radius;
-					it.setxyz(it.pos+(apr,apr,0));
+					vector3 badpos=(rotatevector((0,apr),angle),0);
+
+					it.setxyz(it.pos+badpos);
 					A_Face(it,0,0,flags:FAF_BOTTOM,z_ofs:0);
 					double pitchcover=pitch;double angcover=angle;
-					it.setxyz(it.pos-2*(apr,apr,0));
+					it.setxyz(it.pos-2*badpos);
 					A_Face(it,0,0,flags:FAF_TOP,z_ofs:0);
 					angcover=(
 							deltaangle(pitchcover,pitch),
 							deltaangle(angcover,angle)
 						).length();
-					it.setxyz(it.pos+(apr,apr,0));
+					it.setxyz(it.pos+badpos);
 
 					angcover*=losmul;
 					dmg=ceil(fragdamage*min(1.,angcover*(1./40.)));
