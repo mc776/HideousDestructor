@@ -2,7 +2,7 @@
 // Bolt-Action Rifle
 // ------------------------------------------------------------
 actor BossMOA:InventoryFlag{inventory.maxamount 36}
-actor BossZoomDegree:InventoryFlag{inventory.maxamount 5}
+actor BossZoomDegree:InventoryFlag{inventory.maxamount 55}
 actor BossChamber : Ammo
 {
 	+inventory.ignoreskill
@@ -368,7 +368,7 @@ actor BossRifle : HDWeapon
 			A_GiveInventory("BossZoom",1);
 			if(countinv("PressingFire")>0){A_GiveInventory("BossZoomDegree",1);}
 			else if(countinv("PressingAltFire")>0){A_TakeInventory("BossZoomDegree",1);}
-		}
+		}goto zoomadjust
 	zoomclicked:
 		BARG A 1{
 			A_WeaponReady(WRF_NOFIRE);
