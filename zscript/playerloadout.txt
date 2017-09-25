@@ -43,7 +43,8 @@ extend class HDPlayerPawn{
 				if(getcvar("hd_vulczoom"))vvv.weaponstatus[2]=getcvar("hd_vulczoom");
 			}
 		}
-		if(countinv("RocquetteLauncher")){  
+		if(countinv("RocquetteLauncher")){
+			A_SetInventory("RocketZoom",getcvar("hd_rlzoom"));
 			if(getcvar("hd_rlmode")==1){ //GL
 				A_GiveInventory("IsUsingRocketUnderslung");
 			}else if(getcvar("hd_rlmode")==2){ //HEAT

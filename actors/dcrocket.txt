@@ -1,7 +1,6 @@
 // ------------------------------------------------------------
 //   Rocket Launcher
 // ------------------------------------------------------------
-
 ACTOR RocquetteLauncher : HDWeapon
 {
 	game Doom
@@ -266,11 +265,15 @@ ACTOR RocquetteLauncher : HDWeapon
 		MISG B 1 offset(0,34)
 		goto nope
 
-	Zoom:
+	zoom:
+		"----" A 0 A_JumpIfInventory("IsUsingRocketUnderslung",1,"nope")
+		MISG A 1 A_WeaponReady(WRF_NOFIRE)
 		MISG A 0{
-			if(countinv("RocketZoom")>0){A_TakeInventory("RocketZoom");}
-			else{A_GiveInventory("RocketZoom");}
-		}goto nope
+			if(countinv("PressingFire")){A_GiveInventory("RocketZoom",1);}
+			else if(countinv("PressingAltFire")){A_TakeInventory("RocketZoom",1);}
+			if(countinv("PressingZoom")){return state("zoomadjust");}
+			return state("nope");
+		}loop
 	user4:
 	Unload:
 		TNT1 A 0 A_JumpIfInventory("HEATLoaded",1,"AltReload")
@@ -333,7 +336,7 @@ ACTOR RocquetteLauncher : HDWeapon
 		stop
 	}
 }
-actor RocketZoom : InventoryFlag {}
+actor RocketZoom:InventoryFlag{inventory.maxamount 32}
 actor RocketMag : Ammo
 {
 	+inventory.ignoreskill

@@ -81,8 +81,8 @@ class Vulcanette:HDWeapon{
 		VULG A 0{
 			int iws=invoker.weaponstatus[2]+1;
 			if(countinv("PressingAltFire"))iws-=2;
-			invoker.weaponstatus[2]=clamp(iws,0,2);
-		}
+			invoker.weaponstatus[2]=clamp(iws,0,27);
+		}goto zoomadjust;
 	zoomclicked:
 		VULG A 1{
 			A_WeaponReady(WRF_NOFIRE);

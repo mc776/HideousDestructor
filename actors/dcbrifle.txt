@@ -67,7 +67,7 @@ actor LiberatorHeat:InventoryFlag{inventory.maxamount 50}
 actor LiberatorFullAuto:InventoryFlag{}
 actor LiberatorGrenadeMode:InventoryFlag{}
 actor LiberatorZoom:InventoryFlag{}
-actor LiberatorZoomDegree:InventoryFlag{inventory.maxamount 3}
+actor LiberatorZoomDegree:InventoryFlag{inventory.maxamount 32}
 actor LiberatorNoMag:InventoryFlag{}
 actor LiberatorSpentChamber:InventoryFlag{}
 actor LiberatorVentHeat:ActionItem{
@@ -305,7 +305,7 @@ actor LiberatorRifle : HDWeapon
 		BRFG A 0{
 			if (countinv("PressingFire")>0){A_GiveInventory("LiberatorZoomDegree",1);}
 			else if (countinv("PressingAltFire")>0){A_TakeInventory("LiberatorZoomDegree",1);}
-		}
+		}goto zoomadjust
 	zoomclicked:
 		BRFG A 1{
 			A_WeaponReady(WRF_NOFIRE);

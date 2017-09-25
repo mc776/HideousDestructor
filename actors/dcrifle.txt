@@ -444,8 +444,8 @@ actor ZM66GrenadeRifle:HDWeapon{
 	zoomclick:
 		RIFG A 0{
 			if(countinv("PressingFire")){A_GiveInventory("ZM66ZoomDegree",1);}
-			else if(countinv("PressingAltFire")){A_TakeInventory("ZM66ZoomDegree",1);}
-		}
+			else{A_TakeInventory("ZM66ZoomDegree",1);}
+		}goto zoomadjust
 	zoomclicked:
 		RIFG A 1{
 			A_WeaponReady(WRF_NOFIRE);
@@ -520,7 +520,7 @@ actor ZM66Zoom:InventoryFlag{}
 actor ZM66BrokenRound:InventoryFlag{}
 actor ZM66JailbrokenMag:InventoryFlag{}
 actor ZM66NoMag:InventoryFlag{}
-actor ZM66ZoomDegree:InventoryFlag{inventory.maxamount 2}
+actor ZM66ZoomDegree:InventoryFlag{inventory.maxamount 27}
 actor ZM66Ratchet:InventoryFlag{Inventory.MaxAmount 3}
 actor ZM66Heat:InventoryFlag{Inventory.MaxAmount 80}
 actor ZM66FullAuto:InventoryFlag{Inventory.MaxAmount 2}

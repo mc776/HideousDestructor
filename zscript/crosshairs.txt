@@ -48,9 +48,9 @@ extend class HDStatusBar{
 					scale:(1.6,1.7)
 				);
 				if(hpl.countinv("ZM66Zoom")){
-					int fv=7-hpl.countinv("ZM66ZoomDegree");
-					if(fv<7)fv-=3;
-					texman.setcameratotexture(hpc,"TCAMTEX3",fv);
+					texman.setcameratotexture(hpc,"TCAMTEX3",
+						(35-hpl.countinv("ZM66ZoomDegree"))*0.2
+					);
 					drawimage(
 						"TCAMTEX3",(0,-53),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 						alpha:0.9,scale:(0.31,0.31)
@@ -67,9 +67,9 @@ extend class HDStatusBar{
 				"XH25",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 				alpha:0.8,scale:(1.7,1.7)
 			);
-			int fv=7-wp.weaponstatus[2];
-			if(fv<7)fv-=3;
-			texman.setcameratotexture(hpc,"TCAMTEX3",fv);
+			texman.setcameratotexture(hpc,"TCAMTEX3",
+				(35-wp.weaponstatus[2])*0.2
+			);
 			drawimage(
 				"TCAMTEX3",(0,47),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 				alpha:0.9,scale:(0.28,0.28)
@@ -96,7 +96,7 @@ extend class HDStatusBar{
 					alpha:0.9,scale:(2.,2.)
 				);
 				texman.setcameratotexture(hpc,"TCAMTEX3",
-					hpl.countinv("RocketZoom")?2:5
+					(35-hpl.countinv("RocketZoom"))*0.2
 				);
 				drawimage(
 					"TCAMTEX3",(0,58),DI_SCREEN_CENTER|DI_ITEM_CENTER,
@@ -138,9 +138,9 @@ extend class HDStatusBar{
 					scale:(1.6,1.7)
 				);
 				if(hpl.countinv("LiberatorZoom")){
-					int fv=7-hpl.countinv("LiberatorZoomDegree");
-					if(fv<7)fv-=3;
-					texman.setcameratotexture(hpc,"TCAMTEX3",fv);
+					texman.setcameratotexture(hpc,"TCAMTEX3",
+						(35-hpl.countinv("LiberatorZoomDegree"))*0.2
+					);
 					drawimage(
 						"TCAMTEX3",(0,-53),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 						alpha:0.9,scale:(0.3,0.3)
