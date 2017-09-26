@@ -1,6 +1,16 @@
 // ------------------------------------------------------------
 // Gyro-Grenades and H.E.A.T.
 // ------------------------------------------------------------
+class AirburstCount:InventoryFlag{
+	default{inventory.maxamount 35000;+inventory.keepdepleted;}
+	override void DoEffect(){
+		if(owner.player && owner.getcvar("ab")){
+			amount=owner.getcvar("ab");
+//			owner.setcvar("ab",0);
+			owner.ACS_NamedExecuteAlways("ResetAirburstCVar");
+		}
+	}
+}
 class GyroGrenade:SlowProjectile{
 	int fuze;bool primed;
 	default{

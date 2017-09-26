@@ -1,6 +1,10 @@
 #library "HDACS"
 #include "zcommon.acs"
 
+script "ResetAirburstCVar"(void){
+	SetUserCVar(PlayerNumber(),"ab",0);
+}
+
 //legacy muzzle climb
 script "MuzzleClimb"(int climb, int twist){
 	if((climb)&&((CheckInventory("IsMoving"))||(CheckInventory("IsJumping"))||(CheckInventory("IsHit")))){

@@ -444,8 +444,8 @@ actor ZM66AssaultRifle:HDWeapon{
 		RIFG A 0{
 			if(countinv("PressingFire"))invoker.weaponstatus[ZM66S_ZOOM]++;
 			else invoker.weaponstatus[ZM66S_ZOOM]--;
-			invoker.weaponstatus[ZM66S_ZOOM]=clamp(invoker.weaponstatus[ZM66S_ZOOM],0,2);
-		}
+			invoker.weaponstatus[ZM66S_ZOOM]=clamp(invoker.weaponstatus[ZM66S_ZOOM],0,27);
+		}goto zoomadjust;
 	zoomclicked:
 		RIFG A 1{
 			A_WeaponReady(WRF_NOFIRE);
