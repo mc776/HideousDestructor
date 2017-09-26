@@ -2,8 +2,9 @@
 // ZM66 4.26mm UAC Standard Automatic Rifle
 // ------------------------------------------------------------
 const HDCONST_ZM66COOKOFF=21;
-actor ZM66AssaultRifle:HDWeapon{
+class ZM66AssaultRifle:HDWeapon{
 	default{
++weapon.cheatnotweapon;
 		weapon.selectionorder 20;
 		weapon.slotnumber 4;
 		inventory.pickupsound "misc/w_pkup";
@@ -17,9 +18,9 @@ actor ZM66AssaultRifle:HDWeapon{
 		super.tick();
 		drainheat(6,12);
 	}
-	action void brokenround(){
+	action bool brokenround(){
 		if(!(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBERBROKEN)){
-			int rnd=owner==null?10:1;
+			int rnd=invoker.owner==null?10:1;
 			int sq=invoker.weaponstatus[ZM66S_AUTO];
 			if(sq)rnd+=sq*sq;
 			rnd+=invoker.weaponstatus[ZM66S_MAG]/3; //int, leave it as division
@@ -297,7 +298,8 @@ actor ZM66AssaultRifle:HDWeapon{
 					&&(countinv("FourMilAmmo")>AmmoCap("FourMilAmmo")-invoker.weaponstatus[ZM66S_MAG])  
 				)
 			){
-				actor mmm=A_SpawnItemEx("HD4mmMag",12,0,height-12,1,0,-1,0,SXF_SETTARGET);
+				int garbage;actor mmm;
+				[garbage,mmm]=A_SpawnItemEx("HD4mmMag",12,0,height-12,1,0,-1,0,SXF_SETTARGET);
 				mmm.stamina=invoker.weaponstatus[ZM66S_MAG]%100;
 				A_SetTics(1);
 			}else{
@@ -467,7 +469,7 @@ actor ZM66AssaultRifle:HDWeapon{
 			A_SetCrosshair(21);
 			A_MuzzleClimb(-0.3,-0.3);
 		}
-		RIFG B 2 offset(0,34)
+		RIFG B 2 offset(0,34);
 		RIFG B 1 offset(4,38){
 			A_MuzzleClimb(-0.3,-0.3);
 		}
@@ -541,7 +543,7 @@ actor ZM66AssaultRifle:HDWeapon{
 
 			//shoot the bullet
 			//copy any changes to flash as well!
-			actor bbb=spawn("HDBullet426",pos+(0,0,8);
+			actor bbb=spawn("HDBullet426",pos+(0,0,8));
 			bbb.target=self;bbb.vel+=vel;
 			double brnd=invoker.weaponstatus[ZM66S_HEAT];
 			if(brnd>12.){  
@@ -569,44 +571,42 @@ actor ZM66AssaultRifle:HDWeapon{
 		goto spawn2;
 	}
 
-	/*
-		[0]status
-		[1]mag, -1 is emptymag
-		[3]firemode/ratchet (0=semi;1=auto;2=burst (if 2+, add 1 on each shot;>3, no shot))
-		[4]zoomlevel
-		[5]airburst
-		[6]heat
-		[[7]moa?]
-	*/
-	enum zm66status{
-		ZM66F_CHAMBER=1,
-		ZM66F_CHAMBERBROKEN=2,
-		ZM66F_DIRTYMAG=4,
-		ZM66F_GRENADELOADED=8,
-		ZM66F_NOLAUNCHER=16,
-		ZM66F_NOFIRESELECT=32,
-		ZM66F_GLMODE=64,
-		ZM66F_UNLOADONLY=128,
-
-		ZM66S_FLAGS=0,
-		ZM66S_MAG=1, //-1 is ampty
-		ZM66S_AUTO=2, //2 is burst, 2-5 counts ratchet
-		ZM66S_ZOOM=3,
-		ZM66S_AIRBURST=4,
-		ZM66S_HEAT=5,
-	};
-	override void beginplay(){
-		invoker.weaponstatus[ZM66S_FLAGS]=ZM66F_CHAMBER|ZM66F_GRENADELOADED;
-		invoker.weaponstatus[ZM66S_MAG]=50;
-		invoker.weaponstatus[ZM66S_AUTO]=0;
-		invoker.weaponstatus[ZM66S_ZOOMLEVEL]=0;
-		invoker.weaponstatus[ZM66S_AIRBURST]=0;
-		invoker.weaponstatus[ZM66S_HEAT]=0;
-		super.beginplay();
+	override void InitializeWepStats(bool idfa=false){
+		weaponstatus[ZM66S_FLAGS]=ZM66F_CHAMBER|ZM66F_GRENADELOADED;
+		weaponstatus[ZM66S_MAG]=50;
+		weaponstatus[ZM66S_AUTO]=0;
+		weaponstatus[ZM66S_ZOOM]=0;
+		weaponstatus[ZM66S_AIRBURST]=0;
+		weaponstatus[ZM66S_HEAT]=0;
 	}
 }
 
+/*
+	[0]status
+	[1]mag, -1 is emptymag
+	[3]firemode/ratchet (0=semi;1=auto;2=burst (if 2+, add 1 on each shot;>3, no shot))
+	[4]zoomlevel
+	[5]airburst
+	[6]heat
+	[[7]moa?]
+*/
+enum zm66status{
+	ZM66F_CHAMBER=1,
+	ZM66F_CHAMBERBROKEN=2,
+	ZM66F_DIRTYMAG=4,
+	ZM66F_GRENADELOADED=8,
+	ZM66F_NOLAUNCHER=16,
+	ZM66F_NOFIRESELECT=32,
+	ZM66F_GLMODE=64,
+	ZM66F_UNLOADONLY=128,
 
+	ZM66S_FLAGS=0,
+	ZM66S_MAG=1, //-1 is ampty
+	ZM66S_AUTO=2, //2 is burst, 2-5 counts ratchet
+	ZM66S_ZOOM=3,
+	ZM66S_AIRBURST=4,
+	ZM66S_HEAT=5,
+};
 
 class ZM66Spawner:IdleDummy{
 	states{
@@ -614,9 +614,9 @@ class ZM66Spawner:IdleDummy{
 		TNT1 A 0 nodelay{
 			let rrr=ZM66AssaultRifle(spawn("ZM66AssaultRifle",pos));
 			if(!rrr)return;
-			if(!random(0,4))rrr.weaponstatus[ZM66S_FLAGS]|=ZM66F_NOLAUNCHER;
-			else if(!random(0,4))rrr.weaponstatus[ZM66S_FLAGS]|=ZM66F_NOFIRESELECT;
-			if(rrr.weaponstatus[ZM66S_FLAGS]&ZM66F_NOLAUNCHER){
+			if(!random(0,4))rrr.weaponstatus[0]|=ZM66F_NOLAUNCHER;
+			else if(!random(0,4))rrr.weaponstatus[0]|=ZM66F_NOFIRESELECT;
+			if(rrr.weaponstatus[0]&ZM66F_NOLAUNCHER){
 				spawn("ZM66RifleMags",pos+(7,0,0));
 				spawn("ZM66RifleMags",pos+(5,0,0));
 			}else{
