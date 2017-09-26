@@ -90,6 +90,29 @@ extend class HDStatusBar{
 				-30,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
 			);
 		}
+		else if(w is "ZM66AssaultRifle"){
+			let zzz=zm66assaultrifle(w);
+			if(zzz){
+				if(!(zzz.weaponstatus[0]&ZM66F_NOFIRESELECT))
+				drawwepcounter(zzz.weaponstatus[ZM66S_AUTO],
+					-22,-10,"RBRSA3A7","STFULAUT","STBURAUT"
+				);
+				if(zzz.weaponstatus[0]&ZM66F_GRENADELOADED)drawwepdot(-16,-13,(4,2.6));
+			}
+			int lod=min(zzz.weaponstatus[ZM66S_MAG]%100,50);
+			drawwepnum(lod,50);
+			if(zzz.weaponstatus[0]&ZM66F_CHAMBER){
+				drawwepdot(-16,-10,(3,1));
+				lod++;
+			}
+			if(zzz.weaponstatus[ZM66S_MAG]>100)lod=random[shitgun](10,99);
+			drawnum(lod,-16,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_RED);
+			if(zzz.weaponstatus[0]&ZM66F_GLMODE)drawnum(pp.countinv("AirburstCount"),
+				-30,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
+			);else drawnum(zzz.weaponstatus[ZM66S_ZOOM],
+				-30,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
+			);
+		}
 		else if(w is "Vulcanette"){
 			let vvv=vulcanette(w);
 			if(vvv){
