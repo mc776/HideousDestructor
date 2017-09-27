@@ -4,10 +4,12 @@
 class AirburstCount:InventoryFlag{
 	default{inventory.maxamount 35000;+inventory.keepdepleted;}
 	override void DoEffect(){
-		if(owner.player && owner.getcvar("ab")){
-			amount=owner.getcvar("ab");
-//			owner.setcvar("ab",0);
-			owner.ACS_NamedExecuteAlways("ResetAirburstCVar");
+		if(owner.player){
+			int abv=cvar.getcvar("ab",owner.player).getint();
+			if(abv){
+				amount=abv;
+				cvar.getcvar("ab",owner.player).setint(0);
+			}
 		}
 	}
 }
