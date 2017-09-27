@@ -28,6 +28,20 @@ class HDLoaded:ActionItem{
 		TNT1 A 0{
 			A_PlaySound("misc/w_pkup",CHAN_AUTO);
 			A_Print("Weapons reloaded.");
+
+			thinkeriterator it=thinkeriterator.create("HDWeapon");
+			actor hdw;
+			while(
+				hdw=inventory(it.Next())
+			){
+				let hdww=hdweapon(hdw);
+				if(
+					hdww
+					&& hdww.owner==self
+				)hdww.initializewepstats(true);
+			}
+
+			//unscriptified weapons below
 			if(countinv("Lumberjack")){
 				let wpn=Lumberjack(findinventory("Lumberjack"));
 				if(wpn)wpn.initializewepstats(true);

@@ -16,7 +16,7 @@ class ZM66AssaultRifle:HDWeapon{
 	}
 	override void tick(){
 		super.tick();
-		drainheat(6,12);
+		drainheat(ZM66S_HEAT,12);
 	}
 	action bool brokenround(){
 		if(!(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBERBROKEN)){
@@ -62,15 +62,15 @@ class ZM66AssaultRifle:HDWeapon{
 			if (countinv("PressingFire")||countinv("PressingAltfire")){
 				setweaponstate("abclick");
 			}else if(countinv("PressingZoom")){
-				invoker.weaponstatus[ZM66S_AIRBURST]=-1;
+				A_TakeInventory("AirBurstCount");
 				setweaponstate("nope");
 			}else if(countinv("PressingFireMode"))setweaponstate("abadjust");
-			setweaponstate("nope");
+			else setweaponstate("nope");
 		}
 	abclick:
 		RIFG A 0{
-			if(countinv("PressingFire"))invoker.weaponstatus[ZM66S_AIRBURST]++;
-			else invoker.weaponstatus[ZM66S_AIRBURST]--;
+			if(countinv("PressingFire"))A_GiveInventory("AirBurstCount",1);
+			else A_TakeInventory("AirBurstCount",1);
 			setweaponstate("abadjust");
 		}
 
@@ -111,15 +111,15 @@ class ZM66AssaultRifle:HDWeapon{
 			//copypaste any changes to spawnshoot as well!
 			actor bbb=spawn("HDBullet426",pos+(0,0,height-8));
 			bbb.target=self;bbb.vel+=vel;bbb.pitch=pitch;bbb.angle=angle;
-			double brnd=invoker.weaponstatus[ZM66S_HEAT];
-			if(brnd>12.){  
-				bbb.angle=angle+frandom(-brnd,brnd)*0.1;
-				bbb.pitch=pitch+frandom(-brnd,brnd)*0.1;
-				bbb.speed-=brnd*10.;
+			double brnd=invoker.weaponstatus[ZM66S_HEAT]*0.01;
+			if(brnd>0.12){
+				bbb.angle=angle+frandom(-brnd,brnd);
+				bbb.pitch=pitch+frandom(-brnd,brnd);
+				bbb.speed-=brnd*1000.;
 			}
 
 			invoker.weaponstatus[ZM66S_FLAGS]&=~ZM66F_CHAMBER;
-			invoker.weaponstatus[ZM66S_HEAT]+=random(2,4);
+			invoker.weaponstatus[ZM66S_HEAT]+=random(3,5);
 			A_AlertMonsters();
 		}
 		RIFF A 0 A_ZoomFactor(1.0,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
@@ -133,7 +133,8 @@ class ZM66AssaultRifle:HDWeapon{
 		}goto shootgun;
 	hold:
 		RIFG A 0 A_JumpIf(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_GLMODE,"FireFrag");
-		RIFG A 0 A_JumpIf(invoker.weaponstatus[ZM66S_AUTO]>=4,"nope");
+		RIFG A 0 A_JumpIf(invoker.weaponstatus[0]&ZM66F_NOFIRESELECT,"nope");
+		RIFG A 0 A_JumpIf(invoker.weaponstatus[ZM66S_AUTO]>4,"nope");
 		RIFG A 0 A_JumpIf(invoker.weaponstatus[ZM66S_AUTO],"shootgun");
 	althold:
 		---- A 1{
@@ -403,7 +404,6 @@ class ZM66AssaultRifle:HDWeapon{
 		RIFG A 0 A_JumpIf(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_GRENADELOADED,1);
 		stop;
 		RIFG A 2{
-			A_SetInventory("AirburstCount",invoker.weaponstatus[ZM66S_AIRBURST]);
 			A_SpawnItemEx("GyroGrenade",0,0,height-6,
 				vel.x,vel.y,vel.z,0,
 				SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
@@ -424,8 +424,8 @@ class ZM66AssaultRifle:HDWeapon{
 	altfire:
 		RIFG A 1 offset(0,34){
 			if(invoker.weaponstatus[0]&ZM66F_NOLAUNCHER)return;
-			invoker.weaponstatus[ZM66S_AIRBURST]=-1;
 			invoker.weaponstatus[0]^=ZM66F_GLMODE;
+			A_TakeInventory("AirburstCount");
 			A_SetCrosshair(21);
 		}goto nope;
 	zoom:
@@ -525,16 +525,16 @@ class ZM66AssaultRifle:HDWeapon{
 			//copy any changes to flash as well!
 			actor bbb=spawn("HDBullet426",pos+(0,0,8));
 			bbb.target=self;bbb.vel+=vel;
-			double brnd=invoker.weaponstatus[ZM66S_HEAT];
-			if(brnd>12.){  
-				bbb.angle=angle+frandom(-brnd,brnd)*0.1;
-				bbb.pitch=pitch+frandom(-brnd,brnd)*0.1;
-				bbb.speed-=brnd*10.;
+			double brnd=invoker.weaponstatus[ZM66S_HEAT]*0.01;
+			if(brnd>0.12){
+				bbb.angle=angle+frandom(-brnd,brnd);
+				bbb.pitch=pitch+frandom(-brnd,brnd);
+				bbb.speed-=brnd*1000.;
 			}
 
 			A_ChangeVelocity(frandom(-0.4,0.1),frandom(-0.1,0.08),1,CVF_RELATIVE);
 			A_PlaySound("weapons/rifle",CHAN_VOICE);
-			invoker.weaponstatus[ZM66S_HEAT]+=random(1,random(1,3));
+			invoker.weaponstatus[ZM66S_HEAT]+=random(3,5);
 			angle+=frandom(4,-14);
 			pitch+=frandom(-8,8);
 		}
@@ -552,23 +552,23 @@ class ZM66AssaultRifle:HDWeapon{
 	}
 
 	override void InitializeWepStats(bool idfa=false){
-		weaponstatus[ZM66S_FLAGS]=ZM66F_CHAMBER|ZM66F_GRENADELOADED;
+		weaponstatus[ZM66S_FLAGS]|=ZM66F_CHAMBER|ZM66F_GRENADELOADED;
 		weaponstatus[ZM66S_MAG]=50;
-		weaponstatus[ZM66S_AUTO]=0;
-		weaponstatus[ZM66S_ZOOM]=0;
-		weaponstatus[ZM66S_AIRBURST]=0;
-		weaponstatus[ZM66S_HEAT]=0;
+		if(!idfa && !owner){
+			weaponstatus[ZM66S_ZOOM]=0;
+			weaponstatus[ZM66S_AUTO]=0;
+			weaponstatus[ZM66S_HEAT]=0;
+		}
 	}
 }
 
 /*
 	[0]status
 	[1]mag, -1 is emptymag
-	[3]firemode/ratchet (0=semi;1=auto;2=burst (if 2+, add 1 on each shot;>3, no shot))
-	[4]zoomlevel
-	[5]airburst
-	[6]heat
-	[[7]moa?]
+	[2]firemode/ratchet (0=semi;1=auto;2=burst (if 2+, add 1 on each shot;>3, no shot))
+	[3]zoomlevel
+	[4]heat
+	[[5]moa?]
 */
 enum zm66status{
 	ZM66F_CHAMBER=1,
@@ -584,8 +584,7 @@ enum zm66status{
 	ZM66S_MAG=1, //-1 is ampty
 	ZM66S_AUTO=2, //2 is burst, 2-5 counts ratchet
 	ZM66S_ZOOM=3,
-	ZM66S_AIRBURST=4,
-	ZM66S_HEAT=5,
+	ZM66S_HEAT=4,
 };
 
 class ZM66Spawner:IdleDummy{

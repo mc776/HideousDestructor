@@ -99,7 +99,7 @@ extend class HDStatusBar{
 				);
 				if(zzz.weaponstatus[0]&ZM66F_GRENADELOADED)drawwepdot(-16,-13,(4,2.6));
 			}
-			int lod=min(zzz.weaponstatus[ZM66S_MAG]%100,50);
+			int lod=clamp(zzz.weaponstatus[ZM66S_MAG]%100,0,50);
 			drawwepnum(lod,50);
 			if(zzz.weaponstatus[0]&ZM66F_CHAMBER){
 				drawwepdot(-16,-10,(3,1));
