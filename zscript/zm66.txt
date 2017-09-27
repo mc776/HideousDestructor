@@ -501,30 +501,43 @@ class ZM66AssaultRifle:HDWeapon{
 		ZM66 EF select-fire no-GL shooting
 		ZM66 G semi no-GL normal
 		[ZM66 H semi GL normal???]
+
+		RIGL A
+		RIGL BC 
 	*/
 	spawn:
-		ZM66 A 0 A_Stop();
+		---- A 0 A_Stop();
 	spawn2:
-		ZM66 A -1{
+		---- A -1{
+			//set sprite
+			if(invoker.weaponstatus[0]&ZM66F_NOLAUNCHER){
+				if(invoker.weaponstatus[0]&ZM66F_NOFIRESELECT)
+					sprite=getspriteindex("RIFSA0");
+				else sprite=getspriteindex("RIFLA0");
+			}else sprite=getspriteindex("RIGLA0");
+
+			//set to no-mag frame
+			if(invoker.weaponstatus[ZM66S_MAG]<0){
+				frame=3;
+				if(!(invoker.weaponstatus[0]&ZM66F_CHAMBER))return;
+			}
+
 			if(
 				invoker.weaponstatus[0]&ZM66F_CHAMBER
 				&&!(invoker.weaponstatus[0]&ZM66F_CHAMBERBROKEN)
 				&&invoker.weaponstatus[ZM66S_HEAT]>HDCONST_ZM66COOKOFF  
 			){
 				setstatelabel("spawnshoot");
-			}else if(invoker.weaponstatus[0]&ZM66F_NOLAUNCHER){
-				if(invoker.weaponstatus[0]&ZM66F_NOFIRESELECT)frame=6;
-				else frame=3;
 			}
 		}
 	spawnshoot:
-		ZM66 A 1 light("SHOT"){
+		#### C 1 light("SHOT"){
 			if(invoker.weaponstatus[0]&ZM66F_NOLAUNCHER)frame=4;else frame=1;
 
 			//shoot the bullet
 			//copy any changes to flash as well!
 			actor bbb=spawn("HDBullet426",pos+(0,0,8));
-			bbb.target=self;bbb.vel+=vel;
+			bbb.target=self;bbb.vel+=vel;bbb.pitch=pitch;bbb.angle=angle;
 			double brnd=invoker.weaponstatus[ZM66S_HEAT]*0.01;
 			if(brnd>0.12){
 				bbb.angle=angle+frandom(-brnd,brnd);
@@ -535,11 +548,10 @@ class ZM66AssaultRifle:HDWeapon{
 			A_ChangeVelocity(frandom(-0.4,0.1),frandom(-0.1,0.08),1,CVF_RELATIVE);
 			A_PlaySound("weapons/rifle",CHAN_VOICE);
 			invoker.weaponstatus[ZM66S_HEAT]+=random(3,5);
-			angle+=frandom(4,-14);
-			pitch+=frandom(-8,8);
+			angle+=frandom(2,-7);
+			pitch+=frandom(-4,4);
 		}
-		ZM66 A 2{
-			frame++;
+		#### B 2{
 			if(invoker.weaponstatus[ZM66S_AUTO]>1)A_SetTics(0);  
 			invoker.weaponstatus[0]&=~(ZM66F_CHAMBER|ZM66F_CHAMBERBROKEN);
 			if(invoker.weaponstatus[ZM66S_MAG]%100>0){  
