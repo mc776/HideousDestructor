@@ -189,6 +189,7 @@ class ZM66AssaultRifle:HDWeapon{
 				invoker.weaponstatus[ZM66S_MAG]--;
 				invoker.weaponstatus[ZM66S_FLAGS]|=ZM66F_CHAMBER;
 			}else{
+				invoker.weaponstatus[ZM66S_MAG]=min(invoker.weaponstatus[ZM66S_MAG],0);
 				A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
 			}
 			if(!invoker.weaponstatus[ZM66S_AUTO])A_SetTics(1);
@@ -349,6 +350,7 @@ class ZM66AssaultRifle:HDWeapon{
 		RIFG A 4 offset(-17,49) A_Log("Reloading a 4.26 UAC Standard magazine into another firearm without auth--\cgFUCK YOURSELF.\c- Sincerely, management.",true);
 	chamber_manual:
 		RIFG A 4 offset(-15,43){
+			if(!invoker.weaponstatus[ZM66S_MAG]%100)invoker.weaponstatus[ZM66S_MAG]=0;
 			if(
 				!(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBER)
 				&& !(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBER)
