@@ -509,6 +509,18 @@ class ZM66AssaultRifle:HDWeapon{
 	*/
 	spawn:
 		---- A 0 A_Stop();
+		---- A 0{
+			//don't jam just because
+			if(
+				!(invoker.weaponstatus[0]&ZM66F_CHAMBER)
+				&&!(invoker.weaponstatus[0]&ZM66F_CHAMBERBROKEN)
+				&&invoker.weaponstatus[ZM66S_MAG]>0
+			){
+				invoker.weaponstatus[ZM66S_MAG]--;
+				invoker.weaponstatus[0]|=ZM66F_CHAMBER;
+				brokenround();
+			}
+		}
 	spawn2:
 		---- A -1{
 			//set sprite
