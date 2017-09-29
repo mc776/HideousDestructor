@@ -32,7 +32,7 @@ class HDBullet:HDActor{
 	property distantsounder:distantsounder;
 	default{
 		projectile; -nogravity
-		+bloodsplatter +noextremedeath +cannotpush +hittracer +forcexybillboard
+		+noextremedeath +cannotpush +hittracer +forcexybillboard
 		height 0.05;radius 0.05;
 		maxstepheight 0;
 		missileheight 0; projectilekickback 20;
@@ -281,6 +281,13 @@ class HDBullet:HDActor{
 				else targ=a.tracer.getclassname();
 			A_Log(string.format("%s \ca%i \cj%s",self.getclassname(),dmg,targ));
 		}
+
+		//don't place puff/blood right on edge of box - looks bad with too many
+		setorigin(pos+(
+			cos(pitch)*cos(angle)*random(1,a.tracer.radius),
+			cos(pitch)*sin(angle)*random(1,a.tracer.radius),
+			sin(-pitch)*random(1,a.tracer.radius)
+		),false);
 
 		//puff or bleed as appropriate
 		if(bbloodlessimpact||!a.tracer.bshootable||a.tracer.bnoblood)Puff();
