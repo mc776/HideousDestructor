@@ -107,6 +107,26 @@ class HDWeapon:Weapon{
 			}
 		}
 	}
+	//activate a laser rangefinder
+	//because every gun should have one of these
+	action double FindRange(){
+		actor a;double b;
+		[a,b]=lineattack(
+			angle,9999999999,pitch,0,"none",
+			"LaserCheckPuff",flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ,
+			offsetz:height-6
+		);
+		if(!a){
+			A_Log("\cd[\cuRF\cd]\cj ERROR",true);
+			return 0;
+		}
+		a.addz(-height+6);
+		b=distance3d(a)*(1./HDCONST_ONEMETRE);
+		if(b>128)b*=frandom(0.999,1.001);
+		A_Log(string.format("\cd[\cuRF\cd]\cj \cf%.2f\cj metre%s",b,b==1?"":"s"),true);
+		return b;
+	}
+
 	override void touch(actor toucher){}
 	virtual void actualpickup(actor other){
 		if(other.countinv(getclassname()))return;
@@ -319,6 +339,8 @@ class HDWeapon:Weapon{
 	user2:
 		---- A 0 A_Jump(256,"firemode");
 	user3:
+		---- A 0 FindRange();
+		goto nope;
 	user4:
 		---- A 0 A_Jump(256,"unload");
 	fire:
@@ -351,5 +373,8 @@ class HDWeapon:Weapon{
 		---- A 0 A_Jump(256,"ready");
 	}
 }
+
+//for the rangefinder function
+class LaserCheckPuff:CheckPuff{default{-alwayspuff -skyexplode}}
 
 
