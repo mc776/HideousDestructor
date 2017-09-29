@@ -113,7 +113,7 @@ class HDMedikitter:HDWoundFixer{
 			A_PlaySound("misc/bulletflesh",CHAN_BODY);
 			invoker.patchwound(1,self);
 		}goto flashend;
-	flashtampon: //heh
+	flashnail:
 		TNT1 A 1{
 			A_PlaySound("misc/punch",CHAN_WEAPON);
 			A_PlaySound("misc/bulletflesh",CHAN_BODY);
@@ -290,7 +290,7 @@ class HDMedikitter:HDWoundFixer{
 		}
 		TNT1 A 0 A_Jump(112,"stapler");
 	injector:
-		TNT1 A 0 A_Overlay(3,"flashtampon");
+		TNT1 A 0 A_Overlay(3,"flashnail");
 		goto patchupend;
 	stapler:
 		TNT1 AAAAA random(4,5){
