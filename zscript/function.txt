@@ -267,16 +267,7 @@ struct HDF play{
 	//HDF.MaxInv(self,"FourMilAmmo")
 	static int MaxInv(actor holder,class<inventory> inv){
 		if(holder.findinventory(inv))return holder.findinventory(inv).maxamount;
-		holder.A_GiveInventory(inv);
-		let hh=holder.findinventory(inv);
-		if(!hh){
-			if(hd_debug)
-			holder.A_Log(string.format("Invalid type for HDF.maxinv: %s",inv.getclassname()));
-			return -1;
-		}
-		int max=hh.maxamount;
-		hh.destroy();
-		return max;
+		return getdefaultbytype(inv).maxamount;
 	}
 	//transfer inventory: one gets, the other loses
 	enum TransferInventoryFlags{
