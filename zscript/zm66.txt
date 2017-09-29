@@ -4,7 +4,6 @@
 const HDCONST_ZM66COOKOFF=21;
 class ZM66AssaultRifle:HDWeapon{
 	default{
-+weapon.cheatnotweapon;
 		weapon.selectionorder 20;
 		weapon.slotnumber 4;
 		inventory.pickupsound "misc/w_pkup";
@@ -618,7 +617,10 @@ class ZM66AltStarter:ActionItem{
 			if(invoker.amount==1)zzz.weaponstatus[0]|=ZM66F_NOLAUNCHER;
 			else if(invoker.amount==2)zzz.weaponstatus[0]|=ZM66F_NOLAUNCHER|ZM66F_NOFIRESELECT;
 			zzz.attachtoowner(self);
-			if(player)player.pendingweapon=zzz;
+			if(player){
+				player.readyweapon=zzz;
+				player.pendingweapon=zzz;
+			}
 		}fail;
 	}
 }
