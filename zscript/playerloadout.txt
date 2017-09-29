@@ -37,6 +37,13 @@ extend class HDPlayerPawn{
 			A_SetInventory("ZM66FullAuto",getcvar("hd_zmfiremode"));
 			A_SetInventory("ZM66ZoomDegree",getcvar("hd_zmzoom"));
 		}
+		if(countinv("ZM66AssaultRifle")){
+			let zzz=ZM66AssaultRifle(findinventory("ZM66AssaultRifle"));
+			if(zzz){
+				zzz.weaponstatus[ZM66S_AUTO]=getcvar("hd_zmfiremode");
+				zzz.weaponstatus[ZM66S_ZOOM]=getcvar("hd_zmzoom");
+			}
+		}
 		if(countinv("Vulcanette")){
 			let vvv=vulcanette(findinventory("vulcanette"));
 			if(vvv){
@@ -259,15 +266,15 @@ extend class HDPlayerPawn{
 			case 40:
 			case 41:
 			case 42:
-				if(num==40)nw="ZM66SemiRifle";
-				else if(num==41)nw="ZM66Rifle";
-				else if(num==42){
-					nw="ZM66GrenadeRifle";
-					A_GiveInventory("ZM66GLoaded");
+				nw="ZM66AssaultRifle";
+				let zzz=hdweapon(spawn("ZM66AssaultRifle",pos));
+				if(zzz){
+					if(num<42){
+						zzz.weaponstatus[0]|=ZM66F_NOLAUNCHER;
+						if(num==40)zzz.weaponstatus[0]|=ZM66F_NOFIRESELECT;
+					}
 				}
-				A_GiveInventory("ZM66Chamber");
-				A_GiveInventory("ZM66Loaded",50);
-				A_GiveInventory(nw);
+				zzz.AttachToOwner(self);
 				break;
 			case 43:
 				nw="Vulcanette";A_GiveInventory(nw);
