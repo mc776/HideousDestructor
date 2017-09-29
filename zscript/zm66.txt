@@ -77,7 +77,10 @@ class ZM66AssaultRifle:HDWeapon{
 	select0:
 		RIFG A 0{
 			invoker.weaponstatus[0]&=~ZM66F_GLMODE;
-			if(invoker.weaponstatus[0]&ZM66F_NOLAUNCHER)setweaponstate("select0small");
+			if(invoker.weaponstatus[0]&ZM66F_NOLAUNCHER){
+				invoker.weaponstatus[0]&=~ZM66F_GRENADELOADED;
+				setweaponstate("select0small");
+			}
 		}goto select0big;
 	deselect0:
 		RIFG A 0{
@@ -92,7 +95,7 @@ class ZM66AssaultRifle:HDWeapon{
 				A_DropInventory(invoker.getclassname());
 				return;
 			}
-			if(invoker.weaponstatus[0]&ZM66F_NOLAUNCHER)setweaponstate("select0small");
+			if(invoker.weaponstatus[0]&ZM66F_NOLAUNCHER)setweaponstate("deselect0small");
 		}goto deselect0big;
 	flash:
 		RIFF A 1 bright{
@@ -605,15 +608,29 @@ enum zm66status{
 	ZM66S_HEAT=4,
 };
 
+
+class ZM66AltStarter:ActionItem{
+	default{inventory.maxamount 2;} //we don't need this but that's probably a bug
+	states{
+	pickup:
+		TNT1 A 0{
+			let zzz=ZM66AssaultRifle(spawn("ZM66AssaultRifle",pos));if(!zzz)return;
+			if(invoker.amount==1)zzz.weaponstatus[0]|=ZM66F_NOLAUNCHER;
+			else if(invoker.amount==2)zzz.weaponstatus[0]|=ZM66F_NOLAUNCHER|ZM66F_NOFIRESELECT;
+			zzz.attachtoowner(self);
+			if(player)player.pendingweapon=zzz;
+		}fail;
+	}
+}
 class ZM66Spawner:IdleDummy{
 	states{
 	spawn:
 		TNT1 A 0 nodelay{
-			let rrr=ZM66AssaultRifle(spawn("ZM66AssaultRifle",pos));
-			if(!rrr)return;
-			if(!random(0,4))rrr.weaponstatus[0]|=ZM66F_NOLAUNCHER;
-			else if(!random(0,4))rrr.weaponstatus[0]|=ZM66F_NOFIRESELECT;
-			if(rrr.weaponstatus[0]&ZM66F_NOLAUNCHER){
+			let zzz=ZM66AssaultRifle(spawn("ZM66AssaultRifle",pos));
+			if(!zzz)return;
+			if(!random(0,4))zzz.weaponstatus[0]|=ZM66F_NOLAUNCHER;
+			else if(!random(0,4))zzz.weaponstatus[0]|=ZM66F_NOFIRESELECT;
+			if(zzz.weaponstatus[0]&ZM66F_NOLAUNCHER){
 				spawn("ZM66RifleMags",pos+(7,0,0));
 				spawn("ZM66RifleMags",pos+(5,0,0));
 			}else{
