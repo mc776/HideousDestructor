@@ -110,13 +110,13 @@ class ZM66AssaultRifle:HDWeapon{
 
 			//shoot the bullet
 			//copypaste any changes to spawnshoot as well!
-			actor bbb=spawn("HDBullet426",pos+(0,0,height-8));
+			actor bbb=spawn("HDBullet426",pos+(0,0,height-6));
 			bbb.target=self;bbb.vel+=vel;bbb.pitch=pitch;bbb.angle=angle;
 			double brnd=invoker.weaponstatus[ZM66S_HEAT]*0.01;
 			if(brnd>0.12){
 				bbb.angle=angle+frandom(-brnd,brnd);
 				bbb.pitch=pitch+frandom(-brnd,brnd);
-				bbb.speed-=brnd*1000.;
+				bbb.speed-=brnd*100.;
 			}
 
 			invoker.weaponstatus[ZM66S_FLAGS]&=~ZM66F_CHAMBER;
@@ -344,7 +344,10 @@ class ZM66AssaultRifle:HDWeapon{
 				setweaponstate("chamber_manual");
 				return;
 			}
-			A_MuzzleClimb(frandom(2.3,3.6),frandom(2.4,3.8));
+			A_MuzzleClimb(
+				-frandom(0.4,0.6),frandom(2.,3.)
+				-frandom(0.2,0.3),frandom(1.,1.6)
+			);
 			A_PlaySound("weapons/rifleclick2",6);
 			A_PlaySound("weapons/smack",7);
 		}
@@ -369,7 +372,7 @@ class ZM66AssaultRifle:HDWeapon{
 
 	reloadend:
 		RIFG B 2 offset(-11,39);
-		RIFG A 1 offset(-8,37) A_MuzzleClimb(frandom(2,-24),frandom(2,-14));
+		RIFG A 1 offset(-8,37) A_MuzzleClimb(frandom(0.2,-2.4),frandom(0.2,-1.4));
 		RIFG A 1 offset(-3,34);
 		RIFG A 1 offset(0,33);
 		goto nope;
