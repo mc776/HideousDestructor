@@ -89,13 +89,14 @@ extend class HDPlayerPawn{
 			barrelwidth=1;
 			barreldepth=3;
 		}else if(wp is "ZM66AssaultRifle"){
-			amt=8+wp.weaponstatus[ZM66S_MAG]*0.03+(wp.weaponstatus[0]&ZM66F_GRENADELOADED?1:0);
 			if(wp.weaponstatus[0]&ZM66F_NOLAUNCHER){
+				amt=6.5+wp.weaponstatus[ZM66S_MAG]*0.02;
 				barrellength=25;
 				barrelwidth=0.5;
 				barreldepth=1;
-				amt--;
 			}else{
+				amt=8+wp.weaponstatus[ZM66S_MAG]*0.01
+					+(wp.weaponstatus[0]&ZM66F_GRENADELOADED?1.:0.);
 				barrellength=28;
 				barrelwidth=1;
 				barreldepth=3;
