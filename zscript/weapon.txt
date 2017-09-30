@@ -378,3 +378,17 @@ class HDWeapon:Weapon{
 class LaserCheckPuff:CheckPuff{default{-alwayspuff -skyexplode}}
 
 
+
+extend class HDPlayerPawn{
+	override void FireWeaponAlt(state stat){
+		super.fireweaponalt(stat);
+		player.weaponstate|=WF_WEAPONBOBBING;
+	}
+	override void FireWeapon(state stat){
+		super.fireweapon(stat);
+		player.weaponstate|=WF_WEAPONBOBBING;
+	}
+}
+
+
+
