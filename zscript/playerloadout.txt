@@ -70,6 +70,10 @@ extend class HDPlayerPawn{
 		if(countinv("BossRifle")){
 			A_SetInventory("BossZoomDegree",getcvar("hd_bosszoom"));
 			A_SetInventory("BossMOA",getcvar("hd_bossmoa"));
+			let bbb=hdweapon(findinventory("bossrifle"));
+			if(bbb){
+				if(getcvar("hd_bossfrontreticle"))bbb.weaponstatus[0]|=1;
+			}
 		}
 
 		//so you don't start out with the fist all the time

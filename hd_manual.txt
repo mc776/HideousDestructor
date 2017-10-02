@@ -435,11 +435,11 @@ hd_autostrip: Normally you must hit hd_strip to strip off your armour, or hit Re
 
 The following cvars affect how some of your weapons are set up when you first spawn with them in your loadout. Default setting in parentheses.
 
-hd_startzoomed (0): When you raise your weapon, you normally start out with the non-scoped or non-zoomed sight picture for your crosshair. Setting this to 1 has you start with the scoped, zoomed view instead. This also governs weapons with binary zoom settings, e.g., the rocket launcher.
+hd_startzoomed (0): When you raise your weapon, you normally start out with the non-scoped or non-zoomed sight picture for your crosshair. Setting this to 1 has you start with the scoped, zoomed view instead. Only affects weapons where the zoomed view is above the centre of the screen.
 
 hd_derpmode (0): Sets the starting mode for the DERP. 0=turret; 1=ambush; 2=patrol; 3=follow.
 
-hd_smgfiremode, hd_zmfiremode, hd_libauto (0): Set semi or full automatic for the SMG, ZM66 and Liberator. 1=full auto for the rifles, but burst for the SMG. 2=burst for the ZM66, but full auto for the SMG.
+hd_pistauto, hd_smgfiremode, hd_zmfiremode, hd_libauto (0): Set semi or full automatic for the pistol, SMG, ZM66 and Liberator. 1=full auto for the rifles, but burst for the SMG. 2=burst for the ZM66, but full auto for the SMG.
 
 hd_huntauto (0): If set to 1, starts in semiauto instead of pump.
 
@@ -447,13 +447,15 @@ hd_vulcsuper (0): If set to 1, starts in 2100 RPM mode rather than 700.
 
 hd_rlmode (0): If set to 1, starts in grenade rather than rocket mode. If set to 2, you lose 1 loaded rocket and start with a HEAT loaded instead.
 
-hd_zmzoom, hd_vulczoom, hd_libzoom (0): Starts with the ZM66, Vulcanette and Liberator scope at various zoom levels, up to a maximum of 2 for the ZM and 3 for the Liberator (equivalent to 5 for the boss).
+hd_zmzoom, hd_vulczoom, hd_rlzoom, hd_libzoom (0): Starts with the ZM66, Vulcanette and Liberator scope at various zoom levels, up to a maximum of 27 for the ZM66 and Vulcanette and 32 for the RL and Liberator.
 
 hd_tbmode (0): If set to 1, starts the Thunder Buster in its alternate CQB spray setting.
 
 hd_bossmoa (0): Presets the Boss reticle bullet drop adjustment. See the Boss description in this manual for details.
 
-hd_bosszoom (0): Starts with the Boss scope at various zoom levels, up to a maximum of 5.
+hd_bosszoom (0): Starts with the Boss scope at various zoom levels, up to a maximum of 55.
+
+hd_bossfrontreticle (false): If true, your Boss scope is fitted with a front reticle that follows the magnification of your target. This means the dots are consistent with the adjustments you need to make, but the resulting range of possible magnifications is much smaller.
 
 hd_clearcvs: Resets all archived weapon default options to their defaults.
 
