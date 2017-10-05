@@ -73,10 +73,14 @@ extend class HDPlayerPawn{
 						)*BLOX_SHELLLOADED;
 				}else if(hdw is "Slayer"){
 					blx+=100+countinv("ShotgunQuickAmmo2")*BLOX_SHELLLOADED;
-				}else if(hdw is "ZM66GrenadeRifle"){
-					if(hdw is "ZM66Rifle")blx+=100;
-					else blx+=125+countinv("ZM66GLoaded")*BLOX_ROCKETLOADED;
-					blx+=countinv("ZM66Loaded")*BLOX_426_LOADED;
+				}else if(hdw is "ZM66AssaultRifle"){
+					if(!(hdw.weaponstatus[0]&ZM66F_NOLAUNCHER)){
+						blx+=125;
+						if(
+							hdw.weaponstatus[0]&ZM66F_GRENADELOADED
+						)blx+=BLOX_ROCKETLOADED;
+					}else blx+=100;
+					blx+=hdw.weaponstatus[ZM66S_MAG]*BLOX_426_LOADED;
 				}else if(hdw is "Vulcanette"){
 					blx+=225;
 					if(hdw.weaponstatus[1]>=0)blx+=BLOX_BATTERY_LOADED;

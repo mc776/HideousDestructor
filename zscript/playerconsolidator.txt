@@ -8,11 +8,6 @@ extend class HDPlayerPawn{
 
 		//misc. maintenance
 		A_TakeInventory("BossJam");
-		if(countinv("ZM66BrokenRound")){
-			A_TakeInventory("ZM66BrokenRound");
-			sparepowder++;
-		}
-		A_TakeInventory("ZM66Heat");
 		A_TakeInventory("BrontornisHeat");
 		A_TakeInventory("HunterSpentShell");
 		A_TakeInventory("SlayerSpentShell1");
@@ -241,11 +236,26 @@ extend class HDPlayerPawn{
 				A_TakeInventory("ZM66Loaded",1);
 			}
 		}
+		if(countinv("ZM66AssaultRifle")){
+			let zzz=zm66assaultrifle(findinventory("ZM66AssaultRifle"));
+			if(zzz){
+				if(zzz.weaponstatus[0]&ZM66F_CHAMBERBROKEN){
+					zzz.weaponstatus[0]&=~ZM66F_CHAMBERBROKEN;
+					sparepowder++;
+				}
+				if(zzz.weaponstatus[ZM66S_MAG]%100<10 && countinv("ZM66RifleMags")){
+					sparepowder+=zzz.weaponstatus[ZM66S_MAG]%100;
+					A_TakeInventory("ZM66RifleMags",1);
+					zzz.weaponstatus[ZM66S_MAG]=51;
+				}
+			}
+		}
 		if(countinv("Vulcanette")){
 			vulcanette vvv=vulcanette(findinventory("Vulcanette"));
-			if(vvv && vvv.weaponstatus[0]>0 && countinv("ZM66RifleMags")){
-				A_TakeInventory("HDCellPacks",1);
-				vvv.weaponstatus[0]=50;
+			if(vvv && vvv.vulcmag[0]%100<10 && countinv("ZM66RifleMags")){
+				sparepowder+=vvv.vulcmag[0]%100;
+				A_TakeInventory("ZM66RifleMags",1);
+				vvv.vulcmag[0]=51;
 			}
 		}
 

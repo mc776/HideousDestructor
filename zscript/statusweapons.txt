@@ -71,25 +71,6 @@ extend class HDStatusBar{
 				drawwepdot(-15-i*2,-2,(1,3));
 			}
 		}
-		else if(w is "ZM66Rifle" || w is "ZM66GrenadeRifle" || w is "ZM66SemiRifle"){
-			if(!(w is "ZM66SemiRifle"))drawwepcounter(pp.countinv("ZM66FullAuto"),
-				-22,-10,"RBRSA3A7","STFULAUT","STBURAUT"
-			);
-			if(pp.countinv("ZM66GLoaded"))drawwepdot(-16,-13,(4,2.6));
-			int lod=pp.countinv("ZM66Loaded");
-			drawwepnum(pp.countinv("ZM66Loaded"),50);
-			if(pp.countinv("ZM66Chamber")){
-				drawwepdot(-16,-10,(3,1));
-				lod++;
-			}
-			if(pp.countinv("ZM66JailbrokenMag"))lod=random[shitgun](10,99);
-			drawnum(lod,-16,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_RED);
-			if(pp.countinv("ZM66GLMode"))drawnum(pp.countinv("AirburstCount"),
-				-30,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
-			);else drawnum(pp.countinv("ZM66ZoomDegree"),
-				-30,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
-			);
-		}
 		else if(w is "ZM66AssaultRifle"){
 			let zzz=zm66assaultrifle(w);
 			if(zzz){
