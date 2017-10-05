@@ -446,8 +446,7 @@ actor ZedChamber:InventoryFlag
 	inventory.maxamount 2
 }
 
-actor UndeadJackbootman:Jackboot
-{
+actor UndeadJackbootman:Jackboot{
 	translation "112:113=30:33","114:120=101:111","121:127=5:8","48:71=128:151"
 	meleedamage 5
 	+faster +missileevenmore
@@ -456,42 +455,41 @@ actor UndeadJackbootman:Jackboot
 	speed 10
 	health 90
 	mass 100
+	var int user_mag;var int user_ratchet;
 	states{
 	spawn:
 		PLAY A 0
 		goto spawn2
 	shoot:
-		"----" A 0 A_JumpIfInventory("ZM66BrokenRound",1,"ohforfuckssake")
-		"----" A 0 A_JumpIfInventory("ZM66Loaded",0,"ohforfuckssake")
+		"----" A 0 A_JumpIf(user_ratchet<0,"ohforfuckssake")
+		"----" A 0 A_JumpIf(user_mag>=50,"ohforfuckssake")
 		"----" A 0{
 			A_SetAngle(angle+frandom(-user_spread,user_spread));
 			A_SetPitch(pitch+frandom(-user_spread,user_spread));
 		}
 		"####" FFF 1 bright light("SHOT"){
-			if(countinv("ZM66Loaded")>49){  
+			if(user_mag>=50){  
 				A_SetTics(0);
 				return state("");
 			}
 			A_PlayWeaponSound("weapons/rifle");
 			pitch+=frandom(-0.05,0.15);
 			A_GiveInventory("DecoBulleter426");
-			A_GiveInventory("ZM66Loaded",1);
+			user_mag++;
 			return state("");
 		}
 	postshot:
 		"####" A 0{
-			A_TakeInventory("ZM66Ratchet");
-			if(random(1,55)==1){A_GiveInventory("ZM66BrokenRound");}
+			if(!random(0,55)){user_ratchet=-1;}
+			else{user_ratchet=0;}
 		}
-		"####" A 0 A_JumpIfInventory("ZM66Loaded",0,"reload")
-		"####" A 0 A_SetUserVar("user_spread",user_spread+1)
-		"####" E 5 A_SetTics(random(2,6))
-		"####" E 5
+		"####" A 0 A_JumpIf(user_mag>=50,"reload")
+		"####" A 0 {user_spread++;}
+		"####" E 5 A_SetTics(random(2,12))
 		"####" E 0 A_JumpIfTargetInLOS(1)
 		goto coverfire  //even if not in los,occasionally keep shooting anyway
-		"####" E 0 A_Jump(30,"see")  //even if in los,occasionally stop shooting anyway
-		"####" E 0
-		goto coverfire
+		"####" E 0 A_Jump(22,"see")  //even if in los,occasionally stop shooting anyway
+		goto missile
 	coverfire:
 		"####" E 1 A_SetTics(random(0,12))
 		"####" E 0 A_SetUserVar("user_spread",2)
@@ -500,7 +498,7 @@ actor UndeadJackbootman:Jackboot
 		"####" A 0 A_Jump(216,"shoot")
 		loop
 	burst:
-		"####" A 0 A_GiveInventory("ZM66Ratchet",1)
+		"####" A 0 {user_ratchet++;}
 		goto shoot
 	ohforfuckssake:
 		"####" E 8
@@ -509,20 +507,19 @@ actor UndeadJackbootman:Jackboot
 		"####" A 0 A_PlaySound("weapons/rifleclick2")
 		"####" AA 1 A_Chase("melee","")
 		"####" A 0{
-			if(countinv("ZM66NoMag")<1){
+			if(user_mag<0){
 				A_PlaySound("weapons/rifleload");
 				A_SpawnProjectile("HD4mmMagEmpty",38,0,random(90,120));
-				A_GiveInventory("ZM66NoMag");
+				user_mag=-1;
 			}
 		}
 		"####" BBCCDD 1 A_Chase("melee","")
 		"####" E 8{
-			if(countinv("ZM66BrokenRound")<1){
+			if(user_ratchet>=0){
 				A_SetTics(0);
 				return state("");
-			}
-			else if(random(1,5)==1){
-				A_TakeInventory("ZM66BrokenRound",1);
+			}else if(!random(0,4)){
+				user_ratchet=0;
 				A_PlayWeaponSound("weapons/rifleclick");
 				A_SpawnItemEx("TinyWallChunk",0,0,20,random(4,7),random(-2,2),random(-2,1),0,SXF_NOCHECKPOSITION);
 				A_SpawnItemEx("TinyWallChunk",0,0,20,random(4,7),random(-2,2),random(-2,1),0,SXF_NOCHECKPOSITION);
@@ -536,8 +533,7 @@ actor UndeadJackbootman:Jackboot
 		"####" E 8 A_PlaySound("weapons/rifleload")
 		"####" E 2{
 			A_PlaySound("weapons/rifleclick2");
-			A_TakeInventory("ZM66Loaded",50);
-			A_TakeInventory("ZM66NoMag");
+			user_mag=0;
 			A_ChangeFlag("frightened",0);
 		}
 		"####" CCBB 2 A_Wander
@@ -613,7 +609,7 @@ actor UndeadJackbootman:Jackboot
 		"####" A 0 A_Die("raisebotch")
 		stop
 	raisegibbed:
-		"####" A 0 A_TakeInventory("IsGibbed",999)
+		"####" A 0 A_TakeInventory("IsGibbed")
 		"####" A 0 A_GiveInventory("HDCorpseFlags",1)
 		"####" A 0 A_SetSolid
 		"####" A 0 A_Jump(172,"raisegibbedzombie")

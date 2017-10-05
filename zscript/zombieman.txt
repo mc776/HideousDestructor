@@ -104,7 +104,7 @@ class ZombieStormtrooper:ZombieMan{
 		}
 		#### A 0 A_Jump(256,"shoot");
 	shoot:
-		#### A 0 A_JumpIfInventory("ZM66Loaded",0,"ohforfuckssake");
+		#### A 0 A_JumpIf(mag<1,"ohforfuckssake");
 		#### F 1 bright light("SHOT"){
 			pitch+=frandom(-spread,spread);
 			angle+=frandom(-spread,spread);
