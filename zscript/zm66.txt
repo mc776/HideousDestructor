@@ -240,24 +240,24 @@ class ZM66AssaultRifle:HDWeapon{
 				invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_GLMODE
 			){
 				setweaponstate("unloadgrenade");
-			}
-			else if(
+			}else if(
 				invoker.weaponstatus[ZM66S_MAG]>=0  
 			){
 				setweaponstate("unloadmag");
-			}
-			else if(
+			}else if(
 				invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBER
 			){
 				setweaponstate("unloadchamber");
+			}else{
+				setweaponstate("unloadmag");
 			}
-			setweaponstate("reload");
 		}
 	reload:
 		RIFG A 0{
+			invoker.weaponstatus[ZM66S_FLAGS]&=~ZM66F_UNLOADONLY;
 			if(	//full mag, no jam, not unload-only - why hit reload at all?
 				!(invoker.weaponstatus[0]&ZM66F_CHAMBERBROKEN)
-				&& invoker.weaponstatus[ZM66S_MAG]%100==50
+				&& invoker.weaponstatus[ZM66S_MAG]%100>=50
 				&& !(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_UNLOADONLY)
 			){
 				setweaponstate("nope");
@@ -267,8 +267,9 @@ class ZM66AssaultRifle:HDWeapon{
 			){
 				invoker.weaponstatus[ZM66S_FLAGS]|=ZM66F_UNLOADONLY;
 				setweaponstate("unloadchamber");
+			}else{
+				setweaponstate("unloadmag");
 			}
-			setweaponstate("unloadmag");
 		}
 	unloadmag:
 		RIFG A 1 offset(0,33);
