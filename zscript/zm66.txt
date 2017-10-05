@@ -210,11 +210,13 @@ class ZM66AssaultRifle:HDWeapon{
 				(countinv("PressingReload")||countinv("PressingUnload"))	//trying to detach
 				&&(invoker.weaponstatus[ZM66S_MAG]>=0)	//something to detach  
 			){
-				A_SpawnItemEx("HD4mMag",
+				actor mmm;int bluh;
+				[bluh,mmm]=A_SpawnItemEx("HD4mmMag",
 					cos(pitch)*8,0,height-10-8*sin(pitch),
 					vel.x,vel.y,vel.z,0,
 					SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
 				);
+				mmm.stamina=invoker.weaponstatus[ZM66S_MAG]%100;
 				invoker.weaponstatus[ZM66S_MAG]=-1;
 			}
 			else if(countinv("PressingAltfire")){

@@ -225,28 +225,22 @@ extend class HDPlayerPawn{
 		//zm66 and vulc
 		//if zm has less than 10 bullets, reload zm
 		//if vulc has less than 10 bullets, reload vulc - one mag only
-		int inzedmag=countinv("ZM66Loaded");
-		if((countinv("ZM66Rifle")||countinv("ZM66SemiRifle")||countinv("ZM66GrenadeRifle"))
-			&&inzedmag<10&&countinv("ZM66RifleMags")
-		){
-			A_GiveInventory("ZM66Loaded",50);
-			A_TakeInventory("ZM66RifleMags",1);
-			if(!countinv("ZM66Chamber")){
-				A_GiveInventory("ZM66Chamber",1);
-				A_TakeInventory("ZM66Loaded",1);
-			}
-		}
 		if(countinv("ZM66AssaultRifle")){
 			let zzz=zm66assaultrifle(findinventory("ZM66AssaultRifle"));
 			if(zzz){
 				if(zzz.weaponstatus[0]&ZM66F_CHAMBERBROKEN){
 					zzz.weaponstatus[0]&=~ZM66F_CHAMBERBROKEN;
+					zzz.weaponstatus[0]&=~ZM66F_CHAMBER;
 					sparepowder++;
 				}
 				if(zzz.weaponstatus[ZM66S_MAG]%100<10 && countinv("ZM66RifleMags")){
 					sparepowder+=zzz.weaponstatus[ZM66S_MAG]%100;
 					A_TakeInventory("ZM66RifleMags",1);
 					zzz.weaponstatus[ZM66S_MAG]=51;
+				}
+				if(!(zzz.weaponstatus[0]&ZM66F_CHAMBER)){
+					zzz.weaponstatus[0]|=ZM66F_CHAMBER;
+					zzz.weaponstatus[ZM66S_MAG]--;
 				}
 			}
 		}
