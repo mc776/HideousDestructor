@@ -504,6 +504,10 @@ class ZM66AssaultRifle:HDWeapon{
 		RIFG A 1 offset(0,34) A_MuzzleClimb(frandom(-2.4,0.2),frandom(-1.4,0.2));
 		goto nope;
 
+	placeholder:
+		RIFL ABCD 0;
+		RIGL ABCD 0;
+		RIFS ABCD 0;
 	spawn:
 		---- A 0 A_Stop();
 		---- A 0{
@@ -627,7 +631,25 @@ class ZM66AltStarter:ActionItem{
 		}fail;
 	}
 }
-class ZM66Spawner:IdleDummy{
+class ZM66Semi:IdleDummy{
+	states{
+	spawn:
+		TNT1 A 0 nodelay{
+			let zzz=ZM66AssaultRifle(spawn("ZM66AssaultRifle",pos));if(!zzz)return;
+			zzz.weaponstatus[0]|=ZM66F_NOLAUNCHER|ZM66F_NOFIRESELECT;
+		}stop;
+	}
+}
+class ZM66Regular:IdleDummy{
+	states{
+	spawn:
+		TNT1 A 0 nodelay{
+			let zzz=ZM66AssaultRifle(spawn("ZM66AssaultRifle",pos));if(!zzz)return;
+			zzz.weaponstatus[0]|=ZM66F_NOLAUNCHER;
+		}stop;
+	}
+}
+class ZM66Random:IdleDummy{
 	states{
 	spawn:
 		TNT1 A 0 nodelay{

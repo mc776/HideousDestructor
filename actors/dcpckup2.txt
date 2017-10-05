@@ -26,11 +26,11 @@ ACTOR ClipBoxPickup1 : HDPickup
 	{
 	spawn:
 		TNT1 A 0
-		CLIP A 0 A_Jump (176, 2)
+		CLIP A 0 A_Jump(176, 2)
 		CLIP A 0 A_SpawnItemEx ("HDFragGrenadeAmmo", random(-12,12), random(-12,12), random(-4,4))
-		CLIP A 0 A_Jump (186, 2)
-		CLIP A 0 A_SpawnItemEx ("RocketAmmo", random(-8,8), random(-8,8), random(-4,4))
-		CLIP C 0 A_SpawnItemEx ("ZM66RifleSpawner", random(-4,4),random(-4,4),0)
+		CLIP A 0 A_Jump(186, 2)
+		CLIP A 0 A_SpawnItemEx("RocketAmmo", random(-8,8), random(-8,8), random(-4,4))
+		CLIP C 0 A_SpawnItemEx("ZM66Random", random(-4,4),random(-4,4),0)
 		stop
 	pickup:
 		TNT1 A 0 A_GiveInventory("ZM66RifleMags",1)
