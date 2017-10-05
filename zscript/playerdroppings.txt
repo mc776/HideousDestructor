@@ -10,8 +10,11 @@ class HDDropOne:ActionItem{
 			if(cw=="HDPistol")A_GiveInventory("DropOnePistolMag");
 			else if(cw=="HDSMG")A_GiveInventory("DropOneSMGMag");
 			else if(cw=="Hunter"||cw=="Slayer")A_GiveInventory("DropFourSG");
-			else if(cw=="ZM66Rifle"||cw=="ZM66SemiRifle")A_GiveInventory("DropOneZMag");
-			else if(cw=="ZM66GrenadeRifle")A_GiveInventory("DropOneZMagFrag");
+			else if(cw=="ZM66AssaultRifle"){
+				let cww=ZM66AssaultRifle(player.readyweapon);
+				if(cww.weaponstatus[0]&ZM66F_NOLAUNCHER)A_GiveInventory("DropOneZMag");
+				else A_GiveInventory("DropOneZMagFrag");
+			}
 			else if(cw=="Vulcanette")A_GiveInventory("DropOneZMagCell");
 			else if(cw=="RocquetteLauncher")A_GiveInventory("DropOneRocketHEAT");
 			else if(cw=="Blooper")A_GiveInventory("DropOneRocket");

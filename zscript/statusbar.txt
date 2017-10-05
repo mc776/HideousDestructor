@@ -339,11 +339,15 @@ class HDStatusBar:DoomStatusBar{
 		if(cp.countinv("HDSMGNoMag"))smgsprite="SMGNB0";else smgsprite="SMGNA0";
 
 		//zm66
-		string zm66pre="RIFL";
-		if(cp.countinv("ZM66SemiRifle"))zm66pre="RIFS";
-		else if(cp.countinv("ZM66GrenadeRifle"))zm66pre="RIGL";
-		if(cp.countinv("ZM66NoMag"))zm66sprite="D";else zm66sprite="A";
-		zm66sprite=string.format("%s%s0",zm66pre,zm66sprite);
+		if(cp.countinv("ZM66AssaultRifle")){
+			string zm66pre;
+			let zzz=ZM66AssaultRifle(cp.findinventory("ZM66AssaultRifle"));
+			if(zzz.weaponstatus[0]&ZM66F_NOFIRESELECT)zm66pre="RIFS";
+			else if(zzz.weaponstatus[0]&ZM66F_NOLAUNCHER)zm66pre="RIFL";
+			else zm66pre="RIGL";
+			if(zzz.weaponstatus[ZM66S_MAG]<0)zm66sprite="D";else zm66sprite="A";
+			zm66sprite=string.format("%s%s0",zm66pre,zm66sprite);
+		}
 
 		//liberator
 		if(cp.countinv("LiberatorGrenadeRifle")){
@@ -393,7 +397,7 @@ class HDStatusBar:DoomStatusBar{
 		else if(w is "HDSMG")wx=smgsprite;
 		else if(w is "Slayer")wx=slayersprite;
 		else if(w is "Hunter")wx=huntersprite;
-		else if(w is "ZM66GrenadeRifle")wx=zm66sprite;
+		else if(w is "ZM66AssaultRifle")wx=zm66sprite;
 		else if(w is "Vulcanette")wx="VULCA0";
 		else if(w is "Blooper")wx="BLOPA0";
 		else if(w is "RocquetteLauncher")wx="LAUNA0";
@@ -429,9 +433,7 @@ class HDStatusBar:DoomStatusBar{
 		drawwep("Hunter",huntersprite,-128+yofs,right:rt);
 		drawwep("Slayer",slayersprite,-120+yofs,right:rt);
 		drawwep("Vulcanette","VULCA0",-108+yofs,right:rt);
-		drawwep("ZM66SemiRifle",zm66sprite,-103+yofs,right:rt);
-		drawwep("ZM66Rifle",zm66sprite,-103+yofs,right:rt);
-		drawwep("ZM66GrenadeRifle",zm66sprite,-103+yofs,right:rt);
+		drawwep("ZM66AssaultRifle",zm66sprite,-103+yofs,right:rt);
 		drawwep("RocquetteLauncher","LAUNA0",-83+yofs,scl:0.9,right:rt);
 		drawwep("Blooper","BLOPA0",-78+yofs,right:rt);
 		drawwep("ThunderBuster","PLASA0",-63+yofs,scl:0.8,right:rt);

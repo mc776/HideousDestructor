@@ -127,9 +127,7 @@ actor DropExtra:CustomInventory{
 		TNT1 A 0 A_SpawnItemEx("HDShellAmmo",random(8,12),random(0,-12),24,5,0,0,random(6,12))
 		loop
 	zm66:
-		TNT1 A 0 A_JumpIfInventory("ZM66Rifle",1,"rocket")
-		TNT1 A 0 A_JumpIfInventory("ZM66GrenadeRifle",1,"rocket")
-		TNT1 A 0 A_JumpIfInventory("ZM66SemiRifle",1,"rocket")
+		TNT1 A 0 A_JumpIfInventory("ZM66AssaultRifle",1,"rocket")
 		TNT1 A 0 A_JumpIfInventory("Vulcanette",1,"rocket")
 		TNT1 A 0 A_JumpIfInventory("ZM66RifleMags",1,1)
 		goto fourmil
@@ -140,7 +138,7 @@ actor DropExtra:CustomInventory{
 		TNT1 A 0 A_GiveInventory("HD4mDMagMaker")
 	rocket:
 		TNT1 A 0 A_JumpIfInventory("RocquetteLauncher",1,"lib")
-		TNT1 A 0 A_JumpIfInventory("ZM66GrenadeRifle",1,"heat")
+		TNT1 A 0 A_JumpIfInventory("ZM66AssaultRifle",1,"heat")
 		TNT1 A 0 A_JumpIfInventory("LiberatorGrenadeRifle",1,"heat")
 		TNT1 A 0 A_JumpIfInventory("Blooper",1,"heat")
 		TNT1 A 0 A_JumpIfInventory("HDRocketAmmo",1,1)

@@ -134,20 +134,10 @@ extend class HDPlayerPawn{
 		return false;
 	}
 
-	//If you've got a weapon check going on for something unselected, <s>put it here.</s>
-	//take it OUT of here and put it in the weapon's DoEffect()!
+	//Deprecated. See HDWeapon.DrainHeat().
 	//GunHeatSmoke(player.readyweapon.getclassname());
 	void GunHeatSmoke(name w){
 		int pg=0;
-		if(countinv("ZM66Heat")){
-			pg++;
-			if(random(0,2))A_TakeInventory("ZM66Heat",1);
-			if(
-				w=="ZM66Rifle"||
-				w=="ZM66GrenadeRifle"||
-				w=="ZM66SemiRifle"
-			)pg+=1000;
-		}
 		if(countinv("BrontornisHeat")){
 			pg++;
 			A_TakeInventory("BrontornisHeat",1);

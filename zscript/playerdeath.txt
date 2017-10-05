@@ -51,10 +51,11 @@ extend class HDPlayerPawn{
 				A_DropInventory("BFG9k");
 			}
 		}
-		if(countinv("ZM66Heat")>26){
-			A_DropInventory("ZM66Rifle");
-			A_DropInventory("ZM66GrenadeRifle");
-			A_DropInventory("ZM66SemiRifle");
+		if(countinv("ZM66AssaultRifle")){
+			let zzz=zm66assaultrifle(findinventory("ZM66AssaultRifle"));
+			if(zzz&&zzz.weaponstatus[ZM66S_HEAT]>HDCONST_ZM66COOKOFF){
+				A_DropInventory("ZM66AssaultRifle");
+			}
 		}
 
 		super.die(source,inflictor,dmgflags);
