@@ -43,6 +43,14 @@ class LiberatorRifle:HDWeapon{
 		scale 0.7;
 		obituary "%o was liberated by %k.";
 	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		if(owner&&owner.player){
+			int lib=cvar.getcvar("hd_libauto",owner.player).getint();
+			if(lib)weaponstatus[0]|=LIBF_FULLAUTO;
+			weaponstatus[LIBS_ZOOM]=cvar.getcvar("hd_libzoom",owner.player).getint();
+		}
+	}
 	override void tick(){
 		super.tick();
 		drainheat(LIBS_HEAT,8);

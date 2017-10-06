@@ -56,13 +56,6 @@ extend class HDPlayerPawn{
 				A_GiveInventory("HEATLoaded");
 			}
 		}
-		if(countinv("LiberatorRifle")){
-			let llb=LiberatorRifle(findinventory("LiberatorRifle"));
-			if(llb){
-				if(getcvar("hd_libauto"))llb.weaponstatus[0]|=LIBF_FULLAUTO;
-				llb.weaponstatus[LIBS_ZOOM]=getcvar("hd_libzoom");
-			}
-		}
 		if(countinv("ThunderBuster")){
 			if(getcvar("hd_tbmode"))A_GiveInventory("PlasmaAlt");
 		}
