@@ -155,7 +155,6 @@ extend class HDStatusBar{
 			drawwepnum(pp.countinv("RocketMag"),6);
 		}
 		else if(w is "LiberatorRifle"){
-
 			let llb=LiberatorRifle(w);
 			string llba="RBRSA3A7";
 			if(llb.weaponstatus[0]&LIBF_FULLAUTO)llba="STFULAUT";
@@ -164,13 +163,12 @@ extend class HDStatusBar{
 				DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE|DI_ITEM_RIGHT
 			);
 			if(llb.weaponstatus[0]&LIBF_GRENADELOADED)drawwepdot(-16,-13,(4,2.6));
-			int lod=max(llb.weaponstatus[ZM66S_MAG],0);
+			int lod=max(llb.weaponstatus[LIBS_MAG],0);
 			drawwepnum(lod,30);
 			if(llb.weaponstatus[LIBS_CHAMBER]==2){
 				drawwepdot(-16,-10,(3,1));
 				lod++;
 			}
-			drawnum(lod,-16,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_RED);
 			if(llb.weaponstatus[0]&LIBF_GRENADEMODE)drawnum(pp.countinv("AirburstCount"),
 				-30,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
 			);else drawnum(llb.weaponstatus[LIBS_ZOOM],

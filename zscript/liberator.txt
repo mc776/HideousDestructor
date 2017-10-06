@@ -50,17 +50,17 @@ class LiberatorRifle:HDWeapon{
 	action void A_Chamber(bool unloadonly=false){
 		A_PlaySound("weapons/rifleclick",6);
 		if(invoker.weaponstatus[LIBS_CHAMBER]==1){
-			A_SpawnItemEx("HDLoose7mm",
+			A_SpawnItemEx("HDSpent7mm",
 				cos(pitch)*12,0,height-8-sin(pitch)*12,
 				cos(pitch)*cos(angle-4)*4+vel.x,cos(pitch)*sin(angle-4)*4+vel.y,
 				-sin(pitch)*4+vel.z,
 				0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
 			);
 		}else if(invoker.weaponstatus[LIBS_CHAMBER]==2){
-			A_SpawnItemEx("HDSpent7mm",
+			A_SpawnItemEx("HDLoose7mm",
 				cos(pitch)*12,0,height-8-sin(pitch)*12,
-				cos(pitch)*cos(angle-4)*6+vel.x,cos(pitch)*sin(angle-4)*6+vel.y,
-				-sin(pitch)*6+vel.z,
+				cos(pitch)*cos(angle-4)*3+vel.x,cos(pitch)*sin(angle-4)*3+vel.y,
+				-sin(pitch)*3+vel.z,
 				0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
 			);
 		}
@@ -89,7 +89,7 @@ class LiberatorRifle:HDWeapon{
 					if(countinv("SevenMilAmmo")>=30){  
 						A_TakeInventory("SevenMilAmmo",30);
 						A_GiveInventory("LiberatorMag");
-					}else if(!countinv("BossRifle")){
+					}else if(!countinv("BossRifle")&&countinv("BossClip")){
 						A_TakeInventory("BossClip",1);
 						A_GiveInventory("SevenMilAmmo",10);
 						if(hd_debug)A_Log("Seriously what key to strip clips on lib???");
@@ -113,7 +113,7 @@ class LiberatorRifle:HDWeapon{
 			if(
 				invoker.weaponstatus[0]&LIBF_GRENADEMODE
 				||!(invoker.weaponstatus[0]&LIBF_FULLAUTO)
-				||!(invoker.weaponstatus[LIBS_CHAMBER]!=2)
+				||invoker.weaponstatus[LIBS_CHAMBER]!=2
 			)setweaponstate("nope");
 		}goto shoot;
 
@@ -206,11 +206,11 @@ class LiberatorRifle:HDWeapon{
 			){
 				return resolvestate("unloadchamber");
 			}
-			invoker.weaponstatus[0]&=~LIBF_JUSTUNLOAD;
 			return resolvestate("nope");
 		}
 	reload:
 		BRFG A 0{
+			invoker.weaponstatus[0]&=~LIBF_JUSTUNLOAD;
 			if(
 				//no spare ammo
 				!countinv("LiberatorMag")&&!countinv("SevenMilAmmo")
@@ -230,8 +230,7 @@ class LiberatorRifle:HDWeapon{
 				){
 					return resolvestate("chamber_manual");
 				}				
-			}
-			return resolvestate("unmag");
+			}return resolvestate("unmag");
 		}
 
 	unmag:
@@ -269,11 +268,14 @@ class LiberatorRifle:HDWeapon{
 					AmmoCap("SevenMilAmmo")
 				)
 			){
-				A_SpawnItemEx("LiberatorMagP",
+				actor mmm;int nnn;
+				[nnn,mmm]=A_SpawnItemEx("LiberatorMagP",
 					cos(pitch)*10,0,height-10-10*sin(pitch),
 					vel.x,vel.y,vel.z,
-					0,SXF_SETTARGET|SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
+					0,SXF_SETTARGET|SXF_ABSOLUTEMOMENTUM|
+					SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
 				);
+				mmm.stamina=invoker.weaponstatus[LIBS_MAG];
 				invoker.weaponstatus[LIBS_MAG]=-1;
 				return resolvestate("magout");
 			}
@@ -452,8 +454,13 @@ class LiberatorRifle:HDWeapon{
 			// B: +g +m
 			// C: -g -m
 			// D: +g -m
-			if(!(invoker.weaponstatus[0]&LIBF_NOLAUNCHER))frame++;
-			if(invoker.weaponstatus[LIBS_MAG]<0)frame+=2;
+			if(invoker.weaponstatus[0]&LIBF_NOLAUNCHER){
+				if(invoker.weaponstatus[LIBS_MAG]<0)frame=2;
+				else frame=0;
+			}else{
+				if(invoker.weaponstatus[LIBS_MAG]<0)frame=3;
+				else frame=1;
+			}
 		}
 	}
 	override void InitializeWepStats(bool idfa=false){
@@ -611,7 +618,7 @@ class LiberatorMagP:HDUPK replaces ZM66RifleMags{
 	override void postbeginplay(){
 		super.postbeginplay();
 		if(stamina<1){
-			actor emg=spawn("HD4mmMagEmpty",pos);
+			actor emg=spawn("LiberatorEmptyMag",pos);
 			if(emg)emg.vel=vel;
 			destroy();return;
 		}
