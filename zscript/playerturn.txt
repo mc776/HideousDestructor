@@ -10,8 +10,6 @@ extend class HDPlayerPawn{
 	bool muzzlehit;
 
 	void TurnCheck(){
-//		UserCmd cmd = player.cmd; //commented out as it's only ever used once here
-
 		//get input based on previous angle
 		//do NOT use input because that breaks recoil
 		double yaw=deltaangle(lastangle,angle);
@@ -111,20 +109,18 @@ extend class HDPlayerPawn{
 			barrelwidth=1.6;
 			barreldepth=3;
 		}else if(wp is "LiberatorRifle"){
-			amt=9+
-				countinv("LiberatorLoaded")*0.1
-			;
-			barrellength=26;
-			barrelwidth=0.5;
-			barreldepth=1;
-		}else if(wp is "LiberatorGrenadeRifle"){
-			amt=10+
-				countinv("LiberatorLoaded")*0.02+
-				(countinv("LiberatorGrenadeChamber")?1:0)
-			;
-			barrellength=29;
-			barrelwidth=1;
-			barreldepth=3;
+			if(wp.weaponstatus[0]&LIBF_NOLAUNCHER){
+				amt=9+wp.weaponstatus[LIBS_MAG]*0.02;
+				barrellength=27;
+				barrelwidth=0.5;
+				barreldepth=2;
+			}else{
+				amt=10+wp.weaponstatus[LIBS_MAG]*0.02
+					+(wp.weaponstatus[0]&LIBF_GRENADELOADED?1.:0.);
+				barrellength=29;
+				barrelwidth=1;
+				barreldepth=3;
+			}
 		}else if(wp is "ThunderBuster"){
 			amt=10+
 				(countinv("PlasmaBattery")||countinv("PlasmaEmptyCell")?2:0)

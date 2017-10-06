@@ -46,7 +46,7 @@ extend class HDPlayerPawn{
 		//downtime-only: reload brass
 		if(
 			usablebrass && sparepowder>=3 &&
-			countinv("LiberatorRifle")+countinv("LiberatorGrenadeRifle")+countinv("BossRifle")>0  
+			(countinv("LiberatorRifle")||countinv("BossRifle"))
 		){
 			int newbullets=min(
 				usablebrass,
@@ -258,7 +258,7 @@ extend class HDPlayerPawn{
 		//fill up boss with whatever clips or spares are left
 		if(
 			countinv("SevenMilAmmo")||countinv("LiberatorMag")||countinv("BossClip")||
-			countinv("LiberatorRifle")||countinv("LiberatorGrenadeRifle")||countinv("BossRifle")
+			countinv("LiberatorRifle")||countinv("BossRifle")
 		){
 			int totalspare=
 				countinv("LiberatorMag")*30+
@@ -266,7 +266,7 @@ extend class HDPlayerPawn{
 				countinv("SevenMilAmmo");
 			if(totalspare){
 				bool boss=countinv("BossRifle");
-				bool liberator=countinv("LiberatorGrenadeRifle");
+				bool liberator=countinv("LiberatorRifle");
 				if(countinv("LiberatorRifle"))liberator=true;
 				int originalmags=countinv("LiberatorMag");
 				int originalclips=countinv("BossClip");
@@ -284,14 +284,20 @@ extend class HDPlayerPawn{
 					}
 				}
 				if(totalspare && liberator){
-					if(!countinv("LiberatorChamber")){
-						A_GiveInventory("LiberatorChamber");
-						totalspare--;
-					}
-					toload=min(30-countinv("LiberatorLoaded"),totalspare);
-					if(toload){
-						A_GiveInventory("LiberatorLoaded",toload);
-						totalspare--;
+					let llb=LiberatorRifle(findinventory("LiberatorRifle"));
+					if(llb){
+						int chm=llb.weaponstatus[LIBS_CHAMBER];
+						if(chm<2){
+							llb.weaponstatus[LIBS_CHAMBER]=2;
+							if(chm==1)A_GiveInventory("HDSpent7mmPickup");
+							totalspare--;
+						}
+						chm=llb.weaponstatus[LIBS_MAG];
+						toload=min(30-chm,totalspare);
+						if(toload){
+							llb.weaponstatus[LIBS_MAG]+=toload;
+							totalspare-=toload;
+						}
 					}
 				}
 
@@ -390,14 +396,15 @@ extend class HDPlayerPawn{
 				zzz.weaponstatus[0]|=ZM66F_GRENADELOADED;
 			}
 		}
-		if(countinv("LiberatorGrenadeRifle")&&!countinv("LiberatorGrenadeChamber")&&countinv("HDRocketAmmo")){
-			A_TakeInventory("HDRocketAmmo",1);
-			A_GiveInventory("LiberatorGrenadeChamber");
-		}
-		if(countinv("RocquetteLauncher")&&!countinv("HEATLoaded")){
-			while(countinv("RocketMag")<6&&countinv("HDRocketAmmo")){
+		if(countinv("LiberatorRifle")){
+			let llm=LiberatorRifle(findinventory("LiberatorRifle"));
+			if(
+				llm&&!(llm.weaponstatus[0]&LIBF_NOLAUNCHER)
+				&&!(llm.weaponstatus[0]&LIBF_GRENADELOADED)
+				&&countinv("HDRocketAmmo")
+			){
 				A_TakeInventory("HDRocketAmmo",1);
-				A_GiveInventory("RocketMag");
+				llm.weaponstatus[0]|=LIBF_GRENADELOADED;
 			}
 		}
 	}

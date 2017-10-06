@@ -19,8 +19,11 @@ class HDDropOne:ActionItem{
 			else if(cw=="RocquetteLauncher")A_GiveInventory("DropOneRocketHEAT");
 			else if(cw=="Blooper")A_GiveInventory("DropOneRocket");
 			else if(cw=="HDFragGrenades")A_GiveInventory("DropOneFrag");
-			else if(cw=="LiberatorRifle")A_GiveInventory("DropOneLib");
-			else if(cw=="LiberatorGrenadeRifle")A_GiveInventory("DropOneLibFrag");
+			else if(cw=="LiberatorRifle"){
+				let cww=LiberatorRifle(player.readyweapon);
+				if(cww.weaponstatus[0]&LIBF_NOLAUNCHER)A_GiveInventory("DropOneLib");
+				else A_GiveInventory("DropOneLibFrag");
+			}
 			else if(cw=="Brontornis")A_GiveInventory("DropOneBronto");
 			else if(cw=="BossRifle")A_GiveInventory("DropOneBoss");
 			else if(cw=="ThunderBuster"||cw=="BFG9k"||cw=="Lumberjack")

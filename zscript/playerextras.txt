@@ -143,14 +143,6 @@ extend class HDPlayerPawn{
 			A_TakeInventory("BrontornisHeat",1);
 			if(w=="Brontornis")pg+=1000;
 		}
-		if(countinv("LiberatorHeat")){
-			pg++;
-			if(random(0,2))A_TakeInventory("LiberatorHeat",1);
-			if(
-				w=="LiberatorRifle"||
-				w=="LiberatorGrenadeRifle"
-			)pg+=1000;
-		}
 		if(!pg)return;
 		double ht=height*0.7;
 		if(pg>1000){	//one of these puffs must emerge from muzzle

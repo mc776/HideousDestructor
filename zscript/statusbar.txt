@@ -350,12 +350,15 @@ class HDStatusBar:DoomStatusBar{
 		}
 
 		//liberator
-		if(cp.countinv("LiberatorGrenadeRifle")){
-			if(cp.countinv("LiberatorNoMag"))liberatorsprite="BRFLD0";
-			else liberatorsprite="BRFLB0";
-		}else{
-			if(cp.countinv("LiberatorNoMag"))liberatorsprite="BRFLC0";
-			else liberatorsprite="BRFLA0";
+		if(cp.countinv("LiberatorRifle")){
+			let llb=LiberatorRifle(cp.findinventory("LiberatorRifle"));
+			if(llb.weaponstatus[0]&LIBF_NOLAUNCHER){
+				if(llb.weaponstatus[LIBS_MAG]<0)liberatorsprite="BRFLC0";
+				else liberatorsprite="BRFLA0";
+			}else{
+				if(llb.weaponstatus[LIBS_MAG]<0)liberatorsprite="BRFLD0";
+				else liberatorsprite="BRFLB0";
+			}
 		}
 
 		//hunter
@@ -401,7 +404,7 @@ class HDStatusBar:DoomStatusBar{
 		else if(w is "Vulcanette")wx="VULCA0";
 		else if(w is "Blooper")wx="BLOPA0";
 		else if(w is "RocquetteLauncher")wx="LAUNA0";
-		else if(w is "LiberatorGrenadeRifle")wx=liberatorsprite;
+		else if(w is "LiberatorRifle")wx=liberatorsprite;
 		else if(w is "ThunderBuster")wx="PLASA0";
 		else if(w is "Brontornis")wx="BLSTA0";
 		else if(w is "BFG9k")wx="BFUGA0";
@@ -438,7 +441,6 @@ class HDStatusBar:DoomStatusBar{
 		drawwep("Blooper","BLOPA0",-78+yofs,right:rt);
 		drawwep("ThunderBuster","PLASA0",-63+yofs,scl:0.8,right:rt);
 		drawwep("LiberatorRifle",liberatorsprite,-53+yofs,right:rt);
-		drawwep("LiberatorGrenadeRifle",liberatorsprite,-53+yofs,right:rt);
 		drawwep("BFG9k","BFUGA0",-28+yofs,right:rt);
 		drawwep("Brontornis","BLSTA0",-23+yofs,right:rt);
 		drawwep("BossRifle","BORFA0",-16+yofs,right:rt);

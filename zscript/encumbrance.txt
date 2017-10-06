@@ -13,7 +13,7 @@ const BLOX_426MAG_LOADED=BLOX_426MAG*0.4;
 const BLOX_426=BLOX_426MAG*0.03;
 const BLOX_426_LOADED=BLOX_426*0.3;
 
-const BLOX_776MAG=22;
+const BLOX_776MAG=27;
 const BLOX_776MAG_LOADED=BLOX_776MAG*0.5;
 //cased rounds are easier to keep in your pocket and fit where a mag will not.
 const BLOX_776=BLOX_776MAG*0.035;
@@ -95,13 +95,13 @@ extend class HDPlayerPawn{
 						+countinv("RocketMag")*BLOX_ROCKETLOADED
 						+countinv("HEATLoaded")*BLOX_HEATROCKETLOADED;
 				}else if(hdw is "LiberatorRifle"){
-					if(hdw is "LiberatorGrenadeRifle")
-						blx+=150
-							+countinv("LiberatorGrenadeChamber")
-								*BLOX_ROCKETLOADED
-							+countinv("LiberatorLoaded")
-								*BLOX_776_LOADED;
-						else blx+=125+countinv("LiberatorLoaded")*BLOX_776_LOADED;
+					if(!(hdw.weaponstatus[0]&LIBF_NOLAUNCHER)){
+						blx+=150;
+						if(
+							hdw.weaponstatus[0]&LIBF_GRENADELOADED
+						)blx+=BLOX_ROCKETLOADED;
+					}else blx+=125;
+					blx+=hdw.weaponstatus[LIBS_MAG]*BLOX_776_LOADED;
 				}else if(hdw is "ThunderBuster"){
 					blx+=175;
 					if(hdw.weaponstatus[1]>=0)blx+=BLOX_BATTERY_LOADED;

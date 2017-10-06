@@ -107,7 +107,7 @@ extend class HDStatusBar{
 				);
 			}
 		}
-		else if((wp is "ThunderBuster")&&ismoving<6){
+		else if(wp is "ThunderBuster"&&ismoving<6){
 			drawimage(
 				"XH26",(0,1),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 				scale:(5,1)
@@ -122,10 +122,8 @@ extend class HDStatusBar{
 				scale:(1,1)
 			);
 		}
-		else if(
-			((wp is "LiberatorRifle"||wp is "LiberatorGrenadeRifle")&&ismoving<6)
-		){
-			if(hpl.countinv("LiberatorGrenadeMode")){
+		else if(wp is "LiberatorRifle"&&ismoving<6){
+			if(wp.weaponstatus[0]&LIBF_GRENADEMODE){
 				if(ismoving>4)return;
 				drawimage(
 					"XH27",(0,1.8),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
@@ -138,7 +136,7 @@ extend class HDStatusBar{
 				);
 				if(hpl.countinv("LiberatorZoom")){
 					texman.setcameratotexture(hpc,"TCAMTEX3",
-						(35-hpl.countinv("LiberatorZoomDegree"))*0.2
+						(35-wp.weaponstatus[LIBS_ZOOM])*0.2
 					);
 					drawimage(
 						"TCAMTEX3",(0,-53),DI_SCREEN_CENTER|DI_ITEM_CENTER,

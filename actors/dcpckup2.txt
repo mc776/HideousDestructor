@@ -742,7 +742,7 @@ actor HDBPPK:HDUPK replaces Backpack{
 	spawn:
 		BPAK A 0 A_Stop
 		BPAK A -1{
-			if(countinv("Clip")<1){
+			if(!countinv("Clip")){
 				A_GiveInventory("Clip");
 				A_SetTics(1);
 			}
@@ -750,8 +750,8 @@ actor HDBPPK:HDUPK replaces Backpack{
 		BPAK A 0 A_Jump(64,1,2,3,4,5) loop
 		BPAK A 0 A_SpawnItem("BossRifleSpawner",9) loop
 		BPAK A 0 A_SpawnItem("BloopMapPickup",9) loop
-		BPAK A 0 A_SpawnItem("LiberatorGrenadeRiflePickup",9) loop
-		BPAK A 0 A_SpawnItem("LiberatorRiflePickup",9) loop
+		BPAK A 0 A_SpawnItem("LiberatorRifle",9) loop
+		BPAK A 0 A_SpawnItem("LiberatorNoGL",9) loop
 		BPAK A 0 A_SpawnItem("HERPUsable",9) loop
 	give:
 		TNT1 A 0{

@@ -57,8 +57,11 @@ extend class HDPlayerPawn{
 			}
 		}
 		if(countinv("LiberatorChamber")){
-			A_SetInventory("LiberatorFullAuto",getcvar("hd_libauto"));
-			A_SetInventory("LiberatorZoomDegree",getcvar("hd_libzoom"));
+			let llb=ZM66AssaultRifle(findinventory("ZM66AssaultRifle"));
+			if(llb){
+				if(getcvar("hd_libauto"))llb.weaponstatus[0]|=LIBF_FULLAUTO;
+				llb.weaponstatus[LIBS_ZOOM]=getcvar("hd_libzoom");
+			}
 		}
 		if(countinv("ThunderBuster")){
 			if(getcvar("hd_tbmode"))A_GiveInventory("PlasmaAlt");
@@ -289,14 +292,14 @@ extend class HDPlayerPawn{
 				break;
 			case 60:
 			case 61:
-				if(num==60)nw="LiberatorRifle";
-				else{
-					nw="LiberatorGrenadeRifle";
-					A_GiveInventory("LiberatorGrenadeChamber");
+				nw="LiberatorRifle";
+				let llb=hdweapon(spawn("LiberatorRifle",pos));
+				if(llb){
+					if(num==60){
+						llb.weaponstatus[0]|=LIBF_NOLAUNCHER;
+					}
 				}
-				A_GiveInventory("LiberatorChamber");
-				A_GiveInventory("LiberatorLoaded",30);
-				A_GiveInventory(nw);
+				llb.AttachToOwner(self);
 				break;
 			case 62:
 				nw="ThunderBuster";A_GiveInventory(nw);

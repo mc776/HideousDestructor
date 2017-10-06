@@ -73,13 +73,11 @@ extend class HDStatusBar{
 		}
 		else if(w is "ZM66AssaultRifle"){
 			let zzz=zm66assaultrifle(w);
-			if(zzz){
-				if(!(zzz.weaponstatus[0]&ZM66F_NOFIRESELECT))
-				drawwepcounter(zzz.weaponstatus[ZM66S_AUTO],
-					-22,-10,"RBRSA3A7","STFULAUT","STBURAUT"
-				);
-				if(zzz.weaponstatus[0]&ZM66F_GRENADELOADED)drawwepdot(-16,-13,(4,2.6));
-			}
+			if(!(zzz.weaponstatus[0]&ZM66F_NOFIRESELECT))
+			drawwepcounter(zzz.weaponstatus[ZM66S_AUTO],
+				-22,-10,"RBRSA3A7","STFULAUT","STBURAUT"
+			);
+			if(zzz.weaponstatus[0]&ZM66F_GRENADELOADED)drawwepdot(-16,-13,(4,2.6));
 			int lod=clamp(zzz.weaponstatus[ZM66S_MAG]%100,0,50);
 			drawwepnum(lod,50);
 			if(zzz.weaponstatus[0]&ZM66F_CHAMBER){
@@ -156,16 +154,26 @@ extend class HDStatusBar{
 			);
 			drawwepnum(pp.countinv("RocketMag"),6);
 		}
-		else if(w is "LiberatorRifle" || w is "LiberatorGrenadeRifle"){
-			drawwepcounter(pp.countinv("LiberatorFullAuto"),
-				-22,-10,"RBRSA3A7","STFULAUT"
+		else if(w is "LiberatorRifle"){
+
+			let llb=LiberatorRifle(w);
+			string llba="RBRSA3A7";
+			if(llb.weaponstatus[0]&LIBF_FULLAUTO)llba="STFULAUT";
+			drawimage(
+				llba,(-22,-10),
+				DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE|DI_ITEM_RIGHT
 			);
-			if(pp.countinv("LiberatorGrenadeChamber"))drawwepdot(-16,-13,(4,2.6));
-			drawwepnum(pp.countinv("LiberatorLoaded"),30);
-			if(pp.countinv("LiberatorChamber"))drawwepdot(-16,-10,(3,1));
-			if(pp.countinv("LiberatorGrenadeMode"))drawnum(pp.countinv("AirburstCount"),
+			if(llb.weaponstatus[0]&LIBF_GRENADELOADED)drawwepdot(-16,-13,(4,2.6));
+			int lod=max(llb.weaponstatus[ZM66S_MAG],0);
+			drawwepnum(lod,30);
+			if(llb.weaponstatus[LIBS_CHAMBER]==2){
+				drawwepdot(-16,-10,(3,1));
+				lod++;
+			}
+			drawnum(lod,-16,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_RED);
+			if(llb.weaponstatus[0]&LIBF_GRENADEMODE)drawnum(pp.countinv("AirburstCount"),
 				-30,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
-			);else drawnum(pp.countinv("LiberatorZoomDegree"),
+			);else drawnum(llb.weaponstatus[LIBS_ZOOM],
 				-30,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
 			);
 		}
