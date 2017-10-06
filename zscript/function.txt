@@ -1,5 +1,5 @@
 // ------------------------------------------------------------
-//   Basic functional stuff
+// Basic functional stuff
 // ------------------------------------------------------------
 
 //event handler
@@ -12,7 +12,6 @@ class HDActor:Actor{
 	}
 	//advance to the next tic without doing anything
 	void nexttic(){
-		ClearInterpolation(); //after 3.1.0 this may be unnecessary
 		if(!CheckNoDelay()) return;
 		if(tics!=-1){
 			if(tics>0)tics--;
@@ -149,7 +148,7 @@ class ActionItem:CustomInventory{
 	}
 	//wrapper for HDWeapon and ActionItem
 	//remember: LEFT and DOWN
-	//change these back to vector2s after 3.2?
+	//would use vector2s but lol bracketing errors I don't need that kind of negativity in my life
 	action void A_MuzzleClimb(
 		double mc10=0,double mc11=0,
 		double mc20=0,double mc21=0,
@@ -205,12 +204,6 @@ class TMChecker:HDActor{
 
 //collection of generic math functions
 struct HDMath{
-	//why does ZS not have a native round function?????
-	//or ceiling, for that matter????????
-	static int Round(double input){
-		int r=floor(input);if(input-r>=0.5) r++;
-		return r;
-	}
 	//return true if lump exists
 	//mostly for seeing if we're playing D1 or D2
 	//HDMath.CheckLump("SHT2A0")
@@ -250,7 +243,6 @@ struct HDMath{
 		}return count;
 	}
 	//calculate the speed at which 2 actors are moving towards each other
-	//surely there's got to be a faster way to do this x_x
 	static double TowardsEachOther(actor a1, actor a2){
 		vector3 oldpos1=a1.pos;
 		vector3 oldpos2=a2.pos;
