@@ -169,29 +169,13 @@ class LiberatorRifle:HDWeapon{
 		}goto nope;
 
 	zoom:
-		BRFG A 1{
-			A_WeaponReady(WRF_NOFIRE);
-			A_SetCrosshair(21);
-			if(countinv("LiberatorZoom"))A_TakeInventory("LiberatorZoom");
-			else A_GiveInventory("LiberatorZoom");
-		}
-		BRFG A 0 A_JumpIfInventory("PressingZoom",1,"zoomadjust");
-		goto nope;
-	zoomadjust:
 		BRFG A 1 A_WeaponReady(WRF_NOFIRE);
 		BRFG A 0{
-			if(countinv("PressingFire")||countinv("PressingAltfire")){
-				A_GiveInventory("LiberatorZoom");
-				int lz=invoker.weaponstatus[LIBS_ZOOM];
-				if(countinv("PressingFire")){
-					invoker.weaponstatus[LIBS_ZOOM]=min(lz+1,32);
-				}else{
-					invoker.weaponstatus[LIBS_ZOOM]=max(lz-1,0);
-				}
-			}else if(
-				countinv("PressingZoom")
-			)setweaponstate("zoomadjust");
-		}goto nope;
+			if(countinv("PressingFire"))invoker.weaponstatus[LIBS_ZOOM]++;
+			else if(countinv("PressingAltFire"))invoker.weaponstatus[LIBS_ZOOM]--;
+			else if(!countinv("PressingZoom"))setweaponstate("nope");
+			invoker.weaponstatus[LIBS_ZOOM]=clamp(invoker.weaponstatus[LIBS_ZOOM],0,32);
+		}loop;
 
 
 	unloadchamber:

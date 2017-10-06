@@ -56,8 +56,8 @@ extend class HDPlayerPawn{
 				A_GiveInventory("HEATLoaded");
 			}
 		}
-		if(countinv("LiberatorChamber")){
-			let llb=ZM66AssaultRifle(findinventory("ZM66AssaultRifle"));
+		if(countinv("LiberatorRifle")){
+			let llb=LiberatorRifle(findinventory("LiberatorRifle"));
 			if(llb){
 				if(getcvar("hd_libauto"))llb.weaponstatus[0]|=LIBF_FULLAUTO;
 				llb.weaponstatus[LIBS_ZOOM]=getcvar("hd_libzoom");
