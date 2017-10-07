@@ -68,11 +68,11 @@ class HD4mmMag:HDUPK replaces ZM66RifleMags{
 		CLIP A 0 A_Stop();
 	spawn2:
 		---- A -1{
-			if(stamina>50)frame=2;
+			if(stamina==51)frame=2;
 		}
 	give:
 		---- A 0{
-			if(stamina>50){  
+			if(stamina==51){  
 				if(A_JumpIfInTargetInventory("ZM66RifleMags",0,"null")){
 					setstatelabel("spawn");return;
 				}else{

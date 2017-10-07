@@ -17,6 +17,15 @@ class ZM66AssaultRifle:HDWeapon{
 		super.tick();
 		drainheat(ZM66S_HEAT,12);
 	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		if(owner&&owner.player){
+			weaponstatus[ZM66S_AUTO]=
+				clamp(cvar.getcvar("hd_zmfiremode",owner.player).getint(),0,2);
+			weaponstatus[ZM66S_ZOOM]=
+				clamp(cvar.getcvar("hd_zmzoom",owner.player).getint(),0,27);
+		}
+	}
 	action bool brokenround(){
 		if(!(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBERBROKEN)){
 			int rnd=

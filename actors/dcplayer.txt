@@ -139,7 +139,6 @@ actor HDP_PR:HDPlayerPawn{
 	player.displayname "Specialist"
 	player.startitem ThunderBuster
 	player.startitem SoldierExtras
-	player.startitem PlasmaBattery 60
 	player.startitem HDCellPacks 6
 	player.startitem HDFragGrenadeAmmo 6
 	states{
@@ -410,7 +409,6 @@ actor RebelLoadout:ActionItem{
 		goto otherstuff
 	weapon6:
 		TNT1 A 0 A_GiveInventory("ThunderBuster",1)
-		TNT1 A 0 A_GiveInventory("PlasmaBattery",60)
 		TNT1 A 0 A_GiveInventory("HDCellPacks",random(1,6))
 		goto otherstuff
 	weapon7:

@@ -195,14 +195,15 @@ extend class HDPlayerPawn{
 			}
 			A_GiveInventory("BFGInternalCharge",20);
 			A_GiveInventory("BFGChamber",20);
-			A_GiveInventory("PlasmaBattery",60);
 			A_GiveInventory("LumberCell",1200);
 			hdweapon hdw=hdweapon(findinventory("vulcanette"));
 			if(hdw)hdw.weaponstatus[1]=20;
 		}else{
 			if(countinv("ThunderBuster")){
-				if(countinv("PlasmaBattery")<10&&countinv("HDCellPacks")){
-					A_GiveInventory("PlasmaBattery",60);
+				let tbt=ThunderBuster(findinventory("ThunderBuster"));
+				if(countinv("BFG9k"))tbt.weaponstatus[TBS_BATTERY]=20;
+				else if(tbt.weaponstatus[TBS_BATTERY]<5&&countinv("HDCellPacks")){
+					tbt.weaponstatus[TBS_BATTERY]=20;
 					A_TakeInventory("HDCellPacks",1);
 				}
 			}
@@ -214,7 +215,8 @@ extend class HDPlayerPawn{
 			}
 			if(countinv("Vulcanette")){
 				vulcanette vvv=vulcanette(findinventory("Vulcanette"));
-				if(vvv && vvv.weaponstatus[1]<2 && countinv("HDCellPacks")){
+				if(countinv("BFG9k"))vvv.weaponstatus[1]=20;
+				else if(vvv && vvv.weaponstatus[1]<2 && countinv("HDCellPacks")){
 					A_TakeInventory("HDCellPacks",1);
 					vvv.weaponstatus[1]=20;
 				}

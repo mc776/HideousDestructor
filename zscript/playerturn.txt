@@ -122,9 +122,7 @@ extend class HDPlayerPawn{
 				barreldepth=3;
 			}
 		}else if(wp is "ThunderBuster"){
-			amt=10+
-				(countinv("PlasmaBattery")||countinv("PlasmaEmptyCell")?2:0)
-			;
+			amt=10+(wp.weaponstatus[TBS_BATTERY]<0?0:2);
 			barrellength=28;
 			barrelwidth=1.6;
 			barreldepth=3;

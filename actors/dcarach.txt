@@ -38,6 +38,7 @@ ACTOR Krangling : Arachnotron replaces Arachnotron
 	damagefactor "SmallArms0", 0.8
 	damagefactor "SmallArms1", 0.8
 	damagefactor "SmallArms2", 0.9
+	var int user_pb;
 	States
 	{
 	ambushrotate:
@@ -82,7 +83,7 @@ ACTOR Krangling : Arachnotron replaces Arachnotron
 		TNT1 A 0 A_JumpIfCloser(500,3)
 		TNT1 A 0 A_ChangeFlag("frightened",0)
 		TNT1 A 0 A_ChangeFlag("missilemore",0)
-		TNT1 A 0 A_TakeInventory("PlasmaBattery",2)
+		TNT1 A 0 {if(user_pb>0){user_pb--;}}
 		TNT1 A 0 A_ChangeFlag("ambush",0)
 		TNT1 A 0 A_PlaySound ("baby/walk")
 		TNT1 A 0 A_Recoil(-1)
@@ -163,12 +164,12 @@ ACTOR Krangling : Arachnotron replaces Arachnotron
 		BSPI A 10 A_FaceTarget(20,20)
 	shootpb:
 		TNT1 A 0 A_CheckLOF("see",CLOFF_JUMPNONHOSTILE|CLOFF_SKIPTARGET|CLOFF_JUMPOBJECT|CLOFF_MUSTBESOLID|CLOFF_SKIPENEMY,320,0, 0,0, 32,0)
-		TNT1 A 0 A_JumpIfInventory("PlasmaBattery",0,"see")
+		TNT1 A 0 A_JumpIf(user_pb>=30,"see")
 		BSPI A 10
 		BSPI GGGGG 3 bright light("PLAZMABX2") A_PlayWeaponSound("weapons/plasidle")
 	shootpb2:
 		BSPI GGGGGGGGGGGGG 2 bright light("PLAZMABX2") A_GiveInventory("KranglingPBShot",1)
-		TNT1 A 0 A_GiveInventory("PlasmaBattery",3)
+		TNT1 A 0 {user_pb++;}
 		TNT1 A 0 A_Jump(48,1)
 		goto see
 		TNT1 A 0 A_CheckLOF("see",CLOFF_JUMPNONHOSTILE|CLOFF_SKIPTARGET|CLOFF_JUMPOBJECT|CLOFF_MUSTBESOLID|CLOFF_SKIPENEMY,320,0, 0,0, 32,0)

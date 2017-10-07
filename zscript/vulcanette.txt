@@ -26,6 +26,13 @@ class Vulcanette:HDWeapon{
 		super.tick();
 		drainheat(3,18);
 	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		if(owner&&owner.player){
+			if(cvar.getcvar("hd_vulcsuper",owner.player).getint())weaponstatus[0]|=VULCF_FAST;
+			weaponstatus[2]=clamp(cvar.getcvar("hd_vulczoom",owner.player).getint(),0,27);
+		}
+	}
 	states{
 	select0:
 		VULG A 0{

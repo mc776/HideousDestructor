@@ -176,11 +176,14 @@ extend class HDStatusBar{
 			);
 		}
 		else if(w is "ThunderBuster"){
-			drawwepcounter(pp.countinv("PlasmaAlt"),
-				-22,-10,"blank","STBURAUT"
+			let tbt=ThunderBuster(w);
+			if(tbt.weaponstatus[0]&TBF_ALT)drawimage(
+				"STBURAUT",(-22,-10),
+				DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE|DI_ITEM_RIGHT
 			);
-			if(pp.countinv("PlasmaBattery"))drawwepnum(pp.countinv("PlasmaBattery"),60);
-			else if(pp.countinv("PlasmaEmptyCell"))drawstring(
+			int bat=tbt.weaponstatus[TBS_BATTERY];
+			if(bat>0)drawwepnum(bat,20);
+			else if(!bat)drawstring(
 				mamountfont,"00000",
 				(-16,-9),DI_TEXT_ALIGN_RIGHT|DI_TRANSLATABLE|DI_SCREEN_CENTER_BOTTOM,
 				Font.CR_DARKGRAY
