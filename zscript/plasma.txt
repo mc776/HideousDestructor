@@ -194,7 +194,7 @@ class ThunderBuster:HDWeapon{
 					vel.x,vel.y,vel.z,
 					0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
 				);
-				a.A_SetInventory("HDCellAmmo",invoker.weaponstatus[TBS_BATTERY]);
+				a.stamina=invoker.weaponstatus[TBS_BATTERY];
 			}
 			invoker.weaponstatus[TBS_BATTERY]=-1;
 		}goto magout;
@@ -247,7 +247,7 @@ class ThunderBuster:HDWeapon{
 			}else{
 				//reload a partial one
 				int rld=min(random(1,19),countinv("HDCellAmmo"));
-				invoker.weaponstatus[TBS_BATTERY]=rld*3;
+				invoker.weaponstatus[TBS_BATTERY]=rld;
 				A_TakeInventory("HDCellAmmo",rld,TIF_NOTAKEINFINITE);
 			}
 		}goto reload3;

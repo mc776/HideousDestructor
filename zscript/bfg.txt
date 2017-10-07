@@ -211,7 +211,7 @@ class BFG9K:HDWeapon replaces BFG9000{
 					vel.x,vel.y,vel.z,
 					0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
 				);
-				a.A_SetInventory("HDCellAmmo",countinv("BFGChamber"));
+				a.stamina=countinv("BFGChamber");
 			}
 			if(countinv("BFGDemonSummoned")){
 				A_GiveInventory("BFGUnloader"); //too many repeat-frames to add here!

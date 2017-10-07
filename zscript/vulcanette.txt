@@ -283,7 +283,7 @@ class Vulcanette:HDWeapon{
 					vel.x,vel.y,vel.z,
 					0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
 				);
-				a.A_SetInventory("HDCellAmmo",invoker.weaponstatus[1]);
+				a.stamina=invoker.weaponstatus[1];
 				invoker.weaponstatus[1]=-1;
 				setweaponstate("cellout");
 			}else setweaponstate("pocketcell");
