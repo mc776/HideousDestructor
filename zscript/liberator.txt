@@ -56,29 +56,41 @@ class LiberatorRifle:HDWeapon{
 	}
 	action void A_Chamber(bool unloadonly=false){
 		A_PlaySound("weapons/rifleclick",6);
+		actor brsss=null;
 		if(invoker.weaponstatus[LIBS_CHAMBER]==1){
 			int bss=invoker.weaponstatus[LIBS_BRASS];
 			if(bss<random(1,7)){
 				invoker.weaponstatus[LIBS_BRASS]++;
 				A_PlaySound("misc/casing",CHAN_AUTO);
-			}else A_SpawnItemEx("HDSpent7mm",
-				cos(pitch)*12,0,height-8-sin(pitch)*12,
-				cos(pitch)*cos(angle-4)*4+vel.x,cos(pitch)*sin(angle-4)*4+vel.y,
-				-sin(pitch)*4+vel.z,
-				0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
-			);
+			}else{
+				double fc=max(pitch*0.01,5);
+				double cosp=cos(pitch);
+				[cosp,brsss]=A_SpawnItemEx("HDSpent7mm",
+					cosp*12,0,height-8-sin(pitch)*12,
+					cosp*fc,0.2*randompick(-1,1),-sin(pitch)*fc,
+					0,SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
+				);
+				brsss.vel+=vel;
+				brsss.A_PlaySound(brsss.bouncesound,CHAN_BODY,0.4);
+			}
 		}else if(invoker.weaponstatus[LIBS_CHAMBER]==2){
-			A_SpawnItemEx("HDLoose7mm",
-				cos(pitch)*12,0,height-8-sin(pitch)*12,
-				cos(pitch)*cos(angle-4)*3+vel.x,cos(pitch)*sin(angle-4)*3+vel.y,
-				-sin(pitch)*3+vel.z,
-				0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
+			double fc=max(pitch*0.01,5);
+			double cosp=cos(pitch);
+			[cosp,brsss]=A_SpawnItemEx("HDLoose7mm",
+				cosp*12,0,height-8-sin(pitch)*12,
+				cosp*fc,0.2*randompick(-1,1),-sin(pitch)*fc,
+				0,SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
 			);
+			brsss.vel+=vel;
+			brsss.A_PlaySound(brsss.bouncesound,CHAN_BODY,0.4);
 		}
 		if(!unloadonly && invoker.weaponstatus[LIBS_MAG]>0){
 			invoker.weaponstatus[LIBS_MAG]--;
 			invoker.weaponstatus[LIBS_CHAMBER]=2;
-		}else invoker.weaponstatus[LIBS_CHAMBER]=0;
+		}else{
+			invoker.weaponstatus[LIBS_CHAMBER]=0;
+			if(brsss!=null)brsss.vel=vel+(cos(angle),sin(angle),-2);
+		}
 	}
 	states{
 	brasstube:
@@ -95,7 +107,7 @@ class LiberatorRifle:HDWeapon{
 				actor brsss;
 				[cosp,brsss]=A_SpawnItemEx("HDSpent7mm",
 					cosp*12,0,height-8-sin(pitch)*12,
-					cosp*fc,randompick(-0.2,0.2),-sin(pitch)*fc,
+					cosp*fc,0.2*randompick(-1,1),-sin(pitch)*fc,
 					0,SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
 				);
 				brsss.vel+=vel;
@@ -115,7 +127,7 @@ class LiberatorRifle:HDWeapon{
 				actor brsss;
 				[cosp,brsss]=A_SpawnItemEx("HDSpent7mm",
 					cosp*12,0,height-8-sin(pitch)*12,
-					cosp*3,randompick(-0.2,0.2),-sin(pitch)*3,
+					cosp*3,0.2*randompick(-1,1),-sin(pitch)*3,
 					0,SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
 				);
 				brsss.vel+=vel;
