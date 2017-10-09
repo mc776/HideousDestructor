@@ -160,8 +160,9 @@ extend class HDStatusBar{
 				"XH23",(0,-0.5),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 				scale:(3,1.6)
 			);
+			double degree;
 			if(wp.weaponstatus[0]&1){
-				double degree=4.-0.05*hpl.countinv("BossZoomDegree");
+				degree=4.-0.05*hpl.countinv("BossZoomDegree");
 				texman.setcameratotexture(hpc,"TCAMTEX3",degree);
 				drawimage(
 					"TCAMTEX3",(0,68),DI_SCREEN_CENTER|DI_ITEM_CENTER,
@@ -176,11 +177,11 @@ extend class HDStatusBar{
 				SetClipRect(276,204,88,88);
 				drawimage(
 					"reticle1",(0,68),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-					scale:(2.,2.)/degree
+					scale:(1.6,1.6)/degree
 				);
 				screen.SetClipRect(cx,cy,cw,ch);
 			}else{
-				double degree=6.-0.1*hpl.countinv("BossZoomDegree");
+				degree=6.-0.1*hpl.countinv("BossZoomDegree");
 				texman.setcameratotexture(hpc,"TCAMTEX3",degree);
 				drawimage(
 					"TCAMTEX3",(0,68),DI_SCREEN_CENTER|DI_ITEM_CENTER,
@@ -195,6 +196,16 @@ extend class HDStatusBar{
 					scale:(1.24,1.24)
 				);
 			}
+			drawnum(degree*600,
+				0,119,DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,Font.CR_BLACK
+			);
+			drawnum(hpl.countinv("BossMOA")*5,
+				0,12,DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,Font.CR_BLACK
+			);
+			// the scope display is in 10ths of an arcminute.
+			// every 2 BossMOA (item) should be one arcminute.
+			// every 60 BossMOA (scope) should be one dot.
+			// one dot = 6 arcminutes.
 		}
 	}
 }

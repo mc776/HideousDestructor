@@ -269,7 +269,7 @@ class HDPlayerPawn:PlayerPawn{
 		if(input&BT_USER1){
 			A_GiveInventory("PressingAltReload",1);A_GiveInventory("WeaponBusy");}
 		if(input&BT_USER2){
-			A_GiveInventory("PressingFireMode",1);A_GiveInventory("WeaponBusy");}
+			A_GiveInventory("PressingFireMode",1);}
 		if(input&BT_USER4){
 			A_GiveInventory("PressingUnload",1);A_GiveInventory("WeaponBusy");}
 		if(height<40)A_GiveInventory("IsCrouching");
@@ -413,8 +413,8 @@ class HDPlayerPawn:PlayerPawn{
 			countinv("PowerInvulnerable")||
 			(
 				input&BT_RELOAD
-				||input&BT_USER1
-				||input&BT_USER2
+//				||input&BT_USER1
+//				||input&BT_USER2
 				||input&BT_USER3
 				||input&BT_USER4
 				||input&BT_JUMP
