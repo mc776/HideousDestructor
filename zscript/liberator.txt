@@ -57,7 +57,11 @@ class LiberatorRifle:HDWeapon{
 	action void A_Chamber(bool unloadonly=false){
 		A_PlaySound("weapons/rifleclick",6);
 		if(invoker.weaponstatus[LIBS_CHAMBER]==1){
-			A_SpawnItemEx("HDSpent7mm",
+			int bss=invoker.weaponstatus[LIBS_BRASS];
+			if(bss<random(1,7)){
+				invoker.weaponstatus[LIBS_BRASS]++;
+				A_PlaySound("misc/casing",CHAN_AUTO);
+			}else A_SpawnItemEx("HDSpent7mm",
 				cos(pitch)*12,0,height-8-sin(pitch)*12,
 				cos(pitch)*cos(angle-4)*4+vel.x,cos(pitch)*sin(angle-4)*4+vel.y,
 				-sin(pitch)*4+vel.z,
@@ -77,13 +81,48 @@ class LiberatorRifle:HDWeapon{
 		}else invoker.weaponstatus[LIBS_CHAMBER]=0;
 	}
 	states{
+	brasstube:
+		TNT1 A 4{
+			if(
+				invoker.weaponstatus[LIBS_BRASS]>0
+				&&(
+					pitch>5
+					||countinv("WeaponBusy")
+				)
+			){
+				double fc=max(pitch*0.01,5);
+				double cosp=cos(pitch);
+				actor brsss;
+				[cosp,brsss]=A_SpawnItemEx("HDSpent7mm",
+					cosp*12,0,height-8-sin(pitch)*12,
+					cosp*fc,randompick(-0.2,0.2),-sin(pitch)*fc,
+					0,SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
+				);
+				brsss.vel+=vel;
+				brsss.A_PlaySound(brsss.bouncesound,CHAN_BODY,0.4);
+				invoker.weaponstatus[LIBS_BRASS]--;
+			}
+		}wait;
 	select0:
 		BRFG A 0{
+			A_Overlay(776,"brasstube");
 			invoker.weaponstatus[0]&=~LIBF_GRENADEMODE;
 		}goto select0big;
 	deselect0:
-		BRFG A 0;
-		goto deselect0big;
+		BRFG A 0{
+			while(invoker.weaponstatus[LIBS_BRASS]>0){
+				double cosp=cos(pitch);
+				actor brsss;
+				[cosp,brsss]=A_SpawnItemEx("HDSpent7mm",
+					cosp*12,0,height-8-sin(pitch)*12,
+					cosp*3,randompick(-0.2,0.2),-sin(pitch)*3,
+					0,SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
+				);
+				brsss.vel+=vel;
+				brsss.A_PlaySound(brsss.bouncesound,CHAN_BODY,0.4);
+				invoker.weaponstatus[LIBS_BRASS]--;
+			}
+		}goto deselect0big;
 	ready:
 		BRFG A 1{
 			A_WeaponReady(WRF_ALL);
@@ -493,6 +532,7 @@ enum liberatorstatus{
 	LIBS_MAG=2, //-1 is ampty
 	LIBS_ZOOM=3,
 	LIBS_HEAT=4,
+	LIBS_BRASS=5,
 };
 
 
