@@ -57,7 +57,7 @@ extend class HDStatusBar{
 					scale:(0.8,0.8)
 				);
 				drawnum(degree*10,
-					0,80,DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,Font.CR_BLACK
+					0,79,DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,Font.CR_BLACK
 				);
 			}
 		}
@@ -77,7 +77,7 @@ extend class HDStatusBar{
 				scale:(0.8,0.8)
 			);
 			drawnum(degree*10,
-				0,80,DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,Font.CR_BLACK
+				0,79,DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,Font.CR_BLACK
 			);
 		}
 		else if((wp is "Blooper")&&ismoving<10){
@@ -96,9 +96,8 @@ extend class HDStatusBar{
 					"XH25",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 					alpha:0.9,scale:(2.,2.)
 				);
-				texman.setcameratotexture(hpc,"TCAMTEX3",
-					(35-hpl.countinv("RocketZoom"))*0.2
-				);
+				double degree=(35-hpl.countinv("RocketZoom"))*0.2;
+				texman.setcameratotexture(hpc,"TCAMTEX3",degree);
 				drawimage(
 					"TCAMTEX3",(0,58),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 					alpha:0.9,scale:(0.4,0.4)
@@ -106,6 +105,9 @@ extend class HDStatusBar{
 				drawimage(
 					"XH32",(0,58),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 					alpha:1.0,scale:(1.0,1.0)
+				);
+				drawnum(degree*10,
+					0,98,DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,Font.CR_BLACK
 				);
 			}
 		}
@@ -202,7 +204,7 @@ extend class HDStatusBar{
 					scale:(1.24,1.24)
 				);
 			}
-			drawnum(degree*600,
+			drawnum(degree*10,
 				0,119,DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,Font.CR_BLACK
 			);
 			drawnum(hpl.countinv("BossMOA")*5,
