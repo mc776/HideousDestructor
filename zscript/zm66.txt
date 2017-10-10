@@ -555,8 +555,10 @@ class ZM66AssaultRifle:HDWeapon{
 			}
 		}
 	spawnshoot:
-		#### C 1 light("SHOT"){
-			if(invoker.weaponstatus[0]&ZM66F_NOLAUNCHER)frame=4;else frame=1;
+		#### C 1 bright light("SHOT"){
+			if(invoker.weaponstatus[0]&ZM66F_NOLAUNCHER){
+				sprite=getspriteindex("RIFLA0");
+			}else sprite=getspriteindex("RIGLA0");
 
 			//shoot the bullet
 			//copy any changes to flash as well!
@@ -583,8 +585,7 @@ class ZM66AssaultRifle:HDWeapon{
 				invoker.weaponstatus[0]|=ZM66F_CHAMBER;
 				brokenround();
 			}
-		}
-		goto spawn2;
+		}goto spawn2;
 	}
 
 	override void InitializeWepStats(bool idfa=false){

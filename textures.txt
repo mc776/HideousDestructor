@@ -214,7 +214,7 @@ sprite PMAPH0,28,27
 	patch PMAPD0,0,0{translation "112:127=240:247";alpha 0.2;style translucent}
 }
 
-
+//ZM66 psprite
 sprite RIFGA0,78,138
 {
 	offset -170,-105
@@ -236,32 +236,122 @@ sprite RIFGB0,74,138
 	yscale 1.29
 	patch RIFGB0,0,0{}
 }
-sprite RIFLD0,42,15{
+
+//ZM66 pickup
+sprite RIFSD0,42,16{
 	offset 20,15
-	patch RIFSD0,0,0{}
-	patch RISLA0,15,6{}
+	patch ZMBASE,0,0{}
 }
-sprite RIGLD0,42,15{
+sprite RIFLD0,42,16{
+	offset 20,15
+	patch ZMBASE,0,0{}
+	patch FIRESEL,16,8{}
+}
+sprite RIGLD0,42,16{
 	offset 20,15
 	patch RIFLD0,0,0{}
-	patch RIFGLAT,22,7{}
+	patch RIFGLAT,21,8{}
 }
-sprite RIFSA0,42,15{
-	offset 20,15
+sprite RIFSA0,42,17{
+	offset 20,16
 	patch RIFSD0,0,0{}
-	patch RIFMA0,5,9{}
+	patch ZMMAGAT,6,10{}
 }
-sprite RIFLA0,42,15{
-	offset 20,15
+sprite RIFLA0,42,17{
+	offset 20,16
 	patch RIFLD0,0,0{}
-	patch RIFMA0,5,9{}
+	patch ZMMAGAT,6,10{}
 }
-sprite RIGLA0,42,15{
-	offset 20,15
+sprite RIGLA0,42,17{
+	offset 20,16
 	patch RIGLD0,0,0{}
-	patch RIFMA0,5,9{}
+	patch ZMMAGAT,6,10{}
+}
+//cookoff sprites
+sprite RIFLB5,5,17{
+	offset 3,16
+	patch RIFBC,-128,-17{}
+}
+sprite RIFLB6B4,23,17{
+	offset 10,16
+	patch RIFBC,-134,-17{}
+}
+sprite RIFLB7B3,42,17{
+	offset 20,16
+	patch RIFBC,-157,-17{}
+}
+sprite RIFLB8B2,23,17{
+	offset 10,16
+	patch RIFBC,-199,-17{}
+}
+sprite RIFLB1,5,17{
+	offset 3,16
+	patch RIFBC,-223,-17{}
+}
+sprite RIGLB5,7,17{
+	offset 4,16
+	patch RIFBC,-127,0{}
+}
+sprite RIGLB6B4,23,17{
+	offset 10,16
+	patch RIFBC,-134,0{}
+}
+sprite RIGLB7B3,42,17{
+	offset 20,16
+	patch RIFBC,-157,0{}
+}
+sprite RIGLB8B2,23,17{
+	offset 10,16
+	patch RIFBC,-199,0{}
+}
+sprite RIGLB1,7,17{
+	offset 4,16
+	patch RIFBC,-222,0{}
+}
+sprite RIFLC5,9,17{
+	offset 5,16
+	patch RIFBC,0,-17{}
+}
+sprite RIFLC6C4,29,17{
+	offset 10,16
+	patch RIFBC,-9,-17{}
+}
+sprite RIFLC7C3,51,17{
+	offset 20,16
+	patch RIFBC,-38,-17{}
+}
+sprite RIFLC8C2,29,17{
+	offset 10,16
+	patch RIFBC,-89,-17{}
+}
+sprite RIFLC1,9,17{
+	offset 5,16
+	patch RIFBC,-118,-17{}
+}
+sprite RIGLC5,9,17{
+	offset 5,16
+	patch RIFBC,0,0{}
+}
+sprite RIGLC6C4,29,17{
+	offset 10,16
+	patch RIFBC,-9,0{}
+}
+sprite RIGLC7C3,51,17{
+	offset 20,16
+	patch RIFBC,-38,0{}
+}
+sprite RIGLC8C2,29,17{
+	offset 10,16
+	patch RIFBC,-89,0{}
+}
+sprite RIGLC1,9,17{
+	offset 5,16
+	patch RIFBC,-118,0{}
 }
 
+
+
+//Liberator pickup
 sprite BRFLC0,42,17{
 	offset 19,16
 	patch LIBBASE,0,0{}
@@ -270,6 +360,7 @@ sprite BRFLD0,42,17{
 	offset 19,16
 	patch LIBBASE,0,0{}
 	patch RIFGLAT,20,10{}
+	patch LADSITE,28,4{}
 }
 sprite BRFLA0,42,20{
 	offset 19,19
@@ -444,10 +535,10 @@ graphic MAGRED,11,8
 	patch RBRSA3A7,7,4{translation red, flipx}
 	patch RBRSA3A7,7,6{translation red, flipx}
 }
-graphic CLIPRED, 9, 11
+graphic CLIPRED,9,11
 {
-	offset 2, 11
-	patch CLIPA0, 0, 0 {translation red}
+	offset 2,11
+	patch CLIPA0,0,0{translation red}
 }
 sprite CLP2A0,9,11
 {
@@ -637,7 +728,7 @@ sprite PISTC0,27,15
 	xscale 1.5
 	yscale 1.5
 	patch PISTA0,0,0{}
-	patch RISLA0,11,5{}
+	patch FIRESEL,11,5{}
 }
 sprite PISTD0,30,15
 {
@@ -645,7 +736,7 @@ sprite PISTD0,30,15
 	xscale 1.5
 	yscale 1.5
 	patch PISTB0,0,0{}
-	patch RISLA0,14,5{}
+	patch FIRESEL,14,5{}
 }
 sprite ROCKB0,12,27
 {
