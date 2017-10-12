@@ -156,7 +156,7 @@ class HDSecondPistol:HDAmmo{
 			owner&&owner.player&&weaponstatus[PISS_AUTO]>=0
 			&&cvar.getcvar("hd_pistauto",owner.player).getint()
 		){
-			weaponstatus[PISS_AUTO]=2;
+			weaponstatus[PISS_AUTO]=1;
 		}
 	}
 	override void AttachToOwner(actor other){
@@ -267,7 +267,7 @@ class HDPistol:HDWeapon{
 			owner&&owner.player&&weaponstatus[PISS_AUTO]>=0
 			&&cvar.getcvar("hd_pistauto",owner.player).getint()
 		){
-			weaponstatus[PISS_AUTO]=2;
+			weaponstatus[PISS_AUTO]=1;
 		}
 	}
 	action void SwapPistols(){
@@ -319,7 +319,10 @@ class HDPistol:HDWeapon{
 	user2:
 	firemode:
 		---- A 0{
-			if(invoker.weaponstatus[PISS_AUTO]>=0)invoker.weaponstatus[PISS_AUTO]^=1;  
+			int pa=invoker.weaponstatus[PISS_AUTO];
+			if(pa>=0){
+				invoker.weaponstatus[PISS_AUTO]=pa==0?1:0;
+			}
 		}goto nope;
 	altfire:
 		---- A 0{
@@ -452,10 +455,12 @@ class HDPistol:HDWeapon{
 			if(pmg<0)setweaponstate("magout");
 			else if(
 				!pmg
-				||stamina>AmmoCap("HDPistolAmmo")-pmg  
+				||countinv("HDPistolAmmo")+pmg>AmmoCap("HDPistolAmmo")
 				||(!countinv("PressingUnload")&&!countinv("PressingReload"))
 			){
-				A_SpawnItemEx("HD9mPmag",12,0,height-12,1,0,-1,0,SXF_SETTARGET);
+				actor mmm;int bbb;
+				[bbb,mmm]=A_SpawnItemEx("HD9mPmag",12,0,height-12,1,0,-1,0,SXF_SETTARGET);
+				mmm.stamina=pmg;
 				setweaponstate("magout");
 			}
 			else{
