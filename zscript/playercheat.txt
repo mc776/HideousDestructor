@@ -89,11 +89,13 @@ extend class HDPlayerPawn{
 					&& hdww.owner==self
 				)hdww.initializewepstats(true);
 			}
-		}
 
-		//pistol hack
-		let pstl2=HDSecondPistol(findinventory("HDSecondPistol"));
-		if(pstl2)pstl2.weaponstatus[PISS_AUTO]=max(0,pstl2.weaponstatus[PISS_AUTO]);
+			//pistol hack
+			let pstl=HDPistol(findinventory("HDPistol"));
+			if(pstl)pstl.weaponstatus[PISS_AUTO]=max(0,pstl.weaponstatus[PISS_AUTO]);
+			let pstl2=HDSecondPistol(findinventory("HDSecondPistol"));
+			if(pstl2)pstl2.weaponstatus[PISS_AUTO]=max(0,pstl2.weaponstatus[PISS_AUTO]);
+		}
 
 		//clean up some stuff
 		if(!hd_carrylimit)A_TakeInventory("backpack");

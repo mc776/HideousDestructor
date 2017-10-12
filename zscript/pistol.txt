@@ -403,7 +403,10 @@ class HDPistol:HDWeapon{
 			invoker.weaponstatus[PISS_MAG]--;
 			if(invoker.weaponstatus[PISS_AUTO]==1){
 				let pnr=HDPlayerPawn(self);
-				if(pnr)pnr.fatigue+=min(countinv("IsMoving"),5);
+				if(
+					pnr&&countinv("IsMoving")
+					&&pnr.fatigue<HDCONST_SPRINTFATIGUE
+				)pnr.fatigue++;
 				A_GiveInventory("IsMoving",5);
 				A_Refire("fire");
 			}else A_Refire();
@@ -585,8 +588,7 @@ class HDPistol:HDWeapon{
 		weaponstatus[0]=0;
 		weaponstatus[PISS_MAG]=15;
 		weaponstatus[PISS_CHAMBER]=2;
-		if(idfa)weaponstatus[PISS_AUTO]=0;
-		else weaponstatus[PISS_AUTO]=max(-1,weaponstatus[PISS_AUTO]);
+		if(!idfa)weaponstatus[PISS_AUTO]=-1;
 	}
 }
 enum pistolstatus{
