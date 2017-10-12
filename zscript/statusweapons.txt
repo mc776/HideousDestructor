@@ -10,26 +10,26 @@ extend class HDStatusBar{
 
 		if(w is "Lumberjack"){
 			let wpn=lumberjack(w);
-			if(wpn){
-				if(!wpn.weaponstatus[1])drawstring(
-					mamountfont,"00000",(-16,-9),DI_TEXT_ALIGN_RIGHT|
-					DI_TRANSLATABLE|DI_SCREEN_CENTER_BOTTOM,
-					Font.CR_DARKGRAY
-				);else if(wpn.weaponstatus[1]>0)
-					drawwepnum(wpn.weaponstatus[1],20);
-			}
+			if(!wpn.weaponstatus[1])drawstring(
+				mamountfont,"00000",(-16,-9),DI_TEXT_ALIGN_RIGHT|
+				DI_TRANSLATABLE|DI_SCREEN_CENTER_BOTTOM,
+				Font.CR_DARKGRAY
+			);else if(wpn.weaponstatus[1]>0)
+				drawwepnum(wpn.weaponstatus[1],20);
 		}
 		else if(w is "HDPistol"){
-			drawwepcounter(pp.countinv("HDPistolFullAuto"),
+			let wpn=hdpistol(w);
+			if(wpn.weaponstatus[PISS_AUTO]>=0)drawwepcounter(wpn.weaponstatus[PISS_AUTO],
 				-22,-10,"blank","RBRSA3A7","STFULAUT"
 			);
-			if(pp.countinv("HDSecondPistol")){
+			let wpn2=hdsecondpistol(pp.findinventory("HDSecondPistol"));
+			if(wpn2){
 				drawwepdot(-16,-13,(4,2.6));
-				if(pp.countinv("HDSecondPistolFullAuto"))
+				if(wpn2.weaponstatus[PISS_AUTO]>=0)
 					drawwepdot(-21,-13,(2,2.6));
 			}
-			drawwepnum(pp.countinv("HDPistolLoaded"),15);
-			if(pp.countinv("HDPistolChamber"))drawwepdot(-16,-10,(3,1));
+			drawwepnum(wpn.weaponstatus[PISS_MAG],15);
+			if(wpn.weaponstatus[PISS_CHAMBER]==2)drawwepdot(-16,-10,(3,1));
 		}
 		else if(w is "HDSMG"){
 			drawwepcounter(pp.countinv("SMGFullAuto"),

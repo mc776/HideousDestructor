@@ -74,65 +74,6 @@ extend class HDPlayerPawn{
 		//load pistols, then mags, then SMG, rest in SMG mags
 		//fuck this is complicated
 		PistolConsolidator();
-		if(countinv("HDPistol")){
-			if(countinv("HDPistolLoaded")<15){
-				if(countinv("HDPistolMag")){
-					A_TakeInventory("HDPistolMag",1);
-					A_GiveInventory("HDPistolLoaded",15);
-				}
-				else if(countinv("HDSMGMag")){
-					A_TakeInventory("HDSMGMag",1);
-					A_GiveInventory("HDPistolLoaded",30);
-				}
-			}
-			if(!countinv("HDPistolChamber")){
-				bool noch=false;
-				if(countinv("HDPistolAmmo"))A_TakeInventory("HDPistolAmmo",1);
-				else if(countinv("HDPistolLoaded"))A_TakeInventory("HDPistolLoaded",1);
-				else noch=true;
-				if(!noch)A_GiveInventory("HDPistolChamber");
-			}
-			int btg=min(15-countinv("HDPistolLoaded"),countinv("HDPistolAmmo"));
-			if(btg){
-				A_TakeInventory("HDPistolAmmo",btg);
-				A_GiveInventory("HDPistolLoaded",btg);
-			}
-		}
-		if(countinv("HDSecondPistol")){
-			if(countinv("HDSecondPistolLoaded")<15){
-				if(countinv("HDPistolMag")){
-					A_TakeInventory("HDPistolMag",1);
-					A_GiveInventory("HDSecondPistolLoaded",15);
-				}
-				else if(countinv("HDSMGMag")){
-					A_TakeInventory("HDSMGMag",1);
-					A_GiveInventory("HDSecondPistolLoaded",30);
-				}
-			}
-			if(!countinv("HDSecondPistolChamber")){
-				bool noch=false;
-				if(countinv("HDPistolAmmo"))A_TakeInventory("HDPistolAmmo",1);
-				else if(countinv("HDSecondPistolLoaded"))A_TakeInventory("HDSecondPistolLoaded",1);
-				else noch=true;
-				if(!noch)A_GiveInventory("HDSecondPistolChamber");
-			}
-			int btg=min(15-countinv("HDSecondPistolLoaded"),countinv("HDPistolAmmo"));
-			if(btg){
-				A_TakeInventory("HDPistolAmmo",btg);
-				A_GiveInventory("HDSecondPistolLoaded",btg);
-			}
-		}
-		if(countinv("HDPistolAmmo")>=15 && (countinv("HDPistol")||countinv("DERPUsable"))){
-			bool done=false;
-			int mc;
-			while(!done){
-				mc=countinv("HDPistolMag");
-				A_GiveInventory("HDPistolMag");
-				if(countinv("HDPistolMag")>mc)A_TakeInventory("HDPistolAmmo",15);
-				else done=true;
-				if(countinv("HDPistolAmmo")<15)done=true;
-			}
-		}
 		if(countinv("HDSMG")){
 			if(countinv("HDSMGLoaded")<30){
 				if(countinv("HDSMGMag")){

@@ -80,7 +80,12 @@ class DERPBot:HDUPK{
 				)
 			)){
 				target.A_PlaySound("weapons/rifleclick",CHAN_AUTO);
-				A_SpawnItemEx("HD9mDmag",0,0,0,1,random(-1,1),2,0,SXF_SETTARGET);
+				actor mmm=spawn("HD9mPMag",pos);
+				if(mmm){
+					mmm.A_ChangeVelocity(1,random(-1,1),2,CVF_RELATIVE);
+					mmm.stamina=countinv("DERPAmmo");
+					A_TakeInventory("DERPAmmo");
+				}
 			}else if(
 				(!target.countinv("DERPUsable")&&health>0)
 				||(!target.countinv("DERPDEAD")&&health<=0)

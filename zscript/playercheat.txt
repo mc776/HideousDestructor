@@ -92,10 +92,8 @@ extend class HDPlayerPawn{
 		}
 
 		//pistol hack
-		if(allthings||name~=="weapons"){
-			A_SetInventory("HDPistolFullAuto",max(1,countinv("HDPistolFullAuto")));
-			A_SetInventory("HDSecondPistolFullAuto",max(1,countinv("HDSecondPistolFullAuto")));
-		}
+		let pstl2=HDSecondPistol(findinventory("HDSecondPistol"));
+		if(pstl2)pstl2.weaponstatus[PISS_AUTO]=max(0,pstl2.weaponstatus[PISS_AUTO]);
 
 		//clean up some stuff
 		if(!hd_carrylimit)A_TakeInventory("backpack");

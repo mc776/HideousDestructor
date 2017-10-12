@@ -62,7 +62,7 @@ extend class HDPlayerPawn{
 					blx+=100;
 					if(hdw.weaponstatus[1]>=0)blx+=BLOX_BATTERY_LOADED;
 				}else if(hdw is "HDPistol"){
-					blx+=30+countinv("HDPistolLoaded")*BLOX_9MAG_LOADED;
+					blx+=30;//+countinv("HDPistolLoaded")*BLOX_9MAG_LOADED;
 				}else if(hdw is "HDSMG"){
 					if(countinv("HDSMGNoMag"))blx+=120-BLOX_9MAG30_LOADED;
 					else blx+=120+countinv("HDSMGLoaded")*BLOX_9_LOADED;
@@ -135,7 +135,8 @@ extend class HDPlayerPawn{
 		blox+=
 
 		//second pistol
-		(countinv("HDSecondPistol")?(30+countinv("HDSecondPistolLoaded")*BLOX_9MAG_LOADED):0)
+//		(countinv("HDSecondPistol")?(30+countinv("HDSecondPistolLoaded")*BLOX_9MAG_LOADED):0)
+		(countinv("HDSecondPistol")?30:0)
 
 		//armour
 		+countinv("PortableRadsuit")*50

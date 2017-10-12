@@ -19,12 +19,6 @@ extend class HDPlayerPawn{
 		if(countinv("HDSMGChamber")){
 			A_SetInventory("SMGFullAuto",getcvar("hd_smgfiremode"));
 		}
-		if(getcvar("hd_pistauto")){
-			if(countinv("HDPistolFullAuto"))
-				A_GiveInventory("HDPistolFullAuto",2);
-			if(countinv("HDSecondPistolFullAuto"))
-				A_GiveInventory("HDSecondPistolFullAuto",2);
-		}
 		if(countinv("Hunter")){
 			A_SetInventory("ShotgunAuto",getcvar("hd_huntauto"));
 		}
@@ -67,16 +61,8 @@ class SoldierExtras:ActionItem{
 				&&!countinv("BlueArmour")
 			)A_SetInventory("GreenArmour",HDCONST_GREENARMOUR);
 
-			if(!countinv("HDPistol")){
-				A_GiveInventory("HDPistol");
-			}
-			else if(!countinv("HDSecondPistol")){
-				A_GiveInventory("HDSecondPistol");
-				A_GiveInventory("HDSecondPistolLoaded",15);
-				A_GiveInventory("HDSecondPistolChamber");
-			}
-			A_GiveInventory("HDPistolLoaded",15);
-			A_GiveInventory("HDPistolChamber");
+			if(!countinv("HDPistol"))A_GiveInventory("HDPistol");
+			else if(!countinv("HDSecondPistol"))A_GiveInventory("HDSecondPistol");
 			A_SetInventory("HDPistolMag",max(countinv("HDPistolMag"),3));
 
 			A_SetInventory("HDFragGrenadeAmmo",max(3,countinv("HDFragGrenadeAmmo")));
@@ -127,8 +113,6 @@ class DoomguyLoadout:InvReset{
 		let d=HDPlayerPawn(other);
 		if(d)d.GiveBasics();
 		other.A_GiveInventory("HDPistol");
-		other.A_GiveInventory("HDPistolLoaded",15);
-		other.A_GiveInventory("HDPistolChamber");
 		other.A_GiveInventory("HDPistolMag",2);
 		other.A_GiveInventory("HDPistolAmmo",4);
 		goawayanddie();
@@ -187,38 +171,23 @@ extend class HDPlayerPawn{
 				break;
 			case 20:
 			case 21:
+				int which=0;
 				if(amt>1){
-					if(num==21){
-						A_GiveInventory("HDPistolFullAuto");
-						A_GiveInventory("HDSecondPistolFullAuto");
-					}else{
-						A_TakeInventory("HDPistolFullAuto");
-						A_TakeInventory("HDSecondPistolFullAuto");
-					}
 					A_GiveInventory("HDSecondPistol");
-					A_GiveInventory("HDSecondPistolChamber");
-					A_GiveInventory("HDSecondPistolLoaded",15);
 					nw="HDPistol";A_GiveInventory(nw);
-					A_GiveInventory("HDPistolChamber");
-					A_GiveInventory("HDPistolLoaded",15);
+					which=3;
 				}else{
-					PistolConsolidator();
 					if(countinv("HDPistol")){
 						A_GiveInventory("HDSecondPistol");
-						A_GiveInventory("HDSecondPistolChamber");
-						A_GiveInventory("HDSecondPistolLoaded",15);
-						if(num==21){
-							if(!countinv("HDPistolFullAuto"))
-								A_GiveInventory("HDPistolFullAuto");
-							else
-								A_GiveInventory("HDSecondPistolFullAuto");
-						}
+						which=2;
 					}else{
 						nw="HDPistol";A_GiveInventory(nw);
-						A_GiveInventory("HDPistolChamber");
-						A_GiveInventory("HDPistolLoaded",15);
-						if(num==21)A_GiveInventory("HDPistolFullAuto");
+						which=1;
 					}
+				}
+				if(num==21){
+					if(which!=2)hdpistol(findinventory("HDPistol")).weaponstatus[PISS_AUTO]=0;
+					if(which>1&&countinv("HDSecondPistol"))hdsecondpistol(findinventory("HDSecondPistol")).weaponstatus[PISS_AUTO]=0;
 				}
 				break;
 			case 22:

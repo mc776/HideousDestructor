@@ -326,14 +326,26 @@ class HDStatusBar:DoomStatusBar{
 	string smgsprite;string zm66sprite;string liberatorsprite;
 	string medisprite;string pistolsprite;string pistolsprite2;
 	void setwepsprites(playerpawn cp){
-		if(cp.countinv("HDPistolChamber")){
-			if(cp.countinv("HDPistolFullAuto"))
-				pistolsprite="PISTC0";else pistolsprite="PISTA0";
-		}else{
-			if(cp.countinv("HDPistolFullAuto"))
-				pistolsprite="PISTD0";else pistolsprite="PISTB0";
+		let pstl=hdpistol(cp.findinventory("HDPistol"));
+		if(pstl){
+			if(pstl.weaponstatus[PISS_CHAMBER]>0){
+				if(pstl.weaponstatus[PISS_AUTO]>=0)
+					pistolsprite="PISTC0";else pistolsprite="PISTA0";
+			}else{
+				if(pstl.weaponstatus[PISS_AUTO]>=0)
+					pistolsprite="PISTD0";else pistolsprite="PISTB0";
+			}
+			let pstl2=hdsecondpistol(cp.findinventory("HDSecondPistol"));
+			if(pstl2){
+				if(pstl2.weaponstatus[PISS_CHAMBER]>0){
+					if(pstl2.weaponstatus[PISS_AUTO]>=0)
+						pistolsprite2="PISTC0";else pistolsprite2="PISTA0";
+				}else{
+					if(pstl2.weaponstatus[PISS_AUTO]>=0)
+						pistolsprite2="PISTD0";else pistolsprite2="PISTB0";
+				}
+			}
 		}
-		if(cp.countinv("HDSecondPistolChamber"))pistolsprite2="PISTA0";else pistolsprite2="PISTB0";
 
 		//smg
 		if(cp.countinv("HDSMGNoMag"))smgsprite="SMGNB0";else smgsprite="SMGNA0";
@@ -395,7 +407,7 @@ class HDStatusBar:DoomStatusBar{
 		else if(w is "Lumberjack")wx="CSAWA0";
 		else if(w is "HDPistol"){
 			wx=pistolsprite;
-			if(cplayer.mo.countinv("HDPistolChamber"))posx+=2;
+			if(hdpistol(w).weaponstatus[PISS_CHAMBER]>0)posx+=2;
 		}
 		else if(w is "HDSMG")wx=smgsprite;
 		else if(w is "Slayer")wx=slayersprite;
