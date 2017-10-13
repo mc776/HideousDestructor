@@ -4,7 +4,7 @@ extend class HDPlayerPawn{
 	void ConsolidateWeapons(){
 		if(sv_infiniteammo)return;
 		int sparepowder=countinv("FourMilAmmo");
-		int usablebrass=countinv("HDSpent7mmPickup");
+		int usablebrass=countinv("SevenMilBrass");
 
 		//misc. maintenance
 		A_TakeInventory("BossJam");
@@ -55,7 +55,7 @@ extend class HDPlayerPawn{
 			);
 			A_GiveInventory("SevenMilAmmo",newbullets);
 			//then subtract used supplies
-			A_TakeInventory("HDSpent7mmPickup",newbullets);
+			A_TakeInventory("SevenMilBrass",newbullets);
 			A_TakeInventory("FourMilAmmo",newbullets*random(2,5));
 		}
 
@@ -232,7 +232,7 @@ extend class HDPlayerPawn{
 						int chm=llb.weaponstatus[LIBS_CHAMBER];
 						if(chm<2){
 							llb.weaponstatus[LIBS_CHAMBER]=2;
-							if(chm==1)A_GiveInventory("HDSpent7mmPickup");
+							if(chm==1)A_GiveInventory("SevenMilBrass");
 							totalspare--;
 						}
 						chm=llb.weaponstatus[LIBS_MAG];
@@ -351,6 +351,145 @@ extend class HDPlayerPawn{
 			}
 		}
 	}
+	void ConsolidateAmmo(){
+		//use the BFG to charge everything
+		if(countinv("BFG9k")){
+			A_GiveInventory("BFGInternalCharge",20);
+			A_GiveInventory("BFGChamber",20);
+			A_GiveInventory("BFGLoaded");
+			//convert empty to full
+			while(
+				countinv("HDCellPackEmpty")
+				&&!A_JumpIfInventory("HDCellPacks",0,"null")
+			){
+				A_TakeInventory("HDCellPackEmpty",1);
+				A_GiveInventory("HDCellPacks");
+			}
+			//convert partial to full
+			while(
+				countinv("HDCellAmmo")
+				&&!A_JumpIfInventory("HDCellPacks",0,"null")
+			){
+				A_TakeInventory("HDCellAmmo",random(4,20));
+				A_GiveInventory("HDCellPacks");
+			}
+			if(countinv("ThunderBuster")){
+				hdweapon(findinventory("ThunderBuster")).weaponstatus[TBS_BATTERY]=20;
+			}
+			if(countinv("Lumberjack")){
+				hdweapon(findinventory("Lumberjack")).weaponstatus[1]=20;
+			}
+			if(countinv("Vulcanette")){
+				hdweapon(findinventory("Vulcanette")).weaponstatus[1]=20;
+			}
+		}else{
+			//is there anything that can be done?
+		}
+
+		//handle 7mm conversion - do not add until after 7mm consolidated
+		int addsevenmil=0;
+		if(
+			countinv("LiberatorRifle")
+			&&countinv("SevenMilBrass")
+			&&countinv("FourMilAmmo")>4  
+		){    
+			int curr7=
+				countinv("LiberatorMag")*30
+				+countinv("BossClip")*10
+				+countinv("SevenMilAmmo");
+			int max7=
+				hdf.maxinv(self,"LiberatorMag")*30
+				+hdf.maxinv(self,"BossClip")*10
+				+hdf.maxinv(self,"SevenMilAmmo");
+			int rnd=random(1,7);
+			int powderunits=max(0,countinv("FourMilAmmo")-rnd);
+
+			//take garbage out of guns
+			if(countinv("BossSpentChamber")){
+				A_TakeInventory("BossSpentChamber");
+				addsevenmil++;
+			}
+			if(
+				liberatorrifle(findinventory("LiberatorRifle"))
+				&&liberatorrifle(findinventory("LiberatorRifle")).weaponstatus[LIBS_CHAMBER]==1
+			){
+				liberatorrifle(findinventory("LiberatorRifle")).weaponstatus[LIBS_CHAMBER]=0;
+				addsevenmil++;
+			}
+			if(
+				zm66assaultrifle(findinventory("zm66assaultrifle")).weaponstatus[0]
+				&ZM66F_CHAMBERBROKEN
+			){
+				zm66assaultrifle(findinventory("zm66assaultrifle")).weaponstatus[0]&=~(
+					ZM66F_CHAMBER|ZM66F_CHAMBERBROKEN
+				);
+				powderunits++;
+			}
+
+			//put it all together
+			addsevenmil=min(
+				max7-curr7,
+				powderunits/4,
+				countinv("SevenMilBrass")
+			);
+			A_TakeInventory("SevenMilBrass",addsevenmil);
+			A_TakeInventory("FourMilAmmo",addsevenmil*4+rnd);
+		}
+		//convert spare 776 to Liberator mags
+		addsevenmil+=countinv("SevenMilAmmo");
+		while(
+			addsevenmil>=30      
+			&&!A_JumpIfInventory("LiberatorMag",0,"null")
+		){
+			addsevenmil-=30;
+			A_GiveInventory("LiberatorMag");
+		}
+		//convert spare 776 to clips
+		while(
+			addsevenmil>=10      
+			&&!A_JumpIfInventory("BossClip",0,"null")
+		){
+			addsevenmil-=10;
+			A_GiveInventory("BossClip");
+		}
+		//add addsevenmil to spare 776
+		A_SetInventory("SevenMilAmmo",addsevenmil);
+
+
+		//convert spare 9 to SMG mags, convert spare 9 to pistol mags
+		while(
+			countinv("HDPistolAmmo")>=30      
+			&&!A_JumpIfInventory("HDSMGMag",0,"null")
+		){
+			A_TakeInventory("HDPistolAmmo",30);
+			A_GiveInventory("HDSMGMag");
+		}
+		while(
+			countinv("HDPistolAmmo")>=15      
+			&&!A_JumpIfInventory("HDPistolMag",0,"null")
+		){
+			A_TakeInventory("HDPistolAmmo",15);
+			A_GiveInventory("HDPistolMag");
+		}
+
+		//misc. garbage removal
+		A_TakeInventory("BossJam");
+		A_TakeInventory("HunterSpentShell");
+		A_TakeInventory("SlayerSpentShell1");
+		A_TakeInventory("SlayerSpentShell2");
+		A_TakeInventory("BrontornisSpent");
+
+		//repair *ERPs
+		if (countinv("DERPDEAD")){
+			A_TakeInventory("DERPDEAD");
+			A_GiveInventory("DERPUsable");
+		}
+		if (countinv("HERPDEAD")){
+			A_TakeInventory("HERPDEAD");
+			A_GiveInventory("HERPUsable");
+		}
+	}
+
 }
 
 

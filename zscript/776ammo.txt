@@ -45,14 +45,14 @@ class HDSpent7mm:HDDebris{
 		loop;
 	death:
 		TNT1 A 0{
-			actor p=spawn("HDSpent7mmPickup",self.pos,ALLOW_REPLACE);
+			actor p=spawn("SevenMilBrass",self.pos,ALLOW_REPLACE);
 			p.angle=self.angle;p.vel=self.vel;
 			destroy();
 		}
 		RBRS A -1;
 	}
 }
-class HDSpent7mmPickup:Ammo{
+class SevenMilBrass:Ammo{
 	default{
 		+inventory.ignoreskill +forcexybillboard +cannotpush
 		height 16;radius 8;ammo.backpackamount 0;
