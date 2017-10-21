@@ -32,11 +32,12 @@ extend class HDStatusBar{
 			if(wpn.weaponstatus[PISS_CHAMBER]==2)drawwepdot(-16,-10,(3,1));
 		}
 		else if(w is "HDSMG"){
-			drawwepcounter(pp.countinv("SMGFullAuto"),
+			let wpn=hdsmg(w);
+			drawwepcounter(wpn.weaponstatus[SMGS_AUTO],
 				-22,-10,"blank","STBURAUT","STFULAUT"
 			);
-			drawwepnum(pp.countinv("HDSMGLoaded"),30);
-			if(pp.countinv("HDSMGChamber"))drawwepdot(-16,-10,(3,1));
+			drawwepnum(wpn.weaponstatus[SMGS_MAG],30);
+			if(wpn.weaponstatus[SMGS_CHAMBER]==2)drawwepdot(-16,-10,(3,1));
 		}
 		else if(w is "Slayer"){
 			if(pp.countinv("ShellChamber1")){

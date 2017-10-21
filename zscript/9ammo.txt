@@ -128,4 +128,59 @@ class HD9mPmag:HDUPK replaces HDPistolMag{
 		}stop;
 	}
 }
+class HD9mSmag:HDUPK replaces HDPistolMag{
+	override void postbeginplay(){
+		super.postbeginplay();
+		if(stamina<1){
+			actor emg=spawn("HDSMGEmptyMag",pos);
+			if(emg)emg.vel=vel;
+			destroy();return;
+		}
+	}
+	states{
+	spawn:
+		CLP3 A -1 A_Stop();
+	give:
+		---- A 0{
+			if(stamina>=30){  
+				if(A_JumpIfInTargetInventory("HDPistolMag",0,"null")){
+					setstatelabel("spawn");return;
+				}else{
+					target.A_GiveInventory("HDSMGMag",1);
+					destroy();return;
+				}
+			}else{
+				int al=target.countinv("HDPistolAmmo");
+				target.A_GiveInventory("HDPistolAmmo",stamina);
+				stamina-=target.countinv("HDPistolAmmo")-al;
+				if(!stamina){destroy();return;}
+				else setstatelabel("spawn");
+			}
+		}stop;
+	}
+}
 
+
+
+// ------------------------------------------------------------
+// Pistol Bullet Extras
+// ------------------------------------------------------------
+class HDNineMilNoisemaker:IdleDummy{
+	states{
+	spawn:
+		TNT1 A 1;
+		TNT1 A 0{
+			if(
+				ceilingpic==skyflatnum||
+				ceilingz-floorz>256
+			)A_AlertMonsters(860);
+		}stop;
+	}
+}
+class HDNineMilTrail:IdleDummy{
+	states{
+	spawn:
+		TNT1 A 10 nodelay A_PlaySound("weapons/subfwoosh",0,0.02);
+		stop;
+	}
+}

@@ -348,7 +348,10 @@ class HDStatusBar:DoomStatusBar{
 		}
 
 		//smg
-		if(cp.countinv("HDSMGNoMag"))smgsprite="SMGNB0";else smgsprite="SMGNA0";
+		let smgg=hdsmg(cp.findinventory("HDSMG"));
+		if(smgg){
+			if(smgg.weaponstatus[SMGS_MAG]<0)smgsprite="SMGNB0";else smgsprite="SMGNA0";
+		}
 
 		//zm66
 		if(cp.countinv("ZM66AssaultRifle")){
