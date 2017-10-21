@@ -94,8 +94,6 @@ extend class HDStatusBar{
 			else{
 				double degree=(35-hpl.countinv("RocketZoom"))*0.1;
 				texman.setcameratotexture(hpc,"TCAMTEX5",degree);
-
-
 				int cx, cy, cw, ch;
 				[cx,cy,cw,ch]=screen.GetClipRect();
 				SetClipRect(302,179,36,57);
@@ -108,25 +106,6 @@ extend class HDStatusBar{
 					"stadia",(0,-2),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 					alpha:1.0,scale:(1.,1.)
 				);
-/*
-				drawimage(
-					"XH25",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-					alpha:0.9,scale:(2.,2.)
-				);
-				double degree=(35-hpl.countinv("RocketZoom"))*0.2;
-				texman.setcameratotexture(hpc,"TCAMTEX3",degree);
-				drawimage(
-					"TCAMTEX3",(0,58),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-					alpha:0.9,scale:(0.4,0.4)
-				);
-				drawimage(
-					"XH32",(0,58),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-					alpha:1.0,scale:(1.0,1.0)
-				);
-				drawnum(degree*10,
-					0,98,DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,Font.CR_BLACK
-				);
-*/
 			}
 		}
 		else if(wp is "ThunderBuster"&&ismoving<6){
@@ -176,9 +155,18 @@ extend class HDStatusBar{
 			}
 		}
 		else if((wp is "Brontornis")&&ismoving<10){
+			texman.setcameratotexture(hpc,"TCAMTEX5",2);
+			int cx,cy,cw,ch;
+			[cx,cy,cw,ch]=screen.GetClipRect();
+			SetClipRect(302,179,36,57);
 			drawimage(
-				"XH24",(0,1.8),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-				scale:(1,1)
+				"TCAMTEX5",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+				alpha:0.9,scale:(0.35,0.35)
+			);
+			screen.SetClipRect(cx,cy,cw,ch);
+			drawimage(
+				"stadia",(0,-2),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
+				alpha:1.0,scale:(1.,1.)
 			);
 		}
 		else if(wp is "BossRifle"&&ismoving<5){
