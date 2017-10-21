@@ -16,9 +16,6 @@ extend class HDPlayerPawn{
 
 		//now for configs!
 		A_SetInventory("DERPMode",getcvar("hd_derpmode"));
-		if(countinv("HDSMGChamber")){
-			A_SetInventory("SMGFullAuto",getcvar("hd_smgfiremode"));
-		}
 		if(countinv("Hunter")){
 			A_SetInventory("ShotgunAuto",getcvar("hd_huntauto"));
 		}
@@ -192,8 +189,6 @@ extend class HDPlayerPawn{
 				break;
 			case 22:
 				nw="HDSMG";A_GiveInventory(nw);
-				A_GiveInventory("HDSMGChamber");
-				A_GiveInventory("HDSMGLoaded",30);
 				break;
 			case 30:
 				nw="Slayer";A_GiveInventory(nw);

@@ -64,8 +64,9 @@ extend class HDPlayerPawn{
 				}else if(hdw is "HDPistol"){
 					blx+=30;//+countinv("HDPistolLoaded")*BLOX_9MAG_LOADED;
 				}else if(hdw is "HDSMG"){
-					if(countinv("HDSMGNoMag"))blx+=120-BLOX_9MAG30_LOADED;
-					else blx+=120+countinv("HDSMGLoaded")*BLOX_9_LOADED;
+					int mg=hdw.weaponstatus[SMGS_MAG];
+					if(mg<0)blx+=120-BLOX_9MAG30_LOADED;
+					else blx+=120+mg*BLOX_9_LOADED;
 				}else if(hdw is "Hunter"){
 					blx+=125+(
 							countinv("ShotgunTube")

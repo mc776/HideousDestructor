@@ -247,7 +247,7 @@ class HDSMG:HDWeapon{
 		SMGG A 0 A_MuzzleClimb(frandom(0.2,-0.8),frandom(-0.2,0.4));
 		SMGG AAAAAAAAAAAAAAA 1;
 		SMGG A 12{
-			A_PlayWeaponSound("weapons/pocket");
+			A_PlaySound("weapons/pocket",CHAN_WEAPON);
 			A_TakeInventory("HDPistolMag",1);
 			int room=ammocap("HDPistolAmmo")-countinv("HDPistolAmmo");
 			A_GiveInventory("HDPistolAmmo",room);

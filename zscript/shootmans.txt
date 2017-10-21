@@ -34,7 +34,10 @@ class NoBlockWepDrop:ActionItem{
 
 			if(self is "ZombieSMGStormtrooper"){
 				if(!hasdropped){
-					A_DropItem("HDSMGDropped");
+					let wp=dropwep("HDSMG");if(!wp)return;
+					wp.weaponstatus[SMGS_AUTO]=2;
+					wp.weaponstatus[SMGS_MAG]=random(0,30);
+					wp.weaponstatus[SMGS_CHAMBER]=2;
 					A_DropItem("HDFragGrenadeAmmo",0,8);
 					A_DropItem("HDFragGrenadeAmmo",0,4);
 					A_DropItem("HDSMGMag",8);
@@ -98,13 +101,19 @@ class NoBlockWepDrop:ActionItem{
 				}
 			}else if(self is "HoopBubble"){
 				if(!hasdropped){
-					A_DropItem("HDSMGDropped");
+					let wp=dropwep("HDSMG");if(!wp)return;
+					wp.weaponstatus[SMGS_AUTO]=2;
+					wp.weaponstatus[SMGS_MAG]=random(0,30);
+					wp.weaponstatus[SMGS_CHAMBER]=2;
 				}else{
 					A_DropItem("HDSMGMag",0,96);
 				}
 			}else if(self is "SWAT2Base"){
 				if(!hasdropped){
-					A_DropItem("HDSMGDropped");
+					let wp=dropwep("HDSMG");if(!wp)return;
+					wp.weaponstatus[SMGS_AUTO]=2;
+					wp.weaponstatus[SMGS_MAG]=random(0,30);
+					wp.weaponstatus[SMGS_CHAMBER]=2;
 				}else{
 					A_DropItem("HDSMGMag",0,96);
 				}

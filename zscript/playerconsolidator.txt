@@ -71,45 +71,7 @@ extend class HDPlayerPawn{
 			A_GiveInventory("HERPUsable");
 		}
 
-		//load pistols, then mags, then SMG, rest in SMG mags
-		//fuck this is complicated
-		//also the pistol stuff has been deleted lol
-		if(countinv("HDSMG")){
-			if(countinv("HDSMGLoaded")<30){
-				if(countinv("HDSMGMag")){
-					A_TakeInventory("HDSMGMag",1);
-					A_GiveInventory("HDPistolAmmo",30);
-				}
-				else if(countinv("HDPistolMag")>=2){
-					A_TakeInventory("HDPistolMag",2);
-					A_GiveInventory("HDPistolAmmo",30);
-				}
-			}
-			if(!countinv("HDSMGChamber")){
-				bool noch=false;
-				if(countinv("HDPistolAmmo"))A_TakeInventory("HDPistolAmmo",1);
-				else if(countinv("HDSMGLoaded"))A_TakeInventory("HDSMGLoaded",1);
-				else noch=true;
-				if(!noch)A_GiveInventory("HDSMGChamber");
-			}
-			int btg=min(30-countinv("HDSMGLoaded"),countinv("HDPistolAmmo"));
-			if(btg){
-				A_TakeInventory("HDPistolAmmo",btg);
-				A_GiveInventory("HDSMGLoaded",btg);
-			}
-		}
-		if(countinv("HDPistolAmmo")>=30){
-			bool done=false;
-			int mc;
-			while(!done){
-				mc=countinv("HDSMGMag");
-				A_GiveInventory("HDSMGMag");
-				if(countinv("HDSMGMag")>mc)A_TakeInventory("HDPistolAmmo",30);
-				else done=true;
-				if(countinv("HDPistolAmmo")<30)done=true;
-			}
-		}
-
+		//all the pistol/smg stuff is gone, lol
 
 		//fill up bronto
 		if(countinv("Brontornis")&&!countinv("BrontornisMag")&&countinv("BrontornisRound")){

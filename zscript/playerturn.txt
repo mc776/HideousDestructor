@@ -54,8 +54,7 @@ extend class HDPlayerPawn{
 			barreldepth=2;
 		}else if(wp is "HDSMG"){
 			amt=5+
-				countinv("HDSMGLoaded")*0.02+
-				(countinv("HDSMGNoMag")?0:0.5)
+				(wp.weaponstatus[SMGS_MAG]<0)?-0.5:(wp.weaponstatus[SMGS_MAG]*0.02)
 			;
 			barrellength=26;
 			barrelwidth=0.5;
