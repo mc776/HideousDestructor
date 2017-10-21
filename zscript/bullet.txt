@@ -468,19 +468,18 @@ class DecoBulleter:ActionItem{
 	states{
 	pickup:
 		TNT1 A 0{
-			actor p=Spawn(invoker.missilename,pos+(0,0,height-6));
+			actor p=spawn(invoker.missilename,pos+(0,0,height-6));
+			if(!p)return;
 			p.target=self;p.angle=angle;p.pitch=pitch;
 			if(invoker.speed)p.speed=invoker.speed;
 			double pf=invoker.accuracy;
-			if(p){
-				if(pf){
-					p.vel+=(
-						frandom(-pf,pf),frandom(-pf,pf),frandom(-pf,pf)
-					);
-					p.speed+=10*frandom(-pf,pf);
-				}
-				p.vel+=self.vel;
+			if(pf){
+				p.vel+=(
+					frandom(-pf,pf),frandom(-pf,pf),frandom(-pf,pf)
+				);
+				p.speed+=10*frandom(-pf,pf);
 			}
+			p.vel+=self.vel;
 		}fail;
 	}
 }

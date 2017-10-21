@@ -108,13 +108,22 @@ class ZombieStormtrooper:ZombieMan{
 		#### F 1 bright light("SHOT"){
 			pitch+=frandom(-spread,spread);
 			angle+=frandom(-spread,spread);
+			actor p;
 			if(firemode==-2){
 				A_PlaySound("weapons/pistol",CHAN_WEAPON);
-				A_GiveInventory("DecoBulleter9");
+				p=spawn("HDBullet9",pos+(0,0,height-6));
+				p.speed=500+10*frandom(-1.,1.);
+				p.vel+=(
+					frandom(-1.,1.),frandom(-1.,1.),frandom(-1.,1.)
+				);
 			}else{
 				A_PlaySound("weapons/rifle",CHAN_WEAPON);
-				A_GiveInventory("DecoBulleter426");
+				p=spawn("HDBullet426",pos+(0,0,height-6));
 			}
+			p.target=self;p.angle=angle;p.pitch=pitch;
+			p.vel+=self.vel;
+
+
 			mag--;
 		}
 		#### E 2{
