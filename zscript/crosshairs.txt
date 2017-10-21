@@ -92,6 +92,23 @@ extend class HDStatusBar{
 				scale:(1.6,1.6)
 			);
 			else{
+				double degree=(35-hpl.countinv("RocketZoom"))*0.1;
+				texman.setcameratotexture(hpc,"TCAMTEX5",degree);
+
+
+				int cx, cy, cw, ch;
+				[cx,cy,cw,ch]=screen.GetClipRect();
+				SetClipRect(302,179,36,57);
+				drawimage(
+					"TCAMTEX5",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					alpha:0.9,scale:(0.35,0.35)
+				);
+				screen.SetClipRect(cx,cy,cw,ch);
+				drawimage(
+					"stadia",(0,-2),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
+					alpha:1.0,scale:(1.,1.)
+				);
+/*
 				drawimage(
 					"XH25",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 					alpha:0.9,scale:(2.,2.)
@@ -109,6 +126,7 @@ extend class HDStatusBar{
 				drawnum(degree*10,
 					0,98,DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,Font.CR_BLACK
 				);
+*/
 			}
 		}
 		else if(wp is "ThunderBuster"&&ismoving<6){
