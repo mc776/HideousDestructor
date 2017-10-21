@@ -172,7 +172,7 @@ class HDSMG:HDWeapon{
 				aaa.stamina=invoker.weaponstatus[SMGS_MAG];
 				invoker.weaponstatus[SMGS_MAG]=-1;
 				setweaponstate("magout");
-			}setweaponstate("pocketmag");
+			}
 		}
 	pocketmag:
 		SMGG B 0{
@@ -194,6 +194,7 @@ class HDSMG:HDWeapon{
 		SMGG BB 7 offset(34,54) A_MuzzleClimb(frandom(0.2,-0.8),frandom(-0.2,0.4));
 		SMGG B 8 offset(34,52) A_PlaySound("weapons/pocket",CHAN_WEAPON);
 		SMGG B 12 offset(32,50);
+		SMGG B 3 offset(32,49) A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
 		SMGG B 0{
 			if(countinv("HDSMGMag")){
 				invoker.weaponstatus[SMGS_MAG]=30;
@@ -206,15 +207,11 @@ class HDSMG:HDWeapon{
 			if(invoker.weaponstatus[SMGS_CHAMBER]==2)setweaponstate("reloadend");
 		}
 	chamber:
-		SMGG B 3 offset(32,49) A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
-		SMGG A 3 offset(32,49);
-		SMGG A 2 offset(32,47);
-		SMGG B 8 offset(33,50){
+		SMGG B 2 offset(33,50){
 			invoker.weaponstatus[SMGS_MAG]--;
 			invoker.weaponstatus[SMGS_CHAMBER]=2;
-			A_PlaySound("weapons/rifleload",CHAN_WEAPON);
 		}
-		SMGG B 4 offset(32,46) A_PlaySound("weapons/rifleclick2");
+		SMGG B 4 offset(32,49) A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
 
 	reloadend:
 		SMGG B 3 offset(30,52);

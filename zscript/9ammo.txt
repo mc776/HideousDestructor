@@ -119,10 +119,10 @@ class HD9mPmag:HDUPK replaces HDPistolMag{
 					destroy();return;
 				}
 			}else{
-				int al=target.countinv("HDPistolAMmo");
-				target.A_GiveInventory("HDPistolAMmo",stamina);
-				stamina-=target.countinv("HDPistolAMmo")-al;
-				if(!stamina){destroy();return;}
+				int al=target.countinv("HDPistolAmmo");
+				target.A_GiveInventory("HDPistolAmmo",stamina);
+				stamina-=target.countinv("HDPistolAmmo")-al;
+				if(stamina<1){destroy();return;}
 				else setstatelabel("spawn");
 			}
 		}stop;
@@ -143,7 +143,7 @@ class HD9mSmag:HDUPK replaces HDPistolMag{
 	give:
 		---- A 0{
 			if(stamina>=30){  
-				if(A_JumpIfInTargetInventory("HDPistolMag",0,"null")){
+				if(A_JumpIfInTargetInventory("HDSMGMag",0,"null")){
 					setstatelabel("spawn");return;
 				}else{
 					target.A_GiveInventory("HDSMGMag",1);
@@ -153,7 +153,7 @@ class HD9mSmag:HDUPK replaces HDPistolMag{
 				int al=target.countinv("HDPistolAmmo");
 				target.A_GiveInventory("HDPistolAmmo",stamina);
 				stamina-=target.countinv("HDPistolAmmo")-al;
-				if(!stamina){destroy();return;}
+				if(stamina<1){destroy();return;}
 				else setstatelabel("spawn");
 			}
 		}stop;
