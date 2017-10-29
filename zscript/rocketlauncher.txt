@@ -9,15 +9,6 @@ class HDRL:HDWeapon{
 		scale 0.6;
 		inventory.pickupmessage "You got the rocket launcher!";
 	}
-	override void DoEffect(){
-		if(owner.player){
-			int abv=cvar.getcvar("ab",owner.player).getint();
-			if(abv){
-				weaponstatus[RLS_AIRBURST]=max(abv,0);
-				cvar.getcvar("ab",owner.player).setint(0);
-			}
-		}
-	}
 	states{
 	select0:
 		MISG A 0;
@@ -28,14 +19,8 @@ class HDRL:HDWeapon{
 
 	ready:
 		MISG A 1{
+			A_CheckAirburstCVar(RLS_AIRBURST);
 			A_WeaponReady(WRF_ALL);
-			if(player){
-				int abv=cvar.getcvar("ab",player).getint();
-				if(abv){
-					invoker.weaponstatus[RLS_AIRBURST]=max(abv,0);
-					cvar.getcvar("ab",player).setint(0);
-				}
-			}
 		}goto readyend;
 
 	user2:

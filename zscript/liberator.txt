@@ -136,6 +136,7 @@ class LiberatorRifle:HDWeapon{
 		}goto deselect0big;
 	ready:
 		BRFG A 1{
+			A_CheckAirburstCVar(LIBS_AIRBURST);
 			A_WeaponReady(WRF_ALL);
 			A_GiveInventory("NotShot",1);
 			if(countinv("NotShot")>350){  
@@ -388,7 +389,7 @@ class LiberatorRifle:HDWeapon{
 			if(invoker.weaponstatus[0]&LIBF_NOLAUNCHER){
 				invoker.weaponstatus[0]&=~(LIBF_GRENADEMODE|LIBF_GRENADELOADED);
 				setweaponstate("nope");
-			}else A_TakeInventory("AirburstCount");
+			}else invoker.weaponstatus[LIBS_AIRBURST]=0;
 		}
 		BRFG A 1 offset(2,36);
 		BRFG B 1 offset(4,40);
@@ -402,29 +403,26 @@ class LiberatorRifle:HDWeapon{
 		BRFG A 0;
 		goto nope;
 	abadjust:
-		BRFG A 1 A_WeaponReady(WRF_NOFIRE);
+		BRFG A 2 A_WeaponReady(WRF_NONE);
 		BRFG A 0{
-			if(
-				countinv("PressingFire")||
-				countinv("PressingAltfire")
-			){
-				if(countinv("PressingFire"))A_GiveInventory("AirburstCount",1);
-				else A_TakeInventory("AirburstCount",1);
+			A_GiveInventory("WeaponBusy");
+			if (countinv("PressingFire")||countinv("PressingAltfire")){
+				if(countinv("PressingFire"))invoker.weaponstatus[LIBS_AIRBURST]++;
+				else invoker.weaponstatus[LIBS_AIRBURST]=
+					max(0,invoker.weaponstatus[LIBS_AIRBURST]-1);
 			}else if(countinv("PressingZoom")){
-				A_TakeInventory("AirburstCount");
-			}else if(countinv("PressingFireMode")){
-				setweaponstate("abadjust");
-			}else setweaponstate("nope");
+				invoker.weaponstatus[LIBS_AIRBURST]=0;
+				setweaponstate("nope");
+			}
+			if(countinv("PressingFireMode"))setweaponstate("abadjust");
 		}goto nope;
+
+
 	firegrenade:
 		BRFG B 2{
 			if(invoker.weaponstatus[0]&LIBF_GRENADELOADED){
+				A_FireHDGL(LIBS_AIRBURST);
 				invoker.weaponstatus[0]&=~LIBF_GRENADELOADED;
-				A_SpawnItemEx("GyroGrenade",0,0,height-6,
-					vel.x,vel.y,vel.z,
-					0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
-				);
-				A_PlaySound("weapons/grenadeshot",CHAN_WEAPON);
 				A_ZoomFactor(0.99,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
 				A_MuzzleClimb(
 					0,0,
@@ -544,6 +542,7 @@ enum liberatorstatus{
 	LIBS_ZOOM=3,
 	LIBS_HEAT=4,
 	LIBS_BRASS=5,
+	LIBS_AIRBURST=6,
 };
 
 

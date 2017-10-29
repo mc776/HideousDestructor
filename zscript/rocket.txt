@@ -1,20 +1,31 @@
 // ------------------------------------------------------------
 // Gyro-Grenades and H.E.A.T.
 // ------------------------------------------------------------
-class AirburstCount:InventoryFlag{
-	default{inventory.maxamount 35000;+inventory.keepdepleted;}
-	override void DoEffect(){
-		if(owner.player){
-			int abv=cvar.getcvar("ab",owner.player).getint();
-			if(abv){
-				amount=abv;
-				cvar.getcvar("ab",owner.player).setint(0);
+class AirburstCount:InventoryFlag{}
+extend class HDWeapon{
+	action void A_FireHDGL(int airburstcounter=0){
+		A_PlaySound("weapons/grenadeshot",CHAN_WEAPON);
+		let ggg=gyrogrenade(spawn("GyroGrenade",pos+(0,0,height-8)));
+		ggg.angle=angle;ggg.pitch=pitch;ggg.target=self;ggg.master=self;
+		ggg.primed=false;
+		ggg.stamina=0;
+		if(airburstcounter){
+			ggg.fuze=invoker.weaponstatus[airburstcounter];
+			invoker.weaponstatus[airburstcounter]=0;
+		}else ggg.fuze=0;
+	}
+	action void A_CheckAirburstCVar(int weaponstatnum){
+		if(player){
+			int abv=cvar.getcvar("ab",player).getint();
+			if(abv>=0){
+				invoker.weaponstatus[weaponstatnum]=max(abv,0);
+				cvar.getcvar("ab",player).setint(-1);
 			}
 		}
 	}
 }
 class GyroGrenade:SlowProjectile{
-	int fuze;bool primed;
+	int fuze;bool primed;bool isrocket;
 	default{
 		-noextremedeath -noteleport +bloodlessimpact
 		height 3; radius 3; scale 0.5;
@@ -24,73 +35,55 @@ class GyroGrenade:SlowProjectile{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		fuze=0;primed=false;
+		if(isrocket)speed*=2;
 		A_ChangeVelocity(speed*cos(pitch),0,speed*sin(-pitch),CVF_RELATIVE);
 	}
 	states{
 	spawn:
 		ROCQ A 0;
 	spawn1:
-		#### A 0{
-			if(target){
-				fuze=target.countinv("AirburstCount");
-				if(fuze)fuze++;
-				A_TakeInventory("AirburstCount",giveto:AAPTR_TARGET);
-			}
-			if(countinv("HDRocketAmmo")) setstatelabel("spawnrocket");
-		}
-		#### B 1;
+		#### B 1 A_JumpIf(isrocket,"spawnrocket");
 		#### A 0{primed=true;}
 	spawn2:
 		#### AB 1{
-			if(fuze>0){
-				fuze--;
-				if(fuze==1)ExplodeMissile();
-			}
+			fuze--;
+			if(!fuze)ExplodeMissile();
 		}loop;
 	spawnrocket:
-		#### A 0{
-			if(
-				target.A_CheckLOF("null",CLOFF_JUMPENEMY|CLOFF_JUMPFRIEND|CLOFF_JUMPOBJECT|CLOFF_JUMPNONHOSTILE|CLOFF_ALLOWNULL|CLOFF_SETTRACER|CLOFF_FROMBASE|CLOFF_NOAIM,65536,512,0,0,target.height-12,0,AAPTR_NULL)
-			){
-				target.A_PlaySound("misc/chat2",CHAN_AUTO,1,0,24);
-				tracer=target.tracer;
-				target.A_Log(string.format("tracking %s",target.tracer.getclassname()),true);
-			}
+		---- A 0{
 			brockettrail=true;
-			if(fuze>1)fuze+=5; //idiotproofing the rocket timer
 			Gunsmoke();
-			for(int i=0;i<3;i++){
-				actor sss=spawn("HDSmoke",pos-vel*0.1+(0,0,-4));
-				sss.vel=vel*-0.06+(frandom(-2,2),frandom(-2,2),frandom(-2,2));
-			}
-			A_PlaySound("weapons/rocklaunch");
+			A_PlaySound("weapons/rocklaunch",CHAN_VOICE);
+		}
+		---- AAA 0{
+			actor sss=spawn("HDSmoke",pos-vel*0.1+(0,0,-4));
+			sss.vel=vel*-0.06+(frandom(-2,2),frandom(-2,2),frandom(-2,2));
 		}
 	spawnrocket2:
 		#### BA 1{
-			if(stamina>0){
+			if(stamina>0){  
 				if(!inthesky){
 					actor sss=spawn("HDGunsmoke",pos);
 					sss.vel=vel*0.1;
 				}
 				if(tracer)A_FaceTracer(20,20);
-				A_ChangeVelocity(cos(pitch)*(stamina>>2),0,sin(-pitch)*(stamina>>2)+1,CVF_RELATIVE);
+				A_ChangeVelocity(
+					cos(pitch)*stamina,0,
+					sin(-pitch)*stamina+1,CVF_RELATIVE
+				);
 				accuracy++;
-			}else if(stamina>-20){
+			}
+			fuze--;
+			if(!fuze)ExplodeMissile();
+			stamina--;
+		}
+		---- A 0{
+			if(!primed){
+				primed=true;
 				brockettrail=false;
 				bgrenadetrail=true;
-				A_ChangeVelocity(cos(pitch),0,sin(-pitch)+0.6,CVF_RELATIVE);
-			}else{
-				bgrenadetrail=false;
 			}
-			if(fuze>0){
-				fuze--;
-				if(fuze==1)ExplodeMissile();
-			}
-			stamina--;
-			primed=true;
-		}
-		loop;
+		}loop;
 	death:
 		TNT1 A 1{
 			if(!primed){
@@ -123,7 +116,7 @@ class HDHEAT:GyroGrenade{
 	}
 	states{
 	spawn:
-		MISL A 0;
+		MISL A 0 nodelay{primed=true;}
 		goto spawnrocket;
 	death:
 		TNT1 AAA 0 A_SpawnItemEx ("HDSmokeChunk", 0,0,1, random(-3,3),random(-3,3),random(2,6),random(-15,15),SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS,32);

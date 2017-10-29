@@ -40,6 +40,7 @@ class ZM66AssaultRifle:HDWeapon{
 	states{
 	ready:
 		RIFG A 1{
+			A_CheckAirburstCVar(ZM66S_AIRBURST);
 			if(
 				invoker.weaponstatus[ZM66S_HEAT]>HDCONST_ZM66COOKOFF    
 				&&invoker.weaponstatus[0]&ZM66F_CHAMBER
@@ -68,19 +69,15 @@ class ZM66AssaultRifle:HDWeapon{
 		RIFG A 0{
 			A_GiveInventory("WeaponBusy");
 			if (countinv("PressingFire")||countinv("PressingAltfire")){
-				setweaponstate("abclick");
+				if(countinv("PressingFire"))invoker.weaponstatus[ZM66S_AIRBURST]++;
+				else invoker.weaponstatus[ZM66S_AIRBURST]=
+					max(0,invoker.weaponstatus[ZM66S_AIRBURST]-1);
 			}else if(countinv("PressingZoom")){
-				A_TakeInventory("AirBurstCount");
+				invoker.weaponstatus[ZM66S_AIRBURST]=0;
 				setweaponstate("nope");
-			}else if(countinv("PressingFireMode"))setweaponstate("abadjust");
-			else setweaponstate("nope");
-		}
-	abclick:
-		RIFG A 0{
-			if(countinv("PressingFire"))A_GiveInventory("AirBurstCount",1);
-			else A_TakeInventory("AirBurstCount",1);
-			setweaponstate("abadjust");
-		}
+			}
+			if(countinv("PressingFireMode"))setweaponstate("abadjust");
+		}goto nope;
 
 	select0:
 		RIFG A 0{
@@ -424,10 +421,7 @@ class ZM66AssaultRifle:HDWeapon{
 		RIFG A 0 A_JumpIf(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_GRENADELOADED,1);
 		stop;
 		RIFG A 2{
-			A_SpawnItemEx("GyroGrenade",0,0,height-6,
-				vel.x,vel.y,vel.z,0,
-				SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
-			);
+			A_FireHDGL(ZM66S_AIRBURST);
 			invoker.weaponstatus[ZM66S_FLAGS]&=~ZM66F_GRENADELOADED;
 			A_PlaySound("weapons/grenadeshot",CHAN_WEAPON);
 			A_ZoomFactor(0.99,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
@@ -445,7 +439,7 @@ class ZM66AssaultRifle:HDWeapon{
 		RIFG A 1 offset(0,34){
 			if(invoker.weaponstatus[0]&ZM66F_NOLAUNCHER)return;
 			invoker.weaponstatus[0]^=ZM66F_GLMODE;
-			A_TakeInventory("AirburstCount");
+			invoker.weaponstatus[ZM66S_AIRBURST]=0;
 			A_SetCrosshair(21);
 		}goto nope;
 	zoom:
@@ -598,15 +592,6 @@ class ZM66AssaultRifle:HDWeapon{
 		}
 	}
 }
-
-/*
-	[0]status
-	[1]mag, -1 is emptymag
-	[2]firemode/ratchet (0=semi;1=auto;2=burst (if 2+, add 1 on each shot;>3, no shot))
-	[3]zoomlevel
-	[4]heat
-	[[5]moa?]
-*/
 enum zm66status{
 	ZM66F_CHAMBER=1,
 	ZM66F_CHAMBERBROKEN=2,
@@ -622,6 +607,7 @@ enum zm66status{
 	ZM66S_AUTO=2, //2 is burst, 2-5 counts ratchet
 	ZM66S_ZOOM=3,
 	ZM66S_HEAT=4,
+	ZM66S_AIRBURST=5,
 };
 
 

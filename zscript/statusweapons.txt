@@ -87,7 +87,7 @@ extend class HDStatusBar{
 			}
 			if(zzz.weaponstatus[ZM66S_MAG]>100)lod=random[shitgun](10,99);
 			drawnum(lod,-16,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_RED);
-			if(zzz.weaponstatus[0]&ZM66F_GLMODE)drawnum(pp.countinv("AirburstCount"),
+			if(zzz.weaponstatus[0]&ZM66F_GLMODE)drawnum(zzz.weaponstatus[ZM66S_AIRBURST],
 				-30,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
 			);else drawnum(zzz.weaponstatus[ZM66S_ZOOM],
 				-30,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
@@ -170,7 +170,7 @@ extend class HDStatusBar{
 				drawwepdot(-16,-10,(3,1));
 				lod++;
 			}
-			if(llb.weaponstatus[0]&LIBF_GRENADEMODE)drawnum(pp.countinv("AirburstCount"),
+			if(llb.weaponstatus[0]&LIBF_GRENADEMODE)drawnum(llb.weaponstatus[LIBS_AIRBURST],
 				-30,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
 			);else drawnum(llb.weaponstatus[LIBS_ZOOM],
 				-30,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
