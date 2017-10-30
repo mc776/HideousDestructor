@@ -7,7 +7,6 @@ extend class HDWeapon{
 		let ggg=gyrogrenade(spawn("GyroGrenade",pos+(0,0,height-8)));
 		ggg.angle=angle;ggg.pitch=pitch;ggg.target=self;ggg.master=self;
 		ggg.primed=false;
-		ggg.stamina=0;
 		if(airburstcounter){
 			ggg.fuze=invoker.weaponstatus[airburstcounter];
 			invoker.weaponstatus[airburstcounter]=0;
@@ -23,26 +22,65 @@ extend class HDWeapon{
 		}
 	}
 }
-class GyroGrenade:SlowProjectile{
+class GyroGrenade:HDBullet{
 	int fuze;bool primed;bool isrocket;
 	default{
 		-noextremedeath -noteleport +bloodlessimpact
 		height 3; radius 3; scale 0.5;
 		speed 110; mass 600; accuracy 0; woundhealth 0;
 		obituary "%o was fragged by %k.";
-		stamina 42; //used for fuel
+		stamina 5; //used for fuel
 	}
 	override void postbeginplay(){
-		super.postbeginplay();
 		if(isrocket)speed*=2;
-		A_ChangeVelocity(speed*cos(pitch),0,speed*sin(-pitch),CVF_RELATIVE);
+		super.postbeginplay();
+	}
+	override void bulletimpact(){
+		if(!primed&&random(0,20)){
+			A_SpawnItemEx("DudRocket",0,0,0,
+				random(30,60),random(-10,10),random(-10,10),
+				random(0,360),SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS,0
+			);
+			if(tracer){
+				int dmgg=vel.length();
+				tracer.damagemobj(self,target,dmgg*dmgg*0.1,"SmallArms0");
+			}
+			destroy();return;
+		}
+		bmissile=false;
+		A_SprayDecal("Scorch",8);
+
+
+		//impact damage
+		if(tracer){
+			tracer.damagemobj(self,target,clamp((42-stamina)*20,0,400),"SmallArms3");
+		}
+
+
+		//explosion
+		if(!inthesky){
+			A_Blast(
+				pushradius:256,pushamount:128,fullpushradius:96,
+				fragradius:HDCONST_SPEEDOFSOUND,
+				fragdamage:random(160,200+2*stamina),
+				gibradius:16,gibamount:random(1,8)*10
+			);
+			actor xpl=spawn("Gyrosploder",self.pos-(0,0,1),ALLOW_REPLACE);
+			xpl.target=target;xpl.master=master;xpl.stamina=stamina;
+		}else{actor xpl=Spawn("DistantRocket",self.pos,ALLOW_REPLACE);}
+		A_SpawnChunks("HDBulletFrag",180,100,500+4*stamina);
+
+		destroy();
 	}
 	states{
 	spawn:
 		ROCQ A 0;
 	spawn1:
-		#### B 1 A_JumpIf(isrocket,"spawnrocket");
-		#### A 0{primed=true;}
+		#### B 1;
+		#### A 0{
+			if(isrocket)setstatelabel("spawnrocket");
+			primed=true;
+		}
 	spawn2:
 		#### AB 1{
 			fuze--;
@@ -65,16 +103,14 @@ class GyroGrenade:SlowProjectile{
 					actor sss=spawn("HDGunsmoke",pos);
 					sss.vel=vel*0.1;
 				}
-				if(tracer)A_FaceTracer(20,20);
 				A_ChangeVelocity(
-					cos(pitch)*stamina,0,
-					sin(-pitch)*stamina+1,CVF_RELATIVE
+					cos(pitch)*60,0,
+					sin(-pitch)*60,CVF_RELATIVE
 				);
-				accuracy++;
+				stamina--;
 			}
 			fuze--;
-			if(!fuze)ExplodeMissile();
-			stamina--;
+			if(!fuze)setstatelabel("death");//ExplodeMissile();
 		}
 		---- A 0{
 			if(!primed){
@@ -84,27 +120,7 @@ class GyroGrenade:SlowProjectile{
 			}
 		}loop;
 	death:
-		TNT1 A 1{
-			if(!primed){
-				A_SpawnItemEx("DudRocket",0,0,0,random(30,60),random(-10,10),random(-10,10),random(0,360),SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS,0);
-				return;
-			}
-			if(tracer)tracer.damagemobj(self,target,clamp((42-stamina)*20,0,400),"SmallArms3");
-			A_SprayDecal("Scorch",8);
-
-			//explosion
-			if(!inthesky){
-				A_Blast(
-					pushradius:256,pushamount:128,fullpushradius:96,
-					fragradius:HDCONST_SPEEDOFSOUND,
-					fragdamage:random(160,200+2*stamina),
-					gibradius:16,gibamount:random(1,8)*10
-				);
-				actor xpl=Spawn("Gyrosploder",self.pos-(0,0,1),ALLOW_REPLACE);
-				xpl.target=target;xpl.master=master;xpl.stamina=stamina;
-			}else{actor xpl=Spawn("DistantRocket",self.pos,ALLOW_REPLACE);}
-			A_SpawnChunks("HDBulletFrag",180,100,500+4*stamina);
-		}stop;
+		TNT1 A 1;stop;
 	}
 }
 class HDHEAT:GyroGrenade{

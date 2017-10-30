@@ -59,10 +59,10 @@ class HDRL:HDWeapon{
 		---- A 0;
 		goto nope;
 	shoot:
-		MISG A 4{
+		MISG A 2{
 			int chm=invoker.weaponstatus[RLS_CHAMBER];
 			if(chm<1){
-				setweaponstate("nope");
+				setweaponstate("chamber_manual");
 				return;
 			}
 			gyrogrenade rkt;
@@ -73,48 +73,50 @@ class HDRL:HDWeapon{
 				//shoot a grenade
 				A_FireHDGL(RLS_AIRBURST);
 				invoker.weaponstatus[RLS_SMOKE]+=5;
-				setweaponstate("nope"); //do NOT return, some common setup stuff below
+				invoker.weaponstatus[RLS_CHAMBER]=0;
+				setweaponstate("chamber");
 			}else{
 				//shoot a rocket
 				if(chm>1)rkt=gyrogrenade(spawn("HDHEAT",pos+(0,0,height-8)));
 				else rkt=gyrogrenade(spawn("GyroGrenade",pos+(0,0,height-8)));
-				rkt.stamina=5;
-				invoker.weaponstatus[RLS_SMOKE]+=100;
+				invoker.weaponstatus[RLS_SMOKE]+=50;
 				rkt.angle=angle;rkt.pitch=pitch;rkt.target=self;rkt.master=self;
 				rkt.primed=false;
+				rkt.isrocket=true;
 				if(chm==1)rkt.fuze=max(0,invoker.weaponstatus[RLS_AIRBURST]);
-				else rkt.fuze=0;
+					else rkt.fuze=0;
 				invoker.weaponstatus[RLS_AIRBURST]=0;
+				invoker.weaponstatus[RLS_CHAMBER]=0;
+				A_PlaySound("weapons/rockignite",CHAN_AUTO);
 			}
-			invoker.weaponstatus[RLS_CHAMBER]=0;
 		}
-		MISG A 3{
+		MISG A 2{
 			A_ZoomFactor(0.98);
 			if(countinv("IsSupported")){
 				A_TakeInventory("IsSupported");
 				A_MuzzleClimb(
 					0,0,
-					-frandom(2,2.5),-frandom(1,1.5),
-					-frandom(2,3),-frandom(1.5,2),
-					frandom(1,1.2),frandom(2,3)
+					frandom(1,1.2),-frandom(1,1.5),
+					frandom(0.7,0.9),-frandom(1.5,2),
+					-frandom(0.8,1.),frandom(2,3)
 				);
 			}else{
 				A_MuzzleClimb(
 					0,0,
-					-frandom(3,3.5),-frandom(2,2.5),
-					-frandom(3,4),-frandom(2.5,3),
-					-frandom(1,1.2),-frandom(2,3)
+					frandom(1.2,1.7),-frandom(2,2.5),
+					frandom(1.,1.2),-frandom(2.5,3),
+					frandom(0.6,0.8),-frandom(2,3)
 				);
 				A_ChangeVelocity(cos(pitch)*-1,0,sin(pitch)*1,CVF_RELATIVE);
 			}
-		}
-		MISG A 3 A_ZoomFactor(1.);
-		MISG B 10{
+		} 
+		MISG B 4{
+			A_ZoomFactor(1.);
 			A_Gunflash();
-		}
+		}goto chamber;
 	flash:
 		MISF A 1 bright{
-			A_PlaySound("weapons/rockignite");
+			A_PlaySound("weapons/rocklaunch",CHAN_AUTO,0.6);
 			HDFlashAlpha(128);
 			A_Light1();
 		}
@@ -124,6 +126,22 @@ class HDRL:HDWeapon{
 		TNT1 A 0 A_AlertMonsters();
 		stop;
 
+	chamber:
+		MISG A 1 offset(0,34){
+			if(invoker.weaponstatus[RLS_CHAMBER]>0){
+				setweaponstate("nope");
+				return;
+			}
+			A_PlaySound("weapons/shotgr",CHAN_AUTO);
+		}
+		MISG A 1 offset(1,36){
+			if(invoker.weaponstatus[RLS_MAG]>0){
+				invoker.weaponstatus[RLS_CHAMBER]=1;
+				invoker.weaponstatus[RLS_MAG]--;
+			}
+		}
+		MISG A 1 offset(0,34);
+		goto nope;
 	zoom:
 	chamber_manual:
 		MISG A 1 offset(0,34){
@@ -131,7 +149,7 @@ class HDRL:HDWeapon{
 				setweaponstate("nope");
 				return;
 			}
-			A_PlaySound("weapons/shotgr",CHAN_WEAPON);
+			A_PlaySound("weapons/shotgr",CHAN_AUTO);
 		}
 		MISG A 1 offset(0,37);
 		MISG A 2 offset(1,36){
@@ -153,7 +171,7 @@ class HDRL:HDWeapon{
 			}
 			A_GiveInventory("WeaponBusy");
 		}
-		MISG A 2 offset(0,36) A_PlaySound("weapons/shotgr",CHAN_WEAPON);
+		MISG A 2 offset(0,36) A_PlaySound("weapons/shotgr",CHAN_AUTO);
 		MISG A 1 offset(0,37);
 		MISG A 2 offset(1,38);
 		MISG A 3 offset(2,37){
