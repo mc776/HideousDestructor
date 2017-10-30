@@ -130,7 +130,7 @@ extend class HDStatusBar{
 		else if(w is "Blooper"){
 			let wpn=blooper(w);
 			if(wpn.weaponstatus[0]&BLOPF_LOADED)drawwepdot(-16,-10,(5,3));
-			drawnum(wpn.weaponstatus[0]&BLOPS_AIRBURST,
+			drawnum(wpn.weaponstatus[BLOPS_AIRBURST],
 				-28,-15,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
 			);
 			drawwepnum(
@@ -140,7 +140,10 @@ extend class HDStatusBar{
 		}
 		else if(w is "HDRL"){
 			let wpn=hdrl(w);
-			if(wpn.weaponstatus[RLF_GRENADEMODE]){
+			if(
+				wpn.weaponstatus[RLS_CHAMBER]>1||
+				!(wpn.weaponstatus[0]&RLF_GRENADEMODE)
+			){
 				if(wpn.weaponstatus[RLS_CHAMBER]>1){
 					drawwepdot(-19,-13,(3,2));
 					drawwepdot(-16,-13,(2,2));
@@ -156,6 +159,7 @@ extend class HDStatusBar{
 				-32,-15,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
 			);
 			drawwepnum(wpn.weaponstatus[RLS_MAG],6);
+			if(wpn.weaponstatus[RLS_CHAMBER]>0)drawwepdot(-16,-10,(3,1));
 		}
 		else if(w is "LiberatorRifle"){
 			let llb=LiberatorRifle(w);

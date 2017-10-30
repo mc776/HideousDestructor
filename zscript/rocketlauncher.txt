@@ -35,7 +35,7 @@ class HDRL:HDWeapon{
 			A_WeaponReady(WRF_ALL);
 		}goto readyend;
 
-	user2:
+	firemode:
 	abadjust:
 		---- A 2;
 		---- A 0{
@@ -124,16 +124,42 @@ class HDRL:HDWeapon{
 		TNT1 A 0 A_AlertMonsters();
 		stop;
 
-	altfire:
+	zoom:
+	chamber_manual:
 		MISG A 1 offset(0,34){
-			if(invoker.weaponstatus[RLS_CHAMBER]>1){
-				invoker.weaponstatus[0]|=RLF_GRENADEMODE;
+			if(invoker.weaponstatus[RLS_CHAMBER]>0){
 				setweaponstate("nope");
 				return;
 			}
-			invoker.weaponstatus[0]^=RLF_GRENADEMODE;
+			A_PlaySound("weapons/shotgr",CHAN_WEAPON);
+		}
+		MISG A 1 offset(0,37);
+		MISG A 2 offset(1,36){
+			if(invoker.weaponstatus[RLS_MAG]>0){
+				invoker.weaponstatus[RLS_CHAMBER]=1;
+				invoker.weaponstatus[RLS_MAG]--;
+			}
+		}
+		MISG A 1 offset(0,34);
+		goto nope;
+
+	altfire:
+	grenadeorrocket:
+		MISG A 1 offset(0,34){
+			if(invoker.weaponstatus[RLS_CHAMBER]>1){
+				invoker.weaponstatus[0]&=~RLF_GRENADEMODE;
+				setweaponstate("nope");
+				return;
+			}
+			A_GiveInventory("WeaponBusy");
 		}
 		MISG A 2 offset(0,36) A_PlaySound("weapons/shotgr",CHAN_WEAPON);
+		MISG A 1 offset(0,37);
+		MISG A 2 offset(1,38);
+		MISG A 3 offset(2,37){
+			invoker.weaponstatus[0]^=RLF_GRENADEMODE;
+		}
+		MISG A 2 offset(1,36);
 		MISG A 1 offset(0,34);
 		goto nope;
 	reload:
@@ -474,26 +500,21 @@ class Blooper:HDWeapon{
 
 	ready:
 		BLOG A 1{
+			A_CheckAirburstCVar(BLOPS_AIRBURST);
 			A_WeaponReady(WRF_ALL);
-			if(player){
-				int abv=cvar.getcvar("ab",player).getint();
-				if(abv){
-					invoker.weaponstatus[BLOPS_AIRBURST]=max(abv,0);
-					cvar.getcvar("ab",player).setint(0);
-				}
-			}
 		}goto readyend;
 	hold:
 	altfire:
 		BLOG A 0{invoker.weaponstatus[BLOPS_AIRBURST]=0;}
 		goto nope;
+	firemode:
 	abadjust:
 		---- A 2;
 		---- A 0{
 			if(countinv("PressingFire")||countinv("PressingAltfire")){
 				if(countinv("PressingFire"))invoker.weaponstatus[BLOPS_AIRBURST]++;
 				else invoker.weaponstatus[BLOPS_AIRBURST]=
-					max(0,invoker.weaponstatus[RLS_AIRBURST]-1);
+					max(0,invoker.weaponstatus[BLOPS_AIRBURST]-1);
 				setweaponstate("abadjust");
 			}else if(countinv("PressingZoom")){
 				invoker.weaponstatus[BLOPS_AIRBURST]=0;
@@ -567,6 +588,7 @@ class Blooper:HDWeapon{
 		BLOG B 1 offset(4,36);
 		BLOG B 1 offset(2,34);
 		goto ready;
+	altreload:
 	reload:
 		BLOG B 0 A_JumpIf(
 			invoker.weaponstatus[0]&BLOPF_LOADED
