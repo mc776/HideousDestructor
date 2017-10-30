@@ -22,7 +22,7 @@ extend class HDWeapon{
 		}
 	}
 }
-class GyroGrenade:HDBullet{
+class GyroGrenade:SlowProjectile{
 	int fuze;bool primed;bool isrocket;
 	default{
 		-noextremedeath -noteleport +bloodlessimpact
@@ -32,30 +32,35 @@ class GyroGrenade:HDBullet{
 		stamina 5; //used for fuel
 	}
 	override void postbeginplay(){
-		if(isrocket)speed*=2;
 		super.postbeginplay();
+		if(isrocket)speed*=2;
+		A_ChangeVelocity(speed*cos(pitch),0,speed*sin(-pitch),CVF_RELATIVE);
 	}
-	override void bulletimpact(){
+	override void ExplodeSlowMissile(line blockingline,actor blockingobject){
+		//scorch
+		A_SprayDecal("Scorch",8);
+
+		//bounce
 		if(!primed&&random(0,20)){
+			if(speed>50)painsound="misc/punch";else painsound="misc/fragknock";
+			actor a=spawn("IdleDummy",pos);a.stamina=10;a.A_PlaySound(painsound,CHAN_AUTO);
 			A_SpawnItemEx("DudRocket",0,0,0,
 				random(30,60),random(-10,10),random(-10,10),
 				random(0,360),SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS,0
 			);
-			if(tracer){
-				int dmgg=vel.length();
-				tracer.damagemobj(self,target,dmgg*dmgg*0.1,"SmallArms0");
+			if(blockingobject){
+				blockingobject.damagemobj(self,target,
+					speed*speed*frandom(0.001,0.003),"SmallArms0"
+				);
 			}
-			destroy();return;
-		}
-		bmissile=false;
-		A_SprayDecal("Scorch",8);
-
-
-		//impact damage
-		if(tracer){
-			tracer.damagemobj(self,target,clamp((42-stamina)*20,0,400),"SmallArms3");
+			destroy();
+			return;
 		}
 
+		//damage
+		if(blockingobject){
+			blockingobject.damagemobj(self,target,clamp((42-stamina)*20,0,400),"SmallArms3");
+		}
 
 		//explosion
 		if(!inthesky){
@@ -68,9 +73,9 @@ class GyroGrenade:HDBullet{
 			actor xpl=spawn("Gyrosploder",self.pos-(0,0,1),ALLOW_REPLACE);
 			xpl.target=target;xpl.master=master;xpl.stamina=stamina;
 		}else{actor xpl=Spawn("DistantRocket",self.pos,ALLOW_REPLACE);}
-		A_SpawnChunks("HDBulletFrag",180,100,500+4*stamina);
+			A_SpawnChunks("HDBulletFrag",180,100,500+4*stamina);
 
-		destroy();
+		destroy();return;
 	}
 	states{
 	spawn:

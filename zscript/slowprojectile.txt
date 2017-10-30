@@ -34,7 +34,7 @@ class SlowProjectile:HDBullet{
 		}
 
 		//point actor in velocity
-		if(hd_debug && speed>400)A_Log(String.Format("%s is over speed 400. Consider using HDBullet for this.",getclassname()));
+		if(hd_debug && speed>600)A_Log(String.Format("%s is over speed 600. Consider using HDBullet for this.",getclassname()));
 
 		// force some lateral movement so that collision detection works as intended.
 		if(vel.xy==(0,0))vel.x = MinVel;
@@ -107,7 +107,7 @@ class SlowProjectile:HDBullet{
 				inthesky=false;
 				binvisible=false;
 			}
-//			CheckPortalTransition(); //after 3.1.0
+			CheckPortalTransition(); //after 3.1.0
 
 			if(speed && !inthesky
 				&& bmissile && missilename && speed*radius>=240
