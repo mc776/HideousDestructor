@@ -59,7 +59,16 @@ class GyroGrenade:SlowProjectile{
 
 		//damage
 		if(blockingobject){
-			blockingobject.damagemobj(self,target,clamp((42-stamina)*20,0,400),"SmallArms3");
+			int dmgg=random(50,200);
+			if(isrocket){
+				double dangle=angle;
+				A_Face(blockingmobj);
+				dangle=abs(deltaangle(angle,dangle));
+				if(dangle<10)dmgg+=random(600,700);
+				else if(dangle<30)dmgg+=random(100,700);
+			}
+
+			blockingobject.damagemobj(self,target,dmgg,"SmallArms3");
 		}
 
 		//explosion
@@ -67,7 +76,9 @@ class GyroGrenade:SlowProjectile{
 			A_Blast(
 				pushradius:256,pushamount:128,fullpushradius:96,
 				fragradius:HDCONST_SPEEDOFSOUND,
-				fragdamage:random(160,200+2*stamina),
+				fragdamage:random(160,200+8*stamina),
+				immolateradius:128,immolateamount:random(3,60),
+				immolatechance:isrocket?random(1,stamina):25,
 				gibradius:16,gibamount:random(1,8)*10
 			);
 			actor xpl=spawn("Gyrosploder",self.pos-(0,0,1),ALLOW_REPLACE);
