@@ -86,14 +86,13 @@ extend class HDStatusBar{
 				scale:(1.6,1.6)
 			);
 		}
-		else if((wp is "RocquetteLauncher")&&ismoving<6){
-			if(hpl.countinv("IsUsingRocketUnderslung"))drawimage(
+		else if((wp is "HDRL")&&ismoving<6){
+			if(wp.weaponstatus[0]&RLF_GRENADEMODE)drawimage(
 				"XH27",(0,1.8),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 				scale:(1.6,1.6)
 			);
 			else{
-				double degree=(35-hpl.countinv("RocketZoom"))*0.1;
-				texman.setcameratotexture(hpc,"TCAMTEX5",degree);
+				texman.setcameratotexture(hpc,"TCAMTEX5",3);
 				int cx, cy, cw, ch;
 				[cx,cy,cw,ch]=screen.GetClipRect();
 				SetClipRect(302,179,36,57);

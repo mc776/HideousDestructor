@@ -1,5 +1,25 @@
 //  Cyberdemon
 
+
+//	For direct hits
+actor CyberShot{
+	damagetype "SmallArms3" projectile height 2 radius 2 +hittracer +forcepain +nodamagethrust mass 1
+	states
+	{
+	spawn:
+		TNT1 A 0 nodelay A_Warp(AAPTR_TRACER)
+		TNT1 A 2
+		stop
+	xdeath:
+		TNT1 A 1 A_GiveInventory("BlastGib",1,AAPTR_TRACER)
+		TNT1 A 0 A_SetMass(mass-1)
+		TNT1 A 0 A_JumpIf(mass<1,1)
+		loop
+		TNT1 A 0
+		stop
+	}
+}
+
 actor HDSatanSmokeChunk : HDSmokeChunk
 {
 	states

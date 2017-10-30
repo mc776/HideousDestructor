@@ -285,11 +285,16 @@ extend class HDPlayerPawn{
 
 		//reload rocket weapons
 		//blooper > zm66 > liberator > RL ONLY if no HEAT loaded
-		if(countinv("Blooper")&&!countinv("BloopChamber")&&countinv("HDRocketAmmo")){
-			A_TakeInventory("HDRocketAmmo",1);
-			A_GiveInventory("BloopChamber");
+		if(countinv("Blooper")){
+			let bbb=blooper(findinventory("Blooper"));
+			if(
+				bbb&&!(bbb.weaponstatus[0]&BLOPF_LOADED)
+				&&countinv("HDRocketAmmo")
+			){
+				A_TakeInventory("HDRocketAmmo",1);
+				bbb.weaponstatus[0]|=BLOPF_LOADED;
+			}
 		}
-
 		if(countinv("ZM66AssaultRifle")){
 			let zzz=zm66assaultrifle(findinventory("ZM66AssaultRifle"));
 			if(
@@ -310,6 +315,25 @@ extend class HDPlayerPawn{
 			){
 				A_TakeInventory("HDRocketAmmo",1);
 				llm.weaponstatus[0]|=LIBF_GRENADELOADED;
+			}
+		}
+		if(countinv("HDRL")){
+			let rrl=hdrl(findinventory("HDRL"));
+			if(rrl&&rrl.weaponstatus[RLS_CHAMBER]<2){
+				if(
+					rrl&&!(rrl.weaponstatus[RLS_CHAMBER]<1)
+					&&countinv("HDRocketAmmo")
+				){
+					A_TakeInventory("HDRocketAmmo",1);
+					rrl.weaponstatus[RLS_CHAMBER]=1;
+				}
+				while(
+					rrl.weaponstatus[RLS_MAG]<5
+					&&countinv("HDRocketAmmo")
+				){
+					A_TakeInventory("HDRocketAmmo",1);
+					rrl.weaponstatus[RLS_MAG]++;
+				}
 			}
 		}
 	}

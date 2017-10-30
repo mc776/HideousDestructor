@@ -60,16 +60,6 @@ class HDLoaded:ActionItem{
 				A_TakeInventory("SlayerSpentShell1");
 				A_TakeInventory("SlayerSpentShell2");
 			}
-			if(countinv("RocquetteLauncher")>0){
-				if(countinv("RocketMag")<6){
-					A_GiveInventory("RocketMag",6);
-				}else{
-					A_GiveInventory("HEATLoaded");
-					A_TakeInventory("IsUsingRocketUnderslung");
-					A_SetInventory("RocketMag",5);
-				}
-			}
-			if(countinv("Blooper")>0){A_GiveInventory("BloopChamber");}
 			if(countinv("Brontornis")>0){A_GiveInventory("BrontornisMag");}
 			if(countinv("BFG9k")){
 				A_TakeInventory("BFGDemonSummoned");

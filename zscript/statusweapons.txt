@@ -128,8 +128,9 @@ extend class HDStatusBar{
 			}
 		}
 		else if(w is "Blooper"){
-			if(pp.countinv("BloopChamber"))drawwepdot(-16,-10,(5,3));
-			drawnum(pp.countinv("AirburstCount"),
+			let wpn=blooper(w);
+			if(wpn.weaponstatus[0]&BLOPF_LOADED)drawwepdot(-16,-10,(5,3));
+			drawnum(wpn.weaponstatus[0]&BLOPS_AIRBURST,
 				-28,-15,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
 			);
 			drawwepnum(
@@ -137,9 +138,10 @@ extend class HDStatusBar{
 				pp.findinventory("HDRocketAmmo").maxamount
 			);
 		}
-		else if(w is "RocquetteLauncher"){
-			if(!pp.countinv("IsUsingRocketUnderslung")){
-				if(pp.countinv("HEATLoaded")){
+		else if(w is "HDRL"){
+			let wpn=hdrl(w);
+			if(wpn.weaponstatus[RLF_GRENADEMODE]){
+				if(wpn.weaponstatus[RLS_CHAMBER]>1){
 					drawwepdot(-19,-13,(3,2));
 					drawwepdot(-16,-13,(2,2));
 					drawwepdot(-22,-11,(4,6));
@@ -150,10 +152,10 @@ extend class HDStatusBar{
 					drawwepdot(-22,-11,(4,3));
 				}
 			}
-			drawnum(pp.countinv("AirburstCount"),
+			drawnum(wpn.weaponstatus[RLS_AIRBURST],
 				-32,-15,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
 			);
-			drawwepnum(pp.countinv("RocketMag"),6);
+			drawwepnum(wpn.weaponstatus[RLS_MAG],6);
 		}
 		else if(w is "LiberatorRifle"){
 			let llb=LiberatorRifle(w);

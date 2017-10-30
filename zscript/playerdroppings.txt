@@ -16,7 +16,7 @@ class HDDropOne:ActionItem{
 				else A_GiveInventory("DropOneZMagFrag");
 			}
 			else if(cw=="Vulcanette")A_GiveInventory("DropOneZMagCell");
-			else if(cw=="RocquetteLauncher")A_GiveInventory("DropOneRocketHEAT");
+			else if(cw=="HDRL")A_GiveInventory("DropOneRocketHEAT");
 			else if(cw=="Blooper")A_GiveInventory("DropOneRocket");
 			else if(cw=="HDFragGrenades")A_GiveInventory("DropOneFrag");
 			else if(cw=="LiberatorRifle"){
@@ -71,7 +71,7 @@ class DropMisc:DropActionItem{
 			A_MassDrop("PortableRadsuit","PortableRadsuit",1,2);
 			A_MassDrop("SquadSummoner","SquadSummoner",1,2);
 			A_MassDrop("HDIEDKit","HDIEDKit",3,5);
-			A_MassDrop("DudRocquetteAmmo","DudRocquetteAmmo",3,4);
+			A_MassDrop("DudRocketAmmo","DudRocketAmmo",3,4);
 			if(countinv("GreenArmourStored"))A_DropInventory("GreenArmourStored");
 			if(countinv("BlueArmourStored"))A_DropInventory("BlueArmourStored");
 			if(countinv("BlackArmourStored"))A_DropInventory("BlackArmourStored");
@@ -129,7 +129,7 @@ class DropExtra:DropActionItem{
 				A_DropInventory("FourMilAmmo",countinv("FourMilAmmo"));
 			}
 			if(
-				!countinv("RocquetteLauncher")
+				!countinv("HDRL")
 			){
 				A_MassDrop("HEATAmmo","HEATAmmo",2,2.5);
 				if(
@@ -165,7 +165,7 @@ class DropExtra:DropActionItem{
 			if(!countinv("Brontornis"))
 				A_MassDrop("BrontornisRound","BrontornisRound",4,5);
 			if(!countinv("HDIEDKit"))
-				A_MassDrop("DudRocquetteAmmo","DudRocquetteAmmo",4,5);
+				A_MassDrop("DudRocketAmmo","DudRocketAmmo",4,5);
 			double aaa=angle;
 			angle+=frandom(-10,10);A_DropInventory("DERPDEAD");
 			angle+=frandom(-10,10);A_DropInventory("HERPDEAD");

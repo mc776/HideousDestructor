@@ -90,11 +90,13 @@ extend class HDPlayerPawn{
 						if(vvv.vulcmag[i]>=0)blx+=BLOX_426MAG_LOADED;
 					}
 				}else if(hdw is "Blooper"){
-					blx+=75+countinv("BloopChamber")*BLOX_ROCKETLOADED;
-				}else if(hdw is "RocquetteLauncher"){
-					blx+=175
-						+countinv("RocketMag")*BLOX_ROCKETLOADED
-						+countinv("HEATLoaded")*BLOX_HEATROCKETLOADED;
+					blx+=75;
+					if(hdw.weaponstatus[0]&BLOPF_LOADED)blx+=BLOX_ROCKETLOADED;
+				}else if(hdw is "HDRL"){
+					blx+=175+hdw.weaponstatus[RLS_MAG]*BLOX_ROCKETLOADED;
+					int chmb=hdw.weaponstatus[RLS_CHAMBER];
+					if(chmb>1)blx+=BLOX_HEATROCKETLOADED;
+					else if(chmb==1)blx+=BLOX_ROCKETLOADED;
 				}else if(hdw is "LiberatorRifle"){
 					if(!(hdw.weaponstatus[0]&LIBF_NOLAUNCHER)){
 						blx+=150;
@@ -163,7 +165,7 @@ extend class HDPlayerPawn{
 		+countinv("HDShellAmmo")*BLOX_SHELL
 		+countinv("BrontornisRound")*BLOX_BRONTOSHELL
 		+countinv("HDFragGrenadeAmmo")*BLOX_FRAG
-		+(countinv("HDRocketAmmo")+countinv("DudRocquetteAmmo"))*BLOX_ROCKET
+		+(countinv("HDRocketAmmo")+countinv("DudRocketAmmo"))*BLOX_ROCKET
 		+countinv("HEATAmmo")*BLOX_HEATROCKET
 
 		//full mags

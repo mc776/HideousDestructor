@@ -19,15 +19,6 @@ extend class HDPlayerPawn{
 		if(countinv("Hunter")){
 			A_SetInventory("ShotgunAuto",getcvar("hd_huntauto"));
 		}
-		if(countinv("RocquetteLauncher")){
-			A_SetInventory("RocketZoom",getcvar("hd_rlzoom"));
-			if(getcvar("hd_rlmode")==1){ //GL
-				A_GiveInventory("IsUsingRocketUnderslung");
-			}else if(getcvar("hd_rlmode")==2){ //HEAT
-				A_TakeInventory("RocketMag",1);
-				A_GiveInventory("HEATLoaded");
-			}
-		}
 		if(countinv("BossRifle")){
 			A_SetInventory("BossZoomDegree",getcvar("hd_bosszoom"));
 			A_SetInventory("BossMOA",getcvar("hd_bossmoa"));
@@ -219,11 +210,9 @@ extend class HDPlayerPawn{
 				break;
 			case 50:
 				nw="Blooper";A_GiveInventory(nw);
-				A_GiveInventory("BloopChamber",1);
 				break;
 			case 51:
-				nw="RocquetteLauncher";A_GiveInventory(nw);
-				A_GiveInventory("RocketMag",6);
+				nw="HDRL";A_GiveInventory(nw);
 				break;
 			case 60:
 			case 61:

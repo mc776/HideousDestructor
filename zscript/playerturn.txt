@@ -94,16 +94,16 @@ extend class HDPlayerPawn{
 			barrellength=30;
 			barrelwidth=2;
 			barreldepth=4;
-		}else if(wp is "RocquetteLauncher"){
+		}else if(wp is "HDRL"){
 			amt=10+
-				countinv("RocketMag")+
-				countinv("HEATLoaded")*2
+				wp.weaponstatus[RLS_MAG]+
+				wp.weaponstatus[RLS_CHAMBER]
 			;
 			barrellength=32;
 			barrelwidth=2.5;
 			barreldepth=5;
 		}else if(wp is "Blooper"){
-			amt=4+countinv("BloopChamber");
+			amt=wp.weaponstatus[0]&BLOPF_LOADED?5:4;
 			barrellength=24;
 			barrelwidth=1.6;
 			barreldepth=3;
