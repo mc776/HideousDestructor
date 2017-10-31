@@ -317,6 +317,7 @@ class HDPistol:HDWeapon{
 		---- A 3 offset(3,46) A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
 		---- A 0{
 			int pmg=invoker.weaponstatus[PISS_MAG];
+			invoker.weaponstatus[PISS_MAG]=-1;
 			if(pmg<0)setweaponstate("magout");
 			else if(
 				!pmg
