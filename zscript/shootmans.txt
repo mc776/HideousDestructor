@@ -52,6 +52,7 @@ class NoBlockWepDrop:ActionItem{
 					wp.weaponstatus[0]=
 						ZM66F_NOFIRESELECT|ZM66F_NOLAUNCHER|(random(0,1)*ZM66F_CHAMBER);
 					wp.weaponstatus[ZM66S_MAG]=random(0,50);
+					if(wp.weaponstatus[ZM66S_MAG]==50)wp.weaponstatus[ZM66S_MAG]=51;
 					wp.weaponstatus[ZM66S_ZOOM]=random(0,27);
 				}else{
 					A_DropItem("ZM66RifleMags",0,96);
