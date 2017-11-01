@@ -80,24 +80,25 @@ extend class HDPlayerPawn{
 		}
 
 		//if bfg, max out everything
+		let bff=BFG9k(findinventory("BFG9k"));
 		if(
-			countinv("BFG9k")&&(
-				countinv("BFGInternalCharge")>6||
-				countinv("BFGChamber")>6||
+			bff&&(
+				bff.weaponstatus[BFGS_CHARGE]>6||
+				bff.weaponstatus[BFGS_BATTERY]>6||
 				countinv("HDCellPacks")
 			)&&(
-				countinv("BFGLoaded")||
+				bff.weaponstatus[BFGS_BATTERY]>=0||
 				countinv("HDCellPacks")||
 				countinv("HDCellPackEmpty")
 			)
 		){
-			if(!countinv("BFGLoaded")){
-				A_GiveInventory("BFGLoaded");
+			if(bff.weaponstatus[BFGS_BATTERY]<0){
+				bff.weaponstatus[BFGS_BATTERY]=20;
 				if(countinv("HDCellPackEmpty"))A_TakeInventory("HDCellPackEmpty",1);
 				else A_TakeInventory("HDCellPacks",1);
 			}
-			A_GiveInventory("BFGInternalCharge",20);
-			A_GiveInventory("BFGChamber",20);
+			bff.weaponstatus[BFGS_BATTERY]=20;
+			bff.weaponstatus[BFGS_CHARGE]=20;
 			A_GiveInventory("LumberCell",1200);
 			hdweapon hdw=hdweapon(findinventory("vulcanette"));
 			if(hdw)hdw.weaponstatus[1]=20;
@@ -340,9 +341,7 @@ extend class HDPlayerPawn{
 	void ConsolidateAmmo(){
 		//use the BFG to charge everything
 		if(countinv("BFG9k")){
-			A_GiveInventory("BFGInternalCharge",20);
-			A_GiveInventory("BFGChamber",20);
-			A_GiveInventory("BFGLoaded");
+			hdweapon(findinventory("BFG9k")).initializewepstats(true);
 			//convert empty to full
 			while(
 				countinv("HDCellPackEmpty")

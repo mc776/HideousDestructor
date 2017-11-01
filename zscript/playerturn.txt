@@ -131,8 +131,9 @@ extend class HDPlayerPawn{
 			barrelwidth=1;
 			barreldepth=2;
 		}else if(wp is "BFG9k"){
-			amt=19+
-				(countinv("BFGLoaded")||countinv("BFGChamber")?1:0)
+			amt=15
+				+(wp.weaponstatus[BFGS_BATTERY]>=0?1:0)
+				+(wp.weaponstatus[0]&BFGF_STRAPPED?0:4)
 			;
 			barrellength=32;
 			barrelwidth=3.5;

@@ -47,7 +47,8 @@ extend class HDPlayerPawn{
 		}
 		if(countinv("BFG9k")){
 			let bfg=bfg9k(findinventory("bfg9k"));
-			if(bfg&&bfg.weaponstatus[5]){
+			if(bfg&&bfg.weaponstatus[BFGS_CRITTIMER]>0){
+				bfg.buntossable=false;
 				A_DropInventory("BFG9k");
 			}
 		}

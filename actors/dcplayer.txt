@@ -149,9 +149,6 @@ actor HDP_BF:HDPlayerPawn{
 	player.displayname "Hideous Destructor"
 	player.startitem BFG9K
 	player.startitem SoldierExtras
-	player.startitem BFGChamber 20
-	player.startitem BFGInternalCharge 20
-	player.startitem BFGLoaded 1
 	player.startitem HDCellPacks 6
 	player.startitem HDFragGrenadeAmmo 6
 	states{
@@ -394,8 +391,6 @@ actor RebelLoadout:ActionItem{
 		goto otherstuff
 	weapon7:
 		TNT1 A 0 A_GiveInventory("BFG9k",1)
-		TNT1 A 0 A_GiveInventory("BFGChamber",20)
-		TNT1 A 0 A_GiveInventory("BFGInternalCharge",20)
 		TNT1 A 0 A_GiveInventory("HDCellPacks",random(1,6))
 		goto otherstuff
 	weapon8:

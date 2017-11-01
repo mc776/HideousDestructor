@@ -197,13 +197,20 @@ extend class HDStatusBar{
 			);
 		}
 		else if(w is "BFG9k"){
-			if(pp.countinv("BFGChamber"))drawwepnum(pp.countinv("BFGChamber"),20,posy:-10);
-			else if(pp.countinv("BFGLoaded"))drawstring(
+			let bff=BFG9k(w);
+			int bffb=bff.weaponstatus[BFGS_BATTERY];
+			if(bffb>0)drawwepnum(bffb,20,posy:-10);
+			else if(!bffb)drawstring(
 				mamountfont,"00000",
 				(-16,-14),DI_TEXT_ALIGN_RIGHT|DI_TRANSLATABLE|DI_SCREEN_CENTER_BOTTOM,
 				Font.CR_DARKGRAY
 			);
-			drawwepnum(pp.countinv("BFGInternalCharge"),20);
+			if(bff.weaponstatus[0]&BFGF_STRAPPED){
+				drawwepdot(-16,-16,(10,1));
+				drawwepdot(-16,-19,(8,1));
+				drawwepdot(-16,-22,(5,1));
+			}
+			drawwepnum(bff.weaponstatus[BFGS_CHARGE],20);
 		}
 		else if(w is "Brontornis"){
 			if(pp.countinv("BrontornisMag"))drawwepdot(-16,-10,(5,3));

@@ -390,14 +390,7 @@ ACTOR HDBBE : BossEye replaces BossEye
 	See2:
 		TNT1 AAAAAAA 20 A_JumpIfInTargetInventory("HasKilledTyrant",1,"Death")
 		TNT1 A 0 A_CustomMissile("HDBBP",6)
-		TNT1 A 0 A_GiveInventory("BFGChamber",random(1,10),AAPTR_PLAYER1)
-		TNT1 A 0 A_GiveInventory("BFGChamber",random(1,10),AAPTR_PLAYER2)
-		TNT1 A 0 A_GiveInventory("BFGChamber",random(1,10),AAPTR_PLAYER3)
-		TNT1 A 0 A_GiveInventory("BFGChamber",random(1,10),AAPTR_PLAYER4)
-		TNT1 A 0 A_GiveInventory("BFGChamber",random(1,10),AAPTR_PLAYER5)
-		TNT1 A 0 A_GiveInventory("BFGChamber",random(1,10),AAPTR_PLAYER6)
-		TNT1 A 0 A_GiveInventory("BFGChamber",random(1,10),AAPTR_PLAYER7)
-		TNT1 A 0 A_GiveInventory("BFGChamber",random(1,10),AAPTR_PLAYER8)
+		TNT1 A 0 A_SpawnItemEx("BFGAccelerator")
 		loop
 	Death:
 		TNT1 A 0 A_KillChildren

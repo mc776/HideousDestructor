@@ -111,8 +111,9 @@ extend class HDPlayerPawn{
 				}else if(hdw is "Brontornis"){
 					blx+=75+countinv("BrontornisMag")*BLOX_BRONTOSHELLLOADED;
 				}else if(hdw is "BFG9k"){
-					blx+=220;
-					if(hdw.weaponstatus[2]>=0)blx+=BLOX_BATTERY_LOADED;
+					if(hdw.weaponstatus[0]&BFGF_STRAPPED)blx+=200;
+					else blx+=240;
+					if(hdw.weaponstatus[BFGS_BATTERY]>=0)blx+=BLOX_BATTERY_LOADED;
 				}else if(hdw is "BossRifle"){
 					blx+=175+countinv("BossMag")*BLOX_776_LOADED;
 				}
