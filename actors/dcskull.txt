@@ -5,9 +5,10 @@
 
 ACTOR FireDancer : LostSoul replaces LostSoul
 {
+	+NOBLOOD +PUSHABLE -FLOORCLIP +AVOIDMELEE
+//	+FLOATBOB
 	Obituary "%o found a skull."
 	ActiveSound ""
-	+NOBLOOD +FLOATBOB +PUSHABLE -FLOORCLIP +AVOIDMELEE
 	Scale 0.6
 	Radius 12
 	Height 26
@@ -39,7 +40,7 @@ ACTOR FireDancer : LostSoul replaces LostSoul
 	See:
 		TNT1 A 0 A_GiveInventory("Shell", 1)
 		SKUL A 0 A_NoGravity
-		TNT1 A 0 A_ChangeFlag("floatbob",1)
+//		TNT1 A 0 A_ChangeFlag("floatbob",1)
 	see2:
 		TNT1 A 0 A_Chase
 		TNT1 A 0 A_ScaleVelocity(0.8)
