@@ -201,10 +201,10 @@ class HDPistol:HDWeapon{
 	chamber_manual:
 		---- A 0{
 			if(
-				invoker.weaponstatus[PISS_CHAMBER]==2
-				||(
-					invoker.weaponstatus[PISS_MAG]<1
-					&&!(invoker.weaponstatus[0]&PISF_JUSTUNLOAD)
+				!(invoker.weaponstatus[0]&PISF_JUSTUNLOAD)
+				&&(
+					invoker.weaponstatus[PISS_CHAMBER]==2
+					||invoker.weaponstatus[PISS_MAG]<1
 				)
 			)setweaponstate("nope");
 		}
@@ -213,6 +213,7 @@ class HDPistol:HDWeapon{
 			A_MuzzleClimb(frandom(0.4,0.5),-frandom(0.6,0.8));
 			A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
 			int psch=invoker.weaponstatus[PISS_CHAMBER];
+			invoker.weaponstatus[PISS_CHAMBER]=0;
 			if(psch==2){
 				A_SpawnItemEx("HDPistolAmmo",cos(pitch*12),0,height-8-sin(pitch)*12,1,2,3,0);
 			}else if(psch==1){
@@ -296,11 +297,11 @@ class HDPistol:HDWeapon{
 	unload:
 		---- A 0{
 			invoker.weaponstatus[0]|=PISF_JUSTUNLOAD;
-			if(invoker.weaponstatus[PISS_MAG]>=0)setweaponstate("unmag");  
-			else if(invoker.weaponstatus[PISS_MAG]!=2)setweaponstate("chamber_manual");
-		}goto nope;
+			if(invoker.weaponstatus[PISS_MAG]>=0)setweaponstate("unmag");
+		}goto chamber_manual;
 	reload:
 		---- A 0{
+			invoker.weaponstatus[0]&=~PISF_JUSTUNLOAD;
 			if(
 				invoker.weaponstatus[PISS_MAG]>=15  
 				||(
