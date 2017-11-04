@@ -169,16 +169,14 @@ class HDPistol:HDWeapon{
 		PISG # 1{
 			A_SetCrosshair(21);
 			A_WeaponReady(WRF_ALL);
+			A_GiveInventory("NotShot",1);
 			if(
 				!A_JumpIfInventory("HDPistolMag",0,"null")
-				&&stamina>=15
 				&&countinv("NotShot")>210  
 			){
 				A_TakeInventory("NotShot");
 				A_GiveInventory("HDPistolMag",1);
 				A_TakeInventory("HDPistolAmmo",15);
-			}else{
-				A_GiveInventory("NotShot",1);
 			}
 		}goto readyend;
 	user2:
