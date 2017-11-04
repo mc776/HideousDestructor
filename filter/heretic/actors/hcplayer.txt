@@ -31,7 +31,7 @@ actor SD_Base:HDPlayerPawn{
 		goto deathcontinued
 	death.bleedout:
 	death.invisiblebleedout:
-		"####" H 0 A_JumpIfInventory("IsCrouching",1,"deathcrouched")
+		"####" H 0 A_JumpIf(height<40,"deathcrouched")
 		goto deathcontinued
 	deathcontinued:
 		"----" A 0 A_GiveInventory("CheckLiveRound",1)

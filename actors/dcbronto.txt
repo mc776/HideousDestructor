@@ -1,8 +1,6 @@
-
 // ------------------------------------------------------------
-//   Brontornis Cannon
+// Brontornis Cannon
 // ------------------------------------------------------------
-
 actor TerrorSabotPiece
 {
 	xscale 1 yscale 2.2 height 2 radius 2
@@ -68,12 +66,9 @@ ACTOR Brontornis : HDWeapon
 		goto deselect0small
 	Ready:
 		TNT1 A 0 A_SetCrosshair(21)
-		TNT1 A 0 A_GiveInventory("IsWeaponReady",1)
-		TNT1 A 0 A_GiveInventory("IsWeaponShort",1)
 		TNT1 A 0 A_JumpIfInventory("PressingUnload",1,"Unload")
 		BLSG A 1 A_WeaponReady(16)
-		TNT1 A 0 A_TakeInventory("IsInterrupting",999)
-		TNT1 A 0 A_TakeInventory("WeaponBusy",999)
+		TNT1 A 0 A_TakeInventory("WeaponBusy")
 		TNT1 A 0 A_JumpIfInventory("BrontornisHeat",1,1)
 		goto ReadyEnd
 		TNT1 A 0 A_TakeInventory("BrontornisHeat",1)
@@ -93,7 +88,6 @@ ACTOR Brontornis : HDWeapon
 		BLSG A 0 A_FireCustomMissile("HDGunSmoke",frandom(-1,1),0,0,0,0,frandom(-1,1))
 		goto nope
 	Interrupt:
-		BLSG B 0 A_GiveInventory("IsInterrupting",1)
 		BLSG B 1 offset(0,34) A_PlayWeaponSound ("weapons/huntopen")
 		BLSG B 1 offset(0,36)
 		BLSG B 1 offset(0,34)

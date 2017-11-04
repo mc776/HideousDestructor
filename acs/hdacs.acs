@@ -3,7 +3,7 @@
 
 //legacy muzzle climb
 script "MuzzleClimb"(int climb, int twist){
-	if((climb)&&((CheckInventory("IsMoving"))||(CheckInventory("IsJumping"))||(CheckInventory("IsHit")))){
+	if((climb)&&((CheckInventory("IsMoving"))||(CheckInventory("IsJumping")))){
 		climb=climb*random(2,3)+random(4,16)*CheckInventory("IsJumping");
 		twist=twist*random(3,4)+random(2,8)*CheckInventory("IsJumping");
 	}

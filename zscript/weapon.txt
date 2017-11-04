@@ -144,6 +144,15 @@ class HDWeapon:Weapon{
 		initializewepstats();
 		super.beginplay();
 	}
+	//because I'm too lazy to retype all that shit
+	action bool PressingFire(){return player.cmd.buttons&BT_ATTACK;}
+	action bool PressingAltfire(){return player.cmd.buttons&BT_ALTATTACK;}
+	action bool PressingReload(){return player.cmd.buttons&BT_RELOAD;}
+	action bool PressingZoom(){return player.cmd.buttons&BT_ZOOM;}
+	action bool PressingAltReload(){return player.cmd.buttons&BT_USER1;}
+	action bool PressingFiremode(){return player.cmd.buttons&BT_USER2;}
+	action bool PressingUser3(){return player.cmd.buttons&BT_USER3;}
+	action bool PressingUnload(){return player.cmd.buttons&BT_USER4;}
 	states{
 	spawn:
 		TNT1 A 0;
@@ -154,7 +163,6 @@ class HDWeapon:Weapon{
 			A_OverlayFlags(PSP_WEAPON,PSPF_CVARFAST|PSPF_POWDOUBLE,false);
 			A_OverlayFlags(PSP_FLASH,PSPF_CVARFAST|PSPF_POWDOUBLE,false);
 
-			A_TakeInventory("IsZoomed");
 			A_GiveInventory("WeaponBusy");
 			A_SetCrosshair(21);
 
@@ -389,6 +397,4 @@ extend class HDPlayerPawn{
 		player.weaponstate|=WF_WEAPONBOBBING;
 	}
 }
-
-
 

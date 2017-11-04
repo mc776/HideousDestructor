@@ -86,8 +86,6 @@ class HDPlayerPawn:PlayerPawn{
 	spawn2:
 		#### E 5{
 			A_TakeInventory("IsTurning",1);
-			A_TakeInventory("IsHit");
-			A_TakeInventory("IsJumping");
 		}
 		---- A 0{
 			if(getdistance(1,AAPTR_PLAYER_GETTARGET)<256) A_GiveInventory("EvadeNow",1,AAPTR_PLAYER_GETTARGET);
@@ -251,8 +249,6 @@ class HDPlayerPawn:PlayerPawn{
 
 		//add inventory flags for inputs
 		//remove ONLY when a deprecated inventory flags has been removed from all code!
-		A_TakeInventory("IsSprinting");
-		A_TakeInventory("IsCrouching");
 		A_TakeInventory("PressingFire");
 		A_TakeInventory("PressingAltfire");
 		A_TakeInventory("PressingReload");
@@ -272,8 +268,6 @@ class HDPlayerPawn:PlayerPawn{
 			A_GiveInventory("PressingFireMode",1);}
 		if(input&BT_USER4){
 			A_GiveInventory("PressingUnload",1);A_GiveInventory("WeaponBusy");}
-		if(height<40)A_GiveInventory("IsCrouching");
-		if(input&BT_SPEED)A_GiveInventory("IsSprinting");
 		if(runwalksprint>=0&&(fm||sm))A_GiveInventory("IsMoving");
 
 
@@ -565,8 +559,6 @@ extend class HDPlayerPawn{
 		else{
 			A_TakeInventory("WeaponBusy");
 			A_TakeInventory("IsMoving");
-			A_TakeInventory("IsSprinting");
-			A_TakeInventory("IsHit");
 			A_TakeInventory("JustUnloading");
 			A_TakeInventory("IsInHell");
 			A_TakeInventory("WipedOut");

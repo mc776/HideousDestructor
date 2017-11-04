@@ -1,0 +1,405 @@
+// ------------------------------------------------------------
+// Bolt-Action Rifle
+// ------------------------------------------------------------
+class BossClip:Ammo{
+	default{
+		+inventory.ignoreskill;
+		inventory.maxamount 12;
+		ammo.backpackmaxamount 30;
+		ammo.backpackamount 0;
+	}
+	states{
+	spawn:
+		TNT1 A 0;
+		TNT1 A 0 A_SpawnItemEx("BossClipPickup",0,0,0,vel.x,vel.y,vel.z,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS);
+		stop;
+	}
+}
+class BossClipPickup:HDUPK replaces BossClip{
+	default{
+		scale 0.5;
+	}
+	states{
+	spawn:
+		RCLP A 0 A_Stop();
+		goto spawn2;
+	give:
+		---- A 0 A_JumpIfInTargetInventory("BossClip",0,"spawn");
+		---- A 0 A_GiveToTarget("BossClip",1);
+		---- A 0 A_PlaySound("weapons/pocket");
+		stop
+	}
+}
+class BossRifleSpawner{
+	states{
+	spawn:
+		TNT1 A 0 nodelay{
+			A_SpawnItemEx("BossClipPickup",0,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
+			A_SpawnItemEx("BossClipPickup",3,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
+			A_SpawnItemEx("BossClipPickup",1,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
+			A_SpawnItemEx("BossRiflePickup",-3,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
+		}stop;
+	}
+}
+class BossRifle:HDWeapon{
+	default{
+		weapon.slotnumber 8;
+		weapon.kickback 15;
+		weapon.selectionorder 80;
+		inventory.pickupSound "misc/w_pkup";
+		inventory.pickupMessage "You got the bolt-action rifle!";
+		weapon.bobrangex 0.28;
+		weapon.bobrangey 1.1;
+		scale 0.7;
+		Obituary "%o sure showed %k who was the boss!";
+	}
+	int pickuprounds;
+	states{
+	select0:
+		BARG A 0;
+		goto select0bfg;
+	deselect0:
+		BARG A 0;
+		goto deselect0big;
+
+	ready:
+		BARG A 1{
+			A_WeaponReady(WRF_ALL);
+			if(
+				!A_JumpIfInventory("BossClip",0,"null")
+				&&countinv("SevenMilAmmo")>=10  
+			){
+				A_GiveInventory("NotShot",1);
+				if(countinv("NotShot")>200){  
+					A_TakeInventory("NotShot");
+					A_GiveInventory("BossClip",1);
+					A_TakeInventory("SevenMilAmmo",10);
+				}
+			}
+		}goto readyend;
+	altreload:
+		BARG A 0 A_JumpIfInventory("SevenMilAmmo",0,"nope");
+		BARG A 0 A_JumpIfInventory("BossClip",1,"altreloadgetclip");
+		BARG A 0 A_JumpIfInventory("LiberatorMag",1,"altreloadgetmag");
+		goto nope;
+	altreloadgetmag:
+		BARG A 0{
+			A_TakeInventory("LiberatorMag",1);
+			pickuprounds=30;
+		}goto altreloadgenerate;
+	altreloadgetclip:
+		BARG A 0{
+			A_TakeInventory("BossClip",1);
+			pickuprounds=10;
+		}goto altreloadgenerate;
+	altreloadgenerate:
+		BARG A 2 offset(4,36){
+			pickuprounds--;
+			A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
+			if(A_JumpIfInventory("SevenMilAmmo",0,"null"))
+				A_SpawnItemEx(
+					"HDLoose7mm",random(4,8),0,32,
+					frandom(2,3),frandom(1,2),frandom(1,3),
+					0,SXF_NOCHECKPOSITION
+				);
+				else A_GiveInventory("SevenMilAmmo",1);
+			if(pickuprounds<1)setweaponstate("nope");
+		}loop;
+	fire:
+	firegun:
+	shoot:
+		BARG A 1{
+			if(invoker.weaponstatus[BOSSS_CHAMBER]!=2)setweaponstate("nope");
+			A_Gunflash();
+		}
+		BARG F 2 A_JumpIfInventory("IsSupported",1,"nope");
+		goto nope;
+	althold:
+		BARG E 1 A_WeaponReady(WRF_NOFIRE);
+		BARG E 1 A_Refire();
+		BARG DCB 3 A_WeaponReady(WRF_NOFIRE);
+		goto ready;
+	flash:
+		BARF A 1 bright{
+			invoker.weaponstatus[BOSSS_CHAMBER]=1;
+			A_ZoomFactor(0.95,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
+			A_PlaySound("weapons/bigrifle",CHAN_WEAPON);
+			A_AlertMonsters();
+			A_GiveInventory("DecoBulleter776f");
+			A_Log("Use a proper bullet spawn in the Boss flash!");
+
+			A_Light1();
+			HDFlashAlpha(-96);
+		}
+		TNT1 A 1{
+			A_Light0();
+			A_ZoomFactor(1.0,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
+			A_MuzzleClimb(
+				-frandom(0.2,0.4),-frandom(0.6,1.),
+				-frandom(0.4,0.7),-frandom(1.2,2.1),
+				-frandom(0.4,0.7),-frandom(1.2,2.1)
+			);
+		}stop;
+	altfire:
+		BARG A 2 offset(0,34);
+		BARG B 1 offset(2,36) A_GiveInventory("WeaponBusy");
+		BARG A 0 A_JumpIfInventory("BossJam",1,"jamderp")
+		BARG B 1 offset(4,38){
+			if(invoker.weaponstatus[BOSSS_CHAMBER]>2)setweaponstate("jamderp");  
+			else A_Refire("chamber");
+		}
+		BARG A 0 A_JumpIfInventory("BossChamber",1,3);
+		BARG A 0 A_JumpIfInventory("BossSpentChamber",1,2);
+		BARG A 0 A_Jump(256,3);
+		BARG A 0 A_Jump(96,2);
+		BARG A 0 A_GiveInventory("BossJam");
+		BARG B 1 offset(0,34){
+			if(
+				!random(0,4)
+				&&invoker.weaponstatus[BOSSS_CHAMBER]>0  
+			)invoker.weaponstatus[BOSSS_CHAMBER]+=2;
+		}goto ready;
+	jam:
+		BARG A 0{
+			int chm=invoker.weaponstatus[BOSSS_CHAMBER];
+			if(chm<1)setweaponstate("chamber");
+			else if(chm<3)invoker.weaponstatus[BOSSS_CHAMBER]+=2;
+		}
+	jamderp:
+		BARG A 0 A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
+		BARG D 1 offset(4,38);
+		BARG D 2 offset(2,36);
+		BARG D 2 offset(4,38)A_MuzzleClimb(frandom(-0.5,0.6),frandom(-0.3,0.6));
+		BARG D 3 offset(2,36){
+			A_MuzzleClimb(frandom(-0.5,0.6),frandom(-0.3,0.6));
+			if(!random(0,3)){
+				setweaponstate("chamber");
+				if(invoker.weaponstatus[BOSSS_CHAMBER]>2)  
+					invoker.weaponstatus[BOSSS_CHAMBER]-=2;
+			}
+		}
+		BARG D 2 offset(4,38)
+		BARG D 3 offset(2,36)
+		BARG A 0 A_Refire("jamderp");
+		goto ready;
+	chamber:
+		BARG C 2 offset(4,38) A_PlaySound("weapons/boltback",CHAN_WEAPON);
+		BARG D 2 offset(6,42);
+		BARG D 1 offset(6,42){
+			if(countinv("IsSupported"))A_MuzzleClimb(
+				frandom(-0.1,0.3),frandom(-0.1,0.3)
+			);else A_MuzzleClimb(
+				frandom(-0.2,0.8),frandom(-0.4,0.8)
+			);
+			if(!random(0,31))setweaponstate("jam");
+		}
+		BARG D 2 offset(6,42){
+			//eject
+			int chm=invoker.weaponstatus[BOSSS_CHAMBER];
+			if(chm>1){  
+				A_SpawnItemEx(
+					"HDLoose7mm",cos(pitch)*8,1,height-7-sin(pitch)*8,
+					cos(pitch)*cos(angle-80)*4+vel.x,
+					cos(pitch)*sin(angle-80)*4+vel.y,
+					-sin(pitch)*4+vel.z,
+					0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
+				);
+			}else if(chm==1){
+				A_SpawnItemEx(
+					"HDSpent7mm",cos(pitch)*8,1,height-7-sin(pitch)*8,
+					cos(pitch)*cos(angle-80)*6+vel.x,
+					cos(pitch)*sin(angle-80)*6+vel.y,
+					-sin(pitch)*6+vel.z,
+					0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
+				);
+			}
+			//cycle new
+			if(invoker.weaponstatus[BOSSS_MAG]>0){  
+				invoker.weaponstatus[BOSSS_CHAMBER]=2;
+			}else invoker.weaponstatus[BOSSS_CHAMBER]=0;
+		}
+		BARG E 1 offset(6,42) A_WeaponReady(WRF_NOFIRE);
+		BARG E 0 A_Refire("chamber4");
+		BARG E 1 offset(3,34) A_WeaponReady(WRF_NOFIRE);
+		BARG E 1 offset(3,34) A_PlaySound("weapons/boltfwd",CHAN_WEAPON);
+		BARG E 3 offset(4,38);
+		BARG D 2 offset(3,37){
+			if(!countinv("IsSupported"))
+				A_MuzzleClimb(frandom(-0.4,0.8),frandom(-0.2,0.8);
+		}
+		BARG C 3 offset(2,36);
+		BARG B 3 offset(0,34);
+		goto ready;
+	zoom:
+	zoomadjust:
+		BARG A 1 A_WeaponReady(WRF_NOFIRE);
+		BARG A 0{
+			if(PressingFire()){
+				invoker.weaponstatus[BOSSS_ZOOM]=
+					clamp(invoker.weaponstatus[BOSSS_ZOOM]+1,0,55);
+			}else if(PressingAltfire()){
+				invoker.weaponstatus[BOSSS_ZOOM]=
+					clamp(invoker.weaponstatus[BOSSS_ZOOM]-1,0,55);
+			}
+			if(PressingZoom())setweaponstate("zoomadjust");
+		}goto nope;
+	reload:
+		TNT1 A 0 A_TakeInventory("IsWeaponReady")
+		BARG A 1 offset (0,34)
+		BARG A 1 offset (2,36)
+		BARG A 1 offset (4,40)
+		TNT1 A 0 A_TakeInventory("IsWeaponLong")
+		TNT1 A 0 ACS_NamedExecuteAlways("MuzzleClimb",0,random(-4,-14),random(4,8),0)
+		BARG A 2 offset (8,42) A_PlaySound ("weapons/rifleclick2")
+		TNT1 A 0 ACS_NamedExecuteAlways("MuzzleClimb",0,random(-4,-14),random(4,8),0)
+		BARG A 4 offset (14,46) A_PlaySound ("weapons/rifleload")
+		TNT1 A 0 A_JumpIfInventory("BossMag",0,"reloaddone")
+		TNT1 A 0 A_JumpIfInventory("BossMag",1,"loadhand")
+		TNT1 A 0 A_JumpIfInventory("BossClip",1,"loadclip")
+	loadhand:
+		TNT1 A 0 A_JumpIfInventory("SevenMilAmmo",1,"loadhandloop")
+		TNT1 A 0 A_JumpIfInventory("BossClip",1,"stripbossclip")
+		TNT1 A 0 A_JumpIfInventory("LiberatorMag",1,"striplibmag")
+		goto reloaddone
+	stripbossclip:
+		BARG AAA 3 A_PlaySound("weapons/rifleclick2")
+		TNT1 A 0 A_TakeInventory("BossClip",1)
+		TNT1 A 0 A_GiveInventory("SevenMilAmmo",10)
+		goto loadhandloop
+	striplibmag:
+		BARG AA 4 A_PlaySound("weapons/rifleclick2")
+		BARG AA 3 A_PlaySound("weapons/rifleclick2")
+		BARG AAAAAA 2 A_PlaySound("weapons/rifleclick2")
+		TNT1 A 0 A_TakeInventory("LiberatorMag",1)
+		TNT1 A 0 A_GiveInventory("SevenMilAmmo",30)
+		goto loadhandloop
+	loadhandloop:
+		TNT1 A 0 A_JumpIfInventory("SevenMilAmmo",1,1)
+		goto loadone
+		TNT1 A 0 A_JumpIfInventory("BossHand",0,"loadone")
+		TNT1 A 0 A_TakeInventory("SevenMilAmmo",1)
+		TNT1 A 0 A_GiveInventory("BossHand",1)
+		BARG A 4 A_PlaySound("weapons/pocket")
+		loop
+	loadone:
+		BARG A 0 A_JumpIfInventory("BossHand",1,1)
+		goto reloadcontinue
+		BARG A 0 A_JumpIfInventory("BossMag",0,"reloaddone")
+		TNT1 A 0 A_TakeInventory("BossHand",1)
+		TNT1 A 0 A_GiveInventory("BossMag",1)
+		BARG A 2 offset(16,50) A_PlaySound("weapons/rifleclick2")
+		BARG A 4 offset(14,46)
+		loop
+	loadclip:
+		BARG AA 4 offset(16,50) A_PlaySound("weapons/rifleclick2")
+		BARG AA 3 offset(17,52) A_PlaySound("weapons/rifleclick2")
+		BARG AAAAAA 2 offset(16,50) A_PlaySound("weapons/rifleclick2")
+		TNT1 A 0 A_PlaySound("weapons/rifleclick")
+		TNT1 A 0 A_TakeInventory("BossClip",1)
+		TNT1 A 0 A_GiveInventory("BossMag",10)
+		BARG A 4 offset(14,46)
+		goto reloaddone
+	reloaddone:
+		BARG A 1 offset (4,40)
+		BARG A 1 offset (2,36)
+		BARG A 1 offset (0,34)
+	unloadhand:
+		BARG A 0 A_JumpIfInventory("BossHand",1,1)
+		goto nope
+		BARG A 0 A_TakeInventory("BossHand",1)
+		BARG A 0 A_GiveInventory("SevenMilAmmo",1)
+		loop
+	unload:
+		TNT1 A 0 A_TakeInventory("IsWeaponReady")
+		BARG A 1 offset (0,34)
+		BARG A 1 offset (2,36)
+		BARG A 1 offset (4,40)
+		TNT1 A 0 A_TakeInventory("IsWeaponLong")
+		TNT1 A 0 ACS_NamedExecuteAlways("MuzzleClimb",0,random(-4,-14),random(4,8),0)
+		BARG A 2 offset (8,42) A_PlaySound ("weapons/rifleclick2")
+		TNT1 A 0 ACS_NamedExecuteAlways("MuzzleClimb",0,random(-4,-14),random(4,8),0)
+		BARG A 4 offset (14,46) A_PlaySound ("weapons/rifleload")
+		BARG A 0 A_JumpIfInventory("BossMag",1,"unload1")
+		goto unloaddone
+	unload1:
+		BARG A 0 A_TakeInventory("BossMag",1)
+		BARG A 0 A_JumpIfInventory("SevenMilAmmo",0,"unloaddrop")
+		BARG A 0 A_GiveInventory("SevenMilAmmo",1)
+		goto unloadloop
+	unloaddrop:
+		BARG A 0 A_SpawnItemEx("HDLoose7mm",cos(pitch)*8,0,height-7-sin(pitch)*8,cos(pitch)*cos(angle-40)*1+vel.x,cos(pitch)*sin(angle-40)*1+vel.y,-sin(pitch)*1+vel.z,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH)
+		goto unloadloop
+	unloadloop:
+		BARG A 4 offset (3,41) A_PlaySound("weapons/rifleclick2")
+		BARG A 2 offset (2,42)
+		BARG A 0 A_JumpIfInventory("BossMag",1,1)
+		goto unloaddone
+		BARG A 0{
+			if(countinv("PressingUnload")+countinv("PressingReload")+countinv("PressingFire")+countinv("PressingAltfire")>0){setweaponstate("unloaddone");}setweaponstate("unload1");  
+		}
+	unloaddone:
+		BARG A 2 offset (2,42)
+		BARG A 3 offset (3,41)
+		BARG A 1 offset (4,40) A_PlaySound("weapons/rifleclick")
+		BARG A 1 offset (2,36)
+		BARG A 1 offset (0,34)
+		goto ready
+	reloadcontinue:
+		BARG A 0{
+			if(countinv("PressingUnload")+countinv("PressingReload")+countinv("PressingFire")+countinv("PressingAltfire")>0){setweaponstate("reloaddone");}setweaponstate("");  
+		}
+		BARG A 0 A_JumpIfInventory("SevenMilAmmo",1,1)	//don't strip clips automatically
+		goto reloaddone
+		BARG A 8 offset(16,48) A_PlaySound("weapons/pocket")
+		goto loadhandloop
+	xloadabort:
+		---- A 1 A_WeaponReady(WRF_NOFIRE)
+		---- A 0 A_JumpIfInventory("PressingReload",1,"xloadabort")
+		---- A 0 A_JumpIfInventory("PressingUnload",1,"xloadabort")
+		goto reloaddone
+	firemode:
+	moaadjust:
+		BARG A 3 A_WeaponReady(WRF_NOFIRE)
+		BARG A 0{
+			if (countinv("PressingFire")+countinv("PressingAltfire")>0){
+				setweaponstate("moaclick");
+			} else if(countinv("PressingFireMode")>0){setweaponstate("moaadjust");}
+			setweaponstate("nope");
+		}
+	moaclick:
+		BARG A 0{
+			if (countinv("PressingFire")>0){A_GiveInventory("BossMOA",1);}
+			else if (countinv("PressingAltFire")>0){A_TakeInventory("BossMOA",1);}
+			setweaponstate("moaadjust");
+		}
+
+	spawn:
+		TNT1 A 1
+		TNT1 A 0 A_CheckProximity("spawndropped","PlayerPawn",20,1, CPXF_COUNTDEAD|CPXF_SETTARGET|CPXF_ANCESTOR|CPXF_CLOSEST|CPXF_NOZ)
+	spawnfresh:
+		TNT1 A 0 A_SpawnItemEx("BossRiflePickup",0,0,0,vel.x,vel.y,vel.z,0, SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_NOPOINTERS)
+		stop
+	spawndropped:
+		TNT1 A 0 A_JumpIfInTargetInventory("BossRifle",1,"spawnfresh")
+		TNT1 A 0 A_SpawnItemEx("BossRiflePickup",0,0,0,vel.x,vel.y,vel.z,0, SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS)
+		stop
+	}
+}
+class BossEmptyHand:ActionItem
+{
+	states
+	{
+	pickup:
+		TNT1 A 0 A_JumpIfInventory("BossHand",1,1)
+		fail
+		TNT1 A 0 A_TakeInventory("BossHand",1)
+		TNT1 A 0 A_JumpIfInventory("SevenMilAmmo",0,2)
+		TNT1 A 0 A_GiveInventory("SevenMilAmmo",1)
+		loop
+		TNT1 A 0 A_SpawnItemEx("HDLoose7mm",cos(pitch)*5,1,height-7-sin(pitch)*5,cos(pitch)*cos(angle)*random(1,4)+vel.x,cos(pitch)*sin(angle)*random(1,4)+vel.y,-sin(pitch)*random(1,4)+vel.z,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH)
+		loop
+	}
+}
+
+
+
