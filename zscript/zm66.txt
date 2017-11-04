@@ -454,7 +454,8 @@ class ZM66AssaultRifle:HDWeapon{
 	altreload:
 		RIFG A 0{
 			if(
-				!(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_GRENADELOADED)
+				!(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_NOLAUNCHER)
+				&&!(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_GRENADELOADED)
 				&&countinv("HDRocketAmmo")
 			)setweaponstate("unloadgrenade");
 		}goto nope;
