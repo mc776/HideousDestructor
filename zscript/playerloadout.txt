@@ -18,14 +18,6 @@ extend class HDPlayerPawn{
 		if(countinv("Hunter")){
 			A_SetInventory("ShotgunAuto",getcvar("hd_huntauto"));
 		}
-		if(countinv("BossRifle")){
-			A_SetInventory("BossZoomDegree",getcvar("hd_bosszoom"));
-			A_SetInventory("BossMOA",getcvar("hd_bossmoa"));
-			let bbb=hdweapon(findinventory("bossrifle"));
-			if(bbb){
-				if(getcvar("hd_bossfrontreticle"))bbb.weaponstatus[0]|=1;
-			}
-		}
 
 		//so you don't start out with the fist all the time
 		if(player.readyweapon){
@@ -236,8 +228,6 @@ extend class HDPlayerPawn{
 				break;
 			case 80:
 				nw="BossRifle";A_GiveInventory(nw);
-				A_GiveInventory("BossChamber");
-				A_GiveInventory("BossMag",10);
 				break;
 			case 90:
 				nw="HDMedikitter";A_GiveInventory(nw);

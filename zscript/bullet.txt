@@ -499,21 +499,6 @@ class DecoBulleter776:DecoBulleter{
 		missiletype "HDBullet776";
 	}
 }
-class DecoBulleter776f:DecoBulleter776{
-	default{
-		speed 1400;
-	}
-	states{
-	pickup:
-		TNT1 A 0{
-			actor p=Spawn("HDBullet776",pos+(0,0,height-6));
-			p.target=self;p.angle=angle;p.pitch=pitch;
-			p.speed=1400;
-			p.vel+=self.vel;
-			p.pitch-=countinv("BossMOA")*(1./120.);
-		}fail;
-	}
-}
 class DecoBulleter9:DecoBulleter{
 	default{
 		missiletype "HDBullet9";

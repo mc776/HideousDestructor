@@ -220,14 +220,15 @@ extend class HDStatusBar{
 			);
 		}
 		else if(w is "BossRifle"){
-			drawwepnum(pp.countinv("BossMag"),10);
-			drawwepcounter(pp.countinv("BossChamber"),
+			let brf=BossRifle(w);
+			drawwepnum(brf.weaponstatus[BOSSS_MAG],10);
+			drawwepcounter(brf.weaponstatus[BOSSS_CHAMBER],
 				-16,-10,"blank","RBRSA3A7"
 			);
-			drawnum(pp.countinv("BossZoomDegree"),
+			drawnum(brf.weaponstatus[BOSSS_ZOOM],
 				-30,-18,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
 			);
-			drawnum(pp.countinv("BossMOA"),
+			drawnum(brf.weaponstatus[BOSSS_DROPADJUST],
 				-16,-18,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_WHITE
 			);
 		}

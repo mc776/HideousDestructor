@@ -175,7 +175,7 @@ extend class HDStatusBar{
 			);
 			double degree;
 			if(wp.weaponstatus[0]&1){
-				degree=4.-0.05*hpl.countinv("BossZoomDegree");
+				degree=4.-0.05*wp.weaponstatus[BOSSS_ZOOM];
 				texman.setcameratotexture(hpc,"TCAMTEX3",degree);
 				drawimage(
 					"TCAMTEX3",(0,68),DI_SCREEN_CENTER|DI_ITEM_CENTER,
@@ -194,7 +194,7 @@ extend class HDStatusBar{
 				);
 				screen.SetClipRect(cx,cy,cw,ch);
 			}else{
-				degree=6.-0.1*hpl.countinv("BossZoomDegree");
+				degree=6.-0.1*wp.weaponstatus[BOSSS_ZOOM];
 				texman.setcameratotexture(hpc,"TCAMTEX3",degree);
 				drawimage(
 					"TCAMTEX3",(0,68),DI_SCREEN_CENTER|DI_ITEM_CENTER,
@@ -212,7 +212,7 @@ extend class HDStatusBar{
 			drawnum(degree*10,
 				0,119,DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,Font.CR_BLACK
 			);
-			drawnum(hpl.countinv("BossMOA")*5,
+			drawnum(wp.weaponstatus[BOSSS_DROPADJUST]*5,
 				0,12,DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,Font.CR_BLACK
 			);
 			// the scope display is in 10ths of an arcminute.

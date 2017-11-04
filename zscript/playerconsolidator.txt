@@ -7,19 +7,22 @@ extend class HDPlayerPawn{
 		int usablebrass=countinv("SevenMilBrass");
 
 		//misc. maintenance
-		A_TakeInventory("BossJam");
 		A_TakeInventory("BrontornisHeat");
 		A_TakeInventory("HunterSpentShell");
 		A_TakeInventory("SlayerSpentShell1");
 		A_TakeInventory("SlayerSpentShell2");
 		A_TakeInventory("BrontornisSpent");
-		if(countinv("BossSpentChamber")){
-			A_TakeInventory("BossSpentChamber");
-			usablebrass++;
+		if(
+			findinventory("BossRifle")
+		){
+			int br=bossrifle(findinventory("BossRifle")).weaponstatus[BOSSS_CHAMBER];
+			if(br==1||br==3)usablebrass++;
 		}
-		if(countinv("LiberatorSpentChamber")){
-			A_TakeInventory("LiberatorSpentChamber");
-			usablebrass++;
+		if(
+			findinventory("LiberatorRifle")
+			&&LiberatorRifle(findinventory("LiberatorRifle")).weaponstatus[LIBS_CHAMBER]==1
+		){
+				usablebrass++;
 		}
 
 		//make as many mags and clips as possible to make room for more 7mm
@@ -171,39 +174,35 @@ extend class HDPlayerPawn{
 				countinv("BossClip")*10+
 				countinv("SevenMilAmmo");
 			if(totalspare){
-				bool boss=countinv("BossRifle");
-				bool liberator=countinv("LiberatorRifle");
-				if(countinv("LiberatorRifle"))liberator=true;
+				let boss=hdweapon(findinventory("BossRifle"));
+				let llb=hdweapon(findinventory("LiberatorRifle"));
 				int originalmags=countinv("LiberatorMag");
 				int originalclips=countinv("BossClip");
 				int toload=totalspare;
 
 				if(boss){
-					if(!countinv("BossChamber")){
-						A_GiveInventory("BossChamber");
+					if(boss.weaponstatus[BOSSS_CHAMBER]!=2){
+						boss.weaponstatus[BOSSS_CHAMBER]=2;
 						totalspare--;
 					}
-					toload=min(10-countinv("BossMag"),totalspare);
-					if(toload){
-						A_GiveInventory("BossMag",toload);
+					toload=min(10-boss.weaponstatus[BOSSS_MAG],totalspare);
+					if(toload>0){
+						boss.weaponstatus[BOSSS_CHAMBER]+=toload;
 						totalspare-=toload;
 					}
 				}
-				if(totalspare && liberator){
-					let llb=LiberatorRifle(findinventory("LiberatorRifle"));
-					if(llb){
-						int chm=llb.weaponstatus[LIBS_CHAMBER];
-						if(chm<2){
-							llb.weaponstatus[LIBS_CHAMBER]=2;
-							if(chm==1)A_GiveInventory("SevenMilBrass");
-							totalspare--;
-						}
-						chm=llb.weaponstatus[LIBS_MAG];
-						toload=min(30-chm,totalspare);
-						if(toload){
-							llb.weaponstatus[LIBS_MAG]+=toload;
-							totalspare-=toload;
-						}
+				if(totalspare && llb){
+					int chm=llb.weaponstatus[LIBS_CHAMBER];
+					if(chm<2){
+						llb.weaponstatus[LIBS_CHAMBER]=2;
+						if(chm==1)A_GiveInventory("SevenMilBrass");
+						totalspare--;
+					}
+					chm=llb.weaponstatus[LIBS_MAG];
+					toload=min(30-chm,totalspare);
+					if(toload){
+						llb.weaponstatus[LIBS_MAG]+=toload;
+						totalspare-=toload;
 					}
 				}
 
@@ -223,7 +222,7 @@ extend class HDPlayerPawn{
 				}
 
 				//load more clips or mags
-				if(player.readyweapon is "BossRifle" || !liberator){
+				if(player.readyweapon is "BossRifle" || !llb){
 					int maxclips=HDF.maxinv(self,"BossClip");
 					while(totalspare>=10 && countinv("BossClip")<maxclips){
 						A_GiveInventory("BossClip");
@@ -390,9 +389,14 @@ extend class HDPlayerPawn{
 			int powderunits=max(0,countinv("FourMilAmmo")-rnd);
 
 			//take garbage out of guns
-			if(countinv("BossSpentChamber")){
-				A_TakeInventory("BossSpentChamber");
-				addsevenmil++;
+			if(
+				bossrifle(findinventory("BossRifle"))
+			){
+				int br=bossrifle(findinventory("BossRifle")).weaponstatus[BOSSS_CHAMBER];
+				if(br!=2&&br!=4&&br>0){
+					addsevenmil++;
+					bossrifle(findinventory("BossRifle")).weaponstatus[BOSSS_CHAMBER]=0;
+				}
 			}
 			if(
 				liberatorrifle(findinventory("LiberatorRifle"))
@@ -458,7 +462,6 @@ extend class HDPlayerPawn{
 		}
 
 		//misc. garbage removal
-		A_TakeInventory("BossJam");
 		A_TakeInventory("HunterSpentShell");
 		A_TakeInventory("SlayerSpentShell1");
 		A_TakeInventory("SlayerSpentShell2");
