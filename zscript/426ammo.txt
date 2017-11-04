@@ -116,11 +116,11 @@ class HD4mmMagEmpty:HDDebris{
 	}
 }
 
-
-class ZM66DroppedRound:FourMilAmmo{
+class ZM66DroppedRound:HDDebris{
 	default{
 		projectile;
 		+cannotpush +forcexybillboard -nogravity +doombounce +bounceonactors
+		xscale 0.5; yscale 0.6; height 2; radius 2; translation "ice";
 		damagefunction(0);bouncefactor 0.2;seesound "misc/casing3";
 	}
 	states{
@@ -128,6 +128,10 @@ class ZM66DroppedRound:FourMilAmmo{
 		RBRS A 2 A_SetAngle(angle+45);
 		wait;
 	death:
-		---- A -1;
+		---- A -1{
+			inventory bl=inventory(spawn("FourMilAmmo",pos));
+			bl.amount=1;bl.angle=angle;
+			destroy();
+		}
 	}
 }
