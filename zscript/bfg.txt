@@ -40,6 +40,7 @@ class BFG9K:HDWeapon replaces BFG9000{
 		BFGG AAA 1 A_Lower(5);
 		BFGG AA 2 A_Lower(3);
 		BFGG A 4{
+			A_PlaySound("weapons/shotgr",5);
 			if(!(invoker.weaponstatus[0]&BFGF_STRAPPED)){
 				A_SetTics(6);
 				A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
