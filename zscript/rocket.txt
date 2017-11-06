@@ -37,7 +37,6 @@ class GyroGrenade:SlowProjectile{
 		A_ChangeVelocity(speed*cos(pitch),0,speed*sin(-pitch),CVF_RELATIVE);
 	}
 	override void ExplodeSlowMissile(line blockingline=null,actor blockingobject=null){
-
 		//bounce
 		if(!primed&&random(0,20)){
 			if(speed>50)painsound="misc/punch";else painsound="misc/fragknock";
@@ -46,27 +45,13 @@ class GyroGrenade:SlowProjectile{
 				random(30,60),random(-10,10),random(-10,10),
 				random(0,360),SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS,0
 			);
-			if(blockingobject){
-				blockingobject.damagemobj(self,target,
-					speed*speed*frandom(0.0005,0.002),"SmallArms0"
-				);
-			}
 			destroy();
 			return;
 		}
 
 		//damage
-		if(blockingobject){
-			int dmgg=random(50,200);
-			if(primed&&isrocket){
-				double dangle=angle;
-				A_Face(blockingmobj);
-				dangle=abs(deltaangle(angle,dangle));
-				if(dangle<10)dmgg+=random(600,700);
-				else if(dangle<30)dmgg+=random(100,700);
-			}
-			blockingobject.damagemobj(self,target,dmgg,"SmallArms3");
-		}
+		//nothing here - impact is disappearingly tiny compared to frags
+		//NOTE: damage calculation is ALREADY in base SlowProjectile!
 
 		//explosion
 		if(!inthesky){
@@ -84,8 +69,7 @@ class GyroGrenade:SlowProjectile{
 		}else{actor xpl=Spawn("DistantRocket",self.pos,ALLOW_REPLACE);}
 			A_SpawnChunks("HDBulletFrag",180,100,500+4*stamina);
 
-		bmissile=false;setstatelabel("death");
-//		destroy();return;
+		destroy();return;
 	}
 	states{
 	spawn:
@@ -108,7 +92,7 @@ class GyroGrenade:SlowProjectile{
 			A_PlaySound("weapons/rocklaunch",CHAN_VOICE);
 		}
 		---- AAA 0{
-			actor sss=spawn("HDSmoke",pos-vel*0.1+(0,0,-4));
+			actor sss=spawn("HDGunSmoke",pos-vel*0.1+(0,0,-4));
 			sss.vel=vel*-0.06+(frandom(-2,2),frandom(-2,2),frandom(-2,2));
 		}
 	spawnrocket2:
@@ -138,11 +122,6 @@ class GyroGrenade:SlowProjectile{
 		}loop;
 	death:
 		TNT1 A 1;
-TNT1 A 0{
-	if(blockingmobj){
-		A_LogInt(blockingmobj.spawnhealth()-blockingmobj.health);
-	}
-}
 		stop;
 	}
 }
@@ -152,31 +131,46 @@ class HDHEAT:GyroGrenade{
 		scale 0.4; woundhealth 1800;
 		decal "BrontoScorch";
 	}
+	override void ExplodeSlowMissile(line blockingline=null,actor blockingobject=null){
+		//bounce
+		//nothing here - HEAT will always explode
+
+		//damage
+		if(blockingobject){
+			int dmgg=random(70,240);
+			if(primed&&isrocket){
+				double dangle=angle;
+				A_Face(blockingmobj);
+				dangle=abs(deltaangle(angle,dangle));
+				if(dangle<10)dmgg+=random(2000,4000);
+				else if(dangle<30)dmgg+=random(200,1200);
+			}
+			blockingobject.damagemobj(self,target,dmgg,"SmallArms3");
+		}
+
+		//explosion
+		if(!inthesky){
+			A_SprayDecal("BrontoScorch",16);
+			A_Blast(
+				pushradius:256,pushamount:128,fullpushradius:96,
+				fragradius:HDCONST_SPEEDOFSOUND,
+				fragdamage:random(60,240),
+				immolateradius:128,immolateamount:random(3,60),
+				immolatechance:2,
+				gibradius:16,gibamount:random(1,8)*10
+			);
+			actor xpl=spawn("Gyrosploder",self.pos-(0,0,1),ALLOW_REPLACE);
+			xpl.target=target;xpl.master=master;xpl.stamina=stamina;
+		}else{actor xpl=Spawn("DistantRocket",self.pos,ALLOW_REPLACE);}
+			A_SpawnChunks("HDBulletFrag",80,100,600);
+			A_SpawnChunks("HDBulletFrag",random(2,4),1,6);
+
+		destroy();return;
+	}
 	states{
 	spawn:
 		MISL A 0 nodelay{primed=true;}
 		goto spawnrocket;
-	death:
-		TNT1 AAA 0 A_SpawnItemEx ("HDSmokeChunk", 0,0,1, random(-3,3),random(-3,3),random(2,6),random(-15,15),SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS,32);
-		TNT1 A 1{
-			if(tracer)tracer.damagemobj(self,target,random(3,5)*600+clamp((42-stamina)*20,0,400),"SmallArms3");
-			A_SprayDecal("BrontoScorch",16);
-
-			//explosion
-			if(!inthesky){
-				A_Blast(
-					pushradius:256,pushamount:128,fullpushradius:96,
-					fragradius:HDCONST_SPEEDOFSOUND,
-					fragdamage:random(160,200+2*stamina),
-					immolateradius:128,immolateamount:random(3,60),
-					immolatechance:random(1,stamina),
-					gibradius:16,gibamount:random(1,8)*10
-				);
-				actor xpl=Spawn("Gyrosploder",self.pos-(0,0,1),ALLOW_REPLACE);
-				xpl.target=target;xpl.master=master;xpl.stamina=stamina;
-			}else{actor xpl=Spawn("DistantRocket",self.pos,ALLOW_REPLACE);}
-			A_SpawnChunks("HDBulletFrag",40,100,500+4*stamina);
-		}stop;
 	}
 }
 
