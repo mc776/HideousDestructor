@@ -77,8 +77,10 @@ class HDRL:HDWeapon{
 				setweaponstate("chamber");
 			}else{
 				//shoot a rocket
-				if(chm>1)rkt=gyrogrenade(spawn("HDHEAT",pos+(0,0,height-8)));
-				else rkt=gyrogrenade(spawn("GyroGrenade",pos+(0,0,height-8)));
+				if(chm>1){
+					rkt=gyrogrenade(spawn("HDHEAT",pos+(0,0,height-8)));
+					A_ChangeVelocity(cos(pitch)*-1,0,sin(pitch)*1,CVF_RELATIVE);
+				}else rkt=gyrogrenade(spawn("GyroGrenade",pos+(0,0,height-8)));
 				invoker.weaponstatus[RLS_SMOKE]+=50;
 				rkt.angle=angle;rkt.pitch=pitch;rkt.target=self;rkt.master=self;
 				rkt.primed=false;
@@ -101,6 +103,7 @@ class HDRL:HDWeapon{
 					frandom(0.7,0.9),-frandom(1.5,2),
 					-frandom(0.8,1.),frandom(2,3)
 				);
+				A_ChangeVelocity(cos(pitch)*-1,0,sin(pitch)*1,CVF_RELATIVE);
 			}else{
 				A_MuzzleClimb(
 					0,0,
@@ -108,7 +111,8 @@ class HDRL:HDWeapon{
 					frandom(1.,1.2),-frandom(2.5,3),
 					frandom(0.6,0.8),-frandom(2,3)
 				);
-				A_ChangeVelocity(cos(pitch)*-1,0,sin(pitch)*1,CVF_RELATIVE);
+				A_ChangeVelocity(cos(pitch)*-3,0,sin(pitch)*3,CVF_RELATIVE);
+				if(self is "hdplayerpawn")hdplayerpawn(self).stunned+=10;
 			}
 		} 
 		MISG B 4{
