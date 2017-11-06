@@ -84,7 +84,8 @@ class GyroGrenade:SlowProjectile{
 		}else{actor xpl=Spawn("DistantRocket",self.pos,ALLOW_REPLACE);}
 			A_SpawnChunks("HDBulletFrag",180,100,500+4*stamina);
 
-		destroy();return;
+		bmissile=false;setstatelabel("death");
+//		destroy();return;
 	}
 	states{
 	spawn:
@@ -136,7 +137,13 @@ class GyroGrenade:SlowProjectile{
 			}
 		}loop;
 	death:
-		TNT1 A 1;stop;
+		TNT1 A 1;
+TNT1 A 0{
+	if(blockingmobj){
+		A_LogInt(blockingmobj.spawnhealth()-blockingmobj.health);
+	}
+}
+		stop;
 	}
 }
 class HDHEAT:GyroGrenade{

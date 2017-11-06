@@ -43,6 +43,10 @@ class HDBullet:HDActor{
 		speed 40;//accuracy 20;
 		pushfactor 0.1;
 	}
+	override void beginplay(){
+		damagetype="SmallArms0"; //how do you set this in the defaults???
+		super.beginplay();
+	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		if(distantsounder!="none"){
@@ -333,20 +337,20 @@ class HDBullet:HDActor{
 		if(speed>256){
 			name b="";
 			if(speed>1000){
-				A_SetDamageType("SmallArms3");
+				damagetype="SmallArms3";
 				if(mass>80) b="SupersonicTrailBig";
 				else b="SupersonicTrail";
 			}else if(speed>800){
-				A_SetDamageType("SmallArms3");
+				damagetype="SmallArms3";
 				b="SupersonicTrail";
 			}else if(speed>HDCONST_SPEEDOFSOUND){
-				A_SetDamageType("SmallArms2");
+				damagetype="SmallArms2";
 				b="SupersonicTrailSmall";
 			}else if(speed>100){
-				A_SetDamageType("SmallArms1");
+				damagetype="SmallArms1";
 				b="SubsonicTrail";
 			}else{
-				A_SetDamageType("SmallArms0");
+				damagetype="SmallArms0";
 			}
 			if(woundhealth>50)
 				A_SetDamageType("SmallArms3");
