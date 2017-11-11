@@ -188,7 +188,7 @@ class DERPBot:HDUPK{
 		}
 		DERP A 1{
 			A_FaceTarget(10,10,0,0,FAF_TOP,-4);
-			if(target.health<1){  
+			if(!target||target.health<1){  
 				DerpAlert("\cf  Hostile eliminated.");
 			}
 		}

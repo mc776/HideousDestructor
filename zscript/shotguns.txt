@@ -1,0 +1,1153 @@
+// ------------------------------------------------------------
+// Shotgun Shells
+// ------------------------------------------------------------
+class HDShellAmmo:Ammo{
+	default{
+		+inventory.ignoreskill
+		inventory.maxamount 24;
+		ammo.backpackmaxamount 150;
+		ammo.backpackamount 0;
+		inventory.pickupmessage "Picked up a shotgun shell.";
+		scale 0.3;
+	}
+	states{
+	spawn:
+		SHL1 A -1;
+	}
+}
+class HDSpentShell:Actor{
+	default{
+		+missile +doombounce +bounceonactors +cannotpush -noteleport +forcexybillboard
+		seesound "misc/casing2";scale 0.3;height 2;radius 2;
+	}
+	states{
+	spawn:
+		ESHL ABCDEFGH 2;
+		loop;
+	death:
+		ESHL A -1{
+			bmissile=false;
+			frame=randompick(0,0,0,0,4,4,4,4,2,2,5);
+		}stop;
+	}
+}
+class HDUnSpentShell:HDSpentShell{
+	states{
+	spawn:
+		ESHL ABCDE 2;
+		TNT1 A 0 A_GiveToTarget("HDShellAmmo",1);
+		stop;
+	}
+}
+class HDFumblingShell:HDSpentShell{
+	states{
+	spawn:
+		ESHL ABCDEFGH 2;
+		loop;
+	death:
+		TNT1 A 0 A_SpawnItemEx("HDFumbledShell",0,0,0,
+			vel.x,vel.y,vel.z,
+			0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION
+		);stop;
+	}
+}
+class HDFumbledShell:HDShellAmmo{
+	default{
+		+cannotpush
+		scale 0.3;
+		inventory.pickupmessage "Picked up a shotgun shell.";
+	}
+	states{
+	spawn:
+		ESHL A -1 nodelay{
+			bmissile=false;
+			frame=randompick(0,0,0,0,4,4,4,4,2,2,5);
+		}stop;
+	}
+}
+
+
+// ------------------------------------------------------------
+// Shotgun
+// ------------------------------------------------------------
+class Hunter:HDWeapon{
+	default{
+		weapon.selectionorder 31;
+		weapon.slotnumber 3;
+		weapon.bobrangex 0.21;
+		weapon.bobrangey 0.86;
+		scale 0.6;
+		inventory.pickupmessage "You got the pump-action shotgun!";
+		obituary "%o was brutally pumped full of %k's hot, manly lead.";
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		if(owner&&owner.player){
+			if(cvar.getcvar("hd_huntauto",owner.player).getint())
+				weaponstatus[0]|=HUNTF_AUTO;
+				else weaponstatus[0]&=~HUNTF_AUTO;
+		}
+	}
+	action void Chamber(){
+		int chm=invoker.weaponstatus[HUNTS_CHAMBER];
+		if(invoker.weaponstatus[HUNTS_TUBE]>0){    
+			invoker.weaponstatus[HUNTS_CHAMBER]=2;
+			invoker.weaponstatus[HUNTS_TUBE]--;
+		}
+		if(chm>1)A_SpawnItemEx("HDFumblingShell",    
+			cos(pitch)*8,0,height-7-sin(pitch)*8,
+			vel.x+cos(pitch)*cos(angle-random(86,90))*5,
+			vel.y+cos(pitch)*sin(angle-random(86,90))*5,
+			vel.z+sin(pitch)*random(4,6),
+			0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
+		);else if(chm>0)A_SpawnItemEx("HDSpentShell",
+			cos(pitch)*8,0,height-7-sin(pitch)*8,
+			vel.x+cos(pitch)*cos(angle-random(86,90))*6,
+			vel.y+cos(pitch)*sin(angle-random(86,90))*6,
+			vel.z+sin(pitch)*random(5,7),
+			0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
+		);
+	}
+	action void EmptyHand(){
+		while(invoker.weaponstatus[HUNTS_HAND]>0){    
+			invoker.weaponstatus[HUNTS_HAND]--;
+			A_SpawnItemEx("HDFumblingShell",
+				cos(pitch)*5,1,height-7-sin(pitch)*5,
+				cos(pitch)*cos(angle)*random(1,4)+vel.x,
+				cos(pitch)*sin(angle)*random(1,4)+vel.y,
+				-sin(pitch)*random(1,4)+vel.z,
+				0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
+			);
+		}
+	}
+	states{
+	select0:
+		SHTG A 0;
+		goto select0big;
+	deselect0:
+		SHTG A 0;
+		goto deselect0big;
+	firemode:
+		SHTG A 0{
+			invoker.weaponstatus[0]^=HUNTF_AUTO;
+		}goto nope;
+	ready:
+		SHTG A 1{
+			A_WeaponReady(WRF_ALL);
+		}wait;
+	reloadSS:
+		SHTG A 1 offset(1,34){
+			int hnd=min(
+				countinv("HDShellAmmo"),
+				12-invoker.weaponstatus[HUNTS_SIDESADDLE],
+				max(1,health/22),
+				3
+			);
+			if(hnd<1)setweaponstate("nope");
+			else invoker.weaponstatus[HUNTS_HAND]=hnd;
+		}
+		SHTG A 2 offset(2,34);
+		SHTG A 3 offset(3,36);
+	reloadSSrestart:
+		SHTG A 6 offset(3,35);
+		SHTG A 9 offset(4,34) A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		SHTG A 4 offset(3,34){
+			//count shells again to avoid a drop exploit
+			int hnd=min(invoker.weaponstatus[HUNTS_HAND],countinv("HDShellAmmo"));
+			if(hnd>0)invoker.weaponstatus[HUNTS_SIDESADDLE]+=hnd;    
+		}
+		SHTG A 0 {
+			if(
+				PressingUnload()
+				||PressingReload()
+				||PressingFire()
+				||PressingAltfire()
+			)setweaponstate("reloadSSend");
+			else if(
+				invoker.weaponstatus[HUNTS_SIDESADDLE]<12
+				&&countinv("HDShellAmmo")
+			)setweaponstate("ReloadSSrestart");
+		}
+	reloadSSend:
+		SHTG A 3 offset(2,34);
+		SHTG A 1 offset(1,34);
+		goto nope;
+	fire:
+		SHTG E 0 A_JumpIf(invoker.weaponstatus[HUNTS_CHAMBER]==2,"shoot")
+		goto nope;
+	shoot:
+		SHTG A 2;
+		SHTG A 1 offset(0,36){
+			A_GiveInventory("DecoBulleter00");
+			A_Log("put in a real shotgun blast");
+
+			A_GunFlash();
+			invoker.weaponstatus[HUNTS_CHAMBER]=1;
+			A_PlaySound("weapons/hunter",CHAN_WEAPON);
+			if(invoker.weaponstatus[0]&HUNTF_AUTO)
+				A_MuzzleClimb(randompick(-1,1)*1.4,-3.4);
+				else A_MuzzleClimb(randompick(-1,1)*1.,-2.6);
+		}
+		SHTG E 1 A_MuzzleClimb(randompick(-1,1)*1.,-0.3);
+		SHTG E 0{
+			if(
+				invoker.weaponstatus[0]&HUNTF_AUTO
+				&&random(0,127)
+			)setweaponstate("chamberauto");
+		}goto ready;
+	altfire:
+	chamber:
+		SHTG A 1 A_PlaySound("weapons/shotgr",CHAN_WEAPON);
+		SHTG AE 1 A_MuzzleClimb(0,-frandom(1.,1.6));
+		SHTG E 0 A_Refire("LongStroke");
+		SHTG EA 2 A_MuzzleClimb(0,frandom(1.,1.6));
+		goto ready;
+	longstroke:
+		SHTG F 2 A_MuzzleClimb(frandom(1.,2.));
+		SHTG F 0{
+			A_Chamber();
+			A_MuzzleClimb(-frandom(1.,2.));
+		}
+		SHTG EA 2 A_MuzzleClimb(frandom(1.,1.6));
+		goto nope;
+	chamberauto:
+		SHTG A 2;
+		SHTG A 1{
+			A_Chamber();
+			A_Refire("nope");
+		}goto ready;
+	flash:
+		SHTF B 1 bright{
+			A_Light2();
+			HDFlashAlpha(-32);
+		}
+		TNT1 A 1 A_ZoomFactor(0.98,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
+		TNT1 A 0{
+			A_Light0();
+			A_AlertMonsters();
+			A_ZoomFactor(1.0,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
+		}stop;
+	altreload:
+	reloadfrompockets:
+		SHTG A 0{
+			int sss=invoker.weaponstatus[HUNTS_SIDESADDLE];
+			int ppp=countinv("HDShellAmmo");
+			if(ppp<1&&sss<1)setweaponstate("nope");
+				else if(ppp<1)
+					invoker.weaponstatus[0]&=~HUNTF_FROMPOCKETS;
+				else invoker.weaponstatus[0]|=HUNTF_FROMPOCKETS;
+		}goto startreload;
+	reload:
+	reloadfromsidesaddles:
+		SHTG A 0{
+			int sss=invoker.weaponstatus[HUNTS_SIDESADDLE];
+			int ppp=countinv("HDShellAmmo");
+			if(ppp<1&&sss<1)setweaponstate("nope");
+				else if(sss<1)
+					invoker.weaponstatus[0]|=HUNTF_FROMPOCKETS;
+				else invoker.weaponstatus[0]&=~HUNTF_FROMPOCKETS;
+		}goto startreload;
+	startreload:
+		SHTG A 1{
+			if(
+				invoker.weaponstatus[HUNTS_CHAMBER]>0
+				&&invoker.weaponstatus[HUNTS_TUBE]>=7    
+				&&invoker.weaponstatus[HUNTS_SIDESADDLES]<12
+				&&countinv("HDShellAmmo")
+			)setweaponstate("ReloadSS");
+		}
+		SHTG BC 4 A_MuzzleClimb(frandom(1.2,2.4),-frandom(1.2,2.4));
+		SHTG D 1;
+		SHTG D 0 A_PlaySound("weapons/huntopen",CHAN_WEAPON);
+	reloadstarthand:
+		SHTG D 1 offset(0,34);
+		SHTG D 1 offset(0,36);
+		SHTG D 1 offset(0,38);
+		SHTG D 4 offset(0,36){
+			invoker.weaponstatus[HUNTS_CHAMBER]=clamp(invoker.weaponstatus[HUNTS_CHAMBER],0,2);
+			if(invoker.weaponstatus[HUNTS_CHAMBER]!=1)setweaponstate("reloadfast");
+		}
+		SHTG D 4 offset(0,34);
+		SHTG D 4 offset(0,36){
+			invoker.weaponstatus[HUNTS_CHAMBER]=0;
+			double cp=cos(pitch);
+			A_SpawnItemEx("HDSpentShell",
+				cp*8,0,height-7-sin(pitch)*8,
+				vel.x+cp*cos(angle-random(86,90))*5,
+				vel.y+cp*sin(angle-random(86,90))*5,
+				vel.z+sin(pitch)*random(4,6),
+				0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
+			);
+		}
+		SHTG D 4 offset(0,40);
+	reloadfast:
+		SHTG D 4 offset(0,40){
+			if(invoker.weaponstatus[0]&HUNTF_FROMPOCKETS)setweaponstate("reloadpocket");
+			else{
+				invoker.weaponstatus[HUNTS_HAND]=min(
+					invoker.weaponstatus[HUNTS_SIDESADDLES],
+					invoker.weaponstatus[HUNTS_TUBE]
+						-invoker.weaponstatus[HUNTS_SIDESADDLES],
+					max(1,health/22),
+					3
+				);
+				if(health>40)A_SetTics(0);    
+			}
+		}
+		SHTG D 3 offset(0,42)A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		SHTG D 4 offset(0,41);
+		goto reloadashell;
+	reloadpocket:
+		SHTG D 4 offset(0,39){
+			invoker.weaponstatus[HUNTS_HAND]=min(
+				invoker.weaponstatus[HUNTS_SIDESADDLES],
+				invoker.weaponstatus[HUNTS_TUBE]
+					-invoker.weaponstatus[HUNTS_SIDESADDLES],
+				max(1,health/22),
+				3
+			);
+		}
+		SHTG D 6 offset(0,40) {if(health>40)A_SetTics(0);}
+		SHTG D 4 offset(0,40) A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		SHTG D 8 offset(0,42) A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		SHTG D 6 offset(0,41) A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		SHTG D 6 offset(0,40);
+		goto reloadashell;
+
+	reloadashell:
+		SHTG D 2 offset(0,36)A_PlaySound("weapons/huntreload",CHAN_WEAPON);
+		SHTG D 4 offset(0,34){
+			if(countinv("HDShellAmmo")){
+				invoker.weaponstatus[HUNTS_HAND]--;
+				if(invoker.weaponstatus[HUNTS_CHAMBER]!=2)
+					invoker.weaponstatus[HUNTS_CHAMBER]=2;
+					else invoker.weaponstatus[HUNTS_TUBE]++;
+			}else invoker.weaponstatus[HUNTS_HAND]=0;
+		}
+		SHTG DDDDDD 1 offset(0,33){
+			if(
+				PressingReload()
+				||PressingUnload()
+				||PressingFire()
+				||PressingAltfire()
+				||invoker.weaponstatus[HUNTS_TUBE]>=7    
+				||!countinv("HDShellAmmo")
+			)setweaponstate("reloadend");
+			else if(invoker.weaponstatus[HUNTS_HAND]<1)setweaponstate("reloadstarthand");
+		}goto reloadashell;
+	reloadend:
+		SHTG D 6 offset(0,34);
+		SHTG D 2 offset(0,34) A_PlaySound("weapons/huntopen",CHAN_WEAPON);
+		SHTG D 1 offset(0,36);
+		SHTG D 1 offset(0,34);
+		SHTG CB 4;
+		goto ready;
+	zoom:
+	cannibalize:
+		SHTG A 2 offset(0,36){
+			if(!countinv("Slayer"))setweaponstate("nope");
+		}
+		SHTG A 2 offset(0,40) A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		SHTG A 6 offset(0,42);
+		SHTG A 4 offset(0,44);
+		SHTG A 6 offset(0,42);
+		SHTG A 2 offset (0,36){
+			let sss=hdweapon(findinventory("Slayer"));
+			if(sss){
+				int totake=min(
+					sss.weaponstatus[SLAYS_SIDESADDLES],
+					AmmoCap("HDShellAmmo")-countinv("HDShellAmmo"),
+					3
+				);
+				sss.weaponstatus[SLAYS_SIDESADDLES]-=totake;
+				A_GiveInventory("HDShellAmmo",totake);
+			}
+		}goto nope;
+
+	unloadSS:
+		SHTG A 2 offset(1,34){
+			if(invoker.weaponstatus[HUNTS_SIDESADDLES]<1)setweaponstate("nope");
+		}
+		SHTG A 1 offset(2,34);
+		SHTG A 1 offset(3,36) A_PlaySound("weapons/pocket",CHAN_WEAPON);
+	unloadSSLoop1:
+		SHTG A 5 offset(4,36){	//from ss to hand
+			int hnd=min(3,invoker.weaponstatus[HUNTS_SIDESADDLES]);
+			invoker.weaponstatus[HUNTS_HAND]=hnd;
+			invoker.weaponstatus[HUNTS_SIDESADDLES]-=hnd;
+		}
+		SHTG A 3 offset(5,37){	//pocket if there's space
+			int limhnd=min(invoker.weaponstatus[HUNTS_HAND],
+				AmmoCap("HDShellAmmo")
+				-countinv("HDShellAmmo")
+				-invoker.weaponstatus[HUNTS_HAND]
+			);
+			if(limhnd>0){    
+				A_SetTics(8);
+				A_WeaponReady(WRF_NOFIRE);
+				A_PlaySound("weapons/pocket");
+				invoker.weaponstatus[HUNTS_HAND]-=limhnd;
+				A_GiveInventory("HDShellAmmo",limhnd);
+			}
+			EmptyHand();
+		}
+		SHTG A 2 offset(4,36){	//decide whether to loop
+			if(
+				PressingUnload()
+				||PressingReload()
+				||PressingFire()
+				||PressingAltfire()
+				||invoker.weaponstatus[HUNTS_SIDESADDLES]<1
+			)setweaponstate("unloadSSend");
+		}goto unloadSSLoop1;
+	unloadSSend:
+		SHTG A 3 offset(4,35);
+		SHTG A 2 offset(3,35);
+		SHTG A 1 offset(2,34);
+		SHTG A 1 offset(1,34);
+		goto nope;
+	unload:
+		SHTG A 0 A_JumpIfInventory("ShotgunQuickAmmo",1,"UnloadSS")
+		SHTG A 0 A_JumpIfInventory("HunterSpentShell",1,"Unload0")
+		SHTG A 0 A_JumpIfInventory("ShotgunChamber",1,"Unload0")
+		SHTG A 0 A_JumpIfInventory("ShotgunTube",1,"Unload0")
+		goto nope
+	Unload0:
+		SHTG A 1{
+			if(invoker.weaponstatus[HUNTS_SIDESADDLES]>0)setweaponstate("unloadSS");  
+			else if(
+				invoker.weaponstatus[HUNTS_CHAMBER]<1
+				&&invoker.weaponstatus[HUNTS_TUBE]<1
+			)setweaponstate("nope");
+		}
+		SHTG BC 4 A_MuzzleClimb(frandom(1.2,2.4),frandom(1.2,2.4));
+		SHTG D 1 A_PlaySound("weapons/huntopen",CHAN_WEAPON);
+		SHTG D 1 offset(0,34);
+		SHTG D 1 offset(0,36);
+		SHTG D 1 offset(0,38);
+		SHTG D 4 offset(0,36){
+			if(invoker.weaponstatus[HUNTS_CHAMBER]<1)
+			setweaponstate("unloadtube");
+		}
+		SHTG D 4 offset(0,34);
+		SHTG D 3 offset(0,36){
+			int chm=invoker.weaponstatus[HUNTS_CHAMBER];
+			invoker.weaponstatus[HUNTS_CHAMBER]=0;
+			if(chm>1){  
+				A_PlaySound("weapons/huntreload",CHAN_WEAPON);
+				if(A_JumpIfInventory("HDShellAmmo",0,"null"))A_SpawnItemEx("HDFumblingShell",
+					cos(pitch)*8,0,height-7-sin(pitch)*8,
+					vel.x+cos(pitch)*cos(angle-random(86,90))*5,
+					vel.y+cos(pitch)*sin(angle-random(86,90))*5,
+					vel.z+sin(pitch)*random(4,6),
+					0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
+				);else{
+					A_GiveInventory("HDShellAmmo",1);
+					A_PlaySound("weapons/pocket",CHAN_BODY);
+					A_SetTics(5);
+				}
+			}else if(chm>0)A_SpawnItemEx("HDSpentShell",
+					cos(pitch)*8,0,height-7-sin(pitch)*8,
+					vel.x+cos(pitch)*cos(angle-random(86,90))*5,
+					vel.y+cos(pitch)*sin(angle-random(86,90))*5,
+					vel.z+sin(pitch)*random(4,6),
+					0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
+				);
+			}
+		}
+		SHTG D 4 offset(0,40);
+	unloadtube:
+		SHTG D 6 offset(0,40){
+			if(invoker.weaponstatus[HUNTS_TUBE]<1)setweaponstate("reloadend");
+			else invoker.weaponstatus[HUNTS_HAND]=0;
+		}
+	unloadloop:
+		SHTG D 8 offset(1,41){
+			if(
+				invoker.weaponstatus[HUNTS_HAND]>=3  
+				invoker.weaponstatus[HUNTS_TUBE]<1
+			)setweaponstate("unloadloopend");
+			else{
+				invoker.weaponstatus[HUNTS_HAND]++;
+				invoker.weaponstatus[HUNTS_TUBE]--;
+			}
+		}
+		SHTG D 4 offset(0,40) A_PlaySound("weapons/huntreload",CHAN_WEAPON);
+		loop;
+	unloadloopend:
+		SHTG D 6 offset(1,41);
+		SHTG D 3 offset(1,42){
+			int rmm=ammocap("HDShellAmmo")-countinv("HDShellAmmo");
+			if(rmm>0){  
+				A_PlaySound("weapons/pocket");
+				A_SetTics(8);
+				A_GiveInventory("HDShellAmmo",rmm);
+				invoker.weaponstatus[HUNTS_HAND]-=rmm;
+			}
+		}
+		SHTG D 6{
+			EmptyHand();
+			if (
+				invoker.weaponstatus[HUNTS_TUBE]<1
+				||PressingUnload()
+				||PressingReload()
+				||PressingFire()
+				||PressingAltfire()
+			)setweaponstate("reloadend");
+		}goto unloadloop;
+	spawn:
+		HUNT A -1;
+		stop
+	}
+	override void InitializeWepStats(bool idfa=false){
+		if(!owner){
+			weaponstatus[0]=randompick(0,0,0,HUNTF_AUTO);
+		}
+		weaponstatus[HUNTS_CHAMBER]=2;
+		weaponstatus[HUNTS_TUBE]=7;
+		weaponstatus[HUNTS_SIDESADDLE]=12;
+	}
+}
+enum hunterstatus{
+	HUNTF_AUTO=1,
+	HUNTF_JAMMED=2,
+	HUNTF_UNLOADONLY=4,
+	HUNTF_FROMPOCKETS=8,
+
+	HUNTS_CHAMBER=1,
+	HUNTS_TUBE=2,
+	HUNTS_SIDESADDLE=3,
+	HUNTS_HEAT=4,
+	HUNTS_HAND=5,
+};
+
+
+
+
+
+
+// ------------------------------------------------------------
+// Super Shotgun
+// ------------------------------------------------------------
+class Slayer:ZSSlayer{
+	default{
+		weapon.selectionorder 30;
+		weapon.slotnumber 3;
+		inventory.pickupmessage "You got the double-barreled shotgun!";
+		weapon.bobrangex 0.18;
+		weapon.bobrangey 0.7;
+		scale 0.6;
+		obituary "%o was brutally pumped full of %k's hot, manly lead.";
+	}
+	states{
+	select0:
+		SHT2 A 0;
+		goto select0small;
+	deselect0:
+		SHT2 A 0;
+		goto deselect0small;
+	ready:
+		SHT2 A 1{
+			if(
+				PressingFire()
+				&&PressingAltfire()
+				&&invoker.weaponstatus[SLAYS_CHAMBER1]==2
+				&&invoker.weaponstatus[SLAYS_CHAMBER2]==2
+			)A_Overlay(PSP_FLASH,"flashboth");
+			else if(
+				PressingFire()
+				&&invoker.weaponstatus[SLAYS_CHAMBER1]==2
+			)A_Overlay(11,"flashleft");
+			else if(
+				PressingAltfire()
+				&&invoker.weaponstatus[SLAYS_CHAMBER2]==2
+			)A_Overlay(12,"flashright");
+			A_WeaponReady(WRF_ALL|WRF_NOFIRE);
+		}goto readyend;
+
+	flashleft:
+		SHT1 J 1 bright{
+			A_Light2();
+			HDFlashAlpha(64,false,overlayid());
+			A_PlaySound("weapons/slayersingle",6);
+			A_ZoomFactor(0.98,ZOOM_INSTANT|ZOOM_NOSCALETURNING)
+			invoker.weaponstatus[SLAYS_CHAMBER1]=1;
+
+			A_GiveInventory("DecoBulleter00f");
+			A_Log("Remember to adjust angle on each barrel! (LEFT)");
+		}
+		TNT1 A 1{
+			A_Light0();
+			A_MuzzleClimb(1.6,-3.9,1.6,-3.9);
+		}goto flasheither;
+	flashright:
+		SHT1 N 1 bright{
+			A_Light2();
+			HDFlashAlpha(64,false,overlayid());
+			A_PlaySound("weapons/slayersingle",6);
+			A_ZoomFactor(0.98,ZOOM_INSTANT|ZOOM_NOSCALETURNING)
+			invoker.weaponstatus[SLAYS_CHAMBER2]=1;
+
+			A_GiveInventory("DecoBulleter00f");
+			A_Log("Remember to adjust angle on each barrel! (RIGHT)");
+		}
+		TNT1 A 1{
+			A_Light0();
+			A_MuzzleClimb(-1.6,-3.9,-1.6,-3.9);
+		}goto flasheither;
+	flasheither:
+		TNT1 A 0{
+			A_ZoomFactor(1.0,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
+			A_AlertMonsters();
+		}stop;
+	flashboth:
+		SHT2 J 1 bright{
+			A_Light2();
+			HDFlashAlpha(128);
+			A_PlaySound("weapons/slayersingle",5);
+			A_PlaySound("weapons/slayersingle",6);
+			A_ZoomFactor(0.95,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
+			invoker.weaponstatus[SLAYS_CHAMBER1]=1;
+			invoker.weaponstatus[SLAYS_CHAMBER2]=1;
+
+			A_GiveInventory("DecoBulleter00f2");
+			A_Log("Remember to adjust angle on each barrel! (BOTH)");
+		}
+		TNT1 A 1{
+			A_Light0();
+			A_MuzzleClimb(1.2,-8.,1.2,-8.8);
+		}goto flasheither;
+
+	AltReload:
+		TNT1 A 0 A_GiveInventory("ShotgunPocketLoading",1)
+	Reload:
+		TNT1 A 0 A_JumpIfInventory("ShellChamber1",1,1)
+		goto ReallyReload
+		TNT1 A 0 A_JumpIfInventory("ShellChamber2",1,1)
+		goto ReallyReload
+		TNT1 A 0 A_JumpIfInventory("ShotgunQuickAmmo2",0,1)
+		goto ReloadSS
+	ReloadFail:
+		TNT1 A 0 A_TakeInventory("ShotgunPocketLoading",999)
+		goto Ready
+	ReallyReload:
+		SHT2 A 0 A_JumpIfInventory("ShotgunPocketLoading",1,2)
+		SHT2 A 0 A_JumpIfInventory("ShotgunQuickAmmo2",1,2)
+		SHT2 A 0 A_JumpIfInventory("HDShellAmmo",1,1)
+		goto ReloadFail
+
+		SH2G K 2 offset(0,34)
+		SH2G K 2 offset(0,40)
+		SH2G K 10 offset(0,46) A_PlaySound ("weapons/sshoto")
+		SH2G K 2 offset(0,46) ACS_NamedExecuteAlways("MuzzleClimb",0,random(-12,-24),random(-12,-24),0)
+		TNT1 A 0 ACS_NamedExecuteAlways("MuzzleClimb",0,random(-12,-24),random(-12,-24),0)
+
+	EjectEmpty:
+		TNT1 A 0 A_JumpIfInventory("SlayerSpentShell1",1,2)
+		TNT1 A 0 A_Jump(256,3)
+		TNT1 A 0 A_SpawnItemEx("HDSpentShell",cos(pitch)*5,0,height-7-sin(pitch)*5,cos(pitch-45)*cos(angle+random(-2,2))*random(1,4)+vel.x,cos(pitch-45)*sin(angle+random(-2,2))*random(1,4)+vel.y,-sin(pitch-45)*random(1,4)+vel.z,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH)
+		TNT1 A 0 A_TakeInventory("SlayerSpentShell1",1)
+		TNT1 A 0 A_JumpIfInventory("SlayerSpentShell2",1,2)
+		TNT1 A 0 A_Jump(256,3)
+		TNT1 A 0 A_SpawnItemEx("HDSpentShell",cos(pitch)*5,-1,height-7-sin(pitch)*5,cos(pitch-45)*cos(angle+random(-2,2))*random(1,4)+vel.x,cos(pitch-45)*sin(angle+random(-2,2))*random(1,4)+vel.y,-sin(pitch-45)*random(1,4)+vel.z,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH)
+		TNT1 A 0 A_TakeInventory("SlayerSpentShell2",1)
+		TNT1 A 0 A_JumpIfInventory("ShellChamber1",1,"ReloadHalfFull")
+		TNT1 A 0 A_JumpIfInventory("ShellChamber2",1,"ReloadHalfFull")
+		goto ReloadEmpty
+
+	ReloadHalfFull:
+		TNT1 A 0 A_TakeInventory("ShellChamber1",1)
+		TNT1 A 0 A_TakeInventory("ShellChamber2",1)
+		TNT1 A 0 A_JumpIf(health>90,2)
+		TNT1 A 0 A_JumpIfInventory("IsMoving",1,"ReloadHalfFullFumble")
+		TNT1 A 0 A_JumpIfInventory("HDShellAmmo",0,"ReloadHalfFullFumble")
+		TNT1 A 0 A_JumpIfHealthLower(66,2)
+		TNT1 A 0 A_SpawnItemEx("HDUnspentShell",cos(pitch)*5,0,height-7-sin(pitch)*5,vel.x,vel.y,vel.z+1,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH)
+		goto ReloadEmpty
+	ReloadHalfFullFumble:
+		TNT1 A 0 A_SpawnItemEx("HDFumblingShell",cos(pitch)*5,-1,height-7-sin(pitch)*5,cos(pitch-45)*cos(angle+random(-2,2))*random(1,4)+vel.x,cos(pitch-45)*sin(angle+random(-2,2))*random(1,4)+vel.y,-sin(pitch-45)*random(1,4)+vel.z,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH)
+		goto ReloadEmpty
+
+	ReloadEmpty:
+		SH2G L 3 offset(0,36)
+		SH2G L 6 offset(0,34)
+		TNT1 A 0 A_JumpIfInventory("HDShellAmmo",1,2)
+		TNT1 A 0 A_Jump(256,2)
+		TNT1 A 0 A_JumpIfInventory("ShotgunPocketLoading",1,2)
+		TNT1 A 0 A_JumpIfInventory("ShotgunQuickAmmo2",2,3)
+		SH2G L 10 offset(0,36) A_PlaySound ("weapons/pocket")
+		SH2G L 14 offset(0,35) A_PlaySound ("weapons/pocket")
+		SH2G L 12 offset(0,34)
+		SH2G E 6
+		SH2G E 1 offset (0,36)
+		SH2G F 3 offset (0,40)
+		SH2G F 2 offset (0,44)
+		goto ReloadHand
+
+	ReloadHand:
+		TNT1 A 0 A_TakeInventory("ShotgunHand",999)
+	ReloadHand2:
+		TNT1 A 0 A_JumpIfInventory("ShotgunHand",2,"ReloadChamber")
+		TNT1 A 0 A_JumpIfInventory("ShotgunPocketLoading",1,5)
+		TNT1 A 0 A_JumpIfInventory("ShotgunQuickAmmo2",1,2)
+		TNT1 A 0 A_Jump(256,3)
+		TNT1 A 0 A_TakeInventory("ShotgunQuickAmmo2",1)
+		TNT1 A 0 A_GiveInventory("ShotgunHand",1)
+		loop
+		TNT1 A 0 A_JumpIfInventory("HDShellAmmo",1,1)
+		goto ReloadChamber
+		TNT1 A 0 A_TakeInventory("HDShellAmmo",1,TIF_NOTAKEINFINITE)
+		TNT1 A 0 A_GiveInventory("ShotgunHand",1)
+		loop
+	ReloadChamber:
+		TNT1 A 0 A_JumpIfInventory("ShotgunHand",1,1)
+		goto ReloadEnd
+		TNT1 A 0 A_TakeInventory("ShotgunHand",1)
+		TNT1 A 0 A_GiveInventory("ShellChamber1",1)
+		TNT1 A 0 A_JumpIfInventory("ShotgunHand",1,1)
+		goto ReloadEnd
+		TNT1 A 0 A_TakeInventory("ShotgunHand",1)
+		TNT1 A 0 A_GiveInventory("ShellChamber2",1)
+		goto ReloadEnd
+
+	ReloadEnd:
+		TNT1 A 0 A_TakeInventory("ShotgunPocketLoading",999)
+		TNT1 A 4
+		TNT1 A 6 A_PlaySound ("weapons/sshotl")
+		SH2G G 2 offset (0,46)
+		SH2G G 2 offset (0,42)
+		SH2G H 2 offset (0,42)
+		SH2G H 0 A_PlaySound ("weapons/sshotc")
+		SH2G H 5
+		SHT2 A 3
+		Goto Ready
+
+	ReloadSS:
+		SHT2 A 0 A_JumpIfInventory("ShotgunQuickAmmo2",0,"nope")
+		SHT2 A 1 offset(1,34)
+		SHT2 A 2 offset(2,34)
+		SHT2 A 3 offset(3,36)
+	ReloadSSRestart:
+		SHT2 A 6 offset(3,35)
+		SHT2 A 9 offset(4,34) A_PlaySound("weapons/pocket")
+	ReloadSSLoop1:
+		SHT2 A 0 A_JumpIfInventory("ShotgunHand",0,"ReloadSSLoop2")
+		SHT2 A 0 A_JumpIfInventory("HDShellAmmo",1,1)
+		goto ReloadSSLoop2
+		SHT2 A 0 A_GiveInventory("ShotgunHand",1)
+		SHT2 A 0 A_TakeInventory("HDShellAmmo",1,TIF_NOTAKEINFINITE)
+		loop
+	ReloadSSLoop2:
+		SHT2 A 0 A_JumpIfInventory("ShotgunQuickAmmo2",0,"ReloadSSEnd")
+		SHT2 A 0 A_JumpIfInventory("ShotgunHand",1,1)
+		goto ReloadSSEnd
+		SHT2 A 0 A_GiveInventory("ShotgunQuickAmmo2",1)
+		SHT2 A 0 A_TakeInventory("ShotgunHand",1)
+		loop
+	ReloadSSEnd:
+		SHT2 A 4 offset(3,34)
+		SHT2 A 0 {if(countinv("PressingUnload")+countinv("PressingReload")+countinv("PressingFire")+countinv("PressingAltfire")>0){setweaponstate("ReloadSSEndReal");}setweaponstate("");}
+		SHT2 A 0 A_JumpIfInventory("ShotgunQuickAmmo2",0,2)
+		SHTG A 0 A_JumpIfInventory("HDShellAmmo",1,"ReloadSSRestart")
+	ReloadSSEndReal:
+		SHT2 A 3 offset(2,34)
+		SHT2 A 1 offset(1,34)
+		goto nope
+	UnloadSS:
+		SHT2 A 0 A_JumpIfInventory("ShotgunQuickAmmo2",1,1)
+		goto nope
+		SHT2 A 0 A_GiveInventory("ShotgunEmptyHand",1) //just in case
+		SHT2 A 2 offset(2,34)
+		SHT2 A 1 offset(3,36) A_PlaySound("weapons/pocket")
+	UnloadSSLoop1:
+		SHT2 A 5 offset(4,36){	//from ss to hand
+			//ShotgunHand is capped at 3 anyway
+			A_GiveInventory("ShotgunHand",countinv("ShotgunQuickAmmo2"));
+			A_TakeInventory("ShotgunQuickAmmo2",countinv("ShotgunHand"));
+		}
+		SHT2 A 3 offset(5,37){	//pocket if not full
+			if(countinv("HDSHellAmmo")+countinv("ShotgunHand")<=AmmoCap("HDShellAmmo")){
+				A_SetTics(8);
+				A_WeaponReady(WRF_NOFIRE);
+				A_PlaySound("weapons/pocket");
+			}
+		}
+		SHT2 A 0 A_GiveInventory("ShotgunEmptyHand")
+		SHT2 A 2 offset(4,36){	//decide whether to loop
+			if(countinv("PressingUnload")+countinv("PressingReload")+countinv("PressingFire")+countinv("PressingAltfire")>0)      
+				{setweaponstate("UnloadSSEndReal");}
+			else if(countinv("ShotgunQuickAmmo2")>0)
+				{setweaponstate("");}
+			setweaponstate("UnloadSSEndReal");
+		}
+		goto UnloadSSLoop1
+	UnloadSSEndReal:
+		SHT2 A 3 offset(4,35)
+		SHT2 A 2 offset(3,35)
+		SHT2 A 1 offset(2,34)
+		goto nope
+	Unload:
+		SHT2 A 0 A_JumpIfInventory("ShotgunQuickAmmo2",1,"UnloadSS")
+		SHT2 A 0 A_JumpIfInventory("ShellChamber1",1,"Unload0")
+		SHT2 A 0 A_JumpIfInventory("ShellChamber2",1,"Unload0")
+		SHT2 A 0 A_JumpIfInventory("SlayerSpentShell1",1,"Unload0")
+		SHT2 A 0 A_JumpIfInventory("SlayerSpentShell2",1,"Unload0")
+		goto nope
+	Unload0:
+		TNT1 A 0 A_SetCrosshair(21)
+		TNT1 A 0 A_TakeInventory("IsWeaponReady",999)
+		TNT1 A 0 A_TakeInventory("IsWeaponShort",999)
+		SH2G K 2 offset(0,34)
+		SH2G K 2 offset(0,40)
+		SH2G K 10 offset(0,46) A_PlaySound ("weapons/sshoto")
+		SH2G K 2 offset(0,46) ACS_NamedExecuteAlways("MuzzleClimb",0,random(-12,-24),random(-12,-24),0)
+		TNT1 A 0 ACS_NamedExecuteAlways("MuzzleClimb",0,random(-12,-24),random(-12,-24),0)
+	UnEjectEmpty:
+		TNT1 A 0 A_JumpIfInventory("SlayerSpentShell1",1,2)
+		TNT1 A 0 A_Jump(256,3)
+		TNT1 A 0 A_SpawnItemEx("HDSpentShell",cos(pitch)*5,0,height-7-sin(pitch)*5,cos(pitch-45)*cos(angle+random(-2,2))*random(1,4)+vel.x,cos(pitch-45)*sin(angle+random(-2,2))*random(1,4)+vel.y,-sin(pitch-45)*random(1,4)+vel.z,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH)
+		TNT1 A 0 A_TakeInventory("SlayerSpentShell1",1)
+		TNT1 A 0 A_JumpIfInventory("SlayerSpentShell2",1,2)
+		TNT1 A 0 A_Jump(256,3)
+		TNT1 A 0 A_SpawnItemEx("HDSpentShell",cos(pitch)*5,-1,height-7-sin(pitch)*5,cos(pitch-45)*cos(angle+random(-2,2))*random(1,4)+vel.x,cos(pitch-45)*sin(angle+random(-2,2))*random(1,4)+vel.y,-sin(pitch-45)*random(1,4)+vel.z,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH)
+		TNT1 A 0 A_TakeInventory("SlayerSpentShell2",1)
+	UnloadFullCheck:
+		TNT1 A 0 A_JumpIfInventory("ShellChamber1",1,"UnloadFull1")
+		TNT1 A 0 A_JumpIfInventory("ShellChamber2",1,"UnloadFull2")
+		goto ReloadEnd
+	UnloadFull1:
+		TNT1 A 0 A_TakeInventory("ShellChamber1",1)
+		goto UnloadFull
+	UnloadFull2:
+		TNT1 A 0 A_TakeInventory("ShellChamber2",1)
+		goto UnloadFull
+	UnloadFull:
+		TNT1 A 0 A_JumpIf(health>90,2)
+		TNT1 A 0 A_JumpIfInventory("IsMoving",1,"UnloadFullFumble")
+		TNT1 A 0 A_JumpIfInventory("HDShellAmmo",0,"UnloadFullFumble")
+		TNT1 A 0 A_JumpIfHealthLower(80,"UnloadFullFumble")
+		TNT1 A 0 A_SpawnItemEx("HDUnspentShell",cos(pitch)*5,0,height-7-sin(pitch)*5,vel.x,vel.y,vel.z+1,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH)
+		goto UnloadFullCheck
+	UnloadFullFumble:
+		TNT1 A 0 A_SpawnItemEx("HDFumblingShell",cos(pitch)*5,-1,height-7-sin(pitch)*5,cos(pitch-45)*cos(angle+random(-2,2))*random(1,4)+vel.x,cos(pitch-45)*sin(angle+random(-2,2))*random(1,4)+vel.y,-sin(pitch-45)*random(1,4)+vel.z,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH)
+		goto UnloadFullCheck
+
+
+	Zoom:
+	Cannibalize:
+		SHT2 A 2 offset (0,36)
+		SHT2 A 2 offset (0,40) A_PlaySound ("weapons/pocket")
+		SHT2 A 8 offset (0,42)
+		SHT2 A 8 offset (0,44)
+		SHT2 A 8 offset (0,42)
+		TNT1 A 0 A_TakeInventory("ShotgunHand",999)
+	CannibalizeCount:
+		TNT1 A 0 A_JumpIfInventory("ShotgunHand",3,"CannibalizeFinish")
+		TNT1 A 0 A_JumpIfInventory("HDShellAmmo",0,"CannibalizeFinish")
+		TNT1 A 0 A_JumpIfInventory("ShotgunQuickAmmo",1,1)
+		goto CannibalizeFinish
+		TNT1 A 0 A_TakeInventory("ShotgunQuickAmmo",1)
+		TNT1 A 0 A_GiveInventory("ShotgunHand",1)
+		TNT1 A 0 A_GiveInventory("HDShellAmmo",1)
+		loop
+	CannibalizeFinish:
+		TNT1 A 0 A_TakeInventory("ShotgunHand",999)
+		SHT2 A 2 offset (0,36)
+		goto Ready
+	spawn:
+		TNT1 A 1
+		TNT1 A 0 A_CheckProximity("spawndropped","PlayerPawn",20,1, CPXF_COUNTDEAD|CPXF_SETTARGET|CPXF_ANCESTOR|CPXF_CLOSEST|CPXF_NOZ)
+	spawnfresh:
+		TNT1 A 0 A_SpawnItemEx("SlayerPickup",0,0,0,vel.x,vel.y,vel.z,0, SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_NOPOINTERS)
+		stop
+	spawndropped:
+		TNT1 A 0 A_JumpIfInTargetInventory("Slayer",1,"spawnfresh")
+		TNT1 A 0 A_SpawnItemEx("SlayerPickup",0,0,0,vel.x,vel.y,vel.z,0, SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS)
+		stop
+	}
+}
+class ShellChamber1:Ammo
+{
+	+inventory.ignoreskill
+	+inventory.untossable
+	inventory.maxamount 1
+	ammo.backpackmaxamount 1
+	ammo.backpackamount 0
+	states{spawn:TNT1 A 0 nodelay{setweaponstate("null");}stop}
+}
+class ShellChamber2:Ammo
+{
+	+inventory.ignoreskill
+	+inventory.untossable
+	inventory.maxamount 1
+	ammo.backpackmaxamount 1
+	ammo.backpackamount 0
+	states{spawn:TNT1 A 0 nodelay{setweaponstate("null");}stop}
+}
+
+
+// ------------------------------------------------------------
+//   <s>Mags and </s>pickups
+// ------------------------------------------------------------
+
+class HunterPickup:HDUPK replaces Shotgun
+{
+	scale 0.6
+	states
+	{
+	spawn2:
+		HUNT A 0 A_JumpIfInventory("ShotgunQuickAmmo",11,"spawn3")
+		HUNT B 0 A_JumpIfInventory("ShotgunQuickAmmo",9,"spawn3")
+		HUNT C 0 A_JumpIfInventory("ShotgunQuickAmmo",7,"spawn3")
+		HUNT D 0 A_JumpIfInventory("ShotgunQuickAmmo",5,"spawn3")
+		HUNT E 0 A_JumpIfInventory("ShotgunQuickAmmo",3,"spawn3")
+		HUNT F 0 A_JumpIfInventory("ShotgunQuickAmmo",1,"spawn3")
+		HUNT G 0
+	spawn3:
+		"----" A -1
+	spawn:
+		HUNT A 0 A_Stop
+		"----" A 0 A_JumpIfInventory("Clip",1,"spawn2")
+		"----" A 0 A_GiveInventory("Clip",1)
+		"----" A 0 A_JumpIf(CheckClass("PlayerPawn",AAPTR_TARGET,true),"takeloop")
+		"----" A 0 A_GiveInventory("ShotgunTube",8)
+		"----" A 0 A_GiveInventory("ShotgunQuickAmmo",12)
+		"----" A 0 A_GiveInventory("ShotgunChamber")
+		"----" A 0 A_Jump(256,"spawn2")
+	takeloop:
+		"----" A 0{
+			A_GiveToTarget("ShotgunEmptyHand");
+			if(countinv("ShotgunTube",AAPTR_TARGET)>0){    
+				A_GiveInventory("ShotgunTube",countinv("ShotgunTube",AAPTR_TARGET));
+				A_TakeFromTarget("ShotgunTube");
+			}
+			if(countinv("ShotgunQuickAmmo",AAPTR_TARGET)>0){    
+				A_GiveInventory("ShotgunQuickAmmo",countinv("ShotgunQuickAmmo",AAPTR_TARGET));
+				A_TakeFromTarget("ShotgunQuickAmmo");
+			}
+			if(countinv("ShotgunAuto",AAPTR_TARGET)>0){    
+				A_GiveInventory("ShotgunAuto");
+				A_TakeFromTarget("ShotgunAuto");
+			}
+			if(countinv("ShotgunChamber",AAPTR_TARGET)>0){    
+				A_GiveInventory("ShotgunChamber");
+				A_TakeFromTarget("ShotgunChamber");
+			}
+			if(countinv("HunterSpentShell",AAPTR_TARGET)>0){    
+				A_GiveInventory("HunterSpentShell");
+				A_TakeFromTarget("HunterSpentShell");
+			}
+		}goto spawn2
+	give:
+		"----" A 0 A_JumpIfInTargetInventory("Hunter",1,"spawn")
+	givegun:
+		"----" A 0 A_PlaySound("misc/w_pkup")
+		"----" A 0 A_GiveToTarget("Hunter",1)
+	givegunloop:
+		"----" A 0{
+			if(countinv("ShotgunTube")>0){    
+				A_GiveToTarget("ShotgunTube",countinv("ShotgunTube"));
+				A_TakeInventory("ShotgunTube");
+			}
+			if(countinv("ShotgunQuickAmmo")>0){    
+				A_GiveToTarget("ShotgunQuickAmmo",countinv("ShotgunQuickAmmo"));
+				A_TakeInventory("ShotgunQuickAmmo");
+			}
+			if(countinv("ShotgunAuto")>0){    
+				A_GiveToTarget("ShotgunAuto");
+				A_TakeInventory("ShotgunAuto");
+			}
+			if(countinv("ShotgunChamber")>0){    
+				A_GiveToTarget("ShotgunChamber");
+				A_TakeInventory("ShotgunChamber");
+			}
+			if(countinv("HunterSpentShell")>0){    
+				A_GiveToTarget("HunterSpentShell");
+				A_TakeInventory("HunterSpentShell");
+			}
+		}goto givegunloopend
+	}
+}
+class ShotgunPickupDropped:HunterPickup
+{
+	states
+	{
+	spawn:
+		HUNT A 0 A_Stop
+		HUNT A 0 A_JumpIfInventory("Clip",1,"spawn2")
+		HUNT A 0 A_GiveInventory("Clip",1)
+		HUNT A 0 A_GiveInventory("ShotgunTube",random(1,7))
+		HUNT A 0 A_Jump(24,2)
+		HUNT A 0 A_GiveInventory("ShotgunChamber",1)
+		HUNT A 0 A_JumpIfInventory("ShotgunChamber",0,3)
+		HUNT A 0 A_Jump(64,2)
+		HUNT A 0 A_GiveInventory("HunterSpentShell",1)
+		HUNT A 0 A_Jump(64,2)
+		HUNT A 0 A_GiveInventory("ShotgunAuto",1)
+		HUNT A 0 A_Jump(12,"spawn2")
+		HUNT A 0 A_GiveInventory("ShotgunQuickAmmo",random(1,12))
+		goto spawn2
+	}
+}
+
+class SlayerPickup:HDUPK
+{
+	scale 0.6
+	states
+	{
+	spawn2:
+		SLAY A 0 A_JumpIfInventory("ShotgunQuickAmmo2",11,"spawn3")
+		SLAY B 0 A_JumpIfInventory("ShotgunQuickAmmo2",9,"spawn3")
+		SLAY C 0 A_JumpIfInventory("ShotgunQuickAmmo2",7,"spawn3")
+		SLAY D 0 A_JumpIfInventory("ShotgunQuickAmmo2",5,"spawn3")
+		SLAY E 0 A_JumpIfInventory("ShotgunQuickAmmo2",3,"spawn3")
+		SLAY F 0 A_JumpIfInventory("ShotgunQuickAmmo2",1,"spawn3")
+		SLAY G 0
+	spawn3:
+		"----" A -1
+	spawn:
+		SLAY A 0 A_Stop
+		"----" A 0 A_JumpIfInventory("Clip",1,"spawn2")
+		"----" A 0{
+			if(!CheckLump("SHT2A0")){
+				A_SpawnItemEx("HunterPickup",0,0,0,vel.x,vel.y,vel.z,0,
+				SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS);
+				destroy();return;
+			}
+			else{A_GiveInventory("Clip",1);}
+		}
+		"----" A 0 A_JumpIf(CheckClass("PlayerPawn",AAPTR_TARGET,true),"takeloop")
+		"----" A 0 A_GiveInventory("ShellChamber1",1)
+		"----" A 0 A_GiveInventory("ShellChamber2",1)
+		"----" A 0 A_GiveInventory("ShotgunQuickAmmo2",12)
+		"----" A 0 A_Jump(256,"spawn2")
+	takeloop:
+		"----" A 0{
+			A_GiveToTarget("ShotgunEmptyHand");
+			if(countinv("ShotgunQuickAmmo2",AAPTR_TARGET)>0){      
+				A_GiveInventory("ShotgunQuickAmmo2",countinv("ShotgunQuickAmmo2",AAPTR_TARGET));
+				A_TakeFromTarget("ShotgunQuickAmmo2");
+			}
+		}goto take2
+	take2:
+		"----" A 0 A_JumpIfInTargetInventory("ShellChamber1",1,1)
+		goto take3
+		"----" A 0 A_TakeFromTarget("ShellChamber1",1)
+		"----" A 0 A_GiveInventory("ShellChamber1",1)
+	take3:
+		"----" A 0 A_JumpIfInTargetInventory("ShellChamber2",1,1)
+		goto take4
+		"----" A 0 A_TakeFromTarget("ShellChamber2",1)
+		"----" A 0 A_GiveInventory("ShellChamber2",1)
+	take4:
+		"----" A 0 A_JumpIfInTargetInventory("SlayerSpentShell1",1,1)
+		goto take5
+		"----" A 0 A_TakeFromTarget("SlayerSpentShell1",1)
+		"----" A 0 A_GiveInventory("SlayerSpentShell1",1)
+	take5:
+		"----" A 0 A_JumpIfInTargetInventory("SlayerSpentShell2",1,1)
+		goto spawn2
+		"----" A 0 A_TakeFromTarget("SlayerSpentShell2",1)
+		"----" A 0 A_GiveInventory("SlayerSpentShell2",1)
+		goto spawn2
+	give:
+		"----" A 0 A_JumpIfInTargetInventory("Slayer",1,"spawn")
+	givegun:
+		"----" A 0 A_PlaySound("misc/w_pkup")
+		"----" A 0 A_GiveToTarget("Slayer",1)
+	givegunloop:
+		"----" A 0 A_JumpIfInventory("ShotgunQuickAmmo2",1,1)
+		goto givegun2
+		"----" A 0 A_GiveToTarget("ShotgunQuickAmmo2",1)
+		"----" A 0 A_TakeInventory("ShotgunQuickAmmo2",1)
+		loop
+	givegun2:
+		"----" A 0 A_JumpIfInventory("ShellChamber1",1,1)
+		goto givegun3
+		"----" A 0 A_GiveToTarget("ShellChamber1",1)
+		"----" A 0 A_TakeInventory("ShellChamber1",1)
+	givegun3:
+		"----" A 0 A_JumpIfInventory("ShellChamber2",1,1)
+		goto givegun4
+		"----" A 0 A_GiveToTarget("ShellChamber2",1)
+		"----" A 0 A_TakeInventory("ShellChamber2",1)
+	givegun4:
+		"----" A 0 A_JumpIfInventory("SlayerSpentShell1",1,1)
+		goto givegun5
+		"----" A 0 A_GiveToTarget("SlayerSpentShell1",1)
+		"----" A 0 A_TakeInventory("SlayerSpentShell1",1)
+	givegun5:
+		"----" A 0 A_JumpIfInventory("SlayerSpentShell2",1,1)
+		goto givegunloopend
+		"----" A 0 A_GiveToTarget("SlayerSpentShell2",1)
+		"----" A 0 A_TakeInventory("SlayerSpentShell2",1)
+		goto givegunloopend
+	}
+}
+
+class SuperShotgunPickupDropped:SlayerPickup
+{
+	states
+	{
+	spawn:
+		SLAY A 0 A_Stop
+		SLAY A 0 A_JumpIfInventory("Clip",1,"spawn2")
+		SLAY A 0 A_GiveInventory("Clip",1)
+		SLAY A 0 A_Jump(128,3)
+		SLAY A 0 A_GiveInventory("ShellChamber1",1)
+		SLAY A 0 A_Jump(256,3)
+		SLAY A 0 A_Jump(128,2)
+		SLAY A 0 A_GiveInventory("SlayerSpentShell1",1)
+
+		SLAY A 0 A_Jump(128,2)
+		SLAY A 0 A_GiveInventory("ShellChamber2",1)
+		SLAY A 0 A_Jump(256,3)
+		SLAY A 0 A_Jump(128,2)
+		SLAY A 0 A_GiveInventory("SlayerSpentShell2",1)
+
+		SLAY A 0 A_Jump(12,"spawn2")
+		SLAY A 0 A_GiveInventory("ShotgunQuickAmmo2",random(1,12))
+		goto spawn2
+	}
+}
+
+class ShellBoxPickup:HDUPK
+{
+	translation "160:167=80:95"
+	scale 0.4
+	states
+	{
+	spawn:
+		SBOX A -1 A_Stop
+	give:
+		"----" A 0 A_JumpIfInTargetInventory("HDShellAmmo",0,"spawn")
+		"----" A 0 A_GiveToTarget("HDShellAmmo",1)
+		"----" A 0 A_GiveInventory("HDShellAmmo",1)
+		"----" A 0 A_JumpIfInventory("HDShellAmmo",20,1)
+		loop
+		"----" A 0 A_PlaySound("weapons/pocket")
+		TNT1 A 0
+		stop
+	}
+}
+class ShellPickup:HDUPK
+{
+	scale 0.3
+	states
+	{
+	spawn:
+		SHEL A -1 A_Stop
+	give:
+		"----" A 0 A_JumpIfInventory("HDShellAmmo",1,2)
+		"----" A 0 A_JumpIfInTargetInventory("HDShellAmmo",0,"spawn")
+		"----" A 0 A_JumpIfInTargetInventory("HDShellAmmo",0,3)
+		"----" A 0 A_GiveToTarget("HDShellAmmo",1)
+		"----" A 0 A_Jump(256,2)
+		"----" A 0 A_SpawnItemEx ("HDShellAmmo",0,random(-1,1),0,random(3,3),0,0,random(-3,3),SXF_NOCHECKPOSITION)
+		"----" A 0 A_GiveInventory("HDShellAmmo",1)
+		"----" A 0 A_JumpIfInventory("HDShellAmmo",4,1)
+		loop
+		"----" A 0 A_PlaySound("weapons/pocket")
+		stop
+	}
+}
