@@ -270,7 +270,9 @@ class HDSMG:HDWeapon{
 		SMGG B 4 offset(0,34);
 		goto nope;
 	spawn:
-		SMGN A -1;
+		SMGN A -1 nodelay{
+			if(invoker.weaponstatus[SMGS_MAG]<0)frame=1;
+		}
 	}
 	override void initializewepstats(bool idfa=false){
 		weaponstatus[0]=0;
