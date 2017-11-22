@@ -299,7 +299,7 @@ class DropOneCell:DropActionItem{
 	pickup:
 		TNT1 A 0{
 			if(countinv("HDCellAmmo"))A_GiveInventory("HDSpareCellDropper");
-			if(countinv("HDCellPackEmpty"))A_DropInventory("HDCellPackEmpty",1);
+			else if(countinv("HDCellPackEmpty"))A_DropInventory("HDCellPackEmpty",1);
 			else A_DropInventory("HDCellPacks",1);
 		}fail;
 	}

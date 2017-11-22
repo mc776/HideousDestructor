@@ -12,12 +12,36 @@ class HDCellAmmo:Ammo{
 		target=owner;
 		super.detachfromowner();
 	}
+	override inventory createtossable(int amount){
+		inventory iii=super.createtossable(amount);
+		iii.target=owner;
+		return iii;
+	}
 	states{
 	spawn:
 		TNT1 A 1 nodelay{
-			if(target)target.A_GiveInventory("HDSpareCellDropper");
-		}
-		stop;
+			if(target){
+				if(amount>0)target.A_GiveInventory("HDCellAmmo",amount);
+				target.A_GiveInventory("HDSpareCellDropper");
+			}
+		}stop;
+	}
+}
+//for the single drop
+class HDSpareCellDropper:ActionItem{
+	states{
+	pickup:
+		TNT1 A 0{
+			actor a;int b;
+			while(countinv("HDCellAmmo")){
+				[b,a]=A_SpawnItemEx("HDCellPickup",
+					random(8,12),random(0,12),24,5,0,0,random(-6,-12)
+				);a.vel+=vel;
+				b=min(countinv("HDCellAmmo"),random(1,19));
+				a.stamina=b;
+				A_TakeInventory("HDCellAmmo",b);
+			}
+		}fail;
 	}
 }
 class HDCellpacks:Ammo replaces Cell{
@@ -121,21 +145,5 @@ class HDCellPickup:HDUPK{
 	}
 }
 
-//for the single drop
-class HDSpareCellDropper:ActionItem{
-	states{
-	pickup:
-		TNT1 A 0{
-			actor a;int b;
-			while(countinv("HDCellAmmo")){
-				[b,a]=A_SpawnItemEx("HDCellPickup",
-					random(8,12),random(0,12),24,5,0,0,random(-6,-12)
-				);a.vel+=vel;
-				b=min(countinv("HDCellAmmo"),random(1,19));
-				a.A_SetInventory("HDCellAmmo",b);
-				A_TakeInventory("HDCellAmmo",b);
-			}
-		}fail;
-	}
-}
+
 
