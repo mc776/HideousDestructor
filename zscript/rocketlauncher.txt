@@ -484,12 +484,12 @@ class Blooper:HDWeapon{
 		BLOG B 1 offset(2,34);
 		BLOG B 1 offset(4,36) A_MuzzleClimb(-frandom(1.2,2.4),frandom(1.2,2.4));
 		BLOG B 1 offset(10,38);
-		BLOG B 8 offset(12,40){
+		BLOG B 6 offset(12,40){
 			A_MuzzleClimb(-frandom(1.2,2.4),frandom(1.2,2.4));
 			A_PlaySound("weapons/rifleclick2",7);
 		}
-		BLOG B 14 offset(11,38) A_PlaySound("weapons/grenopen",CHAN_WEAPON);
-		BLOG B 12 offset(10,38) A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		BLOG B 9 offset(11,38) A_PlaySound("weapons/grenopen",CHAN_WEAPON);
+		BLOG B 7 offset(10,38) A_PlaySound("weapons/pocket",CHAN_WEAPON);
 		BLOG B 0{
 			if(health<40)A_SetTics(7);
 			else if(health<60)A_SetTics(3);
@@ -522,6 +522,7 @@ class Blooper:HDWeapon{
 				)setweaponstate("reloadend");else{
 					A_TakeInventory("HDRocketAmmo",1,TIF_NOTAKEINFINITE);
 					invoker.weaponstatus[0]|=BLOPF_LOADED;
+					A_SetTics(5);
 				}
 			}
 		}
@@ -552,7 +553,7 @@ class Blooper:HDWeapon{
 			if(
 				!(invoker.weaponstatus[0]&BLOPF_LOADED)
 			)setweaponstate("nope");else{
-				invoker.weaponstatus[0]&=~BLOPF_JUSTUNLOAD;
+				invoker.weaponstatus[0]|=BLOPF_JUSTUNLOAD;
 			}
 		}goto loadcommon;
 
