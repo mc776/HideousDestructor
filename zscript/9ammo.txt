@@ -44,8 +44,15 @@ class HDSMGMag:Ammo{
 	}
 	states{
 	spawn:
-		CLP3 A 0 nodelay A_SpawnItemEx("HD9mSmag",0,0,0,vel.x,vel.y,vel.z,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);
-		stop;
+		CLP3 A 0 nodelay{
+			while(amount>0){
+				amount--;
+				actor smm=spawn("HD9mSMag",pos);
+				smm.vel=vel;
+				if(amount)smm.vel+=(frandom(-1,1),frandom(-1,1),frandom(-1,1));
+				smm.stamina=30;
+			}
+		}stop;
 	}
 }
 
