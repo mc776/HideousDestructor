@@ -172,7 +172,8 @@ class HDPistol:HDWeapon{
 			A_GiveInventory("NotShot",1);
 			if(
 				!A_JumpIfInventory("HDPistolMag",0,"null")
-				&&countinv("NotShot")>210  
+				&&countinv("NotShot")>210
+				&&countinv("HDPistolAmmo")>=15
 			){
 				A_TakeInventory("NotShot");
 				A_GiveInventory("HDPistolMag",1);
@@ -192,7 +193,7 @@ class HDPistol:HDWeapon{
 			invoker.weaponstatus[0]&=~PISF_JUSTUNLOAD;
 			if(
 				invoker.weaponstatus[PISS_CHAMBER]!=2
-				&&invoker.weaponstatus[PISS_MAG]>0  
+				&&invoker.weaponstatus[PISS_MAG]>0
 			)setweaponstate("chamber_manual");
 			else if(countinv("HDSecondPistol"))setweaponstate("retainswap");
 		}goto nope;
@@ -221,7 +222,7 @@ class HDPistol:HDWeapon{
 					0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
 				);
 			}
-			if(invoker.weaponstatus[PISS_MAG]>0){  
+			if(invoker.weaponstatus[PISS_MAG]>0){
 				invoker.weaponstatus[PISS_CHAMBER]=2;
 				invoker.weaponstatus[PISS_MAG]--;
 			}
@@ -301,7 +302,7 @@ class HDPistol:HDWeapon{
 		---- A 0{
 			invoker.weaponstatus[0]&=~PISF_JUSTUNLOAD;
 			if(
-				invoker.weaponstatus[PISS_MAG]>=15  
+				invoker.weaponstatus[PISS_MAG]>=15
 				||(
 					!countinv("HDPistolMag")&&!stamina
 				)
@@ -402,7 +403,7 @@ class HDPistol:HDWeapon{
 			int pocketmax=min(30,AmmoCap("HDPistolAmmo")-stamina);
 			A_GiveInventory("HDPistolAmmo",pocketmax);
 			pocketmax=30-pocketmax;
-			while(pocketmax>0){  
+			while(pocketmax>0){
 				pocketmax--;
 				A_SpawnItemEx("HDPistolAmmo",
 					random(8,12),random(0,-12),24,5,0,0,random(6,12)
