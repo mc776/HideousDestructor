@@ -16,7 +16,12 @@ class HDStatusBar:DoomStatusBar{
 		diparms = InventoryBarState.Create();
 	}
 	override void Draw(int state,double TicFrac){
-		if(cplayer.health<1||cplayer.mo.countinv("WipedOut"))return;
+		if(
+			!cplayer
+			||!cplayer.mo
+			||cplayer.health<1
+			||cplayer.mo.countinv("WipedOut")
+		)return;
 		cplayer.inventorytics=0;
 
 		setwepsprites(cplayer.mo);
@@ -404,7 +409,8 @@ class HDStatusBar:DoomStatusBar{
 		}
 	}
 	void drawselectedweapon(int posx,int posy,int flags){
-		weapon w=cplayer.readyweapon;
+		if(!cplayer.readyweapon)return;
+		else weapon w=cplayer.readyweapon;
 		string wx="";
 		if(w is "")wx="";
 		else if(w is "Lumberjack")wx="CSAWA0";
