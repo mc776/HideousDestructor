@@ -8,7 +8,7 @@ extend class HDStatusBar{
 		playerpawn pp=cplayer.mo;
 		oddtic++;if(oddtic>6)oddtic=0;
 
-		else if(w is "Lumberjack"){
+		if(w is "Lumberjack"){
 			let wpn=lumberjack(w);
 			if(!wpn.weaponstatus[1])drawstring(
 				mamountfont,"00000",(-16,-9),DI_TEXT_ALIGN_RIGHT|
@@ -135,7 +135,7 @@ extend class HDStatusBar{
 			);
 			drawwepnum(
 				pp.countinv("HDRocketAmmo"),
-				pp.findinventory("HDRocketAmmo").maxamount
+				getdefaultbytype("HDRocketAmmo").maxamount
 			);
 		}
 		else if(w is "HDRL"){
