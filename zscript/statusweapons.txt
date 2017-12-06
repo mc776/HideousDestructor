@@ -216,7 +216,7 @@ extend class HDStatusBar{
 			if(pp.countinv("BrontornisMag"))drawwepdot(-16,-10,(5,3));
 			drawwepnum(
 				pp.countinv("BrontornisRound"),
-				pp.findinventory("BrontornisRound").maxamount
+				getdefaultbytype("BrontornisRound").maxamount
 			);
 		}
 		else if(w is "BossRifle"){
@@ -235,7 +235,7 @@ extend class HDStatusBar{
 		else if(w is "HDFragGrenades" && pp.countinv("HDFragGrenadeAmmo")){
 			drawwepnum(
 				pp.countinv("HDFragGrenadeAmmo"),
-				pp.findinventory("HDFragGrenadeAmmo").maxamount
+				getdefaultbytype("HDFragGrenadeAmmo").maxamount
 			);
 			drawwepnum(pp.countinv("GrenadeForce"),50,posy:-10);
 			if(!pp.countinv("SpoonOff")){
@@ -307,11 +307,11 @@ extend class HDStatusBar{
 		else{
 			if(cplayer.readyweapon.ammotype1)drawwepnum(
 				pp.countinv(cplayer.readyweapon.ammotype1),
-				pp.findinventory(cplayer.readyweapon.ammotype1).maxamount
+				getdefaultbytype(cplayer.readyweapon.ammotype1).maxamount
 			);
 			if(cplayer.readyweapon.ammotype2)drawwepnum(
 				pp.countinv(cplayer.readyweapon.ammotype2),
-				pp.findinventory(cplayer.readyweapon.ammotype2).maxamount,
+				getdefaultbytype(cplayer.readyweapon.ammotype2).maxamount,
 				posy:-10
 			);
 		}
