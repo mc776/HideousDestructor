@@ -181,18 +181,19 @@ extend class HDStatusBar{
 					"TCAMTEX3",(0,68),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 					scale:(0.5,0.5)
 				);
+				int cx,cy,cw,ch;
+				[cx,cy,cw,ch]=screen.GetClipRect();
+				SetClipRect(276,204,88,88);
+				double deg=1/degree;
+				drawimage(
+					"reticle1",(0,68),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					scale:(1.6,1.6)*deg
+				);
+				screen.SetClipRect(cx,cy,cw,ch);
 				drawimage(
 					"XH31",(0,68),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 					scale:(1.24,1.24)
 				);
-				int cx, cy, cw, ch;
-				[cx,cy,cw,ch]=screen.GetClipRect();
-				SetClipRect(276,204,88,88);
-				drawimage(
-					"reticle1",(0,68),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-					scale:(1.6,1.6)/degree
-				);
-				screen.SetClipRect(cx,cy,cw,ch);
 			}else{
 				degree=6.-0.1*wp.weaponstatus[BOSSS_ZOOM];
 				texman.setcameratotexture(hpc,"TCAMTEX3",degree);
