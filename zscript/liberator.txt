@@ -45,7 +45,7 @@ class LiberatorRifle:HDWeapon{
 		super.postbeginplay();
 		if(owner&&owner.player){
 			if(cvar.getcvar("hd_libauto",owner.player).getint())weaponstatus[0]|=LIBF_FULLAUTO;
-			weaponstatus[LIBS_ZOOM]=cvar.getcvar("hd_libzoom",owner.player).getint();
+			weaponstatus[LIBS_ZOOM]=clamp(cvar.getcvar("hd_libzoom",owner.player).getint(),0,32);
 		}
 	}
 	override void tick(){
