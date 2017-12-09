@@ -34,6 +34,7 @@ class HDSecondPistol:HDAmmo replaces Pistol{
 			for(int i=0;i<8;i++){
 				ppp.weaponstatus[i]=weaponstatus[i];
 			}
+			ppp.weaponstatus[0]|=PISF_FROMSECOND;
 			ppp.attachtoowner(other);
 			destroy();
 		}else super.attachtoowner(other);
@@ -115,23 +116,24 @@ class HDPistol:HDWeapon{
 	override void DetachFromOwner(){
 		//if owner has second, change it to first before detaching
 		let ppp=hdsecondpistol(owner.findinventory("HDSecondPistol"));
+		super.detachfromowner();
 		if(ppp){
 			let pppp=hdsecondpistol(spawn("HDSecondPistol",owner.pos));
 			if(pppp){
 				for(int i=0;i<8;i++){
 					pppp.weaponstatus[i]=ppp.weaponstatus[i];
 				}
-				pppp.attachtoowner(owner);
 				ppp.destroy();
+				pppp.attachtoowner(owner);
 			}
 		}
-		super.detachfromowner();
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		if(
 			owner&&owner.player&&weaponstatus[PISS_AUTO]>=0
 			&&cvar.getcvar("hd_pistauto",owner.player).getint()
+			&&!(weaponstatus[0]&PISF_FROMSECOND)
 		){
 			weaponstatus[PISS_AUTO]=1;
 		}
@@ -458,7 +460,8 @@ class HDPistol:HDWeapon{
 	}
 }
 enum pistolstatus{
-	PISF_JUSTUNLOAD=1,
+	PISF_FROMSECOND=1,
+	PISF_JUSTUNLOAD=2,
 
 	PISS_FLAGS=0,
 	PISS_MAG=1,
