@@ -1,12 +1,13 @@
 // ------------------------------------------------------------
 // Pistol
 // ------------------------------------------------------------
-class HDSecondPistol:HDAmmo{
+class HDSecondPistol:HDAmmo replaces Pistol{
 	int weaponstatus[8];
 	default{
 		inventory.maxamount 1;
 		scale 0.63;
 		inventory.pickupmessage "You got the pistol!";
+		inventory.pickupsound "misc/w_pkup";
 	}
 	override void BeginPlay(){
 		weaponstatus[0]=0;
