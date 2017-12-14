@@ -106,7 +106,7 @@ class HERPBot:HDUPK{
 		HERP A 7 A_PlaySound("weapons/vulcanup",CHAN_BODY);
 		HERP AAA 1 A_PlaySound("misc/i_pkup",CHAN_VOICE);
 	aim:
-		HERP A 2 A_FaceTarget(3,3,0,0,FAF_TOP,-4);
+		HERP A 2 A_FaceTarget(2.,2.,0,0,FAF_TOP,-4);
 	shoot:
 		HERP B 1 bright light("SHOT"){
 			if(ammo<1){
@@ -144,8 +144,10 @@ class HERPBot:HDUPK{
 					"CheckPuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT|LAF_OVERRIDEZ,
 					offsetz:12
 				);
-				if(a!=target)setstatelabel("aim");
-				else setstatelabel("shoot");
+				if(a!=target){
+					if(checksight(target))setstatelabel("aim");
+					else target=null;
+				}else setstatelabel("shoot");
 			}
 		}goto idle;
 	swapmag:
