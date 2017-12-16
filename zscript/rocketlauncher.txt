@@ -380,10 +380,16 @@ class HDRL:HDWeapon{
 	}
 	override void InitializeWepStats(bool idfa=false){
 		weaponstatus[RLS_MAG]=5;
-		weaponstatus[RLS_CHAMBER]=1;
-		if(!idfa){
+		if(idfa){
+			weaponstatus[RLS_CHAMBER]=max(1,weaponstatus[RLS_CHAMBER]);
+		}else{
 			weaponstatus[0]=0;
+			weaponstatus[RLS_CHAMBER]=1;
 			weaponstatus[RLS_AIRBURST]=0;
+			if(!owner){
+				weaponstatus[0]+=random(0,1)*RLF_GRENADEMODE;
+				weaponstatus[0]+=random(0,1)*RLF_ZOOM;
+			}
 		}
 	}
 }
