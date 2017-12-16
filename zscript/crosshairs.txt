@@ -91,7 +91,7 @@ extend class HDStatusBar{
 				"XH27",(0,1.8),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 				scale:(1.6,1.6)
 			);
-			else{
+			else if(wp.weaponstatus[0]&RLF_ZOOM){
 				texman.setcameratotexture(hpc,"TCAMTEX5",2.2);
 				int cx, cy, cw, ch;
 				[cx,cy,cw,ch]=screen.GetClipRect();
@@ -106,6 +106,10 @@ extend class HDStatusBar{
 					alpha:1.0,scale:(1.,1.)
 				);
 			}
+			else drawimage(
+				"XH25",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+				scale:(1.9,1.9)
+			);
 		}
 		else if(wp is "ThunderBuster"&&ismoving<6){
 			drawimage(

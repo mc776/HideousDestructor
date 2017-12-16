@@ -17,8 +17,15 @@ class HDRL:HDWeapon{
 		super.postbeginplay();
 		if(owner&&owner.player){
 			int glm=cvar.getcvar("hd_rlmode",owner.player).getint();
-			if(glm)weaponstatus[0]|=RLF_GRENADEMODE;
-			else weaponstatus[0]&=~RLF_GRENADEMODE;
+			if(!glm)weaponstatus[0]|=RLF_GRENADEMODE;
+			else{
+				weaponstatus[0]&=~RLF_GRENADEMODE;
+				if(glm>1)weaponstatus[RLS_CHAMBER]=2;
+			}
+
+			if(cvar.getcvar("hd_rlzoom",owner.player).getbool())
+				weaponstatus[0]|=RLF_ZOOM;
+				else weaponstatus[0]&=~RLF_ZOOM;
 		}
 	}
 	states{
@@ -147,7 +154,6 @@ class HDRL:HDWeapon{
 		}
 		MISG A 1 offset(0,34);
 		goto nope;
-	zoom:
 	chamber_manual:
 		MISG A 1 offset(0,34){
 			if(invoker.weaponstatus[RLS_CHAMBER]>0){
@@ -183,6 +189,15 @@ class HDRL:HDWeapon{
 			invoker.weaponstatus[0]^=RLF_GRENADEMODE;
 		}
 		MISG A 2 offset(1,36);
+		MISG A 1 offset(0,34);
+		goto nope;
+	zoom:
+		MISG A 1 offset(0,34);
+		MISG A 1 offset(0,36);
+		MISG A 2 offset(2,37){
+			invoker.weaponstatus[0]^=RLF_ZOOM;
+		}
+		MISG A 1 offset(1,36);
 		MISG A 1 offset(0,34);
 		goto nope;
 	reload:
@@ -366,7 +381,7 @@ class HDRL:HDWeapon{
 	override void InitializeWepStats(bool idfa=false){
 		weaponstatus[RLS_MAG]=5;
 		weaponstatus[RLS_CHAMBER]=1;
-		if(!idfa && !owner){
+		if(!idfa){
 			weaponstatus[0]=0;
 			weaponstatus[RLS_AIRBURST]=0;
 		}
@@ -374,6 +389,7 @@ class HDRL:HDWeapon{
 }
 enum rocketstatus{
 	RLF_GRENADEMODE=2,
+	RLF_ZOOM=4,
 
 	RLS_STATUS=0,
 	RLS_MAG=1,
