@@ -1,7 +1,6 @@
 // ------------------------------------------------------------
-//   Brontornis Cannon
+// Brontornis Cannon
 // ------------------------------------------------------------
-
 class TerrorBolt:HDBullet{
 	default{
 		-noextremedeath
@@ -73,4 +72,45 @@ class TerrorBolt:HDBullet{
 		}stop;
 	}
 }
+
+class ZScriptBrontornis:HDWeapon{
+	action void ToggleBrontoZoom(){
+		invoker.weaponstatus[0]^=BRONF_ZOOM;
+		if(hd_debug)A_Log("Scriptify the Bronto already lol");
+	}
+
+
+
+
+	override void tick(){
+		super.tick();
+		drainheat(BRONS_HEAT,12);
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		if(owner&&owner.player){
+			if(cvar.getcvar("hd_brontozoom",owner.player).getbool())
+				weaponstatus[0]|=BRONF_ZOOM;
+				else weaponstatus[0]&=~BRONF_ZOOM;
+		}
+	}
+	override void InitializeWepStats(bool idfa=false){
+		weaponstatus[BRONS_CHAMBER]=2;
+		if(!idfa){
+			weaponstatus[0]=0;
+			weaponstatus[BRONS_HEAT]=0;
+			if(!owner){
+				weaponstatus[0]+=random(0,1)*BRONF_ZOOM;
+			}
+		}
+	}
+}
+
+enum brontostatus{
+	BRONF_ZOOM=1,
+
+	BRONS_STATUS=0,
+	BRONS_CHAMBER=1,
+	BRONS_HEAT=4,
+};
 

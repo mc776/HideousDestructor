@@ -158,18 +158,23 @@ extend class HDStatusBar{
 			}
 		}
 		else if((wp is "Brontornis")&&ismoving<10){
-			texman.setcameratotexture(hpc,"TCAMTEX5",1.6);
-			int cx,cy,cw,ch;
-			[cx,cy,cw,ch]=screen.GetClipRect();
-			SetClipRect(302,179,36,57);
-			drawimage(
-				"TCAMTEX5",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-				alpha:0.9,scale:(0.35,0.35)
-			);
-			screen.SetClipRect(cx,cy,cw,ch);
-			drawimage(
-				"stadia",(0,-2),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
-				alpha:1.0,scale:(1.,1.)
+			if(wp.weaponstatus[0]&BRONF_ZOOM){
+				texman.setcameratotexture(hpc,"TCAMTEX5",1.6);
+				int cx,cy,cw,ch;
+				[cx,cy,cw,ch]=screen.GetClipRect();
+				SetClipRect(302,179,36,57);
+				drawimage(
+					"TCAMTEX5",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					alpha:0.9,scale:(0.35,0.35)
+				);
+				screen.SetClipRect(cx,cy,cw,ch);
+				drawimage(
+					"stadia",(0,-2),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
+					alpha:1.0,scale:(1.,1.)
+				);
+			}else drawimage(
+				"XH25",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+				scale:(1.9,1.9)
 			);
 		}
 		else if(wp is "BossRifle"&&ismoving<5){
