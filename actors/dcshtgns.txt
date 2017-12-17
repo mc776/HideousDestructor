@@ -453,21 +453,6 @@ ACTOR ShotgunTube : Ammo
 	+inventory.ignoreskill +inventory.untossable ammo.backpackamount 0
 	states{spawn:TNT1 A 0 nodelay{return state("null");}stop}
 }
-ACTOR HDShellAmmo : Ammo
-{
-	+inventory.ignoreskill
-	inventory.maxamount 24
-	ammo.backpackmaxamount 150
-	ammo.backpackamount 0
-	inventory.pickupmessage "Picked up a shotgun shell."
-	scale 0.3
-	states
-	{
-	spawn:
-		SHL1 A -1
-		stop
-	}
-}
 ACTOR ShotgunQuickAmmo : Ammo
 {
 	inventory.maxamount 12
@@ -500,80 +485,6 @@ actor ShotgunEmptyHand : ActionItem
 		loop
 		TNT1 A 0 A_SpawnItemEx("HDFumblingShell",cos(pitch)*5,1,height-7-sin(pitch)*5,cos(pitch)*cos(angle)*random(1,4)+velx,cos(pitch)*sin(angle)*random(1,4)+vely,-sin(pitch)*random(1,4)+velz,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH)
 		loop
-	}
-}
-actor HDSpentShell
-{
-	+missile
-	+doombounce
-	+bounceonactors
-	+cannotpush
-	-noteleport
-	+forcexybillboard
-	seesound "misc/casing2"
-	scale 0.3
-	height 2
-	radius 2
-	states
-	{
-	spawn:
-		ESHL ABCDEFGH 2
-		loop
-	death:
-		TNT1 A 0 A_ChangeFlag("missile",0)
-		TNT1 A 0 A_ChangeFlag("doombounce",0)
-		TNT1 A 0 A_Jump (256, 1,1,1,1,2,2,2,2,3,3,4)
-		ESHL A -1
-		stop
-		ESHL E -1
-		stop
-		ESHL C -1
-		stop
-		ESHL G -1
-		stop
-	}
-}
-actor HDUnSpentShell : HDSpentShell
-{
-	scale 0.3
-	states
-	{
-	spawn:
-		ESHL ABCDE 2
-		TNT1 A 0 A_GiveToTarget("HDShellAmmo",1)
-		stop
-	}
-}
-actor HDFumblingShell : HDSpentShell
-{
-	scale 0.3
-	states
-	{
-	spawn:
-		ESHL ABCDEFGH 2
-		loop
-	death:
-		TNT1 A 0 A_SpawnItemEx("HDFumbledShell",0,0,0,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION)
-		stop
-	}
-}
-actor HDFumbledShell:HDShellAmmo
-{
-	scale 0.3
-	+cannotpush
-	inventory.pickupmessage "Picked up a shotgun shell."
-	states
-	{
-	spawn:
-		TNT1 A 0 A_Jump (256, 1,1,1,1,2,2,2,2,3,3,4)
-		ESHL A -1
-		stop
-		ESHL E -1
-		stop
-		ESHL C -1
-		stop
-		ESHL G -1
-		stop
 	}
 }
 

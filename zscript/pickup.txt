@@ -201,7 +201,7 @@ class HDUPK:HDActor{
 		A_PlaySound(activesound);
 		target.A_Log(string.format("\cg%s",pickupmessage),true);
 		stamina-=increase;
-		if(stamina){ //only picked some up
+		if(stamina>0){ //only picked some up
 			setstatelabel("spawn");
 			return;
 		}
