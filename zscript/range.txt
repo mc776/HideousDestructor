@@ -15,7 +15,10 @@ class HDLoadBox:switchabledecoration{
 			A_GiveInventory("Clip");
 			vel.z+=3;
 		}
-		OWWV A 18 A_GiveToTarget("HDLoaded");
+		OWWV A 18{
+			A_GiveToTarget("HDLoaded");
+			target.A_Print("Weapons reloaded.");
+		}
 	spawn:
 		AMMO A -1{
 			busespecial=true;
@@ -27,7 +30,6 @@ class HDLoaded:ActionItem{
 	pickup:
 		TNT1 A 0{
 			A_PlaySound("misc/w_pkup",CHAN_AUTO);
-			A_Print("Weapons reloaded.");
 
 			thinkeriterator it=thinkeriterator.create("HDWeapon");
 			actor hdw;
@@ -41,7 +43,7 @@ class HDLoaded:ActionItem{
 				)hdww.initializewepstats(true);
 			}
 
-			//unscriptified weapons below
+			//unscriptified or non-HDWeapon weapons below
 			if(countinv("HDSecondPistol")){
 				let pst2=HDSecondPistol(findinventory("HDSecondPistol"));
 				pst2.weaponstatus[PISS_CHAMBER]=2;
