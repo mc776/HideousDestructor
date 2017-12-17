@@ -18,6 +18,7 @@ class HDLoadBox:switchabledecoration{
 		OWWV A 18{
 			A_GiveToTarget("HDLoaded");
 			target.A_Print("Weapons reloaded.");
+			target.A_PlaySound("misc/w_pkup",CHAN_AUTO);
 		}
 	spawn:
 		AMMO A -1{
@@ -29,8 +30,6 @@ class HDLoaded:ActionItem{
 	states{
 	pickup:
 		TNT1 A 0{
-			A_PlaySound("misc/w_pkup",CHAN_AUTO);
-
 			thinkeriterator it=thinkeriterator.create("HDWeapon");
 			actor hdw;
 			while(
@@ -62,7 +61,6 @@ class HDLoaded:ActionItem{
 				A_TakeInventory("SlayerSpentShell1");
 				A_TakeInventory("SlayerSpentShell2");
 			}
-			if(countinv("Brontornis")>0){A_GiveInventory("BrontornisMag");}
 			if(countinv("HDFragGrenadeAmmo")<3){
 				A_TakeInventory("HDFragGrenadeAmmo");
 				A_GiveInventory("HDFragGrenadeAmmo",3);

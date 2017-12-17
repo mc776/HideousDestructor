@@ -106,7 +106,7 @@ class HDPickup:CustomInventory{
 	override void touch(actor toucher){}
 	virtual void actualpickup(actor other){
 		name gcn=getclassname();
-		int maxtake=HDF.MaxInv(other,gcn)-other.countinv(gcn);
+		int maxtake=HDMath.MaxInv(other,gcn)-other.countinv(gcn);
 		if(maxtake<1){
 			setstatelabel("spawn2");return;
 		}else if(maxtake<amount){

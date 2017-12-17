@@ -133,35 +133,6 @@ extend class HDPlayerPawn{
 		if(zat-antenna.getzat()>16) return true;
 		return false;
 	}
-
-	//Deprecated. See HDWeapon.DrainHeat().
-	//GunHeatSmoke(player.readyweapon.getclassname());
-	void GunHeatSmoke(name w){
-		int pg=0;
-		if(countinv("BrontornisHeat")){
-			pg++;
-			A_TakeInventory("BrontornisHeat",1);
-			if(w=="Brontornis")pg+=1000;
-		}
-		if(!pg)return;
-		double ht=height*0.7;
-		if(pg>1000){	//one of these puffs must emerge from muzzle
-			pg-=1001;
-			A_SpawnItemEx("HDGunSmoke",
-				cos(pitch)*4,0,-sin(pitch)*4+ht,
-				cos(pitch)*4,0,-sin(pitch)*4,
-				flags:SXF_NOCHECKPOSITION
-			);
-		}
-		actor a;
-		while(pg>0){
-			pg--;
-			a=spawn("HDGunSmoke",pos+(0,0,ht));
-			a.pitch=-80;
-			a.angle=angle-90;
-			a.vel+=vel;
-		}
-	}
 }
 
 

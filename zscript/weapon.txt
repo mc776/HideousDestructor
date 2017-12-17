@@ -34,9 +34,9 @@ class HDWeapon:Weapon{
 		target=owner;
 		super.detachfromowner();
 	}
-	//wrapper for HDF.maxinv because we're gonna need this a lot
+	//wrapper for HDMath.MaxInv because we're gonna need this a lot
 	action int AmmoCap(class<inventory> inv){
-		return HDF.MaxInv(self,inv);
+		return HDMath.MaxInv(self,inv);
 	}
 	//use this to set flash translucency and make it additive
 	action void HDFlashAlpha(int variance=0,bool noalpha=false,int layer=PSP_FLASH){

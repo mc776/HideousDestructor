@@ -72,16 +72,93 @@ class TerrorBolt:HDBullet{
 		}stop;
 	}
 }
-
-class ZScriptBrontornis:HDWeapon{
-	action void ToggleBrontoZoom(){
-		invoker.weaponstatus[0]^=BRONF_ZOOM;
-		if(hd_debug)A_Log("Scriptify the Bronto already lol");
+class TerrorSabotPiece:HDDebris{
+	default{
+		xscale 1;yscale 2.2;height 2;radius 2;
+		translation "ice";
+		bouncesound "misc/casing2";
 	}
+	states{
+	spawn:
+		TNT1 A 0 nodelay{
+			int blh=random(20,35);
+			A_ChangeVelocity(cos(pitch)*blh,frandom(-1,1),-sin(pitch)*blh,CVF_RELATIVE);
+		}
+	spawn2:
+		RBRS A 2{angle+=45;}
+		loop;
+	death:
+		---- A -1;
+		stop;
+	}
+}
+class TerrorCasing:HDDebris{
+	default{
+		scale 0.3;height 4;radius 4;bouncefactor 0.9;
+		bouncesound "misc/casing4";
+	}
+	states{
+	spawn:
+		BSHX A 0 nodelay A_ChangeVelocity(cos(pitch),0,sin(-pitch)+3,CVF_RELATIVE);
+	spawn2:
+		BSHX ACBC random(1,3){angle+=45;}
+		loop;
+	death:
+		---- A -1 A_ChangeVelocity(0,randompick(-1,1),0,CVF_RELATIVE);
+		stop;
+	}
+}
 
 
 
 
+class BrontornisRound:Ammo{
+	default{
+		+inventory.ignoreskill
+		inventory.maxamount 20;
+		ammo.backpackmaxamount 40;
+		ammo.backpackamount 0;
+		inventory.pickupmessage "Picked up a bolt.";
+		scale 0.3;
+	}
+	states{
+	spawn:
+		BROC A 0 nodelay A_SpawnItemEx("BroP",0,0,0,
+			vel.x,vel.y,vel.z,0,
+			SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERTRANSLATION
+		);
+		stop;
+	}
+}
+class BroP:HDUPK replaces BrontornisRound{
+	default{
+		scale 0.3;
+	}
+	states{
+	spawn:
+		BROC A -1 A_Stop();
+	give:
+		---- A 0 A_JumpIfInTargetInventory("BrontornisRound",0,"spawn");
+		---- A 0{
+			A_PlaySound("weapons/pocket");
+			A_GiveToTarget("BrontornisRound",1);
+		}
+		stop;
+	}
+}
+
+
+class Brontornis:HDWeapon{
+	default{
+		weapon.selectionorder 60;
+		weapon.slotnumber 7;
+		weapon.kickback 100;
+		weapon.bobrangex 0.21;
+		weapon.bobrangey 0.86;
+		scale 0.6;
+		inventory.pickupmessage "You got the Brontornis!";
+		obituary "%o was terrorized by %k's Brontornis cannon.";
+	}
 	override void tick(){
 		super.tick();
 		drainheat(BRONS_HEAT,12);
@@ -94,6 +171,175 @@ class ZScriptBrontornis:HDWeapon{
 				else weaponstatus[0]&=~BRONF_ZOOM;
 		}
 	}
+	states{
+	select0:
+		BLSG A 0;
+		goto select0small;
+	deselect0:
+		BLSG A 0;
+		goto deselect0small;
+	ready:
+		BLSG A 1 A_WeaponReady(WRF_ALL);
+		goto readyend;
+	zoom:
+		BLSG A 1 offset(0,34);
+		BLSG A 1 offset(0,36);
+		BLSG A 2 offset(2,37){invoker.weaponstatus[0]^=BRONF_ZOOM;}
+		BLSG A 1 offset(1,36);
+		BLSG A 1 offset(0,34);
+		goto nope;
+	fire:
+		BLSG A 1 offset(0,34){
+			if(invoker.weaponstatus[BRONS_CHAMBER]<2){
+				setweaponstate("nope");
+				return;
+			}
+			A_GunFlash();
+			A_PlaySound("weapons/bronto",CHAN_WEAPON);
+			A_PlaySound("weapons/bronto",6);
+			A_PlaySound("weapons/bigrifle",7);
+			A_SpawnItemEx("TerrorBolt",
+				0,0,height-6,vel.x,vel.y,vel.z,0,
+				SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
+			);
+			invoker.weaponstatus[BRONS_CHAMBER]=1;
+			invoker.weaponstatus[BRONS_HEAT]+=32;
+		}
+		BLSG B 2;
+		goto nope;
+	flash:
+		BLSF A 1 bright{
+			HDFlashAlpha(0,true);
+			A_Light1();
+		}
+		TNT1 A 2{
+			A_ZoomFactor(0.92,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
+			A_Light0();
+		}
+		TNT1 A 0{
+			A_ZoomFactor(1.0,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
+			int recoilside=randompick(-1,1);
+			if(countinv("IsSupported")){
+				A_GiveInventory("IsMoving",2);
+				A_ChangeVelocity(
+					cos(pitch)*-frandom(0.8,1.4),0,
+					sin(pitch)*frandom(0.8,1.4),
+					CVF_RELATIVE
+				);
+				A_MuzzleClimb(
+					recoilside*5,-frandom(3.,5.),
+					recoilside*5,-frandom(3.,5.)
+				);
+			}else{
+				A_ChangeVelocity(
+					cos(pitch)*-frandom(1.8,3.2),0,
+					sin(pitch)*frandom(1.8,3.2),
+					CVF_RELATIVE
+				);
+				A_GiveInventory("IsMoving",7);
+				A_MuzzleClimb(
+					recoilside*5,-frandom(5.,13.),
+					recoilside*5,-frandom(5.,13.)
+				);
+			}
+			if(!binvulnerable
+				&&(
+					countinv("IsMoving")>6
+					||floorz<pos.z
+				)
+			){
+				health=max(11,health);
+				damagemobj(invoker,self,10,"falling");
+				A_GiveInventory("IsMoving",5);
+				A_ChangeVelocity(
+					cos(pitch)*-frandom(2,4),0,sin(pitch)*frandom(2,4),
+					CVF_RELATIVE
+				);
+			}
+			A_TakeInventory("IsSupported");
+		}
+		stop;
+	reload:
+		BLSG A 0{
+			invoker.weaponstatus[0]&=~BRONF_JUSTUNLOAD;
+			if(
+				invoker.weaponstatus[BRONS_CHAMBER]>1
+				||!countinv("BrontornisRound")
+			)setweaponstate("nope");
+		}goto unloadstart;
+	unload:
+		BLSG A 0{
+			invoker.weaponstatus[0]|=BRONF_JUSTUNLOAD;
+		}goto unloadstart;
+
+	unloadstart:
+		BLSG A 1;
+		BLSG BBB 2 A_MuzzleClimb(
+			-frandom(0.5,0.6),frandom(0.5,0.6),
+			-frandom(0.5,0.6),frandom(0.5,0.6)
+		);
+		BLSG B 3 A_PlaySound("weapons/rockreload",CHAN_WEAPON);
+		BLSG BBBBBBBB 0{invoker.drainheat(BRONS_HEAT,12);}
+		BLSG B 12 offset(0,34){
+			int chm=invoker.weaponstatus[BRONS_CHAMBER];
+			invoker.weaponstatus[BRONS_CHAMBER]=0;
+			if(chm<1){
+				A_SetTics(6);
+				return;
+			}
+
+			A_PlaySound("weapons/rifleload",CHAN_AUTO);
+			if(chm>1){
+				if(
+					PressingUnload()
+					&&!A_JumpIfInventory("BrontornisRound",0,"null")
+				){
+					A_SetTics(18);
+					A_PlaySound("weapons/pocket");
+					A_GiveInventory("BrontornisRound");
+				}
+				else A_SpawnItemEx("BrontornisRound",
+					cos(pitch)*2,0,height-10-sin(pitch)*2,
+					vel.x,vel.y,vel.z-frandom(-1,1),
+					random(-3,3),SXF_ABSOLUTEMOMENTUM|
+					SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH|
+					SXF_TRANSFERTRANSLATION
+				);
+			}else if(chm==1){
+				A_SpawnItemEx("TerrorCasing",
+					cos(pitch)*4,0,height-10-sin(pitch)*4,
+					vel.x,vel.y,vel.z-frandom(-1,1),
+					frandom(-1,1),SXF_ABSOLUTEMOMENTUM|
+					SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH|
+					SXF_TRANSFERTRANSLATION
+				);
+			}
+		}
+		BLSG B 1 offset(0,36) A_JumpIf(invoker.weaponstatus[0]&BRONF_JUSTUNLOAD,"reloadend");
+		BLSG B 1 offset(0,41) A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		BLSG B 1 offset(0,38);
+		BLSG B 3 offset(0,36);
+		BLSG B 3 offset(0,34);
+		BLSG B 3 offset(0,35);
+		BLSG B 4 offset(0,34){
+			invoker.weaponstatus[BRONS_CHAMBER]=2;
+			A_TakeInventory("BrontornisRound",1,TIF_NOTAKEINFINITE);
+			A_PlaySound("weapons/rifleload",CHAN_WEAPON);
+		}
+		BLSG B 6 offset(0,33);
+	reloadend:
+		BLSG B 6 offset(0,34);
+		BLSG B 2 offset(0,34) A_PlaySound("weapons/rockreload",CHAN_WEAPON);
+		BLSG B 1 offset(0,36);
+		BLSG B 1 offset(0,34);
+		BLSG BA 4;
+		BLSG A 0 A_PlaySound("weapons/huntopen",CHAN_WEAPON);
+		goto ready;
+
+	spawn:
+		BLST A -1;
+		stop;
+	}
 	override void InitializeWepStats(bool idfa=false){
 		weaponstatus[BRONS_CHAMBER]=2;
 		if(!idfa){
@@ -105,12 +351,27 @@ class ZScriptBrontornis:HDWeapon{
 		}
 	}
 }
-
 enum brontostatus{
 	BRONF_ZOOM=1,
+	BRONF_JUSTUNLOAD=2,
 
 	BRONS_STATUS=0,
 	BRONS_CHAMBER=1,
-	BRONS_HEAT=4,
+	BRONS_HEAT=2,
 };
 
+
+
+//map pickup
+class BrontornisSpawner:IdleDummy{
+	states{
+	spawn:
+		TNT1 A 0 nodelay{
+			A_SpawnItemEx("BroP",0,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
+			A_SpawnItemEx("BroP",3,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
+			A_SpawnItemEx("BroP",1,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
+			A_SpawnItemEx("BroP",-3,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
+			A_SpawnItemEx("Brontornis",0,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
+		}stop;
+	}
+}

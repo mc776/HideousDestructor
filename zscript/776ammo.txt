@@ -44,12 +44,11 @@ class HDSpent7mm:HDDebris{
 		RBRS A 2{angle+=45;}
 		loop;
 	death:
-		TNT1 A 0{
+		RBRS A -1{
 			actor p=spawn("SevenMilBrass",self.pos,ALLOW_REPLACE);
 			p.angle=self.angle;p.vel=self.vel;
 			destroy();
-		}
-		RBRS A -1;
+		}stop;
 	}
 }
 class SevenMilBrass:Ammo{

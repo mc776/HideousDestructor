@@ -210,6 +210,12 @@ struct HDMath{
 	static bool CheckLump(string lumpname){
 		return Wads.CheckNumForName(lumpname,wads.ns_sprites,-1,false)>=0;
 	}
+	//return the maximum capacity for this actor and this inventory
+	//HDMath.MaxInv(self,"FourMilAmmo")
+	static int MaxInv(actor holder,class<inventory> inv){
+		if(holder.findinventory(inv))return holder.findinventory(inv).maxamount;
+		return getdefaultbytype(inv).maxamount;
+	}
 	//counts stuff
 	//HDMath.CountThinkers("IdleDummy")
 	static int Count(name type,bool exactmatch=false){
@@ -254,13 +260,6 @@ struct HDMath{
 	}
 }
 struct HDF play{
-	//return the maximum capacity for this actor and this inventory
-	//force give-and-take to register if absent
-	//HDF.MaxInv(self,"FourMilAmmo")
-	static int MaxInv(actor holder,class<inventory> inv){
-		if(holder.findinventory(inv))return holder.findinventory(inv).maxamount;
-		return getdefaultbytype(inv).maxamount;
-	}
 	//transfer inventory: one gets, the other loses
 	enum TransferInventoryFlags{
 		ITRF_ADD=1,
@@ -279,7 +278,7 @@ struct HDF play{
 
 		//give the amount as appropriate
 		if(flags & ITRF_ADD){
-			amt=min(amt,maxinv(receiver,item)-receiver.countinv(item));
+			amt=min(amt,hdmath.maxinv(receiver,item)-receiver.countinv(item));
 			if(amt)receiver.A_GiveInventory(item,amt);
 		}else receiver.A_SetInventory(item,amt);
 

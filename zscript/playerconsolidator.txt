@@ -4,7 +4,7 @@ extend class HDPlayerPawn{
 	void ConsolidateAmmo(){
 		//make as many mags and clips as possible to make room for more 7mm
 		if(countinv("SevenMilAmmo")>10){
-			int maxclag=HDF.maxinv(self,"LiberatorMag");
+			int maxclag=HDMath.MaxInv(self,"LiberatorMag");
 			while(
 				countinv("SevenMilAmmo")>29 &&  
 				countinv("LiberatorMag")<maxclag
@@ -13,7 +13,7 @@ extend class HDPlayerPawn{
 				A_GiveInventory("LiberatorMag");
 			}
 			if(countinv("BossRifle")){
-				maxclag=HDF.maxinv(self,"BossClip");
+				maxclag=HDMath.MaxInv(self,"BossClip");
 				while(
 					countinv("SevenMilAmmo")>10 &&  
 					countinv("BossClip")<maxclag
@@ -70,9 +70,9 @@ extend class HDPlayerPawn{
 				+countinv("BossClip")*10
 				+countinv("SevenMilAmmo");
 			int max7=
-				hdf.maxinv(self,"LiberatorMag")*30
-				+hdf.maxinv(self,"BossClip")*10
-				+hdf.maxinv(self,"SevenMilAmmo");
+				HDMath.MaxInv(self,"LiberatorMag")*30
+				+HDMath.MaxInv(self,"BossClip")*10
+				+HDMath.MaxInv(self,"SevenMilAmmo");
 			int rnd=random(1,7);
 			int powderunits=max(0,countinv("FourMilAmmo")-rnd);
 
@@ -123,7 +123,7 @@ extend class HDPlayerPawn{
 			A_GiveInventory("LiberatorMag");
 		}
 		//convert spare 776 to clips
-		int maxsevenmil=HDF.MaxInv(self,"SevenMilAmmo");
+		int maxsevenmil=HDMath.MaxInv(self,"SevenMilAmmo");
 		while(
 			(
 				addsevenmil>maxsevenmil

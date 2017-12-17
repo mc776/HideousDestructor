@@ -213,10 +213,11 @@ extend class HDStatusBar{
 			drawwepnum(bff.weaponstatus[BFGS_CHARGE],20);
 		}
 		else if(w is "Brontornis"){
-			if(pp.countinv("BrontornisMag"))drawwepdot(-16,-10,(5,3));
+			let brn=Brontornis(w);
+			if(brn.weaponstatus[BRONS_CHAMBER]>1)drawwepdot(-16,-10,(5,3));
 			drawwepnum(
 				pp.countinv("BrontornisRound"),
-				getdefaultbytype("BrontornisRound").maxamount
+				HDMath.MaxInv(pp,"BrontornisRound")
 			);
 		}
 		else if(w is "BossRifle"){

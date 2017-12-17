@@ -109,7 +109,10 @@ extend class HDPlayerPawn{
 					blx+=175;
 					if(hdw.weaponstatus[1]>=0)blx+=BLOX_BATTERY_LOADED;
 				}else if(hdw is "Brontornis"){
-					blx+=75+countinv("BrontornisMag")*BLOX_BRONTOSHELLLOADED;
+					blx+=75+(
+						hdw.weaponstatus[BRONS_CHAMBER]>1?
+						BLOX_BRONTOSHELLLOADED:0
+					);
 				}else if(hdw is "BFG9k"){
 					if(hdw.weaponstatus[0]&BFGF_STRAPPED)blx+=200;
 					else blx+=240;

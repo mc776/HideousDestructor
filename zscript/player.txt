@@ -205,10 +205,6 @@ class HDPlayerPawn:PlayerPawn{
 		else{A_TakeInventory("IsFemale");A_TakeInventory("IsMale");}
 
 
-		//passive inventory checks
-		if(player.readyweapon)GunHeatSmoke(player.readyweapon.getclassname());
-
-
 		//only do anything below this while the player is alive!
 		if(bkilled||health<1){
 			super.Tick();
