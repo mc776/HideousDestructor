@@ -1,30 +1,7 @@
 // this one gets its own file because it's sooooo sprawly.
 
 extend class HDPlayerPawn{
-	void ConsolidateWeapons(){
-		if(sv_infiniteammo)return;
-		int sparepowder=countinv("FourMilAmmo");
-		int usablebrass=countinv("SevenMilBrass");
-
-		//misc. maintenance
-		A_TakeInventory("BrontornisHeat");
-		A_TakeInventory("HunterSpentShell");
-		A_TakeInventory("SlayerSpentShell1");
-		A_TakeInventory("SlayerSpentShell2");
-		A_TakeInventory("BrontornisSpent");
-		if(
-			findinventory("BossRifle")
-		){
-			int br=bossrifle(findinventory("BossRifle")).weaponstatus[BOSSS_CHAMBER];
-			if(br==1||br==3)usablebrass++;
-		}
-		if(
-			findinventory("LiberatorRifle")
-			&&LiberatorRifle(findinventory("LiberatorRifle")).weaponstatus[LIBS_CHAMBER]==1
-		){
-				usablebrass++;
-		}
-
+	void ConsolidateAmmo(){
 		//make as many mags and clips as possible to make room for more 7mm
 		if(countinv("SevenMilAmmo")>10){
 			int maxclag=HDF.maxinv(self,"LiberatorMag");
@@ -46,298 +23,7 @@ extend class HDPlayerPawn{
 				}
 			}
 		}
-		//downtime-only: reload brass
-		if(
-			usablebrass && sparepowder>=3 &&
-			(countinv("LiberatorRifle")||countinv("BossRifle"))
-		){
-			int newbullets=min(
-				usablebrass,
-				sparepowder*0.3,
-				HDF.maxinv(self,"SevenMilAmmo")
-			);
-			A_GiveInventory("SevenMilAmmo",newbullets);
-			//then subtract used supplies
-			A_TakeInventory("SevenMilBrass",newbullets);
-			A_TakeInventory("FourMilAmmo",newbullets*random(2,5));
-		}
 
-		//downtime-only: recharge cells
-
-		//downtime-only: repair *ERPs
-		if (countinv("DERPDEAD")){
-			A_TakeInventory("DERPDEAD");
-			A_GiveInventory("DERPUsable");
-		}
-		if (countinv("HERPDEAD")){
-			A_TakeInventory("HERPDEAD");
-			A_GiveInventory("HERPUsable");
-		}
-
-		//all the pistol/smg stuff is gone, lol
-
-		//fill up bronto
-		if(countinv("Brontornis")&&!countinv("BrontornisMag")&&countinv("BrontornisRound")){
-			A_TakeInventory("BrontornisRound",1);
-			A_GiveInventory("BrontornisMag");
-		}
-
-		//if bfg, max out everything
-		let bff=BFG9k(findinventory("BFG9k"));
-		if(
-			bff&&(
-				bff.weaponstatus[BFGS_CHARGE]>6||
-				bff.weaponstatus[BFGS_BATTERY]>6||
-				countinv("HDCellPacks")
-			)&&(
-				bff.weaponstatus[BFGS_BATTERY]>=0||
-				countinv("HDCellPacks")||
-				countinv("HDCellPackEmpty")
-			)
-		){
-			if(bff.weaponstatus[BFGS_BATTERY]<0){
-				bff.weaponstatus[BFGS_BATTERY]=20;
-				if(countinv("HDCellPackEmpty"))A_TakeInventory("HDCellPackEmpty",1);
-				else A_TakeInventory("HDCellPacks",1);
-			}
-			bff.weaponstatus[BFGS_BATTERY]=20;
-			bff.weaponstatus[BFGS_CHARGE]=20;
-			A_GiveInventory("LumberCell",1200);
-			hdweapon hdw=hdweapon(findinventory("vulcanette"));
-			if(hdw)hdw.weaponstatus[1]=20;
-		}else{
-			if(countinv("ThunderBuster")){
-				let tbt=ThunderBuster(findinventory("ThunderBuster"));
-				if(countinv("BFG9k"))tbt.weaponstatus[TBS_BATTERY]=20;
-				else if(tbt.weaponstatus[TBS_BATTERY]<5&&countinv("HDCellPacks")){
-					tbt.weaponstatus[TBS_BATTERY]=20;
-					A_TakeInventory("HDCellPacks",1);
-				}
-			}
-			if(countinv("Lumberjack")){
-				if(countinv("LumberCell")<2&&countinv("HDCellPacks")){
-					A_GiveInventory("LumberCell",20);
-					A_TakeInventory("HDCellPacks",1);
-				}
-			}
-			if(countinv("Vulcanette")){
-				vulcanette vvv=vulcanette(findinventory("Vulcanette"));
-				if(countinv("BFG9k"))vvv.weaponstatus[1]=20;
-				else if(vvv && vvv.weaponstatus[1]<2 && countinv("HDCellPacks")){
-					A_TakeInventory("HDCellPacks",1);
-					vvv.weaponstatus[1]=20;
-				}
-			}
-		}
-
-
-		//zm66 and vulc
-		//if zm has less than 10 bullets, reload zm
-		//if vulc has less than 10 bullets, reload vulc - one mag only
-		if(countinv("ZM66AssaultRifle")){
-			let zzz=zm66assaultrifle(findinventory("ZM66AssaultRifle"));
-			if(zzz){
-				if(zzz.weaponstatus[0]&ZM66F_CHAMBERBROKEN){
-					zzz.weaponstatus[0]&=~ZM66F_CHAMBERBROKEN;
-					zzz.weaponstatus[0]&=~ZM66F_CHAMBER;
-					sparepowder++;
-				}
-				if(zzz.weaponstatus[ZM66S_MAG]%100<10 && countinv("ZM66RifleMags")){
-					sparepowder+=zzz.weaponstatus[ZM66S_MAG]%100;
-					A_TakeInventory("ZM66RifleMags",1);
-					zzz.weaponstatus[ZM66S_MAG]=51;
-				}
-				if(!(zzz.weaponstatus[0]&ZM66F_CHAMBER)){
-					zzz.weaponstatus[0]|=ZM66F_CHAMBER;
-					zzz.weaponstatus[ZM66S_MAG]--;
-				}
-			}
-		}
-		if(countinv("Vulcanette")){
-			vulcanette vvv=vulcanette(findinventory("Vulcanette"));
-			if(vvv && vvv.vulcmag[0]%100<10 && countinv("ZM66RifleMags")){
-				sparepowder+=vvv.vulcmag[0]%100;
-				A_TakeInventory("ZM66RifleMags",1);
-				vvv.vulcmag[0]=51;
-			}
-		}
-
-
-		//fill up liberator with whatever mags or spares are present
-		//fill up boss with whatever clips or spares are left
-		if(
-			countinv("SevenMilAmmo")||countinv("LiberatorMag")||countinv("BossClip")||
-			countinv("LiberatorRifle")||countinv("BossRifle")
-		){
-			int totalspare=
-				countinv("LiberatorMag")*30+
-				countinv("BossClip")*10+
-				countinv("SevenMilAmmo");
-			if(totalspare){
-				let boss=hdweapon(findinventory("BossRifle"));
-				let llb=hdweapon(findinventory("LiberatorRifle"));
-				int originalmags=countinv("LiberatorMag");
-				int originalclips=countinv("BossClip");
-				int toload=totalspare;
-
-				if(boss){
-					if(boss.weaponstatus[BOSSS_CHAMBER]!=2){
-						boss.weaponstatus[BOSSS_CHAMBER]=2;
-						totalspare--;
-					}
-					toload=min(10-boss.weaponstatus[BOSSS_MAG],totalspare);
-					if(toload>0){
-						boss.weaponstatus[BOSSS_CHAMBER]+=toload;
-						totalspare-=toload;
-					}
-				}
-				if(totalspare && llb){
-					int chm=llb.weaponstatus[LIBS_CHAMBER];
-					if(chm<2){
-						llb.weaponstatus[LIBS_CHAMBER]=2;
-						if(chm==1)A_GiveInventory("SevenMilBrass");
-						totalspare--;
-					}
-					chm=llb.weaponstatus[LIBS_MAG];
-					toload=min(30-chm,totalspare);
-					if(toload){
-						llb.weaponstatus[LIBS_MAG]+=toload;
-						totalspare-=toload;
-					}
-				}
-
-				//load original clips
-				A_TakeInventory("BossClip");
-				while(totalspare>=10 && countinv("BossClip")<originalclips){
-					A_GiveInventory("BossClip");
-					totalspare-=10;
-				}
-
-				//load original mags
-				A_TakeInventory("LiberatorMag");
-				int maxmags=HDF.maxinv(self,"LiberatorMag");
-				while(totalspare>=30 && countinv("LiberatorMag")<originalmags){
-					A_GiveInventory("LiberatorMag");
-					totalspare-=30;
-				}
-
-				//load more clips or mags
-				if(player.readyweapon is "BossRifle" || !llb){
-					int maxclips=HDF.maxinv(self,"BossClip");
-					while(totalspare>=10 && countinv("BossClip")<maxclips){
-						A_GiveInventory("BossClip");
-						totalspare-=10;
-					}
-				}else while(totalspare>=30 && countinv("LiberatorMag")<originalmags){
-					A_GiveInventory("LiberatorMag");
-					totalspare-=30;
-				}
-
-				A_SetInventory("SevenMilAmmo",totalspare);
-			}
-		}
-
-
-		//fill up shotguns using whatever spares are present
-		//dbs chambers first, then shotguntube
-		//if 24+ left, fill both saddles, else split between saddles
-		A_TakeInventory("HunterSpentShell");
-		A_TakeInventory("SlayerSpentShell1");
-		A_TakeInventory("SlayerSpentShell2");
-		if(countinv("HDShellAmmo")){
-			if(countinv("Slayer")){
-				if(!countinv("ShellChamber1")){
-					A_TakeInventory("HDShellAmmo",1);
-					A_GiveInventory("ShellChamber1");
-				}
-				if(countinv("HDShellAmmo")&&!countinv("ShellChamber2")){
-					A_TakeInventory("HDShellAmmo",1);
-					A_GiveInventory("ShellChamber2");
-				}
-			}
-			if(countinv("Hunter")&&countinv("HDShellAmmo")){
-				if(!countinv("ShotgunChamber")){
-					A_TakeInventory("HDShellAmmo",1);
-					A_GiveInventory("ShotgunChamber");
-				}
-				int gs=min(7-countinv("ShotgunTube"),countinv("HDShellAmmo"));
-				if(gs){
-					A_GiveInventory("ShotgunTube",gs);
-					A_TakeInventory("HDShellAmmo",gs);
-				}
-			}
-		}
-		if(countinv("HDShellAmmo")){
-			int g1=0;int g2=0;
-			int hsa=countinv("HDShellAmmo");
-			if(countinv("Hunter"))g1=12-countinv("ShotgunQuickAmmo");
-			if(countinv("Slayer"))g2=12-countinv("ShotgunQuickAmmo2");
-			int gt=g1+g2;
-			if(gt>hsa){
-				hsa*=0.5;
-				g1=min(hsa,g1);g2=min(hsa,g2);
-				gt=g1+g2;
-			}
-			if(g1)A_GiveInventory("ShotgunQuickAmmo",g1);
-			if(g2)A_GiveInventory("ShotgunQuickAmmo2",g2);
-			if(gt)A_TakeInventory("HDShellAmmo",gt);
-		}
-
-		//reload rocket weapons
-		//blooper > zm66 > liberator > RL ONLY if no HEAT loaded
-		if(countinv("Blooper")){
-			let bbb=blooper(findinventory("Blooper"));
-			if(
-				bbb&&!(bbb.weaponstatus[0]&BLOPF_LOADED)
-				&&countinv("HDRocketAmmo")
-			){
-				A_TakeInventory("HDRocketAmmo",1);
-				bbb.weaponstatus[0]|=BLOPF_LOADED;
-			}
-		}
-		if(countinv("ZM66AssaultRifle")){
-			let zzz=zm66assaultrifle(findinventory("ZM66AssaultRifle"));
-			if(
-				zzz&&!(zzz.weaponstatus[0]&ZM66F_NOLAUNCHER)
-				&&!(zzz.weaponstatus[0]&ZM66F_GRENADELOADED)
-				&&countinv("HDRocketAmmo")
-			){
-				A_TakeInventory("HDRocketAmmo",1);
-				zzz.weaponstatus[0]|=ZM66F_GRENADELOADED;
-			}
-		}
-		if(countinv("LiberatorRifle")){
-			let llm=LiberatorRifle(findinventory("LiberatorRifle"));
-			if(
-				llm&&!(llm.weaponstatus[0]&LIBF_NOLAUNCHER)
-				&&!(llm.weaponstatus[0]&LIBF_GRENADELOADED)
-				&&countinv("HDRocketAmmo")
-			){
-				A_TakeInventory("HDRocketAmmo",1);
-				llm.weaponstatus[0]|=LIBF_GRENADELOADED;
-			}
-		}
-		if(countinv("HDRL")){
-			let rrl=hdrl(findinventory("HDRL"));
-			if(rrl&&rrl.weaponstatus[RLS_CHAMBER]<2){
-				if(
-					rrl&&!(rrl.weaponstatus[RLS_CHAMBER]<1)
-					&&countinv("HDRocketAmmo")
-				){
-					A_TakeInventory("HDRocketAmmo",1);
-					rrl.weaponstatus[RLS_CHAMBER]=1;
-				}
-				while(
-					rrl.weaponstatus[RLS_MAG]<5
-					&&countinv("HDRocketAmmo")
-				){
-					A_TakeInventory("HDRocketAmmo",1);
-					rrl.weaponstatus[RLS_MAG]++;
-				}
-			}
-		}
-	}
-	void ConsolidateAmmo(){
 		//use the BFG to charge everything
 		if(countinv("BFG9k")){
 			hdweapon(findinventory("BFG9k")).initializewepstats(true);
@@ -368,9 +54,11 @@ extend class HDPlayerPawn{
 			}
 		}else{
 			//is there anything that can be done?
+			//batteries, how the fuck do they work?
+			//miraclessssss
 		}
 
-		//handle 7mm conversion - do not add until after 7mm consolidated
+		//reload as much brass as possible and consolidate again
 		int addsevenmil=0;
 		if(
 			countinv("LiberatorRifle")
@@ -388,7 +76,7 @@ extend class HDPlayerPawn{
 			int rnd=random(1,7);
 			int powderunits=max(0,countinv("FourMilAmmo")-rnd);
 
-			//take garbage out of guns
+			//take recyclables out of guns
 			if(
 				bossrifle(findinventory("BossRifle"))
 			){
@@ -399,8 +87,8 @@ extend class HDPlayerPawn{
 				}
 			}
 			if(
-				liberatorrifle(findinventory("LiberatorRifle"))
-				&&liberatorrifle(findinventory("LiberatorRifle")).weaponstatus[LIBS_CHAMBER]==1
+				liberatorrifle(findinventory("LiberatorRifle"))&&
+				liberatorrifle(findinventory("LiberatorRifle")).weaponstatus[LIBS_CHAMBER]==1
 			){
 				liberatorrifle(findinventory("LiberatorRifle")).weaponstatus[LIBS_CHAMBER]=0;
 				addsevenmil++;
@@ -445,7 +133,7 @@ extend class HDPlayerPawn{
 		A_SetInventory("SevenMilAmmo",addsevenmil);
 
 
-		//convert spare 9 to SMG mags, convert spare 9 to pistol mags
+		//convert spare 9 to pistol and SMG mags
 		while(
 			countinv("HDPistolAmmo")>=15      
 			&&!A_JumpIfInventory("HDPistolMag",0,"null")
@@ -460,12 +148,6 @@ extend class HDPlayerPawn{
 			A_TakeInventory("HDPistolAmmo",30);
 			A_GiveInventory("HDSMGMag");
 		}
-
-		//misc. garbage removal
-		A_TakeInventory("HunterSpentShell");
-		A_TakeInventory("SlayerSpentShell1");
-		A_TakeInventory("SlayerSpentShell2");
-		A_TakeInventory("BrontornisSpent");
 
 		//repair *ERPs
 		if (countinv("DERPDEAD")){
