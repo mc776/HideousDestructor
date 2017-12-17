@@ -83,25 +83,25 @@ class Hunter:HDShotgun{
 			A_WeaponReady(WRF_ALL);
 		}wait;
 	reloadSS:
-		SHTG A 1 offset(1,34){
+		SHTG A 1 offset(1,34);
+		SHTG A 2 offset(2,34);
+		SHTG A 3 offset(3,36);
+	reloadSSrestart:
+		SHTG A 6 offset(3,35);
+		SHTG A 9 offset(4,34);
+		SHTG A 4 offset(3,34){
 			int hnd=min(
 				countinv("HDShellAmmo"),
 				12-invoker.weaponstatus[HUNTS_SIDESADDLE],
 				max(1,health/22),
 				3
 			);
-			if(hnd<1)setweaponstate("nope");
-			else invoker.handshells=hnd;
-		}
-		SHTG A 2 offset(2,34);
-		SHTG A 3 offset(3,36);
-	reloadSSrestart:
-		SHTG A 6 offset(3,35);
-		SHTG A 9 offset(4,34) A_PlaySound("weapons/pocket",CHAN_WEAPON);
-		SHTG A 4 offset(3,34){
-			//count shells again to avoid a drop exploit
-			int hnd=min(invoker.handshells,countinv("HDShellAmmo"));
-			if(hnd>0)invoker.weaponstatus[HUNTS_SIDESADDLE]+=hnd;  
+			if(hnd<1)setweaponstate("reloadSSend");
+			else{
+				A_TakeInventory("HDShellAmmo",hnd);
+				invoker.handshells=hnd;
+			}
+			invoker.weaponstatus[HUNTS_SIDESADDLE]+=invoker.handshells;  
 		}
 		SHTG A 0 {
 			if(
@@ -177,9 +177,8 @@ class Hunter:HDShotgun{
 	altreload:
 	reloadfrompockets:
 		SHTG A 0{
-			int sss=invoker.weaponstatus[HUNTS_SIDESADDLE];
 			int ppp=countinv("HDShellAmmo");
-			if(ppp<1&&sss<1)setweaponstate("nope");
+			if(ppp<1)setweaponstate("nope");
 				else if(ppp<1)
 					invoker.weaponstatus[0]&=~HUNTF_FROMPOCKETS;
 				else invoker.weaponstatus[0]|=HUNTF_FROMPOCKETS;
@@ -197,11 +196,15 @@ class Hunter:HDShotgun{
 	startreload:
 		SHTG A 1{
 			if(
-				invoker.weaponstatus[HUNTS_CHAMBER]>0
-				&&invoker.weaponstatus[HUNTS_TUBE]>=7  
-				&&invoker.weaponstatus[HUNTS_SIDESADDLE]<12
-				&&countinv("HDShellAmmo")
-			)setweaponstate("ReloadSS");
+				invoker.weaponstatus[HUNTS_CHAMBER]>1
+				&&invoker.weaponstatus[HUNTS_TUBE]>=7
+			){
+				if(
+					invoker.weaponstatus[HUNTS_SIDESADDLE]<12
+					&&countinv("HDShellAmmo")
+				)setweaponstate("ReloadSS");
+				else setweaponstate("nope");
+			}
 		}
 		SHTG BC 4 A_MuzzleClimb(frandom(1.2,2.4),-frandom(1.2,2.4));
 		SHTG D 1;
@@ -231,14 +234,19 @@ class Hunter:HDShotgun{
 		SHTG D 4 offset(0,40){
 			if(invoker.weaponstatus[0]&HUNTF_FROMPOCKETS)setweaponstate("reloadpocket");
 			else{
-				invoker.handshells=min(
+				int ssh=min(
 					invoker.weaponstatus[HUNTS_SIDESADDLE],
-					invoker.weaponstatus[HUNTS_TUBE]
-						-invoker.weaponstatus[HUNTS_SIDESADDLE],
+					7-invoker.weaponstatus[HUNTS_TUBE],
 					max(1,health/22),
 					3
 				);
-				if(health>40)A_SetTics(0);  
+				if(ssh<1){
+					setweaponstate("reloadend");
+					return;
+				}
+				if(health>40)A_SetTics(0);
+				invoker.handshells=ssh;
+				invoker.weaponstatus[HUNTS_SIDESADDLE]-=ssh;
 			}
 		}
 		SHTG D 3 offset(0,42)A_PlaySound("weapons/pocket",CHAN_WEAPON);
@@ -246,13 +254,18 @@ class Hunter:HDShotgun{
 		goto reloadashell;
 	reloadpocket:
 		SHTG D 4 offset(0,39){
-			invoker.handshells=min(
-				invoker.weaponstatus[HUNTS_SIDESADDLE],
-				invoker.weaponstatus[HUNTS_TUBE]
-					-invoker.weaponstatus[HUNTS_SIDESADDLE],
+			int ssh=min(
+				countinv("HDShellAmmo"),
+				7-invoker.weaponstatus[HUNTS_TUBE],
 				max(1,health/22),
 				3
 			);
+			if(ssh<1){
+				setweaponstate("reloadend");
+				return;
+			}
+			invoker.handshells=ssh;
+			A_TakeInventory("HDShellAmmo",ssh,TIF_NOTAKEINFINITE);
 		}
 		SHTG D 6 offset(0,40) {if(health>40)A_SetTics(0);}
 		SHTG D 4 offset(0,40) A_PlaySound("weapons/pocket",CHAN_WEAPON);
@@ -712,7 +725,7 @@ class Slayer:HDShotgun{
 				setweaponstate("reloadssend");
 				return;
 			}
-			ssh=min(3,ssh,health/20,12-invoker.weaponstatus[SLAYS_SIDESADDLE]);
+			ssh=min(3,ssh,max(1,health/20),12-invoker.weaponstatus[SLAYS_SIDESADDLE]);
 			invoker.weaponstatus[SLAYS_SIDESADDLE]+=ssh;
 			A_TakeInventory("HDShellAmmo",ssh,TIF_NOTAKEINFINITE);
 		}
