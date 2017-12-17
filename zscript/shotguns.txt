@@ -585,6 +585,11 @@ class Slayer:HDShotgun{
 		}goto reloadstart;
 	reload:
 		SHT2 A 0{
+			if(
+				invoker.weaponstatus[SLAYS_CHAMBER1]>1&&
+				invoker.weaponstatus[SLAYS_CHAMBER2]>1
+			)setweaponstate("reloadss");
+
 			invoker.weaponstatus[0]&=~SLAYF_UNLOADONLY;
 			if(invoker.weaponstatus[SLAYS_SIDESADDLE]>0)  
 				invoker.weaponstatus[0]&=~SLAYF_FROMPOCKETS;
@@ -702,13 +707,13 @@ class Slayer:HDShotgun{
 			if(invoker.weaponstatus[SLAYS_SIDESADDLE]>=12)setweaponstate("reloadssend");  
 
 			//load shells into hand
-			int ssh=countinv("HDShellAmmo");
+			int ssh=min(3,countinv("HDShellAmmo"));
 			if(ssh<1){
 				setweaponstate("reloadssend");
 				return;
 			}
-			ssh=min(3,ssh,health/20);
-			invoker.handshells=ssh;
+			ssh=min(3,ssh,health/20,12-invoker.weaponstatus[SLAYS_SIDESADDLE]);
+			invoker.weaponstatus[SLAYS_SIDESADDLE]+=ssh;
 			A_TakeInventory("HDShellAmmo",ssh,TIF_NOTAKEINFINITE);
 		}
 	reloadssend:
