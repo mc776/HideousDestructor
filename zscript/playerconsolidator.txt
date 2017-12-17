@@ -94,6 +94,7 @@ extend class HDPlayerPawn{
 				addsevenmil++;
 			}
 			if(
+				liberatorrifle(findinventory("zm66assaultrifle"))&&
 				zm66assaultrifle(findinventory("zm66assaultrifle")).weaponstatus[0]
 				&ZM66F_CHAMBERBROKEN
 			){
@@ -122,9 +123,15 @@ extend class HDPlayerPawn{
 			A_GiveInventory("LiberatorMag");
 		}
 		//convert spare 776 to clips
+		int maxsevenmil=HDF.MaxInv(self,"SevenMilAmmo");
 		while(
-			addsevenmil>=10      
-			&&!A_JumpIfInventory("BossClip",0,"null")
+			(
+				addsevenmil>maxsevenmil
+				||countinv("BossRifle")
+			)&&(
+				addsevenmil>=10      
+				&&!A_JumpIfInventory("BossClip",0,"null")
+			)
 		){
 			addsevenmil-=10;
 			A_GiveInventory("BossClip");
