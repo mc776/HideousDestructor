@@ -447,18 +447,18 @@ extend class HDPlayerPawn{
 
 		//convert spare 9 to SMG mags, convert spare 9 to pistol mags
 		while(
-			countinv("HDPistolAmmo")>=30      
-			&&!A_JumpIfInventory("HDSMGMag",0,"null")
-		){
-			A_TakeInventory("HDPistolAmmo",30);
-			A_GiveInventory("HDSMGMag");
-		}
-		while(
 			countinv("HDPistolAmmo")>=15      
 			&&!A_JumpIfInventory("HDPistolMag",0,"null")
 		){
 			A_TakeInventory("HDPistolAmmo",15);
 			A_GiveInventory("HDPistolMag");
+		}
+		while(
+			countinv("HDPistolAmmo")>=30      
+			&&!A_JumpIfInventory("HDSMGMag",0,"null")
+		){
+			A_TakeInventory("HDPistolAmmo",30);
+			A_GiveInventory("HDSMGMag");
 		}
 
 		//misc. garbage removal
