@@ -60,15 +60,17 @@ extend class HDPlayerPawn{
 			barrelwidth=0.5;
 			barreldepth=1;
 		}else if(wp is "Hunter"){
+			int tube=wp.weaponstatus[HUNTS_TUBE];
+			if(tube>4)tube+=(tube-4)*2;
 			amt=8+
-				countinv("ShotgunTube")*0.4+
-				countinv("ShotgunQuickAmmo")*0.08
+				tube*0.4+
+				wp.weaponstatus[HUNTS_SIDESADDLE]*0.08
 			;
 			barrellength=30;
 			barrelwidth=0.5;
 			barreldepth=2;
 		}else if(wp is "Slayer"){
-			amt=6+countinv("ShotgunQuickAmmo2")*0.06;
+			amt=6+wp.weaponstatus[SLAYS_SIDESADDLE]*0.06;
 			barrellength=26;
 			barrelwidth=1;
 			barreldepth=1;

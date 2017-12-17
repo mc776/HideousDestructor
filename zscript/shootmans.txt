@@ -81,13 +81,20 @@ class NoBlockWepDrop:ActionItem{
 				}
 			}else if(self is "JackAndJillBoot"){
 				if(!hasdropped){
-					A_DropItem("SuperShotgunPickupDropped");
+					let wp=dropwep("Slayer");if(!wp)return;
+					wp.weaponstatus[SLAYS_CHAMBER1]=random(0,2);
+					wp.weaponstatus[SLAYS_CHAMBER2]=random(0,2);
+					wp.weaponstatus[SLAYS_SIDESADDLE]=random(0,12);
 				}else{
 					A_DropItem("ShellPickup",0,200);
 				}
 			}else if(self is "Jackboot"){
 				if(!hasdropped){
-					A_DropItem("ShotgunPickupDropped");
+					let wp=dropwep("Hunter");if(!wp)return;
+					wp.weaponstatus[0]=random(0,1)*HUNTF_AUTO;
+					wp.weaponstatus[HUNTS_CHAMBER]=random(0,2);
+					wp.weaponstatus[HUNTS_TUBE]=random(0,7);
+					wp.weaponstatus[HUNTS_SIDESADDLE]=random(0,12);
 				}else{
 					A_DropItem("ShellPickup",0,200);
 				}
@@ -120,7 +127,11 @@ class NoBlockWepDrop:ActionItem{
 				}
 			}else if(self is "SWATBase"){
 				if(!hasdropped){
-					A_DropItem("ShotgunPickupDropped");
+					let wp=dropwep("Hunter");if(!wp)return;
+					wp.weaponstatus[0]=random(0,1)*HUNTF_AUTO;
+					wp.weaponstatus[HUNTS_CHAMBER]=random(0,2);
+					wp.weaponstatus[HUNTS_TUBE]=random(0,7);
+					wp.weaponstatus[HUNTS_SIDESADDLE]=random(0,12);
 				}else{
 					A_DropItem("ShellPickup",0,200);
 				}

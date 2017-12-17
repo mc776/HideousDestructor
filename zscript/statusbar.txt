@@ -382,24 +382,28 @@ class HDStatusBar:DoomStatusBar{
 		}
 
 		//hunter
-		int shl=cp.countinv("ShotgunQuickAmmo");
-		if(shl>10)huntersprite="HUNTA0";
-		else if(shl>8)huntersprite="HUNTB0";
-		else if(shl>6)huntersprite="HUNTC0";
-		else if(shl>4)huntersprite="HUNTD0";
-		else if(shl>2)huntersprite="HUNTE0";
-		else if(shl)huntersprite="HUNTF0";
-		else huntersprite="HUNTG0";
+		if(cp.countinv("Hunter")){
+			int shl=HDWeapon(cp.findinventory("Hunter")).weaponstatus[HUNTS_SIDESADDLE];
+			if(shl>10)huntersprite="HUNTA0";
+			else if(shl>8)huntersprite="HUNTB0";
+			else if(shl>6)huntersprite="HUNTC0";
+			else if(shl>4)huntersprite="HUNTD0";
+			else if(shl>2)huntersprite="HUNTE0";
+			else if(shl)huntersprite="HUNTF0";
+			else huntersprite="HUNTG0";
+		}
 
 		//slayer
-		shl=cp.countinv("ShotgunQuickAmmo2");
-		if(shl>10)slayersprite="SLAYA0";
-		else if(shl>8)slayersprite="SLAYB0";
-		else if(shl>6)slayersprite="SLAYC0";
-		else if(shl>4)slayersprite="SLAYD0";
-		else if(shl>2)slayersprite="SLAYE0";
-		else if(shl)slayersprite="SLAYF0";
-		else slayersprite="SLAYG0";
+		if(cp.countinv("Slayer")){
+			int shl=HDWeapon(cp.findinventory("Slayer")).weaponstatus[SLAYS_SIDESADDLE];
+			if(shl>10)slayersprite="SLAYA0";
+			else if(shl>8)slayersprite="SLAYB0";
+			else if(shl>6)slayersprite="SLAYC0";
+			else if(shl>4)slayersprite="SLAYD0";
+			else if(shl>2)slayersprite="SLAYE0";
+			else if(shl)slayersprite="SLAYF0";
+			else slayersprite="SLAYG0";
+		}
 
 		//medikit
 		HDMedikitter mdk=HDMedikitter(cp.findinventory("HDMedikitter"));
@@ -501,12 +505,12 @@ class HDStatusBar:DoomStatusBar{
 		drawnum(cp.countinv("LiberatorMag"),-37,mxhtplus);
 
 		if(cp.countinv("Slayer"))drawnum(
-			cp.countinv("ShotgunQuickAmmo2"),-4,mxhtplus-14,
+			hdweapon(cp.findinventory("Slayer")).weaponstatus[SLAYS_SIDESADDLE],-4,mxhtplus-14,
 			DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_BOTTOM,
 			Font.CR_BROWN
 		);
 		if(cp.countinv("Hunter"))drawnum(
-			cp.countinv("ShotgunQuickAmmo"),-4,mxhtplus-8,
+			hdweapon(cp.findinventory("Hunter")).weaponstatus[HUNTS_SIDESADDLE],-4,mxhtplus-8,
 			DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_BOTTOM,
 			fnt:Font.CR_BROWN
 		);

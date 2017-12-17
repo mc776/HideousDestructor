@@ -15,9 +15,6 @@ extend class HDPlayerPawn{
 
 		//now for configs!
 		A_SetInventory("DERPMode",getcvar("hd_derpmode"));
-		if(countinv("Hunter")){
-			A_SetInventory("ShotgunAuto",getcvar("hd_huntauto"));
-		}
 
 		//so you don't start out with the fist all the time
 		if(player.readyweapon){
@@ -174,14 +171,9 @@ extend class HDPlayerPawn{
 				break;
 			case 30:
 				nw="Slayer";A_GiveInventory(nw);
-				A_GiveInventory("ShellChamber1");
-				A_GiveInventory("ShellChamber2");
-				A_GiveInventory("ShotgunQuickAmmo2",12);
 				break;
 			case 31:
 				nw="Hunter";A_GiveInventory(nw);
-				A_GiveInventory("ShotgunTube",8);
-				A_GiveInventory("ShotgunQuickAmmo",12);
 				break;
 			case 40:
 			case 41:

@@ -32,7 +32,7 @@ const BLOX_9_LOADED=BLOX_9*0.3;
 
 //other things
 const BLOX_SHELL=1;
-const BLOX_SHELLLOADED=0.6;
+const BLOX_SHELLLOADED=0.4;
 const BLOX_ROCKET=BLOX_426MAG;
 const BLOX_ROCKETLOADED=BLOX_ROCKET*0.5;
 const BLOX_HEATROCKET=BLOX_ROCKET*1.2;
@@ -68,12 +68,12 @@ extend class HDPlayerPawn{
 					if(mg<0)blx+=120-BLOX_9MAG30_LOADED;
 					else blx+=120+mg*BLOX_9_LOADED;
 				}else if(hdw is "Hunter"){
-					blx+=125+(
-							countinv("ShotgunTube")
-							+countinv("ShotgunQuickAmmo")
-						)*BLOX_SHELLLOADED;
+					int bluh=hdw.weaponstatus[HUNTS_TUBE];
+					if(bluh>4)bluh+=(bluh-4)*2;
+					bluh+=bluh+hdw.weaponstatus[HUNTS_SIDESADDLE];
+					blx+=125+bluh*BLOX_SHELLLOADED;
 				}else if(hdw is "Slayer"){
-					blx+=100+countinv("ShotgunQuickAmmo2")*BLOX_SHELLLOADED;
+					blx+=100+hdw.weaponstatus[SLAYS_SIDESADDLE]*BLOX_SHELLLOADED;
 				}else if(hdw is "ZM66AssaultRifle"){
 					if(!(hdw.weaponstatus[0]&ZM66F_NOLAUNCHER)){
 						blx+=125;
