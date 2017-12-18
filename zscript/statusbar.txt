@@ -266,6 +266,15 @@ class HDStatusBar:DoomStatusBar{
 				cp.overloaded<1.2?Font.CR_OLIVE:(cp.overloaded>2?Font.CR_RED:Font.CR_GOLD)
 			);
 		}
+
+
+		//debug centre line
+		if(hd_debug)drawimage(
+			"GREENPXL",(0,0),DI_SCREEN_CENTER_BOTTOM,
+			0.2,scale:(0.6,100)
+		);
+
+
 	}
 	void drawnum(int num,int xpos,int ypos,int flags=-1,int fnt=Font.CR_OLIVE){
 		drawstring(
