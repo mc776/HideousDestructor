@@ -565,7 +565,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 				PressingAltfire()
 				&&invoker.weaponstatus[SLAYS_CHAMBER2]==2
 			)A_Overlay(12,"flashright");
-			A_WeaponReady(WRF_ALL|WRF_NOFIRE);
+			A_WeaponReady(WRF_ALL);
 		}goto readyend;
 
 	flashleft:
@@ -665,8 +665,8 @@ class Slayer:HDShotgun replaces HDShotgun{
 	unloadstart:
 		SH2G K 2 offset(0,34) EmptyHand();
 		SH2G K 2 offset(0,40);
-		SH2G K 10 offset(0,46) A_PlaySound("weapons/sshoto",CHAN_AUTO);
-		SH2G K 2 offset(0,46) A_MuzzleClimb(
+		SH2G K 7 offset(0,46) A_PlaySound("weapons/sshoto",CHAN_AUTO);
+		SH2G M 5 offset(0,46) A_MuzzleClimb(
 			frandom(0.6,1.2),frandom(0.6,1.2),
 			frandom(0.6,1.2),frandom(0.6,1.2),
 			frandom(1.2,2.4),frandom(1.2,2.4)
@@ -713,8 +713,9 @@ class Slayer:HDShotgun replaces HDShotgun{
 		SH2G L 10 offset(0,34);
 		SH2G E 6;
 		SH2G E 1 offset(0,36);
-		SH2G F 3 offset(0,40);
-		SH2G F 2 offset(0,44);
+		SH2G F 2 offset(0,40);
+		SH2G F 2 offset(0,46);
+		SH2G F 1 offset(0,54);
 
 		TNT1 A 4{
 			//take up to 2 shells in hand
