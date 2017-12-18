@@ -13,15 +13,26 @@ class HDShotgun:HDWeapon{
 	}
 	int handshells;
 	action void EmptyHand(){
-		while(invoker.handshells>0){  
-			invoker.handshells--;
-			A_SpawnItemEx("HDFumblingShell",
-				cos(pitch)*5,1,height-7-sin(pitch)*5,
-				cos(pitch)*cos(angle)*random(1,4)+vel.x,
-				cos(pitch)*sin(angle)*random(1,4)+vel.y,
-				-sin(pitch)*random(1,4)+vel.z,
-				0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
-			);
+		while(invoker.handshells>0){
+ 			if(invoker.handshells>=4){
+				invoker.handshells-=4;
+				A_SpawnItemEx("ShellPickup",
+					cos(pitch)*1,1,height-7-sin(pitch)*1,
+					cos(pitch)*cos(angle)+vel.x,
+					cos(pitch)*sin(angle)+vel.y,
+					-sin(pitch)+vel.z,
+					0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
+				);
+			}else{
+				invoker.handshells--;
+				A_SpawnItemEx("HDFumblingShell",
+					cos(pitch)*5,1,height-7-sin(pitch)*5,
+					cos(pitch)*cos(angle)*random(1,4)+vel.x,
+					cos(pitch)*sin(angle)*random(1,4)+vel.y,
+					-sin(pitch)*random(1,4)+vel.z,
+					0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
+				);
+			}
 		}
 	}
 	override void DetachFromOwner(){
@@ -335,7 +346,7 @@ class Hunter:HDShotgun{
 		SHTG A 1 offset(3,36) A_PlaySound("weapons/pocket",CHAN_WEAPON);
 	unloadSSLoop1:
 		SHTG A 5 offset(4,36){	//from ss to hand
-			int hnd=min(3,invoker.weaponstatus[HUNTS_SIDESADDLE]);
+			int hnd=min(invoker.weaponstatus[HUNTS_SIDESADDLE],4);
 			invoker.handshells=hnd;
 			invoker.weaponstatus[HUNTS_SIDESADDLE]-=hnd;
 		}
@@ -762,7 +773,7 @@ class Slayer:HDShotgun{
 	unloadssloop1:
 		SHT2 A 5 offset(4,36){
 			//transfer to hand
-			int ssh=min(invoker.weaponstatus[SLAYS_SIDESADDLE],3);
+			int ssh=min(invoker.weaponstatus[SLAYS_SIDESADDLE],4);
 			invoker.handshells=ssh;
 			invoker.weaponstatus[SLAYS_SIDESADDLE]-=ssh;
 		}
