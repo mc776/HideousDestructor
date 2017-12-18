@@ -27,6 +27,10 @@ class BFG9K:HDWeapon replaces BFG9000{
 			a.vel+=caller.vel*0.9-spot*0.03;
 		}
 	}
+	override void doeffect(){
+		if(weaponstatus[0]&BFGF_STRAPPED)buntossable=true;
+		else buntossable=false;
+	}
 	states{
 	altfire:
 	togglestrap:
