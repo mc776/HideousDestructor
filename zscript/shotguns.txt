@@ -344,8 +344,10 @@ class Hunter:HDShotgun{
 					AmmoCap("HDShellAmmo")-countinv("HDShellAmmo"),
 					3
 				);
-				sss.weaponstatus[SLAYS_SIDESADDLE]-=totake;
-				A_GiveInventory("HDShellAmmo",totake);
+				if(totake>0){
+					sss.weaponstatus[SLAYS_SIDESADDLE]-=totake;
+					A_GiveInventory("HDShellAmmo",totake);
+				}
 			}
 		}goto ready;
 
@@ -459,8 +461,8 @@ class Hunter:HDShotgun{
 			if(rmm>0){  
 				A_PlaySound("weapons/pocket");
 				A_SetTics(8);
-				A_GiveInventory("HDShellAmmo",rmm);
-				invoker.handshells-=rmm;
+				A_GiveInventory("HDShellAmmo",min(rmm,invoker.handshells));
+				invoker.handshells=max(invoker.handshells-rmm,0);
 			}
 		}
 		SHTG D 6{
