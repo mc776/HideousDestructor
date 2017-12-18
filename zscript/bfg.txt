@@ -360,7 +360,7 @@ class BFG9K:HDWeapon replaces BFG9000{
 
 	override void postbeginplay(){
 		super.postbeginplay();
-		if(owner&&owner.player)weaponstatus[0]|=BFGF_STRAPPED;
+		if(owner&&owner.player&&owner.player.readyweapon==self)weaponstatus[0]|=BFGF_STRAPPED;
 	}
 	override void InitializeWepStats(bool idfa=false){
 		weaponstatus[BFGS_CHARGE]=20;
