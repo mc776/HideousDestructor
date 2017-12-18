@@ -576,8 +576,13 @@ class Slayer:HDShotgun{
 			A_ZoomFactor(0.98,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
 			invoker.weaponstatus[SLAYS_CHAMBER1]=1;
 
-			A_GiveInventory("DecoBulleter00f");
-			A_Log("Remember to adjust angle on each barrel! (LEFT)");
+			actor p=spawn("HDBullet00bfl",pos+(0,0,height-6));
+			p.target=self;p.angle=angle;p.pitch=pitch;
+			p.vel+=(
+				frandom(-1.,1.),frandom(-1.,1.),frandom(-1.,1.)
+			);
+			p.speed+=10*frandom(-1.,1.);
+			p.vel+=self.vel;
 		}
 		TNT1 A 1{
 			A_Light0();
@@ -591,8 +596,13 @@ class Slayer:HDShotgun{
 			A_ZoomFactor(0.98,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
 			invoker.weaponstatus[SLAYS_CHAMBER2]=1;
 
-			A_GiveInventory("DecoBulleter00f");
-			A_Log("Remember to adjust angle on each barrel! (RIGHT)");
+			actor p=spawn("HDBullet00bfr",pos+(0,0,height-6));
+			p.target=self;p.angle=angle;p.pitch=pitch;
+			p.vel+=(
+				frandom(-1.,1.),frandom(-1.,1.),frandom(-1.,1.)
+			);
+			p.speed+=10*frandom(-1.,1.);
+			p.vel+=self.vel;
 		}
 		TNT1 A 1{
 			A_Light0();
