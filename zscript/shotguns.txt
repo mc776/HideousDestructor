@@ -141,7 +141,6 @@ class Hunter:HDShotgun{
 		SHTG A 2;
 		SHTG A 1 offset(0,36){
 			actor p=spawn("HDBullet00b",pos+(0,0,height-6));
-			if(!p)return;
 			p.target=self;p.angle=angle;p.pitch=pitch;
 			p.vel+=(
 				frandom(-1.,1.),frandom(-1.,1.),frandom(-1.,1.)
@@ -614,8 +613,14 @@ class Slayer:HDShotgun{
 			invoker.weaponstatus[SLAYS_CHAMBER1]=1;
 			invoker.weaponstatus[SLAYS_CHAMBER2]=1;
 
-			A_GiveInventory("DecoBulleter00f2");
-			A_Log("Remember to adjust angle on each barrel! (BOTH)");
+
+			actor p=spawn("HDBullet00bf2",pos+(0,0,height-6));
+			p.target=self;p.angle=angle;p.pitch=pitch;
+			p.vel+=(
+				frandom(-1.,1.),frandom(-1.,1.),frandom(-1.,1.)
+			);
+			p.speed+=10*frandom(-1.,1.);
+			p.vel+=self.vel;
 		}
 		TNT1 A 1{
 			A_Light0();

@@ -527,29 +527,6 @@ class DecoBulleter00f:DecoBulleter00{
 		accuracy 0;
 	}
 }
-class DecoBulleter00f2:DecoBulleter00f{
-	states{
-	pickup:
-		TNT1 A 0{
-			for(double i=-1;i<2;i+=2){
-				actor p=Spawn(invoker.missilename,pos+(0,0,height-6));
-				p.setorigin(p.pos+(cos(angle-90),sin(angle+90),0)*i,false);
-				p.target=self;p.angle=angle;p.pitch=pitch;
-				if(invoker.speed)p.speed=invoker.speed;
-				double pf=invoker.accuracy;
-				if(p){
-					if(pf){
-						p.vel+=(
-							frandom(-pf,pf),frandom(-pf,pf),frandom(-pf,pf)
-						);
-						p.speed+=10*frandom(-pf,pf);
-					}
-					p.vel+=self.vel;
-				}
-			}
-		}fail;
-	}
-}
 class DecoBulleterGhost:DecoBulleter{
 	default{
 		missiletype "GhostBullet";
@@ -619,7 +596,33 @@ class HDBullet00bf:HDBullet00b{
 		speed 800;
 		pushfactor 0.3;
 	}
-	override void LongArmWobble(){}
+}
+class HDBullet00bf1:HDBullet00bf{
+	override void LongArmWobble(){} //this is done in the first one
+}
+class HDBullet00bf2:HDBullet00bf{
+	override void postbeginplay(){
+		LongArmWobble();
+		for(double i=-1;i<=3;i+=3){
+			setorigin(pos+(cos(angle-90),sin(angle-90),0)*i,false);
+			angle+=i*0.1;
+
+			actor bb;
+			double p=pushfactor;
+			for(int i=stamina;i;i--){
+				bb=spawn("HDBullet00",pos,ALLOW_REPLACE);
+				bb.target=target;bb.pitch=pitch;bb.angle=angle;if(target)bb.vel=target.vel;
+				bb.speed=speed+speed*frandom(-p,p);
+				bb.pitch+=frandom(-p,p);
+				bb.angle+=frandom(-p,p);
+				bb.A_ChangeVelocity(
+					bb.speed*cos(bb.pitch),0,
+					bb.speed*sin(-bb.pitch),CVF_RELATIVE
+				);
+			}
+		}
+		destroy();
+	}
 }
 class HDBullet9:HDBullet{
 	default{
