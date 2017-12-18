@@ -3,8 +3,6 @@
 // ------------------------------------------------------------
 class HDShotgun:HDWeapon{
 	default{
-		weapon.selectionorder 31;
-		weapon.slotnumber 3;
 		weapon.bobrangex 0.21;
 		weapon.bobrangey 0.86;
 		scale 0.6;
@@ -44,7 +42,7 @@ class HDShotgun:HDWeapon{
 // ------------------------------------------------------------
 // A 12-gauge pump for protection
 // ------------------------------------------------------------
-class Hunter:HDShotgun{
+class Hunter:HDShotgun replaces Shotgun{
 	default{
 		weapon.selectionorder 31;
 		weapon.slotnumber 3;
@@ -517,7 +515,7 @@ enum hunterstatus{
 // ------------------------------------------------------------
 // Super Shotgun
 // ------------------------------------------------------------
-class Slayer:HDShotgun{
+class Slayer:HDShotgun replaces HDShotgun{
 	default{
 		weapon.selectionorder 30;
 		weapon.slotnumber 3;
