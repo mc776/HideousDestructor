@@ -14,19 +14,3 @@ class ZSSlayer:HDWeapon{
 		else super.AttachToOwner(user);
 	}
 }
-class SlayerOrBoss:ActionItem{
-	states{
-	pickup:
-		TNT1 A 0{
-			if(HDMath.CheckLump("SHT2A0")){
-				A_GiveInventory("Slayer");
-				A_GiveInventory("HDShellAmmo",36);
-			}else{
-				A_GiveInventory("BossRifle");
-				A_GiveInventory("BossClip",10);
-			}
-		}fail;
-	}
-}
-
-

@@ -504,16 +504,21 @@ class Slayer:HDShotgun{
 		scale 0.6;
 		obituary "%o was brutally pumped full of %k's hot, manly lead.";
 	}
-	override void AttachToOwner(actor user){
-		if(Wads.CheckNumForName("SHT2A0",wads.ns_sprites,-1,false)<0){
-			if(hd_debug)user.A_Log("doom 1 shotty lol",true);
-			if(!user.countinv("Hunter")){
-				user.A_GiveInventory("Hunter");
+	override void PostBeginPlay(){
+		if(Wads.CheckNumForName("SHT2B0",wads.ns_sprites,-1,false)<0){
+			if(owner){
+				actor ownor=owner;
+				destroy();
+				if(hd_debug)ownor.A_Log("doom 1 shotty lol",true);
+				ownor.A_GiveInventory("Hunter");
+				ownor.A_SelectWeapon("Hunter");
+			}else{
+				spawn("Hunter",pos,ALLOW_REPLACE);
+				destroy();
 			}
-			A_SelectWeapon("Hunter");
-			destroy();return;
+			return;
 		}
-		else super.AttachToOwner(user);
+		super.postbeginplay();
 	}
 	states{
 	select0:
@@ -523,6 +528,7 @@ class Slayer:HDShotgun{
 		SHT2 A 0;
 		goto deselect0small;
 	ready:
+		TNT1 A 0; //let the PostBeginPlay handle the presence of the relevant sprite
 		SHT2 A 1{
 			if(
 				PressingFire()
