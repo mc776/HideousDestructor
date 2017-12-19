@@ -16,8 +16,8 @@ class HDShotgun:HDWeapon{
 				invoker.handshells-=4;
 				A_SpawnItemEx("ShellPickup",
 					cos(pitch)*1,1,height-7-sin(pitch)*1,
-					cos(pitch)*cos(angle+frandom(-1,1))+vel.x,
-					cos(pitch)*sin(angle+frandom(-1,1))+vel.y,
+					cos(pitch)*cos(angle)*frandom(1,2)+vel.x,
+					cos(pitch)*sin(angle)*frandom(1,2)+vel.y,
 					-sin(pitch)+vel.z,
 					0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
 				);
