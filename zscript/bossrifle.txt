@@ -123,43 +123,40 @@ class BossRifle:HDWeapon{
 			if(invoker.pickuprounds<1)setweaponstate("nope");
 		}loop;
 	fire:
-	firegun:
+		BARG A 1 A_JumpIf(invoker.weaponstatus[BOSSS_CHAMBER]==2,"shoot");
+		goto ready;
 	shoot:
 		BARG A 1{
-			if(invoker.weaponstatus[BOSSS_CHAMBER]!=2)setweaponstate("nope");
-			else A_Gunflash();
-		}
-		BARG F 2 A_JumpIfInventory("IsSupported",1,"nope");
-		goto nope;
-	althold:
-		BARG E 1 A_WeaponReady(WRF_NOFIRE);
-		BARG E 1 A_Refire();
-		BARG DCB 3 A_WeaponReady(WRF_NOFIRE);
-		goto ready;
-	flash:
-		BARF A 1 bright{
+			A_Gunflash();
 			invoker.weaponstatus[BOSSS_CHAMBER]=1;
-			A_ZoomFactor(0.95,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
-			A_PlaySound("weapons/bigrifle",CHAN_WEAPON);
+			A_PlaySound("weapons/bigrifle",6);
 			A_AlertMonsters();
 
-			actor p=Spawn("HDBullet776",pos+(0,0,height-6));
+			actor p=spawn("HDBullet776",pos+(0,0,height-6));
 			p.target=self;p.angle=angle;p.pitch=pitch;
 			p.speed=1400;
 			p.vel+=self.vel;
 			p.pitch-=(1./120.)*invoker.weaponstatus[BOSSS_DROPADJUST];
 
-			A_Light1();
-			HDFlashAlpha(-96);
-		}
-		TNT1 A 1{
-			A_Light0();
-			A_ZoomFactor(1.0,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
 			A_MuzzleClimb(
+				0,0,
 				-frandom(0.2,0.4),-frandom(0.6,1.),
 				-frandom(0.4,0.7),-frandom(1.2,2.1),
 				-frandom(0.4,0.7),-frandom(1.2,2.1)
 			);
+		}
+		BARG F 1;
+		BARG F 1 A_JumpIfInventory("IsSupported",1,"ready");
+		goto ready;
+	flash:
+		BARF A 1 bright{
+			A_Light1();
+			HDFlashAlpha(-96);
+			A_ZoomFactor(0.95,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
+		}
+		TNT1 A 1{
+			A_Light0();
+			A_ZoomFactor(1.0,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
 		}stop;
 	altfire:
 		BARG A 2 offset(0,34);
@@ -174,6 +171,11 @@ class BossRifle:HDWeapon{
 				&&invoker.weaponstatus[BOSSS_CHAMBER]>0  
 			)invoker.weaponstatus[BOSSS_CHAMBER]+=2;
 		}goto ready;
+	althold:
+		BARG E 1 A_WeaponReady(WRF_NOFIRE);
+		BARG E 1 A_Refire();
+		BARG DCB 3 A_WeaponReady(WRF_NOFIRE);
+		goto ready;
 	jam:
 		BARG A 0{
 			int chm=invoker.weaponstatus[BOSSS_CHAMBER];
