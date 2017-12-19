@@ -16,8 +16,8 @@ class HDShotgun:HDWeapon{
 				invoker.handshells-=4;
 				A_SpawnItemEx("ShellPickup",
 					cos(pitch)*1,1,height-7-sin(pitch)*1,
-					cos(pitch)*cos(angle)+vel.x,
-					cos(pitch)*sin(angle)+vel.y,
+					cos(pitch)*cos(angle+frandom(-1,1))+vel.x,
+					cos(pitch)*sin(angle+frandom(-1,1))+vel.y,
 					-sin(pitch)+vel.z,
 					0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
 				);
@@ -25,8 +25,8 @@ class HDShotgun:HDWeapon{
 				invoker.handshells--;
 				A_SpawnItemEx("HDFumblingShell",
 					cos(pitch)*5,1,height-7-sin(pitch)*5,
-					cos(pitch)*cos(angle)*random(1,4)+vel.x,
-					cos(pitch)*sin(angle)*random(1,4)+vel.y,
+					cos(pitch)*cos(angle)*frandom(1,4)+vel.x,
+					cos(pitch)*sin(angle)*frandom(1,4)+vel.y,
 					-sin(pitch)*random(1,4)+vel.z,
 					0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
 				);
