@@ -2,28 +2,6 @@
 
 extend class HDPlayerPawn{
 	void ConsolidateAmmo(){
-		//make as many mags and clips as possible to make room for more 7mm
-		if(countinv("SevenMilAmmo")>10){
-			int maxclag=HDMath.MaxInv(self,"LiberatorMag");
-			while(
-				countinv("SevenMilAmmo")>29 &&  
-				countinv("LiberatorMag")<maxclag
-			){
-				A_TakeInventory("SevenMilAmmo",30);
-				A_GiveInventory("LiberatorMag");
-			}
-			if(countinv("BossRifle")){
-				maxclag=HDMath.MaxInv(self,"BossClip");
-				while(
-					countinv("SevenMilAmmo")>10 &&  
-					countinv("BossClip")<maxclag
-				){
-					A_TakeInventory("SevenMilAmmo",10);
-					A_GiveInventory("BossClip");
-				}
-			}
-		}
-
 		//use the BFG to charge everything
 		if(countinv("BFG9k")){
 			hdweapon(findinventory("BFG9k")).initializewepstats(true);
@@ -58,10 +36,33 @@ extend class HDPlayerPawn{
 			//miraclessssss
 		}
 
+
+		//make as many mags and clips as possible to make room for more 7mm
+		if(countinv("SevenMilAmmo")>10){
+			int maxclag=HDMath.MaxInv(self,"LiberatorMag");
+			while(
+				countinv("SevenMilAmmo")>29 &&  
+				countinv("LiberatorMag")<maxclag
+			){
+				A_TakeInventory("SevenMilAmmo",30);
+				A_GiveInventory("LiberatorMag");
+			}
+			if(countinv("BossRifle")){
+				maxclag=HDMath.MaxInv(self,"BossClip");
+				while(
+					countinv("SevenMilAmmo")>10 &&  
+					countinv("BossClip")<maxclag
+				){
+					A_TakeInventory("SevenMilAmmo",10);
+					A_GiveInventory("BossClip");
+				}
+			}
+		}
+
 		//reload as much brass as possible and consolidate again
 		int addsevenmil=0;
 		if(
-			countinv("LiberatorRifle")
+			(countinv("LiberatorRifle")||countinv("BossRifle"))
 			&&countinv("FourMilAmmo")>4  
 		){    
 			int curr7=
