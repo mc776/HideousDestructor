@@ -496,7 +496,14 @@ class HDStatusBar:DoomStatusBar{
 		drawambar("PISARED","HDPISAMO","HDPistolAmmo",(-76,mxhtplus-1));
 		drawambar("CLIPRED","CLIPC0","FourMilAmmo",(-54,mxhtplus));
 		drawimage("RMAGA0",(-32,mxhtplus+3),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM,scale:(1.5,1.5));
+
 		drawambar("MAGRED","MAGSTAT","SevenMilAmmo",(-35,mxhtplus-1));
+		drawbar(
+				"RBRSRED","RBRSA3A7",
+				cp.countinv("SevenMilBrass"),hdmath.maxinv(cp,"SevenMilBrass"),
+				(-38,mxhtplus+2),-1,
+				SHADER_HORZ,DI_ITEM_RIGHT_BOTTOM|DI_SCREEN_RIGHT_BOTTOM
+		);
 		drawimage("SHELA0",(-10,mxhtplus-1),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM);
 
 		drawimage("BROCA0",(-81,mxht),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM);		
