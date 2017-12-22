@@ -75,9 +75,6 @@ class HDPlayerPawn:PlayerPawn{
 		}
 		A_TakeInventory("NullWeapon");
 
-		if(getcvar("hd_hudsprite"))A_GiveInventory("HUDSprite");
-			else A_TakeInventory("HUDSprite");
-
 		A_SetTeleFog("TeleportFog","TeleportFog");
 	}
 	states{
@@ -420,9 +417,6 @@ class HDPlayerPawn:PlayerPawn{
 		if(input & BT_USE){
 			bpickup=true;
 			A_GiveInventory("GimmeHud");
-			if(getcvar("hd_hudsprite"))
-				A_GiveInventory("HUDSprite");
-				else A_TakeInventory("HUDSprite");
 			if(!(oldinput & BT_USE)){
 				hasgrabbed=false;
 			}

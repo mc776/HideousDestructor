@@ -131,7 +131,6 @@ actor bleedout
 }
 
 
-
 actor HDWeaponPurge:ActionItem{
 	states{
 	use:
@@ -143,26 +142,6 @@ actor HDWeaponPurge:ActionItem{
 
 
 
-
 actor IsWeaponReady:InventoryFlag{}
-
-actor HUDSprite:InventoryFlag{}
-
-
-actor LongArmWobble:ActionItem{
-	states{
-	pickup:
-		TNT1 A 0{
-			if(countinv("IsMoving",AAPTR_TARGET)>=10){
-				A_SetPitch(pitch+random(-2,2),true);
-				A_SetAngle(angle+random(-1,1),true);
-			}
-		}
-		fail
-	}
-}
-
-
-
 
 
