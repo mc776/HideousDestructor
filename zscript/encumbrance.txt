@@ -87,7 +87,8 @@ extend class HDPlayerPawn{
 					if(hdw.weaponstatus[VULCS_BATTERY]>=0)blx+=BLOX_BATTERY_LOADED;
 					let vvv=vulcanette(hdw);
 					for(int i=0;i<5;i++){
-						if(vvv.vulcmag[i]>=0)blx+=BLOX_426MAG_LOADED;
+						if(vvv.vulcmag[i]>=0)
+							blx+=BLOX_426MAG_LOADED*min(10,vvv.vulcmag[i]);
 					}
 				}else if(hdw is "Blooper"){
 					blx+=75;
