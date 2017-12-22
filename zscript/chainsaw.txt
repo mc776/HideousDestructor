@@ -51,6 +51,7 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 		goto beatdown;
 	saw:
 		BEVG AB 1{
+			A_WeaponReady(WRF_NONE);
 			int drainprob=LUMBERJACKDRAIN;
 			if(invoker.weaponstatus[2]<12)invoker.weaponstatus[2]++;
 			if((invoker.weaponstatus[1]>random(5,8))&&(invoker.weaponstatus[2]>11)){
@@ -86,8 +87,10 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 			}
 			if(!random(0,drainprob)&&invoker.weaponstatus[1]>0)invoker.weaponstatus[1]--;
 		}
-		BEVG B 1 A_Refire();
-		goto ready;
+		BEVG B 1{
+			A_WeaponReady(WRF_NONE);
+			A_Refire();
+		}goto ready;
 
 	altfire:
 	beatdown:
@@ -261,8 +264,9 @@ class HDSawPuff:IdleDummy{
 	spawn:
 		TNT1 A 1 nodelay{
 			A_GiveInventory("WasChoppingFlesh",1,AAPTR_TARGET);
-			if(tracer && tracer.bcorpse){
-				tracer.A_GiveInventory("SawGib",random(5,10));
+			if(tracer){
+				if(tracer.bcorpse)tracer.A_GiveInventory("SawGib",random(5,10));
+				if(tracer.bnoblood)spawn("BulletPuffMedium",pos);
 			}
 		}stop;
 	crash:
@@ -280,6 +284,7 @@ class HDSawPuff:IdleDummy{
 					}
 					target.A_Recoil(random(-1,2));
 					target.damagemobj(self,target,1,"chainsaw");
+					target.A_TakeInventory("WasChoppingFlesh");
 				}
 			}
 			spawn("BulletPuffMedium",pos);
