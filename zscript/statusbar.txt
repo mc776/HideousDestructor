@@ -3,6 +3,7 @@
 // ------------------------------------------------------------
 class HDStatusBar:DoomStatusBar{
 	double gogbob;
+	int gimmehud;
 	override void Init(){
 		BaseStatusBar.Init();
 		SetSize(0,320,200);
@@ -245,7 +246,6 @@ class HDStatusBar:DoomStatusBar{
 			);
 		}
 
-
 		//weapon readouts!
 		if(cplayer.readyweapon)drawweaponstatus(cplayer.readyweapon);
 
@@ -253,13 +253,14 @@ class HDStatusBar:DoomStatusBar{
 		if(
 			cvar.getcvar("hd_hudsprite",cplayer).getbool()
 			||!cvar.getcvar("r_drawplayersprites",cplayer).getbool()
-			||cp.countinv("GimmeHud")>9
+			||!gimmehud
 		)
 		drawselectedweapon(58,-6,DI_SCREEN_CENTER_BOTTOM|DI_ITEM_LEFT_BOTTOM);
 
 
 		//full hud consequences
-		if(cp.countinv("GimmeHud")>9){
+		if(cplayer.buttons&BT_USE)gimmehud=max(gimmehud-1,0);else gimmehud=10;
+		if(!gimmehud){
 			drawweaponstash();
 			drawammocounters(mxht);
 

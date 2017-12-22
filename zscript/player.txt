@@ -416,7 +416,6 @@ class HDPlayerPawn:PlayerPawn{
 		//check use key
 		if(input & BT_USE){
 			bpickup=true;
-			A_GiveInventory("GimmeHud");
 			if(!(oldinput & BT_USE)){
 				hasgrabbed=false;
 			}
@@ -466,7 +465,6 @@ class HDPlayerPawn:PlayerPawn{
 			}
 		}else{
 			bpickup=false;
-			A_TakeInventory("GimmeHud");
 		}
 		if(corpsekicktimer>0)corpsekicktimer--;
 
