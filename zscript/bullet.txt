@@ -202,7 +202,7 @@ class HDBullet:HDActor{
 			}
 
 			//pierce
-			else if(hd_penetrate && accuracy){
+			else if((hd_penetrate||deathmatch) && accuracy){
 				Puff(speed*0.4);
 				actor e;
 				vector3 velp=vel.unit();
