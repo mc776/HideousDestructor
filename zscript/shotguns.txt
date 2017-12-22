@@ -707,10 +707,11 @@ class Slayer:HDShotgun replaces HDShotgun{
 			//play animation to search pockets as appropriate
 			if(invoker.weaponstatus[0]&SLAYF_FROMPOCKETS)
 				A_PlaySound("weapons/pocket",CHAN_WEAPON);
-				else A_SetTics(0);
+				else setweaponstate("reloadnopocket");
 		}
-		SH2G L 9 offset(0,35) A_PlaySound("weapons/pocket",CHAN_WEAPON);
-		SH2G L 9 offset(0,34);
+		SH2G L 8 offset(0,35);
+		SH2G L 7 offset(0,34);
+	reloadnopocket:
 		SH2G E 6;
 		SH2G E 1 offset(0,36);
 		SH2G F 2 offset(0,40);
