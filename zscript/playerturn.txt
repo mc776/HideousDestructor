@@ -88,10 +88,10 @@ extend class HDPlayerPawn{
 				barreldepth=3;
 			}
 		}else if(wp is "Vulcanette"){
+			amt=14+wp.weaponstatus[1]<0?0:1;
 			vulcanette vvv=vulcanette(wp);
-			if(vvv)amt=13+vvv.weaponstatus[1]<0?0:0.6;
 			for(int i=0;i<4;i++){
-				if(vvv.vulcmag[0]>=0)amt+=3;
+				if(vvv.vulcmag[i]>=0)amt+=3;
 			}
 			barrellength=30;
 			barrelwidth=2;

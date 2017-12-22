@@ -1,11 +1,24 @@
 // ------------------------------------------------------------
 // Vulcanette
 // ------------------------------------------------------------
+/*
+	[0] flags
+	[too many fuckin' mags and chambers lol, put 'em in another array]
+	[1] battery, -1 is no battery loaded
+	[2] zoom
+	[3] heat
+	[4] channel
+*/
 enum vulcstatus{
 	VULCF_FAST=1,
 	VULCF_SPINNINGFAST=2,
 	VULCF_JUSTUNLOAD=4,
 	VULCF_LOADCELL=8,
+
+	VULCS_BATTERY=1,
+	VULCS_ZOOM=2,
+	VULCS_HEAT=3,
+	VULCS_CHANNEL=4,
 };
 class Vulcanette:HDWeapon{
 	default{
@@ -530,9 +543,11 @@ class Vulcanette:HDWeapon{
 		if(invoker.vulcchamber[0]!=1)return; //0 is empty, 2 is broken
 		if(flash2)A_GunFlash("flash2");else A_GunFlash("flash");
 
-		if(invoker.weaponstatus[4]>=7)invoker.weaponstatus[4]=0;
-		else if(invoker.weaponstatus[4]==1)invoker.weaponstatus[4]=5;
-		else invoker.weaponstatus[4]++;
+		if(invoker.weaponstatus[0]&VULCF_FAST){
+			if(invoker.weaponstatus[4]>7)invoker.weaponstatus[4]=4;
+			else if(invoker.weaponstatus[4]==1)invoker.weaponstatus[4]=5;
+			else invoker.weaponstatus[4]++;
+		}else invoker.weaponstatus[4]=CHAN_WEAPON;
 		A_PlaySound("weapons/vulcanette",invoker.weaponstatus[4]);
 
 		int cm=countinv("IsMoving");if(
