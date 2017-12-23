@@ -274,10 +274,10 @@ class HDWeapon:Weapon{
 		---- A 1 A_Raise(-2);
 		---- AA 1 A_Raise(-1);
 		---- AA 1 {
-			ACS_NamedExecuteAlways("MuzzleClimb",0,-8,-3);
+			A_MuzzleClimb(0.3,0.8);
 			A_Raise(-1);
 		}
-		---- AA 1 ACS_NamedExecuteAlways("MuzzleClimb",0,4,1);
+		---- AA 1 A_MuzzleClimb(-0.1,-0.4);
 		---- AA 1 A_Raise();
 		---- A 1 A_Raise();
 		---- A 1 A_Raise(12);
@@ -291,11 +291,11 @@ class HDWeapon:Weapon{
 		---- A 1 A_Lower(-2);
 		---- AA 1 A_Lower(-1);
 		---- AA 1{
-			ACS_NamedExecuteAlways("MuzzleClimb",0,-8,-3);
+			A_MuzzleClimb(0.3,0.8);
 			A_Lower(-1);
 		}
 		---- AA 1{
-			ACS_NamedExecuteAlways("MuzzleClimb",0,4,1);
+			A_MuzzleClimb(-0.1,-0.4);
 			A_Lower(2);
 		}
 		---- AAAA 1 A_Lower();
