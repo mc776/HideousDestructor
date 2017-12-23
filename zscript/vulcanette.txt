@@ -1,14 +1,6 @@
 // ------------------------------------------------------------
 // Vulcanette
 // ------------------------------------------------------------
-/*
-	[0] flags
-	[too many fuckin' mags and chambers lol, put 'em in another array]
-	[1] battery, -1 is no battery loaded
-	[2] zoom
-	[3] heat
-	[4] channel
-*/
 enum vulcstatus{
 	VULCF_FAST=1,
 	VULCF_SPINNINGFAST=2,
@@ -43,7 +35,9 @@ class Vulcanette:HDWeapon{
 		super.postbeginplay();
 		if(owner&&owner.player){
 			if(cvar.getcvar("hd_vulcsuper",owner.player).getint())weaponstatus[0]|=VULCF_FAST;
-			weaponstatus[2]=clamp(cvar.getcvar("hd_vulczoom",owner.player).getint(),0,27);
+			weaponstatus[VULCS_ZOOM]=clamp(
+				cvar.getcvar("hd_vulczoom",owner.player).getint(),0,27
+			);
 		}
 	}
 	states{
@@ -58,7 +52,7 @@ class Vulcanette:HDWeapon{
 	droop:
 		TNT1 A 1{
 			if(pitch<5&&(!countinv("IsSupported"))){
-				if(countinv("IsMoving")>2 && countinv("PowerStrength")<1){  
+				if(countinv("IsMoving")>2 && countinv("PowerStrength")<1){    
 					A_MuzzleClimb(frandom(-0.1,0.1),
 						frandom(0.1,clamp(1-pitch,0.1,0.3)));
 				}else{
@@ -74,7 +68,7 @@ class Vulcanette:HDWeapon{
 		VULG A 1 A_WeaponReady(WRF_NOFIRE);
 		VULG A 0{
 			if(!countinv("IsSupported"))A_GiveInventory("WeaponBusy",1);
-			if(countinv("PressingFire")||countinv("PressingAltfire"))
+			if(PressingFire()||PressingAltfire())
 				setweaponstate("zoomclick");
 			else if(countinv("PressingZoom"))
 				setweaponstate("zoomadjust");
@@ -82,14 +76,14 @@ class Vulcanette:HDWeapon{
 		}
 	zoomclick:
 		VULG A 0{
-			int iws=invoker.weaponstatus[2]+1;
-			if(countinv("PressingAltFire"))iws-=2;
-			invoker.weaponstatus[2]=clamp(iws,0,27);
+			int iws=invoker.weaponstatus[VULCS_ZOOM]+1;
+			if(PressingAltfire())iws-=2;
+			invoker.weaponstatus[VULCS_ZOOM]=clamp(iws,0,27);
 		}goto zoomadjust;
 	zoomclicked:
 		VULG A 1{
 			A_WeaponReady(WRF_NOFIRE);
-			if(!countinv("PressingFire")&&!countinv("PressingAltfire"))
+			if(!PressingFire()&&!PressingAltfire())
 			setweaponstate("zoomadjust");
 		}goto zoomclicked;
 
@@ -110,32 +104,32 @@ class Vulcanette:HDWeapon{
 	fire:
 		VULG A 1{
 			A_WeaponReady(WRF_NONE);
-			if(invoker.weaponstatus[1]>0 && !random(0,700))invoker.weaponstatus[1]--;  
+			if(invoker.weaponstatus[VULCS_BATTERY]>0 && !random(0,700))invoker.weaponstatus[VULCS_BATTERY]--;    
 		}goto shoot;
 	hold:
 		VULG A 0{
-			if(invoker.weaponstatus[1]<1)setweaponstate("nope");
+			if(invoker.weaponstatus[VULCS_BATTERY]<1)setweaponstate("nope");
 		}
 	shoot:
 		VULG A 2{
 			A_WeaponReady(WRF_NONE);
 			if(
-				invoker.weaponstatus[1]>0  
+				invoker.weaponstatus[VULCS_BATTERY]>0    
 				&&!random(0,invoker.weaponstatus[0]&VULCF_SPINNINGFAST?200:210)
-			)invoker.weaponstatus[1]--;
+			)invoker.weaponstatus[VULCS_BATTERY]--;
 			invoker.weaponstatus[0]&=~VULCF_SPINNINGFAST;
 
 			//check speed and then shoot
 			if(
 				invoker.weaponstatus[0]&VULCF_FAST &&
-				invoker.weaponstatus[1]>=4 &&  
+				invoker.weaponstatus[VULCS_BATTERY]>=4 &&    
 				invoker.vulcchamber[0]
 			){
 				A_SetTics(1);
 				invoker.weaponstatus[0]|=VULCF_SPINNINGFAST;
-			}else if(invoker.weaponstatus[1]<2){
+			}else if(invoker.weaponstatus[VULCS_BATTERY]<2){
 				A_SetTics(random(3,4));
-			}else if(invoker.weaponstatus[1]<3){
+			}else if(invoker.weaponstatus[VULCS_BATTERY]<3){
 				A_SetTics(random(2,3));
 			}
 			VulcShoot();
@@ -151,15 +145,15 @@ class Vulcanette:HDWeapon{
 				A_SetTics(1);
 				VulcShoot(true);
 				VulcNextRound();
-			}else if(invoker.weaponstatus[1]<2){
+			}else if(invoker.weaponstatus[VULCS_BATTERY]<2){
 				A_SetTics(random(3,4));
-			}else if(invoker.weaponstatus[1]<3){
+			}else if(invoker.weaponstatus[VULCS_BATTERY]<3){
 				A_SetTics(random(2,3));
 			}
 		}
 		VULG B 1{
 			A_WeaponReady(WRF_NONE);
-			if(invoker.weaponstatus[1]<1)setweaponstate("spindown");
+			if(invoker.weaponstatus[VULCS_BATTERY]<1)setweaponstate("spindown");
 			else A_Refire("holdswap");
 		}goto spindown;
 	holdswap:
@@ -193,7 +187,7 @@ class Vulcanette:HDWeapon{
 		---- A 0{
 			A_MuzzleClimb(0,0,-frandom(0.1,0.3),-frandom(0.4,0.8));
 			A_ZoomFactor(0.99,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
-			HDFlashAlpha(invoker.weaponstatus[3]*48);
+			HDFlashAlpha(invoker.weaponstatus[VULCS_HEAT]*48);
 		}
 		---- A 1 bright A_Light2();
 		TNT1 A 0{
@@ -213,7 +207,7 @@ class Vulcanette:HDWeapon{
 					&&invoker.vulcmag[1]>0
 					&&invoker.vulcmag[2]>0
 					&&invoker.vulcmag[3]>0
-					&&invoker.vulcmag[4]>0  
+					&&invoker.vulcmag[4]>0    
 				)
 			)setweaponstate("nope");else{
 				invoker.weaponstatus[0]&=~(VULCF_JUSTUNLOAD|VULCF_LOADCELL);
@@ -226,7 +220,7 @@ class Vulcanette:HDWeapon{
 			if(
 				//abort if full battery loaded or no spares
 				(
-					invoker.weaponstatus[1]>=20  
+					invoker.weaponstatus[VULCS_BATTERY]>=20    
 				)||(
 					!countinv("HDCellPacks")
 					&&!countinv("HDCellAmmo")
@@ -247,7 +241,7 @@ class Vulcanette:HDWeapon{
 	cellunload:
 		VULG A 0{
 			//abort if no cell to unload
-			if(invoker.weaponstatus[1]<0)
+			if(invoker.weaponstatus[VULCS_BATTERY]<0)
 			setweaponstate("nope");else{
 				invoker.weaponstatus[0]|=VULCF_JUSTUNLOAD;
 				invoker.weaponstatus[0]|=VULCF_LOADCELL;
@@ -259,12 +253,12 @@ class Vulcanette:HDWeapon{
 	lowertoopen:
 		VULG A 2 offset(0,36);
 		VULG A 2 offset(4,38){
-			A_PlaySound("weapons/rifleclick2");
+			A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
 			A_MuzzleClimb(-frandom(1.2,1.8),-frandom(1.8,2.4));
 		}
-		VULG A 6 offset(9,41)A_PlaySound("weapons/pocket");
-		VULG A 8 offset(12,43)A_PlaySound("weapons/huntreload");
-		VULG A 5 offset(10,41)A_PlaySound("weapons/grenopen");
+		VULG A 6 offset(9,41)A_PlaySound("weapons/pocket",CHAN_AUTO);
+		VULG A 8 offset(12,43)A_PlaySound("weapons/huntreload",CHAN_WEAPON);
+		VULG A 5 offset(10,41)A_PlaySound("weapons/grenopen",CHAN_AUTO);
 		VULG A 0{
 			if(invoker.weaponstatus[0]&VULCF_LOADCELL)setweaponstate("uncell");
 			else if(invoker.weaponstatus[0]&VULCF_JUSTUNLOAD)setweaponstate("unmag");
@@ -272,20 +266,20 @@ class Vulcanette:HDWeapon{
 
 	uncell:
 		VULG A 10 offset(11,42){
-			if(invoker.weaponstatus[1]<0)setweaponstate("cellout");
+			if(invoker.weaponstatus[VULCS_BATTERY]<0)setweaponstate("cellout");
 			else if(
 				(
-					!countinv("PressingUnload")
+					!PressingUnload()
 					&&!countinv("PressingAltReload")
-					&&!countinv("PressingReload")
+					&&!PressingReload()
 				)||(
-					invoker.weaponstatus[1]<20
-					&& countinv("HDCellAmmo")+invoker.weaponstatus[1]>AmmoCap("HDCellAmmo")
+					invoker.weaponstatus[VULCS_BATTERY]<20
+					&& countinv("HDCellAmmo")+invoker.weaponstatus[VULCS_BATTERY]>AmmoCap("HDCellAmmo")
 				)||(
-					invoker.weaponstatus[1]>=20  
+					invoker.weaponstatus[VULCS_BATTERY]>=20    
 					&& A_JumpIfInventory("HDCellPacks",0,"null")
 				)||(
-					!invoker.weaponstatus[1]
+					!invoker.weaponstatus[VULCS_BATTERY]
 					&& A_JumpIfInventory("HDCellPackEmpty",0,"null")
 				)
 			){
@@ -296,8 +290,8 @@ class Vulcanette:HDWeapon{
 					vel.x,vel.y,vel.z,
 					0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
 				);
-				a.stamina=invoker.weaponstatus[1];
-				invoker.weaponstatus[1]=-1;
+				a.stamina=invoker.weaponstatus[VULCS_BATTERY];
+				invoker.weaponstatus[VULCS_BATTERY]=-1;
 				setweaponstate("cellout");
 			}else setweaponstate("pocketcell");
 		}
@@ -305,10 +299,10 @@ class Vulcanette:HDWeapon{
 	pocketcell:
 		VULG A 10 offset(11,42){
 			A_PlaySound("weapons/pocket",CHAN_WEAPON);
-			if(invoker.weaponstatus[1]>=20)A_GiveInventory("HDCellPacks",1);  
-			else if(!invoker.weaponstatus[1])A_GiveInventory("HDCellPackEmpty",1);
-			else A_GiveInventory("HDCellAmmo",invoker.weaponstatus[1]);
-			invoker.weaponstatus[1]=-1;
+			if(invoker.weaponstatus[VULCS_BATTERY]>=20)A_GiveInventory("HDCellPacks",1);    
+			else if(!invoker.weaponstatus[VULCS_BATTERY])A_GiveInventory("HDCellPackEmpty",1);
+			else A_GiveInventory("HDCellAmmo",invoker.weaponstatus[VULCS_BATTERY]);
+			invoker.weaponstatus[VULCS_BATTERY]=-1;
 		}goto cellout;
 
 	cellout:
@@ -316,11 +310,11 @@ class Vulcanette:HDWeapon{
 	loadcell:
 		VULG A 0{
 			if(countinv("HDCellPacks")){
-				invoker.weaponstatus[1]=20;
+				invoker.weaponstatus[VULCS_BATTERY]=20;
 				A_TakeInventory("HDCellPacks",1,TIF_NOTAKEINFINITE);
 			}else{
 				int lod=min(random(1,19),countinv("HDCellAmmo"));
-				invoker.weaponstatus[1]=lod;
+				invoker.weaponstatus[VULCS_BATTERY]=lod;
 				A_TakeInventory("HDCellAmmo",lod,TIF_NOTAKEINFINITE);
 			}
 		}goto reloadend;
@@ -348,7 +342,7 @@ class Vulcanette:HDWeapon{
 				invoker.vulcmag[3]<0&&
 				invoker.vulcmag[4]<0
 			){
-				if(invoker.weaponstatus[1]>=0)setweaponstate("cellunload");  
+				if(invoker.weaponstatus[VULCS_BATTERY]>=0)setweaponstate("cellunload");    
 				else setweaponstate("unchamber");
 			}
 		}
@@ -356,21 +350,23 @@ class Vulcanette:HDWeapon{
 		//if there's no mag2 but stuff after that, shunt everything over until there is.
 		//if there's nothing but mag1, unload mag1.
 		VULG A 6 offset(10,40){
-			if(!(invoker.weaponstatus[0]&VULCF_JUSTUNLOAD))setweaponstate("loadmag");
+			if(
+				!invoker.weaponstatus[0]&VULCF_JUSTUNLOAD
+			)setweaponstate("loadmag");
 			A_PlaySound("weapons/rifleload");
 			A_MuzzleClimb(-frandom(1.2,1.8),-frandom(1.8,2.4));
 		}
 	//remove mag #2 first, #1 only if out of options
 	unmag0:
 		VULG A 0{
-			if(invoker.vulcmag[1]>=0)setweaponstate("unmag2");  
+			if(invoker.vulcmag[1]>=0)setweaponstate("unmag2");    
 			else if(
 				invoker.vulcmag[2]>=0||
 				invoker.vulcmag[3]>=0||
-				invoker.vulcmag[4]>=0
+				invoker.vulcmag[4]>=0  
 			)setweaponstate("unmagshunt");
 			else if(
-				invoker.vulcmag[0]>=0  
+				invoker.vulcmag[0]>=0    
 			)setweaponstate("unmag1");
 		}goto reloadend;
 	unmagshunt:
@@ -391,13 +387,13 @@ class Vulcanette:HDWeapon{
 			if(
 				!mg1
 				||(
-					!countinv("PressingUnload")
-					&&!countinv("PressingReload")
+					!PressingUnload()
+					&&!PressingReload()
 				)||(
-					mg1>50
+					mg1>50  
 					&&A_JumpIfInventory("ZM66RifleMags",0,"null")
 				)||(
-					countinv("FourMilAmmo")+mg1>AmmoCap("FourMilAmmo")  
+					countinv("FourMilAmmo")+mg1>AmmoCap("FourMilAmmo")    
 				)
 			){
 				actor a;int b;
@@ -409,7 +405,7 @@ class Vulcanette:HDWeapon{
 				a.stamina=mg1;
 				setweaponstate("mag2out");
 			}else{
-				if(mg1>50)A_GiveInventory("ZM66RifleMags",1);  
+				if(mg1>50)A_GiveInventory("ZM66RifleMags",1);    
 				else A_GiveInventory("FourMilAmmo",mg1);
 				setweaponstate("pocketmag");
 			}
@@ -421,13 +417,13 @@ class Vulcanette:HDWeapon{
 			if(
 				!mg0
 				||(
-					!countinv("PressingUnload")
-					&&!countinv("PressingReload")
+					!PressingUnload()
+					&&!PressingReload()
 				)||(
-					mg0>50  
+					mg0>50    
 					&&A_JumpIfInventory("ZM66RifleMags",0,"null")
 				)||(
-					countinv("FourMilAmmo")+mg0>AmmoCap("FourMilAmmo")
+					countinv("FourMilAmmo")+mg0>AmmoCap("FourMilAmmo")  
 				)
 			){
 				actor a;int b;
@@ -439,7 +435,7 @@ class Vulcanette:HDWeapon{
 				a.stamina=mg0;
 				setweaponstate("mag2out");
 			}else{
-				if(mg0>50)A_GiveInventory("ZM66RifleMags",1);  
+				if(mg0>50)A_GiveInventory("ZM66RifleMags",1);    
 				else A_GiveInventory("FourMilAmmo",mg0);
 				setweaponstate("pocketmag");
 			}
@@ -486,22 +482,37 @@ class Vulcanette:HDWeapon{
 			else if(invoker.vulcmag[2]<0)magslot=2;
 			else if(invoker.vulcmag[3]<0)magslot=3;
 			else if(invoker.vulcmag[4]<0)magslot=4;
+			else{
+				//mag1 is loaded but empty
+				actor a;int b;
+				[b,a]=A_SpawnItemEx("HD4mmMag",
+					cos(pitch)*8,0,height-10-8*sin(pitch),
+					vel.x,vel.y,vel.z,0,
+					SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
+				);
+				a.stamina=0;
+				A_SetTics(9);
+				magslot=0;
+			}
 
 			if(lod<51)invoker.vulcmag[magslot]=100+lod;
 			else invoker.vulcmag[magslot]=51;
 
-			A_MuzzleClimb(-frandom(1.,1.2),-frandom(0.5,0.7));
+			A_MuzzleClimb(-frandom(0.4,0.8),-frandom(0.5,0.7));
 		}
 		VULG A 8 offset(9,38){
 			A_PlaySound("weapons/rifleclick");
-			A_MuzzleClimb(-frandom(1.0,1.2),-frandom(0.5,0.7));
+			A_MuzzleClimb(
+				-frandom(0.2,0.8),-frandom(0.2,0.3)
+				-frandom(0.2,0.8),-frandom(0.2,0.3)
+			);
 		}
 		VULG A 0{
 			if(
 				(
-					countinv("PressingReload")
-					||countinv("PressingUnload")
-					||countinv("PressingFire")
+					PressingReload()
+					||PressingUnload()
+					||PressingFire()
 				)||(
 					!countinv("ZM66RifleMags")
 					&&!countinv("FourMilAmmo")
@@ -510,7 +521,7 @@ class Vulcanette:HDWeapon{
 					&&invoker.vulcmag[1]>=0
 					&&invoker.vulcmag[2]>=0
 					&&invoker.vulcmag[3]>=0
-					&&invoker.vulcmag[4]>=0  
+					&&invoker.vulcmag[4]>=0    
 					
 				)
 			)setweaponstate("reloadend");
@@ -520,19 +531,11 @@ class Vulcanette:HDWeapon{
 		VULC A -1;
 	}
 
-	/*
-		[0] flags
-		[too many fuckin' mags and chambers lol, put 'em in another array]
-		[1] battery, -1 is no battery loaded
-		[2] zoom
-		[3] heat
-		[4] channel
-	*/
 	int vulcmag[5]; //-1 is no mag loaded; 100+ is jailbroken mag
 	int vulcchamber[5]; //2 is broken round
 
 	override void InitializeWepStats(bool idfa=false){
-		weaponstatus[1]=20;
+		weaponstatus[VULCS_BATTERY]=20;
 		for(int i=0;i<5;i++)vulcmag[i]=51;
 		if(idfa)for(int i=0;i<5;i++)vulcchamber[i]=1;
 	}
@@ -544,11 +547,11 @@ class Vulcanette:HDWeapon{
 		if(flash2)A_GunFlash("flash2");else A_GunFlash("flash");
 
 		if(invoker.weaponstatus[0]&VULCF_FAST){
-			if(invoker.weaponstatus[4]>7)invoker.weaponstatus[4]=4;
-			else if(invoker.weaponstatus[4]==1)invoker.weaponstatus[4]=5;
-			else invoker.weaponstatus[4]++;
-		}else invoker.weaponstatus[4]=CHAN_WEAPON;
-		A_PlaySound("weapons/vulcanette",invoker.weaponstatus[4]);
+			if(invoker.weaponstatus[VULCS_CHANNEL]>7)invoker.weaponstatus[VULCS_CHANNEL]=4;  
+			else if(invoker.weaponstatus[VULCS_CHANNEL]==1)invoker.weaponstatus[VULCS_CHANNEL]=5;
+			else invoker.weaponstatus[VULCS_CHANNEL]++;
+		}else invoker.weaponstatus[VULCS_CHANNEL]=CHAN_WEAPON;
+		A_PlaySound("weapons/vulcanette",invoker.weaponstatus[VULCS_CHANNEL]);
 
 		int cm=countinv("IsMoving");if(
 			invoker.weaponstatus[0]&VULCF_FAST
@@ -560,16 +563,16 @@ class Vulcanette:HDWeapon{
 		actor b=spawn("HDBullet426",pos+(0,0,height-8));
 		b.target=self;b.vel+=vel;b.angle=angle+offx;b.pitch=pitch+offy;
 
-		int heat=min(50,invoker.weaponstatus[3]);
-		if(heat>20)b.vel+=(frandom(-heat,heat),frandom(-heat,heat),frandom(-heat,heat))*0.1;  
-		invoker.weaponstatus[3]+=2;
+		int heat=min(50,invoker.weaponstatus[VULCS_HEAT]);
+		if(heat>20)b.vel+=(frandom(-heat,heat),frandom(-heat,heat),frandom(-heat,heat))*0.1;    
+		invoker.weaponstatus[VULCS_HEAT]+=2;
 
-		if(random(0,8192)<min(10,heat))invoker.weaponstatus[1]++;
+		if(random(0,8192)<min(10,heat))invoker.weaponstatus[VULCS_BATTERY]++;
 
 		invoker.vulcchamber[0]=0;
 	}
 	action void VulcNextMag(){
-		if(invoker.vulcmag[0]>=0){  
+		if(invoker.vulcmag[0]>=0){    
 			double cp=cos(pitch);double ca=cos(angle);
 			double sp=sin(pitch);double sa=sin(angle);
 			actor mmm=spawn("HD4mmMag",pos+(
@@ -592,7 +595,7 @@ class Vulcanette:HDWeapon{
 	action void VulcNextRound(){
 		if(invoker.vulcchamber[0]){
 			//spit out a misfired, wasted or broken round
-			if(invoker.vulcchamber[0]>1){  
+			if(invoker.vulcchamber[0]>1){    
 				for(int i=0;i<5;i++){
 					A_SpawnItemEx("TinyWallChunk",3,0,height-18,
 						random(4,7),random(-2,2),random(-2,1),
@@ -619,11 +622,11 @@ class Vulcanette:HDWeapon{
 		//figure out what's in the mag and load it to the final chamber
 		int inmag=max(0,invoker.vulcmag[0]);
 		if(inmag>100)inmag-=100;
-		if(inmag>0){  
+		if(inmag>0){    
 			A_PlaySound("weapons/rifleclick2",CHAN_BODY);
 			invoker.vulcchamber[4]++;
 			if(random(1,1000)<=
-				1+(invoker.vulcmag[0]>100)?(invoker.weaponstatus[0]&VULCF_FAST?13:9):0  
+				1+(invoker.vulcmag[0]>100)?(invoker.weaponstatus[0]&VULCF_FAST?13:9):0    
 			)invoker.vulcchamber[4]++;
 			invoker.vulcmag[0]--;
 		}else invoker.vulcchamber[4]=0;
