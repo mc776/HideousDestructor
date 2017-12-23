@@ -457,6 +457,11 @@ class HDPlayerPawn:PlayerPawn{
 						){
 							corpsekicktimer=17+unstablewoundcount*0.5;
 							A_SpawnItemEx("KickProjectile",0,0,4,vel.x,vel.y,vel.z,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);
+						}else{
+							double forc=0.4;if(zerk>0)forc=1.2;
+							corpsekicktimer=20+unstablewoundcount*0.6;
+							vel-=(k.vel+(0,0,4))*forc;
+							k.blockingmobj.A_PlaySound("misc/punch");
 						}
 						fatigue++;bloodpressure++;
 						stunned+=2;
