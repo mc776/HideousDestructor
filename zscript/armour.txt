@@ -100,8 +100,30 @@ class HDArmourPickup:HDUPK{
 	give:
 		---- A 0{
 			if(target.countinv("StoredArmour")){
-				setstatelabel("spawn");
-				return;
+				if(
+					!target.countinv("BlackArmour")
+					&&!target.countinv("GreenArmour")
+					&&!target.countinv("BlueArmour")
+					&&!target.countinv("WornRadsuit")
+				){
+					HDF.TransferFire(self,target);
+					class<inventory> at="GreenArmour";
+					if(countinv("BlackArmour"))at="BlackArmour";
+					else if(countinv("BlueArmour"))at="BlueArmour";
+					target.A_GiveInventory(at,stamina);
+
+					target.A_TakeInventory("SpiritualArmour");
+					target.A_SetBlend("00 00 00",1,6,"00 00 00");
+					target.A_PlaySound("weapons/pocket");
+					target.A_ChangeVelocity(0,0,2);
+					let onr=HDPlayerPawn(target);
+					if(onr)onr.stunned+=40;
+
+					destroy();return;
+				}else{
+					setstatelabel("spawn");
+					return;
+				}
 			}
 			HDF.TransferFire(self,target);
 			A_PlaySound("weapons/pocket");
