@@ -43,6 +43,7 @@ const BLOX_FRAG=BLOX_ROCKET*1.2;
 
 
 extend class HDPlayerPawn{
+	double blox;
 	double CheckEncumbrance(){
 		if(!deathmatch && !hd_carrylimit && skill<5){
 			A_TakeInventory("Backpack");
@@ -60,7 +61,7 @@ extend class HDPlayerPawn{
 				int blx=0;
 				if(hdw is "Lumberjack"){
 					blx+=100;
-					if(hdw.weaponstatus[1]>=0)blx+=BLOX_BATTERY_LOADED;
+					if(hdw.weaponstatus[CSAWS_BATTERY]>=0)blx+=BLOX_BATTERY_LOADED;
 				}else if(hdw is "HDPistol"){
 					blx+=30+hdw.weaponstatus[PISS_MAG]*BLOX_9MAG_LOADED;
 				}else if(hdw is "HDSMG"){
@@ -182,7 +183,7 @@ extend class HDPlayerPawn{
 		;
 
 		A_SetInventory("Backpack",countinv("HDBackpack"));
-		carrymax=
+		double carrymax=
 			360+
 			countinv("PowerStrength")*100+
 			min(regenblues,150)+

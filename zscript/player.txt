@@ -20,7 +20,6 @@ class HDPlayerPawn:PlayerPawn{
 	bool barehanded;
 	
 	double overloaded;
-	double blox;double carrymax;
 
 	bool mustwalk;bool cansprint;
 	int runwalksprint;
@@ -303,14 +302,17 @@ class HDPlayerPawn:PlayerPawn{
 				stimcount>10||
 				fatigue<HDCONST_SPRINTFATIGUE
 			)
-			&&!countinv("WornRadsuit")
 		)cansprint=true;else cansprint=false;
 
 		//encumbrance
-		double maxspeed=(
+		double maxspeed=min(
 			2.8
 			*(countinv("PowerStrength")?1.5:1.)
-			*(height<40?0.6:1.)
+			*(height<40?0.6:1.),
+			countinv("WornRadsuit")?1.8:
+			(countinv("BlackArmour")?2.2:
+			(countinv("BlueArmour")?2.6:
+			countinv("GreenArmour")?3.0:999.))
 		);
 		if(overloaded>0){
 			maxspeed=max(0.1,4.-overloaded);
