@@ -47,9 +47,9 @@ extend class HDStatusBar{
 					scale:(2.6,2.7)
 				);
 				double degree=(35-wp.weaponstatus[ZM66S_ZOOM])*0.2;
-				texman.setcameratotexture(hpc,"TCAMTEX3",degree);
+				texman.setcameratotexture(hpc,"HDXHCAM3",degree);
 				drawimage(
-					"TCAMTEX3",(0,47),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					"HDXHCAM3",(0,47),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 					alpha:0.9,scale:(0.31,0.31)
 				);
 				drawimage(
@@ -67,9 +67,9 @@ extend class HDStatusBar{
 				alpha:0.8,scale:(1.7,1.7)
 			);
 			double degree=(35-wp.weaponstatus[2])*0.2;
-			texman.setcameratotexture(hpc,"TCAMTEX3",degree);
+			texman.setcameratotexture(hpc,"HDXHCAM3",degree);
 			drawimage(
-				"TCAMTEX3",(0,47),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+				"HDXHCAM3",(0,47),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 				alpha:0.9,scale:(0.31,0.31)
 			);
 			drawimage(
@@ -92,12 +92,12 @@ extend class HDStatusBar{
 				scale:(1.6,1.6)
 			);
 			else if(wp.weaponstatus[0]&RLF_ZOOM){
-				texman.setcameratotexture(hpc,"TCAMTEX5",2.2);
+				texman.setcameratotexture(hpc,"HDXHCAM5",2.2);
 				int cx, cy, cw, ch;
 				[cx,cy,cw,ch]=screen.GetClipRect();
 				SetClipRect(302,179,36,57);
 				drawimage(
-					"TCAMTEX5",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					"HDXHCAM5",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 					alpha:0.9,scale:(0.35,0.35)
 				);
 				screen.SetClipRect(cx,cy,cw,ch);
@@ -116,9 +116,9 @@ extend class HDStatusBar{
 				"XH26",(0,1),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 				scale:(5,1)
 			);
-			texman.setcameratotexture(hpc,"TCAMTEX1",3);
+			texman.setcameratotexture(hpc,"HDXHCAM1",3);
 			drawimage(
-				"TCAMTEX1",(0,36),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+				"HDXHCAM1",(0,36),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 				alpha:0.9,scale:(1,1)
 			);
 			drawimage(
@@ -139,9 +139,9 @@ extend class HDStatusBar{
 					scale:(2.5,2.5)
 				);
 				double degree=(35-wp.weaponstatus[LIBS_ZOOM])*0.2;
-				texman.setcameratotexture(hpc,"TCAMTEX3",degree);
+				texman.setcameratotexture(hpc,"HDXHCAM3",degree);
 				drawimage(
-					"TCAMTEX3",(0,60),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					"HDXHCAM3",(0,60),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 					scale:(0.4,0.4)
 				);
 				drawimage(
@@ -159,12 +159,12 @@ extend class HDStatusBar{
 		}
 		else if((wp is "Brontornis")&&ismoving<10){
 			if(wp.weaponstatus[0]&BRONF_ZOOM){
-				texman.setcameratotexture(hpc,"TCAMTEX5",1.6);
+				texman.setcameratotexture(hpc,"HDXHCAM5",1.6);
 				int cx,cy,cw,ch;
 				[cx,cy,cw,ch]=screen.GetClipRect();
 				SetClipRect(302,179,36,57);
 				drawimage(
-					"TCAMTEX5",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					"HDXHCAM5",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 					alpha:0.9,scale:(0.35,0.35)
 				);
 				screen.SetClipRect(cx,cy,cw,ch);
@@ -185,9 +185,9 @@ extend class HDStatusBar{
 			double degree;
 			if(wp.weaponstatus[0]&BOSSF_FRONTRETICLE){
 				degree=4.-0.05*wp.weaponstatus[BOSSS_ZOOM];
-				texman.setcameratotexture(hpc,"TCAMTEX3",degree);
+				texman.setcameratotexture(hpc,"HDXHCAM3",degree);
 				drawimage(
-					"TCAMTEX3",(0,68),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					"HDXHCAM3",(0,68),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 					scale:(0.5,0.5)
 				);
 				int cx,cy,cw,ch;
@@ -205,9 +205,9 @@ extend class HDStatusBar{
 				);
 			}else{
 				degree=6.-0.1*wp.weaponstatus[BOSSS_ZOOM];
-				texman.setcameratotexture(hpc,"TCAMTEX3",degree);
+				texman.setcameratotexture(hpc,"HDXHCAM3",degree);
 				drawimage(
-					"TCAMTEX3",(0,68),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					"HDXHCAM3",(0,68),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 					scale:(0.5,0.5)
 				);
 				drawimage(
