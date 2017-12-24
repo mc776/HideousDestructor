@@ -185,8 +185,8 @@ extend class HDPlayerPawn{
 		carrymax=
 			360+
 			countinv("PowerStrength")*100+
-			countinv("RegenBlues")+
-			countinv("RegenStims")*2+
+			min(regenblues,150)+
+			stimcount*2+
 			+countinv("HDBackpack")*100
 		;
 		return blox/carrymax;
