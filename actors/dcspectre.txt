@@ -191,8 +191,8 @@ ACTOR NinjaPirate //replaces Spectre
 		SARG EEF 1{
 			A_FaceTarget;
 			A_ChangeVelocity(1,0,0,CVF_RELATIVE);
-			if(random(1,20)==1){A_Pain;}else if(random(1,10)==1){A_PlaySound("babuin/bite");}
-			if(random(1,240)<=1+countinv("IsTurning",AAPTR_TARGET)*2){
+			if(!random(0,19)){A_Pain;}else if(random(1,10)==1){A_PlaySound("babuin/bite");}
+			if(!random(0,200)){
 				A_ChangeVelocity(-1,0,0,CVF_RELATIVE);
 				A_ChangeVelocity(-2,0,2,CVF_RELATIVE,AAPTR_TARGET);
 				return state("see");
