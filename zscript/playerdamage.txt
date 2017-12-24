@@ -357,8 +357,10 @@ extend class HDPlayerPawn{
 				A_SetPitch(pitch+random(-4,4),SPF_FORCECLAMP|SPF_INTERPOLATE);
 				A_SetAngle(angle+random(-4,4),SPF_INTERPOLATE);
 				A_TakeInventory("PowerFrightener");
-				A_TakeInventory("NotShot");
 				A_TakeInventory("SpiritualArmour",1);
+				if(
+					player&&hdweapon(player.readyweapon)
+				)hdweapon(player.readyweapon).notshot=0;
 			}
 		}
 		#### G 3 A_Pain();
@@ -368,7 +370,9 @@ extend class HDPlayerPawn{
 			if(bloodpressure<40)bloodpressure+=2;
 			if(beatmax>20)beatmax=max(beatmax-2,18);
 			A_SetBlend("00 00 00",0.8,40,"00 00 00");
-			A_TakeInventory("NotShot");
+			if(
+				player&&hdweapon(player.readyweapon)
+			)hdweapon(player.readyweapon).notshot=0;
 		}
 		#### G 3 A_Pain();
 		---- A 0 setstatelabel("spawn");

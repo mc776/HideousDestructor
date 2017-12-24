@@ -205,7 +205,6 @@ class DragonGuard:Chaingunguy{
 
 	death:
 		CPOS H 5{
-			A_GivetoTarget("HDKillCount",1);
 			hdmobai.CorpseFlags(self);
 			A_SpawnItemEx("tempshield",0,0,0,vel.x,vel.y,vel.z,0,40);
 		}
@@ -242,7 +241,6 @@ class DragonGuard:Chaingunguy{
 		CPOS O 5{
 			bshootable=false;
 			A_GiveInventory("IsGibbed");
-			A_GivetoTarget("HDKillCount",1);
 		}
 		CPOS P 3{
 			A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);

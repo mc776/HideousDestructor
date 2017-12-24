@@ -167,13 +167,17 @@ class HDPlayerPawn:PlayerPawn{
 	missile:
 		#### E 4{
 			overloaded=CheckEncumbrance();
-			A_TakeInventory("NotShot");
+			if(
+				player&&hdweapon(player.readyweapon)
+			)hdweapon(player.readyweapon).notshot=0;
 			A_TakeInventory("PowerFrightener");
 		}
 		---- A 0 A_Jump(256,"spawn2");
 	melee:
 		---- A 0{
-			A_TakeInventory("NotShot");
+			if(
+				player&&hdweapon(player.readyweapon)
+			)hdweapon(player.readyweapon).notshot=0;
 			A_TakeInventory("PowerFrightener");
 			if(!random(0,5)){A_GiveInventory("EvadeNow",1,AAPTR_PLAYER_GETTARGET);}
 		}

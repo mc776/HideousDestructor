@@ -86,9 +86,8 @@ class BossRifle:HDWeapon{
 				!A_JumpIfInventory("BossClip",0,"null")
 				&&countinv("SevenMilAmmo")>=10  
 			){
-				A_GiveInventory("NotShot",1);
-				if(countinv("NotShot")>200){  
-					A_TakeInventory("NotShot");
+				if(invoker.notshot>200){  
+					invoker.notshot=0;
 					A_GiveInventory("BossClip",1);
 					A_TakeInventory("SevenMilAmmo",10);
 				}

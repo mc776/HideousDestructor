@@ -116,7 +116,6 @@ actor Babuin:ZBabuin{
 	Death:
 		TNT1 A 0 A_ChangeFlag("pushable",0)
 		"----" A 0 A_GiveInventory("HDCorpseFlags",1)
-		TNT1 A 0 A_GivetoTarget("HDKillCount",1)
 		TNT1 A 0 A_Scream
 		SRG2 I 5 A_SpawnItemEx ("tempshield2", 0,0,0, velx,vely,velz, 0,40)
 		SRG2 J 5 A_NoBlocking
@@ -163,7 +162,6 @@ actor Babuin:ZBabuin{
 	XDeath:
 		TNT1 A 0 A_GiveInventory("IsGibbed",1)
 		TNT1 A 0 A_ChangeFlag("shootable",0)
-		TNT1 A 0 A_GivetoTarget("HDKillCount",1)
 		TROO N 0 A_ChangeFlag("NODROPOFF", 0)
 		TROO N 0 A_SpawnItemEx ("MegaBloodSplatter", 0,0,34, 0,0,0, 0,160)
 		TROO O 4 A_XScream

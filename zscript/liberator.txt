@@ -137,9 +137,8 @@ class LiberatorRifle:HDWeapon{
 		BRFG A 1{
 			A_CheckAirburstCVar(LIBS_AIRBURST);
 			A_WeaponReady(WRF_ALL);
-			A_GiveInventory("NotShot",1);
-			if(countinv("NotShot")>350){  
-				A_TakeInventory("NotShot");
+			if(invoker.notshot>350){  
+				invoker.notshot=0;
 				if(
 					!A_JumpIfInventory("LiberatorMag",0,"null")
 				){

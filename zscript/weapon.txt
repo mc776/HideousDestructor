@@ -7,6 +7,7 @@ class HDWeapon:Weapon{
 	int barrelwidth;
 	int barreldepth;
 	int weaponstatus[8];
+	int notshot;
 	const WRF_ALL=WRF_ALLOWRELOAD|WRF_ALLOWZOOM|WRF_ALLOWUSER1|WRF_ALLOWUSER2|WRF_ALLOWUSER3|WRF_ALLOWUSER4;
 	const WRF_NONE=WRF_NOFIRE|WRF_DISABLESWITCH;
 	property GunDimensions: gunmass,barrellength,barrelwidth,barreldepth;
@@ -165,6 +166,7 @@ class HDWeapon:Weapon{
 
 			A_GiveInventory("WeaponBusy");
 			A_SetCrosshair(21);
+			invoker.notshot=0;
 
 			return resolvestate("select0");
 		}
@@ -329,7 +331,8 @@ class HDWeapon:Weapon{
 	ready:
 		TNT1 A 1 A_WeaponReady(WRF_ALL);
 	readyend:
-		---- A 0 {
+		---- A 0{
+			if(invoker.notshot<65535)invoker.notshot++;
 			let p=HDPlayerPawn(self);
 			if(
 				p&&!p.beatcount&&p.zerk>900
