@@ -68,15 +68,15 @@ class ZM66AssaultRifle:HDWeapon{
 		RIFG A 2 A_WeaponReady(WRF_NONE);
 		RIFG A 0{
 			A_GiveInventory("WeaponBusy");
-			if (countinv("PressingFire")||countinv("PressingAltfire")){
-				if(countinv("PressingFire"))invoker.weaponstatus[ZM66S_AIRBURST]++;
+			if (PressingFire()||PressingAltfire()){
+				if(PressingFire())invoker.weaponstatus[ZM66S_AIRBURST]++;
 				else invoker.weaponstatus[ZM66S_AIRBURST]=
 					max(0,invoker.weaponstatus[ZM66S_AIRBURST]-1);
-			}else if(countinv("PressingZoom")){
+			}else if(PressingZoom()){
 				invoker.weaponstatus[ZM66S_AIRBURST]=0;
 				setweaponstate("nope");
 			}
-			if(countinv("PressingFireMode"))setweaponstate("abadjust");
+			if(PressingFireMode())setweaponstate("abadjust");
 		}goto nope;
 
 	select0:
@@ -213,7 +213,7 @@ class ZM66AssaultRifle:HDWeapon{
 			A_TakeInventory("IsSupported");
 			A_GiveInventory("IsMoving",1);
 			if(
-				(countinv("PressingReload")||countinv("PressingUnload"))	//trying to detach
+				(PressingReload()||PressingUnload())	//trying to detach
 				&&(invoker.weaponstatus[ZM66S_MAG]>=0)	//something to detach  
 			){
 				actor mmm;int bluh;
@@ -225,7 +225,7 @@ class ZM66AssaultRifle:HDWeapon{
 				mmm.stamina=invoker.weaponstatus[ZM66S_MAG]%100;
 				invoker.weaponstatus[ZM66S_MAG]=-1;
 			}
-			else if(countinv("PressingAltfire")){
+			else if(PressingAltfire()){
 				A_Gunflash("nadeflash");
 			}
 			setweaponstate("shootgun");
@@ -303,7 +303,7 @@ class ZM66AssaultRifle:HDWeapon{
 				(
 					!invoker.weaponstatus[ZM66S_MAG]
 				)||(
-					!countinv("PressingUnload")&&!countinv("PressingReload")
+					!PressingUnload()&&!PressingReload()
 				)||(
 					(invoker.weaponstatus[ZM66S_MAG]==51)
 					&&(A_JumpIfInventory("ZM66RifleMags",0,"null"))
@@ -445,9 +445,9 @@ class ZM66AssaultRifle:HDWeapon{
 	zoom:
 		RIFG A 1 A_WeaponReady(WRF_NOFIRE);
 		RIFG A 0{
-			if(countinv("PressingFire"))invoker.weaponstatus[ZM66S_ZOOM]++;
-			else if(countinv("PressingAltFire"))invoker.weaponstatus[ZM66S_ZOOM]--;
-			else if(!countinv("PressingZoom"))setweaponstate("nope");
+			if(PressingFire())invoker.weaponstatus[ZM66S_ZOOM]++;
+			else if(PressingAltfire())invoker.weaponstatus[ZM66S_ZOOM]--;
+			else if(!PressingZoom())setweaponstate("nope");
 			invoker.weaponstatus[ZM66S_ZOOM]=clamp(invoker.weaponstatus[ZM66S_ZOOM],0,27);
 		}loop;
 
@@ -479,7 +479,7 @@ class ZM66AssaultRifle:HDWeapon{
 			}
 			invoker.weaponstatus[ZM66S_FLAGS]&=~ZM66F_GRENADELOADED;
 			if(
-				!countinv("PressingUnload")
+				!PressingUnload()
 				||A_JumpIfInventory("HDRocketAmmo",0,"null")
 			){
 				A_SpawnItemEx("HDRocketAmmo",

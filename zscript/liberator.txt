@@ -228,9 +228,9 @@ class LiberatorRifle:HDWeapon{
 	zoom:
 		BRFG A 1 A_WeaponReady(WRF_NOFIRE);
 		BRFG A 0{
-			if(countinv("PressingFire"))invoker.weaponstatus[LIBS_ZOOM]++;
-			else if(countinv("PressingAltFire"))invoker.weaponstatus[LIBS_ZOOM]--;
-			else if(!countinv("PressingZoom"))setweaponstate("nope");
+			if(PressingFire())invoker.weaponstatus[LIBS_ZOOM]++;
+			else if(PressingAltfire())invoker.weaponstatus[LIBS_ZOOM]--;
+			else if(!PressingZoom())setweaponstate("nope");
 			invoker.weaponstatus[LIBS_ZOOM]=clamp(invoker.weaponstatus[LIBS_ZOOM],0,32);
 		}loop;
 
@@ -313,8 +313,8 @@ class LiberatorRifle:HDWeapon{
 					invoker.weaponstatus[LIBS_MAG]<1
 				)||(
 					//not trying to pocket to begin with
-					!countinv("PressingReload")
-					&&!countinv("PressingUnload")
+					!PressingReload()
+					&&!PressingUnload()
 				)||(
 					//full mag and you are maxed on full mags
 					A_JumpIfInventory("LiberatorLoaded",0,"null")
@@ -405,15 +405,15 @@ class LiberatorRifle:HDWeapon{
 		BRFG A 2 A_WeaponReady(WRF_NONE);
 		BRFG A 0{
 			A_GiveInventory("WeaponBusy");
-			if (countinv("PressingFire")||countinv("PressingAltfire")){
-				if(countinv("PressingFire"))invoker.weaponstatus[LIBS_AIRBURST]++;
+			if (PressingFire()||PressingAltfire()){
+				if(PressingFire())invoker.weaponstatus[LIBS_AIRBURST]++;
 				else invoker.weaponstatus[LIBS_AIRBURST]=
 					max(0,invoker.weaponstatus[LIBS_AIRBURST]-1);
-			}else if(countinv("PressingZoom")){
+			}else if(PressingZoom()){
 				invoker.weaponstatus[LIBS_AIRBURST]=0;
 				setweaponstate("nope");
 			}
-			if(countinv("PressingFireMode"))setweaponstate("abadjust");
+			if(PressingFireMode())setweaponstate("abadjust");
 		}goto nope;
 
 
@@ -470,7 +470,7 @@ class LiberatorRifle:HDWeapon{
 		BRFG A 3 offset(-16,56){
 			if(invoker.weaponstatus[0]&LIBF_GRENADELOADED){
 				if(
-					(countinv("PressingReload")||countinv("PressingUnload"))
+					(PressingReload()||PressingUnload())
 					&&!A_JumpIfInventory("HDRocketAmmo",0,"null")
 				){
 					A_GiveInventory("HDRocketAmmo");

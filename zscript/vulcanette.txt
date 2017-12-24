@@ -70,7 +70,7 @@ class Vulcanette:HDWeapon{
 			if(!countinv("IsSupported"))A_GiveInventory("WeaponBusy",1);
 			if(PressingFire()||PressingAltfire())
 				setweaponstate("zoomclick");
-			else if(countinv("PressingZoom"))
+			else if(PressingZoom())
 				setweaponstate("zoomadjust");
 			else setweaponstate("nope");
 		}
@@ -270,7 +270,7 @@ class Vulcanette:HDWeapon{
 			else if(
 				(
 					!PressingUnload()
-					&&!countinv("PressingAltReload")
+					&&!PressingAltReload()
 					&&!PressingReload()
 				)||(
 					invoker.weaponstatus[VULCS_BATTERY]<20
@@ -329,7 +329,7 @@ class Vulcanette:HDWeapon{
 	unchamber:
 		VULG B 4 A_PlaySound("derp/crawl",CHAN_AUTO,0.3);
 		VULG A 4;
-		VULG A 0 A_JumpIfInventory("PressingUnload",1,"unchamber");
+		VULG A 0 A_JumpIf(PressingUnload(),"unchamber");
 		goto nope;
 	unmag:
 		//if no mags, remove battery

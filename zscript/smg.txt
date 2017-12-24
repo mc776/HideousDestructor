@@ -164,7 +164,7 @@ class HDSMG:HDWeapon{
 			}
 			if(
 				!invoker.weaponstatus[SMGS_MAG]
-				||(!countinv("PressingUnload")&&!countinv("PressingReload"))
+				||(!PressingUnload()&&!PressingReload())
 				||(
 					countinv("HDPistolAmmo")+invoker.weaponstatus[SMGS_MAG]
 					>AmmoCap("HDPistolAmmo")

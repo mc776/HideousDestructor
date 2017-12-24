@@ -241,26 +241,14 @@ class HDPlayerPawn:PlayerPawn{
 		if(max(abs(vel.x),abs(vel.y),abs(vel.z))>1)A_TakeInventory("IsSupported");
 
 		//add inventory flags for inputs
-		//remove ONLY when a deprecated inventory flags has been removed from all code!
-		A_TakeInventory("PressingFire");
-		A_TakeInventory("PressingAltfire");
-		A_TakeInventory("PressingReload");
-		A_TakeInventory("PressingZoom");
-		A_TakeInventory("PressingFireMode");
-		A_TakeInventory("PressingAltReload");
-		A_TakeInventory("PressingUnload");
-		if(input&BT_ATTACK)A_GiveInventory("PressingFire");
-		if(input&BT_ALTATTACK)A_GiveInventory("PressingAltfire");
-		if(input&BT_RELOAD){
-			A_GiveInventory("PressingReload",1);A_GiveInventory("WeaponBusy");}
-		if(input&BT_ZOOM){
-			A_GiveInventory("PressingZoom",1);}
-		if(input&BT_USER1){
-			A_GiveInventory("PressingAltReload",1);A_GiveInventory("WeaponBusy");}
-		if(input&BT_USER2){
-			A_GiveInventory("PressingFireMode",1);}
-		if(input&BT_USER4){
-			A_GiveInventory("PressingUnload",1);A_GiveInventory("WeaponBusy");}
+		if(
+			input&BT_RELOAD
+			||input&BT_ZOOM
+			||input&BT_USER1
+			||input&BT_USER2
+			||input&BT_USER3
+			||input&BT_USER4
+		)A_GiveInventory("WeaponBusy");
 		if(runwalksprint>=0&&(fm||sm))A_GiveInventory("IsMoving");
 
 
@@ -329,31 +317,35 @@ class HDPlayerPawn:PlayerPawn{
 		)cansprint=true;else cansprint=false;
 
 		//encumbrance
-		if(overloaded>1){
-			speed*=max(1-(overloaded*0.25),0.1);
-			if(overloaded>2.8){
+		double maxspeed=(
+			2.8
+			*(countinv("PowerStrength")?1.5:1.)
+			*(height<40?0.6:1.)
+		);
+		if(overloaded>0){
+			maxspeed=max(0.1,4.-overloaded);
+			if(maxspeed<0.36){
 				viewbob=clamp(viewbob+0.2,0,1.4);
 				mustwalk=true;
 				cansprint=false;
 			}
-			else if(overloaded>2.4){
+			else if(maxspeed<0.4){
 				viewbob=clamp(viewbob+0.1,0,1.3);
-				mustwalk=true;
 				cansprint=false;
-			}
-			else if(overloaded>2.0){
+			}else if(maxspeed<1.){
 				viewbob=clamp(viewbob+0.1,0,1.2);
 				cansprint=false;
-			}
-			else if(overloaded>1.2){
+			}else if(overloaded<1.2){
 				viewbob=clamp(viewbob+0.1,0,1.1);
 			}
 		}
 
 		//apply all movement speed modifiers
-		speed=1.;
+		speed=1.-overloaded*0.02;
+		//walk
 		if(mustwalk||runwalksprint<0)speed=0.36;
 		else if(cansprint && runwalksprint>0){
+			//sprint
 			if(!sm && fm>0)speed=2.8;
 			else speed=1.6;
 		}
@@ -367,6 +359,7 @@ class HDPlayerPawn:PlayerPawn{
 		)speed=min(speed,0.8);
 		if(countinv("PowerStrength"))speed*=1.5;
 		if(height<40)speed*=0.6;
+		speed=min(speed,maxspeed);
 
 		//then snap to 1 of only 3 speeds if necessary
 		if(multiplayer && hd_3speed){
@@ -552,7 +545,6 @@ extend class HDPlayerPawn{
 		else{
 			A_TakeInventory("WeaponBusy");
 			A_TakeInventory("IsMoving");
-			A_TakeInventory("JustUnloading");
 			A_TakeInventory("IsInHell");
 			A_TakeInventory("WipedOut");
 			A_TakeInventory("IsSupported");
