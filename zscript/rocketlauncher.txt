@@ -583,7 +583,7 @@ class Blooper:HDWeapon{
 		BLOP A -1;
 	}
 	override void InitializeWepStats(bool idfa=false){
-		weaponstatus[0]&=BLOPF_LOADED;
+		weaponstatus[0]|=BLOPF_LOADED;
 		if(!idfa && !owner){
 			weaponstatus[BLOPS_AIRBURST]=0;
 		}
