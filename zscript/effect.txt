@@ -255,22 +255,6 @@ class HDGunSmoke:HDSmoke{
 		vel+=(frandom(-0.1,0.1),frandom(-0.1,0.1),frandom(0.4,0.9));
 	}
 }
-class HDGunSmoker:IdleDummy{
-	states{
-	spawn:
-	death:
-		TNT1 A 1 nodelay{
-			for(int i=0;i<15;i+=5){
-				A_SpawnItemEx("HDGunSmoke",
-					cos(pitch)*i,0,-sin(pitch)*i,
-					cos(pitch)*4,0,-sin(pitch)*4,
-					0,SXF_NOCHECKPOSITION
-				);
-			}
-		}
-		stop;
-	}
-}
 class HDFlameRed:HDPuff{
 	default{
 		renderstyle "add";

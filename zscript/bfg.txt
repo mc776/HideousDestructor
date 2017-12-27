@@ -282,12 +282,12 @@ class BFG9K:HDWeapon replaces BFG9000{
 			else if(j<4)setweaponstate("vile");
 		}goto harmless;
 	vile:
-		TNT1 AAAAA 0 A_FireProjectile("BFGVileShard",random(170,190),-10,random(-20,20),5,0,0);
+		TNT1 AAAAA 0 A_FireProjectile("BFGVileShard",random(170,190),spawnofs_xy:random(-20,20));
 		goto batteryout;
 	yok:
-		TNT1 A 0 A_FireProjectile("YokaiSpawner",random(170,190),-10,random(-20,20),5,0,0);
+		TNT1 A 0 A_FireProjectile("YokaiSpawner",random(170,190),spawnofs_xy:random(-20,20));
 	harmless:
-		TNT1 AAAAA 0 A_FireProjectile("BFGShard",random(170,190),-10,random(-20,20),5,0,0);
+		TNT1 AAAAA 0 A_FireProjectile("BFGShard",random(170,190),spawnofs_xy:random(-20,20));
 		goto batteryout;
 	batteryout:
 		BFGG C 4 offset(0,42){
