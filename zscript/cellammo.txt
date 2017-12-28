@@ -14,7 +14,7 @@ class HDCellAmmo:Ammo{
 	}
 	override inventory createtossable(int amount){
 		inventory iii=super.createtossable(amount);
-		iii.target=owner;
+		if(iii)iii.target=owner;
 		return iii;
 	}
 	states{
@@ -23,9 +23,11 @@ class HDCellAmmo:Ammo{
 			//do not let the player choose how much they drop
 			if(target){
 				int ontarget=target.countinv("HDCellAmmo");
-				int total=amount+ontarget;
-				amount=clamp(amount+random(-10,10),1,total);
-				target.setinventory("HDCellAmmo",total-amount);
+				if(ontarget){
+					int total=amount+ontarget;
+					amount=clamp(amount+random(-10,10),1,total);
+					target.setinventory("HDCellAmmo",total-amount);
+				}
 			}
 
 			actor a;int b;

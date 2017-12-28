@@ -32,8 +32,9 @@ class HDDropOne:ActionItem{
 				if(countinv("HEATAmmo")){
 					angle+=1;
 					A_DropInventory("HDRocketAmmo",1);
+					angle-=2;
 					A_DropInventory("HEATAmmo",1);
-					angle-=1;
+					angle+=1;
 				}else A_DropInventory("HDRocketAmmo",1);
 			}
 			else if(cw=="Blooper")A_DropInventory("HDRocketAmmo",1);
@@ -51,10 +52,19 @@ class HDDropOne:ActionItem{
 				if(countinv("SevenMilAmmo"))
 					A_DropInventory("SevenMilAmmo",countinv("SevenMilAmmo"));
 				else A_DropInventory("BossClip",1);
-			}else if(cw=="ThunderBuster"||cw=="BFG9k"||cw=="Lumberjack"){
+			}else if(cw=="ThunderBuster"||cw=="Lumberjack"){
 				if(countinv("HDCellAmmo"))A_DropInventory("HDCellAmmo",countinv("HDCellAmmo"));
 				else if(countinv("HDCellPackEmpty"))A_DropInventory("HDCellPackEmpty",1);
 				else A_DropInventory("HDCellPacks",1);
+			}else if(cw=="BFG9k"){
+				if(countinv("HDCellAmmo"))A_DropInventory("HDCellAmmo",countinv("HDCellAmmo"));
+				else if(countinv("HDCellPackEmpty")){
+					angle+=1;
+					A_DropInventory("HDCellPacks",1);
+					angle-=2;
+					A_DropInventory("HDCellPackEmpty",1);
+					angle+=1;
+				}else A_DropInventory("HDCellPacks",1);
 			}else if(cw=="SelfBandage"){
 				A_DropInventory("PortableStimpack",1);
 				A_DropInventory("PortableMedikit",1);
