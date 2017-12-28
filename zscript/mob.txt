@@ -116,7 +116,7 @@ struct HDMobAI play{
 		if(pp!=pg){
 			caller.setorigin(pg,false);
 			if(caller.bfloat){
-				caller.vel+=(pp-pg)*(fraid?0.32:0.16);
+				caller.vel+=(pp-pg)*(flee?0.32:0.16);
 				if(attacktarget&&caller.pos.z-attacktarget.pos.z<attacktarget.height)
 					caller.vel.z+=frandom(0,0.1); //floaty death from above
 			}else{
@@ -125,7 +125,7 @@ struct HDMobAI play{
 		}
 
 		//face appropriate direction
-		if(attacktarget&&caller.distance3d(attacktarget)<caller.meleerange*2)
+		if(attacktarget&&caller.distance3d(attacktarget)<max(caller.meleerange*2,caller.radius*3))
 			caller.A_FaceTarget(10,10);
 		else if(caller.vel.xy!=(0,0))caller.A_FaceMovementDirection(15,40);
 
@@ -285,6 +285,9 @@ class HDMobster:IdleDummy{
 
 
 class exzo:zombieman{
+	default{
+		meleerange 64;
+	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		hdmobster.spawnmobster(self);
@@ -293,6 +296,7 @@ class exzo:zombieman{
 	see:
 		POSS AABBCCDD 4{HDMobAI.Chase(self);}
 		loop;
+	melee:
 	missile:
 		POSS E 10 A_FaceTarget();
 		POSS F 8 A_PosAttack();

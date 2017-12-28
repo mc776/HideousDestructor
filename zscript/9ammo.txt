@@ -54,9 +54,9 @@ class HDSMGMag:Ammo{
 			while(amount>0){
 				amount--;
 				actor smm=spawn("HD9mSMag",pos);
+				smm.stamina=30;
 				smm.vel=vel;
 				if(amount)smm.vel+=(frandom(-1,1),frandom(-1,1),frandom(-1,1));
-				smm.stamina=30;
 			}
 		}stop;
 	}
@@ -110,7 +110,7 @@ class HDPistolEmptyMag:HDDebris{
 		}stop;
 	}
 }
-class HD9mPmag:HDUPK replaces HDPistolMag{
+class HD9mPmag:HDUPK{
 	override void postbeginplay(){
 		super.postbeginplay();
 		if(stamina<1){
@@ -141,7 +141,7 @@ class HD9mPmag:HDUPK replaces HDPistolMag{
 		}stop;
 	}
 }
-class HD9mSmag:HDUPK replaces HDPistolMag{
+class HD9mSmag:HDUPK{
 	override void postbeginplay(){
 		super.postbeginplay();
 		if(stamina<1){
