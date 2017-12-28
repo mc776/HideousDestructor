@@ -14,7 +14,7 @@ class HDActor:Actor{
 	void nexttic(){
 		if(!CheckNoDelay()) return;
 		if(tics!=-1){
-			if(tics>0)tics--;
+			if(tics>0)tics--;  
 			while(!tics){
 				if(!SetState(CurState.NextState)){
 					return;
@@ -40,7 +40,7 @@ class HDActor:Actor{
 			||chunk.getparentclass().getparentclass()=="WallChunk"
 		){
 			int ch=hdmath.count("WallChunk");
-			if(ch>500){
+			if(ch>500){  
 				if(hd_debug)A_Log(string.format("%i is too many chunks, %s not spawned",ch,chunk.getclassname()));
 				return;
 			}
@@ -49,18 +49,13 @@ class HDActor:Actor{
 		vector3 burstpoint=self.pos+(0,0,self.height*0.5);
 		if(burstpoint.z-floorz<56) airb=-1;
 			else if(ceilingz-burstpoint.z<56) airb=1;
-		actor frg;vector3 bp;
 		for(int i=0;i<number;i++){
-			frg=spawn(chunk,burstpoint);
-			bp=(
+			actor frg=spawn(chunk,burstpoint);
+			vector3 bp=(
 				frandom(-1,1),
 				frandom(-1,1),
-				0
-			);
-			if(airb<0) bp.z=frandom(0.01,1);
-				else if(airb>0) bp.z=-frandom(0.01,1);
-				else bp.z=frandom(-1,1);
-			bp*=frandom(minvel,maxvel);
+				airb<0?frandom(0.01,1):(airb>0?-frandom(0.01,1):frandom(-1,1))
+			)*frandom(minvel,maxvel);
 			if(bp==(0,0,0))bp.z=1;
 			frg.vel=vel+bp;
 			if(frg is "HDBullet"){
@@ -69,65 +64,15 @@ class HDActor:Actor{
 			}
 		}
 	}
-	//face a specified vector. NEGATIVE Z IS DOWN.
-	//A_FaceVector((-20,90,-10),10,10,true);
-	void A_FaceVector(vector3 v,double maxangle=0,double maxpitch=0,bool relative=false){
-		double nangle=atan2(v.y,v.x);
-		double abshorz=v.xy.length();
-		double npitch=-atan2(v.z,abshorz);
-
-		//cap angle
-		double dangle=nangle-self.angle;
-		if((abs(dangle)<360-maxangle)&&(abs(dangle)>maxangle)&&(maxangle>0)){
-			if(abs(dangle)>180) dangle-=360;
-			dangle=clamp(dangle,-maxangle,maxangle);
-			nangle=self.angle+dangle;
-		}
-
-		//cap pitch
-		dangle=npitch-self.pitch;
-		if((abs(dangle)>maxpitch)&&(maxpitch>0)){
-			dangle=clamp(dangle,-maxpitch,maxpitch);
-			npitch=self.pitch+dangle;
-		}
-
-		//apply: add if relative, replace if not
-		if(relative){
-			A_SetAngle(angle+nangle,SPF_INTERPOLATE);
-			A_SetPitch(pitch+npitch,SPF_INTERPOLATE);
-		}else{
-			A_SetAngle(nangle,SPF_INTERPOLATE);
-			A_SetPitch(npitch,SPF_INTERPOLATE);
-		}
-	}
 	//very crude way to tell if someone's back is turned
 	//A_CheckBackTurned(self,self.pos,target.pos,target.angle)
 	bool A_CheckBackTurned(vector3 ownpos,vector3 tpos,double tangle){
 		if(
-			((tangle>314 || tangle<46) && ownpos.x<tpos.x) ||
+			((tangle>314||tangle<46) && ownpos.x<tpos.x) ||
 			((tangle>45 && tangle<136) && ownpos.y<tpos.y) ||
 			((tangle>135 && tangle<226) && ownpos.x>tpos.x) ||
-			((tangle>225 && tangle<316) && ownpos.y>tpos.y)
+			((tangle>225 && tangle<316) && ownpos.y>tpos.y)  
 		)return true;else return false;
-	}
-	//set a feartarget for nearby mobs
-	//A_Frighten(256); maybe 128 for bullet and 512 for plasma and bfg
-	void A_Frighten(double fraidius,actor fearsome=null){
-		if(!fearsome)fearsome=self;
-		actor hir;
-		blockthingsiterator it=blockthingsiterator.create(self,fraidius);
-		while(it.Next()){
-			hir=it.thing;
-			if(hir
-				&& hir.bIsMonster
-				&& hir.health>0
-				&& hir.CheckSight(fearsome)
-			){
-				hir.A_GiveInventory("HDMobAI");
-				HDMobAI hirai=HDMobAI(hir.findinventory("HDMobAI"));
-				if(hirai)hirai.feartarget=fearsome;
-			}
-		}
 	}
 }
 
@@ -179,7 +124,7 @@ class IdleDummy:HDActor{
 	states{
 	spawn:
 		TNT1 A -1 nodelay{
-			if(stamina>0) A_SetTics(stamina);
+			if(stamina>0) A_SetTics(stamina);  
 		}stop;
 	}
 }
@@ -223,30 +168,6 @@ struct HDMath{
 		thinkeriterator it=thinkeriterator.create(type);
 		while(it.Next(exact:exactmatch))count++;
 		return count;
-	}
-	//gets how many of an inventory are attached to a given owner.
-	//can get number of thinkers or total amount.
-	//HDMath.supercountinv(target,"parasite")
-	static int SuperCountInv(actor caller,class<inventory> type,bool geteachamount=false){
-		int count=0;
-
-		//new, unreliable? version
-		for(let probe=caller.inv;probe;probe=probe.inv){
-			if(probe is type){
-				if(geteachamount)count+=probe.amount;
-				else count++;
-			}
-		}return count;
-
-		//old version
-		thinkeriterator invfinder=thinkeriterator.create("Inventory");
-		inventory mo;
-		while(mo=inventory(invfinder.next())){
-			if(mo is type && mo.owner==caller){
-				if(geteachamount)count+=mo.amount;
-				else count++;
-			}
-		}return count;
 	}
 	//calculate the speed at which 2 actors are moving towards each other
 	static double TowardsEachOther(actor a1, actor a2){

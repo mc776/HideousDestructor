@@ -17,13 +17,13 @@ class SawGib:InventoryFlag{
 	}
 	override void doeffect(){
 		if(bmissileevenmore)return;
-		if(amount>stamina){
+		if(amount>stamina){  
 			bmissileevenmore=true;
 			actor o=owner;
 			if(
 				!owner.bcorpse
 				||!owner.bshootable
-				||owner.health>0
+				||owner.health>0  
 				||!o.findstate("xdeath",true)
 			)goawayanddie();
 			else{
@@ -36,27 +36,20 @@ class SawGib:InventoryFlag{
 		}
 	}
 }
-
-//A generic mob controller.
-//Stick this onto an actor for all sorts of fun effects!
-class HDMobAI:Inventory{
-	override void detachfromowner(){
-		if(feartarget)feartarget.destroy();
-		if(movetarget)movetarget.destroy();
-		super.detachfromowner();
+//wrapper until all monsters scriptified
+class HDCorpseFlags:ActionItem{
+	states{
+	pickup:
+		TNT1 A 0{
+			hdmobai.CorpseFlags(self);
+		}fail;
 	}
-	override void doeffect(){
-		if(!owner||owner.health<1){
-			if(feartarget)feartarget.destroy();
-			if(movetarget)movetarget.destroy();
-			destroy();
-		}
-	}
+}
 
-	actor feartarget;
-	actor movetarget;
 
-	//consolidate diversification
+//static mob functions
+struct HDMobAI play{
+	//randomize size
 	static void resize(actor caller,double minscl=0.9,double maxscl=1.,int minhealth=0){
 		double scl=frandom(minscl,maxscl);
 		caller.scale*=scl;
@@ -71,7 +64,7 @@ class HDMobAI:Inventory{
 	//"CorpseFlags" item is a wrapper for this now
 	static void CorpseFlags(actor caller){
 		caller.A_TakeInventory("SawGib");
-		if(caller.health>0){  
+		if(caller.health>0){    
 			caller.bnotautoaimed=false;
 			caller.balwaystelefrag=false;
 		}else{
@@ -82,7 +75,7 @@ class HDMobAI:Inventory{
 	}
 
 	//taking all the same flags as A_LookEx
-	static void look(
+	static void Look(
 		actor caller,
 		int flags=0,
 		float minseedist=0,
@@ -98,76 +91,36 @@ class HDMobAI:Inventory{
 	}
 
 	//smooth chase
+	//do NOT try to set targets in here, JUST do the chase sequence
 	static void Chase(actor caller,actor movetarget=null,bool res=false,bool flee=true){
 		if(caller.A_CheckBlock("null")){
 			caller.A_Wander();
 			return;
 		}
-		actor attacktarget=caller.target;
-		if(!attacktarget||attacktarget.health<random(-5,1)){
-			caller.target=null;
-			if(!caller.bfriendly){
-				caller.setstatelabel("spawn");
-				return;
-			}else if(caller.LookForEnemies(false))attacktarget=caller.target;
-		}
-		if(!movetarget)movetarget=attacktarget;
-
-		//attack as appropriate
-		double adist=attacktarget.distance3d(caller);
-		if(attacktarget&&caller.checksight(attacktarget)){
-			if(
-				caller.findstate("melee")
-				&&adist<caller.meleerange
-			){
-				caller.setstatelabel("melee");
-				return;
-			}else if(
-				caller.findstate("missile")
-				&&random(0,255)>caller.minmissilechance
-				&&(
-					!caller.maxtargetrange||
-					adist<caller.maxtargetrange
-				)
-			){
-				caller.setstatelabel("missile");
-				return;
-			}
-		}
 
 		//remember original position, etc.
 		vector3 pg=caller.pos;
 		bool fraid=caller.bfrightened;
+		actor attacktarget=caller.target;
 
 		//chase the move target and record the resulting position
-		caller.target=movetarget;
 		caller.bfrightened=flee;
-		caller.maxtargetrange=0;
-		if(movetarget)caller.A_Chase(flags:CHF_NODIRECTIONTURN|CHF_NOPOSTATTACKTURN|(res?CHF_RESURRECT:0));
+		if(attacktarget)caller.A_Chase(flags:CHF_NODIRECTIONTURN|CHF_NOPOSTATTACKTURN|(res?CHF_RESURRECT:0));
 		else caller.A_Wander(flags:CHF_NODIRECTIONTURN);
 		vector3 pp=caller.pos;
-
-		//reset target and fear
-		caller.target=attacktarget;
-		caller.bfrightened=fraid;
 
 		if(!caller.bfloat && caller.floorz<caller.pos.z)return; //abort if can't propel caller
 		caller.vel.xy*=0.7; //slow down
 
 		//reset position and move in chase direction
-		//only in debug mode FOR NOW
 		if(pp!=pg){
-			if(hd_debug){
-				caller.SetOrigin(pg,false);
-				if(caller.bfloat){
-					caller.vel+=(pp-pg)*0.2;
-					if(caller.pos.z-attacktarget.pos.z<attacktarget.height)
-						caller.vel.z+=frandom(0,0.1); //floaty death from above
-				}else{
-					caller.vel.xy+=(pp.xy-pg.xy)*0.16;
-				}
+			caller.setorigin(pg,false);
+			if(caller.bfloat){
+				caller.vel+=(pp-pg)*0.2;
+				if(attacktarget&&caller.pos.z-attacktarget.pos.z<attacktarget.height)
+					caller.vel.z+=frandom(0,0.1); //floaty death from above
 			}else{
-				caller.vel+=(pp-pg)*0.0001;
+				caller.vel.xy+=(pp.xy-pg.xy)*0.16;
 			}
 		}
 
@@ -175,6 +128,9 @@ class HDMobAI:Inventory{
 		if(attacktarget&&caller.distance3d(attacktarget)<caller.meleerange*2)
 			caller.A_FaceTarget(10,10);
 		else caller.A_FaceMovementDirection(5,40);
+
+		//reset things
+		caller.bfrightened=fraid;
 	}
 
 	//check if shot is clear
@@ -182,104 +138,151 @@ class HDMobAI:Inventory{
 	static bool TryShoot(
 		actor caller,
 		double shootheight=-1,
-		int range=256,
+		double range=256,
 		double pradius=0,
 		double pheight=0
 	){
 		if(!caller.target)return false;
 		if(shootheight<0)shootheight=caller.height-6;
-		actor a;int b;
-		int bottomdist;int topdist;int leftdist;int rightdist;
-		vector3 oldpos=caller.pos;
-		range=min(caller.distance3d(caller.target),range);
-		int range2=range*2;
+
+		actor a=null;int b;
+		double bottomdist=range;double topdist=range;
+		double leftdist=range;double rightdist=range;
+		double fullrange=range;
 
 		//bottom centre - always done
-		caller.addz(shootheight);
 		[a,b]=caller.LineAttack(caller.angle,range,caller.pitch,0,"none",
-			"CheckPuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT|LAF_OVERRIDEZ);
-		if(!a)bottomdist=range2;else{
-			if(a.tracer==caller.target)bottomdist=range2;else
+			"TryShootPuff",flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ,
+			offsetz:shootheight
+		);
+		if(a){
 			bottomdist=a.distance3d(caller);
-			a.spawn("BulletPuff",a.pos);
+			//if any subsequent collision happens after hitting target, ignore it
+			if(a.tracer==caller.target)range=min(range,bottomdist);
 		}
-
 
 		//top centre
 		if(pheight){
-			caller.addz(pheight);
 			[a,b]=caller.LineAttack(caller.angle,range,caller.pitch,0,"none",
-				"CheckPuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT|LAF_OVERRIDEZ);
-			if(!a)topdist=range2;else{
-				if(a.tracer==caller.target)topdist=range2;else
+				"TryShootPuff",flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ,
+				offsetz:pheight
+			);
+			if(a){
 				topdist=a.distance3d(caller);
-				a.spawn("BulletPuff",a.pos);
+				if(a.tracer==caller.target)range=min(range,topdist);
 			}
-			caller.addz(-pheight);
-		}else topdist=range2; //if no check, impact deemed to be beyond range
+		}
 
 		//left and right
 		if(pradius){
 			double pht=pheight*0.5;
-			caller.addz(pht);
-
-			vector3 adj=(cos(caller.angle+90),sin(caller.angle+90),0)*pradius;
-			caller.setxyz(caller.pos+adj);
 			[a,b]=caller.LineAttack(caller.angle,range,caller.pitch,0,"none",
-				"CheckPuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT|LAF_OVERRIDEZ);
-			if(!a)leftdist=range2;else{
-				if(a.tracer==caller.target)leftdist=range2;else
+				"TryShootPuff",flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ,
+				offsetz:pht,offsetside:-pradius
+			);
+			if(a){
 				leftdist=a.distance3d(caller);
-				a.spawn("BulletPuff",a.pos);
+				if(a.tracer==caller.target)range=min(range,leftdist);
 			}
 
-			caller.setxyz(caller.pos-adj*2);
 			[a,b]=caller.LineAttack(caller.angle,range,caller.pitch,0,"none",
-				"CheckPuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT|LAF_OVERRIDEZ);
-			if(!a)rightdist=range2;else{
-				if(a.tracer==caller.target)rightdist=range2;else
+				"TryShootPuff",flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ,
+				offsetz:pht,offsetside:pradius
+			);
+			if(a){
 				rightdist=a.distance3d(caller);
-				a.spawn("BulletPuff",a.pos);
+				if(a.tracer==caller.target)range=min(range,rightdist);
 			}
-
-			caller.addz(-pht);
-		}else{
-			leftdist=range2;rightdist=range2;
 		}
 
-		//important
-		caller.setxyz(oldpos);
-
-		if(min(bottomdist,topdist,leftdist,rightdist)+5<range)return false;
-
+		if(min(bottomdist,topdist,leftdist,rightdist)<range)return false;
 		return true;
 	}
 
-	//setting targets, etc.
-	static void setfeartarget(actor caller,actor frightener){
-		caller.A_GiveInventory("HDMobAI");
-		HDMobAI a=HDMobAI(caller.findinventory("HDMobAI"));
-		if(a)a.feartarget=frightener;
-	}
-	static void setmovetarget(actor caller,vector3 mtpos){
-		caller.A_GiveInventory("HDMobAI");
-		HDMobAI a=HDMobAI(caller.findinventory("HDMobAI"));
-		if(a){
-			if(!a.movetarget)a.feartarget=caller.spawn("IdleDummy",caller.pos);
-			if(a.movetarget){
-				a.movetarget.setorigin(mtpos,false);
+	//set a feartarget for nearby mobs
+	//hdmobai.frighten(self,256); maybe 128 for bullet and 512 for plasma and bfg
+	static void Frighten(actor caller,double fraidius,actor fearsome=null){
+		if(!fearsome)fearsome=caller;
+		actor hir;
+		blockthingsiterator it=blockthingsiterator.create(caller,fraidius);
+		while(it.Next()){
+			hir=it.thing;
+			if(hir
+				&& hir.bIsMonster
+				&& hir.health>0
+				&& hir.goal is "HDMobster"
+				&& hir.CheckSight(fearsome)
+			){
+				HDMobster(hir.goal).threat=fearsome;
+				HDMobster(hir.goal).thraidius=fraidius;
 			}
 		}
 	}
 }
-class HDCorpseFlags:ActionItem{
-	states{
-	pickup:
-		TNT1 A 0{
-			hdmobai.CorpseFlags(self);
-		}fail;
+class TryShootPuff:CheckPuff{
+	default{
+		-alwayspuff
 	}
 }
+
+
+
+
+//actor that sets monster's goal
+class HDMobster:IdleDummy{
+	vector3 firstposition;
+	actor threat;
+	double thraidius;
+	static hdmobster SpawnMobster(actor caller){
+		let hdmb=hdmobster(spawn("HDMobster",caller.pos));
+		hdmb.master=caller;
+		hdmb.target=caller.target;
+		return hdmb;
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		firstposition=pos;
+		threat=null;thraidius=256;
+		changetid(123); //only used for actoriterator
+	}
+	states{
+	spawn:
+		TNT1 A random(7,10){
+			if(
+				!master
+				//abort if something else is setting the goal, e.g. a level script
+				||(master.goal&&master.goal!=self)
+			){
+				destroy();return;
+			}
+			if(master.health<1)return;
+			master.goal=self;
+			master.bchasegoal=true;
+
+			//decide where to place goal
+			target=master.target;
+			if(threat){
+				setorigin(master.pos+master.pos-threat.pos,false);
+				if(
+					!master.checksight(threat)
+					||master.distance3d(threat)>thraidius  
+				)threat=null;
+			}else if(target){
+				//chase target directly, or occasionaly randomize general direction
+				if(
+					target.health>0
+					&&master.checksight(target)
+				)setorigin(master.target.pos,false);  
+				else if(!random(0,100))setorigin(
+					master.target.pos+(random(-512,512),random(-512,512),0),false
+				);
+			}else setorigin(firstposition,false); //go back to start
+		}wait;
+	}
+}
+
+
+
 
 class exzo:zombieman{
 	states{

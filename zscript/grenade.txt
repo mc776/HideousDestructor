@@ -34,7 +34,7 @@ class HDFragGrenadeRoller:HDActor{
 	states{
 	spawn:
 		FRAG A 0 nodelay{
-			A_Frighten(256);
+			HDMobAI.Frighten(self,512);
 		}
 	spawn2:
 		#### BCD 2{
@@ -142,8 +142,8 @@ class HDFragGrenade:SlowProjectile{
 			gr.fuze=self.fuze;
 			gr.vel=self.keeprolling;
 			gr.keeprolling=self.keeprolling;
-			gr.A_Frighten(256);
 			gr.A_PlaySound("misc/fragknock",CHAN_BODY);
+			HDMobAI.Frighten(gr,512);
 		}stop;
 	}
 }
@@ -448,7 +448,7 @@ class HDFragGrenades:HDWeapon{
 				aaa.vel=invoker.vel;
 			}else{
 				A_GiveToTarget("HDFragGrenades");
-				A_GiveToTarget("DropFrag");
+				target.A_DropInventory("HDFragGrenadeAmmo",countinv("HDFragGrenadeAmmo"));
 			}
 		}stop;
 	}

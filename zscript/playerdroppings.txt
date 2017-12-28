@@ -7,74 +7,79 @@ class HDDropOne:ActionItem{
 		TNT1 A 0{
 			if(!player||!player.readyweapon)return;
 			name cw=player.readyweapon.getclassname();
-			if(cw=="HDPistol")A_GiveInventory("DropOnePistolMag");
-			else if(cw=="HDSMG")A_GiveInventory("DropOneSMGMag");
-			else if(cw=="Hunter"||cw=="Slayer")A_GiveInventory("DropFourSG");
-			else if(cw=="ZM66AssaultRifle"){
-				let cww=ZM66AssaultRifle(player.readyweapon);
-				if(cww.weaponstatus[0]&ZM66F_NOLAUNCHER)A_GiveInventory("DropOneZMag");
-				else A_GiveInventory("DropOneZMagFrag");
+			if(cw=="HDPistol"){
+				if(countinv("HDPistolAmmo")){
+					A_DropInventory("HDPistolAmmo",countinv("HDPistolAmmo"));
+				}else A_DropInventory("HDPistolMag",1);
+			}else if(cw=="HDSMG"){
+				if(countinv("HDPistolAmmo")){
+					A_DropInventory("HDPistolAmmo",countinv("HDPistolAmmo"));
+				}else A_DropInventory("HDSMGMag",1);
+			}else if(cw=="Hunter"||cw=="Slayer"){
+				A_DropInventory("HDShellAmmo",4);
+			}else if(cw=="ZM66AssaultRifle"){
+				if(
+					!(hdweapon(player.readyweapon).weaponstatus[0]&ZM66F_NOLAUNCHER)
+				)A_DropInventory("HDRocketAmmo",1);
+				if(countinv("FourMilAmmo"))
+					A_DropInventory("FourMilAmmo",countinv("FourMilAmmo"));
+				else A_DropInventory("ZM66RifleMags",1);
+			}else if(cw=="Vulcanette"){
+				if(countinv("HDCellAmmo"))A_DropInventory("HDCellAmmo",countinv("HDCellAmmo"));
+				else A_DropInventory("HDCellPacks",1);
+				A_DropInventory("ZM66RifleMags",1);
+			}else if(cw=="HDRL"){
+				if(countinv("HEATAmmo")){
+					angle+=1;
+					A_DropInventory("HDRocketAmmo",1);
+					A_DropInventory("HEATAmmo",1);
+					angle-=1;
+				}else A_DropInventory("HDRocketAmmo",1);
 			}
-			else if(cw=="Vulcanette")A_GiveInventory("DropOneZMagCell");
-			else if(cw=="HDRL")A_GiveInventory("DropOneRocketHEAT");
-			else if(cw=="Blooper")A_GiveInventory("DropOneRocket");
-			else if(cw=="HDFragGrenades")A_GiveInventory("DropOneFrag");
+			else if(cw=="Blooper")A_DropInventory("HDRocketAmmo",1);
+			else if(cw=="HDFragGrenades")A_DropInventory("HDFragGrenadeAmmo",1);
 			else if(cw=="LiberatorRifle"){
-				let cww=LiberatorRifle(player.readyweapon);
-				if(cww.weaponstatus[0]&LIBF_NOLAUNCHER)A_GiveInventory("DropOneLib");
-				else A_GiveInventory("DropOneLibFrag");
+				if(
+					!(hdweapon(player.readyweapon).weaponstatus[0]&LIBF_NOLAUNCHER)
+				)A_DropInventory("HDRocketAmmo",1);
+				if(countinv("SevenMilAmmo"))
+					A_DropInventory("SevenMilAmmo",countinv("SevenMilAmmo"));
+				else A_DropInventory("LiberatorMag",1);
 			}
-			else if(cw=="Brontornis")A_GiveInventory("DropOneBronto");
-			else if(cw=="BossRifle")A_GiveInventory("DropOneBoss");
-			else if(cw=="ThunderBuster"||cw=="BFG9k"||cw=="Lumberjack")
-				A_GiveInventory("DropOneCell",1);
-			else if(cw=="SelfBandage")A_GiveInventory("DropOneMedStimZerk");
+			else if(cw=="Brontornis")A_DropInventory("BrontornisRound",1);
+			else if(cw=="BossRifle"){
+				if(countinv("SevenMilAmmo"))
+					A_DropInventory("SevenMilAmmo",countinv("SevenMilAmmo"));
+				else A_DropInventory("BossClip",1);
+			}else if(cw=="ThunderBuster"||cw=="BFG9k"||cw=="Lumberjack"){
+				if(countinv("HDCellAmmo"))A_DropInventory("HDCellAmmo",countinv("HDCellAmmo"));
+				else if(countinv("HDCellPackEmpty"))A_DropInventory("HDCellPackEmpty",1);
+				else A_DropInventory("HDCellPacks",1);
+			}else if(cw=="SelfBandage"){
+				A_DropInventory("PortableStimpack",1);
+				A_DropInventory("PortableMedikit",1);
+				A_DropInventory("PortableBerserkPack",1);
+				A_DropInventory("BluePotion",1);
+			}
 			else A_GiveInventory("DropExtra");
 		}fail;
 	}
 }
-class DropActionItem:ActionItem{
-	action void A_MassDrop(
-		class<inventory> item,
-		class<actor> pickup,
-		double throwdistmin=3,
-		double throwdistmax=5,
-		int amtperunit=1
-	){
-		double dheight=height-12;
-		while(countinv(item)>=amtperunit){  
-			A_TakeInventory(item,amtperunit);
-			double tdh=throwdistmin*0.5;
-			A_SpawnItemEx(pickup,
-				random(8,12),random(0,12),dheight,
-				frandom(throwdistmin,throwdistmax),0,0,
-				frandom(tdh,tdh),SXF_NOCHECKPOSITION|SXF_NOPOINTERS
-			);
-		}
-	}
-}
 
-class DropFrag:DropActionItem{
-	states{
-	pickup:
-		TNT1 A 0 A_MassDrop("HDFragGrenadeAmmo","HDFragGrenadeAmmo",3,5);
-		fail;
-	}
-}
-class DropMisc:DropActionItem{
+class DropMisc:ActionItem{
 	states{
 	pickup:
 		TNT1 A 0{
 			A_DropInventory("PortableLiteAmp");
 			A_DropInventory("HERPUsable");
 			A_DropInventory("DERPUsable");
-			A_MassDrop("PortableRadsuit","PortableRadsuit",1,2);
-			A_MassDrop("SquadSummoner","SquadSummoner",1,2);
-			A_MassDrop("HDIEDKit","HDIEDKit",3,5);
-			A_MassDrop("DudRocketAmmo","DudRocketAmmo",3,4);
-			if(countinv("GreenArmourStored"))A_DropInventory("GreenArmourStored");
-			if(countinv("BlueArmourStored"))A_DropInventory("BlueArmourStored");
-			if(countinv("BlackArmourStored"))A_DropInventory("BlackArmourStored");
+			A_DropInventory("PortableRadsuit",countinv("PortableRadsuit"));
+			A_DropInventory("SquadSummoner",countinv("SquadSummoner"));
+			A_DropInventory("HDIEDKit",countinv("HDIEDKit"));
+			A_DropInventory("DudRocketAmmo",countinv("DudRocketAmmo"));
+			A_DropInventory("GreenArmourStored");
+			A_DropInventory("BlueArmourStored");
+			A_DropInventory("BlackArmourStored");
 		}fail;
 	}
 }
@@ -90,8 +95,7 @@ class DropMeds:ActionItem{
 	}
 }
 
-
-class DropExtra:DropActionItem{
+class DropExtra:ActionItem{
 	states{
 	pickup:
 		TNT1 A 0{
@@ -101,208 +105,74 @@ class DropExtra:DropActionItem{
 				&&!countinv("HDSMG")
 				&&!countinv("DERPUsable")
 			){
-				A_MassDrop("HDPistolMag","HD9mPMag",3,5);
-				A_MassDrop("HDSMGMag","HD9mSMag",3,4);
-				A_MassDrop("HDPistolAmmo","HDPistolAmmo",4,6);
+				A_DropInventory("HDPistolAmmo",countinv("HDPistolAmmo"));
+				A_DropInventory("HDSMGMag",countinv("HDSMGMag"));
+				A_DropInventory("HDPistolMag",countinv("HDPistolMag"));
 			}
 			if(
 				!countinv("Slayer")
 				&&!countinv("Hunter")
 			){
-				A_MassDrop("HDShellAmmo","ShellPickup",3,5,4);
-				A_MassDrop("HDShellAmmo","HDShellAmmo",3,5);
+				A_DropInventory("HDShellAmmo",countinv("HDShellAmmo"));
 			}
 			if(
 				!countinv("ZM66AssaultRifle")
 				&&!countinv("Vulcanette")
 				&&!countinv("HERPUsable")
 			){
-				A_MassDrop("ZM66RifleMags","ZM66RifleMags",3,5);
-				A_DropInventory("FourMilAmmo",countinv("FourMilAmmo"));
+				A_DropInventory("ZM66RifleMags",countinv("ZM66RifleMags"));
+				if(!countinv("LiberatorRifle")&&!countinv("BossRifle"))
+					A_DropInventory("FourMilAmmo",countinv("FourMilAmmo"));
 			}
 			if(
 				!countinv("HDRL")
 			){
-				A_MassDrop("HEATAmmo","HEATAmmo",2,2.5);
+				A_DropInventory("HEATAmmo",countinv("HEATAmmo"));
 				if(
 					!countinv("Blooper")
-					&&!countinv("ZM66AssaultRifle")
+					&&(
+						!countinv("ZM66AssaultRifle")
+						||hdweapon(findinventory("ZM66AssaultRifle")).weaponstatus[0]
+							&ZM66F_NOLAUNCHER
+					)
 					&&!countinv("LiberatorRifle")
-				){
-					A_MassDrop("HDRocketAmmo","HDRocketAmmo",2,3);
-				}
+					&&(
+						!countinv("LiberatorRifle")
+						||hdweapon(findinventory("LiberatorRifle")).weaponstatus[0]
+							&LIBF_NOLAUNCHER
+					)
+				)A_DropInventory("HDRocketAmmo",countinv("HDRocketAmmo"));
 			}
 			if(
 				!countinv("LiberatorRifle")
 				&&!countinv("BossRifle")
 			){
-				A_MassDrop("LiberatorMag","LiberatorMag",2,2.5);
-				A_MassDrop("BossClip","BossClip",4,5);
-				A_MassDrop("SevenMilAmmo","SevenMilAmmo",5,6);
+				A_DropInventory("LiberatorMag",countinv("LiberatorMag"));
+				A_DropInventory("BossClip",countinv("BossClip"));
+				A_DropInventory("SevenMilAmmo",countinv("SevenMilAmmo"));
 			}
 			if(
 				!countinv("BFG9k")
 			){
-				A_MassDrop("HDCellPackEmpty","HDCellPackEmpty",3,4);
+				A_DropInventory("HDCellPackEmpty",countinv("HDCellPackEmpty"));
 				if(
 					!countinv("ThunderBuster")
 					&&!countinv("Vulcanette")
 					&&!countinv("Lumberjack")
 					&&!countinv("HERPUsable")
 				){
-					A_MassDrop("HDCellPacks","HDCellPacks",3,4);
-					A_GiveInventory("HDSpareCellDropper");
+					A_DropInventory("HDCellPacks",countinv("HDCellPacks"));
+					A_DropInventory("HDCellAmmo",countinv("HDCellAmmo"));
 				}
 			}
 			if(!countinv("Brontornis"))
-				A_MassDrop("BrontornisRound","BrontornisRound",4,5);
+				A_DropInventory("BrontornisRound",countinv("BrontornisRound"));
 			if(!countinv("HDIEDKit"))
-				A_MassDrop("DudRocketAmmo","DudRocketAmmo",4,5);
+				A_DropInventory("DudRocketAmmo",countinv("DudRocketAmmo"));
 			double aaa=angle;
 			angle+=frandom(-10,10);A_DropInventory("DERPDEAD");
 			angle+=frandom(-10,10);A_DropInventory("HERPDEAD");
 			angle=aaa;
-		}fail;
-	}
-}
-
-
-
-class DropOnePistolMag:DropActionItem{
-	states{
-	pickup:
-		TNT1 A 0{
-			if(countinv("HDPistolAmmo")){
-				A_MassDrop("HDPistolAmmo","HDPistolAmmo",4,6);
-			}
-			else A_DropInventory("HDPistolMag",1);
-		}fail;
-	}
-}
-class DropOneSMGMag:DropActionItem{
-	states{
-	pickup:
-		TNT1 A 0{
-			if(countinv("HDPistolAmmo")){
-				A_MassDrop("HDPistolAmmo","HDPistolAmmo",4,6);
-			}else A_DropInventory("HDSMGMag",1);
-		}fail;
-	}
-}
-class DropFourSG:DropActionItem{
-	states{
-	pickup:
-		TNT1 A 0{
-			if(countinv("HDShellAmmo")>=4){  
-				A_TakeInventory("HDShellAmmo",4);
-				A_SpawnItemEx("ShellPickup",0,0,height-12,
-					cos(pitch)*cos(angle)*5,cos(pitch)*sin(angle)*5,sin(pitch)*-5,
-					0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM
-				);
-			}else A_MassDrop("HDShellAmmo","HDShellAmmo",3,5);
-		}
-		fail;
-	}
-}
-class DropOneZMag:DropActionItem{
-	states{
-	pickup:
-		TNT1 A 0{
-			if(countinv("FourMilAmmo"))A_DropInventory("FourMilAmmo",countinv("FourMilAmmo"));
-			else A_DropInventory("ZM66RifleMags",1);
-		}fail;
-	}
-}
-class DropOneZMagFrag:DropOneZMag{
-	states{
-	pickup:
-		TNT1 A 0 A_DropInventory("HDRocketAmmo",1);
-		goto super::pickup;
-	}
-}
-class DropOneZMagCell:DropOneZMag{
-	states{
-	pickup:
-		TNT1 A 0{
-			if(countinv("HDCellAmmo"))A_GiveInventory("HDSpareCellDropper");
-			else A_DropInventory("HDCellPacks",1);
-		}goto super::pickup;
-	}
-}
-class DropOneRocketHEAT:DropActionItem{
-	states{
-	pickup:
-		TNT1 A 0{
-			angle+=1;
-			A_DropInventory("HDRocketAmmo",1);
-			A_DropInventory("HEATAmmo",1);
-			angle-=1;
-		}fail;
-	}
-}
-class DropOneRocket:DropActionItem{
-	states{
-	pickup:
-		TNT1 A 0 A_DropInventory("HDRocketAmmo",1);
-		fail;
-	}
-}
-class DropOneFrag:DropActionItem{
-	states{
-	pickup:
-		TNT1 A 0 A_DropInventory("HDFragGrenadeAmmo",1);
-		fail;
-	}
-}
-class DropOneLib:DropActionItem{
-	states{
-	pickup:
-		TNT1 A 0{
-			if(countinv("SevenMilAmmo"))A_MassDrop("SevenMilAmmo","SevenMilAmmo",5,6);
-			else A_DropInventory("LiberatorMag",1);
-		}fail;
-	}
-}
-class DropOneLibFrag:DropOneLib{
-	states{
-	pickup:
-		TNT1 A 0 A_DropInventory("HDRocketAmmo",1);
-		goto super::pickup;
-	}
-}
-class DropOneBronto:DropActionItem{
-	states{
-	pickup:
-		TNT1 A 0 A_DropInventory("BrontornisRound",1);
-		fail;
-	}
-}
-class DropOneBoss:DropActionItem{
-	states{
-	pickup:
-		TNT1 A 0{
-			if(countinv("SevenMilAmmo"))A_MassDrop("SevenMilAmmo","SevenMilAmmo",5,6);
-			else A_DropInventory("BossClip",1);
-		}fail;
-	}
-}
-class DropOneCell:DropActionItem{
-	states{
-	pickup:
-		TNT1 A 0{
-			if(countinv("HDCellAmmo"))A_GiveInventory("HDSpareCellDropper");
-			else if(countinv("HDCellPackEmpty"))A_DropInventory("HDCellPackEmpty",1);
-			else A_DropInventory("HDCellPacks",1);
-		}fail;
-	}
-}
-class DropOneMedStimZerk:DropActionItem{
-	states{
-	pickup:
-		TNT1 A 0{
-			A_DropInventory("PortableStimpack",8);
-			A_DropInventory("PortableMedikit",8);
-			A_DropInventory("PortableBerserkPack",8);
 		}fail;
 	}
 }

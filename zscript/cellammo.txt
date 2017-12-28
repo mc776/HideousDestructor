@@ -20,28 +20,30 @@ class HDCellAmmo:Ammo{
 	states{
 	spawn:
 		TNT1 A 1 nodelay{
+			//do not let the player choose how much they drop
 			if(target){
-				if(amount>0)target.A_GiveInventory("HDCellAmmo",amount);
-				target.A_GiveInventory("HDSpareCellDropper");
+				int ontarget=target.countinv("HDCellAmmo");
+				int total=amount+ontarget;
+				if(amount<20)amount=random(1,19);
+				else amount=min(total,amount+random(-10,10));
+				target.setinventory("HDCellAmmo",total-amount);
 			}
-		}stop;
-	}
-}
-//for the single drop
-class HDSpareCellDropper:ActionItem{
-	states{
-	pickup:
-		TNT1 A 0{
+
 			actor a;int b;
-			while(countinv("HDCellAmmo")){
-				[b,a]=A_SpawnItemEx("HDCellPickup",
-					random(8,12),random(0,12),24,5,0,0,random(-6,-12)
-				);a.vel+=vel;
-				b=min(countinv("HDCellAmmo"),random(1,19));
-				a.stamina=b;
-				A_TakeInventory("HDCellAmmo",b);
+			//spawn randoms
+			while(amount>19){  
+				int amt=min(amount,random(1,19));
+				a=spawn("HDCellPickup",pos);
+				a.vel+=vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
+				a.stamina=amt;
+				amount-=amt;
 			}
-		}fail;
+
+			//spawn final
+			a=spawn("HDCellPickup",pos);
+			a.vel+=vel;
+			a.stamina=amount;
+		}stop;
 	}
 }
 class HDCellpacks:Ammo replaces Cell{
@@ -123,7 +125,7 @@ class HDCellPickup:HDUPK{
 		goto spawn2;
 	give:
 		---- A 0{
-			if(stamina>=20){  
+			if(stamina>=20){    
 				if(A_JumpIfInTargetInventory("HDCellPacks",0,"null")){
 					setstatelabel("spawn");
 					return;
