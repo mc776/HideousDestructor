@@ -247,10 +247,13 @@ class DudRocketAmmo:Ammo{
 	}
 	states{
 	spawn:
-		ROCQ A 0 nodelay A_SpawnItemEx("DRAP",0,0,0,
-			vel.x,vel.y,vel.z,
-			0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM
-		);stop;
+		ROCQ A 0 nodelay{
+			HDF.SplitAmmoSpawn(self);
+			A_SpawnItemEx("DRAP",0,0,0,
+				vel.x,vel.y,vel.z,
+				0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM
+			);
+		}stop;
 	}
 }
 class DRAP:HDUPK{

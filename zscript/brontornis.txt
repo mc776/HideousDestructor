@@ -123,11 +123,13 @@ class BrontornisRound:Ammo{
 	}
 	states{
 	spawn:
-		BROC A 0 nodelay A_SpawnItemEx("BroP",0,0,0,
-			vel.x,vel.y,vel.z,0,
-			SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERTRANSLATION
-		);
-		stop;
+		BROC A 0 nodelay{
+			HDF.SplitAmmoSpawn(self);
+			A_SpawnItemEx("BroP",0,0,0,
+				vel.x,vel.y,vel.z,
+				0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM
+			);
+		}stop;
 	}
 }
 class BroP:HDUPK replaces BrontornisRound{
