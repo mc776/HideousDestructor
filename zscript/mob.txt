@@ -93,7 +93,7 @@ struct HDMobAI play{
 	//smooth chase
 	//do NOT try to set targets in here, JUST do the chase sequence
 	static void Chase(actor caller,actor movetarget=null,bool res=false,bool flee=true){
-		if(caller.A_CheckBlock("null")){
+		if(!caller.trymove(caller.pos.xy,false)){
 			caller.A_Wander();
 			return;
 		}
@@ -105,7 +105,7 @@ struct HDMobAI play{
 
 		//chase the move target and record the resulting position
 		caller.bfrightened=flee;
-		if(attacktarget)caller.A_Chase(flags:CHF_NODIRECTIONTURN|CHF_NOPOSTATTACKTURN|(res?CHF_RESURRECT:0));
+		if(attacktarget)caller.A_Chase("melee","missile",CHF_NODIRECTIONTURN|CHF_NOPOSTATTACKTURN|(res?CHF_RESURRECT:0));
 		else caller.A_Wander(flags:CHF_NODIRECTIONTURN);
 		vector3 pp=caller.pos;
 
@@ -116,18 +116,18 @@ struct HDMobAI play{
 		if(pp!=pg){
 			caller.setorigin(pg,false);
 			if(caller.bfloat){
-				caller.vel+=(pp-pg)*0.2;
+				caller.vel+=(pp-pg)*(fraid?0.32:0.16);
 				if(attacktarget&&caller.pos.z-attacktarget.pos.z<attacktarget.height)
 					caller.vel.z+=frandom(0,0.1); //floaty death from above
 			}else{
-				caller.vel.xy+=(pp.xy-pg.xy)*0.16;
+				caller.vel.xy+=(pp.xy-pg.xy)*(flee?0.32:0.16);
 			}
 		}
 
 		//face appropriate direction
 		if(attacktarget&&caller.distance3d(attacktarget)<caller.meleerange*2)
 			caller.A_FaceTarget(10,10);
-		else caller.A_FaceMovementDirection(5,40);
+		else if(caller.vel.xy!=(0,0))caller.A_FaceMovementDirection(15,40);
 
 		//reset things
 		caller.bfrightened=fraid;
@@ -274,7 +274,7 @@ class HDMobster:IdleDummy{
 					&&master.checksight(target)
 				)setorigin(master.target.pos,false);  
 				else if(!random(0,100))setorigin(
-					master.target.pos+(random(-512,512),random(-512,512),0),false
+					pos+(random(-512,512),random(-512,512),0),false
 				);
 			}else setorigin(firstposition,false); //go back to start
 		}wait;
@@ -285,6 +285,10 @@ class HDMobster:IdleDummy{
 
 
 class exzo:zombieman{
+	override void postbeginplay(){
+		super.postbeginplay();
+		hdmobster.spawnmobster(self);
+	}
 	states{
 	see:
 		POSS AABBCCDD 4{HDMobAI.Chase(self);}
