@@ -24,15 +24,14 @@ class HDCellAmmo:Ammo{
 			if(target){
 				int ontarget=target.countinv("HDCellAmmo");
 				int total=amount+ontarget;
-				if(amount<20)amount=random(1,19);
-				else amount=min(total,amount+random(-10,10));
+				amount=clamp(amount+random(-10,10),1,total);
 				target.setinventory("HDCellAmmo",total-amount);
 			}
 
 			actor a;int b;
 			//spawn randoms
 			while(amount>19){  
-				int amt=min(amount,random(1,19));
+				int amt=clamp(random(1,19),1,amount);
 				a=spawn("HDCellPickup",pos);
 				a.vel+=vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
 				a.stamina=amt;
