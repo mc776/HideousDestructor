@@ -12,7 +12,14 @@ class HDShellAmmo:Ammo{
 	}
 	states{
 	spawn:
-		SHL1 A -1;
+		SHL1 A -1 nodelay{
+			HDF.SplitAmmoSpawn(self,4);
+			if(amount==4){
+				actor sss=spawn("ShellPickup",pos);
+				sss.vel=vel;
+				destroy();return;
+			}else HDF.SplitAmmoSpawn(self);
+		}
 	}
 }
 class HDSpentShell:Actor{

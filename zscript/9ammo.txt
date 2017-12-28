@@ -16,15 +16,7 @@ class HDPistolAmmo:Ammo{
 	}
 	states{
 	spawn:
-		PBRS A -1 nodelay{
-			while(amount>1){
-				amount--;
-				inventory bbb=inventory(spawn("HDPistolAmmo",pos+(
-					frandom(-1,1),frandom(-1,1),frandom(-1,1)
-				)));
-				bbb.amount=1;bbb.vel=vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
-			}
-		}stop;
+		PBRS A -1 nodelay {hdf.splitammospawn(self);}
 	}
 }
 class HDPistolMag:Ammo{

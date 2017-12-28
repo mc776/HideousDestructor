@@ -224,6 +224,14 @@ struct HDF play{
 		}
 		return counter;
 	}
+	//split inventory item to match pickup sprite
+	static void SplitAmmoSpawn(inventory caller,int maxunit=1){
+		while(caller.amount>maxunit){
+			caller.amount-=maxunit;
+			inventory bbb=inventory(caller.spawn(caller.getclass(),caller.pos));
+			bbb.amount=maxunit;bbb.vel=caller.vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
+		}
+	}
 }
 
 
