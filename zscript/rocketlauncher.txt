@@ -417,10 +417,13 @@ class HDRocketAmmo:Ammo replaces RocketAmmo{
 	}
 	states{
 	spawn:
-		ROQP A 0 nodelay A_SpawnItemEx("RocP",0,0,0,
-			vel.x,vel.y,vel.z,
-			0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM
-		);stop;
+		ROQP A 0 nodelay{
+			HDF.SplitAmmoSpawn(self);
+			A_SpawnItemEx("RocP",0,0,0,
+				vel.x,vel.y,vel.z,
+				0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM
+			);
+		}stop;
 	}
 }
 class HEATAmmo:Ammo{
@@ -434,10 +437,13 @@ class HEATAmmo:Ammo{
 	}
 	states{
 	spawn:
-		ROCK A 0 nodelay A_SpawnItemEx("HEATP",0,0,0,
-			vel.x,vel.y,vel.z,
-			0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM
-		);stop;
+		ROCK A 0 nodelay{
+			HDF.SplitAmmoSpawn(self);
+			A_SpawnItemEx("HEATP",0,0,0,
+				vel.x,vel.y,vel.z,
+				0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM
+			);
+		}stop;
 	}
 }
 

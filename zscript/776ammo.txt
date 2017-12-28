@@ -27,8 +27,7 @@ class SevenMilAmmo:Ammo{
 	}
 	states{
 	spawn:
-		RBRS A -1;
-		stop;
+		RBRS A -1 nodelay{HDF.SplitAmmoSpawn(self);}
 	}
 }
 class HDSpent7mm:HDDebris{
