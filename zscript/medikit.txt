@@ -63,6 +63,14 @@ class HDWoundFixer:HDWeapon{
 		}
 		return 0;
 	}
+	states{
+	reload:
+		TNT1 A 14{
+			if(countinv("WornRadsuit"))useinventory(findinventory("portableradsuit"));
+			else UseInventory(FindInventory("HDDropArmour"));
+			A_ClearRefire();
+		}goto ready;
+	}
 }
 class HDMedikitter:HDWoundFixer{
 	default{
@@ -101,12 +109,6 @@ class HDMedikitter:HDWoundFixer{
 			else A_Print("\cg+++ \cjMEDIKIT \cg+++\c-\n\n\nUse this to patch yourself up.\n\n\n\nYou're fine now, so go\n\ndo something else.\n\n\n\n(Altfire deploys that nasty accelerated healing thing.\nwhile fire mode runs a diagnostic.)",5);
 		}
 		goto super::select;
-	reload:
-		TNT1 A 14{
-			if(countinv("WornRadsuit"))useinventory(findinventory("portableradsuit"));
-			else UseInventory(FindInventory("HDDropArmour"));
-			A_ClearRefire();
-		}goto ready;
 	flashstaple:
 		TNT1 A 1{
 			A_PlaySound("weapons/bigcrack",CHAN_WEAPON);
