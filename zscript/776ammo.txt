@@ -10,9 +10,13 @@ class LiberatorMag:Ammo{
 		inventory.pickupmessage "Picked up a 7.76mm magazine.";
 	}states{
 	spawn:
-		TNT1 A 1;
-		TNT1 A 0 A_SpawnItemEx("LiberatorMagP",0,0,0,vel.x,vel.y,vel.z,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_SETTARGET);
-		stop;
+		TNT1 A 0 nodelay{
+			HDF.SplitAmmoSpawn(self);
+			A_SpawnItemEx("LiberatorMagP",0,0,0,
+				vel.x,vel.y,vel.z,
+				0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM
+			);
+		}stop;
 	}
 }
 class SevenMilAmmo:Ammo{
@@ -61,8 +65,10 @@ class SevenMilBrass:Ammo{
 	}
 	states{
 	spawn:
-		RBRS A -1 nodelay A_ChangeVelocity(0,frandom(-1,1),0,CVF_RELATIVE);
-		stop;
+		RBRS A -1 nodelay{
+			HDF.SplitAmmoSpawn(self);
+			A_ChangeVelocity(0,frandom(-1,1),0,CVF_RELATIVE);
+		}stop;
 	}
 }
 class HDLoose7mm:HDSpent7mm{

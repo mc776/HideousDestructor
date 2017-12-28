@@ -10,9 +10,13 @@ class BossClip:Ammo{
 	}
 	states{
 	spawn:
-		TNT1 A 0;
-		TNT1 A 0 A_SpawnItemEx("BossClipPickup",0,0,0,vel.x,vel.y,vel.z,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS);
-		stop;
+		TNT1 A 0 nodelay{
+			HDF.SplitAmmoSpawn(self);
+			A_SpawnItemEx("BossClipPickup",0,0,0,
+				vel.x,vel.y,vel.z,
+				0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM
+			);
+		}stop;
 	}
 }
 class BossClipPickup:HDUPK replaces BossClip{
