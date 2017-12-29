@@ -249,16 +249,16 @@ class HDPlayerPawn:PlayerPawn{
 		if(fall>10){
 			if(barehanded)fall-=4;
 			if(fall<=15)A_PlaySound("weapons/smack",CHAN_AUTO,0.4);
-			if(fall>15){
+			else{
 				A_PlaySound("weapons/smack",CHAN_AUTO);
 				if(countinv("PowerStrength"))fall*=0.5;
-				damagemobj(self,self,fall*random(1,4),"falling");
-				stunned+=fall*random(5,10)*4;
+				int fdmg=random(fall,fall*4);
+				damagemobj(self,self,fdmg,"falling");
+				stunned+=fdmg*random(20,30);
 				beatmax-=fall*0.5;
 				if(random(1,fall)>7){
 					if(player.readyweapon && !(player.readyweapon is "Ring"))
 						A_DropInventory(player.readyweapon.getclassname());
-					A_SelectWeapon("Ring");
 				}
 			}
 		}
