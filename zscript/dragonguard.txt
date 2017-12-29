@@ -47,9 +47,10 @@ class DragonGuard:Chaingunguy{
 		}loop;
 	spawnhold:
 		CPOS G 1{
-			A_Recoil(random(-1,1)*0.4);
-			A_SetTics(random(30,80));
-			A_PlaySound("grunt/active",CHAN_VOICE);
+			A_Look();
+			if(!random(0,8))A_Recoil(random(-1,1)*0.4);
+			A_SetTics(random(10,30));
+			if(!random(0,8))A_PlaySound("grunt/active",CHAN_VOICE);
 		}wait;
 	spawnstill:
 		CPOS C 0{
