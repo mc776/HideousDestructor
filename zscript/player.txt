@@ -243,7 +243,6 @@ class HDPlayerPawn:PlayerPawn{
 		)A_GiveInventory("WeaponBusy");
 		if(runwalksprint>=0&&(fm||sm))A_GiveInventory("IsMoving");
 
-
 		//"falling" damage
 		int fall=(lastvel-vel).length();
 		if(fall>10){
@@ -254,7 +253,7 @@ class HDPlayerPawn:PlayerPawn{
 				if(countinv("PowerStrength"))fall*=0.5;
 				int fdmg=random(fall,fall*4);
 				damagemobj(self,self,fdmg,"falling");
-				stunned+=fdmg*random(20,30);
+				stunned+=fdmg*random(20,25);
 				beatmax-=fall*0.5;
 				if(random(1,fall)>7){
 					if(player.readyweapon && !(player.readyweapon is "Ring"))
