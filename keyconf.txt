@@ -8,11 +8,9 @@ addmenukey "Unload Weapon" +user4
 addmenukey "Purge Weaponless Ammo" hd_purge
 addmenukey "Drop One Ammo Unit" hd_dropone
 addmenukey "Strip Armour" hd_strip
-addmenukey "Drop Weapon and Free Hands" hd_drop
 addmenukey "Taunt" hd_taunt
 addmenukey "Use Pistol" hd_pistol
 addmenukey "Use Grenades" hd_frags
-addmenukey "Use Rocket Launcher" hd_rock
 addmenukey "Attempt To Bandage Wound" hd_band
 addmenukey "Detonate all IEDs" detonate
 addmenukey "Toggle passive IEDs" iedpassive
@@ -30,19 +28,14 @@ alias -hd_firemode -user2;
 alias +hd_unload +user4;
 alias -hd_unload -user4;
 
-alias hd_scoresoff "set hd_showscores -1; archivecvar hd_showscores";
-alias hd_scoreson "set hd_showscores 0; archivecvar hd_showscores";
-
 alias hd_doomguy "give DoomGuyLoadout";
 alias hd_purge "use HDWeaponPurge";
-alias hd_drop "weapdrop;use ring";	//deprecated
 alias hd_dropone "use HDDropOne";
 alias hd_taunt "use Taunter";
 alias hd_strip "use HDDropArmour";
 
 alias hd_pistol "use HDPistol";
 alias hd_frags "use HDFragGrenades";
-alias hd_rock "use RocquetteLauncher";
 alias hd_band "use SelfBandage";
 
 alias hd_clearscv "hd_forcepistolstart 0;hd_nobots 0;hd_carrylimit 0;hd_penetrate 1;hd_killerbarrels 5;hd_lowdamage 0;hd_nobleed 0;hd_3speed 0;hd_noturninertia 0;echo Hideous Destructor Server CVars reset"
