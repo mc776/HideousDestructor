@@ -1,5 +1,5 @@
 // ------------------------------------------------------------
-// We'll miss you, ACS. (not really)
+// Sight picture crosshairs
 // ------------------------------------------------------------
 extend class HDStatusBar{
 	void DrawHDXHair(hdplayerpawn hpl){
@@ -8,11 +8,19 @@ extend class HDStatusBar{
 		if(
 			!wp
 			||hpl.barehanded
-			||hpl.nocrosshair>0
+			||hpl.nocrosshair>0  
 		)return;
 
 		int ismoving=hpl.countinv("IsMoving");
 		actor hpc=hpl.scopecamera;
+		int cpbt=cplayer.cmd.buttons;
+		bool scopeview=(
+			(
+				!cvar.getcvar("hd_noscope",cplayer).getbool()
+				||cpbt&BT_ZOOM
+				||(cpbt&BT_USE&&hpl.countinv("IsSupported"))
+			)?true:false
+		);
 
 		if((wp is "HDPistol")&&ismoving<5){
 			drawimage(
@@ -36,7 +44,7 @@ extend class HDStatusBar{
 			wp is "ZM66AssaultRifle"&&ismoving<7
 		){
 			if(wp.weaponstatus[0]&ZM66F_GLMODE){
-				if(ismoving>4)return;
+				if(ismoving>4)return;  
 				drawimage(
 					"XH27",(0,1.8),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 					scale:(1.6,1.6)
@@ -46,7 +54,30 @@ extend class HDStatusBar{
 					"XH25",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 					scale:(2.6,2.7)
 				);
-				double degree=(35-wp.weaponstatus[ZM66S_ZOOM])*0.2;
+				if(scopeview){
+					double degree=(35-wp.weaponstatus[ZM66S_ZOOM])*0.2;
+					texman.setcameratotexture(hpc,"HDXHCAM3",degree);
+					drawimage(
+						"HDXHCAM3",(0,47),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+						scale:(0.31,0.31)
+					);
+					drawimage(
+						"XH29",(0,47),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+						scale:(0.8,0.8)
+					);
+					drawnum(degree*10,
+						0,79,DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,Font.CR_BLACK
+					);
+				}
+			}
+		}
+		else if((wp is "Vulcanette")&&ismoving<3){
+			drawimage(
+				"XH25",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+				scale:(1.7,1.7)
+			);
+			if(scopeview){
+				double degree=(35-wp.weaponstatus[2])*0.2;
 				texman.setcameratotexture(hpc,"HDXHCAM3",degree);
 				drawimage(
 					"HDXHCAM3",(0,47),DI_SCREEN_CENTER|DI_ITEM_CENTER,
@@ -60,25 +91,6 @@ extend class HDStatusBar{
 					0,79,DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,Font.CR_BLACK
 				);
 			}
-		}
-		else if((wp is "Vulcanette")&&ismoving<3){
-			drawimage(
-				"XH25",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-				scale:(1.7,1.7)
-			);
-			double degree=(35-wp.weaponstatus[2])*0.2;
-			texman.setcameratotexture(hpc,"HDXHCAM3",degree);
-			drawimage(
-				"HDXHCAM3",(0,47),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-				scale:(0.31,0.31)
-			);
-			drawimage(
-				"XH29",(0,47),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-				scale:(0.8,0.8)
-			);
-			drawnum(degree*10,
-				0,79,DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,Font.CR_BLACK
-			);
 		}
 		else if((wp is "Blooper")&&ismoving<10){
 			drawimage(
@@ -116,19 +128,21 @@ extend class HDStatusBar{
 				"XH26",(0,1),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 				scale:(5,1)
 			);
-			texman.setcameratotexture(hpc,"HDXHCAM1",3);
-			drawimage(
-				"HDXHCAM1",(0,36),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-				scale:(1,1)
-			);
-			drawimage(
-				"XH28",(0,36),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-				scale:(1,1)
-			);
+			if(scopeview){
+				texman.setcameratotexture(hpc,"HDXHCAM1",3);
+				drawimage(
+					"HDXHCAM1",(0,36),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					scale:(1,1)
+				);
+				drawimage(
+					"XH28",(0,36),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					scale:(1,1)
+				);
+			}
 		}
 		else if(wp is "LiberatorRifle"&&ismoving<6){
 			if(wp.weaponstatus[0]&LIBF_GRENADEMODE){
-				if(ismoving>4)return;
+				if(ismoving>4)return;  
 				drawimage(
 					"XH27",(0,1.8),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 					scale:(1.6,1.6)
@@ -138,23 +152,25 @@ extend class HDStatusBar{
 					"XH25",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 					scale:(2.5,2.5)
 				);
-				double degree=(35-wp.weaponstatus[LIBS_ZOOM])*0.2;
-				texman.setcameratotexture(hpc,"HDXHCAM3",degree);
-				drawimage(
-					"HDXHCAM3",(0,60),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-					scale:(0.4,0.4)
-				);
-				drawimage(
-					"reticle1",(0,60),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-					scale:(0.45,0.45)
-				);
-				drawimage(
-					"XH31",(0,60),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-					scale:(1.,1.)
-				);
-				drawnum(degree*10,
-					0,102,DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,Font.CR_BLACK
-				);
+				if(scopeview){
+					double degree=(35-wp.weaponstatus[LIBS_ZOOM])*0.2;
+					texman.setcameratotexture(hpc,"HDXHCAM3",degree);
+					drawimage(
+						"HDXHCAM3",(0,60),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+						scale:(0.4,0.4)
+					);
+					drawimage(
+						"reticle1",(0,60),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+						scale:(0.45,0.45)
+					);
+					drawimage(
+						"XH31",(0,60),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+						scale:(1.,1.)
+					);
+					drawnum(degree*10,
+						0,102,DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,Font.CR_BLACK
+					);
+				}
 			}
 		}
 		else if((wp is "Brontornis")&&ismoving<10){
@@ -182,49 +198,51 @@ extend class HDStatusBar{
 				"XH23",(0,-0.5),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 				scale:(3,1.6)
 			);
-			double degree;
-			if(wp.weaponstatus[0]&BOSSF_FRONTRETICLE){
-				degree=4.-0.05*wp.weaponstatus[BOSSS_ZOOM];
-				texman.setcameratotexture(hpc,"HDXHCAM3",degree);
-				drawimage(
-					"HDXHCAM3",(0,68),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-					scale:(0.5,0.5)
+			if(scopeview){
+				double degree;
+				if(wp.weaponstatus[0]&BOSSF_FRONTRETICLE){
+					degree=4.-0.05*wp.weaponstatus[BOSSS_ZOOM];
+					texman.setcameratotexture(hpc,"HDXHCAM3",degree);
+					drawimage(
+						"HDXHCAM3",(0,68),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+						scale:(0.5,0.5)
+					);
+					int cx,cy,cw,ch;
+					[cx,cy,cw,ch]=screen.GetClipRect();
+					SetClipRect(276,204,88,88);
+					double deg=1/degree;
+					drawimage(
+						"reticle1",(0,68),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+						scale:(1.6,1.6)*deg
+					);
+					screen.SetClipRect(cx,cy,cw,ch);
+					drawimage(
+						"XH31",(0,68),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+						scale:(1.24,1.24)
+					);
+				}else{
+					degree=6.-0.1*wp.weaponstatus[BOSSS_ZOOM];
+					texman.setcameratotexture(hpc,"HDXHCAM3",degree);
+					drawimage(
+						"HDXHCAM3",(0,68),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+						scale:(0.5,0.5)
+					);
+					drawimage(
+						"reticle1",(0,68),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+						scale:(0.5,0.5)
+					);
+					drawimage(
+						"XH31",(0,68),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+						scale:(1.24,1.24)
+					);
+				}
+				drawnum(degree*10,
+					0,119,DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,Font.CR_BLACK
 				);
-				int cx,cy,cw,ch;
-				[cx,cy,cw,ch]=screen.GetClipRect();
-				SetClipRect(276,204,88,88);
-				double deg=1/degree;
-				drawimage(
-					"reticle1",(0,68),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-					scale:(1.6,1.6)*deg
-				);
-				screen.SetClipRect(cx,cy,cw,ch);
-				drawimage(
-					"XH31",(0,68),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-					scale:(1.24,1.24)
-				);
-			}else{
-				degree=6.-0.1*wp.weaponstatus[BOSSS_ZOOM];
-				texman.setcameratotexture(hpc,"HDXHCAM3",degree);
-				drawimage(
-					"HDXHCAM3",(0,68),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-					scale:(0.5,0.5)
-				);
-				drawimage(
-					"reticle1",(0,68),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-					scale:(0.5,0.5)
-				);
-				drawimage(
-					"XH31",(0,68),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-					scale:(1.24,1.24)
+				drawnum(wp.weaponstatus[BOSSS_DROPADJUST]*5,
+					0,12,DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,Font.CR_BLACK
 				);
 			}
-			drawnum(degree*10,
-				0,119,DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,Font.CR_BLACK
-			);
-			drawnum(wp.weaponstatus[BOSSS_DROPADJUST]*5,
-				0,12,DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,Font.CR_BLACK
-			);
 			// the scope display is in 10ths of an arcminute.
 			// every 2 BossMOA (item) should be one arcminute.
 			// every 60 BossMOA (scope) should be one dot.
