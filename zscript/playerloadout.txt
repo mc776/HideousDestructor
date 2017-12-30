@@ -52,18 +52,10 @@ class SoldierExtras:ActionItem{
 //reset inventory
 class InvReset:Inventory{
 	void ReallyClearInventory(actor resetee,bool keepkeys=false){
-		//can't just use ClearInventory since we want to get all the +undroppables too
-		thinkeriterator it=thinkeriterator.create("Inventory");
-		actor inv;
-		while(
-			inv=inventory(it.Next())
-		){
-			let invv=inventory(inv);
+		for(inventory item=resetee.inv;item!=null;item=item.inv){
 			if(
-				invv
-				&& (!keepkeys || !(inv is "Key"))
-				&& invv.owner==resetee
-			)invv.destroy();
+				(!keepkeys||!(item is "Key"))
+			)item.goawayanddie();
 		}
 	}
 	void GiveStartItems(actor resetee){

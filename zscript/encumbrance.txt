@@ -52,12 +52,9 @@ extend class HDPlayerPawn{
 
 		//scriptified weapons
 		blox=0;
-		thinkeriterator it=thinkeriterator.create("HDWeapon");
-		HDweapon hdw;
-		while(
-			hdw=HDWeapon(it.Next())
-		){
-			if(hdw.owner==self){
+		for(inventory hdww=inv;hdww!=null;hdww=hdww.inv){
+			let hdw=hdweapon(hdww);
+			if(hdw){
 				int blx=0;
 				if(hdw is "Lumberjack"){
 					blx+=100;

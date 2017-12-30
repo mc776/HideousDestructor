@@ -30,16 +30,9 @@ class HDLoaded:ActionItem{
 	states{
 	pickup:
 		TNT1 A 0{
-			thinkeriterator it=thinkeriterator.create("HDWeapon");
-			actor hdw;
-			while(
-				hdw=inventory(it.Next())
-			){
-				let hdww=hdweapon(hdw);
-				if(
-					hdww
-					&& hdww.owner==self
-				)hdww.initializewepstats(true);
+			for(inventory hdww=inv;hdww!=null;hdww=hdww.inv){
+				let hdw=hdweapon(hdww);
+				if(hdw)hdw.initializewepstats(true);
 			}
 
 			//unscriptified or non-HDWeapon weapons below

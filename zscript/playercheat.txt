@@ -77,16 +77,9 @@ extend class HDPlayerPawn{
 
 		//load weapons that use variables instead of ammo types
 		if(allthings||name~=="ammo"){
-			thinkeriterator it=thinkeriterator.create("HDWeapon");
-			actor hdw;
-			while(
-				hdw=inventory(it.Next())
-			){
-				let hdww=hdweapon(hdw);
-				if(
-					hdww
-					&& hdww.owner==self
-				)hdww.initializewepstats(true);
+			for(inventory hdww=inv;hdww!=null;hdww=hdww.inv){
+				let hdw=hdweapon(hdww);
+				if(hdw)hdw.initializewepstats(true);
 			}
 
 			//pistol hack
