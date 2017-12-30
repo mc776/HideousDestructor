@@ -387,7 +387,9 @@ hd_dropone: This will drop drop one unit of each type of ammo that applies to yo
 
 hd_purge: This will drop all ammunition for which you do not have an appropriate weapon, along with empty cells (in the absence of a BFG) and broken robots.
 
-hd_drop (deprecated): Equivalent to dropping your weapon, an alias kept for historical reasons. Note that attempting to drop your fist results in dropping all miscellaneous usable items that can't be dropped using either of the above two commands.hd_clearcvs: Resets all archived CVars (other than loadout cvars) to their defaults.
++hd_zoom: Bind a key to this, and pressing it will set the hd_noscope cvar to 0, and letting go will set it to 2. As this bind messes with player settings, this is left unbound by default and does not appear in the menu.
+
+hd_clearcvs: Resets all archived CVars (other than loadout cvars) to their defaults.
 
 ab: Type "ab <number>" in the console to set the airburst timer whenever you have an automatic rifle, blooper or rocket launcher out and ready to fire a grenade.
 
@@ -429,7 +431,7 @@ hd_hudsprite: Displays your current weapon as a pickup sprite graphic inside you
 
 hd_autostrip: Normally you must hit hd_strip to strip off your armour, or hit Reload with the medikit out. With this option enabled you will automatically strip when you hit fire or altfire.
 
-hd_noscope: Makes the scoped view only visible while you are "slow-aiming" with a braced weapon, rather than simply appearing as part of the sight crosshair. Note that the scoped view will always appear while you are holding the zoom button.
+hd_noscope: Many weapons have an optic sight that is represented as a sight picture just below HD's regular sight picture crosshair. If set to 0, this cvar lets this view appear whenever the regular sight picture crosshair appears. Set to 1, this makes the scoped view only visible while you are "slow-aiming" with a braced weapon. Set to 2, the scoped view never appears unless you hit zoom. Note that the zoom key overrides this setting, and this setting has no effect on the rocket launcher or Brontornis since they already have toggleable magnified sights.
 
 hd_clearucv: Resets all archived user options to their defaults.
 

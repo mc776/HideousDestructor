@@ -46,6 +46,11 @@ OptionValue "TurnInertia"{
 	1, "All Disabled"
 	2, "Accelerate Only"
 }
+OptionValue "NoScope"{
+	0, "Always"
+	1, "Auto"
+	2, "Never"
+}
 
 
 ListMenu "PlayerMenu"{
@@ -105,7 +110,7 @@ OptionMenu "HDUserOptionsMenu"{
 	StaticText "Hideous Destructor User Settings",1
 	Option "Contextual help","hd_helptext","YesNo"
 	Option "HUD weapon sprite","hd_hudsprite","YesNo"
-	Option "Scope view only when braced","hd_noscope","OnOff"
+	Option "Show scope view","hd_noscope","NoScope"
 	Option "Auto-strip for medikit","hd_autostrip","YesNo"
 	Command "Reset all HD user settings","hd_clearucv"
 
