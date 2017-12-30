@@ -8,18 +8,31 @@ extend class HDStatusBar{
 		playerpawn pp=cplayer.mo;
 		oddtic++;if(oddtic>6)oddtic=0;
 
+		let hdw=hdweapon(w);
+		if(!hdw){
+			if(cplayer.readyweapon.ammotype1)drawwepnum(
+				pp.countinv(cplayer.readyweapon.ammotype1),
+				hdmath.maxinv(pp,cplayer.readyweapon.ammotype1)
+			);
+			if(cplayer.readyweapon.ammotype2)drawwepnum(
+				pp.countinv(cplayer.readyweapon.ammotype2),
+				hdmath.maxinv(pp,cplayer.readyweapon.ammotype2),
+				posy:-10
+			);
+			return;
+		}
+
 		if(w is "Lumberjack"){
 			if(!gimmehud){
 				drawambar("CELLRED","CELLA0","HDCellAmmo",(-54,-4),DI_SCREEN_CENTER_BOTTOM);
 				drawnum(pp.countinv("HDCellPacks"),-46,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
-			let wpn=lumberjack(w);
-			if(!wpn.weaponstatus[1])drawstring(
+			if(!hdw.weaponstatus[1])drawstring(
 				mamountfont,"00000",(-16,-9),DI_TEXT_ALIGN_RIGHT|
 				DI_TRANSLATABLE|DI_SCREEN_CENTER_BOTTOM,
 				Font.CR_DARKGRAY
-			);else if(wpn.weaponstatus[1]>0)
-				drawwepnum(wpn.weaponstatus[1],20);
+			);else if(hdw.weaponstatus[1]>0)
+				drawwepnum(hdw.weaponstatus[1],20);
 		}
 		else if(w is "HDPistol"){
 			if(!gimmehud){
@@ -27,8 +40,7 @@ extend class HDStatusBar{
 				drawambar("PISARED","HDPISAMO","HDPistolAmmo",(-53,-4),DI_SCREEN_CENTER_BOTTOM);
 				drawnum(pp.countinv("HDPistolMag"),-43,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
-			let wpn=hdpistol(w);
-			drawwepcounter(wpn.weaponstatus[PISS_AUTO]+1,
+			drawwepcounter(hdw.weaponstatus[PISS_AUTO]+1,
 				-22,-10,"blank","RBRSA3A7","STFULAUT"
 			);
 			let wpn2=hdsecondpistol(pp.findinventory("HDSecondPistol"));
@@ -37,8 +49,8 @@ extend class HDStatusBar{
 				if(wpn2.weaponstatus[PISS_AUTO]>=0)
 					drawwepdot(-21,-13,(2,2.6));
 			}
-			drawwepnum(wpn.weaponstatus[PISS_MAG],15);
-			if(wpn.weaponstatus[PISS_CHAMBER]==2)drawwepdot(-16,-10,(3,1));
+			drawwepnum(hdw.weaponstatus[PISS_MAG],15);
+			if(hdw.weaponstatus[PISS_CHAMBER]==2)drawwepdot(-16,-10,(3,1));
 		}
 		else if(w is "HDSMG"){
 			if(!gimmehud){
@@ -46,32 +58,30 @@ extend class HDStatusBar{
 				drawambar("PISARED","HDPISAMO","HDPistolAmmo",(-53,-4),DI_SCREEN_CENTER_BOTTOM);
 				drawnum(pp.countinv("HDPistolMag"),-43,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
-			let wpn=hdsmg(w);
-			drawwepcounter(wpn.weaponstatus[SMGS_AUTO],
+			drawwepcounter(hdw.weaponstatus[SMGS_AUTO],
 				-22,-10,"RBRSA3A7","STBURAUT","STFULAUT"
 			);
-			drawwepnum(wpn.weaponstatus[SMGS_MAG],30);
-			if(wpn.weaponstatus[SMGS_CHAMBER]==2)drawwepdot(-16,-10,(3,1));
+			drawwepnum(hdw.weaponstatus[SMGS_MAG],30);
+			if(hdw.weaponstatus[SMGS_CHAMBER]==2)drawwepdot(-16,-10,(3,1));
 		}
 		else if(w is "Slayer"){
 			if(!gimmehud){
 				drawimage("SHL1A0",(-47,-10),DI_SCREEN_CENTER_BOTTOM);
 				drawnum(pp.countinv("HDShellAmmo"),-46,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
-			let wpn=hdweapon(w);
-			if(wpn.weaponstatus[SLAYS_CHAMBER1]>1){
+			if(hdw.weaponstatus[SLAYS_CHAMBER1]>1){
 				drawwepdot(-28,-10,(3,5));
 				drawwepdot(-28,-7,(3,2));
-			}else if(wpn.weaponstatus[SLAYS_CHAMBER1]>0){
+			}else if(hdw.weaponstatus[SLAYS_CHAMBER1]>0){
 				drawwepdot(-28,-7,(3,2));
 			}
-			if(wpn.weaponstatus[SLAYS_CHAMBER2]>1){
+			if(hdw.weaponstatus[SLAYS_CHAMBER2]>1){
 				drawwepdot(-16,-10,(3,5));
 				drawwepdot(-16,-7,(3,2));
-			}else if(wpn.weaponstatus[SLAYS_CHAMBER2]>0){
+			}else if(hdw.weaponstatus[SLAYS_CHAMBER2]>0){
 				drawwepdot(-16,-7,(3,2));
 			}
-			for(int i=wpn.weaponstatus[SLAYS_SIDESADDLE];i>0;i--){
+			for(int i=hdw.weaponstatus[SLAYS_SIDESADDLE];i>0;i--){
 				drawwepdot(-10-i*2,-2,(1,3));
 			}
 		}
@@ -80,47 +90,47 @@ extend class HDStatusBar{
 				drawimage("SHL1A0",(-47,-10),DI_SCREEN_CENTER_BOTTOM);
 				drawnum(pp.countinv("HDShellAmmo"),-46,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
-			let wpn=hdweapon(w);
-			if(wpn.weaponstatus[HUNTS_CHAMBER]>1){
+			if(hdw.weaponstatus[HUNTS_CHAMBER]>1){
 				drawwepdot(-19,-11,(5,3));
 				drawwepdot(-16,-11,(2,3));
 			}
-			else if(wpn.weaponstatus[HUNTS_CHAMBER]>0){
+			else if(hdw.weaponstatus[HUNTS_CHAMBER]>0){
 				drawwepdot(-16,-11,(2,3));
 			}
-			drawwepcounter(wpn.weaponstatus[0]&HUNTF_AUTO,
+			drawwepcounter(hdw.weaponstatus[0]&HUNTF_AUTO,
 				-24,-12,"blank","STFULAUT"
 			);
-			drawwepnum(wpn.weaponstatus[HUNTS_TUBE],7,posy:-7);
-			for(int i=wpn.weaponstatus[HUNTS_SIDESADDLE];i>0;i--){
+			drawwepnum(hdw.weaponstatus[HUNTS_TUBE],7,posy:-7);
+			for(int i=hdw.weaponstatus[HUNTS_SIDESADDLE];i>0;i--){
 				drawwepdot(-15-i*2,-2,(1,3));
 			}
 		}
 		else if(w is "ZM66AssaultRifle"){
 			if(!gimmehud){
 				drawambar("CLIPRED","CLIPC0","FourMilAmmo",(-51,-4),DI_SCREEN_CENTER_BOTTOM);
-				drawimage("ROQPA0",(-62,-4),DI_SCREEN_CENTER_BOTTOM,scale:(0.6,0.6));
 				drawnum(pp.countinv("ZM66RifleMags"),-43,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
-				drawnum(pp.countinv("HDRocketAmmo"),-56,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+				if(!(hdw.weaponstatus[0]&ZM66F_NOLAUNCHER)){
+					drawimage("ROQPA0",(-62,-4),DI_SCREEN_CENTER_BOTTOM,scale:(0.6,0.6));
+					drawnum(pp.countinv("HDRocketAmmo"),-56,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+				}
 			}
 
-			let zzz=zm66assaultrifle(w);
-			if(!(zzz.weaponstatus[0]&ZM66F_NOFIRESELECT))
-			drawwepcounter(zzz.weaponstatus[ZM66S_AUTO],
+			if(!(hdw.weaponstatus[0]&ZM66F_NOFIRESELECT))
+			drawwepcounter(hdw.weaponstatus[ZM66S_AUTO],
 				-22,-10,"RBRSA3A7","STFULAUT","STBURAUT"
 			);
-			if(zzz.weaponstatus[0]&ZM66F_GRENADELOADED)drawwepdot(-16,-13,(4,2.6));
-			int lod=clamp(zzz.weaponstatus[ZM66S_MAG]%100,0,50);
+			if(hdw.weaponstatus[0]&ZM66F_GRENADELOADED)drawwepdot(-16,-13,(4,2.6));
+			int lod=clamp(hdw.weaponstatus[ZM66S_MAG]%100,0,50);
 			drawwepnum(lod,50);
-			if(zzz.weaponstatus[0]&ZM66F_CHAMBER){
+			if(hdw.weaponstatus[0]&ZM66F_CHAMBER){
 				drawwepdot(-16,-10,(3,1));
 				lod++;
 			}
-			if(zzz.weaponstatus[ZM66S_MAG]>100)lod=random[shitgun](10,99);
+			if(hdw.weaponstatus[ZM66S_MAG]>100)lod=random[shitgun](10,99);
 			drawnum(lod,-16,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_RED);
-			if(zzz.weaponstatus[0]&ZM66F_GLMODE)drawnum(zzz.weaponstatus[ZM66S_AIRBURST],
+			if(hdw.weaponstatus[0]&ZM66F_GLMODE)drawnum(hdw.weaponstatus[ZM66S_AIRBURST],
 				-30,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
-			);else drawnum(zzz.weaponstatus[ZM66S_ZOOM],
+			);else drawnum(hdw.weaponstatus[ZM66S_ZOOM],
 				-30,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
 			);
 		}
@@ -131,7 +141,7 @@ extend class HDStatusBar{
 				drawnum(pp.countinv("ZM66RifleMags"),-43,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 				drawnum(pp.countinv("HDCellPacks"),-56,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
-			let vvv=vulcanette(w);
+			let vvv=vulcanette(hdw);
 			if(vvv){
 				for(int i=1;i<5;i++){
 					if(vvv.vulcmag[i]>=0)drawwepdot(-16-i*4,-13,(3,2));
@@ -169,9 +179,8 @@ extend class HDStatusBar{
 				drawimage("ROQPA0",(-52,-4),DI_SCREEN_CENTER_BOTTOM,scale:(0.6,0.6));
 				drawnum(pp.countinv("HDRocketAmmo"),-45,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
-			let wpn=blooper(w);
-			if(wpn.weaponstatus[0]&BLOPF_LOADED)drawwepdot(-16,-10,(5,3));
-			drawnum(wpn.weaponstatus[BLOPS_AIRBURST],
+			if(hdw.weaponstatus[0]&BLOPF_LOADED)drawwepdot(-16,-10,(5,3));
+			drawnum(hdw.weaponstatus[BLOPS_AIRBURST],
 				-28,-15,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
 			);
 			drawwepnum(
@@ -186,12 +195,11 @@ extend class HDStatusBar{
 				drawnum(pp.countinv("HDRocketAmmo"),-41,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 				drawnum(pp.countinv("HEATAmmo"),-54,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
-			let wpn=hdrl(w);
 			if(
-				wpn.weaponstatus[RLS_CHAMBER]>1||
-				!(wpn.weaponstatus[0]&RLF_GRENADEMODE)
+				hdw.weaponstatus[RLS_CHAMBER]>1||
+				!(hdw.weaponstatus[0]&RLF_GRENADEMODE)
 			){
-				if(wpn.weaponstatus[RLS_CHAMBER]>1){
+				if(hdw.weaponstatus[RLS_CHAMBER]>1){
 					drawwepdot(-19,-13,(3,2));
 					drawwepdot(-16,-13,(2,2));
 					drawwepdot(-22,-11,(4,6));
@@ -202,37 +210,38 @@ extend class HDStatusBar{
 					drawwepdot(-22,-11,(4,3));
 				}
 			}
-			drawnum(wpn.weaponstatus[RLS_AIRBURST],
+			drawnum(hdw.weaponstatus[RLS_AIRBURST],
 				-32,-15,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
 			);
-			drawwepnum(wpn.weaponstatus[RLS_MAG],6);
-			if(wpn.weaponstatus[RLS_CHAMBER]>0)drawwepdot(-16,-10,(3,1));
+			drawwepnum(hdw.weaponstatus[RLS_MAG],6);
+			if(hdw.weaponstatus[RLS_CHAMBER]>0)drawwepdot(-16,-10,(3,1));
 		}
 		else if(w is "LiberatorRifle"){
 			if(!gimmehud){
 				drawimage("RMAGA0",(-51,-4),DI_SCREEN_CENTER_BOTTOM);
 				drawambar("MAGRED","MAGSTAT","SevenMilAmmo",(-51,-4),DI_SCREEN_CENTER_BOTTOM);
-				drawimage("ROQPA0",(-62,-4),DI_SCREEN_CENTER_BOTTOM,scale:(0.6,0.6));
 				drawnum(pp.countinv("LiberatorMag"),-43,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
-				drawnum(pp.countinv("HDRocketAmmo"),-56,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+				if(!(hdw.weaponstatus[0]&LIBF_NOLAUNCHER)){
+					drawimage("ROQPA0",(-62,-4),DI_SCREEN_CENTER_BOTTOM,scale:(0.6,0.6));
+					drawnum(pp.countinv("HDRocketAmmo"),-56,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+				}
 			}
-			let llb=LiberatorRifle(w);
 			string llba="RBRSA3A7";
-			if(llb.weaponstatus[0]&LIBF_FULLAUTO)llba="STFULAUT";
+			if(hdw.weaponstatus[0]&LIBF_FULLAUTO)llba="STFULAUT";
 			drawimage(
 				llba,(-22,-10),
 				DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE|DI_ITEM_RIGHT
 			);
-			if(llb.weaponstatus[0]&LIBF_GRENADELOADED)drawwepdot(-16,-13,(4,2.6));
-			int lod=max(llb.weaponstatus[LIBS_MAG],0);
+			if(hdw.weaponstatus[0]&LIBF_GRENADELOADED)drawwepdot(-16,-13,(4,2.6));
+			int lod=max(hdw.weaponstatus[LIBS_MAG],0);
 			drawwepnum(lod,30);
-			if(llb.weaponstatus[LIBS_CHAMBER]==2){
+			if(hdw.weaponstatus[LIBS_CHAMBER]==2){
 				drawwepdot(-16,-10,(3,1));
 				lod++;
 			}
-			if(llb.weaponstatus[0]&LIBF_GRENADEMODE)drawnum(llb.weaponstatus[LIBS_AIRBURST],
+			if(hdw.weaponstatus[0]&LIBF_GRENADEMODE)drawnum(hdw.weaponstatus[LIBS_AIRBURST],
 				-30,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
-			);else drawnum(llb.weaponstatus[LIBS_ZOOM],
+			);else drawnum(hdw.weaponstatus[LIBS_ZOOM],
 				-30,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
 			);
 		}
@@ -241,12 +250,11 @@ extend class HDStatusBar{
 				drawambar("CELLRED","CELLA0","HDCellAmmo",(-54,-4),DI_SCREEN_CENTER_BOTTOM);
 				drawnum(pp.countinv("HDCellPacks"),-46,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
-			let tbt=ThunderBuster(w);
-			if(tbt.weaponstatus[0]&TBF_ALT)drawimage(
+			if(hdw.weaponstatus[0]&TBF_ALT)drawimage(
 				"STBURAUT",(-22,-10),
 				DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE|DI_ITEM_RIGHT
 			);
-			int bat=tbt.weaponstatus[TBS_BATTERY];
+			int bat=hdw.weaponstatus[TBS_BATTERY];
 			if(bat>0)drawwepnum(bat,20);
 			else if(!bat)drawstring(
 				mamountfont,"00000",
@@ -259,28 +267,26 @@ extend class HDStatusBar{
 				drawambar("CELLRED","CELLA0","HDCellAmmo",(-54,-4),DI_SCREEN_CENTER_BOTTOM);
 				drawnum(pp.countinv("HDCellPacks"),-46,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
-			let bff=BFG9k(w);
-			int bffb=bff.weaponstatus[BFGS_BATTERY];
+			int bffb=hdw.weaponstatus[BFGS_BATTERY];
 			if(bffb>0)drawwepnum(bffb,20,posy:-10);
 			else if(!bffb)drawstring(
 				mamountfont,"00000",
 				(-16,-14),DI_TEXT_ALIGN_RIGHT|DI_TRANSLATABLE|DI_SCREEN_CENTER_BOTTOM,
 				Font.CR_DARKGRAY
 			);
-			if(bff.weaponstatus[0]&BFGF_STRAPPED){
+			if(hdw.weaponstatus[0]&BFGF_STRAPPED){
 				drawwepdot(-16,-16,(10,1));
 				drawwepdot(-16,-19,(8,1));
 				drawwepdot(-16,-22,(5,1));
 			}
-			drawwepnum(bff.weaponstatus[BFGS_CHARGE],20);
+			drawwepnum(hdw.weaponstatus[BFGS_CHARGE],20);
 		}
 		else if(w is "Brontornis"){
 			if(!gimmehud){
 				drawimage("BROCA0",(-48,-10),DI_SCREEN_CENTER_BOTTOM,scale:(0.7,0.7));
 				drawnum(pp.countinv("BrontornisRound"),-45,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
-			let brn=Brontornis(w);
-			if(brn.weaponstatus[BRONS_CHAMBER]>1)drawwepdot(-16,-10,(5,3));
+			if(hdw.weaponstatus[BRONS_CHAMBER]>1)drawwepdot(-16,-10,(5,3));
 			drawwepnum(
 				pp.countinv("BrontornisRound"),
 				HDMath.MaxInv(pp,"BrontornisRound")
@@ -291,15 +297,14 @@ extend class HDStatusBar{
 				drawambar("MAGRED","MAGSTAT","SevenMilAmmo",(-45,-9),DI_SCREEN_CENTER_BOTTOM|DI_ITEM_RIGHT_BOTTOM);
 				drawnum(pp.countinv("BossClip"),-45,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
-			let brf=BossRifle(w);
-			drawwepnum(brf.weaponstatus[BOSSS_MAG],10);
-			drawwepcounter(brf.weaponstatus[BOSSS_CHAMBER],
+			drawwepnum(hdw.weaponstatus[BOSSS_MAG],10);
+			drawwepcounter(hdw.weaponstatus[BOSSS_CHAMBER],
 				-16,-10,"blank","RBRSA1A5","RBRSA3A7","RBRSA4A6"
 			);
-			drawnum(brf.weaponstatus[BOSSS_ZOOM],
+			drawnum(hdw.weaponstatus[BOSSS_ZOOM],
 				-30,-18,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
 			);
-			drawnum(brf.weaponstatus[BOSSS_DROPADJUST],
+			drawnum(hdw.weaponstatus[BOSSS_DROPADJUST],
 				-16,-18,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_WHITE
 			);
 		}
@@ -343,7 +348,7 @@ extend class HDStatusBar{
 		else if(w is "HDMedikitter"){
 			drawwepdot(-27,-11,(2,6));
 			drawwepdot(-25,-13,(6,2));
-			hdmedikitter ww=hdmedikitter(w);
+			let ww=hdmedikitter(w);
 			if(ww.useonother){
 				drawwepdot(-22,-20,(5,6));
 				drawwepdot(-24,-25,(1,7));
@@ -377,17 +382,6 @@ extend class HDStatusBar{
 			drawimage(
 				"STIMA0",(-14,-7),
 				DI_SCREEN_CENTER_BOTTOM|DI_ITEM_RIGHT
-			);
-		}
-		else{
-			if(cplayer.readyweapon.ammotype1)drawwepnum(
-				pp.countinv(cplayer.readyweapon.ammotype1),
-				hdmath.maxinv(pp,cplayer.readyweapon.ammotype1)
-			);
-			if(cplayer.readyweapon.ammotype2)drawwepnum(
-				pp.countinv(cplayer.readyweapon.ammotype2),
-				hdmath.maxinv(pp,cplayer.readyweapon.ammotype2),
-				posy:-10
 			);
 		}
 	}
