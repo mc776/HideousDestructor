@@ -8,7 +8,7 @@ class HDStatusBar:DoomStatusBar{
 		BaseStatusBar.Init();
 		SetSize(0,320,200);
 
-		// Create the font used for the fullscreen HUD
+		//Create the font used for the fullscreen HUD
 		Font fnt = "HUDFONT_DOOM";
 		mHUDFont = HUDFont.Create(fnt, fnt.GetCharWidth("0"), true, 1, 1);
 		fnt = "INDEXFONT_DOOM";
@@ -281,10 +281,14 @@ class HDStatusBar:DoomStatusBar{
 
 
 	}
-	void drawnum(int num,int xpos,int ypos,int flags=-1,int fnt=Font.CR_OLIVE){
+	void drawnum(
+		int num,int xpos,int ypos,
+		int flags=DI_SCREEN_RIGHT_BOTTOM,
+		int fnt=Font.CR_OLIVE
+	){
 		drawstring(
 			mAmountFont,formatnumber(num),
-			(xpos,ypos),flags<0?DI_TEXT_ALIGN_LEFT|DI_SCREEN_RIGHT_BOTTOM:flags,
+			(xpos,ypos),flags|DI_TEXT_ALIGN_RIGHT,
 			fnt
 		);
 	}
@@ -296,7 +300,7 @@ class HDStatusBar:DoomStatusBar{
 			int liv=cplayer.mo.countinv("HDLives");
 			drawstring(
 				mHUDFont,FormatNumber(liv),
-				(posx,posy),flags,
+				(posx,posy),flags|DI_ITEM_RIGHT_BOTTOM|DI_TEXT_ALIGN_LEFT,
 				liv>3?Font.CR_GOLD:(liv?Font.CR_BRICK:Font.CR_DARKGRAY)
 			);
 			
@@ -305,16 +309,17 @@ class HDStatusBar:DoomStatusBar{
 	void drawambar(
 		string ongfx,string offgfx,
 		class<inventory> type,
-		vector2 coords
+		vector2 coords,
+		int flags=DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM
 	){
 		inventory inv=cplayer.mo.findinventory(type);
 		if(!inv||!inv.amount){
-			drawimage(offgfx,coords,DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM);
+			drawimage(offgfx,coords,flags);
 		}else drawbar(
 				ongfx,offgfx,
 				inv.amount,inv.maxamount,
 				coords,-1,
-				SHADER_VERT,DI_ITEM_RIGHT_BOTTOM|DI_SCREEN_RIGHT_BOTTOM
+				SHADER_VERT,flags
 		);
 	}
 	void DrawInvSel(int posx,int posy,int numposx,int numposy,int flags){

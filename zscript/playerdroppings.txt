@@ -27,7 +27,9 @@ class HDDropOne:ActionItem{
 			}else if(cw=="Vulcanette"){
 				if(countinv("HDCellAmmo"))A_DropInventory("HDCellAmmo",countinv("HDCellAmmo"));
 				else A_DropInventory("HDCellPacks",1);
-				A_DropInventory("ZM66RifleMags",1);
+				if(countinv("FourMilAmmo"))
+					A_DropInventory("FourMilAmmo",countinv("FourMilAmmo"));
+				else A_DropInventory("ZM66RifleMags",1);
 			}else if(cw=="HDRL"){
 				if(countinv("HEATAmmo")){
 					angle+=1;
