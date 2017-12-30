@@ -90,49 +90,6 @@ struct HDMobAI play{
 		if(!random(1,soundchance))caller.A_PlaySound(caller.activesound);
 	}
 
-	//smooth chase
-	//do NOT try to set targets in here, JUST do the chase sequence
-	static void Chase(actor caller,actor movetarget=null,bool res=false,bool flee=true){
-		if(!caller.trymove(caller.pos.xy,false)){
-			caller.A_Wander();
-			return;
-		}
-
-		//remember original position, etc.
-		vector3 pg=caller.pos;
-		bool fraid=caller.bfrightened;
-		actor attacktarget=caller.target;
-
-		//chase the move target and record the resulting position
-		caller.bfrightened=flee;
-		if(attacktarget)caller.A_Chase("melee","missile",CHF_NODIRECTIONTURN|CHF_NOPOSTATTACKTURN|(res?CHF_RESURRECT:0));
-		else caller.A_Wander(flags:CHF_NODIRECTIONTURN);
-		vector3 pp=caller.pos;
-
-		if(!caller.bfloat && caller.floorz<caller.pos.z)return; //abort if can't propel caller
-		caller.vel.xy*=0.7; //slow down
-
-		//reset position and move in chase direction
-		if(pp!=pg){
-			caller.setorigin(pg,false);
-			if(caller.bfloat){
-				caller.vel+=(pp-pg)*(flee?0.32:0.16);
-				if(attacktarget&&caller.pos.z-attacktarget.pos.z<attacktarget.height)
-					caller.vel.z+=frandom(0,0.1); //floaty death from above
-			}else{
-				caller.vel.xy+=(pp.xy-pg.xy)*(flee?0.32:0.16);
-			}
-		}
-
-		//face appropriate direction
-		if(attacktarget&&caller.distance3d(attacktarget)<max(caller.meleerange*2,caller.radius*3))
-			caller.A_FaceTarget(10,10);
-		else if(caller.vel.xy!=(0,0))caller.A_FaceMovementDirection(15,40);
-
-		//reset things
-		caller.bfrightened=fraid;
-	}
-
 	//check if shot is clear
 	//hdmobai.tryshoot(self,pradius:6,pheight:6)
 	static bool TryShoot(
@@ -218,6 +175,53 @@ struct HDMobAI play{
 			}
 		}
 	}
+
+	//smooth chase
+	//do NOT try to set targets in here, JUST do the chase sequence
+	static void Chase(actor caller,actor movetarget=null,bool res=false,bool flee=false){
+		if(!caller.trymove(caller.pos.xy,false)){
+			caller.A_Wander();
+			return;
+		}
+
+		//remember original position, etc.
+		vector3 pg=caller.pos;
+		bool fraid=caller.bfrightened;
+		actor attacktarget=caller.target;
+		if(flee)caller.bfrightened=true;
+
+double speedbak=caller.speed;
+if(caller.bfrightened)caller.speed*=2;
+
+		//chase the move target and record the resulting position
+		if(attacktarget)caller.A_Chase("melee","missile",CHF_NODIRECTIONTURN|CHF_NOPOSTATTACKTURN|(res?CHF_RESURRECT:0));
+		else caller.A_Wander(flags:CHF_NODIRECTIONTURN);
+		vector3 pp=caller.pos;
+
+		if(!caller.bfloat && caller.floorz<caller.pos.z)return; //abort if can't propel caller
+		caller.vel.xy*=0.7; //slow down
+
+		//reset position and move in chase direction
+		if(pp!=pg){
+			caller.setorigin(pg,false);
+			if(caller.bfloat){
+				caller.vel+=(pp-pg)*(flee?0.32:0.16);
+				if(attacktarget&&caller.pos.z-attacktarget.pos.z<attacktarget.height)
+					caller.vel.z+=frandom(0,0.1); //floaty death from above
+			}else{
+				caller.vel.xy+=(pp.xy-pg.xy)*0.16;
+			}
+		}
+
+		//face appropriate direction
+		if(attacktarget&&caller.distance3d(attacktarget)<max(caller.meleerange*2,caller.radius*3))
+			caller.A_FaceTarget(10,10);
+		else if(caller.vel.xy!=(0,0))caller.A_FaceMovementDirection(15,40);
+
+		//reset things
+		caller.bfrightened=fraid;
+		caller.speed=speedbak;
+	}
 }
 class TryShootPuff:CheckPuff{
 	default{
@@ -233,16 +237,21 @@ class HDMobster:IdleDummy{
 	vector3 firstposition;
 	actor threat;
 	double thraidius;
+	int leftright;
+	int boredthreshold;int bored;
 	static hdmobster SpawnMobster(actor caller){
 		let hdmb=hdmobster(spawn("HDMobster",caller.pos));
 		hdmb.master=caller;
 		hdmb.target=caller.target;
+		hdmb.bfrightened=caller.bfrightened;
 		return hdmb;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		firstposition=pos;
+		leftright=randompick(-1,-1,-1,-1,0,1,1);
 		threat=null;thraidius=256;
+		bored=0;boredthreshold=20;
 		changetid(123); //only used for actoriterator
 	}
 	states{
@@ -256,27 +265,52 @@ class HDMobster:IdleDummy{
 				destroy();return;
 			}
 			if(master.health<1)return;
-			master.goal=self;
-			master.bchasegoal=true;
 
 			//decide where to place goal
 			target=master.target;
 			if(threat){
-				setorigin(master.pos+master.pos-threat.pos,false);
+				bored=0;
+				master.bfrightened=true;
+				master.goal=self;master.bchasegoal=true;
+				setorigin(master.pos+(master.pos-threat.pos)
+					+(random(-128,128),random(-128,128),0),false);
+				A_SetTics(4);
 				if(
 					!master.checksight(threat)
 					||master.distance3d(threat)>thraidius  
 				)threat=null;
 			}else if(target){
+				master.bfrightened=bfrightened;
+				master.goal=self;master.bchasegoal=true;
 				//chase target directly, or occasionaly randomize general direction
 				if(
 					target.health>0
 					&&master.checksight(target)
-				)setorigin(master.target.pos,false);  
-				else if(!random(0,100))setorigin(
-					pos+(random(-512,512),random(-512,512),0),false
-				);
-			}else setorigin(firstposition,false); //go back to start
+				){
+					setorigin(master.target.pos,false);
+					bored=0;
+				}else if(!random(0,15)){
+					setorigin((
+						master.pos.xy
+						+rotatevector(pos.xy-master.pos.xy
+							+(random(-512,512),random(-512,512)),
+							random(60,120)*
+							leftright+randompick(1,1,1,1,-1,-1,0)
+						)
+					,0),false);
+					bored++;
+					if(bored>boredthreshold){
+						bored=0;
+						master.goal=null;master.bchasegoal=false;
+						A_ClearTarget();master.A_ClearTarget();
+						if(master.findstate("idle"))master.setstatelabel("idle");
+						else master.setstatelabel("spawn");
+					}
+				}
+			}else{
+				master.goal=null;master.bchasegoal=false;
+				setorigin(firstposition,false); //go back to start
+			}
 		}wait;
 	}
 }
