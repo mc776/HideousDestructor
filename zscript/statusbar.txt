@@ -522,13 +522,13 @@ class HDStatusBar:DoomStatusBar{
 		drawambar("CELLRED","CELLA0","HDCellAmmo",(-30,mxht));
 		drawimage("FRAGA0",(-10,mxht),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM,scale:(0.7,0.7));
 
-		drawnum(cp.countinv("HDPistolMag"),-75,mxhtplus-6);
-		drawnum(cp.countinv("HDSMGMag"),-75,mxhtplus);
+		drawnum(cp.countinv("HDPistolMag"),-71,mxhtplus-6);
+		drawnum(cp.countinv("HDSMGMag"),-71,mxhtplus);
 
-		drawnum(cp.countinv("ZM66RifleMags"),-56,mxhtplus);
+		drawnum(cp.countinv("ZM66RifleMags"),-52,mxhtplus);
 
-		drawnum(cp.countinv("BossClip"),-37,mxhtplus-6);
-		drawnum(cp.countinv("LiberatorMag"),-37,mxhtplus);
+		drawnum(cp.countinv("BossClip"),-30,mxhtplus-6);
+		drawnum(cp.countinv("LiberatorMag"),-30,mxhtplus);
 
 		if(cp.countinv("Slayer"))drawnum(
 			hdweapon(cp.findinventory("Slayer")).weaponstatus[SLAYS_SIDESADDLE],-4,mxhtplus-14,
@@ -544,19 +544,19 @@ class HDStatusBar:DoomStatusBar{
 			DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_BOTTOM
 		);
 
-		drawnum(cp.countinv("BrontornisRound"),-80,mxht);
+		drawnum(cp.countinv("BrontornisRound"),-76,mxht);
 
-		drawnum(cp.countinv("HEATAmmo"),-60,mxht-6);
-		drawnum(cp.countinv("HDRocketAmmo"),-60,mxht);
-		drawnum(cp.countinv("DudRocketAmmo"),-64,mxht,
+		drawnum(cp.countinv("HEATAmmo"),-54,mxht-6);
+		drawnum(cp.countinv("HDRocketAmmo"),-54,mxht);
+		drawnum(cp.countinv("DudRocketAmmo"),-66,mxht-2,
 			DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_BOTTOM,
 			fnt:Font.CR_BROWN
 		);
 
-		drawnum(cp.countinv("HDCellPacks"),-30,mxht,
+		drawnum(cp.countinv("HDCellPacks"),-28,mxht,
 			DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_BOTTOM
 		);
-		drawnum(cp.countinv("HDCellPackEmpty"),-40,mxht,
+		drawnum(cp.countinv("HDCellPackEmpty"),-38,mxht,
 			DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_BOTTOM,
 			fnt:Font.CR_BROWN
 		);
