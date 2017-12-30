@@ -55,7 +55,10 @@ class InvReset:Inventory{
 		for(inventory item=resetee.inv;item!=null;item=item.inv){
 			if(
 				(!keepkeys||!(item is "Key"))
-			)item.goawayanddie();
+			){
+				item.destroy();
+				item=resetee.inv;
+			}
 		}
 	}
 	void GiveStartItems(actor resetee){
@@ -83,6 +86,7 @@ class DoomguyLoadout:InvReset{
 		other.A_GiveInventory("HDPistol");
 		other.A_GiveInventory("HDPistolMag",2);
 		other.A_GiveInventory("HDPistolAmmo",4);
+		other.A_SelectWeapon("HDPistol");
 		goawayanddie();
 		return;
 	}

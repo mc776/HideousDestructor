@@ -57,10 +57,13 @@ class Ring:HDWeapon replaces Fist{
 		weapon.bobrangey 0.5;
 		weapon.slotnumber 1;
 	}
+	override inventory CreateTossable(int amount){
+		owner.A_GiveInventory("DropMisc");
+		return super.createtossable(amount);
+	}
 	override void DetachFromOwner(){
 		target=owner;
 		super.detachfromowner();
-		target.A_GiveInventory("DropMisc");
 		target.A_GiveInventory("Ring");
 		target.A_SelectWeapon("Ring");
 	}
