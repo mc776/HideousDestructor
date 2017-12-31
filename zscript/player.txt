@@ -8,13 +8,15 @@ const HDCONST_DAMAGEFATIGUE=80;
 class HDPlayerPawn:PlayerPawn{
 	vector3 lastpos;vector3 lastvel;double lastangle;double lastpitch;double lastheight;
 	vector3 poschange;
-	actor scopecamera;
+	bool teleported;
+
 	double fm;double sm;
 	double oldfm;double oldsm;
 	double iyaw;double ipitch;
 	double zat;
 
 	actor playercorpse;
+	actor scopecamera;
 
 	weapon lastweapon;
 	bool barehanded;
@@ -207,31 +209,9 @@ class HDPlayerPawn:PlayerPawn{
 		ipitch=player.cmd.pitch*(360./65536.);
 
 
-		//"falling" damage calculation
-		//must be done before tick or bad things happen with the trymoves
-		vector2 fpbak=pos.xy;
-		int fallvel=0;
-		if(
-			!trymove(fpbak+vel.xy,true)
-		){
-			if(blockingline)fallvel=vel.xy.length();
-			else if(blockingmobj)fallvel=vel.xy.length()*8/10;
-		}
-		if(
-			(pos.z+vel.z<floorz)
-			||(pos.z+height+vel.z>ceilingz)
-		){
-			fallvel=max(fallvel,vel.length());
-		}
-//
-fallvel*=fallvel*0.03;
-		if(abs(fallvel)>10)A_Log(string.format("impact %i",fallvel));
-		setorigin((fpbak,pos.z),false);
-
 
 
 		super.Tick();
-
 
 
 		HeartTicker();
@@ -246,8 +226,12 @@ fallvel*=fallvel*0.03;
 			scopecamera=spawn("ViewDummy",pos);
 		}else scopecamera.target=self;
 
+		//check if teleported
+		//fastest you can voluntarily go (berserk, invuln, soulsphere) is mid-90s
+		if((lastpos-pos).length()>100)teleported=true;else teleported=false;
+
 		//if this is put into playermove bad things happen
-		TurnCheck();
+		if(!teleported)TurnCheck();
 		JumpCheck();
 		CrouchCheck();
 
@@ -265,6 +249,8 @@ fallvel*=fallvel*0.03;
 		if(runwalksprint>=0&&(fm||sm))A_GiveInventory("IsMoving");
 
 		//"falling" damage
+		int fallvel=0;
+		if(!teleported)fallvel=(lastvel-vel).length();
 		if(fallvel>10){
 			if(barehanded)fallvel-=4;
 			if(fallvel<=15)A_PlaySound("weapons/smack",CHAN_AUTO,0.4);
