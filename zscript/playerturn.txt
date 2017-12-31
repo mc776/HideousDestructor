@@ -307,6 +307,7 @@ extend class HDPlayerPawn{
 			}else if(disttop<distbottom){
 				pitchchange=min(barrellength-disttop,mvng?0:4);
 			}
+			pitchchange=clamp(pitchchange,-45,45);
 
 			if(!muzhit){
 				A_Recoil(clamp(barrellength-disttop,0,barrellength)*0.02);
@@ -325,7 +326,6 @@ extend class HDPlayerPawn{
 
 
 //if(anglechange)A_LogFloat(anglechange);
-
 
 
 		//set everything and update old
@@ -366,10 +366,9 @@ extend class HDPlayerPawn{
 				if(anglechange<0) dir=-90;
 				trymove(self.pos.xy-(cos(angle+dir),sin(angle+dir))*0.8,false);
 			}
-			int ptchch=abs(pitchchange);
+			int ptchch=clamp(abs(pitchchange),0,10); //THE CLAMP IS A BANDAID
 			if(ptchch>1 && -30<pitch<30){  
-				trymove(self.pos.xy-(cos(angle)*ptchch,
-					sin(angle)*ptchch)*0.1,false);
+				trymove(pos.xy-(cos(angle)*ptchch,sin(angle)*ptchch)*0.1,false);
 				PlayRunning();
 			}
 		}
