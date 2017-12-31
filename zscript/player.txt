@@ -7,10 +7,9 @@ const HDCONST_WALKFATIGUE=40;
 const HDCONST_DAMAGEFATIGUE=80;
 class HDPlayerPawn:PlayerPawn{
 	vector3 lastpos;vector3 lastvel;double lastangle;double lastpitch;double lastheight;
-	vector3 poschange;
 	bool teleported;
 
-	double fm;double sm;
+	int oldinput;
 	double oldfm;double oldsm;
 	double iyaw;double ipitch;
 	double zat;
@@ -31,8 +30,6 @@ class HDPlayerPawn:PlayerPawn{
 	int stunned;
 	int fatigue;
 	int nocrosshair;
-
-	int input;int oldinput;
 
 	bool hasgrabbed;
 	int corpsekicktimer;
@@ -87,7 +84,14 @@ class HDPlayerPawn:PlayerPawn{
 			A_TakeInventory("IsMoving");
 		}
 		---- AAAAAA 5{
-			if(!barehanded && zerk<1 && zat==pos.z && !countinv("IsSupported") && !countinv("IsMoving") && !countinv("WeaponBusy")){
+			if(
+				!barehanded
+				&&zerk<1
+				&&zat==pos.z
+				&&!countinv("IsSupported")
+				&&!countinv("IsMoving")
+				&&!countinv("WeaponBusy")
+			){
 				vector3 posbak=pos;
 				setxyz(pos+(cos(angle),sin(angle),0)*16);
 				double zat2=getzat();
@@ -188,14 +192,13 @@ class HDPlayerPawn:PlayerPawn{
 	override void Tick(){
 		if (!player||!player.mo||player.mo!=self){Super.Tick();return;} //anti-voodoodoll
 
-		poschange=lastpos-pos;
 		lastpos=pos;
 		zat=getzat();
 
 		//log all new inputs
-		input=player.cmd.buttons;
-		fm=player.cmd.forwardmove;
-		sm=player.cmd.sidemove;
+		int input=player.cmd.buttons;
+		double fm=player.cmd.forwardmove;
+		double sm=player.cmd.sidemove;
 
 		//only do anything below this while the player is alive!
 		if(bkilled||health<1){
@@ -214,7 +217,7 @@ class HDPlayerPawn:PlayerPawn{
 		super.Tick();
 
 
-		HeartTicker();
+		HeartTicker(fm,sm,input);
 		if(inpain>0)inpain--;
 
 		//prevent odd screwups that leave you unable to throw grenades or something
@@ -232,7 +235,7 @@ class HDPlayerPawn:PlayerPawn{
 
 		//if this is put into playermove bad things happen
 		if(!teleported)TurnCheck();
-		JumpCheck();
+		JumpCheck(fm,sm);
 		CrouchCheck();
 
 		//prevent some support exploits
@@ -293,7 +296,7 @@ class HDPlayerPawn:PlayerPawn{
 		if(
 			stunned
 			||(!zerk && fatigue>HDCONST_WALKFATIGUE && stimcount<8)
-			||StumbleCheck()
+			||StumbleCheck(fm,sm)
 			||health<25
 		){
 			mustwalk=true;
