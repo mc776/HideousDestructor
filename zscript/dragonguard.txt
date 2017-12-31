@@ -24,6 +24,7 @@ class DragonGuard:Chaingunguy{
 		super.postbeginplay();
 		vulcammo=250;
 		vulcchambers=5;
+		hdmobster.spawnmobster(self);
 	}
 	override void die(actor source,actor inflictor,int dmgflags=0){
 		A_GiveInventory("HasDroppedGun");
@@ -100,7 +101,7 @@ class DragonGuard:Chaingunguy{
 			vulcammo+=50;
 		}loop;
 	see:
-		CPOS AABBCCDD 4 A_Chase();
+		CPOS AABBCCDD 4 {hdmobai.chase(self);}//A_Chase();
 		CPOS A 0{
 			if(!target||!checksight(target))healthing(random(1,6));
 			if(!vulcammo)setstatelabel("reload");

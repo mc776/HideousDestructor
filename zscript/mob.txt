@@ -160,6 +160,7 @@ struct HDMobAI play{
 	//hdmobai.frighten(self,256); maybe 128 for bullet and 512 for plasma and bfg
 	static void Frighten(actor caller,double fraidius,actor fearsome=null){
 		if(!fearsome)fearsome=caller;
+		fearsome.A_AlertMonsters();
 		actor hir;
 		blockthingsiterator it=blockthingsiterator.create(caller,fraidius);
 		while(it.Next()){
@@ -190,8 +191,8 @@ struct HDMobAI play{
 		actor attacktarget=caller.target;
 		if(flee)caller.bfrightened=true;
 
-double speedbak=caller.speed;
-if(caller.bfrightened)caller.speed*=2;
+		double speedbak=caller.speed;
+		if(caller.bfrightened)caller.speed*=2;
 
 		//chase the move target and record the resulting position
 		if(attacktarget)caller.A_Chase("melee","missile",CHF_NODIRECTIONTURN|CHF_NOPOSTATTACKTURN|(res?CHF_RESURRECT:0));
@@ -321,6 +322,7 @@ class HDMobster:IdleDummy{
 class exzo:zombieman{
 	default{
 		meleerange 64;
+		attacksound "";
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -331,6 +333,10 @@ class exzo:zombieman{
 		POSS AABBCCDD 4{HDMobAI.Chase(self);}
 		loop;
 	melee:
+		POSS A 8 A_FaceTarget();
+		POSS E 10 A_SargAttack();
+		POSS A 8;
+		goto see;
 	missile:
 		POSS E 10 A_FaceTarget();
 		POSS F 8 A_PosAttack();
