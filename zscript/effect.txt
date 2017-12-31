@@ -158,6 +158,8 @@ class HDPuff:HDActor{
 	}
 }
 class HDBulletPuff:HDPuff{
+	int scarechance;
+	property scarechance:scarechance;
 	default{
 		stamina 5;missiletype "WallChunk";alpha 0.8;
 
@@ -168,10 +170,16 @@ class HDBulletPuff:HDPuff{
 		hdpuff.minalpha 0.1;
 		hdpuff.startvelz 4;
 		gravity 0.1;
+
+		hdbulletpuff.scarechance 5;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		hdmobai.frighten(self,256);
+		if(!random(0,scarechance)){
+			actor fff=spawn("idledummy",pos);
+			fff.stamina=random(60,120);
+			hdmobai.frighten(fff,256);
+		}
 		A_PlaySound("misc/bullethit",0,0.02*stamina*stamina);
 		A_ChangeVelocity(-0.4,0,frandom(0.1,0.4),CVF_RELATIVE);
 		trymove(pos.xy+vel.xy,false);
@@ -191,26 +199,31 @@ class HDBulletPuff:HDPuff{
 class BulletPuffBig:HDBulletPuff{
 	default{
 		stamina 5;scale 0.6;
+		hdbulletpuff.scarechance 5;
 	}
 }
 class BulletPuffMedium:HDBulletPuff{
 	default{
 		stamina 4;scale 0.5;
+		hdbulletpuff.scarechance 10;
 	}
 }
 class BulletPuffSmall:HDBulletPuff{
 	default{
 		stamina 3;scale 0.4;missiletype "TinyWallChunk";
+		hdbulletpuff.scarechance 20;
 	}
 }
 class FragPuff:HDBulletPuff{
 	default{
 		stamina 1;scale 0.5;
+		hdbulletpuff.scarechance 40;
 	}
 }
 class PenePuff:HDBulletPuff{
 	default{
 		stamina 4;scale 0.6;
+		hdbulletpuff.scarechance 4;
 	}
 	states{
 	spawn:

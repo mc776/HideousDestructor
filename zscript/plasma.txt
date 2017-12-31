@@ -285,9 +285,9 @@ class PlasmaCheckPuff:CheckPuff{
 class HDThunderTrail:IdleDummy{
 	states{
 	spawn:
-		TNT1 A 1 nodelay A_RadiusGive("EvadeNow",96,RGF_MONSTERS,1);
+		TNT1 A 1 nodelay {HDMobAI.Frighten(self,128);}
 		TNT1 A 10 A_PlaySound("weapons/bigcrack");
-		TNT1 A 0 A_AlertMonsters();
+		TNT1 A 20 A_AlertMonsters();
 		stop;
 	}
 }
