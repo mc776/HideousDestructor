@@ -243,7 +243,7 @@ class HDPlayerPawn:PlayerPawn{
 		if(runwalksprint>=0&&(fm||sm))A_GiveInventory("IsMoving");
 
 		//"falling" damage
-		int fall=(lastvel-vel).length();
+		int fall=lastvel.length()-vel.length(); //(lastvel-vel).length() won't work because portals
 		if(fall>10){
 			if(barehanded)fall-=4;
 			if(fall<=15)A_PlaySound("weapons/smack",CHAN_AUTO,0.4);
