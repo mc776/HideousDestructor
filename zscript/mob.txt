@@ -179,7 +179,11 @@ struct HDMobAI play{
 
 	//smooth chase
 	//do NOT try to set targets in here, JUST do the chase sequence
-	static void Chase(actor caller,actor movetarget=null,bool res=false,bool flee=false){
+	static void Chase(
+		actor caller,
+		statelabel melstate="melee",statelabel misstate="missle",
+		bool res=false,bool flee=false
+	){
 		if(!caller.trymove(caller.pos.xy,false)){
 			caller.A_Wander();
 			return;
@@ -195,7 +199,11 @@ struct HDMobAI play{
 		if(caller.bfrightened)caller.speed*=2;
 
 		//chase the move target and record the resulting position
-		if(attacktarget)caller.A_Chase("melee","missile",CHF_NODIRECTIONTURN|CHF_NOPOSTATTACKTURN|(res?CHF_RESURRECT:0));
+		if(attacktarget)caller.A_Chase(
+			"melee","missile",
+			CHF_NODIRECTIONTURN|CHF_NOPOSTATTACKTURN|
+			(res?CHF_RESURRECT:0)
+		);
 		else caller.A_Wander(flags:CHF_NODIRECTIONTURN);
 		vector3 pp=caller.pos;
 
@@ -221,7 +229,7 @@ struct HDMobAI play{
 
 		//reset things
 		caller.bfrightened=fraid;
-		caller.speed=speedbak;
+		caller.speed=getdefaultbytype(caller.getclass()).speed;
 	}
 }
 class TryShootPuff:CheckPuff{

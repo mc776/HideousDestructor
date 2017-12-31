@@ -171,6 +171,7 @@ class HDBulletPuff:HDPuff{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
+		hdmobai.frighten(self,256);
 		A_PlaySound("misc/bullethit",0,0.02*stamina*stamina);
 		A_ChangeVelocity(-0.4,0,frandom(0.1,0.4),CVF_RELATIVE);
 		trymove(pos.xy+vel.xy,false);

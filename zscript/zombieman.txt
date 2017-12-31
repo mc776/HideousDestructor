@@ -20,6 +20,7 @@ class ZombieStormtrooper:ZombieMan{
 		super.postbeginplay();
 		mag=50;
 		firemode=random(-1,5);
+		hdmobster.spawnmobster(self);
 	}
 	states{
 	spawn:
@@ -176,13 +177,13 @@ class ZombieStormtrooper:ZombieMan{
 			A_PlaySound("weapons/rifleclick2");
 			bfrightened=true;
 		}
-		#### AA 1 A_Chase("melee",null);
+		#### AA 1 {hdmobai.chase(self,"melee",null);}//A_Chase("melee",null);
 		#### A 0{
 			A_PlaySound("weapons/rifleload");
 			if(firemode==-2)A_SpawnProjectile("HDSMGEmptyMag",38,0,random(90,120));
 			else A_SpawnProjectile("HD4mmMagEmpty",38,0,random(90,120));
 		}
-		#### BBCCDD 1 A_Chase("melee",null);
+		#### BBCCDD 1 {hdmobai.chase(self,"melee",null);}//A_Chase("melee",null);
 		#### E 12 A_PlaySound("weapons/pocket");
 		#### E 8 A_PlaySound("weapons/rifleload");
 		#### E 2{
@@ -226,7 +227,7 @@ class ZombieStormtrooper:ZombieMan{
 			)setstatelabel("see_evade");
 			else if(mag<1)setstatelabel("reload");
 		}
-		#### AABBCCDD 2 A_Chase();
+		#### AABBCCDD 2 {hdmobai.chase(self);}//A_Chase();
 		#### A 0{
 			spread=2;
 		}
@@ -416,3 +417,63 @@ class ZombieSMGStormtrooper:ZombieStormTrooper{
 }
 
 
+class ZombieHideousTrooper:RandomSpawner replaces ZombieMan{
+	default{
+		dropitem "ZombieSemiStormtrooper",256,24;
+		dropitem "ZombieStormtrooper",256,48;
+		dropitem "ZombieSMGStormtrooper",256,12;
+		dropitem "EnemyHERP",256,1;
+	}
+}
+class DeadZombieHideousTrooper:RandomSpawner replaces DeadZombieMan{
+	default{
+		dropitem "DeadZombieSemiStormtrooper",256,2;
+		dropitem "DeadZombieStormtrooper",256,4;
+		dropitem "DeadZombieSMGStormtrooper",256,1;
+	}
+}
+class DeadZombieSMGStormtrooper:ZombieSMGStormtrooper{
+	override void postbeginplay(){
+		super.postbeginplay();
+		A_GiveInventory("HasDroppedGun");
+		A_Die("spawndead");
+	}
+	states{
+	death.spawndead:
+		POSS A 0{
+			hdmobai.CorpseFlags(self);
+			bnodropoff=false;
+		}
+		goto super::dead;
+	}
+}
+class DeadZombieStormtrooper:ZombieStormtrooper{
+	override void postbeginplay(){
+		super.postbeginplay();
+		A_GiveInventory("HasDroppedGun");
+		A_Die("spawndead");
+	}
+	states{
+	death.spawndead:
+		POSS A 0{
+			hdmobai.CorpseFlags(self);
+			bnodropoff=false;
+		}
+		goto super::dead;
+	}
+}
+class DeadZombieSemiStormtrooper:ZombieSemiStormtrooper{
+	override void postbeginplay(){
+		super.postbeginplay();
+		A_GiveInventory("HasDroppedGun");
+		A_Die("spawndead");
+	}
+	states{
+	death.spawndead:
+		POSS A 0{
+			hdmobai.CorpseFlags(self);
+			bnodropoff=false;
+		}
+		goto super::dead;
+	}
+}
