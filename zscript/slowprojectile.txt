@@ -23,7 +23,7 @@ class SlowProjectile:HDBullet{
 		grav=getgravity();
 		LongArmWobble();
 		Gunsmoke();
-		divrad=1./(radius*1.9);
+		divrad=radius*1.9;
 		if(target)master=target;
 	}
 	override void Tick(){
@@ -49,7 +49,7 @@ class SlowProjectile:HDBullet{
 			if(inthesky){
 				setorigin(pos+frac-(0,0,frac.z),true);
 			}
-			else if(!TryMove(pos.xy+frac.xy,true,null,tm)){
+			else if(!TryMove(pos.xy+frac.xy,true,true,tm)){
 
 				//hack to prevent exploding on lower sky
 				let l = tm.ceilingline;
@@ -78,6 +78,7 @@ class SlowProjectile:HDBullet{
 				explodeslowmissile(blockingline,blockingmobj);
 				return;
 			}
+			CheckPortalTransition();
 
 			addz(frac.z,true);
 			UpdateWaterLevel();
@@ -107,7 +108,6 @@ class SlowProjectile:HDBullet{
 				inthesky=false;
 				binvisible=false;
 			}
-			CheckPortalTransition();
 
 			if(speed && !inthesky
 				&& bmissile && missilename && speed*radius>=240
