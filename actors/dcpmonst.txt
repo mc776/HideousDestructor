@@ -1,8 +1,6 @@
-
 // ------------------------------------------------------------
 //   Rifleman and derivatives
 // ------------------------------------------------------------
-
 ACTOR RiflemanBase
 {
 	Translation "112:120=152:159","121:127=9:12"
@@ -779,7 +777,6 @@ actor RocketTango : Tango
 // ------------------------------------------------------------
 //   Marine corpse used by player pawn
 // ------------------------------------------------------------
-
 actor DeadRifleman replaces DeadMarine
 {
 	translation "112:120=152:159","121:127=9:12"
@@ -787,6 +784,7 @@ actor DeadRifleman replaces DeadMarine
 	+shootable
 	+ismonster
 	+telestomp
+	+alwaystelefrag
 	mass 200
 	radius 12
 	height 56
@@ -801,8 +799,10 @@ actor DeadRifleman replaces DeadMarine
 		wait
 	XDeath:
 	Death:
-		"####" A 0 A_NoBlocking
-		"----" A 0 A_GiveInventory("HDCorpseFlags",1)
+		"----" A 0{
+			A_NoBlocking;
+			A_GiveInventory("HDCorpseFlags");
+		}
 	Dead:
 		"####" K 3 canraise A_JumpIf(abs(velz)<2,1)
 		loop
@@ -932,8 +932,10 @@ actor ReDeadRifleman : DeadRifleman
 	States
 	{
 	Raise:
-		"----" A 0 A_GiveInventory("HasDroppedGun",1)
-		"----" A 0 A_UnsetShootable
+		"----" A 0{
+			A_GiveInventory("HDCorpseFlags");
+			A_GiveInventory("HasDroppedGun");
+		}
 		PLAY MML 8 A_SpawnItemEx("MegaBloodSplatter",0,0,4,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
 		PLAY KJIH 4
 		TNT1 A 0 A_Jump(80,"RaiseBotch")
