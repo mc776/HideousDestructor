@@ -207,6 +207,28 @@ class HDPlayerPawn:PlayerPawn{
 		ipitch=player.cmd.pitch*(360./65536.);
 
 
+		//"falling" damage calculation
+		//must be done before tick or bad things happen with the trymoves
+		vector2 fpbak=pos.xy;
+		int fallvel=0;
+		if(
+			!trymove(fpbak+vel.xy,true)
+		){
+			if(blockingline)fallvel=vel.xy.length();
+			else if(blockingmobj)fallvel=vel.xy.length()*8/10;
+		}
+		if(
+			(pos.z+vel.z<floorz)
+			||(pos.z+height+vel.z>ceilingz)
+		){
+			fallvel=max(fallvel,vel.length());
+		}
+//
+fallvel*=fallvel*0.03;
+		if(abs(fallvel)>10)A_Log(string.format("impact %i",fallvel));
+		setorigin((fpbak,pos.z),false);
+
+
 
 		super.Tick();
 
@@ -243,25 +265,23 @@ class HDPlayerPawn:PlayerPawn{
 		if(runwalksprint>=0&&(fm||sm))A_GiveInventory("IsMoving");
 
 		//"falling" damage
-		int fall=lastvel.length()-vel.length(); //(lastvel-vel).length() won't work because portals
-		if(fall>10){
-			if(barehanded)fall-=4;
-			if(fall<=15)A_PlaySound("weapons/smack",CHAN_AUTO,0.4);
+		if(fallvel>10){
+			if(barehanded)fallvel-=4;
+			if(fallvel<=15)A_PlaySound("weapons/smack",CHAN_AUTO,0.4);
 			else{
 				A_PlaySound("weapons/smack",CHAN_AUTO);
-				if(countinv("PowerStrength"))fall*=0.5;
-				int fdmg=random(fall,fall*4);
+				if(countinv("PowerStrength"))fallvel*=0.5;
+				int fdmg=random(fallvel*2,fallvel*3);
 				damagemobj(self,self,fdmg,"falling");
 				stunned+=fdmg*random(20,25);
-				beatmax-=fall*0.5;
-				if(random(1,fall)>7){
+				beatmax-=fallvel*0.5;
+				if(random(1,fallvel)>7){
 					if(player.readyweapon && !(player.readyweapon is "Ring"))
 						A_DropInventory(player.readyweapon.getclassname());
 				}
 			}
 		}
 		stunned=max(stunned-1,0);
-
 
 
 		//see if player is intentionally walking, running or sprinting

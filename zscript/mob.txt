@@ -200,10 +200,11 @@ struct HDMobAI play{
 		//chase the move target and record the resulting position
 		if(attacktarget)caller.A_Chase(
 			"melee","missile",
-			CHF_NODIRECTIONTURN|CHF_NOPOSTATTACKTURN|
+//			CHF_NODIRECTIONTURN|CHF_NOPOSTATTACKTURN|
 			(res?CHF_RESURRECT:0)
 		);
-		else caller.A_Wander(flags:CHF_NODIRECTIONTURN);
+//		else caller.A_Wander(flags:CHF_NODIRECTIONTURN);
+		else caller.A_Wander();
 		vector3 pp=caller.pos;
 
 		if(!caller.bfloat && caller.floorz<caller.pos.z)return; //abort if can't propel caller
@@ -213,19 +214,21 @@ struct HDMobAI play{
 		if(pp!=pg){
 			caller.setorigin(pg,false);
 			if(caller.bfloat){
-				caller.vel+=(pp-pg)*(flee?0.32:0.16);
+//				caller.vel+=(pp-pg)*(flee?0.32:0.16);
+				caller.vel.xy+=caller.angletovector(caller.angle,caller.speed*0.16);
 				if(attacktarget&&caller.pos.z-attacktarget.pos.z<attacktarget.height)
 					caller.vel.z+=frandom(0,0.1); //floaty death from above
 			}else{
-				caller.vel.xy+=(pp.xy-pg.xy)*0.16;
+//				caller.vel.xy+=(pp.xy-pg.xy)*0.16;
+				caller.vel.xy+=caller.angletovector(caller.angle,caller.speed*0.16);
 			}
 		}
-
+/*
 		//face appropriate direction
 		if(attacktarget&&caller.distance3d(attacktarget)<max(caller.meleerange*2,caller.radius*3))
 			caller.A_FaceTarget(10,10);
 		else if(caller.vel.xy!=(0,0))caller.A_FaceMovementDirection(15,40);
-
+*/
 		//reset things
 		caller.bfrightened=fraid;
 		caller.speed=getdefaultbytype(caller.getclass()).speed;
@@ -237,7 +240,7 @@ class TryShootPuff:CheckPuff{
 	}
 }
 
-
+class dmp:doomimp{}
 
 
 //actor that sets monster's goal

@@ -296,15 +296,17 @@ extend class HDPlayerPawn{
 
 //A_Log(string.format("%i %i %i %i",distleft,distright,disttop,distbottom));
 
-			if(distleft<distright){
+			if(distleft<barrellength){
 				anglechange=max(distleft-barrellength,mvng?0:-4);
-			}else if(distleft>distright){
+			}
+			if(distright<barrellength){
 				anglechange=min(barrellength-distright,mvng?0:4);
 			}
 
-			if(disttop>distbottom){  
+			if(disttop<barrellength){
 				pitchchange=max(distbottom-barrellength,mvng?0:-4);
-			}else if(disttop<distbottom){
+			}
+			if(distbottom<barrellength){
 				pitchchange=min(barrellength-disttop,mvng?0:4);
 			}
 			pitchchange=clamp(pitchchange,-45,45);
@@ -323,9 +325,10 @@ extend class HDPlayerPawn{
 			}
 		}
 
+//if(abs(anglechange)>45)A_Log(string.format("angle %i",anglechange));
+//if(abs(pitchchange)>45)A_Log(string.format("pitch %i",pitchchange));
 
-
-//if(anglechange)A_LogFloat(anglechange);
+//if(anglechange)A_Log(string.format("angle %i",anglechange));
 
 
 		//set everything and update old
