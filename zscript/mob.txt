@@ -328,7 +328,15 @@ class HDMobster:IdleDummy{
 					target.health>0
 					&&master.checksight(target)
 				){
-					setorigin(master.target.pos,false);
+					vector3 gll=master.target.pos-master.pos;
+					gll.xy=rotatevector(gll.xy,
+						random(30,80)*(leftright
+							+randompick(1,1,1,1,-1,-1,0))
+					);
+					setorigin(
+						//master.target.pos
+						gll,false
+					);
 					bored=0;
 				}else if(!random(0,15)){
 					setorigin((
@@ -336,7 +344,7 @@ class HDMobster:IdleDummy{
 						+rotatevector(pos.xy-master.pos.xy
 							+(random(-512,512),random(-512,512)),
 							random(60,120)*
-							leftright+randompick(1,1,1,1,-1,-1,0)
+							(leftright+randompick(1,1,1,1,-1,-1,0))
 						)
 					,0),false);
 					bored++;

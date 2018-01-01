@@ -23,7 +23,7 @@ class HellKnave:HellKnight replaces HellKnight{
 		hdmobai.resize(self,0.7,1.2);
 	}
 	double initialangle;
-	actor putti[3];
+	int putti;
 	states{
 	spwander:
 		BOS2 A 4 {hdmobai.wander(self);}
@@ -82,11 +82,13 @@ class HellKnave:HellKnight replaces HellKnight{
 		BOS2 F 5
 		BOS2 G 3
 		BOS2 G 6{
-			actor p=spawn
-			A_SpawnItemEx("Putto",24,0,0,28*cos(pitch),0,28*sin(-pitch),0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_SETMASTER)
+			actor p=spawn("Putto"),pos+(angletovector(angle,32),32);
+			p.master=self;p.angle=angle;p.pitch=pitch;
+			p.A_ChangeVelocity(cos(pitch)*5,0,-sin(pitch)*5,CVF_RELATIVE);
+			putti++;
 		}
-		BOS2 F 6
-		Goto See
+		BOS2 F 6;
+		goto see;
 	missile2:
 		BOS2 E 6 A_FaceTarget(60,60)
 		BOS2 E 3
