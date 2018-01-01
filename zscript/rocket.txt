@@ -66,8 +66,10 @@ class GyroGrenade:SlowProjectile{
 			);
 			actor xpl=spawn("Gyrosploder",self.pos-(0,0,1),ALLOW_REPLACE);
 			xpl.target=target;xpl.master=master;xpl.stamina=stamina;
-		}else{actor xpl=Spawn("DistantRocket",self.pos,ALLOW_REPLACE);}
-			A_SpawnChunks("HDBulletFrag",180,100,500+4*stamina);
+		}else{
+			spawn("DistantRocket",self.pos,ALLOW_REPLACE);
+		}
+		A_SpawnChunks("HDBulletFrag",180,100,500+4*stamina);
 
 		destroy();return;
 	}
