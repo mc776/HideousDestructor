@@ -28,7 +28,7 @@ class BFG9K:HDWeapon replaces BFG9000{
 		}
 	}
 	override void doeffect(){
-		if(weaponstatus[0]&BFGF_STRAPPED)buntossable=true;
+		if(weaponstatus[0]&BFGF_STRAPPED&&(owner&&owner.health>0))buntossable=true;
 		else buntossable=false;
 	}
 	states{
