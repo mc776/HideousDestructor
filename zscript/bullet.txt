@@ -600,6 +600,7 @@ class HDBullet00bfl:HDBullet00b{
 	override void postbeginplay(){
 		LongArmWobble();
 		setorigin(pos+(cos(angle-90),sin(angle-90),0)*accuracy,false);
+		spawn("DistantShotgun",pos,ALLOW_REPLACE);
 		angle+=accuracy*0.1;
 
 		actor bb;
@@ -633,6 +634,7 @@ class HDBullet00bf2:HDBullet00bfl{
 		LongArmWobble();
 		for(double i=-1;i<=3;i+=3){
 			setorigin(pos+(cos(angle-90),sin(angle-90),0)*i,false);
+			spawn("DistantShotgun",pos,ALLOW_REPLACE);
 			angle+=i*0.1;
 
 			actor bb;
