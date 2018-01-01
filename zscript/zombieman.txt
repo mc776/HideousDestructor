@@ -215,9 +215,11 @@ class ZombieStormtrooper:ZombieMan{
 
 	see:
 		#### A 0{
-			bnopain=true;
-			damagemobj(self,target,1,"bleedout");
-			bnopain=false;
+			if(health<20){
+				bnopain=true;
+				damagemobj(self,target,1,"bleedout");
+				bnopain=false;
+			}
 		}
 	see2:
 		#### A 0{
