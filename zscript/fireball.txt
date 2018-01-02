@@ -12,15 +12,18 @@ class HDFireballTail:IdleDummy{
 		speed -0.3;height 1.0;radius 0.6;deathheight 0.7;friction 1.1;
 	}
 	override void tick(){
+		if(globalfreeze||level.Frozen){
+			clearinterpolation();
+			return;
+		}
 		if(!master){
+			destroy();
+			return;
+		}else if(!master.bmissile){
 			A_FadeOut(0.3);
 			vel.xy*=0.9;
 			vel.z+=0.1;
 			setorigin(pos+vel,true);
-			return;
-		}
-		if(globalfreeze||level.Frozen){
-			clearinterpolation();
 			return;
 		}
 		if(alpha<0.3){

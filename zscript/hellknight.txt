@@ -190,9 +190,7 @@ class HellKnave:HellKnight replaces HellKnight{
 
 class zbbt:hdfireballtail{
 	default{
-//		translation "ice";
-//
-translation 2;
+		translation 2;
 		renderstyle "subtract";
 		deathheight 0.9;
 		gravity 0;
@@ -221,6 +219,7 @@ class zbaleball:hdfireball{
 	spawn:
 		BAL7 A 0 nodelay{
 			A_PlaySound("weapons/plasidle",CHAN_VOICE,0.6,true,4);
+			actor bbl=spawn("BaronBallLight",pos);bbl.target=self;
 		}
 		BAL7 ABAB 3 A_FBTail();
 	spawn2:
@@ -229,6 +228,7 @@ class zbaleball:hdfireball{
 		}loop;
 	death:
 		BAL7 A 0{
+			vel.z+=0.5;
 			if(!blockingmobj){
 				tracer=null;
 				setstatelabel("burn");
@@ -254,7 +254,7 @@ class zbaleball:hdfireball{
 	burn:
 		BAL7 CDE 3{
 			A_FadeOut(0.05);
-			frame=random(4,6);roll=random(0,360);
+			frame=random(2,4);roll=random(0,360);
 			if(!tracer){
 				addz(0.1);
 				return;
@@ -276,6 +276,26 @@ class zbaleball:hdfireball{
 				destroy();
 			}
 		}wait;
+	}
+}
+
+
+
+class BaronBallLight:PointLight{
+	override void postbeginplay(){
+		args[0]=64;
+		args[1]=196;
+		args[2]=48;
+		args[3]=0;
+		args[4]=0;
+	}
+	override void tick(){
+		super.tick();
+		if(!target){
+			args[3]+=random(-10,1);
+			if(args[3]<1)destroy();
+		}else if(target.bmissile)args[3]=random(32,40);
+		else args[3]=random(48,64);
 	}
 }
 
