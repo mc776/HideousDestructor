@@ -13,14 +13,18 @@ class HDFireballTail:IdleDummy{
 	}
 	override void tick(){
 		if(!master){
-			destroy();return;
+			A_FadeOut(0.3);
+			vel.xy*=0.9;
+			vel.z+=0.1;
+			setorigin(pos+vel,true);
+			return;
 		}
 		if(globalfreeze||level.Frozen){
 			clearinterpolation();
 			return;
 		}
 		if(alpha<0.3){
-			setxyz(master.pos);
+			setorigin(master.pos,true);
 			vel=master.vel*speed+(frandom(-0.1,0.1),frandom(-0.1,0.1),frandom(0.5,1));
 			alpha=height;
 			scale.x=radius;scale.y=radius;
@@ -29,8 +33,6 @@ class HDFireballTail:IdleDummy{
 			alpha*=deathheight;
 			scale*=friction;
 		}
-		trymove(self.pos.xy+vel.xy,true);
-		addz(vel.z,true);
 		nexttic();
 	}
 }
