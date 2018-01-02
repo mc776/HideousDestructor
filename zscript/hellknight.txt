@@ -1,8 +1,7 @@
 // ------------------------------------------------------------
 // Hell Knight
 // ------------------------------------------------------------
-
-class ZHellKnave:HellKnight{
+class HellKnave:HellKnight replaces HellKnight{
 	default{
 		damagefactor "Balefire",0.3;
 		damagefactor "Thermal",0.8;
@@ -55,7 +54,7 @@ class ZHellKnave:HellKnight{
 			}
 			healthing(random(1,3));
 		}
-		BOS2 ABCD 5{hdmobai.chase(self);}
+		BOS2 AABBCCDD 3{hdmobai.chase(self);}
 		loop;
 	pain.balefire:
 		BOS2 H 3{
@@ -76,8 +75,9 @@ class ZHellKnave:HellKnight{
 		BOS2 E 0{
 			if(target)targetdistance=distance3d(target);else targetdistance=0;
 			if(
-				targetdistance>512000
-				&&putti<3
+				putti<3
+				&&targetdistance>1024
+				&&!random(0,4)
 			){
 				setstatelabel("putto");
 			}
@@ -135,8 +135,8 @@ class ZHellKnave:HellKnight{
 			if(!random(0,3))return;
 			actor aaa;int bbb;
 			[bbb,aaa]=A_SpawnItemEx("zbaleball",
-				0,0,32,
-				6,0,-20
+				0,0,48,
+				8,0,-12
 			);
 			aaa.vel+=vel;
 		}
@@ -241,6 +241,9 @@ class zbaleball:hdfireball{
 			else if(tracer&&blockingmobj==tracer){
 				vel.z=2;
 				tracer.damagemobj(self,target,random(10,20),"balefire");
+				if(tracer.bcorpse){
+					tracer.A_GiveInventory("SawGib",random(10,20));
+				}
 				alpha=1;scale*=1.2;
 				setstatelabel("burn");
 			}
@@ -250,18 +253,25 @@ class zbaleball:hdfireball{
 		stop;
 	burn:
 		BAL7 CDE 3{
-			frame=random(4,6);roll=random(0,360);
 			A_FadeOut(0.05);
-			if(!tracer||tracer.health<1){
+			frame=random(4,6);roll=random(0,360);
+			if(!tracer){
 				addz(0.1);
 				return;
+			}
+
+			if(tracer is "HDPlayerPawn"&&tracer.health<1&&HDPlayerPawn(tracer).playercorpse){
+				tracer=HDPlayerPawn(tracer).playercorpse;
 			}
 
 			double trad=tracer.radius;double tht=tracer.height;
 			setxyz(tracer.pos+(frandom(-trad,trad),frandom(-trad,trad),frandom(tht*0.5,tht)));
 
-			if(alpha>0.3)tracer.damagemobj(self,target,random(1,3),"balefire");
-			else{
+			if(alpha>0.3){
+				if(tracer.bcorpse){
+					tracer.A_GiveInventory("SawGib",random(1,3));
+				}else tracer.damagemobj(self,target,random(1,3),"balefire");
+			}else{
 				A_Immolate(tracer,target,random(10,20));
 				destroy();
 			}
