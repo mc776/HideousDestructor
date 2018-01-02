@@ -52,14 +52,17 @@ class SlowProjectile:HDBullet{
 			else if(!TryMove(pos.xy+frac.xy,true,true,tm)){
 
 				//hack to prevent exploding on lower sky
-				let l = tm.ceilingline;
-				if(l && l.backsector){
-					actor a=spawn("idledummy",pos+(frac.xy,0)*2);
-					if(ceilingpic==skyflatnum && a.ceilingpic==skyflatnum && a.pos.z>=a.ceilingz){
+				let l=tm.ceilingline;
+				let p=tm.ceilingpic;
+				if(l&&l.backsector){
+					if(
+						ceilingpic==skyflatnum
+						&&tm.ceilingpic==skyflatnum
+						&&tm.pos.z>=tm.ceilingz
+					){
 						destroy();
-						a.destroy();
 						return;
-					}a.destroy();
+					}
 				}
 
 				//[RH] Don't explode on horizon lines.

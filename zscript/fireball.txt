@@ -137,8 +137,11 @@ class HDFireball:HDActor{
 			//hit something while moving horizontally
 			if(!trymove(pos.xy+frac.xy,true,true,tm)){
 				if(!bSkyExplode){
-					let l = tm.ceilingline;
-					if (BlockingLine != NULL && BlockingLine.special == Line_Horizon){
+					let p=tm.ceilingpic;
+					if(
+						p==skyflatnum||
+						(blockingline&&blockingline.special==Line_Horizon)
+					){
 						destroy();
 						return;
 					}
