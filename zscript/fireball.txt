@@ -139,8 +139,10 @@ class HDFireball:HDActor{
 				if(!bSkyExplode){
 					let p=tm.ceilingpic;
 					if(
-						p==skyflatnum||
-						(blockingline&&blockingline.special==Line_Horizon)
+						blockingline&&(
+							p==skyflatnum||
+							blockingline.special==Line_Horizon
+						)
 					){
 						destroy();
 						return;
