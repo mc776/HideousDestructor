@@ -169,20 +169,19 @@ class PersistentDamager:HDActor{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		if(master) relpos=self.pos-master.pos;
+		if(master)relpos=self.pos-master.pos;
 	}
 	override void tick(){
 		if(globalfreeze||level.Frozen) return;
 
-		if(master) setorigin(master.pos+relpos,false);
-		trymove(pos.xy+(minvel,0),true);
+		if(master)setorigin(master.pos+relpos,false);
+		trymove(pos.xy,true);
 
 		nexttic();
 	}
 	override bool CanCollideWith(actor other,bool passive){
 		if(
 			passive
-			||!other.bsolid
 			||(
 				target &&
 				target.bdontharmspecies &&
