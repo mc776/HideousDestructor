@@ -209,14 +209,19 @@ class BaleBall:hdfireball{
 	default{
 		missiletype "zbbt";
 		damagetype "balefire";
+		activesound "weapons/plasidle";
 		decal "gooscorch";
 		gravity 0;
 		speed 25;
 	}
+	actor lingerburner;
+	override void ondestroy(){
+		if(lingerburner)lingerburner.destroy();
+		super.ondestroy();
+	}
 	states{
 	spawn:
 		BAL7 A 0 nodelay{
-			A_PlaySound("weapons/plasidle",CHAN_VOICE,0.6,true,4);
 			actor bbl=spawn("BaronBallLight",pos);bbl.target=self;
 		}
 		BAL7 ABAB 3 A_FBTail();
@@ -230,6 +235,9 @@ class BaleBall:hdfireball{
 			if(!blockingmobj){
 				tracer=null;
 				setstatelabel("burn");
+
+				lingerburner=spawn("BaleBallBurner",pos);
+				lingerburner.target=target;lingerburner.master=self;
 				return;
 			}else if(target&&
 				blockingmobj.health>0&&target.health>0&&
@@ -276,7 +284,12 @@ class BaleBall:hdfireball{
 		}wait;
 	}
 }
-
+class BaleBallBurner:PersistentDamager{
+	default{
+		height 12;radius 20;threshold 35;damage 1;accuracy 0;gibhealth 3;
+		damagetype "balefire";
+	}
+}
 
 
 class BaronBallLight:PointLight{

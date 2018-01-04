@@ -41,6 +41,8 @@ class HDFireballTail:IdleDummy{
 }
 
 //damage would be balefire, electro, radioactivity or heat/immolation
+//missiletype: tail used in A_FBTail()
+//activesound: looping sound
 class HDFireball:HDActor{
 	vector3 oldvel;
 	vector3 frac;
@@ -57,6 +59,7 @@ class HDFireball:HDActor{
 		damagetype "thermal";damagefunction(1);
 
 		seesound "imp/attack";deathsound "imp/shotx";
+		activesound "misc/firecrkl";
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -64,7 +67,8 @@ class HDFireball:HDActor{
 		grav=getgravity();
 		fracc=speed/radius;
 		frac=vel/fracc;
-		A_PlaySound(seesound,CHAN_BODY);
+		A_PlaySound(seesound,CHAN_VOICE);
+		A_PlaySound(activesound,CHAN_BODY,0.4,true,4);
 	}
 	bool A_FBSeek(
 		int seekradius=256,
@@ -137,21 +141,29 @@ class HDFireball:HDActor{
 			//hit something while moving horizontally
 			if(!trymove(pos.xy+frac.xy,true,true,tm)){
 				if(!bSkyExplode){
+					let l=tm.ceilingline;
 					let p=tm.ceilingpic;
-					if(
-						blockingline&&(
-							p==skyflatnum||
-							blockingline.special==Line_Horizon
-						)
-					){
-						destroy();
-						return;
+					if(l&&l.backsector){
+						if(
+							ceilingpic==skyflatnum
+							&&tm.ceilingpic==skyflatnum
+							&&tm.pos.z>=tm.ceilingz
+						){
+							destroy();
+							return;
+						}
 					}
 				}
 				if(!target)target=master;
 				explodemissile(BlockingLine,BlockingMobj);
 				return;
 			}
+
+			if(blockingline&&blockingline.special==Line_Horizon){
+				destroy();
+				return;
+			}
+
 			CheckPortalTransition();
 			addz(frac.z,true);
 
