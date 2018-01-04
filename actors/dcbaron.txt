@@ -294,23 +294,3 @@ ACTOR MiniBBall
 		stop
 	}
 }
-
-ACTOR BaleBall : MiniBBall
-{
-	Decal "GooScorch"
-	Speed 18
-	Damage 8
-	Scale 1.0
-	Radius 6
-	Height 8
-	States
-	{
-	Spawn:
-		BAL7 AA 1 BRIGHT A_SeekerMissile(4,6)
-		BAL7 A 1 BRIGHT A_SpawnItemEx("MiniBBallTail",-3,0,3,3,random(-1,1), random(1,2),0,161)
-		BAL7 BB 1 BRIGHT A_SeekerMissile(4,6)
-		BAL7 B 1 BRIGHT A_SpawnItemEx("MiniBBallTail",-3,0,3,3,random(-1,1), random(1,2),0,161)
-		BAL7 ABABABAB 3 BRIGHT A_SpawnItemEx("MiniBBallTail",-3,0,3,3,random(-1,1), random(1,2),0,161)
-		loop
-	}
-}

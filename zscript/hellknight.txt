@@ -27,10 +27,7 @@ class HellKnave:HellKnight replaces HellKnight{
 	int putti;
 	states{
 	spwander:
-		BOS2 A 4 {hdmobai.wander(self);}
-		BOS2 B 4 {hdmobai.wander(self);}
-		BOS2 C 4 {hdmobai.wander(self);}
-		BOS2 D 4 {hdmobai.wander(self);}
+		BOS2 ABCDABCD 7 {hdmobai.wander(self);}
 		BOS2 A 0{
 			if(!random(0,1))setstatelabel("spwander");
 			else A_Recoil(-0.4);
@@ -118,7 +115,7 @@ class HellKnave:HellKnight replaces HellKnight{
 		BOS2 F 1;
 		BOS2 G 4{
 			actor aaa;int bbb;
-			[bbb,aaa]=A_SpawnItemEx("zbaleball",
+			[bbb,aaa]=A_SpawnItemEx("BaleBall",
 				0,0,32,
 				cos(pitch)*25,0,-sin(pitch)*25
 			);
@@ -134,7 +131,7 @@ class HellKnave:HellKnight replaces HellKnight{
 			A_CustomMeleeAttack(random(20,100),"baron/melee","","claws",true);
 			if(!random(0,3))return;
 			actor aaa;int bbb;
-			[bbb,aaa]=A_SpawnItemEx("zbaleball",
+			[bbb,aaa]=A_SpawnItemEx("BaleBall",
 				0,0,48,
 				8,0,-12
 			);
@@ -208,7 +205,7 @@ class zbbt:hdfireballtail{
 		}loop;
 	}
 }
-class zbaleball:hdfireball{
+class BaleBall:hdfireball{
 	default{
 		missiletype "zbbt";
 		damagetype "balefire";
