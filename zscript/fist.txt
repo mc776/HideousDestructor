@@ -144,6 +144,7 @@ class Ring:HDWeapon replaces Fist{
 		if(
 			!punchee.bnopain
 			&& punchee.health>0
+			&& !(punchee is "KillerBarrel")
 			&& punchee.findstate("pain")
 			&& a.pos.z>punchee.pos.z+punchee.height*0.75
 		){
