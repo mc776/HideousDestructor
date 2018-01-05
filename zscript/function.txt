@@ -147,6 +147,58 @@ class TMChecker:HDActor{
 }
 
 
+// Blocker to prevent shotguns from overpenetrating multiple targets
+// A_SpawnItemEx("tempshield",flags:SXF_SETMASTER|SXF_NOCHECKPOSITION);
+class tempshield:actor{
+	default{
+		-solid +shootable +nodamage
+		mass 10000;
+		radius 16;height 50;
+		stamina 16;
+	}
+	override void tick(){
+		super.tick();
+		if(master){
+			setorigin(master.pos,false);
+		}
+		stamina--;
+		if(stamina<1)destroy();
+	}
+	states{
+	spawn:
+		TNT1 A 16;
+		stop;
+	}
+}
+class tempshield2:tempshield{
+	default{
+		radius 18;height 26;
+		stamina 10;
+	}
+}
+class tempshieldyellow:tempshield{
+	default{bloodcolor "aa 99 22";}
+}
+class tempshieldgreen:tempshield{
+	default{bloodcolor "44 99 22";}
+}
+class tempshield2green:tempshield2{
+	default{bloodcolor "44 99 22";}
+}
+class tempshieldblue:tempshield{
+	default{bloodcolor "00 00 99";}
+}
+class tempshield2blue:tempshield2{
+	default{bloodcolor "00 00 99";}
+}
+class tempshieldpuff:tempshield{
+	default{+noblood}
+}
+class tempshield2puff:tempshield2{
+	default{+noblood}
+}
+
+
 //collection of generic math functions
 struct HDMath{
 	//return true if lump exists
