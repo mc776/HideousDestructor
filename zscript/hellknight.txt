@@ -6,9 +6,9 @@ class HellKnave:HellKnight replaces HellKnight{
 		damagefactor "Balefire",0.3;
 		damagefactor "Thermal",0.8;
 		damagefactor "SmallArms0",0.9;
-		BloodColor "44 99 22";
-		Height 64;
-		Scale 0.9;
+		bloodcolor "44 99 22";
+		height 64;
+		scale 0.9;
 		speed 12;
 		meleedamage 10;
 		meleerange 56;
@@ -16,15 +16,15 @@ class HellKnave:HellKnight replaces HellKnight{
 		minmissilechance 42;
 		Obituary "%o didn't get quite medieval enough on a hell knight's ass.";
 		HitObituary "%o had %p loins tendered by sir knight.";
+
+		stamina 0;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		putti=0;
 		hdmobai.resize(self,0.9,1.1);
 	}
 	double targetingangle;double targetingpitch;
 	double targetdistance;
-	int putti;
 	states{
 	spwander:
 		BOS2 ABCDABCD 7 {hdmobai.wander(self);}
@@ -72,7 +72,7 @@ class HellKnave:HellKnight replaces HellKnight{
 		BOS2 E 0{
 			if(target)targetdistance=distance3d(target);else targetdistance=0;
 			if(
-				putti<3
+				stamina<1
 				&&targetdistance>1024
 				&&!random(0,4)
 			){
@@ -90,7 +90,7 @@ class HellKnave:HellKnight replaces HellKnight{
 			p.master=self;p.angle=angle;p.pitch=pitch;
 			p.A_ChangeVelocity(cos(pitch)*5,0,-sin(pitch)*5,CVF_RELATIVE);
 			p.bfriendly=bfriendly;p.target=target;
-			putti++;
+			stamina++;
 		}
 		goto see;
 	fireball:
@@ -102,7 +102,7 @@ class HellKnave:HellKnight replaces HellKnight{
 		BOS2 E 3{
 			A_FaceTarget(6,6);
 
-			if(targetdistance<(25*35*7)){
+			if(target&&targetdistance<(25*35*7)){
 				double adj=targetdistance*frandom(0.008,0.032);
 				angle+=deltaangle(targetingangle,angle)*adj;
 				if(target.bfloat)pitch+=deltaangle(targetingpitch,pitch)*adj;
