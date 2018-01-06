@@ -44,7 +44,13 @@ extend class HDActor{
 		actor perpetrator,
 		int duration=0
 	){
-		if(!victim){
+		if(!victim
+			||(
+				perpetrator&&
+				perpetrator.bdontharmspecies&&
+				perpetrator.getspecies()==victim.getspecies()
+			)
+		){
 			victim=spawn("PersistentDamager",self.pos);
 			victim.target=perpetrator;
 		}
