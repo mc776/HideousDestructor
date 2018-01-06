@@ -46,7 +46,7 @@ extend class HDActor{
 
 			if(	//abort all checks if no hurt species
 				!it || it==self ||
-				(!hurtspecies && (source && it.species!=source.species))
+				(!hurtspecies && (source && it.species==source.species))
 			)continue;
 
 			it=itt.thing;
