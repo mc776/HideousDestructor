@@ -85,12 +85,8 @@ class manjuice:hdfireball{
 			alpha-=0.15;
 			scale*=1.01;
 		}
-		TNT1 A 0 A_Immolate(null,target,480);
+		TNT1 A 0 A_Immolate(null,target,80);
 		TNT1 AAAAAAAAAAAAAAA 4{
-			A_SpawnItemEx("HDFlameRed",
-				random(-2,2),random(-2,2),random(-2,2),
-				frandom(2,-4),frandom(-2,2),frandom(1,4),0,SXF_NOCHECKPOSITION
-			);
 			A_SpawnItemEx("HDSmoke",
 				random(-2,2),random(-2,2),random(-2,2),
 				frandom(2,-4),frandom(-2,2),frandom(1,4),0,SXF_NOCHECKPOSITION
@@ -130,10 +126,18 @@ class Mancubus:Fatso replaces Fatso{
 			A_FaceTarget(40,40);
 		}
 		FATT G 4 A_FaceTarget(20,20);
-		FATT GGGGGG 1 A_SpawnItemEx("HDSmoke",
+		FATT GGGG 1 A_SpawnItemEx("HDSmoke",
 			24,randompick(24,-24),18,
 			random(2,4),flags:SXF_NOCHECKPOSITION
 		);
+	shoot:
+		FATT G 2{
+			A_FaceTarget(10,10);
+			A_SpawnItemEx("HDSmoke",
+				24,randompick(24,-24),18,
+				random(2,4),flags:SXF_NOCHECKPOSITION
+			);
+		}
 		FATT G 1{
 			vector2 aimbak=(angle,pitch);
 			A_FaceTarget(0,0);
@@ -146,31 +150,60 @@ class Mancubus:Fatso replaces Fatso{
 			secondtargetaim=(angle,pitch);
 			angle=aimbak.x;pitch=aimbak.y;
 
-			targdist=(target?distance3d(target):2000);
+			targdist=(target?distance3d(target):4096);
 
-			leadoffset=(
+			if(targdist>2000)leadoffset=(frandom(-2.,2),frandom(-1.,1.));
+			else leadoffset=(
 				deltaangle(firsttargetaim.x,secondtargetaim.x),
 				deltaangle(firsttargetaim.y,secondtargetaim.y)
-			)*targdist*0.07;
+			)*targdist*frandom(0.055,0.067);
 
 			angle+=leadoffset.x;pitch+=leadoffset.y;
 		}
 		FATT H 10 bright{
-			//fire both at same point
+			A_PlaySound("weapons/bronto",CHAN_WEAPON);
+
+			//lead target
 			actor ppp;int bluh;
-			for(int i=-1;i<2;i+=2){
-				[bluh,ppp]=A_SpawnItemEx(
-					"manjuice",0,24*i,32,
-					cos(pitch)*27,0,-sin(pitch
-						-(targdist<1024?min(60,targdist*0.002):0)
-					)*27,
-					i<0?-atan(24/targdist):atan(24/targdist),
-					flags:SXF_NOCHECKPOSITION|SXF_SETTARGET
-				);
-				ppp.angle=angle+i*atan(24/targdist);
+			[bluh,ppp]=A_SpawnItemEx(
+				"manjuice",0,24,32,
+				cos(pitch)*27,0,-sin(pitch
+					-(targdist<1024?min(40,targdist*0.002):0)
+				)*27,
+				atan(24/targdist),
+				flags:SXF_NOCHECKPOSITION|SXF_SETTARGET|SXF_TRANSFERPITCH
+			);
+
+			//random
+			int opt=random(0,2);
+			A_FaceTarget(5,5);
+			if(opt==1){
+				leadoffset*=frandom(-0.6,1.);
+				angle+=leadoffset.x;
+				pitch+=leadoffset.y;
+			}else if(opt==2){
+				angle+=frandom(-10,10)/targdist;
+				pitch+=frandom(-1,1);
 			}
+			[bluh,ppp]=A_SpawnItemEx(
+				"manjuice",0,-24,32,
+				cos(pitch)*27,0,-sin(pitch
+					-(targdist<1024?min(40,targdist*0.002):0)
+				)*27,
+				-atan(24/targdist),
+				flags:SXF_NOCHECKPOSITION|SXF_SETTARGET|SXF_TRANSFERPITCH
+			);
 		}
-		FATT G 10;
+		FATT G 6;
+		FATT G 10{
+			if(
+				accuracy<2
+				&&(!random(0,4)||(target&&target.health>0))
+			){
+				accuracy++;
+				setstatelabel("shoot");
+			}else accuracy=0;
+		}
 		goto see;
 	death:
 		FATT K 6{
