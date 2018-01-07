@@ -1,7 +1,20 @@
 // ------------------------------------------------------------
 //   Setting things on fire
 // ------------------------------------------------------------
-
+class ImmunityToFire:InventoryFlag{
+	override void attachtoowner(actor user){
+		super.attachtoowner(user);
+		if(owner){
+			actoriterator it=actoriterator.create(-7677,"HDFire");
+			actor fff;int counter;
+			while(fff=it.next()){
+				if(fff.target==owner){
+					fff.destroy();
+				}
+			}
+		}
+	}
+}
 class HDFireEnder:InventoryFlag{
 	default{
 		inventory.maxamount 5;
@@ -71,6 +84,10 @@ class HDFire:IdleDummy{
 	override void postbeginplay(){
 		super.postbeginplay();
 		if(target){
+			if(target.countinv("ImmunityToFire")){
+				destroy();return;
+			}
+
 			stamina=target.ApplyDamageFactor("Thermal",stamina);
 			if(target is "PlayerPawn" || target is "HDPlayerCorpse"){
 				changetid(-7677);
@@ -89,7 +106,7 @@ class HDFire:IdleDummy{
 		if(hd_debug)A_Log(string.format("fire duration \ci%i",stamina));
 	}
 	override void ondestroy(){
-		if(target && target is "PersistentDamager") target.destroy();
+		if(target&&target is "PersistentDamager")target.destroy();
 		super.ondestroy();
 	}
 	states{
