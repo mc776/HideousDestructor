@@ -450,29 +450,6 @@ actor RebelLoadout:ActionItem{
 }
 
 
-actor Taunter:ActionItem{
-	states{
-	use:
-		TNT1 A 0{
-			A_PlaySound("*taunt",CHAN_VOICE);
-			A_ChangeFlag("shadow",0);
-			A_TakeInventory("powerfrightener");
-			A_FireCustommissile("DelayedTaunter",0,0);
-		}fail
-	}
-}
-actor DelayedTaunter{
-	+missile -solid +noblockmap height 0 radius 0 speed 2
-	states{
-	spawn:
-	death:
-		TNT1 A 18
-		TNT1 A 0 A_AlertMonsters
-		stop
-	}
-}
-
-
 // ------------------------------------------------------------
 // Null weapon
 // ------------------------------------------------------------
