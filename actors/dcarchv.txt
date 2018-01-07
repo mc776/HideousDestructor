@@ -32,8 +32,8 @@ ACTOR BloodyHellFire
 		TNT1 A 0 A_JumpIfInventory("Timer",1,"spawn2")
 		TNT1 A 0 A_RearrangePointers(AAPTR_NULL,AAPTR_TARGET)
 		TNT1 A 0 A_TransferPointer(AAPTR_MASTER,AAPTR_DEFAULT,AAPTR_TARGET,AAPTR_TARGET)
-		TNT1 A 0 A_JumpIfInTargetInventory("IsImmuneToFire",1,"yokai")
-		TNT1 A 0 A_JumpIf(z-floorz>40,"yokai")
+		TNT1 A 0 A_JumpIfInTargetInventory("IsImmuneToFire",1,"putto")
+		TNT1 A 0 A_JumpIf(z-floorz>40,"putto")
 		TNT1 AAAAAAA random(4,6) A_SpawnItemEx("HDSmoke",random(-1,1),random(-1,1),random(1,6),velx+random(-1,1),vely+random(-1,1),velz+random(1,3),0,SXF_NOCHECKPOSITION)
 		TNT1 AAAAAAA random(1,4) A_SpawnItemEx("HDSmoke",random(-1,1),random(-1,1),random(1,6),velx+random(-1,1),vely+random(-1,1),velz+random(1,3),0,SXF_NOCHECKPOSITION)
 		TNT1 A 0 A_PlaySound("vile/firestrt",6)
@@ -81,11 +81,11 @@ ACTOR BloodyHellFire
 		FIRE D 0 A_CustomMissile("BloodyHellFireTail", 0, 0, 0, 2, 0)
 		FIRE D random(1,2) bright light("HELL") A_Wander
 		goto See
-	yokai:
+	putto:
 		TNT1 A 0 A_TransferPointer(AAPTR_MASTER,AAPTR_DEFAULT,AAPTR_MASTER,AAPTR_MASTER)
 		TNT1 A 0 A_PlaySound("vile/firestrt")
 		TNT1 AAAAA 0 A_SpawnItemEx("HDSmoke",random(-1,1),random(-1,1),random(1,6),velx+random(-1,1),vely+random(-1,1),velz+random(1,3),0,SXF_NOCHECKPOSITION)
-		TNT1 AA 0 A_SpawnItemEx("Yokai",0,0,0,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
+		TNT1 AA 0 A_SpawnItemEx("Putto",0,0,0,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
 		stop
 	Melee:
 	Detonate:
@@ -242,7 +242,7 @@ ACTOR ArchFiend : Archvile replaces ArchVile
 		VILE NOO 2 bright A_CustomMissile("HeckFire", 16, 0, -8)
 		TNT1 A 0 A_FaceTarget
 		TNT1 A 0 A_JumpIfTargetInLOS("MissileLong")
-		TNT1 A 0 bright A_SpawnItemEx("Yokai", 4,0,30, 2,0,2, 0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
+		TNT1 A 0 bright A_SpawnItemEx("Putto", 4,0,30, 2,0,2, 0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
 	MissileLong:
 		TNT1 A 0 A_CheckFlag("friendly", "MissileLongFriendly")
 		TNT1 A 0 A_CustomBulletAttack(0,0, 1, 1, "BloodyHellFire")

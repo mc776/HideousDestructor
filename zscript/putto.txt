@@ -22,10 +22,16 @@ class Putto:HDActor{
 		seesound "putto/sight";
 		painsound "putto/pain";
 		deathsound "putto/death";
+		translation 0;
 	}
 	states{
 	spawn:
-		BOSF ABCD 6 A_Look();
+		BOSF A 0 nodelay{
+			if(Wads.CheckNumForName("BOSFA0",wads.ns_sprites,-1,false)<0)
+				sprite=getspriteindex("PINVA0");
+		}
+	spawn2:
+		#### ABCD 6 A_Look();
 		loop;
 	see:
 		#### A 0{

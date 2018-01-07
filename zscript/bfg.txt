@@ -277,15 +277,11 @@ class BFG9K:HDWeapon replaces BFG9000{
 	unloaddemon:
 		//effects for a possessed cell
 		BFGG C 0{
-			int j=random(0,10);
-			if(!j)setweaponstate("yok");
-			else if(j<4)setweaponstate("vile");
+			if(!random(0,2))setweaponstate("vile");
 		}goto harmless;
 	vile:
 		TNT1 AAAAA 0 A_FireProjectile("BFGVileShard",random(170,190),spawnofs_xy:random(-20,20));
 		goto batteryout;
-	yok:
-		TNT1 A 0 A_FireProjectile("YokaiSpawner",random(170,190),spawnofs_xy:random(-20,20));
 	harmless:
 		TNT1 AAAAA 0 A_FireProjectile("BFGShard",random(170,190),spawnofs_xy:random(-20,20));
 		goto batteryout;
