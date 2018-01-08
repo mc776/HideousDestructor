@@ -145,7 +145,8 @@ class Taunter:ActionItem{
 			A_PlaySound("*taunt",CHAN_VOICE);
 			A_TakeInventory("powerfrightener");
 			A_FireProjectile("DelayedTaunter");
-			if(findinventory("HDBlurSphere"))findinventory("HDBlurSphere").accuracy-=100;
+			if(findinventory("HDBlurSphere"))
+				HDBlursphere(findinventory("HDBlurSphere")).intensity-=100;
 		}fail;
 	}
 }

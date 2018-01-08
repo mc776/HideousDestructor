@@ -114,19 +114,21 @@ class HDStatusBar:DoomStatusBar{
 			SetSize(0,320,200);
 			BeginHUD(forcescaled:true);
 			texman.setcameratotexture(cp.scopecamera,"HDXHCAM4",97);
-			double camalpha=cp.findinventory("HDBlurSphere").accuracy*0.005;
+			let bls=HDBlurSphere(cp.findinventory("HDBlurSphere"));
+			double lv=bls.stamina+random(-2,2);
+			double camalpha=bls.intensity*0.001*clamp(lv,0,9);
 			drawimage(
-				"HDXHCAM4",(-random(30,32),0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+				"HDXHCAM4",(-random(30,32)-lv,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 				alpha:camalpha,scale:(2.0,2.0)*frandom(0.99,1.01)
 			);
 			texman.setcameratotexture(cp.scopecamera,"HDXHCAM4",110);
 			drawimage(
-				"HDXHCAM4",(random(30,32),0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+				"HDXHCAM4",(random(30,32)+lv,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 				alpha:camalpha*0.6,scale:(2.0,2.0)*frandom(0.99,1.01)
 			);
 			drawimage(
 				"DUSTA0",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-				alpha:0.2,scale:(1000,600)
+				alpha:0.01*lv,scale:(1000,600)
 			);
 			return;
 		}

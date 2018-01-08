@@ -160,7 +160,7 @@ class HDBlurSphere:HDPickup{
 	//no one seems to consider this to be a bug.
 	//shadow will at least cause attacks to happen less often.
 	default{
-		inventory.maxamount 1;
+		inventory.maxamount 9;
 		inventory.interhubamount 1;
 		inventory.pickupmessage "So precious in your sight.";
 		inventory.pickupsound "misc/casing";
@@ -168,7 +168,7 @@ class HDBlurSphere:HDPickup{
 		scale 0.3;
 		accuracy 1;
 	}
-	int spent;bool worn;
+	int intensity;int xp;bool worn;
 	override void tick(){
 		super.tick();
 		double frnd=frandom(0.93,1.04);
@@ -176,14 +176,23 @@ class HDBlurSphere:HDPickup{
 		alpha=0.9*frnd;
 	}
 	states{
+	spawn:
 	spawn2:
 		PINS ABCDCB random(1,6);
 		loop;
 	use:
 		TNT1 A 0{
 			A_SetBlend("01 00 00",0.9,48);
-			invoker.worn=invoker.worn?false:true;
+			if(!invoker.worn){
+				invoker.worn=true;
+				if(invoker.xp>=BLUR_LEVELUP)invoker.stamina=min(invoker.intensity,0);
+				invoker.stamina+=invoker.xp/BLUR_LEVELUP;
+				invoker.xp%=BLUR_LEVELUP;
+			}else invoker.worn=false;
 		}fail;
+	}
+	enum blurstats{
+		BLUR_LEVELUP=3500,
 	}
 	override void DoEffect(){
 		if(
@@ -193,11 +202,14 @@ class HDBlurSphere:HDPickup{
 			goawayanddie();return;
 		}
 
-		if(!worn)accuracy=max(0,accuracy-1);
-		else if(accuracy<99)accuracy=max(accuracy+1,-35);
+		if(!worn)intensity=max(0,intensity-1);
+		else{
+			if(intensity<99)intensity=max(intensity+1,-35);
+			xp++;
+		}
 		bool invi=true;
 
-		if(accuracy<random(8,25)){
+		if(intensity<random(8,25)){
 			owner.a_setrenderstyle(1.,STYLE_Normal);
 			invi=false;
 		}else{
@@ -205,10 +217,18 @@ class HDBlurSphere:HDPickup{
 		}
 
 		owner.bshadow=invi;
+
+		//they eat their own
+		amount=1;
 	}
 	override void DetachFromOwner(){
 		owner.bshadow=false;
 		owner.a_setrenderstyle(1.,STYLE_Normal);
+		if(worn){
+			worn=false;
+			owner.damagemobj(self,owner,random(1,stamina),"balefire");
+		}
+		intensity=0;
 		super.detachfromowner();
 	}
 }
