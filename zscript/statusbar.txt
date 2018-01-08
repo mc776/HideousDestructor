@@ -107,9 +107,29 @@ class HDStatusBar:DoomStatusBar{
 
 		if(
 			cp.binvisible
-			||cp.alpha<1.
-			||cp.countinv("PowerInvisibility")
+			||cp.alpha<=0
 		)return;
+
+		if(cp.bshadow&&cp.countinv("HDBlurSphere")){
+			SetSize(0,320,200);
+			BeginHUD(forcescaled:true);
+			texman.setcameratotexture(cp.scopecamera,"HDXHCAM4",97);
+			double camalpha=cp.findinventory("HDBlurSphere").accuracy*0.005;
+			drawimage(
+				"HDXHCAM4",(-random(30,32),0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+				alpha:camalpha,scale:(2.0,2.0)*frandom(0.99,1.01)
+			);
+			texman.setcameratotexture(cp.scopecamera,"HDXHCAM4",110);
+			drawimage(
+				"HDXHCAM4",(random(30,32),0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+				alpha:camalpha*0.6,scale:(2.0,2.0)*frandom(0.99,1.01)
+			);
+			drawimage(
+				"DUSTA0",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+				alpha:0.2,scale:(1000,600)
+			);
+			return;
+		}
 
 		//draw the crosshair.
 		DrawHDXHair(cp);

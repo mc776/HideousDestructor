@@ -291,58 +291,6 @@ struct HDF play{
 
 
 
-//test blursphere stuff
-
-class HDInvis:Inventory{
-	override void DoEffect(){
-		if(
-			!owner||
-			owner.health<1
-		){
-			goawayanddie();return;
-		}else if(
-			!owner.countinv("IsMoving")
-			&&(
-				!owner.player
-				||!owner.player.cmd.buttons
-				||owner.player.cmd.buttons==BT_CROUCH
-			)
-		){
-
-//UNIFY ALL THESE
-//STAMINA VERSUS RANDOM FIGURE
-//-> PLAIN, NO INVIS
-//-> BLUR, RANDOM INVIS
-//-> INVIS
-			if(stamina<1){
-				owner.binvisible=true;
-				owner.a_setrenderstyle(0.,STYLE_None);
-				owner.alpha=0.5;
-			}else{
-				owner.binvisible=random(0,stamina);
-				owner.a_setrenderstyle(0.9,stamina<random(15,45)?STYLE_Fuzzy:STYLE_Normal);
-				stamina--;
-			}
-		}else if(
-			!owner.player
-			||!owner.player.cmd.buttons
-			||owner.player.cmd.buttons==BT_CROUCH
-		){
-			owner.binvisible=random(0,stamina);
-			owner.a_setrenderstyle(0.9,stamina<random(15,45)?STYLE_Fuzzy:STYLE_Normal);
-		}else{
-			owner.binvisible=false;
-			owner.a_setrenderstyle(1.,STYLE_Normal);
-			if(stamina<60)stamina=min(stamina+30,60);
-			else stamina=min(stamina,105);
-		}
-	}
-	override void DetachFromOwner(){
-		owner.binvisible=false;
-		owner.a_setrenderstyle(1.,STYLE_Normal);
-		super.detachfromowner();
-	}
-}
 
 
 

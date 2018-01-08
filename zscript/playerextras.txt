@@ -143,10 +143,9 @@ class Taunter:ActionItem{
 	use:
 		TNT1 A 0{
 			A_PlaySound("*taunt",CHAN_VOICE);
-			A_ChangeFlag("shadow",0);
 			A_TakeInventory("powerfrightener");
-			A_FireCustommissile("DelayedTaunter",0,0);
-			if(findinventory("HDInvis"))findinventory("HDInvis").stamina+=50;
+			A_FireProjectile("DelayedTaunter");
+			if(findinventory("HDBlurSphere"))findinventory("HDBlurSphere").accuracy-=100;
 		}fail;
 	}
 }

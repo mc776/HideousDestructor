@@ -180,7 +180,7 @@ class HDPlayerPawn:PlayerPawn{
 		---- A 0 A_Jump(256,"spawn2");
 	melee:
 		#### F 2 bright light("SHOT"){
-			if(findinventory("HDInvis"))findinventory("HDInvis").stamina+=100;
+			if(findinventory("HDBlurSphere"))findinventory("HDBlurSphere").accuracy-=100;
 			if(
 				player&&hdweapon(player.readyweapon)
 			)hdweapon(player.readyweapon).notshot=0;

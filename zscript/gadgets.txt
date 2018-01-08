@@ -151,63 +151,64 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 
 
 
-
-
-
-
-//experimental, ignore
-class HDBlursphere:Inventory{
-	override void DoEffect(){
-		owner.bshadow=true;
-		hdplayerpawn(owner).nocrosshair=10;
-		if(
-			owner.vel==(0,0,0)&&
-			owner.player&&
-			!owner.player.cmd.pitch&&
-			!owner.player.cmd.yaw&&
-			(!owner.player.cmd.buttons||owner.player.cmd.buttons==BT_CROUCH)
-		){
-			if(!bjustattacked){
-				owner.A_SetRenderStyle(0,Style_Translucent);
-				owner.binvisible=true;
-				actor aaa=spawn("idledummy",pos);
-				aaa.health=10;
-				aaa.bshootable=true;
-				aaa.A_AlertMonsters(0,AMF_TARGETEMITTER);
-				aaa.stamina=10;
-				bjustattacked=true;
-			}
-		}else{
-			bjustattacked=false;
-			owner.A_SetRenderStyle(1,STYLE_Fuzzy);
-			owner.binvisible=false;
-		}
-		stamina--;
-		if(stamina<1){
-			EndEffect();
-			destroy();
-		}
-	}
-	override void OwnerDied(){
-		EndEffect();
-	}
-	void EndEffect(){
-		if(!owner)return;
-		owner.binvisible=false;
-		owner.bshadow=false;
-		owner.A_SetRenderStyle(1,STYLE_Normal);
-	}
+//-------------------------------------------------
+// Blur Sphere
+//-------------------------------------------------
+class HDBlurSphere:HDPickup{
+	//true +invisible can never be used.
+	//it will cause the monsters to be caught in a consant 1-tic see loop.
+	//no one seems to consider this to be a bug.
+	//shadow will at least cause attacks to happen less often.
 	default{
-		+countitem +visibilitypulse +floatbob +nogravity
-		+inventory.alwayspickup +inventory.bigpowerup
 		inventory.maxamount 1;
-		stamina 35*60;
-		renderstyle "translucent";alpha 0.4;
-		inventory.pickupmessage "$GOTINVIS";
+		inventory.interhubamount 1;
+		inventory.pickupmessage "So precious in your sight.";
+		inventory.pickupsound "misc/casing";
+		inventory.icon "PINSA0";
+		scale 0.3;
+		accuracy 1;
+	}
+	int spent;bool worn;
+	override void tick(){
+		super.tick();
+		double frnd=frandom(0.93,1.04);
+		scale=(0.3,0.3)*frnd;
+		alpha=0.9*frnd;
 	}
 	states{
-	spawn:
-		PINS ABCD 6 bright;
+	spawn2:
+		PINS ABCDCB random(1,6);
 		loop;
+	use:
+		TNT1 A 0{
+			A_SetBlend("01 00 00",0.9,48);
+			invoker.worn=invoker.worn?false:true;
+		}fail;
+	}
+	override void DoEffect(){
+		if(
+			!owner||
+			owner.health<1
+		){
+			goawayanddie();return;
+		}
+
+		if(!worn)accuracy=max(0,accuracy-1);
+		else if(accuracy<99)accuracy=max(accuracy+1,-35);
+		bool invi=true;
+
+		if(accuracy<random(8,25)){
+			owner.a_setrenderstyle(1.,STYLE_Normal);
+			invi=false;
+		}else{
+			owner.a_setrenderstyle(0.9,STYLE_Fuzzy);
+		}
+
+		owner.bshadow=invi;
+	}
+	override void DetachFromOwner(){
+		owner.bshadow=false;
+		owner.a_setrenderstyle(1.,STYLE_Normal);
+		super.detachfromowner();
 	}
 }
