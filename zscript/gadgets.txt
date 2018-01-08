@@ -219,7 +219,10 @@ class HDBlurSphere:HDPickup{
 		owner.bshadow=invi;
 
 		//they eat their own
-		amount=1;
+		if(amount>1){
+			amount=1;
+			xp+=100;
+		}
 	}
 	override void DetachFromOwner(){
 		owner.bshadow=false;
