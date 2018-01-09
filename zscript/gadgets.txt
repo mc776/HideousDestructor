@@ -222,7 +222,23 @@ class HDBlurSphere:HDPickup{
 			owner.a_setrenderstyle(0.9,STYLE_Fuzzy);
 		}
 
+		//apply result
 		owner.bshadow=invi;
+
+
+		//medusa gaze
+		if(invi&&!random(0,3)){
+			actor aaa;int bbb;
+			[aaa,bbb]=owner.LineAttack(owner.angle,4096,owner.pitch,0,"none",
+				"CheckPuff",flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ|LAF_NOINTERACT,
+				offsetz:owner.height-6
+			);
+			if(aaa&&aaa.tracer&&aaa.tracer.target==owner){
+				aaa.tracer.A_ClearTarget();
+			}
+			owner.A_ClearSoundTarget();
+		}
+
 
 		//they eat their own
 		if(amount>1){
