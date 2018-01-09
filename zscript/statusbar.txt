@@ -115,7 +115,7 @@ class HDStatusBar:DoomStatusBar{
 			BeginHUD(forcescaled:true);
 			texman.setcameratotexture(cp.scopecamera,"HDXHCAM4",97);
 			let bls=HDBlurSphere(cp.findinventory("HDBlurSphere"));
-			double lv=bls.stamina+random(-2,2);
+			double lv=bls.stamina+frandom(-2,2);
 			double camalpha=bls.intensity*0.001*clamp(lv,0,9);
 			drawimage(
 				"HDXHCAM4",(-random(30,32)-lv,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,

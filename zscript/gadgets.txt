@@ -168,7 +168,7 @@ class HDBlurSphere:HDPickup{
 		scale 0.3;
 		accuracy 1;
 	}
-	int intensity;int xp;bool worn;
+	int intensity;int xp;int level;bool worn;
 	override void tick(){
 		super.tick();
 		double frnd=frandom(0.93,1.04);
@@ -185,10 +185,14 @@ class HDBlurSphere:HDPickup{
 			A_SetBlend("01 00 00",0.9,48);
 			if(!invoker.worn){
 				invoker.worn=true;
-				if(invoker.xp>=BLUR_LEVELUP)invoker.stamina=min(invoker.intensity,0);
-				invoker.stamina+=invoker.xp/BLUR_LEVELUP;
+				A_PlaySound("imp/sight2",CHAN_BODY,frandom(0.3,0.5),false,8);
+				invoker.level+=invoker.xp/BLUR_LEVELUP;
 				invoker.xp%=BLUR_LEVELUP;
-			}else invoker.worn=false;
+				invoker.stamina=clamp(invoker.level+random(-2,2),0,10);
+			}else{
+				invoker.worn=false;
+				A_PlaySound("imp/sight1",CHAN_BODY,frandom(0.3,0.5),false,8);
+			}
 		}fail;
 	}
 	enum blurstats{
@@ -202,8 +206,10 @@ class HDBlurSphere:HDPickup{
 			goawayanddie();return;
 		}
 
-		if(!worn)intensity=max(0,intensity-1);
-		else{
+		if(!worn){
+			intensity=max(0,intensity-1);
+			xp+=randompick(0,0,1);
+		}else{
 			if(intensity<99)intensity=max(intensity+1,-35);
 			xp++;
 		}
@@ -223,15 +229,56 @@ class HDBlurSphere:HDPickup{
 			amount=1;
 			xp+=100;
 		}
+
+		//precious.
+		if(random(1,BLUR_LEVELUP)<level){
+			if(!(xp%3)){
+				sound snd[7];
+				snd[0]="imp/sight";
+				snd[1]="grunt/sight";
+				snd[2]="grunt/active";
+				snd[3]="demon/active";
+				snd[4]="world/riflefar";
+				snd[5]="world/rocketfar";
+				snd[6]="misc/gibbed";
+				owner.A_PlaySound(snd[random(1,snd.size())-1],
+					CHAN_VOICE,frandom(0.3,0.5),false,8
+				);
+			}
+			if(!(xp%5)){
+				string msg[15];
+				msg[0]=string.format("Out of sync with: %i",random(1,4));
+				msg[1]="Error: no such actor \"HDPlayer\" exists. Execution may abort!";
+				msg[2]="\cd[DERP] \cjEngaging hostile.";
+				msg[3]="Memory allocation error: recovered segfault at address 00x6f24ff.";
+				msg[4]="rendering error";
+				msg[5]="Noise.";
+				msg[6]="hello";
+				msg[7]="I hate you.";
+				msg[8]="This is worthless.";
+				msg[9]="it hurts";
+				msg[10]="error";
+				msg[11]="Precious.";
+				msg[12]="Precious.";
+				msg[13]="Precious.";
+				msg[14]="Precious.";
+				owner.A_Log(msg[random(1,msg.size())-1],true);
+			}
+			if(!(xp%7)){
+				hdplayerpawn(owner).aggravateddamage++;
+				if(!random(0,3))owner.A_Log("Precious.",true);
+			}
+		}
 	}
 	override void DetachFromOwner(){
 		owner.bshadow=false;
 		owner.a_setrenderstyle(1.,STYLE_Normal);
 		if(worn){
 			worn=false;
-			owner.damagemobj(self,owner,random(1,stamina),"balefire");
+			owner.damagemobj(self,owner,random(1,level),"balefire");
 		}
 		intensity=0;
+		owner.A_PlaySound("imp/sight1",CHAN_BODY,frandom(0.3,0.5),false,8);
 		super.detachfromowner();
 	}
 }
