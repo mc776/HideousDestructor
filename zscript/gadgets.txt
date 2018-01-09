@@ -235,6 +235,12 @@ class HDBlurSphere:HDPickup{
 			);
 			if(aaa&&aaa.tracer&&aaa.tracer.target==owner){
 				aaa.tracer.A_ClearTarget();
+				blockthingsiterator itt=blockthingsiterator.create(aaa,512);
+				while(itt.Next()){
+					if(itt.thing.target==owner)itt.thing.A_ClearTarget();
+					if(itt.thing.health>0&&!aaa.tracer.target)aaa.tracer.target=itt.thing;
+				}
+				aaa.tracer.A_ClearSoundTarget();
 			}
 			owner.A_ClearSoundTarget();
 		}
@@ -247,7 +253,7 @@ class HDBlurSphere:HDPickup{
 		}
 
 		//precious.
-		if(random(1,BLUR_LEVELUP)<level){
+		if(random(0,BLUR_LEVELUP)<level){
 			if(!(xp%3)){
 				sound snd[7];
 				snd[0]="imp/sight";
