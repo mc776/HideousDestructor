@@ -175,6 +175,10 @@ class HDBlurSphere:HDPickup{
 		scale=(0.3,0.3)*frnd;
 		alpha=0.9*frnd;
 	}
+	override void ownerdied(){
+		buntossable=false;
+		owner.A_DropInventory("HDBlursphere",amount);
+	}
 	states{
 	spawn:
 	spawn2:
@@ -189,6 +193,7 @@ class HDBlurSphere:HDPickup{
 				invoker.level+=invoker.xp/BLUR_LEVELUP;
 				invoker.xp%=BLUR_LEVELUP;
 				invoker.stamina=clamp(invoker.level+random(-2,2),0,10);
+				if(invoker.level>7)invoker.buntossable=true;
 			}else{
 				invoker.worn=false;
 				A_PlaySound("imp/sight1",CHAN_BODY,frandom(0.3,0.5),false,8);
@@ -203,7 +208,7 @@ class HDBlurSphere:HDPickup{
 			!owner||
 			owner.health<1
 		){
-			goawayanddie();return;
+			return;
 		}
 
 		if(!worn){

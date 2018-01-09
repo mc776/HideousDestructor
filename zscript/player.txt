@@ -554,6 +554,12 @@ extend class HDPlayerPawn{
 			A_TakeInventory("WoundCount");
 		}
 
+		let hbl=HDBlurSphere(findinventory("HDBlurSphere"));
+		if(hbl){
+			hbl.worn=false;
+			hbl.stamina=0;
+		}
+
 		A_GiveInventory("PowerFrightener",1);
 		ConsolidateAmmo();
 	}
