@@ -29,9 +29,9 @@ class ZM66AssaultRifle:HDWeapon{
 	action bool brokenround(){
 		if(!(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBERBROKEN)){
 			int rnd=
-				(invoker.owner==null?10:1)
-				+invoker.weaponstatus[ZM66S_AUTO]
-				+invoker.weaponstatus[ZM66S_MAG]>100?10:0;
+				(invoker.owner?1:10)
+				+(invoker.weaponstatus[ZM66S_AUTO])
+				+(invoker.weaponstatus[ZM66S_MAG]>100?10:0);
 			if(random(0,2000)<rnd){
 				invoker.weaponstatus[ZM66S_FLAGS]|=ZM66F_CHAMBERBROKEN;
 			}
@@ -170,8 +170,10 @@ class ZM66AssaultRifle:HDWeapon{
 			if(
 				//can neither shoot nor chamber
 				invoker.weaponstatus[0]&ZM66F_CHAMBERBROKEN
-				&&!(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBER)
-				&&invoker.weaponstatus[ZM66S_MAG]<1
+				||(
+					!(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBER)
+					&&invoker.weaponstatus[ZM66S_MAG]<1
+				)
 			){
 				setweaponstate("nope");
 			}else if(!(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBER)){
@@ -269,7 +271,7 @@ class ZM66AssaultRifle:HDWeapon{
 				setweaponstate("nope");
 			}else if(	//if jammed, treat as unloading
 				invoker.weaponstatus[ZM66S_MAG]<0
-				&& invoker.weaponstatus[0]&ZM66F_CHAMBERBROKEN
+				&&invoker.weaponstatus[0]&ZM66F_CHAMBERBROKEN
 			){
 				invoker.weaponstatus[ZM66S_FLAGS]|=ZM66F_UNLOADONLY;
 				setweaponstate("unloadchamber");
@@ -390,10 +392,8 @@ class ZM66AssaultRifle:HDWeapon{
 
 
 	unloadchamber:
-		RIFG A 1 offset(0,33);
 		RIFG A 1 offset(-3,34);
-		RIFG A 1 offset(-8,37);
-		RIFG B 2 offset(-11,39);
+		RIFG A 1 offset(-9,39);
 		RIFG B 3 offset(-19,44) A_MuzzleClimb(frandom(-0.4,0.4),frandom(-0.4,0.4));
 		RIFG A 2 offset(-16,42) A_MuzzleClimb(frandom(-0.4,0.4),frandom(-0.4,0.4));
 		RIFG A 0{
