@@ -49,6 +49,13 @@ extend class HDPlayerPawn{
 		int towound=0;
 		int toburn=0;
 
+		//blursphere
+		let blrs=HDBlurSphere(findinventory("HDBlursphere"));
+		if(blrs&&blrs.worn){
+			if(mod=="balefire")damage=max(1,damage-blrs.level*2);
+			else if(mod=="thermal")blrs.intensity-=100;
+		}
+
 		//radsuit
 		if(countinv("PowerIronFeet"))A_GiveInventory("WornRadsuit");
 		wornradsuit radsuit=wornradsuit(findinventory("WornRadsuit"));
