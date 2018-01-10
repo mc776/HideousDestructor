@@ -87,14 +87,13 @@ class HDMedikitter:HDWoundFixer{
 	void patchwound(int amt,actor targ){
 		let slf=HDPlayerPawn(targ);
 		if(!slf)return;
+		if(!random(0,1)&&(slf.alpha<1||slf.bshadow))amt-=random(0,amt+1);
 		int wound=max(slf.woundcount,0);
 		int unstablewound=max(slf.unstablewoundcount,0);
 		if(wound){
-			amt=min(amt,wound);
-			slf.woundcount-=amt;
+			slf.woundcount=max(0,wound-amt);
 		}else if(unstablewound){
-			amt=min(amt,unstablewound);
-			slf.unstablewoundcount-=amt;
+			slf.unstablewoundcount=max(0,unstablewound-amt);
 		}else amt=0;
 		slf.oldwoundcount+=amt;
 	}
@@ -428,6 +427,7 @@ class SelfBandage:HDWoundFixer{
 	void patchwound(int amt,actor targ){
 		let slf=HDPlayerPawn(targ);
 		if(!slf)return;
+		if(!random(0,2)&&(slf.alpha<1||slf.bshadow))amt-=random(0,amt+1);
 		int wound=max(slf.woundcount,0);
 		amt=min(amt,wound);
 		if(wound){
