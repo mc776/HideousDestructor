@@ -235,8 +235,7 @@ extend class HDPlayerPawn{
 			double lowheight=highheight-max(1,barreldepth);
 
 			//and now uh do stuff
-			actor barrelbase=spawn("IdleDummy",pos+(0,0,midheight));
-			barrelbase.stamina=1;
+			vector3 barrelbase=pos+(0,0,midheight);
 			actor muzpuf;
 			int stuff;
 			int muzhit=0;
@@ -253,7 +252,7 @@ extend class HDPlayerPawn{
 				offsetz:midheight,offsetside:-barrelwidth
 			);
 			if(muzpuf){
-				distleft=(muzpuf.distance3d(barrelbase));
+				distleft=(levellocals.vec3diff(muzpuf.pos,barrelbase).length());
 				muzpuf.destroy();
 			}else muzhit++;
 			//right
@@ -263,7 +262,7 @@ extend class HDPlayerPawn{
 				offsetz:midheight,offsetside:+barrelwidth
 			);
 			if(muzpuf){
-				distright=(muzpuf.distance3d(barrelbase));
+				distright=(levellocals.vec3diff(muzpuf.pos,barrelbase).length());
 				muzpuf.destroy();
 			}else muzhit++;
 
@@ -274,7 +273,7 @@ extend class HDPlayerPawn{
 				offsetz:highheight,offsetside:0
 			);
 			if(muzpuf){
-				disttop=(muzpuf.distance3d(barrelbase));
+				disttop=(levellocals.vec3diff(muzpuf.pos,barrelbase).length());
 				muzpuf.destroy();
 			}else muzhit++;
 			//bottom
@@ -284,7 +283,7 @@ extend class HDPlayerPawn{
 				offsetz:lowheight,offsetside:0
 			);
 			if(muzpuf){
-				distbottom=(muzpuf.distance3d(barrelbase));
+				distbottom=(levellocals.vec3diff(muzpuf.pos,barrelbase).length());
 				muzpuf.destroy();
 			}else muzhit++;
 
