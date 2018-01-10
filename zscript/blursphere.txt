@@ -41,6 +41,12 @@ class HDBlurSphere:HDPickup{
 				invoker.xp%=BLUR_LEVELUP;
 				invoker.stamina=clamp(invoker.level+random(-2,2),0,10);
 				if(invoker.level>7)invoker.buntossable=true;
+
+				int spac=countinv("SpiritualArmour");
+				if(spac){
+					hdplayerpawn(self).cheatgivestatusailments("fire",spac*3);
+					A_TakeInventory("SpiritualArmour");
+				}
 			}else{
 				invoker.worn=false;
 				A_PlaySound("imp/sight1",CHAN_BODY,frandom(0.3,0.5),false,8);

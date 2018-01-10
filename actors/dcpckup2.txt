@@ -324,9 +324,16 @@ actor GreenHelmet:CustomInventory replaces SpiritualArmour{
 		loop
 	pickup:
 		TNT1 A 0 A_GiveInventory("SpiritualArmour",1)
-		TNT1 A 0 A_GiveInventory("SpiritualArmour",3)
-		TNT1 A 0 A_GiveInventory("PowerFrightener",1)
-		TNT1 A 0 A_TakeInventory("WoundCount",7)
+		TNT1 A 0{
+			A_GiveInventory("SpiritualArmour",3);
+			A_GiveInventory("PowerFrightener",1);
+			A_TakeInventory("WoundCount",7);
+			if(countinv("HDBlurSphere")){
+				bbuddha=true;
+				A_TakeInventory("HDBlurSphere");
+				bbuddha=false;
+			}
+		}
 		TNT1 A 0 A_Jump(256,
 		"Pss003v3",
 		"Pss003v6t7",
