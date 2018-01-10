@@ -91,12 +91,16 @@ class HDBlurSphere:HDPickup{
 				"CheckPuff",flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ|LAF_NOINTERACT,
 				offsetz:owner.height-6
 			);
-			if(aaa&&aaa.tracer&&aaa.tracer.target==owner){
+			if(aaa&&aaa.tracer&&aaa.tracer.bismonster){
 				aaa.tracer.A_ClearTarget();
 				blockthingsiterator itt=blockthingsiterator.create(aaa,512);
 				while(itt.Next()){
 					if(itt.thing.target==owner)itt.thing.A_ClearTarget();
-					if(itt.thing.health>0&&!aaa.tracer.target)aaa.tracer.target=itt.thing;
+					if(
+						itt.thing.bismonster
+						&&itt.thing.health>0
+						&&!aaa.tracer.target
+					)aaa.tracer.target=itt.thing;
 				}
 				aaa.tracer.A_ClearSoundTarget();
 			}
