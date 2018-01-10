@@ -292,32 +292,39 @@ class TrippingFrag:FragP{
 	override void postbeginplay(){
 		super.postbeginplay();
 
-		//and now a BIG FUCKING HACK to find some shit!
-		actor tm=spawn("TMChecker",pos);
-		if(master && !tm.trymove(pos.xy+(pos.xy-master.pos.xy).unit(),true)){
-			if(tm.blockingline.backsector){
-				stuckto=tm.blockingline.backsector;
+		//and now to find some shit
+		fcheckposition tm;
+		checkmove(pos.xy+angletovector(angle,5),PCM_NOACTORS,tm);
 
-				int sflr=stuckto.centerfloor();
-				int sceil=stuckto.centerceiling();
-				if(pos.z<sceil)stuckfloor=true;else stuckfloor=false;
-
-				if(stuckfloor){
-					stucktoheight=sflr-pos.z;
-				}else{
-					stucktoheight=pos.z-sceil;
-				}
+		if(master&&
+			//checkmove reveals this is stuck to an upper or lower texture
+			(
+				tm.floorz>tm.pos.z
+				||tm.ceilingz<tm.pos.z+height
+			)
+		){
+			if(tm.floorz>tm.pos.z)stuckto=tm.floorsector;
+				else stuckto=tm.ceilingsector;
+			if(pos.z<stuckto.centerceiling()){
+				stuckfloor=true;
+				stucktoheight=stuckto.centerfloor()-pos.z;
+			}else{
+				stuckfloor=false;
+				stucktoheight=pos.z-stuckto.centerceiling();
 			}
-		}else if(
-			master.pitch>0  
-		){
+//			if(hd_debug)A_LogInt(stucktoheight);
+		}else{
+			//check to see if on floor or ceiling of its own sector
+			int spaceabove=ceilingz-pos.z;
+			int spacebelow=pos.z-floorz;
+			if(spaceabove>spacebelow){  
+				//stuck to floor
+				brelativetofloor=true;
+			}else{
+				//err in favour of stuck to ceiling
+				bceilinghugger=true;
+			}
 			bmovewithsector=true;
-			brelativetofloor=true;
-		}else if(
-			master.pitch<0
-		){
-			bmovewithsector=true;
-			bceilinghugger=true;
 		}
 	}
 	override void tick(){
