@@ -633,7 +633,7 @@ class ZM66Semi:IdleDummy{
 	spawn:
 		TNT1 A 0 nodelay{
 			let zzz=ZM66AssaultRifle(spawn("ZM66AssaultRifle",pos));if(!zzz)return;
-			zzz.weaponstatus[0]|=ZM66F_NOLAUNCHER|ZM66F_NOFIRESELECT;
+			zzz.weaponstatus[0]|=ZM66F_NOLAUNCHER|ZM66F_NOFIRESELECT;zzz.vel=vel;
 		}stop;
 	}
 }
@@ -642,7 +642,7 @@ class ZM66Regular:IdleDummy{
 	spawn:
 		TNT1 A 0 nodelay{
 			let zzz=ZM66AssaultRifle(spawn("ZM66AssaultRifle",pos));if(!zzz)return;
-			zzz.weaponstatus[0]|=ZM66F_NOLAUNCHER;
+			zzz.weaponstatus[0]|=ZM66F_NOLAUNCHER;zzz.vel=vel;
 		}stop;
 	}
 }
