@@ -249,13 +249,55 @@ enum ladderfigures{
 class hdladderbottom:hdactor{
 	default{
 		+nogravity
-		height 0.1;radius 0.1;
+		height 60.1;radius 10.1;
+	}
+	actor currentuser;
+	double currentuserz;
+	override bool used(actor user){
+		if(currentuser){
+			currentuser=null;
+			A_Log("GIVE SOMEONE ELSE THE LADDER");
+		}else{
+			currentuser=user;
+			currentuserz=user.pos.z;
+			A_Log("YAY A LADDER");
+		}
+		return true;
 	}
 	states{
 	spawn:
 		BAL1 A 1{
 			if(!target){destroy();return;}
 			setz(clamp(target.pos.z-LADDER_MAX,floorz,target.pos.z+LADDER_MAX));
+
+			if(currentuser){
+				if(currentuser.health<1){currentuser=null;return;}
+				if(
+					//currentuser.floorz==currentuser.pos.z||
+					currentuser.pos.z>target.pos.z
+				)return;
+				if(currentuser.player){
+					int fm=currentuser.player.cmd.forwardmove/4000;
+					currentuser.vel.z=fm;
+					currentuserz+=fm;
+				}
+				currentuser.vel*=0.7;
+				currentuserz=clamp(currentuserz,
+					currentuser.floorz,
+					currentuser.ceilingz-currentuser.height
+				);
+				currentuser.setorigin((
+					clamp(currentuser.pos.x,
+						pos.x-16,
+						pos.x+16
+					),
+					clamp(currentuser.pos.y,
+						pos.y-16,
+						pos.y+16
+					),
+					currentuserz
+				),true);
+			}
 		}wait;
 	}
 }

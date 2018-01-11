@@ -383,7 +383,7 @@ actor HDGoreBits : RandomSpawner
 actor HelmFrag : RandomSpawner replaces ArmorBonus
 {
 	dropitem "DecoPusher" 96 20
-	dropitem "GreenHelmet" 96 2
+	dropitem "SpiritualArmour" 96 2
 	dropitem "HDFragGrenades" 72 1
 	dropitem "LiberatorMag" 48 1
 	dropitem "ZM66RifleMags" 48 1
@@ -457,9 +457,7 @@ actor BrownSphere : BlueSphere replaces Megasphere
 			A_NoGravity;
 			A_PlaySound("misc/p_pkup");
 			A_GiveToTarget("RegenBlues",490);
-			A_GiveToTarget("SpiritualArmour");
-			A_GiveToTarget("SpiritualArmour");
-			A_GiveToTarget("GreenHelmet");
+			A_GiveToTarget("SpiritualArmour",7);
 		}goto fade
 	}
 }
@@ -575,7 +573,7 @@ actor HDBPPK:HDUPK replaces Backpack{
 		TNT1 A 1 A_ClearTarget
 		TNT1 A 0 A_TakeInventory("Timer",1)
 		TNT1 A 0 A_Jump(256,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20)
-	d1: TNT1 A 0 A_SpawnItemEx("GreenHelmet",0,0,0,-3,0,1,random(-90,90),SXF_NOCHECKPOSITION) goto dropstuff
+	d1: TNT1 A 0 A_SpawnItemEx("SpiritualArmour",0,0,0,-3,0,1,random(-90,90),SXF_NOCHECKPOSITION) goto dropstuff
 	d2: TNT1 A 0{
 		A_SpawnItemEx("GreenArmor",0,0,0,-3,0,1,random(-90,90),SXF_NOCHECKPOSITION);
 		}goto dropstuff
@@ -649,7 +647,7 @@ actor HDBPPK:HDUPK replaces Backpack{
 	g27: TNT1 A 0 A_GiveToTarget("BluePotion") goto givestuff
 	g28: TNT1 A 0 A_GiveToTarget("SquadSummoner") goto givestuff
 	g29: TNT1 A 0 A_GiveToTarget("HDIEDKit",random(4,8)) goto givestuff
-	g30: TNT1 A 0 A_SpawnItemEx("GreenHelmet",0,0,0,-3,0,1,random(-4,4),SXF_NOCHECKPOSITION) goto givestuff
+	g30: TNT1 A 0 A_SpawnItemEx("SpiritualArmour",0,0,0,-3,0,1,random(-4,4),SXF_NOCHECKPOSITION) goto givestuff
 	g31: TNT1 A 0 A_SpawnItemEx("GreenArmourPickup",0,0,0,-3,0,1,random(-4,4),SXF_NOCHECKPOSITION) goto givestuff
 	g32: TNT1 A 0 A_SpawnItemEx("BlueArmourPickup",0,0,0,-3,0,1,random(-4,4),SXF_NOCHECKPOSITION) goto givestuff
 	g33: TNT1 A 0 A_SpawnItemEx("BlackArmourPickup",0,0,0,-3,0,1,random(-4,4),SXF_NOCHECKPOSITION) goto givestuff
