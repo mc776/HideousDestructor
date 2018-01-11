@@ -114,6 +114,19 @@ class HDBlurSphere:HDPickup{
 			xp+=100;
 		}
 
+		//get rid of the equivalents in greenhelmet and potion
+		let hdp=hdplayerpawn(owner);
+		if(hdp){
+			if(hdp.regenblues>0){
+				hdp.regenblues=max(0,hdp.regenblues-15);
+				hdp.cheatgivestatusailments("fire",level*3+1);
+			}
+			if(hdp.countinv("SpiritualArmour")){
+				hdp.cheatgivestatusailments("fire",countinv("SpiritualArmour")*4);
+				hdp.A_TakeInventory("SpiritualArmour");
+			}
+		}
+
 		//precious.
 		if(random(0,BLUR_LEVELUP)<level){
 			if(!(xp%3)){

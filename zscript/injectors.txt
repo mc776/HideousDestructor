@@ -385,20 +385,8 @@ class HDBlueBottler:HDWoundFixer{
 			A_SetBlend("5a 6a a0",0.1,8);
 			A_MuzzleClimb(0,-2);
 			A_PlaySound("misc/gibbed",CHAN_VOICE);
-
-			//don't mix 'em.
-			let blrs=HDBlursphere(findinventory("HDBlursphere"));
-			if(
-				blrs&&blrs.level>random(0,3)
-			){
-				hdplayerpawn(self).cheatgivestatusailments("fire",blrs.level*3);
-				blrs.level++;
-				blrs.worn=false;
-				return;
-			}else{
-				let onr=HDPlayerPawn(self);
-				if(onr)onr.regenblues+=300;
-			}
+			let onr=HDPlayerPawn(self);
+			if(onr)onr.regenblues+=300;
 		}
 		TNT1 AAAA 1 A_MuzzleClimb(0,0.5);
 		TNT1 A 6;
