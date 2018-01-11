@@ -157,12 +157,12 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 
 
 //-------------------------------------------------
-// Rope
+// Ladder
 //-------------------------------------------------
 
-//show where the rope is hanging
+//show where the ladder is hanging
 //no it doesn't swing, math is hard :(
-class hdropesection:idledummy{
+class hdladdersection:idledummy{
 	default{
 		+wallsprite
 	}
@@ -192,7 +192,7 @@ class hdropesection:idledummy{
 		ROCK A -1;
 	}
 }
-class hdropetop:hdactor{
+class hdladdertop:hdactor{
 	default{
 		+missile //testing
 		+flatsprite
@@ -200,7 +200,7 @@ class hdropetop:hdactor{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		bmissile=false;
+		bmissile=false;master=target;
 		setz(floorz);
 		fcheckposition tm;
 		vector2 mvlast=pos.xy;
@@ -209,32 +209,32 @@ class hdropetop:hdactor{
 			mvlast+=mv;
 			checkmove(mvlast,PCM_DROPOFF|PCM_NOACTORS,tm);
 
-			//found a place for the rope to hang down
-			int htdiff=clamp(floorz-tm.floorz,0,HDCONST_MAXROPE);
+			//found a place for the ladder to hang down
+			int htdiff=clamp(floorz-tm.floorz,0,ladder_MAX);
 //			A_Log(string.format("%i %i",floorz,tm.floorz));
 			if(htdiff){
-				//spawn the rope end
-				target=spawn("hdropebottom",tm.pos);
+				//spawn the ladder end
+				target=spawn("hdladderbottom",tm.pos);
 				target.target=self;
 				target.master=master;
 
-				//spawn the rope sections
-				int sectionlength=min(htdiff,HDCONST_MAXROPE)/20;
-				for(int i=0;i<HDCONST_MAXROPE/20;i++){
+				//spawn the ladder sections
+				int sectionlength=min(htdiff,ladder_MAX)/20;
+				for(int i=0;i<20;i++){
 					tm.pos.z-=sectionlength;
-					actor sss=spawn("hdropesection",tm.pos);
+					actor sss=spawn("hdladdersection",tm.pos);
 					sss.master=self;sss.target=target;sss.angle=angle;
 				}
 
-				//now that we're at the bottom, move the rope end
+				//now that we're at the bottom, move the ladder end
 				target.setz(tm.pos.z);
 
 				return;
 			}
 		}
 
-		//if there's no lower floor to drop the rope, abort.
-		if(master)master.A_Log("No point hanging a rope here.",true);
+		//if there's no lower floor to drop the ladder, abort.
+		if(master)master.A_Log("No point hanging a ladder here.",true);
 		destroy();
 	}
 	states{
@@ -242,8 +242,10 @@ class hdropetop:hdactor{
 		BAL2 A -1;
 	}
 }
-const HDCONST_MAXROPE=200;
-class hdropebottom:hdactor{
+enum ladderfigures{
+	LADDER_MAX=400,
+}
+class hdladderbottom:hdactor{
 	default{
 		+nogravity
 		height 0.1;radius 0.1;
@@ -251,7 +253,7 @@ class hdropebottom:hdactor{
 	states{
 	spawn:
 		BAL1 A 1{
-			setz(clamp(pos.z,target.pos.z-HDCONST_MAXROPE,target.pos.z+HDCONST_MAXROPE));
+			setz(clamp(pos.z,target.pos.z-ladder_MAX,target.pos.z+ladder_MAX));
 		}wait;
 	}
 }
