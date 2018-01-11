@@ -210,7 +210,7 @@ class hdladdertop:hdactor{
 			checkmove(mvlast,PCM_DROPOFF|PCM_NOACTORS,tm);
 
 			//found a place for the ladder to hang down
-			int htdiff=clamp(floorz-tm.floorz,0,ladder_MAX);
+			int htdiff=clamp(floorz-tm.floorz,0,LADDER_MAX);
 //			A_Log(string.format("%i %i",floorz,tm.floorz));
 			if(htdiff){
 				//spawn the ladder end
@@ -219,8 +219,8 @@ class hdladdertop:hdactor{
 				target.master=master;
 
 				//spawn the ladder sections
-				int sectionlength=min(htdiff,ladder_MAX)/20;
-				for(int i=0;i<20;i++){
+				int sectionlength=min(htdiff,LADDER_MAX)/LADDER_SECTIONS;
+				for(int i=0;i<LADDER_SECTIONS;i++){
 					tm.pos.z-=sectionlength;
 					actor sss=spawn("hdladdersection",tm.pos);
 					sss.master=self;sss.target=target;sss.angle=angle;
@@ -243,7 +243,8 @@ class hdladdertop:hdactor{
 	}
 }
 enum ladderfigures{
-	LADDER_MAX=400,
+	LADDER_MAX=800,
+	LADDER_SECTIONS=LADDER_MAX/20,
 }
 class hdladderbottom:hdactor{
 	default{
@@ -253,7 +254,12 @@ class hdladderbottom:hdactor{
 	states{
 	spawn:
 		BAL1 A 1{
-			setz(clamp(pos.z,target.pos.z-ladder_MAX,target.pos.z+ladder_MAX));
+			if(!target){destroy();return;}
+			setz(clamp(target.pos.z-LADDER_MAX,floorz,target.pos.z+LADDER_MAX));
 		}wait;
 	}
 }
+
+
+
+
