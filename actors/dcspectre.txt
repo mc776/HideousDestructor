@@ -22,7 +22,7 @@ ACTOR NinjaPirate //replaces Spectre
 	mass 300
 	damage 8
 	obituary " "//%o died."
-	dropitem "HDBlurSphere",24
+	dropitem "HDBlurSphere",2
 	States
 	{
 	Spawn:
@@ -322,8 +322,9 @@ goto spawn2}}
 actor SpectreSpawner : RandomSpawner replaces Spectre
 {
 	+ismonster
-	dropitem "NinjaPirate" 256 1
-	dropitem "SpecBabuin" 256 4
+	dropitem "NinjaPirate" 256 5
+	dropitem "SpecBabuin" 256 20
+	dropitem "ShellShade" 256 1
 }
 
 actor BabuSpectreSpawner : RandomSpawner replaces Demon
