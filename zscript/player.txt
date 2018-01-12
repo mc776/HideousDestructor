@@ -67,6 +67,9 @@ class HDPlayerPawn:PlayerPawn{
 		beatcap=35;beatmax=35;
 		feetangle=angle;
 
+		scopecamera=spawn("ScopeCamera",pos+(0,0,height-6));
+		scopecamera.target=self;
+
 		if(player&&player.bot&&hd_nobots&&!countinv("WipedOut"))ReplaceBot();
 		else if(hd_forcepistolstart){
 			A_GiveInventory("DoomguyLoadout");
@@ -226,9 +229,8 @@ class HDPlayerPawn:PlayerPawn{
 		if(!player.readyweapon)A_SelectWeapon("Ring");
 
 		//same thing with scope camera
-		if(!scopecamera){
-			scopecamera=spawn("ViewDummy",pos);
-		}else scopecamera.target=self;
+		if(!scopecamera)scopecamera=spawn("ScopeCamera",pos);
+		scopecamera.target=self;
 
 		//check if teleported
 		//fastest you can voluntarily go (berserk, invuln, soulsphere) is mid-90s
@@ -485,25 +487,22 @@ class HDPlayerPawn:PlayerPawn{
 
 
 //Camera actor for player's scope
-class ViewDummy:IdleDummy{
-	override void postbeginplay(){
-		A_CheckProximity("spawndropped","PlayerPawn",10,1, CPXF_COUNTDEAD|CPXF_SETMASTER|CPXF_ANCESTOR|CPXF_CLOSEST|CPXF_NOZ);
-	}
+class ScopeCamera:IdleDummy{
 	override void Tick(){
-		if(!master){
+		if(!target){
 			destroy();
 			return;
 		}
-		angle=master.angle;
-		pitch=master.pitch;
-		if(abs(pitch)>89)setxyz(master.pos+(
-			cos(angle)*2,
-			sin(angle)*2,
-			sin(-pitch)*6+master.height-4
-		));else setxyz(master.pos+(
-			cos(pitch)*cos(angle)*6,
-			cos(pitch)*sin(angle)*6,
-			sin(-pitch)*6+master.height-4
+		angle=target.angle;
+		pitch=target.pitch;
+		vector2 fwd=angletovector(target.angle,2);
+
+		if(abs(pitch)>89)setxyz(target.pos+(
+			fwd*max(0.5,cos(pitch))*2,
+			sin(-pitch)*6+target.height-4
+		));else setxyz(target.pos+(
+			fwd*cos(pitch)*6,
+			sin(-pitch)*6+target.height-4
 		));
 		nexttic();
 	}
