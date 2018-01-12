@@ -234,7 +234,10 @@ class hdladdertop:hdactor{
 		}
 
 		//if there's no lower floor to drop the ladder, abort.
-		if(master)master.A_Log("No point hanging a ladder here.",true);
+		if(master){
+			master.A_Log("No point hanging a ladder here.",true);
+			master.A_GiveInventory("HDLadder");
+		}else spawn("HDLadder",pos);
 		destroy();
 	}
 	states{
@@ -255,53 +258,112 @@ class hdladderbottom:hdactor{
 	double currentuserz;
 	override bool used(actor user){
 		if(currentuser){
-			currentuser=null;
-			A_Log("GIVE SOMEONE ELSE THE LADDER");
-		}else{
-			currentuser=user;
-			currentuserz=user.pos.z;
-			A_Log("YAY A LADDER");
+			disengageladder();
+			return false;
 		}
+		currentuser=user;
+		currentuserz=user.pos.z;
+		currentuser.A_Log("You climb the ladder.",true);
 		return true;
+	}
+	void disengageladder(){
+		if(!currentuser)return;
+		currentuser.A_Log("Ladder disengaged.",true);
+		currentuser=null;
+	}
+	override void tick(){
+		if(!target){destroy();return;}
+		setz(clamp(target.pos.z-LADDER_MAX,floorz,target.pos.z+LADDER_MAX));
+
+		if(currentuser){
+			if(currentuser.health<1){currentuser=null;return;}
+			if(
+				currentuser.pos.z>target.pos.z-16
+			){
+				if(distance2d(currentuser)>24)disengageladder();
+				return;
+			}
+			if(currentuser.player){
+				int fm=currentuser.player.cmd.forwardmove/4000;
+				int sm=currentuser.player.cmd.sidemove/4000;
+				int bt=currentuser.player.cmd.buttons;
+				currentuser.vel.z=0;
+				currentuserz+=fm;
+
+				//jump also disengages
+				//crouch+jump to remove the rope
+				if(bt){
+					if(bt&BT_JUMP){
+						if(bt&BT_CROUCH){
+							currentuser.A_Log("Ladder taken down.",true);
+							
+							actor hdl=spawn("HDLadder",pos);
+							hdl.setz(target.pos.z);
+		
+							vector2 vc=(currentuser.pos.xy-pos.xy).unit()*5;
+							currentuser.vel.xy+=vc;
+							hdl.vel.xy+=vc;
+		
+							target.destroy();
+							if(self)destroy();
+							return;
+						}else disengageladder();
+					}
+				}
+				if(sm)currentuser.trymove(
+					pos.xy+angletovector(angle-90,sm),
+					true
+				);
+			}
+			if(!currentuser)return;
+
+			currentuser.vel*=0.7;
+			currentuserz=clamp(currentuserz,
+				currentuser.floorz,
+				currentuser.ceilingz-currentuser.height
+			);
+			currentuser.setorigin((
+				clamp(currentuser.pos.x,
+					pos.x-16,
+					pos.x+16
+				),
+				clamp(currentuser.pos.y,
+					pos.y-16,
+					pos.y+16
+				),
+				currentuserz
+			),true);
+		}
 	}
 	states{
 	spawn:
-		BAL1 A 1{
-			if(!target){destroy();return;}
-			setz(clamp(target.pos.z-LADDER_MAX,floorz,target.pos.z+LADDER_MAX));
-
-			if(currentuser){
-				if(currentuser.health<1){currentuser=null;return;}
-				if(
-					//currentuser.floorz==currentuser.pos.z||
-					currentuser.pos.z>target.pos.z
-				)return;
-				if(currentuser.player){
-					int fm=currentuser.player.cmd.forwardmove/4000;
-					currentuser.vel.z=fm;
-					currentuserz+=fm;
-				}
-				currentuser.vel*=0.7;
-				currentuserz=clamp(currentuserz,
-					currentuser.floorz,
-					currentuser.ceilingz-currentuser.height
-				);
-				currentuser.setorigin((
-					clamp(currentuser.pos.x,
-						pos.x-16,
-						pos.x+16
-					),
-					clamp(currentuser.pos.y,
-						pos.y-16,
-						pos.y+16
-					),
-					currentuserz
-				),true);
-			}
-		}wait;
+		BAL1 A -1;wait;
 	}
 }
+class HDLadder:HDPickup{
+	default{
+		inventory.icon "PLAYA1";
+		inventory.pickupmessage "Picked up a ladder.";
+		height 24;radius 16;
+	}
+	states{
+	spawn:
+		BAL7 B -1;
+	use:
+		TNT1 A 0{
+			actor aaa;int bbb;
+			[bbb,aaa]=A_SpawnItemEx(
+				"HDLadderTop",24,0,32,
+				flags:SXF_NOCHECKPOSITION|SXF_SETTARGET
+			);if(!aaa)return;
 
+			//only face player if above player's height - otherwise why not just mantle?
+			if(aaa.floorz>pos.z+height){
+				aaa.angle+=180;
+			}
+		}stop;
+	}
+}
 
 
 
