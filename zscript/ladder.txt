@@ -200,6 +200,10 @@ class hdladderbottom:hdactor{
 					}
 				}else fm*=-1;
 
+				if(currentuser.countinv("PowerStrength"))fm*=3;
+				if(hdplayerpawn(currentuser)&&hdplayerpawn(currentuser).stunned)
+					fm=max(1,fm/3);
+
 				//apply climbing
 				currentuserz+=fm;
 
@@ -208,7 +212,8 @@ class hdladderbottom:hdactor{
 				if(bt){
 					if(bt&BT_JUMP){
 						currentuser.vel.xy+=
-							(currentuser.pos.xy-pos.xy).unit()*7;
+							(currentuser.pos.xy-pos.xy).unit()*
+							(currentuser.countinv("PowerStrength")?12:5);
 
 						if(bt&BT_CROUCH){
 							currentuser.A_Log("Ladder taken down.",true);
