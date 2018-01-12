@@ -200,6 +200,7 @@ class hdladdertop:hdactor{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
+		pitch=-14;
 		bmissile=false;master=target;
 		setz(floorz);
 		fcheckposition tm;
@@ -211,8 +212,9 @@ class hdladdertop:hdactor{
 
 			//found a place for the ladder to hang down
 			int htdiff=clamp(floorz-tm.floorz,0,LADDER_MAX);
-//			A_Log(string.format("%i %i",floorz,tm.floorz));
 			if(htdiff){
+				A_PlaySound("misc/ladder");
+
 				//spawn the ladder end
 				target=spawn("hdladderbottom",tm.pos);
 				target.target=self;
@@ -237,8 +239,15 @@ class hdladdertop:hdactor{
 		if(master){
 			master.A_Log("No point hanging a ladder here.",true);
 			master.A_GiveInventory("HDLadder");
-		}else spawn("HDLadder",pos);
+		}else{
+			actor hdl=spawn("HDLadder",pos);
+			hdl.A_PlaySound("misc/ladder");
+		}
 		destroy();
+	}
+	override void tick(){
+		setz(floorz+2);
+		nexttic();
 	}
 	states{
 	spawn:
@@ -262,6 +271,7 @@ class hdladderbottom:hdactor{
 			return false;
 		}
 		currentuser=user;
+		currentuser.vel.z+=1;
 		currentuserz=user.pos.z;
 		currentuser.A_Log("You climb the ladder.",true);
 		return true;
@@ -273,21 +283,71 @@ class hdladderbottom:hdactor{
 	}
 	override void tick(){
 		if(!target){destroy();return;}
-		setz(clamp(target.pos.z-LADDER_MAX,floorz,target.pos.z+LADDER_MAX));
+		setz(clamp(target.pos.z-LADDER_MAX,getzat(),target.pos.z+LADDER_MAX));
 
 		if(currentuser){
 			if(currentuser.health<1){currentuser=null;return;}
 			if(
 				currentuser.pos.z>target.pos.z-16
 			){
-				if(distance2d(currentuser)>24)disengageladder();
+
+				if(currentuser.player){
+					int bt=currentuser.player.cmd.buttons;
+					if(
+						bt&BT_JUMP
+						||bt&BT_SPEED
+					){
+						disengageladder();
+						if(bt&BT_CROUCH&&bt&BT_JUMP){
+							actor hdl=spawn("HDLadder",target.pos);
+							hdl.A_PlaySound("misc/ladder");
+							target.destroy();
+							if(self)destroy();
+						}
+						return;
+					}
+				}
+				if(target.distance2d(currentuser)>40){
+					vector2 tp=target.pos.xy;
+					currentuser.setorigin((
+						clamp(currentuser.pos.x,
+							tp.x-40,
+							tp.x+40
+						),
+						clamp(currentuser.pos.y,
+							tp.y-40,
+							tp.y+40
+						),
+						currentuser.pos.z
+					),true);
+				}
 				return;
 			}
+			currentuser.vel.z=0;
+
+			bool facing=
+				abs(
+					deltaangle(
+						angleto(currentuser,true),
+						currentuser.angle
+					)
+				)>100;
+
 			if(currentuser.player){
-				int fm=currentuser.player.cmd.forwardmove/4000;
-				int sm=currentuser.player.cmd.sidemove/4000;
+				int fm=currentuser.player.cmd.forwardmove/8000;
+				int sm=currentuser.player.cmd.sidemove/8000;
 				int bt=currentuser.player.cmd.buttons;
-				currentuser.vel.z=0;
+
+				//barehanded and descending are faster
+				if(facing){
+					if(!sm&&fm<0)fm*=1.5;
+					weapon wp=currentuser.player.readyweapon;
+					if(wp is "Ring"||wp is "NullWeapon"){
+						sm*=2;fm*=2;
+					}
+				}else fm*=-1;
+
+				//apply climbing
 				currentuserz+=fm;
 
 				//jump also disengages
@@ -296,22 +356,24 @@ class hdladderbottom:hdactor{
 					if(bt&BT_JUMP){
 						if(bt&BT_CROUCH){
 							currentuser.A_Log("Ladder taken down.",true);
-							
-							actor hdl=spawn("HDLadder",pos);
-							hdl.setz(target.pos.z);
+
+							actor hdl=spawn("HDLadder",target.pos);
+							hdl.A_PlaySound("misc/ladder");
 		
-							vector2 vc=(currentuser.pos.xy-pos.xy).unit()*5;
-							currentuser.vel.xy+=vc;
-							hdl.vel.xy+=vc;
-		
+							vector2 vc=(currentuser.pos.xy-pos.xy).unit();
+							currentuser.vel.xy+=vc*7;
+							hdl.vel.xy+=vc*4;
+
 							target.destroy();
 							if(self)destroy();
 							return;
 						}else disengageladder();
 					}
 				}
+
+				//should be able to move around a bit
 				if(sm)currentuser.trymove(
-					pos.xy+angletovector(angle-90,sm),
+					currentuser.pos.xy+angletovector(currentuser.angle-90,sm),
 					true
 				);
 			}
@@ -334,6 +396,7 @@ class hdladderbottom:hdactor{
 				currentuserz
 			),true);
 		}
+		nexttic();
 	}
 	states{
 	spawn:
@@ -353,7 +416,7 @@ class HDLadder:HDPickup{
 		TNT1 A 0{
 			actor aaa;int bbb;
 			[bbb,aaa]=A_SpawnItemEx(
-				"HDLadderTop",24,0,32,
+				"HDLadderTop",14,0,32,
 				flags:SXF_NOCHECKPOSITION|SXF_SETTARGET
 			);if(!aaa)return;
 
