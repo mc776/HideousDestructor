@@ -207,15 +207,14 @@ class hdladderbottom:hdactor{
 				//crouch+jump to remove the rope
 				if(bt){
 					if(bt&BT_JUMP){
+						currentuser.vel.xy+=
+							(currentuser.pos.xy-pos.xy).unit()*7;
+
 						if(bt&BT_CROUCH){
 							currentuser.A_Log("Ladder taken down.",true);
 
 							actor hdl=spawn("HDLadder",target.pos);
 							hdl.A_PlaySound("misc/ladder");
-		
-							vector2 vc=(currentuser.pos.xy-pos.xy).unit();
-							currentuser.vel.xy+=vc*7;
-							hdl.vel.xy+=vc*4;
 
 							target.destroy();
 							if(self)destroy();
