@@ -291,6 +291,7 @@ class hdladderbottom:hdactor{
 				currentuser.pos.z>target.pos.z-16
 			){
 
+				//throw in some use of controls still
 				if(currentuser.player){
 					int bt=currentuser.player.cmd.buttons;
 					if(
@@ -305,6 +306,16 @@ class hdladderbottom:hdactor{
 							if(self)destroy();
 						}
 						return;
+					}
+					if(currentuser.floorz<currentuser.pos.z){
+						int fm=currentuser.player.cmd.forwardmove/6000;
+						int sm=currentuser.player.cmd.sidemove/6000;
+						if(fm||sm)currentuser.trymove(
+							currentuser.pos.xy
+							+angletovector(currentuser.angle,fm)
+							+angletovector(currentuser.angle-90,sm),
+							true
+						);
 					}
 				}
 				if(target.distance2d(currentuser)>40){
