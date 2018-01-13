@@ -26,7 +26,7 @@ class hdladdersection:idledummy{
 			destroy();return;
 		}
 		double mpz=master.pos.z;
-		setz(mpz+(mpz-target.pos.z)*proportion);
+		setz(mpz+(mpz-target.pos.z)*proportion-12);
 		nexttic();
 	}
 	states{
@@ -72,7 +72,7 @@ class hdladdertop:hdactor{
 
 				//spawn the ladder sections
 				int sectionlength=min(htdiff,LADDER_MAX)/LADDER_SECTIONS;
-				for(int i=0;i<LADDER_SECTIONS;i++){
+				for(int i=1;i<=LADDER_SECTIONS;i++){
 					tm.pos.z-=sectionlength;
 					actor sss=spawn("hdladdersection",tm.pos);
 					sss.master=self;sss.target=target;sss.angle=angle;
