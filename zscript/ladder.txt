@@ -129,6 +129,17 @@ class hdladderbottom:hdactor{
 
 		if(currentuser){
 			if(currentuser.health<1){currentuser=null;return;}
+
+
+			//check if facing the ladder
+			bool facing=abs(
+				deltaangle(
+					angleto(currentuser,true),
+					currentuser.angle
+				)
+			)>100;
+
+			//checks when above ladder
 			if(
 				currentuser.pos.z>target.pos.z-16
 			){
@@ -139,6 +150,7 @@ class hdladderbottom:hdactor{
 					if(
 						bt&BT_JUMP
 						||bt&BT_SPEED
+						||(!facing&&bt&BT_USE)
 					){
 						disengageladder();
 						if(bt&BT_CROUCH&&bt&BT_JUMP){
@@ -178,14 +190,7 @@ class hdladderbottom:hdactor{
 			}
 			currentuser.vel.z=0;
 
-			bool facing=
-				abs(
-					deltaangle(
-						angleto(currentuser,true),
-						currentuser.angle
-					)
-				)>100;
-
+			//climbing interface
 			if(currentuser.player){
 				double fm=currentuser.player.cmd.forwardmove*0.000125;
 				double sm=currentuser.player.cmd.sidemove*0.000125;
@@ -229,7 +234,7 @@ class hdladderbottom:hdactor{
 							if(self)destroy();
 							return;
 						}else disengageladder();
-					}
+					}else if(!facing&&bt&BT_USE)disengageladder();
 				}
 
 				//should be able to move around a bit
