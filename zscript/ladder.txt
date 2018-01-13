@@ -187,8 +187,8 @@ class hdladderbottom:hdactor{
 				)>100;
 
 			if(currentuser.player){
-				int fm=currentuser.player.cmd.forwardmove/8000;
-				int sm=currentuser.player.cmd.sidemove/8000;
+				double fm=currentuser.player.cmd.forwardmove*0.000125;
+				double sm=currentuser.player.cmd.sidemove*0.000125;
 				int bt=currentuser.player.cmd.buttons;
 
 				//barehanded and descending are faster
@@ -202,7 +202,7 @@ class hdladderbottom:hdactor{
 
 				if(currentuser.countinv("PowerStrength"))fm*=3;
 				if(hdplayerpawn(currentuser)&&hdplayerpawn(currentuser).stunned)
-					fm=max(1,fm/3);
+					fm*=0.3;
 
 				//apply climbing
 				currentuserz+=fm;
@@ -211,15 +211,19 @@ class hdladderbottom:hdactor{
 				//crouch+jump to remove the rope
 				if(bt){
 					if(bt&BT_JUMP){
-						currentuser.vel.xy+=
-							(currentuser.pos.xy-pos.xy).unit()*
-							(currentuser.countinv("PowerStrength")?12:5);
+						vector3 vl=(
+							(currentuser.pos.xy-pos.xy).unit()*3,
+							4
+						);
+						if(currentuser.countinv("PowerStrength"))vl*=2.2;
+						currentuser.vel+=vl;
 
 						if(bt&BT_CROUCH){
 							currentuser.A_Log("Ladder taken down.",true);
 
 							actor hdl=spawn("HDLadder",target.pos);
 							hdl.A_PlaySound("misc/ladder");
+							hdl.vel.xy=vl.xy;
 
 							target.destroy();
 							if(self)destroy();
