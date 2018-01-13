@@ -284,7 +284,7 @@ class HDLadder:HDPickup{
 		TNT1 A 0{
 			actor aaa;int bbb;
 			[bbb,aaa]=A_SpawnItemEx(
-				"HDLadderTop",4,0,32,
+				"HDLadderTop",16*cos(pitch),0,48-16*sin(pitch),
 				flags:SXF_NOCHECKPOSITION|SXF_SETTARGET
 			);if(!aaa)return;
 
