@@ -143,7 +143,6 @@ class hdladderbottom:hdactor{
 			if(
 				currentuser.pos.z>target.pos.z-16
 			){
-
 				//throw in some use of controls still
 				if(currentuser.player){
 					int bt=currentuser.player.cmd.buttons;
@@ -188,6 +187,7 @@ class hdladderbottom:hdactor{
 				}
 				return;
 			}
+			currentuser.vel.xy*=0.7;
 			currentuser.vel.z=0;
 
 			//climbing interface
@@ -205,9 +205,9 @@ class hdladderbottom:hdactor{
 					}
 				}else fm*=-1;
 
-				if(currentuser.countinv("PowerStrength"))fm*=3;
+				if(currentuser.countinv("PowerStrength"))fm*=1.8;
 				if(hdplayerpawn(currentuser)&&hdplayerpawn(currentuser).stunned)
-					fm*=0.3;
+					fm*=0.2;
 
 				//apply climbing
 				currentuserz+=fm;
@@ -245,7 +245,6 @@ class hdladderbottom:hdactor{
 			}
 			if(!currentuser)return;
 
-			currentuser.vel*=0.7;
 			currentuserz=clamp(currentuserz,
 				currentuser.floorz,
 				currentuser.ceilingz-currentuser.height
