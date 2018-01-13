@@ -121,17 +121,22 @@ class hdladderbottom:hdactor{
 		currentuser.A_Log("You climb the ladder.",true);
 		return true;
 	}
-	void disengageladder(){
+	void disengageladder(bool message=true){
 		if(!currentuser)return;
-		currentuser.A_Log("Ladder disengaged.",true);
+		if(playerpawn(currentuser))playerpawn(currentuser).viewbob=1.;
+		if(message)currentuser.A_Log("Ladder disengaged.",true);
 		currentuser=null;
+	}
+	override void ondestroy(){
+		if(playerpawn(currentuser))playerpawn(currentuser).viewbob=1.;
+		super.ondestroy();
 	}
 	override void tick(){
 		if(!target){destroy();return;}
 		setz(clamp(target.pos.z-LADDER_MAX,getzat(),target.pos.z+LADDER_MAX));
 
 		if(currentuser){
-			if(currentuser.health<1){currentuser=null;return;}
+			if(currentuser.health<1){disengageladder(false);return;}
 
 
 			//check if facing the ladder
@@ -214,6 +219,12 @@ class hdladderbottom:hdactor{
 
 				//apply climbing
 				currentuserz+=fm;
+				if(sm)currentuser.trymove(
+					currentuser.pos.xy+angletovector(currentuser.angle-90,sm),
+					true
+				);
+				if(fm||sm)playerpawn(currentuser).viewbob=1;
+					else playerpawn(currentuser).viewbob=0.;
 
 				//jump also disengages
 				//crouch+jump to remove the rope
@@ -239,12 +250,6 @@ class hdladderbottom:hdactor{
 						}else disengageladder();
 					}else if(!facing&&bt&BT_USE)disengageladder();
 				}
-
-				//should be able to move around a bit
-				if(sm)currentuser.trymove(
-					currentuser.pos.xy+angletovector(currentuser.angle-90,sm),
-					true
-				);
 			}
 			if(!currentuser)return;
 
