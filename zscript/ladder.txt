@@ -38,17 +38,25 @@ class hdladdertop:hdactor{
 	default{
 		+missile //testing
 		+flatsprite
-		height 1;radius 2;
+		height 1;radius 10;
+	}
+	states{
+	spawn:
+		BAL2 A -1;
+	}
+	override void tick(){
+		setz(floorz+4);
+		nexttic();
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		pitch=-14;
+		pitch=-24;
 		bmissile=false;master=target;
 		setz(floorz);
 		fcheckposition tm;
 		vector2 mvlast=pos.xy;
 		vector2 mv=angletovector(angle,2);
-		for(int i=0;i<10;i++){
+		for(int i=0;i<20;i++){
 			mvlast+=mv;
 			checkmove(mvlast,PCM_DROPOFF|PCM_NOACTORS,tm);
 
@@ -73,6 +81,9 @@ class hdladdertop:hdactor{
 				//now that we're at the bottom, move the ladder end
 				target.setz(tm.pos.z);
 
+				//reposition the thing
+				setorigin((target.pos.xy-mv*radius,floorz),true);
+
 				return;
 			}
 		}
@@ -87,14 +98,6 @@ class hdladdertop:hdactor{
 		}
 		destroy();
 	}
-	override void tick(){
-		setz(floorz+2);
-		nexttic();
-	}
-	states{
-	spawn:
-		BAL2 A -1;
-	}
 }
 enum ladderfigures{
 	LADDER_MAX=800,
@@ -103,7 +106,7 @@ enum ladderfigures{
 class hdladderbottom:hdactor{
 	default{
 		+nogravity
-		height 60.1;radius 10.1;
+		height 56;radius 10;
 	}
 	actor currentuser;
 	double currentuserz;
@@ -281,7 +284,7 @@ class HDLadder:HDPickup{
 		TNT1 A 0{
 			actor aaa;int bbb;
 			[bbb,aaa]=A_SpawnItemEx(
-				"HDLadderTop",14,0,32,
+				"HDLadderTop",4,0,32,
 				flags:SXF_NOCHECKPOSITION|SXF_SETTARGET
 			);if(!aaa)return;
 
