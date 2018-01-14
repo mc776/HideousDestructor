@@ -122,12 +122,12 @@ class HDBlurSphere:HDPickup{
 			if(hdp.regenblues>0){
 				hdp.regenblues=max(0,hdp.regenblues-15);
 				hdp.cheatgivestatusailments("fire",1);
-				if(!worn&&!random(0,35*level)){
+				if(!worn&&!random(0,40+level)){
 					hdp.A_TakeInventory("BlurTaint");
 				}
 			}
 			if(hdp.countinv("SpiritualArmour")){
-				hdp.cheatgivestatusailments("fire",countinv("SpiritualArmour")*4);
+				hdp.cheatgivestatusailments("fire",countinv("SpiritualArmour")*10);
 				hdp.A_TakeInventory("SpiritualArmour");
 			}
 		}
