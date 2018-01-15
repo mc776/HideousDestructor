@@ -31,7 +31,7 @@ class hdladdersection:idledummy{
 	}
 	states{
 	spawn:
-		ROCK A -1;
+		LADD B -1;
 	}
 }
 class hdladdertop:hdactor{
@@ -42,7 +42,7 @@ class hdladdertop:hdactor{
 	}
 	states{
 	spawn:
-		BAL2 A -1;
+		LADD A -1;
 	}
 	override void tick(){
 		setz(floorz+4);
@@ -50,7 +50,7 @@ class hdladdertop:hdactor{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		pitch=-24;
+		pitch=18;
 		bmissile=false;master=target;
 		setz(floorz);
 		fcheckposition tm;
@@ -69,17 +69,19 @@ class hdladdertop:hdactor{
 				target=spawn("hdladderbottom",tm.pos);
 				target.target=self;
 				target.master=master;
+				target.angle=angle;
+
+				vector2 mv2=mv*0.02;
 
 				//spawn the ladder sections
 				int sectionlength=min(htdiff,LADDER_MAX)/LADDER_SECTIONS;
-				for(int i=1;i<=LADDER_SECTIONS;i++){
-					tm.pos.z-=sectionlength;
-					actor sss=spawn("hdladdersection",tm.pos);
+				for(i=0;i<LADDER_SECTIONS;i++){
+					vector3 newpos=tm.pos+(mv2,-sectionlength)*i;
+					actor sss=spawn("hdladdersection",newpos);
 					sss.master=self;sss.target=target;sss.angle=angle;
+					sss.translation=master.translation;
+					target.setorigin(newpos,true);
 				}
-
-				//now that we're at the bottom, move the ladder end
-				target.setz(tm.pos.z);
 
 				//reposition the thing
 				setorigin((target.pos.xy-mv*radius,tm.pos.z),true);
@@ -100,17 +102,22 @@ class hdladdertop:hdactor{
 	}
 }
 enum ladderfigures{
-	LADDER_MAX=800,
-	LADDER_SECTIONS=LADDER_MAX/20,
+	LADDER_MAX=300,
+	LADDER_SECTIONS=LADDER_MAX/12,
 }
 class hdladderbottom:hdactor{
 	default{
-		+nogravity
+		+nogravity +wallsprite
 		height 56;radius 10;
 	}
 	actor currentuser;
 	double currentuserz;
 	override bool used(actor user){
+		double upz=user.pos.z;
+		if(
+			upz>target.pos.z+24
+			||upz+user.height*1.3<pos.z
+		)return false;
 		if(currentuser){
 			disengageladder();
 			return false;
@@ -133,7 +140,7 @@ class hdladderbottom:hdactor{
 	}
 	override void tick(){
 		if(!target){destroy();return;}
-		setz(clamp(target.pos.z-LADDER_MAX,getzat(),target.pos.z+LADDER_MAX));
+		setz(clamp(pos.z,max(target.pos.z-LADDER_MAX,getzat()),target.pos.z+LADDER_MAX));
 
 		if(currentuser){
 			if(currentuser.health<1){disengageladder(false);return;}
@@ -190,7 +197,7 @@ class hdladderbottom:hdactor{
 							tp.y-40,
 							tp.y+40
 						),
-						currentuser.pos.z
+						min(currentuser.pos.z,target.pos.z+24)
 					),true);
 				}
 				return;
@@ -254,7 +261,7 @@ class hdladderbottom:hdactor{
 			if(!currentuser)return;
 
 			currentuserz=clamp(currentuserz,
-				currentuser.floorz,
+				pos.z-currentuser.height*1.3,//currentuser.floorz,
 				currentuser.ceilingz-currentuser.height
 			);
 			currentuser.setorigin((
@@ -273,18 +280,18 @@ class hdladderbottom:hdactor{
 	}
 	states{
 	spawn:
-		BAL1 A -1;wait;
+		LADD B -1;wait;
 	}
 }
 class HDLadder:HDPickup{
 	default{
-		inventory.icon "PLAYA1";
+		inventory.icon "LADDA0";
 		inventory.pickupmessage "Picked up a ladder.";
 		height 24;radius 12;
 	}
 	states{
 	spawn:
-		BAL7 B -1;
+		LADD A -1;
 	use:
 		TNT1 A 0{
 			actor aaa;int bbb;
