@@ -43,6 +43,7 @@ class SoldierExtras:ActionItem{
 
 			A_SetInventory("HDFragGrenadeAmmo",max(3,countinv("HDFragGrenadeAmmo")));
 			A_SetInventory("DERPUsable",max(1,countinv("DERPUsable")));
+			A_SetInventory("PortableLadder",1);
 		}fail;
 	}
 }
@@ -281,6 +282,7 @@ extend class HDPlayerPawn{
 					A_GiveInventory("StoredArmour",HDCONST_BLACKARMOUR);
 					A_GiveInventory("BlackArmourStored");
 					break;
+				case 20: A_GiveInventory("PortableLadder",1);break;
 				case 99:
 					A_GiveInventory("SoldierExtras",amt);
 					return "HDPistol";

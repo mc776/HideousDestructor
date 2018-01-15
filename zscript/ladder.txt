@@ -96,9 +96,9 @@ class hdladdertop:hdactor{
 		//if there's no lower floor to drop the ladder, abort.
 		if(master){
 			master.A_Log("No point hanging a ladder here.",true);
-			master.A_GiveInventory("HDLadder");
+			master.A_GiveInventory("PortableLadder");
 		}else{
-			actor hdl=spawn("HDLadder",pos);
+			actor hdl=spawn("PortableLadder",pos);
 			hdl.A_PlaySound("misc/ladder");
 		}
 		destroy();
@@ -106,7 +106,7 @@ class hdladdertop:hdactor{
 }
 enum ladderfigures{
 	LADDER_MAX=800,
-	LADDER_SECTIONS=LADDER_MAX/10,
+	LADDER_SECTIONS=LADDER_MAX/12,
 }
 class hdladderbottom:hdactor{
 	default{
@@ -171,7 +171,7 @@ class hdladderbottom:hdactor{
 					){
 						disengageladder();
 						if(bt&BT_CROUCH&&bt&BT_JUMP){
-							actor hdl=spawn("HDLadder",target.pos);
+							actor hdl=spawn("PortableLadder",target.pos);
 							hdl.A_PlaySound("misc/ladder");
 							target.destroy();
 							if(self)destroy();
@@ -250,7 +250,7 @@ class hdladderbottom:hdactor{
 						if(bt&BT_CROUCH){
 							currentuser.A_Log("Ladder taken down.",true);
 
-							actor hdl=spawn("HDLadder",target.pos);
+							actor hdl=spawn("PortableLadder",target.pos);
 							hdl.A_PlaySound("misc/ladder");
 							hdl.vel.xy=vl.xy;
 							hdl.translation=translation;
@@ -265,7 +265,7 @@ class hdladderbottom:hdactor{
 			if(!currentuser)return;
 
 			currentuserz=clamp(currentuserz,
-				pos.z-currentuser.height*1.3,//currentuser.floorz,
+				max(currentuser.floorz,pos.z-currentuser.height*1.3),
 				currentuser.ceilingz-currentuser.height
 			);
 			currentuser.setorigin((
@@ -287,7 +287,7 @@ class hdladderbottom:hdactor{
 		LADD C -1;wait;
 	}
 }
-class HDLadder:HDPickup{
+class PortableLadder:HDPickup{
 	default{
 		inventory.icon "LADDD0";
 		inventory.pickupmessage "Picked up a ladder.";
