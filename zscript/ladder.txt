@@ -26,7 +26,7 @@ class hdladdersection:idledummy{
 			destroy();return;
 		}
 		double mpz=master.pos.z;
-		setz(mpz+(mpz-target.pos.z)*proportion-12);
+		setz(mpz+(mpz-target.pos.z)*proportion);
 		nexttic();
 	}
 	states{
@@ -70,13 +70,16 @@ class hdladdertop:hdactor{
 				target.target=self;
 				target.master=master;
 				target.angle=angle;
+				target.pitch=-27;
+				target.translation=master.translation;
 
 				vector2 mv2=mv*0.02;
+				vector3 newpos;
 
 				//spawn the ladder sections
 				int sectionlength=min(htdiff,LADDER_MAX)/LADDER_SECTIONS;
-				for(i=0;i<LADDER_SECTIONS;i++){
-					vector3 newpos=tm.pos+(mv2,-sectionlength)*i;
+				for(int i=1;i<LADDER_SECTIONS;i++){
+					newpos=tm.pos+(mv2,-sectionlength)*i;
 					actor sss=spawn("hdladdersection",newpos);
 					sss.master=self;sss.target=target;sss.angle=angle;
 					sss.translation=master.translation;
@@ -84,7 +87,7 @@ class hdladdertop:hdactor{
 				}
 
 				//reposition the thing
-				setorigin((target.pos.xy-mv*radius,tm.pos.z),true);
+				setorigin((target.pos.xy-mv*radius,floorz),true);
 
 				return;
 			}
@@ -103,11 +106,11 @@ class hdladdertop:hdactor{
 }
 enum ladderfigures{
 	LADDER_MAX=300,
-	LADDER_SECTIONS=LADDER_MAX/12,
+	LADDER_SECTIONS=LADDER_MAX/10,
 }
 class hdladderbottom:hdactor{
 	default{
-		+nogravity +wallsprite
+		+nogravity +flatsprite
 		height 56;radius 10;
 	}
 	actor currentuser;
@@ -280,18 +283,18 @@ class hdladderbottom:hdactor{
 	}
 	states{
 	spawn:
-		LADD B -1;wait;
+		LADD C -1;wait;
 	}
 }
 class HDLadder:HDPickup{
 	default{
-		inventory.icon "LADDA0";
+		inventory.icon "LADDD0";
 		inventory.pickupmessage "Picked up a ladder.";
 		height 24;radius 12;
 	}
 	states{
 	spawn:
-		LADD A -1;
+		LADD D -1;
 	use:
 		TNT1 A 0{
 			actor aaa;int bbb;
