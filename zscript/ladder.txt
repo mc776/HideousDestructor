@@ -77,8 +77,8 @@ class hdladdertop:hdactor{
 				vector3 newpos;
 
 				//spawn the ladder sections
-				int sectionlength=min(htdiff,LADDER_MAX)/LADDER_SECTIONS;
-				for(int i=1;i<LADDER_SECTIONS;i++){
+				double sectionlength=min(htdiff,LADDER_MAX)/LADDER_SECTIONS;
+				for(int i=1;i<=LADDER_SECTIONS;i++){
 					newpos=tm.pos+(mv2,-sectionlength)*i;
 					actor sss=spawn("hdladdersection",newpos);
 					sss.master=self;sss.target=target;sss.angle=angle;
@@ -104,10 +104,10 @@ class hdladdertop:hdactor{
 		destroy();
 	}
 }
-enum ladderfigures{
-	LADDER_MAX=800,
-	LADDER_SECTIONS=LADDER_MAX/12,
-}
+const LADDER_MAX=800.;
+const LADDER_SECTIONS=LADDER_MAX/12.;
+
+
 class hdladderbottom:hdactor{
 	default{
 		+nogravity +flatsprite
@@ -143,7 +143,12 @@ class hdladderbottom:hdactor{
 	}
 	override void tick(){
 		if(!target){destroy();return;}
-		setz(clamp(pos.z,max(target.pos.z-LADDER_MAX,getzat()),target.pos.z+LADDER_MAX));
+		setz(
+			clamp(pos.z,
+				max(target.pos.z-LADDER_MAX,floorz),
+				target.pos.z+LADDER_MAX
+			)
+		);
 
 		if(currentuser){
 			if(currentuser.health<1){disengageladder(false);return;}
