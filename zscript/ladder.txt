@@ -57,12 +57,16 @@ class hdladdertop:hdactor{
 		vector2 mvlast=pos.xy;
 		vector2 mv=angletovector(angle,2);
 		for(int i=0;i<20;i++){
+
 			mvlast+=mv;
 			checkmove(mvlast,PCM_DROPOFF|PCM_NOACTORS,tm);
 
 			//found a place for the ladder to hang down
 			int htdiff=clamp(floorz-tm.floorz,0,LADDER_MAX);
-			if(htdiff){
+			if(
+				htdiff
+				&&(master&&abs(master.pos.z+master.height-floorz)<master.height)
+			){
 				A_PlaySound("misc/ladder");
 
 				//spawn the ladder end
@@ -178,6 +182,7 @@ class hdladderbottom:hdactor{
 						if(bt&BT_CROUCH&&bt&BT_JUMP){
 							actor hdl=spawn("PortableLadder",target.pos);
 							hdl.A_PlaySound("misc/ladder");
+							hdl.translation=translation;
 							target.destroy();
 							if(self)destroy();
 						}
