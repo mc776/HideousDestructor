@@ -105,7 +105,7 @@ class hdladdertop:hdactor{
 	}
 }
 enum ladderfigures{
-	LADDER_MAX=300,
+	LADDER_MAX=800,
 	LADDER_SECTIONS=LADDER_MAX/10,
 }
 class hdladderbottom:hdactor{
@@ -253,6 +253,7 @@ class hdladderbottom:hdactor{
 							actor hdl=spawn("HDLadder",target.pos);
 							hdl.A_PlaySound("misc/ladder");
 							hdl.vel.xy=vl.xy;
+							hdl.translation=translation;
 
 							target.destroy();
 							if(self)destroy();
