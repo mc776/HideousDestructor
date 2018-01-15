@@ -65,7 +65,6 @@ class hdladdertop:hdactor{
 			int htdiff=clamp(floorz-tm.floorz,0,LADDER_MAX);
 			if(
 				htdiff
-				&&(master&&abs(master.pos.z+master.height-floorz)<master.height)
 			){
 				A_PlaySound("misc/ladder");
 
@@ -93,13 +92,18 @@ class hdladdertop:hdactor{
 				//reposition the thing
 				setorigin((target.pos.xy-mv*radius,floorz),true);
 
-				return;
+				//only complete if within throwable range, else abort
+				if(master&&pos.z-master.pos.z<108){
+					master.A_Log("You hang up a ladder.",true);
+					master.A_TakeInventory("PortableLadder");
+					return;
+				}
 			}
 		}
 
 		//if there's no lower floor to drop the ladder, abort.
 		if(master){
-			master.A_Log("No point hanging a ladder here.",true);
+			master.A_Log("Can't hang a ladder here.",true);
 			master.A_GiveInventory("PortableLadder");
 		}else{
 			actor hdl=spawn("PortableLadder",pos);
@@ -318,7 +322,7 @@ class PortableLadder:HDPickup{
 			if(aaa.floorz>pos.z+height){
 				aaa.angle+=180;
 			}
-		}stop;
+		}fail;
 	}
 }
 
