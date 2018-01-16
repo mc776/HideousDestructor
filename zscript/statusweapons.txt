@@ -391,21 +391,23 @@ extend class HDStatusBar{
 				hudfont pSmallFont=HUDFont.Create("SmallFont");
 				drawstring(psmallfont,string.format("%i:  %s",which,bp.itemname[which]),
 					(0,40),DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,
-					font.CR_SAPPHIRE
+					font.CR_OLIVE
 				);
 				int howmany=bp.itemamount[which];
 				drawstring(psmallfont,howmany<1?"none carried":
-					string.format("%i units for %i bulk",
+					string.format("%i unit%s for %i bulk",
 						howmany,
+						howmany==1?"":"s",
 						bp.itembulk[which]*bp.itemamount[which]
 					),
 					(0,50),DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,
-					font.CR_GRAY
+					font.CR_DARKBROWN
 				);
 				howmany=pp.countinv(bp.itemtype[which]);
 				drawstring(psmallfont,howmany<1?"none on person":
-					string.format("%i units on person",
-						howmany
+					string.format("%i unit%s on person",
+						howmany,
+						howmany==1?"":"s"
 					),
 					(0,70),DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,
 					font.CR_DARKGRAY
