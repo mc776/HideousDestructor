@@ -67,7 +67,6 @@ class HDBP:HDWeapon{
 			A_TakeInventory(itp,1);
 			A_SelectWeapon(invoker.getclassname());
 			invoker.itemamount[invoker.which]++;
-			A_Log(string.format("Put in %s",invoker.itemname[invoker.which]));
 		}goto ready;
 	unload:
 		TNT1 A 7{
@@ -79,15 +78,9 @@ class HDBP:HDWeapon{
 
 			A_GiveInventory(itp,1);
 			invoker.itemamount[invoker.which]--;
-			A_Log(string.format("Took out %s",invoker.itemname[invoker.which]));
 		}goto ready;
 	}
 	int which;
-	int pistolstatus[2][8];
-	int smgstatus[2][8];
-	int blooperstatus[2][8];
-	int brontostatus[2][8];
-	int lumberstatus[8];
 
 	string itemname[HDBPC_NUMITEMS];
 	class<inventory> itemtype[HDBPC_NUMITEMS];
@@ -125,14 +118,6 @@ class HDBP:HDWeapon{
 		i++;itemtype[i]="HDCellAmmo";itemname[i]="Stale battery";//itembulk[i]=;
 		i++;itemtype[i]="HDCellPackEmpty";itemname[i]="Depleted battery";//itembulk[i]=;
 		i++;itemtype[i]="HDFragGrenadeAmmo";itemname[i]="Hand grenade";//itembulk[i]=;
-
-/*
-		i++;itemtype[i]="Lumberjack";itemname[i]="Chainsaw";//itembulk[i]=;
-		i++;itemtype[i]="HDSecondPistol";itemname[i]="Pistol";//itembulk[i]=;
-		i++;itemtype[i]="HDSMG";itemname[i]="SMG";//itembulk[i]=;
-		i++;itemtype[i]="Blooper";itemname[i]="Blooper";//itembulk[i]=;
-		i++;itemtype[i]="Brontornis";itemname[i]="Brontornis";//itembulk[i]=;
-*/
 
 		i++;itemtype[i]="PortableMedikit";itemname[i]="Medikit";//itembulk[i]=;
 		i++;itemtype[i]="PortableBerserkPack";itemname[i]="Berserk pack";//itembulk[i]=;
