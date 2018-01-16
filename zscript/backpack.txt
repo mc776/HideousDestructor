@@ -20,11 +20,18 @@ class _HDBackpack:HDWeapon{
 	althold:
 		TNT1 A 8{
 			if(pressingaltfire())invoker.which++;else invoker.which--;
-			if(invoker.which>=HDBPC_NUMITEMS){  
-				invoker.which=0;
-			}else if(invoker.which<0)invoker.which=HDBPC_NUMITEMS-1;
+			if(
+				invoker.which<0
+			){
+				invoker.which=HDBPC_NUMITEMS-1;
+				while(!invoker.itemname[invoker.which])invoker.which--;
+			}else if(
+				invoker.which>=HDBPC_NUMITEMS
+				||!invoker.itemname[invoker.which]
+			)invoker.which=0;
 
-			invoker.selectedoutput=(string.format("carrying %i of %s for %i bulk",
+			invoker.selectedoutput=(string.format("[BP-%i] carrying %i of %s for %i bulk",
+				invoker.which,
 				invoker.itemamount[invoker.which],
 				invoker.itemname[invoker.which],
 				invoker.itembulk[invoker.which]*invoker.itemamount[invoker.which]
@@ -116,11 +123,13 @@ class _HDBackpack:HDWeapon{
 		i++;itemtype[i]="HDCellPackEmpty";itemname[i]="Depleted battery";//itembulk[i]=;
 		i++;itemtype[i]="HDFragGrenadeAmmo";itemname[i]="Hand grenade";//itembulk[i]=;
 
+/*
 		i++;itemtype[i]="Lumberjack";itemname[i]="Chainsaw";//itembulk[i]=;
 		i++;itemtype[i]="HDSecondPistol";itemname[i]="Pistol";//itembulk[i]=;
 		i++;itemtype[i]="HDSMG";itemname[i]="SMG";//itembulk[i]=;
 		i++;itemtype[i]="Blooper";itemname[i]="Blooper";//itembulk[i]=;
 		i++;itemtype[i]="Brontornis";itemname[i]="Brontornis";//itembulk[i]=;
+*/
 
 		i++;itemtype[i]="PortableMedikit";itemname[i]="Medikit";//itembulk[i]=;
 		i++;itemtype[i]="PortableBerserkPack";itemname[i]="Berserk pack";//itembulk[i]=;
