@@ -14,11 +14,19 @@ Everything here is sub-WIP, do not take seriously!
 
 class HDBP:HDWeapon{
 	states{
+	ready:
+		TNT1 A 1 A_WeaponReady(WRF_ALLOWUSER4|WRF_ALLOWZOOM|WRF_ALLOWRELOAD);
+		goto readyend;
 	fire:
 	hold:
 	altfire:
 	althold:
 		TNT1 A 8{
+			//better to hold rather than toggle
+			if(pressingfiremode())invoker.weaponstatus[0]|=HDBPF_NOAUTO;
+				else invoker.weaponstatus[0]&=~HDBPF_NOAUTO;
+
+			//move direction
 			if(pressingaltfire())invoker.which++;else invoker.which--;
 			if(
 				invoker.which<0
@@ -30,11 +38,6 @@ class HDBP:HDWeapon{
 				||!invoker.itemname[invoker.which]
 			)invoker.which=0;
 
-			invoker.selectedoutput=(string.format("%i units for %i bulk",
-				invoker.itemamount[invoker.which],
-				invoker.itembulk[invoker.which]*invoker.itemamount[invoker.which]
-			));
-
 			if(
 				invoker.weaponstatus[0]&HDBPF_NOAUTO||
 				invoker.itemamount[invoker.which]<1
@@ -42,11 +45,15 @@ class HDBP:HDWeapon{
 		}
 		TNT1 A 0{
 			if(invoker.weaponstatus[0]&HDBPF_NOAUTO){
-				A_ClearRefire();
-				setweaponstate("nope");
+				A_Refire("holdnoauto");
 			}else A_Refire();
 		}goto ready;
+	holdnoauto:
+		TNT1 A 1;
+		TNT1 A 0 A_Refire("holdnoauto");
+		goto ready;
 	firemode:
+		stop;
 		TNT1 A 0{
 			invoker.weaponstatus[0]^=HDBPF_NOAUTO;
 			if(invoker.weaponstatus[0]&HDBPF_NOAUTO)A_Log("Autoscroll off.",true);
@@ -76,7 +83,6 @@ class HDBP:HDWeapon{
 		}goto ready;
 	}
 	int which;
-	string selectedoutput;
 	int pistolstatus[2][8];
 	int smgstatus[2][8];
 	int blooperstatus[2][8];

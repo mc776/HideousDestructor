@@ -393,7 +393,10 @@ extend class HDStatusBar{
 					(0,0),DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,
 					font.CR_SAPPHIRE
 				);
-				drawstring(psmallfont,hdbp(w).selectedoutput,
+				drawstring(psmallfont,string.format("%i units for %i bulk",
+						bp.itemamount[which],
+						bp.itembulk[which]*bp.itemamount[which]
+					),
 					(0,20),DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,
 					font.CR_GRAY
 				);
