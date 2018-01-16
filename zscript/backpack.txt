@@ -1,0 +1,141 @@
+
+/*
+backpack as weapon (in doom system terms)
+with it out, anything you pick up goes into it
+Fire and altfire scroll through list of items
+Reload places more from your inventory into backpack
+Unload pulls it out and drops it
+
+how do we store weapon properties? (loaded ammo, full-auto capability, etc.)
+
+Everything here is sub-WIP, do not take seriously!
+*/
+
+
+class _HDBackpack:HDWeapon{
+	states{
+	fire:
+	hold:
+	altfire:
+	althold:
+		TNT1 A 8{
+			if(pressingaltfire())invoker.which++;else invoker.which--;
+			if(invoker.which>=HDBPC_NUMITEMS){  
+				invoker.which=0;
+			}else if(invoker.which<0)invoker.which=HDBPC_NUMITEMS-1;
+
+			invoker.selectedoutput=(string.format("carrying %i of %s for %i bulk",
+				invoker.itemamount[invoker.which],
+				invoker.itemname[invoker.which],
+				invoker.itembulk[invoker.which]*invoker.itemamount[invoker.which]
+			));
+			A_Log(invoker.selectedoutput,true);
+
+			if(
+				invoker.weaponstatus[0]&HDBPF_NOAUTO||
+				invoker.itemamount[invoker.which]<1
+			)A_SetTics(1);
+		}
+		TNT1 A 0{
+			if(invoker.weaponstatus[0]&HDBPF_NOAUTO){
+				A_ClearRefire();
+				setweaponstate("nope");
+			}else A_Refire();
+		}goto ready;
+	firemode:
+		TNT1 A 0{
+			invoker.weaponstatus[0]^=HDBPF_NOAUTO;
+			if(invoker.weaponstatus[0]&HDBPF_NOAUTO)A_Log("Autoscroll off.",true);
+				else A_Log("Autoscroll on.",true);
+		}goto nope;
+	reload:
+		TNT1 A 5{
+			class<inventory> itp=invoker.itemtype[invoker.which];
+			if(!countinv(itp))return;
+
+			A_TakeInventory(itp,1);
+			A_SelectWeapon(invoker.getclassname());
+			invoker.itemamount[invoker.which]++;
+			A_Log(string.format("Put in %s",invoker.itemname[invoker.which]));
+		}goto ready;
+	unload:
+		TNT1 A 7{
+			class<inventory> itp=invoker.itemtype[invoker.which];
+			if(
+				invoker.itemamount[invoker.which]<1
+				||A_JumpIfInventory(itp,0,"null")
+			)return;
+
+			A_GiveInventory(itp,1);
+			invoker.itemamount[invoker.which]--;
+			A_Log(string.format("Took out %s",invoker.itemname[invoker.which]));
+		}goto ready;
+	}
+	int which;
+	string selectedoutput;
+	int pistolstatus[2][8];
+	int smgstatus[2][8];
+	int blooperstatus[2][8];
+	int brontostatus[2][8];
+	int lumberstatus[8];
+
+	string itemname[HDBPC_NUMITEMS];
+	class<inventory> itemtype[HDBPC_NUMITEMS];
+	int itemamount[HDBPC_NUMITEMS];
+	int itembulk[HDBPC_NUMITEMS];
+
+	enum HDBackpackItems{
+		HDBPS_CARRIED=1,
+		HDBPS_INDEX=2,
+
+		HDBPF_NOAUTO=1,
+	
+		HDBPC_NUMITEMS=36, //should be the length of the array
+	}
+
+	override void beginplay(){
+		super.beginplay();
+
+		int i=0;
+		itemtype[i]="HDSMGMag";itemname[i]="SMG mag";//itembulk[i]=;
+		i++;itemtype[i]="HDPistolMag";itemname[i]="Pistol mag";//itembulk[i]=;
+		i++;itemtype[i]="HDPistolAmmo";itemname[i]="Misc. 9mm ammo";//itembulk[i]=;
+		i++;itemtype[i]="HDShellAmmo";itemname[i]="Shotgun shell";//itembulk[i]=;
+		i++;itemtype[i]="ZM66RifleMags";itemname[i]="4.26mm mag";//itembulk[i]=;
+		i++;itemtype[i]="FourMilAmmo";itemname[i]="Misc. 4.26mm ammo";//itembulk[i]=;
+		i++;itemtype[i]="LiberatorMag";itemname[i]="7.76mm mag";//itembulk[i]=;
+		i++;itemtype[i]="BossClip";itemname[i]="7.76mm clip";//itembulk[i]=;
+		i++;itemtype[i]="SevenMilAmmo";itemname[i]="Misc. 7.76mm ammo";//itembulk[i]=;
+		i++;itemtype[i]="SevenMilBrass";itemname[i]="7.76mm casing";//itembulk[i]=;
+		i++;itemtype[i]="HDRocketAmmo";itemname[i]="Rocket grenade";//itembulk[i]=;
+		i++;itemtype[i]="DudRocketAmmo";itemname[i]="Defused rocket grenade";//itembulk[i]=;
+		i++;itemtype[i]="HEATAmmo";itemname[i]="H.E.A.T. rocket";//itembulk[i]=;
+		i++;itemtype[i]="BrontornisRound";itemname[i]="Brontornis shell";//itembulk[i]=;
+		i++;itemtype[i]="HDCellPacks";itemname[i]="Fresh battery";//itembulk[i]=;
+		i++;itemtype[i]="HDCellAmmo";itemname[i]="Stale battery";//itembulk[i]=;
+		i++;itemtype[i]="HDCellPackEmpty";itemname[i]="Depleted battery";//itembulk[i]=;
+		i++;itemtype[i]="HDFragGrenadeAmmo";itemname[i]="Hand grenade";//itembulk[i]=;
+
+		i++;itemtype[i]="Lumberjack";itemname[i]="Chainsaw";//itembulk[i]=;
+		i++;itemtype[i]="HDSecondPistol";itemname[i]="Pistol";//itembulk[i]=;
+		i++;itemtype[i]="HDSMG";itemname[i]="SMG";//itembulk[i]=;
+		i++;itemtype[i]="Blooper";itemname[i]="Blooper";//itembulk[i]=;
+		i++;itemtype[i]="Brontornis";itemname[i]="Brontornis";//itembulk[i]=;
+
+		i++;itemtype[i]="PortableMedikit";itemname[i]="Medikit";//itembulk[i]=;
+		i++;itemtype[i]="PortableBerserkPack";itemname[i]="Berserk pack";//itembulk[i]=;
+		i++;itemtype[i]="PortableStimpack";itemname[i]="Stimpack";//itembulk[i]=;
+		i++;itemtype[i]="BluePotion";itemname[i]="Healing potion";//itembulk[i]=;
+
+		i++;itemtype[i]="GreenArmour";itemname[i]="Soft armour";//itembulk[i]=;
+		i++;itemtype[i]="PortableRadSuit";itemname[i]="Environment suit";//itembulk[i]=;
+		i++;itemtype[i]="PortableLiteAmp";itemname[i]="Light amplifiers";//itembulk[i]=;
+		i++;itemtype[i]="PortableLadder";itemname[i]="Ladder";//itembulk[i]=;
+		i++;itemtype[i]="DERPUsable";itemname[i]="D.E.R.P. robot";//itembulk[i]=;
+		i++;itemtype[i]="DERPDEAD";itemname[i]="Broken D.E.R.P. robot";//itembulk[i]=;
+		i++;itemtype[i]="HDIEDKit";itemname[i]="I.E.D. kit";//itembulk[i]=;
+		i++;itemtype[i]="SquadSummoner";itemname[i]="Summoning talisman";//itembulk[i]=;
+		i++;itemtype[i]="HDBlurSphere";itemname[i]="Blur sphere";//itembulk[i]=;
+	}
+}
+
