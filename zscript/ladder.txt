@@ -8,25 +8,19 @@ class hdladdersection:idledummy{
 	default{
 		+wallsprite
 	}
-	double proportion;
 	override void postbeginplay(){
 		super.postbeginplay();
 		//master is top, target is bottom
 		if(!master||!target){
 			destroy();return;
 		}
-		proportion=target.pos.z-master.pos.z;
-		if(!proportion){
-			destroy();return;
-		}
-		proportion=abs(master.pos.z-pos.z)/proportion;
+A_LogInt(health);
 	}
 	override void tick(){
 		if(!master||!target){
 			destroy();return;
 		}
-		double mpz=master.pos.z;
-		setz(mpz+(mpz-target.pos.z)*proportion);
+		setz(max(target.floorz,master.pos.z-LADDER_SECTIONLENGTH*health));
 		nexttic();
 	}
 	states{
@@ -77,25 +71,26 @@ class hdladdertop:hdactor{
 				target.translation=master.translation;
 
 				vector2 mv2=mv*0.02;
-				vector3 newpos;
+				vector3 newpos=tm.pos;
 
 				//spawn the ladder sections
 				double sectionlength=min(htdiff,LADDER_MAX)/LADDER_SECTIONS;
 				for(int i=1;i<=LADDER_SECTIONS;i++){
-					newpos=tm.pos+(mv2,-sectionlength)*i;
+					newpos.xy+=mv2;
 					actor sss=spawn("hdladdersection",newpos);
-					sss.master=self;sss.target=target;sss.angle=angle;
+					sss.master=self;sss.target=target;sss.angle=angle+frandom(-1.,1.);
 					sss.translation=master.translation;
-					target.setorigin(newpos,true);
+					sss.health=i;
+					target.setorigin(newpos+(0,0,-sectionlength*i),true);
 				}
 
 				//reposition the thing
-				setorigin((target.pos.xy-mv*radius,floorz),true);
+				setorigin((tm.pos.xy-mv*radius,floorz),true);
 
 				//only complete if within throwable range, else abort
 				if(master&&pos.z-master.pos.z<108){
 					master.A_Log("You hang up a ladder.",true);
-					master.A_TakeInventory("PortableLadder");
+					master.A_TakeInventory("PortableLadder",1);
 					return;
 				}
 			}
@@ -113,7 +108,8 @@ class hdladdertop:hdactor{
 	}
 }
 const LADDER_MAX=800.;
-const LADDER_SECTIONS=LADDER_MAX/12.;
+const LADDER_SECTIONLENGTH=12.;
+const LADDER_SECTIONS=LADDER_MAX/LADDER_SECTIONLENGTH;
 
 
 class hdladderbottom:hdactor{
@@ -126,7 +122,7 @@ class hdladderbottom:hdactor{
 	override bool used(actor user){
 		double upz=user.pos.z;
 		if(
-			upz>target.pos.z+24
+			upz>target.pos.z+24  
 			||upz+user.height*1.3<pos.z
 		)return false;
 		if(currentuser){
@@ -168,11 +164,11 @@ class hdladderbottom:hdactor{
 					angleto(currentuser,true),
 					currentuser.angle
 				)
-			)>100;
+			)>100;  
 
 			//checks when above ladder
 			if(
-				currentuser.pos.z>target.pos.z-16
+				currentuser.pos.z>target.pos.z-16  
 			){
 				//throw in some use of controls still
 				if(currentuser.player){
@@ -203,7 +199,7 @@ class hdladderbottom:hdactor{
 						);
 					}
 				}
-				if(target.distance2d(currentuser)>40){
+				if(target.distance2d(currentuser)>40){  
 					vector2 tp=pos.xy;
 					currentuser.setorigin((
 						clamp(currentuser.pos.x,
@@ -305,6 +301,7 @@ class PortableLadder:HDPickup{
 	default{
 		inventory.icon "LADDD0";
 		inventory.pickupmessage "Picked up a ladder.";
+		inventory.maxamount 3;
 		height 24;radius 12;
 	}
 	states{
@@ -319,7 +316,7 @@ class PortableLadder:HDPickup{
 			);if(!aaa)return;
 
 			//only face player if above player's height - otherwise why not just mantle?
-			if(aaa.floorz>pos.z+height){
+			if(aaa.floorz>pos.z+height){  
 				aaa.angle+=180;
 			}
 		}fail;
