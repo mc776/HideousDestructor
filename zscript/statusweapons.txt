@@ -384,6 +384,21 @@ extend class HDStatusBar{
 				DI_SCREEN_CENTER_BOTTOM|DI_ITEM_RIGHT
 			);
 		}
+		else if(w is "HDBP"){
+			let bp=hdbp(w);
+			if(bp){
+				int which=bp.which;
+				hudfont pSmallFont=HUDFont.Create("SmallFont");
+				drawstring(psmallfont,string.format("%i:  %s",which,bp.itemname[which]),
+					(0,0),DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,
+					font.CR_SAPPHIRE
+				);
+				drawstring(psmallfont,hdbp(w).selectedoutput,
+					(0,20),DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,
+					font.CR_GRAY
+				);
+			}
+		}
 	}
 	void drawwepdot(int posx,int posy,vector2 dotscale=(3.,3.)){
 		drawimage(

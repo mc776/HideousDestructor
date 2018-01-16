@@ -12,7 +12,7 @@ Everything here is sub-WIP, do not take seriously!
 */
 
 
-class _HDBackpack:HDWeapon{
+class HDBP:HDWeapon{
 	states{
 	fire:
 	hold:
@@ -30,13 +30,10 @@ class _HDBackpack:HDWeapon{
 				||!invoker.itemname[invoker.which]
 			)invoker.which=0;
 
-			invoker.selectedoutput=(string.format("[BP-%i] carrying %i of %s for %i bulk",
-				invoker.which,
+			invoker.selectedoutput=(string.format("%i units for %i bulk",
 				invoker.itemamount[invoker.which],
-				invoker.itemname[invoker.which],
 				invoker.itembulk[invoker.which]*invoker.itemamount[invoker.which]
 			));
-			A_Log(invoker.selectedoutput,true);
 
 			if(
 				invoker.weaponstatus[0]&HDBPF_NOAUTO||
