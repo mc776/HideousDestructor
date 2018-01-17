@@ -59,6 +59,7 @@ class HDBP:HDWeapon{
 		TNT1 A 5{
 			int which=invoker.weaponstatus[HDBPS_WHICH];
 			class<inventory> itp=invoker.itemtype[which];
+
 			if(
 				!countinv(itp)
 				||(
@@ -70,9 +71,14 @@ class HDBP:HDWeapon{
 
 			//where the magic happens
 			if(itp=="GreenArmourStored"){
+				if(invoker.itemamount[which]>0)return; //limit one
 				invoker.itemamount[which]=countinv("StoredArmour");
 				A_TakeInventory(itp);
 				A_TakeInventory("StoredArmour");
+			}else if(itp=="HDCellAmmo"){
+				int totake=min(countinv(itp),20);
+				invoker.itemamount[which]+=totake;
+				A_TakeInventory(itp,totake);
 			}else{
 				invoker.itemamount[which]++;
 				A_TakeInventory(itp,1);
@@ -109,6 +115,14 @@ class HDBP:HDWeapon{
 				A_GiveInventory(itp,1);
 				A_GiveInventory("StoredArmour",invoker.itemamount[which]);
 				invoker.itemamount[which]=0;
+			}else if(itp=="HDCellAmmo"){
+				int totake=min(
+					invoker.itemamount[which],
+					HDMath.MaxInv(self,itp)-countinv(itp),
+					20
+				);
+				invoker.itemamount[which]-=totake;
+				A_GiveInventory(itp,totake);
 			}else{
 				A_GiveInventory(itp,1);
 				invoker.itemamount[which]--;
@@ -123,7 +137,11 @@ class HDBP:HDWeapon{
 		for (int i=0;i<HDBPC_NUMITEMS;i++){
 			if(itemamount[i]>0){
 				if(itemtype[i]=="HDCellAmmo"){ //you can't have a piece of a cell
-					bulk+=max(itembulk[i-1],itembulk[i]*itemamount[i]);
+					int count=itemamount[i];
+					while(count>0){
+						count-=20;
+						bulk+=itembulk[i];
+					}
 				}else if(itemtype[i]=="GreenArmourStored"){ //always worth 1 suit
 					bulk+=itembulk[i];
 				}else bulk+=itembulk[i]*itemamount[i];
@@ -157,7 +175,7 @@ class HDBP:HDWeapon{
 		i++;itembulk[i]=170;itemtype[i]="HEATAmmo";itemname[i]="H.E.A.T. rocket";
 		i++;itembulk[i]=90;itemtype[i]="BrontornisRound";itemname[i]="Brontornis shell";
 		i++;itembulk[i]=80;itemtype[i]="HDCellPacks";itemname[i]="Fresh battery";
-		i++;itembulk[i]=4;itemtype[i]="HDCellAmmo";itemname[i]="Stale battery";
+		i++;itembulk[i]=80;itemtype[i]="HDCellAmmo";itemname[i]="Stale battery";
 		i++;itembulk[i]=80;itemtype[i]="HDCellPackEmpty";itemname[i]="Depleted battery";
 		i++;itembulk[i]=100;itemtype[i]="HDFragGrenadeAmmo";itemname[i]="Hand grenade";
 
