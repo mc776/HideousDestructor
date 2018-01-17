@@ -78,10 +78,11 @@ class Ring:HDWeapon replaces Fist{
 	action void A_CheckGender(statelabel st){
 		if(player){
 			int gnd=player.getgender();
-			if(!gnd)setweaponstate("male");
-			else if(gnd==1)setweaponstate("female");
+			if(!gnd)gnd=getspriteindex("PUNGA0");
+			else if(gnd==1)gnd=getspriteindex("PUNFA0");
+			else gnd=getspriteindex("TNT1A0");
+			player.findPSprite(PSP_WEAPON).sprite=gnd;
 		}
-		setweaponstate(st);
 	}
 	action void HDPunch(int dmg){
 		actor a;int b;
