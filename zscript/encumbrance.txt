@@ -45,140 +45,146 @@ const BLOX_FRAG=BLOX_ROCKET*1.2;
 extend class HDPlayerPawn{
 	double blox;
 	double CheckEncumbrance(){
-		if(!deathmatch && !hd_carrylimit && skill<5){
-			A_TakeInventory("Backpack");
-			return 0;
-		}
-
-		//scriptified weapons
 		blox=0;
-		for(inventory hdww=inv;hdww!=null;hdww=hdww.inv){
-			let hdw=hdweapon(hdww);
-			if(hdw){
-				int blx=0;
-				if(hdw is "Lumberjack"){
-					blx+=100;
-					if(hdw.weaponstatus[CSAWS_BATTERY]>=0)blx+=BLOX_BATTERY_LOADED;
-				}else if(hdw is "HDPistol"){
-					blx+=30+hdw.weaponstatus[PISS_MAG]*BLOX_9MAG_LOADED;
-				}else if(hdw is "HDSMG"){
-					int mg=hdw.weaponstatus[SMGS_MAG];
-					if(mg<0)blx+=120-BLOX_9MAG30_LOADED;
-					else blx+=120+mg*BLOX_9_LOADED;
-				}else if(hdw is "Hunter"){
-					int bluh=hdw.weaponstatus[HUNTS_TUBE];
-					if(bluh>4)bluh+=(bluh-4)*2;
-					bluh+=bluh+hdw.weaponstatus[HUNTS_SIDESADDLE];
-					blx+=125+bluh*BLOX_SHELLLOADED;
-				}else if(hdw is "Slayer"){
-					blx+=100+hdw.weaponstatus[SLAYS_SIDESADDLE]*BLOX_SHELLLOADED;
-				}else if(hdw is "ZM66AssaultRifle"){
-					if(!(hdw.weaponstatus[0]&ZM66F_NOLAUNCHER)){
-						blx+=125;
-						if(
-							hdw.weaponstatus[0]&ZM66F_GRENADELOADED
-						)blx+=BLOX_ROCKETLOADED;
-					}else blx+=100;
-					blx+=hdw.weaponstatus[ZM66S_MAG]*BLOX_426_LOADED;
-				}else if(hdw is "Vulcanette"){
-					blx+=225;
-					if(hdw.weaponstatus[VULCS_BATTERY]>=0)blx+=BLOX_BATTERY_LOADED;
-					let vvv=vulcanette(hdw);
-					for(int i=0;i<5;i++){
-						if(vvv.vulcmag[i]>=0)
-							blx+=BLOX_426MAG_LOADED*min(10,vvv.vulcmag[i]);
+
+		//backpack
+		let hdbp=HDBP(findinventory("HDBP"));
+		if(hdbp)blox+=max(100,(hdbp.weaponstatus[HDBPS_CARRIED]>>4));
+
+		if(
+			deathmatch||hd_carrylimit||skill>=5
+		){
+
+			//scriptified weapons
+			for(inventory hdww=inv;hdww!=null;hdww=hdww.inv){
+				let hdw=hdweapon(hdww);
+				if(hdw){
+					int blx=0;
+					if(hdw is "Lumberjack"){
+						blx+=100;
+						if(hdw.weaponstatus[CSAWS_BATTERY]>=0)blx+=BLOX_BATTERY_LOADED;
+					}else if(hdw is "HDPistol"){
+						blx+=30+hdw.weaponstatus[PISS_MAG]*BLOX_9MAG_LOADED;
+					}else if(hdw is "HDSMG"){
+						int mg=hdw.weaponstatus[SMGS_MAG];
+						if(mg<0)blx+=120-BLOX_9MAG30_LOADED;
+						else blx+=120+mg*BLOX_9_LOADED;
+					}else if(hdw is "Hunter"){
+						int bluh=hdw.weaponstatus[HUNTS_TUBE];
+						if(bluh>4)bluh+=(bluh-4)*2;
+						bluh+=bluh+hdw.weaponstatus[HUNTS_SIDESADDLE];
+						blx+=125+bluh*BLOX_SHELLLOADED;
+					}else if(hdw is "Slayer"){
+						blx+=100+hdw.weaponstatus[SLAYS_SIDESADDLE]*BLOX_SHELLLOADED;
+					}else if(hdw is "ZM66AssaultRifle"){
+						if(!(hdw.weaponstatus[0]&ZM66F_NOLAUNCHER)){
+							blx+=125;
+							if(
+								hdw.weaponstatus[0]&ZM66F_GRENADELOADED
+							)blx+=BLOX_ROCKETLOADED;
+						}else blx+=100;
+						blx+=hdw.weaponstatus[ZM66S_MAG]*BLOX_426_LOADED;
+					}else if(hdw is "Vulcanette"){
+						blx+=225;
+						if(hdw.weaponstatus[VULCS_BATTERY]>=0)blx+=BLOX_BATTERY_LOADED;
+						let vvv=vulcanette(hdw);
+						for(int i=0;i<5;i++){
+							if(vvv.vulcmag[i]>=0)
+								blx+=BLOX_426MAG_LOADED*min(10,vvv.vulcmag[i]);
+						}
+					}else if(hdw is "Blooper"){
+						blx+=75;
+						if(hdw.weaponstatus[0]&BLOPF_LOADED)blx+=BLOX_ROCKETLOADED;
+					}else if(hdw is "HDRL"){
+						blx+=175+hdw.weaponstatus[RLS_MAG]*BLOX_ROCKETLOADED;
+						int chmb=hdw.weaponstatus[RLS_CHAMBER];
+						if(chmb>1)blx+=BLOX_HEATROCKETLOADED;
+						else if(chmb==1)blx+=BLOX_ROCKETLOADED;
+					}else if(hdw is "LiberatorRifle"){
+						if(!(hdw.weaponstatus[0]&LIBF_NOLAUNCHER)){
+							blx+=150;
+							if(
+								hdw.weaponstatus[0]&LIBF_GRENADELOADED
+							)blx+=BLOX_ROCKETLOADED;
+						}else blx+=125;
+						blx+=hdw.weaponstatus[LIBS_MAG]*BLOX_776_LOADED;
+					}else if(hdw is "ThunderBuster"){
+						blx+=175;
+						if(hdw.weaponstatus[1]>=0)blx+=BLOX_BATTERY_LOADED;
+					}else if(hdw is "Brontornis"){
+						blx+=75+(
+							hdw.weaponstatus[BRONS_CHAMBER]>1?
+							BLOX_BRONTOSHELLLOADED:0
+						);
+					}else if(hdw is "BFG9k"){
+						if(hdw.weaponstatus[0]&BFGF_STRAPPED)blx+=200;
+						else blx+=240;
+						if(hdw.weaponstatus[BFGS_BATTERY]>=0)blx+=BLOX_BATTERY_LOADED;
+					}else if(hdw is "BossRifle"){
+						blx+=175+hdw.weaponstatus[BOSSS_MAG]*BLOX_776_LOADED;
 					}
-				}else if(hdw is "Blooper"){
-					blx+=75;
-					if(hdw.weaponstatus[0]&BLOPF_LOADED)blx+=BLOX_ROCKETLOADED;
-				}else if(hdw is "HDRL"){
-					blx+=175+hdw.weaponstatus[RLS_MAG]*BLOX_ROCKETLOADED;
-					int chmb=hdw.weaponstatus[RLS_CHAMBER];
-					if(chmb>1)blx+=BLOX_HEATROCKETLOADED;
-					else if(chmb==1)blx+=BLOX_ROCKETLOADED;
-				}else if(hdw is "LiberatorRifle"){
-					if(!(hdw.weaponstatus[0]&LIBF_NOLAUNCHER)){
-						blx+=150;
-						if(
-							hdw.weaponstatus[0]&LIBF_GRENADELOADED
-						)blx+=BLOX_ROCKETLOADED;
-					}else blx+=125;
-					blx+=hdw.weaponstatus[LIBS_MAG]*BLOX_776_LOADED;
-				}else if(hdw is "ThunderBuster"){
-					blx+=175;
-					if(hdw.weaponstatus[1]>=0)blx+=BLOX_BATTERY_LOADED;
-				}else if(hdw is "Brontornis"){
-					blx+=75+(
-						hdw.weaponstatus[BRONS_CHAMBER]>1?
-						BLOX_BRONTOSHELLLOADED:0
-					);
-				}else if(hdw is "BFG9k"){
-					if(hdw.weaponstatus[0]&BFGF_STRAPPED)blx+=200;
-					else blx+=240;
-					if(hdw.weaponstatus[BFGS_BATTERY]>=0)blx+=BLOX_BATTERY_LOADED;
-				}else if(hdw is "BossRifle"){
-					blx+=175+hdw.weaponstatus[BOSSS_MAG]*BLOX_776_LOADED;
+					if(
+						hdw==lastweapon||
+						hdw==player.readyweapon
+					)blox+=blx*0.6;
+					else blox+=blx;
 				}
-				if(
-					hdw==lastweapon||
-					hdw==player.readyweapon
-				)blox+=blx*0.6;
-				else blox+=blx;
 			}
+	
+			//because herps are special
+			let herp=HERPUsable(findinventory("HERPUsable"));
+			if(herp)blox+=125+herp.ammo<0?0:BLOX_426MAG*0.4;
+			else blox+=countinv("HERPDEAD")*125;
+	
+			//let's make the derp special too
+			if(countinv("DERPUsable")||countinv("DERPDEAD"))
+				blox+=45+countinv("DERPAmmo")*BLOX_9MAG_LOADED;
+	
+	
+			//and now for stuff that should just be listed
+			blox+=
+	
+			//second pistol
+			(countinv("HDSecondPistol")?30+HDSecondPistol(findinventory("HDSecondPistol")).weaponstatus[PISS_MAG]*BLOX_9MAG_LOADED:0)
+	
+			//armour
+			+countinv("PortableRadsuit")*50
+			+countinv("GreenArmourStored")*60
+			+countinv("BlueArmourStored")*80
+			+countinv("BlackArmourStored")*100
+	
+			//usables
+			+countinv("HDIEDKit")*3
+			+(countinv("PortableStimpack")+countinv("PortableBerserkPack"))*5
+			+countinv("SquadSummoner")*7
+			+countinv("BluePotion")*10
+			+countinv("PortableLiteAmp")*20
+			+countinv("PortableMedikit")*45
+			+countinv("PortableLadder")*70
+	
+			//loose/magged ambiguous ammo
+			+countinv("HDPistolAmmo")*BLOX_9
+			+countinv("SevenMilAmmo")*BLOX_776
+			+countinv("FourMilAmmo")*BLOX_426
+			+countinv("HDCellAmmo")*BLOX_BATTERY*0.3
+	
+			//single loose ammo
+			+countinv("HDShellAmmo")*BLOX_SHELL
+			+countinv("BrontornisRound")*BLOX_BRONTOSHELL
+			+countinv("HDFragGrenadeAmmo")*BLOX_FRAG
+			+(countinv("HDRocketAmmo")+countinv("DudRocketAmmo"))*BLOX_ROCKET
+			+countinv("HEATAmmo")*BLOX_HEATROCKET
+	
+			//full mags
+			+countinv("HDPistolMag")*BLOX_9MAG
+			+countinv("BossClip")*BLOX_776CLIP
+			+countinv("ZM66RifleMags")*BLOX_426MAG
+			+(countinv("HDCellPacks")+countinv("HDCellPackEmpty"))*BLOX_BATTERY
+			+countinv("HDSMGMag")*BLOX_9MAG30
+			+countinv("LiberatorMag")*BLOX_776MAG
+			;
+	
 		}
-
-		//because herps are special
-		let herp=HERPUsable(findinventory("HERPUsable"));
-		if(herp)blox+=125+herp.ammo<0?0:BLOX_426MAG*0.4;
-		else blox+=countinv("HERPDEAD")*125;
-
-		//let's make the derp special too
-		if(countinv("DERPUsable")||countinv("DERPDEAD"))
-			blox+=45+countinv("DERPAmmo")*BLOX_9MAG_LOADED;
-
-
-		//and now for stuff that should just be listed
-		blox+=
-
-		//second pistol
-		(countinv("HDSecondPistol")?30+HDSecondPistol(findinventory("HDSecondPistol")).weaponstatus[PISS_MAG]*BLOX_9MAG_LOADED:0)
-
-		//armour
-		+countinv("PortableRadsuit")*50
-		+countinv("GreenArmourStored")*60
-		+countinv("BlueArmourStored")*80
-		+countinv("BlackArmourStored")*100
-
-		//usables
-		+countinv("HDIEDKit")*3
-		+(countinv("PortableStimpack")+countinv("PortableBerserkPack"))*5
-		+countinv("SquadSummoner")*7
-		+countinv("BluePotion")*10
-		+countinv("PortableLiteAmp")*20
-		+countinv("PortableMedikit")*45
-		+countinv("PortableLadder")*70
-
-		//loose/magged ambiguous ammo
-		+countinv("HDPistolAmmo")*BLOX_9
-		+countinv("SevenMilAmmo")*BLOX_776
-		+countinv("FourMilAmmo")*BLOX_426
-		+countinv("HDCellAmmo")*BLOX_BATTERY*0.3
-
-		//single loose ammo
-		+countinv("HDShellAmmo")*BLOX_SHELL
-		+countinv("BrontornisRound")*BLOX_BRONTOSHELL
-		+countinv("HDFragGrenadeAmmo")*BLOX_FRAG
-		+(countinv("HDRocketAmmo")+countinv("DudRocketAmmo"))*BLOX_ROCKET
-		+countinv("HEATAmmo")*BLOX_HEATROCKET
-
-		//full mags
-		+countinv("HDPistolMag")*BLOX_9MAG
-		+countinv("BossClip")*BLOX_776CLIP
-		+countinv("ZM66RifleMags")*BLOX_426MAG
-		+(countinv("HDCellPacks")+countinv("HDCellPackEmpty"))*BLOX_BATTERY
-		+countinv("HDSMGMag")*BLOX_9MAG30
-		+countinv("LiberatorMag")*BLOX_776MAG
-		;
 
 		A_SetInventory("Backpack",countinv("HDBackpack"));
 		double carrymax=
