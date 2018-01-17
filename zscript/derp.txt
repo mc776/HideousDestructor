@@ -258,7 +258,6 @@ class DERPUsable:HDPickup{
 		}stop;
 	use:
 		TNT1 A 0 A_JumpIfInventory("HDPistolMag",1,"reallyuse");
-		TNT1 A 0 A_JumpIfInventory("HDSMGMag",1,"reallyuse");
 		TNT1 A 0 A_Print("\cd[DERP]\cj  Please insert a loaded 9mm magazine before deploying.");
 		fail;
 	reallyuse:
@@ -266,8 +265,7 @@ class DERPUsable:HDPickup{
 			actor a;int b;
 			[b,a]=A_SpawnItemEx("DERPBot",12,0,height-12, vel.x+cos(angle)*cos(pitch)*6,vel.y+sin(angle)*cos(pitch)*6,vel.z-sin(pitch)*6, 0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_ABSOLUTEMOMENTUM|SXF_SETMASTER|SXF_TRANSFERTRANSLATION|SXF_SETTARGET);
 			a.A_GiveInventory("DERPAmmo",15);
-			if(countinv("HDPistolMag"))A_TakeInventory("HDPistolMag",1,TIF_NOTAKEINFINITE);
-			else if(countinv("HDSMGMag"))A_TakeInventory("HDSMGMag",1,TIF_NOTAKEINFINITE);
+			A_TakeInventory("HDPistolMag",1,TIF_NOTAKEINFINITE);
 		}stop;
 	spawn:
 		DERP A -1;
