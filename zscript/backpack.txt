@@ -5,7 +5,7 @@ class HDBP:HDWeapon{
 	default{
 		+inventory.invbar
 		inventory.icon "BPAKA0";
-		inventory.pickupmessage "Picked up a backpack inexplicably filled with ammo!";
+		inventory.pickupmessage "Picked up a backpack to help fill your life with ammo!";
 		inventory.pickupsound "weapons/pocket";
 	}
 	states{
@@ -159,6 +159,7 @@ class HDBP:HDWeapon{
 	int itembulk[HDBPC_NUMITEMS];
 
 	override void initializewepstats(bool idfa=false){
+		if(!idfa)return;
 		for(int i=0;i<HDBPC_NUMITEMS;i++){
 			itemamount[i]=max(
 				1,
