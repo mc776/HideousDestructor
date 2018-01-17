@@ -397,7 +397,6 @@ extend class HDStatusBar{
 					bool onperson=pp.countinv(bp.itemtype[i]);
 					bool inpack=bp.itemamount[i];
 					drawstring(psmallfont,
-//						string.format("%i:  %s",i,bp.itemname[i]),
 						bp.itemname[i],
 						(column,10+row),
 						DI_SCREEN_TOP|DI_SCREEN_LEFT|DI_TEXT_ALIGN_LEFT,
@@ -414,12 +413,41 @@ extend class HDStatusBar{
 				}
 			}
 
+			//total status
 			int bulk=bp.weaponstatus[HDBPS_CARRIED];
+			row+=26;
 			drawstring(psmallfont,string.format("Total Bulk:  %i",bulk),
-				(column,10+row+16),
+				(column,row),
 				DI_SCREEN_TOP|DI_SCREEN_LEFT|DI_TEXT_ALIGN_LEFT,
 				bulk>=HDBPC_CAPACITY*0.7?font.CR_RED:font.CR_GOLD
 			);
+
+			//explanation
+			if(cvar.getcvar("hd_helptext",cplayer).getbool()){
+				row+=20;
+				drawstring(psmallfont,"Backpack Instructions:",
+					(column,row),
+					DI_SCREEN_TOP|DI_SCREEN_LEFT|DI_TEXT_ALIGN_LEFT,
+					font.CR_BROWN,alpha:0.5
+				);
+				row+=9;
+				column+=10;
+				drawstring(psmallfont,"Fire/Altfire: Select",
+					(column,row),
+					DI_SCREEN_TOP|DI_SCREEN_LEFT|DI_TEXT_ALIGN_LEFT,
+					font.CR_OLIVE,alpha:0.5
+				);
+				drawstring(psmallfont,"(hold Fire Mode to slow)",
+					(column+8,row+8),
+					DI_SCREEN_TOP|DI_SCREEN_LEFT|DI_TEXT_ALIGN_LEFT,
+					font.CR_DARKGRAY,alpha:0.5
+				);
+				drawstring(psmallfont,"Reload/Unload: Put/Take",
+					(column,row+16),
+					DI_SCREEN_TOP|DI_SCREEN_LEFT|DI_TEXT_ALIGN_LEFT,
+					font.CR_OLIVE,alpha:0.5
+				);
+			}
 
 			//currently selected item
 			drawstring(psmallfont,string.format("%i:  %s",which,bp.itemname[which]),
