@@ -44,13 +44,12 @@ class HDBP:HDWeapon{
 			)invoker.weaponstatus[HDBPS_WHICH]=0;
 
 			if(
-				invoker.weaponstatus[0]&HDBPF_NOAUTO||
 				invoker.itemamount[invoker.weaponstatus[HDBPS_WHICH]]<1
 			){
 				int which=invoker.weaponstatus[HDBPS_WHICH];
 				if(
 					which&&!countinv(invoker.itemtype[which])
-				)A_SetTics(0);
+				)A_Refire();
 				else A_SetTics(1);
 			}
 		}
