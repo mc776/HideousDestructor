@@ -27,20 +27,23 @@ class HDBP:HDWeapon{
 				else invoker.weaponstatus[0]&=~HDBPF_NOAUTO;
 
 			//move direction
-			if(pressingaltfire())invoker.which++;else invoker.which--;
+			if(pressingaltfire())
+				invoker.weaponstatus[HDBPS_WHICH]--;
+				else invoker.weaponstatus[HDBPS_WHICH]++;
 			if(
-				invoker.which<0
+				invoker.weaponstatus[HDBPS_WHICH]<0
 			){
-				invoker.which=HDBPC_NUMITEMS-1;
-				while(!invoker.itemname[invoker.which])invoker.which--;
+				invoker.weaponstatus[HDBPS_WHICH]=HDBPC_NUMITEMS-1;
+				while(!invoker.itemname[invoker.weaponstatus[HDBPS_WHICH]])
+					invoker.weaponstatus[HDBPS_WHICH]--;
 			}else if(
-				invoker.which>=HDBPC_NUMITEMS
-				||!invoker.itemname[invoker.which]
-			)invoker.which=0;
+				invoker.weaponstatus[HDBPS_WHICH]>=HDBPC_NUMITEMS
+				||!invoker.itemname[invoker.weaponstatus[HDBPS_WHICH]]
+			)invoker.weaponstatus[HDBPS_WHICH]=0;
 
 			if(
 				invoker.weaponstatus[0]&HDBPF_NOAUTO||
-				invoker.itemamount[invoker.which]<1
+				invoker.itemamount[invoker.weaponstatus[HDBPS_WHICH]]<1
 			)A_SetTics(1);
 		}
 		TNT1 A 0{
@@ -52,87 +55,133 @@ class HDBP:HDWeapon{
 		TNT1 A 1;
 		TNT1 A 0 A_Refire("holdnoauto");
 		goto ready;
-	firemode:
-		stop;
-		TNT1 A 0{
-			invoker.weaponstatus[0]^=HDBPF_NOAUTO;
-			if(invoker.weaponstatus[0]&HDBPF_NOAUTO)A_Log("Autoscroll off.",true);
-				else A_Log("Autoscroll on.",true);
-		}goto nope;
 	reload:
 		TNT1 A 5{
-			class<inventory> itp=invoker.itemtype[invoker.which];
-			if(!countinv(itp))return;
+			int which=invoker.weaponstatus[HDBPS_WHICH];
+			class<inventory> itp=invoker.itemtype[which];
+			if(
+				!countinv(itp)
+				||(
+					HDBPC_CAPACITY-invoker.itembulk[which]
+					<invoker.weaponstatus[HDBPS_CARRIED]
+				)
+			)return;
 
-			A_TakeInventory(itp,1);
-			A_SelectWeapon(invoker.getclassname());
-			invoker.itemamount[invoker.which]++;
+
+			//where the magic happens
+			if(itp=="GreenArmourStored"){
+				invoker.itemamount[which]=countinv("StoredArmour");
+				A_TakeInventory(itp);
+				A_TakeInventory("StoredArmour");
+			}else{
+				invoker.itemamount[which]++;
+				A_TakeInventory(itp,1);
+			}
+
+
+			if(
+				invoker.itemamount[which]>20
+				||invoker.itembulk[which]>40
+			)A_SetTics(4);
+
+			invoker.getbulk();
 		}goto ready;
 	unload:
 		TNT1 A 7{
-			class<inventory> itp=invoker.itemtype[invoker.which];
+			int which=invoker.weaponstatus[HDBPS_WHICH];
+			class<inventory> itp=invoker.itemtype[which];
 			if(
-				invoker.itemamount[invoker.which]<1
+				invoker.itemamount[which]<1
 				||A_JumpIfInventory(itp,0,"null")
 			)return;
 
-			A_GiveInventory(itp,1);
-			invoker.itemamount[invoker.which]--;
+			if(
+				invoker.itemamount[which]>20
+				||invoker.itembulk[which]>40
+			)A_SetTics(5);
+			else if(invoker.itembulk[which]<20){ //reaching
+				A_SetTics(10);
+				A_PlaySound("weapons/pocket",CHAN_WEAPON);
+			}
+
+			//where the magic happens
+			if(itp=="GreenArmourStored"){
+				A_GiveInventory(itp,1);
+				A_GiveInventory("StoredArmour",invoker.itemamount[which]);
+				invoker.itemamount[which]=0;
+			}else{
+				A_GiveInventory(itp,1);
+				invoker.itemamount[which]--;
+			}
+
+			invoker.getbulk();
 		}goto ready;
 	}
-	int which;
+
+	int getbulk(){
+		int bulk=0;
+		for (int i=0;i<HDBPC_NUMITEMS;i++){
+			if(itemamount[i]>0){
+				if(itemtype[i]=="HDCellAmmo"){ //you can't have a piece of a cell
+					bulk+=max(itembulk[i-1],itembulk[i]*itemamount[i]);
+				}else if(itemtype[i]=="GreenArmourStored"){ //always worth 1 suit
+					bulk+=itembulk[i];
+				}else bulk+=itembulk[i]*itemamount[i];
+			}
+		}
+		weaponstatus[HDBPS_CARRIED]=bulk;
+		return bulk;
+	}
 
 	string itemname[HDBPC_NUMITEMS];
 	class<inventory> itemtype[HDBPC_NUMITEMS];
 	int itemamount[HDBPC_NUMITEMS];
 	int itembulk[HDBPC_NUMITEMS];
 
-	enum HDBackpackItems{
-		HDBPS_CARRIED=1,
-		HDBPS_INDEX=2,
-
-		HDBPF_NOAUTO=1,
-	
-		HDBPC_NUMITEMS=36, //should be the length of the array
-	}
-
 	override void beginplay(){
 		super.beginplay();
 
 		int i=0;
-		itemtype[i]="HDSMGMag";itemname[i]="SMG mag";//itembulk[i]=;
-		i++;itemtype[i]="HDPistolMag";itemname[i]="Pistol mag";//itembulk[i]=;
-		i++;itemtype[i]="HDPistolAmmo";itemname[i]="Misc. 9mm ammo";//itembulk[i]=;
-		i++;itemtype[i]="HDShellAmmo";itemname[i]="Shotgun shell";//itembulk[i]=;
-		i++;itemtype[i]="ZM66RifleMags";itemname[i]="4.26mm mag";//itembulk[i]=;
-		i++;itemtype[i]="FourMilAmmo";itemname[i]="Misc. 4.26mm ammo";//itembulk[i]=;
-		i++;itemtype[i]="LiberatorMag";itemname[i]="7.76mm mag";//itembulk[i]=;
-		i++;itemtype[i]="BossClip";itemname[i]="7.76mm clip";//itembulk[i]=;
-		i++;itemtype[i]="SevenMilAmmo";itemname[i]="Misc. 7.76mm ammo";//itembulk[i]=;
-		i++;itemtype[i]="SevenMilBrass";itemname[i]="7.76mm casing";//itembulk[i]=;
-		i++;itemtype[i]="HDRocketAmmo";itemname[i]="Rocket grenade";//itembulk[i]=;
-		i++;itemtype[i]="DudRocketAmmo";itemname[i]="Defused rocket grenade";//itembulk[i]=;
-		i++;itemtype[i]="HEATAmmo";itemname[i]="H.E.A.T. rocket";//itembulk[i]=;
-		i++;itemtype[i]="BrontornisRound";itemname[i]="Brontornis shell";//itembulk[i]=;
-		i++;itemtype[i]="HDCellPacks";itemname[i]="Fresh battery";//itembulk[i]=;
-		i++;itemtype[i]="HDCellAmmo";itemname[i]="Stale battery";//itembulk[i]=;
-		i++;itemtype[i]="HDCellPackEmpty";itemname[i]="Depleted battery";//itembulk[i]=;
-		i++;itemtype[i]="HDFragGrenadeAmmo";itemname[i]="Hand grenade";//itembulk[i]=;
+		itembulk[i]=70;itemtype[i]="HDSMGMag";itemname[i]="SMG mag";
+		i++;itembulk[i]=30;itemtype[i]="HDPistolMag";itemname[i]="Pistol mag";
+		i++;itembulk[i]=2;itemtype[i]="HDPistolAmmo";itemname[i]="Misc. 9mm ammo";
+		i++;itembulk[i]=5;itemtype[i]="HDShellAmmo";itemname[i]="Shotgun shell";
+		i++;itembulk[i]=40;itemtype[i]="ZM66RifleMags";itemname[i]="4.26mm mag";
+		i++;itembulk[i]=1;itemtype[i]="FourMilAmmo";itemname[i]="Misc. 4.26mm ammo";
+		i++;itembulk[i]=90;itemtype[i]="LiberatorMag";itemname[i]="7.76mm mag";
+		i++;itembulk[i]=36;itemtype[i]="BossClip";itemname[i]="7.76mm clip";
+		i++;itembulk[i]=4;itemtype[i]="SevenMilAmmo";itemname[i]="Misc. 7.76mm ammo";
+		i++;itembulk[i]=3;itemtype[i]="SevenMilBrass";itemname[i]="7.76mm casing";
+		i++;itembulk[i]=100;itemtype[i]="HDRocketAmmo";itemname[i]="Rocket grenade";
+		i++;itembulk[i]=100;itemtype[i]="DudRocketAmmo";itemname[i]="Defused rocket";
+		i++;itembulk[i]=170;itemtype[i]="HEATAmmo";itemname[i]="H.E.A.T. rocket";
+		i++;itembulk[i]=90;itemtype[i]="BrontornisRound";itemname[i]="Brontornis shell";
+		i++;itembulk[i]=80;itemtype[i]="HDCellPacks";itemname[i]="Fresh battery";
+		i++;itembulk[i]=4;itemtype[i]="HDCellAmmo";itemname[i]="Stale battery";
+		i++;itembulk[i]=80;itemtype[i]="HDCellPackEmpty";itemname[i]="Depleted battery";
+		i++;itembulk[i]=100;itemtype[i]="HDFragGrenadeAmmo";itemname[i]="Hand grenade";
 
-		i++;itemtype[i]="PortableMedikit";itemname[i]="Medikit";//itembulk[i]=;
-		i++;itemtype[i]="PortableBerserkPack";itemname[i]="Berserk pack";//itembulk[i]=;
-		i++;itemtype[i]="PortableStimpack";itemname[i]="Stimpack";//itembulk[i]=;
-		i++;itemtype[i]="BluePotion";itemname[i]="Healing potion";//itembulk[i]=;
+		i++;itembulk[i]=100;itemtype[i]="PortableMedikit";itemname[i]="Medikit";
+		i++;itembulk[i]=90;itemtype[i]="PortableBerserkPack";itemname[i]="Berserk pack";
+		i++;itembulk[i]=70;itemtype[i]="PortableStimpack";itemname[i]="Stimpack";
+		i++;itembulk[i]=80;itemtype[i]="BluePotion";itemname[i]="Healing potion";
 
-		i++;itemtype[i]="GreenArmour";itemname[i]="Soft armour";//itembulk[i]=;
-		i++;itemtype[i]="PortableRadSuit";itemname[i]="Environment suit";//itembulk[i]=;
-		i++;itemtype[i]="PortableLiteAmp";itemname[i]="Light amplifiers";//itembulk[i]=;
-		i++;itemtype[i]="PortableLadder";itemname[i]="Ladder";//itembulk[i]=;
-		i++;itemtype[i]="DERPUsable";itemname[i]="D.E.R.P. robot";//itembulk[i]=;
-		i++;itemtype[i]="DERPDEAD";itemname[i]="Broken D.E.R.P. robot";//itembulk[i]=;
-		i++;itemtype[i]="HDIEDKit";itemname[i]="I.E.D. kit";//itembulk[i]=;
-		i++;itemtype[i]="SquadSummoner";itemname[i]="Summoning talisman";//itembulk[i]=;
-		i++;itemtype[i]="HDBlurSphere";itemname[i]="Blur sphere";//itembulk[i]=;
+		i++;itembulk[i]=600;itemtype[i]="GreenArmourStored";itemname[i]="Soft armour";
+		i++;itembulk[i]=400;itemtype[i]="PortableRadSuit";itemname[i]="Environment suit";
+		i++;itembulk[i]=150;itemtype[i]="PortableLiteAmp";itemname[i]="Light amplifiers";
+		i++;itembulk[i]=320;itemtype[i]="PortableLadder";itemname[i]="Ladder";
+		i++;itembulk[i]=160;itemtype[i]="DERPUsable";itemname[i]="D.E.R.P. robot";
+		i++;itembulk[i]=150;itemtype[i]="DERPDEAD";itemname[i]="Broken D.E.R.P. robot";
+		i++;itembulk[i]=7;itemtype[i]="HDIEDKit";itemname[i]="I.E.D. kit";
+		i++;itembulk[i]=100;itemtype[i]="SquadSummoner";itemname[i]="Summoning talisman";
 	}
 }
+enum HDBackpackItems{
+	HDBPS_CARRIED=1,
+	HDBPS_WHICH=2,
 
+	HDBPF_NOAUTO=1,
+
+	HDBPC_CAPACITY=3000,
+	HDBPC_NUMITEMS=36, //should be the length of the array
+}
