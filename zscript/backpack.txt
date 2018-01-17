@@ -1,22 +1,11 @@
-
-/*
-backpack as weapon (in doom system terms)
-with it out, anything you pick up goes into it
-Fire and altfire scroll through list of items
-Reload places more from your inventory into backpack
-Unload pulls it out and drops it
-
-how do we store weapon properties? (loaded ammo, full-auto capability, etc.)
-
-Everything here is sub-WIP, do not take seriously!
-*/
-
-
+// ------------------------------------------------------------
+// Backpack
+// ------------------------------------------------------------
 class HDBP:HDWeapon{
 	default{
 		+inventory.invbar
 		inventory.icon "BPAKA0";
-		inventory.pickupmessage "Picked up a backpack to fill with ammo!";
+		inventory.pickupmessage "Picked up a backpack inexplicably filled with ammo!";
 		inventory.pickupsound "weapons/pocket";
 	}
 	states{
@@ -169,9 +158,17 @@ class HDBP:HDWeapon{
 	int itemamount[HDBPC_NUMITEMS];
 	int itembulk[HDBPC_NUMITEMS];
 
+	override void initializewepstats(bool idfa=false){
+		for(int i=0;i<HDBPC_NUMITEMS;i++){
+			itemamount[i]=max(
+				1,
+				itemamount[i],
+				10/(max(1,itembulk[i]))
+			);
+			getbulk();
+		}
+	}
 	override void beginplay(){
-		super.beginplay();
-
 		int i=0;
 		itembulk[i]=70;itemtype[i]="HDSMGMag";itemname[i]="SMG mag";
 		i++;itembulk[i]=30;itemtype[i]="HDPistolMag";itemname[i]="Pistol mag";
@@ -205,6 +202,7 @@ class HDBP:HDWeapon{
 		i++;itembulk[i]=150;itemtype[i]="DERPDEAD";itemname[i]="Broken D.E.R.P. robot";
 		i++;itembulk[i]=7;itemtype[i]="HDIEDKit";itemname[i]="I.E.D. kit";
 		i++;itembulk[i]=100;itemtype[i]="SquadSummoner";itemname[i]="Summoning talisman";
+		super.beginplay();
 	}
 }
 enum HDBackpackItems{
