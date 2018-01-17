@@ -251,7 +251,7 @@ class HDSMG:HDWeapon{
 		SMGG A 12{
 			A_PlaySound("weapons/pocket",CHAN_WEAPON);
 			A_TakeInventory("HDPistolMag",1);
-			int room=ammocap("HDPistolAmmo")-countinv("HDPistolAmmo");
+			int room=min(15,ammocap("HDPistolAmmo")-countinv("HDPistolAmmo"));
 			A_GiveInventory("HDPistolAmmo",room);
 			if(room<15){
 				room=15-room;
