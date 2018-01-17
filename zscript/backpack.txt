@@ -13,7 +13,20 @@ Everything here is sub-WIP, do not take seriously!
 
 
 class HDBP:HDWeapon{
+	default{
+		+inventory.invbar
+		inventory.icon "BPAKA0";
+		inventory.pickupmessage "Picked up a backpack to fill with ammo!";
+		inventory.pickupsound "weapons/pocket";
+	}
 	states{
+	spawn:
+		BPAK A -1;
+	select0:
+		TNT1 A 10{
+			A_PlaySound("weapons/pocket",CHAN_WEAPON);
+			if(invoker.weaponstatus[HDBPS_CARRIED]>1000)A_SetTics(20);
+		}goto super::select0;
 	ready:
 		TNT1 A 1 A_WeaponReady(WRF_ALLOWUSER4|WRF_ALLOWZOOM|WRF_ALLOWRELOAD);
 		goto readyend;
@@ -21,7 +34,7 @@ class HDBP:HDWeapon{
 	hold:
 	altfire:
 	althold:
-		TNT1 A 8{
+		TNT1 A 4{
 			//better to hold rather than toggle
 			if(pressingfiremode())invoker.weaponstatus[0]|=HDBPF_NOAUTO;
 				else invoker.weaponstatus[0]&=~HDBPF_NOAUTO;
