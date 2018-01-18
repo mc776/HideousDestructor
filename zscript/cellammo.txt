@@ -25,7 +25,7 @@ class HDCellAmmo:Ammo{
 				int ontarget=target.countinv("HDCellAmmo");
 				if(ontarget){
 					int total=amount+ontarget;
-					amount=clamp(amount+random(-10,10),1,total);
+					amount=clamp(max(amount,9)+random(-10,10),1,total);
 					target.setinventory("HDCellAmmo",total-amount);
 				}
 			}
