@@ -19,17 +19,18 @@ class userpickerupper:hdactor{
 		for(int i=0;i<10;i++){
 			if(!trymove(pos.xy+vel.xy,true,true)){
 				if(blockingmobj){
+					blockingmobj.target=self.target;
 					if(
 						blockingmobj is "HDUPK"
+						&&blockingmobj.findstate("grab",true)
 					){
-						blockingmobj.target=self.target;
-						if(blockingmobj.findstate("grab",true))
-							blockingmobj.setstatelabel("grab");
+						blockingmobj.setstatelabel("grab");
 						let ppp=HDPlayerPawn(target);if(ppp)ppp.hasgrabbed=true;
 						destroy();return;
 					}
 					else if(
-						blockingmobj is "HDPickup"
+						blockingmobj is "HDUPK"
+						||blockingmobj is "HDPickup"
 						||blockingmobj is "HDWeapon"
 					){
 						tracer=blockingmobj;
@@ -55,8 +56,8 @@ class userpickerupper:hdactor{
 			tracer.vel+=(
 				target.pos.x-tracer.pos.x,
 				target.pos.y-tracer.pos.y,
-				target.pos.z+target.height*0.6-tracer.pos.z+2
-			)*0.3;
+				target.pos.z+target.height*0.6-tracer.pos.z
+			)*0.3+(0,0,2);
 		}
 		TNT1 A 0{
 			if(!tracer){destroy();return;}
@@ -236,6 +237,12 @@ class HDUPK:HDActor{
 			}else{
 				setorigin(target.pos+(0,0,target.height-24),true);
 				A_HDUPKGive();
+
+				A_CallSpecial(
+					special,args[0],
+					args[1],args[2],
+					args[3],args[4]
+				);
 			}
 		}
 	give:
