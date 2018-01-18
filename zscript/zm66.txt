@@ -621,6 +621,7 @@ class ZM66AltStarter:ActionItem{
 			if(invoker.amount==1)zzz.weaponstatus[0]|=ZM66F_NOLAUNCHER;
 			else if(invoker.amount==2)zzz.weaponstatus[0]|=ZM66F_NOLAUNCHER|ZM66F_NOFIRESELECT;
 			zzz.attachtoowner(self);
+			zzz.special=special;
 			if(player){
 				player.readyweapon=zzz;
 				player.pendingweapon=zzz;
@@ -634,6 +635,7 @@ class ZM66Semi:IdleDummy{
 		TNT1 A 0 nodelay{
 			let zzz=ZM66AssaultRifle(spawn("ZM66AssaultRifle",pos));if(!zzz)return;
 			zzz.weaponstatus[0]|=ZM66F_NOLAUNCHER|ZM66F_NOFIRESELECT;zzz.vel=vel;
+			zzz.special=special;
 		}stop;
 	}
 }
@@ -643,6 +645,7 @@ class ZM66Regular:IdleDummy{
 		TNT1 A 0 nodelay{
 			let zzz=ZM66AssaultRifle(spawn("ZM66AssaultRifle",pos));if(!zzz)return;
 			zzz.weaponstatus[0]|=ZM66F_NOLAUNCHER;zzz.vel=vel;
+			zzz.special=special;
 		}stop;
 	}
 }
@@ -652,6 +655,7 @@ class ZM66Random:IdleDummy{
 		TNT1 A 0 nodelay{
 			let zzz=ZM66AssaultRifle(spawn("ZM66AssaultRifle",pos));
 			if(!zzz)return;
+			zzz.special=special;
 			if(!random(0,4))zzz.weaponstatus[0]|=ZM66F_NOLAUNCHER;
 			else if(!random(0,4))zzz.weaponstatus[0]|=ZM66F_NOFIRESELECT;
 			if(zzz.weaponstatus[0]&ZM66F_NOLAUNCHER){
