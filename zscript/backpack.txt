@@ -151,7 +151,11 @@ class HDBP:HDWeapon{
 			if(invoker.weaponstatus[HDBPS_COOLDOWN]<16)return;
 			for(int i=0;i<HDBPC_NUMITEMS;i++){
 				if(invoker.itemtype[i]&&invoker.itemamount[i]>0){
-					A_DropItem(invoker.itemtype[i],invoker.itemamount[i]);
+					if(invoker.itemtype[i]=="GreenArmourStored"){
+						actor aaa=spawn("HDArmourPickup",pos+(0,0,height*0.6));
+						aaa.stamina=invoker.itemamount[i];
+					}
+					else A_DropItem(invoker.itemtype[i],invoker.itemamount[i]);
 					invoker.itemamount[i]=0;
 				}
 			}
@@ -186,7 +190,10 @@ class HDBP:HDWeapon{
 	override void initializewepstats(bool idfa=false){
 		if(!idfa)return;
 		for(int i=0;i<HDBPC_NUMITEMS;i++){
-			itemamount[i]=max(
+
+			if(i==mcellindex)itemamount[i]=10;
+			else if(i==armourindex)itemamount[i]=HDCONST_GREENARMOUR;
+			else itemamount[i]=max(
 				1,
 				itemamount[i],
 				10/(max(1,itembulk[i]))
@@ -195,6 +202,7 @@ class HDBP:HDWeapon{
 		}
 	}
 	int derpindex;int bderpindex;
+	int mcellindex;int armourindex;
 	override void beginplay(){
 		int i=0;
 		itembulk[i]=70;itemtype[i]="HDSMGMag";itemname[i]="SMG mag";
@@ -212,7 +220,7 @@ class HDBP:HDWeapon{
 		i++;itembulk[i]=170;itemtype[i]="HEATAmmo";itemname[i]="H.E.A.T. rocket";
 		i++;itembulk[i]=90;itemtype[i]="BrontornisRound";itemname[i]="Brontornis shell";
 		i++;itembulk[i]=80;itemtype[i]="HDCellPacks";itemname[i]="Fresh battery";
-		i++;itembulk[i]=80;itemtype[i]="HDCellAmmo";itemname[i]="Stale battery";
+		i++;itembulk[i]=80;itemtype[i]="HDCellAmmo";itemname[i]="Stale battery";mcellindex=i;
 		i++;itembulk[i]=80;itemtype[i]="HDCellPackEmpty";itemname[i]="Depleted battery";
 		i++;itembulk[i]=90;itemtype[i]="HDFragGrenadeAmmo";itemname[i]="Hand grenade";
 
@@ -221,7 +229,7 @@ class HDBP:HDWeapon{
 		i++;itembulk[i]=70;itemtype[i]="PortableStimpack";itemname[i]="Stimpack";
 		i++;itembulk[i]=90;itemtype[i]="BluePotion";itemname[i]="Healing potion";
 
-		i++;itembulk[i]=800;itemtype[i]="GreenArmourStored";itemname[i]="Soft armour";
+		i++;itembulk[i]=800;itemtype[i]="GreenArmourStored";itemname[i]="Soft armour";armourindex=i;
 		i++;itembulk[i]=600;itemtype[i]="PortableRadSuit";itemname[i]="Environment suit";
 		i++;itembulk[i]=150;itemtype[i]="PortableLiteAmp";itemname[i]="Light amplifiers";
 		i++;itembulk[i]=500;itemtype[i]="PortableLadder";itemname[i]="Ladder";

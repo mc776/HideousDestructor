@@ -46,7 +46,7 @@ extend class HDPlayerPawn{
 		//apply giveammo principles to HDAmmo
 		class<inventory> type;
 		if(allthings||name~=="ammo"){
-			if(hd_carrylimit)A_GiveInventory("Backpack");
+			A_GiveInventory("HDBP");
 			for(int i=0;i<AllActorClasses.Size();++i){
 				type=(class<Inventory>)(AllActorClasses[i]);
 				if (type&&type.GetParentClass()=="HDAmmo"){
@@ -90,7 +90,7 @@ extend class HDPlayerPawn{
 		}
 
 		//clean up some stuff
-		if(!hd_carrylimit)A_TakeInventory("backpack");
+		A_TakeInventory("backpack");A_TakeInventory("hdbackpack");
 		A_TakeInventory("BasicArmor");
 	}
 	override void CheatTake(string name, int amount){
