@@ -161,11 +161,19 @@ extend class HDPlayerPawn{
 		}
 
 		//repair *ERPs
-		if (countinv("DERPDEAD")){
+		if(countinv("DERPDEAD")){
 			A_TakeInventory("DERPDEAD");
 			A_GiveInventory("DERPUsable");
 		}
-		if (countinv("HERPDEAD")){
+		let hdbp=hdbp(findinventory("HDBP"));
+		if(hdbp
+			&&hdbp.itemamount[hdbp.derpindex]<1
+			&&hdbp.itemamount[hdbp.bderpindex]>0
+		){
+			hdbp.itemamount[hdbp.bderpindex]--;
+			hdbp.itemamount[hdbp.derpindex]=1;
+		}
+		if(countinv("HERPDEAD")){
 			A_TakeInventory("HERPDEAD");
 			A_GiveInventory("HERPUsable");
 		}

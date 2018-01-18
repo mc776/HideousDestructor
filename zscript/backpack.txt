@@ -179,6 +179,7 @@ class HDBP:HDWeapon{
 			getbulk();
 		}
 	}
+	int derpindex;int bderpindex;
 	override void beginplay(){
 		int i=0;
 		itembulk[i]=70;itemtype[i]="HDSMGMag";itemname[i]="SMG mag";
@@ -209,8 +210,8 @@ class HDBP:HDWeapon{
 		i++;itembulk[i]=600;itemtype[i]="PortableRadSuit";itemname[i]="Environment suit";
 		i++;itembulk[i]=150;itemtype[i]="PortableLiteAmp";itemname[i]="Light amplifiers";
 		i++;itembulk[i]=500;itemtype[i]="PortableLadder";itemname[i]="Ladder";
-		i++;itembulk[i]=180;itemtype[i]="DERPUsable";itemname[i]="D.E.R.P. robot";
-		i++;itembulk[i]=160;itemtype[i]="DERPDEAD";itemname[i]="Broken D.E.R.P. robot";
+		i++;itembulk[i]=180;itemtype[i]="DERPUsable";itemname[i]="D.E.R.P. robot";derpindex=i;
+		i++;itembulk[i]=160;itemtype[i]="DERPDEAD";itemname[i]="Broken D.E.R.P. robot";bderpindex=i;
 		i++;itembulk[i]=9;itemtype[i]="HDIEDKit";itemname[i]="I.E.D. kit";
 		i++;itembulk[i]=100;itemtype[i]="SquadSummoner";itemname[i]="Summoning talisman";
 		super.beginplay();
