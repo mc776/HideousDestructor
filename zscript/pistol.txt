@@ -95,7 +95,8 @@ class HDAutoPistol:HDSecondPistol{
 		spawn:
 			TNT1 A 0 nodelay{
 				let pppp=hdsecondpistol(spawn("HDSecondPistol",pos));
-				if(pppp)pppp.weaponstatus[PISS_AUTO]=0;
+				pppp.weaponstatus[PISS_AUTO]=0;
+				pppp.special=special;
 			}stop;
 	}
 }
@@ -446,6 +447,7 @@ class HDPistol:HDWeapon{
 			[bbb,aaa]=A_SpawnItemEx("HDSecondPistol",
 				flags:SXF_TRANSFERSPECIAL|SXF_NOCHECKPOSITION
 			);
+			aaa.special=special;
 			let ppp=hdsecondpistol(aaa);
 			if(!ppp)return;
 			for(int i=0;i<8;i++){

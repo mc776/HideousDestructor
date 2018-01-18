@@ -61,6 +61,13 @@ class userpickerupper:hdactor{
 		TNT1 A 0{
 			if(!tracer){destroy();return;}
 			tracer.A_Stop();
+
+			tracer.A_CallSpecial(
+				tracer.special,tracer.args[0],
+				tracer.args[1],tracer.args[2],
+				tracer.args[3],tracer.args[4]
+			);
+
 			//in case of death or teleport mid-grab
 			if(
 				target
@@ -238,12 +245,6 @@ class HDUPK:HDActor{
 		CLIP A -1;
 	spawn2:
 		---- A -1;
-	givegunloopend:
-		---- A 0{
-			if(hd_debug)A_Log("Deprecated givegunloopend found in %s",getclassname());
-			setorigin(target.pos+(0,0,target.height-24),true);
-		}
-		stop;
 	}
 }
 
