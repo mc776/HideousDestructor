@@ -15,7 +15,7 @@ class ZombieStormtrooper:ZombieMan{
 	double spread;
 	double turnamount;
 	int mag;
-	int firemode; //-1 = semi; -2 = SMG
+	int firemode; //-2 SMG; -1 semi only; 0 semi; 1 auto; 2+ burst
 	override void postbeginplay(){
 		super.postbeginplay();
 		mag=50;
@@ -48,7 +48,7 @@ class ZombieStormtrooper:ZombieMan{
 			A_SetTics(random(30,80));
 			A_PlaySound("grunt/active");
 		}
-		#### A 0 A_Jump(256,"spawn");
+		#### A 0 A_Jump(256,"spawn2");
 	spawnswitch:
 		#### A 0 A_JumpIf(bambush,"spawnstill");
 		goto spawnwander;
@@ -62,7 +62,7 @@ class ZombieStormtrooper:ZombieMan{
 		}
 		#### AB 5 A_SetAngle(angle+random(-4,4));
 		#### B 1 A_SetTics(random(10,40));
-		#### A 0 A_Jump(256,"spawn");
+		#### A 0 A_Jump(256,"spawn2");
 	spawnwander:
 		#### A 0 A_Look();
 		#### CD 5 A_Wander();
@@ -71,8 +71,8 @@ class ZombieStormtrooper:ZombieMan{
 			if(!random(0,127))A_PlaySound("grunt/active");
 		}
 		#### AB 5 A_Wander();
-		#### A 0 A_Jump(64,"spawn");
-		#### A 0 A_Jump(256,"spawn");
+		#### A 0 A_Jump(64,"spawn2");
+		loop;
 	missile:
 		#### A 0 A_JumpIf(mag<1,"reload");
 		#### A 0 A_JumpIfTargetInLOS(3,120);
@@ -83,7 +83,7 @@ class ZombieStormtrooper:ZombieMan{
 	missile2:
 		#### A 0{
 			if(!target){
-				setstatelabel("spawn");
+				setstatelabel("spawn2");
 				return;
 			}
 			double enemydist=distance3d(target);
@@ -101,7 +101,7 @@ class ZombieStormtrooper:ZombieMan{
 			A_FaceTarget(turnamount,turnamount);
 			A_SetTics(random(0,100/clamp(turnamount,1,turnamount+1)+4));
 			spread=frandom(0.1,0.2)*turnamount;
-			if(firemode>=0)firemode=random(0,2);
+			if(firemode>=0)firemode=random(0,2);  
 		}
 		#### A 0 A_Jump(256,"shoot");
 	shoot:
@@ -117,6 +117,11 @@ class ZombieStormtrooper:ZombieMan{
 				p.vel+=(
 					frandom(-1.,1.),frandom(-1.,1.),frandom(-1.,1.)
 				);
+				A_SpawnItemEx("HDSpent9mm",
+					cos(pitch)*10,0,height-8-sin(pitch)*10,
+					vel.x,vel.y,vel.z,
+					0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
+				);
 			}else{
 				A_PlaySound("weapons/rifle",CHAN_WEAPON);
 				p=spawn("HDBullet426",pos+(0,0,height-6));
@@ -129,13 +134,18 @@ class ZombieStormtrooper:ZombieMan{
 		}
 		#### E 2{
 			if(
-				mag<1
-				||firemode>4
-				||-2<firemode<1
+				//conditions under which no autofire can happen
+				!firemode
+				||firemode==-1
+				||firemode>4  
+				||mag<1
 			){
-				if(firemode>2)firemode=2;
+				if(firemode>2)firemode=2;  
 				setstatelabel("postshot");
-			}else if(firemode>=2){
+			}else if(
+				//if burst, do not wait the tics of this frame
+				firemode>=2  
+			){
 				firemode++;
 				setstatelabel("shoot");
 			}
@@ -224,7 +234,7 @@ class ZombieStormtrooper:ZombieMan{
 	see2:
 		#### A 0{
 			if(
-				floorz>pos.z-4
+				floorz>pos.z-4  
 				&&countinv("EvadeNow")
 			)setstatelabel("see_evade");
 			else if(mag<1)setstatelabel("reload");
