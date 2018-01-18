@@ -10,7 +10,9 @@ class HDBP:HDWeapon{
 	}
 	states{
 	spawn:
-		BPAK A -1;
+		BPAK AB -1 nodelay{
+			if(!invoker.getbulk())frame=1;
+		}
 	select0:
 		TNT1 A 10{
 			A_PlaySound("weapons/pocket",CHAN_WEAPON);

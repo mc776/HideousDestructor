@@ -186,13 +186,12 @@ extend class HDPlayerPawn{
 	
 		}
 
-		A_SetInventory("Backpack",countinv("HDBackpack"));
 		double carrymax=
 			360+
 			countinv("PowerStrength")*100+
 			min(regenblues,150)+
 			stimcount*2+
-			+countinv("HDBackpack")*100
+			+countinv("HDBP")*100
 		;
 		return blox/carrymax;
 	}
