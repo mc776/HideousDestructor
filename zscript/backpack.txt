@@ -17,8 +17,10 @@ class HDBP:HDWeapon{
 			if(invoker.weaponstatus[HDBPS_CARRIED]>1000)A_SetTics(20);
 		}goto super::select0;
 	ready:
-		TNT1 A 1 A_WeaponReady(WRF_ALLOWUSER1|WRF_ALLOWUSER4|WRF_ALLOWZOOM|WRF_ALLOWRELOAD);
-		goto readyend;
+		TNT1 A 1{
+			invoker.weaponstatus[HDBPS_COOLDOWN]=max(0,invoker.weaponstatus[HDBPS_COOLDOWN]-1);
+			A_WeaponReady(WRF_ALLOWUSER1|WRF_ALLOWUSER4|WRF_ALLOWZOOM|WRF_ALLOWRELOAD);
+		}goto readyend;
 	altreload:
 		TNT1 A 0{
 			class<inventory> what=invoker.itemtype[invoker.weaponstatus[HDBPS_WHICH]];
@@ -142,6 +144,19 @@ class HDBP:HDWeapon{
 
 			invoker.getbulk();
 		}goto ready;
+
+	zoom:
+		TNT1 A 0{
+			invoker.weaponstatus[HDBPS_COOLDOWN]+=8;
+			if(invoker.weaponstatus[HDBPS_COOLDOWN]<16)return;
+			for(int i=0;i<HDBPC_NUMITEMS;i++){
+				if(invoker.itemtype[i]&&invoker.itemamount[i]>0){
+					A_DropItem(invoker.itemtype[i],invoker.itemamount[i]);
+					invoker.itemamount[i]=0;
+				}
+			}
+			invoker.getbulk();
+		}goto nope;
 	}
 
 	int getbulk(){
@@ -220,6 +235,7 @@ class HDBP:HDWeapon{
 enum HDBackpackItems{
 	HDBPS_CARRIED=1,
 	HDBPS_WHICH=2,
+	HDBPS_COOLDOWN=3,
 
 	HDBPF_NOAUTO=1,
 
