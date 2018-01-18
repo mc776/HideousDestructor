@@ -17,8 +17,13 @@ class HDBP:HDWeapon{
 			if(invoker.weaponstatus[HDBPS_CARRIED]>1000)A_SetTics(20);
 		}goto super::select0;
 	ready:
-		TNT1 A 1 A_WeaponReady(WRF_ALLOWUSER4|WRF_ALLOWZOOM|WRF_ALLOWRELOAD);
+		TNT1 A 1 A_WeaponReady(WRF_ALLOWUSER1|WRF_ALLOWUSER4|WRF_ALLOWZOOM|WRF_ALLOWRELOAD);
 		goto readyend;
+	altreload:
+		TNT1 A 0{
+			class<inventory> what=invoker.itemtype[invoker.weaponstatus[HDBPS_WHICH]];
+			A_DropInventory(what,countinv(what));
+		}goto nope;
 	fire:
 	hold:
 	altfire:
@@ -28,7 +33,7 @@ class HDBP:HDWeapon{
 			if(pressingfiremode())invoker.weaponstatus[0]|=HDBPF_NOAUTO;
 				else invoker.weaponstatus[0]&=~HDBPF_NOAUTO;
 
-			//move direction
+			//move directionz
 			if(pressingaltfire())
 				invoker.weaponstatus[HDBPS_WHICH]--;
 				else invoker.weaponstatus[HDBPS_WHICH]++;

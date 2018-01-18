@@ -72,6 +72,13 @@ class HDDropOne:ActionItem{
 				A_DropInventory("PortableMedikit",1);
 				A_DropInventory("PortableBerserkPack",1);
 				A_DropInventory("BluePotion",1);
+			}else if(cw=="HDBP"){
+				let hdbp=hdbp(findinventory("hdbp"));
+				class<inventory> what=hdbp.itemtype[hdbp.weaponstatus[HDBPS_WHICH]];
+				int howmany=min(1,countinv(what));
+				if(!howmany)return;
+				if(what=="HDShellAmmo")howmany=min(4,countinv(what));
+				A_DropInventory(what,howmany);
 			}
 			else A_GiveInventory("DropExtra");
 		}fail;
