@@ -3,7 +3,7 @@
 // ------------------------------------------------------------
 class HDBP:HDWeapon{
 	default{
-		+inventory.invbar
+		+inventory.invbar +weapon.wimpy_weapon
 		inventory.icon "BPAKA0";
 		inventory.pickupmessage "Picked up a backpack to help fill your life with ammo!";
 		inventory.pickupsound "weapons/pocket";
@@ -206,39 +206,45 @@ class HDBP:HDWeapon{
 	int derpindex;int bderpindex;
 	int mcellindex;int armourindex;
 	override void beginplay(){
-		int i=0;
-		itembulk[i]=70;itemtype[i]="HDSMGMag";itemname[i]="SMG mag";
-		i++;itembulk[i]=35;itemtype[i]="HDPistolMag";itemname[i]="Pistol mag";
-		i++;itembulk[i]=3;itemtype[i]="HDPistolAmmo";itemname[i]="Misc. 9mm ammo";
-		i++;itembulk[i]=10;itemtype[i]="HDShellAmmo";itemname[i]="Shotgun shell";
-		i++;itembulk[i]=40;itemtype[i]="ZM66RifleMags";itemname[i]="4.26mm mag";
-		i++;itembulk[i]=1;itemtype[i]="FourMilAmmo";itemname[i]="Misc. 4.26mm ammo";
-		i++;itembulk[i]=90;itemtype[i]="LiberatorMag";itemname[i]="7.76mm mag";
-		i++;itembulk[i]=36;itemtype[i]="BossClip";itemname[i]="7.76mm clip";
-		i++;itembulk[i]=8;itemtype[i]="SevenMilAmmo";itemname[i]="Misc. 7.76mm ammo";
-		i++;itembulk[i]=7;itemtype[i]="SevenMilBrass";itemname[i]="7.76mm casing";
-		i++;itembulk[i]=90;itemtype[i]="HDRocketAmmo";itemname[i]="Rocket grenade";
-		i++;itembulk[i]=90;itemtype[i]="DudRocketAmmo";itemname[i]="Defused rocket";
-		i++;itembulk[i]=170;itemtype[i]="HEATAmmo";itemname[i]="H.E.A.T. rocket";
-		i++;itembulk[i]=85;itemtype[i]="BrontornisRound";itemname[i]="Brontornis shell";
-		i++;itembulk[i]=80;itemtype[i]="HDCellPacks";itemname[i]="Fresh battery";
-		i++;itembulk[i]=80;itemtype[i]="HDCellAmmo";itemname[i]="Stale battery";mcellindex=i;
-		i++;itembulk[i]=80;itemtype[i]="HDCellPackEmpty";itemname[i]="Depleted battery";
-		i++;itembulk[i]=95;itemtype[i]="HDFragGrenadeAmmo";itemname[i]="Hand grenade";
+		int i=-1;
+		i++;itembulk[i]=800;itemtype[i]="GreenArmourStored";itemname[i]="Soft armour";armourindex=i;
+		i++;itembulk[i]=500;itemtype[i]="PortableLadder";itemname[i]="Ladder";
+		i++;itembulk[i]=400;itemtype[i]="PortableRadSuit";itemname[i]="Environment suit";
+		i++;itembulk[i]=130;itemtype[i]="PortableLiteAmp";itemname[i]="Light amplifiers";
 
 		i++;itembulk[i]=130;itemtype[i]="PortableMedikit";itemname[i]="Medikit";
 		i++;itembulk[i]=100;itemtype[i]="PortableBerserkPack";itemname[i]="Berserk pack";
 		i++;itembulk[i]=70;itemtype[i]="PortableStimpack";itemname[i]="Stimpack";
 		i++;itembulk[i]=90;itemtype[i]="BluePotion";itemname[i]="Healing potion";
+		i++;itembulk[i]=100;itemtype[i]="SquadSummoner";itemname[i]="Summoning talisman";
 
-		i++;itembulk[i]=800;itemtype[i]="GreenArmourStored";itemname[i]="Soft armour";armourindex=i;
-		i++;itembulk[i]=400;itemtype[i]="PortableRadSuit";itemname[i]="Environment suit";
-		i++;itembulk[i]=130;itemtype[i]="PortableLiteAmp";itemname[i]="Light amplifiers";
-		i++;itembulk[i]=500;itemtype[i]="PortableLadder";itemname[i]="Ladder";
+		i++;itembulk[i]=140;itemtype[i]="HEATAmmo";itemname[i]="H.E.A.T. rocket";
+		i++;itembulk[i]=90;itemtype[i]="HDRocketAmmo";itemname[i]="Rocket grenade";
+		i++;itembulk[i]=90;itemtype[i]="DudRocketAmmo";itemname[i]="Defused rocket";
+
+		i++;itembulk[i]=95;itemtype[i]="HDFragGrenadeAmmo";itemname[i]="Hand grenade";
+		i++;itembulk[i]=80;itemtype[i]="HDCellPacks";itemname[i]="Fresh battery";
+		i++;itembulk[i]=80;itemtype[i]="HDCellAmmo";itemname[i]="Stale battery";mcellindex=i;
+		i++;itembulk[i]=80;itemtype[i]="HDCellPackEmpty";itemname[i]="Depleted battery";
+		i++;itembulk[i]=85;itemtype[i]="BrontornisRound";itemname[i]="Brontornis shell";
+
+		i++;itembulk[i]=40;itemtype[i]="ZM66RifleMags";itemname[i]="4.26mm mag";
+		i++;itembulk[i]=1;itemtype[i]="FourMilAmmo";itemname[i]="Misc. 4.26mm ammo";
+
+		i++;itembulk[i]=90;itemtype[i]="LiberatorMag";itemname[i]="7.76mm mag";
+		i++;itembulk[i]=36;itemtype[i]="BossClip";itemname[i]="7.76mm clip";
+		i++;itembulk[i]=8;itemtype[i]="SevenMilAmmo";itemname[i]="Misc. 7.76mm ammo";
+		i++;itembulk[i]=7;itemtype[i]="SevenMilBrass";itemname[i]="7.76mm casing";
+
+		i++;itembulk[i]=35;itemtype[i]="HDPistolMag";itemname[i]="Pistol mag";
+		i++;itembulk[i]=70;itemtype[i]="HDSMGMag";itemname[i]="SMG mag";
+		i++;itembulk[i]=3;itemtype[i]="HDPistolAmmo";itemname[i]="Misc. 9mm ammo";
+
+		i++;itembulk[i]=10;itemtype[i]="HDShellAmmo";itemname[i]="Shotgun shell";
+
 		i++;itembulk[i]=180;itemtype[i]="DERPUsable";itemname[i]="D.E.R.P. robot";derpindex=i;
 		i++;itembulk[i]=160;itemtype[i]="DERPDEAD";itemname[i]="Broken D.E.R.P. robot";bderpindex=i;
 		i++;itembulk[i]=9;itemtype[i]="HDIEDKit";itemname[i]="I.E.D. kit";
-		i++;itembulk[i]=100;itemtype[i]="SquadSummoner";itemname[i]="Summoning talisman";
 		super.beginplay();
 	}
 }
