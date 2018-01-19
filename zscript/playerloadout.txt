@@ -39,7 +39,7 @@ class SoldierExtras:ActionItem{
 
 			if(!countinv("HDPistol"))A_GiveInventory("HDPistol");
 			else if(!countinv("HDSecondPistol"))A_GiveInventory("HDSecondPistol");
-			A_SetInventory("HDPistolMag",max(countinv("HDPistolMag"),3));
+			A_SetInventory("HDPistolMag",max(3,countinv("HDPistolMag")));
 
 			A_SetInventory("HDFragGrenadeAmmo",max(3,countinv("HDFragGrenadeAmmo")));
 			A_SetInventory("DERPUsable",max(1,countinv("DERPUsable")));
@@ -71,6 +71,8 @@ class InvReset:Inventory{
 				resetee.A_GiveInventory(di.Name,di.Amount);
 			}
 		}
+		let d=HDPlayerPawn(resetee);
+		if(d)d.GiveBasics();
 	}
 	override void attachtoowner(actor other){
 		reallyclearinventory(other);

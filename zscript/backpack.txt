@@ -217,23 +217,23 @@ class HDBP:HDWeapon{
 		i++;itembulk[i]=36;itemtype[i]="BossClip";itemname[i]="7.76mm clip";
 		i++;itembulk[i]=8;itemtype[i]="SevenMilAmmo";itemname[i]="Misc. 7.76mm ammo";
 		i++;itembulk[i]=7;itemtype[i]="SevenMilBrass";itemname[i]="7.76mm casing";
-		i++;itembulk[i]=100;itemtype[i]="HDRocketAmmo";itemname[i]="Rocket grenade";
-		i++;itembulk[i]=100;itemtype[i]="DudRocketAmmo";itemname[i]="Defused rocket";
+		i++;itembulk[i]=90;itemtype[i]="HDRocketAmmo";itemname[i]="Rocket grenade";
+		i++;itembulk[i]=90;itemtype[i]="DudRocketAmmo";itemname[i]="Defused rocket";
 		i++;itembulk[i]=170;itemtype[i]="HEATAmmo";itemname[i]="H.E.A.T. rocket";
-		i++;itembulk[i]=90;itemtype[i]="BrontornisRound";itemname[i]="Brontornis shell";
+		i++;itembulk[i]=85;itemtype[i]="BrontornisRound";itemname[i]="Brontornis shell";
 		i++;itembulk[i]=80;itemtype[i]="HDCellPacks";itemname[i]="Fresh battery";
 		i++;itembulk[i]=80;itemtype[i]="HDCellAmmo";itemname[i]="Stale battery";mcellindex=i;
 		i++;itembulk[i]=80;itemtype[i]="HDCellPackEmpty";itemname[i]="Depleted battery";
-		i++;itembulk[i]=90;itemtype[i]="HDFragGrenadeAmmo";itemname[i]="Hand grenade";
+		i++;itembulk[i]=95;itemtype[i]="HDFragGrenadeAmmo";itemname[i]="Hand grenade";
 
-		i++;itembulk[i]=150;itemtype[i]="PortableMedikit";itemname[i]="Medikit";
+		i++;itembulk[i]=130;itemtype[i]="PortableMedikit";itemname[i]="Medikit";
 		i++;itembulk[i]=100;itemtype[i]="PortableBerserkPack";itemname[i]="Berserk pack";
 		i++;itembulk[i]=70;itemtype[i]="PortableStimpack";itemname[i]="Stimpack";
 		i++;itembulk[i]=90;itemtype[i]="BluePotion";itemname[i]="Healing potion";
 
 		i++;itembulk[i]=800;itemtype[i]="GreenArmourStored";itemname[i]="Soft armour";armourindex=i;
-		i++;itembulk[i]=600;itemtype[i]="PortableRadSuit";itemname[i]="Environment suit";
-		i++;itembulk[i]=150;itemtype[i]="PortableLiteAmp";itemname[i]="Light amplifiers";
+		i++;itembulk[i]=400;itemtype[i]="PortableRadSuit";itemname[i]="Environment suit";
+		i++;itembulk[i]=130;itemtype[i]="PortableLiteAmp";itemname[i]="Light amplifiers";
 		i++;itembulk[i]=500;itemtype[i]="PortableLadder";itemname[i]="Ladder";
 		i++;itembulk[i]=180;itemtype[i]="DERPUsable";itemname[i]="D.E.R.P. robot";derpindex=i;
 		i++;itembulk[i]=160;itemtype[i]="DERPDEAD";itemname[i]="Broken D.E.R.P. robot";bderpindex=i;
@@ -275,6 +275,7 @@ class HDBPPreset:InventoryFlag{
 		inventory.maxamount 999;
 	}
 	override void attachtoowner(actor user){
+		super.attachtoowner(user);
 		user.A_SetInventory("HDBP",1);
 		let bp=HDBP(user.findinventory("HDBP"));
 		if(amount==999){
@@ -288,11 +289,11 @@ class HDBPPreset:InventoryFlag{
 					else if(bpi=="PortableMedikit")bp.itemamount[i]=3;
 					else if(bpi=="HDFragGrenadeAmmo")bp.itemamount[i]=7;
 				}else if(amount==2){ //medic
-					if(bpi=="PortableMedikit")bp.itemamount[i]=4;
-					else if(bpi=="PortableBerserkPack")bp.itemamount[i]=4;
-					else if(bpi=="PortableStimpack")bp.itemamount[i]=4;
+					if(bpi=="PortableMedikit")bp.itemamount[i]=5;
+					else if(bpi=="PortableBerserkPack")bp.itemamount[i]=5;
+					else if(bpi=="PortableStimpack")bp.itemamount[i]=5;
 					else if(bpi=="HDCellPacks")bp.itemamount[i]=2;
-					else if(bpi=="PortableRadsuit")bp.itemamount[i]=1;
+					else if(bpi=="PortableRadsuit")bp.itemamount[i]=2;
 					else if(bpi=="PortableLadder")bp.itemamount[i]=1;
 				}else if(amount==3){ //roboticist
 					if(bpi=="DERPDEAD")bp.itemamount[i]=1;

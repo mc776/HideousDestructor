@@ -219,10 +219,6 @@ class HDFragGrenades:HDWeapon{
 		weapon.selectionorder 1003;weapon.slotnumber 0;
 		weapon.bobstyle "Alpha";
 		weapon.bobspeed 2.5;weapon.bobrangex 0.1;weapon.bobrangey 0.5;
-		weapon.ammotype "HDFragGrenadeAmmo";
-		weapon.ammotype2 "HDFragGrenadeAmmo";
-		weapon.ammogive 0;weapon.ammogive2 0;
-		weapon.ammouse 1;weapon.ammouse2 1;
 	}
 	states{
 	select0:
@@ -443,12 +439,13 @@ class HDFragGrenades:HDWeapon{
 	spawn:
 		TNT1 A 1;
 		TNT1 A 0{
-			if(!target||target.countinv("HDFragGrenades")){
+			actor ot=invoker.target;
+			if(!ot||ot.countinv("HDFragGrenades")){
 				actor aaa=spawn("FragP",invoker.pos);
 				aaa.vel=invoker.vel;
 			}else{
-				A_GiveToTarget("HDFragGrenades");
-				target.A_DropInventory("HDFragGrenadeAmmo",countinv("HDFragGrenadeAmmo"));
+				ot.A_GiveInventory("HDFragGrenades");
+				ot.A_DropInventory("HDFragGrenadeAmmo",ot.countinv("HDFragGrenadeAmmo"));
 			}
 		}stop;
 	}
@@ -489,10 +486,12 @@ class HDFragGrenadeAmmo:Ammo{
 	states{
 	spawn:
 		FRAG A 0 nodelay{
-			while(amount>0){
+			while(invoker.amount>0){
 				amount--;
-				A_SpawnItemEx("FragP",0,0,0,
-					vel.x+frandom(-1,1),vel.y+frandom(-1,1),vel.z+frandom(-1,1),
+				invoker.A_SpawnItemEx("FragP",0,0,0,
+					invoker.vel.x+frandom(-1,1),
+					invoker.vel.y+frandom(-1,1),
+					invoker.vel.z+frandom(-1,1),
 					0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM
 				);
 			}

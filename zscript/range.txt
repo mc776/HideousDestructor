@@ -41,10 +41,7 @@ class HDLoaded:ActionItem{
 				pst2.weaponstatus[PISS_CHAMBER]=2;
 				pst2.weaponstatus[PISS_MAG]=15;
 			}
-			if(countinv("HDFragGrenadeAmmo")<3){
-				A_TakeInventory("HDFragGrenadeAmmo");
-				A_GiveInventory("HDFragGrenadeAmmo",3);
-			}
+			A_SetInventory("HDFragGrenadeAmmo",max(3,countinv("HDFragGrenadeAmmo")));
 		}fail;
 	}
 }
