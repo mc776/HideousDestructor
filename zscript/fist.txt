@@ -59,13 +59,9 @@ class Ring:HDWeapon replaces Fist{
 	}
 	override inventory CreateTossable(int amount){
 		owner.A_GiveInventory("DropMisc");
+		owner.A_GiveInventory("Ring");
+		owner.A_SelectWeapon("Ring");
 		return null;//super.createtossable(amount);
-	}
-	override void DetachFromOwner(){
-		target=owner;
-		super.detachfromowner();
-		target.A_GiveInventory("Ring");
-		target.A_SelectWeapon("Ring");
 	}
 	override void DoEffect(){
 		super.DoEffect();

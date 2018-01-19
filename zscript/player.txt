@@ -232,9 +232,6 @@ class HDPlayerPawn:PlayerPawn{
 		if(!scopecamera)scopecamera=spawn("ScopeCamera",pos);
 		scopecamera.target=self;
 
-		//for some reason, if you don't give an ammo after the first tic and then exit
-		//a map that resets inventory, the game will freeze.
-		A_GiveInventory("Clip",1);A_TakeInventory("Clip");
 
 		//check if teleported
 		//fastest you can voluntarily go (berserk, invuln, soulsphere) is mid-90s
