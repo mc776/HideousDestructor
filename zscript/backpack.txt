@@ -252,3 +252,69 @@ enum HDBackpackItems{
 	HDBPC_CAPACITY=3000,
 	HDBPC_NUMITEMS=36, //should be the length of the array
 }
+
+
+
+class HDBPPreset:InventoryFlag{
+/*
+	void LoadBPCustom(actor caller){
+		caller.A_SetInventory("HDBP",1);
+		let bp=HDBP(caller.findinventory("HDBP"));
+		for(int i=0;i<HDBPC_NUMITEMS;i++){
+			if(bp.itemtype[i]){
+				bp.itemamount[i]=caller.getcvar(string.format("hd_loadbp%i",i));
+				if(bp.getbulk()>=HDBPC_CAPACITY){  
+					bp.itemamount[i]=0;
+					break;
+				}
+			}
+		}
+	}
+*/
+	default{
+		inventory.maxamount 999;
+	}
+	override void attachtoowner(actor user){
+		user.A_SetInventory("HDBP",1);
+		let bp=HDBP(user.findinventory("HDBP"));
+		if(amount==999){
+		}else{
+			for(int i=0;i<HDBPC_NUMITEMS;i++){
+				class<inventory>bpi=bp.itemtype[i];
+				if(amount==1){ //contractor
+					if(bpi=="HDShellAmmo")bp.itemamount[i]=40;
+					else if(bpi=="HDRocketAmmo")bp.itemamount[i]=5;
+					else if(bpi=="PortableStimpack")bp.itemamount[i]=7;
+					else if(bpi=="PortableMedikit")bp.itemamount[i]=3;
+					else if(bpi=="HDFragGrenadeAmmo")bp.itemamount[i]=7;
+				}else if(amount==2){ //medic
+					if(bpi=="PortableMedikit")bp.itemamount[i]=4;
+					else if(bpi=="PortableBerserkPack")bp.itemamount[i]=4;
+					else if(bpi=="PortableStimpack")bp.itemamount[i]=4;
+					else if(bpi=="HDCellPacks")bp.itemamount[i]=2;
+					else if(bpi=="PortableRadsuit")bp.itemamount[i]=1;
+					else if(bpi=="PortableLadder")bp.itemamount[i]=1;
+				}else if(amount==3){ //roboticist
+					if(bpi=="DERPDEAD")bp.itemamount[i]=1;
+					else if(bpi=="HDCellPacks")bp.itemamount[i]=6;
+					else if(bpi=="DudRocketAmmo")bp.itemamount[i]=5;
+					else if(bpi=="HDPistolMag")bp.itemamount[i]=10;
+					else if(bpi=="ZM66RifleMags")bp.itemamount[i]=5;
+				}else if(!random(0,5)){ //insurgent
+					int maxrand=500/(max(1,bp.itembulk[i]));
+					bp.itemamount[i]=random(1,maxrand);
+					if(bp.getbulk()>=HDBPC_CAPACITY){  
+						bp.itemamount[i]=0;
+						break;
+					}
+				}
+			}
+		}
+		bp.getbulk();
+		destroy();
+	}
+}
+
+
+
+
