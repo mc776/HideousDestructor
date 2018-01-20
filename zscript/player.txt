@@ -34,6 +34,8 @@ class HDPlayerPawn:PlayerPawn{
 	bool hasgrabbed;
 	int corpsekicktimer;
 
+	bool flip;
+
 	default{
 		+interpolateangles
 		-telestomp
@@ -198,6 +200,8 @@ class HDPlayerPawn:PlayerPawn{
 
 		lastpos=pos;
 		zat=getzat();
+
+		if(!flip)flip=true;else flip=false; //for things that must alternate every tic
 
 		//log all new inputs
 		int input=player.cmd.buttons;
