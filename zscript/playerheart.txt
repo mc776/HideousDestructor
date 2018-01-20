@@ -291,12 +291,3 @@ extend class HDPlayerPawn{
 
 
 
-class BleedOutAI:ActionItem{
-	states{
-	pickup:
-		TNT1 A 0{
-			damagemobj(self,null,1,"bleedout",DMG_THRUSTLESS);
-			if(hd_debug)A_Log("Deprecated bleedout.");
-		}fail;
-	}
-}
