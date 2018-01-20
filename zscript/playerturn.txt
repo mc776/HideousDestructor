@@ -340,7 +340,7 @@ extend class HDPlayerPawn{
 
 		//feet angle
 		double fac=deltaangle(feetangle,angle);
-		if(player.onground && abs(fac)>(player.crouchfactor<0.7?30:50)){
+		if(abs(fac)>(player.crouchfactor<0.7?30:50)){
 			vel+=rotatevector((0,fac>0?0.1:-0.1),angle);  
 			A_GiveInventory("IsMoving",2);
 			feetangle=angle;
