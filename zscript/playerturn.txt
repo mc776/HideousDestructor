@@ -362,7 +362,7 @@ extend class HDPlayerPawn{
 
 		//move pivot point a little behind the player's view
 		anglechange=deltaangle(angle,lastangle);
-		if(zat-pos.z==0){
+		if(player.onground && zat-pos.z==0){
 			if(abs(anglechange)>1){      
 				int dir=90;
 				if(anglechange<0) dir=-90;
