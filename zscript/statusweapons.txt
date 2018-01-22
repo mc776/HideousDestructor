@@ -392,7 +392,10 @@ extend class HDStatusBar{
 			//list
 			int row=0;int column=16;
 			for(int i=0;i<HDBPC_NUMITEMS;i++){
-				if(bp.itemname[i]=="br"){
+				if(bp.itemname[i]=="cl"){
+					row=0;
+					column+=160;
+				}else if(bp.itemname[i]=="br"){
 					row+=5;
 				}else if(bp.itemtype[i]){
 					bool onperson=pp.countinv(bp.itemtype[i]);
@@ -407,16 +410,12 @@ extend class HDStatusBar{
 						)),alpha:(!inpack&&!onperson&&i!=which)?0.6:1.
 					);
 					row+=8;
-					if(row>=22*8){
-						row=0;
-						column+=160;
-					}
 				}
 			}
 
 			//total status
 			int bulk=bp.weaponstatus[HDBPS_CARRIED];
-			row+=26;
+			row+=19;
 			drawstring(psmallfont,string.format("Total Bulk:  %i",bulk),
 				(column,row),
 				DI_SCREEN_TOP|DI_SCREEN_LEFT|DI_TEXT_ALIGN_LEFT,

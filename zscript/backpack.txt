@@ -234,7 +234,7 @@ class HDBP:HDWeapon{
 
 		i++;itembulk[i]=40;itemtype[i]="ZM66RifleMags";itemname[i]="4.26mm mag";
 		i++;itembulk[i]=1;itemtype[i]="FourMilAmmo";itemname[i]="Misc. 4.26mm ammo";
-		i++;itemname[i]="br";
+		i++;itemname[i]="cl";
 
 		i++;itembulk[i]=90;itemtype[i]="LiberatorMag";itemname[i]="7.76mm mag";
 		i++;itembulk[i]=36;itemtype[i]="BossClip";itemname[i]="7.76mm clip";
@@ -254,6 +254,8 @@ class HDBP:HDWeapon{
 		i++;itembulk[i]=160;itemtype[i]="DERPDEAD";itemname[i]="Broken D.E.R.P. robot";bderpindex=i;
 		i++;itembulk[i]=9;itemtype[i]="HDIEDKit";itemname[i]="I.E.D. kit";
 		super.beginplay();
+A_LogInt(HDBFP_IEDK);
+A_LogInt(HDBFP_LITE);
 	}
 }
 enum HDBackpackItems{
@@ -262,6 +264,28 @@ enum HDBackpackItems{
 	HDBPS_COOLDOWN=3,
 
 	HDBPF_NOAUTO=1,
+
+	HDBFP_PMAG=1,
+	HDBFP_SMAG=1<<1,
+	HDBFP_SHEL=1<<2,
+	HDBFP_ZM66=1<<3,
+	HDBFP_ROCK=1<<4,
+	HDBFP_HEAT=1<<5,
+	HDBFP_CELL=1<<6,
+	HDBFP_LMAG=1<<7,
+	HDBFP_CLIP=1<<8,
+	HDBFP_BRON=1<<9,
+	HDBFP_FRAG=1<<10,
+	HDBFP_MEDI=1<<11,
+	HDBFP_STIM=1<<12,
+	HDBFP_BERS=1<<13,
+	HDBFP_RADS=1<<14,
+	HDBFP_LADD=1<<15,
+	HDBFP_LITE=1<<16,
+	HDBFP_ARMR=1<<17,
+	HDBFP_DERP=1<<18,
+	HDBFP_DDRP=1<<19,
+	HDBFP_IEDK=1<<20,
 
 	HDBPC_CAPACITY=3000,
 	HDBPC_NUMITEMS=40, //should be the length of the array including brs
@@ -274,13 +298,36 @@ class HDBPPreset:InventoryFlag{
 	void LoadBPCustom(actor caller){
 		caller.A_SetInventory("HDBP",1);
 		let bp=HDBP(caller.findinventory("HDBP"));
+		int bpflags=caller.getcvar(hd_loadbp);
+
 		for(int i=0;i<HDBPC_NUMITEMS;i++){
-			if(bp.itemtype[i]){
-				bp.itemamount[i]=caller.getcvar(string.format("hd_loadbp%i",i));
-				if(bp.getbulk()>=HDBPC_CAPACITY){  
-					bp.itemamount[i]=0;
-					break;
-				}
+			let bpit=bp.itemtype[i];
+			if(
+				(bpflags&HDBPF_&&bpit=="HDPistolMags")
+				||(bpflags&HDBPF_&&bpit=="HDSMGMags")
+				||(bpflags&HDBPF_&&bpit=="HDShellAmmo")
+				||(bpflags&HDBPF_&&bpit=="ZM66RifleMags")
+				||(bpflags&HDBPF_&&bpit=="HDRocketAmmo")
+				||(bpflags&HDBPF_&&bpit=="HEATAmmo")
+				||(bpflags&HDBPF_&&bpit=="HDCellPacks")
+				||(bpflags&HDBPF_&&bpit=="LiberatorMag")
+				||(bpflags&HDBPF_&&bpit=="BossClip")
+				||(bpflags&HDBPF_&&bpit=="BrontornisRounds")
+				||(bpflags&HDBPF_&&bpit=="HDFragGrenadeAmmo")
+				||(bpflags&HDBPF_&&bpit=="PortableMedikit")
+				||(bpflags&HDBPF_&&bpit=="PortableStimpack")
+				||(bpflags&HDBPF_&&bpit=="PortableBerserkPack")
+				||(bpflags&HDBPF_&&bpit=="PortableRadsuit")
+				||(bpflags&HDBPF_&&bpit=="PortableLadder")
+				||(bpflags&HDBPF_&&bpit=="PortableLiteAmp")
+				||(bpflags&HDBPF_&&bpit=="GreenArmourStored")
+				||(bpflags&HDBPF_&&bpit=="DERPUsable")
+				||(bpflags&HDBPF_&&bpit=="DERPDEAD")
+				||(bpflags&HDBPF_&&bpit=="IEDKit")
+			)bp.itemamount[i]=max(1,hdmath.maxinv(bpit)/3)
+			if(bp.getbulk()>=HDBPC_CAPACITY){
+				bp.itemamount[i]=0;
+				return;
 			}
 		}
 	}
