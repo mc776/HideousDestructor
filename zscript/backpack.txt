@@ -263,73 +263,70 @@ enum HDBackpackItems{
 
 	HDBPF_NOAUTO=1,
 
-	HDBFP_PMAG=1,
-	HDBFP_SMAG=1<<1,
-	HDBFP_SHEL=1<<2,
-	HDBFP_ZM66=1<<3,
-	HDBFP_ROCK=1<<4,
-	HDBFP_HEAT=1<<5,
-	HDBFP_CELL=1<<6,
-	HDBFP_LMAG=1<<7,
-	HDBFP_CLIP=1<<8,
-	HDBFP_BRON=1<<9,
-	HDBFP_FRAG=1<<10,
-	HDBFP_MEDI=1<<11,
-	HDBFP_STIM=1<<12,
-	HDBFP_BERS=1<<13,
-	HDBFP_RADS=1<<14,
-	HDBFP_LADD=1<<15,
-	HDBFP_LITE=1<<16,
-	HDBFP_ARMR=1<<17,
-	HDBFP_DERP=1<<18,
-	HDBFP_DDRP=1<<19,
-	HDBFP_IEDK=1<<20,
+	HDBPF_PMAG=1,
+	HDBPF_SMAG=1<<1,
+	HDBPF_SHEL=1<<2,
+	HDBPF_ZM66=1<<3,
+	HDBPF_ROCK=1<<4,
+	HDBPF_HEAT=1<<5,
+	HDBPF_CELL=1<<6,
+	HDBPF_LMAG=1<<7,
+	HDBPF_CLIP=1<<8,
+	HDBPF_BRON=1<<9,
+	HDBPF_FRAG=1<<10,
+	HDBPF_MEDI=1<<11,
+	HDBPF_STIM=1<<12,
+	HDBPF_BERS=1<<13,
+	HDBPF_RADS=1<<14,
+	HDBPF_LADD=1<<15,
+	HDBPF_LITE=1<<16,
+	HDBPF_ARMR=1<<17,
+	HDBPF_DERP=1<<18,
+	HDBPF_DDRP=1<<19,
+	HDBPF_IEDK=1<<20,
 
 	HDBPC_CAPACITY=3000,
 	HDBPC_NUMITEMS=40, //should be the length of the array including brs
 }
 
-
-
 class HDBPPreset:InventoryFlag{
-/*
 	void LoadBPCustom(actor caller){
 		caller.A_SetInventory("HDBP",1);
+		int bpflags=cvar.getcvar("hd_loadbp",owner.player).getint();
+		if(!bpflags)return;
 		let bp=HDBP(caller.findinventory("HDBP"));
-		int bpflags=caller.getcvar(hd_loadbp);
 
 		for(int i=0;i<HDBPC_NUMITEMS;i++){
 			let bpit=bp.itemtype[i];
-			if(
-				(bpflags&HDBPF_&&bpit=="HDPistolMags")
-				||(bpflags&HDBPF_&&bpit=="HDSMGMags")
-				||(bpflags&HDBPF_&&bpit=="HDShellAmmo")
-				||(bpflags&HDBPF_&&bpit=="ZM66RifleMags")
-				||(bpflags&HDBPF_&&bpit=="HDRocketAmmo")
-				||(bpflags&HDBPF_&&bpit=="HEATAmmo")
-				||(bpflags&HDBPF_&&bpit=="HDCellPacks")
-				||(bpflags&HDBPF_&&bpit=="LiberatorMag")
-				||(bpflags&HDBPF_&&bpit=="BossClip")
-				||(bpflags&HDBPF_&&bpit=="BrontornisRounds")
-				||(bpflags&HDBPF_&&bpit=="HDFragGrenadeAmmo")
-				||(bpflags&HDBPF_&&bpit=="PortableMedikit")
-				||(bpflags&HDBPF_&&bpit=="PortableStimpack")
-				||(bpflags&HDBPF_&&bpit=="PortableBerserkPack")
-				||(bpflags&HDBPF_&&bpit=="PortableRadsuit")
-				||(bpflags&HDBPF_&&bpit=="PortableLadder")
-				||(bpflags&HDBPF_&&bpit=="PortableLiteAmp")
-				||(bpflags&HDBPF_&&bpit=="GreenArmourStored")
-				||(bpflags&HDBPF_&&bpit=="DERPUsable")
-				||(bpflags&HDBPF_&&bpit=="DERPDEAD")
-				||(bpflags&HDBPF_&&bpit=="IEDKit")
-			)bp.itemamount[i]=max(1,hdmath.maxinv(bpit)/3)
+			if(bpit&&(
+				(bpflags&HDBPF_PMAG&&bpit=="HDPistolMag")
+				||(bpflags&HDBPF_SMAG&&bpit=="HDSMGMag")
+				||(bpflags&HDBPF_SHEL&&bpit=="HDShellAmmo")
+				||(bpflags&HDBPF_ZM66&&bpit=="ZM66RifleMags")
+				||(bpflags&HDBPF_ROCK&&bpit=="HDRocketAmmo")
+				||(bpflags&HDBPF_HEAT&&bpit=="HEATAmmo")
+				||(bpflags&HDBPF_CELL&&bpit=="HDCellPacks")
+				||(bpflags&HDBPF_LMAG&&bpit=="LiberatorMag")
+				||(bpflags&HDBPF_CLIP&&bpit=="BossClip")
+				||(bpflags&HDBPF_BRON&&bpit=="BrontornisRound")
+				||(bpflags&HDBPF_FRAG&&bpit=="HDFragGrenadeAmmo")
+				||(bpflags&HDBPF_MEDI&&bpit=="PortableMedikit")
+				||(bpflags&HDBPF_STIM&&bpit=="PortableStimpack")
+				||(bpflags&HDBPF_BERS&&bpit=="PortableBerserkPack")
+				||(bpflags&HDBPF_RADS&&bpit=="PortableRadsuit")
+				||(bpflags&HDBPF_LADD&&bpit=="PortableLadder")
+				||(bpflags&HDBPF_LITE&&bpit=="PortableLiteAmp")
+				||(bpflags&HDBPF_ARMR&&bpit=="GreenArmourStored")
+				||(bpflags&HDBPF_DERP&&bpit=="DERPUsable")
+				||(bpflags&HDBPF_DDRP&&bpit=="DERPDEAD")
+				||(bpflags&HDBPF_IEDK&&bpit=="HDIEDKit")
+			))bp.itemamount[i]=max(1,hdmath.maxinv(owner,bpit));
 			if(bp.getbulk()>=HDBPC_CAPACITY){
 				bp.itemamount[i]=0;
 				return;
 			}
 		}
 	}
-*/
 	default{
 		inventory.maxamount 999;
 	}
@@ -338,6 +335,7 @@ class HDBPPreset:InventoryFlag{
 		user.A_SetInventory("HDBP",1);
 		let bp=HDBP(user.findinventory("HDBP"));
 		if(amount==999){
+			LoadBPCustom(user);
 		}else{
 			for(int i=0;i<HDBPC_NUMITEMS;i++){
 				class<inventory>bpi=bp.itemtype[i];

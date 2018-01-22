@@ -12,6 +12,7 @@ class frags:idledummy{
 		}stop;
 	}
 }
+
 class HDFragGrenadeRoller:HDActor{
 	int fuze;
 	vector3 keeprolling;
@@ -59,7 +60,11 @@ class HDFragGrenadeRoller:HDActor{
 	destroy:
 		TNT1 A 1{
 			bsolid=false;bpushable=false;bmissile=false;bnointeraction=true;bshootable=false;
-			spawn("DistantRocket",pos);
+			A_Blast(
+				pushradius:256,pushamount:128,fullpushradius:96,
+				fragradius:HDCONST_SPEEDOFSOUND,fragdamage:256,
+				gibradius:24,gibamount:random(2,9)*10
+			);
 			DistantQuaker.Quake(self,4,35,512,10);
 			A_PlaySound("world/explode",1,7);
 			A_AlertMonsters();
@@ -67,18 +72,14 @@ class HDFragGrenadeRoller:HDActor{
 				xpl.target=target;xpl.master=master;xpl.stamina=stamina;
 			xpl=spawn("HDExplosion",self.pos-(0,0,1),ALLOW_REPLACE);
 				xpl.target=target;xpl.master=master;xpl.stamina=stamina;
-			A_Blast(
-				pushradius:256,pushamount:128,fullpushradius:96,
-				fragradius:HDCONST_SPEEDOFSOUND,fragdamage:256,
-				gibradius:24,gibamount:random(2,9)*10
-			);
 			A_SpawnChunks("BigWallChunk",14,4,12);
 			A_SpawnChunks("HDBulletFrag",360,100,800);
+			spawn("DistantRocket",pos);
 		}
 		stop;
 	}
 	override void tick(){
-		if(globalfreeze||level.Frozen) return;
+		if(globalfreeze||level.Frozen)return;
 		else if(bnointeraction){
 			nexttic();
 			return;
@@ -107,7 +108,9 @@ class HDFragGrenade:SlowProjectile{
 	override void tick(){
 		ClearInterpolation();
 		if(globalfreeze||level.Frozen)return;
-		if(fuze<140){
+		if(!bmissile){
+			hdactor.tick();return;
+		}else if(fuze<140){
 			fuze++;
 			keeprolling=vel;
 			super.tick();
@@ -117,9 +120,9 @@ class HDFragGrenade:SlowProjectile{
 				A_SpawnChunks("HDBulletFrag",360,400,800);
 				destroy();return;
 			}
-			actor gr=spawn("HDFragGrenadeRoller",pos);
+			let gr=HDFragGrenadeRoller(spawn("HDFragGrenadeRoller",pos));
 			gr.target=self.target;gr.master=self.master;gr.vel=self.vel;
-			gr.setstatelabel("destroy");
+			gr.fuze=fuze;
 			destroy();return;
 		}
 	}
