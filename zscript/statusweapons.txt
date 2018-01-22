@@ -392,7 +392,9 @@ extend class HDStatusBar{
 			//list
 			int row=0;int column=16;
 			for(int i=0;i<HDBPC_NUMITEMS;i++){
-				if(bp.itemtype[i]){
+				if(bp.itemname[i]=="br"){
+					row+=5;
+				}else if(bp.itemtype[i]){
 					bool onperson=pp.countinv(bp.itemtype[i]);
 					bool inpack=bp.itemamount[i];
 					drawstring(psmallfont,
@@ -405,7 +407,7 @@ extend class HDStatusBar{
 						)),alpha:(!inpack&&!onperson&&i!=which)?0.6:1.
 					);
 					row+=8;
-					if(row>=20*8){
+					if(row>=22*8){
 						row=0;
 						column+=160;
 					}
@@ -423,13 +425,13 @@ extend class HDStatusBar{
 
 			//explanation
 			if(cvar.getcvar("hd_helptext",cplayer).getbool()){
-				row+=20;
+				row+=12;
 				drawstring(psmallfont,"Backpack Instructions:",
 					(column,row),
 					DI_SCREEN_TOP|DI_SCREEN_LEFT|DI_TEXT_ALIGN_LEFT,
 					font.CR_BROWN,alpha:0.5
 				);
-				row+=9;
+				row+=7;
 				column+=10;
 				drawstring(psmallfont,"Fire/Altfire: Select",
 					(column,row),
@@ -437,17 +439,17 @@ extend class HDStatusBar{
 					font.CR_OLIVE,alpha:0.5
 				);
 				drawstring(psmallfont,"(hold Fire Mode to slow)",
-					(column+8,row+8),
+					(column+8,row+7),
 					DI_SCREEN_TOP|DI_SCREEN_LEFT|DI_TEXT_ALIGN_LEFT,
 					font.CR_DARKGRAY,alpha:0.5
 				);
 				drawstring(psmallfont,"Reload/Unload: Put/Take",
-					(column,row+16),
+					(column,row+14),
 					DI_SCREEN_TOP|DI_SCREEN_LEFT|DI_TEXT_ALIGN_LEFT,
 					font.CR_OLIVE,alpha:0.5
 				);
 				drawstring(psmallfont,"Mash Zoom to dump",
-					(column,row+24),
+					(column,row+21),
 					DI_SCREEN_TOP|DI_SCREEN_LEFT|DI_TEXT_ALIGN_LEFT,
 					font.CR_OLIVE,alpha:0.5
 				);
