@@ -78,6 +78,7 @@ ListMenu "PlayerMenu"{
 	Font "SmallFont","White","Gold"
 	TextItem "User Settings...","U","HDUserOptionsMenu"
 	TextItem "Customize Loadout...","L","CustomLoadoutMenu"
+	TextItem "Customize Backpack...","B","CustomBackpackMenu"
 
 	Class "PlayerMenu"
 }
@@ -94,7 +95,7 @@ AddOptionMenu GameplayOptions{
 	Slider "Killer barrel spawn rate","hd_killerbarrels",0,100,5,0
 	Option "Only 3 movement speeds in multiplayer","hd_3speed","YesNo"
 	Option "Weapon inertia","hd_noturninertia","TurnInertia"
-	Command "Reset all HD server settings","hd_clearscv"
+//	Command "Reset all HD server settings","hd_clearscv"
 
 	StaticText " "
 	SubMenu "Hideous Destructor User Settings...","HDUserOptionsMenu"
@@ -112,7 +113,7 @@ OptionMenu "HDUserOptionsMenu"{
 	Option "HUD weapon sprite","hd_hudsprite","YesNo"
 	Option "Show scope view","hd_noscope","NoScope"
 	Option "Auto-strip for medikit","hd_autostrip","YesNo"
-	Command "Reset all HD user settings","hd_clearucv"
+//	Command "Reset all HD user settings","hd_clearucv"
 
 	StaticText " "
 	StaticText "Hideous Destructor Personal Weapon Settings",1
@@ -134,12 +135,14 @@ OptionMenu "HDUserOptionsMenu"{
 	Slider "Boss drop adjust","hd_bossmoa",0,36,1,0
 	Slider "Boss zoom level","hd_bosszoom",0,55,1,0
 	Option "Boss front reticle","hd_bossfrontreticle","YesNo"
-	Command "Reset all HD personal weapon settings","hd_clearwepcv"
+//	Command "Reset all HD personal weapon settings","hd_clearwepcv"
 }
 
 //loadout spamghetti
 OptionMenu "CustomLoadoutMenu"{
 	Title "CUSTOMIZE LOADOUT"
+	Submenu "Set Backpack Contents...","CustomBackpackMenu"
+//	Command "Reset all HD server settings","hd_resetloadout"
 
 	Option "Item 0",hd_load0,"CustomLoadoutItems"
 	Slider"amount","hd_load0a",0,20,1,0
@@ -242,6 +245,47 @@ OptionValue "CustomLoadoutItems"{
 	17,"Green Armour (stored)"18,"Blue Armour (stored)"19,"Black Armour (stored)"
 	20,"Ladder"
 }
+//backpackloadout spamghetti
+OptionMenu "CustomBackpackMenu"{
+	Title "CUSTOMIZE BACKPACK"
+//	Command "Reset all HD server settings","hd_resetbackpackcvars"
 
+	Slider"Soft armour","hd_loadbp0",0,1,1,0
+	Slider"Ladder","hd_loadbp1",0,3,1,0
+	Slider"Environment suit","hd_loadbp2",0,4,1,0
+	Slider"Light amplifiers","hd_loadbp3",0,10,1,0
+	statictext""
+	Slider"Medikit","hd_loadbp5",0,10,1,0
+	Slider"Berserk pack","hd_loadbp6",0,15,1,0
+	Slider"Stimpack","hd_loadbp7",0,20,1,0
+	statictext""
+	Slider"H.E.A.T. rocket","hd_loadbp11",0,20,1,0
+	Slider"Rocket grenade","hd_loadbp12",0,20,1,0
+	Slider"Defused rocket","hd_loadbp13",0,20,1,0
+	statictext""
+	Slider"Hand grenade","hd_loadbp15",0,20,1,0
+	Slider"Fresh battery","hd_loadbp16",0,20,1,0
+	Slider"Stale battery","hd_loadbp17",0,20,1,0
+	Slider"Depleted battery","hd_loadbp18",0,20,1,0
+	Slider"Brontornis shell","hd_loadbp19",0,20,1,0
+	statictext""
+	Slider"4.26mm mag","hd_loadbp21",0,21,1,0
+	Slider"Misc. 4.26mm ammo","hd_loadbp22",0,20,1,0
+	statictext""
+	Slider"7.76mm mag","hd_loadbp24",0,20,1,0
+	Slider"7.76mm clip","hd_loadbp25",0,20,1,0
+	Slider"Misc. 7.76mm ammo","hd_loadbp26",0,20,1,0
+	Slider"7.76mm casing","hd_loadbp27",0,20,1,0
+	statictext""
+	Slider"Pistol mag","hd_loadbp29",0,20,1,0
+	Slider"SMG ma","hd_loadbp30",0,20,1,0
+	Slider"Misc. 9mm ammo","hd_loadbp31",0,20,1,0
+	statictext""
+	Slider"Shotgun shell","hd_loadbp33",0,20,1,0
+	statictext""
+	Slider"D.E.R.P. robot","hd_loadbp35",0,20,1,0
+	Slider"Broken D.E.R.P. robot","hd_loadbp36",0,20,1,0
+	Slider"I.E.D. kit","hd_loadbp37",0,20,1,0
+}
 
 

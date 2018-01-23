@@ -263,70 +263,11 @@ enum HDBackpackItems{
 
 	HDBPF_NOAUTO=1,
 
-	HDBPF_PMAG=1,
-	HDBPF_SMAG=1<<1,
-	HDBPF_SHEL=1<<2,
-	HDBPF_ZM66=1<<3,
-	HDBPF_ROCK=1<<4,
-	HDBPF_HEAT=1<<5,
-	HDBPF_CELL=1<<6,
-	HDBPF_LMAG=1<<7,
-	HDBPF_CLIP=1<<8,
-	HDBPF_BRON=1<<9,
-	HDBPF_FRAG=1<<10,
-	HDBPF_MEDI=1<<11,
-	HDBPF_STIM=1<<12,
-	HDBPF_BERS=1<<13,
-	HDBPF_RADS=1<<14,
-	HDBPF_LADD=1<<15,
-	HDBPF_LITE=1<<16,
-	HDBPF_ARMR=1<<17,
-	HDBPF_DERP=1<<18,
-	HDBPF_DDRP=1<<19,
-	HDBPF_IEDK=1<<20,
-
 	HDBPC_CAPACITY=3000,
 	HDBPC_NUMITEMS=40, //should be the length of the array including brs
 }
 
 class HDBPPreset:InventoryFlag{
-	void LoadBPCustom(actor caller){
-		caller.A_SetInventory("HDBP",1);
-		int bpflags=cvar.getcvar("hd_loadbp",owner.player).getint();
-		if(!bpflags)return;
-		let bp=HDBP(caller.findinventory("HDBP"));
-
-		for(int i=0;i<HDBPC_NUMITEMS;i++){
-			let bpit=bp.itemtype[i];
-			if(bpit&&(
-				(bpflags&HDBPF_PMAG&&bpit=="HDPistolMag")
-				||(bpflags&HDBPF_SMAG&&bpit=="HDSMGMag")
-				||(bpflags&HDBPF_SHEL&&bpit=="HDShellAmmo")
-				||(bpflags&HDBPF_ZM66&&bpit=="ZM66RifleMags")
-				||(bpflags&HDBPF_ROCK&&bpit=="HDRocketAmmo")
-				||(bpflags&HDBPF_HEAT&&bpit=="HEATAmmo")
-				||(bpflags&HDBPF_CELL&&bpit=="HDCellPacks")
-				||(bpflags&HDBPF_LMAG&&bpit=="LiberatorMag")
-				||(bpflags&HDBPF_CLIP&&bpit=="BossClip")
-				||(bpflags&HDBPF_BRON&&bpit=="BrontornisRound")
-				||(bpflags&HDBPF_FRAG&&bpit=="HDFragGrenadeAmmo")
-				||(bpflags&HDBPF_MEDI&&bpit=="PortableMedikit")
-				||(bpflags&HDBPF_STIM&&bpit=="PortableStimpack")
-				||(bpflags&HDBPF_BERS&&bpit=="PortableBerserkPack")
-				||(bpflags&HDBPF_RADS&&bpit=="PortableRadsuit")
-				||(bpflags&HDBPF_LADD&&bpit=="PortableLadder")
-				||(bpflags&HDBPF_LITE&&bpit=="PortableLiteAmp")
-				||(bpflags&HDBPF_ARMR&&bpit=="GreenArmourStored")
-				||(bpflags&HDBPF_DERP&&bpit=="DERPUsable")
-				||(bpflags&HDBPF_DDRP&&bpit=="DERPDEAD")
-				||(bpflags&HDBPF_IEDK&&bpit=="HDIEDKit")
-			))bp.itemamount[i]=max(1,hdmath.maxinv(owner,bpit));
-			if(bp.getbulk()>=HDBPC_CAPACITY){
-				bp.itemamount[i]=0;
-				return;
-			}
-		}
-	}
 	default{
 		inventory.maxamount 999;
 	}
@@ -334,8 +275,19 @@ class HDBPPreset:InventoryFlag{
 		super.attachtoowner(user);
 		user.A_SetInventory("HDBP",1);
 		let bp=HDBP(user.findinventory("HDBP"));
-		if(amount==999){
-			LoadBPCustom(user);
+		if(amount==999){ //custom
+			for(int i=0;i<HDBPC_NUMITEMS;i++){
+				if(bp.itemtype[i]){
+					bp.itemamount[i]=cvar.getcvar(
+						string.format("hd_loadbp%i",i),
+						owner.player
+					).getint();
+					if(bp.getbulk()>=HDBPC_CAPACITY){    
+						bp.itemamount[i]=0;
+						break;
+					}
+				}
+			}
 		}else{
 			for(int i=0;i<HDBPC_NUMITEMS;i++){
 				class<inventory>bpi=bp.itemtype[i];
