@@ -8,10 +8,23 @@ class HDBP:HDWeapon{
 		inventory.pickupmessage "Picked up a backpack to help fill your life with ammo!";
 		inventory.pickupsound "weapons/pocket";
 	}
+	override inventory createtossable(int amount){
+		target=owner;
+		let ct=hdbp(super.createtossable(amount));
+		if(target&&ct.getbulk()){
+			ct.target=target;
+			ct.translation=target.translation;
+		}
+		return ct;
+	}
 	states{
 	spawn:
-		BPAK AB -1 nodelay{
+		BPAK ABC -1 nodelay{
 			if(!invoker.getbulk())frame=1;
+			else if(target){
+				translation=target.translation;
+				frame=2;
+			}
 		}
 	select0:
 		TNT1 A 10{
