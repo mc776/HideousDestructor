@@ -14,10 +14,6 @@ extend class HDStatusBar{
 		SetSize(0,400,250);
 		BeginHUD(forcescaled:true);
 
-//at some point we'll need text
-//hudfont pSmallFont=HUDFont.Create("SmallFont");
-//drawstring(psmallfont,"AAA",(random(120,180),random(60,90)),DI_TEXT_ALIGN_CENTER,font.CR_SAPPHIRE);
-
 		int ismoving=hpl.countinv("IsMoving");
 		actor hpc=hpl.scopecamera;
 		int cpbt=cplayer.cmd.buttons;
@@ -111,15 +107,11 @@ extend class HDStatusBar{
 				scale:(1.6,1.6)
 			);
 			else if(wp.weaponstatus[0]&RLF_ZOOM){
-				texman.setcameratotexture(hpc,"HDXHCAM5",2.2);
-				int cx, cy, cw, ch;
-				[cx,cy,cw,ch]=screen.GetClipRect();
-				SetClipRect(302,179,36,57);
+				texman.setcameratotexture(hpc,"HDXHCAM5",2.);
 				drawimage(
-					"HDXHCAM5",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					"HDXHCAM5",(0,-2),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 					scale:(0.35,0.35)
 				);
-				screen.SetClipRect(cx,cy,cw,ch);
 				drawimage(
 					"stadia",(0,-2),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 					scale:(1.,1.)
@@ -182,15 +174,11 @@ extend class HDStatusBar{
 		}
 		else if((wp is "Brontornis")&&ismoving<10){
 			if(wp.weaponstatus[0]&BRONF_ZOOM){
-				texman.setcameratotexture(hpc,"HDXHCAM5",1.6);
-				int cx,cy,cw,ch;
-				[cx,cy,cw,ch]=screen.GetClipRect();
-				SetClipRect(302,179,36,57);
+				texman.setcameratotexture(hpc,"HDXHCAM5",2.6);
 				drawimage(
-					"HDXHCAM5",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					"HDXHCAM5",(0,-2),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 					scale:(0.35,0.35)
 				);
-				screen.SetClipRect(cx,cy,cw,ch);
 				drawimage(
 					"stadia",(0,-2),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 					scale:(1.,1.)

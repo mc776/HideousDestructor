@@ -89,7 +89,7 @@ class HDRL:HDWeapon{
 					A_ChangeVelocity(cos(pitch)*-1,0,sin(pitch)*1,CVF_RELATIVE);
 				}else rkt=gyrogrenade(spawn("GyroGrenade",pos+(0,0,height-8)));
 				invoker.weaponstatus[RLS_SMOKE]+=50;
-				rkt.angle=angle;rkt.pitch=pitch;rkt.target=self;rkt.master=self;
+				rkt.angle=angle;rkt.pitch=pitch-1;rkt.target=self;rkt.master=self;
 				rkt.primed=false;
 				rkt.isrocket=true;
 				if(chm==1)rkt.fuze=max(0,invoker.weaponstatus[RLS_AIRBURST]);
