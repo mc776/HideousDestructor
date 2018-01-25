@@ -98,7 +98,6 @@ class hdladdertop:hdactor{
 		//if there's no lower floor to drop the ladder, abort.
 		if(master){
 			master.A_Log("Can't hang a ladder here.",true);
-			master.A_GiveInventory("PortableLadder");
 		}else{
 			actor hdl=spawn("PortableLadder",pos);
 			hdl.A_PlaySound("misc/ladder");
