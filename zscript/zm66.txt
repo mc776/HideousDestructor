@@ -303,15 +303,22 @@ class ZM66AssaultRifle:HDWeapon{
 		RIFG B 20 offset(-14,44){
 			if(
 				(
+					//empty mag
 					!invoker.weaponstatus[ZM66S_MAG]
 				)||(
+					//not holding *load buttons
 					!PressingUnload()&&!PressingReload()
 				)||(
-					(invoker.weaponstatus[ZM66S_MAG]==51)
-					&&(A_JumpIfInventory("ZM66RifleMags",0,"null"))
+					//no space for full mags
+					invoker.weaponstatus[ZM66S_MAG]==51
+					&&A_JumpIfInventory("ZM66RifleMags",0,"null")
 				)||(
-					(invoker.weaponstatus[ZM66S_MAG]>0)
-					&&(countinv("FourMilAmmo")>AmmoCap("FourMilAmmo")-invoker.weaponstatus[ZM66S_MAG])  
+					//no space for partials
+					invoker.weaponstatus[ZM66S_MAG]<51
+					&&invoker.weaponstatus[ZM66S_MAG]>0
+					&&countinv("FourMilAmmo")>  
+						AmmoCap("FourMilAmmo")
+						-invoker.weaponstatus[ZM66S_MAG]
 				)
 			){
 				int garbage;actor mmm;
