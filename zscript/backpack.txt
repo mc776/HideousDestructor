@@ -1,9 +1,10 @@
 // ------------------------------------------------------------
 // Backpack
 // ------------------------------------------------------------
-class HDBP:HDWeapon replaces backpack{
+class HDBP:HDWeapon{
 	default{
 		+inventory.invbar +weapon.wimpy_weapon
+		+weapon.no_auto_switch
 		inventory.icon "BPAKA0";
 		inventory.pickupmessage "Picked up a backpack to help fill your life with ammo!";
 		inventory.pickupsound "weapons/pocket";
@@ -25,6 +26,7 @@ class HDBP:HDWeapon replaces backpack{
 				translation=target.translation;
 				frame=2;
 			}
+			invoker.bno_auto_switch=false;
 		}
 	select0:
 		TNT1 A 10{
@@ -280,14 +282,27 @@ enum HDBackpackItems{
 	HDBPC_NUMITEMS=40, //should be the length of the array including brs
 }
 
-class HDBPPreset:InventoryFlag{
+class HDBPPreset:Inventory replaces backpack{
 	default{
 		inventory.maxamount 999;
 	}
-	override void attachtoowner(actor user){
-		super.attachtoowner(user);
-		user.A_SetInventory("HDBP",1);
-		let bp=HDBP(user.findinventory("HDBP"));
+	override void postbeginplay(){
+		super.postbeginplay();
+		actor prebp;
+		if(owner){
+			owner.A_SetInventory("HDBP",1);
+			prebp=owner.findinventory("HDBP");
+		}else{
+			prebp=spawn("HDBP",pos);
+			amount=random(1,20);
+		}
+		let bp=HDBP(prebp);
+		if(bp){
+			addstuff(bp);
+		}
+		destroy();
+	}
+	void addstuff(hdbp bp){
 		if(amount==999){ //custom
 			for(int i=0;i<HDBPC_NUMITEMS;i++){
 				if(bp.itemtype[i]){
@@ -323,7 +338,7 @@ class HDBPPreset:InventoryFlag{
 					else if(bpi=="DudRocketAmmo")bp.itemamount[i]=5;
 					else if(bpi=="HDPistolMag")bp.itemamount[i]=10;
 					else if(bpi=="ZM66RifleMags")bp.itemamount[i]=5;
-				}else if(!random(0,5)){ //insurgent
+				}else if(!random(0,5)&&bpi){ //insurgent
 					int maxrand=500/(max(1,bp.itembulk[i]));
 					bp.itemamount[i]=random(1,maxrand);
 					if(bp.getbulk()>=HDBPC_CAPACITY){  
