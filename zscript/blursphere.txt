@@ -17,11 +17,17 @@ class HDBlurSphere:HDPickup{
 		accuracy 1;
 	}
 	int intensity;int xp;int level;bool worn;
+	int randticker[4];double randtickerfloat;
 	override void tick(){
 		super.tick();
-		double frnd=frandom(0.93,1.04);
+		double frnd=frandom[blur](0.93,1.04);
 		scale=(0.3,0.3)*frnd;
 		alpha=0.9*frnd;
+		randticker[0]=random(0,3);
+		randticker[1]=random(8,25);
+		randticker[2]=random(0,40+level);
+		randticker[3]=random(0,BLUR_LEVELUP);
+		randtickerfloat=frandom(0.,1.);
 	}
 	override void ownerdied(){
 		buntossable=false;
@@ -42,7 +48,7 @@ class HDBlurSphere:HDPickup{
 				invoker.level+=invoker.xp/BLUR_LEVELUP;
 				invoker.xp%=BLUR_LEVELUP;
 				invoker.stamina=clamp(invoker.level+random(-2,2),0,10);
-				if(invoker.level>7)invoker.buntossable=true;
+				if(invoker.level>7)invoker.buntossable=true;  
 
 				int spac=countinv("SpiritualArmour");
 				if(spac){
@@ -67,7 +73,7 @@ class HDBlurSphere:HDPickup{
 		}
 
 		//they eat their own
-		if(amount>1){
+		if(amount>1){  
 			amount=1;
 			xp+=100;
 		}
@@ -75,14 +81,14 @@ class HDBlurSphere:HDPickup{
 
 		if(!worn){
 			intensity=max(0,intensity-1);
-			xp+=randompick(0,0,1);
+			if(randticker[0])xp++;
 		}else{
 			if(intensity<99)intensity=max(intensity+1,-135);
 			xp++;
 		}
 		bool invi=true;
 
-		if(intensity<random(8,25)){
+		if(intensity<randticker[1]){
 			owner.a_setrenderstyle(1.,STYLE_Normal);
 			invi=false;
 		}else{
@@ -95,7 +101,7 @@ class HDBlurSphere:HDPickup{
 		if(!owner.countinv("blurtaint"))return;
 
 		//medusa gaze
-		if(invi&&!random(0,3)){
+		if(invi&&!!randticker[0]){
 			actor aaa;int bbb;
 			[aaa,bbb]=owner.LineAttack(owner.angle,4096,owner.pitch,0,"none",
 				"CheckPuff",flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ|LAF_NOINTERACT,
@@ -108,7 +114,7 @@ class HDBlurSphere:HDPickup{
 					if(itt.thing.target==owner)itt.thing.A_ClearTarget();
 					if(
 						itt.thing.bismonster
-						&&itt.thing.health>0
+						&&itt.thing.health>0  
 						&&!aaa.tracer.target
 					)aaa.tracer.target=itt.thing;
 				}
@@ -119,10 +125,10 @@ class HDBlurSphere:HDPickup{
 
 		let hdp=hdplayerpawn(owner);
 		if(hdp){
-			if(hdp.regenblues>0){
+			if(hdp.regenblues>0){  
 				hdp.regenblues=max(0,hdp.regenblues-15);
 				hdp.cheatgivestatusailments("fire",1);
-				if(!worn&&!random(0,40+level)){
+				if(!worn&&!randticker[2]){
 					hdp.A_TakeInventory("BlurTaint");
 				}
 			}
@@ -133,7 +139,7 @@ class HDBlurSphere:HDPickup{
 		}
 
 		//precious.
-		if(random(0,BLUR_LEVELUP)<level){
+		if(randticker[3]<level){
 			if(!(xp%3)){
 				sound snd[7];
 				snd[0]="imp/sight";
@@ -143,13 +149,13 @@ class HDBlurSphere:HDPickup{
 				snd[4]="world/riflefar";
 				snd[5]="world/rocketfar";
 				snd[6]="misc/gibbed";
-				owner.A_PlaySound(snd[random(1,snd.size())-1],
-					CHAN_VOICE,frandom(0.3,0.5),false,8
+				owner.A_PlaySound(snd[clamp(randtickerfloat*snd.size(),0,snd.size()-1)],
+					CHAN_VOICE,randtickerfloat*0.3+0.3,false,8
 				);
 			}
 			if(!(xp%5)){
 				string msg[15];
-				msg[0]=string.format("Out of sync with: %i",random(1,4));
+				msg[0]=string.format("Out of sync with: %i",randticker[0]+1);
 				msg[1]="Error: no such actor \"HDPlayer\" exists. Execution may abort!";
 				msg[2]="\cd[DERP] \cjEngaging hostile.";
 				msg[3]="Memory allocation error: recovered segfault at address 00x6f24ff.";
@@ -164,11 +170,11 @@ class HDBlurSphere:HDPickup{
 				msg[12]="Precious.";
 				msg[13]="Precious.";
 				msg[14]="Precious.";
-				owner.A_Log(msg[random(1,msg.size())-1],true);
+				owner.A_Log(msg[clamp(randtickerfloat*msg.size(),0,msg.size()-1)],true);
 			}
 			if(!(xp%7)){
 				hdplayerpawn(owner).aggravateddamage++;
-				if(!random(0,3))owner.A_Log("Precious.",true);
+				if(!randticker[0])owner.A_Log("Precious.",true);
 			}
 		}
 	}
