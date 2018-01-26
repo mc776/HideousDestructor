@@ -19,9 +19,7 @@ class HDIEDKit:HDPickup{
 	}
 	override void attachtoowner(actor user){
 		super.attachtoowner(user);
-		user.A_SetInventory("IEDController",1);
-		user.A_GiveInventory("IEDDet");
-		user.A_GiveInventory("IEDSetPassive");
+		user.A_GiveInventory("IEDController");
 	}
 	states{
 	spawn2:
@@ -118,9 +116,6 @@ class HDIED:DudRocket{
 	}
 }
 class IEDController:InventoryFlag{
-	default{
-		inventory.maxamount 999;
-	}
 	override void DoEffect(){
 		if(!owner.player){destroy();return;}
 
