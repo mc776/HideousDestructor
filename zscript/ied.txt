@@ -2,7 +2,7 @@
 // Not-Quite-Improvised Explosive Device
 //-------------------------------------------------
 enum HDIEDConst{
-	HDIED_TID=84954,
+	HDIED_TID=8495,
 
 	HDIED_DETONATE=99,
 	HDIED_AWAKEN=42,
@@ -66,8 +66,8 @@ class HDIED:DudRocket{
 			}
 		}
 		IEDS C 0 A_PlaySound("misc/i_pkup");
-		IEDS CBCBC 7;
-		IEDS ABABABABABABAB 5;
+		IEDS CBCBC 4;
+		IEDS ABABABABABABAB 2;
 		IEDS ABABAB 1;
 		IEDS A 0{
 			bmissileevenmore=true;
@@ -81,14 +81,8 @@ class HDIED:DudRocket{
 			}
 			A_ClearTarget();
 		}loop;
-/*
-	see:
-		IEDS B 2 A_JumpIfCloser(96,"melee");
-		IEDS C 2 A_ClearTarget();
-		goto idle;
-*/
 	melee:
-		IEDS A 1;
+		IEDS A 0;
 		goto detonate;
 	pain:
 		IEDS A 0 A_Jump(8,"destroy");
@@ -99,12 +93,11 @@ class HDIED:DudRocket{
 		IEDS A 0 A_Jump(200,"destroy");
 		goto idle;
 	detonate:
-		IEDS A 0{
+		IEDS A 1{
 			bshootable=false;
 			bfriendly=false;
 			bismonster=false;
 			target=master;
-			master=null;
 		}goto explode;
 	destroy:
 		IEDS A 0{
@@ -154,24 +147,30 @@ class IEDController:InventoryFlag{
 		inventory.maxamount 999;
 	}
 	override void DoEffect(){
-		if(amount==1)return;
+		if(!owner.player){destroy();return;}
+
+		string cmd=cvar.getcvar("ied",owner.player).getstring();
+		if(cmd=="")return;
+		cmd.tolower();
 
 		actoriterator it=actoriterator.create(HDIED_TID,"HDIED");
 		actor ied;
 		while(ied=it.Next()){
-			if(amount==HDIED_DETONATE){
-				if(ied.bmissileevenmore)ied.setstatelabel("explode");
-			}
-			else if(amount==HDIED_PASSIVE){
-				ied.bmissilemore=false;
-			}
-			else if(amount==HDIED_AWAKEN){
-				ied.bmissilemore=true;
+			if(ied.master==owner){
+				if(cmd=="detonate"){
+					if(ied.bmissileevenmore)ied.setstatelabel("detonate");
+				}
+				else if(cmd.charat(0)=="a"){
+					ied.bmissilemore=true;
+				}
+				else{
+					ied.bmissilemore=false;
+				}
 			}
 		}
 
-		//reset as necessary
-		if(amount!=2)amount=1;
+		//reset
+		cvar.getcvar("ied",owner.player).resettodefault();
 	}
 }
 
