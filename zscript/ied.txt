@@ -118,13 +118,13 @@ class HDIED:DudRocket{
 				SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM
 			);
 			A_SpawnItemEx("DudRocket",0,0,height-12,
-				velx,vely,vel.z+2,0,
+				vel.x,vel.y,vel.z+2,0,
 				SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM
 			);
 		}stop;
 	}
 }
-class HDIEDDet:ActionItem{
+class IEDDet:ActionItem{
 	default{+inventory.undroppable}
 	states{
 	use:
@@ -149,7 +149,7 @@ class IEDSetPassive:ActionItem{
 		}fail;
 	}
 }
-actor IEDController:InventoryFlag{
+class IEDController:InventoryFlag{
 	default{
 		inventory.maxamount 999;
 	}
