@@ -117,31 +117,6 @@ class HDIED:DudRocket{
 		}stop;
 	}
 }
-class IEDDet:ActionItem{
-	default{+inventory.undroppable}
-	states{
-	use:
-		TNT1 A 0{
-			A_Print("All online IEDs \cgDETONATED");
-			A_SetInventory("IEDController",HDIED_DETONATE);
-		}fail;
-	}
-}
-class IEDSetPassive:ActionItem{
-	default{+inventory.undroppable}
-	states{
-	use:
-		TNT1 A 0{
-			if(countinv("IEDController")!=2){
-				A_Print("All online IEDs \cjPASSIVE");
-				A_SetInventory("IEDController",HDIED_PASSIVE);
-			}else{
-				A_Print("All online IEDs \cdACTIVE");
-				A_SetInventory("IEDController",HDIED_AWAKEN);
-			}
-		}fail;
-	}
-}
 class IEDController:InventoryFlag{
 	default{
 		inventory.maxamount 999;
