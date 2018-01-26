@@ -59,6 +59,7 @@ class HDBP:HDWeapon{
 			}else{
 				if(player.cmd.pitch<0)invoker.weaponstatus[HDBPS_WHICH]++;
 				else if(player.cmd.pitch>0)invoker.weaponstatus[HDBPS_WHICH]--;
+				A_MuzzleClimb(0,player.cmd.pitch*0.0012);
 			}
 
 			//wrap, skip
