@@ -193,7 +193,7 @@ struct HDMobAI play{
 		double speedbak=caller.speed;
 		if(!caller.target||caller.target.health<1)caller.speed*=0.5;
 
-		//chase the move target and record the resulting position
+		//wander and record the resulting position
 		caller.A_Wander();
 		vector3 pp=caller.pos;
 
@@ -237,9 +237,9 @@ struct HDMobAI play{
 		double speedbak=caller.speed;
 		if(caller.bfrightened)caller.speed*=2;
 
-		//chase the move target and record the resulting position
+		//chase the goal and record the resulting position
 		if(attacktarget)caller.A_Chase(
-			"melee","missile",
+			melstate,misstate,
 			(res?CHF_RESURRECT:0)
 		);
 		else caller.A_Wander();
