@@ -70,6 +70,8 @@ class HDIED:DudRocket{
 		goto idle;
 	idle:
 		IEDS A 10{
+			if(master&&master.countinv("IEDController")==2)bmissilemore=false;
+				else bmissilemore=true;
 			if(bmissilemore){
 				A_LookEx(LOF_NOSOUNDCHECK,0,96.0,0,360,"melee");
 			}
@@ -112,12 +114,18 @@ class HDIED:DudRocket{
 	}
 }
 class IEDController:InventoryFlag{
+	default{
+		inventory.maxamount 2;
+	}
 	override void DoEffect(){
 		if(!owner.player){destroy();return;}
 
 		string cmd=cvar.getcvar("ied",owner.player).getstring();
 		if(cmd=="")return;
 		cmd.tolower();
+
+		//2=safety on
+		if(cmd.charat(0)=="s"||cmd.charat(0)=="p")amount=2;else amount=1;
 
 		actoriterator it=actoriterator.create(HDIED_TID,"HDIED");
 		actor ied;
