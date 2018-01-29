@@ -1,5 +1,5 @@
 // ------------------------------------------------------------
-//   Former Human Sergeant
+// Former Human Sergeant
 // ------------------------------------------------------------
 class HideousShotgunGuy:RandomSpawner replaces ShotgunGuy{
 	default{
@@ -10,10 +10,6 @@ class HideousShotgunGuy:RandomSpawner replaces ShotgunGuy{
 }
 class HDSGG:ShotgunGuy{
 	default{
-//(s)sg		translation "58:66=128:136","214:223=141:148","176:191=24:47","16:34=68:79";
-//zm66		translation "112:113=30:33","114:120=101:111","121:127=5:8","48:71=128:151";
-translation "58:66=128:136","214:223=141:148","176:191=24:47","16:34=68:79";
-
 		dropitem "";
 		health 80;
 		gibhealth 100;
@@ -42,9 +38,11 @@ translation "58:66=128:136","214:223=141:148","176:191=24:47","16:34=68:79";
 		wep=random(0,1)-random(0,1); //-1 zm66, 0 sg, 1 ssg
 		if(wep<0){
 			sprite=GetSpriteIndex("PLAYA1");
+			A_SetTranslation("HattedJackboot");
 			gunloaded=50;
 		}else{
 			sprite=GetSpriteIndex("SPOSA1");
+			A_SetTranslation("ShotgunGuy");
 			gunloaded=wep?2:8;
 		}
 	}
