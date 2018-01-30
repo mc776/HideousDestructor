@@ -272,7 +272,10 @@ class HDSGG:ShotgunGuy{
 			A_Pain();
 			if(!random(0,7))A_AlertMonsters();
 		}
-		#### G 0{bfrightened=true;}
+		#### G 0{
+			if(target&&distance3d(target)<100)setstatelabel("see");
+			bfrightened=true;
+		}
 		#### ABCD 2{hdmobai.chase(self)};
 		#### G 0{bfrightened=false;}
 		goto see;

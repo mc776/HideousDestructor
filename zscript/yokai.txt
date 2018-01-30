@@ -17,7 +17,7 @@ class Yokai:HDActor{
 		if(alpha<0.4&&!random(0,3)){
 			a_setrenderstyle(alpha,STYLE_Fuzzy);
 		}else{
-			a_setrenderstyle(alpha,STYLE_Translucent);
+			a_setrenderstyle(alpha,STYLE_Add);
 		}
 	}
 	states{
@@ -57,15 +57,15 @@ class Yokai:HDActor{
 
 			A_PlaySound("putto/sight",CHAN_AUTO,1,0,0.9);
 			A_SetScale(0.666);
-			HealThing(1);
+			HealThing(4);
 			if(!target)return;
 			A_GiveToTarget("IsMoving",2);
 			target.damagemobj(
 				self,self,
-				1,!random(0,20)?"balefire":"internal",
+				1,!random(0,63)?"balefire":"internal",
 				DMG_NO_ARMOR
 			);
-			if(target.health>0&&!random(0,3))target.health++;  
+			if(target.health>0&&!random(0,3))target.health++;
 		}
 		#### B 1 bright{
 			A_SetScale(0.680);

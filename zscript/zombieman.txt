@@ -290,9 +290,11 @@ class ZombieStormtrooper:ZombieMan{
 		#### G 3{
 			A_Pain();
 			if(!random(0,10))A_AlertMonsters();
-			if(target&&distance3d(target)<100)setstatelabel("see");
 		}
-		#### G 0{bfrightened=true;}
+		#### G 0{
+			if(target&&distance3d(target)<100)setstatelabel("see");
+			else bfrightened=true;
+		}
 		#### ABCD 2 A_Chase();
 		#### G 0{bfrightened=false;}
 		goto see;
