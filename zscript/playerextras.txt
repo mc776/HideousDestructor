@@ -89,7 +89,7 @@ extend class HDPlayerPawn{
 				if(overloaded)jumppower/=max(1,overloaded);
 				double jz=jumppower*0.6;
 				if(!sm){
-					if(!fm) vel.z+=jz; //straight up
+					if(!fm)vel.z+=jumppower*1.3; //straight up
 					else if(fm>0){ //forwards
 						jumppower*=1.5;
 						A_ChangeVelocity(jumppower,0,jz,CVF_RELATIVE);
