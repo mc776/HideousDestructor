@@ -55,7 +55,7 @@ extend class HDPlayerPawn{
 
 		// check whether the move is ok
 		Height = defaultheight * player.crouchfactor;
-		if (!TryMove(Pos.XY, false, NULL)){
+		if(!TryMove(Pos.XY, false, NULL)){
 			Height = savedheight;
 			if (direction > 0){
 				// doesn't fit
@@ -74,6 +74,8 @@ extend class HDPlayerPawn{
 
 		// Check for eyes going above/below fake floor due to crouching motion.
 		CheckFakeFloorTriggers(pos.Z + oldheight, true);
+
+		A_TakeInventory("IsSupported");
 	}
 	override void MovePlayer(){
 		let player = self.player;
