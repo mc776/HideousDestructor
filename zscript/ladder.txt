@@ -176,14 +176,18 @@ class hdladderbottom:hdactor{
 						||bt&BT_SPEED
 						||(!facing&&bt&BT_USE)
 					){
-						disengageladder();
-						if(bt&BT_CROUCH&&bt&BT_JUMP){
+						if(
+							bt&BT_JUMP
+							&&currentuser.height<
+							getdefaultbytype(currentuser.getclass()).height
+						){
+							currentuser.A_Log("Ladder taken up.",true);
 							actor hdl=spawn("PortableLadder",target.pos);
 							hdl.A_PlaySound("misc/ladder");
 							hdl.translation=translation;
 							target.destroy();
 							if(self)destroy();
-						}
+						}else disengageladder();
 						return;
 					}
 					if(currentuser.floorz<currentuser.pos.z){
@@ -259,7 +263,10 @@ class hdladderbottom:hdactor{
 						if(currentuser.countinv("PowerStrength"))vl*=2.2;
 						currentuser.vel+=vl;
 
-						if(bt&BT_CROUCH){
+						if(
+							currentuser.height<
+							getdefaultbytype(currentuser.getclass()).height
+						){
 							currentuser.A_Log("Ladder taken down.",true);
 
 							actor hdl=spawn("PortableLadder",target.pos);
