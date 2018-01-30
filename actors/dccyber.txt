@@ -53,12 +53,13 @@ actor HDSatanExplosion : HDExplosion
 }
 ACTOR SatanRocket:FastProjectile
 {
+	+rockettrail
 	damage 30
 	speed 72
 	missileheight 8
+	gravity 0
 	decal "Scorch"
 	seesound "weapons/rocklf"
-	+rockettrail
 	var int user_rocqfuel;
 	States
 	{
@@ -218,64 +219,64 @@ ACTOR SatanRobo : Cyberdemon replaces Cyberdemon
 		TNT1 A 0 A_Jump(48,2)
 		TNT1 A 0 A_JumpIfCloser(320,"DirectShots")
 	LeadTarget:
-		CYBR F 3 bright light("ROCKET") A_CustomMissile("SatanRocket",42,-24,0,CMF_AIMDIRECTION|CMF_SAVEPITCH,pitch+frandom(-3,3))
+		CYBR F 3 bright light("ROCKET") A_SpawnProjectile("SatanRocket",42,-24,0,CMF_AIMDIRECTION|CMF_SAVEPITCH,pitch+frandom(-3,3))
 		CYBR E 1 A_SetTics(random(1,4))
 		CYBR E 0 A_JumpIf(health>1600,3)
 		CYBR EE 0 A_SpawnItemEx ("HDSmoke", random(-32,32),random(-32,32),random(46,96),0,0,random(2,4),0,160,64)
-		CYBR E 8 A_FaceTarget(12,12)
+		CYBR E 8 A_FaceTarget(12,12,0,0,FAF_MIDDLE)
 
 		//I'd use an actionitem but it takes its own uservars
 		TNT1 A 0 A_SetUserVar("user_oldpitch",pitch)
 		TNT1 A 0 A_SetUserVar("user_oldangle",angle)
-		TNT1 A 0 A_FaceTarget(12,12)
+		TNT1 A 0 A_FaceTarget(12,12,0,0,FAF_MIDDLE)
 		TNT1 A 0 A_SetUserVar("user_pitchadjust",pitch-user_oldpitch)
 		TNT1 A 0 A_SetUserVar("user_angleadjust",angle-user_oldangle)
 		goto LeadTarget2
 
 	LeadTarget2:
-		CYBR F 3 bright light("ROCKET") A_CustomMissile("SatanRocket",42,-24,
+		CYBR F 3 bright light("ROCKET") A_SpawnProjectile("SatanRocket",42,-24,
 			frandom(0,2)*user_angleadjust,CMF_AIMDIRECTION|CMF_SAVEPITCH,
-			frandom(0,2)*user_pitchadjust)
+			pitch+frandom(0,2)*user_pitchadjust)
 		CYBR E 1 A_SetTics(random(1,8))
 		CYBR E 0 A_JumpIf(health>1600,3)
 		CYBR EE 0 A_SpawnItemEx ("HDSmoke", random(-32,32),random(-32,32),random(46,96),0,0,random(2,4),0,160,64)
-		CYBR E 8 A_FaceTarget(0,0)
+		CYBR E 8 A_FaceTarget(0,0,0,0,FAF_MIDDLE)
 
 		//I'd use an actionitem but it takes its own uservars
 		//should be identical to the above except for the gotos
 		TNT1 A 0 A_SetUserVar("user_oldpitch",pitch)
 		TNT1 A 0 A_SetUserVar("user_oldangle",angle)
-		TNT1 A 0 A_FaceTarget(12,12)
+		TNT1 A 0 A_FaceTarget(12,12,0,0,FAF_MIDDLE)
 		TNT1 A 0 A_SetUserVar("user_pitchadjust",pitch-user_oldpitch)
 		TNT1 A 0 A_SetUserVar("user_angleadjust",angle-user_oldangle)
 		goto LeadTarget3
 
 	LeadTarget3:
-		CYBR F 3 bright light("ROCKET") A_CustomMissile("SatanRocket",42,-24,
+		CYBR F 3 bright light("ROCKET") A_SpawnProjectile("SatanRocket",42,-24,
 			frandom(1,5)*user_angleadjust,CMF_AIMDIRECTION|CMF_SAVEPITCH,
-			frandom(1,5)*user_pitchadjust)
+			pitch+frandom(1,5)*user_pitchadjust)
 		CYBR E 0 A_JumpIf(health>1600,3)
 		CYBR EE 0 A_SpawnItemEx ("HDSmoke", random(-32,32),random(-32,32),random(46,96),0,0,random(2,4),0,160,64)
 		CYBR E 10
 		goto see
 
 	DirectShots:
-		CYBR F 3 bright light("ROCKET") A_CustomMissile("SatanRocket",42,-24,0,CMF_AIMDIRECTION|CMF_SAVEPITCH,pitch)
-		CYBR E 8 A_FaceTarget(12,12)
-		CYBR F 3 bright light("ROCKET") A_CustomMissile("SatanRocket",42,-24,frandom(-1,1),CMF_AIMDIRECTION|CMF_SAVEPITCH,frandom(-1,1))
-		CYBR E 8 A_FaceTarget(12,12)
-		CYBR F 3 bright light("ROCKET") A_CustomMissile("SatanRocket",42,-24,frandom(-2,2),CMF_AIMDIRECTION|CMF_SAVEPITCH,frandom(-2,2))
+		CYBR F 3 bright light("ROCKET") A_SpawnProjectile("SatanRocket",42,-24,0,CMF_AIMDIRECTION|CMF_SAVEPITCH,pitch)
+		CYBR E 8 A_FaceTarget(12,12,0,0,FAF_MIDDLE)
+		CYBR F 3 bright light("ROCKET") A_SpawnProjectile("SatanRocket",42,-24,frandom(-1,1),CMF_AIMDIRECTION|CMF_SAVEPITCH,pitch+frandom(-1,1))
+		CYBR E 8 A_FaceTarget(12,12,0,0,FAF_MIDDLE)
+		CYBR F 3 bright light("ROCKET") A_SpawnProjectile("SatanRocket",42,-24,frandom(-2,2),CMF_AIMDIRECTION|CMF_SAVEPITCH,pitch+frandom(-2,2))
 		CYBR E 0 A_JumpIf(health>1600,3)
 		CYBR EE 0 A_SpawnItemEx ("HDSmoke", random(-32,32),random(-32,32),random(46,96),0,random(2,4),0,160,64)
 		CYBR E 10
 		goto see
 
 	Spray:
-		CYBR F 3 bright light("ROCKET") A_CustomMissile("SatanRocket",42,-24,frandom(-1,1),CMF_AIMDIRECTION|CMF_SAVEPITCH,pitch+frandom(-1,1))
-		CYBR E 6 A_FaceTarget(12,12)
-		CYBR F 3 bright light("ROCKET") A_CustomMissile("SatanRocket",42,-24,frandom(-2,2),CMF_AIMDIRECTION|CMF_SAVEPITCH,pitch+frandom(-2,2))
-		CYBR E 6 A_FaceTarget(12,12)
-		CYBR F 3 bright light("ROCKET") A_CustomMissile("SatanRocket",42,-24,frandom(-3,3),CMF_AIMDIRECTION|CMF_SAVEPITCH,pitch+frandom(-3,3))
+		CYBR F 3 bright light("ROCKET") A_SpawnProjectile("SatanRocket",42,-24,frandom(-1,1),CMF_AIMDIRECTION|CMF_SAVEPITCH,pitch+frandom(-1,1))
+		CYBR E 6 A_FaceTarget(12,12,0,0,FAF_MIDDLE)
+		CYBR F 3 bright light("ROCKET") A_SpawnProjectile("SatanRocket",42,-24,frandom(-2,2),CMF_AIMDIRECTION|CMF_SAVEPITCH,pitch+frandom(-2,2))
+		CYBR E 6 A_FaceTarget(12,12,0,0,FAF_MIDDLE)
+		CYBR F 3 bright light("ROCKET") A_SpawnProjectile("SatanRocket",42,-24,frandom(-3,3),CMF_AIMDIRECTION|CMF_SAVEPITCH,pitch+frandom(-3,3))
 		CYBR E 0 A_JumpIf(health>1600,3)
 		CYBR EE 0 A_SpawnItemEx ("HDSmoke", random(-32,32),random(-32,32),random(46,96),0,0,random(2,4),0,160,64)
 		CYBR E 10
