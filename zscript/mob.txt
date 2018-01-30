@@ -220,7 +220,7 @@ struct HDMobAI play{
 	//do NOT try to set targets in here, JUST do the chase sequence
 	static void Chase(
 		actor caller,
-		statelabel melstate="melee",statelabel misstate="missle",
+		statelabel melstate="melee",statelabel mistate="missile",
 		bool res=false,bool flee=false
 	){
 		if(!caller.trymove(caller.pos.xy,false)){
@@ -239,7 +239,7 @@ struct HDMobAI play{
 
 		//chase the goal and record the resulting position
 		if(attacktarget)caller.A_Chase(
-			melstate,misstate,
+			melstate,mistate,
 			(res?CHF_RESURRECT:0)
 		);
 		else caller.A_Wander();
