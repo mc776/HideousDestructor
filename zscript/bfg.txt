@@ -278,6 +278,7 @@ class BFG9K:HDWeapon replaces BFG9000{
 		//effects for a possessed cell
 		BFGG C 0{
 			if(!random(0,2))setweaponstate("vile");
+			else if(!random(0,15))A_FireProjectile("YokaiSpawner");
 		}goto harmless;
 	vile:
 		TNT1 AAAAA 0 A_FireProjectile("BFGVileShard",random(170,190),spawnofs_xy:random(-20,20));

@@ -364,6 +364,43 @@ actor PuttoCC{
 		stop
 	}
 }
+actor YokaiCC:PuttoCC{
+	translation "176:191=29:47","192:207=160:167","240:247=188:191"
+	renderstyle add deathsound "putto/sight"
+	states{
+	see:
+		PINS ABCD 4
+		loop
+	missile:
+		PINS AB 3
+		PINS CDA 2
+		PINS BAABAABAABAABAABAABAACDA 1
+		goto see
+	death:
+		PINS ABC 1
+		PINS A 1 A_Scream
+		TNT1 A 1
+		PINS B 1
+		TNT1 A 1
+		PINS C 1
+		TNT1 A 2
+		PINS D 1
+		TNT1 A 2
+		PINS A 1
+		TNT1 A 2
+		PINS B 1
+		TNT1 A 3
+		PINS C 1
+		TNT1 A 4
+		PINS D 1
+		TNT1 A 5
+		PINS A 1
+		TNT1 A 6
+		PINS B 1
+		TNT1 A 40
+		stop
+	}
+}
 actor SpiderCC:SpiderMastermind{
 	states{
 	missile:
