@@ -1,7 +1,10 @@
 // ------------------------------------------------------------
 // Former Human Sergeant
 // ------------------------------------------------------------
-class HDSGG:ShotgunGuy{
+class Jackboot:HideousShotgunGuy{default{accuracy 1;}}
+class JackAndJillboot:HideousShotgunGuy{default{accuracy 2;}}
+class UndeadJackbootman:HideousShotgunGuy{default{accuracy 3;}}
+class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 	default{
 		dropitem "";
 		health 80;
@@ -15,6 +18,7 @@ class HDSGG:ShotgunGuy{
 		meleedamage 4;
 		maxtargetrange 4000;
 		painchance 200;
+		accuracy 0;
 
 		//placeholder
 		obituary "%o was brutally pumped full of a shotgun sergeant's hot, manly lead.";
@@ -23,7 +27,7 @@ class HDSGG:ShotgunGuy{
 	override string getobituary(actor victim,actor inflictor,name mod,bool playerattack){
 		bool shotdead=false;
 		string ob="%o was brutally pumped full of a shotgun sergeant's hot, manly lead.";
-		if(inflictor is "HDBullet")shotdead=true;
+		if(inflictor is "HDBullet"||inflictor==victim)shotdead=true;
 		if(shotdead){
 			if(wep>0)ob="%o was doubly penetrated with a shotgun sergeant's hot, manly lead.";
 			else if(wep<0)ob="%o was penetrated by the Tyrant's jack-booted thugs.";
@@ -40,6 +44,27 @@ class HDSGG:ShotgunGuy{
 	int wep;
 	int turnamount;
 	double shotspread;
+	override void postbeginplay(){
+		super.postbeginplay();
+		hasdropped=0;
+
+		//-1 zm66, 0 sg, 1 ssg
+		if(!accuracy) wep=random(0,1)-random(0,1);
+		else if(accuracy==1)wep=0;
+		else if(accuracy==2)wep=1;
+		else if(accuracy==3)wep=-1;
+		if(wep<0){
+			sprite=GetSpriteIndex("PLAYA1");
+			A_SetTranslation("HattedJackboot");
+			gunloaded=50;
+		}else{
+			sprite=GetSpriteIndex("SPOSA1");
+			A_SetTranslation("ShotgunGuy");
+			gunloaded=wep?2:8;
+		}
+		semi=randompick(0,0,1);
+		hdmobster.spawnmobster(self);
+	}
 	void noblockwepdrop(){
 		A_NoBlocking();
 		if(hasdropped){
@@ -95,25 +120,10 @@ class HDSGG:ShotgunGuy{
 			gunloaded=2;
 		}
 	}
-	override void postbeginplay(){
-		super.postbeginplay();
-		hasdropped=0;
-
-		wep=random(0,1)-random(0,1); //-1 zm66, 0 sg, 1 ssg
-		if(wep<0){
-			sprite=GetSpriteIndex("PLAYA1");
-			A_SetTranslation("HattedJackboot");
-			gunloaded=50;
-		}else{
-			sprite=GetSpriteIndex("SPOSA1");
-			A_SetTranslation("ShotgunGuy");
-			gunloaded=wep?2:8;
-		}
-		semi=randompick(0,0,1);
-		hdmobster.spawnmobster(self);
-	}
 	states{
 	spawn:
+		SPOS A 0 nodelay A_JumpIf(wep>=0,2);
+		PLAY A 0;
 		#### EEEEEE 1{
 			A_Look();
 			A_Recoil(frandom(-1.,1.));

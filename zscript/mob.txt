@@ -236,6 +236,12 @@ struct HDMobAI play{
 
 		double speedbak=caller.speed;
 		if(caller.bfrightened)caller.speed*=2;
+		bool membak=caller.bmissileevenmore;
+		bool mmbak=caller.bmissilemore;
+
+		//HD shouldn't bother with this distance dropoff
+		caller.bmissileevenmore=true;
+		caller.bmissilemore=true;
 
 		//chase the goal and record the resulting position
 		if(attacktarget)caller.A_Chase(
@@ -262,6 +268,8 @@ struct HDMobAI play{
 		//reset things
 		caller.bfrightened=fraid;
 		caller.speed=getdefaultbytype(caller.getclass()).speed;
+		caller.bmissileevenmore=membak;
+		caller.bmissilemore=mmbak;
 	}
 }
 class TryShootPuff:CheckPuff{
