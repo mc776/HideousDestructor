@@ -12,6 +12,10 @@ class Yokai:HDActor{
 		translation "176:191=29:47","192:207=160:167","240:247=188:191";
 		speed 4;height 24;radius 18;
 	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		A_GiveInventory("ImmunityToFire");
+	}
 	override void tick(){
 		super.tick();
 		if(alpha<0.4&&!random(0,3)){
@@ -46,7 +50,7 @@ class Yokai:HDActor{
 		#### B 1 bright A_JumpIfInTargetLOS("hurt");
 		goto posthurt;
 	hurt:
-		#### A 2 bright{
+		#### A 2{
 			bfrightened=false;
 			A_SetShootable();
 			alpha=frandom(0.8,0.9);
