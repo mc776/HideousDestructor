@@ -25,6 +25,61 @@ class HDSGG:ShotgunGuy{
 	int wep;
 	int turnamount;
 	double shotspread;
+	void noblockwepdrop(){
+		A_NoBlocking();
+		if(hasdropped){
+			if(wep<0)A_DropItem("ZM66RifleMags",0,96);
+			else A_DropItem("ShellPickup",0,200);
+		}else{
+			A_DropItem("HDPistol",0,16);
+			hasdropped=true;
+			hdweapon wp;
+			if(wep==-1){
+				wp=hdweapon(spawn("ZM66AssaultRifle",(pos.x,pos.y,pos.z+40)));
+				wp.weaponstatus[0]=
+					ZM66F_NOLAUNCHER|(random(0,1)*ZM66F_CHAMBER);
+				wp.weaponstatus[ZM66S_MAG]=random(0,50);
+				wp.weaponstatus[ZM66S_AUTO]=2;
+				wp.weaponstatus[ZM66S_ZOOM]=random(0,27);
+
+				gunloaded=50;
+			}
+			if(wep==0){
+				wp=hdweapon(spawn("Hunter",(pos.x,pos.y,pos.z+40)));
+				if(!semi)wp.weaponstatus[0]|=HUNTF_AUTO;
+				if(gunspent)wp.weaponstatus[HUNTS_CHAMBER]=1;
+				else if(gunloaded>0){
+					wp.weaponstatus[HUNTS_CHAMBER]=2;
+					gunloaded--;
+				}
+				if(gunloaded>0)wp.weaponstatus[HUNTS_TUBE]=gunloaded;
+				wp.weaponstatus[HUNTS_SIDESADDLE]=random(0,12);
+
+				gunloaded=8;
+			}
+			if(wep==1){
+				wp=hdweapon(spawn("Slayer",(pos.x,pos.y,pos.z+40)));
+				if(gunloaded==2)wp.weaponstatus[SLAYS_CHAMBER2]=2;
+				else if(gunspent==2)wp.weaponstatus[SLAYS_CHAMBER2]=1;
+				if(gunloaded>0)wp.weaponstatus[SLAYS_CHAMBER1]=2;
+				else if(gunspent>0)wp.weaponstatus[SLAYS_CHAMBER1]=1;
+				wp.weaponstatus[SLAYS_SIDESADDLE]=random(0,12);
+
+				gunloaded=2;
+			}
+			wp.vel=vel+(frandom(-2,2),frandom(-2,2),1);
+		}
+		gunspent=0;
+		if(wep==-1){
+			gunloaded=50;
+		}
+		if(wep==0){
+			gunloaded=8;
+		}
+		if(wep==1){
+			gunloaded=2;
+		}
+	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		hasdropped=0;
@@ -369,7 +424,6 @@ class HDSGG:ShotgunGuy{
 		#### G 0{bfrightened=false;}
 		goto see;
 
-	//2018-01-29 lol just copypasting from zombieman
 	death.bleedout:
 		#### H 5{
 			{hdmobai.corpseflags(self);}
@@ -391,7 +445,7 @@ class HDSGG:ShotgunGuy{
 		#### J 5{
 			actor ttt=spawn("tempshield2",pos);
 			ttt.vel=vel;ttt.master=self;
-			A_GiveInventory("NoBlockWepDrop");
+			noblockwepdrop();
 		}
 		#### K 5;
 	dead:
@@ -418,7 +472,7 @@ class HDSGG:ShotgunGuy{
 			spawn("MegaBloodSplatter",pos+(0,0,34));
 			A_XScream();
 		}
-		#### O 0 A_GiveInventory("NoBlockWepDrop");
+		#### O 0 noblockwepdrop();
 		#### OP 5 spawn("MegaBloodSplatter",pos+(0,0,34));
 		#### QRST 5;
 		goto xdead;
