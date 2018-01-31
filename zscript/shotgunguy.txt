@@ -251,6 +251,9 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 				setstatelabel("ohforfuckssake");
 				return;
 			}
+			angle+=frandom(0,shotspread)-frandom(0,shotspread);
+			pitch+=frandom(0,shotspread)-frandom(0,shotspread);
+
 			if(wep==-1)setstatelabel("shootzm66");
 			else if(wep==1)setstatelabel("shootssg");
 			else setstatelabel("shootsg");
@@ -260,8 +263,6 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 	shootzm66:
 		#### F 0{
 			gunspent=0;
-			angle+=frandom(-shotspread,shotspread);
-			pitch+=frandom(-shotspread,shotspread);
 		}
 	shootzm662:
 		#### F 1 bright light("SHOT"){
@@ -297,8 +298,6 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 				setstatelabel("see");
 				return;
 			}
-			angle+=frandom(-shotspread,shotspread);
-			pitch+=frandom(-shotspread,shotspread);
 
 			A_PlaySound("weapons/slayersingle",CHAN_WEAPON);
 			if(gunloaded>1&&!random(0,5)){
@@ -335,8 +334,6 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 				setstatelabel("see");
 				return;
 			}
-			angle+=frandom(-shotspread,shotspread);
-			pitch+=frandom(-shotspread,shotspread);
 
 			A_PlaySound("weapons/hunter",CHAN_WEAPON);
 
