@@ -14,9 +14,24 @@ class HDSGG:ShotgunGuy{
 		meleesound "weapons/smack";
 		meleedamage 4;
 		maxtargetrange 4000;
-		obituary "%o was brutally pumped full of a shotgun sergeant's hot,manly lead.";
-		hitobituary "%o was whipped and dominated by fifty shades of shotgun guy.";
 		painchance 200;
+
+		//placeholder
+		obituary "%o was brutally pumped full of a shotgun sergeant's hot, manly lead.";
+		hitobituary "%o was whipped and dominated by fifty shades of shotgun guy.";
+	}
+	override string getobituary(actor victim,actor inflictor,name mod,bool playerattack){
+		bool shotdead=false;
+		string ob="%o was brutally pumped full of a shotgun sergeant's hot, manly lead.";
+		if(inflictor is "HDBullet")shotdead=true;
+		if(shotdead){
+			if(wep>0)ob="%o was doubly penetrated with a shotgun sergeant's hot, manly lead.";
+			else if(wep<0)ob="%o was penetrated by the Tyrant's jack-booted thugs.";
+		}else{
+			if(wep<0)ob="%o was was pounded by the Tyrant's jack-booted thugs.";
+			else ob="%o was whipped and dominated by fifty shades of shotgun guy.";
+		}
+		return ob;
 	}
 	bool hasdropped;
 	bool semi;
@@ -37,8 +52,8 @@ class HDSGG:ShotgunGuy{
 			if(wep==-1){
 				wp=hdweapon(spawn("ZM66AssaultRifle",(pos.x,pos.y,pos.z+40)));
 				wp.weaponstatus[0]=
-					ZM66F_NOLAUNCHER|(random(0,1)*ZM66F_CHAMBER);
-				wp.weaponstatus[ZM66S_MAG]=random(0,50);
+					ZM66F_NOLAUNCHER|(randompick(0,1,1,1,1)*ZM66F_CHAMBER);
+				wp.weaponstatus[ZM66S_MAG]=gunloaded;
 				wp.weaponstatus[ZM66S_AUTO]=2;
 				wp.weaponstatus[ZM66S_ZOOM]=random(0,27);
 
