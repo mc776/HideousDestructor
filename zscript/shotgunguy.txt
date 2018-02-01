@@ -21,21 +21,17 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 		accuracy 0;
 
 		//placeholder
-		obituary "%o was brutally pumped full of a shotgun sergeant's hot, manly lead.";
-		hitobituary "%o was whipped and dominated by fifty shades of shotgun guy.";
+		obituary "%o was beaten up by the Tyrant's jack-booted thugs.";
+		hitobituary "%o was shot up by the Tyrant's jack-booted thugs.";
 	}
 	override string getobituary(actor victim,actor inflictor,name mod,bool playerattack){
-		bool shotdead=false;
-		string ob="%o was brutally pumped full of a shotgun sergeant's hot, manly lead.";
-		if(inflictor is "HDBullet"||inflictor==victim)shotdead=true;
-		if(shotdead){
-			if(wep>0)ob="%o was doubly penetrated with a shotgun sergeant's hot, manly lead.";
-			else if(wep<0)ob="%o was penetrated by the Tyrant's jack-booted thugs.";
-		}else{
-			if(wep<0)ob="%o was pounded by the Tyrant's jack-booted thugs.";
-			else ob="%o was whipped and dominated by fifty shades of shotgun guy.";
-		}
-		return ob;
+		if(
+			!wep //"pumped"
+			&&inflictor is "HDBullet" //"brutally!" "full!" - not just bleeding!
+			&&!random(0,5) //novelty value
+			&&victim.player&&!victim.player.getgender() //this party is best left sausage
+		)return "%o was brutally pumped full of a shotgun sergeant's hot, manly lead.";
+		else return super.getobituary(victim,inflictor,mod,playerattack);
 	}
 	bool hasdropped;
 	bool semi;
@@ -600,3 +596,22 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 		goto dead;
 	}
 }
+
+class DeadJackboot:DeadHideousShotgunGuy{default{accuracy 1;}}
+class DeadJackAndJillboot:DeadHideousShotgunGuy{default{accuracy 2;}}
+class DeadUndeadJackbootman:DeadHideousShotgunGuy{default{accuracy 3;}}
+class DeadHideousShotgunGuy:HideousShotgunGuy replaces DeadShotgunGuy{
+	override void postbeginplay(){
+		super.postbeginplay();
+		A_Die("spawndead");
+	}
+	states{
+	death.spawndead:
+		---- A 0{
+			hdmobai.corpseflags(self);
+			A_NoBlocking();
+			bnodropoff=false;
+		}goto dead;
+	}
+}
+
