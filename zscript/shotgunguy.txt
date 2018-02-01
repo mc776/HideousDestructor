@@ -21,17 +21,18 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 		accuracy 0;
 
 		//placeholder
-		obituary "%o was beaten up by the Tyrant's jack-booted thugs.";
-		hitobituary "%o was shot up by the Tyrant's jack-booted thugs.";
+		obituary "%o was shot up by the Tyrant's jack-booted thugs.";
+		hitobituary "%o was beaten up by the Tyrant's jack-booted thugs.";
 	}
 	override string getobituary(actor victim,actor inflictor,name mod,bool playerattack){
 		if(
 			!wep //"pumped"
 			&&inflictor is "HDBullet" //"brutally!" "full!" - not just bleeding!
-			&&!random(0,5) //novelty value
+			&&!random(0,4) //novelty value
 			&&victim.player&&!victim.player.getgender() //this party is best left sausage
 		)return "%o was brutally pumped full of a shotgun sergeant's hot, manly lead.";
-		else return super.getobituary(victim,inflictor,mod,playerattack);
+		else if(inflictor==self) return hitobituary;
+		else return obituary;
 	}
 	bool hasdropped;
 	bool semi;
