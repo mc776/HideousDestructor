@@ -97,7 +97,9 @@ class HDBP:HDWeapon{
 					}else A_SetTics(3);
 				}else{
 					ispd=abs(ispd);
-					if(ispd>400)A_SetTics(1);  
+					if(ispd>500&&which%3)A_SetTics(0);
+					else if(ispd>450&&which%2)A_SetTics(0);
+					else if(ispd>400)A_SetTics(1);
 					else if(ispd>200)A_SetTics(3);
 					else if(ispd>100)A_SetTics(5);
 					else A_SetTics(7);
@@ -331,7 +333,7 @@ class HDBPPreset:Inventory replaces backpack{
 						string.format("hd_loadbp%i",i),
 						owner.player
 					).getint();
-					if(bp.getbulk()>=HDBPC_CAPACITY){    
+					if(bp.getbulk()>=HDBPC_CAPACITY){
 						bp.itemamount[i]=0;
 						break;
 					}
@@ -362,7 +364,7 @@ class HDBPPreset:Inventory replaces backpack{
 				}else if(!random(0,5)&&bpi){ //insurgent
 					int maxrand=500/(max(1,bp.itembulk[i]));
 					bp.itemamount[i]=random(1,maxrand);
-					if(bp.getbulk()>=HDBPC_CAPACITY){  
+					if(bp.getbulk()>=HDBPC_CAPACITY){
 						bp.itemamount[i]=0;
 						break;
 					}
