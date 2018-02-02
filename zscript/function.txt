@@ -64,17 +64,6 @@ class HDActor:Actor{
 			}
 		}
 	}
-	//very crude way to tell if someone's back is turned
-	//A_CheckBackTurned(self,self.pos,target.pos,target.angle)
-	bool A_CheckBackTurned(vector3 ownpos,vector3 tpos,double tangle){
-		if(hd_debug)A_Log("A_CheckBackTurned sucks, change it! (GetAngle?)");
-		if(
-			((tangle>314||tangle<46) && ownpos.x<tpos.x) ||
-			((tangle>45 && tangle<136) && ownpos.y<tpos.y) ||
-			((tangle>135 && tangle<226) && ownpos.x>tpos.x) ||
-			((tangle>225 && tangle<316) && ownpos.y>tpos.y)  
-		)return true;else return false;
-	}
 }
 
 class InventoryFlag:Inventory{

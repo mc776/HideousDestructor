@@ -268,7 +268,7 @@ class HDBullet:HDActor{
 		double cang=angle;
 		double cpi=pitch;
 		A_Face(a.tracer);
-		if(abs(deltaangle(angle,cang))<12){
+		if(absangle(angle,cang)<12){
 			double th=a.tracer.height;
 			double pz=pos.z-sin(cpi)*a.tracer.radius;
 			pz=abs(a.tracer.pos.z+(th*0.61)-pz);

@@ -53,7 +53,7 @@ class KillerBarrel:HDActor{
 				&& (
 					!(target is "PlayerPawn")
 					||(
-						A_CheckBackTurned(self.pos,target.pos,target.angle)
+						!A_JumpIfInTargetLOS("null",100,JLOSF_FLIPFOV|JLOSF_TARGETLOS)
 						&& (target.pos-pos).length()>96
 					)
 				)
@@ -67,7 +67,7 @@ class KillerBarrel:HDActor{
 					A_PlaySound(attacksound);
 					A_SpawnProjectile("BaleBall",40,flags:CMF_AIMDIRECTION);
 				}
-				else{
+				else if(!random(0,10){
 					//move
 					A_FaceTarget();
 					angle+=random(-135,135);
@@ -287,7 +287,7 @@ class KillerFireCan:KillerBarrel{
 				!random(0,9)
 				&&(
 					!(target is "PlayerPawn")
-					|| A_CheckBackTurned(self.pos,target.pos,target.angle)
+					||!A_JumpIfInTargetLOS("null",100,JLOSF_FLIPFOV|JLOSF_TARGETLOS)
 				)
 			){
 				A_FaceTarget(0,0);
@@ -303,7 +303,7 @@ class KillerFireCan:KillerBarrel{
 						A_SpawnProjectile("BarrelFlame",40,flags:CMF_AIMDIRECTION);
 					}
 				}
-				else{
+				else if(!random(0,10){
 					//move
 					A_FaceTarget();
 					angle+=random(-135,135);
