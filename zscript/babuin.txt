@@ -17,7 +17,7 @@ class Babuin:HDActor{
 		if(
 			!target
 			||target.health<1
-			||distance3d(target)-target.radius-radius>12
+			||distance2d(target)-target.radius-radius>12
 		){
 			latched=false;
 			return;
@@ -114,7 +114,7 @@ class Babuin:HDActor{
 		health 90;radius 16;
 		height 44;deathheight 10;
 		scale 0.6;
-		speed 10;
+		speed 14;
 		mass 70;
 		meleerange 40;
 		maxtargetrange 128;
@@ -200,7 +200,7 @@ class Babuin:HDActor{
 			if(latched){
 				if(!random(0,30))A_Pain();
 				target.damagemobj(
-					self,self,random(1,2),random(0,3)?"teeth":"none"
+					self,self,random(0,2),random(0,3)?"teeth":"falling"
 				);
 			}else{
 				setstatelabel("pain");
