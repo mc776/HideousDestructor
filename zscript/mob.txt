@@ -287,11 +287,15 @@ class HDMobster:IdleDummy{
 	double thraidius;
 	int leftright;
 	int boredthreshold;int bored;
+	default{
+		meleethreshold 0;
+	}
 	static hdmobster SpawnMobster(actor caller){
 		let hdmb=hdmobster(spawn("HDMobster",caller.pos));
 		hdmb.master=caller;
 		hdmb.target=caller.target;
 		hdmb.bfrightened=caller.bfrightened;
+		hdmb.meleerange=caller.meleerange;
 		return hdmb;
 	}
 	override void postbeginplay(){
@@ -335,15 +339,21 @@ class HDMobster:IdleDummy{
 					target.health>0
 					&&master.checksight(target)
 				){
-					vector3 gll=master.target.pos-master.pos;
-					gll.xy=rotatevector(gll.xy,
-						random(30,80)*(leftright
-							+randompick(1,1,1,1,-1,-1,0))
-					);
-					setorigin(
-						//master.target.pos
-						gll,false
-					);
+					vector3 mpo=master.pos;
+					double mth=meleethreshold;
+					vector3 tpo=master.target.pos;
+					if(
+						!mth
+						||mth<distance3d(target)
+					){
+						vector3 flank=mpo-tpo;
+						flank.xy=rotatevector(flank.xy,
+							random(30,80)*(leftright
+								+randompick(1,1,1,1,-1,-1,0))
+						);
+						tpo+=flank;
+					}
+					setorigin(tpo,false);
 					bored=0;
 				}else if(!random(0,15)){
 					setorigin((

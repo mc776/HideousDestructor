@@ -8,9 +8,10 @@ class Babuin:HDActor{
 	bool latched;
 	double latchforce;
 	override void postbeginplay(){
-		hdmobai.resize(self,0.8,1.4);
-		hdmobster.spawnmobster(self);
 		super.postbeginplay();
+		hdmobai.resize(self,0.9,1.1);
+		let hdmb=hdmobster(hdmobster.spawnmobster(self));
+		hdmb.meleethreshold=200;
 	}
 	void TryLatch(){
 		if(
@@ -113,12 +114,12 @@ class Babuin:HDActor{
 		health 90;radius 16;
 		height 44;deathheight 10;
 		scale 0.6;
-		speed 16;
+		speed 10;
 		mass 70;
 		meleerange 40;
-		damage 3;
-		painchance 90; pushfactor 0.2;
 		maxtargetrange 128;
+		painchance 90; pushfactor 0.2;
+		maxstepheight 32;maxdropoffheight 32;
 		seesound "demon/sight";painsound "demon/pain";
 		deathsound "demon/death";activesound "demon/active";
 		obituary "%o was mauled by a babuin.";
@@ -129,7 +130,7 @@ class Babuin:HDActor{
 	spawn:
 		SRG2 A 0 nodelay A_JumpIf(bambush,"spawnstill");
 	spawnwander:
-		SRG2 AABBCCDD random(3,4){
+		SRG2 AABBCCDD random(2,3){
 			blookallaround=false;
 			hdmobai.wander(self);
 		}
@@ -168,7 +169,7 @@ class Babuin:HDActor{
 		SRG2 AABBCCDD random(1,2){hdmobai.chase(self);}
 		goto seeend;
 	roam:
-		SRG2 AABBCCDD random(2,4){hdmobai.wander(self,true);}
+		SRG2 AABBCCDD random(1,3){hdmobai.wander(self,true);}
 		goto seeend;
 	seeend:
 		SRG2 A 0{
@@ -176,8 +177,8 @@ class Babuin:HDActor{
 				A_PlaySound(seesound,CHAN_VOICE);
 				A_AlertMonsters();
 			}
+			HealThing(random(2,12));
 		}
-		SRG2 A 0 HealThing(random(2,12));
 		goto see;
 	melee:
 		SRG2 E 7{
@@ -199,7 +200,7 @@ class Babuin:HDActor{
 			if(latched){
 				if(!random(0,30))A_Pain();
 				target.damagemobj(
-					self,self,random(0,2),"teeth"
+					self,self,random(1,2),random(0,3)?"teeth":"none"
 				);
 			}else{
 				setstatelabel("pain");
@@ -211,7 +212,7 @@ class Babuin:HDActor{
 			A_FaceTarget(16,16);
 			A_Changevelocity(1,0,0,CVF_RELATIVE);
 			if(A_JumpIfTargetInLOS("null",20,0,128))setstatelabel("jump");
-		}loop;
+		}goto see;
 	jump:
 		SRG2 AE 3{
 			A_FaceTarget(16,16);
@@ -228,8 +229,8 @@ class Babuin:HDActor{
 			if(floorz>=pos.z)setstatelabel("land");
 		}wait;
 	land:
-		SRG2 FEH 4{vel.xy*=0.8;}
-		SRG2 D 6{vel.xy=(0,0);}
+		SRG2 FEH 3{vel.xy*=0.8;}
+		SRG2 D 4{vel.xy=(0,0);}
 		goto see;
 	pain:
 		SRG2 H 2 A_SetSolid();
