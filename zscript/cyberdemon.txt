@@ -210,7 +210,7 @@ class HDCB:Cyberdemon replaces CyberDemon{
 		){
 			int blocked=clamp(damage,0,min(shields,500));
 			damage-=blocked;
-			shields-=blocked;
+			shields-=max(0,blocked-30);
 			if(!inflictor.bismonster&&!inflictor.player){
 				int shrd=max(1,damage/30);
 				for(int i=0;i<shrd;i++){
