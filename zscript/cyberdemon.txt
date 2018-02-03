@@ -175,12 +175,26 @@ class HDCB:Cyberdemon replaces CyberDemon{
 			random(-32,32),random(-32,32),random(46,96),
 			0,0,random(2,4),0,160,64
 		);
-		if(health>0&&shields<HDCB_SHIELDMAX)shields+=5;
+		if(health>0&&shields<HDCB_SHIELDMAX)shields+=2;
+
+
+		/*
+		//indicator
+		if(!master||!(master is "IdleDummy")){
+			master=spawn("IdleDummy");
+			master.sprite=GetSpriteIndex("BFE2A0");
+		}else{
+			double shieldleft=(shields*1.)/(HDCB_SHIELDMAX*1.);
+			master.scale=(shieldleft,shieldleft);master.alpha=shieldleft;
+			master.setorigin(pos+(0,0,height+20),true);
+		}
+		*/
 	}
 	override int damagemobj(
 		actor inflictor,actor source,int damage,
 		name mod,int flags=0,double angle=0
 	){
+
 		//cheat
 		if(source==self)return 0;
 
@@ -199,7 +213,7 @@ class HDCB:Cyberdemon replaces CyberDemon{
 				||inflictor is "KillerBarrel"
 			)
 		){
-			damage/=(shields>0?0:5);
+			damage/=(shields>0?1:5);
 		}
 
 		//shields
