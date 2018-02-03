@@ -62,7 +62,7 @@ class Babuin:HDActor{
 			vector3 lp=target.pos;
 			targangle=(targangle+target.angle)*0.5;
 			lp.xy+=rotatevector(latchpos.xy,target.angle);
-			latchpos.z=clamp(latchpos.z+random(-2,2),12,target.height-12);
+			latchpos.z=clamp(latchpos.z+random(-2,2),12,max(floorz,target.height-height));
 			lp.z+=latchpos.z+frandom(-0.1,0.1);
 
 			//don't interpolate teleport
