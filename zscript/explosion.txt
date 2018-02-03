@@ -103,6 +103,7 @@ extend class HDActor{
 			}
 			//push
 			if(!it)continue;if(dist<=pushradius && it.bshootable && !it.bdontthrust){
+				if(it.radiusdamagefactor)pushamount*=it.radiusdamagefactor;
 				vector3 push=(it.pos-self.pos)*divdist
 					*clamp(pushamount-clamp(dist-fullpushradius,0,dist),0,pushamount);
 				if(pushmass){
@@ -116,6 +117,7 @@ extend class HDActor{
 			}
 			//blast damage
 			if(!it)continue;if(dist<=blastradius && (it.bshootable||it.bvulnerable)){
+				if(it.radiusdamagefactor)blastdamage*=it.radiusdamagefactor;
 				if(dist>fullblastradius){
 					dmg=clamp(dist-fullblastradius,0,dist);
 					dmg=blastdamage-dmg;
@@ -127,6 +129,7 @@ extend class HDActor{
 			if(!it)continue;if(dist<=fragradius
 				&&(it.bsolid || it.bshootable || it.bvulnerable)
 			){
+				if(it.radiusdamagefactor)fragdamage*=it.radiusdamagefactor;
 				A_Face(it);
 				if(
 					it!=self
