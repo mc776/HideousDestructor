@@ -208,11 +208,12 @@ class HDCB:Cyberdemon replaces CyberDemon{
 			&&mod!="internal"
 			&&mod!="falling"
 		){
-			int blocked=clamp(damage,0,min(shields,1000));
+			int blocked=clamp(damage,0,min(shields,500));
 			damage-=blocked;
 			shields-=blocked;
 			if(!inflictor.bismonster&&!inflictor.player){
-				for(int i=0;i<3;i++){
+				int shrd=max(1,damage/30);
+				for(int i=0;i<shrd;i++){
 					actor aaa=spawn("FragShard",inflictor.pos);
 					aaa.vel=(frandom(-3,3),frandom(-3,3),frandom(-3,3));
 				}
