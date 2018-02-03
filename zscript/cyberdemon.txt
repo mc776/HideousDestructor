@@ -11,6 +11,7 @@ class Cyberball:SlowProjectile{
 		gravity 0;
 		decal "Scorch";
 		seesound "weapons/rocklf";
+		scale 0.6;
 	}
 	override void ExplodeSlowMissile(line blockingline=null,actor blockingobject=null){
 		//damage
@@ -29,12 +30,12 @@ class Cyberball:SlowProjectile{
 		if(!inthesky){
 			A_SprayDecal("Scorch",16);
 			A_Blast(
-				pushradius:256,pushamount:128,fullpushradius:96,
-				fragradius:HDCONST_SPEEDOFSOUND,
-				fragdamage:random(160,200+8*stamina),
+				blastradius:512,blastdamage:random(128,256),fullblastradius:96,
+				pushradius:256,pushamount:256,fullpushradius:96,
+//				fragradius:256,fragdamage:random(160,200),
 				immolateradius:128,immolateamount:random(3,60),
 				immolatechance:15,
-				gibradius:16,gibamount:random(1,8)*10
+				gibradius:24,gibamount:random(1,8)*10
 			);
 			actor xpl=spawn("HDSatanExplosion",self.pos-(0,0,1),ALLOW_REPLACE);
 			xpl.target=target;xpl.master=master;xpl.stamina=stamina;
@@ -117,9 +118,8 @@ class Cyberball:SlowProjectile{
 }
 
 
-/*
 
-class HDCB:Cyberdemon replaces Cyberdemon{
+class HDCB:Cyberdemon replaces CyberDemon{
 	default{
 		+avoidmelee +nofear +seeinvisible +nodropoff
 		-noradiusdmg
@@ -150,43 +150,69 @@ class HDCB:Cyberdemon replaces Cyberdemon{
 	void A_CyberAdjustLead(){
 		oldaim=(angle,pitch);
 		A_FaceTarget(12,12,0,0,FAF_MIDDLE);
-		aimadjust=(deltaangle(angle,oldaim.x),deltaangle(pitch,oldaim.y));
-		aimadjust*=distance3d(target)*0.001;
+		aimadjust=(deltaangle(oldaim.x,angle),deltaangle(oldaim.y,pitch));
+		aimadjust*=distance3d(target)*0.0005;
 	}
 	void A_CyberRocket(double spread=0.,double aimhorz=0.,double aimvert=0.){
+		A_PlaySound("weapons/bronto",CHAN_WEAPON);
+		spawn("DistantShotgun",pos);
 		if(spread){
 			aimhorz=frandom(-spread,spread);
 			aimvert=frandom(-spread,spread);
 		}
+		double dist=distance3d(target);
 		A_SpawnProjectile("CyberBall",42,-24,
-			aimhorz,CMF_AIMDIRECTION|CMF_SAVEPITCH,pitch+aimvert
+			aimhorz-(target?atan(24/dist):0),
+			CMF_AIMDIRECTION|CMF_SAVEPITCH,pitch+aimvert-(dist>2048?dist*0.000001:0)
 		);
 	}
 	override void tick(){
 		super.tick();
 		if(
+			bnofear&&
 			health<1600&&
 			!random(0,max(10,health))
 		)A_SpawnItemEx("HDSmoke",
 			random(-32,32),random(-32,32),random(46,96),
 			0,0,random(2,4),0,160,64
 		);
+		if(health>0&&shields<HDCB_SHIELDMAX)shields+=5;
 	}
 	override int damagemobj(
 		actor inflictor,actor source,int damage,
 		name mod,int flags=0,double angle=0
 	){
+		//cheat
+		if(source==self)return 0;
+
+		//frags
+		if(
+			mod=="SmallArms1"&&(
+				inflictor is "TerrorBolt"
+				||inflictor is "GyroGrenade"
+				||inflictor is "Cyberball"
+				||inflictor is "HDFragGrenade"
+				||inflictor is "HDFragGrenadeRoller"
+				||inflictor is "KillerBarrel"
+			)
+		){
+			damage/=10;
+		}
+
+		//shields
 		if(
 			shields>0  
 			&&mod!="internal"
 			&&mod!="falling"
 		){
-			int blocked=clamp(damage,0,min(shields,500));
+			int blocked=clamp(damage,0,min(shields,1000));
 			damage-=blocked;
 			shields-=blocked;
-			if(!inflictor.bmonster&&!inflictor.player){
-				spawn("BulletTail",inflictor.pos);
-				if(hd_debug)A_Log("make a better effect!");
+			if(!inflictor.bismonster&&!inflictor.player){
+				for(int i=0;i<3;i++){
+					actor aaa=spawn("FragShard",inflictor.pos);
+					aaa.vel=(frandom(-3,3),frandom(-3,3),frandom(-3,3));
+				}
 			}
 		}else{
 			bnoblood=false;
@@ -197,10 +223,14 @@ class HDCB:Cyberdemon replaces Cyberdemon{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		shields=4000;
+		shields=HDCB_SHIELDMAX;
+		hdmobster.spawnmobster(self);
 	}
 	vector2 oldaim;vector2 aimadjust;
 	int shields;
+	enum CyberStats{
+		HDCB_SHIELDMAX=4000,
+	}
 	states{
 	spawn:
 		CYBR EEEE 10{
@@ -222,9 +252,8 @@ class HDCB:Cyberdemon replaces Cyberdemon{
 			if(health<1)setstatelabel("death");
 			A_AlertMonsters(0,AMF_TARGETNONPLAYER);
 			bfrightening=true;
-			A_JumpIfHealthLower (1600, "See2")
 		}
-		CYBR A 5{
+		CYBR AA 2{
 			hdmobai.chase(self);
 		}
 		CYBR B 5{
@@ -235,21 +264,22 @@ class HDCB:Cyberdemon replaces Cyberdemon{
 			A_PlaySound("cyber/hoof",6);
 			hdmobai.chase(self);
 		}
-		CYBR D 5{
+		CYBR DD 2{
 			hdmobai.chase(self);
 		}
 		CYBR E 0 A_Jump(56,"see");
 		CYBR E 0 A_JumpIfTargetInLOS("missile",0);
 		loop;
 	pain:
-		CYBR E 0{
+		CYBR G 10{
+			A_Pain();
 			if(health<3500){
 				if(health<3000)minmissilechance-=5;
 				if(health>1000)speed++;else speed--;  
 			}
-		}goto super::pain;
+		}goto see;
 	missile:
-		CYBR A 0 A_JumpIfTargetInLOS("inposition",20)
+		CYBR A 0 A_JumpIfTargetInLOS("inposition",20);
 		CYBR A 4 A_FaceTarget(40,40);
 		CYBR B 4{
 			A_FaceTarget(40,40);
@@ -281,7 +311,7 @@ class HDCB:Cyberdemon replaces Cyberdemon{
 		CYBR E 0 A_JumpIfTargetInLOS(1,90);
 		goto missile;
 
-		CYBR E 0 A_JumpIf(health>1600,3)
+		CYBR E 0 A_JumpIf(health>1600,3);
 		CYBR EE 2 A_CyberGunSmoke();
 		CYBR E 4 A_FaceTarget(12,12);
 		CYBR E 0 A_JumpIf(health>1600,3);
@@ -289,14 +319,15 @@ class HDCB:Cyberdemon replaces Cyberdemon{
 		CYBR E 4;
 		CYBR A 0{
 			double dist=distance3d(target);
+
 			if(dist<1024&&!random(0,7))setstatelabel("spray");
-			else if(dist<4096&&!random(0,2))setstatelabel("leadtarget");
-			else if(dist<320)setstatelabel("directshots");
+			else if(dist<8192&&!random(0,2))setstatelabel("leadtarget");
+			else setstatelabel("directshots");
 		}
 	leadtarget:
 		CYBR F 3 bright light("ROCKET")A_CyberRocket();
-		CYBR E 1 A_SetTics(random(1,4))
-		CYBR E 0 A_JumpIf(health>1600,3)
+		CYBR E 1 A_SetTics(random(1,4));
+		CYBR E 0 A_JumpIf(health>1600,3);
 		CYBR EE 0 A_CyberGunSmoke();
 	leadtarget2:
 		CYBR E 8 A_FaceTarget(12,12,0,0,FAF_MIDDLE);
@@ -306,8 +337,8 @@ class HDCB:Cyberdemon replaces Cyberdemon{
 				0.,frandom(0,2)*aimadjust.x,frandom(0,2)*aimadjust.y
 			);
 		}
-		CYBR E 1 A_SetTics(random(1,8))
-		CYBR E 0 A_JumpIf(health>1600,3)
+		CYBR E 1 A_SetTics(random(1,8));
+		CYBR E 0 A_JumpIf(health>1600,3);
 		CYBR EE 0 A_CyberGunSmoke();
 	leadtarget3:
 		CYBR E 8 A_FaceTarget(12,12,0,0,FAF_MIDDLE);
@@ -331,7 +362,7 @@ class HDCB:Cyberdemon replaces Cyberdemon{
 		CYBR F 3 bright light("ROCKET")A_CyberRocket(1.);
 		CYBR E 6 A_FaceTarget(12,12,0,0,FAF_MIDDLE);
 		CYBR F 3 bright light("ROCKET")A_CyberRocket(2.);
-		CYBR E 6 A_FaceTarget(12,12,0,0,FAF_MIDDLE)
+		CYBR E 6 A_FaceTarget(12,12,0,0,FAF_MIDDLE);
 		CYBR F 3 bright light("ROCKET")A_CyberRocket(3.);
 	fireend:
 		CYBR E 0 A_JumpIf(health>1600,3);
@@ -459,7 +490,7 @@ class HDCB:Cyberdemon replaces Cyberdemon{
 		);
 		CYBR I 2{
 			A_Explode(512,16);
-			DistantQuaker.Quake(self,8,500,8192,7,400,666,256);
+			DistantQuaker.Quake(self,8,140,4096,7,400,666,256);
 		}
 
 		CYBR AAAAAAA 0 A_SpawnItemEx("HDSmokeChunk",
@@ -519,8 +550,8 @@ class HDCB:Cyberdemon replaces Cyberdemon{
 			random(-1,1),random(-1,1),random(1,3)
 		);
 		CYBR K 4 A_SpawnItemEx("HDExplosionBoss",
-		random(-66,66),random(-66,66),random(15,42),
-		random(-1,1),random(-1,1),random(1,3)
+			random(-66,66),random(-66,66),random(15,42),
+			random(-1,1),random(-1,1),random(1,3)
 		);
 
 		CYBR L 4 A_SpawnItemEx("HDExplosion",
@@ -564,11 +595,13 @@ class HDCB:Cyberdemon replaces Cyberdemon{
 			random(-26,26),random(-26,26),random(1,14),
 			random(-1,1),random(-1,1),random(2,6),random(0,255)
 		);
-		CYBR P 200;
+		CYBR P 200{bnofear=false;}
 		CYBR P -1 A_BossDeath();
-		Stop
+		stop;
 	}
 }
+
+
 class CyberRemains:Actor{
 	default{
 		renderstyle "add";
@@ -578,7 +611,7 @@ class CyberRemains:Actor{
 	spawn:
 		CYBR NO 4;
 	spawn2:
-		---- -- 1 A_SpawnItemEx("HDSmoke",
+		---- AA 1 A_SpawnItemEx("HDSmoke",
 			random(-30,30),random(-30,30),random(12,14),
 			random(-1,1),random(-1,1),0,
 			0,SXF_NOCHECKPOSITION
@@ -602,8 +635,8 @@ class CyberRemains:Actor{
 		---- A 0{
 			A_SetTics(random(1,smokelag/7));
 			smokelag++;
-			if(alpha<0.2)alpha-=0.002;
-			else A_FadeOut(0.04);
+			if(alpha>0.2)alpha-=0.04;
+			else A_FadeOut(0.002);
 		}
 		---- A 0 A_JumpIf(alpha<0.2,1);
 		loop; //NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
@@ -638,13 +671,11 @@ class CyberGibs:RedParticleFountain{
 	bluh:
 		POSS U 6{
 			A_SpawnItemEx("HDSmokeChunk",
-				random(-3,3),random(-3,3),2,
-				vel.x+frandom(-2,2),vel.y+frandom(-2,2),vel.z+frandom(2,5),
+				frandom(-3,3),frandom(-3,3),2,
+				vel.x+frandom(-6,6),vel.y+frandom(-6,6),vel.z+frandom(5,10),
 				0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM
 			);
-			A_FadeOut(0.2);
-		}loop;
+			A_FadeOut(0.07);
+		}wait;
 	}
 }
-
-*/
