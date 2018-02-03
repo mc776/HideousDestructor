@@ -41,7 +41,7 @@ class Cyberball:SlowProjectile{
 			//hit map geometry
 			if(
 				blockingline||
-				floorz>=pos.z||  
+				floorz>=pos.z||
 				ceilingz-height<=pos.z
 			){
 				bmissilemore=true;
@@ -132,7 +132,7 @@ class HDCB:Cyberdemon replaces CyberDemon{
 		mass 12000;
 		speed 15;
 		deathheight 110;
-		painchance 3;
+		painchance 32;
 		painthreshold 200;
 		maxtargetrange 16384;
 		radiusdamagefactor 0.3;
@@ -199,18 +199,18 @@ class HDCB:Cyberdemon replaces CyberDemon{
 				||inflictor is "KillerBarrel"
 			)
 		){
-			damage/=10;
+			damage/=(shields>0?0:5);
 		}
 
 		//shields
 		if(
-			shields>0  
+			shields>0
 			&&mod!="internal"
 			&&mod!="falling"
 		){
 			int blocked=clamp(damage,0,min(shields,500));
-			damage-=blocked;
-			shields-=max(0,blocked-30);
+			damage=max(damage-blocked,(!random(0,9)?1:0));
+			shields-=max(0,blocked-20);
 			if(!inflictor.bismonster&&!inflictor.player){
 				int shrd=max(1,damage/30);
 				for(int i=0;i<shrd;i++){
@@ -221,6 +221,8 @@ class HDCB:Cyberdemon replaces CyberDemon{
 		}else{
 			bnoblood=false;
 		}
+		if(damage<1)return 0;
+			else A_Log(string.format("cyberdemon took %i damage",damage));
 		return super.damagemobj(
 			inflictor,source,damage,mod,flags,angle
 		);
@@ -279,7 +281,7 @@ class HDCB:Cyberdemon replaces CyberDemon{
 			A_Pain();
 			if(health<3500){
 				if(health<3000)minmissilechance-=5;
-				if(health>1000)speed++;else speed--;  
+				if(health>1000)speed++;else speed--;
 			}
 		}goto see;
 	missile:
