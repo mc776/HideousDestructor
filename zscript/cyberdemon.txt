@@ -135,7 +135,7 @@ class HDCB:Cyberdemon replaces CyberDemon{
 		painchance 32;
 		painthreshold 200;
 		maxtargetrange 16384;
-		radiusdamagefactor 0.3;
+		radiusdamagefactor 0.6;
 		obituary "%o was experimented upon by a cyberdemon.";
 		minmissilechance 196;
 	}
@@ -194,7 +194,6 @@ class HDCB:Cyberdemon replaces CyberDemon{
 		actor inflictor,actor source,int damage,
 		name mod,int flags=0,double angle=0
 	){
-
 		//cheat
 		if(source==self)return 0;
 
@@ -206,7 +205,7 @@ class HDCB:Cyberdemon replaces CyberDemon{
 		){
 			int blocked=clamp(damage,0,min(shields,500));
 			damage=max(damage-blocked,(!random(0,9)?1:0));
-			shields-=max(0,blocked-20);
+			shields=clamp(shields-(mod=="BFGBallAttack"?blocked*100:blocked-20),0,shields);
 			if(!inflictor.bismonster&&!inflictor.player){
 				int shrd=max(1,damage/30);
 				for(int i=0;i<shrd;i++){
