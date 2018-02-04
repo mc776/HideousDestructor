@@ -17,13 +17,13 @@ class SawGib:InventoryFlag{
 	}
 	override void doeffect(){
 		if(bmissileevenmore)return;
-		if(amount>stamina){  
+		if(amount>stamina){
 			bmissileevenmore=true;
 			actor o=owner;
 			if(
 				!owner.bcorpse
 				||!owner.bshootable
-				||owner.health>0  
+				||owner.health>0
 				||!o.findstate("xdeath",true)
 			)goawayanddie();
 			else{
@@ -64,10 +64,12 @@ struct HDMobAI play{
 	//"CorpseFlags" item is a wrapper for this now
 	static void CorpseFlags(actor caller){
 		caller.A_TakeInventory("SawGib");
-		if(caller.health>0){    
+		if(caller.health>0){
+			if(!caller.bfloat)caller.bnodropoff=true;
 			caller.bnotautoaimed=false;
 			caller.balwaystelefrag=false;
 		}else{
+			caller.bnodropoff=false;
 			caller.bshootable=true;
 			caller.bnotautoaimed=true;
 			caller.balwaystelefrag=true;
@@ -228,6 +230,9 @@ struct HDMobAI play{
 			return;
 		}
 
+		//doesn't this do that by default???
+		if(!caller.bfloat)caller.bnodropoff=true;
+
 		//remember original position, etc.
 		double ag=caller.angle;
 		vector3 pg=caller.pos;
@@ -333,7 +338,7 @@ class HDMobster:IdleDummy{
 				A_SetTics(4);
 				if(
 					!master.checksight(threat)
-					||master.distance3d(threat)>thraidius  
+					||master.distance3d(threat)>thraidius
 				)threat=null;
 			}else if(target){
 				master.bfrightened=bfrightened;
