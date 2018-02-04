@@ -3,7 +3,6 @@
 // ------------------------------------------------------------
 ACTOR RiflemanBase
 {
-	Translation "112:120=152:159","121:127=9:12"
 	Height 52
 	Radius 12
 	Health 130
@@ -265,15 +264,9 @@ ACTOR RiflemanBase
 		Goto See
 	}
 }
-actor BlackRifleman : RiflemanBase
-{
-	Translation "112:120=152:159","121:127=9:12", "48:79=66:79", "18:21=68:68", "213:213=66:66"
-}
-actor BrownRifleman : RiflemanBase
-{
-	Translation "112:120=152:159","121:127=9:12", "48:79=61:79", "18:21=63:63", "213:213=63:63"
-}
-actor WhiteRifleman : RiflemanBase{}
+actor BlackRifleman : RiflemanBase{Translation "BlackRifleman"}
+actor BrownRifleman : RiflemanBase{Translation "BrownRifleman"}
+actor WhiteRifleman : RiflemanBase{Translation "WhiteRifleman"}
 actor Rifleman:RandomSpawner replaces ScriptedMarine
 {
 	+friendly
@@ -288,7 +281,6 @@ actor RifleChaingunman : Rifleman replaces MarineChaingun {}
 
 actor SWAT2Base : RiflemanBase
 {
-	Translation "112:113=92:98","114:120=99:111","121:127=5:8"
 	DropItem ""
 	stamina 30
 	states
@@ -339,13 +331,15 @@ actor SWAT2Base : RiflemanBase
 }
 actor BlackSWAT2 : SWAT2Base
 {
-	Translation "112:113=92:98","114:120=99:111","121:127=5:8", "48:79=66:79", "18:21=68:68", "213:213=66:66"
+	Translation "BlackInfiltrator"
 }
 actor BrownSWAT2 : SWAT2Base
 {
-	Translation "112:113=92:98","114:120=99:111","121:127=5:8", "48:79=61:79", "18:21=63:63", "213:213=63:63"
+	Translation "BrownInfiltrator"
 }
-actor WhiteSWAT2 : SWAT2Base{}
+actor WhiteSWAT2 : SWAT2Base{
+	Translation "WhiteInfiltrator"
+}
 actor SWAT2 : RandomSpawner replaces ScriptedMarine
 {
 	+friendly
@@ -362,7 +356,6 @@ actor SWATChain : SWAT2 replaces MarineChainsaw {}
 
 ACTOR SWATBase : RiflemanBase
 {
-	Translation "112:113=92:98","114:120=99:111","121:127=5:8"
 	Health 120
 	gibhealth 180
 	Speed 8
@@ -492,13 +485,15 @@ ACTOR SWATBase : RiflemanBase
 }
 actor BlackSWAT : SWATBase
 {
-	Translation "112:113=92:98","114:120=99:111","121:127=5:8", "48:79=66:79", "18:21=68:68", "213:213=66:66"
+	Translation "BlackEnforcer"
 }
 actor BrownSWAT : SWATBase
 {
-	Translation "112:113=92:98","114:120=99:111","121:127=5:8", "48:79=61:79", "18:21=63:63", "213:213=63:63"
+	Translation "BrownEnforcer"
 }
-actor WhiteSWAT : SWATBase{}
+actor WhiteSWAT : SWATBase{
+	Translation "WhiteEnforcer"
+}
 actor SWAT : Rifleman
 {
 	DropItem "BlackSWAT"
@@ -511,7 +506,6 @@ actor SWATNoShot : SWAT replaces MarineBerserk {}
 
 actor RocketeerBase : RiflemanBase
 {
-	translation "112:115=128:139","116:119=144:151","120:127=236:239"
 	health 120
 	speed 8
 	dropitem ""
@@ -595,13 +589,15 @@ actor RocketDummy : FastProjectile
 actor NoRocketsForYou : InventoryFlag {}
 actor BlackRocketeer : RocketeerBase
 {
-	Translation "112:115=128:139","116:119=144:151","120:127=236:239", "48:79=66:79", "18:21=68:68", "213:213=66:66"
+	Translation "BlackRocketeer"
 }
 actor BrownRocketeer : RocketeerBase
 {
-	Translation "112:115=128:139","116:119=144:151","120:127=236:239", "48:79=61:79", "18:21=63:63", "213:213=63:63"
+	Translation "BrownRocketeer"
 }
-actor WhiteRocketeer : RocketeerBase{}
+actor WhiteRocketeer : RocketeerBase{
+	Translation "WhiteRocketeer"
+}
 actor Rocketeer : Rifleman
 {
 	DropItem "BlackRocketeer"
@@ -638,13 +634,15 @@ ACTOR TangoBase : RiflemanBase
 }
 actor BlackTango : TangoBase
 {
-	Translation "112:116=163:167","117:124=72:79","125:127=5:8", "48:79=66:79", "18:21=68:68", "213:213=66:66"
+	Translation "BlackTango"
 }
 actor BrownTango : TangoBase
 {
-	Translation "112:116=163:167","117:124=72:79","125:127=5:8", "48:79=61:79", "18:21=63:63", "213:213=63:63"
+	Translation "BrownTango"
 }
-actor WhiteTango : TangoBase{}
+actor WhiteTango : TangoBase{
+	Translation "WhiteTango"
+}
 actor Tango : RandomSpawner
 {
 	height 56
@@ -658,7 +656,6 @@ ACTOR ShotTangoBase : SWATBase
 {
 	-friendly
 	-pushable
-	translation "112:116=163:167","117:124=72:79","125:127=5:8"
 	obituary "%o lost the war against terrorism."
 	hitobituary "%o supports your war of terror."
 	decal "BulletScratch"
@@ -679,13 +676,15 @@ ACTOR ShotTangoBase : SWATBase
 }
 actor BlackShotTango : ShotTangoBase
 {
-	Translation "112:116=163:167","117:124=72:79","125:127=5:8", "48:79=66:79", "18:21=68:68", "213:213=66:66"
+	Translation "BlackTango"
 }
 actor BrownShotTango : ShotTangoBase
 {
-	Translation "112:116=163:167","117:124=72:79","125:127=5:8", "48:79=61:79", "18:21=63:63", "213:213=63:63"
+	Translation "BrownTango"
 }
-actor WhiteShotTango : ShotTangoBase{}
+actor WhiteShotTango : ShotTangoBase{
+	Translation "WhiteTango"
+}
 actor ShotTango : Tango
 {
 	DropItem "BlackShotTango"
@@ -698,7 +697,6 @@ ACTOR SMGTangoBase : SWAT2Base
 {
 	-friendly
 	-pushable
-	translation "112:116=163:167","117:124=72:79","125:127=5:8"
 	obituary "%o lost the war against terrorism."
 	hitobituary "%o supports your war of terror."
 	decal "BulletScratch"
@@ -719,13 +717,15 @@ ACTOR SMGTangoBase : SWAT2Base
 }
 actor BlackSMGTango : SMGTangoBase
 {
-	Translation "112:116=163:167","117:124=72:79","125:127=5:8", "48:79=66:79", "18:21=68:68", "213:213=66:66"
+	Translation "BlackTango"
 }
 actor BrownSMGTango : SMGTangoBase
 {
-	Translation "112:116=163:167","117:124=72:79","125:127=5:8", "48:79=61:79", "18:21=63:63", "213:213=63:63"
+	Translation "BrownTango"
 }
-actor WhiteSMGTango : SMGTangoBase{}
+actor WhiteSMGTango : SMGTangoBase{
+	Translation "WhiteTango"
+}
 actor SMGTango : Tango
 {
 	DropItem "BlackSMGTango"
@@ -738,7 +738,6 @@ ACTOR RocketTangoBase : RocketeerBase
 {
 	-friendly
 	-pushable
-	translation "112:116=163:167","117:124=72:79","125:127=5:8"
 	obituary "%o lost the war against terrorism."
 	hitobituary "%o supports your war of terror."
 	dropitem ""
@@ -758,13 +757,15 @@ ACTOR RocketTangoBase : RocketeerBase
 }
 actor BlackRocketTango : RocketTangoBase
 {
-	Translation "112:116=163:167","117:124=72:79","125:127=5:8", "48:79=66:79", "18:21=68:68", "213:213=66:66"
+	Translation "BlackTango"
 }
 actor BrownRocketTango : RocketTangoBase
 {
-	Translation "112:116=163:167","117:124=72:79","125:127=5:8", "48:79=61:79", "18:21=63:63", "213:213=63:63"
+	Translation "BrownTango"
 }
-actor WhiteRocketTango : RocketTangoBase{}
+actor WhiteRocketTango : RocketTangoBase{
+	Translation "WhiteTango"
+}
 actor RocketTango : Tango
 {
 	DropItem "BlackRocketTango"
@@ -779,7 +780,7 @@ actor RocketTango : Tango
 // ------------------------------------------------------------
 actor DeadRifleman replaces DeadMarine
 {
-	translation "112:120=152:159","121:127=9:12"
+	translation "BrownRifleman"
 	-solid
 	+shootable
 	+ismonster
@@ -908,7 +909,7 @@ actor ReallyDeadRiflemanCrouched : ReallyDeadRifleman replaces GibbedMarineExtra
 actor UndeadRifleman : TangoBase
 {
 	-telestomp
-	Translation "112:120=152:159","121:127=9:12"
+	Translation "BrownRifleman"
 	Health 100
 	gibhealth 100
 	SeeSound "grunt/sight"
@@ -993,7 +994,6 @@ actor ScaryItem : ActionItem
 actor SquadRiflemanBase
 {
 	damagefactor "GhostSquadAttack", 0
-	Translation "112:120=152:159","121:127=9:12"
 	maxtargetrange 65536
 	maxdropoffheight 40
 	maxstepheight 40
@@ -1165,12 +1165,14 @@ actor SquadRiflemanBase
 	}
 }
 actor BlackSquadRifleman : SquadRiflemanBase{
-	Translation "112:120=152:159","121:127=9:12", "48:79=66:79", "18:21=68:68", "213:213=66:66"
+	Translation "BlackRifleman"
 }
 actor BrownSquadRifleman : SquadRiflemanBase{
-	Translation "112:120=152:159","121:127=9:12", "48:79=61:79", "18:21=63:63", "213:213=63:63"
+	Translation "BrownRifleman"
 }
-actor WhiteSquadRifleman:SquadRiflemanBase{}
+actor WhiteSquadRifleman:SquadRiflemanBase{
+	Translation "WhiteRifleman"
+}
 actor SquadRifleman:RandomSpawner{
 	+ismonster +friendly height 52 radius 12
 	DropItem "BlackSquadRifleman"
