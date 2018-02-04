@@ -25,7 +25,8 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 	double spread;
 	double turnamount;
 	int gunloaded;
-	int gunloadmax;
+	int gunmax;
+	int gunspent;
 	int pistolloaded;
 	int timesdied;
 	bool hasdropped;
@@ -45,11 +46,11 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 		if(!accuracy)wep=clamp(random(0,3)-random(0,3),0,3);
 		else wep=accuracy-1;
 
-		if(wep==HDMW_ZM66)gunloadmax=51;
-		else if(wep==HDMW_HUNTER)gunloadmax=8;
-		else if(wep==HDMW_SMG)gunloadmax=31;
-		else if(wep==HDMW_ROCKET)gunloadmax=6;
-		gunloaded=gunloadmax;
+		if(wep==HDMW_ZM66)gunmax=51;
+		else if(wep==HDMW_HUNTER)gunmax=8;
+		else if(wep==HDMW_SMG)gunmax=31;
+		else if(wep==HDMW_ROCKET)gunmax=6;
+		gunloaded=gunmax;
 
 
 		//appearance
@@ -89,11 +90,7 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 	states{
 
 	spawn:
-//		#### A -1;
-		PLAY A -1;
-}}
-/*
-	spawn:
+		PLAY A 0;
 		#### AA 4{hdmobai.wander(self);}
 		#### A 0 A_Look();
 		#### BB 4{hdmobai.wander(self);}
@@ -115,12 +112,12 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 		#### A 0 A_JumpIf(pistolloaded<1,"reloadpistol");
 		#### AABBCCDD 2{hdmobai.chase(self);}
 		#### A 0{
-			if(health<40){A_DamageSelf(random(1,4),"bleedout");}
-			else{HealThing(1);}
-			A_SetSolid;
+			if(health<40)damagemobj(self,self,1,"bleedout");
+			else HealThing(1);
+			A_SetSolid();
 		}
-		#### E 0 A_JumpIfTargetInLOS("See")
-		#### E 0 A_Jump(256,"spwander")
+		loop;
+		#### E 0 A_JumpIfTargetInLOS("see");
 	spwander:
 		#### E 0 A_ClearTarget();
 		#### AA 3{hdmobai.wander(self);}
@@ -141,45 +138,56 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 		#### EEE 2 A_Chase(flags:CHF_DONTMOVE);
 		#### A 0 A_Jump(60,"spwander");
 		#### E 0 A_JumpIfTargetInLOS("see");
-		goto spwander
+		goto spwander;
+
 	missile:
 		#### A 0 A_JumpIf(gunloaded<1,"reload");
 		#### A 0 A_JumpIfTargetInLOS(3,120);
 		#### CD 2 A_FaceTarget(90);
 		#### E 1 A_SetTics(random(4,10)); //when they just start to aim,not for followup shots!
 	missile2:
-		#### A 0 A_JumpIfCloser(500,4)
-		#### A 0 A_JumpIfCloser(1200,2)
-		#### A 0 A_SetUserVar("turnamount",10)
-		goto turntoaim
-		#### A 0 A_SetUserVar("turnamount",30)
-		goto turntoaim
-		#### A 0 A_SetUserVar("turnamount",50)
-		goto turntoaim
+		#### A 0{
+			double dist=distance3d(target);
+			if(dist<500)turnamount=50;
+			else if(dist<1200)turnamount=30;
+			else turnamount=10;
+		}
 	turntoaim:
-		#### E 2 A_FaceTarget(turnamount,turnamount)
-		#### A 0 A_JumpIfTargetInLOS(1)
-		goto see
-		#### A 0 A_JumpIfTargetInLOS(1,10)
-		loop
-		#### A 0 A_FaceTarget(turnamount,turnamount)
-		#### E 1 A_SetTics(random(0,80/turnamount))
-		#### A 0 A_SetUserVar("spread",turnamount/10)
-		#### A 0 A_Jump(256,"shoot")
+		#### E 2 A_FaceTarget(turnamount,turnamount);
+		#### A 0 A_JumpIfTargetInLOS(1);
+		goto see;
+		#### A 0 A_JumpIfTargetInLOS(1,10);
+		loop;
+		#### A 0 A_FaceTarget(turnamount,turnamount);
+		#### E 1 A_SetTics(random(0,80/turnamount));
+		#### A 0{
+			spread=turnamount*0.1;
+			setstatelabel("shoot");
+		}
+
 	shoot:
 		#### A 0 A_JumpIf(gunloaded<1,"shootpistol");
-		#### F 10 bright light("SHOT") A_Log("Bang!");
-		#### E;
+		#### F 10 bright light("SHOT"){
+			A_Log("Bang!");
+			A_SpawnProjectile("doomimpball",42,angle:frandom(-spread,spread),flags:CMF_SAVEPITCH|CMF_AIMDIRECTION,pitch:pitch+frandom(-spread,spread));
+		}
+		#### E 5;
 		goto see;
-
 	shootpistol:
 		#### A 0 A_JumpIf(pistolloaded<1,"ohforfuckssake");
 		#### F 10 bright light("SHOT") A_Log("bangbangbang...");
-		#### E;
+		#### E 5;
 		goto see;
 
 	ohforfuckssake:
 		#### E 4 A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
+
+	reload:
+		#### E 10{
+			A_Log("RELOADING!");
+			gunloaded=gunmax;
+		}goto see;
+}}/*
 
 	reloadzm66:
 		#### AA 1{hdmobai.chase(self,"melee","",flee:true);}
@@ -195,7 +203,7 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 		#### E 2 A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
 		#### A 0{
 			A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
-			gunloaded=gunloadmax;
+			gunloaded=gunmax;
 		}
 		#### EEE 1 A_Chase(flags:CHF_DONTMOVE);
 		goto see;
@@ -269,15 +277,8 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 				seesound="grunt/sight";
 				painsound="grunt/pain";
 				deathsound="grunt/death";
+				A_PlaySound(seesound,CHAN_VOICE);
 				return;
-
-				//replace with this?
-				let udr=HDMarine(spawn("UndeadRifleman",pos));
-				udr.hasdropped=true;
-				udr.target=target;udr.master=master;
-				udr.stamina=melanin+1;udr.accuracy=wep+1;
-				udr.translation=translation;
-				udr.A_PlaySound(udr.seesound,CHAN_VOICE);
 			}
 		}stop;
 
@@ -353,32 +354,32 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 	}
 }
 
-class Rifleman:HDMarine{default{accuracy 1;}}
-class BlackRifleman:HDMarine{default{accuracy 1;stamina 3;}}
-class BrownRifleman:HDMarine{default{accuracy 1;stamina 2;}}
-class WhiteRifleman:HDMarine{default{accuracy 1;stamina 1;}}
+class Rifleman:HDMarine{default{accuracy HDMW_ZM66+1;}}
+class BlackRifleman:HDMarine{default{accuracy HDMW_ZM66+1;stamina 3;}}
+class BrownRifleman:HDMarine{default{accuracy HDMW_ZM66+1;stamina 2;}}
+class WhiteRifleman:HDMarine{default{accuracy HDMW_ZM66+1;stamina 1;}}
 class RifleFistman:Rifleman replaces MarineFist{}
 class RifleChaingunman:Rifleman replaces MarineChaingun{}
 
-class Enforcer:HDMarine{default{accuracy 2;}}
-class BlackEnforcer:HDMarine{default{accuracy 2;stamina 3;}}
-class BrownEnforcer:HDMarine{default{accuracy 2;stamina 2;}}
-class WhiteEnforcer:HDMarine{default{accuracy 2;stamina 1;}}
+class Enforcer:HDMarine{default{accuracy HDMW_HUNTER+1;}}
+class BlackEnforcer:HDMarine{default{accuracy HDMW_HUNTER+1;stamina 3;}}
+class BrownEnforcer:HDMarine{default{accuracy HDMW_HUNTER+1;stamina 2;}}
+class WhiteEnforcer:HDMarine{default{accuracy HDMW_HUNTER+1;stamina 1;}}
 class EnforcerShot:Enforcer replaces MarineShotgun {}
 class EnforcerSuperShot:Enforcer replaces MarineSSG {}
 class EnforcerNoShot:Enforcer replaces MarineBerserk {}
 
-class Infiltrator:HDMarine{default{accuracy 3;}}
-class BlackInfiltrator:HDMarine{default{accuracy 3;stamina 3;}}
-class BrownInfiltrator:HDMarine{default{accuracy 3;stamina 2;}}
-class WhiteInfiltrator:HDMarine{default{accuracy 3;stamina 1;}}
+class Infiltrator:HDMarine{default{accuracy HDMW_SMG+1;}}
+class BlackInfiltrator:HDMarine{default{accuracy HDMW_SMG+1;stamina 3;}}
+class BrownInfiltrator:HDMarine{default{accuracy HDMW_SMG+1;stamina 2;}}
+class WhiteInfiltrator:HDMarine{default{accuracy HDMW_SMG+1;stamina 1;}}
 class InfiltratorPistol:Infiltrator replaces MarinePistol{}
 class InfiltratorChainsaw:Infiltrator replaces MarineChainsaw{}
 
-class Rocketeer:HDMarine{default{accuracy 4;}}
-class BlackRocketeer:HDMarine{default{accuracy 4;stamina 3;}}
-class BrownRocketeer:HDMarine{default{accuracy 4;stamina 2;}}
-class WhiteRocketeer:HDMarine{default{accuracy 4;stamina 1;}}
+class Rocketeer:HDMarine{default{accuracy HDMW_ROCKET+1;}}
+class BlackRocketeer:HDMarine{default{accuracy HDMW_ROCKET+1;stamina 3;}}
+class BrownRocketeer:HDMarine{default{accuracy HDMW_ROCKET+1;stamina 2;}}
+class WhiteRocketeer:HDMarine{default{accuracy HDMW_ROCKET+1;stamina 1;}}
 class RRocketeer:Rocketeer replaces MarineRocket{}
 class BFuglyteer:Rocketeer replaces MarineBFG{}
 class Plasmateer:Rocketeer replaces MarinePlasma{}
@@ -390,21 +391,21 @@ class BlackTango:Tango{default{stamina 3;}}
 class BrownTango:Tango{default{stamina 2;}}
 class WhiteTango:Tango{default{stamina 1;}}
 
-class BlackRifleTango:Tango{default{accuracy 1;stamina 3;}}
-class BrownRifleTango:Tango{default{accuracy 1;stamina 2;}}
-class WhiteRifleTango:Tango{default{accuracy 1;stamina 1;}}
+class BlackRifleTango:Tango{default{accuracy HDMW_ZM66+1;stamina 3;}}
+class BrownRifleTango:Tango{default{accuracy HDMW_ZM66+1;stamina 2;}}
+class WhiteRifleTango:Tango{default{accuracy HDMW_ZM66+1;stamina 1;}}
 
-class BlackShotTango:Tango{default{accuracy 2;stamina 3;}}
-class BrownShotTango:Tango{default{accuracy 2;stamina 2;}}
-class WhiteShotTango:Tango{default{accuracy 2;stamina 1;}}
+class BlackShotTango:Tango{default{accuracy HDMW_HUNTER+1;stamina 3;}}
+class BrownShotTango:Tango{default{accuracy HDMW_HUNTER+1;stamina 2;}}
+class WhiteShotTango:Tango{default{accuracy HDMW_HUNTER+1;stamina 1;}}
 
-class BlackSMGTango:Tango{default{accuracy 3;stamina 3;}}
-class BrownSMGTango:Tango{default{accuracy 3;stamina 2;}}
-class WhiteSMGTango:Tango{default{accuracy 3;stamina 1;}}
+class BlackSMGTango:Tango{default{accuracy HDMW_SMG+1;stamina 3;}}
+class BrownSMGTango:Tango{default{accuracy HDMW_SMG+1;stamina 2;}}
+class WhiteSMGTango:Tango{default{accuracy HDMW_SMG+1;stamina 1;}}
 
-class BlackRocketTango:Tango{default{accuracy 4;stamina 3;}}
-class BrownRocketTango:Tango{default{accuracy 4;stamina 2;}}
-class WhiteRocketTango:Tango{default{accuracy 4;stamina 1;}}
+class BlackRocketTango:Tango{default{accuracy HDMW_ROCKET+1;stamina 3;}}
+class BrownRocketTango:Tango{default{accuracy HDMW_ROCKET+1;stamina 2;}}
+class WhiteRocketTango:Tango{default{accuracy HDMW_ROCKET+1;stamina 1;}}
 
 
 

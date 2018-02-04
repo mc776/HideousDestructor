@@ -229,6 +229,7 @@ struct HDMobAI play{
 		}
 
 		//remember original position, etc.
+		double ag=caller.angle;
 		vector3 pg=caller.pos;
 		bool fraid=caller.bfrightened;
 		actor attacktarget=caller.target;
@@ -250,6 +251,9 @@ struct HDMobAI play{
 		);
 		else caller.A_Wander();
 		vector3 pp=caller.pos;
+
+		//don't spin so dang fast
+		caller.angle=ag+clamp(caller.deltaangle(ag,caller.angle),-10,10);
 
 		if(!caller.bfloat && caller.floorz<caller.pos.z)return; //abort if can't propel caller
 		caller.vel.xy*=0.7; //slow down
