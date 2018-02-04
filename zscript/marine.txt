@@ -1,12 +1,11 @@
 // ------------------------------------------------------------
 // Rifleman and derivatives
 // ------------------------------------------------------------
-class HDRFM:HDActor{
+class HDMarine:HDActor{// replaces ScriptedMarine{
 	default{
 		monster;
 		+friendly
 		+quicktoretaliate
-//		translation "112:120=152:159","121:127=9:12";
 		height 52;
 		radius 12;
 		health 130;
@@ -19,20 +18,35 @@ class HDRFM:HDActor{
 		painchance 240;
 		obituary "%o was shot up by a marine.";
 		hitobituary "%o violated a marine's personal space.";
+
 		accuracy 0; //set to hdmw_*+1
+		stamina 0; //+1 for setting
 	}
 	double spread;
 	double turnamount;
 	int gunloaded;
+	int gunloadmax;
+	int pistolloaded;
 	bool hasdropped;
 	int wep;
 	override void postbeginplay(){
 		super.postbeginplay();
 		hasdropped=false;
+		spread=0;
 
+		//weapon
+		pistolloaded=15;
 		if(!accuracy)wep=clamp(random(0,3)-random(0,3),0,3);
 		else wep=accuracy-1;
 
+		if(wep==HDMW_ZM66)gunloadmax=51;
+		else if(wep==HDMW_HUNTER)gunloadmax=8;
+		else if(wep==HDMW_SMG)gunloadmax=31;
+		else if(wep==HDMW_ROCKET)gunloadmax=6;
+		gunloaded=gunloadmax;
+
+
+		//appearance
 		string trnsl="";
 		if(bfriendly){
 			bpushable=true;
@@ -42,7 +56,8 @@ class HDRFM:HDActor{
 			else if(wep==HDMW_ROCKET)trnsl="Rocketeer";
 		}else trnsl="Tango";
 
-		int melanin=random(0,2);
+		int melanin=stamina+1;
+		if(!accuracy)melanin=random(0,2);
 		if(!melanin)trnsl=string.format("White%s",trnsl);
 		else if(melanin==1)trnsl=string.format("Brown%s",trnsl);
 		else if(melanin==2)trnsl=string.format("Black%s",trnsl);
@@ -74,47 +89,25 @@ class HDRFM:HDActor{
 /*
 	spawn:
 		#### AA 4{hdmobai.wander(self);}
-		#### A 0 A_Look
+		#### A 0 A_Look();
 		#### BB 4{hdmobai.wander(self);}
-		#### A 0 A_Look
+		#### A 0 A_Look();
 		#### CC 4{hdmobai.wander(self);}
-		#### A 0 A_Look
+		#### A 0 A_Look();
 		#### DD 4{hdmobai.wander(self);}
-		#### A 0 HealThing(1)
-		#### A 0 A_Jump(256,"spawn2")
+		#### A 0 HealThing(1);
 	spawn2:
-		#### A 0 A_Look
-		#### A 0 A_Jump(60,"spawn")
-		#### A 0 A_SetAngle(angle+random(-30,30))
-		#### EEE 3 A_Look
-		#### A 0 A_SetAngle(angle+random(-30,30))
-		#### EEE 3 A_Look
-		#### A 0 A_Jump(60,"spawn")
-		loop
-
-	see_evade:
-		#### A 0 A_Jump(182,2)
-		#### A 0 A_JumpIfTargetInLOS ("Missile")
-		#### A 0 A_Chase("missile","melee",CHF_DONTMOVE)
-		#### A 0 A_FaceTarget(0,0)
-		#### A 0 A_SetAngle(angle+random(60,100)*(random(0,1)*2-1))
-		#### A 0 A_ChangeFlag("nodropoff",1)
-	see_evade2:
-		#### A 0 A_SetUserVar("spread",3)
-		#### A 0 A_SetAngle(angle+random(-30,30))
-		#### ABCD 4 A_Recoil(-3)
-		#### A 0 A_JumpIf(velx*velx+vely*vely>25,2)
-		#### A 0 A_SetAngle(angle+random(-160,200))
-		#### A 0 A_ChangeFlag("nodropoff",0)
-		#### A 0 A_Jump(72,2)
-		#### A 0 A_TakeInventory("EvadeNow",1)
-	See:
-		#### A 0 A_JumpIf(gunloaded>=stamina,"reload")
-	see_all:
-		#### A 0 A_JumpIf(floorz<z-4,2)
-		#### A 0 A_JumpIfInventory("EvadeNow",1,"see_evade")
-		#### A 0 A_SetUserVar("spread",2)
-		#### AABBCCDD 2 A_Chase
+		#### A 0 A_Jump(60,"spawn");
+		#### A 0{angle+=random(-30,30);}
+		#### EEE 3 A_Look();
+		#### A 0{angle+=random(-30,30);}
+		#### EEE 3 A_Look();
+		#### A 0 A_Jump(60,"spawn");
+		loop;
+	see:
+		#### A 0 A_JumpIf(gunloaded<1,"reload");
+		#### A 0 A_JumpIf(pistolloaded<1,"reloadpistol");
+		#### AABBCCDD 2{hdmobai.chase(self);}
 		#### A 0{
 			if(health<40){A_DamageSelf(random(1,4),"bleedout");}
 			else{HealThing(1);}
@@ -123,31 +116,31 @@ class HDRFM:HDActor{
 		#### E 0 A_JumpIfTargetInLOS("See")
 		#### E 0 A_Jump(256,"spwander")
 	spwander:
-		#### E 0 A_ClearTarget
+		#### E 0 A_ClearTarget();
 		#### AA 3{hdmobai.wander(self);}
-		#### A 0 A_Chase("melee","missile",CHF_DONTMOVE)
+		#### A 0 A_Chase(flags:CHF_DONTMOVE);
 		#### BB 3{hdmobai.wander(self);}
-		#### A 0 A_Chase("melee","missile",CHF_DONTMOVE)
+		#### A 0 A_Chase(flags:CHF_DONTMOVE);
 		#### CC 3{hdmobai.wander(self);}
-		#### A 0 A_Chase("melee","missile",CHF_DONTMOVE)
+		#### A 0 A_Chase(flags:CHF_DONTMOVE);
 		#### DD 3{hdmobai.wander(self);}
-		#### A 0 HealThing(1)
-		#### E 0 A_Jump(128,"spwander")
+		#### A 0 HealThing(1);
+		#### E 0 A_Jump(128,"spwander");
 	spwander2:
-		#### A 0 A_Look
-		#### A 0 A_Jump(4,"spawn")
-		#### A 0 A_SetAngle(angle+random(-30,30))
-		#### EEE 2 A_Chase("melee","missile",CHF_DONTMOVE)
-		#### A 0 A_SetAngle(angle+random(-30,30))
-		#### EEE 2 A_Chase("melee","missile",CHF_DONTMOVE)
-		#### A 0 A_Jump(60,"spwander")
-		#### E 0 A_JumpIfTargetInLOS("see")
-		#### E 0 A_Jump(256,"spwander")
+		#### A 0 A_Look();
+		#### A 0 A_Jump(4,"spawn");
+		#### A 0{angle+=random(-30,30);}
+		#### EEE 2 A_Chase(flags:CHF_DONTMOVE);
+		#### A 0{angle+=random(-30,30);}
+		#### EEE 2 A_Chase(flags:CHF_DONTMOVE);
+		#### A 0 A_Jump(60,"spwander");
+		#### E 0 A_JumpIfTargetInLOS("see");
+		goto spwander
 	missile:
-		#### A 0 A_JumpIf(gunloaded>=stamina,"reload")
-		#### A 0 A_JumpIfTargetInLOS(3,120)
-		#### CD 2 A_FaceTarget(90)
-		#### E 1 A_SetTics(random(4,10)) //when they just start to aim, not for followup shots!
+		#### A 0 A_JumpIf(gunloaded<1,"reload");
+		#### A 0 A_JumpIfTargetInLOS(3,120);
+		#### CD 2 A_FaceTarget(90);
+		#### E 1 A_SetTics(random(4,10)); //when they just start to aim, not for followup shots!
 	missile2:
 		#### A 0 A_JumpIfCloser(500,4)
 		#### A 0 A_JumpIfCloser(1200,2)
@@ -168,654 +161,158 @@ class HDRFM:HDActor{
 		#### A 0 A_SetUserVar("spread",turnamount/10)
 		#### A 0 A_Jump(256,"shoot")
 	shoot:
-		#### E 3 A_Jump (128, 1)
-		"####" A 0 A_CheckLOF("see",CLOFF_JUMPNONHOSTILE|CLOFF_SKIPTARGET|CLOFF_JUMPOBJECT|CLOFF_MUSTBESOLID|CLOFF_SKIPENEMY,0,0, 0,0, 44,0)
-	shoot2:
-		#### E 0 A_JumpIfCloser (600, "rifle")
-	Grenade:
-		#### E 0 A_Jump (160, "rifle")
-		#### E 0 A_JumpIfCloser (760, 2)
-		#### E 0 A_Jump (256, "rifle")
-		#### EE 2 A_FaceTarget(10,10)
-		#### E 0 A_PlaySound ("weapons/grenadeshot")
-		#### E 12 A_SpawnProjectile ("GyroGrenade", 44,0,0, CMF_AIMDIRECTION|CMF_SAVEPITCH, pitch+frandom(4,-3))
-		#### A 0 A_CheckFlag("friendly",2)
-		#### A 0 A_Jump(256,2)
-		#### A 0 A_AlertMonsters(0,AMF_TARGETEMITTER)
-		#### A 0
-		goto See
+		#### A 0 A_JumpIf(gunloaded<1,"shootpistol");
+		#### F 10 bright light("SHOT") A_Log("Bang!");
+		#### E;
+		goto see;
 
-	rifle:
-		#### A 0 A_JumpIf(gunloaded>=stamina,"reload")
-		goto gunshot
-	gunshot:
-		#### A 0 A_JumpIf(gunloaded>=stamina,"ohforfuckssake")
-		#### F 0 A_PlayWeaponSound("weapons/rifle")
-		#### F 1 bright light("SHOT"){
-			pitch+=frandom(-spread,spread);
-			angle+=frandom(-spread,spread);
-			A_GiveInventory("DecoBulleter426");
-		}
-		#### A 0 {gunloaded++;}
-		#### E 2 A_SetUserVar("spread",spread+0.2)
-		#### A 0 A_CheckFlag("friendly",2)
-		#### A 0 A_Jump(256,2)
-		#### A 0 A_AlertMonsters(0,AMF_TARGETEMITTER)
-		#### A 0 A_JumpIfCloser(200,"fullauto")
-		#### A 0 A_JumpIfCloser(800,1)
-		goto postshot
-		#### A 0 A_Jump(120,"gunshot")
-
-	postshot:
-		#### A 0 A_JumpIf(gunloaded>=stamina,"reload")
-		#### A 0 A_JumpIf(spread<1,2)
-		#### A 0 A_SetUserVar("spread",spread-1)
-		#### E 5 A_SetTics(random(1,3))
-		#### E 1 A_JumpIfTargetInLOS(2)
-		#### E 0 A_Jump(90,"coverfire")//even if not in los, occasionally keep shooting anyway
-		goto see
-		#### E 0 A_FaceTarget(10,10)
-		#### E 0 A_Jump(8,"see")//even if in los, occasionally stop shooting anyway
-		#### E 0 A_JumpIfInTargetInventory("Health",1,2)//if target is alive, shoot
-		#### E 0 A_Jump(200,"see")
-		#### E 0
-		goto coverfire
-	coverfire:
-		#### E 1 A_SetTics(random(2,12))
-		#### E 0 A_SetUserVar("spread",2)
-		#### A 0 A_Jump(90,"see")
-		#### E 0 A_JumpIfTargetInLOS("missile2")
-		#### A 0 A_Jump(216,"shoot")
-		loop
-
-	fullauto:
-		#### A 0 A_Jump(128,"shoot")
-		#### A 0 A_CPosRefire
-		#### A 0 A_Jump(256,"shoot")
+	shootpistol:
+		#### A 0 A_JumpIf(pistolloaded<1,"ohforfuckssake");
+		#### F 10 bright light("SHOT") A_Log("bangbangbang...");
+		#### E;
+		goto see;
 
 	ohforfuckssake:
-		#### E 4
-	reload:
-		#### A 0 A_ChangeFlag("frightened",1)
-		#### A 0 A_PlaySound ("weapons/rifleclick2")
-		#### AA 1 A_Chase("melee","")
-		#### A 0 A_PlaySound ("weapons/rifleload")
-		#### A 0 A_SpawnProjectile("HD4mmMagEmpty",38,0,random(90,120))
-	reload2:
-		#### BBCC 1 A_Chase("melee","")
-		#### A 0 A_ChangeFlag("frightened",0)
-		#### DD 1 A_Chase("melee","")
-		#### A 0 A_PlaySound ("weapons/pocket")
-		#### E 3 A_FaceTarget(60,60)
-		#### E 9
-		#### E 8 A_PlaySound ("weapons/rifleload")
-		#### E 2 A_PlaySound ("weapons/rifleclick2")
-		#### A 0 A_PlaySound ("weapons/rifleclick")
-		#### A 0 {gunloaded=0;}
-		#### A 0 A_ChangeFlag("frightened",0)
-		#### EEE 1 A_Chase("melee","missile",CHF_DONTMOVE)
-		goto see
+		#### E 4 A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
 
-	Melee:
-		#### C 8 A_FaceTarget
-		#### D 4
-		#### E 4 A_MeleeAttack
-		#### E 3 A_JumpIfCloser (64, 3)
-		#### E 4 A_FaceTarget(0,0)
-		#### A 0 A_Jump (256, "Missile2")
-		#### A 4
-		Goto See
-	Pain:
-		#### G 4
-		#### G 4 A_Pain
-		#### G 0 A_Jump (100,"See")
-		#### AB 2 A_FaceTarget(50,50)
-		#### CD 3 A_FastChase
-		#### G 0 A_CPosRefire
-		#### A 0 A_Jump (256,"Missile")
-	Death:
-		#### A 0 A_ChangeFlag("pushable", 0)
-		#### H 5 A_SpawnItemEx("tempshield", 0,0,0, velx,vely,velz, 0,40)
-		#### I 5 A_Scream
-	death.bleedout:
-		#### J 5 A_GiveInventory("NoBlockWepDrop")
-		#### KLM 5
-		#### A 0 A_Jump(256,"Dead")
-	XDeath:
-		#### O 5 A_ChangeFlag ("shootable", 0)
-		#### O 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,SXF_NOCHECKPOSITION)
-		#### P 5 A_XScream
-		#### P 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,SXF_NOCHECKPOSITION)
-		#### Q 5 A_GiveInventory("NoBlockWepDrop")
-		#### Q 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,SXF_NOCHECKPOSITION)
-		#### RSTUV 5
-		#### A 0 A_Jump(256,"XDead")
-	Dead:
-		#### N 0 A_SpawnItemEx("DeadRifleman",0,0,0,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_TRANSFERTRANSLATION|SXF_TRANSFERSCALE)
-		Stop
-	XDead:
-		#### N 0 A_SpawnItemEx("ReallyDeadRifleman",0,0,0,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_TRANSFERTRANSLATION|SXF_TRANSFERSCALE)
-		Stop
-	//Raise:
-		#### MLKJIH 4
-		#### A 0 A_ChangeFlag("pushable",1)
-		Goto See
-	}
-}
-class BlackRifleman : RiflemanBase
-{
-	Translation "112:120=152:159","121:127=9:12", "48:79=66:79", "18:21=68:68", "213:213=66:66"
-}
-class BrownRifleman : RiflemanBase
-{
-	Translation "112:120=152:159","121:127=9:12", "48:79=61:79", "18:21=63:63", "213:213=63:63"
-}
-class WhiteRifleman : RiflemanBase{}
-class Rifleman:RandomSpawner replaces ScriptedMarine
-{
-	+friendly
-	height 56
-	radius 12
-	DropItem "BlackRifleman"
-	DropItem "BrownRifleman"
-	DropItem "WhiteRifleman"
-}
-class RifleFistman : Rifleman replaces MarineFist {}
-class RifleChaingunman : Rifleman replaces MarineChaingun {}
-
-class SWAT2Base : RiflemanBase
-{
-	Translation "112:113=92:98","114:120=99:111","121:127=5:8"
-	DropItem ""
-	stamina 30
-	states
-	{
-	spawn:
-		#### A 0
-		#### A 0 A_GiveInventory("HDSMG",1)
-		goto super::spawn
-	shoot:
-	rifle:
-		#### A 0 A_JumpIf(gunloaded>=stamina,"reload")
-		"####" A 0 A_CheckLOF("see",CLOFF_JUMPNONHOSTILE|CLOFF_SKIPTARGET|CLOFF_JUMPOBJECT|CLOFF_MUSTBESOLID|CLOFF_SKIPENEMY,0,0, 0,0, 44,0)
-		goto gunshot
-	gunshot:
-		"----" A 0 A_JumpIf(gunloaded>=stamina,"ohforfuckssake")
-		"----" A 0 A_PlaySound("weapons/pistol",CHAN_WEAPON,0.7)
-		"####" F 1 bright light("SHOT"){
-			pitch+=frandom(-spread,spread);
-			angle+=frandom(-spread,spread);
-			A_GiveInventory("DecoBulleter9f");
+	reloadzm66:
+		#### AA 1{hdmobai.chase(self,"melee","",flee:true);}
+		#### A{
+			A_PlaySound("weapons/rifleload",CHAN_WEAPON);
+			A_SpawnProjectile("HD4mmMagEmpty",38,0,random(90,120));
 		}
-		#### E 2{
-			gunloaded++;
-			A_SetUserVar("spread",spread+0.2);
+		#### BBCC 1{hdmobai.chase(self,"melee","",flee:true);}
+		#### DD 1{hdmobai.chase(self,"melee","");}
+		#### A 0 A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		#### E 10 A_FaceTarget(60,60);
+		#### E 8 A_PlaySound("weapons/rifleload",CHAN_WEAPON);
+		#### E 2 A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
+		#### A 0{
+			A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
+			gunloaded=gunloadmax;
 		}
-		#### A 0 A_CheckFlag("friendly",2)
-		#### A 0 A_Jump(256,2)
-		#### A 0 A_AlertMonsters(0,AMF_TARGETEMITTER)
-		#### A 0 A_SpawnProjectile("HDSpent9mm",40)
-		#### A 0 A_JumpIfCloser(600,"fullauto")
-		#### A 0 A_JumpIfCloser(1200,1)
-		goto postshot
-		#### A 0 A_Jump(120,"gunshot")
-		goto postshot
-	postshot:
-		#### A 0 A_JumpIf(gunloaded>=stamina,"reload")
-		goto super::postshot+1
-	ohforfuckssake:
-		#### E 4
-	reload:
-		#### A 0 A_ChangeFlag("frightened",1)
-		#### A 0 A_PlaySound ("weapons/rifleclick2")
-		#### AA 1 A_Chase("melee","")
-		#### A 0 A_PlaySound ("weapons/rifleload")
-		#### A 0 A_SpawnProjectile("HDSMGEmptyMag",38,0,random(90,120))
-		goto reload2
-	}
-}
-class BlackSWAT2 : SWAT2Base
-{
-	Translation "112:113=92:98","114:120=99:111","121:127=5:8", "48:79=66:79", "18:21=68:68", "213:213=66:66"
-}
-class BrownSWAT2 : SWAT2Base
-{
-	Translation "112:113=92:98","114:120=99:111","121:127=5:8", "48:79=61:79", "18:21=63:63", "213:213=63:63"
-}
-class WhiteSWAT2 : SWAT2Base{}
-class SWAT2 : RandomSpawner replaces ScriptedMarine
-{
-	+friendly
-	height 56
-	radius 12
-	DropItem "BlackSWAT2"
-	DropItem "BrownSWAT2"
-	DropItem "WhiteSWAT2"
-}
-class SWATPist : SWAT2 replaces MarinePistol {}
-class SWATChain : SWAT2 replaces MarineChainsaw {}
+		#### EEE 1 A_Chase(flags:CHF_DONTMOVE);
+		goto see;
 
-
-
-class SWATBase : RiflemanBase
-{
-	Translation "112:113=92:98","114:120=99:111","121:127=5:8"
-	Health 120
-	gibhealth 180
-	Speed 8
-	Decal "BulletScratch"
-	+doharmspecies
-	DropItem ""
-	maxtargetrange 1024
-	States
-	{
-	spwander:
-		#### A 0 A_JumpIfInventory("ShotgunTube",1,"reload")
-		goto super::spwander
-	see:
-		#### A 0 A_JumpIfInventory("HunterSpentShell",1,"Chamber")
-		#### A 0 A_JumpIfInventory("ShotgunTube",0,"reload")
-		#### A 0 A_ChangeFlag("frightened",0)
-		goto super::see_all
-	ohforfuckssake:
-		#### E 4
-	reload:
-		#### A 0 A_ChangeFlag("frightened",1)
-		#### AA 1 A_Chase("melee","")
-		#### A 0 A_PlaySound ("weapons/huntopen")
-		#### BBCC 1 A_Chase("melee","")
-		#### DDAA 1 A_Chase("melee","missile")
-		#### A 0 A_TakeInventory("ShotgunTube",1)
-		#### A 0 A_PlaySound ("weapons/huntreload")
-		#### A 0 A_JumpIfInventory("ShotgunTube",1,"reload2")
-		goto reloadend
-	reload2:
-		#### BB 4 A_Chase("melee","missile")
-		#### A 0 A_TakeInventory("ShotgunTube",1)
-		#### A 0 A_PlaySound ("weapons/huntreload")
-		#### A 0 A_JumpIfInventory("ShotgunTube",1,1)
-		goto reloadend
-		#### CC 4 A_Chase("melee","missile")
-		#### A 0 A_TakeInventory("ShotgunTube",1)
-		#### A 0 A_PlaySound ("weapons/huntreload")
-		#### A 0 A_JumpIfInventory("ShotgunTube",1,1)
-		goto reloadend
-		#### DD 4 A_Chase("melee","missile")
-		#### A 0 A_TakeInventory("ShotgunTube",1)
-		#### A 0 A_PlaySound ("weapons/huntreload")
-		#### A 0 A_JumpIfInventory("ShotgunTube",1,1)
-		goto reloadend
-		#### A 0 A_PlaySound ("weapons/pocket")
-		#### AABBCCDDAA 1 A_Chase("melee","missile")
-		loop
-	reloadend:
-		#### A 0 A_ChangeFlag("frightened",0)
-		#### BBCCDD 2 A_Chase("melee","")
-		#### A 0 A_PlaySound ("weapons/huntopen")
-		#### EEE 1 A_Chase("melee","missile",CHF_DONTMOVE)
-		goto see
-	missile:
-		#### A 0 A_JumpIfInventory("ShotgunTube",0,"reload")
-		#### A 0 A_JumpIfTargetInLOS(3,120)
-		#### CD 2 A_FaceTarget(90,30)
-		#### E 1 A_SetTics(random(4,10)) //when they just start to aim, not for followup shots!
-	missile2:
-		#### A 0 A_JumpIfCloser(200,4)
-		#### A 0 A_JumpIfCloser(900,2)
-		#### A 0 A_SetUserVar("turnamount",10)
-		goto turntoaim
-		#### A 0 A_SetUserVar("turnamount",20)
-		goto turntoaim
-		#### A 0 A_SetUserVar("turnamount",30)
-		goto turntoaim
-	turntoaim:
-		#### E 2 A_FaceTarget(turnamount,turnamount)
-		#### A 0 A_JumpIfTargetInLOS(1)
-		goto see
-		#### A 0 A_JumpIfTargetInLOS(1,10)
-		loop
-		#### A 0 A_FaceTarget(turnamount,turnamount)
-		#### E 1 A_SetTics(random(0,80/turnamount))
-		#### A 0 A_SetUserVar("spread",turnamount/10)
-		"####" A 0 A_CheckLOF("see",CLOFF_JUMPNONHOSTILE|CLOFF_SKIPTARGET|CLOFF_JUMPOBJECT|CLOFF_MUSTBESOLID|CLOFF_SKIPENEMY,0,0, 0,0, 44,0)
-		#### A 0 A_Jump(256,"shoot")
-	shoot:
-		POSS E 0 A_JumpIf(velx*velx+vely*vely>64,"see")
-		#### E 0 A_JumpIfInventory("HunterSpentShell",1,"Chamber")
-		#### A 0 A_JumpIfInventory("ShotgunTube",0,"ohforfuckssake")
-		"####" F 1 bright light("SHOT"){
-			A_PlayWeaponSound("weapons/hunter");
-			angle+=frandom(-spread,spread);
-			pitch+=frandom(-spread,spread);
-			A_GiveInventory("DecoBulleter00");
-		}
-		#### E 0 A_GiveInventory("ShotgunTube",1)
-		#### E 2 A_GiveInventory("HunterSpentShell",1)
-		#### A 0 A_AlertMonsters(0,AMF_TARGETEMITTER)
-		#### A 0 A_JumpIfInventory("EvadeNow",1,"see_evade")
-		#### E 1 A_SetTics(random(4,12))
-		Goto See
-	Chamber:
-		#### E 0 A_SpawnItemEx("HDSpentShell",cos(pitch)*8,0,height-7+sin(pitch)*8,velx+cos(pitch)*cos(angle-random(86,90))*6,vely+cos(pitch)*sin(angle-random(86,90))*6,velz-sin(pitch)*random(5,7),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH)
-		#### E 0 A_TakeInventory("HunterSpentShell")
-		#### E 0 A_Jump(48,3)
-		#### E 0 A_Jump(64,"see")
-		#### E 0 A_SpidRefire
-		goto missile
-		#### E 8 A_PlaySoundEx("weapons/shotgr","soundslot5")
-		goto see
-	Melee:
-		#### D 6 A_FaceTarget
-		#### D 4
-		#### E 4 A_MeleeAttack
-
-		#### E 3 A_JumpIfCloser (56, 2)
-
-		#### E 3 A_FaceTarget(0,0)
-		Goto Missile+1
-
-		#### A 3
-		Goto See
-	Pain:
-		#### A 0 A_JumpIfHealthLower (40, 3)
-		#### G 3 A_ChangeFlag("NODROPOFF",1)
-		#### G 3 A_Pain
-		#### AB 2 A_FaceTarget(50,50)
-		#### A 0 A_ChangeFlag("frightened",0)
-		#### CDAB 3 A_FastChase
-		#### G 0 A_CPosRefire
-		Goto Missile
-	}
-}
-class BlackSWAT : SWATBase
-{
-	Translation "112:113=92:98","114:120=99:111","121:127=5:8", "48:79=66:79", "18:21=68:68", "213:213=66:66"
-}
-class BrownSWAT : SWATBase
-{
-	Translation "112:113=92:98","114:120=99:111","121:127=5:8", "48:79=61:79", "18:21=63:63", "213:213=63:63"
-}
-class WhiteSWAT : SWATBase{}
-class SWAT : Rifleman
-{
-	DropItem "BlackSWAT"
-	DropItem "BrownSWAT"
-	DropItem "WhiteSWAT"
-}
-class SWATShot : SWAT replaces MarineShotgun {}
-class SWATSuperShot : SWAT replaces MarineSSG {}
-class SWATNoShot : SWAT replaces MarineBerserk {}
-
-class RocketeerBase : RiflemanBase
-{
-	translation "112:115=128:139","116:119=144:151","120:127=236:239"
-	health 120
-	speed 8
-	dropitem ""
-	meleedamage 6
-	meleesound "weapons/smack"
-	obituary "%o was fragged by a marine."
-	States
-	{
-	see_evade:
-		#### A 0 A_Jump(182,2)
-		#### A 0 A_JumpIfTargetInLOS ("Missile")
-		#### A 0 A_Chase("missile","melee",CHF_DONTMOVE)
-		#### A 0 A_FaceTarget(90,90)
-		#### A 0 A_SetAngle(angle+random(60,100)*(random(0,1)*2-1))
-		#### A 0 A_ChangeFlag("nodropoff",1)
-	see_evade2:
-		#### A 0 A_SetAngle(angle+random(-30,30))
-		#### ABCD 4 A_Recoil(-3)
-		#### A 0 A_JumpIf(velx*velx+vely*vely>25,2)
-		#### A 0 A_SetAngle(angle+random(-160,200))
-		#### A 0 A_ChangeFlag("nodropoff",0)
-		#### A 0 A_Jump(72,2)
-		#### A 0 A_TakeInventory("EvadeNow",1)
-	See:
-		#### A 0 A_TakeInventory("NoRocketsForYou",1)
-		#### A 0 A_JumpIfCloser (64, 4)
-		#### A 0 A_JumpIfCloser (172, 2)
-		#### A 0 A_Jump (256, 2)
-		#### A 0 A_ChangeFlag ("frightened", 1)
-		goto see_all
-		#### A 0 A_ChangeFlag ("frightened", 0)
-		goto see_all
-	Missile:
-		#### A 0 A_JumpIfCloser (120, 3)
-		#### EE 4 A_FaceTarget(30,30)
-		#### E 0 A_FaceTarget(30,30)
-		#### E 3 A_SpawnProjectile("RocketDummy",42,0,0,CMF_AIMDIRECTION|CMF_SAVEPITCH,pitch)
-		#### A 0 A_JumpIfInventory("NoRocketsForYou",1,"see_evade2")
-		#### F 6 BRIGHT light("SHOT"){
-			A_PlayWeaponSound("weapons/rockignite");
-			A_SpawnProjectile("GyroGrenade",42,0,0,CMF_AIMDIRECTION|CMF_SAVEPITCH,pitch);
-			A_TakeInventory("NoRocketsForYou",1);
-		}
-		#### A 0 A_CheckFlag("friendly",2)
-		#### A 0 A_Jump(256,2)
-		#### A 0 A_AlertMonsters(0,AMF_TARGETEMITTER)
-		#### E 6 A_Recoil(4)
-		goto See
-	Melee:
-		#### D 6 A_FaceTarget(0,0)
-		#### D 4
-		#### E 4 A_MeleeAttack
-		#### A 3
-		goto See
-	Pain:
-		#### A 0 A_JumpIfHealthLower (40, 3)
-		#### G 3
-		#### G 3 A_Pain
-		#### AB 2 A_FaceTarget(50,50)
-		#### CD 3 A_FastChase
-		Goto See
-	}
-}
-class RocketDummy : FastProjectile
-{
-	speed 1
-	height 4
-	radius 4
-	states
-	{
-	spawn:
-		#### A 0
-		#### A 0 A_ScaleVelocity(80)
-		#### A 3
-		stop
+	melee:
+		#### C 7 A_FaceTarget();
+		#### D 2;
+		#### E 6 A_CustomMeleeAttack(
+			random(10,100),"weapons/smack","","none",randompick(0,0,0,1)
+		);
+		#### ABCD 2{
+			if(gunloaded>0){
+				setwstatelabel("missile");
+				return;
+			}
+			A_FaceTarget(0,0);
+			A_Recoil(-3);
+			if(target&&distance3d(target)-target.radius<meleerange)setwstatelabel("melee");
+		}goto see;
+	pain:
+		#### G 3;
+		#### G 3 A_Pain();
+		#### G 0 A_Jump(100,"se;e")
+		#### AB 2 A_FaceTarget(50,50);
+		#### CD 3 A_FastChase();
+		#### G 0 A_CPosRefire();
+		goto missile;
 	death:
-		#### A 1 A_GiveInventory("NoRocketsForYou",1,AAPTR_TARGET)
-		stop
+		#### H 5{
+			bpushable=false;
+			A_SpawnItemEx("tempshield", 0,0,0, vel.x,vel.y,vel.z, 0,SXF_SETMASTER);
+		}
+		#### I 5 A_Scream();
+	death.bleedout:
+		#### J 5 A_GiveInventory("NoBlockWepDrop");
+		#### KLM 5;
+		#### A 0 A_Jump(256,"Dead");
+	xdeath:
+		#### O 5 A_UnsetShootable(); 
+		#### P 5{
+			A_SpawnItemEx("MegaBloodSplatter",0,0,34,flags:SXF_NOCHECKPOSITION);
+			A_XScream();
+		}
+		#### Q 5{
+			A_SpawnItemEx("MegaBloodSplatter",0,0,34,flags:SXF_NOCHECKPOSITION);
+			A_GiveInventory("NoBlockWepDrop");
+		}
+		#### Q 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,flags:SXF_NOCHECKPOSITION);
+		#### RSTUV 5;
+		goto xdead;
+	dead:
+		#### N -1;
+NEED FLOPPY AND GIBBABLE
+		stop;
+	xdead:
+		#### W -1;
+		stop;
+	raise:
+		#### MLKJIH 4;
+		#### A 0 A_ChangeFlag("pushable",1);
+		goto see;
 	}
 }
-class NoRocketsForYou : InventoryFlag {}
-class BlackRocketeer : RocketeerBase
-{
-	Translation "112:115=128:139","116:119=144:151","120:127=236:239", "48:79=66:79", "18:21=68:68", "213:213=66:66"
-}
-class BrownRocketeer : RocketeerBase
-{
-	Translation "112:115=128:139","116:119=144:151","120:127=236:239", "48:79=61:79", "18:21=63:63", "213:213=63:63"
-}
-class WhiteRocketeer : RocketeerBase{}
-class Rocketeer : Rifleman
-{
-	DropItem "BlackRocketeer"
-	DropItem "BrownRocketeer"
-	DropItem "WhiteRocketeer"
-}
-class RRocketeer : Rocketeer replaces MarineRocket {}
-class BFuglyteer : Rocketeer replaces MarineBFG {}
-class Plasmateer : Rocketeer replaces MarinePlasma {}
-class Railgunteer : Rocketeer replaces MarineRailgun {}
+
+class Rifleman:HDMarine{default{accuracy 1;}}
+class BlackRifleman:HDMarine{default{accuracy 1;stamina 3;}}
+class BrownRifleman:HDMarine{default{accuracy 1;stamina 2;}}
+class WhiteRifleman:HDMarine{default{accuracy 1;stamina 1;}}
+class RifleFistman:Rifleman replaces MarineFist{}
+class RifleChaingunman:Rifleman replaces MarineChaingun{}
+
+class Enforcer:HDMarine{default{accuracy 2;}}
+class BlackEnforcer:HDMarine{default{accuracy 2;stamina 3;}}
+class BrownEnforcer:HDMarine{default{accuracy 2;stamina 2;}}
+class WhiteEnforcer:HDMarine{default{accuracy 2;stamina 1;}}
+class EnforcerShot:Enforcer replaces MarineShotgun {}
+class EnforcerSuperShot:Enforcer replaces MarineSSG {}
+class EnforcerNoShot:Enforcer replaces MarineBerserk {}
+
+class Infiltrator:HDMarine{default{accuracy 3;}}
+class BlackInfiltrator:HDMarine{default{accuracy 3;stamina 3;}}
+class BrownInfiltrator:HDMarine{default{accuracy 3;stamina 2;}}
+class WhiteInfiltrator:HDMarine{default{accuracy 3;stamina 1;}}
+class InfiltratorPistol:Infiltrator replaces MarinePistol{}
+class InfiltratorChainsaw:Infiltrator replaces MarineChainsaw{}
+
+class Rocketeer:HDMarine{default{accuracy 4;}}
+class BlackRocketeer:HDMarine{default{accuracy 4;stamina 3;}}
+class BrownRocketeer:HDMarine{default{accuracy 4;stamina 2;}}
+class WhiteRocketeer:HDMarine{default{accuracy 4;stamina 1;}}
+class RRocketeer:Rocketeer replaces MarineRocket{}
+class BFuglyteer:Rocketeer replaces MarineBFG{}
+class Plasmateer:Rocketeer replaces MarinePlasma{}
+class Railgunteer:Rocketeer replaces MarineRailgun{}
 
 
-class TangoBase : RiflemanBase
-{
-	-friendly
-	-pushable
-	translation "112:116=163:167","117:124=72:79","125:127=5:8"
-	obituary "%o lost the war against terrorism."
-	hitobituary "%o supports your war of terror."
-	decal "BulletScratch"
-	states
-	{
-	Raise:
-		#### LKJIH 5
-		#### A 0 A_ChangeFlag ("pushable", 0)
-		Goto See
-	Dead:
-		#### N 0 A_SpawnItemEx ("DeadRifleman",0,0,0,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_TRANSFERTRANSLATION)
-		stop
-	XDead:
-		#### N 0 A_SpawnItemEx ("ReallyDeadRifleman",0,0,0,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_TRANSFERTRANSLATION)
-		stop
-	}
-}
-class BlackTango : TangoBase
-{
-	Translation "112:116=163:167","117:124=72:79","125:127=5:8", "48:79=66:79", "18:21=68:68", "213:213=66:66"
-}
-class BrownTango : TangoBase
-{
-	Translation "112:116=163:167","117:124=72:79","125:127=5:8", "48:79=61:79", "18:21=63:63", "213:213=63:63"
-}
-class WhiteTango : TangoBase{}
-class Tango : RandomSpawner
-{
-	height 56
-	radius 12
-	DropItem "BlackTango"
-	DropItem "BrownTango"
-	DropItem "WhiteTango"
-}
+class Tango:HDMarine{default{-friendly}}
+class BlackTango:Tango{default{stamina 3;}}
+class BrownTango:Tango{default{stamina 2;}}
+class WhiteTango:Tango{default{stamina 1;}}
 
-class ShotTangoBase : SWATBase
-{
-	-friendly
-	-pushable
-	translation "112:116=163:167","117:124=72:79","125:127=5:8"
-	obituary "%o lost the war against terrorism."
-	hitobituary "%o supports your war of terror."
-	decal "BulletScratch"
-	DropItem ""
-	states
-	{
-	Raise:
-		#### LKJIH 5
-		#### A 0 A_ChangeFlag ("pushable", 0)
-		Goto See
-	Dead:
-		#### N 0 A_SpawnItemEx ("DeadRifleman",0,0,0,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_TRANSFERTRANSLATION)
-		stop
-	XDead:
-		#### N 0 A_SpawnItemEx ("ReallyDeadRifleman",0,0,0,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_TRANSFERTRANSLATION)
-		stop
-	}
-}
-class BlackShotTango : ShotTangoBase
-{
-	Translation "112:116=163:167","117:124=72:79","125:127=5:8", "48:79=66:79", "18:21=68:68", "213:213=66:66"
-}
-class BrownShotTango : ShotTangoBase
-{
-	Translation "112:116=163:167","117:124=72:79","125:127=5:8", "48:79=61:79", "18:21=63:63", "213:213=63:63"
-}
-class WhiteShotTango : ShotTangoBase{}
-class ShotTango : Tango
-{
-	DropItem "BlackShotTango"
-	DropItem "BrownShotTango"
-	DropItem "WhiteShotTango"
-}
+class BlackRifleTango:Tango{default{accuracy 1;stamina 3;}}
+class BrownRifleTango:Tango{default{accuracy 1;stamina 2;}}
+class WhiteRifleTango:Tango{default{accuracy 1;stamina 1;}}
 
+class BlackShotTango:Tango{default{accuracy 2;stamina 3;}}
+class BrownShotTango:Tango{default{accuracy 2;stamina 2;}}
+class WhiteShotTango:Tango{default{accuracy 2;stamina 1;}}
 
-class SMGTangoBase : SWAT2Base
-{
-	-friendly
-	-pushable
-	translation "112:116=163:167","117:124=72:79","125:127=5:8"
-	obituary "%o lost the war against terrorism."
-	hitobituary "%o supports your war of terror."
-	decal "BulletScratch"
-	DropItem ""
-	states
-	{
-	Raise:
-		#### LKJIH 5
-		#### A 0 A_ChangeFlag ("pushable", 0)
-		Goto See
-	Dead:
-		#### N 0 A_SpawnItemEx ("DeadRifleman",0,0,0,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_TRANSFERTRANSLATION)
-		stop
-	XDead:
-		#### N 0 A_SpawnItemEx ("ReallyDeadRifleman",0,0,0,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_TRANSFERTRANSLATION)
-		stop
-	}
-}
-class BlackSMGTango : SMGTangoBase
-{
-	Translation "112:116=163:167","117:124=72:79","125:127=5:8", "48:79=66:79", "18:21=68:68", "213:213=66:66"
-}
-class BrownSMGTango : SMGTangoBase
-{
-	Translation "112:116=163:167","117:124=72:79","125:127=5:8", "48:79=61:79", "18:21=63:63", "213:213=63:63"
-}
-class WhiteSMGTango : SMGTangoBase{}
-class SMGTango : Tango
-{
-	DropItem "BlackSMGTango"
-	DropItem "BrownSMGTango"
-	DropItem "WhiteSMGTango"
-}
+class BlackSMGTango:Tango{default{accuracy 3;stamina 3;}}
+class BrownSMGTango:Tango{default{accuracy 3;stamina 2;}}
+class WhiteSMGTango:Tango{default{accuracy 3;stamina 1;}}
 
-
-class RocketTangoBase : RocketeerBase
-{
-	-friendly
-	-pushable
-	translation "112:116=163:167","117:124=72:79","125:127=5:8"
-	obituary "%o lost the war against terrorism."
-	hitobituary "%o supports your war of terror."
-	dropitem ""
-	states
-	{
-	Raise:
-		#### LKJIH 5
-		#### A 0 A_ChangeFlag ("pushable", 0)
-		Goto See
-	Dead:
-		#### N 0 A_SpawnItemEx ("DeadRifleman",0,0,0,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_TRANSFERTRANSLATION)
-		stop
-	XDead:
-		#### N 0 A_SpawnItemEx ("ReallyDeadRifleman",0,0,0,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_TRANSFERTRANSLATION)
-		stop
-	}
-}
-class BlackRocketTango : RocketTangoBase
-{
-	Translation "112:116=163:167","117:124=72:79","125:127=5:8", "48:79=66:79", "18:21=68:68", "213:213=66:66"
-}
-class BrownRocketTango : RocketTangoBase
-{
-	Translation "112:116=163:167","117:124=72:79","125:127=5:8", "48:79=61:79", "18:21=63:63", "213:213=63:63"
-}
-class WhiteRocketTango : RocketTangoBase{}
-class RocketTango : Tango
-{
-	DropItem "BlackRocketTango"
-	DropItem "BrownRocketTango"
-	DropItem "WhiteRocketTango"
-}
+class BlackRocketTango:Tango{default{accuracy 4;stamina 3;}}
+class BrownRocketTango:Tango{default{accuracy 4;stamina 2;}}
+class WhiteRocketTango:Tango{default{accuracy 4;stamina 1;}}
 
 
 
 // ------------------------------------------------------------
 // Marine corpse used by player pawn
 // ------------------------------------------------------------
-class DeadRifleman replaces DeadMarine
-{
+class DeadRifleman replaces DeadMarine{
 	translation "112:120=152:159","121:127=9:12"
 	-solid
 	+shootable
@@ -841,27 +338,27 @@ class DeadRifleman replaces DeadMarine
 			A_GiveInventory("HDCorpseFlags");
 		}
 	Dead:
-		"####" K 3 canraise A_JumpIf(abs(velz)<2,1)
+		"####" K 3 canraise A_JumpIf(abs(vel.z)<2,1)
 		loop
-		"####" LM 5 canraise A_JumpIf(abs(velz)>=2,"Dead")
+		"####" LM 5 canraise A_JumpIf(abs(vel.z)>=2,"Dead")
 	Death.Spawn:
 		"####" A 0 A_NoBlocking
 		"####" A 0 A_ChangeFlag("shootable",1)
 	Dead2:
-		"####" N 5 canraise A_JumpIf(abs(velz)>=2,"Dead")
+		"####" N 5 canraise A_JumpIf(abs(vel.z)>=2,"Dead")
 		loop
 	Raise:
 		"----" A 0 A_GiveInventory("HDCorpseFlags",1)
 		"----" A 0 A_UnsetShootable
 		"####" A 0 A_SetSolid
-		"####" MMK 7 A_SpawnItemEx("MegaBloodSplatter",0,0,4,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+		"####" MMK 7 A_SpawnItemEx("MegaBloodSplatter",0,0,4,vel.x,vel.y,vel.z,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
 		"####" JHE 4
 		"####" A 0 A_UnsetSolid
-		"####" H 0 A_Jump (32,3)
-		#### A 1 A_SpawnItemEx ("UndeadRifleman", 0,0,0, 0,0,0, 0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_TRANSFERTRANSLATION|SXF_ISTRACER)
+		"####" H 0 A_Jump(32,3)
+		#### A 1 A_SpawnItemEx("UndeadRifleman", 0,0,0, 0,0,0, 0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_TRANSFERTRANSLATION|SXF_ISTRACER)
 		#### A 0 A_GiveInventory("HasDroppedGun",1,AAPTR_TRACER)
 		stop
-		#### A 1 A_SpawnItemEx ("RiflemanBase", 0,0,0, 0,0,0, 0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_TRANSFERTRANSLATION|SXF_ISTRACER)
+		#### A 1 A_SpawnItemEx("RiflemanBase", 0,0,0, 0,0,0, 0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_TRANSFERTRANSLATION|SXF_ISTRACER)
 		#### A 0 A_GiveInventory("HasDroppedGun",1,AAPTR_TRACER)
 		stop
 	XXDeath:
@@ -872,11 +369,11 @@ class DeadRifleman replaces DeadMarine
 		#### Q 5 A_NoBlocking
 		#### Q 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,SXF_NOCHECKPOSITION)
 		#### RSTUV 5
-		#### N 0 A_SpawnItemEx("ReallyDeadRifleman",0,0,0,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_TRANSFERTRANSLATION)
+		#### N 0 A_SpawnItemEx("ReallyDeadRifleman",0,0,0,vel.x,vel.y,vel.z,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_TRANSFERTRANSLATION)
 		stop
 	}
 }
-class DeadRiflemanCrouched : DeadRifleman
+class DeadRiflemanCrouched:DeadRifleman
 {
 	States
 	{
@@ -885,7 +382,7 @@ class DeadRiflemanCrouched : DeadRifleman
 		goto super::spawn2
 	}
 }
-class ReallyDeadRifleman : DeadRifleman replaces GibbedMarine
+class ReallyDeadRifleman:DeadRifleman replaces GibbedMarine
 {
 	States
 	{
@@ -897,23 +394,23 @@ class ReallyDeadRifleman : DeadRifleman replaces GibbedMarine
 	Death:
 		"####" W 1 A_NoBlocking
 	XDead:
-		"####" V 3 canraise A_JumpIf(abs(velz)<2,1)
+		"####" V 3 canraise A_JumpIf(abs(vel.z)<2,1)
 		wait
 		"####" W 5 canraise A_JumpIf(floorz<=z-6,"XDead")
 		wait
 	Raise:
 		"----" A 0 A_UnsetShootable
-		"####" A 0 A_Jump (172, "RaiseZombie")
-		"####" WW 8 A_SpawnItemEx("MegaBloodSplatter",0,0,4,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+		"####" A 0 A_Jump(172, "RaiseZombie")
+		"####" WW 8 A_SpawnItemEx("MegaBloodSplatter",0,0,4,vel.x,vel.y,vel.z,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
 		"####" VUT 7
 		"####" SRQ 5
 		"####" POH 4
 		"####" IJKLM 4
-		"----" A 1 A_SpawnItemEx ("DeadRifleman", 0,0,0, 0,0,0, 0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_TRANSFERTRANSLATION|SXF_ISTRACER)
+		"----" A 1 A_SpawnItemEx("DeadRifleman", 0,0,0, 0,0,0, 0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_TRANSFERTRANSLATION|SXF_ISTRACER)
 		"----" A 0 A_GiveInventory("HasDroppedGun",1,AAPTR_TRACER)
 		stop
 	RaiseZombie:
-		#### U 4 A_SpawnItemEx("MegaBloodSplatter",0,0,4,velx,vely,velz+3,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+		#### U 4 A_SpawnItemEx("MegaBloodSplatter",0,0,4,vel.x,vel.y,vel.z+3,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
 		"####" U 8
 		"####" T 4
 		"####" T 2 A_PlaySound("weapons/bigcrack",6)
@@ -922,12 +419,12 @@ class ReallyDeadRifleman : DeadRifleman replaces GibbedMarine
 		"####" SRQ 6
 		"####" PONMH 4
 		"####" IJKL 4
-		"----" A 1 A_SpawnItemEx("DeadZombieStormtrooper",0,0,0,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_ISMASTER)
+		"----" A 1 A_SpawnItemEx("DeadZombieStormtrooper",0,0,0,vel.x,vel.y,vel.z,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_ISMASTER)
 		"----" A 0 A_GiveInventory("HasDroppedGun",1,AAPTR_MASTER)
 		stop
 	}
 }
-class ReallyDeadRiflemanCrouched : ReallyDeadRifleman replaces GibbedMarineExtra
+class ReallyDeadRiflemanCrouched:ReallyDeadRifleman replaces GibbedMarineExtra
 {
 	States
 	{
@@ -942,7 +439,7 @@ class ReallyDeadRiflemanCrouched : ReallyDeadRifleman replaces GibbedMarineExtra
 // Undead marines
 // ------------------------------------------------------------
 
-class UndeadRifleman : TangoBase
+class UndeadRifleman:TangoBase
 {
 	-telestomp
 	Translation "112:120=152:159","121:127=9:12"
@@ -957,14 +454,14 @@ class UndeadRifleman : TangoBase
 	States
 	{
 	Dead:
-		#### N 0 A_SpawnItemEx ("ReDeadRifleman",0,0,0,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_TRANSFERTRANSLATION)
+		#### N 0 A_SpawnItemEx("ReDeadRifleman",0,0,0,vel.x,vel.y,vel.z,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_TRANSFERTRANSLATION)
 		stop
 	XDead:
-		#### N 0 A_SpawnItemEx ("ReallyReDeadRifleman",0,0,0,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_TRANSFERTRANSLATION)
+		#### N 0 A_SpawnItemEx("ReallyReDeadRifleman",0,0,0,vel.x,vel.y,vel.z,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_TRANSFERTRANSLATION)
 		Stop
 	}
 }
-class ReDeadRifleman : DeadRifleman
+class ReDeadRifleman:DeadRifleman
 {
 	States
 	{
@@ -973,11 +470,11 @@ class ReDeadRifleman : DeadRifleman
 			A_GiveInventory("HDCorpseFlags");
 			A_GiveInventory("HasDroppedGun");
 		}
-		#### MML 8 A_SpawnItemEx("MegaBloodSplatter",0,0,4,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+		#### MML 8 A_SpawnItemEx("MegaBloodSplatter",0,0,4,vel.x,vel.y,vel.z,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
 		#### KJIH 4
 		#### A 0 A_Jump(80,"RaiseBotch")
 		#### A 0 A_UnsetSolid
-		#### A 1 A_SpawnItemEx ("UndeadRifleman", 0,0,0, 0,0,0, 0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_TRANSFERTRANSLATION|SXF_ISMASTER)
+		#### A 1 A_SpawnItemEx("UndeadRifleman", 0,0,0, 0,0,0, 0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_TRANSFERTRANSLATION|SXF_ISMASTER)
 		#### A 0 A_GiveInventory("HasDroppedGun",1,AAPTR_MASTER)
 		stop
 	RaiseBotch:
@@ -988,12 +485,12 @@ class ReDeadRifleman : DeadRifleman
 		#### Q 5 A_NoBlocking
 		#### Q 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,SXF_NOCHECKPOSITION)
 		#### RSTUV 5
-		#### N 0 A_SpawnItemEx("ReallyReDeadRifleman",0,0,0,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_TRANSFERTRANSLATION|SXF_ISTRACER)
+		#### N 0 A_SpawnItemEx("ReallyReDeadRifleman",0,0,0,vel.x,vel.y,vel.z,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_TRANSFERTRANSLATION|SXF_ISTRACER)
 		"----" A 0 A_GiveInventory("HasDroppedGun",1,AAPTR_TRACER)
 		Stop
 	}
 }
-class ReallyReDeadRifleman : ReallyDeadRifleman
+class ReallyReDeadRifleman:ReallyDeadRifleman
 {
 	States
 	{
@@ -1001,13 +498,13 @@ class ReallyReDeadRifleman : ReallyDeadRifleman
 		"----" A 0 A_GiveInventory("HasDroppedGun",1)
 		"----" A 0 A_GiveInventory("HDCorpseFlags",1)
 		"----" A 0 A_UnsetShootable
-		#### A 0 A_Jump (172, "RaiseZombie")
-		"####" WW 8 A_SpawnItemEx("MegaBloodSplatter",0,0,4,velx,vely,velz,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+		#### A 0 A_Jump(172, "RaiseZombie")
+		"####" WW 8 A_SpawnItemEx("MegaBloodSplatter",0,0,4,vel.x,vel.y,vel.z,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
 		"####" VUT 8
 		"####" SRQ 6
 		"####" POH 4
 		"####" IJKLM 4
-		#### A 1 A_SpawnItemEx ("RedeadRifleman", 0,0,0, 0,0,0, 0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_TRANSFERTRANSLATION|SXF_ISTRACER)
+		#### A 1 A_SpawnItemEx("RedeadRifleman", 0,0,0, 0,0,0, 0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_TRANSFERTRANSLATION|SXF_ISTRACER)
 		#### A 0 A_GiveInventory("HasDroppedGun",1,AAPTR_TRACER)
 		stop
 	}
@@ -1018,7 +515,7 @@ class ReallyReDeadRifleman : ReallyDeadRifleman
 // Summoned marines - no friendly fire
 // ------------------------------------------------------------
 
-class ScaryItem : ActionItem
+class ScaryItem:ActionItem
 {
 	states
 	{
@@ -1048,12 +545,12 @@ class SquadRiflemanBase
 	States
 	{
 	Spawn:
-		#### E 10 A_Look
+		#### E 10 A_Look();
 		loop
 	See:
 		#### E 0 A_GiveInventory("PowerFrightener",1)
 		#### E 0 A_RadiusGive("ScaryItem",512,RGF_MONSTERS|RGF_CUBE,1)
-		#### AABBCCDD 2 A_Chase
+		#### AABBCCDD 2{hdmobai.chase(self);}
 		#### A 0 A_ClearTarget
 		#### E 0 HealThing(1)
 		#### E 0 A_GiveToTarget("ScaryItem",1)
@@ -1099,7 +596,7 @@ class SquadRiflemanBase
 		#### E 0 A_JumpIfCloser(760,2)
 		#### E 0 A_Jump(256,"rifle")
 		#### E 0 NoiseAlert(0,0)
-		#### E 0 A_PlaySound ("weapons/grenadeshot")
+		#### E 0 A_PlaySound("weapons/grenadeshot")
 		#### E 12 A_SpawnProjectile("SquadGyroGrenade",44,0,0,0,14)
 		#### E 0 A_Jump(256,"see")
 	Rifle:
@@ -1111,22 +608,22 @@ class SquadRiflemanBase
 			pitch+=frandom(-1,1);
 			A_GiveInventory("DecoBulleterGhost");
 		}
-		#### E 2 A_Jump (24, "PostSnipe")
+		#### E 2 A_Jump(24, "PostSnipe")
 
 		#### F 1 bright light("SHOT"){
 			A_PlayWeaponSound("weapons/bigrifle");
 			pitch+=frandom(-1,1);
 			A_GiveInventory("DecoBulleterGhost");
 		}
-		#### E 2 A_Jump (168, "PostSnipe")
+		#### E 2 A_Jump(168, "PostSnipe")
 
 		#### F 1 bright light("SHOT"){
 			A_PlayWeaponSound("weapons/bigrifle");
 			pitch+=frandom(-1,1);
 			A_GiveInventory("DecoBulleterGhost");
 		}
-		#### E 2 A_Jump (96,"PostSnipe")
-		#### A 0 A_Jump (256,"PostSnipe")
+		#### E 2 A_Jump(96,"PostSnipe")
+		#### A 0 A_Jump(256,"PostSnipe")
 	PostSnipe:
 		#### E 6
 		#### E 0 A_Jump(256,"see")
@@ -1143,14 +640,14 @@ class SquadRiflemanBase
 			pitch+=frandom(-1,1);
 			A_GiveInventory("DecoBulleterGhost");
 		}
-		#### E 2 A_Jump (32,"PostCQB")
+		#### E 2 A_Jump(32,"PostCQB")
 
 		#### F 1 bright light("SHOT"){
 			A_PlayWeaponSound("weapons/bigrifle");
 			pitch+=frandom(-1,1);
 			A_GiveInventory("DecoBulleterGhost");
 		}
-		#### E 2 A_Jump (96, "PostCQB")
+		#### E 2 A_Jump(96, "PostCQB")
 
 		#### F 1 bright light("SHOT"){
 			A_PlayWeaponSound("weapons/bigrifle");
@@ -1158,7 +655,7 @@ class SquadRiflemanBase
 			A_GiveInventory("DecoBulleterGhost");
 		}
 		#### E 2
-		#### A 0 A_Jump (256, "PostCQB")
+		#### A 0 A_Jump(256, "PostCQB")
 	PostCQB:
 		#### E 0 A_Jump(96,3)
 		#### E 9 A_CPosRefire
@@ -1201,10 +698,8 @@ class SquadRiflemanBase
 		stop
 	}
 }
-class BlackSquadRifleman : SquadRiflemanBase{
-	Translation "112:120=152:159","121:127=9:12", "48:79=66:79", "18:21=68:68", "213:213=66:66"
-}
-class BrownSquadRifleman : SquadRiflemanBase{
+class BlackSquadRifleman:SquadRiflemanBase{default{stamina 1;accuracy 1;}}
+class BrownSquadRifleman:SquadRiflemanBase{
 	Translation "112:120=152:159","121:127=9:12", "48:79=61:79", "18:21=63:63", "213:213=63:63"
 }
 class WhiteSquadRifleman:SquadRiflemanBase{}
@@ -1220,17 +715,17 @@ class SquadGyroGrenade:GyroGrenade{
 	death:
 	explode:
 		#### A 0 bright A_NoGravity
-		#### AAAAAAAAAAAA 0 A_SpawnItemEx ("HugeWallChunk", 0, 0, 0, random(-7,7),random(-7,7),random(4,18),random(0,360),160)
+		#### AAAAAAAAAAAA 0 A_SpawnItemEx("HugeWallChunk", 0, 0, 0, random(-7,7),random(-7,7),random(4,18),random(0,360),160)
 		#### A 1 A_Explode(1,512,0,1,512,
 			0,0,none,
 			"GhostSquadAttack"
 		)
-		#### AA 0 A_SpawnItemEx ("HDBBWTH", random(-1,1),random(-1,1),2, 0,0,0, 0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
-		#### A 2 A_SpawnItemEx ("HDBBWTH", 0,0,0, 0,0,2, 0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
-		#### AAA 0 A_SpawnItemEx ("HDSmoke", random(-6,6),random(-6,6),1, random(-1,4),random(-1,1),0, random(-15,15),SXF_NOCHECKPOSITION)
+		#### AA 0 A_SpawnItemEx("HDBBWTH", random(-1,1),random(-1,1),2, 0,0,0, 0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
+		#### A 2 A_SpawnItemEx("HDBBWTH", 0,0,0, 0,0,2, 0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
+		#### AAA 0 A_SpawnItemEx("HDSmoke", random(-6,6),random(-6,6),1, random(-1,4),random(-1,1),0, random(-15,15),SXF_NOCHECKPOSITION)
 		#### A 0 A_SetTranslucent(1,1)
 		#### A 0 A_AlertMonsters
-		#### A 0 A_SpawnItemEx ("DistantRocket", 0,0,0, 0,0,0, 0,32)
+		#### A 0 A_SpawnItemEx("DistantRocket", 0,0,0, 0,0,0, 0,32)
 		#### A 21 A_Quake(2,21,0,200,none)
 		Stop
 	}
@@ -1313,12 +808,12 @@ class BotBot:RiflemanBase{
 		"----" A 0 A_Jump(256,3)
 		"----" A 0 A_GiveInventory("NotSeen",1)
 		"----" A 0 A_JumpIfInventory("NotSeen",12,"warpandwait")
-		#### A 0 A_Look
+		#### A 0 A_Look();
 		#### A 0 A_Jump(60,"spawn")
-		#### A 0 A_SetAngle(angle+random(-30,30))
-		#### EEE 3 A_Look
-		#### A 0 A_SetAngle(angle+random(-30,30))
-		#### EEE 3 A_Look
+		#### A 0{angle+=random(-30,30))
+		#### EEE 3 A_Look();
+		#### A 0{angle+=random(-30,30))
+		#### EEE 3 A_Look();
 		#### A 0 HealThing(2)
 		#### A 0 A_Jump(60,"spawn")
 		loop
@@ -1331,11 +826,11 @@ class BotBot:RiflemanBase{
 		"----" A 0 A_GiveInventory("NotSeen",1)
 		"----" A 0 A_JumpIfInventory("NotSeen",7,"warpandwait")
 		#### AA 3{hdmobai.wander(self);}
-		#### A 0 A_Chase("melee","missile",CHF_DONTMOVE)
+		#### A 0 A_Chase(flags:CHF_DONTMOVE);
 		#### BB 3{hdmobai.wander(self);}
-		#### A 0 A_Chase("melee","missile",CHF_DONTMOVE)
+		#### A 0 A_Chase(flags:CHF_DONTMOVE);
 		#### CC 3{hdmobai.wander(self);}
-		#### A 0 A_Chase("melee","missile",CHF_DONTMOVE)
+		#### A 0 A_Chase(flags:CHF_DONTMOVE);
 		#### DD 3{hdmobai.wander(self);}
 		#### A 0 HealThing(3)
 		#### E 0 A_Jump(128,"spwander")
@@ -1352,7 +847,7 @@ class BotBot:RiflemanBase{
 		#### A 0 A_ChangeFlag("frightened",1)
 		#### A 0 A_Warp(AAPTR_PLAYER1,0,0,0,0,WARPF_TOFLOOR|WARPF_NOCHECKPOSITION)
 	warpedwait:
-		#### AAAAAA 0 A_Chase("","")
+		#### AAAAAA 0{hdmobai.chase(self);}("","")
 		#### A 0 A_Jump(4,"warpandwait")
 		#### A 0 A_Jump(4,2)
 		#### A 1 A_CheckSight(1)
