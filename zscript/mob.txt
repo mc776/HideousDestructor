@@ -385,38 +385,3 @@ class HDMobster:IdleDummy{
 	}
 }
 
-
-
-
-class exzo:zombieman{
-	default{
-		meleerange 64;
-		attacksound "";
-	}
-	override void postbeginplay(){
-		super.postbeginplay();
-		hdmobster.spawnmobster(self);
-	}
-	states{
-	see:
-		POSS AABBCCDD 4{HDMobAI.Chase(self);}
-		loop;
-	melee:
-		POSS A 8 A_FaceTarget();
-		POSS E 10 A_SargAttack();
-		POSS A 8;
-		goto see;
-	missile:
-		POSS E 10 A_FaceTarget();
-		POSS F 8 A_PosAttack();
-		POSS E 8;
-		goto see;
-	pain:
-		POSS G 3;
-		POSS G 3 A_Pain();
-		goto see;
-	raise:
-		POSS KJIH 5;
-		goto see;
-	}
-}
