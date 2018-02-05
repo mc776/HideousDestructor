@@ -83,8 +83,8 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 	}
 
 	// #### E 1 A_LeadTarget1();
-	// #### E 1 A_LeadTarget2(shotspeed:missilename);
-	// #### F 1 bright light("SHOT") A_MarineShot(getdefaultbytype(missilename).speed);
+	// #### E 1 A_LeadTarget2(shotspeed:getdefaultbytype(missilename).speed);
+	// #### F 1 bright light("SHOT") A_MarineShot(missilename);
 	// maybe generalize this later?
 	vector2 leadoldaim;vector2 leadaim;
 	vector2 A_LeadTarget1(){
@@ -133,17 +133,17 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 
 		return aimadjust;
 	}
-	actor A_MarineShot(class<actor> missiletype,double dist=0){
+	actor A_MarineShot(class<actor> missiletype,double dist=0,bool userocket=false){
 		actor mmm=spawn(missiletype,pos);
 		mmm.pitch=pitch;mmm.angle=angle;
 		mmm.addz(height-6);
 		mmm.target=self;
 
 		//TEST, DELETE
-//		if(mmm is "GyroGrenade")gyrogrenade(mmm).isrocket=true;
+		if(userocket&&mmm is "GyroGrenade")gyrogrenade(mmm).isrocket=true;
 
 		double dist=max(1,(target?distance3d(target):0));
-		if(dist>mmm.speed){
+		if(mmm.gravity&&dist>mmm.speed){
 			double spd=mmm.speed;
 			if(mmm is "GyroGrenade"&&gyrogrenade(mmm).isrocket)spd*=6.4;
 			int ticstotake=dist/spd;
@@ -155,8 +155,11 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 			A_LogInt(ptchamt);
 			mmm.pitch-=ptchamt;
 		}
-return mmm;
-		if(!(mmm is "HDBullet"))mmm.A_ChangeVelocity(
+
+		//because we don't shoot from height 32
+		if(dist>0)mmm.pitch+=atan(10/dist);
+
+		if(!(mmm is "HDBullet")&&!(mmm is "SlowProjectile"))mmm.A_ChangeVelocity(
 			mmm.speed*cos(mmm.pitch),0,mmm.speed*sin(mmm.pitch),CVF_RELATIVE
 		);
 		return mmm;
@@ -247,6 +250,7 @@ return mmm;
 
 	shoot:
 		#### A 0 A_JumpIf(gunloaded<1,"shootpistol");
+goto shootpistol;
 		#### F 10 bright light("SHOT"){
 			A_Log("Bang!");
 			A_MarineShot("doomimpball");
@@ -255,7 +259,13 @@ return mmm;
 		goto see;
 	shootpistol:
 		#### A 0 A_JumpIf(pistolloaded<1,"ohforfuckssake");
-		#### F 10 bright light("SHOT") A_Log("bangbangbang...");
+		#### E 1 A_LeadTarget1();
+		#### F 1 bright light("SHOT"){
+			A_Log("bang...");
+			class<actor> mn="HDBullet9";
+			A_LeadTarget2(shotspeed:getdefaultbytype(mn).speed);
+			A_MarineShot(mn);
+		}
 		#### E 5;
 		goto see;
 
