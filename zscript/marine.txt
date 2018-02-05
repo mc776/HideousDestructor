@@ -139,7 +139,7 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 		mmm.addz(height-6);
 		mmm.target=self;
 
-		//TEST, DELETE
+		//one very special case
 		if(userocket&&mmm is "GyroGrenade")gyrogrenade(mmm).isrocket=true;
 
 		double dist=max(1,(target?distance3d(target):0));
@@ -151,12 +151,10 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 			for(int i=1;i<=ticstotake;i++){
 				dropamt+=i;
 			}
-			double ptchamt=atan(dropamt/dist);
-			A_LogInt(ptchamt);
-			mmm.pitch-=ptchamt;
+			mmm.pitch-=min(atan(dropamt/dist),45);
 		}
 
-		//because we don't shoot from height 32
+		//because we don't shoot from height 32 but 42
 		if(dist>0)mmm.pitch+=atan(10/dist);
 
 		if(!(mmm is "HDBullet")&&!(mmm is "SlowProjectile"))mmm.A_ChangeVelocity(
@@ -262,7 +260,7 @@ goto shootpistol;
 		#### E 1 A_LeadTarget1();
 		#### F 1 bright light("SHOT"){
 			A_Log("bang...");
-			class<actor> mn="HDBullet9";
+			class<actor> mn="GyroGrenade";//"HDBullet9";
 			A_LeadTarget2(shotspeed:getdefaultbytype(mn).speed);
 			A_MarineShot(mn);
 		}
