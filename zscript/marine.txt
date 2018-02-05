@@ -81,7 +81,24 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 
 		hdmobster.spawnmobster(self);
 	}
-	vector2 A_LeadTarget(
+
+	// #### E 1 A_LeadTarget1();
+	// #### E 1 A_LeadTarget2(shotspeed:missilename);
+	// #### F 1 bright light("SHOT") A_MarineShot(getdefaultbytype(missilename).speed);
+	// maybe generalize this later?
+	vector2 leadoldaim;vector2 leadaim;
+	vector2 A_LeadTarget1(){
+		if(!target){
+			leadoldaim=(angle,pitch);
+			return leadoldaim;
+		}
+		vector2 aimbak=(angle,pitch);
+		A_FaceTarget(0,0);
+		leadoldaim=(angle,pitch);
+		angle=aimbak.x;pitch=aimbak.y;
+		return leadoldaim;
+	}
+	vector2 A_LeadTarget2(
 		double dist=-1,
 		double shotspeed=20,
 		vector2 oldaim=(-1,-1),
@@ -98,7 +115,9 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 
 		//get current angle - this function should not end with a net change
 		vector2 aimbak=(angle,pitch);
-		if(oldaim==(-1,-1))oldaim=aimbak;
+
+		//retrieve result from A_LeadTarget1
+		if(oldaim==(-1,-1))oldaim=leadoldaim;
 
 		//check the aim to change and revert immediately
 		//I could use angleto but the pitch calculations would be awkward
