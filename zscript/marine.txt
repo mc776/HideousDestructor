@@ -81,6 +81,39 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 
 		hdmobster.spawnmobster(self);
 	}
+	vector2 A_LeadTarget(
+		double dist=-1,
+		double shotspeed=20,
+		vector2 oldaim=(-1,-1),
+		double ticsfromadj=1
+	){
+		if(!target||!shotspeed)return(0,0);
+
+		//distance defaults to distance from target
+		if(dist<0)dist=distance3d(target);
+
+		//figure out how many tics to adjust
+		double ticstotarget=dist/shotspeed;
+		if(ticstotarget<1.)return(0,0);
+
+		//get current angle - this function should not end with a net change
+		vector2 aimbak=(angle,pitch);
+		if(oldaim==(-1,-1))oldaim=aimbak;
+
+		//check the aim to change and revert immediately
+		//I could use angleto but the pitch calculations would be awkward
+		A_FaceTarget(0,0);
+		vector2 aimadjust=(
+			deltaangle(angle,oldaim.x),
+			deltaangle(pitch,oldaim.y)
+		);
+		angle=aimbak.x;pitch=aimbak.y;
+
+		//this is why those tic counts need to be doubles
+		aimadjust*=ticstotarget/ticsfromadj;
+
+		return aimadjust;
+	}
 	actor A_MarineShot(class<actor> missiletype,double dist=0){
 		actor mmm=spawn(missiletype,pos);
 		mmm.pitch=pitch;mmm.angle=angle;
