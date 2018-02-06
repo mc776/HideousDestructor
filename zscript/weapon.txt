@@ -122,9 +122,11 @@ class HDWeapon:Weapon{
 			return 0;
 		}
 		a.addz(-height+6);
-		b=distance3d(a)*(1./HDCONST_ONEMETRE);
+		double c=distance3d(a);
+		b=c*(1./HDCONST_ONEMETRE);
 		if(b>128)b*=frandom(0.999,1.001);
 		A_Log(string.format("\cd[\cuRF\cd]\cj \cf%.2f\cj metre%s",b,b==1?"":"s"),true);
+		if(hd_debug)A_Log(string.format("(%.2f DU%s)",c,c==1?"":"s"),true);
 		return b;
 	}
 	//that said, why get picky when you can just shoot twice?
