@@ -286,11 +286,12 @@ class DudRocket:HDUPK{
 	}
 	states{
 	spawn:
-		ROCQ A 0 A_Jump(256,"dead");
+		ROCQ A 0 A_Jump(256,"clean");
 		ROCQ AB 2 A_SetAngle(angle+45);
 		loop;
 	death:
 		ROCQ A 0{
+			return; //why did we have these flags anyway?
 			bmissile=false;
 			bpushable=true;
 			bshootable=true;

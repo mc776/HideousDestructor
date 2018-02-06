@@ -4,6 +4,8 @@
 
 //Projectile for using things that aren't switches and doors
 class userpickerupper:hdactor{
+	actor picktarget;
+	actor pickobj;
 	default{
 		+solid +noblockmonst +notrigger +noteleport +cannotpush
 		height 2;radius 2;
@@ -15,17 +17,19 @@ class userpickerupper:hdactor{
 		);
 	}
 	override void postbeginplay(){
+		picktarget=target;
 		if(vel.xy==(0,0))vel.x=minvel;
 		for(int i=0;i<10;i++){
 			if(!trymove(pos.xy+vel.xy,true,true)){
 				if(blockingmobj){
-					blockingmobj.target=self.target;
+					blockingmobj.target=picktarget;
 					if(
 						blockingmobj is "HDUPK"
 						&&blockingmobj.findstate("grab",true)
 					){
+						hdupk(blockingmobj).picktarget=picktarget;
 						blockingmobj.setstatelabel("grab");
-						let ppp=HDPlayerPawn(target);if(ppp)ppp.hasgrabbed=true;
+						let ppp=HDPlayerPawn(picktarget);if(ppp)ppp.hasgrabbed=true;
 						destroy();return;
 					}
 					else if(
@@ -33,15 +37,16 @@ class userpickerupper:hdactor{
 						||blockingmobj is "HDPickup"
 						||blockingmobj is "HDWeapon"
 					){
-						tracer=blockingmobj;
+						pickobj=blockingmobj;
 						let ppp=HDPlayerPawn(target);if(ppp)ppp.hasgrabbed=true;
-						setstatelabel("grabpickup");return;
+						setstatelabel("grabpickup");
+						return;
 					}
 				}
 				if(blockingline){destroy();return;}
 			}
 			addz(vel.z);
-			if(floorz>pos.z && floorz<target.height+target.pos.z){
+			if(floorz>pos.z && floorz<target.height+target.pos.z){  
 				setz(floorz);
 				vel.z=0;
 			}
@@ -52,45 +57,45 @@ class userpickerupper:hdactor{
 	grabpickup:
 		TNT1 A 0{bsolid=false;}
 		TNT1 AA 2{
-			if(!tracer){destroy();return;}
-			tracer.vel+=(
-				target.pos.x-tracer.pos.x,
-				target.pos.y-tracer.pos.y,
-				target.pos.z+target.height*0.6-tracer.pos.z
+			if(!pickobj){destroy();return;}
+			pickobj.vel+=(
+				picktarget.pos.x-pickobj.pos.x,
+				picktarget.pos.y-pickobj.pos.y,
+				picktarget.pos.z+picktarget.height*0.6-pickobj.pos.z
 			)*0.3+(0,0,2);
 		}
 		TNT1 A 0{
-			if(!tracer){destroy();return;}
-			tracer.A_Stop();
+			if(!pickobj){destroy();return;}
+			pickobj.A_Stop();
 
-			tracer.A_CallSpecial(
-				tracer.special,tracer.args[0],
-				tracer.args[1],tracer.args[2],
-				tracer.args[3],tracer.args[4]
+			pickobj.A_CallSpecial(
+				pickobj.special,pickobj.args[0],
+				pickobj.args[1],pickobj.args[2],
+				pickobj.args[3],pickobj.args[4]
 			);
 
 			//in case of death or teleport mid-grab
 			if(
-				target
-				&&!target.bkilled
-				&&target.health>0        
-				&&tracer.distance3d(target)<64
+				picktarget
+				&&!picktarget.bkilled
+				&&picktarget.health>0          
+				&&pickobj.distance3d(picktarget)<64
 			){
-				let ht=hdupk(tracer);
+				let ht=hdupk(pickobj);
 				if(ht){
-					ht.target=target;
+					ht.picktarget=picktarget;
 					ht.a_hdupkgive();
 					return;
 				}
 
-				let pt=hdpickup(tracer);
-				if(pt){pt.actualpickup(target);return;}
+				let pt=hdpickup(pickobj);
+				if(pt){pt.actualpickup(picktarget);return;}
 
-				let wt=hdweapon(tracer);
-				if(wt){wt.actualpickup(target);return;}
+				let wt=hdweapon(pickobj);
+				if(wt){wt.actualpickup(picktarget);return;}
 
-				let tt=inventory(tracer);
-				if(tt){tt.touch(target);return;}
+				let tt=inventory(pickobj);
+				if(tt){tt.touch(picktarget);return;}
 			}
 		}stop;
 	}
@@ -99,6 +104,7 @@ class userpickerupper:hdactor{
 
 //Usable pickup.
 class HDPickup:CustomInventory{
+	actor picktarget;
 	default{
 		+inventory.invbar +inventory.persistentpower
 		+solid +noblockmonst +notrigger
@@ -119,6 +125,8 @@ class HDPickup:CustomInventory{
 	}
 	override void touch(actor toucher){}
 	virtual void actualpickup(actor other){
+		if(!other)other=picktarget;
+		if(!other)return;
 		name gcn=getclassname();
 		int maxtake=HDMath.MaxInv(other,gcn)-other.countinv(gcn);
 		if(maxtake<1){
@@ -126,7 +134,7 @@ class HDPickup:CustomInventory{
 		}else if(maxtake<amount){
 			amount-=maxtake;
 			other.A_GiveInventory(gcn,maxtake);
-			if(amount>0)setstatelabel("spawn2");
+			if(amount>0)setstatelabel("spawn2");  
 		}else trypickup(other);
 		other.A_PlaySound(pickupsound,CHAN_AUTO);
 		other.A_Log(string.format("\cg%s",pickupmessage()),true);
@@ -138,7 +146,7 @@ class HDPickup:CustomInventory{
 	spawn:
 		TNT1 A 1;
 		TNT1 A 0{
-			while(invoker.amount>invoker.accuracy){
+			while(invoker.amount>invoker.accuracy){  
 				inventory aa=inventory(spawn(invoker.getclassname(),invoker.pos));
 				aa.amount=invoker.accuracy;invoker.amount-=invoker.accuracy;
 				aa.vel=invoker.vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
@@ -170,52 +178,56 @@ class HDAmmo:HDPickup{
 */
 class HDUPK:HDActor{
 	//do NOT use this for pickupable casings, 1x1 is intolerably pixelbitchy!
-	name pickuptype;
-	property pickuptype:pickuptype;
+	actor picktarget;
+	class<inventory> pickuptype;
 	string pickupmessage;
+	sound pickupsound;
+	property pickuptype:pickuptype;
 	property pickupmessage:pickupmessage;
+	property pickupsound:pickupsound;
 	default{
 		+solid +noblockmonst +notrigger
 		height 8;radius 8;
-		activesound "misc/i_pkup";
+		hdupk.pickupsound "misc/i_pkup";
 		hdupk.pickupmessage "Picked something up.";
 		hdupk.pickuptype "none";
 	}
 	override bool cancollidewith(actor other,bool passive){
-		return(bpushable || other is "userpickerupper");
+		return(bpushable||other is "userpickerupper");
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
 
-		if(!accuracy) return;
-		if(accuracy<0) accuracy*=-1;
-		while(stamina>accuracy){
+		if(!accuracy)return;
+		if(accuracy<0)accuracy*=-1;
+		while(stamina>accuracy){  
 			actor a=spawn(getclassname(),pos,ALLOW_REPLACE);
 			a.stamina=accuracy;
 			stamina-=accuracy;
 			a.vel=vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
 		}
-		if(stamina>1){
+		if(stamina>1){  
 		}else{
 			stamina=1;
 		}
 	}
 	virtual void A_HDUPKGive(){
 		if(pickuptype=="none"){
+			target=picktarget;
 			setstatelabel("give");
 			return;
 		}
-		int increase=target.countinv(pickuptype);
-		A_GiveToTarget(pickuptype,stamina);
-		increase=target.countinv(pickuptype)-increase;
+		int increase=picktarget.countinv(pickuptype);
+		picktarget.A_GiveInventory(pickuptype,stamina);
+		increase=picktarget.countinv(pickuptype)-increase;
 		if(!increase){ //didn't pick any up
 			setstatelabel("spawn");
 			return;
 		}
-		A_PlaySound(activesound);
-		target.A_Log(string.format("\cg%s",pickupmessage),true);
+		picktarget.A_PlaySound(pickupsound,5);
+		picktarget.A_Log(string.format("\cg%s",pickupmessage),true);
 		stamina-=increase;
-		if(stamina>0){ //only picked some up
+		if(stamina>0){ //only picked some up  
 			setstatelabel("spawn");
 			return;
 		}
@@ -224,18 +236,18 @@ class HDUPK:HDActor{
 	grab:
 		---- AA 2{
 			vel+=(
-				target.pos.x-pos.x,
-				target.pos.y-pos.y,
-				target.pos.z+target.height*0.6-pos.z
+				picktarget.pos.x-pos.x,
+				picktarget.pos.y-pos.y,
+				picktarget.pos.z+picktarget.height*0.6-pos.z
 			)*0.3+(0,0,2);
 		}
 		---- A 0{
 			//in case of death or teleport mid-grab
-			if(target.bkilled||distance3d(target)>64){
+			if(picktarget.bkilled||distance3d(picktarget)>64){  
 				A_Stop();
 				setstatelabel("spawn");
 			}else{
-				setorigin(target.pos+(0,0,target.height-24),true);
+				setorigin(picktarget.pos+(0,0,picktarget.height-24),true);
 				A_HDUPKGive();
 
 				A_CallSpecial(
