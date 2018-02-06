@@ -127,6 +127,13 @@ class HDWeapon:Weapon{
 		A_Log(string.format("\cd[\cuRF\cd]\cj \cf%.2f\cj metre%s",b,b==1?"":"s"),true);
 		return b;
 	}
+	//that said, why get picky when you can just shoot twice?
+	action void A_MagManager(int type){
+		A_SetInventory("MagManager",1);
+		let mm=MagManager(findinventory("MagManager"));
+		mm.weaponstatus[HDMMS_WHICH]=type;
+		A_SelectWeapon("MagManager");
+	}
 
 	override void touch(actor toucher){}
 	virtual void actualpickup(actor other){

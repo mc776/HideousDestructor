@@ -33,17 +33,11 @@ class HDSMG:HDWeapon{
 			A_SetCrosshair(21);
 			invoker.weaponstatus[SMGS_RATCHET]=0;
 			A_WeaponReady(WRF_ALL);
-			if(
-				invoker.notshot>469	//timer
-				&&countinv("HDPistolAmmo")>29	//have enough loose  
-				&&!A_JumpIfInventory("HDSMGMag",0,"null")	//not maxed out on mags
-			){
-				A_GiveInventory("HDSMGMag",1);
-				A_TakeInventory("HDPistolAmmo",30);
-				invoker.notshot=0;
-			}
 		}
 		goto readyend;
+	user3:
+		---- A 0 A_MagManager(HDMMS_SMG);
+		goto ready;
 	altfire:
 	althold:
 		goto nope;
@@ -229,44 +223,7 @@ class HDSMG:HDWeapon{
 
 
 	zoom:
-	cannibalize:
-		SMGG A 0 A_SetCrosshair(21);
-		SMGG A 0 A_JumpIf(!countinv("HDPistolMag"),"nope");
-		SMGG B 4 offset(0,34);
-		SMGG B 2 offset(0,44);
-		SMGG B 2 offset(0,70);
-
-		SMGG AA 4 A_PlaySound("weapons/pocket",CHAN_WEAPON);
-		SMGG A 10 A_MuzzleClimb(frandom(0.2,-0.8),frandom(-0.2,0.4));
-		SMGG A 3 A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
-		SMGG AA 2 A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
-		SMGG A 0 A_MuzzleClimb(frandom(0.2,-0.8),frandom(-0.2,0.4));
-		SMGG AAAAAAAA 1 A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
-		SMGG AA 2 A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
-		SMGG A 0 A_MuzzleClimb(frandom(0.2,-0.8),frandom(-0.2,0.4));
-		SMGG AA 3 A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
-		SMGG A 0 A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
-		SMGG A 0 A_MuzzleClimb(frandom(0.2,-0.8),frandom(-0.2,0.4));
-		SMGG AAAAAAAAAAAAAAA 1;
-		SMGG A 12{
-			A_PlaySound("weapons/pocket",CHAN_WEAPON);
-			A_TakeInventory("HDPistolMag",1);
-			int room=min(15,ammocap("HDPistolAmmo")-countinv("HDPistolAmmo"));
-			A_GiveInventory("HDPistolAmmo",room);
-			if(room<15){
-				room=15-room;
-				while(room>0){
-					room--;
-					A_SpawnItemEx("HDPistolAmmo",
-						random(8,12),random(0,-12),24,
-						random(3,6),0,0,random(6,12)
-					);
-				}
-			}
-		}
-		SMGG B 2 offset(0,70);
-		SMGG B 2 offset(0,44);
-		SMGG B 4 offset(0,34);
+		SMGG A 0 FindRange();
 		goto nope;
 	spawn:
 		SMGN A -1 nodelay{

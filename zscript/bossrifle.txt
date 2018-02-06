@@ -84,19 +84,11 @@ class BossRifle:HDWeapon{
 		goto deselect0big;
 
 	ready:
-		BARG A 1{
-			A_WeaponReady(WRF_ALL);
-			if(
-				!A_JumpIfInventory("BossClip",0,"null")
-				&&countinv("SevenMilAmmo")>=10  
-			){
-				if(invoker.notshot>200){  
-					invoker.notshot=0;
-					A_GiveInventory("BossClip",1);
-					A_TakeInventory("SevenMilAmmo",10);
-				}
-			}
-		}goto readyend;
+		BARG A 1A_WeaponReady(WRF_ALL);
+		goto readyend;
+	user3:
+		---- A 0 A_MagManager(HDMMS_BOSS);
+		goto ready;
 	altreload:
 		BARG A 0 A_JumpIfInventory("SevenMilAmmo",0,"nope");
 		BARG A 0 A_JumpIfInventory("BossClip",1,"altreloadgetclip");

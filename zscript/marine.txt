@@ -130,6 +130,9 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 			deltaangle(oldaim.y,pitch)
 		);
 
+		//something fishy is going on
+		if(abs(aimadjust.x)>45)return (0,0);
+
 		//this is why those tic counts need to be doubles
 		aimadjust*=ticstotarget;
 

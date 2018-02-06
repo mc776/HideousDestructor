@@ -139,8 +139,14 @@ extend class HDPlayerPawn{
 			//let's make the derp special too
 			if(countinv("DERPUsable")||countinv("DERPDEAD"))
 				blox+=45+countinv("DERPAmmo")*BLOX_9MAG_LOADED;
-	
-	
+
+			//mag manager
+			let hdmm=MagManager(findinventory("MagManager"));
+			if(hdmm)blox+=
+				(hdmm.weaponstatus[HDMMS_PIST]+hdmm.weaponstatus[HDMMS_SMG])*BLOX_9+
+				(hdmm.weaponstatus[HDMMS_LIB]+hdmm.weaponstatus[HDMMS_BOSS])*BLOX_776;
+
+
 			//and now for stuff that should just be listed
 			blox+=
 	

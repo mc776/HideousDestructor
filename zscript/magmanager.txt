@@ -1,0 +1,143 @@
+// ------------------------------------------------------------
+// Manually reload magazines!
+// ------------------------------------------------------------
+class MagManager:HDWeapon{
+	default{
+		+weapon.wimpy_weapon
+		+weapon.no_auto_switch
+	}
+	override void detachfromowner(){
+		DumpAmmo();
+		owner.A_TakeInventory("Ring"); //this will trigger givebasics
+		super.detachfromowner();
+	}
+	override inventory CreateTossable(int amount){
+		DumpAmmo();
+		return null;//super.createtossable(amount);
+	}
+	void DumpAmmo(){
+		for(int i=0;i<8;i++){
+			if(
+				weaponstatus[i]
+				&&ammotype[i]
+			){
+				owner.A_DropItem(ammotype[i],weaponstatus[i]);
+				weaponstatus[i]=0;
+			}
+		}
+	}
+	states{
+	spawn:
+		TNT1 A 0;
+		stop;
+	ready:
+		TNT1 A 1 A_WeaponReady(WRF_ALL);
+		goto readyend;
+
+	//switch mag types
+	altfire:
+		TNT1 A 10{
+			int which=invoker.weaponstatus[HDMMS_WHICH]+1;
+			if(which>HDMMC_LAST)which=HDMMC_FIRST;  
+			invoker.weaponstatus[HDMMS_WHICH]=which;
+		}goto ready;
+	fire:
+		TNT1 A 10{
+			int which=invoker.weaponstatus[HDMMS_WHICH]-1;
+			if(which<HDMMC_FIRST)which=HDMMC_LAST;
+			invoker.weaponstatus[HDMMS_WHICH]=which;
+		}goto ready;
+	reload:
+		TNT1 A 12{
+			int which=invoker.weaponstatus[HDMMS_WHICH];
+			int magmax=invoker.magmax[which];
+			if(
+				//something can be loaded
+				countinv(invoker.ammotype[which])
+				&&(
+					//either not full or room for a full
+					!A_JumpIfInventory(invoker.magtype[which],0,"null")
+					||invoker.weaponstatus[which]<magmax
+				)
+			){
+				//transfer one into the mag
+				A_TakeInventory(invoker.ammotype[which],1);
+				invoker.weaponstatus[which]++;
+				A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
+
+				//if full, add one to the full mag pile and reset
+				if(invoker.weaponstatus[which]>=magmax){  
+					invoker.weaponstatus[which]=0;
+					A_GiveInventory(invoker.magtype[which],1);
+					A_PlaySound("weapons/pocket",5);
+					setweaponstate("nope");
+					return;
+				}
+			}
+		}
+		TNT1 A 0 A_Refire();
+		goto ready;
+	unload:
+		TNT1 A 2{
+			int which=invoker.weaponstatus[HDMMS_WHICH];
+			int magmax=invoker.magmax[which];
+			if(
+				//take one full mag before removing one from it
+				invoker.weaponstatus[which]<1
+				&&countinv(invoker.magtype[which])
+				&&!A_JumpIfInventory(invoker.ammotype[which],0,"null")
+			){
+				A_TakeInventory(invoker.magtype[which],1);
+				invoker.weaponstatus[which]=magmax;
+				A_PlaySound("weapons/pocket",5);
+				A_SetTics(12);
+			}
+			if(
+				//take one out of the mag
+				invoker.weaponstatus[which]>0  
+				&&!A_JumpIfInventory(invoker.ammotype[which],0,"null")
+			){
+				A_GiveInventory(invoker.ammotype[which],1);
+				invoker.weaponstatus[which]--;
+				A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
+			}
+			if(!invoker.weaponstatus[which]){
+				setweaponstate("nope");
+				return;
+			}
+		}
+		TNT1 A 0 A_Refire();
+		goto ready;
+	}
+	int magmax[8];class<inventory>magtype[8];class<inventory>ammotype[8];
+	string magmsg[8];
+	override void initializewepstats(bool idfa=false){
+		weaponstatus[HDMMS_WHICH]=HDMMC_FIRST;
+		magmax[HDMMS_PIST]=15;
+		magmax[HDMMS_SMG]=30;
+		magmax[HDMMS_LIB]=30;
+		magmax[HDMMS_BOSS]=10;
+		magtype[HDMMS_PIST]="HDPistolMag";
+		magtype[HDMMS_SMG]="HDSMGMag";
+		magtype[HDMMS_LIB]="LiberatorMag";
+		magtype[HDMMS_BOSS]="BossClip";
+		ammotype[HDMMS_PIST]="HDPistolAmmo";
+		ammotype[HDMMS_SMG]="HDPistolAmmo";
+		ammotype[HDMMS_LIB]="SevenMilAmmo";
+		ammotype[HDMMS_BOSS]="SevenMilAmmo";
+		magmsg[HDMMS_PIST]="15-round pistol magazines";
+		magmsg[HDMMS_SMG]="30-round SMG magazines";
+		magmsg[HDMMS_LIB]="30-round Liberator magazines";
+		magmsg[HDMMS_BOSS]="10-round Boss clips";
+	}
+}
+enum MagManagerNumbers{
+	HDMMS_WHICH=1,
+	HDMMS_PIST=2,
+	HDMMS_SMG=3,
+	HDMMS_LIB=4,
+	HDMMS_BOSS=5,
+
+	HDMMC_FIRST=2, //# of first HDMMS_<magtype> entry
+	HDMMC_LAST=5, //# of last HDMMS_<magtype> entry
+}

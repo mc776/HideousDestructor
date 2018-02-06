@@ -173,16 +173,10 @@ class HDPistol:HDWeapon{
 		PISG # 1{
 			A_SetCrosshair(21);
 			A_WeaponReady(WRF_ALL);
-			if(
-				!A_JumpIfInventory("HDPistolMag",0,"null")
-				&&invoker.notshot>210
-				&&countinv("HDPistolAmmo")>=15
-			){
-				invoker.notshot=0;
-				A_GiveInventory("HDPistolMag",1);
-				A_TakeInventory("HDPistolAmmo",15);
-			}
 		}goto readyend;
+	user3:
+		---- A 0 A_MagManager(HDMMS_PIST);
+		goto ready;
 	user2:
 	firemode:
 		---- A 0{
@@ -381,42 +375,7 @@ class HDPistol:HDWeapon{
 		goto ready;
 
 	zoom:
-	cannibalize:
-		---- A 0{
-			if(countinv("HDSMGMag"))A_SetCrosshair(21);
-			else setweaponstate("nope");
-		}
-		---- A 4 offset(0,34);
-		---- A 2 offset(0,44);
-		---- A 2 offset(0,70);
-
-		---- AA 4 A_PlaySound("weapons/pocket");
-		---- A 10 A_MuzzleClimb(frandom(-0.2,0.8),frandom(-0.2,0.4));
-		---- A 3 A_PlaySound("weapons/rifleclick2",CHAN_AUTO);
-		---- AA 2 A_PlaySound("weapons/rifleclick2",CHAN_AUTO);
-		---- A 0 A_MuzzleClimb(frandom(-0.2,0.8),frandom(-0.2,0.4));
-		---- AAAAAAAA 1 A_PlaySound("weapons/rifleclick2",CHAN_AUTO);
-		---- AA 2 A_PlaySound("weapons/rifleclick2",CHAN_AUTO);
-		---- A 0 A_MuzzleClimb(frandom(-0.2,0.8),frandom(-0.2,0.4));
-		---- AA 3 A_PlaySound("weapons/rifleclick2",CHAN_AUTO);
-		---- A 0 A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
-		---- A 8{
-			A_MuzzleClimb(frandom(-0.2,0.8),frandom(-0.2,0.4));
-			A_TakeInventory("HDSMGMag",1);
-			int pocketmax=min(30,AmmoCap("HDPistolAmmo")-stamina);
-			A_GiveInventory("HDPistolAmmo",pocketmax);
-			pocketmax=30-pocketmax;
-			while(pocketmax>0){
-				pocketmax--;
-				A_SpawnItemEx("HDPistolAmmo",
-					random(8,12),random(0,-12),24,5,0,0,random(6,12)
-				);
-			}
-		}
-		---- A 4 A_PlaySound("weapons/pocket",CHAN_WEAPON);
-		---- A 2 offset(0,70);
-		---- A 2 offset(0,44);
-		---- A 4 offset(0,34);
+		---- A 0 FindRange();
 		goto nope;
 
 	user1:
