@@ -181,14 +181,12 @@ class HDUPK:HDActor{
 	actor picktarget;
 	class<inventory> pickuptype;
 	string pickupmessage;
-	sound pickupsound;
 	property pickuptype:pickuptype;
 	property pickupmessage:pickupmessage;
-	property pickupsound:pickupsound;
 	default{
 		+solid +noblockmonst +notrigger
 		height 8;radius 8;
-		hdupk.pickupsound "misc/i_pkup";
+		activesound "misc/i_pkup";
 		hdupk.pickupmessage "Picked something up.";
 		hdupk.pickuptype "none";
 	}
@@ -224,7 +222,7 @@ class HDUPK:HDActor{
 			setstatelabel("spawn");
 			return;
 		}
-		picktarget.A_PlaySound(pickupsound,5);
+		picktarget.A_PlaySound(activesound,5);
 		picktarget.A_Log(string.format("\cg%s",pickupmessage),true);
 		stamina-=increase;
 		if(stamina>0){ //only picked some up  
