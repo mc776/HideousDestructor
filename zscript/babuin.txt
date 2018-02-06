@@ -5,7 +5,7 @@ class Babuin:HDActor{
 	vector3 lastpos;
 	vector3 latchpos;
 	double targangle;
-	bool latched;
+	actor latchtarget;
 	double latchforce;
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -16,53 +16,52 @@ class Babuin:HDActor{
 	void TryLatch(){
 		if(
 			!target
+			||target==self
 			||target.health<1
 			||distance2d(target)-target.radius-radius>12
 		){
-			latched=false;
+			latchtarget=null;
 			return;
 		}else{
-			latched=true;
-			bnotargetswitch=true;
+			latchtarget=target;
 			latchpos.xy=
-				rotatevector(pos.xy-target.pos.xy,-target.angle).unit()
-				*(target.radius+radius)
+				rotatevector(pos.xy-latchtarget.pos.xy,-latchtarget.angle).unit()
+				*(latchtarget.radius+radius)
 			;
-			latchpos.z=random(8,target.height-12);
-			targangle=target.angle;
-			latchforce=min(0.4,mass*0.02/max(1,target.mass));
+			latchpos.z=random(8,latchtarget.height-12);
+			targangle=latchtarget.angle;
+			latchforce=min(0.4,mass*0.02/max(1,latchtarget.mass));
 			lastpos=pos;
 			setstatelabel("latched");
 		}
 	}
 	override bool cancollidewith(actor other,bool passive){
 		return(
-			other!=target
+			other!=latchtarget
 			||(
-				!latched
+				!latchtarget
 				&&max(
 					abs(other.pos.x-pos.x),
 					abs(other.pos.y-pos.y)
-				)>=other.radius+radius
+				)>=other.radius+radius  
 			)
 		);
 	}
 	override void Die(actor source,actor inflictor,int dmgflags=0){
-		latched=false;
-		bnoclip=false;
+		latchtarget=null;
 		super.Die(source,inflictor,dmgflags);
 	}
 	override void Tick(){
-		if(!latched||!target||target.health<1){
-			latched=false;
-			bnotargetswitch=false;
+		if(!latchtarget||latchtarget==self||latchtarget.health<1){
+			latchtarget=null;
+			latchtarget=null;
 		}
-		if(latched){
-			A_FaceTarget();
-			vector3 lp=target.pos;
-			targangle=(targangle+target.angle)*0.5;
-			lp.xy+=rotatevector(latchpos.xy,target.angle);
-			latchpos.z=clamp(latchpos.z+random(-2,2),12,max(floorz,target.height-height));
+		if(latchtarget){
+			A_Face(latchtarget,0,0);
+			vector3 lp=latchtarget.pos;
+			targangle=(targangle+latchtarget.angle)*0.5;
+			lp.xy+=rotatevector(latchpos.xy,latchtarget.angle);
+			latchpos.z=clamp(latchpos.z+random(-2,2),12,max(floorz,latchtarget.height-height));
 			lp.z+=latchpos.z+frandom(-0.1,0.1);
 
 			//don't interpolate teleport
@@ -76,31 +75,30 @@ class Babuin:HDActor{
 
 			//can try to bump or shake it off
 			if(
-				absangle(target.angle,targangle)>random(30,180)||
-				floorz>pos.z||
+				absangle(latchtarget.angle,targangle)>random(30,180)||
+				floorz>pos.z||  
 				ceilingz<pos.z+height||
 				(!trymove(pos.xy,true)&&(
-						blockingmobj!=target
+						blockingmobj!=latchtarget
 					)
 				)
 			){
-				latched=false;
-				A_FaceTarget(0,0);
 				A_Changevelocity(-6,random(-2,2),4,CVF_RELATIVE);
+				latchtarget=null;
 			}else{
 				//fun!
-				target.A_SetAngle(frandom(
-					target.angle,targangle)+random(-8,8),SPF_INTERPOLATE
+				latchtarget.A_SetAngle(frandom(
+					latchtarget.angle,targangle)+random(-8,8),SPF_INTERPOLATE
 				);
-				target.A_SetPitch(target.pitch+random(-6,10),SPF_INTERPOLATE);
-				target.vel+=(pos-lastpos)*latchforce;
+				latchtarget.A_SetPitch(latchtarget.pitch+random(-6,10),SPF_INTERPOLATE);
+				latchtarget.vel+=(pos-lastpos)*latchforce;
 				lastpos=pos;
 				//lift the victim as circumstances permit
 				if(
 					floorz>=pos.z
-					&&mass>target.mass
+					&&mass>latchtarget.mass  
 				){
-					target.addz(random(-1,2),true);
+					latchtarget.addz(random(-1,2),true);
 				}
 			}
 			nexttic();return;
@@ -159,12 +157,13 @@ class Babuin:HDActor{
 	see:
 		SRG2 A 0{
 			blookallaround=false;
+			A_Chase(flags:CHF_DONTMOVE);
 			if(
 				(target&&checksight(target))
 				||!random(0,7)
 			)setstatelabel("seechase");
 			else setstatelabel("roam");
-		}goto roam;
+		}
 	seechase:
 		SRG2 AABBCCDD random(1,2){hdmobai.chase(self);}
 		goto seeend;
@@ -197,9 +196,9 @@ class Babuin:HDActor{
 
 	latched:
 		#### EF random(1,2){
-			if(latched){
+			if(latchtarget){
 				if(!random(0,30))A_Pain();
-				target.damagemobj(
+				latchtarget.damagemobj(
 					self,self,random(0,2),random(0,3)?"teeth":"falling"
 				);
 			}else{
@@ -226,7 +225,7 @@ class Babuin:HDActor{
 	fly:
 		SRG2 F 1{
 			TryLatch();
-			if(floorz>=pos.z)setstatelabel("land");
+			if(floorz>=pos.z)setstatelabel("land");  
 		}wait;
 	land:
 		SRG2 FEH 3{vel.xy*=0.8;}
