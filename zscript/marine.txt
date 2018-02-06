@@ -350,10 +350,10 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 		loop;
 		#### A 0 A_FaceTarget(turnamount,turnamount);
 		#### E 1 A_SetTics(random(0,80/turnamount));
-		#### A 0{
+		#### E 0{
 			spread=turnamount*0.1;
-			setstatelabel("shoot");
-		}
+			A_SetTics(20/spread);
+		}goto shoot;
 
 	shoot:
 		#### A 0 A_JumpIf(gunloaded<1,"shootpistol");
