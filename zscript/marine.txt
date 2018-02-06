@@ -28,6 +28,7 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 	int gunmax;
 	int gunspent;
 	int pistolloaded;
+	bool glloaded;
 	int timesdied;
 	bool hasdropped;
 	int wep;
@@ -43,6 +44,7 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 
 		//weapon
 		pistolloaded=15;
+		glloaded=true;
 		if(!accuracy)wep=clamp(random(0,3)-random(0,3),0,3);
 		else wep=accuracy-1;
 
@@ -80,6 +82,84 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 		}
 
 		hdmobster.spawnmobster(self);
+	}
+	void noblockwepdrop(){
+		if(hasdropped){
+			class<actor> dropammo="";
+			if(wep==HDMW_SMG)dropammo="HDSMGMag";
+			else if(wep==HDMW_ZM66)dropammo="HDPistolMag";
+			else if(wep==HDMW_ROCKET)dropammo="HDRocketAmmo";
+			else if(wep==HDMW_HUNTER)dropammo="ShellPickup";
+			if(!random(0,timesdied))A_DropItem(dropammo);
+			if(!random(0,12+timesdied))A_DropItem("HDPistolMag");
+			if(
+				!random(0,timesdied)&&wep==HDMW_SMG
+			)A_DropItem("HDRocketAmmo");
+		}else{
+			hasdropped=true;
+			hdweapon dropped;
+			if(wep==HDMW_SMG){
+				dropped=hdweapon(spawn("HDSMG",pos));
+				if(gunloaded){
+					dropped.weaponstatus[SMGS_MAG]=gunloaded-1;
+					dropped.weaponstatus[SMGS_CHAMBER]=2;
+				}else{
+					dropped.weaponstatus[SMGS_MAG]=0;
+					dropped.weaponstatus[SMGS_CHAMBER]=0;
+				}
+			}else if(wep==HDMW_ZM66){
+				dropped=hdweapon(spawn("ZM66AssaultRifle",pos));
+				if(gunloaded){
+					dropped.weaponstatus[ZM66S_MAG]=gunloaded-1;
+					dropped.weaponstatus[0]=ZM66F_CHAMBER;
+				}else{
+					dropped.weaponstatus[ZM66S_MAG]=0;
+					dropped.weaponstatus[0]=0;
+				}
+				if(glloaded)dropped.weaponstatus[0]|=ZM66F_GRENADELOADED;
+			}else if(wep==HDMW_ROCKET){
+				dropped=hdweapon(spawn("HDRL",pos));
+				if(gunloaded){
+					dropped.weaponstatus[RLS_MAG]=gunloaded-1;
+					dropped.weaponstatus[RLS_CHAMBER]=1;
+				}else{
+					dropped.weaponstatus[RLS_MAG]=0;
+					dropped.weaponstatus[RLS_CHAMBER]=0;
+				}
+			}else if(wep==HDMW_HUNTER){
+				dropped=hdweapon(spawn("Hunter",pos));
+				if(gunloaded){
+					dropped.weaponstatus[HUNTS_TUBE]=gunloaded-1;
+					dropped.weaponstatus[HUNTS_CHAMBER]=2;
+				}else{
+					dropped.weaponstatus[HUNTS_TUBE]=0;
+					dropped.weaponstatus[HUNTS_CHAMBER]=0;
+				}
+				dropped.weaponstatus[HUNTS_SIDESADDLE]=random(0,12);
+				dropped.weaponstatus[0]=HUNTF_AUTO;
+			}
+			dropped.addz(32);
+			dropped.vel=vel+(frandom(-1,1),frandom(-1,1),2);
+
+			//drop the pistol
+			dropped=hdweapon(spawn("HDPistol",pos));
+			dropped.addz(32);
+			dropped.vel=vel+(frandom(-1,1),frandom(-1,1),2);
+			if(pistolloaded){
+				dropped.weaponstatus[PISS_MAG]=pistolloaded-1;
+				dropped.weaponstatus[PISS_CHAMBER]=2;
+			}else{
+				dropped.weaponstatus[PISS_MAG]=0;
+				dropped.weaponstatus[PISS_CHAMBER]=0;
+			}
+
+			//drop the blooper
+			if(wep!=HDMW_SMG&&wep!=HDMW_HUNTER)return;
+			dropped=hdweapon(spawn("Blooper",pos));
+			dropped.addz(32);
+			dropped.vel=vel+(frandom(-1,1),frandom(-1,1),2);
+			if(glloaded)dropped.weaponstatus[0]|=BLOPF_LOADED;
+		}
 	}
 
 	// #### E 1 A_LeadTarget1();
@@ -197,7 +277,19 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 		#### A 0 A_Jump(60,"spawn");
 		loop;
 	see:
-		#### A 0 A_JumpIf(gunloaded<1,"reload");
+		#### A 0{
+			if(
+				(
+					//must reload
+					!gunloaded
+					&&!pistolloaded
+				)||(
+					//may reload
+					(!target||!checksight(target))
+					&&!random(0,3)
+				)
+			)setstatelabel("reload");
+		}
 		#### A 0 A_JumpIf(pistolloaded<1,"reloadpistol");
 		#### AABBCCDD 2{hdmobai.chase(self);}
 		#### A 0{
@@ -230,7 +322,15 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 		goto spwander;
 
 	missile:
-		#### A 0 A_JumpIf(gunloaded<1,"reload");
+		#### A 0{
+			if(
+				(
+					//must reload
+					!gunloaded
+					&&!pistolloaded
+				)
+			)setstatelabel("reload");
+		}
 		#### A 0 A_JumpIfTargetInLOS(3,120);
 		#### CD 2 A_FaceTarget(40);
 		#### E 1 A_SetTics(random(4,10)); //when they just start to aim,not for followup shots!
@@ -272,38 +372,98 @@ goto shootpistol;
 			A_DropAdjust(mn);
 		}
 		#### F 1 bright light("SHOT"){
-			A_Log("bang...");
+			pistolloaded--;
+			A_PlaySound("weapons/pistol",CHAN_WEAPON);
 			A_MarineShot("HDBullet9");
 		}
-		#### E 5;
+		#### E random(2,4) A_SpawnItemEx("HDSpent9mm",
+			cos(pitch)*12,0,height-7-sin(pitch)*12,
+			vel.x,vel.y,vel.z,
+			0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
+		);
+		#### E 0 A_JumpIfTargetInLOS("turntoaim",3);
+		#### E 0 A_JumpIfTargetInLOS("missile");
 		goto see;
 
 	ohforfuckssake:
 		#### E 4 A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
 
 	reload:
-		#### E 10{
-			A_Log("RELOADING!");
-			gunloaded=gunmax;
+		#### A 0{
+			if(
+				pistolloaded<0
+				||wep==HDMW_SMG
+				||wep==HDMW_ZM66
+			)setstatelabel("reloadmag");
+			else if(gunloaded<gunmax){
+				if(wep==HDMW_HUNTER)setstatelabel("reloadsg");
+				if(wep==HDMW_ROCKET)setstatelabel("reloadrl");
+			}else if(!glloaded&&wep!=HDMW_ROCKET)setstatelabel("reloadgl");
 		}goto see;
-
-	reloadzm66:
-		#### AA 1{hdmobai.chase(self,"melee",null,flee:true);}
-		#### A 0{
-			A_PlaySound("weapons/rifleload",CHAN_WEAPON);
-			A_SpawnProjectile("HD4mmMagEmpty",38,0,random(90,120));
+	reloadsg:
+		#### A 0 A_PlaySound("weapons/huntopen",CHAN_WEAPON);
+		#### AB 3{hdmobai.chase(self,"melee",null,true);}
+	reloadsgloop:
+		#### A 0 A_PlaySound("weapons/pocket",5);
+		#### CDAB 3{hdmobai.chase(self,"melee",null,true);}
+		#### BBC 3{
+			if(!random(0,1))hdmobai.chase(self,"melee",null,true);
+			if(gunloaded<gunmax){
+				gunloaded++;
+				A_PlaySound("weapons/huntload",CHAN_WEAPON);
+			}
 		}
-		#### BBCC 1{hdmobai.chase(self,"melee",null,flee:true);}
-		#### DD 1{hdmobai.chase(self,"melee",null);}
-		#### A 0 A_PlaySound("weapons/pocket",CHAN_WEAPON);
-		#### E 10 A_FaceTarget(60,60);
-		#### E 8 A_PlaySound("weapons/rifleload",CHAN_WEAPON);
-		#### E 2 A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
-		#### A 0{
+		#### A 0 A_JumpIf(gunloaded<gunmax,"reloadsgloop");
+		goto see;
+	reloadrl:
+		#### A 0 A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
+		#### AB 3{hdmobai.chase(self,"melee",null,true);}
+	reloadrlloop:
+		#### A 0 A_PlaySound("weapons/pocket",5);
+		#### CDAB 3{hdmobai.chase(self,"melee",null,true);}
+		#### C 4{
+			if(!random(0,3))hdmobai.chase(self,"melee",null,true);
+			if(gunloaded<gunmax){
+				gunloaded++;
+				A_PlaySound("weapons/rockreload",CHAN_WEAPON);
+			}
+		}
+		#### A 0 A_JumpIf(gunloaded<gunmax,"reloadsgloop");
+		goto see;
+	reloadmag:
+		#### AB 3{hdmobai.chase(self,"melee",null,true);}
+		#### C 3{
+			hdmobai.chase(self,"melee",null,true);
 			A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
-			gunloaded=gunmax;
+			A_PlaySound("weapons/rifleload",5);
+			class<actor> oldthing="";
+			if(pistolloaded<1)oldthing="HDPistolEmptyMag";
+			else if(wep==HDMW_SMG)oldthing="HDSMGEmptyMag";
+			else if(wep==HDMW_ZM66)oldthing="HD4mmMagEmpty";
+			if(oldthing){
+				actor ooo=spawn(oldthing,pos+(0,0,40));
+				ooo.vel+=vel;
+			}
 		}
-		#### EEE 1 A_Chase(flags:CHF_DONTMOVE);
+		#### DABC 3{hdmobai.chase(self,"melee",null,true);}
+		#### D 2 A_PlaySound("weapons/rifleload",5);
+		#### A 3{
+			A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
+			hdmobai.chase(self,"melee",null);
+			if(pistolloaded<1)pistolloaded=15;
+			else gunloaded=gunmax;
+		}
+		goto see;
+	reloadgl:
+		#### A 0 A_PlaySound("weapons/grenopen",CHAN_WEAPON);
+		#### ABCD 3{hdmobai.chase(self,"melee",null,true);}
+		#### AB 2 A_PlaySound("weapons/rockreload",5);
+		#### C 3{
+			A_PlaySound("weapons/grenopen",CHAN_WEAPON);
+			hdmobai.chase(self,"melee",null);
+			glloaded=1;
+		}
+		#### D 4;
 		goto see;
 
 	melee:
@@ -349,7 +509,7 @@ goto shootpistol;
 		}
 		#### I 5 A_Scream();
 	deathpostscream:
-		#### J 5 A_GiveInventory("NoBlockWepDrop");
+		#### J 5 noblockwepdrop();
 		#### K 5;
 		goto dead;
 
@@ -396,7 +556,7 @@ goto shootpistol;
 		}
 		#### Q 5{
 			A_SpawnItemEx("MegaBloodSplatter",0,0,34,flags:SXF_NOCHECKPOSITION);
-			A_GiveInventory("NoBlockWepDrop");
+			noblockwepdrop();
 		}
 		#### Q 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,flags:SXF_NOCHECKPOSITION);
 		#### RSTUV 5;
