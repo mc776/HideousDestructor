@@ -9,7 +9,7 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 		height 52;
 		radius 12;
 		health 130;
-		speed 8;
+		speed 16;
 		maxdropoffheight 48;
 		maxstepheight 48;
 		maxtargetrange 65536;
@@ -60,11 +60,13 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 		string trnsl="";
 		if(bfriendly){
 			bpushable=true;
+		}
+		if(self is "Tango")trnsl="Tango";else{
 			if(wep==HDMW_ZM66)trnsl="Rifleman";
 			else if(wep==HDMW_HUNTER)trnsl="Enforcer";
 			else if(wep==HDMW_SMG)trnsl="Infiltrator";
 			else if(wep==HDMW_ROCKET)trnsl="Rocketeer";
-		}else trnsl="Tango";
+		}
 
 		int melanin=stamina+1;
 		if(!accuracy)melanin=random(0,2);
@@ -163,6 +165,20 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 		}
 	}
 
+	//returns true if area around target is clear of friendlies
+	bool A_CheckBlast(actor tgt=null,double checkradius=256){
+		if(!tgt)tgt=target;
+		if(!tgt)return true;
+		blockthingsiterator itt=blockthingsiterator.create(tgt,checkradius);
+		while(itt.next()){
+			actor it=itt.thing;
+			if(
+				isfriend(it)||isteammate(it)
+			)return false;
+		}
+		return true;
+	}
+
 	// #### E 1 A_LeadTarget1();
 	// #### E 3{
 	//	A_LeadTarget2(shotspeed:getdefaultbytype(missilename).speed);
@@ -231,7 +247,7 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 			for(int i=1;i<=ticstotake;i++){
 				dropamt+=i;
 			}
-			pitch-=min(atan(dropamt/dist),45);
+			pitch-=min(atan(dropamt/dist),10);
 		}
 
 		//because we don't shoot from height 32 but 42
@@ -278,6 +294,12 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 		#### A 0 A_Jump(60,"spawn");
 		loop;
 	see:
+		#### AABBCCDD 2{hdmobai.chase(self);}
+		#### A 0{
+			if(health<40)damagemobj(self,self,1,"bleedout",DMG_NO_PAIN);
+			else HealThing(1);
+			A_SetSolid();
+		}
 		#### A 0{
 			if(
 				(
@@ -286,19 +308,16 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 					&&!pistolloaded
 				)||(
 					//may reload
-					(!target||!checksight(target))
-					&&!random(0,3)
+					!random(0,7)
+					&&(
+						gunloaded<1
+						||pistolloaded<1
+						||(wep!=HDMW_ROCKET&&!glloaded)
+					)
+					&&(!target||!checksight(target))
 				)
 			)setstatelabel("reload");
 		}
-		#### A 0 A_JumpIf(pistolloaded<1,"reloadpistol");
-		#### AABBCCDD 2{hdmobai.chase(self);}
-		#### A 0{
-			if(health<40)damagemobj(self,self,1,"bleedout",DMG_NO_PAIN);
-			else HealThing(1);
-			A_SetSolid();
-		}
-		loop;
 		#### E 0 A_JumpIfTargetInLOS("see");
 	spwander:
 		#### E 0 A_ClearTarget();
@@ -356,20 +375,181 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 		}goto shoot;
 
 	shoot:
-		#### A 0 A_JumpIf(gunloaded<1,"shootpistol");
-goto shootpistol;
-		#### F 10 bright light("SHOT"){
-			A_Log("Bang!");
-			A_MarineShot("doomimpball");
+		#### E 4{
+			if(!target)return;
+			if(target&&checksight(target)&&target.health<1){
+				target=null;
+				setstatelabel("noshot");
+				return;
+			}
+			double dist=distance3d(target);
+			if(
+				!hdmobai.tryshoot(self,
+					range:min(1024,dist*0.5),
+					pradius:4,
+					pheight:4
+				)
+			){
+				return;
+			}
+
+			//grenade
+			if(
+				dist<5000
+				&&dist>600
+				&&(
+					(wep==HDMW_ROCKET&&gunloaded>0)
+					||(glloaded&&!random(0,10))
+				)
+			){
+				setstatelabel("shootgl");
+				return;
+			}
+
+			//pistol
+			if(
+				gunloaded<1
+				||(wep==HDMW_ROCKET&&dist<600)
+			){
+				if(pistolloaded<1)setstatelabel("ohforfuckssake");
+				else setstatelabel("shootpistol");
+				return;
+			}
+
+			//all other guns
+			if(wep==HDMW_SMG)setstatelabel("shootsmg");
+			else if(wep==HDMW_HUNTER)setstatelabel("shootsg");
+			else if(wep==HDMW_ZM66)setstatelabel("shootzm66");
+			else if(wep==HDMW_ROCKET)setstatelabel("shootrl");
 		}
-		#### E 5;
-		goto see;
-	shootpistol:
-		#### A 0 A_JumpIf(pistolloaded<1,"ohforfuckssake");
+	shootzm66:
 		#### E 1 A_LeadTarget1();
 		#### E 2{
-			class<actor> mn="HDBullet9";
+			class<actor> mn="HDBullet426";
 			A_LeadTarget2(shotspeed:getdefaultbytype(mn).speed,adjusttics:2);
+			A_DropAdjust(mn);
+			gunspent=min(gunloaded,randompick(1,1,1,1,1,3));
+		}
+	firezm66:
+		#### F 1 bright light("SHOT"){
+			if(gunloaded<1||gunspent<1)setstatelabel("firezm66end");
+			gunloaded--;gunspent--;
+			A_PlaySound("weapons/rifle",CHAN_WEAPON);
+			A_MarineShot("HDBullet426");
+		}loop;
+	firezm66end:
+		#### E 2;
+		#### E 0 A_JumpIf(gunloaded>0&&random(0,2),"firezm66");
+		#### E 0 A_MonsterRefire(20,"see");
+		goto missile;
+	shootsmg:
+		#### E 1 A_LeadTarget1();
+		#### E 1{
+			class<actor> mn="HDBullet9";
+			A_LeadTarget2(shotspeed:getdefaultbytype(mn).speed,adjusttics:1);
+			A_DropAdjust(mn);
+		}
+	firesmg:
+		#### F 1 bright light("SHOT"){
+			gunloaded--;
+			A_PlaySound("weapons/pistol",CHAN_WEAPON,0.7);
+			actor bbb=A_MarineShot("HDBullet9");
+			bbb.A_ChangeVelocity(cos(bbb.pitch)*20,0,-sin(bbb.pitch)*20,CVF_RELATIVE);
+		}
+		#### E 2 A_SpawnItemEx("HDSpent9mm",
+			cos(pitch)*10,0,height-8-sin(pitch)*10,
+			vel.x,vel.y,vel.z,
+			0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
+		);
+		#### E 0 A_JumpIf(gunloaded>0&&random(0,2),"firesmg");
+		#### E 0 A_MonsterRefire(20,"see");
+		goto missile;
+	shootsg:
+		#### E 1 A_LeadTarget1();
+		#### E 2{
+			class<actor> mn="HDBullet00b";
+			A_LeadTarget2(shotspeed:getdefaultbytype(mn).speed,adjusttics:2);
+			A_DropAdjust(mn);
+		}
+		#### F 1 bright light("SHOT"){
+			gunloaded--;
+			A_PlaySound("weapons/hunter",CHAN_WEAPON);
+			A_MarineShot("HDBullet00b");
+		}
+		#### E 2{
+			if(random(0,4)){
+				gunspent=0;
+				A_SpawnItemEx("HDSpentShell",
+					cos(pitch)*8,0,height-7-sin(pitch)*8,
+					vel.x+cos(pitch)*cos(angle-random(86,90))*6,
+					vel.y+cos(pitch)*sin(angle-random(86,90))*6,
+					vel.z+sin(pitch)*random(5,7),0,
+					SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
+				);
+			}else gunspent=1;
+		}
+		#### E 1{
+			if(gunspent){
+				gunspent=0;
+				A_PlaySound("weapons/shotgr",5);
+				A_SetTics(random(4,6));
+				A_SpawnItemEx("HDSpentShell",
+					cos(pitch)*8,0,height-7-sin(pitch)*8,
+					vel.x+cos(pitch)*cos(angle-random(86,90))*6,
+					vel.y+cos(pitch)*sin(angle-random(86,90))*6,
+					vel.z+sin(pitch)*random(5,7),0,
+					SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
+				);
+			}
+		}
+		#### E 0 A_MonsterRefire(20,"see");
+		goto missile;
+	shootrl:
+		#### E 1{
+			if(A_CheckBlast(target))A_LeadTarget1();
+			else setstatelabel("noshot");
+		}
+		#### E 3{
+			class<actor> mn="GyroGrenade";
+			A_LeadTarget2(shotspeed:getdefaultbytype(mn).speed*6.4,adjusttics:3);
+			A_DropAdjust(mn,userocket:true);
+		}
+		#### F 2 bright light("SHOT"){
+			if(wep==HDMW_ROCKET)gunloaded--;else glloaded=false;
+			A_PlaySound("weapons/rockignite",CHAN_WEAPON);
+			A_PlaySound("weapons/bronto",5);
+			A_MarineShot("GyroGrenade",userocket:true);
+		}
+		#### E 5{
+			A_Recoil(-4);
+			A_PlaySound("weapons/rocklaunch",CHAN_AUTO,0.6);
+		}
+		#### E 0 A_PlaySound("weapons/shotgr",5);
+		goto see;
+	shootgl:
+		#### E 1{
+			if(A_CheckBlast(target))A_LeadTarget1();
+			else setstatelabel("noshot");
+		}
+		#### E 2{
+			class<actor> mn="GyroGrenade";
+			A_LeadTarget2(shotspeed:getdefaultbytype(mn).speed,adjusttics:2);
+			A_DropAdjust(mn);
+		}
+		#### F 1 bright{
+			if(wep==HDMW_ROCKET)gunloaded--;else glloaded=false;
+			A_PlaySound("weapons/grenadeshot",CHAN_WEAPON);
+			A_MarineShot("GyroGrenade");
+		}
+		#### E 4;
+		#### E 0 A_MonsterRefire(20,"see");
+		goto missile;
+
+	shootpistol:
+		#### E 1 A_LeadTarget1();
+		#### E 1{
+			class<actor> mn="HDBullet9";
+			A_LeadTarget2(shotspeed:getdefaultbytype(mn).speed,adjusttics:random(1,4));
 			A_DropAdjust(mn);
 		}
 		#### F 1 bright light("SHOT"){
@@ -377,13 +557,15 @@ goto shootpistol;
 			A_PlaySound("weapons/pistol",CHAN_WEAPON);
 			A_MarineShot("HDBullet9");
 		}
-		#### E random(2,4) A_SpawnItemEx("HDSpent9mm",
+		#### E random(1,4) A_SpawnItemEx("HDSpent9mm",
 			cos(pitch)*12,0,height-7-sin(pitch)*12,
 			vel.x,vel.y,vel.z,
 			0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
 		);
-		#### E 0 A_JumpIfTargetInLOS("turntoaim",3);
-		#### E 0 A_JumpIfTargetInLOS("missile");
+		#### E 0 A_MonsterRefire(20,"see");
+		goto missile;
+	noshot:
+		#### E 6;
 		goto see;
 
 	ohforfuckssake:
@@ -411,7 +593,7 @@ goto shootpistol;
 			if(!random(0,1))hdmobai.chase(self,"melee",null,true);
 			if(gunloaded<gunmax){
 				gunloaded++;
-				A_PlaySound("weapons/huntload",CHAN_WEAPON);
+				A_PlaySound("weapons/sshotl",CHAN_WEAPON);
 			}
 		}
 		#### A 0 A_JumpIf(gunloaded<gunmax,"reloadsgloop");
@@ -474,7 +656,7 @@ goto shootpistol;
 			random(10,100),"weapons/smack","","none",randompick(0,0,0,1)
 		);
 		#### ABCD 2{
-			if(target&&distance3d(target)-target.radius<meleerange){
+			if(target&&!target.bcorpse&&distance3d(target)-target.radius<meleerange){
 				setstatelabel("melee");
 				return;
 			}
