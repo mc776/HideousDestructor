@@ -41,8 +41,8 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 	int wep;
 	int turnamount;
 	double shotspread;
-	override void postbeginplay(){
-		super.postbeginplay();
+	override void beginplay(){
+		super.beginplay();
 		hasdropped=0;
 
 		//-1 zm66, 0 sg, 1 ssg
@@ -50,6 +50,9 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 		else if(accuracy==1)wep=0;
 		else if(accuracy==2)wep=1;
 		else if(accuracy==3)wep=-1;
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
 		if(wep<0){
 			sprite=GetSpriteIndex("PLAYA1");
 			A_SetTranslation("HattedJackboot");
@@ -539,6 +542,7 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 		#### L 5 canraise{if(abs(vel.z)>=2.)setstatelabel("dead");}
 		wait;
 	xdeathbrewtlelulz:
+		#### M 0 A_JumpIf(wep<0,"xdeathbrewtlelulz2");
 		#### M 5{
 			bshootable=false;
 			A_GiveInventory("IsGibbed");
@@ -549,7 +553,19 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 		}
 		#### OPQRST 5;
 		goto xdead;
+	xdeathbrewtlelulz2:
+		#### O 5{
+			bshootable=false;
+			A_GiveInventory("IsGibbed");
+		}
+		#### P 5{
+			spawn("MegaBloodSplatter",pos+(0,0,34));
+			A_XScream();
+		}
+		#### QRSTUV 5;
+		goto xdead2;
 	xdeath:
+		#### M 0 A_JumpIf(wep<0,"xdeath2");
 		#### M 5{
 			bshootable=false;
 			A_GiveInventory("IsGibbed");
@@ -565,6 +581,23 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 	xdead:
 		#### T 3 canraise{if(abs(vel.z)<2.)frame++;}
 		#### U 5 canraise{if(abs(vel.z)>=2.)setstatelabel("xdead");}
+		wait;
+	xdeath2:
+		#### O 5{
+			bshootable=false;
+			A_GiveInventory("IsGibbed");
+		}
+		#### P 5{
+			spawn("MegaBloodSplatter",pos+(0,0,34));
+			A_XScream();
+		}
+		#### Q 0 noblockwepdrop();
+		#### QR 5 spawn("MegaBloodSplatter",pos+(0,0,34));
+		#### STUV 5;
+		goto xdead2;
+	xdead2:
+		#### V 3 canraise{if(abs(vel.z)<2.)frame++;}
+		#### W 5 canraise{if(abs(vel.z)>=2.)setstatelabel("xdead2");}
 		wait;
 	raise:
 		#### A 0 {hdmobai.corpseflags(self);}
