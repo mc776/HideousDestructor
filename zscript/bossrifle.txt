@@ -284,14 +284,28 @@ class BossRifle:HDWeapon{
 			else if(countinv("BossClip"))setweaponstate("loadclip");
 		}
 	loadhand:
-		BARG A 0 A_JumpIfInventory("SevenMilAmmo",1,"loadhandloop");
-		BARG A 0 A_JumpIfInventory("BossClip",1,"stripbossclip");
+		BARG A 0{
+			if(countinv("SevenMilAmmo"))setweaponstate("loadhandloop");
+			else if(countinv("BossClip")||(
+					countinv("MagManager")&&
+					magmanager(findinventory("magmanager")).weaponstatus[HDMMS_BOSS]>0
+				)
+			)setweaponstate("stripbossclip");
+		}
 		BARG A 0 A_JumpIfInventory("LiberatorMag",1,"striplibmag");
 		goto reloaddone;
 	stripbossclip:
 		BARG AAA 3 A_PlaySound("weapons/rifleclick2");
-		BARG A 0 A_TakeInventory("BossClip",1);
-		BARG A 0 A_GiveInventory("SevenMilAmmo",10);
+		BARG A 0{
+			let mmm=magmanager(findinventory("magmanager"));
+			if(mmm&&mmm.weaponstatus[HDMMS_BOSS]>0){
+				A_GiveInventory("SevenMilAmmo",mmm.weaponstatus[HDMMS_BOSS]);
+				mmm.weaponstatus[HDMMS_BOSS]=0;
+			}else{
+				A_TakeInventory("BossClip",1);
+				A_GiveInventory("SevenMilAmmo",10);
+			}
+		}
 		goto loadhandloop;
 	striplibmag:
 		BARG AA 4 A_PlaySound("weapons/rifleclick2");
@@ -310,6 +324,7 @@ class BossRifle:HDWeapon{
 				setweaponstate("reloaddone");
 				return;
 			}else{
+				A_TakeInventory("SevenMilAmmo",hnd,TIF_NOTAKEINFINITE);
 				invoker.weaponstatus[BOSSS_HAND]=hnd;
 				A_PlaySound("weapons/pocket",CHAN_WEAPON);
 			}
