@@ -1,7 +1,10 @@
-// this one gets its own file because it's sooooo sprawly.
-
+// ------------------------------------------------------------
+// The cause of - and solution to -
+// ------------------------------------------------------------
 extend class HDPlayerPawn{
 	void ConsolidateAmmo(){
+		let bp=HDBP(findinventory("HDBP"));
+
 		//use the BFG to charge everything
 		if(countinv("BFG9k")){
 			hdweapon(findinventory("BFG9k")).initializewepstats(true);
@@ -25,69 +28,59 @@ extend class HDPlayerPawn{
 				hdweapon(findinventory("ThunderBuster")).weaponstatus[TBS_BATTERY]=20;
 			}
 			if(countinv("Lumberjack")){
-				hdweapon(findinventory("Lumberjack")).weaponstatus[1]=20;
+				hdweapon(findinventory("Lumberjack")).weaponstatus[CSAWS_BATTERY]=20;
 			}
 			if(countinv("Vulcanette")){
-				hdweapon(findinventory("Vulcanette")).weaponstatus[1]=20;
+				hdweapon(findinventory("Vulcanette")).weaponstatus[VULCS_BATTERY]=20;
 			}
-		}else{
-			//is there anything that can be done?
-			//batteries, how the fuck do they work?
-			//miraclessssss
-		}
 
-
-		//make as many mags and clips as possible to make room for more 7mm
-		if(countinv("SevenMilAmmo")>10){
-			int maxclag=HDMath.MaxInv(self,"LiberatorMag");
-			while(
-				countinv("SevenMilAmmo")>29 &&  
-				countinv("LiberatorMag")<maxclag
-			){
-				A_TakeInventory("SevenMilAmmo",30);
-				A_GiveInventory("LiberatorMag");
-			}
-			if(countinv("BossRifle")){
-				maxclag=HDMath.MaxInv(self,"BossClip");
-				while(
-					countinv("SevenMilAmmo")>10 &&  
-					countinv("BossClip")<maxclag
-				){
-					A_TakeInventory("SevenMilAmmo",10);
-					A_GiveInventory("BossClip");
-				}
+			//convert stuff in backpacks
+			if(bp){
+				bp.itemamount[bp.fcellindex]+=bp.itemamount[bp.ecellindex];
+				bp.itemamount[bp.ecellindex]=0;
+				bp.itemamount[bp.fcellindex]+=max(1,bp.itemamount[bp.mcellindex]/15);
+				bp.itemamount[bp.mcellindex]=0;
 			}
 		}
+		//there is no else.
+		//consider using the big battery pack sprite as a charger on some maps?
+
+		
+		//repair *ERPs
+		if(countinv("DERPDEAD")){
+			A_TakeInventory("DERPDEAD");
+			A_GiveInventory("DERPUsable");
+		}
+		if(bp
+			&&bp.itemamount[bp.derpindex]<1
+			&&bp.itemamount[bp.bderpindex]>0  
+		){
+			bp.itemamount[bp.bderpindex]--;
+			bp.itemamount[bp.derpindex]=1;
+		}
+		if(countinv("HERPDEAD")){
+			A_TakeInventory("HERPDEAD");
+			A_GiveInventory("HERPUsable");
+		}
+
 
 		//reload as much brass as possible and consolidate again
-		int addsevenmil=0;
 		if(
 			(countinv("LiberatorRifle")||countinv("BossRifle"))
-			&&countinv("FourMilAmmo")>4  
-		){    
-			int curr7=
-				countinv("LiberatorMag")*30
-				+countinv("BossClip")*10
-				+countinv("SevenMilAmmo");
-			int max7=
-				HDMath.MaxInv(self,"LiberatorMag")*30
-				+HDMath.MaxInv(self,"BossClip")*10
-				+HDMath.MaxInv(self,"SevenMilAmmo");
-			int rnd=random(1,7);
-			int powderunits=max(0,countinv("FourMilAmmo")-rnd);
+		){
 			int totalbrass=countinv("SevenMilBrass");
+			int totalpowder=countinv("FourMilAmmo");
 
 			//take recyclables out of guns
-			if(
-				bossrifle(findinventory("BossRifle"))
-			){
-				int br=bossrifle(findinventory("BossRifle")).weaponstatus[BOSSS_CHAMBER];
-				if(br!=2&&br!=4&&br>0){
+			let boss=bossrifle(findinventory("BossRifle"));
+			if(boss){
+				int br=boss.weaponstatus[BOSSS_CHAMBER];
+				if(br!=2&&br!=4&&br>0){  
 					totalbrass++;
-					bossrifle(findinventory("BossRifle")).weaponstatus[BOSSS_CHAMBER]=0;
+					boss.weaponstatus[BOSSS_CHAMBER]=0;
 				}
 			}
-			liberatorrifle libb=liberatorrifle(findinventory("LiberatorRifle"));
+			let libb=liberatorrifle(findinventory("LiberatorRifle"));
 			if(libb){
 				if(libb.weaponstatus[LIBS_CHAMBER]==1){
 					libb.weaponstatus[LIBS_CHAMBER]=0;
@@ -95,91 +88,78 @@ extend class HDPlayerPawn{
 				}
 				int brasss=libb.weaponstatus[LIBS_BRASS];
 				libb.weaponstatus[LIBS_BRASS]=0;
-				if(brasss>0)totalbrass+=brasss;
+				if(brasss>0)totalbrass+=brasss;  
 			}
+			let zed=zm66assaultrifle(findinventory("zm66assaultrifle"));
 			if(
-				zm66assaultrifle(findinventory("zm66assaultrifle"))&&
-				zm66assaultrifle(findinventory("zm66assaultrifle")).weaponstatus[0]
+				zed&&
+				zed.weaponstatus[0]
 				&ZM66F_CHAMBERBROKEN
 			){
-				zm66assaultrifle(findinventory("zm66assaultrifle")).weaponstatus[0]&=~(
-					ZM66F_CHAMBER|ZM66F_CHAMBERBROKEN
-				);
-				powderunits++;
+				zed.weaponstatus[0]&=~(ZM66F_CHAMBER|ZM66F_CHAMBERBROKEN);
+				totalpowder++;
 			}
 
-			//put it all together
-			addsevenmil=min(
-				max7-curr7,
-				powderunits/4,
-				totalbrass
+			//and other containers
+			int brassinbp=0;
+			int zedinbp=0;
+			if(bp){
+				brassinbp=bp.itemamount[bp.brassindex];
+				zedinbp=bp.itemamount[bp.loosezedindex];
+
+				totalbrass+=brassinbp;
+				totalpowder+=zedinbp;
+			}
+
+
+			//figure out what you can actually do
+			int max7=hdmath.maxinv(self,"SevenMilAmmo")-countinv("SevenMilAmmo");
+			int max7bp=0;
+			if(bp)max7bp=max(0,(HDBPC_CAPACITY-bp.getbulk())/(bp.itembulk[bp.sevenmilindex]));
+
+			//random losses
+			int scrapped=totalbrass*0.02+random(0,2);
+			totalbrass-=scrapped;
+			scrapped=totalpowder*0.05+random(0,12);
+			totalpowder-=scrapped;
+
+			//and now make the dang things
+			int made=min(
+				totalbrass,
+				totalpowder/3,
+				max7+max7bp
 			);
-			A_TakeInventory("FourMilAmmo",addsevenmil*4+rnd);
-			A_SetInventory("SevenMilBrass",totalbrass-addsevenmil);
-		}
-		//convert spare 776 to Liberator mags
-		addsevenmil+=countinv("SevenMilAmmo");
-		while(
-			addsevenmil>=30      
-			&&!A_JumpIfInventory("LiberatorMag",0,"null")
-		){
-			addsevenmil-=30;
-			A_GiveInventory("LiberatorMag");
-		}
-		//convert spare 776 to clips
-		int maxsevenmil=HDMath.MaxInv(self,"SevenMilAmmo");
-		while(
-			(
-				addsevenmil>maxsevenmil
-				||countinv("BossRifle")
-			)&&(
-				addsevenmil>=10      
-				&&!A_JumpIfInventory("BossClip",0,"null")
-			)
-		){
-			addsevenmil-=10;
-			A_GiveInventory("BossClip");
-		}
-		//add addsevenmil to spare 776
-		A_SetInventory("SevenMilAmmo",addsevenmil);
+			totalbrass-=made;
+			totalpowder-=made*3;
 
+			A_Log(string.format("Reloaded %i 7.76mm rounds during downtime.",made),true);
 
-		//convert spare 9 to pistol and SMG mags
-		while(
-			countinv("HDPistolAmmo")>=15      
-			&&!A_JumpIfInventory("HDPistolMag",0,"null")
-		){
-			A_TakeInventory("HDPistolAmmo",15);
-			A_GiveInventory("HDPistolMag");
-		}
-		while(
-			countinv("HDPistolAmmo")>=30      
-			&&!A_JumpIfInventory("HDSMGMag",0,"null")
-		){
-			A_TakeInventory("HDPistolAmmo",30);
-			A_GiveInventory("HDSMGMag");
+			//fill inventory first, then backpack
+			//let the player load into mags after
+			max7=min(max7,made);
+			made-=max7;
+			A_GiveInventory("SevenMilAmmo",max7);
+
+			//put stuff back into backpack
+			if(bp){
+				bp.itemamount[bp.sevenmilindex]+=made;
+
+				brassinbp=min(totalbrass,brassinbp);
+				zedinbp=min(totalpowder,zedinbp);
+				totalbrass-=brassinbp;
+				totalpowder-=zedinbp;
+
+				bp.itemamount[bp.brassindex]=brassinbp;
+				bp.itemamount[bp.loosezedindex]=zedinbp;
+			}
+
+			//put stuff back into inventory
+			A_SetInventory("SevenMilBrass",totalbrass);
+			A_SetInventory("FourMilAmmo",totalpowder);
 		}
 
-		//repair *ERPs
-		if(countinv("DERPDEAD")){
-			A_TakeInventory("DERPDEAD");
-			A_GiveInventory("DERPUsable");
-		}
-		let hdbp=hdbp(findinventory("HDBP"));
-		if(hdbp
-			&&hdbp.itemamount[hdbp.derpindex]<1
-			&&hdbp.itemamount[hdbp.bderpindex]>0
-		){
-			hdbp.itemamount[hdbp.bderpindex]--;
-			hdbp.itemamount[hdbp.derpindex]=1;
-		}
-		if(countinv("HERPDEAD")){
-			A_TakeInventory("HERPDEAD");
-			A_GiveInventory("HERPUsable");
-		}
+		//I've deleted ALL things that can be done manually by the player.
+		//Too many possible permutations.
+		//Fuck, just look at the extra code for putting reloads in the backpack!
 	}
-
 }
-
-
-

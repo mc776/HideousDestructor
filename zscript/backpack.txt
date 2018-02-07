@@ -242,7 +242,9 @@ class HDBP:HDWeapon{
 		}
 	}
 	int derpindex;int bderpindex;
-	int mcellindex;int armourindex;
+	int fcellindex;int mcellindex;int ecellindex;
+	int armourindex;
+	int sevenmilindex;int brassindex;int loosezedindex;
 	override void beginplay(){
 		int i=-1;
 		i++;itembulk[i]=800;itemtype[i]="GreenArmourStored";itemname[i]="Soft armour";armourindex=i;
@@ -264,20 +266,20 @@ class HDBP:HDWeapon{
 		i++;itemname[i]="br";
 
 		i++;itembulk[i]=95;itemtype[i]="HDFragGrenadeAmmo";itemname[i]="Hand grenade";
-		i++;itembulk[i]=80;itemtype[i]="HDCellPacks";itemname[i]="Fresh battery";
+		i++;itembulk[i]=80;itemtype[i]="HDCellPacks";itemname[i]="Fresh battery";fcellindex=i;
 		i++;itembulk[i]=80;itemtype[i]="HDCellAmmo";itemname[i]="Stale battery";mcellindex=i;
-		i++;itembulk[i]=80;itemtype[i]="HDCellPackEmpty";itemname[i]="Depleted battery";
+		i++;itembulk[i]=80;itemtype[i]="HDCellPackEmpty";itemname[i]="Depleted battery";ecellindex=i;
 		i++;itembulk[i]=85;itemtype[i]="BrontornisRound";itemname[i]="Brontornis shell";
 		i++;itemname[i]="br";
 
 		i++;itembulk[i]=40;itemtype[i]="ZM66RifleMags";itemname[i]="4.26mm mag";
-		i++;itembulk[i]=1;itemtype[i]="FourMilAmmo";itemname[i]="Misc. 4.26mm ammo";
+		i++;itembulk[i]=1;itemtype[i]="FourMilAmmo";itemname[i]="Misc. 4.26mm ammo";loosezedindex=i;
 		i++;itemname[i]="cl";
 
 		i++;itembulk[i]=90;itemtype[i]="LiberatorMag";itemname[i]="7.76mm mag";
 		i++;itembulk[i]=36;itemtype[i]="BossClip";itemname[i]="7.76mm clip";
-		i++;itembulk[i]=8;itemtype[i]="SevenMilAmmo";itemname[i]="Misc. 7.76mm ammo";
-		i++;itembulk[i]=7;itemtype[i]="SevenMilBrass";itemname[i]="7.76mm casing";
+		i++;itembulk[i]=8;itemtype[i]="SevenMilAmmo";itemname[i]="Misc. 7.76mm ammo";sevenmilindex=i;
+		i++;itembulk[i]=5;itemtype[i]="SevenMilBrass";itemname[i]="7.76mm casing";brassindex=i;
 		i++;itemname[i]="br";
 
 		i++;itembulk[i]=35;itemtype[i]="HDPistolMag";itemname[i]="Pistol mag";
