@@ -79,6 +79,12 @@ class HDDropOne:ActionItem{
 				if(!howmany)return;
 				if(what=="HDShellAmmo")howmany=min(4,countinv(what));
 				A_DropInventory(what,howmany);
+			}else if(cw=="MagManager"){
+				let mmm=MagManager(findinventory("MagManager"));
+				class<inventory> what=mmm.ammotype[mmm.weaponstatus[HDMMS_WHICH]];
+				int howmany=min(5,countinv(what));
+				if(!howmany)return;
+				A_DropInventory(what,howmany);
 			}
 			else A_GiveInventory("DropExtra");
 		}fail;
