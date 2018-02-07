@@ -256,12 +256,15 @@ class LiberatorRifle:HDWeapon{
 		BRFG A 0{
 			invoker.weaponstatus[0]&=~LIBF_JUSTUNLOAD;
 			if(
-				//no spare ammo
-				!countinv("LiberatorMag")&&!countinv("SevenMilAmmo")
+				invoker.weaponstatus[LIBS_MAG]>=30
 				||(
-					//gun full
-					invoker.weaponstatus[LIBS_CHAMBER]==2
-					&&invoker.weaponstatus[LIBS_MAG]>=30  
+					!countinv("LiberatorMag")
+					&&!countinv("SevenMilAmmo")
+					&&(
+						!countinv("MagManager")
+						||magmanager(findinventory("magmanager")).
+							weaponstatus[HDMMS_LIB]<1
+					)
 				)
 			)return resolvestate("nope");
 			else if(
@@ -349,9 +352,7 @@ class LiberatorRifle:HDWeapon{
 				A_TakeInventory("LiberatorMag",1,TIF_NOTAKEINFINITE);
 				invoker.weaponstatus[LIBS_MAG]=30;
 			}else{
-				int lm=min(random(1,30),countinv("SevenMilAmmo"));
-				invoker.weaponstatus[LIBS_MAG]=lm;
-				A_TakeInventory("SevenMilAmmo",lm,TIF_NOTAKEINFINITE);
+				invoker.weaponstatus[LIBS_MAG]=magmanager.takespares(self,"LiberatorMag");
 			}
 			A_PlaySound("weapons/rifleload",CHAN_WEAPON);
 		}

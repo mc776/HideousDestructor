@@ -138,7 +138,15 @@ class HDSMG:HDWeapon{
 			invoker.weaponstatus[0]&=~SMGF_JUSTUNLOAD;
 			if(
 				invoker.weaponstatus[SMGS_MAG]>=30
-				||(!countinv("HDSMGMag")&&!countinv("HDPistolAmmo"))
+				||(
+					!countinv("HDSMGMag")
+					&&!countinv("HDPistolAmmo")
+					&&(
+						!countinv("MagManager")
+						||magmanager(findinventory("magmanager")).
+							weaponstatus[HDMMS_SMG]<1
+					)
+				)
 			)setweaponstate("nope");
 		}goto unmag;
 	unmag:
@@ -200,9 +208,7 @@ class HDSMG:HDWeapon{
 				invoker.weaponstatus[SMGS_MAG]=30;
 				A_TakeInventory("HDSMGMag",1,TIF_NOTAKEINFINITE);
 			}else{
-				int rnd=min(random(1,30),countinv("HDPistolAmmo"));
-				invoker.weaponstatus[SMGS_MAG]=rnd;
-				A_TakeInventory("HDPistolAmmo",rnd,TIF_NOTAKEINFINITE);
+				invoker.weaponstatus[SMGS_MAG]=magmanager.takespares(self,"HDSMGMag");
 			}
 			if(invoker.weaponstatus[SMGS_CHAMBER]==2)setweaponstate("reloadend");
 		}

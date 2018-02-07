@@ -301,7 +301,13 @@ class HDPistol:HDWeapon{
 			if(
 				invoker.weaponstatus[PISS_MAG]>=15
 				||(
-					!countinv("HDPistolMag")&&!stamina
+					!countinv("HDPistolMag")
+					&&!countinv("HDPistolAmmo")
+					&&(
+						!countinv("MagManager")
+						||magmanager(findinventory("magmanager")).
+							weaponstatus[HDMMS_PIST]<1
+					)
 				)
 			)setweaponstate("nope");
 		}goto unmag;
@@ -352,9 +358,7 @@ class HDPistol:HDWeapon{
 				invoker.weaponstatus[PISS_MAG]=15;
 				A_TakeInventory("HDPistolMag",1,TIF_NOTAKEINFINITE);
 			}else{
-				int rnd=min(stamina,random(1,15));
-				invoker.weaponstatus[PISS_MAG]=rnd;
-				A_TakeInventory("HDPistolAmmo",rnd,TIF_NOTAKEINFINITE);
+				invoker.weaponstatus[PISS_MAG]=magmanager.takespares(self,"HDPistolMag");
 			}
 			A_PlaySound("weapons/rifleclick",CHAN_BODY);
 		}

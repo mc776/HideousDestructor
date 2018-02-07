@@ -1,5 +1,5 @@
 // ------------------------------------------------------------
-// Manually reload magazines!
+// Manually reload magazines! (and clips too!)
 // ------------------------------------------------------------
 class MagManager:HDWeapon{
 	default{
@@ -27,6 +27,31 @@ class MagManager:HDWeapon{
 				weaponstatus[i]=0;
 			}
 		}
+	}
+	static int TakeSpares(actor caller,class<inventory> type){
+		caller.A_SetInventory("MagManager",1);
+		let mmm=MagManager(caller.findinventory("MagManager"));
+		int rndmag=0;int mmindex=-1;
+
+		//take from magmanager if possible
+		for(int i=0;i<8;i++){
+			if(mmm.magtype[i]==type){
+				rndmag=mmm.weaponstatus[i];
+				mmm.weaponstatus[i]=0;
+				mmindex=i;
+				break;
+			}
+		}
+		if(mmindex<0)return 0;
+		if(!rndmag){
+			//take from ammo pool
+			rndmag=min(
+				caller.countinv(mmm.ammotype[mmindex]),
+				random(1,mmm.magmax[mmindex]-1)
+			);
+			caller.A_TakeInventory(mmm.ammotype[mmindex],rndmag);
+		}
+		return rndmag;
 	}
 	states{
 	spawn:
