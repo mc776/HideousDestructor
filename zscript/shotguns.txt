@@ -34,9 +34,11 @@ class HDShotgun:HDWeapon{
 		}
 	}
 	override void DetachFromOwner(){
-		if(owner){
-			owner.A_DropItem("HDShellAmmo",handshells);
-		}else A_DropItem("HDShellAmmo",handshells);
+		if(handshells>0){
+			if(owner){
+				owner.A_DropItem("HDShellAmmo",handshells);
+			}else A_DropItem("HDShellAmmo",handshells);
+		}
 		handshells=0;
 		super.detachfromowner();
 	}

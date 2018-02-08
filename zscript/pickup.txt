@@ -20,7 +20,11 @@ class userpickerupper:hdactor{
 		picktarget=target;
 		if(vel.xy==(0,0))vel.x=minvel;
 		for(int i=0;i<10;i++){
-			if(!trymove(pos.xy+vel.xy,true,true)){
+			//can't use a simple trymove because lol silly map haxxx
+//			if(!trymove(pos.xy+vel.xy,true,true)){
+			setorigin(pos+vel,false);
+			if(!trymove(pos.xy,true,true)){
+				if(!checksight(picktarget)){destroy();return;}
 				if(blockingmobj){
 					blockingmobj.target=picktarget;
 					if(
@@ -43,9 +47,9 @@ class userpickerupper:hdactor{
 						return;
 					}
 				}
-				if(blockingline){destroy();return;}
+//				if(blockingline){destroy();return;}
 			}
-			addz(vel.z);
+//			addz(vel.z);
 			if(floorz>pos.z && floorz<target.height+target.pos.z){  
 				setz(floorz);
 				vel.z=0;
@@ -59,7 +63,7 @@ class userpickerupper:hdactor{
 		TNT1 AAAA 1{
 			if(!pickobj){destroy();return;}
 			pickobj.setorigin(
-				0.5*((picktarget.pos+(0,0,picktarget.height*0.6))+pickobj.pos)
+				0.5*((picktarget.pos+(0,0,picktarget.height-10))+pickobj.pos)
 			,true);
 		}
 		TNT1 A 0{
@@ -229,7 +233,7 @@ class HDUPK:HDActor{
 	grab:
 		---- AAAA 1{
 			setorigin(
-				0.5*((picktarget.pos+(0,0,picktarget.height*0.6))+pos)
+				0.5*((picktarget.pos+(0,0,picktarget.height-10))+pos)
 			,true);
 		}
 		---- A 0{
@@ -257,22 +261,5 @@ class HDUPK:HDActor{
 		CLIP A -1;
 	spawn2:
 		---- A -1;
-	}
-}
-
-
-//some people put keys in the weirdest of sectors.
-//One particular Oblige trick makes them impossible to pick up as HDUPKs.
-class HDHPK:HDUPK{
-	override bool cancollidewith(actor other,bool passive){
-		if(other is "userpickerupper") return true;
-		if(other is "playerpawn" && other.bpickup){
-			target=other;
-			let ppp=HDPlayerPawn(target);if(ppp && !ppp.hasgrabbed){
-				ppp.hasgrabbed=true;
-				if(findstate("give",true))setstatelabel("give");
-			}
-			return false;
-		}return false;
 	}
 }
