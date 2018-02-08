@@ -56,47 +56,42 @@ class userpickerupper:hdactor{
 	states{
 	grabpickup:
 		TNT1 A 0{bsolid=false;}
-		TNT1 AA 2{
+		TNT1 AAAA 1{
 			if(!pickobj){destroy();return;}
-			pickobj.vel+=(
-				picktarget.pos.x-pickobj.pos.x,
-				picktarget.pos.y-pickobj.pos.y,
-				picktarget.pos.z+picktarget.height*0.6-pickobj.pos.z
-			)*0.3+(0,0,2);
+			pickobj.setorigin(
+				0.5*((picktarget.pos+(0,0,picktarget.height*0.6))+pickobj.pos)
+			,true);
 		}
 		TNT1 A 0{
-			if(!pickobj){destroy();return;}
-			pickobj.A_Stop();
-
+			if(
+				!pickobj
+				||!picktarget
+				||picktarget.health<1
+			){
+				destroy();
+				return;
+			}
 			pickobj.A_CallSpecial(
 				pickobj.special,pickobj.args[0],
 				pickobj.args[1],pickobj.args[2],
 				pickobj.args[3],pickobj.args[4]
 			);
 
-			//in case of death or teleport mid-grab
-			if(
-				picktarget
-				&&!picktarget.bkilled
-				&&picktarget.health>0          
-				&&pickobj.distance3d(picktarget)<64
-			){
-				let ht=hdupk(pickobj);
-				if(ht){
-					ht.picktarget=picktarget;
-					ht.a_hdupkgive();
-					return;
-				}
-
-				let pt=hdpickup(pickobj);
-				if(pt){pt.actualpickup(picktarget);return;}
-
-				let wt=hdweapon(pickobj);
-				if(wt){wt.actualpickup(picktarget);return;}
-
-				let tt=inventory(pickobj);
-				if(tt){tt.touch(picktarget);return;}
+			let ht=hdupk(pickobj);
+			if(ht){
+				ht.picktarget=picktarget;
+				ht.a_hdupkgive();
+				return;
 			}
+
+			let pt=hdpickup(pickobj);
+			if(pt){pt.actualpickup(picktarget);return;}
+
+			let wt=hdweapon(pickobj);
+			if(wt){wt.actualpickup(picktarget);return;}
+
+			let tt=inventory(pickobj);
+			if(tt){tt.touch(picktarget);return;}
 		}stop;
 	}
 }
@@ -232,17 +227,17 @@ class HDUPK:HDActor{
 	}
 	states{
 	grab:
-		---- AA 2{
-			vel+=(
-				picktarget.pos.x-pos.x,
-				picktarget.pos.y-pos.y,
-				picktarget.pos.z+picktarget.height*0.6-pos.z
-			)*0.3+(0,0,2);
+		---- AAAA 1{
+			setorigin(
+				0.5*((picktarget.pos+(0,0,picktarget.height*0.6))+pos)
+			,true);
 		}
 		---- A 0{
 			//in case of death or teleport mid-grab
-			if(picktarget.bkilled||distance3d(picktarget)>64){  
-				A_Stop();
+			if(
+				!picktarget
+				||picktarget.health<1
+			){
 				setstatelabel("spawn");
 			}else{
 				setorigin(picktarget.pos+(0,0,picktarget.height-24),true);
