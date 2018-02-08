@@ -663,8 +663,10 @@ class ZM66Random:IdleDummy{
 			let zzz=ZM66AssaultRifle(spawn("ZM66AssaultRifle",pos));
 			if(!zzz)return;
 			zzz.special=special;
-			if(!random(0,4))zzz.weaponstatus[0]|=ZM66F_NOLAUNCHER;
-			else if(!random(0,4))zzz.weaponstatus[0]|=ZM66F_NOFIRESELECT;
+			if(!random(0,2)){
+				zzz.weaponstatus[0]|=ZM66F_NOLAUNCHER;
+				if(!random(0,3))zzz.weaponstatus[0]|=ZM66F_NOFIRESELECT;
+			}
 			if(zzz.weaponstatus[0]&ZM66F_NOLAUNCHER){
 				spawn("ZM66RifleMags",pos+(7,0,0));
 				spawn("ZM66RifleMags",pos+(5,0,0));
