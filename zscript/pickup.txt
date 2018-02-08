@@ -117,7 +117,7 @@ class HDPickup:CustomInventory{
 	override inventory createtossable(int amount){
 		actor onr=owner;
 		inventory iii=super.createtossable(amount);
-		iii.translation=onr.translation;
+		if(iii)iii.translation=onr.translation;
 		return iii;
 	}
 	override void doeffect(){

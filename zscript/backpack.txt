@@ -13,7 +13,7 @@ class HDBP:HDWeapon{
 	override inventory createtossable(int amount){
 		target=owner;
 		let ct=hdbp(super.createtossable(amount));
-		if(target&&ct.getbulk()){
+		if(ct&&target&&ct.getbulk()){
 			ct.target=target;
 			ct.translation=target.translation;
 		}
