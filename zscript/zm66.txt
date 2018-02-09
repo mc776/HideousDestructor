@@ -460,6 +460,7 @@ class ZM66AssaultRifle:HDWeapon{
 
 	altreload:
 		RIFG A 0{
+			invoker.weaponstatus[ZM66S_FLAGS]&=~ZM66F_UNLOADONLY;
 			if(
 				!(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_NOLAUNCHER)
 				&&!(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_GRENADELOADED)
@@ -476,12 +477,13 @@ class ZM66AssaultRifle:HDWeapon{
 			A_MuzzleClimb(-0.3,-0.3);
 		}
 		RIFG B 2 offset(8,48){
-			A_PlaySound("weapons/grenopen",CHAN_WEAPON);
+			A_PlaySound("weapons/grenopen",5);
 			A_MuzzleClimb(-0.3,-0.3);
+			if(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_GRENADELOADED)A_PlaySound("weapons/rockreload",CHAN_WEAPON);
 		}
-		RIFG B 3 offset(10,49){
+		RIFG B 10 offset(10,49){
 			if(!(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_GRENADELOADED)){
-				A_SetTics(0);
+				if(!(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_UNLOADONLY))A_SetTics(3);
 				return;
 			}
 			invoker.weaponstatus[ZM66S_FLAGS]&=~ZM66F_GRENADELOADED;
@@ -494,8 +496,7 @@ class ZM66AssaultRifle:HDWeapon{
 					SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
 				);
 			}else{
-				A_SetTics(10);
-				A_PlaySound("weapons/pocket",CHAN_WEAPON);
+				A_PlaySound("weapons/pocket",5);
 				A_GiveInventory("HDRocketAmmo",1);
 				A_MuzzleClimb(frandom(0.8,-0.2),frandom(0.4,-0.2));
 			}
