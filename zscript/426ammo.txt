@@ -14,7 +14,7 @@ class FourMilAmmo:Ammo{
 		super.postbeginplay();
 		if(owner)return;
 		if(amount==1)return;
-		while(amount>1){  
+		while(amount>1){
 			int ld=min(amount,random(1,49));
 			actor a=spawn("HD4mmMag",pos);
 			a.vel+=vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
@@ -72,21 +72,22 @@ class HD4mmMag:HDUPK replaces ZM66RifleMags{
 		}
 	give:
 		---- A 0{
-			if(stamina==51){  
+			if(stamina==51){
 				if(A_JumpIfInTargetInventory("ZM66RifleMags",0,"null")){
-					setstatelabel("spawn");return;
+					return;
 				}else{
 					target.A_GiveInventory("ZM66RifleMags",1);
 					destroy();return;
 				}
 			}else{
-				int al=target.countinv("FourMilAmmo");
-				target.A_GiveInventory("FourMilAmmo",stamina);
-				stamina-=target.countinv("FourMilAmmo")-al;
-				if(!stamina){destroy();return;}
-				else setstatelabel("spawn");
+				int givemax=min(stamina,
+					hdmath.maxinv(target,"FourMilAmmo")-target.countinv("FourMilAmmo")
+				);
+				target.A_GiveInventory("FourMilAmmo",givemax);
+				stamina-=givemax;
+				if(stamina<1){destroy();return;}
 			}
-		}stop;
+		}goto spawn2;
 	}
 }
 
