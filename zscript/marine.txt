@@ -373,7 +373,7 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 		#### A 0 A_FaceTarget(turnamount,turnamount);
 		#### E 1 A_SetTics(random(0,80/turnamount));
 		#### E 0{
-			spread=turnamount*0.02+0.1*timesdied;
+			spread=turnamount*0.02+min(timesdied,15);
 			A_SetTics(10/spread);
 		}goto shoot;
 
