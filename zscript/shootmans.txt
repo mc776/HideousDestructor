@@ -32,43 +32,7 @@ class NoBlockWepDrop:ActionItem{
 			bool hasdropped=countinv("HasDroppedGun");
 			A_GiveInventory("HasDroppedGun");
 
-			if(self is "ZombieSMGStormtrooper"){
-				if(!hasdropped){
-					let wp=dropwep("HDSMG");if(!wp)return;
-					wp.weaponstatus[SMGS_AUTO]=2;
-					wp.weaponstatus[SMGS_MAG]=random(0,30);
-					wp.weaponstatus[SMGS_CHAMBER]=2;
-					A_DropItem("HDFragGrenadeAmmo",0,8);
-					A_DropItem("HDFragGrenadeAmmo",0,4);
-					A_DropItem("HDSMGMag");
-				}else{
-					A_DropItem("HDSMGMag",random(1,2));
-					A_DropItem("HDFragGrenadeAmmo",0,4);
-					A_DropItem("HDFragGrenadeAmmo",0,4);
-				}
-			}else if(self is "ZombieSemiStormtrooper"){
-				if(!hasdropped){
-					let wp=dropwep("ZM66AssaultRifle");if(!wp)return;
-					wp.weaponstatus[0]=
-						ZM66F_NOFIRESELECT|ZM66F_NOLAUNCHER|(random(0,1)*ZM66F_CHAMBER);
-					wp.weaponstatus[ZM66S_MAG]=random(0,50);
-					if(wp.weaponstatus[ZM66S_MAG]==50)wp.weaponstatus[ZM66S_MAG]=51;
-					wp.weaponstatus[ZM66S_ZOOM]=random(0,27);
-				}else{
-					A_DropItem("ZM66RifleMags",0,96);
-				}
-			}else if(self is "ZombieStormtrooper"){
-				if(!hasdropped){
-					let wp=dropwep("ZM66AssaultRifle");if(!wp)return;
-					wp.weaponstatus[0]=
-						ZM66F_NOLAUNCHER|(random(0,1)*ZM66F_CHAMBER);
-					wp.weaponstatus[ZM66S_MAG]=random(0,50);
-					wp.weaponstatus[ZM66S_AUTO]=random(0,1);
-					wp.weaponstatus[ZM66S_ZOOM]=random(0,27);
-				}else{
-					A_DropItem("ZM66RifleMags",0,96);
-				}
-			}else if(self is "DragonGuard"){
+			if(self is "DragonGuard"){
 				if(!hasdropped){
 					//see the actor itself for the weapon drop
 					A_DropItem("HDCellPacks",16);
