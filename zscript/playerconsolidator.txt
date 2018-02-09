@@ -16,10 +16,23 @@ extend class HDPlayerPawn{
 					&&(
 						bfug.weaponstatus[BFGS_BATTERY]>=0  
 						||countinv("HDCellPackEmpty")
+						||countinv("HDCellPacks")
+						||countinv("HDCellAmmo")
+						||(
+							bp&&(
+								bp.itemamount[bp.mcellindex]>0
+								||bp.itemamount[bp.ecellindex]>0
+							)
+						)
+					)
+				)||(
+					bp&&(
+						bp.itemamount[bp.fcellindex]>0
+						||bp.itemamount[bp.mcellindex]>BFGC_MINCHARGE
 					)
 				)
 				||countinv("HDCellPacks")
-				||countinv("HDCellAmmo")>BFGC_MINCHARGE  
+				||countinv("HDCellAmmo")>BFGC_MINCHARGE
 			)
 		){
 			hdweapon(findinventory("BFG9k")).initializewepstats(true);
