@@ -6,7 +6,22 @@ extend class HDPlayerPawn{
 		let bp=HDBP(findinventory("HDBP"));
 
 		//use the BFG to charge everything
-		if(countinv("BFG9k")){
+		let bfug=hdweapon(findinventory("BFG9k"));
+		if(
+			bfug
+			&&(
+				bfug.weaponstatus[BFGS_BATTERY]>BFGC_MINCHARGE  
+				||(
+					bfug.weaponstatus[BFGS_CHARGE]>BFGC_MINCHARGE  
+					&&(
+						bfug.weaponstatus[BFGS_BATTERY]>=0  
+						||countinv("HDCellPackEmpty")
+					)
+				)
+				||countinv("HDCellPacks")
+				||countinv("HDCellAmmo")>BFGC_MINCHARGE  
+			)
+		){
 			hdweapon(findinventory("BFG9k")).initializewepstats(true);
 			//convert empty to full
 			while(
