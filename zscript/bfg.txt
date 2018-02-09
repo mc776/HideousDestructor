@@ -98,8 +98,8 @@ class BFG9K:HDWeapon replaces BFG9000{
 				&& invoker.weaponstatus[BFGS_BATTERY]>=20
 			)return resolvestate("chargeend");
 			else if(
-				invoker.weaponstatus[BFGS_CHARGE]>6
-				||invoker.weaponstatus[BFGS_BATTERY]>6
+				invoker.weaponstatus[BFGS_CHARGE]>BFGC_MINCHARGE
+				||invoker.weaponstatus[BFGS_BATTERY]>BFGC_MINCHARGE
 			)return resolvestate("charge");
 			return resolvestate("nope");
 		}
@@ -234,8 +234,11 @@ class BFG9K:HDWeapon replaces BFG9000{
 					!countinv("HDCellAmmo")
 					&&!countinv("HDCellPacks")
 				)
-			)setweaponstate("reloadempty");
-			else invoker.weaponstatus[BFGS_LOADTYPE]=1;
+			){
+				if(invoker.weaponstatus[BFGS_CHARGE]>BFGC_MINCHARGE)
+					setweaponstate("reloadempty");
+					else setweaponstate("nope");
+			}else invoker.weaponstatus[BFGS_LOADTYPE]=1;
 		}goto reload1;
 	altreload:
 	reloadempty:
@@ -388,6 +391,8 @@ enum bfg9kstatus{
 	BFGS_TIMER=3,
 	BFGS_LOADTYPE=4,
 	BFGS_CRITTIMER=5,
+
+	BFGC_MINCHARGE=6,
 };
 
 class BFGSpark:HDActor{
