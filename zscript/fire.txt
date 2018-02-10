@@ -22,13 +22,10 @@ class HDFireEnder:InventoryFlag{
 }
 class HDFireDouse:InventoryFlag{
 	default{
-		inventory.maxamount 70;
+		inventory.maxamount 20;
 	}
-	override void Tick(){
-		super.Tick();
-		if(amount>0){
-			amount--;
-		}
+	override void DoEffect(){
+		if(amount>0)amount--;
 	}
 }
 

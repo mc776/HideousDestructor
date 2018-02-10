@@ -138,26 +138,35 @@ class TMChecker:HDActor{
 
 
 // Blocker to prevent shotguns from overpenetrating multiple targets
-// A_SpawnItemEx("tempshield",flags:SXF_SETMASTER|SXF_NOCHECKPOSITION);
-class tempshield:actor{
+// tempshield.spawnshield();
+class tempshield:HDActor{
 	default{
 		-solid +shootable +nodamage
-		mass 10000;
 		radius 16;height 50;
 		stamina 16;
 	}
-	override void tick(){
-		super.tick();
-		if(master){
-			setorigin(master.pos,false);
-		}
-		stamina--;
-		if(stamina<1)destroy();
+	static actor spawnshield(actor caller,bool deathheight=false,int shieldlength=16){
+		actor sss=caller.spawn("tempshield",caller.pos);
+		if(!sss)return null;
+		sss.master=caller;
+		sss.A_SetSize(
+			caller.radius,
+			deathheight?getdefaultbytype(caller.getclass()).deathheight
+			:getdefaultbytype(caller.getclass()).height
+		);
+//		sss.bloodtype=caller.bloodtype;
+//		sss.bloodcolor=caller.bloodcolor;
+		sss.bnoblood=caller.bnoblood;
+		sss.stamina=shieldlength;
+		return sss;
 	}
 	states{
 	spawn:
-		TNT1 A 16;
-		stop;
+		TNT1 A 1 nodelay{
+			if(!master||stamina<1)destroy();
+			setorigin(master.pos,false);
+			stamina--;
+		}wait;
 	}
 }
 class tempshield2:tempshield{

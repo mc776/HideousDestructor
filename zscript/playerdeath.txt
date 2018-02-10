@@ -201,10 +201,7 @@ extend class HDHandlers{
 class HDPlayerCorpse:HDActor{
 	default{
 		monster; -countkill +solid +friendly
-		height 52;radius 12;health 100;mass 100;
-	}
-	override void Die(actor source,actor inflictor,int dmgflags=0){
-		super.die(source,inflictor,dmgflags);
+		height 52;radius 12;health 100;mass 160;
 	}
 	states{
 	spawn:
@@ -249,21 +246,17 @@ class HDPlayerCorpse:HDActor{
 		stop;
 	}
 	override void Tick(){
-		if(master){ //keep the corpse just behind the player's view
-			let p=PlayerPawn(master);
-			if(p && p.player && p.player.mo==p){
-				if(p.getplayerinput(MODINPUT_BUTTONS)&BT_USE){
-					master=null;
-				}else{
-					setorigin(master.pos+(-cos(master.angle),-sin(master.angle),0),true);
-				}
-			}
-		}
+		if(
+			hdplayerpawn(master)
+			&&hdplayerpawn(master).playercorpse==self
+		){
+			//keep the corpse just behind the player's view
+			setorigin(
+				(master.pos.xy-angletovector(master.angle),master.pos.z),true
+			);
+		}else master=null;
 		super.Tick();
 	}
 }
-
-
-
 
 

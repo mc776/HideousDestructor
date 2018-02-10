@@ -53,8 +53,7 @@ extend class HDHandlers{
 		let hde=HDPlayerPawn(players[e.playernumber].mo);
 		if(!hde)return;
 
-		HDF.TransferFire(hde,hde.playercorpse);
-
+		//replenish ammo to mitigate spawncamping
 		hde.A_GiveInventory("HDLoaded");
 
 		if(wiped[e.playernumber]){
