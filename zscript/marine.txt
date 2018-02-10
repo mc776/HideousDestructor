@@ -922,7 +922,7 @@ class ReallyDeadRiflemanCrouched:ReallyDeadRifleman replaces GibbedMarineExtra{
 
 
 // ------------------------------------------------------------
-// Chech yourself before you Erech yourself
+// Raging Erech shun.
 // ------------------------------------------------------------
 class GhostMarine:HDActor{
 	bool A_GhostShot(actor victim){
@@ -1166,6 +1166,11 @@ class SquadSummoner:HDPickup{
 }
 
 
+
+
+// ------------------------------------------------------------
+// A replacement.
+// ------------------------------------------------------------
 class BotBot:HDMarine{
 	default{
 		+noblockmonst
@@ -1173,7 +1178,6 @@ class BotBot:HDMarine{
 		species "Player";
 		obituary "%o died.";
 	}
-	actor replaceplayer;
 	override int damagemobj(
 		actor inflictor,actor source,int damage,
 		name mod,int flags=0,double angle=0
@@ -1181,7 +1185,13 @@ class BotBot:HDMarine{
 		//abort if zero team damage, otherwise save factor for wounds and burns
 		if(
 			source!=self
-			&&isteammate(source)
+			&&(
+				isteammate(source)
+				||(
+					!deathmatch&&
+					(source.player||botbot(source))
+				)
+			)
 		){
 			if(!teamdamage)return 0;
 			else damage*=teamdamage;
