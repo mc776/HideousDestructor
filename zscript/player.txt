@@ -418,7 +418,7 @@ class HDPlayerPawn:PlayerPawn{
 		else nocrosshair--;
 
 		//check use key
-		if(input & BT_USE){
+		if(input&BT_USE){
 			bpickup=true;
 			if(!(oldinput & BT_USE)){
 				hasgrabbed=false;
@@ -435,7 +435,13 @@ class HDPlayerPawn:PlayerPawn{
 				a.target=self;
 				a.vel=ap*4;
 			}
-			if(!corpsekicktimer && height>45 && beatmax>10 && zat==pos.z){
+			if(
+				!corpsekicktimer
+				&&height>45
+				&&beatmax>10
+				&&zat==pos.z
+			){
+				bool kicked=false;
 				actor k=spawn("fastprojectile",pos);k.angle=angle;
 				k.A_SetSize(4,12);//k.bfloorhugger=true;
 				k.A_ChangeVelocity(5,0,0,CVF_RELATIVE);
@@ -448,10 +454,13 @@ class HDPlayerPawn:PlayerPawn{
 							||k.blockingmobj is "HDFragGrenade"
 							||k.blockingmobj is "HDFragGrenadeRoller"
 						){
-							int forc=80;if(zerk>0)forc*=3;
-							corpsekicktimer=20+unstablewoundcount*0.5;
-							k.blockingmobj.vel+=(k.vel+(0,0,4))*forc/k.blockingmobj.mass;
-							k.blockingmobj.A_PlaySound("misc/punch");
+							if(!(oldinput&BT_USE)){
+								int forc=80;if(zerk>0)forc*=3;
+								corpsekicktimer=20+unstablewoundcount*0.5;
+								k.blockingmobj.vel+=(k.vel+(0,0,4))*forc/k.blockingmobj.mass;
+								k.blockingmobj.A_PlaySound("misc/punch");
+								kicked=true;
+							}
 						}else if(
 							k.blockingmobj.bismonster
 							||(
@@ -466,10 +475,12 @@ class HDPlayerPawn:PlayerPawn{
 							corpsekicktimer=20+unstablewoundcount*0.6;
 							vel-=(k.vel+(0,0,4))*forc;
 							k.blockingmobj.A_PlaySound("misc/punch");
+							kicked=true;
 						}
-						fatigue++;bloodpressure++;
-						stunned+=2;
 					}
+				}
+				if(kicked){
+					fatigue++;bloodpressure++;stunned+=2;
 				}
 			}
 		}else{

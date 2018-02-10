@@ -163,7 +163,7 @@ class tempshield:HDActor{
 	states{
 	spawn:
 		TNT1 A 1 nodelay{
-			if(!master||stamina<1)destroy();
+			if(!master||stamina<1){destroy();return;}
 			setorigin(master.pos,false);
 			stamina--;
 		}wait;

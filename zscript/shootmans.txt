@@ -50,58 +50,12 @@ class NoBlockWepDrop:ActionItem{
 				}else{
 					A_DropItem("HDSMGMag",0,96);
 				}
-			}else if(self is "InfiltratorBase"){
-				if(!hasdropped){
-					let wp=dropwep("HDSMG");if(!wp)return;
-					wp.weaponstatus[SMGS_AUTO]=2;
-					wp.weaponstatus[SMGS_MAG]=random(0,30);
-					wp.weaponstatus[SMGS_CHAMBER]=2;
-				}else{
-					A_DropItem("HDSMGMag",0,96);
-				}
-			}else if(self is "EnforcerBase"){
-				if(!hasdropped){
-					let wp=dropwep("Hunter");if(!wp)return;
-					wp.weaponstatus[0]=random(0,1)*HUNTF_AUTO;
-					wp.weaponstatus[HUNTS_CHAMBER]=random(0,2);
-					wp.weaponstatus[HUNTS_TUBE]=random(0,7);
-					wp.weaponstatus[HUNTS_SIDESADDLE]=random(0,12);
-				}else{
-					A_DropItem("ShellPickup",0,200);
-				}
-			}else if(self is "RocketeerBase"){
-				if(!hasdropped){
-					A_DropItem("HDRL");
-				}else{
-					A_DropItem("HDRocketAmmo",0,96);
-					A_DropItem("HDRocketAmmo",0,96);
-					A_DropItem("HDRocketAmmo",0,96);
-					A_DropItem("HDRocketAmmo",0,96);
-				}
-			}else if(self is "RiflemanBase"){
-				if(!hasdropped){
-					let wp=dropwep("ZM66AssaultRifle");if(!wp)return;
-					wp.weaponstatus[0]=(random(0,1)*ZM66F_CHAMBER);
-					wp.weaponstatus[ZM66S_MAG]=random(0,50);
-					wp.weaponstatus[ZM66S_AUTO]=random(0,2);
-					wp.weaponstatus[ZM66S_ZOOM]=random(0,27);
-				}else{
-					A_DropItem("ZM66RifleMags",96);
-				}
 			}
 
 			//first-time drops common to all who use this
 			if(!hasdropped){
 				//everybody can have a pistol!
 				A_DropItem("HDPistol",0,16);
-				
-				//marines drop armour!
-				if(self is "RiflemanBase"){
-					A_GiveInventory("GreenArmour",random(1,HDCONST_GREENARMOUR));
-					if(countinv("GreenArmour")>60){  
-						A_GiveInventory("HDDropArmour");
-					}
-				}
 			}
 		}fail;
 	}

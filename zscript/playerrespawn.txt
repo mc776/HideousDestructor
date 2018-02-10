@@ -4,34 +4,12 @@
 extend class HDPlayerPawn{
 	void ReplaceBot(){
 		actor spot;int garbage;
-		if(!player.getgender()){
-			[garbage,spot]=A_SpawnItemEx("BotBot",flags:SXF_NOCHECKPOSITION|SXF_TRANSFERTRANSLATION);
-		}else{
-			[garbage,spot]=A_SpawnItemEx("BotBotF",flags:SXF_NOCHECKPOSITION|SXF_TRANSFERTRANSLATION);
-		}
-		if(spot){
-			spot.master=self;
-		}
+		[garbage,spot]=A_SpawnItemEx("BotBot",flags:
+			SXF_NOCHECKPOSITION|SXF_TRANSFERTRANSLATION|SXF_SETMASTER
+		);
 		setz(pos.z+50);
 		A_Log(string.format("Bot %s replaced with rifleman.",player.getusername()));
 		A_Morph("HDBotSpectator",int.MAX,MRF_FULLHEALTH,"HDBloodTrailFloor","TeleFog");
-	}
-	states{
-	death.disappear:
-		TNT1 A 0{
-			A_NoBlocking();
-		}
-		TNT1 A 10 A_CheckPlayerDone();
-		wait;
-	}
-}
-class BotKill:ActionItem{
-	states{
-	pickup:
-		TNT1 A 0{
-			bshootable=1;
-			A_Die("disappear");
-		}fail;
 	}
 }
 //hack given by ACS map restart
