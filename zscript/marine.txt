@@ -381,14 +381,18 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 		}goto shoot;
 
 	shoot:
-		#### E 4{	
-			if(!target)return;
+		#### E 1{
 			if(checksight(target)&&target.health<1){
 				target=null;
 				setstatelabel("noshot");
 				return;
 			}
 			A_FaceTarget(0,0); //can't lead without this
+			double dist=distance3d(target);
+			A_SetTics(clamp(dist*0.002,0,30));
+		}
+		#### E 4{	
+			if(!target)return;
 			double dist=distance3d(target);
 			if(
 				!hdmobai.tryshoot(self,
