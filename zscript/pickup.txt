@@ -128,7 +128,10 @@ class HDPickup:CustomInventory{
 		if(!other)return;
 		name gcn=getclassname();
 		int maxtake=HDMath.MaxInv(other,gcn)-other.countinv(gcn);
-		if(maxtake<1){
+		if(balwayspickup){
+			inventory.touch(other);
+			return;
+		}else if(maxtake<1){
 			setstatelabel("spawn2");return;
 		}else if(maxtake<amount){
 			amount-=maxtake;

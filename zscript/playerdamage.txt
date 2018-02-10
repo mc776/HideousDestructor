@@ -89,7 +89,7 @@ extend class HDPlayerPawn{
 			toburn=0;
 			damage/=3;
 			if(damage>health)damage=health-1;
-			if(mod!="bleedout"&&!random(0,2))A_TakeInventory("SpiritualArmour",1);
+			if(mod!="bleedout"&&damage>random(7,14))A_TakeInventory("SpiritualArmour",1);
 			mod="thermal";
 		}
 
