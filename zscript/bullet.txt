@@ -528,11 +528,6 @@ class DecoBulleter00f:DecoBulleter00{
 		accuracy 0;
 	}
 }
-class DecoBulleterGhost:DecoBulleter{
-	default{
-		missiletype "GhostBullet";
-	}
-}
 
 
 class HDBullet426:HDBullet{
@@ -679,17 +674,6 @@ class HDBulletFrag:HDBullet{
 		A_SpawnItemEx("FragPuff",flags:
 			SXF_NOCHECKPOSITION
 		);
-	}
-}
-class GhostBullet:HDBullet426{
-	override void BulletImpact(){
-		bmissile=false;
-		spawn("FragPuff",pos,ALLOW_REPLACE); //no debris spawned
-		if(a.tracer && a.tracer.bshootable && !a.tracer.bkilled){
-			a.tracer.damagemobj(self,target,-1,"GhostSquadAttack");
-			a.tracer.damagemobj(self,target,1,"GhostSquadAttack");
-		}
-		destroy();return;
 	}
 }
 
