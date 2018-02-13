@@ -3,6 +3,7 @@
 // ------------------------------------------------------------
 class DERPBot:HDUPK{
 	int cmd;
+	int ammo;
 	default{
 		+ismonster +noblockmonst +shootable
 		+friendly +nofear +dontgib +noblood
@@ -47,57 +48,54 @@ class DERPBot:HDUPK{
 	void UpdateCmd(){
 		if(master)cmd=master.countinv("DERPmode");
 	}
-	states{
-	spawn:
-		DERP A 0 A_Stop();
-		DERP A 0{
-			if(!countinv("Clip")){
-				A_GiveInventory("Clip",1);
-				if(!(master is "PlayerPawn")){
-					A_GiveInventory("DERPAmmo",15);
-					cmd=random(0,3);
-				}
-			}
-			setstatelabel("spawn2");
+	override void postbeginplay(){
+		super.postbeginplay();
+		if(!playerpawn(master)){
+			ammo=15;
+			cmd=random(0,3);
 		}
+	}
+	states{
 	give:
 		DERP A 0{
 			if(cmd!=1){
 				A_PlaySound("weapons/rifleclick2",CHAN_AUTO);
 				cmd=1;
 			}
-			if(countinv("DERPAmmo")&&(
+			bool canpickup=(
+				(health>0&&!target.countinv("DERPUsable"))
+				||(health<1&&!target.countinv("DERPDEAD"))
+			);
+			if(ammo>0&&(
 				(
-					(target.countinv("DERPUsable")&&health>0)
-					||(target.countinv("DERPDEAD")&&health<=0)
+					!canpickup
 				)||(
-					countinv("DERPAmmo")==15
+					ammo>=15
 					&&target.A_JumpIfInventory("HDPistolMag",0,"null")
 				)||(
 					HDMath.MaxInv(target,"HDPistolAmmo")
 					-target.countinv("HDPistolAmmo")
-					<countinv("DERPAmmo")
+					<ammo
 				)
 			)){
 				target.A_PlaySound("weapons/rifleclick",CHAN_AUTO);
 				actor mmm=spawn("HD9mPMag",pos);
 				if(mmm){
 					mmm.A_ChangeVelocity(1,random(-1,1),2,CVF_RELATIVE);
-					mmm.stamina=countinv("DERPAmmo");
-					A_TakeInventory("DERPAmmo");
+					mmm.stamina=ammo;
+					ammo=-1;
 				}
-			}else if(
-				(!target.countinv("DERPUsable")&&health>0)
-				||(!target.countinv("DERPDEAD")&&health<=0)
-			){
+			}else if(canpickup){
 				if(health>0)target.A_GiveInventory("DERPUsable");
 				else target.A_GiveInventory("DERPDEAD");
 
-				if(countinv("DERPAmmo")==15)target.A_GiveInventory("HDPistolMag",1);
-				target.A_GiveInventory("HDPistolAmmo",countinv("DERPAmmo"));
+				if(ammo>=15)target.A_GiveInventory("HDPistolMag",1);
+				else target.A_GiveInventory("HDPistolAmmo",ammo);
 				destroy();return;
 			}
 		}goto spawn;
+	spawn:
+		DERP A 0 A_Stop();
 	spawn2:
 		DERP A 10 A_ClearTarget();
 		goto patrol;
@@ -119,10 +117,10 @@ class DERPBot:HDUPK{
 		}loop;
 	see:
 		DERP A 0{
-			if(getzat(0)==pos.z) bnodropoff=false;
+			if(getzat(0)==pos.z)bnodropoff=false;
 			else bnodropoff=true;
 
-			if(!countinv("DERPAmmo")) setstatelabel("noammo");
+			if(ammo<1)setstatelabel("noammo");
 		}
 		DERP AAAAAAAA 3{
 			UpdateCmd();
@@ -175,7 +173,7 @@ class DERPBot:HDUPK{
 		DERP A 0 DerpAlert("\cjEngaging hostile.");
 	fire:
 		DERP A 0 A_JumpIfHealthLower(1,"dead");
-		DERP A 0 A_JumpIfInventory("DERPAmmo",1,"noreallyfire");
+		DERP A 0 A_JumpIf(ammo>0,"noreallyfire");
 		goto noammo;
 	noreallyfire:
 		DERP A 0 A_FaceTarget(0.5,0.5,0,0,FAF_TOP,-4);
@@ -184,7 +182,7 @@ class DERPBot:HDUPK{
 		DERP A 2{
 			if(getzat(0)<pos.z) A_ChangeVelocity(cos(pitch)*-2,0,sin(pitch)*2,CVF_RELATIVE);
 			else A_ChangeVelocity(cos(pitch)*-0.4,0,sin(pitch)*0.4,CVF_RELATIVE);
-			A_TakeInventory("DERPAmmo",1);
+			ammo--;
 		}
 		DERP A 1{
 			A_FaceTarget(10,10,0,0,FAF_TOP,-4);
@@ -241,8 +239,6 @@ class DERPUsable:HDPickup{
 		translation 0;
 	}
 	override void detachfromowner(){
-		A_SetInventory("DERPAmmo",owner.countinv("DERPAmmo"));
-		owner.A_TakeInventory("DERPAmmo");
 		translation=owner.translation;
 		super.detachfromowner();
 	}
@@ -257,15 +253,30 @@ class DERPUsable:HDPickup{
 			A_GiveInventory("DERPtermFOLLOW");
 		}stop;
 	use:
-		TNT1 A 0 A_JumpIfInventory("HDPistolMag",1,"reallyuse");
+		TNT1 A 0 A_JumpIf(
+			countinv("HDPistolAmmo")
+			||countinv("HDPistolMag")
+			,"reallyuse"
+		);
 		TNT1 A 0 A_Print("\cd[DERP]\cj  Please insert a loaded 9mm magazine before deploying.");
 		fail;
 	reallyuse:
 		TNT1 A 0{
 			actor a;int b;
-			[b,a]=A_SpawnItemEx("DERPBot",12,0,height-12, vel.x+cos(angle)*cos(pitch)*6,vel.y+sin(angle)*cos(pitch)*6,vel.z-sin(pitch)*6, 0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_ABSOLUTEMOMENTUM|SXF_SETMASTER|SXF_TRANSFERTRANSLATION|SXF_SETTARGET);
-			a.A_GiveInventory("DERPAmmo",15);
-			A_TakeInventory("HDPistolMag",1,TIF_NOTAKEINFINITE);
+			[b,a]=A_SpawnItemEx("DERPBot",12,0,height-12,
+				cos(pitch)*6,0,-sin(pitch)*6,0,
+				SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|
+				SXF_SETMASTER|SXF_TRANSFERTRANSLATION|SXF_SETTARGET
+			);
+			a.vel+=vel;
+			if(countinv("HDPistolMag")){
+				DERPBot(a).ammo=15;
+				A_TakeInventory("HDPistolMag",1,TIF_NOTAKEINFINITE);
+			}else{
+				int rndp=min(random(1,14),countinv("HDPistolAmmo"));
+				DERPBot(a).ammo=rndp;
+				A_TakeInventory("HDPistolAmmo",rndp,TIF_NOTAKEINFINITE);
+			}
 		}stop;
 	spawn:
 		DERP A -1;
@@ -274,13 +285,7 @@ class DERPUsable:HDPickup{
 
 
 
-//ammo and status
-class DERPAmmo:HDAmmo{
-	default{
-		+inventory.untossable
-		inventory.maxamount 15;
-	}
-}
+//status
 class DERPmode:InventoryFlag{
 	default{
 		inventory.maxamount 3;
