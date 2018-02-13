@@ -535,6 +535,14 @@ extend class HDHandlers{
 			p.levelreset();
 			setplayerlives(e.playernumber);
 			if(deathmatch)p.spawn("TeleFog",p.pos);
+
+			if(
+				hd_nobots
+				&&players[e.PlayerNumber].bot
+				&&!p.countinv("WipedOut")
+			){
+				p.ReplaceBot();
+			}
 		}
 	}
 }

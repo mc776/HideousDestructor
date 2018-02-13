@@ -1229,7 +1229,10 @@ class BotBot:HDMarine{
 		actor rpp=players[masterplayer].mo;
 		if(rpp)rpp.setorigin(pos,false);
 
-		if(target)return;
+		if(!bfriendly||timesdied>0||target){
+			unseen=0;
+			return;
+		}
 
 		warptimer++;
 		if(!(warptimer%35)){
@@ -1246,6 +1249,9 @@ class BotBot:HDMarine{
 			}
 			if(!seen)unseen++;
 			if(unseen==HDMBC_WARPLIMIT){
+				gunloaded=gunmax;
+				glloaded=true;
+				pistolloaded=15;
 				for(int i=0;i<MAXPLAYERS;i++){
 					if(
 						playeringame[i]&&!players[i].bot&&players[i].mo
