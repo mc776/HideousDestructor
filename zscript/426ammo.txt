@@ -72,6 +72,8 @@ class HD4mmMag:HDUPK replaces ZM66RifleMags{
 		}
 	give:
 		---- A 0{
+			target=picktarget;
+			if(!target)return;
 			if(stamina==51){
 				if(A_JumpIfInTargetInventory("ZM66RifleMags",0,"null")){
 					return;
@@ -83,7 +85,9 @@ class HD4mmMag:HDUPK replaces ZM66RifleMags{
 				int givemax=min(stamina,
 					hdmath.maxinv(target,"FourMilAmmo")-target.countinv("FourMilAmmo")
 				);
-				target.A_GiveInventory("FourMilAmmo",givemax);
+				if(target.findinventory("FourMilAmmo")){
+					target.findinventory("FourMilAmmo").amount+=givemax;
+				}else target.A_GiveInventory("FourMilAmmo",givemax);
 				stamina-=givemax;
 				if(stamina<1){destroy();return;}
 			}
