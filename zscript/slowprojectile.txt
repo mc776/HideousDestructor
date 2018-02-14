@@ -29,7 +29,15 @@ class SlowProjectile:HDBullet{
 	override void Tick(){
 		if(globalfreeze||level.Frozen) return;
 		if(!bmissile){
-			nexttic();
+			//nexttic
+			if(CheckNoDelay()){
+				if(tics>0)tics--;  
+				while(!tics){
+					if(!SetState(CurState.NextState)){
+						return;
+					}
+				}
+			}
 			return;
 		}
 
@@ -124,9 +132,16 @@ class SlowProjectile:HDBullet{
 		vel.z-=getgravity();
 
 		//thus ends the "handle movement" part
-		if(!CheckNoDelay())return;
 
-		nexttic();
+		//nexttic
+		if(CheckNoDelay()){
+			if(tics>0)tics--;  
+			while(!tics){
+				if(!SetState(CurState.NextState)){
+					return;
+				}
+			}
+		}
 	}
 	virtual void ExplodeSlowMissile(line blockingline,actor blockingobject){
 		if(speed>50)painsound="misc/punch";else painsound="misc/fragknock";

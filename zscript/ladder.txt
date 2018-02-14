@@ -6,7 +6,7 @@
 //no it doesn't swing, math is hard :(
 class hdladdersection:idledummy{
 	default{
-		+wallsprite
+		+wallsprite +nointeraction
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -15,31 +15,27 @@ class hdladdersection:idledummy{
 			destroy();return;
 		}
 	}
-	override void tick(){
-		if(!master||!target){
-			destroy();return;
-		}
-		setz(max(target.floorz,master.pos.z-LADDER_SECTIONLENGTH*health));
-		nexttic();
-	}
 	states{
 	spawn:
-		LADD B -1;
+		LADD B 1{
+			if(!master||!target){
+				destroy();return;
+			}
+			setz(max(target.floorz,master.pos.z-LADDER_SECTIONLENGTH*health));
+		}wait;
 	}
 }
 class hdladdertop:hdactor{
 	default{
 		+missile //testing
 		+flatsprite
+		+nointeraction
 		height 1;radius 10;
 	}
 	states{
 	spawn:
-		LADD A -1;
-	}
-	override void tick(){
-		setz(floorz+4);
-		nexttic();
+		LADD A 1 nodelay{setz(floorz+4);}
+		wait;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -299,7 +295,15 @@ class hdladderbottom:hdactor{
 				currentuserz
 			),true);
 		}
-		nexttic();
+		//nexttic
+		if(CheckNoDelay()){
+			if(tics>0)tics--;  
+			while(!tics){
+				if(!SetState(CurState.NextState)){
+					return;
+				}
+			}
+		}
 	}
 	states{
 	spawn:

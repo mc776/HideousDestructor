@@ -108,14 +108,6 @@ class GumAndString:IdleDummy{
 		scale 0.1;translation 2;
 		radius 0.5;height 0.5;
 	}
-	override void tick(){
-		if(stuckto){
-			if(stuckfloor)setz(stuckto.centerfloor()-stucktoheight);
-			else setz(stuckto.centerceiling()+stucktoheight);
-		}
-		else if(bceilinghugger)setz(ceilingz-height);
-		nexttic();
-	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		trapisset=false;
@@ -247,6 +239,13 @@ class GumAndString:IdleDummy{
 					startalphaf:0.8
 				);
 			}
+
+			//set height
+			if(stuckto){
+				if(stuckfloor)setz(stuckto.centerfloor()-stucktoheight);
+				else setz(stuckto.centerceiling()+stucktoheight);
+			}
+			else if(bceilinghugger)setz(ceilingz-height);
 		}wait;
 	}
 	void PullPin(double vvx=0,double vvy=0,double vvz=0){

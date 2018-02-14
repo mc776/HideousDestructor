@@ -197,7 +197,15 @@ class PersistentDamager:HDActor{
 		if(master)setorigin(master.pos+relpos,false);
 		trymove(pos.xy,true);
 
-		nexttic();
+		//nexttic
+		if(CheckNoDelay()){
+			if(tics>0)tics--;  
+			while(!tics){
+				if(!SetState(CurState.NextState)){
+					return;
+				}
+			}
+		}
 	}
 	override bool CanCollideWith(actor other,bool passive){
 		if(

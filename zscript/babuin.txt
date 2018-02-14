@@ -101,7 +101,15 @@ class Babuin:HDActor{
 					latchtarget.addz(random(-1,2),true);
 				}
 			}
-			nexttic();return;
+			//nexttic
+			if(CheckNoDelay()){
+				if(tics>0)tics--;  
+				while(!tics){
+					if(!SetState(CurState.NextState)){
+						return;
+					}
+				}
+			}
 		}
 		else super.Tick();
 	}

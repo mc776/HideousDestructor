@@ -63,7 +63,15 @@ class HDDebris:HDActor{
 				setz(floorz);
 				bmovewithsector=true;
 			}
-			nexttic();
+			//nexttic
+			if(CheckNoDelay()){
+				if(tics>0)tics--;  
+				while(!tics){
+					if(!SetState(CurState.NextState)){
+						return;
+					}
+				}
+			}
 		}
 	}
 }
@@ -196,7 +204,15 @@ class HDPuff:HDActor{
 		}
 		if(pos.z>ceilingz)setz(ceilingz-8);
 		else if(pos.z<floorz)setz(floorz);
-		nexttic();
+		//nexttic
+		if(CheckNoDelay()){
+			if(tics>0)tics--;  
+			while(!tics){
+				if(!SetState(CurState.NextState)){
+					return;
+				}
+			}
+		}
 	}
 }
 class HDBulletPuff:HDPuff{
@@ -653,7 +669,15 @@ class FragShard:IdleDummy{
 		trymove(self.pos.xy+vel.xy,true);
 		if(alpha<1)alpha+=0.05;
 		addz(vel.z,true);
-		nexttic();
+		//nexttic
+		if(CheckNoDelay()){
+			if(tics>0)tics--;  
+			while(!tics){
+				if(!SetState(CurState.NextState)){
+					return;
+				}
+			}
+		}
 	}
 	states{
 	spawn:

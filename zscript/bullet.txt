@@ -81,7 +81,15 @@ class HDBullet:HDActor{
 	override void tick(){
 		if(globalfreeze||level.Frozen) return;
 		if(!bmissile){
-			nexttic();
+			//nexttic
+			if(CheckNoDelay()){
+				if(tics>0)tics--;  
+				while(!tics){
+					if(!SetState(CurState.NextState)){
+						return;
+					}
+				}
+			}
 			return;
 		}
 
@@ -90,7 +98,15 @@ class HDBullet:HDActor{
 			setorigin(pos+vel,false);
 			if(ceilingz>pos.z) inthesky=false;
 			if(vel.z>-277)vel.z-=grav;
-			nexttic();
+			//nexttic
+			if(CheckNoDelay()){
+				if(tics>0)tics--;  
+				while(!tics){
+					if(!SetState(CurState.NextState)){
+						return;
+					}
+				}
+			}
 			return;
 		}
 
@@ -179,7 +195,15 @@ class HDBullet:HDActor{
 			frandom(-pushfactor,pushfactor),
 			0,CVF_RELATIVE
 		);
-		nexttic();
+		//nexttic
+		if(CheckNoDelay()){
+			if(tics>0)tics--;  
+			while(!tics){
+				if(!SetState(CurState.NextState)){
+					return;
+				}
+			}
+		}
 	}
 
 	//impact

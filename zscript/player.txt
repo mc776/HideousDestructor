@@ -506,23 +506,25 @@ class HDPlayerPawn:PlayerPawn{
 
 //Camera actor for player's scope
 class ScopeCamera:IdleDummy{
-	override void Tick(){
-		if(!target){
-			destroy();
-			return;
-		}
-		angle=target.angle;
-		pitch=target.pitch;
-		vector2 fwd=angletovector(target.angle,2);
-
-		if(abs(pitch)>89)setxyz(target.pos+(
-			fwd*max(0.5,cos(pitch))*2,
-			sin(-pitch)*6+target.height-4
-		));else setxyz(target.pos+(
-			fwd*cos(pitch)*6,
-			sin(-pitch)*6+target.height-4
-		));
-		nexttic();
+	states{
+	spawn:
+		TNT1 A 1 nodelay{
+			if(!target){
+				destroy();
+				return;
+			}
+			angle=target.angle;
+			pitch=target.pitch;
+			vector2 fwd=angletovector(target.angle,2);
+	
+			if(abs(pitch)>89)setxyz(target.pos+(
+				fwd*max(0.5,cos(pitch))*2,
+				sin(-pitch)*6+target.height-4
+			));else setxyz(target.pos+(
+				fwd*cos(pitch)*6,
+				sin(-pitch)*6+target.height-4
+			));
+		}wait;
 	}
 }
 

@@ -81,13 +81,29 @@ class HDFragGrenadeRoller:HDActor{
 	override void tick(){
 		if(globalfreeze||level.Frozen)return;
 		else if(bnointeraction){
-			nexttic();
+			//nexttic
+			if(CheckNoDelay()){
+				if(tics>0)tics--;  
+				while(!tics){
+					if(!SetState(CurState.NextState)){
+						return;
+					}
+				}
+			}
 			return;
 		}else{
 			fuze++;
 			if(fuze>=140 && !bnointeraction){
 				setstatelabel("destroy");
-				nexttic();
+				//nexttic
+				if(CheckNoDelay()){
+					if(tics>0)tics--;  
+					while(!tics){
+						if(!SetState(CurState.NextState)){
+							return;
+						}
+					}
+				}
 				return;
 			}else super.tick();
 		}
