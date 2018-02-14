@@ -18,7 +18,7 @@ extend class HDPlayerPawn{
 		//reduced turning while supported.
 		if(
 			player.cmd.buttons&BT_USE&&
-			!gunbraced&&
+			gunbraced&&
 			!countinv("IsMoving")
 		){
 			yaw-=iyaw*0.9;ptch+=ipitch*0.9;
