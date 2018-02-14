@@ -18,7 +18,7 @@ extend class HDPlayerPawn{
 		//reduced turning while supported.
 		if(
 			player.cmd.buttons&BT_USE&&
-			countinv("IsSupported")&&
+			!gunbraced&&
 			!countinv("IsMoving")
 		){
 			yaw-=iyaw*0.9;ptch+=ipitch*0.9;
@@ -212,7 +212,7 @@ extend class HDPlayerPawn{
 		){
 			double jitter=0.3;
 			if(fatigue)jitter=clamp(0.01*fatigue,0.3,6.);
-			if(countinv("IsSupported"))jitter=0.05;
+			if(gunbraced)jitter=0.05;
 			else if(health<20)jitter=1;
 			anglechange+=frandom(-jitter,jitter);
 			pitchchange+=frandom(-jitter,jitter);
@@ -388,12 +388,12 @@ extend class HDPlayerPawn{
 		"SLIME1","SLIME2","SLIME3","SLIME4",
 		"SLIME5","SLIME6","SLIME7","SLIME8"
 	};
-	bool standingonliquid;
 	bool CheckLiquidTexture(){
 		int lqlength=lq.size();
-		for(int i=0; i<lqlength; i++){
-			TextureID tx = TexMan.CheckForTexture(lq[i], TexMan.Type_Flat);
-			if (tx && floorpic == tx){
+		let fp=floorpic;
+		for(int i=0;i<lqlength;i++){
+			TextureID tx=TexMan.CheckForTexture(lq[i],TexMan.Type_Flat);
+			if (tx&&fp==tx){
 				return true;
 			}
 		}
@@ -403,7 +403,7 @@ extend class HDPlayerPawn{
 	//Muzzle climb!
 	void A_MuzzleClimb(vector2 mc1,vector2 mc2,vector2 mc3,vector2 mc4){
 		double mult=1.;
-		if(countinv("IsSupported"))mult=0.2;
+		if(gunbraced)mult=0.2;
 		else if(countinv("IsMoving"))mult=1.6;
 		if(stunned)mult*=1.6;
 		if(mult){

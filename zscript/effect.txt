@@ -625,11 +625,10 @@ class HDBloodTrailFloor:Actor{
 	default{
 		+flatsprite +noblockmap
 		+nointeraction +movewithsector
-		height 0;radius 0;alpha 0.6;
+		height 1;radius 1;alpha 0.6;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		angle=random(0,3)*90;
 		frame=random(0,3);
 		scale*=frandom(0.6,1.2);
 		setz(floorz);

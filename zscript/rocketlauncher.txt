@@ -103,8 +103,8 @@ class HDRL:HDWeapon{
 		}
 		MISG A 2{
 			A_ZoomFactor(0.98);
-			if(countinv("IsSupported")){
-				A_TakeInventory("IsSupported");
+			if(gunbraced()){
+				hdplayerpawn(self).gunbraced=false;
 				A_MuzzleClimb(
 					0,0,
 					frandom(1,1.2),-frandom(1,1.5),

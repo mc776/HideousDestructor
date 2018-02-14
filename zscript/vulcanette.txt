@@ -51,7 +51,7 @@ class Vulcanette:HDWeapon{
 
 	droop:
 		TNT1 A 1{
-			if(pitch<5&&(!countinv("IsSupported"))){
+			if(pitch<5&&(!gunbraced())){
 				if(countinv("IsMoving")>2 && countinv("PowerStrength")<1){    
 					A_MuzzleClimb(frandom(-0.1,0.1),
 						frandom(0.1,clamp(1-pitch,0.1,0.3)));
@@ -67,7 +67,7 @@ class Vulcanette:HDWeapon{
 	zoomadjust:
 		VULG A 1 A_WeaponReady(WRF_NOFIRE);
 		VULG A 0{
-			if(!countinv("IsSupported"))A_GiveInventory("WeaponBusy",1);
+			if(!gunbraced())A_GiveInventory("WeaponBusy",1);
 			if(PressingFire()||PressingAltfire())
 				setweaponstate("zoomclick");
 			else if(PressingZoom())

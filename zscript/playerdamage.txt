@@ -62,13 +62,13 @@ extend class HDPlayerPawn{
 		//radsuit
 		if(countinv("PowerIronFeet"))A_GiveInventory("WornRadsuit");
 		wornradsuit radsuit=wornradsuit(findinventory("WornRadsuit"));
-		if(radsuit&&flags|~DMG_NO_ARMOR){
+		if(radsuit&&!(flags&DMG_NO_ARMOR)){
 			radsuit.stamina+=damage;
 			if(mod=="slime"){
-				if(damage>5 && radsuit.stamina>45+random(20,50)){
+				if(damage>10 && radsuit.stamina>45+random(20,50)){
 					A_TakeInventory("WornRadsuit");
 					A_PlaySound("misc/fwoosh",CHAN_AUTO);
-				}else if(damage>random(1,5)*10){
+				}else if(damage>random(10,50)){
 					damage=1;
 				}else return 0;
 			}
@@ -92,7 +92,7 @@ extend class HDPlayerPawn{
 			toburn=0;
 			damage/=3;
 			if(damage>health)damage=health-1;
-			if(mod!="bleedout"&&damage>random(7,14))A_TakeInventory("SpiritualArmour",1);
+			if(mod!="bleedout"&&damage>random(7,42))A_TakeInventory("SpiritualArmour",1);
 			mod="thermal";
 		}
 
@@ -111,7 +111,6 @@ extend class HDPlayerPawn{
 
 			if(mod=="bleedout"){
 				if(!skill || hd_nobleed){
-					A_TakeInventory("WoundCount");
 					woundcount=0;
 					return 0;
 				}
@@ -359,10 +358,11 @@ extend class HDPlayerPawn{
 				if(bloodpressure<100)bloodpressure+=20;
 				if(beatmax>12)beatmax=max(beatmax-randompick(10,20),8);
 				A_SetBlend("00 00 00",0.8,40,"00 00 00");
-				A_SetPitch(pitch+random(-4,4),SPF_FORCECLAMP|SPF_INTERPOLATE);
-				A_SetAngle(angle+random(-4,4),SPF_INTERPOLATE);
+				A_MuzzleClimb(
+					(frandom(-4,4),frandom(-4,4)),(frandom(-4,4),frandom(-4,4)),
+					(0,0),(0,0)
+				);
 				A_TakeInventory("PowerFrightener");
-				A_TakeInventory("SpiritualArmour",1);
 				if(
 					player&&hdweapon(player.readyweapon)
 				)hdweapon(player.readyweapon).notshot=0;
@@ -375,9 +375,6 @@ extend class HDPlayerPawn{
 			if(bloodpressure<40)bloodpressure+=2;
 			if(beatmax>20)beatmax=max(beatmax-2,18);
 			A_SetBlend("00 00 00",0.8,40,"00 00 00");
-			if(
-				player&&hdweapon(player.readyweapon)
-			)hdweapon(player.readyweapon).notshot=0;
 		}
 		#### G 3 A_Pain();
 		---- A 0 setstatelabel("spawn");

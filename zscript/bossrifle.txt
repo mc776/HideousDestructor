@@ -141,7 +141,7 @@ class BossRifle:HDWeapon{
 			);
 		}
 		BARG F 1;
-		BARG F 1 A_JumpIfInventory("IsSupported",1,"ready");
+		BARG F 1 A_JumpIf(gunbraced(),"ready");
 		goto ready;
 	flash:
 		BARF A 1 bright{
@@ -207,7 +207,7 @@ class BossRifle:HDWeapon{
 		}
 		BARG D 2 offset(6,42);
 		BARG D 1 offset(6,42){
-			if(countinv("IsSupported"))A_MuzzleClimb(
+			if(gunbraced())A_MuzzleClimb(
 				frandom(-0.1,0.3),frandom(-0.1,0.3)
 			);else A_MuzzleClimb(
 				frandom(-0.2,0.8),frandom(-0.4,0.8)
@@ -246,7 +246,7 @@ class BossRifle:HDWeapon{
 		BARG E 1 offset(3,34) A_PlaySound("weapons/boltfwd",CHAN_WEAPON);
 		BARG E 3 offset(4,38);
 		BARG D 2 offset(3,37){
-			if(!countinv("IsSupported"))
+			if(!gunbraced())
 				A_MuzzleClimb(frandom(-0.4,0.8),frandom(-0.2,0.8));
 		}
 		BARG C 3 offset(2,36);
