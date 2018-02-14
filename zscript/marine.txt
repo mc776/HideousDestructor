@@ -896,7 +896,7 @@ class DeadRifleman:HDMarine replaces DeadMarine{
 		A_Die("spawndead");
 	}
 	states{
-	spawndead:
+	death.spawndead:
 		---- A 0{
 			A_NoBlocking();
 			hdmobai.corpseflags(self);
@@ -905,7 +905,7 @@ class DeadRifleman:HDMarine replaces DeadMarine{
 }
 class ReallyDeadRifleman:DeadRifleman replaces GibbedMarine{
 	states{
-	spawndead:
+	death.spawndead:
 		---- A 0{
 			A_NoBlocking();
 			hdmobai.corpseflags(self);
@@ -916,14 +916,14 @@ class ReallyDeadRifleman:DeadRifleman replaces GibbedMarine{
 }
 class DeadRiflemanCrouched:DeadRifleman{
 	states{
-	spawndead:
+	death.spawndead:
 		PLYC A 0;
 		goto super::spawndead;
 	}
 }
 class ReallyDeadRiflemanCrouched:ReallyDeadRifleman replaces GibbedMarineExtra{
 	states{
-	spawndead:
+	death.spawndead:
 		PLYC A 0;
 		goto super::spawndead;
 	}
