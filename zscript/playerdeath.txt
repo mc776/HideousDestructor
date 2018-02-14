@@ -23,7 +23,7 @@ extend class HDPlayerPawn{
 	override void Die(actor source,actor inflictor,int dmgflags=0){
 		if(player&&player.readyweapon&&deathmatch&&!sv_weapondrop&&!barehanded)
 				A_DropInventory(player.readyweapon.getclassname());
-		if(player.attacker is "HDFire")player.attacker=null;
+		if(player.attacker is "HDFire")player.attacker=player.attacker.master;
 		playercorpse=spawn("HDPlayerCorpse",pos);
 		playercorpse.vel=vel;playercorpse.master=self;
 		if(height<40)playercorpse.sprite=GetSpriteIndex("PLYCA0");
@@ -219,11 +219,11 @@ class HDPlayerCorpse:HDActor{
 		#### N 2 canraise A_JumpIf(abs(vel.z)>2,"deadfall");
 		wait;
 	xdeath:
-		#### O 0{
+		#### O 5{
 			A_XScream();
 			scale.x=1;
 		}
-		#### OPQRSTUV 5;
+		#### PQRSTUV 5;
 		---- A 0{
 			A_SpawnItemEx("ReallyDeadRifleman",flags:
 				SXF_NOCHECKPOSITION|

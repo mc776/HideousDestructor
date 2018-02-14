@@ -112,14 +112,14 @@ extend class HDPlayerPawn{
 
 			//heartbeat sound
 			if(bloodpressure>5||health<30||beatmax<20){
-				float bp=0.05*bloodpressure;
+				double bp=0.05*bloodpressure;
 				if(beatmax<15||health<30)bp*=2;
 				A_PlaySound("misc/heart",CHAN_BODY,0.05*max(bloodpressure,22-beatmax),false,30);
 			}
 
 			//MY ORIFICE IS BLEEDING!!!
 			if(woundcount){
-				int dm=(random(10,woundcount)-random(0,bloodpressure))*0.4;
+				int dm=(random(10,woundcount)-random(0,bloodpressure))*4/10;
 				if(dm>0)damagemobj(self,lastthingthatwoundedyou,dm,"bleedout",DMG_THRUSTLESS);
 			}
 
