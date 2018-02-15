@@ -242,15 +242,16 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 		return aimadjust;
 	}
 	void A_DropAdjust(class<actor> missiletype,double dist=0,bool userocket=false){
-		double dist=max(1,(target?distance3d(target):0));
+		double dist=max(1,(target?distance2d(target):0));
 		double spd=getdefaultbytype(missiletype).speed;
 		if(getdefaultbytype(missiletype).gravity&&dist>spd){
 			if(userocket&&missiletype is "GyroGrenade")spd*=6.4; //used only for the gyrorockets
 			int ticstotake=dist/spd;
-			int dropamt=0;
+			double dropamt=0;
 			for(int i=1;i<=ticstotake;i++){
 				dropamt+=i;
 			}
+//dropamt+=(target.pos.z-pos.z);
 			pitch-=min(atan(dropamt/dist),10);
 		}
 
