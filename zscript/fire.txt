@@ -156,6 +156,9 @@ class HDFire:IdleDummy{
 			//check if player
 			let tgt=HDPlayerPawn(target);
 			if(tgt){
+				if(tgt.playercorpse){
+					target=tgt.playercorpse;
+				}
 				A_AlertMonsters();
 				A_TakeFromTarget("PowerFrightener");
 				A_GiveToTarget("WeaponBusy",1);
