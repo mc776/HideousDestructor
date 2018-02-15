@@ -247,11 +247,10 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 		if(getdefaultbytype(missiletype).gravity&&dist>spd){
 			if(userocket&&missiletype is "GyroGrenade")spd*=6.4; //used only for the gyrorockets
 			int ticstotake=dist/spd;
-			double dropamt=0;
+			int dropamt=0;
 			for(int i=1;i<=ticstotake;i++){
 				dropamt+=i;
 			}
-//dropamt+=(target.pos.z-pos.z);
 			pitch-=min(atan(dropamt/dist),10);
 		}
 
