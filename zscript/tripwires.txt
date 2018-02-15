@@ -325,24 +325,23 @@ class TrippingFrag:FragP{
 			bmovewithsector=true;
 		}
 	}
-	override void tick(){
-		ClearInterpolation();
-		if(stuckto){
-			if(stuckfloor)setz(stuckto.centerfloor()-stucktoheight);
-			else setz(stuckto.centerceiling()+stucktoheight);
-
-			//if gone into floor or ceiling, abort
-			if(floorz>pos.z||ceilingz<pos.z){  
-				A_PlaySound("misc/fragknock");
-				bnogravity=false;
-				bceilinghugger=false;
-				stuckto=null;
-			}
-		}
-		else if(bceilinghugger)setz(ceilingz-height);
-		super.tick();
-	}
 	states{
+	spawn:
+		FRAG A 1 nodelay{
+			if(stuckto){
+				if(stuckfloor)setz(stuckto.centerfloor()-stucktoheight);
+				else setz(stuckto.centerceiling()+stucktoheight);
+	
+				//if gone into floor or ceiling, abort
+				if(floorz>pos.z||ceilingz<pos.z){  
+					A_PlaySound("misc/fragknock");
+					bnogravity=false;
+					bceilinghugger=false;
+					stuckto=null;
+				}
+			}
+			else if(bceilinghugger)setz(ceilingz-height);
+		}wait;
 	pain:
 		---- A 0{
 			if(!random(0,9)){
