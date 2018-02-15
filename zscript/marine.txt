@@ -35,6 +35,7 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 	int wep;
 	override void die(actor source,actor inflictor,int dmgflags=0){
 		timesdied++;
+		bpushable=false;
 		super.die(source,inflictor,dmgflags);
 	}
 	override void beginplay(){
@@ -42,9 +43,7 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 		hasdropped=false;
 		spread=0;
 		timesdied=0;
-		if(bfriendly){
-			bpushable=true;
-		}
+		if(bfriendly)bpushable=true;
 
 		//weapon
 		pistolloaded=15;
@@ -725,6 +724,7 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 		#### A 0{
 			hdmobai.corpseflags(self);
 			A_SetSolid();
+			if(bfriendly)bpushable=true;
 			if(countinv("IsGibbed"))setstatelabel("raisegibbed");
 			A_TakeInventory("IsGibbed");
 		}
@@ -918,14 +918,20 @@ class DeadRiflemanCrouched:DeadRifleman{
 	states{
 	death.spawndead:
 		PLYC A 0;
-		goto super::spawndead;
+		goto super::death.spawndead;
+	raise:
+		PLAY A 0;
+		goto super::raise;
 	}
 }
 class ReallyDeadRiflemanCrouched:ReallyDeadRifleman replaces GibbedMarineExtra{
 	states{
 	death.spawndead:
 		PLYC A 0;
-		goto super::spawndead;
+		goto super::death.spawndead;
+	raise:
+		PLAY A 0;
+		goto super::raise;
 	}
 }
 

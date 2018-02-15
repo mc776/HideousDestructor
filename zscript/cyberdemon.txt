@@ -119,7 +119,7 @@ class SatanRobo:Cyberdemon replaces CyberDemon{
 	default{
 		+avoidmelee +nofear +seeinvisible +nodropoff
 		-noradiusdmg
-		+noblood
+		+noblooddecals
 		damagefactor "Thermal", 0.5;
 		damagefactor "SmallArms0", 0.2;
 		damagefactor "SmallArms1", 0.3;
@@ -134,7 +134,7 @@ class SatanRobo:Cyberdemon replaces CyberDemon{
 		painthreshold 200;
 		maxtargetrange 0;
 		radiusdamagefactor 0.6;
-		bloodtype "NotQuiteBloodSplat";
+		bloodtype "ShieldNotBlood";
 		obituary "%o was experimented upon by a cyberdemon.";
 		minmissilechance 196;
 	}
@@ -176,7 +176,6 @@ class SatanRobo:Cyberdemon replaces CyberDemon{
 		);
 		if(health>0&&shields<HDCB_SHIELDMAX)shields+=2;
 
-
 		/*
 		//indicator
 		if(!master||!(master is "IdleDummy")){
@@ -212,8 +211,6 @@ class SatanRobo:Cyberdemon replaces CyberDemon{
 					aaa.vel=(frandom(-3,3),frandom(-3,3),frandom(-3,3));
 				}
 			}
-		}else{
-			bnoblood=false;
 		}
 		if(damage<1)return 0;
 //			else A_Log(string.format("cyberdemon took %i damage",damage));

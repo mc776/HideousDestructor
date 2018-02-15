@@ -592,10 +592,9 @@ class BloodSplatSilent:HDPuff{
 	states{
 	spawn:
 		BLUD ABC 4{
-			if(floorz==pos.z){
-//				actor aaa=spawn("HDBloodTrailFloor",pos); //maybe???
-//				if(aaa){aaa.scale=scale;aaa.alpha=alpha;}
-				destroy();
+			if(floorz<=pos.z){
+				bflatsprite=true;bmovewithsector=true;bnointeraction=true;
+				setz(floorz);vel=(0,0,0);
 			}
 		}wait;
 	}
@@ -614,6 +613,34 @@ class NotQuiteBloodSplat:BloodSplat{
 		actor p=spawn("PenePuff",pos,ALLOW_REPLACE);
 		p.target=target;p.master=master;p.vel=vel*0.3;
 		scale*=frandom(0.2,0.5);
+	}
+}
+class ShieldNotBlood:NotQuiteBloodSplat{
+	default{
+		+puffgetsowner
+	}
+	override void postbeginplay(){
+		bloodsplat.postbeginplay();
+		if(
+			(satanrobo(target)&&satanrobo(target).shields>5)
+			||(spiderdemon(target)&&spiderdemon(target).shields>5)
+		){
+			A_SetTranslucent(1,1);
+			grav=-0.6;
+			scale*=0.4;
+			setstatelabel("spawnshield");
+			bnointeraction=true;
+			return;
+		}
+		A_PlaySound("misc/bulletflesh",0,0.02);
+		actor p=spawn("PenePuff",pos,ALLOW_REPLACE);
+		p.target=target;p.master=master;p.vel=vel*0.3;
+		scale*=frandom(0.2,0.5);
+	}
+	states{
+	spawnshield:
+		TFOG ABCDEFGHIJ 3 bright A_FadeOut(0.05);
+		stop;
 	}
 }
 class BloodTrail:HDPuff{
