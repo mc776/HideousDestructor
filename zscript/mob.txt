@@ -117,7 +117,10 @@ struct HDMobAI play{
 		if(a){
 			bottomdist=a.distance3d(caller);
 			//if any subsequent collision happens after hitting target, ignore it
-			if(a.tracer==caller.target)range=min(range,bottomdist);
+			if(
+				a.tracer==caller.target
+				||a.floorz>=a.pos.z
+			)range=min(range,bottomdist);
 		}
 
 		//top centre
@@ -279,6 +282,29 @@ struct HDMobAI play{
 		caller.speed=getdefaultbytype(caller.getclass()).speed;
 		caller.bmissileevenmore=membak;
 		caller.bmissilemore=mmbak;
+	}
+
+	//eyeball out how much one's projectile will drop and raise pitch accordingly
+	static void DropAdjust(actor caller,
+		class<actor> missiletype,
+		double dist=1.,
+		double speedmult=1.,
+		double gravity=1.
+	){
+		let target=caller.target;
+		double dist=max(1,(target?caller.distance2d(target):0));
+		double spd=getdefaultbytype(missiletype).speed*speedmult;
+		if(getdefaultbytype(missiletype).gravity&&dist>spd){  
+			int ticstotake=dist/spd;
+			int dropamt=0;
+			for(int i=1;i<=ticstotake;i++){
+				dropamt+=i;
+			}
+			caller.pitch-=min(atan(dropamt*gravity/dist),30);
+		}
+
+		//because we don't shoot from height 32 but 42
+		if(dist>0)caller.pitch+=atan(10/dist);  
 	}
 }
 class TryShootPuff:CheckPuff{
