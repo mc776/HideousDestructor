@@ -734,6 +734,7 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 		);
 		#### JHE 4;
 		#### H 0{
+			scale.x=1;
 			if(!random(0,15+timesdied))return;
 			else if(!random(0,10-timesdied))A_Die("raisebotch");
 			else{
@@ -883,6 +884,7 @@ class UndeadRifleman:HDMarine{
 	override void postbeginplay(){
 		super.postbeginplay();
 		timesdied++;
+		hasdropped=true;
 		speed=max(1,speed-random(0,2));
 		health=max(50,health-random(0,6));
 		seesound="grunt/sight";
@@ -893,6 +895,7 @@ class UndeadRifleman:HDMarine{
 class DeadRifleman:HDMarine replaces DeadMarine{
 	override void postbeginplay(){
 		super.postbeginplay();
+		hasdropped=true;
 		A_Die("spawndead");
 	}
 	states{
@@ -911,6 +914,7 @@ class ReallyDeadRifleman:DeadRifleman replaces GibbedMarine{
 			hdmobai.corpseflags(self);
 			A_UnsetShootable();
 			timesdied++;
+			A_GiveInventory("IsGibbed");
 		}goto xdead;
 	}
 }

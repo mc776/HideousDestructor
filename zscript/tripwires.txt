@@ -331,7 +331,7 @@ class TrippingFrag:FragP{
 			if(stuckto){
 				if(stuckfloor)setz(stuckto.centerfloor()-stucktoheight);
 				else setz(stuckto.centerceiling()+stucktoheight);
-	
+
 				//if gone into floor or ceiling, abort
 				if(floorz>pos.z||ceilingz<pos.z){  
 					A_PlaySound("misc/fragknock");
@@ -345,7 +345,6 @@ class TrippingFrag:FragP{
 	pain:
 		---- A 0{
 			if(!random(0,9)){
-//			if(1){ //testing
 				actor ggg=spawn("HDFragGrenadeRoller",pos);
 				ggg.target=target;
 				if(tracer){
@@ -366,3 +365,4 @@ class TrippingFrag:FragP{
 		}goto spawn;
 	}
 }
+
