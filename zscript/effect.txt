@@ -587,7 +587,7 @@ class BloodSplatSilent:HDPuff{
 		hdpuff.decel 0.86;
 		hdpuff.fade 0.88;
 		hdpuff.grow 0.03;
-		hdpuff.minalpha 0.1;
+		hdpuff.minalpha 0.03;
 	}
 	states{
 	spawn:
@@ -595,6 +595,7 @@ class BloodSplatSilent:HDPuff{
 			if(floorz>=pos.z){
 				bflatsprite=true;bmovewithsector=true;bnointeraction=true;
 				setz(floorz);vel=(0,0,0);
+				fade=0.97;
 			}
 		}wait;
 	}

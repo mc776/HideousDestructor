@@ -362,6 +362,10 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 		#### CD 2 A_FaceTarget(40);
 	missile2:
 		#### A 0{
+			if(!target){
+				setstatelabel("noshot");
+				return;
+			}
 			double dist=distance3d(target);
 			if(dist<500)turnamount=50;
 			else if(dist<1200)turnamount=30;
@@ -383,7 +387,7 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 
 	shoot:
 		#### E 1{
-			if(checksight(target)&&target.health<1){
+			if(!target||(checksight(target)&&target.health<1)){
 				target=null;
 				setstatelabel("noshot");
 				return;

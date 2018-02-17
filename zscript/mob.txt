@@ -105,13 +105,17 @@ struct HDMobAI play{
 		return(
 			victim!=target
 			&&(
-				!victim.bshootable
-				||caller.isfriend(victim)
-			)
-			&&(
-				caller.absangle(caller.angleto(victim),caller.angleto(target))>error  
-			)
-			&&(
+				!victim
+				||(
+					(
+						!victim.bshootable
+						||caller.isfriend(victim)
+					)&&(
+						caller.absangle(caller.angleto(victim),
+							caller.angleto(target))>error  
+					)
+				)
+			)&&(
 				!blastradius
 				||target.distance3d(puff)>blastradius  
 			)
