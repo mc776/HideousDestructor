@@ -1,7 +1,7 @@
 // ------------------------------------------------------------
 // Cyberdemon
 // ------------------------------------------------------------
-class Cyberball:SlowProjectile{
+class Roboball:SlowProjectile{
 	default{
 		+rockettrail
 		damage 30;
@@ -116,6 +116,7 @@ class Cyberball:SlowProjectile{
 }
 class Satanball:HDFireball{
 	default{
+		+extremedeath
 		damagetype "balefire";
 		activesound "weapons/plasidle";
 		seesound "weapons/plasmaf";
@@ -156,9 +157,22 @@ class Satanball:HDFireball{
 	death:
 		BFE1 A 1 bright{
 			spawn("HDSmoke",pos);
-			A_PlaySound("world/explode");
-			A_Explode();
+			A_PlaySound("world/explode",CHAN_VOICE);
+			damagetype="thermal";
+			bextremedeath=false;
+			A_Explode(64,64);
 			if(lite)lite.args[3]=128;
+			A_Quake(2,21,0,256);
+
+			//hit map geometry
+			if(
+				blockingline||
+				floorz>=pos.z||
+				ceilingz-height<=pos.z
+			){
+				A_SpawnChunks("HDSmoke",3,2,3);
+				A_SpawnChunks("HugeWallChunk",50,4,20);
+			}
 		}
 		BFE1 BBCDDEEE 2 bright A_FadeOut(0.05);
 		stop;
@@ -217,9 +231,9 @@ class SatanRobo:Cyberdemon replaces CyberDemon{
 		aimadjust=(deltaangle(oldaim.x,angle),deltaangle(oldaim.y,pitch));
 		aimadjust*=distance3d(target)*0.0005;
 	}
-	void A_CyberRocket(double spread=0.,double aimhorz=0.,double aimvert=0.){
+	void A_SatanRoboAttack(double spread=0.,double aimhorz=0.,double aimvert=0.){
 		A_PlaySound("weapons/bronto",CHAN_WEAPON);
-		if(shottype=="CyberBall")spawn("DistantShotgun",pos);
+		if(shottype=="Roboball")spawn("DistantShotgun",pos);
 		if(spread){
 			aimhorz=frandom(-spread,spread);
 			aimvert=frandom(-spread,spread);
@@ -289,7 +303,7 @@ class SatanRobo:Cyberdemon replaces CyberDemon{
 		super.postbeginplay();
 		shields=HDCB_SHIELDMAX;
 		rockets=HDCB_ROCKETMAX;
-		shottype="CyberBall";
+		shottype="Roboball";
 		hdmobster.spawnmobster(self);
 	}
 	vector2 oldaim;vector2 aimadjust;
@@ -390,7 +404,7 @@ class SatanRobo:Cyberdemon replaces CyberDemon{
 			double dist=distance3d(target);
 
 			if(rockets*0>random(0,HDCB_ROCKETMAX)){
-				shottype="CyberBall";
+				shottype="Roboball";
 				rockets--;
 			}else shottype="SatanBall";
 
@@ -399,7 +413,7 @@ class SatanRobo:Cyberdemon replaces CyberDemon{
 			else setstatelabel("directshots");
 		}
 	leadtarget:
-		CYBR F 3 bright light("ROCKET")A_CyberRocket();
+		CYBR F 3 bright light("ROCKET")A_SatanRoboAttack();
 		CYBR E 1 A_SetTics(random(1,4));
 		CYBR E 0 A_JumpIf(health>1600,3);
 		CYBR EE 0 A_CyberGunSmoke();
@@ -407,7 +421,7 @@ class SatanRobo:Cyberdemon replaces CyberDemon{
 		CYBR E 8 A_FaceTarget(12,12,0,0,FAF_MIDDLE);
 		CYBR F 3 bright light("ROCKET"){
 			A_CyberAdjustLead();
-			A_CyberRocket(
+			A_SatanRoboAttack(
 				0.,frandom(0,2)*aimadjust.x,frandom(0,2)*aimadjust.y
 			);
 		}
@@ -418,26 +432,26 @@ class SatanRobo:Cyberdemon replaces CyberDemon{
 		CYBR E 8 A_FaceTarget(12,12,0,0,FAF_MIDDLE);
 		CYBR F 3 bright light("ROCKET"){
 			A_CyberAdjustLead();
-			A_CyberRocket(
+			A_SatanRoboAttack(
 				0.,frandom(1,5)*aimadjust.x,frandom(1,5)*aimadjust.y
 			);
 		}
 		goto fireend;
 
 	directshots:
-		CYBR F 3 bright light("ROCKET")A_CyberRocket();
+		CYBR F 3 bright light("ROCKET")A_SatanRoboAttack();
 		CYBR E 8 A_FaceTarget(12,12,0,0,FAF_MIDDLE);
-		CYBR F 3 bright light("ROCKET")A_CyberRocket(0.3);
+		CYBR F 3 bright light("ROCKET")A_SatanRoboAttack(0.3);
 		CYBR E 8 A_FaceTarget(12,12,0,0,FAF_MIDDLE);
-		CYBR F 3 bright light("ROCKET")A_CyberRocket(0.7);
+		CYBR F 3 bright light("ROCKET")A_SatanRoboAttack(0.7);
 		goto fireend;
 
 	spray:
-		CYBR F 3 bright light("ROCKET")A_CyberRocket(1.);
+		CYBR F 3 bright light("ROCKET")A_SatanRoboAttack(1.);
 		CYBR E 6 A_FaceTarget(12,12,0,0,FAF_MIDDLE);
-		CYBR F 3 bright light("ROCKET")A_CyberRocket(2.);
+		CYBR F 3 bright light("ROCKET")A_SatanRoboAttack(2.);
 		CYBR E 6 A_FaceTarget(12,12,0,0,FAF_MIDDLE);
-		CYBR F 3 bright light("ROCKET")A_CyberRocket(3.);
+		CYBR F 3 bright light("ROCKET")A_SatanRoboAttack(3.);
 	fireend:
 		CYBR E 0 A_JumpIf(health>1600,3);
 		CYBR EE 2 A_CyberGunSmoke();
