@@ -114,6 +114,33 @@ class Cyberball:SlowProjectile{
 		stop;
 	}
 }
+class Satanball:HDFireball{
+	default{
+		damagetype "balefire";
+		activesound "weapons/plasidle";
+		seesound "weapons/plasmaf";
+		decal "scorch";
+		gravity 0;
+		height 12;radius 12;
+		speed 50;
+	}
+	states{
+	spawn:
+		BFS1 AB 1 bright{
+			for(int i=0;i<10;i++){
+				A_SpawnParticle("green",SPF_RELACCEL);
+			}
+		}loop;
+	death:
+		BFE1 A 1 bright{
+			spawn("HDSmoke",pos);
+			A_PlaySound("world/explode");
+			A_Explode();
+		}
+		BFE1 BBCDDEEE 2 bright A_FadeOut(0.05);
+		stop;
+	}
+}
 
 class SatanRobo:Cyberdemon replaces CyberDemon{
 	default{
@@ -363,8 +390,8 @@ class SatanRobo:Cyberdemon replaces CyberDemon{
 		CYBR F 3 bright light("ROCKET")A_CyberRocket(3.);
 	fireend:
 		CYBR E 0 A_JumpIf(health>1600,3);
-		CYBR EE 0 A_CyberGunSmoke();
-		CYBR E 10;
+		CYBR EE 2 A_CyberGunSmoke();
+		CYBR E 17;
 		goto see;
 
 	death:
