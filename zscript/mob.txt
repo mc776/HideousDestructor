@@ -303,9 +303,11 @@ struct HDMobAI play{
 		class<actor> missiletype,
 		double dist=1.,
 		double speedmult=1.,
-		double gravity=1.
+		double gravity=1.,
+		actor target=null;
 	){
-		let target=caller.target;
+		if(!target)target=caller.target;
+		if(!target)return;
 		double dist=max(1,(target?caller.distance2d(target):0));
 		double spd=getdefaultbytype(missiletype).speed*speedmult;
 		if(getdefaultbytype(missiletype).gravity&&dist>spd){    
