@@ -593,7 +593,7 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 	reload:
 		#### A 0{
 			if(
-				pistolloaded<0
+				pistolloaded<1
 				||wep==HDMW_SMG
 				||wep==HDMW_ZM66
 			)setstatelabel("reloadmag");
@@ -639,7 +639,14 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 			A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
 			A_PlaySound("weapons/rifleload",5);
 			class<actor> oldthing="";
-			if(pistolloaded<1&&gunloaded<1)oldthing="HDPistolEmptyMag";
+			if(
+				pistolloaded<1
+				&&(
+					gunloaded<1
+					||wep!=HDMW_SMG
+					||wep!=HDMW_ZM66
+				)
+			)oldthing="HDPistolEmptyMag";
 			else if(wep==HDMW_SMG)oldthing="HDSMGEmptyMag";
 			else if(wep==HDMW_ZM66)oldthing="HD4mmMagEmpty";
 			if(oldthing){
@@ -652,7 +659,14 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 		#### A 3{
 			A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
 			hdmobai.chase(self,"melee",null);
-			if(pistolloaded<1&&gunloaded<1)pistolloaded=15;
+			if(
+				pistolloaded<1
+				&&(
+					gunloaded<1
+					||wep!=HDMW_SMG
+					||wep!=HDMW_ZM66
+				)
+			)pistolloaded=15;
 			else gunloaded=gunmax;
 		}
 		goto see;

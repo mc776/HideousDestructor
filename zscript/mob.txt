@@ -17,13 +17,13 @@ class SawGib:InventoryFlag{
 	}
 	override void doeffect(){
 		if(bmissileevenmore)return;
-		if(amount>stamina){
+		if(amount>stamina){  
 			bmissileevenmore=true;
 			actor o=owner;
 			if(
 				!owner.bcorpse
 				||!owner.bshootable
-				||owner.health>0
+				||owner.health>0  
 				||!o.findstate("xdeath",true)
 			)goawayanddie();
 			else{
@@ -64,7 +64,7 @@ struct HDMobAI play{
 	//"CorpseFlags" item is a wrapper for this now
 	static void CorpseFlags(actor caller){
 		caller.A_TakeInventory("SawGib");
-		if(caller.health>0){
+		if(caller.health>0){  
 			if(!caller.bfloat)caller.bnodropoff=true;
 			caller.bnotautoaimed=false;
 			caller.balwaystelefrag=false;
@@ -94,14 +94,41 @@ struct HDMobAI play{
 
 	//check if shot is clear
 	//hdmobai.tryshoot(self,pradius:6,pheight:6)
+	static bool TryShootPuffCheck(
+		actor caller,
+		actor puff,
+		actor victim,
+		actor target,
+		double blastradius,
+		double error
+	){
+puff.spawn("BulletTail",puff.pos);
+		return(
+			victim!=target
+			&&(
+				!victim.bshootable
+				||caller.isfriend(victim)
+			)
+			&&(
+				caller.absangle(caller.angleto(victim),caller.angleto(target))>error  
+			)
+			&&(
+				!blastradius
+				||target.distance3d(puff)>blastradius  
+			)
+		);
+	}
 	static bool TryShoot(
 		actor caller,
 		double shootheight=-1,
 		double range=256,
 		double pradius=0,
-		double pheight=0
+		double pheight=0,
+		double blastradius=0,
+		double error=1
 	){
 		if(!caller.target)return false;
+		actor target=caller.target;
 		if(shootheight<0)shootheight=caller.height-6;
 
 		actor a=null;int b;
@@ -114,50 +141,34 @@ struct HDMobAI play{
 			"TryShootPuff",flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ,
 			offsetz:shootheight
 		);
-		if(a){
-			bottomdist=a.distance3d(caller);
-			//if any subsequent collision happens after hitting target, ignore it
-			if(
-				a.tracer==caller.target
-				||a.floorz>=a.pos.z
-			)range=min(range,bottomdist);
-		}
+		if(a&&TryShootPuffCheck(caller,a,a.tracer,target,blastradius,error))return false;
+
+		//get zoffset for top shot
+		shootheight+=pheight;
 
 		//top centre
-		if(pheight){
-			[a,b]=caller.LineAttack(caller.angle,range,caller.pitch,0,"none",
-				"TryShootPuff",flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ,
-				offsetz:pheight
-			);
-			if(a){
-				topdist=a.distance3d(caller);
-				if(a.tracer==caller.target)range=min(range,topdist);
-			}
-		}
+		[a,b]=caller.LineAttack(caller.angle,range,caller.pitch,0,"none",
+			"TryShootPuff",flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ,
+			offsetz:shootheight
+		);
+		if(a&&TryShootPuffCheck(caller,a,a.tracer,target,blastradius,error))return false;
+
+		//get zoffset for side shots
+		shootheight-=pheight*0.5;
 
 		//left and right
-		if(pradius){
-			double pht=pheight*0.5;
-			[a,b]=caller.LineAttack(caller.angle,range,caller.pitch,0,"none",
-				"TryShootPuff",flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ,
-				offsetz:pht,offsetside:-pradius
-			);
-			if(a){
-				leftdist=a.distance3d(caller);
-				if(a.tracer==caller.target)range=min(range,leftdist);
-			}
+		[a,b]=caller.LineAttack(caller.angle,range,caller.pitch,0,"none",
+			"TryShootPuff",flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ,
+			offsetz:shootheight,offsetside:-pradius
+		);
+		if(a&&TryShootPuffCheck(caller,a,a.tracer,target,blastradius,error))return false;
+		[a,b]=caller.LineAttack(caller.angle,range,caller.pitch,0,"none",
+			"TryShootPuff",flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ,
+			offsetz:shootheight,offsetside:pradius
+		);
+		if(a&&TryShootPuffCheck(caller,a,a.tracer,target,blastradius,error))return false;
 
-			[a,b]=caller.LineAttack(caller.angle,range,caller.pitch,0,"none",
-				"TryShootPuff",flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ,
-				offsetz:pht,offsetside:pradius
-			);
-			if(a){
-				rightdist=a.distance3d(caller);
-				if(a.tracer==caller.target)range=min(range,rightdist);
-			}
-		}
-
-		if(min(bottomdist,topdist,leftdist,rightdist)<range)return false;
+		//if none of the checks fail
 		return true;
 	}
 
@@ -294,7 +305,7 @@ struct HDMobAI play{
 		let target=caller.target;
 		double dist=max(1,(target?caller.distance2d(target):0));
 		double spd=getdefaultbytype(missiletype).speed*speedmult;
-		if(getdefaultbytype(missiletype).gravity&&dist>spd){  
+		if(getdefaultbytype(missiletype).gravity&&dist>spd){    
 			int ticstotake=dist/spd;
 			int dropamt=0;
 			for(int i=1;i<=ticstotake;i++){
@@ -304,7 +315,7 @@ struct HDMobAI play{
 		}
 
 		//because we don't shoot from height 32 but 42
-		if(dist>0)caller.pitch+=atan(10/dist);  
+		if(dist>0)caller.pitch+=atan(10/dist);    
 	}
 }
 class TryShootPuff:CheckPuff{
@@ -364,14 +375,14 @@ class HDMobster:IdleDummy{
 				A_SetTics(4);
 				if(
 					!master.checksight(threat)
-					||master.distance3d(threat)>thraidius
+					||master.distance3d(threat)>thraidius  
 				)threat=null;
 			}else if(target){
 				master.bfrightened=bfrightened;
 				master.goal=self;master.bchasegoal=true;
 				//chase target directly, or occasionaly randomize general direction
 				if(
-					target.health>0
+					target.health>0  
 					&&master.checksight(target)
 				){
 					vector3 mpo=master.pos;
@@ -400,7 +411,7 @@ class HDMobster:IdleDummy{
 						)
 					,0),false);
 					bored++;
-					if(bored>boredthreshold){
+					if(bored>boredthreshold){  
 						bored=0;
 						master.goal=null;master.bchasegoal=false;
 						A_ClearTarget();master.A_ClearTarget();
