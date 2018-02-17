@@ -128,10 +128,11 @@ struct HDMobAI play{
 		double pradius=0,
 		double pheight=0,
 		double blastradius=0,
-		double error=1
+		double error=1,
+		actor target=null
 	){
-		if(!caller.target)return false;
-		actor target=caller.target;
+		if(!target)target=caller.target;
+		if(!target)return false;
 		if(shootheight<0)shootheight=caller.height-6;
 
 		actor a=null;int b;
@@ -304,7 +305,7 @@ struct HDMobAI play{
 		double dist=1.,
 		double speedmult=1.,
 		double gravity=1.,
-		actor target=null;
+		actor target=null
 	){
 		if(!target)target=caller.target;
 		if(!target)return;
