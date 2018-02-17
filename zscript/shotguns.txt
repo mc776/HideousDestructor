@@ -260,7 +260,8 @@ class Hunter:HDShotgun replaces Shotgun{
 			else{
 				int ssh=min(
 					invoker.weaponstatus[HUNTS_SIDESADDLE],
-					7-invoker.weaponstatus[HUNTS_TUBE],
+					(invoker.weaponstatus[HUNTS_CHAMBER]!=2?8:7)
+						-invoker.weaponstatus[HUNTS_TUBE],
 					max(1,health/22),
 					3
 				);
@@ -280,7 +281,8 @@ class Hunter:HDShotgun replaces Shotgun{
 		SHTG D 4 offset(0,39){
 			int ssh=min(
 				countinv("HDShellAmmo"),
-				7-invoker.weaponstatus[HUNTS_TUBE],
+				(invoker.weaponstatus[HUNTS_CHAMBER]!=2?8:7)
+					-invoker.weaponstatus[HUNTS_TUBE],
 				max(1,health/22),
 				3
 			);
