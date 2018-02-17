@@ -120,11 +120,11 @@ class GumAndString:IdleDummy{
 		if(master&&
 			//checkmove reveals this is stuck to an upper or lower texture
 			(
-				tm.floorz>tm.pos.z
+				tm.floorz>tm.pos.z  
 				||tm.ceilingz<tm.pos.z+height
 			)
 		){
-			if(tm.floorz>tm.pos.z)stuckto=tm.floorsector;
+			if(tm.floorz>tm.pos.z)stuckto=tm.floorsector;  
 				else stuckto=tm.ceilingsector;
 			if(pos.z<stuckto.centerceiling()){
 				stuckfloor=true;
@@ -138,7 +138,7 @@ class GumAndString:IdleDummy{
 			//check to see if on floor or ceiling of its own sector
 			int spaceabove=ceilingz-pos.z;
 			int spacebelow=pos.z-floorz;
-			if(spaceabove>spacebelow){  
+			if(spaceabove>spacebelow){    
 				//stuck to floor
 				brelativetofloor=true;
 			}else{
@@ -160,7 +160,7 @@ class GumAndString:IdleDummy{
 			}
 
 			//if gone into floor or ceiling, abort
-			if(floorz>pos.z||ceilingz<pos.z){  
+			if(floorz>pos.z||ceilingz<pos.z){    
 				ForceAbort();
 				return;
 			}
@@ -290,6 +290,20 @@ class TrippingFrag:FragP{
 	override void postbeginplay(){
 		super.postbeginplay();
 
+		//add a gumwad if none exists
+		if(!tracer){
+			actor a;int b;
+			[a,b]=LineAttack(angle,512,pitch,0,"none",
+				"TripwirePlacerPuff",
+				flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ
+			);
+			if(a){
+				tracer=spawn("GumAndString",a.pos);
+				tracer.tracer=self;
+				tracer.A_Face(self,0,0);
+			}
+		}
+
 		//and now to find some shit
 		fcheckposition tm;
 		checkmove(pos.xy+angletovector(angle,5),PCM_NOACTORS,tm);
@@ -297,11 +311,11 @@ class TrippingFrag:FragP{
 		if(master&&
 			//checkmove reveals this is stuck to an upper or lower texture
 			(
-				tm.floorz>tm.pos.z
+				tm.floorz>tm.pos.z  
 				||tm.ceilingz<tm.pos.z+height
 			)
 		){
-			if(tm.floorz>tm.pos.z)stuckto=tm.floorsector;
+			if(tm.floorz>tm.pos.z)stuckto=tm.floorsector;  
 				else stuckto=tm.ceilingsector;
 			if(pos.z<stuckto.centerceiling()){
 				stuckfloor=true;
@@ -315,7 +329,7 @@ class TrippingFrag:FragP{
 			//check to see if on floor or ceiling of its own sector
 			int spaceabove=ceilingz-pos.z;
 			int spacebelow=pos.z-floorz;
-			if(spaceabove>spacebelow){  
+			if(spaceabove>spacebelow){    
 				//stuck to floor
 				brelativetofloor=true;
 			}else{
@@ -331,9 +345,9 @@ class TrippingFrag:FragP{
 			if(stuckto){
 				if(stuckfloor)setz(stuckto.centerfloor()-stucktoheight);
 				else setz(stuckto.centerceiling()+stucktoheight);
-
+	
 				//if gone into floor or ceiling, abort
-				if(floorz>pos.z||ceilingz<pos.z){  
+				if(floorz>pos.z||ceilingz<pos.z){    
 					A_PlaySound("misc/fragknock");
 					bnogravity=false;
 					bceilinghugger=false;
@@ -345,6 +359,7 @@ class TrippingFrag:FragP{
 	pain:
 		---- A 0{
 			if(!random(0,9)){
+//			if(1){ //testing
 				actor ggg=spawn("HDFragGrenadeRoller",pos);
 				ggg.target=target;
 				if(tracer){
@@ -365,4 +380,3 @@ class TrippingFrag:FragP{
 		}goto spawn;
 	}
 }
-
