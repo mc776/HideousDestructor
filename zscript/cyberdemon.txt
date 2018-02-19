@@ -72,9 +72,9 @@ class Roboball:SlowProjectile{
 			A_ChangeVelocity(thrust.x,0,thrust.y,CVF_RELATIVE);
 		}loop;
 	spawn3:
-		MISL A 3 light("ROCKET")A_Changevelocity(0,0,-1);
-		MISL A 2 light("ROCKET")A_Changevelocity(0,0,-1);
-		MISL A 1 A_Changevelocity(0,0,-1);
+		MISL A 3 light("ROCKET"){gravity=0.4;}
+		MISL A 2 light("ROCKET"){gravity=0.8;}
+		MISL A -1{gravity=1.;}
 		wait;
 	death:
 		TNT1 A 1{
@@ -137,7 +137,7 @@ class Satanball:HDFireball{
 	states{
 	spawn:
 		BFS1 A 0{
-			if(stamina>(35*5)||!target||target.health<1)return;
+			if(stamina>40||!target||target.health<1)return;
 			stamina++;
 			actor tgt=target.target;
 			if(tgt&&checksight(tgt)){
@@ -404,7 +404,7 @@ class SatanRobo:Cyberdemon replaces CyberDemon{
 		CYBR A 0{
 			double dist=distance3d(target);
 
-			if(rockets*0>random(0,HDCB_ROCKETMAX)){
+			if(rockets>random(0,HDCB_ROCKETMAX*1.2)){
 				shottype="Roboball";
 				rockets--;
 			}else shottype="SatanBall";
