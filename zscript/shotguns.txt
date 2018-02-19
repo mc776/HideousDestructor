@@ -863,8 +863,10 @@ class Slayer:HDShotgun replaces HDShotgun{
 					AmmoCap("HDShellAmmo")-countinv("HDShellAmmo"),
 					4
 				);
-				hhh.weaponstatus[HUNTS_SIDESADDLE]-=totake;
-				A_GiveInventory("HDShellAmmo",totake);
+				if(totake>0){
+					hhh.weaponstatus[HUNTS_SIDESADDLE]-=totake;
+					A_GiveInventory("HDShellAmmo",totake);
+				}
 			}
 		}goto ready;
 
