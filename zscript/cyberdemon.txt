@@ -84,7 +84,7 @@ class Roboball:SlowProjectile{
 			}
 			A_PlaySound("world/explode");
 			spawn("DistantRocket",pos);
-			A_Quake(3,28,0,256);
+			DistantQuaker.Quake(self,4,35,512,10);
 		}
 		TNT1 AAAA 0 A_SpawnItemEx("HDSmokeChunk",
 			random(-1,1),random(-1,1),random(-1,1),
@@ -137,7 +137,8 @@ class Satanball:HDFireball{
 	states{
 	spawn:
 		BFS1 A 0{
-			if(!target||target.health<1)return;
+			if(stamina>(35*5)||!target||target.health<1)return;
+			stamina++;
 			actor tgt=target.target;
 			if(tgt&&checksight(tgt)){
 				vel*=0.92;
@@ -162,7 +163,7 @@ class Satanball:HDFireball{
 			bextremedeath=false;
 			A_Explode(64,64);
 			if(lite)lite.args[3]=128;
-			A_Quake(2,21,0,256);
+			DistantQuaker.Quake(self,2,35,512,10);
 
 			//hit map geometry
 			if(
