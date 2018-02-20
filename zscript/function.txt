@@ -292,6 +292,65 @@ struct HDF play{
 
 
 
+/*
+vid_fps 1;summon ticky;
+23150 ms/f
+vid_fps 1;summon stated;
+23800 ms/f with brackets
+vid_fps 1;summon stated;
+*/
+class ticky:idledummy{
+    default{missiletype "ticky_";}
+    override void postbeginplay(){
+        super.postbeginplay();
+        for(int i=0;i<1000;i++){
+            spawn(missilename,pos);
+        }
+        destroy();
+    }
+}
+class stated:ticky{
+    default{missiletype "stated_";}
+}
+class stated_:actor{
+    void A_Test(){
+        for(int i=0;i<1000;i++){
+            setorigin((
+                pos.x+frandom(-0.0001,0.0001),
+                pos.y+frandom(-0.0001,0.0001),
+                frandom(floorz,ceilingz)
+            ),true);
+            stamina=random(0,99999);
+            accuracy=random(0,99999);
+            double yargh=pos.length();
+            if(!stamina)A_LogFloat(yargh);
+        }
+    }
+    states{
+    spawn:
+        TNT1 A 1 nodelay A_Test();
+        wait;
+    }
+}
+class ticky_:stated_{
+    override void Tick(){
+        clearinterpolation();
+        A_Test();
+        if(CheckNoDelay()){
+            if(tics>0)tics--;    
+            while(!tics){
+                if(!SetState(CurState.NextState)){
+                    return;
+                }
+            }
+        }
+    }
+    states{
+    spawn:
+        TNT1 A -1;
+    }
+} 
+
 
 
 
