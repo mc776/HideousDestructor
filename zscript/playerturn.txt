@@ -252,6 +252,7 @@ extend class HDPlayerPawn{
 				offsetz:midheight,offsetside:-barrelwidth
 			);
 			if(muzpuf){
+				if(!muzpuf.tracer||!muzpuf.tracer.bcorpse)
 				distleft=(levellocals.vec3diff(muzpuf.pos,barrelbase).length());
 				muzpuf.destroy();
 			}else muzhit++;
@@ -262,6 +263,7 @@ extend class HDPlayerPawn{
 				offsetz:midheight,offsetside:+barrelwidth
 			);
 			if(muzpuf){
+				if(!muzpuf.tracer||!muzpuf.tracer.bcorpse)
 				distright=(levellocals.vec3diff(muzpuf.pos,barrelbase).length());
 				muzpuf.destroy();
 			}else muzhit++;
@@ -273,6 +275,7 @@ extend class HDPlayerPawn{
 				offsetz:highheight,offsetside:0
 			);
 			if(muzpuf){
+				if(!muzpuf.tracer||!muzpuf.tracer.bcorpse)
 				disttop=(levellocals.vec3diff(muzpuf.pos,barrelbase).length());
 				muzpuf.destroy();
 			}else muzhit++;
@@ -283,6 +286,7 @@ extend class HDPlayerPawn{
 				offsetz:lowheight,offsetside:0
 			);
 			if(muzpuf){
+				if(!muzpuf.tracer||!muzpuf.tracer.bcorpse)
 				distbottom=(levellocals.vec3diff(muzpuf.pos,barrelbase).length());
 				muzpuf.destroy();
 			}else muzhit++;
@@ -421,7 +425,7 @@ extend class HDPlayerPawn{
 
 class MuzzleBlockerPuff:IdleDummy{
 	default{
-		+nodecal +puffonactors +notrigger +bloodlessimpact
+		+nodecal +puffonactors +notrigger +bloodlessimpact +hittracer
 	}
 }
 
