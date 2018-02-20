@@ -86,16 +86,6 @@ extend class HDPlayerPawn{
 			armourlevel=1;
 		}
 
-		//spiritual armour
-		if(countinv("SpiritualArmour")){
-			towound=0;
-			toburn=0;
-			damage/=3;
-			if(damage>health)damage=health-1;
-			if(mod!="bleedout"&&damage>random(7,42))A_TakeInventory("SpiritualArmour",1);
-			mod="thermal";
-		}
-
 		//bleeding
 		if(
 			mod=="bleedout"||
@@ -306,6 +296,20 @@ extend class HDPlayerPawn{
 			damage*=(1-(armourlevel*0.2));
 			if(!random(0,10+armourlevel*2))towound+=max(1,damage*0.03);
 		}
+
+
+		//spiritual armour
+		if(countinv("SpiritualArmour")){
+			towound=0;
+			toburn=0;
+			if(damage>health)damage=health-1;
+			if(mod!="bleedout"&&damage>random(7,42)){
+				A_TakeInventory("SpiritualArmour",1);
+			}
+			damage=clamp(damage,1,health-7);
+			mod="falling";
+		}
+
 
 		//abort if damage is less than zero
 		if(damage<0)return 0;
