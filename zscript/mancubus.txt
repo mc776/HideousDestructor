@@ -163,13 +163,13 @@ class Mancubus:Fatso replaces Fatso{
 		FATT H 10 bright{
 			A_PlaySound("weapons/bronto",CHAN_WEAPON);
 
+			hdmobai.DropAdjust(self,"ManJuice");
+
 			//lead target
 			actor ppp;int bluh;
 			[bluh,ppp]=A_SpawnItemEx(
 				"manjuice",0,24,32,
-				cos(pitch)*27,0,-sin(pitch
-					-(targdist<1024?min(40,targdist*0.002):0)
-				)*27,
+				cos(pitch)*27,0,-sin(pitch)*27,
 				atan(24/targdist),
 				flags:SXF_NOCHECKPOSITION|SXF_SETTARGET|SXF_TRANSFERPITCH
 			);
@@ -187,9 +187,7 @@ class Mancubus:Fatso replaces Fatso{
 			}
 			[bluh,ppp]=A_SpawnItemEx(
 				"manjuice",0,-24,32,
-				cos(pitch)*27,0,-sin(pitch
-					-(targdist<1024?min(40,targdist*0.002):0)
-				)*27,
+				cos(pitch)*27,0,-sin(pitch)*27,
 				-atan(24/targdist),
 				flags:SXF_NOCHECKPOSITION|SXF_SETTARGET|SXF_TRANSFERPITCH
 			);

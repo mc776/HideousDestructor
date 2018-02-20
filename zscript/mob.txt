@@ -302,14 +302,15 @@ struct HDMobAI play{
 	//eyeball out how much one's projectile will drop and raise pitch accordingly
 	static void DropAdjust(actor caller,
 		class<actor> missiletype,
-		double dist=1.,
+		double dist=0,
 		double speedmult=1.,
-		double gravity=1.,
+		double gravity=0,
 		actor target=null
 	){
 		if(!target)target=caller.target;
 		if(!target)return;
-		double dist=max(1,(target?caller.distance2d(target):0));
+		if(dist<1)dist=max(1,(target?caller.distance2d(target):1));
+		if(!gravity)gravity=getdefaultbytype(missiletype).gravity;
 		double spd=getdefaultbytype(missiletype).speed*speedmult;
 		if(getdefaultbytype(missiletype).gravity&&dist>spd){    
 			int ticstotake=dist/spd;
@@ -321,7 +322,7 @@ struct HDMobAI play{
 		}
 
 		//because we don't shoot from height 32 but 42
-		if(dist>0)caller.pitch+=atan(10/dist);    
+		if(dist>0)caller.pitch+=atan(10/dist);
 	}
 }
 class TryShootPuff:CheckPuff{
