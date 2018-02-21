@@ -13,9 +13,9 @@ class Roboball:SlowProjectile{
 		seesound "weapons/rocklf";
 		scale 0.6;
 	}
-	override void ExplodeSlowMissile(line blockingline=null,actor blockingobject=null){
+	override void ExplodeSlowMissile(line blockingline=null,actor blockingmobj=null){
 		//damage
-		if(blockingobject){
+		if(blockingmobj){
 			int dmgg=random(70,240);
 			double dangle=angle;
 			A_Face(blockingmobj);
@@ -23,7 +23,7 @@ class Roboball:SlowProjectile{
 			if(dangle<10)dmgg+=random(2000,4000);
 			else if(dangle<30)dmgg+=random(200,1200);
 
-			blockingobject.damagemobj(self,target,dmgg,"SmallArms3");
+			blockingmobj.damagemobj(self,target,dmgg,"SmallArms3");
 		}
 
 		//explosion
@@ -126,7 +126,7 @@ class Satanball:HDFireball{
 	states{
 	spawn:
 		BFS1 A 0{
-			if(stamina>40||!target||target.health<1)return;
+			if(stamina>40||!target||target.health<1)return;  
 			stamina++;
 			actor tgt=target.target;
 			if(tgt&&checksight(tgt)){
@@ -147,7 +147,7 @@ class Satanball:HDFireball{
 	death:
 		BFE1 A 1 bright{
 			spawn("HDSmoke",pos);
-			A_PlaySound("world/explode",CHAN_VOICE);
+			A_PlaySound("weapons/bfgx",CHAN_BODY,0.4);
 			damagetype="thermal";
 			bextremedeath=false;
 			A_Explode(64,64);
@@ -157,11 +157,28 @@ class Satanball:HDFireball{
 			//hit map geometry
 			if(
 				blockingline||
-				floorz>=pos.z||
+				floorz>=pos.z||  
 				ceilingz-height<=pos.z
 			){
 				A_SpawnChunks("HDSmoke",3,2,3);
 				A_SpawnChunks("HugeWallChunk",50,4,20);
+			}
+
+			//teleport victim
+			if(
+				blockingmobj
+				&&!blockingmobj.player
+				&&!blockingmobj.special
+				&&(
+					!blockingmobj.bismonster
+					||blockingmobj.health<1
+				)
+				&&!random(0,3)
+			){
+				spawn("TeleFog",blockingmobj.pos);
+				vector3 newpos=(angletovector(frandom(0,360),8192),0);
+				blockingmobj.setorigin(newpos,false);
+				spawn("TeleFog",blockingmobj.pos);
 			}
 		}
 		BFE1 BBCDDEEE 2 bright A_FadeOut(0.05);
