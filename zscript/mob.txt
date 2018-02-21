@@ -222,7 +222,7 @@ struct HDMobAI play{
 
 		//reset position and move in chase direction
 		if(pp!=pg){
-			caller.setorigin(pg,false);
+			if(!caller.bteleport)caller.setorigin(pg,false);
 			if(caller.bfloat){
 				caller.vel.xy+=caller.angletovector(caller.angle,caller.speed*0.16);
 			}else{
@@ -278,20 +278,27 @@ struct HDMobAI play{
 		//don't spin so dang fast
 		caller.angle=ag+clamp(caller.deltaangle(ag,caller.angle),-10,10);
 
-		if(!caller.bfloat && caller.floorz<caller.pos.z)return; //abort if can't propel caller
-		caller.vel.xy*=0.7; //slow down
-
-		//reset position and move in chase direction
-		if(pp!=pg){
-			caller.setorigin(pg,false);
-			if(caller.bfloat){
-				caller.vel.xy+=caller.angletovector(caller.angle,caller.speed*0.16);
-				if(attacktarget&&caller.pos.z-attacktarget.pos.z<attacktarget.height)
-					caller.vel.z+=frandom(0,0.1); //floaty death from above
-			}else{
-				caller.vel.xy+=caller.angletovector(caller.angle,caller.speed*0.16);
+		if(
+			!caller.bteleport&&(
+				caller.bfloat
+				||caller.floorz>=caller.pos.z
+			)
+		){
+			caller.vel.xy*=0.7; //slow down
+	
+			//reset position and move in chase direction
+			if(pp!=pg){
+				if(!caller.bteleport)caller.setorigin(pg,false);
+				if(caller.bfloat){
+					caller.vel.xy+=caller.angletovector(caller.angle,caller.speed*0.16);
+					if(attacktarget&&caller.pos.z-attacktarget.pos.z<attacktarget.height)
+						caller.vel.z+=frandom(0,0.1); //floaty death from above
+				}else{
+					caller.vel.xy+=caller.angletovector(caller.angle,caller.speed*0.16);
+				}
 			}
 		}
+
 		//reset things
 		caller.bfrightened=fraid;
 		caller.speed=getdefaultbytype(caller.getclass()).speed;
