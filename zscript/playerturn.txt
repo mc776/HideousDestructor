@@ -40,6 +40,7 @@ extend class HDPlayerPawn{
 		int barrellength=0;
 		double barrelwidth=0;
 		int barreldepth=0;
+		bool notnull=true;
 		let wp=HDWeapon(player.readyweapon);
 		if(wp && wp.gunmass>0){
 			amt=wp.gunmass;
@@ -151,6 +152,7 @@ extend class HDPlayerPawn{
 			barrellength=40;
 			barrelwidth=4;
 			barreldepth=7;
+			notnull=false;
 		}
 
 		//inertia adjustments for other things
@@ -161,7 +163,7 @@ extend class HDPlayerPawn{
 		}else if(countinv("PowerStrength")||countinv("PowerInvulnerable")){
 			amt*=0.2;
 		}
-		if(countinv("WeaponBusy")){
+		if(notnull&&countinv("WeaponBusy")){
 			barrellength=radius+2;
 			barrelwidth=2;
 			amt=min(amt*1.5,20);
@@ -257,7 +259,6 @@ extend class HDPlayerPawn{
 				offsetz:midheight,offsetside:-barrelwidth
 			);
 			if(muzpuf){
-				if(!muzpuf.tracer||!muzpuf.tracer.bcorpse)
 				distleft=(levellocals.vec3diff(muzpuf.pos,barrelbase).length());
 				muzpuf.destroy();
 			}else muzhit++;
@@ -268,7 +269,6 @@ extend class HDPlayerPawn{
 				offsetz:midheight,offsetside:+barrelwidth
 			);
 			if(muzpuf){
-				if(!muzpuf.tracer||!muzpuf.tracer.bcorpse)
 				distright=(levellocals.vec3diff(muzpuf.pos,barrelbase).length());
 				muzpuf.destroy();
 			}else muzhit++;
@@ -280,7 +280,6 @@ extend class HDPlayerPawn{
 				offsetz:highheight,offsetside:0
 			);
 			if(muzpuf){
-				if(!muzpuf.tracer||!muzpuf.tracer.bcorpse)
 				disttop=(levellocals.vec3diff(muzpuf.pos,barrelbase).length());
 				muzpuf.destroy();
 			}else muzhit++;
@@ -291,7 +290,6 @@ extend class HDPlayerPawn{
 				offsetz:lowheight,offsetside:0
 			);
 			if(muzpuf){
-				if(!muzpuf.tracer||!muzpuf.tracer.bcorpse)
 				distbottom=(levellocals.vec3diff(muzpuf.pos,barrelbase).length());
 				muzpuf.destroy();
 			}else muzhit++;
@@ -309,7 +307,7 @@ extend class HDPlayerPawn{
 
 //A_Log(string.format("%i %i %i %i",distleft,distright,disttop,distbottom));
 
-			if(!(wp is "NullWeapon")){
+			if(notnull){
 				if(distleft<barrellength){
 					anglechange=max(distleft-barrellength,mvng?0:-4);
 				}
@@ -327,7 +325,7 @@ extend class HDPlayerPawn{
 
 				if(totallyblocked){
 					vector2 cv=angletovector(pitch,
-						clamp(barrellength-disttop,0,barrellength)*0.01);
+						clamp(barrellength-disttop,0,barrellength)*0.001);
 					A_ChangeVelocity(-cv.x,0,cv.y,CVF_RELATIVE);
 				}
 			}
