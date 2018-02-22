@@ -398,6 +398,53 @@ class LaserCheckPuff:CheckPuff{default{-alwayspuff -skyexplode}}
 
 
 
+// Null weapon for lowering weapon
+class NulledWeapon:InventoryFlag{}
+class NullWeapon:HDWeapon{
+	default{
+		+weapon.wimpy_weapon
+		+weapon.cheatnotweapon
+		+nointeraction
+		+weapon.noalert
+		+inventory.untossable
+	}
+	override inventory CreateTossable(int amount){
+		let onr=hdplayerpawn(owner);
+		if(onr){
+			if(onr.lastweapon)onr.A_DropInventory(onr.lastweapon.getclassname());
+		}
+		return null;
+	}
+	states{
+	spawn:
+		TNT1 A 0;
+		stop;
+	select:
+		TNT1 A 0{
+			A_TakeInventory("PowerFrightener",1);
+			A_GiveInventory("NulledWeapon",1);
+			A_SetCrosshair(21);
+		}
+		TNT1 A 0 A_Raise();
+		wait;
+	deselect:
+		TNT1 A 0 A_SetCrosshair(21);
+		TNT1 A 0 A_Lower();
+		wait;
+	ready:
+		TNT1 A 1 A_WeaponReady(WRF_NOFIRE);
+		TNT1 A 0 A_TakeInventory("WeaponBusy");
+		loop;
+	fire:
+		TNT1 A 1;
+		goto ready;
+	}
+}
+
+
+
+
+
 extend class HDPlayerPawn{
 	override void FireWeaponAlt(state stat){
 		super.fireweaponalt(stat);
