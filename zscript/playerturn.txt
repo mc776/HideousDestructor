@@ -291,8 +291,8 @@ extend class HDPlayerPawn{
 				muzpuf.destroy();
 			}else muzhit++;
 
-			//set angles
 
+			//set angles
 			bool mvng;if(lastheight!=height || vel.length()<0.5)mvng=true;
 			bool hitsnd;
 			if(max(abs(anglechange),abs(pitchchange))>1)hitsnd=true;  
@@ -314,9 +314,16 @@ extend class HDPlayerPawn{
 			}
 			pitchchange=clamp(pitchchange,-45,45);
 
+
+
+			//totally caught
 			if(!muzhit){
-				A_Recoil(clamp(barrellength-disttop,0,barrellength)*0.02);
+				vector2 cv=angletovector(pitch,
+					clamp(barrellength-disttop,0,barrellength)*0.01);
+				A_ChangeVelocity(-cv.x,0,cv.y,CVF_RELATIVE);
+//				if(cv.y<0)pitchchange=max(pitchchange,0);
 			}
+
 
 
 			//bump
