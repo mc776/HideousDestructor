@@ -28,13 +28,15 @@ extend class HDPlayerPawn{
 			A_TakeInventory("BasicArmor");
 		}
 
+		if(damage==TELEFRAG_DAMAGE)flags|=DMG_FORCED;
+
 		//factor in cheats and skills
 		if(!(flags&DMG_FORCED)){
 			if(
-				player&&(
+				binvulnerable||!bshootable
+				||(player&&(
 					player.cheats&CF_GODMODE2 || player.cheats&CF_GODMODE
-				)
-				||binvulnerable||!bshootable
+				))
 			)return 0;
 			if(!skill||hd_lowdamage)damage=max(1,damage/3);
 		}
