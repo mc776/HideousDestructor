@@ -8,6 +8,7 @@ extend class HDPlayerPawn{
 	vector2 muzzleclimb4;
 	vector2 muzzledrift;
 	bool muzzlehit;
+	bool totallyblocked;
 
 	void TurnCheck(){
 		//get input based on previous angle
@@ -146,6 +147,10 @@ extend class HDPlayerPawn{
 			barrellength=40;
 			barrelwidth=1;
 			barreldepth=2;
+		}else if(wp is "NullWeapon"){
+			barrellength=40;
+			barrelwidth=4;
+			barreldepth=7;
 		}
 
 		//inertia adjustments for other things
@@ -292,6 +297,11 @@ extend class HDPlayerPawn{
 			}else muzhit++;
 
 
+			//totally caught
+			if(!muzhit)totallyblocked=true;
+			else totallyblocked=false;
+
+
 			//set angles
 			bool mvng;if(lastheight!=height || vel.length()<0.5)mvng=true;
 			bool hitsnd;
@@ -299,29 +309,27 @@ extend class HDPlayerPawn{
 
 //A_Log(string.format("%i %i %i %i",distleft,distright,disttop,distbottom));
 
-			if(distleft<barrellength){
-				anglechange=max(distleft-barrellength,mvng?0:-4);
-			}
-			if(distright<barrellength){
-				anglechange=min(barrellength-distright,mvng?0:4);
-			}
+			if(!(wp is "NullWeapon")){
+				if(distleft<barrellength){
+					anglechange=max(distleft-barrellength,mvng?0:-4);
+				}
+				if(distright<barrellength){
+					anglechange=min(barrellength-distright,mvng?0:4);
+				}
+	
+				if(disttop<barrellength){
+					pitchchange=max(distbottom-barrellength,mvng?0:-4);
+				}
+				if(distbottom<barrellength){
+					pitchchange=min(barrellength-disttop,mvng?0:4);
+				}
+				pitchchange=clamp(pitchchange,-45,45);
 
-			if(disttop<barrellength){
-				pitchchange=max(distbottom-barrellength,mvng?0:-4);
-			}
-			if(distbottom<barrellength){
-				pitchchange=min(barrellength-disttop,mvng?0:4);
-			}
-			pitchchange=clamp(pitchchange,-45,45);
-
-
-
-			//totally caught
-			if(!muzhit){
-				vector2 cv=angletovector(pitch,
-					clamp(barrellength-disttop,0,barrellength)*0.01);
-				A_ChangeVelocity(-cv.x,0,cv.y,CVF_RELATIVE);
-//				if(cv.y<0)pitchchange=max(pitchchange,0);
+				if(totallyblocked){
+					vector2 cv=angletovector(pitch,
+						clamp(barrellength-disttop,0,barrellength)*0.01);
+					A_ChangeVelocity(-cv.x,0,cv.y,CVF_RELATIVE);
+				}
 			}
 
 

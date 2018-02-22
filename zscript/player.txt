@@ -371,7 +371,8 @@ class HDPlayerPawn:PlayerPawn{
 
 		//lowering weapon for sprint/mantle/jump
 		if(
-			input&BT_SPEED
+			totallyblocked
+			||input&BT_SPEED
 			||input&BT_JUMP
 		){
 			if(!barehanded){
