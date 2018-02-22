@@ -24,7 +24,6 @@ extend class HDActor{
 		);
 
 		//initialize things to be used in the iterator
-		vector3 orig=self.pos+(0,0,self.height*0.5);
 		if(!source){
 			if(target)source=target;
 			else if(master)source=master;
@@ -44,7 +43,6 @@ extend class HDActor{
 				||it==self
 				||(
 					!hurtspecies
-					&&source
 					&&it.species==source.species
 				)
 			)continue;

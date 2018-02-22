@@ -81,41 +81,64 @@ class HDPlayerPawn:PlayerPawn{
 
 		A_SetTeleFog("TeleportFog","TeleportFog");
 	}
+	void A_CheckGunBraced(){
+		if(countinv("WeaponBusy"))gunbraced=false;
+		else if(
+			!barehanded
+			&&!gunbraced
+			&&zerk<1
+			&&zat==pos.z
+			&&!countinv("IsMoving")
+		){
+			double zat2=getzat(16)-zat+height;
+			if(zat2<0 && zat2>-27){
+				gunbraced=true;
+				muzzleclimb1.y-=0.1;
+				muzzleclimb2.y+=0.05;
+				muzzleclimb3.y+=0.05;
+				A_PlaySound("weapons/rifleclick2",CHAN_BODY,0.3);
+			}
+		}
+	}
+	void A_CheckSeeState(){
+		gunbraced=false;
+		overloaded=CheckEncumbrance();
+		feetangle=angle;
+
+		//random low health sumbling
+		if(zat>=pos.z && !random(1,2)){  
+			if(health<random(35,45)){
+				if(player.crouchfactor<0.7)A_ChangeVelocity(
+					random(-4,2),frandom(-3,3),random(-1,0),CVF_RELATIVE
+				);
+				vel.xy*=frandom(0.7,1.0);
+			}else if(health<random(60,65)){
+				if(player.crouchfactor<0.7)A_ChangeVelocity(
+					random(-2,1),frandom(-1,1),random(-1,0),CVF_RELATIVE
+				);
+				vel.xy*=frandom(0.9,1.0);
+			}
+		}
+		if(stunned)setstatelabel("seestun");
+		else if(cansprint && runwalksprint>0){
+			if(bloodpressure<30)bloodpressure+=2;
+			setstatelabel("seesprint");
+		}else if(runwalksprint<0){
+			setstatelabel("seewalk");
+		}
+	}
 	states{
 	spawn:
 		PLAY A 4;
 	spawn2:
 		#### E 5;
-		---- A 0{
-			A_TakeInventory("IsMoving");
-		}
-		---- AAAAAA 5{
-			if(
-				!barehanded
-				&&zerk<1
-				&&zat==pos.z
-				&&!gunbraced
-				&&!countinv("IsMoving")
-				&&!countinv("WeaponBusy")
-			){
-				vector3 posbak=pos;
-				setxyz(pos+(cos(angle),sin(angle),0)*16);
-				double zat2=getzat();
-				setxyz(posbak);
-				zat2-=(zat+height);
-				if(-27<zat2 && zat2<0){
-					gunbraced=true;
-					muzzleclimb1.y-=0.1;
-					muzzleclimb2.y+=0.05;
-					muzzleclimb3.y+=0.05;
-					A_PlaySound("weapons/rifleclick2",CHAN_BODY,0.3);
-				}else gunbraced=false;
-			}else if(countinv("WeaponBusy"))gunbraced=false;
-		}
+		---- A 0 A_TakeInventory("IsMoving");
+		---- A 0 A_CheckGunBraced();
+		---- AAAAAA 5 A_CheckGunBraced();
 		loop;
 	see:
 		//this state is needed for the player setup preview to work
-		---- A 0 {setstatelabel("see0");}
+		---- A 0 A_Jump(256,"see0");
 	seepreview:
 		PLAY ABCDABCDABCDABCDABCD 4;
 		PLAY E 25;
@@ -127,60 +150,27 @@ class HDPlayerPawn:PlayerPawn{
 		PLAY E 35;
 		loop;
 	see0:
-		---- A 0{
-			gunbraced=false;
-			overloaded=CheckEncumbrance();
-			feetangle=angle;
-			if(zat>=pos.z && !random(1,2)){
-				if(health<random(35,45)){
-					if(player.crouchfactor<0.7)A_ChangeVelocity(
-						random(-4,2),frandom(-3,3),random(-1,0),CVF_RELATIVE
-					);
-					vel.xy*=frandom(0.7,1.0);
-				}else if(health<random(60,65)){
-					if(player.crouchfactor<0.7)A_ChangeVelocity(
-						random(-2,1),frandom(-1,1),random(-1,0),CVF_RELATIVE
-					);
-					vel.xy*=frandom(0.9,1.0);
-				}
-			}
-			if(stunned){
-				return resolvestate("seestun");
-			}
-			else if(cansprint && runwalksprint>0){
-				if(bloodpressure<30)bloodpressure+=2;
-				return resolvestate("seesprint");
-			}
-			else if(runwalksprint<0){
-				return resolvestate("seewalk");
-			}
-			return resolvestate(null);
-		}
+		---- A 0 A_CheckSeeState();
 		#### ABCD 4;
-		---- A 0{return resolvestate("spawn");}
+		goto spawn;
 	seestun:
-		#### ABCD random(2,10) {
-			A_GiveInventory("IsMoving",2);
-		}
-		---- A 0{return resolvestate("spawn");}
+		#### ABCD random(2,10) A_GiveInventory("IsMoving",2);
+		goto spawn;
 	seewalk:
-		#### ABCD 6 {
-			if(height>30 && runwalksprint<0)A_TakeInventory("IsMoving",5);
+		#### ABCD 6{
+			if(height>40 && runwalksprint<0)A_TakeInventory("IsMoving",5);  
 		}
-		---- A 0{return resolvestate("spawn");}
+		goto spawn;
 	seesprint:
 		---- A 4 A_TakeInventory("PowerFrightener");
 		#### B 2;
 		#### C 4;
 		#### D 2;
-		---- A 0{return resolvestate("spawn");}
+		goto spawn;
 
 	missile:
 		#### E 4{
 			overloaded=CheckEncumbrance();
-			if(
-				player&&hdweapon(player.readyweapon)
-			)hdweapon(player.readyweapon).notshot=0;
 			A_TakeInventory("PowerFrightener");
 		}
 		---- A 0 A_Jump(256,"spawn2");
@@ -188,16 +178,12 @@ class HDPlayerPawn:PlayerPawn{
 		#### F 2 bright light("SHOT"){
 			if(findinventory("HDBlurSphere"))
 				HDBlursphere(findinventory("HDBlurSphere")).intensity-=100;
-			if(
-				player&&hdweapon(player.readyweapon)
-			)hdweapon(player.readyweapon).notshot=0;
 			A_TakeInventory("PowerFrightener");
-			if(!random(0,5)){A_GiveInventory("EvadeNow",1,AAPTR_PLAYER_GETTARGET);}
 		}
 		---- A 0 A_Jump(256,"missile");
 	}
 	override void Tick(){
-		if (!player||!player.mo||player.mo!=self){Super.Tick();return;} //anti-voodoodoll
+		if(!player||!player.mo||player.mo!=self){super.tick();return;} //anti-voodoodoll
 
 		lastpos=pos;
 		zat=getzat();
@@ -227,7 +213,7 @@ class HDPlayerPawn:PlayerPawn{
 
 
 		HeartTicker(fm,sm,input);
-		if(inpain>0)inpain--;
+		if(inpain>0)inpain--;  
 
 		//prevent odd screwups that leave you unable to throw grenades or something
 		if(!countinv("Ring"))GiveBasics();
@@ -240,7 +226,7 @@ class HDPlayerPawn:PlayerPawn{
 
 		//check if teleported
 		//fastest you can voluntarily go (berserk, invuln, soulsphere) is mid-90s
-		if((lastpos-pos).length()>100)teleported=true;else teleported=false;
+		if(bteleport||(lastpos-pos).length()>100)teleported=true;else teleported=false;
 
 		//if this is put into playermove bad things happen
 		if(!teleported)TurnCheck();
@@ -248,7 +234,7 @@ class HDPlayerPawn:PlayerPawn{
 		CrouchCheck();
 
 		//prevent some support exploits
-		if(max(abs(vel.x),abs(vel.y),abs(vel.z))>1)gunbraced=false;
+		if(max(abs(vel.x),abs(vel.y),abs(vel.z))>1)gunbraced=false;  
 
 		//add inventory flags for inputs
 		if(
@@ -258,23 +244,24 @@ class HDPlayerPawn:PlayerPawn{
 			||input&BT_USER3
 			||input&BT_USER4
 		)A_GiveInventory("WeaponBusy");
-		if(runwalksprint>=0&&(fm||sm))A_GiveInventory("IsMoving");
+		if((fm||sm)&&runwalksprint>=0)A_GiveInventory("IsMoving");  
+
+		//this will be used a few times hereon in
+		bool weaponbusy=countinv("WeaponBusy");
 
 		//"falling" damage
-		int fallvel=0;
-		if(!teleported)fallvel=(lastvel-vel).length();
-		if(fallvel>10){
+		int fallvel=teleported?0:(lastvel-vel).length();
+		if(fallvel>10){  
 			if(barehanded)fallvel-=4;
 			if(fallvel<=15)A_PlaySound("weapons/smack",CHAN_AUTO,0.4);
 			else{
 				A_PlaySound("weapons/smack",CHAN_AUTO);
-				if(countinv("PowerStrength"))fallvel*=0.5;
+				if(countinv("PowerStrength"))fallvel/=2;
 				int fdmg=random(fallvel*2,fallvel*3);
 				damagemobj(self,self,fdmg,"falling");
-				stunned+=fdmg*random(20,25);
-				beatmax-=fallvel*0.5;
-				if(random(1,fallvel)>7){
-					if(player.readyweapon && !(player.readyweapon is "Ring"))
+				beatmax-=fallvel/2;
+				if(random(1,fallvel)>7){  
+					if(player.readyweapon&&!(player.readyweapon is "Ring"))
 						A_DropInventory(player.readyweapon.getclassname());
 				}
 			}
@@ -284,7 +271,7 @@ class HDPlayerPawn:PlayerPawn{
 
 		//see if player is intentionally walking, running or sprinting
 		//-1 = walk, 0 = run, 1 = sprint
-		if(input & BT_SPEED) runwalksprint=1;
+		if(input & BT_SPEED)runwalksprint=1;
 		else if(6400<max(abs(fm),abs(sm)))runwalksprint=0;
 		else runwalksprint=-1;
 
@@ -296,7 +283,7 @@ class HDPlayerPawn:PlayerPawn{
 			||(player.readyweapon is "NullWeapon")
 		)barehanded=true;else barehanded=false;
 
-		//don't know where to put this: reduce stepheight if crouched
+		//reduce stepheight if crouched
 		if(height<40 && !barehanded) maxstepheight=12;
 		else maxstepheight=24;
 
@@ -304,9 +291,9 @@ class HDPlayerPawn:PlayerPawn{
 		//conditions for forcing walk
 		if(
 			stunned
-			||(!zerk && fatigue>HDCONST_WALKFATIGUE && stimcount<8)
-			||StumbleCheck(fm,sm)
 			||health<25
+			||(zerk<1 && fatigue>HDCONST_WALKFATIGUE && stimcount<8)
+			||StumbleCheck(fm,sm)
 		){
 			mustwalk=true;
 			runwalksprint=-1;
@@ -317,8 +304,8 @@ class HDPlayerPawn:PlayerPawn{
 			!mustwalk
 			&&barehanded
 			&&(
-				zerk||
-				stimcount>10||
+				zerk>0||
+				stimcount>10||  
 				fatigue<HDCONST_SPRINTFATIGUE
 			)
 		)cansprint=true;else cansprint=false;
@@ -328,19 +315,20 @@ class HDPlayerPawn:PlayerPawn{
 			2.8
 			*(countinv("PowerStrength")?1.5:1.)
 			*(height<40?0.6:1.),
-			countinv("WornRadsuit")?1.8:
-			(countinv("BlackArmour")?2.2:
-			(countinv("BlueArmour")?2.6:
-			countinv("GreenArmour")?3.0:999.))
+			countinv("WornRadsuit")?1.8:(
+				countinv("BlackArmour")?2.2:(
+					countinv("BlueArmour")?2.6:
+					countinv("GreenArmour")?3.0:999.
+				)
+			)
 		);
-		if(overloaded>0){
+		if(overloaded>0){  
 			maxspeed=max(0.1,4.-overloaded);
 			if(maxspeed<0.36){
 				viewbob=clamp(viewbob+0.2,0,1.4);
 				mustwalk=true;
 				cansprint=false;
-			}
-			else if(maxspeed<0.4){
+			}else if(maxspeed<0.4){
 				viewbob=clamp(viewbob+0.1,0,1.3);
 				cansprint=false;
 			}else if(maxspeed<1.){
@@ -361,7 +349,7 @@ class HDPlayerPawn:PlayerPawn{
 			else speed=1.6;
 		}
 		//cap speed depending on weapon status
-		if(countinv("WeaponBusy"))speed=min(speed,0.6);
+		if(weaponbusy)speed=min(speed,0.6);
 		else if(
 			//weapons so bulky they get in the way physically
 			//as a rule of thumb, anything that uses the "swinging" weapon bob
@@ -375,7 +363,7 @@ class HDPlayerPawn:PlayerPawn{
 
 		//then snap to 1 of only 3 speeds if necessary
 		if(multiplayer && hd_3speed){
-			if(speed>2.)speed=2.6;  
+			if(speed>2.)speed=2.6;    
 			else if(speed>0.5)speed=1.;
 			else speed=0.36;
 		}
@@ -401,55 +389,48 @@ class HDPlayerPawn:PlayerPawn{
 
 		//display crosshair
 		if(
-			countinv("WeaponBusy")||
-			countinv("PowerInvulnerable")||
-			(
+			weaponbusy
+			||(
 				input&BT_RELOAD
 //				||input&BT_USER1
 //				||input&BT_USER2
 				||input&BT_USER3
 				||input&BT_USER4
 				||input&BT_JUMP
-			)||
-			abs(iyaw)>4096
+			)
+			||abs(iyaw)>4096  
+			||countinv("PowerInvulnerable")
 		)nocrosshair=12;
 		else if(
-			player.fov>120||player.fov<80
+			player.fov>120||player.fov<80  
 		)nocrosshair=1;
 		else nocrosshair--;
 
 		//check use key
-		if(input&BT_USE){
+		if(!(input&BT_USE))bpickup=false;else{
 			bpickup=true;
-			if(!(oldinput & BT_USE)){
-				hasgrabbed=false;
-			}
+			if(!(oldinput&BT_USE))hasgrabbed=false;
+
 			//pickerupper
 			overloaded=CheckEncumbrance();
-			if(!hasgrabbed){
-				vector3 ap=(
-					cos(pitch)*cos(angle),
-					cos(pitch)*sin(angle),
-					-sin(pitch)
-				);
-				actor a=spawn("userpickerupper",pos-ap+(0,0,height-16));
-				a.target=self;
-				a.vel=ap*4;
-			}
+			if(!hasgrabbed)A_SpawnItemEx(
+				"userpickerupper",1,0,height-16,
+				cos(pitch)*4,0,sin(-pitch)*4,
+				0,SXF_NOCHECKPOSITION|SXF_SETTARGET
+			);
 			if(
 				!corpsekicktimer
-				&&height>45
-				&&beatmax>10
 				&&zat==pos.z
+				&&height>45
+				&&beatmax>10  
 			){
 				bool kicked=false;
-				actor k=spawn("fastprojectile",pos);k.angle=angle;
-				k.A_SetSize(4,12);//k.bfloorhugger=true;
-				k.A_ChangeVelocity(5,0,0,CVF_RELATIVE);
-				k.A_SetSize(6,10);k.target=self;
+				actor k=spawn("fastprojectile",pos);
+				k.angle=angle;k.target=self;
+				k.A_SetSize(6,10);
+				vector2 kv=AngleToVector(angle,5);
 				for(int i=7;i;i--){
-					if(!k.TryMove(k.pos.xy+k.vel.xy,true) && k.blockingmobj){
-						i=1;
+					if(!k.TryMove(k.pos.xy+kv,true) && k.blockingmobj){
 						if(
 							k.blockingmobj.bcorpse
 							||k.blockingmobj is "HDFragGrenade"
@@ -465,12 +446,16 @@ class HDPlayerPawn:PlayerPawn{
 						}else if(
 							k.blockingmobj.bismonster
 							||(
-								k.blockingmobj is "PlayerPawn"
-								&& !isteammate(k.blockingmobj)
+								k.blockingmobj.player
+								&&!isteammate(k.blockingmobj)
 							)
 						){
 							corpsekicktimer=17+unstablewoundcount*0.5;
-							A_SpawnItemEx("KickProjectile",0,0,4,vel.x,vel.y,vel.z,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);
+							A_SpawnItemEx("KickProjectile",0,0,4,
+								vel.x,vel.y,vel.z,0,
+								SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM
+							);
+							kicked=true;
 						}else{
 							double forc=0.4;if(zerk>0)forc=1.2;
 							corpsekicktimer=20+unstablewoundcount*0.6;
@@ -478,16 +463,15 @@ class HDPlayerPawn:PlayerPawn{
 							k.blockingmobj.A_PlaySound("misc/punch");
 							kicked=true;
 						}
+						break;
 					}
 				}
 				if(kicked){
 					fatigue++;bloodpressure++;stunned+=2;
 				}
 			}
-		}else{
-			bpickup=false;
 		}
-		if(corpsekicktimer>0)corpsekicktimer--;
+		if(corpsekicktimer>0)corpsekicktimer--;  
 
 
 		//record old shit
@@ -515,7 +499,7 @@ class ScopeCamera:IdleDummy{
 		pitch=target.pitch;
 		vector2 fwd=angletovector(target.angle,2);
 
-		if(abs(pitch)>89)setxyz(target.pos+(
+		if(abs(pitch)>89)setxyz(target.pos+(  
 			fwd*max(0.5,cos(pitch))*2,
 			sin(-pitch)*6+target.height-4
 		));else setxyz(target.pos+(
@@ -592,5 +576,3 @@ extend class HDPlayerPawn{
 		ConsolidateAmmo();
 	}
 }
-
-

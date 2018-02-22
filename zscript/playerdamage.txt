@@ -291,6 +291,10 @@ extend class HDPlayerPawn{
 		){
 			//noarmour
 			flags|=DMG_NO_ARMOR;
+
+			if(mod=="falling"){
+				stunned+=damage*random(20,25);
+			}
 		}else{
 			//anything else
 			damage*=(1-(armourlevel*0.2));
