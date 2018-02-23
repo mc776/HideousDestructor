@@ -38,7 +38,7 @@ class HDFireballTail:IdleDummy{
 		}
 		//nexttic
 		if(CheckNoDelay()){
-			if(tics>0)tics--;  
+			if(tics>0)tics--;
 			while(!tics){
 				if(!SetState(CurState.NextState)){
 					return;
@@ -77,6 +77,7 @@ class HDFireball:HDActor{
 		frac=vel/fracc;
 		A_PlaySound(seesound,CHAN_VOICE);
 		A_PlaySound(activesound,CHAN_BODY,0.4,true,4);
+		corkscrew=0;
 	}
 	bool A_FBSeek(
 		int seekradius=256,
@@ -118,6 +119,13 @@ class HDFireball:HDActor{
 		actor a=spawn(missilename,pos);
 		a.master=self;a.vel=self.vel*0.9;
 	}
+	int corkscrew;
+	void A_Corkscrew(double turnspeed=1.,bool clockwise=false,int adjustdegree=45){
+		if(!corkscrew)turnspeed*=0.5;
+		vector2 turnamt=angletovector(clockwise?corkscrew:-corkscrew,turnspeed);
+		A_ChangeVelocity(0,turnamt.x,turnamt.y,CVF_RELATIVE);
+		corkscrew+=adjustdegree;if(corkscrew>720)corkscrew-=360;
+	}
 	override void Tick(){
 		if(globalfreeze||level.frozen){
 			clearinterpolation();
@@ -132,7 +140,7 @@ class HDFireball:HDActor{
 			vel*=0.9;
 			//nexttic
 			if(CheckNoDelay()){
-				if(tics>0)tics--;  
+				if(tics>0)tics--;
 				while(!tics){
 					if(!SetState(CurState.NextState)){
 						return;
@@ -216,7 +224,7 @@ class HDFireball:HDActor{
 		if(grav)vel.z-=grav;
 		//nexttic
 		if(CheckNoDelay()){
-			if(tics>0)tics--;  
+			if(tics>0)tics--;
 			while(!tics){
 				if(!SetState(CurState.NextState)){
 					return;

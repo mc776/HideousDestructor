@@ -28,7 +28,7 @@ class BFG9K:HDWeapon replaces BFG9000{
 		}
 	}
 	override void doeffect(){
-		if(weaponstatus[0]&BFGF_STRAPPED&&(owner&&owner.health>0))buntossable=true;  
+		if(weaponstatus[0]&BFGF_STRAPPED&&(owner&&owner.health>0))buntossable=true;    
 		else buntossable=false;
 	}
 	states{
@@ -94,12 +94,12 @@ class BFG9K:HDWeapon replaces BFG9000{
 	hold:
 		BFGG C 0{
 			if(
-				invoker.weaponstatus[BFGS_CHARGE]>=20  
+				invoker.weaponstatus[BFGS_CHARGE]>=20    
 				&& invoker.weaponstatus[BFGS_BATTERY]>=20
 			)return resolvestate("chargeend");
 			else if(
 				invoker.weaponstatus[BFGS_CHARGE]>BFGC_MINCHARGE
-				||invoker.weaponstatus[BFGS_BATTERY]>BFGC_MINCHARGE  
+				||invoker.weaponstatus[BFGS_BATTERY]>BFGC_MINCHARGE    
 			)return resolvestate("charge");
 			return resolvestate("nope");
 		}
@@ -110,7 +110,7 @@ class BFG9K:HDWeapon replaces BFG9000{
 				||invoker.weaponstatus[BFGS_BATTERY]<0
 				||(
 					invoker.weaponstatus[BFGS_CHARGE]>=20
-					&&invoker.weaponstatus[BFGS_BATTERY]>=20  
+					&&invoker.weaponstatus[BFGS_BATTERY]>=20    
 				)
 			)setweaponstate("nope");
 		}
@@ -128,7 +128,7 @@ class BFG9K:HDWeapon replaces BFG9000{
 			if(invoker.weaponstatus[BFGS_BATTERY]==20)A_SetTics(5);
 			if(health<40){
 				A_SetTics(4);
-				if(health>16)damagemobj(invoker,self,1,"internal");  
+				if(health>16)damagemobj(invoker,self,1,"internal");    
 			}
 			A_TakeInventory("WeaponBusy",1);
 			A_PlaySound("weapons/plasidle",5);
@@ -144,13 +144,13 @@ class BFG9K:HDWeapon replaces BFG9000{
 	chargeend:
 		BFGG B 2{
 			BFG9k.Spark(self,1,height-10);
-			A_PlaySound("weapons/plasidle",invoker.weaponstatus[BFGS_TIMER]>6?CHAN_AUTO:5);  
+			A_PlaySound("weapons/plasidle",invoker.weaponstatus[BFGS_TIMER]>6?CHAN_AUTO:5);    
 			A_WeaponReady(WRF_ALLOWRELOAD|WRF_NOFIRE|WRF_DISABLESWITCH);
 			A_SetTics(max(1,6-invoker.weaponstatus[BFGS_TIMER]*0.3));
 			invoker.weaponstatus[BFGS_TIMER]++;
 		}
 		BFGG B 0{
-			if(invoker.weaponstatus[BFGS_TIMER]>21)A_Refire("shoot");  
+			if(invoker.weaponstatus[BFGS_TIMER]>21)A_Refire("shoot");    
 			else A_Refire("chargeend");
 		}goto ready;
 	shoot:
@@ -229,13 +229,13 @@ class BFG9K:HDWeapon replaces BFG9000{
 	reload:
 		BFGG A 0{
 			if(
-				invoker.weaponstatus[BFGS_BATTERY]>=20  
+				invoker.weaponstatus[BFGS_BATTERY]>=20    
 				||(
 					!countinv("HDCellAmmo")
 					&&!countinv("HDCellPacks")
 				)
 			){
-				if(invoker.weaponstatus[BFGS_CHARGE]>BFGC_MINCHARGE)  
+				if(invoker.weaponstatus[BFGS_CHARGE]>BFGC_MINCHARGE)    
 					setweaponstate("reloadempty");
 					else setweaponstate("nope");
 			}else invoker.weaponstatus[BFGS_LOADTYPE]=1;
@@ -265,7 +265,7 @@ class BFG9K:HDWeapon replaces BFG9000{
 		BFGG C 2 offset(0,42){
 			A_MuzzleClimb(-frandom(1.2,2.4),frandom(1.2,2.4));
 			A_PlaySound("weapons/huntopen");
-			if(invoker.weaponstatus[BFGS_BATTERY]>=0){  
+			if(invoker.weaponstatus[BFGS_BATTERY]>=0){    
 				A_SetTics(4);
 				actor a;int b;
 				[b,a]=A_SpawnItemEx("HDCellPickup",
@@ -467,10 +467,10 @@ class SkillSharder:ActionItem{
 	}
 }
 
-class BFGBalle:FastProjectile{
+
+class BFGBalle:HDFireball{
 	int ballripdmg;
 	default{
-		projectile;
 		+skyexplode +forceradiusdmg +ripper -noteleport +telestomp +notarget
 		+bright
 		decal "HDBFGLightning";
@@ -482,35 +482,43 @@ class BFGBalle:FastProjectile{
 		height 6;
 		radius 6;
 		speed 10;
+		gravity 0;
 		obituary "%o was smacked by %k's big green gob.";
 	}
 	void A_BFGBallWeave(){
 		if(pos.z-floorz<12)vel.z+=1;
 		else if(ceilingz-pos.z<19)vel.z-=1;
-		A_BishopMissileWeave();
+		A_Corkscrew();
 
+		for(int i=0;i<10;i++){
+			A_SpawnParticle("green",SPF_RELATIVE|SPF_FULLBRIGHT,35,frandom(4,8),0,
+				frandom(-8,8),frandom(-8,8),frandom(0,8),
+				frandom(-1,1),frandom(-1,1),frandom(1,2),
+				-0.1,frandom(-0.1,0.1),-0.05
+			);
+		}
+
+		vector2 oldaim=(angle,pitch);
 		blockthingsiterator it=blockthingsiterator.create(self,2048);
 		while(it.Next()){
 			actor itt=it.thing;
 			if(
 				(itt.bismonster||itt.player)
 				&&itt!=target
-				&&itt.health>0  
+				&&itt.health>0    
 				&&!target.isfriend(itt)
 				&&!target.isteammate(itt)
 				&&checksight(itt)
 			){
-				vector2 oldaim=(angle,pitch);
 				A_Face(itt,0,0);
 				A_CustomRailgun((0),0,"","55 ff 88",
-					RGF_SILENT|RGF_NOPIERCING|RGF_FULLBRIGHT,
+					RGF_CENTERZ|RGF_SILENT|RGF_NOPIERCING|RGF_FULLBRIGHT,
 					0,50.0,"BFGPuff",0,0,2048,18,0.2,1.0
 				);
-				angle=oldaim.x;
-				pitch=oldaim.y;
 				break;
 			}
 		}
+		angle=oldaim.x;pitch=oldaim.y;
 	}
 	void A_BFGBallZap(){
 		blockthingsiterator it=blockthingsiterator.create(self,2048);
@@ -519,7 +527,7 @@ class BFGBalle:FastProjectile{
 			if(
 				(itt.bismonster||itt.player)
 				&&itt!=target
-				&&itt.health>0  
+				&&itt.health>0    
 				&&!target.isfriend(itt)
 				&&!target.isteammate(itt)
 				&&checksight(itt)
@@ -528,7 +536,7 @@ class BFGBalle:FastProjectile{
 				int hhh=itt.health;
 				for(int i=0;i<hhh;i+=1024){
 					A_CustomRailgun((0),0,"","55 ff 88",
-						RGF_SILENT|RGF_NOPIERCING|RGF_FULLBRIGHT,
+						RGF_CENTERZ|RGF_SILENT|RGF_NOPIERCING|RGF_FULLBRIGHT,
 						0,50.0,"BFGPuff",3,3,2048,18,0.2,1.0
 					);
 				}
@@ -540,7 +548,7 @@ class BFGBalle:FastProjectile{
 		TNT1 A 0 nodelay{
 			A_BFGSpray();
 			ballripdmg=1;
-			if(countinv("IsMoving",AAPTR_TARGET)>=6){  
+			if(countinv("IsMoving",AAPTR_TARGET)>=6){    
 				A_SetPitch(pitch+random(-3,3));
 				A_SetAngle(angle+random(-1,1));
 			}
@@ -581,9 +589,9 @@ class BFGBallRemains:GreenParticleFountain{
 		stop;
 	}
 }
-class BFGBallTail:GreenParticleFountain{
+class BFGBallTail:IdleDummy{
 	default{
-		-invisible +forcexybillboard
+		+forcexybillboard
 		scale 0.8;renderstyle "add";
 	}
 	states{
@@ -609,11 +617,12 @@ class BFGPuff:GreenParticleFountain{
 			A_PlaySound("misc/bfgrail",5);
 		}
 		BFE2 A 3 bright{
-			A_Explode(random(196,320),320);
+			A_Explode(random(196,320),320,0);
 
 			//teleport victim
 			if(
 				tracer
+				&&tracer!=target
 				&&!tracer.player
 				&&!tracer.special
 				&&(
