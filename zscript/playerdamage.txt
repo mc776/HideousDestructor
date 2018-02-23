@@ -295,7 +295,8 @@ extend class HDPlayerPawn{
 			flags|=DMG_NO_ARMOR;
 
 			if(mod=="falling"){
-				stunned+=damage*random(20,25);
+				if(!source)return 0; //ignore regular fall damage
+				else stunned+=damage*random(20,25);
 			}
 		}else{
 			//anything else
