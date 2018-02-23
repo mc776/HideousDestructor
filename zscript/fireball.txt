@@ -149,12 +149,12 @@ class HDFireball:HDActor{
 			}
 			return;
 		}
-		if(vel==(0,0,0)) vel.x=minvel;
+		if(vel.xy==(0,0))A_Recoil(-0.001);
 
 		//update frac
 		if(oldvel!=vel){
 			oldvel=vel;
-			fracc=max(vel.length()/radius,1);
+			fracc=max(vel.xy.length()/radius,1);
 			frac=vel/fracc;
 		}
 
