@@ -123,7 +123,7 @@ class HDFireball:HDActor{
 	void A_Corkscrew(double turnspeed=1.,bool clockwise=false,int adjustdegree=45){
 		if(!corkscrew)turnspeed*=0.5;
 		vector2 turnamt=angletovector(clockwise?corkscrew:-corkscrew,turnspeed);
-		A_ChangeVelocity(0,turnamt.x,turnamt.y,CVF_RELATIVE);
+		A_ChangeVelocity(sin(pitch)*turnamt.y,turnamt.x,cos(pitch)*turnamt.y,CVF_RELATIVE);
 		corkscrew+=adjustdegree;if(corkscrew>720)corkscrew-=360;
 	}
 	override void Tick(){

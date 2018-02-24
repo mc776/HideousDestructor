@@ -542,8 +542,8 @@ class BFGBalle:HDFireball{
 			A_BFGSpray();
 			ballripdmg=1;
 			if(countinv("IsMoving",AAPTR_TARGET)>=6){    
-				A_SetPitch(pitch+random(-3,3));
-				A_SetAngle(angle+random(-1,1));
+				pitch+=frandom(-3,3);
+				angle+=frandom(-1,1);
 			}
 		}
 		BFS1 AB 2 A_SpawnItemEx("BFGBallTail",0,0,0,vel.x*0.2,vel.y*0.2,vel.z*0.2,0,168,0);
