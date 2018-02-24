@@ -116,6 +116,9 @@ ACTOR TheTyrant : BossBrain replaces BossBrain
 		BBRN A -1
 		Stop
 	Death.PistolHack:
+		BBRN B 7
+		BBRN B 20 A_Scream
+		BBRN BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB 1{if(binvisible){binvisible=false;}else {binvisible=true;}}
 		TNT1 A 0 A_BrainDie
 		TNT1 A -1
 		stop
