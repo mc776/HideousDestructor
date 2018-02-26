@@ -310,7 +310,12 @@ extend class HDPlayerPawn{
 			towound=0;
 			toburn=0;
 			if(damage>health)damage=health-1;
-			if(!inpain&&mod!="bleedout"&&damage>random(7,42)){
+			if(inpain>0)inpain=max(inpain,3);
+			else if(
+				mod!="bleedout"
+				&&mod!="internal"
+				&&damage>random(3,35)
+			){
 				A_TakeInventory("SpiritualArmour",1);
 			}
 			damage=clamp(damage,1,health-7);
