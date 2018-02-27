@@ -3,10 +3,9 @@
 // ------------------------------------------------------------
 class CacoPuff:HDPuff{
 	default{
-		+rollsprite +rollcenter
+		+rollsprite +rollcenter +forcexybillboard
 		+puffgetsowner +hittracer
 		+extremedeath
-		+forcexybillboard
 		+puffonactors
 		+forcepain
 		obituary "%o was smashed by a cacodemon.";
@@ -18,10 +17,10 @@ class CacoPuff:HDPuff{
 	states{
 	spawn:
 		BAL2 A 0 nodelay{
-			
 			A_PlaySound("weapons/plasidle",0,0.1,0,0.4);
 			if(tracer){
-				tracer.damagemobj(self,target?target.target:self,accuracy,"electro");
+				tracer.damagemobj(self,target?target.target:self,random(1,3),"electro");
+				tracer.A_PlaySound("weapons/rifleclick",CHAN_BODY);
 			}
 		}
 		BAL2 AB 1 A_FadeOut(0.05);
@@ -43,20 +42,21 @@ class BakaBall:HDFireball{
 		deathsound "baka/shotx";
 		obituary "%o was smashed by a cacodemon.";
 	}
+	void A_MoveZap(){
+		A_PlaySound("weapons/plasidle",0,0.6,0,2);
+		for(int i=0;i<4;i++){
+			A_CustomRailgun((random(1,2)),0,"none","blueviolet",
+				RGF_SILENT|RGF_NOPIERCING|RGF_FULLbright|RGF_CENTERZ,
+				0,4000,"CacoPuff",180,180,random(40,120),8,1.4,1.5
+			);
+		}
+	}
 	states{
 	spawn:
 		BAL2 ABABABAB 1 bright;
 	see:
-		BAL2 A 0{
-			A_Corkscrew();
-			A_PlaySound("weapons/plasidle",0,0.6,0,2);
-			for(int i=0;i<4;i++){
-				A_CustomRailgun((random(1,2)),0,"none","blueviolet",
-					RGF_SILENT|RGF_NOPIERCING|RGF_FULLbright|RGF_CENTERZ,
-					0,4000,"CacoPuff",180,180,random(40,120),8,1.4,1.5
-				);
-			}
-		}
+		BAL2 A 0 A_Corkscrew();
+		BAL2 A 0 A_MoveZap();
 		BAL2 AB 1 bright;
 		loop;
 	death:
@@ -97,7 +97,7 @@ class BakaMeleePreshot:IdleDummy{
 	default{
 		+extremedeath
 		+forcexybillboard;
-		renderstyle "add"
+		renderstyle "add";
 		scale 1.8; alpha 0.6;
 	}
 	double theight;
@@ -134,10 +134,16 @@ class BakaSlavePreshot:BakaMeleePreshot{
 			A_PlaySound("bakaslave/attack",CHAN_AUTO,1,0,1);
 			theight=target.height*0.2;
 		}
-		TNT1 A 0 A_PlaySound("world/explode",CHAN_VOICE);
-		TNT1 A 0 A_Explode(40,128,0);
-		TNT1 A 0 A_SetScale(2.2);
-		BAL2 CDCDCDDEE 1 bright A_SpawnItemEx("BakaBall", 0,0,random(28,0), vel.x*16+random(-4,4),vel.y*16+random(-4,4),vel.z*16+random(-1,1), 0,SXF_TRANSFERPOINTERS);
+		TNT1 A 0{
+			A_PlaySound("world/explode",CHAN_VOICE);
+			A_Explode(40,128,0);
+			A_SetScale(2.2);
+			DistantQuaker.Quake(self,4,35,512,10);
+		}
+		BAL2 CDCDCDDEE 1 bright A_SpawnItemEx("BakaBall", 0,0,28,
+			cos(pitch)*frandom(24,36),frandom(-4,4),sin(pitch)*frandom(20,40),
+			frandom(-4,4),SXF_TRANSFERPOINTERS
+		);
 		stop;
 	}
 }
@@ -145,7 +151,7 @@ class BakaSlavePreshot:BakaMeleePreshot{
 
 
 enum CacoNums{
-	CACO_MAXHEALTH=500,
+	CACO_MAXHEALTH=666,
 }
 class CacoChunk:HugeWallChunk{
 	override void postbeginplay(){
@@ -162,10 +168,8 @@ class CacoShellBlood:BloodSplatSilent{
 		A_PlaySound("misc/bulletflesh",0,0.02);
 		A_SpawnChunks("CacoChunk",random(3,7),3,7);
 		if(
-			target.health>CACO_MAXHEALTH*0.8
-		){
-			destroy();return;
-		}
+			target.health>(CACO_MAXHEALTH*0.6)
+		)destroy();
 	}
 }
 class Cacademon:Cacodemon{//replaces Cacodemon{
@@ -177,6 +181,7 @@ class Cacademon:Cacodemon{//replaces Cacodemon{
 		+PUSHABLE
 		pushfactor 0.05;
 		bloodtype "CacoShellBlood";
+		bloodcolor "10 00 90";
 		painchance 90;
 		deathheight 29;
 		damagefactor "SmallArms0", 0.8;
@@ -213,7 +218,8 @@ class Cacademon:Cacodemon{//replaces Cacodemon{
 		loop;
 	pain:
 		HEAD E 2{
-			if(health<256)bfloatbob=true;
+			if(health<(CACO_MAXHEALTH*0.5))bfloatbob=true;
+			else if(health<(CACO_MAXHEALTH*0.6))bnoblooddecals=false;
 			vel.z-=frandom(0.4,1.4);
 		}
 		HEAD F 6 A_Pain();
