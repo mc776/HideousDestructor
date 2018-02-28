@@ -96,7 +96,7 @@ class BakaBall:HDFireball{
 class BakaMeleePreshot:IdleDummy{
 	default{
 		+extremedeath
-		+forcexybillboard;
+		+forcexybillboard
 		renderstyle "add";
 		scale 1.8; alpha 0.6;
 	}
@@ -111,7 +111,7 @@ class BakaMeleePreshot:IdleDummy{
 		alpha=random(0,1)?frandom(0.8,1.6):frandom(0,0.3);
 		//nexttic
 		if(CheckNoDelay()){
-			if(tics>0)tics--;
+			if(tics>0)tics--;  
 			while(!tics){
 				if(!SetState(CurState.NextState)){
 					return;
@@ -168,7 +168,7 @@ class CacoShellBlood:BloodSplatSilent{
 		A_PlaySound("misc/bulletflesh",0,0.02);
 		A_SpawnChunks("CacoChunk",random(3,7),3,7);
 		if(
-			target.health>(CACO_MAXHEALTH*0.6)
+			target.health>(CACO_MAXHEALTH*0.6)  
 		)destroy();
 	}
 }
@@ -238,7 +238,7 @@ class Cacademon:Cacodemon{//replaces Cacodemon{
 				return;
 			}
 			double dist=distance3d(target);
-			if(dist>560&&!random(0,1))setstatelabel("baka");
+			if(dist>560&&!random(0,1))setstatelabel("baka");  
 			else if(pos.z-floorz<100)vel.z+=0.8;
 			if(dist<128||!random(0,2))setstatelabel("centre");
 		}
