@@ -412,7 +412,6 @@ class HDPlayerPawn:PlayerPawn{
 		if(!(input&BT_USE))bpickup=false;else{
 			bpickup=true;
 			if(!(oldinput&BT_USE))hasgrabbed=false;
-
 			//pickerupper
 			overloaded=CheckEncumbrance();
 			if(!hasgrabbed)A_SpawnItemEx(
@@ -471,6 +470,7 @@ class HDPlayerPawn:PlayerPawn{
 				if(kicked){
 					fatigue++;bloodpressure++;stunned+=2;
 				}
+				if(k)k.destroy();
 			}
 		}
 		if(corpsekicktimer>0)corpsekicktimer--;
