@@ -247,7 +247,7 @@ class BaleBall:hdfireball{
 			else if(tracer&&blockingmobj==tracer){
 				vel.z=2;
 				tracer.damagemobj(self,target,random(10,20),"balefire");
-				if(tracer.bcorpse){
+				if(tracer&&tracer.bcorpse){
 					tracer.A_GiveInventory("SawGib",random(10,20));
 				}
 				alpha=1;scale*=1.2;
