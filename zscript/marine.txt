@@ -1,8 +1,26 @@
 // ------------------------------------------------------------
 // Molon labe, Games Workshop.
 // ------------------------------------------------------------
-class HDMarine:HDActor{// replaces ScriptedMarine{
+
+/*
+	SPECIAL NOTE FOR MAPPERS
+	You can customize individual marines using the args:
+
+	args[0] may be set 1-4 for ZM66, shotgun, SMG or RL.
+	args[1] may be set 1-3 for white, brown or black.
+		(technically any number not 1 or 3 is brown)
+
+	Invert args[1] (e.g., -3 for dark skin) to use the tango red.
+	Set an arg to zero to use the actor default. (HDMarine is random)
+*/
+
+class HDMarine:HDActor replaces ScriptedMarine{
 	default{
+		//$Category "Monsters/Hideous Destructor/Marines"
+		//$Title "Marine"
+		//$Sprite "PLAYA1"
+		//$Angled
+
 		monster;
 		+friendly
 		+quicktoretaliate
@@ -48,8 +66,8 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 		//weapon
 		pistolloaded=15;
 		glloaded=true;
-		if(!accuracy)wep=clamp(random(0,3)-random(0,3),0,3);
-		else wep=accuracy-1;
+		if(args[0])accuracy=args[0];
+		wep=accuracy?accuracy:clamp(random(1,4)-random(0,3),1,4);
 
 		if(wep==HDMW_ZM66)gunmax=50;
 		else if(wep==HDMW_HUNTER)gunmax=8;
@@ -58,20 +76,20 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 		gunloaded=gunmax;
 
 
-		//appearance
+		//appearance;
+		if(args[1])stamina=args[1];
 		string trnsl="";
-		if(self is "Tango")trnsl="Tango";else{
+		if(stamina<0||self is "Tango")trnsl="Tango";else{
 			if(wep==HDMW_ZM66)trnsl="Rifleman";
 			else if(wep==HDMW_HUNTER)trnsl="Enforcer";
 			else if(wep==HDMW_SMG)trnsl="Infiltrator";
 			else if(wep==HDMW_ROCKET)trnsl="Rocketeer";
 		}
 
-		int melanin=stamina+1;
-		if(!accuracy)melanin=random(0,2);
-		if(!melanin)trnsl=string.format("White%s",trnsl);
-		else if(melanin==1)trnsl=string.format("Brown%s",trnsl);
-		else if(melanin==2)trnsl=string.format("Black%s",trnsl);
+		int melanin=stamina?abs(stamina):random(1,3);
+		if(melanin==1)trnsl=string.format("White%s",trnsl);
+		else if(melanin==3)trnsl=string.format("Black%s",trnsl);
+		else trnsl=string.format("Brown%s",trnsl);
 
 		A_SetTranslation(trnsl);
 
@@ -259,10 +277,11 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 		return mmm;
 	}
 	enum HDMarineStats{
-		HDMW_ZM66=0,
-		HDMW_HUNTER=1,
-		HDMW_SMG=2,
-		HDMW_ROCKET=3,
+		HDMW_RANDOM=0,
+		HDMW_ZM66=1,
+		HDMW_HUNTER=2,
+		HDMW_SMG=3,
+		HDMW_ROCKET=4,
 
 		HDMBC_WARPLIMIT=4,
 	}
@@ -824,32 +843,32 @@ class HDMarine:HDActor{// replaces ScriptedMarine{
 	}
 }
 
-class Rifleman:HDMarine{default{accuracy HDMW_ZM66+1;}}
-class BlackRifleman:HDMarine{default{accuracy HDMW_ZM66+1;stamina 3;}}
-class BrownRifleman:HDMarine{default{accuracy HDMW_ZM66+1;stamina 2;}}
-class WhiteRifleman:HDMarine{default{accuracy HDMW_ZM66+1;stamina 1;}}
+class Rifleman:HDMarine{default{accuracy HDMW_ZM66;}}
+class BlackRifleman:Rifleman{default{stamina 3;}}
+class BrownRifleman:Rifleman{default{stamina 2;}}
+class WhiteRifleman:Rifleman{default{stamina 1;}}
 class RifleFistman:Rifleman replaces MarineFist{}
 class RifleChaingunman:Rifleman replaces MarineChaingun{}
 
-class Enforcer:HDMarine{default{accuracy HDMW_HUNTER+1;}}
-class BlackEnforcer:HDMarine{default{accuracy HDMW_HUNTER+1;stamina 3;}}
-class BrownEnforcer:HDMarine{default{accuracy HDMW_HUNTER+1;stamina 2;}}
-class WhiteEnforcer:HDMarine{default{accuracy HDMW_HUNTER+1;stamina 1;}}
+class Enforcer:HDMarine{default{accuracy HDMW_HUNTER;}}
+class BlackEnforcer:Enforcer{default{stamina 3;}}
+class BrownEnforcer:Enforcer{default{stamina 2;}}
+class WhiteEnforcer:Enforcer{default{stamina 1;}}
 class EnforcerShot:Enforcer replaces MarineShotgun {}
 class EnforcerSuperShot:Enforcer replaces MarineSSG {}
 class EnforcerNoShot:Enforcer replaces MarineBerserk {}
 
-class Infiltrator:HDMarine{default{accuracy HDMW_SMG+1;}}
-class BlackInfiltrator:HDMarine{default{accuracy HDMW_SMG+1;stamina 3;}}
-class BrownInfiltrator:HDMarine{default{accuracy HDMW_SMG+1;stamina 2;}}
-class WhiteInfiltrator:HDMarine{default{accuracy HDMW_SMG+1;stamina 1;}}
+class Infiltrator:HDMarine{default{accuracy HDMW_SMG;}}
+class BlackInfiltrator:Infiltrator{default{stamina 3;}}
+class BrownInfiltrator:Infiltrator{default{stamina 2;}}
+class WhiteInfiltrator:Infiltrator{default{stamina 1;}}
 class InfiltratorPistol:Infiltrator replaces MarinePistol{}
 class InfiltratorChainsaw:Infiltrator replaces MarineChainsaw{}
 
-class Rocketeer:HDMarine{default{accuracy HDMW_ROCKET+1;}}
-class BlackRocketeer:HDMarine{default{accuracy HDMW_ROCKET+1;stamina 3;}}
-class BrownRocketeer:HDMarine{default{accuracy HDMW_ROCKET+1;stamina 2;}}
-class WhiteRocketeer:HDMarine{default{accuracy HDMW_ROCKET+1;stamina 1;}}
+class Rocketeer:HDMarine{default{accuracy HDMW_ROCKET;}}
+class BlackRocketeer:Rocketeer{default{stamina 3;}}
+class BrownRocketeer:Rocketeer{default{stamina 2;}}
+class WhiteRocketeer:Rocketeer{default{stamina 1;}}
 class RRocketeer:Rocketeer replaces MarineRocket{}
 class BFuglyteer:Rocketeer replaces MarineBFG{}
 class Plasmateer:Rocketeer replaces MarinePlasma{}
@@ -861,25 +880,25 @@ class BlackTango:Tango{default{stamina 3;}}
 class BrownTango:Tango{default{stamina 2;}}
 class WhiteTango:Tango{default{stamina 1;}}
 
-class RifleTango:Tango{default{accuracy HDMW_ZM66+1;}}
-class BlackRifleTango:Tango{default{accuracy HDMW_ZM66+1;stamina 3;}}
-class BrownRifleTango:Tango{default{accuracy HDMW_ZM66+1;stamina 2;}}
-class WhiteRifleTango:Tango{default{accuracy HDMW_ZM66+1;stamina 1;}}
+class RifleTango:Tango{default{accuracy HDMW_ZM66;}}
+class BlackRifleTango:RifleTango{default{stamina 3;}}
+class BrownRifleTango:RifleTango{default{stamina 2;}}
+class WhiteRifleTango:RifleTango{default{stamina 1;}}
 
-class ShotTango:Tango{default{accuracy HDMW_HUNTER+1;}}
-class BlackShotTango:Tango{default{accuracy HDMW_HUNTER+1;stamina 3;}}
-class BrownShotTango:Tango{default{accuracy HDMW_HUNTER+1;stamina 2;}}
-class WhiteShotTango:Tango{default{accuracy HDMW_HUNTER+1;stamina 1;}}
+class ShotTango:Tango{default{accuracy HDMW_HUNTER;}}
+class BlackShotTango:ShotTango{default{stamina 3;}}
+class BrownShotTango:ShotTango{default{stamina 2;}}
+class WhiteShotTango:ShotTango{default{stamina 1;}}
 
-class SMGTango:Tango{default{accuracy HDMW_SMG+1;}}
-class BlackSMGTango:Tango{default{accuracy HDMW_SMG+1;stamina 3;}}
-class BrownSMGTango:Tango{default{accuracy HDMW_SMG+1;stamina 2;}}
-class WhiteSMGTango:Tango{default{accuracy HDMW_SMG+1;stamina 1;}}
+class SMGTango:Tango{default{accuracy HDMW_SMG;}}
+class BlackSMGTango:SMGTango{default{stamina 3;}}
+class BrownSMGTango:SMGTango{default{stamina 2;}}
+class WhiteSMGTango:SMGTango{default{stamina 1;}}
 
-class RocketTango:Tango{default{accuracy HDMW_ROCKET+1;}}
-class BlackRocketTango:Tango{default{accuracy HDMW_ROCKET+1;stamina 3;}}
-class BrownRocketTango:Tango{default{accuracy HDMW_ROCKET+1;stamina 2;}}
-class WhiteRocketTango:Tango{default{accuracy HDMW_ROCKET+1;stamina 1;}}
+class RocketTango:Tango{default{accuracy HDMW_ROCKET;}}
+class BlackRocketTango:RocketTango{default{stamina 3;}}
+class BrownRocketTango:RocketTango{default{stamina 2;}}
+class WhiteRocketTango:RocketTango{default{stamina 1;}}
 
 
 
@@ -887,7 +906,7 @@ class WhiteRocketTango:Tango{default{accuracy HDMW_ROCKET+1;stamina 1;}}
 // Marine corpse
 // ------------------------------------------------------------
 class UndeadRifleman:HDMarine{
-	default{accuracy HDMW_ZM66+1;}
+	default{}
 	override void postbeginplay(){
 		super.postbeginplay();
 		timesdied++;
