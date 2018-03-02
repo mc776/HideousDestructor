@@ -141,11 +141,11 @@ class HDHEAT:GyroGrenade{
 		if(blockingobject){
 			int dmgg=random(70,240);
 			if(primed&&isrocket){
-				double dangle=angle;
-				A_Face(blockingmobj);
-				dangle=absangle(angle,dangle);
-				if(dangle<10)dmgg+=random(2000,4000);
-				else if(dangle<30)dmgg+=random(200,1200);
+				double dangle=absangle(angle,angleto(blockingobject));
+				if(dangle<20){
+					dmgg+=random(2000,4000);
+					if(hd_Debug)A_Log("CRIT!");
+				}else if(dangle<40)dmgg+=random(200,1200);
 			}
 			blockingobject.damagemobj(self,target,dmgg,"SmallArms3");
 		}
@@ -164,8 +164,7 @@ class HDHEAT:GyroGrenade{
 			actor xpl=spawn("Gyrosploder",self.pos-(0,0,1),ALLOW_REPLACE);
 			xpl.target=target;xpl.master=master;xpl.stamina=stamina;
 		}else{actor xpl=Spawn("DistantRocket",self.pos,ALLOW_REPLACE);}
-			A_SpawnChunks("HDBulletFrag",80,100,600);
-			A_SpawnChunks("HDBulletFrag",random(2,4),1,6);
+		A_SpawnChunks("HDBulletFrag",80,100,600);
 
 		destroy();return;
 	}
