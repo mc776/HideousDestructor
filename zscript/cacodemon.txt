@@ -29,15 +29,15 @@ class FooFighter:HDActor{
 		foocleric=randompick(0,0,0,0,0,1);
 	}
 	override void tick(){
+		if(globalfreeze||level.Frozen){
+			clearinterpolation();
+			return;
+		}
 		if(bnointeraction){
 			roll+=10;
 			scale*=1.01;
 			A_SpawnItemEx("HDGunSmoke",3,0,0,2,0,1,roll,SXF_NOCHECKPOSITION);
 			super.tick();
-			return;
-		}
-		if(globalfreeze||level.Frozen){
-			clearinterpolation();
 			return;
 		}
 		roll=frandom(0,360);
@@ -263,9 +263,7 @@ class Cacademon:Cacodemon{//replaces Cacodemon{
 	override void postbeginplay(){
 		super.postbeginplay();
 		hdmobai.resize(self,0.5,1.1);
-		if(scale.x<0.6){
-			speed*=2;
-		}
+		speed*=3.-2*scale.x;
 	}
 	void A_CacoCorpseZap(){
 		A_PlaySound("weapons/plasidle",0,0.3,0,2);
@@ -279,12 +277,15 @@ class Cacademon:Cacodemon{//replaces Cacodemon{
 	int oldpitch;
 	states{
 	spawn:
-		HEAD A 10 A_Look();
-		wait;
+		HEAD A 10{
+			A_Look();
+			if(health>(CACO_MAXHEALTH*0.5))bfloatbob=false;
+		}wait;
 	see:
 		HEAD A 4{
 			if(stamina<100)stamina++;
 			else healthing(random(0,5));
+			if(health>(CACO_MAXHEALTH*0.5))bfloatbob=false;
 
 			if(stamina>30)hdmobai.chase(self);
 			else hdmobai.wander(self,true);
@@ -321,7 +322,7 @@ class Cacademon:Cacodemon{//replaces Cacodemon{
 			}
 			stamina-=90;
 			double dist=distance3d(target);
-			if(dist>560&&!random(0,1))setstatelabel("baka");  
+			if(dist>256&&!random(0,1))setstatelabel("baka");  
 			else if(pos.z-floorz<100)vel.z+=0.8;
 			if(dist<128||!random(0,2))setstatelabel("centre");
 		}
@@ -421,9 +422,9 @@ class Cacademon:Cacodemon{//replaces Cacodemon{
 						flags:SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS
 					);
 					blll.vel=(
-						frandom(-10,10),
-						frandom(-10,10),
-						frandom(0,10)
+						frandom(-5,5),
+						frandom(-5,5),
+						frandom(1,5)
 					);
 				}
 				bll.stamina=0;
