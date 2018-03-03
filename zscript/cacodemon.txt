@@ -90,6 +90,17 @@ class FooFighter:HDActor{
 				A_PlaySound("world/explode",CHAN_VOICE);
 				A_PlaySound("world/bfgfar",CHAN_BODY);
 				A_PlaySound("weapons/bigcrack",5);
+
+				A_SetSize(radius*2,height*1.4);
+				if(
+					abs(floorz-pos.z)<10
+					||abs(ceilingz-(pos.z+height))<10
+					||!checkmove(pos.xy,PCM_NOACTORS|PCM_DROPOFF)
+				){
+					A_SpawnChunks("HugeWallChunk",12,4,12);
+					A_SpawnChunks("BigWallChunk",12,4,12);
+					A_SpawnChunks("HDSmoke",3,0,2);
+				}
 				
 				DistantQuaker.Quake(self,4,35,512,10);
 				vel=(0,0,0.4);
