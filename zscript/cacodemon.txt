@@ -7,18 +7,22 @@ class FooFighter:HDActor{
 	default{
 		+bright +nogravity +float +noblockmap
 		+seekermissile +missile
+		+puffonactors +bloodlessimpact +alwayspuff +puffgetsowner
 
 		+rollsprite +rollcenter
 		+forcexybillboard +bright
+		renderstyle "add";
 
 		height 12;radius 12;
-		speed 40;
-		renderstyle "add";
+		speed 20;
+		maxstepheight 64;
+
+		seesound "weapons/plasidle";
 	}
 	override void beginplay(){
 		super.beginplay();
 		vel*=frandom(0.4,1.7);
-		stamina=random(600,3000);
+		stamina=random(600,1200);
 		ChangeTid(424707);
 
 		foowizard=randompick(0,0,0,0,1);
@@ -26,6 +30,9 @@ class FooFighter:HDActor{
 	}
 	override void tick(){
 		if(bnointeraction){
+			roll+=10;
+			scale*=1.01;
+			A_SpawnItemEx("HDGunSmoke",3,0,0,2,0,1,roll,SXF_NOCHECKPOSITION);
 			super.tick();
 			return;
 		}
@@ -34,6 +41,7 @@ class FooFighter:HDActor{
 			return;
 		}
 		roll=frandom(0,360);
+		stamina--;
 
 		//apply movement and collision
 		speed=vel.xy.length();
@@ -41,14 +49,18 @@ class FooFighter:HDActor{
 		vector3 frac=(times==1)?vel:(vel/times);
 		fcheckposition tm;
 		for(int i=0;i<times;i++){
-			if(!trymove(pos.xy+frac.xy,true,true,tm)){
-				if(random(0,7)){
+			if(stamina<1||!trymove(pos.xy+frac.xy,true,true,tm)){
+				if(random(0,7)&&stamina>0){
 					setorigin((pos.xy+frac.xy,pos.z),true);
 					continue;
 				}
 
 				//bzz
 				if(blockingmobj&&!blockingline){
+					if(
+						blockingmobj is "Cacademon"
+						&&!blockingmobj.ishostile(target)
+					)continue;
 					blockingmobj.DamageMobj(self,target,random(1,3),"Electro");
 					A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
 					while(random(0,2))A_SpawnParticle("white",
@@ -71,10 +83,14 @@ class FooFighter:HDActor{
 					blastradius:128,blastdamage:128,blastdamagetype:"Electro",
 					pushradius:256,pushamount:128,pushmass:true,
 					immolateradius:72,immolateamount:random(30,80),immolatechance:40,
-					gibradius:64,gibamount:3
+					gibradius:64,gibamount:3,
+					hurtspecies:false
 				);
+				spawn("distantrifle",pos);
 				A_PlaySound("world/explode",CHAN_VOICE);
 				A_PlaySound("world/bfgfar",CHAN_BODY);
+				A_PlaySound("weapons/bigcrack",5);
+				
 				DistantQuaker.Quake(self,4,35,512,10);
 				vel=(0,0,0.4);
 				scale*=2.;
@@ -90,13 +106,15 @@ class FooFighter:HDActor{
 				vel.z=0;
 			}
 		}
-		vel.x*=frandom(0.6,1.1);
-		vel.y*=frandom(0.6,1.1);
-		vel.z*=frandom(0.6,1.1);
-		if(tracer){
+		vel.x*=frandom(0.9,1.05);
+		vel.y*=frandom(0.9,1.05);
+		vel.z*=frandom(0.9,1.05);
+		if(accuracy>100&&tracer&&checksight(tracer)){
 			A_Face(tracer,0,0,FAF_TOP);
 			A_ChangeVelocity(cos(pitch),0,-sin(pitch),CVF_RELATIVE);
-		}
+		}else A_ChangeVelocity(0.01,0,0,CVF_RELATIVE);
+		accuracy--;
+		if(accuracy<0)accuracy=160;
 
 		//nexttic
 		if(CheckNoDelay()){
@@ -110,7 +128,7 @@ class FooFighter:HDActor{
 	}
 	states{
 	spawn:
-		BAL2 ABABABABAB 1;
+		BAL2 ABABABABAB 1 light("PLAZMABX1");
 		BAL2 A 0 A_Jump(24,"castspell");
 		loop;
 	castspell:
@@ -119,14 +137,6 @@ class FooFighter:HDActor{
 			if(!random(0,3))vel.z=frandom(-vel.z*0.3,vel.z);
 			vel.xy=rotatevector(vel.xy,achange);
 
-			if(foocleric){
-				actor itt=null;
-				actoriterator it=actoriterator.create(424707,"FooFighter");
-				while(itt=it.next()){
-					if(checksight(itt))
-					itt.stamina+=100;
-				}
-			}
 			if(foowizard){
 				int warptimes=random(3,7);
 				double spdbak=speed;
@@ -137,10 +147,23 @@ class FooFighter:HDActor{
 				speed=spdbak;
 				setz(frandom(floorz,ceilingz-height));
 			}
+			if(foocleric){
+				if(!tracer){
+					foocleric=false;
+					foowizard=true;
+					return;
+				}
+				actor itt=null;
+				actoriterator it=actoriterator.create(424707,"FooFighter");
+				while(itt=it.next()){
+					if(checksight(itt))
+					itt.vel+=itt.vec3to(tracer).unit()*2;
+				}
+			}
 		}goto spawn;
 	death:
-		BAL2 CDE 3;
-		BAL2 E 3 A_FadeOut(0.2);
+		BAL2 CDE 3 light("BAKAPOST4");
+		BAL2 E 3 light("PLAZMABX2") A_FadeOut(0.3);
 		wait;
 	}
 }
@@ -148,7 +171,7 @@ class FooFighter:HDActor{
 class Cacasmaball:IdleDummy{
 	default{
 		+extremedeath
-		+forcexybillboard
+		+forcexybillboard +rollsprite +rollcenter
 		renderstyle "add";
 		scale 1.8; alpha 0.6;
 	}
@@ -160,6 +183,7 @@ class Cacasmaball:IdleDummy{
 			return;
 		}
 		setorigin((angletovector(target.angle,target.radius),theight)+target.pos,false);
+		roll=frandom(0,360);
 		alpha=random(0,1)?frandom(0.8,1.6):frandom(0,0.3);
 		//nexttic
 		if(CheckNoDelay()){
@@ -175,7 +199,7 @@ class Cacasmaball:IdleDummy{
 	spawn:
 		BAL2 A 40 bright nodelay{
 			A_PlaySound("bakaslave/attack",CHAN_AUTO,1,0,1);
-			theight=target.height*0.2;
+			theight=target.height*0.4;
 		}stop;
 	}
 }
@@ -188,17 +212,21 @@ enum CacoNums{
 class CacoChunk:WallChunk{
 	override void postbeginplay(){
 		super.postbeginplay();
-		if(random(-CACO_MAXHEALTH/5,CACO_MAXHEALTH)>CACO_MAXHEALTH){
+		if(!target)return;
+		if(random(-CACO_MAXHEALTH*2,CACO_MAXHEALTH)>target.health){
 			A_SetTranslation("AllBlue");
-		}else if(!random(0,3))A_SetTranslation("AllPurple");
-		else A_SetTranslation("AllRed");
+		}else{
+			scale*=frandom(0.8,2.);
+			if(!random(0,3))A_SetTranslation("AllPurple");
+			else A_SetTranslation("AllRed");
+		}
 	}
 }
 class CacoShellBlood:BloodSplatSilent{
 	override void postbeginplay(){
 		bloodsplatsilent.postbeginplay();
 		A_PlaySound("misc/bulletflesh",0,0.02);
-		A_SpawnChunks("CacoChunk",random(3,7),3,7);
+		A_SpawnChunks("CacoChunk",random(1,7),1,7);
 		if(
 			target.health>(CACO_MAXHEALTH*0.6)  
 		)destroy();
@@ -219,10 +247,14 @@ class Cacademon:Cacodemon{//replaces Cacodemon{
 		damagefactor "SmallArms1", 0.9;
 		obituary "%o was inverted by a cacodemon.";
 		speed 4;
+		stamina 100;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		hdmobai.resize(self,0.6,1.1);
+		hdmobai.resize(self,0.5,1.1);
+		if(scale.x<0.6){
+			speed*=2;
+		}
 	}
 	void A_CacoCorpseZap(){
 		A_PlaySound("weapons/plasidle",0,0.3,0,2);
@@ -240,12 +272,15 @@ class Cacademon:Cacodemon{//replaces Cacodemon{
 		wait;
 	see:
 		HEAD A 4{
-			hdmobai.chase(self);
-			healthing(random(0,5));
+			if(stamina<100)stamina++;
+			else healthing(random(0,5));
+
+			if(stamina>30)hdmobai.chase(self);
+			else hdmobai.wander(self,true);
 		}
 	roam:
 		HEAD A 0 A_JumpIfTargetInLOS("see");
-		HEAD A 6{hdmobai.wander(self);}
+		HEAD A 6{hdmobai.wander(self,true);}
 		loop;
 	pain:
 		HEAD E 2{
@@ -258,7 +293,7 @@ class Cacademon:Cacodemon{//replaces Cacodemon{
 	missile:
 		HEAD A 4{
 			A_FaceTarget(40,40);
-			if(A_JumpIfTargetInLOS("null",40)){setstatelabel("shoot");}
+			if(A_JumpIfTargetInLOS("null",10)){setstatelabel("shoot");}
 			else if(A_JumpIfTargetInLOS("null")){setstatelabel("see");}
 		}loop;
 	shoot:
@@ -268,30 +303,36 @@ class Cacademon:Cacodemon{//replaces Cacodemon{
 				setstatelabel("see");
 				return;
 			}
+			if(scale.x<0.7){
+				stamina-=30;
+				setstatelabel("pica");
+				return;
+			}
+			stamina-=90;
 			double dist=distance3d(target);
 			if(dist>560&&!random(0,1))setstatelabel("baka");  
 			else if(pos.z-floorz<100)vel.z+=0.8;
 			if(dist<128||!random(0,2))setstatelabel("centre");
 		}
 	sweep:
-		HEAD B 2{sprayangle=randompick(-6,6);}
+		HEAD B 2{sprayangle=randompick(-16,16);}
 		HEAD C 4;
-		HEAD D 8 bright A_SpawnProjectile("FooFighter",32,0,sprayangle,CMF_AIMDIRECTION,pitch);
-		HEAD C 4;
-		HEAD B 2;
-		HEAD A 6 A_FaceTarget(10,20);
-		HEAD B 2;
-		HEAD C 4;
-		HEAD D 8 bright A_SpawnProjectile("FooFighter",32,0,0,CMF_AIMDIRECTION,pitch);
+		HEAD D 12 bright A_SpawnProjectile("FooFighter",32,0,sprayangle,CMF_AIMDIRECTION,pitch);
 		HEAD C 4;
 		HEAD B 2;
-		HEAD A 6 A_FaceTarget(10,20);
+		HEAD A 8 A_FaceTarget(10,20);
 		HEAD B 2;
 		HEAD C 4;
-		HEAD D 8 bright A_SpawnProjectile("FooFighter",32,0,-sprayangle,CMF_AIMDIRECTION,pitch);
+		HEAD D 12 bright A_SpawnProjectile("FooFighter",32,0,0,CMF_AIMDIRECTION,pitch);
 		HEAD C 4;
 		HEAD B 2;
-		HEAD A 6 A_FaceTarget(10,20);
+		HEAD A 8 A_FaceTarget(10,20);
+		HEAD B 2;
+		HEAD C 4;
+		HEAD D 12 bright A_SpawnProjectile("FooFighter",32,0,-sprayangle,CMF_AIMDIRECTION,pitch);
+		HEAD C 4;
+		HEAD B 2;
+		HEAD AA 6 A_FaceTarget(10,20);
 		goto see;
 	centre:
 		HEAD A 0{
@@ -310,7 +351,7 @@ class Cacademon:Cacodemon{//replaces Cacodemon{
 			pitch+=oldpitch*sprayangle;
 		}
 		HEAD C 4;
-		HEAD D 8 bright A_SpawnProjectile("FooFighter",32,0,0,CMF_AIMDIRECTION,pitch);
+		HEAD D 12 bright A_SpawnProjectile("FooFighter",32,0,0,CMF_AIMDIRECTION,pitch);
 		HEAD C 4;
 		HEAD B 2;
 		HEAD A 6{
@@ -319,7 +360,7 @@ class Cacademon:Cacodemon{//replaces Cacodemon{
 		}
 		HEAD B 2;
 		HEAD C 4;
-		HEAD D 8 bright A_SpawnProjectile("FooFighter",32,0,0,CMF_AIMDIRECTION,pitch);
+		HEAD D 12 bright A_SpawnProjectile("FooFighter",32,0,0,CMF_AIMDIRECTION,pitch);
 		HEAD C 4;
 		HEAD B 2;
 		HEAD A 6{
@@ -329,15 +370,23 @@ class Cacademon:Cacodemon{//replaces Cacodemon{
 		}
 		HEAD B 2;
 		HEAD C 4;
-		HEAD D 8 bright A_SpawnProjectile("FooFighter",32,0,0,CMF_AIMDIRECTION,pitch);
+		HEAD D 12 bright A_SpawnProjectile("FooFighter",32,0,0,CMF_AIMDIRECTION,pitch);
 		HEAD C 4;
 		HEAD B 2;
-		HEAD A 6;
+		HEAD AA 6;
+		goto see;
+	pica:
+		HEAD B 1;
+		HEAD C 2;
+		HEAD D 6 bright A_SpawnProjectile("FooFighter",32,0,0,CMF_AIMDIRECTION,pitch);
+		HEAD C 4;
+		HEAD B 2;
+		HEAD A 3 A_FaceTarget(10,20);
 		goto see;
 	baka:
 		HEAD B 2;
-		HEAD C 4 A_ChangeVelocity(0,0,frandom(0.3,1),CVF_RELATIVE);
-		HEAD D 6 A_FaceTarget(1,2,0,0,FAF_BOTTOM);
+		HEAD C 4{vel.z+=frandom(0.2,1.2);}
+		HEAD DDD 2 A_FaceTarget(30,30,flags:FAF_BOTTOM);
 		HEAD D 36 bright{
 			bnopain=true;
 			A_SpawnProjectile("Cacasmaball",28,0,0,CMF_AIMDIRECTION,pitch);
@@ -346,9 +395,28 @@ class Cacademon:Cacodemon{//replaces Cacodemon{
 			A_ChangeVelocity(-cos(pitch)*3,0,sin(pitch),CVF_RELATIVE);	
 			A_CustomRailgun(random(120,240),50,"","azure",
 				RGF_SILENT|RGF_NOPIERCING|RGF_FULLBRIGHT,
-				0,40.0,"FooFighter",0,0,65536,
+				0,40.0,null,0,0,65536,
 				12,0.4,2.0,"",-4
 			);
+			bnopain=false;
+			actor bll=LineAttack(
+				angle,65536,pitch,0,"","FooFighter"
+			);
+			if(bll){
+				bll.tracer=target;
+				actor blll;bool gbg;
+				for(int i=0;i<3;i++){
+					[gbg,blll]=bll.A_SpawnItemEx("FooFighter",
+						flags:SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS
+					);
+					blll.vel=(
+						frandom(-10,10),
+						frandom(-10,10),
+						frandom(0,10)
+					);
+				}
+				bll.stamina=0;
+			}
 			bnopain=false;
 		}
 		HEAD C 6;
