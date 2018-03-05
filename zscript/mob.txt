@@ -301,8 +301,10 @@ struct HDMobAI play{
 				if(!caller.bteleport)caller.setorigin(pg,false);
 				if(caller.bfloat){
 					caller.vel.xy+=caller.angletovector(caller.angle,caller.speed*0.16);
-					if(attacktarget&&caller.pos.z-attacktarget.pos.z<attacktarget.height)
-						caller.vel.z+=frandom(0,0.1); //floaty death from above
+					if(attacktarget
+						&&caller.checksight(attacktarget)
+						&&caller.pos.z-attacktarget.pos.z<attacktarget.height
+					)caller.vel.z+=frandom(0,0.1); //floaty death from above
 				}else{
 					caller.vel.xy+=caller.angletovector(caller.angle,caller.speed*0.16);
 				}

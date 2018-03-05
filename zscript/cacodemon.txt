@@ -285,14 +285,16 @@ class Cacademon:Cacodemon replaces Cacodemon{
 	spawn:
 		HEAD A 10{
 			A_Look();
+			healthing(random(0,10));
 			if(health>(CACO_MAXHEALTH*0.5))bfloatbob=false;
+			if(!bambush&&!random(0,10))hdmobai.wander(self,true);
 		}wait;
 	see:
 		HEAD A 4{
 			healthing(random(0,5));
 			if(health>(CACO_MAXHEALTH*0.5))bfloatbob=false;
 			hdmobai.chase(self);
-		}loop;
+		}wait;
 	pain:
 		HEAD E 2{
 			if(health<(CACO_MAXHEALTH*0.5))bfloatbob=true;
@@ -302,20 +304,21 @@ class Cacademon:Cacodemon replaces Cacodemon{
 		HEAD F 6 A_Pain();
 		HEAD E 3;
 	missile:
-		HEAD A 4{
+		HEAD A 3{
 			A_FaceTarget(40,40,flags:FAF_BOTTOM);
 			if(A_JumpIfTargetInLOS("null",10)){setstatelabel("shoot");}
 			else if(A_JumpIfTargetInLOS("null")){setstatelabel("see");}
 		}loop;
 	shoot:
-		HEAD BCC 2;// A_FaceTarget(30,30,flags:FAF_BOTTOM);
-		HEAD D 32 bright{
+		HEAD B 2;
+		HEAD C 3;
+		HEAD D 36 bright{
 			vel.z+=frandom(0.2,1.2);
 			A_FaceTarget(30,30,flags:FAF_BOTTOM);
 			bnopain=true;
 			A_SpawnProjectile("Cacasmaball",28,0,0,CMF_AIMDIRECTION,pitch);
 		}
-		HEAD D 20{
+		HEAD D 24{
 			spawn("DistantShotgun",pos);
 			A_PlaySound("weapons/bronto",CHAN_WEAPON);
 			A_ChangeVelocity(-cos(pitch)*3,0,sin(pitch),CVF_RELATIVE);	
@@ -331,7 +334,7 @@ class Cacademon:Cacodemon replaces Cacodemon{
 			if(bll){
 				bll.tracer=target;
 				actor blll;bool gbg;
-				for(int i=0;i<3;i++){
+				for(int i=random(1,3);i>0;i--){
 					[gbg,blll]=bll.A_SpawnItemEx("FooFighter",
 						0,0,3,frandom(-1,4),0,frandom(1,5),
 						angle+frandom(-50,50),
@@ -358,7 +361,7 @@ class Cacademon:Cacodemon replaces Cacodemon{
 			A_PlaySound("caco/sight");
 		}
 		HEAD D 2 bright A_SpawnProjectile("Cacasmaball",28);
-		HEAD DDDDDDDDDDDD 2 bright A_CustomRailgun((random(1,2)),0,"","azure",
+		HEAD DDDDDDDDDDDD 2 bright A_CustomRailgun((random(10,20)),0,"","azure",
 			RGF_SILENT|RGF_FULLBRIGHT,
 			0,4000,"BeamSpot",20,20,random(120,260),28,1.4,1.5,"none",-12
 		);
