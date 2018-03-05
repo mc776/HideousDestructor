@@ -278,6 +278,13 @@ class TrippingFrag:FragP{
 	double stucktoheight;
 	bool stuckfloor;
 	default{
+		//$Category "Misc/Hideous Destructor/Traps"
+		//$Title "Tripwire Grenade"
+		//$Sprite "FRAGA0"
+
+		// SPECIAL MAPPING NOTE
+		// Args[0] sets the pitch!
+
 		+nogravity +shootable +noblood +nodamage +notargetswitch
 		health int.MAX;painchance 256; mass 10;
 		radius 2;height 2;
@@ -295,6 +302,7 @@ class TrippingFrag:FragP{
 
 		//add a gumwad if none exists
 		if(!tracer){
+			pitch=args[0];
 			actor a;int b;
 			[a,b]=LineAttack(angle,512,pitch,0,"none",
 				"TripwirePlacerPuff",

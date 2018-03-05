@@ -18,6 +18,10 @@ class SuspiciousBarrel:IdleDummy replaces ExplosiveBarrel{
 
 class KillerBarrel:HDActor{
 	default{
+		//$Category "Monsters/Hideous Destructor"
+		//$Title "Killer Barrel"
+		//$Sprite "BAR1A0"
+
 		+ismonster //sprite clips differently whether this is on or not
 		+solid +shootable
 		+countkill +canpushwalls +activatemcross +canpass +nodropoff
@@ -170,6 +174,10 @@ class KillerBarrel:HDActor{
 }
 class InnocentBarrel:KillerBarrel{
 	default{
+		//$Category "Monsters/Hideous Destructor"
+		//$Title "Inert Barrel"
+		//$Sprite "BAR1A0"
+
 		obituary "%o was exploded by a barrel.";
 		painsound "none";
 		painchance 255;
@@ -262,6 +270,10 @@ class KillerFireCan:KillerBarrel{
 		super.postbeginplay();
 	}
 	default{
+		//$Category "Monsters/Hideous Destructor"
+		//$Title "Killer Flaming Barrel"
+		//$Sprite "FCANA0"
+
 		+bright
 		health 100;
 		translation "176:191=96:111","64:79=104:111";
@@ -357,6 +369,10 @@ class KillerFireCan:KillerBarrel{
 
 class InnocentFireCan:KillerFireCan{
 	default{
+		//$Category "Monsters/Hideous Destructor"
+		//$Title "Inert Flaming Barrel"
+		//$Sprite "FCANA0"
+
 		obituary "%o was exploded by a barrel that was on fire.";
 		painsound "none";
 		painchance 255;
