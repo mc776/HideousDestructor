@@ -3,6 +3,10 @@
 // ------------------------------------------------------------
 class HERPBot:HDUPK{
 	default{
+		//$Category "Monsters/Hideous Destructor"
+		//$Title "H.E.R.P. Robot"
+		//$Sprite "HERPA1"
+
 		+ismonster +noblockmonst +friendly +standstill +nofear
 		+shootable +ghost +noblood +dontgib
 		height 32;radius 10;mass 400;health 200;
@@ -270,6 +274,10 @@ class HERPBot:HDUPK{
 }
 class EnemyHERP:HERPBot{
 	default{
+		//$Category "Monsters/Hideous Destructor"
+		//$Title "H.E.R.P. Robot (Hostile)"
+		//$Sprite "HERPA1"
+
 		-friendly
 		translation "112:120=152:159","121:127=9:12";
 	}
@@ -292,6 +300,10 @@ class HERPSwitch:ActionItem{
 class HERPUsable:HDPickup{
 	int ammo;
 	default{
+		//$Category "Items/Hideous Destructor"
+		//$Title "H.E.R.P. Robot (Pickup)"
+		//$Sprite "HERPA1"
+
 		inventory.amount 1;
 		inventory.maxamount 1;
 		inventory.icon "HERPEX";

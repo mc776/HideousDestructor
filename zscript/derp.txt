@@ -5,6 +5,10 @@ class DERPBot:HDUPK{
 	int cmd;
 	int ammo;
 	default{
+		//$Category "Monsters/Hideous Destructor"
+		//$Title "D.E.R.P. Robot"
+		//$Sprite "DERPA1"
+
 		+ismonster +noblockmonst +shootable
 		+friendly +nofear +dontgib +noblood
 		painchance 240;painthreshold 12;
@@ -230,6 +234,10 @@ class DERPBot:HDUPK{
 //keep the usable a separate actor so we can add more interfaces in the future
 class DERPUsable:HDPickup{
 	default{
+		//$Category "Items/Hideous Destructor"
+		//$Title "D.E.R.P. Robot (Pickup)"
+		//$Sprite "DERPA1"
+
 		+inventory.transfer
 		scale 0.6;
 		inventory.amount 1; inventory.maxamount 1;
@@ -379,6 +387,10 @@ class DERPtermFOLLOW:DERPtermTURRET{
 //evil roguebot
 class EnemyDERP:DERPBot{
 	default{
+		//$Category "Monsters/Hideous Destructor"
+		//$Title "D.E.R.P. Robot (Hostile)"
+		//$Sprite "DERPA1"
+
 		-friendly
 		translation 1;
 	}
