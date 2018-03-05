@@ -268,6 +268,7 @@ class Cacademon:Cacodemon replaces Cacodemon{
 		damagefactor "SmallArms1", 0.9;
 		obituary "%o was inverted by a cacodemon.";
 		speed 4;
+		meleerange 128;
 	}
 	override void beginplay(){
 		super.beginplay();
@@ -294,6 +295,7 @@ class Cacademon:Cacodemon replaces Cacodemon{
 			healthing(random(0,5));
 			if(health>(CACO_MAXHEALTH*0.5))bfloatbob=false;
 			hdmobai.chase(self);
+			if(!random(0,20))vel.z-=1;
 		}wait;
 	pain:
 		HEAD E 2{
@@ -303,11 +305,12 @@ class Cacademon:Cacodemon replaces Cacodemon{
 		}
 		HEAD F 6 A_Pain();
 		HEAD E 3;
+		goto see;
 	missile:
 		HEAD A 3{
 			A_FaceTarget(40,40,flags:FAF_BOTTOM);
 			if(A_JumpIfTargetInLOS("null",10)){setstatelabel("shoot");}
-			else if(A_JumpIfTargetInLOS("null")){setstatelabel("see");}
+			else if(A_JumpIfTargetInLOS("null",flags:JLOSF_DEADNOJUMP)){setstatelabel("see");}
 		}loop;
 	shoot:
 		HEAD B 2;
@@ -350,11 +353,7 @@ class Cacademon:Cacodemon replaces Cacodemon{
 		HEAD A 6;
 		goto see;
 	melee:
-		HEAD B 4{
-			A_FaceTarget(40,40);
-			if(A_JumpIfTargetInLOS("null",10))setstatelabel("zap");
-		}goto see;
-	zap:
+		HEAD BB 2 A_FaceTarget(40,40);
 		HEAD C 4{
 			angle+=frandom(-10,10);
 			pitch+=frandom(-10,10);
