@@ -536,10 +536,11 @@ class Slayer:HDShotgun replaces HDShotgun{
 		if(Wads.CheckNumForName("SHT2B0",wads.ns_sprites,-1,false)<0){
 			if(owner){
 				actor ownor=owner;
-				destroy();
-				if(hd_debug)ownor.A_Log("doom 1 shotty lol",true);
 				ownor.A_GiveInventory("Hunter");
-				ownor.A_SelectWeapon("Hunter");
+				if(ownor.player&&ownor.player.readyweapon==self)
+					ownor.A_SelectWeapon("Hunter");
+				if(hd_debug)ownor.A_Log("doom 1 shotty lol",true);
+				destroy();
 			}else{
 				spawn("Hunter",pos,ALLOW_REPLACE);
 				destroy();
@@ -547,6 +548,11 @@ class Slayer:HDShotgun replaces HDShotgun{
 			return;
 		}
 		super.postbeginplay();
+	}
+	override void detachfromowner(){
+		if(Wads.CheckNumForName("SHT2B0",wads.ns_sprites,-1,false)<0){
+			weapon.detachfromowner();
+		}else hdweapon.detachfromowner();
 	}
 	states{
 	select0:
