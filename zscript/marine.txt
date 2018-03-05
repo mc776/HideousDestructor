@@ -9,6 +9,7 @@
 	args[0] may be set 1-4 for ZM66, shotgun, SMG or RL.
 	args[1] may be set 1-3 for white, brown or black.
 		(technically any number not 1 or 3 is brown)
+		add 100 to force male, 200 to female; below 100 is random.
 
 	Invert args[1] (e.g., -3 for dark skin) to use the tango red.
 	Set an arg to zero to use the actor default. (HDMarine is random)
@@ -19,7 +20,6 @@ class HDMarine:HDActor replaces ScriptedMarine{
 		//$Category "Monsters/Hideous Destructor/Marines"
 		//$Title "Marine"
 		//$Sprite "PLAYA1"
-		//$Angled
 
 		monster;
 		+friendly
@@ -76,8 +76,20 @@ class HDMarine:HDActor replaces ScriptedMarine{
 		gunloaded=gunmax;
 
 
-		//appearance;
+		//appearance
 		if(args[1])stamina=args[1];
+
+		int voiceboxshape=abs(stamina);
+		voiceboxshape=(voiceboxshape>=200)?2:((voiceboxshape>=100)?1:random(1,2));
+		if(voiceboxshape==2){
+			painsound="marinef/pain";
+			deathsound="marinef/death";
+		}else{
+			painsound="marine/pain";
+			deathsound="marine/death";
+		}
+		stamina%=100;
+
 		string trnsl="";
 		if(stamina<0||self is "Tango")trnsl="Tango";else{
 			if(wep==HDMW_ZM66)trnsl="Rifleman";
@@ -92,14 +104,6 @@ class HDMarine:HDActor replaces ScriptedMarine{
 		else trnsl=string.format("Brown%s",trnsl);
 
 		A_SetTranslation(trnsl);
-
-		if(random(0,1)){
-			painsound="marinef/pain";
-			deathsound="marinef/death";
-		}else{
-			painsound="marine/pain";
-			deathsound="marine/death";
-		}
 	}
 	virtual void A_HDMScream(){
 		A_Scream();
@@ -843,14 +847,26 @@ class HDMarine:HDActor replaces ScriptedMarine{
 	}
 }
 
-class Rifleman:HDMarine{default{accuracy HDMW_ZM66;}}
+class Rifleman:HDMarine{
+	default{
+		//$Category "Monsters/Hideous Destructor/Marines"
+		//$Title "Marine (Rifle)"
+		//$Sprite "PLAYA1"
+		accuracy HDMW_ZM66;
+}}
 class BlackRifleman:Rifleman{default{stamina 3;}}
 class BrownRifleman:Rifleman{default{stamina 2;}}
 class WhiteRifleman:Rifleman{default{stamina 1;}}
 class RifleFistman:Rifleman replaces MarineFist{}
 class RifleChaingunman:Rifleman replaces MarineChaingun{}
 
-class Enforcer:HDMarine{default{accuracy HDMW_HUNTER;}}
+class Enforcer:HDMarine{
+	default{
+		//$Category "Monsters/Hideous Destructor/Marines"
+		//$Title "Marine (Shotgun)"
+		//$Sprite "PLAYA1"
+		accuracy HDMW_HUNTER;
+}}
 class BlackEnforcer:Enforcer{default{stamina 3;}}
 class BrownEnforcer:Enforcer{default{stamina 2;}}
 class WhiteEnforcer:Enforcer{default{stamina 1;}}
@@ -858,14 +874,26 @@ class EnforcerShot:Enforcer replaces MarineShotgun {}
 class EnforcerSuperShot:Enforcer replaces MarineSSG {}
 class EnforcerNoShot:Enforcer replaces MarineBerserk {}
 
-class Infiltrator:HDMarine{default{accuracy HDMW_SMG;}}
+class Infiltrator:HDMarine{
+	default{
+		//$Category "Monsters/Hideous Destructor/Marines"
+		//$Title "Marine (SMG)"
+		//$Sprite "PLAYA1"
+		accuracy HDMW_SMG;
+}}
 class BlackInfiltrator:Infiltrator{default{stamina 3;}}
 class BrownInfiltrator:Infiltrator{default{stamina 2;}}
 class WhiteInfiltrator:Infiltrator{default{stamina 1;}}
 class InfiltratorPistol:Infiltrator replaces MarinePistol{}
 class InfiltratorChainsaw:Infiltrator replaces MarineChainsaw{}
 
-class Rocketeer:HDMarine{default{accuracy HDMW_ROCKET;}}
+class Rocketeer:HDMarine{
+	default{
+		//$Category "Monsters/Hideous Destructor/Marines"
+		//$Title "Marine (Rocket)"
+		//$Sprite "PLAYA1"
+		accuracy HDMW_ROCKET;
+}}
 class BlackRocketeer:Rocketeer{default{stamina 3;}}
 class BrownRocketeer:Rocketeer{default{stamina 2;}}
 class WhiteRocketeer:Rocketeer{default{stamina 1;}}
@@ -875,27 +903,57 @@ class Plasmateer:Rocketeer replaces MarinePlasma{}
 class Railgunteer:Rocketeer replaces MarineRailgun{}
 
 
-class Tango:HDMarine{default{-friendly}}
+class Tango:HDMarine{
+	default{
+		//$Category "Monsters/Hideous Destructor/Marines"
+		//$Title "Tango"
+		//$Sprite "PLAYA1"
+		-friendly
+}}
 class BlackTango:Tango{default{stamina 3;}}
 class BrownTango:Tango{default{stamina 2;}}
 class WhiteTango:Tango{default{stamina 1;}}
 
-class RifleTango:Tango{default{accuracy HDMW_ZM66;}}
+class RifleTango:Tango{
+	default{
+		//$Category "Monsters/Hideous Destructor/Marines"
+		//$Title "Tango (Rifle)"
+		//$Sprite "PLAYA1"
+		accuracy HDMW_ZM66;
+}}
 class BlackRifleTango:RifleTango{default{stamina 3;}}
 class BrownRifleTango:RifleTango{default{stamina 2;}}
 class WhiteRifleTango:RifleTango{default{stamina 1;}}
 
-class ShotTango:Tango{default{accuracy HDMW_HUNTER;}}
+class ShotTango:Tango{
+	default{
+		//$Category "Monsters/Hideous Destructor/Marines"
+		//$Title "Tango (Shotgun)"
+		//$Sprite "PLAYA1"
+		accuracy HDMW_HUNTER;
+}}
 class BlackShotTango:ShotTango{default{stamina 3;}}
 class BrownShotTango:ShotTango{default{stamina 2;}}
 class WhiteShotTango:ShotTango{default{stamina 1;}}
 
-class SMGTango:Tango{default{accuracy HDMW_SMG;}}
+class SMGTango:Tango{
+	default{
+		//$Category "Monsters/Hideous Destructor/Marines"
+		//$Title "Tango (SMG)"
+		//$Sprite "PLAYA1"
+		accuracy HDMW_SMG;
+}}
 class BlackSMGTango:SMGTango{default{stamina 3;}}
 class BrownSMGTango:SMGTango{default{stamina 2;}}
 class WhiteSMGTango:SMGTango{default{stamina 1;}}
 
-class RocketTango:Tango{default{accuracy HDMW_ROCKET;}}
+class RocketTango:Tango{
+	default{
+		//$Category "Monsters/Hideous Destructor/Marines"
+		//$Title "Tango (Rocket)"
+		//$Sprite "PLAYA1"
+		accuracy HDMW_ROCKET;
+}}
 class BlackRocketTango:RocketTango{default{stamina 3;}}
 class BrownRocketTango:RocketTango{default{stamina 2;}}
 class WhiteRocketTango:RocketTango{default{stamina 1;}}
@@ -906,7 +964,11 @@ class WhiteRocketTango:RocketTango{default{stamina 1;}}
 // Marine corpse
 // ------------------------------------------------------------
 class UndeadRifleman:HDMarine{
-	default{}
+	default{
+		//$Category "Monsters/Hideous Destructor/"
+		//$Title "Undead Marine"
+		//$Sprite "PLAYA1"
+	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		timesdied++;
