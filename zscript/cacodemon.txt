@@ -13,7 +13,7 @@ class FooFighter:HDActor{
 		+forcexybillboard +bright
 		renderstyle "add";
 
-		height 12;radius 12;
+		height 20;radius 20;
 		speed 20;
 		maxstepheight 64;
 
@@ -50,18 +50,26 @@ class FooFighter:HDActor{
 		fcheckposition tm;
 		for(int i=0;i<times;i++){
 			if(stamina<1||!trymove(pos.xy+frac.xy,true,true,tm)){
-				if(random(0,7)&&stamina>0){
+				if(
+					random(0,blockingmobj==null?2:7)&&stamina>0
+				){
 					setorigin((pos.xy+frac.xy,pos.z),true);
 					continue;
 				}
 
 				//bzz
-				if(blockingmobj&&!blockingline){
+				if(blockingmobj){
 					if(
 						blockingmobj is "Cacademon"
-						&&!blockingmobj.ishostile(target)
+						&&target
+						&&target.target!=blockingmobj
 					)continue;
+
+					int pcbak=blockingmobj.painchance;
+					blockingmobj.painchance=max(pcbak,240);
 					blockingmobj.DamageMobj(self,target,random(1,3),"Electro");
+					blockingmobj.painchance=pcbak;
+
 					A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
 					while(random(0,2))A_SpawnParticle("white",
 						SPF_RELATIVE|SPF_FULLBRIGHT,35,frandom(4,8),0,
@@ -71,6 +79,8 @@ class FooFighter:HDActor{
 					);
 					if(random(0,3)){
 						setorigin((pos.xy+frac.xy,pos.z),true);
+						stamina-=1;
+						vel*=0.9;
 						continue;
 					}
 				}
@@ -81,7 +91,7 @@ class FooFighter:HDActor{
 				//kaBOOM
 				A_Blast(
 					blastradius:128,blastdamage:128,blastdamagetype:"Electro",
-					pushradius:256,pushamount:128,pushmass:true,
+					pushradius:256,pushamount:512,pushmass:true,
 					immolateradius:72,immolateamount:random(30,80),immolatechance:40,
 					gibradius:64,gibamount:3,
 					hurtspecies:false
@@ -123,13 +133,13 @@ class FooFighter:HDActor{
 		if(accuracy>100&&tracer&&checksight(tracer)){
 			A_Face(tracer,0,0,FAF_TOP);
 			A_ChangeVelocity(cos(pitch),0,-sin(pitch),CVF_RELATIVE);
-		}else A_ChangeVelocity(0.01,0,0,CVF_RELATIVE);
+		}else if(!random(0,50))A_ChangeVelocity(5,0,0.2,CVF_RELATIVE);
 		accuracy--;
 		if(accuracy<0)accuracy=160;
 
 		//nexttic
 		if(CheckNoDelay()){
-			if(tics>0)tics--;  
+			if(tics>0)tics--;
 			while(!tics){
 				if(!SetState(CurState.NextState)){
 					return;
@@ -198,7 +208,7 @@ class Cacasmaball:IdleDummy{
 		alpha=random(0,1)?frandom(0.8,1.6):frandom(0,0.3);
 		//nexttic
 		if(CheckNoDelay()){
-			if(tics>0)tics--;  
+			if(tics>0)tics--;
 			while(!tics){
 				if(!SetState(CurState.NextState)){
 					return;
@@ -239,11 +249,11 @@ class CacoShellBlood:BloodSplatSilent{
 		A_PlaySound("misc/bulletflesh",0,0.02);
 		A_SpawnChunks("CacoChunk",random(1,7),1,7);
 		if(
-			target.health>(CACO_MAXHEALTH*0.6)  
+			target.health>(CACO_MAXHEALTH*0.6)
 		)destroy();
 	}
 }
-class Cacademon:Cacodemon{//replaces Cacodemon{
+class Cacademon:Cacodemon replaces Cacodemon{
 	default{
 		+MISSILEMORE
 		+MISSILEEVENMORE
@@ -258,11 +268,10 @@ class Cacademon:Cacodemon{//replaces Cacodemon{
 		damagefactor "SmallArms1", 0.9;
 		obituary "%o was inverted by a cacodemon.";
 		speed 4;
-		stamina 100;
 	}
-	override void postbeginplay(){
-		super.postbeginplay();
-		hdmobai.resize(self,0.5,1.1);
+	override void beginplay(){
+		super.beginplay();
+		hdmobai.resize(self,0.8,1.1);
 		speed*=3.-2*scale.x;
 	}
 	void A_CacoCorpseZap(){
@@ -272,9 +281,6 @@ class Cacademon:Cacodemon{//replaces Cacodemon{
 			0,4000,"CacoPuff",180,180,random(60,160),18,1.4,1.5
 		);
 	}
-	int sprayangle;
-	int oldangle;
-	int oldpitch;
 	states{
 	spawn:
 		HEAD A 10{
@@ -283,17 +289,10 @@ class Cacademon:Cacodemon{//replaces Cacodemon{
 		}wait;
 	see:
 		HEAD A 4{
-			if(stamina<100)stamina++;
-			else healthing(random(0,5));
+			healthing(random(0,5));
 			if(health>(CACO_MAXHEALTH*0.5))bfloatbob=false;
-
-			if(stamina>30)hdmobai.chase(self);
-			else hdmobai.wander(self,true);
-		}
-	roam:
-		HEAD A 0 A_JumpIfTargetInLOS("see");
-		HEAD A 6{hdmobai.wander(self,true);}
-		loop;
+			hdmobai.chase(self);
+		}loop;
 	pain:
 		HEAD E 2{
 			if(health<(CACO_MAXHEALTH*0.5))bfloatbob=true;
@@ -304,108 +303,23 @@ class Cacademon:Cacodemon{//replaces Cacodemon{
 		HEAD E 3;
 	missile:
 		HEAD A 4{
-			A_FaceTarget(40,40);
+			A_FaceTarget(40,40,flags:FAF_BOTTOM);
 			if(A_JumpIfTargetInLOS("null",10)){setstatelabel("shoot");}
 			else if(A_JumpIfTargetInLOS("null")){setstatelabel("see");}
 		}loop;
 	shoot:
-		HEAD A 0 A_JumpIfCloser(128,"melee");
-		HEAD A 0{
-			if(!target){
-				setstatelabel("see");
-				return;
-			}
-			if(scale.x<0.7){
-				stamina-=30;
-				setstatelabel("pica");
-				return;
-			}
-			stamina-=90;
-			double dist=distance3d(target);
-			if(dist>256&&!random(0,1))setstatelabel("baka");  
-			else if(pos.z-floorz<100)vel.z+=0.8;
-			if(dist<128||!random(0,2))setstatelabel("centre");
-		}
-	sweep:
-		HEAD B 2{sprayangle=randompick(-16,16);}
-		HEAD C 4;
-		HEAD D 12 bright A_SpawnProjectile("FooFighter",32,0,sprayangle,CMF_AIMDIRECTION,pitch);
-		HEAD C 4;
-		HEAD B 2;
-		HEAD A 8 A_FaceTarget(10,20);
-		HEAD B 2;
-		HEAD C 4;
-		HEAD D 12 bright A_SpawnProjectile("FooFighter",32,0,0,CMF_AIMDIRECTION,pitch);
-		HEAD C 4;
-		HEAD B 2;
-		HEAD A 8 A_FaceTarget(10,20);
-		HEAD B 2;
-		HEAD C 4;
-		HEAD D 12 bright A_SpawnProjectile("FooFighter",32,0,-sprayangle,CMF_AIMDIRECTION,pitch);
-		HEAD C 4;
-		HEAD B 2;
-		HEAD AA 6 A_FaceTarget(10,20);
-		goto see;
-	centre:
-		HEAD A 0{
-			A_FaceTarget(20,40);
-			oldangle=angle;
-			oldpitch=pitch;
-		}
-		HEAD B 2{
-			A_FaceTarget(20,40);
-			if(!target)return;
-			sprayangle=distance3d(target);
-			if(!random(0,1))sprayangle=-sprayangle;
-			oldangle=(angle-oldangle);
-			oldpitch=(pitch-oldpitch);
-			angle+=oldangle*sprayangle;
-			pitch+=oldpitch*sprayangle;
-		}
-		HEAD C 4;
-		HEAD D 12 bright A_SpawnProjectile("FooFighter",32,0,0,CMF_AIMDIRECTION,pitch);
-		HEAD C 4;
-		HEAD B 2;
-		HEAD A 6{
-			angle-=oldangle*sprayangle;
-			pitch-=oldpitch*sprayangle;
-		}
-		HEAD B 2;
-		HEAD C 4;
-		HEAD D 12 bright A_SpawnProjectile("FooFighter",32,0,0,CMF_AIMDIRECTION,pitch);
-		HEAD C 4;
-		HEAD B 2;
-		HEAD A 6{
-			sprayangle/=2;
-			angle+=oldangle*sprayangle;
-			pitch+=oldpitch*sprayangle;
-		}
-		HEAD B 2;
-		HEAD C 4;
-		HEAD D 12 bright A_SpawnProjectile("FooFighter",32,0,0,CMF_AIMDIRECTION,pitch);
-		HEAD C 4;
-		HEAD B 2;
-		HEAD AA 6;
-		goto see;
-	pica:
-		HEAD B 1;
-		HEAD C 2;
-		HEAD D 6 bright A_SpawnProjectile("FooFighter",32,0,0,CMF_AIMDIRECTION,pitch);
-		HEAD C 4;
-		HEAD B 2;
-		HEAD A 3 A_FaceTarget(10,20);
-		goto see;
-	baka:
-		HEAD B 2;
-		HEAD C 4{vel.z+=frandom(0.2,1.2);}
-		HEAD DDD 2 A_FaceTarget(30,30,flags:FAF_BOTTOM);
-		HEAD D 36 bright{
+		HEAD BCC 2;// A_FaceTarget(30,30,flags:FAF_BOTTOM);
+		HEAD D 32 bright{
+			vel.z+=frandom(0.2,1.2);
+			A_FaceTarget(30,30,flags:FAF_BOTTOM);
 			bnopain=true;
 			A_SpawnProjectile("Cacasmaball",28,0,0,CMF_AIMDIRECTION,pitch);
 		}
-		HEAD D 32{
+		HEAD D 20{
+			spawn("DistantShotgun",pos);
+			A_PlaySound("weapons/bronto",CHAN_WEAPON);
 			A_ChangeVelocity(-cos(pitch)*3,0,sin(pitch),CVF_RELATIVE);	
-			A_CustomRailgun(random(120,240),50,"","azure",
+			A_CustomRailgun((0),50,"","azure",
 				RGF_SILENT|RGF_NOPIERCING|RGF_FULLBRIGHT,
 				0,40.0,null,0,0,65536,
 				12,0.4,2.0,"",-4
@@ -419,12 +333,9 @@ class Cacademon:Cacodemon{//replaces Cacodemon{
 				actor blll;bool gbg;
 				for(int i=0;i<3;i++){
 					[gbg,blll]=bll.A_SpawnItemEx("FooFighter",
-						flags:SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS
-					);
-					blll.vel=(
-						frandom(-5,5),
-						frandom(-5,5),
-						frandom(1,5)
+						0,0,3,frandom(-1,4),0,frandom(1,5),
+						angle+frandom(-50,50),
+						SXF_ABSOLUTEANGLE|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS
 					);
 				}
 				bll.stamina=0;
@@ -464,31 +375,33 @@ class Cacademon:Cacodemon{//replaces Cacodemon{
 			A_NoBlocking();
 		}goto dead;
 	death:
-		HEAD G 3{
+		HEAD F 3{
 			bpushable=false;
 			bfloatbob=false;
 			bnogravity=false;
 			hdmobai.corpseflags(self);
 			A_SpawnItemEx("tempshieldblue",flags:SXF_NOCHECKPOSITION|SXF_SETMASTER);
 			A_NoBlocking();
-			A_Scream();
+			A_PlaySound(seesound,CHAN_VOICE);
 		}
-		HEAD HI 3;
-		HEAD I -1;
+		HEAD GH 3;
+		HEAD H 2 A_JumpIf(vel.z>=0,"deadsplatting");
 		wait;
-	crash:
-		HEAD J 4{
+	deadsplatting:
+		HEAD I 4{
+			A_Scream();
 			bpushable=false;
 			bfloatbob=false;
 			hdmobai.corpseflags(self);
 			A_SpawnItemEx("tempshield2blue",flags:SXF_NOCHECKPOSITION|SXF_SETMASTER);
 		}
+		HEAD J 4;
 		HEAD JKKK 1 light("PLAZMABX1") A_CacoCorpseZap();
 		HEAD K 1 A_SpawnItemEx("tempshield2blue",flags:SXF_NOCHECKPOSITION|SXF_SETMASTER);
 		HEAD KKKK 1 light("PLAZMABX1") A_CacoCorpseZap();
 		HEAD L 1 A_SetTics(random(5,25));
 		HEAD LLLLL 2 light("PLAZMABX1") A_CacoCorpseZap();
-	crash2:
+	deadzapping:
 		HEAD L 1 light("PLAZMABX1") A_SetTics(random(1,4));
 		TNT1 A 0 A_PlaySound("weapons/plasidle",0,0.6,0,2);
 		HEAD L 1{
