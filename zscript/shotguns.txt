@@ -49,6 +49,10 @@ class HDShotgun:HDWeapon{
 // ------------------------------------------------------------
 class Hunter:HDShotgun replaces Shotgun{
 	default{
+		//$Category "Weapons/Hideous Destructor"
+		//$Title "Hunter"
+		//$Sprite "HUNTA0"
+
 		weapon.selectionorder 31;
 		weapon.slotnumber 3;
 		weapon.bobrangex 0.21;
@@ -163,7 +167,7 @@ class Hunter:HDShotgun replaces Shotgun{
 		SHTG E 0{
 			if(
 				invoker.weaponstatus[0]&HUNTF_AUTO
-				&&random(0,31)
+				&&random(0,63)
 			)setweaponstate("chamberauto");
 		}goto ready;
 	altfire:
@@ -524,6 +528,10 @@ enum hunterstatus{
 // ------------------------------------------------------------
 class Slayer:HDShotgun replaces HDShotgun{
 	default{
+		//$Category "Weapons/Hideous Destructor"
+		//$Title "Slayer"
+		//$Sprite "SLAYA0"
+
 		weapon.selectionorder 30;
 		weapon.slotnumber 3;
 		inventory.pickupmessage "You got the double-barreled shotgun!";

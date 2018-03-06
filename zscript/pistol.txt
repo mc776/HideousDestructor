@@ -4,6 +4,10 @@
 class HDSecondPistol:HDAmmo replaces Pistol{
 	int weaponstatus[8];
 	default{
+		//$Category "Weapons/Hideous Destructor"
+		//$Title "Pistol"
+		//$Sprite "PISTA0"
+
 		inventory.maxamount 1;
 		scale 0.63;
 		inventory.pickupmessage "You got the pistol!";
@@ -90,7 +94,12 @@ class HDAutoPistol:HDSecondPistol{
 		}
 		destroy();
 	}
-	default{-solid}
+	default{
+		//$Category "Weapons/Hideous Destructor"
+		//$Title "Pistol (Select Fire)"
+		//$Sprite "PISTA0"
+		-solid
+}
 	states{
 		spawn:
 			TNT1 A 0 nodelay{
