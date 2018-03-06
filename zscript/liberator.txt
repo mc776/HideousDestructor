@@ -533,24 +533,22 @@ enum liberatorstatus{
 };
 
 
-class LiberatorNoGL:IdleDummy{
-	states{
-	spawn:
-		TNT1 A 0 nodelay{
-			let lll=LiberatorRifle(spawn("LiberatorRifle",pos));if(!lll)return;
-			lll.weaponstatus[0]|=LIBF_NOLAUNCHER;
+class LiberatorNoGL:InventoryFlag{
+	override void postbeginplay(){
+		super.postbeginplay();
+		LiberatorRifle lll;
+		if(owner){
+			owner.A_SetInventory("LiberatorRifle",1);
+			lll=LiberatorRifle(owner.findinventory("LiberatorRifle"));
+		}else{
+			lll=LiberatorRifle(spawn("LiberatorRifle",pos));
 			lll.special=special;
-		}stop;
+		}
+		lll.weaponstatus[0]|=LIBF_NOLAUNCHER;
+		lll.weaponstatus[0]&=~LIBF_GRENADELOADED;
+		destroy();
 	}
 }
-class LiberatorNoGLItem:ActionItem{
-	states{
-	pickup:
-		TNT1 A 0{
-			let lll=LiberatorRifle(spawn("LiberatorRifle",pos));if(!lll)return;
-			lll.weaponstatus[0]|=LIBF_NOLAUNCHER;
-			lll.attachtoowner(self);
-		}fail;
-	}
-}
+
+
 
