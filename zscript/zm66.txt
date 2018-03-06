@@ -638,34 +638,31 @@ class ZM66AltStarter:ActionItem{
 		}fail;
 	}
 }
-class ZM66Semi:IdleDummy{
+class ZM66Semi:InventoryFlag{
 	default{
 		//$Category "Weapons/Hideous Destructor"
 		//$Title "ZM66 Rifle (All)"
 		//$Sprite "RIFSA0"
+		stamina ZM66F_NOLAUNCHER|ZM66F_NOFIRESELECT;
 	}
-	states{
-	spawn:
-		TNT1 A 0 nodelay{
-			let zzz=ZM66AssaultRifle(spawn("ZM66AssaultRifle",pos));if(!zzz)return;
-			zzz.weaponstatus[0]|=ZM66F_NOLAUNCHER|ZM66F_NOFIRESELECT;zzz.vel=vel;
-			zzz.special=special;
-		}stop;
+	override void postbeginplay(){
+		super.postbeginplay();
+		ZM66AssaultRifle zzz;
+		if(owner){
+			owner.A_SetInventory("ZM66AssaultRifle",1);
+			zzz=ZM66AssaultRifle(owner.findinventory("ZM66AssaultRifle"));
+		}else zzz=ZM66AssaultRifle(spawn("ZM66AssaultRifle",pos));
+		zzz.weaponstatus[0]|=stamina;
+		if(zzz.weaponstatus[0]&ZM66F_NOLAUNCHER)zzz.weaponstatus[0]&=~ZM66F_GRENADELOADED;
+		destroy();
 	}
 }
-class ZM66Regular:IdleDummy{
+class ZM66Regular:ZM66Semi{
 	default{
 		//$Category "Weapons/Hideous Destructor"
 		//$Title "ZM66 Rifle (All)"
 		//$Sprite "RIFLA0"
-	}
-	states{
-	spawn:
-		TNT1 A 0 nodelay{
-			let zzz=ZM66AssaultRifle(spawn("ZM66AssaultRifle",pos));if(!zzz)return;
-			zzz.weaponstatus[0]|=ZM66F_NOLAUNCHER;zzz.vel=vel;
-			zzz.special=special;
-		}stop;
+		stamina ZM66F_NOLAUNCHER;
 	}
 }
 class ZM66Random:IdleDummy{
