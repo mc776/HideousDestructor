@@ -3,6 +3,10 @@
 // ------------------------------------------------------------
 class LiberatorMag:Ammo{
 	default{
+		//$Category "Ammo/Hideous Destructor/"
+		//$Title "Liberator Magazine"
+		//$Sprite "RMAGA0"
+
 		+inventory.ignoreskill
 		ammo.backpackmaxamount 12;ammo.backpackamount 0;
 		inventory.maxamount 5;
@@ -19,6 +23,93 @@ class LiberatorMag:Ammo{
 		}stop;
 	}
 }
+class LiberatorEmptyMag:HD4mmMagEmpty{
+	default{scale 0.7;}
+	states{
+	spawn:
+		RMAG B -1;
+		stop;
+	death:
+		---- A -1{bmissile=true;}
+		stop;
+	}
+}
+class LiberatorMagP:HDUPK replaces LiberatorMag{
+	default{
+		stamina 30;
+		scale 0.7;
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		if(stamina<1){
+			actor emg=spawn("LiberatorEmptyMag",pos);
+			if(emg)emg.vel=vel;
+			destroy();return;
+		}
+	}
+	states{
+	spawn:
+		RMAG A -1 A_Stop();
+	give:
+		---- A 0{
+			if(stamina>=30){    
+				if(A_JumpIfInTargetInventory("LiberatorMag",0,"null")){
+					setstatelabel("spawn");return;
+				}else{
+					target.A_GiveInventory("LiberatorMag",1);
+					destroy();return;
+				}
+			}else{
+				int al=target.countinv("SevenMilAmmo");
+				target.A_GiveInventory("SevenMilAmmo",stamina);
+				stamina-=target.countinv("SevenMilAmmo")-al;
+				if(!stamina){destroy();return;}
+				else setstatelabel("spawn");
+			}
+		}stop;
+	}
+}
+
+
+class BossClip:Ammo{
+	default{
+		//$Category "Ammo/Hideous Destructor/"
+		//$Title "Boss Clip"
+		//$Sprite "RCLPA0"
+
+		+inventory.ignoreskill;
+		inventory.maxamount 12;
+		ammo.backpackmaxamount 30;
+		ammo.backpackamount 0;
+	}
+	states{
+	spawn:
+		TNT1 A 0 nodelay{
+			HDF.SplitAmmoSpawn(self);
+			A_SpawnItemEx("BossClipPickup",0,0,0,
+				vel.x,vel.y,vel.z,
+				0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM
+			);
+		}stop;
+	}
+}
+class BossClipPickup:HDUPK replaces BossClip{
+	default{
+		scale 0.5;
+	}
+	states{
+	spawn:
+		RCLP A 0 A_Stop();
+		goto spawn2;
+	give:
+		---- A 0 A_JumpIfInTargetInventory("BossClip",0,"spawn");
+		---- A 0{
+			A_GiveToTarget("BossClip",1);
+			A_PlaySound("weapons/pocket");
+		}stop;
+	}
+}
+
 class SevenMilAmmo:Ammo{
 	default{
 		+forcexybillboard +cannotpush
@@ -88,52 +179,5 @@ class HDLoose7mm:HDSpent7mm{
 	}
 }
 
-
-class LiberatorEmptyMag:HD4mmMagEmpty{
-	default{scale 0.7;}
-	states{
-	spawn:
-		RMAG B -1;
-		stop;
-	death:
-		---- A -1{bmissile=true;}
-		stop;
-	}
-}
-class LiberatorMagP:HDUPK replaces LiberatorMag{
-	default{
-		stamina 30;
-		scale 0.7;
-	}
-	override void postbeginplay(){
-		super.postbeginplay();
-		if(stamina<1){
-			actor emg=spawn("LiberatorEmptyMag",pos);
-			if(emg)emg.vel=vel;
-			destroy();return;
-		}
-	}
-	states{
-	spawn:
-		RMAG A -1 A_Stop();
-	give:
-		---- A 0{
-			if(stamina>=30){    
-				if(A_JumpIfInTargetInventory("LiberatorMag",0,"null")){
-					setstatelabel("spawn");return;
-				}else{
-					target.A_GiveInventory("LiberatorMag",1);
-					destroy();return;
-				}
-			}else{
-				int al=target.countinv("SevenMilAmmo");
-				target.A_GiveInventory("SevenMilAmmo",stamina);
-				stamina-=target.countinv("SevenMilAmmo")-al;
-				if(!stamina){destroy();return;}
-				else setstatelabel("spawn");
-			}
-		}stop;
-	}
-}
 
 

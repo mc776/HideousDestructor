@@ -21,6 +21,10 @@ class HDPistolAmmo:Ammo{
 }
 class HDPistolMag:Ammo{
 	default{
+		//$Category "Ammo/Hideous Destructor/"
+		//$Title "Pistol Magazine"
+		//$Sprite "CLP2A0"
+
 		+inventory.ignoreskill
 		inventory.maxamount 6;
 		ammo.backpackmaxamount 24;
@@ -29,7 +33,7 @@ class HDPistolMag:Ammo{
 	}
 	states{
 	spawn:
-		CLP3 A 0 nodelay{
+		CLP2 A 0 nodelay{
 			while(amount>0){
 				amount--;
 				actor pmm=spawn("HD9mPmag",pos);
@@ -42,6 +46,10 @@ class HDPistolMag:Ammo{
 }
 class HDSMGMag:Ammo{
 	default{
+		//$Category "Ammo/Hideous Destructor/"
+		//$Title "SMG Magazine"
+		//$Sprite "CLP3A0"
+
 		+inventory.ignoreskill
 		inventory.maxamount 5;
 		ammo.backpackmaxamount 18;
