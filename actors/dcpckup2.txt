@@ -147,6 +147,10 @@ actor TrapShooter : IdleDummy
 	}
 }
 actor HDAmBox:HDUPK{
+		//$Category "Misc/Hideous Destructor/Traps"
+		//$Title "Ammo Box"
+		//$Sprite "AMMOA0"
+
 	scale 0.6
 	height 16 radius 16
 	+usespecial activation THINGSPEC_Switch|THINGSPEC_ThingTargets
@@ -277,6 +281,10 @@ actor HDAmBox:HDUPK{
 }
 actor HDAmBoxUnarmed : HDAmBox
 {
+		//$Category "Misc/Hideous Destructor/Traps"
+		//$Title "Ammo Box (Unarmed)"
+		//$Sprite "OWWVA0"
+
 	states
 	{
 	open:
@@ -426,6 +434,10 @@ actor RedSphere : RandomSpawner replaces BlurSphere
 }
 actor BlueSphere : switchabledecoration replaces Soulsphere
 {
+		//$Category "Items/Hideous Destructor/Magic"
+		//$Title "Soul Sphere"
+		//$Sprite "SOULA0"
+
 	+floatbob
 	+usespecial activation THINGSPEC_Activate|THINGSPEC_ThingTargets
 	alpha 0.8 //renderstyle add
@@ -453,6 +465,10 @@ actor BlueSphere : switchabledecoration replaces Soulsphere
 }
 actor BrownSphere : BlueSphere replaces Megasphere
 {
+		//$Category "Items/Hideous Destructor/Magic"
+		//$Title "Megasphere"
+		//$Sprite "MEGAA0"
+
 	states{
 	spawn:
 		MEGA ABCD random(2,7) bright
@@ -470,6 +486,10 @@ actor BrownSphere : BlueSphere replaces Megasphere
 }
 actor GreenSphere : BlueSphere replaces Invulnerabilitysphere
 {
+		//$Category "Items/Hideous Destructor/Magic"
+		//$Title "Invulnerability Sphere"
+		//$Sprite "PINVA0"
+
 	+shootable
 	renderstyle normal
 	scale 0.6
