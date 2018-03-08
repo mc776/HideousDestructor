@@ -331,12 +331,12 @@ class Cacademon:Cacodemon replaces Cacodemon{
 			A_ChangeVelocity(-cos(pitch)*3,0,sin(pitch),CVF_RELATIVE);	
 			A_CustomRailgun(random(100,200),50,"","azure",
 				RGF_SILENT|RGF_NOPIERCING|RGF_FULLBRIGHT,
-				0,40.0,null,0,0,65536,
+				0,40.0,null,0,0,2048,
 				12,0.4,2.0,"",-4
 			);
 			bnopain=false;
 			actor bll=LineAttack(
-				angle,65536,pitch,0,"","FooFighter"
+				angle,2048,pitch,0,"","FooFighter"
 			);
 			if(bll){
 				bll.stamina=0;

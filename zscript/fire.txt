@@ -121,7 +121,7 @@ class HDFire:IdleDummy{
 				if(stamina>20)stamina=20;
 			}
 			setorigin(target.pos,false);
-			A_SetTics(clamp(random(8,30-stamina*0.1),4,12));
+			A_SetTics(clamp(random(3,30-stamina*0.1),2,12));
 			if(stamina<=0 || target.countinv("HDFireEnder")){
 				A_TakeFromTarget("HDFireEnder");
 				spawn("HDSmoke",pos);
@@ -163,11 +163,9 @@ class HDFire:IdleDummy{
 				A_TakeFromTarget("PowerFrightener");
 				A_GiveToTarget("WeaponBusy",1);
 				A_GiveToTarget("IsMoving",4);
-			}
+			}else stamina-=3; //monsters assumed to be trying to douse
 			//damage the target
-			//don't touch the bsolid, else crash trying to hurt the plasma beamspot
-			if(target.bsolid)
-				target.damagemobj(self,master,1,"Thermal",flags:DMG_NO_FACTOR);
+			target.damagemobj(self,master,1,"Thermal",flags:DMG_NO_FACTOR);
 		}
 		wait;
 	}
