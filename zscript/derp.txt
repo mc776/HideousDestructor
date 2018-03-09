@@ -102,7 +102,7 @@ class DERPBot:HDUPK{
 		DERP A 0 A_Stop();
 	spawn2:
 		DERP A 10 A_ClearTarget();
-		goto patrol;
+		goto see;
 	patrol:
 		DERP A 3{
 			A_ClearTarget();
@@ -125,6 +125,7 @@ class DERPBot:HDUPK{
 			else bnodropoff=false;
 
 			if(ammo<1)setstatelabel("noammo");
+			else if(!target)setstatelabel("patrol");
 		}
 		DERP AAAAAAAA 3{
 			UpdateCmd();
