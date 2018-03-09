@@ -13,7 +13,7 @@ class DERPBot:HDUPK{
 		+friendly +nofear +dontgib +noblood
 		painchance 240;painthreshold 12;
 		damagefactor "Thermal",0.7;damagefactor "Normal",0.8;
-		radius 5;height 8;deathheight 8;maxdropoffheight 4;maxstepheight 4;
+		radius 4;height 4;deathheight 4;maxdropoffheight 4;maxstepheight 4;
 		bloodcolor "22 22 22";scale 0.6;
 		health 100;mass 20;
 		maxtargetrange 256;
@@ -121,8 +121,8 @@ class DERPBot:HDUPK{
 		}loop;
 	see:
 		DERP A 0{
-			if(getzat(0)==pos.z)bnodropoff=false;
-			else bnodropoff=true;
+			if(floorz>=pos.z)bnodropoff=true;
+			else bnodropoff=false;
 
 			if(ammo<1)setstatelabel("noammo");
 		}
