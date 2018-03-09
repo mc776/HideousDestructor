@@ -290,12 +290,12 @@ class Babuin:HDActor{
 			hdmobai.corpseflags(self);
 			A_SpawnItemEx("tempshield2",flags:SXF_NOCHECKPOSITION|SXF_SETMASTER);
 		}goto deathend;
-	XDeathBrewtleLulz: //it's identical
 	xdeath:
+		TROO O 0{hdmobai.corpseflags(self);}
+	XDeathBrewtleLulz: //it's ALMOST identical
 		TROO O 0{
 			bpushable=false;
 			bnodropoff=false;
-			hdmobai.corpseflags(self);
 			A_GiveInventory("IsGibbed");
 			A_XScream();
 			A_NoBlocking();
