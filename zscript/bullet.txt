@@ -115,14 +115,18 @@ class HDBullet:HDActor{
 		A_FaceMovementDirection();
 
 		//b is never used.
-		if(!bseeinvisible && target)target.bshootable=false; //hack to escape shooter
+		bool bsbak=false;
+		if(!bseeinvisible&&target){
+			bsbak=target.bshootable;
+			target.bshootable=false; //hack to escape shooter
+		}
 		[a,b]=LineAttack(angle,speed,pitch,0,"none",
 			"NewBulletMovePuff",
 			flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT|LAF_OVERRIDEZ
 		);
 
 		//reset hacks
-		if(!bseeinvisible && target)target.bshootable=true;
+		if(!bseeinvisible && target)target.bshootable=bsbak;
 		bseeinvisible=true;
 
 		if(a){
