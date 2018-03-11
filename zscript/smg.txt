@@ -78,11 +78,14 @@ class HDSMG:HDWeapon{
 		}
 		SMGG A 1;
 		SMGG A 0{
-			A_SpawnItemEx("HDSpent9mm",
-				cos(pitch)*10,0,height-8-sin(pitch)*10,
-				vel.x,vel.y,vel.z,
-				0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
-			);
+			if(invoker.weaponstatus[SMGS_CHAMBER]==1){
+				A_SpawnItemEx("HDSpent9mm",
+					cos(pitch)*10,0,height-8-sin(pitch)*10,
+					vel.x,vel.y,vel.z,
+					0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
+				);
+				invoker.weaponstatus[SMGS_CHAMBER]=0;
+			}
 			if(invoker.weaponstatus[SMGS_AUTO]==2)A_SetTics(1);
 		}
 		SMGG A 0 A_ReFire();
@@ -121,7 +124,7 @@ class HDSMG:HDWeapon{
 	unloadchamber:
 		SMGG B 4 A_JumpIf(invoker.weaponstatus[SMGS_CHAMBER]<1,"nope");
 		SMGG B 10{
-			class<actor>which=invoker.weaponstatus[SMGS_CHAMBER]==2?"HDPistolAmmo":"HDSpent9mm";
+			class<actor>which=invoker.weaponstatus[SMGS_CHAMBER]>1?"HDPistolAmmo":"HDSpent9mm";
 			invoker.weaponstatus[SMGS_CHAMBER]=0;
 			A_SpawnItemEx(which,
 				cos(pitch)*10,0,height-8-sin(pitch)*10,
