@@ -151,7 +151,10 @@ extend class HDPlayerPawn{
 					mod="Bashing";
 				}
 				//degrade armour and puff
-				if(!random(0,max(0,(armourlevel-type)*5))){
+				if(
+					armourlevel<type
+					||!random(type-armourlevel,7)
+				){
 					actor p;bool q;
 					if(countinv("BlackArmour")){
 						A_TakeInventory("BlackArmour",random(1,type));
@@ -172,7 +175,7 @@ extend class HDPlayerPawn{
 						let pp=HDActor(p);
 						pp.A_SpawnChunks("HugeWallChunk",random(1,4),3,6);
 					}else{
-						A_TakeInventory("GreenArmour",random(1,type*2));
+						A_TakeInventory("GreenArmour",random(1,type));
 						[q,p]=A_SpawnItemEx("FragPuff",
 							0,0,height*1.6,
 							4,0,1,
