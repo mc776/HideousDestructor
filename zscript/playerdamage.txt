@@ -53,6 +53,8 @@ extend class HDPlayerPawn{
 
 		int towound=0;
 		int toburn=0;
+		int tostun=0;
+		int tobreak=0;
 
 		//blursphere
 		let blrs=HDBlurSphere(findinventory("HDBlursphere"));
@@ -132,24 +134,27 @@ extend class HDPlayerPawn{
 			else if(mod=="smallarms2")type=2;
 			else if(mod=="smallarms3")type=3;
 
-			//1/6 chance to hit exposed area
-			if(!armourlevel||!random(0,5)){
-				towound+=max(2,damage*0.08);
+			if(!armourlevel){
+				towound+=max(2,damage*0.12);
 				damage*=0.7;
 			}else{
+				int basedamage=damage;
+
 				//reduce damage and wounding
-				if(type>armourlevel+random(-1,1)){
-					towound+=max(1,damage*0.08);
+				if(type>armourlevel+randompick(0,1,1,1,1,1,2)){
+					towound+=max(1,damage*0.12);
 					damage*=0.7;
 				}else{
-					towound+=damage*0.02;
-					damage/=3;
+					damage*=armourlevel==3?0.3:(armourlevel==2?0.4:0.6);
+					tostun+=damage;
+					tobreak+=max(randompick(0,0,0,1),damage/10);
+					mod="Bashing";
 				}
 				//degrade armour and puff
-				if(!random(0,max(0,armourlevel-type))){
+				if(!random(0,max(0,(armourlevel-type)*5))){
 					actor p;bool q;
 					if(countinv("BlackArmour")){
-						A_TakeInventory("BlackArmour",1);
+						A_TakeInventory("BlackArmour",random(1,type));
 						[q,p]=A_SpawnItemEx("PenePuff",
 							0,0,height*1.6,
 							4,0,1
@@ -157,9 +162,8 @@ extend class HDPlayerPawn{
 						p.vel+=vel;
 						let pp=HDActor(p);
 						pp.A_SpawnChunks("WallChunk",random(8,16),3,8);
-					}
-					else if(countinv("BlueArmour")){
-						A_TakeInventory("BlueArmour",1);
+					}else if(countinv("BlueArmour")){
+						A_TakeInventory("BlueArmour",random(1,type));
 						[q,p]=A_SpawnItemEx("FragPuff",
 							0,0,height*1.6,
 							4,0,1
@@ -167,15 +171,12 @@ extend class HDPlayerPawn{
 						p.vel+=vel;
 						let pp=HDActor(p);
 						pp.A_SpawnChunks("HugeWallChunk",random(1,4),3,6);
-					}
-					else{
-						A_TakeInventory("GreenArmour",1);
+					}else{
+						A_TakeInventory("GreenArmour",random(1,type*2));
 						[q,p]=A_SpawnItemEx("FragPuff",
 							0,0,height*1.6,
 							4,0,1,
-							0,
-							0,
-							64
+							0,0,64
 						);
 						if(p)p.vel+=vel;
 					}
@@ -279,7 +280,7 @@ extend class HDPlayerPawn{
 				if(!random(0,mod=="teeth"?12:36))aggravateddamage++;
 				if(random(1,15)<damage)towound++;
 			}
-			stunned+=damage*frandom(0,0.6);
+			tostun+=damage*frandom(0,0.6);
 		}else if(
 			mod=="GhostSquadAttack"
 		){
@@ -297,7 +298,7 @@ extend class HDPlayerPawn{
 
 			if(mod=="falling"){
 				if(!source)return 0; //ignore regular fall damage
-				else stunned+=damage*random(20,25);
+				else tostun+=damage*random(20,25);
 			}
 		}else{
 			//anything else
@@ -336,10 +337,12 @@ extend class HDPlayerPawn{
 			woundcount+=towound;
 		}
 		burncount+=toburn;
+		stunned+=tostun;
+		oldwoundcount+=tobreak;
 
 		//stun the player randomly
 		if(damage>60 || (!random(0,5) && damage>20)){
-			stunned+=damage;
+			tostun+=damage;
 		}
 
 		if(hd_debug){

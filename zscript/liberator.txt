@@ -185,8 +185,12 @@ class LiberatorRifle:HDWeapon{
 			invoker.weaponstatus[LIBS_CHAMBER]=1;
 			invoker.weaponstatus[LIBS_HEAT]+=2;
 			A_PlaySound("weapons/bigrifle",1);
-			A_GiveInventory("DecoBulleter776");
 			A_ZoomFactor(0.97,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
+
+			actor p=spawn("HDBullet776",pos+(0,0,height-6));
+			p.target=self;p.angle=angle;p.pitch=pitch;
+			p.vel+=self.vel;
+
 			A_MuzzleClimb(
 				-0.2,-0.4,
 				-frandom(0.5,0.9),-frandom(1.7,2.1),

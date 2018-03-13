@@ -28,8 +28,10 @@ class HDBullet:HDActor{
 	int dmg;
 	bool inthesky;
 	line firstblockingline;
-	name distantsounder;
+
+	class<actor> distantsounder;
 	property distantsounder:distantsounder;
+
 	default{
 		projectile; -nogravity
 		+noextremedeath +cannotpush +hittracer +forcexybillboard
@@ -39,7 +41,7 @@ class HDBullet:HDActor{
 		damagefunction(0);
 		hdbullet.distantsounder "none";
 
-		mass 40; //40 426, 50 00, 80 776, 90 9mil, 600 40mm
+		mass 40; //40 426, 50 : 00, 80 776, 90 9mil, 600 40mm
 		speed 40;//accuracy 20;
 		pushfactor 0.1;
 	}
@@ -289,6 +291,14 @@ class HDBullet:HDActor{
 		dmg+=mass*speed*0.0003+woundhealth;
 		int maxdmg=dmg*2;
 
+		//set damagetype
+		int penetrability=(2.-pushfactor)*(accuracy+speed)+random(-200,200);
+		if(penetrability>1500)damagetype="SmallArms3";
+		else if(penetrability>1100)damagetype="SmallArms2";
+		else if(penetrability>600)damagetype="SmallArms1";
+		else damagetype="SmallArms0";
+
+
 		//supersonic shockwave damage
 		if(speed>HDCONST_SPEEDOFSOUND)maxdmg*=1.2;
 
@@ -364,34 +374,20 @@ class HDBullet:HDActor{
 			SXF_NOCHECKPOSITION
 		);
 	}
-	//sets crack sound and damage type
+	//sets crack sound
 	void CrackType(){
 		if(speed>256){
 			name b="";
 			if(speed>1000){
-				damagetype="SmallArms3";
 				if(mass>80) b="SupersonicTrailBig";
 				else b="SupersonicTrail";
 			}else if(speed>800){
-				damagetype="SmallArms3";
 				b="SupersonicTrail";
 			}else if(speed>HDCONST_SPEEDOFSOUND){
-				damagetype="SmallArms2";
 				b="SupersonicTrailSmall";
 			}else if(speed>100){
-				damagetype="SmallArms1";
 				b="SubsonicTrail";
-			}else{
-				damagetype="SmallArms0";
 			}
-			if(woundhealth>50)
-				A_SetDamageType("SmallArms3");
-			if(damagetype=="SmallArms1" && woundhealth>30)
-				A_SetDamageType("SmallArms2");
-			if(damagetype=="SmallArms0" && woundhealth>30)
-				A_SetDamageType("SmallArms2");
-			else if(damagetype=="SmallArms0" && woundhealth>10)
-				A_SetDamageType("SmallArms1");
 
 			if(b=="")return;
 
@@ -518,52 +514,47 @@ class DecoBulleter:ActionItem{
 		}fail;
 	}
 }
-class DecoBulleter426:DecoBulleter{
-	default{
-		missiletype "HDBullet426";
-	}
-}
-class DecoBulleter426s:DecoBulleter426{
-	default{
-		speed 1100;
-		accuracy 2;
-	}
-}
-class DecoBulleter776:DecoBulleter{
-	default{
-		missiletype "HDBullet776";
-	}
-}
 class DecoBulleter9:DecoBulleter{
 	default{
 		missiletype "HDBullet9";
-		accuracy 2;
-	}
-}
-class DecoBulleter9f:DecoBulleter9{
-	default{
 		speed 500;
 		accuracy 1;
 	}
 }
-class DecoBulleter00:DecoBulleter{
-	default{
-		missiletype "HDBullet00b";
-		accuracy 1;
-	}
-}
-class DecoBulleter00f:DecoBulleter00{
-	default{
-		missiletype "HDBullet00bf";
-		accuracy 0;
-	}
-}
 
 
+
+//the actual bullets!
+class HDBulletFrag:HDBullet{
+	default{
+		woundhealth 2;
+	}
+	override void postbeginplay(){
+		HDActor.PostBeginPlay();
+		shootz = height*0.5+8;
+		grav=getgravity();
+		pushfactor=frandom(0.1,1);
+		mass=random(15,60);
+		accuracy=random(0,12);
+	}
+	override void Puff(int sp=0){
+		A_SpawnItemEx("FragPuff",flags:
+			SXF_NOCHECKPOSITION
+		);
+	}
+}
+class HDBullet9:HDBullet{
+	default{
+		pushfactor 0.5;
+		mass 90;
+		speed 480;
+		accuracy 9;
+	}
+}
 class HDBullet426:HDBullet{
 	default{
 		pushfactor 0.6;
-		mass 40;
+		mass 60;
 		speed 1200;
 		accuracy 6;
 		woundhealth 6;
@@ -573,7 +564,7 @@ class HDBullet426:HDBullet{
 class HDBullet776:HDBullet{
 	default{
 		pushfactor 0.3;
-		mass 90;
+		mass 100;
 		speed 1100;
 		accuracy 17;
 		woundhealth 7;
@@ -678,32 +669,6 @@ class HDBullet00bf2:HDBullet00bfl{
 			}
 		}
 		destroy();
-	}
-}
-class HDBullet9:HDBullet{
-	default{
-		pushfactor 0.5;
-		mass 90;
-		speed 480;
-		accuracy 9;
-	}
-}
-class HDBulletFrag:HDBullet{
-	default{
-		woundhealth 2;
-	}
-	override void postbeginplay(){
-		HDActor.PostBeginPlay();
-		shootz = height*0.5+8;
-		grav=getgravity();
-		pushfactor=frandom(0.1,1);
-		mass=random(1,4)*20;
-		accuracy=random(0,2)*6;
-	}
-	override void Puff(int sp=0){
-		A_SpawnItemEx("FragPuff",flags:
-			SXF_NOCHECKPOSITION
-		);
 	}
 }
 
