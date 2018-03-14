@@ -246,27 +246,21 @@ class HDStatusBar:DoomStatusBar{
 		}
 
 		//armour
-		int armour=-1;int maxarmour;string armoursprite;
-		name armourtype="";
-		if(cp.countinv("GreenArmour")){
-			armour=0;armoursprite="ARMSA0";
-			armourtype="GreenArmour";
-			maxarmour=HDCONST_GREENARMOUR;
-		}else if(cp.countinv("BlackArmour")){
-			armour=1;armoursprite="ARMEA0";
-			armourtype="BlackArmour";
-			maxarmour=HDCONST_BLACKARMOUR;
-		}else if(cp.countinv("BlueArmour")){
-			armour=2;armoursprite="ARMCA0";
-			armourtype="BlueArmour";
+		int maxarmour=HDCONST_GREENARMOUR;
+		string armoursprite="ARMSA0";
+		string armourback="ARMER0";
+		int armouramt=cp.countinv("BlueArmour");
+		if(armouramt){
 			maxarmour=HDCONST_BLUEARMOUR;
-		}
-		if(armour>=0){
+			armoursprite="ARMCA0";
+			armourback="ARMER1";
+		}else armouramt=cp.countinv("GreenArmour");
+		if(armouramt){
 			vector2 armourcoords=(0,-mIndexFont.mFont.GetHeight()*2);
 			if(state==HUD_Fullscreen)armourcoords=(-55,-4);
 			drawbar(
-				armoursprite,string.format("ARMER%i",armour),
-				cp.countinv(armourtype),maxarmour,
+				armoursprite,armourback,
+				armouramt,maxarmour,
 				armourcoords,-1,
 				SHADER_VERT,DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM
 			);
@@ -354,8 +348,7 @@ class HDStatusBar:DoomStatusBar{
 			drawinventoryicon(ivs,(posx,posy),flags|DI_ITEM_CENTER_BOTTOM|DI_TRANSLATABLE);
 			if(
 				ivs is "GreenArmourStored"||
-				ivs is "BlueArmourStored"||
-				ivs is "BlackArmourStored"
+				ivs is "BlueArmourStored"
 			)drawstring(
 				mAmountFont,FormatNumber(cplayer.mo.countinv("StoredArmour")),
 				(numposx,numposy),flags|DI_TEXT_ALIGN_RIGHT,Font.CR_OLIVE

@@ -4,15 +4,13 @@ sprite OWWVA0,28,16
 	patch AMMOA0,0,0{}
 	patch AMMOA0,0,3{rotate 180}
 }
-sprite ARMSA0,31,17
-{
+sprite ARMSA0,31,17{
 	offset 15,17
 	patch ARM1A0,0,0{translation "112:120=152:159","121:127=9:12"}
 }
-sprite ARMCA0,31,17
-{
+sprite ARMCA0,31,17{
 	offset 15,17
-	patch ARM2A0,0,0{translation desaturate,29}
+	patch ARM2A0,0,0{translation "192:207=%[0,0,0]:[2,2,2]"}
 }
 sprite ARMSB0,31,17{
 	offset 0,-8
@@ -21,10 +19,6 @@ sprite ARMSB0,31,17{
 sprite ARMCB0,31,17{
 	offset 0,-8
 	patch ARMCA0,0,0{}
-}
-sprite ARMEB0,31,17{
-	offset 0,-8
-	patch ARMEA0,0,0{}
 }
 
 sprite BPAKB0,29,22{
@@ -636,20 +630,13 @@ graphic PISARED, 6, 6
 	patch PBRSC0G0, 3, 2 {translation red}
 	patch PBRSC0G0, 3, 4 {translation red}
 }
-graphic ARMER0, 31, 17
-{
+graphic ARMER0, 31,17{
 	offset 15,17
-	patch ARMSA0, 0, 0 {translation Desaturate, 31; style Modulate}
+	patch ARMSA0,0,0{translation Desaturate, 31;style Modulate}
 }
-graphic ARMER1, 31, 17
-{
+graphic ARMER1, 31,17{
 	offset 15,17
-	patch ARMCA0, 0, 0 {translation Desaturate, 31; style Modulate}
-}
-graphic ARMER2, 31, 17
-{
-	offset 15,17
-	patch ARMEA0, 0, 0 {translation Desaturate, 31; style Modulate}
+	patch ARMCA0,0,0{translation Desaturate, 31;style Modulate}
 }
 graphic STBURAUT, 5, 3
 {

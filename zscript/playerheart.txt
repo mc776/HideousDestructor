@@ -167,9 +167,8 @@ extend class HDPlayerPawn{
 			if(cansprint && runwalksprint>0 && (fm||sm)){
 				fatigue+=2+(
 					countinv("WornRadsuit")?randompick(0,1,1):
-					(countinv("BlackArmour")?randompick(0,1):
-					(countinv("BlueArmour")?randompick(0,0,1):
-					countinv("GreenArmour")?randompick(0,0,0,1):0))
+					(countinv("BlueArmour")?randompick(0,1):
+					countinv("GreenArmour")?randompick(0,0,0,1):0)
 				);
 				if(!stimcount && !zerk && fatigue>=HDCONST_SPRINTFATIGUE){
 					fatigue+=20;

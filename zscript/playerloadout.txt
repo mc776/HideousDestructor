@@ -34,8 +34,7 @@ class SoldierExtras:ActionItem{
 			A_SetInventory("PortableMedikit",max(1,countinv("PortableMedikit")));
 			A_SetInventory("PortableStimpack",max(2,countinv("PortableStimpack")));
 			if(
-				!countinv("BlackArmour")
-				&&!countinv("BlueArmour")
+				!countinv("BlueArmour")
 			)A_SetInventory("GreenArmour",HDCONST_GREENARMOUR);
 
 			if(!countinv("HDPistol"))A_GiveInventory("HDPistol");
@@ -247,14 +246,14 @@ extend class HDPlayerPawn{
 		else{ //all other shit
 			switch(num){
 				case 1:
-					A_TakeInventory("BlackArmour");A_TakeInventory("BlueArmour");
+					A_TakeInventory("BlueArmour");
 					A_SetInventory("GreenArmour",HDCONST_GREENARMOUR);break;
 				case 2:
-					A_TakeInventory("BlackArmour");A_TakeInventory("GreenArmour");
+					A_TakeInventory("GreenArmour");
 					A_SetInventory("BlueArmour",HDCONST_BLUEARMOUR);break;
 				case 3:
-					A_TakeInventory("GreenArmour");A_TakeInventory("BlueArmour");
-					A_SetInventory("BlackArmour",HDCONST_BLACKARMOUR);break;
+					//can we reuse this?
+					break;
 
 				case 4: A_GiveInventory("PortableMedikit",amt);break;
 				case 5: A_GiveInventory("PortableStimpack",amt);break;
@@ -282,8 +281,7 @@ extend class HDPlayerPawn{
 					A_GiveInventory("BlueArmourStored");
 					break;
 				case 19:
-					A_GiveInventory("StoredArmour",HDCONST_BLACKARMOUR);
-					A_GiveInventory("BlackArmourStored");
+					//what this for
 					break;
 				case 20: A_GiveInventory("PortableLadder",amt);break;
 				case 99:

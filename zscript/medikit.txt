@@ -167,7 +167,7 @@ class HDMedikitter:HDWoundFixer{
 				if(getcvar("hd_helptext"))A_Print("Get them to take off their environment suit first!\n\n(toggle it in the inventory)");
 				return resolvestate("nope");
 			}
-			if(!c.player.bot && c.countinv("GreenArmour")+c.countinv("BlueArmour")+c.countinv("BlackArmour")){
+			if(!c.player.bot && (c.countinv("GreenArmour")||c.countinv("BlueArmour"))){
 				if(getcvar("hd_helptext"))A_Print("Get them to take off their armour first!\n\n(\cdhd_strip\c- in the console)");
 				return resolvestate("nope");
 			}
@@ -251,7 +251,7 @@ class HDMedikitter:HDWoundFixer{
 					A_Refire("nope");
 				}
 			}
-			else if(countinv("GreenArmour")+countinv("BlueArmour")+countinv("BlackArmour")){
+			else if(countinv("GreenArmour")||countinv("BlueArmour")){
 				if(getcvar("hd_autostrip"))A_Refire("reload");
 				else{
 					if(getcvar("hd_helptext"))A_Print("Take off your armour first!\n\n(\cdhd_strip\c- in the console\n\nor hit reload)");
@@ -340,7 +340,7 @@ class HDMedikitter:HDWoundFixer{
 			int ag=slf.aggravateddamage*0.2+countinv("IsMoving");
 			int wg=0;
 			if(ww||uw)wg+=2;
-			if(countinv("GreenArmour")+countinv("BlueArmour")+countinv("BlackArmour"))wg+=5;
+			if(countinv("GreenArmour")||countinv("BlueArmour"))wg+=5;
 			ow=max(ow+random(-ag,ag),0);
 			bb=max(bb+random(-ag,ag),0);
 			uw=max(uw+random(-wg,wg),0);
@@ -545,7 +545,7 @@ class SelfBandage:HDWoundFixer{
 			if(getcvar("hd_helptext"))A_Print("You seem to be stable.",5);
 		}goto nope;
 		TNT1 A 0 A_Jump(42,2);
-		TNT1 A 0 A_JumpIf(countinv("GreenArmour")||countinv("BlueArmour")||countinv("BlackArmour"),2);
+		TNT1 A 0 A_JumpIf(countinv("GreenArmour")||countinv("BlueArmour"),2);
 		TNT1 A 4 A_Jump(100,2,3);
 		TNT1 A 0 {invoker.patchwound(random(1,3),self);}
 		TNT1 A 0 A_MuzzleClimb(frandom(-2.4,2.4),frandom(-2.4,2.4));
