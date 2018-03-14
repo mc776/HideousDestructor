@@ -152,7 +152,7 @@ extend class HDPlayerPawn{
 				){
 					actor p;bool q;
 					if(armourlevel>1){
-						A_TakeInventory("BlueArmour",random(1,type));
+						A_TakeInventory("BlueArmour",random(1,type+1));
 						[q,p]=A_SpawnItemEx("PenePuff",
 							0,0,height*1.6,
 							4,0,1
@@ -161,7 +161,7 @@ extend class HDPlayerPawn{
 						let pp=HDActor(p);
 						pp.A_SpawnChunks("WallChunk",random(8,16),3,8);
 					}else{
-						A_TakeInventory("GreenArmour",random(1,type));
+						A_TakeInventory("GreenArmour",random(1,type+1));
 						[q,p]=A_SpawnItemEx("FragPuff",
 							0,0,height*1.6,
 							4,0,1,
