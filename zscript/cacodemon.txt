@@ -7,7 +7,7 @@ class FooFighter:HDActor{
 	default{
 		+bright +nogravity +float +noblockmap
 		+seekermissile +missile
-		+puffonactors +bloodlessimpact +alwayspuff +puffgetsowner
+		+puffonactors +bloodlessimpact +alwayspuff +puffgetsowner +hittracer
 
 		+rollsprite +rollcenter
 		+forcexybillboard +bright
@@ -16,6 +16,8 @@ class FooFighter:HDActor{
 		height 20;radius 20;
 		speed 20;
 		maxstepheight 64;
+
+		damagetype "Thermal";
 
 		seesound "weapons/plasidle";
 	}
@@ -336,14 +338,13 @@ class Cacademon:Cacodemon replaces Cacodemon{
 			);
 			bnopain=false;
 			actor bll=LineAttack(
-				angle,2048,pitch,0,"","FooFighter"
+				angle,2048,pitch,random(128,512),"","FooFighter"
 			);
 			if(bll){
 				bll.stamina=0;
-				bll.tracer=target;
-				actor blll;bool gbg;
-				for(int i=random(1,3);i>0;i--){
-					[gbg,blll]=bll.A_SpawnItemEx("FooFighter",
+				if(!bll.tracer){
+					bll.tracer=target;
+					bll.A_SpawnItemEx("FooFighter",
 						0,0,3,frandom(-1,4),0,frandom(1,5),
 						angle+frandom(-50,50),
 						SXF_ABSOLUTEANGLE|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS
