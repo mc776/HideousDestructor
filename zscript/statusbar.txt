@@ -169,7 +169,7 @@ class HDStatusBar:DoomStatusBar{
 		int mhht=-4-mHUDFont.mFont.getheight();
 
 		//inventory
-		DrawInvSel(25,-4,42,mxht,DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE);
+		DrawInvSel(25,-4,42,mxht,DI_SCREEN_CENTER_BOTTOM);
 
 		//keys
 		string keytype="";
@@ -345,11 +345,12 @@ class HDStatusBar:DoomStatusBar{
 	void DrawInvSel(int posx,int posy,int numposx,int numposy,int flags){
 		if(CPlayer.mo.InvSel){
 			inventory ivs=cplayer.mo.invsel;
-			drawinventoryicon(ivs,(posx,posy),flags|DI_ITEM_CENTER_BOTTOM|DI_TRANSLATABLE);
-			if(
-				ivs is "GreenArmourStored"||
-				ivs is "BlueArmourStored"
-			)drawstring(
+			bool ivsa=ivs is "GreenArmourStored"||ivs is "BlueArmourStored";
+			drawinventoryicon(ivs,(posx,posy),
+				flags|DI_ITEM_CENTER_BOTTOM
+				|(ivsa?0:DI_TRANSLATABLE)
+			);
+			if(ivsa)drawstring(
 				mAmountFont,FormatNumber(cplayer.mo.countinv("StoredArmour")),
 				(numposx,numposy),flags|DI_TEXT_ALIGN_RIGHT,Font.CR_OLIVE
 			);

@@ -251,14 +251,12 @@ extend class HDPlayerPawn{
 				case 2:
 					A_TakeInventory("GreenArmour");
 					A_SetInventory("BlueArmour",HDCONST_BLUEARMOUR);break;
-				case 3:
-					//can we reuse this?
-					break;
+				case 3: A_GiveInventory("PortableRadsuit",amt);break;
 
 				case 4: A_GiveInventory("PortableMedikit",amt);break;
 				case 5: A_GiveInventory("PortableStimpack",amt);break;
 				case 6: A_GiveInventory("PortableBerserkPack",amt);break;
-				case 7: A_GiveInventory("PortableRadsuit",amt);break;
+				case 7: A_GiveInventory("PortableLadder",amt);break;
 				case 8:
 					A_GiveInventory("PortableLiteAmp");
 					break;
@@ -280,10 +278,6 @@ extend class HDPlayerPawn{
 					A_GiveInventory("StoredArmour",HDCONST_BLUEARMOUR);
 					A_GiveInventory("BlueArmourStored");
 					break;
-				case 19:
-					//what this for
-					break;
-				case 20: A_GiveInventory("PortableLadder",amt);break;
 				case 99:
 					A_GiveInventory("SoldierExtras",amt);
 					return "HDPistol";
