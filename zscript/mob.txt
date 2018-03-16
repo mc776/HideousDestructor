@@ -268,6 +268,10 @@ struct HDMobAI play{
 		actor attacktarget=caller.target;
 		if(flee)caller.bfrightened=true;
 
+		//reset velocity
+		if(!caller.trymove(pg.xy+caller.vel.xy,false))caller.vel.xy=(0,0);
+		else caller.setorigin(pg,false);
+
 		double speedbak=caller.speed;
 		if(caller.bfrightened)caller.speed*=2;
 		bool membak=caller.bmissileevenmore;
