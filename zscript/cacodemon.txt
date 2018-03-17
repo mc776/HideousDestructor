@@ -387,11 +387,11 @@ class Cacademon:Cacodemon replaces Cacodemon{
 		HEAD E 3;
 		goto see;
 	missile:
-		HEAD A 3{
-			A_FaceTarget(40,40,flags:FAF_TOP);
-			if(A_JumpIfTargetInLOS("null",10)){setstatelabel("shoot");}
-			else if(A_JumpIfTargetInLOS("null",flags:JLOSF_DEADNOJUMP)){setstatelabel("see");}
-		}loop;
+		HEAD A 0 A_JumpIfTargetInLOS("shoot",10);
+		HEAD A 0 A_JumpIfTargetInLOS(1,flags:JLOSF_DEADNOJUMP);
+		goto see;
+		HEAD A 3 A_FaceTarget(40,40,flags:FAF_TOP);
+		loop;
 	shoot:
 		HEAD A 0 A_JumpIf(charge>10,"bigzap");
 	foof:
