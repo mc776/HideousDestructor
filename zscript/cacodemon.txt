@@ -197,7 +197,7 @@ class FooFighter:HDActor{
 
 class FoofPuff:Actor{
 	default{
-		+nointeraction
+		+nointeraction +bloodlessimpact
 		decal "";
 	}
 	states{spawn:TNT1 A 0;stop;}
@@ -209,13 +209,12 @@ class Foof:HDFireball{
 		decal "BulletScratch";
 		damagefunction(random(20,40));
 	}
-	actor ZapSomething(){
+	void ZapSomething(){
 		roll=frandom(0,360);
 		A_PlaySound("weapons/plasidle",CHAN_BODY);
-		blockthingsiterator it=blockthingsiterator.create(self,128);
+		blockthingsiterator it=blockthingsiterator.create(self,72);
 		actor tb=target;
 		actor zit=null;
-		double oldp=pitch;double olda=angle;
 		while(it.next()){
 			if(
 				it.thing.bshootable
@@ -229,7 +228,7 @@ class Foof:HDFireball{
 						||!(zit is "Cacodemon")
 					)
 				){
-					zit.damagemobj(self,tb,random(1,12),"Electro");
+					zit.damagemobj(self,tb,random(0,7),"Electro");
 				}
 				break;
 			}
@@ -240,10 +239,8 @@ class Foof:HDFireball{
 			RGF_SILENT|RGF_NOPIERCING|RGF_FULLBRIGHT|RGF_CENTERZ|RGF_NORANDOMPUFFZ,
 			0,4000,"FoofPuff",range:128,6,0.8,1.5
 		);
-		pitch=oldp+frandom(-2,2);angle=olda+frandom(-2,2);
-		if(pos.z-floorz<24)vel.z+=0.3;
 		A_FaceTracer(4,4);
-		return zit;
+		if(pos.z-floorz<24)vel.z+=0.3;
 	}
 	states{
 	spawn:
