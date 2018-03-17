@@ -229,14 +229,14 @@ class Foof:HDFireball{
 						||!(zit is "Cacodemon")
 					)
 				){
-					zit.damagemobj(self,tb,random(0,12),"Electro");
+					zit.damagemobj(self,tb,random(1,12),"Electro");
 				}
 				break;
 			}
 		}
 		if(!zit||zit==tb){pitch=frandom(-90,90);angle=frandom(0,360);}
 		A_CustomRailgun(
-			0,0,"","e0 df ff",
+			(0),0,"","e0 df ff",
 			RGF_SILENT|RGF_NOPIERCING|RGF_FULLBRIGHT|RGF_CENTERZ|RGF_NORANDOMPUFFZ,
 			0,4000,"FoofPuff",range:128,6,0.8,1.5
 		);
@@ -340,7 +340,7 @@ class Cacademon:Cacodemon replaces Cacodemon{
 		damagefactor "SmallArms1", 0.9;
 		obituary "%o was inverted by a cacodemon.";
 		speed 4;
-		meleerange 128;
+		maxtargetrange 8192;
 	}
 	override void beginplay(){
 		super.beginplay();
@@ -376,7 +376,7 @@ class Cacademon:Cacodemon replaces Cacodemon{
 			healthing(random(0,5));
 			if(health>(CACO_MAXHEALTH*0.5))bfloatbob=false;
 			hdmobai.chase(self);
-		}wait;
+		}loop;
 	pain:
 		HEAD E 2{
 			if(health<(CACO_MAXHEALTH*0.5))bfloatbob=true;

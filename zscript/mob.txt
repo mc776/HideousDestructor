@@ -266,6 +266,7 @@ struct HDMobAI play{
 		vector3 pg=caller.pos;
 		bool fraid=caller.bfrightened;
 		actor attacktarget=caller.target;
+		actor goal=caller.goal;if(!caller.bchasegoal)goal=attacktarget;
 		if(flee)caller.bfrightened=true;
 
 		//reset velocity
@@ -282,11 +283,19 @@ struct HDMobAI play{
 		caller.bmissilemore=true;
 
 		//chase the goal and record the resulting position
-		if(attacktarget)caller.A_Chase(
-			melstate,mistate,
-			(res?CHF_RESURRECT:0)
-		);
-		else caller.A_Wander();
+		if(attacktarget){
+			caller.A_Chase(
+				null,null,
+				(res?CHF_RESURRECT:0)
+			);
+			bool cg=caller.bchasegoal;
+			caller.bchasegoal=false;
+			caller.A_Chase(
+				melstate,mistate,
+				CHF_DONTMOVE
+			);
+			caller.bchasegoal=cg;
+		}else caller.A_Wander();
 		vector3 pp=caller.pos;
 
 		//don't spin so dang fast
@@ -304,11 +313,11 @@ struct HDMobAI play{
 			if(pp!=pg){
 				if(!caller.bteleport)caller.setorigin(pg,false);
 				if(caller.bfloat){
-					caller.vel.xy+=caller.angletovector(caller.angle,caller.speed*0.16);
-					if(attacktarget
-						&&caller.checksight(attacktarget)
-						&&caller.pos.z-attacktarget.pos.z<attacktarget.height
-					)caller.vel.z+=frandom(0,0.1); //floaty death from above
+					double spp=caller.speed*0.16;
+					caller.vel.xy+=caller.angletovector(caller.angle,spp);
+					if(goal)caller.vel.z=(
+						caller.pos.z>goal.pos.z
+					)?-spp:spp; //floaty death from above
 				}else{
 					caller.vel.xy+=caller.angletovector(caller.angle,caller.speed*0.16);
 				}
@@ -415,21 +424,20 @@ class HDMobster:IdleDummy{
 					target.health>0  
 					&&master.checksight(target)
 				){
-					vector3 mpo=master.pos;
+					vector2 mpo=master.pos.xy;
 					double mth=meleethreshold;
-					vector3 tpo=master.target.pos;
+					vector2 tpo=master.target.pos.xy;
 					if(
-						!mth
-						||mth<distance3d(target)
+						(!mth||mth<distance3d(target))
+						&&!random(0,7)
 					){
-						vector3 flank=mpo-tpo;
-						flank.xy=rotatevector(flank.xy,
+						vector2 flank=rotatevector(mpo-tpo,
 							random(30,80)*(leftright
 								+randompick(1,1,1,1,-1,-1,0))
 						);
 						tpo+=flank;
 					}
-					setorigin(tpo,false);
+					setorigin((tpo,master.target.pos.z+master.target.height),false);
 					bored=0;
 				}else if(!random(0,15)){
 					setorigin((
@@ -439,7 +447,7 @@ class HDMobster:IdleDummy{
 							random(60,120)*
 							(leftright+randompick(1,1,1,1,-1,-1,0))
 						)
-					,0),false);
+					,master.pos.z),false);
 					bored++;
 					if(bored>boredthreshold){  
 						bored=0;

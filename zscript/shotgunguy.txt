@@ -237,6 +237,10 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 		);
 	missile2:
 		#### A 0{
+			if(!target){
+				setstatelabel("see");
+				return;
+			}
 			double dist=distance3d(target);
 			if(dist<300){
 				turnamount=40;
