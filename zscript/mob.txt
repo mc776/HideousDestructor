@@ -285,7 +285,7 @@ struct HDMobAI play{
 		//chase the goal and record the resulting position
 		if(attacktarget){
 			caller.A_Chase(
-				melstate,null,
+				melstate,mistate,
 				(res?CHF_RESURRECT:0)
 			);
 
@@ -293,10 +293,8 @@ struct HDMobAI play{
 				skill>=5
 				&&!caller.bfrightened
 				&&caller.findstate(mistate)
-//				&&caller.checksight(attacktarget)
 			){
-caller.minmissilechance=0;
-//				caller.setstatelabel(mistate);
+				caller.minmissilechance=0;
 			}
 
 			//call A_Chase again
