@@ -292,10 +292,11 @@ struct HDMobAI play{
 			if(
 				skill>=5
 				&&!caller.bfrightened
-				&&caller.findstate(melstate)
-				&&caller.checksight(attacktarget)
+				&&caller.findstate(mistate)
+//				&&caller.checksight(attacktarget)
 			){
-				caller.setstatelabel(mistate);
+caller.minmissilechance=0;
+//				caller.setstatelabel(mistate);
 			}
 
 			//call A_Chase again
