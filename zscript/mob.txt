@@ -285,10 +285,12 @@ struct HDMobAI play{
 		//chase the goal and record the resulting position
 		if(attacktarget){
 			caller.A_Chase(
-				melstate,mistate,
+				melstate,null,
 				(res?CHF_RESURRECT:0)
 			);
 
+			//super aggro
+			int mmc=caller.minmissilechance;
 			if(
 				skill>=5
 				&&!caller.bfrightened
@@ -298,15 +300,14 @@ struct HDMobAI play{
 			}
 
 			//call A_Chase again
-			//otherwise attack chance is reduced
-			if(caller.bchasegoal){
-				caller.bchasegoal=false;
-				caller.A_Chase(
-					melstate,mistate,
-					CHF_DONTMOVE
-				);
-				caller.bchasegoal=true;
-			}
+			bool cg=caller.bchasegoal;
+			caller.bchasegoal=false;
+			caller.A_Chase(
+				melstate,mistate,
+				CHF_DONTMOVE
+			);
+			caller.bchasegoal=cg;
+			caller.minmissilechance=MMC;
 		}else caller.A_Wander();
 		vector3 pp=caller.pos;
 
