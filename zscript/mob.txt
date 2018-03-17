@@ -285,16 +285,29 @@ struct HDMobAI play{
 		//chase the goal and record the resulting position
 		if(attacktarget){
 			caller.A_Chase(
-				null,null,
+				melstate,null,
 				(res?CHF_RESURRECT:0)
 			);
-			bool cg=caller.bchasegoal;
-			caller.bchasegoal=false;
-			caller.A_Chase(
-				melstate,mistate,
-				CHF_DONTMOVE
-			);
-			caller.bchasegoal=cg;
+
+			if(
+				skill>=5
+				&&!caller.bfrightened
+				&&caller.findstate(melstate)
+				&&caller.checksight(attacktarget)
+			){
+				caller.setstatelabel(mistate);
+			}
+
+			//call A_Chase again
+			//otherwise attack chance is reduced
+			if(caller.bchasegoal){
+				caller.bchasegoal=false;
+				caller.A_Chase(
+					melstate,mistate,
+					CHF_DONTMOVE
+				);
+				caller.bchasegoal=true;
+			}
 		}else caller.A_Wander();
 		vector3 pp=caller.pos;
 
