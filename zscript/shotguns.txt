@@ -562,6 +562,14 @@ class Slayer:HDShotgun replaces HDShotgun{
 			weapon.detachfromowner();
 		}else hdweapon.detachfromowner();
 	}
+	override void attachtoowner(actor other){
+		super.attachtoowner(other);
+		if(owner&&owner.player){
+			if(cvar.getcvar("hd_slaydouble",owner.player).getbool())
+				weaponstatus[0]|=SLAYF_DOUBLE;
+				else weaponstatus[0]&=~SLAYF_DOUBLE;
+		}
+	}
 	states{
 	select0:
 		SHT2 A 0;
@@ -572,19 +580,20 @@ class Slayer:HDShotgun replaces HDShotgun{
 	ready:
 		TNT1 A 0; //let the PostBeginPlay handle the presence of the relevant sprite
 		SHT2 A 1{
+			int pff=PressingFire()+PressingAltfire()*2;
+			bool ch1=invoker.weaponstatus[SLAYS_CHAMBER1]==2;
+			bool ch2=invoker.weaponstatus[SLAYS_CHAMBER2]==2;
 			if(
-				PressingFire()
-				&&PressingAltfire()
-				&&invoker.weaponstatus[SLAYS_CHAMBER1]==2
-				&&invoker.weaponstatus[SLAYS_CHAMBER2]==2
+				(pff==3||(pff&&invoker.weaponstatus[0]&SLAYF_DOUBLE))
+				&&ch1&&ch2
 			)A_Overlay(PSP_FLASH,"flashboth");
 			else if(
-				PressingFire()
-				&&invoker.weaponstatus[SLAYS_CHAMBER1]==2
+				pff%2
+				&&ch1
 			)A_Overlay(11,"flashleft");
 			else if(
-				PressingAltfire()
-				&&invoker.weaponstatus[SLAYS_CHAMBER2]==2
+				pff>1
+				&&ch2
 			)A_Overlay(12,"flashright");
 			A_WeaponReady(WRF_ALL);
 		}goto readyend;
@@ -858,6 +867,16 @@ class Slayer:HDShotgun replaces HDShotgun{
 			else invoker.weaponstatus[0]|=SLAYF_UNLOADONLY;
 		}goto unloadstart;
 
+	firemode:
+	cannibalize:
+		SHT2 A 2 offset(0,36);
+		SHT2 A 1 offset(0,40);
+		SHT2 A 4 offset(0,42){
+			A_PlaySound("weapons/pocket",CHAN_WEAPON,0.4);
+			invoker.weaponstatus[0]^=SLAYF_DOUBLE;
+		}
+		SHT2 A 2 offset(0,36);
+		goto ready;
 
 	zoom:
 	cannibalize:
@@ -904,7 +923,8 @@ class Slayer:HDShotgun replaces HDShotgun{
 }
 enum slayerstatus{
 	SLAYF_UNLOADONLY=1,
-	SLAYF_FROMPOCKETS=2,
+	SLAYF_DOUBLE=2,
+	SLAYF_FROMPOCKETS=4,
 
 	SLAYS_CHAMBER1=1,
 	SLAYS_CHAMBER2=2,

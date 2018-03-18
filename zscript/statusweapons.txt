@@ -68,17 +68,23 @@ extend class HDStatusBar{
 				drawimage("SHL1A0",(-47,-10),DI_SCREEN_CENTER_BOTTOM);
 				drawnum(pp.countinv("HDShellAmmo"),-46,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
+			int loffs=-28;int rofs=-16;
+			if(hdw.weaponstatus[0]&SLAYF_DOUBLE){
+				loffs=-24;rofs=-20;
+//				drawwepdot(-19,-17,(9,2));
+				drawimage("STBURAUT",(-23,-17),DI_SCREEN_CENTER_BOTTOM);
+			}
 			if(hdw.weaponstatus[SLAYS_CHAMBER1]>1){
-				drawwepdot(-28,-10,(3,5));
-				drawwepdot(-28,-7,(3,2));
+				drawwepdot(loffs,-10,(3,5));
+				drawwepdot(loffs,-7,(3,2));
 			}else if(hdw.weaponstatus[SLAYS_CHAMBER1]>0){
-				drawwepdot(-28,-7,(3,2));
+				drawwepdot(loffs,-7,(3,2));
 			}
 			if(hdw.weaponstatus[SLAYS_CHAMBER2]>1){
-				drawwepdot(-16,-10,(3,5));
-				drawwepdot(-16,-7,(3,2));
+				drawwepdot(rofs,-10,(3,5));
+				drawwepdot(rofs,-7,(3,2));
 			}else if(hdw.weaponstatus[SLAYS_CHAMBER2]>0){
-				drawwepdot(-16,-7,(3,2));
+				drawwepdot(rofs,-7,(3,2));
 			}
 			for(int i=hdw.weaponstatus[SLAYS_SIDESADDLE];i>0;i--){
 				drawwepdot(-10-i*2,-2,(1,3));
@@ -131,7 +137,7 @@ extend class HDStatusBar{
 				int ab=hdw.weaponstatus[ZM66S_AIRBURST];
 				drawnum(ab,
 					-30,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,
-					Font.CR_DARKGRAY
+					ab?Font.CR_WHITE:Font.CR_DARKGRAY
 				);
 				drawwepdot(-30,-42+min(16,ab/3),(4,1));
 				drawwepdot(-30,-26,(1,16));
@@ -186,8 +192,10 @@ extend class HDStatusBar{
 				drawnum(pp.countinv("HDRocketAmmo"),-45,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
 			if(hdw.weaponstatus[0]&BLOPF_LOADED)drawwepdot(-16,-10,(5,3));
-			drawnum(hdw.weaponstatus[BLOPS_AIRBURST],
-				-28,-15,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
+			int ab=hdw.weaponstatus[BLOPS_AIRBURST];
+			drawnum(ab,
+				-28,-15,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,
+				ab?Font.CR_WHITE:Font.CR_DARKGRAY
 			);
 			drawwepnum(
 				pp.countinv("HDRocketAmmo"),
@@ -221,8 +229,9 @@ extend class HDStatusBar{
 				drawwepdot(-22,-10,(1,16));
 				drawwepdot(-24,-10,(1,16));
 			}
-			drawnum(hdw.weaponstatus[RLS_AIRBURST],
-				-32,-15,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
+			drawnum(ab,
+				-32,-15,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,
+				ab?Font.CR_WHITE:Font.CR_DARKGRAY
 			);
 			drawwepnum(hdw.weaponstatus[RLS_MAG],6);
 			if(hdw.weaponstatus[RLS_CHAMBER]>0)drawwepdot(-16,-10,(3,1));
@@ -254,7 +263,7 @@ extend class HDStatusBar{
 				int ab=hdw.weaponstatus[LIBS_AIRBURST];
 				drawnum(ab,
 					-30,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,
-					Font.CR_DARKGRAY
+					ab?Font.CR_WHITE:Font.CR_DARKGRAY
 				);
 				drawwepdot(-30,-42+min(16,ab/3),(4,1));
 				drawwepdot(-30,-26,(1,16));
