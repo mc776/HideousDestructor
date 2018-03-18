@@ -292,8 +292,8 @@ struct HDMobAI play{
 			//super aggro
 			int mmc=caller.minmissilechance;
 			if(
-				skill>=5
-				&&!caller.bfrightened
+				!caller.bfrightened
+				&&skill>=5
 				&&caller.findstate(mistate)
 			){
 				caller.minmissilechance=0;
@@ -307,7 +307,7 @@ struct HDMobAI play{
 				CHF_DONTMOVE
 			);
 			caller.bchasegoal=cg;
-			caller.minmissilechance=MMC;
+			caller.minmissilechance=mmc;
 		}else caller.A_Wander();
 		vector3 pp=caller.pos;
 
