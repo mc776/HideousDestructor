@@ -88,7 +88,7 @@ class hdladdertop:hdactor{
 
 				//only complete if within throwable range, else abort
 				if(master&&pos.z-master.pos.z<108){
-					master.A_Log("You hang up a ladder.",true);
+					master.A_Log(string.format("You hang up a ladder.%s",master.getcvar("hd_helptext")?" Use the ladder to climb.":""),true);
 					master.A_TakeInventory("PortableLadder",1);
 					return;
 				}
@@ -130,7 +130,7 @@ class hdladderbottom:hdactor{
 		currentuser=user;
 		currentuser.vel.z+=1;
 		currentuserz=user.pos.z;
-		currentuser.A_Log("You climb the ladder.",true);
+		currentuser.A_Log(string.format("You climb the ladder.%s",user.getcvar("hd_helptext")?" Use again or jump to disengage; crouch and jump to pull down the ladder with you.":""),true);
 		return true;
 	}
 	void disengageladder(bool message=true){
