@@ -293,10 +293,9 @@ struct HDMobAI play{
 			int mmc=caller.minmissilechance;
 			if(
 				!caller.bfrightened
-				&&skill>=5
-				&&caller.findstate(mistate)
+				&&(deathmatch||skill>=5)
 			){
-				caller.minmissilechance=0;
+				caller.minmissilechance=1;
 			}
 
 			//call A_Chase again
