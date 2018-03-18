@@ -580,7 +580,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 	ready:
 		TNT1 A 0; //let the PostBeginPlay handle the presence of the relevant sprite
 		SHT2 A 1{
-			int pff=PressingFire()+PressingAltfire()*2;
+			int pff=PressingFire()+(PressingAltfire()<<1);
 			bool ch1=invoker.weaponstatus[SLAYS_CHAMBER1]==2;
 			bool ch2=invoker.weaponstatus[SLAYS_CHAMBER2]==2;
 			if(
