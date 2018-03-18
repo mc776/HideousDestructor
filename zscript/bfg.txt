@@ -32,8 +32,15 @@ class BFG9K:HDWeapon replaces BFG9000{
 		}
 	}
 	override void doeffect(){
-		if(weaponstatus[0]&BFGF_STRAPPED&&(owner&&owner.health>0))buntossable=true;    
-		else buntossable=false;
+		if(hdplayerpawn(owner)){
+			if(weaponstatus[0]&BFGF_STRAPPED&&(owner&&owner.health>0))buntossable=true;    
+			else buntossable=false;
+			if(
+				!(hdplayerpawn(owner).gunbraced)&&
+				!(weaponstatus[0]&BFGF_STRAPPED)&&
+				owner.pitch<10
+			)hdplayerpawn(owner).A_MuzzleClimb((frandom(-0.05,0.05),0.1),(0,0),(0,0),(0,0));
+		}
 	}
 	states{
 	altfire:
@@ -66,8 +73,6 @@ class BFG9K:HDWeapon replaces BFG9000{
 		BFGG A 1{
 			if(invoker.weaponstatus[0]&BFGF_CRITICAL)setweaponstate("shoot");
 			A_WeaponReady(WRF_ALL);
-			if(!(invoker.weaponstatus[0]&BFGF_STRAPPED)&&pitch<10)
-				A_MuzzleClimb(frandom(-0.05,0.05),0.1);
 		}goto readyend;
 	select0:
 		BFGG A 0;
