@@ -273,20 +273,26 @@ class HDRL:HDWeapon{
 		MISG B 4 offset(0,40) A_PlaySound("weapons/rockreload",CHAN_WEAPON);
 
 		MISG B 6{
-			if(invoker.weaponstatus[RLS_CHAMBER]>1){
+			int chh=invoker.weaponstatus[RLS_CHAMBER];
+			if(chh>1){
 				setweaponstate("removeheatfromchamber");
 				return;
 			}
-			else if(invoker.weaponstatus[RLS_CHAMBER]<1){
+
+			if(invoker.weaponstatus[RLS_CHAMBER]<1){
 				setweaponstate("loadheatintoemptychamber");
 				return;
+			}else{
+				invoker.weaponstatus[RLS_CHAMBER]=0;
+				if(invoker.weaponstatus[RLS_MAG]<5){
+					invoker.weaponstatus[RLS_MAG]++;
+					return;
+				}
+				if(A_JumpIfInventory("HDRocketAmmo",0,"null"))A_SpawnItemEx(
+					"HDRocketAmmo",10,0,10,vel.x,vel.y,vel.z,
+					0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION
+				);else A_GiveInventory("HDRocketAmmo",1);
 			}
-			invoker.weaponstatus[RLS_CHAMBER]=0;
-			if(A_JumpIfInventory("HDRocketAmmo",0,"null"))A_SpawnItemEx(
-				"HDRocketAmmo",10,0,10,vel.x,vel.y,vel.z,
-				0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION
-			);
-			else A_GiveInventory("HDRocketAmmo",1);
 		}goto loadheatintoemptychamber;
 	loadheatintoemptychamber:
 		MISG B 3 offset(0,38);
