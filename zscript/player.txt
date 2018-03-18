@@ -81,6 +81,8 @@ class HDPlayerPawn:PlayerPawn{
 
 		A_SetTeleFog("TeleportFog","TeleportFog");
 		btelestomp=true;
+
+		if(cvar.getcvar("hd_helptext",player).getbool())CallACS("TipMessage");
 	}
 	void A_CheckGunBraced(){
 		if(countinv("WeaponBusy"))gunbraced=false;
@@ -241,7 +243,7 @@ class HDPlayerPawn:PlayerPawn{
 		if(
 			input&BT_RELOAD
 			||input&BT_USER1
-			||input&BT_USER2
+//			||input&BT_USER2
 			||input&BT_USER3
 			||input&BT_USER4
 		)A_GiveInventory("WeaponBusy");
@@ -575,5 +577,7 @@ extend class HDPlayerPawn{
 
 		A_GiveInventory("PowerFrightener",1);
 		ConsolidateAmmo();
+
+		if(cvar.getcvar("hd_helptext",player).getbool())CallACS("TipMessage");
 	}
 }

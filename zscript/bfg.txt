@@ -46,6 +46,7 @@ class BFG9K:HDWeapon replaces BFG9000{
 	altfire:
 	togglestrap:
 		BFGG A 3{
+			A_GiveInventory("WeaponBusy");
 			if(invoker.weaponstatus[0]&BFGF_STRAPPED){
 				A_SetTics(6);
 				A_PlaySound("weapons/rifleclick",CHAN_WEAPON);

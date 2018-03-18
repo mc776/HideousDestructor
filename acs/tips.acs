@@ -1,0 +1,22 @@
+// ------------------------------------------------------------
+// Tips
+// ------------------------------------------------------------
+script "TipMessage"(void){
+	setfont("smallfont");
+
+	HudMessage(
+		s:"\crT I P :\n",
+		s:gettip();
+		HUDMSG_FADEINOUT,4,CR_DARKGREY,
+		0.1,0.9,
+		6.0
+	);
+}
+function str gettip(void){
+	switch(random(0,0)){
+	case 1:
+		return "HURRRRR DURRRRRR";
+	}
+	//default:
+		return "Remember to bind keys for all\n\cpweapon functions\cu and \cpweapon drop\cu!";
+}
