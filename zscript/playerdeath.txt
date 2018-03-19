@@ -38,6 +38,8 @@ extend class HDPlayerPawn{
 			}
 		}
 
+		if(cvar.getcvar("hd_helptext",player).getbool())CallACS("TipMessage",70);
+
 		//drop parting gifts
 		if(countinv("FragOut")){  
 			A_GiveInventory("HDGrenadeToss",1);
