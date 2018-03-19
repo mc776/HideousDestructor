@@ -144,7 +144,7 @@ class HDArmourWorn:HDArmour{
 }
 
 
-class BlueArmour:Inventory{
+class BlueArmour:Inventory replaces BlueArmor{
 	default{
 		meleethreshold 3;
 		inventory.maxamount HDCONST_GREENARMOUR;
@@ -163,5 +163,5 @@ class BlueArmour:Inventory{
 		destroy();
 	}
 }
-class GreenArmour:Inventory{default{meleethreshold 1;}}
+class GreenArmour:BlueArmour replaces GreenArmor{default{meleethreshold 1;}}
 
