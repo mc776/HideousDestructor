@@ -97,7 +97,7 @@ class HDArmour:HDPickup{
 				int armourlevel=invoker.meleethreshold;
 				iii.meleethreshold=armourlevel;
 
-				int qual=armourlevel==3?HDCONST_BLUEARMOUR:HDCONST_GREENARMOUR;
+				double qual=armourlevel==3?HDCONST_BLUEARMOUR:HDCONST_GREENARMOUR;
 
 				if(getcvar("hd_helptext")){
 					if(qual)qual=invoker.amount/qual;else if(hd_debug)A_Log("armour calculation error.");
@@ -151,21 +151,30 @@ class HDArmourWorn:HDArmour{
 class BlueArmour:Inventory replaces BlueArmor{
 	default{
 		meleethreshold 3;
-		inventory.maxamount HDCONST_GREENARMOUR;
-		inventory.amount HDCONST_GREENARMOUR;
+		inventory.maxamount HDCONST_BLUEARMOUR;
+		inventory.amount HDCONST_BLUEARMOUR;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		inventory aaa=null;
 		if(owner){
-			owner.A_SetInventory("HDArmourWorn",amount);
+			owner.A_SetInventory("HDArmourWorn",min(amount,maxamount));
 			aaa=owner.findinventory("HDArmourWorn");
 		}else{
 			aaa=inventory(spawn("HDArmour",pos));
 		}
-		if(aaa)aaa.meleethreshold=meleethreshold;
+		if(aaa){
+			aaa.meleethreshold=meleethreshold;
+			aaa.maxamount=maxamount;
+		}
 		destroy();
 	}
 }
-class GreenArmour:BlueArmour replaces GreenArmor{default{meleethreshold 1;}}
+class GreenArmour:BlueArmour replaces GreenArmor{
+	default{
+		meleethreshold 1;
+		inventory.maxamount HDCONST_GREENARMOUR;
+		inventory.amount HDCONST_GREENARMOUR;
+	}
+}
 

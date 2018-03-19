@@ -13,22 +13,27 @@ script "TipMessage"(void){
 	);
 }
 function str gettip(void){
-	switch(random(0,2)){
+	switch(random(0,4)){
+	case 1: return "Remember to \cxBIND KEYS\cu for all
+			\n\cqweapon functions\cu and \cqweapon drop\cu!";
 
-	case 1: return "When you are \cxON FIRE\cu,
+	case 2: return "When you are \cxON FIRE\cu,
 			\n\cqCrouch and spin around\cu really fast
 			\nto emulate a stop-drop-roll, or 
 			\n\cqtake off your armour\cu and let the fire
 			\non it eventually go out.";
 
-	case 2: return "To \cxTAKE OFF YOUR ARMOUR\cu,
+	case 3: return "To \cxTAKE OFF YOUR ARMOUR\cu,
 			\n\cqdrop\cu the \cqHDArmourWorn\cu item,
 			\ntype \cq\"hd_strip\"\cu in the console,
 			\nor use the medikit or the bandages
-			\n(\cqweapon slot 9\cu) and hit \cqReload\cu.";
+			\n(weapon slot \cq9\cu) and hit \cqReload\cu.";
+
+	case 4: return "\cxAIM FOR THE HEART.\cu";
 	}
 
 	//default:
-		return "Remember to bind keys for all
-			\n\cqweapon functions\cu and \cqweapon drop\cu!";
+		return "All the information in these
+			\ntips is available in the \cxMANUAL\cu
+			\n(\cqhd_manual.txt\cu in the archive)!";
 }
