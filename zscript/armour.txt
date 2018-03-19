@@ -158,7 +158,7 @@ class BlueArmour:Inventory replaces BlueArmor{
 		super.postbeginplay();
 		inventory aaa=null;
 		if(owner){
-			owner.A_SetInventory("HDArmourWorn",min(amount,maxamount));
+			owner.A_GiveInventory("HDArmourWorn");
 			aaa=owner.findinventory("HDArmourWorn");
 		}else{
 			aaa=inventory(spawn("HDArmour",pos));
@@ -166,6 +166,7 @@ class BlueArmour:Inventory replaces BlueArmor{
 		if(aaa){
 			aaa.meleethreshold=meleethreshold;
 			aaa.maxamount=maxamount;
+			aaa.amount=amount;
 		}
 		destroy();
 	}
