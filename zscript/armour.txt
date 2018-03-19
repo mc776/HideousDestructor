@@ -5,19 +5,32 @@ const HDCONST_BLUEARMOUR=33;
 const HDCONST_GREENARMOUR=144;
 
 
-class GAM:HDPickup{
+class HDArmour:HDPickup{
 	default{
 		+inventory.invbar
 		inventory.maxamount HDCONST_GREENARMOUR;
+		inventory.amount HDCONST_GREENARMOUR;
 		accuracy HDCONST_GREENARMOUR;
 
 		inventory.icon "ARMSB0";
 		inventory.pickupmessage "Picked up the security armour.";
+
+		meleethreshold 1; //used as armour level
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		if(meleethreshold==3){
+			pickupmessage="Picked up the combat armour.";
+			icon=texman.checkfortexture("ARMCB0",TexMan.Type_MiscPatch);
+			maxamount=HDCONST_BLUEARMOUR;
+			amount=min(maxamount,amount);
+		}
 	}
 	override inventory createtossable(int amount){
 		inventory iii=super.createtossable(amount);
 		if(iii){
 			iii.target=owner;
+			iii.meleethreshold=meleethreshold;
 			if(iii.amount<self.amount){
 				iii.amount+=self.amount;
 				self.amount=0;
@@ -28,7 +41,7 @@ class GAM:HDPickup{
 	override void actualpickup(actor other){
 		if(!other)other=picktarget;
 		if(!other)return;
-		if(other.countinv("GAM"))return;
+		if(other.countinv(getclassname()))return;
 
 		if(trypickup(other)){
 			other.A_PlaySound(pickupsound,CHAN_AUTO);
@@ -37,9 +50,46 @@ class GAM:HDPickup{
 	}
 	states{
 	spawn:
-		ARMS A -1;
+		ARMC A 0;
+		ARMS A -1{
+			if(meleethreshold==3){
+				sprite=getspriteindex("ARMCA0");
+			}
+		}stop;
 	}
 }
+class HDArmourWorn:HDArmour{
+	default{
+		-inventory.invbar
+	}
+	override inventory createtossable(int amount){
+		if(!owner)return null;
+		inventory iiii=inventory(spawn("HDArmour",owner.pos+(0,0,owner.height*0.6),ALLOW_REPLACE));
+		if(iiii){
+			owner.A_TakeInventory("SpiritualArmour");
+			owner.A_SetBlend("00 00 00",1,6,"00 00 00");
+			owner.A_PlaySound("weapons/pocket");
+			owner.vel.z+=2;
+			let onr=HDPlayerPawn(owner);
+			if(onr)onr.stunned+=40;
+
+			iiii.amount=self.amount;
+			iiii.angle=owner.angle;
+			iiii.A_ChangeVelocity(1,0,1,CVF_RELATIVE);
+			iiii.vel+=owner.vel;
+			HDF.TransferFire(owner,iiii);
+
+			self.amount=0;
+		}
+		return iiii;
+	}
+}
+
+
+
+
+
+//old shit below
 
 
 
