@@ -80,7 +80,11 @@ class HDArmour:HDPickup{
 					invoker.doubleclicktimer+=35;
 				}
 			}else{
-				if(invoker.master!=self)A_TakeInventory("SpiritualArmour");
+				if(invoker.master!=self&&countinv("SpiritualArmour")){
+					spawn("HDSmoke",pos);
+					A_PlaySound("misc/p_pkup",6);
+					A_TakeInventory("SpiritualArmour");
+				}
 				A_SetBlend("00 00 00",1,6,"00 00 00");
 				A_PlaySound("weapons/pocket");
 				A_ChangeVelocity(0,0,2);
