@@ -307,6 +307,7 @@ class HERPUsable:HDPickup{
 		inventory.amount 1;
 		inventory.maxamount 1;
 		inventory.icon "HERPEX";
+		inventory.pickupsound "misc/w_pkup";
 		inventory.pickupmessage "Picked up a Heavy Engagement Rotary Platform robot.";
 	}
 	override void beginplay(){
@@ -357,7 +358,6 @@ class HERPUsable:HDPickup{
 		}fail;
 	spawn:
 		HERP A 0 A_Stop();
-		HERP A 0 A_GiveInventory("Clip",1);
 		HERP A -1;
 		stop;
 	}
@@ -371,6 +371,7 @@ class HERPDEAD:HDPickup{
 		inventory.amount 1;
 		inventory.maxamount 1;
 		inventory.icon "HERPEX";
+		inventory.pickupsound "misc/w_pkup";
 		inventory.pickupmessage "Picked up a Heavy Engagement Rotary Platform robot. It is damaged.";
 		scale 0.8;
 	}

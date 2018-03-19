@@ -4,6 +4,45 @@
 const HDCONST_BLUEARMOUR=33;
 const HDCONST_GREENARMOUR=144;
 
+
+class GAM:HDPickup{
+	default{
+		+inventory.invbar
+		inventory.maxamount HDCONST_GREENARMOUR;
+		accuracy HDCONST_GREENARMOUR;
+
+		inventory.icon "ARMSB0";
+		inventory.pickupmessage "Picked up the security armour.";
+	}
+	override inventory createtossable(int amount){
+		inventory iii=super.createtossable(amount);
+		if(iii){
+			iii.target=owner;
+			if(iii.amount<self.amount){
+				iii.amount+=self.amount;
+				self.amount=0;
+			}
+		}
+		return iii;
+	}
+	override void actualpickup(actor other){
+		if(!other)other=picktarget;
+		if(!other)return;
+		if(other.countinv("GAM"))return;
+
+		if(trypickup(other)){
+			other.A_PlaySound(pickupsound,CHAN_AUTO);
+			other.A_Log(string.format("\cg%s",pickupmessage()),true);
+		}
+	}
+	states{
+	spawn:
+		ARMS A -1;
+	}
+}
+
+
+
 //instead of basicarmour, we just use these:
 class GreenArmour:InventoryFlag{
 	default{
@@ -45,7 +84,7 @@ class HDDropArmour:ActionItem{
 			vel.z+=2;
 			actor a=spawn("HDArmourPickup",pos+(0,0,height*0.6),ALLOW_REPLACE);
 			a.vel=vel+(cos(angle),sin(angle),4);
-			a.A_GiveInventory(arm);
+			a.A_GiveInventory(arm,amt);
 			a.stamina=amt;
 			HDF.TransferFire(self,a,random(0,3));
 			A_TakeInventory("BlueArmour");
