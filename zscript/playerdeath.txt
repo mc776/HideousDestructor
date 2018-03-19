@@ -38,7 +38,7 @@ extend class HDPlayerPawn{
 			}
 		}
 
-		if(cvar.getcvar("hd_helptext",player).getbool())CallACS("TipMessage",70);
+		if(cvar.getcvar("hd_helptext",player).getbool())CallACS("TipMessage",70,random(1,10)+abs(pitch)*0.05+flip+countinv("IsMoving"));
 
 		//drop parting gifts
 		if(countinv("FragOut")){  

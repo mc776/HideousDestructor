@@ -84,7 +84,7 @@ class HDPlayerPawn:PlayerPawn{
 		A_SetTeleFog("TeleportFog","TeleportFog");
 		btelestomp=true;
 
-		if(cvar.getcvar("hd_helptext",player).getbool())CallACS("TipMessage");
+		if(cvar.getcvar("hd_helptext",player).getbool())CallACS("TipMessage",0,random(1,2));
 	}
 	void A_CheckGunBraced(){
 		if(countinv("WeaponBusy"))gunbraced=false;

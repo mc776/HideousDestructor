@@ -1,19 +1,22 @@
 // ------------------------------------------------------------
 // Tips
 // ------------------------------------------------------------
-script "TipMessage"(int dly){
+script "TipMessage"(int dly,int rsd){
 	delay(dly);
 	setfont("smallfont");
 	HudMessage(
 		s:"\crT I P :  \cu",
-		s:gettip();
+		s:gettip(rsd);
 		HUDMSG_FADEINOUT,4,CR_DARKGREY,
 		0.1,0.9,
 		6.0,0.6,2.0
 	);
 }
-function str gettip(void){
-	switch(random(0,4)){
+function str gettip(int rsd){
+	int rmax=4;
+	int rnd=random(0,rmax);
+	for(int i=0;i<rsd;i++){rnd=random(0,rmax);}
+	switch(rnd){
 	case 1: return "Remember to \cxBIND KEYS\cu for all
 			\n\cqweapon functions\cu and \cqweapon drop\cu!";
 
