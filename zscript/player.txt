@@ -32,6 +32,8 @@ class HDPlayerPawn:PlayerPawn{
 	int fatigue;
 	int nocrosshair;
 
+	int armourlevel;
+
 	bool hasgrabbed;
 	int corpsekicktimer;
 
@@ -314,13 +316,15 @@ class HDPlayerPawn:PlayerPawn{
 		)cansprint=true;else cansprint=false;
 
 		//encumbrance
+		if(findinventory("HDArmourWorn"))armourlevel=findinventory("HDArmourWorn").meleethreshold;
+		else armourlevel=0;
 		double maxspeed=min(
 			2.8
 			*(countinv("PowerStrength")?1.5:1.)
 			*(height<40?0.6:1.),
 			countinv("WornRadsuit")?1.8:(
-				countinv("BlueArmour")?2.2:(
-					countinv("GreenArmour")?3.0:999.
+				armourlevel==3?2.2:(
+					armourlevel==1?3.0:999.
 				)
 			)
 		);

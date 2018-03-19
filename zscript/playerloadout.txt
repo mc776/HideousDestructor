@@ -11,7 +11,6 @@ extend class HDPlayerPawn{
 		A_GiveInventory("HDWeaponPurge");
 		A_GiveInventory("HDDropOne");
 		A_GiveInventory("Taunter");
-		A_GiveInventory("HDDropArmour");
 		A_GiveInventory("MagManager");
 
 		//now for configs!
@@ -34,8 +33,8 @@ class SoldierExtras:ActionItem{
 			A_SetInventory("PortableMedikit",max(1,countinv("PortableMedikit")));
 			A_SetInventory("PortableStimpack",max(2,countinv("PortableStimpack")));
 			if(
-				!countinv("BlueArmour")
-			)A_SetInventory("GreenArmour",HDCONST_GREENARMOUR);
+				!countinv("HDArmourWorn")
+			)A_SetInventory("HDArmourWorn",HDCONST_GREENARMOUR);
 
 			if(!countinv("HDPistol"))A_GiveInventory("HDPistol");
 			else if(!countinv("HDSecondPistol"))A_GiveInventory("HDSecondPistol");
@@ -246,11 +245,13 @@ extend class HDPlayerPawn{
 		else{ //all other shit
 			switch(num){
 				case 1:
-					A_TakeInventory("BlueArmour");
-					A_SetInventory("GreenArmour",HDCONST_GREENARMOUR);break;
+					A_TakeInventory("HDArmourWorn");
+					A_SetInventory("HDArmourWorn",HDCONST_GREENARMOUR);break;
 				case 2:
-					A_TakeInventory("GreenArmour");
-					A_SetInventory("BlueArmour",HDCONST_BLUEARMOUR);break;
+					A_TakeInventory("HDArmourWorn");
+					A_SetInventory("HDArmourWorn",HDCONST_BLUEARMOUR);
+					FindInventory("HDArmourWorn").meleethreshold=3;
+					break;
 				case 3: A_GiveInventory("PortableRadsuit",amt);break;
 
 				case 4: A_GiveInventory("PortableMedikit",amt);break;
@@ -271,12 +272,11 @@ extend class HDPlayerPawn{
 				case 16: A_GiveInventory("YellowCard",amt);break;
 
 				case 17:
-					A_GiveInventory("StoredArmour",HDCONST_GREENARMOUR);
-					A_GiveInventory("GreenArmourStored");
+					A_GiveInventory("HDArmour",HDCONST_GREENARMOUR);
 					break;
 				case 18:
-					A_GiveInventory("StoredArmour",HDCONST_BLUEARMOUR);
-					A_GiveInventory("BlueArmourStored");
+					A_GiveInventory("HDArmour",HDCONST_BLUEARMOUR);
+					FindInventory("HDArmour").meleethreshold=3;
 					break;
 				case 99:
 					A_GiveInventory("SoldierExtras",amt);

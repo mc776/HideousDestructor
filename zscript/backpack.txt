@@ -127,11 +127,11 @@ class HDBP:HDWeapon{
 
 
 			//where the magic happens
-			if(itp=="GreenArmourStored"){
+			if(itp=="HDArmour"){
 				if(invoker.itemamount[which]>0)return; //limit one
-				invoker.itemamount[which]=countinv("StoredArmour");
+				invoker.itemamount[which]=countinv("HDArmour");
 				A_TakeInventory(itp);
-				A_TakeInventory("StoredArmour");
+				A_TakeInventory("HDArmour");
 			}else if(itp=="HDCellAmmo"){
 				int totake=min(countinv(itp),20);
 				invoker.itemamount[which]+=totake;
@@ -168,9 +168,9 @@ class HDBP:HDWeapon{
 			}
 
 			//where the magic happens
-			if(itp=="GreenArmourStored"){
+			if(itp=="HDArmour"){
 				A_GiveInventory(itp,1);
-				A_GiveInventory("StoredArmour",invoker.itemamount[which]);
+				A_GiveInventory("HDArmour",invoker.itemamount[which]);
 				invoker.itemamount[which]=0;
 			}else if(itp=="HDCellAmmo"){
 				int totake=min(
@@ -194,9 +194,9 @@ class HDBP:HDWeapon{
 			if(invoker.weaponstatus[HDBPS_COOLDOWN]<16)return;
 			for(int i=0;i<HDBPC_NUMITEMS;i++){
 				if(invoker.itemtype[i]&&invoker.itemamount[i]>0){
-					if(invoker.itemtype[i]=="GreenArmourStored"){
-						actor aaa=spawn("HDArmourPickup",pos+(0,0,height*0.6));
-						aaa.stamina=invoker.itemamount[i];
+					if(invoker.itemtype[i]=="HDArmour"){
+						inventory aaa=inventory(spawn("HDArmour",pos+(0,0,height*0.6)));
+						aaa.amount=invoker.itemamount[i];
 					}
 					else A_DropItem(invoker.itemtype[i],invoker.itemamount[i]);
 					invoker.itemamount[i]=0;
@@ -216,7 +216,7 @@ class HDBP:HDWeapon{
 						count-=20;
 						bulk+=itembulk[i];
 					}
-				}else if(itemtype[i]=="GreenArmourStored"){ //always worth 1 suit
+				}else if(itemtype[i]=="HDArmour"){ //always worth 1 suit
 					bulk+=itembulk[i];
 				}else bulk+=itembulk[i]*itemamount[i];
 			}
@@ -251,7 +251,7 @@ class HDBP:HDWeapon{
 	int sevenmilindex;int brassindex;int loosezedindex;
 	override void beginplay(){
 		int i=-1;
-		i++;itembulk[i]=800;itemtype[i]="GreenArmourStored";itemname[i]="Soft armour";armourindex=i;
+		i++;itembulk[i]=800;itemtype[i]="HDArmour";itemname[i]="Soft armour";armourindex=i;
 		i++;itembulk[i]=500;itemtype[i]="PortableLadder";itemname[i]="Ladder";
 		i++;itembulk[i]=400;itemtype[i]="PortableRadSuit";itemname[i]="Environment suit";
 		i++;itemname[i]="br";

@@ -13,14 +13,16 @@ class HDArmour:HDPickup{
 		accuracy HDCONST_GREENARMOUR;
 
 		inventory.icon "ARMSB0";
-		inventory.pickupmessage "Picked up the security armour.";
 
 		meleethreshold 1; //used as armour level
+	}
+	override string pickupmessage(){
+		if(meleethreshold==3)return "Picked up the combat armour.";
+		else return "Picked up the security armour.";
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		if(meleethreshold==3){
-			pickupmessage="Picked up the combat armour.";
 			icon=texman.checkfortexture("ARMCB0",TexMan.Type_MiscPatch);
 			maxamount=HDCONST_BLUEARMOUR;
 			amount=min(maxamount,amount);
@@ -29,6 +31,7 @@ class HDArmour:HDPickup{
 	override inventory createtossable(int amount){
 		inventory iii=super.createtossable(amount);
 		if(iii){
+			iii.translation=0;
 			iii.target=owner;
 			iii.meleethreshold=meleethreshold;
 			if(iii.amount<self.amount){
@@ -77,6 +80,7 @@ class HDArmourWorn:HDArmour{
 			iiii.angle=owner.angle;
 			iiii.A_ChangeVelocity(1,0,1,CVF_RELATIVE);
 			iiii.vel+=owner.vel;
+			iiii.meleethreshold=meleethreshold;
 			HDF.TransferFire(owner,iiii);
 
 			self.amount=0;
@@ -86,8 +90,30 @@ class HDArmourWorn:HDArmour{
 }
 
 
+class BlueArmour:Inventory{
+	default{
+		meleethreshold 3;
+		inventory.maxamount HDCONST_GREENARMOUR;
+		inventory.amount HDCONST_GREENARMOUR;
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		inventory aaa=null;
+		if(owner){
+			owner.A_SetInventory("HDArmourWorn",amount);
+			aaa=owner.findinventory("HDArmourWorn");
+		}else{
+			aaa=inventory(spawn("HDArmour",pos));
+		}
+		if(aaa)aaa.meleethreshold=meleethreshold;
+		destroy();
+	}
+}
+class GreenArmour:Inventory{default{meleethreshold 1;}}
 
 
+
+/*
 
 //old shit below
 
@@ -323,3 +349,4 @@ class BlueArmourStored:GreenArmourStored{
 
 
 
+*/

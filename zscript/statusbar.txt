@@ -246,21 +246,19 @@ class HDStatusBar:DoomStatusBar{
 		}
 
 		//armour
-		int maxarmour=HDCONST_GREENARMOUR;
-		string armoursprite="ARMSA0";
-		string armourback="ARMER0";
-		int armouramt=cp.countinv("BlueArmour");
-		if(armouramt){
-			maxarmour=HDCONST_BLUEARMOUR;
-			armoursprite="ARMCA0";
-			armourback="ARMER1";
-		}else armouramt=cp.countinv("GreenArmour");
-		if(armouramt){
+		let armour=HDArmourWorn(cp.findinventory("HDArmourWorn"));
+		if(armour){
+			string armoursprite="ARMSA0";
+			string armourback="ARMER0";
+			if(armour.meleethreshold==3){
+				armoursprite="ARMCA0";
+				armourback="ARMER1";
+			}
 			vector2 armourcoords=(0,-mIndexFont.mFont.GetHeight()*2);
 			if(state==HUD_Fullscreen)armourcoords=(-55,-4);
 			drawbar(
 				armoursprite,armourback,
-				armouramt,maxarmour,
+				armour.amount,armour.maxamount,
 				armourcoords,-1,
 				SHADER_VERT,DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM
 			);
@@ -345,16 +343,11 @@ class HDStatusBar:DoomStatusBar{
 	void DrawInvSel(int posx,int posy,int numposx,int numposy,int flags){
 		if(CPlayer.mo.InvSel){
 			inventory ivs=cplayer.mo.invsel;
-			bool ivsa=ivs is "GreenArmourStored"||ivs is "BlueArmourStored";
 			drawinventoryicon(ivs,(posx,posy),
 				flags|DI_ITEM_CENTER_BOTTOM
-				|(ivsa?0:DI_TRANSLATABLE)
+				|(ivs is "HDArmour"?0:DI_TRANSLATABLE)
 			);
-			if(ivsa)drawstring(
-				mAmountFont,FormatNumber(cplayer.mo.countinv("StoredArmour")),
-				(numposx,numposy),flags|DI_TEXT_ALIGN_RIGHT,Font.CR_OLIVE
-			);
-			else if(ivs is "PortableLiteAmp"){
+			if(ivs is "PortableLiteAmp"){
 				let pla=PortableLiteAmp(ivs);
 				if(pla)drawstring(
 					mAmountFont,FormatNumber((84000-pla.spent)/840),
