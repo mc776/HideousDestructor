@@ -1294,6 +1294,8 @@ class BotBot:HDMarine{
 		actor inflictor,actor source,int damage,
 		name mod,int flags=0,double angle=0
 	){
+		if(!bfriendly)return super.damagemobj(inflictor,source,damage,mod,flags,angle);
+
 		//abort if zero team damage, otherwise save factor for wounds and burns
 		if(
 			source!=self
