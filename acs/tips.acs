@@ -7,15 +7,15 @@ script "TipMessage"(int dly,int rsd){
 	HudMessage(
 		s:"\crT I P :  \cu",
 		s:gettip(rsd);
-		HUDMSG_FADEINOUT,4,CR_DARKGREY,
+		HUDMSG_FADEINOUT|HUDMSG_LOG,4,CR_DARKGREY,
 		0.1,0.9,
 		6.0,0.6,2.0
 	);
 }
 function str gettip(int rsd){
-	int rmax=4;
-	int rnd=random(0,rmax);
-	for(int i=0;i<rsd;i++){rnd=random(0,rmax);}
+	int rnd=0;
+	for(int i=0;i<rsd;i++){rnd=random(0,1);}
+	rnd=random(0,23);
 	switch(rnd){
 	case 1: return "Remember to \cxBIND KEYS\cu for all
 			\n\cqweapon functions\cu and \cqweapon drop\cu!";
@@ -28,11 +28,105 @@ function str gettip(int rsd){
 
 	case 3: return "To \cxTAKE OFF YOUR ARMOUR\cu,
 			\n\cqdrop\cu the \cqHDArmourWorn\cu item,
-			\ntype \cq\"hd_strip\"\cu in the console,
+			\ntype \"\cqhd_strip\cu\" in the console,
 			\nor use the medikit or the bandages
 			\n(weapon slot \cq9\cu) and hit \cqReload\cu.";
 
-	case 4: return "\cxAIM FOR THE HEART.\cu";
+	case 4: return "A \cxSHOT THROUGH THE HEART\cu
+			\ncures many ills the head does not.";
+
+	case 5: return "To \cxSTOP BLEEDING\cu,
+			\n\cquse a medikit\cu or try to bind up your
+			\nwounds by using weapon slot \cq9\cu, 
+			\nthen \cqlook down\cu and press and hold \cqFire\cu.";
+
+	case 6: return "To \cxMANTLE\cu onto a ledge,
+			\npress and hold \cqJump\cu in front of it.
+			\nTo \cxLEAP\cu forwards, backwards, left or right,
+			\npress \cqJump while moving\cu in that direction.";
+
+	case 7: return "Press \cqUse\cu to \cxPICK UP ITEMS\cu.
+			\nFor smaller items, \cqhold Use\cu and run 
+			\nover them as you do in regular Doom.";
+
+	case 8: return "Press \cqUse\cu to \cxKICK\cu an enemy,
+			\na corpse or an armed hand grenade
+			\nin front of you.";
+
+	case 9: return "For more precise \cxAIMING\cu, \cqhold Use\cu.
+			\nThis works better if you have some
+			\n\cqmap geometry\cu below you or if you can
+			\nget your gun to \cqcollide\cu against a wall.";
+
+	case 10: return "If you find the \cxSCOPE VIEW\cu to be
+			\ngetting in your way, set \cqhd_noscope\cu to
+			\n1 or 2 (default 0). \cq1\cu makes the scope appear only
+			\nwhen your full HUD is visible while pressing \cqUse\cu;
+			\n\cq2\cu disables shooting with the scope entirely.";
+
+	case 11: return "Rifle scopes can \cxZOOM IN AND OUT\cu.
+			\n\cqHold Zoom\cu and press \cqFire\cu and \cqAltfire\cu
+			\nto go up and down respectively.
+			\nSame goes for \cqFire Mode\cu the Boss's MOA
+			\nadjustment and the rocket airburst.";
+
+	case 12: return "To consolidate \cxMAGAZINES\cu for the 9mm
+			\nand 7.776mm guns, press \cqUser3\cu on those guns
+			\nor type \"\cquse MagManager\cu\" from the console.";
+
+	case 13: return "All ingame console commands can be bound to keys.
+			\nCheck the \cqcontrols menu\cu for details.";
+
+	case 14: return "You can \cxCUSTOMIZE\cu your starting loadout
+			\nand weapon settings for any weapon you spawn with!
+			\nCheck the \cqplayer setup menu\cu for details.";
+
+	case 15: return "When you pick up \cxARMOUR\cu,
+			\nit goes into your inventory.
+			\n\cqUse the item\cu to equip it.";
+
+	case 16: return "When playing with \cxENCUMBRANCE\cu (\cqhd_carrylimit 1\cu),
+			\ntype \"\cqhd_purge\cu\" in the console to get rid of
+			\nany and all ammo you do not have a weapon for,
+			\n\"\cqhd_dropone\cu\" to drop a single unit of your
+			\ncurrent weapon's ammunition, and
+			\n\cqtry to drop your fist\cu to
+			\npurge all miscellaneous items.";
+
+	case 17: return "\cxAMMO BOXES\cu may be trapped.
+			\n\cqUse\cu once to try to disarm, \cqUse twice\cu
+			\nin quick succession to open without checking.";
+
+	case 18: return "If a weapon does not have any other function
+			\nreserved for it, \cqUser3\cu will
+			\nactivate a rangefinder.";
+
+	case 19: return "\cxSTIMPACKS\cu increase healing and
+			\nreduce bleeding temporarily, and do \crnot\cu need you
+			\nto remove your armour, while \cxMEDIKITS\cu require you
+			\nto \cqremove your armour\cu but stop bleeding for the long term.
+			\nUse the stimpacks during the \cqfirefight
+			\nand the medikit during the \cqaftermath\cu.";
+
+	case 20: return "Hideous Destructor works in \cxMULTIPLAYER\cu
+			\nand has its own limited lives modes!
+			\nSet \cqfraglimit\cu in co-op or deathmatch to
+			\nsomething \cqover 100\cu for \cqelimination mode\cu,
+			\nor \cqup to 100\cu in co-op to \cqforce a restart\cu
+			\nonce the limit is reached.";
+
+	case 21: return "For most magazine-fed weapons you can
+			\n\cqhold the key\cu while reloading or unloading
+			\nto retain the ammo instead of
+			\nletting it drop to the ground.";
+
+	case 22: return "The ZDoom bots suck at this.
+			\nSet \cqhd_nobots\cu to true to replace
+			\nthe bots with HD's own marines!";
+
+	case 23: return "Your \cqturning\cu affects the momentum of
+			\nyour \cqpunches\cu and \cqgrenade throws\cu.
+			\nGo to the range and do some practice!";
 	}
 
 	//default:
@@ -40,3 +134,5 @@ function str gettip(int rsd){
 			\ntips is available in the \cxMANUAL\cu
 			\n(\cqhd_manual.txt\cu in the archive)!";
 }
+
+
