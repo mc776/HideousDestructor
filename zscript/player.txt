@@ -240,13 +240,13 @@ class HDPlayerPawn:PlayerPawn{
 		if(max(abs(vel.x),abs(vel.y),abs(vel.z))>1)gunbraced=false;
 
 		//add inventory flags for inputs
-		A_SetInventory("WeaponBusy",
+		A_SetInventory("WeaponBusy",max(countinv("WeaponBusy"),
 			input&BT_RELOAD
 			||input&BT_USER1
 //			||input&BT_USER2
 			||input&BT_USER3
 			||input&BT_USER4
-		);
+		));
 		if((fm||sm)&&runwalksprint>=0)A_GiveInventory("IsMoving");
 
 		//this will be used a few times hereon in
