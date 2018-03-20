@@ -240,13 +240,13 @@ class HDPlayerPawn:PlayerPawn{
 		if(max(abs(vel.x),abs(vel.y),abs(vel.z))>1)gunbraced=false;
 
 		//add inventory flags for inputs
-		if(
+		A_SetInventory("WeaponBusy",
 			input&BT_RELOAD
 			||input&BT_USER1
 //			||input&BT_USER2
 			||input&BT_USER3
 			||input&BT_USER4
-		)A_GiveInventory("WeaponBusy");
+		);
 		if((fm||sm)&&runwalksprint>=0)A_GiveInventory("IsMoving");
 
 		//this will be used a few times hereon in
@@ -381,8 +381,8 @@ class HDPlayerPawn:PlayerPawn{
 		){
 			if(!barehanded){
 				if(player.readyweapon)lastweapon=player.readyweapon;
-				if(!countinv("NullWeapon"))A_GiveInventory("NullWeapon");
-				A_GiveInventory("NulledWeapon");
+				A_SetInventory("NulledWeapon",1);
+				A_SetInventory("NullWeapon",1);
 				A_SelectWeapon("NullWeapon");
 			}
 		}else if(
@@ -493,6 +493,7 @@ class HDPlayerPawn:PlayerPawn{
 
 
 
+
 //Camera actor for player's scope
 class ScopeCamera:IdleDummy{
 	override void tick(){
@@ -536,7 +537,7 @@ extend class HDHandlers{
 			if(
 				p.player&&
 				!players[e.PlayerNumber].bot&&
-				cvar.getcvar("hd_helptext",players[e.playernumber]).getbool()
+				cvar.getcvar("hd_helptext",players[e.playernumber]).getint()>1
 			)CallACS("TipMessage",0,random(1,3));
 		}
 	}
