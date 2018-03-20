@@ -96,5 +96,35 @@ class TargetBarrel:Actor{
 	}
 }
 
-
+class HDPunchDummy:HDActor{
+	default{
+		+noblood +shootable +ghost
+		height 50;radius 12;health TELEFRAG_DAMAGE;
+		translation "0:255=%[0,0,0]:[1.7,1.3,0.4]";
+	}
+	override int damagemobj(
+		actor inflictor,actor source,int damage,
+		name mod,int flags=0,double angle=0
+	){
+		if(inflictor is "HDFistPuncher"){
+			vel.z+=damage*0.1;
+			string d="u";
+			if(damage>100){
+				d="x";
+				A_PlaySound("misc/p_pkup",CHAN_WEAPON,attenuation:0.6);
+			}else if(damage>60)d="y";
+			else if(damage>30)d="g";
+			if(!hd_debug&&source)source.A_Log(
+				string.format("\ccPunched for \c%s%i\cc damage!",d,damage)
+			,true);
+			A_PlaySound("misc/punch",random(1,6));
+		}
+		return 0; //indestructible
+	}
+	states{
+	spawn:
+	pain:
+		BEXP B -1 nodelay{scale.y=1.4;}
+	}
+}
 

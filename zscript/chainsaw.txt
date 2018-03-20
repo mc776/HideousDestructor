@@ -120,9 +120,9 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 	whack:
 		BEVG D 1 A_JumpIf(pitch>25,"nowhack");
 		BEVG AB 1 offset(0,36) A_SetPitch(pitch+10,SPF_INTERPOLATE);
-		BEVG AAAAA 0 A_CustomPunch(random(1,5),0,0,"HDNullPuff",46);
+		BEVG AAAAA 0 A_CustomPunch(random(1,5),0,0,"HDFistPuncher",46);
 		BEVG A 1 offset(0,35){
-			if(countinv("PowerStrength")>0){A_CustomPunch(random(10,20),0,0,"HDNullPuff",46);}  
+			if(countinv("PowerStrength")>0){A_CustomPunch(random(10,20),0,0,"HDFistPuncher",46);}  
 			A_SetPitch(pitch+10,SPF_INTERPOLATE);
 		}
 		BEVG B 2 offset(0,34);
