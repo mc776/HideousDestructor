@@ -52,7 +52,7 @@ class Tripwire:HDWeapon{
 		TNT1 A 1{
 			if(!countinv("HDFragGrenadeAmmo"))A_SelectWeapon("Ring");
 			else A_SetCrosshair(0);
-			if(!invoker.gumspot)A_TakeInventory("WeaponBusy");else A_GiveInventory("WeaponBusy");
+			A_SetInventory("WeaponBusy",invoker.gumspot!=null);
 			A_WeaponReady(WRF_ALLOWUSER3);
 		}wait;
 	fire:

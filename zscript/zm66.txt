@@ -71,7 +71,7 @@ class ZM66AssaultRifle:HDWeapon{
 	abadjust:
 		RIFG A 2 A_WeaponReady(WRF_NONE);
 		RIFG A 0{
-			A_GiveInventory("WeaponBusy");
+			A_SetInventory("WeaponBusy",1);
 			if (PressingFire()||PressingAltfire()){
 				if(PressingFire())invoker.weaponstatus[ZM66S_AIRBURST]++;
 				else invoker.weaponstatus[ZM66S_AIRBURST]=

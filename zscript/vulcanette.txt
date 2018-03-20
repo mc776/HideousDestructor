@@ -71,7 +71,7 @@ class Vulcanette:HDWeapon{
 	zoomadjust:
 		VULG A 1 A_WeaponReady(WRF_NOFIRE);
 		VULG A 0{
-			if(!gunbraced())A_GiveInventory("WeaponBusy",1);
+			if(!gunbraced())A_SetInventory("WeaponBusy",1);
 			if(PressingFire()||PressingAltfire())
 				setweaponstate("zoomclick");
 			else if(PressingZoom())
