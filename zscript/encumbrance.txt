@@ -156,9 +156,9 @@ extend class HDPlayerPawn{
 	
 			//armour
 			+countinv("PortableRadsuit")*50
-			+countinv("HDArmour")?(
+			+(countinv("HDArmour")?(
 				findinventory("HDArmour").meleethreshold==3?200:80
-			):0
+			):0)
 	
 			//usables
 			+countinv("HDIEDKit")*3
