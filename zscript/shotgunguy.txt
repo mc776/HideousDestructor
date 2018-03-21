@@ -75,11 +75,11 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 		if(wep<0){
 			sprite=GetSpriteIndex("PLAYA1");
 			A_SetTranslation("HattedJackboot");
-			gunloaded=50;
+			gunloaded=random(10,50);
 		}else{
 			sprite=GetSpriteIndex("SPOSA1");
 			A_SetTranslation("ShotgunGuy");
-			gunloaded=wep?2:8;
+			gunloaded=wep?random(1,2):random(3,8);
 		}
 		semi=randompick(0,0,1);
 		hdmobster.spawnmobster(self);
