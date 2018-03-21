@@ -21,6 +21,9 @@ extend class HDStatusBar{
 			return;
 		}
 
+		bool helptext=cvar.getcvar("hd_helptext",cplayer).getbool();
+		hudfont pSmallFont=HUDFont.Create("SmallFont");
+
 		if(w is "Lumberjack"){
 			if(gimmehud){
 				drawambar("CELLRED","CELLA0","HDCellAmmo",(-54,-4),DI_SCREEN_CENTER_BOTTOM);
@@ -359,18 +362,35 @@ extend class HDStatusBar{
 		}
 		else if(w is "SelfBandage"){
 			int of=0;
-			let hp=hdplayerpawn(pp);
-			if(hp && hp.woundcount){
+			if(pp.woundcount){
 				drawimage(
 					"BLUDC0",(-17,-6),
 					DI_SCREEN_CENTER_BOTTOM|DI_ITEM_RIGHT,
 					0.6
 				);
-				of=clamp(hp.woundcount*0.2,1,3);
+				of=clamp(pp.woundcount*0.2,1,3);
 				if(pp.flip)of=-of;
 			}
 			drawwepdot(-22,-8+of,(2,10));
 			drawwepdot(-17,-12+of,(12,2));
+
+			if(helptext){
+				drawstring(psmallfont,"B A N D A G I N G",
+					(-10,pp.woundcount?-70:-60),
+					DI_SCREEN_BOTTOM|DI_SCREEN_RIGHT|DI_TEXT_ALIGN_RIGHT,
+					font.CR_WHITE,alpha:0.5
+				);
+				if(pp.woundcount)drawstring(psmallfont,"Fire: bandage self",
+					(-10,-60),
+					DI_SCREEN_BOTTOM|DI_SCREEN_RIGHT|DI_TEXT_ALIGN_RIGHT,
+					font.CR_OLIVE,alpha:0.5
+				);
+				drawstring(psmallfont,"Altfire: bandage other",
+					(-10,-50),
+					DI_SCREEN_BOTTOM|DI_SCREEN_RIGHT|DI_TEXT_ALIGN_RIGHT,
+					font.CR_OLIVE,alpha:0.5
+				);
+			}
 		}
 		else if(w is "HDMedikitter"){
 			drawwepdot(-27,-11,(2,6));
@@ -392,6 +412,38 @@ extend class HDStatusBar{
 			);
 			drawwepnum(HD_MEDPATCHLIMIT-ww.usedpatches,HD_MEDPATCHLIMIT);
 			if(!ww.usedflesh)drawwepdot(-16,-10,(4,3));
+
+			if(helptext){
+				drawstring(psmallfont,"M E D I K I T",
+					(-10,-90),
+					DI_SCREEN_BOTTOM|DI_SCREEN_RIGHT|DI_TEXT_ALIGN_RIGHT,
+					font.CR_DARKRED,alpha:0.5
+				);
+				drawstring(psmallfont,
+					string.format("Fire: patch %s",ww.useonother?"other":"self"),
+					(-10,-80),
+					DI_SCREEN_BOTTOM|DI_SCREEN_RIGHT|DI_TEXT_ALIGN_RIGHT,
+					font.CR_OLIVE,alpha:0.5
+				);
+				drawstring(psmallfont,
+					string.format("Altfire: Second Flesh %s",ww.useonother?"other":"self"),
+					(-10,-70),
+					DI_SCREEN_BOTTOM|DI_SCREEN_RIGHT|DI_TEXT_ALIGN_RIGHT,
+					font.CR_OLIVE,alpha:0.5
+				);
+				drawstring(psmallfont,
+					string.format("Zoom: use on %s",ww.useonother?"self":"other"),
+					(-10,-60),
+					DI_SCREEN_BOTTOM|DI_SCREEN_RIGHT|DI_TEXT_ALIGN_RIGHT,
+					font.CR_OLIVE,alpha:0.5
+				);
+				drawstring(psmallfont,
+					string.format("Firemode: run diagnostic on self"),
+					(-10,-50),
+					DI_SCREEN_BOTTOM|DI_SCREEN_RIGHT|DI_TEXT_ALIGN_RIGHT,
+					font.CR_OLIVE,alpha:0.5
+				);
+			}
 		}
 		else if(w is "HDBlueBottler"){
 			drawimage(
@@ -413,7 +465,6 @@ extend class HDStatusBar{
 		}
 		else if(w is "HDBP"){
 			let bp=hdbp(w);
-			hudfont pSmallFont=HUDFont.Create("SmallFont");
 			int which=bp.weaponstatus[HDBPS_WHICH];
 			int howmany=bp.itemamount[which];
 
@@ -451,7 +502,7 @@ extend class HDStatusBar{
 			);
 
 			//explanation
-			if(cvar.getcvar("hd_helptext",cplayer).getbool()){
+			if(helptext){
 				row+=12;
 				drawstring(psmallfont,"Backpack Instructions:",
 					(column,row),
@@ -501,11 +552,10 @@ extend class HDStatusBar{
 		}
 		else if(w is "MagManager"){
 			let mm=MagManager(w);
-			hudfont pSmallFont=HUDFont.Create("SmallFont");
 			int which=mm.weaponstatus[HDMMS_WHICH];
 
 			//explanation
-			if(cvar.getcvar("hd_helptext",cplayer).getbool()){
+			if(helptext){
 				int row=100;
 				int column=10;
 				drawstring(psmallfont,"Mag Manager Instructions:",
