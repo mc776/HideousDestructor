@@ -37,10 +37,7 @@ class HDWeapon:Weapon{
 	//display the tip
 	override void attachtoowner(actor user){
 		super.attachtoowner(user);
-		if(
-			user.player&&
-			cvar.getcvar("hd_helptext",user.player).getint()>1
-		)user.ACS_NamedExecuteAlways("TipMessage",0,-1,selectionorder);
+		showtip();
 	}
 	//wrapper for HDMath.MaxInv because we're gonna need this a lot
 	action int AmmoCap(class<inventory> inv){
@@ -118,6 +115,12 @@ class HDWeapon:Weapon{
 				}
 			}
 		}
+	}
+	void ShowTip(){
+		if(
+			owner&&owner.player&&
+			cvar.getcvar("hd_helptext",owner.player).getint()>1
+		)owner.ACS_NamedExecuteAlways("TipMessage",0,-1,selectionorder);
 	}
 	//activate a laser rangefinder
 	//because every gun should have one of these

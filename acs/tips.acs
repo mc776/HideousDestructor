@@ -6,6 +6,7 @@ script "TipMessage"(int dly,int rsd){
 	if(dly<0){
 		if(!rsd)terminate;
 		gt=getguntip(rsd);
+		if(gt=="")terminate;
 	}else{
 		delay(dly);
 		gt=strparam(
@@ -24,7 +25,7 @@ script "TipMessage"(int dly,int rsd){
 function str gettip(int rsd){
 	int rnd=0;
 	for(int i=0;i<rsd;i++){rnd=random(0,1);}
-	rnd=random(0,23);
+	rnd=random(0,24);
 	switch(rnd){
 	case 1: return "Remember to \cxBIND KEYS\cu for all
 			\n\cqweapon functions\cu and \cqweapon drop\cu!";
@@ -83,18 +84,20 @@ function str gettip(int rsd){
 			\nand 7.776mm guns, press \cqUser3\cu on those guns
 			\nor type \"\cquse MagManager\cu\" from the console.";
 
-	case 13: return "All ingame console commands can be bound to keys.
+	case 13: return "Press \cqUser4\cu to \cxUNLOAD WEAPONS\cu.";
+
+	case 14: return "All ingame console commands can be bound to keys.
 			\nCheck the \cqcontrols menu\cu for details.";
 
-	case 14: return "You can \cxCUSTOMIZE\cu your starting loadout
+	case 15: return "You can \cxCUSTOMIZE\cu your starting loadout
 			\nand weapon settings for any weapon you spawn with!
 			\nCheck the \cqplayer setup menu\cu for details.";
 
-	case 15: return "When you pick up \cxARMOUR\cu,
+	case 16: return "When you pick up \cxARMOUR\cu,
 			\nit goes into your inventory.
 			\n\cqUse the item\cu to equip it.";
 
-	case 16: return "When playing with \cxENCUMBRANCE\cu (\cqhd_carrylimit 1\cu),
+	case 17: return "When playing with \cxENCUMBRANCE\cu (\cqhd_carrylimit 1\cu),
 			\ntype \"\cqhd_purge\cu\" in the console to get rid of
 			\nany and all ammo you do not have a weapon for,
 			\n\"\cqhd_dropone\cu\" to drop a single unit of your
@@ -102,38 +105,38 @@ function str gettip(int rsd){
 			\n\cqtry to drop your fist\cu to
 			\npurge all miscellaneous items.";
 
-	case 17: return "\cxAMMO BOXES\cu may be trapped.
+	case 18: return "\cxAMMO BOXES\cu may be trapped.
 			\n\cqUse\cu once to try to disarm, \cqUse twice\cu
 			\nin quick succession to open without checking.";
 
-	case 18: return "If a weapon does not have any other
+	case 19: return "If a weapon does not have any other
 			\nfunction reserved for it, \cqUser3\cu
 			\nwill activate a rangefinder.";
 
-	case 19: return "\cxSTIMPACKS\cu increase healing and
+	case 20: return "\cxSTIMPACKS\cu increase healing and
 			\nreduce bleeding temporarily, and do \crnot\cu
 			\nneed you to remove your armour,
 			\nwhile \cxMEDIKITS\cu require you to
 			\n\cqremove your armour\cu but stop
 			\nbleeding for the long term.";
 
-	case 20: return "Hideous Destructor works in \cxMULTIPLAYER\cu
+	case 21: return "Hideous Destructor works in \cxMULTIPLAYER\cu
 			\nand has its own limited lives modes!
 			\nSet \cqfraglimit\cu in co-op or deathmatch to
 			\nsomething \cqover 100\cu for \cqelimination mode\cu,
 			\nor \cqup to 100\cu in co-op to \cqforce a restart\cu
 			\nonce the limit is reached.";
 
-	case 21: return "For most magazine-fed weapons you can
+	case 22: return "For most magazine-fed weapons you can
 			\n\cqhold the key\cu while reloading or unloading
 			\nto retain the ammo instead of
 			\nletting it drop to the ground.";
 
-	case 22: return "The ZDoom bots suck at this.
+	case 23: return "The ZDoom bots suck at this.
 			\nSet \cqhd_nobots\cu to true to replace
 			\nthe bots with HD's own marines!";
 
-	case 23: return "Your \cqturning\cu affects the momentum of
+	case 24: return "Your \cqturning\cu affects the momentum of
 			\nyour \cqpunches\cu and \cqgrenade throws\cu.
 			\nGo to the range and do some practice!";
 	}
@@ -148,6 +151,7 @@ function str gettip(int rsd){
 
 function str getguntip(int selectionorder){
 	str fir="\n\cyFIRE:\cw ";
+	str firsht="\n\cyFIRE:\cw shoot";
 	str alt="\n\cyALTFIRE:\cw ";
 	str rld="\n\cyRELOAD:\cw ";
 	str zom="\n\cyZOOM:\cw ";
@@ -155,52 +159,202 @@ function str getguntip(int selectionorder){
 	str fmd="\n\cyUSER2/FIREMODE:\cw ";
 	str msc="\n\cyUSER3/MISC:\cw ";
 	str uld="\n\cyUSER4/UNLOAD:\cw ";
+	str uldd="\n\cyUSER4/UNLOAD:\cw unload";
 	switch(selectionorder){
 		case 20: return strparam(
 			s:"\cxZM66 Assault Rifle",
-			s:fir,s:"shoot",
+			s:firsht,
 			s:alt,s:"toggle GL (if any)",
 			s:rld,s:"reload magazine",
 			s:zom,s:"adjust zoom",
 			s:ard,s:"reload grenade",
 			s:fmd,s:"switch semi/auto/burst (rifle)",
-			s:msc,s:"adjust airburst (GL)",
-			s:uld,s:"unload"
+			s:fmd,s:"adjust airburst (GL)",
+			s:uldd
 		);
-		//TEST IF IT WORKS FIRST
-		default: return strparam(
-			s:"\cudic but",
-			s:fir,s:"dic",
-			s:alt,s:"but"
+		case 24: return strparam(
+			s:"\cxSub-Machine Gun",
+			s:firsht,
+			s:rld,s:"reload magazine",
+			s:zom,s:"rangefinder",
+			s:fmd,s:"switch semi/burst",
+			s:msc,s:"manage ammo",
+			s:uldd
 		);
+		case 27: return strparam(
+			s:"\cxLiberator Battle Rifle",
+			s:firsht,
+			s:alt,s:"toggle GL (if any)",
+			s:rld,s:"reload magazine",
+			s:zom,s:"adjust zoom",
+			s:ard,s:"reload grenade",
+			s:fmd,s:"switch semi/burst (rifle)",
+			s:fmd,s:"adjust airburst (GL)",
+			s:uldd
+		);
+		case 30: return strparam(
+			s:"\cxDouble-Barreled Shotgun",
+			s:fir,s:"shoot left",
+			s:alt,s:"shoot right",
+			s:rld,s:"reload from sidesaddles or pockets",
+			s:zom,s:"steal ammo from SG sidesaddles",
+			s:ard,s:"reload from pockets only",
+			s:fmd,s:"hold to force double shot",
+			s:uldd
+		);
+		case 31: return strparam(
+			s:"\cxPump-Action Shotgun",
+			s:firsht,
+			s:alt,s:"pump",
+			s:rld,s:"reload from sidesaddles or pockets",
+			s:zom,s:"steal ammo from SSG sidesaddles",
+			s:ard,s:"reload from pockets only",
+			s:fmd,s:"toggle pump/semi",
+			s:uldd
+		);
+		case 40: return strparam(
+			s:"\cxVulcanette",
+			s:firsht,
+			s:alt,s:"toggle RPM",
+			s:rld,s:"reload magazines",
+			s:zom,s:"adjust zoom",
+			s:ard,s:"reload battery",
+			s:fmd,s:"toggle RPM",
+			s:uldd
+		);
+		case 50: return strparam(
+			s:"\cxPistol",
+			s:firsht,
+			s:alt,s:"switch pistols",
+			s:rld,s:"reload magazine",
+			s:zom,s:"rangefinder",
+			s:fmd,s:"switch semi/auto (if any)",
+			s:msc,s:"manage ammo",
+			s:uldd
+		);
+		case 60: return strparam(
+			s:"\cxBrontornis",
+			s:firsht,
+			s:rld,s:"reload shell",
+			s:zom,s:"toggle zoom",
+			s:uldd
+		);
+		case 70: return strparam(
+			s:"\cxThunder Buster",
+			s:firsht,
+			s:alt,s:"rangefinder",
+			s:rld,s:"reload battery",
+			s:fmd,s:"toggle scattershot mode",
+			s:uldd
+		);
+		case 80: return strparam(
+			s:"\cxBoss Rifle",
+			s:firsht,
+			s:alt,s:"work bolt",
+			s:rld,s:"reload clip/rounds",
+			s:zom,s:"adjust zoom",
+			s:ard,s:"fast-strip one clip",
+			s:fmd,s:"adjust bullet drop compensation",
+			s:msc,s:"manage ammo",
+			s:uldd
+		);
+		case 90: return strparam(
+			s:"\cxChainsaw",
+			s:fir,s:"saw",
+			s:alt,s:"raise for beatdown",
+			s:rld,s:"reload battery",
+			s:uldd
+		);
+		case 91: return strparam(
+			s:"\cxBFG9K",
+			s:fir,s:"charge/shoot",
+			s:alt,s:"toggle recoil harness",
+			s:rld,s:"abort charge/reload battery",
+			s:ard,s:"reload empty battery",
+			s:uldd
+		);
+		case 92: return strparam(
+			s:"\cxRocket Launcher",
+			s:firsht,
+			s:alt,s:"toggle GL",
+			s:rld,s:"reload grenade",
+			s:zom,s:"toggle zoom",
+			s:ard,s:"reload H.E.A.T.",
+			s:fmd,s:"adjust airburst",
+			s:uldd
+		);
+		case 93: return strparam(
+			s:"\cxGrenade Launcher",
+			s:firsht,
+			s:alt,s:"reset airburst",
+			s:rld,s:"reload",
+			s:fmd,s:"adjust airburst",
+			s:uldd
+		);
+		case 100: return strparam(
+			s:"\cxFist",
+			s:fir,s:"punch",
+			s:alt,s:"lunge",
+			s:rld,s:"flick"
+		);
+		case 1000: return strparam(
+			s:"\cxPotion",
+			s:fir,s:"drink"
+		);
+		case 1001: return strparam(
+			s:"\cxMedikit",
+			s:fir,s:"staple and patch",
+			s:alt,s:"use Second Flesh",
+			s:rld,s:"take off your armour",
+			s:zom,s:"toggle self/other",
+			s:fmd,s:"run diagnostic"
+		);
+		case 1002: return strparam(
+			s:"\cxBerserk Pack",
+			s:fir,s:"use on yourself",
+			s:alt,s:"use on someone else"
+		);
+		case 1003: return strparam(
+			s:"\cxStimpack",
+			s:fir,s:"use on yourself",
+			s:alt,s:"use on someone else"
+		);
+		case 1004: return strparam(
+			s:"\cxBandaging",
+			s:fir,s:"use on yourself",
+			s:alt,s:"use on someone else"
+		);
+		case 1010: return strparam(
+			s:"\cxBackpack",
+			s:fir,s:"previous item",
+			s:alt,s:"next item",
+			s:rld,s:"place into backpack",
+			s:fmd,s:"hold to navigate with mouse",
+			s:uld,s:"remove from backpack"
+		);
+		case 1011: return strparam(
+			s:"\cxMagManager",
+			s:fir,s:"previous ammo type",
+			s:alt,s:"next ammo type",
+			s:rld,s:"place into mag/clip",
+			s:uld,s:"remove from mag/clip"
+		);
+		case 1020: return strparam(
+			s:"\cxHand Grenades",
+			s:fir,s:"hold to [pull pin and] wind up,
+				\n\cw      let go to [drop spoon and] throw",
+			s:alt,s:"hold to pull pin,
+				\n\cw       press again to drop spoon",
+			s:rld,s:"put pin back in",
+			s:zom,s:"start planting tripwire traps"
+		);
+		case 1021: return strparam(
+			s:"\cxGrenade Tripwire Traps",
+			s:fir,s:"place end of string,
+				\n\cw      press again to place grenade",
+			s:alt,s:"abort"
+		);
+		default: return "";
 	}
-	return "dic but";
+	return "";
 }
-
-/*
-selectionorders:
- 20: ZM66
- 24: SMG
- 27: Liberator
- 30: Slayer
- 31: Hunter
- 40: Vulcanette
- 50: Pistol
- 60: Bronto
- 70: Plasma
- 80: Boss
- 90: Chainsaw
- 91: BFG
- 92: RL
- 93: Blooper
- 100: Fist
- 1000: Potion
- 1001: Medikit
- 1002: Berserk
- 1003: Stimpack
- 1004: SelfBandage
- 1010: Backpack
- 1011: MagManager
- 1020: Grenade
- 1021: Tripwires
-*/

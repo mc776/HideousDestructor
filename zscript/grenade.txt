@@ -240,10 +240,14 @@ class HDFragGrenades:HDWeapon{
 		weapon.bobstyle "Alpha";
 		weapon.bobspeed 2.5;weapon.bobrangex 0.1;weapon.bobrangey 0.5;
 	}
+	override void attachtoowner(actor user){
+		weapon.attachtoowner(user);
+	}
 	states{
 	select0:
 		TNT1 A 0 A_JumpIf(!countinv("HDFragGrenadeAmmo"),"selectinstant");
 		TNT1 A 8{
+			invoker.showtip();
 			if(!countinv("NulledWeapon"))A_SetTics(tics+4);
 			A_TakeInventory("NulledWeapon");
 			A_TakeInventory("FragTimer");

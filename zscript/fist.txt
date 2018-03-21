@@ -40,6 +40,9 @@ class Ring:HDWeapon replaces Fist{
 		weapon.bobrangey 0.5;
 		weapon.slotnumber 1;
 	}
+	override void attachtoowner(actor user){
+		weapon.attachtoowner(user);
+	}
 	override inventory CreateTossable(int amount){
 		owner.A_GiveInventory("DropMisc");
 		owner.A_GiveInventory("Ring");
@@ -149,6 +152,9 @@ class Ring:HDWeapon replaces Fist{
 		}
 	}
 	states{
+	select:
+		TNT1 A 0{invoker.showtip();}
+		goto super::select;
 	female:
 		PUNF A 0;goto nope;
 	male:
