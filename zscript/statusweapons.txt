@@ -373,24 +373,6 @@ extend class HDStatusBar{
 			}
 			drawwepdot(-22,-8+of,(2,10));
 			drawwepdot(-17,-12+of,(12,2));
-
-			if(helptext){
-				drawstring(psmallfont,"B A N D A G I N G",
-					(-10,pp.woundcount?-70:-60),
-					DI_SCREEN_BOTTOM|DI_SCREEN_RIGHT|DI_TEXT_ALIGN_RIGHT,
-					font.CR_WHITE,alpha:0.5
-				);
-				if(pp.woundcount)drawstring(psmallfont,"Fire: bandage self",
-					(-10,-60),
-					DI_SCREEN_BOTTOM|DI_SCREEN_RIGHT|DI_TEXT_ALIGN_RIGHT,
-					font.CR_OLIVE,alpha:0.5
-				);
-				drawstring(psmallfont,"Altfire: bandage other",
-					(-10,-50),
-					DI_SCREEN_BOTTOM|DI_SCREEN_RIGHT|DI_TEXT_ALIGN_RIGHT,
-					font.CR_OLIVE,alpha:0.5
-				);
-			}
 		}
 		else if(w is "HDMedikitter"){
 			drawwepdot(-27,-11,(2,6));
@@ -412,38 +394,6 @@ extend class HDStatusBar{
 			);
 			drawwepnum(HD_MEDPATCHLIMIT-ww.usedpatches,HD_MEDPATCHLIMIT);
 			if(!ww.usedflesh)drawwepdot(-16,-10,(4,3));
-
-			if(helptext){
-				drawstring(psmallfont,"M E D I K I T",
-					(-10,-90),
-					DI_SCREEN_BOTTOM|DI_SCREEN_RIGHT|DI_TEXT_ALIGN_RIGHT,
-					font.CR_DARKRED,alpha:0.5
-				);
-				drawstring(psmallfont,
-					string.format("Fire: patch %s",ww.useonother?"other":"self"),
-					(-10,-80),
-					DI_SCREEN_BOTTOM|DI_SCREEN_RIGHT|DI_TEXT_ALIGN_RIGHT,
-					font.CR_OLIVE,alpha:0.5
-				);
-				drawstring(psmallfont,
-					string.format("Altfire: Second Flesh %s",ww.useonother?"other":"self"),
-					(-10,-70),
-					DI_SCREEN_BOTTOM|DI_SCREEN_RIGHT|DI_TEXT_ALIGN_RIGHT,
-					font.CR_OLIVE,alpha:0.5
-				);
-				drawstring(psmallfont,
-					string.format("Zoom: use on %s",ww.useonother?"self":"other"),
-					(-10,-60),
-					DI_SCREEN_BOTTOM|DI_SCREEN_RIGHT|DI_TEXT_ALIGN_RIGHT,
-					font.CR_OLIVE,alpha:0.5
-				);
-				drawstring(psmallfont,
-					string.format("Firemode: run diagnostic on self"),
-					(-10,-50),
-					DI_SCREEN_BOTTOM|DI_SCREEN_RIGHT|DI_TEXT_ALIGN_RIGHT,
-					font.CR_OLIVE,alpha:0.5
-				);
-			}
 		}
 		else if(w is "HDBlueBottler"){
 			drawimage(
