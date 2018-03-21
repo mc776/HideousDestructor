@@ -427,8 +427,8 @@ extend class HDStatusBar{
 				}else if(bp.itemname[i]=="br"){
 					row+=5;
 				}else if(bp.itemtype[i]){
-					bool onperson=pp.countinv(bp.itemtype[i]);
-					bool inpack=bp.itemamount[i];
+					bool onperson=pp.countinv(bp.itemtype[i])>0;
+					bool inpack=bp.itemamount[i]>0;
 					drawstring(psmallfont,
 						bp.itemname[i],
 						(column,10+row),
