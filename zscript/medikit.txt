@@ -57,7 +57,6 @@ class PortableMedikit:HDPickup{
 class HDWoundFixer:HDWeapon{
 	default{
 		+weapon.wimpy_weapon +weapon.no_auto_switch +weapon.cheatnotweapon
-		weapon.selectionorder 1001;
 	}
 	int checkwoundcount(bool checkunstable=false){
 		let onr=HDPlayerPawn(owner);
@@ -78,6 +77,7 @@ class HDWoundFixer:HDWeapon{
 }
 class HDMedikitter:HDWoundFixer{
 	default{
+		weapon.selectionorder 1001;
 		weapon.slotnumber 9;
 	}
 	bool useonother;
@@ -426,6 +426,7 @@ class SecondFleshBeast:IdleDummy{
 
 class SelfBandage:HDWoundFixer{
 	default{
+		weapon.selectionorder 1004;
 		weapon.slotnumber 9;
 	}
 	void patchwound(int amt,actor targ){

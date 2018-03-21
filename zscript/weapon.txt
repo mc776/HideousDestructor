@@ -34,6 +34,14 @@ class HDWeapon:Weapon{
 		target=owner;
 		super.detachfromowner();
 	}
+	//display the tip
+	override void attachtoowner(actor user){
+		super.attachtoowner(user);
+		if(
+			user.player&&
+			cvar.getcvar("hd_helptext",user.player).getint()>1
+		)user.ACS_NamedExecuteAlways("TipMessage",0,-1,selectionorder);
+	}
 	//wrapper for HDMath.MaxInv because we're gonna need this a lot
 	action int AmmoCap(class<inventory> inv){
 		return HDMath.MaxInv(self,inv);

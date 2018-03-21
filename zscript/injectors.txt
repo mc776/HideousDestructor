@@ -98,6 +98,7 @@ class HDStimpacker:HDWoundFixer{
 		hdstimpacker.spentinjecttype "SpentStim";
 		hdstimpacker.inventorytype "PortableStimpack";
 		hdstimpacker.noerror "No stimpacks.";
+		weapon.selectionorder 1003;
 	}
 	states{
 	spawn:
@@ -267,6 +268,7 @@ class HDBerserker:HDStimpacker{
 		hdstimpacker.spentinjecttype "SpentZerk";
 		hdstimpacker.inventorytype "PortableBerserkPack";
 		hdstimpacker.noerror "No berserk packs.";
+		weapon.selectionorder 1002;
 	}
 	states{
 	select:
@@ -336,6 +338,9 @@ class BluePotion:HDPickup{
 	}
 }
 class HDBlueBottler:HDWoundFixer{
+	default{
+		weapon.selectionorder 1000;
+	}
 	states{
 	spawn:
 		TNT1 A 1;

@@ -2,11 +2,20 @@
 // Tips
 // ------------------------------------------------------------
 script "TipMessage"(int dly,int rsd){
-	delay(dly);
+	str gt="";
+	if(dly<0){
+		if(!rsd)terminate;
+		gt=getguntip(rsd);
+	}else{
+		delay(dly);
+		gt=strparam(
+			s:"\crT I P :  \cu",
+			s:gettip(rsd)
+		);
+	}
 	setfont("smallfont");
 	HudMessage(
-		s:"\crT I P :  \cu",
-		s:gettip(rsd);
+		s:gt;
 		HUDMSG_FADEINOUT|HUDMSG_LOG,4,CR_DARKGREY,
 		0.1,0.9,
 		6.0,0.6,2.0
@@ -136,3 +145,62 @@ function str gettip(int rsd){
 }
 
 
+
+function str getguntip(int selectionorder){
+	str fir="\n\cyFIRE:\cw ";
+	str alt="\n\cyALTFIRE:\cw ";
+	str rld="\n\cyRELOAD:\cw ";
+	str zom="\n\cyZOOM:\cw ";
+	str ard="\n\cyUSER1/ALTRELOAD:\cw ";
+	str fmd="\n\cyUSER2/FIREMODE:\cw ";
+	str msc="\n\cyUSER3/MISC:\cw ";
+	str uld="\n\cyUSER4/UNLOAD:\cw ";
+	switch(selectionorder){
+		case 20: return strparam(
+			s:"\cxZM66 Assault Rifle",
+			s:fir,s:"shoot",
+			s:alt,s:"toggle GL (if any)",
+			s:rld,s:"reload magazine",
+			s:zom,s:"adjust zoom",
+			s:ard,s:"reload grenade",
+			s:fmd,s:"switch semi/auto/burst (rifle)",
+			s:msc,s:"adjust airburst (GL)",
+			s:uld,s:"unload"
+		);
+		//TEST IF IT WORKS FIRST
+		default: return strparam(
+			s:"\cudic but",
+			s:fir,s:"dic",
+			s:alt,s:"but"
+		);
+	}
+	return "dic but";
+}
+
+/*
+selectionorders:
+ 20: ZM66
+ 24: SMG
+ 27: Liberator
+ 30: Slayer
+ 31: Hunter
+ 40: Vulcanette
+ 50: Pistol
+ 60: Bronto
+ 70: Plasma
+ 80: Boss
+ 90: Chainsaw
+ 91: BFG
+ 92: RL
+ 93: Blooper
+ 100: Fist
+ 1000: Potion
+ 1001: Medikit
+ 1002: Berserk
+ 1003: Stimpack
+ 1004: SelfBandage
+ 1010: Backpack
+ 1011: MagManager
+ 1020: Grenade
+ 1021: Tripwires
+*/
