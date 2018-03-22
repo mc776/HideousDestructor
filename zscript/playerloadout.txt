@@ -150,14 +150,13 @@ extend class HDPlayerPawn{
 					A_GiveInventory("HDSecondPistol");
 					nw="HDPistol";A_GiveInventory(nw);
 					which=3;
+				}
+				if(countinv("HDPistol")){
+					A_GiveInventory("HDSecondPistol");
+					which=2;
 				}else{
-					if(countinv("HDPistol")){
-						A_GiveInventory("HDSecondPistol");
-						which=2;
-					}else{
-						nw="HDPistol";A_GiveInventory(nw);
-						which=1;
-					}
+					nw="HDPistol";A_GiveInventory(nw);
+					which=1;
 				}
 				if(num==21){
 					if(which!=2)hdpistol(findinventory("HDPistol")).weaponstatus[PISS_AUTO]=0;
