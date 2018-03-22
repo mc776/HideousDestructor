@@ -106,7 +106,7 @@ class HDPickup:CustomInventory{
 	actor picktarget;
 	default{
 		+inventory.invbar +inventory.persistentpower
-		+solid +noblockmonst +notrigger
+		+solid +noblockmonst +notrigger +dontgib
 		inventory.interhubamount int.MAX;
 
 		radius 8; height 10; scale 0.8;
@@ -188,7 +188,7 @@ class HDUPK:HDActor{
 	property pickuptype:pickuptype;
 	property pickupmessage:pickupmessage;
 	default{
-		+solid +noblockmonst +notrigger
+		+solid +noblockmonst +notrigger +dontgib
 		height 8;radius 8;
 		activesound "misc/i_pkup";
 		hdupk.pickupmessage "Picked something up.";
