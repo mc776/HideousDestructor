@@ -42,6 +42,20 @@ const BLOX_BRONTOSHELL=BLOX_426MAG*0.4;
 const BLOX_BRONTOSHELLLOADED=BLOX_BRONTOSHELL*0.4;
 const BLOX_FRAG=BLOX_ROCKET*1.2;
 
+//more things
+const BLOX_BLUEARMOUR=200;
+const BLOX_GREENARMOUR=80;
+const BLOX_RADSUIT=50;
+const BLOX_IEDKIT=3;
+const BLOX_STIMPACK=5;
+const BLOX_SQUADSUMMONER=7;
+const BLOX_BLUEPOTION=10;
+const BLOX_LITEAMP=20;
+const BLOX_MEDIKIT=45;
+const BLOX_LADDER=70;
+const BLOX_DERP=45;
+const BLOX_HERP=125;
+
 
 extend class HDPlayerPawn{
 	double blox;
@@ -50,7 +64,7 @@ extend class HDPlayerPawn{
 
 		//backpack
 		let hdbp=HDBP(findinventory("HDBP"));
-		if(hdbp)blox+=max(100,(hdbp.weaponstatus[HDBPS_CARRIED]>>3));
+		if(hdbp)blox+=max(100,(hdbp.bulk)*0.4);
 
 		if(
 			deathmatch||hd_carrylimit||skill>=5
@@ -131,15 +145,15 @@ extend class HDPlayerPawn{
 					else blox+=blx;
 				}
 			}
-	
+
 			//because herps are special
 			let herp=HERPUsable(findinventory("HERPUsable"));
-			if(herp)blox+=125+herp.ammo<0?0:BLOX_426MAG*0.4;
-			else blox+=countinv("HERPDEAD")*125;
+			if(herp)blox+=BLOX_HERP+herp.ammo<0?0:BLOX_426MAG*0.4;
+			else blox+=countinv("HERPDEAD")*BLOX_HERP;
 	
 			//let's make the derp special too
 			if(countinv("DERPUsable")||countinv("DERPDEAD"))
-				blox+=45;
+				blox+=BLOX_DERP;
 
 			//mag manager
 			let hdmm=MagManager(findinventory("MagManager"));
@@ -152,22 +166,26 @@ extend class HDPlayerPawn{
 			blox+=
 	
 			//second pistol
-			(countinv("HDSecondPistol")?30+HDSecondPistol(findinventory("HDSecondPistol")).weaponstatus[PISS_MAG]*BLOX_9MAG_LOADED:0)
-	
+			(
+				countinv("HDSecondPistol")?30
+				+HDSecondPistol(
+					findinventory("HDSecondPistol")
+				).weaponstatus[PISS_MAG]*BLOX_9MAG_LOADED:0)
+
 			//armour
-			+countinv("PortableRadsuit")*50
+			+countinv("PortableRadsuit")*BLOX_RADSUIT
 			+(countinv("HDArmour")?(
 				findinventory("HDArmour").meleethreshold==3?200:80
 			):0)
-	
+
 			//usables
-			+countinv("HDIEDKit")*3
-			+(countinv("PortableStimpack")+countinv("PortableBerserkPack"))*5
-			+countinv("SquadSummoner")*7
-			+countinv("BluePotion")*10
-			+countinv("PortableLiteAmp")*20
-			+countinv("PortableMedikit")*45
-			+countinv("PortableLadder")*70
+			+countinv("HDIEDKit")*BLOX_IEDKIT
+			+(countinv("PortableStimpack")+countinv("PortableBerserkPack"))*BLOX_STIMPACK
+			+countinv("SquadSummoner")*BLOX_SQUADSUMMONER
+			+countinv("BluePotion")*BLOX_BLUEPOTION
+			+countinv("PortableLiteAmp")*BLOX_LITEAMP
+			+countinv("PortableMedikit")*BLOX_MEDIKIT
+			+countinv("PortableLadder")*BLOX_LADDER
 	
 			//loose/magged ambiguous ammo
 			+countinv("HDPistolAmmo")*BLOX_9
@@ -198,8 +216,7 @@ extend class HDPlayerPawn{
 			360+
 			countinv("PowerStrength")*100+
 			min(regenblues,150)+
-			stimcount*2+
-			+countinv("HDBP")*100
+			stimcount*2
 		;
 		return blox/carrymax;
 	}
