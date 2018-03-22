@@ -69,8 +69,33 @@ extend class HDPlayerPawn{
 				bp.itemamount[bp.fcellindex]+=max(1,bp.itemamount[bp.mcellindex]/15);
 				bp.itemamount[bp.mcellindex]=0;
 			}
+		}else{
+			//use a bunch of partials
+			int totalmcell=countinv("HDCellAmmo");
+			int roomforcell=hdmath.maxinv(self,"HDCellPacks")-countinv("HDCellPacks");
+			if(bp){
+				totalmcell+=bp.itemamount[bp.mcellindex];
+				roomforcell+=max(0,HDBPC_CAPACITY-bp.bulk);
+			}
+			while(
+				totalmcell>=50
+				&&roomforcell>0
+			){
+				int spent=24;
+				roomforcell--;
+				totalmcell-=spent;
+				if(bp){
+					int bpsp=min(spent,bp.itemamount[bp.mcellindex]);
+					bp.itemamount[bp.mcellindex]-=bpsp;
+					spent-=bpsp;
+				}
+				if(spent>0)A_TakeInventory("HDCellAmmo",spent);
+
+				if(A_JumpIfInventory("HDCellPacks",0,"null"))
+					bp.itemamount[bp.fcellindex]++;
+					else A_GiveInventory("HDCellPacks");
+			}
 		}
-		//there is no else.
 		//consider using the big battery pack sprite as a charger on some maps?
 
 		
