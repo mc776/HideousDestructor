@@ -151,22 +151,48 @@ extend class HDStatusBar{
 					scale:(2.5,2.5)
 				);
 				if(scopeview){
-					double degree=(35-wp.weaponstatus[LIBS_ZOOM])*0.2;
-					texman.setcameratotexture(hpc,"HDXHCAM3",degree);
-					drawimage(
-						"HDXHCAM3",(0,60),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-						scale:(0.4,0.4)
-					);
-					drawimage(
-						"reticle1",(0,60),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-						scale:(0.45,0.45)
-					);
+					double degree;
+					if(wp.weaponstatus[0]&LIBF_FRONTRETICLE){
+						degree=4.-0.05*wp.weaponstatus[LIBS_ZOOM];
+						texman.setcameratotexture(hpc,"HDXHCAM3",degree);
+						drawimage(
+							"HDXHCAM3",(0,60),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+							scale:(0.4,0.4)
+						);
+						int cx,cy,cw,ch;
+						[cx,cy,cw,ch]=screen.GetClipRect();
+						SetClipRect(276,204,88,88);
+						double deg=1/degree;
+						drawimage(
+							"reticle1",(0,60),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+							scale:(1.6,1.6)*deg
+						);
+						screen.SetClipRect(cx,cy,cw,ch);
+					}else{
+						degree=(35-wp.weaponstatus[LIBS_ZOOM])*0.2;
+						texman.setcameratotexture(hpc,"HDXHCAM3",degree);
+						drawimage(
+							"HDXHCAM3",(0,60),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+							scale:(0.4,0.4)
+						);
+						int cx,cy,cw,ch;
+						[cx,cy,cw,ch]=screen.GetClipRect();
+						SetClipRect(276,204,88,88);
+						drawimage(
+							"reticle1",(0,60),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+							scale:(0.52,0.52)
+						);
+						screen.SetClipRect(cx,cy,cw,ch);
+					}
 					drawimage(
 						"XH31",(0,60),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 						scale:(1.,1.)
 					);
 					drawnum(degree*10,
 						4,102,DI_SCREEN_CENTER,Font.CR_BLACK
+					);
+					drawnum(wp.weaponstatus[LIBS_DROPADJUST]*5,
+						6,12,DI_SCREEN_CENTER,Font.CR_BLACK
 					);
 				}
 			}
@@ -210,10 +236,6 @@ extend class HDStatusBar{
 						scale:(1.6,1.6)*deg
 					);
 					screen.SetClipRect(cx,cy,cw,ch);
-					drawimage(
-						"XH31",(0,68),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-						scale:(1.24,1.24)
-					);
 				}else{
 					degree=6.-0.1*wp.weaponstatus[BOSSS_ZOOM];
 					texman.setcameratotexture(hpc,"HDXHCAM3",degree);
@@ -225,11 +247,11 @@ extend class HDStatusBar{
 						"reticle1",(0,68),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 						scale:(0.5,0.5)
 					);
-					drawimage(
-						"XH31",(0,68),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-						scale:(1.24,1.24)
-					);
 				}
+				drawimage(
+					"XH31",(0,68),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					scale:(1.24,1.24)
+				);
 				drawnum(degree*10,
 					4,119,DI_SCREEN_CENTER,Font.CR_BLACK
 				);

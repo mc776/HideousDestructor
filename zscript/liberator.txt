@@ -214,6 +214,7 @@ class LiberatorRifle:HDWeapon{
 	firemode:
 		---- A 0{
 			if(invoker.weaponstatus[0]&LIBF_GRENADEMODE)setweaponstate("abadjust");
+			else if(PressingZoom())setweaponstate("moaadjust");
 			else invoker.weaponstatus[0]^=LIBF_FULLAUTO;
 		}goto nope;
 
@@ -222,8 +223,18 @@ class LiberatorRifle:HDWeapon{
 		BRFG A 0{
 			if(PressingFire())invoker.weaponstatus[LIBS_ZOOM]++;
 			else if(PressingAltfire())invoker.weaponstatus[LIBS_ZOOM]--;
+			else if(PressingFireMode())setweaponstate("moaadjust");
 			else if(!PressingZoom())setweaponstate("nope");
 			invoker.weaponstatus[LIBS_ZOOM]=clamp(invoker.weaponstatus[LIBS_ZOOM],0,32);
+		}loop;
+
+	moaadjust:
+		BRFG A 1 A_WeaponReady(WRF_NOFIRE);
+		BRFG A 0{
+			if(PressingFire())invoker.weaponstatus[LIBS_DROPADJUST]++;
+			else if(PressingAltfire())invoker.weaponstatus[LIBS_DROPADJUST]--;
+			else if(!PressingZoom()&&!PressingFireMode())setweaponstate("nope");
+			invoker.weaponstatus[LIBS_DROPADJUST]=clamp(invoker.weaponstatus[LIBS_DROPADJUST],0,32);
 		}loop;
 
 
@@ -512,6 +523,7 @@ class LiberatorRifle:HDWeapon{
 	}
 	override void InitializeWepStats(bool idfa=false){
 		weaponstatus[LIBS_FLAGS]|=LIBF_GRENADELOADED;
+//		weaponstatus[LIBS_FLAGS]|=LIBF_FRONTRETICLE;
 		weaponstatus[LIBS_MAG]=30;
 		weaponstatus[LIBS_CHAMBER]=2;
 		if(!idfa && !owner){
@@ -525,8 +537,9 @@ enum liberatorstatus{
 	LIBF_JUSTUNLOAD=2,
 	LIBF_GRENADELOADED=4,
 	LIBF_NOLAUNCHER=8,
-	LIBF_GRENADEMODE=32,
-	LIBF_UNLOADONLY=64,
+	LIBF_FRONTRETICLE=32,
+	LIBF_GRENADEMODE=64,
+	LIBF_UNLOADONLY=128,
 
 	LIBS_FLAGS=0,
 	LIBS_CHAMBER=1,
@@ -535,6 +548,7 @@ enum liberatorstatus{
 	LIBS_HEAT=4,
 	LIBS_BRASS=5,
 	LIBS_AIRBURST=6,
+	LIBS_DROPADJUST=7,
 };
 
 
