@@ -233,7 +233,6 @@ class HDGrenadeToss:ActionItem{
 
 
 class HDFragGrenades:HDWeapon{
-	int tipped;
 	default{
 		+WEAPON.NO_AUTO_SWITCH +weapon.noalert +weapon.wimpy_weapon
 		weapon.selectionorder 1020;
@@ -247,15 +246,10 @@ class HDFragGrenades:HDWeapon{
 		owner.A_SelectWeapon("Ring");
 		return null;//super.createtossable(amount);
 	}
-	override void attachtoowner(actor user){
-		weapon.attachtoowner(user);
-		tipped=0;
-	}
 	states{
 	select0:
 		TNT1 A 0 A_JumpIf(!countinv("HDFragGrenadeAmmo"),"selectinstant");
 		TNT1 A 8{
-			if(invoker.tipped<3){invoker.showtip();invoker.tipped++;}
 			if(!countinv("NulledWeapon"))A_SetTics(tics+4);
 			A_TakeInventory("NulledWeapon");
 			A_TakeInventory("FragTimer");

@@ -7,6 +7,7 @@ class HDWeapon:Weapon{
 	int barrelwidth;
 	int barreldepth;
 	int weaponstatus[8];
+	int tipped;
 	const WRF_ALL=WRF_ALLOWRELOAD|WRF_ALLOWZOOM|WRF_ALLOWUSER1|WRF_ALLOWUSER2|WRF_ALLOWUSER3|WRF_ALLOWUSER4;
 	const WRF_NONE=WRF_NOFIRE|WRF_DISABLESWITCH;
 	property GunDimensions: gunmass,barrellength,barrelwidth,barreldepth;
@@ -33,11 +34,6 @@ class HDWeapon:Weapon{
 		angle=owner.angle;pitch=owner.pitch;
 		target=owner;
 		super.detachfromowner();
-	}
-	//display the tip
-	override void attachtoowner(actor user){
-		super.attachtoowner(user);
-		showtip();
 	}
 	//wrapper for HDMath.MaxInv because we're gonna need this a lot
 	action int AmmoCap(class<inventory> inv){
@@ -118,9 +114,13 @@ class HDWeapon:Weapon{
 	}
 	void ShowTip(){
 		if(
+			tipped<3&&
 			owner&&owner.player&&
 			cvar.getcvar("hd_helptext",owner.player).getint()>1
-		)owner.ACS_NamedExecuteAlways("TipMessage",0,-1,selectionorder);
+		){
+			owner.ACS_NamedExecuteAlways("TipMessage",0,-1,selectionorder);
+			tipped++;
+		}
 	}
 	//activate a laser rangefinder
 	//because every gun should have one of these
@@ -157,6 +157,7 @@ class HDWeapon:Weapon{
 		other.A_Log(string.format("\cg%s",pickupmessage()),true);
 		other.A_PlaySound(pickupsound,CHAN_AUTO);
 		attachtoowner(other);
+		tipped=0;
 	}
 	override bool cancollidewith(actor other,bool passive){
 		return(other is "userpickerupper");
@@ -189,6 +190,8 @@ class HDWeapon:Weapon{
 
 			A_SetInventory("WeaponBusy",1);
 			A_SetCrosshair(21);
+
+			invoker.ShowTip();
 
 			return resolvestate("select0");
 		}

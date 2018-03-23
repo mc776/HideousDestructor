@@ -27,7 +27,6 @@ class Ring:HDWeapon replaces Fist{
 	int targethealth;
 	int targetspawnhealth;
 	bool flicked;
-	int tipped;
 	default{
 		+WEAPON.WIMPY_WEAPON +WEAPON.MELEEWEAPON +WEAPON.NOALERT +WEAPON.NO_AUTO_SWITCH
 		+forcepain
@@ -40,10 +39,6 @@ class Ring:HDWeapon replaces Fist{
 		weapon.bobrangex 0.1;
 		weapon.bobrangey 0.5;
 		weapon.slotnumber 1;
-	}
-	override void attachtoowner(actor user){
-		weapon.attachtoowner(user);
-		tipped=0;
 	}
 	override inventory CreateTossable(int amount){
 		owner.A_GiveInventory("DropMisc");
@@ -158,10 +153,6 @@ class Ring:HDWeapon replaces Fist{
 		PUNF A 0;goto nope;
 	male:
 		PUNG A 0;goto nope;
-	select:
-		TNT1 A 0{
-			if(invoker.tipped<3){invoker.showtip();invoker.tipped++;}
-		}goto super::select;
 	ready:
 		TNT1 A 1{
 			A_WeaponReady(WRF_ALL);
