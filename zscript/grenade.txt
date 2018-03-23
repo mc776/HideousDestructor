@@ -233,6 +233,7 @@ class HDGrenadeToss:ActionItem{
 
 
 class HDFragGrenades:HDWeapon{
+	int tipped;
 	default{
 		+WEAPON.NO_AUTO_SWITCH +weapon.noalert +weapon.wimpy_weapon
 		weapon.selectionorder 1020;
@@ -240,14 +241,21 @@ class HDFragGrenades:HDWeapon{
 		weapon.bobstyle "Alpha";
 		weapon.bobspeed 2.5;weapon.bobrangex 0.1;weapon.bobrangey 0.5;
 	}
+	override inventory CreateTossable(int amount){
+		owner.A_DropInventory("HDFragGrenadeAmmo",owner.countinv("HDFragGrenadeAmmo"));
+		owner.A_GiveInventory("Ring");
+		owner.A_SelectWeapon("Ring");
+		return null;//super.createtossable(amount);
+	}
 	override void attachtoowner(actor user){
 		weapon.attachtoowner(user);
+		tipped=0;
 	}
 	states{
 	select0:
 		TNT1 A 0 A_JumpIf(!countinv("HDFragGrenadeAmmo"),"selectinstant");
 		TNT1 A 8{
-			invoker.showtip();
+			if(invoker.tipped<3){invoker.showtip();invoker.tipped++;}
 			if(!countinv("NulledWeapon"))A_SetTics(tics+4);
 			A_TakeInventory("NulledWeapon");
 			A_TakeInventory("FragTimer");
@@ -461,17 +469,8 @@ class HDFragGrenades:HDWeapon{
 		TNT1 A 0 A_Refire("nullhold");
 		goto ready;
 	spawn:
-		TNT1 A 1;
-		TNT1 A 0{
-			actor ot=invoker.target;
-			if(!ot||ot.countinv("HDFragGrenades")){
-				actor aaa=spawn("FragP",invoker.pos);
-				aaa.vel=invoker.vel;
-			}else{
-				ot.A_GiveInventory("HDFragGrenades");
-				ot.A_DropInventory("HDFragGrenadeAmmo",ot.countinv("HDFragGrenadeAmmo"));
-			}
-		}stop;
+		TNT1 A 0 nodelay A_SpawnItemEx("FragP",SXF_NOCHECKPOSITION);
+		stop;
 	}
 }
 

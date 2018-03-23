@@ -29,7 +29,6 @@ function str gettip(int rsd){
 	for(int i=0;i<rsd;i++){flp=random(0,1);}
 	while(rnd==lastrnd)rnd=random(0,24);
 	lastrnd=rnd;
-Log(i:rnd);
 	switch(rnd){
 	case 1: return "Remember to \cxBIND KEYS\cu for all
 			\n\cqweapon functions\cu and \cqweapon drop\cu!";
@@ -295,7 +294,7 @@ function str getguntip(int selectionorder){
 			s:fmd,s:"adjust airburst",
 			s:uldd
 		);
-		case 100: return ""; return strparam(
+		case 100: return strparam(
 			s:"\cxFist",
 			s:fir,s:"punch",
 			s:alt,s:"lunge",
