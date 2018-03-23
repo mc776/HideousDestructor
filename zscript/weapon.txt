@@ -191,7 +191,7 @@ class HDWeapon:Weapon{
 			A_SetInventory("WeaponBusy",1);
 			A_SetCrosshair(21);
 
-			invoker.ShowTip();
+			if(!countinv("NulledWeapon"))invoker.ShowTip();
 
 			return resolvestate("select0");
 		}
