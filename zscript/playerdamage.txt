@@ -75,7 +75,7 @@ extend class HDPlayerPawn{
 		}
 
 		//regular armour...
-		int armourlevel=armourlevel;
+		int armourlevel=(flags&DMG_NO_ARMOR||flags&DMG_FORCED)?0:armourlevel;
 
 		//bleeding
 		if(
@@ -123,8 +123,6 @@ extend class HDPlayerPawn{
 
 			if(
 				!armourlevel
-				||flags&DMG_NO_ARMOR
-				||flags&DMG_FORCED
 			){
 				towound+=max(2,damage*0.12);
 				damage*=0.7;
