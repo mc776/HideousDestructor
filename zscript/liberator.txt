@@ -240,6 +240,7 @@ class LiberatorRifle:HDWeapon{
 		BRFG A 0{
 			if(PressingFire())invoker.weaponstatus[LIBS_DROPADJUST]++;
 			else if(PressingAltfire())invoker.weaponstatus[LIBS_DROPADJUST]--;
+			else if(PressingZoom()&&!PressingFireMode())setweaponstate("zoom");
 			else if(!PressingZoom()&&!PressingFireMode())setweaponstate("nope");
 			invoker.weaponstatus[LIBS_DROPADJUST]=
 				clamp(invoker.weaponstatus[LIBS_DROPADJUST],0,60);
