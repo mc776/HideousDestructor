@@ -288,6 +288,30 @@ class HDStatusBar:DoomStatusBar{
 				(8,mxht),DI_TEXT_ALIGN_LEFT|DI_SCREEN_LEFT_BOTTOM,
 				cp.overloaded<1.2?Font.CR_OLIVE:(cp.overloaded>2?Font.CR_RED:Font.CR_GOLD)
 			);
+
+			//compass
+			hudfont pSmallFont=HUDFont.Create("SmallFont");
+			int comprad=12;vector2 compos=(-comprad,comprad)*2;
+			double compangle=cp.angle;
+			drawstring(psmallfont,"S",
+				(cos(compangle),sin(compangle))*comprad+compos,
+				DI_TEXT_ALIGN_CENTER|DI_SCREEN_RIGHT_TOP,Font.CR_BLACK
+			);
+			compangle-=90;
+			drawstring(psmallfont,"E",
+				(cos(compangle),sin(compangle))*comprad+compos,
+				DI_TEXT_ALIGN_CENTER|DI_SCREEN_RIGHT_TOP,Font.CR_GOLD
+			);
+			compangle-=90;
+			drawstring(psmallfont,"N",
+				(cos(compangle),sin(compangle))*comprad+compos,
+				DI_TEXT_ALIGN_CENTER|DI_SCREEN_RIGHT_TOP,Font.CR_WHITE
+			);
+			compangle-=90;
+			drawstring(psmallfont,"W",
+				(cos(compangle),sin(compangle))*comprad+compos,
+				DI_TEXT_ALIGN_CENTER|DI_SCREEN_RIGHT_TOP,Font.CR_RED
+			);
 		}
 
 
@@ -296,7 +320,6 @@ class HDStatusBar:DoomStatusBar{
 			"GREENPXL",(0,0),DI_SCREEN_CENTER_BOTTOM,
 			0.06,scale:(0.6,100)
 		);
-
 
 	}
 	void drawnum(
