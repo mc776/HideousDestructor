@@ -22,10 +22,14 @@ script "TipMessage"(int dly,int rsd){
 		6.0,0.6,2.0
 	);
 }
+int lastrnd=-1;
 function str gettip(int rsd){
-	int rnd=0;
-	for(int i=0;i<rsd;i++){rnd=random(0,1);}
-	rnd=random(0,24);
+	int flp=0;
+	int rnd=lastrnd;
+	for(int i=0;i<rsd;i++){flp=random(0,1);}
+	while(rnd==lastrnd)rnd=random(0,24);
+	lastrnd=rnd;
+Log(i:rnd);
 	switch(rnd){
 	case 1: return "Remember to \cxBIND KEYS\cu for all
 			\n\cqweapon functions\cu and \cqweapon drop\cu!";
