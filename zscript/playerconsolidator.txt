@@ -182,33 +182,35 @@ extend class HDPlayerPawn{
 				totalpowder/3,
 				max7+max7bp
 			);
-			totalbrass-=made;
-			totalpowder-=made*3;
+			if(made>0){
+				totalbrass-=made;
+				totalpowder-=made*3;
 
-			A_Log(string.format("Reloaded %i 7.76mm rounds during downtime.",made),true);
+				A_Log(string.format("Reloaded %i 7.76mm rounds during downtime.",made),true);
+	
+				//fill inventory first, then backpack
+				//let the player load into mags after
+				max7=min(max7,made);
+				made-=max7;
+				A_GiveInventory("SevenMilAmmo",max7);
 
-			//fill inventory first, then backpack
-			//let the player load into mags after
-			max7=min(max7,made);
-			made-=max7;
-			A_GiveInventory("SevenMilAmmo",max7);
+				//put stuff back into backpack
+				if(bp){
+					bp.itemamount[bp.sevenmilindex]+=made;
+	
+					brassinbp=min(totalbrass,brassinbp);
+					zedinbp=min(totalpowder,zedinbp);
+					totalbrass-=brassinbp;
+					totalpowder-=zedinbp;
+	
+					bp.itemamount[bp.brassindex]=brassinbp;
+					bp.itemamount[bp.loosezedindex]=zedinbp;
+				}
 
-			//put stuff back into backpack
-			if(bp){
-				bp.itemamount[bp.sevenmilindex]+=made;
-
-				brassinbp=min(totalbrass,brassinbp);
-				zedinbp=min(totalpowder,zedinbp);
-				totalbrass-=brassinbp;
-				totalpowder-=zedinbp;
-
-				bp.itemamount[bp.brassindex]=brassinbp;
-				bp.itemamount[bp.loosezedindex]=zedinbp;
+				//put stuff back into inventory
+				A_SetInventory("SevenMilBrass",totalbrass);
+				A_SetInventory("FourMilAmmo",totalpowder);
 			}
-
-			//put stuff back into inventory
-			A_SetInventory("SevenMilBrass",totalbrass);
-			A_SetInventory("FourMilAmmo",totalpowder);
 		}
 
 		//I've deleted ALL things that can be done manually by the player.

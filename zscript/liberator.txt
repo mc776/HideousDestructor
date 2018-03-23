@@ -49,7 +49,13 @@ class LiberatorRifle:HDWeapon{
 		super.postbeginplay();
 		if(owner&&owner.player){
 			if(cvar.getcvar("hd_libauto",owner.player).getint())weaponstatus[0]|=LIBF_FULLAUTO;
-			weaponstatus[LIBS_ZOOM]=clamp(cvar.getcvar("hd_libzoom",owner.player).getint(),0,32);
+			if(cvar.getcvar("hd_libfrontreticle",owner.player).getbool())
+				weaponstatus[0]|=LIBF_FRONTRETICLE;
+				else weaponstatus[0]&=~LIBF_FRONTRETICLE;
+			weaponstatus[LIBS_ZOOM]=
+				clamp(cvar.getcvar("hd_libzoom",owner.player).getint(),0,32);
+			weaponstatus[LIBS_DROPADJUST]=
+				clamp(cvar.getcvar("hd_libmoa",owner.player).getint(),0,60);
 		}
 	}
 	override void tick(){
@@ -187,6 +193,7 @@ class LiberatorRifle:HDWeapon{
 			actor p=spawn("HDBullet776",pos+(0,0,height-6));
 			p.target=self;p.angle=angle;p.pitch=pitch;
 			p.vel+=self.vel;
+			p.pitch-=(1./120.)*invoker.weaponstatus[LIBS_DROPADJUST];
 
 			A_MuzzleClimb(
 				-0.2,-0.4,
@@ -234,7 +241,8 @@ class LiberatorRifle:HDWeapon{
 			if(PressingFire())invoker.weaponstatus[LIBS_DROPADJUST]++;
 			else if(PressingAltfire())invoker.weaponstatus[LIBS_DROPADJUST]--;
 			else if(!PressingZoom()&&!PressingFireMode())setweaponstate("nope");
-			invoker.weaponstatus[LIBS_DROPADJUST]=clamp(invoker.weaponstatus[LIBS_DROPADJUST],0,32);
+			invoker.weaponstatus[LIBS_DROPADJUST]=
+				clamp(invoker.weaponstatus[LIBS_DROPADJUST],0,60);
 		}loop;
 
 
@@ -523,12 +531,13 @@ class LiberatorRifle:HDWeapon{
 	}
 	override void InitializeWepStats(bool idfa=false){
 		weaponstatus[LIBS_FLAGS]|=LIBF_GRENADELOADED;
-//		weaponstatus[LIBS_FLAGS]|=LIBF_FRONTRETICLE;
 		weaponstatus[LIBS_MAG]=30;
 		weaponstatus[LIBS_CHAMBER]=2;
 		if(!idfa && !owner){
+			if(randompick(0,0,1))weaponstatus[0]|=LIBF_FRONTRETICLE;
 			weaponstatus[LIBS_ZOOM]=0;
 			weaponstatus[LIBS_HEAT]=0;
+			weaponstatus[LIBS_DROPADJUST]=24;
 		}
 	}
 }
