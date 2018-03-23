@@ -2,24 +2,14 @@
 // Gyro-Grenades and H.E.A.T.
 // ------------------------------------------------------------
 extend class HDWeapon{
-	action void A_FireHDGL(int airburstcounter=0){
+	int airburst;
+	action void A_FireHDGL(){
 		A_PlaySound("weapons/grenadeshot",CHAN_WEAPON);
 		let ggg=gyrogrenade(spawn("GyroGrenade",pos+(0,0,height-8)));
 		ggg.angle=angle;ggg.pitch=pitch-2;ggg.target=self;ggg.master=self;
 		ggg.primed=false;
-		if(airburstcounter){
-			ggg.fuze=invoker.weaponstatus[airburstcounter];
-			invoker.weaponstatus[airburstcounter]=0;
-		}else ggg.fuze=0;
-	}
-	action void A_CheckAirburstCVar(int weaponstatnum){
-		if(player){
-			int abv=cvar.getcvar("ab",player).getint();
-			if(abv>=0){
-				invoker.weaponstatus[weaponstatnum]=max(abv,0);
-				cvar.getcvar("ab",player).setint(-1);
-			}
-		}
+		ggg.fuze=invoker.airburst;
+		invoker.airburst=0;
 	}
 }
 class GyroGrenade:SlowProjectile{

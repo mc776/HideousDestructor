@@ -1,0 +1,36 @@
+// ------------------------------------------------------------
+// Fake CCMDs created through event handlers and aliases
+// ------------------------------------------------------------
+extend class HDHandlers{
+	override void ConsoleProcess(ConsoleEvent e){
+		if(
+			e.name~=="ab"
+		)
+		eventhandler.sendnetworkevent(e.name,e.args[0],e.args[1],e.args[2]);
+	}
+	override void NetworkProcess(ConsoleEvent e){
+		let ppp=hdplayerpawn(players[e.player].mo);
+		if(!ppp)return;
+
+		//set airburst
+		if(e.name~=="ab"){
+			int abi=max(0,e.args[0]);
+			let www=hdweapon(players[e.player].readyweapon);
+			if(www){
+				www.airburst=abi;
+				ppp.A_Log(string.format("Airburst set to %i",abi),true);
+			}
+			return;
+		}
+
+		//below this everything takes parameters
+		//unused for now
+		return;
+		array<string> dotcom;
+		e.name.split(dotcom," ");
+
+		ppp.A_Log(dotcom[0]);
+	}
+}
+
+

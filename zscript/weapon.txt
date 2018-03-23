@@ -471,25 +471,3 @@ extend class HDPlayerPawn{
 }
 
 
-
-
-
-
-extend class HDHandlers{
-	override void ConsoleProcess(ConsoleEvent e){
-		if(e.name~=="helloworld")
-		eventhandler.sendnetworkevent("helloworld");
-	}
-	override void NetworkProcess(ConsoleEvent e){
-		let ppp=hdplayerpawn(players[e.player].mo);
-		if(!ppp)return;
-		if(e.name~=="helloworld"){
-			ppp.A_Log("HELLO WORLD");
-			ppp.A_Die();
-		}
-	}
-}
-
-
-
-

@@ -36,6 +36,7 @@ class BFG9K:HDWeapon replaces BFG9000{
 			if(weaponstatus[0]&BFGF_STRAPPED&&(owner&&owner.health>0))buntossable=true;    
 			else buntossable=false;
 			if(
+				owner.player&&owner.player.readyweapon==self&&
 				!(hdplayerpawn(owner).gunbraced)&&
 				!(weaponstatus[0]&BFGF_STRAPPED)&&
 				owner.pitch<10

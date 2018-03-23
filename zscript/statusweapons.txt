@@ -137,7 +137,7 @@ extend class HDStatusBar{
 			if(hdw.weaponstatus[ZM66S_MAG]>100)lod=random[shitgun](10,99);
 			drawnum(lod,-16,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_RED);
 			if(hdw.weaponstatus[0]&ZM66F_GLMODE){
-				int ab=hdw.weaponstatus[ZM66S_AIRBURST];
+				int ab=hdw.airburst;
 				drawnum(ab,
 					-30,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,
 					ab?Font.CR_WHITE:Font.CR_DARKGRAY
@@ -195,7 +195,7 @@ extend class HDStatusBar{
 				drawnum(pp.countinv("HDRocketAmmo"),-45,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
 			if(hdw.weaponstatus[0]&BLOPF_LOADED)drawwepdot(-16,-10,(5,3));
-			int ab=hdw.weaponstatus[BLOPS_AIRBURST];
+			int ab=hdw.airburst;
 			drawnum(ab,
 				-28,-15,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,
 				ab?Font.CR_WHITE:Font.CR_DARKGRAY
@@ -212,7 +212,7 @@ extend class HDStatusBar{
 				drawnum(pp.countinv("HDRocketAmmo"),-41,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 				drawnum(pp.countinv("HEATAmmo"),-54,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
-			int ab=hdw.weaponstatus[RLS_AIRBURST];
+			int ab=hdw.airburst;
 			if(
 				hdw.weaponstatus[RLS_CHAMBER]>1||
 				!(hdw.weaponstatus[0]&RLF_GRENADEMODE)
@@ -263,7 +263,7 @@ extend class HDStatusBar{
 				lod++;
 			}
 			if(hdw.weaponstatus[0]&LIBF_GRENADEMODE){
-				int ab=hdw.weaponstatus[LIBS_AIRBURST];
+				int ab=hdw.airburst;
 				drawnum(ab,
 					-30,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,
 					ab?Font.CR_WHITE:Font.CR_DARKGRAY

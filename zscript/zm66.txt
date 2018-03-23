@@ -44,7 +44,6 @@ class ZM66AssaultRifle:HDWeapon{
 	states{
 	ready:
 		RIFG A 1{
-			A_CheckAirburstCVar(ZM66S_AIRBURST);
 			if(
 				invoker.weaponstatus[ZM66S_HEAT]>HDCONST_ZM66COOKOFF    
 				&&invoker.weaponstatus[0]&ZM66F_CHAMBER
@@ -73,11 +72,11 @@ class ZM66AssaultRifle:HDWeapon{
 		RIFG A 0{
 			A_SetInventory("WeaponBusy",1);
 			if (PressingFire()||PressingAltfire()){
-				if(PressingFire())invoker.weaponstatus[ZM66S_AIRBURST]++;
-				else invoker.weaponstatus[ZM66S_AIRBURST]=
-					max(0,invoker.weaponstatus[ZM66S_AIRBURST]-1);
+				if(PressingFire())invoker.airburst++;
+				else invoker.airburst=
+					max(0,invoker.airburst-1);
 			}else if(PressingZoom()){
-				invoker.weaponstatus[ZM66S_AIRBURST]=0;
+				invoker.airburst=0;
 				setweaponstate("nope");
 			}
 			if(PressingFireMode())setweaponstate("abadjust");
@@ -430,7 +429,7 @@ class ZM66AssaultRifle:HDWeapon{
 		RIFG A 0 A_JumpIf(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_GRENADELOADED,1);
 		stop;
 		RIFG A 2{
-			A_FireHDGL(ZM66S_AIRBURST);
+			A_FireHDGL();
 			invoker.weaponstatus[ZM66S_FLAGS]&=~ZM66F_GRENADELOADED;
 			A_PlaySound("weapons/grenadeshot",CHAN_WEAPON);
 			A_ZoomFactor(0.99,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
@@ -448,7 +447,7 @@ class ZM66AssaultRifle:HDWeapon{
 		RIFG A 1 offset(0,34){
 			if(invoker.weaponstatus[0]&ZM66F_NOLAUNCHER)return;
 			invoker.weaponstatus[0]^=ZM66F_GLMODE;
-			invoker.weaponstatus[ZM66S_AIRBURST]=0;
+			invoker.airburst=0;
 			A_SetCrosshair(21);
 		}goto nope;
 	zoom:
