@@ -171,7 +171,14 @@ extend class HDHandlers{
 			){
 				if(iedcmd==999){
 					badcommand=false;
-					if(ied.bmissileevenmore)ied.setstatelabel("detonate");
+					if(
+						ied.checksight(ppp)&&
+						ied.distance3d(ppp)<512
+					){
+						ppp.A_Log("\cd[IED] \crERROR:\cj IED in range of user \crNOT\cj detonated.",true);
+					}else if(!ied.bmissileevenmore){
+						ppp.A_Log("\cd[IED] \crERROR:\cj IED booting \crNOT\cj detonated.",true);
+					}else ied.setstatelabel("detonate");
 				}
 				else if(iedcmd==1){
 					badcommand=false;
@@ -180,9 +187,7 @@ extend class HDHandlers{
 						ied.distance3d(ppp)<512
 					){
 						ppp.A_Log("\cd[IED] \crERROR:\cj IED in range of user \crNOT\cj activated.",true);
-					}else{
-						ied.bmissilemore=true;
-					}
+					}else ied.bmissilemore=true;
 				}
 				else if(iedcmd==2){
 					badcommand=false;
