@@ -518,9 +518,18 @@ GZDoom actor name: HERPBot
 In the wake of the stunning success of the D.E.R.P. project, the Brojira Robotics and Human Development Foundation soon secured a second grant from the Israeli military to build a scaled-up version for high-accuracy automated targeting in heavy urban engagements. This was met with some setbacks early on in the project when it was discovered that Brojira's CEO at the time, Dr. Branson Icke, had supported a local mayoral candidate in his hometown eight years before whose platform included "ending the politically correct war on Christmas by passing a bylaw that every mall Santa shall be a real Santa with HIS beard and HIS wife Mrs. Claus who is a woman". A great and terrible media cycle ensued and Dr. Icke, one of the chief coders and designers behind the original D.E.R.P. project, was forced to resign from all further positions with Brojira, and the H.E.R.P. project was substantially completed without his guidance and programming virtuosity. The resulting product remains functional, if a bit bloated, slow and unwieldy.
 Once deployed, the HERP will begin doing sweeps of the 90-degree view in front of its starting position. The new IFF detection system* means it can only focus on a narrow band in front of it, meaning that it will only target enemies that cross a 12-degree FOV directly in front of the sensor.
 *(which contains a few additional safeguards after numerous class action lawsuits resulting from fatalities when local American police forces were found to be deploying units in inner-city schools)
-To switch the HERP on and off while it is deployed, type "herp" in the console.
 The HERP takes up to 3 mags and 1 cell to deploy.
-Note: the HERP is bulky enough to count as its own weapon when encumbrance limits are enabled.
+The HERP is bulky enough to count as its own weapon when encumbrance limits are enabled.
+You can manipulate your HERPs from the console.
+Command format: ied <mode> <tag> <direction>
+Possible modes are:
+1 = On: scan for enemies and shoot on sight.
+2 = Off: detonate only when commanded.
+3 = Redirect: change base angle by the amount given in the direction parameter, going counterclockwise in degrees.
+123 = Query: show coordinates and status.
+-x = Set tag: where x is any whole number.
+"iedactive", "iedpassive" and "detonate" can be used in place of "ied 1", "ied 2" and "ied 999" and can all take tags.
+For more information on tags, please see the IED Kit description.
 
 IED Kit
 GZDoom actor name: HDIEDKit

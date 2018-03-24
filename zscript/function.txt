@@ -231,6 +231,19 @@ struct HDMath{
 		double l2=(newpos1-newpos2).length();
 		return l1-l2;
 	}
+	//return a string indicating a rough cardinal direction
+	static string CardinalDirection(int angle){
+		angle%=360;
+		if(angle<0)angle+=360;
+		if(angle>=22&&angle<=66)return("northeast");
+		else if(angle>=67&&angle<=113)return("north");
+		else if(angle>=114&&angle<=158)return("northwest");
+		else if(angle>=159&&angle<=203)return("west");
+		else if(angle>=204&&angle<=248)return("southwest");
+		else if(angle>=249&&angle<=292)return("south");
+		else if(angle>=293&&angle<=338)return("southeast");
+		return("east");
+	}
 }
 struct HDF play{
 	//transfer inventory: one gets, the other loses

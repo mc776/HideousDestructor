@@ -38,7 +38,7 @@ class HDIEDKit:HDPickup{
 				SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPITCH
 			);
 			HDIED(target).botid=invoker.botid;
-			A_Log(string.format("\cd[IED] \cjDeployed with tag ID %i",invoker.botid),true);
+			A_Log(string.format("\cd[IED] \cjDeployed with tag ID \cy%i",invoker.botid),true);
 			target.A_ChangeVelocity(4*cos(pitch),0,4*sin(-pitch),CVF_RELATIVE);
 		}fail;
 	}
@@ -145,7 +145,7 @@ class HDIEDKits:IdleDummy{
 extend class HDHandlers{
 	void SetIED(hdplayerpawn ppp,int iedcmd,int botcmdid){
 		let iedinv=HDIEDKit(ppp.findinventory("HDIEDKit"));
-		int botid=iedinv?iedinv.botid:0;
+		int botid=iedinv?iedinv.botid:1;
 
 		//set IED tag number with -#
 		//e.g., "ied -123" will set tag to 123

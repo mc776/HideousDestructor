@@ -1,6 +1,9 @@
 // ------------------------------------------------------------
 // H.E.R.P. Robot
 // ------------------------------------------------------------
+enum HERPConst{
+	HERP_TID=851816,
+}
 class HERPBot:HDUPK{
 	default{
 		//$Category "Monsters/Hideous Destructor"
@@ -9,6 +12,7 @@ class HERPBot:HDUPK{
 
 		+ismonster +noblockmonst +friendly +standstill +nofear
 		+shootable +ghost +noblood +dontgib
+		+missilemore //on/off
 		height 12;radius 10;mass 400;health 200;
 		damagefactor "Thermal",0.7;damagefactor "SmallArms3",0.8;
 		obituary "%o went HERP.";
@@ -22,6 +26,7 @@ class HERPBot:HDUPK{
 	int battery; //the battery, -1-20
 	double startangle;
 	bool scanright;
+	int botid;
 
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -43,7 +48,7 @@ class HERPBot:HDUPK{
 			setstatelabel("nopower");
 			return;
 		}
-		if(health<1||countinv("HERPOff",AAPTR_MASTER))return;
+		if(!bmissilemore||health<1)return;
 		if(!random(0,8192))battery--;
 		A_ClearTarget();
 
@@ -132,11 +137,7 @@ class HERPBot:HDUPK{
 			else A_AlertMonsters();
 		}
 		HERP A 0{
-			if(master && master.countinv("HERPOff")){
-				message("Shutting down.");
-				A_PlaySound("weapons/vulcandown");
-				setstatelabel("off");
-			}else if(ammo<1){
+			if(ammo<1){
 				setstatelabel("swapmag");
 			}else if(target && target.health>random(-30,30)){
 				actor a;int b;
@@ -170,7 +171,7 @@ class HERPBot:HDUPK{
 		HERP A 0{
 			if(
 				(ammo<1&&mags<1)||
-				A_JumpIfInventory("HERPOff",1,"off",AAPTR_MASTER)
+				!bmissilemore
 			)setstatelabel("off");
 		}goto idle;
 	give:
@@ -282,23 +283,9 @@ class EnemyHERP:HERPBot{
 		translation "112:120=152:159","121:127=9:12";
 	}
 }
-class HERPOff:InventoryFlag{}
-class HERPSwitch:ActionItem{
-	states{
-	use:
-		TNT1 A 0{
-			if(countinv("HERPOff")){
-				A_TakeInventory("HERPOff");
-				A_Log("\cd[HERP]\cj  Initializing...",true);
-			}else{
-				A_GiveInventory("HERPOff");
-				A_Log("\cd[HERP]\cj  Shutting down...",true);
-			}
-		}fail;
-	}
-}
 class HERPUsable:HDPickup{
 	int ammo;
+	int botid;
 	default{
 		//$Category "Items/Hideous Destructor"
 		//$Title "H.E.R.P. Robot (Pickup)"
@@ -312,6 +299,7 @@ class HERPUsable:HDPickup{
 	}
 	override void beginplay(){
 		ammo=51;
+		botid=1;
 		super.beginplay();
 	}
 	states{
@@ -340,20 +328,21 @@ class HERPUsable:HDPickup{
 				loadmags++;
 				A_TakeInventory("ZM66RifleMags",1,TIF_NOTAKEINFINITE);
 			}
-			A_TakeInventory("HerpOff");
-			A_GiveInventory("HERPSwitch");
 			actor hhh;int iii;
 			[iii,hhh]=A_SpawnItemEx("HERPBot",4,0,height-16,
 				2*cos(pitch),0,-2*sin(pitch),
 				0,SXF_NOCHECKPOSITION|SXF_TRANSFERTRANSLATION
 				|SXF_TRANSFERPOINTERS|SXF_SETMASTER
 			);
+			hhh.ChangeTid(HERP_TID);
 			hhh.vel+=vel;hhh.angle=angle;
 			let hhhh=HERPBot(hhh);
 			hhhh.startangle=angle;
 			hhhh.ammo=invoker.ammo;
 			hhhh.mags=loadmags;
 			hhhh.battery=loadcell;
+			hhhh.botid=invoker.botid;
+			A_Log(string.format("\cd[HERP] \cjDeployed with tag ID \cy%i",invoker.botid),true);
 			invoker.goawayanddie();
 		}fail;
 	spawn:
@@ -383,3 +372,99 @@ class HERPDEAD:HDPickup{
 		fail;
 	}
 }
+
+
+
+extend class HDHandlers{
+	void SetHERP(hdplayerpawn ppp,int botcmd,int botcmdid,int achange){
+		let herpinv=HERPUsable(ppp.findinventory("HERPUsable"));
+		int botid=herpinv?herpinv.botid:1;
+
+		//set HERP tag number with -#
+		if(botcmd<0){
+			herpinv.botid=-botcmd;
+			ppp.A_Log(string.format("\cd[HERP] \cjNext HERP tag set to \cy%i",-botcmd),true);
+			return;
+		}
+
+		//give actual commands
+		bool anybots=false;
+		int affected=0;
+		bool badcommand=true;
+		actoriterator it=actoriterator.create(HERP_TID,"HERPBot");
+		actor bot;
+		while(bot=it.Next()){
+			anybots=true;
+			let herp=HERPBot(bot);
+			if(
+				herp
+				&&herp.master==ppp
+				&&herp.health>0
+				&&(
+					!botcmdid||
+					botcmdid==herp.botid
+				)
+			){
+				if(botcmd==1){
+					badcommand=false;
+					if(
+						(herp.mags<1&&herp.ammo<1)
+						||herp.battery<1
+					){
+						ppp.A_Log(string.format("\cd[HERP] \crERROR:\cj HERP at [\cj%i\cu,\cj%i\cu] out of ammo or cells, \cxNOT\cj activated.",herp.pos.x,herp.pos.y),true);
+					}else{
+						affected++;
+						herp.bmissilemore=true;
+					}
+				}
+				else if(botcmd==2){
+					affected++;
+					badcommand=false;
+					herp.bmissilemore=false;
+				}
+				else if(botcmd==3){
+					if(!achange){
+						ppp.A_Log(string.format("\cd[HERP] \crERROR:\cj No angle change indicated."),true);
+					}else{
+						badcommand=false;
+						affected++;
+						int anet=(herp.startangle+achange)%360;
+						if(anet<0)anet+=360;
+						herp.startangle=anet;
+
+						ppp.A_Log(string.format("\cd[HERP] \cj HERP at [\cj%i\cu,\cj%i\cu]\cj base angle now facing %s",herp.pos.x,herp.pos.y,hdmath.cardinaldirection(anet)),true);
+					}
+				}
+				else if(botcmd==123){
+					badcommand=false;
+					ppp.A_Log(string.format("\cd[HERP] \cu [\cj%i\cu,\cj%i\cu]\cj facing %s \cy%i\cj %s",
+						herp.pos.x,herp.pos.y,
+						hdmath.cardinaldirection(herp.startangle),
+						herp.botid,
+						herp.bmissilemore?"\cxACTIVE":"\cyinactive"
+					),true);
+				}
+				else{
+					badcommand=true;
+					break;
+				}
+			}
+		}
+		if(
+			!badcommand
+			&&botcmd!=123
+		){
+			string verb="hacked";
+			if(botcmd==1)verb="\cxactivated";
+			else if(botcmd==2)verb="\cydeactivated";
+			else if(botcmd==3)verb="\curedirected";
+			ppp.A_Log(string.format(
+				"\cd[HERP] \cj%i HERP%s %s%s\cj.",affected,affected==1?"":"s",
+				botcmdid?string.format("with tag \ca%i\cj ",botcmdid):"",
+				verb
+			),true);
+		}else if(badcommand)ppp.A_Log(string.format("\cd[HERP] \cj%sCommand format:\cu ied <option> <tag number> <direction>\n\cjOptions\n 1 = ON\n 2 = OFF\n 3 = DIRECTION (counterclockwise in degrees)\n 123 = QUERY\n -n = set tag number.\n\cj  tag number on next deployment: \cy%i",anybots?"":"No HERPs currently deployed.\n",botid),true);
+	}
+}
+
+
