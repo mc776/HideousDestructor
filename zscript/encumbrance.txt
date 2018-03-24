@@ -3,68 +3,68 @@
 // ------------------------------------------------------------
 
 //a battery should be about the size of your old flip phone but significantly heavier.
-const BLOX_BATTERY=12;
-const BLOX_BATTERY_LOADED=BLOX_BATTERY*0.4;
+const ENC_BATTERY=12;
+const ENC_BATTERY_LOADED=ENC_BATTERY*0.4;
 
 //a ZM66 mag should be roughly the size of a battery.
-const BLOX_426MAG=10;
-const BLOX_426MAG_LOADED=BLOX_426MAG*0.4;
+const ENC_426MAG=10;
+const ENC_426MAG_LOADED=ENC_426MAG*0.4;
 //50 single rounds should inconvenience you far more than a single mag.
-const BLOX_426=BLOX_426MAG*0.03;
-const BLOX_426_LOADED=BLOX_426*0.3;
+const ENC_426=ENC_426MAG*0.03;
+const ENC_426_LOADED=ENC_426*0.3;
 
-const BLOX_776MAG=27;
-const BLOX_776MAG_LOADED=BLOX_776MAG*0.5;
+const ENC_776MAG=27;
+const ENC_776MAG_LOADED=ENC_776MAG*0.5;
 //cased rounds are easier to keep in your pocket and fit where a mag will not.
-const BLOX_776=BLOX_776MAG*0.035;
-const BLOX_776B=BLOX_776*0.6;
-const BLOX_776_LOADED=BLOX_776*0.3;
+const ENC_776=ENC_776MAG*0.035;
+const ENC_776B=ENC_776*0.6;
+const ENC_776_LOADED=ENC_776*0.3;
 //clips take up more space than 10 assorted rounds.
-const BLOX_776CLIP=BLOX_776*12;
+const ENC_776CLIP=ENC_776*12;
 
-const BLOX_9MAG=9;
+const ENC_9MAG=9;
 //it's almost entirely inside the handle!
-const BLOX_9MAG_LOADED=BLOX_9MAG*0.2;
-const BLOX_9MAG30=23;
+const ENC_9MAG_LOADED=ENC_9MAG*0.2;
+const ENC_9MAG30=23;
 //the opposite of that...
-const BLOX_9MAG30_LOADED=BLOX_9MAG30*0.6;
-const BLOX_9=BLOX_9MAG*0.07;
-const BLOX_9_LOADED=BLOX_9*0.3;
+const ENC_9MAG30_LOADED=ENC_9MAG30*0.6;
+const ENC_9=ENC_9MAG*0.07;
+const ENC_9_LOADED=ENC_9*0.3;
 
 //other things
-const BLOX_SHELL=1;
-const BLOX_SHELLLOADED=0.3;
-const BLOX_ROCKET=BLOX_426MAG;
-const BLOX_ROCKETLOADED=BLOX_ROCKET*0.5;
-const BLOX_HEATROCKET=BLOX_ROCKET*1.2;
-const BLOX_HEATROCKETLOADED=BLOX_ROCKETLOADED;
-const BLOX_BRONTOSHELL=BLOX_426MAG*0.4;
-const BLOX_BRONTOSHELLLOADED=BLOX_BRONTOSHELL*0.4;
-const BLOX_FRAG=BLOX_ROCKET*1.2;
+const ENC_SHELL=1;
+const ENC_SHELLLOADED=0.3;
+const ENC_ROCKET=ENC_426MAG;
+const ENC_ROCKETLOADED=ENC_ROCKET*0.5;
+const ENC_HEATROCKET=ENC_ROCKET*1.2;
+const ENC_HEATROCKETLOADED=ENC_ROCKETLOADED;
+const ENC_BRONTOSHELL=ENC_426MAG*0.4;
+const ENC_BRONTOSHELLLOADED=ENC_BRONTOSHELL*0.4;
+const ENC_FRAG=ENC_ROCKET*1.2;
 
 //more things
-const BLOX_BLUEARMOUR=200;
-const BLOX_GREENARMOUR=80;
-const BLOX_RADSUIT=50;
-const BLOX_IEDKIT=3;
-const BLOX_STIMPACK=5;
-const BLOX_SQUADSUMMONER=7;
-const BLOX_BLUEPOTION=10;
-const BLOX_LITEAMP=20;
-const BLOX_MEDIKIT=45;
-const BLOX_LADDER=70;
-const BLOX_DERP=45;
-const BLOX_HERP=125;
+const ENC_BLUEARMOUR=200;
+const ENC_GREENARMOUR=80;
+const ENC_RADSUIT=50;
+const ENC_IEDKIT=3;
+const ENC_STIMPACK=5;
+const ENC_SQUADSUMMONER=7;
+const ENC_BLUEPOTION=10;
+const ENC_LITEAMP=20;
+const ENC_MEDIKIT=45;
+const ENC_LADDER=70;
+const ENC_DERP=45;
+const ENC_HERP=125;
 
 
 extend class HDPlayerPawn{
-	double blox;
+	double enc;
 	double CheckEncumbrance(){
-		blox=0;
+		enc=0;
 
 		//backpack
 		let hdbp=HDBP(findinventory("HDBP"));
-		if(hdbp)blox+=max(100,(hdbp.bulk)*0.4);
+		if(hdbp)enc+=max(100,(hdbp.bulk)*0.62);
 
 		if(
 			deathmatch||hd_carrylimit||skill>=5
@@ -77,137 +77,135 @@ extend class HDPlayerPawn{
 					int blx=0;
 					if(hdw is "Lumberjack"){
 						blx+=100;
-						if(hdw.weaponstatus[CSAWS_BATTERY]>=0)blx+=BLOX_BATTERY_LOADED;
+						if(hdw.weaponstatus[CSAWS_BATTERY]>=0)blx+=ENC_BATTERY_LOADED;
 					}else if(hdw is "HDPistol"){
-						blx+=30+hdw.weaponstatus[PISS_MAG]*BLOX_9MAG_LOADED;
+						blx+=30+hdw.weaponstatus[PISS_MAG]*ENC_9MAG_LOADED;
 					}else if(hdw is "HDSMG"){
 						int mg=hdw.weaponstatus[SMGS_MAG];
-						if(mg<0)blx+=120-BLOX_9MAG30_LOADED;
-						else blx+=120+mg*BLOX_9_LOADED;
+						if(mg<0)blx+=120-ENC_9MAG30_LOADED;
+						else blx+=120+mg*ENC_9_LOADED;
 					}else if(hdw is "Hunter"){
 						int bluh=hdw.weaponstatus[HUNTS_TUBE];
 						if(bluh>4)bluh+=(bluh-4)*2;
 						bluh+=bluh+hdw.weaponstatus[HUNTS_SIDESADDLE];
-						blx+=125+bluh*BLOX_SHELLLOADED;
+						blx+=125+bluh*ENC_SHELLLOADED;
 					}else if(hdw is "Slayer"){
-						blx+=100+hdw.weaponstatus[SLAYS_SIDESADDLE]*BLOX_SHELLLOADED;
+						blx+=100+hdw.weaponstatus[SLAYS_SIDESADDLE]*ENC_SHELLLOADED;
 					}else if(hdw is "ZM66AssaultRifle"){
 						if(!(hdw.weaponstatus[0]&ZM66F_NOLAUNCHER)){
 							blx+=125;
 							if(
 								hdw.weaponstatus[0]&ZM66F_GRENADELOADED
-							)blx+=BLOX_ROCKETLOADED;
+							)blx+=ENC_ROCKETLOADED;
 						}else blx+=100;
-						blx+=hdw.weaponstatus[ZM66S_MAG]*BLOX_426_LOADED;
+						blx+=hdw.weaponstatus[ZM66S_MAG]*ENC_426_LOADED;
 					}else if(hdw is "Vulcanette"){
 						blx+=225;
-						if(hdw.weaponstatus[VULCS_BATTERY]>=0)blx+=BLOX_BATTERY_LOADED;
+						if(hdw.weaponstatus[VULCS_BATTERY]>=0)blx+=ENC_BATTERY_LOADED;
 						let vvv=vulcanette(hdw);
 						for(int i=0;i<5;i++){
 							if(vvv.vulcmag[i]>=0)
-								blx+=BLOX_426MAG_LOADED*min(10,vvv.vulcmag[i]);
+								blx+=ENC_426MAG_LOADED*min(10,vvv.vulcmag[i]);
 						}
 					}else if(hdw is "Blooper"){
 						blx+=75;
-						if(hdw.weaponstatus[0]&BLOPF_LOADED)blx+=BLOX_ROCKETLOADED;
+						if(hdw.weaponstatus[0]&BLOPF_LOADED)blx+=ENC_ROCKETLOADED;
 					}else if(hdw is "HDRL"){
-						blx+=175+hdw.weaponstatus[RLS_MAG]*BLOX_ROCKETLOADED;
+						blx+=175+hdw.weaponstatus[RLS_MAG]*ENC_ROCKETLOADED;
 						int chmb=hdw.weaponstatus[RLS_CHAMBER];
-						if(chmb>1)blx+=BLOX_HEATROCKETLOADED;
-						else if(chmb==1)blx+=BLOX_ROCKETLOADED;
+						if(chmb>1)blx+=ENC_HEATROCKETLOADED;
+						else if(chmb==1)blx+=ENC_ROCKETLOADED;
 					}else if(hdw is "LiberatorRifle"){
 						if(!(hdw.weaponstatus[0]&LIBF_NOLAUNCHER)){
 							blx+=150;
 							if(
 								hdw.weaponstatus[0]&LIBF_GRENADELOADED
-							)blx+=BLOX_ROCKETLOADED;
+							)blx+=ENC_ROCKETLOADED;
 						}else blx+=125;
-						blx+=hdw.weaponstatus[LIBS_MAG]*BLOX_776_LOADED;
+						blx+=hdw.weaponstatus[LIBS_MAG]*ENC_776_LOADED;
 					}else if(hdw is "ThunderBuster"){
 						blx+=175;
-						if(hdw.weaponstatus[1]>=0)blx+=BLOX_BATTERY_LOADED;
+						if(hdw.weaponstatus[1]>=0)blx+=ENC_BATTERY_LOADED;
 					}else if(hdw is "Brontornis"){
 						blx+=75+(
 							hdw.weaponstatus[BRONS_CHAMBER]>1?
-							BLOX_BRONTOSHELLLOADED:0
+							ENC_BRONTOSHELLLOADED:0
 						);
 					}else if(hdw is "BFG9k"){
 						if(hdw.weaponstatus[0]&BFGF_STRAPPED)blx+=200;
 						else blx+=240;
-						if(hdw.weaponstatus[BFGS_BATTERY]>=0)blx+=BLOX_BATTERY_LOADED;
+						if(hdw.weaponstatus[BFGS_BATTERY]>=0)blx+=ENC_BATTERY_LOADED;
 					}else if(hdw is "BossRifle"){
-						blx+=144+hdw.weaponstatus[BOSSS_MAG]*BLOX_776_LOADED;
+						blx+=144+hdw.weaponstatus[BOSSS_MAG]*ENC_776_LOADED;
 					}
 					if(
 						hdw==lastweapon||
 						hdw==player.readyweapon
-					)blox+=blx*0.6;
-					else blox+=blx;
+					)enc+=blx*0.6;
+					else enc+=blx;
 				}
 			}
 
 			//because herps are special
 			let herp=HERPUsable(findinventory("HERPUsable"));
-			if(herp)blox+=BLOX_HERP+herp.ammo<0?0:BLOX_426MAG*0.4;
-			else blox+=countinv("HERPDEAD")*BLOX_HERP;
-	
-			//let's make the derp special too
-			if(countinv("DERPUsable")||countinv("DERPDEAD"))
-				blox+=BLOX_DERP;
+			if(herp)enc+=ENC_HERP+herp.ammo<0?0:ENC_426MAG*0.4;
+			enc+=countinv("HERPDEAD")*ENC_HERP;
 
 			//mag manager
 			let hdmm=MagManager(findinventory("MagManager"));
-			if(hdmm)blox+=
-				(hdmm.weaponstatus[HDMMS_PIST]+hdmm.weaponstatus[HDMMS_SMG])*BLOX_9+
-				(hdmm.weaponstatus[HDMMS_LIB]+hdmm.weaponstatus[HDMMS_BOSS])*BLOX_776;
+			if(hdmm)enc+=
+				(hdmm.weaponstatus[HDMMS_PIST]+hdmm.weaponstatus[HDMMS_SMG])*ENC_9+
+				(hdmm.weaponstatus[HDMMS_LIB]+hdmm.weaponstatus[HDMMS_BOSS])*ENC_776;
 
 
 			//and now for stuff that should just be listed
-			blox+=
+			enc+=
 	
 			//second pistol
 			(
 				countinv("HDSecondPistol")?30
 				+HDSecondPistol(
 					findinventory("HDSecondPistol")
-				).weaponstatus[PISS_MAG]*BLOX_9MAG_LOADED:0)
+				).weaponstatus[PISS_MAG]*ENC_9MAG_LOADED:0)
 
 			//armour
-			+countinv("PortableRadsuit")*BLOX_RADSUIT
+			+countinv("PortableRadsuit")*ENC_RADSUIT
 			+(countinv("HDArmour")?(
 				findinventory("HDArmour").meleethreshold==3?200:80
 			):0)
 
 			//usables
-			+countinv("HDIEDKit")*BLOX_IEDKIT
-			+(countinv("PortableStimpack")+countinv("PortableBerserkPack"))*BLOX_STIMPACK
-			+countinv("SquadSummoner")*BLOX_SQUADSUMMONER
-			+countinv("BluePotion")*BLOX_BLUEPOTION
-			+countinv("PortableLiteAmp")*BLOX_LITEAMP
-			+countinv("PortableMedikit")*BLOX_MEDIKIT
-			+countinv("PortableLadder")*BLOX_LADDER
+			+countinv("HDIEDKit")*ENC_IEDKIT
+			+(countinv("PortableStimpack")+countinv("PortableBerserkPack"))*ENC_STIMPACK
+			+countinv("SquadSummoner")*ENC_SQUADSUMMONER
+			+countinv("BluePotion")*ENC_BLUEPOTION
+			+countinv("PortableLiteAmp")*ENC_LITEAMP
+			+countinv("PortableMedikit")*ENC_MEDIKIT
+			+countinv("PortableLadder")*ENC_LADDER
+			+countinv("DERPUsable")*ENC_DERP
+			+countinv("DERPDEAD")*ENC_DERP
 	
 			//loose/magged ambiguous ammo
-			+countinv("HDPistolAmmo")*BLOX_9
-			+countinv("SevenMilAmmo")*BLOX_776
-			+countinv("SevenMilBrass")*BLOX_776B
-			+countinv("FourMilAmmo")*BLOX_426
-			+countinv("HDCellAmmo")*BLOX_BATTERY*0.3
+			+countinv("HDPistolAmmo")*ENC_9
+			+countinv("SevenMilAmmo")*ENC_776
+			+countinv("SevenMilBrass")*ENC_776B
+			+countinv("FourMilAmmo")*ENC_426
+			+countinv("HDCellAmmo")*ENC_BATTERY*0.3
 	
 			//single loose ammo
-			+countinv("HDShellAmmo")*BLOX_SHELL
-			+countinv("BrontornisRound")*BLOX_BRONTOSHELL
-			+countinv("HDFragGrenadeAmmo")*BLOX_FRAG
-			+(countinv("HDRocketAmmo")+countinv("DudRocketAmmo"))*BLOX_ROCKET
-			+countinv("HEATAmmo")*BLOX_HEATROCKET
+			+countinv("HDShellAmmo")*ENC_SHELL
+			+countinv("BrontornisRound")*ENC_BRONTOSHELL
+			+countinv("HDFragGrenadeAmmo")*ENC_FRAG
+			+(countinv("HDRocketAmmo")+countinv("DudRocketAmmo"))*ENC_ROCKET
+			+countinv("HEATAmmo")*ENC_HEATROCKET
 	
 			//full mags
-			+countinv("HDPistolMag")*BLOX_9MAG
-			+countinv("BossClip")*BLOX_776CLIP
-			+countinv("ZM66RifleMags")*BLOX_426MAG
-			+(countinv("HDCellPacks")+countinv("HDCellPackEmpty"))*BLOX_BATTERY
-			+countinv("HDSMGMag")*BLOX_9MAG30
-			+countinv("LiberatorMag")*BLOX_776MAG
+			+countinv("HDPistolMag")*ENC_9MAG
+			+countinv("BossClip")*ENC_776CLIP
+			+countinv("ZM66RifleMags")*ENC_426MAG
+			+(countinv("HDCellPacks")+countinv("HDCellPackEmpty"))*ENC_BATTERY
+			+countinv("HDSMGMag")*ENC_9MAG30
+			+countinv("LiberatorMag")*ENC_776MAG
 			;
 	
 		}
@@ -218,7 +216,7 @@ extend class HDPlayerPawn{
 			min(regenblues,150)+
 			stimcount*2
 		;
-		return blox/carrymax;
+		return enc/carrymax;
 	}
 }
 
