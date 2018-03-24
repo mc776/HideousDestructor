@@ -1,6 +1,9 @@
 // ------------------------------------------------------------
 // D.E.R.P. Robot
 // ------------------------------------------------------------
+enum DerpConst{
+	DERP_TID=451816,
+}
 class DERPBot:HDUPK{
 	int cmd;
 	int ammo;
@@ -54,6 +57,7 @@ class DERPBot:HDUPK{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
+		ChangeTid(DERP_TID);
 		if(!playerpawn(master)){
 			ammo=15;
 			cmd=random(0,3);
@@ -223,9 +227,9 @@ class DERPBot:HDUPK{
 	chasemaster:
 		DERP A 4{
 			if(distance3d(master)<40){
-				A_FaceMaster(30,0);
+				angle=-angle;A_FaceMaster(30,0);angle=-angle;
 				A_PlaySound("derp/crawl",CHAN_BODY);
-				A_Recoil(-0.4);
+				A_Recoil(0.4);
 			}else A_SetTics(20);
 		}loop;
 	}
