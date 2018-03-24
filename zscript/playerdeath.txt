@@ -24,7 +24,6 @@ extend class HDPlayerPawn{
 	override void DeathThink(){
 		if(
 			deathcounter<144
-			&&lastthingthatwoundedyou!=self
 			&&player
 		){
 			player.cmd.buttons&=~BT_USE;
@@ -33,8 +32,16 @@ extend class HDPlayerPawn{
 		super.DeathThink();
 	}
 	override void Die(actor source,actor inflictor,int dmgflags=0){
-		lastthingthatwoundedyou=source;
-		deathcounter=1;
+
+		//forced delay for respawn to clear all persistent damagers
+		//exemption made for suicide
+		if(
+			(source==self&&health<-50000)
+			||(
+				!multiplayer&&!level.allowrespawn&&skill<5
+			)
+		)deathcounter=144;
+		else deathcounter=1;
 
 		if(player&&player.readyweapon&&deathmatch&&!sv_weapondrop&&!barehanded)
 			A_DropInventory(player.readyweapon.getclassname());
