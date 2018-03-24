@@ -524,9 +524,17 @@ IED Kit
 GZDoom actor name: HDIEDKit
 The OpenTerror Working Group's brief lifespan included what turned out to be an ingenious adaptation of the Heckler & Mok Short-Range Reduced-Arc Hybrid Rocket Grenade for securing a building against certain passing threats. The open-source schematics have allowed numerous aftermarket companies to develop the Simple Idiotproof Improvised Explosive Device Kit for various military, police and private security contracts long after the original inventors were captured, tortured and their remains presumably disposed of in an undisclosed location by various government and other* agencies. (*A lawsuit against Heckler & Mok by the families was dismissed with costs after an eighteen-day motion was heard. The families settled for an undisclosed amount and were never heard from again.)
 To activate the IED, make sure you have at least one IED kit and one live or dud rocket. (You can pick duds up from any botched grenade launch assuming they don't spontaneously detonate on you first.) The IED takes 5 seconds to come online, during which you may decide to flee. They will generally not target friendlies. An IED may be picked up and its components reused; the disarming process, however, ruins the rocket grenade such that it can no longer be launched and is only good for planting another IED.
-To set IED passive or active mode, type "iedpassive" and "iedactive" in the console. This message applies to all IEDs that you have set.
-To detonate all your outstanding IEDs, type "detonate" in the console. This message is ignored by IEDs that are still booting up, so you may need to wait a moment (or time your deployments and detonations carefully).
-These are all just shortcuts for the "ied" command: "ied p" sets passive, "ied a" sets active, "ied detonate" detonates (you have to spell the last one out).
+You can manipulate your IEDs from the console.
+Command format: ied <mode> <tag>
+Possible modes are:
+1 = Active: detonate once an enemy is in range.
+2 = Passive: detonate only when commanded.
+999 = Detonate: detonate immediately.
+123 = Query: show coordinates and status.
+-x = Set tag: where x is any whole number.
+"iedactive", "iedpassive" and "detonate" can be used in place of "ied 1", "ied 2" and "ied 999" and can all take tags.
+Tags help you sort IEDs into groups. The tag number appears in cyan in your inventory selection: that is the tag of any IED you deploy next. If you set Active, Passive, Detonate or Query and specify a tag, only those deployed IEDs of yours that have that specific tag will be affected.
+Example: I type "ied -2" and plant an IED by the door, then type "ied -3" and plant another IED down the hall, then run for cover and type "ied 2" to set all the IEDs to passive. The door opens and some monsters come through the door, and as they pass the door IED I type "ied 999 2". The door IED blasts a bunch of them, and the survivors continue down the hall. They reach the second IED, I type "ied 999 3" (or "ied 999" since I don't have anything else deployed anyway) and that IED blows up those survivors.
 
 Relic of the Ancients
 GZDoom actor name: SquadSummoner

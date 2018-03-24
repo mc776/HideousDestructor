@@ -370,6 +370,13 @@ class HDStatusBar:DoomStatusBar{
 				flags|DI_ITEM_CENTER_BOTTOM
 				|(ivs is "HDArmour"?0:DI_TRANSLATABLE)
 			);
+			if(ivs is "HDIEDKit"){
+				let ied=HDIEDKit(ivs);
+				if(ied)drawstring(
+					mAmountFont,FormatNumber(ied.botid),
+					(numposx,numposy-7),flags|DI_TEXT_ALIGN_RIGHT,Font.CR_SAPPHIRE
+				);
+			}
 			if(ivs is "PortableLiteAmp"){
 				let pla=PortableLiteAmp(ivs);
 				if(pla)drawstring(
