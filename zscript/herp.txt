@@ -48,7 +48,15 @@ class HERPBot:HDUPK{
 			setstatelabel("nopower");
 			return;
 		}
-		if(!bmissilemore||health<1)return;
+		if(health<1){
+			A_Die();
+			setstatelabel("death");
+			return;
+		}
+		if(!bmissilemore){
+			setstatelabel("off");
+			return;
+		}
 		if(!random(0,8192))battery--;
 		A_ClearTarget();
 
@@ -167,11 +175,21 @@ class HERPBot:HDUPK{
 	nopower:
 		HERP A -1;
 	off:
-		HERP A 10;
+		HERP A 10{
+			if(health>0){
+				double turn=clamp(deltaangle(angle,startangle),-24,24);
+				if(turn){
+					A_PlaySound("derp/crawl",CHAN_BODY,0.6);
+					angle+=turn;
+					A_SetTics(5);
+				}
+			}
+		}
 		HERP A 0{
 			if(
-				(ammo<1&&mags<1)||
 				!bmissilemore
+				||absangle(angle,startangle)>12
+				||(ammo<1&&mags<1)
 			)setstatelabel("off");
 		}goto idle;
 	give:
@@ -382,6 +400,7 @@ extend class HDHandlers{
 
 		//set HERP tag number with -#
 		if(botcmd<0){
+			if(!herpinv)return;
 			herpinv.botid=-botcmd;
 			ppp.A_Log(string.format("\cd[HERP] \cjNext HERP tag set to \cy%i",-botcmd),true);
 			return;
@@ -431,6 +450,7 @@ extend class HDHandlers{
 						int anet=(herp.startangle+achange)%360;
 						if(anet<0)anet+=360;
 						herp.startangle=anet;
+						herp.setstatelabel("off");
 
 						ppp.A_Log(string.format("\cd[HERP] \cj HERP at [\cj%i\cu,\cj%i\cu]\cj base angle now facing %s",herp.pos.x,herp.pos.y,hdmath.cardinaldirection(anet)),true);
 					}

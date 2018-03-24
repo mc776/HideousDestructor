@@ -150,6 +150,7 @@ extend class HDHandlers{
 		//set IED tag number with -#
 		//e.g., "ied -123" will set tag to 123
 		if(iedcmd<0){
+			if(!iedinv)return;
 			iedinv.botid=-iedcmd;
 			ppp.A_Log(string.format("\cd[IED] \cjNext IED tag set to \cy%i",-iedcmd),true);
 			return;
