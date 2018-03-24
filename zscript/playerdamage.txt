@@ -338,8 +338,9 @@ extend class HDPlayerPawn{
 			));
 		}
 
+
 		//finally call the real one but ignore all armour
-		return super.DamageMobj(
+		int finaldmg=super.DamageMobj(
 			inflictor,
 			source,
 			damage,
@@ -347,6 +348,15 @@ extend class HDPlayerPawn{
 			flags|DMG_NO_ARMOR,
 			angle
 		);
+
+		//transfer pointers to corpse
+		if(deathcounter&&inflictor&&!inflictor.bismonster&&playercorpse){
+			if(inflictor.tracer==self)inflictor.tracer=playercorpse;
+			if(inflictor.target==self)inflictor.target=playercorpse;
+			if(inflictor.master==self)inflictor.master=playercorpse;
+		}
+
+		return finaldmg;
 	}
 	states{
 	pain:

@@ -123,3 +123,52 @@ class dimp:doomimp{
 	}
 }
 
+
+
+class squimp:doomimp{}
+class squirtball:doomimpball replaces doomimpball{
+	double initangleto;
+	double inittangle;
+	double inittz;
+	default{+hittracer}
+	states{
+	death:
+		TNT1 A 0{
+
+			A_Scream();
+			if(tracer){
+				initangleto=angleto(tracer);
+				inittangle=tracer.angle;
+				inittz=tracer.pos.z;
+			}
+		}
+		TNT1 AAAAAAAAAAAA 2{
+			if(!tracer)return;
+			int diff=max(
+				absangle(initangleto,angleto(tracer)),
+				absangle(inittangle,tracer.angle),
+				abs(inittz-tracer.pos.z)*0.05
+			);
+			int dmg=max(0,10-diff/10);
+			if(!tracer.player)tracer.angle+=randompick(-10,10);
+
+			//do it again
+			initangleto=angleto(tracer);
+			inittangle=tracer.angle;
+			inittz=tracer.pos.z;
+
+			tracer.damagemobj(self,target,dmg,"Thermal");
+		}
+		stop;
+	}
+}
+
+
+
+
+
+
+
+
+
+

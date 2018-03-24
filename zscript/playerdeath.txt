@@ -20,16 +20,33 @@ extend class HDPlayerPawn{
 		---- A 20 A_CheckPlayerDone();
 		wait;
 	}
+	int deathcounter;
+	override void DeathThink(){
+		if(
+			deathcounter<144
+			&&lastthingthatwoundedyou!=self
+			&&player
+		){
+			player.cmd.buttons&=~BT_USE;
+			deathcounter++;
+		}
+		super.DeathThink();
+	}
 	override void Die(actor source,actor inflictor,int dmgflags=0){
+		lastthingthatwoundedyou=source;
+		deathcounter=1;
+
 		if(player&&player.readyweapon&&deathmatch&&!sv_weapondrop&&!barehanded)
-				A_DropInventory(player.readyweapon.getclassname());
+			A_DropInventory(player.readyweapon.getclassname());
 		if(player.attacker is "HDFire")player.attacker=player.attacker.master;
+
 		playercorpse=spawn("HDPlayerCorpse",pos);
 		playercorpse.vel=vel;playercorpse.master=self;
 		if(height<40)playercorpse.sprite=GetSpriteIndex("PLYCA0");
 			else playercorpse.sprite=GetSpriteIndex("PLAYA0");
 		playercorpse.translation=translation;
 		playercorpse.A_SetSize(12,52);
+
 		if(-health>gibhealth||aggravateddamage>40) playercorpse.A_Die("extreme");
 		else{
 			playercorpse.A_Die();
@@ -81,11 +98,6 @@ extend class HDHandlers{
 		let eee=PlayerPawn(players[e.playernumber].mo);
 		if(!eee)return;
 		let hde=HDPlayerPawn(eee);
-
-		//transfer fires to corpse
-		actor pc=null;
-		if(hde)pc=hde.playercorpse;
-		HDF.TransferFire(players[e.playernumber].mo,pc);
 
 		if(fraglimit && !deathmatch){
 			coopdeaths++;
@@ -229,6 +241,7 @@ class HDPlayerCorpse:HDActor{
 		}
 		#### PQRSTUV 5;
 		---- A 0{
+			bnotargetswitch=false;
 			A_SpawnItemEx("ReallyDeadRifleman",flags:
 				SXF_NOCHECKPOSITION|
 				SXF_TRANSFERPOINTERS|
