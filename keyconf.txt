@@ -47,7 +47,7 @@ alias hd_clearscv "hd_forcepistolstart 0;hd_nobots 0;hd_carrylimit 0;hd_penetrat
 
 alias hd_clearucv "hd_helptext 2;hd_noscope 0;hd_hudsprite 0;hd_autostrip 0;echo Hideous Destructor User CVars reset"
 
-alias hd_clearwepcv "hd_derpmode 0;hd_smgfiremode 0;hd_huntauto 0;hd_zmfiremode 0;hd_zmzoom 2;hd_vulcsuper 0;hd_vulczoom 0;hd_rlmode 1;hd_rlzoom 1;hd_libauto 0;hd_libzoom 2;hd_libmoa 30;hd_libfrontreticle false;hd_tbmode 0;hd_brontozoom 0;hd_bossmoa 27;hd_bosszoom 3;hd_bossfrontreticle false;echo Hideous Destructor Weapon CVars reset"
+alias hd_clearwepcv "hd_derpmode 0;hd_smgfiremode 0;hd_huntauto 0;hd_zmfiremode 0;hd_zmzoom 2;hd_vulcsuper 0;hd_vulczoom 0;hd_rlmode 1;hd_rlzoom 1;hd_libauto 0;hd_libzoom 2;hd_libmoa 30;hd_libfrontreticle false;hd_libaltreticle false;hd_tbmode 0;hd_brontozoom 0;hd_bossmoa 27;hd_bosszoom 3;hd_bossfrontreticle false;echo Hideous Destructor Weapon CVars reset"
 
 //PROTIP: copypaste from cvarinfo and string replace "user int " with blank, = with space
 alias hd_resetbackpack "echo Hideous Destructor custom backpack reset;hd_loadbp0 0;hd_loadbp1 0;hd_loadbp2 0;hd_loadbp3 0;hd_loadbp4 0;hd_loadbp5 0;hd_loadbp6 0;hd_loadbp7 0;hd_loadbp8 0;hd_loadbp9 0;hd_loadbp10 0;hd_loadbp11 0;hd_loadbp12 0;hd_loadbp13 0;hd_loadbp14 0;hd_loadbp15 0;hd_loadbp16 0;hd_loadbp17 0;hd_loadbp18 0;hd_loadbp19 0;hd_loadbp20 0;hd_loadbp21 0;hd_loadbp22 0;hd_loadbp23 0;hd_loadbp24 0;hd_loadbp25 0;hd_loadbp26 0;hd_loadbp27 0;hd_loadbp28 0;hd_loadbp29 0;hd_loadbp30 0;hd_loadbp31 0;hd_loadbp32 0;hd_loadbp33 0;hd_loadbp34 0;hd_loadbp35 0;hd_loadbp36 0;hd_loadbp37 0;"
@@ -62,6 +62,17 @@ alias hd_babymode "test $hd_nobleed hd_bm0 hd_bm1"
 
 alias ab "netevent ab %1";
 
+alias ied "netevent ied %1 %2";
+alias detonate "netevent ied 999 %1";
+alias iedactive "netevent ied 1 %1";
+alias iedpassive "netevent ied 2 %1";
+alias iedtag "netevent iedtag %1";
+
+alias herp "netevent herp %1 %2 %3";
+alias herptag "netevent herptag %1";
+alias herpdir "netevent herpdir %1 %2";
+
+
 alias derp "use DERPterm";
 alias derpat "use DERPATTog";
 alias derpt "use DERPtermTURRET";
@@ -73,16 +84,6 @@ alias dt "derpt";
 alias dtz "derptz";
 alias dp "derpp";
 alias dpz "derppz";
-
-alias ied "netevent ied %1 %2";
-alias detonate "netevent ied 999 %1";
-alias iedactive "netevent ied 1 %1";
-alias iedpassive "netevent ied 2 %1";
-alias iedtag "netevent iedtag %1";
-
-alias herp "netevent herp %1 %2 %3";
-alias herptag "netevent herptag %1";
-alias herpdir "netevent herpdir %1 %2";
 
 
 

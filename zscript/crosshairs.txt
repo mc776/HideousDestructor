@@ -152,8 +152,10 @@ extend class HDStatusBar{
 				);
 				if(scopeview){
 					double degree;
+					string reticle=
+						wp.weaponstatus[0]&LIBF_ALTRETICLE?"reticle2":"reticle1";
 					if(wp.weaponstatus[0]&LIBF_FRONTRETICLE){
-						degree=4.-0.05*wp.weaponstatus[LIBS_ZOOM];
+						degree=4.-0.06*wp.weaponstatus[LIBS_ZOOM];
 						texman.setcameratotexture(hpc,"HDXHCAM3",degree);
 						drawimage(
 							"HDXHCAM3",(0,60),DI_SCREEN_CENTER|DI_ITEM_CENTER,
@@ -164,7 +166,7 @@ extend class HDStatusBar{
 						SetClipRect(276,204,88,88);
 						double deg=1/degree;
 						drawimage(
-							"reticle1",(0,60),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+							reticle,(0,60),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 							scale:(2.,2.)*deg
 						);
 						screen.SetClipRect(cx,cy,cw,ch);
@@ -179,7 +181,7 @@ extend class HDStatusBar{
 						[cx,cy,cw,ch]=screen.GetClipRect();
 						SetClipRect(276,204,88,88);
 						drawimage(
-							"reticle1",(0,60),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+							reticle,(0,60),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 							scale:(0.52,0.52)
 						);
 						screen.SetClipRect(cx,cy,cw,ch);

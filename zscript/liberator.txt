@@ -52,6 +52,9 @@ class LiberatorRifle:HDWeapon{
 			if(cvar.getcvar("hd_libfrontreticle",owner.player).getbool())
 				weaponstatus[0]|=LIBF_FRONTRETICLE;
 				else weaponstatus[0]&=~LIBF_FRONTRETICLE;
+			if(cvar.getcvar("hd_libaltreticle",owner.player).getbool())
+				weaponstatus[0]|=LIBF_ALTRETICLE;
+				else weaponstatus[0]&=~LIBF_ALTRETICLE;
 			weaponstatus[LIBS_ZOOM]=
 				clamp(cvar.getcvar("hd_libzoom",owner.player).getint(),0,32);
 			weaponstatus[LIBS_DROPADJUST]=
@@ -536,6 +539,7 @@ class LiberatorRifle:HDWeapon{
 		weaponstatus[LIBS_CHAMBER]=2;
 		if(!idfa && !owner){
 			if(randompick(0,0,1))weaponstatus[0]|=LIBF_FRONTRETICLE;
+			if(randompick(0,0,1))weaponstatus[0]|=LIBF_ALTRETICLE;
 			weaponstatus[LIBS_ZOOM]=0;
 			weaponstatus[LIBS_HEAT]=0;
 			weaponstatus[LIBS_DROPADJUST]=24;
@@ -548,8 +552,9 @@ enum liberatorstatus{
 	LIBF_GRENADELOADED=4,
 	LIBF_NOLAUNCHER=8,
 	LIBF_FRONTRETICLE=32,
-	LIBF_GRENADEMODE=64,
-	LIBF_UNLOADONLY=128,
+	LIBF_ALTRETICLE=64,
+	LIBF_GRENADEMODE=128,
+	LIBF_UNLOADONLY=256,
 
 	LIBS_FLAGS=0,
 	LIBS_CHAMBER=1,
