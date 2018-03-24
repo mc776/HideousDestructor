@@ -12,6 +12,17 @@ extend class HDWeapon{
 		invoker.airburst=0;
 	}
 }
+extend class HDHandlers{
+	void SetAirburst(hdplayerpawn ppp,int abi){
+		abi=max(0,abi);
+		let www=hdweapon(ppp.player.readyweapon);
+		if(www){
+			www.airburst=abi;
+			ppp.A_Log(string.format("Airburst set to %i",abi),true);
+		}
+		return;
+	}
+}
 class GyroGrenade:SlowProjectile{
 	int fuze;bool primed;bool isrocket;
 	default{

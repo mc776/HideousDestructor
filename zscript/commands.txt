@@ -13,23 +13,7 @@ extend class HDHandlers{
 		if(!ppp)return;
 
 		//set airburst
-		if(e.name~=="ab"){
-			int abi=max(0,e.args[0]);
-			let www=hdweapon(players[e.player].readyweapon);
-			if(www){
-				www.airburst=abi;
-				ppp.A_Log(string.format("Airburst set to %i",abi),true);
-			}
-			return;
-		}
-
-		//below this everything takes parameters
-		//unused for now
-		return;
-		array<string> dotcom;
-		e.name.split(dotcom," ");
-
-		ppp.A_Log(dotcom[0]);
+		if(e.name~=="ab")SetAirburst(ppp,e.args[0]);
 	}
 }
 

@@ -95,7 +95,10 @@ class HDRL:HDWeapon{
 				if(invoker.weaponstatus[0]&RLF_ZOOM)rkt.pitch=pitch-1;else rkt.pitch=pitch;
 				rkt.primed=false;
 				rkt.isrocket=true;
-				if(chm==1)rkt.fuze=max(2,invoker.airburst); //airburst 1 is a bad idea
+				if(
+					chm==1
+					&&invoker.airburst>0
+				)rkt.fuze=max(2,invoker.airburst); //airburst 1 is a bad idea
 					else rkt.fuze=0;
 				invoker.airburst=0;
 				invoker.weaponstatus[RLS_CHAMBER]=0;
