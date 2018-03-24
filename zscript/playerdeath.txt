@@ -28,6 +28,9 @@ extend class HDPlayerPawn{
 		){
 			player.cmd.buttons&=~BT_USE;
 			deathcounter++;
+		}else if(deathcounter==144){
+			A_Log("\clPress \cdUse\cl to contnue.",true);
+			deathcounter=145;
 		}
 		super.DeathThink();
 	}
@@ -40,7 +43,7 @@ extend class HDPlayerPawn{
 			||(
 				!multiplayer&&!level.allowrespawn&&skill<5
 			)
-		)deathcounter=144;
+		)deathcounter=145;
 		else deathcounter=1;
 
 		if(player&&player.readyweapon&&deathmatch&&!sv_weapondrop&&!barehanded)
