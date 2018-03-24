@@ -159,6 +159,7 @@ extend class HDHandlers{
 		bool badcommand=true;
 		actoriterator it=actoriterator.create(HDIED_TID,"HDIED");
 		actor ied;bool anyieds=false;
+		int affected=0;
 
 		while(ied=it.Next()){
 			anyieds=true;
@@ -171,14 +172,19 @@ extend class HDHandlers{
 			){
 				if(iedcmd==999){
 					badcommand=false;
-					if(
+					if(!ied.bmissileevenmore){
+						ppp.A_Log("\cd[IED] \crERROR:\cj IED booting \crNOT\cj detonated.",true);
+					}
+					else if(
 						ied.checksight(ppp)&&
 						ied.distance3d(ppp)<512
 					){
-						ppp.A_Log("\cd[IED] \crERROR:\cj IED in range of user \crNOT\cj detonated.",true);
-					}else if(!ied.bmissileevenmore){
-						ppp.A_Log("\cd[IED] \crERROR:\cj IED booting \crNOT\cj detonated.",true);
-					}else ied.setstatelabel("detonate");
+						ppp.A_Log(string.format("\cd[IED] \crERROR:\cj IED at [%i,%i] in range of user \crNOT\cj detonated.",ied.pos.x,ied.pos.y),true);
+					}
+					else{
+						ied.setstatelabel("detonate");
+						affected++;
+					}
 				}
 				else if(iedcmd==1){
 					badcommand=false;
@@ -186,12 +192,16 @@ extend class HDHandlers{
 						ied.checksight(ppp)&&
 						ied.distance3d(ppp)<512
 					){
-						ppp.A_Log("\cd[IED] \crERROR:\cj IED in range of user \crNOT\cj activated.",true);
-					}else ied.bmissilemore=true;
+						ppp.A_Log(string.format("\cd[IED] \crERROR:\cj IED at [%i,%i] in range of user \crNOT\cj activated.",ied.pos.x,ied.pos.y),true);
+					}else{
+						ied.bmissilemore=true;
+						affected++;
+					}
 				}
 				else if(iedcmd==2){
 					badcommand=false;
 					ied.bmissilemore=false;
+					affected++;
 				}
 				else if(iedcmd==123){
 					badcommand=false;
@@ -216,7 +226,7 @@ extend class HDHandlers{
 			else if(iedcmd==1)verb="\cxactivated";
 			else if(iedcmd==0)verb="\cydeactivated";
 			ppp.A_Log(string.format(
-				"\cd[IED] \cjIEDs %s%s\cj.",
+				"\cd[IED] \cj%i IED%s %s%s\cj.",affected,affected==1?"":"s",
 				botcmdid?string.format("with tag \ca%i\cj ",botcmdid):"",
 				verb
 			),true);
