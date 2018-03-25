@@ -3,7 +3,18 @@
 // ------------------------------------------------------------
 
 //event handler
-class HDHandlers:EventHandler{}
+class HDHandlers:EventHandler{
+	//the only thing that should be up here, otherwise use "extend"
+	override void worldtick(){
+		//for changing fraglimit on the fly
+		if(fl!=fraglimit){
+			fl=fraglimit>=100?fraglimit-100:fraglimit;
+			for(int i=0;i<MAXPLAYERS;i++){
+				lives[i]=fl;
+			}
+		}
+	}
+}
 
 //because "extend class Actor" doesn't work
 class HDActor:Actor{

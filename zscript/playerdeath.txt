@@ -22,15 +22,18 @@ extend class HDPlayerPawn{
 	}
 	int deathcounter;
 	override void DeathThink(){
-		if(
-			deathcounter<144
-			&&player
-		){
-			player.cmd.buttons&=~BT_USE;
-			deathcounter++;
-		}else if(deathcounter==144){
-			A_Log("\clPress \cdUse\cl to contnue.",true);
-			deathcounter=145;
+		if(player){
+			if(deathcounter==144&&!(player.cmd.buttons&BT_USE)){
+				A_Log("\clPress \cdUse\cl to contnue.",true);
+				deathcounter=145;
+			}
+			if(
+				deathcounter<144
+				&&player
+			){
+				player.cmd.buttons&=~BT_USE;
+				deathcounter++;
+			}
 		}
 		super.DeathThink();
 	}
