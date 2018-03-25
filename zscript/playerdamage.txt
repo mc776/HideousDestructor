@@ -26,7 +26,7 @@ extend class HDPlayerPawn{
 
 		if(damage==TELEFRAG_DAMAGE)flags|=DMG_FORCED;
 
-		if(inflictor.bpiercearmor)flags|=DMG_NO_ARMOR;
+		if(inflictor&&inflictor.bpiercearmor)flags|=DMG_NO_ARMOR;
 
 		//factor in cheats and skills
 		if(!(flags&DMG_FORCED)){
