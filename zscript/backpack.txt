@@ -128,8 +128,12 @@ class HDBP:HDWeapon{
 
 			//where the magic happens
 			if(itp=="HDArmour"){
-				if(invoker.itemamount[which]>0)return; //limit one
-				invoker.itemamount[which]=countinv("HDArmour");
+				let armr=HDArmour(findinventory("HDArmour"));
+				if(
+					invoker.itemamount[which]>0 //limit one
+					||armr.meleethreshold>1
+				)return;
+				invoker.itemamount[which]=armr.amount;
 				A_TakeInventory(itp);
 				A_TakeInventory("HDArmour");
 			}else if(itp=="HDCellAmmo"){
