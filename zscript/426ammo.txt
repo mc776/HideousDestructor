@@ -5,7 +5,7 @@ class FourMilAmmo:Ammo{
 	default{
 		+inventory.ignoreskill
 		inventory.maxamount 60;
-		ammo.backpackmaxamount 120;
+		ammo.backpackmaxamount 60;
 		ammo.backpackamount 0;
 		xscale 0.5; yscale 0.6; height 2; radius 2; translation "ice";
 		inventory.pickupmessage "Picked up a stray 4.26 UAC Standard round. Reloading a 4.26 UAC Standard magazine into another firearm without authorization is a breach of the Volt End User License Agreement.";
@@ -27,21 +27,18 @@ class FourMilAmmo:Ammo{
 		RBRS A -1;
 	}
 }
-class ZM66RifleMags:Ammo{
+class ZM66RifleMags:HDAmmo{
 	default{
 		//$Category "Ammo/Hideous Destructor/"
 		//$Title "4.26mm UAC Standard Mag"
 		//$Sprite "CLIPB0"
 
-		+inventory.ignoreskill
 		+nointeraction
 		inventory.maxamount 6;
-		ammo.backpackmaxamount 18;
-		ammo.backpackamount 0;
 		inventory.pickupmessage "Picked up a 4.26 UAC Standard magazine.";
 		xscale 0.3;yscale 0.4;
 	}
-	states{
+	states(actor){
 	spawn:
 		TNT1 A 0 nodelay{
 			HDF.SplitAmmoSpawn(self);
@@ -82,6 +79,7 @@ class HD4mmMag:HDUPK replaces ZM66RifleMags{
 				if(A_JumpIfInTargetInventory("ZM66RifleMags",0,"null")){
 					return;
 				}else{
+					target.A_Log("\cgPicked up a 4.26mm UAC Standard magazine.",true);
 					target.A_GiveInventory("ZM66RifleMags",1);
 					destroy();return;
 				}
@@ -93,6 +91,7 @@ class HD4mmMag:HDUPK replaces ZM66RifleMags{
 					target.findinventory("FourMilAmmo").amount+=givemax;
 				}else target.A_GiveInventory("FourMilAmmo",givemax);
 				stamina-=givemax;
+				target.A_Log("\cgPicked up a discarded used 4.26 UAC Standard magazine. Reloading a 4.26 UAC Standard magazine into another firearm without authorization is a breach of the Volt End User License Agreement.",true);
 				if(stamina<1){destroy();return;}
 			}
 		}goto spawn2;
