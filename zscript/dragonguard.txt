@@ -26,7 +26,7 @@ class DragonGuard:Chaingunguy{
 		vulcchambers=5;
 		hdmobster.spawnmobster(self);
 	}
-	override void die(actor source,actor inflictor,int dmgflags=0){
+	override void die(actor source,actor inflictor,int dmgflags){
 		A_GiveInventory("HasDroppedGun");
 		super.die(source,inflictor,dmgflags);
 	}

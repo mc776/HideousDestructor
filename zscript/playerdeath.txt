@@ -36,7 +36,7 @@ extend class HDPlayerPawn{
 		}
 		super.DeathThink();
 	}
-	override void Die(actor source,actor inflictor,int dmgflags=0){
+	override void Die(actor source,actor inflictor,int dmgflags){
 		//forced delay for respawn to clear all persistent damagers
 		//exemption made for suicide
 		if(
@@ -134,18 +134,14 @@ extend class HDHandlers{
 						endgame=true;
 						eee.ACS_NamedExecuteAlways("CoopFail",0,0,0);
 					}else{
-						int wipecount=0;actor pmo;
-						int playercount=0; //what is the REAL way to do this???
+						int playersleft=0;
 						for(int i=0;i<MAXPLAYERS;i++){
-							if(playeringame[i]){
-								playercount++;
-								pmo=players[i].mo;
-								if(
-									pmo.countinv("WipedOut")
-								)wipecount++;
-							}
+							if(
+								playeringame[i]
+								&&!wiped[i]
+							)playersleft++;
 						}
-						if(wipecount>=playercount){
+						if(playersleft<1){
 							endgame=true;
 							eee.ACS_NamedExecuteAlways("CoopWipe",0,0,0);
 						}

@@ -13,7 +13,7 @@ class TerrorBolt:HDBullet{
 		decal "BrontoScorch";
 		obituary "%o played %k's cannon.";
 	}
-	override void Puff(int sp=0){
+	override void Puff(int sp){
 		if(sp<0)setstatelabel("death");
 	}
 	override void BulletImpact(){
@@ -348,7 +348,7 @@ class Brontornis:HDWeapon{
 		BLST A -1;
 		stop;
 	}
-	override void InitializeWepStats(bool idfa=false){
+	override void InitializeWepStats(bool idfa){
 		weaponstatus[BRONS_CHAMBER]=2;
 		if(!idfa){
 			weaponstatus[0]=0;

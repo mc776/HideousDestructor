@@ -13,7 +13,7 @@ class Roboball:SlowProjectile{
 		seesound "weapons/rocklf";
 		scale 0.6;
 	}
-	override void ExplodeSlowMissile(line blockingline=null,actor blockingmobj=null){
+	override void ExplodeSlowMissile(line blockingline,actor blockingmobj){
 		//damage
 		if(blockingmobj){
 			int dmgg=random(70,240);
@@ -278,7 +278,7 @@ class SatanRobo:Cyberdemon replaces CyberDemon{
 	}
 	override int damagemobj(
 		actor inflictor,actor source,int damage,
-		name mod,int flags=0,double angle=0
+		name mod,int flags,double angle
 	){
 		//cheat
 		if(source==self)return 0;

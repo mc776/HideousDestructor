@@ -335,8 +335,12 @@ class HDStatusBar:DoomStatusBar{
 	}
 	void drawlives(int posx,int posy,int flags){
 		if(
-			fraglimit>100||
-			(fraglimit>0 && !deathmatch)
+			(
+				multiplayer||level.allowrespawn||skill>5
+			)&&(
+				fraglimit>100||
+				(fraglimit>0&&!deathmatch)
+			)
 		){
 			int liv=HDHandlers(eventhandler.find("HDHandlers")).lives[consoleplayer];
 			drawstring(

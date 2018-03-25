@@ -95,6 +95,7 @@ class DropMisc:ActionItem{
 	states{
 	pickup:
 		TNT1 A 0{
+			if(health<1)return;
 			A_DropInventory("PortableLiteAmp");
 			A_DropInventory("PortableLadder");
 			A_DropInventory("HERPUsable");

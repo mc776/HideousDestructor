@@ -390,7 +390,7 @@ class HDRL:HDWeapon{
 	spawn:
 		LAUN A -1;
 	}
-	override void InitializeWepStats(bool idfa=false){
+	override void InitializeWepStats(bool idfa){
 		weaponstatus[RLS_MAG]=5;
 		if(idfa){
 			weaponstatus[RLS_CHAMBER]=max(1,weaponstatus[RLS_CHAMBER]);
@@ -610,7 +610,7 @@ class Blooper:HDWeapon{
 	spawn:
 		BLOP A -1;
 	}
-	override void InitializeWepStats(bool idfa=false){
+	override void InitializeWepStats(bool idfa){
 		weaponstatus[0]|=BLOPF_LOADED;
 		if(!idfa && !owner){
 			airburst=0;

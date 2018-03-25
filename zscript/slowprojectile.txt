@@ -143,7 +143,7 @@ class SlowProjectile:HDBullet{
 			}
 		}
 	}
-	virtual void ExplodeSlowMissile(line blockingline,actor blockingobject){
+	virtual void ExplodeSlowMissile(line blockingline=null,actor blockingobject=null){
 		if(speed>50)painsound="misc/punch";else painsound="misc/fragknock";
 		actor a=spawn("IdleDummy",pos);a.stamina=10;a.A_PlaySound(painsound,CHAN_AUTO);
 		explodemissile(null,null);

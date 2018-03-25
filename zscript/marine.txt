@@ -51,7 +51,7 @@ class HDMarine:HDActor replaces ScriptedMarine{
 	int timesdied;
 	bool hasdropped;
 	int wep;
-	override void die(actor source,actor inflictor,int dmgflags=0){
+	override void die(actor source,actor inflictor,int dmgflags){
 		timesdied++;
 		bpushable=false;
 		super.die(source,inflictor,dmgflags);
@@ -1191,7 +1191,7 @@ class GhostGyroGrenade:GyroGrenade{
 		renderstyle "add";
 		damagetype "GhostSquadAttack";
 	}
-	override void ExplodeSlowMissile(line blockingline=null,actor blockingobject=null){
+	override void ExplodeSlowMissile(line blockingline,actor blockingobject){
 		let gm=GhostMarine(target);
 		if(!gm)return;
 		actor tb=gm.target;
@@ -1292,7 +1292,7 @@ class BotBot:HDMarine{
 	}
 	override int damagemobj(
 		actor inflictor,actor source,int damage,
-		name mod,int flags=0,double angle=0
+		name mod,int flags,double angle
 	){
 		if(!bfriendly)return super.damagemobj(inflictor,source,damage,mod,flags,angle);
 
