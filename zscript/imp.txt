@@ -143,10 +143,13 @@ class squirtball:dimpb replaces doomimpball{
 				//HEAD SHOT
 				if(
 					pos.z-tracer.pos.z>tracer.height*0.8
-				)bpiercearmor=true;
+				){
+					if(hd_debug)A_Log("HEAD SHOT");
+					bpiercearmor=true;
+				}
 			}
 		}
-		TNT1 AAAAAAAAAAAA 2{
+		BAL1 ABCCCDDDEEEE 2{
 			if(!tracer)return;
 			int diff=max(
 				absangle(initangleto,angleto(tracer)),
@@ -161,7 +164,11 @@ class squirtball:dimpb replaces doomimpball{
 			inittangle=tracer.angle;
 			inittz=tracer.pos.z;
 
-			tracer.damagemobj(self,target,dmg,"Thermal");
+			if(dmg){
+				tracer.damagemobj(self,target,dmg/3,"Thermal");
+				stamina+=dmg;
+				if(stamina>80)A_Immolate(tracer,target,dmg/2);
+			}
 		}
 		stop;
 	}
