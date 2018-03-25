@@ -338,7 +338,7 @@ class HDStatusBar:DoomStatusBar{
 			fraglimit>100||
 			(fraglimit>0 && !deathmatch)
 		){
-			int liv=cplayer.mo.countinv("HDLives");
+			int liv=HDHandlers(eventhandler.find("HDHandlers")).lives[consoleplayer];
 			drawstring(
 				mHUDFont,FormatNumber(liv),
 				(posx,posy),flags|DI_ITEM_RIGHT_BOTTOM|DI_TEXT_ALIGN_LEFT,
