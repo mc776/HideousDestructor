@@ -28,6 +28,7 @@ class dimpb:hdfireball{
 		BAL1 ABAB 3 A_FBTail();
 	spawn2:
 		BAL1 AB 3 {
+			A_Corkscrew(stamina*frandom(0,0.07));stamina++;
 			roll+=10;
 			if(!A_FBSeek())A_FBFloat();
 		}
@@ -103,7 +104,7 @@ class dimp:doomimp{
 				angle+=(lead2.x-lead1.x)*dist;
 			}
 			actor a;bool b;
-			[b,a]=A_SpawnItemEx("dimpb",0,0,32,cos(pitch)*12,0,sin(-pitch)*12,0,SXF_SETTARGET);
+			[b,a]=A_SpawnItemEx("squirtball",0,0,32,cos(pitch)*12,0,sin(-pitch)*12,0,SXF_SETTARGET);
 			a.tracer=target;
 		}
 		TROO G 0{
@@ -130,26 +131,39 @@ class squirtball:dimpb replaces doomimpball{
 	double initangleto;
 	double inittangle;
 	double inittz;
-	default{+hittracer}
+	vector3 initpos;
 	states{
 	death:
+		TNT1 AAA 0 A_SpawnItemEx("HDSmoke",flags:SXF_NOCHECKPOSITION);
 		TNT1 A 0{
 			A_Scream();
+			tracer=blockingmobj;
 			if(tracer){
+				tracer=blockingmobj;
 				initangleto=angleto(tracer);
 				inittangle=tracer.angle;
 				inittz=tracer.pos.z;
+				initpos=tracer.pos-pos;
 
 				//HEAD SHOT
 				if(
 					pos.z-tracer.pos.z>tracer.height*0.8
+					&&!(tracer is "Cacodemon")
+					&&!(tracer is "Demon")
+					&&!(tracer is "SpiderMastermind")
+					&&!(tracer is "Arachnotron")
+					&&!(tracer is "PainElemental")
+					&&!(tracer is "LostSoul")
+					&&!(tracer is "Putto")
+					&&!(tracer is "Yokai")
 				){
 					if(hd_debug)A_Log("HEAD SHOT");
 					bpiercearmor=true;
 				}
-			}
+			}else A_SprayDecal("BrontoScorch",radius*2);
 		}
-		BAL1 ABCCCDDDEEEE 2{
+		BAL1 ABCCDDEEEEEEE 2{
+			roll=frandom(0,360);alpha*=0.96;scale*=frandom(1.,0.96);
 			if(!tracer)return;
 			int diff=max(
 				absangle(initangleto,angleto(tracer)),
@@ -169,6 +183,8 @@ class squirtball:dimpb replaces doomimpball{
 				stamina+=dmg;
 				if(stamina>80)A_Immolate(tracer,target,dmg/2);
 			}
+
+			setorigin((pos+(tracer.pos-initpos))*0.5,true);
 		}
 		stop;
 	}
