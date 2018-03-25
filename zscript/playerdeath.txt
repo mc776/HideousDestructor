@@ -108,18 +108,28 @@ class WipedOut:InventoryFlag{
 	}
 }
 extend class HDHandlers{
+	int fl;
+	int lives[MAXPLAYERS];
+
 	bool endgame;
 	int coopdeaths;
 	int teamdeaths[255];
 	int ffadeaths[MAXPLAYERS];
-	int lives[MAXPLAYERS];
-	int fl;
 	bool wiped[MAXPLAYERS];
 	override void onregister(){
 		fl=fraglimit>=100?fraglimit-100:fraglimit;
 		for(int i=0;i<MAXPLAYERS;i++){
 			lives[i]=fl;
+
+			//simple defaults
+			ffadeaths[i]=0;
+			wiped[i]=false;
 		}
+
+		//more defaults
+		endgame=false;
+		coopdeaths=0;
+		for(int i=0;i<teamdeaths.size();i++){teamdeaths[i]=0;}
 	}
 	override void PlayerDied(PlayerEvent e){
 		let eee=PlayerPawn(players[e.playernumber].mo);
@@ -168,10 +178,10 @@ extend class HDHandlers{
 
 			teamdeaths[gtm]++;
 			int lvs=fl-teamdeaths[gtm];
-			if(hd_debug)eee.A_Log(string.format("Team %i has %i %s left.",
+			if(hd_debug)eee.A_Log(string.format("Team %i has %s li%s left.",
 				gtm,
-				lvs,
-				lvs==1?"life":"lives"
+				lvs>0?string.format("%i",lvs):"no",
+				lvs==1?"fe":"ves"
 			));
 
 			//update counters for each player
@@ -181,7 +191,7 @@ extend class HDHandlers{
 					gtmi=players[i].getteam();
 					players[i].fragcount=max(0,fl-teamdeaths[gtmi]);
 					if(players[i].getteam()==gtm)lives[i]=players[i].fragcount;
-	
+
 					//figure out which teams remain
 					if(!wiped[i]){
 						if(standingteam<0)standingteam=gtmi;else{
