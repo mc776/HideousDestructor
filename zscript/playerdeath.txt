@@ -96,7 +96,17 @@ extend class HDPlayerPawn{
 
 
 //event handlers for wipe, etc.
-class WipedOut:InventoryFlag{}
+class WipedOut:InventoryFlag{
+	override void doeffect(){
+		if(!owner){destroy();return;}
+		if(hdplayerpawn(owner)){
+			if(stamina>0){
+				owner.A_GiveInventory("InvReset");
+				destroy();return;
+			}else stamina++;
+		}
+	}
+}
 extend class HDHandlers{
 	bool endgame;
 	int coopdeaths;

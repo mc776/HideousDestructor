@@ -566,14 +566,11 @@ extend class HDPlayerPawn{
 
 		overloaded=CheckEncumbrance();
 
-		if(countinv("WipedOut"))A_GiveInventory("InvReset");
-		else{
-			A_TakeInventory("WeaponBusy");
-			A_TakeInventory("IsMoving");
-			A_TakeInventory("IsInHell");
-			A_TakeInventory("WipedOut");
-			gunbraced=false;
-		}
+		A_TakeInventory("WeaponBusy");
+		A_TakeInventory("IsMoving");
+		A_TakeInventory("IsInHell");
+		gunbraced=false;
+
 		GiveBasics();
 
 		bshadow=false;

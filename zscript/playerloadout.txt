@@ -63,7 +63,7 @@ class InvReset:Inventory{
 	}
 	void GiveStartItems(actor resetee){
 		//now get all the "dropitems" (i.e. player's startitems) and give them
-		let drop=resetee.getdropitems();
+		let drop=getdefaultbytype(resetee.getclass()).getdropitems();
 		if(drop){
 			for(dropitem di=drop;di;di=di.Next){
 				if(di.Name=='None')continue;

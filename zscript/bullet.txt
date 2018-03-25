@@ -540,6 +540,7 @@ class HDBulletFrag:HDBullet{
 		accuracy=random(0,4);
 	}
 	override void Puff(int sp){
+		if(max(abs(pos.x),abs(pos.y))>=32678)return;
 		A_SpawnItemEx("FragPuff",flags:
 			SXF_NOCHECKPOSITION
 		);
