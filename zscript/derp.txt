@@ -339,14 +339,6 @@ class DERPDEAD:DERPUsable{
 
 
 
-//controllers
-class DERPterm:ActionItem{
-	states{
-	use:
-		TNT1 A 0 A_Print("\cd[DERP]\cj List of available commands:\n             derpt   \cjturret mode\n             derpp   \cjpatrol mode\n             derptz   \cjambush mode\n             derppz   \cjfollow mode");
-		fail;
-	}
-}
 
 //evil roguebot
 class EnemyDERP:DERPBot{
@@ -366,7 +358,9 @@ extend class HDHandlers{
 		actoriterator it=actoriterator.create(DERP_TID,"DERPBot");
 		actor bot=null;
 		int derps=0;
+		bool badcommand=true;
 		while(bot=it.Next()){
+			badcommand=false;
 			let derp=DERPBot(bot);
 			if(
 				derp&&derp.master==ppp
@@ -394,8 +388,8 @@ extend class HDHandlers{
 					derp.goalpoint=ppp.pos.xy;
 					derp.turnamount=derp.angletogoal();
 					derp.setstatelabel("turn");
-					ppp.A_Log(string.format("\cd[DERP]  goal set to  \cyYOUR POSITION"),true);
-				}else if (cmd==5){
+					ppp.A_Log("\cd[DERP]  \cugoal set to  \cyYOUR POSITION",true);
+				}else if(cmd==5){
 					actor goalpuff;int gbg;
 					[goalpuff,gbg]=ppp.LineAttack(ppp.angle,1024,
 						ppp.pitch,0,"none","CheckPuff",
@@ -405,16 +399,29 @@ extend class HDHandlers{
 					if(goalpuff){
 						goalset=true;
 						derp.goalpoint=goalpuff.pos.xy;
-						ppp.A_Log(string.format("\cd[DERP]  goal set to  \cxPOINTER"),true);
+						ppp.A_Log(string.format("\cd[DERP]  \cugoal set to  \cx[%i,%i]",goalpuff.x,goalpuff.y),true);
 					}
+				}else{
+					badcommand=true;
+					break;
 				}
 				if(goalset){
 					derp.movestamina=20-(derp.pos.xy-derp.goalpoint).length()/derp.speed;
-ppp.A_LogInt(derp.movestamina);
 					derp.turnamount=derp.angletogoal();
 					derp.setstatelabel("turn");
 				}
 			}
+		}
+		if(badcommand){
+			ppp.A_Print("\cd[DERP]\cj List of available commands:
+\n             derpt    \cjturret mode  (1)
+\n             derpa    \cjambush mode  (2)
+\n             derpp    \cjpatrol mode  (3)
+\n             derpcome \cjcome to user (4)
+\n             derpgo   \cjgo to point  (5)
+\n             derpat   \cjtoggle 1/2   (6)
+\n \cu(all of these can be shortened\n\cuwith \"d\" instead of \"derp\")
+			",9);
 		}
 	}
 }
