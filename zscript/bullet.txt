@@ -234,7 +234,11 @@ class HDBullet:HDActor{
 			}
 
 			//pierce
-			else if((hd_penetrate||deathmatch) && accuracy){
+			else if(
+				(hd_penetrate||deathmatch||skill>=5)
+				&&accuracy
+				&&max(abs(pos.x),abs(pos.y))<32678
+			){
 				Puff(speed*0.4);
 				actor e;
 				vector3 velp=vel.unit();
@@ -270,6 +274,7 @@ class HDBullet:HDActor{
 
 				//place at point of exit, puff, continue.
 				setorigin(e.pos+velpp,false);
+
 				if(speed>500){
 					actor pp=spawn("PenePuff",e.pos+velpp,ALLOW_REPLACE);
 					pp.vel=vel*0.006;

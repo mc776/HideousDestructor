@@ -48,7 +48,7 @@ class dimpb:hdfireball{
 		stop;
 	}
 }
-class dimp:doomimp{
+class dimp:doomimp replaces zombiestormtrooper{
 	vector2 lead1;
 	vector2 lead2;
 	bool spamming;
@@ -60,8 +60,29 @@ class dimp:doomimp{
 		hdmobai.resize(self,0.8,1.0);
 	}
 	states{
+	spawn:
+		TROO AAABBCCCDD 8 A_Look();
+		#### A 0 A_SetAngle(angle+random(-4,4));
+		#### A 1 A_SetTics(random(1,3));
+		---- A 0 A_Jump(216,2);
+		---- A 0 A_PlaySound("imp/active");
+		#### A 0 A_CheckFlag("ambush","spawn0");
+		#### A 0 A_Jump(32,"spawn2");
+		loop;
+	spwander:
+		#### A 4 A_Wander();
+		---- A 0 A_Look();
+		#### B 4 A_Wander();
+		---- A 0 A_Look();
+		#### C 4 A_Wander();
+		---- A 0 A_Look();
+		#### D 4 A_Wander();
+		#### A 0 A_Jump(198,"spawn2");
+		#### A 0 A_Recoil(-0.4);
+		#### A 0 A_Jump(64,"spawn0");
+		loop;
 	see:
-		TROO AABBCCDD 4 {HDMobAI.Chase(self);}
+		TROO AABBCCDD 4{HDMobAI.Chase(self);}
 		loop;
 	melee:
 		TROO ABCD 4{
