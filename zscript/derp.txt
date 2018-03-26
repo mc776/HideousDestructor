@@ -77,7 +77,7 @@ class DERPBot:HDUPK{
 	}
 	void A_DerpRandTurn(){
 		movestamina=0;
-		if(!turnamount)setstatelabel("see2");
+		if(!turnamount)setstatelabel("see");
 		A_PlaySound("derp/crawl",CHAN_BODY);
 		if(turnamount<0){
 			angle+=15;
@@ -142,6 +142,7 @@ class DERPBot:HDUPK{
 		goto see;
 	see:
 		DERP A 0{
+			A_ClearTarget();
 			if(floorz>=pos.z)bnodropoff=true;
 			else bnodropoff=false;
 
