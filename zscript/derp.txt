@@ -17,7 +17,7 @@ class DERPBot:HDUPK{
 		+ismonster +noblockmonst +shootable
 		+friendly +nofear +dontgib +noblood
 		painchance 240;painthreshold 12;
-		speed 0;
+		speed 3;
 		damagefactor "Thermal",0.7;damagefactor "Normal",0.8;
 		radius 4;height 4;deathheight 4;maxdropoffheight 4;maxstepheight 4;
 		bloodcolor "22 22 22";scale 0.6;
@@ -62,6 +62,7 @@ class DERPBot:HDUPK{
 	int movestamina;
 	int turnamount;
 	vector2 goalpoint;
+	vector2 originalgoalpoint;
 	int angletogoal(){
 		vector3 vecdiff=levellocals.vec3diff(pos,(goalpoint,0));
 		return deltaangle(
@@ -73,30 +74,31 @@ class DERPBot:HDUPK{
 		bool moved=true;
 		//ambush(1) does nothing, not even make noise
 		if(cmd!=1){
-			A_PlaySound("derp/crawl",CHAN_BODY);
 			A_Chase("missile","missile",CHF_DONTMOVE|CHF_DONTTURN|CHF_NODIRECTIONTURN);
 
-			if(cmd||goalpoint!=(0,0))moved=TryMove(pos.xy+(cos(angle),sin(angle))*3,false);
-
+			if(
+				cmd
+				||(movestamina<20&&goalpoint!=(0,0))
+			){
+				A_PlaySound("derp/crawl",CHAN_BODY);
+				moved=TryMove(pos.xy+(cos(angle),sin(angle))*speed,false);
+			}
 			movestamina++;
 
 			if(!moved){
-				goalpoint=(0,0);
 				turnamount=random(10,16)*randompick(-1,1);
 			}else if(
-				movestamina>20
+				cmd
+				&&movestamina>20
 				&&!random(0,20)
 			){
-				if(goalpoint==(0,0))turnamount=random(-5,12)*randompick(-1,1);
-				else{
-					turnamount=angletogoal();
-				}
+				turnamount=angletogoal();
 			}else turnamount=0;
 			if(turnamount)setstatelabel("Turn");
 		}
 	}
 	void A_DerpTurn(){
-		movestamina=0;
+		if(cmd)movestamina=0;
 		if(!turnamount)setstatelabel("see");
 		A_PlaySound("derp/crawl",CHAN_BODY);
 		if(turnamount<0){
@@ -110,7 +112,8 @@ class DERPBot:HDUPK{
 
 	override void postbeginplay(){
 		super.postbeginplay();
-		goalpoint=(0,0);
+		originalgoalpoint=pos.xy;
+		goalpoint=originalgoalpoint;
 		ChangeTid(DERP_TID);
 		if(!playerpawn(master)){
 			ammo=15;
@@ -432,7 +435,7 @@ class EnemyDERP:DERPBot{
 
 
 extend class HDHandlers{
-	void SetDERP(hdplayerpawn ppp,int cmd,int tag=0,int cmd2=0){
+	void SetDERP(hdplayerpawn ppp,int cmd,int tag,int cmd2){
 		actoriterator it=actoriterator.create(DERP_TID,"DERPBot");
 		actor bot=null;
 		int derps=0;
@@ -442,14 +445,37 @@ extend class HDHandlers{
 				derp&&derp.master==ppp
 				&&(!tag||tag==derp.botid)
 			){
+				bool goalset=false;
 				if(cmd&&cmd<4){
-					derp.cmd=cmd;
-					string mode="gPATROL";
+					derp.cmd=cmd-1;
+					string mode="aTURRET";
 					if(cmd==1)mode="cAMBUSH";
-					else if(cmd==2)mode="cAMBUSH";
+					else if(cmd==2)mode="gPATROL";
 					ppp.A_Log(string.format("\cd[DERP]  \c%s  \cjmode",mode),true);
 				}else if(cmd==4){
 					derp.goalpoint=ppp.pos.xy;
+					derp.turnamount=derp.angletogoal();
+					derp.setstatelabel("turn");
+					ppp.A_Log(string.format("\cd[DERP]  goal set to  \cxYOUR POSITION"),true);
+				}else if (cmd==5){
+					actor goalpuff;int gbg;
+					[goalpuff,gbg]=ppp.LineAttack(ppp.angle,1024,
+						ppp.pitch,0,"none","CheckPuff",
+						flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ|LAF_NOINTERACT,
+						offsetz:ppp.height-5
+					);
+					if(goalpuff){
+						goalset=true;
+						derp.goalpoint=goalpuff.pos.xy;
+						ppp.A_Log(string.format("\cd[DERP]  goal set to  \cxPOINTER"),true);
+					}
+				}else if (cmd==6){
+					goalset=true;
+					derp.goalpoint=(0,0);
+					ppp.A_Log(string.format("\cd[DERP]  goal  \ccyCLEARED"),true);
+				}
+				if(goalset){
+					derp.movestamina=20-(derp.pos.xy-derp.goalpoint).length()/derp.speed;
 					derp.turnamount=derp.angletogoal();
 					derp.setstatelabel("turn");
 				}
