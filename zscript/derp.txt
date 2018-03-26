@@ -15,6 +15,7 @@ class DERPBot:HDUPK{
 		+ismonster +noblockmonst +shootable
 		+friendly +nofear +dontgib +noblood
 		painchance 240;painthreshold 12;
+		speed 0;
 		damagefactor "Thermal",0.7;damagefactor "Normal",0.8;
 		radius 4;height 4;deathheight 4;maxdropoffheight 4;maxstepheight 4;
 		bloodcolor "22 22 22";scale 0.6;
@@ -55,6 +56,38 @@ class DERPBot:HDUPK{
 	void UpdateCmd(){
 		if(master)cmd=master.countinv("DERPmode");
 	}
+
+	int movestamina;
+	int turnamount;
+	void A_DerpCrawl(){
+		UpdateCmd();
+		bool moved=true;
+		//ambush(1) does nothing, not even make noise
+		if(cmd!=1){
+			A_PlaySound("derp/crawl",CHAN_BODY);
+			A_Chase("missile","missile",CHF_DONTMOVE|CHF_DONTTURN|CHF_NODIRECTIONTURN);
+
+			if(cmd)moved=TryMove(pos.xy+(cos(angle),sin(angle))*3,false);
+
+			if(!moved)turnamount=random(10,16)*randompick(-1,1);
+			else if(movestamina>20&&!random(0,20))turnamount=random(-5,12)*randompick(-1,1);
+			else turnamount=0;
+			if(turnamount)setstatelabel("randturn");
+		}
+	}
+	void A_DerpRandTurn(){
+		movestamina=0;
+		if(!turnamount)setstatelabel("see2");
+		A_PlaySound("derp/crawl",CHAN_BODY);
+		if(turnamount<0){
+			angle+=15;
+			turnamount++;
+		}else{
+			angle-=15;
+			turnamount--;
+		}
+	}
+
 	override void postbeginplay(){
 		super.postbeginplay();
 		ChangeTid(DERP_TID);
@@ -107,52 +140,24 @@ class DERPBot:HDUPK{
 	spawn2:
 		DERP A 10 A_ClearTarget();
 		goto see;
-	patrol:
-		DERP A 3{
-			A_ClearTarget();
-			A_LookEx(LOF_NOSOUNDCHECK, 0,512, 0,200, "see");
-			UpdateCmd();
-			if(cmd==0){ //turret
-				A_SetAngle(angle+20);
-			}else if(cmd>1){ //follow or patrol
-				A_Wander();
-				A_Recoil(-0.3);
-			}
-			//ambush(1) does nothing, not even make noise
-			if(cmd!=1){
-				A_PlaySound("derp/crawl",CHAN_BODY);
-			}
-		}loop;
 	see:
 		DERP A 0{
 			if(floorz>=pos.z)bnodropoff=true;
 			else bnodropoff=false;
 
 			if(ammo<1)setstatelabel("noammo");
-			else if(!target)setstatelabel("patrol");
 		}
-		DERP AAAAAAAA 3{
-			UpdateCmd();
-			if(cmd==0){ //turret
-				A_Chase("missile","missile",CHF_DONTMOVE|CHF_DONTTURN);
-			}else if(cmd==2){ //patrol
-				A_Chase();
-				A_Recoil(-0.3);
-			}else if(cmd==3){ //follow
-				A_Wander();
-				A_Recoil(-0.3);
-			}
-			//ambush(1) does nothing, not even make noise
-			if(cmd!=1){
-				A_PlaySound("derp/crawl",CHAN_BODY);
-			}
-		}
-		goto patrol;
+	see2:
+		DERP AAAAAAAA 3 A_DerpCrawl();
+		goto see;
+	randturn:
+		DERP A 1 A_DerpRandTurn();
+		wait;
 	noshot:
 		DERP AAAAAAA 3{
 			if(cmd>1){
 				A_Wander();
-				A_Recoil(-0.3);
+				TryMove(pos.xy+(cos(angle),sin(angle))*3,false);
 				A_PlaySound("derp/crawl",CHAN_BODY,0.6);
 			}
 		}goto see;
@@ -167,7 +172,6 @@ class DERPBot:HDUPK{
 		DERP A 0{
 			//abort shot if ambush or follow
 			UpdateCmd();
-			if(cmd==1||cmd==3)setstatelabel("patrol");
 		}
 	ready:
 		DERP A 0 A_PlaySound("derp/crawl",CHAN_BODY,0.6);
@@ -200,7 +204,7 @@ class DERPBot:HDUPK{
 			}
 		}
 	yourefired:
-		DERP A 0 A_JumpIfHealthLower(1,"patrol",AAPTR_TARGET);
+		DERP A 0 A_JumpIfHealthLower(1,"see",AAPTR_TARGET);
 		DERP A 0 A_JumpIfTargetInLOS("fire",2,JLOSF_DEADNOJUMP,256.0,0);
 		DERP A 0 A_JumpIfTargetInLOS("aim",360,JLOSF_DEADNOJUMP,512.0,0);
 		goto noshot;
@@ -403,4 +407,8 @@ class EnemyDERP:DERPBot{
 		translation 1;
 	}
 }
+
+
+
+
 
