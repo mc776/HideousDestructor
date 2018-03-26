@@ -78,7 +78,8 @@ class DERPBot:HDUPK{
 				if(
 					playeringame[i]
 					&&players[i].mo
-					&&!players[i].mo.isteammate(master)
+					&&players[i].mo!=master
+					&&(!teamplay||players[i].getteam()!=master.player.getteam())
 					&&distance3d(players[i].mo)<256
 				){
 					bfriendly=false;
@@ -434,6 +435,9 @@ extend class HDHandlers{
 						derp.goalpoint=goalpuff.pos.xy;
 						ppp.A_Log(string.format("\cd[DERP]  \cugoal set to  \cx[%i,%i]",goalpuff.x,goalpuff.y),true);
 					}
+				}else if(cmd==123){
+					int ammo=derp.ammo;
+					ppp.A_Log(string.format("\cd[DERP] \cjreporting in at [\cx%i\cj,\cx%i\cj] with %s",derp.pos.x,derp.pos.y,ammo?string.format("\cy%i\cj bullets left!",derp.ammo):"\crno ammo left!\cj Help!"),true);
 				}else{
 					badcommand=true;
 					break;
@@ -454,6 +458,7 @@ extend class HDHandlers{
 \n             derpgo   \cjgo to point  (5)
 \n             derpat   \cjtoggle 1/2   (6)
 \n \cu(all of these can be shortened\n\cuwith \"d\" instead of \"derp\")
+\n \cuType \cdderp 123\cu to poll deployed DERPs.
 			",9);
 		}
 	}
