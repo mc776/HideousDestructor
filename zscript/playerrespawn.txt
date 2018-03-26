@@ -52,14 +52,14 @@ extend class HDHandlers{
 		}
 		else if(deathmatch&&fraglimit>100){
 			int fl=fraglimit-100;
-			int dths;
+			int lvs;
 			if(teamplay){
-				dths=fl-teamdeaths[players[pnum].getteam()];
-				players[pnum].fragcount=dths;
+				lvs=fl-teamdeaths[players[pnum].getteam()];
+				players[pnum].fragcount=lvs;
 			}
 			else{
-				dths=max(0,fl-ffadeaths[pnum]);
-				lives[pnum]=dths;
+				lvs=max(0,fl-ffadeaths[pnum]);
+				lives[pnum]=lvs;
 			}
 		}
 	}
