@@ -421,7 +421,7 @@ hd_clearucv: Resets all archived user options to their defaults.
 
 The following cvars affect how some of your weapons are set up when you first spawn with them in your loadout. Default setting in parentheses.
 
-hd_derpmode (0): Sets the starting mode for the DERP. 0=turret; 1=ambush; 2=patrol; 3=follow.
+hd_derpmode (0): Sets the starting mode for the DERP. 1=turret; 2=ambush; 3=patrol.
 
 hd_pistauto, hd_smgfiremode, hd_zmfiremode, hd_libauto (0): Set semi or full automatic for the pistol, SMG, ZM66 and Liberator. 1=full auto for the rifles, but burst for the SMG. 2=burst for the ZM66, but full auto for the SMG.
 
@@ -511,13 +511,15 @@ Use from inventory to bring it up. Fire and altfire select your item; hold fire 
 Defence, Engagement, Reconnaissance and Patrol Robot
 GZDoom actor name: DERPBot
 The gun that runs around killing people by itself! Basically a pistol wired to a webcam and treads, made of bullets, aggression and shitty programmer art. Must be manually recovered after use. They can't climb and run out of ammo quickly, but you can pick them back up anytime as you would an ordinary item for later redeployment. Uses up one pistol mag each time you deploy, and any unused ammo is recovered on pickup.
-The DERP can be programmed to one of several behaviours. Type the following into the console to set what mode it will engage in at any time.
-	derpt = TURRET: Default. Stand ground and engage targets from wherever it is.
-	derpp = PATROL: Move about on its own, generally following the player, pursue and engage targets as acquired.
-	derptz = AMBUSH: As turret, but will not shoot.
-	derppz = FOLLOW: As patrol, but will not shoot.
-"derp" in the above can be shortened to "d", e.g. "dtz" for ambush mode.
-CAUTION: If it breaks, you will not be able to use it again until you start a new level.
+If it breaks, you will not be able to use it again until you start a new level.
+The DERP can be programmed to one of several behaviours. Type the following into the console, or "derp <number shown>", to set what mode it will engage in at any time.
+	1. derpt = TURRET: Stand ground and engage targets from wherever it is.
+	2. derpa = AMBUSH: As turret, but will not shoot.
+	3. derpp = PATROL: Wander around the vicinity of its goal, pursue and engage targets as acquired.
+	4. derpcome: make a beeline towards the user.
+	5. derpgo: make a beeline towards the general direction you are pointing in.
+	6. derpat: toggle between turret and ambush mode.
+"derp" in the above can be shortened to "d", e.g. "dtz" for ambush mode, but not if you use the numbers. Typing "derp" only, or entering an unused number, will show these commands.
 
 Heavy Engagement Rotary Platform Robot
 GZDoom actor name: HERPBot

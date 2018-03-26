@@ -385,9 +385,8 @@ extend class HDHandlers{
 					else if(cmd==3)mode="gPATROL";
 					ppp.A_Log(string.format("\cd[DERP]  \c%s  \cjmode",mode),true);
 				}else if(cmd==4){
+					goalset=true;
 					derp.goalpoint=ppp.pos.xy;
-					derp.turnamount=derp.angletogoal();
-					derp.setstatelabel("turn");
 					ppp.A_Log("\cd[DERP]  \cugoal set to  \cyYOUR POSITION",true);
 				}else if(cmd==5){
 					actor goalpuff;int gbg;
