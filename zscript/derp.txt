@@ -3,10 +3,12 @@
 // ------------------------------------------------------------
 enum DerpConst{
 	DERP_TID=451816,
+	DERP_MAXTICTURN=15,
 }
 class DERPBot:HDUPK{
 	int cmd;
 	int ammo;
+	int botid;
 	default{
 		//$Category "Monsters/Hideous Destructor"
 		//$Title "D.E.R.P. Robot"
@@ -59,6 +61,13 @@ class DERPBot:HDUPK{
 
 	int movestamina;
 	int turnamount;
+	vector2 goalpoint;
+	int angletogoal(){
+		vector3 vecdiff=levellocals.vec3diff(pos,(goalpoint,0));
+		return deltaangle(
+			atan2(vecdiff.y,vecdiff.x),angle
+		)/DERP_MAXTICTURN;
+	}
 	void A_DerpCrawl(){
 		UpdateCmd();
 		bool moved=true;
@@ -67,29 +76,41 @@ class DERPBot:HDUPK{
 			A_PlaySound("derp/crawl",CHAN_BODY);
 			A_Chase("missile","missile",CHF_DONTMOVE|CHF_DONTTURN|CHF_NODIRECTIONTURN);
 
-			if(cmd)moved=TryMove(pos.xy+(cos(angle),sin(angle))*3,false);
+			if(cmd||goalpoint!=(0,0))moved=TryMove(pos.xy+(cos(angle),sin(angle))*3,false);
 
-			if(!moved)turnamount=random(10,16)*randompick(-1,1);
-			else if(movestamina>20&&!random(0,20))turnamount=random(-5,12)*randompick(-1,1);
-			else turnamount=0;
-			if(turnamount)setstatelabel("randturn");
+			movestamina++;
+
+			if(!moved){
+				goalpoint=(0,0);
+				turnamount=random(10,16)*randompick(-1,1);
+			}else if(
+				movestamina>20
+				&&!random(0,20)
+			){
+				if(goalpoint==(0,0))turnamount=random(-5,12)*randompick(-1,1);
+				else{
+					turnamount=angletogoal();
+				}
+			}else turnamount=0;
+			if(turnamount)setstatelabel("Turn");
 		}
 	}
-	void A_DerpRandTurn(){
+	void A_DerpTurn(){
 		movestamina=0;
 		if(!turnamount)setstatelabel("see");
 		A_PlaySound("derp/crawl",CHAN_BODY);
 		if(turnamount<0){
-			angle+=15;
+			angle+=DERP_MAXTICTURN;
 			turnamount++;
 		}else{
-			angle-=15;
+			angle-=DERP_MAXTICTURN;
 			turnamount--;
 		}
 	}
 
 	override void postbeginplay(){
 		super.postbeginplay();
+		goalpoint=(0,0);
 		ChangeTid(DERP_TID);
 		if(!playerpawn(master)){
 			ammo=15;
@@ -151,8 +172,8 @@ class DERPBot:HDUPK{
 	see2:
 		DERP AAAAAAAA 3 A_DerpCrawl();
 		goto see;
-	randturn:
-		DERP A 1 A_DerpRandTurn();
+	turn:
+		DERP A 1 A_DerpTurn();
 		wait;
 	noshot:
 		DERP AAAAAAA 3{
@@ -406,6 +427,34 @@ class EnemyDERP:DERPBot{
 
 		-friendly
 		translation 1;
+	}
+}
+
+
+extend class HDHandlers{
+	void SetDERP(hdplayerpawn ppp,int cmd,int tag=0,int cmd2=0){
+		actoriterator it=actoriterator.create(DERP_TID,"DERPBot");
+		actor bot=null;
+		int derps=0;
+		while(bot=it.Next()){
+			let derp=DERPBot(bot);
+			if(
+				derp&&derp.master==ppp
+				&&(!tag||tag==derp.botid)
+			){
+				if(cmd&&cmd<4){
+					derp.cmd=cmd;
+					string mode="gPATROL";
+					if(cmd==1)mode="cAMBUSH";
+					else if(cmd==2)mode="cAMBUSH";
+					ppp.A_Log(string.format("\cd[DERP]  \c%s  \cjmode",mode),true);
+				}else if(cmd==4){
+					derp.goalpoint=ppp.pos.xy;
+					derp.turnamount=derp.angletogoal();
+					derp.setstatelabel("turn");
+				}
+			}
+		}
 	}
 }
 
