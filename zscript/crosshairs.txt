@@ -2,6 +2,7 @@
 // Sight picture crosshairs
 // ------------------------------------------------------------
 extend class HDStatusBar{
+double scl;
 	virtual void DrawHDXHair(hdplayerpawn hpl){
 		let wp=hdweapon(cplayer.readyweapon);
 
@@ -52,23 +53,24 @@ extend class HDStatusBar{
 					scale:(1.6,1.6)
 				);
 			}else{
+scl=clamp(scl+frandom(-0.05,0.05),0.8,1.2);
 				drawimage(
 					"XH25",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-					scale:(2.6,2.7)
+					scale:(2.6,2.7)*scl
 				);
 				if(scopeview){
 					double degree=(35-wp.weaponstatus[ZM66S_ZOOM])*0.2;
 					texman.setcameratotexture(hpc,"HDXHCAM3",degree);
 					drawimage(
-						"HDXHCAM3",(0,47),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-						scale:(0.31,0.31)
+						"HDXHCAM3",(0,47*scl),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+						scale:(0.31,0.31)*scl
 					);
 					drawimage(
-						"XH29",(0,47),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-						scale:(0.8,0.8)
+						"XH29",(0,47*scl),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+						scale:(0.8,0.8)*scl
 					);
 					drawnum(degree*10,
-						4,79,DI_SCREEN_CENTER,Font.CR_BLACK
+						4,79*scl,DI_SCREEN_CENTER,Font.CR_BLACK
 					);
 				}
 			}
