@@ -277,7 +277,8 @@ class HDStatusBar:DoomStatusBar{
 
 
 		//full hud consequences
-		if(cplayer.buttons&BT_USE)gimmehud=max(0,gimmehud-1);else gimmehud=10;
+		if(cplayer.buttons&BT_USE)gimmehud=max(0,gimmehud-1);
+			else gimmehud=max(cvar.getcvar("hd_hudusedelay",cplayer).getint(),0);
 		if(!gimmehud){
 			drawweaponstash();
 			drawammocounters(mxht);
