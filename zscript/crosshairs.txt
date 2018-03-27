@@ -18,7 +18,7 @@ extend class HDStatusBar{
 		actor hpc=hpl.scopecamera;
 		int cpbt=cplayer.cmd.buttons;
 		int nscp=cvar.getcvar("hd_noscope",cplayer).getint();
-		float scl=cvar.getcvar("hd_xhscale",cplayer).getfloat();
+		float scl=clamp(cvar.getcvar("hd_xhscale",cplayer).getfloat(),0.1,3.0);
 		bool scopeview=(
 			!nscp||
 			(nscp==1&&!gimmehud)||
