@@ -83,7 +83,7 @@ extend class HDHandlers{
 	vector3 teamspawns[255]; //how do you get # of teams
 	double teamspawnangle[255];
 	void MoveToTeamSpawn(hdplayerpawn ppp,int team,int cmd){
-		string messagesubject=string.format("%s has",ppp.player.getusername());
+		string messagesubject=string.format("\cl%s has",ppp.player.getusername());
 		string message;
 		if(cmd==666){
 			if(ppp.player.crouchfactor<1.||!ppp.checkmove(ppp.pos.xy,PCM_NOACTORS)){
@@ -98,7 +98,7 @@ extend class HDHandlers{
 			}
 		}else if(cmd<0||cmd==999){
 			teamspawns[team]=(0,0,0);
-			message=(" \cyCLEARED\cl the team spawnpoint! You will respawn randomly!\n\cu(Type \crteamspawn 666\cl to set a new spawnpoint.)");
+			message=(" \cyCLEARED\cl the team spawnpoint! You will respawn randomly!\n\cu(Type \crteamspawn 666\cu to set a new spawnpoint.)");
 		}else{
 			if(teamspawns[team]==(0,0,0))ppp.A_Log("\clNo team spawnpoint has been set. Type \crteamspawn 666\cl to set it.",true);
 			else ppp.A_Log(string.format("\clThe team spawnpoint is [\cx%i\cl,\cy%i\cl,\cz%i\cl]",
@@ -110,7 +110,7 @@ extend class HDHandlers{
 			if(players[i].getteam()==team&&players[i].mo)
 			players[i].mo.A_Print(
 				string.format("%s\cl%s",
-					i==ppp.playernumber()?"You have":messagesubject,
+					i==ppp.playernumber()?"\clYou have":messagesubject,
 					message
 				)
 			);
