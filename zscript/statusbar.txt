@@ -87,9 +87,12 @@ class HDStatusBar:DoomStatusBar{
 			cplayer.mo.health>70?Font.CR_OLIVE:(cplayer.mo.health>33?Font.CR_GOLD:Font.CR_RED)
 		);
 
+		//armour
+		DrawArmour((4,86),DI_TOPLEFT);
+
 		//inventory
-		DrawInvSel(6,90,36,106,DI_TOPLEFT);
-		if(cp.countinv("WornRadsuit"))drawimage("SUITC0",(14,120),DI_TOPLEFT);
+		DrawInvSel(6,110,10,109,DI_TOPLEFT);
+		if(cp.countinv("WornRadsuit"))drawimage("SUITC0",(11,137),DI_TOPLEFT);
 
 		//guns
 		drawselectedweapon(-100,-24,DI_BOTTOMRIGHT);
@@ -246,23 +249,10 @@ class HDStatusBar:DoomStatusBar{
 		}
 
 		//armour
-		let armour=HDArmourWorn(cp.findinventory("HDArmourWorn"));
-		if(armour){
-			string armoursprite="ARMSA0";
-			string armourback="ARMER0";
-			if(armour.meleethreshold==3){
-				armoursprite="ARMCA0";
-				armourback="ARMER1";
-			}
-			vector2 armourcoords=(0,-mIndexFont.mFont.GetHeight()*2);
-			if(state==HUD_Fullscreen)armourcoords=(-55,-4);
-			drawbar(
-				armoursprite,armourback,
-				armour.amount,armour.maxamount,
-				armourcoords,-1,
-				SHADER_VERT,DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM
-			);
-		}
+		DrawArmour(
+			state==HUD_Fullscreen?(-55,-4):(0,-mIndexFont.mFont.GetHeight()*2),
+			DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM
+		);
 
 		//weapon readouts!
 		if(cplayer.readyweapon)drawweaponstatus(cplayer.readyweapon);
@@ -367,6 +357,23 @@ class HDStatusBar:DoomStatusBar{
 				coords,-1,
 				SHADER_VERT,flags
 		);
+	}
+	void DrawArmour(vector2 armourcoords,int flags){
+		let armour=HDArmourWorn(cplayer.mo.findinventory("HDArmourWorn"));
+		if(armour){
+			string armoursprite="ARMSA0";
+			string armourback="ARMER0";
+			if(armour.meleethreshold==3){
+				armoursprite="ARMCA0";
+				armourback="ARMER1";
+			}
+			drawbar(
+				armoursprite,armourback,
+				armour.amount,armour.maxamount,
+				armourcoords,-1,SHADER_VERT,
+				flags
+			);
+		}
 	}
 	void DrawInvSel(int posx,int posy,int numposx,int numposy,int flags){
 		if(CPlayer.mo.InvSel){
