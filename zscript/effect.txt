@@ -38,8 +38,7 @@ class HDDebris:HDActor{
 			for(int i=0;i<spd;i++){
 				if(!trymove(pos.xy+frac,true)){
 					A_PlaySound(bouncesound);
-					vel.xy+=(frandom(-spd,spd),frandom(-spd,spd));
-					vel.xy*=-bouncefactor;
+					vel.xy=rotatevector(vel.xy,frandom(80,280))*bouncefactor;
 				}
 			}
 			CheckPortalTransition();
@@ -51,12 +50,11 @@ class HDDebris:HDActor{
 				if(pos.z<=floorz)setz(floorz);else setz(ceilingz-height);
 				if(abs(vel.z)>2){
 					A_PlaySound(bouncesound);
-					vel.xy+=(frandom(-spd,spd),frandom(-spd,spd));
+					vel.xy=rotatevector(vel.xy,frandom(-110,110))*bouncefactor;
 				}
-				vel.xy*=bouncefactor;
 				vel.z*=-bouncefactor;
 			}
-			if(floorz==pos.z && max(abs(vel.x),abs(vel.y),abs(vel.z))<1){
+			if(floorz==pos.z && vel.length()<1){
 				if(findstate("death"))setstatelabel("death");else destroy();
 				if(bdestroyed)return; //if nexttic() is called below, it would crash
 				stopped=true;
