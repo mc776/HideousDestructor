@@ -42,6 +42,22 @@ extend class HDHandlers{
 			hde.A_GiveInventory("SpecMorph");
 		}else{
 			setplayerlives(e.playernumber);
+
+			if(
+				teamplay&&deathmatch
+			){
+				vector3 tmspn=teamspawns[players[e.playernumber].getteam()];
+				if(tmspn!=(0,0,0)){
+					hde.setorigin(tmspn,false);
+					hde.angle=teamspawnangle[players[e.playernumber].getteam()];
+					if(
+						!hde.trymove(hde.pos.xy,true)
+						&&hde.blockingmobj&&hde.blockingmobj.bshootable
+					)hde.blockingmobj.damagemobj(hde,hde,hde.TELEFRAG_DAMAGE,"Balefire",DMG_FORCED);
+					hde.A_Recoil(-15);
+				}
+			}
+
 			hde.spawn("TeleFog",hde.pos); //HDPP only sets telefog in postbeginplay
 		}
 	}
@@ -61,6 +77,43 @@ extend class HDHandlers{
 				lvs=max(0,fl-ffadeaths[pnum]);
 				lives[pnum]=lvs;
 			}
+		}
+	}
+
+	vector3 teamspawns[255]; //how do you get # of teams
+	double teamspawnangle[255];
+	void MoveToTeamSpawn(hdplayerpawn ppp,int team,int cmd){
+		string messagesubject=string.format("%s has",ppp.player.getusername());
+		string message;
+		if(cmd==666){
+			if(ppp.player.crouchfactor<1.||!ppp.checkmove(ppp.pos.xy,PCM_NOACTORS)){
+				ppp.A_Log("\crThere is not enough room to set a spawnpoint.");
+				return;
+			}else{
+				teamspawns[team]=ppp.pos;
+				teamspawnangle[team]=ppp.angle;
+				message=string.format(" changed the team spawnpoint to [\cx%i\cl,\cy%i\cl,\cz%i\cl]",
+					teamspawns[team].x,teamspawns[team].y,teamspawns[team].z
+				);
+			}
+		}else if(cmd<0||cmd==999){
+			teamspawns[team]=(0,0,0);
+			message=(" \cyCLEARED\cl the team spawnpoint! You will respawn randomly!\n\cu(Type \crteamspawn 666\cl to set a new spawnpoint.)");
+		}else{
+			if(teamspawns[team]==(0,0,0))ppp.A_Log("\clNo team spawnpoint has been set. Type \crteamspawn 666\cl to set it.",true);
+			else ppp.A_Log(string.format("\clThe team spawnpoint is [\cx%i\cl,\cy%i\cl,\cz%i\cl]",
+				teamspawns[team].x,teamspawns[team].y,teamspawns[team].z
+			),true);
+			return;
+		}
+		for(int i=0;i<MAXPLAYERS;i++){
+			if(players[i].getteam()==team&&players[i].mo)
+			players[i].mo.A_Print(
+				string.format("%s\cl%s",
+					i==ppp.playernumber()?"You have":messagesubject,
+					message
+				)
+			);
 		}
 	}
 }

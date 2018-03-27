@@ -23,6 +23,12 @@ extend class HDHandlers{
 		else if(e.name~=="herpdir")SetHERP(ppp,3,e.args[1],e.args[0]);
 
 		else if(e.name~=="derp")SetDERP(ppp,e.args[0],e.args[1],e.args[2]);
+	
+		else if(
+			e.name~=="teamspawn"
+			&&teamplay&&deathmatch
+			&&ppp.player.crouchfactor>0.9
+		)MoveToTeamSpawn(ppp,players[e.player].getteam(),e.args[0]);
 	}
 }
 

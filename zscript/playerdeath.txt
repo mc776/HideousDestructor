@@ -22,7 +22,7 @@ extend class HDPlayerPawn{
 	}
 	int deathcounter;
 	override void DeathThink(){
-		if(player){
+		if(player&&!player.bot){
 			if(deathcounter==144&&!(player.cmd.buttons&BT_USE)){
 				A_Log("\clPress \cdUse\cl to contnue.",true);
 				deathcounter=145;
@@ -130,6 +130,10 @@ extend class HDHandlers{
 		endgame=false;
 		coopdeaths=0;
 		for(int i=0;i<teamdeaths.size();i++){teamdeaths[i]=0;}
+
+		for(int i=0;i<teamspawns.size();i++){
+			teamspawns[i]=(0,0,0);
+		}
 	}
 	override void PlayerDied(PlayerEvent e){
 		let eee=PlayerPawn(players[e.playernumber].mo);
