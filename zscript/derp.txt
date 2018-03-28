@@ -165,7 +165,7 @@ class DERPBot:HDUPK{
 				cmd=DERP_AMBUSH;
 			}
 			bool canpickup=(
-				(health>0&&!target.countinv("DERPUsable"))
+				(health>0&&!target.A_JumpIfInventory("DERPUsable",0,"null"))
 				||(health<1&&!target.countinv("DERPDEAD"))
 			);
 			if(ammo>0&&(
@@ -301,7 +301,7 @@ class DERPUsable:HDPickup{
 
 		+inventory.transfer
 		scale 0.6;
-		inventory.amount 1; inventory.maxamount 1;
+		inventory.amount 1; inventory.maxamount 3;
 		inventory.icon "DERPEX";
 		inventory.pickupmessage "Picked up a Defence, Engagement, Reconnaissance and Patrol robot.";
 		inventory.pickupsound "derp/crawl";
