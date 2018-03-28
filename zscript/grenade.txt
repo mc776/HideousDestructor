@@ -488,7 +488,7 @@ class GrenadeForce:InventoryFlag{
 	}
 }
 class JustThrew:InventoryFlag{}
-class HDFragGrenadeAmmo:Ammo{
+class HDFragGrenadeAmmo:HDAmmo{
 	default{
 		//$Category "Ammo/Hideous Destructor/"
 		//$Title "Frag Grenade"
@@ -498,25 +498,13 @@ class HDFragGrenadeAmmo:Ammo{
 		inventory.icon "FRAGA0";
 		inventory.amount 1;
 		inventory.maxamount 16;
-		ammo.backpackamount 0;
-		ammo.backpackmaxamount 60;
 		scale 0.3;
 		inventory.pickupmessage "Picked up a hand grenade.";
 		inventory.pickupsound "weapons/pocket";
 	}
 	states{
-	spawn:
-		FRAG A 0 nodelay{
-			while(invoker.amount>0){
-				amount--;
-				invoker.A_SpawnItemEx("FragP",0,0,0,
-					invoker.vel.x+frandom(-1,1),
-					invoker.vel.y+frandom(-1,1),
-					invoker.vel.z+frandom(-1,1),
-					0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM
-				);
-			}
-		}stop;
+	spawn2:
+		FRAG A -1;stop;
 	}
 }
 class FragP:HDUPK replaces HDFragGrenadeAmmo{

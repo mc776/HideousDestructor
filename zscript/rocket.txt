@@ -259,7 +259,10 @@ class DudRocketAmmo:Ammo{
 	}
 }
 class DRAP:HDUPK{
-	default{scale 0.5;}
+	default{
+		scale 0.5;
+		hdupk.pickupmessage "picked up a defused rocket grenade.";
+	}
 	states{
 	spawn:
 		ROCQ A -1 A_Stop();
@@ -281,6 +284,7 @@ class DudRocket:HDUPK{
 		bouncesound "misc/fragknock";
 		wallbouncesound "misc/fragknock";
 		obituary "%o was fragged by %k.";
+		hdupk.pickupmessage "picked up (and defused) a rocket grenade.";
 		damagefactor(0);
 		radius 3; height 3; scale 0.5;
 	}

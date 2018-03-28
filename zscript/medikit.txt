@@ -390,15 +390,17 @@ class HDOpenedMedikit:HDUPK{
 		}
 	}
 	override void A_HDUPKGive(){
-		if(!target||target.countinv("HDMedikitter")){
+		if(!picktarget||picktarget.countinv("HDMedikitter")){
 			setstatelabel("spawn");
 			return;
 		}
-		target.A_GiveInventory("HDMedikitter");
-		let k=HDMedikitter(target.FindInventory("HDMedikitter"));
+		picktarget.A_GiveInventory("HDMedikitter");
+		let k=HDMedikitter(picktarget.FindInventory("HDMedikitter"));
 		k.usedflesh=usedflesh;
 		k.usedpatches=usedpatches;
 		k.usedon=usedon;
+		picktarget.A_PlaySound(activesound,5);
+		picktarget.A_Log(string.format("\cg%s",pickupmessage),true);
 	}
 }
 class SecondFleshBeast:IdleDummy{

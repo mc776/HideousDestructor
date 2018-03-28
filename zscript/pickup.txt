@@ -224,6 +224,9 @@ class HDUPK:HDActor{
 		if(pickuptype=="none"){
 			target=picktarget;
 			setstatelabel("give");
+			if(!bdestroyed)return;
+			picktarget.A_PlaySound(activesound,5);
+			picktarget.A_Log(string.format("\cg%s",pickupmessage),true);
 			return;
 		}
 		int increase=picktarget.countinv(pickuptype);

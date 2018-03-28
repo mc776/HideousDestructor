@@ -112,39 +112,16 @@ class TerrorCasing:HDDebris{
 
 
 
-class BrontornisRound:Ammo{
+class BrontornisRound:HDAmmo{
 	default{
 		+inventory.ignoreskill
 		inventory.maxamount 20;
-		ammo.backpackmaxamount 40;
-		ammo.backpackamount 0;
 		inventory.pickupmessage "Picked up a bolt.";
 		scale 0.3;
 	}
 	states{
-	spawn:
-		BROC A 0 nodelay{
-			HDF.SplitAmmoSpawn(self);
-			A_SpawnItemEx("BroP",0,0,0,
-				vel.x,vel.y,vel.z,
-				0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM
-			);
-		}stop;
-	}
-}
-class BroP:HDUPK replaces BrontornisRound{
-	default{
-		scale 0.3;
-	}
-	states{
-	spawn:
-		BROC A -1 A_Stop();
-	give:
-		---- A 0 A_JumpIfInTargetInventory("BrontornisRound",0,"spawn");
-		---- A 0{
-			A_PlaySound("weapons/pocket");
-			A_GiveToTarget("BrontornisRound",1);
-		}
+	spawn2:
+		BROC A -1;
 		stop;
 	}
 }
@@ -375,10 +352,10 @@ class BrontornisSpawner:IdleDummy{
 	states{
 	spawn:
 		TNT1 A 0 nodelay{
-			A_SpawnItemEx("BroP",0,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
-			A_SpawnItemEx("BroP",3,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
-			A_SpawnItemEx("BroP",1,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
-			A_SpawnItemEx("BroP",-3,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
+			A_SpawnItemEx("BrontornisRound",0,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
+			A_SpawnItemEx("BrontornisRound",3,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
+			A_SpawnItemEx("BrontornisRound",1,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
+			A_SpawnItemEx("BrontornisRound",-3,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
 			A_SpawnItemEx("Brontornis",0,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
 		}stop;
 	}

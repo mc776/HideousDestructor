@@ -1,26 +1,21 @@
 // ------------------------------------------------------------
 // 7.76mm Ammo
 // ------------------------------------------------------------
-class LiberatorMag:Ammo{
+class LiberatorMag:HDAmmo{
 	default{
 		//$Category "Ammo/Hideous Destructor/"
 		//$Title "Liberator Magazine"
 		//$Sprite "RMAGA0"
 
 		+inventory.ignoreskill
-		ammo.backpackmaxamount 12;ammo.backpackamount 0;
 		inventory.maxamount 5;
+		scale 0.7;
 		scale 0.7;
 		inventory.pickupmessage "Picked up a 7.76mm magazine.";
 	}states{
-	spawn:
-		TNT1 A 0 nodelay{
-			HDF.SplitAmmoSpawn(self);
-			A_SpawnItemEx("LiberatorMagP",0,0,0,
-				vel.x,vel.y,vel.z,
-				0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM
-			);
-		}stop;
+	spawn2:
+		RMAG A -1;
+		stop;
 	}
 }
 class LiberatorEmptyMag:HD4mmMagEmpty{
@@ -34,10 +29,11 @@ class LiberatorEmptyMag:HD4mmMagEmpty{
 		stop;
 	}
 }
-class LiberatorMagP:HDUPK replaces LiberatorMag{
+class LiberatorMagP:HDUPK{
 	default{
 		stamina 30;
 		scale 0.7;
+		hdupk.pickupmessage "Picked up a 7.76mm magazine.";
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -71,7 +67,7 @@ class LiberatorMagP:HDUPK replaces LiberatorMag{
 }
 
 
-class BossClip:Ammo{
+class BossClip:HDAmmo{
 	default{
 		//$Category "Ammo/Hideous Destructor/"
 		//$Title "Boss Clip"
@@ -79,34 +75,14 @@ class BossClip:Ammo{
 
 		+inventory.ignoreskill;
 		inventory.maxamount 12;
-		ammo.backpackmaxamount 30;
-		ammo.backpackamount 0;
-	}
-	states{
-	spawn:
-		TNT1 A 0 nodelay{
-			HDF.SplitAmmoSpawn(self);
-			A_SpawnItemEx("BossClipPickup",0,0,0,
-				vel.x,vel.y,vel.z,
-				0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM
-			);
-		}stop;
-	}
-}
-class BossClipPickup:HDUPK replaces BossClip{
-	default{
+
 		scale 0.5;
+		inventory.pickupmessage "Picked up a clip.";
 	}
 	states{
-	spawn:
-		RCLP A 0 A_Stop();
-		goto spawn2;
-	give:
-		---- A 0 A_JumpIfInTargetInventory("BossClip",0,"spawn");
-		---- A 0{
-			A_GiveToTarget("BossClip",1);
-			A_PlaySound("weapons/pocket");
-		}stop;
+	spawn2:
+		RCLP A -1;
+		stop;
 	}
 }
 

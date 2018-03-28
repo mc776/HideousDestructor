@@ -294,6 +294,7 @@ class DERPBot:HDUPK{
 
 //keep the usable a separate actor so we can add more interfaces in the future
 class DERPUsable:HDPickup{
+	int botid;
 	default{
 		//$Category "Items/Hideous Destructor"
 		//$Title "D.E.R.P. Robot (Pickup)"
@@ -306,6 +307,10 @@ class DERPUsable:HDPickup{
 		inventory.pickupmessage "Picked up a Defence, Engagement, Reconnaissance and Patrol robot.";
 		inventory.pickupsound "derp/crawl";
 		translation 0;
+	}
+	override void beginplay(){
+		super.beginplay();
+		botid=1;
 	}
 	override void detachfromowner(){
 		translation=owner.translation;
@@ -334,6 +339,7 @@ class DERPUsable:HDPickup{
 			);
 			let derp=derpbot(a);
 			derp.vel+=vel;
+			derp.botid=invoker.botid;
 			if(countinv("HDPistolMag")){
 				derp.ammo=15;
 				A_TakeInventory("HDPistolMag",1,TIF_NOTAKEINFINITE);
@@ -389,6 +395,14 @@ class EnemyDERP:DERPBot{
 
 extend class HDHandlers{
 	void SetDERP(hdplayerpawn ppp,int cmd,int tag,int cmd2){
+		if(cmd<0){
+			let dpu=DERPUsable(ppp.findinventory("DERPUsable"));
+			if(dpu){
+				dpu.botid=-cmd;
+				ppp.A_Log(string.format("\cd[DERP]  \cutag set to  \cy%i",-cmd),true);
+			}
+			return;
+		}
 		actoriterator it=actoriterator.create(DERP_TID,"DERPBot");
 		actor bot=null;
 		int derps=0;
@@ -437,7 +451,7 @@ extend class HDHandlers{
 					}
 				}else if(cmd==123){
 					int ammo=derp.ammo;
-					ppp.A_Log(string.format("\cd[DERP] \cjreporting in at [\cx%i\cj,\cx%i\cj] with %s",derp.pos.x,derp.pos.y,ammo?string.format("\cy%i\cj bullets left!",derp.ammo):"\crno ammo left!\cj Help!"),true);
+					ppp.A_Log(string.format("\cd[DERP] \cjtag #\cx%i \cjreporting in at [\cx%i\cj,\cx%i\cj] with %s",derp.botid,derp.pos.x,derp.pos.y,ammo?string.format("\cy%i\cj bullets left!",derp.ammo):"\crno ammo left!\cj Help!"),true);
 				}else{
 					badcommand=true;
 					break;
@@ -450,16 +464,19 @@ extend class HDHandlers{
 			}
 		}
 		if(badcommand){
-			ppp.A_Print("\cd[DERP]\cj List of available commands:
+			let dpu=DERPUsable(ppp.findinventory("DERPUsable"));
+			ppp.A_Print(string.format("\cd[DERP]\cj List of available commands:
 \n             derpt    \cjturret mode  (1)
 \n             derpa    \cjambush mode  (2)
 \n             derpp    \cjpatrol mode  (3)
 \n             derpcome \cjcome to user (4)
 \n             derpgo   \cjgo to point  (5)
 \n             derpat   \cjtoggle 1/2   (6)
+\n             derptag  \cjset tag      (7)
 \n \cu(all of these can be shortened\n\cuwith \"d\" instead of \"derp\")
-\n \cuType \cdderp 123\cu to poll deployed DERPs.
-			",9);
+\n\n \cuType \cdderp 123\cu to poll deployed DERPs.
+\n \cuCurrent tag is \cx%i.
+			",dpu?dpu.botid:1),9);
 		}
 	}
 }
