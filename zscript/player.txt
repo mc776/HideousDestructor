@@ -326,7 +326,7 @@ class HDPlayerPawn:PlayerPawn{
 				)
 			)
 		);
-		if(overloaded>0){
+		if(overloaded>1.){
 			maxspeed=max(0.1,4.-overloaded);
 			if(maxspeed<0.36){
 				viewbob=clamp(viewbob+0.2,0,1.4);
@@ -341,7 +341,7 @@ class HDPlayerPawn:PlayerPawn{
 			}else if(overloaded<1.2){
 				viewbob=clamp(viewbob+0.1,0,1.1);
 			}
-		}
+		}else viewbob=clamp(viewbob+0.1,0,0.8);
 
 		//apply all movement speed modifiers
 		speed=1.-overloaded*0.02;
