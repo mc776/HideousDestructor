@@ -55,49 +55,19 @@ class HDCellpacks:HDAmmo{
 		scale 0.4;
 	}
 	states(actor){
-	spawn:
-		CELL A 0 nodelay A_SpawnItemEx("CelP",0,0,0,vel.x,vel.y,vel.z,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);
+	spawn2:
+		CELL A -1;
 		stop;
 	}
 }
-class HDCellpackEmpty:HDAmmo{
+class HDCellpackEmpty:HDCellpacks{
 	default{
 		//$Category "Ammo/Hideous Destructor/"
 		//$Title "Cell Battery (Spent)"
 		//$Sprite "CELLC0"
 
-		inventory.maxamount 6;
 		inventory.pickupmessage "Picked up a depleted cell.";
-		scale 0.4;
-	}
-	states{
-	spawn:
-		CELL A 0 nodelay A_SpawnItemEx("CelE",0,0,0,vel.x,vel.y,vel.z,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);
-		stop;
-	}
-}
-class CelP:HDUPK replaces HDCellpacks{
-	default{scale 0.4;}
-	states{
-	spawn:
-		CELL A -1 A_Stop();
-	give:
-		---- A 0 A_JumpIfInTargetInventory("HDCellpacks",0,"spawn");
-		---- A 0{
-			A_PlaySound("weapons/pocket",CHAN_WEAPON);
-			A_GiveToTarget("HDCellpacks",1);
-		}stop;
-	}
-}
-class CelE:CelP replaces HDCellpackEmpty{
-	default{translation 0;}
-	states{
-	give:
-		---- A 0 A_JumpIfInTargetInventory("HDCellpackEmpty",0,"spawn");
-		---- A 0{
-			A_PlaySound("weapons/pocket",CHAN_WEAPON);
-			A_GiveToTarget("HDCellpackEmpty",1);
-		}stop;
+		translation 0;
 	}
 }
 
@@ -110,11 +80,11 @@ class HDCellPickup:HDUPK{
 	spawn2:
 		CELL CBA -1{
 			if(stamina<1){
-				actor a=spawn("CelE",pos);a.vel=vel;
+				actor a=spawn("HDCellpackEmpty",pos);a.vel=vel;
 				destroy();return;
 			}
 			else if(stamina>=20){  
-				actor a=spawn("CelP",pos);a.vel=vel;
+				actor a=spawn("HDCellpacks",pos);a.vel=vel;
 				destroy();return;
 			}
 			else if(stamina>13)frame=0;  

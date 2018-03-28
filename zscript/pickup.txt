@@ -104,20 +104,26 @@ class userpickerupper:hdactor{
 //Usable pickup.
 class HDPickup:CustomInventory{
 	actor picktarget;
+	bool droptranslation;
+	property droptranslation:droptranslation;
 	default{
 		+inventory.invbar +inventory.persistentpower
 		+solid +noblockmonst +notrigger +dontgib
 		inventory.interhubamount int.MAX;
+
+		hdpickup.droptranslation true;
 
 		radius 8; height 10; scale 0.8;
 		inventory.pickupsound "weapons/pocket";
 		accuracy 1;
 	}
 	override inventory createtossable(int amount){
-		actor onr=owner;
-		inventory iii=super.createtossable(amount);
-		if(iii)iii.translation=onr.translation;
-		return iii;
+		if(droptranslation&&owner){
+			actor onr=owner;
+			inventory iii=super.createtossable(amount);
+			if(iii)iii.translation=onr.translation;
+			return iii;
+		}else return super.createtossable(amount);
 	}
 	override void doeffect(){
 		if(!amount)goawayanddie();
@@ -166,6 +172,7 @@ class HDAmmo:HDPickup{
 	property basemaxamount:basemaxamount;
 	default{
 		-inventory.invbar
+		hdpickup.droptranslation false;
 	}
 	states{use:TNT1 A 0;fail;spawn2:---- A -1;}
 }

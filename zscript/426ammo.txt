@@ -33,23 +33,16 @@ class ZM66RifleMags:HDAmmo{
 		//$Title "4.26mm UAC Standard Mag"
 		//$Sprite "CLIPB0"
 
-		+nointeraction
 		inventory.maxamount 6;
 		inventory.pickupmessage "Picked up a 4.26 UAC Standard magazine.";
 		xscale 0.3;yscale 0.4;
 	}
-	states(actor){
-	spawn:
-		TNT1 A 0 nodelay{
-			HDF.SplitAmmoSpawn(self);
-			A_SpawnItemEx("HD4mmMag",0,0,0,
-				vel.x,vel.y,vel.z,
-				0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM
-			);
-		}stop;
+	states{
+	spawn2:
+		CLIP C -1;
 	}
 }
-class HD4mmMag:HDUPK replaces ZM66RifleMags{
+class HD4mmMag:HDUPK{
 	default{
 		translation "160:167=144:151";
 		xscale 0.3;yscale 0.4;

@@ -27,7 +27,7 @@ function str gettip(int rsd){
 	int flp=0;
 	int rnd=lastrnd;
 	for(int i=0;i<rsd;i++){flp=random(0,1);}
-	while(rnd==lastrnd)rnd=random(0,24);
+	while(rnd==lastrnd)rnd=random(0,25);
 	lastrnd=rnd;
 	switch(rnd){
 	case 1: return "Remember to \cxBIND KEYS\cu for all
@@ -142,6 +142,10 @@ function str gettip(int rsd){
 	case 24: return "Your \cqturning\cu affects the momentum of
 			\nyour \cqpunches\cu and \cqgrenade throws\cu.
 			\nGo to the range and do some practice!";
+
+	case 25: return "If you need to \cxRESIZE\cu the crosshair/
+			\nscope view, set \cqhd_xhscale\cu to any value between
+			\n0.1 and 3.0 (default 1.0).";
 	}
 
 	//default:

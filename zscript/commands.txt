@@ -12,8 +12,11 @@ extend class HDHandlers{
 		let ppp=hdplayerpawn(players[e.player].mo);
 		if(!ppp)return;
 
-		//set airburst
 		if(e.name~=="ab")SetAirburst(ppp,e.args[0]);
+
+		else if(e.name~=="hd_taunt")Taunt(ppp);
+		else if(e.name~=="hd_purge")PurgeUselessAmmo(ppp);
+		else if(e.name~=="hd_dropone")DropOne(ppp,ppp.player,e.args[0]);
 
 		else if(e.name~=="ied")SetIED(ppp,e.args[0],e.args[1]);
 		else if(e.name~=="iedtag")SetIED(ppp,-abs(e.args[0]),0);
