@@ -321,10 +321,12 @@ class LiberatorRifle:HDWeapon{
 			A_PlaySound ("weapons/rifleload");
 		}
 		BRFG B 0{
+			int magamt=invoker.weaponstatus[LIBS_MAG];
 			if(
 				//no mag loaded, skip straight to magout
-				invoker.weaponstatus[LIBS_MAG]<0
+				magamt<0
 			)return resolvestate("magout");
+			bool inmm=false;
 			if(
 				(
 					//nothing worth keeping in this mag
@@ -335,12 +337,12 @@ class LiberatorRifle:HDWeapon{
 					&&!PressingUnload()
 				)||(
 					//full mag and you are maxed on full mags
-					A_JumpIfInventory("LiberatorLoaded",0,"null")
+					magamt>=30
 					&&A_JumpIfInventory("LiberatorMag",0,"null")
 				)||(
 					//partial mag and you have more spares than you can fit
-					countinv("SevenMilAmmo")+invoker.weaponstatus[LIBS_MAG]>  
-					AmmoCap("SevenMilAmmo")
+					!(inmm=magmanager.givemmmag(null,self,HDMMS_LIB,magamt))
+					&&(countinv("SevenMilAmmo")+magamt>AmmoCap("SevenMilAmmo"))
 				)
 			){
 				actor mmm;int nnn;
@@ -354,6 +356,7 @@ class LiberatorRifle:HDWeapon{
 				invoker.weaponstatus[LIBS_MAG]=-1;
 				return resolvestate("magout");
 			}
+			if(inmm)invoker.weaponstatus[LIBS_MAG]=-1;
 			return resolvestate("pocketmag");
 		}
 	pocketmag:
