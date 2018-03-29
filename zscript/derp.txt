@@ -34,7 +34,7 @@ class DERPBot:HDUPK{
 		if(!target)return false;
 		if(
 			target==master
-			||target.isteammate(master)
+			||(master&&target.isteammate(master))
 		){
 			A_ClearTarget();
 			bfriendly=true;
