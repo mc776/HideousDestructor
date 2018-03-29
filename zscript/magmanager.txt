@@ -16,6 +16,14 @@ class MagManager:HDWeapon{
 		DropMag(weaponstatus[HDMMS_WHICH]);
 		return null;//super.createtossable(amount);
 	}
+	static bool GiveMMMag(actor caller,actor picker,int which,int amount){
+		let mmm=magmanager(picker.findinventory("magmanager"));
+		if(!mmm)return false;
+		if(mmm.weaponstatus[which])return false;
+		mmm.weaponstatus[which]=amount;
+		caller.destroy();
+		return true;
+	}
 	bool DropMag(int which){
 		int mmamount=weaponstatus[which];
 		if(mmamount<1)return false;
