@@ -19,7 +19,7 @@ class HDPistolAmmo:Ammo{
 		PBRS A -1 nodelay {hdf.splitammospawn(self);}
 	}
 }
-class HDPistolMag:Ammo{
+class HDPistolMag:HDAmmo{
 	default{
 		//$Category "Ammo/Hideous Destructor/"
 		//$Title "Pistol Magazine"
@@ -27,24 +27,15 @@ class HDPistolMag:Ammo{
 
 		+inventory.ignoreskill
 		inventory.maxamount 6;
-		ammo.backpackmaxamount 24;
-		ammo.backpackamount 0;
 		inventory.pickupmessage "Picked up a 9mm magazine.";
 	}
 	states{
-	spawn:
-		CLP2 A 0 nodelay{
-			while(amount>0){
-				amount--;
-				actor pmm=spawn("HD9mPmag",pos);
-				pmm.vel=vel;
-				if(amount)pmm.vel+=(frandom(-1,1),frandom(-1,1),frandom(-1,1));
-				pmm.stamina=15;
-			}
-		}stop;
+	spawn2:
+		CLP2 A -1;
+		stop;
 	}
 }
-class HDSMGMag:Ammo{
+class HDSMGMag:HDAmmo{
 	default{
 		//$Category "Ammo/Hideous Destructor/"
 		//$Title "SMG Magazine"
@@ -52,21 +43,12 @@ class HDSMGMag:Ammo{
 
 		+inventory.ignoreskill
 		inventory.maxamount 5;
-		ammo.backpackmaxamount 18;
-		ammo.backpackamount 0;
 		inventory.pickupmessage "Picked up a 30-round 9mm magazine.";
 	}
 	states{
-	spawn:
-		CLP3 A 0 nodelay{
-			while(amount>0){
-				amount--;
-				actor smm=spawn("HD9mSMag",pos);
-				smm.stamina=30;
-				smm.vel=vel;
-				if(amount)smm.vel+=(frandom(-1,1),frandom(-1,1),frandom(-1,1));
-			}
-		}stop;
+	spawn2:
+		CLP3 A -1;
+		stop;
 	}
 }
 

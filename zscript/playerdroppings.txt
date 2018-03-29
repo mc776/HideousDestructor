@@ -4,6 +4,7 @@
 extend class HDHandlers{
 	//drops all ammo for which you do not have a weapon
 	void PurgeUselessAmmo(hdplayerpawn ppp){
+		let mmm=MagManager(ppp.findinventory("MagManager"));
 		if(
 			!ppp.countinv("HDPistol")
 			&&!ppp.countinv("HDSecondPistol")
@@ -13,6 +14,7 @@ extend class HDHandlers{
 			ppp.A_DropInventory("HDPistolAmmo",ppp.countinv("HDPistolAmmo"));
 			ppp.A_DropInventory("HDSMGMag",ppp.countinv("HDSMGMag"));
 			ppp.A_DropInventory("HDPistolMag",ppp.countinv("HDPistolMag"));
+			if(mmm){mmm.DropMag(HDMMS_PIST);mmm.DropMag(HDMMS_SMG);}
 		}
 		if(
 			!ppp.countinv("Slayer")
@@ -55,6 +57,7 @@ extend class HDHandlers{
 			ppp.A_DropInventory("LiberatorMag",ppp.countinv("LiberatorMag"));
 			ppp.A_DropInventory("BossClip",ppp.countinv("BossClip"));
 			ppp.A_DropInventory("SevenMilAmmo",ppp.countinv("SevenMilAmmo"));
+			if(mmm){mmm.DropMag(HDMMS_LIB);mmm.DropMag(HDMMS_BOSS);}
 		}
 		if(
 			!ppp.countinv("BFG9k")
@@ -88,14 +91,22 @@ extend class HDHandlers{
 		if(!amt&&(cw is "Hunter"||cw is "Slayer"))amt=4;
 		else amt=max(1,amt);
 
+		let mmm=MagManager(ppp.findinventory("MagManager"));
+
 		if(cw is "HDPistol"){
 			int ccc=ppp.countinv("HDPistolAmmo");
 			if(ccc)ppp.A_DropInventory("HDPistolAmmo",ccc);
-			else ppp.A_DropInventory("HDPistolMag",amt);
+			else{
+				if(mmm&&mmm.DropMag(HDMMS_PIST))amt--;
+				if(amt>0)ppp.A_DropInventory("HDPistolMag",amt);
+			}
 		}else if(cw is "HDSMG"){
 			int ccc=ppp.countinv("HDPistolAmmo");
 			if(ccc)ppp.A_DropInventory("HDPistolAmmo",ccc);
-			else ppp.A_DropInventory("HDSMGMag",amt);
+			else{
+				if(mmm&&mmm.DropMag(HDMMS_SMG))amt--;
+				if(amt>0)ppp.A_DropInventory("HDSMGMag",amt);
+			}
 		}else if(cw is "Hunter"||cw is "Slayer"){
 			ppp.A_DropInventory("HDShellAmmo",amt);
 		}else if(cw is "ZM66AssaultRifle"){
@@ -129,13 +140,19 @@ extend class HDHandlers{
 			)ppp.A_DropInventory("HDRocketAmmo",amt);
 			int ccc=ppp.countinv("SevenMilAmmo");
 			if(ccc)ppp.A_DropInventory("SevenMilAmmo",ccc);
-			else ppp.A_DropInventory("LiberatorMag",amt);
+			else{
+				if(mmm&&mmm.DropMag(HDMMS_LIB))amt--;
+				if(amt>0)ppp.A_DropInventory("LiberatorMag",amt);
+			}
 		}
 		else if(cw is "Brontornis")ppp.A_DropInventory("BrontornisRound",amt);
 		else if(cw is "BossRifle"){
 			int ccc=ppp.countinv("SevenMilAmmo");
 			if(ccc)ppp.A_DropInventory("SevenMilAmmo",ccc);
-			else ppp.A_DropInventory("BossClip",amt);
+			else{
+				if(mmm&&mmm.DropMag(HDMMS_BOSS))amt--;
+				if(amt>0)ppp.A_DropInventory("BossClip",amt);
+			}
 		}else if(cw is "ThunderBuster"||cw is "Lumberjack"){
 			int ccc=ppp.countinv("HDCellAmmo");
 			if(ccc)ppp.A_DropInventory("HDCellAmmo",ccc);
@@ -172,7 +189,6 @@ extend class HDHandlers{
 		}else PurgeUselessAmmo(ppp);
 	}
 }
-
 
 class DropMeds:ActionItem{
 	states{
