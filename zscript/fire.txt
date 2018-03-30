@@ -237,9 +237,6 @@ class PersistentDamager:HDActor{
 
 
 
-
-
-
 //new shit
 
 
@@ -293,7 +290,9 @@ class Heat:InventoryFlag{
 
 		amount--;
 		if(owner.health>0)amount-=2;
-		int mv=max(absangle(owner.angle,angle)*0.05,clamp(distance3dsquared(owner)*0.05,0,15));
+		int mv=max(absangle(owner.angle,angle)*0.05,
+			clamp(distance3dsquared(owner)*0.05,0,15)
+		);
 		amount-=random(0,mv);
 
 A_LogInt(amount);
@@ -304,17 +303,24 @@ A_LogInt(amount);
 		if(amount>hurtthreshold){
 			int dmgamt=amount>hurtthreshold?amount/hurtthreshold:(random(0,amount)>hurtthreshold);
 			owner.damagemobj(self,null,dmgamt,"Thermal",DMG_NO_ARMOR|DMG_THRUSTLESS);
-		}
-		if(
-			amount>(flamethreshold*random(100,200))/100
-			&&amount<flamethreshold*3
-		){
-			//spawn a flame
-			double or=owner.radius;
-			spawn("HDFlameRed",owner.pos+(frandom(-or,or),frandom(-or,or),frandom(0,owner.height)));
-			amount+=max(1,amount/100);
-			if(random(1,amount>flamethreshold))owner.A_GiveInventory("SawGib",1);
-			A_LogInt(amount);
+
+			if(
+				owner&&
+				amount>(flamethreshold*random(100,200))/100
+			){
+				//spawn a flame
+				double or=owner.radius;
+				spawn("HDFlameRed",owner.pos
+					+(frandom(-or,or),frandom(-or,or),frandom(0,owner.height))
+				);
+				if(random(1,amount>flamethreshold))owner.A_GiveInventory("SawGib",1);
+				amount=clamp(amount+max(1,amount/100),0,flamethreshold*3);
+	
+				//structural damage
+				if(owner.health<1&&amount==flamethreshold*3)hurtthreshold++;
+	
+				A_LogInt(amount);
+			}
 		}
 	}
 }
