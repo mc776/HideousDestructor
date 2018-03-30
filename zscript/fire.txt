@@ -234,3 +234,73 @@ class PersistentDamager:HDActor{
 }
 
 
+
+
+
+
+
+
+//new shit
+
+
+class Heat:InventoryFlag{
+	default{
+		+inventory.untossable
+		inventory.maxamount 1000000;
+	}
+	int flamethreshold;
+	int hurtthreshold;
+	override void AttachToOwner(actor other){
+		super.attachtoowner(other);
+		if(!owner){destroy();return;}
+
+		//mass, height, etc. for flamethreshold
+		flamethreshold=(
+			(
+				max(owner.mass,getdefaultbytype(owner.getclass()).health)
+				+owner.health
+			)
+			*owner.radius
+			*owner.height
+		)/100;
+
+		//hurtthreshold pinned on flamethreshold
+		int ht=flamethreshold*2/3;
+		hurtthreshold=ApplyDamageFactor("Thermal",ht);
+		int althurtthreshold=ApplyDamageFactor("Fire",ht);
+		if(althurtthreshold<hurtthreshold)hurtthreshold=althurtthreshold;
+		althurtthreshold=ApplyDamageFactor("Burning",ht);
+		if(althurtthreshold<hurtthreshold)hurtthreshold=althurtthreshold;
+	}
+	override void DoEffect(){
+		if(!owner){destroy();return;}
+		if(amount<1)return;
+
+		if(
+			owner.health<1
+			&&hdplayerpawn(owner)
+			&&hdplayerpawn(owner).playercorpse
+		){
+			target=hdplayerpawn(owner).playercorpse;
+			target.A_GiveInventory("Heat",amount);
+			amount=0;
+		}
+		if(amount>hurtthreshold){
+			int dmgamt=amount>hurtthreshold?amount/hurtthreshold:(random(0,amount)>hurtthreshold);
+			owner.damagemobj(self,null,dmgamt,"Thermal",DMG_NO_ARMOR|DMG_THRUSTLESS);
+		}
+		if(
+			amount>(flamethreshold*random(100,200))/100
+			&&amount<flamethreshold*3
+		){
+			//spawn a flame
+			double or=owner.radius;
+			spawn("HDFlameRed",owner.pos+(frandom(-or,or),frandom(-or,or),frandom(0,owner.height)));
+			amount+=max(1,amount/100);
+			if(random(1,amount>flamethreshold))owner.A_GiveInventory("SawGib",1);
+			A_LogInt(amount);
+		}
+
+		amount--;
+	}
+}
