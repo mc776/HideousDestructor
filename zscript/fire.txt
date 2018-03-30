@@ -275,6 +275,7 @@ class Heat:InventoryFlag{
 	}
 	override void DoEffect(){
 		if(!owner){destroy();return;}
+A_LogInt(amount);
 		if(amount<1)return;
 
 		if(
@@ -295,8 +296,6 @@ class Heat:InventoryFlag{
 		);
 		amount-=random(0,mv);
 
-A_LogInt(amount);
-
 		angle=owner.angle;
 		setorigin(owner.pos,false);
 
@@ -306,20 +305,21 @@ A_LogInt(amount);
 
 			if(
 				owner&&
-				amount>(flamethreshold*random(100,200))/100
+				amount>(flamethreshold*frandom(1,3))
 			){
 				//spawn a flame
-				double or=owner.radius;
-				spawn("HDFlameRed",owner.pos
-					+(frandom(-or,or),frandom(-or,or),frandom(0,owner.height))
-				);
-				if(random(1,amount>flamethreshold))owner.A_GiveInventory("SawGib",1);
+				if(accuracy<1){
+					accuracy=random(2,5);
+					double or=owner.radius;
+					spawn("HDFlameRed",owner.pos
+						+(frandom(-or,or),frandom(-or,or),frandom(0,owner.height))
+					);
+					if(random(0,amount)>flamethreshold)owner.A_GiveInventory("SawGib",1);
+				}else accuracy--;
 				amount=clamp(amount+max(1,amount/100),0,flamethreshold*3);
 	
 				//structural damage
-				if(owner.health<1&&amount==flamethreshold*3)hurtthreshold++;
-	
-				A_LogInt(amount);
+				if(owner.health<1&&amount>flamethreshold*2)hurtthreshold++;
 			}
 		}
 	}

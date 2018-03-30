@@ -278,13 +278,18 @@ class HDPlayerCorpse:HDActor{
 			scale.x=1;
 		}
 		#### PQRSTUV 5;
+		#### W -1;
+	raisegibbed:
 		---- A 0{
 			bnotargetswitch=false;
-			A_SpawnItemEx("ReallyDeadRifleman",flags:
+			actor masbak=master;
+			[bavoidmelee,master]=A_SpawnItemEx("ReallyDeadRifleman",flags:
 				SXF_NOCHECKPOSITION|
 				SXF_TRANSFERPOINTERS|
 				SXF_TRANSFERTRANSLATION
 			);
+			A_RaiseMaster(RF_NOCHECKPOSITION|RF_TRANSFERFRIENDLINESS);
+			master.master=masbak;
 		}
 		stop;
 	raise:
