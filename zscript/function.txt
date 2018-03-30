@@ -8,9 +8,10 @@ class HDHandlers:EventHandler{
 	override void worldtick(){
 		//for changing fraglimit on the fly
 		if(fl!=fraglimit){
+			int oldfl;
 			fl=fraglimit>=100?fraglimit-100:fraglimit;
 			for(int i=0;i<MAXPLAYERS;i++){
-				lives[i]=fl;
+				lives[i]+=(fl-oldfl);
 			}
 		}
 	}
