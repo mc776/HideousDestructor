@@ -260,8 +260,8 @@ class Heat:InventoryFlag{
 				max(owner.mass,getdefaultbytype(owner.getclass()).health)
 				+owner.health
 			)
-			*owner.radius
-			*owner.height
+			*getdefaultbytype(owner.getclass()).radius
+			*getdefaultbytype(owner.getclass()).height
 		)/100;
 
 		//hurtthreshold pinned on flamethreshold
@@ -271,6 +271,10 @@ class Heat:InventoryFlag{
 		if(althurtthreshold<hurtthreshold)hurtthreshold=althurtthreshold;
 		althurtthreshold=ApplyDamageFactor("Burning",ht);
 		if(althurtthreshold<hurtthreshold)hurtthreshold=althurtthreshold;
+
+		//used to calculated movement
+		setorigin(owner.pos,false);
+		angle=owner.angle;
 	}
 	override void DoEffect(){
 		if(!owner){destroy();return;}
@@ -284,7 +288,18 @@ class Heat:InventoryFlag{
 			target=hdplayerpawn(owner).playercorpse;
 			target.A_GiveInventory("Heat",amount);
 			amount=0;
+			return;
 		}
+
+		amount--;
+		int mv=max(absangle(owner.angle,angle)*0.05,clamp(distance3dsquared(owner)*0.05,0,15));
+		amount-=random(0,mv);
+
+A_LogInt(amount);
+
+		angle=owner.angle;
+		setorigin(owner.pos,false);
+
 		if(amount>hurtthreshold){
 			int dmgamt=amount>hurtthreshold?amount/hurtthreshold:(random(0,amount)>hurtthreshold);
 			owner.damagemobj(self,null,dmgamt,"Thermal",DMG_NO_ARMOR|DMG_THRUSTLESS);
@@ -300,7 +315,8 @@ class Heat:InventoryFlag{
 			if(random(1,amount>flamethreshold))owner.A_GiveInventory("SawGib",1);
 			A_LogInt(amount);
 		}
-
-		amount--;
 	}
 }
+
+
+
