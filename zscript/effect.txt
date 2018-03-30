@@ -15,6 +15,7 @@ class HDDebris:HDActor{
 		+rollsprite;+rollcenter;
 	}
 	override void postbeginplay(){
+		if(max(abs(pos.x),abs(pos.y))>=32678){destroy();return;}
 		super.postbeginplay();
 		stopped=false;
 		grav=getgravity();
@@ -172,6 +173,7 @@ class HDPuff:HDActor{
 		hdpuff.startvelz 2.;
 	}
 	override void postbeginplay(){
+		if(max(abs(pos.x),abs(pos.y))>=32678){destroy();return;}
 		HDActor.postbeginplay();
 		roll=random(0,3)*90;
 		scale.x*=randompick(-1,1);
@@ -373,6 +375,7 @@ class HDExplosion:IdleDummy{
 	spawn:
 	death:
 		MISL B 0 nodelay{
+			if(max(abs(pos.x),abs(pos.y))>=32678){destroy();return;}
 			vel.z+=4;
 			A_PlaySound("world/explode");
 		}
