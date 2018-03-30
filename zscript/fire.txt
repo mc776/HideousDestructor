@@ -292,6 +292,7 @@ class Heat:InventoryFlag{
 		}
 
 		amount--;
+		if(owner.health>0)amount-=2;
 		int mv=max(absangle(owner.angle,angle)*0.05,clamp(distance3dsquared(owner)*0.05,0,15));
 		amount-=random(0,mv);
 
