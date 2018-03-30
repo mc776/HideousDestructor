@@ -192,6 +192,7 @@ class DERPBot:HDUPK{
 				else target.A_GiveInventory("DERPDEAD");
 
 				if(ammo>=15)target.A_GiveInventory("HDPistolMag",1);
+				else if(magmanager.givemmmag(self,picktarget,HDMMS_PIST,ammo))return;
 				else target.A_GiveInventory("HDPistolAmmo",ammo);
 				destroy();return;
 			}
