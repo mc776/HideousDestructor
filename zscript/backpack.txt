@@ -254,6 +254,7 @@ class HDBP:HDWeapon{
 	int fcellindex;int mcellindex;int ecellindex;
 	int armourindex;
 	int sevenmilindex;int brassindex;int loosezedindex;
+	int potionindex;int talismanindex;
 	override void beginplay(){
 		int i=-1;
 		i++;itembulk[i]=ENC_GREENARMOUR;itemtype[i]="HDArmour";itemname[i]="Soft armour";armourindex=i;
@@ -264,8 +265,8 @@ class HDBP:HDWeapon{
 		i++;itembulk[i]=ENC_MEDIKIT;itemtype[i]="PortableMedikit";itemname[i]="Medikit";
 		i++;itembulk[i]=ENC_STIMPACK;itemtype[i]="PortableBerserkPack";itemname[i]="Berserk pack";
 		i++;itembulk[i]=ENC_STIMPACK;itemtype[i]="PortableStimpack";itemname[i]="Stimpack";
-		i++;itembulk[i]=ENC_BLUEPOTION;itemtype[i]="BluePotion";itemname[i]="Healing potion";
-		i++;itembulk[i]=ENC_SQUADSUMMONER;itemtype[i]="SquadSummoner";itemname[i]="Summoning talisman";
+		i++;itembulk[i]=ENC_BLUEPOTION;itemtype[i]="BluePotion";itemname[i]="Healing potion";potionindex=i;
+		i++;itembulk[i]=ENC_SQUADSUMMONER;itemtype[i]="SquadSummoner";itemname[i]="Summoning talisman";talismanindex=i;
 		i++;itemname[i]="br";
 
 		i++;itembulk[i]=ENC_HEATROCKET;itemtype[i]="HEATAmmo";itemname[i]="H.E.A.T. rocket";
@@ -371,8 +372,13 @@ class HDBPPreset:Inventory replaces backpack{
 					else if(bpi=="HDPistolMag")bp.itemamount[i]=10;
 					else if(bpi=="ZM66RifleMags")bp.itemamount[i]=6;
 				}else if(!random(0,5)&&bpi){ //insurgent
-					int maxrand=500/(max(1,bp.itembulk[i]));
-					bp.itemamount[i]=random(1,maxrand);
+					int maxrand=random(0,3);
+					if(
+						i!=bp.potionindex
+						&&i!=bp.talismanindex
+					)maxrand=random(100,500)/(max(1,bp.itembulk[i]));
+					if(!maxrand)continue;
+					bp.itemamount[i]=random(1,random(1,maxrand));
 					if(bp.getbulk()>=HDBPC_CAPACITY){
 						bp.itemamount[i]=0;
 						break;

@@ -512,7 +512,6 @@ actor MageImp : DrunkImp
 		"####" E 0 A_Jump (32, "missile2")
 		"####" E 8 A_FaceTarget(0,0)
 		"####" H 4 A_NoGravity
-		//"####" H 0 A_ChangeFlag ("noblockmap", 1)
 		"####" H 16 bright ThrustThingZ (0, 8, 0, 0)
 		"####" H 8 bright A_Stop
 		"####" H 0 A_SpawnProjectile ("MageImpBall2", 32, 0, 162, 2, 60)
@@ -529,7 +528,6 @@ actor MageImp : DrunkImp
 		"####" H 8 bright A_SpawnProjectile ("MageImpBall2", 32, 0, -132, 2, -14)
 		"####" H 8 A_LowGravity
 		"####" H 0 A_Gravity
-		//"####" H 4 A_ChangeFlag ("noblockmap", 0)
 		goto missile1
 	pain:
 		"----" A 0 A_GiveInventory("HDFireEnder",3)

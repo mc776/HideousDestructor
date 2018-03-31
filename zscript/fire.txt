@@ -259,10 +259,10 @@ class Heat:InventoryFlag{
 			)
 			*getdefaultbytype(owner.getclass()).radius
 			*getdefaultbytype(owner.getclass()).height
-		)/100;
+		)/1000;
 
 		//hurtthreshold pinned on flamethreshold
-		int ht=flamethreshold*2/3;
+		int ht=flamethreshold*0.4;
 		hurtthreshold=ApplyDamageFactor("Thermal",ht);
 		int althurtthreshold=ApplyDamageFactor("Fire",ht);
 		if(althurtthreshold<hurtthreshold)hurtthreshold=althurtthreshold;
@@ -275,7 +275,7 @@ class Heat:InventoryFlag{
 	}
 	override void DoEffect(){
 		if(!owner){destroy();return;}
-A_LogInt(amount);
+A_LogInt(hurtthreshold);
 		if(amount<1)return;
 
 		if(
@@ -305,7 +305,7 @@ A_LogInt(amount);
 
 			if(
 				owner&&
-				amount>(flamethreshold*frandom(1,3))
+				amount>(flamethreshold*frandom(1,(HEAT_FLAMEMULT-1)))
 			){
 				//spawn a flame
 				if(accuracy<1){
@@ -314,14 +314,18 @@ A_LogInt(amount);
 					spawn("HDFlameRed",owner.pos
 						+(frandom(-or,or),frandom(-or,or),frandom(0,owner.height))
 					);
-					if(random(0,amount)>flamethreshold)owner.A_GiveInventory("SawGib",1);
+					if(random(-flamethreshold,amount)>flamethreshold)
+						owner.A_GiveInventory("SawGib",1);
 				}else accuracy--;
-				amount=clamp(amount+max(1,amount/100),0,flamethreshold*3);
+				amount=clamp(amount+max(1,amount/10),0,flamethreshold*(HEAT_FLAMEMULT+1));
 	
 				//structural damage
-				if(owner.health<1&&amount>flamethreshold*2)hurtthreshold++;
+				if(owner.health<1&&amount>flamethreshold*HEAT_FLAMEMULT)hurtthreshold++;
 			}
 		}
+	}
+	enum HeatThresholds{
+		HEAT_FLAMEMULT = 5,
 	}
 }
 

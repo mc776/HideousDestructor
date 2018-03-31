@@ -67,6 +67,11 @@ class ThunderBuster:HDWeapon{
 		goto shootend;
 	shootstraight:
 		PLSG A 0{
+if(hd_debug&&aimtarget()){
+	aimtarget().A_GiveInventory("Heat",100);
+	return;
+}
+
 			int bat=invoker.weaponstatus[TBS_BATTERY];
 			if(bat>random(-2,1)){
 				A_FireBullets(0,0,
