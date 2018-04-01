@@ -275,7 +275,6 @@ class Heat:InventoryFlag{
 	}
 	override void DoEffect(){
 		if(!owner){destroy();return;}
-A_LogInt(hurtthreshold);
 		if(amount<1)return;
 
 		if(
@@ -311,9 +310,10 @@ A_LogInt(hurtthreshold);
 				if(accuracy<1){
 					accuracy=random(2,5);
 					double or=owner.radius;
-					spawn("HDFlameRed",owner.pos
+					actor aaa=spawn("HDFlameRed",owner.pos
 						+(frandom(-or,or),frandom(-or,or),frandom(0,owner.height))
 					);
+					aaa.A_PlaySound("misc/firecrkl",CHAN_VOICE,min(1.,0.0001*amount));
 					if(random(-flamethreshold,amount)>flamethreshold)
 						owner.A_GiveInventory("SawGib",1);
 				}else accuracy--;

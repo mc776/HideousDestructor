@@ -67,12 +67,29 @@ class ThunderBuster:HDWeapon{
 		goto shootend;
 	shootstraight:
 		PLSG A 0{
-if(hd_debug&&aimtarget()){
-	aimtarget().A_GiveInventory("Heat",100);
-	return;
-}
-
 			int bat=invoker.weaponstatus[TBS_BATTERY];
+			if(bat>0&&!random(0,3))invoker.weaponstatus[TBS_BATTERY]--;
+			if(hd_debug){
+				actor zapp;int zpp;
+				[zapp,zpp]=lineattack(
+					angle,HDCONST_TBMAXRANGE*2,pitch,0,"none",
+					"CheckPuff",flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ,
+					offsetz:height-6
+				);
+				if(!zapp)return;
+				zpp=max(1,random(1,bat)/5);
+				if(zapp.tracer){
+					zapp.tracer.A_GiveInventory("Heat",16*bat);
+					zpp-=random(0,2);
+				}
+				for(int i=0;i<zpp;i++){
+					zapp.A_SpawnItemEx("BeamSpot",
+						flags:SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS
+					);
+				}
+				return;
+			}
+
 			if(bat>random(-2,1)){
 				A_FireBullets(0,0,
 					clamp(bat*0.3,1,3),(0),
