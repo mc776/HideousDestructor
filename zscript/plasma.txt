@@ -79,7 +79,10 @@ class ThunderBuster:HDWeapon{
 				if(!zapp)return;
 				zpp=max(1,random(1,bat)/5);
 				if(zapp.tracer){
-					zapp.tracer.A_GiveInventory("Heat",16*bat);
+					zapp.tracer.A_GiveInventory("Heat",8*bat);
+					zapp.tracer.damagemobj(
+						zapp,self,bat/4,"Electro"
+					);
 					zpp-=random(0,2);
 				}
 				for(int i=0;i<zpp;i++){

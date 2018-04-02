@@ -4,6 +4,7 @@
 class HDCellAmmo:HDAmmo{
 	default{
 		inventory.maxamount 50;
+		inventory.pickupmessage "Picked up a partially depleted battery.";
 	}
 	override void detachfromowner(){
 		target=owner;
@@ -51,7 +52,7 @@ class HDCellpacks:HDAmmo{
 		//$Sprite "CELLA0"
 
 		inventory.maxamount 6;
-		inventory.pickupmessage "Picked up a cell.";
+		inventory.pickupmessage "Picked up a battery.";
 		scale 0.4;
 	}
 	states(actor){
@@ -66,7 +67,7 @@ class HDCellpackEmpty:HDCellpacks{
 		//$Title "Cell Battery (Spent)"
 		//$Sprite "CELLC0"
 
-		inventory.pickupmessage "Picked up a depleted cell.";
+		inventory.pickupmessage "Picked up a depleted battery.";
 		translation 0;
 	}
 }
