@@ -254,7 +254,11 @@ class Heat:InventoryFlag{
 		//mass, height, etc. for flamethreshold
 		flamethreshold=(
 			(
-				max(owner.mass,getdefaultbytype(owner.getclass()).health)
+				max(
+					owner.mass,
+					getdefaultbytype(owner.getclass()).health,
+					getdefaultbytype(owner.getclass()).gibhealth
+				)
 				+owner.health
 			)
 			*getdefaultbytype(owner.getclass()).radius
@@ -313,9 +317,18 @@ class Heat:InventoryFlag{
 					actor aaa=spawn("HDFlameRed",owner.pos
 						+(frandom(-or,or),frandom(-or,or),frandom(0,owner.height))
 					);
-					aaa.A_PlaySound("misc/firecrkl",CHAN_VOICE,min(1.,0.0001*amount));
-					if(random(-flamethreshold,amount)>flamethreshold)
+					aaa.A_PlaySound("misc/firecrkl",CHAN_VOICE,min(0.4,0.0001*amount));
+					if(random(-flamethreshold,amount)>flamethreshold*2){
 						owner.A_GiveInventory("SawGib",1);
+						owner.A_SpawnItemEx(owner.bloodtype,
+							frandom(0,owner.radius),0,
+							frandom(0,owner.height),
+							1,0,2,frandom(0,360),
+							SXF_NOCHECKPOSITION|SXF_USEBLOODCOLOR
+						);
+						aaa.A_PlaySound("misc/bulletflesh",CHAN_BODY,0.2);
+						owner.vel.z+=frandom(-1,1);
+					}
 				}else accuracy--;
 				amount=clamp(amount+max(1,amount/10),0,flamethreshold*(HEAT_FLAMEMULT+1));
 	

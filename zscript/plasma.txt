@@ -31,6 +31,7 @@ class ThunderBuster:HDWeapon{
 	ready:
 		PLSG A 1{
 			A_SetCrosshair(21);
+			invoker.weaponstatus[TBS_WARMUP]=0;
 			A_WeaponReady(WRF_ALL);
 		}goto readyend;
 	fire:
@@ -68,7 +69,8 @@ class ThunderBuster:HDWeapon{
 	shootstraight:
 		PLSG A 0{
 			int bat=invoker.weaponstatus[TBS_BATTERY];
-			if(bat>0&&!random(0,3))invoker.weaponstatus[TBS_BATTERY]--;
+			if(bat>0&&!random(0,4))invoker.weaponstatus[TBS_BATTERY]--;
+			bat-=max(0,10-invoker.weaponstatus[TBS_WARMUP]);invoker.weaponstatus[TBS_WARMUP]++;
 			if(hd_debug){
 				actor zapp;int zpp;
 				[zapp,zpp]=lineattack(
@@ -302,7 +304,8 @@ enum tbstatus{
 
 	TBS_FLAGS=0,
 	TBS_BATTERY=1,
-	TBS_HEAT=2,
+	TBS_WARMUP=2,
+	TBS_HEAT=3,
 };
 
 class PlasmaCheckPuff:CheckPuff{
@@ -342,7 +345,10 @@ class BeamBoltThrower:ActionItem{
 			);
 			if(!player)return;
 			let tb=ThunderBuster(player.readyweapon);
-			if(tb)tb.weaponstatus[TBS_HEAT]+=60;
+			if(tb){
+				tb.weaponstatus[TBS_HEAT]+=60;
+				tb.weaponstatus[TBS_WARMUP]=0;
+			}
 		}fail;
 	}
 }
