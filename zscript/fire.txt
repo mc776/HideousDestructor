@@ -324,12 +324,12 @@ class Heat:InventoryFlag{
 						);
 						aaa.A_PlaySound("misc/bulletflesh",CHAN_BODY,0.2);
 						owner.vel.z+=frandom(-1,1);
+	
+						//structural damage
+						if(owner.health<1)hurtthreshold++;
 					}
 				}else accuracy--;
 				amount=clamp(amount+max(1,amount/10),0,flamethreshold*(HEAT_FLAMEMULT+1));
-	
-				//structural damage
-				if(owner.health<1&&amount>flamethreshold*HEAT_FLAMEMULT)hurtthreshold++;
 			}
 		}
 	}

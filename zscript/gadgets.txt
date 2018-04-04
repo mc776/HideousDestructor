@@ -102,6 +102,7 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 	}
 	int spent;bool worn;
 	const LITEBAT=84000;
+	double gogbob;double gogvel;
 	override void DetachFromOwner(){
 		if(owner && owner.player && owner.player.fixedcolormap==5)owner.player.fixedcolormap=-1;
 		worn=false;
@@ -116,6 +117,16 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 				&&!owner.countinv("PowerInvisibility")
 				&&(owner.player.fixedcolormap<0||owner.player.fixedcolormap==5)
 			){
+				//special hud bobbing
+				gogvel=max(abs(owner.vel.x),abs(owner.vel.y));
+				if(gogbob!=90||gogvel){
+					gogvel=max(gogvel,1.8);
+					gogbob+=12;
+					if(gogvel<2&&(80<gogbob<90||260<gogbob<270))gogbob=90;
+					else if(gogbob>360)gogbob=0;
+				}
+
+				//actual google effect
 				owner.player.fov=min(owner.player.fov,90);
 				owner.player.fixedcolormap=5;
 				owner.player.fixedlightlevel=1;
@@ -136,6 +147,7 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 		PVIS B -1;
 	use:
 		TNT1 A 0{
+			invoker.gogbob=90;
 			A_SetBlend("01 00 00",0.8,16);
 			if(invoker.spent>=LITEBAT){
 				if(countinv("HDCellPacks")){
