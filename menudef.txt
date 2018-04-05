@@ -41,10 +41,9 @@ OptionValue "LoHi"{
 	1, "High"
 }
 OptionValue "DERPModes"{
-	0, "Turret"
-	1, "Ambush"
-	2, "Patrol"
-	3, "Follow"
+	1, "Turret"
+	2, "Ambush"
+	3, "Patrol"
 }
 OptionValue "TurnInertia"{
 	0, "Normal"
@@ -56,41 +55,70 @@ OptionValue "NoScope"{
 	1, "Auto"
 	2, "Never"
 }
-
-
-ListMenu "PlayerMenu"{
-	StaticTextCentered 160, 6, "$MNU_PLAYERSETUP"
-	Font "SmallFont"
-	Linespacing 16
-	Position 48, 36
-
-	PlayerNameBox "Name", 0, "Playerbox"
-	PlayerDisplay 220, 80, "1a 10 08", "50 3a 30", 1, "PlayerDisplay"
-	Selector "-", -16, -1
-	
-	ValueText "Loadout", "Class"
-	ValueText "Team", "Team"
-	ValueText "Color", "Color"
-	Linespacing 10
-	Slider "Red", "Red", 0, 255, 16
-	Slider "Green", "Green", 0, 255, 16
-	Linespacing 16
-	Slider "Blue", "Blue", 0, 255, 16
-	ValueText "Pronoun", "Gender", "Gender"
-	ValueText "Switch on pickup", "Switch", "OffOn"
-
-	Linespacing 10
-	Font "SmallFont","White","Gold"
-	TextItem "User Settings...","U","HDUserOptionsMenu"
-	TextItem "Customize Loadout...","L","CustomLoadoutMenu"
-	TextItem "Customize Backpack...","B","CustomBackpackMenu"
-
-	Class "PlayerMenu"
+OptionValue "BeamSpray"{
+	0, "Beam"
+	1, "Spray"
 }
 
-AddOptionMenu GameplayOptions{
+
+LISTMENU "MainMenu"{
+	IfGame(Doom,Chex){
+		StaticPatch 94,2,"M_DOOM"
+		Position 97, 72
+		IfOption(ReadThis){
+			Position 97, 64
+		}
+	}
+	IfGame(Strife){
+		StaticPatch 84,2,"M_STRIFE"
+		Position 97, 45
+	}
+	IfGame(Heretic){
+		StaticPatch 88,0,"M_HTIC"
+		StaticPatch 40,10,"M_SKL01"
+		StaticPatch 232,10,"M_SKL00"
+		Position 110, 56
+	}
+	IfGame(Hexen){
+		StaticPatch 88,0,"M_HTIC"
+		StaticPatch 37,80,"FBULB0"
+		StaticPatch 278,80,"FBULA0"
+		Position 110,56
+	}
+	IfGame(Doom,Strife,Chex){
+		PatchItem "M_NGAME","n","PlayerclassMenu"
+			TextItem "HD Options","o","HDOptionsMenu"
+			TextItem "Loadout Config","o","CustomLoadoutMenu"
+		ifOption(SwapMenu){
+			PatchItem "M_LOADG","l","LoadGameMenu"
+			PatchItem "M_SAVEG","s","SaveGameMenu"
+			PatchItem "M_OPTION","o","OptionsMenu"
+		}else{
+			PatchItem "M_OPTION","o", "OptionsMenu"
+			PatchItem "M_LOADG", "l", "LoadGameMenu"
+			PatchItem "M_SAVEG", "s", "SaveGameMenu"
+		}
+		ifOption(ReadThis){
+			PatchItem "M_RDTHIS","r","ReadThisMenu"
+		}
+		PatchItem "M_QUITG","q","QuitMenu"
+	}
+
+	IfGame(Heretic, Hexen){
+		TextItem "$MNU_NEWGAME","n","PlayerclassMenu"
+		TextItem "$MNU_OPTIONS","o","OptionsMenu"
+		TextItem "$MNU_GAMEFILES","g","GameFilesMenu"
+		TextItem "$MNU_INFO","i","ReadThisMenu"
+		TextItem "$MNU_QUITGAME","q","QuitMenu"
+	}
+}
+
+
+
+OptionMenu "HDOptionsMenu"{
+	Title "HIDEOUS DESTRUCTOR OPTIONS"
 	StaticText " "
-	StaticText "Hideous Destructor Server Settings",1
+	StaticText "Server Settings",1
 	Option "Force pistol start","hd_forcepistolstart","YesNo"
 	Option "Encumbrance limits on players","hd_carrylimit","YesNo"
 	Option "Replace bots with riflemen","hd_nobots","YesNo"
@@ -100,30 +128,20 @@ AddOptionMenu GameplayOptions{
 	Slider "Killer barrel spawn rate","hd_killerbarrels",0,100,5,0
 	Option "Only 3 movement speeds in multiplayer","hd_3speed","YesNo"
 	Option "Weapon inertia","hd_noturninertia","TurnInertia"
-//	Command "Reset all HD server settings","hd_clearscv"
+	Command "Reset server settings","hd_clearscv"
 
 	StaticText " "
-	SubMenu "Hideous Destructor User Settings...","HDUserOptionsMenu"
-
-	Class "GameplayMenu"
-}
-
-
-//user options
-OptionMenu "HDUserOptionsMenu"{
-	Title "USER OPTIONS"
-	StaticText " "
-	StaticText "Hideous Destructor User Settings",1
+	StaticText "User Settings",1
 	Option "Help text","hd_helptext","HelpText"
 	Option "HUD weapon sprite","hd_hudsprite","YesNo"
 	Option "Show scope view","hd_noscope","NoScope"
 	Slider "Crosshair scale","hd_xhscale",0.1,3.0,0.1,1
 	Slider "HUD use key delay","hd_hudusedelay",0,70,1,0
 	Option "Auto-strip for medikit","hd_autostrip","YesNo"
-//	Command "Reset all HD user settings","hd_clearucv"
+	Command "Reset user settings","hd_clearucv"
 
 	StaticText " "
-	StaticText "Hideous Destructor Personal Weapon Settings",1
+	StaticText "User Personal Weapon Settings",1
 	Submenu "Set Custom Loadout...","CustomLoadoutMenu"
 	Option "DERP mode","hd_derpmode","DERPModes"
 	Option "Pistol full-auto","hd_pistauto","OnOff"
@@ -139,13 +157,13 @@ OptionMenu "HDUserOptionsMenu"{
 	Slider "Liberator zoom level","hd_libzoom",0,32,1,0
 	Slider "Liberator drop adjust","hd_libmoa",0,40,1,0
 	Option "Liberator front reticle","hd_libfrontreticle","YesNo"
-	Option "Liberator night reticle","hd_libalttreticle","YesNo"
-	Option "Thunder Buster starts on spray","hd_tbmode","YesNo"
+	Option "Liberator night reticle","hd_libaltreticle","YesNo"
+	Option "Thunder Buster mode","hd_tbmode","BeamSpray"
 	Option "Brontornis zoom","hd_brontozoom","OnOff"
 	Slider "Boss drop adjust","hd_bossmoa",0,36,1,0
 	Slider "Boss zoom level","hd_bosszoom",0,55,1,0
 	Option "Boss front reticle","hd_bossfrontreticle","YesNo"
-//	Command "Reset all HD personal weapon settings","hd_clearwepcv"
+	Command "Reset weapon settings","hd_clearwepcv"
 }
 
 //loadout spamghetti
