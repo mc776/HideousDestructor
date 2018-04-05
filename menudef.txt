@@ -62,7 +62,7 @@ OptionValue "BeamSpray"{
 
 
 
-LISTMENU "MainMenu"{
+ListMenu "MainMenu"{
 	IfGame(Doom,Chex){
 		StaticPatch 94,2,"M_DOOM"
 		Position 97, 72
@@ -132,7 +132,7 @@ ListMenu "PlayerMenu"{
 		MouseWindow 0,220
 		PlayerDisplay 220,80,"20 00 00","80 00 40",1,"PlayerDisplay"
 	}
-	IfGame(Hexen)	{
+	IfGame(Hexen){
 		MouseWindow 0,220
 		PlayerDisplay 220,80,"00 07 00","40 53 40",1,"PlayerDisplay"
 	}
@@ -149,6 +149,11 @@ ListMenu "PlayerMenu"{
 //	Slider "$PLYRMNU_AUTOAIM", "Autoaim", 0, 35, 1
 	ValueText "$PLYRMNU_SWITCHONPICKUP", "Switch", "OffOn"
 	ValueText "$PLYRMNU_ALWAYSRUN", "AlwaysRun", "OnOff"
+
+	Linespacing 10
+	Font "SmallFont","White","Gold"
+	TextItem "Customize Loadout...","L","CustomLoadoutMenu"
+	TextItem "Customize Backpack...","B","CustomBackpackMenu"
 	Class "PlayerMenu"
 }
 
@@ -170,6 +175,7 @@ OptionMenu "HDOptionsMenu"{
 	StaticText " "
 	StaticText "User Settings",1
 	Option "Pronoun","gender","Pronoun"
+	Submenu "More player customization...","PlayerMenu"
 //	Option "Loadout","PlayerClass","PlayerClass"
 	Option "Help text","hd_helptext","HelpText"
 	Option "HUD weapon sprite","hd_hudsprite","YesNo"
@@ -182,23 +188,29 @@ OptionMenu "HDOptionsMenu"{
 	StaticText " "
 	StaticText "User Personal Weapon Settings",1
 	Submenu "Set Custom Loadout...","CustomLoadoutMenu"
+	StaticText " "
 	Option "DERP mode","hd_derpmode","DERPModes"
 	Option "Pistol full-auto","hd_pistauto","OnOff"
 	Option "SMG fire mode","hd_smgfiremode","SemiBurstAuto"
 	Option "Hunter semiauto","hd_huntauto","OnOff"
+	StaticText " "
 	Option "ZM66 fire mode","hd_zmfiremode","SemiAutoSalvo"
 	Slider "ZM66 zoom level","hd_zmzoom",0,27,1,0
 	Option "Vulcanette high RPM","hd_vulcsuper","OnOff"
 	Slider "Vulcanette zoom level","hd_vulczoom",0,27,1,0
+	StaticText " "
 	Option "Rocket launcher mode","hd_rlmode","RLMode"
 	Option "Rocket launcher zoom","hd_rlzoom","OnOff"
+	StaticText " "
 	Option "Liberator full-auto","hd_libauto","OnOff"
 	Slider "Liberator zoom level","hd_libzoom",0,32,1,0
 	Slider "Liberator drop adjust","hd_libmoa",0,40,1,0
 	Option "Liberator front reticle","hd_libfrontreticle","YesNo"
 	Option "Liberator night reticle","hd_libaltreticle","YesNo"
+	StaticText " "
 	Option "Thunder Buster mode","hd_tbmode","BeamSpray"
 	Option "Brontornis zoom","hd_brontozoom","OnOff"
+	StaticText " "
 	Slider "Boss drop adjust","hd_bossmoa",0,36,1,0
 	Slider "Boss zoom level","hd_bosszoom",0,55,1,0
 	Option "Boss front reticle","hd_bossfrontreticle","YesNo"
@@ -272,8 +284,6 @@ OptionMenu "CustomLoadoutMenu"{
 	Submenu "Set Backpack Contents...","CustomBackpackMenu"
 	SafeCommand "Reset Custom Loadout","hd_resetloadout","Really reset custom loadout?"
 	StaticText " "
-
-
 
 	Option "Item 0",hd_load0,"CustomLoadoutItems"
 	Slider"amount","hd_load0a",0,20,1,0
