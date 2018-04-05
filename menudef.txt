@@ -170,7 +170,7 @@ OptionMenu "HDOptionsMenu"{
 	StaticText " "
 	StaticText "User Settings",1
 	Option "Pronoun","gender","Pronoun"
-	Option "Loadout","PlayerClass","PlayerClass"
+//	Option "Loadout","PlayerClass","PlayerClass"
 	Option "Help text","hd_helptext","HelpText"
 	Option "HUD weapon sprite","hd_hudsprite","YesNo"
 	Option "Show scope view","hd_noscope","NoScope"
@@ -210,12 +210,12 @@ OptionMenu "HDControlsMenu"{
 	Title "HIDEOUS DESTRUCTOR CONTROLS"
 	StaticText " "
 	StaticText "Regular Weapon Controls",1
-	Control 	"$CNTRLMNU_ATTACK","+attack"
-	Control 	"$CNTRLMNU_ALTATTACK","+altattack"
+//	Control 	"$CNTRLMNU_ATTACK","+attack"
+//	Control 	"$CNTRLMNU_ALTATTACK","+altattack"
+	StaticText "Identical to reload, zoom,","DarkGrey"
+	StaticText "user1 through 4, and weapdrop.","DarkGrey"
 	Control 	"$CNTRLMNU_RELOAD","+reload"
 	Control "$CNTRLMNU_ZOOM","+zoom"
-	StaticText "The following are identical to","DarkGrey"
-	StaticText "user1 through 4 and weapdrop","DarkGrey"
 	Control "Secondary Reload","+user1"
 	Control "Weapon Fire Mode","+user2"
 	Control "Mag Manger/Rangefinder","+user3"
@@ -224,6 +224,8 @@ OptionMenu "HDControlsMenu"{
 
 	StaticText " "
 	StaticText "Regular Movement Controls",1
+	StaticText "I assume you've already","DarkGrey"
+	StaticText "bound the direction movements!","DarkGrey"
 	Control "Toggle Run","toggle cl_run"
 	Control "Crouch","+crouch"
 	Control "Jump/Mantle","+jump"
@@ -231,6 +233,7 @@ OptionMenu "HDControlsMenu"{
 
 	StaticText " "
 	StaticText "HD-Exclusive Commands",1
+	StaticText "Technically optional.","DarkGrey"
 	Control "Taunt","hd_taunt"
 	Control "Strip","hd_strip"
 	Control "Drop one ammo","hd_dropone"
@@ -238,7 +241,7 @@ OptionMenu "HDControlsMenu"{
 
 	StaticText " "
 	StaticText "Weapon-Specific Shortcuts",1
-	StaticText "These are totally optional.","DarkGrey"
+	StaticText "Totally optional.","DarkGrey"
 	Control "Use Pistol","hd_pistol"
 	Control "Use Grenades","hd_frags"
 	Control "Use Stimpack","hd_stims"
@@ -256,6 +259,7 @@ OptionMenu "HDControlsMenu"{
 
 	StaticText " "
 	StaticText "Experimental Controls",1
+	StaticText "These mess with your cvars.","DarkGrey"
 	Control "Toggle Zoom Always Off/On","hd_zoomon"
 	Control "Hold Zoom Always Off/On","+hd_zoom"
 }
