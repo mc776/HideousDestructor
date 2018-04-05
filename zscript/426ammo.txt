@@ -94,15 +94,17 @@ class HD4mmMag:HDUPK{
 class HD4mmMagEmpty:HDDebris{
 	default{
 		translation "160:167=104:111";
-		bouncesound "misc/casing2";bouncefactor 0.6;xscale 0.4;yscale 0.3;radius 2;height 2;
+		xscale 0.4;yscale 0.3;radius 2;height 2;
+		bouncesound "misc/casing2";
+		bouncefactor 0.6;
+		maxstepheight 2;
 	}
 	states{
 	spawn:
-		CLIP B 2{
-			A_SetRoll(roll+30,SPF_INTERPOLATE);
-		}loop;
+		CLIP B 2 A_SetRoll(roll+30,SPF_INTERPOLATE);
+		wait;
 	death:
-		CLIP B -1{
+		---- A -1{
 			roll=randompick(0,0,0,0,180,180,180,180,90,270);
 		}stop;
 	}

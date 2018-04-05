@@ -8,10 +8,11 @@ class HDDebris:HDActor{
 	bool stopped;
 	int grav;
 	double wdth;
+	double minrollspeed;
 	default{
 		+noblockmap -solid -shootable +dontgib +forcexybillboard +notrigger +cannotpush
 		height 2;radius 2;
-		bouncesound "misc/casing2";bouncefactor 0.8;maxstepheight 2;
+		bouncesound "misc/casing2";bouncefactor 0.6;maxstepheight 2;
 		+rollsprite;+rollcenter;
 	}
 	override void postbeginplay(){
@@ -21,47 +22,60 @@ class HDDebris:HDActor{
 		grav=getgravity();
 		if(bwallsprite)grav*=frandom(0.4,0.7);
 		wdth=radius*1.8;
+
+		minrollspeed=maxstepheight*0.2;
 	}
 	override void Tick(){
 		if(globalfreeze||level.Frozen)return;
 		if(stopped){
-			actor.tick();
 			if(vel==(0,0,0)){
 				brelativetofloor=true;
 				bnointeraction=true;
 			}
+			actor.tick();
 			return;
 		}else{
-			vel.z-=grav;
-			double spd=max(abs(vel.x),abs(vel.y))/wdth;
-			vector2 frac=vel.xy/spd;
-			if(bwallsprite)vel.xy+=(frandom(-1,1),frandom(-1,1));
+			double spd=max(1,max(abs(vel.x),abs(vel.y))/wdth);
+			vector3 frac=vel/spd;
 			for(int i=0;i<spd;i++){
-				if(!trymove(pos.xy+frac,true)){
+				addz(frac.z,true);
+				if(!trymove(pos.xy+frac.xy,true)){
 					A_PlaySound(bouncesound);
-					vel.xy=rotatevector(vel.xy,frandom(80,280))*bouncefactor;
+					A_FaceMovementDirection();
+					vel.xy=rotatevector(vel.xy,angle+frandom(80,280))*bouncefactor;
+					break;
 				}
 			}
 			CheckPortalTransition();
-			addz(vel.z,true);
+
 			if(
-				pos.z<=floorz
+				floorz>=pos.z
+				&&vel.z>-grav
+				&&vel.xy.length()<minrollspeed
+			){
+				stopped=true;
+				setz(floorz);
+				bmovewithsector=true;
+				if(findstate("death"))setstatelabel("death");else destroy();
+				return;
+			}else if(
+				pos.z<floorz
 				||pos.z+height>ceilingz
 			){
 				if(pos.z<=floorz)setz(floorz);else setz(ceilingz-height);
 				if(abs(vel.z)>2){
 					A_PlaySound(bouncesound);
-					vel.xy=rotatevector(vel.xy,frandom(-110,110))*bouncefactor;
+					A_FaceMovementDirection();
+					vel.xy=rotatevector(vel.xy,
+						angle+frandom(-1,1)*abs(vel.z)
+					);
 				}
 				vel.z*=-bouncefactor;
-			}else vel.xy*=bouncefactor;
-			if(floorz==pos.z && vel.length()<1){
-				if(findstate("death"))setstatelabel("death");else destroy();
-				if(bdestroyed)return; //if nexttic() is called below, it would crash
-				stopped=true;
-				setz(floorz);
-				bmovewithsector=true;
+				vel.xy*=bouncefactor;
 			}
+
+			vel.z-=grav;
+
 			//nexttic
 			if(CheckNoDelay()){
 				if(tics>0)tics--;  
