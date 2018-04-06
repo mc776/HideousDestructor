@@ -115,7 +115,7 @@ class HDSpent7mm:HDDebris{
 	death:
 		RBRS A -1{
 			actor p=spawn("SevenMilBrass",self.pos,ALLOW_REPLACE);
-			p.vel=self.vel;
+			p.vel=self.vel;p.vel.xy*=3;
 			p.A_FaceMovementDirection();p.angle+=90;
 			destroy();
 		}stop;
