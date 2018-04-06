@@ -92,11 +92,8 @@ extend class HDPlayerPawn{
 				hdw==player.readyweapon
 			);
 			if(
-				hdw
-				&&(
-					thisweapon
-					||forcefull
-				)
+				thisweapon
+				||forcefull
 			){
 				int blx=0;
 				if(hdw is "Lumberjack"){
@@ -182,9 +179,9 @@ extend class HDPlayerPawn{
 					use776=true;
 				}
 				if(thisweapon){
-					enc+=blx*0.6;
+					enc+=blx;
 					if(!forcefull)break;
-				}else enc+=blx;
+				}else enc+=blx*1.6;
 			}
 		}
 
