@@ -327,7 +327,7 @@ Pickups: For most things, you must "use" an item to pick it up. If you cannot ca
 
 Kicking: pressing use in front of an enemy lets you kick them. (There is no animation for this; this mod is called hideous for a reason.) You can also kick away corpses and hand grenades if they're in the way.
 
-HUD: HD typically hides your complete inventory display. Pressing and holding use brings this up. If encumbrance (hd_carrylimit) is on, this will also show how many arbitrary "blocks'" worth of equipment you are carrying.
+HUD: HD typically hides your complete inventory display. Pressing and holding use brings this up. It will also show how many arbitrary "blocks'" worth of equipment you are carrying.
 
 
 	Aiming and Turning
@@ -378,15 +378,13 @@ teamspawn: In team deathmatch, any member of a team can type "teamspawn 666" in 
 
 hd_doomguy (cheat): This command, available anytime and not considered a cheat, will set you back to the good old naked marine with a pistol and 50 bullets.
 
-hd_babymode (cheat): Toggles the server cvars hd_nobleed and hd_lowdamage.
-
 
 
 	CVars (host only)
 
 hd_forcepistolstart: This has the same effect as if everyone voluntarily picked the Doomed Guy class, with more griping.
 
-hd_carrylimit: Normally you have a hard limit to each type of item you may carry, and can have every weapon available on your person, as is the case in Doom. When this server cvar is on, these limits are increased but you are also subject to a movement penalty based on the total weight and bulk of your inventory. Generally you can have 2 primary weapons (and one of them in hand) and a pistol before you lose the ability to sprint.
+hd_onemanarmy: An important concession HD makes by default for regular Doom gameplay. Every item you carry starts to slow you down a bit. When this server cvar is on (by default), the encumbrance calculation conveniently ignores every weapon except the one you have out in front of you, and every piece of ammo that that weapon cannot use (your second pistol counting as ammo for your first). If this cvar is off, or you are playing deathmatch or Grimdark/Spooky difficulty, all weapons and ammo count toward your encumbrance. This cvar has no effect on usable items, armour and backpacks, and having an *ERP or lite-amp on you means supplies used by those items will also be counted (since you can deploy them without switching weapons).
 
 hd_nobots: This causes bots to be replaced with riflemen. Can be used for coop and deathmatch. Generally far more competent, but cannot use customized loadouts and can sometimes appear in odd places.
 
