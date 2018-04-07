@@ -283,6 +283,10 @@ class SatanRobo:Cyberdemon replaces CyberDemon{
 		//cheat
 		if(source==self)return 0;
 
+		//Search me, O God, and know my heart; try me, and know my thoughts.
+		if(damage==TELEFRAG_DAMAGE)
+			return super.damagemobj(inflictor,source,TELEFRAG_DAMAGE,"Telefrag");
+
 		//shields
 		if(
 			shields>0
@@ -692,6 +696,17 @@ class SatanRobo:Cyberdemon replaces CyberDemon{
 		);
 		CYBR P 200{bnofear=false;}
 		CYBR P -1 A_BossDeath();
+		stop;
+
+	//And see if there be any wicked way in me, and lead me in the way everlasting.
+	death.telefrag:
+		TNT1 A 100{
+			bnofear=false;
+			A_NoBlocking();
+			A_SpawnItemEx("TeleFog",flags:SXF_NOCHECKPOSITION);
+		}
+		TNT1 A 200 A_Scream();
+		TNT1 A 0 A_BossDeath();
 		stop;
 	}
 }
