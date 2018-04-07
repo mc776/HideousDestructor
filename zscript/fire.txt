@@ -269,7 +269,7 @@ class Heat:InventoryFlag{
 		althurtthreshold=ApplyDamageFactor("Burning",ht);
 		if(althurtthreshold<hurtthreshold)hurtthreshold=althurtthreshold;
 
-		hurtthreshold=clamp(1,hurtthreshold);
+		hurtthreshold=max(1,hurtthreshold);
 
 		//used to calculated movement
 		setorigin(owner.pos,false);

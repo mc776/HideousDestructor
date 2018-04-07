@@ -18,17 +18,18 @@ class PortableMedikit:HDPickup{
 		if(!owner&&vel==(0,0,0))A_GiveInventory("PortableStimpack");
 	}
 	override void actualpickup(actor other){
-		if(countinv("PortableStimpack")){
-			if(other &&
-				other.A_JumpIfInventory("PortableStimpack",0,"null")
-			){
-				angle=other.angle;
-				while(countinv("PortableStimpack")){
-					A_TakeInventory("PortableStimpack",1);
-					A_SpawnItemEx("PortableStimpack",0,0,0,3,0,1,0,SXF_NOCHECKPOSITION);
+		if(other){
+			int smpk=countinv("PortableStimpack");
+			if(smpk){
+				A_TakeInventory("PortableStimpack");
+				int maxgive=
+					hdmath.maxinv(other,"PortableStimpack")
+					-other.countinv("PortableStimpack");
+				if(maxgive>0){
+					other.A_GiveInventory("PortableStimpack",maxgive);
+					smpk-=maxgive;
 				}
-			}else{
-				other.A_GiveInventory("PortableStimpack");
+				if(smpk>0)A_DropItem("PortableStimpack",smpk);
 			}
 		}
 		super.actualpickup(other);
