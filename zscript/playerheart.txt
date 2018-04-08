@@ -146,12 +146,14 @@ extend class HDPlayerPawn{
 				||fatigue>HDCONST_DAMAGEFATIGUE  
 			)DamageMobj(self,self,1,"internal");
 			else{
-				if(health<100
+				int getmaxhealth=100
 					-aggravateddamage
 					-burncount
 					-oldwoundcount
 					-unstablewoundcount
 					+max(fatigue-HDCONST_SPRINTFATIGUE,0)
+				;
+				if(health<getmaxhealth
 				){
 					if(random(1,30)+countinv("IsMoving")<beatmax)healthing(1);
 					if(random(1,40)<stimcount)healthing(1);

@@ -318,7 +318,7 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 
 	shootssg:
 		#### F 1 bright light("SHOT"){
-			if(vel.length()>30){
+			if(vel dot vel > 900){
 				setstatelabel("see");
 				return;
 			}
@@ -354,7 +354,7 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 			if(gunspent>0){
 				setstatelabel("chambersg");
 				return;
-			}else if(vel.length()>20){
+			}else if(vel dot vel > 400){
 				setstatelabel("see");
 				return;
 			}
