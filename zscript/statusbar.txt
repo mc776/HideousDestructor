@@ -374,7 +374,11 @@ class HDStatusBar:DoomStatusBar{
 			inventory ivs=cplayer.mo.invsel;
 			drawinventoryicon(ivs,(posx,posy),
 				flags|DI_ITEM_CENTER_BOTTOM
-				|(ivs is "HDArmour"?0:DI_TRANSLATABLE)
+				|((
+					ivs is "HDArmour"
+					||ivs is "PortableStimpack"
+					||ivs is "PortableMedikit"
+				)?0:DI_TRANSLATABLE)
 			);
 
 			let herp=HERPUsable(ivs);
