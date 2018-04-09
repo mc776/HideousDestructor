@@ -235,108 +235,71 @@ class PersistentDamager:HDActor{
 
 //new shit
 
-
-class Heat:InventoryFlag{
-	default{
-		+inventory.untossable
-		inventory.maxamount 1000000;
+class Heat:Inventory{
+	double volume;
+	double inversevolumeratio;
+	double realamount;
+	int effectivemass;
+	enum HeatNumbers{
+		HEATNUM_DEFAULTVOLUME=12*12*48*4,
 	}
-	int flamethreshold;
-	int hurtthreshold;
-	override void AttachToOwner(actor other){
-		super.attachtoowner(other);
-		if(!owner){destroy();return;}
-
-		//mass, height, etc. for flamethreshold
-		flamethreshold=(
-			(
-				max(
-					owner.mass,
-					getdefaultbytype(owner.getclass()).health,
-					getdefaultbytype(owner.getclass()).gibhealth
-				)
-				+owner.health
-			)
-			*getdefaultbytype(owner.getclass()).radius
-			*getdefaultbytype(owner.getclass()).height
-		)/1000;
-
-		//hurtthreshold pinned on flamethreshold
-		int ht=flamethreshold*0.4;
-		hurtthreshold=ApplyDamageFactor("Thermal",ht);
-		int althurtthreshold=ApplyDamageFactor("Fire",ht);
-		if(althurtthreshold<hurtthreshold)hurtthreshold=althurtthreshold;
-		althurtthreshold=ApplyDamageFactor("Burning",ht);
-		if(althurtthreshold<hurtthreshold)hurtthreshold=althurtthreshold;
-
-		hurtthreshold=max(1,hurtthreshold);
-
-		//used to calculated movement
-		setorigin(owner.pos,false);
-		angle=owner.angle;
+	states{spawn:TNT1 A 0;stop;}
+	default{
+		inventory.amount 1;
+		inventory.maxamount 9999999;
+	}
+	override void attachtoowner(actor user){
+		super.attachtoowner(user);
+		volume=(user.radius*user.radius*user.height)*4;
+		inversevolumeratio=HEATNUM_DEFAULTVOLUME/volume;
+		effectivemass=max(user.mass,user.spawnhealth());
+		A_SetSize(owner.radius,owner.height);
 	}
 	override void DoEffect(){
 		if(!owner){destroy();return;}
-		if(amount<1)return;
 
-		if(
-			owner.health<1
-			&&hdplayerpawn(owner)
-			&&hdplayerpawn(owner).playercorpse
-		){
-			target=hdplayerpawn(owner).playercorpse;
-			target.A_GiveInventory("Heat",amount);
+		//convert given to real
+		if(amount){
+			realamount+=amount*inversevolumeratio;
 			amount=0;
+		}
+		//clamp number to zero
+		if(realamount<1){
+			realamount=0;
 			return;
 		}
 
-		amount--;
-		if(owner.health>0)amount-=2;
-		int mv=max(absangle(owner.angle,angle)*0.05,
-			clamp(distance3dsquared(owner)*0.05,0,15)
-		);
-		amount-=random(0,mv);
-
-		angle=owner.angle;
-		setorigin(owner.pos,false);
-
-		if(amount>hurtthreshold){
-			int dmgamt=randompick(0,1,amount/hurtthreshold);
-			owner.damagemobj(self,null,dmgamt,"Thermal",DMG_NO_ARMOR|DMG_THRUSTLESS);
-
-			if(
-				owner&&
-				amount>(flamethreshold*frandom(1,(HEAT_FLAMEMULT-1)))
-			){
-				//spawn a flame
-				if(accuracy<1){
-					accuracy=random(2,5);
-					double or=owner.radius;
-					actor aaa=spawn("HDFlameRed",owner.pos
-						+(frandom(-or,or),frandom(-or,or),frandom(0,owner.height))
-					);
-					aaa.A_PlaySound("misc/firecrkl",CHAN_VOICE,min(0.4,0.0001*amount));
-					if(random(-flamethreshold,amount)>flamethreshold*2){
-						owner.A_GiveInventory("SawGib",1);
-						owner.A_SpawnItemEx(owner.bloodtype,
-							frandom(0,owner.radius),0,
-							frandom(0,owner.height),
-							1,0,2,frandom(0,360),
-							SXF_NOCHECKPOSITION|SXF_USEBLOODCOLOR
-						);
-						aaa.A_PlaySound("misc/bulletflesh",CHAN_BODY,0.2);
-						owner.vel.z+=frandom(-1,1);
-	
-						//structural damage
-						if(owner.health<1)hurtthreshold++;
-					}
-				}else accuracy--;
-				amount=clamp(amount+max(1,amount/10),0,flamethreshold*(HEAT_FLAMEMULT+1));
+		//flame
+		if(realamount>frandom(90,140)&&!(int(realamount)%3)){
+			if(owner.bshootable){
+				realamount+=2.;
+				if(realamount>150&&!random(0,7))owner.A_GiveInventory("SawGib",1);
 			}
+			actor aaa=spawn("HDFlameRed",owner.pos+(
+				frandom(-radius,radius),
+				frandom(-radius,radius),
+				frandom(2,owner.height)
+			));
+			aaa.target=owner;
+			aaa.A_PlaySound("misc/firecrkl",CHAN_BODY,clamp(realamount*0.001,0,0.2));
 		}
-	}
-	enum HeatThresholds{
-		HEAT_FLAMEMULT = 5,
+
+		//damage
+		if(realamount>50){
+			double dmgamt=realamount*0.01;
+			if(dmgamt<1.&&frandom(0.,1.)<dmgamt)dmgamt=1;
+			owner.damagemobj(self,self,dmgamt,"thermal",DMG_NO_ARMOR);
+			if(!owner)return;
+		}
+
+		//cooldown
+		double reduce=inversevolumeratio;
+		if(owner.vel dot owner.vel > 4)reduce*=1.6;
+		if(absangle(angle,owner.angle)>16)reduce*=1.6;
+		realamount-=reduce;
+		angle=owner.angle;
+
+//		A_LogFloat(realamount);
 	}
 }
 
