@@ -13,13 +13,25 @@ class PortableMedikit:HDPickup{
 		inventory.icon "PMEDA0";
 		scale 0.4;
 	}
+	bool hasstim;
 	override void postbeginplay(){
 		super.postbeginplay();
-		if(!owner&&vel==(0,0,0))A_GiveInventory("PortableStimpack");
+		hasstim=(!owner&&vel==(0,0,0));
+	}
+	override void actualpickup(actor other){
+		if(hasstim){
+			hasstim=false;
+			A_PlaySound("weapons/pocket");
+			if(other.A_JumpIfInventory("PortableStimpack",0,"null"))
+				A_DropItem("PortableStimpack",1);
+				else other.A_GiveInventory("PortableStimpack",1);
+		}
+		super.actualpickup(other);
 	}
 	states{
 	spawn2:
 		MEDI A -1{
+			translation=0;
 			if(invoker.countinv("PortableStimpack"))invoker.scale=(0.47,0.4);
 			else invoker.scale=(0.4,0.4);
 		}
@@ -28,9 +40,6 @@ class PortableMedikit:HDPickup{
 			if(!FindInventory("HDMedikitter")){
 				A_GiveInventory("HDMedikitter");
 				A_TakeInventory("PortableMedikit",1);
-				if(A_JumpIfInventory("PortableStimpack",0,"null"))
-					A_DropItem("PortableStimpack",1);
-					else A_GiveInventory("PortableStimpack",1);
 			}else{
 				A_Log("You pull out the medikit you've already unwrapped.",true);
 			}
