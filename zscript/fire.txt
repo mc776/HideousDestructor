@@ -238,6 +238,7 @@ class PersistentDamager:HDActor{
 class Heat:Inventory{
 	double volume;
 	double inversevolumeratio;
+	double baseinversevolumeratio;
 	double realamount;
 	int effectivemass;
 	enum HeatNumbers{
@@ -251,7 +252,8 @@ class Heat:Inventory{
 	override void attachtoowner(actor user){
 		super.attachtoowner(user);
 		volume=(user.radius*user.radius*user.height)*4;
-		inversevolumeratio=HEATNUM_DEFAULTVOLUME/volume;
+		baseinversevolumeratio=HEATNUM_DEFAULTVOLUME/volume;
+		inversevolumeratio=baseinversevolumeratio;
 		effectivemass=max(user.mass,user.spawnhealth());
 		A_SetSize(owner.radius,owner.height);
 	}
@@ -259,6 +261,15 @@ class Heat:Inventory{
 		if(!owner){destroy();return;}
 
 		//convert given to real
+		inversevolumeratio=baseinversevolumeratio;
+		if(owner.countinv("WornRadsuit"))amount/=5;
+		if(hdplayerpawn(owner)){
+			int al=hdplayerpawn(owner).armourlevel;
+			if(al==1){
+				inversevolumeratio*=0.4;
+				amount=max(0,amount-5);
+			}else if(al==3)inversevolumeratio*=0.6;
+		}
 		if(amount){
 			realamount+=amount*inversevolumeratio;
 			amount=0;
