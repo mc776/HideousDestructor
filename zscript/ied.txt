@@ -1,6 +1,10 @@
 //-------------------------------------------------
 // Not-Quite-Improvised Explosive Device
 //-------------------------------------------------
+/*
+	SPECIAL NOTE FOR MAPPERS
+	Setting args[0] to -1 will disable targeting.
+*/
 enum HDIEDConst{
 	HDIED_TID=8495,
 }
@@ -38,7 +42,6 @@ class HDIEDKit:HDPickup{
 				SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPITCH
 			);
 			HDIED(target).botid=invoker.botid;
-			A_Log(string.format("\cd[IED] \cjDeployed with tag ID \cy%i",invoker.botid),true);
 			target.A_ChangeVelocity(4*cos(pitch),0,4*sin(-pitch),CVF_RELATIVE);
 		}fail;
 	}
@@ -58,8 +61,8 @@ class HDIED:DudRocket{
 		//$Title "Friendly IED"
 		//$Sprite "IEDSA0"
 
-		//mm: actively scanning; mem: live
-		-missilemore -missileevenmore
+		//mm: actively scanning
+		-missilemore
 
 		-missile +friendly +lookallaround +nosplashalert
 		-pushable +shootable +noblood +nodamage
@@ -72,22 +75,38 @@ class HDIED:DudRocket{
 		if(master){
 			master.A_TakeInventory("HDIEDKit",1,TIF_NOTAKEINFINITE);
 			ChangeTid(HDIED_TID);
-		}
+			if(master.player){
+				if(cvar.getcvar("hd_autoactivateied",master.player).getbool()){
+					master.A_Log(
+						string.format(
+							"\cd[IED] \cjDeployed with tag ID \cy%i\cj - \cgARMED AND SEEKING!\cj\n\cjUse \cdied 1 \cy%i\cj in the console to \cgde\cjactivate seeking or \cdied 999 \cy%i\cj to detonate immediately.",
+							botid,botid,botid
+						),true
+					);
+					bmissilemore=true;
+				}else if(cvar.getcvar("hd_helptext",master.player).getint())master.A_Log(
+					string.format(
+						"\cd[IED] \cjDeployed with tag ID \cy%i\cj.\n\cjUse \cdied 1 \cy%i\cj in the console to activate seeking or \cdied 999 \cy%i\cj to detonate immediately.",
+						botid,botid,botid
+					),true
+				);
+			}
+		}else bmissilemore=args[0]>-1; //map-placed should be seeking
 	}
 	states{
 	spawn:
-		IEDS C 35;
-		IEDS C 0 A_PlaySound("misc/i_pkup");
+		IEDS A 0 nodelay A_JumpIf(!bmissilemore,"idle");
+		IEDS C 35 A_PlaySound("misc/i_pkup");
 		IEDS CBCBC 4;
 		IEDS ABABABABABABAB 2;
 		IEDS ABABAB 1;
-		IEDS A 0{bmissileevenmore=true;}
-		goto idle;
 	idle:
 		IEDS A 10{
 			if(bmissilemore)A_LookEx(LOF_NOSOUNDCHECK,0,96.0,0,360,"melee");
 			A_ClearTarget();
-		}loop;
+		}
+		IEDS C 10 A_JumpIf(!bmissilemore,"idle");
+		loop;
 	melee:
 		IEDS A 0;
 		goto detonate;
@@ -173,10 +192,7 @@ extend class HDHandlers{
 			){
 				if(iedcmd==999){
 					badcommand=false;
-					if(!ied.bmissileevenmore){
-						ppp.A_Log("\cd[IED] \crERROR:\cj IED booting \crNOT\cj detonated.",true);
-					}
-					else if(
+					if(
 						ied.checksight(ppp)&&
 						ied.distance3d(ppp)<512
 					){
