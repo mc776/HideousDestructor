@@ -358,12 +358,10 @@ class HDWeapon:Weapon{
 		---- A 0{
 			let p=HDPlayerPawn(self);
 			if(
+				player&&
 				p&&!p.beatcount&&p.zerk>900
 				&&!random(0,(invoker is "Ring")?20:100)
-			)player.SetPsprite(
-				PSP_WEAPON,
-				invoker.FindState("Fire")
-			);
+			)player.cmd.buttons|=BT_ATTACK;
 			A_TakeInventory("WeaponBusy");
 		}
 		---- A 0 A_Jump(256,"ready");
