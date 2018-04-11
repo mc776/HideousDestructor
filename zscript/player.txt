@@ -378,12 +378,16 @@ class HDPlayerPawn:PlayerPawn{
 
 		//special hud bobbing
 		double bobvel=max(abs(vel.x),abs(vel.y))*viewbob;
-		if(player.onground&&bobvel){
-			bobcounter+=12;
+		let pr=weapon(player.readyweapon);
+		if(player.onground&&bobvel&&pr){
+			bobcounter+=5.3*pr.bobspeed;
 			if(bobvel<0.1&&(89<bobcounter<90||269<bobcounter<270))bobcounter=90;
 			else if(bobcounter>360)bobcounter=0;
 		}
-		hudbob=(cos(bobcounter)*(sm?2.:1.),sin(bobcounter*2)*3)*bobvel;
+		hudbob=(
+			cos(bobcounter)*(sm?5.:2.)*(pr?pr.bobrangex:1.),
+			sin(bobcounter*2)*6.*(pr?pr.bobrangey:1.)
+		)*bobvel;
 
 
 		//lowering weapon for sprint/mantle/jump

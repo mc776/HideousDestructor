@@ -428,14 +428,12 @@ class HDBullet:HDActor{
 			gs.pitch=pitch;gs.angle=angle;gs.vel=vk*j;
 		}
 	}
-	virtual void LongArmWobble(){
+	void LongArmWobble(){
 		let hdp=hdplayerpawn(target);
 		if(hdp&&hdp.scopecamera){
 			pitch+=deltaangle(hdp.pitch,hdp.scopecamera.pitch);
 			angle+=deltaangle(hdp.angle,hdp.scopecamera.angle);
-			return;
-		}
-		if(countinv("IsMoving",AAPTR_TARGET)>=10){
+		}else if(countinv("IsMoving",AAPTR_TARGET)>=10){
 			pitch+=frandom(-2,2);
 			angle+=frandom(-1,1);
 		}

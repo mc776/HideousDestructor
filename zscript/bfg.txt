@@ -553,7 +553,11 @@ class BFGBalle:HDFireball{
 		TNT1 A 0 nodelay{
 			A_BFGSpray();
 			ballripdmg=1;
-			if(countinv("IsMoving",AAPTR_TARGET)>=6){    
+			let hdp=hdplayerpawn(target);
+			if(hdp&&hdp.scopecamera){
+				pitch+=deltaangle(hdp.pitch,hdp.scopecamera.pitch);
+				angle+=deltaangle(hdp.angle,hdp.scopecamera.angle);
+			}else if(countinv("IsMoving",AAPTR_TARGET)>=6){    
 				pitch+=frandom(-3,3);
 				angle+=frandom(-1,1);
 			}
