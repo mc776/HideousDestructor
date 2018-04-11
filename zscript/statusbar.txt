@@ -148,12 +148,10 @@ class HDStatusBar:DoomStatusBar{
 		//draw the goggles when they do something.
 		let hdla=portableliteamp(cp.findinventory("PortableLiteAmp"));
 		if(hdla && hdla.worn){
-			double vv=hdla.gogvel;
 			drawimage(
-				"GOGGA0",(
-					cos(hdla.gogbob)*vv,
-					sin(hdla.gogbob*2)*vv*2
-				),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+				"GOGGA0",
+				-cp.hudbob,
+				DI_SCREEN_CENTER|DI_ITEM_CENTER,
 				scale:(2.2,2.4)
 			);
 		}
