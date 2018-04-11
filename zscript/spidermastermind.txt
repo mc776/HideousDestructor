@@ -60,7 +60,7 @@ class Spiderdemon:SpiderMastermind replaces SpiderMastermind{
 			int blocked=clamp(damage,0,min(shields,500));
 			damage=max(damage-blocked,(!random(0,9)?1:0));
 			shields=clamp(shields-(mod=="BFGBallAttack"?blocked*100:blocked-20),0,shields);
-			if(!inflictor.bismonster&&!inflictor.player){
+			if(inflictor&&!inflictor.bismonster&&!inflictor.player){
 				int shrd=max(random(0,1),damage/50);
 				for(int i=0;i<shrd;i++){
 					actor aaa=spawn("FragShard",inflictor.pos);

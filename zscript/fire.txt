@@ -260,16 +260,29 @@ class Heat:Inventory{
 	override void DoEffect(){
 		if(!owner){destroy();return;}
 
-		//convert given to real
-		inversevolumeratio=baseinversevolumeratio;
-		if(owner.countinv("WornRadsuit"))amount/=5;
-		if(hdplayerpawn(owner)){
-			int al=hdplayerpawn(owner).armourlevel;
+		//make adjustments based on armour and player status
+		let hdp=hdplayerpawn(owner);
+		if(hdp){
+			inversevolumeratio=baseinversevolumeratio;
+			if(owner.countinv("WornRadsuit"))amount/=5;
+			int al=hdp.armourlevel;
 			if(al==1){
 				inversevolumeratio*=0.4;
 				amount=max(0,amount-5);
 			}else if(al==3)inversevolumeratio*=0.6;
+			if(
+				hdp.health<1&&
+				hdp.playercorpse
+			){
+				hdp.playercorpse.A_GiveInventory("Heat",amount);
+				Heat(hdp.playercorpse.findinventory("Heat")).realamount+=realamount;
+				amount=0;
+				realamount=0;
+				return;
+			}
 		}
+
+		//convert given to real
 		if(amount){
 			realamount+=amount*inversevolumeratio;
 			amount=0;
@@ -310,7 +323,8 @@ class Heat:Inventory{
 		realamount-=reduce;
 		angle=owner.angle;
 
-//		A_LogFloat(realamount);
+//
+		A_LogFloat(realamount);
 	}
 }
 
