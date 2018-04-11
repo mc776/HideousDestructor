@@ -39,6 +39,9 @@ class HDPlayerPawn:PlayerPawn{
 
 	bool flip;
 
+	double bobcounter;
+	vector2 hudbob;
+
 	default{
 		+interpolateangles
 		-telestomp
@@ -356,7 +359,7 @@ class HDPlayerPawn:PlayerPawn{
 		if(weaponbusy)speed=min(speed,0.6);
 		else if(
 			//weapons so bulky they get in the way physically
-			//as a rule of thumb, anything that uses the "swinging" weapon bob
+			//as a rule of thumb, anything that uses the "swinging" weapon hudbob
 			player.readyweapon is "Vulcanette"||
 			player.readyweapon is "BFG9k"||
 			player.readyweapon is "HDBP"
@@ -371,6 +374,16 @@ class HDPlayerPawn:PlayerPawn{
 			else if(speed>0.5)speed=1.;
 			else speed=0.36;
 		}
+
+
+		//special hud bobbing
+		double bobvel=max(abs(vel.x),abs(vel.y))*viewbob;
+		if(bobvel){
+			bobcounter+=12;
+			if(bobvel<0.1&&(89<bobcounter<90||269<bobcounter<270))bobcounter=90;
+			else if(bobcounter>360)bobcounter=0;
+		}
+		hudbob=(cos(bobcounter)*(sm?2.:1.),sin(bobcounter*2)*3)*bobvel;
 
 
 		//lowering weapon for sprint/mantle/jump
@@ -496,21 +509,26 @@ class HDPlayerPawn:PlayerPawn{
 
 //Camera actor for player's scope
 class ScopeCamera:IdleDummy{
+	hdplayerpawn hpl;
+	override void postbeginplay(){
+		super.postbeginplay();
+		hpl=hdplayerpawn(target);
+	}
 	override void tick(){
-		if(!target){
+		if(!hpl){
 			destroy();
 			return;
 		}
-		angle=target.angle;
-		pitch=target.pitch;
-		vector2 fwd=angletovector(target.angle,2);
+		angle=hpl.angle+hpl.hudbob.x*0.6;
+		pitch=hpl.pitch+hpl.hudbob.y*0.6;
+		vector2 fwd=angletovector(angle,2);
 
-		if(abs(pitch)>89)setxyz(target.pos+(
+		if(abs(pitch)>89)setxyz(hpl.pos+(
 			fwd*max(0.5,cos(pitch))*2,
-			sin(-pitch)*6+target.height-4
-		));else setxyz(target.pos+(
+			sin(-pitch)*6+hpl.height-4
+		));else setxyz(hpl.pos+(
 			fwd*cos(pitch)*6,
-			sin(-pitch)*6+target.height-4
+			sin(-pitch)*6+hpl.height-4
 		));
 	}
 }

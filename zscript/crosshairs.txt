@@ -25,9 +25,12 @@ extend class HDStatusBar{
 			cpbt&BT_ZOOM
 		);
 
+		vector2 bob=hpl.hudbob;
+		ismoving=0;
+
 		if((wp is "HDPistol")&&ismoving<5){
 			drawimage(
-				"XH26",(0,0),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
+				"XH26",(0,0)+bob,DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 				scale:(2,2)*scl
 			);
 		}
@@ -50,27 +53,27 @@ extend class HDStatusBar{
 			if(wp.weaponstatus[0]&ZM66F_GLMODE){
 				if(ismoving>4)return;  
 				drawimage(
-					"XH27",(0,1.8),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
+					"XH27",(0,1.8)+bob,DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 					scale:(1.6,1.6)
 				);
 			}else{
 				drawimage(
-					"XH25",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					"XH25",(0,0)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
 					scale:(2.6,2.7)*scl
 				);
 				if(scopeview){
 					double degree=(35-wp.weaponstatus[ZM66S_ZOOM])*0.2;
 					texman.setcameratotexture(hpc,"HDXHCAM3",degree);
 					drawimage(
-						"HDXHCAM3",(0,scaledyoffset),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+						"HDXHCAM3",(0,scaledyoffset)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
 						scale:(0.31,0.31)*scl
 					);
 					drawimage(
-						"XH29",(0,scaledyoffset),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+						"XH29",(0,scaledyoffset)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
 						scale:(0.8,0.8)*scl
 					);
 					drawnum(degree*10,
-						4,79*scl,DI_SCREEN_CENTER,Font.CR_BLACK
+						4+bob.x,79*scl+bob.y,DI_SCREEN_CENTER,Font.CR_BLACK
 					);
 				}
 			}

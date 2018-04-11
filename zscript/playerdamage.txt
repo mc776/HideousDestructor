@@ -395,3 +395,19 @@ extend class HDPlayerPawn{
 	}
 }
 
+
+//for future reference
+class DamageFloorChecker:Actor{
+	override void postbeginplay(){
+		super.postbeginplay();
+		sector sss=floorsector;
+		A_Log(string.format(
+			"%i %s damage every %i tics with %i leak chance.",
+			sss.damageamount,
+			sss.damagetype,
+			sss.damageinterval,
+			sss.leakydamage
+		));
+		destroy();
+	}
+}
