@@ -378,7 +378,7 @@ class HDPlayerPawn:PlayerPawn{
 
 		//special hud bobbing
 		double bobvel=max(abs(vel.x),abs(vel.y))*viewbob;
-		if(bobvel){
+		if(player.onground&&bobvel){
 			bobcounter+=12;
 			if(bobvel<0.1&&(89<bobcounter<90||269<bobcounter<270))bobcounter=90;
 			else if(bobcounter>360)bobcounter=0;
