@@ -107,6 +107,7 @@ class HDPlayerPawn:PlayerPawn{
 		}
 	}
 	void A_CheckSeeState(){
+		if(!player)return;
 		gunbraced=false;
 		overloaded=CheckEncumbrance();
 		feetangle=angle;
@@ -131,6 +132,13 @@ class HDPlayerPawn:PlayerPawn{
 			setstatelabel("seesprint");
 		}else if(runwalksprint<0){
 			setstatelabel("seewalk");
+		}
+
+		if(player.readyweapon){
+			player.readyweapon.bobspeed=getdefaultbytype(player.readyweapon.getclass()).bobspeed;
+			if(stunned||runwalksprint<0){
+				player.readyweapon.bobspeed*=0.6;
+			}
 		}
 	}
 	states{
