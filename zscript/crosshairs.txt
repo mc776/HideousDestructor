@@ -36,13 +36,13 @@ extend class HDStatusBar{
 		}
 		else if((wp is "HDSMG"||wp is "Hunter")&&ismoving<6){
 			drawimage(
-				"XH23",(0,1.8),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
+				"XH23",(0,1.8)+bob,DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 				scale:(1.6,1.7)*scl
 			);
 		}
 		else if((wp is "Slayer")&&ismoving<10){
 			drawimage(
-				"XH23",(0,1.4),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
+				"XH23",(0,1.4)+bob,DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 				scale:(1.8,1.6)*scl
 			);
 		}
@@ -81,67 +81,69 @@ extend class HDStatusBar{
 		else if((wp is "Vulcanette")&&ismoving<3){
 			int scaledyoffset=47*scl;
 			drawimage(
-				"XH25",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+				"XH25",(0,0)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
 				scale:(1.7,1.7)*scl
 			);
 			if(scopeview){
 				double degree=(35-wp.weaponstatus[2])*0.2;
 				texman.setcameratotexture(hpc,"HDXHCAM3",degree);
 				drawimage(
-					"HDXHCAM3",(0,scaledyoffset),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					"HDXHCAM3",(0,scaledyoffset)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
 					scale:(0.31,0.31)*scl
 				);
 				drawimage(
-					"XH29",(0,scaledyoffset),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					"XH29",(0,scaledyoffset)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
 					scale:(0.8,0.8)*scl
 				);
 				drawnum(degree*10,
-					4,79*scl,DI_SCREEN_CENTER,Font.CR_BLACK
+					4+bob.x,79*scl+bob.y,DI_SCREEN_CENTER,Font.CR_BLACK
 				);
 			}
 		}
 		else if((wp is "Blooper")&&ismoving<10){
 			drawimage(
-				"XH27",(0,1.8*scl),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
+				"XH27",(0,1.8*scl)+bob,DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 				scale:(1.6,1.6)*scl
 			);
 		}
 		else if((wp is "HDRL")&&ismoving<6){
 			if(wp.weaponstatus[0]&RLF_GRENADEMODE)drawimage(
-				"XH27",(0,1.8*scl),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
+				"XH27",(0,1.8*scl)+bob,DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 				scale:(1.6,1.6)*scl
 			);
 			else if(wp.weaponstatus[0]&RLF_ZOOM){
 				int scaledyoffset=-2*scl;
 				texman.setcameratotexture(hpc,"HDXHCAM5",2.);
 				drawimage(
-					"HDXHCAM5",(0,scaledyoffset),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
+					"HDXHCAM5",(0,scaledyoffset)+bob,
+					DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 					scale:(0.35,0.35)*scl
 				);
 				drawimage(
-					"stadia",(0,scaledyoffset),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
+					"stadia",(0,scaledyoffset)+bob,
+					DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 					scale:(1.,1.)*scl
 				);
 			}
 			else drawimage(
-				"XH25",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+				"XH25",(0,0)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
 				scale:(1.9,1.9)*scl
 			);
 		}
 		else if(wp is "ThunderBuster"&&ismoving<6){
 			drawimage(
-				"XH26",(0,1*scl),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
+				"XH26",(0,1*scl)+bob,DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 				scale:(5,1)*scl
 			);
 			if(scopeview){
 				int scaledyoffset=36*scl;
 				texman.setcameratotexture(hpc,"HDXHCAM1",3);
 				drawimage(
-					"HDXHCAM1",(0,scaledyoffset),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					"HDXHCAM1",(0,scaledyoffset)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
 					scale:(1,1)*scl
 				);
 				drawimage(
-					"XH28",(0,scaledyoffset),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					"XH28",(0,scaledyoffset)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
 					scale:(1,1)*scl
 				);
 			}
@@ -150,12 +152,12 @@ extend class HDStatusBar{
 			if(wp.weaponstatus[0]&LIBF_GRENADEMODE){
 				if(ismoving>4)return;  
 				drawimage(
-					"XH27",(0,1.8*scl),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
+					"XH27",(0,1.8*scl)+bob,DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 					scale:(1.6,1.6)*scl
 				);
 			}else{
 				drawimage(
-					"XH25",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					"XH25",(0,0)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
 					scale:(2.5,2.5)*scl
 				);
 				if(scopeview){
@@ -168,18 +170,18 @@ extend class HDStatusBar{
 						degree=4.-0.06*wp.weaponstatus[LIBS_ZOOM];
 						texman.setcameratotexture(hpc,"HDXHCAM3",degree);
 						drawimage(
-							"HDXHCAM3",(0,scaledyoffset),
+							"HDXHCAM3",(0,scaledyoffset)+bob,
 							DI_SCREEN_CENTER|DI_ITEM_CENTER,
 							scale:(0.4,0.4)*scl
 						);
 						int cx,cy,cw,ch;
 						[cx,cy,cw,ch]=screen.GetClipRect();
 						SetClipRect(
-							-36*scl,24*scl,scaledwidth,scaledwidth,
+							-36*scl+bob.x,24*scl+bob.y,scaledwidth,scaledwidth,
 						DI_SCREEN_CENTER);
 						double deg=1/degree;
 						drawimage(
-							reticle,(0,scaledyoffset),
+							reticle,(0,scaledyoffset)+bob,
 							DI_SCREEN_CENTER|DI_ITEM_CENTER,
 							scale:(2.,2.)*deg*scl
 						);
@@ -188,31 +190,31 @@ extend class HDStatusBar{
 						degree=(35-wp.weaponstatus[LIBS_ZOOM])*0.2;
 						texman.setcameratotexture(hpc,"HDXHCAM3",degree);
 						drawimage(
-							"HDXHCAM3",(0,scaledyoffset),
+							"HDXHCAM3",(0,scaledyoffset)+bob,
 							DI_SCREEN_CENTER|DI_ITEM_CENTER,
 							scale:(0.4,0.4)*scl
 						);
 						int cx,cy,cw,ch;
 						[cx,cy,cw,ch]=screen.GetClipRect();
 						SetClipRect(
-							-36*scl,24*scl,scaledwidth,scaledwidth,
+							-36*scl+bob.x,24*scl+bob.y,scaledwidth,scaledwidth,
 						DI_SCREEN_CENTER);
 						drawimage(
-							reticle,(0,scaledyoffset),
+							reticle,(0,scaledyoffset)+bob,
 							DI_SCREEN_CENTER|DI_ITEM_CENTER,
 							scale:(0.52,0.52)*scl
 						);
 						screen.SetClipRect(cx,cy,cw,ch);
 					}
 					drawimage(
-						"XH31",(0,scaledyoffset),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+						"XH31",(0,scaledyoffset)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
 						scale:(1.,1.)*scl
 					);
 					drawnum(degree*10,
-						4,102*scl,DI_SCREEN_CENTER,Font.CR_BLACK
+						4+bob.x,102*scl+bob.y,DI_SCREEN_CENTER,Font.CR_BLACK
 					);
 					drawnum(wp.weaponstatus[LIBS_DROPADJUST]*5,
-						6,14*scl,DI_SCREEN_CENTER,Font.CR_BLACK
+						6+bob.x,14*scl+bob.y,DI_SCREEN_CENTER,Font.CR_BLACK
 					);
 				}
 			}
@@ -222,23 +224,23 @@ extend class HDStatusBar{
 			if(wp.weaponstatus[0]&BRONF_ZOOM){
 				texman.setcameratotexture(hpc,"HDXHCAM5",2.6);
 				drawimage(
-					"HDXHCAM5",(0,scaledyoffset),
+					"HDXHCAM5",(0,scaledyoffset)+bob,
 					DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 					scale:(0.35,0.35)*scl
 				);
 				drawimage(
-					"stadia",(0,scaledyoffset),
+					"stadia",(0,scaledyoffset)+bob,
 					DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 					scale:(1.,1.)*scl
 				);
 			}else drawimage(
-				"XH25",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+				"XH25",(0,0)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
 				scale:(1.9,1.9)*scl
 			);
 		}
 		else if(wp is "BossRifle"&&ismoving<5){
 			drawimage(
-				"XH23",(0,-0.5*scl),DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
+				"XH23",(0,-0.5*scl)+bob,DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 				scale:(3,1.6)*scl
 			);
 			if(scopeview){
@@ -250,17 +252,17 @@ extend class HDStatusBar{
 					degree=4.-0.05*wp.weaponstatus[BOSSS_ZOOM];
 					texman.setcameratotexture(hpc,"HDXHCAM3",degree);
 					drawimage(
-						"HDXHCAM3",(0,scaledyoffset),
+						"HDXHCAM3",(0,scaledyoffset)+bob,
 						DI_SCREEN_CENTER|DI_ITEM_CENTER,
 						scale:sclhalf
 					);
 					int cx,cy,cw,ch;
 					[cx,cy,cw,ch]=screen.GetClipRect();
-					SetClipRect(-44*scl,23*scl,scaledwidth,scaledwidth,
+					SetClipRect(-44*scl+bob.x,23*scl+bob.y,scaledwidth,scaledwidth,
 						DI_SCREEN_CENTER);
 					double deg=1/degree;
 					drawimage(
-						"reticle1",(0,scaledyoffset),
+						"reticle1",(0,scaledyoffset)+bob,
 						DI_SCREEN_CENTER|DI_ITEM_CENTER,
 						scale:(1.6,1.6)*deg*scl
 					);
@@ -269,25 +271,25 @@ extend class HDStatusBar{
 					degree=6.-0.1*wp.weaponstatus[BOSSS_ZOOM];
 					texman.setcameratotexture(hpc,"HDXHCAM3",degree);
 					drawimage(
-						"HDXHCAM3",(0,scaledyoffset),
+						"HDXHCAM3",(0,scaledyoffset)+bob,
 						DI_SCREEN_CENTER|DI_ITEM_CENTER,
 						scale:sclhalf
 					);
 					drawimage(
-						"reticle1",(0,scaledyoffset),
+						"reticle1",(0,scaledyoffset)+bob,
 						DI_SCREEN_CENTER|DI_ITEM_CENTER,
 						scale:sclhalf
 					);
 				}
 				drawimage(
-					"XH31",(0,scaledyoffset),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					"XH31",(0,scaledyoffset)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
 					scale:(1.24,1.24)*scl
 				);
 				drawnum(degree*10,
-					4,119*scl,DI_SCREEN_CENTER,Font.CR_BLACK
+					4+bob.x,119*scl+bob.y,DI_SCREEN_CENTER,Font.CR_BLACK
 				);
 				drawnum(wp.weaponstatus[BOSSS_DROPADJUST]*5,
-					6,12*scl,DI_SCREEN_CENTER,Font.CR_BLACK
+					6+bob.x,12*scl+bob.y,DI_SCREEN_CENTER,Font.CR_BLACK
 				);
 			}
 			// the scope display is in 10ths of an arcminute.
