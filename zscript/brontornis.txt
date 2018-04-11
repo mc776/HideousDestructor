@@ -56,17 +56,19 @@ class TerrorBolt:HDBullet{
 				self,self.master,
 				random(12,24)*60,
 				"SmallArms3",DMG_THRUSTLESS);
-			actor a=Spawn("WallChunker",pos,ALLOW_REPLACE);
 			A_Blast(
 				fragradius:256,fragdamage:256,fragdamagetype:"SmallArms1",
 				immolateradius:64,immolateamount:random(4,20),immolatechance:32,
 				gibradius:16,gibamount:random(4,20)
 			);
+			DistantQuaker.Quake(self,3,35,256,12);
+
+			if(max(abs(pos.x),abs(pos.y))>=32678)return;
+			actor aaa=Spawn("WallChunker",pos,ALLOW_REPLACE);
 			A_SpawnChunks("BigWallChunk",20,4,20);
 			A_SpawnChunks("HDSmoke",4,1,7);
-			a=spawn("HDExplosion",pos,ALLOW_REPLACE);a.vel.z=2;
+			aaa=spawn("HDExplosion",pos,ALLOW_REPLACE);aaa.vel.z=2;
 			spawn("DistantRocket",pos,ALLOW_REPLACE);
-			DistantQuaker.Quake(self,3,35,256,12);
 			vel.z+=10;
 			A_SpawnChunks("HDSmokeChunk",random(3,4),6,12);
 		}stop;
