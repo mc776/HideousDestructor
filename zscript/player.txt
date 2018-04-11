@@ -524,7 +524,7 @@ class ScopeCamera:IdleDummy{
 			return;
 		}
 		angle=hpl.angle-hpl.hudbob.x*0.6;
-		pitch=hpl.pitch-hpl.hudbob.y*0.6;
+		pitch=hpl.pitch+hpl.hudbob.y*0.6;
 		vector2 fwd=angletovector(angle,2);
 
 		if(abs(pitch)>89)setxyz(hpl.pos+(
