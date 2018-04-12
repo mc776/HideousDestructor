@@ -1,18 +1,6 @@
 // ------------------------------------------------------------
 // GRENADE!
 // ------------------------------------------------------------
-
-//delete this once all things have been scriptified
-class frags:idledummy{
-	states{
-	spawn:
-		TNT1 A 1 nodelay {
-			A_SpawnChunks("HDBulletFrag",242,100,700);
-			if(hd_debug)A_Log("deprecated frags. Please use A_SpawnChunks directly.");
-		}stop;
-	}
-}
-
 class HDFragGrenadeRoller:HDActor{
 	int fuze;
 	vector3 keeprolling;
@@ -73,7 +61,7 @@ class HDFragGrenadeRoller:HDActor{
 			xpl=spawn("HDExplosion",self.pos-(0,0,1),ALLOW_REPLACE);
 				xpl.target=target;xpl.master=master;xpl.stamina=stamina;
 			A_SpawnChunks("BigWallChunk",14,4,12);
-			A_SpawnChunks("HDBulletFrag",360,100,800);
+			A_SpawnChunks("HDBulletFrag",360,300,900);
 			spawn("DistantRocket",pos);
 		}
 		stop;
@@ -133,7 +121,7 @@ class HDFragGrenade:SlowProjectile{
 		}else{
 			if(inthesky){
 				spawn("DistantRocket",pos);
-				A_SpawnChunks("HDBulletFrag",360,400,800);
+				A_SpawnChunks("HDBulletFrag",360,300,900);
 				destroy();return;
 			}
 			let gr=HDFragGrenadeRoller(spawn("HDFragGrenadeRoller",pos));
