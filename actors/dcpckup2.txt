@@ -454,7 +454,7 @@ actor BlueSphere : switchabledecoration replaces Soulsphere
 		"----" A 0 A_PlaySound("misc/p_pkup")
 		"----" A 0 A_Jump(256,"give")
 	give:
-		"----" A 0 A_GiveToTarget("RegenBlues",490)
+		"----" A 0 A_GiveToTarget("RegenBlues",1000)
 	fade:
 		"----" A 1 bright{
 			A_SetScale(scalex*1.01);
@@ -479,8 +479,8 @@ actor BrownSphere : BlueSphere replaces Megasphere
 			A_ChangeVelocity(0,0,1);
 			A_NoGravity;
 			A_PlaySound("misc/p_pkup");
-			A_GiveToTarget("RegenBlues",490);
-			A_GiveToTarget("SpiritualArmour",7);
+			A_GiveToTarget("RegenBlues",1000);
+			A_GiveToTarget("SpiritualArmour",3);
 		}goto fade
 	}
 }
