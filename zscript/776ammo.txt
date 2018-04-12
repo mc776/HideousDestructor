@@ -9,8 +9,7 @@ class LiberatorMag:HDAmmo{
 
 		+inventory.ignoreskill
 		inventory.maxamount 5;
-		scale 0.7;
-		scale 0.7;
+		scale 0.8;
 		inventory.pickupmessage "Picked up a 7.76mm magazine.";
 	}states{
 	spawn2:
@@ -19,7 +18,7 @@ class LiberatorMag:HDAmmo{
 	}
 }
 class LiberatorEmptyMag:HD4mmMagEmpty{
-	default{scale 0.7;}
+	default{scale 0.8;}
 	states{
 	spawn:
 		RMAG B 2 A_SetRoll(roll+30,SPF_INTERPOLATE);
@@ -29,7 +28,7 @@ class LiberatorEmptyMag:HD4mmMagEmpty{
 class LiberatorMagP:HDUPK{
 	default{
 		stamina 30;
-		scale 0.7;
+		scale 0.8;
 		hdupk.pickupmessage "Picked up a 7.76mm magazine.";
 	}
 	override void postbeginplay(){
@@ -91,7 +90,7 @@ class SevenMilAmmo:Ammo{
 		ammo.backpackmaxamount 80;ammo.backpackamount 0;
 		height 16; radius 8;
 		inventory.maxamount 40;
-		scale 0.7;
+		xscale 0.8;yscale 0.88;
 		inventory.pickupmessage "Picked up a 7.76mm round.";
 	}
 	states{
@@ -105,7 +104,8 @@ class HDSpent7mm:HDDebris{
 		A_ChangeVelocity(random(-3,3),frandom(-0.4,0.4),0,CVF_RELATIVE);
 	}
 	default{
-		bouncesound "misc/casing";scale 0.7;
+		bouncesound "misc/casing";
+		xscale 0.8;yscale 0.88;
 		maxstepheight 0.6;
 	}
 	states{
@@ -127,7 +127,7 @@ class SevenMilBrass:Ammo{
 		height 16;radius 8;ammo.backpackamount 0;
 		ammo.backpackmaxamount 120;
 		inventory.maxamount 60;
-		scale 0.7;
+		xscale 0.8;yscale 0.88;
 		inventory.pickupmessage "Picked up some brass.";
 	}
 	states{

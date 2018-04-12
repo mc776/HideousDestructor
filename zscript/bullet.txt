@@ -41,7 +41,7 @@ class HDBullet:HDActor{
 		damagefunction(0);
 		hdbullet.distantsounder "none";
 
-		mass 40; //40 426, 50 : 00, 80 776, 90 9mil, 600 40mm
+		mass 40; //60 426
 		speed 40;//accuracy 20;
 		pushfactor 0.1;
 	}
@@ -293,7 +293,7 @@ class HDBullet:HDActor{
 	}
 	//apply damage and blood
 	void BulletImpactDamage(){
-		dmg+=mass*speed*0.0003+woundhealth;
+		dmg=mass*(vel dot vel)*0.0000001+woundhealth;
 		int maxdmg=dmg*2;
 
 		//set damagetype
@@ -385,7 +385,7 @@ class HDBullet:HDActor{
 		if(speed>256){
 			name b="";
 			if(speed>1000){
-				if(mass>80) b="SupersonicTrailBig";
+				if(mass>200) b="SupersonicTrailBig";
 				else b="SupersonicTrail";
 			}else if(speed>800){
 				b="SupersonicTrail";
@@ -496,8 +496,6 @@ class SubsonicTrail:SupersonicTrail{
 
 
 
-
-
 // transitional?
 
 //special usage:accuracy=variation
@@ -545,7 +543,7 @@ class HDBulletFrag:HDBullet{
 
 		grav=getgravity();
 		pushfactor=frandom(0.6,1);
-		mass=random(15,60);
+		mass=random(20,50);
 		accuracy=random(0,4);
 	}
 	override void Puff(int sp){
@@ -558,7 +556,7 @@ class HDBulletFrag:HDBullet{
 class HDBullet9:HDBullet{
 	default{
 		pushfactor 0.5;
-		mass 90;
+		mass 360;
 		speed 480;
 		accuracy 9;
 	}
@@ -566,7 +564,7 @@ class HDBullet9:HDBullet{
 class HDBullet426:HDBullet{
 	default{
 		pushfactor 0.6;
-		mass 60;
+		mass 85;
 		speed 1200;
 		accuracy 6;
 		woundhealth 6;
@@ -576,7 +574,7 @@ class HDBullet426:HDBullet{
 class HDBullet776:HDBullet{
 	default{
 		pushfactor 0.3;
-		mass 100;
+		mass 250;
 		speed 1100;
 		accuracy 17;
 		woundhealth 7;
@@ -586,7 +584,7 @@ class HDBullet776:HDBullet{
 class HDBullet00:HDBullet{
 	default{
 		pushfactor 0.9;
-		mass 50;
+		mass 170;
 		accuracy 8;
 		woundhealth 0;
 	}
