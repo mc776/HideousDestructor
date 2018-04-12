@@ -49,7 +49,11 @@ class HDArmour:HDPickup{
 	override void actualpickup(actor other){
 		if(!other)other=picktarget;
 		if(!other)return;
-		if(other.countinv(getclassname()))return;
+		if(other.countinv("HDArmour")){
+			if(other.countinv("HDArmourWorn")||other.countinv("WornRadsuit"))return;
+			attachtoowner(other);
+			other.UseInventory(self);
+		}
 
 		if(trypickup(other)){
 			other.A_PlaySound(pickupsound,CHAN_AUTO);
@@ -145,6 +149,7 @@ class HDArmourWorn:HDArmour{
 	}
 	states{
 	use:
+	spawn:
 		TNT1 A 0;
 		stop;
 	}
