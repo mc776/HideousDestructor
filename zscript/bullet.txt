@@ -531,7 +531,7 @@ class DecoBulleter9f:DecoBulleter{
 //the actual bullets!
 class HDBulletFrag:HDBullet{
 	default{
-		woundhealth 1;
+		woundhealth 2;
 	}
 	override void postbeginplay(){
 		HDActor.PostBeginPlay();
@@ -539,7 +539,7 @@ class HDBulletFrag:HDBullet{
 
 		grav=getgravity();
 		pushfactor=frandom(0.8,2.);
-		mass=random(20,50);
+		mass=random(100,150);
 		accuracy=random(0,4);
 	}
 	override void Puff(int sp){

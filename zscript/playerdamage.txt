@@ -35,7 +35,10 @@ extend class HDPlayerPawn{
 				||(player&&(
 					player.cheats&CF_GODMODE2 || player.cheats&CF_GODMODE
 				))
-			)return 0;
+			){
+				A_TakeInventory("Heat");
+				return 0;
+			}
 			if(!skill||hd_lowdamage)damage=max(1,damage/3);
 		}
 
