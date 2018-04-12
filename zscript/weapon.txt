@@ -112,14 +112,16 @@ class HDWeapon:Weapon{
 			}
 		}
 	}
-	void ShowTip(){
+	void ShowTip(bool forced=false){
 		if(
-			tipped<3&&
-			owner&&owner.player&&
-			cvar.getcvar("hd_helptext",owner.player).getint()>1
+			forced||(
+				tipped<3&&
+				owner&&owner.player&&
+				cvar.getcvar("hd_helptext",owner.player).getint()>1
+			)
 		){
 			owner.ACS_NamedExecuteAlways("TipMessage",0,-1,selectionorder);
-			tipped++;
+			if(!forced)tipped++;
 		}
 	}
 	//activate a laser rangefinder
