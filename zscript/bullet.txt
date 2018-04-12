@@ -293,8 +293,8 @@ class HDBullet:HDActor{
 	}
 	//apply damage and blood
 	void BulletImpactDamage(){
-		dmg=mass*(vel dot vel)*0.0000001+woundhealth;
-		int maxdmg=dmg*2;
+		dmg=woundhealth*speed*0.004;
+		int maxdmg=mass*(vel dot vel)*0.00000012;
 
 		//set damagetype
 		int penetrability=(2.-pushfactor)*(accuracy+speed)+random(-200,200);
@@ -302,10 +302,6 @@ class HDBullet:HDActor{
 		else if(penetrability>1100)damagetype="SmallArms2";
 		else if(penetrability>600)damagetype="SmallArms1";
 		else damagetype="SmallArms0";
-
-
-		//supersonic shockwave damage
-		if(speed>HDCONST_SPEEDOFSOUND)maxdmg*=1.2;
 
 		//extra damage for hitting ~center of mass
 		double cang=angle;
@@ -542,7 +538,7 @@ class HDBulletFrag:HDBullet{
 		shootz = height*0.5+8;
 
 		grav=getgravity();
-		pushfactor=frandom(0.6,1);
+		pushfactor=frandom(0.8,2.);
 		mass=random(20,50);
 		accuracy=random(0,4);
 	}
@@ -556,7 +552,7 @@ class HDBulletFrag:HDBullet{
 class HDBullet9:HDBullet{
 	default{
 		pushfactor 0.5;
-		mass 360;
+		mass 1539;
 		speed 480;
 		accuracy 9;
 	}
@@ -564,7 +560,7 @@ class HDBullet9:HDBullet{
 class HDBullet426:HDBullet{
 	default{
 		pushfactor 0.6;
-		mass 85;
+		mass 320;
 		speed 1200;
 		accuracy 6;
 		woundhealth 6;
@@ -574,7 +570,7 @@ class HDBullet426:HDBullet{
 class HDBullet776:HDBullet{
 	default{
 		pushfactor 0.3;
-		mass 250;
+		mass 1176;
 		speed 1100;
 		accuracy 17;
 		woundhealth 7;
@@ -584,7 +580,7 @@ class HDBullet776:HDBullet{
 class HDBullet00:HDBullet{
 	default{
 		pushfactor 0.9;
-		mass 170;
+		mass 576;
 		accuracy 8;
 		woundhealth 0;
 	}
