@@ -133,12 +133,12 @@ class HDStimpacker:HDWoundFixer{
 				A_MuzzleClimb(0,8);
 				A_Refire();
 			}else{
-				A_TakeInventory(invoker.inventorytype,1);
 				A_Refire("inject");
 			}
 		}goto nope;
 	inject:
 		TNT1 A 1{
+			A_TakeInventory(invoker.inventorytype,1);
 			A_SetBlend("7a 3a 18",0.1,4);
 			A_MuzzleClimb(0,2);
 			A_PlaySound("*usemeds",CHAN_VOICE);
