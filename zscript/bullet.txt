@@ -227,7 +227,7 @@ class HDBullet:HDActor{
 				hitline.backsector
 				&&hitline.backsector.gettexture(hitline.backsector.ceiling)==skyflatnum
 				&&hitline.backsector.ceilingplane.zatpoint
-					(blt.hitlocation.xy+blt.hitdir.xy)>pos.z
+					(blt.hitlocation.xy+blt.hitdir.xy)<blt.hitlocation.z
 			){
 				inthesky=true;
 				return;
@@ -377,7 +377,8 @@ class HDBullet:HDActor{
 		double victimheartsize=victim.radius*0.3;
 		if(distancefromheart<victimheartsize*victimheartsize){
 			if(hd_debug)A_Log("CRIT!");
-			maxdmg*=2;
+			if(pierced)maxdmg*=2;
+			else maxdmg+=speed/100;
 		}
 
 		//determine net damage
