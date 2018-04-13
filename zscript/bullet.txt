@@ -225,12 +225,19 @@ class HDBullet:HDActor{
 			//STILL PRETTY HACKY lower sky ceiling check
 			if(
 				hitline.backsector
-				&&hitline.backsector.gettexture(hitline.backsector.ceiling)==skyflatnum
-				&&hitline.backsector.ceilingplane.zatpoint
-					(blt.hitlocation.xy+blt.hitdir.xy)<blt.hitlocation.z
+				&&hitline.frontsector
 			){
-				inthesky=true;
-				return;
+				sector othersector=
+					hitline.backsector==blt.hitsector?
+					hitline.frontsector:hitline.backsector;
+				if(
+					othersector.gettexture(othersector.ceiling)==skyflatnum
+					&&othersector.ceilingplane.zatpoint
+						(blt.hitlocation.xy+blt.hitdir.xy)<blt.hitlocation.z
+				){
+					inthesky=true;
+					return;
+				}
 			}
 
 			//check if moving through void
