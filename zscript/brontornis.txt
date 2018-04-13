@@ -13,11 +13,13 @@ class TerrorBolt:HDBullet{
 		decal "BrontoScorch";
 		obituary "%o played %k's cannon.";
 	}
-	override void Puff(int sp){
+	override actor Puff(int sp){
 		if(sp<0)setstatelabel("death");
+		return null;
 	}
-	override void BulletImpact(){
+	override void BulletImpact(line hitline,actor hitactor){
 		if(!bmissile) return;
+/*
 		if(a && a.tracer){
 			A_PlaySound("weapons/bigcrack");
 			BulletImpactDamage();
@@ -34,6 +36,7 @@ class TerrorBolt:HDBullet{
 			A_SprayDecal("BrontoScorch");
 			Puff(-1);
 		}
+*/
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -52,7 +55,7 @@ class TerrorBolt:HDBullet{
 		TNT1 A 16{
 			bmissile=false;
 			vel*=0.01;
-			if(a.tracer)a.tracer.damagemobj( //warhead damage
+			if(tracer)tracer.damagemobj( //warhead damage
 				self,self.master,
 				random(12,24)*60,
 				"SmallArms3",DMG_THRUSTLESS);

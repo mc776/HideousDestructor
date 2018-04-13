@@ -19,19 +19,22 @@ class HDBullet:HDActor{
 		accuracy: penetration distance.
 		woundhealth: "extra" damage from frangibility, etc.
 	*/
-	actor a;int b;
-	vector3 crackvel;
 	double grav;
-	double hitdist;
 	double oneoverspeed;
-	double shootz;
-	int dmg;
+	double speedsquared;
 	bool inthesky;
-	line firstblockingline;
+	flinetracedata blt;
+	line lasthitline;
+	actor throughthis;
+	double penetration; //juvenile giggling
 
 	class<actor> distantsounder;
 	property distantsounder:distantsounder;
 
+	enum BulletConsts{
+		BULLET_TERMINALVELOCITY=-277,
+		BULLET_CRACKINTERVAL=64,
+	}
 	default{
 		projectile; -nogravity
 		+noextremedeath +cannotpush +hittracer +forcexybillboard
@@ -48,14 +51,15 @@ class HDBullet:HDActor{
 	override void beginplay(){
 		damagetype="SmallArms0"; //how do you set this in the defaults???
 		super.beginplay();
+		lasthitline=null;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
+		throughthis=target;
 		if(distantsounder!="none"){
 			actor m=spawn(distantsounder,pos,ALLOW_REPLACE);
 			m.target=target;
 		}
-		shootz = height*0.5+8;
 		grav=getgravity();
 		if(target && !pitch)pitch=target.pitch;
 
@@ -83,23 +87,17 @@ class HDBullet:HDActor{
 	override void tick(){
 		if(globalfreeze||level.Frozen) return;
 		if(!bmissile){
-			//nexttic
-			if(CheckNoDelay()){
-				if(tics>0)tics--;  
-				while(!tics){
-					if(!SetState(CurState.NextState)){
-						return;
-					}
-				}
-			}
+			bnointeraction=true;
+			actor.tick();
 			return;
 		}
+
 
 		//if it's in the sky, do a separate thing instead
 		if(inthesky){
-			setorigin(pos+vel,false);
-			if(ceilingz>pos.z) inthesky=false;
-			if(vel.z>-277)vel.z-=grav;
+			setorigin(pos+vel,true);
+			if(ceilingz>pos.z)inthesky=false;
+			if(vel.z>BULLET_TERMINALVELOCITY)vel.z-=grav;
 			//nexttic
 			if(CheckNoDelay()){
 				if(tics>0)tics--;  
@@ -112,90 +110,152 @@ class HDBullet:HDActor{
 			return;
 		}
 
+
 		//point actor in velocity
+		//set some basic variables
 		speed=vel.length();
+		speedsquared=vel dot vel;
+		penetration=speedsquared*mass*accuracy*0.000000001/pushfactor*frandom(0.9,1.1);
 		A_FaceMovementDirection();
 
-		//b is never used.
+		//hack to escape shooter
 		bool bsbak=false;
-		if(!bseeinvisible&&target){
-			bsbak=target.bshootable;
-			target.bshootable=false; //hack to escape shooter
+		if(throughthis){
+			bsbak=throughthis.bshootable;
+			throughthis.bshootable=false;
 		}
-		[a,b]=LineAttack(angle,speed,pitch,0,"none",
-			"NewBulletMovePuff",
-			flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT|LAF_OVERRIDEZ
+
+		//get the line
+		LineTrace(
+			angle,
+			speed,
+			pitch,
+			flags:0,
+			data:blt
 		);
 
 		//reset hacks
-		if(!bseeinvisible && target)target.bshootable=bsbak;
-		bseeinvisible=true;
+		if(throughthis){
+			throughthis.bshootable=bsbak;
+			throughthis=null;
+		}
 
-		if(a){
-			hitdist=distance3d(a);
 
-			//find points close to players and spawn crackers
-			CrackType();
-
-			//it got shot into the sky!
-			if(a.ceilingpic==skyflatnum && a.ceilingz-a.pos.z<height){
-				inthesky=true;
-			}else{
-				setorigin(a.pos,true);
-				CheckPortalTransition();
-
-				if(missilename)Effect();
-
-				//NOW test for impacts...
-
-				//used for a few things
-				vector3 posbak;
-
-				//lower sky ceiling check
-				posbak=a.pos;
-				a.setorigin(a.pos+(cos(angle),sin(angle),0)*4,false);
-				if(a.ceilingpic==skyflatnum && a.ceilingz-a.pos.z<height){
-					setorigin(a.pos,false);
-					inthesky=true;
-					return;
+		//find points close to players and spawn crackers
+		//also spawn trails if applicable
+		if(speed>256){
+			name b="";
+			if(speed>1000){
+				if(mass>200) b="SupersonicTrailBig";
+				else b="SupersonicTrail";
+			}else if(speed>800){
+				b="SupersonicTrail";
+			}else if(speed>HDCONST_SPEEDOFSOUND){
+				b="SupersonicTrailSmall";
+			}else if(speed>100){
+				b="SubsonicTrail";
+			}
+			if(b!=""){
+				vector3 crackbak=pos;
+				vector3 crackinterval=blt.hitdir*BULLET_CRACKINTERVAL;
+				int j=max(1,blt.distance*(1./BULLET_CRACKINTERVAL));
+				for(int i=0;i<j;i++){
+					setxyz(crackbak+crackinterval*i);
+					if(missilename)spawn(missilename,pos);
+					bool gotplayer=false;
+					for(int k=0;!gotplayer && k<MAXPLAYERS;k++){
+						if(playeringame[k] && players[k].mo){
+							if(
+								distance3d(players[k].mo)<256
+							){
+								gotplayer=true;
+								spawn(b,pos);
+							}
+						}
+					}
 				}
-				a.setorigin(posbak,false);
-
-				//SUPER HACKY horizon line check
-				posbak=pos;
-				vector2 sizbak=(radius,height);
-				a_setsize(12,4);
-				if(
-					!trymove(posbak.xy+1*(cos(angle),sin(angle)),true,true)
-					&& blockingline && blockingline.special==Line_Horizon
-				){
-					destroy();return;
-				}
-				setorigin(posbak,false);
-				a_setsize(sizbak.x,sizbak.y);
-
-				//save the blockingline info for future reference
-				if(blockingline){
-					firstblockingline=blockingline;
-				}
-
-
-				//finally, the "real" impacts
-				if(floorz>pos.z||ceilingz<=pos.z+height){
-					Puff();destroy();return;
-				}else if(abs(hitdist-speed)>radius){
-					BulletImpact();
-					if(bdestroyed)return;
-				}
+				setxyz(crackbak);
 			}
 		}
-		//destroy immediately if on a sky floor.
-		if(!a||(floorz>pos.z&&floorpic==skyflatnum)){
-			destroy();return;
+
+		//set the new position
+		setorigin(blt.hitlocation,true);
+
+		//it's (probably) not coming back up
+		bool zricochet=false;
+		if(floorz>pos.z){
+			if(floorpic==skyflatnum){
+				destroy();return;
+			}
+			zricochet=true;
+		}
+		//but it can come back down
+		if(ceilingz<pos.z){
+			if(ceilingpic==skyflatnum){
+				inthesky=true;
+				return;
+			}else{
+				zricochet=true;
+			}
+		}
+		//another way to come up or down
+		if(zricochet){
+			double velxy=max(abs(vel.x),abs(vel.y));
+			if(
+				(!velxy&&!frandom(0,63))
+				||(frandom(0,velxy)>abs(vel.z))
+			){
+				Puff(speed*0.3);
+				vel.z*=frandom(0,-vel.z);
+				vel.xy=rotatevector(vel.xy,frandom(-45,45)*pushfactor);
+			}else{
+				Puff();destroy();return;
+			}
+		}
+
+		//all other situations
+		CheckPortalTransition();
+
+		//used for a few things
+		vector3 posbak=pos;
+
+		if(blt.hitline){
+			let hitline=blt.hitline;
+
+			//way less hacky horizon line check
+			if(hitline.special==Line_Horizon){destroy();return;}
+
+			//STILL PRETTY HACKY lower sky ceiling check
+			setorigin(pos+blt.hitdir*2,false);
+			if(ceilingpic==skyflatnum && ceilingz>pos.z){
+				inthesky=true;
+				return;
+			}
+			setorigin(posbak,false);
+
+			//check if moving through void
+			if(
+				lasthitline
+				&&!lasthitline.backsector
+				&&blt.distance>penetration
+			){
+				destroy();return;
+			}
+
+			BulletImpact(hitline);
+			if(bdestroyed)return;
+
+			//update last hit line
+			lasthitline=hitline;
+		}
+
+		if(blt.hitactor){
+			BulletImpact(blt.hitline,blt.hitactor);
+			if(bdestroyed)return;
 		}
 
 		//drop and wobble
-		vel.z-=grav;
+		if(vel.z>BULLET_TERMINALVELOCITY)vel.z-=grav;
 		if(pushfactor)A_Changevelocity(
 			-frandom(0,pushfactor)*0.01*speed,
 			frandom(-pushfactor,pushfactor),
@@ -213,17 +273,26 @@ class HDBullet:HDActor{
 	}
 
 	//impact
-	virtual void BulletImpact(){
-		bmissile=false;
-		if(a && a.tracer){
-			BulletImpactDamage();
-			destroy();return;
-		}else{
+	virtual void BulletImpact(line hitline=null,actor hitactor=null){
+		if(max(abs(pos.x),abs(pos.y))>=32678){destroy();return;}
+		if(hitactor){
+			throughthis=hitactor;
+			tracer=hitactor;
+			BulletImpactDamage(hitactor);
+			if(vel dot vel<(50*50)){
+				destroy();return;
+			}else{
+				vel.xy=rotatevector(vel.xy,frandom(-10,10)*pushfactor);
+				vel.z*=pushfactor*frandom(-1.,1.);
+			}
+		}else if(hitline){
 			//decal
-			//if anyone knows how to prevent this from showing up on the wrong side, let me know!
 			name decal="BulletChip";
-			if(dmg<80)decal="BulletChipSmall";
-			A_SprayDecal(decal,radius+4); //dunno why minimum is +4
+			if(penetration<4.)decal="BulletChipSmall";
+			A_SprayDecal(decal,1);
+
+			//save the hitline info for future reference
+			lasthitline=hitline;
 
 			//ricochet
 			if(!random(0,15)){
@@ -231,119 +300,99 @@ class HDBullet:HDActor{
 				vel.xy=rotatevector(vel.xy,frandom(0,360))*0.9;
 				vel.z=frandom(-vel.z,vel.z*0.8);
 				Puff(speed*0.9);
+				return;
 			}
 
 			//pierce
-			else if(
-				(hd_penetrate||deathmatch||skill>=5)
-				&&accuracy
-				&&max(abs(pos.x),abs(pos.y))<32678
+			if(
+				penetration>0
+				&&(hd_penetrate||deathmatch||skill>=5)
 			){
-				Puff(speed*0.4);
-				actor e;
-				vector3 velp=vel.unit();
-				vector3 velpp=velp;
-				velp*=accuracy;
-				double oz=pos.z;
-				setorigin(pos+velp,false);
-
-				//disappear if stuck inside the floor or ceiling.
-				//I have no idea why this doesn't work.
-				if(ceilingz<pos.z||floorz>pos.z){
-					destroy();return;
+				vector3 hitdir=blt.hitdir;
+				if(hitline.frontsector&&hitline.backsector){
+					actor ppp=spawn("PenePuff",pos+hitdir);
+					if(ppp)ppp.vel=hitdir;
+				}else if(hitline.frontsector){
+					Puff(speed*0.9);
+				}else if(hitline.backsector){
+					actor ppp=spawn("PenePuff",pos+hitdir);
+					if(ppp)ppp.vel=hitdir;
 				}
-
-				//find exact point of exit.
-				angle+=180;pitch*=-1;
-				[e,b]=LineAttack(
-					angle,accuracy+2,pitch,0,"none","NewBulletMovePuff",
-					flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT|LAF_OVERRIDEZ
-				);
-
-				//if there's any place to put a check for the void, place it here.
-				//basically: check of firstblockingline is the same as what e hits,
-				//and if e.blockingline has no front sector.
-
-
-				//exit hole.
-				//I have no idea why this won't work for raised floors.
-				A_SprayDecal(decal,max(5,accuracy+2));
-
-				//reorient bullet.
-				angle+=180;pitch*=-1;
-
-				//place at point of exit, puff, continue.
-				setorigin(e.pos+velpp,false);
-
-				if(speed>500){
-					actor pp=spawn("PenePuff",e.pos+velpp,ALLOW_REPLACE);
-					pp.vel=vel*0.006;
-				}else Puff(speed*1.4);
-				vel*=0.9;
-				accuracy=0;
-				bmissile=true;
+				setorigin(pos+hitdir,false);
+				vel.xy=rotatevector(vel.xy,frandom(-10,10)*pushfactor);
+				vel.z+=frandom(-speed,speed)*pushfactor*0.1;
+				vel*=clamp(0.1*accuracy,0.1,0.9);
 			}
 
 			//final puff
-			else{
-				Puff();
+			if(vel dot vel<(50*50)){
 				destroy();return;
 			}
 		}
 	}
 	//apply damage and blood
-	void BulletImpactDamage(){
-		dmg=woundhealth*speed*0.004;
-		int maxdmg=mass*(vel dot vel)*0.00000012;
+	void BulletImpactDamage(actor victim){
+		int dmg=woundhealth*speed*0.002;
+		int maxdmg=mass*speedsquared*0.0000004;
 
 		//set damagetype
-		int penetrability=(2.-pushfactor)*(accuracy+speed)+random(-200,200);
-		if(penetrability>1500)damagetype="SmallArms3";
-		else if(penetrability>1100)damagetype="SmallArms2";
-		else if(penetrability>600)damagetype="SmallArms1";
-		else damagetype="SmallArms0";
+		bool pierced=true;
+		double victimthickness=max(
+			victim.radius*0.1,
+			victim.spawnhealth()*0.01
+		);
+		if(penetration>victimthickness)damagetype="SmallArms3";
+		else if(penetration>victimthickness*0.6)damagetype="SmallArms2";
+		else if(penetration>victimthickness*0.4)damagetype="SmallArms1";
+		else if(penetration>victimthickness*0.2)damagetype="SmallArms1";
+		else{
+			damagetype="Bashing";
+			pierced=false;
+		}
+
+		if(
+			pierced&&
+			(!(victim is "HDPlayerPawn")||hdplayerpawn(victim).armourlevel<1)
+		){
+			dmg*=frandom(1,3);
+			maxdmg=max(dmg,maxdmg);
+		}
 
 		//extra damage for hitting ~center of mass
-		double cang=angle;
-		double cpi=pitch;
-		A_Face(a.tracer);
-		if(absangle(angle,cang)<12){
-			double th=a.tracer.height;
-			double pz=pos.z-sin(cpi)*a.tracer.radius;
-			pz=abs(a.tracer.pos.z+(th*0.61)-pz);
-			if(pz*5<th){
-				if(hd_debug)A_Log("CRIT!");
-				maxdmg*=2;
-			}
+		vector3 hitdir=blt.hitdir;
+		vector3 extrapolation=pos+hitdir*victim.radius;
+		vector3 victimheart=victim.pos;
+		victimheart.z+=victim.height*0.6;
+		extrapolation=victimheart-extrapolation;
+		double distancefromheart=extrapolation dot extrapolation;
+		double victimheartsize=victim.radius*0.3;
+		if(distancefromheart<victimheartsize*victimheartsize){
+			if(hd_debug)A_Log("CRIT!");
+			maxdmg*=2;
 		}
-		angle=cang;pitch=cpi;
 
 		//determine net damage
 		dmg=random(dmg,maxdmg);
 		if(hd_debug){
 			string targ="";
-			if(a.tracer.player)targ=a.tracer.player.getusername();
-				else targ=a.tracer.getclassname();
+			if(victim.player)targ=victim.player.getusername();
+				else targ=victim.getclassname();
 			A_Log(string.format("%s \ca%i \cj%s",self.getclassname(),dmg,targ));
 		}
 
 		//don't place puff/blood right on edge of box - looks bad with too many
-		setorigin(pos+(
-			cos(pitch)*cos(angle)*random(1,a.tracer.radius),
-			cos(pitch)*sin(angle)*random(1,a.tracer.radius),
-			sin(-pitch)*random(1,a.tracer.radius)
-		),false);
+		setorigin(pos+hitdir*random(1,victim.radius),false);
 
 		//puff or bleed as appropriate
-		if(bbloodlessimpact||!a.tracer.bshootable||a.tracer.bnoblood)Puff();
+		if(bbloodlessimpact||!victim.bshootable||victim.bnoblood)Puff();
 		else for(int i=0;i<dmg;i+=40){
-			a.tracer.A_SpawnItemEx(
-				a.tracer.bloodtype,
+			victim.A_SpawnItemEx(
+				victim.bloodtype,
 				//comes out of actor itself
-				(a.pos.x-a.tracer.pos.x)*frandom(0.6,0.9),
-				(a.pos.y-a.tracer.pos.y)*frandom(0.6,0.9),
-				(a.pos.z-a.tracer.pos.z)*frandom(0.6,0.9),
-				random(3,6),random(-1,1),random(1,3),
+				(pos.x-victim.pos.x)*frandom(0.6,0.9),
+				(pos.y-victim.pos.y)*frandom(0.6,0.9),
+				(pos.z-victim.pos.z)*frandom(0.6,0.9),
+				frandom(3,6),frandom(-1,1),frandom(1,3),
 				180,
 				SXF_USEBLOODCOLOR|
 				SXF_NOCHECKPOSITION|
@@ -352,17 +401,15 @@ class HDBullet:HDActor{
 		}
 
 		//gibbing
-		if(a.tracer.bcorpse){
+		if(victim.bcorpse){
 			int gibs=max(randompick(0,0,0,1),dmg*0.05);
-			a.tracer.A_GiveInventory("SawGib",gibs);
+			victim.A_GiveInventory("SawGib",gibs);
 		}
 
 		//do this last, as it can destroy some actors leading to an address zero crash
-		a.tracer.damagemobj(self,self.target,dmg,damagetype,DMG_THRUSTLESS);
+		victim.damagemobj(self,self.target,dmg,damagetype,DMG_THRUSTLESS);
 	}
-	//generate puff
-	virtual void Puff(int sp=0){
-		if(max(abs(pos.x),abs(pos.y))>=32678)return;
+	virtual actor Puff(int sp=0){
 		if(!sp)sp=speed;
 		name pufftype="BulletPuffBig";
 		if(sp>800){
@@ -372,47 +419,11 @@ class HDBullet:HDActor{
 		}else{
 			pufftype="BulletPuffSmall";
 		}
-		A_SpawnItemEx(pufftype,flags:
+		bool gbg;actor ppp;
+		[gbg,ppp]=A_SpawnItemEx(pufftype,flags:
 			SXF_NOCHECKPOSITION
 		);
-	}
-	//sets crack sound
-	void CrackType(){
-		if(speed>256){
-			name b="";
-			if(speed>1000){
-				if(mass>200) b="SupersonicTrailBig";
-				else b="SupersonicTrail";
-			}else if(speed>800){
-				b="SupersonicTrail";
-			}else if(speed>HDCONST_SPEEDOFSOUND){
-				b="SupersonicTrailSmall";
-			}else if(speed>100){
-				b="SubsonicTrail";
-			}
-
-			if(b=="")return;
-
-			crackvel=vel*64/hitdist;
-			int k=hitdist*(1./64);
-
-			actor cracker=spawn("idledummy",pos);
-			for(int j=0;j<k;j++){
-				cracker.setorigin(cracker.pos+crackvel,false);
-				bool p=false;
-				for(int i=0;!p && i<MAXPLAYERS;i++){
-					if(playeringame[i] && players[i].mo){
-						if(
-							cracker.distance3d(players[i].mo)<256
-						){
-							p=true;
-							spawn(b,cracker.pos);
-						}
-					}
-				}
-			}
-			cracker.destroy();
-		}
+		return ppp;
 	}
 	virtual void Gunsmoke(){
 		actor gs;
@@ -432,25 +443,6 @@ class HDBullet:HDActor{
 		}else if(countinv("IsMoving",AAPTR_TARGET)>=10){
 			pitch+=frandom(-2,2);
 			angle+=frandom(-1,1);
-		}
-	}
-	virtual void Effect(
-		class<Actor> trailtype="None",
-		int numactors=12,
-		double spacing=4,
-		double velmul=0.6
-	){
-		if(!bmissile||!speed) return;
-		if(trailtype=="None")trailtype=missilename;
-		if(!trailtype)return;
-		vector3 frac=-vel.unit()*spacing;
-		vector3 trvel=vel*0.006+(0,0,2);
-		numactors=speed/spacing;
-		for(int i=numactors;i;i--){
-			actor tr=spawn(trailtype,pos,ALLOW_REPLACE);
-			if(tr.pos.z>tr.ceilingz-10)tr.destroy();
-			tr.setorigin(pos+frac*i,true);
-			tr.vel=trvel;
 		}
 	}
 }
@@ -535,18 +527,19 @@ class HDBulletFrag:HDBullet{
 	}
 	override void postbeginplay(){
 		HDActor.PostBeginPlay();
-		shootz = height*0.5+8;
 
 		grav=getgravity();
 		pushfactor=frandom(0.8,2.);
 		mass=random(100,150);
-		accuracy=random(0,4);
+		accuracy=random(3,6);
 	}
-	override void Puff(int sp){
-		if(max(abs(pos.x),abs(pos.y))>=32678)return;
-		A_SpawnItemEx("FragPuff",flags:
+	override actor Puff(int sp){
+		if(max(abs(pos.x),abs(pos.y))>=32678)return null;
+		actor ppp;
+		[sp,ppp]=A_SpawnItemEx("FragPuff",flags:
 			SXF_NOCHECKPOSITION
 		);
+		return ppp;
 	}
 }
 class HDBullet9:HDBullet{
@@ -554,7 +547,7 @@ class HDBullet9:HDBullet{
 		pushfactor 0.5;
 		mass 1539;
 		speed 480;
-		accuracy 9;
+		accuracy 4;
 	}
 }
 class HDBullet426:HDBullet{
@@ -581,13 +574,12 @@ class HDBullet00:HDBullet{
 	default{
 		pushfactor 0.9;
 		mass 576;
-		accuracy 8;
+		accuracy 5;
 		woundhealth 0;
 	}
 	override void postbeginplay(){
 		HDActor.postbeginplay();
 		Gunsmoke();
-		shootz = height*0.5+8;
 		grav=getgravity();
 	}
 }
