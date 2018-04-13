@@ -3,7 +3,7 @@
 // ------------------------------------------------------------
 
 //testing performance when spamming
-class HDBulletb:PlasmaBall{//replaces PlasmaBall{
+class HDBulletb:PlasmaBall replaces PlasmaBall{
 	override void postbeginplay(){
 		if(!hd_debug){super.postbeginplay();return;}
 		for (int i=14;i;i--){
@@ -16,7 +16,7 @@ class HDBulletb:PlasmaBall{//replaces PlasmaBall{
 class HDBullet:HDActor{
 	/*
 		special usages:
-		accuracy: penetration distance.
+		accuracy: hardness/pointiness.
 		woundhealth: "extra" damage from frangibility, etc.
 	*/
 	double grav;
@@ -183,31 +183,31 @@ class HDBullet:HDActor{
 
 		//it's (probably) not coming back up
 		bool zricochet=false;
-		if(floorz>pos.z){
+		if(floorz>=pos.z){
 			if(floorpic==skyflatnum){
 				destroy();return;
 			}
 			zricochet=true;
 		}
 		//but it can come back down
-		if(ceilingz<pos.z){
+		if(ceilingz<=pos.z){
 			if(ceilingpic==skyflatnum){
 				inthesky=true;
 				return;
-			}else{
-				zricochet=true;
 			}
+			zricochet=true;
 		}
 		//another way to come up or down
 		if(zricochet){
+			setz(clamp(pos.z,floorz+1,ceilingz-1));
 			double velxy=max(abs(vel.x),abs(vel.y));
 			if(
-				(!velxy&&!frandom(0,63))
-				||(frandom(0,velxy)>abs(vel.z))
+				frandom(-speed,frandom(-speed,velxy))>abs(vel.z)
 			){
 				Puff(speed*0.3);
-				vel.z*=frandom(0,-vel.z);
+				vel.z=-frandom(0.1,0.9)*vel.z;
 				vel.xy=rotatevector(vel.xy,frandom(-45,45)*pushfactor);
+				vel*=frandom(0.6,0.9);
 			}else{
 				Puff();destroy();return;
 			}
@@ -286,10 +286,15 @@ class HDBullet:HDActor{
 				vel.z*=pushfactor*frandom(-1.,1.);
 			}
 		}else if(hitline){
+			vector3 hitdir=blt.hitdir;
+			vector3 hitlocation=blt.hitlocation;
+
 			//decal
 			name decal="BulletChip";
 			if(penetration<4.)decal="BulletChipSmall";
-			A_SprayDecal(decal,1);
+			setorigin(hitlocation-hitdir*4,false);
+			A_SprayDecal(decal,max(12,penetration*2));
+			setorigin(hitlocation+hitdir*4,false);
 
 			//save the hitline info for future reference
 			lasthitline=hitline;
@@ -308,23 +313,42 @@ class HDBullet:HDActor{
 				penetration>0
 				&&(hd_penetrate||deathmatch||skill>=5)
 			){
-				vector3 hitdir=blt.hitdir;
-				if(hitline.frontsector&&hitline.backsector){
-					actor ppp=spawn("PenePuff",pos+hitdir);
-					if(ppp)ppp.vel=hitdir;
-				}else if(hitline.frontsector){
-					Puff(speed*0.9);
-				}else if(hitline.backsector){
-					actor ppp=spawn("PenePuff",pos+hitdir);
-					if(ppp)ppp.vel=hitdir;
+				bool puffbacksector=
+					hitline.backsector
+					&&getzat(2.)<=pos.z
+					&&getzat(2.,flags:GZF_CEILING)>=pos.z
+				;
+
+				if(hitline.frontsector){
+					actor ppp=Puff(speed*0.9);
+					if(ppp)ppp.setorigin(pos-hitdir*4,true);
 				}
-				setorigin(pos+hitdir,false);
+				if(puffbacksector){
+					actor ppp=spawn("PenePuff",pos+hitdir);
+					if(ppp){
+						ppp.vel=hitdir;
+						ppp.setorigin(pos+hitdir*4,true);
+					}
+				}
+
+				if(
+					!puffbacksector
+					&&hitline.backsector
+				){
+					setorigin(hitlocation+hitdir*penetration,false);
+					if(floorz>pos.z||ceilingz<pos.z){destroy();return;}
+				}else setorigin(pos+hitdir,false);
+
+				angle=-angle;pitch=-pitch;
+				A_SprayDecal(decal,max(12,penetration*2));
+				angle=-angle;pitch=-pitch;
+
 				vel.xy=rotatevector(vel.xy,frandom(-10,10)*pushfactor);
 				vel.z+=frandom(-speed,speed)*pushfactor*0.1;
 				vel*=clamp(0.1*accuracy,0.1,0.9);
 			}
 
-			//final puff
+			//final goodbye
 			if(vel dot vel<(50*50)){
 				destroy();return;
 			}
@@ -410,6 +434,7 @@ class HDBullet:HDActor{
 		victim.damagemobj(self,self.target,dmg,damagetype,DMG_THRUSTLESS);
 	}
 	virtual actor Puff(int sp=0){
+		if(max(abs(pos.x),abs(pos.y))>=32678)return null;
 		if(!sp)sp=speed;
 		name pufftype="BulletPuffBig";
 		if(sp>800){
