@@ -283,7 +283,7 @@ class HDBullet:HDActor{
 				destroy();return;
 			}else{
 				vel.xy=rotatevector(vel.xy,frandom(-10,10)*pushfactor);
-				vel.z*=pushfactor*frandom(-1.,1.);
+				vel.z*=pushfactor*frandom(-0.4,0.4);
 			}
 		}else if(hitline){
 			//these get used a lot
@@ -340,8 +340,8 @@ class HDBullet:HDActor{
 	}
 	//apply damage and blood
 	void BulletImpactDamage(actor victim){
-		int dmg=woundhealth*speed*0.002;
-		int maxdmg=mass*speedsquared*0.0000004;
+		int dmg=woundhealth*mass*0.002;
+		int maxdmg=mass*speedsquared*0.0000002;
 
 		//set damagetype
 		bool pierced=true;
@@ -349,13 +349,14 @@ class HDBullet:HDActor{
 			victim.radius*0.1,
 			victim.spawnhealth()*0.01
 		);
-		if(penetration>victimthickness)damagetype="SmallArms3";
-		else if(penetration>victimthickness*0.6)damagetype="SmallArms2";
-		else if(penetration>victimthickness*0.4)damagetype="SmallArms1";
-		else if(penetration>victimthickness*0.2)damagetype="SmallArms1";
+		if(penetration>victimthickness){damagetype="SmallArms3";vel*=0.9;}
+		else if(penetration>victimthickness*0.6){damagetype="SmallArms2";vel*=0.8;}
+		else if(penetration>victimthickness*0.4){damagetype="SmallArms1";vel*=0.4;}
+		else if(penetration>victimthickness*0.2){damagetype="SmallArms1";vel*=0.2;}
 		else{
 			damagetype="Bashing";
 			pierced=false;
+			vel*=0.1;
 		}
 
 		if(
@@ -603,9 +604,9 @@ class HDBullet00b:HDBullet00{
 		spawn("DistantShotgun",pos,ALLOW_REPLACE);
 		actor bb;
 		double p=pushfactor;
-		if(target && !pitch)pitch=target.pitch;
 		for(int i=stamina;i;i--){
 			bb=spawn("HDBullet00",pos,ALLOW_REPLACE);
+			hdbullet(bb).throughthis=target;
 			bb.target=target;bb.pitch=pitch;bb.angle=angle;if(target)bb.vel=target.vel;
 			bb.speed=speed+speed*frandom(-p,p);
 			bb.pitch+=frandom(-p,p);
@@ -631,6 +632,7 @@ class HDBullet00bfl:HDBullet00b{
 		double p=pushfactor;
 		for(int i=stamina;i;i--){
 			bb=spawn("HDBullet00",pos,ALLOW_REPLACE);
+			hdbullet(bb).throughthis=target;
 			bb.target=target;bb.pitch=pitch;bb.angle=angle;if(target)bb.vel=target.vel;
 			bb.speed=speed+speed*frandom(-p,p);
 			bb.pitch+=frandom(-p,p);
@@ -665,6 +667,7 @@ class HDBullet00bf2:HDBullet00bfl{
 			double p=pushfactor;
 			for(int ii=stamina;ii;ii--){
 				bb=spawn("HDBullet00",pos,ALLOW_REPLACE);
+				hdbullet(bb).throughthis=target;
 				bb.target=target;bb.pitch=pitch;bb.angle=angle;if(target)bb.vel=target.vel;
 				bb.speed=speed+speed*frandom(-p,p);
 				bb.pitch+=frandom(-p,p);
