@@ -252,7 +252,7 @@ class Heat:Inventory{
 	override void attachtoowner(actor user){
 		super.attachtoowner(user);
 		volume=(user.radius*user.radius*user.height)*4;
-		baseinversevolumeratio=HEATNUM_DEFAULTVOLUME/volume;
+		baseinversevolumeratio=HEATNUM_DEFAULTVOLUME/max(0.000001,volume);
 		inversevolumeratio=baseinversevolumeratio;
 		effectivemass=max(user.mass,user.spawnhealth());
 		A_SetSize(owner.radius,owner.height);
