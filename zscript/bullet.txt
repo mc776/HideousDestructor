@@ -194,7 +194,7 @@ class HDBullet:HDActor{
 			tracer=hitactor;
 			setorigin(blt.hitlocation+blt.hitdir*frandom(0,hitactor.radius*0.8),true);
 
-			double hitresistance=(hitactor.radius+hitactor.spawnhealth()*0.1)*0.5;
+			double hitresistance=(hitactor.radius+hitactor.spawnhealth()*0.2)*0.5;
 
 			//damagetype?
 			if(penetration>5)damagetype="SmallArms3";
@@ -229,7 +229,7 @@ class HDBullet:HDActor{
 					netpenetration-hdp.armourlevel*frandom(3,6)
 				);
 			}
-			netpenetration/=hitresistance;
+			netpenetration=min(0.9999,netpenetration/hitresistance);
 			if(netpenetration>0.5){
 				throughthis=hitactor;
 			}
@@ -238,7 +238,8 @@ class HDBullet:HDActor{
 			}
 
 			//determine damage
-			int dmg=speed/(hitresistance*2);
+			int dmg=speed/(hitresistance*2+1);
+
 			int maxdmg=dmg+woundhealth;
 			if(pierce){
 				dmg*=2;
@@ -259,7 +260,11 @@ class HDBullet:HDActor{
 			}
 
 			//bleed
-			if(!pierce&&random(0,7)){
+			if(
+				hitactor.bnoblood
+				||!hitactor.bshootable
+				||(!pierce&&random(0,7))
+			){
 				Puff();
 			}else{
 				vector3 hitdir=blt.hitdir;
@@ -291,7 +296,7 @@ class HDBullet:HDActor{
 			vel*=netpenetration;
 
 			//destroy if too slow
-			if(vel dot vel<(20*20))destroy();
+			if(vel dot vel<(50*50))destroy();
 			return;
 		}
 
@@ -448,7 +453,7 @@ class HDBullet:HDActor{
 		angle=-angle;pitch=-pitch;
 		A_SprayDecal("BulletChip",penetration);
 		A_SpawnItemEx("PenePuff",
-			xvel:1,zvel:vel.z/max(speed,0,0001),
+			xvel:1,zvel:vel.z/max(speed,1),
 			flags:SXF_NOCHECKPOSITION
 		);
 		angle=-angle;pitch=-pitch;
