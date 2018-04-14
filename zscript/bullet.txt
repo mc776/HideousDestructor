@@ -197,7 +197,7 @@ class HDBullet:HDActor{
 			double hitresistance=(hitactor.radius+hitactor.spawnhealth()*0.2)*0.5;
 
 			//damagetype?
-			if(penetration>5)damagetype="SmallArms3";
+			if(penetration>4)damagetype="SmallArms3";
 			else if(penetration>3)damagetype="SmallArms2";
 			else if(penetration>2.2)damagetype="SmallArms1";
 			else if(penetration>1)damagetype="SmallArms0";
@@ -226,7 +226,7 @@ class HDBullet:HDActor{
 			let hdp=hdplayerpawn(hitactor);
 			if(hdp){
 				netpenetration=max(0,
-					netpenetration-hdp.armourlevel*frandom(3,6)
+					netpenetration-hdp.armourlevel*frandom(2,4)
 				);
 			}
 			netpenetration=min(0.9999,netpenetration/hitresistance);
@@ -238,17 +238,17 @@ class HDBullet:HDActor{
 			}
 
 			//determine damage
-			int dmg=speed/(hitresistance*2+1);
+			int dmg=(speed+mass)/(hitresistance*5+1);
 
 			int maxdmg=dmg+woundhealth;
 			if(pierce){
 				dmg*=2;
-				maxdmg+=woundhealth*10;
+				maxdmg+=woundhealth*3;
 			}
 			if(crit){
 				if(pierce){
 					dmg*=1.5;
-					maxdmg=dmg+woundhealth*20;
+					maxdmg=dmg+woundhealth*6;
 				}else dmg*=1.2;
 			}
 			dmg=random(dmg,maxdmg);
