@@ -194,7 +194,7 @@ class HDBullet:HDActor{
 			tracer=hitactor;
 			setorigin(blt.hitlocation+blt.hitdir*frandom(0,hitactor.radius*0.8),true);
 
-			double hitresistance=(hitactor.radius+hitactor.spawnhealth()*0.2)*0.5;
+			double hitresistance=(hitactor.radius*2+hitactor.spawnhealth()*0.2)*0.3;
 
 			//damagetype?
 			if(penetration>4)damagetype="SmallArms3";
@@ -232,13 +232,13 @@ class HDBullet:HDActor{
 			netpenetration=min(0.9999,netpenetration/hitresistance);
 			if(netpenetration>0.5){
 				throughthis=hitactor;
-			}
-			if(netpenetration>0.2){
+				pierce=true;
+			}else if(netpenetration>0.2){
 				pierce=true;
 			}
 
 			//determine damage
-			int dmg=(speed+mass)/(hitresistance*5+1);
+			int dmg=(speed+mass)*0.0163;
 
 			int maxdmg=dmg+woundhealth;
 			if(pierce){
@@ -278,7 +278,9 @@ class HDBullet:HDActor{
 					);
 					if(blood){
 						blood.setorigin(pos,false);
-						blood.vel=-hitdir*dmg*0.01
+						blood.vel=
+							throughthis==hitactor?hitdir:-hitdir
+							*dmg*0.01
 						+(frandom(-2,2),frandom(-2,2),frandom(-2,2));
 					}
 				}
@@ -294,6 +296,10 @@ class HDBullet:HDActor{
 
 			//reduce speed
 			vel*=netpenetration;
+			double rvel=
+				netpenetration*pushfactor*speed*0.2
+			;
+			vel+=(frandom(-rvel,rvel),frandom(-rvel,rvel),frandom(-rvel,rvel));
 
 			//destroy if too slow
 			if(vel dot vel<(50*50))destroy();
@@ -416,7 +422,7 @@ class HDBullet:HDActor{
 			if(voidprobe.hitline){
 				emergefromimpact(voidprobe.hitlocation+voidprobe.hitdir);
 				double vd=voidprobe.distance;
-				vel*=vd/max(vd,penetration,1);
+				vel*=vd/max(vd+1,penetration,1);
 				return;
 			}else{
 				//splat against a very thick wall
