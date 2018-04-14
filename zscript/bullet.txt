@@ -475,6 +475,11 @@ class HDBullet:HDActor{
 		);
 		angle+=180;pitch=-pitch;
 		setorigin(emergespot,true);
+
+		double rvel=
+			penetration*pushfactor*speed*0.0006
+		;
+		vel+=(frandom(-rvel,rvel),frandom(-rvel,rvel),frandom(-rvel,rvel));
 	}
 
 	virtual actor Puff(int sp=0){
