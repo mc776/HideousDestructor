@@ -343,7 +343,14 @@ class HDBullet:HDActor{
 		//this covers a few things that hittype does not
 		int hitresult=0;
 		if(blt.hitline){
-			A_SprayDecal(speed>HDCONST_SPEEDOFSOUND?"BulletChip":"BulletChipSmall",1.);
+			setorigin(pos-blt.hitdir*4,false);
+			A_SprayDecal(penetration>4?"BulletChip":"BulletChipSmall",10);
+			setorigin(pos+blt.hitdir*4,true);
+
+			//there's got to be a better way to do this
+			LineAttack(angle,penetration,pitch,0,"Bashing","CheckPuff",
+				flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ
+			);
 			if(
 				!blt.hitline.backsector
 				&&blt.hitline.frontsector!=blt.hitsector
@@ -398,9 +405,12 @@ class HDBullet:HDActor{
 				}
 			}
 			if(areaclear){
-				emergefromimpact(pos);
+				setorigin(blt.hitlocation,true);
+				Puff(speed*0.6);
+				emergefromimpact(hitloc);
 				double vd=(blt.hitlocation-hitloc).length();
-				vel*=vd/max(vd,penetration,1);
+				if(vd>=penetration)dieonimpact(blt.hitlocation-blt.hitdir*4);
+				else vel*=(penetration-vd)/max(penetration,1);
 				return;
 			}else{
 				dieonimpact(blt.hitlocation-blt.hitdir*4);
@@ -419,10 +429,11 @@ class HDBullet:HDActor{
 				flags:0,
 				data:voidprobe
 			);
-			if(voidprobe.hitline){
+			if(voidprobe.hitline&&voidprobe.distance<penetration){
+				Puff(speed*0.6);
 				emergefromimpact(voidprobe.hitlocation+voidprobe.hitdir);
 				double vd=voidprobe.distance;
-				vel*=vd/max(vd+1,penetration,1);
+				vel*=(penetration-vd)/max(penetration,1);
 				return;
 			}else{
 				//splat against a very thick wall
@@ -455,14 +466,15 @@ class HDBullet:HDActor{
 		destroy();
 	}
 	void EmergeFromImpact(vector3 emergespot){
-		setorigin(emergespot,true);
-		angle=-angle;pitch=-pitch;
-		A_SprayDecal("BulletChip",penetration);
+		setorigin(emergespot+blt.hitdir*4,true);
+		angle+=180;pitch=-pitch;
+		A_SprayDecal("BulletChip",10);
 		A_SpawnItemEx("PenePuff",
 			xvel:1,zvel:vel.z/max(speed,1),
 			flags:SXF_NOCHECKPOSITION
 		);
-		angle=-angle;pitch=-pitch;
+		angle+=180;pitch=-pitch;
+		setorigin(emergespot,true);
 	}
 
 	virtual actor Puff(int sp=0){
