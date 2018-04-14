@@ -17,27 +17,6 @@ class TerrorBolt:HDBullet{
 		if(sp<0)setstatelabel("death");
 		return null;
 	}
-	override void BulletImpact(line hitline,actor hitactor){
-		if(!bmissile) return;
-/*
-		if(a && a.tracer){
-			A_PlaySound("weapons/bigcrack");
-			BulletImpactDamage();
-			if(a && a.tracer.health>-a.tracer.gibhealth) Puff(-1);
-			else{
-				bmissile=true;
-				dmg=0;
-				vel*=0.9;
-				vel+=(random(-3,3),random(-3,3),random(-3,3));
-				return;
-			}
-		}else{
-			bmissile=false;
-			A_SprayDecal("BrontoScorch");
-			Puff(-1);
-		}
-*/
-	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		vector3 pvel=vel*0.02;

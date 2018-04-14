@@ -24,7 +24,7 @@ class HDBullet:HDActor{
 	double speedsquared;
 	bool inthesky;
 	flinetracedata blt;
-	line lasthitline;
+	sector othersector;
 	actor throughthis;
 	double penetration; //juvenile giggling
 
@@ -34,6 +34,11 @@ class HDBullet:HDActor{
 	enum BulletConsts{
 		BULLET_TERMINALVELOCITY=-277,
 		BULLET_CRACKINTERVAL=64,
+
+		BLT_HITTOP=1,
+		BLT_HITBOTTOM=2,
+		BLT_HITMIDDLE=3,
+		BLT_HITONESIDED=4,
 	}
 	default{
 		projectile; -nogravity
@@ -51,7 +56,7 @@ class HDBullet:HDActor{
 	override void beginplay(){
 		damagetype="SmallArms0"; //how do you set this in the defaults???
 		super.beginplay();
-		lasthitline=null;
+		othersector=null;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -178,8 +183,118 @@ class HDBullet:HDActor{
 			}
 		}
 
-		//set the new position
+		//move to new location
+		vector3 posbak=blt.hitlocation;
 		setorigin(blt.hitlocation,true);
+
+
+		//hit actor, ignore all the wall geometry stuff below
+		if(blt.hitactor){
+			actor hitactor=blt.hitactor;
+			tracer=hitactor;
+			setorigin(blt.hitlocation+blt.hitdir*frandom(0,hitactor.radius*0.8),true);
+
+			double hitresistance=(hitactor.radius+hitactor.spawnhealth()*0.1)*0.5;
+
+			//damagetype?
+			if(penetration>5)damagetype="SmallArms3";
+			else if(penetration>3)damagetype="SmallArms2";
+			else if(penetration>2.2)damagetype="SmallArms1";
+			else if(penetration>1)damagetype="SmallArms0";
+			else damagetype="Bashing";
+
+			//crit?
+			bool crit;
+			if(
+				abs(
+					(hitactor.pos.z+hitactor.height*0.6)-
+					(blt.hitlocation.z+blt.hitdir.z*hitactor.radius)
+				)<hitactor.height*0.2
+				&&
+				absangle(
+					angleto(hitactor),
+					angle
+				)<12.
+			){
+				if(hd_debug)A_Log("CRIT!");
+				crit=true;
+			}
+
+			//pierce?
+			bool pierce=false;
+			double netpenetration=penetration;
+			let hdp=hdplayerpawn(hitactor);
+			if(hdp){
+				netpenetration=max(0,
+					netpenetration-hdp.armourlevel*frandom(3,6)
+				);
+			}
+			netpenetration/=hitresistance;
+			if(netpenetration>0.5){
+				throughthis=hitactor;
+			}
+			if(netpenetration>0.2){
+				pierce=true;
+			}
+
+			//determine damage
+			int dmg=speed/(hitresistance*2);
+			int maxdmg=dmg+woundhealth;
+			if(pierce){
+				dmg*=2;
+				maxdmg+=woundhealth*10;
+			}
+			if(crit){
+				if(pierce){
+					dmg*=1.5;
+					maxdmg=dmg+woundhealth*20;
+				}else dmg*=1.2;
+			}
+			dmg=random(dmg,maxdmg);
+			if(hd_debug){
+				string targ="";
+				if(hitactor.player)targ=hitactor.player.getusername();
+					else targ=hitactor.getclassname();
+				A_Log(string.format("%s \ca%i \cj%s",self.getclassname(),dmg,targ));
+			}
+
+			//bleed
+			if(!pierce&&random(0,7)){
+				Puff();
+			}else{
+				vector3 hitdir=blt.hitdir;
+				for(int i=0;i<dmg;i+=60){
+					bool gbg;actor blood;
+					[gbg,blood]=A_SpawnItemEx(
+						hitactor.bloodtype,
+						flags:SXF_USEBLOODCOLOR|
+						SXF_NOCHECKPOSITION|
+						SXF_ABSOLUTEPOSITION
+					);
+					if(blood){
+						blood.setorigin(pos,false);
+						blood.vel=-hitdir*dmg*0.01
+						+(frandom(-2,2),frandom(-2,2),frandom(-2,2));
+					}
+				}
+			}
+
+			//apply damage
+			if(hitactor.health<1){
+				int gibs=max(randompick(0,0,0,1),dmg*0.05);
+				hitactor.A_GiveInventory("SawGib",gibs);
+			}else{
+				hitactor.damagemobj(self,self.target,dmg,damagetype,DMG_THRUSTLESS);
+			}
+
+			//reduce speed
+			vel*=netpenetration;
+
+			//destroy if too slow
+			if(vel dot vel<(20*20))destroy();
+			return;
+		}
+
 
 		//it's (probably) not coming back up
 		bool zricochet=false;
@@ -190,8 +305,9 @@ class HDBullet:HDActor{
 			zricochet=true;
 		}
 		//but it can come back down
-		if(blt.hittype==Trace_HitCeiling){
+		else if(blt.hittype==Trace_HitCeiling){
 			if(ceilingpic==skyflatnum){
+				setorigin(posbak+vel,true);
 				inthesky=true;
 				return;
 			}
@@ -202,63 +318,106 @@ class HDBullet:HDActor{
 			setz(clamp(pos.z,floorz+1,ceilingz-1));
 			double velxy=max(abs(vel.x),abs(vel.y));
 			if(
-				frandom(-speed,frandom(-speed,velxy))>abs(vel.z)
+				frandom(-speed,frandom(-speed,velxy))
+				>abs(vel.z)
 			){
 				Puff(speed*0.3);
 				vel.z=-frandom(0.1,0.9)*vel.z;
 				vel.xy=rotatevector(vel.xy,frandom(-45,45)*pushfactor);
 				vel*=frandom(0.6,0.9);
-			}else{
-				Puff();destroy();return;
+				return;
 			}
 		}
 
-		//all other situations
-		CheckPortalTransition();
-
+		//this covers a few things that hittype does not
+		int hitresult=0;
 		if(blt.hitline){
-			let hitline=blt.hitline;
-
-			//way less hacky horizon line check
-			if(hitline.special==Line_Horizon){destroy();return;}
-
-			//STILL PRETTY HACKY lower sky ceiling check
+			A_SprayDecal(speed>HDCONST_SPEEDOFSOUND?"BulletChip":"BulletChipSmall",1.);
 			if(
-				hitline.backsector
-				&&hitline.frontsector
-			){
-				sector othersector=
-					hitline.backsector==blt.hitsector?
-					hitline.frontsector:hitline.backsector;
-				if(
-					othersector.gettexture(othersector.ceiling)==skyflatnum
-					&&othersector.ceilingplane.zatpoint
-						(blt.hitlocation.xy+blt.hitdir.xy)<blt.hitlocation.z
-				){
-					inthesky=true;
-					return;
+				!blt.hitline.backsector
+				&&blt.hitline.frontsector!=blt.hitsector
+			)hitresult=BLT_HITONESIDED;
+			else{
+				if(blt.hitsector==blt.hitline.backsector)othersector=blt.hitline.frontsector;
+				else othersector=blt.hitline.backsector;
+
+				if(!othersector)hitresult=BLT_HITONESIDED;else{
+					vector2 zatpointer=blt.hitlocation.xy+blt.hitdir.xy;
+					double otherceilingz=othersector.ceilingplane.zatpoint(zatpointer);
+					double otherfloorz=othersector.floorplane.zatpoint(zatpointer);
+	
+					double hitz=blt.hitlocation.z;
+					if(hitz>otherceilingz)hitresult=BLT_HITTOP;
+					else if(hitz<otherfloorz)hitresult=BLT_HITTOP;
+					else hitresult=BLT_HITMIDDLE;
 				}
 			}
-
-			//check if moving through void
-			if(
-				lasthitline
-				&&!lasthitline.backsector
-				&&blt.distance>penetration
-			){
-				destroy();return;
-			}
-
-			BulletImpact(hitline);
-			if(bdestroyed)return;
-
-			//update last hit line
-			lasthitline=hitline;
+		}else{
+			if(blt.hittype==Trace_HitFloor)hitresult=BLT_HITBOTTOM;
+			else if(blt.hittype==Trace_HitCeiling)hitresult=BLT_HITTOP;
 		}
-
-		if(blt.hitactor){
-			BulletImpact(blt.hitline,blt.hitactor);
-			if(bdestroyed)return;
+		//thin sheet of something that you can't walk through
+		if(hitresult==BLT_HITMIDDLE){
+			setorigin(blt.hitlocation+blt.hitdir,true);
+			return;
+		}
+		//have to drill through floor or ceiling
+		else if(hitresult==BLT_HITTOP||hitresult==BLT_HITBOTTOM){
+			//but first, sky check
+			if(
+				othersector&&
+				othersector.gettexture(othersector.ceiling)==skyflatnum
+				&&othersector.ceilingplane.zatpoint
+					(blt.hitlocation.xy+blt.hitdir.xy)<blt.hitlocation.z
+			){
+				setorigin(pos+vel,true);
+				inthesky=true;
+				return;
+			}
+			bool areaclear=false;
+			vector3 hitdir=blt.hitdir*4; //4 because we don't want to waste too much time
+			vector3 hitloc=blt.hitlocation;
+			for(int i=0;i<penetration;i+=4){
+				hitloc+=hitdir;
+				setorigin(hitloc,true);
+				double posz=pos.z;
+				if(posz>=floorz&&posz<=ceilingz){
+					areaclear=true;
+					break;
+				}
+			}
+			if(areaclear){
+				emergefromimpact(pos);
+				double vd=(blt.hitlocation-hitloc).length();
+				vel*=vd/max(vd,penetration,1);
+				return;
+			}else{
+				dieonimpact(blt.hitlocation-blt.hitdir*4);
+				return;
+			}
+		}
+		//into the void behind every rock
+		else if(hitresult==BLT_HITONESIDED){
+			if(blt.hitline.special==Line_Horizon){destroy();return;}
+			setorigin(blt.hitlocation+blt.hitdir,true);
+			flinetracedata voidprobe;
+			LineTrace(
+				angle,
+				penetration*0.6, //these are usually structural rather than doors
+				pitch,
+				flags:0,
+				data:voidprobe
+			);
+			if(voidprobe.hitline){
+				emergefromimpact(voidprobe.hitlocation+voidprobe.hitdir);
+				double vd=voidprobe.distance;
+				vel*=vd/max(vd,penetration,1);
+				return;
+			}else{
+				//splat against a very thick wall
+				dieonimpact(blt.hitlocation-blt.hitdir*4);
+				return;
+			}
 		}
 
 		//drop and wobble
@@ -279,153 +438,22 @@ class HDBullet:HDActor{
 		}
 	}
 
-	//impact
-	virtual void BulletImpact(line hitline=null,actor hitactor=null){
-		if(max(abs(pos.x),abs(pos.y))>=32678){destroy();return;}
-		if(hitactor){
-			throughthis=hitactor;
-			tracer=hitactor;
-			BulletImpactDamage(hitactor);
-			if(vel dot vel<(50*50)){
-				destroy();return;
-			}else{
-				vel.xy=rotatevector(vel.xy,frandom(-10,10)*pushfactor);
-				vel.z*=pushfactor*frandom(-0.4,0.4);
-			}
-		}else if(hitline){
-			//these get used a lot
-			vector3 hitdir=blt.hitdir;
-			vector3 hitlocation=blt.hitlocation;
-
-			//save the hitline info for future reference
-			lasthitline=hitline;
-
-			//decal
-			name decal="BulletChip";
-			if(penetration<4.)decal="BulletChipSmall";
-			setorigin(hitlocation-hitdir*4,false);
-			A_SprayDecal(decal,max(12,penetration*2));
-
-			//ricochet
-			if(!random(0,15)){
-				bmissile=true;
-				vel.xy=rotatevector(vel.xy,frandom(0,360))*0.9;
-				vel.z=frandom(-vel.z,vel.z*0.8);
-				Puff(speed*0.9);
-				return;
-			}else Puff();
-
-			if(
-				penetration<=0
-				||(!hd_penetrate&&!deathmatch&&skill<5)
-			){destroy();return;}
-
-
-			//pierce
-			setorigin(hitlocation+hitdir*min(10,penetration),false);
-			if(floorz>=pos.z||ceilingz<=pos.z){destroy();return;}
-
-			bool backsectorceilingfloor=(
-				hitline.backsector
-				&&hitline.backsector.floorplane.zatpoint(hitlocation.xy+hitdir.xy)<pos.z
-				&&hitline.backsector.ceilingplane.zatpoint(hitlocation.xy+hitdir.xy)>pos.z
-			);
-
-			angle=-angle;pitch=-pitch;
-			if(backsectorceilingfloor)A_SprayDecal(decal,max(12,penetration*2));
-			LineAttack(
-				angle,penetration*2,pitch,0,"none",
-				"PenePuff",flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ
-			);
-			angle=-angle;pitch=-pitch;
-
-			//final goodbye
-			if(vel dot vel<(50*50)){
-				destroy();return;
-			}
-		}
+	void DieOnImpact(vector3 deathspot){
+		setorigin(deathspot,true);
+		Puff();
+		destroy();
 	}
-	//apply damage and blood
-	void BulletImpactDamage(actor victim){
-		int dmg=woundhealth*mass*0.002;
-		int maxdmg=mass*speedsquared*0.0000002;
-
-		//set damagetype
-		bool pierced=true;
-		double victimthickness=max(
-			victim.radius*0.1,
-			victim.spawnhealth()*0.01
+	void EmergeFromImpact(vector3 emergespot){
+		setorigin(emergespot,true);
+		angle=-angle;pitch=-pitch;
+		A_SprayDecal("BulletChip",penetration);
+		A_SpawnItemEx("PenePuff",
+			xvel:1,zvel:vel.z/max(speed,0,0001),
+			flags:SXF_NOCHECKPOSITION
 		);
-		if(penetration>victimthickness){damagetype="SmallArms3";vel*=0.9;}
-		else if(penetration>victimthickness*0.6){damagetype="SmallArms2";vel*=0.8;}
-		else if(penetration>victimthickness*0.4){damagetype="SmallArms1";vel*=0.4;}
-		else if(penetration>victimthickness*0.2){damagetype="SmallArms1";vel*=0.2;}
-		else{
-			damagetype="Bashing";
-			pierced=false;
-			vel*=0.1;
-		}
-
-		if(
-			pierced&&
-			(!(victim is "HDPlayerPawn")||hdplayerpawn(victim).armourlevel<1)
-		){
-			dmg*=frandom(1,3);
-			maxdmg=max(dmg,maxdmg);
-		}
-
-		//extra damage for hitting ~center of mass
-		vector3 hitdir=blt.hitdir;
-		vector3 extrapolation=pos+hitdir*victim.radius;
-		vector3 victimheart=victim.pos;
-		victimheart.z+=victim.height*0.6;
-		extrapolation=victimheart-extrapolation;
-		double distancefromheart=extrapolation dot extrapolation;
-		double victimheartsize=victim.radius*0.3;
-		if(distancefromheart<victimheartsize*victimheartsize){
-			if(hd_debug)A_Log("CRIT!");
-			if(pierced)maxdmg*=2;
-			else maxdmg+=speed/100;
-		}
-
-		//determine net damage
-		dmg=random(dmg,maxdmg);
-		if(hd_debug){
-			string targ="";
-			if(victim.player)targ=victim.player.getusername();
-				else targ=victim.getclassname();
-			A_Log(string.format("%s \ca%i \cj%s",self.getclassname(),dmg,targ));
-		}
-
-		//don't place puff/blood right on edge of box - looks bad with too many
-		setorigin(pos+hitdir*random(1,victim.radius),false);
-
-		//puff or bleed as appropriate
-		if(bbloodlessimpact||!victim.bshootable||victim.bnoblood)Puff();
-		else for(int i=0;i<dmg;i+=40){
-			victim.A_SpawnItemEx(
-				victim.bloodtype,
-				//comes out of actor itself
-				(pos.x-victim.pos.x)*frandom(0.6,0.9),
-				(pos.y-victim.pos.y)*frandom(0.6,0.9),
-				(pos.z-victim.pos.z)*frandom(0.6,0.9),
-				frandom(3,6),frandom(-1,1),frandom(1,3),
-				180,
-				SXF_USEBLOODCOLOR|
-				SXF_NOCHECKPOSITION|
-				SXF_ABSOLUTEPOSITION
-			);
-		}
-
-		//gibbing
-		if(victim.bcorpse){
-			int gibs=max(randompick(0,0,0,1),dmg*0.05);
-			victim.A_GiveInventory("SawGib",gibs);
-		}
-
-		//do this last, as it can destroy some actors leading to an address zero crash
-		victim.damagemobj(self,self.target,dmg,damagetype,DMG_THRUSTLESS);
+		angle=-angle;pitch=-pitch;
 	}
+
 	virtual actor Puff(int sp=0){
 		if(max(abs(pos.x),abs(pos.y))>=32678)return null;
 		if(!sp)sp=speed;
