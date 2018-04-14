@@ -466,11 +466,11 @@ class HDBullet:HDActor{
 		destroy();
 	}
 	void EmergeFromImpact(vector3 emergespot){
-		setorigin(emergespot+blt.hitdir*4,true);
+		setorigin(emergespot+blt.hitdir,true);
 		angle+=180;pitch=-pitch;
 		A_SprayDecal("BulletChip",10);
 		A_SpawnItemEx("PenePuff",
-			xvel:1,zvel:vel.z/max(speed,1),
+			xvel:-1,zvel:vel.z/max(speed,1),
 			flags:SXF_NOCHECKPOSITION
 		);
 		angle+=180;pitch=-pitch;
