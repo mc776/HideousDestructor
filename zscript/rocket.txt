@@ -37,7 +37,7 @@ class GyroGrenade:SlowProjectile{
 		if(isrocket)speed*=2;
 		A_ChangeVelocity(speed*cos(pitch),0,speed*sin(-pitch),CVF_RELATIVE);
 	}
-	override void ExplodeSlowMissile(line blockingline,actor blockingobject){
+	override void ExplodeSlowMissile(line blockingline,actor blockingobject,bool frontal){
 		//bounce
 		if(!primed&&random(0,20)){
 			if(speed>50)painsound="misc/punch";else painsound="misc/fragknock";
@@ -134,7 +134,7 @@ class HDHEAT:GyroGrenade{
 		scale 0.4; woundhealth 1800;
 		decal "BrontoScorch";
 	}
-	override void ExplodeSlowMissile(line blockingline,actor blockingobject){
+	override void ExplodeSlowMissile(line blockingline,actor blockingobject,bool frontal){
 		//bounce
 		//nothing here - HEAT will always explode
 

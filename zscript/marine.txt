@@ -1191,7 +1191,7 @@ class GhostGyroGrenade:GyroGrenade{
 		renderstyle "add";
 		damagetype "GhostSquadAttack";
 	}
-	override void ExplodeSlowMissile(line blockingline,actor blockingobject){
+	override void ExplodeSlowMissile(line blockingline,actor blockingobject,bool frontal){
 		let gm=GhostMarine(target);
 		if(!gm)return;
 		actor tb=gm.target;

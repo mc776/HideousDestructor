@@ -7,9 +7,8 @@
 class SlowProjectile:HDBullet{
 	/*
 		special usages:
-		woundhealth: extra damage other than raw impact.
+		accuracy: amount, in DUs, that the nose extends beyond the base radius.
 	*/
-	double divrad;
 	default{
 		+bloodlessimpact -noteleport +forcexybillboard
 //		missiletype "BulletTail"; //testing and random eye candy
@@ -23,8 +22,11 @@ class SlowProjectile:HDBullet{
 		grav=getgravity();
 		LongArmWobble();
 		Gunsmoke();
-		divrad=radius*1.9;
-		if(target)master=target;
+		if(target){
+			master=target;
+			throughthis=target;
+		}
+		accuracy+=radius;
 	}
 	override void Tick(){
 		if(globalfreeze||level.Frozen) return;
@@ -42,96 +44,135 @@ class SlowProjectile:HDBullet{
 		}
 
 		//point actor in velocity
-		if(hd_debug && speed>600)A_Log(String.Format("%s is over speed 600. Consider using HDBullet for this.",getclassname()));
-
-		// force some lateral movement so that collision detection works as intended.
-		if(vel.xy==(0,0))vel.xy=angletovector(angle,0.01);
-
-		// Handle movement
-		fcheckposition tm;
+		//set some basic variables
 		speed=vel.length();
+		speedsquared=vel dot vel;
+		penetration=speedsquared*mass*accuracy*0.000000001/pushfactor*frandom(0.9,1.1);
+		A_FaceMovementDirection();
 
-		int count=max(2,speed*divrad);
-		vector3 frac=vel/count;
-		for(int i=0;i<count;i++){
-			if(inthesky){
-				setorigin(pos+frac-(0,0,frac.z),true);
+		//hack to escape shooter
+		bool bsbak=false;
+		if(throughthis){
+			bsbak=throughthis.bshootable;
+			throughthis.bshootable=false;
+		}
+
+		//get the lines
+		flinetracedata blttop;
+		flinetracedata bltbottom;
+		flinetracedata bltleft;
+		flinetracedata bltright;
+		actor hitactor=null;
+		line hitline=null;
+		LineTrace(
+			angle,speed,pitch,flags:0,
+			offsetz:radius,
+			offsetforward:accuracy,
+			data:blt
+		);
+		if(!hitline)hitline=blt.hitline;if(!hitactor)hitactor=blt.hitactor;
+		LineTrace(
+			angle,speed,pitch,flags:0,
+			offsetz:height,
+			data:blttop
+		);
+		if(!hitline)hitline=blttop.hitline;if(!hitactor)hitactor=blttop.hitactor;
+		LineTrace(
+			angle,speed,pitch,flags:0,
+			data:bltbottom
+		);
+		if(!hitline)hitline=bltbottom.hitline;if(!hitactor)hitactor=bltbottom.hitactor;
+		LineTrace(
+			angle,speed,pitch,flags:0,
+			offsetz:radius,
+			offsetside:-radius,
+			data:bltleft
+		);
+		if(!hitline)hitline=bltleft.hitline;if(!hitactor)hitactor=bltleft.hitactor;
+		LineTrace(
+			angle,speed,pitch,flags:0,
+			offsetz:radius,
+			offsetside:-radius,
+			data:bltright
+		);
+		if(!hitline)hitline=bltright.hitline;if(!hitactor)hitactor=bltright.hitactor;
+
+		//reset hacks (copypasted from bullet less plushitdir)
+		if(throughthis){
+			throughthis.bshootable=bsbak;
+			throughthis=null;
+		}
+
+		//find points close to players and spawn crackers
+		//also spawn trails if applicable
+		//(copypasted from bullet)
+		if(speed>256){
+			name b="";
+			if(speed>1000){
+				if(mass>200) b="SupersonicTrailBig";
+				else b="SupersonicTrail";
+			}else if(speed>800){
+				b="SupersonicTrail";
+			}else if(speed>HDCONST_SPEEDOFSOUND){
+				b="SupersonicTrailSmall";
+			}else if(speed>100){
+				b="SubsonicTrail";
 			}
-			else if(!TryMove(pos.xy+frac.xy,true,true,tm)){
-
-				//hack to prevent exploding on lower sky
-				let l=tm.ceilingline;
-				let p=tm.ceilingpic;
-				if(l&&l.backsector){
-					if(
-						tm.ceilingpic==skyflatnum
-						&&tm.pos.z>=tm.ceilingz
-					){
-						destroy();
-						return;
+			if(b!=""){
+				vector3 crackbak=pos;
+				vector3 crackinterval=blt.hitdir*BULLET_CRACKINTERVAL;
+				int j=max(1,blt.distance*(1./BULLET_CRACKINTERVAL));
+				for(int i=0;i<j;i++){
+					setxyz(crackbak+crackinterval*i);
+					if(missilename)spawn(missilename,pos);
+					bool gotplayer=false;
+					for(int k=0;!gotplayer && k<MAXPLAYERS;k++){
+						if(playeringame[k] && players[k].mo){
+							if(
+								distance3d(players[k].mo)<256
+							){
+								gotplayer=true;
+								spawn(b,pos);
+							}
+						}
 					}
 				}
-
-				//[RH] Don't explode on horizon lines.
-				if(BlockingLine && BlockingLine.special == Line_Horizon){
-					destroy();
-					return;
-				}
-
-				//upon hitting an actor
-				if(!target)target=master;
-				if(blockingmobj){
-					tracer=blockingmobj;
-					int idmg=speed*speed*mass*0.000005;
-					if(!bnodamage)tracer.damagemobj(self,target,idmg,"none");
-					if(idmg>40)tracer.A_PlaySound("misc/bulletflesh",CHAN_BODY);
-					if(hd_debug)A_Log(String.Format("%s hit %s",getclassname(),blockingmobj.getclassname()));
-				}
-				explodeslowmissile(blockingline,blockingmobj);
-				return;
-			}
-			CheckPortalTransition();
-
-			addz(frac.z,true);
-			UpdateWaterLevel();
-
-			//hit the floor
-			if(pos.z<=floorz){
-				if(floorpic==skyflatnum){
-					destroy();return;
-				}
-				setz(floorz);
-				hitfloor();
-				explodeslowmissile(null,null);
-				return;
-			}
-			//hit the ceiling or sky
-			else if(pos.z+height>ceilingz){
-				if(ceilingpic!=skyflatnum){
-					setz(ceilingz-height);
-					explodeslowmissile(null,null);
-					return;
-				}else{
-					if(grav<=0){destroy();return;} //it's not coming back down
-					inthesky=true;
-					binvisible=true;
-				}
-			}else{
-				inthesky=false;
-				binvisible=false;
-			}
-
-			if(speed && !inthesky
-				&& bmissile && missilename && speed*radius>=240
-			){
-				actor tr=spawn(missilename,pos,ALLOW_REPLACE);
-				tr.vel=vel*0.4;
+				setxyz(crackbak);
 			}
 		}
-		//bullet drop again, updating the actual velocity
-		vel.z-=getgravity();
 
-		//thus ends the "handle movement" part
+		//move to new location
+		setorigin(bltbottom.hitlocation-bltbottom.hitdir*radius,true);
+
+		//see if it hit right on the nose
+		bool frontal=(
+			blttop.hittype==TRACE_HitNone
+			&&bltbottom.hittype==TRACE_HitNone
+			&&bltleft.hittype==TRACE_HitNone
+			&&bltright.hittype==TRACE_HitNone
+		);
+
+
+		//explode missile
+		if(
+			!frontal||
+			(frontal&&blt.hittype!=TRACE_HitNone)
+		){
+			if(hitactor){
+				int dmg=(vel dot vel)*max(mass,radius*radius)*0.000002;
+				A_LogInt(dmg);
+				hitactor.damagemobj(self,target,
+					random(dmg,dmg*2),
+					"Bashing"
+				);
+			}
+			ExplodeSlowMissile(hitline,hitactor,frontal);
+		}
+		if(bdestroyed)return;
+
+
+		//gravity, etc.
+		vel.z-=grav;
 
 		//nexttic
 		if(CheckNoDelay()){
@@ -143,9 +184,15 @@ class SlowProjectile:HDBullet{
 			}
 		}
 	}
-	virtual void ExplodeSlowMissile(line blockingline=null,actor blockingobject=null){
-		if(speed>50)painsound="misc/punch";else painsound="misc/fragknock";
-		actor a=spawn("IdleDummy",pos);a.stamina=10;a.A_PlaySound(painsound,CHAN_AUTO);
+	virtual void ExplodeSlowMissile(line hitline=null,actor hitactor=null,bool frontal=true){
+		actor aaa=hitactor;
+		if(!hitactor){
+			aaa=spawn("IdleDummy",pos);
+			aaa.stamina=10;
+		}else{
+		}
+		aaa.A_PlaySound(speed>50?"misc/punch":"misc/fragknock",CHAN_AUTO);
+
 		explodemissile(null,null);
 	}
 	states{
