@@ -76,8 +76,10 @@ class HDWoundFixer:HDWeapon{
 }
 class HDMedikitter:HDWoundFixer{
 	default{
+		-weapon.no_auto_switch
 		weapon.selectionorder 1001;
 		weapon.slotnumber 9;
+		scale 0.27;
 	}
 	bool useonother;
 	bool usedflesh;
@@ -359,44 +361,13 @@ class HDMedikitter:HDWoundFixer{
 		}
 		goto nope;
 	spawn:
-		TNT1 A 1;
-		TNT1 A 0{
-			let k=HDOpenedMedikit(invoker.spawn("HDOpenedMedikit",invoker.pos));
-			if(k){
-				k.vel=invoker.vel;
-				k.usedflesh=invoker.usedflesh;
-				k.usedpatches=invoker.usedpatches;
-				k.usedon=invoker.usedon;
-			}
+		MEDI B -1 nodelay{
+			if(invoker.usedon)frame=2;
 		}stop;
 	}
-}
-class HDOpenedMedikit:HDUPK{
-	bool usedflesh;
-	int usedpatches;
-	actor usedon;
-	default{
-		scale 0.27;
-	}
-	states{
-	spawn:
-		MEDI B 0 A_Stop();
-		MEDI B -1{
-			if(usedon)frame=2;
-		}
-	}
-	override void A_HDUPKGive(){
-		if(!picktarget||picktarget.countinv("HDMedikitter")){
-			setstatelabel("spawn");
-			return;
-		}
-		picktarget.A_GiveInventory("HDMedikitter");
-		let k=HDMedikitter(picktarget.FindInventory("HDMedikitter"));
-		k.usedflesh=usedflesh;
-		k.usedpatches=usedpatches;
-		k.usedon=usedon;
-		picktarget.A_PlaySound(activesound,5);
-		picktarget.A_Log(string.format("\cg%s",pickupmessage),true);
+	override string pickupmessage(){
+		if(usedflesh||usedpatches>0)return "Picked up a used medikit.";
+		return "Picked up an opened medikit.";
 	}
 }
 class SecondFleshBeast:IdleDummy{
