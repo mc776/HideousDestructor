@@ -343,14 +343,10 @@ class HDBullet:HDActor{
 		//this covers a few things that hittype does not
 		int hitresult=0;
 		if(blt.hitline){
+			blt.hitline.activate(target,blt.lineside,SPAC_Impact);
 			setorigin(pos-blt.hitdir*4,false);
 			A_SprayDecal(penetration>4?"BulletChip":"BulletChipSmall",10);
 			setorigin(pos+blt.hitdir*4,true);
-
-			//there's got to be a better way to do this
-			LineAttack(angle,penetration,pitch,0,"Bashing","CheckPuff",
-				flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ
-			);
 			if(
 				!blt.hitline.backsector
 				&&blt.hitline.frontsector!=blt.hitsector
