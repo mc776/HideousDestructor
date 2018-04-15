@@ -144,6 +144,7 @@ class HDBullet:HDActor{
 			throughthis.bshootable=bsbak;
 			throughthis=null;
 		}
+		vector3 plushitdir=blt.hitlocation+blt.hitdir;
 
 
 		//find points close to players and spawn crackers
@@ -344,9 +345,35 @@ class HDBullet:HDActor{
 		int hitresult=0;
 		if(blt.hitline){
 			blt.hitline.activate(target,blt.lineside,SPAC_Impact);
-			setorigin(pos-blt.hitdir*4,false);
+//if(!random(0,12))blt.hitline.activate(target,blt.lineside,SPAC_Use);
+			setorigin(blt.hitlocation-blt.hitdir*4,false);
 			A_SprayDecal(penetration>4?"BulletChip":"BulletChipSmall",10);
-			setorigin(pos+blt.hitdir*4,true);
+
+			//ricochet
+			if(!random(0,10)){
+				flinetracedata ricosuave;
+				LineTrace(
+					angle-40,
+					4,
+					0,
+					flags:TRF_THRUACTORS,
+					offsetforward:-1,
+					data:ricosuave
+				);
+				Puff(speed*0.3);
+				vel.z=frandom(-0.9,0.9)*vel.z;
+				vel.xy*=frandom(0.6,0.9);
+				double rnd=frandom(0,90);
+				if(ricosuave.hitline==blt.hitline){
+					vel.xy=rotatevector((speed,0),angle+rnd);
+				}else{
+					vel.xy=rotatevector((speed,0),angle-rnd);
+				}
+				return;
+			}
+			setorigin(blt.hitlocation,true);
+
+			//evaluate hitlineresult
 			if(
 				!blt.hitline.backsector
 				&&blt.hitline.frontsector!=blt.hitsector
@@ -356,7 +383,7 @@ class HDBullet:HDActor{
 				else othersector=blt.hitline.backsector;
 
 				if(!othersector)hitresult=BLT_HITONESIDED;else{
-					vector2 zatpointer=blt.hitlocation.xy+blt.hitdir.xy;
+					vector2 zatpointer=plushitdir.xy;
 					double otherceilingz=othersector.ceilingplane.zatpoint(zatpointer);
 					double otherfloorz=othersector.floorplane.zatpoint(zatpointer);
 	
@@ -372,7 +399,7 @@ class HDBullet:HDActor{
 		}
 		//thin sheet of something that you can't walk through
 		if(hitresult==BLT_HITMIDDLE){
-			setorigin(blt.hitlocation+blt.hitdir,true);
+			setorigin(plushitdir,true);
 			return;
 		}
 		//have to drill through floor or ceiling
@@ -382,7 +409,7 @@ class HDBullet:HDActor{
 				othersector&&
 				othersector.gettexture(othersector.ceiling)==skyflatnum
 				&&othersector.ceilingplane.zatpoint
-					(blt.hitlocation.xy+blt.hitdir.xy)<blt.hitlocation.z
+					(plushitdir.xy)<blt.hitlocation.z
 			){
 				setorigin(pos+vel,true);
 				inthesky=true;
@@ -416,7 +443,7 @@ class HDBullet:HDActor{
 		//into the void behind every rock
 		else if(hitresult==BLT_HITONESIDED){
 			if(blt.hitline.special==Line_Horizon){destroy();return;}
-			setorigin(blt.hitlocation+blt.hitdir,true);
+			setorigin(plushitdir,true);
 			flinetracedata voidprobe;
 			LineTrace(
 				angle,
