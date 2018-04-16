@@ -44,6 +44,7 @@ class HDDebris:HDActor{
 		for(int i=0;i<fracamount;i++){
 			addz(frac.z,true);
 			if(keeptrymove&&!trymove(pos.xy+frac.xy,true,true)){
+				A_PlaySound(bouncesound,CHAN_BODY);
 				if(blockingmobj){
 					vel*=-bouncefactor;
 				}else if(blockingline){
@@ -62,6 +63,7 @@ class HDDebris:HDActor{
 			onfloor
 			||ceilingz<=pos.z //most debris actors are negligible height
 		){
+			A_PlaySound(bouncesound,CHAN_BODY);
 			vel.xy=rotatevector(vel.xy,frandom(-0.1,0.1)*abs(vel.z))*bouncefactor;
 			vel.z*=-bouncefactor;
 		}
