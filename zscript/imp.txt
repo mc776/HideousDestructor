@@ -83,9 +83,8 @@ class dimpb:hdfireball{
 			inittz=tracer.pos.z;
 
 			if(dmg){
-				tracer.damagemobj(self,target,dmg/3,"Thermal");
-				stamina+=dmg;
-				if(stamina>80)A_Immolate(tracer,target,dmg/2);
+				tracer.damagemobj(self,target,dmg,"Thermal");
+				tracer.A_GiveInventory("Heat",dmg);
 			}
 
 			setorigin((pos+(tracer.pos-initpos))*0.5,true);
