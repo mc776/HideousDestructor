@@ -4,17 +4,18 @@
 extend class HDStatusBar{
 	virtual void DrawHDXHair(hdplayerpawn hpl){
 		let wp=hdweapon(cplayer.readyweapon);
+		bool sightbob=cvar.getcvar("hd_sightbob",cplayer).getbool();
 
 		if(
 			!wp
 			||hpl.barehanded
 			||hpl.nocrosshair>0  
+			||(!sightbob&&hpl.countinv("IsMoving"))
 		)return;
 
 		SetSize(0,400,250);
 		BeginHUD(forcescaled:true);
 
-//		int ismoving=hpl.countinv("IsMoving");
 		actor hpc=hpl.scopecamera;
 		int cpbt=cplayer.cmd.buttons;
 		int nscp=cvar.getcvar("hd_noscope",cplayer).getint();
@@ -25,21 +26,21 @@ extend class HDStatusBar{
 			cpbt&BT_ZOOM
 		);
 
-		vector2 bob=hpl.hudbob;
+		vector2 bob=sightbob?hpl.hudbob:(0,0);
 
-		if((wp is "HDPistol")){ //&&ismoving<5){
+		if((wp is "HDPistol")){
 			drawimage(
 				"XH26",(0,0)+bob,DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 				scale:(2,2)*scl
 			);
 		}
-		else if((wp is "HDSMG"||wp is "Hunter")){ //&&ismoving<6){
+		else if((wp is "HDSMG"||wp is "Hunter")){
 			drawimage(
 				"XH23",(0,1.8)+bob,DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 				scale:(1.6,1.7)*scl
 			);
 		}
-		else if((wp is "Slayer")){ //&&ismoving<10){
+		else if((wp is "Slayer")){
 			drawimage(
 				"XH23",(0,1.4)+bob,DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 				scale:(1.8,1.6)*scl
