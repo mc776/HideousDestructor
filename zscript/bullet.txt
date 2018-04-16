@@ -345,7 +345,6 @@ class HDBullet:HDActor{
 		int hitresult=0;
 		if(blt.hitline){
 			blt.hitline.activate(target,blt.lineside,SPAC_Impact);
-//if(!random(0,12))blt.hitline.activate(target,blt.lineside,SPAC_Use);
 			setorigin(blt.hitlocation-blt.hitdir*4,false);
 			A_SprayDecal(penetration>4?"BulletChip":"BulletChipSmall",10);
 
@@ -483,12 +482,12 @@ class HDBullet:HDActor{
 		}
 	}
 
-	void DieOnImpact(vector3 deathspot){
+	virtual void DieOnImpact(vector3 deathspot){
 		setorigin(deathspot,true);
 		Puff();
 		destroy();
 	}
-	void EmergeFromImpact(vector3 emergespot){
+	virtual void EmergeFromImpact(vector3 emergespot){
 		setorigin(emergespot+blt.hitdir,true);
 		angle+=180;pitch=-pitch;
 		A_SprayDecal("BulletChip",10);
