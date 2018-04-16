@@ -27,7 +27,7 @@ function str gettip(int rsd){
 	int flp=0;
 	int rnd=lastrnd;
 	for(int i=0;i<rsd;i++){flp=random(0,1);}
-	while(rnd==lastrnd)rnd=random(0,26);
+	while(rnd==lastrnd)rnd=random(0,27);
 	lastrnd=rnd;
 	switch(rnd){
 	case 1: return "Remember to \cxBIND KEYS\cu for all
@@ -149,6 +149,10 @@ function str gettip(int rsd){
 
 	case 26: return "To view the extra help text for your selected
 			\nweapon, type \cqweaptip\cu in the console.";
+
+	case 27: return "To \cxREMOTE ACTIVATE\cu a switch or a door,
+			\ntype \cqderp 555 <tag>\cu to stick your D.E.R.P.
+			\nonto it and \cqderp 556 <tag>\cu to hit the switch";
 	}
 
 	//default:
