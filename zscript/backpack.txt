@@ -135,7 +135,6 @@ class HDBP:HDWeapon{
 				)return;
 				invoker.itemamount[which]=armr.amount;
 				A_TakeInventory(itp);
-				A_TakeInventory("HDArmour");
 			}else if(itp=="HDCellAmmo"){
 				int totake=min(countinv(itp),20);
 				invoker.itemamount[which]+=totake;
@@ -173,8 +172,7 @@ class HDBP:HDWeapon{
 
 			//where the magic happens
 			if(itp=="HDArmour"){
-				A_GiveInventory(itp,1);
-				A_GiveInventory("HDArmour",invoker.itemamount[which]);
+				A_GiveInventory(itp,invoker.itemamount[which]);
 				invoker.itemamount[which]=0;
 			}else if(itp=="HDCellAmmo"){
 				int totake=min(
