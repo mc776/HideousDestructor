@@ -24,14 +24,15 @@ class TerrorBolt:HDBullet{
 	}
 	override void DieOnImpact(vector3 deathspot){
 		if(throughthis&&throughthis!=target)return;
+		deathspot=blt.hitlocation-blt.hitdir*4;
 		setorigin(deathspot,true);
 		setstatelabel("death");
 	}
 	override void EmergeFromImpact(vector3 emergespot){
-		dieonimpact(blt.hitlocation-blt.hitdir*4);
+		dieonimpact(pos);
 	}
 	override actor Puff(int sp){
-		dieonimpact(blt.hitlocation-blt.hitdir*4);
+		dieonimpact(pos);
 		return self;
 	}
 	states{
