@@ -227,7 +227,7 @@ class HDBullet:HDActor{
 			let hdp=hdplayerpawn(hitactor);
 			if(hdp){
 				netpenetration=max(0,
-					netpenetration-hdp.armourlevel*frandom(2,4)
+					netpenetration-hdp.armourlevel*frandom(1,2)
 				);
 			}
 			netpenetration=min(0.9999,netpenetration/hitresistance);
@@ -239,7 +239,7 @@ class HDBullet:HDActor{
 			}
 
 			//determine damage
-			int dmg=(speed+mass)*0.0163;
+			int dmg=(speed+mass)*0.0099;
 
 			int maxdmg=dmg+woundhealth;
 			if(pierce){
