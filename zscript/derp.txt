@@ -533,7 +533,18 @@ extend class HDHandlers{
 				}else if(
 					cmd==556&&derp.stuckline
 				){
-					derp.stuckline.activate(ppp,0,SPAC_Use);
+					bool exiting=
+						derp.stuckline.special==Exit_Normal
+						||derp.stuckline.special==Exit_Secret;
+					if(
+						!exiting||(
+							derp.checksight(ppp)
+							&&derp.distance3d(ppp)<128
+						)
+					){
+						derp.stuckline.activate(ppp,0,SPAC_Use);
+						if(exiting)ppp.A_GiveInventory("DERPUsable",1);
+					}
 					derp.stuckline=null;
 				}else if(cmd==123){
 					int ammo=derp.ammo;
