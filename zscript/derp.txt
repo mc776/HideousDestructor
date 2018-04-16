@@ -152,7 +152,7 @@ class DERPBot:HDUPK{
 	void A_DerpStuck(){
 		if(!stuckline){
 			bnogravity=false;
-			setstatelabel("spawn");
+			setstatelabel("unstuck");
 			return;
 		}
 		setz(
@@ -179,6 +179,15 @@ class DERPBot:HDUPK{
 	stuck:
 		DERP A 1 A_DerpStuck();
 		wait;
+	unstuck:
+		DERP A 10{
+			spawn("FragPuff",pos);
+			bnogravity=false;
+			A_ChangeVelocity(3,0,2,CVF_RELATIVE);
+			A_PlaySound("weapons/bigcrack",4);
+			A_PlaySound("misc/fragknock",5);
+			A_PlaySound("derp/crawl",6);
+		}goto spawn2;
 	give:
 		DERP A 0{
 			stuckline=null;bnogravity=false;
@@ -526,11 +535,6 @@ extend class HDHandlers{
 				){
 					derp.stuckline.activate(ppp,0,SPAC_Use);
 					derp.stuckline=null;
-					derp.bnogravity=false;
-					derp.A_ChangeVelocity(5,0,2,CVF_RELATIVE);
-					derp.A_PlaySound("weapons/bigcrack",CHAN_WEAPON);
-					derp.A_PlaySound("derp/crawl",CHAN_VOICE);
-					derp.A_PlaySound("misc/fragknock",CHAN_BODY);
 				}else if(cmd==123){
 					int ammo=derp.ammo;
 					ppp.A_Log(string.format("\cd[DERP] \cjtag #\cx%i \cjreporting in at [\cx%i\cj,\cx%i\cj] with %s",derp.botid,derp.pos.x,derp.pos.y,ammo?string.format("\cy%i\cj bullets left!",derp.ammo):"\crno ammo left!\cj Help!"),true);
