@@ -262,6 +262,30 @@ extend class HDPlayerPawn{
 			double testangle=lastangle+anglechange;
 			double testpitch=lastpitch+pitchchange;
 
+
+			//top
+			linetrace(
+				testangle,barrellength,testpitch,flags:0,
+				offsetz:highheight,
+				offsetforward:-sin(pitch),
+				offsetside:0,
+				data:ltt
+			);
+			disttop=ltt.distance;
+			if(ltt.hittype==Trace_HitNone)muzzleclear++;
+
+			//bottom
+			linetrace(
+				testangle,barrellength,testpitch,flags:0,
+				offsetz:lowheight,
+				offsetforward:sin(pitch),
+				offsetside:0,
+				data:ltb
+			);
+			distbottom=ltb.distance;
+			if(ltb.hittype==Trace_HitNone)muzzleclear++;
+
+
 			//left
 			linetrace(
 				testangle,barrellength,testpitch,flags:0,
@@ -281,27 +305,6 @@ extend class HDPlayerPawn{
 			);
 			distright=ltr.distance;
 			if(ltr.hittype==Trace_HitNone)muzzleclear++;
-
-
-			//top
-			linetrace(
-				testangle,barrellength,testpitch,flags:0,
-				offsetz:highheight,
-				offsetside:0,
-				data:ltt
-			);
-			disttop=ltt.distance;
-			if(ltt.hittype==Trace_HitNone)muzzleclear++;
-
-			//bottom
-			linetrace(
-				testangle,barrellength,testpitch,flags:0,
-				offsetz:lowheight,
-				offsetside:0,
-				data:ltb
-			);
-			distbottom=ltb.distance;
-			if(ltb.hittype==Trace_HitNone)muzzleclear++;
 
 
 			//totally caught
