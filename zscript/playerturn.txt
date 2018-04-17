@@ -8,13 +8,14 @@ extend class HDPlayerPawn{
 	vector2 muzzleclimb4;
 	vector2 muzzledrift;
 	bool muzzlehit;
-	int totallyblocked;
+	bool totallyblocked;
 
 	void TurnCheck(){
 		//get input based on previous angle
 		//do NOT use input because that breaks recoil
 		double yaw=deltaangle(lastangle,angle);
 		double ptch=deltaangle(lastpitch,pitch);
+		double vdv=vel dot vel;
 
 		//reduced turning while supported.
 		if(
@@ -158,6 +159,11 @@ extend class HDPlayerPawn{
 			notnull=false;
 		}
 
+		//better anticipation
+		if(vdv>0.25){
+			barrelwidth*=clamp(vdv*10,0,2.6);
+		}
+
 		//inertia adjustments for other things
 		if(stunned){
 			amt=max(17,amt);
@@ -168,7 +174,7 @@ extend class HDPlayerPawn{
 		}
 		if(notnull&&countinv("WeaponBusy")){
 			barrellength=radius+2;
-			barrelwidth=2;
+			barrelwidth*=2;
 			amt=min(amt*1.5,20);
 		}
 
@@ -308,13 +314,12 @@ extend class HDPlayerPawn{
 
 
 			//totally caught
-			if(muzzleclear>2)totallyblocked=0;
-			else if(!muzzleclear)totallyblocked++;
+			totallyblocked=(!muzzleclear);
 
 
 			//set angles
-			bool mvng=(lastheight!=height || vel dot vel > 0.25);
-			double mvng2=vel dot vel*0.001;
+			bool mvng=(lastheight!=height || vdv > 0.25);
+			double mvng2=vdv*0.001;
 			bool hitsnd=(max(abs(anglechange),abs(pitchchange))>1);
 
 //A_Log(string.format("%i %i %i %i",distleft,distright,disttop,distbottom));
