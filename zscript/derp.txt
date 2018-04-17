@@ -150,16 +150,20 @@ class DERPBot:HDUPK{
 	int stucktier;
 	vector2 stuckpoint;
 	void A_DerpStuck(){
-		if(!stuckline){
-			bnogravity=false;
-			setstatelabel("unstuck");
-			return;
-		}
 		setz(
 			stucktier==1?stuckbacksector.ceilingplane.zatpoint(stuckpoint)+stuckheight:
 			stucktier==-1?stuckbacksector.floorplane.zatpoint(stuckpoint)+stuckheight:
 			stuckheight
 		);
+		if(
+			!stuckline
+			||ceilingz<pos.z
+			||floorz>pos.z
+		){
+			stuckline=null;
+			setstatelabel("unstucknow");
+			return;
+		}
 	}
 
 	override void postbeginplay(){
@@ -180,13 +184,31 @@ class DERPBot:HDUPK{
 		DERP A 1 A_DerpStuck();
 		wait;
 	unstuck:
+		DERP A 2 A_JumpIf(!stuckline,"unstucknow");
+		DERP A 4 A_PlaySound("derp/crawl",6);
+	unstucknow:
+		DERP A 2 A_PlaySound("weapons/bigcrack",4);
 		DERP A 10{
+			if(stuckline){
+				bool exiting=
+					stuckline.special==Exit_Normal
+					||stuckline.special==Exit_Secret;
+				if(
+					!exiting||!master||(
+						checksight(master)
+						&&distance3d(master)<128
+					)
+				){
+					stuckline.activate(master,0,SPAC_Use);
+					if(exiting&&master)master.A_GiveInventory("DERPUsable",1);
+				}
+			}
+			stuckline=null;
 			spawn("FragPuff",pos);
 			bnogravity=false;
+			bsolid=true;
 			A_ChangeVelocity(3,0,2,CVF_RELATIVE);
-			A_PlaySound("weapons/bigcrack",4);
 			A_PlaySound("misc/fragknock",5);
-			A_PlaySound("derp/crawl",6);
 		}goto spawn2;
 	give:
 		DERP A 0{
@@ -448,6 +470,7 @@ extend class HDHandlers{
 				return;
 			}
 			let ddd=DERPBot(ppp.spawn("DERPBot",dlt.hitlocation-dlt.hitdir*4));
+			ddd.bsolid=false;
 			if(!ddd){
 				ppp.A_Log(string.format("\cd[DERP]  \cuCan't deploy here."),true);
 				return;
@@ -534,19 +557,7 @@ extend class HDHandlers{
 				}else if(
 					cmd==556&&derp.stuckline
 				){
-					bool exiting=
-						derp.stuckline.special==Exit_Normal
-						||derp.stuckline.special==Exit_Secret;
-					if(
-						!exiting||(
-							derp.checksight(ppp)
-							&&derp.distance3d(ppp)<128
-						)
-					){
-						derp.stuckline.activate(ppp,0,SPAC_Use);
-						if(exiting)ppp.A_GiveInventory("DERPUsable",1);
-					}
-					derp.stuckline=null;
+					derp.setstatelabel("unstuck");
 				}else if(cmd==123){
 					int ammo=derp.ammo;
 					ppp.A_Log(string.format("\cd[DERP] \cjtag #\cx%i \cjreporting in at [\cx%i\cj,\cx%i\cj] with %s",derp.botid,derp.pos.x,derp.pos.y,ammo?string.format("\cy%i\cj bullets left!",derp.ammo):"\crno ammo left!\cj Help!"),true);
