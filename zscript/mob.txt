@@ -104,30 +104,24 @@ struct HDMobAI play{
 
 	//check if shot is clear
 	//hdmobai.tryshoot(self,pradius:6,pheight:6)
-	static bool TryShootPuffCheck(
+	static bool TryShootAcceptableVictim(
 		actor caller,
-		actor puff,
 		actor victim,
 		actor target,
-		double blastradius,
 		double error
 	){
 		return(
-			victim!=target
-			&&(
-				!victim
-				||(
-					(
-						!victim.bshootable
-						||caller.isfriend(victim)
-					)&&(
-						caller.absangle(caller.angleto(victim),
-							caller.angleto(target))>error  
-					)
+			victim==target
+			||(
+				victim&&
+				(
+					!victim.bshootable
+					||!(caller.isfriend(victim))
+				)&&(
+					caller.absangle(caller.angleto(victim),
+						caller.angleto(target)
+					)>error
 				)
-			)&&(
-				!blastradius
-				||target.distance3d(puff)>blastradius  
 			)
 		);
 	}
@@ -137,7 +131,6 @@ struct HDMobAI play{
 		double range=256,
 		double pradius=0,
 		double pheight=0,
-		double blastradius=0,
 		double error=1,
 		actor target=null
 	){
@@ -145,42 +138,62 @@ struct HDMobAI play{
 		if(!target)return false;
 		if(shootheight<0)shootheight=caller.height-6;
 
-		actor a=null;int b;
-		double bottomdist=range;double topdist=range;
-		double leftdist=range;double rightdist=range;
-		double fullrange=range;
+		flinetracedata flt;
 
 		//bottom centre - always done
-		[a,b]=caller.LineAttack(caller.angle,range,caller.pitch,0,"none",
-			"TryShootPuff",flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ,
-			offsetz:shootheight
+		caller.linetrace(
+			caller.angle,range,caller.pitch,flags:0,
+			offsetz:shootheight,
+			offsetside:0,
+			data:flt
 		);
-		if(a&&TryShootPuffCheck(caller,a,a.tracer,target,blastradius,error))return false;
+		if(
+			flt.hittype!=Trace_HitNone
+			&&!TryShootAcceptableVictim(caller,flt.hitactor,target,error)
+		)return false;
 
 		//get zoffset for top shot
 		shootheight+=pheight;
 
 		//top centre
-		[a,b]=caller.LineAttack(caller.angle,range,caller.pitch,0,"none",
-			"TryShootPuff",flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ,
-			offsetz:shootheight
-		);
-		if(a&&TryShootPuffCheck(caller,a,a.tracer,target,blastradius,error))return false;
+		if(pheight){
+			caller.linetrace(
+				caller.angle,range,caller.pitch,flags:0,
+				offsetz:shootheight,
+				offsetside:0,
+				data:flt
+			);
+			if(
+				flt.hittype!=Trace_HitNone
+				&&!TryShootAcceptableVictim(caller,flt.hitactor,target,error)
+			)return false;
+		}
 
 		//get zoffset for side shots
+		if(!pradius)return true;
 		shootheight-=pheight*0.5;
 
 		//left and right
-		[a,b]=caller.LineAttack(caller.angle,range,caller.pitch,0,"none",
-			"TryShootPuff",flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ,
-			offsetz:shootheight,offsetside:-pradius
+		caller.linetrace(
+			caller.angle,range,caller.pitch,flags:0,
+			offsetz:shootheight,
+			offsetside:-pradius,
+			data:flt
 		);
-		if(a&&TryShootPuffCheck(caller,a,a.tracer,target,blastradius,error))return false;
-		[a,b]=caller.LineAttack(caller.angle,range,caller.pitch,0,"none",
-			"TryShootPuff",flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ,
-			offsetz:shootheight,offsetside:pradius
+		if(
+			flt.hittype!=Trace_HitNone
+			&&!TryShootAcceptableVictim(caller,flt.hitactor,target,error)
+		)return false;
+		caller.linetrace(
+			caller.angle,range,caller.pitch,flags:0,
+			offsetz:shootheight,
+			offsetside:pradius,
+			data:flt
 		);
-		if(a&&TryShootPuffCheck(caller,a,a.tracer,target,blastradius,error))return false;
+		if(
+			flt.hittype!=Trace_HitNone
+			&&!TryShootAcceptableVictim(caller,flt.hitactor,target,error)
+		)return false;
 
 		//if none of the checks fail
 		return true;
