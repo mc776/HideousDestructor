@@ -8,7 +8,7 @@ extend class HDPlayerPawn{
 	vector2 muzzleclimb4;
 	vector2 muzzledrift;
 	bool muzzlehit;
-	bool totallyblocked;
+	int totallyblocked;
 
 	void TurnCheck(){
 		//get input based on previous angle
@@ -308,7 +308,8 @@ extend class HDPlayerPawn{
 
 
 			//totally caught
-			totallyblocked=(!muzzleclear);
+			if(muzzleclear>2)totallyblocked=0;
+			else if(!muzzleclear)totallyblocked++;
 
 
 			//set angles
@@ -329,10 +330,10 @@ extend class HDPlayerPawn{
 				}
 	
 				if(disttop<barrellength){
-					pitchchange=mvng?min((disttop-barrellength)*2,-4):0;
+					pitchchange=mvng?min(disttop-barrellength,-4):0;
 				}
 				if(distbottom<barrellength){
-					pitchchange=mvng?max((barrellength-distbottom)*2,4):0;
+					pitchchange=mvng?max(barrellength-distbottom,4):0;
 				}
 				pitchchange=clamp(pitchchange,-45,45);
 
