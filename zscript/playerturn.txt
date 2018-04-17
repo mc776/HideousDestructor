@@ -241,90 +241,95 @@ extend class HDPlayerPawn{
 		//weapon collision
 		if(!(player.cheats&CF_NOCLIP2 || player.cheats&CF_NOCLIP)){
 			double highheight=height-6;
-			double midheight=highheight-barreldepth*0.5;
+			double midheight=highheight-max(1,barreldepth)*0.5;
 			double lowheight=highheight-max(1,barreldepth);
 
 			//and now uh do stuff
 			vector3 barrelbase=pos+(0,0,midheight);
 			actor muzpuf;
 			int stuff;
-			int muzhit=0;
+			int muzzleclear=0;
 
 			double distleft=barrellength;;
 			double distright=barrellength;;
 			double disttop=barrellength;
 			double distbottom=barrellength;
 
+			flinetracedata ltl;
+			flinetracedata ltr;
+			flinetracedata ltt;
+			flinetracedata ltb;
+			double testangle=lastangle+anglechange;
+			double testpitch=lastpitch+pitchchange;
+
 			//left
-			[muzpuf,stuff]=LineAttack(lastangle+anglechange,barrellength,
-				lastpitch+pitchchange,0,"none",
-				"MuzzleBlockerPuff",flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ,
-				offsetz:midheight,offsetside:-barrelwidth
+			linetrace(
+				testangle,barrellength,testpitch,flags:0,
+				offsetz:midheight,
+				offsetside:-barrelwidth,
+				data:ltl
 			);
-			if(muzpuf){
-				distleft=(levellocals.vec3diff(muzpuf.pos,barrelbase).length());
-				muzpuf.destroy();
-			}else muzhit++;
+			distleft=ltl.distance;
+			if(ltl.hittype==Trace_HitNone)muzzleclear++;
+
 			//right
-			[muzpuf,stuff]=LineAttack(lastangle+anglechange,barrellength,
-				lastpitch+pitchchange,0,"none",
-				"MuzzleBlockerPuff",flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ,
-				offsetz:midheight,offsetside:+barrelwidth
+			linetrace(
+				testangle,barrellength,testpitch,flags:0,
+				offsetz:midheight,
+				offsetside:barrelwidth,
+				data:ltr
 			);
-			if(muzpuf){
-				distright=(levellocals.vec3diff(muzpuf.pos,barrelbase).length());
-				muzpuf.destroy();
-			}else muzhit++;
+			distright=ltr.distance;
+			if(ltr.hittype==Trace_HitNone)muzzleclear++;
+
 
 			//top
-			[muzpuf,stuff]=LineAttack(lastangle+anglechange,barrellength,
-				lastpitch+pitchchange,0,"none",
-				"MuzzleBlockerPuff",flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ,
-				offsetz:highheight,offsetside:0
+			linetrace(
+				testangle,barrellength,testpitch,flags:0,
+				offsetz:highheight,
+				offsetside:0,
+				data:ltt
 			);
-			if(muzpuf){
-				disttop=(levellocals.vec3diff(muzpuf.pos,barrelbase).length());
-				muzpuf.destroy();
-			}else muzhit++;
+			disttop=ltt.distance;
+			if(ltt.hittype==Trace_HitNone)muzzleclear++;
+
 			//bottom
-			[muzpuf,stuff]=LineAttack(lastangle+anglechange,barrellength,
-				lastpitch+pitchchange,0,"none",
-				"MuzzleBlockerPuff",flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ,
-				offsetz:lowheight,offsetside:0
+			linetrace(
+				testangle,barrellength,testpitch,flags:0,
+				offsetz:lowheight,
+				offsetside:0,
+				data:ltb
 			);
-			if(muzpuf){
-				distbottom=(levellocals.vec3diff(muzpuf.pos,barrelbase).length());
-				muzpuf.destroy();
-			}else muzhit++;
+			distbottom=ltb.distance;
+			if(ltb.hittype==Trace_HitNone)muzzleclear++;
 
 
 			//totally caught
-			if(!muzhit)totallyblocked=true;
-			else totallyblocked=false;
+			totallyblocked=(!muzzleclear);
 
 
 			//set angles
-			bool mvng;if(lastheight!=height || vel dot vel < 0.25)mvng=true;
-			bool hitsnd;
-			if(max(abs(anglechange),abs(pitchchange))>1)hitsnd=true;  
+			bool mvng=(lastheight!=height || vel dot vel > 0.25);
+			double mvng2=vel dot vel*0.001;
+			bool hitsnd=(max(abs(anglechange),abs(pitchchange))>1);
 
 //A_Log(string.format("%i %i %i %i",distleft,distright,disttop,distbottom));
 
 			if(notnull){
 				if(distleft<barrellength){
-					anglechange=max(distleft-barrellength,mvng?0:-4);
+					anglechange=mvng?min(distleft-barrellength,-12):0;
 					A_ChangeVelocity(0,-0.05,0,CVF_RELATIVE);
 				}
 				if(distright<barrellength){
-					anglechange=min(barrellength-distright,mvng?0:4);
+					anglechange=mvng?max(barrellength-distleft,12):0;
 					A_ChangeVelocity(0,0.05,0,CVF_RELATIVE);
 				}
 	
 				if(disttop<barrellength){
-					pitchchange=max(distbottom-barrellength,mvng?0:-4);
+					pitchchange=mvng?min(disttop-barrellength,-12):0;
 				}
 				if(distbottom<barrellength){
-					pitchchange=min(barrellength-disttop,mvng?0:4);
+					pitchchange=mvng?max(barrellength-distbottom,12):0;
 				}
 				pitchchange=clamp(pitchchange,-45,45);
 
@@ -338,7 +343,7 @@ extend class HDPlayerPawn{
 
 
 			//bump
-			if(muzhit>=4){  
+			if(muzzleclear>=4){  
 				muzzlehit=false;
 			}else if(!muzzlehit){
 				if(hitsnd)A_PlaySound("weapons/rifleclick2",CHAN_AUTO,0.6);
