@@ -105,151 +105,149 @@ class GumAndString:IdleDummy{
 	vector3 ddd;int bbb;float ii;
 	sector stuckto;
 	double stucktoheight;
-	bool stuckfloor;
+	int stucktier;
 	default{
 		+spriteangle
 		spriteangle 0;
 		scale 0.1;translation 2;
 		radius 0.5;height 0.5;
 	}
+	void GumTicker(){
+		if(
+			!tracer&&
+			(trapisset||!master||master.health<1)
+		){
+			destroy();
+			return;
+		}
+
+		//if gone into floor or ceiling, abort
+		if(floorz>pos.z||ceilingz<pos.z){    
+			ForceAbort();
+			return;
+		}
+
+		//check for the actual thing
+		if(tracer)A_FaceTracer(0,0,flags:FAF_TOP,-1);
+		else if(master)A_FaceMaster(0,0,flags:FAF_TOP,-1);
+		flinetracedata wirecheck;
+		linetrace(
+			angle,512,pitch,flags:0,
+			offsetz:0,
+			offsetside:0,
+			data:wirecheck
+		);
+		bool carefulplayer=false;
+		let atpl=HDPlayerPawn(wirecheck.hitactor);
+		if(
+			atpl && atpl!=master && atpl.runwalksprint<0
+			&& wirecheck.hitlocation.z-atpl.pos.z<24
+			&& max(abs(atpl.vel.x),abs(atpl.vel.y),abs(atpl.vel.z))<5
+		){
+			carefulplayer=true;
+			atpl.stunned=max(atpl.stunned,10);
+		}
+
+		actor wiretripper=wirecheck.hitactor;
+		if(!master && !carefulplayer && wiretripper && wiretripper!=tracer){
+			vector3 vvv;
+			vvv=wiretripper.vel*0.5;
+			PullPin(vvv.x,vvv.y,vvv.z);
+			return;
+		}
+		else if(tracer && wiretripper==tracer)master=null;
+
+		if(
+			!wiretripper
+			||(tracer && wiretripper==master)
+			||(!tracer && wiretripper!=master)
+		){
+			ForceAbort();
+			return;
+		}
+
+
+		//draw a line of particles
+		if(!tracer && !master)return;
+
+		//set all the numbers
+		if(!trapisset){
+			if(tracer)ddd=tracer.pos+(0,0,4);
+			else ddd=master.pos+(0,0,master.height-8);
+
+			ddd-=pos;
+			stringlength=max(ddd.length(),1);
+			bbb=stringlength*0.3;
+			ddd/=bbb;
+
+			ii=min(bbb,40)*0.0001;
+
+			if(tracer && !master)trapisset=true;
+		}else if(tracer && (tracer.pos+(0,0,4)-pos).length()>stringlength+1){
+			PullPin();
+			return;
+		}
+
+		vector3 ccc;
+		for(int i=0;i<bbb;i++){
+			ccc=ddd*i*frandom(1-ii,1+ii);
+			A_SpawnParticle(
+				"white",
+				lifetime:1,size:0.5,
+				xoff:ccc.x,yoff:ccc.y,zoff:ccc.z,
+				startalphaf:0.8
+			);
+		}
+
+		//set height
+		//centerfloor works, as long as dynamic slope alterations don't.
+		//if those do, see how the DERP does it.
+		switch(stucktier){
+		case 1:
+			setz(stuckto.centerceiling()+stucktoheight);break;
+		case -1:
+			setz(stuckto.centerfloor()+stucktoheight);break;
+		default:
+			break;
+		}
+	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		trapisset=false;
 		stucktoheight=0;
+		stucktier=0;
 
 		//and now to find some shit
 		fcheckposition tm;
 		checkmove(pos.xy+angletovector(angle,5),PCM_NOACTORS,tm);
 
-		if(master&&
-			//checkmove reveals this is stuck to an upper or lower texture
-			(
-				tm.floorz>tm.pos.z  
-				||tm.ceilingz<tm.pos.z+height
-			)
-		){
-			if(tm.floorz>tm.pos.z)stuckto=tm.floorsector;  
-				else stuckto=tm.ceilingsector;
-			if(pos.z<stuckto.centerceiling()){
-				stuckfloor=true;
-				stucktoheight=stuckto.centerfloor()-pos.z;
-			}else{
-				stuckfloor=false;
-				stucktoheight=pos.z-stuckto.centerceiling();
+		flinetracedata flt;
+		linetrace(angle,1,pitch,flags:TRF_THRUACTORS,data:flt);
+		sector othersector=hdmath.oppositesector(flt.hitline,flt.hitsector);
+
+		if(othersector){
+			stuckto=othersector;
+			double otherfloorz=othersector.floorplane.zatpoint(flt.hitlocation.xy+flt.hitdir.xy);
+			double otherceilingz=othersector.ceilingplane.zatpoint(flt.hitlocation.xy+flt.hitdir.xy);
+			if(otherfloorz>flt.hitlocation.z){
+				stucktier=-1;
+				stucktoheight=flt.hitlocation.z-othersector.centerfloor();
+			}else if(otherceilingz<flt.hitlocation.z){
+				stucktier=1;
+				stucktoheight=flt.hitlocation.z-othersector.centerceiling();
 			}
-//			if(hd_debug)A_LogInt(stucktoheight);
-		}else{
-			//check to see if on floor or ceiling of its own sector
-			int spaceabove=ceilingz-pos.z;
-			int spacebelow=pos.z-floorz;
-			if(spaceabove>spacebelow){    
-				//stuck to floor
-				brelativetofloor=true;
-			}else{
-				//err in favour of stuck to ceiling
-				bceilinghugger=true;
-			}
+		}else if(flt.hittype==Trace_HitFloor){
+			brelativetofloor=true;
+			bmovewithsector=true;
+		}else if(flt.hittype==Trace_HitCeiling){
+			bceilinghugger=true;
 			bmovewithsector=true;
 		}
 	}
 	states{
 	spawn:
-		BAL7 A 1 nodelay{
-			if(
-				!tracer&&
-				(trapisset||!master||master.health<1)
-			){
-				destroy();
-				return;
-			}
-
-			//if gone into floor or ceiling, abort
-			if(floorz>pos.z||ceilingz<pos.z){    
-				ForceAbort();
-				return;
-			}
-
-			//check for the actual thing
-			if(tracer)A_FaceTracer(0,0,flags:FAF_TOP,-1);
-			else if(master)A_FaceMaster(0,0,flags:FAF_TOP,-1);
-			flinetracedata wirecheck;
-			linetrace(
-				angle,512,pitch,flags:0,
-				offsetz:0,
-				offsetside:0,
-				data:wirecheck
-			);
-			bool carefulplayer=false;
-			let atpl=HDPlayerPawn(wirecheck.hitactor);
-			if(
-				atpl && atpl!=master && atpl.runwalksprint<0
-				&& wirecheck.hitlocation.z-atpl.pos.z<24
-				&& max(abs(atpl.vel.x),abs(atpl.vel.y),abs(atpl.vel.z))<5
-			){
-				carefulplayer=true;
-				atpl.stunned=max(atpl.stunned,10);
-			}
-
-			actor wiretripper=wirecheck.hitactor;
-			if(!master && !carefulplayer && wiretripper && wiretripper!=tracer){
-				vector3 vvv;
-				vvv=wiretripper.vel*0.5;
-				PullPin(vvv.x,vvv.y,vvv.z);
-				return;
-			}
-			else if(tracer && wiretripper==tracer)master=null;
-
-			if(
-				!wiretripper
-				||(tracer && wiretripper==master)
-				||(!tracer && wiretripper!=master)
-			){
-				ForceAbort();
-				return;
-			}
-
-
-			//draw a line of particles
-			if(!tracer && !master)return;
-
-			//set all the numbers
-			if(!trapisset){
-				if(tracer)ddd=tracer.pos+(0,0,4);
-				else ddd=master.pos+(0,0,master.height-8);
-
-				ddd-=pos;
-				stringlength=max(ddd.length(),1);
-				bbb=stringlength*0.3;
-				ddd/=bbb;
-
-				ii=min(bbb,40)*0.0001;
-
-				if(tracer && !master)trapisset=true;
-			}else if(tracer && (tracer.pos+(0,0,4)-pos).length()>stringlength+1){
-				PullPin();
-				return;
-			}
-
-			vector3 ccc;
-			for(int i=0;i<bbb;i++){
-				ccc=ddd*i*frandom(1-ii,1+ii);
-				A_SpawnParticle(
-					"white",
-					lifetime:1,size:0.5,
-					xoff:ccc.x,yoff:ccc.y,zoff:ccc.z,
-					startalphaf:0.8
-				);
-			}
-
-			//set height
-			//centerfloor works, as long as dynamic slope alterations don't.
-			//if those do, see how the DERP does it.
-			if(stuckto){
-				if(stuckfloor)setz(stuckto.centerfloor()-stucktoheight);
-				else setz(stuckto.centerceiling()+stucktoheight);
-			}
-			else if(bceilinghugger)setz(ceilingz-height);
-		}wait;
+		BAL7 A 1 nodelay GumTicker();
+		wait;
 	}
 	void PullPin(double vvx=0,double vvy=0,double vvz=0){
 		if(!tracer)return;

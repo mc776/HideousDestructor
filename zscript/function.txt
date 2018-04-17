@@ -233,6 +233,12 @@ struct HDMath{
 		while(it.Next(exact:exactmatch))count++;
 		return count;
 	}
+	//get the opposite sector of a line
+	static sector OppositeSector(line hitline,sector hitsector){
+		if(!hitline||!hitline.backsector)return null;
+		if(hitline.backsector==hitsector)return hitline.frontsector;
+		return hitline.backsector;
+	}
 	//calculate the speed at which 2 actors are moving towards each other
 	static double TowardsEachOther(actor a1, actor a2){
 		vector3 oldpos1=a1.pos;
