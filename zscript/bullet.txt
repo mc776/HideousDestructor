@@ -489,6 +489,7 @@ class HDBullet:HDActor{
 	}
 	virtual void EmergeFromImpact(vector3 emergespot){
 		setorigin(emergespot+blt.hitdir,true);
+		if(max(abs(pos.x),abs(pos.y))>=32678){destroy();return;}
 		angle+=180;pitch=-pitch;
 		A_SprayDecal("BulletChip",10);
 		A_SpawnItemEx("PenePuff",

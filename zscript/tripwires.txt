@@ -57,29 +57,34 @@ class Tripwire:HDWeapon{
 		}wait;
 	fire:
 		TNT1 A 0{
-			actor a;int b;actor aaa;
+			flinetracedata gumline;
+			linetrace(
+				angle,64,pitch,flags:0,
+				offsetz:height-8,
+				data:gumline
+			);
+			if(
+				gumline.hittype==Trace_HitNone
+				||(
+					gumline.hittype!=Trace_HitWall
+					&&gumline.hittype!=Trace_HitFloor
+					&&gumline.hittype!=Trace_HitCeiling
+				)
+			){
+				A_Log(string.format(
+					"You need to stick the %s on to something stable.",
+					invoker.gumspot?"wire":"grenade"
+				),true);
+				return;
+			}
 			if(!invoker.gumspot){
-				[a,b]=LineAttack(angle,64,pitch,0,"none",
-					"TripwirePlacerPuff",flags:LAF_NORANDOMPUFFZ
-				);
-				if(!a){
-					A_Log("You need to stick the wire on to something stable.",true);
-					return;
-				}
-				aaa=spawn("GumAndString",a.pos);
+				actor aaa=spawn("GumAndString",gumline.hitlocation-gumline.hitdir*0.6);
 				aaa.target=self;aaa.master=self;aaa.angle=angle;
 				aaa.A_PlaySound("misc/bulletflesh",CHAN_BODY);
 				invoker.gumspot=aaa;
 				A_Log("Wire end secured. Now to set the grenade...",true);
 			}else{
-				[a,b]=LineAttack(angle,64,pitch,0,"none",
-					"TripwirePlacerPuff",flags:LAF_NORANDOMPUFFZ
-				);
-				if(!a){
-					A_Log("You need to stick the grenade on to something stable.",true);
-					return;
-				}
-				aaa=spawn("TrippingFrag",a.pos);
+				actor aaa=spawn("TrippingFrag",gumline.hitlocation-gumline.hitdir*2);
 				aaa.target=self;aaa.master=self;aaa.angle=angle;
 				aaa.A_PlaySound("weapons/rifleclick2",CHAN_BODY);
 				invoker.grenade=aaa;
@@ -91,7 +96,6 @@ class Tripwire:HDWeapon{
 				A_TakeInventory("HDFragGrenadeAmmo",1,TIF_NOTAKEINFINITE);
 				invoker.gumspot=null;
 			}
-			a.destroy();
 		}goto nope;
 	}
 }
@@ -168,43 +172,40 @@ class GumAndString:IdleDummy{
 			//check for the actual thing
 			if(tracer)A_FaceTracer(0,0,flags:FAF_TOP,-1);
 			else if(master)A_FaceMaster(0,0,flags:FAF_TOP,-1);
-			actor a;int b;
-			[a,b]=LineAttack(angle,512,pitch,0,"none",
-				"TripwireCheckerPuff",
-				flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ
+			flinetracedata wirecheck;
+			linetrace(
+				angle,512,pitch,flags:0,
+				offsetz:0,
+				offsetside:0,
+				data:wirecheck
 			);
-			if(a){
-				bool carefulplayer=false;
-				let atpl=HDPlayerPawn(a.tracer);
-				if(
-					atpl && atpl!=master && atpl.runwalksprint<0
-					&& a.pos.z-atpl.pos.z<24
-					&& max(abs(atpl.vel.x),abs(atpl.vel.y),abs(atpl.vel.z))<5
-				){
-					carefulplayer=true;
-					atpl.stunned=max(atpl.stunned,10);
-				}
+			bool carefulplayer=false;
+			let atpl=HDPlayerPawn(wirecheck.hitactor);
+			if(
+				atpl && atpl!=master && atpl.runwalksprint<0
+				&& wirecheck.hitlocation.z-atpl.pos.z<24
+				&& max(abs(atpl.vel.x),abs(atpl.vel.y),abs(atpl.vel.z))<5
+			){
+				carefulplayer=true;
+				atpl.stunned=max(atpl.stunned,10);
+			}
 
-				if(!master && !carefulplayer && tracer && a.tracer!=tracer){
-					vector3 vvv;
-					if(a.tracer)vvv=a.tracer.vel*0.5;
-					PullPin(vvv.x,vvv.y,vvv.z);
-					return;
-				}
-				else if(tracer && a.tracer==tracer)master=null;
+			actor wiretripper=wirecheck.hitactor;
+			if(!master && !carefulplayer && wiretripper && wiretripper!=tracer){
+				vector3 vvv;
+				vvv=wiretripper.vel*0.5;
+				PullPin(vvv.x,vvv.y,vvv.z);
+				return;
+			}
+			else if(tracer && wiretripper==tracer)master=null;
 
-				if(
-					!a.tracer
-					||(tracer && a.tracer==master)
-					||(!tracer && a.tracer!=master)
-				){
-					ForceAbort();
-					return;
-				}
-				a.destroy();
-			}else{
+			if(
+				!wiretripper
+				||(tracer && wiretripper==master)
+				||(!tracer && wiretripper!=master)
+			){
 				ForceAbort();
-				destroy();return;
+				return;
 			}
 
 
@@ -241,6 +242,8 @@ class GumAndString:IdleDummy{
 			}
 
 			//set height
+			//centerfloor works, as long as dynamic slope alterations don't.
+			//if those do, see how the DERP does it.
 			if(stuckto){
 				if(stuckfloor)setz(stuckto.centerfloor()-stucktoheight);
 				else setz(stuckto.centerceiling()+stucktoheight);
@@ -303,13 +306,15 @@ class TrippingFrag:FragP{
 		//add a gumwad if none exists
 		if(!tracer){
 			pitch=args[0];
-			actor a;int b;
-			[a,b]=LineAttack(angle,512,pitch,0,"none",
-				"TripwirePlacerPuff",
-				flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ
+			flinetracedata gum;
+			linetrace(
+				angle,512,pitch,flags:TRF_THRUACTORS,
+				offsetz:0,
+				offsetside:0,
+				data:gum
 			);
-			if(a){
-				tracer=spawn("GumAndString",a.pos);
+			if(gum.hittype!=Trace_HitNone){
+				tracer=spawn("GumAndString",gum.hitlocation-gum.hitdir*0.4);
 				tracer.tracer=self;
 				tracer.A_Face(self,0,0);
 			}
