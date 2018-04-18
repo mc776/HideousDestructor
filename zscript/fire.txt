@@ -284,7 +284,7 @@ class Heat:Inventory{
 
 		//convert given to real
 		if(amount){
-			realamount+=amount*inversevolumeratio;
+			realamount+=amount*inversevolumeratio*(countinv("WornRadsuit")?0.1:1.);
 			amount=0;
 		}
 		//clamp number to zero
