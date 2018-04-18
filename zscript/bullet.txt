@@ -204,6 +204,9 @@ class HDBullet:HDActor{
 			else if(penetration>1)damagetype="SmallArms0";
 			else damagetype="Bashing";
 
+			if(max(abs(pos.x-hitactor.pos.x),abs(pos.y-hitactor.pos.y))<hitactor.radius*0.7)
+				damagetype="SmallArms3";
+
 			//crit?
 			bool crit;
 			if(
