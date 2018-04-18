@@ -187,7 +187,7 @@ class DERPBot:HDUPK{
 		DERP A 2 A_JumpIf(!stuckline,"unstucknow");
 		DERP A 4 A_PlaySound("derp/crawl",6);
 	unstucknow:
-		DERP A 2 A_PlaySound("weapons/bigcrack",4);
+		DERP A 2 A_PlaySound("misc/fragknock",5);
 		DERP A 10{
 			if(stuckline){
 				bool exiting=
@@ -206,9 +206,9 @@ class DERPBot:HDUPK{
 			stuckline=null;
 			spawn("FragPuff",pos);
 			bnogravity=false;
-			bsolid=true;
+//			bsolid=true;
 			A_ChangeVelocity(3,0,2,CVF_RELATIVE);
-			A_PlaySound("misc/fragknock",5);
+			A_PlaySound("weapons/bigcrack",4);
 		}goto spawn2;
 	give:
 		DERP A 0{
@@ -470,7 +470,7 @@ extend class HDHandlers{
 				return;
 			}
 			let ddd=DERPBot(ppp.spawn("DERPBot",dlt.hitlocation-dlt.hitdir*4));
-			ddd.bsolid=false;
+//			ddd.bsolid=false;
 			if(!ddd){
 				ppp.A_Log(string.format("\cd[DERP]  \cuCan't deploy here."),true);
 				return;
