@@ -213,6 +213,9 @@ extend class HDPlayerPawn{
 		+(countinv("HDArmour")?(
 			findinventory("HDArmour").meleethreshold==3?200:80
 		):0)
+		+(countinv("HDArmourWorn")?(
+			findinventory("HDArmourWorn").meleethreshold*7
+		):0)
 
 		//usables
 		+countinv("HDIEDKit")*ENC_IEDKIT
