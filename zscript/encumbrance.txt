@@ -209,12 +209,10 @@ extend class HDPlayerPawn{
 		)
 
 		//armour
+		+armourlevel*7
 		+countinv("PortableRadsuit")*ENC_RADSUIT
 		+(countinv("HDArmour")?(
 			findinventory("HDArmour").meleethreshold==3?200:80
-		):0)
-		+(countinv("HDArmourWorn")?(
-			findinventory("HDArmourWorn").meleethreshold*7
 		):0)
 
 		//usables
@@ -229,42 +227,42 @@ extend class HDPlayerPawn{
 		+countinv("DERPDEAD")*ENC_DERP
 
 		//magged ammo
-		+use9?(
+		+(use9?(
 			countinv("HDPistolAmmo")*ENC_9
 			+countinv("HDPistolMag")*ENC_9MAG
 			+countinv("HDSMGMag")*ENC_9MAG30
-		):0
-		+use776?(
+		):0)
+		+(use776?(
 			countinv("SevenMilAmmo")*ENC_776
 			+countinv("SevenMilBrass")*ENC_776B
 			+countinv("BossClip")*ENC_776CLIP
 			+countinv("LiberatorMag")*ENC_776MAG
-		):0
-		+(use776||use426)?(
+		):0)
+		+((use776||use426)?(
 			countinv("FourMilAmmo")*ENC_426
-		):0
-		+use426?(
+		):0)
+		+(use426?(
 			countinv("FourMilAmmo")*ENC_426
 			+countinv("ZM66RifleMags")*ENC_426MAG
-		):0
-		+usebattery?(
+		):0)
+		+(usebattery?(
 			countinv("HDCellAmmo")*ENC_BATTERY*0.3
 			+countinv("HDCellPacks")*ENC_BATTERY
-		):0
+		):0)
 
 		//single loose ammo
-		+use12?(
+		+(use12?(
 			countinv("HDShellAmmo")*ENC_SHELL
-		):0
-		+userocket?(
+		):0)
+		+(userocket?(
 			countinv("HDRocketAmmo")*ENC_ROCKET
-		):0
-		+usebronto?(
+		):0)
+		+(usebronto?(
 			countinv("BrontornisRound")*ENC_BRONTOSHELL
-		):0
-		+useheat?(
+		):0)
+		+(useheat?(
 			countinv("HEATAmmo")*ENC_HEATROCKET
-		):0
+		):0)
 		+countinv("HDFragGrenadeAmmo")*ENC_FRAG
 
 		//i will no longer protect you from your hoarding

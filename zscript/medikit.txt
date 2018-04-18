@@ -70,7 +70,7 @@ class HDWoundFixer:HDWeapon{
 			A_ClearRefire();
 		}goto ready;
 	deselect:
-		TNT1 A 0 A_Print("");
+		TNT1 A 0{if(player&&cvar.getcvar("hd_helptext",player).getint())A_Print(" ");}
 		goto super::deselect;
 	}
 }
