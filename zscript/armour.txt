@@ -49,13 +49,25 @@ class HDArmour:HDPickup{
 	override void actualpickup(actor other){
 		if(!other)other=picktarget;
 		if(!other)return;
+
+		int heatamount=countinv("Heat");
+		if(countinv("Heat")>50){
+			other.A_Log("Too hot to pick up!",true);
+			return;
+		}else if(heatamount){
+			other.A_GiveInventory("Heat",heatamount);
+			A_TakeInventory("Heat");
+		}
+
 		if(other.countinv("HDArmour")){
 			if(other.countinv("HDArmourWorn")||other.countinv("WornRadsuit"))return;
+			HDF.TransferFire(self,other);
 			attachtoowner(other);
 			other.UseInventory(self);
 		}
 
 		if(trypickup(other)){
+			HDF.TransferFire(self,other);
 			other.A_PlaySound(pickupsound,CHAN_AUTO);
 			other.A_Log(string.format("\cg%s",pickupmessage()),true);
 		}
@@ -91,6 +103,7 @@ class HDArmour:HDPickup{
 					A_PlaySound("misc/p_pkup",6);
 					A_TakeInventory("SpiritualArmour");
 				}
+
 				A_SetBlend("00 00 00",1,6,"00 00 00");
 				A_PlaySound("weapons/pocket");
 				A_ChangeVelocity(0,0,2);
@@ -140,6 +153,13 @@ class HDArmourWorn:HDArmour{
 			iiii.vel+=owner.vel;
 			iiii.meleethreshold=meleethreshold;
 			iiii.master=owner;
+
+			int heatamount=owner.countinv("Heat")/2;
+			if(heatamount){
+				owner.A_TakeInventory("Heat",heatamount);
+				iiii.A_GiveInventory("Heat",heatamount);
+				
+			}
 			HDF.TransferFire(owner,iiii);
 
 			self.amount=0;
