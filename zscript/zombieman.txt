@@ -4,7 +4,7 @@
 
 /*
 	SPECIAL NOTE FOR MAPPERS
-	You can customize individual zombies using arg[0].
+	You can customize individual zombies using user_weapon.
 	1=ZM66 regular; 2=ZM66 marksman; 3=SMG
 */
 
@@ -26,12 +26,13 @@ class ZombieStormtrooper:ZombieMan{
 	}
 	double spread;
 	double turnamount;
+	int user_weapon;
 	int mag;
 	int firemode; //-2 SMG; -1 semi only; 0 semi; 1 auto; 2+ burst
 	bool hasdropped;
 	override void postbeginplay(){
 		super.postbeginplay();
-		if(args[0])accuracy=args[0];
+		if(user_weapon)accuracy=user_weapon;
 		if(accuracy==1)firemode=random(0,5);
 		else if(accuracy==2)firemode=-1;
 		else if(accuracy==3)firemode=-2;

@@ -275,13 +275,14 @@ class TrippingFrag:FragP{
 	sector stuckto;
 	double stucktoheight;
 	int stucktier;
+	int user_pitch;
 	default{
 		//$Category "Misc/Hideous Destructor/Traps"
 		//$Title "Tripwire Grenade"
 		//$Sprite "FRAGA0"
 
 		// SPECIAL MAPPING NOTE
-		// Args[0] sets the pitch!
+		// user_pitch sets the starting pitch!
 
 		+nogravity +shootable +noblood +nodamage +notargetswitch
 		health int.MAX;painchance 256; mass 10;
@@ -300,7 +301,7 @@ class TrippingFrag:FragP{
 
 		//add a gumwad if none exists
 		if(!tracer){
-			pitch=args[0];
+			pitch=user_pitch;
 			flinetracedata gum;
 			linetrace(
 				angle,512,pitch,flags:TRF_THRUACTORS,

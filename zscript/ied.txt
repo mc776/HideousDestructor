@@ -3,7 +3,7 @@
 //-------------------------------------------------
 /*
 	SPECIAL NOTE FOR MAPPERS
-	Setting args[0] to -1 will disable targeting.
+	Setting user_startmode to -1 will disable targeting.
 */
 enum HDIEDConst{
 	HDIED_TID=8495,
@@ -56,6 +56,7 @@ class HDEnemyIED:HDIED{
 }
 class HDIED:DudRocket{
 	int botid;
+	int user_startmode;
 	default{
 		//$Category "Misc/Hideous Destructor/Traps"
 		//$Title "Friendly IED"
@@ -91,7 +92,7 @@ class HDIED:DudRocket{
 					),true
 				);
 			}
-		}else bmissilemore=args[0]>-1; //map-placed should be seeking
+		}else bmissilemore=user_startmode>-1; //map-placed should be seeking
 	}
 	states{
 	spawn:
