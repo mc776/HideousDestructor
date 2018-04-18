@@ -8,7 +8,7 @@ extend class HDWeapon{
 		let ggg=gyrogrenade(spawn("GyroGrenade",pos+(0,0,height-8)));
 		ggg.angle=angle;ggg.pitch=pitch-2;ggg.target=self;ggg.master=self;
 		ggg.primed=false;
-		ggg.fuze=invoker.airburst;
+		if(invoker.airburst)ggg.airburst=max(15,abs(invoker.airburst))*HDCONST_ONEMETRE;
 		invoker.airburst=0;
 	}
 }
@@ -24,7 +24,7 @@ extend class HDHandlers{
 	}
 }
 class GyroGrenade:SlowProjectile{
-	int fuze;bool primed;bool isrocket;
+	bool primed;bool isrocket;
 	default{
 		-noextremedeath -noteleport +bloodlessimpact
 		height 2; radius 2; scale 0.5;
@@ -84,10 +84,8 @@ class GyroGrenade:SlowProjectile{
 			primed=true;
 		}
 	spawn2:
-		#### AB 1{
-			fuze--;
-			if(!fuze)ExplodeSlowMissile();
-		}loop;
+		#### AB 1;
+		loop;
 	spawnrocket:
 		---- A 0{
 			brockettrail=true;
@@ -111,8 +109,6 @@ class GyroGrenade:SlowProjectile{
 				);
 				stamina--;
 			}
-			fuze--;
-			if(!fuze)ExplodeSlowMissile();
 		}
 		---- A 0{
 			if(primed){

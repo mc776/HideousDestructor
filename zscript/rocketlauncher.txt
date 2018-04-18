@@ -97,9 +97,8 @@ class HDRL:HDWeapon{
 				rkt.isrocket=true;
 				if(
 					chm==1
-					&&invoker.airburst>0
-				)rkt.fuze=max(2,invoker.airburst); //airburst 1 is a bad idea
-					else rkt.fuze=0;
+					&&invoker.airburst
+				)rkt.airburst=max(30,abs(invoker.airburst))*HDCONST_ONEMETRE;
 				invoker.airburst=0;
 				invoker.weaponstatus[RLS_CHAMBER]=0;
 				A_PlaySound("weapons/rockignite",CHAN_AUTO);

@@ -10,6 +10,8 @@ class SlowProjectile:HDBullet{
 		woundhealth: extra damage other than raw impact.
 	*/
 	double divrad;
+	double distancetravelled;
+	int airburst;
 	default{
 		+bloodlessimpact -noteleport +forcexybillboard
 //		missiletype "BulletTail"; //testing and random eye candy
@@ -25,6 +27,7 @@ class SlowProjectile:HDBullet{
 		Gunsmoke();
 		divrad=radius*1.9;
 		if(target)master=target;
+		distancetravelled=0;
 	}
 	override void Tick(){
 		if(globalfreeze||level.Frozen) return;
@@ -53,6 +56,7 @@ class SlowProjectile:HDBullet{
 
 		int count=max(2,speed*divrad);
 		vector3 frac=vel/count;
+		double speedfrac=speed/count;
 		for(int i=0;i<count;i++){
 			if(inthesky){
 				setorigin(pos+frac-(0,0,frac.z),true);
@@ -126,6 +130,13 @@ class SlowProjectile:HDBullet{
 			){
 				actor tr=spawn(missilename,pos,ALLOW_REPLACE);
 				tr.vel=vel*0.4;
+			}
+
+			//track distance travelled
+			distancetravelled+=speedfrac;
+			if(airburst&&distancetravelled>airburst){
+				ExplodeSlowMissile();
+				return;
 			}
 		}
 		//bullet drop again, updating the actual velocity
