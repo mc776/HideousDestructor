@@ -454,9 +454,8 @@ class HDPlayerPawn:PlayerPawn{
 				&&beatmax>10
 			){
 				bool kicked=false;
-				actor k=spawn("fastprojectile",pos);
+				actor k=spawn("kickchecker",pos);
 				k.angle=angle;k.target=self;
-				k.A_SetSize(6,10);
 				vector2 kv=AngleToVector(angle,5);
 				for(int i=7;i;i--){
 					if(!k.TryMove(k.pos.xy+kv,true) && k.blockingmobj){
@@ -613,5 +612,12 @@ extend class HDPlayerPawn{
 
 		A_GiveInventory("PowerFrightener",1);
 		ConsolidateAmmo();
+	}
+}
+class kickchecker:actor{
+	default{
+		projectile;
+		radius 6;height 10;
+		+thrughost
 	}
 }

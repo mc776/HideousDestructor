@@ -125,6 +125,9 @@ class YokaiSpawner:HDActor{
 	}
 	states{
 	spawn:
+		TNT1 A 0 nodelay A_JumpIf(!sv_nomonsters,"spawn2");
+		stop;
+	spawn2:
 		TNT1 A 10 A_Look();
 		loop;
 	see:
