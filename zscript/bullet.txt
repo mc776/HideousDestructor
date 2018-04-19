@@ -208,20 +208,25 @@ class HDBullet:HDActor{
 				damagetype="SmallArms3";
 
 			//crit?
-			bool crit;
+			bool crit=false;
+			bool rico=false;
+			double hitangle=absangle(angleto(hitactor),angle);
 			if(
 				abs(
 					(hitactor.pos.z+hitactor.height*0.6)-
 					(blt.hitlocation.z+blt.hitdir.z*hitactor.radius)
 				)<hitactor.height*0.2
 				&&
-				absangle(
-					angleto(hitactor),
-					angle
-				)<12.
+				hitangle<12.
 			){
 				if(hd_debug)A_Log("CRIT!");
 				crit=true;
+			}else if(hitangle>frandom(40,120)){
+				throughthis=hitactor;
+				angle+=frandom(-90,90);pitch+=frandom(-90,90);
+				speed*=frandom(0.8,0.99);
+				damagetype="Bashing";
+				A_ChangeVelocity(cos(pitch)*speed,0,sin(pitch)*-speed,CVF_RELATIVE);
 			}
 
 			//pierce?
@@ -234,7 +239,8 @@ class HDBullet:HDActor{
 				);
 			}
 			netpenetration=min(0.9999,netpenetration/hitresistance);
-			if(netpenetration>0.5){
+			if(rico)pierce=false;
+			else if(netpenetration>0.5){
 				throughthis=hitactor;
 				pierce=true;
 			}else if(netpenetration>0.2){
