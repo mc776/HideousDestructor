@@ -204,12 +204,8 @@ class HDBullet:HDActor{
 			else if(penetration>1)damagetype="SmallArms0";
 			else damagetype="Bashing";
 
-			if(max(abs(pos.x-hitactor.pos.x),abs(pos.y-hitactor.pos.y))<hitactor.radius*0.7)
-				damagetype="SmallArms3";
-
 			//crit?
 			bool crit=false;
-			bool rico=false;
 			double hitangle=absangle(angleto(hitactor),angle);
 			if(
 				abs(
@@ -221,12 +217,6 @@ class HDBullet:HDActor{
 			){
 				if(hd_debug)A_Log("CRIT!");
 				crit=true;
-			}else if(hitangle>frandom(40,120)){
-				throughthis=hitactor;
-				angle+=frandom(-90,90);pitch+=frandom(-90,90);
-				speed*=frandom(0.8,0.99);
-				damagetype="Bashing";
-				A_ChangeVelocity(cos(pitch)*speed,0,sin(pitch)*-speed,CVF_RELATIVE);
 			}
 
 			//pierce?
@@ -239,8 +229,15 @@ class HDBullet:HDActor{
 				);
 			}
 			netpenetration=min(0.9999,netpenetration/hitresistance);
-			if(rico)pierce=false;
-			else if(netpenetration>0.5){
+			if(hitangle>40+frandom(30,100)*netpenetration){
+				pierce=false;
+				crit=false;
+				throughthis=hitactor;
+				angle+=frandom(-90,90);pitch+=frandom(-90,90);
+				damagetype="Bashing";
+				A_ChangeVelocity(cos(pitch)*speed,0,sin(pitch)*-speed,CVF_RELATIVE);
+				if(hd_debug)A_Log("Ricochet!");
+			}else if(netpenetration>0.5){
 				throughthis=hitactor;
 				pierce=true;
 			}else if(netpenetration>0.2){
@@ -253,7 +250,7 @@ class HDBullet:HDActor{
 			int maxdmg=dmg+woundhealth;
 			if(pierce){
 				dmg*=2;
-				maxdmg+=woundhealth*3;
+				maxdmg+=woundhealth*5;
 			}
 			if(crit){
 				if(pierce){
