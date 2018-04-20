@@ -288,12 +288,6 @@ struct HDMobAI play{
 
 		double speedbak=caller.speed;
 		if(caller.bfrightened)caller.speed*=2;
-		bool membak=caller.bmissileevenmore;
-		bool mmbak=caller.bmissilemore;
-
-		//HD shouldn't bother with this distance dropoff
-		caller.bmissileevenmore=true;
-		caller.bmissilemore=true;
 
 		//chase the goal and record the resulting position
 		if(attacktarget){
@@ -302,14 +296,13 @@ struct HDMobAI play{
 				(res?CHF_RESURRECT:0)
 			);
 
-			//super aggro
+			//HD shouldn't bother with this distance dropoff
+			bool membak=caller.bmissileevenmore;
+			bool mmbak=caller.bmissilemore;
 			int mmc=caller.minmissilechance;
-			if(
-				!caller.bfrightened
-				&&(deathmatch||skill>=5)
-			){
-				caller.minmissilechance=1;
-			}
+			caller.bmissileevenmore=true;
+			caller.bmissilemore=true;
+			mmc/=4;
 
 			//call A_Chase again
 			bool cg=caller.bchasegoal;
@@ -320,7 +313,13 @@ struct HDMobAI play{
 			);
 			caller.bchasegoal=cg;
 			caller.minmissilechance=mmc;
-		}else caller.A_Wander();
+
+			caller.bmissileevenmore=membak;
+			caller.bmissilemore=mmbak;
+		}else{
+			caller.A_Wander();
+			caller.A_Look();
+		}
 		vector3 pp=caller.pos;
 
 		//don't spin so dang fast
@@ -352,8 +351,6 @@ struct HDMobAI play{
 		//reset things
 		caller.bfrightened=fraid;
 		caller.speed=getdefaultbytype(caller.getclass()).speed;
-		caller.bmissileevenmore=membak;
-		caller.bmissilemore=mmbak;
 	}
 
 	//eyeball out how much one's projectile will drop and raise pitch accordingly
