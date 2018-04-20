@@ -76,7 +76,7 @@ extend class HDPlayerPawn{
 		bool use9=forcefull||countinv("DERPUsable");
 		bool use12=forcefull;
 		bool use776=forcefull;
-		bool use426=forcefull||countinv("HERPUsable");
+		bool use426=forcefull;
 		bool usebronto=forcefull;
 		bool usebattery=forcefull||countinv("HERPUsable")||countinv("PortableLiteAmp");
 		bool userocket=forcefull||countinv("HDIEDKit");
@@ -187,8 +187,10 @@ extend class HDPlayerPawn{
 
 		//because herps are special
 		let herp=HERPUsable(findinventory("HERPUsable"));
-		if(herp)enc+=ENC_HERP+herp.ammo<0?0:ENC_426MAG*0.4;
-		enc+=countinv("HERPDEAD")*ENC_HERP;
+		if(herp){
+			enc+=ENC_HERP+herp.ammo<0?0:ENC_426MAG*0.4;
+			use426=true;
+		}enc+=countinv("HERPDEAD")*ENC_HERP;
 
 		//mag manager
 		let hdmm=MagManager(findinventory("MagManager"));
