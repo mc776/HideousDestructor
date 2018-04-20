@@ -130,12 +130,6 @@ extend class HDPlayerPawn{
 				stunned=min(10,stunned);
 			}
 
-			//remove these once we're done with them
-			if(countinv("RegenBlues")){
-				regenblues+=countinv("RegenBlues");
-				A_TakeInventory("RegenBlues");
-			}
-
 			//limit beatmax subject to zerk
 			if(countinv("PowerStrength")) beatmax=clamp(beatmax,4,14);
 			else beatmax=clamp(beatmax,HDCONST_MINHEARTTICS,35);
