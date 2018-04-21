@@ -27,7 +27,7 @@ class GyroGrenade:SlowProjectile{
 	bool primed;bool isrocket;
 	default{
 		-noextremedeath -noteleport +bloodlessimpact
-		height 2; radius 2; scale 0.5;
+		height 2; radius 2; scale 0.33;
 		speed 110; mass 600; accuracy 0; woundhealth 0;
 		obituary "%o was fragged by %k.";
 		stamina 5; //used for fuel
@@ -127,7 +127,7 @@ class GyroGrenade:SlowProjectile{
 class HDHEAT:GyroGrenade{
 	default{
 		+forcepain
-		scale 0.4; woundhealth 1800;
+		scale 0.24; woundhealth 1800;
 		decal "BrontoScorch";
 	}
 	override void ExplodeSlowMissile(line blockingline,actor blockingobject){
@@ -178,7 +178,6 @@ class Gyrosploder:HDActor{
 		+noblockmap +missile +nodamagethrust
 		gravity 0;height 6;radius 6;
 		damagefactor(0);
-		decal "BigScorch";
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -234,39 +233,17 @@ class Gyrosploder:HDActor{
 
 
 
-class DudRocketAmmo:Ammo{
+class DudRocketAmmo:HDAmmo{
 	default{
-		+inventory.ignoreskill
 		inventory.pickupmessage "picked up a defused rocket grenade.";
+		inventory.amount 1;
 		inventory.maxamount 6;
-		ammo.backpackmaxamount 6;
 		radius 2;height 2;
-		scale 0.5;
+		scale 0.33;
 	}
 	states{
-	spawn:
-		ROCQ A 0 nodelay{
-			HDF.SplitAmmoSpawn(self);
-			A_SpawnItemEx("DRAP",0,0,0,
-				vel.x,vel.y,vel.z,
-				0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM
-			);
-		}stop;
-	}
-}
-class DRAP:HDUPK{
-	default{
-		scale 0.5;
-		hdupk.pickupmessage "picked up a defused rocket grenade.";
-	}
-	states{
-	spawn:
-		ROCQ A -1 A_Stop();
-	give:
-		---- A 0 A_JumpIfInTargetInventory("DudRocketAmmo",0,"spawn");
-		---- A 0 A_GiveToTarget("DudRocketAmmo",1);
-		---- A 0 A_PlaySound("weapons/grenopen");
-		stop;
+	spawn2:
+		ROCQ A -1;stop;
 	}
 }
 class DudRocket:HDUPK{
@@ -282,7 +259,7 @@ class DudRocket:HDUPK{
 		obituary "%o was fragged by %k.";
 		hdupk.pickupmessage "picked up (and defused) a rocket grenade.";
 		damagefactor(0);
-		radius 3; height 3; scale 0.5;
+		radius 2; height 2; scale 0.33;
 	}
 	states{
 	spawn:
@@ -323,7 +300,7 @@ class DudRocket:HDUPK{
 		---- A 0 A_PlaySound("weapons/grenopen");
 		stop;
 		ROCQ A 0 A_Jump(1,"Explode");
-		ROCQ A 0 A_SpawnItemEx("DRAP",2,0,0,0,0,2,0,SXF_NOCHECKPOSITION);
+		ROCQ A 0 spawn("DudRocketAmmo",pos);
 		stop;
 	}
 }

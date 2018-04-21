@@ -49,7 +49,10 @@ extend class HDPlayerPawn{
 			A_GiveInventory("HDBP");
 			for(int i=0;i<AllActorClasses.Size();++i){
 				type=(class<Inventory>)(AllActorClasses[i]);
-				if (type&&type.GetParentClass()=="HDAmmo"){
+				if (type&&type.GetParentClass()=="HDAmmo"
+					&&type!="DudRocketAmmo"
+					&&type!="HDCellPackEmpty"
+				){
 					let ammoitem=FindInventory(type);
 					if(!ammoitem){
 						ammoitem=Inventory(Spawn(type));
