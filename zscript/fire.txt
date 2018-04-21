@@ -294,7 +294,11 @@ class Heat:Inventory{
 		}
 
 		//flame
-		if(realamount>frandom(90,140)&&!(int(realamount)%3)){
+		if(
+			!(int(realamount)%3)
+			&&realamount>frandom(100,140)
+			&&!owner.countinv("ImmunityToFire")
+		){
 			if(owner.bshootable){
 				realamount+=2.;
 				if(realamount>150&&!random(0,7))owner.A_GiveInventory("SawGib",1);
@@ -309,9 +313,12 @@ class Heat:Inventory{
 		}
 
 		//damage
-		if(realamount>50){
+		if(realamount>random(random(20,60),100)){
 			double dmgamt=realamount*0.01;
-			if(dmgamt<1.&&frandom(0.,1.)<dmgamt)dmgamt=1;
+			if(
+				dmgamt<1.
+				&&(frandom(0.,1.)<dmgamt)
+			)dmgamt=1.;
 			owner.damagemobj(self,self,dmgamt,"thermal",DMG_NO_ARMOR);
 			if(!owner)return;
 		}
