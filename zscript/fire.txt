@@ -240,7 +240,7 @@ class Heat:Inventory{
 	double inversevolumeratio;
 	double baseinversevolumeratio;
 	double realamount;
-	int effectivemass;
+	int burnoutthreshold;
 	enum HeatNumbers{
 		HEATNUM_DEFAULTVOLUME=12*12*48*4,
 	}
@@ -254,7 +254,7 @@ class Heat:Inventory{
 		volume=(user.radius*user.radius*user.height)*4;
 		baseinversevolumeratio=HEATNUM_DEFAULTVOLUME/max(0.000001,volume);
 		inversevolumeratio=baseinversevolumeratio;
-		effectivemass=max(user.mass,user.spawnhealth());
+		burnoutthreshold=max(user.gibhealth,user.spawnhealth())*3;
 		A_SetSize(owner.radius,owner.height);
 	}
 	override void DoEffect(){
@@ -298,10 +298,13 @@ class Heat:Inventory{
 			!(int(realamount)%3)
 			&&realamount>frandom(100,140)
 			&&!owner.countinv("ImmunityToFire")
+			&&owner.countinv("SawGib")<burnoutthreshold*frandom(0.8,1.2)
 		){
 			if(owner.bshootable){
-				realamount+=2.;
+				realamount+=frandom(1.2,3.0);
 				if(realamount>150&&!random(0,7))owner.A_GiveInventory("SawGib",1);
+A_LogInt(owner.countinv("SawGib"));
+A_LogInt(realamount);
 			}
 			actor aaa=spawn("HDFlameRed",owner.pos+(
 				frandom(-radius,radius),
