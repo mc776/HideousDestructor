@@ -26,7 +26,7 @@ class DERPBot:HDUPK{
 		bloodcolor "22 22 22";scale 0.6;
 		health 100;mass 20;
 		maxtargetrange 256;
-		activesound "derp/crawl";
+		hdupk.pickupsound "derp/crawl";
 		hdupk.pickupmessage "Picked up a Defence, Engagement, Reconnaissance and Patrol robot.";
 		obituary "%o went derp.";
 	}
@@ -488,8 +488,7 @@ extend class HDHandlers{
 				ddd.stuckheight=ddd.pos.z;
 				ddd.stucktier=0;
 			}else{
-				sector othersector=dlt.hitline.backsector;
-				if(othersector==dlt.hitsector)othersector=dlt.hitline.frontsector;
+				sector othersector=hdmath.oppositesector(dlt.hitline,dlt.hitsector);
 				ddd.stuckpoint=dlt.hitlocation.xy+dlt.hitdir.xy*4;
 				double stuckceilingz=othersector.ceilingplane.zatpoint(ddd.stuckpoint);
 				double stuckfloorz=othersector.floorplane.zatpoint(ddd.stuckpoint);

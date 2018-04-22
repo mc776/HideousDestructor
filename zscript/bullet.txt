@@ -384,8 +384,7 @@ class HDBullet:HDActor{
 				&&blt.hitline.frontsector!=blt.hitsector
 			)hitresult=BLT_HITONESIDED;
 			else{
-				if(blt.hitsector==blt.hitline.backsector)othersector=blt.hitline.frontsector;
-				else othersector=blt.hitline.backsector;
+				othersector=hdmath.oppositesector(blt.hitline,blt.hitsector);
 
 				if(!othersector)hitresult=BLT_HITONESIDED;else{
 					vector2 zatpointer=plushitdir.xy;

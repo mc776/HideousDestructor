@@ -292,6 +292,10 @@ struct HDF play{
 		}
 		return amt;
 	}
+	//because this is 10 times faster than A_GiveInventory
+	static void Give(actor whom,class<inventory> what,int howmany=1){
+		whom.A_SetInventory(what,whom.countinv(what)+howmany);
+	}
 	//transfer fire. returns # of fire actors affected.
 	static int TransferFire(actor ror,actor ree,int maxfires=-1){
 		actoriterator it=actoriterator.create(-7677,"HDFire");

@@ -182,7 +182,7 @@ class HDAmmo:HDPickup{
 
 /*
  special uses:
- activesound: pickup sound
+ hdupk.pickupsound: pickup sound
  hdupk.pickuptype: default type of inventory item it replaces
  hdupk.pickupmessage: self-explanatory
  accuracy: max # of pickuptype a single unit can store
@@ -192,12 +192,14 @@ class HDUPK:HDActor{
 	actor picktarget;
 	class<inventory> pickuptype;
 	string pickupmessage;
+	sound pickupsound;
 	property pickuptype:pickuptype;
 	property pickupmessage:pickupmessage;
+	property pickupsound:pickupsound;
 	default{
 		+solid +noblockmonst +notrigger +dontgib
 		height 8;radius 8;
-		activesound "misc/i_pkup";
+		hdupk.pickupsound "weapons/pocket";//"misc/i_pkup";
 		hdupk.pickupmessage "Picked something up.";
 		hdupk.pickuptype "none";
 	}
@@ -225,7 +227,7 @@ class HDUPK:HDActor{
 			target=picktarget;
 			setstatelabel("give");
 			if(!bdestroyed)return;
-			picktarget.A_PlaySound(activesound,5);
+			picktarget.A_PlaySound(pickupsound,5);
 			picktarget.A_Log(string.format("\cg%s",pickupmessage),true);
 			return;
 		}
@@ -236,7 +238,7 @@ class HDUPK:HDActor{
 			setstatelabel("spawn");
 			return;
 		}
-		picktarget.A_PlaySound(activesound,5);
+		picktarget.A_PlaySound(pickupsound,5);
 		picktarget.A_Log(string.format("\cg%s",pickupmessage),true);
 		stamina-=increase;
 		if(stamina>0){ //only picked some up  

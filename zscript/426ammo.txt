@@ -48,6 +48,8 @@ class HD4mmMag:HDUPK{
 		xscale 0.3;yscale 0.4;
 
 		stamina 51; //51 means FRESH AND SEALED
+		hdupk.pickupmessage "Picked up a 4.26mm UAC Standard magazine.";
+		hdupk.pickupsound "weapons/pocket";
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -72,7 +74,6 @@ class HD4mmMag:HDUPK{
 				if(A_JumpIfInTargetInventory("ZM66RifleMags",0,"null")){
 					return;
 				}else{
-					target.A_Log("\cgPicked up a 4.26mm UAC Standard magazine.",true);
 					target.A_GiveInventory("ZM66RifleMags",1);
 					destroy();return;
 				}
@@ -84,7 +85,7 @@ class HD4mmMag:HDUPK{
 					target.findinventory("FourMilAmmo").amount+=givemax;
 				}else target.A_GiveInventory("FourMilAmmo",givemax);
 				stamina-=givemax;
-				target.A_Log("\cgPicked up a discarded used 4.26 UAC Standard magazine. Reloading a 4.26 UAC Standard magazine into another firearm without authorization is a breach of the Volt End User License Agreement.",true);
+				target.A_Log("Reloading a 4.26 UAC Standard magazine into another firearm without authorization is a breach of the Volt End User License Agreement.",true);
 				if(stamina<1){destroy();return;}
 			}
 		}goto spawn2;
