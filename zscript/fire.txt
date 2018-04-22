@@ -318,7 +318,7 @@ class Heat:Inventory{
 
 
 		//convection, kinda
-		if(ticker>20){
+		if(ticker>20&&!(ticker%2)){
 			flinetracedata hlt;
 			double aimdist=realamount*0.1;
 			owner.linetrace(
@@ -336,10 +336,9 @@ class Heat:Inventory{
 				let htt=heat(hlt.hitactor.findinventory("Heat"));
 				if(!htt)htt=heat(hlt.hitactor.GiveInventoryType("heat"));
 				double distdiff=hlt.distance/aimdist;
-				double togive=realamount*(1.-distdiff)*0.1; //can't be 0.1
+				double togive=realamount*(1.-distdiff)*0.01; //can't be 0.1
 				htt.realamount+=togive;
 				realamount-=togive;
-A_LogFloat(togive);
 			}
 		}
 
