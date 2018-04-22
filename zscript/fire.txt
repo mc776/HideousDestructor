@@ -192,11 +192,14 @@ class PersistentDamager:HDActor{
 		super.postbeginplay();
 		if(master)relpos=self.pos-master.pos;
 	}
+	int ticker;
 	override void tick(){
 		if(globalfreeze||level.Frozen) return;
 
 		if(master)setorigin(master.pos+relpos,false);
-		trymove((pos.x,pos.y),true,true);
+
+		if(stamina>0){
+		}
 
 		//nexttic
 		if(CheckNoDelay()){
@@ -207,24 +210,6 @@ class PersistentDamager:HDActor{
 				}
 			}
 		}
-	}
-	override bool CanCollideWith(actor other,bool passive){
-		if(
-			passive||(
-				target&&
-				target.bdontharmspecies&&
-				other.getspecies()==target.getspecies()
-			)
-		){
-			return false;
-		}
-		if(damagetype=="Thermal")HDF.Give(other,"Heat",stamina);
-		else other.damagemobj(self,target,stamina,damagetype);
-
-		if(other&&(other.bismonster||other.player)&&!random(0,10)){
-			other.vel.xy-=(pos.xy-other.pos.xy).unit()*other.mass*0.01;
-		}
-		return false;
 	}
 	states{
 	spawn:
@@ -240,10 +225,12 @@ class PersistentDamager:HDActor{
 
 class Heat:Inventory{
 	double volume;
+	double volumeratio;
 	double inversevolumeratio;
 	double baseinversevolumeratio;
 	double realamount;
 	int burnoutthreshold;
+	actor heatfield;
 	enum HeatNumbers{
 		HEATNUM_DEFAULTVOLUME=12*12*48*4,
 	}
@@ -257,6 +244,7 @@ class Heat:Inventory{
 		volume=(user.radius*user.radius*user.height)*4;
 		baseinversevolumeratio=HEATNUM_DEFAULTVOLUME/max(0.000001,volume);
 		inversevolumeratio=baseinversevolumeratio;
+		volumeratio=1/baseinversevolumeratio;
 		burnoutthreshold=max(user.gibhealth,user.spawnhealth(),100);
 		A_SetSize(owner.radius,owner.height);
 	}
@@ -295,10 +283,11 @@ class Heat:Inventory{
 			realamount=0;
 			return;
 		}
+		int ticker=int(realamount);
 
 		//flame
 		if(
-			!(int(realamount)%3)
+			!(ticker%3)
 			&&realamount>frandom(100,140)
 			&&!owner.countinv("ImmunityToFire")
 			&&owner.countinv("SawGib")<burnoutthreshold*frandom(0.8,1.2)
@@ -327,6 +316,31 @@ class Heat:Inventory{
 			if(!owner)return;
 		}
 
+
+		//convection, kinda
+		if(ticker>20){
+			flinetracedata hlt;
+			double aimdist=realamount*0.1;
+			owner.linetrace(frandom(0,360),aimdist,frandom(80,90),
+				data:hlt
+			);
+			if(
+				hlt.hitactor
+				&&(
+					!hlt.hitactor.findinventory("Heat")
+					||heat(hlt.hitactor.findinventory("Heat")).realamount<realamount
+				)
+			){
+				let htt=heat(hlt.hitactor.findinventory("Heat"));
+				if(!htt)htt=heat(hlt.hitactor.GiveInventoryType("heat"));
+				double distdiff=hlt.distance/aimdist;
+				double togive=realamount-htt.realamount*distdiff;
+				htt.realamount+=togive;
+				realamount-=togive*1.05;
+			}
+		}
+
+
 		//cooldown
 		double reduce=inversevolumeratio;
 		if(owner.vel dot owner.vel > 4)reduce*=1.6;
@@ -336,7 +350,7 @@ class Heat:Inventory{
 		realamount-=reduce;
 		angle=owner.angle;
 
-//		A_LogFloat(realamount);
+//if(owner.player)A_LogFloat(realamount);
 	}
 }
 
