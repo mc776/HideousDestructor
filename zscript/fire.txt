@@ -218,9 +218,6 @@ class PersistentDamager:HDActor{
 }
 
 
-
-
-
 //new shit
 
 class Heat:Inventory{
@@ -250,6 +247,7 @@ class Heat:Inventory{
 	}
 	override void DoEffect(){
 		if(!owner){destroy();return;}
+		if(!owner.player&&(globalfreeze||level.Frozen))return;
 
 		//make adjustments based on armour and player status
 		let hdp=hdplayerpawn(owner);

@@ -659,6 +659,17 @@ class ShieldNotBlood:NotQuiteBloodSplat{
 		stop;
 	}
 }
+class ShieldNeverBlood:ShieldNotBlood{
+	override void postbeginplay(){
+		bloodsplat.postbeginplay();
+		scale*=frandom(0.2,0.5);
+	}
+	states{
+	spawn:
+		TFOG ABCDEFGHIJ 3 bright A_FadeOut(0.05);
+		stop;
+	}
+}
 class BloodTrail:HDPuff{
 	default{
 		alpha 0.7;scale 0.2;gravity 0.02;

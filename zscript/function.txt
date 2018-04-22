@@ -151,15 +151,18 @@ class TMChecker:HDActor{
 
 
 // Blocker to prevent shotguns from overpenetrating multiple targets
-// tempshield.spawnshield();
+// tempshield.spawnshield(self);
 class tempshield:HDActor{
 	default{
 		-solid +shootable +nodamage
 		radius 16;height 50;
 		stamina 16;
 	}
-	static actor spawnshield(actor caller,bool deathheight=false,int shieldlength=16){
-		actor sss=caller.spawn("tempshield",caller.pos);
+	static actor spawnshield(
+		actor caller,class<actor> type="tempshield",
+		bool deathheight=false,int shieldlength=16
+	){
+		actor sss=caller.spawn(type,caller.pos);
 		if(!sss)return null;
 		sss.master=caller;
 		sss.A_SetSize(
@@ -167,8 +170,6 @@ class tempshield:HDActor{
 			deathheight?getdefaultbytype(caller.getclass()).deathheight
 			:getdefaultbytype(caller.getclass()).height
 		);
-//		sss.bloodtype=caller.bloodtype;
-//		sss.bloodcolor=caller.bloodcolor;
 		sss.bnoblood=caller.bnoblood;
 		sss.stamina=shieldlength;
 		return sss;
