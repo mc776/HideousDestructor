@@ -254,7 +254,7 @@ class Heat:Inventory{
 		volume=(user.radius*user.radius*user.height)*4;
 		baseinversevolumeratio=HEATNUM_DEFAULTVOLUME/max(0.000001,volume);
 		inversevolumeratio=baseinversevolumeratio;
-		burnoutthreshold=max(user.gibhealth,user.spawnhealth())*3;
+		burnoutthreshold=max(user.gibhealth,user.spawnhealth(),100);
 		A_SetSize(owner.radius,owner.height);
 	}
 	override void DoEffect(){
@@ -314,7 +314,7 @@ class Heat:Inventory{
 		}
 
 		//damage
-		if(realamount>random(random(20,60),100)){
+		if(realamount>random(random(12,20),40)){
 			double dmgamt=realamount*0.01;
 			if(
 				dmgamt<1.
@@ -328,6 +328,7 @@ class Heat:Inventory{
 		double reduce=inversevolumeratio;
 		if(owner.vel dot owner.vel > 4)reduce*=1.6;
 		if(absangle(angle,owner.angle)>16)reduce*=1.6;
+		if((!skill||hd_lowdamage)&&owner.player)reduce*=3;
 		realamount-=reduce;
 		angle=owner.angle;
 
