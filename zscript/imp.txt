@@ -1,7 +1,7 @@
 // ------------------------------------------------------------
 // Imp
 // ------------------------------------------------------------
-class dimpbd:hdfireballtail{
+class HDImpBallTail:HDFireballTail{
 	default{
 		translation "ice";
 		renderstyle "subtract";
@@ -16,9 +16,9 @@ class dimpbd:hdfireballtail{
 		}loop;
 	}
 }
-class dimpb:hdfireball{
+class HDImpBall:HDFireball{
 	default{
-		missiletype "dimpbd";
+		missiletype "HDImpBallTail";
 		damagetype "electro";
 		damagefunction(10);
 		decal "scorch";
@@ -44,15 +44,15 @@ class dimpb:hdfireball{
 			A_Scream();
 			tracer=null;
 			if(blockingmobj){
-				actor src=null;
 				if(target&&(
 					blockingmobj.species!=target.species
 					||blockingmobj==target.target
 				)){
-					src=target;
 					tracer=blockingmobj;
+					blockingmobj.damagemobj(self,target,random(6,18),"Electro");
+				}else if(blockingmobj is "DoomImp"){
+					blockingmobj.HealThing(random(1,10));
 				}
-				blockingmobj.damagemobj(self,src,random(6,18),"Electro");
 			}
 			if(tracer){
 				initangleto=angleto(tracer);
@@ -77,7 +77,7 @@ class dimpb:hdfireball{
 				}
 			}else A_SprayDecal("BrontoScorch",radius*2);
 		}
-		BAL1 ABCCDDEEEEEEE 2{
+		BAL1 ABCCDDEEEEEEE 3{
 			roll=frandom(0,360);alpha*=0.96;scale*=frandom(1.,0.96);
 			if(!tracer)return;
 			int diff=max(
@@ -187,7 +187,7 @@ class dimp:doomimp{
 				angle+=(lead2.x-lead1.x)*dist;
 			}
 			actor a;bool b;
-			[b,a]=A_SpawnItemEx("dimpb",0,0,32,
+			[b,a]=A_SpawnItemEx("HDImpBall",0,0,32,
 				cos(pitch)*16,0,sin(-pitch)*16,
 				0,SXF_SETTARGET
 			);
@@ -215,7 +215,7 @@ class dimp:doomimp{
 		TROO F 4;
 		TROO G 8{
 			actor a;bool b;
-			[b,a]=A_SpawnItemEx("dimpb",0,0,32,
+			[b,a]=A_SpawnItemEx("HDImpBall",0,0,32,
 				cos(pitch)*frandom(6,10),0,sin(-pitch)*frandom(6,10),
 				0,SXF_SETTARGET
 			);

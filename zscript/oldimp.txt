@@ -4,10 +4,8 @@
 class DrunkImpBallTail:BlackParticleFountain{
 	default{
 		+nointeraction +forcexybillboard -invisible
-		-nogravity
 		renderstyle "add";
 		alpha 0.5;scale 0.6;
-		radius 12;height 12;
 	}
 	states{
 	spawn:
@@ -20,11 +18,8 @@ class DrunkImpBallTail:BlackParticleFountain{
 class ReverseImpBallTail:RedParticleFountain{
 	default{
 		+nointeraction +forcexybillboard -invisible
-		-nogravity
 		renderstyle "add";
 		scale 0.6;alpha 0;
-		radius 16;
-		height 12;
 	}
 	states{
 		spawn:
@@ -199,7 +194,7 @@ class DrunkImp:DoomImp{
 			pitch+=user_pitch*user_change;
 		}
 		#### F 4;
-		#### G 8 A_SpawnItemEx("DrunkImpBall",0,0,32,vel.x+12*cos(angle)*cos(pitch),vel.y+12*sin(angle)*cos(pitch),vel.z+12*sin(-pitch),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_SETTARGET);
+		#### G 8 A_SpawnItemEx("HDImpBall",0,0,32,vel.x+12*cos(angle)*cos(pitch),vel.y+12*sin(angle)*cos(pitch),vel.z+12*sin(-pitch),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_SETTARGET);
 		#### F 6;
 		---- A 0 A_JumpIfTargetInsideMeleeRange("melee");
 		#### E 0 A_Jump(16,"see");
@@ -216,7 +211,7 @@ class DrunkImp:DoomImp{
 		#### E 2 A_FaceTarget(12,24);
 	missile1a:
 		#### F 2;
-		#### G 6 A_SpawnProjectile("DrunkImpBall",32,6,random(-8,8),CMF_AIMDIRECTION,pitch+random(-6,6));
+		#### G 6 A_SpawnProjectile("HDImpBall",32,6,random(-8,8),CMF_AIMDIRECTION,pitch+random(-6,6));
 		#### F 4;
 		#### F 0 A_JumpIfTargetInLOS(1);
 		goto coverfire;
@@ -243,9 +238,9 @@ class DrunkImp:DoomImp{
 		#### EEEEE 2 A_SpawnItemEx("ReverseImpBallTail",4,24,random(31,33),1,0,0,0,160);
 		#### E 2;
 		#### F 2;
-		#### G 0 A_SpawnProjectile("DrunkImpBall",(random(34,36)),6,(random(6,14)),CMF_AIMDIRECTION,pitch);
-		#### G 0 A_SpawnProjectile("DrunkImpBall",(random(26,31)),6,(random(-4,4)),CMF_AIMDIRECTION,pitch);
-		#### G 0 A_SpawnProjectile("DrunkImpBall",(random(36,38)),6,(random(-6,-14)),CMF_AIMDIRECTION,pitch);
+		#### G 0 A_SpawnProjectile("HDImpBall",(random(34,36)),6,(random(6,14)),CMF_AIMDIRECTION,pitch);
+		#### G 0 A_SpawnProjectile("HDImpBall",(random(26,31)),6,(random(-4,4)),CMF_AIMDIRECTION,pitch);
+		#### G 0 A_SpawnProjectile("HDImpBall",(random(36,38)),6,(random(-6,-14)),CMF_AIMDIRECTION,pitch);
 		#### GGFE 5 A_SetTics(random(4,6));
 		goto spam;
 	melee:
@@ -419,7 +414,7 @@ class HealerImp:DrunkImp{
 		---- A 0 A_Jump(256,2);
 		---- A 0 A_FaceTarget(0,0);
 		#### F 4;
-		#### G 8 A_SpawnProjectile("DrunkImpBall",(random(24,30)),0,(random(-6,6)),CMF_AIMDIRECTION,pitch);
+		#### G 8 A_SpawnProjectile("HDImpBall",(random(24,30)),0,(random(-6,6)),CMF_AIMDIRECTION,pitch);
 		#### F 5;
 		goto see;
 	Missile2:
