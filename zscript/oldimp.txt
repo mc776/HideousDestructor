@@ -296,12 +296,15 @@ class DrunkImp:DoomImp{
 // ------------------------------------------------------------
 // Healer Imp
 // ------------------------------------------------------------
+class tempshield2imp:tempshield2{
+	default{+noblooddecals bloodtype "ShieldNeverBlood";}
+}
 class ShieldImpBall:DoomImpBall{
 	default{
 		+seekermissile +forcexybillboard
 		decal "DoomImpScorch";
 		-noblockmap
-		+shootable +mthruspecies +noblood
+		+shootable +mthruspecies +noblooddecals
 		scale 1.2;
 		height 20;
 		radius 20;
@@ -317,7 +320,7 @@ class ShieldImpBall:DoomImpBall{
 	){
 		if(!bmissile)return 0;
 		ExplodeMissile();
-		tempshield.spawnshield(self,"tempshield2puff",false,8);
+		tempshield.spawnshield(self,"tempshield2imp",false,8);
 		A_Scream();
 		bmissile=false;
 		setstatelabel("death");

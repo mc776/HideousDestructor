@@ -659,14 +659,19 @@ class ShieldNotBlood:NotQuiteBloodSplat{
 		stop;
 	}
 }
-class ShieldNeverBlood:ShieldNotBlood{
+class ShieldNeverBlood:IdleDummy{
+	default{
+		+forcexybillboard +rollsprite +rollcenter
+		renderstyle "add";
+	}
 	override void postbeginplay(){
-		bloodsplat.postbeginplay();
+		super.postbeginplay();
 		scale*=frandom(0.2,0.5);
+		roll=frandom(0,360);
 	}
 	states{
 	spawn:
-		TFOG ABCDEFGHIJ 3 bright A_FadeOut(0.05);
+		TFOG ABCDEFGHIJ 3 bright A_FadeOut(0.08);
 		stop;
 	}
 }
