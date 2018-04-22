@@ -177,17 +177,16 @@ class HDFire:IdleDummy{
 
 //an invisible actor that constantly damages anything it collides with
 /* special uses:
-	threshold = damage interval
-	damage = *exact* damage amount each time
-	accuracy = temporary number tracking interval
-	gibhealth = % chance to immolate
+	accuracy = amount of heat to give each tic
 */
 class PersistentDamager:HDActor{
 	vector3 relpos;
 	default{
 		+noblockmap +missile
-		height 8;radius 8;threshold 35;damage 1;accuracy 0;gibhealth 5;
-		damagetype "thermal";
+		damagetype "Thermal";
+
+		height 8;radius 8;
+		stamina 8;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -197,7 +196,7 @@ class PersistentDamager:HDActor{
 		if(globalfreeze||level.Frozen) return;
 
 		if(master)setorigin(master.pos+relpos,false);
-		trymove(pos.xy,true);
+		trymove((pos.x,pos.y),true,true);
 
 		//nexttic
 		if(CheckNoDelay()){
@@ -211,16 +210,20 @@ class PersistentDamager:HDActor{
 	}
 	override bool CanCollideWith(actor other,bool passive){
 		if(
-			passive
-			||(
-				target &&
-				target.bdontharmspecies &&
+			passive||(
+				target&&
+				target.bdontharmspecies&&
 				other.getspecies()==target.getspecies()
 			)
 		){
 			return false;
 		}
-		other.A_GiveInventory("Heat",1);
+		if(damagetype=="Thermal")HDF.Give(other,"Heat",stamina);
+		else other.damagemobj(self,target,stamina,damagetype);
+
+		if(other&&(other.bismonster||other.player)&&!random(0,10)){
+			other.vel.xy-=(pos.xy-other.pos.xy).unit()*other.mass*0.01;
+		}
 		return false;
 	}
 	states{
@@ -327,7 +330,8 @@ class Heat:Inventory{
 		//cooldown
 		double reduce=inversevolumeratio;
 		if(owner.vel dot owner.vel > 4)reduce*=1.6;
-		if(absangle(angle,owner.angle)>16)reduce*=1.6;
+		double aang=absangle(angle,owner.angle);
+		if(aang>4.)reduce*=clamp(aang*0.4,1.,4.);
 		if((!skill||hd_lowdamage)&&owner.player)reduce*=3;
 		realamount-=reduce;
 		angle=owner.angle;
