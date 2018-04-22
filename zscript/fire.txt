@@ -302,7 +302,7 @@ class Heat:Inventory{
 		){
 			if(owner.bshootable){
 				realamount+=frandom(1.2,3.0);
-				if(realamount>150&&!random(0,7))owner.A_GiveInventory("SawGib",1);
+				if(realamount>random(150,1000))owner.A_GiveInventory("SawGib",1);
 			}
 			actor aaa=spawn("HDFlameRed",owner.pos+(
 				frandom(-radius,radius),

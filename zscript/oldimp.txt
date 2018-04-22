@@ -98,6 +98,12 @@ class DrunkImp:DoomImp{
 		obituary "%o was marinated by the imps.";
 		hitobituary "%o was tenderized by the imps.";
 	}
+	override string getobituary(actor victim,actor inflictor,name mod,bool playerattack){
+		return mod;
+		if(mod=="Telefrag")return "$OB_MONTELEFRAG";
+		if((mod=="Melee"||mod=="Claws"))return HitObituary;
+		return Obituary;
+	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		hdmobai.resize(self,0.8,1.1);
@@ -710,4 +716,5 @@ class DeadMageImp:MageImp{
 		A_Die("spawndead");
 	}
 }
+
 

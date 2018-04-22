@@ -44,14 +44,16 @@ class HDImpBall:HDFireball{
 			A_Scream();
 			tracer=null;
 			if(blockingmobj){
-				if(target&&(
-					blockingmobj.species!=target.species
-					||blockingmobj==target.target
-				)){
+				if(
+					blockingmobj is "DoomImp"
+					&&(!target||blockingmobj!=target.target)
+				)blockingmobj.health=min(
+						blockingmobj.spawnhealth(),
+						blockingmobj.health+random(1,10)
+				);
+				else{
 					tracer=blockingmobj;
 					blockingmobj.damagemobj(self,target,random(6,18),"Electro");
-				}else if(blockingmobj is "DoomImp"){
-					blockingmobj.HealThing(random(1,10));
 				}
 			}
 			if(tracer){
@@ -94,7 +96,7 @@ class HDImpBall:HDFireball{
 			inittz=tracer.pos.z;
 
 			if(dmg){
-				tracer.damagemobj(self,target,dmg,"Thermal");
+				tracer.damagemobj(self,target,dmg/10,"Thermal");
 				tracer.A_GiveInventory("Heat",dmg);
 			}
 
