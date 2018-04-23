@@ -46,46 +46,11 @@ class HDImpBallTail:HDFireballTail{
 		}loop;
 	}
 }
-class MageImpBallTail:HDFireballTail{
-	default{
-		deathheight 0.9;
-		gravity 0;
-		friction 0.92;
-		radius 1.6;
-	}
-	states{
-	spawn:
-		BAL1 AB 2{
-			roll=frandom(0,360);
-			scale.x*=randompick(-1,1);
-		}loop;
-	}
-}
-class MageImpBall:HDImpBall{
-	default{
-		missiletype "MageImpBallTail";
-		speed 10;
-		scale 1.2;
-	}
-	override void A_HDIBFly(){
-		roll=frandom(0,360);
-		if(tracer)vel*=0.86;
-		A_FBSeek(512);
-	}
-	states{
-	spawn:
-		BAL1 ABABABAB 2 A_FBTail();
-		goto spawn2;
-	death:
-		TNT1 AAA 0 A_SpawnItemEx("HDSmoke",flags:SXF_NOCHECKPOSITION);
-		TNT1 A 0 {if(blockingmobj)A_Immolate(blockingmobj,target,40);}
-		goto super::death;
-	}
-}
 class HDImpBall:HDFireball{
 	default{
 		+seekermissile
 		missiletype "HDImpBallTail";
+		decal "BrontoScorch";
 		speed 12;
 		damagetype "electro";
 		gravity 0;
@@ -169,7 +134,8 @@ class HDImpBall:HDFireball{
 					if(hd_debug)A_Log("HEAD SHOT");
 					bpiercearmor=true;
 				}
-			}else A_SprayDecal("BrontoScorch",radius*2);
+			}
+			A_SprayDecal("BrontoScorch",radius*2);
 		}
 		BAL1 ABCCDDEEEEEEE 3 A_ImpSquirt();
 		stop;
@@ -239,24 +205,7 @@ class FighterImp:DoomImp{
 		#### A 0 A_JumpIf(bambush,"spawn0");
 		#### A 0 A_Jump(32,"spawn2");
 		loop;
-	see_evade:
-		---- A 0 A_Chase("missile","melee",CHF_DONTMOVE);
-		---- A 0 A_FaceTarget();
-		---- A 0 A_SetAngle(angle+random(40,120)*(random(0,1)*2-1));
-		---- A 0 {bnodropoff=true;}
-	see_evade2:
-		---- A 0 A_SetAngle(angle+random(-30,30));
-		#### ABCD 3 A_Recoil(-3);
-		---- A 0{
-			if(vel.xy dot vel.xy<25)angle+=frandom(-160,200);
-			bnodropoff=false;
-			A_TakeInventory("EvadeNow");
-		}
-		---- A 0 A_JumpIfTargetInLOS("Missile");
-		goto see;
 	see:
-		---- A 0 A_JumpIf(floorz<pos.z-4,2);
-		---- A 0 A_JumpIfInventory("EvadeNow",1,"see_evade");
 		#### AABBCCDD 2 A_ImpChase();
 		---- A 0 A_Jump(180,2);
 		---- A 0 A_AlertMonsters();
@@ -270,7 +219,7 @@ class FighterImp:DoomImp{
 		}loop;
 	missile0:
 		---- A 0 A_JumpIfTargetInLOS(1);
-		goto spam;
+		---- A 0 A_Jump(256,"spam");
 		#### E 0{
 			bNODROPOFF=true;
 			A_ChangeVelocity(1,random(-1,1)*random(0,3),0,CVF_RELATIVE);
@@ -324,7 +273,7 @@ class FighterImp:DoomImp{
 		#### F 0 A_JumpIfTargetInLOS(1);
 		goto coverfire;
 		---- A 0 A_Jump(120,"missile");
-		goto see;
+		---- A 0 A_Jump(256,"see");
 	coverfire:
 		---- A 0 A_JumpIfTargetInsideMeleeRange("melee");
 		#### E random(2,7)A_JumpIfTargetInLOS("Missile");
@@ -334,7 +283,7 @@ class FighterImp:DoomImp{
 		---- A 0 A_Jump(80,1);
 		loop;
 		#### AABBCCDD 2 A_ImpChase();
-		goto missile;
+		---- A 0 A_Jump(256,"missile");
 	hork:
 		#### E 0 A_Jump(156,"spam");
 		---- A 0 A_JumpIfTargetInLOS(2);
@@ -350,7 +299,7 @@ class FighterImp:DoomImp{
 		#### G 0 A_SpawnProjectile("HDImpBall",36,0,(frandom(-2,-10)),CMF_AIMDIRECTION,pitch+frandom(-4,4));
 		#### GGFE 5 A_SetTics(random(4,6));
 		#### E 0 A_JumpIf(!hdmobai.TryShoot(self,32,256,10,10),"see");
-		goto spam;
+		---- A 0 A_Jump(256,"spam");
 	melee:
 		#### EE 4 A_FaceTarget();
 		#### F 2;
@@ -630,7 +579,17 @@ class MageImp:FighterImp{
 		hitobituary "%o experienced ALL the magic.";
 	}
 	states{
+	recharge:
+		---- A 6;
+		#### ABCD 4 {
+			hdmobai.wander(self,true);
+			if(stamina>0)stamina--;
+		}goto see;
 	missile:
+		---- A 0 A_JumpIf(stamina>random(5,10),"recharge");
+		---- A 0 A_JumpIf(health<random(0,200),1);
+		goto super::missile;
+		---- A 0{stamina+=3;}
 		---- A 0 A_JumpIfTargetInLOS(2);
 		---- A 0 A_Jump(256,"missile1");
 		#### E 0 A_Jump(16,"missile1");
@@ -661,15 +620,19 @@ class MageImp:FighterImp{
 		---- A 0 A_FaceTarget(0,0);
 		#### F 6;
 
-		#### GGGGGGGG 0 A_SpawnProjectile("MageImpBall2B",random(29,34),6,(random(-18,18)),CMF_AIMDIRECTION,pitch+frandom(-2,4));
+		#### GGGGGGGG 0 A_SpawnProjectile("MageImpBall2",random(29,34),6,(random(-18,18)),CMF_AIMDIRECTION,pitch+frandom(-2,4));
+		---- A 0{stamina+=5;}
 		#### GGFE 5;
 		goto see;
 	missile3:
 		#### E 0 A_Jump(16,"missile1");
 		#### E 0 A_Jump(32,"missile2");
-		#### E 8 A_FaceTarget(0,0);
-		#### H 4 A_NoGravity();
-		#### H 16 bright ThrustThingZ(0,8,0,0);
+		#### EEH 3 A_FaceTarget(0,0);
+		#### H 2 A_NoGravity();
+		#### H 16 bright{
+			vel.z+=2;
+			stamina+=8;
+		}
 		#### H 8 bright A_Stop();
 		#### H 0 A_SpawnProjectile("MageImpBall2",32,0,162,2,60);
 		#### H 2 bright A_SpawnProjectile("MageImpBall2",32,0,-162,2,60);
@@ -697,94 +660,85 @@ class MageImp:FighterImp{
 	}
 }
 
-class MageImpBall2:DoomImpBall{
+class MageImpBall:HDImpBall{
 	default{
-		+seekermissile +forcexybillboard
-		damage 2;
-		speed 2;
-		height 4;radius 4;
-		scale 0.6;
-		decal "DoomImpScorch";
-		damagetype "Thermal";
+		missiletype "MageImpBallTail";
+		speed 10;
+		scale 1.2;
+	}
+	override void A_HDIBFly(){
+		roll=frandom(0,360);
+		if(tracer)vel*=0.86;
+		A_FBSeek(512);
 	}
 	states{
 	spawn:
-		BAL1 A 0 A_JumpIfInventory("Timer",10,2);
-		BAL1 A 0 A_Jump(256,2);
-		BAL1 A 0 bright A_SpawnItemEx("MageImpBall2B",-1,0,0,vel.x*4,vel.y*4,vel.z*4,0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS);
-		stop;
-		BAL1 A 0 A_GiveInventory("Timer",1);
-		BAL1 A 2 bright FAST A_SeekerMissile(8,8);
-		BAL1 B 2 bright FAST A_SeekerMissile(8,8);
-		BAL1 A 0 bright A_SpawnItemEx("MageImpBall2Tail",-1,0,0,-1,0,1,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION);
+		BAL1 ABABABAB 2 A_FBTail();
+		goto spawn2;
+	death:
+		TNT1 AAA 0 A_SpawnItemEx("HDSmoke",flags:SXF_NOCHECKPOSITION);
+		TNT1 A 0 {if(blockingmobj)A_Immolate(blockingmobj,target,40);}
+		goto super::death;
+	}
+}
+class MageImpBall2:HDImpBall{
+	default{
+		missiletype "MageImpBallTail2";
+		damage 2;
+		speed 4;
+		height 4;radius 4;
+		scale 0.6;
+		decal "Scorch";
+	}
+	override void A_HDIBFly(){
+		roll=frandom(0,360);
+		A_FBSeek(256);
+	}
+	states{
+	spawn:
+		BAL1 A 2 bright fast{
+			A_SeekerMissile(20,20);
+			stamina++;
+			if(stamina>20){
+				pitch+=frandom(-1,1);
+				angle+=frandom(-1,1);
+				setstatelabel("spawn2");
+			}else if(stamina<5)A_FBTail();
+		}
+		loop;
+	spawn2:
+		BAL1 ABAB 1 bright fast A_ChangeVelocity(cos(pitch)*4,0,-sin(pitch)*4,CVF_RELATIVE);
+	spawn3:
+		BAL1 AB 3 bright fast A_HDIBFly();
 		loop;
 	death:
-		TNT1 A 0 A_SpawnItemEx("HDSmoke",0,0,0,0,0,random(1,2),0,SXF_NOCHECKPOSITION);
-		TNT1 A 0 A_Jump(212,2);
-		TNT1 A 0 A_RadiusGive("HDFireStarter",32,RGF_PLAYERS|RGF_MONSTERS|RGF_OBJECTS|RGF_CORPSES,1);
+		TNT1 A 0{
+			spawn("HDSmoke",pos);
+			if(blockingmobj)A_Immolate(blockingmobj,target,random(10,32));
+		}
 		BAL1 CDE 4 bright A_FadeOut(0.2);
 		stop;
 	}
 }
-class MageImpBall2A:MageImpBall2{
+class MageImpBallTail:HDFireballTail{
 	default{
-		decal "DoomImpScorch";
-		seesound "";
-		speed 0;
+		deathheight 0.9;
+		gravity 0;
+		friction 0.92;
+		radius 1.6;
 	}
 	states{
 	spawn:
-		BAL1 ABAB 2 bright nodelay A_SpawnItemEx("MageImpBall2Tail",-1,0,0,8,0,0,0,160,0);
-		BAL1 A 0 ThrustThingZ(0,random(1,3),1,0);
-	see:
-		BAL1 A 0 A_Jump(82,2);
-		BAL1 A 0 A_BishopMissileWeave();
-		BAL1 AB 2 bright A_SpawnItemEx("MageImpBall2Tail2",-1,0,0,8,0,0,0,160,0);
-		BAL1 A 0 A_JumpIf(pos.z-floorz<24,"Tread");
-		BAL1 A 0 A_SeekerMissile(random(0,14),random(0,18));
-		loop;
-	tread:
-		BAL1 A 0 ThrustThingZ(0,random(2,4),0,0);
-		goto see;
+		BAL1 AB 2{
+			roll=frandom(0,360);
+			scale.x*=randompick(-1,1);
+		}loop;
 	}
 }
-class MageImpBall2B:MageImpBall2A{
+class MageImpBallTail2:MageImpBallTail{
 	default{
-		scale 0.8;
-		damage 3;
-		seesound "imp/attack";
-		speed 14;
-	}
-	states{
-	spawn:
-		BAL1 A 0 A_Jump(82,2);
-		BAL1 A 0 A_SeekerMissile(4,8);
-		BAL1 A 0 A_BishopMissileWeave();
-		BAL1 AB 2 bright A_SpawnItemEx("MageImpBall2Tail2",-6,0,0,8,0,0,0,160,0);
-		BAL1 A 0 A_JumpIf(pos.z-floorz<24,"Tread");
-		loop;
-	}
-}
-class MageImpBall2Tail:Actor{
-	default{
-		+nointeraction +forcexybillboard
-		scale 0.6;
-		renderstyle "add";
-		alpha 0.6;
-	}
-	states{
-	spawn:
-		BAL1 A 0 nodelay A_PlaySound("misc/firecrkl",0,0.2,0,6);
-		BAL1 A 6 bright A_FadeOut(0.1);
-		wait;
-	}
-}
-class MageImpBall2Tail2:MageImpBall2Tail{
-	states{
-	spawn:
-		BAL1 A 0 nodelay A_PlaySound("misc/firecrkl",0,0.2,0,6);
-		BAL1 A 4 bright A_FadeOut(0.2);
-		wait;
+		deathheight 0.86;
+		radius 0.7;
 	}
 }
 
