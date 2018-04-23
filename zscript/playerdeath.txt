@@ -37,6 +37,7 @@ extend class HDPlayerPawn{
 		super.DeathThink();
 	}
 	override void Die(actor source,actor inflictor,int dmgflags){
+
 		//forced delay for respawn to clear all persistent damagers
 		//exemption made for suicide
 		if(
@@ -50,21 +51,6 @@ extend class HDPlayerPawn{
 		if(player&&player.readyweapon&&deathmatch&&!sv_weapondrop&&!barehanded)
 			A_DropInventory(player.readyweapon.getclassname());
 		if(player.attacker is "HDFire")player.attacker=player.attacker.master;
-
-		playercorpse=spawn("HDPlayerCorpse",pos);
-		playercorpse.vel=vel;playercorpse.master=self;
-		if(height<40)playercorpse.sprite=GetSpriteIndex("PLYCA0");
-			else playercorpse.sprite=GetSpriteIndex("PLAYA0");
-		playercorpse.translation=translation;
-		playercorpse.A_SetSize(12,52);
-
-		if(-health>gibhealth||aggravateddamage>40)playercorpse.A_Die("extreme");
-		else{
-			playercorpse.A_Die();
-			if(!silentdeath){
-				A_PlayerScream();
-			}
-		}
 
 		if(
 			cvar.getcvar("hd_helptext",player).getint()>1
@@ -91,6 +77,22 @@ extend class HDPlayerPawn{
 		}
 
 		super.die(source,inflictor,dmgflags);
+
+		//this must appear only after so the obits work properly
+		playercorpse=spawn("HDPlayerCorpse",pos);
+		playercorpse.vel=vel;playercorpse.master=self;
+		if(height<40)playercorpse.sprite=GetSpriteIndex("PLYCA0");
+			else playercorpse.sprite=GetSpriteIndex("PLAYA0");
+		playercorpse.translation=translation;
+		playercorpse.A_SetSize(12,52);
+
+		if(-health>gibhealth||aggravateddamage>40)playercorpse.A_Die("extreme");
+		else{
+			playercorpse.A_Die();
+			if(!silentdeath){
+				A_PlayerScream();
+			}
+		}
 	}
 }
 

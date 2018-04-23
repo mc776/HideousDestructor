@@ -282,3 +282,53 @@ extend class HDPlayerPawn{
 	}
 }
 
+
+
+class doorblocker:actor{
+	default{
+		+solid +nogravity +dontgib +ghost
+		+actlikebridge
+		height 0.1;radius 0.1;
+	}
+}
+class doorball:doomimpball{
+	static const int doorspecials[]={
+		//from LineSpecials[] in p_lnspec.cpp
+		10,11,12,13,14, 85, 105,106, 202, 249, 274
+	};
+	states{
+	death:
+		BAL1 C 0{
+			flinetracedata dlt;
+			linetrace(angle,radius+3,0,offsetz:height*0.5,data:dlt);
+			if(dlt.hitline){
+				sector othersector=hdmath.oppositesector(dlt.hitline,dlt.hitsector);
+				if(
+					othersector
+					&&othersector.ceilingplane.zatpoint(dlt.hitlocation.xy+dlt.hitdir.xy)<dlt.hitlocation.z
+//TAG???				&&othersector.arg[0]==dlt.hitline.arg[0]
+				){
+					bool isdoor=false;
+					int dlsl=doorspecials.size();
+					for(int i=0;i<dlsl;i++){
+						if(dlt.hitline.special==doorspecials[i]){
+							isdoor=true;
+							break;
+						}
+					}
+					if(!isdoor)return;
+					double blockpoint=
+						dlt.hitsector.ceilingplane.zatpoint(dlt.hitlocation.xy);
+					othersector.MoveCeiling(100,blockpoint,0,1,false);
+
+					actor db=spawn("doorblocker",(
+						(dlt.hitlocation.xy+dlt.hitdir.xy*2),blockpoint
+					));
+					db.setz(blockpoint);
+					othersector.flags|=sector.SECF_SILENTMOVE;
+				}
+			}
+		}goto super::death;
+	}
+}
+
