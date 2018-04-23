@@ -28,10 +28,11 @@ class HDFireballTail:IdleDummy{
 		}
 		if(alpha<0.3){
 			setorigin(master.pos,true);
+			clearinterpolation();
 			vel=master.vel*speed+(frandom(-0.1,0.1),frandom(-0.1,0.1),frandom(0.5,1));
 			alpha=height;
 			scale.x=radius;scale.y=radius;
-			roll=random(0,7)*45;
+			roll=frandom(0,360);
 		}else{
 			alpha*=deathheight;
 			scale*=friction;
@@ -85,8 +86,8 @@ class HDFireball:HDActor{
 	){
 		if(!tracer)return false;
 		vector3 totracer=(0,0,0);
-		if(pos.z>tracer.pos.z+tracer.height)totracer.z=0;
-			else totracer.z=tracer.height;
+		if(pos.z>tracer.pos.z+tracer.height*0.6)totracer.z=0;
+			else totracer.z=tracer.height*0.6;
 		totracer+=tracer.pos-self.pos;
 		double disttotracer=distance3d(tracer);
 		if(
