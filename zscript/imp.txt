@@ -89,10 +89,6 @@ class HDImpBall:HDFireball{
 		}
 		setorigin((pos+(tracer.pos-initpos))*0.5,true);
 	}
-	override string GetObituary(actor victim,actor inflictor,name mod,bool playerattack){
-		if(mod=="claws")return hitobituary;
-		return obituary;
-	}
 	states{
 	spawn:
 		BAL1 ABAB 3 A_FBTail();
@@ -171,6 +167,10 @@ class FighterImp:DoomImp{
 		super.postbeginplay();
 		hdmobster.spawnmobster(self);
 		hdmobai.resize(self,0.8,1.1);
+	}
+	override string GetObituary(actor victim,actor inflictor,name mod,bool playerattack){
+		if(mod=="claws")return hitobituary;
+		return obituary;
 	}
 	void A_ImpChase(){
 		hdmobai.chase(self);
