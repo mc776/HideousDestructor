@@ -84,18 +84,17 @@ class HDFireball:HDActor{
 		bool inlosonly=true
 	){
 		if(!tracer)return false;
-		vector3 totracer;
+		vector3 totracer=(0,0,0);
 		if(pos.z>tracer.pos.z+tracer.height)totracer.z=0;
 			else totracer.z=tracer.height;
 		totracer+=tracer.pos-self.pos;
-		double disttotracer=distance2d(tracer);
+		double disttotracer=distance3d(tracer);
 		if(
-			(!inlosonly || checksight(tracer))
+			(!inlosonly||checksight(tracer))
 			&&
 			(disttotracer<seekradius)
 		){
-			totracer=totracer.unit()*seekspeed;
-			vel+=totracer;
+			vel+=totracer.unit()*seekspeed;
 			return true;
 		}
 		return false;

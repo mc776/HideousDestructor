@@ -57,26 +57,26 @@ ACTOR FireDancer : LostSoul replaces LostSoul
 		SKUL A 0 A_PlaySound("skull/melee")
 		loop
 	Missile:
-		SKUL A 2 bright A_SpawnItemEx("DrunkImpBallTail", random(-4,-6),random(-1,1),random(4,6), velx*0.7,vely*0.7,velz*0.7+1, 0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+		SKUL A 2 bright A_SpawnItemEx("ImpBallTail", random(-4,-6),random(-1,1),random(4,6), velx*0.7,vely*0.7,velz*0.7+1, 0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
 		SKUL B 2 bright A_FaceTarget
-		SKUL A 2 bright A_SpawnItemEx("DrunkImpBallTail", random(-4,-6),random(-1,1),random(4,6), velx*0.7,vely*0.7,velz*0.7+1, 0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+		SKUL A 2 bright A_SpawnItemEx("ImpBallTail", random(-4,-6),random(-1,1),random(4,6), velx*0.7,vely*0.7,velz*0.7+1, 0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
 		SKUL B 2 bright A_FaceTarget
-		SKUL A 2 bright A_SpawnItemEx("DrunkImpBallTail", random(-4,-6),random(-1,1),random(4,6), velx*0.7,vely*0.7,velz*0.7+1, 0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+		SKUL A 2 bright A_SpawnItemEx("ImpBallTail", random(-4,-6),random(-1,1),random(4,6), velx*0.7,vely*0.7,velz*0.7+1, 0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
 		SKUL B 2 bright A_FaceTarget
 		SKUL C 2 BRIGHT A_SkullAttack
 			//intentional fall-through
 	Fly:
-		SKUL C 1 BRIGHT A_SpawnItemEx("DrunkImpBallTail", -4,0,8, velx*0.7,vely*0.7,velz*0.7+1, 0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+		SKUL C 1 BRIGHT A_SpawnItemEx("ImpBallTail", -4,0,8, velx*0.7,vely*0.7,velz*0.7+1, 0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
 		SKUL C 0 BRIGHT ThrustThingZ(0,random(1,4),random(0,1),1)
 		SKUL D 2 BRIGHT
-		SKUL D 1 BRIGHT A_SpawnItemEx("DrunkImpBallTail", -4,0,8, velx*0.7,vely*0.7,velz*0.7+1, 0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+		SKUL D 1 BRIGHT A_SpawnItemEx("ImpBallTail", -4,0,8, velx*0.7,vely*0.7,velz*0.7+1, 0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
 		SKUL C 2 BRIGHT
 		SKUL C 0 BRIGHT ThrustThingZ(0, random(1,4), random(0,1), 1)
 		SKUL C 0 BRIGHT A_GiveInventory("Clip",1)
 		SKUL C 0 BRIGHT A_JumpIfInventory("Clip",4,1)
 		loop
 		SKUL C 2 BRIGHT A_TakeInventory("Clip")
-		SKUL D 2 BRIGHT A_SpawnItemEx("DrunkImpBallTail", -4,0,8, velx*0.7,vely*0.7,velz*0.7+1, 0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
+		SKUL D 2 BRIGHT A_SpawnItemEx("ImpBallTail", -4,0,8, velx*0.7,vely*0.7,velz*0.7+1, 0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM)
 		SKUL CD 2 BRIGHT A_FastChase
 		SKUL C 4 BRIGHT
 		goto see

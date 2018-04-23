@@ -334,12 +334,11 @@ class Heat:Inventory{
 				let htt=heat(hlt.hitactor.findinventory("Heat"));
 				if(!htt)htt=heat(hlt.hitactor.GiveInventoryType("heat"));
 				double distdiff=hlt.distance/aimdist;
-				double togive=realamount*(1.-distdiff)*0.01; //can't be 0.1
+				double togive=realamount*(1.-distdiff)*0.01*volume/max(1.,htt.volume);
 				htt.realamount+=togive;
 				realamount-=togive;
 			}
 		}
-
 
 		//cooldown
 		double reduce=inversevolumeratio;
