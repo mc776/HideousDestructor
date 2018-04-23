@@ -553,9 +553,11 @@ class GreenSphere:BlueSphere replaces Invulnerabilitysphere{
 	override bool used(actor user){
 		user.A_GiveInventory("HDInvuln");
 		user.A_Quake(3,26,0,220,"none");
-		user.A_RadiusGive("HDFireStarter",128,
-			RGF_PLAYERS|RGF_MONSTERS|RGF_OBJECTS|RGF_CORPSES,1
-		);
+		blockthingsiterator itt=blockthingsiterator.create(user,256);
+		while(itt.Next()){
+			A_Immolate(itt.thing,user,76);
+		}
+
 		for(int i=45;i<360;i+=90){
 			user.A_SpawnItemEx("HDExplosion",
 				4,-4,20,user.vel.x,user.vel.y,user.vel.z+1,i,
