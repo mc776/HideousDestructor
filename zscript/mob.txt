@@ -394,6 +394,7 @@ class HDMobster:IdleDummy{
 	double thraidius;
 	int leftright;
 	int boredthreshold;int bored;
+	actor healablecorpse;
 	default{
 		meleethreshold 0;
 	}
@@ -411,6 +412,7 @@ class HDMobster:IdleDummy{
 		leftright=randompick(-1,-1,-1,-1,0,1,1);
 		threat=null;thraidius=256;
 		bored=0;boredthreshold=20;
+		healablecorpse=null;
 		changetid(123); //only used for actoriterator
 	}
 	states{
@@ -425,6 +427,43 @@ class HDMobster:IdleDummy{
 			}
 			if(master.health<1)return;
 
+			//see if this is a healer
+			if(!random(0,14))healablecorpse=null;
+			if(
+				master.findstate("heal")
+				&&!threat
+			){
+				blockthingsiterator it=blockthingsiterator.create(master,256);
+				while(it.next()){
+					actor itt=it.thing;
+					if(
+						itt.bcorpse
+						&&itt.findstate("raise")
+						&&!random(0,4)
+						&&abs(itt.pos.z-master.pos.z)<master.maxstepheight*2
+						&&itt.checksight(master)
+					){
+						healablecorpse=itt;
+						if(
+							itt.distance3d(master)<
+							(itt.radius+master.radius+12)*HDCONST_SQRTTWO
+						){
+							actor masbak=master;
+							master=itt;
+							masbak.A_Face(master);
+							masbak.setstatelabel("heal");
+							A_RaiseMaster(
+								RF_TRANSFERFRIENDLINESS
+								|RF_NOCHECKPOSITION
+							);
+							master.master=masbak;
+							master=masbak;
+						}
+						break;
+					}
+				}
+			}
+
 			//decide where to place goal
 			target=master.target;
 			if(threat){
@@ -438,6 +477,10 @@ class HDMobster:IdleDummy{
 					!master.checksight(threat)
 					||master.distance3d(threat)>thraidius  
 				)threat=null;
+			}else if(healablecorpse){
+				master.bfrightened=bfrightened;
+				master.goal=self;master.bchasegoal=true;
+				setorigin(healablecorpse.pos,true);
 			}else if(target){
 				master.bfrightened=bfrightened;
 				master.goal=self;master.bchasegoal=true;
