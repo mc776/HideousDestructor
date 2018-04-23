@@ -16,8 +16,8 @@ const ENC_426_LOADED=ENC_426*0.3;
 const ENC_776MAG=30;
 const ENC_776MAG_LOADED=ENC_776MAG*0.5;
 //cased rounds are easier to keep in your pocket and fit where a mag will not.
-const ENC_776=ENC_776MAG*0.035;
-const ENC_776B=ENC_776*0.3;
+const ENC_776=ENC_776MAG*0.032;
+const ENC_776B=ENC_776*0.5;
 const ENC_776_LOADED=ENC_776*0.3;
 //clips take up more space than 10 assorted rounds.
 const ENC_776CLIP=ENC_776*12;
@@ -47,11 +47,11 @@ const ENC_BLUEARMOUR=220;
 const ENC_GREENARMOUR=70;
 const ENC_RADSUIT=50;
 const ENC_IEDKIT=3;
-const ENC_STIMPACK=5;
 const ENC_SQUADSUMMONER=7;
-const ENC_BLUEPOTION=10;
+const ENC_BLUEPOTION=12;
 const ENC_LITEAMP=20;
 const ENC_MEDIKIT=45;
+const ENC_STIMPACK=7;
 const ENC_LADDER=70;
 const ENC_DERP=55;
 const ENC_HERP=125;
@@ -273,7 +273,7 @@ extend class HDPlayerPawn{
 		;
 
 		double carrymax=
-			360+
+			400+
 			countinv("PowerStrength")*100+
 			min(regenblues,150)+
 			stimcount*2
