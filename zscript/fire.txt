@@ -177,12 +177,13 @@ class HDFire:IdleDummy{
 
 //an invisible actor that constantly damages anything it collides with
 /* special uses:
-	accuracy = amount of heat to give each tic
+	accuracy = amount of heat to give each cycle
 */
 class PersistentDamager:HDActor{
 	vector3 relpos;
 	default{
-		+noblockmap +missile
+//		+noblockmap +missile
+		+solid
 		damagetype "Thermal";
 
 		height 8;radius 8;
@@ -192,14 +193,22 @@ class PersistentDamager:HDActor{
 		super.postbeginplay();
 		if(master)relpos=self.pos-master.pos;
 	}
+	override bool cancollidewith(actor other,bool passive){
+		if(passive&&!ticker&&other.bshootable&&!other.bnodamage){
+			if(damagetype=="Thermal"){
+				HDF.Give(other,"Heat",stamina*10);
+				stamina--;
+				if(accuracy<1){destroy();return false;}
+			}else other.damagemobj(self,target,stamina,damagetype);
+		}
+		return false;
+	}
 	int ticker;
 	override void tick(){
 		if(globalfreeze||level.Frozen) return;
 
 		if(master)setorigin(master.pos+relpos,false);
-
-		if(stamina>0){
-		}
+		if(ticker<4)ticker++;else ticker=0;
 
 		//nexttic
 		if(CheckNoDelay()){
@@ -287,6 +296,7 @@ class Heat:Inventory{
 		if(
 			!(ticker%3)
 			&&realamount>frandom(100,140)
+			&&!owner.bnodamage
 			&&!owner.countinv("ImmunityToFire")
 			&&owner.countinv("SawGib")<burnoutthreshold*frandom(0.8,1.2)
 		){
@@ -304,7 +314,10 @@ class Heat:Inventory{
 		}
 
 		//damage
-		if(realamount>random(random(12,20),40)){
+		if(
+			owner.bshootable&&!owner.bnodamage
+			&&realamount>random(random(12,20),40)
+		){
 			double dmgamt=realamount*0.01;
 			if(
 				dmgamt<1.
@@ -349,7 +362,8 @@ class Heat:Inventory{
 		realamount-=reduce;
 		angle=owner.angle;
 
-//if(owner.player)A_LogFloat(realamount);
+//
+if(owner.player)A_LogFloat(realamount);
 	}
 }
 
