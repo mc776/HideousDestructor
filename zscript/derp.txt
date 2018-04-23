@@ -115,6 +115,11 @@ class DERPBot:HDUPK{
 			A_PlaySound("derp/crawl",CHAN_BODY);
 			moved=TryMove(pos.xy+(cos(angle),sin(angle))*speed,false);
 			movestamina++;
+		}else if(
+			cmd==DERP_TURRET
+		){
+			A_PlaySound("derp/crawl",CHAN_BODY);
+			angle+=36;
 		}
 
 		if(!moved){
@@ -206,7 +211,6 @@ class DERPBot:HDUPK{
 			stuckline=null;
 			spawn("FragPuff",pos);
 			bnogravity=false;
-//			bsolid=true;
 			A_ChangeVelocity(3,0,2,CVF_RELATIVE);
 			A_PlaySound("weapons/bigcrack",4);
 		}goto spawn2;
@@ -255,7 +259,8 @@ class DERPBot:HDUPK{
 		DEPR A 0 A_JumpIf(!!stuckline,"stuck");
 	spawn2:
 		DERP A 0 A_ClearTarget();
-		DERP A 10 A_DerpLook();
+		DERP A 0 A_DerpLook();
+		DERP A 6 A_DerpCrawl();
 		loop;
 	see:
 		DERP A 0{
@@ -266,14 +271,14 @@ class DERPBot:HDUPK{
 			if(ammo<1)setstatelabel("noammo");
 		}
 	see2:
-		DERP AAAAAAAA 3 A_DerpCrawl();
-		DERP A 0{if(deathmatch)A_DerpLook();}
+		DERP AAAAAAAA 2 A_DerpCrawl();
+		DERP A 0 A_DerpLook();
 		goto see;
 	turn:
 		DERP A 1 A_DerpTurn();
 		wait;
 	noshot:
-		DERP AAAAAAAA 3 A_DerpCrawl(false);
+		DERP AAAAAAAA 2 A_DerpCrawl(false);
 		goto see2;
 	pain:
 		DERP A 20{
@@ -470,7 +475,6 @@ extend class HDHandlers{
 				return;
 			}
 			let ddd=DERPBot(ppp.spawn("DERPBot",dlt.hitlocation-dlt.hitdir*4));
-//			ddd.bsolid=false;
 			if(!ddd){
 				ppp.A_Log(string.format("\cd[DERP]  \cuCan't deploy here."),true);
 				return;
