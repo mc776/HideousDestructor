@@ -172,7 +172,7 @@ class FighterImp:DoomImp{
 		if(mod=="claws")return hitobituary;
 		return obituary;
 	}
-	void A_ImpChase(){
+	virtual void A_ImpChase(){
 		hdmobai.chase(self);
 	}
 	vector2 leadaim1;
@@ -500,6 +500,9 @@ class HealerImp:FighterImp{
 		meleedamage 3;
 		obituary "%o could feel the schadenfreude.";
 		hitobituary "%o said I want a second opinion,so the imps said okay you're ugly too.";
+	}
+	override void A_ImpChase(){
+		hdmobai.chase(self,res:true);
 	}
 	states{
 	see:

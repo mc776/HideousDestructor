@@ -349,10 +349,11 @@ class doordestroyer:hdactor{
 		}
 		return false;
 	}
-	static void destroydoor(actor caller){
+	static void destroydoor(actor caller,double range=0){
+		if(!range)range=caller.radius*2;
 		flinetracedata dlt;
 		caller.linetrace(
-			caller.angle,caller.radius*2,0,
+			caller.angle,range,0,
 			flags:TRF_THRUACTORS,
 			offsetz:caller.height*0.5,data:dlt
 		);
