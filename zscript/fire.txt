@@ -244,6 +244,12 @@ class Heat:Inventory{
 	default{
 		inventory.amount 1;
 		inventory.maxamount 9999999;
+		obituary "%o was too hot to handle.";
+	}
+	static double GetAmount(actor heated){
+		let htt=Heat(heated.findinventory("Heat"));
+		if(!htt)return 0;
+		return htt.realamount;
 	}
 	override void attachtoowner(actor user){
 		super.attachtoowner(user);
