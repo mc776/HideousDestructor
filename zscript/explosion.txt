@@ -5,12 +5,33 @@
 //need to do a new explosion to immolate things properly
 //...can we do a combo exploder (blast, frags and immolate)?
 extend class HDActor{
-	void A_Blast(
+	void A_HDBlast(
 		double blastradius=0,int blastdamage=0,double fullblastradius=0,name blastdamagetype="None",
 		double pushradius=0,double pushamount=0,double fullpushradius=0,bool pushmass=true,
 		double fragradius=0,int fragdamage=0,name fragdamagetype="SmallArms1",
 		double immolateradius=0,int immolateamount=1,int immolatechance=100,
-		double gibradius=0,double gibamount=1,
+		double gibradius=0,int gibamount=1,
+		bool hurtspecies=true,
+		actor source=null,
+		bool passwalls=false
+	){
+		hdactor.HDBlast(self,
+			blastradius,blastdamage,fullblastradius,blastdamagetype,
+			pushradius,pushamount,fullpushradius,pushmass,
+			fragradius,fragdamage,fragdamagetype,
+			immolateradius,immolateamount,immolatechance,
+			gibradius,gibamount,
+			hurtspecies,
+			source,
+			passwalls
+		);
+	}
+	static void HDBlast(actor caller,
+		double blastradius=0,int blastdamage=0,double fullblastradius=0,name blastdamagetype="None",
+		double pushradius=0,double pushamount=0,double fullpushradius=0,bool pushmass=true,
+		double fragradius=0,int fragdamage=0,name fragdamagetype="SmallArms1",
+		double immolateradius=0,int immolateamount=1,int immolatechance=100,
+		double gibradius=0,int gibamount=1,
 		bool hurtspecies=true,
 		actor source=null,
 		bool passwalls=false
@@ -25,22 +46,23 @@ extend class HDActor{
 
 		//initialize things to be used in the iterator
 		if(!source){
-			if(target)source=target;
-			else if(master)source=master;
-			else source=self;
+			if(caller.target)source=caller.target;
+			else if(caller.master)source=caller.master;
+			else source=caller;
 		}
+		actor target=caller.target;
 
 		//do all this from the centre
-		addz(height*0.5);
+		caller.addz(caller.height*0.5);
 
-		blockthingsiterator itt=blockthingsiterator.create(self,bigradius);
+		blockthingsiterator itt=blockthingsiterator.create(caller,bigradius);
 		while(itt.Next()){
 			actor it=itt.thing;
 			double losmul=0;
 
 			if(	//abort all checks if no hurt species
 				!it
-				||it==self
+				||it==caller
 				||(
 					!hurtspecies
 					&&it.species==source.species
@@ -50,7 +72,7 @@ extend class HDActor{
 
 			double ithalfheight=it.height*0.5;
 			it.addz(ithalfheight); //get the middle not the bottom
-			double dist=distance3d(it);
+			double dist=caller.distance3d(it);
 			it.addz(-ithalfheight); //reset its position
 
 			bool ontop=
@@ -63,9 +85,9 @@ extend class HDActor{
 			else{
 				actor its=spawn("idledummy",it.pos);
 				if(its){
-					its.a_setsize(1,1);if(checksight(its))losmul+=0.34;
-					its.addz(ithalfheight);if(checksight(its))losmul+=0.34;
-					its.addz(ithalfheight);if(checksight(its))losmul+=0.34;
+					its.a_setsize(1,1);if(caller.checksight(its))losmul+=0.34;
+					its.addz(ithalfheight);if(caller.checksight(its))losmul+=0.34;
+					its.addz(ithalfheight);if(caller.checksight(its))losmul+=0.34;
 					its.destroy();
 				}losmul=min(losmul,1.);
 			}
@@ -77,14 +99,15 @@ extend class HDActor{
 			//immolate before all damage, to avoid bypassing player death transfer
 			if(!it)continue;if(dist<=immolateradius&&!it.countinv("ImmunityToFire")){
 				if(immolatechance>=random(1,100)*losmul){
-					A_Immolate(it,target,immolateamount);
+					if(hdactor(caller))hdactor(caller).A_Immolate(it,target,immolateamount);
+					else HDF.Give(it,"Heat",immolateamount*2);
 				}
 			}
 			//gibbing
 			if(!it)continue;if(dist<=gibradius && it.bcorpse && it.bshootable){
 				it.a_giveinventory("sawgib",gibamount-dist/3);
 				for(int i=0;i<gibamount;i+=3){
-					A_SpawnItemEx(it.bloodtype,
+					caller.A_SpawnItemEx(it.bloodtype,
 						random(1,it.radius),
 						random(-it.radius,it.radius)*0.5,
 						random(4,it.height),
@@ -94,18 +117,18 @@ extend class HDActor{
 						0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION
 					);
 				}
-				if(!it.bdontthrust)it.vel+=(it.pos-self.pos)*divdist*divmass*10;
+				if(!it.bdontthrust)it.vel+=(it.pos-caller.pos)*divdist*divmass*10;
 			}
 			//push
 			if(!it)continue;if(dist<=pushradius && it.bshootable && !it.bdontthrust){
 				if(it.radiusdamagefactor)pushamount*=it.radiusdamagefactor;
-				vector3 push=(it.pos-self.pos)*divdist
+				vector3 push=(it.pos-caller.pos)*divdist
 					*clamp(pushamount-clamp(dist-fullpushradius,0,dist),0,pushamount);
 				if(pushmass){
 					if(pushamount<=it.mass)push=(0,0,0);
 					else{
 						push*=divmass;
-						if(push.z>0)push-=(0,0,mass*it.gravity);
+						if(push.z>0)push-=(0,0,caller.mass*it.gravity);
 					}
 				}
 				it.vel+=push;
@@ -116,7 +139,7 @@ extend class HDActor{
 				int dmg=(dist>fullblastradius)?
 					blastdamage-clamp(dist-fullblastradius,0,dist)
 					:blastdamage;
-				it.DamageMobj(self,source,dmg*losmul,blastdamagetype,DMG_THRUSTLESS,0);
+				it.DamageMobj(caller,source,dmg*losmul,blastdamagetype,DMG_THRUSTLESS,0);
 			}
 			//frag damage
 			if(!it)continue;if(
@@ -124,7 +147,7 @@ extend class HDActor{
 				&&(it.bsolid || it.bshootable || it.bvulnerable)
 			){
 				if(it.radiusdamagefactor)fragdamage*=it.radiusdamagefactor;
-				A_Face(it);
+				caller.A_Face(it);
 				if(
 					(
 						it.bvulnerable||(
@@ -135,16 +158,16 @@ extend class HDActor{
 					)
 				){
 					//determine size of arc exposed to frags
-					vector3 badpos=(rotatevector((0,it.radius),angle),0);
+					vector3 badpos=(rotatevector((0,it.radius),caller.angle),0);
 
 					it.setxyz(it.pos+badpos);
-					A_Face(it,0,0,flags:FAF_BOTTOM,z_ofs:0);
-					double pitchcover=pitch;double angcover=angle;
+					caller.A_Face(it,0,0,flags:FAF_BOTTOM,z_ofs:0);
+					double pitchcover=caller.pitch;double angcover=caller.angle;
 					it.setxyz(it.pos-2*badpos);
-					A_Face(it,0,0,flags:FAF_TOP,z_ofs:0);
+					caller.A_Face(it,0,0,flags:FAF_TOP,z_ofs:0);
 					angcover=(
-							deltaangle(pitchcover,pitch),
-							deltaangle(angcover,angle)
+							deltaangle(pitchcover,caller.pitch),
+							deltaangle(angcover,caller.angle)
 						).length();
 					it.setxyz(it.pos+badpos);
 
@@ -153,10 +176,10 @@ extend class HDActor{
 					if(random(1,720)<angcover)dmg=max(dmg,random(1,fragdamage));
 
 						//SO MUCH BLOOD
-					A_Face(it,0,0);
+					caller.A_Face(it,0,0);
 					name bld="FragPuff";
 					if(!it.bnoblood&&it.bloodtype)bld=it.bloodtype;
-					int gbg;actor blaaa;vector2 blooddir=(pos.xy-it.pos.xy).unit();
+					int gbg;actor blaaa;vector2 blooddir=(caller.pos.xy-it.pos.xy).unit();
 					for(int i=0;i<dmg;i+=12){
 						[gbg,blaaa]=it.A_SpawnItemEx(bld,
 							random(-1,it.radius),
@@ -165,7 +188,7 @@ extend class HDActor{
 							blooddir.x*frandom(-1,4),
 							blooddir.y*frandom(-4,4),
 							frandom(1,4),
-							-self.angle,SXF_USEBLOODCOLOR
+							-caller.angle,SXF_USEBLOODCOLOR
 							|SXF_ABSOLUTEANGLE
 							|SXF_NOCHECKPOSITION
 						);
@@ -187,18 +210,18 @@ extend class HDActor{
 
 
 					//and finally the good stuff
-					if(hd_debug)A_Log(
+					if(hd_debug)caller.A_Log(
 						string.format("%s fragged for %i damage",
 							it.getclassname(),dmg
 						)
 					);
-					it.DamageMobj(self,source,dmg,
+					it.DamageMobj(caller,source,dmg,
 						fragdamagetype,DMG_THRUSTLESS,0
 					);
 				}
 			}
 		}
 		//reset position
-		if(self)addz(-height*0.5);
+		if(caller)caller.addz(-caller.height*0.5);
 	}
 }

@@ -57,7 +57,7 @@ class GyroGrenade:SlowProjectile{
 		//explosion
 		if(!inthesky){
 			A_SprayDecal("Scorch",16);
-			A_Blast(
+			A_HDBlast(
 				pushradius:256,pushamount:128,fullpushradius:96,
 				fragradius:HDCONST_SPEEDOFSOUND,
 				fragdamage:random(160,200+8*stamina),
@@ -150,7 +150,7 @@ class HDHEAT:GyroGrenade{
 		//explosion
 		if(!inthesky){
 			A_SprayDecal("BrontoScorch",16);
-			A_Blast(
+			A_HDBlast(
 				pushradius:256,pushamount:128,fullpushradius:96,
 				fragradius:HDCONST_SPEEDOFSOUND,
 				fragdamage:random(60,240),
@@ -283,7 +283,7 @@ class DudRocket:HDUPK{
 		stop;
 	explode:
 		---- A 0{
-			A_Blast(
+			A_HDBlast(
 				pushradius:256,pushamount:128,fullpushradius:96,
 				fragradius:HDCONST_SPEEDOFSOUND,
 				fragdamage:random(160,200+8*stamina),

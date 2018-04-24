@@ -284,7 +284,7 @@ extend class HDPlayerPawn{
 
 
 
-class doorblocker:actor{
+class doordestroyer:hdactor{
 	default{
 		+solid +nogravity +dontgib +ghost
 		+actlikebridge
@@ -301,6 +301,15 @@ class doorblocker:actor{
 		llength=vvv.length();
 		llit=max(1,llength/10); //see chunkspeed
 		vfrac=vvv/llit;
+
+		A_HDBlast(
+			pushradius:llength,pushamount:24,
+			fragradius:llength,fragdamage:42,
+			immolateradius:llength,
+			immolateamount:random(10,30),
+			immolatechance:12,
+			gibradius:llength*0.4,gibamount:10
+		);
 	}
 	void DoorChunk(class<actor>chunktype,int numpercolumn=1,double chunkspeed=10){
 		chunkspeed*=0.1; //see vfrac
@@ -314,6 +323,10 @@ class doorblocker:actor{
 						vfrac,randompick(90,-90)+frandom(-60,60)
 					)*chunkspeed*frandom(0.4,1.4);
 				aaa.vel.z=frandom(-6,12);
+				spawn("HDSmoke",(
+					(v1pos+vfrac*i),
+					floorz+frandom(1,32)
+				));
 			}
 		}
 	}
@@ -323,87 +336,125 @@ class doorblocker:actor{
 		TNT1 A 0 DoorChunk("HDExplosion",3,3);
 		TNT1 A 0 DoorChunk("HDSmoke",5,3);
 		TNT1 AAA 1 DoorChunk("HugeWallChunk",20,15);
-		TNT1 AAAA 2 DoorChunk("HDSmoke",5,3);
-		TNT1 AAA 1 DoorChunk("HugeWallChunk",20);
-		TNT1 AAAAAAA 4 DoorChunk("HDSmoke",5,3);
+		TNT1 A 0 DoorChunk("HDSmoke",5,3);
+		TNT1 A 0 DoorChunk("HDSmokeChunk",random(0,3),7);
+		TNT1 AAAA 1 DoorChunk("HDSmoke",5,3);
+		TNT1 A 0 DoorChunk("HDSmoke",5,3);
+		TNT1 A 0 DoorChunk("HDSmokeChunk",random(0,3),7);
+		TNT1 AAAA 2 DoorChunk("HugeWallChunk",20);
 		TNT1 A -1;
 		stop;
 	}
-}
-class doorball:doomimpball{
 	static const int doorspecials[]={
 		//from LineSpecials[] in p_lnspec.cpp
 		10,11,12,13,14, 85, 105,106, 202, 249, 274
 	};
+	static bool checkdoorspecial(int linespecial){
+		int dlsl=doordestroyer.doorspecials.size();
+		for(int i=0;i<dlsl;i++){
+			if(linespecial==doordestroyer.doorspecials[i]){
+				return true;
+				break;
+			}
+		}
+		return false;
+	}
+	static void destroydoor(actor caller){
+		flinetracedata dlt;
+		caller.linetrace(
+			caller.angle,caller.radius*1.44,0,
+			flags:TRF_THRUACTORS,
+			offsetz:caller.height*0.5,data:dlt
+		);
+		if(dlt.hitline){
+			sector othersector=hdmath.oppositesector(dlt.hitline,dlt.hitsector);
+			if(
+				othersector
+				&&othersector.ceilingplane.zatpoint(dlt.hitlocation.xy+dlt.hitdir.xy)<dlt.hitlocation.z
+			){
+				//see if a door special applies
+				bool isdoor=checkdoorspecial(dlt.hitline.special);
+
+				//then do the above for all other lines tagging this sector :(
+				if(!isdoor){
+					//HOW THE FUCK DO YOU FIND A SECTOR TAG
+					int brutalforcery=0;
+					bool gotit=false;
+					for(brutalforcery=0;brutalforcery<100;brutalforcery++){
+						sectortagiterator sss=
+							sectortagiterator.create(brutalforcery);
+						int ssss=sss.next();
+						while(!gotit&&ssss>-1){
+							if(level.sectors[ssss]==othersector)gotit=true;
+							ssss=sss.next();
+						}
+						if(gotit)break;
+					}
+
+					lineiditerator lll=lineiditerator.create(brutalforcery);
+					int l=lll.next();
+					while(!isdoor&&l>-1){
+						isdoor=checkdoorspecial(level.lines[l].special);
+						l=lll.next();
+					}
+				}
+
+				if(!isdoor)return;
+
+				//see how wide the door is
+				vector2 doorline=dlt.hitline.v1.p-dlt.hitline.v2.p;
+				double maxdoor=frandom(64,1128);
+				if(doorline dot doorline > maxdoor*maxdoor)return;
+
+				//see how thick the door is
+				//what is the proper way of doing this
+				vector3 posbak=caller.pos;
+				caller.setorigin(caller.pos+((dlt.hitlocation.xy+dlt.hitdir.xy)*frandom(14,34),0),false);
+				isdoor=(caller.cursector!=othersector);
+				caller.setorigin(posbak,false);
+
+				if(!isdoor)return;
+
+				//not intended by the mapper
+				textureid shwal=texman.checkfortexture("ASHWALL2",texman.type_any);
+				if(int(shwal)<1)
+					shwal=texman.checkfortexture("ASHWALL",texman.type_any);
+				othersector.settexture(sector.ceiling,shwal,true);
+				for(int i=0;i<othersector.lines.size();i++){
+					othersector.lines[i].flags|=line.ML_DONTPEGTOP;
+					for(int j=0;j<2;j++){
+						side sdd=othersector.lines[i].sidedef[j];
+						if(
+							sdd
+							&&int(sdd.gettexture(side.top))<1
+						){
+							sdd.settexture(side.top,shwal);
+						}
+					}
+				}
+
+				//blow that shit up
+				othersector.flags|=sector.SECF_SILENTMOVE;
+				double blockpoint=
+					dlt.hitsector.ceilingplane.zatpoint(dlt.hitlocation.xy);
+				othersector.MoveCeiling(100,blockpoint+random(3,12),0,1,false);
+
+				let db=doordestroyer(spawn("doordestroyer",(
+					(dlt.hitlocation.xy+dlt.hitdir.xy*2),blockpoint
+				)));
+				db.setz(blockpoint);
+				db.v1pos=dlt.hitline.v1.p;
+				db.v2pos=dlt.hitline.v2.p;
+				db.target=caller.target;
+			}
+		}
+	}
+}
+class doorball:doomimpball{
 	states{
 	death:
-		BAL1 C 0{
-			flinetracedata dlt;
-			linetrace(angle,radius+3,0,offsetz:height*0.5,data:dlt);
-			if(dlt.hitline){
-				sector othersector=hdmath.oppositesector(dlt.hitline,dlt.hitsector);
-				if(
-					othersector
-					&&othersector.ceilingplane.zatpoint(dlt.hitlocation.xy+dlt.hitdir.xy)<dlt.hitlocation.z
-//TAG???				&&othersector.arg[0]==dlt.hitline.arg[0]
-				){
-					bool isdoor=false;
-
-					//see if a door special applies
-					int dlsl=doorspecials.size();
-					for(int i=0;i<dlsl;i++){
-						if(dlt.hitline.special==doorspecials[i]){
-							isdoor=true;
-							break;
-						}
-					}
-					if(!isdoor)return;
-
-					//see how wide the door is
-					vector2 doorline=dlt.hitline.v1.p-dlt.hitline.v2.p;
-					double maxdoor=frandom(64,1128);
-					if(doorline dot doorline > maxdoor*maxdoor)return;
-
-					//see how thick the door is
-					//what is the proper way of doing this
-					vector3 posbak=pos;
-					setorigin(pos+((dlt.hitlocation.xy+dlt.hitdir.xy)*frandom(14,34),0),false);
-					isdoor=(cursector!=othersector);
-					setorigin(posbak,false);
-					if(!isdoor)return;
-
-					textureid shwal=texman.checkfortexture("ASHWALL2",texman.type_any);
-					if(int(shwal)<1)
-						shwal=texman.checkfortexture("ASHWALL",texman.type_any);
-					othersector.settexture(sector.ceiling,shwal,true);
-					for(int i=0;i<othersector.lines.size();i++){
-						for(int j=0;j<2;j++){
-							side sdd=othersector.lines[i].sidedef[j];
-							if(
-								sdd
-								&&int(sdd.gettexture(side.top))<1
-							){
-								A_LogInt(int(sdd.gettexture(side.top)));
-								sdd.settexture(side.top,shwal);
-							}
-						}
-					}
-
-					//blow that shit up
-					othersector.flags|=sector.SECF_SILENTMOVE;
-					double blockpoint=
-						dlt.hitsector.ceilingplane.zatpoint(dlt.hitlocation.xy);
-					othersector.MoveCeiling(100,blockpoint+random(3,12),0,1,false);
-
-					let db=doorblocker(spawn("doorblocker",(
-						(dlt.hitlocation.xy+dlt.hitdir.xy*2),blockpoint
-					)));
-					db.setz(blockpoint);
-					db.v1pos=dlt.hitline.v1.p;
-					db.v2pos=dlt.hitline.v2.p;
-				}
-			}
-		}goto super::death;
+		BAL1 C 0{doordestroyer.destroydoor(self);}
+		goto super::death;
 	}
 }
 

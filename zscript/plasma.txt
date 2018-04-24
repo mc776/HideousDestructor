@@ -422,7 +422,7 @@ class BeamSpotFlash:BeamSpot{
 		int n=clamp((1000-d)*0.1,2,100);
 		int n1=n*0.6;
 		int n2=n*0.4;
-		A_Blast(
+		A_HDBlast(
 			n2,n1,0,"Electro",
 			pushradius:n2,pushamount:n2,
 			immolateradius:n1,immolateamount:random(4,8)*n2,immolatechance:n
@@ -523,7 +523,7 @@ class BeamSpotBoom:IdleDummy{
 		TNT1 A 0{
 			actor s;
 			A_GiveToTarget("BeamBoltThrower");
-			A_Blast(
+			A_HDBlast(
 				420,random(24,42)*10,128,"SmallArms0",
 				pushradius:420,pushamount:420,
 				immolateradius:256,immolateamount:random(1,5),immolatechance:70,

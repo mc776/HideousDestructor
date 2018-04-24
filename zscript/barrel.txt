@@ -163,7 +163,7 @@ class KillerBarrel:HDActor{
 		}
 	}
 	virtual void A_BarrelBlast(){
-		A_Blast(
+		A_HDBlast(
 			random(128,256),random(128,256),0,"Balefire",
 			256,256,0,true,
 			256,96,"Thermal",
@@ -339,7 +339,7 @@ class KillerFireCan:KillerBarrel{
 		}
 		POB1 A -1{
 			A_PlaySound("vile/firestrt",CHAN_AUTO,0.4);
-			if(!random(0,4))A_Blast(
+			if(!random(0,4))A_HDBlast(
 				random(12,128),random(2,4),64,"Balefire"
 			);
 			A_SpawnChunks("HDSmoke",8,4,12);
@@ -358,7 +358,7 @@ class KillerFireCan:KillerBarrel{
 		}
 	}
 	override void A_BarrelBlast(){
-		A_Blast(
+		A_HDBlast(
 			random(128,256),random(64,128),0,"Thermal",
 			pushradius:256,pushamount:256,fullpushradius:0,pushmass:true,
 			immolateradius:256,immolateamount:random(3,12),immolatechance:56,
@@ -436,7 +436,7 @@ class BarrelFlame2:HDFireball{
 		}loop;
 	death:
 		FIRE D 0{
-			A_Blast(
+			A_HDBlast(
 				immolateradius:stamina+4,
 				immolateamount:stamina+4,
 				hurtspecies:false
@@ -481,7 +481,7 @@ class BarrelFlame:HDFireball{
 				destroy();
 				return;
 			}
-			A_Blast(
+			A_HDBlast(
 				immolateradius:24,
 				immolateamount:random(8,16),
 				hurtspecies:false
