@@ -363,10 +363,27 @@ class doordestroyer:hdactor{
 				othersector
 				&&othersector.ceilingplane.zatpoint(dlt.hitlocation.xy+dlt.hitdir.xy)<dlt.hitlocation.z
 			){
-				//see if a door special applies
-				bool isdoor=checkdoorspecial(dlt.hitline.special);
+				//see how wide the door is
+				vector2 doorline=dlt.hitline.v1.p-dlt.hitline.v2.p;
+				double maxdoor=frandom(64,256);
+				if(doorline dot doorline > maxdoor*maxdoor)return;
 
-				//then do the above for all other lines tagging this sector :(
+				bool isdoor=false;
+
+				//see how thick the door is
+				//what is the proper way of doing this
+				vector3 posbak=caller.pos;
+				caller.setorigin(caller.pos+(
+					(dlt.hitlocation.xy+dlt.hitdir.xy)*frandom(14,34),0
+				),false);
+				isdoor=(caller.cursector!=othersector);
+				caller.setorigin(posbak,false);
+				if(!isdoor)return;
+
+				//see if a door special applies
+				isdoor=checkdoorspecial(dlt.hitline.special);
+
+				//see if door special applies for all other lines tagging this sector
 				if(!isdoor){
 					//HOW THE FUCK DO YOU FIND A SECTOR TAG
 					int brutalforcery=0;
@@ -382,27 +399,15 @@ class doordestroyer:hdactor{
 						if(gotit)break;
 					}
 
-					lineiditerator lll=lineiditerator.create(brutalforcery);
-					int l=lll.next();
-					while(!isdoor&&l>-1){
-						isdoor=checkdoorspecial(level.lines[l].special);
-						l=lll.next();
+					if(brutalforcery>0){
+						lineiditerator lll=lineiditerator.create(brutalforcery);
+						int l=lll.next();
+						while(!isdoor&&l>-1){
+							isdoor=checkdoorspecial(level.lines[l].special);
+							l=lll.next();
+						}
 					}
 				}
-
-				if(!isdoor)return;
-
-				//see how wide the door is
-				vector2 doorline=dlt.hitline.v1.p-dlt.hitline.v2.p;
-				double maxdoor=frandom(64,1128);
-				if(doorline dot doorline > maxdoor*maxdoor)return;
-
-				//see how thick the door is
-				//what is the proper way of doing this
-				vector3 posbak=caller.pos;
-				caller.setorigin(caller.pos+((dlt.hitlocation.xy+dlt.hitdir.xy)*frandom(14,34),0),false);
-				isdoor=(caller.cursector!=othersector);
-				caller.setorigin(posbak,false);
 
 				if(!isdoor)return;
 
