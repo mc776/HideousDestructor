@@ -290,6 +290,45 @@ class doorblocker:actor{
 		+actlikebridge
 		height 0.1;radius 0.1;
 	}
+	vector2 v1pos;
+	vector2 v2pos;
+	vector2 vfrac;
+	double llength;
+	int llit;
+	override void postbeginplay(){
+		super.postbeginplay();
+		vector2 vvv=(v2pos-v1pos);
+		llength=vvv.length();
+		llit=max(1,llength/10); //see chunkspeed
+		vfrac=vvv/llit;
+	}
+	void DoorChunk(class<actor>chunktype,int numpercolumn=1,double chunkspeed=10){
+		chunkspeed*=0.1; //see vfrac
+		for(int i=0;i<llit;i++){
+			for(int j=0;j<numpercolumn;j++){
+				actor aaa=spawn(chunktype,(
+					(v1pos+vfrac*i),
+					frandom(floorz,ceilingz)
+				));
+				aaa.vel.xy=rotatevector(
+						vfrac,randompick(90,-90)+frandom(-60,60)
+					)*chunkspeed*frandom(0.4,1.4);
+				aaa.vel.z=frandom(-6,12);
+			}
+		}
+	}
+	states{
+	spawn:
+		TNT1 A 0;
+		TNT1 A 0 DoorChunk("HDExplosion",3,3);
+		TNT1 A 0 DoorChunk("HDSmoke",5,3);
+		TNT1 AAA 1 DoorChunk("HugeWallChunk",20,15);
+		TNT1 AAAA 2 DoorChunk("HDSmoke",5,3);
+		TNT1 AAA 1 DoorChunk("HugeWallChunk",20);
+		TNT1 AAAAAAA 4 DoorChunk("HDSmoke",5,3);
+		TNT1 A -1;
+		stop;
+	}
 }
 class doorball:doomimpball{
 	static const int doorspecials[]={
@@ -309,6 +348,8 @@ class doorball:doomimpball{
 //TAG???				&&othersector.arg[0]==dlt.hitline.arg[0]
 				){
 					bool isdoor=false;
+
+					//see if a door special applies
 					int dlsl=doorspecials.size();
 					for(int i=0;i<dlsl;i++){
 						if(dlt.hitline.special==doorspecials[i]){
@@ -317,15 +358,49 @@ class doorball:doomimpball{
 						}
 					}
 					if(!isdoor)return;
+
+					//see how wide the door is
+					vector2 doorline=dlt.hitline.v1.p-dlt.hitline.v2.p;
+					double maxdoor=frandom(64,1128);
+					if(doorline dot doorline > maxdoor*maxdoor)return;
+
+					//see how thick the door is
+					//what is the proper way of doing this
+					vector3 posbak=pos;
+					setorigin(pos+((dlt.hitlocation.xy+dlt.hitdir.xy)*frandom(14,34),0),false);
+					isdoor=(cursector!=othersector);
+					setorigin(posbak,false);
+					if(!isdoor)return;
+
+					textureid shwal=texman.checkfortexture("ASHWALL2",texman.type_any);
+					if(int(shwal)<1)
+						shwal=texman.checkfortexture("ASHWALL",texman.type_any);
+					othersector.settexture(sector.ceiling,shwal,true);
+					for(int i=0;i<othersector.lines.size();i++){
+						for(int j=0;j<2;j++){
+							side sdd=othersector.lines[i].sidedef[j];
+							if(
+								sdd
+								&&int(sdd.gettexture(side.top))<1
+							){
+								A_LogInt(int(sdd.gettexture(side.top)));
+								sdd.settexture(side.top,shwal);
+							}
+						}
+					}
+
+					//blow that shit up
+					othersector.flags|=sector.SECF_SILENTMOVE;
 					double blockpoint=
 						dlt.hitsector.ceilingplane.zatpoint(dlt.hitlocation.xy);
-					othersector.MoveCeiling(100,blockpoint,0,1,false);
+					othersector.MoveCeiling(100,blockpoint+random(3,12),0,1,false);
 
-					actor db=spawn("doorblocker",(
+					let db=doorblocker(spawn("doorblocker",(
 						(dlt.hitlocation.xy+dlt.hitdir.xy*2),blockpoint
-					));
+					)));
 					db.setz(blockpoint);
-					othersector.flags|=sector.SECF_SILENTMOVE;
+					db.v1pos=dlt.hitline.v1.p;
+					db.v2pos=dlt.hitline.v2.p;
 				}
 			}
 		}goto super::death;
