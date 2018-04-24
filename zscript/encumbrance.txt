@@ -298,18 +298,8 @@ class doordestroyer:hdactor{
 	override void postbeginplay(){
 		super.postbeginplay();
 		vector2 vvv=(v2pos-v1pos);
-		llength=vvv.length();
 		llit=max(1,llength/10); //see chunkspeed
 		vfrac=vvv/llit;
-
-		A_HDBlast(
-			pushradius:llength,pushamount:24,
-			fragradius:llength,fragdamage:42,
-			immolateradius:llength,
-			immolateamount:random(10,30),
-			immolatechance:12,
-			gibradius:llength*0.4,gibamount:10
-		);
 	}
 	void DoorChunk(class<actor>chunktype,int numpercolumn=1,double chunkspeed=10){
 		chunkspeed*=0.1; //see vfrac
@@ -336,10 +326,10 @@ class doordestroyer:hdactor{
 		TNT1 A 0 DoorChunk("HDExplosion",3,3);
 		TNT1 A 0 DoorChunk("HDSmoke",5,3);
 		TNT1 AAA 1 DoorChunk("HugeWallChunk",20,15);
-		TNT1 A 0 DoorChunk("HDSmoke",5,3);
+		TNT1 A 0 DoorChunk("HDSmoke",5,2);
 		TNT1 A 0 DoorChunk("HDSmokeChunk",random(0,3),7);
-		TNT1 AAAA 1 DoorChunk("HDSmoke",5,3);
-		TNT1 A 0 DoorChunk("HDSmoke",5,3);
+		TNT1 AAAA 1 DoorChunk("HDSmoke",5,1);
+		TNT1 A 0 DoorChunk("HDSmoke",5,1);
 		TNT1 A 0 DoorChunk("HDSmokeChunk",random(0,3),7);
 		TNT1 AAAA 2 DoorChunk("HugeWallChunk",20);
 		TNT1 A -1;
@@ -362,7 +352,7 @@ class doordestroyer:hdactor{
 	static void destroydoor(actor caller){
 		flinetracedata dlt;
 		caller.linetrace(
-			caller.angle,caller.radius*1.44,0,
+			caller.angle,caller.radius*2,0,
 			flags:TRF_THRUACTORS,
 			offsetz:caller.height*0.5,data:dlt
 		);
@@ -446,6 +436,16 @@ class doordestroyer:hdactor{
 				db.v1pos=dlt.hitline.v1.p;
 				db.v2pos=dlt.hitline.v2.p;
 				db.target=caller.target;
+
+				double llength=doorline.length();
+				hdactor.HDBlast(caller,
+					pushradius:llength,pushamount:24,
+					fragradius:llength,fragdamage:llength,
+					immolateradius:llength,
+					immolateamount:random(10,30),
+					immolatechance:12,
+					gibradius:llength*0.4,gibamount:10
+				);
 			}
 		}
 	}
