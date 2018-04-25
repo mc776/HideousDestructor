@@ -98,8 +98,9 @@ class doordestroyer:hdactor{
 		//see how thick the door is
 		//what is the proper way of doing this
 		vector3 posbak=caller.pos;
-		caller.setorigin(caller.pos+(
-			(dlt.hitlocation.xy+dlt.hitdir.xy*maxdepth*frandom(0.8,1.2)),0
+		caller.setorigin((
+			dlt.hitlocation.xy+dlt.hitdir.xy*maxdepth*frandom(0.8,1.2),
+			posbak.z
 		),false);
 		isdoor=(caller.cursector!=othersector);
 		caller.setorigin(posbak,false);
@@ -152,20 +153,11 @@ class doordestroyer:hdactor{
 			othersector.lines[i].special=0;
 			for(int j=0;j<2;j++){
 				side sdd=othersector.lines[i].sidedef[j];
-				if(
-					sdd
-					&&int(sdd.gettexture(side.top))<1
-				){
-					sdd.settexture(side.top,shwal);
-				}
 				if(sdd){
-caller.A_LogInt(sdd.gettextureyoffset(side.mid));
+					if(int(sdd.gettexture(side.top))<1)sdd.settexture(side.top,shwal);
 					sdd.settextureyoffset(side.mid,
-						sdd.gettextureyoffset(side.mid)+holeheight
+						sdd.gettextureyoffset(side.mid)-holeheight
 					);
-caller.A_LogInt(holeheight);
-caller.A_LogInt(sdd.gettextureyoffset(side.mid));
-caller.A_Log("\cx---");
 				}
 			}
 		}
