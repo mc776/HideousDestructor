@@ -53,8 +53,14 @@ class doordestroyer:hdactor{
 		stop;
 	}
 	static const int doorspecials[]={
-		//from LineSpecials[] in p_lnspec.cpp
-		10,11,12,13,14, 85, 105,106, 202, 249, 274
+		//from https://github.com/coelckers/gzdoom/blob/master/src/p_lnspec.cpp#L3432
+		//only affects raising doors, not lowering platforms designed to function as doors
+
+		//these are all arg0
+		10,11,12,13,14,
+		105,106,194,195,198,
+		202,
+		249,252,262,263,265,266,268,274
 	};
 	static bool checkdoorspecial(int linespecial){
 		int dlsl=doordestroyer.doorspecials.size();
@@ -66,7 +72,7 @@ class doordestroyer:hdactor{
 		}
 		return false;
 	}
-	static bool destroydoor(actor caller,double range=0){
+	static bool destroydoor(actor caller,double maxwidth=128,double maxdepth=32,double range=0){
 		if(!range)range=caller.radius*2;
 		flinetracedata dlt;
 		caller.linetrace(
@@ -83,8 +89,8 @@ class doordestroyer:hdactor{
 
 		//see how wide the door is
 		vector2 doorline=dlt.hitline.v1.p-dlt.hitline.v2.p;
-		double maxdoor=frandom(64,256);
-		if(doorline dot doorline > maxdoor*maxdoor)return false;
+		maxwidth=frandom(0.8,1.2);
+		if(doorline dot doorline > maxwidth*maxwidth)return false;
 
 		bool isdoor=false;
 
@@ -92,7 +98,7 @@ class doordestroyer:hdactor{
 		//what is the proper way of doing this
 		vector3 posbak=caller.pos;
 		caller.setorigin(caller.pos+(
-			(dlt.hitlocation.xy+dlt.hitdir.xy)*frandom(14,34),0
+			(dlt.hitlocation.xy+dlt.hitdir.xy)*maxdepth*frandom(0.8,1.2),0
 		),false);
 		isdoor=(caller.cursector!=othersector);
 		caller.setorigin(posbak,false);

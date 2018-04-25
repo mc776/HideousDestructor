@@ -8,9 +8,11 @@ class HDWeapon:Weapon{
 	int barreldepth;
 	int weaponstatus[8];
 	int tipped;
-	const WRF_ALL=WRF_ALLOWRELOAD|WRF_ALLOWZOOM|WRF_ALLOWUSER1|WRF_ALLOWUSER2|WRF_ALLOWUSER3|WRF_ALLOWUSER4;
-	const WRF_NONE=WRF_NOFIRE|WRF_DISABLESWITCH;
 	property GunDimensions: gunmass,barrellength,barrelwidth,barreldepth;
+	enum HDWeaponFlagsets{
+		WRF_ALL=WRF_ALLOWRELOAD|WRF_ALLOWZOOM|WRF_ALLOWUSER1|WRF_ALLOWUSER2|WRF_ALLOWUSER3|WRF_ALLOWUSER4,
+		WRF_NONE=WRF_NOFIRE|WRF_DISABLESWITCH,
+	}
 	default{
 		+weapon.ammo_optional +weapon.alt_ammo_optional +weapon.noalert +weapon.noautoaim
 		+solid +noblockmonst +notrigger +dontgib

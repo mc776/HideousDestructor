@@ -77,6 +77,31 @@ class HDActor:Actor{
 			frg.bseeinvisible=true; //work around hack that normally lets HDBullet out
 		}
 	}
+	//roughly equivalent to CacoZapper
+	static void ArcZap(actor caller){
+		caller.A_CustomRailgun((random(4,8)),frandom(-12,12),"","azure",
+			RGF_SILENT|RGF_FULLBRIGHT,
+			1,4000,"HDArcPuff",180,180,frandom(32,128),4,0.4,0.6
+		);
+	}
+}
+class HDArcPuff:HDActor{
+	default{
+		+nogravity
+		+puffgetsowner
+		+puffonactors
+		+forcepain
+		+noblood
+		scale 0.4;
+		damagetype "Electro";
+		radius 0.1;
+		height 0.1;
+	}
+	states{
+	spawn:
+		TNT1 A 5 A_PlaySound("weapons/plasidle",0,0.1,0,0.4);
+		stop;
+	}
 }
 
 class InventoryFlag:Inventory{
