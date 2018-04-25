@@ -63,7 +63,7 @@ class ThunderBuster:HDWeapon{
 			invoker.weaponstatus[TBS_HEAT]+=6;
 			if(tlt.hittype==Trace_HitNone||tlt.distance>1000)return;
 			actor bbb=spawn("BeamSpotFlash",tlt.hitlocation-tlt.hitdir);
-			beamspotflash(bbb).impactdistance=tlt.distance;
+			beamspotflash(bbb).impactdistance=tlt.distance-10*battery;
 			bbb.angle=angle;
 			bbb.A_SprayDecal("Scorch",12);
 			bbb.pitch=pitch;

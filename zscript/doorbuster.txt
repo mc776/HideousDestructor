@@ -73,7 +73,7 @@ class doordestroyer:hdactor{
 		}
 		return false;
 	}
-	static bool destroydoor(actor caller,double maxwidth=160,double maxdepth=48,double range=0){
+	static bool destroydoor(actor caller,double maxwidth=140,double maxdepth=32,double range=0){
 		if(!range)range=max(4,caller.radius*2);
 		flinetracedata dlt;
 		caller.linetrace(
@@ -88,9 +88,18 @@ class doordestroyer:hdactor{
 			||othersector.ceilingplane.zatpoint(dlt.hitlocation.xy+dlt.hitdir.xy)>dlt.hitlocation.z
 		)return false;
 
+		//see if there are at least 2 2-sided lines
+		int num2sided=0;
+		for(int i=0;i<othersector.lines.size();i++){
+			if(othersector.lines[i].sidedef[1]){
+				num2sided++;
+				caller.A_LogInt(num2sided);
+			}
+		}if(num2sided<2)return false;
+
 		//see how wide the door is
 		vector2 doorline=dlt.hitline.v1.p-dlt.hitline.v2.p;
-		maxwidth*=frandom(0.8,1.6);
+		maxwidth*=frandom(0.4,1.8);
 		if(doorline dot doorline > maxwidth*maxwidth)return false;
 
 		bool isdoor=false;
