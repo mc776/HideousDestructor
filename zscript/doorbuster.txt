@@ -47,7 +47,6 @@ class doordestroyer:hdactor{
 		TNT1 A 0 DoorChunk("HDSmoke",5,2);
 		TNT1 A 0 DoorChunk("HDSmokeChunk",random(0,3),7);
 		TNT1 AAAA 1 DoorChunk("HDSmoke",5,1);
-		TNT1 A 0 DoorChunk("HDExplosion",1,3);
 		TNT1 A 0 DoorChunk("HDSmoke",5,1);
 		TNT1 A 0 DoorChunk("HDSmokeChunk",random(0,3),7);
 		TNT1 AAAA 2 DoorChunk("HugeWallChunk",20);
@@ -91,7 +90,7 @@ class doordestroyer:hdactor{
 
 		//see how wide the door is
 		vector2 doorline=dlt.hitline.v1.p-dlt.hitline.v2.p;
-		maxwidth*=frandom(0.8,1.2);
+		maxwidth*=frandom(0.8,1.6);
 		if(doorline dot doorline > maxwidth*maxwidth)return false;
 
 		bool isdoor=false;
@@ -107,15 +106,12 @@ class doordestroyer:hdactor{
 		if(!isdoor)return false;
 
 		//see if a door special applies
-		isdoor=checkdoorspecial(dlt.hitline.special);
+//		isdoor=checkdoorspecial(dlt.hitline.special);
 
 		//see if door special applies for all other lines tagging this sector
 		if(!isdoor){
 			//HOW THE FUCK DO YOU FIND A SECTOR TAG
 			int brutalforcery=0;
-/*
-I don't know why the lineiditerator gives the correct result.
-Do I even want to know at this point?
 			bool gotit=false;
 			for(brutalforcery=0;brutalforcery<100;brutalforcery++){
 				sectortagiterator sss=
@@ -127,9 +123,8 @@ Do I even want to know at this point?
 				}
 				if(gotit)break;
 			}
-*/
 			if(brutalforcery>0){
-				lineiditerator lll=lineiditerator.create(0);
+				lineiditerator lll=lineiditerator.create(brutalforcery);
 				int l=0;
 				while(!isdoor&&l>-1){
 					isdoor=checkdoorspecial(level.lines[l].special);
@@ -140,6 +135,13 @@ Do I even want to know at this point?
 
 		if(!isdoor)return false;
 
+		//blow that shit up
+		double holeheight=max(32,frandom(0.2,1.)*maxwidth);
+		othersector.flags|=sector.SECF_SILENTMOVE;
+		double blockpoint=
+			othersector.ceilingplane.zatpoint(dlt.hitlocation.xy+dlt.hitdir.xy)+holeheight;
+		othersector.MoveCeiling(holeheight,blockpoint,0,1,false);
+
 		//not intended by the mapper
 		textureid shwal=texman.checkfortexture("ASHWALL2",texman.type_any);
 		if(int(shwal)<1)
@@ -147,6 +149,7 @@ Do I even want to know at this point?
 		othersector.settexture(sector.ceiling,shwal,true);
 		for(int i=0;i<othersector.lines.size();i++){
 			othersector.lines[i].flags|=line.ML_DONTPEGTOP;
+			othersector.lines[i].special=0;
 			for(int j=0;j<2;j++){
 				side sdd=othersector.lines[i].sidedef[j];
 				if(
@@ -155,15 +158,19 @@ Do I even want to know at this point?
 				){
 					sdd.settexture(side.top,shwal);
 				}
+				if(sdd){
+caller.A_LogInt(sdd.gettextureyoffset(side.mid));
+					sdd.settextureyoffset(side.mid,
+						sdd.gettextureyoffset(side.mid)+holeheight
+					);
+caller.A_LogInt(holeheight);
+caller.A_LogInt(sdd.gettextureyoffset(side.mid));
+caller.A_Log("\cx---");
+				}
 			}
 		}
 
-		//blow that shit up
-		othersector.flags|=sector.SECF_SILENTMOVE;
-		double blockpoint=
-			dlt.hitsector.ceilingplane.zatpoint(dlt.hitlocation.xy);
-		othersector.MoveCeiling(100,blockpoint+frandom(-12,12),0,1,false);
-
+		//fancy effects
 		let db=doordestroyer(spawn("doordestroyer",(
 			(dlt.hitlocation.xy+dlt.hitdir.xy*2),blockpoint
 		)));
