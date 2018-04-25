@@ -40,12 +40,14 @@ class doordestroyer:hdactor{
 	states{
 	spawn:
 		TNT1 A 0;
-		TNT1 A 0 DoorChunk("HDExplosion",3,3);
+		TNT1 A 0 DoorChunk("HDExplosion",1,3);
 		TNT1 A 0 DoorChunk("HDSmoke",5,3);
 		TNT1 AAA 1 DoorChunk("HugeWallChunk",20,15);
+		TNT1 A 0 DoorChunk("HDExplosion",1,3);
 		TNT1 A 0 DoorChunk("HDSmoke",5,2);
 		TNT1 A 0 DoorChunk("HDSmokeChunk",random(0,3),7);
 		TNT1 AAAA 1 DoorChunk("HDSmoke",5,1);
+		TNT1 A 0 DoorChunk("HDExplosion",1,3);
 		TNT1 A 0 DoorChunk("HDSmoke",5,1);
 		TNT1 A 0 DoorChunk("HDSmokeChunk",random(0,3),7);
 		TNT1 AAAA 2 DoorChunk("HugeWallChunk",20);
@@ -72,8 +74,8 @@ class doordestroyer:hdactor{
 		}
 		return false;
 	}
-	static bool destroydoor(actor caller,double maxwidth=128,double maxdepth=32,double range=0){
-		if(!range)range=caller.radius*2;
+	static bool destroydoor(actor caller,double maxwidth=160,double maxdepth=48,double range=0){
+		if(!range)range=max(4,caller.radius*2);
 		flinetracedata dlt;
 		caller.linetrace(
 			caller.angle,range,0,
@@ -89,7 +91,7 @@ class doordestroyer:hdactor{
 
 		//see how wide the door is
 		vector2 doorline=dlt.hitline.v1.p-dlt.hitline.v2.p;
-		maxwidth=frandom(0.8,1.2);
+		maxwidth*=frandom(0.8,1.2);
 		if(doorline dot doorline > maxwidth*maxwidth)return false;
 
 		bool isdoor=false;
@@ -98,7 +100,7 @@ class doordestroyer:hdactor{
 		//what is the proper way of doing this
 		vector3 posbak=caller.pos;
 		caller.setorigin(caller.pos+(
-			(dlt.hitlocation.xy+dlt.hitdir.xy)*maxdepth*frandom(0.8,1.2),0
+			(dlt.hitlocation.xy+dlt.hitdir.xy*maxdepth*frandom(0.8,1.2)),0
 		),false);
 		isdoor=(caller.cursector!=othersector);
 		caller.setorigin(posbak,false);
@@ -111,6 +113,9 @@ class doordestroyer:hdactor{
 		if(!isdoor){
 			//HOW THE FUCK DO YOU FIND A SECTOR TAG
 			int brutalforcery=0;
+/*
+I don't know why the lineiditerator gives the correct result.
+Do I even want to know at this point?
 			bool gotit=false;
 			for(brutalforcery=0;brutalforcery<100;brutalforcery++){
 				sectortagiterator sss=
@@ -122,10 +127,10 @@ class doordestroyer:hdactor{
 				}
 				if(gotit)break;
 			}
-
+*/
 			if(brutalforcery>0){
-				lineiditerator lll=lineiditerator.create(brutalforcery);
-				int l=lll.next();
+				lineiditerator lll=lineiditerator.create(0);
+				int l=0;
 				while(!isdoor&&l>-1){
 					isdoor=checkdoorspecial(level.lines[l].special);
 					l=lll.next();

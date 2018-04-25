@@ -97,8 +97,10 @@ extend class HDActor{
 			double divmass=1.;if(it.mass>0)divmass=1./it.mass;
 
 			//immolate before all damage, to avoid bypassing player death transfer
-			if(!it)continue;if(dist<=immolateradius&&!it.countinv("ImmunityToFire")){
-				if(immolatechance>=random(1,100)*losmul){
+			if(!it)continue;if(dist<=immolateradius){
+				if(immolateamount<0){
+					HDF.Give(it,"Heat",-immolateamount+random(-immolatechance,immolatechance));
+				}else if(!it.countinv("ImmunityToFire")&&immolatechance>=random(1,100)*losmul){
 					if(hdactor(caller))hdactor(caller).A_Immolate(it,target,immolateamount);
 					else HDF.Give(it,"Heat",immolateamount*2);
 				}

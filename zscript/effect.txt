@@ -123,7 +123,33 @@ class WallChunk:HDDebris{
 		stop;
 	}
 }
+class WallChunker:HDActor{
+	default{
+		height 8;radius 12;
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		if(
+			ceilingz-pos.z<height
+			&&pos.z-floorz<2
+			&&checkmove(pos.xy,PCM_NOACTORS)
+		){
+			destroy();
+			return;
+		}
 
+		if(ceilingz-pos.z<12&&pos.z-floorz>12)chunkdir=-2;
+		else chunkdir=5;
+	}
+	double chunkdir;
+	states{
+	spawn:
+		TNT1 AAAAAAAAAAAAAAAAAAAAAA 0 A_SpawnItemEx("HugeWallChunk",0,0,4,frandom(6,12),0,frandom(-3,12)*chunkdir,frandom(0,360),SXF_NOCHECKPOSITION);
+		TNT1 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 0 A_SpawnItemEx("BigWallChunk",0,0,4,frandom(7,18),0,frandom(-3,14)*chunkdir,frandom(0,360),SXF_NOCHECKPOSITION);
+		TNT1 AA 0 A_SpawnItemEx ("HDSmoke",-1,0,1,frandom(-2,2),0,0,frandom(0,360),SXF_NOCHECKPOSITION);
+		stop;
+	}
+}
 
 //the other chunk!
 class HDSmokeChunk:HDDebris{
