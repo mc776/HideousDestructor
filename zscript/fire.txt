@@ -321,8 +321,9 @@ class Heat:Inventory{
 
 		//damage
 		if(
-			owner.bshootable&&!owner.bnodamage
-			&&realamount>random(random(7,12),100)
+			!(ticker%3)
+			&&owner.bshootable&&!owner.bnodamage
+			&&realamount>random(random(7,12),70)
 		){
 			double dmgamt=realamount*0.01;
 			if(
