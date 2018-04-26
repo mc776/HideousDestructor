@@ -18,12 +18,15 @@ class doordestroyer:hdactor{
 		llit=max(1,llength/10); //see chunkspeed
 		vfrac=vvv/llit;
 	}
+	override bool cancollidewith(actor other,bool passive){
+		return false;
+	}
 	void DoorChunk(class<actor>chunktype,int numpercolumn=1,double chunkspeed=10){
 		chunkspeed*=0.1; //see vfrac
 		for(int i=0;i<llit;i++){
 			for(int j=0;j<numpercolumn;j++){
 				actor aaa=spawn(chunktype,(
-					(v1pos+vfrac*i),
+					(v1pos+vfrac*i)+(frandom(-3,3),frandom(-3,3)),
 					frandom(floorz,ceilingz)
 				));
 				aaa.vel.xy=rotatevector(
@@ -93,7 +96,6 @@ class doordestroyer:hdactor{
 		for(int i=0;i<othersector.lines.size();i++){
 			if(othersector.lines[i].sidedef[1]){
 				num2sided++;
-				caller.A_LogInt(num2sided);
 			}
 		}if(num2sided<2)return false;
 
@@ -105,22 +107,15 @@ class doordestroyer:hdactor{
 		bool isdoor=false;
 
 		//see how thick the door is
-		//what is the proper way of doing this
-		vector3 posbak=caller.pos;
-		caller.setorigin((
-			dlt.hitlocation.xy+dlt.hitdir.xy*maxdepth*frandom(0.8,1.2),
-			posbak.z
-		),false);
-		isdoor=(caller.cursector!=othersector);
-		caller.setorigin(posbak,false);
+		isdoor=(othersector!=
+			sector.pointinsector(dlt.hitlocation.xy+dlt.hitdir.xy*maxdepth*frandom(0.8,1.2))
+		);
 		if(!isdoor)return false;
 
 		//see if a door special applies
 //		isdoor=checkdoorspecial(dlt.hitline.special);
-
-		//see if door special applies for all other lines tagging this sector
 		if(!isdoor){
-			//HOW THE FUCK DO YOU FIND A SECTOR TAG
+			//find the sector tag
 			int brutalforcery=0;
 			bool gotit=false;
 			for(brutalforcery=0;brutalforcery<100;brutalforcery++){
@@ -142,8 +137,8 @@ class doordestroyer:hdactor{
 				}
 			}
 		}
-
 		if(!isdoor)return false;
+
 
 		//blow that shit up
 		double holeheight=max(32,frandom(0.2,1.)*maxwidth);
