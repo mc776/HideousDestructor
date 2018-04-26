@@ -63,7 +63,7 @@ class ThunderBuster:HDWeapon{
 		if(tlt.hitactor){
 			actor hitactor=tlt.hitactor;
 			if(hitactor.bloodtype=="ShieldNotBlood"){
-				hitactor.damagemobj(null,caller,random(battery,battery*10),"Balefire");
+				hitactor.damagemobj(null,caller,random(1,battery*8),"Balefire");
 			}else if(
 				hitactor.bnodamage
 				||(hitactor.bnoblood&&!random(0,3))
@@ -123,6 +123,7 @@ class ThunderBuster:HDWeapon{
 			);
 			invoker.weaponstatus[TBS_HEAT]+=6;
 		}else if(!random(0,13))invoker.weaponstatus[TBS_BATTERY]--;
+		invoker.weaponstatus[TBS_HEAT]+=random(0,3);
 
 		//update range thingy
 		invoker.weaponstatus[TBS_MAXRANGEDISPLAY]=(battery>0?battery*200+8000:0)/HDCONST_ONEMETRE;
