@@ -280,11 +280,13 @@ extend class HDStatusBar{
 				drawambar("CELLRED","CELLA0","HDCellAmmo",(-54,-4),DI_SCREEN_CENTER_BOTTOM);
 				drawnum(pp.countinv("HDCellPacks"),-46,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
-			drawnum(hdw.weaponstatus[TBS_MAXRANGEDISPLAY],-16,-14,DI_SCREEN_CENTER_BOTTOM,font.CR_GRAY);
-			if(hdw.weaponstatus[0]&TBF_ALT)drawimage(
-				"STBURAUT",(-22,-10),
-				DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE|DI_ITEM_RIGHT
-			);
+			if(hdw.weaponstatus[0]&TBF_ALT){
+				drawimage(
+					"STBURAUT",(-28,-10),
+					DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE|DI_ITEM_RIGHT
+				);
+				drawnum(1000/HDCONST_ONEMETRE,-16,-14,DI_SCREEN_CENTER_BOTTOM,font.CR_GRAY);
+			}else drawnum(hdw.weaponstatus[TBS_MAXRANGEDISPLAY],-16,-14,DI_SCREEN_CENTER_BOTTOM,font.CR_GRAY);
 			int bat=hdw.weaponstatus[TBS_BATTERY];
 			if(bat>0)drawwepnum(bat,20);
 			else if(!bat)drawstring(

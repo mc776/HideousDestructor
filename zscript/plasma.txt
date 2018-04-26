@@ -112,7 +112,7 @@ class ThunderBuster:HDWeapon{
 
 		//aftereffects
 		if(invoker.weaponstatus[0]&TBF_ALT){
-			if(!random(0,3))invoker.weaponstatus[TBS_BATTERY]--;
+			if(!random(0,5))invoker.weaponstatus[TBS_BATTERY]--;
 			A_MuzzleClimb(
 				0.1,-0.3,
 				0.2,-0.4,
@@ -120,7 +120,7 @@ class ThunderBuster:HDWeapon{
 				0.02,-0.1
 			);
 			invoker.weaponstatus[TBS_HEAT]+=6;
-		}else if(!random(0,11))invoker.weaponstatus[TBS_BATTERY]--;
+		}else if(!random(0,13))invoker.weaponstatus[TBS_BATTERY]--;
 
 		//update range thingy
 		invoker.weaponstatus[TBS_MAXRANGEDISPLAY]=(battery>0?battery*200+8000:0)/HDCONST_ONEMETRE;
@@ -511,16 +511,15 @@ class BeamSpotFlash:IdleDummy{
 		alpha=scale.y+0.3;
 		vel=(frandom(-1,1),frandom(-1,1),frandom(1,3));
 
-		double n=clamp(impactcloseness*0.1,2,100);
+		double n=max(impactcloseness*0.1,2);
 		double n1=n*0.6;
 		double n2=n*0.4;
 		if(tracer){
-			tracer.damagemobj(self,target,random(n2,n),"Electro");
+			tracer.damagemobj(self,target,random(n1,n),"Electro");
 			HDF.Give(tracer,"Heat",n);
 		}
 		A_HDBlast(
-			n2,n1,0,"Electro",
-			pushradius:n2,pushamount:n2,
+			n2,random(n2,n),0,"Electro",
 			immolateradius:n1,immolateamount:-random(4,8)*n2/10,immolatechance:n
 		);
 
@@ -528,6 +527,7 @@ class BeamSpotFlash:IdleDummy{
 		angle=frandom(0,360);
 		A_SpawnChunks("HDGunSmoke",clamp(n2*0.6,4,7),3,6);
 		A_PlaySound("weapons/plasmaf");
+		A_AlertMonsters();
 	}
 	states{
 	spawn:

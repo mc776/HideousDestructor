@@ -45,6 +45,7 @@ class Roboball:SlowProjectile{
 				ceilingz-height<=pos.z
 			){
 				bmissilemore=true;
+				if(blockingline)doordestroyer.destroydoor(self,200,frandom(24,48),6);
 			}
 		}else{
 			spawn("DistantRocket",self.pos,ALLOW_REPLACE);
