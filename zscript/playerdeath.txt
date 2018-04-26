@@ -76,12 +76,13 @@ extend class HDPlayerPawn{
 			}
 		}
 
+		bool crouched=height<40;
 		super.die(source,inflictor,dmgflags);
 
 		//this must appear only after so the obits work properly
 		playercorpse=spawn("HDPlayerCorpse",pos);
 		playercorpse.vel=vel;playercorpse.master=self;
-		if(height<40)playercorpse.sprite=GetSpriteIndex("PLYCA0");
+		if(crouched)playercorpse.sprite=GetSpriteIndex("PLYCA0");
 			else playercorpse.sprite=GetSpriteIndex("PLAYA0");
 		playercorpse.translation=translation;
 		playercorpse.A_SetSize(12,52);

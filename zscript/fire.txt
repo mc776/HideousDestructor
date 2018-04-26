@@ -278,10 +278,9 @@ class Heat:Inventory{
 				hdp.health<1&&
 				hdp.playercorpse
 			){
-				hdp.playercorpse.A_GiveInventory("Heat",amount);
+				hdp.playercorpse.A_GiveInventory("Heat",1);
 				Heat(hdp.playercorpse.findinventory("Heat")).realamount+=realamount;
-				amount=0;
-				realamount=0;
+				destroy();
 				return;
 			}
 		}
