@@ -26,48 +26,33 @@ class ThunderBuster:HDWeapon{
 			weaponstatus[0]|=TBF_ALT;
 		}
 	}
-	action void A_ThunderZap(){
-		if(invoker.weaponstatus[TBS_HEAT]>20)return;
-		int battery=invoker.weaponstatus[TBS_BATTERY];
-		if(battery<1){
-			setweaponstate("nope");
-			return;
-		}
-
-		//minor effects
-		A_ZoomFactor(0.99,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
-		A_PlaySound("weapons/plasidle");
-		if(countinv("IsMoving")>9)A_MuzzleClimb(frandom(-0.8,0.8),frandom(-0.8,0.8));
-
+	static void ThunderZap(
+		actor caller,
+		double zoffset=32,
+		bool alt=false,
+		int battery=20
+	){
+		//create the line
 		flinetracedata tlt;
-		linetrace(
-			angle,
-			8000+200*frandom(0,battery),
-			pitch,
+		caller.linetrace(
+			caller.angle,
+			8000+200*battery,
+			caller.pitch,
 			flags:TRF_NOSKY,
-			offsetz:height-6,
+			offsetz:zoffset,
 			data:tlt
 		);
-		if(!random(0,15))invoker.weaponstatus[TBS_BATTERY]--;
 		if(tlt.hittype==Trace_HitNone)return;
 
 		//alt does a totally different thing
-		if(invoker.weaponstatus[0]&TBF_ALT){
-			if(!random(0,3))invoker.weaponstatus[TBS_BATTERY]--;
-			A_MuzzleClimb(
-				0.1,-0.3,
-				0.2,-0.4,
-				0.08,-0.2,
-				0.02,-0.1
-			);
-			invoker.weaponstatus[TBS_HEAT]+=6;
+		if(alt){
 			if(tlt.hittype==Trace_HitNone||tlt.distance>1000)return;
 			actor bbb=spawn("BeamSpotFlash",tlt.hitlocation-tlt.hitdir);
 			beamspotflash(bbb).impactdistance=tlt.distance-10*battery;
-			bbb.angle=angle;
+			bbb.angle=caller.angle;
 			bbb.A_SprayDecal("Scorch",12);
-			bbb.pitch=pitch;
-			bbb.target=self;
+			bbb.pitch=caller.pitch;
+			bbb.target=caller;
 			bbb.tracer=tlt.hitactor; //damage inflicted on the puff's end
 			return;
 		}
@@ -86,11 +71,11 @@ class ThunderBuster:HDWeapon{
 				||!random(0,7)
 			)){
 				//dry actor - ping damage and continue
-				hitactor.damagemobj(invoker,self,1,"Electro");
+				hitactor.damagemobj(null,caller,1,"Electro");
 				hdf.give(hitactor,"Heat",basedmg/2);
 			}else{
 				//wet actor
-				hitactor.damagemobj(invoker,self,basedmg,"Electro");
+				hitactor.damagemobj(null,caller,basedmg,"Electro");
 				hdf.give(hitactor,"Heat",basedmg*3);
 				actor sss=spawn("HDGunsmoke",tlt.hitlocation);
 				sss.vel=(0,0,1)-tlt.hitdir;
@@ -99,11 +84,44 @@ class ThunderBuster:HDWeapon{
 		}
 		//where where the magic happens happens
 		actor bbb=spawn("BeamSpot",tlt.hitlocation-tlt.hitdir);
-		bbb.target=self;
+		bbb.target=caller;
 		bbb.stamina=basedmg;
-		bbb.angle=angle;
+		bbb.angle=caller.angle;
 		bbb.A_SprayDecal("PlasmaShock",14);
-		bbb.pitch=pitch;
+		bbb.pitch=caller.pitch;
+	}
+	action void A_ThunderZap(){
+		if(invoker.weaponstatus[TBS_HEAT]>20)return;
+		int battery=invoker.weaponstatus[TBS_BATTERY];
+		if(battery<1){
+			setweaponstate("nope");
+			return;
+		}
+
+		//preliminary effects
+		A_ZoomFactor(0.99,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
+		A_PlaySound("weapons/plasidle");
+		if(countinv("IsMoving")>9)A_MuzzleClimb(frandom(-0.8,0.8),frandom(-0.8,0.8));
+
+		//the actual call
+		ThunderBuster.ThunderZap(
+			self,
+			height-6,
+			invoker.weaponstatus[0]&TBF_ALT,
+			battery
+		);
+
+		//aftereffects
+		if(invoker.weaponstatus[0]&TBF_ALT){
+			if(!random(0,3))invoker.weaponstatus[TBS_BATTERY]--;
+			A_MuzzleClimb(
+				0.1,-0.3,
+				0.2,-0.4,
+				0.08,-0.2,
+				0.02,-0.1
+			);
+			invoker.weaponstatus[TBS_HEAT]+=6;
+		}else if(!random(0,15))invoker.weaponstatus[TBS_BATTERY]--;
 	}
 	states{
 	ready:
@@ -144,6 +162,7 @@ class ThunderBuster:HDWeapon{
 		PLSF AB 1 bright;
 		PLSF B 0 bright A_Light0();
 		stop;
+	altfire:
 	firemode:
 		PLSG C 1 offset(1,32) A_GiveInventory("WeaponBusy");
 		PLSG C 2 offset(2,32);
@@ -158,9 +177,6 @@ class ThunderBuster:HDWeapon{
 		PLSG A 1;
 		PLSG A 1 offset(0,34);
 		PLSG A 1 offset(1,33);
-		goto nope;
-	althold:
-		---- A 0;
 		goto nope;
 
 	select0:
