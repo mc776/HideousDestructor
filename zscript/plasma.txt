@@ -62,14 +62,16 @@ class ThunderBuster:HDWeapon{
 		//wet actor
 		if(tlt.hitactor){
 			actor hitactor=tlt.hitactor;
-			if(hitactor&&(
+			if(hitactor.bloodtype=="ShieldNotBlood"){
+				hitactor.damagemobj(null,caller,random(battery,battery*10),"Balefire");
+			}else if(
 				hitactor.bnodamage
 				||(hitactor.bnoblood&&!random(0,3))
 				||hitactor.bloodtype=="NotQuiteBloodSplat"
 				||hitactor.countinv("WornRadsuit")
 				||hitactor.countinv("ImmunityToFire")
 				||!random(0,7)
-			)){
+			){
 				//dry actor - ping damage and continue
 				hitactor.damagemobj(null,caller,1,"Electro");
 				hdf.give(hitactor,"Heat",basedmg/2);
