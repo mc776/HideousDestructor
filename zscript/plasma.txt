@@ -379,26 +379,27 @@ class BeamSpot:HDActor{
 
 		//flash player's muzzle
 		let hdp=hdplayerpawn(target);
-		let tbt=thunderbuster(target.player.readyweapon);
 		if(
 			hdp
-			&&tbt
 			&&hdp.player
 		){
-			hdp.A_MuzzleClimb(
-				(frandom(1.2,1.8),-frandom(4.0,5.4)),
-				(frandom(0.8,1.2),-frandom(3.4,4.2)),
-				(frandom(0.4,0.8),-frandom(2.4,2.4)),
-				(-frandom(0.4,1.0),frandom(2.8,2.8))
-			);
-			hdp.player.setpsprite(PSP_FLASH,tbt.findstate("flash"));
-			hdp.A_ChangeVelocity(
-				cos(pitch)*-frandom(1,3),0,
-				sin(pitch)*frandom(1,3),
-				CVF_RELATIVE
-			);
-			tbt.weaponstatus[TBS_HEAT]+=70;
-			tbt.weaponstatus[TBS_WARMUP]=0;
+			let tbt=thunderbuster(target.player.readyweapon);
+			if(tbt){
+				hdp.A_MuzzleClimb(
+					(frandom(1.2,1.8),-frandom(4.0,5.4)),
+					(frandom(0.8,1.2),-frandom(3.4,4.2)),
+					(frandom(0.4,0.8),-frandom(2.4,2.4)),
+					(-frandom(0.4,1.0),frandom(2.8,2.8))
+				);
+				hdp.player.setpsprite(PSP_FLASH,tbt.findstate("flash"));
+				hdp.A_ChangeVelocity(
+					cos(pitch)*-frandom(1,3),0,
+					sin(pitch)*frandom(1,3),
+					CVF_RELATIVE
+				);
+				tbt.weaponstatus[TBS_HEAT]+=70;
+				tbt.weaponstatus[TBS_WARMUP]=0;
+			}
 		}
 
 		//blast heat and shit		
