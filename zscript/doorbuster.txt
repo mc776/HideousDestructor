@@ -176,13 +176,11 @@ class doordestroyer:hdactor{
 		textureid shwal=texman.checkfortexture("ASHWALL2",texman.type_any);
 		if(int(shwal)<1)
 			shwal=texman.checkfortexture("ASHWALL",texman.type_any);
-		othersector.settexture(sector.ceiling,shwal,true);
+		othersector.settexture(floornotdoor?sector.floor:sector.ceiling,shwal,true);
 		for(int i=0;i<othersector.lines.size();i++){
-			if(floornotdoor){
-				if(othersector.lines[i].sidedef[1])
-					othersector.lines[i].flags|=line.ML_DONTPEGBOTTOM;
-				othersector.settexture(0,shwal);
-			}else othersector.lines[i].flags|=line.ML_DONTPEGTOP;
+			if(floornotdoor&&othersector.lines[i].sidedef[1])
+				othersector.lines[i].flags|=line.ML_DONTPEGBOTTOM;
+			else othersector.lines[i].flags|=line.ML_DONTPEGTOP;
 			othersector.lines[i].special=0;
 			for(int j=0;j<2;j++){
 				side sdd=othersector.lines[i].sidedef[j];
