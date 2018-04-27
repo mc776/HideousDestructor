@@ -50,9 +50,9 @@ class ThunderBuster:HDWeapon{
 
 		//alt does a totally different thing
 		if(alt){
-			if(tlt.hittype==Trace_HitNone||tlt.distance>1000)return;
+			if(tlt.hittype==Trace_HitNone||tlt.distance>2000)return;
 			actor bbb=spawn("BeamSpotFlash",tlt.hitlocation-tlt.hitdir);
-			beamspotflash(bbb).impactdistance=tlt.distance-10*battery;
+			beamspotflash(bbb).impactdistance=tlt.distance-16*battery;
 			bbb.angle=caller.angle;
 			bbb.A_SprayDecal("Scorch",12);
 			bbb.pitch=caller.pitch;
@@ -120,10 +120,10 @@ class ThunderBuster:HDWeapon{
 		if(invoker.weaponstatus[0]&TBF_ALT){
 			if(!random(0,5))invoker.weaponstatus[TBS_BATTERY]--;
 			A_MuzzleClimb(
-				0.1,-0.3,
-				0.2,-0.4,
-				0.08,-0.2,
-				0.02,-0.1
+				frandom(0.05,0.2),frandom(-0.2,-0.4),
+				frandom(0.1,0.3),frandom(-0.2,-0.6),
+				frandom(0.04,0.12),frandom(-0.1,-0.3),
+				frandom(0.01,0.03),frandom(-0.1,-0.2)
 			);
 			invoker.weaponstatus[TBS_HEAT]+=6;
 		}else if(!random(0,13))invoker.weaponstatus[TBS_BATTERY]--;
@@ -508,18 +508,18 @@ class BeamSpotFlash:IdleDummy{
 	}
 	double impactdistance;
 	override void postbeginplay(){
-		if(impactdistance>1000){
+		if(impactdistance>2000){
 			destroy();
 			return;
 		}
 		super.postbeginplay();
 
-		double impactcloseness=1000-impactdistance;
-		scale*=(impactcloseness)*0.001;
+		double impactcloseness=2000-impactdistance;
+		scale*=(impactcloseness)*0.0006;
 		alpha=scale.y+0.3;
 		vel=(frandom(-1,1),frandom(-1,1),frandom(1,3));
 
-		double n=max(impactcloseness*0.1,2);
+		double n=max(impactcloseness*0.06,2);
 		double n1=n*0.6;
 		double n2=n*0.4;
 		if(tracer){
@@ -528,7 +528,8 @@ class BeamSpotFlash:IdleDummy{
 		}
 		A_HDBlast(
 			n2,random(n2,n),0,"Electro",
-			immolateradius:n1,immolateamount:-random(4,8)*n2/10,immolatechance:n
+			immolateradius:n1,immolateamount:-random(4,8)*n2/10,immolatechance:n,
+			gibradius:12,gibamount:random(4,n)
 		);
 
 		pitch=frandom(80,90);
