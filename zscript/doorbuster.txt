@@ -107,7 +107,7 @@ class doordestroyer:hdactor{
 			if(othersector.lines[i].sidedef[1]){
 				num2sided++;
 			}
-		}if(num2sided<2)return false;
+		}if(num2sided<-2)return false;
 
 		//see how wide the door is
 		vector2 doorline=dlt.hitline.v1.p-dlt.hitline.v2.p;
@@ -164,7 +164,8 @@ class doordestroyer:hdactor{
 				justoverthereheight-holeheight,
 				lowestsurrounding-frandom(3,6)
 			);
-			othersector.MoveFloor(justoverthereheight-blockpoint,blockpoint,0,1,false);
+			holeheight=justoverthereheight-blockpoint;
+			othersector.MoveFloor(holeheight,blockpoint,0,1,false);
 		}else{
 			blockpoint=
 				othersector.ceilingplane.zatpoint(justoverthere)+holeheight;
@@ -177,15 +178,18 @@ class doordestroyer:hdactor{
 			shwal=texman.checkfortexture("ASHWALL",texman.type_any);
 		othersector.settexture(sector.ceiling,shwal,true);
 		for(int i=0;i<othersector.lines.size();i++){
-			if(floornotdoor)othersector.lines[i].flags|=line.ML_DONTPEGBOTTOM;
-			else othersector.lines[i].flags|=line.ML_DONTPEGTOP;
+			if(floornotdoor){
+				if(othersector.lines[i].sidedef[1])
+					othersector.lines[i].flags|=line.ML_DONTPEGBOTTOM;
+				othersector.settexture(0,shwal);
+			}else othersector.lines[i].flags|=line.ML_DONTPEGTOP;
 			othersector.lines[i].special=0;
 			for(int j=0;j<2;j++){
 				side sdd=othersector.lines[i].sidedef[j];
 				if(sdd){
 					int notmid=floornotdoor?side.bottom:side.top;
 					if(int(sdd.gettexture(notmid))<1)sdd.settexture(notmid,shwal);
-					sdd.settextureyoffset(side.mid,
+					if(!floornotdoor)sdd.settextureyoffset(side.mid,
 						sdd.gettextureyoffset(side.mid)-holeheight
 					);
 				}
