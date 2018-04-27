@@ -2,13 +2,12 @@
 // Prototype weapon
 // ------------------------------------------------------------
 class HDWeapon:Weapon{
-	double gunmass;
-	int barrellength;
-	int barrelwidth;
-	int barreldepth;
+	double barrellength;
+	double barrelwidth;
+	double barreldepth;
+	property barrelsize:barrellength,barrelwidth,barreldepth;
 	int weaponstatus[8];
 	int tipped;
-	property GunDimensions: gunmass,barrellength,barrelwidth,barreldepth;
 	enum HDWeaponFlagsets{
 		WRF_ALL=WRF_ALLOWRELOAD|WRF_ALLOWZOOM|WRF_ALLOWUSER1|WRF_ALLOWUSER2|WRF_ALLOWUSER3|WRF_ALLOWUSER4,
 		WRF_NONE=WRF_NOFIRE|WRF_DISABLESWITCH,
@@ -25,6 +24,7 @@ class HDWeapon:Weapon{
 		weapon.bobspeed 2.4;
 		weapon.bobrangex 0.2;
 		weapon.bobrangey 0.8;
+		hdweapon.barrelsize 0,0,0;
 	}
 	//wrapper for setpsprite
 	action void SetWeaponState(statelabel st,int layer=PSP_WEAPON){
@@ -77,6 +77,18 @@ class HDWeapon:Weapon{
 			A_SetAngle(angle+mc0.x,SPF_INTERPOLATE);
 		}
 	}
+	//do these whenever the gun is ready
+	action void ReadyEnd(){
+		let p=HDPlayerPawn(self);
+		if(
+			player&&
+			p&&!p.beatcount&&p.zerk>900
+			&&!random(0,(invoker is "Ring")?20:100)
+		)player.cmd.buttons|=BT_ATTACK;
+		A_TakeInventory("WeaponBusy");
+	}
+	//determine mass for weapon inertia purposes
+	virtual double gunmass(){return 0;}
 	//for smoking barrels
 	void drainheat(int ref,int smklength=18){
 		if(globalfreeze||level.Frozen)return;
@@ -423,6 +435,7 @@ class NullWeapon:HDWeapon{
 		+nointeraction
 		+weapon.noalert
 		+inventory.untossable
+		hdweapon.barrelsize 10,4,7;
 	}
 	override inventory CreateTossable(int amount){
 		let onr=hdplayerpawn(owner);
@@ -430,6 +443,9 @@ class NullWeapon:HDWeapon{
 			if(onr.lastweapon)onr.A_DropInventory(onr.lastweapon.getclassname());
 		}
 		return null;
+	}
+	override double gunmass(){
+		return 12;
 	}
 	states{
 	spawn:

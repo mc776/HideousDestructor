@@ -28,6 +28,7 @@ class Vulcanette:HDWeapon{
 		weapon.bobspeed 1.3;
 		weapon.bobstyle "normal";
 		obituary "%o met the budda-budda-budda on the street,and %k killed %h.";
+		hdweapon.barrelsize 30,3,4;
 	}
 	override void tick(){
 		super.tick();
@@ -41,6 +42,13 @@ class Vulcanette:HDWeapon{
 				cvar.getcvar("hd_vulczoom",owner.player).getint(),0,27
 			);
 		}
+	}
+	override double gunmass(){
+		double amt=14+weaponstatus[1]<0?0:1;
+		for(int i=0;i<5;i++){
+			if(vulcmag[i]>=0)amt+=3.3;
+		}
+		return amt;
 	}
 	states{
 	select0:

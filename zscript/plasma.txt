@@ -12,6 +12,7 @@ class ThunderBuster:HDWeapon{
 		weapon.ammouse 1;
 		scale 0.6;
 		inventory.pickupmessage "You got the particle beam gun!";
+		hdweapon.barrelsize 28,1.6,3;
 	}
 	override void tick(){
 		super.tick();
@@ -25,6 +26,9 @@ class ThunderBuster:HDWeapon{
 		){
 			weaponstatus[0]|=TBF_ALT;
 		}
+	}
+	override double gunmass(){
+		return 10+(weaponstatus[TBS_BATTERY]<0?0:2);
 	}
 	static void ThunderZap(
 		actor caller,

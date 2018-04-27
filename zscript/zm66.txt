@@ -23,11 +23,27 @@ class ZM66AssaultRifle:HDWeapon{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
+		if(weaponstatus[0]&ZM66F_NOLAUNCHER){
+			barrellength=25;
+			barrelwidth=0.5;
+			barreldepth=1;
+		}else{
+			barrellength=28;
+			barrelwidth=1;
+			barreldepth=3;
+		}
 		if(owner&&owner.player){
 			weaponstatus[ZM66S_AUTO]=
 				clamp(cvar.getcvar("hd_zmfiremode",owner.player).getint(),0,2);
 			weaponstatus[ZM66S_ZOOM]=
 				clamp(cvar.getcvar("hd_zmzoom",owner.player).getint(),0,27);
+		}
+	}
+	override double gunmass(){
+		if(weaponstatus[0]&ZM66F_NOLAUNCHER){
+			return 6.5+weaponstatus[ZM66S_MAG]*0.02;
+		}else{
+			return 8+weaponstatus[ZM66S_MAG]*0.01+(weaponstatus[0]&ZM66F_GRENADELOADED?1.:0.);
 		}
 	}
 	action bool brokenround(){

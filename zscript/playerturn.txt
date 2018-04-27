@@ -41,122 +41,17 @@ extend class HDPlayerPawn{
 
 		//get weapon size
 		double amt=0;
-		int barrellength=0;
-		double barrelwidth=0;
-		int barreldepth=0;
-		bool notnull=true;
+		double barrellength;
+		double barrelwidth;
+		double barreldepth;
+		bool notnull=false;
 		let wp=HDWeapon(player.readyweapon);
-		if(wp && wp.gunmass>0){
-			amt=wp.gunmass;
+		if(wp){
+			amt=wp.gunmass();
 			barrellength=wp.barrellength;
 			barrelwidth=wp.barrelwidth;
 			barreldepth=wp.barreldepth;
-		}else if(wp is "Lumberjack"){
-			amt=5+
-				(countinv("LumberCell")||countinv("LumberEmptyCell")?1:0)
-			;
-			barrellength=26;
-			barrelwidth=1.;
-			barreldepth=2;
-		}else if(wp is "HDSMG"){
-			amt=5+
-				(wp.weaponstatus[SMGS_MAG]<0)?-0.5:(wp.weaponstatus[SMGS_MAG]*0.02)
-			;
-			barrellength=26;
-			barrelwidth=0.5;
-			barreldepth=1;
-		}else if(wp is "Hunter"){
-			int tube=wp.weaponstatus[HUNTS_TUBE];
-			if(tube>4)tube+=(tube-4)*2;
-			amt=8+
-				tube*0.3+
-				wp.weaponstatus[HUNTS_SIDESADDLE]*0.08
-			;
-			barrellength=30;
-			barrelwidth=0.5;
-			barreldepth=2;
-		}else if(wp is "Slayer"){
-			amt=6+wp.weaponstatus[SLAYS_SIDESADDLE]*0.06;
-			barrellength=26;
-			barrelwidth=1;
-			barreldepth=1;
-		}else if(wp is "ZM66AssaultRifle"){
-			if(wp.weaponstatus[0]&ZM66F_NOLAUNCHER){
-				amt=6.5+wp.weaponstatus[ZM66S_MAG]*0.02;
-				barrellength=25;
-				barrelwidth=0.5;
-				barreldepth=1;
-			}else{
-				amt=8+wp.weaponstatus[ZM66S_MAG]*0.01
-					+(wp.weaponstatus[0]&ZM66F_GRENADELOADED?1.:0.);
-				barrellength=28;
-				barrelwidth=1;
-				barreldepth=3;
-			}
-		}else if(wp is "Vulcanette"){
-			amt=14+wp.weaponstatus[1]<0?0:1;
-			vulcanette vvv=vulcanette(wp);
-			for(int i=0;i<5;i++){
-				if(vvv.vulcmag[i]>=0)amt+=3.3;
-			}
-			barrellength=30;
-			barrelwidth=3;
-			barreldepth=4;
-		}else if(wp is "HDRL"){
-			amt=10+
-				wp.weaponstatus[RLS_MAG]+
-				wp.weaponstatus[RLS_CHAMBER]
-			;
-			barrellength=32;
-			barrelwidth=3.1;
-			barreldepth=5;
-		}else if(wp is "Blooper"){
-			amt=wp.weaponstatus[0]&BLOPF_LOADED?5:4;
-			barrellength=24;
-			barrelwidth=1.6;
-			barreldepth=3;
-		}else if(wp is "LiberatorRifle"){
-			if(wp.weaponstatus[0]&LIBF_NOLAUNCHER){
-				amt=9+wp.weaponstatus[LIBS_MAG]*0.02;
-				barrellength=27;
-				barrelwidth=0.5;
-				barreldepth=2;
-			}else{
-				amt=10+wp.weaponstatus[LIBS_MAG]*0.02
-					+(wp.weaponstatus[0]&LIBF_GRENADELOADED?1.:0.);
-				barrellength=29;
-				barrelwidth=1;
-				barreldepth=3;
-			}
-		}else if(wp is "ThunderBuster"){
-			amt=10+(wp.weaponstatus[TBS_BATTERY]<0?0:2);
-			barrellength=28;
-			barrelwidth=1.6;
-			barreldepth=3;
-		}else if(wp is "Brontornis"){
-			amt=wp.weaponstatus[BRONS_CHAMBER];
-			amt=amt*amt+6;
-			barrellength=24;
-			barrelwidth=1;
-			barreldepth=2;
-		}else if(wp is "BFG9k"){
-			amt=15
-				+(wp.weaponstatus[BFGS_BATTERY]>=0?1:0)
-				+(wp.weaponstatus[0]&BFGF_STRAPPED?0:4)
-			;
-			barrellength=32;
-			barrelwidth=3.5;
-			barreldepth=7;
-		}else if(wp is "BossRifle"){
-			amt=12;
-			barrellength=40;
-			barrelwidth=1;
-			barreldepth=2;
-		}else if(wp is "NullWeapon"){
-			barrellength=40;
-			barrelwidth=4;
-			barreldepth=7;
-			notnull=false;
+			notnull=!(wp is "NullWeapon");
 		}
 
 		//better anticipation

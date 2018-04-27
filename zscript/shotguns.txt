@@ -60,6 +60,7 @@ class Hunter:HDShotgun replaces Shotgun{
 		scale 0.6;
 		inventory.pickupmessage "You got the pump-action shotgun!";
 		obituary "%o was brutally pumped full of %k's hot, manly lead.";
+		hdweapon.barrelsize 30,0.5,2;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -68,6 +69,11 @@ class Hunter:HDShotgun replaces Shotgun{
 				weaponstatus[0]|=HUNTF_AUTO;
 				else weaponstatus[0]&=~HUNTF_AUTO;
 		}
+	}
+	override double gunmass(){
+		int tube=weaponstatus[HUNTS_TUBE];
+		if(tube>4)tube+=(tube-4)*2;
+		return 8+tube*0.3+weaponstatus[HUNTS_SIDESADDLE]*0.08;
 	}
 	action void A_Chamber(){
 		int chm=invoker.weaponstatus[HUNTS_CHAMBER];
@@ -538,7 +544,8 @@ class Slayer:HDShotgun replaces HDShotgun{
 		weapon.bobrangex 0.18;
 		weapon.bobrangey 0.7;
 		scale 0.6;
-		obituary "%o was brutally pumped full of %k's hot, manly lead.";
+		obituary "%o doubled over from the turgid size of %k's hot, manly lead.";
+		hdweapon.barrelsize 26,1,1;
 	}
 	override void PostBeginPlay(){
 		if(Wads.CheckNumForName("SHT2B0",wads.ns_sprites,-1,false)<0){
@@ -557,6 +564,10 @@ class Slayer:HDShotgun replaces HDShotgun{
 		}
 		super.postbeginplay();
 	}
+	override double gunmass(){
+		return 6+weaponstatus[SLAYS_SIDESADDLE]*0.06;
+	}
+	//so you don't switch to the hunter every IDFA in D1
 	override void detachfromowner(){
 		if(Wads.CheckNumForName("SHT2B0",wads.ns_sprites,-1,false)<0){
 			weapon.detachfromowner();

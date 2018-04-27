@@ -16,6 +16,10 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 		weapon.kickback 2;
 		scale 0.4;
 		inventory.pickupmessage "You got the chainsaw! Go find some meat!";
+		hdweapon.barrelsize 26,1,2;
+	}
+	override double gunmass(){
+		return 5+weaponstatus[CSAWS_BATTERY]<0?0:1;
 	}
 	states{
 	ready:

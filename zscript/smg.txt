@@ -16,6 +16,10 @@ class HDSMG:HDWeapon{
 		weapon.bobspeed 2.5;
 		scale 0.55;
 		inventory.pickupmessage "You got the SMG!";
+		hdweapon.barrelsize 26,0.5,1;
+	}
+	override double gunmass(){
+		return 5+(weaponstatus[SMGS_MAG]<0)?-0.5:(weaponstatus[SMGS_MAG]*0.02);
 	}
 	override void postbeginplay(){
 		super.postbeginplay();

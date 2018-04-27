@@ -135,6 +135,7 @@ class Brontornis:HDWeapon{
 		scale 0.6;
 		inventory.pickupmessage "You got the Brontornis!";
 		obituary "%o was terrorized by %k's Brontornis cannon.";
+		hdweapon.barrelsize 24,1,2;
 	}
 	override void tick(){
 		super.tick();
@@ -147,6 +148,10 @@ class Brontornis:HDWeapon{
 				weaponstatus[0]|=BRONF_ZOOM;
 				else weaponstatus[0]&=~BRONF_ZOOM;
 		}
+	}
+	override double gunmass(){
+		double amt=weaponstatus[BRONS_CHAMBER];
+		return 6+amt*amt;
 	}
 	states{
 	select0:

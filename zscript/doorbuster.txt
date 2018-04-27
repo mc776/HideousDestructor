@@ -12,6 +12,8 @@ class doordestroyer:hdactor{
 	vector2 vfrac;
 	double llength;
 	int llit;
+	double bottom;
+	double top;
 	override void postbeginplay(){
 		super.postbeginplay();
 		vector2 vvv=(v2pos-v1pos);
@@ -27,7 +29,7 @@ class doordestroyer:hdactor{
 			for(int j=0;j<numpercolumn;j++){
 				actor aaa=spawn(chunktype,(
 					(v1pos+vfrac*i)+(frandom(-3,3),frandom(-3,3)),
-					frandom(floorz,ceilingz)
+					frandom(bottom,top)
 				));
 				aaa.vel.xy=rotatevector(
 						vfrac,randompick(90,-90)+frandom(-60,60)
@@ -36,7 +38,7 @@ class doordestroyer:hdactor{
 			}
 			spawn("HDSmoke",(
 				(v1pos+vfrac*i),
-				floorz+frandom(1,32)
+				bottom+frandom(1,32)
 			));
 		}
 	}
@@ -77,6 +79,7 @@ class doordestroyer:hdactor{
 		return false;
 	}
 	static bool destroydoor(actor caller,double maxwidth=140,double maxdepth=32,double range=0){
+		if(hd_nodoorbuster)return false;
 		if(!range)range=max(4,caller.radius*2);
 		flinetracedata dlt;
 		caller.linetrace(
@@ -86,9 +89,16 @@ class doordestroyer:hdactor{
 		);
 		if(!dlt.hitline)return false;
 		sector othersector=hdmath.oppositesector(dlt.hitline,dlt.hitsector);
+		if(!othersector)return false;
+
+		//the first point within the othersector is used a few times
+		vector2 justoverthere=dlt.hitlocation.xy+dlt.hitdir.xy;
+
+		//figure out if it hit above or below
+		bool floornotdoor=othersector.floorplane.zatpoint(justoverthere)<dlt.hitlocation.z;
 		if(
-			!othersector
-			||othersector.ceilingplane.zatpoint(dlt.hitlocation.xy+dlt.hitdir.xy)>dlt.hitlocation.z
+				!floornotdoor
+				&&othersector.ceilingplane.zatpoint(justoverthere)>dlt.hitlocation.z
 		)return false;
 
 		//see if there are at least 2 2-sided lines
@@ -112,8 +122,10 @@ class doordestroyer:hdactor{
 		);
 		if(!isdoor)return false;
 
+/*
 		//see if a door special applies
-//		isdoor=checkdoorspecial(dlt.hitline.special);
+		//currently unused - it's a "door" destroyer without limitation
+		isdoor=checkdoorspecial(dlt.hitline.special);
 		if(!isdoor){
 			//find the sector tag
 			int brutalforcery=0;
@@ -138,14 +150,26 @@ class doordestroyer:hdactor{
 			}
 		}
 		if(!isdoor)return false;
-
+*/
 
 		//blow that shit up
 		double holeheight=max(32,frandom(0.2,1.)*maxwidth);
+		double blockpoint;
 		othersector.flags|=sector.SECF_SILENTMOVE;
-		double blockpoint=
-			othersector.ceilingplane.zatpoint(dlt.hitlocation.xy+dlt.hitdir.xy)+holeheight;
-		othersector.MoveCeiling(holeheight,blockpoint,0,1,false);
+		if(floornotdoor){
+			double lowestsurrounding;vertex garbage;
+			[lowestsurrounding,garbage]=othersector.findlowestfloorsurrounding();
+			double justoverthereheight=othersector.floorplane.zatpoint(justoverthere);
+			blockpoint=max(
+				justoverthereheight-holeheight,
+				lowestsurrounding-frandom(3,6)
+			);
+			othersector.MoveFloor(justoverthereheight-blockpoint,blockpoint,0,1,false);
+		}else{
+			blockpoint=
+				othersector.ceilingplane.zatpoint(justoverthere)+holeheight;
+			othersector.MoveCeiling(holeheight,blockpoint,0,1,false);
+		}
 
 		//not intended by the mapper
 		textureid shwal=texman.checkfortexture("ASHWALL2",texman.type_any);
@@ -153,12 +177,14 @@ class doordestroyer:hdactor{
 			shwal=texman.checkfortexture("ASHWALL",texman.type_any);
 		othersector.settexture(sector.ceiling,shwal,true);
 		for(int i=0;i<othersector.lines.size();i++){
-			othersector.lines[i].flags|=line.ML_DONTPEGTOP;
+			if(floornotdoor)othersector.lines[i].flags|=line.ML_DONTPEGBOTTOM;
+			else othersector.lines[i].flags|=line.ML_DONTPEGTOP;
 			othersector.lines[i].special=0;
 			for(int j=0;j<2;j++){
 				side sdd=othersector.lines[i].sidedef[j];
 				if(sdd){
-					if(int(sdd.gettexture(side.top))<1)sdd.settexture(side.top,shwal);
+					int notmid=floornotdoor?side.bottom:side.top;
+					if(int(sdd.gettexture(notmid))<1)sdd.settexture(notmid,shwal);
 					sdd.settextureyoffset(side.mid,
 						sdd.gettextureyoffset(side.mid)-holeheight
 					);
@@ -168,12 +194,19 @@ class doordestroyer:hdactor{
 
 		//fancy effects
 		let db=doordestroyer(spawn("doordestroyer",(
-			(dlt.hitlocation.xy+dlt.hitdir.xy*2),blockpoint
+			(justoverthere+dlt.hitdir.xy),blockpoint
 		)));
 		db.setz(blockpoint);
 		db.v1pos=dlt.hitline.v1.p;
 		db.v2pos=dlt.hitline.v2.p;
 		db.target=caller.target;
+		if(floornotdoor){
+			db.top=db.floorz+holeheight;
+			db.bottom=db.floorz;
+		}else{
+			db.top=blockpoint+holeheight;
+			db.bottom=blockpoint;
+		}
 
 		double doorwidth=doorline.length();
 		db.llength=doorwidth;

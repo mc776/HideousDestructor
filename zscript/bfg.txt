@@ -16,6 +16,7 @@ class BFG9K:HDWeapon replaces BFG9000{
 		weapon.bobstyle "normal";
 		scale 0.7;
 		inventory.pickupmessage "You got the BFG 9000! Oh yes.";
+		hdweapon.barrelsize 32,3.5,7;
 	}
 	//BFG9k.Spark(self,4);
 	//BFG9k.Spark(self,4,height-10);
@@ -42,6 +43,9 @@ class BFG9K:HDWeapon replaces BFG9000{
 				owner.pitch<10
 			)hdplayerpawn(owner).A_MuzzleClimb((frandom(-0.05,0.05),0.1),(0,0),(0,0),(0,0));
 		}
+	}
+	override double gunmass(){
+		return 15+(weaponstatus[BFGS_BATTERY]>=0?1:0)+(weaponstatus[0]&BFGF_STRAPPED?0:4);
 	}
 	states{
 	altfire:

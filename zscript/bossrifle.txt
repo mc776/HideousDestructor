@@ -23,6 +23,7 @@ class BossRifle:HDWeapon{
 		weapon.bobrangey 1.1;
 		scale 0.75;
 		Obituary "%o sure showed %k who was the boss!";
+		hdweapon.barrelsize 40,1,2;
 	}
 	int pickuprounds;
 	override void tick(){
@@ -40,6 +41,9 @@ class BossRifle:HDWeapon{
 			weaponstatus[BOSSS_DROPADJUST]=
 				clamp(cvar.getcvar("hd_bossmoa",owner.player).getint(),0,120);
 		}
+	}
+	override double gunmass(){
+		return 12;
 	}
 	states{
 	select0:
