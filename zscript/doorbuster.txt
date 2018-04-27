@@ -95,10 +95,10 @@ class doordestroyer:hdactor{
 		vector2 justoverthere=dlt.hitlocation.xy+dlt.hitdir.xy;
 
 		//figure out if it hit above or below
-		bool floornotdoor=othersector.floorplane.zatpoint(justoverthere)<dlt.hitlocation.z;
+		bool floornotdoor=othersector.floorplane.zatpoint(justoverthere)>dlt.hitlocation.z;
 		if(
-				!floornotdoor
-				&&othersector.ceilingplane.zatpoint(justoverthere)>dlt.hitlocation.z
+			!floornotdoor
+			&&othersector.ceilingplane.zatpoint(justoverthere)>=dlt.hitlocation.z
 		)return false;
 
 		//see if there are at least 2 2-sided lines
