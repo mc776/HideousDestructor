@@ -1,20 +1,23 @@
 // ------------------------------------------------------------
 // Additional player functions
 // ------------------------------------------------------------
+class PlayerAntenna:HDActor{
+	default{
+		radius 3;
+		height 2;
+	}
+}
 extend class HDPlayerPawn{
 	actor antenna;
 	void A_MoveAntenna(vector3 newpos){
-		if(!antenna){
-			antenna=spawn("IdleDummy");
-			antenna.A_SetSize(3,3,3);
-		}
-		antenna.setorigin(newpos,false);
+		if(!antenna)antenna=spawn("PlayerAntenna",newpos);
+		else antenna.setorigin(newpos,false);
 	}
 
 	//check mantling
 	//returns: -1 cannot mantle; 0 cannot mantle but on ground; 1 can mantle
 	int MantleCheck(){
-		bool onground;
+		bool onground=false;
 		int res=-1;
 		if(zat==pos.z){
 			onground=true;
@@ -36,12 +39,28 @@ extend class HDPlayerPawn{
 			else mantlemax=56;
 		}
 		//place the antenna
-		A_MoveAntenna(pos+vel+(cos(angle)*18,sin(angle)*18,mantlemax));
+		A_MoveAntenna(pos+vel+(cos(angle)*radius,sin(angle)*radius,mantlemax));
+
 		//check if blocked
+		bool checkmovesuccessful=false;
+		bool checkmoveunsuccessful=false;
+		int mmfinal=mantlemax;
+		for(int i=0;i<mantlemax;i++){
+			antenna.addz(-1);
+			mmfinal-=1;
+			if(antenna.checkmove(antenna.pos.xy)){
+				checkmovesuccessful=true;
+			}else if(mmfinal>maxstepheight){
+				checkmoveunsuccessful=true;
+			}
+		}
+		if(!checkmovesuccessful||!checkmoveunsuccessful)return res;
+/*
 		mantlemax=antenna.getzat();
 		if((mantlemax-pos.z)<=maxstepheight) return res; //don't mantle steppables
 		if(antenna.getzat(flags:GZF_CEILING)-mantlemax<1) return res; //can't squeeze fingers in
 		if(antenna.pos.z<mantlemax) return res; //too high to reach and grab
+*/
 
 		//thrust player upwards and forwards
 		if(
