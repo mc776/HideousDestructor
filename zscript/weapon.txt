@@ -141,20 +141,14 @@ class HDWeapon:Weapon{
 	//activate a laser rangefinder
 	//because every gun should have one of these
 	action double FindRange(){
-		actor a;double b;
-		[a,b]=lineattack(
-			angle,9999999999,pitch,0,"none",
-			"LaserCheckPuff",flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ,
-			offsetz:height-6
+		flinetracedata frt;
+		linetrace(
+			angle,65536,pitch,flags:TRF_NOSKY,
+			offsetz:height-6,
+			data:frt
 		);
-		if(!a){
-			A_Log("\cd[\cuRF\cd]\cj ERROR",true);
-			return 0;
-		}
-		a.addz(-height+6);
-		double c=distance3d(a);
-		b=c*(1./HDCONST_ONEMETRE);
-		if(b>128)b*=frandom(0.999,1.001);
+		double c=frt.distance;
+		double b=c/HDCONST_ONEMETRE;
 		A_Log(string.format("\cd[\cuRF\cd]\cj \cf%.2f\cj metre%s",b,b==1?"":"s"),true);
 		if(hd_debug)A_Log(string.format("(%.2f DU%s)",c,c==1?"":"s"),true);
 		return b;
