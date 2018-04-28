@@ -46,7 +46,9 @@ class TerrorBolt:HDBullet{
 			if(tracer)tracer.damagemobj( //warhead damage
 				self,self.master,
 				random(12,24)*60,
-				"SmallArms3",DMG_THRUSTLESS);
+				"SmallArms3",DMG_THRUSTLESS
+			);
+			doordestroyer.destroydoor(self,128,frandom(24,36),6);
 			A_HDBlast(
 				fragradius:256,fragdamage:256,fragdamagetype:"SmallArms1",
 				immolateradius:64,immolateamount:random(4,20),immolatechance:32,
@@ -62,7 +64,6 @@ class TerrorBolt:HDBullet{
 			spawn("DistantRocket",pos,ALLOW_REPLACE);
 			vel.z+=10;
 			A_SpawnChunks("HDSmokeChunk",random(3,4),6,12);
-			doordestroyer.destroydoor(self,128,frandom(24,36),4);
 		}stop;
 	}
 }
