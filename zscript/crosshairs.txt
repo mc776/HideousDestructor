@@ -220,18 +220,19 @@ extend class HDStatusBar{
 			}
 		}
 		else if((wp is "Brontornis")){ //&&ismoving<10){
-			int scaledyoffset=-2*scl;
+			int scaledyoffset=-4*scl;
 			if(wp.weaponstatus[0]&BRONF_ZOOM){
 				texman.setcameratotexture(hpc,"HDXHCAM5",2.6);
 				drawimage(
 					"HDXHCAM5",(0,scaledyoffset)+bob,
 					DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
-					scale:(0.35,0.35)*scl
+					scale:(0.42,0.42)*scl
 				);
+				scaledyoffset=-6*scl;
 				drawimage(
-					"stadia",(0,scaledyoffset)+bob,
+					"bstadia",(0,scaledyoffset)+bob,
 					DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
-					scale:(1.,1.)*scl
+					scale:(1.2,1.2)*scl
 				);
 			}else drawimage(
 				"XH25",(0,0)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
