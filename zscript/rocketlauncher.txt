@@ -53,9 +53,8 @@ class HDRL:HDWeapon{
 		---- A 2;
 		---- A 0{
 			if(PressingFire()||PressingAltfire()){
-				if(PressingFire())invoker.airburst++;
-				else invoker.airburst=
-					max(0,invoker.airburst-1);
+				if(PressingFire())invoker.modairburst(1);
+				else invoker.modairburst(-1);
 				setweaponstate("abadjust");
 			}else if(PressingZoom()){
 				invoker.airburst=0;
@@ -499,9 +498,8 @@ class Blooper:HDWeapon{
 		---- A 2;
 		---- A 0{
 			if(PressingFire()||PressingAltfire()){
-				if(PressingFire())invoker.airburst++;
-				else invoker.airburst=
-					max(0,invoker.airburst-1);
+				if(PressingFire())invoker.modairburst(1);
+				else invoker.modairburst(-1);
 				setweaponstate("abadjust");
 			}else if(PressingZoom()){
 				invoker.airburst=0;
