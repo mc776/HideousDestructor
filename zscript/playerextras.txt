@@ -39,7 +39,7 @@ extend class HDPlayerPawn{
 			else mantlemax=56;
 		}
 		//place the antenna
-		A_MoveAntenna(pos+vel+(cos(angle)*radius,sin(angle)*radius,mantlemax));
+		A_MoveAntenna(pos+vel+((cos(angle),sin(angle))*(radius+1),mantlemax));
 
 		//check if blocked
 		bool checkmovesuccessful=false;
@@ -47,15 +47,16 @@ extend class HDPlayerPawn{
 		int mmfinal=mantlemax;
 		for(int i=0;i<mantlemax;i++){
 			antenna.addz(-1);
-			mmfinal-=1;
 			if(antenna.checkmove(antenna.pos.xy)){
 				checkmovesuccessful=true;
 			}else if(mmfinal>maxstepheight){
 				checkmoveunsuccessful=true;
 			}
+			mmfinal-=1;
 		}
 		if(!checkmovesuccessful||!checkmoveunsuccessful)return res;
 /*
+		//the old method in case the other one fails
 		mantlemax=antenna.getzat();
 		if((mantlemax-pos.z)<=maxstepheight) return res; //don't mantle steppables
 		if(antenna.getzat(flags:GZF_CEILING)-mantlemax<1) return res; //can't squeeze fingers in
