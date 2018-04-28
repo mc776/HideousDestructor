@@ -68,8 +68,8 @@ class DERPBot:HDUPK{
 	void A_DerpAttack(){
 		if(DerpTargetCheck(false))DerpShot();
 	}
-	void A_DerpLook(){
-		A_Look();
+	void A_DerpLook(statelabel seestate="see"){
+		A_LookEx(label:seestate);
 		if(
 			deathmatch&&bfriendly
 			&&master&&master.player
@@ -84,7 +84,7 @@ class DERPBot:HDUPK{
 				){
 					bfriendly=false;
 					target=players[i].mo;
-					setstatelabel("see");
+					setstatelabel(seestate);
 					break;
 				}
 			}
@@ -104,9 +104,11 @@ class DERPBot:HDUPK{
 	void A_DerpCrawl(bool attack=true){
 		bool moved=true;
 		//ambush(1) does nothing, not even make noise
-		if(attack&&cmd!=DERP_AMBUSH)A_Chase(
-			"missile","missile",CHF_DONTMOVE|CHF_DONTTURN|CHF_NODIRECTIONTURN
-		);
+		if(attack&&cmd!=DERP_AMBUSH){
+			if(target&&target.health>0)A_Chase(
+				"missile","missile",CHF_DONTMOVE|CHF_DONTTURN|CHF_NODIRECTIONTURN
+			);else A_DerpLook("see2");
+		}
 
 		if(
 			cmd==DERP_PATROL
