@@ -153,7 +153,8 @@ class doordestroyer:hdactor{
 */
 
 		//blow that shit up
-		double holeheight=max(32,frandom(0.2,1.)*maxwidth);
+		double doorwidth=doorline.length();
+		double holeheight=clamp(frandom(0.01,0.02)*maxdepth*maxwidth,32,doorwidth+frandom(-12,12));
 		double blockpoint;
 		othersector.flags|=sector.SECF_SILENTMOVE;
 		if(floornotdoor){
@@ -210,7 +211,6 @@ class doordestroyer:hdactor{
 			db.bottom=blockpoint;
 		}
 
-		double doorwidth=doorline.length();
 		db.llength=doorwidth;
 		hdactor.HDBlast(caller,
 			pushradius:doorwidth,pushamount:24,
