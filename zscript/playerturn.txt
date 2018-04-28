@@ -145,6 +145,7 @@ extend class HDPlayerPawn{
 			double midheight=highheight-max(1,barreldepth)*0.5;
 			double lowheight=highheight-max(1,barreldepth);
 
+
 			//and now uh do stuff
 			vector3 barrelbase=pos+(0,0,midheight);
 			actor muzpuf;
@@ -162,6 +163,17 @@ extend class HDPlayerPawn{
 			flinetracedata ltb;
 			double testangle=lastangle+anglechange;
 			double testpitch=lastpitch+pitchchange;
+
+
+			//because LineTrace fails at portals :(
+			actor a;bool b;
+			[a,b]=lineattack(
+				testangle,barrellength+10,testpitch,0,"none",
+				"CheckPuff",flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ,
+				offsetz:midheight
+			);
+			vector3 adist=a.pos-pos;
+			if(adist dot adist>(64*64))return;
 
 
 			//top
