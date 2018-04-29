@@ -77,6 +77,16 @@ class LiberatorRifle:HDWeapon{
 			return 10+weaponstatus[LIBS_MAG]*0.04+(weaponstatus[0]&LIBF_GRENADELOADED?1.:0.);
 		}
 	}
+	override double,int weaponbulk(){
+		double blx=125;
+		int uss=USE_776;
+		if(!(weaponstatus[0]&LIBF_NOLAUNCHER)){
+			blx+=25;
+			if(weaponstatus[0]&LIBF_GRENADELOADED)blx+=ENC_ROCKETLOADED;
+			uss|=USE_BATTERY;
+		}
+		return blx+weaponstatus[LIBS_MAG]*ENC_776_LOADED,uss;
+	}
 	override void tick(){
 		super.tick();
 		drainheat(LIBS_HEAT,8);

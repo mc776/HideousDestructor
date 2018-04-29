@@ -30,6 +30,9 @@ class ThunderBuster:HDWeapon{
 	override double gunmass(){
 		return 10+(weaponstatus[TBS_BATTERY]<0?0:2);
 	}
+	override double,int weaponbulk(){
+		return 175+(weaponstatus[1]>=0?ENC_BATTERY_LOADED:0),USE_BATTERY;
+	}
 	static void ThunderZap(
 		actor caller,
 		double zoffset=32,

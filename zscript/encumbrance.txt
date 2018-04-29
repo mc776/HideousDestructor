@@ -73,15 +73,10 @@ extend class HDPlayerPawn{
 			||!hd_onemanarmy
 			||skill>=5
 		);
-		bool use9=forcefull||countinv("DERPUsable");
-		bool use12=forcefull;
-		bool use776=forcefull;
-		bool use426=forcefull;
-		bool usebronto=forcefull;
-		bool usebattery=forcefull||countinv("HERPUsable")||countinv("PortableLiteAmp");
-		bool userocket=forcefull||countinv("HDIEDKit");
-		bool useheat=forcefull;
-		bool usesecondpistol=forcefull;
+		int useammotypes=forcefull?(1+2+4+8+16+32+64+128+256):0;
+		if(countinv("DERPUsable"))useammotypes|=USE_9;
+		if(countinv("HERPUsable")||countinv("PortableLiteAmp"))useammotypes|=(USE_426|USE_BATTERY);
+		if(countinv("HDIEDKit"))useammotypes|=USE_ROCKET;
 
 		//scriptified weapons
 		for(inventory hdww=inv;hdww!=null;hdww=hdww.inv){
@@ -95,93 +90,12 @@ extend class HDPlayerPawn{
 				thisweapon
 				||forcefull
 			){
-				int blx=0;
-				if(hdw is "Lumberjack"){
-					blx+=100;
-					if(hdw.weaponstatus[CSAWS_BATTERY]>=0)blx+=ENC_BATTERY_LOADED;
-					usebattery=true;
-				}else if(hdw is "HDPistol"){
-					blx+=30+hdw.weaponstatus[PISS_MAG]*ENC_9MAG_LOADED;
-					use9=true;
-					usesecondpistol=true;
-				}else if(hdw is "HDSMG"){
-					int mg=hdw.weaponstatus[SMGS_MAG];
-					if(mg<0)blx+=120-ENC_9MAG30_LOADED;
-					else blx+=120+mg*ENC_9_LOADED;
-					use9=true;
-				}else if(hdw is "Hunter"){
-					int bluh=hdw.weaponstatus[HUNTS_TUBE];
-					if(bluh>4)bluh+=(bluh-4)*2;
-					bluh+=bluh+hdw.weaponstatus[HUNTS_SIDESADDLE];
-					blx+=125+bluh*ENC_SHELLLOADED;
-					use12=true;
-				}else if(hdw is "Slayer"){
-					blx+=100+hdw.weaponstatus[SLAYS_SIDESADDLE]*ENC_SHELLLOADED;
-					use12=true;
-				}else if(hdw is "ZM66AssaultRifle"){
-					if(!(hdw.weaponstatus[0]&ZM66F_NOLAUNCHER)){
-						blx+=125;
-						if(
-							hdw.weaponstatus[0]&ZM66F_GRENADELOADED
-						)blx+=ENC_ROCKETLOADED;
-						userocket=true;
-					}else blx+=100;
-					blx+=hdw.weaponstatus[ZM66S_MAG]*ENC_426_LOADED;
-					use426=true;
-				}else if(hdw is "Vulcanette"){
-					blx+=225;
-					if(hdw.weaponstatus[VULCS_BATTERY]>=0)blx+=ENC_BATTERY_LOADED;
-					let vvv=vulcanette(hdw);
-					for(int i=0;i<5;i++){
-						if(vvv.vulcmag[i]>=0)
-							blx+=ENC_426MAG_LOADED*min(10,vvv.vulcmag[i]);
-					}
-					usebattery=true;
-					use426=true;
-				}else if(hdw is "Blooper"){
-					blx+=75;
-					if(hdw.weaponstatus[0]&BLOPF_LOADED)blx+=ENC_ROCKETLOADED;
-					userocket=true;
-				}else if(hdw is "HDRL"){
-					blx+=175+hdw.weaponstatus[RLS_MAG]*ENC_ROCKETLOADED;
-					int chmb=hdw.weaponstatus[RLS_CHAMBER];
-					if(chmb>1)blx+=ENC_HEATROCKETLOADED;
-					else if(chmb==1)blx+=ENC_ROCKETLOADED;
-					userocket=true;
-					useheat=true;
-				}else if(hdw is "LiberatorRifle"){
-					if(!(hdw.weaponstatus[0]&LIBF_NOLAUNCHER)){
-						blx+=150;
-						if(
-							hdw.weaponstatus[0]&LIBF_GRENADELOADED
-						)blx+=ENC_ROCKETLOADED;
-						userocket=true;
-					}else blx+=125;
-					blx+=hdw.weaponstatus[LIBS_MAG]*ENC_776_LOADED;
-					use776=true;
-				}else if(hdw is "ThunderBuster"){
-					blx+=175;
-					if(hdw.weaponstatus[1]>=0)blx+=ENC_BATTERY_LOADED;
-					usebattery=true;
-				}else if(hdw is "Brontornis"){
-					blx+=75+(
-						hdw.weaponstatus[BRONS_CHAMBER]>1?
-						ENC_BRONTOSHELLLOADED:0
-					);
-					usebronto=true;
-				}else if(hdw is "BFG9k"){
-					if(hdw.weaponstatus[0]&BFGF_STRAPPED)blx+=200;
-					else blx+=240;
-					if(hdw.weaponstatus[BFGS_BATTERY]>=0)blx+=ENC_BATTERY_LOADED;
-					usebattery=true;
-				}else if(hdw is "BossRifle"){
-					blx+=144+hdw.weaponstatus[BOSSS_MAG]*ENC_776_LOADED;
-					use776=true;
-				}
-				if(thisweapon){
-					enc+=blx;
-					if(!forcefull)break;
-				}else enc+=blx*1.6;
+				double gunbulk;
+				int ammotouse;
+				[gunbulk,ammotouse]=hdw.weaponbulk();
+				enc+=gunbulk*(thisweapon?0.8:1);
+				useammotypes|=ammotouse;
+				//if(gunbulk)A_Log(string.format("%s  %.2f",hdw.getclassname(),gunbulk));
 			}
 		}
 
@@ -189,7 +103,6 @@ extend class HDPlayerPawn{
 		let herp=HERPUsable(findinventory("HERPUsable"));
 		if(herp){
 			enc+=ENC_HERP+herp.ammo<0?0:ENC_426MAG*0.4;
-			use426=true;
 		}enc+=countinv("HERPDEAD")*ENC_HERP;
 
 		//mag manager
@@ -204,7 +117,7 @@ extend class HDPlayerPawn{
 
 		//second pistol
 		(
-			(usesecondpistol&&countinv("HDSecondPistol"))?30
+			(useammotypes&USE_SECONDPISTOL&&countinv("HDSecondPistol"))?30
 			+HDSecondPistol(
 				findinventory("HDSecondPistol")
 			).weaponstatus[PISS_MAG]*ENC_9MAG_LOADED:0
@@ -229,40 +142,40 @@ extend class HDPlayerPawn{
 		+countinv("DERPDEAD")*ENC_DERP
 
 		//magged ammo
-		+(use9?(
+		+(useammotypes&USE_9?(
 			countinv("HDPistolAmmo")*ENC_9
 			+countinv("HDPistolMag")*ENC_9MAG
 			+countinv("HDSMGMag")*ENC_9MAG30
 		):0)
-		+(use776?(
+		+(useammotypes&USE_776?(
 			countinv("SevenMilAmmo")*ENC_776
 			+countinv("SevenMilBrass")*ENC_776B
 			+countinv("BossClip")*ENC_776CLIP
 			+countinv("LiberatorMag")*ENC_776MAG
 		):0)
-		+((use776||use426)?(
+		+((useammotypes&USE_776||useammotypes&USE_426)?(
 			countinv("FourMilAmmo")*ENC_426
 		):0)
-		+(use426?(
+		+(useammotypes&USE_426?(
 			countinv("FourMilAmmo")*ENC_426
 			+countinv("ZM66RifleMags")*ENC_426MAG
 		):0)
-		+(usebattery?(
+		+(useammotypes&USE_BATTERY?(
 			countinv("HDCellAmmo")*ENC_BATTERY*0.3
 			+countinv("HDCellPacks")*ENC_BATTERY
 		):0)
 
 		//single loose ammo
-		+(use12?(
+		+(useammotypes&USE_12?(
 			countinv("HDShellAmmo")*ENC_SHELL
 		):0)
-		+(userocket?(
+		+(useammotypes&USE_ROCKET?(
 			countinv("HDRocketAmmo")*ENC_ROCKET
 		):0)
-		+(usebronto?(
+		+(useammotypes&USE_BRONTO?(
 			countinv("BrontornisRound")*ENC_BRONTOSHELL
 		):0)
-		+(useheat?(
+		+(useammotypes&USE_HEAT?(
 			countinv("HEATAmmo")*ENC_HEATROCKET
 		):0)
 		+countinv("HDFragGrenadeAmmo")*ENC_FRAG
@@ -280,5 +193,16 @@ extend class HDPlayerPawn{
 		;
 		return enc/carrymax;
 	}
+}
+enum useammoflags{
+	USE_BATTERY=1,
+	USE_9=2,
+	USE_SECONDPISTOL=4,
+	USE_12=8,
+	USE_426=16,
+	USE_ROCKET=32,
+	USE_HEAT=64,
+	USE_BRONTO=128,
+	USE_776=256
 }
 

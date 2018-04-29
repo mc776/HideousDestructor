@@ -47,6 +47,10 @@ class BFG9K:HDWeapon replaces BFG9000{
 	override double gunmass(){
 		return 15+(weaponstatus[BFGS_BATTERY]>=0?1:0)+(weaponstatus[0]&BFGF_STRAPPED?0:4);
 	}
+	override double,int weaponbulk(){
+		double blx=(weaponstatus[0]&BFGF_STRAPPED)?200:240;
+		return blx+(weaponstatus[BFGS_BATTERY]>=0?ENC_BATTERY_LOADED:0),USE_BATTERY;
+	}
 	states{
 	altfire:
 	togglestrap:

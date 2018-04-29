@@ -21,6 +21,11 @@ class HDSMG:HDWeapon{
 	override double gunmass(){
 		return 5+(weaponstatus[SMGS_MAG]<0)?-0.5:(weaponstatus[SMGS_MAG]*0.02);
 	}
+	override double,int weaponbulk(){
+		int mg=weaponstatus[SMGS_MAG];
+		if(mg<0)return 120-ENC_9MAG30_LOADED;
+		else return 120+mg*ENC_9_LOADED,USE_9;
+	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		if(owner&&owner.player)weaponstatus[SMGS_AUTO]=clamp(

@@ -138,6 +138,9 @@ class HDPistol:HDWeapon{
 			}
 		}
 	}
+	override double,int weaponbulk(){
+		return 30+weaponstatus[PISS_MAG]*ENC_9MAG_LOADED,USE_9;
+	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		if(
