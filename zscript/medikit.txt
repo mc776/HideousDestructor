@@ -12,6 +12,7 @@ class PortableMedikit:HDPickup{
 		inventory.pickupmessage "Picked up a medikit.";
 		inventory.icon "PMEDA0";
 		scale 0.4;
+		hdpickup.bulk ENC_MEDIKIT;
 	}
 	bool hasstim;
 	override void postbeginplay(){
@@ -88,6 +89,9 @@ class HDMedikitter:HDWoundFixer{
 	override void beginplay(){
 		usedflesh=false;useonother=false;usedpatches=0;usedon=null;
 		super.beginplay();
+	}
+	override double,int weaponbulk(){
+		return ENC_MEDIKIT*1.1,0;
 	}
 	void patchwound(int amt,actor targ){
 		let slf=HDPlayerPawn(targ);

@@ -24,6 +24,10 @@ class HDArmour:HDPickup{
 		if(meleethreshold==3)return "Picked up the combat armour.";
 		else return "Picked up the security armour.";
 	}
+	override double getbulk(){
+		if(meleethreshold==3)return 200;
+		else return 80;
+	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		if(meleethreshold==3){
@@ -136,6 +140,10 @@ class HDArmourWorn:HDArmour{
 	}
 	override void doeffect(){
 		if(!amount)goawayanddie();
+	}
+	override double getbulk(){
+		if(meleethreshold==3)return 120;
+		else return 35;
 	}
 	override inventory createtossable(int amount){
 		if(!owner)return null;

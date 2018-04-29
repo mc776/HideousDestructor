@@ -106,17 +106,21 @@ class HDPickup:CustomInventory{
 	actor picktarget;
 	bool droptranslation;
 	property droptranslation:droptranslation;
+	double bulk;
+	property bulk:bulk;
 	default{
 		+inventory.invbar +inventory.persistentpower
 		+solid +noblockmonst +notrigger +dontgib
 		inventory.interhubamount int.MAX;
 
 		hdpickup.droptranslation true;
+		hdpickup.bulk 0;
 
 		radius 8; height 10; scale 0.8;
 		inventory.pickupsound "weapons/pocket";
 		accuracy 1;
 	}
+	virtual double getbulk(){return amount*bulk;}
 	override inventory createtossable(int amount){
 		if(droptranslation&&owner){
 			actor onr=owner;
@@ -174,6 +178,8 @@ class HDAmmo:HDPickup{
 		-inventory.invbar
 		hdpickup.droptranslation false;
 	}
+	//bulk must be calculated in encumbrance so hd_onemanarmy can be read
+	override double getbulk(){return 0;}
 	states{use:TNT1 A 0;fail;spawn2:---- A -1;}
 }
 

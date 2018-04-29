@@ -63,10 +63,6 @@ extend class HDPlayerPawn{
 		if(!player)return 0;
 		enc=0;
 
-		//backpack
-		let hdbp=HDBP(findinventory("HDBP"));
-		if(hdbp)enc+=max(100,(hdbp.bulk)*0.62);
-
 		//booleans for reference
 		bool forcefull=(
 			deathmatch
@@ -81,23 +77,32 @@ extend class HDPlayerPawn{
 		//scriptified weapons
 		for(inventory hdww=inv;hdww!=null;hdww=hdww.inv){
 			let hdw=hdweapon(hdww);
-			if(!hdw)continue;
-			bool thisweapon=(
-				hdw==lastweapon||
-				hdw==player.readyweapon
-			);
-			if(
-				thisweapon
-				||forcefull
-			){
-				double gunbulk;
-				int ammotouse;
-				[gunbulk,ammotouse]=hdw.weaponbulk();
-				if(thisweapon&&forcefull)gunbulk*=0.8;
-				enc+=gunbulk;
-				useammotypes|=ammotouse;
-				//if(gunbulk)A_Log(string.format("%s  %.2f",hdw.getclassname(),gunbulk));
+			if(hdw){
+				bool thisweapon=(
+					hdw==lastweapon||
+					hdw==player.readyweapon
+				);
+				if(hdbp(hdw)){
+					enc+=thisweapon?hdw.weaponbulk():(hdw.weaponbulk()*0.62);
+					continue;
+				}else if(
+					thisweapon
+					||forcefull
+				){
+					double gunbulk;
+					int ammotouse;
+					[gunbulk,ammotouse]=hdw.weaponbulk();
+					if(thisweapon&&forcefull){
+						gunbulk*=0.8;
+					}
+					enc+=gunbulk;
+					useammotypes|=ammotouse;
+					//if(gunbulk)A_Log(string.format("%s  %.2f",hdw.getclassname(),gunbulk));
+				}
+				continue;
 			}
+			let hdp=hdpickup(hdww);
+			if(hdp)enc+=hdp.getbulk();
 		}
 
 		//because herps are special
@@ -123,24 +128,6 @@ extend class HDPlayerPawn{
 				findinventory("HDSecondPistol")
 			).weaponstatus[PISS_MAG]*ENC_9MAG_LOADED:0
 		)
-
-		//armour
-		+armourlevel*7
-		+countinv("PortableRadsuit")*ENC_RADSUIT
-		+(countinv("HDArmour")?(
-			findinventory("HDArmour").meleethreshold==3?200:80
-		):0)
-
-		//usables
-		+countinv("HDIEDKit")*ENC_IEDKIT
-		+(countinv("PortableStimpack")+countinv("PortableBerserkPack"))*ENC_STIMPACK
-		+countinv("SquadSummoner")*ENC_SQUADSUMMONER
-		+countinv("BluePotion")*ENC_BLUEPOTION
-		+countinv("PortableLiteAmp")*ENC_LITEAMP
-		+countinv("PortableMedikit")*ENC_MEDIKIT
-		+countinv("PortableLadder")*ENC_LADDER
-		+countinv("DERPUsable")*ENC_DERP
-		+countinv("DERPDEAD")*ENC_DERP
 
 		//magged ammo
 		+(useammotypes&USE_9?(
