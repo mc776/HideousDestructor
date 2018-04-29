@@ -93,7 +93,8 @@ extend class HDPlayerPawn{
 				double gunbulk;
 				int ammotouse;
 				[gunbulk,ammotouse]=hdw.weaponbulk();
-				enc+=gunbulk*(thisweapon?0.8:1);
+				if(thisweapon&&forcefull)gunbulk*=0.8;
+				enc+=gunbulk;
 				useammotypes|=ammotouse;
 				//if(gunbulk)A_Log(string.format("%s  %.2f",hdw.getclassname(),gunbulk));
 			}
