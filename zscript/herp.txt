@@ -102,20 +102,20 @@ class HERPBot:HDUPK{
 		if(!random(0,8192))battery--;
 		A_ClearTarget();
 
-		//shoot 3 lines for at least some z-axis awareness
-		actor a;int b;int c=-1;
+		//shoot 5 lines for at least some z-axis awareness
+		actor a;int b;int c=-2;
 		while(
 			c<=1
 		){
 			c++;
 			//shoot a line out
 			[a,b]=lineattack(
-				angle,4096,0,0,"none",
+				angle,4096,c,0,"none",
 				"CheckPuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT|LAF_OVERRIDEZ,
-				offsetz:16
+				offsetz:10
 			);
 
-			if(a)a.a_spawnparticle("red",lifetime:2,size:2);
+			if(a&&!c)a.a_spawnparticle("red",lifetime:2,size:2);
 
 			//if the line hits a valid target, go into shooting state
 			if(
@@ -525,7 +525,7 @@ extend class HDHandlers{
 				botcmdid?string.format("with tag \ca%i\cj ",botcmdid):"",
 				verb
 			),true);
-		}else if(badcommand)ppp.A_Log(string.format("\cd[HERP] \cj%sCommand format:\cu ied <option> <tag number> <direction>\n\cjOptions\n 1 = ON\n 2 = OFF\n 3 = DIRECTION (counterclockwise in degrees)\n 123 = QUERY\n -n = set tag number.\n\cj  tag number on next deployment: \cy%i",anybots?"":"No HERPs currently deployed.\n",botid),true);
+		}else if(badcommand)ppp.A_Log(string.format("\cd[HERP] \cj%sCommand format:\cu herp <option> <tag number> <direction>\n\cjOptions\n 1 = ON\n 2 = OFF\n 3 = DIRECTION (counterclockwise in degrees)\n 123 = QUERY\n -n = set tag number.\n\cj  tag number on next deployment: \cy%i",anybots?"":"No HERPs currently deployed.\n",botid),true);
 	}
 }
 
