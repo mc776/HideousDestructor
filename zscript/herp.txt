@@ -4,6 +4,25 @@
 enum HERPConst{
 	HERP_TID=851816,
 }
+class HERPLeg:Actor{
+	default{
+		+flatsprite +nointeraction
+	}
+	vector3 relpos;
+	override void Tick(){
+		if(!master){destroy();return;}
+		if(master.pos.z<floorz+12){
+			master.setz(floorz+12);
+			master.vel.z=max(0,master.vel.z);
+		}else setorigin(master.pos+relpos,true);
+		if(pos.z<=floorz)master.vel.xy*=getfriction();
+	}
+	states{
+	spawn:
+		HLEG A -1;
+		stop;
+	}
+}
 class HERPBot:HDUPK{
 	default{
 		//$Category "Monsters/Hideous Destructor"
@@ -38,6 +57,28 @@ class HERPBot:HDUPK{
 			mags=2;
 			battery=20;
 		}
+		bool gbg;actor lll;
+		[gbg,lll]=A_SpawnItemEx(
+			"HERPLeg",xofs:-7,zofs:-12,
+			angle:0,
+			flags:SXF_NOCHECKPOSITION|SXF_SETMASTER
+		);
+		HERPLeg(lll).relpos=lll.pos-pos;
+		lll.pitch=-60;
+		[gbg,lll]=A_SpawnItemEx(
+			"HERPLeg",xofs:-7,zofs:-12,
+			angle:-120,
+			flags:SXF_NOCHECKPOSITION|SXF_SETMASTER
+		);
+		HERPLeg(lll).relpos=lll.pos-pos;
+		lll.pitch=-60;
+		[gbg,lll]=A_SpawnItemEx(
+			"HERPLeg",xofs:-7,zofs:-12,
+			angle:120,
+			flags:SXF_NOCHECKPOSITION|SXF_SETMASTER
+		);
+		HERPLeg(lll).relpos=lll.pos-pos;
+		lll.pitch=-60;
 	}
 	void message(string msg){
 		if(!master)return;
