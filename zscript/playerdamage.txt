@@ -16,6 +16,8 @@ extend class HDPlayerPawn{
 		//which in turn nukes the data which is being checked in DamageMobj."
 		if(!self || !(self is "HDPlayerPawn") || health<1)return 0;
 
+		silentdeath=false;
+
 		//replace all armour with custom HD stuff
 		int a=countinv("BasicArmor");
 		if(a){
@@ -88,6 +90,7 @@ extend class HDPlayerPawn{
 			mod=="invisiblebleedout"
 		){
 			flags|=(DMG_NO_ARMOR|DMG_NO_PAIN|DMG_THRUSTLESS);
+			silentdeath=true;
 			if(!random(0,127))oldwoundcount++;
 			if(beatcap>20){
 				beatmax+=random(-2,random(-1,4));
