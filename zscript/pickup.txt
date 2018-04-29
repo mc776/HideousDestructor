@@ -25,7 +25,10 @@ class userpickerupper:hdactor{
 			setorigin(pos+vel,false);
 			if(!trymove(pos.xy,true,true)){
 				if(!checksight(picktarget)){destroy();return;}
-				if(blockingmobj){
+				if(
+					blockingmobj
+					&&abs(picktarget.pos.z+picktarget.height-12-blockingmobj.pos.z)<48
+				){
 					blockingmobj.target=picktarget;
 					if(
 						blockingmobj is "HDUPK"
