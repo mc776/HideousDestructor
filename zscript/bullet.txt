@@ -351,7 +351,7 @@ class HDBullet:HDActor{
 		int hitresult=0;
 		if(blt.hitline){
 			blt.hitline.activate(target,blt.lineside,SPAC_Impact);
-			setorigin(blt.hitlocation-blt.hitdir*4,false);
+			setorigin(blt.hitlocation-blt.hitdir,false);
 			A_SprayDecal(penetration>4?"BulletChip":"BulletChipSmall",10);
 
 			//ricochet
