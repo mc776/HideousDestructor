@@ -76,7 +76,10 @@ class HDCellpackEmpty:HDCellpacks{
 //replace the derivatives where you can
 //spawn a HDCellPickup from the weapon, give it a Clip plus whatever # you want
 class HDCellPickup:HDUPK{
-	default{scale 0.4;stamina 20;}
+	default{
+		scale 0.4;stamina 20;
+		hdupk.pickupmessage "Picked up a partially depleted battery.";
+	}
 	states{
 	spawn2:
 		CELL CBA -1{
