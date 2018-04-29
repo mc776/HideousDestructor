@@ -537,6 +537,7 @@ class BeamSpotFlash:IdleDummy{
 
 		pitch=frandom(80,90);
 		angle=frandom(0,360);
+		A_SpawnItemEx("BeamSpotFlashLight",flags:SXF_NOCHECKPOSITION|SXF_SETTARGET);
 		A_SpawnChunks("HDGunSmoke",clamp(n2*0.6,4,7),3,6);
 		A_PlaySound("weapons/plasmaf");
 		A_AlertMonsters();
@@ -560,7 +561,7 @@ class BeamSpotFlashLight:PointLight{
 	}
 	override void tick(){
 		super.tick();
-		args[3]+=randompick(-10,10,-5);
+		args[3]+=randompick(-10,5,-20);
 		if(args[3]<1)destroy();
 	}
 }
