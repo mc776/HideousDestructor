@@ -72,19 +72,25 @@ struct HDMobAI play{
 
 	//set and unset shootable corpse
 	//"CorpseFlags" item is a wrapper for this now
-	static void CorpseFlags(actor caller){
+	//in raise states, set gibbed to true to enable going to a raise-from-gib state
+	static void CorpseFlags(actor caller,bool gibbed=false,bool raise=false){
 		caller.A_TakeInventory("SawGib");
-		if(caller.health>0){  
+		if(raise||caller.health>0){
 			if(!caller.bfloat)caller.bnodropoff=true;
-			caller.maxstepheight=caller.height*0.1;
+			caller.maxstepheight=getdefaultbytype(caller.getclass()).maxstepheight;
 			caller.bnotautoaimed=false;
 			caller.balwaystelefrag=false;
+			if(gibbed&&caller.findinventory("IsGibbed")){
+				caller.setstatelabel("raisegibbed");
+				caller.A_TakeInventory("IsGibbed");
+			}
 		}else{
 			caller.bnodropoff=false;
-			caller.maxstepheight=getdefaultbytype(caller.getclass()).maxstepheight;
-			caller.bshootable=true;
+			caller.maxstepheight=caller.height*0.1;
 			caller.bnotautoaimed=true;
 			caller.balwaystelefrag=true;
+			if(gibbed)caller.A_GiveInventory("IsGibbed");
+			else caller.bshootable=true;
 		}
 	}
 

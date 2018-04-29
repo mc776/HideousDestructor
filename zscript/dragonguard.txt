@@ -240,10 +240,7 @@ class DragonGuard:Chaingunguy{
 		CPOS QRS 5 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
 		goto xdead;
 	xdeath:
-		CPOS O 5{
-			bshootable=false;
-			A_GiveInventory("IsGibbed");
-		}
+		CPOS O 5{hdmobai.corpseflags(self,true);}
 		CPOS P 3{
 			A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
 			A_XScream();
@@ -258,27 +255,19 @@ class DragonGuard:Chaingunguy{
 			if(abs(vel.z)>1)setstatelabel("dead");    
 		}wait;
 	raise:
-		CPOS N 2{
-			hdmobai.CorpseFlags(self);
-			if(countinv("IsGibbed"))setstatelabel("raisegibbed");
-			else A_SpawnItemEx("MegaBloodSplatter",0,0,4,0,0,3,0,SXF_NOCHECKPOSITION);
-		}
+		CPOS N 0{hdmobai.corpseflags(self,true,true);}
+		CPOS N 2 A_SpawnItemEx("MegaBloodSplatter",0,0,4,0,0,3,0,SXF_NOCHECKPOSITION);
 		CPOS NML 6;
 		CPOS KJIH 4;
 		goto see;
 	raisegibbed:
-		CPOS T 6{
-			A_TakeInventory("IsGibbed");
-			A_SpawnItemEx("MegaBloodSplatter",0,0,4,0,0,3,0,SXF_NOCHECKPOSITION);
-		}
+		CPOS T 6 A_SpawnItemEx("MegaBloodSplatter",0,0,4,0,0,3,0,SXF_NOCHECKPOSITION);
 		CPOS TS 12 A_SpawnItemEx("MegaBloodSplatter",0,0,4,0,0,3,0,SXF_NOCHECKPOSITION);
 		CPOS RQ 7;
 		CPOS POH 5;
 		CPOS H 5 A_Die("ungibbed");
 	death.ungibbed:
-		CPOS H 5{
-			hdmobai.CorpseFlags(self);
-		}
+		CPOS H 5{hdmobai.CorpseFlags(self);}
 		CPOS I 5 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
 		CPOS J 5 A_NoBlocking();
 		CPOS KLM 5;

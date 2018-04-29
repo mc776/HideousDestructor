@@ -588,11 +588,9 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 		#### QRSTUV 5;
 		goto xdead2;
 	xdeath:
+		#### M 0 {hdmobai.corpseflags(self,true);}
 		#### M 0 A_JumpIf(wep<0,"xdeath2");
-		#### M 5{
-			bshootable=false;
-			A_GiveInventory("IsGibbed");
-		}
+		#### M 5;
 		#### N 5{
 			spawn("MegaBloodSplatter",pos+(0,0,34));
 			A_XScream();
@@ -606,10 +604,7 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 		#### U 5 canraise{if(abs(vel.z)>=2.)setstatelabel("xdead");}
 		wait;
 	xdeath2:
-		#### O 5{
-			bshootable=false;
-			A_GiveInventory("IsGibbed");
-		}
+		#### O 5;
 		#### P 5{
 			spawn("MegaBloodSplatter",pos+(0,0,34));
 			A_XScream();
@@ -623,17 +618,14 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 		#### W 5 canraise{if(abs(vel.z)>=2.)setstatelabel("xdead2");}
 		wait;
 	raise:
-		#### A 0 {hdmobai.corpseflags(self);}
+		#### A 0 {hdmobai.corpseflags(self,true,true);}
 		#### A 0 A_JumpIfInventory("IsGibbed",1,"RaiseGibbed");
 		#### L 4 spawn("MegaBloodSplatter",pos+(0,0,34));
 		#### LK 6;
 		#### JIH 4;
 		goto see;
 	raisegibbed:
-		#### U 12{
-			A_TakeInventory("IsGibbed");
-			spawn("MegaBloodSplatter",pos+(0,0,34));
-		}
+		#### U 12 Spawn("MegaBloodSplatter",pos+(0,0,34));
 		#### T 8;
 		#### SRQ 6;
 		#### PONM 4;

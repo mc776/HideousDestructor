@@ -265,15 +265,13 @@ class Babuin:HDActor{
 		}loop;
 	raise:
 		---- A 0{
-			hdmobai.corpseflags(self);
-			if(countinv("IsGibbed"))setstatelabel("raisegibbed");
-			else bpushable=true;
+			if(!countinv("IsGibbed"))bpushable=true;
+			hdmobai.corpseflags(self,true,true);
 		}
 		SRG2 NMLKJI 5;
 		goto see;
 	raisegibbed:
 		TROO U 6{
-			A_TakeInventory("IsGibbed");
 			A_SpawnItemEx("MegaBloodSplatter",0,0,4,
 				vel.x,vel.y,vel.z+3,0,
 				SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM
@@ -291,7 +289,7 @@ class Babuin:HDActor{
 			A_SpawnItemEx("tempshield2",flags:SXF_NOCHECKPOSITION|SXF_SETMASTER);
 		}goto deathend;
 	xdeath:
-		TROO O 0{hdmobai.corpseflags(self);}
+		TROO O 0{hdmobai.corpseflags(self,true);}
 	XDeathBrewtleLulz: //it's ALMOST identical
 		TROO O 0{
 			bpushable=false;

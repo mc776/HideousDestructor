@@ -131,7 +131,7 @@ ACTOR HellPrince:BaronOfHell replaces BaronofHell{
 		BOSS F 5 A_JumpIf(getdistance(true,AAPTR_TARGET)>84,"missilesweep")
 		goto See
 	Death:
-		"----" A 0 A_GiveInventory("HDCorpseFlags",1)
+		"----" A 0 A_GiveInventory("HDCorpseFlags",1) //{hdmobai.corpseflags(self);}
 		TNT1 A 0 A_Quake(2,64,0,600)
 		BOSS I 0 A_SpawnItemEx("tempshieldgreen",0,0,0,velx,vely,velz,0,40)
 		BOSS I 2 A_SpawnItemEx("BFGVileShard",0,0,20,10,0,8,45,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
@@ -148,7 +148,7 @@ ACTOR HellPrince:BaronOfHell replaces BaronofHell{
 		BOSS O -1 A_BossDeath
 		stop
 	Raise:
-		"----" A 0 A_GiveInventory("HDCorpseFlags",1)
+		"----" A 0 A_GiveInventory("HDCorpseFlags",1) //{hdmobai.corpseflags(self,false,true);}
 		TNT1 A 0 A_GiveInventory("VileCount",1)
 		BOSS ONMLKJI 5
 		TNT1 A 0 A_JumpIfInventory("VileCount",5,"ReallyRaise")

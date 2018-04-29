@@ -750,11 +750,9 @@ class HDMarine:HDActor replaces ScriptedMarine{
 		wait;
 	raise:
 		#### A 0{
-			hdmobai.corpseflags(self);
 			A_SetSolid();
 			if(bfriendly)bpushable=true;
-			if(countinv("IsGibbed"))setstatelabel("raisegibbed");
-			A_TakeInventory("IsGibbed");
+			hdmobai.corpseflags(self,true,true);
 		}
 		#### MMK 7 A_SpawnItemEx("MegaBloodSplatter",0,0,4,
 			vel.x,vel.y,vel.z,0,
@@ -777,10 +775,8 @@ class HDMarine:HDActor replaces ScriptedMarine{
 
 	xdeath:
 		#### O 5{
-			hdmobai.corpseflags(self);
 			bpushable=false;
-			A_GiveInventory("IsGibbed");
-			A_UnsetShootable(); 
+			hdmobai.corpseflags(self,true);
 		}
 		#### P 5{
 			A_SpawnItemEx("MegaBloodSplatter",0,0,34,flags:SXF_NOCHECKPOSITION);
@@ -796,13 +792,11 @@ class HDMarine:HDActor replaces ScriptedMarine{
 		#### W -1 canraise;
 		stop;
 	death.raisebotch:
-		#### O 0{hdmobai.corpseflags(self);}
+		#### O 0{hdmobai.corpseflags(self,true);}
 	xdeathbrewtlelulz:
 		#### O 5{
 			A_NoBlocking();
-			A_UnsetShootable();
 			A_SpawnItemEx("MegaBloodSplatter",0,0,34,flags:SXF_NOCHECKPOSITION);
-			A_GiveInventory("IsGibbed");
 		}
 		#### P 5 A_XScream();
 		#### QR 5 A_SpawnItemEx("MegaBloodSplatter",0,0,34,flags:SXF_NOCHECKPOSITION);
@@ -822,9 +816,9 @@ class HDMarine:HDActor replaces ScriptedMarine{
 	death.raisedrop:
 		#### H 5{
 			timesdied+=4;
-			hdmobai.corpseflags(self);
 			bpushable=false;
 			A_SpawnItemEx("tempshield2",0,0,0,vel.x,vel.y,vel.z,0,SXF_SETMASTER);
+			hdmobai.corpseflags(self);
 		}
 		#### IJK 5;
 		goto dead;
