@@ -1,6 +1,7 @@
 // ------------------------------------------------------------
 // Because sometimes, things get caught in map geometry.
 // ------------------------------------------------------------
+class SectorDamageCounter:IdleDummy{}
 class doordestroyer:hdactor{
 	default{
 		+solid +nogravity +dontgib +ghost
@@ -22,6 +23,9 @@ class doordestroyer:hdactor{
 	}
 	override bool cancollidewith(actor other,bool passive){
 		return false;
+	}
+	enum doorbusternums{
+		SECTORDAMAGE_TID=4440,
 	}
 	void DoorChunk(class<actor>chunktype,int numpercolumn=1,double chunkspeed=10){
 		chunkspeed*=0.1; //see vfrac
@@ -107,7 +111,7 @@ class doordestroyer:hdactor{
 			if(othersector.lines[i].sidedef[1]){
 				num2sided++;
 			}
-		}if(num2sided<-2)return false;
+		}if(num2sided<2)return false;
 
 		//see how wide the door is
 		vector2 doorline=dlt.hitline.v1.p-dlt.hitline.v2.p;
@@ -117,9 +121,33 @@ class doordestroyer:hdactor{
 		bool isdoor=false;
 
 		//see how thick the door is
+		vector2 depthcheck=dlt.hitdir.xy*maxdepth*frandom(0.8,1.2);
 		isdoor=(othersector!=
-			sector.pointinsector(dlt.hitlocation.xy+dlt.hitdir.xy*maxdepth*frandom(0.8,1.2))
+			sector.pointinsector(dlt.hitlocation.xy+depthcheck)
 		);
+		if(!isdoor){
+			if(othersector!=sector.pointinsector(dlt.hitlocation.xy+depthcheck*frandom(0,2))){
+				//add a damage point
+				actor surprise=spawn("SectorDamageCounter",(justoverthere,dlt.hitlocation.z));
+				int checktid=SECTORDAMAGE_TID+othersector.index();
+				surprise.changetid(checktid);
+
+				//count how many
+				actoriterator buttesecs=actoriterator.create(checktid,"SectorDamageCounter");
+				actor buttesec=null;
+				array<actor>buttecracked;
+				while(buttesec=buttesecs.next()){
+					if(buttesec.cursector==othersector)buttecracked.push(buttesec);
+				}
+				caller.A_LogInt(buttecracked.size());
+				if(buttecracked.size()>random(5,7)){
+					isdoor=true;
+					for(int i=0;i<buttecracked.size();i++){
+						buttecracked[i].destroy();
+					}
+				}
+			}
+		}
 		if(!isdoor)return false;
 
 /*
