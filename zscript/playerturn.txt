@@ -10,6 +10,12 @@ extend class HDPlayerPawn{
 	bool muzzlehit;
 	bool totallyblocked;
 
+	enum muzzleblock{
+		MB_TOP=1,
+		MB_BOTTOM=2,
+		MB_LEFT=4,
+		MB_RIGHT=8,
+	}
 	void TurnCheck(){
 		//get input based on previous angle
 		//do NOT use input because that breaks recoil
@@ -150,7 +156,7 @@ extend class HDPlayerPawn{
 			vector3 barrelbase=pos+(0,0,midheight);
 			actor muzpuf;
 			int stuff;
-			int muzzleclear=0;
+			int muzzleblocked=0;
 
 			double distleft=barrellength;;
 			double distright=barrellength;;
@@ -185,7 +191,7 @@ extend class HDPlayerPawn{
 				data:ltt
 			);
 			disttop=ltt.distance;
-			if(ltt.hittype==Trace_HitNone)muzzleclear++;
+			if(ltt.distance<barrellength)muzzleblocked|=MB_TOP;
 
 			//bottom
 			linetrace(
@@ -196,7 +202,7 @@ extend class HDPlayerPawn{
 				data:ltb
 			);
 			distbottom=ltb.distance;
-			if(ltb.hittype==Trace_HitNone)muzzleclear++;
+			if(ltb.distance<barrellength)muzzleblocked|=MB_BOTTOM;
 
 
 			//left
@@ -207,7 +213,7 @@ extend class HDPlayerPawn{
 				data:ltl
 			);
 			distleft=ltl.distance;
-			if(ltl.hittype==Trace_HitNone)muzzleclear++;
+			if(ltl.distance<barrellength)muzzleblocked|=MB_LEFT;
 
 			//right
 			linetrace(
@@ -217,11 +223,11 @@ extend class HDPlayerPawn{
 				data:ltr
 			);
 			distright=ltr.distance;
-			if(ltr.hittype==Trace_HitNone)muzzleclear++;
+			if(ltr.distance<barrellength)muzzleblocked|=MB_RIGHT;
 
 
 			//totally caught
-			totallyblocked=(!muzzleclear);
+			totallyblocked=muzzleblocked==15;
 
 
 			//set angles
@@ -232,20 +238,20 @@ extend class HDPlayerPawn{
 //A_Log(string.format("%i %i %i %i",distleft,distright,disttop,distbottom));
 
 			if(notnull){
-				if(distleft<barrellength){
+				if(muzzleblocked&MB_LEFT){
 					anglechange=mvng?min(distleft-barrellength,-4):0;
 					A_ChangeVelocity(0,-0.05,0,CVF_RELATIVE);
 				}
-				if(distright<barrellength){
-					anglechange=mvng?max(barrellength-distleft,4):0;
+				if(muzzleblocked&MB_RIGHT){
+					anglechange=mvng?max(barrellength-distright,4):0;
 					A_ChangeVelocity(0,0.05,0,CVF_RELATIVE);
 				}
-	
-				if(disttop<barrellength){
-					pitchchange=mvng?min(disttop-barrellength,-4):0;
+
+				if(muzzleblocked&MB_BOTTOM){
+					pitchchange=mvng?max(distbottom-barrellength,-4):0;
 				}
-				if(distbottom<barrellength){
-					pitchchange=mvng?max(barrellength-distbottom,4):0;
+				if(muzzleblocked&MB_TOP){
+					pitchchange=mvng?min(barrellength-disttop,4):0;
 				}
 				pitchchange=clamp(pitchchange,-45,45);
 
@@ -259,7 +265,7 @@ extend class HDPlayerPawn{
 
 
 			//bump
-			if(muzzleclear>=4){  
+			if(muzzleblocked>=4){  
 				muzzlehit=false;
 			}else if(!muzzlehit){
 				if(hitsnd)A_PlaySound("weapons/rifleclick2",CHAN_AUTO,0.6);
