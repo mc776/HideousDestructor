@@ -206,18 +206,28 @@ class doordestroyer:hdactor{
 			shwal=texman.checkfortexture("ASHWALL",texman.type_any);
 		othersector.settexture(floornotdoor?sector.floor:sector.ceiling,shwal,true);
 		for(int i=0;i<othersector.lines.size();i++){
-			if(floornotdoor&&othersector.lines[i].sidedef[1])
-				othersector.lines[i].flags|=line.ML_DONTPEGBOTTOM;
-			else othersector.lines[i].flags|=line.ML_DONTPEGTOP;
+//			if(floornotdoor&&othersector.lines[i].sidedef[1])
+//				othersector.lines[i].flags|=line.ML_DONTPEGBOTTOM;
+//			else othersector.lines[i].flags|=line.ML_DONTPEGTOP;
 			othersector.lines[i].special=0;
 			for(int j=0;j<2;j++){
 				side sdd=othersector.lines[i].sidedef[j];
 				if(sdd){
 					int notmid=floornotdoor?side.bottom:side.top;
 					if(int(sdd.gettexture(notmid))<1)sdd.settexture(notmid,shwal);
-					if(!floornotdoor)sdd.settextureyoffset(side.mid,
-						sdd.gettextureyoffset(side.mid)-holeheight
-					);
+					if(!floornotdoor){
+						sdd.settextureyoffset(side.mid,
+							sdd.gettextureyoffset(side.mid)-holeheight
+						);
+						sdd.settextureyoffset(side.top,
+							sdd.gettextureyoffset(side.top)-holeheight
+						);
+					}else{
+						othersector.lines[i].flags|=line.ML_DONTPEGBOTTOM;
+						sdd.settextureyoffset(side.bottom,
+							sdd.gettextureyoffset(side.bottom)-holeheight
+						);
+					}
 				}
 			}
 		}
