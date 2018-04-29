@@ -659,8 +659,10 @@ class MageImpBall:HDImpBall{
 	}
 	override void A_HDIBFly(){
 		roll=frandom(0,360);
-		if(tracer)vel*=0.86;
-		A_FBSeek(512);
+		if(tracer){
+			vel*=0.86;
+			if(!A_FBSeek(512))vel+=(frandom(-1,1),frandom(-1,1),frandom(-1,1));
+		}
 	}
 	states{
 	spawn:
