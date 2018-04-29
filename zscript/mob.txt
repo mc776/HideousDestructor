@@ -268,7 +268,7 @@ struct HDMobAI play{
 		statelabel melstate="melee",statelabel mistate="missile",
 		bool res=false,bool flee=false
 	){
-		if(!caller.trymove(caller.pos.xy,false)){
+		if(!caller.checkmove(caller.pos.xy)){
 			caller.A_Wander();
 			return;
 		}
@@ -320,7 +320,6 @@ struct HDMobAI play{
 			caller.bmissilemore=mmbak;
 		}else{
 			caller.A_Wander();
-			caller.A_Look();
 		}
 		vector3 pp=caller.pos;
 
