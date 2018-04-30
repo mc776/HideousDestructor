@@ -120,7 +120,7 @@ class HDBullet:HDActor{
 		//set some basic variables
 		speed=vel.length();
 		speedsquared=vel dot vel;
-		penetration=speedsquared*mass*accuracy*0.000000001/pushfactor*frandom(0.9,1.1);
+		penetration=speed*mass*accuracy*0.000002/pushfactor*frandom(0.9,1.1);
 		A_FaceMovementDirection();
 
 		//hack to escape shooter
