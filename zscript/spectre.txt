@@ -15,9 +15,9 @@ class NinjaPirate:HDActor{ //replaces Spectre{
 		activesound "demon/active";
 		health 300;
 		painchance 200;
-		height 56;
-		radius 20;
-		meleerange 64;
+		height 50;
+		radius 18;
+		meleerange 48;
 		meleethreshold 512;
 		maxdropoffheight 48;
 		maxstepheight 48;
@@ -101,13 +101,18 @@ class NinjaPirate:HDActor{ //replaces Spectre{
 		TNT1 A 0 A_JumpIfInventory("WeaponBusy",1,"seecloaked");
 		TNT1 A 0{bnopain=false;}
 		goto seerunnin;
+	seerunnin:
+		SARG ABCD 4 A_BlurChase();
+		TNT1 A 0 HealThing(random(3,6));
+		TNT1 A 0 A_SetInventory("WeaponBusy",randompick(0,0,0,1));
+		goto see;
 	seecloaked:
 		TNT1 A 0 HealThing(1);
 		TNT1 A 0 A_JumpIfHealthLower(90,"seecloakedflee");
 		goto seecloakedchase;
 	seecloakedflee:
 		TNT1 A 0{bfrightened=true;}
-		TNT1 AAA 0 A_Chase("melee",flags:CHF_NOPLAYACTIVE|CHF_NIGHTMAREFAST);
+		TNT1 AAA 0 A_Chase(null,flags:CHF_NOPLAYACTIVE|CHF_NIGHTMAREFAST);
 		TNT1 A 2;
 		goto seecloaked2;
 	seecloakedchase:
@@ -120,7 +125,7 @@ class NinjaPirate:HDActor{ //replaces Spectre{
 		goto seecloaked2;
 	seecloaked2:
 		TNT1 A 0 A_JumpIfInTargetLOS("seecloaked");
-		TNT1 A 0 A_JumpIfHealthLower(110,"seecloaked");
+		TNT1 A 0 A_JumpIfHealthLower(160,"seecloaked");
 		TNT1 A 0 A_Jump(4,"Uncloak");
 		goto seecloaked;
 	flicker:
@@ -128,10 +133,6 @@ class NinjaPirate:HDActor{ //replaces Spectre{
 			frame=random(0,3);
 			A_Chase("melee",flags:CHF_NOPLAYACTIVE|CHF_NIGHTMAREFAST);
 		}goto seecloaked2;
-	seerunnin:
-		SARG ABCD 4 A_BlurChase();
-		TNT1 A 0 HealThing(random(3,6));
-		goto see;
 	uncloak:
 		SARG G 0 A_Uncloak();
 		SARG G 0 A_SetTranslucent(0,0);
@@ -200,10 +201,9 @@ class NinjaPirate:HDActor{ //replaces Spectre{
 			A_GiveInventory("WeaponBusy");
 		}
 		SARG G 1 A_SetTranslucent(0.8);
-		SARG G 1 A_SetTranslucent(0.6);
 		SARG G 1 A_SetTranslucent(0.4);
-		SARG G 1 A_SetTranslucent(0.2);
 		SARG G 1 A_SetTranslucent(0.2,2);
+		TNT1 AAAAA 0 A_Chase(null);
 		goto see;
 	death:
 		---- A 0 {hdmobai.corpseflags(self);}
