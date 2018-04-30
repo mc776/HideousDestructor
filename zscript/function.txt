@@ -374,3 +374,39 @@ struct HDF play{
 
 
 
+//just wanted to make sure
+//Pop will not crash on an empty array
+//Appears to be saved and loaded just fine
+class dynarraytester:inventory{
+	array<int> testarray;
+	override void doeffect(){
+		if(!(level.time%10)){
+			//drop one
+			if(!random(0,4)){
+				if(testarray.size()>0)A_LogInt(testarray[testarray.size()-1]);
+				testarray.pop();
+			}
+			//add one to the end
+			if(!random(0,3)&&testarray.size()<12){
+				testarray.push(random(10,99));
+			}
+			//move one from end to start
+			if(!random(0,4)&&testarray.size()>1){
+				testarray.insert(0,testarray[testarray.size()-1]);
+				testarray.pop();
+			}
+
+			string aaa="";
+			for(int i=0;i<testarray.size();i++){
+				aaa=string.format("%s %i",aaa,testarray[i]);
+			}
+			if(aaa!="")A_Log(aaa);
+		}
+	}
+}
+
+
+
+
+
+
