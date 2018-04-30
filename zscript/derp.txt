@@ -25,7 +25,7 @@ class DERPBot:HDUPK{
 		radius 4;height 4;deathheight 4;maxdropoffheight 4;maxstepheight 4;
 		bloodcolor "22 22 22";scale 0.6;
 		health 100;mass 20;
-		maxtargetrange 256;
+		maxtargetrange 320;
 		hdupk.pickupsound "derp/crawl";
 		hdupk.pickupmessage "Picked up a Defence, Engagement, Reconnaissance and Patrol robot.";
 		obituary "%o went derp.";
@@ -45,13 +45,13 @@ class DERPBot:HDUPK{
 			A_PlaySound("derp/crawl");
 			A_FaceTarget(2,2,FAF_TOP);
 		}
-		actor derpuf;int garbage;
-		[derpuf,garbage]=lineattack(
-			angle,256,pitch,0,"none",
-			"CheckPuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT|LAF_OVERRIDEZ,
-			offsetz:2
+		flinetracedata dlt;
+		linetrace(
+			angle,320,pitch,
+			offsetz:2,
+			data:dlt
 		);
-		return (derpuf && derpuf.tracer==target);
+		return(dlt.hitactor==target);
 	}
 	void DerpAlert(string msg="Derpy derp!"){
 		if(master)master.A_Log(string.format("\cd[DERP]  %s",msg),true);
@@ -80,7 +80,7 @@ class DERPBot:HDUPK{
 					&&players[i].mo
 					&&players[i].mo!=master
 					&&(!teamplay||players[i].getteam()!=master.player.getteam())
-					&&distance3d(players[i].mo)<256
+					&&distance3d(players[i].mo)<320
 				){
 					bfriendly=false;
 					target=players[i].mo;
@@ -89,6 +89,7 @@ class DERPBot:HDUPK{
 				}
 			}
 		}
+		if(flags&LOF_NOJUMP&&target&&target.health>0&&checksight(target))setstatelabel("missile");
 	}
 
 	int movestamina;
@@ -325,8 +326,8 @@ class DERPBot:HDUPK{
 		}
 	yourefired:
 		DERP A 0 A_JumpIfHealthLower(1,"see",AAPTR_TARGET);
-		DERP A 0 A_JumpIfTargetInLOS("fire",2,JLOSF_DEADNOJUMP,256.0,0);
-		DERP A 0 A_JumpIfTargetInLOS("aim",360,JLOSF_DEADNOJUMP,512.0,0);
+		DERP A 0 A_JumpIfTargetInLOS("fire",2,JLOSF_DEADNOJUMP,256.,0);
+		DERP A 0 A_JumpIfTargetInLOS("aim",360,JLOSF_DEADNOJUMP,320.,0);
 		goto noshot;
 		DERP A 0 A_CheckLOF("noshot",CLOFF_SKIPTARGET|CLOFF_JUMPNONHOSTILE|CLOFF_JUMPOBJECT, 0,0, 0,0, 7,0);
 		goto fire;
