@@ -81,13 +81,12 @@ class HDBullet:HDActor{
 	}
 	states{
 	spawn:
-		BAL1 A -1 nodelay{
-			if(!hd_debug){
+		BLET A -1 nodelay{
+			if(hd_debug){
 				tics=0;
-				scale=(0.3,0.3);
-			}
+			}else scale=(0.3,0.3);
 		}
-		BLET A -1;
+		BAL1 A -1;
 	}
 	override void tick(){
 		if(globalfreeze||level.Frozen) return;
