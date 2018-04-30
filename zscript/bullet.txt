@@ -166,7 +166,7 @@ class HDBullet:HDActor{
 				int j=max(1,blt.distance*(1./BULLET_CRACKINTERVAL));
 				for(int i=0;i<j;i++){
 					setxyz(crackbak+crackinterval*i);
-					if(hd_debug)A_SpawnParticle("yellow",SPF_RELVEL|SPF_RELANG,
+					if(hd_debug>1)A_SpawnParticle("yellow",SPF_RELVEL|SPF_RELANG,
 						size:12,
 						velx:speed*cos(pitch)*0.001,
 						velz:-speed*sin(pitch)*0.001
