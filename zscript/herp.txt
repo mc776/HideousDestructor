@@ -112,7 +112,7 @@ class HERPBot:HDUPK{
 			[a,b]=lineattack(
 				angle,4096,c,0,"none",
 				"CheckPuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT|LAF_OVERRIDEZ,
-				offsetz:10
+				offsetz:9.5
 			);
 
 			if(a&&!c)a.a_spawnparticle("red",lifetime:2,size:2);
@@ -123,7 +123,9 @@ class HERPBot:HDUPK{
 				&&a.tracer
 				&&isHostile(a.tracer)
 				&&a.tracer.bshootable
+				&&!a.tracer.bnotarget
 				&&(a.tracer.bismonster||a.tracer is "PlayerPawn")
+				&&(!a.tracer.player||!(a.tracer.player.cheats&CF_NOTARGET))
 				&&a.tracer.health>random(-2,20)
 			){
 				target=a.tracer;
