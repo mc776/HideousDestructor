@@ -68,8 +68,8 @@ class DERPBot:HDUPK{
 	void A_DerpAttack(){
 		if(DerpTargetCheck(false))DerpShot();
 	}
-	void A_DerpLook(statelabel seestate="see"){
-		A_LookEx(label:seestate);
+	void A_DerpLook(int flags=0,statelabel seestate="see"){
+		A_LookEx(flags,label:seestate);
 		if(
 			deathmatch&&bfriendly
 			&&master&&master.player
@@ -84,7 +84,7 @@ class DERPBot:HDUPK{
 				){
 					bfriendly=false;
 					target=players[i].mo;
-					setstatelabel(seestate);
+					if(!(flags&LOF_NOJUMP))setstatelabel(seestate);
 					break;
 				}
 			}
@@ -107,7 +107,7 @@ class DERPBot:HDUPK{
 		if(attack&&cmd!=DERP_AMBUSH){
 			if(target&&target.health>0)A_Chase(
 				"missile","missile",CHF_DONTMOVE|CHF_DONTTURN|CHF_NODIRECTIONTURN
-			);else A_DerpLook("see2");
+			);
 		}
 
 		if(
@@ -262,7 +262,7 @@ class DERPBot:HDUPK{
 	spawn2:
 		DERP A 0 A_ClearTarget();
 		DERP A 0 A_DerpLook();
-		DERP A 6 A_DerpCrawl();
+		DERP A 3 A_DerpCrawl();
 		loop;
 	see:
 		DERP A 0{
@@ -273,14 +273,20 @@ class DERPBot:HDUPK{
 			if(ammo<1)setstatelabel("noammo");
 		}
 	see2:
-		DERP AAAAAAAA 2 A_DerpCrawl();
-		DERP A 0 A_DerpLook();
+		DERP A 2 A_DerpCrawl();
+		DERP A 0 A_DerpLook(LOF_NOJUMP);
+		DERP A 2 A_DerpCrawl();
+		DERP A 0 A_DerpLook(LOF_NOJUMP);
+		DERP A 2 A_DerpCrawl();
+		DERP A 0 A_DerpLook(LOF_NOJUMP);
+		DERP A 2 A_DerpCrawl();
+		DERP A 0 A_DerpLook(LOF_NOJUMP);
 		goto see;
 	turn:
 		DERP A 1 A_DerpTurn();
 		wait;
 	noshot:
-		DERP AAAAAAAA 2 A_DerpCrawl(false);
+		DERP AAAAAAAA 2 A_DerpCrawl();
 		goto see2;
 	pain:
 		DERP A 20{
