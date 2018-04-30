@@ -109,29 +109,36 @@ class HERPBot:HDUPK{
 		){
 			c++;
 			//shoot a line out
-			[a,b]=lineattack(
-				angle,4096,c,0,"none",
-				"CheckPuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT|LAF_OVERRIDEZ,
-				offsetz:9.5
+			flinetracedata hlt;
+			linetrace(
+				angle,4096,c,
+				flags:TRF_NOSKY,
+				offsetz:9.5,
+				data:hlt
 			);
 
-			if(a&&!c)a.a_spawnparticle("red",lifetime:2,size:2);
+			if(!c&&hlt.hittype!=Trace_HitNone)a_spawnparticle(
+				"red",SPF_FULLBRIGHT,lifetime:2,size:2,0,
+				hlt.hitlocation.x-pos.x,
+				hlt.hitlocation.y-pos.y,
+				hlt.hitlocation.z-pos.z
+			);
 
 			//if the line hits a valid target, go into shooting state
+			actor hitactor=hlt.hitactor;
 			if(
-				a
-				&&a.tracer
-				&&isHostile(a.tracer)
-				&&a.tracer.bshootable
-				&&!a.tracer.bnotarget
-				&&(a.tracer.bismonster||a.tracer is "PlayerPawn")
-				&&(!a.tracer.player||!(a.tracer.player.cheats&CF_NOTARGET))
-				&&a.tracer.health>random(-2,20)
+				hitactor
+				&&isHostile(hitactor)
+				&&hitactor.bshootable
+				&&!hitactor.bnotarget
+				&&(hitactor.bismonster||hitactor.player)
+				&&(!hitactor.player||!(hitactor.player.cheats&CF_NOTARGET))
+				&&hitactor.health>random(-2,20)
 			){
-				target=a.tracer;
+				target=hitactor;
 				setstatelabel("ready");
 				message("IFF system alert: enemy pattern recognized.");
-				if(hd_debug)A_Log(string.format("HERP targeted %s",a.tracer.getclassname()));
+				if(hd_debug)A_Log(string.format("HERP targeted %s",hitactor.getclassname()));
 				return;
 			}
 		}
