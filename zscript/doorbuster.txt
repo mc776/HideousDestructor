@@ -188,12 +188,15 @@ class doordestroyer:hdactor{
 			double lowestsurrounding;vertex garbage;
 			[lowestsurrounding,garbage]=othersector.findlowestfloorsurrounding();
 			double justoverthereheight=othersector.floorplane.zatpoint(justoverthere);
-			blockpoint=max(
-				justoverthereheight-holeheight,
-				lowestsurrounding-frandom(3,6)
+			blockpoint=min(
+				max(
+					justoverthereheight-holeheight,
+					lowestsurrounding-frandom(3,6)
+				),
+				justoverthereheight-32
 			);
 			holeheight=justoverthereheight-blockpoint;
-			othersector.MoveFloor(holeheight,blockpoint,0,1,false);
+			othersector.MoveFloor(holeheight,holeheight,0,-1,false,true);
 		}else{
 			double justoverthereheight=othersector.ceilingplane.zatpoint(justoverthere);
 			blockpoint=justoverthereheight+holeheight;
