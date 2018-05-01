@@ -196,7 +196,7 @@ class doordestroyer:hdactor{
 				justoverthereheight-32
 			);
 			holeheight=justoverthereheight-blockpoint;
-			othersector.MoveFloor(holeheight,holeheight,0,-1,false,true);
+			othersector.MoveFloor(abs(holeheight),abs(blockpoint),0,-1,false,true);
 		}else{
 			double justoverthereheight=othersector.ceilingplane.zatpoint(justoverthere);
 			blockpoint=justoverthereheight+holeheight;
