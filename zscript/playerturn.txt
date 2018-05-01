@@ -150,6 +150,19 @@ extend class HDPlayerPawn{
 			double highheight=height-6;
 			double midheight=highheight-max(1,barreldepth)*0.5;
 			double lowheight=highheight-max(1,barreldepth);
+			double testangle=lastangle+anglechange;
+			double testpitch=lastpitch+pitchchange;
+
+			//because LineTrace fails at portals :(
+			//MAKE SURE NO WEAPON IS TOO LONG
+			actor a;bool b;
+			[a,b]=lineattack(
+				testangle,barrellength+10,testpitch,0,"none",
+				"CheckPuff",flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ,
+				offsetz:midheight
+			);
+			vector2 adist=a.pos.xy-pos.xy;
+			if(adist dot adist>(99*99))return;
 
 
 			//and now uh do stuff
@@ -167,8 +180,6 @@ extend class HDPlayerPawn{
 			flinetracedata ltr;
 			flinetracedata ltt;
 			flinetracedata ltb;
-			double testangle=lastangle+anglechange;
-			double testpitch=lastpitch+pitchchange;
 
 
 			//top
@@ -213,12 +224,6 @@ extend class HDPlayerPawn{
 			);
 			distright=ltr.distance;
 			if(ltr.distance<barrellength)muzzleblocked|=MB_RIGHT;
-
-
-			//because LineTrace fails at portals :(
-			//MAKE SURE NO WEAPON IS TOO LONG
-			vector2 adist=ltt.hitlocation.xy-pos.xy;
-			if(adist dot adist>(99*99))return;
 
 
 			//totally caught
