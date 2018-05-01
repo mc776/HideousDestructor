@@ -102,8 +102,35 @@ class HDPlayerPawn:PlayerPawn{
 				muzzleclimb1.y-=0.1;
 				muzzleclimb2.y+=0.05;
 				muzzleclimb3.y+=0.05;
-				A_PlaySound("weapons/rifleclick2",CHAN_BODY,0.3);
+			}else{
+				flinetracedata glt;
+				linetrace(
+					angle+42,12,pitch,
+					offsetz:height-7,
+					offsetforward:cos(pitch)*10,
+					data:glt
+				);
+				if(glt.hittype==Trace_HitWall){
+					muzzleclimb1.x+=0.1;
+					muzzleclimb2.x-=0.05;
+					muzzleclimb3.x-=0.05;
+					gunbraced=true;
+				}else{
+					linetrace(
+						angle-42,12,pitch,
+						offsetz:height-7,
+						offsetforward:cos(pitch)*10,
+						data:glt
+					);
+					if(glt.hittype==Trace_HitWall){
+						muzzleclimb1.x-=0.1;
+						muzzleclimb2.x+=0.05;
+						muzzleclimb3.x+=0.05;
+						gunbraced=true;
+					}
+				}
 			}
+			if(gunbraced)A_PlaySound("weapons/rifleclick2",CHAN_BODY,0.3);
 		}
 	}
 	void A_CheckSeeState(){
@@ -248,7 +275,7 @@ class HDPlayerPawn:PlayerPawn{
 		CrouchCheck();
 
 		//prevent some support exploits
-		if(max(abs(vel.x),abs(vel.y),abs(vel.z))>1)gunbraced=false;
+		if(vel dot vel>1)gunbraced=false;
 
 		//add inventory flags for inputs
 		A_SetInventory("WeaponBusy",max(countinv("WeaponBusy"),
