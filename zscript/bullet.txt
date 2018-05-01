@@ -202,14 +202,17 @@ class HDBullet:HDActor{
 			double hitresistance=(hitactor.radius*2+hitactor.spawnhealth()*0.2)*0.3;
 
 			//damagetype?
-			if(penetration>4)damagetype="SmallArms3";
-			else if(penetration>3)damagetype="SmallArms2";
-			else if(penetration>2.2)damagetype="SmallArms1";
-			else if(penetration>1)damagetype="SmallArms0";
+			if(penetration>7)damagetype="SmallArms3";
+			else if(penetration>5)damagetype="SmallArms2";
+			else if(penetration>3)damagetype="SmallArms1";
+			else if(penetration>0.1)damagetype="SmallArms0";
 			else damagetype="Bashing";
 
-			if(max(abs(pos.x-hitactor.pos.x),abs(pos.y-hitactor.pos.y))<hitactor.radius*0.7)
-				damagetype="SmallArms3";
+			//if within actor, tumble
+			if(
+				max(abs(pos.x-hitactor.pos.x),abs(pos.y-hitactor.pos.y))
+				<hitactor.radius*0.1*woundhealth
+			)damagetype=random(0,1)?"SmallArms2":"SmallArms3";
 
 			//crit?
 			bool crit;
@@ -239,7 +242,7 @@ class HDBullet:HDActor{
 			if(critangle>frandom(50,150*netpenetration)){
 				if(hd_debug)A_Log("Ricochet!");
 				throughthis=hitactor;
-				angle+=frandom(-90,90);pitch+=frandom(-90,90);
+				angle+=frandom(50,310);pitch+=frandom(-40,40);
 				A_ChangeVelocity(cos(pitch)*speed,0,sin(pitch)*-speed,CVF_RELATIVE);
 			}
 			else if(netpenetration>0.5){
