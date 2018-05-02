@@ -99,11 +99,9 @@ class doordestroyer:hdactor{
 		vector2 justoverthere=dlt.hitlocation.xy+dlt.hitdir.xy;
 
 		//figure out if it hit above or below
-		bool floornotdoor=othersector.floorplane.zatpoint(justoverthere)>dlt.hitlocation.z;
-		if(
-			!floornotdoor
-			&&othersector.ceilingplane.zatpoint(justoverthere)>=dlt.hitlocation.z
-		)return false;
+		//0 top, 1 middle, 2 bottom
+		if(dlt.linepart==1)return false;
+		bool floornotdoor=dlt.linepart==2;//othersector.floorplane.zatpoint(justoverthere)>dlt.hitlocation.z;
 
 		//see if there are at least 2 2-sided lines
 		int num2sided=0;
@@ -152,6 +150,7 @@ class doordestroyer:hdactor{
 /*
 		//see if a door special applies
 		//currently unused - it's a "door" destroyer without limitation
+		//keeping it in case we can disable remote door switches with this
 		isdoor=checkdoorspecial(dlt.hitline.special);
 		if(!isdoor){
 			//find the sector tag
@@ -209,10 +208,6 @@ class doordestroyer:hdactor{
 			shwal=texman.checkfortexture("ASHWALL",texman.type_any);
 		othersector.settexture(floornotdoor?sector.floor:sector.ceiling,shwal,true);
 		for(int i=0;i<othersector.lines.size();i++){
-			if(floornotdoor&&othersector.lines[i].sidedef[1])
-				othersector.lines[i].flags|=line.ML_DONTPEGBOTTOM;
-				else othersector.lines[i].flags|=line.ML_DONTPEGTOP;
-
 			othersector.lines[i].special=0;
 			for(int j=0;j<2;j++){
 				side sdd=othersector.lines[i].sidedef[j];
@@ -227,9 +222,8 @@ class doordestroyer:hdactor{
 							sdd.gettextureyoffset(side.top)-holeheight
 						);
 					}else{
-//						othersector.lines[i].flags|=line.ML_DONTPEGBOTTOM;
 						sdd.settextureyoffset(side.bottom,
-							sdd.gettextureyoffset(side.bottom)-holeheight
+							sdd.gettextureyoffset(side.bottom)+holeheight
 						);
 					}
 				}
