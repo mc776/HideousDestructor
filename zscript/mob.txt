@@ -269,7 +269,143 @@ struct HDMobAI play{
 	}
 	//smooth chase
 	//do NOT try to set targets in here, JUST do the chase sequence
-	static void Chase(
+	enum hdchaseflags{
+		CHF_TURNLEFT=8,
+		CHF_INITIALIZED=16,
+		CHF_FLOATDOWN=32,
+	}
+	static void chase(actor caller,
+		statelabel meleestate="melee",
+		statelabel missilestate="missile",
+		int flags=0,
+		bool flee=false
+	){
+		int dir=caller.reactiontime%8;
+		actor target=caller.target;
+		bool floating=caller.bfloat;
+		double dist=caller.maxtargetrange*2;
+
+		//random direction if uninitialized or invalid result
+		if(
+			dir>7
+			||!(caller.reactiontime&CHF_INITIALIZED)
+		){
+			dir=random(0,7);
+			caller.reactiontime|=CHF_INITIALIZED;
+
+			//save dir because this kicks in too late if attack
+			caller.reactiontime-=caller.reactiontime%8;
+			caller.reactiontime+=dir;
+		}
+
+		//see if attack, if so go into attack and return
+		if(
+			target
+			&&caller.checksight(target)
+		){
+			dist=caller.distance3d(target);
+			//melee range so melee
+			if(
+				meleestate
+				&&dist<caller.meleerange
+			){
+				caller.setstatelabel(meleestate);
+				return;
+			}else if(
+				missilestate
+				&&dist<caller.maxtargetrange*frandom(0.8,1.6)
+				&&random(0,caller.minmissilechance)<64 //we're not calling this nearly as often
+			){
+				caller.setstatelabel(missilestate);
+				return;
+			}
+		}
+
+		//figure out what dir means
+		vector2 movedir;
+		double oosq=HDCONST_ONEOVERSQRTTWO;
+		switch(dir){
+		case 0:movedir=(1,0);break;
+		case 1:movedir=(oosq,oosq);break;
+		case 2:movedir=(0,1);break;
+		case 3:movedir=(-oosq,oosq);break;
+		case 4:movedir=(-1,0);break;
+		case 5:movedir=(-oosq,-oosq);break;
+		case 6:movedir=(0,-1);break;
+		case 7:movedir=(oosq,-oosq);break;
+		default:
+			movedir=caller.angletovector(caller.angle,1);
+			break;
+		}
+
+		//see if randomly deciding to turn anyway
+		bool randmv=!random(0,70);
+
+		//checkmove for the current direction
+		bool checkmv=caller.checkmove(movedir*caller.speed*3); //assume 2 tics per vanilla call, think 6 ahead
+
+		//check destination
+		//if unavailable, treat as random
+		actor movetgt=caller.goal;
+		if(!movetgt)movetgt=caller.target;
+
+		if(
+			randmv
+			||!checkmv
+		){
+			//back up
+			if(!checkmv)movedir=-movedir+(frandom(-1,1),frandom(-1,1));
+
+			//turn randomly
+			if(floating&&!random(0,7))caller.reactiontime^=CHF_FLOATDOWN;
+			int whichdir=random(0,8);
+			if(whichdir<=(caller.reactiontime&CHF_TURNLEFT?5:2)){
+				dir+=random(1,3);
+			}else{
+				dir-=random(1,3);
+			}
+			if(dir>7)dir-=7;
+		}else if(movetgt&&!random(0,3)){
+			//turn towards to goal
+			vector2 tgtdiff=movetgt.pos.xy-caller.pos.xy;
+			int inpang=vectorangle(tgtdiff.x,tgtdiff.y);
+			if(inpang<0)inpang+=360;
+			dir=inpang/45;
+		}
+
+		//slow down the actor and propel in new direction
+		if(floating||caller.floorz>=caller.pos.z){
+
+			//need a lower number since this is happening for multiple frames
+			double speedfactor=caller.speed*0.25;
+
+			caller.vel.xy*=0.7;
+			caller.vel.xy+=movedir*speedfactor;
+
+			caller.A_FaceMovementDirection(4,4);
+
+			//do it again for velz
+			if(floating){
+				caller.vel.z*=0.7;
+				if(target&&caller.checksight(target)){
+					double zdist=target.pos.z-caller.pos.z;
+					if(abs(zdist)>dist*0.4){
+						if(zdist>0)caller.vel.z+=speedfactor;
+						else caller.vel.z-=speedfactor;
+					}else if(!random(0,3)){
+						if(caller.reactiontime&CHF_FLOATDOWN)caller.vel.z-=speedfactor;
+						else caller.vel.z+=speedfactor;
+					}
+					if(caller.pos.z-caller.floorz<16)caller.reactiontime&=~CHF_FLOATDOWN;
+				}
+			}
+		}
+
+		//save dir for future calls
+		caller.reactiontime-=caller.reactiontime%8;
+		caller.reactiontime+=dir;
+	}
+	static void _oldChase(
 		actor caller,
 		statelabel melstate="melee",statelabel mistate="missile",
 		bool res=false,bool flee=false
