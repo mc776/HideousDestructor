@@ -175,6 +175,7 @@ class HDBP:HDWeapon{
 
 			//where the magic happens
 			if(itp=="HDArmour"){
+				if(countinv("HDArmour"))return;
 				A_GiveInventory(itp,invoker.itemamount[which]);
 				invoker.itemamount[which]=0;
 			}else if(itp=="HDCellAmmo"){
@@ -380,6 +381,7 @@ class HDBPPreset:Inventory replaces backpack{
 						i!=bp.potionindex
 						&&i!=bp.talismanindex
 					)maxrand=random(100,500)/(max(1,bp.itembulk[i]));
+					if(i==bp.armourindex)maxrand=random(random(HDCONST_GREENARMOUR/2,HDCONST_GREENARMOUR),HDCONST_GREENARMOUR);
 					if(!maxrand)continue;
 					bp.itemamount[i]=random(1,random(1,maxrand));
 					if(bp.getbulk()>=HDBPC_CAPACITY){

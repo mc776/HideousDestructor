@@ -233,7 +233,7 @@ struct HDMobAI play{
 		actor caller,
 		bool dontlook=false
 	){
-		if(!caller.trymove(caller.pos.xy,false)){
+		if(!caller.checkmove(caller.pos.xy)){
 			caller.A_Wander();
 			return;
 		}
@@ -280,6 +280,10 @@ struct HDMobAI play{
 		int flags=0,
 		bool flee=false
 	){
+		if(!caller.checkmove(caller.pos.xy)){
+			caller.A_Wander();
+			return;
+		}
 		bool befrightened=caller.bfrightened;
 		vector3 oldpos=caller.pos;
 		if(flee)caller.bfrightened=true;

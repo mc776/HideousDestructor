@@ -104,6 +104,7 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 	}
 	int spent;bool worn;
 	const LITEBAT=84000;
+	override double getbulk(){return bulk;}
 	override void DetachFromOwner(){
 		if(owner && owner.player && owner.player.fixedcolormap==5)owner.player.fixedcolormap=-1;
 		worn=false;
@@ -120,17 +121,20 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 			){
 				//actual google effect
 				owner.player.fov=min(owner.player.fov,90);
-				owner.player.fixedcolormap=5;
-				owner.player.fixedlightlevel=1;
+//				owner.player.fixedcolormap=5;
+//				owner.player.fixedlightlevel=1;
+				Shader.SetEnabled(owner.player,"NiteVis",true);
 				if(!random[rand1](0,LITEBAT-spent)){
-					owner.player.fixedcolormap=-1;
-					owner.player.fixedlightlevel=-1;
+//					owner.player.fixedcolormap=-1;
+//					owner.player.fixedlightlevel=-1;
+					Shader.SetEnabled(owner.player,"NiteVis",false);
 				}
 				spent++;
 				if(spent>LITEBAT)worn=false;
 			}else{
-				if(owner.player.fixedcolormap==5)owner.player.fixedcolormap=-1;
-				owner.player.fixedlightlevel=-1;
+//				if(owner.player.fixedcolormap==5)owner.player.fixedcolormap=-1;
+//				owner.player.fixedlightlevel=-1;
+				Shader.SetEnabled(owner.player,"NiteVis",false);
 			}
 		}
 	}

@@ -9,7 +9,7 @@ extend class HDStatusBar{
 		if(
 			!wp
 			||hpl.barehanded
-			||hpl.nocrosshair>0  
+			||hpl.nocrosshair>0
 			||(!sightbob&&hpl.countinv("IsMoving"))
 		)return;
 
@@ -25,6 +25,7 @@ extend class HDStatusBar{
 			(nscp==1&&!gimmehud)||
 			cpbt&BT_ZOOM
 		);
+		if(hpl.findinventory("PortableLiteAmp")&&PortableLiteAmp(hpl.findinventory("PortableLiteAmp")).worn)scopeview=false;
 
 		vector2 bob=hpl.hudbob;
 

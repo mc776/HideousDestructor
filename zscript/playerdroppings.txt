@@ -185,12 +185,12 @@ extend class HDHandlers{
 			else if(what is "HDArmour")unit=howmany;
 			howmany=min(unit,howmany);
 			hdbp.itemamount[hdbp.weaponstatus[HDBPS_WHICH]]-=howmany;
-			actor ddd;
-			[hdbp.bavoidmelee,ddd]=ppp.A_SpawnItemEx(
-				what,0,0,ppp.height-14,
-				4,0,0,0,SXF_NOCHECKPOSITION
-			);
-			if(ddd)inventory(ddd).amount=howmany*amt;
+			inventory ddd=inventory(ppp.spawn(what,ppp.pos));
+			if(ddd){
+				ddd.addz(ppp.height-14);ddd.angle=ppp.angle;
+				ddd.A_ChangeVelocity(4,0,1,CVF_RELATIVE);
+				ddd.amount=howmany*amt;
+			}
 			hdbp.getbulk();
 		}else if(cw is "MagManager"){
 			let mmm=MagManager(cw);
