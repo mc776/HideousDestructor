@@ -291,8 +291,7 @@ struct HDMobAI play{
 		if(flee)caller.bfrightened=true;
 
 		//reset velocity
-		if(!caller.trymove(pg.xy+caller.vel.xy,false))caller.vel.xy=(0,0);
-		else caller.setorigin(pg,false);
+		if(!caller.checkmove(pg.xy+caller.vel.xy*2))caller.vel.xy=(0,0);
 
 		double speedbak=caller.speed;
 		if(caller.bfrightened)caller.speed*=2;
@@ -317,7 +316,7 @@ struct HDMobAI play{
 			caller.bchasegoal=false;
 			caller.A_Chase(
 				melstate,mistate,
-				CHF_DONTMOVE|CHF_NODIRECTIONTURN
+				CHF_DONTMOVE|CHF_NODIRECTIONTURN|(res?CHF_RESURRECT:0)
 			);
 			caller.bchasegoal=cg;
 			caller.minmissilechance=mmc;
@@ -338,19 +337,19 @@ struct HDMobAI play{
 				||caller.floorz>=caller.pos.z
 			)
 		){
-			caller.vel.xy*=0.7; //slow down
+			caller.vel.xy*=0.6; //slow down
 	
 			//reset position and move in chase direction
 			if(pp!=pg){
 				if(!caller.bteleport)caller.setorigin(pg,false);
 				if(caller.bfloat){
-					double spp=caller.speed*0.16;
+					double spp=caller.speed*0.2;
 					caller.vel.xy+=caller.angletovector(caller.angle,spp);
 					if(goal)caller.vel.z=(
 						caller.pos.z>goal.pos.z
 					)?-spp:spp; //floaty death from above
 				}else{
-					caller.vel.xy+=caller.angletovector(caller.angle,caller.speed*0.16);
+					caller.vel.xy+=caller.angletovector(caller.angle,caller.speed*0.2);
 				}
 			}
 		}
@@ -432,7 +431,10 @@ class HDMobster:IdleDummy{
 			){
 				destroy();return;
 			}
-			if(master.health<1)return;
+			if(master.health<1){
+				threat=null;
+				return;
+			}
 
 			//see if this is a healer
 			if(!random(0,14))healablecorpse=null;
@@ -465,6 +467,7 @@ class HDMobster:IdleDummy{
 								|RF_NOCHECKPOSITION
 							);
 							master.master=masbak;
+							master.target=masbak.target;
 							master=masbak;
 						}
 						break;
