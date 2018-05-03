@@ -28,7 +28,7 @@ class HDHandlers:EventHandler{
 			line lll=level.lines[i];
 
 			//no more killer elevators
-			if(lll.special){
+			if(hd_safelifts&&lll.special){
 				switch(lll.special){
 				case Plat_DownByValue:
 				case Plat_DownWaitUpStayLip:
@@ -49,7 +49,8 @@ class HDHandlers:EventHandler{
 			}
 			//if block-all and no midtexture, force add a mostly transparent midtexture
 			if(
-				lll.sidedef[1]
+				hd_dirtywindows
+				&&lll.sidedef[1]
 				&&(
 					lll.flags&line.ML_BLOCKEVERYTHING
 					||lll.flags&line.ML_BLOCKPROJECTILE
