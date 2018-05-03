@@ -639,6 +639,10 @@ extend class HDPlayerPawn{
 
 		A_GiveInventory("PowerFrightener",1);
 		ConsolidateAmmo();
+
+		if(player){
+			Shader.SetEnabled(player,"NiteVis",false);
+		}
 	}
 }
 class kickchecker:actor{
