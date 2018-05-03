@@ -339,8 +339,10 @@ class HDPistol:HDWeapon{
 				!pmg
 				||(!PressingUnload()&&!PressingReload())
 				||(
-					!(inmm=magmanager.givemmmag(null,self,HDMMS_PIST,pmg))&&
-					countinv("HDPistolAmmo")+pmg>AmmoCap("HDPistolAmmo")
+					!(inmm=magmanager.givemmmag(null,self,HDMMS_PIST,pmg))&&(
+						(pmg>=15&&A_JumpIfInventory("HDPistolMag",0,"null"))
+						||(pmg<15&&countinv("HDPistolAmmo")+pmg>AmmoCap("HDPistolAmmo"))
+					)
 				)
 			){
 				actor mmm;int bbb;
