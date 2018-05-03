@@ -125,12 +125,12 @@ class HDPickup:CustomInventory{
 	}
 	virtual double getbulk(){return amount*bulk;}
 	override inventory createtossable(int amount){
+		inventory iii=super.createtossable(amount);
 		if(droptranslation&&owner){
 			actor onr=owner;
-			inventory iii=super.createtossable(amount);
 			if(iii)iii.translation=onr.translation;
-			return iii;
-		}else return super.createtossable(amount);
+		}
+		return iii;
 	}
 	override void doeffect(){
 		if(!amount)goawayanddie();
@@ -139,6 +139,7 @@ class HDPickup:CustomInventory{
 	virtual void actualpickup(actor other){
 		if(!other)other=picktarget;
 		if(!other)return;
+		if(heat.getamount(self)>50)return;
 		name gcn=getclassname();
 		int maxtake=HDMath.MaxInv(other,gcn)-other.countinv(gcn);
 		if(balwayspickup){
@@ -243,6 +244,7 @@ class HDUPK:HDActor{
 		int increase=picktarget.countinv(pickuptype);
 		picktarget.A_GiveInventory(pickuptype,stamina);
 		increase=picktarget.countinv(pickuptype)-increase;
+		if(heat.getamount(self)>50)increase=0;
 		if(!increase){ //didn't pick any up
 			setstatelabel("spawn");
 			return;

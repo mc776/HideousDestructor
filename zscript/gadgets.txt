@@ -74,9 +74,23 @@ class PortableRadsuit:HDPickup replaces RadSuit{
 				actor a;int b;
 				inventory wrs=findinventory("wornradsuit");
 				[b,a]=A_SpawnItemEx("PortableRadsuit",0,0,height/2,2,0,4);
-				if(a && wrs.stamina){
-					let aa=HDActor(a);
-					if(aa)aa.A_Immolate(a,self,wrs.stamina);
+				if(a &&  wrs){
+					//transfer sticky fire
+					if(wrs.stamina){
+						let aa=HDActor(a);
+						if(aa)aa.A_Immolate(a,self,wrs.stamina);
+					}
+					//transfer heat
+					let hhh=heat(findinventory("heat"));
+					if(hhh){
+						double realamount=hhh.realamount;
+						double intosuit=clamp(realamount*0.9,0,min(200,realamount));
+						let hhh2=heat(a.GiveInventoryType("heat"));
+						if(hhh2){
+							hhh2.realamount+=intosuit;
+							hhh.realamount=max(0,hhh.realamount-intosuit);
+						}
+					}
 				}
 				A_TakeInventory("WornRadsuit");
 			}

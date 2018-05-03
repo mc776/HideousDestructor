@@ -268,7 +268,6 @@ class Heat:Inventory{
 		let hdp=hdplayerpawn(owner);
 		if(hdp){
 			inversevolumeratio=baseinversevolumeratio;
-			if(owner.countinv("WornRadsuit"))amount/=5;
 			int al=hdp.armourlevel;
 			if(al==1){
 				inversevolumeratio*=0.4;
@@ -287,7 +286,7 @@ class Heat:Inventory{
 
 		//convert given to real
 		if(amount){
-			realamount+=amount*inversevolumeratio*(countinv("WornRadsuit")?0.1:1.);
+			realamount+=amount*inversevolumeratio;
 			amount=0;
 		}
 		//clamp number to zero
@@ -322,7 +321,7 @@ class Heat:Inventory{
 		if(
 			!(ticker%3)
 			&&owner.bshootable&&!owner.bnodamage
-			&&realamount>random(random(7,12),70)
+			&&(owner.countinv("WornRadsuit")?realamount*0.1:realamount)>random(random(7,12),70)
 		){
 			double dmgamt=realamount*0.01;
 			if(

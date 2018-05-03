@@ -66,12 +66,13 @@ extend class HDPlayerPawn{
 		}
 
 		//radsuit
+		if(mod=="slime")A_GiveInventory("Heat",damage*frandom(2.3,2.7));
 		if(countinv("PowerIronFeet"))A_GiveInventory("WornRadsuit");
 		let radsuit=wornradsuit(findinventory("WornRadsuit"));
 		if(radsuit&&!(flags&DMG_NO_ARMOR)){
-			radsuit.stamina+=damage;
+			radsuit.stamina+=random(1,damage);
 			if(mod=="slime"){
-				if(damage>10 && radsuit.stamina>45+random(20,50)){
+				if(damage>10 && radsuit.stamina>2100){
 					A_TakeInventory("WornRadsuit");
 					A_PlaySound("misc/fwoosh",CHAN_AUTO);
 				}else if(damage>random(10,50)){
@@ -195,10 +196,10 @@ extend class HDPlayerPawn{
 			//burned
 			//the heat still has to hit the armour
 			if(radsuit){
-				radsuit.stamina+=damage*10;
+				radsuit.stamina+=random(1,damage);
 				if(damage<random(0,6))return 0;else{
 					damage*=0.4;
-					if(radsuit.stamina>40&&!random(0,max(0,160-damage-radsuit.stamina))){
+					if(radsuit.stamina>2100){
 						A_TakeInventory("WornRadsuit");
 						A_PlaySound("misc/fwoosh",CHAN_AUTO);
 					}else if(damage<4)mod="slime";
@@ -290,6 +291,7 @@ extend class HDPlayerPawn{
 				if(!source)return 0; //ignore regular fall damage
 				else tostun+=damage*random(20,25);
 			}
+			else if(mod=="slime"&&!random(0,99))aggravateddamage++;
 		}else{
 			//anything else
 			damage*=(1-(armourlevel*0.2));
