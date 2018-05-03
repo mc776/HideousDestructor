@@ -15,6 +15,57 @@ class HDHandlers:EventHandler{
 			}
 		}
 	}
+	override void WorldLoaded(WorldEvent e){
+		textureid dirtyglass=texman.checkfortexture("WALL47_2",texman.type_any);
+
+		//minimum light level 1 for nightvis
+		int itmax=level.sectors.size();
+		for(int i=0;i<itmax;i++){
+			if(level.sectors[i].lightlevel<1)level.sectors[i].lightlevel=1;
+		}
+		itmax=level.lines.size();
+		for(int i=0;i<itmax;i++){
+			line lll=level.lines[i];
+
+			//no more killer elevators
+			if(lll.special){
+				switch(lll.special){
+				case Plat_DownByValue:
+				case Plat_DownWaitUpStayLip:
+				case Plat_DownWaitUpStay:
+				case Generic_Lift:
+				case Plat_PerpetualRaiseLip:
+				case Plat_PerpetualRaise:
+				case Plat_RaiseAndStayTx0:
+				case Plat_UpByValue:
+				case Plat_UpByValueStayTx:
+				case Plat_UpNearestWaitDownStay:
+				case Plat_UpWaitDownStay:
+					if(abs(lll.args[1])>64)break;
+					lll.args[1]=clamp(lll.args[1],-24,24);
+					break;
+				default: break;
+				}
+			}
+			//if block-all and no midtexture, force add a mostly transparent midtexture
+			if(
+				lll.sidedef[1]
+				&&(
+					lll.flags&line.ML_BLOCKEVERYTHING
+					||lll.flags&line.ML_BLOCKPROJECTILE
+					||lll.flags&line.ML_BLOCKHITSCAN
+//					||lll.flags&line.ML_BLOCKING
+				)
+				&&!lll.sidedef[0].gettexture(side.mid)
+				&&!lll.sidedef[1].gettexture(side.mid)
+			){
+				lll.flags|=line.ML_WRAP_MIDTEX;
+				lll.sidedef[0].settexture(side.mid,dirtyglass);
+				lll.sidedef[1].settexture(side.mid,dirtyglass);
+				lll.alpha=0.2;
+			}
+		}
+	}
 }
 
 //because "extend class Actor" doesn't work
