@@ -35,7 +35,7 @@ class manjuicelight:PointLight{
 }
 class manjuiceburner:PersistentDamager{
 	default{
-		height 24;radius 64;stamina 6;
+		height 24;radius 48;stamina 6;
 		damagetype "thermal";
 	}
 }
@@ -69,7 +69,7 @@ class manjuice:hdfireball{
 			vel.z+=1.;
 			A_HDBlast(
 				128,66,16,"thermal",
-				immolateradius:196,random(20,90),100,
+				immolateradius:frandom(96,196),random(20,90),42,
 				16,1,
 				false
 			);
