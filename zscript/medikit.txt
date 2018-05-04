@@ -426,9 +426,11 @@ class SelfBandage:HDWoundFixer{
 		}
 		goto super::select;
 	abort:
-		TNT1 A 0{
+		TNT1 A 1{
 			if(getcvar("hd_helptext"))A_Print("You must stay still\n\nto bandage yourself!",2);
-		}goto nope;
+		}
+		TNT1 A 0 A_Refire("lower");
+		goto nope;
 	fire:
 		TNT1 A 0{
 			bool nope=false;
@@ -437,7 +439,7 @@ class SelfBandage:HDWoundFixer{
 				nope=true;
 			}
 			else if(!invoker.checkwoundcount()){
-				if(getcvar("hd_helptext"))A_Print("You have no\n\ninjuries to bandage.",2);
+				if(getcvar("hd_helptext"))A_Print("You are not bleeding.",2);
 				nope=true;
 			}
 			if(nope)player.setpsprite(PSP_WEAPON,invoker.findstate("nope"));

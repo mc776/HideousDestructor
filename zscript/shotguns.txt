@@ -34,11 +34,39 @@ class HDShotgun:HDWeapon{
 			}
 		}
 	}
+	action void A_UnloadSideSaddle(int slot){
+		int uamt=clamp(invoker.weaponstatus[slot],0,4);
+		if(!uamt)return;
+		invoker.weaponstatus[slot]-=uamt;
+		int maxpocket=min(0,uamt,ammocap("HDShellAmmo")-countinv("HDShellAmmo"));
+		if(maxpocket>0){
+			A_SetTics(8);
+			A_WeaponReady(WRF_NOFIRE);
+			A_PlaySound("weapons/pocket");
+			uamt-=maxpocket;
+			A_GiveInventory("HDShellAmmo",maxpocket);
+		}
+		EmptyHand(uamt);
+	}
+	action void A_CannibalizeOtherShotgun(){
+		let hhh=hdweapon(findinventory(invoker is "Hunter"?"Slayer":"Hunter"));
+		if(hhh){
+			int sidesaddle=hhh is "Slayer"?SLAYS_SIDESADDLE:HUNTS_SIDESADDLE;
+			int totake=min(
+				hhh.weaponstatus[sidesaddle],
+				AmmoCap("HDShellAmmo")-countinv("HDShellAmmo"),
+				4
+			);
+			if(totake>0){
+				hhh.weaponstatus[sidesaddle]-=totake;
+				A_GiveInventory("HDShellAmmo",totake);
+			}
+		}
+	}
 	override void DetachFromOwner(){
 		if(handshells>0){
-			if(owner){
-				owner.A_DropItem("HDShellAmmo",handshells);
-			}else A_DropItem("HDShellAmmo",handshells);
+			if(owner)owner.A_DropItem("HDShellAmmo",handshells);
+			else A_DropItem("HDShellAmmo",handshells);
 		}
 		handshells=0;
 		super.detachfromowner();
@@ -82,11 +110,11 @@ class Hunter:HDShotgun replaces Shotgun{
 	action void A_Chamber(){
 		int chm=invoker.weaponstatus[HUNTS_CHAMBER];
 		invoker.weaponstatus[HUNTS_CHAMBER]=0;
-		if(invoker.weaponstatus[HUNTS_TUBE]>0){  
+		if(invoker.weaponstatus[HUNTS_TUBE]>0){
 			invoker.weaponstatus[HUNTS_CHAMBER]=2;
 			invoker.weaponstatus[HUNTS_TUBE]--;
 		}
-		if(chm>1)A_SpawnItemEx("HDFumblingShell",  
+		if(chm>1)A_SpawnItemEx("HDFumblingShell",
 			cos(pitch)*8,0,height-7-sin(pitch)*8,
 			vel.x+cos(pitch)*cos(angle-random(86,90))*5,
 			vel.y+cos(pitch)*sin(angle-random(86,90))*5,
@@ -328,7 +356,7 @@ class Hunter:HDShotgun replaces Shotgun{
 				||PressingUnload()
 				||PressingFire()
 				||PressingAltfire()
-				||invoker.weaponstatus[HUNTS_TUBE]>=7  
+				||invoker.weaponstatus[HUNTS_TUBE]>=7
 				||(
 					invoker.handshells<1&&(
 						invoker.weaponstatus[HUNTS_SIDESADDLE]<1
@@ -348,56 +376,21 @@ class Hunter:HDShotgun replaces Shotgun{
 		goto ready;
 	zoom:
 	cannibalize:
-		SHTG A 2 offset(0,36){
-			if(!countinv("Slayer"))setweaponstate("nope");
-		}
+		SHTG A 2 offset(0,36) A_JumpIf(!countinv("Slayer"),"nope");
 		SHTG A 2 offset(0,40) A_PlaySound("weapons/pocket",CHAN_WEAPON);
 		SHTG A 6 offset(0,42);
 		SHTG A 4 offset(0,44);
 		SHTG A 6 offset(0,42);
-		SHTG A 2 offset (0,36){
-			let sss=hdweapon(findinventory("Slayer"));
-			if(sss){
-				int totake=min(
-					sss.weaponstatus[SLAYS_SIDESADDLE],
-					AmmoCap("HDShellAmmo")-countinv("HDShellAmmo"),
-					4
-				);
-				if(totake>0){
-					sss.weaponstatus[SLAYS_SIDESADDLE]-=totake;
-					A_GiveInventory("HDShellAmmo",totake);
-				}
-			}
-		}goto ready;
+		SHTG A 2 offset (0,36) A_CannibalizeOtherShotgun();
+		goto ready;
 
 	unloadSS:
-		SHTG A 2 offset(1,34){
-			if(invoker.weaponstatus[HUNTS_SIDESADDLE]<1)setweaponstate("nope");
-		}
+		SHTG A 2 offset(1,34) A_JumpIf(invoker.weaponstatus[HUNTS_SIDESADDLE]<1,"nope");
 		SHTG A 1 offset(2,34);
 		SHTG A 1 offset(3,36) A_PlaySound("weapons/pocket",CHAN_WEAPON);
 	unloadSSLoop1:
 		SHTG A 5 offset(4,36);
-		SHTG A 3 offset(5,37){
-			int hnd=min(invoker.weaponstatus[HUNTS_SIDESADDLE],4);
-			invoker.weaponstatus[HUNTS_SIDESADDLE]-=hnd;
-
-			//pocket if there's space
-			int limhnd=min(hnd,
-				AmmoCap("HDShellAmmo")
-				-countinv("HDShellAmmo")
-				-hnd
-			);
-			if(limhnd>0){  
-				A_SetTics(8);
-				A_WeaponReady(WRF_NOFIRE);
-				A_PlaySound("weapons/pocket");
-				hnd-=limhnd;
-				A_GiveInventory("HDShellAmmo",limhnd);
-			}
-			invoker.handshells=hnd;
-			EmptyHand();
-		}
+		SHTG A 3 offset(5,37) A_UnloadSideSaddle(HUNTS_SIDESADDLE);
 		SHTG A 2 offset(4,36){	//decide whether to loop
 			if(
 				PressingUnload()
@@ -415,7 +408,7 @@ class Hunter:HDShotgun replaces Shotgun{
 		goto nope;
 	unload:
 		SHTG A 1{
-			if(invoker.weaponstatus[HUNTS_SIDESADDLE]>0)setweaponstate("unloadSS");  
+			if(invoker.weaponstatus[HUNTS_SIDESADDLE]>0)setweaponstate("unloadSS");
 			else if(
 				invoker.weaponstatus[HUNTS_CHAMBER]<1
 				&&invoker.weaponstatus[HUNTS_TUBE]<1
@@ -434,7 +427,7 @@ class Hunter:HDShotgun replaces Shotgun{
 		SHTG D 3 offset(0,36){
 			int chm=invoker.weaponstatus[HUNTS_CHAMBER];
 			invoker.weaponstatus[HUNTS_CHAMBER]=0;
-			if(chm>1){  
+			if(chm>1){
 				A_PlaySound("weapons/huntreload",CHAN_WEAPON);
 				if(A_JumpIfInventory("HDShellAmmo",0,"null"))A_SpawnItemEx("HDFumblingShell",
 					cos(pitch)*8,0,height-7-sin(pitch)*8,
@@ -478,7 +471,7 @@ class Hunter:HDShotgun replaces Shotgun{
 		SHTG D 6 offset(1,41);
 		SHTG D 3 offset(1,42){
 			int rmm=ammocap("HDShellAmmo")-countinv("HDShellAmmo");
-			if(rmm>0){  
+			if(rmm>0){
 				A_PlaySound("weapons/pocket");
 				A_SetTics(8);
 				A_GiveInventory("HDShellAmmo",min(rmm,invoker.handshells));
@@ -498,7 +491,7 @@ class Hunter:HDShotgun replaces Shotgun{
 	spawn:
 		HUNT ABCDEFG -1 nodelay{
 			int ssh=invoker.weaponstatus[HUNTS_SIDESADDLE];
-			if(ssh>=11)frame=0;  
+			if(ssh>=11)frame=0;
 			else if(ssh>=9)frame=1;
 			else if(ssh>=7)frame=2;
 			else if(ssh>=5)frame=3;
@@ -514,6 +507,7 @@ class Hunter:HDShotgun replaces Shotgun{
 		weaponstatus[HUNTS_CHAMBER]=2;
 		weaponstatus[HUNTS_TUBE]=7;
 		weaponstatus[HUNTS_SIDESADDLE]=12;
+		handshells=0;
 	}
 }
 enum hunterstatus{
@@ -701,7 +695,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 			)setweaponstate("reloadss");
 
 			invoker.weaponstatus[0]&=~SLAYF_UNLOADONLY;
-			if(invoker.weaponstatus[SLAYS_SIDESADDLE]>0)  
+			if(invoker.weaponstatus[SLAYS_SIDESADDLE]>0)
 				invoker.weaponstatus[0]&=~SLAYF_FROMPOCKETS;
 			else if(countinv("HDShellAmmo"))
 				invoker.weaponstatus[0]|=SLAYF_FROMPOCKETS;
@@ -723,7 +717,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 			for(int i=0;i<2;i++){
 				int chm=invoker.weaponstatus[SLAYS_CHAMBER1+i];
 				invoker.weaponstatus[SLAYS_CHAMBER1+i]=0;
-				if(chm>1){  
+				if(chm>1){
 					if(health<90&&countinv("IsMoving"))A_SpawnItemEx("HDFumblingShell",
 						cos(pitch)*5,-1,height-7-sin(pitch)*5,
 						cos(pitch-45)*cos(angle+random(-2,2))*random(1,4)+vel.x,
@@ -770,7 +764,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 			int ssh=0;
 			if(invoker.weaponstatus[0]&SLAYF_FROMPOCKETS){
 				ssh=min(2,countinv("HDShellAmmo"));
-				if(ssh>0)A_TakeInventory("HDShellAmmo",ssh);  
+				if(ssh>0)A_TakeInventory("HDShellAmmo",ssh);
 			}else{
 				ssh=min(2,invoker.weaponstatus[SLAYS_SIDESADDLE]);
 				invoker.weaponstatus[SLAYS_SIDESADDLE]-=ssh;
@@ -784,7 +778,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 
 			//transfer from hand to chambers
 			ssh--;
-			while(ssh>=0){  
+			while(ssh>=0){
 				invoker.weaponstatus[SLAYS_CHAMBER2-ssh]=2;
 				ssh--;
 			}
@@ -816,7 +810,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 		SHT2 A 9 offset(4,34) A_PlaySound("weapons/pocket",CHAN_WEAPON);
 	reloadssloop1:
 		SHT2 A 0{
-			if(invoker.weaponstatus[SLAYS_SIDESADDLE]>=12)setweaponstate("reloadssend");  
+			if(invoker.weaponstatus[SLAYS_SIDESADDLE]>=12)setweaponstate("reloadssend");
 
 			//load shells into hand
 			int ssh=min(3,countinv("HDShellAmmo"));
@@ -844,31 +838,15 @@ class Slayer:HDShotgun replaces HDShotgun{
 		SHT2 A 1 offset(1,34) emptyhand();
 		goto nope;
 	unloadss:
-		SHT2 A 2 offset(2,34){
-			EmptyHand();
-			if(invoker.weaponstatus[SLAYS_SIDESADDLE]<1)setweaponstate("nope");
-		}
+		SHT2 A 0 EmptyHand();
+		SHT2 A 2 offset(2,34) A_JumpIf(invoker.weaponstatus[SLAYS_SIDESADDLE]<1,"nope");
 		SHT2 A 1 offset(3,36) A_PlaySound("weapons/pocket",CHAN_WEAPON);
 	unloadssloop1:
 		SHT2 A 5 offset(4,36);
-		SHT2 A 3 offset(5,37){
-			int ssh=min(invoker.weaponstatus[SLAYS_SIDESADDLE],4);
-			invoker.weaponstatus[SLAYS_SIDESADDLE]-=ssh;
-
-			//pocket if not full
-			int maxpocket=min(ssh,AmmoCap("HDShellAmmo")-ssh-countinv("HDShellAmmo"));
-			if(maxpocket>0){
-				A_SetTics(8);
-				A_WeaponReady(WRF_NOFIRE);
-				A_PlaySound("weapons/pocket",CHAN_WEAPON);
-				A_GiveInventory("HDShellAmmo",ssh);
-				ssh-=maxpocket;
-			}
-			EmptyHand(ssh);
-		}
+		SHT2 A 3 offset(5,37) A_UnloadSideSaddle(HUNTS_SIDESADDLE);
 		SHT2 A 2 offset(4,36){	//decide whether to loop
 			if(
-				invoker.weaponstatus[SLAYS_SIDESADDLE]>0  
+				invoker.weaponstatus[SLAYS_SIDESADDLE]>0
 				&&!pressingfire()
 				&&!pressingaltfire()
 				&&!pressingreload()
@@ -881,39 +859,25 @@ class Slayer:HDShotgun replaces HDShotgun{
 		goto nope;
 	unload:
 		SH2G K 2 offset(0,34){
-			if(invoker.weaponstatus[SLAYS_SIDESADDLE]>0)setweaponstate("unloadss");  
+			if(invoker.weaponstatus[SLAYS_SIDESADDLE]>0)setweaponstate("unloadss");
 			else invoker.weaponstatus[0]|=SLAYF_UNLOADONLY;
 		}goto unloadstart;
 
 	zoom:
 	cannibalize:
-		SHT2 A 2 offset(0,36){
-			EmptyHand();
-			if(!countinv("Hunter"))setweaponstate("nope");
-		}
+		SHT2 A 0 EmptyHand();
+		SHT2 A 2 offset(0,36) A_JumpIf(!countinv("Hunter"),"nope");
 		SHT2 A 2 offset(0,40) A_PlaySound("weapons/pocket",CHAN_WEAPON);
 		SHT2 A 8 offset(0,42);
 		SHT2 A 8 offset(0,44);
 		SHT2 A 8 offset(0,42);
-		SHT2 A 2 offset(0,36){
-			let hhh=hdweapon(findinventory("Hunter"));
-			if(hhh){
-				int totake=min(
-					hhh.weaponstatus[HUNTS_SIDESADDLE],
-					AmmoCap("HDShellAmmo")-countinv("HDShellAmmo"),
-					4
-				);
-				if(totake>0){
-					hhh.weaponstatus[HUNTS_SIDESADDLE]-=totake;
-					A_GiveInventory("HDShellAmmo",totake);
-				}
-			}
-		}goto ready;
+		SHT2 A 2 offset(0,36) A_CannibalizeOtherShotgun();
+		goto ready;
 
 	spawn:
 		SLAY ABCDEFG -1 nodelay{
 			int ssh=invoker.weaponstatus[SLAYS_SIDESADDLE];
-			if(ssh>=11)frame=0;  
+			if(ssh>=11)frame=0;
 			else if(ssh>=9)frame=1;
 			else if(ssh>=7)frame=2;
 			else if(ssh>=5)frame=3;
@@ -926,6 +890,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 		weaponstatus[SLAYS_CHAMBER1]=2;
 		weaponstatus[SLAYS_CHAMBER2]=2;
 		weaponstatus[SLAYS_SIDESADDLE]=12;
+		handshells=0;
 	}
 }
 enum slayerstatus{
