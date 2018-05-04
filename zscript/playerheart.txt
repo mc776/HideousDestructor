@@ -194,24 +194,25 @@ extend class HDPlayerPawn{
 				else stunned--;
 			}
 
-			//magical healing every heartbeat
+			//magical healing passively helps heart rate
 			if(regenblues){
-				if(unstablewoundcount>0||woundcount>0){  
-					if(woundcount>0)woundcount--;else unstablewoundcount--;
-					regenblues-=2;
-				}
 				if(beatcap<HDCONST_MINHEARTTICS){
 					beatcap=max(beatcap,HDCONST_MINHEARTTICS+3);
 					if(!random(0,99))regenblues--;
 				}
-				if(stimcount>4){  
+				if(stimcount>4){
 					stimcount-=4;
 					regenblues--;
+				}
+				//heal shorter-term damage
+				if(unstablewoundcount>0||woundcount>0){  
+					if(woundcount>0)woundcount--;else unstablewoundcount--;
+					regenblues-=2;
 				}
 			}
 
 			//every 4 beats
-			if(beatcounter%4==0){
+			if(!beatcounter%4){
 				//recovering heart rate
 				if(fatigue){
 					beatmax=min(beatmax,33-fatigue);
@@ -220,14 +221,10 @@ extend class HDPlayerPawn{
 				}
 				if(beatmax<beatcap) beatmax++;
 				if(bloodpressure>0)bloodpressure--;
-				if(regenblues>0 && (oldwoundcount>0||burncount>0||aggravateddamage>0)){    
-					oldwoundcount-=2;burncount-=2;aggravateddamage--;
-					regenblues--;
-				}
 			}
 
 			//every 12 beats
-			if(beatcounter%12==0){
+			if(!beatcounter%12){
 				if(stimcount>0)stimcount--;
 
 				//twitchy zerk
@@ -247,7 +244,17 @@ extend class HDPlayerPawn{
 						}
 					}
 				}
+
+				//all other magical healing
+				if(regenblues>0){
+					//heal long-term damage
+					if(oldwoundcount>0||burncount>0||aggravateddamage>0){
+						oldwoundcount--;burncount--;aggravateddamage--;
+						regenblues--;
+					}
+				}
 			}
+
 			if(beatcounter%20==0){	//every 20 beats
 				beatcap=clamp(beatcap+8,1,35);
 

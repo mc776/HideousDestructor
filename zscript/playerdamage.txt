@@ -90,6 +90,12 @@ extend class HDPlayerPawn{
 			mod=="internal"||
 			mod=="invisiblebleedout"
 		){
+			if(regenblues>0&&health<=damage){
+				regenblues--;
+				woundcount--;
+				damage=health-random(1,3);
+			}
+
 			flags|=(DMG_NO_ARMOR|DMG_NO_PAIN|DMG_THRUSTLESS);
 			silentdeath=true;
 			if(!random(0,127))oldwoundcount++;
@@ -97,7 +103,7 @@ extend class HDPlayerPawn{
 				beatmax+=random(-2,random(-1,4));
 				bloodpressure+=random(0,2);
 			}
-			if(health<damage&&damage-health<20&&beatcap>HDCONST_MINHEARTTICS+3){
+			if(health<=damage&&damage-health<20&&beatcap>HDCONST_MINHEARTTICS+3){
 				damage=health-1;
 				if(!random(0,2))beatcap--;
 			}
