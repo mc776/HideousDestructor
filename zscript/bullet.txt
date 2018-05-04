@@ -119,7 +119,7 @@ class HDBullet:HDActor{
 		//set some basic variables
 		speed=vel.length();
 		speedsquared=vel dot vel;
-		penetration=speed*mass*accuracy*0.000002/pushfactor*frandom(0.9,1.1);
+		penetration=(speed+(mass>>2))*accuracy*0.001/pushfactor*frandom(0.9,1.1);
 		A_FaceMovementDirection();
 
 		//hack to escape shooter
@@ -202,10 +202,10 @@ class HDBullet:HDActor{
 			double hitresistance=(hitactor.radius*2+hitactor.spawnhealth()*0.2)*0.3;
 
 			//damagetype?
-			if(penetration>7)damagetype="SmallArms3";
-			else if(penetration>5)damagetype="SmallArms2";
-			else if(penetration>3)damagetype="SmallArms1";
-			else if(penetration>0.1)damagetype="SmallArms0";
+			if(penetration>12)damagetype="SmallArms3";
+			else if(penetration>8)damagetype="SmallArms2";
+			else if(penetration>5)damagetype="SmallArms1";
+			else if(penetration>2)damagetype="SmallArms0";
 			else damagetype="Bashing";
 
 			//if within actor, tumble
@@ -253,19 +253,18 @@ class HDBullet:HDActor{
 			}
 
 			//determine damage
-			int dmg=(speed+mass)*0.0099;
+			int dmg=(speed+mass)*0.01;
 
 			int maxdmg=dmg+woundhealth;
 			if(pierce){
 				dmg*=2;
-				maxdmg+=woundhealth*3;
-			}
-			if(crit){
-				if(pierce){
+				maxdmg+=woundhealth;
+				if(crit){
 					dmg*=1.5;
-					maxdmg=dmg+woundhealth*6;
-				}else dmg*=1.2;
-			}
+					maxdmg=dmg+woundhealth*2;
+				}
+			}else if(crit)dmg*=1.2;
+
 			dmg=random(dmg,maxdmg);
 			if(hd_debug){
 				string targ="";
@@ -632,7 +631,7 @@ class DecoBulleter9f:DecoBulleter{
 //the actual bullets!
 class HDBulletFrag:HDBullet{
 	default{
-		woundhealth 2;
+		woundhealth 6;
 	}
 	override void postbeginplay(){
 		HDActor.PostBeginPlay();
@@ -657,7 +656,7 @@ class HDBullet9:HDBullet{
 		mass 1539;
 		speed 420;
 		accuracy 4;
-		woundhealth 1;
+		woundhealth 3;
 	}
 }
 class HDBullet426:HDBullet{
@@ -666,7 +665,7 @@ class HDBullet426:HDBullet{
 		mass 320;
 		speed 1200;
 		accuracy 6;
-		woundhealth 6;
+		woundhealth 18;
 		hdbullet.distantsounder "DistantRifle";
 	}
 }
@@ -676,7 +675,7 @@ class HDBullet776:HDBullet{
 		mass 1176;
 		speed 1100;
 		accuracy 12;
-		woundhealth 6;
+		woundhealth 16;
 		hdbullet.distantsounder "DoubleDistantRifle";
 	}
 }
@@ -685,7 +684,7 @@ class HDBullet00:HDBullet{
 		pushfactor 0.9;
 		mass 576;
 		accuracy 5;
-		woundhealth 0;
+		woundhealth 1;
 	}
 	override void postbeginplay(){
 		HDActor.postbeginplay();
