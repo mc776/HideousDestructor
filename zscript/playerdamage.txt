@@ -156,6 +156,9 @@ extend class HDPlayerPawn{
 					tostun+=damage;
 					tobreak+=max(randompick(0,0,0,1),damage/10);
 					mod="Bashing";
+					if(type<armourlevel+randompick(0,1,1,1,1,1,2)){
+						damage=min(damage,health-random(1,3)+armourlevel);
+					}
 				}
 				//degrade armour and puff
 				if(

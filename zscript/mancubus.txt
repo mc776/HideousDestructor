@@ -47,6 +47,8 @@ class manjuice:hdfireball{
 		decal "scorch";
 		gravity 0.1;
 		speed 27;
+		radius 7;
+		height 8;
 	}
 	actor trailburner;
 	override void ondestroy(){
@@ -104,6 +106,10 @@ class Mancubus:Fatso replaces Fatso{
 		obituary "%o was smoked by a mancubus.";
 		painchance 16;
 	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		hdmobster.spawnmobster(self);
+	}
 	vector2 firsttargetaim;
 	vector2 secondtargetaim;
 	vector2 leadoffset;
@@ -137,6 +143,7 @@ class Mancubus:Fatso replaces Fatso{
 				24,randompick(24,-24),18,
 				random(2,4),flags:SXF_NOCHECKPOSITION
 			);
+			if(!hdmobai.TryShoot(self,24,128,48,32))setstatelabel("see");
 		}
 		FATT G 1{
 			vector2 aimbak=(angle,pitch);
