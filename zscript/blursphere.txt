@@ -106,31 +106,34 @@ class HDBlurSphere:HDPickup{
 
 		//medusa gaze
 		if(invi&&!!randticker[0]){
-			actor aaa;int bbb;
-			[aaa,bbb]=owner.LineAttack(owner.angle,4096,owner.pitch,0,"none",
-				"CheckPuff",flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ|LAF_NOINTERACT,
-				offsetz:owner.height-6
+			flinetracedata medusagaze;
+			owner.linetrace(
+				owner.angle,4096,owner.pitch,
+				offsetz:owner.height-6,
+				data:medusagaze
 			);
-			if(aaa&&aaa.tracer&&aaa.tracer.bismonster){
-				aaa.tracer.A_ClearTarget();
+			actor aaa=medusagaze.hitactor;
+			if(aaa&&aaa.bismonster){
+				aaa.A_ClearTarget();
 				blockthingsiterator itt=blockthingsiterator.create(aaa,512);
 				while(itt.Next()){
 					if(itt.thing.target==owner)itt.thing.A_ClearTarget();
 					if(
 						itt.thing.bismonster
-						&&itt.thing!=aaa.tracer
+						&&itt.thing!=aaa
 						&&itt.thing.health>0  
-						&&!aaa.tracer.target
-					)aaa.tracer.target=itt.thing;
+						&&!aaa.target
+					)aaa.target=itt.thing;
 				}
-				aaa.tracer.A_ClearSoundTarget();
+				aaa.A_ClearSoundTarget();
 			}
 			owner.A_ClearSoundTarget();
 		}
 
 		let hdp=hdplayerpawn(owner);
 		if(hdp){
-			if(hdp.regenblues>0){  
+			if(hdp.regenblues>random(1,200)){
+				hdp.aggravateddamage++;
 				hdp.regenblues=max(0,hdp.regenblues-15);
 				hdp.cheatgivestatusailments("fire",1);
 				if(!worn&&!randticker[2]){
