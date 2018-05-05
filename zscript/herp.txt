@@ -199,13 +199,13 @@ class HERPBot:HDUPK{
 			if(ammo<1){
 				setstatelabel("swapmag");
 			}else if(target && target.health>random(-30,30)){
-				actor a;int b;
-				[a,b]=lineattack(
-					angle,4096,0,0,"none",
-					"CheckPuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT|LAF_OVERRIDEZ,
-					offsetz:12
+				flinetracedata herpline;
+				linetrace(
+					angle,4096,pitch,
+					offsetz:12,
+					data:herpline
 				);
-				if(a!=target){
+				if(herpline.hitactor!=target){
 					if(checksight(target))setstatelabel("aim");
 					else target=null;
 				}else setstatelabel("shoot");

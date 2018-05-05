@@ -557,16 +557,17 @@ extend class HDHandlers{
 					derp.goalpoint=ppp.pos.xy;
 					ppp.A_Log("\cd[DERP]  \cugoal set to  \cyYOUR POSITION",true);
 				}else if(cmd==5){
-					actor goalpuff;int gbg;
-					[goalpuff,gbg]=ppp.LineAttack(ppp.angle,1024,
-						ppp.pitch,0,"none","CheckPuff",
-						flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ|LAF_NOINTERACT,
-						offsetz:ppp.height-5
+					flinetracedata derpgoal;
+					ppp.linetrace(
+						ppp.angle,2048,ppp.pitch,
+						TRF_NOSKY,
+						offsetz:ppp.height-6,
+						data:derpgoal
 					);
-					if(goalpuff){
+					if(derpgoal.hittype!=Trace_HitNone){
 						goalset=true;
-						derp.goalpoint=goalpuff.pos.xy;
-						ppp.A_Log(string.format("\cd[DERP]  \cugoal set to  \cx[%i,%i]",goalpuff.pos.x,goalpuff.pos.y),true);
+						derp.goalpoint=derpgoal.hitlocation.xy;
+						ppp.A_Log(string.format("\cd[DERP]  \cugoal set to  \cx[%i,%i]",derpgoal.hitlocation.x,derpgoal.hitlocation.y),true);
 					}
 				}else if(
 					cmd==556&&derp.stuckline

@@ -150,16 +150,18 @@ class HDMedikitter:HDWoundFixer{
 		}goto nope;
 	fireother:
 		TNT1 A 10{
-			actor a;int b;
-			[a,b]=LineAttack(angle,42,pitch,0,"none",
-				"NewBulletMovePuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT
+			flinetracedata mediline;
+			linetrace(
+				angle,42,pitch,
+				offsetz:height-12,
+				data:mediline
 			);
-			let c=HDPlayerPawn(a.tracer);
+			let c=HDPlayerPawn(mediline.hitactor);
 			if(!c){
 				if(getcvar("hd_helptext"))A_Print("Nothing to be done here.\n\nHeal thyself? (press zoom)",2);
 				return resolvestate("nope");
 			}
-			if(invoker.usedon && c!=invoker.usedon){
+			if(c!=invoker.usedon){
 				if(c.getcvar("hd_helptext"))c.A_Print(string.format("Get the hell away!\n\n%s is trying to stab you\n\nwith a used syringe!!!",player.getusername()));
 				if(getcvar("hd_helptext"))A_Print("Why are you attacking your teammate\n\nwith used medical equipment!?");
 			}else if(c.countinv("IsMoving")>4){

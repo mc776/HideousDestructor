@@ -155,8 +155,7 @@ extend class HDPlayerPawn{
 
 			//because LineTrace fails at portals :(
 			//MAKE SURE NO WEAPON IS TOO LONG
-			actor a;bool b;
-			[a,b]=lineattack(
+			actor a=lineattack(
 				testangle,barrellength+10,testpitch,0,"none",
 				"CheckPuff",flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ,
 				offsetz:midheight
