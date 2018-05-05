@@ -124,6 +124,7 @@ struct HDMobAI play{
 				victim&&
 				(
 					!victim.bshootable
+					||victom.health<1
 					||!(caller.isfriend(victim))
 				)&&(
 					caller.absangle(caller.angleto(victim),
