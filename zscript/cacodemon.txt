@@ -318,7 +318,8 @@ class CacoShellBlood:BloodSplatSilent{
 		A_PlaySound("misc/bulletflesh",0,0.02);
 		A_SpawnChunks("CacoChunk",random(1,7),1,7);
 		if(
-			target.health>(CACO_MAXHEALTH*0.6)
+			!target //HOW THE FUCK.
+			||target.health>(CACO_MAXHEALTH*0.6)
 		)destroy();
 	}
 }

@@ -156,7 +156,10 @@ class HDPickup:CustomInventory{
 		other.A_Log(string.format("\cg%s",pickupmessage()),true);
 	}
 	override bool cancollidewith(actor other,bool passive){
-		return(other is "userpickerupper");
+		return(
+			other.bmissile||
+			other is "userpickerupper"
+		);
 	}
 	states{
 	use:	TNT1 A 0;
@@ -215,7 +218,10 @@ class HDUPK:HDActor{
 		hdupk.pickuptype "none";
 	}
 	override bool cancollidewith(actor other,bool passive){
-		return(bpushable||other is "userpickerupper");
+		return(
+			other.bmissile||
+			other is "userpickerupper"
+		);
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
