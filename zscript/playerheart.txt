@@ -212,7 +212,7 @@ extend class HDPlayerPawn{
 			}
 
 			//every 4 beats
-			if(!beatcounter%4){
+			if(beatcounter%4==0){ //==0, !() both 3 characters
 				//recovering heart rate
 				if(fatigue){
 					beatmax=min(beatmax,33-fatigue);
@@ -224,7 +224,7 @@ extend class HDPlayerPawn{
 			}
 
 			//every 12 beats
-			if(!beatcounter%12){
+			if(beatcounter%12==0){
 				if(stimcount>0)stimcount--;
 
 				//twitchy zerk
