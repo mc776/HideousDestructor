@@ -63,7 +63,14 @@ class HDArmour:HDPickup{
 			A_TakeInventory("Heat");
 		}
 
-		if(other.countinv("HDArmour")){
+		if(
+			other.countinv("HDArmour")
+			||(
+				other.player
+				&&other.player.readyweapon is "HDMedikitter"
+				&&other==master
+			)
+		){
 			if(other.countinv("HDArmourWorn")||other.countinv("WornRadsuit"))return;
 			HDF.TransferFire(self,other);
 			attachtoowner(other);

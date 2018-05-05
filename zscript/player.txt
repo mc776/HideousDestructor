@@ -213,6 +213,8 @@ class HDPlayerPawn:PlayerPawn{
 		#### E 4{
 			overloaded=CheckEncumbrance();
 			A_TakeInventory("PowerFrightener");
+			if(findinventory("HDBlurSphere")&&(!player||!(player.readyweapon is "Ring")))
+				HDBlursphere(findinventory("HDBlurSphere")).intensity-=100;
 		}
 		---- A 0 A_Jump(256,"spawn2");
 	melee:

@@ -257,7 +257,7 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 		#### A 0 A_JumpIfTargetInLOS(1,10);
 		loop;
 		#### A 0 A_FaceTarget(turnamount,turnamount);
-		#### E 1A_SetTics(random(0,10-turnamount/10));
+		#### E 1 A_SetTics(random(1,100/clamp(1,turnamount,turnamount+1)));
 		#### E 0{
 			if(
 				gunloaded<1
@@ -265,7 +265,7 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 				setstatelabel("ohforfuckssake");
 				return;
 			}
-			shotspread=frandom(turnamount/14,turnamount/5);
+			shotspread=frandom(turnamount*0.07,turnamount*0.22);
 			setstatelabel("shoot");
 		}
 	shoot:
