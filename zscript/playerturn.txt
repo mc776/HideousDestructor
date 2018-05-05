@@ -153,16 +153,6 @@ extend class HDPlayerPawn{
 			double testangle=lastangle+anglechange;
 			double testpitch=lastpitch+pitchchange;
 
-			//because LineTrace fails at portals :(
-			//MAKE SURE NO WEAPON IS TOO LONG
-			actor a=lineattack(
-				testangle,barrellength+10,testpitch,0,"none",
-				"CheckPuff",flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ,
-				offsetz:midheight
-			);
-			vector2 adist=a.pos.xy-pos.xy;
-			if(adist dot adist>(99*99))return;
-
 
 			//and now uh do stuff
 			vector3 barrelbase=pos+(0,0,midheight);
@@ -189,8 +179,7 @@ extend class HDPlayerPawn{
 				offsetside:0,
 				data:ltt
 			);
-
-
+			if(ltt.hittype==Trace_CrossingPortal)return;
 			disttop=ltt.distance;
 			if(ltt.distance<barrellength)muzzleblocked|=MB_TOP;
 
@@ -202,6 +191,7 @@ extend class HDPlayerPawn{
 				offsetside:0,
 				data:ltb
 			);
+			if(ltb.hittype==Trace_CrossingPortal)return;
 			distbottom=ltb.distance;
 			if(ltb.distance<barrellength)muzzleblocked|=MB_BOTTOM;
 
@@ -213,6 +203,7 @@ extend class HDPlayerPawn{
 				offsetside:-barrelwidth,
 				data:ltl
 			);
+			if(ltl.hittype==Trace_CrossingPortal)return;
 			distleft=ltl.distance;
 			if(ltl.distance<barrellength)muzzleblocked|=MB_LEFT;
 
@@ -223,6 +214,7 @@ extend class HDPlayerPawn{
 				offsetside:barrelwidth,
 				data:ltr
 			);
+			if(ltr.hittype==Trace_CrossingPortal)return;
 			distright=ltr.distance;
 			if(ltr.distance<barrellength)muzzleblocked|=MB_RIGHT;
 
