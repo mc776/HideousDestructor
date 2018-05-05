@@ -406,7 +406,8 @@ struct HDF play{
 			||mod=="falling"
 		)return shields,damage;
 
-		int blocked=max(min(shields,damage,100),(!random(0,9)?1:0));
+		int blocked=min(shields,damage,100);
+		if(blocked==damage&&!random(0,3))blocked--;
 		damage-=blocked;
 
 		shields=clamp(shields-(mod=="BFGBallAttack"?blocked*100:blocked-20),0,shields);
