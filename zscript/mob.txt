@@ -285,8 +285,12 @@ struct HDMobAI play{
 			return;
 		}
 		bool befrightened=caller.bfrightened;
+		bool bechasegoal=caller.bchasegoal;
 		vector3 oldpos=caller.pos;
-		if(flee)caller.bfrightened=true;
+		if(flee){
+			caller.bfrightened=true;
+			caller.bchasegoal=false;
+		}
 		caller.A_Chase(meleestate,missilestate,flags);
 		if(
 			caller.curstate==caller.findstate(meleestate)
@@ -299,7 +303,9 @@ struct HDMobAI play{
 			caller.vel*=0.7;
 			caller.vel+=posdif.unit()*caller.speed*0.18;
 		}
+		if(!caller.bfloat)caller.bnodropoff=true;
 		caller.bfrightened=befrightened;
+		caller.bchasegoal=bechasegoal;
 		//call a_chase again for more missile
 		caller.A_Chase(meleestate,missilestate,CHF_DONTMOVE|CHF_NODIRECTIONTURN);
 		return;

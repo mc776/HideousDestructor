@@ -54,6 +54,7 @@ class HDMarine:HDActor replaces ScriptedMarine{
 	int timesdied;
 	bool hasdropped;
 	int wep;
+	double rocketdisttoenemy;
 	override void die(actor source,actor inflictor,int dmgflags){
 		timesdied++;
 		bpushable=false;
@@ -313,7 +314,12 @@ class HDMarine:HDActor replaces ScriptedMarine{
 		#### A 0 A_Jump(60,"spawn");
 		loop;
 	see:
-		#### AABBCCDD 2{hdmobai.chase(self);}
+		#### A 0{if(target)rocketdisttoenemy=distance2d(target);}
+		#### AABBCCDD 2{
+			hdmobai.chase(self,
+				flee:(wep==HDMW_ROCKET&&rocketdisttoenemy<720)
+			);
+		}
 		#### A 0{
 			if(health<40)damagemobj(self,self,1,"bleedout",DMG_NO_PAIN);
 			else HealThing(1);
