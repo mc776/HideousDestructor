@@ -69,7 +69,17 @@ class HDHandlers:EventHandler{
 					lll.args[2]=max(lll.args[2],1);break;
 				case Light_StrobeDoom:
 					lll.args[2]=min(lll.args[2],1);break;
-//				case Light_RaiseByValue: //need to get sector tag and cap
+				case Light_RaiseByValue:
+					if(lll.args[1]>=0)break;
+				case Light_LowerByValue:
+					sectortagiterator sss=sectortagiterator.create(lll.args[0]);
+					int ssss=sss.next();
+					int lowestlight=255;
+					while(ssss>-1){
+						lowestlight=min(lowestlight,level.sectors[ssss].lightlevel);
+						ssss=sss.next();
+					}
+					lll.args[1]=min(lll.args[1],lowestlight-1);
 				default: break;
 				}
 			}
