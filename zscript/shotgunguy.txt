@@ -53,6 +53,7 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 		else if(inflictor==self) return hitobituary;
 		else return obituary;
 	}
+	bool jammed;
 	bool hasdropped;
 	bool semi;
 	int gunloaded;
@@ -100,6 +101,7 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 				wp.weaponstatus[ZM66S_MAG]=gunloaded;
 				wp.weaponstatus[ZM66S_AUTO]=2;
 				wp.weaponstatus[ZM66S_ZOOM]=random(0,27);
+				if(jammed)wp.weaponstatus[0]|=ZM66F_CHAMBERBROKEN;
 
 				gunloaded=50;
 			}
@@ -269,6 +271,7 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 			setstatelabel("shoot");
 		}
 	shoot:
+		#### F 0 A_JumpIf(jammed,"jammed");
 		#### A 0{
 			if(gunloaded<1){
 				setstatelabel("ohforfuckssake");
@@ -307,6 +310,11 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 			actor p=spawn("HDBullet426",pos+(0,0,height-6));
 			p.target=self;p.angle=angle;p.pitch=pitch;
 			p.vel+=self.vel;
+			if(random(0,2000)<gunspent+2){
+				jammed=true;
+				A_PlaySound("weapons/rifleclick");
+				setstatelabel("jammed");
+			}
 		}
 		#### E 1{
 			if(gunspent<3&&gunloaded>0)setstatelabel("shootzm662");
@@ -406,6 +414,12 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 		#### E 0 A_Jump(127,"see");
 		#### E 0 A_SpidRefire();
 		goto turntoaim;
+
+	jammed:
+		#### E 8;
+		#### E 0 A_Jump(128,"see");
+		#### E 4 A_PlaySound(random(0,2)?seesound:painsound,CHAN_VOICE);
+		goto see;
 
 	ohforfuckssake:
 		#### E 6;
@@ -618,7 +632,10 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 		#### W 5 canraise{if(abs(vel.z)>=2.)setstatelabel("xdead2");}
 		wait;
 	raise:
-		#### A 0 {hdmobai.corpseflags(self,true,true);}
+		#### A 0{
+			hdmobai.corpseflags(self,true,true);
+			jammed=false;
+		}
 		#### A 0 A_JumpIfInventory("IsGibbed",1,"RaiseGibbed");
 		#### L 4 spawn("MegaBloodSplatter",pos+(0,0,34));
 		#### LK 6;

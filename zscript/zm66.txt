@@ -186,11 +186,11 @@ class ZM66AssaultRifle:HDWeapon{
 		goto ready;
 	jam:
 		RIFG B 1 offset(-1,36){
-			A_PlaySound("weapons/rifleclick");
+			A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
 			invoker.weaponstatus[0]|=ZM66F_CHAMBERBROKEN;
 			invoker.weaponstatus[ZM66S_FLAGS]&=~ZM66F_CHAMBER;
 		}
-		RIFG B 1 offset(1,30) A_PlaySound("weapons/rifleclick",7);
+		RIFG B 1 offset(1,30) A_PlaySound("weapons/rifleclick",6);
 		goto nope;
 
 	shootgun:
