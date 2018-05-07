@@ -253,6 +253,10 @@ class HDPistol:HDWeapon{
 			if(invoker.weaponstatus[PISS_CHAMBER]==2)A_GunFlash();
 		}
 		PISG C 1{
+			if(hdplayerpawn(self)){
+				hdplayerpawn(self).gunbraced=false;
+				A_GiveInventory("IsMoving",1);
+			}
 			A_MuzzleClimb(
 				-frandom(0.8,1.),-frandom(1.2,1.6),
 				frandom(0.4,0.5),frandom(0.6,0.8)

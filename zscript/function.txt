@@ -45,6 +45,8 @@ class HDHandlers:EventHandler{
 			//no more killer elevators
 			if(lll.special){
 				switch(lll.special){
+
+				//cap platform speeds
 				case Plat_DownByValue:
 				case Plat_DownWaitUpStayLip:
 				case Plat_DownWaitUpStay:
@@ -59,6 +61,8 @@ class HDHandlers:EventHandler{
 					if(!hd_safelifts||abs(lll.args[1])>64)break;
 					lll.args[1]=clamp(lll.args[1],-24,24);
 					break;
+
+				//prevent lights from going below 1
 				case Light_ChangeToValue:
 				case Light_Fade:
 				case Light_LowerByValue:
@@ -80,6 +84,7 @@ class HDHandlers:EventHandler{
 						ssss=sss.next();
 					}
 					lll.args[1]=min(lll.args[1],lowestlight-1);
+
 				default: break;
 				}
 			}
