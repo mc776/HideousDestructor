@@ -25,6 +25,7 @@ class HDMarine:HDActor replaces ScriptedMarine{
 		+friendly
 		+quicktoretaliate
 		height 52;
+		deathheight 12;
 		radius 12;
 		health 130;
 		speed 16;
@@ -202,7 +203,8 @@ class HDMarine:HDActor replaces ScriptedMarine{
 		while(itt.next()){
 			actor it=itt.thing;
 			if(
-				isfriend(it)||isteammate(it)
+				it.health>0&&
+				(isfriend(it)||isteammate(it))
 			)return false;
 		}
 		return true;
