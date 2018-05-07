@@ -220,7 +220,7 @@ class ZombieStormtrooper:ZombieMan{
 				angle+=frandom(-spread,spread);
 				A_PlaySound("weapons/rifle",CHAN_WEAPON);
 				p=spawn("HDBullet426",pos+(0,0,height-6));
-				if(random(0,20)<firemode){
+				if(random(0,2000)<firemode){
 					jammed=true;
 					A_PlaySound("weapons/rifleclick",5);
 					setstatelabel("jammed");
