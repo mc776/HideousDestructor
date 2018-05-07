@@ -220,9 +220,9 @@ class ZombieStormtrooper:ZombieMan{
 				angle+=frandom(-spread,spread);
 				A_PlaySound("weapons/rifle",CHAN_WEAPON);
 				p=spawn("HDBullet426",pos+(0,0,height-6));
-				if(random(0,2000)<firemode){
+				if(random(0,20)<firemode){
 					jammed=true;
-					A_PlaySound("weapons/rifleclick");
+					A_PlaySound("weapons/rifleclick",5);
 					setstatelabel("jammed");
 				}
 			}
@@ -373,9 +373,16 @@ class ZombieStormtrooper:ZombieMan{
 	melee:
 		#### C 8 A_FaceTarget();
 		#### D 4;
-		#### E 4 A_CustomMeleeAttack(
-			random(3,20),"weapons/smack","","none",randompick(0,0,0,1)
-		);
+		#### E 4{
+			A_CustomMeleeAttack(
+				random(3,20),"weapons/smack","","none",randompick(0,0,0,1)
+			);
+			if(jammed&&!random(0,32)){
+				A_SpawnItemEx("BulletPuffBig",12,0,42,1,0,1);
+				jammed=false;
+				A_PlaySound("weapons/rifleclick",5);
+			}
+		}
 		#### E 3 A_JumpIfCloser(64,2);
 		#### E 4 A_FaceTarget();
 		goto missile2;

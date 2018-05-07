@@ -312,7 +312,7 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 			p.vel+=self.vel;
 			if(random(0,2000)<gunspent+2){
 				jammed=true;
-				A_PlaySound("weapons/rifleclick");
+				A_PlaySound("weapons/rifleclick",5);
 				setstatelabel("jammed");
 			}
 		}
@@ -528,9 +528,16 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 	melee:
 		#### C 6 A_FaceTarget();
 		#### D 4;
-		#### E 4 A_CustomMeleeAttack(
-			random(5,25),"weapons/smack","","none",randompick(0,0,0,1)
-		);
+		#### E 4{
+			A_CustomMeleeAttack(
+				random(5,25),"weapons/smack","","none",randompick(0,0,0,1)
+			);
+			if(jammed&&!random(0,32)){
+				A_SpawnItemEx("BulletPuffBig",12,0,42,1,0,1);
+				jammed=false;
+				A_PlaySound("weapons/rifleclick",5);
+			}
+		}
 		#### E 3 A_JumpIfCloser(64,2);
 		#### E 3 A_FaceTarget();
 		goto missile;
