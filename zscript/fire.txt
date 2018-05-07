@@ -306,7 +306,7 @@ class Heat:Inventory{
 		){
 			if(owner.bshootable){
 				realamount+=frandom(1.2,3.0);
-				if(realamount>random(150,1000))owner.A_GiveInventory("SawGib",1);
+				if(realamount>random(150,1000))hdf.give(owner,"SawGib",1);
 			}
 			actor aaa=spawn("HDFlameRed",owner.pos+(
 				frandom(-radius,radius),
@@ -328,6 +328,7 @@ class Heat:Inventory{
 				dmgamt<1.
 				&&(frandom(0.,1.)<dmgamt)
 			)dmgamt=1.;
+			setxyz(owner.pos);
 			owner.damagemobj(self,self,dmgamt,"thermal",DMG_NO_ARMOR);
 			if(!owner)return;
 		}

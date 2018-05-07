@@ -302,7 +302,7 @@ class HDBullet:HDActor{
 			//apply damage
 			if(hitactor.health<1){
 				int gibs=max(randompick(0,0,0,1),dmg*0.05);
-				hitactor.A_GiveInventory("SawGib",gibs);
+				hdf.give(hitactor,"SawGib",gibs);
 			}else{
 				hitactor.damagemobj(self,self.target,dmg,damagetype,DMG_THRUSTLESS);
 			}

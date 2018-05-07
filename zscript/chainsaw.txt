@@ -275,7 +275,7 @@ class HDSawPuff:IdleDummy{
 		TNT1 A 1 nodelay{
 			A_GiveInventory("WasChoppingFlesh",1,AAPTR_TARGET);
 			if(tracer){
-				if(tracer.bcorpse)tracer.A_GiveInventory("SawGib",random(5,10));
+				if(tracer.bcorpse)hdf.give(tracer,"SawGib",random(5,10));
 				if(tracer.bnoblood)spawn("BulletPuffMedium",pos);
 			}
 		}stop;

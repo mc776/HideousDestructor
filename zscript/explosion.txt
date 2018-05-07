@@ -107,7 +107,7 @@ extend class HDActor{
 			}
 			//gibbing
 			if(!it)continue;if(dist<=gibradius && it.bcorpse && it.bshootable){
-				it.a_giveinventory("sawgib",gibamount-dist/3);
+				hdf.give(it,"sawgib",gibamount-dist/3);
 				for(int i=0;i<gibamount;i+=3){
 					caller.A_SpawnItemEx(it.bloodtype,
 						random(1,it.radius),
