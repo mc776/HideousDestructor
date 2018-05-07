@@ -43,7 +43,7 @@ class HDHandlers:EventHandler{
 			line lll=level.lines[i];
 
 			//no more killer elevators
-			if(hd_safelifts&&lll.special){
+			if(lll.special){
 				switch(lll.special){
 				case Plat_DownByValue:
 				case Plat_DownWaitUpStayLip:
@@ -56,9 +56,20 @@ class HDHandlers:EventHandler{
 				case Plat_UpByValueStayTx:
 				case Plat_UpNearestWaitDownStay:
 				case Plat_UpWaitDownStay:
-					if(abs(lll.args[1])>64)break;
+					if(!hd_safelifts||abs(lll.args[1])>64)break;
 					lll.args[1]=clamp(lll.args[1],-24,24);
 					break;
+				case Light_ChangeToValue:
+				case Light_Fade:
+				case Light_LowerByValue:
+					lll.args[1]=max(lll.args[1],1);break;
+				case Light_Flicker:
+				case Light_Glow:
+				case Light_Strobe:
+					lll.args[2]=max(lll.args[2],1);break;
+				case Light_StrobeDoom:
+					lll.args[2]=min(lll.args[2],1);break;
+//				case Light_RaiseByValue: //need to get sector tag and cap
 				default: break;
 				}
 			}
