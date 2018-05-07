@@ -603,7 +603,13 @@ extend class HDStatusBar{
 			"GREENPXL",
 			(posx,posy),
 			DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE|DI_ITEM_RIGHT,
-			1,scale:(value*25/maxvalue,2)
+			1,scale:(
+				gimmehud
+				||cplayer.buttons&BT_ATTACK
+				||cplayer.buttons&BT_ALTATTACK
+				?((value*6/maxvalue)<<2):
+				(value*24/maxvalue)
+			,2)
 		);
 	}
 	//"" means ignore this value and move on to the next check.
