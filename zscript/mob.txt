@@ -47,6 +47,40 @@ class HDCorpseFlags:ActionItem{
 }
 
 
+//generic bleeding
+//maybe use this for players too in the future???
+class MonsterWound:Thinker{
+	static void Inflict(actor bleeder,int amount){
+		let wwnd=new("MonsterWound");
+		wwnd.owner=bleeder;
+		wwnd.ticker=0;
+
+		int modamt=getdefaultbytype(bleeder.getclass()).health;
+		if(modamt>100)wwnd.amount=amount*100/modamt;
+		else wwnd.amount=amount;
+	}
+	int ticker;
+	int amount;
+	actor owner;
+	override void tick(){
+		if(!owner){destroy();return;}
+		ticker++;
+		if(ticker>3){
+//owner.A_LogInt(amount);
+			ticker=0;
+			if(amount>random(0,80)){
+				owner.damagemobj(owner,null,2,"bleedout",DMG_NO_PAIN);
+				owner.A_SpawnItemEx(owner.bloodtype,
+					frandom(-12,12),frandom(-12,12),
+					flags:SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
+				);
+			}else if(amount<random(-80,60))amount--;
+			if(amount<1||owner.health<1)destroy();
+		}
+	}
+}
+
+
 //static mob functions
 struct HDMobAI play{
 	//randomize size
