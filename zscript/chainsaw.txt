@@ -277,6 +277,7 @@ class HDSawPuff:IdleDummy{
 			if(tracer){
 				if(tracer.bcorpse)hdf.give(tracer,"SawGib",random(5,10));
 				if(tracer.bnoblood)spawn("BulletPuffMedium",pos);
+				else monsterwound.inflict(tracer,random(1,7));
 			}
 		}stop;
 	crash:
