@@ -331,12 +331,24 @@ class HDPlayerPawn:PlayerPawn{
 		else maxstepheight=24;
 
 
+		//get angle for checking high floors
+		double checkangle;
+		if(!vel.y&&!vel.x)checkangle=angle;else checkangle=atan2(vel.y,vel.x);
+
 		//conditions for forcing walk
 		if(
 			stunned
 			||health<25
 			||(zerk<1 && fatigue>HDCONST_WALKFATIGUE && stimcount<8)
-			||StumbleCheck(fm,sm)
+			||LineTrace(
+				checkangle,20,0,
+				offsetz:15
+			)
+			||(
+				(fm||sm)
+				&&floorz>=pos.z
+				&&floorz-getzat(fm*0.004,sm*0.004)>16
+			)
 		){
 			mustwalk=true;
 			runwalksprint=-1;
@@ -351,7 +363,12 @@ class HDPlayerPawn:PlayerPawn{
 				stimcount>10||
 				fatigue<HDCONST_SPRINTFATIGUE
 			)
+			&&!LineTrace(
+				checkangle,56,0,
+				offsetz:10
+			)
 		)cansprint=true;else cansprint=false;
+
 
 		//encumbrance
 		if(findinventory("HDArmourWorn"))armourlevel=findinventory("HDArmourWorn").meleethreshold;
