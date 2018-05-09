@@ -341,7 +341,8 @@ class HDPlayerPawn:PlayerPawn{
 			||health<25
 			||(zerk<1 && fatigue>HDCONST_WALKFATIGUE && stimcount<8)
 			||LineTrace(
-				checkangle,20,0,
+				checkangle,26,0,
+				TRF_THRUACTORS,
 				offsetz:15
 			)
 			||(
@@ -365,6 +366,7 @@ class HDPlayerPawn:PlayerPawn{
 			)
 			&&!LineTrace(
 				checkangle,56,0,
+				TRF_THRUACTORS,
 				offsetz:10
 			)
 		)cansprint=true;else cansprint=false;
