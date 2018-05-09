@@ -14,7 +14,7 @@ extend class HDPlayerPawn{
 		//"You have to be aware of recursively called code pointers in death states.
 		//It can easily happen that Actor A dies, calling function B in its death state,
 		//which in turn nukes the data which is being checked in DamageMobj."
-		if(!self || !(self is "HDPlayerPawn") || health<1)return 0;
+		if(!self || health<1)return 0;
 
 		silentdeath=false;
 
@@ -25,7 +25,15 @@ extend class HDPlayerPawn{
 			A_TakeInventory("BasicArmor");
 		}
 
-		if(damage==TELEFRAG_DAMAGE)flags|=DMG_FORCED;
+		if(damage==TELEFRAG_DAMAGE){
+			if(
+				inflictor
+				&&!inflictor.btelestomp
+			){
+				return 0;
+			}
+			else flags|=DMG_FORCED;
+		}
 
 		if(inflictor&&inflictor.bpiercearmor)flags|=DMG_NO_ARMOR;
 
