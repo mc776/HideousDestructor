@@ -86,27 +86,6 @@ extend class HDPlayerPawn{
 	//and jump. don't separate from mantling.
 	override void CheckJump(){}
 	void JumpCheck(double fm,double sm){
-		//slides, too!
-		if(
-			player.cmd.buttons & BT_CROUCH
-			&&!player.crouchoffset
-			&&(fm||sm)
-		){
-			double mm=jumppower()*1.5;
-			double fmm=fm>0?mm:fm<0?-mm*0.6:0;
-			double smm=sm>0?-mm:sm<0?mm:0;
-			A_ChangeVelocity(fmm,smm,-0.6,CVF_RELATIVE);
-			if(bloodpressure<40)bloodpressure+=4;
-			fatigue+=4;
-			smm*=-0.3;
-			if(fmm<0)A_MuzzleClimb((smm*1.2,-7.2),(smm,-4.),(smm,-2.),(smm*0.8,-1.));
-			else if(fmm>0){
-				A_MuzzleClimb((smm*1.2,7.2),(smm,4.),(smm,2.),(smm*0.8,1.));
-				totallyblocked=true;
-			}
-			else A_MuzzleClimb((smm*1.2,-0.2),(smm,-0.1),(smm,-0.1),(smm*0.8,-0.04));
-			return;
-		}
 		if(
 			player.cmd.buttons & BT_JUMP
 		){
@@ -161,6 +140,27 @@ extend class HDPlayerPawn{
 					fatigue+=4;
 				}
 			}
+		}
+		//slides, too!
+		else if(
+			player.cmd.buttons & BT_CROUCH
+			&&!player.crouchoffset
+			&&(fm||sm)
+			&&countinv("IsMoving")>1
+		){
+			double mm=jumppower()*1.5;
+			double fmm=fm>0?mm:fm<0?-mm*0.6:0;
+			double smm=sm>0?-mm:sm<0?mm:0;
+			A_ChangeVelocity(fmm,smm,-0.6,CVF_RELATIVE);
+			if(bloodpressure<40)bloodpressure+=4;
+			fatigue+=4;
+			smm*=-0.3;
+			if(fmm<0)A_MuzzleClimb((smm*1.2,-7.2),(smm,-4.),(smm,-2.),(smm*0.8,-1.));
+			else if(fmm>0){
+				A_MuzzleClimb((smm*1.2,7.2),(smm,4.),(smm,2.),(smm*0.8,1.));
+				totallyblocked=true;
+			}
+			else A_MuzzleClimb((smm*1.2,-0.2),(smm,-0.1),(smm,-0.1),(smm*0.8,-0.04));
 		}
 	}
 }
