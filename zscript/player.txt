@@ -638,8 +638,14 @@ extend class HDPlayerPawn{
 		feetangle=angle;
 		hasgrabbed=false;
 
-		oldwoundcount+=woundcount+unstablewoundcount;aggravateddamage=0;
-		oldwoundcount--;burncount--;woundcount=0;unstablewoundcount=0;
+		oldwoundcount+=woundcount+unstablewoundcount;
+		woundcount=0;
+		unstablewoundcount=0;
+
+		oldwoundcount--;
+		burncount--;
+
+		if(!random(0,7))aggravateddamage--;
 
 		overloaded=CheckEncumbrance();
 
