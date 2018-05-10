@@ -25,15 +25,7 @@ extend class HDPlayerPawn{
 			A_TakeInventory("BasicArmor");
 		}
 
-		if(damage==TELEFRAG_DAMAGE){
-			if(
-				inflictor
-				&&!inflictor.btelestomp
-			){
-				return 0;
-			}
-			else flags|=DMG_FORCED;
-		}
+		if(damage==TELEFRAG_DAMAGE)flags|=DMG_FORCED;
 
 		if(inflictor&&inflictor.bpiercearmor)flags|=DMG_NO_ARMOR;
 

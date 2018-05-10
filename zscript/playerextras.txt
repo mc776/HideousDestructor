@@ -143,9 +143,9 @@ extend class HDPlayerPawn{
 		}
 		//slides, too!
 		else if(
-			player.cmd.buttons & BT_CROUCH
-			&&!player.crouchoffset
+			player.crouchdir<0&&height>46
 			&&(fm||sm)
+			&&floorz==pos.z
 			&&countinv("IsMoving")>1
 		){
 			double mm=jumppower()*1.5;
