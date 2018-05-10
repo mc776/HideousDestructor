@@ -41,6 +41,7 @@ class HDStatusBar:DoomStatusBar{
 				DrawFullScreenStuff();
 			}
 		}
+		if(idmypos)drawmypos();
 	}
 	void DrawAutomapStuff(){
 		playerpawn cp=playerpawn(cplayer.mo);
@@ -297,8 +298,6 @@ class HDStatusBar:DoomStatusBar{
 				DI_TEXT_ALIGN_CENTER|DI_SCREEN_RIGHT_TOP,Font.CR_RED
 			);
 		}
-
-		if(idmypos)drawmypos();
 
 		//debug centre line
 		if(hd_debug)drawimage(
