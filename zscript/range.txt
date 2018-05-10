@@ -111,7 +111,10 @@ class PunchDummy:HDActor{
 		actor inflictor,actor source,int damage,
 		name mod,int flags,double angle
 	){
-		if(inflictor is "HDFistPuncher"){
+		if(
+			inflictor is "HDFistPuncher"
+			||(inflictor.player && inflictor.player.readyweapon is "Ring")
+		){
 			vel.z+=damage*0.1;
 			string d="u";
 			if(damage>100){
