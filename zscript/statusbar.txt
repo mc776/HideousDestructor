@@ -4,17 +4,23 @@
 class HDStatusBar:DoomStatusBar{
 	int gimmehud;
 	int healthbars[14];
+	hudfont psmallfont;
 	override void Init(){
 		BaseStatusBar.Init();
 		SetSize(0,320,200);
 
 		//Create the font used for the fullscreen HUD
 		Font fnt = "HUDFONT_DOOM";
+		pSmallFont=HUDFont.Create("SmallFont");
 		mHUDFont = HUDFont.Create(fnt, fnt.GetCharWidth("0"), true, 1, 1);
 		fnt = "INDEXFONT_DOOM";
 		mIndexFont = HUDFont.Create(fnt, fnt.GetCharWidth("0"), true);
 		mAmountFont = HUDFont.Create("INDEXFONT");
 		diparms = InventoryBarState.Create();
+	}
+	enum HDStatBar{
+		STB_COMPRAD=12,
+		STB_BEATERSIZE=14,
 	}
 	override void Draw(int state,double TicFrac){
 		if(
@@ -100,6 +106,28 @@ class HDStatusBar:DoomStatusBar{
 
 		drawammocounters(-18);
 		drawweaponstash(true,-48);
+
+		drawmypos(10);
+	}
+
+	void DrawMyPos(int downpos=(STB_COMPRAD<<2)){
+		//permanent mypos
+		let cp=hdplayerpawn(cplayer.mo);
+		drawstring(
+			psmallfont,string.format("%i  x",cp.pos.x),
+			(-4,downpos+10),DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_TOP,
+			Font.CR_OLIVE
+		);
+		drawstring(
+			psmallfont,string.format("%i  y",cp.pos.y),
+			(-4,downpos+18),DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_TOP,
+			Font.CR_OLIVE
+		);
+		drawstring(
+			psmallfont,string.format("%i  z",cp.pos.z),
+			(-4,downpos+26),DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_TOP,
+			Font.CR_OLIVE
+		);
 	}
 	void DrawFullScreenStuff(){
 		if(cplayer.getgender()==0)DrawTexture(GetMugShot(5),(0,-14),DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM);
@@ -275,28 +303,28 @@ class HDStatusBar:DoomStatusBar{
 			);
 
 			//compass
-			hudfont pSmallFont=HUDFont.Create("SmallFont");
-			int comprad=12;vector2 compos=(-comprad,comprad)*2;
+			int STB_COMPRAD=12;vector2 compos=(-STB_COMPRAD,STB_COMPRAD)*2;
 			double compangle=cp.angle;
 			drawstring(psmallfont,"S",
-				(cos(compangle),sin(compangle))*comprad+compos,
+				(cos(compangle),sin(compangle))*STB_COMPRAD+compos,
 				DI_TEXT_ALIGN_CENTER|DI_SCREEN_RIGHT_TOP,Font.CR_BLACK
 			);
 			compangle-=90;
 			drawstring(psmallfont,"E",
-				(cos(compangle),sin(compangle))*comprad+compos,
+				(cos(compangle),sin(compangle))*STB_COMPRAD+compos,
 				DI_TEXT_ALIGN_CENTER|DI_SCREEN_RIGHT_TOP,Font.CR_GOLD
 			);
 			compangle-=90;
 			drawstring(psmallfont,"N",
-				(cos(compangle),sin(compangle))*comprad+compos,
+				(cos(compangle),sin(compangle))*STB_COMPRAD+compos,
 				DI_TEXT_ALIGN_CENTER|DI_SCREEN_RIGHT_TOP,Font.CR_WHITE
 			);
 			compangle-=90;
 			drawstring(psmallfont,"W",
-				(cos(compangle),sin(compangle))*comprad+compos,
+				(cos(compangle),sin(compangle))*STB_COMPRAD+compos,
 				DI_TEXT_ALIGN_CENTER|DI_SCREEN_RIGHT_TOP,Font.CR_RED
 			);
+			drawmypos();
 		}
 
 		//debug centre line
@@ -340,18 +368,17 @@ class HDStatusBar:DoomStatusBar{
 		int flags=DI_SCREEN_CENTER_BOTTOM
 	){
 		let cp=hdplayerpawn(cplayer.mo);
-		int healthbarcount=healthbars.size();
 		if(!cp.beatcount){
-			for(int i=0;i<(healthbarcount-2);i++){
+			for(int i=0;i<(STB_BEATERSIZE-2);i++){
 				healthbars[i]=healthbars[i+2];
 			}
 			int erraticalness=(max(100-cp.health,cp.bloodpressure,0)>>4);
-			healthbars[healthbarcount-2]=clamp(4+random(-erraticalness,erraticalness+1),1,8);
-			healthbars[healthbarcount-1]=clamp(random(1,erraticalness+1),1,8);
+			healthbars[STB_BEATERSIZE-2]=clamp(4+random(-erraticalness,erraticalness+1),1,8);
+			healthbars[STB_BEATERSIZE-1]=clamp(random(1,erraticalness+1),1,8);
 		}
-		for(int i=0;i<healthbarcount;i++){
+		for(int i=0;i<STB_BEATERSIZE;i++){
 			drawimage(
-				"GREENPXL",drawpos+(i-(healthbarcount>>2),0),
+				"GREENPXL",drawpos+(i-(STB_BEATERSIZE>>2),0),
 				flags|DI_TRANSLATABLE|DI_ITEM_CENTER,
 				scale:(0.8,healthbars[i])
 			);
