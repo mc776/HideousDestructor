@@ -118,6 +118,7 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 	}
 	int spent;bool worn;
 	const LITEBAT=84000;
+	pointlight nozerolight;
 	override double getbulk(){return bulk;}
 	override void DetachFromOwner(){
 		if(owner && owner.player && owner.player.fixedcolormap==5)owner.player.fixedcolormap=-1;
@@ -169,8 +170,29 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 				}else A_Log("No power for lite-amp.",true);
 			}
 			if(invoker.spent<LITEBAT){
-				if(invoker.worn)invoker.worn=false;else invoker.worn=true;
+				if(invoker.worn)invoker.worn=false;else{
+					invoker.worn=true;
+					if(!invoker.nozerolight)invoker.nozerolight=pointlight(spawn("visorlight",pos));
+					invoker.nozerolight.target=self;
+				}
 			}
 		}fail;
+	}
+}
+class VisorLight:PointLight{
+	override void postbeginplay(){
+		args[0]=1;
+		args[1]=0;
+		args[2]=0;
+		args[3]=256;
+		args[4]=0;
+	}
+	override void tick(){
+		super.tick();
+		if(
+			target
+			&&target.findinventory("PortableLiteAmp")
+			&&portableliteamp(target.findinventory("PortableLiteAmp")).worn
+		)args[3]=256;else args[3]=0;
 	}
 }
