@@ -112,12 +112,11 @@ class NinjaPirate:HDActor{ //replaces Spectre{
 		goto seecloakedchase;
 	seecloakedflee:
 		TNT1 A 0{bfrightened=true;}
-		TNT1 AAA 0 A_Chase(null,flags:CHF_NOPLAYACTIVE|CHF_NIGHTMAREFAST);
-		TNT1 A 2;
+		TNT1 AAA 1 A_Chase(null,flags:CHF_NOPLAYACTIVE|CHF_NIGHTMAREFAST);
 		goto seecloaked2;
 	seecloakedchase:
 		TNT1 A 0 {bfrightened=false;}
-		TNT1 A 2 A_Chase("melee",flags:CHF_NIGHTMAREFAST);
+		TNT1 A 1 A_Chase("melee",flags:CHF_NIGHTMAREFAST);
 		TNT1 A 0 A_Jump(8,2);
 		TNT1 A 0 A_JumpIfCloser(600,"seecloaked2");
 		TNT1 A 0 A_SetTranslucent(1,2);
