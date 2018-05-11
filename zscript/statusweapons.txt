@@ -3,19 +3,15 @@
 // ------------------------------------------------------------
 extend class HDStatusBar{
 	virtual void drawweaponstatus(weapon w){
-
-		let pp=hdplayerpawn(cplayer.mo);
-		if(!pp)return;
-
 		let hdw=hdweapon(w);
 		if(!hdw){
 			if(cplayer.readyweapon.ammotype1)drawwepnum(
-				pp.countinv(cplayer.readyweapon.ammotype1),
-				hdmath.maxinv(pp,cplayer.readyweapon.ammotype1)
+				hpl.countinv(cplayer.readyweapon.ammotype1),
+				hdmath.maxinv(hpl,cplayer.readyweapon.ammotype1)
 			);
 			if(cplayer.readyweapon.ammotype2)drawwepnum(
-				pp.countinv(cplayer.readyweapon.ammotype2),
-				hdmath.maxinv(pp,cplayer.readyweapon.ammotype2),
+				hpl.countinv(cplayer.readyweapon.ammotype2),
+				hdmath.maxinv(hpl,cplayer.readyweapon.ammotype2),
 				posy:-10
 			);
 			return;
@@ -27,7 +23,7 @@ extend class HDStatusBar{
 		if(w is "Lumberjack"){
 			if(gimmehud){
 				drawambar("CELLRED","CELLA0","HDCellAmmo",(-54,-4),DI_SCREEN_CENTER_BOTTOM);
-				drawnum(pp.countinv("HDCellPacks"),-46,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+				drawnum(hpl.countinv("HDCellPacks"),-46,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
 			if(!hdw.weaponstatus[1])drawstring(
 				mamountfont,"00000",(-16,-9),DI_TEXT_ALIGN_RIGHT|
@@ -40,12 +36,12 @@ extend class HDStatusBar{
 			if(gimmehud){
 				drawimage("CLP2A0",(-46,-3),DI_SCREEN_CENTER_BOTTOM,scale:(3,3));
 				drawambar("PISARED","HDPISAMO","HDPistolAmmo",(-53,-4),DI_SCREEN_CENTER_BOTTOM);
-				drawnum(pp.countinv("HDPistolMag"),-43,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+				drawnum(hpl.countinv("HDPistolMag"),-43,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
 			drawwepcounter(hdw.weaponstatus[PISS_AUTO]+1,
 				-22,-10,"blank","RBRSA3A7","STFULAUT"
 			);
-			let wpn2=hdsecondpistol(pp.findinventory("HDSecondPistol"));
+			let wpn2=hdsecondpistol(hpl.findinventory("HDSecondPistol"));
 			if(wpn2){
 				drawwepdot(-16,-13,(4,2.6));
 				if(wpn2.weaponstatus[PISS_AUTO]>=0)
@@ -58,7 +54,7 @@ extend class HDStatusBar{
 			if(gimmehud){
 				drawimage("CLP3A0",(-46,-3),DI_SCREEN_CENTER_BOTTOM,scale:(3,3));
 				drawambar("PISARED","HDPISAMO","HDPistolAmmo",(-53,-4),DI_SCREEN_CENTER_BOTTOM);
-				drawnum(pp.countinv("HDSMGMag"),-43,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+				drawnum(hpl.countinv("HDSMGMag"),-43,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
 			drawwepcounter(hdw.weaponstatus[SMGS_AUTO],
 				-22,-10,"RBRSA3A7","STBURAUT","STFULAUT"
@@ -69,7 +65,7 @@ extend class HDStatusBar{
 		else if(w is "Slayer"){
 			if(gimmehud){
 				drawimage("SHL1A0",(-47,-10),DI_SCREEN_CENTER_BOTTOM);
-				drawnum(pp.countinv("HDShellAmmo"),-46,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+				drawnum(hpl.countinv("HDShellAmmo"),-46,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
 			int loffs=-28;int rofs=-16;
 			if(hdw.weaponstatus[0]&SLAYF_DOUBLE){
@@ -96,7 +92,7 @@ extend class HDStatusBar{
 		else if(w is "Hunter"){
 			if(gimmehud){
 				drawimage("SHL1A0",(-47,-10),DI_SCREEN_CENTER_BOTTOM);
-				drawnum(pp.countinv("HDShellAmmo"),-46,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+				drawnum(hpl.countinv("HDShellAmmo"),-46,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
 			if(hdw.weaponstatus[HUNTS_CHAMBER]>1){
 				drawwepdot(-19,-11,(5,3));
@@ -116,10 +112,10 @@ extend class HDStatusBar{
 		else if(w is "ZM66AssaultRifle"){
 			if(gimmehud){
 				drawambar("CLIPRED","CLIPC0","FourMilAmmo",(-51,-4),DI_SCREEN_CENTER_BOTTOM);
-				drawnum(pp.countinv("ZM66RifleMags"),-43,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+				drawnum(hpl.countinv("ZM66RifleMags"),-43,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 				if(!(hdw.weaponstatus[0]&ZM66F_NOLAUNCHER)){
 					drawimage("ROQPA0",(-62,-4),DI_SCREEN_CENTER_BOTTOM,scale:(0.6,0.6));
-					drawnum(pp.countinv("HDRocketAmmo"),-56,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+					drawnum(hpl.countinv("HDRocketAmmo"),-56,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 				}
 			}
 
@@ -153,8 +149,8 @@ extend class HDStatusBar{
 			if(gimmehud){
 				drawambar("CLIPRED","CLIPC0","FourMilAmmo",(-49,-4),DI_SCREEN_CENTER_BOTTOM);
 				drawambar("CELLRED","CELLA0","HDCellAmmo",(-64,-4),DI_SCREEN_CENTER_BOTTOM);
-				drawnum(pp.countinv("ZM66RifleMags"),-43,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
-				drawnum(pp.countinv("HDCellPacks"),-56,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+				drawnum(hpl.countinv("ZM66RifleMags"),-43,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+				drawnum(hpl.countinv("HDCellPacks"),-56,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
 			let vvv=vulcanette(hdw);
 			if(vvv){
@@ -192,7 +188,7 @@ extend class HDStatusBar{
 		else if(w is "Blooper"){
 			if(gimmehud){
 				drawimage("ROQPA0",(-52,-4),DI_SCREEN_CENTER_BOTTOM,scale:(0.6,0.6));
-				drawnum(pp.countinv("HDRocketAmmo"),-45,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+				drawnum(hpl.countinv("HDRocketAmmo"),-45,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
 			if(hdw.weaponstatus[0]&BLOPF_LOADED)drawwepdot(-16,-10,(5,3));
 			int ab=hdw.airburst;
@@ -201,16 +197,16 @@ extend class HDStatusBar{
 				ab?Font.CR_WHITE:Font.CR_DARKGRAY
 			);
 			drawwepnum(
-				pp.countinv("HDRocketAmmo"),
-				hdmath.maxinv(pp,"HDRocketAmmo")
+				hpl.countinv("HDRocketAmmo"),
+				hdmath.maxinv(hpl,"HDRocketAmmo")
 			);
 		}
 		else if(w is "HDRL"){
 			if(gimmehud){
 				drawimage("ROQPA0",(-47,-4),DI_SCREEN_CENTER_BOTTOM,scale:(0.6,0.6));
 				drawimage("ROCKA0",(-58,-4),DI_SCREEN_CENTER_BOTTOM,scale:(0.6,0.6));
-				drawnum(pp.countinv("HDRocketAmmo"),-41,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
-				drawnum(pp.countinv("HEATAmmo"),-54,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+				drawnum(hpl.countinv("HDRocketAmmo"),-41,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+				drawnum(hpl.countinv("HEATAmmo"),-54,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
 			int ab=hdw.airburst;
 			if(
@@ -243,10 +239,10 @@ extend class HDStatusBar{
 			if(gimmehud){
 				drawimage("RMAGA0",(-51,-4),DI_SCREEN_CENTER_BOTTOM);
 				drawambar("MAGRED","MAGSTAT","SevenMilAmmo",(-51,-4),DI_SCREEN_CENTER_BOTTOM);
-				drawnum(pp.countinv("LiberatorMag"),-43,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+				drawnum(hpl.countinv("LiberatorMag"),-43,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 				if(!(hdw.weaponstatus[0]&LIBF_NOLAUNCHER)){
 					drawimage("ROQPA0",(-62,-4),DI_SCREEN_CENTER_BOTTOM,scale:(0.6,0.6));
-					drawnum(pp.countinv("HDRocketAmmo"),-56,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+					drawnum(hpl.countinv("HDRocketAmmo"),-56,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 				}
 			}
 			string llba="RBRSA3A7";
@@ -278,7 +274,7 @@ extend class HDStatusBar{
 		else if(w is "ThunderBuster"){
 			if(gimmehud){
 				drawambar("CELLRED","CELLA0","HDCellAmmo",(-54,-4),DI_SCREEN_CENTER_BOTTOM);
-				drawnum(pp.countinv("HDCellPacks"),-46,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+				drawnum(hpl.countinv("HDCellPacks"),-46,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
 			if(hdw.weaponstatus[0]&TBF_ALT){
 				drawimage(
@@ -298,7 +294,7 @@ extend class HDStatusBar{
 		else if(w is "BFG9k"){
 			if(gimmehud){
 				drawambar("CELLRED","CELLA0","HDCellAmmo",(-54,-4),DI_SCREEN_CENTER_BOTTOM);
-				drawnum(pp.countinv("HDCellPacks"),-46,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+				drawnum(hpl.countinv("HDCellPacks"),-46,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
 			int bffb=hdw.weaponstatus[BFGS_BATTERY];
 			if(bffb>0)drawwepnum(bffb,20,posy:-10);
@@ -317,18 +313,18 @@ extend class HDStatusBar{
 		else if(w is "Brontornis"){
 			if(gimmehud){
 				drawimage("BROCA0",(-48,-10),DI_SCREEN_CENTER_BOTTOM,scale:(0.7,0.7));
-				drawnum(pp.countinv("BrontornisRound"),-45,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+				drawnum(hpl.countinv("BrontornisRound"),-45,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
 			if(hdw.weaponstatus[BRONS_CHAMBER]>1)drawwepdot(-16,-10,(5,3));
 			drawwepnum(
-				pp.countinv("BrontornisRound"),
-				HDMath.MaxInv(pp,"BrontornisRound")
+				hpl.countinv("BrontornisRound"),
+				HDMath.MaxInv(hpl,"BrontornisRound")
 			);
 		}
 		else if(w is "BossRifle"){
 			if(gimmehud){
 				drawambar("MAGRED","MAGSTAT","SevenMilAmmo",(-45,-9),DI_SCREEN_CENTER_BOTTOM|DI_ITEM_RIGHT_BOTTOM);
-				drawnum(pp.countinv("BossClip"),-45,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+				drawnum(hpl.countinv("BossClip"),-45,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
 			drawwepnum(hdw.weaponstatus[BOSSS_MAG],10);
 			drawwepcounter(hdw.weaponstatus[BOSSS_CHAMBER],
@@ -341,21 +337,21 @@ extend class HDStatusBar{
 				-16,-18,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_WHITE
 			);
 		}
-		else if(w is "HDFragGrenades" && pp.countinv("HDFragGrenadeAmmo")){
+		else if(w is "HDFragGrenades" && hpl.countinv("HDFragGrenadeAmmo")){
 			if(gimmehud){
 				drawimage("FRAGA0",(-52,-4),DI_SCREEN_CENTER_BOTTOM,scale:(0.6,0.6));
-				drawnum(pp.countinv("HDFragGrenadeAmmo"),-45,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+				drawnum(hpl.countinv("HDFragGrenadeAmmo"),-45,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
 			drawwepnum(
-				pp.countinv("HDFragGrenadeAmmo"),
-				hdmath.maxinv(pp,"HDFragGrenadeAmmo")
+				hpl.countinv("HDFragGrenadeAmmo"),
+				hdmath.maxinv(hpl,"HDFragGrenadeAmmo")
 			);
-			drawwepnum(pp.countinv("GrenadeForce"),50,posy:-10);
-			if(!pp.countinv("SpoonOff")){
+			drawwepnum(hpl.countinv("GrenadeForce"),50,posy:-10);
+			if(!hpl.countinv("SpoonOff")){
 				drawwepdot(-16,-15,(5,4));
-				if(!pp.countinv("FragOut"))drawwepdot(-22,-16,(3,2));
+				if(!hpl.countinv("FragOut"))drawwepdot(-22,-16,(3,2));
 			}else{
-				int timer=pp.countinv("FragTimer");
+				int timer=hpl.countinv("FragTimer");
 				if(timer%3)drawwepnum(140-timer,140,posy:-15);
 			}
 		}
@@ -365,14 +361,14 @@ extend class HDStatusBar{
 		}
 		else if(w is "SelfBandage"){
 			int of=0;
-			if(pp.woundcount){
+			if(hpl.woundcount){
 				drawimage(
 					"BLUDC0",(-17,-6),
 					DI_SCREEN_CENTER_BOTTOM|DI_ITEM_RIGHT,
 					0.6
 				);
-				of=clamp(pp.woundcount*0.2,1,3);
-				if(pp.flip)of=-of;
+				of=clamp(hpl.woundcount*0.2,1,3);
+				if(hpl.flip)of=-of;
 			}
 			drawwepdot(-22,-8+of,(2,10));
 			drawwepdot(-17,-12+of,(12,2));
@@ -381,11 +377,11 @@ extend class HDStatusBar{
 			let ww=hdmedikitter(w);
 			int of=0;
 			if(
-				pp.woundcount
-				&&(!ww.usedon||ww.usedon==pp)
+				hpl.woundcount
+				&&(!ww.usedon||ww.usedon==hpl)
 			){
-				of=clamp(pp.woundcount*0.1,1,3);
-				if(pp.flip)of=-of;
+				of=clamp(hpl.woundcount*0.1,1,3);
+				if(hpl.flip)of=-of;
 			}
 			drawwepdot(-27,-11+of,(2,6));
 			drawwepdot(-25,-13+of,(6,2));
@@ -430,8 +426,8 @@ extend class HDStatusBar{
 			int howmany=bp.itemamount[which];
 
 			bool greenarmour=(
-				pp.findinventory("HDArmour")
-				&&pp.findinventory("HDArmour").meleethreshold<2
+				hpl.findinventory("HDArmour")
+				&&hpl.findinventory("HDArmour").meleethreshold<2
 			);
 
 			//list
@@ -444,7 +440,7 @@ extend class HDStatusBar{
 					row+=5;
 				}else if(bp.itemtype[i]){
 					bool onperson=(
-						pp.countinv(bp.itemtype[i])>0
+						hpl.countinv(bp.itemtype[i])>0
 						&&(
 							i!=bp.armourindex||greenarmour
 						)
@@ -514,7 +510,7 @@ extend class HDStatusBar{
 				(0,66),DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,
 				howmany<1?font.CR_DARKGRAY:font.CR_WHITE
 			);
-			howmany=pp.countinv(bp.itemtype[which]);
+			howmany=hpl.countinv(bp.itemtype[which]);
 			if(which==bp.armourindex&&!greenarmour)howmany=0;
 			drawstring(psmallfont,howmany<1?"none on person":
 				string.format("%i on person",howmany),
@@ -569,13 +565,13 @@ extend class HDStatusBar{
 						(0,66),DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,
 						howmany<1?font.CR_DARKGRAY:font.CR_WHITE
 			);
-			howmany=pp.countinv(mm.ammotype[which]);
+			howmany=hpl.countinv(mm.ammotype[which]);
 			drawstring(psmallfont,howmany<1?"none on person":
 				string.format("%i on person",howmany),
 				(0,74),DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,
 				howmany<1?font.CR_DARKGRAY:font.CR_DARKBROWN
 			);
-			howmany=pp.countinv(mm.magtype[which]);
+			howmany=hpl.countinv(mm.magtype[which]);
 			string pl=howmany==1?"":"s";
 			drawstring(psmallfont,howmany<1?string.format("no full %s%s",clipmag,pl):
 				string.format("%i full %s%s",howmany,clipmag,pl),

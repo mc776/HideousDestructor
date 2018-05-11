@@ -5,6 +5,7 @@ class HDStatusBar:DoomStatusBar{
 	int gimmehud;
 	int healthbars[14];
 	hudfont psmallfont;
+	hdplayerpawn hpl;
 	override void Init(){
 		BaseStatusBar.Init();
 		SetSize(0,320,200);
@@ -12,22 +13,27 @@ class HDStatusBar:DoomStatusBar{
 		//Create the font used for the fullscreen HUD
 		Font fnt = "HUDFONT_DOOM";
 		pSmallFont=HUDFont.Create("SmallFont");
-		mHUDFont = HUDFont.Create(fnt, fnt.GetCharWidth("0"), true, 1, 1);
+		mHUDFont = HUDFont.Create(fnt,fnt.GetCharWidth("0"),true,1,1);
 		fnt = "INDEXFONT_DOOM";
-		mIndexFont = HUDFont.Create(fnt, fnt.GetCharWidth("0"), true);
+		mIndexFont = HUDFont.Create(fnt,fnt.GetCharWidth("0"),true);
 		mAmountFont = HUDFont.Create("INDEXFONT");
 		diparms = InventoryBarState.Create();
 	}
 	enum HDStatBar{
 		STB_COMPRAD=12,
 		STB_BEATERSIZE=14,
+		DI_TOPRIGHT=DI_SCREEN_RIGHT_TOP|DI_ITEM_RIGHT_TOP,
+		DI_TOPLEFT=DI_SCREEN_LEFT_TOP|DI_ITEM_LEFT_TOP,
+		DI_BOTTOMLEFT=DI_SCREEN_LEFT_BOTTOM|DI_ITEM_LEFT_BOTTOM,
+		DI_BOTTOMRIGHT=DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM,
 	}
 	override void Draw(int state,double TicFrac){
+		hpl=hdplayerpawn(cplayer.mo);
 		if(
 			!cplayer
-			||!cplayer.mo
-			||cplayer.health<1
-			||cplayer.mo.countinv("WipedOut")
+			||!hpl
+			||hpl.health<1
+			||hpl.countinv("WipedOut")
 		)return;
 		cplayer.inventorytics=0;
 
@@ -50,18 +56,13 @@ class HDStatusBar:DoomStatusBar{
 		if(idmypos)drawmypos();
 	}
 	void DrawAutomapStuff(){
-		playerpawn cp=playerpawn(cplayer.mo);
-		int DI_TOPRIGHT=DI_SCREEN_RIGHT_TOP|DI_ITEM_RIGHT_TOP;
-		int DI_TOPLEFT=DI_SCREEN_LEFT_TOP|DI_ITEM_LEFT_TOP;
-		int DI_BOTTOMLEFT=DI_SCREEN_LEFT_BOTTOM|DI_ITEM_LEFT_BOTTOM;
-		int DI_BOTTOMRIGHT=DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM;
 		//KEYS!
-		if(cp.countinv("BlueCard"))drawimage("BKEYB0",(10,24),DI_TOPLEFT);
-		if(cp.countinv("YellowCard"))drawimage("YKEYB0",(10,44),DI_TOPLEFT);
-		if(cp.countinv("RedCard"))drawimage("RKEYB0",(10,64),DI_TOPLEFT);
-		if(cp.countinv("BlueSkull"))drawimage("BSKUA0",(6,30),DI_TOPLEFT);
-		if(cp.countinv("YellowSkull"))drawimage("YSKUA0",(6,50),DI_TOPLEFT);
-		if(cp.countinv("RedSkull"))drawimage("RSKUB0",(6,70),DI_TOPLEFT);
+		if(hpl.countinv("BlueCard"))drawimage("BKEYB0",(10,24),DI_TOPLEFT);
+		if(hpl.countinv("YellowCard"))drawimage("YKEYB0",(10,44),DI_TOPLEFT);
+		if(hpl.countinv("RedCard"))drawimage("RKEYB0",(10,64),DI_TOPLEFT);
+		if(hpl.countinv("BlueSkull"))drawimage("BSKUA0",(6,30),DI_TOPLEFT);
+		if(hpl.countinv("YellowSkull"))drawimage("YSKUA0",(6,50),DI_TOPLEFT);
+		if(hpl.countinv("RedSkull"))drawimage("RSKUB0",(6,70),DI_TOPLEFT);
 
 		//lives
 		if(!(deathmatch&&teamplay)) //TDM just uses your frags anyway
@@ -79,12 +80,11 @@ class HDStatusBar:DoomStatusBar{
 		else if(cplayer.getgender()==1)DrawTexture(GetMugShot(5,Mugshot.CUSTOM,"SFF"),(6,-14),DI_BOTTOMLEFT);
 
 		//heartbeat/playercolour tracker
-		let hcp=HDPlayerPawn(cplayer.mo);
-		if(hcp && hcp.beatmax){
-			float cpb=hcp.beatcount*1./hcp.beatmax;
+		if(hpl && hpl.beatmax){
+			float cpb=hpl.beatcount*1./hpl.beatmax;
 			drawimage(
 				"GREENPXL",(32,-24-cpb*3),DI_BOTTOMLEFT|DI_TRANSLATABLE,
-				cpb,scale:(4,4+hcp.bloodpressure*0.05)
+				cpb,scale:(4,4+hpl.bloodpressure*0.05)
 			);
 		}
 		//health
@@ -99,7 +99,7 @@ class HDStatusBar:DoomStatusBar{
 
 		//inventory
 		DrawInvSel(6,110,10,109,DI_TOPLEFT);
-		if(cp.countinv("WornRadsuit"))drawimage("SUITC0",(11,137),DI_TOPLEFT);
+		if(hpl.countinv("WornRadsuit"))drawimage("SUITC0",(11,137),DI_TOPLEFT);
 
 		//guns
 		drawselectedweapon(-100,-24,DI_BOTTOMRIGHT);
@@ -112,48 +112,45 @@ class HDStatusBar:DoomStatusBar{
 
 	void DrawMyPos(int downpos=(STB_COMPRAD<<2)){
 		//permanent mypos
-		let cp=hdplayerpawn(cplayer.mo);
 		drawstring(
-			psmallfont,string.format("%i  x",cp.pos.x),
+			psmallfont,string.format("%i  x",hpl.pos.x),
 			(-4,downpos+10),DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_TOP,
 			Font.CR_OLIVE
 		);
 		drawstring(
-			psmallfont,string.format("%i  y",cp.pos.y),
+			psmallfont,string.format("%i  y",hpl.pos.y),
 			(-4,downpos+18),DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_TOP,
 			Font.CR_OLIVE
 		);
 		drawstring(
-			psmallfont,string.format("%i  z",cp.pos.z),
+			psmallfont,string.format("%i  z",hpl.pos.z),
 			(-4,downpos+26),DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_TOP,
 			Font.CR_OLIVE
 		);
 	}
 	void DrawFullScreenStuff(){
-		if(cplayer.getgender()==0)DrawTexture(GetMugShot(5),(0,-14),DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM);
-		else if(cplayer.getgender()==1)DrawTexture(GetMugShot(5,Mugshot.CUSTOM,"SFF"),(0,-14),DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM);
+		int cpg=cplayer.getgender();
+		if(cpg==0)DrawTexture(GetMugShot(5),(0,-14),DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM);
+		else if(cpg==1)DrawTexture(GetMugShot(5,Mugshot.CUSTOM,"SFF"),(0,-14),DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM);
 	}
 	void DrawAlwaysStuff(){
-		let cp=HDPlayerPawn(CPlayer.mo);
-		if(!cp)return;
-
 		if(
-			cp.binvisible
-			||cp.alpha<=0
+			hpl.binvisible
+			||hpl.alpha<=0
 		)return;
 
-		if(cp.bshadow&&cp.countinv("HDBlurSphere")){
+		if(hpl.bshadow&&hpl.countinv("HDBlurSphere")){
 			SetSize(0,320,200);
 			BeginHUD(forcescaled:true);
-			texman.setcameratotexture(cp.scopecamera,"HDXHCAM4",97);
-			let bls=HDBlurSphere(cp.findinventory("HDBlurSphere"));
+			texman.setcameratotexture(hpl.scopecamera,"HDXHCAM4",97);
+			let bls=HDBlurSphere(hpl.findinventory("HDBlurSphere"));
 			double lv=bls.stamina+frandom[blurhud](-2,2);
 			double camalpha=bls.intensity*0.001*clamp(lv,0,9);
 			drawimage(
 				"HDXHCAM4",(-random[blurhud](30,32)-lv,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 				alpha:camalpha,scale:(2.0,2.0)*frandom[blurhud](0.99,1.01)
 			);
-			texman.setcameratotexture(cp.scopecamera,"HDXHCAM4",110);
+			texman.setcameratotexture(hpl.scopecamera,"HDXHCAM4",110);
 			drawimage(
 				"HDXHCAM4",(random[blurhud](30,32)+lv,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 				alpha:camalpha*0.6,scale:(2.0,2.0)*frandom[blurhud](0.99,1.01)
@@ -166,21 +163,21 @@ class HDStatusBar:DoomStatusBar{
 		}
 
 		//draw the crosshair.
-		DrawHDXHair(cp);
+		DrawHDXHair(hpl);
 
 		SetSize(0,320,200);
 		BeginHUD(forcescaled:true);
-		if(cp.countinv("WornRadsuit"))drawimage(
+		if(hpl.countinv("WornRadsuit"))drawimage(
 			"DRKGRNPX",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 			alpha:0.6,scale:(1000,600)
 		);
 
 		//draw the goggles when they do something.
-		let hdla=portableliteamp(cp.findinventory("PortableLiteAmp"));
+		let hdla=portableliteamp(hpl.findinventory("PortableLiteAmp"));
 		if(hdla && hdla.worn){
 			drawimage(
 				"GOGGA0",
-				-cp.hudbob,
+				-hpl.hudbob,
 				DI_SCREEN_CENTER|DI_ITEM_CENTER,
 				scale:(2.2,2.4)
 			);
@@ -198,8 +195,8 @@ class HDStatusBar:DoomStatusBar{
 
 		//keys
 		string keytype="";
-		if(cp.countinv("BlueCard"))keytype="STKEYS0";
-		if(cp.countinv("BlueSkull")){
+		if(hpl.countinv("BlueCard"))keytype="STKEYS0";
+		if(hpl.countinv("BlueSkull")){
 			if(keytype=="")keytype="STKEYS3";
 			else keytype="STKEYS6";
 		}
@@ -209,8 +206,8 @@ class HDStatusBar:DoomStatusBar{
 			DI_SCREEN_CENTER_BOTTOM
 		);
 		keytype="";
-		if(cp.countinv("YellowCard"))keytype="STKEYS1";
-		if(cp.countinv("YellowSkull")){
+		if(hpl.countinv("YellowCard"))keytype="STKEYS1";
+		if(hpl.countinv("YellowSkull")){
 			if(keytype=="")keytype="STKEYS4";
 			else keytype="STKEYS7";
 		}
@@ -220,8 +217,8 @@ class HDStatusBar:DoomStatusBar{
 			DI_SCREEN_CENTER_BOTTOM
 		);
 		keytype="";
-		if(cp.countinv("RedCard"))keytype="STKEYS2";
-		if(cp.countinv("RedSkull")){
+		if(hpl.countinv("RedCard"))keytype="STKEYS2";
+		if(hpl.countinv("RedSkull")){
 			if(keytype=="")keytype="STKEYS5";
 			else keytype="STKEYS8";
 		}
@@ -232,19 +229,19 @@ class HDStatusBar:DoomStatusBar{
 		);
 
 		//backpack
-		if(cp.countinv("Backpack"))drawimage("BPAKA0",(-55,-4),DI_SCREEN_CENTER_BOTTOM|DI_ITEM_CENTER_BOTTOM);
+		if(hpl.countinv("Backpack"))drawimage("BPAKA0",(-55,-4),DI_SCREEN_CENTER_BOTTOM|DI_ITEM_CENTER_BOTTOM);
 
 		//radsuit
-		if(cp.countinv("WornRadsuit"))drawimage(
+		if(hpl.countinv("WornRadsuit"))drawimage(
 			"SUITC0",(64,-4),DI_SCREEN_CENTER_BOTTOM|DI_ITEM_CENTER_BOTTOM
 		);
 
 
 		//health
 		if(hd_debug)drawstring(
-			mAmountFont,FormatNumber(cp.health),
+			mAmountFont,FormatNumber(hpl.health),
 			(0,mxht),DI_TEXT_ALIGN_CENTER|DI_SCREEN_CENTER_BOTTOM,
-			cp.health>70?Font.CR_OLIVE:(cp.health>33?Font.CR_GOLD:Font.CR_RED)
+			hpl.health>70?Font.CR_OLIVE:(hpl.health>33?Font.CR_GOLD:Font.CR_RED)
 		);else DrawHealthTicker();
 
 
@@ -262,11 +259,11 @@ class HDStatusBar:DoomStatusBar{
 
 
 		//heartbeat/playercolour tracker
-		if(cp.beatmax){
-			float cpb=cp.beatcount*1./cp.beatmax;
+		if(hpl.beatmax){
+			float cpb=hpl.beatcount*1./hpl.beatmax;
 			drawimage(
 				"GREENPXL",(-8,-6-cpb*2),DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE,
-				cpb,scale:(3,3+cp.bloodpressure*0.03)
+				cpb,scale:(3,3+hpl.bloodpressure*0.03)
 			);
 		}
 
@@ -275,17 +272,6 @@ class HDStatusBar:DoomStatusBar{
 			state==HUD_Fullscreen?(-55,-4):(0,-mIndexFont.mFont.GetHeight()*2),
 			DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM
 		);
-
-		//weapon readouts!
-		if(cplayer.readyweapon)drawweaponstatus(cplayer.readyweapon);
-
-		//weapon sprite
-		if(
-			cvar.getcvar("hd_hudsprite",cplayer).getbool()
-			||!cvar.getcvar("r_drawplayersprites",cplayer).getbool()
-			||!gimmehud
-		)
-		drawselectedweapon(58,-6,DI_SCREEN_CENTER_BOTTOM|DI_ITEM_LEFT_BOTTOM);
 
 
 		//full hud consequences
@@ -296,15 +282,15 @@ class HDStatusBar:DoomStatusBar{
 			drawammocounters(mxht);
 
 			//encumbrance
-			if(cp.enc)drawstring(
-				mAmountFont,formatnumber(cp.enc),
+			if(hpl.enc)drawstring(
+				mAmountFont,formatnumber(hpl.enc),
 				(8,mxht),DI_TEXT_ALIGN_LEFT|DI_SCREEN_LEFT_BOTTOM,
-				cp.overloaded<1.2?Font.CR_OLIVE:(cp.overloaded>2?Font.CR_RED:Font.CR_GOLD)
+				hpl.overloaded<1.2?Font.CR_OLIVE:(hpl.overloaded>2?Font.CR_RED:Font.CR_GOLD)
 			);
 
 			//compass
 			int STB_COMPRAD=12;vector2 compos=(-STB_COMPRAD,STB_COMPRAD)*2;
-			double compangle=cp.angle;
+			double compangle=hpl.angle;
 			drawstring(psmallfont,"S",
 				(cos(compangle),sin(compangle))*STB_COMPRAD+compos,
 				DI_TEXT_ALIGN_CENTER|DI_SCREEN_RIGHT_TOP,Font.CR_BLACK
@@ -326,6 +312,17 @@ class HDStatusBar:DoomStatusBar{
 			);
 			drawmypos();
 		}
+
+		//weapon readouts!
+		if(cplayer.readyweapon)drawweaponstatus(cplayer.readyweapon);
+
+		//weapon sprite
+		if(
+			cvar.getcvar("hd_hudsprite",cplayer).getbool()
+			||!cvar.getcvar("r_drawplayersprites",cplayer).getbool()
+			||!gimmehud
+		)
+		drawselectedweapon(58,-6,DI_SCREEN_CENTER_BOTTOM|DI_ITEM_LEFT_BOTTOM);
 
 		//debug centre line
 		if(hd_debug)drawimage(
@@ -368,11 +365,11 @@ class HDStatusBar:DoomStatusBar{
 		int flags=DI_SCREEN_CENTER_BOTTOM
 	){
 		let cp=hdplayerpawn(cplayer.mo);
-		if(!cp.beatcount){
+		if(!hpl.beatcount){
 			for(int i=0;i<(STB_BEATERSIZE-2);i++){
 				healthbars[i]=healthbars[i+2];
 			}
-			int erraticalness=(max(100-cp.health,cp.bloodpressure,0)>>4);
+			int erraticalness=(max(100-hpl.health,hpl.bloodpressure,0)>>4);
 			healthbars[STB_BEATERSIZE-2]=clamp(4+random(-erraticalness,erraticalness+1),1,8);
 			healthbars[STB_BEATERSIZE-1]=clamp(random(1,erraticalness+1),1,8);
 		}
@@ -461,7 +458,7 @@ class HDStatusBar:DoomStatusBar{
 	string smgsprite;string zm66sprite;string liberatorsprite;
 	string medisprite;string pistolsprite;string pistolsprite2;
 	void setwepsprites(playerpawn cp){
-		let pstl=hdpistol(cp.findinventory("HDPistol"));
+		let pstl=hdpistol(hpl.findinventory("HDPistol"));
 		if(pstl){
 			if(pstl.weaponstatus[PISS_CHAMBER]>0){
 				if(pstl.weaponstatus[PISS_AUTO]>=0)
@@ -470,7 +467,7 @@ class HDStatusBar:DoomStatusBar{
 				if(pstl.weaponstatus[PISS_AUTO]>=0)
 					pistolsprite="PISTD0";else pistolsprite="PISTB0";
 			}
-			let pstl2=hdsecondpistol(cp.findinventory("HDSecondPistol"));
+			let pstl2=hdsecondpistol(hpl.findinventory("HDSecondPistol"));
 			if(pstl2){
 				if(pstl2.weaponstatus[PISS_CHAMBER]>0){
 					if(pstl2.weaponstatus[PISS_AUTO]>=0)
@@ -483,15 +480,15 @@ class HDStatusBar:DoomStatusBar{
 		}
 
 		//smg
-		let smgg=hdsmg(cp.findinventory("HDSMG"));
+		let smgg=hdsmg(hpl.findinventory("HDSMG"));
 		if(smgg){
 			if(smgg.weaponstatus[SMGS_MAG]<0)smgsprite="SMGNB0";else smgsprite="SMGNA0";
 		}
 
 		//zm66
-		if(cp.countinv("ZM66AssaultRifle")){
+		if(hpl.countinv("ZM66AssaultRifle")){
 			string zm66pre;
-			let zzz=ZM66AssaultRifle(cp.findinventory("ZM66AssaultRifle"));
+			let zzz=ZM66AssaultRifle(hpl.findinventory("ZM66AssaultRifle"));
 			if(zzz.weaponstatus[0]&ZM66F_NOFIRESELECT)zm66pre="RIFS";
 			else if(zzz.weaponstatus[0]&ZM66F_NOLAUNCHER)zm66pre="RIFL";
 			else zm66pre="RIGL";
@@ -500,8 +497,8 @@ class HDStatusBar:DoomStatusBar{
 		}
 
 		//liberator
-		if(cp.countinv("LiberatorRifle")){
-			let llb=LiberatorRifle(cp.findinventory("LiberatorRifle"));
+		if(hpl.countinv("LiberatorRifle")){
+			let llb=LiberatorRifle(hpl.findinventory("LiberatorRifle"));
 			if(llb.weaponstatus[0]&LIBF_NOLAUNCHER){
 				if(llb.weaponstatus[LIBS_MAG]<0)liberatorsprite="BRFLC0";
 				else liberatorsprite="BRFLA0";
@@ -512,8 +509,8 @@ class HDStatusBar:DoomStatusBar{
 		}
 
 		//hunter
-		if(cp.countinv("Hunter")){
-			int shl=HDWeapon(cp.findinventory("Hunter")).weaponstatus[HUNTS_SIDESADDLE];
+		if(hpl.countinv("Hunter")){
+			int shl=HDWeapon(hpl.findinventory("Hunter")).weaponstatus[HUNTS_SIDESADDLE];
 			if(shl>10)huntersprite="HUNTA0";
 			else if(shl>8)huntersprite="HUNTB0";
 			else if(shl>6)huntersprite="HUNTC0";
@@ -524,8 +521,8 @@ class HDStatusBar:DoomStatusBar{
 		}
 
 		//slayer
-		if(cp.countinv("Slayer")){
-			int shl=HDWeapon(cp.findinventory("Slayer")).weaponstatus[SLAYS_SIDESADDLE];
+		if(hpl.countinv("Slayer")){
+			int shl=HDWeapon(hpl.findinventory("Slayer")).weaponstatus[SLAYS_SIDESADDLE];
 			if(shl>10)slayersprite="SLAYA0";
 			else if(shl>8)slayersprite="SLAYB0";
 			else if(shl>6)slayersprite="SLAYC0";
@@ -536,7 +533,7 @@ class HDStatusBar:DoomStatusBar{
 		}
 
 		//medikit
-		HDMedikitter mdk=HDMedikitter(cp.findinventory("HDMedikitter"));
+		HDMedikitter mdk=HDMedikitter(hpl.findinventory("HDMedikitter"));
 		if(mdk){
 			if(mdk.usedon)medisprite="MEDIC0";
 			else medisprite="MEDIB0";
@@ -621,7 +618,7 @@ class HDStatusBar:DoomStatusBar{
 		drawambar("MAGRED","MAGSTAT","SevenMilAmmo",(-35,mxhtplus-1));
 		drawbar(
 				"RBRSRED","RBRSA3A7",
-				cp.countinv("SevenMilBrass"),hdmath.maxinv(cp,"SevenMilBrass"),
+				hpl.countinv("SevenMilBrass"),hdmath.maxinv(cp,"SevenMilBrass"),
 				(-38,mxhtplus+2),-1,
 				SHADER_HORZ,DI_ITEM_RIGHT_BOTTOM|DI_SCREEN_RIGHT_BOTTOM
 		);
@@ -633,45 +630,45 @@ class HDStatusBar:DoomStatusBar{
 		drawambar("CELLRED","CELLA0","HDCellAmmo",(-30,mxht));
 		drawimage("FRAGA0",(-10,mxht),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM,scale:(0.7,0.7));
 
-		drawnum(cp.countinv("HDPistolMag"),-71,mxhtplus-6);
-		drawnum(cp.countinv("HDSMGMag"),-71,mxhtplus);
+		drawnum(hpl.countinv("HDPistolMag"),-71,mxhtplus-6);
+		drawnum(hpl.countinv("HDSMGMag"),-71,mxhtplus);
 
-		drawnum(cp.countinv("ZM66RifleMags"),-52,mxhtplus);
+		drawnum(hpl.countinv("ZM66RifleMags"),-52,mxhtplus);
 
-		drawnum(cp.countinv("BossClip"),-30,mxhtplus-6);
-		drawnum(cp.countinv("LiberatorMag"),-30,mxhtplus);
+		drawnum(hpl.countinv("BossClip"),-30,mxhtplus-6);
+		drawnum(hpl.countinv("LiberatorMag"),-30,mxhtplus);
 
-		if(cp.countinv("Slayer"))drawnum(
-			hdweapon(cp.findinventory("Slayer")).weaponstatus[SLAYS_SIDESADDLE],-4,mxhtplus-14,
+		if(hpl.countinv("Slayer"))drawnum(
+			hdweapon(hpl.findinventory("Slayer")).weaponstatus[SLAYS_SIDESADDLE],-4,mxhtplus-14,
 			DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_BOTTOM,
 			Font.CR_BROWN
 		);
-		if(cp.countinv("Hunter"))drawnum(
-			hdweapon(cp.findinventory("Hunter")).weaponstatus[HUNTS_SIDESADDLE],-4,mxhtplus-8,
+		if(hpl.countinv("Hunter"))drawnum(
+			hdweapon(hpl.findinventory("Hunter")).weaponstatus[HUNTS_SIDESADDLE],-4,mxhtplus-8,
 			DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_BOTTOM,
 			fnt:Font.CR_BROWN
 		);
-		drawnum(cp.countinv("HDShellAmmo"),-5,mxhtplus,
+		drawnum(hpl.countinv("HDShellAmmo"),-5,mxhtplus,
 			DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_BOTTOM
 		);
 
-		drawnum(cp.countinv("BrontornisRound"),-76,mxht);
+		drawnum(hpl.countinv("BrontornisRound"),-76,mxht);
 
-		drawnum(cp.countinv("HEATAmmo"),-54,mxht-6);
-		drawnum(cp.countinv("HDRocketAmmo"),-54,mxht);
-		drawnum(cp.countinv("DudRocketAmmo"),-66,mxht-2,
+		drawnum(hpl.countinv("HEATAmmo"),-54,mxht-6);
+		drawnum(hpl.countinv("HDRocketAmmo"),-54,mxht);
+		drawnum(hpl.countinv("DudRocketAmmo"),-66,mxht-2,
 			DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_BOTTOM,
 			fnt:Font.CR_BROWN
 		);
 
-		drawnum(cp.countinv("HDCellPacks"),-28,mxht,
+		drawnum(hpl.countinv("HDCellPacks"),-28,mxht,
 			DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_BOTTOM
 		);
-		drawnum(cp.countinv("HDCellPackEmpty"),-38,mxht,
+		drawnum(hpl.countinv("HDCellPackEmpty"),-38,mxht,
 			DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_BOTTOM,
 			fnt:Font.CR_BROWN
 		);
-		drawnum(cp.countinv("HDFragGrenadeAmmo"),-6,mxht,
+		drawnum(hpl.countinv("HDFragGrenadeAmmo"),-6,mxht,
 			DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_BOTTOM
 		);
 	}
