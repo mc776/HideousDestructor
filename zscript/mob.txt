@@ -497,7 +497,7 @@ class HDMobster:IdleDummy{
 				master.goal=self;master.bchasegoal=true;
 				setorigin(master.pos+(master.pos-threat.pos)
 					+(random(-128,128),random(-128,128),0),false);
-				A_SetTics(4);
+				A_SetTics(tics*4);
 				if(
 					!master.checksight(threat)
 					||master.distance3d(threat)>thraidius  
