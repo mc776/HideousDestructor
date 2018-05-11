@@ -66,7 +66,7 @@ extend class HDPlayerPawn{
 				return;
 			}
 		}else{
-			if(flip&&crouchspeed>0.07)fatigue++;
+			if(!(level.time%10))fatigue++;
 			if(player.onground && zerk>0 && direction>0 && height<fullheight*0.6)vel.z+=4;
 		}
 		Height = savedheight;
