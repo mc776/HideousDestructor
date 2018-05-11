@@ -48,7 +48,12 @@ extend class HDPlayerPawn{
 
 		//abort if zero team damage, otherwise save factor for wounds and burns
 		double tmd=1.;
-		if(source is "PlayerPawn" && source!=self && isteammate(source)){
+		if(
+			source is "PlayerPawn"
+			&&source!=self
+			&&isteammate(source)
+			&&player!=source.player
+		){
 			if(!teamdamage) return 0;
 			else tmd=teamdamage;
 		}
