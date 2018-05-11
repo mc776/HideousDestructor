@@ -32,7 +32,6 @@ class HDStatusBar:DoomStatusBar{
 		if(
 			!cplayer
 			||!hpl
-			||hpl.health<1
 			||hpl.countinv("WipedOut")
 		)return;
 		cplayer.inventorytics=0;
@@ -44,6 +43,7 @@ class HDStatusBar:DoomStatusBar{
 			DrawAutomapStuff();
 		}else{
 			DrawAlwaysStuff();
+			if(hpl.health<1)return;
 			BeginHUD(forcescaled:true);
 			if(state==HUD_StatusBar){
 				DrawCommonStuff(state);
@@ -135,8 +135,10 @@ class HDStatusBar:DoomStatusBar{
 	}
 	void DrawAlwaysStuff(){
 		if(
-			hpl.binvisible
-			||hpl.alpha<=0
+			hpl.health>0&&(
+				hpl.binvisible
+				||hpl.alpha<=0
+			)
 		)return;
 
 		if(hpl.bshadow&&hpl.countinv("HDBlurSphere")){
@@ -163,7 +165,7 @@ class HDStatusBar:DoomStatusBar{
 		}
 
 		//draw the crosshair.
-		DrawHDXHair(hpl);
+		if(hpl.health>0)DrawHDXHair(hpl);
 
 		SetSize(0,320,200);
 		BeginHUD(forcescaled:true);

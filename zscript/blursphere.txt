@@ -70,8 +70,8 @@ class HDBlurSphere:HDPickup{
 	}
 	override void DoEffect(){
 		if(
-			!owner||
-			owner.health<1
+			!owner
+			||owner.health<1
 		){
 			return;
 		}
@@ -89,6 +89,9 @@ class HDBlurSphere:HDPickup{
 		}else{
 			if(intensity<99)intensity=max(intensity+1,-135);
 			xp++;
+
+			let ltm=PortableLiteAmp(owner.findinventory("PortableLiteAmp"));
+			if(ltm)ltm.worn=false;
 		}
 		bool invi=true;
 
