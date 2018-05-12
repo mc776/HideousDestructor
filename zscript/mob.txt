@@ -346,6 +346,7 @@ struct HDMobAI play{
 			caller.A_Wander();
 			return;
 		}
+		if(caller.vel.xy==(0,0))caller.newchasedir();
 		bool befrightened=caller.bfrightened;
 		bool bechasegoal=caller.bchasegoal;
 		vector3 oldpos=caller.pos;
