@@ -65,11 +65,17 @@ class HDWeapon:Weapon{
 		double mc10=0,double mc11=0,
 		double mc20=0,double mc21=0,
 		double mc30=0,double mc31=0,
-		double mc40=0,double mc41=0
+		double mc40=0,double mc41=0,
+		bool wepdot=true
 	){
 		let hdp=HDPlayerPawn(self);
 		if(hdp){
-			hdp.A_MuzzleClimb((mc10,mc11),(mc20,mc21),(mc30,mc31),(mc40,mc41));
+			if(wepdot){
+				hdp.hudbobrecoil1+=(-mc10,mc11*2);
+				hdp.hudbobrecoil2+=(-mc20,mc21*2);
+				hdp.hudbobrecoil3+=(-mc30,mc31*2);
+				hdp.hudbobrecoil4+=(-mc40,mc41*2);
+			}hdp.A_MuzzleClimb((mc10,mc11),(mc20,mc21),(mc30,mc31),(mc40,mc41));
 		}else{ //I don't even know why
 			vector2 mc0=(mc10,mc11)+(mc20,mc21)+(mc30,mc31)+(mc40,mc41);
 			A_SetPitch(pitch+mc0.y,SPF_INTERPOLATE);

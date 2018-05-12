@@ -6,6 +6,10 @@ extend class HDPlayerPawn{
 	vector2 muzzleclimb2;
 	vector2 muzzleclimb3;
 	vector2 muzzleclimb4;
+	vector2 hudbobrecoil1;
+	vector2 hudbobrecoil2;
+	vector2 hudbobrecoil3;
+	vector2 hudbobrecoil4;
 	vector2 muzzledrift;
 	bool muzzlehit;
 	bool totallyblocked;
@@ -117,6 +121,7 @@ extend class HDPlayerPawn{
 		pitchchange+=muzzledrift.y*proportion2;
 		muzzledrift*=proportion3;
 
+		hudbobrecoil1-=muzzledrift;
 
 		//good old jitters!
 		//gotta do this after inertia and before collision,

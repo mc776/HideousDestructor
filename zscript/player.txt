@@ -444,7 +444,11 @@ class HDPlayerPawn:PlayerPawn{
 		hudbob=(
 			cos(bobcounter)*(sm?5.:2.)*(pr?pr.bobrangex:1.),
 			sin(bobcounter*2)*6.*(pr?pr.bobrangey:1.)
-		)*bobvel;
+		)*bobvel+hudbobrecoil1;
+		hudbobrecoil1=hudbobrecoil1*0.2+hudbobrecoil2;
+		hudbobrecoil2=hudbobrecoil3;
+		hudbobrecoil3=hudbobrecoil4;
+		hudbobrecoil4=(0,0);
 
 
 		//lowering weapon for sprint/mantle/jump
