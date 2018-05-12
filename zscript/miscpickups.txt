@@ -493,6 +493,7 @@ class BlueSphere:HDActor replaces Soulsphere{
 		stamina 777;
 	}
 	override bool used(actor user){
+		PlantBit.SpawnPlants(self,70,144);
 		let hdp=hdplayerpawn(user);
 		if(hdp)hdp.regenblues+=stamina;
 		else user.health+=stamina;
@@ -508,7 +509,6 @@ class BlueSphere:HDActor replaces Soulsphere{
 			vel.z++;
 			gravity=0;
 			A_PlaySound("misc/p_pkup",CHAN_BODY);
-			PlantBit.SpawnPlants(self,70,144);
 		}
 		---- A 1 bright{
 			A_SetScale(scale.x*1.01);
@@ -556,7 +556,9 @@ class PlantBit:IdleDummy{
 	states{
 	spawn:
 		SPLT A 1 nodelay A_SetTics(random(30,3000));
-		SPLT ########## 2 A_PlantGrow();
+		SPLT ### 3 A_PlantGrow();
+		SPLT #### 1 A_PlantGrow();
+		SPLT ### 2 A_PlantGrow();
 		SPLT # 1 A_SetTics(random(3000,30000));
 		SPLT AAAAAAAAAAAA 0 A_SpawnParticle("tan",0,70,frandom(1.5,2.4),zoff:frandom(0,5),
 			velx:frandom(-0.1,0.1),vely:frandom(-0.1,0.1),velz:frandom(-0.2,0.4)
