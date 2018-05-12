@@ -49,7 +49,22 @@ class ThunderBuster:HDWeapon{
 			offsetz:zoffset,
 			data:tlt
 		);
-		if(tlt.hittype==Trace_HitNone)return;
+		if(
+			tlt.hittype==Trace_HitNone
+			||(
+				tlt.hitline&&(
+					tlt.hitline.special==Line_Horizon
+					||(
+						tlt.linepart==2
+						&&tlt.hitsector.gettexture(0)==skyflatnum
+					)||(
+						tlt.linepart==1
+						&&tlt.hitline.sidedef[1]
+						&&hdmath.oppositesector(tlt.hitline,tlt.hitsector).gettexture(0)==skyflatnum
+					)
+				)
+			)
+		)return;
 
 		//alt does a totally different thing
 		if(alt){
