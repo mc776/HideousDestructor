@@ -23,6 +23,23 @@ extend class HDPlayerPawn{
 	int oldwoundcount;
 	int aggravateddamage;
 
+	int maxhealth(){
+		if(regenblues<0)regenblues=0;
+		if(woundcount<0)woundcount=0;
+		if(oldwoundcount<0)oldwoundcount=0;
+		if(unstablewoundcount<0)unstablewoundcount=0;
+		if(burncount<0)burncount=0;
+		if(aggravateddamage<0)aggravateddamage=0;
+		if(stunned<0)stunned=0;
+		return 100
+			-aggravateddamage
+			-burncount
+			-oldwoundcount
+			-woundcount
+			-unstablewoundcount
+			+max(fatigue-HDCONST_SPRINTFATIGUE,0)
+		;
+	}
 	void ResetHealth(bool downtimeonly=true){
 		beatcount=0;beatcounter=0;
 		bloodpressure=0;
@@ -140,15 +157,7 @@ extend class HDPlayerPawn{
 				||fatigue>HDCONST_DAMAGEFATIGUE  
 			)DamageMobj(self,null,1,"internal");
 			else{
-				int maxhealth=100
-					-aggravateddamage
-					-burncount
-					-oldwoundcount
-					-woundcount
-					-unstablewoundcount
-					+max(fatigue-HDCONST_SPRINTFATIGUE,0)
-				;
-				if(health<maxhealth){
+				if(health<maxhealth()){
 					if(random(1,30)+countinv("IsMoving")<beatmax)healthing(1);
 					if(random(1,40)<stimcount)healthing(1);
 				}
