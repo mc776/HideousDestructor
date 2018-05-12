@@ -252,6 +252,62 @@ extend class HDPlayerPawn{
 						oldwoundcount--;burncount--;aggravateddamage--;
 						regenblues--;
 					}
+					if(beatcounter%20==0&&!random(0,2)){
+						A_Log("You feel power coming out of you.",true);
+						regenblues-=20;
+						plantbit.spawnplants(self,33,144);
+						switch(random(0,3)){
+						case 0:
+							actor masbak=master;
+							blockthingsiterator rezz=
+								blockthingsiterator.create(self,512);
+							while(rezz.next()){
+								actor rezzz=rezz.thing;
+								if(rezzz.bcorpse){
+									master=rezzz;
+									A_RaiseMaster(RF_NOCHECKPOSITION);
+									rezzz.bfriendly=true;
+									rezzz.master=self;
+									plantbit.spawnplants(rezzz,12,33);
+									regenblues--;
+									if(random(0,3)){
+										master=masbak;
+										break;
+									}
+								}
+							}
+							master=masbak;
+							break;
+						case 1:
+							blockthingsiterator fffren=
+								blockthingsiterator.create(self,512);
+							while(fffren.next()){
+								actor ffffren=fffren.thing;
+								if(
+									ffffren.bismonster
+									&&!ffffren.bfriendly
+									&&ffffren.health>0
+									&&ffffren.spawnhealth()<400
+								){
+									ffffren.bfriendly=true;
+									ffffren.A_Pain();
+									plantbit.spawnplants(ffffren,1,0);
+									regenblues-=2;
+									if(!random(0,3))break;
+								}
+							}
+							break;
+						default:
+							aggravateddamage-=10;
+							woundcount-=10;
+							A_RadiusGive("health",512,
+								RGF_GIVESELF|RGF_MONSTERS|RGF_MONSTERS|
+								RGF_CUBE|RGF_NOSIGHT,
+								1000
+							);
+							break;
+						}
+					}
 				}
 			}
 
