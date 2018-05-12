@@ -137,6 +137,7 @@ extend class HDPlayerPawn{
 			if(fatigue)jitter=clamp(0.01*fatigue,0.3,6.);
 			if(gunbraced)jitter=0.05;
 			else if(health<20)jitter=1;
+			hudbobrecoil1+=(frandom(-jitter,jitter),frandom(-jitter,jitter));
 			anglechange+=frandom(-jitter,jitter);
 			pitchchange+=frandom(-jitter,jitter);
 		}
@@ -366,10 +367,10 @@ extend class HDPlayerPawn{
 		muzzleclimb3+=mc3;
 		muzzleclimb4+=mc4;
 		if(wepdot){
-			hudbobrecoil1+=(-mc1.x,mc1.y*2)*mult;
-			hudbobrecoil2+=(-mc2.x,mc2.y*2)*mult;
-			hudbobrecoil3+=(-mc3.x,mc3.y*2)*mult;
-			hudbobrecoil4+=(-mc4.x,mc4.y*2)*mult;
+			hudbobrecoil1+=(mc1.x,mc1.y*2)*mult;
+			hudbobrecoil2+=(mc2.x,mc2.y*2)*mult;
+			hudbobrecoil3+=(mc3.x,mc3.y*2)*mult;
+			hudbobrecoil4+=(mc4.x,mc4.y*2)*mult;
 		}
 	}
 }

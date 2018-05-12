@@ -27,7 +27,10 @@ class userpickerupper:hdactor{
 				if(!checksight(picktarget)){destroy();return;}
 				if(
 					blockingmobj
-					&&abs(picktarget.pos.z+picktarget.height-12-blockingmobj.pos.z)<48
+					&&abs(
+						(picktarget.pos.z+picktarget.height-12)
+						-(blockingmobj.pos.z+blockingmobj.height)
+					)<56
 				){
 					blockingmobj.target=picktarget;
 					if(
