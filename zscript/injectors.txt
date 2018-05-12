@@ -54,6 +54,10 @@ class SpentBottle:SpentStim{
 		alpha 0.6;renderstyle "translucent";
 		bouncesound "misc/casing";bouncefactor 0.7;scale 0.3;radius 4;height 4;
 	}
+	override void ondestroy(){
+		plantbit.spawnplants(self,7,33);
+		actor.ondestroy();
+	}
 	states{
 	spawn:
 		BON1 A 0;
@@ -78,11 +82,14 @@ class SpentCork:SpentBottle{
 		bouncesound "misc/casing3";scale 0.6;
 		translation "224:231=64:71";
 	}
+	override void ondestroy(){
+		plantbit.spawnplants(self,1,0);
+		actor.ondestroy();
+	}
 	states{
 	spawn:
-		PBRS A 2{
-			A_SetRoll(roll+90,SPF_INTERPOLATE);
-		}loop;
+		PBRS A 2 A_SetRoll(roll+90,SPF_INTERPOLATE);
+		wait;
 	}
 }
 class HDStimpacker:HDWoundFixer{
