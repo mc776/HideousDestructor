@@ -75,7 +75,7 @@ class ZombieStormtrooper:ZombieMan{
 					wp.weaponstatus[ZM66S_MAG]=random(0,50);
 					if(wp.weaponstatus[ZM66S_MAG]==50)wp.weaponstatus[ZM66S_MAG]=51;
 					wp.weaponstatus[ZM66S_ZOOM]=random(0,27);
-					if(jammed)wp.weaponstatus[0]|=ZM66F_CHAMBERBROKEN;
+					if(jammed||!random(0,15))wp.weaponstatus[0]|=ZM66F_CHAMBERBROKEN;
 				}
 			}else{
 				A_DropItem("ZM66RifleMags",0,96);
