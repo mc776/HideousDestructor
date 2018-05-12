@@ -165,11 +165,11 @@ struct HDMobAI play{
 		double maxheardist=0,
 		double fov=0,
 		statelabel label="see",
-		int soundchance=40
+		int soundchance=127
 	){
 		caller.A_LookEx(flags,minseedist,maxseedist,maxheardist,fov,label);
 		if(!caller.bambush)caller.angle+=random(-10,10);
-		if(!random(1,soundchance))caller.A_PlaySound(caller.activesound);
+		if(!random(0,soundchance))caller.A_PlaySound(caller.activesound);
 	}
 
 	//check if shot is clear
@@ -342,7 +342,13 @@ struct HDMobAI play{
 		int flags=0,
 		bool flee=false
 	){
-		if(!target||!caller.checkmove(caller.pos.xy)){
+		if(!caller.target){
+			caller.A_ClearTarget();
+			if(caller.findstate("idle"))caller.setstatelabel("idle");
+			else caller.setstatelabel("spawn");
+			return;
+		}
+		if(!caller.checkmove(caller.pos.xy)){
 			caller.A_Wander();
 			return;
 		}
