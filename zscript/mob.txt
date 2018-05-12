@@ -342,7 +342,7 @@ struct HDMobAI play{
 		int flags=0,
 		bool flee=false
 	){
-		if(!caller.checkmove(caller.pos.xy)){
+		if(!target||!caller.checkmove(caller.pos.xy)){
 			caller.A_Wander();
 			return;
 		}
@@ -350,6 +350,7 @@ struct HDMobAI play{
 			if(caller.target)caller.newchasedir();
 			else caller.randomchasedir();
 		}
+
 		bool befrightened=caller.bfrightened;
 		bool bechasegoal=caller.bchasegoal;
 		vector3 oldpos=caller.pos;
@@ -372,6 +373,7 @@ struct HDMobAI play{
 		if(!caller.bfloat)caller.bnodropoff=true;
 		caller.bfrightened=befrightened;
 		caller.bchasegoal=bechasegoal;
+
 		//call a_chase again for more missile
 		caller.A_Chase(meleestate,missilestate,CHF_DONTMOVE|CHF_NODIRECTIONTURN);
 		return;
