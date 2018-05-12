@@ -69,6 +69,7 @@ class DERPBot:HDUPK{
 		if(DerpTargetCheck(false))DerpShot();
 	}
 	void A_DerpLook(int flags=0,statelabel seestate="see"){
+		A_ClearTarget();
 		A_LookEx(flags,label:seestate);
 		if(
 			deathmatch&&bfriendly
