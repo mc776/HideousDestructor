@@ -377,8 +377,9 @@ class HDStatusBar:DoomStatusBar{
 		}
 		for(int i=0;i<STB_BEATERSIZE;i++){
 			drawimage(
-				"GREENPXL",drawpos+(i-(STB_BEATERSIZE>>2),0),
-				flags|DI_TRANSLATABLE|DI_ITEM_CENTER,
+				(cp.health>70?"GREENPXL":cp.health>33?"YELOPXL":"REDPXL"),
+				drawpos+(i-(STB_BEATERSIZE>>2),0),
+				flags|DI_ITEM_CENTER|(cp.health>70?DI_TRANSLATABLE:0),
 				scale:(0.8,healthbars[i])
 			);
 		}
