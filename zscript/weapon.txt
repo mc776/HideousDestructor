@@ -70,12 +70,7 @@ class HDWeapon:Weapon{
 	){
 		let hdp=HDPlayerPawn(self);
 		if(hdp){
-			if(wepdot){
-				hdp.hudbobrecoil1+=(-mc10,mc11*2);
-				hdp.hudbobrecoil2+=(-mc20,mc21*2);
-				hdp.hudbobrecoil3+=(-mc30,mc31*2);
-				hdp.hudbobrecoil4+=(-mc40,mc41*2);
-			}hdp.A_MuzzleClimb((mc10,mc11),(mc20,mc21),(mc30,mc31),(mc40,mc41));
+			hdp.A_MuzzleClimb((mc10,mc11),(mc20,mc21),(mc30,mc31),(mc40,mc41),wepdot);
 		}else{ //I don't even know why
 			vector2 mc0=(mc10,mc11)+(mc20,mc21)+(mc30,mc31)+(mc40,mc41);
 			A_SetPitch(pitch+mc0.y,SPF_INTERPOLATE);

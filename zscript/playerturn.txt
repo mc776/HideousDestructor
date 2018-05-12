@@ -350,7 +350,7 @@ extend class HDPlayerPawn{
 	}
 
 	//Muzzle climb!
-	void A_MuzzleClimb(vector2 mc1,vector2 mc2,vector2 mc3,vector2 mc4){
+	void A_MuzzleClimb(vector2 mc1,vector2 mc2,vector2 mc3,vector2 mc4,bool wepdot=false){
 		double mult=1.;
 		if(gunbraced)mult=0.2;
 		else if(countinv("IsMoving"))mult=1.6;
@@ -365,6 +365,12 @@ extend class HDPlayerPawn{
 		muzzleclimb2+=mc2;
 		muzzleclimb3+=mc3;
 		muzzleclimb4+=mc4;
+		if(wepdot){
+			hudbobrecoil1+=(-mc1.x,mc1.y*2)*mult;
+			hudbobrecoil2+=(-mc2.x,mc2.y*2)*mult;
+			hudbobrecoil3+=(-mc3.x,mc3.y*2)*mult;
+			hudbobrecoil4+=(-mc4.x,mc4.y*2)*mult;
+		}
 	}
 }
 
