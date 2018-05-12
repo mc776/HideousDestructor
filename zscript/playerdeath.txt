@@ -48,8 +48,11 @@ extend class HDPlayerPawn{
 		)deathcounter=145;
 		else deathcounter=1;
 
-		if(player&&player.readyweapon&&deathmatch&&!sv_weapondrop&&!barehanded)
+		if(player&&player.readyweapon&&deathmatch&&!sv_weapondrop&&!barehanded){
+			let zzz=zm66assaultrifle(findinventory("ZM66AssaultRifle"));
+			if(zzz&&!random(0,15))zzz.weaponstatus[0]|=ZM66F_CHAMBERBROKEN;
 			A_DropInventory(player.readyweapon.getclassname());
+		}
 		if(player.attacker is "HDFire")player.attacker=player.attacker.master;
 
 		if(

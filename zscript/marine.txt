@@ -53,6 +53,7 @@ class HDMarine:HDActor replaces ScriptedMarine{
 	bool glloaded;
 	int timesdied;
 	bool hasdropped;
+	bool jammed;
 	int wep;
 	double rocketdisttoenemy;
 	override void die(actor source,actor inflictor,int dmgflags){
@@ -65,6 +66,7 @@ class HDMarine:HDActor replaces ScriptedMarine{
 		hasdropped=false;
 		spread=0;
 		timesdied=0;
+		jammed=0;
 		if(bfriendly)bpushable=true;
 
 		//weapon
@@ -150,6 +152,7 @@ class HDMarine:HDActor replaces ScriptedMarine{
 					dropped.weaponstatus[ZM66S_MAG]=0;
 					dropped.weaponstatus[0]=0;
 				}
+				if(jammed||!random(0,15))dropped.weaponstatus[0]|=ZM66F_CHAMBERBROKEN;
 				if(glloaded)dropped.weaponstatus[0]|=ZM66F_GRENADELOADED;
 			}else if(wep==HDMW_ROCKET){
 				dropped=hdweapon(spawn("HDRL",pos));
@@ -459,6 +462,10 @@ class HDMarine:HDActor replaces ScriptedMarine{
 		#### E 1;
 		#### E 1 A_LeadTarget1();
 		#### E 1{
+			if(jammed){
+				setstatelabel("unjam");
+				return;
+			}
 			class<actor> mn="HDBullet426";
 			A_LeadTarget2(shotspeed:getdefaultbytype(mn).speed,adjusttics:1);
 			hdmobai.DropAdjust(self,mn);
@@ -470,6 +477,10 @@ class HDMarine:HDActor replaces ScriptedMarine{
 			gunloaded--;gunspent--;
 			A_PlaySound("weapons/rifle",CHAN_WEAPON);
 			A_MarineShot("HDBullet426");
+			if(!random(0,1999-gunspent)){
+				jammed=true;
+				setstatelabel("unjam");
+			}
 		}
 	firezm66end:
 		#### E 2 A_AlertMonsters(0,bfriendly?AMF_TARGETEMITTER:0);
@@ -608,8 +619,29 @@ class HDMarine:HDActor replaces ScriptedMarine{
 		#### E 6;
 		goto see;
 
+	unjam:
+		#### E 10;
+		#### E 0{
+			if(gunloaded>0){
+				actor ooo=spawn("HD4mmMag",pos+(0,0,40));
+				ooo.vel+=vel;
+				ooo.stamina=gunloaded;
+				gunloaded=-1;
+			}else if(!random(0,3)){
+				jammed=false;
+				A_PlaySound("weapons/rifleclick");
+				for(int i=0;i<3;i++)A_SpawnItemEx("TinyWallChunk",0,0,20,
+					random(4,7),random(-2,2),random(-2,1),0,SXF_NOCHECKPOSITION
+				);
+				setstatelabel("reload");
+			}
+		}
+		#### ABCD 3{hdmobai.chase(self,"melee",null,true);}
+		loop;
+
 	ohforfuckssake:
 		#### E 4 A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
+		goto reload;
 
 	reload:
 		#### A 0{
@@ -669,7 +701,13 @@ class HDMarine:HDActor replaces ScriptedMarine{
 				)
 			)oldthing="HDPistolEmptyMag";
 			else if(wep==HDMW_SMG)oldthing="HDSMGEmptyMag";
-			else if(wep==HDMW_ZM66)oldthing="HD4mmMagEmpty";
+			else if(wep==HDMW_ZM66){
+				if(jammed){
+					setstatelabel("unjam");
+					return;
+				}
+				oldthing="HD4mmMagEmpty";
+			}
 			if(oldthing){
 				actor ooo=spawn(oldthing,pos+(0,0,40));
 				ooo.vel+=vel;
