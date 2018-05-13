@@ -158,12 +158,11 @@ extend class HDPlayerPawn{
 			fatigue++;
 			stunned+=10;
 			smm*=-0.3;
-			if(fmm<0)A_MuzzleClimb((smm*1.2,-7.2),(smm,-4.),(smm,-2.),(smm*0.8,-1.));
+			if(fmm<0)A_MuzzleClimb((smm*1.2,-2.2),(smm,-1.),(smm,-0.5),(smm*0.8,-0.4));
 			else if(fmm>0){
 				A_MuzzleClimb((smm*1.2,7.2),(smm,4.),(smm,2.),(smm*0.8,1.));
 				totallyblocked=true;
 			}
-			else A_MuzzleClimb((smm*1.2,-0.2),(smm,-0.1),(smm,-0.1),(smm*0.8,-0.04));
 		}
 	}
 }
