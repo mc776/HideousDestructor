@@ -105,6 +105,11 @@ class HDBullet:HDActor{
 		//if it's in the sky, do a separate thing instead
 		if(inthesky){
 			setorigin(pos+vel,true);
+
+			//this one's slightly different
+			//but still fuck whichever asshole gave us that bright red warning message
+			if(max(abs(pos.x),abs(pos.y),-pos.z)>=32768){destroy();return;}
+
 			if(ceilingz>pos.z)inthesky=false;
 			if(vel.z>BULLET_TERMINALVELOCITY)vel.z-=grav;
 			//nexttic
@@ -196,6 +201,9 @@ class HDBullet:HDActor{
 		//move to new location
 		vector3 posbak=blt.hitlocation;
 		setorigin(blt.hitlocation,true);
+
+		//seriously fuck mental
+		if(max(abs(pos.x),abs(pos.y),-pos.z)>=32768){destroy();return;}
 
 
 		//hit actor, ignore all the wall geometry stuff below
@@ -521,7 +529,7 @@ class HDBullet:HDActor{
 	}
 	virtual void EmergeFromImpact(vector3 emergespot){
 		setorigin(emergespot+blt.hitdir,true);
-		if(max(abs(pos.x),abs(pos.y))>=32678){setstatelabel("death");return;}
+		if(max(abs(pos.x),abs(pos.y))>=32768){setstatelabel("death");return;}
 		angle+=180;pitch=-pitch;
 		A_SprayDecal("BulletChip",10);
 		A_SpawnItemEx("PenePuff",
@@ -538,7 +546,7 @@ class HDBullet:HDActor{
 	}
 
 	virtual actor Puff(int sp=0){
-		if(max(abs(pos.x),abs(pos.y))>=32678)return null;
+		if(max(abs(pos.x),abs(pos.y))>=32768)return null;
 		if(!sp)sp=speed;
 		name pufftype="BulletPuffBig";
 		if(sp>800){
@@ -752,7 +760,7 @@ class HDBulletFrag:HDBullet{
 		accuracy=random(3,6);
 	}
 	override actor Puff(int sp){
-		if(max(abs(pos.x),abs(pos.y))>=32678)return null;
+		if(max(abs(pos.x),abs(pos.y))>=32768)return null;
 		actor ppp;
 		[sp,ppp]=A_SpawnItemEx("FragPuff",flags:
 			SXF_NOCHECKPOSITION

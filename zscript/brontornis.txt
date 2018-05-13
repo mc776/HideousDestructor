@@ -57,7 +57,7 @@ class TerrorBolt:HDBullet{
 			if(tracer&&tracer.bcorpse)tracer.A_SetInventory("SawGib",tracer.countinv("SawGib")+100);
 			DistantQuaker.Quake(self,3,35,256,12);
 
-			if(max(abs(pos.x),abs(pos.y))>=32678)return;
+			if(max(abs(pos.x),abs(pos.y))>=32768)return;
 			actor aaa=Spawn("WallChunker",pos,ALLOW_REPLACE);
 			A_SpawnChunks("BigWallChunk",20,4,20);
 			A_SpawnChunks("HDSmoke",4,1,7);
