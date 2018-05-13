@@ -618,6 +618,20 @@ class SubsonicTrail:SupersonicTrail{
 }
 
 
+class OutOfBoundsSound:Actor{
+   override void postbeginplay(){
+      super.postbeginplay();
+      setorigin((12.654654,198273.5654654,42.5416541),false);
+      A_PlaySound("baron/sight");
+   }
+   states{
+   spawn:
+      TNT1 A 100;
+      stop;
+   }
+}
+
+
 //consolidates bullet damage done in the same tic
 class HDBulletDamager:Thinker{
 	array<int> damages;
@@ -694,6 +708,7 @@ class HDBulletDamager:Thinker{
 				attackername,
 				inflictorname
 			));
+victim.A_LogInt(damages.size());
 		}
 
 		name damagetype="Bashing";
