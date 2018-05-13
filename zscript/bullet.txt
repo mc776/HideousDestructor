@@ -139,7 +139,7 @@ class HDBullet:HDActor{
 			angle,
 			speed,
 			pitch,
-			flags:0,
+			flags:TRF_NOSKY,
 			data:blt
 		);
 
@@ -372,6 +372,11 @@ class HDBullet:HDActor{
 		//this covers a few things that hittype does not
 		int hitresult=0;
 		if(blt.hitline){
+			if(blt.hitline.special==Line_Horizon){
+				destroy();
+				return;
+			}
+
 			blt.hitline.activate(target,blt.lineside,SPAC_Impact);
 			setorigin(blt.hitlocation-blt.hitdir,false);
 			A_SprayDecal(penetration>4?"BulletChip":"BulletChipSmall",10);

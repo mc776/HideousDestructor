@@ -54,6 +54,7 @@ class TerrorBolt:HDBullet{
 				immolateradius:64,immolateamount:random(4,20),immolatechance:32,
 				gibradius:16,gibamount:random(4,20)
 			);
+			if(tracer&&tracer.bcorpse)tracer.A_SetInventory("SawGib",tracer.countinv("SawGib")+100);
 			DistantQuaker.Quake(self,3,35,256,12);
 
 			if(max(abs(pos.x),abs(pos.y))>=32678)return;
