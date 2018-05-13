@@ -87,6 +87,11 @@ class HDBullet:HDActor{
 			}else scale=(0.3,0.3);
 		}
 		BAL1 A -1;
+	death:
+		TNT1 A 4{
+			bnointeraction=true;
+			bmissile=false;
+		}stop;
 	}
 	override void tick(){
 		if(globalfreeze||level.Frozen) return;
@@ -270,7 +275,7 @@ class HDBullet:HDActor{
 				string targ="";
 				if(hitactor.player)targ=hitactor.player.getusername();
 					else targ=hitactor.getclassname();
-				A_Log(string.format("%s \ca%i \cj%s  \cu(%s)",self.getclassname(),dmg,targ,damagetype));
+//				A_Log(string.format("%s \ca%i \cj%s  \cu(%s)",self.getclassname(),dmg,targ,damagetype));
 			}
 
 			//bleed
@@ -304,7 +309,8 @@ class HDBullet:HDActor{
 				int gibs=max(randompick(0,0,0,1),dmg*0.05);
 				hdf.give(hitactor,"SawGib",gibs);
 			}else{
-				hitactor.damagemobj(self,self.target,dmg,damagetype,DMG_THRUSTLESS);
+				HDBulletDamager.Get(hitactor,self,target,dmg,damagetype);
+//				hitactor.damagemobj(self,self.target,dmg,damagetype,DMG_THRUSTLESS);
 				if(
 					pierce
 					&&!hitactor.player
@@ -323,7 +329,9 @@ class HDBullet:HDActor{
 			vel+=(frandom(-rvel,rvel),frandom(-rvel,rvel),frandom(-rvel,rvel));
 
 			//destroy if too slow
-			if(vel dot vel<(50*50))destroy();
+			if(vel dot vel<(50*50)){
+				setstatelabel("death");
+			}
 			return;
 		}
 
@@ -332,7 +340,7 @@ class HDBullet:HDActor{
 		bool zricochet=false;
 		if(blt.hittype==Trace_HitFloor){
 			if(floorpic==skyflatnum){
-				destroy();return;
+				setstatelabel("death");return;
 			}
 			zricochet=true;
 		}
@@ -460,7 +468,7 @@ class HDBullet:HDActor{
 		}
 		//into the void behind every rock
 		else if(hitresult==BLT_HITONESIDED){
-			if(blt.hitline.special==Line_Horizon){destroy();return;}
+			if(blt.hitline.special==Line_Horizon){setstatelabel("death");return;}
 			setorigin(plushitdir,true);
 			flinetracedata voidprobe;
 			LineTrace(
@@ -504,11 +512,11 @@ class HDBullet:HDActor{
 	virtual void DieOnImpact(vector3 deathspot){
 		setorigin(deathspot,true);
 		Puff();
-		destroy();
+		setstatelabel("death");
 	}
 	virtual void EmergeFromImpact(vector3 emergespot){
 		setorigin(emergespot+blt.hitdir,true);
-		if(max(abs(pos.x),abs(pos.y))>=32678){destroy();return;}
+		if(max(abs(pos.x),abs(pos.y))>=32678){setstatelabel("death");return;}
 		angle+=180;pitch=-pitch;
 		A_SprayDecal("BulletChip",10);
 		A_SpawnItemEx("PenePuff",
@@ -595,6 +603,95 @@ class SubsonicTrail:SupersonicTrail{
 	}
 }
 
+
+//consolidates bullet damage done in the same tic
+class HDBulletDamager:Thinker{
+	array<int> damages;
+	array<int> damagetypes;
+	int ticker;
+	actor victim;
+	actor lastattacker;
+	actor lastinflictor;
+	override void postbeginplay(){
+		super.postbeginplay();
+	}
+	static HDBulletDamager Get(actor caller,actor inflictor,actor attacker,int damage,name damagetype){
+		thinkeriterator hdbd=ThinkerIterator.create("HDBulletDamager");
+		hdbulletdamager hdbdd;
+		while(hdbdd=hdbulletdamager(hdbd.next(true))){
+			if(hdbdd.victim==caller)break;
+		}
+		if(!hdbdd){
+			hdbdd=new("hdbulletdamager");
+			hdbdd.victim=caller;
+			hdbdd.ticker=4;
+		}
+
+		hdbdd.lastattacker=attacker;
+		hdbdd.lastinflictor=inflictor;
+		int dtype=-1;
+		if(damagetype=="SmallArms0")dtype=0;
+		else if(damagetype=="SmallArms1")dtype=1;
+		else if(damagetype=="SmallArms2")dtype=2;
+		else if(damagetype=="SmallArms3")dtype=3;
+		hdbdd.damagetypes.push(dtype);
+		hdbdd.damages.push(damage);
+
+		return hdbdd;
+	}
+	override void tick(){
+		super.tick();
+		ticker--;
+		if(ticker>0)return;
+		if(!victim){
+			destroy();
+			return;
+		}
+
+		while(damages.size()<damagetypes.size()){
+			damagetypes.pop();
+		}
+		while(damages.size()>damagetypes.size()){
+			damages.pop();
+		}
+
+		int totaldamage=0;
+		int strongestdamage=-1;
+		for(int i=0;i<damages.size();i++){
+			totaldamage+=damages[i];
+			if(strongestdamage<damagetypes[i])strongestdamage=damagetypes[i];
+		}
+
+		if(hd_debug){
+			string victimname;
+			if(victim.player)victimname=victim.player.getusername();
+			else victimname=victim.getclassname();
+			string attackername="nobody";
+			if(lastattacker){
+				if(lastattacker.player)attackername=lastattacker.player.getusername();
+				else attackername=lastattacker.getclassname();
+			}
+			string inflictorname="bullet";
+			if(lastinflictor)inflictorname=lastinflictor.getclassname();
+			victim.A_Log(string.format("%s took \ca%i\cj %s damage from %s's %s",
+				victimname,
+				totaldamage,
+				strongestdamage<0?"Bashing":string.format("SmallArms%i",strongestdamage),
+				attackername,
+				inflictorname
+			));
+		}
+
+		name damagetype="Bashing";
+		if(strongestdamage>2)damagetype="SmallArms3";
+		else if(strongestdamage==2)damagetype="SmallArms2";
+		else if(strongestdamage==1)damagetype="SmallArms1";
+		else if(strongestdamage==0)damagetype="SmallArms0";
+		victim.damagemobj(lastinflictor,lastattacker,totaldamage,damagetype,DMG_THRUSTLESS);
+
+		destroy();
+	}
+}
 
 
 
