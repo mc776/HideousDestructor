@@ -216,8 +216,8 @@ class HDPuff:HDActor{
 		hdpuff.startvelz 2.;
 	}
 	override void postbeginplay(){
-		if(max(abs(pos.x),abs(pos.y),abs(pos.z))>=32768){destroy();return;}
 		HDActor.postbeginplay();
+		if(max(abs(pos.x),abs(pos.y),abs(pos.z))>=32768){destroy();return;}
 		roll=random(0,3)*90;
 		scale.x*=randompick(-1,1);
 		grow*=scale.x;
