@@ -55,6 +55,9 @@ extend class HDActor{
 		//do all this from the centre
 		caller.addz(caller.height*0.5);
 
+		actor its=caller.spawn("idledummy",caller.pos);
+		its.stamina=1;
+
 		blockthingsiterator itt=blockthingsiterator.create(caller,bigradius);
 		while(itt.Next()){
 			actor it=itt.thing;
@@ -70,6 +73,7 @@ extend class HDActor{
 				)
 			)continue;
 
+			its.setorigin(it.pos,false);
 			double ithalfheight=it.height*0.5;
 			it.addz(ithalfheight); //get the middle not the bottom
 			double dist=caller.distance3d(it);
@@ -83,12 +87,10 @@ extend class HDActor{
 			//check LOS
 			if(passwalls)losmul=1.;
 			else{
-				actor its=spawn("idledummy",it.pos);
 				if(its){
 					its.a_setsize(1,1);if(caller.checksight(its))losmul+=0.34;
 					its.addz(ithalfheight);if(caller.checksight(its))losmul+=0.34;
 					its.addz(ithalfheight);if(caller.checksight(its))losmul+=0.34;
-					its.destroy();
 				}losmul=min(losmul,1.);
 			}
 //				if(losmul){A_Log(it.getclassname());A_LogFloat(losmul);}
