@@ -69,8 +69,8 @@ class TauntHandler : EventHandler
 
 //generic bleeding
 //maybe use this for players too in the future???
-class MonsterWound:Thinker{
-	static void Inflict(actor bleeder,int amount){
+class HDWound:Thinker{
+	static void Inflict(actor bleeder,int amount,int armourlevel=0){
 		if(
 			!bleeder.bshootable
 			||bleeder.bnoblood
@@ -79,7 +79,8 @@ class MonsterWound:Thinker{
 			||bleeder.health<1
 			||bleeder.bloodtype=="ShieldNeverBlood"
 		)return;
-		let wwnd=new("MonsterWound");
+
+		let wwnd=new("HDWound");
 		wwnd.owner=bleeder;
 		wwnd.ticker=0;
 

@@ -314,15 +314,15 @@ class HDBullet:HDActor{
 				int gibs=max(randompick(0,0,0,1),dmg*0.05);
 				hdf.give(hitactor,"SawGib",gibs);
 			}else{
-				HDBulletDamager.Get(hitactor,self,target,dmg,damagetype);
+				HDBulletDamager.Get(hitactor,self,target,(dmg>>1),damagetype);
 //				hitactor.damagemobj(self,self.target,dmg,damagetype,DMG_THRUSTLESS);
 				if(
 					pierce
 					&&!hitactor.player
 					&&hitactor.bshootable
 					&&!hitactor.bnodamage
-				)monsterwound.inflict(hitactor,
-					random((mass>>8),(dmg>>1))
+				)hdwound.inflict(hitactor,
+					random((mass>>7),(dmg>>1))
 				);
 			}
 

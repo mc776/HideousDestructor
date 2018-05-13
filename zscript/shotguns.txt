@@ -199,11 +199,11 @@ class Hunter:HDShotgun replaces Shotgun{
 			A_GunFlash();
 			invoker.weaponstatus[HUNTS_CHAMBER]=1;
 			A_PlaySound("weapons/hunter",CHAN_WEAPON);
-			if(invoker.weaponstatus[0]&HUNTF_AUTO)
-				A_MuzzleClimb(randompick(-1,1)*1.4,-3.4);
-				else A_MuzzleClimb(randompick(-1,1)*1.,-2.6);
+			vector2 shotrecoil=(randompick(-1,1),-2.6);
+			if(invoker.weaponstatus[0]&HUNTF_AUTO)shotrecoil=(randompick(-1,1)*1.4,-3.4);
+			A_MuzzleClimb(0,0,shotrecoil.x,shotrecoil.y,randompick(-1,1)*1.,-0.3);
 		}
-		SHTG E 1 A_MuzzleClimb(randompick(-1,1)*1.,-0.3);
+		SHTG E 1;
 		SHTG E 0{
 			if(
 				invoker.weaponstatus[0]&HUNTF_AUTO
