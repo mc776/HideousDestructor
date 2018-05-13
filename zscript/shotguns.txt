@@ -128,6 +128,7 @@ class Hunter:HDShotgun replaces Shotgun{
 			0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
 		);
 	}
+	double shotpowervariation;
 	states{
 	select0:
 		SHTG A 0;
@@ -190,7 +191,8 @@ class Hunter:HDShotgun replaces Shotgun{
 			p.vel+=(
 				frandom(-1.,1.),frandom(-1.,1.),frandom(-1.,1.)
 			);
-			p.speed+=10*frandom(-1.,1.);
+			invoker.shotpowervariation=frandom(-10.,10.);
+			p.speed+=invoker.shotpowervariation;
 			p.vel+=self.vel;
 
 
@@ -205,7 +207,7 @@ class Hunter:HDShotgun replaces Shotgun{
 		SHTG E 0{
 			if(
 				invoker.weaponstatus[0]&HUNTF_AUTO
-				&&random(0,63)
+				&&invoker.shotpowervariation>-9.
 			)setweaponstate("chamberauto");
 		}goto ready;
 	altfire:
@@ -621,7 +623,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 			p.vel+=(
 				frandom(-1.,1.),frandom(-1.,1.),frandom(-1.,1.)
 			);
-			p.speed+=10*frandom(-1.,1.);
+			p.speed+=frandom(-10.,10.);
 			p.vel+=self.vel;
 		}
 		TNT1 A 1{
@@ -641,7 +643,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 			p.vel+=(
 				frandom(-1.,1.),frandom(-1.,1.),frandom(-1.,1.)
 			);
-			p.speed+=10*frandom(-1.,1.);
+			p.speed+=frandom(-10.,10.);
 			p.vel+=self.vel;
 		}
 		TNT1 A 1{

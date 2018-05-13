@@ -339,6 +339,7 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 				actor p=spawn("HDBullet00bf2",pos+(0,0,height-6));
 				p.target=self;p.angle=angle;p.pitch=pitch;
 				p.vel+=self.vel;
+				p.speed+=frandom(-10.,10.);
 			}else{
 				//single barrel
 				//NOTE: DELETE HDBULLET00BF WHEN DONE
@@ -349,6 +350,7 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 				actor p=spawn(whichbf,pos+(0,0,height-6));
 				p.target=self;p.angle=angle;p.pitch=pitch;
 				p.vel+=self.vel;
+				p.speed+=frandom(-10.,10.);
 			}
 		}
 		#### E 1 A_SetTics(random(2,4));
@@ -373,9 +375,14 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 			actor p=spawn("HDBullet00b",pos+(0,0,height-6));
 			p.target=self;p.angle=angle;p.pitch=pitch;
 			p.vel+=self.vel;
+
+			//same as Hunter jam
+			double shotpowervariation=frandom(-10.,10.);
+			p.speed+=shotpowervariation;
+			if(shotpowervariation>-9.)semi=false;
 		}
 		#### E 3{
-			if(semi&&random(0,5)){
+			if(semi){
 				A_SetTics(0);
 				gunspent=0;
 				A_SpawnItemEx("HDSpentShell",
@@ -385,6 +392,7 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 					vel.z+sin(pitch)*random(5,7),0,
 					SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
 				);
+				if(!random(0,7))semi=false;
 			}
 		}
 		#### E 1{
@@ -408,6 +416,7 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 					SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
 				);
 			}
+			if(!random(0,7))semi=true;
 		}
 		#### E 1 A_SetTics(random(3,8));
 		#### E 0 A_Jump(127,"see");
