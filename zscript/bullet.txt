@@ -107,7 +107,6 @@ class HDBullet:HDActor{
 			setorigin(pos+vel,true);
 
 			//this one's slightly different
-			//but still fuck whichever asshole gave us that bright red warning message
 			if(max(abs(pos.x),abs(pos.y),-pos.z)>=32768){destroy();return;}
 
 			if(ceilingz>pos.z)inthesky=false;
@@ -202,7 +201,7 @@ class HDBullet:HDActor{
 		vector3 posbak=blt.hitlocation;
 		setorigin(blt.hitlocation,true);
 
-		//seriously fuck mental
+		//and another, because self-righteous pedantry beats user-friendliness every time
 		if(max(abs(pos.x),abs(pos.y),-pos.z)>=32768){destroy();return;}
 
 
