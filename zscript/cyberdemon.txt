@@ -237,7 +237,7 @@ class SatanRobo:Cyberdemon replaces CyberDemon{
 		oldaim=(angle,pitch);
 		A_FaceTarget(12,12,0,0,FAF_MIDDLE);
 		aimadjust=(deltaangle(oldaim.x,angle),deltaangle(oldaim.y,pitch));
-		aimadjust*=distance3d(target)*0.0005;
+		if(target)aimadjust*=distance3d(target)*0.0005;
 	}
 	void A_SatanRoboAttack(double spread=0.,double aimhorz=0.,double aimvert=0.){
 		A_PlaySound("weapons/bronto",CHAN_WEAPON);
@@ -246,11 +246,12 @@ class SatanRobo:Cyberdemon replaces CyberDemon{
 			aimhorz=frandom(-spread,spread);
 			aimvert=frandom(-spread,spread);
 		}
-		double dist=max(1,(target?distance3d(target):0));
+		bool tgt=target!=null;
+		double dist=max(1,(tgt?distance3d(target):0));
 		A_SpawnProjectile(shottype,42,-24,
-			aimhorz-(target?atan(24/dist):0),
+			aimhorz-(tgt?atan(24/dist):0),
 			CMF_AIMDIRECTION|CMF_SAVEPITCH,
-			pitch+aimvert-(dist>2048?dist*0.000001:0)+(target?atan(10/dist):0)
+			pitch+aimvert-(dist>2048?dist*0.000001:0)+(tgt?atan(10/dist):0)
 		);
 	}
 	override void tick(){

@@ -6,6 +6,7 @@ extend class HDStatusBar{
 		let wp=hdweapon(cplayer.readyweapon);
 		bool sightbob=cvar.getcvar("hd_sightbob",cplayer).getbool();
 
+		//have no crosshair at all
 		if(
 			!wp
 			||hpl.barehanded
@@ -13,6 +14,8 @@ extend class HDStatusBar{
 			||(!sightbob&&hpl.countinv("IsMoving"))
 		)return;
 
+
+		//all weapon sights go here
 		SetSize(0,400,250);
 		BeginHUD(forcescaled:true);
 
