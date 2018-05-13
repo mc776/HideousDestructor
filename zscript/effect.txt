@@ -277,6 +277,7 @@ class HDBulletPuff:HDPuff{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
+		if(max(abs(pos.x),abs(pos.y),abs(pos.z))>=32768){destroy();return;}
 		if(!random(0,scarechance)){
 			actor fff=spawn("idledummy",pos);
 			fff.stamina=random(60,120);
