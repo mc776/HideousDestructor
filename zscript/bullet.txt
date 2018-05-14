@@ -263,7 +263,7 @@ class HDBullet:HDActor{
 			}
 
 			//determine damage
-			int dmg=(speed+mass/3)*0.015;
+			int dmg=(speed+mass/3)*0.009;
 
 			int maxdmg=dmg+woundhealth;
 			if(pierce){
@@ -311,10 +311,10 @@ class HDBullet:HDActor{
 
 			//apply damage
 			if(hitactor.health<1){
-				int gibs=max(randompick(0,0,0,1),dmg*0.05);
+				int gibs=max(randompick(0,0,0,1),dmg*0.1);
 				hdf.give(hitactor,"SawGib",gibs);
 			}else{
-				HDBulletDamager.Get(hitactor,self,target,(dmg>>1),damagetype);
+				HDBulletDamager.Get(hitactor,self,target,dmg,damagetype);
 //				hitactor.damagemobj(self,self.target,dmg,damagetype,DMG_THRUSTLESS);
 				if(
 					pierce
@@ -322,7 +322,7 @@ class HDBullet:HDActor{
 					&&hitactor.bshootable
 					&&!hitactor.bnodamage
 				)hdwound.inflict(hitactor,
-					random((mass>>7),(dmg>>1))
+					random((mass>>7),dmg)
 				);
 			}
 
