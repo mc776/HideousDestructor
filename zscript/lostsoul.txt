@@ -48,7 +48,7 @@ class Condemned:LostSoul replaces LostSoul{
 		spawn("HDSmoke",pos);spawn("HDSmoke",pos);spawn("HDSmoke",pos);
 		A_FaceTarget(16,16);
 		A_ChangeVelocity(cos(pitch)*20,0,-sin(pitch)*20,CVF_RELATIVE);
-		flycheck=rotatevector((radius*1.6,0),angle);
+		flycheck=vel.xy*3;
 		setstatelabel("fly");
 	}
 	vector2 flycheck;
@@ -63,17 +63,20 @@ class Condemned:LostSoul replaces LostSoul{
 			if(blockingline){
 				bounce=true;
 			}else if(blockingmobj){
-				if(blockingmobj!=target||!target){
+				if(
+					!target
+					||blockingmobj!=target
+					||absangle(angleto(target),angle)>30
+				){
 					bounce=true;
 					hdf.give(blockingmobj,"heat",5);
 					blockingmobj.vel+=vel*min(mass/max(1,blockingmobj.mass),0.9);
 				}else{
 					A_FaceTarget();
 					latched=target;
-					latchangle=angle+180;
-					latchpos.xy=rotatevector((pos.xy-latched.pos.xy).unit(),latchangle);
-					latchpos.xy*=frandom(0.95,1.)*latched.radius;
-					latchpos.z=pos.z-latched.height-latched.pos.z;
+					latchangle=deltaangle(target.angle,target.angleto(self));
+					latchdist=frandom(0.95,1.)*(latched.radius+radius);
+					latchz=pos.z-latched.height-latched.pos.z;
 					latchedlastangle=latched.angle;
 					hdf.give(blockingmobj,"heat",12);
 					latched.damagemobj(self,self,random(2,7),"Teeth");
@@ -95,10 +98,10 @@ class Condemned:LostSoul replaces LostSoul{
 			setstatelabel("see");
 			return;
 		}
-		setz(latched.height+latched.pos.z+latchpos.z);
+		setz(latched.height+latched.pos.z+latchz);
 		if(
 			absangle(latched.angle,latchedlastangle)>30
-			||!trymove(latched.pos.xy+rotatevector(latchpos.xy,latched.angle+latchangle),true)
+			||!trymove(latched.pos.xy+rotatevector((latchdist,0),latched.angle+latchangle),true)
 		){
 			target=latched; //just in case it was forgotten somehow
 			latched=null;
@@ -122,7 +125,8 @@ class Condemned:LostSoul replaces LostSoul{
 	}
 	actor spitter;
 	actor latched;
-	vector3 latchpos;
+	double latchdist;
+	double latchz;
 	double latchangle;
 	double latchedlastangle;
 	states{
