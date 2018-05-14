@@ -671,10 +671,9 @@ class HDBulletDamager:Thinker{
 		int totaldamage=0;
 		int strongestdamage=-1;
 		for(int i=0;i<damages.size();i++){
-			totaldamage+=damages[i];
+			totaldamage+=damages[i]+random(1,(i>>3));
 			if(strongestdamage<damagetypes[i])strongestdamage=damagetypes[i];
 		}
-
 		if(hd_debug){
 			string victimname;
 			if(victim.player)victimname=victim.player.getusername();
