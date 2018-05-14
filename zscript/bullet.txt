@@ -209,7 +209,7 @@ class HDBullet:HDActor{
 			tracer=hitactor;
 			setorigin(blt.hitlocation+blt.hitdir*frandom(0,hitactor.radius*0.8),true);
 
-			double hitresistance=(hitactor.radius*2+max(hitactor.spawnhealth(),500)*0.2)*0.3;
+			double hitresistance=(hitactor.radius*2+min((hitactor.spawnhealth()>>3),100))*0.3;
 
 			//damagetype?
 			if(penetration>12)damagetype="SmallArms3";
@@ -249,6 +249,7 @@ class HDBullet:HDActor{
 				);
 			}
 			netpenetration=min(0.9999,netpenetration/hitresistance);
+//A_LogFloat(netpenetration);
 			if(critangle>frandom(50,150*netpenetration)){
 				if(hd_debug)A_Log("Ricochet!");
 				throughthis=hitactor;
