@@ -198,8 +198,6 @@ class HDBullet:HDActor{
 		setorigin(posbak,true);
 
 		//and yet another check
-		//seriously, just play the sound, it's quieter when it's further away,
-		//don't play anything if it's too far to matter, HOW HARD IS THAT
 		if(max(abs(pos.x),abs(pos.y),-pos.z)>=32768){destroy();return;}
 
 
@@ -249,7 +247,7 @@ class HDBullet:HDActor{
 				);
 			}
 			netpenetration=min(0.9999,netpenetration/hitresistance);
-//A_LogFloat(netpenetration);
+//A_LogFloat(penetration);
 			if(critangle>frandom(50,150*netpenetration)){
 				if(hd_debug)A_Log("Ricochet!");
 				throughthis=hitactor;
@@ -801,7 +799,7 @@ class HDBullet776:HDBullet{
 }
 class HDBullet00:HDBullet{
 	default{
-		pushfactor 0.9;
+		pushfactor 0.8;
 		mass 576;
 		accuracy 3;
 		woundhealth 2;
