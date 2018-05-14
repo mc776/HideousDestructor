@@ -206,7 +206,7 @@ extend class HDPlayerPawn{
 			//magical healing passively helps heart rate
 			if(regenblues){
 				if(beatcap<HDCONST_MINHEARTTICS){
-					beatcap=max(beatcap,HDCONST_MINHEARTTICS+3);
+					beatcap=max(beatcap,HDCONST_MINHEARTTICS+5);
 					if(!random(0,99))regenblues--;
 				}
 				if(stimcount>4){
@@ -216,7 +216,7 @@ extend class HDPlayerPawn{
 				//heal shorter-term damage
 				if(unstablewoundcount>0||woundcount>0){  
 					if(woundcount>0)woundcount--;else unstablewoundcount--;
-					regenblues-=2;
+					regenblues--;
 				}
 			}
 
