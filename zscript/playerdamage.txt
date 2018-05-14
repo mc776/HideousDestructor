@@ -373,6 +373,7 @@ extend class HDPlayerPawn{
 			&&random(0,3)
 		){
 			int wnddmg=max(1,damage>>2);
+			if(mod=="bashing")wnddmg>>=1;
 			damage=health-random(1,3);
 			if(
 				mod=="fire"
