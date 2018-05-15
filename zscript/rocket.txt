@@ -62,8 +62,21 @@ class GyroGrenade:SlowProjectile{
 		}
 
 		//damage
-		//nothing here - impact is disappearingly tiny compared to frags
-		//NOTE: damage calculation is ALREADY in base SlowProjectile!
+		//NOTE: basic impact damage calculation is ALREADY in base SlowProjectile!
+		if(blockingobject){
+			int dmgg=random(32,128);
+			name dmggtp="SmallArms2";
+			if(primed&&isrocket){
+				double dangle=absangle(angle,angleto(blockingobject));
+				if(dangle<20){
+					dmgg+=random(400,800);
+					if(hd_Debug)A_Log("CRIT!");
+					dmggtp="SmallArms3";
+				}else if(dangle<40)dmgg+=random(200,600);
+			}
+			blockingobject.damagemobj(self,target,dmgg,dmggtp);
+		}
+
 
 		//explosion
 		if(!inthesky){
@@ -148,14 +161,16 @@ class HDHEAT:GyroGrenade{
 		//damage
 		if(blockingobject){
 			int dmgg=random(70,240);
+			name dmggtp="SmallArms2";
 			if(primed&&isrocket){
 				double dangle=absangle(angle,angleto(blockingobject));
 				if(dangle<20){
 					dmgg+=random(2000,4000);
 					if(hd_Debug)A_Log("CRIT!");
+					dmggtp="SmallArms3";
 				}else if(dangle<40)dmgg+=random(200,1200);
 			}
-			blockingobject.damagemobj(self,target,dmgg,"SmallArms3");
+			blockingobject.damagemobj(self,target,dmgg,dmggtp);
 		}
 
 		if(blockingline)doordestroyer.destroydoor(self);

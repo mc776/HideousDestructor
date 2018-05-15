@@ -247,7 +247,7 @@ class HDBullet:HDActor{
 				);
 			}
 			netpenetration=min(0.9999,netpenetration/hitresistance);
-//A_LogFloat(hitresistance);
+
 			if(critangle>frandom(50,150*netpenetration)){
 				if(hd_debug)A_Log("Ricochet!");
 				throughthis=hitactor;
@@ -275,12 +275,6 @@ class HDBullet:HDActor{
 			}else if(crit)dmg*=1.2;
 
 			dmg=random(dmg,maxdmg);
-			if(hd_debug){
-				string targ="";
-				if(hitactor.player)targ=hitactor.player.getusername();
-					else targ=hitactor.getclassname();
-//				A_Log(string.format("%s \ca%i \cj%s  \cu(%s)",self.getclassname(),dmg,targ,damagetype));
-			}
 
 			//bleed
 			if(
@@ -313,16 +307,24 @@ class HDBullet:HDActor{
 				int gibs=max(randompick(0,0,0,1),dmg*0.1);
 				hdf.give(hitactor,"SawGib",gibs);
 			}else{
-				HDBulletDamager.Get(hitactor,self,target,dmg,damagetype);
-//				hitactor.damagemobj(self,self.target,dmg,damagetype,DMG_THRUSTLESS);
-				if(
-					pierce
-					&&!hitactor.player
-					&&hitactor.bshootable
-					&&!hitactor.bnodamage
-				)hdwound.inflict(hitactor,
-					random((mass>>6),dmg)
-				);
+				if(pierce){
+					HDBulletDamager.Get(hitactor,self,target,dmg,damagetype);
+					if(
+						!hitactor.player
+						&&hitactor.bshootable
+						&&!hitactor.bnodamage
+					)hdwound.inflict(hitactor,
+						random((mass>>6),dmg)
+					);
+				}else{
+					hitactor.damagemobj(self,self.target,dmg,damagetype,DMG_THRUSTLESS);
+					if(hd_debug){
+						string targ="";
+						if(hitactor.player)targ=hitactor.player.getusername();
+							else targ=hitactor.getclassname();
+						A_Log(string.format("%s \ca%i \cj%s  \cu(%s)",self.getclassname(),dmg,targ,damagetype));
+					}
+				}
 			}
 
 			//reduce speed
