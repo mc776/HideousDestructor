@@ -233,16 +233,16 @@ class HDPlayerPawn:PlayerPawn{
 
 		if(!flip)flip=true;else flip=false; //for things that must alternate every tic
 
-		//log all new inputs
-		int input=player.cmd.buttons;
-		double fm=player.cmd.forwardmove;
-		double sm=player.cmd.sidemove;
-
 		//only do anything below this while the player is alive!
 		if(bkilled||health<1){
 			super.Tick();
 			return;
 		}
+
+		//log all new inputs
+		int input=player.cmd.buttons;
+		double fm=player.cmd.forwardmove;
+		double sm=player.cmd.sidemove;
 
 		//set pitch and angle based on raw input to be modified later
 		//DO NOT use these with MovePlayer
@@ -269,7 +269,8 @@ class HDPlayerPawn:PlayerPawn{
 
 		//check if teleported
 		//fastest you can voluntarily go (berserk, invuln, soulsphere) is mid-90s
-		if(bteleport||(lastpos-pos).length()>100)teleported=true;else teleported=false;
+		vector2 posdif=lastpos.xy-pos.xy;
+		if(bteleport||posdif dot posdif>10000)teleported=true;else teleported=false;
 
 		//if this is put into playermove bad things happen
 		if(!teleported)TurnCheck();

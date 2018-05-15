@@ -101,7 +101,7 @@ class Condemned:LostSoul replaces LostSoul{
 		setz(latched.height+latched.pos.z+latchz);
 		if(
 			absangle(latched.angle,latchedlastangle)>30
-			||!trymove(latched.pos.xy+rotatevector((latchdist,0),latched.angle+latchangle),true)
+			||!trymove(latched.pos.xy+angletovector(latched.angle+latchangle,latchdist),true)
 		){
 			target=latched; //just in case it was forgotten somehow
 			latched=null;
