@@ -6,10 +6,10 @@ class HDStealthPorter:Actor{
 	property spawntype:spawntype;
 	default{
 		+ismonster
-		meleerange 128;
+		maxtargetrange 512;
 		speed 10;
 		hdstealthporter.spawntype "";
-		maxstepheight 99;
+		maxstepheight 128;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -46,11 +46,11 @@ class HDStealthPorter:Actor{
 	see:
 		TNT1 A 4 A_Chase();
 		loop;
-	melee:
+	missile:
 		TNT1 A 4 A_CheckPortIn();
 		goto see;
 	portin:
-		TNT1 A 10 A_PlaySound(
+		TNT1 A 70 A_PlaySound(
 			getdefaultbytype(spawntype).seesound,
 			CHAN_VOICE,
 			frandom(0.3,0.6),
