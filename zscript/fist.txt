@@ -7,21 +7,6 @@ class HDFistPuncher:IdleDummy{
 		stamina 1;
 	}
 }
-class HDZerkGibber:FastProjectile{
-	default{
-		+hittarget
-		projectile;speed 1;height 2;radius 2;
-	}
-	states{
-	spawn:
-		TNT1 A 0 nodelay{vel*=64;}
-		TNT1 A 1;
-		stop;
-	xdeath:
-		TNT1 A 1 A_GiveInventory("ZerkGib",1,AAPTR_TARGET);
-		stop;
-	}
-}
 class Ring:HDWeapon replaces Fist{
 	int targettimer;
 	int targethealth;
@@ -151,6 +136,15 @@ class Ring:HDWeapon replaces Fist{
 			invoker.targettimer=0;
 		}
 	}
+	static void kick(actor kicker,actor kickee,actor kicking){
+		kickee.A_PlaySound("weapons/smack",CHAN_BODY);
+		bool kzk=kicker.countinv("PowerStrength");
+		kickee.damagemobj(kicking,kicker,kzk?random(20,40):random(10,20),"bashing");
+		if(kickee&&!kickee.bnopain&&kickee.health>0&&random(0,4))kickee.setstatelabel("pain");
+		vector3 kickdir=(kickee.pos-kicker.pos).unit();
+		if(kickee)kickee.vel=kickdir*(kzk?10:2);
+		kicker.vel-=kickdir;
+	}
 	states{
 	female:
 		PUNF A 0;goto nope;
@@ -222,7 +216,9 @@ class Ring:HDWeapon replaces Fist{
 	kick:
 		TNT1 A 13{
 			if(hdplayerpawn(self))hdplayerpawn(self).fatigue+=2;
-			A_SpawnItemEx("KickProjectile",0,0,4,vel.x,vel.y,vel.z,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);
+			flinetracedata ktl;
+			LineTrace(angle,radius*1.6,0,offsetz:10,data:ktl);
+			if(ktl.hitactor)invoker.kick(self,ktl.hitactor,invoker);
 			if(countinv("PowerStrength"))A_SetTics(8);
 		}
 		PUNF A 0 A_Refire();

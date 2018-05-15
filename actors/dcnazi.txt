@@ -50,33 +50,11 @@ actor HoopBubble:WolfensteinSS replaces WolfensteinSS{
 		TNT1 A 0 A_PlaySound("grunt/active")
 		SSWV AB 5 A_Wander
 		goto spawn
-	see_evade:
-		TNT1 A 0 A_Jump(64,"Missile")
-		TNT1 A 0 A_Chase("missile","",CHF_DONTMOVE)
-		TNT1 A 0 A_FaceTarget
-		TNT1 A 0 A_SetAngle(angle+random(60,100)*(random(0,1)*2-1))
-		TNT1 A 0 A_ChangeFlag("nodropoff",1)
-	see_evade2:
-		TNT1 A 0 A_SetAngle(angle+random(-40,40))
-		SSWV ABCD 4 A_Recoil(-4)
-		TNT1 A 0 A_Stop
-		TNT1 A 0 A_JumpIf(velx*velx+vely*vely>25,2)
-		TNT1 A 0 A_SetAngle(angle+random(-160,200))
-		TNT1 A 0 A_ChangeFlag("nodropoff",0)
-		TNT1 A 0 A_Jump(16,2)
-		TNT1 A 0 A_TakeInventory("EvadeNow",999)
-		TNT1 A 0 A_JumpIfTargetInLOS("See")
-		goto roam
 	See:
-		TNT1 A 0 A_ChangeFlag("ismonster",1)
-		TNT1 A 0 A_JumpIfHealthLower(20,"BleedOut")
-		TNT1 A 0 A_JumpIf(floorz<z-4,2)
-		TNT1 A 0 A_JumpIfInventory("EvadeNow",1,"see_evade")
 		SSWV AABBCCDD 2 A_Chase
 		TNT1 A 0 A_JumpIfTargetInLOS("See")
 		goto roam
 	Roam:
-		TNT1 A 0 A_TakeInventory("EvadeNow",1)
 		TNT1 A 0 A_Jump(160,2)
 		TNT1 A 0 A_AlertMonsters
 		TNT1 A 0 A_Jump(216,1)
@@ -98,12 +76,6 @@ actor HoopBubble:WolfensteinSS replaces WolfensteinSS{
 		SSWV B 3 A_Wander
 		SSWV BCCDD 3 A_Chase
 		goto see
-	BleedOut:
-		TNT1 A 0 A_ChangeFlag("nopain",1)
-		"####" AAAA 0 A_SpawnItemEx("BleedOut",0,0,32,1,0,-1,0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
-		SSWV A 1
-		TNT1 A 0 A_ChangeFlag("nopain",0)
-		goto see+1
 	Pain:
 		SSWV H 3
 		SSWV H 3 A_Pain
@@ -185,5 +157,3 @@ actor HoopBubble:WolfensteinSS replaces WolfensteinSS{
 		goto Dead
 	}
 }
-
-

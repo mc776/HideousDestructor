@@ -2,35 +2,12 @@
 //   Inventory flags
 // ------------------------------------------------------------
 
-actor Timer:InventoryFlag{inventory.maxamount 65535}
-actor NotShot:InventoryFlag{inventory.maxamount 65535}
-
 actor WeaponBusy:InventoryFlag{}
 actor IsMoving:InventoryFlag{inventory.maxamount 20 inventory.interhubamount 0}
 
 actor IsGibbed:InventoryFlag{}
 actor VileCount:InventoryFlag{inventory.maxamount 7}
 actor HasDroppedGun:InventoryFlag{}
-
-
-actor EvadeNow:InventoryFlag{}
-
-actor bleedout
-{
-	+missile
-	damagetype "BleedOut"
-	height 2
-	radius 2
-	damage (random(1,3))
-	states
-	{
-	spawn:
-		TNT1 A 1
-		stop
-	}
-}
-
-
 
 actor IsWeaponReady:InventoryFlag{}
 

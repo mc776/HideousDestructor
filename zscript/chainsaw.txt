@@ -263,7 +263,26 @@ enum lumberstatus{
 
 
 
+class HDSawPuffShitty:FastProjectile{
+	default{
+		damage(0);
+		speed 42;height 1;radius 2;
+	}
+	states{
+	spawn:
+		TNT1 A 1;
+		stop;
+	death:
+		TNT1 A 10 A_PlaySound("weapons/rifleclick",0,0.4);
+		stop;
+	xdeath:
+		TNT1 A 10 A_PlaySound("weapons/pocket",0,0.4);
+		stop;
+	}
+}
 
+
+class WasChoppingFlesh:InventoryFlag{}
 class HDSawPuff:IdleDummy{
 	default{
 		+puffonactors +bloodsplatter +puffgetsowner +hittracer +nointeraction
