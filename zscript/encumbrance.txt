@@ -71,7 +71,8 @@ extend class HDPlayerPawn{
 		);
 		int useammotypes=forcefull?(1+2+4+8+16+32+64+128+256):0;
 		if(countinv("DERPUsable"))useammotypes|=USE_9;
-		if(countinv("HERPUsable")||countinv("PortableLiteAmp"))useammotypes|=(USE_426|USE_BATTERY);
+		if(countinv("HERPUsable"))useammotypes|=USE_426;
+		if(countinv("HERPUsable")||countinv("PortableLiteAmp"))useammotypes|=USE_BATTERY;
 		if(countinv("HDIEDKit"))useammotypes|=USE_ROCKET;
 
 		//scriptified weapons
