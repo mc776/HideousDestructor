@@ -53,10 +53,11 @@ class GyroGrenade:SlowProjectile{
 		if(!primed&&random(0,20)){
 			if(speed>50)painsound="misc/punch";else painsound="misc/fragknock";
 			actor a=spawn("IdleDummy",pos);a.stamina=10;a.A_PlaySound(painsound,CHAN_AUTO);
-			A_SpawnItemEx("DudRocket",0,0,0,
+			[bmissileevenmore,a]=A_SpawnItemEx("DudRocket",0,0,0,
 				random(30,60),random(-10,10),random(-10,10),
 				random(0,360),SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS,0
 			);
+			dudrocket(a).isrocket=isrocket;
 			destroy();
 			return;
 		}
@@ -273,6 +274,7 @@ class DudRocketAmmo:HDAmmo{
 	}
 }
 class DudRocket:HDUPK{
+	bool isrocket;
 	default{
 		projectile; -nogravity -noteleport +bounceonactors
 		-noblockmap -grenadetrail -floorclip +forcexybillboard
@@ -301,9 +303,9 @@ class DudRocket:HDUPK{
 			bsolid=true;
 		}
 	dead:
-		ROCQ A 500 A_Jump(32,"clean");
-		ROCQ A 500 A_Jump(8,"Explode");
-		loop;
+		ROCQ A 0 A_Jump(8,"clean");
+		ROCQ A 1 A_SetTics(random(100,isrocket?10000:50000));
+		goto explode;
 	clean:
 		ROCQ A -1;
 		stop;
