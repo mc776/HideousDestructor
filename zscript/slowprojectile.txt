@@ -12,6 +12,7 @@ class SlowProjectile:HDBullet{
 	double divrad;
 	double distancetravelled;
 	int airburst;
+	bool primed;
 	default{
 		+bloodlessimpact -noteleport +forcexybillboard
 		+notelestomp
@@ -136,6 +137,7 @@ class SlowProjectile:HDBullet{
 			//track distance travelled
 			distancetravelled+=speedfrac;
 			if(airburst&&distancetravelled>airburst){
+				primed=true;
 				ExplodeSlowMissile();
 				return;
 			}

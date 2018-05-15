@@ -8,7 +8,7 @@ extend class HDWeapon{
 		let ggg=gyrogrenade(spawn("GyroGrenade",pos+(0,0,height-8)));
 		ggg.angle=angle;ggg.pitch=pitch-2;ggg.target=self;ggg.master=self;
 		ggg.primed=false;
-		if(invoker.airburst)ggg.airburst=max(15,abs(invoker.airburst))*HDCONST_ONEMETRE;
+		if(invoker.airburst)ggg.airburst=max(10,abs(invoker.airburst))*HDCONST_ONEMETRE;
 		invoker.airburst=0;
 	}
 	action void ModAirBurst(int amt){
@@ -35,7 +35,7 @@ extend class HDHandlers{
 	}
 }
 class GyroGrenade:SlowProjectile{
-	bool primed;bool isrocket;
+	bool isrocket;
 	default{
 		-noextremedeath -noteleport +bloodlessimpact
 		height 2; radius 2; scale 0.33;
