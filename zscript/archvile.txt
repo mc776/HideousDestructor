@@ -248,7 +248,6 @@ class ArchFiend:Archvile replaces ArchVile{
 		VILE AABBCCDDEEFF 3 A_VileChase();
 		VILE A 0{
 			if(oldpos==pos.xy)bnoclip=true;
-			else if(checkmove(pos.xy)) bnoclip=false;
 		}
 		loop;
 	seefriendly:
@@ -285,7 +284,10 @@ class ArchFiend:Archvile replaces ArchVile{
 	missileend:
 		VILE PO 4 bright light("HELL");
 		VILE N 8 bright light("HELL");
-		VILE A 0{bnopain=false;}
+		VILE A 0{
+			bnopain=false;
+			if(checkmove(pos.xy)) bnoclip=false;
+		}
 		goto see;
 	heal:
 		TNT1 A 0 A_radiusgive("VileCount",64,RGF_CORPSES|RGF_MONSTERS,random(1,3));
