@@ -69,10 +69,10 @@ class GyroGrenade:SlowProjectile{
 			if(primed&&isrocket){
 				double dangle=absangle(angle,angleto(blockingobject));
 				if(dangle<20){
-					dmgg+=random(400,800);
+					dmgg+=random(200,600);
 					if(hd_Debug)A_Log("CRIT!");
 					dmggtp="SmallArms3";
-				}else if(dangle<40)dmgg+=random(200,600);
+				}else if(dangle<40)dmgg+=random(100,400);
 			}
 			blockingobject.damagemobj(self,target,dmgg,dmggtp);
 		}
@@ -161,15 +161,13 @@ class HDHEAT:GyroGrenade{
 		//damage
 		if(blockingobject){
 			int dmgg=random(70,240);
-			name dmggtp="SmallArms2";
-			if(primed&&isrocket){
-				double dangle=absangle(angle,angleto(blockingobject));
-				if(dangle<20){
-					dmgg+=random(2000,4000);
-					if(hd_Debug)A_Log("CRIT!");
-					dmggtp="SmallArms3";
-				}else if(dangle<40)dmgg+=random(200,1200);
-			}
+			name dmggtp="SmallArms3";
+			double dangle=absangle(angle,angleto(blockingobject));
+			if(dangle<20){
+				dmgg+=random(2000,4000);
+				if(hd_Debug)A_Log("CRIT!");
+			}else if(dangle<40)dmgg+=random(200,1200);
+			else dmggtp="SmallArms2";
 			blockingobject.damagemobj(self,target,dmgg,dmggtp);
 		}
 

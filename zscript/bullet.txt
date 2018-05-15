@@ -307,7 +307,7 @@ class HDBullet:HDActor{
 				int gibs=max(randompick(0,0,0,1),dmg*0.1);
 				hdf.give(hitactor,"SawGib",gibs);
 			}else{
-				if(pierce){
+				if(pierce||pushfactor<1.){
 					HDBulletDamager.Get(hitactor,self,target,dmg,damagetype);
 					if(
 						!hitactor.player
