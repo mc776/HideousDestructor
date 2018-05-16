@@ -16,11 +16,14 @@ class HDLoadBox:switchabledecoration{
 			busespecial=false;
 		}
 		OWWV AA 4{
-			A_GiveInventory("Clip");
 			vel.z+=3;
 		}
 		OWWV A 18{
 			A_GiveToTarget("HDLoaded");
+			if(
+				!target.countinv("HEATAmmo")
+				&&target.countinv("HDRL")
+			)A_GiveToTarget("HEATAmmo");
 			target.A_Print("Weapons reloaded.");
 			target.A_PlaySound("misc/w_pkup",CHAN_AUTO);
 		}

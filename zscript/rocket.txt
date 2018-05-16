@@ -304,7 +304,8 @@ class DudRocket:HDUPK{
 		}
 	dead:
 		ROCQ A 0 A_Jump(64,"clean");
-		ROCQ A 1 A_SetTics(random(100,isrocket?random(100,50000):50000));
+		ROCQ A 1 A_SetTics(random(1,isrocket?random(1,100000):100000));
+		ROCQ A 0 A_Jump(64,"dead");
 		goto explode;
 	clean:
 		ROCQ A -1;
