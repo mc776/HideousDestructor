@@ -711,39 +711,6 @@ class HDBulletDamager:Thinker{
 
 
 
-// transitional?
-
-//special usage:accuracy=variation
-//A_GiveInventory("DecoBulleter");
-class DecoBulleter:ActionItem{
-	default{
-		missiletype "HDBullet";
-	}
-	states{
-	pickup:
-		TNT1 A 0{
-			actor p=spawn(invoker.missilename,pos+(0,0,height-6));
-			if(!p)return;
-			p.target=self;p.angle=angle;p.pitch=pitch;
-			if(invoker.speed)p.speed=invoker.speed;
-			double pf=invoker.accuracy;
-			if(pf){
-				p.vel+=(
-					frandom(-pf,pf),frandom(-pf,pf),frandom(-pf,pf)
-				);
-				p.speed+=10*frandom(-pf,pf);
-			}
-			p.vel+=self.vel;
-		}fail;
-	}
-}
-class DecoBulleter9f:DecoBulleter{
-	default{
-		missiletype "HDBullet9";
-		speed 500;
-		accuracy 1;
-	}
-}
 
 
 
