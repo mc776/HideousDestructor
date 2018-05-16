@@ -313,9 +313,12 @@ extend class HDPlayerPawn{
 		//move pivot point a little behind the player's view
 		anglechange=deltaangle(angle,lastangle);
 		if(!teleported && player.onground && zat-pos.z==0){
-			if(abs(anglechange)>1){      
+			if(abs(anglechange)>0.1){
 				int dir=90;
-				if(anglechange<0) dir=-90;
+				if(anglechange<0)dir=-90;
+
+				if(gunbraced&&player.cmd.buttons&BT_USE)dir=-dir;
+
 				trymove(self.pos.xy-(cos(angle+dir),sin(angle+dir))*0.8,false);
 			}
 			int ptchch=clamp(abs(pitchchange),0,10); //THE CLAMP IS A BANDAID
