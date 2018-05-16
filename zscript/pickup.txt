@@ -2,6 +2,57 @@
 // Pickup Archetypes
 //-------------------------------------------------
 
+class GrabThinker:Thinker{
+	actor picktarget;
+	actor pickobj;
+	int ticker;
+	override void postbeginplay(){
+		super.postbeginplay();
+	}
+	override void tick(){
+		if(!picktarget||!pickobj){destroy();return;}
+		super.tick();
+		ticker++;
+		if(ticker<4)pickobj.setorigin(
+			0.5*(
+				(picktarget.pos+(0,0,picktarget.height-10))
+				+pickobj.pos
+			),true
+		);else{
+			if(
+				!pickobj
+				||!picktarget
+				||picktarget.health<1
+			){
+				destroy();
+				return;
+			}
+			pickobj.A_CallSpecial(
+				pickobj.special,pickobj.args[0],
+				pickobj.args[1],pickobj.args[2],
+				pickobj.args[3],pickobj.args[4]
+			);
+
+			let ht=hdupk(pickobj);
+			if(ht){
+				ht.picktarget=picktarget;
+				ht.a_hdupkgive();
+				destroy();
+				return;
+			}
+
+			let pt=hdpickup(pickobj);
+			if(pt){pt.actualpickup(picktarget);destroy();return;}
+
+			let wt=hdweapon(pickobj);
+			if(wt){wt.actualpickup(picktarget);destroy();return;}
+
+			let tt=inventory(pickobj);
+			if(tt){tt.touch(picktarget);destroy();return;}
+		}
+	}
+}
+
 //Projectile for using things that aren't switches and doors
 class userpickerupper:hdactor{
 	actor picktarget;

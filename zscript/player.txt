@@ -496,11 +496,33 @@ class HDPlayerPawn:PlayerPawn{
 			if(!(oldinput&BT_USE))hasgrabbed=false;
 			//pickerupper
 			overloaded=CheckEncumbrance();
-			if(!hasgrabbed)A_SpawnItemEx(
-				"userpickerupper",1,0,height-16,
-				cos(pitch)*4,0,sin(-pitch)*4,
-				0,SXF_NOCHECKPOSITION|SXF_SETTARGET
-			);
+			if(!hasgrabbed){
+				flinetracedata grabline;
+				linetrace(
+					angle,56,pitch,
+					flags:TRF_ALLACTORS|TRF_THRUBLOCK|TRF_THRUHITSCAN,
+					offsetz:height-12,
+					data:grabline
+				);
+				let grabbed=grabline.hitactor;
+				if(
+					grabbed
+					&&checksight(grabbed)
+					&&(
+						hdupk(grabbed)
+						||inventory(grabbed)
+					)
+				){
+					if(
+						grabbed is "hdupk"
+						||grabbed is "hdpickup"
+						||grabbed is "weapon"
+					)hasgrabbed=true;
+					let grabthink=new("GrabThinker");
+					grabthink.picktarget=self;
+					grabthink.pickobj=grabbed;
+				}
+			}
 			if(
 				!corpsekicktimer
 				&&zat==pos.z
