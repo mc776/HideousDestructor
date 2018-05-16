@@ -82,12 +82,17 @@ class HDMedikitter:HDWoundFixer{
 		weapon.slotnumber 9;
 		scale 0.27;
 	}
+	enum MediNums{
+		MEDIKIT_MAXFLESH=2,
+	}
 	bool useonother;
-	bool usedflesh;
+	int injectableflesh;
 	int usedpatches;
 	actor usedon;
 	override void beginplay(){
-		usedflesh=false;useonother=false;usedpatches=0;usedon=null;
+		injectableflesh=MEDIKIT_MAXFLESH;
+		usedpatches=0;
+		useonother=false;usedon=null;
 		super.beginplay();
 	}
 	override double,int weaponbulk(){
@@ -109,7 +114,7 @@ class HDMedikitter:HDWoundFixer{
 	states{
 	select:
 		TNT1 A 0{
-			if(invoker.usedflesh && invoker.usedpatches>HD_MEDPATCHLIMIT) A_SelectWeapon("SelfBandage");
+			if(invoker.injectableflesh<1 && invoker.usedpatches>HD_MEDPATCHLIMIT) A_SelectWeapon("SelfBandage");
 		}
 		TNT1 A 10{
 			if(!getcvar("hd_helptext")) return;
@@ -185,7 +190,7 @@ class HDMedikitter:HDWoundFixer{
 				A_Print("They have no lasting injuries to treat.");
 				return resolvestate("nope");
 			}
-			if(getplayerinput(MODINPUT_BUTTONS)&BT_ALTATTACK && invoker.usedflesh){
+			if(getplayerinput(MODINPUT_BUTTONS)&BT_ALTATTACK && invoker.injectableflesh<1){
 				A_Print("You have no Second Flesh to apply.");
 				return resolvestate("nope");
 			}
@@ -221,7 +226,7 @@ class HDMedikitter:HDWoundFixer{
 	applythathotshit:
 		TNT1 A 10{
 			if(invoker.target){
-				invoker.usedflesh=true;
+				invoker.injectableflesh--;
 				invoker.target.A_PlaySound("misc/punch",CHAN_WEAPON);
 				invoker.target.A_PlaySound("misc/bulletflesh",CHAN_BODY);
 				invoker.target.A_PlaySound("misc/smallslop",CHAN_VOICE);
@@ -233,7 +238,7 @@ class HDMedikitter:HDWoundFixer{
 		goto nope;
 	altfire:
 		TNT1 A 0{
-			if(invoker.usedflesh){
+			if(invoker.injectableflesh<1){
 				A_Print("You are out of Second Flesh.");
 				A_Refire("nope");
 			}else A_Refire("althold");
@@ -317,7 +322,7 @@ class HDMedikitter:HDWoundFixer{
 		TNT1 A 10{
 			if(!(self is "HDPlayerPawn"))return;
 			invoker.usedon=self;
-			invoker.usedflesh=true;
+			invoker.injectableflesh--;
 			A_PlaySound("misc/punch",CHAN_WEAPON);
 			A_PlaySound("misc/bulletflesh",CHAN_BODY);
 			A_PlaySound("misc/smallslop",CHAN_VOICE);
@@ -372,7 +377,7 @@ class HDMedikitter:HDWoundFixer{
 		}stop;
 	}
 	override string pickupmessage(){
-		if(usedflesh||usedpatches>0)return "Picked up a used medikit.";
+		if(injectableflesh<MEDIKIT_MAXFLESH||usedpatches>0)return "Picked up a used medikit.";
 		return "Picked up an opened medikit.";
 	}
 }

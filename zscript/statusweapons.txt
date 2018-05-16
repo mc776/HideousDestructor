@@ -400,7 +400,8 @@ extend class HDStatusBar{
 				0.8
 			);
 			drawwepnum(HD_MEDPATCHLIMIT-ww.usedpatches,HD_MEDPATCHLIMIT);
-			if(!ww.usedflesh)drawwepdot(-16,-10,(4,3));
+			if(ww.injectableflesh==2)drawwepdot(-20,-10,(3,3));
+			if(ww.injectableflesh>=1)drawwepdot(-16,-10,(3,3));
 		}
 		else if(w is "HDBlueBottler"){
 			drawimage(

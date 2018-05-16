@@ -153,6 +153,10 @@ class ZombieStormtrooper:ZombieMan{
 		loop;
 	missile:
 		#### A 0{
+			if(!target){
+				setstatelabel("spawn2");
+				return;
+			}
 			double dt=distance3d(target);
 			if(
 				firemode==-2
