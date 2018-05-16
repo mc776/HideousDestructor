@@ -53,111 +53,6 @@ class GrabThinker:Thinker{
 	}
 }
 
-//Projectile for using things that aren't switches and doors
-class userpickerupper:hdactor{
-	actor picktarget;
-	actor pickobj;
-	default{
-		+solid +noblockmonst +notrigger +noteleport +cannotpush
-		height 2;radius 2;
-	}
-	override bool cancollidewith(actor other,bool passive){
-		return(
-			other is "HDUPK"
-			||other is "Inventory"
-		);
-	}
-	override void postbeginplay(){
-		picktarget=target;
-		if(vel.xy==(0,0))vel.x=minvel;
-		for(int i=0;i<10;i++){
-			//can't use a simple trymove because lol silly map haxxx
-//			if(!trymove(pos.xy+vel.xy,true,true)){
-			setorigin(pos+vel,false);
-			if(!trymove(pos.xy,true,true)){
-				if(!checksight(picktarget)){destroy();return;}
-				if(
-					blockingmobj
-					&&abs(
-						(picktarget.pos.z+picktarget.height-12)
-						-(blockingmobj.pos.z+blockingmobj.height)
-					)<56
-				){
-					blockingmobj.target=picktarget;
-					if(
-						blockingmobj is "HDUPK"
-						&&blockingmobj.findstate("grab",true)
-					){
-						hdupk(blockingmobj).picktarget=picktarget;
-						blockingmobj.setstatelabel("grab");
-						let ppp=HDPlayerPawn(picktarget);if(ppp)ppp.hasgrabbed=true;
-						destroy();return;
-					}
-					else if(
-						blockingmobj is "HDUPK"
-						||blockingmobj is "HDPickup"
-						||blockingmobj is "HDWeapon"
-					){
-						pickobj=blockingmobj;
-						let ppp=HDPlayerPawn(target);if(ppp)ppp.hasgrabbed=true;
-						setstatelabel("grabpickup");
-						return;
-					}
-				}
-//				if(blockingline){destroy();return;}
-			}
-//			addz(vel.z);
-			if(floorz>pos.z && floorz<target.height+target.pos.z){  
-				setz(floorz);
-				vel.z=0;
-			}
-		}
-		destroy();
-	}
-	states{
-	grabpickup:
-		TNT1 A 0{bsolid=false;}
-		TNT1 AAAA 1{
-			if(!pickobj){destroy();return;}
-			pickobj.setorigin(
-				0.5*((picktarget.pos+(0,0,picktarget.height-10))+pickobj.pos)
-			,true);
-		}
-		TNT1 A 0{
-			if(
-				!pickobj
-				||!picktarget
-				||picktarget.health<1
-			){
-				destroy();
-				return;
-			}
-			pickobj.A_CallSpecial(
-				pickobj.special,pickobj.args[0],
-				pickobj.args[1],pickobj.args[2],
-				pickobj.args[3],pickobj.args[4]
-			);
-
-			let ht=hdupk(pickobj);
-			if(ht){
-				ht.picktarget=picktarget;
-				ht.a_hdupkgive();
-				return;
-			}
-
-			let pt=hdpickup(pickobj);
-			if(pt){pt.actualpickup(picktarget);return;}
-
-			let wt=hdweapon(pickobj);
-			if(wt){wt.actualpickup(picktarget);return;}
-
-			let tt=inventory(pickobj);
-			if(tt){tt.touch(picktarget);return;}
-		}stop;
-	}
-}
-
-
 //Usable pickup.
 class HDPickup:CustomInventory{
 	actor picktarget;
@@ -167,7 +62,7 @@ class HDPickup:CustomInventory{
 	property bulk:bulk;
 	default{
 		+inventory.invbar +inventory.persistentpower
-		+solid +noblockmonst +notrigger +dontgib
+		-solid +noblockmonst +notrigger +dontgib
 		inventory.interhubamount int.MAX;
 
 		hdpickup.droptranslation true;
@@ -208,12 +103,6 @@ class HDPickup:CustomInventory{
 		}else trypickup(other);
 		other.A_PlaySound(pickupsound,CHAN_AUTO);
 		other.A_Log(string.format("\cg%s",pickupmessage()),true);
-	}
-	override bool cancollidewith(actor other,bool passive){
-		return(
-			other.bmissile||
-			other is "userpickerupper"
-		);
 	}
 	states{
 	use:	TNT1 A 0;
@@ -270,12 +159,6 @@ class HDUPK:HDActor{
 		hdupk.pickupsound "weapons/pocket";//"misc/i_pkup";
 		hdupk.pickupmessage "Picked something up.";
 		hdupk.pickuptype "none";
-	}
-	override bool cancollidewith(actor other,bool passive){
-		return(
-			other.bmissile||
-			other is "userpickerupper"
-		);
 	}
 	override void postbeginplay(){
 		super.postbeginplay();

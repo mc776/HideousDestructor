@@ -288,14 +288,6 @@ class TrippingFrag:FragP{
 		health int.MAX;painchance 256; mass 10;
 		radius 2;height 2;
 	}
-	override bool cancollidewith(actor other,bool passive){
-		if(other is "userpickerupper"){
-			spawn("FragP",pos);
-			if(tracer)tracer.destroy();
-			destroy();return false;
-		}
-		return false;
-	}
 	override void postbeginplay(){
 		super.postbeginplay();
 
@@ -353,10 +345,22 @@ class TrippingFrag:FragP{
 				setz(stuckto.centerceiling()+stucktoheight);break;
 			case -1:
 				setz(stuckto.centerfloor()+stucktoheight);break;
+			case 999:
+				setstatelabel("oldspawn");break;
 			default:
 				break;
 			}
 		}wait;
+	oldspawn:
+		FRAG A -1;
+		stop;
+	grab:
+		---- A 0{
+			if(tracer)tracer.destroy();
+			bnogravity=false;
+			bshootable=false;
+			stucktier=999;
+		}goto super::grab;
 	pain:
 		---- A 0{
 			if(!random(0,9)){

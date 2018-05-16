@@ -498,13 +498,21 @@ class HDPlayerPawn:PlayerPawn{
 			overloaded=CheckEncumbrance();
 			if(!hasgrabbed){
 				flinetracedata grabline;
-				linetrace(
-					angle,56,pitch,
-					flags:TRF_ALLACTORS|TRF_THRUBLOCK|TRF_THRUHITSCAN,
-					offsetz:height-12,
-					data:grabline
-				);
-				let grabbed=grabline.hitactor;
+				actor grabbed=null;
+				int pzofs=12;
+				while(
+					pzofs>4
+					&&!grabbed
+				){
+					linetrace(
+						angle,56,pitch,
+						flags:TRF_ALLACTORS|TRF_THRUBLOCK|TRF_THRUHITSCAN,
+						offsetz:height-pzofs,
+						data:grabline
+					);
+					grabbed=grabline.hitactor;
+					pzofs--;
+				}
 				if(
 					grabbed
 					&&checksight(grabbed)
@@ -518,9 +526,17 @@ class HDPlayerPawn:PlayerPawn{
 						||grabbed is "hdpickup"
 						||grabbed is "weapon"
 					)hasgrabbed=true;
-					let grabthink=new("GrabThinker");
-					grabthink.picktarget=self;
-					grabthink.pickobj=grabbed;
+					if(
+						grabbed is "hdupk"
+						&&grabbed.findstate("grab",true)
+					){
+						hdupk(grabbed).picktarget=self;
+						grabbed.setstatelabel("grab");
+					}else{
+						let grabthink=new("GrabThinker");
+						grabthink.picktarget=self;
+						grabthink.pickobj=grabbed;
+					}
 				}
 			}
 			if(

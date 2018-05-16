@@ -14,7 +14,7 @@ class HDWeapon:Weapon{
 	}
 	default{
 		+weapon.ammo_optional +weapon.alt_ammo_optional +weapon.noalert +weapon.noautoaim
-		+solid +noblockmonst +notrigger +dontgib
+		+noblockmonst +notrigger +dontgib
 		weapon.ammogive 0;weapon.ammogive2 0;
 		weapon.ammouse1 0;weapon.ammouse2 0;
 		weapon.bobstyle "Alpha";
@@ -170,9 +170,6 @@ class HDWeapon:Weapon{
 		other.A_PlaySound(pickupsound,CHAN_AUTO);
 		attachtoowner(other);
 		tipped=0;
-	}
-	override bool cancollidewith(actor other,bool passive){
-		return(other is "userpickerupper");
 	}
 	//because weapons don't use proper "ammo" anymore for loaded items
 	virtual void InitializeWepStats(bool idfa=false){}
