@@ -604,7 +604,7 @@ extend class HDStatusBar{
 				gimmehud
 				||cplayer.buttons&BT_ATTACK
 				||cplayer.buttons&BT_ALTATTACK
-				?((value*6/maxvalue)<<2):
+				?max(((value*6/maxvalue)<<2),!!value):
 				(value*24/maxvalue)
 			,2)
 		);
