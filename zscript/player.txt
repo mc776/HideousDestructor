@@ -526,18 +526,20 @@ class HDPlayerPawn:PlayerPawn{
 						grabbed is "hdupk"
 						||grabbed is "hdpickup"
 						||grabbed is "weapon"
-					)hasgrabbed=true;
-					if(
-						grabbed is "hdupk"
-						&&grabbed.findstate("grab",true)
 					){
-						hdupk(grabbed).picktarget=self;
-						grabbed.setstatelabel("grab");
-					}else{
-						let grabthink=new("GrabThinker");
-						grabthink.picktarget=self;
-						grabthink.pickobj=grabbed;
-					}
+						hasgrabbed=true;
+						if(
+							grabbed is "hdupk"
+							&&grabbed.findstate("grab",true)
+						){
+							hdupk(grabbed).picktarget=self;
+							grabbed.setstatelabel("grab");
+						}else{
+							let grabthink=new("GrabThinker");
+							grabthink.picktarget=self;
+							grabthink.pickobj=grabbed;
+						}
+					}else if(grabbed is "Inventory")inventory(grabbed).touch(self);
 				}
 			}
 			if(

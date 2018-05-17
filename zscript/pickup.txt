@@ -1,7 +1,6 @@
 //-------------------------------------------------
 // Pickup Archetypes
 //-------------------------------------------------
-
 class GrabThinker:Thinker{
 	actor picktarget;
 	actor pickobj;
@@ -154,12 +153,13 @@ class HDUPK:HDActor{
 	property pickupmessage:pickupmessage;
 	property pickupsound:pickupsound;
 	default{
-		+noblockmonst +notrigger +dontgib
+		+solid
 		height 8;radius 8;
 		hdupk.pickupsound "weapons/pocket";//"misc/i_pkup";
 		hdupk.pickupmessage "Picked something up.";
 		hdupk.pickuptype "none";
 	}
+	override bool cancollidewith(actor other,bool passive){return false;}
 	override void postbeginplay(){
 		super.postbeginplay();
 
