@@ -135,7 +135,7 @@ class ZM66AssaultRifle:HDWeapon{
 			A_Light1();
 			HDFlashAlpha(-16);
 			A_PlaySound("weapons/rifle",CHAN_WEAPON);
-			A_ZoomFactor(min(0.99,1.01-0.01*invoker.weaponstatus[ZM66S_AUTO]),
+			A_ZoomFactor(min(0.99,1.01-0.01*min(invoker.weaponstatus[ZM66S_AUTO],3)),
 				ZOOM_INSTANT|ZOOM_NOSCALETURNING
 			);
 			A_MuzzleClimb(
