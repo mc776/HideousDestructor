@@ -103,9 +103,10 @@ class HDPlayerPawn:PlayerPawn{
 				muzzleclimb2.y+=0.05;
 				muzzleclimb3.y+=0.05;
 			}else{
+				gunbraced=false;
 				flinetracedata glt;
 				linetrace(
-					angle+42,12,pitch,
+					angle+22,12,pitch,
 					offsetz:height-7,
 					offsetforward:cos(pitch)*10,
 					data:glt
@@ -117,7 +118,7 @@ class HDPlayerPawn:PlayerPawn{
 					gunbraced=true;
 				}else{
 					linetrace(
-						angle-42,12,pitch,
+						angle-22,12,pitch,
 						offsetz:height-7,
 						offsetforward:cos(pitch)*10,
 						data:glt
