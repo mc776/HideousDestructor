@@ -564,13 +564,13 @@ class HDMobster:IdleDummy{
 						)
 					,master.pos.z),false);
 					bored++;
-					if(bored>boredthreshold){
-						bored=0;
-						master.goal=null;master.bchasegoal=false;
-						A_ClearTarget();master.A_ClearTarget();
-						if(master.findstate("idle"))master.setstatelabel("idle");
-						else master.setstatelabel("spawn");
-					}
+				}
+				if(bored>boredthreshold||(master.bfriendly&&!random(0,100))){
+					bored=0;
+					master.goal=null;master.bchasegoal=false;
+					A_ClearTarget();master.A_ClearTarget();
+					if(master.findstate("idle"))master.setstatelabel("idle");
+					else master.setstatelabel("spawn");
 				}
 			}else{
 				master.goal=null;master.bchasegoal=false;
