@@ -48,6 +48,7 @@ class HERPBot:HDUPK{
 	bool scanright;
 	int botid;
 
+	override bool cancollidewith(actor other,bool passive){return other.bmissile;}
 	override void postbeginplay(){
 		super.postbeginplay();
 		startangle=angle;

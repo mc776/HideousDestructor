@@ -30,6 +30,7 @@ class DERPBot:HDUPK{
 		hdupk.pickupmessage "Picked up a Defence, Engagement, Reconnaissance and Patrol robot.";
 		obituary "%o went derp.";
 	}
+	override bool cancollidewith(actor other,bool passive){return other.bmissile;}
 	bool DerpTargetCheck(bool face=false){
 		if(!target)return false;
 		if(
@@ -335,6 +336,7 @@ class DERPBot:HDUPK{
 		DERP A 0{
 			if(master is "EnemyDERP") master.destroy();
 			else DerpAlert("\cg  Operational fault.\cj Standby for repairs.");
+			pickupmessage=string.format("%s It is damaged.",pickupmessage);
 			A_PlaySound("weapons/bigcrack",CHAN_AUTO);
 			A_SpawnItemEx("HDSmoke",0,0,1, vel.x,vel.y,vel.z+1, 0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);
 			A_SpawnChunks("BigWallChunk",12);
@@ -442,6 +444,7 @@ class DERPDEAD:DERPUsable{
 		//$Sprite "DERPA0"
 		-inventory.invbar
 		hdpickup.bulk ENC_DERP;
+		inventory.pickupmessage "Picked up a Defence, Engagement, Reconnaissance and Patrol robot. It is damaged";
 	}
 }
 
