@@ -70,9 +70,6 @@ class HDWoundFixer:HDWeapon{
 			else A_DropInventory("HDArmourWorn");
 			A_ClearRefire();
 		}goto ready;
-	deselect:
-		TNT1 A 0{if(player&&cvar.getcvar("hd_helptext",player).getint())A_Print(" ");}
-		goto super::deselect;
 	}
 }
 class HDMedikitter:HDWoundFixer{

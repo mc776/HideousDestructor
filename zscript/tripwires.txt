@@ -33,12 +33,12 @@ class Tripwire:HDWeapon{
 	altfire:
 		TNT1 A 0 UndoAll();
 		goto nope;
-	deselect:
+	deselect0:
 		TNT1 A 10{
 			UndoAll();
 			A_PlaySound("weapons/pocket",CHAN_WEAPON);
 			if(countinv("NulledWeapon"))A_SetTics(0);
-		}goto super::deselect;
+		}goto super::deselect0;
 	select:
 		TNT1 A 10{
 			if(!countinv("HDFragGrenadeAmmo")){

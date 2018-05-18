@@ -211,6 +211,7 @@ class HDWeapon:Weapon{
 		TNT1 A 0{
 			A_SetInventory("WeaponBusy",1);
 			A_SetCrosshair(21);
+			if(player&&cvar.getcvar("hd_helptext",player).getint())A_Print(" ");
 			return resolvestate("deselect0");
 		}
 	deselect0:
