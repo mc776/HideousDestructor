@@ -123,7 +123,8 @@ class HDAmBox:HDActor{
 	override bool used(actor user){
 		if(!user||user.countinv("IsMoving"))return false;
 		if(tapped&&distance3d(user)<42){
-			if(
+			if(disarmed)setstatelabel("goodies");
+			else if(
 				!random(0,63)
 				||skullkey==1&&user.countinv("RedSkull")
 				||skullkey==2&&user.countinv("YellowSkull")
@@ -343,21 +344,15 @@ class HDAmBoxUnarmed:HDAmBox{
 		//$Title "Ammo Box(Unarmed)"
 		//$Sprite "OWWVA0"
 
-	states{
-	open:
-		---- A 0 A_Jump(256,"goodies");
-	death:
-	trapped:
-		---- A 0 A_PlaySound("weapons/plasmax",CHAN_VOICE);
-		goto brokengoodies;
+	override void postbeginplay(){
+		hdactor.postbeginplay();
+		disarmed=true;
 	}
 }
 class HDAmBoxDisarmed:HDAmBoxUnarmed{
 	states{
-	tap:
-		---- A 0 A_Jump(256,"goodies");
 	spawn:
-		OWWV A -1;
+		OWWV A -1 nodelay{tapped=true;}
 		stop;
 	}
 }
