@@ -59,7 +59,6 @@ class hdladdertop:hdactor{
 			if(
 				htdiff
 			){
-				A_PlaySound("misc/ladder");
 
 				//spawn the ladder end
 				target=spawn("hdladderbottom",tm.pos);
@@ -67,7 +66,6 @@ class hdladdertop:hdactor{
 				target.master=master;
 				target.angle=angle;
 				target.pitch=-27;
-				target.translation=master.translation;
 
 				vector2 mv2=mv*0.02;
 				vector3 newpos=tm.pos;
@@ -78,16 +76,21 @@ class hdladdertop:hdactor{
 					newpos.xy+=mv2;
 					actor sss=spawn("hdladdersection",newpos);
 					sss.master=self;sss.target=target;sss.angle=angle+frandom(-1.,1.);
-					sss.translation=master.translation;
 					sss.health=i;
 					target.setorigin(newpos+(0,0,-sectionlength*i),true);
+					if(master){
+						sss.translation=master.translation;
+						target.translation=master.translation;
+					}
 				}
 
 				//reposition the thing
 				setorigin((tm.pos.xy-mv*radius,floorz),true);
 
-				//only complete if within throwable range, else abort
-				if(master&&pos.z-master.pos.z<108){
+				//only complete if start or within throwable range, else abort
+				if(!master)return;
+				A_PlaySound("misc/ladder");
+				if(pos.z-master.pos.z<108){
 					master.A_Log(string.format("You hang up a ladder.%s",master.getcvar("hd_helptext")?" Use the ladder to climb.":""),true);
 					master.A_TakeInventory("PortableLadder",1);
 					return;
