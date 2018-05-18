@@ -678,7 +678,7 @@ class MageImpBall2:HDImpBall{
 	default{
 		missiletype "MageImpBallTail2";
 		damage 2;
-		speed 4;
+		speed 7;
 		height 4;radius 4;
 		scale 0.6;
 		decal "Scorch";
@@ -689,10 +689,11 @@ class MageImpBall2:HDImpBall{
 	}
 	states{
 	spawn:
-		BAL1 A 2 bright fast{
-			A_SeekerMissile(20,20);
+		BAL1 A 2 bright{
+			A_SeekerMissile(40,40);
+			A_FaceTracer(2,2);
 			stamina++;
-			if(stamina>20){
+			if(stamina>10){
 				pitch+=frandom(-1,1);
 				angle+=frandom(-1,1);
 				setstatelabel("spawn2");
