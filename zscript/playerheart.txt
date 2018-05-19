@@ -307,13 +307,14 @@ extend class HDPlayerPawn{
 							}
 							break;
 						default:
-							aggravateddamage-=10;
-							woundcount-=10;
+							aggravateddamage-=20;
+							woundcount-=20;
 							A_RadiusGive("health",512,
 								RGF_GIVESELF|RGF_MONSTERS|RGF_MONSTERS|
 								RGF_CUBE|RGF_NOSIGHT,
 								1000
 							);
+							if(!random(0,3))spawn("BFGVileShard",pos);
 							break;
 						}
 					}
