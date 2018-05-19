@@ -111,9 +111,13 @@ class HDBullet:HDActor{
 
 			setorigin((skypos.xy,pos.z),false);
 			if(ceilingz>skypos.z){
+				if(ceilingpic!=skyflatnum){
+					destroy();return;
+				}
 				inthesky=false;
 				binvisible=false;
-				setz(ceilingz-0.1);
+				if(skypos.z<floorz)setz(ceilingz-0.1);
+				else setz(skypos.z);
 			}
 			if(vel.z>BULLET_TERMINALVELOCITY)vel.z-=grav;
 			return;
@@ -259,6 +263,10 @@ class HDBullet:HDActor{
 				pierce=true;
 			}else if(netpenetration>0.2){
 				pierce=true;
+			}
+			if(hd_debug>1){
+				if(pierce)A_Log("--pierce-->");
+				else A_Log("|STOPPED|");
 			}
 
 			//determine damage
