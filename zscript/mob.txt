@@ -199,7 +199,10 @@ struct HDMobAI play{
 				victim&&
 				(
 					!victim.bshootable
-					||!(caller.isfriend(victim))
+					||(
+						!(caller.isfriend(victim))
+						&&!victim.bnodamage
+					)
 				)&&(
 					caller.absangle(caller.angleto(victim),
 						caller.angleto(target)
