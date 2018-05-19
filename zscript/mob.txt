@@ -376,6 +376,7 @@ struct HDMobAI play{
 		bool befrightened=caller.bfrightened;
 		bool bechasegoal=caller.bchasegoal;
 		vector3 oldpos=caller.pos;
+		double oldang=caller.angle;
 		if(flee){
 			caller.bfrightened=true;
 			caller.bchasegoal=false;
@@ -398,7 +399,8 @@ struct HDMobAI play{
 
 		//call a_chase again for more missile
 		caller.A_Chase(meleestate,missilestate,CHF_DONTMOVE|CHF_NODIRECTIONTURN);
-		return;
+
+		//caller.angle=oldang+(deltaangle(oldang,angle))*0.3;
 	}
 
 	//eyeball out how much one's projectile will drop and raise pitch accordingly
