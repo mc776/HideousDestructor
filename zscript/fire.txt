@@ -310,11 +310,23 @@ class Heat:Inventory{
 				if(realamount>random(150,1000))hdf.give(owner,"SawGib",1);
 				if(!random(0,15))owner.A_TakeInventory("VileCount",1);
 			}
-			actor aaa=spawn("HDFlameRed",owner.pos+(
+			actor aaa;
+			if(
+				realamount<500
+				||countinv("SawGib")/burnoutthreshold>0.99
+			)aaa=spawn("HDFlameRed",owner.pos+(
 				frandom(-radius,radius),
 				frandom(-radius,radius),
 				frandom(2,owner.height)
-			));
+			));else{
+				aaa=spawn("HDFlameRedBig",owner.pos+(
+					frandom(-radius,radius)*0.6,
+					frandom(-radius,radius)*0.6,
+					frandom(5,owner.height*0.2)
+				));
+				spawn("HDSmoke",aaa.pos);
+				aaa.scale=(frandom(0.9,1.2),randompick(-1,1)*frandom(0.9,1.1))*min(realamount*0.001,3.);
+			}
 			aaa.target=owner;
 			aaa.A_PlaySound("misc/firecrkl",CHAN_BODY,clamp(realamount*0.001,0,0.2));
 		}

@@ -402,6 +402,33 @@ class HDFlameRed:HDPuff{
 		wait;
 	}
 }
+class HDFlameRedBig:HDActor{
+	default{
+		+nointeraction
+		+rollsprite +rollcenter +spriteangle +bright
+		translation 2;
+		spriteangle 90;
+		renderstyle "add";
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		addz(5);roll=-90;
+	}
+	void A_FlameFade(){
+		A_FadeOut(frandom(-0.002,0.02));
+		addz(frandom(-0.1,0.1));
+		scale*-frandom(0.08,1.01);
+		if(target)setxyz(target.pos+(
+			(frandom(-target.radius,target.radius),frandom(-target.radius,target.radius))*0.6,
+			frandom(0,target.height*0.6)+scale.x*24)
+		);
+	}
+	states{
+	spawn:
+		BAL7 AB 1 light("REDFIRE") A_FlameFade();
+		loop;
+	}
+}
 class HDSmokeSmall:HDFlameRed{
 	override void postbeginplay(){
 		hdactor.postbeginplay();
