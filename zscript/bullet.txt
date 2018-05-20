@@ -253,10 +253,14 @@ class HDBullet:HDActor{
 			netpenetration=min(0.9999,netpenetration/hitresistance);
 
 			if(critangle>frandom(50,150*netpenetration)){
+				//the code below doesn't work. bullet never exits and just damages twice.
+				destroy();return;
+
 				if(hd_debug)A_Log("Ricochet!");
 				throughthis=hitactor;
 				angle+=frandom(50,310);pitch+=frandom(-40,40);
 				A_ChangeVelocity(cos(pitch)*speed,0,sin(pitch)*-speed,CVF_RELATIVE);
+				setorigin(vel.unit()*hitactor.radius*(2*HDCONST_SQRTTWO),true);
 			}
 			else if(netpenetration>0.5){
 				throughthis=hitactor;
@@ -663,6 +667,7 @@ class HDBulletDamager:Thinker{
 		return hdbdd;
 	}
 	override void tick(){
+		if(globalfreeze||level.Frozen)return;
 		super.tick();
 		ticker--;
 		if(ticker>0)return;

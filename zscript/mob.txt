@@ -47,10 +47,8 @@ class HDCorpseFlags:ActionItem{
 }
 
 
-class TauntHandler : EventHandler
-{
-	override void NetworkProcess (ConsoleEvent e)
-	{
+class TauntHandler:EventHandler{
+	override void NetworkProcess(ConsoleEvent e){
 
 		//check to ensure the acting player can taunt
 		let ppp = playerpawn(players[e.player].mo);
@@ -104,6 +102,7 @@ class HDWound:Thinker{
 	int amount;
 	actor owner;
 	override void tick(){
+		if(globalfreeze||level.Frozen)return;
 		if(!owner){destroy();return;}
 		ticker++;
 		if(ticker>3){
