@@ -256,9 +256,8 @@ class HDBullet:HDActor{
 				if(hd_debug)A_Log("Ricochet!");
 				throughthis=hitactor;
 				angle+=deltaangle(angleto(hitactor),angle)+frandom(-10,10);
-				pitch+=frandom(-40,40);
+				pitch+=frandom(-10,10);
 				A_ChangeVelocity(cos(pitch)*speed,0,sin(pitch)*-speed,CVF_RELATIVE|CVF_REPLACE);
-				setorigin(vel.unit()*hitactor.radius*(2*HDCONST_SQRTTWO),true);
 			}
 			else if(netpenetration>0.5){
 				throughthis=hitactor;
