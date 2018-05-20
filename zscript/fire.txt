@@ -311,9 +311,9 @@ class Heat:Inventory{
 				if(!random(0,15))owner.A_TakeInventory("VileCount",1);
 			}
 			actor aaa;
+			double raa=health<1?realamount*countinv("SawGib")/burnoutthreshold:realamount;
 			if(
-				realamount<500
-				||countinv("SawGib")/burnoutthreshold>0.99
+				raa<600
 			)aaa=spawn("HDFlameRed",owner.pos+(
 				frandom(-radius,radius),
 				frandom(-radius,radius),
@@ -324,8 +324,11 @@ class Heat:Inventory{
 					frandom(-radius,radius)*0.6,
 					frandom(5,owner.height*0.2)
 				));
-				spawn("HDSmoke",aaa.pos);
-				aaa.scale=(frandom(0.9,1.2),randompick(-1,1)*frandom(0.9,1.1))*min(realamount*0.001,3.);
+				aaa.scale=(frandom(0.9,1.2),randompick(-1,1)*frandom(0.9,1.1))*clamp((raa-600)*0.0003,0.6,2.);
+				if(!random(0,3)){
+					hdf.give(owner,"SawGib",1);
+					owner.A_TakeInventory("VileCount",1);
+				}
 			}
 			aaa.target=owner;
 			aaa.A_PlaySound("misc/firecrkl",CHAN_BODY,clamp(realamount*0.001,0,0.2));
