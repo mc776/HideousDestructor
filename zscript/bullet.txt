@@ -249,21 +249,20 @@ class HDBullet:HDActor{
 				else if(penetration>2)damagetype="SmallArms0";
 				else damagetype="Bashing";
 			}else{
-				if(netpenetration>0.12)damagetype="SmallArms3";
-				else if(netpenetration>0.1)damagetype="SmallArms2";
-				else if(netpenetration>0.07)damagetype="SmallArms1";
-				else if(netpenetration>0.02)damagetype="SmallArms0";
+				if(netpenetration>0.24)damagetype="SmallArms3";
+				else if(netpenetration>0.18)damagetype="SmallArms2";
+				else if(netpenetration>0.12)damagetype="SmallArms1";
+				else if(netpenetration>0.07)damagetype="SmallArms0";
 				else damagetype="Bashing";
 			}
 
-			if(critangle>frandom(50,150*netpenetration)){
+			if(critangle>frandom(70,120)){
 				if(hd_debug)A_Log("Ricochet!");
 				throughthis=hitactor;
 				angle+=deltaangle(angleto(hitactor),angle)+frandom(-10,10);
 				pitch+=frandom(-10,10);
 				A_ChangeVelocity(cos(pitch)*speed,0,sin(pitch)*-speed,CVF_RELATIVE|CVF_REPLACE);
-			}
-			else if(netpenetration>0.5){
+			}else if(netpenetration>0.5){
 				throughthis=hitactor;
 				pierce=true;
 			}else if(netpenetration>0.12){
