@@ -344,7 +344,7 @@ class HDBullet:HDActor{
 			vel+=(frandom(-rvel,rvel),frandom(-rvel,rvel),frandom(-rvel,rvel));
 
 			//destroy if too slow
-			if(vel dot vel<(50*50)){
+			if(hitactor!=throughthis||vel dot vel<(50*50)){
 				setstatelabel("death");
 			}
 			return;
