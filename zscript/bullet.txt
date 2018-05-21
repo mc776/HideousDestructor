@@ -128,7 +128,7 @@ class HDBullet:HDActor{
 		//set some basic variables
 		speed=vel.length();
 		speedsquared=vel dot vel;
-		penetration=(speed+(mass>>2))*accuracy*0.001/pushfactor*frandom(0.9,1.1);
+		penetration=(speed+(mass>>2))*accuracy*0.001/pushfactor*frandom(0.7,1.);
 		A_FaceMovementDirection();
 
 		//hack to escape shooter
@@ -211,20 +211,7 @@ class HDBullet:HDActor{
 			tracer=hitactor;
 			setorigin(blt.hitlocation+blt.hitdir*frandom(0,hitactor.radius*0.8),true);
 
-			double hitresistance=(hitactor.radius*2+min((hitactor.spawnhealth()>>7),100)*0.3);
-
-			//damagetype?
-			if(penetration>12)damagetype="SmallArms3";
-			else if(penetration>8)damagetype="SmallArms2";
-			else if(penetration>5)damagetype="SmallArms1";
-			else if(penetration>2)damagetype="SmallArms0";
-			else damagetype="Bashing";
-
-			//if within actor, tumble
-			if(
-				max(abs(pos.x-hitactor.pos.x),abs(pos.y-hitactor.pos.y))
-				<hitactor.radius*0.1*woundhealth
-			)damagetype=random(0,1)?"SmallArms2":"SmallArms3";
+			double hitresistance=max(1,min(hitactor.radius*2,64),128-hitactor.painchance);
 
 			//crit?
 			bool crit;
@@ -245,12 +232,29 @@ class HDBullet:HDActor{
 			bool pierce=false;
 			double netpenetration=penetration;
 			let hdp=hdplayerpawn(hitactor);
+			netpenetration=min(0.9999,netpenetration/hitresistance);
+			int hdpwoundcount=0;
 			if(hdp){
+				hdpwoundcount=hdp.woundcount;
 				netpenetration=max(0,
-					netpenetration-hdp.armourlevel*frandom(1,2)
+					netpenetration-hdp.armourlevel*frandom(0.1,0.4)
 				);
 			}
-			netpenetration=min(0.9999,netpenetration/hitresistance);
+
+			//damagetype?
+			if(hitactor.player){
+				if(penetration>12)damagetype="SmallArms3";
+				else if(penetration>8)damagetype="SmallArms2";
+				else if(penetration>5)damagetype="SmallArms1";
+				else if(penetration>2)damagetype="SmallArms0";
+				else damagetype="Bashing";
+			}else{
+				if(netpenetration>0.12)damagetype="SmallArms3";
+				else if(netpenetration>0.1)damagetype="SmallArms2";
+				else if(netpenetration>0.07)damagetype="SmallArms1";
+				else if(netpenetration>0.02)damagetype="SmallArms0";
+				else damagetype="Bashing";
+			}
 
 			if(critangle>frandom(50,150*netpenetration)){
 				if(hd_debug)A_Log("Ricochet!");
@@ -262,7 +266,7 @@ class HDBullet:HDActor{
 			else if(netpenetration>0.5){
 				throughthis=hitactor;
 				pierce=true;
-			}else if(netpenetration>0.2){
+			}else if(netpenetration>0.12){
 				pierce=true;
 			}
 			if(hd_debug>1){
@@ -274,7 +278,7 @@ class HDBullet:HDActor{
 			int dmg=(speed+mass)*0.009;
 
 			int maxdmg=dmg+woundhealth;
-			if(pierce){
+			if(!hdp&&pierce){
 				dmg*=2;
 				maxdmg+=woundhealth;
 				if(crit){
@@ -291,7 +295,10 @@ class HDBullet:HDActor{
 				||!hitactor.bshootable
 			){
 				Puff();
-			}else{
+			}else if(
+				pierce
+				||(hdp&&hdp.woundcount>hdpwoundcount)
+			){
 				vector3 hitdir=blt.hitdir;
 				for(int i=0;i<dmg;i+=60){
 					bool gbg;actor blood;
@@ -319,9 +326,10 @@ class HDBullet:HDActor{
 				if(pierce||pushfactor<1.){
 					HDBulletDamager.Get(hitactor,self,target,dmg,damagetype);
 					if(
-						!hitactor.player
+						pierce
 						&&hitactor.bshootable
 						&&!hitactor.bnodamage
+						&&!hdp
 					)hdwound.inflict(hitactor,
 						random((mass>>6),dmg)
 					);
@@ -777,9 +785,9 @@ class HDBullet776:HDBullet{
 }
 class HDBullet00:HDBullet{
 	default{
-		pushfactor 0.8;
+		pushfactor 0.9;
 		mass 576;
-		accuracy 3;
+		accuracy 4;
 		woundhealth 2;
 	}
 	override void postbeginplay(){
