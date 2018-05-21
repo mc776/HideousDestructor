@@ -17,22 +17,26 @@ class ClipBoxPickup:RandomSpawner replaces ClipBox{
 		dropitem "BossRifleSpawner",256,1;
 	}
 }
-class ClipBoxPickup1:ZM66RifleMags{
+class ClipBoxPickup1:IdleDummy{
 	override void postbeginplay(){
 		super.postbeginplay();
+		A_SpawnItemEx("ZM66RifleMags",flags:SXF_NOCHECKPOSITION);
 		if(random(0,2))A_SpawnItemEx("HDFragGrenadeAmmo",-3,-3,flags:SXF_NOCHECKPOSITION);
 		if(random(0,2)){
 			A_SpawnItemEx("HDRocketAmmo",3,3,flags:SXF_NOCHECKPOSITION);
 			A_SpawnItemEx("ZM66AssaultRifle",1,1,flags:SXF_NOCHECKPOSITION);
 		}else A_SpawnItemEx("ZM66Random",1,1,flags:SXF_NOCHECKPOSITION);
+		destroy();
 	}
 }
-class ClipBoxPickup2:HDSMGMag{
+class ClipBoxPickup2:IdleDummy{
 	override void postbeginplay(){
 		super.postbeginplay();
+		A_SpawnItemEx("ZM66RifleMags",flags:SXF_NOCHECKPOSITION);
 		if(random(0,2))A_SpawnItemEx("HDFragGrenadeAmmo",-3,-3,flags:SXF_NOCHECKPOSITION);
 		if(random(0,2))A_SpawnItemEx("HDSMGMag",3,3,flags:SXF_NOCHECKPOSITION);
 		A_SpawnItemEx("HDSMG",1,1,flags:SXF_NOCHECKPOSITION);
+		destroy();
 	}
 }
 class ShellRandom:RandomSpawner replaces Shell{
