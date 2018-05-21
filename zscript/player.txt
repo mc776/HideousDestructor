@@ -692,13 +692,14 @@ extend class HDPlayerPawn{
 
 		if(!random(0,7))aggravateddamage--;
 
-		health=maxhealth();
+		healthing(maxhealth()-health);
 
 		overloaded=CheckEncumbrance();
 
 		A_TakeInventory("WeaponBusy");
 		A_TakeInventory("IsMoving");
 		A_TakeInventory("IsInHell");
+		A_TakeInventory("Heat");
 		gunbraced=false;
 
 		GiveBasics();
