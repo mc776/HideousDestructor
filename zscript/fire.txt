@@ -301,6 +301,7 @@ class Heat:Inventory{
 		if(
 			!(ticker%3)
 			&&realamount>frandom(100,140)
+			&&owner.bshootable
 			&&!owner.bnodamage
 			&&!owner.countinv("ImmunityToFire")
 			&&owner.countinv("SawGib")<burnoutthreshold*frandom(0.8,1.2)
@@ -313,7 +314,8 @@ class Heat:Inventory{
 			actor aaa;
 			double raa=health<1?realamount*countinv("SawGib")/burnoutthreshold:realamount;
 			if(
-				raa<600
+				owner is "PersistentDamager"
+				||raa<600
 			)aaa=spawn("HDFlameRed",owner.pos+(
 				frandom(-radius,radius),
 				frandom(-radius,radius),
