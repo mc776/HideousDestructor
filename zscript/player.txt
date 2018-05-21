@@ -500,13 +500,13 @@ class HDPlayerPawn:PlayerPawn{
 			if(!hasgrabbed){
 				flinetracedata grabline;
 				actor grabbed=null;
-				int pzofs=15;
+				int pzofs=17;
 				while(
 					pzofs>4
 					&&!grabbed
 				){
 					linetrace(
-						angle,56,pitch,
+						angle,56,pitch+(pzofs-8)*0.1,
 						flags:TRF_ALLACTORS|TRF_THRUBLOCK|TRF_THRUHITSCAN,
 						offsetz:height-pzofs,
 						offsetforward:-4,
