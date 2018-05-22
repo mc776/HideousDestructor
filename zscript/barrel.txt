@@ -150,7 +150,7 @@ class KillerBarrel:HDActor{
 		POB1 A 0{
 			A_SetSize(-1,8);
 			A_SetScale(0.7);
-			A_SetTranslucent(1,0);
+			A_SetRenderstyle(1,Style_Normal);
 			setstatelabel("dying");
 			A_GiveInventory("Heat",6660);
 			bshootable=true;
@@ -342,6 +342,7 @@ class KillerFireCan:KillerBarrel{
 			if(!random(0,1))A_SpawnChunks("HDSmokeChunk",1,2,12);
 		}
 		POB1 A -1{
+			A_SetRenderstyle(1,Style_Normal);
 			A_PlaySound("vile/firestrt",CHAN_AUTO,0.4);
 			if(!random(0,4))A_HDBlast(
 				random(12,128),random(2,4),64,"Balefire"

@@ -385,7 +385,8 @@ class HDFlameRed:HDPuff{
 	}
 	states{
 	spawn:
-		BAL1 ABCDE 1 bright light("REDFIRE");
+		BAL1 A 0 nodelay A_SpawnItemEx("HDRedFireLight",flags:SXF_SETTARGET);
+		BAL1 ABCDE 1;
 	death:
 		TNT1 A 0{
 			grow=0.01;
@@ -400,6 +401,20 @@ class HDFlameRed:HDPuff{
 		//PUF2 C -1{frame=random(0,3);}//
 		SMOK CD -1{frame=random(0,3);}
 		wait;
+	}
+}
+class HDRedFireLight:PointLight{
+	override void postbeginplay(){
+		args[0]=60;
+		args[1]=40;
+		args[2]=10;
+		args[3]=64;
+		args[4]=0;
+	}
+	override void tick(){
+		super.tick();
+		if(args[3]<1){destroy();return;}
+		else args[3]*=frandom(0.8,1.09);
 	}
 }
 class HDFlameRedBig:HDActor{
