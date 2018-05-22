@@ -237,6 +237,7 @@ class Heat:Inventory{
 	double realamount;
 	int burnoutthreshold;
 	actor heatfield;
+	actor heatlight;
 	enum HeatNumbers{
 		HEATNUM_DEFAULTVOLUME=12*12*48*4,
 	}
@@ -260,6 +261,8 @@ class Heat:Inventory{
 		volumeratio=1/baseinversevolumeratio;
 		burnoutthreshold=max(user.gibhealth,user.spawnhealth(),100);
 		A_SetSize(owner.radius,owner.height);
+		heatlight=HDFireLight(spawn("HDFireLight"));
+		heatlight.target=owner;hdfirelight(heatlight).heattarget=self;
 	}
 	override void DoEffect(){
 		if(!owner){destroy();return;}
@@ -318,17 +321,24 @@ class Heat:Inventory{
 				owner is "PersistentDamager"
 				||raa<600
 				||burnoutthreshold<sawgib
-			)aaa=spawn("HDFlameRed",owner.pos+(
-				frandom(-radius,radius),
-				frandom(-radius,radius),
-				frandom(2,owner.height)
-			));else{
+			){
+				aaa=spawn("HDFlameRed",owner.pos+(
+					frandom(-radius,radius),
+					frandom(-radius,radius),
+					frandom(2,owner.height)
+				));
+			}else{
 				aaa=spawn("HDFlameRedBig",owner.pos+(
 					frandom(-radius,radius)*0.6,
 					frandom(-radius,radius)*0.6,
 					frandom(5,owner.height*0.2)
 				));
 				aaa.scale=(frandom(0.9,1.2),randompick(-1,1)*frandom(0.9,1.1))*clamp((raa-600)*0.0003,0.6,2.);
+				if(!heatlight)heatlight=HDFireLight(spawn("HDFireLight"));
+				heatlight.args[0]=200;
+				heatlight.args[1]=150;
+				heatlight.args[2]=90;
+				heatlight.args[3]=min(realamount*0.1,256);
 				if(!random(0,3)){
 					hdf.give(owner,"SawGib",1);
 					owner.A_TakeInventory("VileCount",1);
@@ -396,7 +406,28 @@ class Heat:Inventory{
 	}
 }
 
-
+class HDFireLight:PointLight{
+	heat heattarget;
+	override void postbeginplay(){
+		args[0]=200;
+		args[1]=150;
+		args[2]=100;
+		args[3]=0;
+		args[4]=0;
+	}
+	override void tick(){
+		super.tick();
+		if(!heattarget||!target)destroy();
+		if(!args[0])return;
+		if(args[3]<1){
+			args[0]=0;
+			args[1]=0;
+			args[2]=0;
+			args[3]=0;
+		}
+		else args[3]*=frandom(0.9,0.99);
+	}
+}
 
 
 
