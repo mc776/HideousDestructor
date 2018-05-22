@@ -335,6 +335,7 @@ class Heat:Inventory{
 				));
 				aaa.scale=(frandom(0.9,1.2),randompick(-1,1)*frandom(0.9,1.1))*clamp((raa-600)*0.0003,0.6,2.);
 				if(!heatlight)heatlight=HDFireLight(spawn("HDFireLight"));
+				heatlight.target=owner;hdfirelight(heatlight).heattarget=self;
 				heatlight.args[0]=200;
 				heatlight.args[1]=150;
 				heatlight.args[2]=90;
@@ -360,7 +361,7 @@ class Heat:Inventory{
 				&&(frandom(0.,1.)<dmgamt)
 			)dmgamt=1.;
 			setxyz(owner.pos);
-			owner.damagemobj(self,self,dmgamt,"thermal",DMG_NO_ARMOR);
+			owner.damagemobj(self,self,dmgamt,"thermal",DMG_NO_ARMOR|DMG_THRUSTLESS);
 			if(!owner)return;
 		}
 
@@ -389,7 +390,7 @@ class Heat:Inventory{
 					htt.realamount+=togive;
 					realamount-=togive;
 				}
-				if(togive>2)hlt.hitactor.damagemobj(self,owner,1,"Thermal");
+				if(togive>2)hlt.hitactor.damagemobj(self,owner,1,"thermal",DMG_NO_ARMOR|DMG_THRUSTLESS);
 			}
 		}
 
@@ -417,7 +418,7 @@ class HDFireLight:PointLight{
 	}
 	override void tick(){
 		super.tick();
-		if(!heattarget||!target)destroy();
+		if(!heattarget||!target){destroy();return;}
 		if(!args[0])return;
 		if(args[3]<1){
 			args[0]=0;

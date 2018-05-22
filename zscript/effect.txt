@@ -427,7 +427,7 @@ class HDFlameRedBig:HDActor{
 	spawn:
 		BAL7 ABABABABABAB 1 A_FlameFade();
 		SMOK A 0{
-			scale=(randompick(-1,1),1.);
+			scale.x=scale.y;
 			roll=frandom(0,360);
 			A_SetRenderstyle(0.6,STYLE_Translucent);
 			vel.z+=2;
