@@ -565,16 +565,6 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 		#### G 0{bfrightened=false;}
 		goto see;
 
-	death.bleedout:
-		#### H 5{
-			{hdmobai.corpseflags(self);}
-			actor ttt=spawn("tempshield",pos);
-			ttt.vel=vel;ttt.master=self;
-		}
-		#### I 5{
-			if(!random(0,2))A_PlaySound("grunt/bleedout",CHAN_VOICE);
-		}
-		goto deathpostscream;
 	death:
 		#### H 5{
 			{hdmobai.corpseflags(self);}
@@ -582,7 +572,6 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 			ttt.vel=vel;ttt.master=self;
 		}
 		#### I 5 A_Scream();
-	deathpostscream:
 		#### J 5{
 			actor ttt=spawn("tempshield2",pos);
 			ttt.vel=vel;ttt.master=self;

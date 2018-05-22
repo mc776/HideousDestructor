@@ -110,6 +110,7 @@ class HDWound:Thinker{
 			ticker=0;
 			if(amount>random(0,100)){
 				owner.damagemobj(owner,null,max(1,(amount>>3)),"bleedout",DMG_NO_PAIN);
+				if(owner.health<1&&amount<random(10,60))owner.deathsound="";
 				owner.A_SpawnItemEx(owner.bloodtype,
 					frandom(-12,12),frandom(-12,12),
 					flags:SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
@@ -154,6 +155,7 @@ struct HDMobAI play{
 			caller.maxstepheight=getdefaultbytype(caller.getclass()).maxstepheight;
 			caller.bnotautoaimed=false;
 			caller.balwaystelefrag=false;
+			caller.deathsound=getdefaultbytype(caller.getclass()).deathsound;
 			if(gibbed&&caller.findinventory("IsGibbed")){
 				caller.setstatelabel("raisegibbed");
 				caller.A_TakeInventory("IsGibbed");
