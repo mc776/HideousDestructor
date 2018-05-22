@@ -13,6 +13,7 @@ class SlowProjectile:HDBullet{
 	double distancetravelled;
 	int airburst;
 	bool primed;
+	double skyz;
 	default{
 		+bloodlessimpact -noteleport +forcexybillboard
 		+notelestomp
@@ -45,6 +46,31 @@ class SlowProjectile:HDBullet{
 			}
 			return;
 		}
+		if(inthesky){
+			setorigin(pos+(vel.xy,0),true);
+			if(max(abs(skypos.x),abs(skypos.y))>=32768){destroy();return;}
+			vel.z-=grav;
+			if(ceilingz>skyz){
+				if(ceilingpic!=skyflatnum){
+					destroy();return;
+				}
+				inthesky=false;
+				binvisible=false;
+				if(skyz<floorz)setz(ceilingz-0.1);
+				else setz(skyz);
+			}
+
+			//nexttic
+			if(CheckNoDelay()){
+				if(tics>0)tics--;  
+				while(!tics){
+					if(!SetState(CurState.NextState)){
+						return;
+					}
+				}
+			}
+			return;
+		}
 
 		//point actor in velocity
 		if(hd_debug && speed>600)A_Log(String.Format("%s is over speed 600. Consider using HDBullet for this.",getclassname()));
@@ -55,15 +81,13 @@ class SlowProjectile:HDBullet{
 		// Handle movement
 		fcheckposition tm;
 		speed=vel.length();
+		vector3 posbak=pos;
 
 		int count=max(2,speed*divrad);
 		vector3 frac=vel/count;
 		double speedfrac=speed/count;
 		for(int i=0;i<count;i++){
-			if(inthesky){
-				setorigin(pos+frac-(0,0,frac.z),true);
-			}
-			else if(!TryMove(pos.xy+frac.xy,true,true,tm)){
+			if(!TryMove(pos.xy+frac.xy,true,true,tm)){
 
 				//hack to prevent exploding on lower sky
 				let l=tm.ceilingline;
@@ -121,6 +145,9 @@ class SlowProjectile:HDBullet{
 					if(grav<=0){destroy();return;} //it's not coming back down
 					inthesky=true;
 					binvisible=true;
+					setorigin(posbak+vel,true);
+					vel.z-=grav;
+					return;
 				}
 			}else{
 				inthesky=false;
@@ -143,7 +170,7 @@ class SlowProjectile:HDBullet{
 			}
 		}
 		//bullet drop again, updating the actual velocity
-		vel.z-=getgravity();
+		vel.z-=grav;
 
 		//thus ends the "handle movement" part
 
