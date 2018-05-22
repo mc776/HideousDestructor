@@ -24,7 +24,7 @@ actor HDP_SG:HDPlayerPawn{
 	player.displayname "Enforcer"
 	player.startitem Hunter
 	player.startitem SoldierExtras
-	player.startitem HDShellAmmo 24
+	player.startitem HDShellAmmo 36
 	player.startitem Blooper
 	player.startitem HDRocketAmmo 4
 	player.startitem HDFragGrenadeAmmo 6
@@ -160,7 +160,7 @@ actor HDP_BF:HDPlayerPawn{
 actor HDP_SS:HDPlayerPawn{
 	player.displayname "Contractor"
 	player.startitem Slayer
-	player.startitem HDShellAmmo 24
+	player.startitem HDShellAmmo 36
 	player.startitem HDPistol
 	player.startitem SoldierExtras
 	player.startitem BlueArmour 999
@@ -340,11 +340,11 @@ actor RebelLoadout:ActionItem{
 		goto otherstuff
 	weapon2:
 		TNT1 A 0 A_GiveInventory("Hunter")
-		TNT1 A 0 A_GiveInventory("HDShellAmmo",random(1,24))
+		TNT1 A 0 A_GiveInventory("HDShellAmmo",random(1,36))
 		goto otherstuff
 	weapon3:
 		TNT1 A 0 A_GiveInventory("Slayer",1)
-		TNT1 A 0 A_GiveInventory("HDShellAmmo",random(1,24))
+		TNT1 A 0 A_GiveInventory("HDShellAmmo",random(1,36))
 		goto otherstuff
 	weapon4a:
 		TNT1 A 0 A_GiveInventory("ZM66AltStarter",2)
