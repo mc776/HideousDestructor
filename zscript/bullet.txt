@@ -211,7 +211,8 @@ class HDBullet:HDActor{
 			tracer=hitactor;
 			setorigin(blt.hitlocation+blt.hitdir*frandom(0,hitactor.radius*0.8),true);
 
-			double hitresistance=max(1,min(hitactor.radius*2,64),128-hitactor.painchance);
+			double hitresistance=max(1,min(64,hitactor.mass>>4)*frandom(0.8,1.));
+//A_LogFloat(hitresistance);
 
 			//crit?
 			bool crit;
