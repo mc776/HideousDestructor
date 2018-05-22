@@ -49,6 +49,7 @@ class SlowProjectile:HDBullet{
 		if(inthesky){
 			setorigin(pos+(vel.xy,0),true);
 			if(max(abs(skypos.x),abs(skypos.y))>=32768){destroy();return;}
+			skyz+=vel.z;
 			vel.z-=grav;
 			if(ceilingz>skyz){
 				if(ceilingpic!=skyflatnum){
@@ -147,6 +148,7 @@ class SlowProjectile:HDBullet{
 					binvisible=true;
 					setorigin(posbak+vel,true);
 					vel.z-=grav;
+					skyz=pos.z;
 					return;
 				}
 			}else{

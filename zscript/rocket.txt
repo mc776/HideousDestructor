@@ -113,9 +113,11 @@ class GyroGrenade:SlowProjectile{
 		loop;
 	spawnrocket:
 		---- A 0{
-			brockettrail=true;
-			Gunsmoke();
-			A_PlaySound("weapons/rocklaunch",CHAN_VOICE);
+			if(!inthesky){
+				brockettrail=true;
+				Gunsmoke();
+				A_PlaySound("weapons/rocklaunch",CHAN_VOICE);
+			}
 		}
 		---- AAA 0{
 			actor sss=spawn("HDGunSmoke",pos-vel*0.1+(0,0,-4));
@@ -125,8 +127,12 @@ class GyroGrenade:SlowProjectile{
 		#### BA 1{
 			if(stamina>0){  
 				if(!inthesky){
+					brockettrail=true;
 					actor sss=spawn("HDGunsmoke",pos);
 					sss.vel=vel*0.1;
+				}else{
+					brockettrail=false;
+					bgrenadetrail=false;
 				}
 				A_ChangeVelocity(
 					cos(pitch)*60,0,
@@ -137,11 +143,11 @@ class GyroGrenade:SlowProjectile{
 		}
 		---- A 0{
 			if(primed){
-				A_PlaySound("weapons/rocklaunch",5);
+				if(!inthesky)A_PlaySound("weapons/rocklaunch",5);
 			}else{
 				primed=true;
 				brockettrail=false;
-				bgrenadetrail=true;
+				if(!inthesky)bgrenadetrail=true;
 			}
 		}loop;
 	death:
