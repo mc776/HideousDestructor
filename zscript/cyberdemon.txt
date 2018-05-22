@@ -665,10 +665,7 @@ class SatanRobo:Cyberdemon replaces CyberDemon{
 			random(-20,20),random(-20,20),random(24,80),
 			random(-1,1),random(-1,1),random(2,4)
 		);
-		CYBR O 0{
-			vel=(0,0,0);
-			spawn("CyberRemains",pos);
-		}
+		CYBR O 0 a_spawnitemex("CyberRemains",flags:SXF_NOCHECKPOSITION|SXF_SETMASTER);
 
 		CYBR PPPP 4 A_SpawnItemEx("HDSmoke",
 			random(-26,26),random(-26,26),random(12,40),
@@ -705,16 +702,26 @@ class CyberRemains:Actor{
 	default{
 		renderstyle "add";
 		radius 32;height 16;
+		+shootable +ghost
 	}
 	int smokelag;
+	override void postbeginplay(){
+		super.postbeginplay();
+		A_Die();
+	}
+	override void die(actor source,actor inflictor,int dmgflags){
+		super.die(source,inflictor,dmgflags);
+		bshootable=true;
+		HDF.Give(Self,"Heat",6666);
+	}
+	override void tick(){
+		if(master)setorigin(master.pos,true);
+		super.tick();
+	}
 	states{
 	spawn:
-		CYBR N 0 nodelay A_Die();
 	death:
 		CYBR NO 4;
-		CYBR O 0{
-			bshootable=true;HDF.Give(Self,"Heat",6666);
-		}
 	spawn2:
 		---- AA 1 A_SpawnItemEx("HDSmoke",
 			random(-30,30),random(-30,30),random(12,14),
@@ -741,7 +748,7 @@ class CyberRemains:Actor{
 			A_SetTics(random(1,smokelag/7));
 			smokelag++;
 			if(alpha>0.2)alpha-=0.04;
-			else A_FadeOut(0.002);
+			else A_FadeOut(0.001);
 		}
 		---- A 0 A_JumpIf(alpha<0.2,1);
 		loop; //NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO

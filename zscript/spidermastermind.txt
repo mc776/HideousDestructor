@@ -259,8 +259,7 @@ class Spiderdemon:SpiderMastermind replaces SpiderMastermind{
 
 		SPID PPQQR 4 bright A_SpawnItemEx("HDSmoke", random(-56,56), random(-56,56), random(12,14), random(-1,1),random(-1,1),random(1,3));
 		SPID R 0{
-			vel=(0,0,0);
-			spawn("SpiderRemains",pos);
+			a_spawnitemex("SpiderRemains",flags:SXF_NOCHECKPOSITION|SXF_SETMASTER);
 			bnofear=false;
 		}
 		SPID SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS 5 A_SpawnItemEx("HDSmoke", random(-66,66), random(-56,56), random(12,14), random(-1,1),random(-1,1), random(1,3),random(0,255));
@@ -284,6 +283,7 @@ class Spiderdemon:SpiderMastermind replaces SpiderMastermind{
 class SpiderRemains:CyberRemains{
 	states{
 	spawn:
+	death:
 		SPID R 0;
 		goto spawn2;
 	spawn3:
