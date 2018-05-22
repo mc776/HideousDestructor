@@ -425,8 +425,16 @@ class HDFlameRedBig:HDActor{
 	}
 	states{
 	spawn:
-		BAL7 AB 1 light("REDFIRE") A_FlameFade();
-		loop;
+		BAL7 ABABABABABAB 1 light("REDFIRE") A_FlameFade();
+		SMOK A 0{
+			scale=(randompick(-1,1),1.);
+			roll=frandom(0,360);
+			A_SetRenderstyle(0.6,STYLE_Translucent);
+			vel.z+=2;
+		}
+		SMOK AAAAAAAAAAA 3{
+			vel.z*=0.9;scale*=1.1;alpha-=0.05;
+		}stop;
 	}
 }
 class HDSmokeSmall:HDFlameRed{

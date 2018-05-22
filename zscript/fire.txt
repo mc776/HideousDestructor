@@ -298,13 +298,14 @@ class Heat:Inventory{
 		int ticker=level.time;
 
 		//flame
+		int sawgib=owner.countinv("SawGib");
 		if(
 			!(ticker%3)
 			&&realamount>frandom(100,140)
 			&&owner.bshootable
 			&&!owner.bnodamage
 			&&!owner.countinv("ImmunityToFire")
-			&&owner.countinv("SawGib")<burnoutthreshold*frandom(0.8,1.2)
+			&&sawgib<burnoutthreshold*frandom(0.7,2.)
 		){
 			if(owner.bshootable){
 				realamount+=frandom(1.2,3.0);
@@ -316,6 +317,7 @@ class Heat:Inventory{
 			if(
 				owner is "PersistentDamager"
 				||raa<600
+				||burnoutthreshold<sawgib
 			)aaa=spawn("HDFlameRed",owner.pos+(
 				frandom(-radius,radius),
 				frandom(-radius,radius),
@@ -354,9 +356,9 @@ class Heat:Inventory{
 
 
 		//convection, kinda
-		if(ticker>20&&!(ticker%2)){
+		if(ticker>20){
 			flinetracedata hlt;
-			double aimdist=realamount*0.1;
+			double aimdist=max(10,realamount*0.01);
 			owner.linetrace(
 				frandom(0,360),aimdist,frandom(-80,-90),
 				offsetz:0,
@@ -373,13 +375,16 @@ class Heat:Inventory{
 				if(!htt)htt=heat(hlt.hitactor.GiveInventoryType("heat"));
 				double distdiff=hlt.distance/aimdist;
 				double togive=realamount*(1.-distdiff)*0.01*volume/max(1.,htt.volume);
-				htt.realamount+=togive;
-				realamount-=togive;
+				if(togive>0){
+					htt.realamount+=togive;
+					realamount-=togive;
+				}
+				if(togive>2)hlt.hitactor.damagemobj(self,owner,1,"Thermal");
 			}
 		}
 
 		//cooldown
-		double reduce=inversevolumeratio;
+		double reduce=inversevolumeratio*max(realamount*0.001,1.);
 		if(owner.vel dot owner.vel > 4)reduce*=1.6;
 		double aang=absangle(angle,owner.angle);
 		if(aang>4.)reduce*=clamp(aang*0.4,1.,4.);

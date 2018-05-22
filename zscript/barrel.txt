@@ -39,6 +39,7 @@ class KillerBarrel:HDActor{
 		bloodcolor "ba ff 86";bloodtype "NotQuiteBloodSplat";
 		obituary "%o was rolled by a barrel.";
 		attacksound "misc/bloodchunks";
+		deathheight 4;
 	}
 	states{
 	spawn:
@@ -151,6 +152,9 @@ class KillerBarrel:HDActor{
 			A_SetScale(0.7);
 			A_SetTranslucent(1,0);
 			setstatelabel("dying");
+			A_GiveInventory("Heat",666);
+			bshootable=true;
+			bpushable=false;
 		}
 	dying:
 		POB1 AAAAAAA 50{
