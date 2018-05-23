@@ -476,6 +476,7 @@ class HDMobster:IdleDummy{
 			){
 				destroy();return;
 			}
+			bfriendly=master.bfriendly;
 			if(master.health<1){
 				threat=null;
 				return;
@@ -503,17 +504,17 @@ class HDMobster:IdleDummy{
 							itt.distance3d(master)<
 							(itt.radius+master.radius+12)*HDCONST_SQRTTWO
 						){
-							actor masbak=master;
-							master=itt;
-							masbak.A_Face(master);
-							masbak.setstatelabel("heal");
-							A_RaiseMaster(
+							itt.target=master.target;
+							master.A_Face(itt);
+							master.setstatelabel("heal");
+
+							actor masbak=master.master;
+							master.master=itt;
+							master.A_RaiseMaster(
 								RF_TRANSFERFRIENDLINESS
 								|RF_NOCHECKPOSITION
 							);
 							master.master=masbak;
-							master.target=masbak.target;
-							master=masbak;
 						}
 						break;
 					}
