@@ -32,7 +32,7 @@ class ClipBoxPickup1:IdleDummy{
 class ClipBoxPickup2:IdleDummy{
 	override void postbeginplay(){
 		super.postbeginplay();
-		A_SpawnItemEx("ZM66RifleMags",flags:SXF_NOCHECKPOSITION);
+		A_SpawnItemEx("HDSMGMag",flags:SXF_NOCHECKPOSITION);
 		if(random(0,2))A_SpawnItemEx("HDFragGrenadeAmmo",-3,-3,flags:SXF_NOCHECKPOSITION);
 		if(random(0,2))A_SpawnItemEx("HDSMGMag",3,3,flags:SXF_NOCHECKPOSITION);
 		A_SpawnItemEx("HDSMG",1,1,flags:SXF_NOCHECKPOSITION);
@@ -123,10 +123,14 @@ class HDAmBox:HDActor{
 		super.postbeginplay();
 		if(!random(0,7))skullkey=random(1,3);else skullkey=0;
 		disarmed=false;
+		disarmsteps=random(5,10);
 	}
 	override bool used(actor user){
-		if(!user||user.countinv("IsMoving"))return false;
-		if(tapped&&distance3d(user)<42){
+		if(
+			!user
+			||user.countinv("IsMoving")
+		)return false;
+		if(tapped){
 			if(disarmed)setstatelabel("goodies");
 			else if(
 				!random(0,63)
@@ -139,13 +143,14 @@ class HDAmBox:HDActor{
 				setstatelabel("trapped");
 			}
 			return true;
-		}else if(disarmsteps>random(5,10)){
+		}else if(disarmsteps<1){
 			setstatelabel("disarm");
 			return true;
 		}else{
 			vel.z++;
-			disarmsteps++;
 			tapped=true;
+			bool tt=false;
+			if(random(0,3)&&distance3d(user)<42)disarmsteps--;
 			setstatelabel("tap");
 			return true;
 		}
@@ -163,15 +168,15 @@ class HDAmBox:HDActor{
 	}
 	states{
 	tap:
-		AMMO A 10;
-		AMMO A 0{tapped=false;}
+		---- A 10;
+		---- A 0{tapped=false;}
 	spawn:
 		AMMO A -1;
 		stop;
 	death:
 	trapped:
-		AMMO A 3 A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
-		AMMO A 0{
+		---- A 3 A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
+		---- A 0{
 			tapped=false;
 			switch(random(0,5)){
 			case 1:
