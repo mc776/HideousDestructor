@@ -136,7 +136,7 @@ extend class HDPlayerPawn{
 
 			//MY ORIFICE IS BLEEDING!!!
 			if(woundcount){
-				int dm=(random(10,woundcount)-random(0,bloodpressure))*4/10;
+				int dm=(random(min(woundcount,10),woundcount)-random(0,bloodpressure))*4/10;
 				if(dm>0)damagemobj(self,lastthingthatwoundedyou,dm,"bleedout",DMG_THRUSTLESS);
 			}
 
@@ -272,14 +272,17 @@ extend class HDPlayerPawn{
 								blockthingsiterator.create(self,512);
 							while(rezz.next()){
 								actor rezzz=rezz.thing;
-								if(rezzz.bcorpse){
+								if(
+									rezzz.health<1
+									&&rezzz.findstate("raise")
+								){
 									master=rezzz;
 									A_RaiseMaster(RF_NOCHECKPOSITION);
 									rezzz.bfriendly=true;
 									rezzz.master=self;
 									plantbit.spawnplants(rezzz,12,33);
 									regenblues--;
-									if(random(0,3)){
+									if(!random(0,2)){
 										master=masbak;
 										break;
 									}
