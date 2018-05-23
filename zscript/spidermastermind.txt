@@ -162,7 +162,7 @@ class Spiderdemon:SpiderMastermind replaces SpiderMastermind{
 		SPID # 4{
 			A_FaceTarget(8,8);
 			A_Recoil(2);
-			double dist=distance3d(target);
+			double dist=target?distance3d(target):1000;
 			A_SetTics(clamp(dist*0.002,4,16));
 			spread=22./max(dist*0.012,1);
 			pitch-=dist*0.00002;
@@ -174,7 +174,7 @@ class Spiderdemon:SpiderMastermind replaces SpiderMastermind{
 			shotcount++;
 			A_PlaySound("weapons/bigrifle",shotchannel);
 
-			actor p=spawn("HDBullet776",pos+(0,0,24));
+			actor p=spawn("HDBullet776",pos+(0,0,32));
 			p.target=self;
 			p.angle=angle+frandom(-spread,spread);
 			p.pitch=pitch+frandom(-spread,spread);

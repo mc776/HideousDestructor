@@ -321,7 +321,6 @@ class ArchFiend:Archvile replaces ArchVile{
 		goto see;
 	heal:
 		VILE A 0 A_ChangeVileFlags(true);
-		TNT1 A 0 A_JumpIf(bfriendly,"healfriendly");
 		VILE "[\]" 8 bright light("HEAL");
 		VILE "[\]" 3 bright light("HEAL"){
 			if(bfriendly){
@@ -335,6 +334,7 @@ class ArchFiend:Archvile replaces ArchVile{
 				);
 				if(hlt.hitactor){
 					hlt.hitactor.A_GiveInventory("VileCount",7);
+					hlt.hitactor.bfriendly=bfriendly;
 				}
 			}else A_MassHeal(self);
 		}
