@@ -7,6 +7,7 @@ enum DerpConst{
 	DERP_TURRET=1,
 	DERP_AMBUSH=2,
 	DERP_PATROL=3,
+	DERP_RANGE=320,
 }
 class DERPBot:HDUPK{
 	int cmd;
@@ -25,7 +26,7 @@ class DERPBot:HDUPK{
 		radius 4;height 4;deathheight 4;maxdropoffheight 4;maxstepheight 4;
 		bloodcolor "22 22 22";scale 0.6;
 		health 100;mass 20;
-		maxtargetrange 320;
+		maxtargetrange DERP_RANGE;
 		hdupk.pickupsound "derp/crawl";
 		hdupk.pickupmessage "Picked up a Defence, Engagement, Reconnaissance and Patrol robot.";
 		obituary "%o went derp.";
@@ -48,7 +49,7 @@ class DERPBot:HDUPK{
 		}
 		flinetracedata dlt;
 		linetrace(
-			angle,320,pitch,
+			angle,DERP_RANGE,pitch,
 			offsetz:2,
 			data:dlt
 		);
@@ -82,7 +83,7 @@ class DERPBot:HDUPK{
 					&&players[i].mo
 					&&players[i].mo!=master
 					&&(!teamplay||players[i].getteam()!=master.player.getteam())
-					&&distance3d(players[i].mo)<320
+					&&distance3d(players[i].mo)<DERP_RANGE
 				){
 					bfriendly=false;
 					target=players[i].mo;
@@ -327,8 +328,8 @@ class DERPBot:HDUPK{
 		}
 	yourefired:
 		DERP A 0 A_JumpIfHealthLower(1,"see",AAPTR_TARGET);
-		DERP A 0 A_JumpIfTargetInLOS("fire",2,JLOSF_DEADNOJUMP,256.,0);
-		DERP A 0 A_JumpIfTargetInLOS("aim",360,JLOSF_DEADNOJUMP,320.,0);
+		DERP A 0 A_JumpIfTargetInLOS("fire",2,JLOSF_DEADNOJUMP,DERP_RANGE,0);
+		DERP A 0 A_JumpIfTargetInLOS("aim",360,JLOSF_DEADNOJUMP,DERP_RANGE,0);
 		goto noshot;
 		DERP A 0 A_CheckLOF("noshot",CLOFF_SKIPTARGET|CLOFF_JUMPNONHOSTILE|CLOFF_JUMPOBJECT, 0,0, 0,0, 7,0);
 		goto fire;
