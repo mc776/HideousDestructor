@@ -321,8 +321,8 @@ class ArchFiend:Archvile replaces ArchVile{
 		goto see;
 	heal:
 		VILE A 0 A_ChangeVileFlags(true);
-		VILE "[\]" 8 bright light("HEAL");
-		VILE "[\]" 3 bright light("HEAL"){
+		VILE \\ 8 bright light("HEAL");
+		VILE # 8 bright light("HEAL"){
 			if(bfriendly){
 				hitsleft=7;
 				flinetracedata hlt;
@@ -333,12 +333,16 @@ class ArchFiend:Archvile replaces ArchVile{
 					data:hlt
 				);
 				if(hlt.hitactor){
-					hlt.hitactor.A_GiveInventory("VileCount",7);
+					if(hlt.hitactor.countinv("VileCount")){
+						hlt.hitactor.A_GiveInventory("VileCount",7);
+					}
 					hlt.hitactor.bfriendly=bfriendly;
 				}
-			}else A_MassHeal(self);
+			}else{
+				A_MassHeal(self);
+				A_SetTics(16);
+			}
 		}
-		VILE "[\]" 16 bright light("HEAL");
 		goto see;
 	pain:
 		VILE Q 20 light("HELL")A_VilePain();
