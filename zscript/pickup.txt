@@ -204,12 +204,19 @@ class HDUPK:HDActor{
 	states{
 	grab:
 		---- AAAA 1{
+			//in case of death mid-grab
+			if(
+				!picktarget
+				||picktarget.health<1
+			){
+				setstatelabel("spawn");
+			}
 			setorigin(
 				0.5*((picktarget.pos+(0,0,picktarget.height-10))+pos)
 			,true);
 		}
 		---- A 0{
-			//in case of death or teleport mid-grab
+			//in case of death mid-grab
 			if(
 				!picktarget
 				||picktarget.health<1

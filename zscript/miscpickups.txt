@@ -100,7 +100,7 @@ class HDAB:RandomSpawner{
 		dropitem "HDAmBoxUnarmed",256,5;
 	}
 }
-class HDAmBox:HDActor{
+class HDAmBox:HDUPK{
 	default{
 		//$Category "Misc/Hideous Destructor/Traps"
 		//$Title "Ammo Box"
@@ -109,7 +109,7 @@ class HDAmBox:HDActor{
 		+shootable +noblood +nopain +ghost
 		+lookallaround +nofear
 		scale 0.6;
-		height 16; radius 16;
+		height 8; radius 12;
 		health 100; mass 120;
 		meleerange 42;
 		radiusdamagefactor 0.5;
@@ -125,11 +125,11 @@ class HDAmBox:HDActor{
 		disarmed=false;
 		disarmsteps=random(5,10);
 	}
-	override bool used(actor user){
+	void TryDisarm(actor user){
 		if(
 			!user
 			||user.countinv("IsMoving")
-		)return false;
+		)return;
 		if(tapped){
 			if(disarmed)setstatelabel("goodies");
 			else if(
@@ -142,19 +142,18 @@ class HDAmBox:HDActor{
 				target=user;
 				setstatelabel("trapped");
 			}
-			return true;
-		}else if(disarmsteps<1){
+			return;
+		}else if(!disarmed&&disarmsteps<1){
 			setstatelabel("disarm");
-			return true;
+			return;
 		}else{
 			vel.z++;
 			tapped=true;
 			bool tt=false;
 			if(random(0,3)&&distance3d(user)<42)disarmsteps--;
 			setstatelabel("tap");
-			return true;
+			return;
 		}
-		return false;
 	}
 	void A_DropStuff(
 		class<actor> type,
@@ -167,6 +166,8 @@ class HDAmBox:HDActor{
 		);
 	}
 	states{
+	grab:
+		---- A 0 TryDisarm(picktarget);
 	tap:
 		---- A 10;
 		---- A 0{tapped=false;}
@@ -361,9 +362,10 @@ class HDAmBoxUnarmed:HDAmBox{
 class HDAmBoxDisarmed:HDAmBoxUnarmed{
 	states{
 	spawn:
-		OWWV A 2;
-		OWWV A -1{tapped=true;}
+		OWWV A -1 nodelay{tapped=true;}
 		stop;
+	grab:
+		goto goodies;
 	}
 }
 
