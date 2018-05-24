@@ -138,11 +138,6 @@ class ZM66AssaultRifle:HDWeapon{
 			A_ZoomFactor(min(0.99,1.01-0.01*min(invoker.weaponstatus[ZM66S_AUTO],3)),
 				ZOOM_INSTANT|ZOOM_NOSCALETURNING
 			);
-			A_MuzzleClimb(
-				-frandom(0.1,0.1),-frandom(0,0.1),
-				-0.2,-frandom(0.3,0.4),
-				-frandom(0.4,1.4),-frandom(1.3,2.6)
-			);
 
 			//shoot the bullet
 			//copypaste any changes to spawnshoot as well!
@@ -154,6 +149,12 @@ class ZM66AssaultRifle:HDWeapon{
 				bbb.pitch=pitch+frandom(-brnd,brnd);
 				bbb.speed-=brnd*100.;
 			}
+
+			A_MuzzleClimb(
+				-frandom(0.1,0.1),-frandom(0,0.1),
+				-0.2,-frandom(0.3,0.4),
+				-frandom(0.4,1.4),-frandom(1.3,2.6)
+			);
 
 			invoker.weaponstatus[ZM66S_FLAGS]&=~ZM66F_CHAMBER;
 			invoker.weaponstatus[ZM66S_HEAT]+=random(3,5);
