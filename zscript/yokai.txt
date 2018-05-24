@@ -134,6 +134,7 @@ class YokaiSpawner:HDActor{
 		TNT1 A 1{
 			A_Chase(null,null);
 			setz(frandom((ceilingz+floorz)*0.5,ceilingz-height));
+			if(!target){setstatelabel("spawn2");return;}
 			if(!checksight(target)||distance3d(target)>512)setstatelabel("drop");  
 		}loop;
 	drop:
