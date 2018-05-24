@@ -239,7 +239,7 @@ class HDAmBox:HDActor{
 			A_SpawnItemEx("HDAmBoxDisarmed",0,0,1,flags:SXF_NOCHECKPOSITION);
 		}stop;
 	goodies:
-		---- A 0 A_PlaySound("weapons/pocket",CHAN_VOICE);
+		---- A 2 A_PlaySound("weapons/pocket",CHAN_VOICE);
 		---- A 0 A_Jump(256,
 			"zeds","smgs","piss",
 			"libs","clip","rocs",
@@ -255,7 +255,7 @@ class HDAmBox:HDActor{
 		bron: ---- AAAAA 0 A_DropItem("BrontornisRound");stop;
 		cell: ---- AAAAA 0 A_DropItem("HDCellPacks");stop;
 		shel: ---- AAAAA 0 A_DropItem("ShellPickup");stop;
-		ieds: ---- AAAAAAA 0 A_DropItem("HDIEDKits");stop;
+		ieds: ---- AAA 0 A_DropItem("HDIEDKits");stop;
 	brokengoodies:
 		---- A 0 A_PlaySound("weapons/plasmax",CHAN_VOICE);
 		---- A 0 A_DropStuff("HDSmokeChunk",random(0,6));
@@ -361,7 +361,8 @@ class HDAmBoxUnarmed:HDAmBox{
 class HDAmBoxDisarmed:HDAmBoxUnarmed{
 	states{
 	spawn:
-		OWWV A -1 nodelay{tapped=true;}
+		OWWV A 2;
+		OWWV A -1{tapped=true;}
 		stop;
 	}
 }
