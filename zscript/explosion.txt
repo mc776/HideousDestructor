@@ -110,16 +110,18 @@ extend class HDActor{
 			//gibbing
 			if(!it)continue;if(dist<=gibradius && it.bcorpse && it.bshootable){
 				hdf.give(it,"sawgib",gibamount-dist/3);
+				actor bld;bool gbg;
 				for(int i=0;i<gibamount;i+=3){
-					caller.A_SpawnItemEx(it.bloodtype,
-						random(1,it.radius),
-						random(-it.radius,it.radius)*0.5,
-						random(4,it.height),
-						it.vel.x+(random(-4,4)),
-						it.vel.y+(random(-4,4)),
-						it.vel.z+random(1,7),
-						0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_USEBLOODCOLOR
+					[gbg,bld]=it.A_SpawnItemEx(it.bloodtype,
+						it.radius*frandom(0.6,1),
+						frandom(-it.radius,it.radius)*0.5,
+						frandom(4,it.height),
+						frandom(-1,4),
+						frandom(-4,4),
+						frandom(1,7),
+						it.angleto(caller),SXF_ABSOLUTEMOMENTUM|SXF_ABSOLUTEANGLE|SXF_NOCHECKPOSITION|SXF_USEBLOODCOLOR
 					);
+					bld.vel+=it.vel;
 				}
 				if(!it.bdontthrust)it.vel+=(it.pos-caller.pos)*divdist*divmass*10;
 			}
@@ -186,9 +188,9 @@ extend class HDActor{
 					int gbg;actor blaaa;vector2 blooddir=(caller.pos.xy-it.pos.xy).unit();
 					for(int i=0;i<dmg;i+=12){
 						[gbg,blaaa]=it.A_SpawnItemEx(bld,
-							random(-1,it.radius),
-							random(-it.radius,it.radius)*0.6,
-							random(4,it.height),
+							frandom(-1,it.radius),
+							frandom(-it.radius,it.radius)*0.6,
+							frandom(4,it.height),
 							blooddir.x*frandom(-1,4),
 							blooddir.y*frandom(-4,4),
 							frandom(1,4),
