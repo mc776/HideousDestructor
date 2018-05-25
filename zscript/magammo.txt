@@ -1,0 +1,134 @@
+// ------------------------------------------------------------
+// Tracked magazines (and clips and batteries)
+// ------------------------------------------------------------
+class HDMagAmmo:HDAmmo{
+	array<int> mags; //or clips or batteries, whatever
+	int maxperunit;
+	property maxperunit:maxperunit;
+	default{
+		hdmagammo.maxperunit 30;
+		inventory.maxamount 10;
+	}
+	//add mag amount or size as appropriate
+	//should be called at the start of each interaction
+	//should NEVER reduce the array to none if it was not none before
+	void SyncAmount(){
+		int amountmorethanmags=amount-mags.size();
+		if(!amountmorethanmags)return;
+		if(amountmorethanmags>0){
+			for(int i=0;i<amountmorethanmags;i++){
+				mags.push(maxperunit);
+			}
+		}else amount=mags.size();
+	}
+	//remove one mag and return the value
+	//use to load or drop
+	int TakeMag(bool getmax){
+		SyncAmount();
+		if(amount<1)return 0;
+		int maxindex=mags.find(maxperunit);
+		//take the last in the stack
+		if(!getmax||maxindex==mags.size()){
+			int lastmag=mags[mags.size()-1];
+			mags.pop();
+			amount=mags.size();
+			return lastmag;
+		}
+		//take one full mag
+		mags.delete(maxindex);
+		amount=mags.size();
+		return maxperunit;
+	}
+	//add a mag
+	//use to unload
+	void AddAMag(int addamt=0){
+		SyncAmount();
+		if(amount>=maxamount)return;
+		if(!addamt)addamt=maxperunit;
+		mags.push(addamt);
+		amount=mags.size();
+	}
+	//give a mag to someone
+	//intended primarily for pickups
+	static bool GiveThis(actor receiver,class<inventory> type,int giveamt){
+		if(receiver.findinventory(type)){
+			let mmm=HDMagAmmo(receiver.findinventory(type));
+			if(mmm.amount>=mmm.maxamount)return false;
+			mmm.AddAMag(giveamt);
+		}else{
+			receiver.A_GiveInventory(type,1);
+			let mmm=HDMagAmmo(receiver.findinventory(type));
+			mmm.mags.clear();
+			mmm.AddAMag(giveamt);
+			mmm.amount=mmm.mags.size();
+		}
+		return true;
+	}
+
+	override void actualpickup(actor other){
+		if(!other)other=picktarget;
+		if(!other)return;
+		name gcn=getclassname();
+
+		//you're only ever picking up one at a time
+		if(HDMath.MaxInv(other,gcn)<=other.countinv(gcn))return;
+
+		//misc. effects
+		other.A_PlaySound(pickupsound,CHAN_AUTO);
+		other.A_Log(string.format("\cg%s",pickupmessage()),true);
+
+		//if no information, give max, otherwise use own array info
+		if(mags.size()<1)other.A_GiveInventory(gcn);
+		else HDMagAmmo.GiveThis(other,gcn,mags[0]);
+		destroy();
+	}
+	override inventory createtossable(int amt){
+		if(amount<1)return null;
+		A_Log("see if this can replace the spawn state");
+		amt=min(amt,amount);
+		inventory iii;
+		for(int i=0;i<amt;i++){
+			iii=super.createtossable(1);
+			if(iii){
+				if(droptranslation&&owner){
+					actor onr=owner;
+					if(iii)iii.translation=onr.translation;
+				}
+				let mmm=HDMagAmmo(iii);
+				mmm.mags.clear();
+				mmm.mags.push(takemag(false));
+			}
+		}
+		return iii;
+	}
+
+	states{
+	use:
+		TNT1 A 0{
+			invoker.SyncAmount();
+			if(!invoker.amount)return;
+//give hdmagammo;wait 1;use hdmagammo
+			string stt=string.format("%s: ",invoker.getclassname());
+			int aaa=invoker.amount;
+			for(int i=0;i<aaa;i++){
+				stt=string.format("%s %i",stt,invoker.mags[i]);
+			}
+			A_Log(stt);
+		}
+	spawn:
+		TNT1 A 1;
+		TNT1 A 0{
+			while(invoker.amount>1){
+				inventory aa=inventory(spawn(invoker.getclassname(),invoker.pos));
+				aa.amount=1;invoker.amount--;
+				let aaa=HDMagAmmo(aa);
+				aaa.mags.clear();
+				aaa.mags.push(invoker.takemag(false));
+			}
+			invoker.setstatelabel("spawn2");
+		}stop;
+	spawn2:
+		CLIP A -1;
+		stop;
+	}
+}
