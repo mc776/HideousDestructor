@@ -425,24 +425,22 @@ class HDFlameRedBig:HDActor{
 		spriteangle 90;
 		renderstyle "add";
 	}
-	override void postbeginplay(){
-		super.postbeginplay();
-		addz(5);roll=-90;
-	}
 	void A_FlameFade(){
 		A_FadeOut(frandom(-0.002,0.02));
 		addz(frandom(-0.1,0.1));
-		scale*-frandom(0.08,1.01);
+		scale*=frandom(0.98,1.01);
+		scale.x*=randompick(1,1,-1);
 		if(target)setxyz(target.pos+(
 			(frandom(-target.radius,target.radius),frandom(-target.radius,target.radius))*0.6,
-			frandom(0,target.height*0.6)+scale.x*24)
+			frandom(0,target.height*0.6))
 		);
 	}
 	states{
 	spawn:
-		BAL7 ABABABABABAB 1 A_FlameFade();
+		FIR7 ABABABABABAB 1 A_FlameFade();
 		SMOK A 0{
 			scale.x=scale.y;
+			addz(12*scale.y);
 			roll=frandom(0,360);
 			A_SetRenderstyle(0.6,STYLE_Translucent);
 			vel.z+=2;
