@@ -149,7 +149,7 @@ mags.push(random(1,maxperunit));  //testing
 	}
 	override inventory createtossable(int amt){
 		if(amount<1)return null;
-		amt=min(amt,amount);
+		amt=min(max(1,amt),amount);
 		inventory iii;
 		for(int i=0;i<amt;i++){
 			iii=inventory(spawn(getclassname(),owner.pos));
