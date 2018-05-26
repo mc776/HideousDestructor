@@ -1,6 +1,42 @@
 // ------------------------------------------------------------
 // Tracked magazines (and clips and batteries)
 // ------------------------------------------------------------
+/*
+	for the mags:
+		debris empty only if not retaining
+		debris empty should die and become pickup
+		different sprite depending on empty
+	for the weapons:
+		unload:
+			int tounload=blahblahblah
+			set the loaded variable to -1
+			HDMagAmmo.SpawnMag(self,<type>,tounload);
+			HDMagAmmo.GiveMag(self,<type>,tounload);
+		reload:
+			A_JumpIfInventory(magtype,"reallyreload");
+			int toload=mags.TakeMag(true);
+			if(toload<0)return;
+			let the player load an empty
+	for the magmanager:
+		actor mags;
+		every state, check if mags is null
+		fire/altfire: switch mag types
+		reload/unload: insert/extract
+		zoom: bring up lowest
+		firemode: bring last to first
+		dropweapon: drop 1 mag
+	for the magamanger display:
+		if(!mags){
+			drawstring...
+		}
+		for(int i=0;i<mags.amount;i++){
+			drawsprite...
+			drawnum...
+		}
+	for levelreset
+		Consolidate all
+*/
+/*
 class HDMagAmmo:HDAmmo{
 	array<int> mags; //or clips or batteries, whatever
 	int maxperunit;
@@ -29,14 +65,15 @@ mags.push(random(1,maxperunit));  //testing
 	//use to load or drop
 	int TakeMag(bool getmax){
 		SyncAmount();
-		if(amount<1)return 0;
+		if(amount<1)return -1;
 		int maxindex=mags.find(maxperunit);
-		//take the last in the stack
+		//take the first in the stack
+		//(because last is probably what you just unloaded)
 		if(!getmax||maxindex==mags.size()){
-			int lastmag=mags[mags.size()-1];
-			mags.pop();
+			int firstmag=mags[0];
+			mags.delete(0);
 			amount=mags.size();
-			return lastmag;
+			return firstmag;
 		}
 		//take one full mag
 		mags.delete(maxindex);
@@ -77,11 +114,13 @@ mags.push(random(1,maxperunit));  //testing
 		amount=mags.size();
 	}
 	//give a mag to someone
-	//intended primarily for pickups
-	static bool GiveThis(actor receiver,class<inventory> type,int giveamt){
+	static bool GiveMag(actor receiver,class<inventory> type,int giveamt){
 		if(receiver.findinventory(type)){
 			let mmm=HDMagAmmo(receiver.findinventory(type));
-			if(mmm.amount>=mmm.maxamount)return false;
+			if(mmm.amount>=mmm.maxamount){
+				HDMagAmmo.SpawnMag(receiver,type,giveamt);
+				return false;
+			}
 			mmm.AddAMag(giveamt);
 		}else{
 			receiver.A_GiveInventory(type,1);
@@ -190,7 +229,7 @@ mags.push(random(1,maxperunit));  //testing
 
 		//if no information, give max, otherwise use own array info
 		if(mags.size()<1)other.A_GiveInventory(gcn);
-		else HDMagAmmo.GiveThis(other,gcn,mags[0]);
+		else HDMagAmmo.GiveMag(other,gcn,mags[0]);
 		destroy();
 	}
 	override inventory createtossable(int amt){
@@ -226,7 +265,7 @@ mags.push(random(1,maxperunit));  //testing
 			//stuff to test
 			//give hdmagammo 10;wait 1;use hdmagammo
 			//A_Log("LowestToLast");invoker.LowestToLast();
-			//A_Log("Spawnmag");HDMagAmmo.SpawnMag(self,invoker.getclassname(),5);
+			//A_Log("SpawnMag");HDMagAmmo.SpawnMag(self,invoker.getclassname(),5);
 				//MaxCheat
 				//LastToFirst
 				//LowestToLast
@@ -235,7 +274,7 @@ mags.push(random(1,maxperunit));  //testing
 				//Consolidate
 				//TakeMag(true)
 				//TakeMag(false)
-				//HDMagAmmo.SpawnMag(self,invoker.getclassname(),999)
+				//SpawnMag
 			//invoker.LogAmounts();
 		}fail;
 	spawn:
@@ -256,3 +295,4 @@ mags.push(random(1,maxperunit));  //testing
 		stop;
 	}
 }
+*/
