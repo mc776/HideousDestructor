@@ -2,7 +2,51 @@
 // Because HD weapons aren't complicated enough.
 // ------------------------------------------------------------
 extend class HDStatusBar{
+
+
+	void DrawStrings(
+		HUDFont font,
+		String brokenstring,
+		Vector2 pos,
+		int flags=0,
+		int translation=Font.CR_UNTRANSLATED,
+		double Alpha=1.,
+		int wrapwidth=-1,
+		int linespacing=4
+	){
+		double breakspace=linespacing+smallfont.getheight();
+		string stringpiece="";
+
+		while(brokenstring.length()>0){
+			int nextbreakindex=brokenstring.indexof("\n");
+			if(nextbreakindex<0){
+				stringpiece=brokenstring;
+				brokenstring="";
+			}else{
+				stringpiece=brokenstring.left(nextbreakindex);
+				brokenstring=brokenstring.mid(nextbreakindex+1,brokenstring.length());
+			}
+			DrawString(font,stringpiece,pos,flags,translation,Alpha,wrapwidth,linespacing);
+			pos.y+=breakspace;
+		}
+	}
+
+
 	virtual void drawweaponstatus(weapon w){
+
+
+
+
+
+drawstrings(psmallfont,"YAAAAAAR\nRRRRR\nGH",
+(0,-42),DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,
+font.CR_DARKBROWN
+);
+
+
+
+
+
 		let hdw=hdweapon(w);
 		if(!hdw){
 			if(cplayer.readyweapon.ammotype1)drawwepnum(
