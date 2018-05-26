@@ -110,7 +110,7 @@ extend class HDPlayerPawn{
 			}
 			if(health<=damage&&damage-health<20&&beatcap>HDCONST_MINHEARTTICS+3){
 				damage=health-1;
-				if(!random(0,2))beatcap--;
+				if(!random(0,health))beatcap--;
 			}
 
 			if(mod=="bleedout"){
