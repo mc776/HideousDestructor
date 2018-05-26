@@ -55,7 +55,7 @@ mags.push(random(1,maxperunit));  //testing
 	void AddAMag(int addamt=-1){
 		SyncAmount();
 		if(amount>=maxamount)return;
-		if(addamt<0)addamt=maxperunit;
+		if(addamt<0||addamt>maxperunit)addamt=maxperunit;
 		mags.push(addamt);
 		amount=mags.size();
 	}
@@ -174,21 +174,20 @@ mags.push(random(1,maxperunit));  //testing
 		TNT1 A 0{
 			invoker.SyncAmount();
 			if(!invoker.amount)return;
-//give hdmagammo;wait 1;use hdmagammo
 
 			invoker.LogAmounts();
 
 			//stuff to test
-			A_Log("Consolidate");invoker.Consolidate();
-			//MaxCheat
-			//LastToFirst
-			//Extract
-			//Insert
-			//Consolidate
-			//TakeMag(getmax:true)
-			//TakeMag(getmax:false)
-
-			invoker.LogAmounts();
+			//give hdmagammo 10;wait 1;use hdmagammo
+			//A_Log("TakeMag(false)");invoker.TakeMag(false);
+				//MaxCheat
+				//LastToFirst
+				//Extract
+				//Insert
+				//Consolidate
+				//TakeMag(true)
+				//TakeMag(false)
+			//invoker.LogAmounts();
 		}fail;
 	spawn:
 		TNT1 A 1;
