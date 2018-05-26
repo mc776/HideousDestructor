@@ -1,7 +1,6 @@
 // ------------------------------------------------------------
 // Tracked magazines (and clips and batteries)
 // ------------------------------------------------------------
-/*
 class HDMagAmmo:HDAmmo{
 	array<int> mags; //or clips or batteries, whatever
 	int maxperunit;
@@ -50,6 +49,23 @@ mags.push(random(1,maxperunit));  //testing
 		if(amount<2)return;
 		mags.insert(0,mags[mags.size()-1]);
 		mags.pop();
+	}
+	//bring up the lowest-value mag
+	//useful for refilling and discarding
+	void LowestToLast(){
+		SyncAmount();
+		if(amount<2)return;
+		int lowestindex=-1;
+		int lowest=maxperunit;
+		for(int i=0;i<amount;i++){
+			if(lowest>mags[i]){
+				lowest=mags[i];
+				lowestindex=i;
+			}
+		}
+		if(lowestindex<0)return;
+		mags.delete(lowestindex);
+		mags.push(lowest);
 	}
 	//add a mag
 	//use to unload
@@ -180,9 +196,10 @@ mags.push(random(1,maxperunit));  //testing
 
 			//stuff to test
 			//give hdmagammo 10;wait 1;use hdmagammo
-			//A_Log("TakeMag(false)");invoker.TakeMag(false);
+			//A_Log("LowestToLast");invoker.LowestToLast();
 				//MaxCheat
 				//LastToFirst
+				//LowestToLast
 				//Extract
 				//Insert
 				//Consolidate
@@ -208,4 +225,3 @@ mags.push(random(1,maxperunit));  //testing
 		stop;
 	}
 }
-*/
