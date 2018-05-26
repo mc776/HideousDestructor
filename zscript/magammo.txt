@@ -87,6 +87,7 @@ mags.push(random(1,maxperunit));  //testing
 			receiver.A_GiveInventory(type,1);
 			let mmm=HDMagAmmo(receiver.findinventory(type));
 			mmm.mags.clear();
+			mmm.amount=0;
 			mmm.AddAMag(giveamt);
 			mmm.amount=mmm.mags.size();
 		}
@@ -95,10 +96,11 @@ mags.push(random(1,maxperunit));  //testing
 	//spawn and drop
 	//mostly for unloads
 	static actor SpawnMag(actor giver,class<inventory> type,int giveamt){
-		let mmm=HDMagAmmo(giver.spawn(findinventory(type),giver.pos));
-		mmm.addz(giver.height-12);
+		let mmm=HDMagAmmo(giver.spawn(type,giver.pos));
+		mmm.addz(giver.height-12);mmm.angle=giver.angle;
 		mmm.A_ChangeVelocity(2,0,-1,CVF_RELATIVE);
 		mmm.vel+=giver.vel;
+		mmm.amount=0;
 		mmm.mags.clear();
 		mmm.AddAMag(giveamt);
 		mmm.amount=mmm.mags.size();
@@ -224,6 +226,7 @@ mags.push(random(1,maxperunit));  //testing
 			//stuff to test
 			//give hdmagammo 10;wait 1;use hdmagammo
 			//A_Log("LowestToLast");invoker.LowestToLast();
+			//A_Log("Spawnmag");HDMagAmmo.SpawnMag(self,invoker.getclassname(),5);
 				//MaxCheat
 				//LastToFirst
 				//LowestToLast
@@ -232,6 +235,7 @@ mags.push(random(1,maxperunit));  //testing
 				//Consolidate
 				//TakeMag(true)
 				//TakeMag(false)
+				//HDMagAmmo.SpawnMag(self,invoker.getclassname(),999)
 			//invoker.LogAmounts();
 		}fail;
 	spawn:
