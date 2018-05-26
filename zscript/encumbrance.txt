@@ -68,13 +68,15 @@ extend class HDPlayerPawn{
 			||!hd_onemanarmy
 			||skill>=5
 		);
+		bool weaponly=(!forcefull&&hd_onemanarmy>1);
+
 		int useammotypes=forcefull?(1+2+4+8+16+32+64+128+256):0;
 		if(countinv("DERPUsable"))useammotypes|=USE_9;
 		if(countinv("HERPUsable"))useammotypes|=USE_426;
 		if(countinv("HERPUsable")||countinv("PortableLiteAmp"))useammotypes|=USE_BATTERY;
 		if(countinv("HDIEDKit"))useammotypes|=USE_ROCKET;
 
-		//scriptified weapons
+		//weapons and items
 		for(inventory hdww=inv;hdww!=null;hdww=hdww.inv){
 			let hdw=hdweapon(hdww);
 			if(hdw){
@@ -101,74 +103,78 @@ extend class HDPlayerPawn{
 				}
 				continue;
 			}
-			let hdp=hdpickup(hdww);
-			if(hdp)enc+=hdp.getbulk();
+			if(!weaponly){
+				let hdp=hdpickup(hdww);
+				if(hdp)enc+=hdp.getbulk();
+			}
 		}
 
-		//because herps are special
-		let herp=HERPUsable(findinventory("HERPUsable"));
-		if(herp){
-			enc+=ENC_HERP+herp.ammo<0?0:ENC_426MAG*0.4;
-		}enc+=countinv("HERPDEAD")*ENC_HERP;
+		if(!weaponly){
+			//because herps are special
+			let herp=HERPUsable(findinventory("HERPUsable"));
+			if(herp){
+				enc+=ENC_HERP+herp.ammo<0?0:ENC_426MAG*0.4;
+			}enc+=countinv("HERPDEAD")*ENC_HERP;
 
-		//mag manager
-		let hdmm=MagManager(findinventory("MagManager"));
-		if(hdmm)enc+=
-			(hdmm.weaponstatus[HDMMS_PIST]+hdmm.weaponstatus[HDMMS_SMG])*ENC_9+
-			(hdmm.weaponstatus[HDMMS_LIB]+hdmm.weaponstatus[HDMMS_BOSS])*ENC_776;
+			//mag manager
+			let hdmm=MagManager(findinventory("MagManager"));
+			if(hdmm)enc+=
+				(hdmm.weaponstatus[HDMMS_PIST]+hdmm.weaponstatus[HDMMS_SMG])*ENC_9+
+				(hdmm.weaponstatus[HDMMS_LIB]+hdmm.weaponstatus[HDMMS_BOSS])*ENC_776;
 
 
-		//and now for stuff that should just be listed
-		enc+=
+			//and now for stuff that should just be listed
+			enc+=
 
-		//second pistol
-		(
-			(useammotypes&USE_SECONDPISTOL&&countinv("HDSecondPistol"))?30
-			+HDSecondPistol(
-				findinventory("HDSecondPistol")
-			).weaponstatus[PISS_MAG]*ENC_9MAG_LOADED:0
-		)
+			//second pistol
+			(
+				(useammotypes&USE_SECONDPISTOL&&countinv("HDSecondPistol"))?30
+				+HDSecondPistol(
+					findinventory("HDSecondPistol")
+				).weaponstatus[PISS_MAG]*ENC_9MAG_LOADED:0
+			)
 
-		//magged ammo
-		+(useammotypes&USE_9?(
-			countinv("HDPistolAmmo")*ENC_9
-			+countinv("HDPistolMag")*ENC_9MAG
-			+countinv("HDSMGMag")*ENC_9MAG30
-		):0)
-		+(useammotypes&USE_776?(
-			countinv("SevenMilAmmo")*ENC_776
-			+countinv("SevenMilBrass")*ENC_776B
-			+countinv("BossClip")*ENC_776CLIP
-			+countinv("LiberatorMag")*ENC_776MAG
-		):0)
-		+(useammotypes&USE_426?(
-			countinv("FourMilAmmo")*ENC_426
-			+countinv("ZM66RifleMags")*ENC_426MAG
-		):0)
-		+(useammotypes&USE_BATTERY?(
-			countinv("HDCellAmmo")*ENC_BATTERY*0.3
-			+countinv("HDCellPacks")*ENC_BATTERY
-		):0)
+			//magged ammo
+			+(useammotypes&USE_9?(
+				countinv("HDPistolAmmo")*ENC_9
+				+countinv("HDPistolMag")*ENC_9MAG
+				+countinv("HDSMGMag")*ENC_9MAG30
+			):0)
+			+(useammotypes&USE_776?(
+				countinv("SevenMilAmmo")*ENC_776
+				+countinv("SevenMilBrass")*ENC_776B
+				+countinv("BossClip")*ENC_776CLIP
+				+countinv("LiberatorMag")*ENC_776MAG
+			):0)
+			+(useammotypes&USE_426?(
+				countinv("FourMilAmmo")*ENC_426
+				+countinv("ZM66RifleMags")*ENC_426MAG
+			):0)
+			+(useammotypes&USE_BATTERY?(
+				countinv("HDCellAmmo")*ENC_BATTERY*0.3
+				+countinv("HDCellPacks")*ENC_BATTERY
+			):0)
 
-		//single loose ammo
-		+(useammotypes&USE_12?(
-			countinv("HDShellAmmo")*ENC_SHELL
-		):0)
-		+(useammotypes&USE_ROCKET?(
-			countinv("HDRocketAmmo")*ENC_ROCKET
-		):0)
-		+(useammotypes&USE_BRONTO?(
-			countinv("BrontornisRound")*ENC_BRONTOSHELL
-		):0)
-		+(useammotypes&USE_HEAT?(
-			countinv("HEATAmmo")*ENC_HEATROCKET
-		):0)
-		+countinv("HDFragGrenadeAmmo")*ENC_FRAG
+			//single loose ammo
+			+(useammotypes&USE_12?(
+				countinv("HDShellAmmo")*ENC_SHELL
+			):0)
+			+(useammotypes&USE_ROCKET?(
+				countinv("HDRocketAmmo")*ENC_ROCKET
+			):0)
+			+(useammotypes&USE_BRONTO?(
+				countinv("BrontornisRound")*ENC_BRONTOSHELL
+			):0)
+			+(useammotypes&USE_HEAT?(
+				countinv("HEATAmmo")*ENC_HEATROCKET
+			):0)
+			+countinv("HDFragGrenadeAmmo")*ENC_FRAG
 
-		//i will no longer protect you from your hoarding
-		+countinv("DudRocketAmmo")*ENC_ROCKET
-		+countinv("HDCellPackEmpty")*ENC_BATTERY
-		;
+			//i will no longer protect you from your hoarding
+			+countinv("DudRocketAmmo")*ENC_ROCKET
+			+countinv("HDCellPackEmpty")*ENC_BATTERY
+			;
+		}
 
 		double carrymax=
 			400+

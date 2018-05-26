@@ -12,6 +12,11 @@ OptionValue "HelpText"{
 	1, "Vitals Only"
 	2, "All"
 }
+OptionValue "EncumbranceMode"{
+	0, "No"
+	1, "Yes"
+	2, "Only Weapon"
+}
 OptionValue "Autoaim"{
 	0, "Never"
 	1, "Very low"
@@ -161,15 +166,17 @@ OptionMenu "HDOptionsMenu"{
 	Title "HIDEOUS DESTRUCTOR OPTIONS"
 	StaticText " "
 	StaticText "Server Settings",1
-	Option "Force pistol start","hd_forcepistolstart","YesNo"
-	Option "\"One Man Army\" encumbrance","hd_onemanarmy","YesNo"
-	Option "Replace bots with riflemen","hd_nobots","YesNo"
+	Option "\"One Man Army\" encumbrance","hd_onemanarmy","EncumbranceMode"
 	Option "Reduced damage in all skill levels","hd_lowdamage","YesNo"
 	Option "No bleeding in all skill levels","hd_nobleed","YesNo"
 	Slider "Killer barrel spawn rate","hd_killerbarrels",0,100,5,0
+	StaticText " "
 	Option "Cap lift speeds to safe levels","hd_safelifts","YesNo"
 	Option "Add dirty window textures","hd_dirtywindows","YesNo"
 	Option "Prevent weapons from destroying map","hd_nodoorbuster","YesNo"
+	Option "Replace bots with riflemen","hd_nobots","YesNo"
+	Option "Force pistol start","hd_forcepistolstart","YesNo"
+	StaticText " "
 	Option "Only 3 movement speeds in multiplayer","hd_3speed","YesNo"
 	Option "Weapon inertia","hd_noturninertia","TurnInertia"
 	SafeCommand "Reset Server Settings","hd_clearscv","Really clear all server settings?"
