@@ -153,7 +153,23 @@ mags.push(random(1,maxperunit));  //testing
 		name gcn=getclassname();
 
 		//you're only ever picking up one at a time
-		if(HDMath.MaxInv(other,gcn)<=other.countinv(gcn))return;
+//		if(HDMath.MaxInv(other,gcn)<=other.countinv(gcn))return;
+		let alreadygot=HDMagAmmo(other.findinventory(gcn));
+		if(alreadygot){
+			while(alreadygot.amount>=alreadygot.maxamount){
+				int thismag=mags[0];
+				bool thisisbetter=false;
+				for(int i=0;i<alreadygot.amount;i++){
+					if(thismag>alreadygot.mags[i]){
+						thisisbetter=true;
+						break;
+					}
+				}
+				if(!thisisbetter)return;
+				alreadygot.LowestToLast();
+				other.A_DropInventory(gcn,1);
+			}
+		}
 
 		//misc. effects
 		other.A_PlaySound(pickupsound,CHAN_AUTO);
