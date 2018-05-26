@@ -87,11 +87,22 @@ mags.push(random(1,maxperunit));  //testing
 			receiver.A_GiveInventory(type,1);
 			let mmm=HDMagAmmo(receiver.findinventory(type));
 			mmm.mags.clear();
-			mmm.amount=0;
 			mmm.AddAMag(giveamt);
 			mmm.amount=mmm.mags.size();
 		}
 		return true;
+	}
+	//spawn and drop
+	//mostly for unloads
+	static actor SpawnMag(actor giver,class<inventory> type,int giveamt){
+		let mmm=HDMagAmmo(giver.spawn(findinventory(type),giver.pos));
+		mmm.addz(giver.height-12);
+		mmm.A_ChangeVelocity(2,0,-1,CVF_RELATIVE);
+		mmm.vel+=giver.vel;
+		mmm.mags.clear();
+		mmm.AddAMag(giveamt);
+		mmm.amount=mmm.mags.size();
+		return mmm;
 	}
 
 	//add and extract rounds
@@ -189,7 +200,7 @@ mags.push(random(1,maxperunit));  //testing
 			if(iii){
 				iii.addz(owner.height*0.6);
 				iii.angle=owner.angle;iii.target=owner;iii.vel=owner.vel;
-				iii.A_ChangeVelocity(3,frandom(-0.6,0.6),frandom(0.9,1.1),CVF_RELATIVE);
+				iii.A_ChangeVelocity(4,frandom(-0.6,0.6),frandom(0.9,1.1),CVF_RELATIVE);
 				if(droptranslation&&owner){
 					actor onr=owner;
 					if(iii)iii.translation=onr.translation;
