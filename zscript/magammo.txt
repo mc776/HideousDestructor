@@ -5,8 +5,11 @@ class HDMagAmmo:HDAmmo{
 	array<int> mags; //or clips or batteries, whatever
 	int maxperunit;
 	property maxperunit:maxperunit;
+	class<inventory> roundtype;
+	property roundtype:roundtype;
 	default{
 		hdmagammo.maxperunit 30;
+		hdmagammo.roundtype "HDPistolAmmo";
 		inventory.maxamount 10;
 	}
 	//add mag amount or size as appropriate
@@ -17,7 +20,8 @@ class HDMagAmmo:HDAmmo{
 		if(!amountmorethanmags)return;
 		if(amountmorethanmags>0){
 			for(int i=0;i<amountmorethanmags;i++){
-				mags.push(maxperunit);
+//				mags.push(maxperunit);
+mags.push(random(1,maxperunit));  //testing
 			}
 		}else amount=mags.size();
 	}
@@ -39,12 +43,19 @@ class HDMagAmmo:HDAmmo{
 		amount=mags.size();
 		return maxperunit;
 	}
+	//take last mag and put it at index zero
+	void LastToFirst(){
+		SyncAmount();
+		if(amount<2)return;
+		mags.insert(0,mags[mags.size()-1]);
+		mags.pop();
+	}
 	//add a mag
 	//use to unload
-	void AddAMag(int addamt=0){
+	void AddAMag(int addamt=-1){
 		SyncAmount();
 		if(amount>=maxamount)return;
-		if(!addamt)addamt=maxperunit;
+		if(addamt<0)addamt=maxperunit;
 		mags.push(addamt);
 		amount=mags.size();
 	}
@@ -66,6 +77,59 @@ class HDMagAmmo:HDAmmo{
 		return true;
 	}
 
+	//add and extract rounds
+	//return values can be used to stop loops or affect animations
+	bool Extract(){
+		SyncAmount();
+		if(
+			mags[mags.size()-1]<1
+			||owner.A_JumpIfInventory(roundtype,0,"null")
+		)return false;
+		HDF.Give(owner,roundtype,1);
+		mags[mags.size()-1]--;
+		return true;
+	}
+	bool Insert(){
+		SyncAmount();
+		if(
+			mags[mags.size()-1]>=maxperunit
+			||!owner.countinv(roundtype)
+		)return false;
+		owner.A_TakeInventory(roundtype,1,TIF_NOTAKEINFINITE);
+		mags[mags.size()-1]++;
+		return true;
+	}
+	//consolidate
+	void Consolidate(){
+		SyncAmount();
+		if(amount<2)return;
+		int totalrounds=0;
+		for(int i=0;i<amount;i++){
+			totalrounds+=mags[i];
+			mags[i]=0; //keep the empties, do NOT call clear()!
+		}
+		for(int i=0;i<amount;i++){
+			int toinsert=min(maxperunit,totalrounds);
+			mags[i]=toinsert;
+			totalrounds-=toinsert;
+			if(totalrounds<1)break;
+		}
+	}
+	//max everything
+	void MaxCheat(){
+		mags.clear();
+		SyncAmount();
+	}
+
+	//debug: log amounts
+	void LogAmounts(){
+		string stt=string.format("%i  %s: ",amount,getclassname());
+		for(int i=0;i<amount;i++){
+			stt=string.format("%s %i",stt,mags[i]);
+		}
+		A_Log(stt);
+	}
+
 	override void actualpickup(actor other){
 		if(!other)other=picktarget;
 		if(!other)return;
@@ -85,7 +149,6 @@ class HDMagAmmo:HDAmmo{
 	}
 	override inventory createtossable(int amt){
 		if(amount<1)return null;
-		A_Log("see if this can replace the spawn state");
 		amt=min(amt,amount);
 		inventory iii;
 		for(int i=0;i<amt;i++){
@@ -112,12 +175,20 @@ class HDMagAmmo:HDAmmo{
 			invoker.SyncAmount();
 			if(!invoker.amount)return;
 //give hdmagammo;wait 1;use hdmagammo
-			string stt=string.format("%i  %s: ",invoker.amount,invoker.getclassname());
-			int aaa=invoker.amount;
-			for(int i=0;i<aaa;i++){
-				stt=string.format("%s %i",stt,invoker.mags[i]);
-			}
-			A_Log(stt);
+
+			invoker.LogAmounts();
+
+			//stuff to test
+			A_Log("Consolidate");invoker.Consolidate();
+			//MaxCheat
+			//LastToFirst
+			//Extract
+			//Insert
+			//Consolidate
+			//TakeMag(getmax:true)
+			//TakeMag(getmax:false)
+
+			invoker.LogAmounts();
 		}fail;
 	spawn:
 		TNT1 A 1;
