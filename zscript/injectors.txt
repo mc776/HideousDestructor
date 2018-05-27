@@ -115,9 +115,9 @@ class HDStimpacker:HDWoundFixer{
 	select:
 		TNT1 A 0{
 			if(!countinv(invoker.inventorytype)){
-				if(getcvar("hd_helptext"))A_Print(invoker.noerror);
+				if(getcvar("hd_helptext"))A_WeaponMessage(invoker.noerror);
 				A_SelectWeapon("Ring");
-			}else if(getcvar("hd_helptext"))A_Print("\cd<<< \cjSTIMPACK \cd>>>\c-\n\n\nStimpacks help reduce\nbleeding temporarily.\n\n\Press altfire to use on someone else.\n\n\cgDO NOT OVERDOSE.");
+			}else if(getcvar("hd_helptext"))A_WeaponMessage("\cd<<< \cjSTIMPACK \cd>>>\c-\n\n\nStimpacks help reduce\nbleeding temporarily.\n\n\Press altfire to use on someone else.\n\n\cgDO NOT OVERDOSE.");
 		}
 		goto super::select;
 	deselecthold:
@@ -132,10 +132,10 @@ class HDStimpacker:HDWoundFixer{
 		TNT1 A 1;
 		TNT1 A 0{
 			if(!countinv(invoker.inventorytype)){
-				if(getcvar("hd_helptext"))A_Print(invoker.noerror);
+				if(getcvar("hd_helptext"))A_WeaponMessage(invoker.noerror);
 				A_Refire("deselecthold");
 			}else if(countinv("PortableRadsuit") && countinv("WornRadsuit")){
-				if(getcvar("hd_helptext"))A_Print("Take off your environment suit first!",2);
+				if(getcvar("hd_helptext"))A_WeaponMessage("Take off your environment suit first!",2);
 				A_Refire("nope");
 			}else if(pitch<55){
 				A_MuzzleClimb(0,8);
@@ -169,7 +169,7 @@ class HDStimpacker:HDWoundFixer{
 	althold:
 		TNT1 A 0{
 			if(!countinv(invoker.inventorytype)){
-				if(getcvar("hd_helptext"))A_Print(invoker.noerror);
+				if(getcvar("hd_helptext"))A_WeaponMessage(invoker.noerror);
 				A_Refire("deselecthold");
 			}
 		}
@@ -182,15 +182,15 @@ class HDStimpacker:HDWoundFixer{
 			);
 			let c=HDPlayerPawn(injectorline.hitactor);
 			if(!c){
-				if(getcvar("hd_helptext"))A_Print("Nothing to be done here.\n\nStimulate thyself? (press fire)",2);
+				if(getcvar("hd_helptext"))A_WeaponMessage("Nothing to be done here.\n\nStimulate thyself? (press fire)",2);
 				return resolvestate("nope");
 			}else if(c.countinv("IsMoving")>4){
 				if(c.stimcount){
 					if(c.getcvar("hd_helptext"))c.A_Print(string.format("Run away!!!\n\n%s is trying to overdose you\n\n(and possibly bugger you)...",player.getusername()));
-					if(getcvar("hd_helptext"))A_Print("They seem a bit fidgety...");
+					if(getcvar("hd_helptext"))A_WeaponMessage("They seem a bit fidgety...");
 				}else{
 					if(c.getcvar("hd_helptext"))c.A_Print(string.format("Stop squirming!\n\n%s only wants to\n\ngive you some drugs...",player.getusername()));
-					if(getcvar("hd_helptext"))A_Print("You'll need them to stay still...");
+					if(getcvar("hd_helptext"))A_WeaponMessage("You'll need them to stay still...");
 				}
 				return resolvestate("nope");
 			}else if(
@@ -208,7 +208,7 @@ class HDStimpacker:HDWoundFixer{
 				)
 			){
 				if(c.getcvar("hd_helptext"))c.A_Print(string.format("Run away!!!\n\n%s is trying to overdose you\n\n(and possibly bugger you)...",player.getusername()));
-				if(getcvar("hd_helptext"))A_Print("They seem a bit fidgety already...");
+				if(getcvar("hd_helptext"))A_WeaponMessage("They seem a bit fidgety already...");
 				return resolvestate("nope");
 			}else{
 				//and now...
@@ -284,9 +284,9 @@ class HDBerserker:HDStimpacker{
 	select:
 		TNT1 A 0{
 			if(!countinv(invoker.inventorytype)){
-				if(getcvar("hd_helptext"))A_Print(invoker.noerror);
+				if(getcvar("hd_helptext"))A_WeaponMessage(invoker.noerror);
 				A_SelectWeapon("Ring");
-			}else if(getcvar("hd_helptext"))A_Print("\cr*** \caBERSERK \cr***\c-\n\n\nBerserk packs help increase\ncombat capabilities temporarily.\n\n\Press altfire to use on someone else.");
+			}else if(getcvar("hd_helptext"))A_WeaponMessage("\cr*** \caBERSERK \cr***\c-\n\n\nBerserk packs help increase\ncombat capabilities temporarily.\n\n\Press altfire to use on someone else.");
 		}
 		goto HDWoundFixer::select;
 	}
@@ -359,9 +359,9 @@ class HDBlueBottler:HDWoundFixer{
 	select:
 		TNT1 A 0{
 			if(!countinv("BluePotion")){
-				if(getcvar("hd_helptext"))A_Print("No potion.");
+				if(getcvar("hd_helptext"))A_WeaponMessage("No potion.");
 				A_SelectWeapon("Ring");
-			}else if(getcvar("hd_helptext"))A_Print("\ct\(\(\( \cnPOTION \ct\)\)\)\c-\n\n\nNot made\nby human hands.\n\nBeware.");
+			}else if(getcvar("hd_helptext"))A_WeaponMessage("\ct\(\(\( \cnPOTION \ct\)\)\)\c-\n\n\nNot made\nby human hands.\n\nBeware.");
 			A_PlaySound("misc/casing",CHAN_WEAPON);
 		}
 		goto super::select;
@@ -375,10 +375,10 @@ class HDBlueBottler:HDWoundFixer{
 	fire:
 		TNT1 A 0{
 			if(!countinv("BluePotion")){
-				if(getcvar("hd_helptext"))A_Print("No potion.");
+				if(getcvar("hd_helptext"))A_WeaponMessage("No potion.");
 				A_Refire("deselecthold");
 			}else if(countinv("PortableRadsuit") && countinv("WornRadsuit")){
-				if(getcvar("hd_helptext"))A_Print("Take off your environment suit first!",2);
+				if(getcvar("hd_helptext"))A_WeaponMessage("Take off your environment suit first!",2);
 				A_Refire("nope");
 			}
 		}
@@ -393,10 +393,10 @@ class HDBlueBottler:HDWoundFixer{
 		TNT1 A 1;
 		TNT1 A 0{
 			if(!countinv("BluePotion")){
-				if(getcvar("hd_helptext"))A_Print("No potion.");
+				if(getcvar("hd_helptext"))A_WeaponMessage("No potion.");
 				A_Refire("deselecthold");
 			}else if(countinv("PortableRadsuit") && countinv("WornRadsuit")){
-				if(getcvar("hd_helptext"))A_Print("Take off your environment suit first!",2);
+				if(getcvar("hd_helptext"))A_WeaponMessage("Take off your environment suit first!",2);
 				A_Refire("nope");
 			}else if(pitch>-55){
 				A_MuzzleClimb(0,-8);
