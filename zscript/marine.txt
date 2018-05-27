@@ -841,7 +841,8 @@ class HDMarine:HDActor replaces ScriptedMarine{
 		#### O 0{hdmobai.corpseflags(self,true);}
 	xdeathbrewtlelulz:
 		#### O 5{
-			A_NoBlocking();
+			bshootable=false;
+			A_GiveInventory("IsGibbed");
 			A_SpawnItemEx("MegaBloodSplatter",0,0,34,flags:SXF_NOCHECKPOSITION);
 		}
 		#### P 5 A_XScream();
