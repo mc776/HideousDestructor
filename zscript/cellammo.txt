@@ -65,10 +65,14 @@ class HDCellpackEmpty:HDCellpacks{
 	default{
 		//$Category "Ammo/Hideous Destructor/"
 		//$Title "Cell Battery (Spent)"
-		//$Sprite "CELLC0"
+		//$Sprite "CELLD0"
 
 		inventory.pickupmessage "Picked up a depleted battery.";
-		translation 0;
+	}
+	states(actor){
+	spawn2:
+		CELL D -1;
+		stop;
 	}
 }
 

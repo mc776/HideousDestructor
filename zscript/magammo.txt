@@ -263,7 +263,7 @@ mags.push(random(1,maxperunit));  //testing
 
 			//stuff to test
 			//give hdmagammo 10;wait 1;use hdmagammo
-			//A_Log("LowestToLast");invoker.LowestToLast();
+			//A_Log("Consolidate");invoker.Consolidate();
 			//A_Log("SpawnMag");HDMagAmmo.SpawnMag(self,invoker.getclassname(),5);
 				//MaxCheat
 				//LastToFirst
@@ -287,10 +287,14 @@ mags.push(random(1,maxperunit));  //testing
 				aaa.mags.clear();
 				aaa.mags.push(invoker.takemag(false));
 			}
-			invoker.setstatelabel("spawn2");
+			if(!invoker.mags[0])invoker.setstatelabel("spawnempty");
+			else invoker.setstatelabel("spawn2");
 		}stop;
 	spawn2:
-		CLIP A -1;
+		CELL A -1;
+		stop;
+	spawnempty:
+		CELL D -1;
 		stop;
 	}
 }
