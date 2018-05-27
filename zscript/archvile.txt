@@ -6,8 +6,9 @@ class BloodyHellFire:HDActor{
 		+ismonster
 		+lookallaround
 		-shootable +dontharmclass +missilemore +noblooddecals
-		+alwayspuff +puffonactors +fixmapthingpos +puffgetsowner
+		+alwayspuff +puffonactors +fixmapthingpos +puffgetsowner +bloodlessimpact
 		+nofear
+		+bright
 		health 60;
 		damagefactor "thermal",0;
 		bloodcolor "44 3c 22";
@@ -28,15 +29,17 @@ class BloodyHellFire:HDActor{
 	override void postbeginplay(){
 		super.postbeginplay();
 		A_GiveInventory("ImmunityToFire");
-		master=target;
-		target=master.target;
-		bfriendly=master.bfriendly;
-		if(
-			pos.z>floorz+40
-			||target.countinv("ImmunityToFire")
-		){
-			setstatelabel("putto");
-			return;
+		if(target){
+			master=target;
+			target=master.target;
+			bfriendly=master.bfriendly;
+			if(
+				pos.z>floorz+40
+				||target.countinv("ImmunityToFire")
+			){
+				setstatelabel("putto");
+				return;
+			}
 		}
 		firetimer=random(120,240);
 	}
@@ -47,10 +50,11 @@ class BloodyHellFire:HDActor{
 		TNT1 AAAAAAA random(1,4) A_SpawnItemEx("HDSmoke",frandom(-1,1),frandom(-1,1),frandom(1,6),frandom(-1,1),frandom(-1,1),frandom(1,3),0,SXF_ABSOLUTE);
 		TNT1 A 0 A_Playsound("vile/firestrt",6);
 		TNT1 A 0 A_SetShootable();
+		TNT1 A 0 A_SpawnItemEx("VileFireLight",flags:SXF_SETTARGET);
 		TNT1 AAAAA 0 A_SpawnItemEx("HDSmoke",frandom(-1,1),frandom(-1,1),frandom(1,6),frandom(-1,1),frandom(-1,1),frandom(1,3),0,SXF_ABSOLUTE);
-		goto see;
 	spawn2:
-		FIRE AB 2 bright light("HELL") A_Look();
+		FIRE A 0 A_Look();
+		FIRE CD 2;
 		loop;
 	see:
 		TNT1 A 0{
@@ -60,19 +64,26 @@ class BloodyHellFire:HDActor{
 			if(firetimer<1)setstatelabel("detonate");
 			else firetimer--;
 		}
-		FIRE D 0 A_SpawnItemEx("BloodyHellFireTail",0,0,0,-1,0,1,0,SXF_NOCHECKPOSITION);
-		FIRE CC random(1,2) bright light("HELL") A_VileChase();
-		FIRE D 0 A_SpawnItemEx("BloodyHellFireTail",0,0,0,-1,0,1,0,SXF_NOCHECKPOSITION);
-		FIRE DD random(1,2) bright light("HELL") A_Wander();
+		FIRE D 0 A_SpawnItemEx("BloodyHellFireTail",0,0,0,
+			-frandom(0.6,1.2),frandom(-0.2,0.2),frandom(0.7,1.1),
+			0,SXF_NOCHECKPOSITION
+		);
+		FIRE CC random(1,2) bright A_VileChase();
+		FIRE D 0 A_SpawnItemEx("BloodyHellFireTail",0,0,0,
+			-frandom(0.6,1.2),frandom(-0.2,0.2),frandom(0.7,1.1),
+			0,SXF_NOCHECKPOSITION
+		);
+		FIRE DD random(1,2) bright A_Wander();
 		loop;
 	death:
-		FIRE CD 2 bright light("HELL");
+		FIRE CD 2;
 		TNT1 A 0 A_NoBlocking();
-		TNT1 E 2 bright A_Scream();
-		FIRE FFGGHH 2 bright light("HELL") A_FadeOut(0.1);
+		TNT1 E 2 A_Scream();
+		FIRE FFGGHH 2 A_FadeOut(0.1);
 		TNT1 A 6{bnointeraction=true;}
 	death2:
 		TNT1 A 0{
+			bnofear=true;
 			A_QuakeEx(2,2,5,20,0,256,"",QF_SCALEDOWN|QF_WAVE,10,10,10);
 			A_HDBlast(pushradius:128,pushamount:64);
 			if(target&&target.distance3d(self)<(target.radius+radius)*1.44){
@@ -81,7 +92,7 @@ class BloodyHellFire:HDActor{
 			}
 		}
 		TNT1 AAA 0 A_SpawnItemEx("HDExplosion",
-			frandom(-1,1),frandom(-1,1),24,
+			frandom(-1,1),frandom(-1,1),frandom(8,16),
 			flags:SXF_ABSOLUTE|SXF_TRANSFERPOINTERS
 		);
 		TNT1 AAAAAAAAAA 0 A_SpawnItemEx("HugeWallChunk",
@@ -94,12 +105,14 @@ class BloodyHellFire:HDActor{
 			frandom(4,8),0,frandom(8,12),frandom(1,360),
 			SXF_ABSOLUTEPOSITION|SXF_TRANSFERPOINTERS|SXF_NOCHECKPOSITION,64
 		);
-		TNT1 A 20 A_AlertMonsters();
+		MISL B 1 A_AlertMonsters();
+		MISL C 1;
+		TNT1 A 20;
 		stop;
 	missile:
 		TNT1 A 0 A_SpawnProjectile("HeckFire",0,0,0);
 		FIRE D 0 A_SpawnProjectile("BloodyHellFireTail",0,0,0,2,0);
-		FIRE D random(1,2) bright light("HELL") A_Wander();
+		FIRE D random(1,2) A_Wander();
 		goto see;
 	putto:
 		TNT1 A 0 A_Playsound("vile/firestrt");
@@ -133,6 +146,28 @@ class BloodyHellFireTail:HDActor{
 		FIRE CDCDC random(1,2) bright;
 		FIRE BABA random(1,2) bright A_fadeOut(0.2);
 		stop;
+	}
+}
+class VileFireLight:PointLight{
+	bool triggered;
+	override void postbeginplay(){
+		args[0]=200;
+		args[1]=160;
+		args[2]=70;
+		args[3]=64;
+		args[4]=0;
+		triggered=false;
+	}
+	override void tick(){
+		super.tick();
+		if(!target||target.bnointeraction){destroy();return;}
+		if(!target.bnofear){
+			if(!triggered){
+				args[3]=128;
+				triggered=true;
+			}else args[3]*=frandom(0.8,1.);
+		}
+		else args[3]=random(50,72);
 	}
 }
 
