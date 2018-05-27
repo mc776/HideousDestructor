@@ -37,7 +37,12 @@
 		}
 	for backpack
 		predefine a dynarray in the backpack for each such item
+		int pistindex;int smgindex;int zmindex;int libindex;int bossindex;int cellindex;
+		array<int> pistmags;array<int> smgmags;array<int> zmmags;array<int> libmags;
+		array<int> bossclips;array<int> cells;
 		void SyncMagAmounts(){
+			itemamount[pistindex]=max(itemamount[pistindex],pistmags.size());
+			while(itemamount[pistindex]>pistmags.size(){pistmags.push(15);}
 		}
 		void ConsolidateBPMags(){
 		}
@@ -83,24 +88,32 @@ class HDMagAmmo:HDAmmo{
 	//should be called at the start of each interaction
 	//should NEVER reduce the array to none if it was not none before
 	void SyncAmount(){
-		int amountmorethanmags=amount-mags.size();
-		if(!amountmorethanmags)return;
-		if(amountmorethanmags>0){
-			for(int i=0;i<amountmorethanmags;i++){
-//				mags.push(maxperunit);
-mags.push(random(1,maxperunit));  //testing
-			}
-		}else amount=mags.size();
+		amount=max(amount,mags.size());
+		while(amount>mags.size()){
+//			mags.push(maxperunit);
+			mags.push(random(1,maxperunit));  //testing
+		}
 	}
 	//remove one mag and return the value
 	//use to load or drop
 	int TakeMag(bool getmax){
 		SyncAmount();
 		if(amount<1)return -1;
+		//the usual: get the last one
+		if(!getmax){
+			int lastmag=mags[mags.size()-1];
+			mags.pop();
+			amount=mags.size();
+			return lastmag;
+		}
+
 		int maxindex=mags.find(maxperunit);
-		//take the first in the stack
+		//if fail, take the FIRST mag
 		//(because last is probably what you just unloaded)
-		if(!getmax||maxindex==mags.size()){
+		if(
+			maxindex==mags.size()
+			&&mags[mags.size()-1]<maxperunit
+		){
 			int firstmag=mags[0];
 			mags.delete(0);
 			amount=mags.size();
@@ -132,6 +145,7 @@ mags.push(random(1,maxperunit));  //testing
 			}
 		}
 		if(lowestindex<0)return;
+		A_LogInt(lowestindex);
 		mags.delete(lowestindex);
 		mags.push(lowest);
 	}
@@ -239,17 +253,16 @@ mags.push(random(1,maxperunit));  //testing
 //		if(HDMath.MaxInv(other,gcn)<=other.countinv(gcn))return;
 		let alreadygot=HDMagAmmo(other.findinventory(gcn));
 		if(alreadygot){
+			alreadygot.syncamount();
 			while(alreadygot.amount>=alreadygot.maxamount){
 				int thismag=mags[0];
 				bool thisisbetter=false;
-				for(int i=0;i<alreadygot.amount;i++){
-					if(thismag>alreadygot.mags[i]){
-						thisisbetter=true;
-						break;
-					}
+				for(int i=0;!thisisbetter&&i<alreadygot.amount;i++){
+					if(thismag>alreadygot.mags[i])thisisbetter=true;
 				}
 				if(!thisisbetter)return;
 				alreadygot.LowestToLast();
+alreadygot.logamounts();
 				other.A_DropInventory(gcn,1);
 			}
 		}
@@ -296,7 +309,7 @@ mags.push(random(1,maxperunit));  //testing
 			//stuff to test
 			//give hdmagammo 10;wait 1;use hdmagammo
 			//A_Log("Consolidate");invoker.Consolidate();
-			//A_Log("SpawnMag");HDMagAmmo.SpawnMag(self,invoker.getclassname(),5);
+			//A_Log("LowestToLast");invoker.LowestToLast();
 				//MaxCheat
 				//LastToFirst
 				//LowestToLast
