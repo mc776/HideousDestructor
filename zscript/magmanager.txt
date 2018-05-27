@@ -1,6 +1,118 @@
 // ------------------------------------------------------------
 // Manually reload magazines! (and clips too!)
 // ------------------------------------------------------------
+
+class HDMagManager:HDWeapon{
+	default{
+		+weapon.wimpy_weapon
+		+weapon.no_auto_switch
+		weapon.selectionorder 1011;
+	}
+	int which;
+	hdmagammo thismag;
+	name thismagtype;
+	string uitext;
+	override void beginplay(){
+		super.beginplay();
+		uitext="Mag Manager\n\nNo mags selected";
+		thismagtype="HDMagAmmo";
+		if(owner)thismag=hdmagammo(owner.findinventory(thismagtype));
+	}
+	override inventory createtossable(int amt){
+		if(owner)owner.A_DropInventory(thismagtype,1);
+		return null;
+	}
+	action bool GetMags(){
+		invoker.thismag=hdmagammo(findinventory(invoker.thismagtype));
+		return !!(invoker.thismag);
+	}
+	action void NextMagType(bool forwards=true){
+		if(!GetMags())return;
+		invoker.UpdateText();
+	}
+	action void Insert(){
+		invoker.thismag.Insert();
+		if(!GetMags())return;
+		invoker.UpdateText();
+	}
+	action void Extract(){
+		if(!GetMags())return;
+		invoker.thismag.Extract();
+		invoker.UpdateText();
+	}
+	action void LastToFirst(){
+		if(!GetMags())return;
+		invoker.thismag.LastToFirst();
+		invoker.UpdateText();
+	}
+	action void LowestToLast(){
+		if(!GetMags())return;
+		invoker.thismag.LowestToLast();
+		invoker.UpdateText();
+	}
+	action void DropThis(){
+	}
+	action void Backpack(bool outfrom){
+	}
+	void UpdateText(){
+		if(!thismag){uitext="Mag Manager\n\nNo mags selected";return;}
+		thismagtype=thismag.getclassname();
+		string toui=string.format(
+			"Mag Manager\n\n\n%s\n\n",thismagtype
+		);
+		int finalindex=thismag.amount-1;
+		for(int i=0;i<finalindex;i++){
+			toui.appendformat(" %i ",thismag.mags[i]);
+		}
+		toui.appendformat("\n\n%i",thismag.mags[finalindex]);
+		uitext=toui;
+	}
+	states{
+	spawn:
+		TNT1 A 0;
+		stop;
+	select:
+		TNT1 A 0{invoker.UpdateText();}
+		goto super::select;
+	ready:
+		TNT1 A 1{
+			A_WeaponMessage(invoker.uitext);
+			A_WeaponReady(WRF_ALL);
+		}
+		goto readyend;
+	fire:
+		TNT1 A 0 NextMagType();
+		goto nope;
+	altfire:
+		TNT1 A 0 NextMagType(false);
+		goto nope;
+	reload:
+		TNT1 A 15 Insert();
+		goto readyend;
+	unload:
+		TNT1 A 4 Extract();
+		goto readyend;
+	firemode:
+		TNT1 A 0 LastToFirst();
+		goto nope;
+	zoom:
+		TNT1 A 0 LowestToLast();
+		goto nope;
+	}
+}
+
+
+
+
+
+
+
+
+//old, pre-mag-tracking version below
+
+
+
+
 class MagManager:HDWeapon{
 	default{
 		+weapon.wimpy_weapon

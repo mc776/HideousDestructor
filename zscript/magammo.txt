@@ -57,18 +57,6 @@
 		Consolidate all
 	for bulk
 		cell: return ENC_BATTERY*amount;
-		other: new variables
-		double magbulk;
-		property magbulk:magbulk;
-		double roundbulk;
-		property roundbulk:roundbulk;
-	override void getbulk(){
-		double result=0;
-		SyncAmount();
-		for(int i=0;i<amount;i++){
-			result+=max(magbulk,roundbulk*mags[i]*1.1);
-		}
-	}
 */
 class HDMagAmmo:HDAmmo{
 	array<int> mags; //or clips or batteries, whatever
@@ -78,12 +66,24 @@ class HDMagAmmo:HDAmmo{
 	property roundtype:roundtype;
 	double roundbulk;
 	property roundbulk:roundbulk;
+	double magbulk;
+	property magbulk:magbulk;
 	default{
 		hdmagammo.maxperunit 30;
 		hdmagammo.roundtype "HDPistolAmmo";
 		hdmagammo.roundbulk 0;
+		hdmagammo.magbulk 0;
 		inventory.maxamount 10;
 	}
+	override double getbulk(){
+		double result=0;
+		SyncAmount();
+		for(int i=0;i<amount;i++){
+			result+=max(magbulk,roundbulk*mags[i]*1.1);
+		}
+		return result;
+	}
+
 	//add mag amount or size as appropriate
 	//should be called at the start of each interaction
 	//should NEVER reduce the array to none if it was not none before
@@ -236,12 +236,13 @@ class HDMagAmmo:HDAmmo{
 	}
 
 	//debug: log amounts
-	void LogAmounts(){
+	void LogAmounts(bool owneronly=false){
 		string stt=string.format("%i  %s: ",amount,getclassname());
 		for(int i=0;i<amount;i++){
 			stt=string.format("%s %i",stt,mags[i]);
 		}
-		A_Log(stt);
+		if(owneronly&&owner)owner.A_Log(stt,true);
+		else A_Log(stt);
 	}
 
 	override void actualpickup(actor other){
@@ -297,6 +298,10 @@ alreadygot.logamounts();
 		}
 		return iii;
 	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		syncamount();
+	}
 
 	states{
 	use:
@@ -304,7 +309,7 @@ alreadygot.logamounts();
 			invoker.SyncAmount();
 			if(!invoker.amount||!hd_debug)return;
 
-			invoker.LogAmounts();
+			invoker.LogAmounts(true);
 
 			//stuff to test
 			//give hdmagammo 10;wait 1;use hdmagammo
