@@ -32,16 +32,7 @@ class NoBlockWepDrop:ActionItem{
 			bool hasdropped=countinv("HasDroppedGun");
 			A_GiveInventory("HasDroppedGun");
 
-			if(self is "DragonGuard"){
-				if(!hasdropped){
-					//see the actor itself for the weapon drop
-					A_DropItem("HDCellPacks",16);
-				}else{
-					A_DropItem("ZM66RifleMags",0,96);
-					A_DropItem("ZM66RifleMags",0,96);
-					A_DropItem("HDCellPacks",0,8);
-				}
-			}else if(self is "HoopBubble"){
+			if(self is "HoopBubble"){
 				if(!hasdropped){
 					let wp=dropwep("HDSMG");if(!wp)return;
 					wp.weaponstatus[SMGS_AUTO]=2;

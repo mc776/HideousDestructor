@@ -13,6 +13,7 @@ class DragonGuard:Chaingunguy{
 	int burstcount;
 	int vulcammo; //0-250, just play an animation on hitting a multiple of 50
 	int vulcchambers; //0-5
+	bool hasdropped;
 	default{
 		dropitem "";
 		translation "60:69=128:135","70:79=144:151","176:191=32:47";
@@ -24,11 +25,8 @@ class DragonGuard:Chaingunguy{
 		super.postbeginplay();
 		vulcammo=random(50,250);
 		vulcchambers=5;
+		hasdropped=false;
 		hdmobster.spawnmobster(self);
-	}
-	override void die(actor source,actor inflictor,int dmgflags){
-		A_GiveInventory("HasDroppedGun");
-		super.die(source,inflictor,dmgflags);
 	}
 	states{
 	spawn:
@@ -274,30 +272,39 @@ class DragonGuard:Chaingunguy{
 		goto dead;
 	}
 	void A_VulcNoBlocking(){
-		A_GiveInventory("NoBlockWepDrop");
-		vulcanette vvv=vulcanette(spawn("vulcanette",pos+(0,0,32)));
-		if(!vvv)return;
-		vvv.vel=vel;vvv.angle=angle;
-		vvv.A_ChangeVelocity(1,0,2,CVF_RELATIVE);
-		for(int i=0;i<5;i++){
-			if(i==0){
-				int rem=vulcammo%50;
-				if(rem){
-					vvv.vulcmag[i]=rem;
-					vulcammo-=rem;
+		A_NoBlocking();
+		if(!hasdropped){
+			hasdropped=true;
+			A_DropItem("HDCellPacks",0,16);
+			A_DropItem("HDPistol",0,16);
+			vulcanette vvv=vulcanette(spawn("vulcanette",pos+(0,0,32)));
+			if(!vvv)return;
+			vvv.vel=vel;vvv.angle=angle;
+			vvv.A_ChangeVelocity(1,0,2,CVF_RELATIVE);
+			for(int i=0;i<5;i++){
+				if(i==0){
+					int rem=vulcammo%50;
+					if(rem){
+						vvv.vulcmag[i]=rem;
+						vulcammo-=rem;
+					}
+				}else if(vulcammo>0){
+					vvv.vulcmag[i]=51;
+					vulcammo-=50;
+				}else vvv.vulcmag[i]=-1;
+				if(vulcchambers>0){    
+					vvv.vulcchamber[i]=randompick(1,1,2);
+					vulcchambers--;
 				}
-			}else if(vulcammo>0){
-				vvv.vulcmag[i]=51;
-				vulcammo-=50;
-			}else vvv.vulcmag[i]=-1;
-			if(vulcchambers>0){    
-				vvv.vulcchamber[i]=randompick(1,1,2);
-				vulcchambers--;
 			}
+			if(bmissilemore)vvv.weaponstatus[0]|=VULCF_FAST;
+			bmissilemore=false;
+			vvv.weaponstatus[1]=random(1,20);
+		}else{
+			A_DropItem("ZM66RifleMags",0,96);
+			A_DropItem("ZM66RifleMags",0,96);
+			A_DropItem("HDCellPacks",0,8);
 		}
-		if(bmissilemore)vvv.weaponstatus[0]|=VULCF_FAST;
-		bmissilemore=false;
-		vvv.weaponstatus[1]=random(1,20);
 	}
 }
 
