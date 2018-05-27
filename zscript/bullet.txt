@@ -204,14 +204,14 @@ class HDBullet:HDActor{
 		//and yet another check
 		if(max(abs(pos.x),abs(pos.y),-pos.z)>=32768){destroy();return;}
 
-
+A_LogFloat(penetration);
 		//hit actor, ignore all the wall geometry stuff below
 		if(blt.hitactor){
 			actor hitactor=blt.hitactor;
 			tracer=hitactor;
 			setorigin(blt.hitlocation+blt.hitdir*frandom(0,hitactor.radius*0.6),true);
 
-			double hitresistance=min(64,hitactor.radius*2)*frandom(0.8,1.);
+			double hitresistance=min(64,hitactor.radius*1.6)*frandom(0.8,1.);
 //A_LogFloat(hitresistance);
 
 			//crit?
