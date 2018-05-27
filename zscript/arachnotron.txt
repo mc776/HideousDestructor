@@ -15,6 +15,21 @@ class Krangling:Arachnotron replaces Arachnotron{
 		damagefactor "SmallArms1",0.8;
 		damagefactor "SmallArms2",0.9;
 	}
+	override int damagemobj(
+		actor inflictor,actor source,int damage,
+		name mod,int flags,double angle
+	){
+		if(health>0){
+			if(countinv("VileCount"))return super.damagemobj(
+				inflictor,source,health+1,
+				"NeedMoreVile",DMG_THRUSTLESS|DMG_NO_PAIN
+			);
+		}
+		return super.damagemobj(
+			inflictor,source,damage,mod,flags,angle
+		);
+
+	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		hdmobster.spawnmobster(self);
