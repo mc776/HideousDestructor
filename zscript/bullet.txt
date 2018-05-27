@@ -209,9 +209,9 @@ class HDBullet:HDActor{
 		if(blt.hitactor){
 			actor hitactor=blt.hitactor;
 			tracer=hitactor;
-			setorigin(blt.hitlocation+blt.hitdir*frandom(0,hitactor.radius*0.8),true);
+			setorigin(blt.hitlocation+blt.hitdir*frandom(0,hitactor.radius*0.6),true);
 
-			double hitresistance=max(1,min(64,hitactor.mass>>4)*frandom(0.8,1.));
+			double hitresistance=min(64,hitactor.radius*2)*frandom(0.8,1.);
 //A_LogFloat(hitresistance);
 
 			//crit?
@@ -233,7 +233,7 @@ class HDBullet:HDActor{
 			bool pierce=false;
 			double netpenetration=penetration;
 			let hdp=hdplayerpawn(hitactor);
-			netpenetration=min(0.9999,netpenetration/hitresistance);
+			netpenetration=min(0.999,netpenetration/hitresistance);
 			int hdpwoundcount=0;
 			if(hdp){
 				hdpwoundcount=hdp.woundcount;
@@ -258,21 +258,19 @@ class HDBullet:HDActor{
 			}
 
 			if(critangle>frandom(70,120)){
-				if(hd_debug)A_Log("Ricochet!");
+				if(hd_debug>1)A_Log("Ricochet!");
 				throughthis=hitactor;
 				angle+=deltaangle(angleto(hitactor),angle)+frandom(-10,10);
 				pitch+=frandom(-10,10);
 				A_ChangeVelocity(cos(pitch)*speed,0,sin(pitch)*-speed,CVF_RELATIVE|CVF_REPLACE);
 			}else if(netpenetration>0.5){
+				if(hd_debug>1)A_Log("--- pierce! --->");
 				throughthis=hitactor;
 				pierce=true;
 			}else if(netpenetration>0.12){
+				if(hd_debug>1)A_Log("-pierce->");
 				pierce=true;
-			}
-			if(hd_debug>1){
-				if(pierce)A_Log("--pierce-->");
-				else if(throughthis!=hitactor)A_Log("|STOPPED|");
-			}
+			}else if(hd_debug>1)A_Log("|STOPPED|");
 
 			//determine damage
 			int dmg=(speed+mass)*0.009;
@@ -656,7 +654,7 @@ class HDBulletDamager:Thinker{
 		if(!hdbdd){
 			hdbdd=new("hdbulletdamager");
 			hdbdd.victim=caller;
-			hdbdd.ticker=4;
+			hdbdd.ticker=2;
 		}
 
 		hdbdd.lastattacker=attacker;
