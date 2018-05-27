@@ -213,12 +213,11 @@ class HellPrince:BaronOfHell replaces BaronofHell{
 		BOSS H 0 A_StopSound(CHAN_BODY);
 		BOSS H 0 A_Die("NeedMoreVile");
 	Death.NeedMoreVile:
-		BOSS H 5{
+		BOSS J 5{
 			hdmobai.corpseflags(self,false);
 			A_PlaySound("misc/gibbed",CHAN_BODY);
 			A_SpawnItemEx("tempshieldgreen",flags:SXF_SETMASTER);
 		}
-		BOSS IJ 5;
 		BOSS K 5 A_SpawnItemEx("tempshield2green",flags:SXF_SETMASTER);
 		BOSS L 5 A_NoBlocking();
 		BOSS MN 5;

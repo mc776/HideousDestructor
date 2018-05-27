@@ -204,14 +204,13 @@ class HDBullet:HDActor{
 		//and yet another check
 		if(max(abs(pos.x),abs(pos.y),-pos.z)>=32768){destroy();return;}
 
-A_LogFloat(penetration);
 		//hit actor, ignore all the wall geometry stuff below
 		if(blt.hitactor){
 			actor hitactor=blt.hitactor;
 			tracer=hitactor;
 			setorigin(blt.hitlocation+blt.hitdir*frandom(0,hitactor.radius*0.6),true);
 
-			double hitresistance=min(64,hitactor.radius*1.6)*frandom(0.8,1.);
+			double hitresistance=min(64,hitactor.radius)*frandom(0.7,1.1);
 //A_LogFloat(hitresistance);
 
 			//crit?
@@ -263,11 +262,11 @@ A_LogFloat(penetration);
 				angle+=deltaangle(angleto(hitactor),angle)+frandom(-10,10);
 				pitch+=frandom(-10,10);
 				A_ChangeVelocity(cos(pitch)*speed,0,sin(pitch)*-speed,CVF_RELATIVE|CVF_REPLACE);
-			}else if(netpenetration>0.5){
+			}else if(netpenetration>1.){
 				if(hd_debug>1)A_Log("--- pierce! --->");
 				throughthis=hitactor;
 				pierce=true;
-			}else if(netpenetration>0.12){
+			}else if(netpenetration>0.24){
 				if(hd_debug>1)A_Log("-pierce->");
 				pierce=true;
 			}else if(hd_debug>1)A_Log("|STOPPED|");
