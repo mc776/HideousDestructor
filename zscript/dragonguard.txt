@@ -189,7 +189,7 @@ class DragonGuard:Chaingunguy{
 	waitforlos:
 		CPOS EE 4 A_Jump(2,"fire");
 		CPOS E 0{
-			if(!target||target.health<random(-50,1))
+			if(!target||target.bfriendly&&bfriendly||target.health<random(-5,1))
 				return resolvestate("winddown");
 			if(A_JumpIfTargetInLOS("null"))A_FaceTarget(1,1);
 			if(A_CheckLOF("null",

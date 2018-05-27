@@ -37,6 +37,10 @@
 		}
 	for backpack
 		predefine a dynarray in the backpack for each such item
+		void SyncMagAmounts(){
+		}
+		void ConsolidateBPMags(){
+		}
 		place:
 			check for room
 			takemag, push
@@ -47,15 +51,17 @@
 	for levelreset
 		Consolidate all
 	for bulk
-		cell: just return amount*cell mass
+		cell: return ENC_BATTERY*amount;
+		other: new variables
+		double magbulk;
+		property magbulk:magbulk;
+		double roundbulk;
+		property roundbulk:roundbulk;
 	override void getbulk(){
 		double result=0;
 		SyncAmount();
 		for(int i=0;i<amount;i++){
-			result+=max(
-				minimum per mag: full mag * 0.3
-				# of rounds * 1.1 * per round
-			);
+			result+=max(magbulk,roundbulk*mags[i]*1.1);
 		}
 	}
 */
