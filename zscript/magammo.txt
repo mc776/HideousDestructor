@@ -25,6 +25,8 @@
 		zoom: bring up lowest
 		firemode: bring last to first
 		dropweapon: drop 1 mag
+		altreload: place into backpack
+		firemode3: retrieve from backpack
 	for the magamanger display:
 		if(!mags){
 			drawstring...
@@ -33,8 +35,29 @@
 			drawsprite...
 			drawnum...
 		}
+	for backpack
+		predefine a dynarray in the backpack for each such item
+		place:
+			check for room
+			takemag, push
+		retrieve:
+			int frombp=bpmags[bpmags.size()-1];
+			bpmags.pop();
+			HDMagAmmo.GiveMag(self,type,frombp);
 	for levelreset
 		Consolidate all
+	for bulk
+		cell: just return amount*cell mass
+	override void getbulk(){
+		double result=0;
+		SyncAmount();
+		for(int i=0;i<amount;i++){
+			result+=max(
+				minimum per mag: full mag * 0.3
+				# of rounds * 1.1 * per round
+			);
+		}
+	}
 */
 class HDMagAmmo:HDAmmo{
 	array<int> mags; //or clips or batteries, whatever
@@ -42,9 +65,12 @@ class HDMagAmmo:HDAmmo{
 	property maxperunit:maxperunit;
 	class<inventory> roundtype;
 	property roundtype:roundtype;
+	double roundbulk;
+	property roundbulk:roundbulk;
 	default{
 		hdmagammo.maxperunit 30;
 		hdmagammo.roundtype "HDPistolAmmo";
+		hdmagammo.roundbulk 0;
 		inventory.maxamount 10;
 	}
 	//add mag amount or size as appropriate
