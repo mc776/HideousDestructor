@@ -336,8 +336,7 @@ alreadygot.logamounts();
 
 			//stuff to test
 			//give hdmagammo 10;wait 1;use hdmagammo
-			//
-			A_Log("PurgeEmpties");invoker.PurgeEmpties();
+			//A_Log("PurgeEmpties");invoker.PurgeEmpties();
 				//MaxCheat
 				//LastToFirst
 				//LowestToLast
@@ -349,8 +348,7 @@ alreadygot.logamounts();
 				//TakeMag(false)
 				//SpawnMag
 				//PurgeEmpties
-			//
-			invoker.LogAmounts();
+			//invoker.LogAmounts();
 		}fail;
 	spawn:
 		TNT1 A 1;
@@ -413,6 +411,32 @@ class HD9mMag30:HD9mMag15{
 		stop;
 	spawnempty:
 		CLP3 B -1{
+			brollsprite=true;brollcenter=true;
+			roll=randompick(0,0,0,0,2,2,2,2,1,3)*90;
+		}stop;
+	}
+}
+class HD4mMag:HDMagAmmo{
+	default{
+		hdmagammo.maxperunit 51;
+		hdmagammo.roundtype "FourMilAmmo";
+		hdmagammo.roundbulk 0;
+		hdmagammo.magbulk 0;
+		hdmagammo.nicename "4.26 UAC Standard Magazines";
+		inventory.pickupmessage "Picked up a 4.26 UAC Standard magazine.";
+	}
+	override string pickupmessage(){
+		string pms="Picked up a 4.26 UAC Standard magazine.";
+		if(mags[0]<51)pms.appendformat(" %s",HDCONST_426MAGMSG);
+		return pms;
+	}
+	states(actor){
+	spawn2:
+		ZMAG AB -1{
+			if(mags[0]<51)frame=1;
+		}stop;
+	spawnempty:
+		ZMAG C -1{
 			brollsprite=true;brollcenter=true;
 			roll=randompick(0,0,0,0,2,2,2,2,1,3)*90;
 		}stop;
