@@ -394,6 +394,26 @@ class HD9mMag15:HDMagAmmo{
 		stop;
 	spawnempty:
 		CLP2 B -1{
+			brollsprite=true;brollcenter=true;
+			roll=randompick(0,0,0,0,2,2,2,2,1,3)*90;
+		}stop;
+	}
+}
+class HD9mMag30:HD9mMag15{
+	default{
+		hdmagammo.maxperunit 30;
+		hdmagammo.magbulk 0;
+		hdmagammo.nicename "SMG Magazines";
+		inventory.maxamount 8;
+		inventory.pickupmessage "Picked up an SMG magazine.";
+	}
+	states{
+	spawn2:
+		CLP3 A -1;
+		stop;
+	spawnempty:
+		CLP3 B -1{
+			brollsprite=true;brollcenter=true;
 			roll=randompick(0,0,0,0,2,2,2,2,1,3)*90;
 		}stop;
 	}
