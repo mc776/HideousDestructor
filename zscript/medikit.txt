@@ -365,7 +365,14 @@ class HDMedikitter:HDWoundFixer{
 
 			\cu(all numbers are based on %% of minimum
 			\cuconsidered to be lethal in all situations.)",
-			ww,uw,ow,bb),-210);
+			ww,uw,ow,bb),210);
+
+			A_Log(string.format("Medikit Auto-Diagnostic:
+\ccPatient: \cy%s
+\ccOpen wounds: \cg%u%%
+\ccWounds temporarily bandaged: \ca%u%%
+\ccWounds already treated: \cd%u%%
+\ccBurns: \cq%u%%",player.getusername(),ww,uw,ow,bb),true);
 		}
 		goto nope;
 	spawn:
