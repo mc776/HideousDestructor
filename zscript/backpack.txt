@@ -259,6 +259,27 @@ class HDBP:HDWeapon{
 	int fcellindex;int mcellindex;int ecellindex;
 	int sevenmilindex;int brassindex;int loosezedindex;
 	int potionindex;int talismanindex;
+
+	int pistindex;int smgindex;int zmindex;int libindex;int bossindex;int batteryindex;
+	array<int> pistmags;array<int> smgmags;array<int> zmmags;array<int> libmags;
+	array<int> bossclips;array<int> batteries;
+	void SyncMagAmounts(){
+		itemamount[pistindex]=max(itemamount[pistindex],pistmags.size());
+			while(itemamount[pistindex]>pistmags.size()){pistmags.push(15);}
+		itemamount[smgindex]=max(itemamount[smgindex],smgmags.size());
+			while(itemamount[smgindex]>smgmags.size()){smgmags.push(30);}
+		itemamount[zmindex]=max(itemamount[zmindex],zmmags.size());
+			while(itemamount[zmindex]>zmmags.size()){zmmags.push(51);}
+		itemamount[libindex]=max(itemamount[libindex],libmags.size());
+			while(itemamount[libindex]>libmags.size()){libmags.push(30);}
+		itemamount[bossindex]=max(itemamount[bossindex],bossclips.size());
+			while(itemamount[bossindex]>bossclips.size()){bossclips.push(10);}
+		itemamount[batteryindex]=max(itemamount[batteryindex],batteries.size());
+			while(itemamount[batteryindex]>batteries.size()){batteries.push(20);}
+	}
+	void ConsolidateBPMags(){
+	}
+
 	override void beginplay(){
 		int i=-1;
 		i++;itembulk[i]=ENC_GREENARMOUR;itemtype[i]="HDArmour";itemname[i]="Soft armour";armourindex=i;
@@ -279,6 +300,7 @@ class HDBP:HDWeapon{
 		i++;itemname[i]="br";
 
 		i++;itembulk[i]=ENC_FRAG;itemtype[i]="HDFragGrenadeAmmo";itemname[i]="Hand grenade";
+		i++;itembulk[i]=ENC_BATTERY;itemtype[i]="HDBattery";itemname[i]="Battery";batteryindex=i;
 		i++;itembulk[i]=ENC_BATTERY;itemtype[i]="HDCellPacks";itemname[i]="Fresh battery";fcellindex=i;
 		i++;itembulk[i]=ENC_BATTERY;itemtype[i]="HDCellAmmo";itemname[i]="Stale battery";mcellindex=i;
 		i++;itembulk[i]=ENC_BATTERY;itemtype[i]="HDCellPackEmpty";itemname[i]="Depleted battery";ecellindex=i;
@@ -286,17 +308,22 @@ class HDBP:HDWeapon{
 		i++;itemname[i]="br";
 
 		i++;itembulk[i]=ENC_426MAG;itemtype[i]="ZM66RifleMags";itemname[i]="4.26mm mag";
+		i++;itembulk[i]=ENC_426MAG;itemtype[i]="HD4mMag";itemname[i]="4.26mm mag";zmindex=i;
 		i++;itembulk[i]=ENC_426;itemtype[i]="FourMilAmmo";itemname[i]="Misc. 4.26mm ammo";loosezedindex=i;
 		i++;itemname[i]="cl";
 
 		i++;itembulk[i]=ENC_776MAG;itemtype[i]="LiberatorMag";itemname[i]="7.76mm mag";
 		i++;itembulk[i]=ENC_776CLIP;itemtype[i]="BossClip";itemname[i]="7.76mm clip";
+		i++;itembulk[i]=ENC_776MAG;itemtype[i]="HD7mMag";itemname[i]="7.76mm mag";libindex=i;
+		i++;itembulk[i]=ENC_776CLIP;itemtype[i]="HD7mClip";itemname[i]="7.76mm clip";bossindex=i;
 		i++;itembulk[i]=ENC_776;itemtype[i]="SevenMilAmmo";itemname[i]="Misc. 7.76mm ammo";sevenmilindex=i;
 		i++;itembulk[i]=ENC_776B;itemtype[i]="SevenMilBrass";itemname[i]="7.76mm casing";brassindex=i;
 		i++;itemname[i]="br";
 
 		i++;itembulk[i]=ENC_9MAG;itemtype[i]="HDPistolMag";itemname[i]="Pistol mag";
 		i++;itembulk[i]=ENC_9MAG30;itemtype[i]="HDSMGMag";itemname[i]="SMG mag";
+		i++;itembulk[i]=ENC_9MAG;itemtype[i]="HD9mMag15";itemname[i]="Pistol mag";pistindex=i;
+		i++;itembulk[i]=ENC_9MAG30;itemtype[i]="HD9mMag30";itemname[i]="SMG mag";smgindex=i;
 		i++;itembulk[i]=ENC_9;itemtype[i]="HDPistolAmmo";itemname[i]="Misc. 9mm ammo";
 		i++;itemname[i]="br";
 
