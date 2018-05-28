@@ -24,7 +24,7 @@ class HDMagManager:HDWeapon{
 		magtypes[3]="HD7mClip";
 		magtypes[4]="HD7mMag";
 		magtypes[5]="HDBattery";
-		magtypes[6]="HDMagAmmo";
+//		magtypes[6]="HDMagAmmo";
 	}
 	override inventory createtossable(int amt){
 		if(owner)owner.A_DropInventory(thismagtype,1);
@@ -126,7 +126,7 @@ class HDMagManager:HDWeapon{
 		}
 		goto readyend;
 	fire:
-//give hdmagammo 5;give hd9mmag15 5;give hd9mmag30 5;wait 1;use hdmagammo
+//give hd7mmag 5;give hd9mmag15 5;give hd9mmag30 5;give hd4mmag 5;give hdbattery 5;wait 1;use hd9mmag15
 		TNT1 A 1{
 			if(PressingFireMode())NextMagType(false);
 			else LastToFirst(false);

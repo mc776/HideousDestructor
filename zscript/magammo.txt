@@ -39,8 +39,6 @@
 			HDMagAmmo.GiveMag(self,type,frombp);
 	for levelreset
 		Consolidate all
-	for bulk
-		cell: return ENC_BATTERY*amount;
 */
 class HDMagAmmo:HDAmmo{
 	array<int> mags; //or clips or batteries, whatever
@@ -418,6 +416,58 @@ class HD9mMag30:HD9mMag15{
 		}stop;
 	}
 }
+
+class HD7mMag:HDMagAmmo{
+	default{
+		hdmagammo.maxperunit 30;
+		hdmagammo.roundtype "SevenMilAmmo";
+		hdmagammo.roundbulk 0;
+		hdmagammo.magbulk 0;
+		hdmagammo.nicename "Liberator Magazines";
+		inventory.maxamount 8;
+		inventory.pickupmessage "Picked up a 7.76mm magazine.";
+		scale 0.8;
+	}
+	states{
+	spawn2:
+		RMAG A -1;
+		stop;
+	spawnempty:
+		RMAG B -1{
+			brollsprite=true;brollcenter=true;
+			roll=randompick(0,0,0,0,2,2,2,2,1,3)*90;
+		}stop;
+	}
+}
+
+class HDBattery:HDMagAmmo{
+	default{
+		hdmagammo.maxperunit 15;
+		hdmagammo.roundtype "";
+		hdmagammo.roundbulk 0;
+		hdmagammo.magbulk 0;
+		hdmagammo.nicename "Batteries";
+		inventory.pickupmessage "Picked up a battery.";
+		scale 0.4;
+	}
+	override double getbulk(){
+		return ENC_BATTERY*amount;
+	}
+	override bool Insert(){return false;}
+	override bool Extract(){return false;}
+	states(actor){
+	spawn2:
+		CELL CAB -1{
+			int amt=mags[0];
+			if(amt>13)frame=0;
+			else if(amt>6)frame=1;
+		}stop;
+	spawnempty:
+		CELL D -1;
+		stop;
+	}
+}
+
 class HD4mMag:HDMagAmmo{
 	default{
 		hdmagammo.maxperunit 51;
@@ -425,6 +475,7 @@ class HD4mMag:HDMagAmmo{
 		hdmagammo.roundbulk 0;
 		hdmagammo.magbulk 0;
 		hdmagammo.nicename "4.26 UAC Standard Magazines";
+		inventory.maxamount 12;
 		inventory.pickupmessage "Picked up a 4.26 UAC Standard magazine.";
 	}
 	override void postbeginplay(){
@@ -476,7 +527,7 @@ class HD4mMag:HDMagAmmo{
 		)return false;
 		owner.A_TakeInventory(roundtype,1,TIF_NOTAKEINFINITE);
 		owner.A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
-		if(!random(0,1)){
+		if(!random(0,7)){
 			owner.A_PlaySound("weapons/bigcrack",CHAN_BODY);
 			owner.A_SpawnItemEx("HDSmokeChunk",12,0,owner.height-12,4,frandom(-2,2),frandom(2,4));
 			owner.damagemobj(self,owner,1,"Thermal",DMG_NO_ARMOR);
