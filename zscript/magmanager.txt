@@ -34,7 +34,7 @@ class HDMagManager:HDWeapon{
 		invoker.thismag=hdmagammo(findinventory(invoker.thismagtype));
 		return !!(invoker.thismag);
 	}
-	action void NextMagType(bool forwards=false){
+	action void NextMagType(bool forwards=true){
 		if(!GetMags())return;
 		int findindex=0;
 		int magrange=invoker.magtypes.size();
@@ -82,7 +82,7 @@ class HDMagManager:HDWeapon{
 		if(!thismag){uitext="\cf///\cyMag Manager\cf\\\\\\\n\nNo mags selected";return;}
 		thismagtype=thismag.getclassname();
 		string toui=string.format(
-			"\cf///\cyMag Manager\cf\\\\\\\n\n\cqFire/Altfire\cu  select\n\cqReload/Unload\cu  load mags\n\cqDrop\cu  drop current mag\n\cqZoom\cu bring up lowest mag\n\cqFiremode\cu  next ammo type\n\n\n\cj%s\n",thismag.nicename
+			"\cf///\cyMag Manager\cf\\\\\\\n\n\cqFire/Altfire\cu  select\n(hold \cqFiremode\cu to select ammo type)\n\cqReload/Unload\cu  load mags\n\cqDrop\cu  drop current mag\n\cqZoom\cu bring up lowest mag\n\n\n\cj%s\n",thismag.nicename
 		);
 		if(thismag.mags.size()>0){
 			int finalindex=thismag.amount-1;
@@ -98,19 +98,43 @@ class HDMagManager:HDWeapon{
 	spawn:
 		TNT1 A 0;
 		stop;
+	nope:
+		---- A 1{
+			A_WeaponMessage(invoker.uitext);
+			A_ClearRefire();
+			A_WeaponReady(WRF_NOFIRE);
+		}
+		---- A 0{
+			int inp=getplayerinput(MODINPUT_BUTTONS);
+			if(
+				inp&BT_ATTACK||
+				inp&BT_ALTATTACK||
+				inp&BT_RELOAD||
+				inp&BT_ZOOM||
+				inp&BT_USER1||
+				inp&BT_USER3||
+				inp&BT_USER4
+			)setweaponstate("nope");
+		}
+		---- A 0 A_Jump(256,"ready");
 	ready:
 		TNT1 A 1{
 			A_WeaponMessage(invoker.uitext);
-			A_WeaponReady(WRF_ALL);
+			A_WeaponReady(WRF_ALL&~WRF_ALLOWUSER2);
 			invoker.UpdateText();
 		}
 		goto readyend;
 	fire:
-		TNT1 A 0 LastToFirst(false);
-		goto nope;
+//give hdmagammo 5;give hd9mmag15 5;wait 1;use hdmagammo
+		TNT1 A 1{
+			if(PressingFireMode())NextMagType(false);
+			else LastToFirst(false);
+		}goto nope;
 	altfire:
-		TNT1 A 0 LastToFirst();
-		goto nope;
+		TNT1 A 1{
+			if(PressingFireMode())NextMagType();
+			else LastToFirst();
+		}goto nope;
 	reload:
 		TNT1 A 8 Insert();
 		goto readyend;
@@ -118,7 +142,7 @@ class HDMagManager:HDWeapon{
 		TNT1 A 4 Extract();
 		goto readyend;
 	firemode:
-		TNT1 A 0 NextMagType();
+		TNT1 A 0;
 		goto nope;
 	zoom:
 		TNT1 A 0 LowestToLast();

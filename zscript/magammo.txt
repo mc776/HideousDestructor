@@ -238,6 +238,15 @@ class HDMagAmmo:HDAmmo{
 			if(totalrounds<1)break;
 		}
 	}
+	//purge empty
+	void PurgeEmpties(){
+		SyncAmount();
+		LowestToLast();
+		while(mags[mags.size()-1]<1){
+			owner.A_DropInventory(getclassname(),1);
+			LowestToLast();
+		}
+	}
 	//max everything
 	void MaxCheat(){
 		mags.clear();
@@ -327,8 +336,8 @@ alreadygot.logamounts();
 
 			//stuff to test
 			//give hdmagammo 10;wait 1;use hdmagammo
-			//A_Log("Consolidate");invoker.Consolidate();
-			//A_Log("LowestToLast");invoker.LowestToLast();
+			//
+			A_Log("PurgeEmpties");invoker.PurgeEmpties();
 				//MaxCheat
 				//LastToFirst
 				//LowestToLast
@@ -339,7 +348,9 @@ alreadygot.logamounts();
 				//TakeMag(true)
 				//TakeMag(false)
 				//SpawnMag
-			//invoker.LogAmounts();
+				//PurgeEmpties
+			//
+			invoker.LogAmounts();
 		}fail;
 	spawn:
 		TNT1 A 1;
