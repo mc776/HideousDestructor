@@ -12,11 +12,19 @@ class HDMagManager:HDWeapon{
 	hdmagammo thismag;
 	name thismagtype;
 	string uitext;
+	name magtypes[7];
 	override void beginplay(){
 		super.beginplay();
 		uitext="Mag Manager\n\nNo mags selected";
 		thismagtype="HDMagAmmo";
 		if(owner)thismag=hdmagammo(owner.findinventory(thismagtype));
+		magtypes[0]="HD9mMag15";
+		magtypes[1]="HD9mMag30";
+		magtypes[2]="HD4mMag";
+		magtypes[3]="HD7mClip";
+		magtypes[4]="HD7mMag";
+		magtypes[5]="HDBattery";
+		magtypes[6]="HDMagAmmo";
 	}
 	override inventory createtossable(int amt){
 		if(owner)owner.A_DropInventory(thismagtype,1);
@@ -26,13 +34,30 @@ class HDMagManager:HDWeapon{
 		invoker.thismag=hdmagammo(findinventory(invoker.thismagtype));
 		return !!(invoker.thismag);
 	}
-	action void NextMagType(bool forwards=true){
+	action void NextMagType(bool forwards=false){
 		if(!GetMags())return;
+		int findindex=0;
+		int magrange=invoker.magtypes.size();
+		for(int i=0;i<magrange;i++){
+			if(invoker.thismagtype==invoker.magtypes[i]){
+				findindex=i;
+			}
+		}
+		for(int i=0;i<magrange;i++){
+			if(forwards)findindex++;else findindex--;
+			if(findindex<0)findindex=magrange-1;
+			else if(findindex>=magrange)findindex=0;
+			if(findinventory(invoker.magtypes[findindex])){
+				invoker.thismag=HDMagAmmo(findinventory(invoker.magtypes[findindex]));
+				invoker.thismagtype=invoker.magtypes[findindex];
+				break;
+			}
+		}
 		invoker.UpdateText();
 	}
 	action void Insert(){
-		invoker.thismag.Insert();
 		if(!GetMags())return;
+		invoker.thismag.Insert();
 		invoker.UpdateText();
 	}
 	action void Extract(){
@@ -50,8 +75,6 @@ class HDMagManager:HDWeapon{
 		if(!GetMags())return;
 		invoker.thismag.LowestToLast();
 		invoker.UpdateText();
-	}
-	action void DropThis(){
 	}
 	action void Backpack(bool outfrom){
 	}
@@ -89,7 +112,7 @@ class HDMagManager:HDWeapon{
 		TNT1 A 0 LastToFirst();
 		goto nope;
 	reload:
-		TNT1 A 15 Insert();
+		TNT1 A 8 Insert();
 		goto readyend;
 	unload:
 		TNT1 A 4 Extract();
