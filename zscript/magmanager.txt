@@ -40,9 +40,10 @@ class HDMagManager:HDWeapon{
 		invoker.thismag.Extract();
 		invoker.UpdateText();
 	}
-	action void LastToFirst(){
+	action void LastToFirst(bool forwards=true){
 		if(!GetMags())return;
-		invoker.thismag.LastToFirst();
+		if(forwards)invoker.thismag.LastToFirst();
+		else invoker.thismag.FirstToLast();
 		invoker.UpdateText();
 	}
 	action void LowestToLast(){
@@ -55,36 +56,37 @@ class HDMagManager:HDWeapon{
 	action void Backpack(bool outfrom){
 	}
 	void UpdateText(){
-		if(!thismag){uitext="Mag Manager\n\nNo mags selected";return;}
+		if(!thismag){uitext="\cf///\cyMag Manager\cf\\\\\\\n\nNo mags selected";return;}
 		thismagtype=thismag.getclassname();
 		string toui=string.format(
-			"Mag Manager\n\n\n%s\n\n",thismagtype
+			"\cf///\cyMag Manager\cf\\\\\\\n\n\cqFire/Altfire\cu  select\n\cqReload/Unload\cu  load mags\n\cqDrop\cu  drop current mag\n\cqZoom\cu bring up lowest mag\n\cqFiremode\cu  next ammo type\n\n\n\cj%s\n",thismag.nicename
 		);
-		int finalindex=thismag.amount-1;
-		for(int i=0;i<finalindex;i++){
-			toui.appendformat(" %i ",thismag.mags[i]);
+		if(thismag.mags.size()>0){
+			int finalindex=thismag.amount-1;
+			for(int i=0;i<finalindex;i++){
+				toui.appendformat(" %i ",thismag.mags[i]);
+			}
+			toui.appendformat("\n\nCurrent Mag: \cy%i",thismag.mags[finalindex]);
 		}
-		toui.appendformat("\n\n%i",thismag.mags[finalindex]);
+		if(thismag.roundtype!="")toui.appendformat("\nSpare Rounds: \ce%i",owner.countinv(thismag.roundtype));
 		uitext=toui;
 	}
 	states{
 	spawn:
 		TNT1 A 0;
 		stop;
-	select:
-		TNT1 A 0{invoker.UpdateText();}
-		goto super::select;
 	ready:
 		TNT1 A 1{
 			A_WeaponMessage(invoker.uitext);
 			A_WeaponReady(WRF_ALL);
+			invoker.UpdateText();
 		}
 		goto readyend;
 	fire:
-		TNT1 A 0 NextMagType();
+		TNT1 A 0 LastToFirst(false);
 		goto nope;
 	altfire:
-		TNT1 A 0 NextMagType(false);
+		TNT1 A 0 LastToFirst();
 		goto nope;
 	reload:
 		TNT1 A 15 Insert();
@@ -93,7 +95,7 @@ class HDMagManager:HDWeapon{
 		TNT1 A 4 Extract();
 		goto readyend;
 	firemode:
-		TNT1 A 0 LastToFirst();
+		TNT1 A 0 NextMagType();
 		goto nope;
 	zoom:
 		TNT1 A 0 LowestToLast();

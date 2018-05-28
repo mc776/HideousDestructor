@@ -2,6 +2,8 @@
 // Tracked magazines (and clips and batteries)
 // ------------------------------------------------------------
 /*
+	special:
+		override insert, extract and consolidate for zm66 and cell
 	for the mags:
 		debris empty only if not retaining
 		debris empty should die and become pickup
@@ -17,24 +19,6 @@
 			int toload=mags.TakeMag(true);
 			if(toload<0)return;
 			let the player load an empty
-	for the magmanager:
-		actor mags;
-		every state, check if mags is null
-		fire/altfire: switch mag types
-		reload/unload: insert/extract
-		zoom: bring up lowest
-		firemode: bring last to first
-		dropweapon: drop 1 mag
-		altreload: place into backpack
-		firemode3: retrieve from backpack
-	for the magamanger display:
-		if(!mags){
-			drawstring...
-		}
-		for(int i=0;i<mags.amount;i++){
-			drawsprite...
-			drawnum...
-		}
 	for backpack
 		predefine a dynarray in the backpack for each such item
 		int pistindex;int smgindex;int zmindex;int libindex;int bossindex;int cellindex;
@@ -68,11 +52,14 @@ class HDMagAmmo:HDAmmo{
 	property roundbulk:roundbulk;
 	double magbulk;
 	property magbulk:magbulk;
+	string nicename;
+	property nicename:nicename;
 	default{
 		hdmagammo.maxperunit 30;
 		hdmagammo.roundtype "HDPistolAmmo";
 		hdmagammo.roundbulk 0;
 		hdmagammo.magbulk 0;
+		hdmagammo.nicename "Generic Mag-Tracked Ammo";
 		inventory.maxamount 10;
 	}
 	override double getbulk(){
@@ -131,6 +118,12 @@ class HDMagAmmo:HDAmmo{
 		mags.insert(0,mags[mags.size()-1]);
 		mags.pop();
 	}
+	void FirstToLast(){
+		SyncAmount();
+		if(amount<2)return;
+		mags.push(mags[0]);
+		mags.delete(0);
+	}
 	//bring up the lowest-value mag
 	//useful for refilling and discarding
 	void LowestToLast(){
@@ -148,6 +141,24 @@ class HDMagAmmo:HDAmmo{
 		A_LogInt(lowestindex);
 		mags.delete(lowestindex);
 		mags.push(lowest);
+	}
+	//bring up the highest-value non-full mag
+	//useful for refilling and discarding
+	void HighestFillableToLast(){
+		SyncAmount();
+		if(amount<2)return;
+		int highestindex=-1;
+		int highest=0;
+		for(int i=0;i<amount;i++){
+			if(highest>mags[i]&&mags[i]<maxperunit){
+				highest=mags[i];
+				highestindex=i;
+			}
+		}
+		if(highestindex<0||highestindex==mags.size())return;
+		A_LogInt(highestindex);
+		mags.delete(highestindex);
+		mags.push(highest);
 	}
 	//add a mag
 	//use to unload
@@ -193,7 +204,7 @@ class HDMagAmmo:HDAmmo{
 
 	//add and extract rounds
 	//return values can be used to stop loops or affect animations
-	bool Extract(){
+	virtual bool Extract(){
 		SyncAmount();
 		if(
 			mags[mags.size()-1]<1
@@ -203,7 +214,7 @@ class HDMagAmmo:HDAmmo{
 		mags[mags.size()-1]--;
 		return true;
 	}
-	bool Insert(){
+	virtual bool Insert(){
 		SyncAmount();
 		if(
 			mags[mags.size()-1]>=maxperunit
@@ -214,7 +225,7 @@ class HDMagAmmo:HDAmmo{
 		return true;
 	}
 	//consolidate
-	void Consolidate(){
+	virtual void Consolidate(){
 		SyncAmount();
 		if(amount<2)return;
 		int totalrounds=0;
@@ -307,6 +318,11 @@ alreadygot.logamounts();
 	use:
 		TNT1 A 0{
 			invoker.SyncAmount();
+			A_SetInventory("HDMagManager",1);
+			let mmm=HDMagManager(findinventory("HDMagManager"));
+			mmm.thismag=invoker;mmm.thismagtype=invoker.getclassname();
+			UseInventory(mmm);
+
 			if(!invoker.amount||!hd_debug)return;
 
 			invoker.LogAmounts(true);
@@ -318,6 +334,7 @@ alreadygot.logamounts();
 				//MaxCheat
 				//LastToFirst
 				//LowestToLast
+				//HighestFillableToLast
 				//Extract
 				//Insert
 				//Consolidate
