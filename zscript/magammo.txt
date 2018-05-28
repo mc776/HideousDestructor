@@ -455,6 +455,7 @@ class HDBattery:HDMagAmmo{
 	}
 	override bool Insert(){return false;}
 	override bool Extract(){return false;}
+	override void Consolidate(){}
 	states(actor){
 	spawn2:
 		CELL CAB -1{
@@ -536,6 +537,23 @@ class HD4mMag:HDMagAmmo{
 		owner.A_PlaySound("weapons/pocket",CHAN_BODY,frandom(0.1,0.6));
 		mags[mags.size()-1]++;
 		return true;
+	}
+	override void Consolidate(){
+		SyncAmount();
+		if(amount<2)return;
+		int totalrounds=0;
+		for(int i=0;i<amount;i++){
+			if(mags[i]>=51)continue;
+			totalrounds+=mags[i];
+			mags[i]=0; //keep the empties, do NOT call clear()!
+		}
+		for(int i=0;i<amount;i++){
+			if(mags[i]>=51)continue;
+			int toinsert=min(50,totalrounds);
+			mags[i]=toinsert;
+			totalrounds-=toinsert;
+			if(totalrounds<1)break;
+		}
 	}
 	states(actor){
 	spawn2:

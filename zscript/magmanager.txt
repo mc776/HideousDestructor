@@ -85,7 +85,7 @@ class HDMagManager:HDWeapon{
 			"\cf///\cyMag Manager\cf\\\\\\\n\n\cqFire/Altfire\cu  select\n(hold \cqFiremode\cu to select ammo type)\n\cqReload/Unload\cu  load mags\n\cqDrop\cu  drop current mag\n\cqZoom\cu bring up lowest mag\n\n\n\cj%s\n",thismag.nicename
 		);
 		if(thismag.mags.size()>0){
-			int finalindex=thismag.amount-1;
+			int finalindex=thismag.mags.size()-1;
 			for(int i=0;i<finalindex;i++){
 				toui.appendformat(" %i ",thismag.mags[i]);
 			}

@@ -5,6 +5,12 @@ extend class HDPlayerPawn{
 	void ConsolidateAmmo(){
 		let bp=HDBP(findinventory("HDBP"));
 
+		//for the new tracked mags
+		for(inventory maggg=inv;maggg!=null;maggg=maggg.inv){
+			let magg=hdmagammo(maggg);
+			if(magg)magg.consolidate();
+		}
+
 		//use the BFG to charge everything
 		let bfug=hdweapon(findinventory("BFG9k"));
 		if(
