@@ -362,7 +362,7 @@ class Heat:Inventory{
 			)dmgamt=1.;
 			setxyz(owner.pos);
 			owner.damagemobj(self,self,dmgamt,"thermal",DMG_NO_ARMOR|DMG_THRUSTLESS);
-			if(!owner)return;
+			if(!owner){destroy();return;}
 		}
 
 
@@ -393,6 +393,10 @@ class Heat:Inventory{
 				if(togive>2)hlt.hitactor.damagemobj(self,owner,1,"thermal",DMG_NO_ARMOR|DMG_THRUSTLESS);
 			}
 		}
+
+		//I don't know specifically *what* in Universal Gibs can cause a killerbarrel
+		//to be destroyed by the above damagemobj call, but whatever.
+		if(!owner){destroy();return;}
 
 		//cooldown
 		double reduce=inversevolumeratio*max(realamount*0.001,1.);
