@@ -82,7 +82,7 @@ class HDMagManager:HDWeapon{
 		if(!thismag){uitext="\cf///\cyMag Manager\cf\\\\\\\n\nNo mags selected";return;}
 		thismagtype=thismag.getclassname();
 		string toui=string.format(
-			"\cf///\cyMag Manager\cf\\\\\\\n\n\cqFire/Altfire\cu  select\n(hold \cqFiremode\cu to select ammo type)\n\cqReload/Unload\cu  load mags\n\cqDrop\cu  drop current mag\n\cqZoom\cu bring up lowest mag\n\n\n\cj%s\n",thismag.nicename
+			"\cf///\cyMag Manager\cf\\\\\\\n\n\cqFire/Altfire\cu  select\n(hold \cqFiremode\cu to select ammo type)\n\cqReload/Unload\cu  load mags\n\cqDrop\cu  drop current mag\n\cqZoom\cu bring up lowest mag\n\cqDrop one\cu drop some loose rounds\n\n\n\cj%s\n",thismag.nicename
 		);
 		if(thismag.mags.size()>0){
 			int finalindex=thismag.mags.size()-1;

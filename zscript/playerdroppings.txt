@@ -192,6 +192,13 @@ extend class HDHandlers{
 				ddd.amount=howmany*amt;
 			}
 			hdbp.getbulk();
+		}else if(cw is "HDMagManager"){
+			let mmm=HDMagAmmo(HDMagManager(cw).thismag);
+			if(!mmm)return;
+			let what=mmm.roundtype;
+			int howmany=min(max(1,hdmath.maxinv(ppp,what)*0.2),ppp.countinv(what));
+			if(!howmany)return;
+			ppp.A_DropInventory(what,howmany);
 		}else if(cw is "MagManager"){
 			let mmm=MagManager(cw);
 			class<inventory> what=mmm.ammotype[mmm.weaponstatus[HDMMS_WHICH]];
