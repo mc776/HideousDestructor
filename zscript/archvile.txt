@@ -298,7 +298,7 @@ class ArchFiend:Archvile replaces ArchVile{
 		if(
 			mod!="thermal"
 			&&mod!="balefire"
-			&&damage>(bfriendly?333:random(0,666))
+			&&damage>(bfriendly?333:random(0,444))
 		){
 			if(hitsleft>0){
 				bshootable=false;
@@ -443,10 +443,7 @@ class ArchFiend:Archvile replaces ArchVile{
 		loop;
 		VILE Q 8 A_fadeOut(0.04);
 		TNT1 A 8 A_SpawnItemEx("VileShard",frandom(-8,8),frandom(-8,8),frandom(26,50),frandom(-1,1),0,0,frandom(0,360),SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS,16);
-		TNT1 A 0 {
-			A_NoBlocking();
-			if(!bfriendly)A_DropItem("Megasphere");
-		}
+		TNT1 A 0 A_NoBlocking();
 		TNT1 AAAAA 12 A_SpawnItemEx("VileShard",frandom(-8,8),frandom(-8,8),frandom(26,50),frandom(-1,1),0,0,frandom(0,360),SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS,16);
 		TNT1 A -1{
 			A_SpawnItemEx("VileGhost",flags:SXF_ABSOLUTE|SXF_TRANSFERPOINTERS|SXF_SETMASTER);
