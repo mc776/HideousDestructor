@@ -188,6 +188,16 @@ class HDMagAmmo:HDAmmo{
 		mmm.amount=mmm.mags.size();
 		return mmm;
 	}
+	//for weapon reloading sequences so you don't look like an idiot
+	//if(HDMagAmmo.NothingLoaded(self,"HD9mMag15"))
+	static bool NothingLoaded(actor caller,class<inventory> magtype){
+		let tocheck=HDMagAmmo(caller.findinventory(magtype));
+		if(!tocheck)return true;
+		for(int i=0;i<tocheck.amount;i++){
+			if(tocheck.mags[i]>0)return false;
+		}
+		return true;
+	}
 
 	//add and extract rounds
 	//return values can be used to stop loops or affect animations
@@ -510,6 +520,12 @@ class HD4mMag:HDMagAmmo{
 		string pms="Picked up a 4.26 UAC Standard magazine.";
 		if(mags[0]<51)pms.appendformat(" %s",HDCONST_426MAGMSG);
 		return pms;
+	}
+	bool DirtyMagsOnly(){
+		for(int i=0;i<amount;i++){
+			if(mags[i]>=51)return false;
+		}
+		return true;
 	}
 	override bool Extract(){
 		SyncAmount();
