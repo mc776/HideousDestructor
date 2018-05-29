@@ -165,7 +165,7 @@ class HDArmourWorn:HDArmour{
 
 			iiii.amount=self.amount;
 			iiii.angle=owner.angle;
-			iiii.A_ChangeVelocity(1,0,1,CVF_RELATIVE);
+			iiii.A_ChangeVelocity(1,0,2,CVF_RELATIVE);
 			iiii.vel+=owner.vel;
 			iiii.meleethreshold=meleethreshold;
 			iiii.master=owner;
@@ -181,7 +181,7 @@ class HDArmourWorn:HDArmour{
 			self.amount=0;
 			destroy();
 		}
-		return iiii;
+		return null; //return iiii;
 	}
 	states{
 	use:
