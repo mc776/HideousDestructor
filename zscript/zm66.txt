@@ -333,7 +333,7 @@ class ZM66AssaultRifle:HDWeapon{
 			A_PlaySound("weapons/rifleload",CHAN_WEAPON);
 		}
 		RIFG B 20 offset(-14,44){
-			int inmag=invoker.weaponstatus[ZM66S_MAG];
+			int inmag=invoker.weaponstatus[ZM66S_MAG]%100;
 			invoker.weaponstatus[ZM66S_MAG]=-1;
 			if(
 				!PressingUnload()&&!PressingReload()
