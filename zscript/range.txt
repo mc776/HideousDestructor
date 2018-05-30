@@ -41,6 +41,8 @@ class HDLoaded:ActionItem{
 			for(inventory hdww=inv;hdww!=null;hdww=hdww.inv){
 				let hdw=hdweapon(hdww);
 				if(hdw&&!hdbp(hdw))hdw.initializewepstats(true);
+				let hdm=hdmagammo(hdww);
+				if(hdm)hdm.maxcheat();
 			}
 
 			//unscriptified or non-HDWeapon weapons below

@@ -12,7 +12,8 @@ extend class HDPlayerPawn{
 		}
 
 		//use the BFG to charge everything
-		let bfug=hdweapon(findinventory("BFG9k"));
+		let bfug=HDWeapon(findinventory("BFG9k"));
+		let batts=HDBattery(findinventory("HDBattery"));
 		if(
 			bfug
 			&&(
@@ -21,9 +22,7 @@ extend class HDPlayerPawn{
 					bfug.weaponstatus[BFGS_CHARGE]>BFGC_MINCHARGE  
 					&&(
 						bfug.weaponstatus[BFGS_BATTERY]>=0  
-						||countinv("HDCellPackEmpty")
-						||countinv("HDCellPacks")
-						||countinv("HDCellAmmo")
+						||countinv("HDBattery")
 						||(
 							bp&&(
 								bp.itemamount[bp.mcellindex]>0
@@ -36,28 +35,11 @@ extend class HDPlayerPawn{
 						bp.itemamount[bp.fcellindex]>0
 						||bp.itemamount[bp.mcellindex]>BFGC_MINCHARGE
 					)
-				)
-				||countinv("HDCellPacks")
-				||countinv("HDCellAmmo")>BFGC_MINCHARGE
+				)||batts.BFGChargeable()
 			)
 		){
 			hdweapon(findinventory("BFG9k")).initializewepstats(true);
-			//convert empty to full
-			while(
-				countinv("HDCellPackEmpty")
-				&&!A_JumpIfInventory("HDCellPacks",0,"null")
-			){
-				A_TakeInventory("HDCellPackEmpty",1);
-				A_GiveInventory("HDCellPacks");
-			}
-			//convert partial to full
-			while(
-				countinv("HDCellAmmo")
-				&&!A_JumpIfInventory("HDCellPacks",0,"null")
-			){
-				A_TakeInventory("HDCellAmmo",random(4,20));
-				A_GiveInventory("HDCellPacks");
-			}
+			batts.maxcheat();
 			if(countinv("ThunderBuster")){
 				hdweapon(findinventory("ThunderBuster")).weaponstatus[TBS_BATTERY]=20;
 			}
