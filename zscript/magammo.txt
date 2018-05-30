@@ -66,8 +66,8 @@ class HDMagAmmo:HDAmmo{
 	void SyncAmount(){
 		amount=max(amount,mags.size());
 		while(amount>mags.size()){
-//			mags.push(maxperunit);
-			mags.push(random(1,maxperunit));  //testing
+			//mags.push(random(1,maxperunit));	//testing
+			mags.push(maxperunit);
 		}
 	}
 	//remove one mag and return the value
