@@ -248,23 +248,21 @@ class BFG9K:HDWeapon replaces BFG9000{
 	reload:
 		BFGG A 0{
 			if(
-				invoker.weaponstatus[BFGS_BATTERY]>=20    
+				invoker.weaponstatus[BFGS_BATTERY]>=20
+				||!countinv("HDBattery")
 				||(
-					!countinv("HDCellAmmo")
-					&&!countinv("HDCellPacks")
+					invoker.weaponstatus[BFGS_CHARGE]<BFGC_MINCHARGE
+					&&HDMagAmmo.NothingLoaded(self,"HDBattery")
 				)
-			){
-				if(invoker.weaponstatus[BFGS_CHARGE]>BFGC_MINCHARGE)    
-					setweaponstate("reloadempty");
-					else setweaponstate("nope");
-			}else invoker.weaponstatus[BFGS_LOADTYPE]=1;
+			)setweaponstate("nope");
+			else invoker.weaponstatus[BFGS_LOADTYPE]=1;
 		}goto reload1;
 	altreload:
 	reloadempty:
 		BFGG A 0{
 			if(
-				!invoker.weaponstatus[BFGS_BATTERY]
-				||!countinv("HDCellPackEmpty")
+				!invoker.weaponstatus[BFGS_BATTERY] //already have an empty loaded
+				||!countinv("HDBattery")
 			)setweaponstate("nope");
 			else invoker.weaponstatus[BFGS_LOADTYPE]=0;
 		}goto reload1;
@@ -285,14 +283,8 @@ class BFG9K:HDWeapon replaces BFG9000{
 			A_MuzzleClimb(-frandom(1.2,2.4),frandom(1.2,2.4));
 			A_PlaySound("weapons/huntopen");
 			if(invoker.weaponstatus[BFGS_BATTERY]>=0){    
+				HDMagAmmo.SpawnMag(self,"HDBattery",invoker.weaponstatus[BFGS_BATTERY]);
 				A_SetTics(4);
-				actor a;int b;
-				[b,a]=A_SpawnItemEx("HDCellPickup",
-					cos(pitch)*10,0,height-10-10*sin(pitch),
-					vel.x,vel.y,vel.z,
-					0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
-				);
-				a.stamina=invoker.weaponstatus[BFGS_BATTERY];
 			}
 			if(invoker.weaponstatus[0]&BFGF_DEMON){
 				setweaponstate("unloaddemon");
@@ -321,17 +313,13 @@ class BFG9K:HDWeapon replaces BFG9000{
 		BFGG C 12 offset(0,42)A_PlaySound("weapons/rifleload");
 		BFGG C 10 offset(0,36)A_PlaySound("weapons/grenopen");
 		BFGG C 0{
+			let mmm=hdmagammo(findinventory("HDBattery"));
+			if(!mmm||mmm.amount<1){setweaponstate("reload3");return;}
 			if(!invoker.weaponstatus[BFGS_LOADTYPE]){
-				A_TakeInventory("HDCellPackEmpty",1,TIF_NOTAKEINFINITE);
-				invoker.weaponstatus[BFGS_BATTERY]=0;
-			//below is just "else" since [4]-1 would never enter this state to begin with
-			}else if(countinv("HDCellPacks")){
-				A_TakeInventory("HDCellPacks",1,TIF_NOTAKEINFINITE);
-				invoker.weaponstatus[BFGS_BATTERY]=20;
-			}else if(countinv("HDCellAmmo")){
-				int bt=min(countinv("HDCellAmmo"),random(1,19));
-				invoker.weaponstatus[BFGS_BATTERY]=bt;
-				A_TakeInventory("HDCellAmmo",bt,TIF_NOTAKEINFINITE);
+				mmm.LowestToLast();
+				invoker.weaponstatus[BFGS_BATTERY]=mmm.TakeMag(false);
+			}else{
+				invoker.weaponstatus[BFGS_BATTERY]=mmm.TakeMag(true);
 			}
 		}
 	reload3:
