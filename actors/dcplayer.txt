@@ -9,7 +9,7 @@ actor HDP_AR:HDPlayerPawn{
 	player.displayname "Rifleman"
 	player.startitem ZM66AssaultRifle
 	player.startitem SoldierExtras
-	player.startitem ZM66RifleMags 5
+	player.startitem HD4mMag 5
 	player.startitem HDRocketAmmo 8
 }
 actor HDP_BR:HDPlayerPawn{
@@ -47,7 +47,7 @@ actor HDP_SM:HDPlayerPawn{
 	player.displayname "Infiltrator"
 	player.startitem HDSMG
 	player.startitem SoldierExtras
-	player.startitem HDSMGMag 5
+	player.startitem HD9mMag30 5
 	player.startitem Blooper
 	player.startitem HDRocketAmmo 4
 	player.startitem HDFragGrenadeAmmo 7
@@ -59,7 +59,7 @@ actor HDP_MG:HDPlayerPawn{
 	player.startitem Vulcanette
 	player.startitem SoldierExtras
 	player.startitem HDCellPacks 2
-	player.startitem ZM66RifleMags 6
+	player.startitem HD4mMag 6
 	states{
 	see:
 		"----" A 0 A_Jump(256,"see0")
@@ -107,7 +107,7 @@ actor HDP_BO:HDPlayerPawn{
 	player.startitem BrontornisRound 20
 	player.startitem HDFragGrenadeAmmo 6
 	player.startitem HDSMG
-	player.startitem HDSMGMag 1
+	player.startitem HD9mMag30 1
 	states{
 	see:
 		"----" A 0 A_Jump(256,"see0")
@@ -166,7 +166,7 @@ actor HDP_SS:HDPlayerPawn{
 	player.startitem BlueArmour 999
 	player.startitem HDSecondPistol
 	player.startitem HDBPPreset 1
-	player.startitem HDPistolMag 2
+	player.startitem HD9mMag15 2
 	player.startitem HDFragGrenadeAmmo 3
 	player.startitem Blooper
 	player.startitem HDRocketAmmo 4
@@ -215,7 +215,7 @@ actor HDP_BS:HDPlayerPawn{
 	player.startitem HDPistol
 	player.startitem SoldierExtras
 	player.startitem Lumberjack
-	player.startitem HDPistolMag 2
+	player.startitem HD9mMag15 2
 	player.startitem PortableBerserkPack 3
 	player.startitem PortableStimpack 3
 	player.startitem PortableMedikit 3
@@ -227,8 +227,8 @@ actor HDP_BT:HDPlayerPawn{
 	player.startitem HDPistol
 	player.startitem SoldierExtras
 	player.startitem HDFragGrenadeAmmo 4
-	player.startitem HDPistolMag 5
-	player.startitem ZM66RifleMags 5
+	player.startitem HD9mMag15 5
+	player.startitem HD4mMag 5
 	player.startitem PortableMedikit 2
 	player.startitem PortableStimpack 3
 	player.startitem HDCellPacks 6
@@ -283,7 +283,7 @@ actor HDP_SC:HDPlayerPawn{
 	player.startitem GreenArmour 999
 	player.startitem PortableMedikit 2
 	player.startitem HDPistol
-	player.startitem HDPistolMag 1
+	player.startitem HD9mMag15 1
 	states{
 	see:
 		"----" A 0 A_Jump(256,"see0")
@@ -331,12 +331,12 @@ actor RebelLoadout:ActionItem{
 		}goto otherstuff
 	weapon1a:
 		TNT1 A 0 A_GiveInventory("HDSMG",1)
-		TNT1 A 0 A_GiveInventory("HDSMGMag",random(1,2))
+		TNT1 A 0 A_GiveInventory("HD9mMag30",random(1,2))
 		TNT1 A 0 A_Jump(16,1)
 		goto otherstuff
 	weapon1:
 		TNT1 A 0 A_GiveInventory("HDPistol",1)
-		TNT1 A 0 A_GiveInventory("HDPistolMag",random(1,5))
+		TNT1 A 0 A_GiveInventory("HD9mMag15",random(1,5))
 		goto otherstuff
 	weapon2:
 		TNT1 A 0 A_GiveInventory("Hunter")
@@ -348,11 +348,11 @@ actor RebelLoadout:ActionItem{
 		goto otherstuff
 	weapon4a:
 		TNT1 A 0 A_GiveInventory("ZM66AltStarter",2)
-		TNT1 A 0 A_GiveInventory("ZM66RifleMags",random(1,5))
+		TNT1 A 0 A_GiveInventory("HD4mMag",random(1,5))
 		goto otherstuff
 	weapon4:
 		TNT1 A 0 A_GiveInventory("ZM66AltStarter",1)
-		TNT1 A 0 A_GiveInventory("ZM66RifleMags",random(1,5))
+		TNT1 A 0 A_GiveInventory("HD4mMag",random(1,5))
 		goto otherstuff
 	weapon5:
 		TNT1 A 0 A_GiveInventory("HDRL",1)
@@ -381,7 +381,7 @@ actor RebelLoadout:ActionItem{
 		goto otherstuff
 	weapon8:
 		TNT1 A 0 A_GiveInventory("ZM66AssaultRifle")
-		TNT1 A 0 A_GiveInventory("ZM66RifleMags",random(1,5))
+		TNT1 A 0 A_GiveInventory("HD4mMag",random(1,5))
 		TNT1 A 0 A_GiveInventory("HDRocketAmmo",random(1,6))
 		goto otherstuff
 	weapon9:
@@ -395,7 +395,7 @@ actor RebelLoadout:ActionItem{
 		goto otherstuff
 	weapon11:
 		TNT1 A 0 A_GiveInventory("Vulcanette")
-		TNT1 A 0 A_GiveInventory("ZM66RifleMags",random(1,5))
+		TNT1 A 0 A_GiveInventory("HD4mMag",random(1,5))
 		TNT1 A 0 A_GiveInventory("HDCellPacks",random(1,4))
 		goto otherstuff
 	otherstuff:
@@ -427,7 +427,7 @@ actor RebelLoadout:ActionItem{
 		TNT1 A 0 A_GiveInventory("DERPUsable")
 		TNT1 A 0 A_Jump(250,3)
 		TNT1 A 0 A_GiveInventory("HERPUsable",1)
-		TNT1 A 0 A_GiveInventory("ZM66RifleMags",random(1,4))
+		TNT1 A 0 A_GiveInventory("HD4mMag",random(1,4))
 		TNT1 A 0 A_Jump(220,2)
 		TNT1 A 0 A_GiveInventory("HDCellPacks",random(1,6))
 		TNT1 A 0 A_Jump(220,2)

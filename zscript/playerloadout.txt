@@ -25,7 +25,7 @@ class SoldierExtras:ActionItem{
 
 			if(!countinv("HDPistol"))A_GiveInventory("HDPistol");
 			else if(!countinv("HDSecondPistol"))A_GiveInventory("HDSecondPistol");
-			A_SetInventory("HDPistolMag",max(3,countinv("HDPistolMag")));
+			A_SetInventory("HD9mMag15",max(3,countinv("HD9mMag15")));
 
 			A_SetInventory("HDFragGrenadeAmmo",max(3,countinv("HDFragGrenadeAmmo")));
 			A_SetInventory("DERPUsable",max(1,countinv("DERPUsable")));
@@ -74,7 +74,7 @@ class DoomguyLoadout:InvReset{
 		let d=HDPlayerPawn(other);
 		if(d)d.GiveBasics();
 		other.A_GiveInventory("HDPistol");
-		other.A_GiveInventory("HDPistolMag",2);
+		other.A_GiveInventory("HD9mMag15",2);
 		other.A_GiveInventory("HDPistolAmmo",4);
 		other.A_SelectWeapon("HDPistol");
 		goawayanddie();
@@ -215,11 +215,11 @@ extend class HDPlayerPawn{
 		}
 		else if(num>=100){ //ammo
 			switch(num){
-				case 100:A_GiveInventory("HDCellPacks",amt);break;
-				case 101:A_GiveInventory("HDPistolMag",amt);break;
-				case 102:A_GiveInventory("HDSMGMag",amt);break;
+				case 100:A_GiveInventory("HDBattery",amt);break;
+				case 101:A_GiveInventory("HD9mMag15",amt);break;
+				case 102:A_GiveInventory("HD9mMag30",amt);break;
 				case 103:A_GiveInventory("HDShellAmmo",amt);break;
-				case 104:A_GiveInventory("ZM66RifleMags",amt);break;
+				case 104:A_GiveInventory("HD4mMag",amt);break;
 				case 105:A_GiveInventory("HDRocketAmmo",amt);break;
 				case 106:A_GiveInventory("HEATAmmo",amt);break;
 				case 107:A_GiveInventory("LiberatorMag",amt);break;
