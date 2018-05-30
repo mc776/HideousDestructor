@@ -268,6 +268,10 @@ class ZM66AssaultRifle:HDWeapon{
 		RIFG A 1 offset(-8,37);
 		goto chamber_manual;
 
+	user3:
+		RIFG A 0 A_NewMagManager("HD4mMag");
+		goto ready;
+
 	user4:
 	unload:
 		RIFG A 0{
@@ -329,77 +333,90 @@ class ZM66AssaultRifle:HDWeapon{
 			A_PlaySound("weapons/rifleload",CHAN_WEAPON);
 		}
 		RIFG B 20 offset(-14,44){
+			int inmag=invoker.weaponstatus[ZM66S_MAG];
+			invoker.weaponstatus[ZM66S_MAG]=-1;
 			if(
-				(
-					//empty mag
-					!invoker.weaponstatus[ZM66S_MAG]
-				)||(
-					//not holding *load buttons
-					!PressingUnload()&&!PressingReload()
-				)||(
-					//no space for full mags
-					invoker.weaponstatus[ZM66S_MAG]==51
-					&&A_JumpIfInventory("ZM66RifleMags",0,"null")
-				)||(
-					//no space for partials
-					invoker.weaponstatus[ZM66S_MAG]<51
-					&&invoker.weaponstatus[ZM66S_MAG]>0
-					&&countinv("FourMilAmmo")>  
-						AmmoCap("FourMilAmmo")
-						-invoker.weaponstatus[ZM66S_MAG]
-				)
+				!PressingUnload()&&!PressingReload()
+				||A_JumpIfInventory("HD4mMag",0,"null")
 			){
-				int garbage;actor mmm;
-				[garbage,mmm]=A_SpawnItemEx("HD4mmMag",12,0,height-12,1,0,-1,0,SXF_SETTARGET);
-				mmm.stamina=invoker.weaponstatus[ZM66S_MAG]%100;
+				HDMagAmmo.SpawnMag(self,"HD4mMag",inmag);
 				A_SetTics(1);
 			}else{
+				HDMagAmmo.GiveMag(self,"HD4mMag",inmag);
 				A_PlaySound("weapons/pocket",CHAN_WEAPON);
-				if(invoker.weaponstatus[ZM66S_MAG]==51)A_GiveInventory("ZM66RifleMags",1);    
-				else{
-					A_GiveInventory("FourMilAmmo",invoker.weaponstatus[ZM66S_MAG]%100);
-					A_Log("Reloading a 4.26 UAC Standard magazine into another firearm without authorization is a breach of the Volt End User License Agreement.",true);
-				}
+				if(inmag<51)A_Log(HDCONST_426MAGMSG,true);
 			}
-			invoker.weaponstatus[ZM66S_MAG]=-1;
 		}
 	magout:
 		RIFG B 0{
 			if(
 				invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_UNLOADONLY
-				||(!countinv("ZM66RifleMags")&&!countinv("FourMilAmmo"))
+				||!countinv("HD4mMag")
 			)setweaponstate("reloadend");
 		} //fallthrough to loadmag
 	loadmag:
-		---- A 20{
-			if(countinv("ZM66RifleMags"))A_SetTics(14);
+		---- A 12{
+			let zmag=HD4mMag(findinventory("HD4mMag"));
+			if(!zmag){setweaponstate("reloadend");return;}
 			A_PlaySound("weapons/pocket",CHAN_WEAPON);
-		}
-		---- A 2{
-			if(countinv("ZM66RifleMags")){
-				invoker.weaponstatus[ZM66S_MAG]=51;
-				A_TakeInventory("ZM66RifleMags",1,TIF_NOTAKEINFINITE);
-			}else{
-				int lod=min(random(1,50),countinv("FourMilAmmo"));
-				invoker.weaponstatus[ZM66S_MAG]=lod+100;
-				A_TakeInventory("FourMilAmmo",lod,TIF_NOTAKEINFINITE);
+			bool dmo=zmag.DirtyMagsOnly();
+			if(dmo)invoker.weaponstatus[0]|=ZM66F_LOADINGDIRTY;
+			else{
+				invoker.weaponstatus[0]&=~ZM66F_LOADINGDIRTY;
+				A_SetTics(10);
 			}
 		}
+		---- A 2 A_JumpIf(invoker.weaponstatus[0]&ZM66F_LOADINGDIRTY,"loadmagdirty");
+	loadmagclean:
 		RIFG B 8 offset(-15,45)A_PlaySound("weapons/rifleload",CHAN_WEAPON);
-		RIFG B 1 offset(-14,44)A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
-		RIFG A 8 offset(-18,50){
-			if(invoker.weaponstatus[ZM66S_MAG]<100){
-				setweaponstate("chamber_manual");
+		RIFG B 1 offset(-14,44){
+			let zmag=HD4mMag(findinventory("HD4mMag"));
+			if(!zmag){setweaponstate("reloadend");return;}
+			if(zmag.DirtyMagsOnly()){
+				setweaponstate("loadmagdirty");
 				return;
 			}
+			invoker.weaponstatus[ZM66S_MAG]=zmag.TakeMag(true);
+			A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
+		}goto chamber_manual;
+	loadmagdirty:
+		RIFG B 0{
+			if(PressingReload())invoker.weaponstatus[0]|=ZM66F_STILLPRESSINGRELOAD;
+			else invoker.weaponstatus[0]&=~ZM66F_STILLPRESSINGRELOAD;
+		}
+		RIFG B 3 offset(-15,45)A_PlaySound("weapons/rifleload",CHAN_WEAPON);
+		RIFG B 1 offset(-15,42)A_WeaponMessage(HDCONST_426MAGMSG,70);
+		RIFG BBBBBBB 1 offset(-15,41){
+			bool prr=PressingReload();
+			if(
+				prr
+				&&!(invoker.weaponstatus[0]&ZM66F_STILLPRESSINGRELOAD)
+			){
+				setweaponstate("reallyloadmagdirty");
+			}
+			else if(!PressingReload())invoker.weaponstatus[0]&=~ZM66F_STILLPRESSINGRELOAD;
+		}
+		goto nope;
+	reallyloadmagdirty:
+		RIFG B 1 offset(-14,44)A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
+		RIFG A 8 offset(-18,50){
+			let zmag=HD4mMag(findinventory("HD4mMag"));
+			if(!zmag){setweaponstate("reloadend");return;}
+			invoker.weaponstatus[ZM66S_MAG]=zmag.TakeMag(false);
 			A_MuzzleClimb(
 				-frandom(0.4,0.6),frandom(2.,3.)
 				-frandom(0.2,0.3),frandom(1.,1.6)
 			);
 			A_PlaySound("weapons/rifleclick2",6);
 			A_PlaySound("weapons/smack",7);
+
+			string realmessage=HDCONST_426MAGMSG;
+			realmessage=realmessage.left(random(13,20));
+			realmessage.appendformat("\cgFUCK YOURSELF. \cp--management");
+			A_WeaponMessage(realmessage,70);
 		}
-		RIFG A 4 offset(-17,49) A_Log("Reloading a 4.26 UAC Standard magazine into another firearm without auth--\cgFUCK YOURSELF.\c- Sincerely, management.",true);
+		RIFG A 4 offset(-17,49);
+		goto chamber_manual;
 	chamber_manual:
 		RIFG A 4 offset(-15,43){
 			if(!invoker.weaponstatus[ZM66S_MAG]%100)invoker.weaponstatus[ZM66S_MAG]=0;
@@ -640,6 +657,8 @@ enum zm66status{
 	ZM66F_NOFIRESELECT=32,
 	ZM66F_GLMODE=64,
 	ZM66F_UNLOADONLY=128,
+	ZM66F_STILLPRESSINGRELOAD=256,
+	ZM66F_LOADINGDIRTY=512,
 
 	ZM66S_FLAGS=0,
 	ZM66S_MAG=1, //-1 is ampty
