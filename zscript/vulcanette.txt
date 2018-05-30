@@ -256,7 +256,7 @@ class Vulcanette:HDWeapon{
 			setweaponstate("nope");else{
 				invoker.weaponstatus[0]|=VULCF_JUSTUNLOAD;
 				invoker.weaponstatus[0]|=VULCF_LOADCELL;
-				setweaponstate("lowertoopen");
+				setweaponstate("uncell");
 			}
 		}
 
@@ -277,7 +277,7 @@ class Vulcanette:HDWeapon{
 
 	uncell:
 		GTLG A 10 offset(11,42){
-			int btt=invoker.weaponstatus[VULCS_BATTERY]=-1;
+			int btt=invoker.weaponstatus[VULCS_BATTERY];
 			invoker.weaponstatus[VULCS_BATTERY]=-1;
 			if(btt<0)setweaponstate("cellout");
 			else if(
