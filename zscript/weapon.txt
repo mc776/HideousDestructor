@@ -168,6 +168,12 @@ class HDWeapon:Weapon{
 		mm.weaponstatus[HDMMS_WHICH]=type;
 		A_SelectWeapon("MagManager");
 	}
+	action void A_NewMagManager(name type){
+		A_SetInventory("HDMagManager",1);
+		let mmm=HDMagManager(findinventory("HDMagManager"));
+		mmm.thismag=hdmagammo(findinventory(type));mmm.thismagtype=type;
+		UseInventory(mmm);
+	}
 
 	override void touch(actor toucher){}
 	virtual void actualpickup(actor other){

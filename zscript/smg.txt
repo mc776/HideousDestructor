@@ -49,7 +49,7 @@ class HDSMG:HDWeapon{
 		}
 		goto readyend;
 	user3:
-		---- A 0 A_MagManager(HDMMS_SMG);
+		---- A 0 A_NewMagManager("HD9mMag30");
 		goto ready;
 	altfire:
 	althold:
@@ -141,6 +141,22 @@ class HDSMG:HDWeapon{
 				0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
 			);
 		}goto readyend;
+	loadchamber:
+		---- A 0 A_JumpIf(invoker.weaponstatus[SMGS_CHAMBER]>0,"nope");
+		---- A 1 offset(0,34) A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		---- A 1 offset(2,36);
+		SMGG B 1 offset(5,40);
+		SMGG B 4 offset(4,39){
+			if(countinv("HDPistolAmmo")){
+				A_TakeInventory("HDPistolAmmo",1,TIF_NOTAKEINFINITE);
+				invoker.weaponstatus[SMGS_CHAMBER]=2;
+				A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
+			}
+		}
+		SMGG B 7 offset(5,37);
+		SMGG B 1 offset(2,36);
+		SMGG A 1 offset(0,34);
+		goto readyend;
 	user4:
 	unload:
 		SMGG A 0{
@@ -153,18 +169,11 @@ class HDSMG:HDWeapon{
 	reload:
 		SMGG A 0{
 			invoker.weaponstatus[0]&=~SMGF_JUSTUNLOAD;
-			if(
-				invoker.weaponstatus[SMGS_MAG]>=30
-				||(
-					!countinv("HDSMGMag")
-					&&!countinv("HDPistolAmmo")
-					&&(
-						!countinv("MagManager")
-						||magmanager(findinventory("magmanager")).
-							weaponstatus[HDMMS_SMG]<1
-					)
-				)
-			)setweaponstate("nope");
+			if(invoker.weaponstatus[SMGS_MAG]>=30)setweaponstate("nope");
+			else if(HDMagAmmo.NothingLoaded(self,"HD9mMag30")){
+				if(countinv("HDPistolAmmo"))setweaponstate("loadchamber");
+				else setweaponstate("nope");
+			}
 		}goto unmag;
 	unmag:
 		SMGG A 1 offset(0,34) A_SetCrosshair(21);
@@ -181,35 +190,20 @@ class HDSMG:HDWeapon{
 				setweaponstate("magout");
 				return;
 			}
-			bool inmm=false;
+			invoker.weaponstatus[SMGS_MAG]=-1;
 			if(
-				!magamt
-				||(!PressingUnload()&&!PressingReload())
-				||(
-					!(inmm=magmanager.givemmmag(null,self,HDMMS_SMG,magamt))&&
-					(countinv("HDPistolAmmo")+magamt>AmmoCap("HDPistolAmmo"))
-				)
-				||(
-					magamt>=30
-					&&A_JumpIfInventory("HDSMGMag",0,"null")
-				)
+				(!PressingUnload()&&!PressingReload())
+				||A_JumpIfInventory("HD9mMag30",0,"null")
 			){
-				actor aaa;int bbb;
-				[bbb,aaa]=A_SpawnItemEx("HD9mSmag",12,0,height-12,1,0,-1,0,SXF_SETTARGET);
-				aaa.stamina=invoker.weaponstatus[SMGS_MAG];
-				invoker.weaponstatus[SMGS_MAG]=-1;
+				HDMagAmmo.SpawnMag(self,"HD9mMag30",magamt);
 				setweaponstate("magout");
+			}else{
+				HDMagAmmo.GiveMag(self,"HD9mMag30",magamt);
+				A_PlaySound("weapons/pocket",CHAN_WEAPON);
+				setweaponstate("pocketmag");
 			}
-			if(inmm)invoker.weaponstatus[SMGS_MAG]=-1;
 		}
 	pocketmag:
-		SMGG B 0{
-			A_PlaySound("weapons/pocket");
-			int sl=invoker.weaponstatus[SMGS_MAG];
-			if(sl>=30)A_GiveInventory("HDSMGMag",1);
-			else if(sl>0)A_GiveInventory("HDPistolAmmo",sl);
-			invoker.weaponstatus[SMGS_MAG]=-1;
-		}
 		SMGG BB 7 offset(34,54) A_MuzzleClimb(frandom(0.2,-0.8),frandom(-0.2,0.4));
 	magout:
 		SMGG B 0{
@@ -224,13 +218,17 @@ class HDSMG:HDWeapon{
 		SMGG B 12 offset(32,50);
 		SMGG B 3 offset(32,49) A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
 		SMGG B 0{
-			if(countinv("HDSMGMag")){
-				invoker.weaponstatus[SMGS_MAG]=30;
-				A_TakeInventory("HDSMGMag",1,TIF_NOTAKEINFINITE);
-			}else{
-				invoker.weaponstatus[SMGS_MAG]=magmanager.takespares(self,"HDSMGMag");
+			let mmm=hdmagammo(findinventory("HD9mMag30"));
+			if(mmm){
+				invoker.weaponstatus[SMGS_MAG]=mmm.TakeMag(true);
+				A_PlaySound("weapons/rifleclick",CHAN_BODY);
 			}
-			if(invoker.weaponstatus[SMGS_CHAMBER]==2)setweaponstate("reloadend");
+			if(
+				invoker.weaponstatus[SMGS_MAG]>0
+				&&invoker.weaponstatus[SMGS_CHAMBER]<1
+			){
+				setweaponstate("chamber");
+			}else setweaponstate("reloadend");
 		}
 	chamber:
 		SMGG B 2 offset(33,50){
