@@ -12,8 +12,8 @@ extend class HDHandlers{
 			&&!ppp.countinv("DERPUsable")
 		){
 			ppp.A_DropInventory("HDPistolAmmo",ppp.countinv("HDPistolAmmo"));
-			ppp.A_DropInventory("HDSMGMag",ppp.countinv("HDSMGMag"));
-			ppp.A_DropInventory("HDPistolMag",ppp.countinv("HDPistolMag"));
+			ppp.A_DropInventory("HD9mMag30",ppp.countinv("HD9mMag30"));
+			ppp.A_DropInventory("HD9mMag15",ppp.countinv("HD9mMag15"));
 			if(mmm){mmm.DropMag(HDMMS_PIST);mmm.DropMag(HDMMS_SMG);}
 		}
 		if(
@@ -27,7 +27,7 @@ extend class HDHandlers{
 			&&!ppp.countinv("Vulcanette")
 			&&!ppp.countinv("HERPUsable")
 		){
-			ppp.A_DropInventory("ZM66RifleMags",ppp.countinv("ZM66RifleMags"));
+			ppp.A_DropInventory("HD4mMag",ppp.countinv("HD4mMag"));
 			if(!ppp.countinv("LiberatorRifle")&&!ppp.countinv("BossRifle"))
 				ppp.A_DropInventory("FourMilAmmo",ppp.countinv("FourMilAmmo"));
 		}
@@ -54,8 +54,8 @@ extend class HDHandlers{
 			!ppp.countinv("LiberatorRifle")
 			&&!ppp.countinv("BossRifle")
 		){
-			ppp.A_DropInventory("LiberatorMag",ppp.countinv("LiberatorMag"));
-			ppp.A_DropInventory("BossClip",ppp.countinv("BossClip"));
+			ppp.A_DropInventory("HD7mMag",ppp.countinv("HD7mMag"));
+			ppp.A_DropInventory("HD7mClip",ppp.countinv("HD7mClip"));
 			ppp.A_DropInventory("SevenMilAmmo",ppp.countinv("SevenMilAmmo"));
 			if(mmm){mmm.DropMag(HDMMS_LIB);mmm.DropMag(HDMMS_BOSS);}
 		}
@@ -69,7 +69,7 @@ extend class HDHandlers{
 				&&!ppp.countinv("Lumberjack")
 				&&!ppp.countinv("HERPUsable")
 			){
-				ppp.A_DropInventory("HDCellPacks",ppp.countinv("HDCellPacks"));
+				ppp.A_DropInventory("HDBattery",ppp.countinv("HDBattery"));
 				ppp.A_DropInventory("HDCellAmmo",ppp.countinv("HDCellAmmo"));
 			}
 		}
@@ -96,17 +96,11 @@ extend class HDHandlers{
 		if(cw is "HDPistol"){
 			int ccc=ppp.countinv("HDPistolAmmo");
 			if(ccc)ppp.A_DropInventory("HDPistolAmmo",ccc);
-			else{
-				if(mmm&&mmm.DropMag(HDMMS_PIST))amt--;
-				if(amt>0)ppp.A_DropInventory("HDPistolMag",amt);
-			}
+			else if(amt>0)ppp.A_DropInventory("HD9mMag15",amt);
 		}else if(cw is "HDSMG"){
 			int ccc=ppp.countinv("HDPistolAmmo");
 			if(ccc)ppp.A_DropInventory("HDPistolAmmo",ccc);
-			else{
-				if(mmm&&mmm.DropMag(HDMMS_SMG))amt--;
-				if(amt>0)ppp.A_DropInventory("HDSMGMag",amt);
-			}
+			else if(amt>0)ppp.A_DropInventory("HD9mMag30",amt);
 		}else if(cw is "Hunter"||cw is "Slayer"){
 			ppp.A_DropInventory("HDShellAmmo",amt);
 		}else if(cw is "ZM66AssaultRifle"){
@@ -115,14 +109,12 @@ extend class HDHandlers{
 			)ppp.A_DropInventory("HDRocketAmmo",amt);
 			int ccc=ppp.countinv("FourMilAmmo");
 			if(ccc)ppp.A_DropInventory("FourMilAmmo",ccc);
-			else ppp.A_DropInventory("ZM66RifleMags",amt);
+			else ppp.A_DropInventory("HD4mMag",amt);
 		}else if(cw is "Vulcanette"){
-			int ccc=ppp.countinv("HDCellAmmo");
-			if(ccc)ppp.A_DropInventory("HDCellAmmo",ccc);
-			else ppp.A_DropInventory("HDCellPacks",amt);
-			ccc=ppp.countinv("FourMilAmmo");
+			ppp.A_DropInventory("HDBattery",amt);
+			int ccc=ppp.countinv("FourMilAmmo");
 			if(ccc)ppp.A_DropInventory("FourMilAmmo",ccc);
-			else ppp.A_DropInventory("ZM66RifleMags",amt);
+			else ppp.A_DropInventory("HD4mMag",amt);
 		}else if(cw is "HDRL"){
 			if(ppp.countinv("HEATAmmo")){
 				ppp.angle+=1;
@@ -140,34 +132,15 @@ extend class HDHandlers{
 			)ppp.A_DropInventory("HDRocketAmmo",amt);
 			int ccc=ppp.countinv("SevenMilAmmo");
 			if(ccc)ppp.A_DropInventory("SevenMilAmmo",ccc);
-			else{
-				if(mmm&&mmm.DropMag(HDMMS_LIB))amt--;
-				if(amt>0)ppp.A_DropInventory("LiberatorMag",amt);
-			}
+			else if(amt>0)ppp.A_DropInventory("HD7mMag",amt);
 		}
 		else if(cw is "Brontornis")ppp.A_DropInventory("BrontornisRound",amt);
 		else if(cw is "BossRifle"){
 			int ccc=ppp.countinv("SevenMilAmmo");
 			if(ccc)ppp.A_DropInventory("SevenMilAmmo",ccc);
-			else{
-				if(mmm&&mmm.DropMag(HDMMS_BOSS))amt--;
-				if(amt>0)ppp.A_DropInventory("BossClip",amt);
-			}
-		}else if(cw is "ThunderBuster"||cw is "Lumberjack"){
-			int ccc=ppp.countinv("HDCellAmmo");
-			if(ccc)ppp.A_DropInventory("HDCellAmmo",ccc);
-			else if(ppp.countinv("HDCellPackEmpty"))ppp.A_DropInventory("HDCellPackEmpty",amt);
-			else ppp.A_DropInventory("HDCellPacks",amt);
-		}else if(cw is "BFG9k"){
-			int ccc=ppp.countinv("HDCellAmmo");
-			if(ccc)ppp.A_DropInventory("HDCellAmmo",ccc);
-			else if(ppp.countinv("HDCellPackEmpty")){
-				ppp.angle+=1;
-				ppp.A_DropInventory("HDCellPacks",amt);
-				ppp.angle-=2;
-				ppp.A_DropInventory("HDCellPackEmpty",amt);
-				ppp.angle+=1;
-			}else ppp.A_DropInventory("HDCellPacks",amt);
+			else if(amt>0)ppp.A_DropInventory("HD7mClip",amt);
+		}else if(cw is "ThunderBuster"||cw is "Lumberjack"||cw is "BFG9k"){
+			ppp.A_DropInventory("HDBattery",amt);
 		}else if(cw is "SelfBandage"){
 			ppp.A_DropInventory("PortableStimpack",amt);
 			ppp.A_DropInventory("PortableMedikit",amt);

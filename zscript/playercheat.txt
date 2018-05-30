@@ -49,17 +49,19 @@ extend class HDPlayerPawn{
 			A_GiveInventory("HDBP");
 			for(int i=0;i<AllActorClasses.Size();++i){
 				type=(class<Inventory>)(AllActorClasses[i]);
-				if (type&&type.GetParentClass()=="HDAmmo"
+				if(!type)continue;
+				if(
+					type is "HDAmmo"
+					//base types, do not give
+					&&type!="HDAmmo"
+					&&type!="HDMagAmmo"
+					//garbage
 					&&type!="DudRocketAmmo"
 					&&type!="HDCellPackEmpty"
 				){
 					let ammoitem=FindInventory(type);
-					if(!ammoitem){
-						ammoitem=Inventory(Spawn(type));
-						ammoitem.AttachToOwner(self);
-						ammoitem.Amount=ammoitem.MaxAmount;
-					}
-					else ammoitem.Amount=ammoitem.MaxAmount;
+					if(!ammoitem)ammoitem=GiveInventoryType(type);
+					ammoitem.Amount=ammoitem.MaxAmount;
 				}
 			}
 		}
