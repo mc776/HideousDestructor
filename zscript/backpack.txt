@@ -26,6 +26,131 @@ class HDBP:HDWeapon{
 	override double,int weaponbulk(){
 		return max(100,getbulk()),0;
 	}
+
+
+	action void A_AddBackpackItem(int which){
+		class<inventory> itp=invoker.itemtype[which];
+
+		if(
+			!countinv(itp)
+			||(
+				HDBPC_CAPACITY-invoker.itembulk[which]
+				<invoker.bulk
+			)
+		)return;
+
+
+		//where the magic happens
+		if(itp=="HDArmour"){
+			let armr=HDArmour(findinventory("HDArmour"));
+			if(
+				invoker.itemamount[which]>0 //limit one
+				||armr.meleethreshold>1
+			)return;
+			invoker.itemamount[which]=armr.amount;
+			A_TakeInventory(itp);
+		}else if(itp is "HDMagAmmo"){
+			invoker.BPAddMag(invoker.itemtype[which]);
+		}else{
+			invoker.itemamount[which]++;
+			A_TakeInventory(itp,1);
+		}
+
+
+		if(
+			invoker.itemamount[which]>20
+			||invoker.itembulk[which]>40
+		)A_SetTics(4);
+
+		invoker.getbulk();
+	}
+	void BPAddMag(name what){
+		int dex=-1;
+		if(what=="HD9mMag15")dex=pistindex;
+		else if(what=="HD9mMag30")dex=smgindex;
+		else if(what=="HD4mMag")dex=zmindex;
+		else if(what=="HD7mMag")dex=libindex;
+		else if(what=="HD7mClip")dex=bossindex;
+		else if(what=="HDBattery")dex=batteryindex;
+		else return;
+		double unitbulk=itembulk[dex];
+		if(getbulk()+unitbulk>HDBPC_CAPACITY) return;
+
+		//finally, actually do the thing
+		let mgg=hdmagammo(owner.findinventory(what));
+		if(!mgg||!mgg.mags.size())return;
+		itemamount[dex]++;
+		if(dex==pistindex)pistmags.push(mgg.TakeMag(false));
+		else if(dex==smgindex)smgmags.push(mgg.TakeMag(false));
+		else if(dex==zmindex)zmmags.push(mgg.TakeMag(false));
+		else if(dex==libindex)libmags.push(mgg.TakeMag(false));
+		else if(dex==bossindex)bossclips.push(mgg.TakeMag(false));
+		else if(dex==batteryindex)batteries.push(mgg.TakeMag(false));
+		else return;
+	}
+	action void A_DropBackpackItem(int which){
+		class<inventory> itp=invoker.itemtype[which];
+		if(
+			invoker.itemamount[which]<1
+			||A_JumpIfInventory(itp,0,"null")
+		)return;
+
+		if(
+			invoker.itemamount[which]>20
+			||invoker.itembulk[which]>40
+		)A_SetTics(5);
+		else if(invoker.itembulk[which]<20){ //reaching
+			A_SetTics(10);
+			A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		}
+
+		//where the magic happens
+		if(itp=="HDArmour"){
+			if(countinv("HDArmour"))return;
+			A_GiveInventory(itp,invoker.itemamount[which]);
+			invoker.itemamount[which]=0;
+		}else if(itp is "HDMagAmmo"){
+			HDMagAmmo.GiveMag(self,itp,invoker.BPTakeMag(which));
+		}else{
+			A_GiveInventory(itp,1);
+			invoker.itemamount[which]--;
+		}
+
+		invoker.getbulk();
+	}
+	int BPTakeMag(int which){
+		int spawnamt=-1;
+		SyncMagAmounts();
+		if(itemamount[which]<1)return -1;
+		if(which==batteryindex){
+			spawnamt=batteries[batteries.size()-1];
+			batteries.pop();
+			itemamount[which]=batteries.size();
+		}else if(which==zmindex){
+			spawnamt=zmmags[zmmags.size()-1];
+			zmmags.pop();
+			itemamount[which]=zmmags.size();
+		}else if(which==libindex){
+			spawnamt=libmags[libmags.size()-1];
+			libmags.pop();
+			itemamount[which]=libmags.size();
+		}else if(which==bossindex){
+			spawnamt=bossclips[bossclips.size()-1];
+			bossclips.pop();
+			itemamount[which]=bossclips.size();
+		}else if(which==pistindex){
+			spawnamt=pistmags[pistmags.size()-1];
+			pistmags.pop();
+			itemamount[which]=pistmags.size();
+		}else if(which==smgindex){
+			spawnamt=smgmags[smgmags.size()-1];
+			smgmags.pop();
+			itemamount[which]=smgmags.size();
+		}
+		return spawnamt;
+	}
+
+
 	states{
 	spawn:
 		BPAK ABC -1 nodelay{
@@ -116,83 +241,11 @@ class HDBP:HDWeapon{
 		TNT1 A 0 A_Refire();
 		goto ready;
 	reload:
-		TNT1 A 5{
-			int which=invoker.weaponstatus[HDBPS_WHICH];
-			class<inventory> itp=invoker.itemtype[which];
-
-			if(
-				!countinv(itp)
-				||(
-					HDBPC_CAPACITY-invoker.itembulk[which]
-					<invoker.bulk
-				)
-			)return;
-
-
-			//where the magic happens
-			if(itp=="HDArmour"){
-				let armr=HDArmour(findinventory("HDArmour"));
-				if(
-					invoker.itemamount[which]>0 //limit one
-					||armr.meleethreshold>1
-				)return;
-				invoker.itemamount[which]=armr.amount;
-				A_TakeInventory(itp);
-			}else if(itp=="HDCellAmmo"){
-				int totake=min(countinv(itp),20);
-				invoker.itemamount[which]+=totake;
-				A_TakeInventory(itp,totake);
-			}else{
-				invoker.itemamount[which]++;
-				A_TakeInventory(itp,1);
-			}
-
-
-			if(
-				invoker.itemamount[which]>20
-				||invoker.itembulk[which]>40
-			)A_SetTics(4);
-
-			invoker.getbulk();
-		}goto ready;
+		TNT1 A 5 A_AddBackpackItem(invoker.weaponstatus[HDBPS_WHICH]);
+		goto ready;
 	unload:
-		TNT1 A 7{
-			int which=invoker.weaponstatus[HDBPS_WHICH];
-			class<inventory> itp=invoker.itemtype[which];
-			if(
-				invoker.itemamount[which]<1
-				||A_JumpIfInventory(itp,0,"null")
-			)return;
-
-			if(
-				invoker.itemamount[which]>20
-				||invoker.itembulk[which]>40
-			)A_SetTics(5);
-			else if(invoker.itembulk[which]<20){ //reaching
-				A_SetTics(10);
-				A_PlaySound("weapons/pocket",CHAN_WEAPON);
-			}
-
-			//where the magic happens
-			if(itp=="HDArmour"){
-				if(countinv("HDArmour"))return;
-				A_GiveInventory(itp,invoker.itemamount[which]);
-				invoker.itemamount[which]=0;
-			}else if(itp=="HDCellAmmo"){
-				int totake=min(
-					invoker.itemamount[which],
-					HDMath.MaxInv(self,itp)-countinv(itp),
-					20
-				);
-				invoker.itemamount[which]-=totake;
-				A_GiveInventory(itp,totake);
-			}else{
-				A_GiveInventory(itp,1);
-				invoker.itemamount[which]--;
-			}
-
-			invoker.getbulk();
-		}goto ready;
+		TNT1 A 7 A_DropBackpackItem(invoker.weaponstatus[HDBPS_WHICH]);
+		goto ready;
 
 	zoom:
 		TNT1 A 0{
@@ -233,7 +286,7 @@ class HDBP:HDWeapon{
 	}
 
 	string itemname[HDBPC_NUMITEMS];
-	class<inventory> itemtype[HDBPC_NUMITEMS];
+	name itemtype[HDBPC_NUMITEMS];
 	int itemamount[HDBPC_NUMITEMS];
 	double itembulk[HDBPC_NUMITEMS];
 
@@ -300,30 +353,22 @@ class HDBP:HDWeapon{
 		i++;itemname[i]="br";
 
 		i++;itembulk[i]=ENC_FRAG;itemtype[i]="HDFragGrenadeAmmo";itemname[i]="Hand grenade";
-//		i++;itembulk[i]=ENC_BATTERY;itemtype[i]="HDBattery";itemname[i]="Battery";batteryindex=i;
-		i++;itembulk[i]=ENC_BATTERY;itemtype[i]="HDCellPacks";itemname[i]="Fresh battery";fcellindex=i;
-		i++;itembulk[i]=ENC_BATTERY;itemtype[i]="HDCellAmmo";itemname[i]="Stale battery";mcellindex=i;
-		i++;itembulk[i]=ENC_BATTERY;itemtype[i]="HDCellPackEmpty";itemname[i]="Depleted battery";ecellindex=i;
+		i++;itembulk[i]=ENC_BATTERY;itemtype[i]="HDBattery";itemname[i]="Battery";batteryindex=i;
 		i++;itembulk[i]=ENC_BRONTOSHELL;itemtype[i]="BrontornisRound";itemname[i]="Brontornis shell";
 		i++;itemname[i]="br";
 
-		i++;itembulk[i]=ENC_426MAG;itemtype[i]="ZM66RifleMags";itemname[i]="4.26mm mag";
-//		i++;itembulk[i]=ENC_426MAG;itemtype[i]="HD4mMag";itemname[i]="4.26mm mag";zmindex=i;
+		i++;itembulk[i]=ENC_426MAG;itemtype[i]="HD4mMag";itemname[i]="4.26mm mag";zmindex=i;
 		i++;itembulk[i]=ENC_426;itemtype[i]="FourMilAmmo";itemname[i]="Misc. 4.26mm ammo";loosezedindex=i;
 		i++;itemname[i]="cl";
 
-		i++;itembulk[i]=ENC_776MAG;itemtype[i]="LiberatorMag";itemname[i]="7.76mm mag";
-		i++;itembulk[i]=ENC_776CLIP;itemtype[i]="BossClip";itemname[i]="7.76mm clip";
-//		i++;itembulk[i]=ENC_776MAG;itemtype[i]="HD7mMag";itemname[i]="7.76mm mag";libindex=i;
-//		i++;itembulk[i]=ENC_776CLIP;itemtype[i]="HD7mClip";itemname[i]="7.76mm clip";bossindex=i;
+		i++;itembulk[i]=ENC_776MAG;itemtype[i]="HD7mMag";itemname[i]="7.76mm mag";libindex=i;
+		i++;itembulk[i]=ENC_776CLIP;itemtype[i]="HD7mClip";itemname[i]="7.76mm clip";bossindex=i;
 		i++;itembulk[i]=ENC_776;itemtype[i]="SevenMilAmmo";itemname[i]="Misc. 7.76mm ammo";sevenmilindex=i;
 		i++;itembulk[i]=ENC_776B;itemtype[i]="SevenMilBrass";itemname[i]="7.76mm casing";brassindex=i;
 		i++;itemname[i]="br";
 
-		i++;itembulk[i]=ENC_9MAG;itemtype[i]="HDPistolMag";itemname[i]="Pistol mag";
-		i++;itembulk[i]=ENC_9MAG30;itemtype[i]="HDSMGMag";itemname[i]="SMG mag";
-//		i++;itembulk[i]=ENC_9MAG;itemtype[i]="HD9mMag15";itemname[i]="Pistol mag";pistindex=i;
-//		i++;itembulk[i]=ENC_9MAG30;itemtype[i]="HD9mMag30";itemname[i]="SMG mag";smgindex=i;
+		i++;itembulk[i]=ENC_9MAG;itemtype[i]="HD9mMag15";itemname[i]="Pistol mag";pistindex=i;
+		i++;itembulk[i]=ENC_9MAG30;itemtype[i]="HD9mMag30";itemname[i]="SMG mag";smgindex=i;
 		i++;itembulk[i]=ENC_9;itemtype[i]="HDPistolAmmo";itemname[i]="Misc. 9mm ammo";
 		i++;itemname[i]="br";
 
