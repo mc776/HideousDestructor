@@ -41,8 +41,7 @@ class HERPBot:HDUPK{
 
 	//it is now canon: the mag and seal checkers are built inextricably into the AI.
 	//if you tried to use a jailbroken mag, the whole robot just segfaults.
-	int ammo; //the mag being used, -1-51, -1 no mag, 0 empty, 51 sealed
-	int mags; //the mags in the ammo bay, 0-2
+	int ammo[3]; //the mag being used: -1-51, -1 no mag, 0 empty, 51 sealed, >100  dirty
 	int battery; //the battery, -1-20
 	double startangle;
 	bool scanright;
@@ -54,8 +53,9 @@ class HERPBot:HDUPK{
 		startangle=angle;
 		scanright=false;
 		if(!master){
-			ammo=51;
-			mags=2;
+			ammo[0]=51;
+			ammo[1]=51;
+			ammo[2]=51;
 			battery=20;
 		}
 		bool gbg;actor lll;
@@ -175,13 +175,27 @@ class HERPBot:HDUPK{
 		HERP A 2 A_FaceTarget(2.,2.,0,0,FAF_TOP,-4);
 	shoot:
 		HERP B 1 bright light("SHOT"){
-			if(ammo<1){
+			int currammo=ammo[0];
+			if(
+				currammo<1
+				||(currammo>100&&!random(0,7))
+			){
 				message("Operational fault. Please check your manual for proper maintenance. (ERR-42392-41A) Cartridge empty. Shutting down...");
+				if(currammo>100&&!random(0,3))ammo[0]--;
 				setstatelabel("off");
 				return;
 			}
-			if(ammo>50)ammo=50;
-			ammo--;
+
+			//deplete 1 round
+			if(currammo>100){
+				//"100" is an empty mag so set it to empty
+				if(currammo==101)ammo[0]=0;
+				else ammo[0]--;
+			}else if(currammo>50){
+				//51-99 = sealed mag, break seal and deplete one = 49
+				ammo[0]=49;
+			}else ammo[0]--;
+
 			A_PlaySound("weapons/rifle",CHAN_WEAPON);
 			actor p=Spawn("HDBullet426",pos+(0,0,6));
 			if(p){
@@ -197,7 +211,7 @@ class HERPBot:HDUPK{
 			else A_AlertMonsters();
 		}
 		HERP A 0{
-			if(ammo<1){
+			if(ammo[0]<1){
 				setstatelabel("swapmag");
 			}else if(target && target.health>random(-30,30)){
 				flinetracedata herpline;
@@ -214,14 +228,20 @@ class HERPBot:HDUPK{
 		}goto idle;
 	swapmag:
 		HERP A 3{
-			if(mags<1){
+			int nextmag=ammo[1];
+			if(
+				nextmag<1
+				||nextmag==100
+				||(nextmag>100&&!random(0,3))
+			){
 				message("Operational fault. Please check your manual for proper maintenance. (ERR-42392-41A) Cartridge empty. Shutting down...");
 				A_PlaySound("weapons/vulcandown");
 				setstatelabel("off");
 			}else{
 				//create a thrown empty, then...
-				ammo=51;
-				mags--;
+				ammo[0]=ammo[1];
+				ammo[1]=ammo[2];
+				ammo[2]=-1;
 			}
 		}goto idle;
 	nopower:
@@ -241,7 +261,11 @@ class HERPBot:HDUPK{
 			if(
 				!bmissilemore
 				||absangle(angle,startangle)>12
-				||(ammo<1&&mags<1)
+				||(
+					ammo[0]%100<1
+					&&ammo[1]%100<1
+					&&ammo[2]%100<1
+				)
 			)setstatelabel("off");
 		}goto idle;
 	give:
@@ -250,42 +274,20 @@ class HERPBot:HDUPK{
 				(health<1 && !target.countinv("HERPDEAD"))||
 				(health>0 && !target.countinv("HERPUsable"))
 			){
-				A_PlaySound("misc/w_pkup");
-				if(health<1)A_GiveToTarget("HERPDEAD");
-					else A_GiveToTarget("HERPUsable");
-				let hu=HERPUsable(target.findinventory("HERPUsable"));
-				if(ammo==51){
-					mags++;
-					if(hu)hu.ammo=0;
+				target.A_PlaySound("misc/w_pkup",CHAN_WEAPON);
+				if(health<1){
+					A_GiveToTarget("HERPDEAD");
+					if(random(0,3))HDMagAmmo.GiveMag(target,"HD4mMag",ammo[0]%100);
+					if(random(0,3))HDMagAmmo.GiveMag(target,"HD4mMag",ammo[1]%100);
+					if(random(0,3))HDMagAmmo.GiveMag(target,"HD4mMag",ammo[2]%100);
+					HDMagAmmo.GiveMag(target,"HDBattery",battery);
 				}else{
-					if(hu)hu.ammo=ammo;
-				}
-				ammo=0;
-				while(mags>0){
-					mags--;
-					if(A_JumpIfInTargetInventory("ZM66RifleMags",0,"null"))
-						A_SpawnItemEx("ZM66RifleMags",3,random(-3,3),0,0,0,0,
-							0,SXF_NOPOINTERS
-						);
-					else A_GiveToTarget("ZM66RifleMags",1);
-				}
-				if(battery>=0){
-					A_PlaySound("weapons/rifleclick");
-					if(
-						(
-							battery==20 &&
-							A_JumpIfInTargetInventory("HDCellPacks",0,"null")
-						)||(
-							battery<20 &&
-							HDMath.MaxInv(target,"HDCellAmmo")
-							-target.countinv("HDCellAmmo")<battery
-						)
-					){
-						actor a=spawn("HDCellPickup",pos);
-						a.vel=vel;a.stamina=battery;
-					}else{
-						if(battery==20)A_GiveToTarget("HDCellPacks",1);
-						else A_GiveToTarget("HDCellAmmo",battery);
+					let hu=HERPUsable(target.GiveInventoryType("HERPUsable"));
+					if(hu){
+						hu.ammo[0]=ammo[0];
+						hu.ammo[1]=ammo[1];
+						hu.ammo[2]=ammo[2];
+						HDMagAmmo.GiveMag(target,"HDBattery",battery);
 					}
 				}
 				destroy();return;
@@ -301,8 +303,10 @@ class HERPBot:HDUPK{
 		}goto spawn;
 	death:
 		HERP A 0{
-			ammo=random(0,ammo);
-			mags=random(0,mags);
+			ammo[0]=random(0,ammo[0]+randompick(0,0,0,100));
+			ammo[1]=random(0,ammo[1]+randompick(0,0,0,100));
+			ammo[2]=random(0,ammo[2]+randompick(0,0,0,100));
+			battery=random(0,battery);
 			A_NoBlocking();
 			A_PlaySound("world/shotgunfar",CHAN_BODY,0.4);
 		}
@@ -354,7 +358,7 @@ class EnemyHERP:HERPBot{
 	}
 }
 class HERPUsable:HDPickup{
-	int ammo;
+	int ammo[3];
 	int botid;
 	default{
 		//$Category "Items/Hideous Destructor"
@@ -367,49 +371,88 @@ class HERPUsable:HDPickup{
 		inventory.pickupsound "misc/w_pkup";
 		inventory.pickupmessage "Picked up a Heavy Engagement Rotary Platform robot.";
 	}
+	override double getbulk(){
+		double enc=ENC_HERP;
+		for(int i=0;i<3;i++){
+			if(ammo[i]>=0)enc+=max(ENC_426MAG*0.2,ammo[i]*ENC_426*0.8);
+		}
+		return enc;
+	}
 	override void beginplay(){
-		ammo=51;
+		ammo[0]=51;
+		ammo[1]=51;
+		ammo[2]=51;
 		botid=1;
 		super.beginplay();
 	}
 	states{
 	use:
 		TNT1 A 0{
-			int loadcell;
-			if(countinv("HDCellPacks"))loadcell=20;
-			else if(countinv("HDCellAmmo"))loadcell=min(countinv("HDCellAmmo"),random(1,19));
-			else{
+			let bbb=HDMagAmmo(findinventory("HDBattery"));
+			int loadcell=0;
+			int loadmag[3];
+			if(!bbb){
 				A_Log("\cd[HERP]\cj  No power. Please load 1 cell pack before deploying.",true);
 				return;
+			}else{
+				loadcell=bbb.TakeMag(true);
 			}
-			if(!invoker.ammo){
-				if(!countinv("ZM66RifleMags")){
+
+			//check for no mags at all
+			if(
+				(
+					invoker.ammo[0]>100
+					&&!random(0,7)
+				)||(
+					invoker.ammo[0]%100<0
+					&&invoker.ammo[1]%100<0
+					&&invoker.ammo[2]%100<0
+				)
+			){
+				if(!countinv("HD4mMag")){
 					A_Log("\cd[HERP]\cj  Please load at least 1 fresh 4.26mm UAC Standard magazine before deploying.",true);
 					return;
 				}else{
-					A_TakeInventory("ZM66RifleMags",1,TIF_NOTAKEINFINITE);
-					invoker.ammo=51;
+					let mmm=HDMagAmmo(findinventory("HD4mMag"));
+					if(mmm){
+						int toadd=mmm.TakeMag(true);
+						if(toadd<51){
+							toadd+=100;
+							A_Log(string.format("\cd[HERP] \cj%s",HDCONST_426MAGMSG),true);
+						}
+						invoker.ammo[0]=toadd;
+					}
 				}
 			}
-			if(loadcell==20)A_TakeInventory("HDCellPacks",1);
-				else A_TakeInventory("HDCellAmmo",loadcell);
-			int loadmags=0;
-			while(loadmags<2 && countinv("ZM66RifleMags")){
-				loadmags++;
-				A_TakeInventory("ZM66RifleMags",1,TIF_NOTAKEINFINITE);
+
+			//load the other two mags
+			for(int i=1;i<=2;i++){
+				if(invoker.ammo[i]%100<0){
+					let mmm=HDMagAmmo(findinventory("HD4mMag"));
+					if(mmm&&!HDMagAmmo.NothingLoaded(self,"HD4mMag")){
+						int toadd=mmm.TakeMag(true);
+						if(toadd<51){
+							toadd+=100;
+							A_Log(string.format("\cd[HERP] \cj%s",HDCONST_426MAGMSG),true);
+						}invoker.ammo[i]=toadd;
+					}
+				}
 			}
+
 			actor hhh;int iii;
 			[iii,hhh]=A_SpawnItemEx("HERPBot",5,0,height-16,
 				2.5*cos(pitch),0,-2.5*sin(pitch),
 				0,SXF_NOCHECKPOSITION|SXF_TRANSFERTRANSLATION
 				|SXF_TRANSFERPOINTERS|SXF_SETMASTER
 			);
+			hhh.A_PlaySound("misc/w_pkup",5);
 			hhh.ChangeTid(HERP_TID);
 			hhh.vel+=vel;hhh.angle=angle;
 			let hhhh=HERPBot(hhh);
 			hhhh.startangle=angle;
-			hhhh.ammo=invoker.ammo;
-			hhhh.mags=loadmags;
+			hhhh.ammo[0]=invoker.ammo[0];
+			hhhh.ammo[1]=invoker.ammo[1];
+			hhhh.ammo[2]=invoker.ammo[2];
 			hhhh.battery=loadcell;
 			hhhh.botid=invoker.botid;
 			A_Log(string.format("\cd[HERP] \cjDeployed with tag ID \cy%i",invoker.botid),true);
@@ -432,6 +475,9 @@ class HERPDEAD:HDPickup{
 		inventory.pickupsound "misc/w_pkup";
 		inventory.pickupmessage "Picked up a Heavy Engagement Rotary Platform robot. It is damaged.";
 		scale 0.8;
+	}
+	override double getbulk(){
+		return ENC_HERP;
 	}
 	states{
 	spawn:
@@ -456,6 +502,52 @@ extend class HDHandlers{
 			ppp.A_Log(string.format("\cd[HERP] \cjNext HERP tag set to \cy%i",-botcmd),true);
 			return;
 		}
+		//get some info
+		else if(botcmd==411){
+			if(!herpinv)return;
+			string ammo[3];
+			for(int i=0;i<3;i++){
+				int inherp=herpinv.ammo[i];
+				if(inherp>=100)ammo[i]=string.format("\cg%i",random(0,99));
+				else if(inherp>50)ammo[i]=string.format("\cy50");
+				else if(inherp<0)ammo[i]=string.format("\cu0");
+				else if(inherp<1)ammo[i]=string.format("\cg-");
+				else ammo[i]=string.format("\cw%i",min(50,inherp));
+//				ammo[i]=string.format("%i",inherp);	//debug
+			}
+			ppp.A_Log(string.format("\cd[HERP] \cjSTATUS UPDATE:\n\cjCartridges loaded: \cy%s %s %s",ammo[0],ammo[1],ammo[2]),true);
+			return;
+		}
+		//unload
+		else if(
+			botcmd==412
+			||botcmd==413
+		){
+			if(!herpinv)return;
+			bool takeall=(botcmd==413);
+			bool tookdirty=false;
+			bool tookany=false;
+			for(int i=0;i<3;i++){
+				int gettt=herpinv.ammo[i];
+				if(
+					gettt<0
+					||(!takeall&&gettt>100)
+				)continue;
+				tookany=true;
+				herpinv.ammo[i]=-1;
+				if(gettt>100){
+					tookdirty=true;
+					gettt=clamp(gettt,0,50);
+				}else{
+					gettt=clamp(gettt,0,51);
+				}
+				HDMagAmmo.GiveMag(ppp,"HD4mMag",gettt);
+			}
+			ppp.A_PlaySound("misc/w_pkup",5);
+			if(tookany)ppp.A_Log("\cd[HERP] \cjUnloaded.",true);
+			if(tookdirty)ppp.A_Log(HDCONST_426MAGMSG,true);
+			return;
+		}
 
 		//give actual commands
 		bool anybots=false;
@@ -478,8 +570,12 @@ extend class HDHandlers{
 				if(botcmd==1){
 					badcommand=false;
 					if(
-						(herp.mags<1&&herp.ammo<1)
-						||herp.battery<1
+						herp.battery<1
+						||(
+							herp.ammo[0]<1
+							&&herp.ammo[1]<1
+							&&herp.ammo[2]<1
+						)
 					){
 						ppp.A_Log(string.format("\cd[HERP] \crERROR:\cj HERP at [\cj%i\cu,\cj%i\cu] out of ammo or cells, \cxNOT\cj activated.",herp.pos.x,herp.pos.y),true);
 					}else{
@@ -534,7 +630,7 @@ extend class HDHandlers{
 				botcmdid?string.format("with tag \ca%i\cj ",botcmdid):"",
 				verb
 			),true);
-		}else if(badcommand)ppp.A_Log(string.format("\cd[HERP] \cj%sCommand format:\cu herp <option> <tag number> <direction>\n\cjOptions\n 1 = ON\n 2 = OFF\n 3 = DIRECTION (counterclockwise in degrees)\n 123 = QUERY\n -n = set tag number.\n\cj  tag number on next deployment: \cy%i",anybots?"":"No HERPs currently deployed.\n",botid),true);
+		}else if(badcommand)ppp.A_Log(string.format("\cd[HERP] \cj%sCommand format:\cu herp <option> <tag number> <direction>\n\cjOptions\n 1 = ON\n 2 = OFF\n 3 = DIRECTION (counterclockwise in degrees)\n 123 = QUERY\n -n = set tag number\n 411 = examine\n 412 = unload\n 413 = unload (unsafe)\n\cj  tag number on next deployment: \cy%i",anybots?"":"No HERPs currently deployed.\n",botid),true);
 	}
 }
 

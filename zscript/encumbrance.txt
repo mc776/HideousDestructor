@@ -110,12 +110,6 @@ extend class HDPlayerPawn{
 		}
 
 		if(!weaponly){
-			//because herps are special
-			let herp=HERPUsable(findinventory("HERPUsable"));
-			if(herp){
-				enc+=ENC_HERP+herp.ammo<0?0:ENC_426MAG*0.4;
-			}enc+=countinv("HERPDEAD")*ENC_HERP;
-
 			//mag manager
 			let hdmm=MagManager(findinventory("MagManager"));
 			if(hdmm)enc+=
