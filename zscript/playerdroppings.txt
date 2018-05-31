@@ -4,7 +4,6 @@
 extend class HDHandlers{
 	//drops all ammo for which you do not have a weapon
 	void PurgeUselessAmmo(hdplayerpawn ppp){
-		let mmm=MagManager(ppp.findinventory("MagManager"));
 		if(
 			!ppp.countinv("HDPistol")
 			&&!ppp.countinv("HDSecondPistol")
@@ -14,7 +13,6 @@ extend class HDHandlers{
 			ppp.A_DropInventory("HDPistolAmmo",ppp.countinv("HDPistolAmmo"));
 			ppp.A_DropInventory("HD9mMag30",ppp.countinv("HD9mMag30"));
 			ppp.A_DropInventory("HD9mMag15",ppp.countinv("HD9mMag15"));
-			if(mmm){mmm.DropMag(HDMMS_PIST);mmm.DropMag(HDMMS_SMG);}
 		}
 		if(
 			!ppp.countinv("Slayer")
@@ -57,7 +55,6 @@ extend class HDHandlers{
 			ppp.A_DropInventory("HD7mMag",ppp.countinv("HD7mMag"));
 			ppp.A_DropInventory("HD7mClip",ppp.countinv("HD7mClip"));
 			ppp.A_DropInventory("SevenMilAmmo",ppp.countinv("SevenMilAmmo"));
-			if(mmm){mmm.DropMag(HDMMS_LIB);mmm.DropMag(HDMMS_BOSS);}
 		}
 		if(
 			!ppp.countinv("BFG9k")
@@ -90,8 +87,6 @@ extend class HDHandlers{
 		//if unspecified, shotgun should drop in groups of 4
 		if(!amt&&(cw is "Hunter"||cw is "Slayer"))amt=4;
 		else amt=max(1,amt);
-
-		let mmm=MagManager(ppp.findinventory("MagManager"));
 
 		if(cw is "HDPistol"){
 			int ccc=ppp.countinv("HDPistolAmmo");
@@ -170,19 +165,13 @@ extend class HDHandlers{
 				}
 			}
 			hdbp.getbulk();
-		}else if(cw is "HDMagManager"){
-			let mmm=HDMagAmmo(HDMagManager(cw).thismag);
+		}else if(cw is "MagManager"){
+			let mmm=HDMagAmmo(MagManager(cw).thismag);
 			if(!mmm)return;
 			let what=mmm.roundtype;
 			int howmany=min(max(1,hdmath.maxinv(ppp,what)*0.2),ppp.countinv(what));
 			if(!howmany)return;
 			ppp.A_DropInventory(what,howmany);
-		}else if(cw is "MagManager"){
-			let mmm=MagManager(cw);
-			class<inventory> what=mmm.ammotype[mmm.weaponstatus[HDMMS_WHICH]];
-			int howmany=min(5,ppp.countinv(what));
-			if(!howmany)return;
-			for(int i=0;i<amt;i++)ppp.A_DropInventory(what,howmany);
 		}else PurgeUselessAmmo(ppp);
 	}
 }

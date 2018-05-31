@@ -162,15 +162,9 @@ class HDWeapon:Weapon{
 		return b;
 	}
 	//that said, why get picky when you can just shoot twice?
-	action void A_MagManager(int type){
+	action void A_MagManager(name type){
 		A_SetInventory("MagManager",1);
-		let mm=MagManager(findinventory("MagManager"));
-		mm.weaponstatus[HDMMS_WHICH]=type;
-		A_SelectWeapon("MagManager");
-	}
-	action void A_NewMagManager(name type){
-		A_SetInventory("HDMagManager",1);
-		let mmm=HDMagManager(findinventory("HDMagManager"));
+		let mmm=MagManager(findinventory("MagManager"));
 		mmm.thismag=hdmagammo(findinventory(type));mmm.thismagtype=type;
 		UseInventory(mmm);
 	}

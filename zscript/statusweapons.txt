@@ -524,67 +524,6 @@ extend class HDStatusBar{
 				howmany<1?font.CR_DARKGRAY:font.CR_DARKBROWN
 			);
 		}
-		else if(w is "MagManager"){
-			let mm=MagManager(w);
-			int which=mm.weaponstatus[HDMMS_WHICH];
-
-			//explanation
-			if(helptext){
-				int row=100;
-				int column=10;
-				drawstring(psmallfont,"Mag Manager Instructions:",
-					(column,row),
-					DI_SCREEN_TOP|DI_SCREEN_LEFT|DI_TEXT_ALIGN_LEFT,
-					font.CR_BROWN,alpha:0.5
-				);
-				row+=7;
-				column+=10;
-				drawstring(psmallfont,"Fire/Altfire: Previous/Next",
-					(column,row),
-					DI_SCREEN_TOP|DI_SCREEN_LEFT|DI_TEXT_ALIGN_LEFT,
-					font.CR_OLIVE,alpha:0.5
-				);
-				drawstring(psmallfont,"Re/Unload: Add/Remove",
-					(column,row+7),
-					DI_SCREEN_TOP|DI_SCREEN_LEFT|DI_TEXT_ALIGN_LEFT,
-					font.CR_OLIVE,alpha:0.5
-				);
-				drawstring(psmallfont,"Toss weapon to drop mag",
-					(column,row+14),
-					DI_SCREEN_TOP|DI_SCREEN_LEFT|DI_TEXT_ALIGN_LEFT,
-					font.CR_OLIVE,alpha:0.5
-				);
-			}
-
-			//currently selected item
-			drawstring(psmallfont,string.format("now loading %s",mm.magmsg[which]),
-				(0,58),DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,
-				font.CR_SAPPHIRE
-			);
-			int howmany=mm.weaponstatus[which];
-			string clipmag=(which==HDMMS_BOSS?"clip":"magazine");
-			drawstring(psmallfont,
-				howmany<1?
-					string.format("none in this %s",clipmag)
-					:
-					string.format("%i in %s",howmany,clipmag),
-						(0,66),DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,
-						howmany<1?font.CR_DARKGRAY:font.CR_WHITE
-			);
-			howmany=hpl.countinv(mm.ammotype[which]);
-			drawstring(psmallfont,howmany<1?"none on person":
-				string.format("%i on person",howmany),
-				(0,74),DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,
-				howmany<1?font.CR_DARKGRAY:font.CR_DARKBROWN
-			);
-			howmany=hpl.countinv(mm.magtype[which]);
-			string pl=howmany==1?"":"s";
-			drawstring(psmallfont,howmany<1?string.format("no full %s%s",clipmag,pl):
-				string.format("%i full %s%s",howmany,clipmag,pl),
-				(0,90),DI_SCREEN_CENTER|DI_TEXT_ALIGN_CENTER,
-				howmany<1?font.CR_DARKGRAY:font.CR_DARKBROWN
-			);
-		}
 	}
 	void drawwepdot(int posx,int posy,vector2 dotscale=(3.,3.)){
 		drawimage(
