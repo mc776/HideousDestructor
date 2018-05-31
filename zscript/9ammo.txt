@@ -19,38 +19,6 @@ class HDPistolAmmo:Ammo{
 		PBRS A -1 nodelay {hdf.splitammospawn(self);}
 	}
 }
-class HDPistolMag:HDAmmo{
-	default{
-		//$Category "Ammo/Hideous Destructor/"
-		//$Title "Pistol Magazine"
-		//$Sprite "CLP2A0"
-
-		+inventory.ignoreskill
-		inventory.maxamount 8;
-		inventory.pickupmessage "Picked up a 9mm magazine.";
-	}
-	states{
-	spawn2:
-		CLP2 A -1;
-		stop;
-	}
-}
-class HDSMGMag:HDAmmo{
-	default{
-		//$Category "Ammo/Hideous Destructor/"
-		//$Title "SMG Magazine"
-		//$Sprite "CLP3A0"
-
-		+inventory.ignoreskill
-		inventory.maxamount 7;
-		inventory.pickupmessage "Picked up a 30-round 9mm magazine.";
-	}
-	states{
-	spawn2:
-		CLP3 A -1;
-		stop;
-	}
-}
 
 class HDSpent9mm:HDDebris{
 	override void postbeginplay(){
@@ -96,79 +64,18 @@ class HDPistolEmptyMag:HDDebris{
 		}loop;
 	death:
 		CLP2 B -1{
-			roll=randompick(0,0,0,0,2,2,2,2,1,3)*90;
-		}stop;
-	}
-}
-class HD9mPmag:HDUPK{
-	default{
-		hdupk.pickupmessage "Picked up a 9mm magazine.";
-	}
-	override void postbeginplay(){
-		super.postbeginplay();
-		if(stamina<1){
-			actor emg=spawn("HDPistolEmptyMag",pos);
-			if(emg)emg.vel=vel;
-			destroy();return;
-		}
-	}
-	states{
-	spawn:
-		CLP2 A -1 A_Stop();
-	give:
-		---- A 0{
-			if(stamina==15){  
-				if(A_JumpIfInTargetInventory("HDPistolMag",0,"null")){
-					setstatelabel("spawn");return;
-				}else{
-					target.A_GiveInventory("HDPistolMag",1);
-					destroy();return;
-				}
-			}else{
-				int al=target.countinv("HDPistolAmmo");
-				target.A_GiveInventory("HDPistolAmmo",stamina);
-				stamina-=target.countinv("HDPistolAmmo")-al;
-				if(stamina<1){destroy();return;}
-				else setstatelabel("spawn");
+			roll=randompick(0,0,0,0,180,180,180,180,90,270);
+			let mmm=HDMagAmmo(spawn("HD9mMag15",pos));
+			if(mmm){
+				mmm.roll=roll;
+				mmm.mags.clear();
+				mmm.mags.push(0);
+				mmm.amount=1;
+				A_SetTics(1);
 			}
 		}stop;
 	}
 }
-class HD9mSmag:HDUPK{
-	default{
-		hdupk.pickupmessage "Picked up a big 9mm magazine.";
-	}
-	override void postbeginplay(){
-		super.postbeginplay();
-		if(stamina<1){
-			actor emg=spawn("HDSMGEmptyMag",pos);
-			if(emg)emg.vel=vel;
-			destroy();return;
-		}
-	}
-	states{
-	spawn:
-		CLP3 A -1 A_Stop();
-	give:
-		---- A 0{
-			if(stamina>=30){  
-				if(A_JumpIfInTargetInventory("HDSMGMag",0,"null")){
-					setstatelabel("spawn");return;
-				}else{
-					target.A_GiveInventory("HDSMGMag",1);
-					destroy();return;
-				}
-			}else{
-				int al=target.countinv("HDPistolAmmo");
-				target.A_GiveInventory("HDPistolAmmo",stamina);
-				stamina-=target.countinv("HDPistolAmmo")-al;
-				if(stamina<1){destroy();return;}
-				else setstatelabel("spawn");
-			}
-		}stop;
-	}
-}
-
 
 
 // ------------------------------------------------------------

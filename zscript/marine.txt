@@ -122,12 +122,12 @@ class HDMarine:HDActor replaces ScriptedMarine{
 		A_NoBlocking();
 		if(hasdropped){
 			class<actor> dropammo="";
-			if(wep==HDMW_SMG)dropammo="HDSMGMag";
-			else if(wep==HDMW_ZM66)dropammo="HDPistolMag";
+			if(wep==HDMW_SMG)dropammo="HD9mMag30";
+			else if(wep==HDMW_ZM66)dropammo="HD9mMag15";
 			else if(wep==HDMW_ROCKET)dropammo="HDRocketAmmo";
 			else if(wep==HDMW_HUNTER)dropammo="ShellPickup";
 			if(!random(0,timesdied))A_DropItem(dropammo);
-			if(!random(0,12+timesdied))A_DropItem("HDPistolMag");
+			if(!random(0,12+timesdied))A_DropItem("HD9mMag15");
 			if(
 				!random(0,timesdied)&&wep==HDMW_SMG
 			)A_DropItem("HDRocketAmmo");
@@ -624,9 +624,11 @@ class HDMarine:HDActor replaces ScriptedMarine{
 		#### E 10;
 		#### E 0{
 			if(gunloaded>0){
-				actor ooo=spawn("HD4mmMag",pos+(0,0,40));
+				let ooo=HDMagAmmo(spawn("HD4mMag",pos+(0,0,40)));
 				ooo.vel+=vel;
-				ooo.stamina=gunloaded;
+				ooo.mags.clear();
+				ooo.mags.push(gunloaded);
+				ooo.amount=1;
 				gunloaded=-1;
 			}else if(!random(0,3)){
 				jammed=false;

@@ -122,33 +122,12 @@ extend class HDPlayerPawn{
 				).weaponstatus[PISS_MAG]*ENC_9MAG_LOADED:0
 			)
 
-			//magged ammo
-			+(useammotypes&USE_9?(
-				countinv("HDPistolAmmo")*ENC_9
-				+countinv("HDPistolMag")*ENC_9MAG
-				+countinv("HDSMGMag")*ENC_9MAG30
-			):0)
-			+(useammotypes&USE_776?(
-				countinv("SevenMilAmmo")*ENC_776
-				+countinv("SevenMilBrass")*ENC_776B
-				+countinv("BossClip")*ENC_776CLIP
-				+countinv("LiberatorMag")*ENC_776MAG
-			):0)
-			+(useammotypes&USE_426?(
-				countinv("FourMilAmmo")*ENC_426
-				+countinv("ZM66RifleMags")*ENC_426MAG
-			):0)
-			+(useammotypes&USE_BATTERY?(
-				countinv("HDCellAmmo")*ENC_BATTERY*0.3
-				+countinv("HDCellPacks")*ENC_BATTERY
-			):0)
-
 			//single loose ammo
 			+(useammotypes&USE_12?(
 				countinv("HDShellAmmo")*ENC_SHELL
 			):0)
 			+(useammotypes&USE_ROCKET?(
-				countinv("HDRocketAmmo")*ENC_ROCKET
+				(countinv("HDRocketAmmo")+countinv("DudRocketAmmo"))*ENC_ROCKET
 			):0)
 			+(useammotypes&USE_BRONTO?(
 				countinv("BrontornisRound")*ENC_BRONTOSHELL
@@ -157,10 +136,6 @@ extend class HDPlayerPawn{
 				countinv("HEATAmmo")*ENC_HEATROCKET
 			):0)
 			+countinv("HDFragGrenadeAmmo")*ENC_FRAG
-
-			//i will no longer protect you from your hoarding
-			+countinv("DudRocketAmmo")*ENC_ROCKET
-			+countinv("HDCellPackEmpty")*ENC_BATTERY
 			;
 		}
 
