@@ -148,21 +148,26 @@ extend class HDHandlers{
 			ppp.A_DropInventory("BluePotion",amt);
 		}else if(cw is "HDBP"){
 			let hdbp=hdbp(cw);
-			int howmany=hdbp.itemamount[hdbp.weaponstatus[HDBPS_WHICH]];
-			class<inventory> what=hdbp.itemtype[hdbp.weaponstatus[HDBPS_WHICH]];
+			int which=hdbp.weaponstatus[HDBPS_WHICH];
+			int howmany=hdbp.itemamount[which];
+			class<inventory> what=hdbp.itemtype[which];
 			if(!howmany)return;
-			int unit=1;
-			if(what is "HDShellAmmo")unit=4;
-			else if(what is "FourMilAmmo")unit=random(1,49);
-			else if(what is "HDCellAmmo")unit=random(1,19);
-			else if(what is "HDArmour")unit=howmany;
-			howmany=min(unit,howmany);
-			hdbp.itemamount[hdbp.weaponstatus[HDBPS_WHICH]]-=howmany;
-			inventory ddd=inventory(ppp.spawn(what,ppp.pos));
-			if(ddd){
-				ddd.addz(ppp.height-14);ddd.angle=ppp.angle;
-				ddd.A_ChangeVelocity(4,0,1,CVF_RELATIVE);
-				ddd.amount=howmany*amt;
+			if(what is "HDMagAmmo"){
+				HDMagAmmo.SpawnMag(ppp,what,hdbp.BPTakeMag(which));
+			}else{
+				int unit=1;
+				if(what is "HDShellAmmo")unit=4;
+				else if(what is "FourMilAmmo")unit=random(1,49);
+				else if(what is "HDCellAmmo")unit=random(1,19);
+				else if(what is "HDArmour")unit=howmany;
+				howmany=min(unit,howmany);
+				hdbp.itemamount[hdbp.weaponstatus[HDBPS_WHICH]]-=howmany;
+				inventory ddd=inventory(ppp.spawn(what,ppp.pos));
+				if(ddd){
+					ddd.addz(ppp.height-14);ddd.angle=ppp.angle;
+					ddd.A_ChangeVelocity(4,0,1,CVF_RELATIVE);
+					ddd.amount=howmany*amt;
+				}
 			}
 			hdbp.getbulk();
 		}else if(cw is "HDMagManager"){
