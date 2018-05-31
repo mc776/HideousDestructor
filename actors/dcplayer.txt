@@ -17,7 +17,7 @@ actor HDP_BR:HDPlayerPawn{
 	player.startitem LiberatorRifle
 	player.startitem SoldierExtras
 	player.startitem SevenMilAmmo 20
-	player.startitem LiberatorMag 4
+	player.startitem HD7mMag 4
 	player.startitem HDRocketAmmo 8
 }
 actor HDP_SG:HDPlayerPawn{
@@ -58,7 +58,7 @@ actor HDP_MG:HDPlayerPawn{
 	player.displayname "Support Gunner"
 	player.startitem Vulcanette
 	player.startitem SoldierExtras
-	player.startitem HDCellPacks 2
+	player.startitem HDBattery 2
 	player.startitem HD4mMag 6
 	states{
 	see:
@@ -124,7 +124,7 @@ actor HDP_PR:HDPlayerPawn{
 	player.displayname "Specialist"
 	player.startitem ThunderBuster
 	player.startitem SoldierExtras
-	player.startitem HDCellPacks 6
+	player.startitem HDBattery 6
 	player.startitem HDFragGrenadeAmmo 6
 	states{
 	see:
@@ -142,7 +142,7 @@ actor HDP_BF:HDPlayerPawn{
 	player.displayname "Hideous Destructor"
 	player.startitem BFG9K
 	player.startitem SoldierExtras
-	player.startitem HDCellPacks 6
+	player.startitem HDBattery 6
 	player.startitem HDFragGrenadeAmmo 6
 	states{
 	see:
@@ -173,7 +173,7 @@ actor HDP_SS:HDPlayerPawn{
 	player.startitem PortableMedikit 1
 	player.startitem PortableStimpack 2
 	player.startitem PortableLiteAmp
-	player.startitem HDCellPacks 2
+	player.startitem HDBattery 2
 	states{
 	see:
 		"----" A 0 A_Jump(256,"see0")
@@ -192,7 +192,7 @@ actor HDP_BA:HDPlayerPawn{
 	player.startitem BossRifle
 	player.startitem HDPistolFullAuto
 	player.startitem SoldierExtras
-	player.startitem BossClip 10
+	player.startitem HD7mClip 10
 	player.startitem HDFragGrenadeAmmo 6
 	states{
 	see:
@@ -231,7 +231,7 @@ actor HDP_BT:HDPlayerPawn{
 	player.startitem HD4mMag 5
 	player.startitem PortableMedikit 2
 	player.startitem PortableStimpack 3
-	player.startitem HDCellPacks 6
+	player.startitem HDBattery 6
 	player.startitem DudRocketAmmo 6
 	player.startitem HERPUsable 1
 	player.startitem DERPUsable 3
@@ -327,7 +327,7 @@ actor RebelLoadout:ActionItem{
 	weapon0:
 		TNT1 A 0{
 			A_GiveInventory("Lumberjack",1);
-			A_GiveInventory("HDCellPacks",random(1,4));
+			A_GiveInventory("HDBattery",random(1,4));
 		}goto otherstuff
 	weapon1a:
 		TNT1 A 0 A_GiveInventory("HDSMG",1)
@@ -368,16 +368,16 @@ actor RebelLoadout:ActionItem{
 		goto weapon6a+1
 	weapon6a:
 		TNT1 A 0 A_GiveInventory("LiberatorNoGL",1)
-		TNT1 A 0 A_GiveInventory("LiberatorMag",random(1,6))
+		TNT1 A 0 A_GiveInventory("HD7mMag",random(1,6))
 		TNT1 A 0 A_GiveInventory("SevenMilAmmo",random(1,30))
 		goto otherstuff
 	weapon6:
 		TNT1 A 0 A_GiveInventory("ThunderBuster",1)
-		TNT1 A 0 A_GiveInventory("HDCellPacks",random(1,6))
+		TNT1 A 0 A_GiveInventory("HDBattery",random(1,6))
 		goto otherstuff
 	weapon7:
 		TNT1 A 0 A_GiveInventory("BFG9k",1)
-		TNT1 A 0 A_GiveInventory("HDCellPacks",random(1,6))
+		TNT1 A 0 A_GiveInventory("HDBattery",random(1,6))
 		goto otherstuff
 	weapon8:
 		TNT1 A 0 A_GiveInventory("ZM66AssaultRifle")
@@ -390,13 +390,13 @@ actor RebelLoadout:ActionItem{
 		goto otherstuff
 	weapon10:
 		TNT1 A 0 A_GiveInventory("BossRifle",1)
-		TNT1 A 0 A_GiveInventory("BossClip",random(1,12))
+		TNT1 A 0 A_GiveInventory("HD7mClip",random(1,12))
 		TNT1 A 0 A_GiveInventory("SevenMilAmmo",random(1,50))
 		goto otherstuff
 	weapon11:
 		TNT1 A 0 A_GiveInventory("Vulcanette")
 		TNT1 A 0 A_GiveInventory("HD4mMag",random(1,5))
-		TNT1 A 0 A_GiveInventory("HDCellPacks",random(1,4))
+		TNT1 A 0 A_GiveInventory("HDBattery",random(1,4))
 		goto otherstuff
 	otherstuff:
 		TNT1 A 0 A_Jump(164,1)
@@ -429,7 +429,7 @@ actor RebelLoadout:ActionItem{
 		TNT1 A 0 A_GiveInventory("HERPUsable",1)
 		TNT1 A 0 A_GiveInventory("HD4mMag",random(1,4))
 		TNT1 A 0 A_Jump(220,2)
-		TNT1 A 0 A_GiveInventory("HDCellPacks",random(1,6))
+		TNT1 A 0 A_GiveInventory("HDBattery",random(1,6))
 		TNT1 A 0 A_Jump(220,2)
 		TNT1 A 0 A_GiveInventory("HDPistolAmmo",random(1,6))
 		TNT1 A 0 A_Jump(240,2)

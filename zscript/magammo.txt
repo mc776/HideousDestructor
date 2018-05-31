@@ -193,6 +193,7 @@ class HDMagAmmo:HDAmmo{
 	static bool NothingLoaded(actor caller,class<inventory> magtype){
 		let tocheck=HDMagAmmo(caller.findinventory(magtype));
 		if(!tocheck)return true;
+		tocheck.SyncAmount();
 		for(int i=0;i<tocheck.amount;i++){
 			if(tocheck.mags[i]>0)return false;
 		}
