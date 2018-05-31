@@ -158,6 +158,7 @@ class HDMagAmmo:HDAmmo{
 	}
 	//give a mag to someone
 	static bool GiveMag(actor receiver,class<inventory> type,int giveamt){
+		if(giveamt<0)return false;
 		if(receiver.findinventory(type)){
 			let mmm=HDMagAmmo(receiver.findinventory(type));
 			if(mmm.amount>=mmm.maxamount){
@@ -178,6 +179,7 @@ class HDMagAmmo:HDAmmo{
 	//spawn and drop
 	//mostly for unloads
 	static actor SpawnMag(actor giver,class<inventory> type,int giveamt){
+		if(giveamt<0)return null;
 		let mmm=HDMagAmmo(giver.spawn(type,giver.pos));
 		mmm.addz(giver.height-12);mmm.angle=giver.angle;
 		mmm.A_ChangeVelocity(2,0,-1,CVF_RELATIVE);
@@ -384,8 +386,8 @@ class HD9mMag15:HDMagAmmo{
 	default{
 		hdmagammo.maxperunit 15;
 		hdmagammo.roundtype "HDPistolAmmo";
-		hdmagammo.roundbulk 0;
-		hdmagammo.magbulk 0;
+		hdmagammo.roundbulk ENC_9;
+		hdmagammo.magbulk ENC_9MAG*0.3;
 		hdmagammo.nicename "Pistol Magazines";
 		inventory.maxamount 18;
 		inventory.pickupmessage "Picked up a pistol magazine.";
@@ -404,7 +406,7 @@ class HD9mMag15:HDMagAmmo{
 class HD9mMag30:HD9mMag15{
 	default{
 		hdmagammo.maxperunit 30;
-		hdmagammo.magbulk 0;
+		hdmagammo.magbulk ENC_9MAG30*0.4;
 		hdmagammo.nicename "SMG Magazines";
 		inventory.maxamount 8;
 		inventory.pickupmessage "Picked up an SMG magazine.";
@@ -425,8 +427,8 @@ class HD7mMag:HDMagAmmo{
 	default{
 		hdmagammo.maxperunit 30;
 		hdmagammo.roundtype "SevenMilAmmo";
-		hdmagammo.roundbulk 0;
-		hdmagammo.magbulk 0;
+		hdmagammo.roundbulk ENC_776;
+		hdmagammo.magbulk ENC_776MAG*0.35;
 		hdmagammo.nicename "Liberator Magazines";
 		inventory.maxamount 8;
 		inventory.pickupmessage "Picked up a 7.76mm magazine.";
@@ -447,8 +449,8 @@ class HD7mClip:HDMagAmmo{
 	default{
 		hdmagammo.maxperunit 10;
 		hdmagammo.roundtype "SevenMilAmmo";
-		hdmagammo.roundbulk 0;
-		hdmagammo.magbulk 0;
+		hdmagammo.roundbulk ENC_776;
+		hdmagammo.magbulk ENC_776CLIP*0.1;
 		hdmagammo.nicename "Boss Clips";
 		inventory.maxamount 20;
 		inventory.pickupmessage "Picked up a 7.76mm clip.";
@@ -476,8 +478,6 @@ class HDBattery:HDMagAmmo{
 	default{
 		hdmagammo.maxperunit 20;
 		hdmagammo.roundtype "";
-		hdmagammo.roundbulk 0;
-		hdmagammo.magbulk 0;
 		hdmagammo.nicename "Batteries";
 		inventory.pickupmessage "Picked up a battery.";
 		scale 0.4;
@@ -511,8 +511,8 @@ class HD4mMag:HDMagAmmo{
 	default{
 		hdmagammo.maxperunit 51;
 		hdmagammo.roundtype "FourMilAmmo";
-		hdmagammo.roundbulk 0;
-		hdmagammo.magbulk 0;
+		hdmagammo.roundbulk ENC_426;
+		hdmagammo.magbulk ENC_426MAG*0.3;
 		hdmagammo.nicename "4.26 UAC Standard Magazines";
 		inventory.maxamount 12;
 		inventory.pickupmessage "Picked up a 4.26 UAC Standard magazine.";

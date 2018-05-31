@@ -471,14 +471,7 @@ class HDStatusBar:DoomStatusBar{
 				(numposx,numposy-7),flags|DI_TEXT_ALIGN_RIGHT,Font.CR_SAPPHIRE
 			);
 
-			if(ivs is "PortableLiteAmp"){
-				let pla=PortableLiteAmp(ivs);
-				if(pla)drawstring(
-					mAmountFont,FormatNumber((84000-pla.spent)/840),
-					(numposx,numposy),flags|DI_TEXT_ALIGN_RIGHT,Font.CR_OLIVE
-				);
-			}
-			else drawstring(mAmountFont,FormatNumber(ivs.amount),
+			drawstring(mAmountFont,FormatNumber(ivs.amount),
 				(numposx,numposy),flags|DI_TEXT_ALIGN_RIGHT,Font.CR_OLIVE
 			);
 		}
@@ -656,7 +649,7 @@ class HDStatusBar:DoomStatusBar{
 		drawimage("BROCA0",(-81,mxht),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM);		
 		drawimage("ROCKB0",(-58,mxht-2),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM);
 		drawimage("ROQPA0",(-62,mxht+2),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM,scale:(0.85,0.85));
-		drawambar("CELLRED","CELLA0","HDCellAmmo",(-30,mxht));
+		drawimage("CELLA0",(-30,mxht));
 		drawimage("FRAGA0",(-10,mxht),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM,scale:(0.7,0.7));
 
 		drawnum(hpl.countinv("HD9mMag15"),-71,mxhtplus-6);
@@ -690,12 +683,8 @@ class HDStatusBar:DoomStatusBar{
 			fnt:Font.CR_BROWN
 		);
 
-		drawnum(hpl.countinv("HDCellPacks"),-28,mxht,
+		drawnum(hpl.countinv("HDBattery"),-28,mxht,
 			DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_BOTTOM
-		);
-		drawnum(hpl.countinv("HDCellPackEmpty"),-38,mxht,
-			DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_BOTTOM,
-			fnt:Font.CR_BROWN
 		);
 		drawnum(hpl.countinv("HDFragGrenadeAmmo"),-6,mxht,
 			DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_BOTTOM

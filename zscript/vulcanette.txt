@@ -440,8 +440,14 @@ class Vulcanette:HDWeapon{
 				invoker.vulcmag[0]=-1;
 			}
 
-			if(lod<51)invoker.vulcmag[magslot]=100+lod;
-			else invoker.vulcmag[magslot]=51;
+			if(lod<51){
+				if(!random(0,7)){
+					A_PlayWeaponSound("weapons/rifleclick");
+					lod=min(0,lod-random(1,2));
+					A_Log(HDCONST_426MAGMSG,true);
+				}
+				invoker.vulcmag[magslot]=100+lod;
+			}else invoker.vulcmag[magslot]=51;
 
 			A_MuzzleClimb(-frandom(0.4,0.8),-frandom(0.5,0.7));
 		}
