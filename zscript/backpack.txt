@@ -270,13 +270,7 @@ class HDBP:HDWeapon{
 		double ebulk=0;
 		for (int i=0;i<HDBPC_NUMITEMS;i++){
 			if(itemamount[i]>0){
-				if(itemtype[i]=="HDCellAmmo"){ //you can't have a piece of a cell
-					int count=itemamount[i];
-					while(count>0){
-						count-=20;
-						ebulk+=itembulk[i];
-					}
-				}else if(itemtype[i]=="HDArmour"){ //always worth 1 suit
+				if(itemtype[i]=="HDArmour"){ //always worth 1 suit
 					ebulk+=itembulk[i];
 				}else ebulk+=itembulk[i]*itemamount[i];
 			}

@@ -1,63 +1,35 @@
 // ------------------------------------------------------------
 // Cell ammo for Lumberjack and others
 // ------------------------------------------------------------
-class HDCellAmmo:HDAmmo{
+class HDBattery:HDMagAmmo{
 	default{
-		inventory.maxamount 50;
-		inventory.pickupmessage "Picked up a partially depleted battery.";
-	}
-	override void detachfromowner(){
-		target=owner;
-		super.detachfromowner();
-	}
-	override inventory createtossable(int amount){
-		inventory iii=super.createtossable(amount);
-		if(iii)iii.target=owner;
-		return iii;
-	}
-	states(actor){
-	spawn:
-		TNT1 A 1 nodelay{
-			//do not let the player choose how much they drop
-			if(target){
-				int ontarget=target.countinv("HDCellAmmo");
-				if(ontarget){
-					int total=amount+ontarget;
-					amount=clamp(max(amount,9)+random(-10,10),1,total);
-					target.setinventory("HDCellAmmo",total-amount);
-				}
-			}
-
-			actor a;int b;
-			//spawn randoms
-			while(amount>19){  
-				int amt=clamp(random(1,19),1,amount);
-				a=spawn("HDCellPickup",pos);
-				a.vel+=vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
-				a.stamina=amt;
-				amount-=amt;
-			}
-
-			//spawn final
-			a=spawn("HDCellPickup",pos);
-			a.vel+=vel;
-			a.stamina=amount;
-		}stop;
-	}
-}
-class HDCellpacks:HDAmmo{
-	default{
-		//$Category "Ammo/Hideous Destructor/"
-		//$Title "Cell Battery"
-		//$Sprite "CELLA0"
-
-		inventory.maxamount 6;
+		hdmagammo.maxperunit 20;
+		hdmagammo.roundtype "";
+		hdmagammo.nicename "Batteries";
 		inventory.pickupmessage "Picked up a battery.";
 		scale 0.4;
 	}
+	override double getbulk(){
+		return ENC_BATTERY*amount;
+	}
+	bool BFGChargeable(){
+		for(int i=0;i<amount;i++){
+			if(mags[i]>=BFGC_MINCHARGE)return true;
+		}
+		return false;
+	}
+	override bool Insert(){return false;}
+	override bool Extract(){return false;}
+	override void Consolidate(){}
 	states(actor){
 	spawn2:
-		CELL A -1;
+		CELL CAB -1{
+			int amt=mags[0];
+			if(amt>13)frame=0;
+			else if(amt>6)frame=1;
+		}stop;
+	spawnempty:
+		CELL D -1;
 		stop;
 	}
 }
@@ -75,54 +47,6 @@ class HDCellpackEmpty:IdleDummy{
 	}
 }
 
-
-//replace the derivatives where you can
-//spawn a HDCellPickup from the weapon, give it a Clip plus whatever # you want
-class HDCellPickup:HDUPK{
-	default{
-		scale 0.4;stamina 20;
-		hdupk.pickupmessage "Picked up a partially depleted battery.";
-	}
-	states{
-	spawn2:
-		CELL CBA -1{
-			if(stamina<1){
-				actor a=spawn("HDCellpackEmpty",pos);a.vel=vel;
-				destroy();return;
-			}
-			else if(stamina>=20){  
-				actor a=spawn("HDCellpacks",pos);a.vel=vel;
-				destroy();return;
-			}
-			else if(stamina>13)frame=0;  
-			else if(stamina>6)frame=1;
-		}
-	spawn:
-		CELL C 0 A_Stop();
-		goto spawn2;
-	give:
-		---- A 0{
-			if(stamina>=20){    
-				if(A_JumpIfInTargetInventory("HDCellPacks",0,"null")){
-					setstatelabel("spawn");
-					return;
-				}else target.A_GiveInventory("HDCellPacks",1);
-			}else if(stamina<1){
-				if(A_JumpIfInTargetInventory("HDCellPackEmpty",0,"null")){
-					setstatelabel("spawn");
-					return;
-				}else target.A_GiveInventory("HDCellPackEmpty",1);
-			}else{
-				if(A_JumpIfInTargetInventory("HDCellAmmo",0,"null")){
-					setstatelabel("spawn");
-					return;
-				}
-				target.A_GiveInventory("HDCellAmmo",stamina);
-			}
-			A_PlaySound("weapons/pocket");
-		}stop;
-	}
-}
 
 
 

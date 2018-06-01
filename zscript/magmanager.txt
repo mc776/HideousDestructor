@@ -81,7 +81,7 @@ class MagManager:HDWeapon{
 		if(!thismag){uitext="\cf///\cyMag Manager\cf\\\\\\\n\nNo mags selected";return;}
 		thismagtype=thismag.getclassname();
 		string toui=string.format(
-			"\cf///\cyMag Manager\cf\\\\\\\n\n\cqFire/Altfire\cu  select\n(hold \cqFiremode\cu to select ammo type)\n\cqReload/Unload\cu  load mags\n\cqDrop\cu  drop current mag\n\cqZoom\cu bring up lowest mag\n\cqDrop one\cu drop some loose rounds\n\n\n\cj%s\n",thismag.nicename
+			"\cf///\cyMag Manager\cf\\\\\\\n\n\cqFire\cu/\cqAltfire\cu  select mag\n\cqFiremode\cu+\cqF\cu/\cqAF\cu  select ammo type\n\cqReload\cu/\cqUnload\cu  load/unload selected mag\n\cqFM\cu+\cqR\cu/\cqU\cu  move to/from backpack\n\cqDrop\cu  drop current mag\n\cqZoom\cu bring up lowest mag\n\cqDrop one\cu drop some loose rounds\n\n\n\cj%s\n",thismag.nicename
 		);
 		if(thismag.mags.size()>0){
 			int finalindex=thismag.mags.size()-1;
@@ -125,7 +125,6 @@ class MagManager:HDWeapon{
 		}
 		goto readyend;
 	fire:
-//give hd7mmag 5;give hd9mmag15 5;give hd9mmag30 5;give hd4mmag 5;give hdbattery 5;give hd7mclip 5;wait 1;use hd7mclip
 		TNT1 A 1{
 			if(PressingFireMode())NextMagType(false);
 			else LastToFirst(false);
@@ -136,17 +135,47 @@ class MagManager:HDWeapon{
 			else LastToFirst();
 		}goto nope;
 	reload:
-		TNT1 A 8 Insert();
-		goto readyend;
+		TNT1 A 8{
+			if(PressingFireMode())PutIntoBackpack(invoker.thismagtype);
+			else Insert();
+		}goto readyend;
 	unload:
-		TNT1 A 4 Extract();
-		goto readyend;
+		TNT1 A 4{
+			if(PressingFireMode()){
+				GetFromBackpack(invoker.thismagtype);
+				A_SetTics(8);
+			}else Extract();
+		}goto readyend;
 	firemode:
 		TNT1 A 0;
 		goto nope;
 	zoom:
 		TNT1 A 0 LowestToLast();
 		goto nope;
+	}
+
+
+	//backpack stuff
+	int,hdbp GetBPIndex(name type){
+		let bbb=HDBP(owner.findinventory("HDBP"));
+		if(!bbb)return -1,null;
+		if(type=="HD9mMag15")return bbb.pistindex,bbb;
+		else if(type=="HD9mMag30")return bbb.smgindex,bbb;
+		else if(type=="HD4mMag")return bbb.zmindex,bbb;
+		else if(type=="HD7mMag")return bbb.libindex,bbb;
+		else if(type=="HD7mClip")return bbb.bossindex,bbb;
+		else if(type=="HDBattery")return bbb.batteryindex,bbb;
+		else return -1,null;
+	}
+	action void GetFromBackpack(name type){
+		int which;hdbp bbb;
+		[which,bbb]=invoker.GetBPIndex(type);
+		if(which>=0)HDMagAmmo.GiveMag(self,type,bbb.BPTakeMag(which));
+	}
+	action void PutIntoBackpack(name type){
+		int which;hdbp bbb;
+		[which,bbb]=invoker.GetBPIndex(type);
+		if(which>=0)bbb.BPAddMag(type);
 	}
 }
 

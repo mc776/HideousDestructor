@@ -474,38 +474,7 @@ class HD7mClip:HDMagAmmo{
 	}
 }
 
-class HDBattery:HDMagAmmo{
-	default{
-		hdmagammo.maxperunit 20;
-		hdmagammo.roundtype "";
-		hdmagammo.nicename "Batteries";
-		inventory.pickupmessage "Picked up a battery.";
-		scale 0.4;
-	}
-	override double getbulk(){
-		return ENC_BATTERY*amount;
-	}
-	bool BFGChargeable(){
-		for(int i=0;i<amount;i++){
-			if(mags[i]>=BFGC_MINCHARGE)return true;
-		}
-		return false;
-	}
-	override bool Insert(){return false;}
-	override bool Extract(){return false;}
-	override void Consolidate(){}
-	states(actor){
-	spawn2:
-		CELL CAB -1{
-			int amt=mags[0];
-			if(amt>13)frame=0;
-			else if(amt>6)frame=1;
-		}stop;
-	spawnempty:
-		CELL D -1;
-		stop;
-	}
-}
+
 
 class HD4mMag:HDMagAmmo{
 	default{

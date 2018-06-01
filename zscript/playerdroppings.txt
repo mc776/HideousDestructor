@@ -59,16 +59,12 @@ extend class HDHandlers{
 		if(
 			!ppp.countinv("BFG9k")
 		){
-			ppp.A_DropInventory("HDCellPackEmpty",ppp.countinv("HDCellPackEmpty"));
 			if(
 				!ppp.countinv("ThunderBuster")
 				&&!ppp.countinv("Vulcanette")
 				&&!ppp.countinv("Lumberjack")
 				&&!ppp.countinv("HERPUsable")
-			){
-				ppp.A_DropInventory("HDBattery",ppp.countinv("HDBattery"));
-				ppp.A_DropInventory("HDCellAmmo",ppp.countinv("HDCellAmmo"));
-			}
+			)ppp.A_DropInventory("HDBattery",ppp.countinv("HDBattery"));
 		}
 		if(!ppp.countinv("Brontornis"))
 			ppp.A_DropInventory("BrontornisRound",ppp.countinv("BrontornisRound"));
@@ -153,7 +149,6 @@ extend class HDHandlers{
 				int unit=1;
 				if(what is "HDShellAmmo")unit=4;
 				else if(what is "FourMilAmmo")unit=random(1,49);
-				else if(what is "HDCellAmmo")unit=random(1,19);
 				else if(what is "HDArmour")unit=howmany;
 				howmany=min(unit,howmany);
 				hdbp.itemamount[hdbp.weaponstatus[HDBPS_WHICH]]-=howmany;

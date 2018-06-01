@@ -27,7 +27,7 @@ extend class HDStatusBar{
 		
 		if(w is "Lumberjack"){
 			if(gimmehud){
-				drawambar("CELLRED","CELLA0","HDCellAmmo",(-54,-4),DI_SCREEN_CENTER_BOTTOM);
+				drawimage("CELLA0",(-54,-4),DI_SCREEN_CENTER_BOTTOM);
 				drawnum(hpl.countinv("HDBattery"),-46,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
 			if(!hdw.weaponstatus[1])drawstring(
@@ -153,7 +153,7 @@ extend class HDStatusBar{
 		else if(w is "Vulcanette"){
 			if(gimmehud){
 				drawambar("CLIPRED","CLIPC0","FourMilAmmo",(-49,-4),DI_SCREEN_CENTER_BOTTOM);
-				drawambar("CELLRED","CELLA0","HDCellAmmo",(-64,-4),DI_SCREEN_CENTER_BOTTOM);
+				drawimage("CELLA0",(-64,-4),DI_SCREEN_CENTER_BOTTOM);
 				drawnum(hpl.countinv("HD4mMag"),-43,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 				drawnum(hpl.countinv("HDBattery"),-56,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
@@ -278,7 +278,7 @@ extend class HDStatusBar{
 		}
 		else if(w is "ThunderBuster"){
 			if(gimmehud){
-				drawambar("CELLRED","CELLA0","HDCellAmmo",(-54,-4),DI_SCREEN_CENTER_BOTTOM);
+				drawimage("CELLA0",(-54,-4),DI_SCREEN_CENTER_BOTTOM);
 				drawnum(hpl.countinv("HDBattery"),-46,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
 			if(hdw.weaponstatus[0]&TBF_ALT){
@@ -298,7 +298,7 @@ extend class HDStatusBar{
 		}
 		else if(w is "BFG9k"){
 			if(gimmehud){
-				drawambar("CELLRED","CELLA0","HDCellAmmo",(-54,-4),DI_SCREEN_CENTER_BOTTOM);
+				drawimage("CELLA0",(-54,-4),DI_SCREEN_CENTER_BOTTOM);
 				drawnum(hpl.countinv("HDBattery"),-46,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
 			int bffb=hdw.weaponstatus[BFGS_BATTERY];
