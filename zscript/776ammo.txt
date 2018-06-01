@@ -1,87 +1,6 @@
 // ------------------------------------------------------------
 // 7.76mm Ammo
 // ------------------------------------------------------------
-class LiberatorMag:HDAmmo{
-	default{
-		//$Category "Ammo/Hideous Destructor/"
-		//$Title "Liberator Magazine"
-		//$Sprite "RMAGA0"
-
-		+inventory.ignoreskill
-		inventory.maxamount 6;
-		scale 0.8;
-		inventory.pickupmessage "Picked up a 7.76mm magazine.";
-	}states{
-	spawn2:
-		RMAG A -1;
-		stop;
-	}
-}
-class LiberatorEmptyMag:HD4mmMagEmpty{
-	default{scale 0.8;}
-	states{
-	spawn:
-		RMAG B 2 A_SetRoll(roll+30,SPF_INTERPOLATE);
-		wait;
-	}
-}
-class LiberatorMagP:HDUPK{
-	default{
-		stamina 30;
-		scale 0.8;
-		hdupk.pickupmessage "Picked up a 7.76mm magazine.";
-	}
-	override void postbeginplay(){
-		super.postbeginplay();
-		if(stamina<1){
-			actor emg=spawn("LiberatorEmptyMag",pos);
-			if(emg)emg.vel=vel;
-			destroy();return;
-		}
-	}
-	states{
-	spawn:
-		RMAG A -1 A_Stop();
-	give:
-		---- A 0{
-			if(stamina>=30){    
-				if(A_JumpIfInTargetInventory("LiberatorMag",0,"null")){
-					setstatelabel("spawn");return;
-				}else{
-					target.A_GiveInventory("LiberatorMag",1);
-					destroy();return;
-				}
-			}else{
-				int al=target.countinv("SevenMilAmmo");
-				target.A_GiveInventory("SevenMilAmmo",stamina);
-				stamina-=target.countinv("SevenMilAmmo")-al;
-				if(!stamina){destroy();return;}
-				else setstatelabel("spawn");
-			}
-		}stop;
-	}
-}
-
-
-class BossClip:HDAmmo{
-	default{
-		//$Category "Ammo/Hideous Destructor/"
-		//$Title "Boss Clip"
-		//$Sprite "RCLPA0"
-
-		+inventory.ignoreskill;
-		inventory.maxamount 12;
-
-		scale 0.7;
-		inventory.pickupmessage "Picked up a clip.";
-	}
-	states{
-	spawn2:
-		RCLP A -1;
-		stop;
-	}
-}
-
 class SevenMilAmmo:Ammo{
 	default{
 		+forcexybillboard +cannotpush
@@ -95,6 +14,81 @@ class SevenMilAmmo:Ammo{
 	states{
 	spawn:
 		RBRS A -1 nodelay{HDF.SplitAmmoSpawn(self);}
+	}
+}
+class HD7mMag:HDMagAmmo{
+	default{
+		hdmagammo.maxperunit 30;
+		hdmagammo.roundtype "SevenMilAmmo";
+		hdmagammo.roundbulk ENC_776;
+		hdmagammo.magbulk ENC_776MAG*0.35;
+		hdmagammo.nicename "Liberator Magazines";
+		inventory.maxamount 8;
+		inventory.pickupmessage "Picked up a 7.76mm magazine.";
+		scale 0.8;
+	}
+	states{
+	spawn2:
+		RMAG A -1;
+		stop;
+	spawnempty:
+		RMAG B -1{
+			brollsprite=true;brollcenter=true;
+			roll=randompick(0,0,0,0,2,2,2,2,1,3)*90;
+		}stop;
+	}
+}
+class HD7mClip:HDMagAmmo{
+	default{
+		hdmagammo.maxperunit 10;
+		hdmagammo.roundtype "SevenMilAmmo";
+		hdmagammo.roundbulk ENC_776;
+		hdmagammo.magbulk ENC_776CLIP*0.1;
+		hdmagammo.nicename "Boss Clips";
+		inventory.maxamount 20;
+		inventory.pickupmessage "Picked up a 7.76mm clip.";
+		scale 0.8;
+	}
+	states(actor){
+	spawn2:
+		RCLP ABCDE -1{
+			int amt=mags[0];
+			if(amt>8)frame=0;
+			else if(amt>6)frame=1;
+			else if(amt>4)frame=2;
+			else if(amt>2)frame=3;
+			else if(amt>0)frame=4;
+		}stop;
+	spawnempty:
+		RCLP F -1{
+			brollsprite=true;brollcenter=true;
+			roll=randompick(1,1,1,1,3,3,3,3,0,2)*90;
+		}stop;
+	}
+}
+class SevenMilBrass:Ammo{
+	default{
+		+inventory.ignoreskill +forcexybillboard +cannotpush
+		height 16;radius 8;ammo.backpackamount 0;
+		ammo.backpackmaxamount 120;
+		inventory.maxamount 60;
+		xscale 0.7;yscale 0.8;
+		inventory.pickupmessage "Picked up some brass.";
+	}
+	states{
+	spawn:
+		RBRS A -1 nodelay{
+			HDF.SplitAmmoSpawn(self);
+			A_ChangeVelocity(0,frandom(-1,1),0,CVF_RELATIVE);
+		}stop;
+	}
+}
+
+class LiberatorEmptyMag:IdleDummy{
+	override void postbeginplay(){
+		super.postbeginplay();
+		HDMagAmmo.SpawnMag(self,"HD7mMag",0);
+		destroy();
 	}
 }
 class HDSpent7mm:HDDebris{
@@ -117,23 +111,6 @@ class HDSpent7mm:HDDebris{
 			p.vel=self.vel;p.vel.xy*=3;
 			p.A_FaceMovementDirection();p.angle+=90;
 			destroy();
-		}stop;
-	}
-}
-class SevenMilBrass:Ammo{
-	default{
-		+inventory.ignoreskill +forcexybillboard +cannotpush
-		height 16;radius 8;ammo.backpackamount 0;
-		ammo.backpackmaxamount 120;
-		inventory.maxamount 60;
-		xscale 0.7;yscale 0.8;
-		inventory.pickupmessage "Picked up some brass.";
-	}
-	states{
-	spawn:
-		RBRS A -1 nodelay{
-			HDF.SplitAmmoSpawn(self);
-			A_ChangeVelocity(0,frandom(-1,1),0,CVF_RELATIVE);
 		}stop;
 	}
 }

@@ -171,10 +171,8 @@ class DragonGuard:Chaingunguy{
 			if(
 				!(vulcammo%50)
 			){
-				A_SpawnItemEx(
-					"HD4mmMagEmpty",0,4,32,3,
-					random(-3,2),random(0,-2),0,SXF_NOCHECKPOSITION
-				);
+				actor mmm=HDMagAmmo.SpawnMag(self,"HD4mMag",0);
+				mmm.A_ChangeVelocity(3,frandom(-3,2),frandom(0,-2),CVF_RELATIVE|CVF_REPLACE);
 				A_SetTics(7);
 			}
 			else if(bmissilemore)A_SetTics(0);
@@ -301,8 +299,8 @@ class DragonGuard:Chaingunguy{
 			bmissilemore=false;
 			vvv.weaponstatus[1]=random(1,20);
 		}else{
-			A_DropItem("ZM66RifleMags",0,96);
-			A_DropItem("ZM66RifleMags",0,96);
+			A_DropItem("HD4mMag",0,96);
+			A_DropItem("HD4mMag",0,96);
 			A_DropItem("HDBattery",0,8);
 		}
 	}

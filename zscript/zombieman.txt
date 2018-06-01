@@ -78,7 +78,7 @@ class ZombieStormtrooper:ZombieMan{
 					if(jammed||!random(0,15))wp.weaponstatus[0]|=ZM66F_CHAMBERBROKEN;
 				}
 			}else{
-				A_DropItem("ZM66RifleMags",0,96);
+				A_DropItem("HD4mMag",0,96);
 			}
 		}else{
 			if(!hasdropped){
@@ -90,7 +90,7 @@ class ZombieStormtrooper:ZombieMan{
 					wp.weaponstatus[ZM66S_ZOOM]=random(0,27);
 				}
 			}else{
-				A_DropItem("ZM66RifleMags",0,96);
+				A_DropItem("HD4mMag",0,96);
 			}
 		}
 		if(wp){
@@ -314,8 +314,9 @@ class ZombieStormtrooper:ZombieMan{
 		#### AA 1{hdmobai.chase(self,"melee",null);}
 		#### A 0{
 			A_PlaySound("weapons/rifleload");
-			if(firemode==-2)A_SpawnProjectile("HDSMGEmptyMag",38,0,random(90,120));
-			else A_SpawnProjectile("HD4mmMagEmpty",38,0,random(90,120));
+			name emptymag="HD4mMag";
+			if(firemode==-2)emptymag="HD9mMag30";
+			HDMagAmmo.SpawnMag(self,emptymag,0);
 		}
 		#### BCD 2 {hdmobai.chase(self,"melee",null);}
 		#### E 12 A_PlaySound("weapons/pocket");

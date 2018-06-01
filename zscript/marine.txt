@@ -693,7 +693,7 @@ class HDMarine:HDActor replaces ScriptedMarine{
 			hdmobai.chase(self,"melee",null,true);
 			A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
 			A_PlaySound("weapons/rifleload",5);
-			class<actor> oldthing="";
+			name oldthing="";
 			if(
 				pistolloaded<1
 				&&(
@@ -701,19 +701,16 @@ class HDMarine:HDActor replaces ScriptedMarine{
 					||wep!=HDMW_SMG
 					||wep!=HDMW_ZM66
 				)
-			)oldthing="HDPistolEmptyMag";
-			else if(wep==HDMW_SMG)oldthing="HDSMGEmptyMag";
+			)oldthing="HD9mMag15";
+			else if(wep==HDMW_SMG)oldthing="HD9mMag30";
 			else if(wep==HDMW_ZM66){
 				if(jammed){
 					setstatelabel("unjam");
 					return;
 				}
-				oldthing="HD4mmMagEmpty";
+				oldthing="HD4mMag";
 			}
-			if(oldthing){
-				actor ooo=spawn(oldthing,pos+(0,0,40));
-				ooo.vel+=vel;
-			}
+			if(oldthing)HDMagAmmo.SpawnMag(self,oldthing,0);
 		}
 		#### DABC 3{hdmobai.chase(self,"melee",null,true);}
 		#### D 2 A_PlaySound("weapons/rifleload",5);

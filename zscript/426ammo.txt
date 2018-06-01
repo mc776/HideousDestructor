@@ -34,89 +34,112 @@ class FourMilAmmo:Ammo{
 		RBRS A -1;
 	}
 }
-class ZM66RifleMags:HDAmmo{
+class HD4mMag:HDMagAmmo{
 	default{
-		//$Category "Ammo/Hideous Destructor/"
-		//$Title "4.26mm UAC Standard Mag"
-		//$Sprite "CLIPB0"
-
-		inventory.maxamount 7;
+		hdmagammo.maxperunit 51;
+		hdmagammo.roundtype "FourMilAmmo";
+		hdmagammo.roundbulk ENC_426;
+		hdmagammo.magbulk ENC_426MAG*0.3;
+		hdmagammo.nicename "4.26 UAC Standard Magazines";
+		inventory.maxamount 12;
 		inventory.pickupmessage "Picked up a 4.26 UAC Standard magazine.";
-		xscale 0.3;yscale 0.4;
-	}
-	states{
-	spawn2:
-		CLIP C -1;
-	}
-}
-class HD4mmMag:HDUPK{
-	default{
-		translation "160:167=144:151";
-		xscale 0.3;yscale 0.4;
-
-		stamina 51; //51 means FRESH AND SEALED
-		hdupk.pickupmessage "Picked up a 4.26mm UAC Standard magazine.";
-		hdupk.pickupsound "weapons/pocket";
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		if(stamina<1){
-			actor emg=spawn("HD4mmMagEmpty",pos);
-			if(emg)emg.vel=vel;
-			destroy();return;
-		}
+		sealtimer=0;
 	}
-	states{
-	spawn:
-		CLIP A 0 A_Stop();
-	spawn2:
-		---- A -1{
-			if(stamina==51)frame=2;
+	int sealtimer;
+	override void doeffect(){
+		if(sealtimer>0)sealtimer--;
+	}
+	override string pickupmessage(){
+		string pms="Picked up a 4.26 UAC Standard magazine.";
+		if(mags[0]<51)pms.appendformat(" %s",HDCONST_426MAGMSG);
+		return pms;
+	}
+	bool DirtyMagsOnly(){
+		for(int i=0;i<amount;i++){
+			if(mags[i]>=51)return false;
 		}
-	give:
-		---- A 0{
-			target=picktarget;
-			if(!target)return;
-			if(stamina==51){
-				if(A_JumpIfInTargetInventory("ZM66RifleMags",0,"null")){
-					return;
-				}else{
-					target.A_GiveInventory("ZM66RifleMags",1);
-					destroy();return;
-				}
+		return true;
+	}
+	override bool Extract(){
+		SyncAmount();
+		int mindex=mags.size()-1;
+		if(
+			mags[mindex]<1
+			||owner.A_JumpIfInventory(roundtype,0,"null")
+		)return false;
+		if(mags[mindex]>=51){
+			if(sealtimer<1){
+				owner.A_Log(string.format("%s\nDo you really want to do that?",HDCONST_426MAGMSG),true);
+				sealtimer=10;
+				return false;
 			}else{
-				int givemax=min(stamina,
-					hdmath.maxinv(target,"FourMilAmmo")-target.countinv("FourMilAmmo")
-				);
-				if(target.findinventory("FourMilAmmo")){
-					target.findinventory("FourMilAmmo").amount+=givemax;
-				}else target.A_GiveInventory("FourMilAmmo",givemax);
-				stamina-=givemax;
-				target.A_Log("Reloading a 4.26 UAC Standard magazine into another firearm without authorization is a breach of the Volt End User License Agreement.",true);
-				if(stamina<1){destroy();return;}
+				mags[mindex]=50;
+				owner.A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
+				return false;
 			}
-		}goto spawn2;
+		}
+		int totake=random(1,min(
+			mags[mindex],
+			HDMath.MaxInv(owner,"FourMilAmmo")-owner.countinv("FourMilAmmo"))
+		);
+		HDF.Give(owner,roundtype,totake);
+		owner.A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
+		owner.A_PlaySound("weapons/rockreload",CHAN_BODY,0.4);
+		mags[mindex]-=totake;
+		return true;
 	}
-}
-
-class HD4mmMagEmpty:HDDebris{
-	default{
-		translation "160:167=104:111";
-		xscale 0.4;yscale 0.3;radius 2;height 2;
-		bouncesound "misc/casing2";
-		bouncefactor 0.8;
-		maxstepheight 2;
+	override bool Insert(){
+		SyncAmount();
+		if(
+			mags[mags.size()-1]>=50
+			||!owner.countinv(roundtype)
+		)return false;
+		owner.A_TakeInventory(roundtype,1,TIF_NOTAKEINFINITE);
+		owner.A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
+		if(!random(0,7)){
+			owner.A_PlaySound("weapons/bigcrack",CHAN_BODY);
+			owner.A_SpawnItemEx("HDSmokeChunk",12,0,owner.height-12,4,frandom(-2,2),frandom(2,4));
+			owner.damagemobj(self,owner,1,"Thermal",DMG_NO_ARMOR);
+			return false;
+		}
+		owner.A_PlaySound("weapons/pocket",CHAN_BODY,frandom(0.1,0.6));
+		mags[mags.size()-1]++;
+		return true;
 	}
-	states{
-	spawn:
-		CLIP B 2 A_SetRoll(roll+30,SPF_INTERPOLATE);
-		wait;
-	death:
-		---- A -1{
-			roll=randompick(0,0,0,0,180,180,180,180,90,270);
+	override void Consolidate(){
+		SyncAmount();
+		if(amount<2)return;
+		int totalrounds=0;
+		for(int i=0;i<amount;i++){
+			if(mags[i]>=51)continue;
+			totalrounds+=mags[i];
+			mags[i]=0; //keep the empties, do NOT call clear()!
+		}
+		for(int i=0;i<amount;i++){
+			if(mags[i]>=51)continue;
+			int toinsert=min(50,totalrounds)*frandom(0.9,1.);
+			mags[i]=toinsert;
+			totalrounds-=toinsert;
+			if(totalrounds<1)break;
+		}
+	}
+	states(actor){
+	spawn2:
+		ZMAG AB -1{
+			if(mags[0]<51)frame=1;
+		}stop;
+	spawnempty:
+		ZMAG C -1{
+			brollsprite=true;brollcenter=true;
+			roll=randompick(0,0,0,0,2,2,2,2,1,3)*90;
 		}stop;
 	}
 }
+
+
 
 class ZM66DroppedRound:HDDebris{
 	default{
@@ -137,3 +160,11 @@ class ZM66DroppedRound:HDDebris{
 		}
 	}
 }
+class HD4mmMagEmpty:IdleDummy{
+	override void postbeginplay(){
+		super.postbeginplay();
+		HDMagAmmo.SpawnMag(self,"HD4mMag",0);
+		destroy();
+	}
+}
+
