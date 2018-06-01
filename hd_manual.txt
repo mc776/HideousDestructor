@@ -228,13 +228,7 @@ Description: Hit the reload key to refill your weapon with your spare ammo. The 
 
 When you reload a fixed-magazine weapon like a shotgun or grenade launcher, you load one unit at a time. You will automatically load as many units as you can until you are out of spare units, the gun is full, or you have interrupted the process because you needed to shoot right then (i.e., hold the attack button until you stop reloading).
 
-When you reload a detachable-magazine weapon like a pistol, you will load one full mag, and whatever was in the gun before is either dropped or (by holding the reload key until you hear yourself going through your pockets) added to an abstract miscellaneous-rounds collection (indicated as a bar next to your mag count). If you have no full mags and the weapon permits it, you will load a random "mystery mag" that may contain any number of those miscellaneous rounds.
-
-When you reload a multiple-detachable-magazine weapon like a Vulcanette (which is designed for modularity reasons to take 5 rifle mags), the same detachable-magazine rules apply as between any newly loaded magazine and the gun, and the sequence of loading mags can be interrupted the same way as loading individual rounds in a fixed-magazine weapon.
-
-If you have a detached-mag weapon out that allows such things (i.e., not UAC Standard caseless) and are not shooting, you are presumed to be busy loading as many full mags of that weapon as you can. For example, if you have a pistol out with no spare full mags (15 rounds each) and 20 miscellaneous rounds, and start wandering around for a while looking for a secret, after some time you will notice those 20 rounds be gradually replaced by 1 full mag and 5 rounds. The speed of conversion is based on a hidden counter that resets when you attack (but NOT when you merely switch weapons - this may be used to your advantage).
-
-Similarly, the shotguns have side saddles that let you quickly load up to 12 shells. Keeping a shotgun out without shooting lets you replenish those quick-draw shells from those kept on your person.
+When you reload a detachable-magazine weapon like a pistol, you will load one full mag, and the old mag is either dropped or (by holding the reload key until you hear yourself going through your pockets) placed back into your inventory with the amount it had at the time of removal. The next time you will reload you will either take one full mag if available, or if there is none, the oldest mag in your stack. These mags will be automatically consolidated between levels; to do this manually, use the mag manager described below.
 
 The alternate reload key lets you:
 - with a grenade rifle, reload the underslung grenade;
@@ -270,12 +264,14 @@ With both reload and unload, if you hold down the key you will pocket whatever i
 
 	Manage mags (and clips)
 
-Console command: +user3
+Console command: +user3 or "use MagManager"
 Default key: none
 
-Description: For weapons that are loaded with magazines or other containers from which you can freely move individual rounds (*without* it malfunctioning and voiding your warranty), you can open the magazine manager to fill up some mags/clips for future use - or cannibalize some from one weapon for the other.
+Description: For weapons that are loaded with magazines or other containers from which you can freely move individual rounds, you can open the magazine manager to fill up some mags/clips for future use - or cannibalize some from one type of mag/clip for the other.
 
-As with the backpack, fire and altfire switch from one item to the next, reload puts things into the container and unload takes them out.
+To access the mag manager, type "use MagManager" in the console, or similarly use the specific GZDoom actor name for that mag type, or hit the User3 key for a weapon that uses that ammo type.
+
+As with the backpack, fire and altfire switch from one item to the next, reload puts things into the container and unload takes them out. Hold fire mode and fire/altfire will switch between ammo types, and reload/unload will take mags in and out of your backpack if you have one.
 
 
 	Taunt
@@ -501,7 +497,7 @@ Its original "on-label" use was to save someone going into shock or cardiac arre
 
 Light Amplification Visor
 GZDoom actor name: PortableLiteAmp
-Use to turn on and off. Uses cell power, one cell pack being worth about 40 minutes' worth of light amplification. Rapidly switching on and off drains power.
+Use to turn on and off. Requires at least one operational battery in your inventory to use.
 
 Ladder
 GZdoom actor name: PortableLadder
@@ -763,11 +759,9 @@ Reload key reloads the rifle. Alternate reload reloads the grenade launcher. If 
 
 Tap fire mode when using the rifle to cycle through semi, fullauto and 3-round burst. When using the grenade launcher, hold fire mode and press fire and altfire to program airburst as with the dedicated grenade/rocket launchers.
 
-Protip: when you switch to the rifle from any other weapon, you're set to shoot the rifle not the grenade launcher. This is NOT the case with the rocket launcher which remembers your setting.
+When you switch to the rifle from any other weapon, you're set to shoot the rifle not the grenade launcher. This is NOT the case with the rocket launcher which remembers your setting.
 
-You can only carry one rifle at a time, but if you pick up a rifle of another kind than the one you have you drop your current rifle which can then be picked up later.
-
-Dud rocket grenades, unlike hand grenades, can be kicked out of the way by moving into them, if you do not have the time to pick up and disarm.
+Protip: Do not hit Reload at just the right time as the message comes up. Doing so is illegal.
 
 
 Rotary Support Weapon
