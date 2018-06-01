@@ -61,18 +61,17 @@ class HDCellpacks:HDAmmo{
 		stop;
 	}
 }
-class HDCellpackEmpty:HDCellpacks{
+class HDCellpackEmpty:IdleDummy{
 	default{
 		//$Category "Ammo/Hideous Destructor/"
 		//$Title "Cell Battery (Spent)"
 		//$Sprite "CELLD0"
-
-		inventory.pickupmessage "Picked up a depleted battery.";
 	}
-	states(actor){
-	spawn2:
-		CELL D -1;
-		stop;
+	override void postbeginplay(){
+		super.postbeginplay();
+		angle=frandom(0,360);
+		HDMagAmmo.SpawnMag(self,"HDBattery",0);
+		destroy();
 	}
 }
 
