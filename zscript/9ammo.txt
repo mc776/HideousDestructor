@@ -20,6 +20,48 @@ class HDPistolAmmo:Ammo{
 	}
 }
 
+class HD9mMag15:HDMagAmmo{
+	default{
+		hdmagammo.maxperunit 15;
+		hdmagammo.roundtype "HDPistolAmmo";
+		hdmagammo.roundbulk ENC_9;
+		hdmagammo.magbulk ENC_9MAG*0.3;
+		hdmagammo.nicename "Pistol Magazines";
+		inventory.maxamount 18;
+		inventory.pickupmessage "Picked up a pistol magazine.";
+	}
+	states{
+	spawn2:
+		CLP2 A -1;
+		stop;
+	spawnempty:
+		CLP2 B -1{
+			brollsprite=true;brollcenter=true;
+			roll=randompick(0,0,0,0,2,2,2,2,1,3)*90;
+		}stop;
+	}
+}
+class HD9mMag30:HD9mMag15{
+	default{
+		hdmagammo.maxperunit 30;
+		hdmagammo.magbulk ENC_9MAG30*0.4;
+		hdmagammo.nicename "SMG Magazines";
+		inventory.maxamount 8;
+		inventory.pickupmessage "Picked up an SMG magazine.";
+	}
+	states{
+	spawn2:
+		CLP3 A -1;
+		stop;
+	spawnempty:
+		CLP3 B -1{
+			brollsprite=true;brollcenter=true;
+			roll=randompick(0,0,0,0,2,2,2,2,1,3)*90;
+		}stop;
+	}
+}
+
+
 class HDSpent9mm:HDDebris{
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -53,27 +95,12 @@ class HDLoose9mm:HDSpent9mm{
 		}stop;
 	}
 }
-class HDPistolEmptyMag:HDDebris{
-	default{
-		bouncesound "misc/casing2";scale 0.6;bouncefactor 0.6;scale 1.0;
-	}
-	states{
-	spawn:
-		CLP2 B 2{
-			A_SetRoll(roll+45,SPF_INTERPOLATE);
-		}loop;
-	death:
-		CLP2 B -1{
-			roll=randompick(0,0,0,0,180,180,180,180,90,270);
-			let mmm=HDMagAmmo(spawn("HD9mMag15",pos));
-			if(mmm){
-				mmm.roll=roll;
-				mmm.mags.clear();
-				mmm.mags.push(0);
-				mmm.amount=1;
-				A_SetTics(1);
-			}
-		}stop;
+
+class HDPistolEmptyMag:IdleDummy{
+	override void postbeginplay(){
+		super.postbeginplay();
+		HDMagAmmo.SpawnMag(self,"HD9mMag15",0);
+		destroy();
 	}
 }
 
