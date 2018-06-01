@@ -243,19 +243,12 @@ class ZM66AssaultRifle:HDWeapon{
 	cookoff:
 		RIFG A 0{
 			if(
-				(PressingReload()||PressingUnload())	//trying to detach
-				&&(invoker.weaponstatus[ZM66S_MAG]>=0)	//something to detach  
+				(invoker.weaponstatus[ZM66S_MAG]>=0)	//something to detach
+				&&(PressingReload()||PressingUnload())	//trying to detach
 			){
-				actor mmm;int bluh;
-				[bluh,mmm]=A_SpawnItemEx("HD4mmMag",
-					cos(pitch)*8,0,height-10-8*sin(pitch),
-					vel.x,vel.y,vel.z,0,
-					SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
-				);
-				mmm.stamina=invoker.weaponstatus[ZM66S_MAG]%100;
+				HDMagAmmo.SpawnMag(self,"HD4mMag",invoker.weaponstatus[ZM66S_MAG]);
 				invoker.weaponstatus[ZM66S_MAG]=-1;
-			}
-			else if(PressingAltfire()){
+			}else if(PressingAltfire()){
 				A_Gunflash("nadeflash");
 			}
 			setweaponstate("shootgun");
