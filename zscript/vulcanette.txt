@@ -528,17 +528,17 @@ class Vulcanette:HDWeapon{
 		if(invoker.vulcmag[0]>=0){    
 			double cp=cos(pitch);double ca=cos(angle);
 			double sp=sin(pitch);double sa=sin(angle);
-			actor mmm=spawn("HD4mmMag",pos+(
+			actor mmm=HDMagAmmo.SpawnMag(self,"HD4mMag",invoker.vulcmag[0]);
+			mmm.setorigin(pos+(
 				cp*ca*12,
 				cp*sa*12,
 				height-12-12*sp
-			));
+			),false);
 			mmm.vel=vel+(
 				cp*cos(angle+random(55,65)),
 				cp*sin(angle+random(55,65)),
 				sp
 			);
-			mmm.stamina=invoker.vulcmag[0];
 		}
 		for(int i=0;i<4;i++){
 			invoker.vulcmag[i]=invoker.vulcmag[i+1];
