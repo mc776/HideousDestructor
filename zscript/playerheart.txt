@@ -31,14 +31,14 @@ extend class HDPlayerPawn{
 		if(burncount<0)burncount=0;
 		if(aggravateddamage<0)aggravateddamage=0;
 		if(stunned<0)stunned=0;
-		return 100
+		return max(0,100
 			-aggravateddamage
 			-burncount
 			-oldwoundcount
 			-woundcount
 			-unstablewoundcount
 			+max(fatigue-HDCONST_SPRINTFATIGUE,0)
-		;
+		);
 	}
 	void ResetHealth(bool downtimeonly=true){
 		beatcount=0;beatcounter=0;
@@ -50,17 +50,22 @@ extend class HDPlayerPawn{
 			//wounds stabilize during downtime
 			unstablewoundcount+=woundcount;
 			woundcount=0;
-			oldwoundcount+=min(5,unstablewoundcount);
-			unstablewoundcount=max(unstablewoundcount-5,0);
+
+			int newoldwounds=min(5,unstablewoundcount);
+			oldwoundcount+=newoldwounds;
+			unstablewoundcount=max(unstablewoundcount-newoldwounds,0);
+
 			oldwoundcount=max(oldwoundcount-2,0);
+
+			givebody(100,maxhealth());
 		}else{
 			//just reset everything
 			beatmax=35;beatcap=35;
-			healthing(100-health);
 			regenblues=0;
 			woundcount=0;unstablewoundcount=0;oldwoundcount=0;
 			burncount=0;
 			aggravateddamage=0;
+			givebody(100,maxhealth());
 		}
 	}
 
