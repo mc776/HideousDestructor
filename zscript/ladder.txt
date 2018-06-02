@@ -5,6 +5,7 @@
 //show where the ladder is hanging
 //no it doesn't swing, math is hard :(
 class hdladdersection:idledummy{
+	int secnum;
 	default{
 		+wallsprite +nointeraction
 	}
@@ -21,7 +22,7 @@ class hdladdersection:idledummy{
 			if(!master||!target){
 				destroy();return;
 			}
-			setz(max(target.floorz,master.pos.z-LADDER_SECTIONLENGTH*health));
+			setz(max(target.floorz,master.pos.z-LADDER_SECTIONLENGTH*secnum));
 		}wait;
 	}
 }
@@ -74,9 +75,9 @@ class hdladdertop:hdactor{
 				double sectionlength=min(htdiff,LADDER_MAX)/LADDER_SECTIONS;
 				for(int i=1;i<=LADDER_SECTIONS;i++){
 					newpos.xy+=mv2;
-					actor sss=spawn("hdladdersection",newpos);
+					let sss=hdladdersection(spawn("hdladdersection",newpos));
 					sss.master=self;sss.target=target;sss.angle=angle+frandom(-1.,1.);
-					sss.health=i;
+					sss.secnum=i;
 					target.setorigin(newpos+(0,0,-sectionlength*i),true);
 					if(master){
 						sss.translation=master.translation;

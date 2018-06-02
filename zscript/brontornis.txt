@@ -243,7 +243,7 @@ class Brontornis:HDWeapon{
 					||floorz<pos.z
 				)
 			){
-				health=max(11,health);
+				givebody(max(0,11-health));
 				damagemobj(invoker,self,10,"bashing");
 				A_GiveInventory("IsMoving",5);
 				A_ChangeVelocity(

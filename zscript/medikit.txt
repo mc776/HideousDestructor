@@ -132,8 +132,8 @@ class HDMedikitter:HDWoundFixer{
 		}goto flashend;
 	flashend:
 		TNT1 A 1{
+			givebody(1);
 			damagemobj(invoker,self,1,"staples");
-			HealThing(1);
 			A_ZoomFactor(0.98);
 			A_ChangeVelocity(frandom(-1,0.1),frandom(-1,1),0.5,CVF_RELATIVE);
 		}
@@ -216,7 +216,7 @@ class HDMedikitter:HDWoundFixer{
 				invoker.target.A_PlaySound("misc/smallslop",CHAN_BODY);
 				invoker.patchwound(1,invoker.target);
 				if(!random(0,3))invoker.setstatelabel("patchupend");
-				invoker.target.health++;
+				invoker.target.givebody(1);
 				invoker.target.damagemobj(invoker,null,1,"staples",DMG_FORCED);
 			}
 		}goto patchupend;

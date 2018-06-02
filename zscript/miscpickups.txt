@@ -503,7 +503,7 @@ class BlueSphere:HDActor replaces Soulsphere{
 		PlantBit.SpawnPlants(self,70,144);
 		let hdp=hdplayerpawn(user);
 		if(hdp)hdp.regenblues+=stamina;
-		else user.health+=stamina;
+		else user.givebody(stamina);
 		setstatelabel("grab");
 		return true;
 	}
