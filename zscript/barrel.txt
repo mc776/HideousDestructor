@@ -53,13 +53,16 @@ class KillerBarrel:HDActor{
 				setstatelabel("spawn");
 				return;
 			}
-			else if(
+			vector3 distchecker=target.pos-pos;
+			double distsquared=distchecker dot distchecker;
+			if(
 				!random(0,9)
 				&& (
 					!(target is "PlayerPawn")
 					||(
 						!A_JumpIfInTargetLOS("null",100,JLOSF_FLIPFOV|JLOSF_TARGETLOS)
-						&&(target.pos-pos).length()>96
+						&&distsquared>(96*96)
+						&&distsquared<(1024*1024)
 					)
 				)
 			){
