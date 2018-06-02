@@ -59,20 +59,20 @@ class KillerBarrel:HDActor{
 					!(target is "PlayerPawn")
 					||(
 						!A_JumpIfInTargetLOS("null",100,JLOSF_FLIPFOV|JLOSF_TARGETLOS)
-						&& (target.pos-pos).length()>96
+						&&(target.pos-pos).length()>96
 					)
 				)
 			){
 				A_FaceTarget(0,0);
 				if(
-					HDMobAI.TryShoot(self,32,128,9,9)
+					target.checksight(self)
+					&&HDMobAI.TryShoot(self,32,128,9,9)
 				){
 					//shoot
 					A_FaceTarget(0,0);
 					A_PlaySound(attacksound);
 					A_SpawnProjectile("BaleBall",40,flags:CMF_AIMDIRECTION);
-				}
-				else if(!random(0,10)){
+				}else if(!random(0,10)){
 					//move
 					A_FaceTarget();
 					angle+=random(-135,135);
