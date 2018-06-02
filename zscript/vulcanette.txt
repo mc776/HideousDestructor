@@ -528,7 +528,7 @@ class Vulcanette:HDWeapon{
 		if(invoker.vulcmag[0]>=0){    
 			double cp=cos(pitch);double ca=cos(angle);
 			double sp=sin(pitch);double sa=sin(angle);
-			actor mmm=HDMagAmmo.SpawnMag(self,"HD4mMag",invoker.vulcmag[0]);
+			actor mmm=HDMagAmmo.SpawnMag(self,"HD4mMag",invoker.vulcmag[0]%100);
 			mmm.setorigin(pos+(
 				cp*ca*12,
 				cp*sa*12,
