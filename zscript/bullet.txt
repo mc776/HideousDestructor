@@ -210,9 +210,6 @@ class HDBullet:HDActor{
 			tracer=hitactor;
 			setorigin(blt.hitlocation+blt.hitdir*frandom(0,hitactor.radius*0.6),true);
 
-			double hitresistance=min(64,hitactor.radius)*frandom(0.7,1.1);
-//A_LogFloat(hitresistance);
-
 			//crit?
 			bool crit;
 			double critangle=absangle(angleto(hitactor),angle);
@@ -230,9 +227,10 @@ class HDBullet:HDActor{
 
 			//pierce?
 			bool pierce=false;
-			double netpenetration=penetration;
+			double hitresistance=min(64,hitactor.radius)*frandom(0.7,1.1);
+			double netpenetration=penetration/hitresistance;
+//A_LogFloat(hitresistance);
 			let hdp=hdplayerpawn(hitactor);
-			netpenetration=min(0.999,netpenetration/hitresistance);
 			int hdpwoundcount=0;
 			if(hdp){
 				hdpwoundcount=hdp.woundcount;
@@ -341,7 +339,7 @@ class HDBullet:HDActor{
 			}
 
 			//reduce speed
-			vel*=netpenetration;
+			vel*=max(0.99,netpenetration);
 			double rvel=
 				netpenetration*pushfactor*speed*0.2
 			;
