@@ -110,9 +110,8 @@ class HDWound:Thinker{
 //owner.A_LogInt(amount);
 			ticker=0;
 			if(amount>random(0,100)){
-				int dmgamt=max(1,(amount>>3));
-				if(owner.health<=dmgamt&&amount<random(10,60))owner.deathsound="";
-				owner.damagemobj(owner,null,dmgamt,"bleedout",DMG_NO_PAIN);
+				owner.damagemobj(owner,null,max(1,(amount>>3)),"bleedout",DMG_NO_PAIN);
+				if(owner.health<1&&amount<random(10,60))owner.deathsound="";
 				owner.A_SpawnItemEx(owner.bloodtype,
 					frandom(-12,12),frandom(-12,12),
 					flags:SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
