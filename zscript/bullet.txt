@@ -302,8 +302,7 @@ class HDBullet:HDActor{
 					[gbg,blood]=hitactor.A_SpawnItemEx(
 						hitactor.bloodtype,
 						flags:SXF_USEBLOODCOLOR|
-						SXF_NOCHECKPOSITION|
-						SXF_ABSOLUTEPOSITION
+						SXF_NOCHECKPOSITION
 					);
 					if(blood){
 						blood.setorigin(pos,false);
@@ -720,11 +719,11 @@ class HDBulletDamager:Thinker{
 
 		if(victim.health>0){
 			int damagessize=damages.size();
+			int vdm=max(1,totaldamage/damagessize);
 			while(victim&&damagessize>0){
 				damagessize--;
-				int vdm=max(0,victim.painthreshold);
 				victim.givebody(vdm);
-				victim.damagemobj(lastinflictor,lastattacker,vdm+1,"Bashing",DMG_NO_ARMOR|DMG_THRUSTLESS);
+				victim.damagemobj(lastinflictor,lastattacker,vdm,"Bashing",DMG_NO_ARMOR|DMG_THRUSTLESS);
 			}
 		}
 
