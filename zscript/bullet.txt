@@ -718,10 +718,14 @@ class HDBulletDamager:Thinker{
 		else if(strongestdamage==0)damagetype="SmallArms0";
 		victim.damagemobj(lastinflictor,lastattacker,totaldamage,damagetype,DMG_THRUSTLESS);
 
-		int damagessize=damages.size();
-		while(victim&&damagessize>0){
-			damagessize--;
-			victim.damagemobj(lastinflictor,lastattacker,0,"Bashing",DMG_THRUSTLESS);
+		if(victim.health>0){
+			int damagessize=damages.size();
+			while(victim&&damagessize>0){
+				damagessize--;
+				int vdm=max(0,victim.painthreshold);
+				victim.givebody(vdm);
+				victim.damagemobj(lastinflictor,lastattacker,vdm+1,"Bashing",DMG_NO_ARMOR|DMG_THRUSTLESS);
+			}
 		}
 
 		destroy();
