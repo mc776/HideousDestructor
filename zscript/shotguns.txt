@@ -584,6 +584,9 @@ class Slayer:HDShotgun replaces HDShotgun{
 	deselect0:
 		SHT2 A 0;
 		goto deselect0small;
+	fire:
+	altfire:
+		TNT1 A 0 A_ClearRefire();
 	ready:
 		TNT1 A 0; //let the PostBeginPlay handle the presence of the relevant sprite
 		SHT2 A 1{
@@ -606,7 +609,9 @@ class Slayer:HDShotgun replaces HDShotgun{
 			if(ch1&&pff%2)A_Overlay(11,"flashleft");
 			else if(ch2&&pff>1)A_Overlay(12,"flashright");
 			else A_WeaponReady((WRF_ALL|WRF_NOFIRE)&~WRF_ALLOWUSER2);
-		}goto readyend;
+		}
+		SHT2 A 0 A_WeaponReady();
+		goto readyend;
 	double:
 		SHT2 A 1 offset(0,34);
 		SHT2 A 1 offset(0,33);
