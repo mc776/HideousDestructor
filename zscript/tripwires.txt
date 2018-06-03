@@ -44,7 +44,7 @@ class Tripwire:HDWeapon{
 			if(!countinv("HDFragGrenadeAmmo")){
 				if(getcvar("hd_helptext"))A_Print("No grenades.");
 				A_SelectWeapon("Ring");
-			}else if(getcvar("hd_helptext"))A_Print("\cp\--- \cqTRIPWIRES \cp---\c-\n\n\nHit fire to set one end of the line,\n\nthen hit fire again to plant the grenade.\nby human hands.\n\nMove carefully.\n\n\n\cg(DO NOT TRY TO HANG THE GRENADE\n\cgOFF THE CEILING. IT NEVER WORKS.)");
+			}else if(getcvar("hd_helptext"))A_WeaponMessage("\cp\--- \cqTRIPWIRES \cp---\c-\n\n\nHit fire to set one end of the line,\n\nthen hit fire again to plant the grenade.\nby human hands.\n\nMove carefully.\n\n\n\cg(DO NOT TRY TO HANG THE GRENADE\n\cgOFF THE CEILING. IT NEVER WORKS.)");
 			A_PlaySound("weapons/pocket",CHAN_WEAPON);
 			if(countinv("NulledWeapon"))A_SetTics(0);
 		}goto super::select;
