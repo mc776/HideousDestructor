@@ -442,10 +442,12 @@ struct HDF play{
 		}
 	}
 	//process shields
-	//[shields,damage]=hdf.gothroughshields(shields,damage,inflictor,mod);
-	static int,int GoThroughShields(int shields,int damage,actor inflictor=null,name mod="none"){
+	//[shields,damage]=hdf.gothroughshields(shields,damage,inflictor,mod,flags);
+	static int,int GoThroughShields(int shields,int damage,actor inflictor=null,name mod="none",int flags=0){
 		if(
 			shields<1
+			||!(flags&DMG_NO_FACTOR)
+			||flags&DMG_FORCED
 			||mod=="internal"
 			||mod=="falling"
 		)return shields,damage;

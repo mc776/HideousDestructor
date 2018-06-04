@@ -227,7 +227,7 @@ class HDBullet:HDActor{
 
 			//pierce?
 			bool pierce=false;
-			double hitresistance=min(64,hitactor.radius)*frandom(0.7,1.1);
+			double hitresistance=min(64,hitactor.radius)*frandom(crit?0.5:0.7,1.1);
 			double netpenetration=penetration/hitresistance;
 //A_LogFloat(hitresistance);
 			let hdp=hdplayerpawn(hitactor);
@@ -721,7 +721,9 @@ class HDBulletDamager:Thinker{
 			while(victim&&damagessize>0){
 				damagessize--;
 				victim.givebody(vdm);
-				victim.damagemobj(lastinflictor,lastattacker,vdm,"Bashing",DMG_NO_ARMOR|DMG_THRUSTLESS);
+				victim.damagemobj(lastinflictor,lastattacker,vdm,"Bashing",
+					DMG_NO_FACTOR|DMG_NO_ARMOR|DMG_THRUSTLESS
+				);
 			}
 		}
 
