@@ -75,22 +75,21 @@ class MagManager:HDWeapon{
 		invoker.thismag.LowestToLast();
 		invoker.UpdateText();
 	}
-	action void Backpack(bool outfrom){
-	}
 	void UpdateText(){
-		if(!thismag){uitext="\cf///\cyMag Manager\cf\\\\\\\n\nNo mags selected";return;}
-		thismagtype=thismag.getclassname();
 		string toui=string.format(
-			"\cf///\cyMag Manager\cf\\\\\\\n\n\cqFire\cu/\cqAltfire\cu  select mag\n\cqFiremode\cu+\cqF\cu/\cqAF\cu  select ammo type\n\cqReload\cu/\cqUnload\cu  load/unload selected mag\n\cqFM\cu+\cqR\cu/\cqU\cu  move to/from backpack\n\cqDrop\cu  drop current mag\n\cqZoom\cu bring up lowest mag\n\cqDrop one\cu drop some loose rounds\n\n\n\cj%s\n",thismag.nicename
+			"\cf///\cyMag Manager\cf\\\\\\\n\n\cqFire\cu/\cqAltfire\cu  select mag\n\cqFiremode\cu+\cqF\cu/\cqAF\cu  select ammo type\n\cqReload\cu/\cqUnload\cu  load/unload selected mag\n\cqFM\cu+\cqR\cu/\cqU\cu  move to/from backpack\n\cqDrop\cu  drop current mag\n\cqZoom\cu bring up lowest mag\n\cqDrop one\cu drop some loose rounds\n\n\n\cj%s\n",thismag?thismag.nicename:"No mags selected."
 		);
-		if(thismag.mags.size()>0){
-			int finalindex=thismag.mags.size()-1;
-			for(int i=0;i<finalindex;i++){
-				toui.appendformat(" %i ",thismag.mags[i]);
+		if(thismag){
+			thismagtype=thismag.getclassname();
+			if(thismag.mags.size()>0){
+				int finalindex=thismag.mags.size()-1;
+				for(int i=0;i<finalindex;i++){
+					toui.appendformat(" %i ",thismag.mags[i]);
+				}
+				toui.appendformat("\n\nCurrent Mag: \cy%i",thismag.mags[finalindex]);
 			}
-			toui.appendformat("\n\nCurrent Mag: \cy%i",thismag.mags[finalindex]);
+			if(thismag.roundtype!="")toui.appendformat("\nSpare Rounds: \ce%i",owner.countinv(thismag.roundtype));
 		}
-		if(thismag.roundtype!="")toui.appendformat("\nSpare Rounds: \ce%i",owner.countinv(thismag.roundtype));
 		uitext=toui;
 	}
 	states{
@@ -117,10 +116,16 @@ class MagManager:HDWeapon{
 			)setweaponstate("nope");
 		}
 		---- A 0 A_Jump(256,"ready");
+	select:
+		TNT1 A 0{
+			if(!invoker.thismag)NextMagType();
+			invoker.UpdateText();
+		}goto super::select;
 	ready:
 		TNT1 A 1{
 			A_WeaponMessage(invoker.uitext);
 			A_WeaponReady(WRF_ALL&~WRF_ALLOWUSER2);
+			if(!invoker.thismag)NextMagType();
 			invoker.UpdateText();
 		}
 		goto readyend;
