@@ -372,7 +372,7 @@ extend class HDPlayerPawn{
 			&&mod!="invisiblebleedout"
 			&&random(0,3)
 		){
-			int wnddmg=max(1,damage>>2);
+			int wnddmg=random(0,max(0,damage>>2));
 			if(mod=="bashing")wnddmg>>=1;
 			damage=health-random(1,3);
 			if(
