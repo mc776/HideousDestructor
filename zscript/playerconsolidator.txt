@@ -64,9 +64,12 @@ extend class HDPlayerPawn{
 
 		
 		//repair *ERPs
-		while(countinv("DERPDEAD")&&!A_JumpIfInventory("DERPUsable",0,"null")){
-			A_TakeInventory("DERPDEAD");
-			A_GiveInventory("DERPUsable");
+		while(
+			countinv("DERPDEAD")
+			&&!A_JumpIfInventory("DERPUsable",0,"null")
+		){
+			A_TakeInventory("DERPDEAD",1);
+			A_GiveInventory("DERPUsable",1);
 		}
 		while(bp
 			&&bp.itemamount[bp.derpindex]<1
