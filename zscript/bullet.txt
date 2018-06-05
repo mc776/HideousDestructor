@@ -716,7 +716,7 @@ class HDBulletDamager:Thinker{
 		int pcbak=victim.painchance;
 		victim.painchance*=damages.size();
 		victim.damagemobj(lastinflictor,lastattacker,totaldamage,damagetype,DMG_THRUSTLESS);
-		victim.painchance=pcbak;
+		if(victim)victim.painchance=pcbak;
 
 		destroy();
 	}
