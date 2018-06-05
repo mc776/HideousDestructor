@@ -47,7 +47,11 @@ class GrabThinker:Thinker{
 			if(wt){wt.actualpickup(picktarget);destroy();return;}
 
 			let tt=inventory(pickobj);
-			if(tt){tt.touch(picktarget);destroy();return;}
+			if(tt){
+				//tt.touch(picktarget);
+				if(picktarget.vel.xy==(0,0))picktarget.A_ChangeVelocity(0.01,0,0,CVF_RELATIVE);
+				destroy();return;
+			}
 		}
 	}
 }

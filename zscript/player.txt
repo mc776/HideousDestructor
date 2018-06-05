@@ -493,7 +493,7 @@ class HDPlayerPawn:PlayerPawn{
 
 		//check use key
 		if(!(input&BT_USE))bpickup=false;else{
-//			bpickup=true;
+			bpickup=true;
 			if(!(oldinput&BT_USE))hasgrabbed=false;
 			//pickerupper
 			overloaded=CheckEncumbrance();
@@ -526,9 +526,14 @@ class HDPlayerPawn:PlayerPawn{
 					if(
 						grabbed is "hdupk"
 						||grabbed is "hdpickup"
-						||grabbed is "hdweapon"
+//						||grabbed is "hdweapon"
+						||grabbed is "inventory"
 					){
-						hasgrabbed=true;
+						if(
+							grabbed is "hdupk"
+							||grabbed is "hdpickup"
+							||grabbed is "hdweapon"
+						)hasgrabbed=true;
 						if(
 							grabbed is "hdupk"
 							&&grabbed.findstate("grab",true)
@@ -540,7 +545,7 @@ class HDPlayerPawn:PlayerPawn{
 							grabthink.picktarget=self;
 							grabthink.pickobj=grabbed;
 						}
-					}else if(grabbed is "Inventory")inventory(grabbed).touch(self);
+					}//else if(grabbed is "Inventory")inventory(grabbed).touch(self);
 				}
 			}
 			if(
