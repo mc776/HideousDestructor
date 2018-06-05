@@ -339,9 +339,9 @@ class HDBullet:HDActor{
 			}
 
 			//reduce speed
-			vel*=max(0.99,netpenetration);
+			vel*=min(0.99,netpenetration);
 			double rvel=
-				netpenetration*pushfactor*speed*0.2
+				min(0.99,netpenetration)*pushfactor*speed*0.2
 			;
 			vel+=(frandom(-rvel,rvel),frandom(-rvel,rvel),frandom(-rvel,rvel));
 
