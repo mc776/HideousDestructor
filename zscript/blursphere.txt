@@ -47,9 +47,9 @@ class HDBlurSphere:HDPickup{
 			A_SetBlend("01 00 00",0.9,48);
 			if(!invoker.worn){
 				invoker.worn=true;
-				A_GiveInventory("BlurTaint");
+				HDF.Give(self,"BlurTaint",1);
 				A_PlaySound("imp/sight2",CHAN_BODY,frandom(0.3,0.5),false,8);
-				invoker.level+=invoker.xp/BLUR_LEVELUP;
+				invoker.level=min(13,invoker.level+invoker.xp/BLUR_LEVELUP);
 				invoker.xp%=BLUR_LEVELUP;
 				invoker.stamina=clamp(invoker.level+random(-2,2),0,10);
 				if(invoker.level>7)invoker.buntossable=true;  
@@ -67,6 +67,7 @@ class HDBlurSphere:HDPickup{
 	}
 	enum blurstats{
 		BLUR_LEVELUP=3500,
+		BLUR_LEVELCAP=13;
 	}
 	override void DoEffect(){
 		if(
@@ -82,10 +83,9 @@ class HDBlurSphere:HDPickup{
 			xp+=100;
 		}
 
-
 		if(!worn){
 			intensity=max(0,intensity-1);
-			if(randticker[0])xp++;
+			if(level<BLUR_LEVELCAP&&!randticker[0])xp++;
 		}else{
 			if(intensity<99)intensity=max(intensity+1,-135);
 			xp++;
@@ -104,7 +104,7 @@ class HDBlurSphere:HDPickup{
 
 		//apply result
 		owner.bshadow=invi;
-		owner.bnotarget=invi;
+		owner.bnevertarget=invi;
 
 		if(!owner.countinv("blurtaint"))return;
 
@@ -121,6 +121,7 @@ class HDBlurSphere:HDPickup{
 				aaa.A_ClearTarget();
 				aaa.A_ClearSoundTarget();
 				HDF.Give(aaa,"Heat",random(1,level+3));
+				if(!random(0,3))xp++;
 			}
 			owner.A_ClearSoundTarget();
 		}
@@ -224,6 +225,7 @@ class HDBlurSphere:HDPickup{
 				if(!randticker[0])owner.A_Log("Precious.",true);
 			}
 		}
+		if(level>=BLUR_LEVELCAP&&xp>666)xp=0;
 	}
 	override void DetachFromOwner(){
 		owner.bshadow=false;
