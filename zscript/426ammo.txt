@@ -24,6 +24,7 @@ class FourMilAmmo:Ammo{
 			int ld=min(amount,random(1,12));
 			actor a=spawn("FourMilAmmo",pos);
 			a.vel+=vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
+			a.angle=frandom(0,360);
 			inventory(a).amount=ld;
 			amount-=ld;
 		}if(amount<1)destroy();
