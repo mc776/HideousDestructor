@@ -710,12 +710,11 @@ extend class HDPlayerPawn{
 
 		GiveBasics();
 
-		bshadow=false;
-		a_setrenderstyle(1.,STYLE_Normal);
 		let hbl=HDBlurSphere(findinventory("HDBlurSphere"));
-		if(hbl){
-			hbl.worn=false;
-			hbl.stamina=0;
+		if(!hbl||!hbl.worn){
+			bshadow=false;
+			bnotarget=false;
+			a_setrenderstyle(1.,STYLE_Normal);
 		}
 
 		A_GiveInventory("PowerFrightener",1);

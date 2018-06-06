@@ -6,6 +6,7 @@ class HDStatusBar:DoomStatusBar{
 	int healthbars[14];
 	hudfont psmallfont;
 	hdplayerpawn hpl;
+	bool blurred;
 	override void Init(){
 		BaseStatusBar.Init();
 		SetSize(0,320,200);
@@ -35,6 +36,8 @@ class HDStatusBar:DoomStatusBar{
 			||hpl.countinv("WipedOut")
 		)return;
 		cplayer.inventorytics=0;
+
+		blurred=hpl.bshadow&&hpl.countinv("HDBlurSphere");
 
 		setwepsprites(cplayer.mo);
 
@@ -76,8 +79,8 @@ class HDStatusBar:DoomStatusBar{
 		);
 
 		//mugshot
-		if(cplayer.getgender()==0)DrawTexture(GetMugShot(5),(6,-14),DI_BOTTOMLEFT);
-		else if(cplayer.getgender()==1)DrawTexture(GetMugShot(5,Mugshot.CUSTOM,"SFF"),(6,-14),DI_BOTTOMLEFT);
+		if(cplayer.getgender()==0)DrawTexture(GetMugShot(5),(6,-14),DI_BOTTOMLEFT,alpha:blurred?0.2:1.);
+		else if(cplayer.getgender()==1)DrawTexture(GetMugShot(5,Mugshot.CUSTOM,"SFF"),(6,-14),DI_BOTTOMLEFT,alpha:blurred?0.2:1.);
 
 		//heartbeat/playercolour tracker
 		if(hpl && hpl.beatmax){
@@ -130,8 +133,8 @@ class HDStatusBar:DoomStatusBar{
 	}
 	void DrawFullScreenStuff(){
 		int cpg=cplayer.getgender();
-		if(cpg==0)DrawTexture(GetMugShot(5),(0,-14),DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM);
-		else if(cpg==1)DrawTexture(GetMugShot(5,Mugshot.CUSTOM,"SFF"),(0,-14),DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM);
+		if(cpg==0)DrawTexture(GetMugShot(5),(0,-14),DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM,alpha:blurred?0.2:1.);
+		else if(cpg==1)DrawTexture(GetMugShot(5,Mugshot.CUSTOM,"SFF"),(0,-14),DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM,alpha:blurred?0.2:1.);
 	}
 	void DrawAlwaysStuff(){
 		if(
@@ -141,13 +144,13 @@ class HDStatusBar:DoomStatusBar{
 			)
 		)return;
 
-		if(hpl.bshadow&&hpl.countinv("HDBlurSphere")){
+		if(blurred){
 			SetSize(0,320,200);
 			BeginHUD(forcescaled:true);
 			texman.setcameratotexture(hpl.scopecamera,"HDXHCAM4",97);
 			let bls=HDBlurSphere(hpl.findinventory("HDBlurSphere"));
 			double lv=bls.stamina+frandom[blurhud](-2,2);
-			double camalpha=bls.intensity*0.001*clamp(lv,0,9);
+			double camalpha=bls.intensity*0.0002*clamp(lv,0,9);
 			drawimage(
 				"HDXHCAM4",(-random[blurhud](30,32)-lv,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 				alpha:camalpha,scale:(2.0,2.0)*frandom[blurhud](0.99,1.01)

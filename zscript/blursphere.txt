@@ -104,6 +104,7 @@ class HDBlurSphere:HDPickup{
 
 		//apply result
 		owner.bshadow=invi;
+		owner.bnotarget=invi;
 
 		if(!owner.countinv("blurtaint"))return;
 
@@ -174,9 +175,12 @@ class HDBlurSphere:HDPickup{
 			if(monsters.size()){
 				int maxindex=monsters.size()-1;
 				for(int i=0;i<maxindex;i++){
-					monsters[random(0,maxindex)].damagemobj(
-						self,monsters[random(0,maxindex)],1,"Balefire"
+					actor mmm1=monsters[random(0,maxindex)];
+					actor mmm2=monsters[random(0,maxindex)];
+					mmm1.damagemobj(
+						self,mmm2,1,"Balefire"
 					);
+					mmm1.target=mmm2;
 				}
 			}
 		}
