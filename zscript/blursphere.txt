@@ -118,24 +118,15 @@ class HDBlurSphere:HDPickup{
 			actor aaa=medusagaze.hitactor;
 			if(aaa&&aaa.bismonster){
 				aaa.A_ClearTarget();
-				blockthingsiterator itt=blockthingsiterator.create(aaa,512);
-				while(itt.Next()){
-					if(itt.thing.target==owner)itt.thing.A_ClearTarget();
-					if(
-						itt.thing.bismonster
-						&&itt.thing!=aaa
-						&&itt.thing.health>0  
-						&&!aaa.target
-					)aaa.target=itt.thing;
-				}
 				aaa.A_ClearSoundTarget();
+				HDF.Give(aaa,"Heat",random(1,level+3));
 			}
 			owner.A_ClearSoundTarget();
 		}
 
 		let hdp=hdplayerpawn(owner);
 		if(hdp){
-			if(hdp.regenblues>random(1,200)){
+			if(hdp.regenblues>random(1,777)){
 				hdp.aggravateddamage++;
 				hdp.regenblues=max(0,hdp.regenblues-15);
 				hdp.cheatgivestatusailments("fire",1);
@@ -146,6 +137,47 @@ class HDBlurSphere:HDPickup{
 			if(hdp.countinv("SpiritualArmour")){
 				hdp.cheatgivestatusailments("fire",countinv("SpiritualArmour")*10);
 				hdp.A_TakeInventory("SpiritualArmour");
+			}
+			if(hdp.woundcount>random(0,level)){
+				hdp.woundcount--;
+				hdp.oldwoundcount++;
+			}
+		}
+
+		//power.
+		if(!(xp%666)){
+			bool nub=!level&&xp<1066;
+			if(nub||!random(0,15))owner.A_Log("You feel power growing in you.",true);
+			blockthingsiterator it=blockthingsiterator.create(owner,512);
+			array<actor>monsters;
+			while(it.next()){
+				actor itt=it.thing;
+				if(
+					itt==owner
+					||!itt.bismonster
+					||itt.health<1
+				)continue;
+				monsters.push(itt);
+				if(itt.target==owner)itt.A_ClearTarget();
+				if(
+					nub
+					||!random(0,66-level)
+				){
+					actor fff=itt.spawn("HDFire",itt.pos);
+					fff.target=itt;
+					fff.stamina=nub?166:13*level;
+					fff.master=self;
+				}else if(random(0,6-level)<1){
+					HDWound.Inflict(itt,13*level);
+				}
+			}
+			if(monsters.size()){
+				int maxindex=monsters.size()-1;
+				for(int i=0;i<maxindex;i++){
+					monsters[random(0,maxindex)].damagemobj(
+						self,monsters[random(0,maxindex)],1,"Balefire"
+					);
+				}
 			}
 		}
 
