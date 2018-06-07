@@ -24,6 +24,9 @@ class HDBattery:HDMagAmmo{
 	}
 	override bool Insert(){return false;}
 	override bool Extract(){return false;}
+
+/*
+testing
 override void postbeginplay(){
 	super.postbeginplay();
 	mags.clear();
@@ -38,13 +41,13 @@ override void postbeginplay(){
 	amount=mags.size();
 	LogAmounts();
 }
+*/
 
 	int ticker;
 	int lastamount;
 	bool charging;
 	override void doeffect(){
-		//
-		testingdoeffect();return;
+		//testingdoeffect();return;
 		if(lastamount!=amount){
 			ticker=0;
 			lastamount=amount;
@@ -68,7 +71,7 @@ override void postbeginplay(){
 	}
 
 	//thanks to Quarki for explaining how the principle should work
-	//as long as the chargors total move than the chargee's desired amount,
+	//as long as the chargors total more than the chargee's desired amount,
 	//a transfer may happen in favour of the chargee.
 	override void Consolidate(){
 		ChargeBattery();
