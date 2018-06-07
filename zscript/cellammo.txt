@@ -24,7 +24,98 @@ class HDBattery:HDMagAmmo{
 	}
 	override bool Insert(){return false;}
 	override bool Extract(){return false;}
-	override void Consolidate(){}
+
+
+	int ticker;
+	int lastamount;
+	bool charging;
+	override void doeffect(){
+		//testingdoeffect();return;
+		if(lastamount!=amount){
+			ticker=0;
+			lastamount=amount;
+		}else if(ticker>350){
+			ticker=0;
+			ChargeBattery(1);
+		}else ticker++;
+		super.doeffect();
+	}
+	void testingdoeffect(){
+		if(!ticker){
+			ticker=0;
+			syncamount();
+			for(int i=0;i<mags.size();i++){
+				mags[i]=random(0,20);
+			}
+		}else if(ticker>1400)ticker=0;
+		else if(!(ticker%35))ChargeBattery(1);
+		ticker++;
+		super.doeffect();
+	}
+
+	//thanks to Quarki for explaining how the principle should work
+	//as long as the chargors total over 2x the chargee's desired amount,
+	//a transfer may happen in favour of the chargee.
+	override void Consolidate(){
+		ChargeBattery();
+	}
+	void ChargeBattery(int chargestodo=-1){
+		SyncAmount();
+		if(amount<1)return;
+
+		array<int> indices;
+		int batamt=amount;
+		int totalchargeable=0;
+		int biggestindex=-1;
+		int biggestamt=0;
+		int smallestindex=-1;
+		int smallestamt=20;
+
+		//get the smallest and biggest amounts, and number usable for this
+		for(int i=0;i<batamt;i++){
+			int chargeamt=mags[i];
+			if(chargeamt>0){
+				totalchargeable+=chargeamt;
+				indices.push(i);
+				if(
+					biggestamt<chargeamt
+					&&chargeamt<20
+				){
+					biggestamt=chargeamt;
+					biggestindex=i;
+				}
+				if(
+					smallestamt>chargeamt
+				){
+					smallestamt=chargeamt;
+					smallestindex=i;
+				}
+			}
+		}
+		if(
+			biggestindex<0
+			||smallestindex<0
+			||smallestamt>=20
+			||biggestindex==smallestindex
+		)return;
+		if(
+			indices.size()<3	//need at least 3 to increase any one
+			||totalchargeable<biggestamt*3+2	//min. chargor value = biggestindex*2+2
+		)return;
+
+		//keep going until exactly ONE battery is fully drained or charged
+		while(
+			chargestodo
+			&&mags[smallestindex]>0
+			&&mags[biggestindex]<20
+		){
+			chargestodo--;
+			mags[smallestindex]--;
+			if(random(0,39))mags[biggestindex]++;
+		}
+		if(hd_debug)LogAmounts();
+	}
+
 	states(actor){
 	spawn2:
 		CELL CAB -1{
