@@ -95,6 +95,10 @@ class HDArmour:HDPickup{
 		}stop;
 	use:
 		TNT1 A 0{
+			if(countinv("HDBP")){
+				A_DropInventory("HDBP");
+				return;
+			}
 			if(countinv("WornRadsuit")){
 				if(getcvar("hd_helptext"))A_Log("Take off your environment suit first!",true);
 			}else if(countinv("HDArmourWorn")){
@@ -155,7 +159,7 @@ class HDArmourWorn:HDArmour{
 	}
 	override inventory createtossable(int amount){
 		if(!owner)return null;
-		if(owner.countinv("HDBP")&&owner.player){
+		if(owner.countinv("HDBP")){
 			owner.A_DropInventory("HDBP");
 			return null;
 		}
