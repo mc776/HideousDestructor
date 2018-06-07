@@ -1,36 +1,6 @@
 // ------------------------------------------------------------
 // Tracked magazines (and clips and batteries)
 // ------------------------------------------------------------
-/*
-	special:
-		override insert, extract and consolidate for zm66 and cell
-	for the mags:
-		debris empty only if not retaining
-		debris empty should die and become pickup
-		different sprite depending on empty
-	for the weapons:
-		unload:
-			int tounload=blahblahblah
-			set the loaded variable to -1
-			HDMagAmmo.SpawnMag(self,<type>,tounload);
-			HDMagAmmo.GiveMag(self,<type>,tounload);
-		reload:
-			A_JumpIfInventory(magtype,"reallyreload");
-			int toload=mags.TakeMag(true);
-			if(toload<0)return;
-			let the player load an empty
-	for backpack
-		predefine a dynarray in the backpack for each such item
-		place:
-			check for room
-			takemag, push
-		retrieve:
-			int frombp=bpmags[bpmags.size()-1];
-			bpmags.pop();
-			HDMagAmmo.GiveMag(self,type,frombp);
-	for levelreset
-		Consolidate all
-*/
 class HDMagAmmo:HDAmmo{
 	array<int> mags; //or clips or batteries, whatever
 	int maxperunit;
