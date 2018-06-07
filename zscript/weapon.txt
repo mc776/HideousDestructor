@@ -34,7 +34,7 @@ class HDWeapon:Weapon{
 	}
 	//use target to help a dropped weapon remember its immediately prior owner
 	override void detachfromowner(){
-		owner.A_SelectWeapon("Ring");
+		if(owner.player&&!owner.player.readyweapon)owner.A_SelectWeapon("Ring");
 		angle=owner.angle;pitch=owner.pitch;
 		target=owner;
 		super.detachfromowner();
