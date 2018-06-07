@@ -27,16 +27,16 @@ class HDBattery:HDMagAmmo{
 override void postbeginplay(){
 	super.postbeginplay();
 	mags.clear();
-	mags.push(20);
-	mags.push(2);
+	mags.push(3);
+	mags.push(3);
 	mags.push(3);
 	mags.push(2);
+	mags.push(4);
+	mags.push(2);
 	mags.push(3);
-	mags.push(2);
-	mags.push(2);
-	mags.push(2);
-	mags.push(2);
+	mags.push(1);
 	amount=mags.size();
+	LogAmounts();
 }
 
 	int ticker;
@@ -68,7 +68,7 @@ override void postbeginplay(){
 	}
 
 	//thanks to Quarki for explaining how the principle should work
-	//as long as the chargors total over 2x the chargee's desired amount,
+	//as long as the chargors total move than the chargee's desired amount,
 	//a transfer may happen in favour of the chargee.
 	override void Consolidate(){
 		ChargeBattery();
@@ -77,7 +77,7 @@ override void postbeginplay(){
 		SyncAmount();
 		if(amount<1)return;
 
-		array<int> indices;
+		int batnum=0;
 		int batamt=amount;
 		int totalchargeable=0;
 		int biggestindex=-1;
@@ -90,7 +90,7 @@ override void postbeginplay(){
 			int chargeamt=mags[i];
 			if(chargeamt>0){
 				totalchargeable+=chargeamt;
-				indices.push(i);
+				batnum++;
 				if(
 					biggestamt<chargeamt
 					&&chargeamt<20
@@ -113,8 +113,8 @@ override void postbeginplay(){
 			||biggestindex==smallestindex
 		)return;
 		if(
-			indices.size()<3	//need at least 3 to increase any one
-			||totalchargeable<biggestamt*3+2	//min. chargor value = biggestindex*2+2
+			batnum<3	//need at least 3 to increase any one
+			||totalchargeable-biggestamt-2<biggestamt	//min. chargor value must exceed target amount
 		)return;
 
 		//keep going until exactly ONE battery is fully drained or charged
