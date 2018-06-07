@@ -25,29 +25,26 @@ class HDBattery:HDMagAmmo{
 	override bool Insert(){return false;}
 	override bool Extract(){return false;}
 
-/*
-testing
+//testing
 override void postbeginplay(){
 	super.postbeginplay();
 	mags.clear();
-	mags.push(3);
-	mags.push(3);
-	mags.push(3);
-	mags.push(2);
-	mags.push(4);
-	mags.push(2);
-	mags.push(3);
 	mags.push(1);
+	mags.push(1);
+	mags.push(1);
+	mags.push(1);
+	mags.push(0);
 	amount=mags.size();
 	LogAmounts();
 }
-*/
+//
 
 	int ticker;
 	int lastamount;
 	bool charging;
 	override void doeffect(){
-		//testingdoeffect();return;
+		//
+		testingdoeffect();return;
 		if(lastamount!=amount){
 			ticker=0;
 			lastamount=amount;
@@ -102,7 +99,7 @@ override void postbeginplay(){
 					biggestindex=i;
 				}
 				if(
-					smallestamt>chargeamt
+					smallestamt>=chargeamt
 				){
 					smallestamt=chargeamt;
 					smallestindex=i;
