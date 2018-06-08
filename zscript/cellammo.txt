@@ -78,6 +78,7 @@ class HDBattery:HDMagAmmo{
 		int biggestamt=0;
 		int smallestindex=-1;
 		int smallestamt=20;
+		int maxindex=amount-1;
 
 		//get the smallest and biggest amounts, and number usable for this
 		for(int i=0;i<amount;i++){
@@ -102,7 +103,6 @@ class HDBattery:HDMagAmmo{
 			}
 		}
 		if(usetop){
-			int maxindex=amount-1;
 			biggestindex=maxindex;
 			biggestamt=mags[maxindex];
 		}
@@ -110,6 +110,7 @@ class HDBattery:HDMagAmmo{
 			biggestindex<0
 			||smallestindex<0
 			||smallestamt>=20
+			||biggestamt>=20
 			||biggestindex==smallestindex
 		)return;
 		if(
