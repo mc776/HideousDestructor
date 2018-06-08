@@ -22,61 +22,63 @@ class HDBattery:HDMagAmmo{
 		}
 		return false;
 	}
-	override bool Insert(){return false;}
+//	override bool Insert(){return false;}
 	override bool Extract(){return false;}
 
-/*testing
+//testing
 override void postbeginplay(){
 	super.postbeginplay();
 	mags.clear();
-	mags.push(5);
-	mags.push(6);
+	mags.push(11);
 	mags.push(1);
 	mags.push(10);
 	amount=mags.size();
 	LogAmounts();
 }
-*/
+//
 
 	int ticker;
 	int lastamount;
-	bool charging;
+	int chargemode;
+	enum BatteryChargeModes{
+		BATT_DONTCHARGE=0,
+		BATT_CHARGEMAX=1,
+		BATT_CHARGETOP=2,
+	}
 	override void doeffect(){
 		//testingdoeffect();return;
+		if(!chargemode)return;
 		if(lastamount!=amount){
 			ticker=0;
 			lastamount=amount;
-		}else if(ticker>350){
+		}else if(ticker>35.0){
 			ticker=0;
-			ChargeBattery(1);
+			ChargeBattery(1,chargemode==BATT_CHARGETOP);
 		}else ticker++;
 		super.doeffect();
 	}
-	void testingdoeffect(){
-		if(!ticker){
-			ticker=0;
-			syncamount();
-			for(int i=0;i<mags.size();i++){
-				mags[i]=random(0,20);
-			}
-		}else if(ticker>1400)ticker=0;
-		else if(!(ticker%35))ChargeBattery(1);
-		ticker++;
-		super.doeffect();
+	override bool Insert(){
+		chargemode++;
+		if(chargemode>BATT_CHARGETOP)chargemode=0;
+		string msg="Charging now off.";
+		if(chargemode==1)msg="Now charging highest battery.";
+		else if(chargemode==2)msg="Now charging selected battery.";
+		owner.A_Log(msg,true);
+		return false;
 	}
 
 	//thanks to Quarki for explaining how the principle should work
 	//as long as the chargors total more than the chargee's desired amount,
 	//a transfer may happen in favour of the chargee.
 	override void Consolidate(){
+		ChargeBattery(usetop:true);
 		ChargeBattery();
 	}
-	void ChargeBattery(int chargestodo=-1){
+	void ChargeBattery(int chargestodo=-1,bool usetop=false){
 		SyncAmount();
 		if(amount<1)return;
 
-		int batnum=0;
-		int batamt=amount;
+		int batcount=0;
 		int totalchargeable=0;
 		int biggestindex=-1;
 		int biggestamt=0;
@@ -84,13 +86,14 @@ override void postbeginplay(){
 		int smallestamt=20;
 
 		//get the smallest and biggest amounts, and number usable for this
-		for(int i=0;i<batamt;i++){
+		for(int i=0;i<amount;i++){
 			int chargeamt=mags[i];
 			if(chargeamt>0){
 				totalchargeable+=chargeamt;
-				batnum++;
+				batcount++;
 				if(
-					biggestamt<chargeamt
+					!usetop
+					&&biggestamt<chargeamt
 					&&chargeamt<20
 				){
 					biggestamt=chargeamt;
@@ -104,6 +107,11 @@ override void postbeginplay(){
 				}
 			}
 		}
+		if(usetop){
+			int maxindex=amount-1;
+			biggestindex=maxindex;
+			biggestamt=mags[maxindex];
+		}
 		if(
 			biggestindex<0
 			||smallestindex<0
@@ -111,7 +119,7 @@ override void postbeginplay(){
 			||biggestindex==smallestindex
 		)return;
 		if(
-			batnum<3	//need at least 3 to increase any one
+			batcount<3	//need at least 3 to increase any one
 			||totalchargeable-biggestamt-2<biggestamt	//min. chargor value must exceed target amount
 		)return;
 
