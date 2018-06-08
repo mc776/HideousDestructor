@@ -22,10 +22,8 @@ class HDBattery:HDMagAmmo{
 		}
 		return false;
 	}
-//	override bool Insert(){return false;}
-	override bool Extract(){return false;}
 
-//testing
+/*testing
 	override void postbeginplay(){
 		super.postbeginplay();
 		mags.clear();
@@ -35,7 +33,7 @@ class HDBattery:HDMagAmmo{
 		amount=mags.size();
 		LogAmounts();
 	}
-//
+*/
 	enum BatteryChargeModes{
 		BATT_DONTCHARGE=0,
 		BATT_CHARGEMAX=1,
@@ -50,12 +48,13 @@ class HDBattery:HDMagAmmo{
 		if(lastamount!=amount){
 			ticker=0;
 			lastamount=amount;
-		}else if(ticker>35.0){
+		}else if(ticker>350){
 			ticker=0;
 			ChargeBattery(1,chargemode==BATT_CHARGETOP);
 		}else ticker++;
 		super.doeffect();
 	}
+	override bool Extract(){return false;}
 	override bool Insert(){
 		chargemode++;
 		if(chargemode>BATT_CHARGETOP)chargemode=0;
