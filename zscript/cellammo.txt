@@ -112,7 +112,20 @@ class HDBattery:HDMagAmmo{
 			||smallestamt>=20
 			||biggestamt>=20
 			||biggestindex==smallestindex
-		)return;
+		){
+			if(chargemode==BATT_CHARGETOP){
+				if(biggestamt>=20){
+					owner.A_Log("Battery configuration error: lowest battery selected. Rerouting.");
+				}else if(
+					biggestindex==smallestindex
+					&&biggestindex==maxindex
+				){
+					owner.A_Log("Battery configuration error: full battery selected. Rerouting.");
+				}
+				chargemode=BATT_CHARGEMAX;
+			}
+			return;
+		}
 		if(
 			batcount<3	//need at least 3 to increase any one
 			||totalchargeable-biggestamt-2<biggestamt	//min. chargor value must exceed target amount
