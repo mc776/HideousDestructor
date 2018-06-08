@@ -26,25 +26,24 @@ class HDBattery:HDMagAmmo{
 	override bool Extract(){return false;}
 
 //testing
-override void postbeginplay(){
-	super.postbeginplay();
-	mags.clear();
-	mags.push(11);
-	mags.push(1);
-	mags.push(10);
-	amount=mags.size();
-	LogAmounts();
-}
+	override void postbeginplay(){
+		super.postbeginplay();
+		mags.clear();
+		mags.push(11);
+		mags.push(1);
+		mags.push(10);
+		amount=mags.size();
+		LogAmounts();
+	}
 //
-
-	int ticker;
-	int lastamount;
-	int chargemode;
 	enum BatteryChargeModes{
 		BATT_DONTCHARGE=0,
 		BATT_CHARGEMAX=1,
 		BATT_CHARGETOP=2,
 	}
+	int ticker;
+	int lastamount;
+	int chargemode;
 	override void doeffect(){
 		//testingdoeffect();return;
 		if(!chargemode)return;

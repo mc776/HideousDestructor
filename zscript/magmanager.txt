@@ -88,7 +88,14 @@ class MagManager:HDWeapon{
 				}
 				toui.appendformat("\n\nCurrent Mag: \cy%i",thismag.mags[finalindex]);
 			}
-			if(thismag.roundtype!="")toui.appendformat("\nSpare Rounds: \ce%i",owner.countinv(thismag.roundtype));
+			if(thismag is "HDBattery"){
+				let battt=HDBattery(thismag).chargemode;
+				string batts="uNone";
+				if(battt==hdbattery.BATT_CHARGEMAX)batts="eAuto";
+				else if(battt==hdbattery.BATT_CHARGETOP)batts="ySelected";
+				toui.appendformat("\nCurrently Charging: \c%s\n(Hit \cqReload\cu to cycle modes)",batts);
+			}
+			else if(thismag.roundtype!="")toui.appendformat("\nSpare Rounds: \ce%i",owner.countinv(thismag.roundtype));
 		}
 		uitext=toui;
 	}
