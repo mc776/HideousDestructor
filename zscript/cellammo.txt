@@ -58,10 +58,6 @@ class HDBattery:HDMagAmmo{
 	override bool Insert(){
 		chargemode++;
 		if(chargemode>BATT_CHARGETOP)chargemode=0;
-		string msg="Charging now off.";
-		if(chargemode==1)msg="Now charging highest battery.";
-		else if(chargemode==2)msg="Now charging selected battery.";
-		owner.A_Log(msg,true);
 		return false;
 	}
 
