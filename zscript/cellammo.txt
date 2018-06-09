@@ -44,7 +44,10 @@ class HDBattery:HDMagAmmo{
 	int chargemode;
 	override void doeffect(){
 		//testingdoeffect();return;
-		if(!chargemode)return;
+		if(!chargemode){
+			super.doeffect();
+			return;
+		}
 		if(lastamount!=amount){
 			ticker=0;
 			lastamount=amount;

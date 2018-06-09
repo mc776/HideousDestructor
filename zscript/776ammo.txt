@@ -139,5 +139,21 @@ class HDLoose7mm:HDSpent7mm{
 	}
 }
 
+class HD7mBoxPickup:HDUPK{
+	default{
+		//$Category "Ammo/Hideous Destructor/"
+		//$Title "Box of 7.76mm"
+		//$Sprite "7BOXA0"
 
+		scale 0.4;
+		stamina 50;
+		hdupk.pickupsound "weapons/pocket";
+		hdupk.pickupmessage "Picked up some 7.76mm ammo.";
+		hdupk.pickuptype "SevenMilAmmo";
+	}
+	states{
+	spawn:
+		7BOX A -1 A_Stop();
+	}
+}
 
