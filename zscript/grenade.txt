@@ -246,6 +246,13 @@ class HDFragGrenades:HDWeapon{
 	action bool NoFrags(){
 		return !(invoker.weaponstatus[0]&FRAGF_INHAND)&&!countinv("HDFragGrenadeAmmo");
 	}
+	//pull the pin
+	action void A_PullPin(){
+		invoker.weaponstatus[FRAGS_REALLYPULL]=0;
+		invoker.weaponstatus[0]|=(FRAGF_PINOUT|FRAGF_INHAND);
+		A_TakeInventory("HDFragGrenadeAmmo",1,TIF_NOTAKEINFINITE);
+		A_PlaySound("weapons/fragpinout",CHAN_WEAPON);
+	}
 	//we need to start from the inventory itself so it can go into DoEffect
 	action void A_TossGrenade(bool oshit=false){invoker.TossGrenade(oshit);}
 	void TossGrenade(bool oshit=false){
@@ -375,13 +382,9 @@ class HDFragGrenades:HDWeapon{
 		FRGG B 1 offset(0,36);
 		FRGG B 1 offset(0,38);
 		TNT1 A 6;
-		TNT1 A 3{
-			invoker.weaponstatus[FRAGS_REALLYPULL]=0;
-			invoker.weaponstatus[0]|=(FRAGF_PINOUT|FRAGF_INHAND);
-			A_TakeInventory("HDFragGrenadeAmmo",1,TIF_NOTAKEINFINITE);
-			A_PlaySound("weapons/fragpinout",CHAN_WEAPON);
-			A_Refire();
-		}goto ready;
+		TNT1 A 3 A_PullPin();
+		TNT1 A 0 A_Refire();
+		goto ready;
 	startcooking:
 		TNT1 A 6{
 			bool gbg;actor spn;
@@ -416,12 +419,7 @@ class HDFragGrenades:HDWeapon{
 		TNT1 A 6 A_JumpIf(invoker.weaponstatus[FRAGS_FORCE]>=1,"hold2");
 		TNT1 A 6 A_JumpIfInventory("PowerStrength",1,1);
 		TNT1 A 0 A_JumpIf(NoFrags(),"selectinstant");
-		TNT1 A 3{
-			invoker.weaponstatus[0]|=FRAGF_INHAND;
-			invoker.weaponstatus[0]|=FRAGF_PINOUT;
-			A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
-			A_TakeInventory("HDFragGrenadeAmmo",1,TIF_NOTAKEINFINITE);
-		}
+		TNT1 A 3 A_PullPin();
 	hold2:
 		TNT1 A 0 A_JumpIf(NoFrags(),"selectinstant");
 		FRGG E 0 A_JumpIf(invoker.weaponstatus[FRAGS_FORCE]>=40,"hold3a");
@@ -443,6 +441,7 @@ class HDFragGrenades:HDWeapon{
 		TNT1 A 0 A_Refire();
 		goto throw;
 	throw:
+		TNT1 A 0 A_JumpIf(NoFrags(),"selectinstant");
 		FRGG A 1 offset(0,34) A_TossGrenade();
 		FRGG A 1 offset(0,38);
 		FRGG A 1 offset(0,48);
