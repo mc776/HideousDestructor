@@ -32,12 +32,16 @@ extend class HDPlayerPawn{
 		if(aggravateddamage<0)aggravateddamage=0;
 		if(stunned<0)stunned=0;
 		return max(0,100
-			-aggravateddamage
-			-burncount
-			-oldwoundcount
-			-woundcount
-			-unstablewoundcount
+			+min(0,
+				-aggravateddamage
+				-burncount
+				-oldwoundcount
+				-woundcount
+				-unstablewoundcount
+				+(stimcount>>1)
+			)
 			+max(fatigue-HDCONST_SPRINTFATIGUE,0)
+			
 		);
 	}
 
