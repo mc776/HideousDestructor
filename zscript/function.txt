@@ -18,29 +18,6 @@ class HDHandlers:EventHandler{
 	override void WorldLoaded(WorldEvent e){
 		textureid dirtyglass=texman.checkfortexture("WALL47_2",texman.type_any);
 
-/*
-		//minimum light level 1 for nightvis
-		int itmax=level.sectors.size();
-		for(int i=0;i<itmax;i++){
-			let special=level.sectors[i].special;
-			bool dontchangelight=false;
-			switch(special){
-			// https://doomwiki.org/wiki/Sector#ZDoom
-			//these totally break if we change it like this
-			case 65:
-			case 66:
-			case 67:
-			case 68:
-			case 84:
-			case 76:
-			case 77:
-				dontchangelight=true;
-				break;
-			default:break;
-			}
-			if(!dontchangelight&&level.sectors[i].lightlevel<1)level.sectors[i].lightlevel=1;
-		}
-*/
 		int itmax=level.lines.size();
 		for(int i=0;i<itmax;i++){
 			line lll=level.lines[i];
