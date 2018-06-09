@@ -218,7 +218,12 @@ class HellPrince:BaronOfHell replaces BaronofHell{
 	raise:
 		---- A 0{
 			hdmobai.corpseflags(self,false,true);
-			raisesneeded--;
+			if(
+				A_CheckProximity("null","ArchAngel",
+					64,1,CPXF_CHECKSIGHT|CPXF_NOZ|CPXF_SETTRACER
+				)&&tracer&&tracer.bfriendly
+			)raisesneeded=0;
+			else raisesneeded--;
 			if(raisesneeded>0)damagemobj(
 				self,self,health*frandom(0.07,0.09),
 				"needmorevile",DMG_THRUSTLESS

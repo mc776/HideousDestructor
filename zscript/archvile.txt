@@ -5,6 +5,7 @@ class BloodyHellFire:HDActor{
 	default{
 		+ismonster
 		+lookallaround
+		+frightening
 		-shootable +dontharmclass +missilemore +noblooddecals
 		+alwayspuff +puffonactors +fixmapthingpos +puffgetsowner +bloodlessimpact
 		+nofear
@@ -59,7 +60,6 @@ class BloodyHellFire:HDActor{
 	see:
 		TNT1 A 0{
 			A_SetScale(randompick(-1,1)*frandom(0.8,1.2),frandom(0.8,1.2));
-			A_SetInventory("PowerFrightener",1);
 			A_Playsound("misc/firecrkl");
 			if(firetimer<1)setstatelabel("detonate");
 			else firetimer--;
@@ -220,6 +220,7 @@ class ArchFiend:Archvile replaces ArchVile{
 		-notarget
 		-quicktoretaliate
 		+seeinvisible
+		+frightening
 		radius 16;
 		height 56;
 		scale 0.8;
@@ -316,13 +317,11 @@ class ArchFiend:Archvile replaces ArchVile{
 	}
 	states{
 	see:
-		VILE A 0 A_SetInventory("PowerFrightener",1);
 		VILE A 0 A_JumpIf(bfriendly,"seefriendly");
 		VILE A 0 A_AlertMonsters(0,AMF_TARGETNONPLAYER);
 		VILE AABBCCDDEEFF 3{hdmobai.chase(self);}
 		loop;
 	seefriendly:
-		VILE A 0 A_SetInventory("PowerFrightener",1);
 		VILE H 0 A_ClearTarget();
 		VILE H 0 A_AlertMonsters(0,AMF_TARGETEMITTER);
 		VILE AABBCCDDEEFF 3 A_VileChase();
@@ -330,7 +329,6 @@ class ArchFiend:Archvile replaces ArchVile{
 	missile:
 		VILE G 10 bright{
 			bnopain=false;
-			A_GiveInventory("PowerFrightener");
 			A_FaceTarget();
 		}
 		VILE H 2 bright light("CANF") A_ChangeVileFlags(true);
