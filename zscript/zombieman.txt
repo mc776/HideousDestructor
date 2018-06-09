@@ -48,6 +48,23 @@ class ZombieStormtrooper:ZombieMan{
 		}
 		hdmobster.spawnmobster(self);
 	}
+	void A_ZomFrag(){
+		bool garbage;actor gg;
+		double cpp=cos(pitch);double spp=sin(pitch);
+		[garbage,gg]=A_SpawnItemEx("HDFragSpoon",
+			cpp*-4,-3,height-6-spp*-4,
+			cpp*3,0,-spp*3,
+			frandom(30,45),SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
+		);
+		gg.vel+=self.vel;
+		double gforce=frandom(10,30);
+		[garbage,gg]=A_SpawnItemEx("HDFragGrenade",
+			0,0,height-6,
+			cpp*gforce,0,-spp*gforce,
+			0,SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
+		);
+		gg.vel+=self.vel;
+	}
 	void noblockwepdrop(){
 		A_NoBlocking();
 		hdweapon wp;
@@ -292,8 +309,7 @@ class ZombieStormtrooper:ZombieMan{
 		}
 		---- A 10{
 			A_SpawnItemEx("HDFragSpoon",cos(pitch)*4,-1,height-6-sin(pitch)*4,cos(pitch)*cos(angle)*4+vel.x,cos(pitch)*sin(angle)*4+vel.y,sin(-pitch)*4+vel.z,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH);
-			A_GiveInventory("GrenadeForce",random(10,30));
-			A_GiveInventory("HDGrenadeToss");
+			A_ZomFrag();
 		}
 		---- A 0 A_JumpIf(mag<1,"reload");
 		goto see;

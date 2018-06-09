@@ -60,11 +60,6 @@ extend class HDPlayerPawn{
 		)CallACS("TipMessage",70,random(1,fatigue)+beatcount*flip);
 
 		//drop parting gifts
-		if(countinv("FragOut")){  
-			A_GiveInventory("HDGrenadeToss",1);
-			A_TakeInventory("FragOut");
-			A_TakeInventory("SpoonOff");
-		}
 		if(countinv("BFG9k")){
 			let bfg=bfg9k(findinventory("bfg9k"));
 			if(bfg&&bfg.weaponstatus[BFGS_CRITTIMER]>0){
