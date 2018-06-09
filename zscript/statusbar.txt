@@ -652,7 +652,12 @@ class HDStatusBar:DoomStatusBar{
 		drawimage("BROCA0",(-81,mxht),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM);		
 		drawimage("ROCKB0",(-58,mxht-2),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM);
 		drawimage("ROQPA0",(-62,mxht+2),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM,scale:(0.85,0.85));
-		drawimage("CELLA0",(-30,mxht));
+		let bttc=HDBattery(hpl.findinventory("HDBattery"));
+		if(bttc&&bttc.chargemode){
+			if(bttc.chargemode==HDBattery.BATT_CHARGEMAX)drawimage("CELPA0",(-40,mxht+7),scale:(0.3,0.3));
+			else if(bttc.chargemode==HDBattery.BATT_CHARGETOP)drawimage("CELPA0",(-38,mxht+4),scale:(0.3,0.3));
+		}
+		drawimage("CELLA0",(-38,mxht));
 		drawimage("FRAGA0",(-10,mxht),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM,scale:(0.7,0.7));
 
 		drawnum(hpl.countinv("HD9mMag15"),-71,mxhtplus-6);
