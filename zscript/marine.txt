@@ -1084,13 +1084,14 @@ class GhostMarine:HDActor{
 		}
 
 		int tmp=victim.painchance;
-		int thlt=victim.health;
-		victim.givebody(666);
+		int tmpt=victim.painthreshold;
+		victim.givebody(1);
 		victim.painchance=256;
+		victim.painthreshold=0;
 		victim.bnopain=false;
 		victim.bnofear=false;
 		victim.bfrightened=true;
-		victim.damagemobj(self,self,666,
+		victim.damagemobj(self,self,1,
 			"GhostSquadAttack",DMG_THRUSTLESS|DMG_NO_ARMOR|DMG_NO_FACTOR
 		);
 
@@ -1099,9 +1100,9 @@ class GhostMarine:HDActor{
 
 		//reset
 		victim.painchance=tmp;
+		victim.painthreshold=tmpt;
 		victim.bnopain=np;
 		victim.bnofear=nf;
-		if(victim.health>1)victim.health=thlt-1;
 		return true;
 	}
 	int gonnaleave;
