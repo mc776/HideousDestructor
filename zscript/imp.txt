@@ -104,10 +104,7 @@ class HDImpBall:HDFireball{
 				if(
 					blockingmobj is "DoomImp"
 					&&(!target||blockingmobj!=target.target)
-				)blockingmobj.health=min(
-						blockingmobj.spawnhealth(),
-						blockingmobj.health+random(1,10)
-				);
+				)blockingmobj.givebody(random(1,10));
 				else{
 					tracer=blockingmobj;
 					blockingmobj.damagemobj(self,target,random(6,18),"Electro");
