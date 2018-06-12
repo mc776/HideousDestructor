@@ -147,7 +147,6 @@ struct HDMobAI play{
 	}
 
 	//set and unset shootable corpse
-	//"CorpseFlags" item is a wrapper for this now
 	//in raise states, set gibbed to true to enable going to a raise-from-gib state
 	static void CorpseFlags(actor caller,bool gibbed=false,bool raise=false){
 		caller.A_TakeInventory("SawGib");
@@ -161,6 +160,7 @@ struct HDMobAI play{
 				caller.setstatelabel("raisegibbed");
 				caller.A_TakeInventory("IsGibbed");
 			}
+			caller.bshootable=true;
 		}else{
 			caller.bnodropoff=false;
 			caller.maxstepheight=caller.height*0.1;
