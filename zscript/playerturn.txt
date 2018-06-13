@@ -186,7 +186,13 @@ extend class HDPlayerPawn{
 				offsetside:0,
 				data:ltt
 			);
-			if(ltt.hittype==Trace_CrossingPortal)return;
+			if(
+				ltt.hittype==Trace_CrossingPortal
+				||(ltt.hitactor&&(
+					ltt.hitactor.bnonshootable
+					||!ltt.hitactor.bsolid
+				))
+			)return;
 			disttop=ltt.distance;
 			if(ltt.distance<barrellength)muzzleblocked|=MB_TOP;
 
@@ -198,7 +204,13 @@ extend class HDPlayerPawn{
 				offsetside:0,
 				data:ltb
 			);
-			if(ltb.hittype==Trace_CrossingPortal)return;
+			if(
+				ltb.hittype==Trace_CrossingPortal
+				||(ltb.hitactor&&(
+					ltb.hitactor.bnonshootable
+					||!ltb.hitactor.bsolid
+				))
+			)return;
 			distbottom=ltb.distance;
 			if(ltb.distance<barrellength)muzzleblocked|=MB_BOTTOM;
 
@@ -210,7 +222,13 @@ extend class HDPlayerPawn{
 				offsetside:-barrelwidth,
 				data:ltl
 			);
-			if(ltl.hittype==Trace_CrossingPortal)return;
+			if(
+				ltl.hittype==Trace_CrossingPortal
+				||(ltl.hitactor&&(
+					ltl.hitactor.bnonshootable
+					||!ltl.hitactor.bsolid
+				))
+			)return;
 			distleft=ltl.distance;
 			if(ltl.distance<barrellength)muzzleblocked|=MB_LEFT;
 
@@ -221,7 +239,13 @@ extend class HDPlayerPawn{
 				offsetside:barrelwidth,
 				data:ltr
 			);
-			if(ltr.hittype==Trace_CrossingPortal)return;
+			if(
+				ltr.hittype==Trace_CrossingPortal
+				||(ltr.hitactor&&(
+					ltr.hitactor.bnonshootable
+					||!ltr.hitactor.bsolid
+				))
+			)return;
 			distright=ltr.distance;
 			if(ltr.distance<barrellength)muzzleblocked|=MB_RIGHT;
 
