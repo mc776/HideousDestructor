@@ -164,6 +164,7 @@ extend class HDHandlers{
 			let mmm=HDMagAmmo(MagManager(cw).thismag);
 			if(!mmm)return;
 			let what=mmm.roundtype;
+			if(!what)return;
 			int howmany=min(max(1,hdmath.maxinv(ppp,what)*0.2),ppp.countinv(what));
 			if(!howmany)return;
 			ppp.A_DropInventory(what,howmany);
