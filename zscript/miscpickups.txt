@@ -509,6 +509,8 @@ class BlueSphere:HDActor replaces Soulsphere{
 		stamina 777;
 	}
 	override bool used(actor user){
+		if(bmissileevenmore)return false;
+		bmissileevenmore=true;
 		PlantBit.SpawnPlants(self,70,144);
 		let hdp=hdplayerpawn(user);
 		if(hdp)hdp.regenblues+=stamina;
