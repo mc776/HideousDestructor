@@ -167,15 +167,14 @@ extend class HDPlayerPawn{
 			case 40:
 			case 41:
 			case 42:
-				nw="ZM66AssaultRifle";
-				let zzz=hdweapon(spawn("ZM66AssaultRifle",pos));
+				nw="ZM66AssaultRifle";A_GiveInventory(nw);
+				let zzz=hdweapon(findinventory("ZM66AssaultRifle"));
 				if(zzz){
 					if(num<42){
 						zzz.weaponstatus[0]|=ZM66F_NOLAUNCHER;
 						if(num==40)zzz.weaponstatus[0]|=ZM66F_NOFIRESELECT;
 					}
 				}
-				zzz.AttachToOwner(self);
 				break;
 			case 43:
 				nw="Vulcanette";A_GiveInventory(nw);
@@ -188,14 +187,13 @@ extend class HDPlayerPawn{
 				break;
 			case 60:
 			case 61:
-				nw="LiberatorRifle";
-				let llb=hdweapon(spawn("LiberatorRifle",pos));
+				nw="LiberatorRifle";A_GiveInventory(nw);
+				let llb=hdweapon(findinventory("LiberatorRifle"));
 				if(llb){
 					if(num==60){
 						llb.weaponstatus[0]|=LIBF_NOLAUNCHER;
 					}
 				}
-				llb.AttachToOwner(self);
 				break;
 			case 62:
 				nw="ThunderBuster";A_GiveInventory(nw);
