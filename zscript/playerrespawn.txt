@@ -127,7 +127,7 @@ class SpecMorph:ActionItem{
 	pickup:
 		TNT1 A 0{
 			setz(pos.z+50);
-			A_Morph("HDSpectator",int.MAX,MRF_FULLHEALTH,"IdleDummy","TeleportFog");
+			A_Morph("HDSpectator",int.MAX,MRF_FULLHEALTH,"CheckPuff","TeleportFog");
 			if(!multiplayer)return;
 			A_Log(string.format("%s is now a spectator.",player.getusername()));
 			
