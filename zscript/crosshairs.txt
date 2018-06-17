@@ -23,13 +23,12 @@ extend class HDStatusBar{
 		int cpbt=cplayer.cmd.buttons;
 		int nscp=cvar.getcvar("hd_noscope",cplayer).getint();
 		float scl=clamp(cvar.getcvar("hd_xhscale",cplayer).getfloat(),0.1,3.0);
-		bool scopeview=(
+		bool scopeview=!!hpc&&(
 			!nscp||
 			(nscp==1&&!gimmehud)||
 			cpbt&BT_ZOOM
 		);
 		if(hpl.findinventory("PortableLiteAmp")&&PortableLiteAmp(hpl.findinventory("PortableLiteAmp")).worn)scopeview=false;
-
 		vector2 bob=hpl.hudbob;
 
 		if((wp is "HDPistol")){
@@ -51,11 +50,10 @@ extend class HDStatusBar{
 			);
 		}
 		else if(
-			wp is "ZM66AssaultRifle" //&&ismoving<7
+			wp is "ZM66AssaultRifle"
 		){
 			int scaledyoffset=47*scl;
 			if(wp.weaponstatus[0]&ZM66F_GLMODE){
-//				if(ismoving>4)return;
 				drawimage(
 					"XH27",(0,1.8)+bob,DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 					scale:(1.6,1.6)
@@ -82,7 +80,7 @@ extend class HDStatusBar{
 				}
 			}
 		}
-		else if((wp is "Vulcanette")){ //&&ismoving<3){
+		else if((wp is "Vulcanette")){
 			int scaledyoffset=47*scl;
 			drawimage(
 				"XH25",(0,0)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
@@ -104,13 +102,13 @@ extend class HDStatusBar{
 				);
 			}
 		}
-		else if((wp is "Blooper")){ //&&ismoving<10){
+		else if((wp is "Blooper")){
 			drawimage(
 				"XH27",(0,1.8*scl)+bob,DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 				scale:(1.6,1.6)*scl
 			);
 		}
-		else if((wp is "HDRL")){ //&&ismoving<6){
+		else if((wp is "HDRL")){
 			if(wp.weaponstatus[0]&RLF_GRENADEMODE)drawimage(
 				"XH27",(0,1.8*scl)+bob,DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 				scale:(1.6,1.6)*scl
@@ -134,7 +132,7 @@ extend class HDStatusBar{
 				scale:(1.9,1.9)*scl
 			);
 		}
-		else if(wp is "ThunderBuster"){ //&&ismoving<6){
+		else if(wp is "ThunderBuster"){
 			drawimage(
 				"XH26",(0,1*scl)+bob,DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 				scale:(5,1)*scl
@@ -152,9 +150,8 @@ extend class HDStatusBar{
 				);
 			}
 		}
-		else if(wp is "LiberatorRifle"){ //&&ismoving<6){
+		else if(wp is "LiberatorRifle"){
 			if(wp.weaponstatus[0]&LIBF_GRENADEMODE){
-//				if(ismoving>4)return;  
 				drawimage(
 					"XH27",(0,1.8*scl)+bob,DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 					scale:(1.6,1.6)*scl
@@ -223,7 +220,7 @@ extend class HDStatusBar{
 				}
 			}
 		}
-		else if((wp is "Brontornis")){ //&&ismoving<10){
+		else if((wp is "Brontornis")){
 			int scaledyoffset=-4*scl;
 			if(wp.weaponstatus[0]&BRONF_ZOOM){
 				texman.setcameratotexture(hpc,"HDXHCAM5",2.6);
@@ -243,7 +240,7 @@ extend class HDStatusBar{
 				scale:(1.9,1.9)*scl
 			);
 		}
-		else if(wp is "BossRifle"){ //&&ismoving<5){
+		else if(wp is "BossRifle"){
 			drawimage(
 				"XH23",(0,-0.5*scl)+bob,DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 				scale:(3,1.6)*scl
