@@ -47,21 +47,20 @@ extend class HDPlayerPawn{
 		int mmfinal=mantlemax;
 		for(int i=0;i<mantlemax;i++){
 			antenna.addz(-1);
-			if(antenna.checkmove(antenna.pos.xy)){
+			if(
+				antenna.checkmove(antenna.pos.xy)
+			){
 				checkmovesuccessful=true;
-			}else if(mmfinal>maxstepheight){
+			}else if(
+				mmfinal>maxstepheight
+				&&checkmovesuccessful //must always end with a checkmoveunsuccessful after a successful
+			){
 				checkmoveunsuccessful=true;
+				break;
 			}
-			mmfinal-=1;
+			mmfinal--;
 		}
 		if(!checkmovesuccessful||!checkmoveunsuccessful)return res;
-/*
-		//the old method in case the other one fails
-		mantlemax=antenna.getzat();
-		if((mantlemax-pos.z)<=maxstepheight) return res; //don't mantle steppables
-		if(antenna.getzat(flags:GZF_CEILING)-mantlemax<1) return res; //can't squeeze fingers in
-		if(antenna.pos.z<mantlemax) return res; //too high to reach and grab
-*/
 
 		//thrust player upwards and forwards
 		if(
