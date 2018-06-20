@@ -13,6 +13,11 @@ class HDBulletb:PlasmaBall replaces PlasmaBall{
 	}
 }
 
+
+//keep it simple: 1 of this = 1 unit of radius
+class BulletResistance:InventoryFlag{default{inventory.maxamount 100;}}
+
+
 class HDBullet:HDActor{
 	/*
 		special usages:
@@ -227,7 +232,7 @@ class HDBullet:HDActor{
 
 			//pierce?
 			bool pierce=false;
-			double hitresistance=min(64,hitactor.radius)*frandom(crit?0.5:0.7,1.1);
+			double hitresistance=(min(64,hitactor.radius)+hitactor.countinv("BulletResistance"))*frandom(crit?0.5:0.7,1.1);
 			double netpenetration=penetration/hitresistance;
 //A_LogFloat(hitresistance);
 			let hdp=hdplayerpawn(hitactor);

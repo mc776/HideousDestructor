@@ -426,6 +426,81 @@ extend class HDStatusBar{
 				DI_SCREEN_CENTER_BOTTOM|DI_ITEM_RIGHT
 			);
 		}
+		else if(w is "MagManager"){
+			let thismag=magmanager(w).thismag;
+			if(!thismag||thismag.mags.size()<1)return;
+			int countermaxx=thismag.mags.size();
+			int countermax=countermaxx-1;
+			double scl=2.;
+			int howmanylines=countermax/5;
+			int linecounter=countermax%5;
+			if(linecounter<0)linecounter=4;
+
+			int offx=-64-18*howmanylines;
+			int offy=80;
+			for(int i=0;i<countermaxx;i++){
+
+				bool imax=i==countermax;
+				if(imax){
+					offx=-6;
+					offy=50;
+				}else if(
+					linecounter<1
+				){
+					howmanylines--;
+					offx=-64-18*howmanylines;
+					offy=80;
+					linecounter=4;
+				}else{
+					if(i>0){
+						offx+=2;
+						offy-=9;
+					}
+					linecounter--;
+				}
+
+				int thismagamt=thismag.mags[i];
+				string magsprite="";
+				if(thismag is "HD9mMag30"){
+					if(thismagamt>0)magsprite="CLP3A0";
+					else magsprite="CLP3B0";
+				}else if(thismag is "HD9mMag15"){
+					if(thismagamt>0)magsprite="CLP2A0";
+					else magsprite="CLP2B0";
+				}else if(thismag is "HD4mMag"){
+					if(thismagamt>=51)magsprite="ZMAGA0";
+					else if(thismagamt>0)magsprite="ZMAGB0";
+					else magsprite="ZMAGC0";
+				}else if(thismag is "HD7mMag"){
+					if(thismagamt>0)magsprite="RMAGA0";
+					else magsprite="RMAGB0";
+					scl=1.7;
+				}else if(thismag is "HD7mClip"){
+					if(thismagamt>8)magsprite="RCLPA0";
+					else if(thismagamt>6)magsprite="RCLPB0";
+					else if(thismagamt>4)magsprite="RCLPC0";
+					else if(thismagamt>2)magsprite="RCLPD0";
+					else if(thismagamt>0)magsprite="RCLPE0";
+					else magsprite="RCLPF0";
+					scl=1.5;
+				}else if(thismag is "HDBattery"){
+					if(thismagamt>13)magsprite="CELLA0";
+					else if(thismagamt>6)magsprite="CELLB0";
+					else if(thismagamt>0)magsprite="CELLC0";
+					else magsprite="CELLD0";
+					scl=0.8;
+				}
+				drawimage(magsprite,(offx,offy),
+					DI_SCREEN_CENTER|DI_ITEM_RIGHT_TOP,
+					scale:(scl,scl)*(imax?1.6:1.)
+				);
+				drawstring(
+					imax?pSmallFont:mAmountFont,FormatNumber(thismag.mags[i]),
+					(offx+2,offy),DI_SCREEN_CENTER|DI_TEXT_ALIGN_LEFT,
+					imax?font.CR_SAPPHIRE:font.CR_BROWN
+				);
+			}
+		}
 		else if(w is "HDBP"){
 			let bp=hdbp(w);
 			int which=bp.weaponstatus[HDBPS_WHICH];
