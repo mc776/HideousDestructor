@@ -120,7 +120,7 @@ extend class HDHandlers{
 	int teamdeaths[255];
 	int ffadeaths[MAXPLAYERS];
 	bool wiped[MAXPLAYERS];
-	override void onregister(){
+	void livesinit(){
 		fl=fraglimit>=100?fraglimit-100:fraglimit;
 		for(int i=0;i<MAXPLAYERS;i++){
 			lives[i]=fl;
@@ -138,6 +138,7 @@ extend class HDHandlers{
 		for(int i=0;i<teamspawns.size();i++){
 			teamspawns[i]=(0,0,0);
 		}
+players[0].mo.A_LogInt(coopdeaths);
 	}
 	override void PlayerDied(PlayerEvent e){
 		let eee=PlayerPawn(players[e.playernumber].mo);
