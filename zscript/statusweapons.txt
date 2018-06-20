@@ -496,6 +496,7 @@ extend class HDStatusBar{
 					else magsprite="RCLPF0";
 					scl=1.5;
 				}else if(thismag is "HDBattery"){
+					roundsprite="CELPA0";
 					if(thismagamt>13)magsprite="CELLA0";
 					else if(thismagamt>6)magsprite="CELLB0";
 					else if(thismagamt>0)magsprite="CELLC0";
@@ -512,17 +513,30 @@ extend class HDStatusBar{
 					imax?font.CR_SAPPHIRE:font.CR_BROWN
 				);
 			}
+
 			if(roundsprite!=""){
 				offx+=40;
-				scl*=1.6;
+				if(roundsprite=="CELPA0"){
+					scl=0.4;
+					let battt=HDBattery(thismag).chargemode;
+					string batts="uNone";
+					if(battt==hdbattery.BATT_CHARGEMAX)batts="eAuto";
+					else if(battt==hdbattery.BATT_CHARGETOP)batts="ySelected";
+					drawstrings(
+						pSmallFont,string.format("%s\c%s%s",helptext?"Charging: ":"",batts,helptext?"\n(\cqReload\cu to cycle)":""),
+						(offx+2,offy),DI_SCREEN_CENTER|DI_TEXT_ALIGN_LEFT
+					);
+				}else{
+					scl*=1.6;
+					drawstring(
+						pSmallFont,FormatNumber(hpl.countinv(roundtype)),
+						(offx+2,offy),DI_SCREEN_CENTER|DI_TEXT_ALIGN_LEFT,
+						font.CR_BROWN
+					);
+				}
 				drawimage(roundsprite,(offx,offy),
 					DI_SCREEN_CENTER|DI_ITEM_RIGHT_TOP,
 					scale:(scl,scl)
-				);
-				drawstring(
-					pSmallFont,FormatNumber(hpl.countinv(roundtype)),
-					(offx+2,offy),DI_SCREEN_CENTER|DI_TEXT_ALIGN_LEFT,
-					font.CR_BROWN
 				);
 			}
 		}
