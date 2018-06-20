@@ -432,6 +432,8 @@ extend class HDStatusBar{
 			int countermaxx=thismag.mags.size();
 			int countermax=countermaxx-1;
 			double scl=2.;
+			string roundsprite="";
+			name roundtype="";
 			int howmanylines=countermax/5;
 			int linecounter=countermax%5;
 			if(linecounter<0)linecounter=4;
@@ -462,20 +464,30 @@ extend class HDStatusBar{
 				int thismagamt=thismag.mags[i];
 				string magsprite="";
 				if(thismag is "HD9mMag30"){
+					roundtype="HDPistolAmmo";
+					roundsprite="PBRSA0";
 					if(thismagamt>0)magsprite="CLP3A0";
 					else magsprite="CLP3B0";
 				}else if(thismag is "HD9mMag15"){
+					roundtype="HDPistolAmmo";
+					roundsprite="PBRSA0";
 					if(thismagamt>0)magsprite="CLP2A0";
 					else magsprite="CLP2B0";
 				}else if(thismag is "HD4mMag"){
+					roundtype="FourMilAmmo";;
+					roundsprite="RBRSA3A7";
 					if(thismagamt>=51)magsprite="ZMAGA0";
 					else if(thismagamt>0)magsprite="ZMAGB0";
 					else magsprite="ZMAGC0";
 				}else if(thismag is "HD7mMag"){
+					roundtype="SevenMilAmmo";
+					roundsprite="RBRSA3A7";
 					if(thismagamt>0)magsprite="RMAGA0";
 					else magsprite="RMAGB0";
 					scl=1.7;
 				}else if(thismag is "HD7mClip"){
+					roundtype="SevenMilAmmo";
+					roundsprite="RBRSA3A7";
 					if(thismagamt>8)magsprite="RCLPA0";
 					else if(thismagamt>6)magsprite="RCLPB0";
 					else if(thismagamt>4)magsprite="RCLPC0";
@@ -498,6 +510,19 @@ extend class HDStatusBar{
 					imax?pSmallFont:mAmountFont,FormatNumber(thismag.mags[i]),
 					(offx+2,offy),DI_SCREEN_CENTER|DI_TEXT_ALIGN_LEFT,
 					imax?font.CR_SAPPHIRE:font.CR_BROWN
+				);
+			}
+			if(roundsprite!=""){
+				offx+=40;
+				scl*=1.6;
+				drawimage(roundsprite,(offx,offy),
+					DI_SCREEN_CENTER|DI_ITEM_RIGHT_TOP,
+					scale:(scl,scl)
+				);
+				drawstring(
+					pSmallFont,FormatNumber(hpl.countinv(roundtype)),
+					(offx+2,offy),DI_SCREEN_CENTER|DI_TEXT_ALIGN_LEFT,
+					font.CR_BROWN
 				);
 			}
 		}
