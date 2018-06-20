@@ -129,8 +129,7 @@ class SpecMorph:ActionItem{
 			setz(pos.z+50);
 			A_Morph("HDSpectator",int.MAX,MRF_FULLHEALTH,"CheckPuff","TeleportFog");
 			if(!multiplayer)return;
-			A_Log(string.format("%s is now a spectator.",player.getusername()));
-			
+			if(player)A_Log(string.format("%s is now a spectator.",player.getusername()));
 		}fail;
 	}
 }
