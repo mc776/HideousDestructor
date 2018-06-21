@@ -98,30 +98,30 @@ extend class HDActor{
 					0, //caller is already raised by half its height for other things
 					data:blt
 				);
-				if(blt.hitactor==it)losmul+=0.2;
+				if(blt.hitactor==it)losmul+=0.25;
 				caller.linetrace(angletomid,biggerradius,pitchtomid,0,
 					0, //caller is already raised by half its height for other things
 					data:blt
 				);
-				if(blt.hitactor==it)losmul+=0.2;
+				if(blt.hitactor==it)losmul+=0.25;
 
 				double edgeshot=atan2(smallerradius,dist);
 				caller.linetrace(angletomid+edgeshot,biggerradius,pitchtomid,0,
 					0, //caller is already raised by half its height for other things
 					data:blt
 				);
-				if(blt.hitactor==it)losmul+=0.2;
+				if(blt.hitactor==it)losmul+=0.17;
 				caller.linetrace(angletomid-edgeshot,biggerradius,pitchtomid,0,
 					0, //caller is already raised by half its height for other things
 					data:blt
 				);
-				if(blt.hitactor==it)losmul+=0.2;
+				if(blt.hitactor==it)losmul+=0.17;
 
 				caller.linetrace(angletomid,biggerradius,pitchtobottom,0,
 					0, //caller is already raised by half its height for other things
 					data:blt
 				);
-				if(blt.hitactor==it)losmul+=0.2;
+				if(blt.hitactor==it)losmul+=0.16;
 				losmul=min(losmul,1.);
 			}
 //				if(losmul){caller.A_Log(string.format("%s  %f",it.getclassname(),losmul));continue;}
