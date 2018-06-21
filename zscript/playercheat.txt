@@ -61,6 +61,8 @@ extend class HDPlayerPawn{
 					let ammoitem=FindInventory(type);
 					if(!ammoitem)ammoitem=GiveInventoryType(type);
 					ammoitem.Amount=ammoitem.MaxAmount;
+					let magammoitem=hdmagammo(ammoitem);
+					if(magammoitem)magammoitem.syncamount();
 				}
 			}
 		}
