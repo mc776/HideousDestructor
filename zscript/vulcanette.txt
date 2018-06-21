@@ -423,7 +423,7 @@ class Vulcanette:HDWeapon{
 		GTLG A 0 A_PlaySound("weapons/pocket",CHAN_WEAPON);
 		GTLG AA 6 A_MuzzleClimb(-frandom(0.4,0.6),frandom(-0.4,0.4));
 		GTLG A 6 offset(10,41){
-			if(HDMagAmmo.NothingLoaded(self,"HD4mMag")){return;}
+			if(HDMagAmmo.NothingLoaded(self,"HD4mMag")){setweaponstate("reloadend");return;}
 			int lod=HDMagAmmo(findinventory("HD4mMag")).TakeMag(true);
 
 			int magslot=-1;
