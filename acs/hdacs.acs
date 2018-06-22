@@ -5,8 +5,21 @@
 // ------------------------------------------------------------
 // Multiplayer scripts.
 // ------------------------------------------------------------
-bool ending;
-bool wiped;
+bool ending=false;
+bool wiped=false;
+bool forcingnext=false;
+bool timefornext=false;
+script "CheckForNextMap" OPEN{
+	while(!forcingnext){
+		delay(1);
+		if(timefornext){
+			forcingnext=true;
+			Exit_Normal(0);
+		}
+	}
+}
+
+
 script "WipedSpecMessage"(void){
 	if(ending)terminate;
 	setfont("bigfont");
@@ -40,6 +53,7 @@ script "CoopFail"(void){
 			s: "Too many casualties. HQ has ordered a retreat!";
 			HUDMSG_TYPEON,3,CR_GRAY,1.5,0.62,2.0,0.06);
 		delay(200);
+		delay(1);
 		GiveInventory("RestartMap",1);
 	}
 }
@@ -61,6 +75,8 @@ script "CoopWipe"(void){
 		HUDMSG_TYPEON,3,CR_GRAY,1.5,0.62,2.0,0.06);
 	delay(200);
 	GiveInventory("RestartMap",1);
+	delay(1);
+	timefornext=true;
 }
 
 
@@ -103,7 +119,7 @@ script "TDMEndWin"(int survivingteam){
 		s:byline();
 		HUDMSG_TYPEON,3,CR_GRAY,1.5,0.62,2.0,0.06);
 	delay(280);
-	if(!wiped)Exit_Normal(0);
+	timefornext=true;
 }
 script "FFAWin"(int survivingplayer){
 	ending=true;
@@ -123,7 +139,7 @@ script "FFAWin"(int survivingplayer){
 		s:byline();
 		HUDMSG_TYPEON,3,CR_GRAY,1.5,0.62,2.0,0.06);
 	delay(280);
-	if(!wiped)Exit_Normal(0);
+	timefornext=true;
 }
 
 
