@@ -7,9 +7,9 @@ extend class HDPlayerPawn{
 		if(bp)bp.ConsolidateBPMags();
 
 		//for the new tracked mags
-		for(inventory maggg=inv;maggg!=null;maggg=maggg.inv){
-			let magg=hdmagammo(maggg);
-			if(magg)magg.consolidate();
+		for(inventory ppp=inv;ppp!=null;ppp=ppp.inv){
+			let hdp=hdpickup(ppp);
+			if(hdp)hdp.consolidate();
 		}
 
 		//use the BFG to charge everything

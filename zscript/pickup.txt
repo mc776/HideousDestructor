@@ -75,6 +75,11 @@ class HDPickup:CustomInventory{
 		inventory.pickupsound "weapons/pocket";
 		accuracy 1;
 	}
+
+	//called on level resets, etc.
+	virtual void Consolidate(){}
+
+	//called to get the encumbrance
 	virtual double getbulk(){return amount*bulk;}
 	override inventory createtossable(int amount){
 		inventory iii=super.createtossable(amount);
