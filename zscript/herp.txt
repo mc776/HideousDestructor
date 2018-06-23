@@ -385,13 +385,13 @@ class HERPUsable:HDPickup{
 	states{
 	use:
 		TNT1 A 0{
-			let bbb=HDMagAmmo(findinventory("HDBattery"));
 			int loadcell=0;
 			int loadmag[3];
-			if(!bbb){
+			if(HDMagAmmo.NothingLoaded(self,"HDBattery")){
 				A_Log("\cd[HERP]\cj  No power. Please load 1 cell pack before deploying.",true);
 				return;
 			}else{
+				let bbb=HDMagAmmo(findinventory("HDBattery"));
 				loadcell=bbb.TakeMag(true);
 			}
 
