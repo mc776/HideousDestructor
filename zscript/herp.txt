@@ -476,6 +476,15 @@ class HERPDEAD:HDPickup{
 	override double getbulk(){
 		return ENC_HERP;
 	}
+	override void Consolidate(){
+		if(
+			owner
+			&&!owner.A_JumpIfInventory("HERPUsable",0,"null")
+		){
+			HDF.Give(owner,"HERPUsable");
+			goawayanddie();
+		}
+	}
 	states{
 	spawn:
 		HERP A -1 A_Stop();

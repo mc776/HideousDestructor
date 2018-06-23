@@ -409,7 +409,16 @@ class DERPDEAD:DERPUsable{
 		//$Sprite "DERPA0"
 		-inventory.invbar
 		hdpickup.bulk ENC_DERP;
-		inventory.pickupmessage "Picked up a Defence, Engagement, Reconnaissance and Patrol robot. It is damaged";
+		inventory.pickupmessage "Picked up a Defence, Engagement, Reconnaissance and Patrol robot. It is damaged.";
+	}
+	override void Consolidate(){
+		if(
+			owner
+			&&!owner.A_JumpIfInventory("DERPUsable",0,"null")
+		){
+			HDF.Give(owner,"DERPUsable");
+			goawayanddie();
+		}
 	}
 }
 
