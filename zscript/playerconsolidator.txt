@@ -6,35 +6,38 @@ extend class HDPlayerPawn{
 		let bp=HDBP(findinventory("HDBP"));
 		if(bp)bp.ConsolidateBPMags();
 
-		//for the new tracked mags
+		//call all the Consolidates on actors
+		//really everything below could be migrated to their own actors eventually
 		for(inventory ppp=inv;ppp!=null;ppp=ppp.inv){
 			let hdp=hdpickup(ppp);
 			if(hdp)hdp.consolidate();
 		}
 
 		//use the BFG to charge everything
+		bool hasbfgchargeable=false;
+		if(bp&&bp.batteries.size()>0){
+			for(int i=0;i<bp.batteries.size();i++){
+				if(bp.batteries[i]>BFGC_MINCHARGE){
+					hasbfgchargeable=true;
+					break;
+				}
+			}
+		}
 		let bfug=HDWeapon(findinventory("BFG9k"));
 		let batts=HDBattery(findinventory("HDBattery"));
 		if(
 			bfug
 			&&(
-				bfug.weaponstatus[BFGS_BATTERY]>BFGC_MINCHARGE  
+				hasbfgchargeable
+				||bfug.weaponstatus[BFGS_BATTERY]>BFGC_MINCHARGE
 				||(
 					bfug.weaponstatus[BFGS_CHARGE]>BFGC_MINCHARGE  
 					&&(
 						bfug.weaponstatus[BFGS_BATTERY]>=0  
 						||countinv("HDBattery")
 						||(
-							bp&&(
-								bp.itemamount[bp.mcellindex]>0
-								||bp.itemamount[bp.ecellindex]>0
-							)
+							bp&&bp.itemamount[bp.batteryindex]>0
 						)
-					)
-				)||(
-					bp&&(
-						bp.itemamount[bp.fcellindex]>0
-						||bp.itemamount[bp.mcellindex]>BFGC_MINCHARGE
 					)
 				)||batts.BFGChargeable()
 			)
