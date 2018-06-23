@@ -1351,7 +1351,8 @@ class BotBot:HDMarine{
 
 		//abort if zero team damage, otherwise save factor for wounds and burns
 		if(
-			source!=self
+			source
+			&&source!=self
 			&&(
 				isteammate(source)
 				||(
@@ -1384,7 +1385,14 @@ class BotBot:HDMarine{
 		super.tick();
 		if(masterplayer<1)return;
 		actor rpp=players[masterplayer].mo;
-		if(rpp)rpp.setorigin(pos,false);
+		if(rpp){
+			rpp.setorigin((
+				pos.xy+angletovector(angle,1),
+				pos.z+height-8
+			),true);
+			rpp.angle=angle;
+			rpp.pitch=pitch;
+		}
 
 		if(!bfriendly||timesdied>0||target){
 			unseen=0;
