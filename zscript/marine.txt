@@ -1390,8 +1390,8 @@ class BotBot:HDMarine{
 				pos.xy+angletovector(angle,1),
 				pos.z+height-8
 			),true);
-			rpp.angle=angle;
-			rpp.pitch=pitch;
+			rpp.A_SetAngle(angle,SPF_INTERPOLATE);
+			rpp.A_SetPitch(pitch,SPF_INTERPOLATE);
 		}
 
 		if(!bfriendly||timesdied>0||target){

@@ -36,6 +36,7 @@ class HERPBot:HDUPK{
 		damagefactor "Thermal",0.7;damagefactor "SmallArms3",0.8;
 		obituary "%o went HERP.";
 		hdupk.pickupmessage "Picked up a Heavy Engagement Rotary Platform robot.";
+		hdupk.pickupsound "misc/w_pkup";
 		scale 0.8;
 	}
 
@@ -275,7 +276,6 @@ class HERPBot:HDUPK{
 				(health<1 && !target.countinv("HERPDEAD"))||
 				(health>0 && !target.countinv("HERPUsable"))
 			){
-				target.A_PlaySound("misc/w_pkup",CHAN_WEAPON);
 				if(health<1){
 					A_GiveToTarget("HERPDEAD");
 					if(random(0,3))HDMagAmmo.GiveMag(target,"HD4mMag",ammo[0]%100);
