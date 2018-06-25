@@ -118,7 +118,10 @@ class HDPickup:CustomInventory{
 		fail;
 	spawn:
 		TNT1 A 1;
-		TNT1 A 0{
+		TNT1 A 1{
+//			let hdps=new("HDPickupSplitter");
+//			hdps.invoker=invoker;
+//			return;
 			while(invoker.amount>invoker.accuracy){  
 				inventory aa=inventory(spawn(invoker.getclassname(),invoker.pos));
 				aa.amount=invoker.accuracy;invoker.amount-=invoker.accuracy;
@@ -129,11 +132,39 @@ class HDPickup:CustomInventory{
 		}stop;
 	}
 }
+class HDPickupSplitter:Thinker{
+	hdpickup invoker;
+	int ticks;
+	override void Tick(){
+		super.tick();
+		if(!!invoker){
+			if(invoker is "HDMagAmmo"){
+				let minvoker=HDMagAmmo(invoker);
+				minvoker.SyncAmount();
+				while(minvoker.amount>1){
+					let aaa=HDMagAmmo(inventory(minvoker.spawn(minvoker.getclassname(),minvoker.pos)));
+					aaa.amount=1;minvoker.amount--;
+					aaa.mags.clear();
+					aaa.mags.push(minvoker.takemag(false));
+				}
+				if(!minvoker.mags[0])minvoker.setstatelabel("spawnempty");
+				else minvoker.setstatelabel("spawn2");
+			}else if(invoker is "HDPickup"){
+				while(invoker.amount>invoker.accuracy){  
+					inventory aa=inventory(invoker.spawn(invoker.getclassname(),invoker.pos));
+					aa.amount=invoker.accuracy;invoker.amount-=invoker.accuracy;
+					aa.vel=invoker.vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
+				}
+				invoker.vel+=(frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(-0.6,0.6));
+				if(invoker.findstate("spawn2"))invoker.setstatelabel("spawn2");
+			}
+		}
+		destroy();
+	}
+}
 
 //custom ammotype
 class HDAmmo:HDPickup{
-	int basemaxamount;
-	property basemaxamount:basemaxamount;
 	default{
 		-inventory.invbar
 		hdpickup.droptranslation false;
