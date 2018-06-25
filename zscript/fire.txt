@@ -176,9 +176,6 @@ class HDFire:IdleDummy{
 
 
 //an invisible actor that constantly damages anything it collides with
-/* special uses:
-	accuracy = amount of heat to give each cycle
-*/
 class PersistentDamager:HDActor{
 	vector3 relpos;
 	default{
@@ -217,12 +214,13 @@ class PersistentDamager:HDActor{
 				if(
 					ccc.bnodamage
 					||!ccc.bshootable
+					||ccc.pos.z<pos.z+ccc.height
 				)continue;
 				stamina--;
 				if(damagetype=="Thermal")HDF.Give(ccc,"Heat",stamina*10);
 				ccc.damagemobj(self,target,stamina,damagetype);
 			}
-			accuracy--;
+			stamina--;
 			if(stamina<1){destroy();return;}
 		}
 
