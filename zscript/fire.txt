@@ -182,8 +182,8 @@ class HDFire:IdleDummy{
 class PersistentDamager:HDActor{
 	vector3 relpos;
 	default{
-//		+noblockmap +missile
-		+solid
+		+noblockmap
+//		+solid
 		damagetype "Thermal";
 
 		height 8;radius 8;
@@ -193,7 +193,8 @@ class PersistentDamager:HDActor{
 		super.postbeginplay();
 		if(master)relpos=self.pos-master.pos;
 	}
-	override bool cancollidewith(actor other,bool passive){
+	bool cantcollidewithlolol(actor other,bool passive){
+	//override bool cancollidewith(actor other,bool passive){
 		if(passive&&!ticker&&other.bshootable&&!other.bnodamage){
 			if(damagetype=="Thermal"){
 				HDF.Give(other,"Heat",stamina*10);
@@ -208,7 +209,22 @@ class PersistentDamager:HDActor{
 		if(globalfreeze||level.Frozen) return;
 
 		if(master)setorigin(master.pos+relpos,false);
-		if(ticker<4)ticker++;else ticker=0;
+		if(ticker<4)ticker++;else{
+			ticker=0;
+			blockthingsiterator ccw=blockthingsiterator.create(self);
+			while(ccw.next()){
+				actor ccc=ccw.thing;
+				if(
+					ccc.bnodamage
+					||!ccc.bshootable
+				)continue;
+				stamina--;
+				if(damagetype=="Thermal")HDF.Give(ccc,"Heat",stamina*10);
+				ccc.damagemobj(self,target,stamina,damagetype);
+			}
+			accuracy--;
+			if(stamina<1){destroy();return;}
+		}
 
 		//nexttic
 		if(CheckNoDelay()){
