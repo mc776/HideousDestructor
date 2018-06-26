@@ -292,6 +292,20 @@ alreadygot.logamounts();
 		}
 		return iii;
 	}
+	override void SplitPickup(){
+		SyncAmount();
+		while(amount>1){
+			let aaa=HDMagAmmo(inventory(spawn(getclassname(),pos)));
+			aaa.amount=1;amount--;
+			aaa.mags.clear();
+			aaa.mags.push(takemag(false));
+		}
+		if(!mags[0])setstatelabel("spawnempty");
+		else if(findstate("spawn2")){
+			if(hd_debug)A_Log(string.format("%s still uses spawn2",getclassname()));
+			setstatelabel("spawn2");
+		}
+	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		syncamount();
@@ -327,20 +341,6 @@ alreadygot.logamounts();
 			//invoker.LogAmounts();
 		}fail;
 	spawn:
-		TNT1 A 1;
-		TNT1 A 0{
-			invoker.SyncAmount();
-			while(invoker.amount>1){
-				inventory aa=inventory(spawn(invoker.getclassname(),invoker.pos));
-				aa.amount=1;invoker.amount--;
-				let aaa=HDMagAmmo(aa);
-				aaa.mags.clear();
-				aaa.mags.push(invoker.takemag(false));
-			}
-			if(!invoker.mags[0])invoker.setstatelabel("spawnempty");
-			else invoker.setstatelabel("spawn2");
-		}stop;
-	spawn2:
 		CELL A -1;
 		stop;
 	spawnempty:

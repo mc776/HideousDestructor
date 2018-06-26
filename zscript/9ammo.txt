@@ -35,7 +35,7 @@ class HD9mMag15:HDMagAmmo{
 		inventory.pickupmessage "Picked up a pistol magazine.";
 	}
 	states{
-	spawn2:
+	spawn:
 		CLP2 A -1;
 		stop;
 	spawnempty:
@@ -58,7 +58,7 @@ class HD9mMag30:HD9mMag15{
 		inventory.pickupmessage "Picked up an SMG magazine.";
 	}
 	states{
-	spawn2:
+	spawn:
 		CLP3 A -1;
 		stop;
 	spawnempty:
@@ -81,7 +81,7 @@ class HDSpent9mm:HDDebris{
 	}
 	states{
 	spawn:
-		PBRS A 2{
+		PBRS A 2 nodelay{
 			A_SetRoll(roll+45,SPF_INTERPOLATE);
 		}loop;
 	death:

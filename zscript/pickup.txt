@@ -57,13 +57,14 @@ class GrabThinker:Thinker{
 }
 
 //Usable pickup.
-//*** NEVER OVERRIDE THE SPAWN STATE, ALWAYS USE SPAWN2 ***
 class HDPickup:CustomInventory{
 	actor picktarget;
 	bool droptranslation;
 	property droptranslation:droptranslation;
 	double bulk;
 	property bulk:bulk;
+	int maxunitamount;
+	property maxunitamount:maxunitamount;
 	default{
 		+inventory.invbar +inventory.persistentpower
 		+noblockmonst +notrigger +dontgib
@@ -74,7 +75,7 @@ class HDPickup:CustomInventory{
 
 		radius 8; height 10; scale 0.8;
 		inventory.pickupsound "weapons/pocket";
-		accuracy 1;
+		hdpickup.maxunitamount 1;
 	}
 
 	//called on level resets, etc.
@@ -113,23 +114,31 @@ class HDPickup:CustomInventory{
 		other.A_PlaySound(pickupsound,CHAN_AUTO);
 		other.A_Log(string.format("\cg%s",pickupmessage()),true);
 	}
+	virtual void SplitPickup(){
+		int maxpkamt=max(1,maxunitamount);
+		while(amount>maxpkamt){
+			let aaa=hdpickup(spawn(getclassname(),pos));
+			aaa.amount=maxpkamt;amount-=maxpkamt;
+			aaa.vel=vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
+		}
+		vel+=(frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(-0.6,0.6));
+		if(findstate("spawn2")){
+			if(hd_debug)A_Log(string.format("%s still uses spawn2",getclassname()));
+			setstatelabel("spawn2");
+		}
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		let hdps=new("HDPickupSplitter");
+		hdps.invoker=self;
+	}
 	states{
-	use:	TNT1 A 0;
+	use:
+		TNT1 A 0;
 		fail;
 	spawn:
-		TNT1 A 1;
-		TNT1 A 1{
-//			let hdps=new("HDPickupSplitter");
-//			hdps.invoker=invoker;
-//			return;
-			while(invoker.amount>invoker.accuracy){  
-				inventory aa=inventory(spawn(invoker.getclassname(),invoker.pos));
-				aa.amount=invoker.accuracy;invoker.amount-=invoker.accuracy;
-				aa.vel=invoker.vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
-			}
-			invoker.vel+=(frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(-0.6,0.6));
-			invoker.setstatelabel("spawn2");
-		}stop;
+		CLIP A -1;
+		stop;
 	}
 }
 class HDPickupSplitter:Thinker{
@@ -137,27 +146,8 @@ class HDPickupSplitter:Thinker{
 	int ticks;
 	override void Tick(){
 		super.tick();
-		if(!!invoker){
-			if(invoker is "HDMagAmmo"){
-				let minvoker=HDMagAmmo(invoker);
-				minvoker.SyncAmount();
-				while(minvoker.amount>1){
-					let aaa=HDMagAmmo(inventory(minvoker.spawn(minvoker.getclassname(),minvoker.pos)));
-					aaa.amount=1;minvoker.amount--;
-					aaa.mags.clear();
-					aaa.mags.push(minvoker.takemag(false));
-				}
-				if(!minvoker.mags[0])minvoker.setstatelabel("spawnempty");
-				else minvoker.setstatelabel("spawn2");
-			}else if(invoker is "HDPickup"){
-				while(invoker.amount>invoker.accuracy){  
-					inventory aa=inventory(invoker.spawn(invoker.getclassname(),invoker.pos));
-					aa.amount=invoker.accuracy;invoker.amount-=invoker.accuracy;
-					aa.vel=invoker.vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
-				}
-				invoker.vel+=(frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(-0.6,0.6));
-				if(invoker.findstate("spawn2"))invoker.setstatelabel("spawn2");
-			}
+		if(!!invoker&&!invoker.owner){
+			invoker.SplitPickup();
 		}
 		destroy();
 	}
@@ -171,7 +161,6 @@ class HDAmmo:HDPickup{
 	}
 	//bulk must be calculated in encumbrance so hd_onemanarmy can be read
 	override double getbulk(){return 0;}
-	states{use:TNT1 A 0;fail;spawn2:---- A -1;}
 }
 
 

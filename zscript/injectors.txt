@@ -14,7 +14,7 @@ class PortableStimpack:HDPickup{
 		hdpickup.bulk ENC_STIMPACK;
 	}
 	states{
-	spawn2:
+	spawn:
 		STIM A -1;
 	use:
 		TNT1 A 0{
@@ -259,11 +259,11 @@ class PortableBerserkPack:HDPickup{
 		inventory.pickupmessage "Picked up a berserk pack.";
 		inventory.icon "PPSTA0";
 		scale 0.3;
-		accuracy 4;
+		hdpickup.maxunitamount 4;
 		hdpickup.bulk ENC_STIMPACK;
 	}
 	states{
-	spawn2:
+	spawn:
 		PSTR A -1{if(invoker.amount>2)invoker.scale=(0.4,0.35);else invoker.scale=(0.3,0.3);}
 	use:
 		TNT1 A 0{
@@ -337,7 +337,7 @@ class BluePotion:HDPickup{
 		hdpickup.bulk ENC_BLUEPOTION;
 	}
 	states{
-	spawn2:
+	spawn:
 		BON1 ABCDCB 2 light("HEALTHPOTION") A_SetTics(random(1,3));
 		loop;
 	use:
