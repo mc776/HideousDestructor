@@ -730,11 +730,11 @@ class kickchecker:actor{
 	default{
 		projectile;
 		radius 6;height 10;
-		+thrughost
 	}
 	override bool cancollidewith(actor other,bool passive){
 		return(
 			other.bshootable
+			&&other.bghost
 			&&!(other is "HDPickup")
 			&&!(other is "HDUPK")
 			&&!(other is "HDWeapon")

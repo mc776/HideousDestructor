@@ -180,7 +180,6 @@ class PersistentDamager:HDActor{
 	vector3 relpos;
 	default{
 		+noblockmap
-//		+solid
 		damagetype "Thermal";
 
 		height 8;radius 8;
@@ -189,17 +188,6 @@ class PersistentDamager:HDActor{
 	override void postbeginplay(){
 		super.postbeginplay();
 		if(master)relpos=self.pos-master.pos;
-	}
-	bool cantcollidewithlolol(actor other,bool passive){
-	//override bool cancollidewith(actor other,bool passive){
-		if(passive&&!ticker&&other.bshootable&&!other.bnodamage){
-			if(damagetype=="Thermal"){
-				HDF.Give(other,"Heat",stamina*10);
-				stamina--;
-				if(accuracy<1){destroy();return false;}
-			}else other.damagemobj(self,target,stamina,damagetype);
-		}
-		return false;
 	}
 	int ticker;
 	override void tick(){

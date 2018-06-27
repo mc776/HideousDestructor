@@ -105,14 +105,19 @@ class HDPickup:CustomInventory{
 			inventory.touch(other);
 			return;
 		}else if(maxtake<1){
-			setstatelabel("spawn2");return;
+			return;
 		}else if(maxtake<amount){
 			amount-=maxtake;
 			other.A_GiveInventory(gcn,maxtake);
-			if(amount>0)setstatelabel("spawn2");  
 		}else trypickup(other);
 		other.A_PlaySound(pickupsound,CHAN_AUTO);
 		other.A_Log(string.format("\cg%s",pickupmessage()),true);
+	}
+	void GotoSpawn(){
+		if(findstate("spawn2")){
+			if(hd_debug)A_Log(string.format("%s still uses spawn2",getclassname()));
+			setstatelabel("spawn2");
+		}
 	}
 	virtual void SplitPickup(){
 		int maxpkamt=max(1,maxunitamount);
@@ -122,10 +127,7 @@ class HDPickup:CustomInventory{
 			aaa.vel=vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
 		}
 		vel+=(frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(-0.6,0.6));
-		if(findstate("spawn2")){
-			if(hd_debug)A_Log(string.format("%s still uses spawn2",getclassname()));
-			setstatelabel("spawn2");
-		}
+		GotoSpawn();
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -171,7 +173,8 @@ class HDAmmo:HDPickup{
  hdupk.pickupsound: pickup sound
  hdupk.pickuptype: default type of inventory item it replaces
  hdupk.pickupmessage: self-explanatory
- accuracy: max # of pickuptype a single unit can store
+ hdupk.maxunitamount: max # of pickuptype a single unit can store
+ hdupk.amount: amount in this item, if it is a container
 */
 class HDUPK:HDActor{
 	//do NOT use this for pickupable casings, 1x1 is intolerably pixelbitchy!
@@ -179,9 +182,13 @@ class HDUPK:HDActor{
 	class<inventory> pickuptype;
 	string pickupmessage;
 	sound pickupsound;
+	int maxunitamount;
+	int amount;
 	property pickuptype:pickuptype;
 	property pickupmessage:pickupmessage;
 	property pickupsound:pickupsound;
+	property maxunitamount:maxunitamount;
+	property amount:amount;
 	default{
 		+solid
 		height 8;radius 8;
@@ -193,17 +200,17 @@ class HDUPK:HDActor{
 	override void postbeginplay(){
 		super.postbeginplay();
 
-		if(!accuracy)return;
-		if(accuracy<0)accuracy*=-1;
-		while(stamina>accuracy){  
-			actor a=spawn(getclassname(),pos,ALLOW_REPLACE);
-			a.stamina=accuracy;
-			stamina-=accuracy;
+		if(!maxunitamount)return;
+		if(maxunitamount<0)maxunitamount*=-1;
+		while(amount>maxunitamount){  
+			let a=hdupk(spawn(getclassname(),pos,ALLOW_REPLACE));
+			a.amount=maxunitamount;
+			amount-=maxunitamount;
 			a.vel=vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
 		}
-		if(stamina>1){  
+		if(amount>1){  
 		}else{
-			stamina=1;
+			amount=1;
 		}
 	}
 	virtual void A_HDUPKGive(){
@@ -216,7 +223,7 @@ class HDUPK:HDActor{
 			return;
 		}
 		int increase=picktarget.countinv(pickuptype);
-		picktarget.A_GiveInventory(pickuptype,stamina);
+		picktarget.A_GiveInventory(pickuptype,amount);
 		increase=picktarget.countinv(pickuptype)-increase;
 		if(heat.getamount(self)>50)increase=0;
 		if(!increase){ //didn't pick any up
@@ -225,8 +232,8 @@ class HDUPK:HDActor{
 		}
 		picktarget.A_PlaySound(pickupsound,5);
 		picktarget.A_Log(string.format("\cg%s",pickupmessage),true);
-		stamina-=increase;
-		if(stamina>0){ //only picked some up  
+		amount-=increase;
+		if(amount>0){ //only picked some up  
 			setstatelabel("spawn");
 			return;
 		}
