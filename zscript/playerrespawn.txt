@@ -165,7 +165,7 @@ class HDSpectator:PlayerPawn{
 	int destplayer;
 	override void tick(){
 		playerpawn.tick();
-		if(!player)return;
+		if(!player||player.bot||player.mo!=self)return;
 
 		int oldinput=getplayerinput(MODINPUT_OLDBUTTONS);
 		vel*=0.9;
