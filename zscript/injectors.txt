@@ -264,7 +264,7 @@ class PortableBerserkPack:HDPickup{
 	}
 	states{
 	spawn:
-		PSTR A -1{if(invoker.amount>2)invoker.scale=(0.4,0.35);else invoker.scale=(0.3,0.3);}
+		PSTR A -1 nodelay{if(invoker.amount>2)invoker.scale=(0.4,0.35);else invoker.scale=(0.3,0.3);}
 	use:
 		TNT1 A 0{
 			A_GiveInventory("HDBerserker");

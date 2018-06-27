@@ -232,7 +232,10 @@ class HDBullet:HDActor{
 
 			//pierce?
 			bool pierce=false;
-			double hitresistance=(min(64,hitactor.radius)+hitactor.countinv("BulletResistance"))*frandom(crit?0.5:0.7,1.1);
+			double hitresistance=(
+				min(64,hitactor.radius)*frandom(crit?0.5:0.7,1.1)
+				+hitactor.countinv("BulletResistance")*frandom(crit?0.7:0.4,1.1)
+			);
 			double netpenetration=penetration/hitresistance;
 //A_LogFloat(hitresistance);
 			let hdp=hdplayerpawn(hitactor);
