@@ -198,8 +198,24 @@ extend class HDActor{
 					double angcover=atan2(
 						(it.radius*2+it.height)*0.5,
 						dist
-					)*losmul;
+					);
 //					if(angcover){caller.A_Log(string.format("%s  %f",it.getclassname(),angcover));}
+					//MUHFUGGIN HIGH SCHOOL GEOMETRY https://en.wikipedia.org/wiki/Spherical_sector
+					double domeheight=abs(sin(90-0.5*angcover));
+					double domearea=HDCONST_TAU*domeheight; //*dist
+					double blastarea=(HDCONST_TAU*2)*dist; //*dist
+					double proportionfragged=domearea/blastarea;
+
+					//NOW incorporate the cover
+					proportionfragged*=losmul;
+
+					//PLEASE don't use a for loop here lol
+					int fragshit=10000*proportionfragged;
+
+//caller.A_Log(string.format("%s  %f %f",it.getclassname(),domearea,blastarea));
+caller.A_Log(string.format("%s  %i",it.getclassname(),fragshit));
+
+
 					int dmg=ceil(fragdamage*min(1.,angcover*(1./40.)));
 					if(frandom(0.,180.)<angcover)dmg=max(dmg,random(1,fragdamage));
 
