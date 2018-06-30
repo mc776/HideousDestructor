@@ -1,5 +1,5 @@
 // ------------------------------------------------------------
-//   Radius damage effect combos!
+// Radius damage effect combos!
 // ------------------------------------------------------------
 
 //need to do a new explosion to immolate things properly
@@ -199,46 +199,58 @@ extend class HDActor{
 						(it.radius*2+it.height)*0.5,
 						dist
 					);
-//					if(angcover){caller.A_Log(string.format("%s  %f",it.getclassname(),angcover));}
-					//MUHFUGGIN HIGH SCHOOL GEOMETRY https://en.wikipedia.org/wiki/Spherical_sector
-					double domeheight=abs(sin(90-0.5*angcover));
-					double domearea=HDCONST_TAU*domeheight; //*dist
-					double blastarea=(HDCONST_TAU*2)*dist; //*dist
-					double proportionfragged=domearea/blastarea;
+//caller.A_Log(string.format("%s  %f",it.getclassname(),angcover));
+					int fragshit=2000;
+					if(dist>0){
+						//HIGH SCHOOL GEOMETRY
+						//https://en.wikipedia.org/wiki/Spherical_sector
+						double domeheight=abs(sin(90-0.5*angcover));
+						double domearea=HDCONST_TAU*domeheight; //*dist
+						double blastarea=(HDCONST_TAU*2)*dist; //*dist
+						double proportionfragged=domearea/blastarea;
 
-					//NOW incorporate the cover
-					proportionfragged*=losmul;
+						//NOW incorporate the cover
+						proportionfragged*=losmul;
 
-					//PLEASE don't use a for loop here lol
-					//2000 frags = 2-45 frags on any given target
-					int fragshit=2000*proportionfragged;
+						//2000 frags = 2-45 frags on any given target
+						fragshit*=proportionfragged;
+					}
 
-//caller.A_Log(string.format("%s  %f %f",it.getclassname(),domearea,blastarea));
-caller.A_Log(string.format("%s  %i",it.getclassname(),fragshit));
+//caller.A_Log(string.format("%s  %i",it.getclassname(),fragshit));
 
+					//randomize count and abort if none end up hitting
+					fragshit*=frandom(0.6,1.6);
+					if(fragshit<1)continue;
 
-					int dmg=ceil(fragdamage*min(1.,angcover*(1./40.)));
-					if(frandom(0.,180.)<angcover)dmg=max(dmg,random(1,fragdamage));
+					//base damage
+					int dmg=min(fragshit*max(fragdamage>>4,1),fragdamage);
+					//crits
+					if(frandom(0,1)<(0.01*fragshit))dmg*=frandom(1.,2.);
 
 					//SO MUCH BLOOD
-					caller.A_Face(it,0,0);
-					name bld="FragPuff";
-					if(!it.bnoblood&&it.bloodtype)bld=it.bloodtype;
-					int gbg;actor blaaa;vector2 blooddir=(caller.pos.xy-it.pos.xy).unit();
-					for(int i=0;i<dmg;i+=12){
-						[gbg,blaaa]=it.A_SpawnItemEx(bld,
-							frandom(-1,it.radius),
-							frandom(-it.radius,it.radius)*0.6,
-							frandom(4,it.height),
-							blooddir.x*frandom(-1,4),
-							blooddir.y*frandom(-4,4),
-							frandom(-1,3),
-							-caller.angle,
-							SXF_USEBLOODCOLOR
-							|SXF_ABSOLUTEANGLE
-							|SXF_NOCHECKPOSITION
-						);
-						blaaa.vel+=it.vel;
+					if(
+						!(it is "TempShield")
+					){
+						caller.A_Face(it,0,0);
+						name bld="FragPuff";
+						if(!it.bnoblood&&it.bloodtype)bld=it.bloodtype;
+						int gbg;actor blaaa;vector2 blooddir=(caller.pos.xy-it.pos.xy).unit();
+						int bloodshit=min(fragshit,it.height);
+						for(int i=0;i<bloodshit;i++){
+							[gbg,blaaa]=it.A_SpawnItemEx(bld,
+								frandom(-1,it.radius),
+								frandom(-it.radius,it.radius)*0.6,
+								frandom(4,it.height),
+								blooddir.x*frandom(-1,4),
+								blooddir.y*frandom(-4,4),
+								frandom(-1,3),
+								-caller.angle,
+								SXF_USEBLOODCOLOR
+								|SXF_ABSOLUTEANGLE
+								|SXF_NOCHECKPOSITION
+							);
+							blaaa.vel+=it.vel;
+						}
 					}
 
 					//limit damage to non-gibbing levels
@@ -258,14 +270,17 @@ caller.A_Log(string.format("%s  %i",it.getclassname(),fragshit));
 
 
 					//and finally the good stuff
-					if(hd_debug)caller.A_Log(
-						string.format("%s fragged for %i damage",
-							it.getclassname(),dmg
+					if(1||hd_debug)caller.A_Log(
+						string.format("%s fragged %i times for %i damage",
+							it.getclassname(),fragshit,dmg
 						)
 					);
+					int pcbak=it.painchance;
+					it.painchance*=fragshit;
 					it.DamageMobj(caller,source,dmg,
 						fragdamagetype,DMG_THRUSTLESS,0
 					);
+					if(it)it.painchance=pcbak;
 				}
 			}
 		}
