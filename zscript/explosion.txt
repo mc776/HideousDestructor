@@ -198,11 +198,11 @@ extend class HDActor{
 					//ideally it would be the arc from corner to corner
 					//but this will do for now
 					double angcover=atan2(
-						(it.radius*2+it.height)*0.5,
+						it.height,//(it.radius*2+it.height)*0.5,
 						dist
 					);
 //caller.A_Log(string.format("%s  %f",it.getclassname(),angcover));
-					int fragshit=2000;
+					int fragshit=5000;
 					if(dist>0){
 						//HIGH SCHOOL GEOMETRY
 						//https://en.wikipedia.org/wiki/Spherical_sector
@@ -225,9 +225,9 @@ extend class HDActor{
 					if(fragshit<1)continue;
 
 					//base damage
-					int dmg=min(fragshit*max(fragdamage>>4-random(0,it.countinv("BulletResistance")),1),fragdamage);
+					int dmg=min(fragshit*max(fragdamage>>5-random(0,it.countinv("BulletResistance")),1),fragdamage);
 					//crits
-					if(frandom(0,1)<(0.05*fragshit))dmg*=frandom(1.,2.);
+					if(frandom(0,1)<(0.01*fragshit))dmg*=frandom(1.,2.);
 
 					//SO MUCH BLOOD
 					if(
@@ -272,7 +272,7 @@ extend class HDActor{
 
 
 					//and finally the good stuff
-					if(1||hd_debug)caller.A_Log(
+					if(hd_debug)caller.A_Log(
 						string.format("%s fragged %i times for %i damage",
 							it.getclassname(),fragshit,dmg
 						)
