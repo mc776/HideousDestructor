@@ -221,11 +221,11 @@ extend class HDActor{
 //caller.A_Log(string.format("%s  %i",it.getclassname(),fragshit));
 
 					//randomize count and abort if none end up hitting
-					fragshit*=frandom(0.6,1.6);
+					fragshit*=frandom(0.9,1.1);
 					if(fragshit<1)continue;
 
 					//base damage
-					int dmg=min(fragshit*max(fragdamage>>4,1),fragdamage);
+					int dmg=min(fragshit*max(fragdamage>>4-random(0,it.countinv("BulletResistance")),1),fragdamage);
 					//crits
 					if(frandom(0,1)<(0.05*fragshit))dmg*=frandom(1.,2.);
 
