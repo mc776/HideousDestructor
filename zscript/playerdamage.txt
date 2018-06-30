@@ -70,6 +70,10 @@ extend class HDPlayerPawn{
 			else if(mod=="thermal")blrs.intensity-=100;
 		}
 
+		//too many old maps that predate the availability of lava "fire" damage
+		//better just treat them all the same
+		if(mod=="fire"&&!inflictor)mod="slime";
+
 		//radsuit
 		if(mod=="slime")A_GiveInventory("Heat",damage*frandom(2.3,2.7));
 		if(countinv("PowerIronFeet"))A_GiveInventory("WornRadsuit");
