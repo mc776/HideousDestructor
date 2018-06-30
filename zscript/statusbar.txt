@@ -55,6 +55,13 @@ class HDStatusBar:DoomStatusBar{
 				DrawCommonStuff(state);
 				DrawFullScreenStuff();
 			}
+			else{
+				let www=cplayer.readyweapon;
+				if(
+					www is "HDBP"
+					||www is "MagManager"
+				)drawweaponstatus(www);
+			}
 		}
 		if(idmypos)drawmypos();
 	}
