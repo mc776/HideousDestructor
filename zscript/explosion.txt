@@ -214,7 +214,7 @@ extend class HDActor{
 						//NOW incorporate the cover
 						proportionfragged*=losmul;
 
-						//2000 frags = 2-45 frags on any given target
+						//2500 frags = 2-45 frags on any given target
 						fragshit*=proportionfragged;
 					}
 
@@ -225,7 +225,7 @@ extend class HDActor{
 					if(fragshit<1)continue;
 
 					//base damage
-					int dmg=min(fragshit*max(fragdamage>>5-random(0,it.countinv("BulletResistance")),1),fragdamage);
+					int dmg=min(fragshit*max(fragdamage>>4-random(0,it.countinv("BulletResistance")),1),fragdamage);
 					//crits
 					if(frandom(0,1)<(0.01*fragshit))dmg*=frandom(1.,2.);
 

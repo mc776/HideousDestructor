@@ -9,12 +9,19 @@ class HERPLeg:Actor{
 		+flatsprite +nointeraction
 	}
 	vector3 relpos;
+	double oldfloorz;
 	override void Tick(){
 		if(!master){destroy();return;}
-		if(master.pos.z<floorz+12){
+		if(
+			master.pos.z<floorz+12
+			&&oldfloorz==floorz
+		){
 			master.setz(floorz+12);
 			master.vel.z=max(0,master.vel.z);
-		}else setorigin(master.pos+relpos,true);
+		}
+		binvisible=oldfloorz!=floorz;
+		setorigin(master.pos+relpos,true);
+		oldfloorz=floorz;
 		if(pos.z<=floorz)master.vel.xy*=getfriction();
 	}
 	states{
