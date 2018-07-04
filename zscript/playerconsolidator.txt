@@ -43,7 +43,7 @@ extend class HDPlayerPawn{
 			)
 		){
 			hdweapon(findinventory("BFG9k")).initializewepstats(true);
-			batts.maxcheat();
+			if(batts)batts.maxcheat();
 			if(countinv("ThunderBuster")){
 				hdweapon(findinventory("ThunderBuster")).weaponstatus[TBS_BATTERY]=20;
 			}
