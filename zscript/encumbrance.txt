@@ -11,13 +11,13 @@ const ENC_BATTERY_LOADED=ENC_BATTERY*0.4;
 //https://www.youtube.com/watch?v=mjuEJjzon-g
 const ENC_426MAG=10;
 const ENC_426MAG_EMPTY=ENC_426MAG*0.4;
-const ENC_426_LOADED=(ENC_426MAG-ENC_426MAG_EMPTY)*0.02;
+const ENC_426_LOADED=(ENC_426MAG-ENC_426MAG_EMPTY)/50.;
 const ENC_426=ENC_426_LOADED*4;
 const ENC_426MAG_LOADED=ENC_426MAG_EMPTY*0.4;
 
 const ENC_776MAG=30;
 const ENC_776MAG_EMPTY=ENC_776MAG*0.4;
-const ENC_776_LOADED=(ENC_776MAG-ENC_776MAG_EMPTY)*0.02;
+const ENC_776_LOADED=(ENC_776MAG-ENC_776MAG_EMPTY)/30.;
 const ENC_776=ENC_776_LOADED*3.5;
 const ENC_776MAG_LOADED=ENC_776MAG_EMPTY*0.5;
 const ENC_776B=ENC_776*0.3;
@@ -25,8 +25,8 @@ const ENC_776CLIP_EMPTY=ENC_776B;
 const ENC_776CLIP=ENC_776CLIP_EMPTY+ENC_776*10;
 
 const ENC_9MAG=6;
-const ENC_9MAG_EMPTY=ENC_9MAG*3;
-const ENC_9_LOADED=(ENC_9MAG-ENC_9MAG_EMPTY)*0.02;
+const ENC_9MAG_EMPTY=ENC_9MAG*0.3;
+const ENC_9_LOADED=(ENC_9MAG-ENC_9MAG_EMPTY)/15.;
 const ENC_9=ENC_9_LOADED*3;
 const ENC_9MAG_LOADED=ENC_9MAG_EMPTY*0.1; //it's almost entirely inside the handle!
 const ENC_9MAG30_EMPTY=ENC_9MAG_EMPTY*2.4;
@@ -118,15 +118,7 @@ extend class HDPlayerPawn{
 			//and now for stuff that should just be listed
 			enc+=
 
-			//second pistol
-			(
-				(useammotypes&USE_SECONDPISTOL&&countinv("HDSecondPistol"))?30
-				+HDSecondPistol(
-					findinventory("HDSecondPistol")
-				).weaponstatus[PISS_MAG]*ENC_9MAG_LOADED:0
-			)
-
-			//single loose ammo
+			//single loose ammo does not inherit from HDPickup
 			+(useammotypes&USE_12?(
 				countinv("HDShellAmmo")*ENC_SHELL
 			):0)

@@ -29,6 +29,10 @@ class HDSecondPistol:HDAmmo replaces Pistol{
 			weaponstatus[PISS_AUTO]=1;
 		}
 	}
+	override double getbulk(){
+		int mgg=weaponstatus[PISS_MAG];
+		return 30+(mgg<0?0:(ENC_9MAG_LOADED+mgg*ENC_9_LOADED));
+	}
 	override void AttachToOwner(actor other){
 		//if owner has no first, change self to first
 		//otherwise attach normally
@@ -139,7 +143,8 @@ class HDPistol:HDWeapon{
 		}
 	}
 	override double,int weaponbulk(){
-		return 30+weaponstatus[PISS_MAG]*ENC_9MAG_LOADED,USE_9;
+		int mgg=weaponstatus[PISS_MAG];
+		return 30+(mgg<0?0:(ENC_9MAG_LOADED+mgg*ENC_9_LOADED));
 	}
 	override void postbeginplay(){
 		super.postbeginplay();

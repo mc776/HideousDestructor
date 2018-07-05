@@ -85,7 +85,8 @@ class LiberatorRifle:HDWeapon{
 			if(weaponstatus[0]&LIBF_GRENADELOADED)blx+=ENC_ROCKETLOADED;
 			uss|=USE_ROCKET;
 		}
-		return blx+weaponstatus[LIBS_MAG]*ENC_776_LOADED,uss;
+		int mgg=weaponstatus[LIBS_MAG];
+		return blx+mgg<0?0:(ENC_776MAG_LOADED+mgg*ENC_776_LOADED),uss;
 	}
 	override void tick(){
 		super.tick();
