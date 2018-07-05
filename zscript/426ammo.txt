@@ -4,8 +4,8 @@
 class FourMilAmmo:Ammo{
 	default{
 		+inventory.ignoreskill
-		inventory.maxamount 100;
-		ammo.backpackmaxamount 100;
+		inventory.maxamount 200;
+		ammo.backpackmaxamount 200;
 		ammo.backpackamount 0;
 		xscale 0.5; yscale 0.6; height 2; radius 2; translation "ice";
 	}
@@ -33,6 +33,7 @@ class FourMilAmmo:Ammo{
 	states{
 	spawn:
 		RBRS A -1;
+		stop;
 	}
 }
 class HD4mMag:HDMagAmmo{
@@ -43,8 +44,8 @@ class HD4mMag:HDMagAmmo{
 
 		hdmagammo.maxperunit 51;
 		hdmagammo.roundtype "FourMilAmmo";
-		hdmagammo.roundbulk ENC_426;
-		hdmagammo.magbulk ENC_426MAG*0.3;
+		hdmagammo.roundbulk ENC_426_LOADED;
+		hdmagammo.magbulk ENC_426MAG_EMPTY;
 		hdmagammo.nicename "4.26 UAC Standard Magazines";
 		inventory.maxamount 9;
 		inventory.pickupmessage "Picked up a 4.26 UAC Standard magazine.";
