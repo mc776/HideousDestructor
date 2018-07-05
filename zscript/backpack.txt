@@ -275,6 +275,11 @@ class HDBP:HDWeapon{
 				}else ebulk+=itembulk[i]*itemamount[i];
 			}
 		}
+		int magslength=pistmags.size();for(int i=0;i<magslength;i++){ebulk+=ENC_9*pistmags[i];}
+		magslength=smgmags.size();for(int i=0;i<magslength;i++){ebulk+=ENC_9*smgmags[i];}
+		magslength=zmmags.size();for(int i=0;i<magslength;i++){ebulk+=ENC_426*zmmags[i];}
+		magslength=libmags.size();for(int i=0;i<magslength;i++){ebulk+=ENC_776*libmags[i];}
+		magslength=bossclips.size();for(int i=0;i<magslength;i++){ebulk+=ENC_776*bossclips[i];}
 		bulk=ebulk;
 		return ebulk;
 	}
@@ -322,8 +327,6 @@ class HDBP:HDWeapon{
 		itemamount[batteryindex]=max(itemamount[batteryindex],batteries.size());
 			while(itemamount[batteryindex]>batteries.size()){batteries.push(20);}
 	}
-	void ConsolidateBPMags(){
-	}
 
 	override void beginplay(){
 		int i=-1;
@@ -349,18 +352,18 @@ class HDBP:HDWeapon{
 		i++;itembulk[i]=ENC_BRONTOSHELL;itemtype[i]="BrontornisRound";itemname[i]="Brontornis shell";
 		i++;itemname[i]="br";
 
-		i++;itembulk[i]=ENC_426MAG;itemtype[i]="HD4mMag";itemname[i]="4.26mm mag";zmindex=i;
+		i++;itembulk[i]=ENC_426MAG_EMPTY;itemtype[i]="HD4mMag";itemname[i]="4.26mm mag";zmindex=i;
 		i++;itembulk[i]=ENC_426;itemtype[i]="FourMilAmmo";itemname[i]="Misc. 4.26mm ammo";loosezedindex=i;
 		i++;itemname[i]="cl";
 
-		i++;itembulk[i]=ENC_776MAG;itemtype[i]="HD7mMag";itemname[i]="7.76mm mag";libindex=i;
-		i++;itembulk[i]=ENC_776CLIP;itemtype[i]="HD7mClip";itemname[i]="7.76mm clip";bossindex=i;
+		i++;itembulk[i]=ENC_776MAG_EMPTY;itemtype[i]="HD7mMag";itemname[i]="7.76mm mag";libindex=i;
+		i++;itembulk[i]=ENC_776CLIP_EMPTY;itemtype[i]="HD7mClip";itemname[i]="7.76mm clip";bossindex=i;
 		i++;itembulk[i]=ENC_776;itemtype[i]="SevenMilAmmo";itemname[i]="Misc. 7.76mm ammo";sevenmilindex=i;
 		i++;itembulk[i]=ENC_776B;itemtype[i]="SevenMilBrass";itemname[i]="7.76mm casing";brassindex=i;
 		i++;itemname[i]="br";
 
-		i++;itembulk[i]=ENC_9MAG;itemtype[i]="HD9mMag15";itemname[i]="Pistol mag";pistindex=i;
-		i++;itembulk[i]=ENC_9MAG30;itemtype[i]="HD9mMag30";itemname[i]="SMG mag";smgindex=i;
+		i++;itembulk[i]=ENC_9MAG_EMPTY;itemtype[i]="HD9mMag15";itemname[i]="Pistol mag";pistindex=i;
+		i++;itembulk[i]=ENC_9MAG30_EMPTY;itemtype[i]="HD9mMag30";itemname[i]="SMG mag";smgindex=i;
 		i++;itembulk[i]=ENC_9;itemtype[i]="HDPistolAmmo";itemname[i]="Misc. 9mm ammo";
 		i++;itemname[i]="br";
 
