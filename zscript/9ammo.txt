@@ -111,6 +111,13 @@ class HDPistolEmptyMag:IdleDummy{
 		destroy();
 	}
 }
+class HDSMGEmptyMag:IdleDummy{
+	override void postbeginplay(){
+		super.postbeginplay();
+		HDMagAmmo.SpawnMag(self,"HD9mMag30",0);
+		destroy();
+	}
+}
 
 
 class HD9mBoxPickup:HDUPK{
