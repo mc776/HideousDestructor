@@ -279,7 +279,7 @@ class HDBP:HDWeapon{
 		magslength=smgmags.size();for(int i=0;i<magslength;i++){ebulk+=ENC_9_LOADED*smgmags[i];}
 		magslength=zmmags.size();for(int i=0;i<magslength;i++){ebulk+=ENC_426_LOADED*zmmags[i];}
 		magslength=libmags.size();for(int i=0;i<magslength;i++){ebulk+=ENC_776_LOADED*libmags[i];}
-		magslength=bossclips.size();for(int i=0;i<magslength;i++){ebulk+=ENC_776_LOADED*bossclips[i];}
+		magslength=bossclips.size();for(int i=0;i<magslength;i++){ebulk+=ENC_776*bossclips[i];}
 		bulk=ebulk;
 		return ebulk;
 	}
@@ -357,7 +357,7 @@ class HDBP:HDWeapon{
 		i++;itemname[i]="cl";
 
 		i++;itembulk[i]=ENC_776MAG_EMPTY;itemtype[i]="HD7mMag";itemname[i]="7.76mm mag";libindex=i;
-		i++;itembulk[i]=ENC_776CLIP_EMPTY;itemtype[i]="HD7mClip";itemname[i]="7.76mm clip";bossindex=i;
+		i++;itembulk[i]=ENC_776CLIP;itemtype[i]="HD7mClip";itemname[i]="7.76mm clip";bossindex=i;
 		i++;itembulk[i]=ENC_776;itemtype[i]="SevenMilAmmo";itemname[i]="Misc. 7.76mm ammo";sevenmilindex=i;
 		i++;itembulk[i]=ENC_776B;itemtype[i]="SevenMilBrass";itemname[i]="7.76mm casing";brassindex=i;
 		i++;itemname[i]="br";
