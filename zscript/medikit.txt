@@ -163,7 +163,7 @@ class HDMedikitter:HDWoundFixer{
 				if(getcvar("hd_helptext"))A_WeaponMessage("Nothing to be done here.\n\nHeal thyself? (press zoom)",150);
 				return resolvestate("nope");
 			}
-			if(c!=invoker.usedon){
+			if(invoker.usedon&&c!=invoker.usedon){
 				if(c.getcvar("hd_helptext"))c.A_Print(string.format("Get the hell away!\n\n%s is trying to stab you\n\nwith a used syringe!!!",player.getusername()));
 				if(getcvar("hd_helptext"))A_Print("Why are you attacking your teammate\n\nwith used medical equipment!?");
 			}else if(c.countinv("IsMoving")>4){
