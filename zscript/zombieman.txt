@@ -67,6 +67,7 @@ class ZombieStormtrooper:ZombieMan{
 	}
 	void noblockwepdrop(){
 		A_NoBlocking();
+		if(!hasdropped&&!bfriendly)return;
 		hdweapon wp=null;
 		if(firemode==-2){
 			if(!hasdropped){

@@ -88,8 +88,10 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 	void noblockwepdrop(){
 		A_NoBlocking();
 		if(hasdropped){
-			if(wep<0)A_DropItem("HD4mMag",0,96);
-			else A_DropItem("ShellPickup",0,200);
+			if(!bfriendly){
+				if(wep<0)A_DropItem("HD4mMag",0,96);
+				else A_DropItem("ShellPickup",0,200);
+			}
 		}else{
 			A_DropItem("HDPistol",0,16);
 			hasdropped=true;

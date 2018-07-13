@@ -419,7 +419,7 @@ class DecoPusher:IdleDummy{
 					data:spawnpos
 				);
 				actor aaa=spawn(thingy,spawnpos.hitlocation-spawnpos.hitdir);
-				aaa.setz(aaa.floorz);
+				if(aaa)aaa.setz(aaa.floorz);
 			}
 		}stop;
 	}
