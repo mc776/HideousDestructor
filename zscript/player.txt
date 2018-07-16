@@ -250,7 +250,14 @@ class HDPlayerPawn:PlayerPawn{
 		iyaw=player.cmd.yaw*(360./65536.);
 		ipitch=player.cmd.pitch*(360./65536.);
 
-		
+
+
+
+		super.Tick();
+
+
+
+
 		// IT WORKS!!!! :D :D :D
 		/*
 		if(player.getgender()==1){
@@ -263,12 +270,6 @@ class HDPlayerPawn:PlayerPawn{
 			else sprite=getspriteindex("PLAYA1");
 		}
 		*/
-
-
-
-		super.Tick();
-
-
 
 		HeartTicker(fm,sm,input);
 		if(inpain>0)inpain--;

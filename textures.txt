@@ -639,7 +639,6 @@ graphic CLIPRED,9,11
 {
 	offset 2,11
 	patch CLIPA0,0,0{translation red}
-	patch CLIPA0,0,0{translation "0:255=%[0,0,0]:[1.8,1.8,1.8]"}
 }
 graphic CLIPGREY,9,11
 {
@@ -658,6 +657,18 @@ sprite ZMAGB0,9,11{
 	yscale 2.0
 	patch CLIPA0,0,0{translation "160:163=144:147"}
 }
+graphic ZMAGNORM,9,11{
+	offset 5,11
+	xscale 1.35
+	yscale 1.0
+	patch ZMAGB0,0,0{}
+}
+graphic ZMAGGREY,9,11{
+	offset 5,11
+	xscale 1.35
+	yscale 1.0
+	patch ZMAGB0,0,0{translation "0:255=%[0,0,0]:[1.8,1.8,1.8]"}
+}
 sprite ZMAGC0,9,11{
 	offset 5,11
 	xscale 2.7
@@ -671,11 +682,18 @@ sprite CLP2A0,9,11
 	yscale 2.7
 	patch CLIPA0,0,0{translation "97:111=240:247"}
 }
-graphic CLIP2GREY,9,11
+graphic CLP2NORM,9,11
 {
 	offset 2,11
-	xscale 4.3
-	yscale 2.7
+	xscale 1.433
+	yscale 0.9
+	patch CLP2A0,0,0{}
+}
+graphic CLP2GREY,9,11
+{
+	offset 2,11
+	xscale 1.433
+	yscale 0.9
 	patch CLIPA0,0,0{translation "0:255=%[0,0,0]:[1.8,1.8,1.8]"}
 }
 texture CLP3X0,9,3
@@ -698,12 +716,19 @@ sprite CLP3A0,9,20
 	patch CLP3Y0,0,2{}
 	patch CLP3X0,0,0{}
 }
-graphic CLIP3GREY,9,20
+graphic CLP3NORM,9,20
 {
 	offset 2,19
-	xscale 4.3
-	yscale 2.7
-	patch CLIP3A0,0,0{translation "0:255=%[0,0,0]:[1.8,1.8,1.8]"}
+	xscale 1.433
+	yscale 0.9
+	patch CLP3A0,0,0{}
+}
+graphic CLP3GREY,9,20
+{
+	offset 2,19
+	xscale 1.433
+	yscale 0.9
+	patch CLP3A0,0,0{translation "0:255=%[0,0,0]:[1.8,1.8,1.8]"}
 }
 sprite CLP2B0,11,9{
 	offset 5,9
@@ -1130,16 +1155,26 @@ graphic SUITC0,15,15
 }	
 
 
-sprite RMAGB0,10,9
-{
+sprite RMAGB0,10,9{
 	offset 5,7
 	patch RMAGA0,0,0{rotate 270,translation "160:167=104:111"}
 }
-sprite RMAGA0,10,9
-{
+sprite RMAGA0,10,9{
 	offset 5,7
 	patch RBRSA3A7,1,0{}
 	patch RMAGA0,0,0{}
+}
+graphic RMAGNORM,10,9{
+	offset 5,7
+	xscale 0.7
+	yscale 0.7
+	patch RMAGA0,0,0{}
+}
+graphic RMAGGREY,10,9{
+	offset 5,7
+	xscale 0.7
+	yscale 0.7
+	patch RMAGA0,0,0{translation "0:255=%[0,0,0]:[1.8,1.8,1.8]"}
 }
 sprite CLIPB0,11,9
 {

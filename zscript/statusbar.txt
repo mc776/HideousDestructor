@@ -701,7 +701,7 @@ class HDStatusBar:DoomStatusBar{
 			DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_BOTTOM
 		);
 	}
-	void drawbattery(int posx,int posy,int flags=0){
+	void drawbattery(int posx,int posy,int flags=0,bool reloadorder=false){
 		let hpl=hdplayerpawn(cplayer.mo);
 		string cellsprite="CELLA0";
 		let bttc=HDBattery(hpl.findinventory("HDBattery"));
@@ -710,12 +710,15 @@ class HDStatusBar:DoomStatusBar{
 				if(bttc.chargemode==HDBattery.BATT_CHARGEMAX)drawimage("CELPA0",(posx+2,posy+6),flags:flags,scale:(0.3,0.3));
 				else if(bttc.chargemode==HDBattery.BATT_CHARGETOP)drawimage("CELPA0",(posx,posy+4),flags:flags,scale:(0.3,0.3));
 			}
-			int amt=bttc.mags[bttc.mags.size()-1];
+			int amt;
+			if(reloadorder){
+				amt=GetNextLoadMag(bttc);
+			}else amt=bttc.mags[bttc.mags.size()-1];
 			if(amt<1)cellsprite="CELLD0";
 			else if(amt<=6)cellsprite="CELLC0";
 			else if(amt<=13)cellsprite="CELLB0";
-		}
-		drawimage(cellsprite,(posx,posy),flags:flags);
+		}else cellsprite="CELLD0";
+		drawimage(cellsprite,(posx,posy),flags:flags,alpha:bttc?1.:0.3);
 	}
 }
 
