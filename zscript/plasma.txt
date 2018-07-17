@@ -520,8 +520,8 @@ class BeamSpotFlash:IdleDummy{
 		double n1=n*0.6;
 		double n2=n*0.4;
 		if(tracer){
-			tracer.damagemobj(self,target,random(n1,n),"Electro");
 			HDF.Give(tracer,"Heat",n);
+			tracer.damagemobj(self,target,random(n1,n),"Electro");
 		}
 		A_HDBlast(
 			n2,random(n2,n),0,"Electro",
