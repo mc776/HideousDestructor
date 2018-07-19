@@ -648,8 +648,8 @@ class BFGPuff:GreenParticleFountain{
 				&&!random(0,3)
 			){
 				spawn("TeleFog",tracer.pos);
-				vector3 newpos=(angletovector(frandom(0,360),8192),0);
-				tracer.setorigin(tracer.pos+newpos,false);
+				tracer.setorigin(G_PickDeathmatchStart(),false);
+				tracer.vel=(frandom(-10,10),frandom(-10,10),frandom(10,20));
 				spawn("TeleFog",tracer.pos);
 			}
 		}

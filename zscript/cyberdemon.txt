@@ -177,8 +177,8 @@ class Satanball:HDFireball{
 				&&!random(0,3)
 			){
 				spawn("TeleFog",blockingmobj.pos);
-				vector3 newpos=(angletovector(frandom(0,360),8192),0);
-				blockingmobj.setorigin(blockingmobj.pos+newpos,false);
+				blockingmobj.setorigin(G_PickDeathmatchStart(),false);
+				blockingmobj.vel=(frandom(-10,10),frandom(-10,10),frandom(10,20));
 				spawn("TeleFog",blockingmobj.pos);
 			}
 		}
