@@ -21,7 +21,7 @@ extend class HDPlayerPawn{
 		//replace all armour with custom HD stuff
 		int a=countinv("BasicArmor");
 		if(a){
-			A_GiveInventory("HDArmour",a/4);
+			A_GiveInventory("HDArmour",a>>2);
 			A_TakeInventory("BasicArmor");
 		}
 
@@ -369,11 +369,11 @@ extend class HDPlayerPawn{
 
 		//player survives at cost
 		if(
-			damage<100
-			&&damage>=health
+			damage>=health
 			&&mod!="internal"
 			&&mod!="bleedout"
 			&&mod!="invisiblebleedout"
+			&&damage<random(20,80)
 			&&random(0,3)
 		){
 			int wnddmg=random(0,max(0,damage>>2));
