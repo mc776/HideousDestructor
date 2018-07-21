@@ -409,7 +409,9 @@ class HDBPPreset:Inventory replaces backpack{
 	void addstuff(hdbp bp){
 		if(amount==999){ //custom
 			for(int i=0;i<HDBPC_NUMITEMS;i++){
-				if(bp.itemtype[i]){
+				if(bp.itemtype[i]=="HDArmour"){
+					bp.itemamount[bp.armourindex]=HDCONST_GREENARMOUR;
+				}else if(bp.itemtype[i]){
 					bp.itemamount[i]=cvar.getcvar(
 						string.format("hd_loadbp%i",i),
 						owner.player
@@ -448,7 +450,7 @@ class HDBPPreset:Inventory replaces backpack{
 						i!=bp.potionindex
 						&&i!=bp.talismanindex
 					)maxrand=random(50,250)/(max(1,bp.itembulk[i]));
-					if(i==bp.armourindex)maxrand=random(random(HDCONST_GREENARMOUR/2,HDCONST_GREENARMOUR),HDCONST_GREENARMOUR);
+					if(i==bp.armourindex)maxrand=random(random((HDCONST_GREENARMOUR>>1),HDCONST_GREENARMOUR),HDCONST_GREENARMOUR);
 					if(!maxrand)continue;
 					bp.itemamount[i]=random(1,random(1,maxrand));
 					if(bp.getbulk()>=HDBPC_CAPACITY){
