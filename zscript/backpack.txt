@@ -333,6 +333,7 @@ class HDBP:HDWeapon{
 		i++;itembulk[i]=ENC_GREENARMOUR;itemtype[i]="HDArmour";itemname[i]="Soft armour";armourindex=i;
 		i++;itembulk[i]=ENC_LADDER;itemtype[i]="PortableLadder";itemname[i]="Ladder";
 		i++;itembulk[i]=ENC_RADSUIT;itemtype[i]="PortableRadSuit";itemname[i]="Environment suit";
+		i++;itembulk[i]=ENC_LITEAMP;itemtype[i]="PortableLiteAmp";itemname[i]="Light amplifier";
 		i++;itemname[i]="br";
 
 		i++;itembulk[i]=ENC_MEDIKIT;itemtype[i]="PortableMedikit";itemname[i]="Medikit";
@@ -409,13 +410,15 @@ class HDBPPreset:Inventory replaces backpack{
 	void addstuff(hdbp bp){
 		if(amount==999){ //custom
 			for(int i=0;i<HDBPC_NUMITEMS;i++){
-				if(bp.itemtype[i]=="HDArmour"){
-					bp.itemamount[bp.armourindex]=HDCONST_GREENARMOUR;
-				}else if(bp.itemtype[i]){
-					bp.itemamount[i]=cvar.getcvar(
+				if(bp.itemtype[i]){
+					int thisamt=cvar.getcvar(
 						string.format("hd_loadbp%i",i),
 						owner.player
 					).getint();
+					if(thisamt>0){
+						if(bp.itemtype[i]=="HDArmour")bp.itemamount[bp.armourindex]=HDCONST_GREENARMOUR;
+						else bp.itemamount[i]=thisamt;
+					}
 					if(bp.getbulk()>=HDBPC_CAPACITY){
 						bp.itemamount[i]=0;
 						break;
