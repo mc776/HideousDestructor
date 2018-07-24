@@ -573,33 +573,39 @@ class HDPlayerPawn:PlayerPawn{
 				vector2 kv=AngleToVector(angle,5);
 				for(int i=7;i;i--){
 					if(!k.TryMove(k.pos.xy+kv,true) && k.blockingmobj){
+						let kbmo=k.blockingmobj;
+						double kbmolowerby=pos.z-kbmo.pos.z;
 						if(
-							k.blockingmobj.bcorpse
-							||k.blockingmobj is "HDFragGrenade"
-							||k.blockingmobj is "HDFragGrenadeRoller"
+							kbmolowerby>4
+							||kbmolowerby<-16
+						)continue;
+						if(
+							kbmo.bcorpse
+							||kbmo is "HDFragGrenade"
+							||kbmo is "HDFragGrenadeRoller"
 						){
 							if(!(oldinput&BT_USE)){
 								int forc=80;if(zerk>0)forc*=3;
 								corpsekicktimer=20+unstablewoundcount*0.5;
-								k.blockingmobj.vel+=(kv.x,kv.y,4)*forc/k.blockingmobj.mass;
-								k.blockingmobj.A_PlaySound("misc/punch");
+								kbmo.vel+=(kv.x,kv.y,4)*forc/kbmo.mass;
+								kbmo.A_PlaySound("misc/punch");
 								kicked=true;
 							}
 						}else if(
-							k.blockingmobj.bismonster
+							kbmo.bismonster
 							||(
-								k.blockingmobj.player
-								&&!isteammate(k.blockingmobj)
+								kbmo.player
+								&&!isteammate(kbmo)
 							)
 						){
 							corpsekicktimer=17+unstablewoundcount*0.5;
 							kicked=true;
-							Ring.kick(self,k.blockingmobj,k);
+							Ring.kick(self,kbmo,k);
 						}else{
 							double forc=0.4;if(zerk>0)forc=1.2;
 							corpsekicktimer=20+unstablewoundcount*0.6;
 							vel-=(kv.x,kv.y,4)*forc;
-							k.blockingmobj.A_PlaySound("misc/punch");
+							kbmo.A_PlaySound("misc/punch");
 							kicked=true;
 						}
 						break;
@@ -747,7 +753,7 @@ class kickchecker:actor{
 	override bool cancollidewith(actor other,bool passive){
 		return(
 			other.bshootable
-			&&other.bghost
+			&&!other.bghost
 			&&!(other is "HDPickup")
 			&&!(other is "HDUPK")
 			&&!(other is "HDWeapon")
