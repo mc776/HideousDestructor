@@ -109,16 +109,17 @@ class HDFire:IdleDummy{
 				destroy();return;
 			}
 
-			if(waterlevel){
-				destroy();
-				if(waterlevel<2)spawn("HDSmoke",pos);
-				return;
-			}
 			if(!master)master=self;
 			if(!target){
 				target=spawn("PersistentDamager",self.pos);
 				target.target=master;
 				if(stamina>20)stamina=20;
+			}
+			int wlvl=target.waterlevel;
+			if(wlvl>1){
+				destroy();
+				if(wlvl<2)spawn("HDSmoke",pos);
+				return;
 			}
 			setorigin(target.pos,false);
 			A_SetTics(clamp(random(3,30-stamina*0.1),2,12));
@@ -317,38 +318,40 @@ class Heat:Inventory{
 				if(realamount>random(150,1000))hdf.give(owner,"SawGib",1);
 				if(!random(0,15))owner.A_TakeInventory("VileCount",1);
 			}
-			actor aaa;
-			double raa=health<1?realamount*countinv("SawGib")/burnoutthreshold:realamount;
-			if(
-				owner is "PersistentDamager"
-				||raa<600
-				||burnoutthreshold<sawgib
-			){
-				aaa=spawn("HDFlameRed",owner.pos+(
-					frandom(-radius,radius),
-					frandom(-radius,radius),
-					frandom(2,owner.height)
-				));
-			}else{
-				aaa=spawn("HDFlameRedBig",owner.pos+(
-					frandom(-radius,radius)*0.6,
-					frandom(-radius,radius)*0.6,
-					frandom(5,owner.height*0.2)
-				));
-				aaa.scale=(randompick(-1,1)*frandom(0.9,1.2),frandom(0.9,1.1))*clamp((raa-600)*0.0003,0.6,2.);
-				if(!heatlight)heatlight=HDFireLight(spawn("HDFireLight"));
-				heatlight.target=owner;hdfirelight(heatlight).heattarget=self;
-				heatlight.args[0]=200;
-				heatlight.args[1]=150;
-				heatlight.args[2]=90;
-				heatlight.args[3]=min(realamount*0.1,256);
-				if(!random(0,3)){
-					hdf.give(owner,"SawGib",1);
-					owner.A_TakeInventory("VileCount",1);
+			if(owner.waterlevel<=random(0,1)){
+				actor aaa;
+				double raa=health<1?realamount*countinv("SawGib")/burnoutthreshold:realamount;
+				if(
+					owner is "PersistentDamager"
+					||raa<600
+					||burnoutthreshold<sawgib
+				){
+					aaa=spawn("HDFlameRed",owner.pos+(
+						frandom(-radius,radius),
+						frandom(-radius,radius),
+						frandom(2,owner.height)
+					));
+				}else{
+					aaa=spawn("HDFlameRedBig",owner.pos+(
+						frandom(-radius,radius)*0.6,
+						frandom(-radius,radius)*0.6,
+						frandom(5,owner.height*0.2)
+					));
+					aaa.scale=(randompick(-1,1)*frandom(0.9,1.2),frandom(0.9,1.1))*clamp((raa-600)*0.0003,0.6,2.);
+					if(!heatlight)heatlight=HDFireLight(spawn("HDFireLight"));
+					heatlight.target=owner;hdfirelight(heatlight).heattarget=self;
+					heatlight.args[0]=200;
+					heatlight.args[1]=150;
+					heatlight.args[2]=90;
+					heatlight.args[3]=min(realamount*0.1,256);
+					if(!random(0,3)){
+						hdf.give(owner,"SawGib",1);
+						owner.A_TakeInventory("VileCount",1);
+					}
 				}
+				aaa.target=owner;
+				aaa.A_PlaySound("misc/firecrkl",CHAN_BODY,clamp(realamount*0.001,0,0.2));
 			}
-			aaa.target=owner;
-			aaa.A_PlaySound("misc/firecrkl",CHAN_BODY,clamp(realamount*0.001,0,0.2));
 		}
 
 		//damage
@@ -403,6 +406,11 @@ class Heat:Inventory{
 		//cooldown
 		double reduce=inversevolumeratio*max(realamount*0.001,1.);
 		if(owner.vel dot owner.vel > 4)reduce*=1.6;
+
+		if(owner.waterlevel>2)reduce*=10;
+		else if(owner.waterlevel>1)reduce*=4;
+		else if(owner.countinv("HDFireDouse"))reduce*=2;
+
 		double aang=absangle(angle,owner.angle);
 		if(aang>4.)reduce*=clamp(aang*0.4,1.,4.);
 		if((!skill||hd_lowdamage)&&owner.player)reduce*=3;
