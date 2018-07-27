@@ -119,6 +119,7 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 		hdpickup.bulk ENC_LITEAMP;
 	}
 	int spent;bool worn;
+	int brokenness; //400=totally broken
 	const LITEBAT=20000;
 	pointlight nozerolight;
 	override double getbulk(){return bulk;}
@@ -169,7 +170,7 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 				int bbbi=bbb.mags[bbbindex];
 
 				//flicker
-				if(!random[rand1](0,bbbi*bbbi)){
+				if(!random[rand1](0,max(0,bbbi*bbbi-brokenness))){
 //						owner.player.fixedcolormap=-1;
 //						owner.player.fixedlightlevel=-1;
 					Shader.SetEnabled(owner.player,"NiteVis",false);
