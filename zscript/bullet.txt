@@ -209,6 +209,18 @@ class HDBullet:HDActor{
 		//and yet another check
 		if(max(abs(pos.x),abs(pos.y),-pos.z)>=32768){destroy();return;}
 
+		//wobble
+		if(pushfactor&&speed){
+			double newproportion=blt.distance/speed;
+			double slowdown=-frandom(0,pushfactor)*0.01*(newproportion);
+			speed+=slowdown;
+			A_Changevelocity(
+				slowdown,
+				frandom(-pushfactor,pushfactor)*newproportion,
+				0,CVF_RELATIVE
+			);
+		}
+
 		//hit actor, ignore all the wall geometry stuff below
 		if(blt.hitactor){
 			actor hitactor=blt.hitactor;
@@ -523,13 +535,9 @@ class HDBullet:HDActor{
 			}
 		}
 
-		//drop and wobble
+		//drop
 		if(vel.z>BULLET_TERMINALVELOCITY)vel.z-=grav;
-		if(pushfactor)A_Changevelocity(
-			-frandom(0,pushfactor)*0.01*speed,
-			frandom(-pushfactor,pushfactor),
-			0,CVF_RELATIVE
-		);
+
 		//nexttic
 		if(CheckNoDelay()){
 			if(tics>0)tics--;  
@@ -780,7 +788,7 @@ class HDBullet426:HDBullet{
 }
 class HDBullet776:HDBullet{
 	default{
-		pushfactor 0.3;
+		pushfactor 0.4;
 		mass 1344;
 		speed 1100;
 		accuracy 12;
