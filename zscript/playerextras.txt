@@ -144,7 +144,11 @@ extend class HDPlayerPawn{
 		}
 		//slides, too!
 		else if(
-			player.crouchdir<0&&height>46
+			(
+				!cvar.getcvar("hd_noslide",player).getbool()
+				||runwalksprint>0
+			)
+			&&player.crouchdir<0&&height>46
 			&&(fm||sm)
 			&&floorz==pos.z
 			&&countinv("IsMoving")>1
