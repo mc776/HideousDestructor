@@ -44,7 +44,7 @@ class HDStatusBar:DoomStatusBar{
 		if(automapactive){
 			DrawAutomapHUD(ticfrac);
 			DrawAutomapStuff();
-		}else{
+		}else if(cplayer.mo!=cplayer.camera)return;else{
 			DrawAlwaysStuff();
 			if(hpl.health<1)return;
 			BeginHUD(forcescaled:true);
