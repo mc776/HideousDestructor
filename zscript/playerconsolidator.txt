@@ -144,10 +144,11 @@ extend class HDPlayerPawn{
 				totalbrass-=made;
 				totalpowder-=made*3;
 
-				A_Log(string.format("Reloaded %i 7.76mm rounds during downtime.",made),true);
+				string loadedsevensmsg=string.format("Reloaded %i 7.76mm rounds during downtime.",made);
 
 				//load Liberator mags to make room
 				let llbbmm=HD7mMag(findinventory("HD7mMag"));
+				bool sevensmagged=false;
 				if(llbbmm){
 					int llbbmmamt=llbbmm.mags.size();
 					for(int i=0;i<llbbmmamt;i++){
@@ -155,11 +156,16 @@ extend class HDPlayerPawn{
 							30-llbbmm.mags[i],
 							made
 						);
-						llbbmm.mags[i]+=intomag;
-						made-=intomag;
-						if(made<1)break;
+						if(intomag>0){
+							sevensmagged=true;
+							llbbmm.mags[i]+=intomag;
+							made-=intomag;
+							if(made<1)break;
+						}
 					}
 				}
+				if(sevensmagged)loadedsevensmsg.appendformat(" Some were loaded into your Liberator mags.");
+				A_Log(loadedsevensmsg,true);
 
 				//fill inventory first, then backpack
 				//let the player load into mags after
