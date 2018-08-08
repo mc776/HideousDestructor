@@ -70,25 +70,7 @@ class Tripwire:HDWeapon{
 					gumline.hittype!=Trace_HitWall
 					&&gumline.hittype!=Trace_HitFloor
 					&&gumline.hittype!=Trace_HitCeiling
-				)||(
-					gumline.hittype==Trace_HitCeiling
-					&&ceilingpic==skyflatnum
-				)||(
-					gumline.hittype==Trace_HitFloor
-					&&floorpic==skyflatnum
-				)||(
-					othersector
-					&&gumline.hittype==Trace_HitWall
-					&&(
-						(
-							othersector.gettexture(othersector.ceiling)==skyflatnum
-							&&othersector.ceilingplane.zatpoint(gumline.hitdir.xy)<gumline.hitlocation.z
-						)||(
-							othersector.gettexture(othersector.floor)==skyflatnum
-							&&othersector.floorplane.zatpoint(gumline.hitdir.xy)>gumline.hitlocation.z
-						)
-					)
-				)
+				)||hdf.linetracehitsky(gumline)
 			){
 				A_Log(string.format(
 					"You need to stick the %s on to something stable.",

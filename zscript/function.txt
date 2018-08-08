@@ -419,6 +419,36 @@ struct HDF play{
 			bbb.amount=maxunit;bbb.vel=caller.vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
 		}
 	}
+	//figure out if something hit some map geometry that isn't (i.e., "sky").
+	//why is GetTexture play!?
+	static bool linetracehitsky(flinetracedata llt){
+		if(
+			(
+				llt.hittype==Trace_HitCeiling
+				&&llt.hitsector.gettexture(1)==skyflatnum
+			)||(
+				llt.hittype==Trace_HitFloor
+				&&llt.hitsector.gettexture(0)==skyflatnum
+			)||(
+				!!llt.hitline
+				&&llt.hitline.special==Line_Horizon
+			)
+		)return true;
+		let othersector=hdmath.oppositesector(llt.hitline,llt.hitsector);
+		if(!othersector)return false;
+		return(
+			llt.hittype==Trace_HitWall
+			&&(
+				(
+					othersector.gettexture(othersector.ceiling)==skyflatnum
+					&&othersector.ceilingplane.zatpoint(llt.hitdir.xy)<llt.hitlocation.z
+				)||(
+					othersector.gettexture(othersector.floor)==skyflatnum
+					&&othersector.floorplane.zatpoint(llt.hitdir.xy)>llt.hitlocation.z
+				)
+			)
+		);
+	}
 	//process shields
 	//[shields,damage]=hdf.gothroughshields(shields,damage,inflictor,mod,flags);
 	static int,int GoThroughShields(int shields,int damage,actor inflictor=null,name mod="none",int flags=0){
