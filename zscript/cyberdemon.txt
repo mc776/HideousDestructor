@@ -56,6 +56,13 @@ class Roboball:SlowProjectile{
 		bmissile=false;
 		setstatelabel("death");
 	}
+	void A_SatanRoboRocketThrust(){
+		if(fuel>0){
+			fuel--;
+			A_PlaySound("weapons/rocklaunch",CHAN_AUTO,0.6);
+			A_ChangeVelocity(thrust.x,0,thrust.y,CVF_RELATIVE);
+		}
+	}
 	int fuel;
 	vector2 thrust;
 	states{
@@ -66,12 +73,8 @@ class Roboball:SlowProjectile{
 			thrust=(cos(pitch),-sin(pitch))*10;
 		}
 	spawn2:
-		MISL A 2 light("ROCKET"){
-			A_PlaySound("weapons/rocklaunch",CHAN_AUTO,0.6);
-			if(fuel<1)setstatelabel("spawn2");
-			fuel--;
-			A_ChangeVelocity(thrust.x,0,thrust.y,CVF_RELATIVE);
-		}loop;
+		MISL A 2 light("ROCKET") A_SatanRoboRocketThrust();
+		loop;
 	spawn3:
 		MISL A 3 light("ROCKET"){gravity=0.4;}
 		MISL A 2 light("ROCKET"){gravity=0.8;}
