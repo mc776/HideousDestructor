@@ -352,7 +352,7 @@ class HDBullet:HDActor{
 			}else if(crit)dmg*=1.2;
 
 			dmg=random(dmg,maxdmg);
-			if(headshot)dmg*=hdp?6:3; //bullet damage is reduced for hdplayerpawn
+			if(headshot)dmg<<=(hdp?2:1); //bullet damage is reduced for hdplayerpawn
 
 			//bleed
 			if(
@@ -387,6 +387,9 @@ class HDBullet:HDActor{
 				int gibs=max(randompick(0,0,0,1),dmg*0.1);
 				hdf.give(hitactor,"SawGib",gibs);
 			}else{
+				if(headshot&&hdp&&dmg>max(random(60,100),hdp.health)){
+					hdp.damagemobj(self,self.target,dmg,"bleedout",DMG_THRUSTLESS);
+				}
 				if(pierce||pushfactor<1.){
 					HDBulletDamager.Get(hitactor,self,target,dmg,damagetype);
 					if(
