@@ -13,6 +13,20 @@ class HDBulletb:PlasmaBall replaces PlasmaBall{
 	}
 }
 
+class ShootHead:Actor{
+	default{
+		+shootable +nodamage
+		health 100;
+		height 54.666;
+		radius 20;
+	}
+	states{
+	spawn:
+		POSS A -1;
+		stop;
+	}
+}
+
 
 //keep it simple: 1 of this = 1 unit of radius
 class BulletResistance:InventoryFlag{default{inventory.maxamount 100;}}
@@ -162,19 +176,19 @@ class HDBullet:HDActor{
 
 		//find points close to players and spawn crackers
 		//also spawn trails if applicable
+		name cracker="";
 		if(speed>256){
-			name b="";
 			if(speed>1000){
-				if(mass>200) b="SupersonicTrailBig";
-				else b="SupersonicTrail";
+				if(mass>200) cracker="SupersonicTrailBig";
+				else cracker="SupersonicTrail";
 			}else if(speed>800){
-				b="SupersonicTrail";
+				cracker="SupersonicTrail";
 			}else if(speed>HDCONST_SPEEDOFSOUND){
-				b="SupersonicTrailSmall";
+				cracker="SupersonicTrailSmall";
 			}else if(speed>100){
-				b="SubsonicTrail";
+				cracker="SubsonicTrail";
 			}
-			if(b!=""){
+			if(cracker!=""){
 				vector3 crackbak=pos;
 				vector3 crackinterval=blt.hitdir*BULLET_CRACKINTERVAL;
 				int j=max(1,blt.distance*(1./BULLET_CRACKINTERVAL));
@@ -193,7 +207,7 @@ class HDBullet:HDActor{
 								distance3d(players[k].mo)<256
 							){
 								gotplayer=true;
-								spawn(b,pos);
+								spawn(cracker,pos);
 							}
 						}
 					}
@@ -227,14 +241,43 @@ class HDBullet:HDActor{
 			tracer=hitactor;
 			setorigin(blt.hitlocation+blt.hitdir*frandom(0,hitactor.radius*0.6),true);
 
-			//add 0.666 to an actor's default height triggers this code
-			if(getdefaultbytype(hitactor.getclass()).height*1000%1000==666){
-				if(hd_debug)A_Log("head");
+			//used for both headshot and crit
+			double critangle=absangle(angleto(hitactor),angle);
+
+			//headshot?
+			//adding 0.666 to an actor's default height triggers this code
+			bool headshot=false;
+/*
+			if(
+				hitactor.health>0
+				&&getdefaultbytype(hitactor.getclass()).height*1000%1000==666
+			){
+				double headheight=hitactor.height*0.8+hitactor.pos.z;
+
+				//continue only if above shoulders, otherwise is normal bodyshot
+				if(
+					min(
+						blt.hitlocation.z,
+						pos.z+blt.hitdir.z*hitactor.radius*2
+					)>headheight
+				){
+A_Log("head");
+					//if past shoulder, bypass
+					if(critangle>16.){
+						throughthis=hitactor;
+						if(cracker!="")spawn(cracker,(pos.xy+blt.hitdir.xy*hitactor.radius,pos.z));
+						Tick(); //it's either this or delay a tic
+						return;
+					}else{
+						headshot=true;
+						if(hd_debug)A_Log("HEAD SHOT");
+					}
+				}
 			}
+*/
 
 			//crit?
 			bool crit;
-			double critangle=absangle(angleto(hitactor),angle);
 			if(
 				abs(
 					(hitactor.pos.z+hitactor.height*0.6)-
@@ -253,7 +296,7 @@ class HDBullet:HDActor{
 				min(64,hitactor.radius)*frandom(crit?0.5:0.7,1.1)
 				+hitactor.countinv("BulletResistance")*frandom(crit?0.7:0.4,1.1)
 			);
-			double netpenetration=penetration/hitresistance;
+			double netpenetration=(headshot?penetration*2:penetration)/hitresistance;
 //A_LogFloat(hitresistance);
 			let hdp=hdplayerpawn(hitactor);
 			int hdpwoundcount=0;
@@ -279,6 +322,7 @@ class HDBullet:HDActor{
 				else damagetype="Bashing";
 			}
 
+			//pierce/ricochet?
 			if(critangle>frandom(70,120)){
 				if(hd_debug>1)A_Log("Ricochet!");
 				throughthis=hitactor;
@@ -295,7 +339,7 @@ class HDBullet:HDActor{
 			}else if(hd_debug>1)A_Log("|STOPPED|");
 
 			//determine damage
-			int dmg=(speed+mass)*0.009;
+			int dmg=(speed+mass)*headshot?0.027:0.009;
 
 			int maxdmg=dmg+woundhealth;
 			if(!hdp&&pierce){
