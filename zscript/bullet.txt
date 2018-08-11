@@ -247,7 +247,6 @@ class HDBullet:HDActor{
 			//headshot?
 			//adding 0.666 to an actor's default height triggers this code
 			bool headshot=false;
-/*
 			if(
 				hitactor.health>0
 				&&getdefaultbytype(hitactor.getclass()).height*1000%1000==666
@@ -261,9 +260,8 @@ class HDBullet:HDActor{
 						pos.z+blt.hitdir.z*hitactor.radius*2
 					)>headheight
 				){
-A_Log("head");
 					//if past shoulder, bypass
-					if(critangle>16.){
+					if(critangle>10.){
 						throughthis=hitactor;
 						if(cracker!="")spawn(cracker,(pos.xy+blt.hitdir.xy*hitactor.radius,pos.z));
 						Tick(); //it's either this or delay a tic
@@ -274,7 +272,6 @@ A_Log("head");
 					}
 				}
 			}
-*/
 
 			//crit?
 			bool crit;
@@ -296,7 +293,7 @@ A_Log("head");
 				min(64,hitactor.radius)*frandom(crit?0.5:0.7,1.1)
 				+hitactor.countinv("BulletResistance")*frandom(crit?0.7:0.4,1.1)
 			);
-			double netpenetration=(headshot?penetration*2:penetration)/hitresistance;
+			double netpenetration=(headshot?(penetration*2):penetration)/hitresistance;
 //A_LogFloat(hitresistance);
 			let hdp=hdplayerpawn(hitactor);
 			int hdpwoundcount=0;
@@ -339,7 +336,7 @@ A_Log("head");
 			}else if(hd_debug>1)A_Log("|STOPPED|");
 
 			//determine damage
-			int dmg=(speed+mass)*headshot?0.027:0.009;
+			int dmg=(speed+mass)*(headshot?0.027:0.009);
 
 			int maxdmg=dmg+woundhealth;
 			if(!hdp&&pierce){
