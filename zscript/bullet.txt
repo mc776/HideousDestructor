@@ -242,6 +242,7 @@ class HDBullet:HDActor{
 			setorigin(blt.hitlocation+blt.hitdir*frandom(0,hitactor.radius*0.6),true);
 
 			//used for both headshot and crit
+			bool crit=false;
 			double critangle=absangle(angleto(hitactor),angle);
 
 			//headshot?
@@ -251,32 +252,34 @@ class HDBullet:HDActor{
 				hitactor.health>0
 				&&getdefaultbytype(hitactor.getclass()).height*1000%1000==666
 			){
-				double headheight=hitactor.height*0.8+hitactor.pos.z;
+				double shotpoint=blt.hitdir.z*hitactor.radius+blt.hitlocation.z;
+				double hitactortop=hitactor.height+hitactor.pos.z;
 
 				//continue only if above shoulders, otherwise is normal bodyshot
 				if(
-					min(
-						blt.hitlocation.z,
-						pos.z+blt.hitdir.z*hitactor.radius*2
-					)>headheight
+					max(hitlocation.z,shotpoint)>hitactortop-hitactor.height*0.2
 				){
 					//if past shoulder, bypass
-					if(critangle>10.){
+					if(
+						critangle>10.
+						||shotpoint>hitactortop
+					){
 						throughthis=hitactor;
 						if(cracker!="")spawn(cracker,(pos.xy+blt.hitdir.xy*hitactor.radius,pos.z));
 						Tick(); //it's either this or delay a tic
 						return;
 					}else{
 						headshot=true;
-						if(hd_debug)A_Log("HEAD SHOT");
+						crit=true;
+						if(hd_debug&&target)target.A_Print("HEAD SHOT");
 					}
 				}
 			}
 
 			//crit?
-			bool crit;
 			if(
-				abs(
+				!crit
+				&&abs(
 					(hitactor.pos.z+hitactor.height*0.6)-
 					(blt.hitlocation.z+blt.hitdir.z*hitactor.radius)
 				)<hitactor.height*0.2
@@ -336,7 +339,7 @@ class HDBullet:HDActor{
 			}else if(hd_debug>1)A_Log("|STOPPED|");
 
 			//determine damage
-			int dmg=(speed+mass)*(headshot?0.027:0.009);
+			int dmg=(speed+mass)*0.009;
 
 			int maxdmg=dmg+woundhealth;
 			if(!hdp&&pierce){
@@ -349,6 +352,7 @@ class HDBullet:HDActor{
 			}else if(crit)dmg*=1.2;
 
 			dmg=random(dmg,maxdmg);
+			if(headshot)dmg*=hdp?6:3; //bullet damage is reduced for hdplayerpawn
 
 			//bleed
 			if(
