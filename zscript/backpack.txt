@@ -253,9 +253,13 @@ class HDBP:HDWeapon{
 			if(invoker.weaponstatus[HDBPS_COOLDOWN]<16)return;
 			for(int i=0;i<HDBPC_NUMITEMS;i++){
 				if(invoker.itemtype[i]&&invoker.itemamount[i]>0){
+					class<inventory> itp=invoker.itemtype[i];
 					if(invoker.itemtype[i]=="HDArmour"){
 						inventory aaa=inventory(spawn("HDArmour",pos+(0,0,height*0.6)));
 						aaa.amount=invoker.itemamount[i];
+					}
+					else if(itp is "HDMagAmmo"){
+						while(invoker.itemamount[i]>0)HDMagAmmo.SpawnMag(self,itp,invoker.BPTakeMag(i));
 					}
 					else A_DropItem(invoker.itemtype[i],invoker.itemamount[i]);
 					invoker.itemamount[i]=0;
