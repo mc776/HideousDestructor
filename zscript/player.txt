@@ -65,6 +65,18 @@ class HDPlayerPawn:PlayerPawn{
 		player.displayname "Marine";
 		player.crouchsprite "PLYC";
 	}
+	override bool CanCollideWith(actor other,bool passive){
+		//headshot code - rocket pass shoulder
+		return(
+			(health<1)
+			||(height<40) //crouch
+			||(other.pos.z<pos.z+(height*0.8))
+			||(
+				abs(pos.x-other.pos.x)<3
+				&&abs(pos.y-other.pos.y)<3
+			)
+		);
+	}
 	override void PostBeginPlay(){
 		super.PostBeginPlay();
 		lastpos=pos;
