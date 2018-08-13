@@ -274,7 +274,7 @@ class HDBullet:HDActor{
 					){
 						headshot=true;
 						crit=true;
-						if(hd_debug&&target)A_Log("HEAD SHOT");
+						if(hd_debug)A_Log("HEAD SHOT");
 					}else if(
 						//missed head and body
 						shotpoint>hitactorshoulder
@@ -399,7 +399,7 @@ class HDBullet:HDActor{
 				hdf.give(hitactor,"SawGib",gibs);
 			}else{
 				if(headshot&&hdp&&dmg>max(random(60,100),hdp.health)){
-					hdp.damagemobj(self,self.target,dmg,"bleedout",DMG_THRUSTLESS);
+					hdp.damagemobj(self,target,dmg,"bleedout",DMG_THRUSTLESS);
 				}
 				if(pierce||pushfactor<1.){
 					HDBulletDamager.Get(hitactor,self,target,dmg,damagetype);

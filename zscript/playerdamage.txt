@@ -99,6 +99,7 @@ extend class HDPlayerPawn{
 			mod=="internal"||
 			mod=="invisiblebleedout"
 		){
+			damage=min(health,damage);
 			if(regenblues>0&&health<=damage){
 				regenblues--;
 				woundcount--;
