@@ -16,9 +16,10 @@ class HDBulletb:PlasmaBall replaces PlasmaBall{
 class ShootHead:Actor{
 	default{
 		+shootable +nodamage
+		+forceybillboard
 		health 100;
-		height 54.666;
-		radius 20;
+		height 55.666;
+		radius 12;
 	}
 	states{
 	spawn:
@@ -252,26 +253,36 @@ class HDBullet:HDActor{
 				hitactor.health>0
 				&&getdefaultbytype(hitactor.getclass()).height*1000%1000==666
 			){
-				double shotpoint=blt.hitdir.z*hitactor.radius+blt.hitlocation.z;
 				double hitactortop=hitactor.height+hitactor.pos.z;
+				double hitactorshoulder=hitactortop-hitactor.height*0.2;
+				vector3 headshottestpoint=blt.hitlocation+blt.hitdir*hitactor.radius;
+				double shotpoint=min(headshottestpoint.z,blt.hitlocation.z);
 
 				//continue only if above shoulders, otherwise is normal bodyshot
 				if(
-					max(blt.hitlocation.z,shotpoint)>hitactortop-hitactor.height*0.2
+					headshottestpoint.z>hitactorshoulder
 				){
-					//if past shoulder, bypass
 					if(
-						critangle>14.
-						||shotpoint>hitactortop
+						//hit head
+						shotpoint<hitactortop
+						&&(
+							max(
+								abs(headshottestpoint.x-hitactor.pos.x),
+								abs(headshottestpoint.y-hitactor.pos.y)
+							)<hitactor.radius*0.3
+						)
+					){
+						headshot=true;
+						crit=true;
+						if(hd_debug&&target)A_Log("HEAD SHOT");
+					}else if(
+						//missed head and body
+						shotpoint>hitactorshoulder
 					){
 						throughthis=hitactor;
 						if(cracker!="")spawn(cracker,(pos.xy+blt.hitdir.xy*hitactor.radius,pos.z));
 						Tick(); //it's either this or delay a tic
 						return;
-					}else{
-						headshot=true;
-						crit=true;
-						if(hd_debug&&target)target.A_Print("HEAD SHOT");
 					}
 				}
 			}
