@@ -273,7 +273,6 @@ class HDBullet:HDActor{
 						)
 					){
 						headshot=true;
-						crit=true;
 						if(hd_debug)A_Log("HEAD SHOT");
 					}else if(
 						//missed head and body
@@ -289,13 +288,16 @@ class HDBullet:HDActor{
 
 			//crit?
 			if(
-				!crit
-				&&abs(
-					(hitactor.pos.z+hitactor.height*0.6)-
-					(blt.hitlocation.z+blt.hitdir.z*hitactor.radius)
-				)<hitactor.height*0.2
-				&&
-				critangle<12.
+				(
+					headshot
+					&&critangle<10.
+				)||(
+					critangle<12.
+					&&abs(
+						(hitactor.pos.z+hitactor.height*0.6)-
+						(blt.hitlocation.z+blt.hitdir.z*hitactor.radius)
+					)<hitactor.height*0.2
+				)
 			){
 				if(hd_debug)A_Log("CRIT!");
 				crit=true;
