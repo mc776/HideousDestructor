@@ -231,6 +231,16 @@ class SatanRobo:Cyberdemon replaces CyberDemon{
 		obituary "%o was experimented upon by a cyberdemon.";
 		minmissilechance 196;
 	}
+	override bool CanCollideWith(actor other,bool passive){
+		//headshot code - rocket pass shoulder
+		return(
+			(other.pos.z<pos.z+(110*0.8))
+			||(
+				abs(pos.x-other.pos.x)<12.
+				&&abs(pos.y-other.pos.y)<12.
+			)
+		);
+	}
 	void A_CyberGunSmoke(){
 		A_SpawnItemEx("HDSmoke",
 			random(-32,32),random(-32,32),random(46,96),0,
@@ -318,7 +328,6 @@ class SatanRobo:Cyberdemon replaces CyberDemon{
 		HDCB_ROCKETMAX=99,
 	}
 	states{
-	spawn:
 		CYBR EEEE 10{
 			A_Look();
 			angle+=frandom(-5,5);
