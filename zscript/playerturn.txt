@@ -90,13 +90,16 @@ extend class HDPlayerPawn{
 		double proportion2=0.05*amt;
 		double proportion3=1-proportion*0.7;
 
-		//take the proportion and use that OR crouch+support, whichever is LESS
-		if(hd_noturninertia==2)proportion2*=0.1;else{
-				double yawcap=abs(yaw*proportion);
-				double ptchcap=abs(ptch*proportion);
-				anglechange=clamp(anglechange,-yawcap,yawcap);
-				pitchchange=clamp(pitchchange,-ptchcap,ptchcap);
+
+		//muzzle inertia and weapon
+		hudbobrecoil1+=(anglechange,-pitchchange)*0.3;
+		hudbobrecoil3-=(anglechange,-pitchchange)*0.4;
+		hudbobrecoil4-=(anglechange,-pitchchange)*0.4;
+		if(max(abs(hudbobrecoil1.x),abs(hudbobrecoil1.y))>(40-amt)){
+			nocrosshair=max(8,nocrosshair);
 		}
+		if(!countinv("WeaponBusy"))A_WeaponOffset(hudbobrecoil1.x,hudbobrecoil1.y,WOF_ADD);
+
 
 		//see if there's any change in velocity overall
 		vector3 muzzlevel=lastvel-vel;
@@ -116,7 +119,7 @@ extend class HDPlayerPawn{
 
 
 		//NOW apply the drift!
-		muzzledrift+=(anglechange,pitchchange);
+//		muzzledrift+=(anglechange,pitchchange);
 		anglechange+=muzzledrift.x*proportion2;
 		pitchchange+=muzzledrift.y*proportion2;
 		muzzledrift*=proportion3;
