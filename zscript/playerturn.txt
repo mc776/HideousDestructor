@@ -98,7 +98,7 @@ extend class HDPlayerPawn{
 		if(max(abs(hudbobrecoil1.x),abs(hudbobrecoil1.y))>(40-amt)){
 			nocrosshair=max(8,nocrosshair);
 		}
-		if(!countinv("WeaponBusy"))A_WeaponOffset(hudbobrecoil1.x,hudbobrecoil1.y,WOF_ADD);
+		if(!countinv("WeaponBusy"))A_WeaponOffset(hudbobrecoil1.x,abs(hudbobrecoil1.y),WOF_ADD);
 
 
 		//see if there's any change in velocity overall
@@ -119,7 +119,6 @@ extend class HDPlayerPawn{
 
 
 		//NOW apply the drift!
-//		muzzledrift+=(anglechange,pitchchange);
 		anglechange+=muzzledrift.x*proportion2;
 		pitchchange+=muzzledrift.y*proportion2;
 		muzzledrift*=proportion3;
