@@ -125,12 +125,9 @@ extend class HDPlayerPawn{
 
 
 		//NOW apply the drift!
-		anglechange+=muzzledrift.x*driftproportion;
-		pitchchange+=muzzledrift.y*driftproportion;
 		muzzledrift*=decelproportion;
 
-		hudbobrecoil1.x+=muzzledrift.x;
-		hudbobrecoil1.y+=muzzledrift.y;
+		hudbobrecoil1+=muzzledrift;
 
 		//good old jitters!
 		//gotta do this after inertia and before collision,

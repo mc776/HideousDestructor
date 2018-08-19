@@ -401,6 +401,7 @@ class HDBullet:HDActor{
 				hdf.give(hitactor,"SawGib",gibs);
 			}else{
 				if(headshot&&hdp&&dmg>random(60,100)){
+					hdp.stunned+=(dmg>>random(1,3));
 					hdp.damagemobj(self,target,dmg,"bleedout",DMG_THRUSTLESS);
 				}
 				if(pierce||pushfactor<1.){
