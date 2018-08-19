@@ -71,9 +71,7 @@ extend class HDPlayerPawn{
 
 		//inertia adjustments for other things
 		if(stunned){
-			amt=max(17,amt);
-		}else if(hd_noturninertia==1){
-			amt=0;
+			amt*=frandom(3,5);
 		}else if(countinv("PowerStrength")||countinv("PowerInvulnerable")){
 			amt*=0.2;
 		}
@@ -86,17 +84,16 @@ extend class HDPlayerPawn{
 
 		//muzzle inertia
 		//how much to scale movement
-		double proportion=1-min(0.042*amt,0.99);
-		double proportion2=0.05*amt;
-		double proportion3=1-proportion*0.7;
+		double decelproportion=min(0.042*amt,0.99)*0.7;
+		double driftproportion=0.05*amt;
 
 
-		//muzzle inertia and weapon
+		//apply to weapon
 		vector2 apch=(anglechange,-pitchchange)*0.1*amt;
 		hudbobrecoil1-=apch*0.3;
 		hudbobrecoil3-=apch*0.4;
 		hudbobrecoil4-=apch*0.4;
-		if(max(abs(hudbobrecoil1.x),abs(hudbobrecoil1.y))>(40-amt)){
+		if(max(abs(hudbobrecoil1.x),abs(hudbobrecoil1.y))>max(1.,40-amt)){
 			nocrosshair=max(8,nocrosshair);
 		}
 		if(!countinv("WeaponBusy"))A_WeaponOffset(hudbobrecoil1.x*0.3,abs(hudbobrecoil1.y)*0.3,WOF_ADD);
@@ -116,15 +113,23 @@ extend class HDPlayerPawn{
 		//the y value is what we need
 		muzzlevel.xy=rotatevector(muzzlevel.xy,-angle);
 
-		muzzledrift+=(muzzlevel.y,muzzlevel.z)*proportion2;
+		muzzledrift+=(muzzlevel.y,muzzlevel.z)*driftproportion;
+		if(stunned){
+			vector2 muzzleclimbstun=(anglechange,pitchchange)*frandom(0.1,0.6);
+			anglechange*=0.3;
+			pitchchange*=0.3;
+			muzzleclimb1+=muzzleclimbstun;
+			muzzleclimb2+=muzzleclimbstun;
+			muzzleclimb3+=muzzleclimbstun;
+		}
 
 
 		//NOW apply the drift!
-		anglechange+=muzzledrift.x*proportion2;
-		pitchchange+=muzzledrift.y*proportion2;
-		muzzledrift*=proportion3;
+		anglechange+=muzzledrift.x*driftproportion;
+		pitchchange+=muzzledrift.y*driftproportion;
+		muzzledrift*=decelproportion;
 
-		hudbobrecoil1.x-=muzzledrift.x;
+		hudbobrecoil1.x+=muzzledrift.x;
 		hudbobrecoil1.y+=muzzledrift.y;
 
 		//good old jitters!
