@@ -92,9 +92,10 @@ extend class HDPlayerPawn{
 
 
 		//muzzle inertia and weapon
-		hudbobrecoil1+=(anglechange,-pitchchange)*0.3;
-		hudbobrecoil3-=(anglechange,-pitchchange)*0.4;
-		hudbobrecoil4-=(anglechange,-pitchchange)*0.4;
+		vector2 apch=(anglechange,-pitchchange)*0.1*amt;
+		hudbobrecoil1-=apch*0.3;
+		hudbobrecoil3-=apch*0.4;
+		hudbobrecoil4-=apch*0.4;
 		if(max(abs(hudbobrecoil1.x),abs(hudbobrecoil1.y))>(40-amt)){
 			nocrosshair=max(8,nocrosshair);
 		}
