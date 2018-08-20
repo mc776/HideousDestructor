@@ -55,7 +55,7 @@ class ZM66AssaultRifle:HDWeapon{
 			if(weaponstatus[0]&ZM66F_GRENADELOADED)blx+=ENC_ROCKETLOADED;
 		}
 		int mgg=weaponstatus[ZM66S_MAG];
-		return blx+mgg<0?0:(ENC_426MAG_LOADED+mgg*ENC_426_LOADED),uss;
+		return blx+(mgg<0?0:(ENC_426MAG_LOADED+mgg*ENC_426_LOADED)),uss;
 	}
 	action bool brokenround(){
 		if(!(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBERBROKEN)){
