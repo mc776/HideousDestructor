@@ -91,8 +91,9 @@ extend class HDPlayerPawn{
 		//apply to weapon
 		vector2 apch=(anglechange,-pitchchange)*0.1*amt;
 		hudbobrecoil1-=apch*0.3;
+		hudbobrecoil1-=apch*0.5;
 		hudbobrecoil3-=apch*0.4;
-		hudbobrecoil4-=apch*0.4;
+		hudbobrecoil4-=apch*0.3;
 		if(max(abs(hudbobrecoil1.x),abs(hudbobrecoil1.y))>max(1.,40-amt)){
 			nocrosshair=max(8,nocrosshair);
 		}

@@ -23,9 +23,9 @@ class Vulcanette:HDWeapon{
 		weapon.selectionorder 40;
 		weapon.slotnumber 4;
 		weapon.kickback 24;
-		weapon.bobrangex 0.4;
-		weapon.bobrangey 1.1;
-		weapon.bobspeed 1.6;
+		weapon.bobrangex 0.6;
+		weapon.bobrangey 1.4;
+		weapon.bobspeed 2.1;
 		weapon.bobstyle "normal";
 		obituary "%o met the budda-budda-budda on the street,and %k killed %h.";
 		hdweapon.barrelsize 30,3,4;
@@ -68,7 +68,7 @@ class Vulcanette:HDWeapon{
 
 	droop:
 		TNT1 A 1{
-			if(pitch<5&&(!gunbraced())){
+			if(pitch<frandom(5,8)&&(!gunbraced())){
 				if(countinv("IsMoving")>2 && countinv("PowerStrength")<1){    
 					A_MuzzleClimb(frandom(-0.1,0.1),
 						frandom(0.1,clamp(1-pitch,0.1,0.3)));
