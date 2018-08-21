@@ -177,7 +177,8 @@ class HDMagAmmo:HDAmmo{
 	virtual bool Extract(){
 		SyncAmount();
 		if(
-			mags[mags.size()-1]<1
+			mags.size()<1
+			||mags[mags.size()-1]<1
 			||owner.A_JumpIfInventory(roundtype,0,"null")
 		)return false;
 		HDF.Give(owner,roundtype,1);
@@ -188,7 +189,8 @@ class HDMagAmmo:HDAmmo{
 	virtual bool Insert(){
 		SyncAmount();
 		if(
-			mags[mags.size()-1]>=maxperunit
+			mags.size()<1
+			||mags[mags.size()-1]>=maxperunit
 			||!owner.countinv(roundtype)
 		)return false;
 		owner.A_TakeInventory(roundtype,1,TIF_NOTAKEINFINITE);
