@@ -741,6 +741,8 @@ extend class HDPlayerPawn{
 
 		GiveBasics();
 
+		A_WeaponOffset(0,30); //reset the weaponoffset so weapon floatiness in playerturn works after level change
+
 		let hbl=HDBlurSphere(findinventory("HDBlurSphere"));
 		if(!hbl||!hbl.worn){
 			bshadow=false;
