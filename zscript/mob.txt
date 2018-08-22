@@ -21,9 +21,9 @@ class SawGib:InventoryFlag{
 			bmissileevenmore=true;
 			actor o=owner;
 			if(
-				!owner.bcorpse
-				||!owner.bshootable
-				||owner.health>0
+				!o.bcorpse
+				||!o.bshootable
+				||o.health>0
 			)goawayanddie();
 			else{
 				o.bshootable=false;
