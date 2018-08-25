@@ -12,7 +12,6 @@ class HDPlayerPawn:PlayerPawn{
 	int oldinput;
 	double oldfm;double oldsm;
 	double iyaw;double ipitch;
-	double zat;
 
 	actor playercorpse;
 	actor scopecamera;
@@ -105,10 +104,10 @@ class HDPlayerPawn:PlayerPawn{
 			!barehanded
 			&&!gunbraced
 			&&zerk<1
-			&&zat==pos.z
+			&&floorz==pos.z
 			&&!countinv("IsMoving")
 		){
-			double zat2=getzat(16)-zat-height;
+			double zat2=getzat(16)-floorz-height;
 			if(zat2<0 && zat2>-30){
 				gunbraced=true;
 				muzzleclimb1.y-=0.1;
@@ -152,8 +151,8 @@ class HDPlayerPawn:PlayerPawn{
 		overloaded=CheckEncumbrance();
 		feetangle=angle;
 
-		//random low health sumbling
-		if(zat>=pos.z && !random(1,2)){
+		//random low health stumbling
+		if(floorz>=pos.z && !random(1,2)){
 			if(health<random(35,45)){
 				if(player.crouchfactor<0.7)A_ChangeVelocity(
 					random(-4,2),frandom(-3,3),random(-1,0),CVF_RELATIVE
@@ -242,7 +241,6 @@ class HDPlayerPawn:PlayerPawn{
 		if(!player||!player.mo||player.mo!=self){super.tick();return;} //anti-voodoodoll
 
 		lastpos=pos;
-		zat=getzat();
 
 		if(!flip)flip=true;else flip=false; //for things that must alternate every tic
 
@@ -575,7 +573,7 @@ class HDPlayerPawn:PlayerPawn{
 			}
 			if(
 				!corpsekicktimer
-				&&zat==pos.z
+				&&floorz==pos.z
 				&&height>45
 				&&beatmax>10
 			){

@@ -340,7 +340,7 @@ extend class HDPlayerPawn{
 
 		//move pivot point a little behind the player's view
 		anglechange=deltaangle(angle,lastangle);
-		if(!teleported && player.onground && zat-pos.z==0){
+		if(!teleported && player.onground && floorz==pos.z){
 			bool ongun=gunbraced&&!barehanded&&player.cmd.buttons&BT_USE;
 			if(abs(anglechange)>(ongun?0.05:0.7)){
 				int dir=90;

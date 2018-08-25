@@ -73,7 +73,7 @@ class Ring:HDWeapon replaces Fist{
 		else dmg+=HDMath.TowardsEachOther(self,punchee)*2;
 
 		//come in swinging
-		let onr=hdplayerpawn(invoker.owner);
+		let onr=hdplayerpawn(self);
 		if(onr){
 			int iy=onr.iyaw;
 			int ip=onr.ipitch;
@@ -83,7 +83,7 @@ class Ring:HDWeapon replaces Fist{
 			dmg+=min(abs(iy),dmg*2);
 
 			//need to be well grounded
-			if(onr.zat<pos.z)dmg*=0.5;
+			if(floorz<pos.z)dmg*=0.5;
 		}
 
 		//shit happens
