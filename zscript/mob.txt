@@ -13,7 +13,7 @@ class SawGib:InventoryFlag{
 		actor o=owner;
 		if(owner){
 			stamina=max(o.gibhealth,o.spawnhealth());
-		}else goawayanddie();
+		}else destroy();
 	}
 	override void doeffect(){
 		if(bmissileevenmore)return;
@@ -24,7 +24,7 @@ class SawGib:InventoryFlag{
 				!o.bcorpse
 				||!o.bshootable
 				||o.health>0
-			)goawayanddie();
+			)destroy();
 			else{
 				o.bshootable=false;
 				//use the old death state first

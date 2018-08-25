@@ -7,7 +7,7 @@ const HDCONST_GREENARMOUR=144;
 class HDArmour:HDPickup{
 	int doubleclicktimer;
 	override void doeffect(){
-		if(!amount)goawayanddie();
+		if(!amount)destroy();
 		if(doubleclicktimer>0)doubleclicktimer--;
 	}
 	default{
@@ -151,7 +151,7 @@ class HDArmourWorn:HDArmour{
 		-inventory.invbar
 	}
 	override void doeffect(){
-		if(!amount)goawayanddie();
+		if(!amount)destroy();
 	}
 	override double getbulk(){
 		if(meleethreshold==3)return 120;

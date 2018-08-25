@@ -64,8 +64,7 @@ class InvReset:Inventory{
 	override void attachtoowner(actor other){
 		reallyclearinventory(other);
 		givestartitems(other);
-		goawayanddie();
-		return;
+		destroy();
 	}
 }
 class DoomguyLoadout:InvReset{
@@ -77,8 +76,7 @@ class DoomguyLoadout:InvReset{
 		other.A_GiveInventory("HD9mMag15",2);
 		other.A_GiveInventory("HDPistolAmmo",4);
 		other.A_SelectWeapon("HDPistol");
-		goawayanddie();
-		return;
+		destroy();
 	}
 }
 

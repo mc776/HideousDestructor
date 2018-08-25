@@ -460,7 +460,7 @@ class HERPUsable:HDPickup{
 			hhhh.battery=loadcell;
 			hhhh.botid=invoker.botid;
 			A_Log(string.format("\cd[HERP] \cjDeployed with tag ID \cy%i",invoker.botid),true);
-			invoker.goawayanddie();
+			invoker.destroy();
 		}fail;
 	spawn:
 		HERP A -1 A_Stop();
