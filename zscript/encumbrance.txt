@@ -81,6 +81,7 @@ extend class HDPlayerPawn{
 		if(countinv("HDIEDKit"))useammotypes|=USE_ROCKET;
 
 		//weapons and items
+		double stacker=0;
 		for(inventory hdww=inv;hdww!=null;hdww=hdww.inv){
 			let hdw=hdweapon(hdww);
 			if(hdw){
@@ -98,15 +99,18 @@ extend class HDPlayerPawn{
 					double gunbulk;
 					int ammotouse;
 					[gunbulk,ammotouse]=hdw.weaponbulk();
-					if(thisweapon&&forcefull){
-						gunbulk*=0.8;
-					}
 					enc+=gunbulk;
+					if(gunbulk){
+						enc+=stacker;
+						if(!stacker)stacker=20;
+						stacker*=1.1;
+					}
 					useammotypes|=ammotouse;
 					//if(gunbulk)A_Log(string.format("%s  %.2f",hdw.getclassname(),gunbulk));
 				}
 				continue;
 			}
+			//items
 			if(!weaponly){
 				let hdp=hdpickup(hdww);
 				if(hdp)enc+=hdp.getbulk();

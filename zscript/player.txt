@@ -519,7 +519,8 @@ class HDPlayerPawn:PlayerPawn{
 		//check use key
 		if(!(input&BT_USE))bpickup=false;else{
 			bpickup=true;
-			if(!(oldinput&BT_USE))hasgrabbed=false;
+			if(oldinput&BT_ATTACK)hasgrabbed=true;
+			else if(!(oldinput&BT_USE))hasgrabbed=false;
 			//pickerupper
 			overloaded=CheckEncumbrance();
 			if(!hasgrabbed){
