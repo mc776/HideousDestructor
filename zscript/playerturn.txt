@@ -21,33 +21,13 @@ extend class HDPlayerPawn{
 		MB_RIGHT=8,
 	}
 
-	override void PlayerThink(){
-		//this is intended to replace the commented-out part of playerturn.txt.
-		//reduced turning while supported.
-		if(
-			player.cmd.buttons&BT_USE&&
-			!countinv("IsMoving")
-		){
-			player.cmd.yaw*=0.9;player.cmd.pitch*=0.9;
-			if(!gunbraced){
-				vector2 iyp=(iyaw,-ipitch)*0.05;
-				A_MuzzleClimb(iyp*2,iyp,iyp,iyp);
-			}
-		}
-		//reduced turning while crouched.
-		else if(height<40 && abs(iyaw)>5){
-			player.cmd.yaw>>=1;player.cmd.pitch>>=1;
-		}
-		super.playerthink();
-	}
-
 	void TurnCheck(){
 		//get input based on previous angle
 		//do NOT use input because that breaks recoil
 		double yaw=deltaangle(lastangle,angle);
 		double ptch=deltaangle(lastpitch,pitch);
 		double vdv=vel dot vel;
-/*
+
 		//reduced turning while supported.
 		if(
 			player.cmd.buttons&BT_USE&&
@@ -63,7 +43,6 @@ extend class HDPlayerPawn{
 		else if(height<40 && abs(yaw)>5){
 			yaw-=iyaw*0.4;ptch-=ipitch*0.4;
 		}
-*/
 
 
 		//temporary variables
