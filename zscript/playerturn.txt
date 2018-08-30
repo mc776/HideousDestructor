@@ -21,17 +21,20 @@ extend class HDPlayerPawn{
 		MB_RIGHT=8,
 	}
 
+	
 	void TurnCheck(){
 		//get input based on previous angle
 		//do NOT use input because that breaks recoil
-		double yaw=deltaangle(lastangle,angle);
-		double ptch=deltaangle(lastpitch,pitch);
+//		double yaw=deltaangle(lastangle,angle);
+//		double ptch=deltaangle(lastpitch,pitch);
+double yaw=player.cmd.yaw*(360./65536.);
+double ptch=player.cmd.pitch*(-360./65536.);
 		double vdv=vel dot vel;
 
 		//reduced turning while supported.
 		if(
-			player.cmd.buttons&BT_USE&&
-			!countinv("IsMoving")
+			player.cmd.buttons&BT_USE
+			&&!countinv("IsMoving")
 		){
 			yaw-=iyaw*0.9;ptch+=ipitch*0.9;
 			if(!gunbraced){
