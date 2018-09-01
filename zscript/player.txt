@@ -11,7 +11,6 @@ class HDPlayerPawn:PlayerPawn{
 
 	int oldinput;
 	double oldfm;double oldsm;
-	double iyaw;double ipitch;
 
 	actor playercorpse;
 	actor scopecamera;
@@ -255,10 +254,6 @@ class HDPlayerPawn:PlayerPawn{
 		double fm=player.cmd.forwardmove;
 		double sm=player.cmd.sidemove;
 
-		//set pitch and angle based on raw input to be modified later
-		//DO NOT use these with MovePlayer
-		iyaw=player.cmd.yaw*(360./65536.);
-		ipitch=player.cmd.pitch*(360./65536.);
 
 
 
@@ -506,7 +501,7 @@ class HDPlayerPawn:PlayerPawn{
 				||input&BT_USER4
 				||input&BT_JUMP
 			)
-			||abs(iyaw)>4096
+			||abs(player.cmd.yaw)>4096
 			||countinv("PowerInvulnerable")
 		)nocrosshair=12;
 		else if(

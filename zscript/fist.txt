@@ -75,9 +75,7 @@ class Ring:HDWeapon replaces Fist{
 		//come in swinging
 		let onr=hdplayerpawn(self);
 		if(onr){
-			int iy=onr.iyaw;
-			int ip=onr.ipitch;
-			if(abs(ip)>abs(iy))iy=-ip;
+			int iy=max(abs(player.cmd.pitch),abs(player.cmd.yaw));
 			if(iy>0)iy*=100;
 			else if(iy<0)iy*=200;
 			dmg+=min(abs(iy),dmg*2);
@@ -102,11 +100,13 @@ class Ring:HDWeapon replaces Fist{
 				)
 			)
 		){
-			if(abs(onr.iyaw)>0.5){
-				punchee.A_SetAngle(punchee.angle-onr.iyaw*100,SPF_INTERPOLATE);
+			double iyaw=player.cmd.yaw*(65535./360.);
+			if(abs(iyaw)>(0.5)){
+				punchee.A_SetAngle(punchee.angle-iyaw*100,SPF_INTERPOLATE);
 			}
-			if(abs(onr.ipitch)>0.5){
-				punchee.A_SetPitch(punchee.angle+onr.ipitch*100,SPF_INTERPOLATE);
+			double ipitch=player.cmd.pitch*(65535./360.);
+			if(abs(ipitch)>(0.5*65535/360)){
+				punchee.A_SetPitch(punchee.angle+ipitch*100,SPF_INTERPOLATE);
 			}
 		}
 		//headshot lol

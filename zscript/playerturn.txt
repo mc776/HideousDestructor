@@ -23,10 +23,8 @@ extend class HDPlayerPawn{
 
 	
 	void TurnCheck(){
-		//get input based on previous angle
-		//do NOT use input because that breaks recoil
-		double yaw=player.cmd.yaw*(360./65536.);
-		double ptch=player.cmd.pitch*(-360./65536.);
+		double anglechange=player.cmd.yaw*(360./65536.);
+		double pitchchange=player.cmd.pitch*(-360./65536.);
 		double vdv=vel dot vel;
 
 /*
@@ -46,11 +44,6 @@ extend class HDPlayerPawn{
 			yaw-=iyaw*0.4;ptch-=ipitch*0.4;
 		}
 */
-
-
-		//temporary variables
-		double anglechange=yaw;
-		double pitchchange=ptch;
 
 
 		//get weapon size
