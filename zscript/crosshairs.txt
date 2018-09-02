@@ -87,9 +87,21 @@ extend class HDStatusBar{
 						"HDXHCAM3",(0,scaledyoffset)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
 						scale:(0.31,0.31)*scl
 					);
+					int scaledwidth=57*scl;
+					int cx,cy,cw,ch;
+					[cx,cy,cw,ch]=screen.GetClipRect();
+					SetClipRect(
+						-28*scl+bob.x,19*scl+bob.y,scaledwidth,scaledwidth,
+						DI_SCREEN_CENTER
+					);
+					drawimage(
+						"scophole",(0,scaledyoffset)+bob*3,DI_SCREEN_CENTER|DI_ITEM_CENTER,
+						scale:(0.78,0.78)*scl
+					);
+					screen.SetClipRect(cx,cy,cw,ch);
 					drawimage(
 						"zm66scop",(0,scaledyoffset)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
-						scale:(0.8,0.8)*scl
+						scale:(0.82,0.82)*scl
 					);
 					drawnum(degree*10,
 						4+bob.x,74*scl+bob.y,DI_SCREEN_CENTER,Font.CR_BLACK
@@ -117,6 +129,18 @@ extend class HDStatusBar{
 					"HDXHCAM3",(0,scaledyoffset)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
 					scale:(0.31,0.31)*scl
 				);
+				int scaledwidth=57*scl;
+				int cx,cy,cw,ch;
+				[cx,cy,cw,ch]=screen.GetClipRect();
+				SetClipRect(
+					-28*scl+bob.x,19*scl+bob.y,scaledwidth,scaledwidth,
+					DI_SCREEN_CENTER
+				);
+				drawimage(
+					"scophole",(0,scaledyoffset)+bob*3,DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					scale:(0.78,0.78)*scl
+				);
+				screen.SetClipRect(cx,cy,cw,ch);
 				drawimage(
 					"zm66scop",(0,scaledyoffset)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
 					scale:(0.8,0.8)*scl
@@ -195,29 +219,28 @@ extend class HDStatusBar{
 				if(scopeview){
 					int scaledyoffset=60*scl;
 					int scaledwidth=72*scl;
-					double degree;
+					double degree=4.-0.06*wp.weaponstatus[LIBS_ZOOM];
+					double deg=1/degree;
+					int cx,cy,cw,ch;
+					[cx,cy,cw,ch]=screen.GetClipRect();
+					SetClipRect(
+						-36*scl+bob.x,24*scl+bob.y,scaledwidth,scaledwidth,
+						DI_SCREEN_CENTER
+					);
 					string reticle=
 						wp.weaponstatus[0]&LIBF_ALTRETICLE?"reticle2":"reticle1";
 					if(wp.weaponstatus[0]&LIBF_FRONTRETICLE){
-						degree=4.-0.06*wp.weaponstatus[LIBS_ZOOM];
 						texman.setcameratotexture(hpc,"HDXHCAM3",degree);
 						drawimage(
 							"HDXHCAM3",(0,scaledyoffset)+bob,
 							DI_SCREEN_CENTER|DI_ITEM_CENTER,
 							scale:(0.4,0.4)*scl
 						);
-						int cx,cy,cw,ch;
-						[cx,cy,cw,ch]=screen.GetClipRect();
-						SetClipRect(
-							-36*scl+bob.x,24*scl+bob.y,scaledwidth,scaledwidth,
-						DI_SCREEN_CENTER);
-						double deg=1/degree;
 						drawimage(
-							reticle,(0,scaledyoffset)+bob*deg*5,
+							reticle,(0,scaledyoffset)+bob*5,
 							DI_SCREEN_CENTER|DI_ITEM_CENTER,
 							scale:(2.,2.)*deg*scl
 						);
-						screen.SetClipRect(cx,cy,cw,ch);
 					}else{
 						degree=(35-wp.weaponstatus[LIBS_ZOOM])*0.2;
 						texman.setcameratotexture(hpc,"HDXHCAM3",degree);
@@ -226,21 +249,20 @@ extend class HDStatusBar{
 							DI_SCREEN_CENTER|DI_ITEM_CENTER,
 							scale:(0.4,0.4)*scl
 						);
-						int cx,cy,cw,ch;
-						[cx,cy,cw,ch]=screen.GetClipRect();
-						SetClipRect(
-							-36*scl+bob.x,24*scl+bob.y,scaledwidth,scaledwidth,
-						DI_SCREEN_CENTER);
 						drawimage(
 							reticle,(0,scaledyoffset)+bob,
 							DI_SCREEN_CENTER|DI_ITEM_CENTER,
 							scale:(0.52,0.52)*scl
 						);
-						screen.SetClipRect(cx,cy,cw,ch);
 					}
 					drawimage(
+						"scophole",(0,scaledyoffset)+bob*5,DI_SCREEN_CENTER|DI_ITEM_CENTER,
+						scale:(0.95,0.95)*scl
+					);
+					screen.SetClipRect(cx,cy,cw,ch);
+					drawimage(
 						"libscope",(0,scaledyoffset)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
-						scale:(1.,1.)*scl
+						scale:(scl,scl)
 					);
 					drawnum(degree*10,
 						4+bob.x,95*scl+bob.y,DI_SCREEN_CENTER,Font.CR_BLACK
@@ -280,26 +302,24 @@ extend class HDStatusBar{
 				int scaledyoffset=60*scl;
 				int scaledwidth=89*scl;
 				vector2 sclhalf=(0.5,0.5)*scl;
-				double degree;
+				double degree=4.-0.05*wp.weaponstatus[BOSSS_ZOOM];
+				double deg=1/degree;
+				int cx,cy,cw,ch;
+				[cx,cy,cw,ch]=screen.GetClipRect();
+				SetClipRect(-44*scl+bob.x,16*scl+bob.y,scaledwidth,scaledwidth,
+					DI_SCREEN_CENTER);
 				if(wp.weaponstatus[0]&BOSSF_FRONTRETICLE){
-					degree=4.-0.05*wp.weaponstatus[BOSSS_ZOOM];
 					texman.setcameratotexture(hpc,"HDXHCAM3",degree);
 					drawimage(
 						"HDXHCAM3",(0,scaledyoffset)+bob,
 						DI_SCREEN_CENTER|DI_ITEM_CENTER,
 						scale:sclhalf
 					);
-					int cx,cy,cw,ch;
-					[cx,cy,cw,ch]=screen.GetClipRect();
-					SetClipRect(-44*scl+bob.x,18*scl+bob.y,scaledwidth,scaledwidth,
-						DI_SCREEN_CENTER);
-					double deg=1/degree;
 					drawimage(
 						"reticle1",(0,scaledyoffset)+bob*deg*5,
 						DI_SCREEN_CENTER|DI_ITEM_CENTER,
 						scale:(1.6,1.6)*deg*scl
 					);
-					screen.SetClipRect(cx,cy,cw,ch);
 				}else{
 					degree=6.-0.1*wp.weaponstatus[BOSSS_ZOOM];
 					texman.setcameratotexture(hpc,"HDXHCAM3",degree);
@@ -314,6 +334,11 @@ extend class HDStatusBar{
 						scale:sclhalf
 					);
 				}
+				drawimage(
+					"scophole",(0,scaledyoffset)+bob*5,DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					scale:(1.5,1.5)*scl
+				);
+				screen.SetClipRect(cx,cy,cw,ch);
 				drawimage(
 					"libscope",(0,scaledyoffset)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
 					scale:(1.24,1.24)*scl
