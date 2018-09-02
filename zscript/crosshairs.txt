@@ -70,10 +70,10 @@ extend class HDStatusBar{
 				);
 			}else{
 				double dotoff=max(abs(bob.x),abs(bob.y));
-				if(dotoff<10){
+				if(dotoff<20){
 					drawimage(
 						whichdot,(0,0)+bob*1.6,DI_SCREEN_CENTER|DI_ITEM_CENTER,
-						alpha:1.-dotoff*0.1,scale:(scl,scl)
+						alpha:0.8-dotoff*0.04,scale:(scl,scl)
 					);
 				}
 				drawimage(
@@ -88,21 +88,21 @@ extend class HDStatusBar{
 						scale:(0.31,0.31)*scl
 					);
 					drawimage(
-						"XH29",(0,scaledyoffset)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
+						"zm66scop",(0,scaledyoffset)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
 						scale:(0.8,0.8)*scl
 					);
 					drawnum(degree*10,
-						4+bob.x,79*scl+bob.y,DI_SCREEN_CENTER,Font.CR_BLACK
+						4+bob.x,74*scl+bob.y,DI_SCREEN_CENTER,Font.CR_BLACK
 					);
 				}
 			}
 		}
 		else if((wp is "Vulcanette")){
 			double dotoff=max(abs(bob.x),abs(bob.y));
-			if(dotoff<10){
+			if(dotoff<20){
 				drawimage(
 					whichdot,(0,0)+bob*1.6,DI_SCREEN_CENTER|DI_ITEM_CENTER,
-					alpha:1.-dotoff*0.1,scale:(scl,scl)
+					alpha:0.8-dotoff*0.04,scale:(scl,scl)
 				);
 			}
 			drawimage(
@@ -118,7 +118,7 @@ extend class HDStatusBar{
 					scale:(0.31,0.31)*scl
 				);
 				drawimage(
-					"XH29",(0,scaledyoffset)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					"zm66scop",(0,scaledyoffset)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
 					scale:(0.8,0.8)*scl
 				);
 				drawnum(degree*10,
@@ -182,10 +182,10 @@ extend class HDStatusBar{
 				);
 			}else{
 				double dotoff=max(abs(bob.x),abs(bob.y));
-				if(dotoff<10){
+				if(dotoff<20){
 					drawimage(
 						whichdot,(0,0)+bob*1.6,DI_SCREEN_CENTER|DI_ITEM_CENTER,
-						alpha:1.-dotoff*0.1,scale:(scl,scl)
+						alpha:0.8-dotoff*0.04,scale:(scl,scl)
 					);
 				}
 				drawimage(
@@ -239,14 +239,14 @@ extend class HDStatusBar{
 						screen.SetClipRect(cx,cy,cw,ch);
 					}
 					drawimage(
-						"XH31",(0,scaledyoffset)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
+						"libscope",(0,scaledyoffset)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
 						scale:(1.,1.)*scl
 					);
 					drawnum(degree*10,
-						4+bob.x,102*scl+bob.y,DI_SCREEN_CENTER,Font.CR_BLACK
+						4+bob.x,95*scl+bob.y,DI_SCREEN_CENTER,Font.CR_BLACK
 					);
 					drawnum(wp.weaponstatus[LIBS_DROPADJUST]*5,
-						6+bob.x,14*scl+bob.y,DI_SCREEN_CENTER,Font.CR_BLACK
+						6+bob.x,17*scl+bob.y,DI_SCREEN_CENTER,Font.CR_BLACK
 					);
 				}
 			}
