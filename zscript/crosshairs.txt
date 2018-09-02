@@ -277,7 +277,7 @@ extend class HDStatusBar{
 				scale:(3,1.6)*scl
 			);
 			if(scopeview){
-				int scaledyoffset=68*scl;
+				int scaledyoffset=60*scl;
 				int scaledwidth=89*scl;
 				vector2 sclhalf=(0.5,0.5)*scl;
 				double degree;
@@ -291,7 +291,7 @@ extend class HDStatusBar{
 					);
 					int cx,cy,cw,ch;
 					[cx,cy,cw,ch]=screen.GetClipRect();
-					SetClipRect(-44*scl+bob.x,23*scl+bob.y,scaledwidth,scaledwidth,
+					SetClipRect(-44*scl+bob.x,18*scl+bob.y,scaledwidth,scaledwidth,
 						DI_SCREEN_CENTER);
 					double deg=1/degree;
 					drawimage(
@@ -315,14 +315,14 @@ extend class HDStatusBar{
 					);
 				}
 				drawimage(
-					"XH31",(0,scaledyoffset)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					"libscope",(0,scaledyoffset)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
 					scale:(1.24,1.24)*scl
 				);
 				drawnum(degree*10,
-					4+bob.x,119*scl+bob.y,DI_SCREEN_CENTER,Font.CR_BLACK
+					4+bob.x,105*scl+bob.y,DI_SCREEN_CENTER,Font.CR_BLACK
 				);
 				drawnum(wp.weaponstatus[BOSSS_DROPADJUST]*5,
-					6+bob.x,12*scl+bob.y,DI_SCREEN_CENTER,Font.CR_BLACK
+					6+bob.x,9*scl+bob.y,DI_SCREEN_CENTER,Font.CR_BLACK
 				);
 			}
 			// the scope display is in 10ths of an arcminute.
