@@ -69,7 +69,8 @@ class HDWoundFixer:HDWeapon{
 			if(countinv("WornRadsuit"))useinventory(findinventory("portableradsuit"));
 			else A_DropInventory("HDArmourWorn");
 			A_ClearRefire();
-		}goto ready;
+		}
+		goto readyend;
 	}
 }
 class HDMedikitter:HDWoundFixer{

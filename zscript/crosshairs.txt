@@ -15,6 +15,16 @@ extend class HDStatusBar{
 		)return;
 
 
+		//multiple weapons use this
+		string whichdot="redpxl";
+		int whichdotthough=cvar.getcvar("hd_crosshair",hpl.player).getint();
+		switch(whichdotthough){
+			case 1:case 2:case 3:case 4:
+			whichdot=string.format("riflsit%i",whichdotthough);
+			default:break;
+		}
+
+
 		//all weapon sights go here
 		SetSize(0,400,250);
 		BeginHUD(forcescaled:true);
@@ -59,9 +69,16 @@ extend class HDStatusBar{
 					scale:(1.6,1.6)
 				);
 			}else{
+				double dotoff=max(abs(bob.x),abs(bob.y));
+				if(dotoff<10){
+					drawimage(
+						whichdot,(0,0)+bob*1.6,DI_SCREEN_CENTER|DI_ITEM_CENTER,
+						alpha:1.-dotoff*0.1,scale:(scl,scl)
+					);
+				}
 				drawimage(
-					"XH25",(0,0)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
-					scale:(2.6,2.7)*scl
+					"riflsite",(0,0)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					scale:(scl,scl)
 				);
 				if(scopeview){
 					double degree=(35-wp.weaponstatus[ZM66S_ZOOM])*0.2;
@@ -81,11 +98,18 @@ extend class HDStatusBar{
 			}
 		}
 		else if((wp is "Vulcanette")){
-			int scaledyoffset=47*scl;
+			double dotoff=max(abs(bob.x),abs(bob.y));
+			if(dotoff<10){
+				drawimage(
+					whichdot,(0,0)+bob*1.6,DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					alpha:1.-dotoff*0.1,scale:(scl,scl)
+				);
+			}
 			drawimage(
-				"XH25",(0,0)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
-				scale:(1.7,1.7)*scl
+				"riflsite",(0,0)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
+				scale:(scl,scl)
 			);
+			int scaledyoffset=47*scl;
 			if(scopeview){
 				double degree=(35-wp.weaponstatus[2])*0.2;
 				texman.setcameratotexture(hpc,"HDXHCAM3",degree);
@@ -157,9 +181,16 @@ extend class HDStatusBar{
 					scale:(1.6,1.6)*scl
 				);
 			}else{
+				double dotoff=max(abs(bob.x),abs(bob.y));
+				if(dotoff<10){
+					drawimage(
+						whichdot,(0,0)+bob*1.6,DI_SCREEN_CENTER|DI_ITEM_CENTER,
+						alpha:1.-dotoff*0.1,scale:(scl,scl)
+					);
+				}
 				drawimage(
-					"XH25",(0,0)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
-					scale:(2.5,2.5)*scl
+					"riflsite",(0,0)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					scale:(scl,scl)
 				);
 				if(scopeview){
 					int scaledyoffset=60*scl;
