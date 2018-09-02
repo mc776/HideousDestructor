@@ -54,7 +54,8 @@ extend class HDPlayerPawn{
 		bool notnull=false;
 		let wp=HDWeapon(player.readyweapon);
 		if(wp){
-			amt=wp.gunmass();
+			if(wp is "HDPistol")amt=10;
+			else amt=wp.gunmass();
 			barrellength=wp.barrellength;
 			barrelwidth=wp.barrelwidth;
 			barreldepth=wp.barreldepth;
