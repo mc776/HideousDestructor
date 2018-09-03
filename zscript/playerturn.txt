@@ -23,6 +23,9 @@ extend class HDPlayerPawn{
 
 	
 	void TurnCheck(){
+		double lastangle=angle;
+		double lastpitch=pitch;
+
 		double anglechange=player.cmd.yaw*(360./65536.);
 		double pitchchange=player.cmd.pitch*(-360./65536.);
 		double vdv=vel dot vel;

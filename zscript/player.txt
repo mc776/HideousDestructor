@@ -6,7 +6,7 @@ const HDCONST_SPRINTFATIGUE=30;
 const HDCONST_WALKFATIGUE=40;
 const HDCONST_DAMAGEFATIGUE=80;
 class HDPlayerPawn:PlayerPawn{
-	vector3 lastpos;vector3 lastvel;double lastangle;double lastpitch;double lastheight;
+	vector3 lastpos;vector3 lastvel;double lastheight;
 	bool teleported;
 
 	int oldinput;
@@ -78,8 +78,6 @@ class HDPlayerPawn:PlayerPawn{
 	override void PostBeginPlay(){
 		super.PostBeginPlay();
 		lastpos=pos;
-		lastangle=angle;
-		lastpitch=pitch;
 		lastvel=vel;
 		lastheight=height;
 		beatcap=35;beatmax=35;
@@ -628,8 +626,6 @@ class HDPlayerPawn:PlayerPawn{
 		oldfm=fm;
 		oldsm=sm;
 		lastvel=vel;
-		lastangle=angle;
-		lastpitch=pitch;
 
 		oldinput=input;
 	}
@@ -696,8 +692,6 @@ extend class HDPlayerPawn{
 	//reset various... things.
 	void levelreset(){
 		lastpos=pos;
-		lastangle=angle;
-		lastpitch=pitch;
 		lastvel=vel;
 		lastheight=height;
 
