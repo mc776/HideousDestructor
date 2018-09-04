@@ -201,10 +201,19 @@ extend class HDStatusBar{
 					scale:(0.77,0.77)*scl
 				);
 			}
-			else drawimage(
-				"XH25",(0,0)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
-				scale:(1.9,1.9)*scl
-			);
+			else{
+				double dotoff=max(abs(bob.x),abs(bob.y));
+				if(dotoff<10){
+					drawimage(
+						"riflsit3",(0,0)+bob*1.6,DI_SCREEN_CENTER|DI_ITEM_CENTER,
+						alpha:0.8-dotoff*0.04,scale:(scl,scl)*0.6
+					);
+				}
+				drawimage(
+					"riflsite",(0,0)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					scale:(scl,scl)*0.6
+				);
+			}
 		}
 		else if(wp is "ThunderBuster"){
 			int cx,cy,cw,ch;
@@ -334,10 +343,19 @@ extend class HDStatusBar{
 					DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 					scale:(1.2,1.2)*scl
 				);
-			}else drawimage(
-				"XH25",(0,0)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
-				scale:(1.9,1.9)*scl
-			);
+			}else{
+				double dotoff=max(abs(bob.x),abs(bob.y));
+				if(dotoff<10){
+					drawimage(
+						"riflsit4",(0,0)+bob*1.6,DI_SCREEN_CENTER|DI_ITEM_CENTER,
+						alpha:0.8-dotoff*0.04,scale:(scl,scl)*0.6
+					);
+				}
+				drawimage(
+					"riflsite",(0,0)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					scale:(scl,scl)*0.6
+				);
+			}
 		}
 		else if(wp is "BossRifle"){
 
