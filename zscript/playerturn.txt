@@ -51,9 +51,7 @@ extend class HDPlayerPawn{
 
 		//get weapon size
 		double amt=0;
-		double barrellength;
-		double barrelwidth;
-		double barreldepth;
+		double barrellength,barrelwidth,barreldepth;
 		bool notnull=false;
 		let wp=HDWeapon(player.readyweapon);
 		if(wp){
@@ -91,10 +89,11 @@ extend class HDPlayerPawn{
 
 		//apply to weapon
 		vector2 apch=(anglechange,-pitchchange)*0.1*amt;
-		hudbobrecoil1+=apch*0.3;
-		hudbobrecoil2+=apch*0.5;
+		if(player.cmd.buttons&BT_USE)apch*=-1;
+		hudbobrecoil1+=apch*0.1;
+		hudbobrecoil2+=apch*0.2;
 		hudbobrecoil3+=apch*0.4;
-		hudbobrecoil4+=apch*0.3;
+		hudbobrecoil4+=apch*0.6;
 		if(!countinv("WeaponBusy"))A_WeaponOffset(hudbobrecoil1.x*0.3,abs(hudbobrecoil1.y)*0.3,WOF_ADD);
 
 
