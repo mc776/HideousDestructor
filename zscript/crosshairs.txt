@@ -207,10 +207,24 @@ extend class HDStatusBar{
 			);
 		}
 		else if(wp is "ThunderBuster"){
-			drawimage(
-				"XH26",(0,1*scl)+bob,DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
-				scale:(5,1)*scl
+			int cx,cy,cw,ch;
+			[cx,cy,cw,ch]=screen.GetClipRect();
+			SetClipRect(
+				-16*scl+bob.x,-4*scl+bob.y,32*scl,16*scl,
+				DI_SCREEN_CENTER
 			);
+			vector2 bobb=bob*2;
+			bobb.y=clamp(bobb.y,-8,8);
+			drawimage(
+				"frntsite",(0,0)+bobb,DI_SCREEN_CENTER|DI_ITEM_TOP,
+				alpha:0.9,scale:(scl*1.6,scl*2)
+			);
+			screen.SetClipRect(cx,cy,cw,ch);
+			drawimage(
+				"backsite",(0,0)+bob,DI_SCREEN_CENTER|DI_ITEM_TOP,
+				scale:(scl*2,scl)
+			);
+
 			if(scopeview){
 				int scaledyoffset=36*scl;
 				texman.setcameratotexture(hpc,"HDXHCAM1",3);
@@ -219,8 +233,13 @@ extend class HDStatusBar{
 					scale:(1,1)*scl
 				);
 				drawimage(
-					"XH28",(0,scaledyoffset)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
+					"tbwindow",(0,scaledyoffset)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
 					scale:(1,1)*scl
+				);
+				double dotoff=max(abs(bob.x),abs(bob.y));
+				if(dotoff<40)drawimage(
+					"redpxl",(0,scaledyoffset)+bobb,DI_SCREEN_CENTER|DI_ITEM_TOP,
+					alpha:0.9*(1.-dotoff*0.04),scale:(scl*2,scl*2)
 				);
 			}
 		}
