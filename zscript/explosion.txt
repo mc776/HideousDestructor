@@ -172,7 +172,6 @@ extend class HDActor{
 			}
 			//blast damage
 			if(!it)continue;if(dist<=blastradius && (it.bshootable||it.bvulnerable)){
-			it.A_Log(it.getclassname());
 				if(it.radiusdamagefactor)blastdamage*=it.radiusdamagefactor;
 				int dmg=(dist>fullblastradius)?
 					blastdamage-clamp(dist-fullblastradius,0,dist)
