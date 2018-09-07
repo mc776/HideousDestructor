@@ -5,6 +5,7 @@ extend class HDStatusBar{
 	virtual void DrawHDXHair(hdplayerpawn hpl){
 		let wp=hdweapon(cplayer.readyweapon);
 		bool sightbob=cvar.getcvar("hd_sightbob",cplayer).getbool();
+		vector2 bob=hpl.hudbob;
 
 		//have no crosshair at all
 		if(
@@ -12,6 +13,7 @@ extend class HDStatusBar{
 			||hpl.barehanded
 			||hpl.nocrosshair>0
 			||(!sightbob&&hpl.countinv("IsMoving"))
+			||abs(bob.x)>50
 		)return;
 
 
@@ -39,7 +41,6 @@ extend class HDStatusBar{
 			cpbt&BT_ZOOM
 		);
 		if(hpl.findinventory("PortableLiteAmp")&&PortableLiteAmp(hpl.findinventory("PortableLiteAmp")).worn)scopeview=false;
-		vector2 bob=hpl.hudbob;
 
 		if((wp is "HDPistol")){
 			int cx,cy,cw,ch;
