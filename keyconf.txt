@@ -9,14 +9,25 @@ addmenukey "Drop One Ammo Unit" hd_dropone
 addmenukey "Strip Armour" hd_strip
 addmenukey "Taunt" hd_taunt
 addmenukey "Use Pistol" hd_pistol
+addmenukey "Use SMG" hd_smg
 addmenukey "Use Grenades" hd_frags
-addmenukey "Use Stimpack" hd_meds
+addmenukey "Use Stimpack" hd_stims
 addmenukey "Use Medikit" hd_meds
 addmenukey "Attempt To Bandage Wound" hd_band
 addmenukey "Detonate all IEDs" detonate
 addmenukey "Set IEDs passive" iedpassive
 addmenukey "Set IEDs active" iedactive
-addmenukey "Toggle DERP ambush/turret mode" derpat
+addmenukey "DERP goto target" derpgo
+addmenukey "DERP goto self" derpcome
+addmenukey "DERP turret mode" derpt
+addmenukey "DERP ambush(idle) mode" derpa
+addmenukey "DERP patrol mode" derpp
+addmenukey "DERP ambush/turret toggle" derpat
+addmenukey "Reset airburst" "ab 0"
+addmenukey "Set team spawn here" "teamspawn 666"
+addmenukey "Clear team spawn" "teamspawn -1"
+addmenukey "Toggle zoomed scope view" hd_zoomoff
+addmenukey "Hold for zoomed scope view" +hd_zoom
 
 defaultbind b hd_taunt
 
@@ -39,6 +50,7 @@ alias hd_taunt "netevent hd_taunt";
 alias hd_findrange "netevent hd_findrange";
 
 alias hd_pistol "use HDPistol";
+alias hd_smg "use HDSMG";
 alias hd_frags "use HDFragGrenades";
 alias hd_stims "use PortableStimpack";
 alias hd_meds "use PortableMedikit;wait 1;use HDMedikitter";
