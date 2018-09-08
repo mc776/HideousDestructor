@@ -84,38 +84,10 @@ extend class HDPlayerPawn{
 		let player = self.player;
 		UserCmd cmd = player.cmd;
 
+
 		//move to raw result first to reduce lagjitters
-		if(player.turnticks){
-			player.turnticks--;
-//			angle+=(180./TURN180_TICKS);
-			player.cmd.yaw=max(player.cmd.yaw,(0.5*65536./TURN180_TICKS));
-		}
 //		angle+=cmd.yaw*(360./65536.);
 //		pitch=clamp(pitch-cmd.pitch*(360./65536.),player.minpitch,player.maxpitch);
-
-
-
-		//reduced turning while supported.
-		//replaces angle change in playerturn.txt.
-		int cmdpitch=player.cmd.pitch;
-		int cmdyaw=player.cmd.yaw;
-		if(
-			player.cmd.buttons&BT_USE
-			&&!countinv("IsMoving")
-		){
-			player.cmd.yaw>>=3;
-			player.cmd.pitch>>=3;
-			if(!gunbraced){
-				vector2 iyp=(cmdyaw,-cmdpitch)*(360./65536.*0.05);
-				A_MuzzleClimb(iyp*2,iyp,iyp,iyp);
-			}
-		}
-		//reduced turning while crouched.
-		else if(height<40 && abs(player.cmd.yaw)>256){
-			player.cmd.yaw>>=1;
-			player.cmd.pitch>>=1;
-		}
-
 
 
 		player.onground = (pos.z <= floorz) || bOnMobj || bMBFBouncer || (player.cheats & CF_NOCLIP2);

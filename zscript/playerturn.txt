@@ -30,23 +30,29 @@ extend class HDPlayerPawn{
 		double pitchchange=player.cmd.pitch*(-360./65536.);
 		double vdv=vel dot vel;
 
-/*
+		//turn180
+		if(player.turnticks){
+			player.turnticks--;
+			anglechange+=(180./TURN180_TICKS);
+		}
+
 		//reduced turning while supported.
 		if(
 			player.cmd.buttons&BT_USE
 			&&!countinv("IsMoving")
 		){
-			yaw-=iyaw*0.9;ptch+=ipitch*0.9;
+			anglechange*=0.1;
+			pitchchange*=0.1;
 			if(!gunbraced){
-				vector2 iyp=(iyaw,-ipitch)*0.05;
+				vector2 iyp=(anglechange,pitchchange)*0.05;
 				A_MuzzleClimb(iyp*2,iyp,iyp,iyp);
 			}
 		}
 		//reduced turning while crouched.
-		else if(height<40 && abs(yaw)>5){
-			yaw-=iyaw*0.4;ptch-=ipitch*0.4;
+		else if(height<40 && abs(anglechange)>3){
+			anglechange*=0.6;
+			pitchchange*=0.6;
 		}
-*/
 
 
 		//get weapon size

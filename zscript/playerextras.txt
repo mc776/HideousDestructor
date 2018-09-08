@@ -17,12 +17,8 @@ extend class HDPlayerPawn{
 	//check mantling
 	//returns: -1 cannot mantle; 0 cannot mantle but on ground; 1 can mantle
 	int MantleCheck(){
-		bool onground=false;
-		int res=-1;
-		if(floorz<=pos.z){
-			onground=true;
-			res=0;
-		}
+		bool onground=player.onground;
+		int res=onground?0:-1;
 
 		//determine max height
 		int mantlemax=36;
