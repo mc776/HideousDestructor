@@ -90,6 +90,26 @@ extend class HDPlayerPawn{
 //		pitch=clamp(pitch-cmd.pitch*(360./65536.),player.minpitch,player.maxpitch);
 
 
+		//reduced turning while supported.
+		if(
+			player.cmd.buttons&BT_USE
+			&&!countinv("IsMoving")
+		){
+			player.cmd.yaw>>=3;
+			player.cmd.pitch>>=3;
+			if(!gunbraced){
+				vector2 iyp=(cmd.yaw,-cmd.pitch)*(360./65536.*0.05);
+				if(!(player.cheats & CF_PREDICTING))A_MuzzleClimb(iyp*2,iyp,iyp,iyp);
+			}
+		}
+		//reduced turning while crouched.
+		else if(player.crouchfactor<0.7 && abs(cmd.yaw)>(3*65536/360)){
+			player.cmd.yaw>>=1;
+			player.cmd.pitch>>=1;
+		}
+
+
+
 		player.onground = (pos.z <= floorz) || bOnMobj || bMBFBouncer || (player.cheats & CF_NOCLIP2);
 
 		// killough 10/98:
