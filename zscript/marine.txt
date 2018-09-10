@@ -497,7 +497,7 @@ class HDMarine:HDActor replaces ScriptedMarine{
 	firesmg:
 		#### F 1 bright light("SHOT"){
 			gunloaded--;
-			A_PlaySound("weapons/pistol",CHAN_WEAPON,0.7);
+			A_PlaySound("weapons/smg",CHAN_WEAPON,0.7);
 			actor bbb=A_MarineShot("HDBullet9");
 			bbb.A_ChangeVelocity(cos(bbb.pitch)*20,0,-sin(bbb.pitch)*20,CVF_RELATIVE);
 			if(!random(0,7))A_AlertMonsters(0,bfriendly?AMF_TARGETEMITTER:0);
