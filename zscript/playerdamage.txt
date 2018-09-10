@@ -150,7 +150,7 @@ extend class HDPlayerPawn{
 			else if(mod=="smallarms3")type=3;
 
 			if(
-				!armourlevel
+				armourlevel<1
 			){
 				towound+=max(2,damage*0.6);
 				damage*=0.7;
@@ -172,9 +172,9 @@ extend class HDPlayerPawn{
 				}
 				//degrade armour and puff
 				if(
-					armourlevel<type
-					||!random(type-armourlevel,7)
+					armourlevel<type+random(0,(basedamage>>3))
 				){
+					A_Log("You lose armour.",true);
 					actor p;bool q;
 					if(armourlevel>1){
 						A_TakeInventory("HDArmourWorn",random(1,type+1));
