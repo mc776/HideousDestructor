@@ -31,7 +31,7 @@ extend class HDPlayerPawn{
 				&&player
 			){
 				player.cmd.buttons&=~BT_USE;
-				deathcounter++;
+				if(!(player.cheats & CF_PREDICTING))deathcounter++;
 			}
 		}
 		super.DeathThink();
