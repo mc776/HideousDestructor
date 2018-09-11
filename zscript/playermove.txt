@@ -84,7 +84,6 @@ extend class HDPlayerPawn{
 		let player = self.player;
 		UserCmd cmd = player.cmd;
 
-
 		//reduced turning while supported.
 		if(
 			player.cmd.buttons&BT_USE
@@ -102,7 +101,6 @@ extend class HDPlayerPawn{
 			player.cmd.yaw>>=1;
 			player.cmd.pitch>>=1;
 		}
-
 
 
 		player.onground = (pos.z <= floorz) || bOnMobj || bMBFBouncer || (player.cheats & CF_NOCLIP2);

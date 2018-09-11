@@ -103,9 +103,9 @@ extend class HDPlayerPawn{
 		//on every beat
 		if(beatcount>0){
 			beatcount--;
-			pitch-=0.0005*bloodpressure;
+			A_SetPitch(pitch-0.0005*bloodpressure,SPF_INTERPOLATE);
 		}else{
-			pitch+=0.0005*beatmax*bloodpressure;
+			A_SetPitch(pitch+0.0005*beatmax*bloodpressure,SPF_INTERPOLATE);
 			beatmax=min(beatmax,beatcap);
 
 			//heartbeat sound
