@@ -39,12 +39,21 @@ class ThunderBuster:HDWeapon{
 		bool alt=false,
 		int battery=20
 	){
+		//determine angle
+		double shootangle=caller.angle;
+		double shootpitch=caller.pitch;
+		let hdp=hdplayerpawn(caller);
+		if(hdp&&hdp.scopecamera){
+			shootangle=hdp.scopecamera.angle;
+			shootpitch=hdp.scopecamera.pitch;
+		}
+
 		//create the line
 		flinetracedata tlt;
 		caller.linetrace(
-			caller.angle,
+			shootangle,
 			8000+200*battery,
-			caller.pitch,
+			shootpitch,
 			flags:TRF_NOSKY,
 			offsetz:zoffset,
 			data:tlt
