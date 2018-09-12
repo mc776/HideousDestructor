@@ -65,7 +65,10 @@ class Ring:HDWeapon replaces Fist{
 			offsetz:height-12
 		);
 
-		if(!punchline.hitactor)return;
+		if(!punchline.hitactor){
+			HDF.Give(self,"WallChunkAmmo",1);
+			return;
+		}
 		actor punchee=punchline.hitactor;
 
 		//charge!
@@ -225,6 +228,11 @@ class Ring:HDWeapon replaces Fist{
 		}
 		PUNF A 0 A_Refire();
 		goto ready;
+	zoom:
+		TNT1 A 0 A_GiveInventory("BoogerFlicker");
+		TNT1 A 0 A_SelectWeapon("BoogerFlicker");
+		TNT1 A 1 A_WeaponReady(WRF_NOFIRE);
+		goto nope;
 	spawn:
 		TNT1 A 1;
 		stop;
