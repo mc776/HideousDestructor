@@ -287,6 +287,23 @@ class ArchFiend:Archvile replaces ArchVile{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
+
+		//spawn shards instead if no archvile sprites
+		if(Wads.CheckNumForName("VILER0",wads.ns_sprites,-1,false)<0){
+			for(int i=0;i<99;i++){
+				actor vvv;
+				[bmissilemore,vvv]=A_SpawnItemEx(random(0,40)?"BFGVileShard":"Zombieman",
+					frandom(-3,3),frandom(-3,3),frandom(1,6),
+					frandom(0,30),0,frandom(1,12),frandom(0,360),
+					SXF_SETMASTER|SXF_TRANSFERPOINTERS|SXF_ABSOLUTEPOSITION
+				);
+				vvv.bfriendly=bfriendly;
+			}
+			A_AlertMonsters();
+			destroy();
+			return;
+		}
+
 		hdmobster.spawnmobster(self);
 		HDMobAI.Resize(self,0.8,1.3);
 		A_GiveInventory("ImmunityToFire");

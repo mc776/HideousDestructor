@@ -70,6 +70,9 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 		else if(accuracy==1)wep=0;
 		else if(accuracy==2)wep=1;
 		else if(accuracy==3)wep=-1;
+
+		//if no ssg, sg
+		if(Wads.CheckNumForName("SHT2B0",wads.ns_sprites,-1,false)<0&&wep==1)wep=0;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
