@@ -49,6 +49,7 @@ class GyroGrenade:SlowProjectile{
 		A_ChangeVelocity(speed*cos(pitch),0,speed*sin(-pitch),CVF_RELATIVE);
 	}
 	override void ExplodeSlowMissile(line blockingline,actor blockingobject){
+		if(max(abs(skypos.x),abs(skypos.y))>=32768){destroy();return;}
 		bmissile=false;
 
 		//bounce
@@ -163,6 +164,7 @@ class HDHEAT:GyroGrenade{
 		decal "BrontoScorch";
 	}
 	override void ExplodeSlowMissile(line blockingline,actor blockingobject){
+		if(max(abs(skypos.x),abs(skypos.y))>=32768){destroy();return;}
 		bmissile=false;
 
 		//bounce
