@@ -48,7 +48,7 @@ class SlowProjectile:HDBullet{
 		}
 		if(inthesky){
 			setorigin(pos+(vel.xy,0),true);
-			if(max(abs(skypos.x),abs(skypos.y))>=32768){destroy();return;}
+			if(max(abs(pos.x),abs(pos.y))>=32768){destroy();return;}
 			skyz+=vel.z;
 			vel.z-=grav;
 			if(ceilingz>skyz){
@@ -187,7 +187,7 @@ class SlowProjectile:HDBullet{
 		}
 	}
 	virtual void ExplodeSlowMissile(line blockingline=null,actor blockingobject=null){
-		if(max(abs(skypos.x),abs(skypos.y))>=32768){destroy();return;}
+		if(max(abs(pos.x),abs(pos.y))>=32768){destroy();return;}
 		actor a=spawn("IdleDummy",pos);
 		a.stamina=10;
 		a.A_PlaySound(speed>50?"misc/punch":"misc/fragknock",CHAN_AUTO);
