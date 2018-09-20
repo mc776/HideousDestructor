@@ -144,17 +144,16 @@ class HellPrince:BaronOfHell replaces BaronofHell{
 		BOSS H 18 A_FaceTarget(20,20);
 		BOSS H 0 bright A_SpawnProjectile("BaleBall",38,0,2,0,0);
 		BOSS H 0 bright A_SpawnProjectile("BaleBall",38,0,-2,0,0);
-		BOSS H 6 bright{
-			if(random(0,3))A_SpawnProjectile("BelphBall",28,0,0,2,pitch);
-			else A_BaronSoul();
-		}
 		BOSS H 0 bright A_SpawnProjectile("MiniBBall",46,0,5,2,0);
 		BOSS H 6 bright A_SpawnProjectile("MiniBBall",46,0,-5,2,0);
 		BOSS H 0 bright A_SpawnProjectile("MiniBBall",56,0,7,2,4);
 		BOSS H 6 bright A_SpawnProjectile("MiniBBall",56,0,-7,2,4);
 		BOSS H 0 bright A_SpawnProjectile("MiniBBall",66,0,12,2,7);
 		BOSS H 6 bright A_SpawnProjectile("MiniBBall",66,0,-12,2,7);
-		BOSS H 12;
+		BOSS H 12 bright{
+			if(random(0,3))A_SpawnProjectile("BelphBall",28,0,0,2,pitch);
+			else A_BaronSoul();
+		}
 		goto see;
 	pain:
 		BOSS H 6 A_Pain();
