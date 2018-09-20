@@ -107,17 +107,6 @@ class Mancubus:Fatso replaces Fatso{
 		obituary "%o was smoked by a mancubus.";
 		painchance 80;
 	}
-	override bool CanCollideWith(actor other,bool passive){
-		//headshot code - rocket pass shoulder
-		return(
-			(health<1)
-			||(other.pos.z<pos.z+(height*0.8))
-			||(
-				abs(pos.x-other.pos.x)<(radius*0.3)
-				&&abs(pos.y-other.pos.y)<(radius*0.3)
-			)
-		);
-	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		hdmobster.spawnmobster(self);

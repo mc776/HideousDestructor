@@ -32,17 +32,6 @@ class HellPrince:BaronOfHell replaces BaronofHell{
 			aaa.A_SkullLaunch();
 			shields-=66;
 	}
-	override bool CanCollideWith(actor other,bool passive){
-		//headshot code - rocket pass shoulder
-		return(
-			(health<1)
-			||(other.pos.z<pos.z+(height*0.8))
-			||(
-				abs(pos.x-other.pos.x)<(radius*0.3)
-				&&abs(pos.y-other.pos.y)<(radius*0.3)
-			)
-		);
-	}
 	int shields;
 	int raisesneeded;
 	enum BaronStats{

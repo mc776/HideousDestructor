@@ -234,16 +234,6 @@ class SatanRobo:Cyberdemon replaces CyberDemon{
 		minmissilechance 196;
 		satanrobo.launcheroffset 24;
 	}
-	override bool CanCollideWith(actor other,bool passive){
-		//headshot code - rocket pass shoulder
-		return(
-			(other.pos.z<pos.z+(110*0.8))
-			||(
-				abs(pos.x-other.pos.x)<12.
-				&&abs(pos.y-other.pos.y)<12.
-			)
-		);
-	}
 	void A_CyberGunSmoke(){
 		A_SpawnItemEx("HDSmoke",
 			random(-32,32),random(-32,32),random(46,96),0,
