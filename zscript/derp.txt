@@ -96,14 +96,14 @@ class DERPBot:HDUPK{
 	}
 
 	int movestamina;
-	int turnamount;
+	double turnamount;
 	vector2 goalpoint;
 	vector2 originalgoalpoint;
-	int angletogoal(){
+	double angletogoal(){
 		vector3 vecdiff=levellocals.vec3diff(pos,(goalpoint,0));
 		return deltaangle(
 			atan2(vecdiff.y,vecdiff.x),angle
-		)/DERP_MAXTICTURN;
+		)*(1./DERP_MAXTICTURN);
 	}
 	void A_DerpCrawl(bool attack=true){
 		bool moved=true;
@@ -146,6 +146,11 @@ class DERPBot:HDUPK{
 	void A_DerpTurn(){
 		if(!turnamount)setstatelabel("see");
 		A_PlaySound("derp/crawl",CHAN_BODY);
+		if(abs(turnamount)<1){
+			angle+=DERP_MAXTICTURN*turnamount;
+			turnamount=0;
+			return;
+		}
 		if(turnamount<0){
 			angle+=DERP_MAXTICTURN;
 			turnamount++;
