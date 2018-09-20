@@ -15,6 +15,7 @@ class HDWeapon:Weapon{
 		WRF_NONE=WRF_NOFIRE|WRF_DISABLESWITCH,
 	}
 	default{
+		+solid
 		+weapon.ammo_optional +weapon.alt_ammo_optional +weapon.noalert +weapon.noautoaim
 		+noblockmonst +notrigger +dontgib
 		weapon.ammogive 0;weapon.ammogive2 0;
@@ -28,6 +29,7 @@ class HDWeapon:Weapon{
 		weapon.bobrangey 0.8;
 		hdweapon.barrelsize 0,0,0;
 	}
+	override bool cancollidewith(actor other,bool passive){return HDPickerUpper(other);}
 	//wrapper for setpsprite
 	action void SetWeaponState(statelabel st,int layer=PSP_WEAPON){
 		if(player)player.setpsprite(layer,invoker.findstate(st));
