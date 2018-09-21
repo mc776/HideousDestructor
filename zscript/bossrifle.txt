@@ -227,7 +227,7 @@ class BossRifle:HDWeapon{
 			if(mg==10)setweaponstate("reloaddone");
 			else if(
 				mg<1
-				&&countinv("HD7mClip")
+				&&!HDMagAmmo.NothingLoaded(self,"HD7mClip")
 			)setweaponstate("loadclip");
 		}
 	loadhand:
