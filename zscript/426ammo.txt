@@ -76,7 +76,8 @@ class HD4mMag:HDMagAmmo{
 		SyncAmount();
 		int mindex=mags.size()-1;
 		if(
-			mags[mindex]<1
+			mags.size()<1
+			||mags[mindex]<1
 			||owner.A_JumpIfInventory(roundtype,0,"null")
 		)return false;
 		if(mags[mindex]>=51){
