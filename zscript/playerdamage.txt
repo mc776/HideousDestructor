@@ -319,7 +319,7 @@ extend class HDPlayerPawn{
 
 
 		//spiritual armour
-		if(countinv("SpiritualArmour")){
+		if(!(flags&DMG_FORCED)&&countinv("SpiritualArmour")){
 			towound=0;
 			toburn=0;
 			if(inpain>0)inpain=max(inpain,3);
