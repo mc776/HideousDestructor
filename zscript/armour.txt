@@ -206,15 +206,16 @@ class BlueArmour:Inventory replaces BlueArmor{
 		inventory.maxamount HDCONST_BLUEARMOUR;
 		inventory.amount HDCONST_BLUEARMOUR;
 	}
-	override void postbeginplay(){
-		super.postbeginplay();
-		inventory aaa=null;
-		if(owner){
-			owner.A_GiveInventory("HDArmourWorn");
-			aaa=owner.findinventory("HDArmourWorn");
-		}else{
-			aaa=inventory(spawn("HDArmour",pos));
-		}
+    override void postbeginplay(){
+        super.postbeginplay();
+        inventory aaa=null;
+        if(owner){
+            owner.A_GiveInventory("HDArmourWorn");
+            aaa=owner.findinventory("HDArmourWorn");
+        }else{
+            aaa=inventory(spawn("HDArmour",pos));
+        }
+		aaa.changetid(tid);
 		if(aaa){
 			aaa.meleethreshold=meleethreshold;
 			aaa.maxamount=maxamount;
