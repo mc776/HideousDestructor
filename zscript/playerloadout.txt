@@ -75,11 +75,18 @@ class DoomguyLoadout:InvReset{
 		other.A_GiveInventory("HDPistol");
 		other.A_GiveInventory("HD9mMag15",2);
 		other.A_GiveInventory("HDPistolAmmo",4);
+		let thth=new("DoomGuyPistolSelector");
+		thth.other=other;
+		destroy();
+	}
+}
+class DoomguyPistolSelector:Thinker{
+	actor other;
+	override void Tick(){
 		other.A_SelectWeapon("HDPistol");
 		destroy();
 	}
 }
-
 
 
 

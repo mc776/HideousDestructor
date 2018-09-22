@@ -35,7 +35,7 @@ extend class HDHandlers{
 		if(!hde)return;
 
 		//replenish ammo to mitigate spawncamping
-		hde.A_GiveInventory("HDLoaded");
+		if(!hd_dropeverythingondeath)hde.A_GiveInventory("HDLoaded");
 
 		if(wiped[e.playernumber]){
 			hde.A_GiveInventory("WipedOut");

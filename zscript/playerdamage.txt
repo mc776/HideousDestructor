@@ -25,7 +25,10 @@ extend class HDPlayerPawn{
 			A_TakeInventory("BasicArmor");
 		}
 
-		if(damage==TELEFRAG_DAMAGE)flags|=DMG_FORCED;
+		if(damage==TELEFRAG_DAMAGE&&source==self){
+			flags|=DMG_FORCED;
+			A_TakeInventory("SpiritualArmour");
+		}
 
 		if(inflictor&&inflictor.bpiercearmor)flags|=DMG_NO_ARMOR;
 
