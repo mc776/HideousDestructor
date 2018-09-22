@@ -275,8 +275,12 @@ class hdladderbottom:hdactor{
 
 							actor hdl=spawn("PortableLadder",target.pos);
 							hdl.A_PlaySound("misc/ladder");
-							hdl.vel.xy=vl.xy;
+							hdl.vel.xy=vl.xy*2;
 							hdl.translation=translation;
+
+							let grabthink=new("GrabThinker");
+							grabthink.picktarget=currentuser;
+							grabthink.pickobj=hdl;
 
 							target.destroy();
 							if(self)destroy();
@@ -323,7 +327,7 @@ class PortableLadder:HDPickup{
 		inventory.icon "LADDD0";
 		inventory.pickupmessage "Picked up a ladder.";
 		inventory.maxamount 3;
-		height 24;radius 12;
+		height 20;radius 8;
 		hdpickup.bulk ENC_LADDER;
 	}
 	states{
