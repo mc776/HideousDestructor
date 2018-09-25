@@ -216,8 +216,10 @@ class Slayer:HDShotgun replaces HDShotgun{
 				);
 			}
 		}
-		SH2G L 6 offset(0,34);
-		SH2G L 10 offset(0,36){
+		SH2G L 2 offset(1,34);
+		SH2G L 2 offset(2,34);
+		SH2G L 2 offset(4,34);
+		SH2G L 8 offset(0,36){
 			if(invoker.weaponstatus[0]&SLAYF_UNLOADONLY){
 				setweaponstate("unloadend");
 				return;
@@ -228,14 +230,15 @@ class Slayer:HDShotgun replaces HDShotgun{
 				A_PlaySound("weapons/pocket",CHAN_WEAPON);
 				else setweaponstate("reloadnopocket");
 		}
-		SH2G L 8 offset(0,35);
-		SH2G L 7 offset(0,34);
+		SH2G L 4 offset(2,35);
+		SH2G L 4 offset(0,35);
+		SH2G L 4 offset(0,34);
 	reloadnopocket:
-		SH2G E 6;
-		SH2G E 1 offset(0,36);
+		SH2G E 5 offset(1,35);
+		SH2G E 2 offset(0,36);
 		SH2G F 2 offset(0,40);
-		SH2G F 2 offset(0,46);
-		SH2G F 1 offset(0,54);
+		SH2G F 1 offset(0,46);
+		SH2G F 2 offset(0,54);
 
 		TNT1 A 4{
 			//take up to 2 shells in hand
@@ -261,11 +264,11 @@ class Slayer:HDShotgun replaces HDShotgun{
 				ssh--;
 			}
 		}
-		TNT1 A 5 A_PlaySound("weapons/sshotl",CHAN_WEAPON);
+		TNT1 A 4 A_PlaySound("weapons/sshotl",CHAN_WEAPON);
 		SH2G G 2 offset(0,46);
-		SH2G G 2 offset(0,42);
+		SH2G G 1 offset(0,42);
 		SH2G H 2 offset(0,42);
-		SH2G H 4 A_PlaySound("weapons/sshotc",CHAN_WEAPON);
+		SH2G H 3 A_PlaySound("weapons/sshotc",CHAN_WEAPON);
 		SHT2 A 3;
 		goto ready;
 	unloadend:

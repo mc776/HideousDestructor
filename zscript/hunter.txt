@@ -168,10 +168,9 @@ class Hunter:HDShotgun replaces Shotgun{
 		SHTG A 0 A_JumpIf(invoker.weaponstatus[0]&HUNTF_ALTHOLDING,"nope");
 		SHTG A 0 A_SetAltHold(true);
 		SHTG A 1 A_PlaySound("weapons/shotgr",5);
-		SHTG AE 1 A_MuzzleClimb(0,-frandom(1.,1.6));
-		//SHTG E 0 A_Refire("LongStroke");
+		SHTG AE 1 A_MuzzleClimb(0,frandom(1.,1.6));
 		SHTG E 0 A_JumpIf(pressingaltfire(),"longstroke");
-		SHTG EA 2 A_MuzzleClimb(0,frandom(1.,1.6));
+		SHTG EA 2 A_MuzzleClimb(0,-frandom(1.,1.6));
 		SHTG E 0 A_PlaySound("weapons/rifleclick2",5);
 		SHTG E 0 A_Refire("ready");
 		goto ready;
