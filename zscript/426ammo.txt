@@ -102,8 +102,8 @@ class HD4mMag:HDMagAmmo{
 		return true;
 	}
 	override bool Insert(){
-		if(owner.countinv('SteadyHand') == 0) { owner.GiveInventory('SteadyHand'); }
-		let sh = owner.FindInventory('SteadyHand');
+		if(owner.countinv('SteadyHand') == 0) { owner.GiveInventory('SteadyHand', 1); }
+		let sh = SteadyHand(owner.FindInventory('SteadyHand'));
 		SyncAmount();
 		if(
 			mags[mags.size()-1]>=50
