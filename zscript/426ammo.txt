@@ -119,7 +119,7 @@ class HD4mMag:HDMagAmmo{
 		}
 		owner.A_PlaySound("weapons/pocket",CHAN_BODY,frandom(0.1,0.6));
 		mags[mags.size()-1]++;
-		sh.breakChance += 10;
+		sh.breakChance += random(10, 20);
 		return true;
 	}
 	override void Consolidate(){
