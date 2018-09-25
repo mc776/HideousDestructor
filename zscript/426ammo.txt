@@ -102,6 +102,8 @@ class HD4mMag:HDMagAmmo{
 		return true;
 	}
 	override bool Insert(){
+		if(owner.countinv('SteadyHand') == 0) { owner.GiveInventory('SteadyHand', 1); }
+		let sh = SteadyHand(owner.FindInventory('SteadyHand'));
 		SyncAmount();
 		if(
 			mags[mags.size()-1]>=50
@@ -109,7 +111,7 @@ class HD4mMag:HDMagAmmo{
 		)return false;
 		owner.A_TakeInventory(roundtype,1,TIF_NOTAKEINFINITE);
 		owner.A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
-		if(!random(0,7)){
+		if(random(1,100) <= sh.breakChance){
 			owner.A_PlaySound("weapons/bigcrack",CHAN_BODY);
 			owner.A_SpawnItemEx("HDSmokeChunk",12,0,owner.height-12,4,frandom(-2,2),frandom(2,4));
 			owner.damagemobj(self,owner,1,"Thermal",DMG_NO_ARMOR);
@@ -117,6 +119,7 @@ class HD4mMag:HDMagAmmo{
 		}
 		owner.A_PlaySound("weapons/pocket",CHAN_BODY,frandom(0.1,0.6));
 		mags[mags.size()-1]++;
+		sh.breakChance += random(10, 20);
 		return true;
 	}
 	override void Consolidate(){
@@ -178,3 +181,10 @@ class HD4mmMagEmpty:IdleDummy{
 	}
 }
 
+class SteadyHand : Inventory {
+	int breakChance;
+	override void DoEffect() {
+		super.DoEffect();
+		breakChance = max(breakChance - 1, 1);
+	}
+}
