@@ -55,10 +55,13 @@ class HD4mMag:HDMagAmmo{
 	override void postbeginplay(){
 		super.postbeginplay();
 		sealtimer=0;
+		breakchance=0;
 	}
+	int breakchance;
 	int sealtimer;
 	override void doeffect(){
 		if(sealtimer>0)sealtimer--;
+		if(breakchance>0)breakchance--;
 		super.doeffect();
 	}
 	override string pickupmessage(){
@@ -109,12 +112,14 @@ class HD4mMag:HDMagAmmo{
 		)return false;
 		owner.A_TakeInventory(roundtype,1,TIF_NOTAKEINFINITE);
 		owner.A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
-		if(!random(0,7)){
+		if(random(0,80)<=breakchance){
 			owner.A_PlaySound("weapons/bigcrack",CHAN_BODY);
 			owner.A_SpawnItemEx("HDSmokeChunk",12,0,owner.height-12,4,frandom(-2,2),frandom(2,4));
 			owner.damagemobj(self,owner,1,"Thermal",DMG_NO_ARMOR);
+			breakchance=clamp(breakchance+20,20,80);
 			return false;
 		}
+		breakchance=max(breakchance+1,20);
 		owner.A_PlaySound("weapons/pocket",CHAN_BODY,frandom(0.1,0.6));
 		mags[mags.size()-1]++;
 		return true;
