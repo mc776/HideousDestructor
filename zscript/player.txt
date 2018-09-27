@@ -158,7 +158,7 @@ class HDPlayerPawn:PlayerPawn{
 			setstatelabel("seewalk");
 		}
 
-		if(player.readyweapon){
+		if(player.readyweapon&&player.readyweapon!=WP_NOCHANGE){
 			player.readyweapon.bobspeed=getdefaultbytype(player.readyweapon.getclass()).bobspeed;
 			if(stunned||runwalksprint<0){
 				player.readyweapon.bobspeed*=0.6;
@@ -464,7 +464,7 @@ class HDPlayerPawn:PlayerPawn{
 			||input&BT_JUMP
 		){
 			if(!barehanded){
-				if(player.readyweapon)lastweapon=player.readyweapon;
+				if(player.readyweapon&&player.readyweapon!=WP_NOCHANGE)lastweapon=player.readyweapon;
 				A_SetInventory("NulledWeapon",1);
 				A_SetInventory("NullWeapon",1);
 				A_SelectWeapon("NullWeapon");

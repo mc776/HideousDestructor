@@ -677,10 +677,7 @@ class ZM66AltStarter:ActionItem{
 			else if(invoker.amount==2)zzz.weaponstatus[0]|=ZM66F_NOLAUNCHER|ZM66F_NOFIRESELECT;
 			zzz.attachtoowner(self);
 			zzz.special=special;
-			if(player){
-				player.readyweapon=zzz;
-				player.pendingweapon=zzz;
-			}
+			HDWeaponSelector.Select(self,"ZM66AssaultRifle");
 		}fail;
 	}
 }
