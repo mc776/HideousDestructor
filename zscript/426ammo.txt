@@ -10,7 +10,7 @@ class FourMilAmmo:Ammo{
 		ammo.backpackamount 0;
 		xscale 0.5; yscale 0.6; height 2; radius 2; translation "ice";
 	}
-	override bool cancollidewith(actor other,bool passive){return other.bpickup||HDPickerUpper(other);}
+	override bool cancollidewith(actor other,bool passive){return HDPickerUpper(other);}
 	override string pickupmessage(){
 		string pms="Picked up a stray 4.26 UAC Standard round.";
 		if(amount>1)pms="Picked up a stray block of 4.26 UAC Standard rounds.";

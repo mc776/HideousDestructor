@@ -12,7 +12,7 @@ class SevenMilAmmo:Ammo{
 		xscale 0.7;yscale 0.8;
 		inventory.pickupmessage "Picked up a 7.76mm round.";
 	}
-	override bool cancollidewith(actor other,bool passive){return other.bpickup||HDPickerUpper(other);}
+	override bool cancollidewith(actor other,bool passive){return HDPickerUpper(other);}
 	states{
 	spawn:
 		RBRS A -1 nodelay{HDF.SplitAmmoSpawn(self);}
@@ -86,7 +86,7 @@ class SevenMilBrass:Ammo{
 		xscale 0.7;yscale 0.8;
 		inventory.pickupmessage "Picked up some brass.";
 	}
-	override bool cancollidewith(actor other,bool passive){return other.bpickup||HDPickerUpper(other);}
+	override bool cancollidewith(actor other,bool passive){return HDPickerUpper(other);}
 	states{
 	spawn:
 		RBRS A -1 nodelay{

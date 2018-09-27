@@ -48,8 +48,8 @@ class GrabThinker:Thinker{
 
 			let tt=inventory(pickobj);
 			if(tt){
-				//tt.touch(picktarget);
-				if(picktarget.vel==(0,0,0))picktarget.A_ChangeVelocity(0.001,0,0,CVF_RELATIVE);
+				if(tt.bsolid)tt.touch(picktarget);
+				else if(picktarget.vel==(0,0,0))picktarget.A_ChangeVelocity(0.001,0,0,CVF_RELATIVE);
 				destroy();return;
 			}
 		}
