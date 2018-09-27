@@ -177,7 +177,7 @@ class HellPrince:BaronOfHell replaces BaronofHell{
 		BOSS F 5 A_JumpIf(getdistance(true,AAPTR_TARGET)>84,"missilesweep");
 		goto see;
 	death.telefrag:
-		TNT1 A 0 spawn("Telefog",pos);
+		TNT1 A 0 spawn("Telefog",pos,ALLOW_REPLACE);
 		TNT1 A 0 A_NoBlocking();
 		TNT1 AAAAA 0 A_SpawnItemEx("BFGVileShard",
 			frandom(-4,4),frandom(-4,4),frandom(6,24),

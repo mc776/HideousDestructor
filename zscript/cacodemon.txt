@@ -102,7 +102,7 @@ class FooFighter:HDActor{
 					gibradius:64,gibamount:3,
 					hurtspecies:false
 				);
-				spawn("distantrifle",pos);
+				spawn("distantrifle",pos,ALLOW_REPLACE);
 				A_PlaySound("world/explode",CHAN_VOICE);
 				A_PlaySound("world/bfgfar",CHAN_BODY);
 				A_PlaySound("weapons/bigcrack",5);
@@ -426,7 +426,7 @@ class Cacademon:Cacodemon replaces Cacodemon{
 			A_SpawnProjectile("Cacasmaball",28,0,0,CMF_AIMDIRECTION,pitch);
 		}
 		HEAD D 24{
-			spawn("DistantShotgun",pos);
+			spawn("DistantShotgun",pos,ALLOW_REPLACE);
 			A_PlaySound("weapons/bronto",CHAN_WEAPON);
 			A_ChangeVelocity(-cos(pitch)*3,0,sin(pitch),CVF_RELATIVE);	
 			A_CustomRailgun(random(100,200),50,"","azure",

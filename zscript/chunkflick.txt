@@ -46,7 +46,7 @@ class BoogerFlicker:HDWeapon{
 
 		bool isrobot=player.getgender()==2;
 
-		actor p=spawn("FlickChunk",pos+(0,0,height-6));
+		actor p=spawn("FlickChunk",pos+(0,0,height-6),ALLOW_REPLACE);
 		p.target=self;p.angle=angle;p.pitch=pitch;
 		p.speed=256;
 		p.vel+=(

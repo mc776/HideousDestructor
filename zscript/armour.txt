@@ -115,7 +115,7 @@ class HDArmour:HDPickup{
 				}
 			}else{
 				if(invoker.master!=self&&countinv("SpiritualArmour")){
-					spawn("HDSmoke",pos);
+					spawn("HDSmoke",pos,ALLOW_REPLACE);
 					A_PlaySound("misc/p_pkup",6);
 					A_TakeInventory("SpiritualArmour");
 				}
@@ -213,7 +213,7 @@ class BlueArmour:Inventory replaces BlueArmor{
             owner.A_GiveInventory("HDArmourWorn");
             aaa=owner.findinventory("HDArmourWorn");
         }else{
-            aaa=inventory(spawn("HDArmour",pos));
+            aaa=inventory(spawn("HDArmour",pos,ALLOW_REPLACE));
         }
 		aaa.changetid(tid);
 		if(aaa){

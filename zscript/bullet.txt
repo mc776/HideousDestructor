@@ -186,7 +186,7 @@ class HDBullet:HDActor{
 						velx:speed*cos(pitch)*0.001,
 						velz:-speed*sin(pitch)*0.001
 					);
-					if(missilename)spawn(missilename,pos);
+					if(missilename)spawn(missilename,pos,ALLOW_REPLACE);
 					bool gotplayer=false;
 					for(int k=0;!gotplayer && k<MAXPLAYERS;k++){
 						if(playeringame[k] && players[k].mo){
@@ -194,7 +194,7 @@ class HDBullet:HDActor{
 								distance3d(players[k].mo)<256
 							){
 								gotplayer=true;
-								spawn(cracker,pos);
+								spawn(cracker,pos,ALLOW_REPLACE);
 							}
 						}
 					}

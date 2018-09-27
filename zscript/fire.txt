@@ -36,7 +36,7 @@ class HDFireStarter:ActionItem{
 		TNT1 A 0{
 			if(!self) return;
 			if(hd_debug)a_log("deprecated fire. please use A_Immolate() directly.");
-			actor f=spawn("HDFire",pos);
+			actor f=spawn("HDFire",pos,ALLOW_REPLACE);
 			f.target=self;f.master=self.target;
 			f.stamina=random(40,80);
 			return;
@@ -64,7 +64,7 @@ extend class HDActor{
 			victim=spawn("PersistentDamager",self.pos);
 			victim.target=perpetrator;
 		}
-		actor f=victim.spawn("HDFire",victim.pos);
+		actor f=victim.spawn("HDFire",victim.pos,ALLOW_REPLACE);
 		f.target=victim;f.master=perpetrator;
 		if(duration<1) f.stamina=random(40,80);
 		else f.stamina=duration;
@@ -118,14 +118,14 @@ class HDFire:IdleDummy{
 			int wlvl=target.waterlevel;
 			if(wlvl>1){
 				destroy();
-				if(wlvl<2)spawn("HDSmoke",pos);
+				if(wlvl<2)spawn("HDSmoke",pos,ALLOW_REPLACE);
 				return;
 			}
 			setorigin(target.pos,false);
 			A_SetTics(clamp(random(3,30-stamina*0.1),2,12));
 			if(stamina<=0 || target.countinv("HDFireEnder")){
 				A_TakeFromTarget("HDFireEnder");
-				spawn("HDSmoke",pos);
+				spawn("HDSmoke",pos,ALLOW_REPLACE);
 				destroy();
 				return;
 			}
@@ -150,7 +150,7 @@ class HDFire:IdleDummy{
 					random(-halfrad,halfrad),
 					random(minz,maxz)
 			),false);
-			actor sp=spawn("HDFlameRed",pos);
+			actor sp=spawn("HDFlameRed",pos,ALLOW_REPLACE);
 			sp.vel+=target.vel+(frandom(-2,2),frandom(-2,2),frandom(-1,3));
 			A_PlaySound("misc/firecrkl",CHAN_AUTO,0.4,0,6);
 
@@ -264,7 +264,7 @@ class Heat:Inventory{
 		volumeratio=1/baseinversevolumeratio;
 		burnoutthreshold=max(user.gibhealth,user.spawnhealth(),100);
 		A_SetSize(owner.radius,owner.height);
-		heatlight=HDFireLight(spawn("HDFireLight"));
+		heatlight=HDFireLight(spawn("HDFireLight",pos,ALLOW_REPLACE));
 		heatlight.target=owner;hdfirelight(heatlight).heattarget=self;
 	}
 	override void DoEffect(){
@@ -330,15 +330,15 @@ class Heat:Inventory{
 						frandom(-radius,radius),
 						frandom(-radius,radius),
 						frandom(2,owner.height)
-					));
+					),ALLOW_REPLACE);
 				}else{
 					aaa=spawn("HDFlameRedBig",owner.pos+(
 						frandom(-radius,radius)*0.6,
 						frandom(-radius,radius)*0.6,
 						frandom(5,owner.height*0.2)
-					));
+					),ALLOW_REPLACE);
 					aaa.scale=(randompick(-1,1)*frandom(0.9,1.2),frandom(0.9,1.1))*clamp((raa-600)*0.0003,0.6,2.);
-					if(!heatlight)heatlight=HDFireLight(spawn("HDFireLight"));
+					if(!heatlight)heatlight=HDFireLight(spawn("HDFireLight",pos,ALLOW_REPLACE));
 					heatlight.target=owner;hdfirelight(heatlight).heattarget=self;
 					heatlight.args[0]=200;
 					heatlight.args[1]=150;

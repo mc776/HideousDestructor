@@ -157,7 +157,7 @@ class DragonGuard:Chaingunguy{
 			if(vulcchambers>0)vulcchambers--;    
 			burstcount--;
 			pitch+=frandom(-0.5,0.5);angle+=frandom(-0.5,0.5);
-			actor p=Spawn("HDBullet426",pos+(0,0,height-24));
+			actor p=Spawn("HDBullet426",pos+(0,0,height-24),ALLOW_REPLACE);
 			if(p){
 				p.target=self;p.angle=angle;p.pitch=pitch;
 				p.vel+=(
@@ -275,7 +275,7 @@ class DragonGuard:Chaingunguy{
 			hasdropped=true;
 			A_DropItem("HDBattery",0,16);
 			A_DropItem("HDPistol",0,16);
-			vulcanette vvv=vulcanette(spawn("vulcanette",pos+(0,0,32)));
+			vulcanette vvv=vulcanette(spawn("vulcanette",pos+(0,0,32),ALLOW_REPLACE));
 			if(!vvv)return;
 			vvv.vel=vel;vvv.angle=angle;
 			vvv.A_ChangeVelocity(1,0,2,CVF_RELATIVE);

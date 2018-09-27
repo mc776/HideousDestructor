@@ -826,7 +826,7 @@ class FragShard:IdleDummy{
 extend class HDActor{
 	//A_ShardSuck(self.pos+(0,0,32),20);
 	virtual void A_ShardSuck(vector3 aop,int range=4){
-		actor a=self.spawn("FragShard",aop);
+		actor a=self.spawn("FragShard",aop,ALLOW_REPLACE);
 		a.setxyz(aop+(random(-range,range)*6,random(-range,range)*6,random(-range,range)*6));
 		a.vel=(aop-a.pos)*0.05;
 		a.stamina=20;

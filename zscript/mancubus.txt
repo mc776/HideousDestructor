@@ -58,8 +58,8 @@ class manjuice:hdfireball{
 	states{
 	spawn:
 		MANF A 0 nodelay{
-			actor mjl=spawn("manjuicelight",pos+(0,0,16));mjl.target=self;
-			trailburner=spawn("manjuiceburner",pos);
+			actor mjl=spawn("manjuicelight",pos+(0,0,16),ALLOW_REPLACE);mjl.target=self;
+			trailburner=spawn("manjuiceburner",pos,ALLOW_REPLACE);
 			trailburner.target=target;trailburner.master=self;
 		}
 		MANF AABBAABB 1 A_FBTail();

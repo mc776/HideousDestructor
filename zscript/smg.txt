@@ -106,7 +106,7 @@ class HDSMG:HDWeapon{
 		goto ready;
 	flash:
 		SMGG B 0{
-			actor p=spawn("HDBullet9",pos+(0,0,height-6));
+			actor p=spawn("HDBullet9",pos+(0,0,height-6),ALLOW_REPLACE);
 			p.target=self;p.angle=angle;p.pitch=pitch;
 			p.speed=440;
 			p.vel+=(

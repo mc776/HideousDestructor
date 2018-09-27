@@ -28,7 +28,7 @@ class HoopBubble:WolfensteinSS replaces WolfensteinSS{
 		if(!hasdropped){
 			A_DropItem("HDPistol",0,16);
 			hasdropped=true;
-			if(wp=hdweapon(spawn("HDSMG",pos))){
+			if(wp=hdweapon(spawn("HDSMG",pos,ALLOW_REPLACE))){
 				wp.weaponstatus[SMGS_AUTO]=2;
 				wp.weaponstatus[SMGS_MAG]=random(0,30);
 				wp.weaponstatus[SMGS_CHAMBER]=2;
@@ -156,7 +156,7 @@ class HoopBubble:WolfensteinSS replaces WolfensteinSS{
 			pitch+=frandom(0,spread)-frandom(0,spread);
 			angle+=frandom(0,spread)-frandom(0,spread);
 			A_PlaySound("weapons/pistol",CHAN_WEAPON);
-			actor p=spawn("HDBullet9",pos+(0,0,32));
+			actor p=spawn("HDBullet9",pos+(0,0,32),ALLOW_REPLACE);
 			p.speed=500+10*frandom(-1.,1.);
 			p.target=self;p.angle=angle;p.pitch=pitch;
 			p.vel+=self.vel;
