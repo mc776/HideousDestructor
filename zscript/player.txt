@@ -75,7 +75,7 @@ class HDPlayerPawn:PlayerPawn{
 		scopecamera.target=self;
 
 		if(player&&player.bot&&hd_nobots&&!countinv("WipedOut"))ReplaceBot();
-		else if(hd_forcepistolstart){
+		else if(hd_forcepistolstart||self is "HDP_DG"){
 			A_GiveInventory("DoomguyLoadout");
 		}
 		A_TakeInventory("NullWeapon");
