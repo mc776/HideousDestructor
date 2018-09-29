@@ -38,14 +38,14 @@ class HDShotgun:HDWeapon{
 		int uamt=clamp(invoker.weaponstatus[slot],0,4);
 		if(!uamt)return;
 		invoker.weaponstatus[slot]-=uamt;
-		int maxpocket=min(0,uamt,ammocap("HDShellAmmo")-countinv("HDShellAmmo"));
-		if(maxpocket>0){
-			A_SetTics(8);
-			A_WeaponReady(WRF_NOFIRE);
-			A_PlaySound("weapons/pocket");
+		int maxpocket=min(uamt,ammocap("HDShellAmmo")-countinv("HDShellAmmo"));
+		if(maxpocket>0&&pressingunload()){
+			A_SetTics(16);
+//			A_WeaponReady(WRF_NONE);
 			uamt-=maxpocket;
 			A_GiveInventory("HDShellAmmo",maxpocket);
 		}
+		A_PlaySound("weapons/pocket");
 		EmptyHand(uamt);
 	}
 	action void A_CannibalizeOtherShotgun(){

@@ -323,15 +323,15 @@ class Slayer:HDShotgun replaces HDShotgun{
 		SHT2 A 2 offset(2,34) A_JumpIf(invoker.weaponstatus[SLAYS_SIDESADDLE]<1,"nope");
 		SHT2 A 1 offset(3,36) A_PlaySound("weapons/pocket",CHAN_WEAPON);
 	unloadssloop1:
-		SHT2 A 5 offset(4,36);
-		SHT2 A 3 offset(5,37) A_UnloadSideSaddle(HUNTS_SIDESADDLE);
-		SHT2 A 2 offset(4,36){	//decide whether to loop
+		SHT2 A 4 offset(4,36);
+		SHT2 A 2 offset(5,37) A_UnloadSideSaddle(HUNTS_SIDESADDLE);
+		SHT2 A 3 offset(4,36){	//decide whether to loop
 			if(
 				invoker.weaponstatus[SLAYS_SIDESADDLE]>0
 				&&!pressingfire()
 				&&!pressingaltfire()
 				&&!pressingreload()
-				&&!pressingunload()
+//				&&!pressingunload()
 			)setweaponstate("unloadssloop1");
 		}
 		SHT2 A 3 offset(4,35);

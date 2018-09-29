@@ -355,12 +355,11 @@ class Hunter:HDShotgun replaces Shotgun{
 		SHTG A 1 offset(2,34);
 		SHTG A 1 offset(3,36) A_PlaySound("weapons/pocket",CHAN_WEAPON);
 	unloadSSLoop1:
-		SHTG A 5 offset(4,36);
-		SHTG A 3 offset(5,37) A_UnloadSideSaddle(HUNTS_SIDESADDLE);
-		SHTG A 2 offset(4,36){	//decide whether to loop
+		SHTG A 4 offset(4,36);
+		SHTG A 2 offset(5,37) A_UnloadSideSaddle(HUNTS_SIDESADDLE);
+		SHTG A 3 offset(4,36){	//decide whether to loop
 			if(
-				PressingUnload()
-				||PressingReload()
+				PressingReload()
 				||PressingFire()
 				||PressingAltfire()
 				||invoker.weaponstatus[HUNTS_SIDESADDLE]<1
