@@ -7,11 +7,11 @@ class FlickChunk:HDBullet{
 		speed 256;
 		woundhealth 0;
 		accuracy 0;
-		mass 100;
+		mass 10;
 		deathsound "misc/casing3";
 	}
 	override actor Puff(int sp){
-		bmissile=0;
+		bmissile=false;
 		setstatelabel("death");
 		return null;
 	}
@@ -24,7 +24,7 @@ class FlickChunk:HDBullet{
 			scale=(randompick(-1,1),randompick(-1,1))*frandom(0.05,0.12);
 		}
 	death:
-		---- A 10 A_Scream();
+		---- A 4 A_Scream();
 		stop;
 	}
 }

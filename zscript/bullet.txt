@@ -370,6 +370,7 @@ class HDBullet:HDActor{
 
 			//destroy if too slow
 			if(hitactor!=throughthis||vel dot vel<(50*50)){
+				bmissile=false;
 				setstatelabel("death");
 			}
 			return;
@@ -421,7 +422,7 @@ class HDBullet:HDActor{
 
 			blt.hitline.activate(target,blt.lineside,SPAC_Impact);
 			setorigin(blt.hitlocation-blt.hitdir,false);
-			A_SprayDecal(penetration>4?"BulletChip":"BulletChipSmall",10);
+			if(penetration>0)A_SprayDecal(penetration>4?"BulletChip":"BulletChipSmall",10);
 
 			//ricochet
 			if(!random(0,10)){
