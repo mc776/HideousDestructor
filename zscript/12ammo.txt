@@ -28,6 +28,7 @@ class HDSpentShell:Actor{
 	default{
 		+missile +doombounce +bounceonactors +cannotpush -noteleport +forcexybillboard
 		seesound "misc/casing2";scale 0.3;height 2;radius 2;
+		bouncefactor 0.5;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -44,6 +45,7 @@ class HDSpentShell:Actor{
 		}stop;
 	}
 }
+//a shell that can be caught in hand, launched from the Slayer
 class HDUnSpentShell:HDSpentShell{
 	states{
 	spawn:
@@ -58,7 +60,11 @@ class HDUnSpentShell:HDSpentShell{
 		stop;
 	}
 }
+//any other single shell tumblng out
 class HDFumblingShell:HDSpentShell{
+	default{
+		bouncefactor 0.3;
+	}
 	states{
 	spawn:
 		ESHL ABCDEFGH 2;
@@ -70,6 +76,7 @@ class HDFumblingShell:HDSpentShell{
 		);stop;
 	}
 }
+//the static pickup
 class HDFumbledShell:HDShellAmmo{
 	default{
 		+cannotpush
