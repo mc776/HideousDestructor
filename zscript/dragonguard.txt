@@ -183,12 +183,15 @@ class DragonGuard:Chaingunguy{
 			burstcount=0;
 			if(bmissilemore)A_SetTics(12);
 		}
-		CPOS E 0{if(!vulcammo)setstatelabel("reload");}
+		CPOS E 0 A_JumpIf(!vulcammo,"reload");
+		CPOS E 0 A_JumpIf(!target||target.bfriendly&&bfriendly||target.health<random(-3,1),"see");
 	waitforlos:
 		CPOS EE 4 A_Jump(2,"fire");
 		CPOS E 0{
-			if(!target||target.bfriendly&&bfriendly||target.health<random(-5,1))
+			if(!target||target.bfriendly&&bfriendly||target.health<random(-5,1)){
+				target=null;
 				return resolvestate("winddown");
+			}
 			if(A_JumpIfTargetInLOS("null"))A_FaceTarget(1,1);
 			if(A_CheckLOF("null",
 				CLOFF_JUMPNONHOSTILE|CLOFF_SKIPTARGET|CLOFF_JUMPOBJECT|
