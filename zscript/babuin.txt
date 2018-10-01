@@ -113,7 +113,10 @@ class Babuin:HDActor{
 		}
 		else super.Tick();
 	}
-
+	void A_CheckFreedoomSprite(){
+		if(Wads.CheckNumForName("FREEDOOM",0)!=-1)sprite=getspriteindex("SARG");
+		else sprite=getspriteindex("SRG2");
+	}
 	default{
 		//$Category "Monsters/Hideous Destructor"
 		//$Title "Babuin"
@@ -124,6 +127,7 @@ class Babuin:HDActor{
 		health 90;radius 16;
 		height 44;deathheight 10;
 		scale 0.6;
+		translation "16:47=48:79";
 		speed 14;
 		mass 70;
 		meleerange 40;
@@ -138,36 +142,38 @@ class Babuin:HDActor{
 	}
 	states{
 	spawn:
-		SRG2 A 0 nodelay A_JumpIf(bambush,"spawnstill");
+		SARG A 0;
+		SRG2 A 0 A_CheckFreedoomSprite();
+		#### A 0 A_JumpIf(bambush,"spawnstill");
 	spawnwander:
-		SRG2 AABBCCDD random(2,3){
+		#### AABBCCDD random(2,3){
 			blookallaround=false;
 			hdmobai.wander(self);
 		}
-		SRG2 A 0{
+		#### A 0{
 			if(!random(0,5))setstatelabel("spawnsniff");
 			else if(!random(0,9))A_PlaySound(activesound,CHAN_VOICE);
 		}loop;
 	spawnsniff:
-		SRG2 A 0{blookallaround=true;}
-		SRG2 EEEEEEEE 2{
+		#### A 0{blookallaround=true;}
+		#### EEEEEEEE 2{
 			angle+=frandom(-2,2);
 			A_Look();
 		}
-		SRG2 F 2{
+		#### F 2{
 			angle+=frandom(-20,20);
 			if(!random(0,9))A_PlaySound(activesound,CHAN_VOICE);
 		}
-		SRG2 FFF 2 A_Look();
-		SRG2 A 0{
+		#### FFF 2 A_Look();
+		#### A 0{
 			blookallaround=false;
 			if(!random(0,6))setstatelabel("spawnwander");
 		}loop;
 	spawnstill:
-		SRG2 AABB 4 A_Look();
+		#### AABB 4 A_Look();
 		loop;
 	see:
-		SRG2 A 0{
+		#### A 0{
 			blookallaround=false;
 			A_Chase(flags:CHF_DONTMOVE);
 			if(
@@ -177,13 +183,13 @@ class Babuin:HDActor{
 			else setstatelabel("roam");
 		}
 	seechase:
-		SRG2 AABBCCDD random(1,2){hdmobai.chase(self);}
+		#### AABBCCDD random(1,2){hdmobai.chase(self);}
 		goto seeend;
 	roam:
-		SRG2 AABBCCDD random(1,3){hdmobai.wander(self,true);}
+		#### AABBCCDD random(1,3){hdmobai.wander(self,true);}
 		goto seeend;
 	seeend:
-		SRG2 A 0{
+		#### A 0{
 			if(!random(0,120)){
 				A_PlaySound(seesound,CHAN_VOICE);
 				A_AlertMonsters();
@@ -192,18 +198,18 @@ class Babuin:HDActor{
 		}
 		goto see;
 	melee:
-		SRG2 E 7{
+		#### E 7{
 			A_FaceTarget(0,0);
 			A_PlaySound("demon/melee");
 			A_Changevelocity(cos(pitch)*4,0,sin(-pitch)*4,CVF_RELATIVE);
 		}
-		SRG2 F 6;
-		SRG2 G 2{
+		#### F 6;
+		#### G 2{
 			TryLatch();
 			A_CustomMeleeAttack(random(5,15),"","","teeth",true);
 		}
 	postmelee:
-		SRG2 G 6;
+		#### G 6;
 		goto see;
 
 	latched:
@@ -219,37 +225,37 @@ class Babuin:HDActor{
 		}loop;
 
 	missile:
-		SRG2 ABCD 2{
+		#### ABCD 2{
 			A_FaceTarget(16,16);
 			A_Changevelocity(1,0,0,CVF_RELATIVE);
 			if(A_JumpIfTargetInLOS("null",20,0,128))setstatelabel("jump");
 		}goto see;
 	jump:
-		SRG2 AE 3{
+		#### AE 3{
 			A_FaceTarget(16,16);
 			A_Changevelocity(cos(pitch)*3,0,sin(-pitch)*3,CVF_RELATIVE);
 		}
-		SRG2 E 2{
+		#### E 2{
 			A_FaceTarget(6,6);
 			A_PlaySound("babuin/sight");
 		}
-		SRG2 E 0 A_ChangeVelocity(cos(pitch)*16,0,sin(-pitch)*16+random(3,8),CVF_RELATIVE);
+		#### E 0 A_ChangeVelocity(cos(pitch)*16,0,sin(-pitch)*16+random(3,8),CVF_RELATIVE);
 	fly:
-		SRG2 F 1{
+		#### F 1{
 			TryLatch();
 			if(floorz>=pos.z)setstatelabel("land");  
 		}wait;
 	land:
-		SRG2 FEH 3{vel.xy*=0.8;}
-		SRG2 D 4{vel.xy=(0,0);}
+		#### FEH 3{vel.xy*=0.8;}
+		#### D 4{vel.xy=(0,0);}
 		goto see;
 	pain:
-		SRG2 H 2 A_SetSolid();
-		SRG2 H 6 A_Pain();
-		SRG2 H 0 A_CheckFloor("missile");
+		#### H 2 A_SetSolid();
+		#### H 6 A_Pain();
+		#### H 0 A_CheckFloor("missile");
 		goto see;
 	death:
-		SRG2 I 5{
+		#### I 5{
 			A_Scream();
 			bpushable=false;
 			hdmobai.corpseflags(self);
@@ -257,10 +263,10 @@ class Babuin:HDActor{
 			A_SpawnItemEx("BFGVileShard",flags:SXF_TRANSFERPOINTERS|SXF_SETMASTER,240);
 		}
 	deathend:
-		SRG2 J 5 A_NoBlocking();
-		SRG2 KLM 5;
+		#### J 5 A_NoBlocking();
+		#### KLM 5;
 	dead:
-		SRG2 M 3 canraise{
+		#### M 3 canraise{
 			if(abs(vel.z)<2)frame++;
 		}loop;
 	raise:
@@ -268,7 +274,7 @@ class Babuin:HDActor{
 			if(!countinv("IsGibbed"))bpushable=true;
 			hdmobai.corpseflags(self,true,true);
 		}
-		SRG2 NMLKJI 5;
+		#### NMLKJI 5;
 		goto see;
 	raisegibbed:
 		TROO U 6{
@@ -280,9 +286,10 @@ class Babuin:HDActor{
 		TROO UT 8;
 		TROO SRQ 6;
 		TROO PO 4;
-		SRG2 H 4 A_Die("Ungibbed");
+		SRG2 A 0 A_CheckFreedoomSprite();
+		#### H 4 A_Die("Ungibbed");
 	death.ungibbed:
-		SRG2 I 5{
+		#### I 5{
 			bpushable=false;
 			bnodropoff=false;
 			hdmobai.corpseflags(self);
@@ -351,12 +358,14 @@ class SpecBabuin:Babuin{
 class DeadBabuin:Babuin{
 	override void postbeginplay(){
 		super.postbeginplay();
+		A_CheckFreedoomSprite();
 		A_Die("spawndead");
 	}
 }
 class DeadSpecBabuin:SpecBabuin{
 	override void postbeginplay(){
 		super.postbeginplay();
+		A_CheckFreedoomSprite();
 		A_Die("spawndead");
 	}
 }
