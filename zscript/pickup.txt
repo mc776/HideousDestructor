@@ -48,8 +48,7 @@ class GrabThinker:Thinker{
 
 			let tt=inventory(pickobj);
 			if(tt){
-				if(tt.bsolid)tt.touch(picktarget);
-				else if(picktarget.vel==(0,0,0))picktarget.A_ChangeVelocity(0.001,0,0,CVF_RELATIVE);
+				if(picktarget.vel==(0,0,0))picktarget.A_ChangeVelocity(0.001,0,0,CVF_RELATIVE);
 				destroy();return;
 			}
 		}
@@ -75,6 +74,8 @@ class HDPickup:CustomInventory{
 	property bulk:bulk;
 	int maxunitamount;
 	property maxunitamount:maxunitamount;
+	bool multipickup; //lets you continue picking up without re-pressing the key
+	property multipickup:multipickup;
 	default{
 		+solid
 		+inventory.invbar +inventory.persistentpower
@@ -83,6 +84,7 @@ class HDPickup:CustomInventory{
 
 		hdpickup.droptranslation true;
 		hdpickup.bulk 0;
+		hdpickup.multipickup false;
 
 		radius 8; height 10; scale 0.8;
 		inventory.pickupsound "weapons/pocket";
@@ -110,6 +112,7 @@ class HDPickup:CustomInventory{
 	}
 	override void touch(actor toucher){}
 	virtual void actualpickup(actor other){
+		multipickup=getdefaultbytype(getclass()).multipickup;
 		if(!other)other=picktarget;
 		if(!other)return;
 		if(heat.getamount(self)>50)return;
@@ -175,7 +178,7 @@ class HDAmmo:HDPickup{
 		-inventory.invbar
 		hdpickup.droptranslation false;
 	}
-	//bulk must be calculated in encumbrance so hd_onemanarmy can be read
+	//bulk must be calculated in encumbrance, not here, so hd_onemanarmy can be read
 	override double getbulk(){return 0;}
 }
 

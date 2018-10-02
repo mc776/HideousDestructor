@@ -546,7 +546,7 @@ class HDPlayerPawn:PlayerPawn{
 						if(
 							grabbed is "hdupk"
 							||grabbed is "hdweapon"
-							||grabbed is "hdpickup"
+							||(grabbed is "hdpickup"&&!hdpickup(grabbed).multipickup)
 						)hasgrabbed=true;
 						if(
 							grabbed is "hdupk"
@@ -555,11 +555,15 @@ class HDPlayerPawn:PlayerPawn{
 							hdupk(grabbed).picktarget=self;
 							grabbed.setstatelabel("grab");
 						}else{
-							let grabthink=new("GrabThinker");
-							grabthink.picktarget=self;
-							grabthink.pickobj=grabbed;
+							let hdpg=hdpickup(grabbed);
+							if(!hdpg||hdpg.multipickup){
+								if(hdpg)hdpg.multipickup=false;
+								let grabthink=new("GrabThinker");
+								grabthink.picktarget=self;
+								grabthink.pickobj=grabbed;
+							}
 						}
-					}//else if(grabbed is "Inventory")inventory(grabbed).touch(self);
+					}
 				}
 			}
 			if(
