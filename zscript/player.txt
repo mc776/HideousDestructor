@@ -556,8 +556,8 @@ class HDPlayerPawn:PlayerPawn{
 							grabbed.setstatelabel("grab");
 						}else{
 							let hdpg=hdpickup(grabbed);
-							if(!hdpg||hdpg.multipickup){
-								if(hdpg)hdpg.multipickup=false;
+							if(!hdpg||!hdpg.isbeingpickedup){
+								if(hdpg)hdpg.isbeingpickedup=true;
 								let grabthink=new("GrabThinker");
 								grabthink.picktarget=self;
 								grabthink.pickobj=grabbed;

@@ -76,6 +76,7 @@ class HDPickup:CustomInventory{
 	property maxunitamount:maxunitamount;
 	bool multipickup; //lets you continue picking up without re-pressing the key
 	property multipickup:multipickup;
+	bool isbeingpickedup;
 	default{
 		+solid
 		+inventory.invbar +inventory.persistentpower
@@ -112,7 +113,7 @@ class HDPickup:CustomInventory{
 	}
 	override void touch(actor toucher){}
 	virtual void actualpickup(actor other){
-		multipickup=getdefaultbytype(getclass()).multipickup;
+		isbeingpickedup=false;
 		if(!other)other=picktarget;
 		if(!other)return;
 		if(heat.getamount(self)>50)return;
@@ -148,6 +149,7 @@ class HDPickup:CustomInventory{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
+		isbeingpickedup=false;
 		let hdps=new("HDPickupSplitter");
 		hdps.invoker=self;
 	}
