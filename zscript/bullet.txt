@@ -293,9 +293,9 @@ class HDBullet:HDActor{
 			}else if(hd_debug>1)A_Log("|STOPPED|");
 
 			//determine damage
-			int dmg=(speed+mass)*0.01;
+			int dmg=(speed+mass)*0.012;
 
-			int maxdmg=dmg+woundhealth;
+			int maxdmg=dmg+random(woundhealth>>2,woundhealth);
 			if(!hdp&&pierce){
 				dmg*=2;
 				maxdmg+=woundhealth;
