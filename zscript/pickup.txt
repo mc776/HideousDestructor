@@ -41,7 +41,12 @@ class GrabThinker:Thinker{
 			}
 
 			let pt=hdpickup(pickobj);
-			if(pt){pt.actualpickup(picktarget);destroy();return;}
+			if(pt){
+				pt.actualpickup(picktarget);
+				pt.isbeingpickedup=false;
+				destroy();
+				return;
+			}
 
 			let wt=hdweapon(pickobj);
 			if(wt){wt.actualpickup(picktarget);destroy();return;}
@@ -113,7 +118,6 @@ class HDPickup:CustomInventory{
 	}
 	override void touch(actor toucher){}
 	virtual void actualpickup(actor other){
-		isbeingpickedup=false;
 		if(!other)other=picktarget;
 		if(!other)return;
 		if(heat.getamount(self)>50)return;
