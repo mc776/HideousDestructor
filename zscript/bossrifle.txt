@@ -30,9 +30,9 @@ class BossRifle:HDWeapon{
 		bool customchamber=(invoker.weaponstatus[0]&BOSSF_CUSTOMCHAMBER);
 		if(amt>0&&customchamber)amt>>=1;
 		if(!onlywhileempty||invoker.weaponstatus[BOSSS_CHAMBER]<1)ibg+=amt;
-		else if(!customchamber&&!random(0,4))ibg++;
+		else if(!random(0,4))ibg++;
 		invoker.weaponstatus[BOSSS_GRIME]=clamp(ibg,0,100);
-		if(hd_debug)A_Log(string.format("Boss grit level: %i",invoker.weaponstatus[BOSSS_GRIME]));
+		//if(hd_debug)A_Log(string.format("Boss grit level: %i",invoker.weaponstatus[BOSSS_GRIME]));
 	}
 	int pickuprounds;
 	override void tick(){
