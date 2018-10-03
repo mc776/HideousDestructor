@@ -32,7 +32,7 @@ class BossRifle:HDWeapon{
 		if(!onlywhileempty||invoker.weaponstatus[BOSSS_CHAMBER]<1)ibg+=amt;
 		else if(!customchamber&&!random(0,4))ibg++;
 		invoker.weaponstatus[BOSSS_GRIME]=clamp(ibg,0,100);
-		if(hd_debug)A_LogInt(invoker.weaponstatus[BOSSS_GRIME]);
+		if(hd_debug)A_Log(string.format("Boss grit level: %i",invoker.weaponstatus[BOSSS_GRIME]));
 	}
 	int pickuprounds;
 	override void tick(){
@@ -132,14 +132,32 @@ class BossRifle:HDWeapon{
 	altholdclean:
 		BARG E 1 offset(2,36) A_ClearRefire();
 		BARG E 1 offset(3,38);
-		BARG E 1 offset(5,42);
+		BARG E 1 offset(5,42) A_Log("Looking inside that chamber...",true);
 		BARG E 1 offset(8,48) A_PlaySound("weapons/pocket",CHAN_WEAPON);
 		BARG E 1 offset(7,52) A_MuzzleClimb(frandom(-0.2,0.2),0.2,frandom(-0.2,0.2),0.2,frandom(-0.2,0.2),0.2);
 		TNT1 A 3 A_PlaySound("weapons/pocket",CHAN_WEAPON);
-		TNT1 AAA 4 A_MuzzleClimb(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2));
+		TNT1 AAAA 4 A_MuzzleClimb(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2));
 		TNT1 A 3 A_PlaySound("weapons/pocket",CHAN_WEAPON);
-		TNT1 AAA 4 A_MuzzleClimb(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2));
-		TNT1 A 40 A_ChamberGrit(randompick(0,-3,-5,-10),true);
+		TNT1 AAAA 4 A_MuzzleClimb(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2));
+		TNT1 A 40{
+			A_PlaySound("weapons/pocket",CHAN_WEAPON);
+			int amt=invoker.weaponstatus[BOSSS_GRIME];
+			string amts="There doesn't seem to be much";
+			if(amt>40)amts="What the FUCK";
+			if(amt>30)amts="About time - this gun is barely functional";
+			else if(amt>20)amts="This is starting to gum up badly";
+			else if(amt>10)amts="It can use some cleaning";
+			amts.appendformat(". ");
+			amt=randompick(-3,-5,-5,-random(8,16));
+			A_ChamberGrit(amt,true);
+			amt=invoker.weaponstatus[BOSSS_GRIME];
+			if(amt>40)amts.appendformat("You barely scrape the surface of this all-encrusting abomination.");
+			if(amt>30)amts.appendformat("The gun will need a lot more work than this before it can be deployed again.");
+			else if(amt>20)amts.appendformat("You might get a few shots out of it now, sort of.");
+			else if(amt>10)amts.appendformat("It's better, but still not good.");
+			else amts.appendformat("Good to go now.");
+			A_Log(amts,true);
+		}
 		BARG E 1 offset(7,52);
 		BARG E 1 offset(8,48);
 		BARG E 1 offset(5,42);
@@ -172,7 +190,7 @@ class BossRifle:HDWeapon{
 	chamber:
 		BARG C 2 offset(4,38){
 			if(
-				random(0,4)
+				random(0,max(2,invoker.weaponstatus[BOSSS_GRIME]>>3))
 				&&invoker.weaponstatus[BOSSS_CHAMBER]>2
 			){
 				invoker.weaponstatus[BOSSS_CHAMBER]+=2;
