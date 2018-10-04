@@ -163,7 +163,7 @@ class BossRifle:HDWeapon{
 			A_ChamberGrit(amt,true);
 			amt=invoker.weaponstatus[BOSSS_GRIME];
 			if(amt>40)amts.appendformat("You barely scrape the surface of this all-encrusting abomination.");
-			if(amt>30)amts.appendformat("The gun will need a lot more work than this before it can be deployed again.");
+			else if(amt>30)amts.appendformat("The gun will need a lot more work than this before it can be deployed again.");
 			else if(amt>20)amts.appendformat("You might get a few shots out of it now.");
 			else if(amt>10)amts.appendformat("It's better, but still not good.");
 			else amts.appendformat("Good to go.");
