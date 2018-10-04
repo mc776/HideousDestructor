@@ -142,12 +142,11 @@ class BossRifle:HDWeapon{
 		TNT1 A 40{
 			A_PlaySound("weapons/pocket",CHAN_WEAPON);
 			int amt=invoker.weaponstatus[BOSSS_GRIME];
-			string amts="There doesn't seem to be much";
-			if(amt>40)amts="What the FUCK";
-			if(amt>30)amts="About time - this gun is barely functional";
-			else if(amt>20)amts="This is starting to gum up badly";
-			else if(amt>10)amts="It can use some cleaning";
-			amts.appendformat(". ");
+			string amts="There doesn't seem to be much. ";
+			if(amt>40)amts="What the FUCK. ";
+			if(amt>30)amts="About time - this gun is barely functional. ";
+			else if(amt>20)amts="This is starting to gum up badly. ";
+			else if(amt>10)amts="It can use some cleaning. ";
 
 			static const string cleanverbs[]={"extract","scrape off","wipe away","carefully remove","dump out","pick out","blow off","shake out","scrub off"};
 			static const string contaminants[]={"some dust","a disturbing amount of powder residue","some excess grease","a layer of soot","a bit of hair","an eyelash","a patch of dried blood","a crumb","a dead insect","ashes","some loose bits of skin","a sticky fluid of some sort","a booger","yet even more of that anonymous grey debris that all those bullet impacts make","a tiny cancerous nodule of Second Flesh","some crystalline buildup of congealed Frag"};
@@ -165,7 +164,7 @@ class BossRifle:HDWeapon{
 			amt=invoker.weaponstatus[BOSSS_GRIME];
 			if(amt>40)amts.appendformat("You barely scrape the surface of this all-encrusting abomination.");
 			if(amt>30)amts.appendformat("The gun will need a lot more work than this before it can be deployed again.");
-			else if(amt>20)amts.appendformat("You might get a few shots out of it now, sort of.");
+			else if(amt>20)amts.appendformat("You might get a few shots out of it now.");
 			else if(amt>10)amts.appendformat("It's better, but still not good.");
 			else amts.appendformat("Good to go.");
 			A_Log(amts,true);
