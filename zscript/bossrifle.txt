@@ -148,14 +148,26 @@ class BossRifle:HDWeapon{
 			else if(amt>20)amts="This is starting to gum up badly";
 			else if(amt>10)amts="It can use some cleaning";
 			amts.appendformat(". ");
+
+			static const string cleanverbs[]={"extract","scrape off","wipe away","carefully remove","dump out","pick out","blow off","shake out"};
+			static const string contaminants[]={"some dust","a disturbing amount of powder residue","a patch of dried blood","some excess grease","some loose bits of skin","a bit of hair","an eyelash","a crumb","a dead insect","a sticky fluid of some sort","a booger","some crystalline buildup of congealed Frag"};
+			static const string actionparts[]={"bolt carrier","main extractor","auxiliary extractor","cam pin","bolt head","striker","firing pin spring","ejector slot","striker spring","ejector spring"};
+			for(int i=amt;i>0;i-=random(8,16))amts.appendformat("You %s %s from the %s. ",
+				cleanverbs[random(0,cleanverbs.size()-1)],
+				contaminants[random(0,random(0,contaminants.size()-1))],
+				actionparts[random(0,random(0,actionparts.size()-1))]
+			);
+			amts.appendformat("\n");
+
 			amt=randompick(-3,-5,-5,-random(8,16));
+
 			A_ChamberGrit(amt,true);
 			amt=invoker.weaponstatus[BOSSS_GRIME];
 			if(amt>40)amts.appendformat("You barely scrape the surface of this all-encrusting abomination.");
 			if(amt>30)amts.appendformat("The gun will need a lot more work than this before it can be deployed again.");
 			else if(amt>20)amts.appendformat("You might get a few shots out of it now, sort of.");
 			else if(amt>10)amts.appendformat("It's better, but still not good.");
-			else amts.appendformat("Good to go now.");
+			else amts.appendformat("Good to go.");
 			A_Log(amts,true);
 		}
 		BARG E 1 offset(7,52);
