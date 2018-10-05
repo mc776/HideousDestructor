@@ -364,6 +364,7 @@ class SatanRobo:Cyberdemon replaces CyberDemon{
 			if(health<3500){
 				if(health<3000)minmissilechance-=5;
 				if(health>1000)speed++;else speed--;
+				speed=clamp(speed,random(1,8),random(20,30));
 			}
 		}goto see;
 	missile:
