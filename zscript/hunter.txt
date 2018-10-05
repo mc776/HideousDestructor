@@ -167,7 +167,7 @@ class Hunter:HDShotgun replaces Shotgun{
 	chamber:
 		SHTG A 0 A_JumpIf(invoker.weaponstatus[0]&HUNTF_ALTHOLDING,"nope");
 		SHTG A 0 A_SetAltHold(true);
-		SHTG A 1 A_PlaySound("weapons/shotgr",5);
+		SHTG A 1 A_Overlay(120,"playsgco");
 		SHTG AE 1 A_MuzzleClimb(0,frandom(0.6,1.));
 		SHTG E 1 A_JumpIf(pressingaltfire(),"longstroke");
 		SHTG EA 1 A_MuzzleClimb(0,-frandom(0.6,1.));
@@ -180,15 +180,25 @@ class Hunter:HDShotgun replaces Shotgun{
 			A_Chamber();
 			A_MuzzleClimb(-frandom(1.,2.));
 		}
+	racked:
+		SHTG F 1 A_WeaponReady(WRF_NOFIRE);
+		SHTG F 0 A_JumpIf(!pressingaltfire(),"unrack");
+		loop;
+	unrack:
+		SHTG F 0 A_Overlay(120,"playsgco");
 		SHTG E 1 A_JumpIf(!pressingfire(),1);
 		SHTG EA 2{
-			if(pressingfire())A_SetTics(0);
+			if(pressingfire())A_SetTics(1);
 			A_MuzzleClimb(0,-frandom(0.6,1.));
 		}
 		SHTG A 0 A_JumpIf(!pressingfire()||!pressingaltfire(),"ready");
 		SHTG A 0 A_ClearRefire();
 		SHTG A 0 A_JumpIf(invoker.weaponstatus[HUNTS_CHAMBER]==2,"shoot");
 		goto ready;
+	playsgco:
+		TNT1 A 6 A_PlaySound("weapons/shotgr",5);
+		TNT1 A 0 A_StopSound(5);
+		stop;
 	chamberauto:
 		SHTG A 2;
 		SHTG A 1{
