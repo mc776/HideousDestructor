@@ -249,8 +249,7 @@ class Hunter:HDShotgun replaces Shotgun{
 			}
 		}
 		SHTG BC 4 A_MuzzleClimb(frandom(1.2,2.4),-frandom(1.2,2.4));
-		SHTG D 1;
-		SHTG D 0 A_PlaySound("weapons/huntopen",CHAN_WEAPON);
+		SHTG D 1 A_Overlay(120,"playsgco");
 	reloadstarthand:
 		SHTG D 1 offset(0,34);
 		SHTG D 1 offset(0,36);
@@ -344,11 +343,10 @@ class Hunter:HDShotgun replaces Shotgun{
 			else if(invoker.handshells<1)setweaponstate("reloadstarthand");
 		}goto reloadashell;
 	reloadend:
-		SHTG D 6 offset(0,34);
-		SHTG D 2 offset(0,34) A_PlaySound("weapons/huntopen",CHAN_WEAPON);
+		SHTG D 7 offset(0,34);
 		SHTG D 1 offset(0,36);
-		SHTG D 1 offset(0,34);
-		SHTG CB 4;
+		SHTG C 1 offset(0,34) A_Overlay(120,"playsgco");
+		SHTG CBA 3;
 		goto ready;
 	zoom:
 	cannibalize:
@@ -390,7 +388,7 @@ class Hunter:HDShotgun replaces Shotgun{
 			)setweaponstate("nope");
 		}
 		SHTG BC 4 A_MuzzleClimb(frandom(1.2,2.4),frandom(1.2,2.4));
-		SHTG D 1 A_PlaySound("weapons/huntopen",CHAN_WEAPON);
+		SHTG D 1 A_Overlay(120,"playsgco");
 		SHTG D 1 offset(0,34);
 		SHTG D 1 offset(0,36);
 		SHTG D 1 offset(0,38);
