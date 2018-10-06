@@ -351,9 +351,7 @@ class HDBullet:HDActor{
 						random((mass>>6),dmg)
 					);
 				}else{
-					hitactor.damagemobj(self,target,dmg,damagetype,
-						DMG_THRUSTLESS|(target&&target.player?DMG_PLAYERATTACK:0)
-					);
+					hitactor.damagemobj(self,target,dmg,damagetype,DMG_THRUSTLESS);
 					if(hd_debug){
 						string targ="";
 						if(hitactor.player)targ=hitactor.player.getusername();
@@ -737,9 +735,7 @@ class HDBulletDamager:Thinker{
 		else if(strongestdamage==0)damagetype="SmallArms0";
 		int pcbak=victim.painchance;
 		victim.painchance*=damages.size();
-		victim.damagemobj(lastinflictor,lastattacker,totaldamage,damagetype,
-			DMG_THRUSTLESS|(lastattacker&&lastattacker.player?DMG_PLAYERATTACK:0)
-		);
+		victim.damagemobj(lastinflictor,lastattacker,totaldamage,damagetype,DMG_THRUSTLESS);
 		if(victim)victim.painchance=pcbak;
 
 		destroy();

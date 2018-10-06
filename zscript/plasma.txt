@@ -12,6 +12,7 @@ class ThunderBuster:HDWeapon{
 		weapon.ammouse 1;
 		scale 0.6;
 		inventory.pickupmessage "You got the particle beam gun!";
+		obituary "%o was roasted by %k's particle splatter.";
 		hdweapon.barrelsize 28,1.6,3;
 	}
 	override void tick(){
@@ -89,14 +90,13 @@ class ThunderBuster:HDWeapon{
 		}
 
 		int basedmg=max(0,20-tlt.distance*(1./50.));
+		int dmgflags=caller&&caller.player?DMG_PLAYERATTACK:0; //don't know why the player damagemobj doesn't work
 
 		//wet actor
 		if(tlt.hitactor){
 			actor hitactor=tlt.hitactor;
 			if(hitactor.bloodtype=="ShieldNotBlood"){
-				hitactor.damagemobj(null,caller,random(1,(battery<<2)),"Balefire",
-					caller&&caller.player?DMG_PLAYERATTACK:0
-				);
+				hitactor.damagemobj(null,caller,random(1,(battery<<2)),"Balefire",dmgflags);
 			}else if(
 				hitactor.bnodamage
 				||(hitactor.bnoblood&&!random(0,3))
@@ -106,15 +106,11 @@ class ThunderBuster:HDWeapon{
 				||!random(0,7)
 			){
 				//dry actor - ping damage and continue
-				hitactor.damagemobj(null,caller,1,"Electro",
-					caller&&caller.player?DMG_PLAYERATTACK:0
-				);
+				hitactor.damagemobj(null,caller,1,"Electro",dmgflags);
 				hdf.give(hitactor,"Heat",(basedmg>>1));
 			}else{
 				//wet actor
-				hitactor.damagemobj(null,caller,basedmg,"Electro",
-					caller&&caller.player?DMG_PLAYERATTACK:0
-				);
+				hitactor.damagemobj(null,caller,basedmg,"Electro",dmgflags);
 				hdf.give(hitactor,"Heat",(basedmg<<1));
 				actor sss=spawn("HDGunsmoke",tlt.hitlocation);
 				sss.vel=(0,0,1)-tlt.hitdir;
@@ -537,9 +533,8 @@ class BeamSpotFlash:IdleDummy{
 		double n2=n*0.4;
 		if(tracer){
 			HDF.Give(tracer,"Heat",n);
-			tracer.damagemobj(self,target,random(n1,n),"Electro",
-				target&&target.player?DMG_PLAYERATTACK:0
-			);
+			int dmgflags=target&&target.player?DMG_PLAYERATTACK:0;
+			tracer.damagemobj(self,target,random(n1,n),"Electro",dmgflags);
 		}
 		A_HDBlast(
 			n2,random(n2,n),0,"Electro",

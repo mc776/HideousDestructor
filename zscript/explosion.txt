@@ -82,6 +82,8 @@ extend class HDActor{
 				:false;
 			double divdist=ontop?1:clamp(1./dist,0.,1.);
 
+			int playerattack=0;//source&&source.player?DMG_PLAYERATTACK:0;
+
 			//check LOS
 			if(passwalls)losmul=1.;
 			else{
@@ -178,9 +180,7 @@ extend class HDActor{
 				int dmg=(dist>fullblastradius)?
 					blastdamage-clamp(dist-fullblastradius,0,dist)
 					:blastdamage;
-				it.DamageMobj(caller,source,dmg*losmul,blastdamagetype,
-					DMG_THRUSTLESS|(source&&source.player?DMG_PLAYERATTACK:0),0
-				);
+				it.DamageMobj(caller,source,dmg*losmul,blastdamagetype,DMG_THRUSTLESS|playerattack);
 			}
 			//frag damage
 			if(!it)continue;if(
@@ -284,9 +284,7 @@ extend class HDActor{
 					);
 					int pcbak=it.painchance;
 					it.painchance*=fragshit;
-					it.DamageMobj(caller,source,dmg,
-						fragdamagetype,DMG_THRUSTLESS|(source&&source.player?DMG_PLAYERATTACK:0),0
-					);
+					it.DamageMobj(caller,source,dmg,fragdamagetype,DMG_THRUSTLESS|playerattack);
 					if(it)it.painchance=pcbak;
 				}
 			}
