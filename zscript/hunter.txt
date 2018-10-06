@@ -24,6 +24,21 @@ class Hunter:HDShotgun replaces Shotgun{
 				else weaponstatus[0]&=~HUNTF_AUTO;
 		}
 	}
+	override string getobituary(actor victim,actor inflictor,name mod,bool playerattack){
+		bool sausage=true;
+		for(int i=0;i<MAXPLAYERS;i++){
+			if(playeringame[i]&&(players[i].getgender()!=0)){
+				sausage=false;
+				break;
+			}
+		}
+		if(
+			sausage
+			&&inflictor is "HDBullet" //"brutally!" "full!" - not just bleeding!
+			&&!random(0,4) //novelty value
+		)return "%o was brutally pumped full of %k's hot, manly lead.";
+		return "I like cheese";
+	}
 	override double gunmass(){
 		int tube=weaponstatus[HUNTS_TUBE];
 		if(tube>4)tube+=(tube-4)*2;
