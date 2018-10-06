@@ -180,7 +180,7 @@ class ThunderBuster:HDWeapon{
 			if(invoker.weaponstatus[TBS_BATTERY]<1){
 				A_PlaySound("weapons/plasmas",CHAN_WEAPON);
 				A_GunFlash();
-				A_ClearRefire();
+				setweaponstate("nope");
 			}else{
 				A_Refire();
 			}
@@ -188,7 +188,7 @@ class ThunderBuster:HDWeapon{
 		PLSG AAA 4{
 			A_WeaponReady(WRF_NOFIRE);
 			A_GunFlash();
-		}goto nope;
+		}goto ready;
 	flash:
 		PLSF A 1 bright{
 			HDFlashAlpha(64);
