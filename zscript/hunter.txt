@@ -261,13 +261,16 @@ class Hunter:HDShotgun replaces Shotgun{
 	rackreload:
 		SHTG F 1 offset(-1,35);
 		SHTG F 2 offset(-2,37);
-		SHTG F 4 offset(-3,40) A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		SHTG F 4 offset(-3,40);
 		SHTG F 1 offset(-4,42) A_GrabShells(2,true);
+		SHTG F 0 A_JumpIf(!(invoker.weaponstatus[0]&HUNTF_FROMPOCKETS),"rackloadone");
+		SHTG F 6 offset(-5,43);
+		SHTG F 6 offset(-4,41) A_PlaySound("weapons/pocket",CHAN_WEAPON);
 	rackloadone:
 		SHTG F 1 offset(-4,42);
-		SHTG F 1 offset(-4,41);
+		SHTG F 2 offset(-4,41);
 		SHTG F 3 offset(-4,40) A_LoadTubeFromHand();
-		SHTG F 4 offset(-4,41);
+		SHTG F 5 offset(-4,41);
 		SHTG F 4 offset(-4,40) A_JumpIf(invoker.handshells>0,"rackloadone");
 	rackreloadend:
 		SHTG F 1 offset(-3,39);
@@ -351,7 +354,7 @@ class Hunter:HDShotgun replaces Shotgun{
 	reloadfast:
 		SHTG D 4 offset(0,40) A_GrabShells(3,false);
 		SHTG D 3 offset(0,42);
-		SHTG D 4 offset(0,41);
+		SHTG D 3 offset(0,41);
 		goto reloadashell;
 	reloadpocket:
 		SHTG D 4 offset(0,39) A_GrabShells(3,false);
