@@ -10,10 +10,13 @@ class HDShotgun:HDWeapon{
 		obituary "%o was shot with %k's gun.";
 	}
 	int handshells;
-	action void EmptyHand(int amt=-1){
+	action void EmptyHand(int amt=-1,bool careful=false){
 		if(amt>0)invoker.handshells=amt;
 		while(invoker.handshells>0){
- 			if(invoker.handshells>=4){
+			if(careful&&!A_JumpIfInventory("HDShellAmmo",0,"null")){
+				invoker.handshells--;
+				HDF.Give(self,"HDShellAmmo",1);
+ 			}else if(invoker.handshells>=4){
 				invoker.handshells-=4;
 				A_SpawnItemEx("ShellPickup",
 					cos(pitch)*1,1,height-7-sin(pitch)*1,
