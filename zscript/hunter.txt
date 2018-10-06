@@ -236,7 +236,7 @@ class Hunter:HDShotgun replaces Shotgun{
 		SHTG AE 1 A_MuzzleClimb(0,frandom(0.6,1.));
 		SHTG E 1 A_JumpIf(pressingaltfire(),"longstroke");
 		SHTG EA 1 A_MuzzleClimb(0,-frandom(0.6,1.));
-		SHTG E 0 A_PlaySound("weapons/rifleclick2",5);
+		SHTG E 0 A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
 		SHTG E 0 A_Refire("ready");
 		goto ready;
 	longstroke:
@@ -286,7 +286,7 @@ class Hunter:HDShotgun replaces Shotgun{
 		SHTG A 0 A_JumpIf(invoker.weaponstatus[HUNTS_CHAMBER]==2,"shoot");
 		goto ready;
 	playsgco:
-		TNT1 A 6 A_PlaySound("weapons/huntrack",5);
+		TNT1 A 8 A_PlaySound("weapons/huntrack",5);
 		TNT1 A 0 A_StopSound(5);
 		stop;
 	chamberauto:
@@ -426,9 +426,9 @@ class Hunter:HDShotgun replaces Shotgun{
 				&&invoker.weaponstatus[HUNTS_TUBE]<1
 			)setweaponstate("nope");
 		}
-		SHTG BC 4 A_MuzzleClimb(frandom(1.2,2.4),frandom(1.2,2.4));
+		SHTG BC 4 A_MuzzleClimb(frandom(1.2,2.4),-frandom(1.2,2.4));
 		SHTG D 1 A_Overlay(120,"playsgco");
-		SHTG D 1 offset(0,34);
+		SHTG D 1 offset(0,34) A_Chamber(true);
 		SHTG D 1 offset(0,36);
 		SHTG D 1 offset(0,38);
 		SHTG D 4 offset(0,36){
