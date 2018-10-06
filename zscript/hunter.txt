@@ -133,7 +133,16 @@ class Hunter:HDShotgun replaces Shotgun{
 	firemode:
 		SHTG A 0{
 			invoker.weaponstatus[0]^=HUNTF_AUTO;
-		}goto nope;
+		}
+	firemodehold:
+		---- A 1{
+			if(pressingreload()){
+				invoker.weaponstatus[0]^=HUNTF_AUTO; //untoggle
+				setweaponstate("reloadss");
+			}else A_WeaponReady(WRF_NONE);
+		}
+		---- A 0 A_JumpIf(pressingfiremode()&&invoker.weaponstatus[HUNTS_SIDESADDLE]<12,"firemodehold");
+		goto nope;
 	ready:
 		SHTG A 0 A_JumpIf(pressingaltfire(),2);
 		SHTG A 0{

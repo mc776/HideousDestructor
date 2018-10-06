@@ -58,8 +58,14 @@ class Slayer:HDShotgun replaces HDShotgun{
 	ready:
 		TNT1 A 0; //let the PostBeginPlay handle the presence of the relevant sprite
 		SHT2 A 1{
-			if(PressingFireMode())invoker.weaponstatus[0]|=SLAYF_DOUBLE;
-			else invoker.weaponstatus[0]&=~SLAYF_DOUBLE;
+			if(PressingFireMode()){
+				invoker.weaponstatus[0]|=SLAYF_DOUBLE;
+				if(pressingreload()&&invoker.weaponstatus[SLAYS_SIDESADDLE]<12){
+					invoker.weaponstatus[0]&=~SLAYF_DOUBLE;
+					setweaponstate("reloadss");
+					return;
+				}
+			}else invoker.weaponstatus[0]&=~SLAYF_DOUBLE;
 
 			int pff=PressingFire()+(PressingAltfire()<<1);
 			bool ch1=invoker.weaponstatus[SLAYS_CHAMBER1]==2;
