@@ -13,7 +13,6 @@ class Hunter:HDShotgun replaces Shotgun{
 		weapon.bobrangey 0.86;
 		scale 0.6;
 		inventory.pickupmessage "You got the pump-action shotgun!";
-		obituary "%o was brutally pumped full of %k's hot, manly lead.";
 		hdweapon.barrelsize 30,0.5,2;
 	}
 	override void postbeginplay(){
@@ -34,10 +33,10 @@ class Hunter:HDShotgun replaces Shotgun{
 		}
 		if(
 			sausage
+			&&!(weaponstatus[0]&HUNTF_AUTO) //"pumped"
 			&&inflictor is "HDBullet" //"brutally!" "full!" - not just bleeding!
-			&&!random(0,4) //novelty value
 		)return "%o was brutally pumped full of %k's hot, manly lead.";
-		return "I like cheese";
+		return obituary;
 	}
 	override double gunmass(){
 		int tube=weaponstatus[HUNTS_TUBE];

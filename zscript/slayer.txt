@@ -13,8 +13,21 @@ class Slayer:HDShotgun replaces HDShotgun{
 		weapon.bobrangex 0.18;
 		weapon.bobrangey 0.7;
 		scale 0.6;
-		obituary "%o doubled over from the turgid size of %k's hot, manly lead.";
 		hdweapon.barrelsize 26,1,1;
+	}
+	override string getobituary(actor victim,actor inflictor,name mod,bool playerattack){
+		bool sausage=true;
+		for(int i=0;i<MAXPLAYERS;i++){
+			if(playeringame[i]&&(players[i].getgender()!=0)){
+				sausage=false;
+				break;
+			}
+		}
+		if(
+			sausage
+			&&inflictor is "HDBullet"
+		)return "%o doubled over from the turgid size of %k's hot, manly lead.";
+		return obituary;
 	}
 	override void PostBeginPlay(){
 		if(Wads.CheckNumForName("SHT2B0",wads.ns_sprites,-1,false)<0){
