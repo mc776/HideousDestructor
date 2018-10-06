@@ -185,7 +185,7 @@ class ThunderBuster:HDWeapon{
 				A_Refire();
 			}
 		}
-		PLSG AAA 6{
+		PLSG AAA 4{
 			A_WeaponReady(WRF_NOFIRE);
 			A_GunFlash();
 		}goto nope;
@@ -193,7 +193,6 @@ class ThunderBuster:HDWeapon{
 		PLSF A 1 bright{
 			HDFlashAlpha(64);
 			A_Light2();
-			A_SetTics(random(0,1));
 		}
 		PLSF BA 1 bright;
 		PLSF B 1 bright A_Light1();
@@ -204,7 +203,7 @@ class ThunderBuster:HDWeapon{
 	firemode:
 		PLSG C 1 offset(1,32) A_GiveInventory("WeaponBusy");
 		PLSG C 2 offset(2,32);
-		PLSG C 1 offset(1,33);
+		PLSG C 1 offset(1,33) A_PlaySound("weapons/huntreload",CHAN_WEAPON);
 		PLSG C 2 offset(0,34);
 		PLSG C 3 offset(-1,35);
 		PLSG C 4 offset(-1,36);
