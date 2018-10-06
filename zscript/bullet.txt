@@ -352,7 +352,7 @@ class HDBullet:HDActor{
 					);
 				}else{
 					hitactor.damagemobj(self,target,dmg,damagetype,
-						DMG_THRUSTLESS|(target.player?DMG_PLAYERATTACK:0)
+						DMG_THRUSTLESS|(target&&target.player?DMG_PLAYERATTACK:0)
 					);
 					if(hd_debug){
 						string targ="";
@@ -738,7 +738,7 @@ class HDBulletDamager:Thinker{
 		int pcbak=victim.painchance;
 		victim.painchance*=damages.size();
 		victim.damagemobj(lastinflictor,lastattacker,totaldamage,damagetype,
-			DMG_THRUSTLESS|(lastattacker.player?DMG_PLAYERATTACK:0)
+			DMG_THRUSTLESS|(lastattacker&&lastattacker.player?DMG_PLAYERATTACK:0)
 		);
 		if(victim)victim.painchance=pcbak;
 
