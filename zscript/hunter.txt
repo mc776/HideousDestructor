@@ -67,6 +67,10 @@ class Hunter:HDShotgun replaces Shotgun{
 			);
 		}
 	}
+	action void A_CheckPocketSaddles(){
+		if(invoker.weaponstatus[HUNTS_SIDESADDLE]<1)invoker.weaponstatus[0]|=HUNTF_FROMPOCKETS;
+		if(!countinv("HDShellAmmo"))invoker.weaponstatus[0]&=~HUNTF_FROMPOCKETS;
+	}
 	action bool A_LoadTubeFromHand(){
 		int hand=invoker.handshells;
 		if(
@@ -343,7 +347,7 @@ class Hunter:HDShotgun replaces Shotgun{
 		SHTG D 2 offset(0,36);
 		SHTG D 2 offset(0,34);
 		SHTG D 3 offset(0,36);
-		SHTG D 3 offset(0,40);
+		SHTG D 3 offset(0,40) A_CheckPocketSaddles();
 	reloadfast:
 		SHTG D 4 offset(0,40) A_GrabShells(3,false);
 		SHTG D 3 offset(0,42);
