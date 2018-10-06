@@ -178,7 +178,9 @@ extend class HDActor{
 				int dmg=(dist>fullblastradius)?
 					blastdamage-clamp(dist-fullblastradius,0,dist)
 					:blastdamage;
-				it.DamageMobj(caller,source,dmg*losmul,blastdamagetype,DMG_THRUSTLESS,0);
+				it.DamageMobj(caller,source,dmg*losmul,blastdamagetype,
+					DMG_THRUSTLESS|(source.player?DMG_PLAYERATTACK:0),0
+				);
 			}
 			//frag damage
 			if(!it)continue;if(
@@ -283,7 +285,7 @@ extend class HDActor{
 					int pcbak=it.painchance;
 					it.painchance*=fragshit;
 					it.DamageMobj(caller,source,dmg,
-						fragdamagetype,DMG_THRUSTLESS,0
+						fragdamagetype,DMG_THRUSTLESS|(source.player?DMG_PLAYERATTACK:0),0
 					);
 					if(it)it.painchance=pcbak;
 				}

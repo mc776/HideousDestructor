@@ -94,7 +94,7 @@ class ThunderBuster:HDWeapon{
 		if(tlt.hitactor){
 			actor hitactor=tlt.hitactor;
 			if(hitactor.bloodtype=="ShieldNotBlood"){
-				hitactor.damagemobj(null,caller,random(1,(battery<<2)),"Balefire");
+				hitactor.damagemobj(null,caller,random(1,(battery<<2)),"Balefire",caller.player?DMG_PLAYERATTACK:0);
 			}else if(
 				hitactor.bnodamage
 				||(hitactor.bnoblood&&!random(0,3))
@@ -104,11 +104,11 @@ class ThunderBuster:HDWeapon{
 				||!random(0,7)
 			){
 				//dry actor - ping damage and continue
-				hitactor.damagemobj(null,caller,1,"Electro");
+				hitactor.damagemobj(null,caller,1,"Electro",caller.player?DMG_PLAYERATTACK:0);
 				hdf.give(hitactor,"Heat",(basedmg>>1));
 			}else{
 				//wet actor
-				hitactor.damagemobj(null,caller,basedmg,"Electro");
+				hitactor.damagemobj(null,caller,basedmg,"Electro",caller.player?DMG_PLAYERATTACK:0);
 				hdf.give(hitactor,"Heat",(basedmg<<1));
 				actor sss=spawn("HDGunsmoke",tlt.hitlocation);
 				sss.vel=(0,0,1)-tlt.hitdir;
@@ -531,7 +531,7 @@ class BeamSpotFlash:IdleDummy{
 		double n2=n*0.4;
 		if(tracer){
 			HDF.Give(tracer,"Heat",n);
-			tracer.damagemobj(self,target,random(n1,n),"Electro");
+			tracer.damagemobj(self,target,random(n1,n),"Electro",target.player?DMG_PLAYERATTACK:0);
 		}
 		A_HDBlast(
 			n2,random(n2,n),0,"Electro",
