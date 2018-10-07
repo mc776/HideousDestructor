@@ -70,6 +70,10 @@ extend class HDPlayerPawn{
 			bp.itemamount[bp.derpindex]++;
 		}
 
+		if(countinv("BossRifle")){
+			hdweapon(findinventory("BossRifle")).weaponstatus[BOSSS_GRIME]=random(0,8);
+		}
+
 
 		//reload as much brass as possible and consolidate again
 		if(

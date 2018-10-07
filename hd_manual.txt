@@ -366,6 +366,8 @@ hd_purge: This will drop all ammunition for which you do not have an appropriate
 
 hd_zoomon, hd_zoomoff: These work like +hd_zoom but toggle instead of hold. If you bind a key to one of them, it will automatically function for both.
 
+hd_slideon, hd_slideoff: Like hd_zoomon and hd_zoomoff but for the hd_noslide cvar.
+
 hd_clearcvs: Resets all archived CVars (other than loadout cvars) to their defaults.
 
 hd_resetloadout: Resets the custom loadout to default.
@@ -407,6 +409,8 @@ hd_killerbarrels: Sets the percentage chance that any barrel (nukage or flaming)
 
 hd_nodoorbuster: Some weapons such as the H.E.A.T. rocket and the Brontornis can destroy small pieces of map geometry, letting you bypass tedious or impossible-to-reach areas. This can result in unpredictable or unwanted behaviour, so enabling this option will prevent such weapons from being able to affect map geometry this way. Enabling this midgame will not reverse any damage already done. Default false.
 
+hd_dropeverythingondeath: HD mostly goes with regular Doom inventory behaviour when dying and respawning: you keep your stuff in co-op, reset your stuff in deathmatch, maybe drop an extra copy of your weapon. Enabling this cvar will cause you to drop *all* your inventory except keys, leaving a stash of loot for your opponents (or buddies) in deathmatch or, in co-op, forcing you to do a naked walk of shame back to where you'd died.  Default false.
+
 hd_safelifts: With HD's reduced player speed and falling damage, some classic Doom lifts end up creating scenarios that resemble a superimposition of a Simone Giertz comedy routine and the deposition materials from a factory class action suit. HD automatically scales all these lifts at level start to more reasonable speeds. This may break some levels, so this option is provided. Note that the level must be restarted for the changes to take effect. Default true.
 
 hd_dirtywindows: Before limit-removing sourceports the only windows in Doom were wholly see-through, even if they were supposed to block absolutely everything. This can be a bit frustrating when you have no idea what your shots can or cannot go through unimpeded. This setting will overlay all of these blocking surfaces with a translucent dirt texture to make them look like a poorly cleaned window. Default true.
@@ -430,7 +434,7 @@ hd_sightbob: HD's sight crosshairs by default will bob as the player moves. This
 
 hd_xhairscale: HD's sight crosshairs can scale unpredictably at different resolutions. Other people just don't like the size. Use this setting to make adjustments. Values are between 0.1 and 3.0 inclusive and default is 1.
 
-hd_crosshair (0): This affects which image is displayed on the ZM66 and Liberator reflex sights. This is applied on a per-user basis and you will not need to set this every time you pick up a new gun. If you want to modify these, the lumps to replace are "riflsit1" through "riflsit4".
+hd_crosshair (0): This affects which image is displayed on the ZM66 and Liberator reflex sights. This is applied on a per-user basis and you will not need to set this every time you pick up a new gun. If you want to modify these, the lumps to replace are "riflsit1" through "riflsit5".
 
 hd_hudusedelay: This is how many tics you must hold Use before the full HUD shows up with all the ammo counts and compass (and scope view if hd_noscope is set to 1). Zero means it is always on.
 
@@ -465,6 +469,8 @@ hd_tbmode (0): If set to 1, starts the Thunder Buster in its alternate CQB spray
 hd_libmoa (30), hd_bossmoa (27): Presets the reticle bullet drop adjustment. See the individual weapon descriptions in this manual for details.
 
 hd_bosszoom (0): Starts with the Boss scope at various zoom levels, up to a maximum of 55.
+
+hd_bosscustomchamber (false): If true, your starting Boss rifle is a fancy custom with a special loose-tolerance action that doesn't gum up as easily and jams significantly less often even with minimal maintenance work. This sacrifices a bit of the extreme power of the Boss, but it should still hit harder per bullet than the Liberator.
 
 hd_libfrontreticle, hd_bossfrontreticle (false): If true, your rifle scope is fitted with a front reticle that follows the magnification of your target. This means the dots are consistent with the adjustments you need to make, but the resulting range of possible magnifications is much smaller.
 
@@ -557,7 +563,7 @@ Once deployed, the HERP will begin doing sweeps of the 90-degree view in front o
 The HERP takes up to 3 mags and 1 cell to deploy.
 The HERP is bulky enough to count as its own weapon when encumbrance limits are enabled.
 You can manipulate your HERPs from the console.
-Command format: ied <mode> <tag> <direction>
+Command format: herp <mode> <tag> <direction>
 Possible modes are:
 1 = On: scan for enemies and shoot on sight.
 2 = Off: stand by and do nothing.
@@ -655,6 +661,8 @@ Instructions: Fire button is a straight-up punch. Altfire lunges forward. Reload
 
 Note that the use key kick is available with any weapon.
 
+The zoom function lets you flick a small piece of debris in the direction you are looking. This can be useful for causing a distraction or hitting a shootable switch. You can collect debris by punching walls; if you don't have debris, you'll generate your own.
+
 Protip: Punching damage responds to the way you are turning at the time your fist connects. A good left hook or uppercut to the head can knock out a zombie in one punch. In any event, headshots are generally good for knocking someone about to keep them from hitting back. (Their not hitting back is not guaranteed.)
 
 
@@ -716,9 +724,15 @@ The Tyrant has been strangely fond of this weapon and has armed most of his zomb
 
 Instructions: Altfire cycles the next round; make sure you press hard and long enough that the round actually cycles. Primary fire is what you do to something until it dies.
 
+Holding down the trigger while you chamber a new round lets you slam-fire the shotgun, firing the round immediately when it is ready to fire. Semiauto disables this.
+
 To stop reloading earlier, hold on to the reload key until you hear the click of the loading port closing.
 
 To reload quickly from the shotgun's side saddles, press the reload key. To slowly fish a shell or two from somewhere in your pockets to load those, press the secondary reload key. To reload the side saddles, hit the reload key while the Hunter itself is full.
+
+If you hit reload while the pump is pulled back, you will reload from that position up to 2 shells at a time.
+
+To reload the side saddles themselves without loading the magazine first, hold fire mode and hit reload.
 
 To toggle semiauto mode, hit the fire mode key. There is no guarantee as to the quality of the ammo you find and not every round may be strong enough to cycle properly, so altfire is still available to force cycle a round if necessary.
 
@@ -935,6 +949,10 @@ Clip reload is only available to fill the entire mag, for reasons.
 Hit the user3 button to load and unload clips.
 
 When it jams, hold altfire to keep trying to unjam it. It's a little less finicky than the ZM66 that way.
+
+If it's jamming more than it was before, you may need to clean some gunk out of the action. With the gun completely unloaded, hold altfire to pull the bolt back and and hit unload while pulled.
+
+To load a single round directly into the chamber, hold altfire to pull the bolt back and hit reload while pulled.
 
 Alternate reload strips a clip to get loose rounds (which then may be loaded individually into the Boss or used to fill a Liberator mag). If no clips are available, a Liberator magazine is cannibalized instead.
 

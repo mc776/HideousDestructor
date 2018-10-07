@@ -328,7 +328,7 @@ class HDStatusBar:DoomStatusBar{
 		}
 
 		//weapon readouts!
-		if(cplayer.readyweapon)drawweaponstatus(cplayer.readyweapon);
+		if(cplayer.readyweapon&&cplayer.readyweapon!=WP_NOCHANGE)drawweaponstatus(cplayer.readyweapon);
 
 		//weapon sprite
 		if(
@@ -574,8 +574,8 @@ class HDStatusBar:DoomStatusBar{
 		}
 	}
 	void drawselectedweapon(int posx,int posy,int flags){
-		if(!cplayer.readyweapon)return;
 		weapon w=cplayer.readyweapon;
+		if(!w||w==WP_NOCHANGE)return;
 		string wx="";
 		if(w is "")wx="";
 		else if(w is "Lumberjack")wx="CSAWA0";

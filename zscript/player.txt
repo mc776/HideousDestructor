@@ -50,7 +50,7 @@ class HDPlayerPawn:PlayerPawn{
 		-pickup
 		+forceybillboard //zoom actor will fuck up otherwise
 
-		height 55.666;radius 12;
+		height 54;radius 12;
 		mass 150;gibhealth 180;
 
 		player.viewheight 48;
@@ -62,18 +62,6 @@ class HDPlayerPawn:PlayerPawn{
 		player.gruntspeed 16.0;
 		player.displayname "Marine";
 		player.crouchsprite "PLYC";
-	}
-	override bool CanCollideWith(actor other,bool passive){
-		//headshot code - rocket pass shoulder
-		return(
-			(health<1)
-			||(height<40) //crouch
-			||(other.pos.z<pos.z+(height*0.8))
-			||(
-				abs(pos.x-other.pos.x)<3
-				&&abs(pos.y-other.pos.y)<3
-			)
-		);
 	}
 	override void PostBeginPlay(){
 		super.PostBeginPlay();
@@ -170,7 +158,7 @@ class HDPlayerPawn:PlayerPawn{
 			setstatelabel("seewalk");
 		}
 
-		if(player.readyweapon){
+		if(player.readyweapon&&player.readyweapon!=WP_NOCHANGE){
 			player.readyweapon.bobspeed=getdefaultbytype(player.readyweapon.getclass()).bobspeed;
 			if(stunned||runwalksprint<0){
 				player.readyweapon.bobspeed*=0.6;
@@ -476,7 +464,7 @@ class HDPlayerPawn:PlayerPawn{
 			||input&BT_JUMP
 		){
 			if(!barehanded){
-				if(player.readyweapon)lastweapon=player.readyweapon;
+				if(player.readyweapon&&player.readyweapon!=WP_NOCHANGE)lastweapon=player.readyweapon;
 				A_SetInventory("NulledWeapon",1);
 				A_SetInventory("NullWeapon",1);
 				A_SelectWeapon("NullWeapon");
@@ -512,23 +500,37 @@ class HDPlayerPawn:PlayerPawn{
 			//pickerupper
 			overloaded=CheckEncumbrance();
 			if(!hasgrabbed){
-				flinetracedata grabline;
 				actor grabbed=null;
-				int pzofs=17;
-				while(
-					pzofs>4
-					&&!grabbed
-				){
-					linetrace(
-						angle+frandom(0.2,-0.2),56,pitch+(pzofs-8)*0.1,
-						flags:TRF_ALLACTORS|TRF_THRUBLOCK|TRF_THRUHITSCAN,
-						offsetz:height-pzofs,
-						offsetforward:-4,
-						data:grabline
-					);
-					grabbed=grabline.hitactor;
-					pzofs--;
+
+				//get an antenna
+				hdpickerupper hdpu=null;
+				ThinkerIterator hdpuf=ThinkerIterator.Create("HDPickerUpper");
+				while(hdpu=HDPickerUpper(hdpuf.Next())){
+					if(hdpu.master==self)break;
 				}
+				if(!hdpu||hdpu.master!=self)hdpu=HDPickerUpper(spawn("HDPickerUpper",pos));
+				hdpu.master=self;
+
+				double cp=cos(pitch+3);
+				vector3 pudir=2*(cp*cos(angle),cp*sin(angle),-sin(pitch+3));
+				hdpu.setorigin((pos.xy,pos.z+height-12),false);
+				int putimes=(pudir.z<0.1)?24:18;
+				for(int i=0;i<putimes;i++){
+					hdpu.setorigin(hdpu.pos+pudir,false);
+					if(
+						!hdpu.checkmove(hdpu.pos.xy,PCM_DROPOFF|PCM_NOLINES)
+						&&hdpu.blockingmobj
+					){
+						grabbed=hdpu.blockingmobj;
+
+						//don't hoover the big things
+						if(
+							grabbed is "HDWeapon"
+							||grabbed is "HDMagAmmo"
+						)hasgrabbed=true;
+					}
+				}
+
 				if(
 					grabbed
 					&&checksight(grabbed)
@@ -544,7 +546,7 @@ class HDPlayerPawn:PlayerPawn{
 						if(
 							grabbed is "hdupk"
 							||grabbed is "hdweapon"
-							||grabbed is "hdpickup"
+							||(grabbed is "hdpickup"&&!hdpickup(grabbed).multipickup)
 						)hasgrabbed=true;
 						if(
 							grabbed is "hdupk"
@@ -553,11 +555,15 @@ class HDPlayerPawn:PlayerPawn{
 							hdupk(grabbed).picktarget=self;
 							grabbed.setstatelabel("grab");
 						}else{
-							let grabthink=new("GrabThinker");
-							grabthink.picktarget=self;
-							grabthink.pickobj=grabbed;
+							let hdpg=hdpickup(grabbed);
+							if(!hdpg||!hdpg.isbeingpickedup){
+								if(hdpg)hdpg.isbeingpickedup=true;
+								let grabthink=new("GrabThinker");
+								grabthink.picktarget=self;
+								grabthink.pickobj=grabbed;
+							}
 						}
-					}//else if(grabbed is "Inventory")inventory(grabbed).touch(self);
+					}
 				}
 			}
 			if(
@@ -667,7 +673,7 @@ extend class HDHandlers{
 		if(p){
 			p.levelreset();
 			setplayerlives(e.playernumber);
-			if(deathmatch)p.spawn("TeleFog",p.pos);
+			if(deathmatch)p.spawn("TeleFog",p.pos,ALLOW_REPLACE);
 
 			if(
 				hd_nobots
@@ -757,3 +763,4 @@ class kickchecker:actor{
 		);
 	}
 }
+

@@ -32,6 +32,10 @@ class GrabThinker:Thinker{
 				pickobj.args[3],pickobj.args[4]
 			);
 
+			vector2 shiftpk=actor.rotatevector((frandom(-0.4,-0.8),frandom(0.8,1.1)),picktarget.angle);
+			pickobj.vel.xy+=shiftpk;
+			pickobj.setorigin((pickobj.pos.xy+shiftpk,pickobj.pos.z),true);
+
 			let ht=hdupk(pickobj);
 			if(ht){
 				ht.picktarget=picktarget;
@@ -41,18 +45,32 @@ class GrabThinker:Thinker{
 			}
 
 			let pt=hdpickup(pickobj);
-			if(pt){pt.actualpickup(picktarget);destroy();return;}
+			if(pt){
+				pt.actualpickup(picktarget);
+				pt.isbeingpickedup=false;
+				destroy();
+				return;
+			}
 
 			let wt=hdweapon(pickobj);
 			if(wt){wt.actualpickup(picktarget);destroy();return;}
 
 			let tt=inventory(pickobj);
 			if(tt){
-				//tt.touch(picktarget);
-				if(picktarget.vel.xy==(0,0))picktarget.A_ChangeVelocity(0.01,0,0,CVF_RELATIVE);
+				if(picktarget.vel==(0,0,0))picktarget.A_ChangeVelocity(0.001,0,0,CVF_RELATIVE);
 				destroy();return;
 			}
 		}
+	}
+}
+class HDPickerUpper:Actor{
+	default{
+		+solid +missile +nogravity
+		height 2;
+		radius 2;
+	}
+	override bool cancollidewith(actor other,bool passive){
+		return (inventory(other)||hdupk(other));
 	}
 }
 
@@ -65,17 +83,25 @@ class HDPickup:CustomInventory{
 	property bulk:bulk;
 	int maxunitamount;
 	property maxunitamount:maxunitamount;
+	bool multipickup; //lets you continue picking up without re-pressing the key
+	property multipickup:multipickup;
+	bool isbeingpickedup;
 	default{
+		+solid
 		+inventory.invbar +inventory.persistentpower
 		+noblockmonst +notrigger +dontgib
 		inventory.interhubamount int.MAX;
 
 		hdpickup.droptranslation true;
 		hdpickup.bulk 0;
+		hdpickup.multipickup false;
 
 		radius 8; height 10; scale 0.8;
 		inventory.pickupsound "weapons/pocket";
 		hdpickup.maxunitamount 1;
+	}
+	override bool cancollidewith(actor other,bool passive){
+		return HDPickerUpper(other);
 	}
 
 	//called on level resets, etc.
@@ -131,6 +157,7 @@ class HDPickup:CustomInventory{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
+		isbeingpickedup=false;
 		let hdps=new("HDPickupSplitter");
 		hdps.invoker=self;
 	}
@@ -161,7 +188,7 @@ class HDAmmo:HDPickup{
 		-inventory.invbar
 		hdpickup.droptranslation false;
 	}
-	//bulk must be calculated in encumbrance so hd_onemanarmy can be read
+	//bulk must be calculated in encumbrance, not here, so hd_onemanarmy can be read
 	override double getbulk(){return 0;}
 }
 
@@ -196,7 +223,9 @@ class HDUPK:HDActor{
 		hdupk.pickupmessage "Picked something up.";
 		hdupk.pickuptype "none";
 	}
-	override bool cancollidewith(actor other,bool passive){return false;}
+	override bool cancollidewith(actor other,bool passive){
+		return HDPickerUpper(other);
+	}
 	override void postbeginplay(){
 		super.postbeginplay();
 

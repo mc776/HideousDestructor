@@ -12,7 +12,7 @@ class HellPrince:BaronOfHell replaces BaronofHell{
 		damagefactor "balefire",0.3;
 		meleedamage 12;
 		meleerange 58;
-		height 63.666;
+		height 62;
 		health BE_HPMAX;
 		meleesound "baron/melee";
 		speed 6;
@@ -31,17 +31,6 @@ class HellPrince:BaronOfHell replaces BaronofHell{
 			aaa.vel=vel;
 			aaa.A_SkullLaunch();
 			shields-=66;
-	}
-	override bool CanCollideWith(actor other,bool passive){
-		//headshot code - rocket pass shoulder
-		return(
-			(health<1)
-			||(other.pos.z<pos.z+(height*0.8))
-			||(
-				abs(pos.x-other.pos.x)<(radius*0.3)
-				&&abs(pos.y-other.pos.y)<(radius*0.3)
-			)
-		);
 	}
 	int shields;
 	int raisesneeded;
@@ -155,17 +144,16 @@ class HellPrince:BaronOfHell replaces BaronofHell{
 		BOSS H 18 A_FaceTarget(20,20);
 		BOSS H 0 bright A_SpawnProjectile("BaleBall",38,0,2,0,0);
 		BOSS H 0 bright A_SpawnProjectile("BaleBall",38,0,-2,0,0);
-		BOSS H 6 bright{
-			if(random(0,3))A_SpawnProjectile("BelphBall",28,0,0,2,pitch);
-			else A_BaronSoul();
-		}
 		BOSS H 0 bright A_SpawnProjectile("MiniBBall",46,0,5,2,0);
 		BOSS H 6 bright A_SpawnProjectile("MiniBBall",46,0,-5,2,0);
 		BOSS H 0 bright A_SpawnProjectile("MiniBBall",56,0,7,2,4);
 		BOSS H 6 bright A_SpawnProjectile("MiniBBall",56,0,-7,2,4);
 		BOSS H 0 bright A_SpawnProjectile("MiniBBall",66,0,12,2,7);
 		BOSS H 6 bright A_SpawnProjectile("MiniBBall",66,0,-12,2,7);
-		BOSS H 12;
+		BOSS H 12 bright{
+			if(random(0,3))A_SpawnProjectile("BelphBall",28,0,0,2,pitch);
+			else A_BaronSoul();
+		}
 		goto see;
 	pain:
 		BOSS H 6 A_Pain();
@@ -189,7 +177,7 @@ class HellPrince:BaronOfHell replaces BaronofHell{
 		BOSS F 5 A_JumpIf(getdistance(true,AAPTR_TARGET)>84,"missilesweep");
 		goto see;
 	death.telefrag:
-		TNT1 A 0 spawn("Telefog",pos);
+		TNT1 A 0 spawn("Telefog",pos,ALLOW_REPLACE);
 		TNT1 A 0 A_NoBlocking();
 		TNT1 AAAAA 0 A_SpawnItemEx("BFGVileShard",
 			frandom(-4,4),frandom(-4,4),frandom(6,24),

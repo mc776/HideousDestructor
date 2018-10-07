@@ -31,7 +31,7 @@ extend class HDPlayerPawn{
 				&&player
 			){
 				player.cmd.buttons&=~BT_USE;
-				deathcounter++;
+				if(!(player.cheats & CF_PREDICTING))deathcounter++;
 			}
 		}
 		super.DeathThink();
@@ -47,6 +47,22 @@ extend class HDPlayerPawn{
 			)
 		)deathcounter=145;
 		else deathcounter=1;
+
+		if(hd_dropeverythingondeath){
+			array<inventory> keys;
+			for(inventory item=inv;item!=null;item=item.inv){
+				if(item is "Key"){
+					keys.push(item);
+					item.detachfromowner();
+				}
+				A_DropInventory(item.getclassname(),item.amount);
+				if(!item||item.owner!=self)item=inv;
+			}
+			for(int i=0;i<keys.size();i++){
+				keys[i].attachtoowner(self);
+			}
+		}
+
 
 		if(player&&player.readyweapon&&deathmatch&&!sv_weapondrop&&!barehanded){
 			let zzz=zm66assaultrifle(findinventory("ZM66AssaultRifle"));

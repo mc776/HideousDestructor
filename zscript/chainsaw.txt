@@ -16,7 +16,21 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 		weapon.kickback 2;
 		scale 0.4;
 		inventory.pickupmessage "You got the chainsaw! Go find some meat!";
+		obituary "%o got cut by %k.";
 		hdweapon.barrelsize 26,1,2;
+	}
+	override string getobituary(actor victim,actor inflictor,name mod,bool playerattack){
+		bool clam=true;
+		for(int i=0;i<MAXPLAYERS;i++){
+			if(playeringame[i]&&(players[i].getgender()!=1)){
+				clam=false;
+				break;
+			}
+		}
+		if(
+			clam
+		)return "%o was felled by the power of %k's terribly eager beaver.";
+		return obituary;
 	}
 	override double gunmass(){
 		return 5+weaponstatus[CSAWS_BATTERY]<0?0:1;

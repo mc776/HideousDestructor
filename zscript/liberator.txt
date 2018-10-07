@@ -1,34 +1,6 @@
 // ------------------------------------------------------------
 // Liberator Battle Rifle
 // ------------------------------------------------------------
-class LiberatorChamber:Ammo{
-	default{
-		+inventory.ignoreskill +inventory.untossable
-		ammo.backpackmaxamount 1;ammo.backpackamount 0;
-		inventory.maxamount 1;
-	}states{spawn:TNT1 A 0;stop;}
-}
-class LiberatorGrenadeChamber:Ammo{
-	default{
-		+inventory.ignoreskill +inventory.untossable
-		ammo.backpackmaxamount 1;ammo.backpackamount 0;
-		inventory.maxamount 1;
-	}states{spawn:TNT1 A 0;stop;}
-}
-class LiberatorLoaded:Ammo{
-	default{
-		+inventory.ignoreskill +inventory.untossable
-		ammo.backpackmaxamount 30;ammo.backpackamount 0;
-		inventory.maxamount 30;
-	}states{spawn:TNT1 A 0;stop;}
-}
-class LiberatorHeat:InventoryFlag{default{inventory.maxamount 50;}}
-class LiberatorFullAuto:InventoryFlag{}
-class LiberatorGrenadeMode:InventoryFlag{}
-class LiberatorZoomDegree:InventoryFlag{default{inventory.maxamount 32;}}
-class LiberatorNoMag:InventoryFlag{}
-
-
 class LiberatorRifle:HDWeapon{
 	default{
 		//$Category "Weapons/Hideous Destructor"
@@ -51,6 +23,7 @@ class LiberatorRifle:HDWeapon{
 			barrellength=27;
 			barrelwidth=0.7;
 			barreldepth=1.2;
+			weaponstatus[0]&=~(LIBF_GRENADEMODE|LIBF_GRENADELOADED);
 		}else{
 			barrellength=29;
 			barrelwidth=1;

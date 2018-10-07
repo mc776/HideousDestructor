@@ -37,7 +37,8 @@ extend class HDPlayerPawn{
 		player.crouchoffset=-(viewheight)*(1-player.crouchfactor);
 	}
 	override void CrouchMove(int direction){
-		let player=self.player; //but why?
+		let player=self.player;
+		bool notpredicting=!(player.cheats & CF_PREDICTING);
 
 		double defaultheight = FullHeight;
 		double savedheight = Height;
@@ -65,7 +66,7 @@ extend class HDPlayerPawn{
 				player.crouchfactor -= crouchspeed;
 				return;
 			}
-		}else{
+		}else if(notpredicting){
 			if(!(level.time%10))fatigue++;
 			if(player.onground && zerk>0 && direction>0 && height<fullheight*0.6)vel.z+=4;
 		}
@@ -78,16 +79,30 @@ extend class HDPlayerPawn{
 		// Check for eyes going above/below fake floor due to crouching motion.
 		CheckFakeFloorTriggers(pos.Z + oldheight, true);
 
-		gunbraced=false;
+		if(notpredicting)gunbraced=false;
 	}
 	override void MovePlayer(){
 		let player = self.player;
 		UserCmd cmd = player.cmd;
+		bool notpredicting = !(player.cheats & CF_PREDICTING);
 
-
-		//move to raw result first to reduce lagjitters
-//		angle+=cmd.yaw*(360./65536.);
-//		pitch=clamp(pitch-cmd.pitch*(360./65536.),player.minpitch,player.maxpitch);
+		//reduced turning while supported.
+		if(
+			player.cmd.buttons&BT_USE
+			&&!countinv("IsMoving")
+		){
+			player.cmd.yaw>>=3;
+			player.cmd.pitch>>=3;
+			if(!gunbraced){
+				vector2 iyp=(cmd.yaw,-cmd.pitch)*(360./65536.*0.05);
+				if(notpredicting)A_MuzzleClimb(iyp*2,iyp,iyp,iyp);
+			}
+		}
+		//reduced turning while crouched.
+		else if(player.crouchfactor<0.7 && abs(cmd.yaw)>(3*65536/360)){
+			player.cmd.yaw>>=1;
+			player.cmd.pitch>>=1;
+		}
 
 
 		player.onground = (pos.z <= floorz) || bOnMobj || bMBFBouncer || (player.cheats & CF_NOCLIP2);
@@ -145,6 +160,8 @@ extend class HDPlayerPawn{
 				sm *= player.crouchfactor;
 			}
 
+			if(fm&&sm)movefactor*=HDCONST_ONEOVERSQRTTWO;
+
 			forwardmove = fm * movefactor * (35 / TICRATE);
 			sidemove = sm * movefactor * (35 / TICRATE);
 
@@ -159,7 +176,7 @@ extend class HDPlayerPawn{
 			}
 
 			if(
-				!(player.cheats & CF_PREDICTING)
+				notpredicting
 				&&(forwardmove||sidemove)
 			){
 				PlayRunning();

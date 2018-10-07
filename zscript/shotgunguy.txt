@@ -29,7 +29,7 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 		health 100;
 		gibhealth 100;
 		speed 10;
-		height 55.666;
+		height 54;
 		radius 12;
 		decal "BulletScratch";
 		attacksound "";
@@ -44,11 +44,18 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 		hitobituary "%o was beaten up by the Tyrant's jack-booted thugs.";
 	}
 	override string getobituary(actor victim,actor inflictor,name mod,bool playerattack){
+		bool sausage=true;
+		for(int i=0;i<MAXPLAYERS;i++){
+			if(playeringame[i]&&(players[i].getgender()!=0)){
+				sausage=false;
+				break;
+			}
+		}
 		if(
-			!wep //"pumped"
+			sausage
+			&&!wep //"pumped"
 			&&inflictor is "HDBullet" //"brutally!" "full!" - not just bleeding!
 			&&!random(0,4) //novelty value
-			&&victim.player&&!victim.player.getgender() //this party is best left sausage
 		)return "%o was brutally pumped full of a shotgun sergeant's hot, manly lead.";
 		else if(inflictor==self) return hitobituary;
 		else return obituary;
@@ -70,6 +77,9 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 		else if(accuracy==1)wep=0;
 		else if(accuracy==2)wep=1;
 		else if(accuracy==3)wep=-1;
+
+		//if no ssg, sg
+		if(Wads.CheckNumForName("SHT2B0",wads.ns_sprites,-1,false)<0&&wep==1)wep=0;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -97,7 +107,7 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 			hasdropped=true;
 			hdweapon wp=null;
 			if(wep==-1){
-				wp=hdweapon(spawn("ZM66AssaultRifle",(pos.x,pos.y,pos.z+40)));
+				wp=hdweapon(spawn("ZM66AssaultRifle",(pos.x,pos.y,pos.z+40),ALLOW_REPLACE));
 				wp.weaponstatus[0]=
 					ZM66F_NOLAUNCHER|(randompick(0,1,1,1,1)*ZM66F_CHAMBER);
 				wp.weaponstatus[ZM66S_MAG]=gunloaded;
@@ -108,7 +118,7 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 				gunloaded=50;
 			}
 			if(wep==0){
-				wp=hdweapon(spawn("Hunter",(pos.x,pos.y,pos.z+40)));
+				wp=hdweapon(spawn("Hunter",(pos.x,pos.y,pos.z+40),ALLOW_REPLACE));
 				if(!semi)wp.weaponstatus[0]|=HUNTF_AUTO;
 				if(gunspent)wp.weaponstatus[HUNTS_CHAMBER]=1;
 				else if(gunloaded>0){
@@ -121,7 +131,7 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 				gunloaded=8;
 			}
 			if(wep==1){
-				wp=hdweapon(spawn("Slayer",(pos.x,pos.y,pos.z+40)));
+				wp=hdweapon(spawn("Slayer",(pos.x,pos.y,pos.z+40),ALLOW_REPLACE));
 				if(gunloaded==2)wp.weaponstatus[SLAYS_CHAMBER2]=2;
 				else if(gunspent==2)wp.weaponstatus[SLAYS_CHAMBER2]=1;
 				if(gunloaded>0)wp.weaponstatus[SLAYS_CHAMBER1]=2;
@@ -308,7 +318,7 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 
 			gunspent++;
 			gunloaded--;
-			actor p=spawn("HDBullet426",pos+(0,0,height-6));
+			actor p=spawn("HDBullet426",pos+(0,0,height-6),ALLOW_REPLACE);
 			p.target=self;p.angle=angle;p.pitch=pitch;
 			p.vel+=self.vel;
 			if(random(0,2000)<gunspent+2){
@@ -338,7 +348,7 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 				A_PlaySound("weapons/slayersingle",5);
 				gunspent=2;
 				gunloaded=0;
-				actor p=spawn("HDBullet00bf2",pos+(0,0,height-6));
+				actor p=spawn("HDBullet00bf2",pos+(0,0,height-6),ALLOW_REPLACE);
 				p.target=self;p.angle=angle;p.pitch=pitch;
 				p.vel+=self.vel;
 				p.speed+=frandom(-10.,10.);
@@ -348,7 +358,7 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 				gunloaded--;
 				class<actor> whichbf="HDBullet00bfl";
 				if(gunspent)whichbf="HDBullet00bfr";
-				actor p=spawn(whichbf,pos+(0,0,height-6));
+				actor p=spawn(whichbf,pos+(0,0,height-6),ALLOW_REPLACE);
 				p.target=self;p.angle=angle;p.pitch=pitch;
 				p.vel+=self.vel;
 				p.speed+=frandom(-10.,10.);
@@ -373,7 +383,7 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 
 			gunspent++;
 			gunloaded--;
-			actor p=spawn("HDBullet00b",pos+(0,0,height-6));
+			actor p=spawn("HDBullet00b",pos+(0,0,height-6),ALLOW_REPLACE);
 			p.target=self;p.angle=angle;p.pitch=pitch;
 			p.vel+=self.vel;
 
@@ -566,12 +576,12 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 	death:
 		#### H 5{
 			{hdmobai.corpseflags(self);}
-			actor ttt=spawn("tempshield",pos);
+			actor ttt=spawn("tempshield",pos,ALLOW_REPLACE);
 			ttt.vel=vel;ttt.master=self;
 		}
 		#### I 5 A_Scream();
 		#### J 5{
-			actor ttt=spawn("tempshield2",pos);
+			actor ttt=spawn("tempshield2",pos,ALLOW_REPLACE);
 			ttt.vel=vel;ttt.master=self;
 			noblockwepdrop();
 		}
@@ -587,7 +597,7 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 			A_GiveInventory("IsGibbed");
 		}
 		#### N 5{
-			spawn("MegaBloodSplatter",pos+(0,0,34));
+			spawn("MegaBloodSplatter",pos+(0,0,34),ALLOW_REPLACE);
 			A_XScream();
 		}
 		#### OPQRST 5;
@@ -598,7 +608,7 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 			A_GiveInventory("IsGibbed");
 		}
 		#### P 5{
-			spawn("MegaBloodSplatter",pos+(0,0,34));
+			spawn("MegaBloodSplatter",pos+(0,0,34),ALLOW_REPLACE);
 			A_XScream();
 		}
 		#### QRSTUV 5;
@@ -608,11 +618,11 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 		#### M 0 A_JumpIf(wep<0,"xdeath2");
 		#### M 5;
 		#### N 5{
-			spawn("MegaBloodSplatter",pos+(0,0,34));
+			spawn("MegaBloodSplatter",pos+(0,0,34),ALLOW_REPLACE);
 			A_XScream();
 		}
 		#### O 0 noblockwepdrop();
-		#### OP 5 spawn("MegaBloodSplatter",pos+(0,0,34));
+		#### OP 5 spawn("MegaBloodSplatter",pos+(0,0,34),ALLOW_REPLACE);
 		#### QRST 5;
 		goto xdead;
 	xdead:
@@ -622,11 +632,11 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 	xdeath2:
 		#### O 5;
 		#### P 5{
-			spawn("MegaBloodSplatter",pos+(0,0,34));
+			spawn("MegaBloodSplatter",pos+(0,0,34),ALLOW_REPLACE);
 			A_XScream();
 		}
 		#### Q 0 noblockwepdrop();
-		#### QR 5 spawn("MegaBloodSplatter",pos+(0,0,34));
+		#### QR 5 spawn("MegaBloodSplatter",pos+(0,0,34),ALLOW_REPLACE);
 		#### STUV 5;
 		goto xdead2;
 	xdead2:
@@ -639,12 +649,12 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 			jammed=false;
 		}
 		#### A 0 A_JumpIfInventory("IsGibbed",1,"RaiseGibbed");
-		#### L 4 spawn("MegaBloodSplatter",pos+(0,0,34));
+		#### L 4 spawn("MegaBloodSplatter",pos+(0,0,34),ALLOW_REPLACE);
 		#### LK 6;
 		#### JIH 4;
 		goto see;
 	raisegibbed:
-		#### U 12 Spawn("MegaBloodSplatter",pos+(0,0,34));
+		#### U 12 Spawn("MegaBloodSplatter",pos+(0,0,34),ALLOW_REPLACE);
 		#### T 8;
 		#### SRQ 6;
 		#### PONM 4;
@@ -652,12 +662,12 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 	death.ungibbed:
 		#### H 5{
 			{hdmobai.corpseflags(self);}
-			actor ttt=spawn("tempshield",pos);
+			actor ttt=spawn("tempshield",pos,ALLOW_REPLACE);
 			ttt.vel=vel;ttt.master=self;
 		}
 		#### I 5;
 		#### J 5{
-			actor ttt=spawn("tempshield2",pos);
+			actor ttt=spawn("tempshield2",pos,ALLOW_REPLACE);
 			ttt.vel=vel;ttt.master=self;
 			A_NoBlocking();
 		}

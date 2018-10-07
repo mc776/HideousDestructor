@@ -1,7 +1,7 @@
 // ------------------------------------------------------------
 // 9mm Ammo
 // ------------------------------------------------------------
-class HDPistolAmmo:Ammo{
+class HDPistolAmmo:HDAmmo{
 	default{
 		+inventory.ignoreskill
 		+cannotpush
@@ -11,12 +11,11 @@ class HDPistolAmmo:Ammo{
 		scale 0.7;
 		inventory.pickupmessage "Picked up a 9mm round.";
 		inventory.maxamount 144;
-		ammo.backpackmaxamount 144;
-		ammo.backpackamount 0;
+		hdpickup.multipickup true;
 	}
 	states{
 	spawn:
-		PBRS A -1 nodelay {hdf.splitammospawn(self);}
+		PBRS A -1;
 	}
 }
 

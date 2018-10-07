@@ -14,7 +14,6 @@ class TerrorBolt:HDBullet{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		vector3 pvel=vel*0.02;
 		for(int i=2;i;i--){
 			A_SpawnItemEx("TerrorSabotPiece",0,0,0,
 				speed*cos(pitch)*0.01,(i==2?3:-3),speed*sin(pitch)*0.01,0,
@@ -44,7 +43,7 @@ class TerrorBolt:HDBullet{
 			bmissile=false;
 			vel*=0.01;
 			if(tracer)tracer.damagemobj( //warhead damage
-				self,self.master,
+				self,target,
 				random(12,24)*60,
 				"SmallArms3",DMG_THRUSTLESS
 			);
@@ -52,7 +51,8 @@ class TerrorBolt:HDBullet{
 			A_HDBlast(
 				fragradius:256,fragdamage:256,fragdamagetype:"SmallArms1",
 				immolateradius:64,immolateamount:random(4,20),immolatechance:32,
-				gibradius:16,gibamount:random(4,20)
+				gibradius:16,gibamount:random(4,20),
+				source:target
 			);
 			if(tracer&&tracer.bcorpse)tracer.A_SetInventory("SawGib",tracer.countinv("SawGib")+100);
 			DistantQuaker.Quake(self,3,35,256,12);

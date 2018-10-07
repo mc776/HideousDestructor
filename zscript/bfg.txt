@@ -429,7 +429,6 @@ class BFGVileShard:Actor{
 	states{
 	spawn:
 		BFE2 A 0 nodelay{
-			bfriendly=false;
 			A_GiveInventory("ImmunityToFire");
 			A_SetGravity(0.1);
 		}
@@ -537,6 +536,7 @@ class BFGBalle:HDFireball{
 			actor itt=it.thing;
 			if(
 				(itt.bismonster||itt.player)
+				&&!(itt is "Archfiend")
 				&&itt!=target
 				&&itt.health>0    
 				&&!target.isfriend(itt)

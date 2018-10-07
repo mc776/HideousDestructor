@@ -24,7 +24,7 @@ class HDMarine:HDActor replaces ScriptedMarine{
 		monster;
 		+friendly
 		+quicktoretaliate
-		height 55.666;
+		height 54;
 		deathheight 12;
 		radius 12;
 		health 200;
@@ -326,8 +326,6 @@ class HDMarine:HDActor replaces ScriptedMarine{
 		#### A 0{
 			HealThing(1);
 			A_SetSolid();
-		}
-		#### A 0{
 			if(
 				(
 					//must reload
@@ -497,7 +495,7 @@ class HDMarine:HDActor replaces ScriptedMarine{
 	firesmg:
 		#### F 1 bright light("SHOT"){
 			gunloaded--;
-			A_PlaySound("weapons/pistol",CHAN_WEAPON,0.7);
+			A_PlaySound("weapons/smg",CHAN_WEAPON,0.7);
 			actor bbb=A_MarineShot("HDBullet9");
 			bbb.A_ChangeVelocity(cos(bbb.pitch)*20,0,-sin(bbb.pitch)*20,CVF_RELATIVE);
 			if(!random(0,7))A_AlertMonsters(0,bfriendly?AMF_TARGETEMITTER:0);

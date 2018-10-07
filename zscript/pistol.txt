@@ -144,7 +144,7 @@ class HDPistol:HDWeapon{
 	}
 	override double,int weaponbulk(){
 		int mgg=weaponstatus[PISS_MAG];
-		return 30+(mgg<0?0:(ENC_9MAG_LOADED+mgg*ENC_9_LOADED));
+		return 30+(mgg<0?0:(ENC_9MAG_LOADED+mgg*ENC_9_LOADED)),USE_9;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -297,7 +297,7 @@ class HDPistol:HDWeapon{
 		PISF A 1 bright{
 			HDFlashAlpha(64);
 			A_Light1();
-			actor p=spawn("HDBullet9",pos+(0,0,height-6));
+			actor p=spawn("HDBullet9",pos+(0,0,height-6),ALLOW_REPLACE);
 			p.target=self;p.angle=angle;p.pitch=pitch;
 			if(p){
 				p.vel+=self.vel+(frandom(-2.,2.),frandom(-2.,2.),frandom(-2.,2.));

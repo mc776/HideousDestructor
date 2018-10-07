@@ -1,31 +1,34 @@
 // ------------------------------------------------------------
 // Shotgun Shells
 // ------------------------------------------------------------
-class HDShellAmmo:Ammo{
+class HDShellAmmo:HDAmmo{
 	default{
 		+inventory.ignoreskill
 		inventory.maxamount 50;
-		ammo.backpackmaxamount 50;
-		ammo.backpackamount 0;
 		inventory.pickupmessage "Picked up a shotgun shell.";
 		scale 0.3;
+		hdpickup.multipickup true;
 	}
 	states{
 	spawn:
 		SHL1 A -1 nodelay{
-			HDF.SplitAmmoSpawn(self,4);
-			if(amount==4){
+			if(invoker.amount==4){
 				actor sss=spawn("ShellPickup",pos);
 				sss.vel=vel;
 				destroy();return;
-			}else HDF.SplitAmmoSpawn(self);
+			}
 		}
+	death:
+		ESHL A -1{
+			frame=randompick(0,0,0,0,4,4,4,4,2,2,5);
+		}stop;
 	}
 }
 class HDSpentShell:Actor{
 	default{
 		+missile +doombounce +bounceonactors +cannotpush -noteleport +forcexybillboard
 		seesound "misc/casing2";scale 0.3;height 2;radius 2;
+		bouncefactor 0.5;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -42,6 +45,7 @@ class HDSpentShell:Actor{
 		}stop;
 	}
 }
+//a shell that can be caught in hand, launched from the Slayer
 class HDUnSpentShell:HDSpentShell{
 	states{
 	spawn:
@@ -56,7 +60,11 @@ class HDUnSpentShell:HDSpentShell{
 		stop;
 	}
 }
+//any other single shell tumblng out
 class HDFumblingShell:HDSpentShell{
+	default{
+		bouncefactor 0.3;
+	}
 	states{
 	spawn:
 		ESHL ABCDEFGH 2;
@@ -68,17 +76,14 @@ class HDFumblingShell:HDSpentShell{
 		);stop;
 	}
 }
-class HDFumbledShell:HDShellAmmo{
-	default{
-		+cannotpush
-		scale 0.3;
-		inventory.pickupmessage "Picked up a shotgun shell.";
-	}
+//the static pickup
+class HDFumbledShell:IdleDummy{
 	states{
 	spawn:
-		ESHL A -1 nodelay{
-			bmissile=false;
-			frame=randompick(0,0,0,0,4,4,4,4,2,2,5);
+		TNT1 A 0 nodelay{
+			let sss=HDShellAmmo(spawn("HDShellAmmo",pos,ALLOW_REPLACE));
+			sss.amount=1;
+			sss.setstatelabel("death");
 		}stop;
 	}
 }

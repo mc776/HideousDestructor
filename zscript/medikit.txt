@@ -228,7 +228,7 @@ class HDMedikitter:HDWoundFixer{
 				invoker.target.A_PlaySound("misc/punch",CHAN_WEAPON);
 				invoker.target.A_PlaySound("misc/bulletflesh",CHAN_BODY);
 				invoker.target.A_PlaySound("misc/smallslop",CHAN_VOICE);
-				actor a=spawn("SecondFleshBeast",invoker.target.pos);
+				actor a=spawn("SecondFleshBeast",invoker.target.pos,ALLOW_REPLACE);
 				a.target=invoker.target;
 				a.stamina=150;
 			}
@@ -324,7 +324,7 @@ class HDMedikitter:HDWoundFixer{
 			A_PlaySound("misc/punch",CHAN_WEAPON);
 			A_PlaySound("misc/bulletflesh",CHAN_BODY);
 			A_PlaySound("misc/smallslop",CHAN_VOICE);
-			actor a=spawn("SecondFleshBeast",pos);
+			actor a=spawn("SecondFleshBeast",pos,ALLOW_REPLACE);
 			a.target=self;
 			a.stamina=100;
 		}

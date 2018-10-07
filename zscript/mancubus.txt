@@ -9,7 +9,7 @@ class manjuicetrail:hdfireballtail{
 	}
 	states{
 	spawn:
-		SMOK ABC -1{
+		RSMK ABC -1{
 			roll=random(0,360);
 			scale.x*=randompick(-1,1);
 		}wait;
@@ -58,8 +58,8 @@ class manjuice:hdfireball{
 	states{
 	spawn:
 		MANF A 0 nodelay{
-			actor mjl=spawn("manjuicelight",pos+(0,0,16));mjl.target=self;
-			trailburner=spawn("manjuiceburner",pos);
+			actor mjl=spawn("manjuicelight",pos+(0,0,16),ALLOW_REPLACE);mjl.target=self;
+			trailburner=spawn("manjuiceburner",pos,ALLOW_REPLACE);
 			trailburner.target=target;trailburner.master=self;
 		}
 		MANF AABBAABB 1 A_FBTail();
@@ -102,21 +102,10 @@ class Mancubus:Fatso replaces Fatso{
 		+dontharmspecies
 		deathheight 20;
 		radius 38;
-		height 63.666;
+		height 62;
 		damagefactor "Thermal", 0.7;
 		obituary "%o was smoked by a mancubus.";
 		painchance 80;
-	}
-	override bool CanCollideWith(actor other,bool passive){
-		//headshot code - rocket pass shoulder
-		return(
-			(health<1)
-			||(other.pos.z<pos.z+(height*0.8))
-			||(
-				abs(pos.x-other.pos.x)<(radius*0.3)
-				&&abs(pos.y-other.pos.y)<(radius*0.3)
-			)
-		);
 	}
 	override void postbeginplay(){
 		super.postbeginplay();

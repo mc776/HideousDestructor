@@ -25,6 +25,15 @@ class BossRifle:HDWeapon{
 		Obituary "%o sure showed %k who was the boss!";
 		hdweapon.barrelsize 40,1,2;
 	}
+	action void A_ChamberGrit(int amt,bool onlywhileempty=false){
+		int ibg=invoker.weaponstatus[BOSSS_GRIME];
+		bool customchamber=(invoker.weaponstatus[0]&BOSSF_CUSTOMCHAMBER);
+		if(amt>0&&customchamber)amt>>=1;
+		if(!onlywhileempty||invoker.weaponstatus[BOSSS_CHAMBER]<1)ibg+=amt;
+		else if(!random(0,4))ibg++;
+		invoker.weaponstatus[BOSSS_GRIME]=clamp(ibg,0,100);
+		//if(hd_debug)A_Log(string.format("Boss grit level: %i",invoker.weaponstatus[BOSSS_GRIME]));
+	}
 	int pickuprounds;
 	override void tick(){
 		super.tick();
@@ -32,10 +41,15 @@ class BossRifle:HDWeapon{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
+		weaponstatus[BOSSS_GRIME]=random(0,10);
 		if(owner&&owner.player){
 			if(cvar.getcvar("hd_bossfrontreticle",owner.player).getbool())
 				weaponstatus[0]|=BOSSF_FRONTRETICLE;
 				else weaponstatus[0]&=~BOSSF_FRONTRETICLE;
+			if(cvar.getcvar("hd_bosscustomchamber",owner.player).getbool()){
+				weaponstatus[0]|=BOSSF_CUSTOMCHAMBER;
+				weaponstatus[BOSSS_GRIME]=random(0,5);
+			}else weaponstatus[0]&=~BOSSF_CUSTOMCHAMBER;
 			weaponstatus[BOSSS_ZOOM]=
 				clamp(cvar.getcvar("hd_bosszoom",owner.player).getint(),0,55);
 			weaponstatus[BOSSS_DROPADJUST]=
@@ -74,7 +88,7 @@ class BossRifle:HDWeapon{
 
 			actor p=spawn("HDBullet776",pos+(0,0,height-6));
 			p.target=self;p.angle=angle;p.pitch=pitch;
-			p.speed=1400;
+			p.speed*=(invoker.weaponstatus[0]&BOSSF_CUSTOMCHAMBER)?1.06:1.27;
 			p.vel+=self.vel;
 			p.pitch-=(1./120.)*invoker.weaponstatus[BOSSS_DROPADJUST];
 
@@ -93,6 +107,7 @@ class BossRifle:HDWeapon{
 			A_Light1();
 			HDFlashAlpha(-96);
 			A_ZoomFactor(0.95,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
+			A_ChamberGrit(randompick(0,0,0,0,0,1,1,1,1,-1));
 		}
 		TNT1 A 1{
 			A_Light0();
@@ -109,9 +124,83 @@ class BossRifle:HDWeapon{
 		goto ready;
 	althold:
 		BARG E 1 A_WeaponReady(WRF_NOFIRE);
+		BARG E 0 A_JumpIf(!countinv("SevenMilAmmo"),3);
+		BARG E 0 A_JumpIf(invoker.weaponstatus[BOSSS_CHAMBER]>0,3);
+		BARG E 0 A_JumpIf(pressingreload(),"loadchamber");
+		BARG E 0 A_JumpIf(pressingunload(),"altholdclean");
 		BARG E 1 A_Refire();
+	altholdend:
+		BARG E 0 A_ChamberGrit(randompick(0,0,0,0,-1,1,2),true);
+		BARG E 0 A_PlaySound("weapons/boltfwd",CHAN_WEAPON);
 		BARG DCB 3 A_WeaponReady(WRF_NOFIRE);
 		goto ready;
+	loadchamber:
+		BARG E 0 A_JumpIf(invoker.weaponstatus[BOSSS_GRIME]>10,"altholdclean");
+		BARG E 1 offset(2,36) A_ClearRefire();
+		BARG E 1 offset(3,38);
+		BARG E 1 offset(5,42);
+		BARG E 2 offset(8,48) A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		BARG E 3 offset(7,52) A_MuzzleClimb(frandom(-0.2,0.2),0.2,frandom(-0.2,0.2),0.2,frandom(-0.2,0.2),0.2);
+		TNT1 A 18 A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		TNT1 A 4{
+			A_PlaySound("weapons/rifleload",CHAN_WEAPON,0.7);
+			A_TakeInventory("SevenMilAmmo",1,TIF_NOTAKEINFINITE);
+			invoker.weaponstatus[BOSSS_CHAMBER]=2;
+		}
+		TNT1 A 0 A_ChamberGrit(randompick(0,0,0,0,-1,1,2),true);
+		TNT1 A 1 A_PlaySound("weapons/boltfwd",CHAN_WEAPON);
+		BARG D 2 offset(7,52);
+		BARG C 3 offset(5,42);
+		BARG B 3 offset(3,38);
+		BARG A 1 offset(3,35);
+		BARG A 1 A_WeaponReady(WRF_NONE);
+		goto nope;
+	altholdclean:
+		BARG E 1 offset(2,36) A_ClearRefire();
+		BARG E 1 offset(3,38);
+		BARG E 1 offset(5,42) A_Log("Looking inside that chamber...",true);
+		BARG E 1 offset(8,48) A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		BARG E 1 offset(7,52) A_MuzzleClimb(frandom(-0.2,0.2),0.2,frandom(-0.2,0.2),0.2,frandom(-0.2,0.2),0.2);
+		TNT1 A 3 A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		TNT1 AAAA 4 A_MuzzleClimb(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2));
+		TNT1 A 3 A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		TNT1 AAAA 4 A_MuzzleClimb(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2));
+		TNT1 A 40{
+			A_PlaySound("weapons/pocket",CHAN_WEAPON);
+			int amt=invoker.weaponstatus[BOSSS_GRIME];
+			string amts="There doesn't seem to be much. ";
+			if(amt>40)amts="What the FUCK. ";
+			else if(amt>30)amts="About time - this gun is barely functional. ";
+			else if(amt>20)amts="This is starting to gum up badly. ";
+			else if(amt>10)amts="It can use some cleaning. ";
+
+			static const string cleanverbs[]={"extract","scrape off","wipe away","carefully remove","dump out","pick out","blow off","shake out","scrub off"};
+			static const string contaminants[]={"some dust","a disturbing amount of powder residue","some excess grease","a layer of soot","a bit of hair","an eyelash","a patch of dried blood","a crumb","a dead insect","ashes","some loose bits of skin","a sticky fluid of some sort","a booger","trace fecal matter","yet even more of that anonymous grey debris that all those bullet impacts make","a tiny cancerous nodule of Second Flesh","some crystalline buildup of congealed Frag"};
+			static const string actionparts[]={"bolt carrier","main extractor","auxiliary extractor","cam pin","bolt head","striker","firing pin spring","ejector slot","striker spring","ejector spring"};
+			for(int i=amt;i>0;i-=random(8,16))amts.appendformat("You %s %s from the %s. ",
+				cleanverbs[random(0,cleanverbs.size()-1)],
+				contaminants[random(0,random(0,contaminants.size()-1))],
+				actionparts[random(0,random((actionparts.size()>>1),actionparts.size()-1))]
+			);
+			amts.appendformat("\n");
+
+			amt=randompick(-3,-5,-5,-random(8,16));
+
+			A_ChamberGrit(amt,true);
+			amt=invoker.weaponstatus[BOSSS_GRIME];
+			if(amt>40)amts.appendformat("You barely scrape the surface of this all-encrusting abomination.");
+			else if(amt>30)amts.appendformat("The gun will need a lot more work than this before it can be deployed again.");
+			else if(amt>20)amts.appendformat("You might get a few shots out of it now.");
+			else if(amt>10)amts.appendformat("It's better, but still not good.");
+			else amts.appendformat("Good to go.");
+			A_Log(amts,true);
+		}
+		BARG E 1 offset(7,52);
+		BARG E 1 offset(8,48);
+		BARG E 1 offset(5,42);
+		BARG E 1 offset(3,38);
+		BARG E 1 offset(2,36);
+		goto althold;
 	jam:
 		BARG A 0{
 			int chm=invoker.weaponstatus[BOSSS_CHAMBER];
@@ -138,8 +227,8 @@ class BossRifle:HDWeapon{
 	chamber:
 		BARG C 2 offset(4,38){
 			if(
-				!random(0,4)
-				&&invoker.weaponstatus[BOSSS_CHAMBER]>0  
+				random(0,max(2,invoker.weaponstatus[BOSSS_GRIME]>>3))
+				&&invoker.weaponstatus[BOSSS_CHAMBER]>2
 			){
 				invoker.weaponstatus[BOSSS_CHAMBER]+=2;
 				A_MuzzleClimb(
@@ -157,7 +246,12 @@ class BossRifle:HDWeapon{
 			);else A_MuzzleClimb(
 				frandom(-0.2,0.8),frandom(-0.4,0.8)
 			);
-			if(!random(0,31))setweaponstate("jam");
+			if(
+				random(0,100)<
+				invoker.weaponstatus[BOSSS_GRIME]
+				+(invoker.weaponstatus[BOSSS_HEAT]>>2)
+				+invoker.weaponstatus[BOSSS_CHAMBER]
+			)setweaponstate("jam");
 		}
 		BARG D 2 offset(6,42){
 			//eject
@@ -186,7 +280,7 @@ class BossRifle:HDWeapon{
 			}else invoker.weaponstatus[BOSSS_CHAMBER]=0;
 		}
 		BARG E 1 offset(6,42) A_WeaponReady(WRF_NOFIRE);
-		BARG E 0 A_Refire("chamber4");
+		BARG E 0 A_Refire("althold");
 		BARG E 1 offset(3,34) A_WeaponReady(WRF_NOFIRE);
 		BARG E 1 offset(3,34) A_PlaySound("weapons/boltfwd",CHAN_WEAPON);
 		BARG E 3 offset(4,38);
@@ -227,7 +321,7 @@ class BossRifle:HDWeapon{
 			if(mg==10)setweaponstate("reloaddone");
 			else if(
 				mg<1
-				&&countinv("HD7mClip")
+				&&!HDMagAmmo.NothingLoaded(self,"HD7mClip")
 			)setweaponstate("loadclip");
 		}
 	loadhand:
@@ -355,6 +449,8 @@ class BossRifle:HDWeapon{
 		if(!owner){
 			if(randompick(0,0,1))weaponstatus[0]&=~BOSSF_FRONTRETICLE;
 				else weaponstatus[0]|=BOSSF_FRONTRETICLE;
+			if(random(0,20))weaponstatus[0]&=~BOSSF_CUSTOMCHAMBER;
+				else weaponstatus[0]|=BOSSF_CUSTOMCHAMBER;
 			weaponstatus[BOSSS_ZOOM]=20;
 			weaponstatus[BOSSS_DROPADJUST]=24;
 		}
@@ -362,6 +458,7 @@ class BossRifle:HDWeapon{
 }
 enum bossstatus{
 	BOSSF_FRONTRETICLE=1,
+	BOSSF_CUSTOMCHAMBER=2,
 	BOSSF_UNLOADONLY=4,
 
 	BOSSS_CHAMBER=1, //0=nothing, 1=brass, 2=loaded, 3/4=jammed brass/round
@@ -370,7 +467,7 @@ enum bossstatus{
 	BOSSS_DROPADJUST=4,
 	BOSSS_HEAT=5,
 	BOSSS_HAND=6,
+	BOSSS_GRIME=7,
 }
-
 
 

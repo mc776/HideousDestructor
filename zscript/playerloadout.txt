@@ -39,7 +39,7 @@ class SoldierExtras:ActionItem{
 //reset inventory
 class InvReset:Inventory{
 	void ReallyClearInventory(actor resetee,bool keepkeys=false){
-		for(inventory item=resetee.inv;item!=null;item=item.inv){
+		for(inventory item=resetee.inv;item!=null;item=!item?null:item.inv){
 			if(
 				(!keepkeys||!(item is "Key"))
 			){
@@ -75,11 +75,25 @@ class DoomguyLoadout:InvReset{
 		other.A_GiveInventory("HDPistol");
 		other.A_GiveInventory("HD9mMag15",2);
 		other.A_GiveInventory("HDPistolAmmo",4);
-		other.A_SelectWeapon("HDPistol");
+		HDWeaponSelector.Select(other,"HDPistol");
 		destroy();
 	}
 }
-
+//wait 1 tick and then select a weapon
+//used to override default to fist on weapon removal
+class HDWeaponSelector:Thinker{
+	actor other;
+	class<Weapon> weptype;
+	static void Select(actor caller,class<Weapon> weptype){
+		let thth=new("HDWeaponSelector");
+		thth.weptype=weptype;
+		thth.other=caller;
+	}
+	override void Tick(){
+		other.A_SelectWeapon(weptype);
+		destroy();
+	}
+}
 
 
 

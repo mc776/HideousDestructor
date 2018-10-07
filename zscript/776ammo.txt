@@ -1,19 +1,19 @@
 // ------------------------------------------------------------
 // 7.76mm Ammo
 // ------------------------------------------------------------
-class SevenMilAmmo:Ammo{
+class SevenMilAmmo:HDAmmo{
 	default{
 		+forcexybillboard +cannotpush
 		+inventory.ignoreskill
 		inventory.maxamount 70;
-		ammo.backpackmaxamount 70;ammo.backpackamount 0;
+		hdpickup.multipickup true;
 		height 16; radius 8;
 		xscale 0.7;yscale 0.8;
 		inventory.pickupmessage "Picked up a 7.76mm round.";
 	}
 	states{
 	spawn:
-		RBRS A -1 nodelay{HDF.SplitAmmoSpawn(self);}
+		RBRS A -1;
 	}
 }
 class HD7mMag:HDMagAmmo{
@@ -74,21 +74,19 @@ class HD7mClip:HDMagAmmo{
 		}stop;
 	}
 }
-class SevenMilBrass:Ammo{
+class SevenMilBrass:HDAmmo{
 	default{
 		+inventory.ignoreskill +forcexybillboard +cannotpush
-		height 16;radius 8;ammo.backpackamount 0;
-		ammo.backpackmaxamount 120;
+		height 16;radius 8;
+		hdpickup.multipickup true;
 		inventory.maxamount 60;
 		xscale 0.7;yscale 0.8;
 		inventory.pickupmessage "Picked up some brass.";
 	}
 	states{
 	spawn:
-		RBRS A -1 nodelay{
-			HDF.SplitAmmoSpawn(self);
-			A_ChangeVelocity(0,frandom(-1,1),0,CVF_RELATIVE);
-		}stop;
+		RBRS A -1 nodelay A_ChangeVelocity(0,frandom(-1,1),0,CVF_RELATIVE);
+		stop;
 	}
 }
 
