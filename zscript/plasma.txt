@@ -48,6 +48,10 @@ class ThunderBuster:HDWeapon{
 			shootangle=hdp.scopecamera.angle;
 			shootpitch=hdp.scopecamera.pitch;
 		}
+		if(alt){
+			shootangle+=frandom(-1.2,1.2);
+			shootpitch+=frandom(-1.3,1.1);
+		}
 
 		//create the line
 		flinetracedata tlt;
@@ -537,8 +541,8 @@ class BeamSpotFlash:IdleDummy{
 			tracer.damagemobj(self,target,random(n1,n),"Electro",dmgflags);
 		}
 		A_HDBlast(
-			n2,random(n2,n),0,"Electro",
-			n2,-n2,
+			n,random(n2,n),0,"Electro",
+			n,-n,
 			immolateradius:n1,immolateamount:random(4,8)*(n2*-0.1),immolatechance:n,
 			gibradius:12,gibamount:random(4,n)
 		);
