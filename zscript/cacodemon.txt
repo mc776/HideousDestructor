@@ -222,7 +222,9 @@ class Foof:HDFireball{
 				zit=it.thing;
 				A_Face(zit,0,0,flags:FAF_MIDDLE);
 				if(
-					zit.health>0&&(
+					zit.health>0
+					&&checksight(it.thing)
+					&&(
 						!tb
 						||zit==tb.target
 						||!(zit is "Cacodemon")
@@ -424,31 +426,38 @@ class Cacademon:Cacodemon replaces Cacodemon{
 			A_FaceTarget(30,30,flags:FAF_BOTTOM);
 			bnopain=true;
 			A_SpawnProjectile("Cacasmaball",28,0,0,CMF_AIMDIRECTION,pitch);
+			A_PlaySound("caco/sight",CHAN_VOICE,1.,false,0.1);
 		}
 		HEAD D 24{
 			spawn("DistantShotgun",pos,ALLOW_REPLACE);
 			A_PlaySound("weapons/bronto",CHAN_WEAPON);
-			A_ChangeVelocity(-cos(pitch)*3,0,sin(pitch),CVF_RELATIVE);	
-			A_CustomRailgun(random(100,200),50,"","azure",
-				RGF_SILENT|RGF_NOPIERCING|RGF_FULLBRIGHT,
-				0,40.0,null,0,0,2048,
-				12,0.4,2.0,"",-4
-			);
-			actor bll=LineAttack(
-				angle,2048,pitch,random(128,512),"","FooFighter"
-			);
-			if(bll){
-				bll.stamina=0;
-					for(int i=0;i<3;i++){
-						bll.tracer=target;
-						bll.A_SpawnItemEx("FooFighter",
-							0,0,3,frandom(-1,4),0,frandom(1,5),
-							angle+frandom(-50,50),
-							SXF_ABSOLUTEANGLE|
-							SXF_NOCHECKPOSITION|
-							SXF_TRANSFERPOINTERS
-						);
-					}
+			A_ChangeVelocity(-cos(pitch)*3,0,sin(pitch),CVF_RELATIVE);
+			if(A_JumpIfCloser(1024,"null")||!random(0,3)){
+				A_CustomRailgun(random(100,200),50,"","azure",
+					RGF_SILENT|RGF_NOPIERCING|RGF_FULLBRIGHT,
+					0,40.0,null,0,0,2048,
+					12,0.4,2.0,"",-4
+				);
+				actor bll=LineAttack(
+					angle,2048,pitch,random(128,512),"","FooFighter"
+				);
+				if(bll){
+					bll.stamina=0;
+						for(int i=0;i<3;i++){
+							bll.tracer=target;
+							bll.A_SpawnItemEx("FooFighter",
+								0,0,3,frandom(-1,4),0,frandom(1,5),
+								angle+frandom(-50,50),
+								SXF_ABSOLUTEANGLE|
+								SXF_NOCHECKPOSITION|
+								SXF_TRANSFERPOINTERS
+							);
+						}
+				}
+			}else{
+				actor bll=spawn("KekB",pos);
+				bll.target=self;bll.pitch=pitch;bll.angle=angle;
+				bll.vel+=vel;
 			}
 			charge=0;
 			bnopain=false;
@@ -535,3 +544,125 @@ class DeadCacademon:Cacademon replaces DeadCacodemon{
 		A_Die("spawndead");
 	}
 }
+
+
+
+
+class kekb:HDBullet{
+	default{
+		+bright +nogravity +rollcenter +rollsprite
+		renderstyle "add";
+		speed 666;
+		translation 2;
+		height 4;radius 3;
+		missileheight 2;
+	}
+	vector3 oldpos;
+	override void Tick(){
+		oldpos=pos;
+		super.Tick();
+		if(1){
+			vector3 velunit=(oldpos-pos).unit()*40;
+			vector3 spawnpos=velunit;
+			vector3 offs=(0,0,0);
+			for(int i=0;i<700;i+=20){
+				A_SpawnParticle(
+					"azure",SPF_FULLBRIGHT,40,frandom(3,7),0,
+					spawnpos.x+offs.x,spawnpos.y+offs.y,spawnpos.z+offs.z,
+					offs.x*0.1,offs.y*0.1,offs.z*0.1
+				);
+				offs=(
+					clamp(offs.x+frandom(-3,3),-10,10),
+					clamp(offs.y+frandom(-3,3),-10,10),
+					clamp(offs.z+frandom(-3,3),-10,10)
+				);
+				spawnpos+=velunit;
+			}
+		}
+	}
+	void A_KekSplode(){
+		bmissile=false;
+		bnointeraction=true;
+		vel=(0,0,0.2);
+		roll=frandom(0,360);
+		scale=(randompick(-1,1)*2.,2.);
+
+		A_AlertMonsters();
+		A_HDBlast(
+			420,random(24,42)*10,128,"SmallArms0",
+			pushradius:420,pushamount:420,
+			immolateradius:256,immolateamount:-200,immolatechance:90,
+			gibradius:64,gibamount:random(2,4)*30
+		);
+		A_SprayDecal("BusterScorch",14);
+		spawn("DistantRocket",pos);
+		spawn("DoubleDistantShotgun",pos);
+		DistantQuaker.Quake(self,
+			5,50,2048,8,128,256,256
+		);
+
+		//check floor and ceiling and spawn more debris
+		spawn("DistantRocket",pos);
+		for(int i=0;i<3;i++)A_SpawnItemEx("WallChunker",
+			frandom(-4,4),frandom(-4,4),-4,
+			flags:SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS
+		);
+
+		//"open" a door
+		doordestroyer.destroydoor(self,160,32);
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		actor kb=spawn("KekBlight",pos);
+		kb.target=self;
+	}
+	states{
+	spawn:
+		BAL7 AB 1;
+		loop;
+	death:
+		TNT1 AAAA 0 Spawn("HDExplosion",pos+(frandom(-4,4),frandom(-4,4),frandom(-4,4)));
+		TNT1 AAAA 0 Spawn("HDSmoke",pos+(frandom(-4,4),frandom(-4,4),frandom(-4,4)));
+		TNT1 A 0 A_KekSplode();
+		TNT1 AAAAAAAA 0 ArcZap(self);
+		BAL2 CCCDDDEEEE 1{
+			roll+=20;
+			scale*=1.1;
+			alpha*=0.9;
+			ArcZap(self);
+			ArcZap(self);
+		}
+		TNT1 AAAAAAAAAAAAAAAAAAAA 1 ArcZap(self);
+		stop;
+	}
+}
+class KekBlight:PointLight{
+	override void postbeginplay(){
+		super.postbeginplay();
+		args[0]=240;
+		args[1]=196;
+		args[2]=64;
+		args[3]=196;
+		args[4]=0;
+	}
+	override void tick(){
+		super.tick();
+		if(bstandstill||!target){
+			args[3]+=randompick(-30,15,-60);
+			if(args[3]<1)destroy();
+			return;
+		}
+		args[3]=randompick(164,296,328,436);
+		if(!target.bmissile){
+			args[0]=255;
+			args[1]=250;
+			args[2]=128;
+			args[3]=300;
+			args[4]=0;
+			bstandstill=true;
+		}
+	}
+}
+
+
+
