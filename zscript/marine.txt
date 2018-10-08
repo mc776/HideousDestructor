@@ -1457,7 +1457,14 @@ class BotBot:HDMarine{
 	int masterplayer;
 	override void postbeginplay(){
 		HDActor.postbeginplay();
-		if(!master)master=players[0].mo;
+		if(!master){
+			for(int i=0;i<MAXPLAYERS;i++){
+				if(playeringame[i]&&players[i].mo){
+					master=players[i].mo;
+					break;
+				}
+			}
+		}
 		masterplayer=master.playernumber();
 
 		int pgend;
