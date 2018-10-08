@@ -366,7 +366,7 @@ class Hunter:HDShotgun replaces Shotgun{
 		}
 		SHTG BC 4 A_MuzzleClimb(frandom(1.2,2.4),-frandom(1.2,2.4));
 		SHTG D 1 A_Overlay(120,"playsgco");
-		SHTG D 1 offset(0,34);
+		SHTG D 1 offset(0,34){if(invoker.weaponstatus[HUNTS_CHAMBER]!=2)A_Chamber(true);}
 	reloadstarthand:
 		SHTG D 1 offset(0,36);
 		SHTG D 1 offset(0,38);
