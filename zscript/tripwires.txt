@@ -289,6 +289,12 @@ class TrippingFrag:FragP{
 		health int.MAX;painchance 256; mass 10;
 		radius 2;height 2;
 	}
+	override void OnGrab(actor grabber){
+		if(tracer)tracer.destroy();
+		bnogravity=false;
+		bshootable=false;
+		stucktier=999;
+	}
 	override void postbeginplay(){
 		super.postbeginplay();
 
@@ -355,17 +361,9 @@ class TrippingFrag:FragP{
 	oldspawn:
 		FRAG A -1;
 		stop;
-	grab:
-		---- A 0{
-			if(tracer)tracer.destroy();
-			bnogravity=false;
-			bshootable=false;
-			stucktier=999;
-		}goto super::grab;
 	pain:
 		---- A 0{
 			if(!random(0,9)){
-//			if(1){ //testing
 				actor ggg=spawn("HDFragGrenadeRoller",pos);
 				ggg.target=target;
 				if(tracer){

@@ -252,8 +252,7 @@ class DERPBot:HDUPK{
 			}
 		}goto spawn;
 	spawn:
-		DERP A 0 A_Stop();
-		DEPR A 0 A_JumpIf(!!stuckline,"stuck");
+		DEPR A 0 nodelay A_JumpIf(!!stuckline,"stuck");
 	spawn2:
 		DERP A 0 A_ClearTarget();
 		DERP A 0 A_DerpLook();

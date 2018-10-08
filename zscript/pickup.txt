@@ -242,6 +242,7 @@ class HDUPK:HDActor{
 			amount=1;
 		}
 	}
+	virtual void OnGrab(actor grabber){}
 	virtual void A_HDUPKGive(){
 		if(pickuptype=="none"){
 			target=picktarget;
@@ -265,40 +266,9 @@ class HDUPK:HDActor{
 		if(amount>0){ //only picked some up  
 			setstatelabel("spawn");
 			return;
-		}
+		}else if(pickuptype!="none")destroy();
 	}
 	states{
-	grab:
-		---- AAAA 1{
-			//in case of death mid-grab
-			if(
-				!picktarget
-				||picktarget.health<1
-			){
-				setstatelabel("spawn");
-			}
-			setorigin(
-				0.5*((picktarget.pos+(0,0,picktarget.height-10))+pos)
-			,true);
-		}
-		---- A 0{
-			//in case of death mid-grab
-			if(
-				!picktarget
-				||picktarget.health<1
-			){
-				setstatelabel("spawn");
-			}else{
-				setorigin(picktarget.pos+(0,0,picktarget.height-24),true);
-				A_HDUPKGive();
-
-				A_CallSpecial(
-					special,args[0],
-					args[1],args[2],
-					args[3],args[4]
-				);
-			}
-		}
 	give:
 		---- A 0;
 		stop;

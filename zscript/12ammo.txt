@@ -103,7 +103,7 @@ class ShellBoxPickup:HDUPK{
 	}
 	states{
 	spawn:
-		SBOX A -1 A_Stop();
+		SBOX A -1;
 	}
 }
 class ShellPickup:ShellBoxPickup{
@@ -116,8 +116,7 @@ class ShellPickup:ShellBoxPickup{
 	}
 	states{
 	spawn:
-		SHEL A 0 A_Stop();
-		SHEL A -1{
+		SHEL A -1 nodelay{
 			if(amount<4){
 				while(amount>0){
 					amount--;
