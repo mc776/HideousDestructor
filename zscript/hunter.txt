@@ -428,6 +428,11 @@ class Hunter:HDShotgun replaces Shotgun{
 				||PressingUnload()
 				||PressingFire()
 				||PressingAltfire()
+			)invoker.weaponstatus[0]|=HUNTF_HOLDING;
+			else invoker.weaponstatus[0]&=~HUNTF_HOLDING;
+
+			if(
+				invoker.weaponstatus[0]&HUNTF_HOLDING
 				||invoker.weaponstatus[HUNTS_TUBE]>=7
 				||(
 					invoker.handshells<1&&(
@@ -441,9 +446,10 @@ class Hunter:HDShotgun replaces Shotgun{
 		}goto reloadashell;
 	reloadend:
 		SHTG C 5 offset(0,34) A_PlaySound("weapons/huntopen",CHAN_WEAPON);
-		SHTG C 1 offset(0,36);
+		SHTG C 1 offset(0,36) EmptyHand(careful:true);
 		SHTG C 1 offset(0,34);
 		SHTG CBA 3;
+		SHTG A 0 A_JumpIf(invoker.weaponstatus[0]&HUNTF_HOLDING,"nope");
 		goto ready;
 	zoom:
 	cannibalize:
@@ -585,6 +591,7 @@ enum hunterstatus{
 	HUNTF_UNLOADONLY=4,
 	HUNTF_FROMPOCKETS=8,
 	HUNTF_ALTHOLDING=16,
+	HUNTF_HOLDING=32,
 
 	HUNTS_CHAMBER=1,
 	HUNTS_TUBE=2,
