@@ -35,26 +35,6 @@ extend class HDPlayerPawn{
 			anglechange+=(180./TURN180_TICKS);
 		}
 
-/*
-		//reduced turning while supported.
-		if(
-			player.cmd.buttons&BT_USE
-			&&!countinv("IsMoving")
-		){
-			anglechange*=0.1;
-			pitchchange*=0.1;
-			if(!gunbraced){
-				vector2 iyp=(anglechange,pitchchange)*0.05;
-				A_MuzzleClimb(iyp*2,iyp,iyp,iyp);
-			}
-		}
-		//reduced turning while crouched.
-		else if(height<40 && abs(anglechange)>3){
-			anglechange*=0.6;
-			pitchchange*=0.6;
-		}
-*/
-
 
 		//get weapon size
 		double amt=0;
