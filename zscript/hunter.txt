@@ -341,9 +341,7 @@ class Hunter:HDShotgun replaces Shotgun{
 			if(pressingfire())A_SetTics(1);
 			A_MuzzleClimb(0,-frandom(0.6,1.));
 		}
-		SHTG A 0 A_JumpIf(!pressingfire()||!pressingaltfire(),"ready");
 		SHTG A 0 A_ClearRefire();
-		SHTG A 0 A_JumpIf(invoker.weaponstatus[HUNTS_CHAMBER]==2,"shoot");
 		goto ready;
 	playsgco:
 		TNT1 A 8 A_PlaySound("weapons/huntrack",5);
