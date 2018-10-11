@@ -222,6 +222,7 @@ class Hunter:HDShotgun replaces Shotgun{
 		);
 		SHTG A 0 A_JumpIf(invoker.weaponstatus[HUNTS_CHAMBER]==2,"shoot");
 		SHTG A 1 A_WeaponReady(WRF_NONE);
+		SHTG A 0 A_Refire();
 		goto ready;
 	shoot:
 		SHTG A 2;
@@ -349,10 +350,10 @@ class Hunter:HDShotgun replaces Shotgun{
 		stop;
 	chamberauto:
 		SHTG A 2;
-		SHTG A 1{
-			A_Chamber();
-			A_Refire("nope");
-		}goto ready;
+		SHTG A 1 A_Chamber();
+//		SHTG A 0 A_JumpIf(invoker.weaponstatus[HUNTS_FIRESELECT]==1,"ready");
+		SHTG A 0 A_Refire();
+		goto ready;
 	flash:
 		SHTF B 1 bright{
 			A_Light2();
