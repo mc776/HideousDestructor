@@ -229,7 +229,7 @@ class ArchFiend:Archvile replaces ArchVile{
 		damagetype "Thermal";
 		speed 14;
 		painchance 0;
-		health 1000000;
+		health TELEFRAG_DAMAGE;
 	}
 	int hitsleft;
 	void A_VilePain(){
@@ -313,6 +313,7 @@ class ArchFiend:Archvile replaces ArchVile{
 		actor inflictor,actor source,int damage,
 		name mod,int flags,double angle
 	){
+		if(damage==TELEFRAG_DAMAGE)return super.damagemobj(inflictor,source,damage,mod,flags,angle);
 		if(
 			mod!="thermal"
 			&&mod!="balefire"
