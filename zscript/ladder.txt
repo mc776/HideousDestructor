@@ -248,7 +248,7 @@ class hdladderbottom:hdactor{
 					fm*=0.2;
 
 				//apply climbing
-				currentuserz+=fm;
+				currentuserz=currentuser.pos.z+fm;
 				if(sm)currentuser.trymove(
 					currentuser.pos.xy+angletovector(currentuser.angle-90,sm),
 					true
@@ -291,10 +291,8 @@ class hdladderbottom:hdactor{
 			}
 			if(!currentuser)return;
 
-			currentuserz=clamp(currentuserz,
-				max(currentuser.floorz,pos.z-currentuser.height*1.3),
-				currentuser.ceilingz-currentuser.height
-			);
+			currentuserz=max(currentuserz,pos.z-currentuser.height*1.3);
+			currentuserz=min(currentuserz,currentuser.ceilingz-currentuser.height);
 			currentuser.setorigin((
 				clamp(currentuser.pos.x,
 					pos.x-16,
