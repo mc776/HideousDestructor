@@ -18,15 +18,18 @@ class Hunter:HDShotgun replaces Shotgun{
 	override void postbeginplay(){
 		super.postbeginplay();
 		int startfm;
+		bool startfa;
 		if(owner&&owner.player){
 			startfm=cvar.getcvar("hd_huntauto",owner.player).getint();
-			startfm=clamp(startfm,0,2);
-			bool startfa=cvar.getcvar("hd_huntfullauto",owner.player).getbool();
-			if(startfa)weaponstatus[0]|=HUNTF_CANFULLAUTO;
+			startfa=cvar.getcvar("hd_huntfullauto",owner.player).getbool();
 		}else{
-			if(!random(0,31))weaponstatus[0]|=HUNTF_CANFULLAUTO;
+			if(!random(0,31))startfa=true;
 			startfm=randompick(0,0,0,0,1,1,2);
 		}
+		if(startfa){
+			weaponstatus[0]|=HUNTF_CANFULLAUTO;
+			startfm=clamp(startfm,0,2);
+		}else startfm=clamp(startfm,0,1);
 		weaponstatus[HUNTS_FIREMODE]=startfm;
 	}
 	override string getobituary(actor victim,actor inflictor,name mod,bool playerattack){
@@ -45,7 +48,7 @@ class Hunter:HDShotgun replaces Shotgun{
 		return obituary;
 	}
 	override string pickupmessage(){
-		if(weaponstatus[0]&HUNTF_CANFULLAUTO)return string.format("%s You notice some tool marks near the fire selector...",super.pickupmessage());
+		if(weaponstatus[0]&HUNTF_CANFULLAUTO)return string.format("%s You notice some tool marks near the fire selector.",super.pickupmessage());
 		return super.pickupmessage();
 	}
 	override double gunmass(){
@@ -359,7 +362,7 @@ class Hunter:HDShotgun replaces Shotgun{
 		stop;
 	chamberauto:
 		SHTG A 1 A_Chamber();
-		SHTG A 1 A_JumpIf(invoker.weaponstatus[HUNTS_FIREMODE]==2,"ready");
+		SHTG A 1 A_JumpIf(invoker.weaponstatus[0]&HUNTF_CANFULLAUTO&&invoker.weaponstatus[HUNTS_FIREMODE]==2,"ready");
 		SHTG A 0 A_Refire();
 		goto ready;
 	flash:
