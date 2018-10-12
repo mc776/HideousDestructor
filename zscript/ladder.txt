@@ -154,10 +154,11 @@ class hdladderbottom:hdactor{
 			//check if facing the ladder
 			bool facing=abs(
 				deltaangle(
-					angleto(currentuser,true),
+					currentuser.angleto(self,true),
 					currentuser.angle
 				)
-			)>100;  
+			)<90;
+			if(distance2d(currentuser)<3.)currentuser.A_ChangeVelocity(-1,0,0,CVF_RELATIVE);
 
 			//checks when above ladder
 			if(
