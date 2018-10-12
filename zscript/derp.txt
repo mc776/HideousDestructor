@@ -550,6 +550,23 @@ extend class HDHandlers{
 						derp.goalpoint=derpgoal.hitlocation.xy;
 						ppp.A_Log(string.format("\cd[DERP]  \cugoal set to  \cx[%i,%i]",derpgoal.hitlocation.x,derpgoal.hitlocation.y),true);
 					}
+				}else if(cmd>800&&cmd<810){
+					vector2 which;
+					switch(cmd-800){
+						case 1:which=(-1,-1);break;
+						case 2:which=(0,-1);break;
+						case 3:which=(1,-1);break;
+						case 4:which=(-1,0);break;
+						case 6:which=(1,0);break;
+						case 7:which=(-1,1);break;
+						case 8:which=(0,1);break;
+						case 9:which=(1,1);break;
+						default:return;break;
+					}
+					if(goalset)derp.goalpoint=derp.goalpoint+which*64;
+					else derp.goalpoint=derp.pos.xy+which*64;
+					goalset=true;
+					ppp.A_Log(string.format("\cd[DERP]  \cugoal set to  \cx[%i,%i]",derp.goalpoint.x,derp.goalpoint.y),true);
 				}else if(
 					cmd==556&&derp.stuckline
 				){
@@ -577,6 +594,7 @@ extend class HDHandlers{
 \n             derpcome \cjcome to user (4)
 \n             derpgo   \cjgo to point  (5)
 \n             derpat   \cjtoggle 1/2   (6)
+\n             derpmv*   \cjadvance in direction (n/s/ne/sw/etc.)  (5)
 \n             derptag  \cjset tag #   (-x)
 \n \cu(all of these can be shortened\n\cuwith \"d\" instead of \"derp\")
 \n\n \cuType \cdderp 123\cu to poll deployed DERPs.
