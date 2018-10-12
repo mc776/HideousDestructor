@@ -4,10 +4,12 @@
 
 //show where the ladder is hanging
 //no it doesn't swing, math is hard :(
-class hdladdersection:idledummy{
+class hdladdersection:HDActor{
 	int secnum;
 	default{
 		+wallsprite +nointeraction
+		+solid +nogravity
+		height 7;radius 1;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
