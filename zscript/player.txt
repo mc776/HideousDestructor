@@ -310,8 +310,13 @@ class HDPlayerPawn:PlayerPawn{
 				damagemobj(self,self,fdmg,"falling");
 				beatmax-=fallvel/2;
 				if(random(1,fallvel)>7){
-					if(player.readyweapon&&!(player.readyweapon is "Ring"))
-						A_DropInventory(player.readyweapon.getclassname());
+					if(
+						player.readyweapon
+						&&!(player.readyweapon is "Ring")
+					)
+						if((player.readyweapon is "HDFragGrenades")){
+							HDFragGrenades(player.readyweapon).DropGrenade();
+						}else A_DropInventory(player.readyweapon.getclassname());
 				}
 			}
 		}

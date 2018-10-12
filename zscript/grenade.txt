@@ -189,6 +189,22 @@ class HDFragGrenades:HDWeapon{
 		owner.A_SelectWeapon("Ring");
 		return null;
 	}
+	//for involuntary dropping
+	void DropGrenade(){
+		if(
+			weaponstatus[0]&FRAGF_SPOONOFF
+			||weaponstatus[0]&FRAGF_PINOUT
+		){
+			TossGrenade(true);
+		}else{
+			bool inhand=weaponstatus[0]&FRAGF_INHAND;
+			if(inhand||owner.countinv("HDFragGrenadeAmmo")){
+				if(!inhand)A_TakeInventory("HDFragGrenadeAmmo",1);
+				A_DropItem("HDFragGrenadeAmmo");
+			}
+			weaponstatus[0]&=~FRAGF_INHAND;
+		}
+	}
 	override void DoEffect(){
 		if(weaponstatus[0]&FRAGF_SPOONOFF){
 			weaponstatus[FRAGS_TIMER]++;
