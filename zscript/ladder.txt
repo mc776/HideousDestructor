@@ -4,28 +4,17 @@
 
 //show where the ladder is hanging
 //no it doesn't swing, math is hard :(
-class hdladdersection:HDActor{
+class hdladdersection:IdleDummy{
 	int secnum;
 	default{
-		+wallsprite +nointeraction
-		+solid +nogravity
-		height 7;radius 1;
-	}
-	override void postbeginplay(){
-		super.postbeginplay();
-		//master is top, target is bottom
-		if(!master||!target){
-			destroy();return;
-		}
+		+wallsprite
 	}
 	states{
 	spawn:
-		LADD B 1{
-			if(!master||!target){
-				destroy();return;
-			}
-			setz(max(target.floorz,master.pos.z-LADDER_SECTIONLENGTH*secnum));
-		}wait;
+		LADD B 0 nodelay A_JumpIf(master&&target,1);
+		stop;
+		LADD B 1 setz(max(target.floorz,master.pos.z-LADDER_SECTIONLENGTH*secnum));
+		loop;
 	}
 }
 class hdladdertop:hdactor{
