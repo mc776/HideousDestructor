@@ -173,7 +173,9 @@ class HDMarine:HDActor replaces ScriptedMarine{
 					dropped.weaponstatus[HUNTS_CHAMBER]=0;
 				}
 				dropped.weaponstatus[HUNTS_SIDESADDLE]=random(0,12);
-				dropped.weaponstatus[0]=HUNTF_AUTO;
+				dropped.weaponstatus[HUNTS_FIREMODE]=1;
+				if(!random(0,31))dropped.weaponstatus[0]|=HUNTF_CANFULLAUTO;
+				else dropped.weaponstatus[0]&=~HUNTF_CANFULLAUTO;
 			}
 			dropped.addz(32);
 			dropped.vel=vel+(frandom(-1,1),frandom(-1,1),2);

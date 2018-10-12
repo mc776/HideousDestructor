@@ -48,6 +48,11 @@ OptionValue "SemiBurstAuto"{
 	1, "Burst"
 	2, "Auto"
 }
+OptionValue "PumpSemiAuto"{
+	0, "Pump"
+	1, "Semi"
+	2, "Auto (if available)"
+}
 OptionValue "LoHi"{
 	0, "Low"
 	1, "High"
@@ -218,7 +223,8 @@ OptionMenu "HDOptionsMenu"{
 	Option "Reflex site image","hd_crosshair","ReflexReticle"
 	Option "Pistol full-auto","hd_pistauto","OnOff"
 	Option "SMG fire mode","hd_smgfiremode","SemiBurstAuto"
-	Option "Hunter semiauto","hd_huntauto","OnOff"
+	Option "Hunter semiauto","hd_huntauto","PumpSemiAuto"
+	Option "Hunter full-auto hack","hd_huntfullauto","OnOff"
 	StaticText " "
 	Option "ZM66 fire mode","hd_zmfiremode","SemiAutoSalvo"
 	Slider "ZM66 zoom level","hd_zmzoom",0,27,1,0

@@ -17,11 +17,17 @@ class Hunter:HDShotgun replaces Shotgun{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
+		int startfm;
 		if(owner&&owner.player){
-			if(cvar.getcvar("hd_huntauto",owner.player).getint())
-				weaponstatus[0]|=HUNTF_AUTO;
-				else weaponstatus[0]&=~HUNTF_AUTO;
+			startfm=cvar.getcvar("hd_huntauto",owner.player).getint();
+			startfm=clamp(startfm,0,2);
+			bool startfa=cvar.getcvar("hd_huntfullauto",owner.player).getbool();
+			if(startfa)weaponstatus[0]|=HUNTF_CANFULLAUTO;
+		}else{
+			if(!random(0,31))weaponstatus[0]|=HUNTF_CANFULLAUTO;
+			startfm=randompick(0,0,0,0,1,1,2);
 		}
+		weaponstatus[HUNTS_FIREMODE]=startfm;
 	}
 	override string getobituary(actor victim,actor inflictor,name mod,bool playerattack){
 		bool sausage=true;
@@ -33,10 +39,14 @@ class Hunter:HDShotgun replaces Shotgun{
 		}
 		if(
 			sausage
-			&&!(weaponstatus[0]&HUNTF_AUTO) //"pumped"
+			&&!(weaponstatus[HUNTS_FIREMODE]<1) //"pumped"
 			&&inflictor is "HDBullet" //"brutally!" "full!" - not just bleeding!
 		)return "%o was brutally pumped full of %k's hot, manly lead.";
 		return obituary;
+	}
+	override string pickupmessage(){
+		if(weaponstatus[0]&HUNTF_CANFULLAUTO)return string.format("%s You notice some tool marks near the fire selector...",super.pickupmessage());
+		return super.pickupmessage();
 	}
 	override double gunmass(){
 		int tube=weaponstatus[HUNTS_TUBE];
@@ -45,6 +55,13 @@ class Hunter:HDShotgun replaces Shotgun{
 	}
 	override double,int weaponbulk(){
 		return 125+(weaponstatus[HUNTS_SIDESADDLE]+weaponstatus[HUNTS_TUBE])*ENC_SHELLLOADED,USE_12;
+	}
+	action void A_SwitchFireMode(bool forwards=true){
+		int newfm=invoker.weaponstatus[HUNTS_FIREMODE]+(forwards?1:-1);
+		int newmax=(invoker.weaponstatus[0]&HUNTF_CANFULLAUTO)?2:1;
+		if(newfm>newmax)newfm=0;
+		else if(newfm<0)newfm=newmax;
+		invoker.weaponstatus[HUNTS_FIREMODE]=newfm;
 	}
 	action void A_SetAltHold(bool which){
 		if(which)invoker.weaponstatus[0]|=HUNTF_ALTHOLDING;
@@ -143,13 +160,11 @@ class Hunter:HDShotgun replaces Shotgun{
 		SHTG A 0;
 		goto deselect0big;
 	firemode:
-		SHTG A 0{
-			invoker.weaponstatus[0]^=HUNTF_AUTO;
-		}
+		SHTG A 0 a_switchfiremode();
 	firemodehold:
 		---- A 1{
 			if(pressingreload()){
-				invoker.weaponstatus[0]^=HUNTF_AUTO; //untoggle
+				a_switchfiremode(false); //untoggle
 				setweaponstate("reloadss");
 			}else A_WeaponReady(WRF_NONE);
 		}
@@ -214,12 +229,6 @@ class Hunter:HDShotgun replaces Shotgun{
 		SHTG A 0 A_Refire();
 		goto ready;
 	fire:
-		SHTG A 0 A_JumpIf(
-			!(invoker.weaponstatus[0]&HUNTF_AUTO)
-			&&!(invoker.weaponstatus[0]&HUNTF_ALTHOLDING)
-			&&pressingaltfire()
-			,"chamber"
-		);
 		SHTG A 0 A_JumpIf(invoker.weaponstatus[HUNTS_CHAMBER]==2,"shoot");
 		SHTG A 1 A_WeaponReady(WRF_NONE);
 		SHTG A 0 A_Refire();
@@ -241,13 +250,13 @@ class Hunter:HDShotgun replaces Shotgun{
 			invoker.weaponstatus[HUNTS_CHAMBER]=1;
 			A_PlaySound("weapons/hunter",CHAN_WEAPON);
 			vector2 shotrecoil=(randompick(-1,1),-2.6);
-			if(invoker.weaponstatus[0]&HUNTF_AUTO)shotrecoil=(randompick(-1,1)*1.4,-3.4);
+			if(invoker.weaponstatus[HUNTS_FIREMODE]>0)shotrecoil=(randompick(-1,1)*1.4,-3.4);
 			A_MuzzleClimb(0,0,shotrecoil.x,shotrecoil.y,randompick(-1,1)*1.,-0.3);
 		}
 		SHTG E 1;
 		SHTG E 0{
 			if(
-				invoker.weaponstatus[0]&HUNTF_AUTO
+				invoker.weaponstatus[HUNTS_FIREMODE]>0
 				&&invoker.shotpowervariation>-9.
 			)setweaponstate("chamberauto");
 		}goto ready;
@@ -349,9 +358,8 @@ class Hunter:HDShotgun replaces Shotgun{
 		TNT1 A 0 A_StopSound(5);
 		stop;
 	chamberauto:
-		SHTG A 2;
 		SHTG A 1 A_Chamber();
-//		SHTG A 0 A_JumpIf(invoker.weaponstatus[HUNTS_FIRESELECT]==1,"ready");
+		SHTG A 1 A_JumpIf(invoker.weaponstatus[HUNTS_FIREMODE]==2,"ready");
 		SHTG A 0 A_Refire();
 		goto ready;
 	flash:
@@ -575,9 +583,6 @@ class Hunter:HDShotgun replaces Shotgun{
 		}
 	}
 	override void InitializeWepStats(bool idfa){
-		if(!owner){
-			weaponstatus[0]=randompick(0,0,0,HUNTF_AUTO);
-		}
 		weaponstatus[HUNTS_CHAMBER]=2;
 		weaponstatus[HUNTS_TUBE]=7;
 		weaponstatus[HUNTS_SIDESADDLE]=12;
@@ -585,18 +590,19 @@ class Hunter:HDShotgun replaces Shotgun{
 	}
 }
 enum hunterstatus{
-	HUNTF_AUTO=1,
+	HUNTF_CANFULLAUTO=1,
 	HUNTF_JAMMED=2,
 	HUNTF_UNLOADONLY=4,
 	HUNTF_FROMPOCKETS=8,
 	HUNTF_ALTHOLDING=16,
 	HUNTF_HOLDING=32,
 
-	HUNTS_CHAMBER=1,
-	HUNTS_TUBE=2,
-	HUNTS_SIDESADDLE=3,
-	HUNTS_HEAT=4,
-	HUNTS_HAND=5,
+	HUNTS_FIREMODE=1,
+	HUNTS_CHAMBER=2,
+	HUNTS_TUBE=3,
+	HUNTS_SIDESADDLE=4,
+	HUNTS_HEAT=5,
+	HUNTS_HAND=6,
 };
 
 
