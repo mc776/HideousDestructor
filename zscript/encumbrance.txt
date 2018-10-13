@@ -117,7 +117,49 @@ extend class HDPlayerPawn{
 			}
 		}
 
-		if(!weaponly){
+
+
+		//if sv_infiniteammo is on, give just enough to reload a gun once
+		if(sv_infiniteammo){
+			//single loose ammo does not inherit from HDPickup
+			if(useammotypes&USE_426){
+				int togive=findinventory("Vulcanette")?5:
+					findinventory("HERPUsable")?3:1;
+				A_SetInventory("HD4mMag",togive);
+				HDMagAmmo(findinventory("HD4mMag")).MaxCheat();
+			}
+			if(useammotypes&USE_776){
+				if(countinv("LiberatorRifle")){
+					A_SetInventory("HD7mMag",1);
+					HDMagAmmo(findinventory("HD7mMag")).MaxCheat();
+				}
+				if(countinv("BossRifle")){
+					A_SetInventory("HD7mClip",1);
+					HDMagAmmo(findinventory("HD7mClip")).MaxCheat();
+				}
+			}
+			if(useammotypes&USE_9){
+				if(countinv("HDSMG")){
+					A_SetInventory("HD9mMag30",1);
+					HDMagAmmo(findinventory("HD9mMag30")).MaxCheat();
+				}
+				if(countinv("BossRifle")){
+					A_SetInventory("HD9mMag15",3); //2 pistols and a derp
+					HDMagAmmo(findinventory("HD9mMag15")).MaxCheat();
+				}
+			}
+			if(useammotypes&USE_BATTERY){
+				A_SetInventory("HDBattery",1);
+				HDMagAmmo(findinventory("HDBattery")).MaxCheat();
+			}
+			A_SetInventory("HDShellAmmo",useammotypes&USE_12?20:0);
+			A_SetInventory("HDRocketAmmo",useammotypes&USE_ROCKET?6:0);
+			A_SetInventory("BrontornisRound",useammotypes&USE_BRONTO?1:0);
+			A_SetInventory("HEATAmmo",useammotypes&USE_HEAT?1:0);
+			A_SetInventory("HDFragGrenadeAmmo",1);
+		}
+
+		else if(!weaponly){
 
 			//and now for stuff that should just be listed
 			enc+=
@@ -138,6 +180,9 @@ extend class HDPlayerPawn{
 			+(useammotypes&USE_ROCKET?(
 				(countinv("HDRocketAmmo")+countinv("DudRocketAmmo"))*ENC_ROCKET
 			):0)
+			+(useammotypes&USE_BATTERY?(
+				countinv("HDBattery")*ENC_BATTERY
+			):0)
 			+(useammotypes&USE_BRONTO?(
 				countinv("BrontornisRound")*ENC_BRONTOSHELL
 			):0)
@@ -147,6 +192,7 @@ extend class HDPlayerPawn{
 			+countinv("HDFragGrenadeAmmo")*ENC_FRAG
 			;
 		}
+
 
 		double carrymax=
 			400+
