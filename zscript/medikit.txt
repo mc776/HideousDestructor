@@ -87,6 +87,8 @@ class HDMedikitter:HDWoundFixer{
 	int injectableflesh;
 	int usedpatches;
 	actor usedon;
+	int scanaccuracy;
+	actor scantarget;
 	override void beginplay(){
 		injectableflesh=MEDIKIT_MAXFLESH;
 		usedpatches=0;
@@ -330,6 +332,7 @@ class HDMedikitter:HDWoundFixer{
 		}
 		goto nope;
 	firemode:
+		TNT1 A 0 A_JumpIf(invoker.useonother,"firemodeother");
 		TNT1 A 0 A_WeaponMessage("\cdMedikit Auto-Diagnostic Tool engaged.\c-\n\n\ccScanning, please wait...");
 		TNT1 AAAAAAAAAAAA 2{
 			A_PlaySound("weapons/plasidle",CHAN_WEAPON,0.4);
@@ -376,6 +379,99 @@ class HDMedikitter:HDWoundFixer{
 \ccBurns: \cq%u%%",player.getusername(),ww,uw,ow,bb),true);
 		}
 		goto nope;
+
+	firemodeother:
+		TNT1 A 0{
+			A_WeaponMessage("\cdMedikit Auto-Diagnostic Tool engaged.\c-\n\n\ccScanning, please wait...");
+			invoker.scantarget=null;
+			invoker.scanaccuracy=0;
+		}
+		TNT1 AAAAAAAAAAAA 2{
+			flinetracedata mediline;
+			linetrace(
+				angle,42,pitch,
+				offsetz:height-12,
+				data:mediline
+			);
+			let mha=mediline.hitactor;
+			if(
+				!mha
+				||(invoker.scantarget&&mha!=invoker.scantarget)
+			){
+				invoker.scantarget=null;
+				invoker.scanaccuracy=0;
+				return;
+			}
+			invoker.scantarget=mha;
+		}
+		TNT1 A 0{
+			A_PlaySound("misc/i_pkup",CHAN_WEAPON);
+			actor scanactor=invoker.scantarget;
+			if(!scanactor){
+				A_WeaponMessage("\caMedikit Auto-Diagnostic Tool failed.");
+				invoker.scantarget=null;
+				invoker.scanaccuracy=0;
+				return;
+			}
+			string scanactorname=scanactor.getclassname();
+			if(scanactor.player)scanactorname=scanactor.player.getusername();
+			let slf=HDPlayerPawn(scanactor);
+			if(!slf){
+				int scanactorhealthpercent=scanactor.health*100/scanactor.spawnhealth();
+				A_WeaponMessage(string.format("Medikit Auto-Diagnostic complete.
+
+				Status report:
+
+				\ccPatient: \cy%s
+
+				\ccOverall Health: \cg%u%%
+
+				\cu(all numbers are based on %% of minimum
+				\cuconsidered to be lethal in all situations.)",
+				scanactorname,scanactorhealthpercent),210);
+
+				A_Log(string.format("Medikit Auto-Diagnostic:
+\ccPatient: \cy%s
+\ccOverall Health: \cg%u%%",scanactorname,scanactorhealthpercent),true);
+				return;
+			}
+			int uw=slf.unstablewoundcount;
+			int ww=slf.woundcount;
+			int ow=slf.oldwoundcount;
+			int bb=slf.burncount;
+			int ag=slf.aggravateddamage*0.2+countinv("IsMoving");
+			int wg=0;
+			if(ww||uw)wg+=2;
+			if(countinv("HDArmourWorn"))wg+=5;
+			ow=max(ow+random(-ag,ag),0);
+			bb=max(bb+random(-ag,ag),0);
+			uw=max(uw+random(-wg,wg),0);
+			ww=max(ww+random(-wg,wg),0);
+			A_WeaponMessage(string.format("Medikit Auto-Diagnostic complete.
+
+			Status report:
+
+			\ccPatient: \cy%s
+
+			\ccOpen wounds: \cg%u%%
+
+			\ccWounds temporarily bandaged: \ca%u%%
+			\ccWounds already treated: \cd%u%%
+			\ccBurns: \cq%u%%
+
+			\cu(all numbers are based on %% of minimum
+			\cuconsidered to be lethal in all situations.)",
+			scanactorname,ww,uw,ow,bb),210);
+
+			A_Log(string.format("Medikit Auto-Diagnostic:
+\ccPatient: \cy%s
+\ccOpen wounds: \cg%u%%
+\ccWounds temporarily bandaged: \ca%u%%
+\ccWounds already treated: \cd%u%%
+\ccBurns: \cq%u%%",scanactorname,ww,uw,ow,bb),true);
+		}
+		goto nope;
+
 	spawn:
 		MEDI B -1 nodelay{
 			if(invoker.usedon)frame=2;
