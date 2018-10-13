@@ -136,7 +136,8 @@ class HDArmour:HDPickup{
 
 				if(getcvar("hd_helptext")){
 					if(qual)qual=invoker.amount/qual;else if(hd_debug)A_Log("armour calculation error.");
-					if(qual<0.3)A_Log("You cover your shameful nakedness with your filthy rags.",true);
+					if(qual<0.1)A_Log("Just don't get hit.",true);
+					else if(qual<0.3)A_Log("You cover your shameful nakedness with your filthy rags.",true);
 					else if(qual<0.6)A_Log("It's better than nothing.");
 					else if(qual<0.75)A_Log("This armour has definitely seen better days.",true);
 					else if(qual<0.95)A_Log("This armour does not pass certification.",true);

@@ -158,11 +158,10 @@ class hdladderbottom:hdactor{
 					currentuser.angle
 				)
 			)<90;
-			if(distance2d(currentuser)<3.)currentuser.A_ChangeVelocity(-1,0,0,CVF_RELATIVE);
 
 			//checks when above ladder
 			if(
-				currentuser.pos.z>target.pos.z-16  
+				currentuser.pos.z>target.pos.z-16
 			){
 				//throw in some use of controls still
 				if(currentuser.player){
@@ -213,6 +212,7 @@ class hdladderbottom:hdactor{
 				}
 				return;
 			}
+			if(distance2d(currentuser)<3.)currentuser.A_ChangeVelocity(-1,0,0,CVF_RELATIVE);
 			currentuser.vel.xy*=0.7;
 			currentuser.vel.z=0;
 
