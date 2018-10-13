@@ -96,14 +96,12 @@ class DERPBot:HDUPK{
 	}
 
 	int movestamina;
-	double turnamount;
+	double goalangle;
 	vector2 goalpoint;
 	vector2 originalgoalpoint;
 	double angletogoal(){
 		vector3 vecdiff=levellocals.vec3diff(pos,(goalpoint,0));
-		return deltaangle(
-			atan2(vecdiff.y,vecdiff.x),angle
-		)*(1./DERP_MAXTICTURN);
+		return atan2(vecdiff.y,vecdiff.x);
 	}
 	void A_DerpCrawl(bool attack=true){
 		bool moved=true;
@@ -129,34 +127,36 @@ class DERPBot:HDUPK{
 		}
 
 		if(!moved){
-			turnamount=random(10,16)*randompick(-1,1);
+			goalangle=angle+frandom(30,120)*randompick(-1,1);
 		}else if(
 			movestamina>20
 			&&movestamina<1000
 			&&!random(0,20)
 		){
-			turnamount=angletogoal();
+			goalangle=angletogoal();
 			if(cmd==DERP_PATROL){
-				turnamount+=random(-2,2);
+				goalangle=angle+frandom(-20,20);
 				movestamina=0;
 			}
-		}else turnamount=0;
-		if(turnamount)setstatelabel("Turn");
+		}else goalangle=999;
+		if(goalangle!=999)setstatelabel("Turn");
 	}
 	void A_DerpTurn(){
-		if(!turnamount)setstatelabel("see");
-		A_PlaySound("derp/crawl",CHAN_BODY);
-		if(abs(turnamount)<1){
-			angle+=DERP_MAXTICTURN*turnamount;
-			turnamount=0;
+		if(goalangle==999){
+			setstatelabel("see");
 			return;
 		}
-		if(turnamount<0){
+		A_PlaySound("derp/crawl",CHAN_BODY);
+		double norm=deltaangle(goalangle,angle);
+		if(abs(norm)<DERP_MAXTICTURN){
+			angle=goalangle;
+			goalangle=999;
+			return;
+		}
+		if(norm<0){
 			angle+=DERP_MAXTICTURN;
-			turnamount++;
 		}else{
 			angle-=DERP_MAXTICTURN;
-			turnamount--;
 		}
 	}
 
@@ -186,6 +186,7 @@ class DERPBot:HDUPK{
 		super.postbeginplay();
 		originalgoalpoint=pos.xy;
 		goalpoint=originalgoalpoint;
+		goalangle=999;
 		ChangeTid(DERP_TID);
 		if(!master||!master.player){
 			ammo=15;
@@ -580,7 +581,7 @@ extend class HDHandlers{
 				}
 				if(goalset){
 					derp.movestamina=20-(derp.pos.xy-derp.goalpoint).length()/derp.speed;
-					derp.turnamount=derp.angletogoal();
+					derp.goalangle=derp.angletogoal();
 					derp.setstatelabel("turn");
 				}
 			}
