@@ -162,8 +162,13 @@ class HDWeapon:Weapon{
 	}
 
 	override void touch(actor toucher){}
+	virtual void failedpickupunload(){}
 	virtual void actualpickup(actor other){
-		if(other.countinv(getclassname()))return;
+		if(other.countinv(getclassname())){
+			angle=other.angle-70;
+			failedpickupunload();
+			return;
+		}
 		other.A_Log(string.format("\cg%s",pickupmessage()),true);
 		other.A_PlaySound(pickupsound,CHAN_AUTO);
 		attachtoowner(other);

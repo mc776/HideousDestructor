@@ -54,14 +54,13 @@ class HDShotgun:HDWeapon{
 	action void A_CannibalizeOtherShotgun(){
 		let hhh=hdweapon(findinventory(invoker is "Hunter"?"Slayer":"Hunter"));
 		if(hhh){
-			int sidesaddle=hhh is "Slayer"?SLAYS_SIDESADDLE:HUNTS_SIDESADDLE;
 			int totake=min(
-				hhh.weaponstatus[sidesaddle],
+				hhh.weaponstatus[SHOTS_SIDESADDLE],
 				AmmoCap("HDShellAmmo")-countinv("HDShellAmmo"),
 				4
 			);
 			if(totake>0){
-				hhh.weaponstatus[sidesaddle]-=totake;
+				hhh.weaponstatus[SHOTS_SIDESADDLE]-=totake;
 				A_GiveInventory("HDShellAmmo",totake);
 			}
 		}
@@ -74,5 +73,17 @@ class HDShotgun:HDWeapon{
 		handshells=0;
 		super.detachfromowner();
 	}
+	override void failedpickupunload(){
+		int sss=weaponstatus[SHOTS_SIDESADDLE];
+		if(sss<1)return;
+		A_PlaySound("weapons/pocket",5);
+		int dropamt=min(sss,4);
+		A_DropItem("HDShellAmmo",dropamt);
+		weaponstatus[SHOTS_SIDESADDLE]-=dropamt;
+		setstatelabel("spawn");
+	}
 }
 
+enum hdshottystatus{
+	SHOTS_SIDESADDLE=3,
+};

@@ -126,7 +126,7 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 					gunloaded--;
 				}
 				if(gunloaded>0)wp.weaponstatus[HUNTS_TUBE]=gunloaded;
-				wp.weaponstatus[HUNTS_SIDESADDLE]=random(0,12);
+				wp.weaponstatus[SHOTS_SIDESADDLE]=random(0,12);
 				wp.weaponstatus[0]&=~HUNTF_CANFULLAUTO;
 
 				gunloaded=8;
@@ -137,7 +137,7 @@ class HideousShotgunGuy:ShotgunGuy replaces ShotgunGuy{
 				else if(gunspent==2)wp.weaponstatus[SLAYS_CHAMBER2]=1;
 				if(gunloaded>0)wp.weaponstatus[SLAYS_CHAMBER1]=2;
 				else if(gunspent>0)wp.weaponstatus[SLAYS_CHAMBER1]=1;
-				wp.weaponstatus[SLAYS_SIDESADDLE]=random(0,12);
+				wp.weaponstatus[SHOTS_SIDESADDLE]=random(0,12);
 
 				gunloaded=2;
 			}

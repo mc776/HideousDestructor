@@ -544,7 +544,7 @@ class HDStatusBar:DoomStatusBar{
 
 		//hunter
 		if(hpl.countinv("Hunter")){
-			int shl=HDWeapon(hpl.findinventory("Hunter")).weaponstatus[HUNTS_SIDESADDLE];
+			int shl=HDWeapon(hpl.findinventory("Hunter")).weaponstatus[SHOTS_SIDESADDLE];
 			if(shl>10)huntersprite="HUNTA0";
 			else if(shl>8)huntersprite="HUNTB0";
 			else if(shl>6)huntersprite="HUNTC0";
@@ -556,7 +556,7 @@ class HDStatusBar:DoomStatusBar{
 
 		//slayer
 		if(hpl.countinv("Slayer")){
-			int shl=HDWeapon(hpl.findinventory("Slayer")).weaponstatus[SLAYS_SIDESADDLE];
+			int shl=HDWeapon(hpl.findinventory("Slayer")).weaponstatus[SHOTS_SIDESADDLE];
 			if(shl>10)slayersprite="SLAYA0";
 			else if(shl>8)slayersprite="SLAYB0";
 			else if(shl>6)slayersprite="SLAYC0";
@@ -674,12 +674,12 @@ class HDStatusBar:DoomStatusBar{
 		drawnum(hpl.countinv("HD7mMag"),-30,mxhtplus);
 
 		if(hpl.countinv("Slayer"))drawnum(
-			hdweapon(hpl.findinventory("Slayer")).weaponstatus[SLAYS_SIDESADDLE],-4,mxhtplus-14,
+			hdweapon(hpl.findinventory("Slayer")).weaponstatus[SHOTS_SIDESADDLE],-4,mxhtplus-14,
 			DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_BOTTOM,
 			Font.CR_BROWN
 		);
 		if(hpl.countinv("Hunter"))drawnum(
-			hdweapon(hpl.findinventory("Hunter")).weaponstatus[HUNTS_SIDESADDLE],-4,mxhtplus-8,
+			hdweapon(hpl.findinventory("Hunter")).weaponstatus[SHOTS_SIDESADDLE],-4,mxhtplus-8,
 			DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_BOTTOM,
 			fnt:Font.CR_BROWN
 		);

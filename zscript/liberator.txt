@@ -61,6 +61,14 @@ class LiberatorRifle:HDWeapon{
 		int mgg=weaponstatus[LIBS_MAG];
 		return blx+(mgg<0?0:(ENC_776MAG_LOADED+mgg*ENC_776_LOADED)),uss;
 	}
+	override void failedpickupunload(){
+		if(weaponstatus[LIBS_MAG]<0)return;
+		A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
+		A_PlaySound("weapons/rifleload",5);
+		HDMagAmmo.SpawnMag(self,"HD7mMag",weaponstatus[LIBS_MAG]);
+		weaponstatus[LIBS_MAG]=-1;
+		setstatelabel("spawn");
+	}
 	override void tick(){
 		super.tick();
 		drainheat(LIBS_HEAT,8);
