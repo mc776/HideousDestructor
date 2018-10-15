@@ -164,6 +164,10 @@ class HDArmourWorn:HDArmour{
 			owner.A_DropInventory("HDBP");
 			return null;
 		}
+		if(owner.countinv("HDRadsuitWorn")){
+			owner.UseInventory(owner.findinventory("PortableRadsuit")):
+			return null;
+		}
 		inventory iiii=inventory(spawn("HDArmour",owner.pos+(0,0,owner.height*0.6),ALLOW_REPLACE));
 		if(iiii){
 			owner.A_SetBlend("00 00 00",1,6,"00 00 00");
