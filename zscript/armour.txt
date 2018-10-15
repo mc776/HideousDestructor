@@ -72,6 +72,7 @@ class HDArmour:HDPickup{
 			HDF.TransferFire(self,other);
 			attachtoowner(other);
 			other.UseInventory(self);
+			if(!!self)other.A_DropInventory("HDArmour",other.countinv("HDArmour"));
 			return;
 		}
 
@@ -80,6 +81,22 @@ class HDArmour:HDPickup{
 			other.A_PlaySound(pickupsound,CHAN_AUTO);
 			other.A_Log(string.format("\cg%s",pickupmessage()),true);
 		}
+	}
+	action bool StripLayer(class<inventory> type,string typename,class<inventory> useinstead=null){
+		if(!countinv(type))return false;
+		if(
+			getcvar("hd_autostrip")
+			||invoker.doubleclicktimer>25
+		){
+			if(getcvar("hd_helptext"))A_Log(string.format("Taking off %s.",typename),true);
+			if(useinstead!=null)UseInventory(findinventory(useinstead));
+			else A_DropInventory(type);
+			invoker.doubleclicktimer=0;
+		}else{
+			if(getcvar("hd_helptext")&&!invoker.stamina) A_Log(string.format("Take off your %s first! \cdhd_strip\c- in the console or double-tap the inventory icon to remove this item.",typename),true);
+			invoker.doubleclicktimer+=35;
+		}
+		return true;
 	}
 	states{
 	spawn:
@@ -92,25 +109,10 @@ class HDArmour:HDPickup{
 		}stop;
 	use:
 		TNT1 A 0{
-			if(countinv("HDBP")){
-				A_DropInventory("HDBP");
-				return;
-			}
-			if(countinv("WornRadsuit")){
-				if(getcvar("hd_helptext"))A_Log("Take off your environment suit first!",true);
-			}else if(countinv("HDArmourWorn")){
-				if(
-					getcvar("hd_autostrip")
-					||invoker.doubleclicktimer>25
-				){
-					if(getcvar("hd_helptext"))A_Log("Taking off armour first.",true);
-					A_DropInventory("HDArmourWorn");
-					invoker.doubleclicktimer=0;
-				}else{
-					if(getcvar("hd_helptext")&&!invoker.stamina) A_Log("You are already wearing armour. \cdhd_strip\c- in the console or double-tap the inventory icon to remove your current armour.",true);
-					invoker.doubleclicktimer+=35;
-				}
-			}else{
+			if(striplayer("HDBP","backpack"))return;
+			else if(striplayer("WornRadsuit","environment suit","PortableRadsuit"))return;
+			else if(striplayer("HDArmourWorn","armour"))return;
+			else{
 				if(invoker.master!=self&&countinv("SpiritualArmour")){
 					spawn("HDSmoke",pos,ALLOW_REPLACE);
 					A_PlaySound("misc/p_pkup",6);
@@ -184,7 +186,6 @@ class HDArmourWorn:HDArmour{
 			}
 			HDF.TransferFire(owner,iiii);
 
-			self.amount=0;
 			destroy();
 		}
 		return null; //return iiii;
