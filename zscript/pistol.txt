@@ -33,6 +33,17 @@ class HDSecondPistol:HDAmmo replaces Pistol{
 		int mgg=weaponstatus[PISS_MAG];
 		return 30+(mgg<0?0:(ENC_9MAG_LOADED+mgg*ENC_9_LOADED));
 	}
+	override void actualpickup(actor other){
+		super.actualpickup(other);
+		if(!!owner||weaponstatus[PISS_MAG]<0)return;
+
+		//if it were a weapon, it would be failedpickupunloadmag(PISS_MAG,"HD9mMag15");
+		A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
+		A_PlaySound("weapons/rifleload",5);
+		HDMagAmmo.SpawnMag(self,"HD9mMag15",weaponstatus[PISS_MAG]);
+		weaponstatus[PISS_MAG]=-1;
+		setstatelabel("spawn");
+	}
 	override void AttachToOwner(actor other){
 		//if owner has no first, change self to first
 		//otherwise attach normally

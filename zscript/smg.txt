@@ -26,6 +26,9 @@ class HDSMG:HDWeapon{
 		if(mg<0)return 120-ENC_9MAG30_LOADED;
 		else return 120+mg*ENC_9_LOADED,USE_9;
 	}
+	override void failedpickupunload(){
+		failedpickupunloadmag(SMGS_MAG,"HD9mMag30");
+	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		if(owner&&owner.player)weaponstatus[SMGS_AUTO]=clamp(

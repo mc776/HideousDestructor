@@ -51,6 +51,9 @@ class BFG9K:HDWeapon replaces BFG9000{
 		double blx=(weaponstatus[0]&BFGF_STRAPPED)?200:240;
 		return blx+(weaponstatus[BFGS_BATTERY]>=0?ENC_BATTERY_LOADED:0),USE_BATTERY;
 	}
+	override void failedpickupunload(){
+		failedpickupunloadmag(BFGS_BATTERY,"HDBattery");
+	}
 	states{
 	altfire:
 	togglestrap:

@@ -63,12 +63,7 @@ class ZM66AssaultRifle:HDWeapon{
 		return blx+(mgg<0?0:(ENC_426MAG_LOADED+mgg*ENC_426_LOADED)),uss;
 	}
 	override void failedpickupunload(){
-		if(weaponstatus[ZM66S_MAG]<0)return;
-		A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
-		A_PlaySound("weapons/rifleload",5);
-		HDMagAmmo.SpawnMag(self,"HD4mMag",weaponstatus[ZM66S_MAG]);
-		weaponstatus[ZM66S_MAG]=-1;
-		setstatelabel("spawn");
+		failedpickupunloadmag(ZM66S_MAG,"HD4mMag");
 	}
 	action bool brokenround(){
 		if(!(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBERBROKEN)){

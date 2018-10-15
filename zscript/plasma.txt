@@ -34,6 +34,9 @@ class ThunderBuster:HDWeapon{
 	override double,int weaponbulk(){
 		return 175+(weaponstatus[1]>=0?ENC_BATTERY_LOADED:0),USE_BATTERY;
 	}
+	override void failedpickupunload(){
+		failedpickupunloadmag(TBS_BATTERY,"HDBattery");
+	}
 	static void ThunderZap(
 		actor caller,
 		double zoffset=32,

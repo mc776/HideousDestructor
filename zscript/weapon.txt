@@ -161,8 +161,8 @@ class HDWeapon:Weapon{
 		UseInventory(mmm);
 	}
 
+	//for picking up
 	override void touch(actor toucher){}
-	virtual void failedpickupunload(){}
 	virtual void actualpickup(actor other){
 		if(other.countinv(getclassname())){
 			angle=other.angle-70;
@@ -174,6 +174,18 @@ class HDWeapon:Weapon{
 		attachtoowner(other);
 		tipped=0;
 	}
+
+	//when you have the same gun, just strip the new one
+	virtual void failedpickupunload(){}
+	void failedpickupunloadmag(int magslot,class<hdmagammo> type){
+		if(weaponstatus[magslot]<0)return;
+		A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
+		A_PlaySound("weapons/rifleload",5);
+		HDMagAmmo.SpawnMag(self,type,weaponstatus[magslot]);
+		weaponstatus[magslot]=-1;
+		setstatelabel("spawn");
+	}
+
 	//because weapons don't use proper "ammo" anymore for loaded items
 	virtual void InitializeWepStats(bool idfa=false){}
 	override void beginplay(){
