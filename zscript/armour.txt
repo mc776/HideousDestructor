@@ -63,21 +63,6 @@ class HDArmour:HDPickup{
 			A_TakeInventory("Heat");
 		}
 
-		if(
-			other.countinv("HDArmour")
-			||(
-				other.player
-				&&other.player.readyweapon is "HDMedikitter"
-				&&other==master
-			)
-		){
-			if(other.countinv("HDArmourWorn")||other.countinv("WornRadsuit"))return;
-			HDF.TransferFire(self,other);
-			attachtoowner(other);
-			other.UseInventory(self);
-			return;
-		}
-
 		if(trypickup(other)){
 			HDF.TransferFire(self,other);
 			other.A_PlaySound(pickupsound,CHAN_AUTO);
