@@ -7,8 +7,8 @@ const HDCONST_GREENARMOUR=144;
 class HDArmour:HDPickup{
 	int doubleclicktimer;
 	override void doeffect(){
-		if(!amount)destroy();
 		if(doubleclicktimer>0)doubleclicktimer--;
+		if(!amount)destroy();
 	}
 	default{
 		+inventory.invbar
