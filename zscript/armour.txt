@@ -160,14 +160,8 @@ class HDArmourWorn:HDArmour{
 	}
 	override inventory createtossable(int amount){
 		if(!owner)return null;
-		if(owner.countinv("HDBP")){
-			owner.A_DropInventory("HDBP");
-			return null;
-		}
-		if(owner.countinv("WornRadsuit")){
-			owner.UseInventory(owner.findinventory("PortableRadsuit"));
-			return null;
-		}
+		if(owner.countinv("HDBP"))owner.A_DropInventory("HDBP");
+		if(owner.countinv("WornRadsuit"))owner.UseInventory(owner.findinventory("PortableRadsuit"));
 		inventory iiii=inventory(spawn("HDArmour",owner.pos+(0,0,owner.height*0.6),ALLOW_REPLACE));
 		if(iiii){
 			owner.A_SetBlend("00 00 00",1,6,"00 00 00");
@@ -192,8 +186,9 @@ class HDArmourWorn:HDArmour{
 			HDF.TransferFire(owner,iiii);
 
 			destroy();
+			return iiii;
 		}
-		return null; //return iiii;
+		return null;
 	}
 	states{
 	use:
