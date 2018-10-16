@@ -62,19 +62,22 @@ class BoogerFlicker:HDWeapon{
 	}
 	action void A_Pick(){
 		if(countinv("WallChunkAmmo")){
-			A_Log("You find some random punched-wall debris in your pockets and flick it at the offending thing.",true);
+			A_Log("You find some random punched-wall debris in your pockets to flick it at the offending thing.",true);
 			return;
 		}
 		A_SetTics(30);
 		A_PlaySound("weapons/pocket",CHAN_WEAPON);
 		if(player.getgender()==2)
 		A_Log("For want of random wall-punched debris or a natural mucus system, you scrape some tainted lubricant off of some of your unseen parts and wad it into a filthy, flickable lump.");
-		else A_Log("For want of random wall-punched debris in your pockets, you pick your nose and flick it at the offending thing.",true);
+		else A_Log("For want of random wall-punched debris in your pockets, you pick your nose to flick it at the offending thing.",true);
 	}
 	states{
 	ready:
 		TNT1 A 10;
 		TNT1 A 0 A_Pick();
+	ready2:
+		TNT1 A 1 A_JumpIf(!pressingzoom(),1);
+		wait;
 		TNT1 A 10 A_Flick();
 		TNT1 A 0 A_SelectWeapon("Ring");
 		TNT1 A 1 A_WeaponReady(WRF_NOFIRE);
