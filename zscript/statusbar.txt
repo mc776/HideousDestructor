@@ -196,6 +196,14 @@ class HDStatusBar:DoomStatusBar{
 				scale:(2.2,2.4)
 			);
 		}
+
+		//draw information text for selected weapon
+		hudfont pSmallFont=HUDFont.Create("SmallFont");
+		let hdw=HDWeapon(cplayer.readyweapon);
+		if(hdw&&hdw.msgtimer>0)drawstrings(psmallfont,hdw.wepmsg,
+			(0,48),DI_SCREEN_HCENTER|DI_TEXT_ALIGN_CENTER,
+			wrapwidth:300
+		);
 	}
 	void DrawCommonStuff(int state){
 		let cp=HDPlayerPawn(CPlayer.mo);

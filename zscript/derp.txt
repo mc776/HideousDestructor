@@ -326,8 +326,7 @@ class DERPBot:HDUPK{
 		goto fire;
 	death:
 		DERP A 0{
-			if(master is "EnemyDERP") master.destroy();
-			else DerpAlert("\cg  Operational fault.\cj Standby for repairs.");
+			DerpAlert("\cg  Operational fault.\cj Standby for repairs.");
 			pickupmessage=string.format("%s It is damaged.",pickupmessage);
 			A_PlaySound("weapons/bigcrack",CHAN_AUTO);
 			A_SpawnItemEx("HDSmoke",0,0,1, vel.x,vel.y,vel.z+1, 0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);
