@@ -34,8 +34,13 @@ class HDSecondPistol:HDAmmo replaces Pistol{
 		return 30+(mgg<0?0:(ENC_9MAG_LOADED+mgg*ENC_9_LOADED));
 	}
 	override void actualpickup(actor other){
+		bool nodropclip=(
+			weaponstatus[PISS_MAG]<0
+			||!other.countinv("HDPistol")
+			||!other.countinv("HDSecondPistol")
+		);
 		super.actualpickup(other);
-		if(!!owner||weaponstatus[PISS_MAG]<0)return;
+		if(nodropclip)return;
 
 		//if it were a weapon, it would be failedpickupunloadmag(PISS_MAG,"HD9mMag15");
 		A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
