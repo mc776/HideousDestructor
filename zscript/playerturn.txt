@@ -76,7 +76,7 @@ extend class HDPlayerPawn{
 
 		//apply to weapon
 		vector2 apch=(anglechange,-pitchchange)*0.1*amt;
-		if(player.cmd.buttons&BT_USE||wp is "HDPistol")apch=-apch;
+		if(isFocussing||wp is "HDPistol")apch=-apch;
 		hudbobrecoil1+=apch*0.1;
 		hudbobrecoil2+=apch*0.2;
 		hudbobrecoil3+=apch*0.4;
@@ -328,7 +328,7 @@ extend class HDPlayerPawn{
 		//move pivot point a little behind the player's view
 		anglechange=deltaangle(angle,lastangle);
 		if(!teleported && player.onground && floorz==pos.z){
-			bool ongun=gunbraced&&!barehanded&&player.cmd.buttons&BT_USE;
+			bool ongun=gunbraced&&!barehanded&&isFocussing;
 			if(abs(anglechange)>(ongun?0.05:0.7)){
 				int dir=90;
 				if(

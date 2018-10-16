@@ -50,8 +50,10 @@ class BossRifle:HDWeapon{
 				weaponstatus[0]|=BOSSF_CUSTOMCHAMBER;
 				weaponstatus[BOSSS_GRIME]=random(0,5);
 			}else weaponstatus[0]&=~BOSSF_CUSTOMCHAMBER;
-			weaponstatus[BOSSS_ZOOM]=
-				clamp(cvar.getcvar("hd_bosszoom",owner.player).getint(),0,55);
+			if(weaponstatus[0]&BOSSF_FRONTRETICLE)weaponstatus[BOSSS_ZOOM]=
+				clamp(cvar.getcvar("hd_libzoom",owner.player).getint(),12,40);
+				else weaponstatus[BOSSS_ZOOM]=
+				clamp(cvar.getcvar("hd_libzoom",owner.player).getint(),5,60);
 			weaponstatus[BOSSS_DROPADJUST]=
 				clamp(cvar.getcvar("hd_bossmoa",owner.player).getint(),0,120);
 		}
@@ -71,8 +73,15 @@ class BossRifle:HDWeapon{
 		goto deselect0big;
 
 	ready:
-		BARG A 1A_WeaponReady(WRF_ALL);
-		goto readyend;
+		BARG A 1{
+			if(pressingzoom()){
+				if(player.cmd.buttons&BT_USE){
+					A_ZoomAdjust(BOSSS_DROPADJUST,0,60,BT_USE);
+				}else if(invoker.weaponstatus[0]&BOSSF_FRONTRETICLE)A_ZoomAdjust(BOSSS_ZOOM,12,40);
+				else A_ZoomAdjust(BOSSS_ZOOM,5,60);
+				A_WeaponReady(WRF_NONE);
+			}else A_WeaponReady(WRF_ALL);
+		}goto readyend;
 	user3:
 		---- A 0 A_MagManager("HD7mClip");
 		goto ready;
@@ -291,19 +300,6 @@ class BossRifle:HDWeapon{
 		BARG C 3 offset(2,36);
 		BARG B 3 offset(0,34);
 		goto ready;
-	zoom:
-	zoomadjust:
-		BARG A 1 A_WeaponReady(WRF_NOFIRE);
-		BARG A 0{
-			if(PressingFire()){
-				invoker.weaponstatus[BOSSS_ZOOM]=
-					clamp(invoker.weaponstatus[BOSSS_ZOOM]+1,0,55);
-			}else if(PressingAltfire()){
-				invoker.weaponstatus[BOSSS_ZOOM]=
-					clamp(invoker.weaponstatus[BOSSS_ZOOM]-1,0,55);
-			}
-			if(PressingZoom())setweaponstate("zoomadjust");
-		}goto nope;
 	reload:
 		BARG A 1 offset(0,34);
 		BARG A 1 offset(2,36);
@@ -423,19 +419,6 @@ class BossRifle:HDWeapon{
 		BARG A 1 offset(2,36);
 		BARG A 1 offset(0,34);
 		goto ready;
-	firemode:
-	moaadjust:
-		BARG A 2 A_WeaponReady(WRF_NOFIRE);
-		BARG A 0{
-			if(PressingFire()){
-				invoker.weaponstatus[BOSSS_DROPADJUST]=
-					clamp(invoker.weaponstatus[BOSSS_DROPADJUST]+1,0,120);
-			}else if(PressingAltfire()){
-				invoker.weaponstatus[BOSSS_DROPADJUST]=
-					clamp(invoker.weaponstatus[BOSSS_DROPADJUST]-1,0,120);
-			}
-			if(PressingFireMode())setweaponstate("moaadjust");
-		}goto nope;
 
 	spawn:
 		BORF A -1;

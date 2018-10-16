@@ -100,6 +100,26 @@ class HDWeapon:Weapon{
 	action void FindRange(){
 		eventhandler.sendnetworkevent("hd_findrange",0,0,0);
 	}
+
+	//zoom adjuster for rifles
+	action void A_ZoomAdjust(int slot,int minzoom,int maxzoom,int secondbutton=BT_USER2){
+		if(!PressingZoom()){
+			setweaponstate("nope");
+			return;
+		}
+		if(!(player.cmd.buttons&secondbutton)){
+			A_WeaponReady(WRF_ALL);
+			return;
+		}
+		int inputamt=player.cmd.pitch>>5;
+		inputamt+=(pressingfire()?1:pressingaltfire()?-1:0);
+		player.cmd.pitch=0;player.cmd.yaw=0;
+		invoker.weaponstatus[slot]=clamp(
+			invoker.weaponstatus[slot]-inputamt,minzoom,maxzoom
+		);
+		A_WeaponReady(WRF_NOFIRE);
+	}
+
 	//determine mass for weapon inertia purposes
 	virtual double gunmass(){return 0;}
 	//determine bulk for weapon encumbrance purposes
@@ -396,9 +416,6 @@ class HDWeapon:Weapon{
 	user3:
 		---- A 0 A_MagManager("HDBattery");
 		goto readyend;
-	zoom:
-		---- A 0 FindRange();
-		goto nope;
 	user4:
 		---- A 0 A_Jump(256,"unload");
 	fire:
@@ -420,7 +437,7 @@ class HDWeapon:Weapon{
 				inp&BT_ATTACK||
 				inp&BT_ALTATTACK||
 				inp&BT_RELOAD||
-				inp&BT_ZOOM||
+//				inp&BT_ZOOM||
 				inp&BT_USER1||
 				inp&BT_USER2||
 				inp&BT_USER3||
@@ -430,9 +447,6 @@ class HDWeapon:Weapon{
 		---- A 0 A_Jump(256,"ready");
 	}
 }
-
-//for the rangefinder function
-class LaserCheckPuff:CheckPuff{default{-alwayspuff -skyexplode}}
 
 
 

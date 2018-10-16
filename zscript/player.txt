@@ -34,6 +34,7 @@ class HDPlayerPawn:PlayerPawn{
 
 	bool hasgrabbed;
 	int corpsekicktimer;
+	bool isFocussing;
 
 	bool flip;
 
@@ -239,6 +240,13 @@ class HDPlayerPawn:PlayerPawn{
 		int input=player.cmd.buttons;
 		double fm=player.cmd.forwardmove;
 		double sm=player.cmd.sidemove;
+		isFocussing=(
+			player.cmd.buttons&BT_ZOOM
+			||(
+				player.cmd.buttons&BT_USE
+				&&CVar.GetCVar('hd_usefocus',player).GetBool()
+			)
+		);
 
 
 

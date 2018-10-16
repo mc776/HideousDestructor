@@ -37,7 +37,7 @@ class ZM66AssaultRifle:HDWeapon{
 			weaponstatus[ZM66S_AUTO]=
 				clamp(cvar.getcvar("hd_zmfiremode",owner.player).getint(),0,2);
 			weaponstatus[ZM66S_ZOOM]=
-				clamp(cvar.getcvar("hd_zmzoom",owner.player).getint(),0,27);
+				clamp(cvar.getcvar("hd_zmzoom",owner.player).getint(),16,70);
 		}
 	}
 	override double gunmass(){
@@ -86,10 +86,9 @@ class ZM66AssaultRifle:HDWeapon{
 			){
 				setweaponstate("cookoff");
 				return;
-			}else{
-				A_WeaponReady(WRF_ALL);
-				if(invoker.weaponstatus[ZM66S_AUTO]>2)invoker.weaponstatus[ZM66S_AUTO]=2;  
-			}
+			}else if(pressingzoom())A_ZoomAdjust(ZM66S_ZOOM,16,70);
+			else A_WeaponReady(WRF_ALL);
+			if(invoker.weaponstatus[ZM66S_AUTO]>2)invoker.weaponstatus[ZM66S_AUTO]=2;  
 		}goto readyend;
 	firemode:
 		RIFG A 0 A_JumpIf(invoker.weaponstatus[0]&ZM66F_GLMODE,"abadjust");
@@ -505,14 +504,7 @@ class ZM66AssaultRifle:HDWeapon{
 			invoker.airburst=0;
 			A_SetCrosshair(21);
 		}goto nope;
-	zoom:
-		RIFG A 1 A_WeaponReady(WRF_NOFIRE);
-		RIFG A 0{
-			if(PressingFire())invoker.weaponstatus[ZM66S_ZOOM]++;
-			else if(PressingAltfire())invoker.weaponstatus[ZM66S_ZOOM]--;
-			else if(!PressingZoom())setweaponstate("nope");
-			invoker.weaponstatus[ZM66S_ZOOM]=clamp(invoker.weaponstatus[ZM66S_ZOOM],0,27);
-		}loop;
+
 
 	altreload:
 		RIFG A 0{
@@ -648,7 +640,7 @@ class ZM66AssaultRifle:HDWeapon{
 		weaponstatus[ZM66S_FLAGS]|=ZM66F_CHAMBER|ZM66F_GRENADELOADED;
 		weaponstatus[ZM66S_MAG]=51;
 		if(!idfa && !owner){
-			weaponstatus[ZM66S_ZOOM]=0;
+			weaponstatus[ZM66S_ZOOM]=30;
 			weaponstatus[ZM66S_AUTO]=0;
 			weaponstatus[ZM66S_HEAT]=0;
 		}
@@ -667,7 +659,7 @@ enum zm66status{
 	ZM66F_LOADINGDIRTY=512,
 
 	ZM66S_FLAGS=0,
-	ZM66S_MAG=1, //-1 is ampty
+	ZM66S_MAG=1, //-1 is empty
 	ZM66S_AUTO=2, //2 is burst, 2-5 counts ratchet
 	ZM66S_ZOOM=3,
 	ZM66S_HEAT=4,

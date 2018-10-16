@@ -88,7 +88,7 @@ extend class HDPlayerPawn{
 
 		//reduced turning while supported.
 		if(
-			player.cmd.buttons&BT_USE
+			isFocussing
 			&&!countinv("IsMoving")
 		){
 			int aimshift = CVar.GetCVar('hd_aimsensitivity', player).GetInt();

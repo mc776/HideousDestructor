@@ -39,7 +39,7 @@ class Vulcanette:HDWeapon{
 		if(owner&&owner.player){
 			if(cvar.getcvar("hd_vulcsuper",owner.player).getint())weaponstatus[0]|=VULCF_FAST;
 			weaponstatus[VULCS_ZOOM]=clamp(
-				cvar.getcvar("hd_vulczoom",owner.player).getint(),0,27
+				cvar.getcvar("hd_vulczoom",owner.player).getint(),16,70
 			);
 		}
 	}
@@ -80,30 +80,6 @@ class Vulcanette:HDWeapon{
 		}loop;
 
 
-	zoom:
-	zoomadjust:
-		GTLG A 1 A_WeaponReady(WRF_NOFIRE);
-		GTLG A 0{
-			if(!gunbraced())A_SetInventory("WeaponBusy",1);
-			if(PressingFire()||PressingAltfire())
-				setweaponstate("zoomclick");
-			else if(PressingZoom())
-				setweaponstate("zoomadjust");
-			else setweaponstate("nope");
-		}
-	zoomclick:
-		GTLG A 0{
-			int iws=invoker.weaponstatus[VULCS_ZOOM]+1;
-			if(PressingAltfire())iws-=2;
-			invoker.weaponstatus[VULCS_ZOOM]=clamp(iws,0,27);
-		}goto zoomadjust;
-	zoomclicked:
-		GTLG A 1{
-			A_WeaponReady(WRF_NOFIRE);
-			if(!PressingFire()&&!PressingAltfire())
-			setweaponstate("zoomadjust");
-		}goto zoomclicked;
-
 	altfire:
 	firemode:
 		GTLG A 1{
@@ -114,7 +90,8 @@ class Vulcanette:HDWeapon{
 	ready:
 		GTLG A 1{
 			A_SetCrosshair(21);
-			A_WeaponReady(WRF_ALL);
+			if(pressingzoom())A_ZoomAdjust(VULCS_ZOOM,16,70);
+			else A_WeaponReady(WRF_ALL);
 		}
 		goto readyend;
 
@@ -489,6 +466,7 @@ class Vulcanette:HDWeapon{
 
 	override void InitializeWepStats(bool idfa){
 		weaponstatus[VULCS_BATTERY]=20;
+		weaponstatus[VULCS_ZOOM]=30;
 		for(int i=0;i<5;i++)vulcmag[i]=51;
 		if(idfa)for(int i=0;i<5;i++)vulcchamber[i]=1;
 	}

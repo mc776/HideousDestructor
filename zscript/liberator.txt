@@ -37,8 +37,10 @@ class LiberatorRifle:HDWeapon{
 			if(cvar.getcvar("hd_libaltreticle",owner.player).getbool())
 				weaponstatus[0]|=LIBF_ALTRETICLE;
 				else weaponstatus[0]&=~LIBF_ALTRETICLE;
-			weaponstatus[LIBS_ZOOM]=
-				clamp(cvar.getcvar("hd_libzoom",owner.player).getint(),0,32);
+			if(weaponstatus[0]&LIBF_FRONTRETICLE)weaponstatus[LIBS_ZOOM]=
+				clamp(cvar.getcvar("hd_libzoom",owner.player).getint(),20,40);
+				else weaponstatus[LIBS_ZOOM]=
+				clamp(cvar.getcvar("hd_libzoom",owner.player).getint(),6,70);
 			weaponstatus[LIBS_DROPADJUST]=
 				clamp(cvar.getcvar("hd_libmoa",owner.player).getint(),0,60);
 		}
@@ -150,8 +152,15 @@ class LiberatorRifle:HDWeapon{
 			}
 		}goto deselect0big;
 	ready:
-		BRFG A 1 A_WeaponReady(WRF_ALL);
-		goto readyend;
+		BRFG A 1{
+			if(pressingzoom()){
+				if(player.cmd.buttons&BT_USE){
+					A_ZoomAdjust(LIBS_DROPADJUST,0,60,BT_USE);
+				}else if(invoker.weaponstatus[0]&LIBF_FRONTRETICLE)A_ZoomAdjust(LIBS_ZOOM,20,40);
+				else A_ZoomAdjust(LIBS_ZOOM,6,70);
+				A_WeaponReady(WRF_NONE);
+			}else A_WeaponReady(WRF_ALL);
+		}goto readyend;
 	user3:
 		---- A 0 A_JumpIf(!(invoker.weaponstatus[0]&LIBF_GRENADEMODE),1);
 		goto super::user3;
@@ -230,30 +239,8 @@ class LiberatorRifle:HDWeapon{
 	firemode:
 		---- A 0{
 			if(invoker.weaponstatus[0]&LIBF_GRENADEMODE)setweaponstate("abadjust");
-			else if(PressingZoom())setweaponstate("moaadjust");
 			else invoker.weaponstatus[0]^=LIBF_FULLAUTO;
 		}goto nope;
-
-	zoom:
-		BRFG A 1 A_WeaponReady(WRF_NOFIRE);
-		BRFG A 0{
-			if(PressingFire())invoker.weaponstatus[LIBS_ZOOM]++;
-			else if(PressingAltfire())invoker.weaponstatus[LIBS_ZOOM]--;
-			else if(PressingFireMode())setweaponstate("moaadjust");
-			else if(!PressingZoom())setweaponstate("nope");
-			invoker.weaponstatus[LIBS_ZOOM]=clamp(invoker.weaponstatus[LIBS_ZOOM],0,32);
-		}loop;
-
-	moaadjust:
-		BRFG A 1 A_WeaponReady(WRF_NOFIRE);
-		BRFG A 0{
-			if(PressingFire())invoker.weaponstatus[LIBS_DROPADJUST]++;
-			else if(PressingAltfire())invoker.weaponstatus[LIBS_DROPADJUST]--;
-			else if(PressingZoom()&&!PressingFireMode())setweaponstate("zoom");
-			else if(!PressingZoom()&&!PressingFireMode())setweaponstate("nope");
-			invoker.weaponstatus[LIBS_DROPADJUST]=
-				clamp(invoker.weaponstatus[LIBS_DROPADJUST],0,60);
-		}loop;
 
 
 	unloadchamber:
