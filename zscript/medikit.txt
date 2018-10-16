@@ -152,7 +152,9 @@ class HDMedikitter:HDWoundFixer{
 				invoker.useonother=true;
 				A_WeaponMessage("Using this on someone else.");
 			}
-		}goto nope;
+		}
+		TNT1 A 1 A_JumpIf(!pressingzoom(),"readyend");
+		wait;
 	fireother:
 		TNT1 A 10{
 			flinetracedata mediline;
