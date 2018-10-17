@@ -13,6 +13,7 @@ extend class HDPlayerPawn{
 	vector2 muzzledrift;
 	bool muzzlehit;
 	bool totallyblocked;
+	bool mousehijacked;
 
 	enum muzzleblock{
 		MB_TOP=1,
@@ -22,6 +23,8 @@ extend class HDPlayerPawn{
 	}
 
 	void TurnCheck(){
+		if(mousehijacked)return;
+
 		double lastangle=angle;
 		double lastpitch=pitch;
 

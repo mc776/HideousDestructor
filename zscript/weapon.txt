@@ -83,17 +83,19 @@ class HDWeapon:Weapon{
 	}
 	//do these whenever the gun is ready
 	action void A_ReadyEnd(){
+		A_TakeInventory("WeaponBusy");
 		if(invoker.msgtimer>0){
 			invoker.msgtimer--;
 			if(invoker.msgtimer<1)invoker.wepmsg="";
 		}
 		let p=HDPlayerPawn(self);
+		if(!p)return;
+		p.mousehijacked=false;
 		if(
 			player&&
 			p&&!p.beatcount&&p.zerk>900
 			&&!random(0,(invoker is "Ring")?20:100)
 		)player.cmd.buttons|=BT_ATTACK;
-		A_TakeInventory("WeaponBusy");
 	}
 
 	//activate a laser rangefinder
@@ -115,6 +117,7 @@ class HDWeapon:Weapon{
 		int inputamt=player.cmd.pitch>>5;
 		inputamt+=(justpressed(BT_ATTACK)?1:justpressed(BT_ALTATTACK)?-1:0);
 		player.cmd.pitch=0;player.cmd.yaw=0;
+//let ppp=hdplayerpawn(self);if(ppp)ppp.mousehijacked=true;
 		invoker.weaponstatus[slot]=clamp(
 			invoker.weaponstatus[slot]-inputamt,minzoom,maxzoom
 		);

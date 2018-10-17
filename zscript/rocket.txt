@@ -19,8 +19,7 @@ extend class HDWeapon{
 		else if(player.cmd.pitch){
 			cab=(-player.cmd.pitch>>5);
 			player.cmd.pitch=0;player.cmd.yaw=0;
-//			pitch+=player.cmd.pitch*(360./65536.);angle-=player.cmd.yaw*(360./65536.);
-//CONSIDER: player bool MouseHijacked; if true, turncheck just returns doing nothing; resets false on readyend
+//let ppp=hdplayerpawn(self);if(ppp)ppp.mousehijacked=true;
 		}
 		int abb=invoker.airburst+cab;
 		if(cab<0&&abb<10)abb=0;
