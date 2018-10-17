@@ -5,6 +5,11 @@ class GrabThinker:Thinker{
 	actor picktarget;
 	actor pickobj;
 	int ticker;
+	static void Grab(actor grabber,actor grabee){
+		let grabthink=new("GrabThinker");
+		grabthink.picktarget=grabber;
+		grabthink.pickobj=grabee;
+	}
 	override void postbeginplay(){
 		super.postbeginplay();
 	}

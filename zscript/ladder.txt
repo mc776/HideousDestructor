@@ -270,9 +270,7 @@ class hdladderbottom:hdactor{
 							hdl.vel.xy=vl.xy*2;
 							hdl.translation=translation;
 
-							let grabthink=new("GrabThinker");
-							grabthink.picktarget=currentuser;
-							grabthink.pickobj=hdl;
+							GrabThinker.Grab(currentuser,hdl);
 
 							target.destroy();
 							if(self)destroy();

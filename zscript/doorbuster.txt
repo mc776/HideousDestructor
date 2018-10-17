@@ -278,6 +278,7 @@ class DoorBuster:HDPickup{
 		+inventory.invbar
 		inventory.maxamount 5;
 		hdpickup.bulk ENC_DOORBUSTER;
+		inventory.pickupmessage "Picked up a Door Buster.";
 	}
 	action void A_PlantDB(){
 		if(invoker.amount<1){
@@ -341,7 +342,7 @@ class DoorBuster:HDPickup{
 		fail;
 	}
 }
-class DoorBusterPlanted:HDActor{
+class DoorBusterPlanted:HDUPK{
 	int botid;
 	line stuckline;
 	sector stuckbacksector;
@@ -351,6 +352,12 @@ class DoorBusterPlanted:HDActor{
 	default{
 		+nogravity
 		height 4;radius 3;
+	}
+	override void OnGrab(actor grabber){
+		actor dbbb=spawn("DoorBuster",pos,ALLOW_REPLACE);
+		dbbb.translation=self.translation;
+		GrabThinker.Grab(grabber,dbbb);
+		destroy();
 	}
 	void A_DBStuck(){
 		if(
