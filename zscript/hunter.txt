@@ -174,7 +174,7 @@ class Hunter:HDShotgun replaces Shotgun{
 		---- A 0 A_JumpIf(pressingfiremode()&&invoker.weaponstatus[SHOTS_SIDESADDLE]<12,"firemodehold");
 		goto nope;
 	ready:
-		SHTG A 0 A_JumpIf(pressingzoom()&&pressingunload(),"cannibalize");
+		SHTG A 0 A_JumpIf(pressingunload()&&(pressinguse()||pressingzoom()),"cannibalize");
 		SHTG A 0 A_JumpIf(pressingaltfire(),2);
 		SHTG A 0{
 			if(!pressingaltfire()){

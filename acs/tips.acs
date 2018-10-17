@@ -58,15 +58,13 @@ function str gettip(int rsd){
 			\nTo \cxLEAP\cu forwards, backwards, left or right,
 			\npress \cqJump while moving\cu in that direction.";
 
-	case 7: return "Press \cqUse\cu to \cxPICK UP ITEMS\cu.
-			\nFor smaller items, \cqhold Use\cu and run 
-			\nover them as you do in regular Doom.";
+	case 7: return "Press \cqUse\cu to \cxPICK UP ITEMS\cu.";
 
 	case 8: return "Press \cqUse\cu to \cxKICK\cu an enemy,
 			\na corpse or an armed hand grenade
 			\nin front of you.";
 
-	case 9: return "For more precise \cxAIMING\cu, \cqhold Use\cu.
+	case 9: return "For more precise \cxAIMING\cu, \cqhold Zoom\cu.
 			\nThis works better if you have some
 			\n\cqmap geometry\cu below you or if you can
 			\nget your gun to \cqcollide\cu against a wall.";
@@ -74,14 +72,14 @@ function str gettip(int rsd){
 	case 10: return "If you find the \cxSCOPE VIEW\cu to be
 			\ngetting in your way, set \cqhd_noscope\cu to
 			\n1 or 2 (default 0). \cq1\cu makes the scope appear only
-			\nwhen your full HUD is visible while pressing \cqUse\cu;
-			\n\cq2\cu disables shooting with the scope entirely.";
+			\nwhen your full HUD is visible while holding \cqUse\cu;
+			\n\cq2\cu removes it even then.";
 
 	case 11: return "Rifle scopes can \cxZOOM IN AND OUT\cu.
-			\n\cqHold Zoom\cu and press \cqFire\cu and \cqAltfire\cu
-			\nto go up and down respectively.
-			\nSame goes for \cqFire Mode\cu the Boss's MOA
-			\nadjustment and the rocket airburst.";
+			\n\cqHold Zoom\cu and \cqFiremode\cu and press \cqFire\cu and
+			\n\cqAltfire\cu to go up and down respectively.
+			\nSame goes for \cqZoom and Firemode\cu the Boss's MOA
+			\nadjustment and \cqFiremode\cu for the rocket airburst.";
 
 	case 12: return "To consolidate \cxMAGAZINES\cu for the 9mm
 			\nand 7.776mm guns, press \cqUser3\cu on those guns
@@ -89,7 +87,7 @@ function str gettip(int rsd){
 
 	case 13: return "Press \cqUser4\cu to \cxUNLOAD WEAPONS\cu.";
 
-	case 14: return "All ingame console commands can be bound to keys.
+	case 14: return "Many ingame console commands can be bound to keys.
 			\nCheck the \cqcontrols menu\cu for details.";
 
 	case 15: return "You can \cxCUSTOMIZE\cu your starting loadout
@@ -97,7 +95,7 @@ function str gettip(int rsd){
 			\nCheck the \cqplayer setup menu\cu for details.";
 
 	case 16: return "When you pick up \cxARMOUR\cu,
-			\nit goes into your inventory.
+			\nit usually goes into your inventory.
 			\n\cqUse the item\cu to equip it.";
 
 	case 17: return "To reduce your \cxENCUMBRANCE\cu,
@@ -114,7 +112,7 @@ function str gettip(int rsd){
 
 	case 19: return "If a weapon does not have any other
 			\nfunction reserved for it, \cqUser3\cu
-			\nwill activate a rangefinder.";
+			\nwill activate the magazine manager.";
 
 	case 20: return "\cxSTIMPACKS\cu increase healing and
 			\nreduce bleeding temporarily, and do \crnot\cu
@@ -185,10 +183,11 @@ function str getguntip(int selectionorder){
 			s:firsht,
 			s:alt,s:"toggle GL (if any)",
 			s:rld,s:"reload magazine",
-			s:zom,s:"adjust zoom",
 			s:ard,s:"reload grenade",
 			s:fmd,s:"switch semi/auto/burst (rifle)",
 			s:fmd,s:"adjust airburst (GL)",
+			s:"\n\cyZOOM\cw+\cyFIREMODE:\cw adjust zoom (rifle)",
+			s:"\n\cyZOOM\cw+\cyUSE:\cw adjust bullet drop compensation (rifle)",
 			s:uldd
 		);
 		case 24: return strparam(
@@ -205,11 +204,11 @@ function str getguntip(int selectionorder){
 			s:firsht,
 			s:alt,s:"toggle GL (if any)",
 			s:rld,s:"reload magazine",
-			s:zom,s:"adjust zoom",
 			s:ard,s:"reload grenade",
 			s:fmd,s:"adjust airburst (GL)",
 			s:fmd,s:"switch semi/burst (rifle)",
-			s:"\n\cyUSER2/FIREMODE\cw+\cyZOOM:\cw adjust bullet drop compensation (rifle)",
+			s:"\n\cyZOOM\cw+\cyFIREMODE:\cw adjust zoom (rifle)",
+			s:"\n\cyZOOM\cw+\cyUSE:\cw adjust bullet drop compensation (rifle)",
 			s:uldd
 		);
 		case 30: return strparam(
@@ -217,10 +216,10 @@ function str getguntip(int selectionorder){
 			s:fir,s:"shoot left",
 			s:alt,s:"shoot right",
 			s:rld,s:"reload from sidesaddles or pockets",
-			s:zom,s:"steal ammo from SG sidesaddles",
 			s:ard,s:"reload from pockets only",
 			s:fmd,s:"hold to force double shot",
 			s:"\n\cyFIREMODE\cw+\cyRELOAD\cw: load side saddles",
+			s:"\n\cyUSE\cw+\cyUNLOAD\cw: steal ammo from SG sidesaddles",
 			s:uldd
 		);
 		case 31: return strparam(
@@ -228,10 +227,10 @@ function str getguntip(int selectionorder){
 			s:firsht,
 			s:alt,s:"pump",
 			s:rld,s:"reload from sidesaddles or pockets",
-			s:zom,s:"steal ammo from SSG sidesaddles",
 			s:ard,s:"reload from pockets only",
 			s:fmd,s:"toggle pump/semi",
 			s:"\n\cyFIREMODE\cw+\cyRELOAD\cw: load side saddles",
+			s:"\n\cyUSE\cw+\cyUNLOAD\cw: steal ammo from SG sidesaddles",
 			s:uldd
 		);
 		case 40: return strparam(
@@ -239,9 +238,10 @@ function str getguntip(int selectionorder){
 			s:firsht,
 			s:alt,s:"toggle RPM",
 			s:rld,s:"reload magazines",
-			s:zom,s:"adjust zoom",
 			s:ard,s:"reload battery",
 			s:fmd,s:"toggle RPM",
+			s:"\n\cyZOOM\cw+\cyFIREMODE:\cw adjust zoom",
+			s:"\n\cyZOOM\cw+\cyUSE:\cw adjust bullet drop compensation",
 			s:uldd
 		);
 		case 50: return strparam(
@@ -249,7 +249,6 @@ function str getguntip(int selectionorder){
 			s:firsht,
 			s:alt,s:"switch pistols",
 			s:rld,s:"reload magazine",
-			s:zom,s:"rangefinder",
 			s:fmd,s:"switch semi/auto (if any)",
 			s:msc,s:"manage ammo",
 			s:uldd
@@ -258,7 +257,8 @@ function str getguntip(int selectionorder){
 			s:"\cxBrontornis",
 			s:firsht,
 			s:rld,s:"reload shell",
-			s:zom,s:"toggle zoom",
+			s:alt,s:"toggle zoom",
+			s:fmd,s:"toggle zoom",
 			s:uldd
 		);
 		case 70: return strparam(
@@ -273,10 +273,11 @@ function str getguntip(int selectionorder){
 			s:firsht,
 			s:alt,s:"work bolt",
 			s:rld,s:"reload clip/rounds",
-			s:zom,s:"adjust zoom",
 			s:ard,s:"fast-strip one clip",
 			s:fmd,s:"adjust bullet drop compensation",
 			s:msc,s:"manage ammo",
+			s:"\n\cyZOOM\cw+\cyFIREMODE:\cw adjust zoom",
+			s:"\n\cyZOOM\cw+\cyUSE:\cw adjust bullet drop compensation",
 			s:"\n\cyALTFIRE\cw+\cyRELOAD\cw while bolt is back: load chamber",
 			s:"\n\cyALTFIRE\cw+\cyUNLOAD\cw while bolt is back: clean rifle",
 			s:uldd
@@ -301,9 +302,9 @@ function str getguntip(int selectionorder){
 			s:firsht,
 			s:alt,s:"toggle GL",
 			s:rld,s:"reload grenade",
-			s:zom,s:"toggle zoom",
 			s:ard,s:"reload H.E.A.T.",
 			s:fmd,s:"adjust airburst",
+			s:"\n\cyZOOM\cw+\cyFIREMODE:\cw toggle zoom",
 			s:uldd
 		);
 		case 93: return strparam(

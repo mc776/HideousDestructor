@@ -229,6 +229,13 @@ class HDWeapon:Weapon{
 	action bool PressingFiremode(){return player.cmd.buttons&BT_USER2;}
 	action bool PressingUser3(){return player.cmd.buttons&BT_USER3;}
 	action bool PressingUnload(){return player.cmd.buttons&BT_USER4;}
+	action bool PressingUse(){return player.cmd.buttons&BT_USE;}
+	action bool JustPressed(int whichbutton){return(
+		player.cmd.buttons&whichbutton&&!(player.oldbuttons&whichbutton)
+	);}
+	action bool JustReleased(int whichbutton){return(
+		!(player.cmd.buttons&whichbutton)&&player.oldbuttons&whichbutton
+	);}
 	states{
 	spawn:
 		TNT1 A 0;
