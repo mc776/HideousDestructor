@@ -11,6 +11,7 @@ class HDShotgun:HDWeapon{
 	}
 	int handshells;
 	action void EmptyHand(int amt=-1,bool careful=false){
+		if(!amt)return;
 		if(amt>0)invoker.handshells=amt;
 		while(invoker.handshells>0){
 			if(careful&&!A_JumpIfInventory("HDShellAmmo",0,"null")){
