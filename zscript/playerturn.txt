@@ -23,13 +23,15 @@ extend class HDPlayerPawn{
 	}
 
 	void TurnCheck(){
-		if(mousehijacked)return;
-
 		double lastangle=angle;
 		double lastpitch=pitch;
 
-		double anglechange=player.cmd.yaw*(360./65536.);
-		double pitchchange=player.cmd.pitch*(-360./65536.);
+		double anglechange=0;
+		double pitchchange=0;
+		if(!mousehijacked){
+			anglechange=player.cmd.yaw*(360./65536.);
+			pitchchange=player.cmd.pitch*(-360./65536.);
+		}
 		double vdv=vel dot vel;
 
 		//turn180
