@@ -112,7 +112,7 @@ class HDWeapon:Weapon{
 			return;
 		}
 		int inputamt=player.cmd.pitch>>5;
-		inputamt+=(pressingfire()?1:pressingaltfire()?-1:0);
+		inputamt+=(justpressed(BT_ATTACK)?1:justpressed(BT_ALTATTACK)?-1:0);
 		player.cmd.pitch=0;player.cmd.yaw=0;
 		invoker.weaponstatus[slot]=clamp(
 			invoker.weaponstatus[slot]-inputamt,minzoom,maxzoom
