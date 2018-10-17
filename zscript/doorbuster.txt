@@ -265,3 +265,198 @@ class doorball:doomimpball{
 		goto super::death;
 	}
 }
+
+
+
+
+// ------------------------------------------------------------
+// It's called a "D.B." because it lets you edit the map.
+// ------------------------------------------------------------
+class DoorBuster:HDPickup{
+	int botid;
+	default{
+		+inventory.invbar
+		inventory.maxamount 5;
+		hdpickup.bulk ENC_DOORBUSTER;
+	}
+	action void A_PlantDB(){
+		if(invoker.amount<1){
+			invoker.destroy();return;
+		}
+		flinetracedata dlt;
+		linetrace(
+			angle,48,pitch,flags:TRF_THRUACTORS,
+			offsetz:height-9,
+			data:dlt
+		);
+		if(!dlt.hitline){
+			A_Log(string.format("Find a wall to stick the DoorBuster on."),true);
+			return;
+		}
+		let ddd=DoorBusterPlanted(spawn("DoorBusterPlanted",dlt.hitlocation-dlt.hitdir*4));
+		if(!ddd){
+			A_Log("Can't deploy here.",true);
+			return;
+		}
+		ddd.botid=invoker.botid;
+		ddd.ChangeTid(HDDB_TID);
+		ddd.A_PlaySound("weapons/rockreload",CHAN_BODY);
+		ddd.stuckline=dlt.hitline;
+		ddd.angle=angle;
+		ddd.translation=translation;
+		ddd.master=self;
+		if(!dlt.hitline.backsector){
+			ddd.stuckheight=ddd.pos.z;
+			ddd.stucktier=0;
+		}else{
+			sector othersector=hdmath.oppositesector(dlt.hitline,dlt.hitsector);
+			ddd.stuckpoint=dlt.hitlocation.xy+dlt.hitdir.xy*4;
+			double stuckceilingz=othersector.ceilingplane.zatpoint(ddd.stuckpoint);
+			double stuckfloorz=othersector.floorplane.zatpoint(ddd.stuckpoint);
+			ddd.stuckbacksector=othersector;
+			double dpz=ddd.pos.z;
+			if(dpz-ddd.height>stuckceilingz){
+				ddd.stuckheight=dpz-ddd.height-stuckceilingz;
+				ddd.stucktier=1;
+			}else if(dpz<stuckfloorz){
+				ddd.stuckheight=dpz-stuckfloorz;
+				ddd.stucktier=-1;
+			}else{
+				ddd.stuckheight=ddd.pos.z;
+				ddd.stucktier=0;
+			}
+		}
+		string feedback=string.format("DoorBuster planted with tag \cy%i",ddd.botid);
+		if(cvar.getcvar("hd_helptext",player).getint()) feedback.appendformat(string.format("\cj. Use \cddb 999 \cy%i\cj to detonate.",ddd.botid));
+		A_Log(feedback,true);
+		invoker.amount--;
+		if(invoker.amount<1)invoker.destroy();
+	}
+	states{
+	spawn:
+		BAL1 A -1;
+		stop;
+	use:
+		TNT1 A 0 A_PlantDB();
+		fail;
+	}
+}
+class DoorBusterPlanted:HDActor{
+	int botid;
+	line stuckline;
+	sector stuckbacksector;
+	double stuckheight;
+	int stucktier;
+	vector2 stuckpoint;
+	default{
+		+nogravity
+		height 4;radius 3;
+	}
+	void A_DBStuck(){
+		if(
+			!stuckline
+			||ceilingz<pos.z
+			||floorz>pos.z
+		){
+			if(!stuckline)setstatelabel("death");
+			else setstatelabel("unstucknow");
+			stuckline=null;
+			return;
+		}
+		setz(
+			stucktier==1?stuckbacksector.ceilingplane.zatpoint(stuckpoint)+stuckheight:
+			stucktier==-1?stuckbacksector.floorplane.zatpoint(stuckpoint)+stuckheight:
+			stuckheight
+		);
+	}
+	states{
+	spawn:
+		BAL1 A 1 A_DBStuck();
+		loop;
+	unstucknow:
+		---- A 2 A_PlaySound("misc/fragknock",5);
+		---- A 1{
+			actor dbs=spawn("DoorBuster",pos,ALLOW_REPLACE);
+			dbs.angle=angle;dbs.translation=translation;
+			dbs.A_ChangeVelocity(1,0,0,CVF_RELATIVE);
+			A_SpawnChunks("BigWallChunk",15);
+			A_PlaySound("weapons/bigcrack",4);
+		}
+		stop;
+	death:
+		---- A 2 A_PlaySound("misc/fragknock",5);
+		---- A 1{
+			bnointeraction=true;
+			bool busted=doordestroyer.destroydoor(self);
+
+			actor dbs=spawn("DoorBusterSpent",pos,ALLOW_REPLACE);
+			dbs.angle=angle+180;dbs.translation=translation;
+			if(busted){
+				dbs.A_ChangeVelocity(8,0,frandom(2,3),CVF_RELATIVE);
+			}else{
+				dbs.A_ChangeVelocity(20,frandom(-4,4),frandom(-4,4),CVF_RELATIVE);
+			}
+			A_SpawnChunks("HDExplosion",busted?1:6,0,1);
+			A_PlaySound("weapons/bigcrack",4);
+			A_PlaySound("word/explode",CHAN_VOICE);
+			A_Log("NEED MORE EXPLOSION");
+		}
+		stop;
+	}
+}
+class DoorBusterSpent:HDDebris{
+	states{
+	spawn:
+	death:
+		BAL1 A -1;
+		stop;
+	}
+}
+extend class HDHandlers{
+	void SetDB(hdplayerpawn ppp,int cmd=111,int cmd2=-1){
+		//set DB tag number with -#
+		//e.g., "db -123" will set tag to 123
+		if(cmd<0){
+			let dbu=DoorBuster(ppp.findinventory("DoorBuster"));
+			if(dbu){
+				dbu.botid=-cmd;
+				ppp.A_Log(string.format("DoorBuster tag set to  \cy%i",-cmd),true);
+			}
+			return;
+		}
+		let dbbb=DoorBuster(ppp.findinventory("DoorBuster"));
+		int botid=dbbb?dbbb.botid:1;
+		if(cmd!=999&&cmd!=123){
+			ppp.A_Log(string.format("DoorBuster Command format:\n\cu db <option> <tag number> \n\cjOptions:\n 999 = DETONATE\n 123 = QUERY\n -n = set tag number\n\cj  tag number on next deployment: \cy%i",botid),true);
+		}
+		actoriterator it=actoriterator.create(HDDB_TID,"DoorBusterPlanted");
+		actor dbs;
+		while(dbs=it.Next()){
+			let dbss=DoorBusterPlanted(dbs);
+			if(
+				dbss.master==ppp&&(
+					cmd2<0
+					||cmd2==dbss.botid
+				)
+			){
+				if(cmd==999){
+					dbss.setstatelabel("death");
+					ppp.A_Log(
+						string.format("DoorBuster at [%i,%i].",
+							dbss.pos.x,dbss.pos.y
+						),true
+					);
+				}else if(cmd==123){
+					ppp.A_Log(
+						string.format("DoorBuster with tag \cy%i at [%i,%i].",
+							dbss.botid,dbss.pos.x,dbss.pos.y
+						),true
+					);
+				}
+			}
+		}
+	}
+}
+enum HDDBConst{
+	HDDB_TID=8442,
+}
