@@ -450,6 +450,8 @@ class Hunter:HDShotgun replaces Shotgun{
 				||PressingUnload()
 				||PressingFire()
 				||PressingAltfire()
+				||PressingZoom()
+				||PressingFiremode()
 			)invoker.weaponstatus[0]|=HUNTF_HOLDING;
 			else invoker.weaponstatus[0]&=~HUNTF_HOLDING;
 
@@ -549,13 +551,19 @@ class Hunter:HDShotgun replaces Shotgun{
 	unloadtube:
 		SHTG C 6 offset(0,40){
 			if(invoker.weaponstatus[HUNTS_TUBE]<1)setweaponstate("reloadend");
-			else invoker.handshells=0;
+			invoker.handshells=0;
 		}
 	unloadloop:
 		SHTG C 8 offset(1,41){
 			if(
-				invoker.handshells>=4||
-				invoker.weaponstatus[HUNTS_TUBE]<1
+				invoker.handshells>=4
+				||invoker.weaponstatus[HUNTS_TUBE]<1
+				||PressingReload()
+				||PressingUnload()
+				||PressingFire()
+				||PressingAltfire()
+				||PressingZoom()
+				||PressingFiremode()
 			)setweaponstate("unloadloopend");
 			else{
 				invoker.handshells++;
@@ -583,6 +591,8 @@ class Hunter:HDShotgun replaces Shotgun{
 				||PressingReload()
 				||PressingFire()
 				||PressingAltfire()
+				||PressingZoom()
+				||PressingFiremode()
 			)setweaponstate("reloadend");
 		}goto unloadloop;
 	spawn:

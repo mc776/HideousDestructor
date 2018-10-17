@@ -280,7 +280,7 @@ As with the backpack, fire and altfire switch from one item to the next, reload 
 	Rangefinder
 
 Console command: hd_findrange
-Default key: none (+zoom if zoom is not used by the weapon equipped)
+Default key: none
 
 Description: Logs the distance of the object or map geometry you're pointing at.
 
@@ -423,26 +423,28 @@ hd_clearscv: Resets all archived host options to their defaults.
 
 	CVars (user-based)
 
-hd_helptext: Some events (e.g., picking up a rifle variant, pulling the pin and lighting the fuze on a grenade) generate text messages on your screen that remind you of certain non-obvious events. By setting this cvar to zero, you turn those reminders off. At your own risk.
+hd_helptext (2): Some events (e.g., picking up a rifle variant, pulling the pin and lighting the fuze on a grenade) generate text messages on your screen that remind you of certain non-obvious events. By setting this cvar to zero, you turn those reminders off. At your own risk.
 Set to 1 instead of 2 to get rid of the newbie tips that show up on map start.
 
-hd_hudsprite: Displays your current weapon as a pickup sprite graphic inside your HUD, Ghost Recon-style. Always on when r_drawplayersprites is off.
+hd_hudsprite (false): Displays your current weapon as a pickup sprite graphic inside your HUD, Ghost Recon-style. Always on when r_drawplayersprites is off.
 
-hd_noscope: Many weapons have an optic sight that is represented as a sight picture just below HD's regular sight picture crosshair. If set to 0, this cvar lets this view appear whenever the regular sight picture crosshair appears. Set to 1, this makes the scoped view only visible with the extended HUD that pops up when you hold the use key. Set to 2, the scoped view never appears unless you hit zoom. Note that the zoom key overrides this setting, and this setting has no effect on the rocket launcher or Brontornis since they already have toggleable magnified sights.
+hd_noscope (0): Many weapons have an optic sight that is represented as a sight picture just below HD's regular sight picture crosshair. If set to 0, this cvar lets this view appear whenever the regular sight picture crosshair appears. Set to 1, this makes the scoped view only visible with the extended HUD that pops up when you hold the use key. Set to 2, the scoped view never appears unless you hit zoom. Note that the zoom key overrides this setting, and this setting has no effect on the rocket launcher or Brontornis since they already have toggleable magnified sights.
 
-hd_sightbob: HD's sight crosshairs by default will bob as the player moves. This can sometimes be useful for making trick shots, but for many it is more distracting than anything else. Turn this off to hide the entire thing when you're moving above a certain threshold. Note that your scope angle will still follow the bob which is still used to calculate the trajectory of your shot.
+hd_sightbob (true): HD's sight crosshairs by default will bob as the player moves. This can sometimes be useful for making trick shots, but for many it is more distracting than anything else. Turn this off to hide the entire thing when you're moving above a certain threshold. Note that your scope angle will still follow the bob which is still used to calculate the trajectory of your shot.
 
-hd_xhairscale: HD's sight crosshairs can scale unpredictably at different resolutions. Other people just don't like the size. Use this setting to make adjustments. Values are between 0.1 and 3.0 inclusive and default is 1.
+hd_xhairscale (1): HD's sight crosshairs can scale unpredictably at different resolutions. Other people just don't like the size. Use this setting to make adjustments. Values are between 0.1 and 3.0 inclusive and default is 1.
 
 hd_crosshair (0): This affects which image is displayed on the ZM66 and Liberator reflex sights. This is applied on a per-user basis and you will not need to set this every time you pick up a new gun. If you want to modify these, the lumps to replace are "riflsit1" through "riflsit5".
 
-hd_hudusedelay: This is how many tics you must hold Use before the full HUD shows up with all the ammo counts and compass (and scope view if hd_noscope is set to 1). Zero means it is always on.
+hd_hudusedelay (12): This is how many tics you must hold Use before the full HUD shows up with all the ammo counts and compass (and scope view if hd_noscope is set to 1). Zero means it is always on.
 
-hd_aimsensitivity: By default, when you hold the Use key your aim sensitivity is cranked down to 1/8 so you can do better long-distance shots. This option reduces that reduction to 1/4, 1/2 or no reduction at all.
+hd_aimsensitivity (3): By default, when you hold the Use key your aim sensitivity is cranked down to 1/8 so you can do better long-distance shots. This option reduces that reduction to 1/4, 1/2 or no reduction at all.
 
-hd_autostrip: Normally you must hit hd_strip to strip off your armour, or hit Reload with the medikit out. With this option enabled you will automatically strip when you hit fire or altfire.
+hd_usefocus (true): Holding the Zoom key will normally reduce your aim sensitivity, subject to the hd_aimsensitivity setting. Normally the Use key will also cause this to happen, for the benefit of those who may be running low on room on their keyboards; if this is not a concern for you, or you find that the numerous functions of the Use key are clashing against each other, set this to false so that only the Zoom key will affect your aim.
 
-hd_noslide: Normally if you hit Crouch while moving, you will dive/slide/lunge in that direction. This can be pretty useful to defend against certain attacks (or to inflict certain attacks) but it is bad for fine control and cover manipulation. Set this to true to just simply crouch for this input if you are not sprinting.
+hd_autostrip (false): Normally you must hit hd_strip to strip off your armour, or hit Reload with the medikit out. With this option enabled you will automatically strip when you hit fire or altfire.
+
+hd_noslide (false): Normally if you hit Crouch while moving, you will dive/slide/lunge in that direction. This can be pretty useful to defend against certain attacks (or to inflict certain attacks) but it is bad for fine control and cover manipulation. Set this to true to just simply crouch for this input if you are not sprinting.
 
 hd_clearucv: Resets all archived user options to their defaults.
 
@@ -741,7 +743,7 @@ If you hit reload and unload while the pump is pulled back, you will reload and 
 
 To change fire mode, hit the fire mode key. There is no guarantee as to the quality of the ammo you find and not every round may be strong enough to cycle properly, so altfire is still available to force cycle a round if necessary.
 
-If you have the Slayer, pressing the Zoom key will remove up to 4 shells at a time from the Slayer's side saddles and place them in your general inventory for loading into the Hunter as needed.
+If you have the Slayer, pressing Unload while holding Use or Zoom will remove up to 4 shells at a time from its side saddles and place them in your general inventory.
 
 Protip: People will develop personal preferences for pump or auto and it's probably best to train and stick with one.
 
@@ -762,7 +764,7 @@ When you reload, both shells eject at once, even if only one shell has been fire
 
 Secondary reload works in a similar manner to the Hunter. Side saddles work identically.
 
-If you have the Hunter, pressing the Zoom key will remove up to 4 shells at a time from the Hunter's side saddles and place them in your general inventory for loading into the Slayer as needed.
+If you have the Hunter, pressing Unload while holding Use or Zoom will remove up to 4 shells at a time from its side saddles and place them in your general inventory.
 
 Protip: Protip: For a quick double, tap the sprint key to momentarily lower the Slayer, then hold on to both fire buttons to shoot both barrels at once.
 
