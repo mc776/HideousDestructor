@@ -22,6 +22,26 @@ extend class HDWeapon{
 		}
 		invoker.airburst=cab;
 	}
+	action void A_AirburstReady(){
+		A_WeaponReady(WRF_NONE);
+		int cab=0;
+		if(justpressed(BT_ATTACK))cab=-1;
+		else if(justpressed(BT_ALTATTACK))cab=1;
+		else if(player.cmd.pitch){
+			cab=(-player.cmd.pitch>>5);
+			player.cmd.pitch=0;
+		}
+		int abb=invoker.airburst+cab;
+		if(cab<0&&abb<10)abb=0;
+		else if(cab>0)abb=max(abb,10);
+		invoker.airburst=abb;
+	}
+	states{
+	abadjust:
+		---- A 1 A_AirburstReady();
+		---- A 0 A_JumpIf(pressingfiremode(),"abadjust");
+		goto readyend;
+	}
 }
 extend class HDHandlers{
 	void SetAirburst(hdplayerpawn ppp,int abi){

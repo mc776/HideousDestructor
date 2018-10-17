@@ -413,19 +413,6 @@ class LiberatorRifle:HDWeapon{
 	althold:
 		BRFG A 0;
 		goto nope;
-	abadjust:
-		BRFG A 2 A_WeaponReady(WRF_NONE);
-		BRFG A 0{
-			A_SetInventory("WeaponBusy",1);
-			if (PressingFire()||PressingAltfire()){
-				if(PressingFire())invoker.modairburst(1);
-				else invoker.modairburst(-1);
-			}else if(PressingZoom()){
-				invoker.airburst=0;
-				setweaponstate("nope");
-			}
-			if(PressingFireMode())setweaponstate("abadjust");
-		}goto nope;
 
 
 	firegrenade:

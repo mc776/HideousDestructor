@@ -101,19 +101,7 @@ class ZM66AssaultRifle:HDWeapon{
 			else invoker.weaponstatus[ZM66S_AUTO]++;
 			A_WeaponReady(WRF_NONE);
 		}goto nope;
-	abadjust:
-		RIFG A 2 A_WeaponReady(WRF_NONE);
-		RIFG A 0{
-			A_SetInventory("WeaponBusy",1);
-			if (PressingFire()||PressingAltfire()){
-				if(PressingFire())invoker.modairburst(1);
-				else invoker.modairburst(-1);
-			}else if(PressingZoom()){
-				invoker.airburst=0;
-				setweaponstate("nope");
-			}
-			if(PressingFireMode())setweaponstate("abadjust");
-		}goto nope;
+
 
 	select0:
 		RIFG A 0{

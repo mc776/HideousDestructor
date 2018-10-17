@@ -63,18 +63,7 @@ class HDRL:HDWeapon{
 		goto readyend;
 
 	firemode:
-	abadjust:
-		---- AA 1 A_WeaponReady(WRF_NONE);
-		---- A 0{
-			if(PressingFire()||PressingAltfire()){
-				if(PressingFire())invoker.modairburst(1);
-				else invoker.modairburst(-1);
-				setweaponstate("abadjust");
-			}else if(PressingZoom()){
-				invoker.airburst=0;
-				setweaponstate("nope");
-			}else if(PressingFireMode())setweaponstate("abadjust");
-		}goto nope;
+		goto abadjust;
 
 
 	fire:
@@ -517,18 +506,7 @@ class Blooper:HDWeapon{
 		BLOG A 0{invoker.airburst=0;}
 		goto nope;
 	firemode:
-	abadjust:
-		---- A 2;
-		---- A 0{
-			if(PressingFire()||PressingAltfire()){
-				if(PressingFire())invoker.modairburst(1);
-				else invoker.modairburst(-1);
-				setweaponstate("abadjust");
-			}else if(PressingZoom()){
-				invoker.airburst=0;
-				setweaponstate("nope");
-			}else if(PressingFireMode())setweaponstate("abadjust");
-		}goto nope;
+		goto abadjust;
 
 	fire:
 		BLOG B 0 A_JumpIf(invoker.weaponstatus[0]&BLOPF_LOADED,"reallyshoot");
