@@ -11,17 +11,6 @@ extend class HDWeapon{
 		if(invoker.airburst)ggg.airburst=max(10,abs(invoker.airburst))*HDCONST_ONEMETRE;
 		invoker.airburst=0;
 	}
-	action void ModAirBurst(int amt){
-		int cab=invoker.airburst;
-		if(amt>0){
-			cab--;
-			if(cab<10)cab=0;
-		}else{
-			cab++;
-			if(cab>0)cab=max(cab,10);
-		}
-		invoker.airburst=cab;
-	}
 	action void A_AirburstReady(){
 		A_WeaponReady(WRF_NONE);
 		int cab=0;
