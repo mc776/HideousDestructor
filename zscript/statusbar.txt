@@ -356,12 +356,13 @@ class HDStatusBar:DoomStatusBar{
 	void drawnum(
 		int num,double xpos,double ypos,
 		int flags=DI_SCREEN_RIGHT_BOTTOM,
-		int fnt=Font.CR_OLIVE
+		int fnt=Font.CR_OLIVE,
+		double alpha=1.
 	){
 		drawstring(
 			mAmountFont,formatnumber(num),
 			(xpos,ypos),flags|DI_TEXT_ALIGN_RIGHT,
-			fnt
+			fnt,alpha
 		);
 	}
 	void DrawStrings(

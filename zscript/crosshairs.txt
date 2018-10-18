@@ -223,6 +223,10 @@ extend class HDStatusBar{
 					DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
 					scale:(0.77,0.77)*scl
 				);
+				int airburst=wp.airburst;
+				if(airburst)drawnum(airburst,
+					17*scl+bob.x,15*scl+bob.y,DI_SCREEN_CENTER,Font.CR_DARKRED,0.5
+				);
 			}
 			else{
 				double dotoff=max(abs(bob.x),abs(bob.y));
@@ -235,6 +239,10 @@ extend class HDStatusBar{
 				drawimage(
 					"xh25",(0,0)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
 					scale:(scl,scl)*1.6
+				);
+				int airburst=wp.airburst;
+				if(airburst)drawnum(airburst,
+					10*scl+bob.x,9*scl+bob.y,DI_SCREEN_CENTER,Font.CR_BLACK
 				);
 			}
 		}
