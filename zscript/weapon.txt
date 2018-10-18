@@ -477,7 +477,7 @@ class NullWeapon:HDWeapon{
 	override inventory CreateTossable(int amount){
 		let onr=hdplayerpawn(owner);
 		if(onr){
-			if(onr.lastweapon)onr.A_DropInventory(onr.lastweapon.getclassname());
+			if(onr.lastweapon)onr.DropInventory(onr.lastweapon);
 		}
 		return null;
 	}

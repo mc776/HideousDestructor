@@ -121,7 +121,7 @@ class ZM66AssaultRifle:HDWeapon{
 					invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBER
 				)
 			){
-				A_DropInventory(invoker.getclassname());
+				DropInventory(invoker);
 				return;
 			}
 			if(invoker.weaponstatus[0]&ZM66F_NOLAUNCHER)setweaponstate("deselect0small");

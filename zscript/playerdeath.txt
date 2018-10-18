@@ -55,7 +55,7 @@ extend class HDPlayerPawn{
 					keys.push(item);
 					item.detachfromowner();
 				}else if(item is "HDPickup"||item is "HDWeapon"){
-					A_DropInventory(item.getclassname(),item.amount);
+					DropInventory(item);
 				}
 				if(!item||item.owner!=self)item=inv;
 			}
@@ -68,7 +68,7 @@ extend class HDPlayerPawn{
 		if(player&&player.readyweapon&&deathmatch&&!sv_weapondrop&&!barehanded){
 			let zzz=zm66assaultrifle(findinventory("ZM66AssaultRifle"));
 			if(zzz&&!random(0,15))zzz.weaponstatus[0]|=ZM66F_CHAMBERBROKEN;
-			A_DropInventory(player.readyweapon.getclassname());
+			DropInventory(player.readyweapon);
 		}
 		if(player.attacker is "HDFire")player.attacker=player.attacker.master;
 
@@ -81,13 +81,13 @@ extend class HDPlayerPawn{
 			let bfg=bfg9k(findinventory("bfg9k"));
 			if(bfg&&bfg.weaponstatus[BFGS_CRITTIMER]>0){
 				bfg.buntossable=false;
-				A_DropInventory("BFG9k");
+				DropInventory(bfg);
 			}
 		}
 		if(countinv("ZM66AssaultRifle")){
 			let zzz=zm66assaultrifle(findinventory("ZM66AssaultRifle"));
 			if(zzz&&zzz.weaponstatus[ZM66S_HEAT]>HDCONST_ZM66COOKOFF){
-				A_DropInventory("ZM66AssaultRifle");
+				DropInventory(zzz);
 			}
 		}
 

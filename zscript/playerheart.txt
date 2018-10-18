@@ -64,7 +64,7 @@ extend class HDPlayerPawn{
 							else if(!random(0,3))aggravateddamage++;
 						}
 						if(!(player.readyweapon is "Ring")){
-							A_DropInventory(player.readyweapon.getclass());
+							DropInventory(player.readyweapon);
 							A_SelectWeapon("Ring");
 						}
 					}
@@ -75,7 +75,7 @@ extend class HDPlayerPawn{
 					if(!random(0,3)){
 						healthing(1);
 						if(!(player.readyweapon is "Ring")){
-							A_DropInventory(player.readyweapon.getclass());
+							DropInventory(player.readyweapon);
 							A_SelectWeapon("Ring");
 						}
 					}
