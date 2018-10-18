@@ -2,6 +2,15 @@
 // Sight picture crosshairs
 // ------------------------------------------------------------
 extend class HDStatusBar{
+	virtual void DrawGrenadeLadder(int airburst,vector2 bob,double scl){
+		drawimage(
+			"XH27",(0,1.8)+bob,DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
+			scale:(1.6,1.6)
+		);
+		if(airburst)drawnum(airburst,
+			12*scl+bob.x,42*scl+bob.y,DI_SCREEN_CENTER,Font.CR_BLACK
+		);
+	}
 	virtual void DrawHDXHair(hdplayerpawn hpl){
 		let wp=hdweapon(cplayer.readyweapon);
 		bool sightbob=cvar.getcvar("hd_sightbob",cplayer).getbool();
@@ -107,12 +116,8 @@ extend class HDStatusBar{
 			wp is "ZM66AssaultRifle"
 		){
 			int scaledyoffset=47*scl;
-			if(wp.weaponstatus[0]&ZM66F_GLMODE){
-				drawimage(
-					"XH27",(0,1.8)+bob,DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
-					scale:(1.6,1.6)
-				);
-			}else{
+			if(wp.weaponstatus[0]&ZM66F_GLMODE)drawgrenadeladder(wp.airburst,bob,scl);
+			else{
 				double dotoff=max(abs(bob.x),abs(bob.y));
 				if(dotoff<20){
 					drawimage(
@@ -202,17 +207,9 @@ extend class HDStatusBar{
 				);
 			}
 		}
-		else if((wp is "Blooper")){
-			drawimage(
-				"XH27",(0,1.8*scl)+bob,DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
-				scale:(1.6,1.6)*scl
-			);
-		}
+		else if((wp is "Blooper"))drawgrenadeladder(wp.airburst,bob,scl);
 		else if((wp is "HDRL")){
-			if(wp.weaponstatus[0]&RLF_GRENADEMODE)drawimage(
-				"XH27",(0,1.8*scl)+bob,DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
-				scale:(1.6,1.6)*scl
-			);
+			if(wp.weaponstatus[0]&RLF_GRENADEMODE)drawgrenadeladder(wp.airburst,bob,scl);
 			else if(wp.weaponstatus[0]&RLF_ZOOM){
 				int scaledyoffset=4*scl;
 				texman.setcameratotexture(hpc,"HDXHCAM6",1.6);
@@ -280,12 +277,8 @@ extend class HDStatusBar{
 			}
 		}
 		else if(wp is "LiberatorRifle"){
-			if(wp.weaponstatus[0]&LIBF_GRENADEMODE){
-				drawimage(
-					"XH27",(0,1.8*scl)+bob,DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
-					scale:(1.6,1.6)*scl
-				);
-			}else{
+			if(wp.weaponstatus[0]&LIBF_GRENADEMODE)drawgrenadeladder(wp.airburst,bob,scl);
+			else{
 				double dotoff=max(abs(bob.x),abs(bob.y));
 				if(dotoff<20){
 					drawimage(
