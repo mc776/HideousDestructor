@@ -393,7 +393,7 @@ extend class HDStatusBar{
 				-16,-18,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_WHITE
 			);
 		}
-		else if(w is "HDFragGrenades"){
+		else if(w is "HDFragGrenades"||w is "Tripwire"){
 			if(gimmehud){
 				drawimage("FRAGA0",(-52,-4),DI_SCREEN_CENTER_BOTTOM,scale:(0.6,0.6));
 				drawnum(hpl.countinv("HDFragGrenadeAmmo"),-45,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
@@ -458,24 +458,28 @@ extend class HDStatusBar{
 			drawwepnum(HD_MEDPATCHLIMIT-ww.usedpatches,HD_MEDPATCHLIMIT);
 			if(ww.injectableflesh==2)drawwepdot(-20,-10,(3,3));
 			if(ww.injectableflesh>=1)drawwepdot(-16,-10,(3,3));
+			drawnum(hpl.countinv("PortableMedikit"),-43,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 		}
 		else if(w is "HDBlueBottler"){
 			drawimage(
-				"BON1A0",(-14,-7),
+				"BON1A0",(-23,-7),
 				DI_SCREEN_CENTER_BOTTOM|DI_ITEM_RIGHT
 			);
+			drawnum(hpl.countinv("BluePotion"),-22,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 		}
 		else if(w is "HDBerserker"){
 			drawimage(
-				"PSTRA0",(-14,-7),
+				"PSTRA0",(-24,-7),
 				DI_SCREEN_CENTER_BOTTOM|DI_ITEM_RIGHT
 			);
+			drawnum(hpl.countinv("PortableBerserkPack"),-22,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 		}
 		else if(w is "HDStimpacker"){
 			drawimage(
-				"STIMA0",(-14,-7),
+				"STIMA0",(-23,-7),
 				DI_SCREEN_CENTER_BOTTOM|DI_ITEM_RIGHT
 			);
+			drawnum(hpl.countinv("PortableStimPack"),-22,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 		}
 		else if(w is "MagManager"){
 			let thismag=magmanager(w).thismag;
