@@ -65,7 +65,7 @@ class HDArmour:HDPickup{
 
 		if(
 			other==master
-			&&other.countinv("HDArmour")
+			&&other.player.buttons&BT_USE
 			&&!other.countinv("HDArmourWorn")
 			&&!other.countinv("WornRadsuit")
 			&&!other.countinv("HDBP")
@@ -73,7 +73,7 @@ class HDArmour:HDPickup{
 			HDF.TransferFire(self,other);
 			attachtoowner(other);
 			other.UseInventory(self);
-			if(!!self)other.A_DropInventory("HDArmour",other.countinv("HDArmour"));
+			if(!!self)other.DropInventory(self);
 			return;
 		}
 
