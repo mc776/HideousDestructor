@@ -66,8 +66,7 @@ class HDWoundFixer:HDWeapon{
 	states{
 	reload:
 		TNT1 A 14{
-			if(countinv("WornRadsuit"))useinventory(findinventory("portableradsuit"));
-			else A_DropInventory("HDArmourWorn");
+			A_DropInventory("HDArmourWorn");
 			A_ClearRefire();
 		}
 		goto readyend;

@@ -160,8 +160,14 @@ class HDArmourWorn:HDArmour{
 	}
 	override inventory createtossable(int amount){
 		if(!owner)return null;
+		owner.angle+=20;
 		owner.A_DropInventory("HDBP");
-		if(owner.countinv("WornRadsuit"))owner.UseInventory(owner.findinventory("PortableRadsuit"));
+		owner.angle-=20;
+		if(owner.countinv("WornRadsuit")){
+			owner.angle-=20;
+			owner.UseInventory(owner.findinventory("PortableRadsuit"));
+			owner.angle+=20;
+		}
 		inventory iiii=inventory(spawn("HDArmour",owner.pos+(0,0,owner.height*0.6),ALLOW_REPLACE));
 		if(iiii){
 			owner.A_SetBlend("00 00 00",1,6,"00 00 00");
