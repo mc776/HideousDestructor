@@ -465,12 +465,16 @@ class HDStatusBar:DoomStatusBar{
 			);
 		}
 	}
+	//This doesn't work. All it is is a failed attempt to add scaling to DrawString,
+	//which suggestion got a "[not needed]".
+	//I'm just keeping it here as an example of why every single new person just acts
+	//as though ZScript never existed.
 	void DrawScalableText(string text,double x,double y,vector2 scale,font usefont,color colour){
 		vector2 scl=(1./scale.x,1./scale.y);
 		double width =int(Screen.GetWidth()*scl.x);
 		double height=int(Screen.GetHeight()*scl.y);
-		x*=Screen.GetWidth()/400;
-		y*=Screen.GetWidth()/250;
+		x*=scl.x*Screen.GetWidth()/400;
+		y*=scl.y*Screen.GetHeight()/250;
 		screen.drawtext(usefont,colour,
 			int((width*0.5)+x-usefont.StringWidth(text)),
 			int((height*0.5)+y),
