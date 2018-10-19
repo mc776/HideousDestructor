@@ -465,6 +465,20 @@ class HDStatusBar:DoomStatusBar{
 			);
 		}
 	}
+	void DrawScalableText(string text,double x,double y,vector2 scale,font usefont,color colour){
+		vector2 scl=(1./scale.x,1./scale.y);
+		double width =int(Screen.GetWidth()*scl.x);
+		double height=int(Screen.GetHeight()*scl.y);
+		x*=Screen.GetWidth()/400;
+		y*=Screen.GetWidth()/250;
+		screen.drawtext(usefont,colour,
+			int((width*0.5)+x-usefont.StringWidth(text)),
+			int((height*0.5)+y),
+			text,DTA_KeepRatio,true,
+			DTA_VIRTUALWIDTH,int(width),
+			DTA_VIRTUALHEIGHT,int(height)
+		);
+	}
 	void DrawInvSel(int posx,int posy,int numposx,int numposy,int flags){
 		if(CPlayer.mo.InvSel){
 			inventory ivs=cplayer.mo.invsel;
