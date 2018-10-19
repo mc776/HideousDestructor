@@ -39,8 +39,7 @@ extend class HDStatusBar{
 
 
 		//all weapon sights go here
-		double scl=clamp(cvar.getcvar("hd_xhscale",cplayer).getfloat(),0.1,3.0);
-		scl*=fov/90.; //engine automatically clamps if you try fov 0
+		double scl=clamp(cvar.getcvar("hd_xhscale",cplayer).getfloat(),0.1,3.0)*fov/90.;
 		SetSize(0,400*scl,250*scl);
 		BeginHUD(forcescaled:true);
 
