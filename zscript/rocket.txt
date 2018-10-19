@@ -18,8 +18,7 @@ extend class HDWeapon{
 		else if(justpressed(BT_ALTATTACK))cab=1;
 		else if(player.cmd.pitch){
 			cab=(-player.cmd.pitch>>5);
-			player.cmd.pitch=0;player.cmd.yaw=0;
-//let ppp=hdplayerpawn(self);if(ppp)ppp.mousehijacked=true;
+			HijackMouse();
 		}
 		int abb=invoker.airburst+cab;
 		if(cab<0&&abb<10)abb=0;

@@ -104,6 +104,12 @@ class HDWeapon:Weapon{
 		eventhandler.sendnetworkevent("hd_findrange",0,0,0);
 	}
 
+	//stops turning input
+	action void HijackMouse(){
+		let ppp=hdplayerpawn(self);if(ppp)ppp.mousehijacked=true;
+		else player.cmd.pitch=0;player.cmd.yaw=0;
+	}
+
 	//zoom adjuster for rifles
 	action void A_ZoomAdjust(int slot,int minzoom,int maxzoom,int secondbutton=BT_USER2){
 		if(!PressingZoom()){
@@ -116,8 +122,7 @@ class HDWeapon:Weapon{
 		}
 		int inputamt=player.cmd.pitch>>5;
 		inputamt+=(justpressed(BT_ATTACK)?1:justpressed(BT_ALTATTACK)?-1:0);
-		player.cmd.pitch=0;player.cmd.yaw=0;
-//let ppp=hdplayerpawn(self);if(ppp)ppp.mousehijacked=true;
+		HijackMouse();
 		invoker.weaponstatus[slot]=clamp(
 			invoker.weaponstatus[slot]-inputamt,minzoom,maxzoom
 		);
