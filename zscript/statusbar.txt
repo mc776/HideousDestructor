@@ -213,6 +213,7 @@ class HDStatusBar:DoomStatusBar{
 		int mhht=-4-mHUDFont.mFont.getheight();
 
 		//inventory
+		DrawSurroundingInv(25,-4,42,mxht,DI_SCREEN_CENTER_BOTTOM);
 		DrawInvSel(25,-4,42,mxht,DI_SCREEN_CENTER_BOTTOM);
 
 		//keys
@@ -494,6 +495,35 @@ class HDStatusBar:DoomStatusBar{
 
 			drawstring(mAmountFont,FormatNumber(ivs.amount),
 				(numposx,numposy),flags|DI_TEXT_ALIGN_RIGHT,Font.CR_OLIVE
+			);
+		}
+	}
+	void DrawSurroundingInv(int posx,int posy,int numposx,int numposy,int flags){
+		int i=0;
+		int thisindex=0;
+		inventory item;
+		array<inventory> items;
+		for(item=cplayer.mo.inv;item!=NULL;item=item.inv){
+			if(!item||!item.binvbar)continue;
+			items.push(item);
+			if(item==cplayer.mo.invsel)thisindex=i;
+			i++;
+		}
+		if(items.size()<2)return;
+		int lastindex=items.size()-1;
+		int previndex=thisindex?thisindex-1:lastindex;
+		int nextindex=thisindex==lastindex?0:thisindex+1;
+		inventory drawitems[2];
+		if(items.size()>2)drawitems[0]=items[previndex];
+		drawitems[1]=items[nextindex];
+		for(i=0;i<2;i++){
+			if(!drawitems[i])continue;
+			textureid icon=getinventoryicon(drawitems[i],0);
+			int xoffs=!i?-10:10;
+			drawtexture(icon,
+				(posx+xoffs,posy-17),
+				flags|DI_ITEM_CENTER_BOTTOM,
+				alpha:0.6,scale:(0.6,0.6)
 			);
 		}
 	}
