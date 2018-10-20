@@ -657,6 +657,15 @@ class LingeringThunder:IdleDummy{
 		actor bsfl=spawn("BeamSpotFlashLight",victim.pos);
 		bsfl.target=victim;
 		if(!nodmg)victim.damagemobj(inflictor,source,zappower,"Electro",source&&source.player?DMG_PLAYERATTACK:0);
+
+		if(
+			victim.bcorpse
+			&&victim.mass
+			&&!!victim.findstate("dead")
+		){
+			victim.vel.z+=3.*zappower/victim.mass;
+		}
+
 		return zappower;
 	}
 	states{
