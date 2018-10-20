@@ -447,14 +447,14 @@ class BeamSpot:HDActor{
 
 		//"open" a door
 		//not ready for prime time yet
-		//doordestroyer.destroydoor(self,160,32);
+		doordestroyer.destroydoor(self,frandom(16,96),frandom(16,64));
 	}
 	void A_CheckNeighbourSpots(){
 		array<actor>beamspots;
 		actoriterator it=actoriterator.create(TB_BEAMSPOTTID,"BeamSpot");
 		while(master=it.Next()){
-			double dist=master.distance3d(self)/100;
-			if(master && dist<12){
+			double dist=master.distance3d(self)*0.01;
+			if(master && dist<8){
 				stamina+=21-dist;
 				if(master!=self)beamspots.push(master);
 				if(master.stamina>21)master.setstatelabel("glow");
