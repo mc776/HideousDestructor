@@ -87,6 +87,7 @@ class ThunderBuster:HDWeapon{
 		if(alt){
 			if(tlt.hittype==Trace_HitNone||tlt.distance>2000)return;
 			actor bbb=spawn("BeamSpotFlash",tlt.hitlocation-tlt.hitdir);
+			if(!random(0,3))(lingeringthunder.zap(bbb,bbb,caller,40,true));
 			beamspotflash(bbb).impactdistance=tlt.distance-16*battery;
 			bbb.angle=caller.angle;
 			bbb.A_SprayDecal("Scorch",12);
@@ -548,7 +549,7 @@ class BeamSpotFlash:IdleDummy{
 			tracer.damagemobj(self,target,random(n1,n),"Electro",dmgflags);
 		}
 		A_HDBlast(
-			n,random(n2,n),0,"Electro",
+			n*2,random(1,n),n,"Electro",
 			n,-n,
 			immolateradius:n1,immolateamount:random(4,8)*(n2*-0.1),immolatechance:n,
 			gibradius:12,gibamount:random(4,n)
