@@ -154,7 +154,7 @@ class ThunderBuster:HDWeapon{
 
 		//aftereffects
 		if(invoker.weaponstatus[0]&TBF_ALT){
-			if(!random(0,5))invoker.weaponstatus[TBS_BATTERY]--;
+			if(!random(0,4))invoker.weaponstatus[TBS_BATTERY]--;
 			A_MuzzleClimb(
 				frandom(0.05,0.2),frandom(-0.2,-0.4),
 				frandom(0.1,0.3),frandom(-0.2,-0.6),
@@ -162,7 +162,7 @@ class ThunderBuster:HDWeapon{
 				frandom(0.01,0.03),frandom(-0.1,-0.2)
 			);
 			invoker.weaponstatus[TBS_HEAT]+=6;
-		}else if(!random(0,8))invoker.weaponstatus[TBS_BATTERY]--;
+		}else if(!random(0,6))invoker.weaponstatus[TBS_BATTERY]--;
 		invoker.weaponstatus[TBS_HEAT]+=random(0,3);
 
 		//update range thingy
