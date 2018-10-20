@@ -79,19 +79,14 @@ class Vulcanette:HDWeapon{
 			}
 		}loop;
 
-
-	altfire:
-	firemode:
-		GTLG A 1{
-			invoker.weaponstatus[0]^=VULCF_FAST;
-			A_WeaponReady(WRF_NOFIRE);
-		}goto nope;
-
 	ready:
 		GTLG A 1{
 			A_SetCrosshair(21);
 			if(pressingzoom())A_ZoomAdjust(VULCS_ZOOM,16,70);
-			else A_WeaponReady(WRF_ALL);
+			else{
+				if(justpressed(BT_FIREMODE|BT_ALTFIRE))invoker.weaponstatus[0]^=VULCF_FAST;
+				A_WeaponReady(WRF_ALL);
+			}
 		}
 		goto readyend;
 
