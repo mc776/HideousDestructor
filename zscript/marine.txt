@@ -118,6 +118,21 @@ class HDMarine:HDActor replaces ScriptedMarine{
 		super.postbeginplay();
 		hdmobster.spawnmobster(self);
 	}
+	int lastinginjury;
+	override int damagemobj(
+		actor inflictor,actor source,int damage,
+		name mod,int flags,double angle
+	){
+		if(
+			damage>=health
+			&&(mod!="bleedout"||random(0,12))
+			&&damage<random(12,300)
+		){
+			lastinginjury+=max(1,(damage>>5));
+			damage=min(damage,health-1);
+		}
+		return super.damagemobj(inflictor,source,damage,mod,flags,angle);
+	}
 	void noblockwepdrop(){
 		A_NoBlocking();
 		if(hasdropped){
@@ -275,10 +290,9 @@ class HDMarine:HDActor replaces ScriptedMarine{
 		return aimadjust;
 	}
 	actor A_MarineShot(class<actor> missiletype,bool userocket=false){
-		actor mmm=spawn(missiletype,pos);
+		actor mmm=spawn(missiletype,pos+(0,0,height-6));
 		mmm.pitch=pitch+frandom(0,spread)-frandom(0,spread);
 		mmm.angle=angle+frandom(0,spread)-frandom(0,spread);
-		mmm.addz(height-6);
 		mmm.target=self;
 
 		//one very special case
@@ -327,6 +341,9 @@ class HDMarine:HDActor replaces ScriptedMarine{
 		}
 		#### A 0{
 			HealThing(1);
+			speed=max(0,16-random((lastinginjury>>1),lastinginjury));
+			if(lastinginjury>0&&!random(0,50+lastinginjury))lastinginjury--;
+
 			A_SetSolid();
 			if(
 				(
@@ -427,6 +444,11 @@ class HDMarine:HDActor replaces ScriptedMarine{
 				)
 			){
 				return;
+			}
+			if(lastinginjury>0){
+				double lic=min(lastinginjury,20);
+				angle+=frandom(-0.4,0.4)*lic;
+				pitch+=frandom(-0.5,0.2)*lic;
 			}
 
 			//grenade
@@ -763,7 +785,10 @@ class HDMarine:HDActor replaces ScriptedMarine{
 		#### G 3 A_Pain();
 		#### G 0 A_Jump(100,"see");
 		#### AB 2 A_FaceTarget(50,50);
-		#### CD 3 A_FastChase();
+		#### CD 3{
+			hdmobai.chase(self);
+			A_ChangeVelocity(frandom(-1,1),randompick(-1,1)*min(12,12-random(0,lastinginjury>>3)),0,CVF_RELATIVE);
+		}
 		#### G 0 A_CPosRefire();
 		goto missile;
 
@@ -794,6 +819,7 @@ class HDMarine:HDActor replaces ScriptedMarine{
 		wait;
 	raise:
 		#### A 0{
+			lastinginjury=random(0,(lastinginjury>>3));
 			A_SetSolid();
 			if(bfriendly)bpushable=true;
 			hdmobai.corpseflags(self,true,true);
