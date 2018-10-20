@@ -109,7 +109,7 @@ class HDStatusBar:DoomStatusBar{
 		DrawArmour((4,86),DI_TOPLEFT);
 
 		//inventory
-		DrawInvSel(6,110,10,109,DI_TOPLEFT);
+		DrawInvSel(6,100,10,109,DI_TOPLEFT);
 		if(hpl.countinv("WornRadsuit"))drawimage("SUITC0",(11,137),DI_TOPLEFT);
 
 		//guns
@@ -216,7 +216,7 @@ class HDStatusBar:DoomStatusBar{
 
 		//inventory
 		DrawSurroundingInv(25,-4,42,mxht,DI_SCREEN_CENTER_BOTTOM);
-		DrawInvSel(25,-4,42,mxht,DI_SCREEN_CENTER_BOTTOM);
+		DrawInvSel(25,-14,42,mxht,DI_SCREEN_CENTER_BOTTOM);
 
 		//keys
 		string keytype="";
@@ -471,7 +471,7 @@ class HDStatusBar:DoomStatusBar{
 		if(CPlayer.mo.InvSel){
 			inventory ivs=cplayer.mo.invsel;
 			drawinventoryicon(ivs,(posx,posy),
-				flags|DI_ITEM_CENTER_BOTTOM
+				flags|DI_ITEM_CENTER
 				|((
 					ivs is "HDArmour"
 					||ivs is "PortableStimpack"

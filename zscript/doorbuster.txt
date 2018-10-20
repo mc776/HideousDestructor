@@ -279,6 +279,7 @@ class DoorBuster:HDPickup{
 		inventory.maxamount 5;
 		hdpickup.bulk ENC_DOORBUSTER;
 		inventory.pickupmessage "Picked up a Door Buster.";
+		inventory.icon "BGRNA3A7";
 	}
 	action void A_PlantDB(){
 		if(invoker.amount<1){
@@ -335,7 +336,7 @@ class DoorBuster:HDPickup{
 	}
 	states{
 	spawn:
-		BAL1 A -1;
+		BGRN A -1;
 		stop;
 	use:
 		TNT1 A 0 A_PlantDB();
@@ -352,6 +353,7 @@ class DoorBusterPlanted:HDUPK{
 	default{
 		+nogravity
 		height 4;radius 3;
+		scale 0.6;
 	}
 	override void OnGrab(actor grabber){
 		actor dbbb=spawn("DoorBuster",pos,ALLOW_REPLACE);
@@ -378,7 +380,7 @@ class DoorBusterPlanted:HDUPK{
 	}
 	states{
 	spawn:
-		BAL1 A 1 A_DBStuck();
+		BGRN A 1 A_DBStuck();
 		loop;
 	unstucknow:
 		---- A 2 A_PlaySound("misc/fragknock",5);
@@ -412,10 +414,19 @@ class DoorBusterPlanted:HDUPK{
 	}
 }
 class DoorBusterSpent:HDDebris{
+	default{
+		+rollsprite +rollcenter
+		scale 0.6;
+	}
+	void A_Spin(){
+		roll+=20;
+	}
 	states{
 	spawn:
+		BGRN B 2 A_Spin();
+		loop;
 	death:
-		BAL1 A -1;
+		BGRN B -1;
 		stop;
 	}
 }
