@@ -267,9 +267,10 @@ extend class HDStatusBar{
 			);
 
 			if(scopeview){
+				bool alt=wp.weaponstatus[0]&TBF_ALT;
 				int scaledyoffset=36;
 				texman.setcameratotexture(hpc,"HDXHCAM1",3);
-				drawimage(
+				if(!alt||hpl.flip)drawimage(
 					"HDXHCAM1",(0,scaledyoffset)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
 					scale:(1,1)
 				);
