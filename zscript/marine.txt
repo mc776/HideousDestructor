@@ -125,8 +125,11 @@ class HDMarine:HDActor replaces ScriptedMarine{
 	){
 		if(
 			damage>=health
-			&&(mod!="bleedout"||random(0,12))
 			&&damage<random(12,300)
+			&&(
+				(mod=="bleedout"&&random(0,12))
+				||(random(0,7))
+			)
 		){
 			lastinginjury+=max(1,(damage>>5));
 			damage=min(damage,health-1);
@@ -431,7 +434,10 @@ class HDMarine:HDActor replaces ScriptedMarine{
 			}
 			A_FaceTarget(0,0); //can't lead without this
 			double dist=distance3d(target);
-			A_SetTics(clamp(dist*0.002,0,30));
+
+			int settics=clamp(dist*0.002,0,30);
+			if(lastinginjury>0)settics+=random(0,min(lastinginjury,(35*5)));
+			A_SetTics(settics);
 		}
 		#### E 4{
 			if(!target)return;
@@ -446,7 +452,7 @@ class HDMarine:HDActor replaces ScriptedMarine{
 				return;
 			}
 			if(lastinginjury>0){
-				double lic=min(lastinginjury,20);
+				double lic=min(lastinginjury,10);
 				angle+=frandom(-0.4,0.4)*lic;
 				pitch+=frandom(-0.5,0.2)*lic;
 			}

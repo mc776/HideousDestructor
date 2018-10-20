@@ -420,11 +420,13 @@ class BeamSpot:HDActor{
 
 		//blast heat and shit		
 		A_HDBlast(
-			420,random(24,42)*10,128,"SmallArms0",
-			pushradius:420,pushamount:420,
-			immolateradius:256,immolateamount:-200,immolatechance:90,
+			256,random(96,256),128,"SmallArms0",
+			pushradius:256,pushamount:256,
+			immolateradius:128,immolateamount:-200,immolatechance:90,
 			gibradius:64,gibamount:random(2,4)*30
 		);
+		actor ltt=spawn("LingeringThunder",pos);
+		ltt.target=target;
 
 		A_SprayDecal("BusterScorch",14);
 		spawn("DistantRocket",pos);
@@ -580,4 +582,73 @@ class BeamSpotFlashLight:PointLight{
 		if(args[3]<1)destroy();
 	}
 }
+
+
+//Ionized is the ground because of you
+class LingeringThunder:IdleDummy{
+	int startingstamina;
+	default{
+		stamina 256;
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		startingstamina=stamina;
+	}
+	void A_Zap(){
+		if(stamina<1){destroy();return;}
+		stamina-=5;
+		blockthingsiterator zit=blockthingsiterator.create(self,96+(stamina>>2));
+		int icount=0;
+		while(zit.next()){
+			actor zt=zit.thing;
+			if(
+				(!zt.bshootable&&!zt.bsolid)
+				||zt.floorz<zt.pos.z
+				||random(0,3)
+				||!checksight(zt)
+			)continue;
+			//create arc
+			double ztr=zt.radius;
+			vector3 nodes[4];
+			int len=min(35,stamina);
+			nodes[0]=zt.pos+(frandom(-ztr,ztr),frandom(-ztr,ztr),frandom(0,zt.height));
+			nodes[1]=nodes[0]+(frandom(-len,len),frandom(-len,len),frandom(-len,len));
+			nodes[2]=nodes[1]+(frandom(-len,len),frandom(-len,len),frandom(-(len>>1),len));
+			nodes[3]=nodes[2]+(frandom(-len,len),frandom(-len,len),frandom(-len*2/3,(len>>1)));
+			for(int i=1;i<4;i++){
+				vector3 pastnode=nodes[i-1];
+				vector3 particlepos=nodes[i]-pastnode;
+				int iterations=particlepos.length();
+				vector3 particlemove=particlepos/iterations;
+				particlepos=pastnode-zt.pos;
+				for(int i=0;i<iterations;i++){
+					zt.A_SpawnParticle("white",
+						SPF_RELATIVE|SPF_FULLBRIGHT,(len>>1),frandom(1,7),0,
+						particlepos.x,particlepos.y,particlepos.z,
+						frandom(-0.1,0.1),frandom(-0.1,0.1),frandom(0.1,0.2),
+						frandom(-0.1,0.1),frandom(-0.1,0.1),-0.05
+					);
+					particlepos+=particlemove+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
+				}
+			}
+
+			int zappower=random(stamina>>2,stamina>>1);
+			zt.damagemobj(self,target,zappower,"Electro");
+			hdf.give(zt,"sawgib",zappower>>3);
+			zt.A_PlaySound("weapons/plasidle",CHAN_BODY,frandom(0.2,0.6));
+			zt.A_PlaySound("misc/wallchunks",5);
+			zt.A_PlaySound("weapons/bigcrack",6,frandom(0.2,0.6));
+			actor bsfl=spawn("BeamSpotFlashLight",zt.pos);
+			bsfl.target=zt;
+			stamina-=max(2,zappower>>4);
+		}
+		A_SetTics(max(1,min(random(4,24),sqrt(startingstamina-stamina))));
+	}
+	states{
+	spawn:
+		TNT1 A 1 A_Zap();
+		wait;
+	}
+}
+
 
