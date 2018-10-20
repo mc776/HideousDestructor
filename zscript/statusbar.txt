@@ -500,13 +500,30 @@ class HDStatusBar:DoomStatusBar{
 	}
 	void DrawSurroundingInv(int posx,int posy,int numposx,int numposy,int flags){
 		int i=0;
-		int thisindex=0;
+		int thisindex=-1;
 		inventory item;
 		array<inventory> items;
 		for(item=cplayer.mo.inv;item!=NULL;item=item.inv){
 			if(!item||!item.binvbar)continue;
 			items.push(item);
 			if(item==cplayer.mo.invsel)thisindex=i;
+
+			if(!gimmehud){
+				textureid icon=getinventoryicon(item,0);
+				int xoffs=(i%5)*20;
+				bool isthis=i==thisindex;
+				drawtexture(icon,
+					(-18-xoffs,-56-20*(i/5)),
+					DI_ITEM_CENTER_BOTTOM|DI_SCREEN_RIGHT_BOTTOM
+					|((
+						item is "HDArmour"
+						||item is "PortableStimpack"
+						||item is "PortableMedikit"
+					)?0:DI_TRANSLATABLE),
+					alpha:isthis?1.:0.6,scale:isthis?(1.,1.):(0.6,0.6)
+				);
+			}
+
 			i++;
 		}
 		if(items.size()<2)return;
