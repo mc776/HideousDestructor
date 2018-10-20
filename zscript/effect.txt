@@ -373,6 +373,11 @@ class HDGunSmoke:HDSmoke{
 		vel+=(frandom(-0.1,0.1),frandom(-0.1,0.1),frandom(0.4,0.9));
 	}
 }
+class HDGunSmokeStill:HDGunSmoke{
+	override void postbeginplay(){
+		HDSmoke.postbeginplay();
+	}
+}
 class HDFlameRed:HDPuff{
 	default{
 		renderstyle "add";
