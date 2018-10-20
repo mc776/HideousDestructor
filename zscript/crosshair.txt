@@ -282,7 +282,7 @@ extend class HDStatusBar{
 				double dotoff=max(abs(bobb.x),abs(bobb.y));
 				if(dotoff<40)drawimage(
 					"redpxl",(0,scaledyoffset)+bobb,DI_SCREEN_CENTER|DI_ITEM_TOP,
-					alpha:0.9*(1.-dotoff*0.04),scale:(2,2)
+					alpha:(alt?0.4:0.9)*(1.-dotoff*0.04),scale:(alt||hpl.flip)?(1,1):(2,2)
 				);
 			}
 		}
