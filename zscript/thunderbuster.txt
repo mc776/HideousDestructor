@@ -113,10 +113,12 @@ class ThunderBuster:HDWeapon{
 				||!random(0,7)
 			){
 				//dry actor - ping damage and continue
+				if(!random(0,5))(lingeringthunder.zap(hitactor,hitactor,caller,40,true));
 				hitactor.damagemobj(null,caller,1,"Electro",dmgflags);
 				hdf.give(hitactor,"Heat",(basedmg>>1));
 			}else{
 				//wet actor
+				if(!random(0,7))(lingeringthunder.zap(hitactor,hitactor,caller,(basedmg<<1),true));
 				hitactor.damagemobj(null,caller,basedmg,"Electro",dmgflags);
 				hdf.give(hitactor,"Heat",(basedmg<<1));
 				actor sss=spawn("HDGunsmoke",tlt.hitlocation);
@@ -607,42 +609,46 @@ class LingeringThunder:IdleDummy{
 				||random(0,3)
 				||!checksight(zt)
 			)continue;
-			//create arc
-			double ztr=zt.radius;
-			vector3 nodes[4];
-			int len=min(35,stamina);
-			nodes[0]=zt.pos+(frandom(-ztr,ztr),frandom(-ztr,ztr),frandom(0,zt.height));
-			nodes[1]=nodes[0]+(frandom(-len,len),frandom(-len,len),frandom(-len,len));
-			nodes[2]=nodes[1]+(frandom(-len,len),frandom(-len,len),frandom(-(len>>1),len));
-			nodes[3]=nodes[2]+(frandom(-len,len),frandom(-len,len),frandom(-len*2/3,(len>>1)));
-			for(int i=1;i<4;i++){
-				vector3 pastnode=nodes[i-1];
-				vector3 particlepos=nodes[i]-pastnode;
-				int iterations=particlepos.length();
-				vector3 particlemove=particlepos/iterations;
-				particlepos=pastnode-zt.pos;
-				for(int i=0;i<iterations;i++){
-					zt.A_SpawnParticle("white",
-						SPF_RELATIVE|SPF_FULLBRIGHT,(len>>1),frandom(1,7),0,
-						particlepos.x,particlepos.y,particlepos.z,
-						frandom(-0.1,0.1),frandom(-0.1,0.1),frandom(0.1,0.2),
-						frandom(-0.1,0.1),frandom(-0.1,0.1),-0.05
-					);
-					particlepos+=particlemove+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
-				}
-			}
-
-			int zappower=random(stamina>>2,stamina);
-			zt.damagemobj(self,target,zappower,"Electro");
-			hdf.give(zt,"sawgib",zappower>>3);
-			zt.A_PlaySound("weapons/plasidle",CHAN_BODY,frandom(0.2,0.6));
-			zt.A_PlaySound("misc/wallchunks",5);
-			zt.A_PlaySound("weapons/bigcrack",6,frandom(0.2,0.6));
-			actor bsfl=spawn("BeamSpotFlashLight",zt.pos);
-			bsfl.target=zt;
+			int zappower=Zap(zt,self,target,stamina);
 			stamina-=max(2,zappower>>3);
 		}
 		A_SetTics(max(1,min(random(4,24),sqrt(startingstamina-stamina))));
+	}
+	static int Zap(actor victim,actor inflictor,actor source,int baseamount,bool nodmg=false){
+		//create arc
+		double ztr=victim.radius;
+		vector3 nodes[4];
+		int len=min(35,baseamount);
+		nodes[0]=victim.pos+(frandom(-ztr,ztr),frandom(-ztr,ztr),frandom(0,victim.height));
+		nodes[1]=nodes[0]+(frandom(-len,len),frandom(-len,len),frandom(-len,len));
+		nodes[2]=nodes[1]+(frandom(-len,len),frandom(-len,len),frandom(-(len>>1),len));
+		nodes[3]=nodes[2]+(frandom(-len,len),frandom(-len,len),frandom(-len*2/3,(len>>1)));
+		for(int i=1;i<4;i++){
+			vector3 pastnode=nodes[i-1];
+			vector3 particlepos=nodes[i]-pastnode;
+			int iterations=particlepos.length();
+			vector3 particlemove=particlepos/iterations;
+			particlepos=pastnode-victim.pos;
+			for(int i=0;i<iterations;i++){
+				victim.A_SpawnParticle("white",
+					SPF_RELATIVE|SPF_FULLBRIGHT,(len>>1),frandom(1,7),0,
+					particlepos.x,particlepos.y,particlepos.z,
+					frandom(-0.1,0.1),frandom(-0.1,0.1),frandom(0.1,0.2),
+					frandom(-0.1,0.1),frandom(-0.1,0.1),-0.05
+				);
+				particlepos+=particlemove+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
+			}
+		}
+
+		int zappower=random(baseamount>>2,baseamount);
+		if(victim.health<1)hdf.give(victim,"sawgib",zappower>>3);
+		victim.A_PlaySound("weapons/plasidle",CHAN_BODY,frandom(0.2,0.6));
+		victim.A_PlaySound("misc/wallchunks",5);
+		victim.A_PlaySound("weapons/bigcrack",6,frandom(0.2,0.6));
+		actor bsfl=spawn("BeamSpotFlashLight",victim.pos);
+		bsfl.target=victim;
+		if(!nodmg)victim.damagemobj(inflictor,source,zappower,"Electro",source&&source.player?DMG_PLAYERATTACK:0);
+		return zappower;
 	}
 	states{
 	spawn:
