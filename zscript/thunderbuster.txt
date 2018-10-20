@@ -162,7 +162,7 @@ class ThunderBuster:HDWeapon{
 				frandom(0.01,0.03),frandom(-0.1,-0.2)
 			);
 			invoker.weaponstatus[TBS_HEAT]+=6;
-		}else if(!random(0,12))invoker.weaponstatus[TBS_BATTERY]--;
+		}else if(!random(0,8))invoker.weaponstatus[TBS_BATTERY]--;
 		invoker.weaponstatus[TBS_HEAT]+=random(0,3);
 
 		//update range thingy
@@ -632,7 +632,7 @@ class LingeringThunder:IdleDummy{
 				}
 			}
 
-			int zappower=random(stamina>>2,stamina>>1);
+			int zappower=random(stamina>>2,stamina);
 			zt.damagemobj(self,target,zappower,"Electro");
 			hdf.give(zt,"sawgib",zappower>>3);
 			zt.A_PlaySound("weapons/plasidle",CHAN_BODY,frandom(0.2,0.6));
@@ -640,7 +640,7 @@ class LingeringThunder:IdleDummy{
 			zt.A_PlaySound("weapons/bigcrack",6,frandom(0.2,0.6));
 			actor bsfl=spawn("BeamSpotFlashLight",zt.pos);
 			bsfl.target=zt;
-			stamina-=max(2,zappower>>4);
+			stamina-=max(2,zappower>>3);
 		}
 		A_SetTics(max(1,min(random(4,24),sqrt(startingstamina-stamina))));
 	}
