@@ -161,7 +161,7 @@ The standard soldier kit includes green armour, a pistol, 3 frags, a DERP and on
 	Infiltrator
 	Also, unfortunately, worthy of the same description. The joy of civil forfeiture and gun lobbies.
 	Primary: SMG
-	Extra: Standard soldier kit; Blooper; extra hand grenades
+	Extra: Standard soldier kit; Blooper; Door Buster; extra hand grenades
 
 	Support Gunner
 	Squad assist gunner.
@@ -585,12 +585,21 @@ The HERP is bulky enough to count as its own weapon when encumbrance limits are 
 You can manipulate your HERPs from the console.
 Command format: herp <mode> <tag> <direction>
 Possible modes are:
-1 = On: scan for enemies and shoot on sight.
-2 = Off: stand by and do nothing.
+1 = On: scan for enemies and shoot on sight
+2 = Off: stand by and do nothing
 3 = Redirect: change base angle by the amount given in the direction parameter, going counterclockwise in degrees.
-123 = Query: show coordinates, orientation and status.
--x = Set tag: where x is any whole number.
+123 = Query: show coordinates, orientation and status
+-x = Set tag: where x is any whole number
 For more information on tags, please see the IED Kit description.
+
+Door Buster
+GZDoom actor name: DoorBuster
+Some military-grade demolition charges, because doors are a social construct.
+Command format: db <option> <tag>
+Possible options:
+999 = Detonate
+123 = Query
+-x = Set tag ("dbtag <tag>" also works)
 
 IED Kit
 GZDoom actor name: HDIEDKit
@@ -599,11 +608,11 @@ To activate the IED, make sure you have at least one IED kit and one live or dud
 You can manipulate your IEDs from the console.
 Command format: ied <mode> <tag>
 Possible modes are:
-1 = Active: detonate once an enemy is in range.
-2 = Passive: detonate only when commanded.
-999 = Detonate: detonate immediately.
-123 = Query: show coordinates and status.
--x = Set tag: where x is any whole number.
+1 = Active: detonate once an enemy is in range
+2 = Passive: detonate only when commanded
+999 = Detonate: detonate immediately
+123 = Query: show coordinates and status
+-x = Set tag
 "iedactive", "iedpassive" and "detonate" can be used in place of "ied 1", "ied 2" and "ied 999" and can all take tags.
 Tags help you sort IEDs into groups. The tag number appears in cyan in your inventory selection: that is the tag of any IED you deploy next. If you set Active, Passive, Detonate or Query and specify a tag, only those deployed IEDs of yours that have that specific tag will be affected.
 Example: I type "ied -2" and plant an IED by the door, then type "ied -3" and plant another IED down the hall, then run for cover and type "ied 2" to set all the IEDs to passive. The door opens and some monsters come through the door, and as they pass the door IED I type "ied 999 2". The door IED blasts a bunch of them, and the survivors continue down the hall. They reach the second IED, I type "ied 999 3" (or "ied 999" since I don't have anything else deployed anyway) and that IED blows up those survivors.
