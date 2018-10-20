@@ -272,11 +272,13 @@ extend class HDStatusBar{
 				texman.setcameratotexture(hpc,"HDXHCAM1",3);
 				drawimage(
 					"HDXHCAM1",(0,scaledyoffset)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
-					alpha:alt?0.8:1.,scale:(1,1)
+					alpha:alt?(hpl.flip?0.7:0.8):1.,scale:(1,1)
 				);
-				int rednum=alt?(hpl.flip?800:88):wp.weaponstatus[TBS_MAXRANGEDISPLAY];
-				drawnum(rednum,
+				drawnum(wp.weaponstatus[TBS_MAXRANGEDISPLAY],
 					24+bob.x,12+bob.y,DI_SCREEN_CENTER,Font.CR_RED,0.4
+				);
+				if(alt)drawnum(2000/HDCONST_ONEMETRE,
+					23+bob.x,11+bob.y,DI_SCREEN_CENTER,Font.CR_BLACK,1.
 				);
 				drawimage(
 					"tbwindow",(0,scaledyoffset)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
