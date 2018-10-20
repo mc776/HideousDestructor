@@ -602,6 +602,7 @@ class LingeringThunder:IdleDummy{
 		stamina-=5;
 		blockthingsiterator zit=blockthingsiterator.create(self,96+(stamina>>2));
 		int icount=0;
+		bool haszapped=false;
 		while(zit.next()){
 			actor zt=zit.thing;
 			if(
@@ -610,8 +611,15 @@ class LingeringThunder:IdleDummy{
 				||random(0,3)
 				||!checksight(zt)
 			)continue;
+			haszapped=true;
 			int zappower=Zap(zt,self,target,stamina);
 			stamina-=max(2,zappower>>3);
+		}
+		if(!haszapped){
+			double oldrad=radius;
+			a_setsize(stamina,height);
+			Zap(self,self,target,stamina,true);
+			a_setsize(oldrad,height);
 		}
 		A_SetTics(max(1,min(random(4,24),sqrt(startingstamina-stamina))));
 	}
