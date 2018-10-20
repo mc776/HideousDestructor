@@ -12,6 +12,11 @@ extend class HDStatusBar{
 		);
 	}
 	virtual void DrawHDXHair(hdplayerpawn hpl){
+		if(
+			!(cplayer.cmd.buttons&(BT_USE|BT_ZOOM))
+			&&cvar.getcvar("hd_hudusedelay",cplayer).getint()<-1
+		)return;
+
 		let wp=hdweapon(cplayer.readyweapon);
 		bool sightbob=cvar.getcvar("hd_sightbob",cplayer).getbool();
 		vector2 bob=hpl.hudbob;

@@ -206,6 +206,8 @@ class HDStatusBar:DoomStatusBar{
 		);
 	}
 	void DrawCommonStuff(int state){
+		if(!(cplayer.cmd.buttons&BT_USE)&&cvar.getcvar("hd_hudusedelay",cplayer).getint()<0)return;
+
 		let cp=HDPlayerPawn(CPlayer.mo);
 		if(!cp)return;
 
@@ -498,7 +500,7 @@ class HDStatusBar:DoomStatusBar{
 			);
 		}
 	}
-	void DrawSurroundingInv(int posx,int posy,int numposx,int numposy,int flags){
+	void DrawSurroundingInv(int posx,int posy,int numposx,int numposy,int flags,int drawfull=true){
 		int i=0;
 		int thisindex=-1;
 		inventory item;
@@ -508,7 +510,7 @@ class HDStatusBar:DoomStatusBar{
 			items.push(item);
 			if(item==cplayer.mo.invsel)thisindex=i;
 
-			if(!gimmehud){
+			if(drawfull&&!gimmehud){
 				textureid icon=getinventoryicon(item,0);
 				int xoffs=(i%5)*20;
 				bool isthis=i==thisindex;
