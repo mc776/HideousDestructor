@@ -656,8 +656,8 @@ class LingeringThunder:IdleDummy{
 		victim.A_PlaySound("weapons/bigcrack",6,frandom(0.2,0.6));
 		actor bsfl=spawn("BeamSpotFlashLight",victim.pos);
 		bsfl.target=victim;
-		if(!nodmg)victim.damagemobj(inflictor,source,zappower,"Electro",source&&source.player?DMG_PLAYERATTACK:0);
 
+		//make bodies spasm
 		if(
 			victim.bcorpse
 			&&victim.bshootable
@@ -667,6 +667,7 @@ class LingeringThunder:IdleDummy{
 			victim.vel.z+=3.*zappower/victim.mass;
 		}
 
+		if(!nodmg)victim.damagemobj(inflictor,source,zappower,"Electro",source&&source.player?DMG_PLAYERATTACK:0);
 		return zappower;
 	}
 	states{
