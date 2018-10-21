@@ -83,10 +83,11 @@ class Vulcanette:HDWeapon{
 		GTLG A 1{
 			A_SetCrosshair(21);
 			if(pressingzoom())A_ZoomAdjust(VULCS_ZOOM,16,70);
-			else{
-				if(justpressed(BT_FIREMODE|BT_ALTFIRE))invoker.weaponstatus[0]^=VULCF_FAST;
-				A_WeaponReady(WRF_ALL);
-			}
+			else if(justpressed(BT_FIREMODE|BT_ALTFIRE)){
+				invoker.weaponstatus[0]^=VULCF_FAST;
+				A_PlaySound("weapons/rifleclick2",7,0.4);
+				A_WeaponReady(WRF_NONE);
+			}else A_WeaponReady(WRF_ALL);
 		}
 		goto readyend;
 

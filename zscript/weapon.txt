@@ -243,6 +243,7 @@ class HDWeapon:Weapon{
 	action bool PressingUser3(){return player.cmd.buttons&BT_USER3;}
 	action bool PressingUnload(){return player.cmd.buttons&BT_USER4;}
 	action bool PressingUse(){return player.cmd.buttons&BT_USE;}
+	action bool Pressing(int whichbuttons){return player.cmd.buttons&whichbuttons;}
 	action bool JustPressed(int whichbutton){return(
 		player.cmd.buttons&whichbutton&&!(player.oldbuttons&whichbutton)
 	);}
