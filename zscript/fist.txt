@@ -7,7 +7,7 @@ class HDFistPuncher:IdleDummy{
 		stamina 1;
 	}
 }
-class Ring:HDWeapon replaces Fist{
+class HDFist:HDWeapon replaces Fist{
 	int targettimer;
 	int targethealth;
 	int targetspawnhealth;
@@ -27,8 +27,8 @@ class Ring:HDWeapon replaces Fist{
 	}
 	override inventory CreateTossable(int amount){
 		owner.A_GiveInventory("DropMisc");
-		owner.A_GiveInventory("Ring");
-		owner.A_SelectWeapon("Ring");
+		owner.A_GiveInventory("HDFist");
+		owner.A_SelectWeapon("HDFist");
 		return null;//super.createtossable(amount);
 	}
 	override void DoEffect(){

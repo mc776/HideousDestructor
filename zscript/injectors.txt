@@ -116,7 +116,7 @@ class HDStimpacker:HDWoundFixer{
 		TNT1 A 0{
 			if(!countinv(invoker.inventorytype)){
 				if(getcvar("hd_helptext"))A_WeaponMessage(invoker.noerror);
-				A_SelectWeapon("Ring");
+				A_SelectWeapon("HDFist");
 			}else if(getcvar("hd_helptext"))A_WeaponMessage("\cd<<< \cjSTIMPACK \cd>>>\c-\n\n\nStimpacks help reduce\nbleeding temporarily\n\nand boost performance when injured.\n\n\Press altfire to use on someone else.\n\n\cgDO NOT OVERDOSE.");
 		}
 		goto super::select;
@@ -124,7 +124,7 @@ class HDStimpacker:HDWoundFixer{
 		TNT1 A 1;
 		TNT1 A 0 A_Refire("deselecthold");
 		TNT1 A 0{
-			A_SelectWeapon("Ring");
+			A_SelectWeapon("HDFist");
 			A_WeaponReady(WRF_NOFIRE);
 		}goto nope;
 	fire:
@@ -285,7 +285,7 @@ class HDBerserker:HDStimpacker{
 		TNT1 A 0{
 			if(!countinv(invoker.inventorytype)){
 				if(getcvar("hd_helptext"))A_WeaponMessage(invoker.noerror);
-				A_SelectWeapon("Ring");
+				A_SelectWeapon("HDFist");
 			}else if(getcvar("hd_helptext"))A_WeaponMessage("\cr*** \caBERSERK \cr***\c-\n\n\nBerserk packs help increase\ncombat capabilities temporarily.\n\n\Press altfire to use on someone else.");
 		}
 		goto HDWoundFixer::select;
@@ -303,9 +303,9 @@ class InjectZerkDummy:InjectStimDummy{
 		TNT1 A 1{
 			if(tg.zerk<666){
 				tg.A_PlaySound("*xdeath",CHAN_VOICE);
-				if(!(tg.player.readyweapon is "Ring"))
+				if(!(tg.player.readyweapon is "HDFist"))
 					tg.DropInventory(tg.player.readyweapon);
-				tg.A_SelectWeapon("Ring");
+				tg.A_SelectWeapon("HDFist");
 			}else{
 				tg.A_PlaySound("*pain",CHAN_VOICE);
 			}
@@ -360,7 +360,7 @@ class HDBlueBottler:HDWoundFixer{
 		TNT1 A 0{
 			if(!countinv("BluePotion")){
 				if(getcvar("hd_helptext"))A_WeaponMessage("No potion.");
-				A_SelectWeapon("Ring");
+				A_SelectWeapon("HDFist");
 			}else if(getcvar("hd_helptext"))A_WeaponMessage("\ct\(\(\( \cnPOTION \ct\)\)\)\c-\n\n\nNot made\nby human hands.\n\nBeware.");
 			A_PlaySound("misc/casing",CHAN_WEAPON);
 		}
@@ -369,7 +369,7 @@ class HDBlueBottler:HDWoundFixer{
 		TNT1 A 1;
 		TNT1 A 0 A_Refire("deselecthold");
 		TNT1 A 0{
-			A_SelectWeapon("Ring");
+			A_SelectWeapon("HDFist");
 			A_WeaponReady(WRF_NOFIRE);
 		}goto nope;
 	fire:

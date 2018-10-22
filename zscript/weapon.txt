@@ -40,7 +40,7 @@ class HDWeapon:Weapon{
 	}
 	//use target to help a dropped weapon remember its immediately prior owner
 	override void detachfromowner(){
-		if(owner.player&&!owner.player.readyweapon)owner.A_SelectWeapon("Ring");
+		if(owner.player&&!owner.player.readyweapon)owner.A_SelectWeapon("HDFist");
 		angle=owner.angle;pitch=owner.pitch;
 		target=owner;
 		super.detachfromowner();
@@ -98,7 +98,7 @@ class HDWeapon:Weapon{
 		if(
 			player&&
 			p&&!p.beatcount&&p.zerk>900
-			&&!random(0,(invoker is "Ring")?20:100)
+			&&!random(0,(invoker is "HDFist")?20:100)
 		)player.cmd.buttons|=BT_ATTACK;
 	}
 

@@ -63,9 +63,9 @@ extend class HDPlayerPawn{
 							if(!random(0,4))A_Pain();
 							else if(!random(0,3))aggravateddamage++;
 						}
-						if(!(player.readyweapon is "Ring")){
+						if(!(player.readyweapon is "HDFist")){
 							DropInventory(player.readyweapon);
-							A_SelectWeapon("Ring");
+							A_SelectWeapon("HDFist");
 						}
 					}
 				}else if(zerk>4000){
@@ -74,9 +74,9 @@ extend class HDPlayerPawn{
 					vel+=(frandom(-0.5,0.5),frandom(-0.5,0.5),frandom(-0.5,0.5));
 					if(!random(0,3)){
 						healthing(1);
-						if(!(player.readyweapon is "Ring")){
+						if(!(player.readyweapon is "HDFist")){
 							DropInventory(player.readyweapon);
-							A_SelectWeapon("Ring");
+							A_SelectWeapon("HDFist");
 						}
 					}
 				}else{
