@@ -1,130 +1,118 @@
 // ------------------------------------------------------------
-// Killer Barrel
+// Killer(?) Barrel
 // ------------------------------------------------------------
-class SuspiciousBarrel:IdleDummy replaces ExplosiveBarrel{
-	override void postbeginplay(){
-		super.postbeginplay();
-		actor a;
-		if(
-			(random(1,100)<=hd_killerbarrels)
-			&& !sv_nomonsters
-		){
-			a=spawn("KillerBarrel",pos,ALLOW_REPLACE);
-		}
-		else a=spawn("InnocentBarrel",pos,ALLOW_REPLACE);
-		a.master=self.master;a.target=self.target;
-	}
-}
-
-class KillerBarrel:HDActor{
+class HDBarrel:HDActor replaces ExplosiveBarrel{
+	int musthavegremlin;
+	property musthavegremlin:musthavegremlin;
+	class<actor> lighttype;
+	property lighttype:lighttype;
 	default{
 		//$Category "Monsters/Hideous Destructor"
 		//$Title "Killer Barrel"
 		//$Sprite "BAR1A0"
 
-//		+ismonster //sprite clipping yay
 		+solid +shootable
-		+countkill +canpushwalls +activatemcross +canpass +nodropoff
-		+ambush +ghost +lookallaround
+		+activatemcross +canpass +nodropoff
 		+fixmapthingpos +dontgib +pushable
 		damagefactor "Thermal",1.2;
 		damagefactor "Balefire",0.1;
-		radius 11;height 34;deathheight 34;
-		health 100;speed 1;mass 100;gibhealth 200;
-		painchance 120;
+		radius 11;height 34;
+		health 100;mass 100;gibhealth 200;
+		painchance 256;
 		pushfactor 0.1;
-		painsound "barrel/pain";deathsound "world/barrelx";
+		deathsound "world/barrelx";
 		translation "176:191=96:111","64:79=104:111";
 
 		bloodcolor "ba ff 86";bloodtype "NotQuiteBloodSplat";
 		obituary "%o was rolled by a barrel.";
 		attacksound "misc/bloodchunks";
-		deathheight 4;
+
+		hdbarrel.musthavegremlin 0; //0 random, -1 never, 1 always
+		hdbarrel.lighttype "HDBarrelLight";
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		if(
+			self is "HDFireCan"
+			&&(
+				!hdmath.checklump("FCANA0")
+				||!hdmath.checklump("FIREC0") //apparently D1 *has* FCAN just not FIRE!?
+			)
+		){
+			A_SpawnItemEx("HDBarrel",flags:SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS);
+			destroy();return;
+		}
+		if(
+			musthavegremlin>0
+			||(
+				!musthavegremlin
+				&&!sv_nomonsters
+				&&(random(0,99)<hd_killerbarrels)
+			)
+		){
+			painsound="barrel/pain";
+			A_SpawnItemEx("BarrelGremlin",flags:SXF_NOCHECKPOSITION|SXF_SETMASTER);
+		}
+		A_SpawnItemEx(lighttype,flags:SXF_NOCHECKPOSITION|SXF_SETTARGET);
+	}
+	void A_BarrelMove(){
+		if(floorz!=pos.z)return;
+		A_FaceTarget();
+		angle+=random(-135,135);
+		A_PlaySound("barrel/walk",CHAN_BODY);
+		vel.xy+=(cos(angle),sin(angle))*5;
+		setstatelabel("inertjiggle");
+	}
+	virtual void A_BarrelAttack(){
+		A_FaceTarget(0,0);
+		if(
+			target.checksight(self)
+			&&HDMobAI.TryShoot(self,32,128,9,9)
+		){
+			A_FaceTarget(0,0);
+			A_PlaySound(attacksound,CHAN_WEAPON);
+			A_SpawnProjectile("BaleBall",40,flags:CMF_AIMDIRECTION);
+		}
+		setstatelabel("inertjiggle");
+	}
+	void A_BarrelCheckCrowd(){
+		blockthingsiterator a=blockthingsiterator.create(self,320);
+		while(a.next()){
+			if(
+				a.thing is "BarrelExplodeMarker"
+			){
+				setstatelabel("waittoexplode");
+				return;
+			}
+		}
 	}
 	states{
 	spawn:
 		BAR1 AB 10 A_Look();
 		loop;
-	see:
-		#### AB 10{
-			if(!target || target.bkilled){
-				A_Pain();
-				target=null;
-				setstatelabel("spawn");
-				return;
-			}
-			vector3 distchecker=target.pos-pos;
-			double distsquared=distchecker dot distchecker;
-			if(
-				!random(0,9)
-				&& (
-					!(target is "PlayerPawn")
-					||(
-						!A_JumpIfInTargetLOS("null",100,JLOSF_FLIPFOV|JLOSF_TARGETLOS)
-						&&distsquared>(96*96)
-						&&distsquared<(1024*1024)
-					)
-				)
-			){
-				A_FaceTarget(0,0);
-				if(
-					target.checksight(self)
-					&&HDMobAI.TryShoot(self,32,128,9,9)
-				){
-					//shoot
-					A_FaceTarget(0,0);
-					A_PlaySound(attacksound);
-					A_SpawnProjectile("BaleBall",40,flags:CMF_AIMDIRECTION);
-				}else if(!random(0,10)){
-					//move
-					A_FaceTarget();
-					angle+=random(-135,135);
-					A_PlaySound("barrel/walk");
-					vel.xy+=(cos(angle),sin(angle))*5;
-				}
-				setstatelabel("inertjiggle2");
-			}
-			bnodropoff=true;
-		}loop;
 	pain:
 		#### B 1 A_Pain();
 	inertjiggle:
-		#### B 1 A_PlaySound("misc/bloodchunks");
-	inertjiggle2:
+		#### B 1 A_PlaySound("misc/bloodchunks",CHAN_VOICE);
 		#### ABABAABBAAABBB 1;
-		---- A 0 A_Jump(256,"see");
+		---- A 0 A_Jump(256,"spawn");
 	death:
 		#### A 0;
-	death1:
-		---- AAAAAAA 0 A_SpawnItemEx("BFGSpark",0,0,36,random(-4,4),random(-4,4),random(-4,4),0,SXF_TRANSFERPOINTERS,32);
-	death2:
 		---- A 0 A_NoBlocking();
-	death2a:
-		---- A 0{
-			A_SetSolid();
-			A_SetShootable();
-		}
+	waittoexplode:
+		---- A 0 A_SetSolid();
+		---- A 0 A_SetShootable();
 		#### ABABAB random(1,3);
-		#### B random(1,3){
-			blockthingsiterator a=blockthingsiterator.create(self,320);
-			while(a.next()){
-				if(
-					a.thing is "BarrelExplodeMarker"
-				){
-					setstatelabel("death2a");
-					return;
-				}
-			}
-		}
-		#### B 0{
+		#### B random(1,3) A_BarrelCheckCrowd();
+	reallyexplode:
+		BEXP C 0{
 			A_UnsetSolid();
 			A_UnsetShootable();
 			A_NoBlocking();
 			bsolid=false;
 			spawn("BarrelExplodeMarker",pos);
-		}
-	death2b:
-		BEXP C 0{
+
+			//set counter for spawning chunks in a crowd
 			stamina=0;
 			blockthingsiterator a=blockthingsiterator.create(self,320);
 			while(a.next()){
@@ -134,6 +122,9 @@ class KillerBarrel:HDActor{
 					stamina++;
 				}
 			}
+
+			actor xpl=spawn("HDExplosionLight",pos,ALLOW_REPLACE);
+			xpl.target=self;xpl.stamina=256;
 		}
 		BEXP CCC 1 bright{
 			if(stamina<3) A_SpawnChunks("HugeWallChunk",14,8,20);
@@ -168,7 +159,7 @@ class KillerBarrel:HDActor{
 		POB1 A -1{
 			A_PlaySound("vile/firestrt",CHAN_AUTO,0.4);
 			A_SpawnChunks("HDSmoke",8,4,12);
-		}
+		}stop;
 	}
 	virtual void A_BarrelBlast(){
 		A_HDBlast(
@@ -178,38 +169,6 @@ class KillerBarrel:HDActor{
 			128,random(10,40),36,
 			24,random(1,2)
 		);
-	}
-}
-class InnocentBarrel:KillerBarrel{
-	default{
-		//$Category "Monsters/Hideous Destructor"
-		//$Title "Inert Barrel"
-		//$Sprite "BAR1A0"
-
-		obituary "%o was exploded by a barrel.";
-		painsound "none";
-		painchance 255;
-		-countkill
-		-canpushwalls
-		-canusewalls
-		-activatemcross
-		-canpass
-		-nodropoff
-		-ismonster
-	}
-	states{
-	spawn:
-	see:
-		BAR1 AB 10;
-		loop;
-	death:
-		BEXP A 0{
-			if(!random(0,7)){
-				actor a=spawn("BFGVileShard",pos,ALLOW_REPLACE);
-				a.target=self.target;a.vel=self.vel+(0,0,10);
-			}
-		}
-		goto death1;
 	}
 }
 class BarrelExplodeMarker:IdleDummy{
@@ -236,50 +195,30 @@ class BarrelGibs:IdleDummy{
 		}stop;
 	}
 }
-
-
-// ------------------------------------------------------------
-//   Killer Fire Can
-// ------------------------------------------------------------
-
-class SuspiciousFireCan:IdleDummy replaces BurningBarrel{
+class HDBarrelLight:PointLight{
 	override void postbeginplay(){
-		super.postbeginplay();
-		actor a;
-		if(
-			(random(1,100)<=hd_killerbarrels)
-			&& !sv_nomonsters
-		){
-			a=spawn("KillerFireCan",pos,ALLOW_REPLACE);
-		}
-		else a=spawn("InnocentFireCan",pos,ALLOW_REPLACE);
-		a.master=self.master;a.target=self.target;
+		args[0]=3;
+		args[1]=50;
+		args[2]=10;
+		args[3]=23;
+		args[4]=0;
+	}
+	override void tick(){
+		super.tick();
+		args[3]=random(20,26);
+		if(!target||target.health<1)destroy();
 	}
 }
 
-class KillerFireCan:KillerBarrel{
+
+// ------------------------------------------------------------
+// Killer(?) Fire Can
+// ------------------------------------------------------------
+class HDFireCan:HDBarrel replaces BurningBarrel{
 	int fireticker;
-	override void postbeginplay(){
-		if(
-			!hdmath.checklump("FCANA0")
-			||!hdmath.checklump("FIREC0") //apparently D1 *has* FCAN just not FIRE!?
-		){
-			actor a;
-			if(
-				(random(1,100)<=hd_killerbarrels)
-				&& !sv_nomonsters
-			){
-				a=spawn("KillerBarrel",pos,ALLOW_REPLACE);
-			}
-			else a=spawn("InnocentBarrel",pos,ALLOW_REPLACE);
-			a.master=self.master;a.target=self.target;
-			destroy();return;
-		}
-		super.postbeginplay();
-	}
 	default{
 		//$Category "Monsters/Hideous Destructor"
-		//$Title "Killer Flaming Barrel"
+		//$Title "Flaming Barrel"
 		//$Sprite "FCANA0"
 
 		+bright
@@ -289,70 +228,30 @@ class KillerFireCan:KillerBarrel{
 		obituary "%o was burned by a demonic barrel that was on fire.";
 		attacksound "vile/firestrt";
 		missiletype "BarrelFlame";
+		hdbarrel.lighttype "HDFireCanLight";
 	}
-	states{
-	spawn:
-		FCAN AB random(1,3){
-			A_Look();
-		}loop;
-	see:
-		FCAN AB random(1,3){
-			if(!target || target.bkilled){
-				A_Pain();
-				target=null;
-				setstatelabel("spawn");
+	override void A_BarrelAttack(){
+		A_FaceTarget(0,0);
+		pitch-=random(1,12);
+		if(
+			HDMobAI.TryShoot(self,32,128,9,9)
+		){
+			if(distance3d(target)<256){
+				setstatelabel("flamethrow");
 				return;
+			}else{
+				A_PlaySound(attacksound);
+				A_SpawnProjectile("BarrelFlame",40,flags:CMF_AIMDIRECTION);
 			}
-			else if(
-				!random(0,9)
-				&&(
-					!(target is "PlayerPawn")
-					||!A_JumpIfInTargetLOS("null",100,JLOSF_FLIPFOV|JLOSF_TARGETLOS)
-				)
-			){
-				A_FaceTarget(0,0);
-				pitch-=random(1,12);
-				if(
-					HDMobAI.TryShoot(self,32,128,9,9)
-				){
-					if(distance3d(target)<256){
-						setstatelabel("flamethrow");
-						return;
-					}else{
-						A_PlaySound(attacksound);
-						A_SpawnProjectile("BarrelFlame",40,flags:CMF_AIMDIRECTION);
-					}
-				}
-				else if(!random(0,10)){
-					//move
-					A_FaceTarget();
-					angle+=random(-135,135);
-					A_PlaySound("barrel/walk");
-					vel.xy+=(cos(angle),sin(angle))*5;
-				}
-				setstatelabel("inertjiggle2");
-			}
-			bnodropoff=true;
-		}loop;
-	flamethrow:
-		FCAN ABABABAB 2 bright{
-			A_PlaySound("misc/firecrkl");
-			A_SpawnProjectile("BarrelFlame2",40,flags:CMF_AIMDIRECTION);
 		}
-		FCAN A 0 A_Jump(256,"see");
-	dying:
-		POB1 AAAAAAAAAAAAAAAAA 30{
-			A_Immolate(self,self.target,random(24,48));
-			if(!random(0,1))A_SpawnChunks("HDSmokeChunk",1,2,12);
+		else if(!random(0,10)){
+			//move
+			A_FaceTarget();
+			angle+=random(-135,135);
+			A_PlaySound("barrel/walk");
+			vel.xy+=(cos(angle),sin(angle))*5;
 		}
-		POB1 A -1{
-			A_SetRenderstyle(1,Style_Normal);
-			A_PlaySound("vile/firestrt",CHAN_AUTO,0.4);
-			if(!random(0,4))A_HDBlast(
-				random(12,128),random(2,4),64,"Balefire"
-			);
-			A_SpawnChunks("HDSmoke",8,4,12);
-		}
+		setstatelabel("inertjiggle");
 	}
 	override void tick(){
 		super.tick();
@@ -374,43 +273,34 @@ class KillerFireCan:KillerBarrel{
 			gibradius:24,gibamount:random(1,2)
 		);
 	}
-}
-
-class InnocentFireCan:KillerFireCan{
-	default{
-		//$Category "Monsters/Hideous Destructor"
-		//$Title "Inert Flaming Barrel"
-		//$Sprite "FCANA0"
-
-		obituary "%o was exploded by a barrel that was on fire.";
-		painsound "none";
-		painchance 255;
-		-countkill
-		-canpushwalls
-		-canusewalls
-		-activatemcross
-		-canpass
-		-nodropoff
-		-ismonster
-	}
 	states{
 	spawn:
-	see:
-		FCAN AB random(1,4);
+		FCAN AB random(1,3);
 		loop;
-	death:
-		FCAN A 0{
-			if(!random(0,7)){
-				actor a=spawn("BFGVileShard",pos,ALLOW_REPLACE);
-				a.target=self.target;a.vel=self.vel+(0,0,10);
-			}
+	flamethrow:
+		FCAN ABABABAB 2 bright{
+			A_PlaySound("misc/firecrkl");
+			A_SpawnProjectile("BarrelFlame2",40,flags:CMF_AIMDIRECTION);
 		}
-		goto death1;
+		FCAN A 0 A_Jump(256,"spawn");
+	dying:
+		POB1 AAAAAAAAAAAAAAAAA 30{
+			A_Immolate(self,self.target,random(24,48));
+			if(!random(0,1))A_SpawnChunks("HDSmokeChunk",1,2,12);
+		}
+		POB1 A -1{
+			A_SetRenderstyle(1,Style_Normal);
+			A_PlaySound("vile/firestrt",CHAN_AUTO,0.4);
+			if(!random(0,4))A_HDBlast(
+				random(12,128),random(2,4),64,"Balefire"
+			);
+			A_SpawnChunks("HDSmoke",8,4,12);
+		}
 	}
 }
 
 
-//THE FIRE CAN FIRE
+//the fire can fire
 class BarrelFlameTail:HDFireballTail{
 	default{
 		-rollsprite;
@@ -575,5 +465,114 @@ class BarrelFireCrawler:HDActor{
 		}stop;
 	}
 }
+class HDFireCanLight:HDBarrelLight{
+	override void postbeginplay(){
+		args[0]=120;
+		args[1]=20;
+		args[2]=10;
+		args[3]=42;
+		args[4]=0;
+	}
+}
 
+
+
+//map replacers
+class KillerBarrel:HDBarrel{
+	default{
+		//$Category "Monsters/Hideous Destructor"
+		//$Title "Killer Barrel"
+		//$Sprite "BAR1A0"
+		hdbarrel.musthavegremlin 1;
+	}
+}
+class KillerFireCan:HDFireCan{
+	default{
+		//$Category "Monsters/Hideous Destructor"
+		//$Title "Killer Flaming Barrel"
+		//$Sprite "FCANA0"
+		hdbarrel.musthavegremlin 1;
+	}
+}
+class InnocentBarrel:HDBarrel{
+	default{
+		//$Category "Monsters/Hideous Destructor"
+		//$Title "Inert Barrel"
+		//$Sprite "BAR1A0"
+		hdbarrel.musthavegremlin -1;
+	}
+}
+class InnocentFireCan:HDFireCan{
+	default{
+		//$Category "Monsters/Hideous Destructor"
+		//$Title "Inert Flaming Barrel"
+		//$Sprite "FCANA0"
+		hdbarrel.musthavegremlin -1;
+	}
+}
+
+
+
+// ------------------------------------------------------------
+// Barrel Killer
+// ------------------------------------------------------------
+class BarrelGremlin:HDActor{
+	default{
+		+ismonster +countkill -solid +noblockmap
+		-shootable
+		health 1;
+	}
+	bool hasmoved;
+	void A_GremlinHunt(){
+		if(!master){
+			destroy();
+			return;
+		}
+		if(master.health<1){
+			bshootable=true;
+			A_Die();
+			return;
+		}
+		if(!target||target.health<1){
+			target=null;
+			hasmoved=false;
+			A_LookEx(
+				LOF_NOSOUNDCHECK|LOF_DONTCHASEGOAL|LOF_NOJUMP,
+				maxseedist:512,
+				fov:360
+			);
+			return;
+		}
+		setorigin(master.pos,false);
+		master.target=target;
+		if(random(0,31)||A_JumpIfInTargetLOS("null",100))return;
+		double dist=distance3d(target);
+		if(
+			hasmoved
+			&&dist<random(64,1024)
+		){
+			if(master is "HDBarrel"){
+				HDBarrel(master).A_BarrelAttack();
+			}
+			return;
+		}
+		if(
+			dist<random(512,2048)
+		){
+			if(master is "HDBarrel"){
+				HDBarrel(master).A_BarrelMove();
+			}
+			hasmoved=true;
+		}
+	}
+
+	states{
+	spawn:
+		TNT1 A 10 A_GremlinHunt();
+		wait;
+	death:
+		TNT1 A 1;
+		stop;
+	}
+}
 

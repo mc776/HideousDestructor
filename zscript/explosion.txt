@@ -241,6 +241,8 @@ extend class HDActor{
 						name bld="FragPuff";
 						if(!it.bnoblood&&it.bloodtype)bld=it.bloodtype;
 						int gbg;actor blaaa;vector2 blooddir=(caller.pos.xy-it.pos.xy).unit();
+						if(blooddir.x!=blooddir.x)blooddir.x=frandom(3,3);
+						if(blooddir.y!=blooddir.y)blooddir.y=frandom(3,3);
 						int bloodshit=min(fragshit,it.height*0.5);
 						for(int i=0;i<bloodshit;i++){
 							[gbg,blaaa]=it.A_SpawnItemEx(bld,
