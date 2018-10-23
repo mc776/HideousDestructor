@@ -111,12 +111,27 @@ class HDMarine:HDActor replaces ScriptedMarine{
 
 		A_SetTranslation(trnsl);
 	}
+	string nickname;
+	virtual void A_HDMCheckIn(){
+//TO DO: LOG THIS ONLY FOR THE PERSON ASKING, AND ONLY IF ON THE SAME TEAM
+//TO DO: CHECK IF THE NAME IS TAKEN - BOTH OTHER MARINES AND PLAYERS - ADD RANDOM NUMBER
+		if(!bfriendly||nickname=="")return;
+		A_Log(string.format("\cd%s: Operator reporting in at [%i,%i].",nickname,pos.x,pos.y));
+	}
 	virtual void A_HDMScream(){
 		A_Scream();
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		hdmobster.spawnmobster(self);
+		nickname="";
+		static const string nn[]={
+			"Abra","Bulbasaur","Charmander","Digglett","Eevee","Farfetch'd","Garbodor","Heracross",
+			"Ivysaur","Jigglypuff","Koffing","Lickitung","Magnemite","Nidoran","Oddish","Pikachu",
+			"Quagsire","Rattata","Squirtle","Teddiursa","Umbreon","Venusaur","Wooper","Xatu","Yamask","Zubat"
+		};
+		nickname=nn[random(0,nn.size())];
+		A_HDMCheckIn();
 	}
 	int lastinginjury;
 	override int damagemobj(
