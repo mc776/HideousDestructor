@@ -313,6 +313,7 @@ class DoorBuster:HDPickup{
 		ddd.angle=angle;
 		ddd.translation=translation;
 		ddd.master=self;
+		ddd.detonating=false;
 		if(!dlt.hitline.backsector){
 			ddd.stuckheight=ddd.pos.z;
 			ddd.stucktier=0;
@@ -356,6 +357,7 @@ class DoorBusterPlanted:HDUPK{
 	double stuckheight;
 	int stucktier;
 	vector2 stuckpoint;
+	bool detonating;
 	default{
 		+nogravity
 		height 4;radius 3;
@@ -402,7 +404,8 @@ class DoorBusterPlanted:HDUPK{
 		---- A 2 A_PlaySound("misc/fragknock",5);
 		---- A 1{
 			bnointeraction=true;
-			bool busted=doordestroyer.destroydoor(self);
+			int boost=min(accuracy*accuracy,56);
+			bool busted=doordestroyer.destroydoor(self,140+boost,32+boost);
 
 			A_SprayDecal(busted?"Scorch":"BrontoScorch",16);
 
@@ -497,6 +500,7 @@ extend class HDHandlers{
 		}
 		let dbbb=DoorBuster(ppp.findinventory("DoorBuster"));
 		int botid=dbbb?dbbb.botid:1;
+		array<doorbusterplanted> detonating;
 		if(cmd!=999&&cmd!=123){
 			ppp.A_Log(string.format("DoorBuster Command format:\n\cu db <option> <tag number> \n\cjOptions:\n 999 = DETONATE\n 123 = QUERY\n -n = set tag number\n\cj  tag number on next deployment: \cy%i",botid),true);
 		}
@@ -510,13 +514,23 @@ extend class HDHandlers{
 					||cmd2==dbss.botid
 				)
 			){
-				if(cmd==999){
+				if(cmd==999&&!dbss.detonating){
+					dbss.bincombat=true;
 					dbss.setstatelabel("death");
 					ppp.A_Log(
 						string.format("DoorBuster detonated at [%i,%i].",
 							dbss.pos.x,dbss.pos.y
 						),true
 					);
+					int boost=0;
+					for(int i=0;i<detonating.size();i++){
+						if(
+							detonating[i].master==ppp
+							&&detonating[i].stuckbacksector==dbss.stuckbacksector
+						)boost++;
+					}
+					dbss.accuracy+=boost;
+					detonating.push(dbss);
 				}else if(cmd==123){
 					ppp.A_Log(
 						string.format("DoorBuster with tag \cy%i at [%i,%i].",
