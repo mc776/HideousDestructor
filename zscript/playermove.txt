@@ -100,9 +100,9 @@ extend class HDPlayerPawn{
 			}
 		}
 		//reduced turning while crouched.
-		else if(player.crouchfactor<0.7 && abs(cmd.yaw)>(3*65536/360)){
-			player.cmd.yaw>>=1;
-			player.cmd.pitch>>=1;
+		else if(player.crouchfactor<0.7){
+			player.cmd.yaw=clamp(player.cmd.yaw,-(7*65536/360),(7*65536/360));
+			player.cmd.pitch=clamp(player.cmd.pitch,-(7*65536/360),(7*65536/360));
 		}
 
 
