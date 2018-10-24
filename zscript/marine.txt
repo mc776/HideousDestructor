@@ -57,6 +57,12 @@ class HDMarine:HDActor replaces ScriptedMarine{
 	int wep;
 	double rocketdisttoenemy;
 	override void die(actor source,actor inflictor,int dmgflags){
+		if(
+			bfriendly
+			&&!hasdropped
+			&&!(self is "GhostMarine")
+			&&!(self is "BotBot")
+		)A_Log(string.format("\cf%s died.",nickname));
 		timesdied++;
 		bpushable=false;
 		super.die(source,inflictor,dmgflags);
@@ -112,11 +118,44 @@ class HDMarine:HDActor replaces ScriptedMarine{
 		A_SetTranslation(trnsl);
 	}
 	string nickname;
-	virtual void A_HDMCheckIn(){
-//TO DO: LOG THIS ONLY FOR THE PERSON ASKING, AND ONLY IF ON THE SAME TEAM
-//TO DO: CHECK IF THE NAME IS TAKEN - BOTH OTHER MARINES AND PLAYERS - ADD RANDOM NUMBER
-		if(!bfriendly||nickname=="")return;
-		A_Log(string.format("\cd%s: Operator reporting in at [%i,%i].",nickname,pos.x,pos.y));
+	virtual string SetNickname(){
+		if(!bfriendly)nickname="Anonymous";
+
+		static const string pokemon[]={
+			"Abra","Bulbasaur","Charmander","Digglett","Eevee","Farfetch'd","Garbodor",
+			"Heracross","Ivysaur","Jigglypuff","Koffing","Lickitung","Magnemite","Nidoran",
+			"Oddish","Pikachu","Quagsire","Rattata","Squirtle","Teddiursa","Umbreon",
+			"Venusaur","Wooper","Xatu","Yamask","Zubat"
+		};
+		static const string baseball[]={
+			"Angel","Brave","Cub","Diamondback","Jay","Astro","Mariner","Marlin",
+			"Pirate","Giant","Brewer","Padre","Oriole","Cardinal",
+			"Hawk","Lion","Tiger","Eagle","Buffalo","Dragon","Fighter","BayStar"
+		};
+
+		nickname=pokemon[random(0,pokemon.size()-1)];
+
+		bool isunique;
+		array<string> nicknames;
+		for(int i=0;i<MAXPLAYERS;i++){
+			if(playeringame[i])nicknames.push(players[i].getusername());
+		}
+		hdmarine nmm;
+		thinkeriterator nmit=thinkeriterator.create("HDMarine",STAT_DEFAULT);
+		while(nmm=hdmarine(nmit.Next(exact:false))){
+			if(nmm!=self)nicknames.push(nmm.nickname);
+		}
+		do{
+			isunique=true;
+			for(int i=0;i<nicknames.size();i++){
+				if(nickname==nicknames[i]){
+					isunique=false;
+					nickname.appendformat("-%i",random(0,99));
+				}
+			}
+		}while(!isunique);
+
+		return nickname;
 	}
 	virtual void A_HDMScream(){
 		A_Scream();
@@ -124,14 +163,7 @@ class HDMarine:HDActor replaces ScriptedMarine{
 	override void postbeginplay(){
 		super.postbeginplay();
 		hdmobster.spawnmobster(self);
-		nickname="";
-		static const string nn[]={
-			"Abra","Bulbasaur","Charmander","Digglett","Eevee","Farfetch'd","Garbodor","Heracross",
-			"Ivysaur","Jigglypuff","Koffing","Lickitung","Magnemite","Nidoran","Oddish","Pikachu",
-			"Quagsire","Rattata","Squirtle","Teddiursa","Umbreon","Venusaur","Wooper","Xatu","Yamask","Zubat"
-		};
-		nickname=nn[random(0,nn.size())];
-		A_HDMCheckIn();
+		SetNickname();
 	}
 	int lastinginjury;
 	override int damagemobj(
@@ -141,6 +173,7 @@ class HDMarine:HDActor replaces ScriptedMarine{
 		if(
 			damage>=health
 			&&damage<random(12,300)
+			&&mod!="spawndead"
 			&&(
 				(mod=="bleedout"&&random(0,12))
 				||(random(0,7))
@@ -331,6 +364,7 @@ class HDMarine:HDActor replaces ScriptedMarine{
 
 		HDMBC_WARPLIMIT=4,
 	}
+	bool checkedin;
 	states{
 	spawn:
 		PLAY A 0;
@@ -1127,6 +1161,96 @@ class ReallyDeadRiflemanCrouched:ReallyDeadRifleman replaces GibbedMarineExtra{
 
 
 
+
+// ------------------------------------------------------------
+// You have no authority to order them around, but...
+// ------------------------------------------------------------
+extend class HDMarine{
+	static void PlayerCheckIn(actor caller){
+		if(!caller||!caller.player||caller.health<1)return;
+		string msg=string.format(
+			"\cd%s: Operator reporting in at [%i,%i].",
+			caller.player.getusername(),caller.pos.x,caller.pos.y
+		);
+		HDTeamSay(caller,msg,true);
+	}
+	static void HDTeamSay(actor caller,string msg,bool includeself=false){
+		for(int i=0;i<MAXPLAYERS;i++){
+			if(
+				playeringame[i]
+				&&(includeself||!caller.player||players[i]!=caller.player)
+				&&players[i].mo
+				&&(
+					caller.isfriend(players[i].mo)
+					||caller.isteammate(players[i].mo)
+				)
+			){
+				actor pmo=players[i].mo;
+				pmo.A_PlaySound("misc/chat",CHAN_VOICE,1,0,24);
+				pmo.A_Log(msg,true);
+			}
+		}
+	}
+	static void CallCheckIn(actor caller){
+		if(!caller.player)return;
+		HDTeamSay(caller,string.format("\cd%s: Report in, team.",caller.player.getusername()),true);
+		//all players check in
+		for(int i=0;i<MAXPLAYERS;i++){
+			PlayerCheckIn(players[i].mo);
+		}
+		//all HDMarines check in
+		hdmarine nmm;
+		thinkeriterator nmit=thinkeriterator.create("HDMarine",STAT_DEFAULT);
+		while(nmm=hdmarine(nmit.Next(exact:false))){
+			if(
+				nmm.isfriend(caller)
+				||nmm.isteammate(caller)
+			)nmm.HDMCheckIn();
+		}
+	}
+	virtual void HDMCheckIn(){
+		if(
+			health<1
+			||(!bfriendly&&random(0,15))
+		)return;
+		int x;int y;
+		if(!bfriendly){
+			nickname="Anonymous";
+			x=random(-32700,32700);
+			y=random(-32700,32700);
+		}
+
+		string msg=string.format(
+			"\cd%s: Operator reporting in at [%i,%i].",
+			nickname,pos.x,pos.y
+		);
+
+		for(int i=0;i<MAXPLAYERS;i++){
+			if(
+				playeringame[i]
+				&&players[i].mo
+				&&(
+					isfriend(players[i].mo)
+					||isteammate(players[i].mo)
+				)
+			){
+				if(target&&target.health>0)msg.appendformat(
+					" I need some backup."
+				);
+				actor pmo=players[i].mo;
+				if(checksight(pmo)&&distance3d(pmo)<512)msg.appendformat(
+					" I'm right here, watch your fire!"
+				);
+				pmo.A_PlaySound("misc/chat",CHAN_VOICE);
+				pmo.A_Log(msg,true);
+			}
+		}
+	}
+}
+
+
+
+
 // ------------------------------------------------------------
 // Raging Erech shun.
 // ------------------------------------------------------------
@@ -1532,6 +1656,15 @@ class BotBot:HDMarine{
 			deathsound="marineb/death";
 		}
 	}
+	//nick should be the player's nick
+	override string SetNickname(){
+		if(!master)return super.setnickname();
+		return players[masterplayer].getusername();
+	}
+	//don't do anything, let the playerpawn do the reporting instead
+	override void HDMCheckIn(){}
 }
+
+
 
 
