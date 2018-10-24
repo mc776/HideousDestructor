@@ -1238,7 +1238,7 @@ extend class HDMarine{
 					" I need some backup."
 				);
 				actor pmo=players[i].mo;
-				if(checksight(pmo)&&distance3d(pmo)<512)msg.appendformat(
+				if(checksight(pmo)||distance3d(pmo)<512)msg.appendformat(
 					" I'm right here, watch your fire!"
 				);
 				pmo.A_PlaySound("misc/chat",CHAN_VOICE|CHAN_NOPAUSE);
