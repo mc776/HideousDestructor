@@ -1169,7 +1169,7 @@ extend class HDMarine{
 	static void PlayerCheckIn(actor caller){
 		if(!caller||!caller.player||caller.health<1)return;
 		string msg=string.format(
-			"\cd%s: Operator reporting in at [%i,%i].",
+			"%s\cd: Operator reporting in at [%i,%i].",
 			caller.player.getusername(),caller.pos.x,caller.pos.y
 		);
 		HDTeamSay(caller,msg,true);
@@ -1186,14 +1186,14 @@ extend class HDMarine{
 				)
 			){
 				actor pmo=players[i].mo;
-				pmo.A_PlaySound("misc/chat",CHAN_VOICE,1,0,24);
+				pmo.A_PlaySound("misc/chat",CHAN_VOICE|CHAN_NOPAUSE,1,0,24);
 				pmo.A_Log(msg,true);
 			}
 		}
 	}
 	static void CallCheckIn(actor caller){
 		if(!caller.player)return;
-		HDTeamSay(caller,string.format("\cd%s: Report in, team.",caller.player.getusername()),true);
+		HDTeamSay(caller,string.format("%s\cd: Report in, team.",caller.player.getusername()),true);
 		//all players check in
 		for(int i=0;i<MAXPLAYERS;i++){
 			PlayerCheckIn(players[i].mo);
@@ -1221,7 +1221,7 @@ extend class HDMarine{
 		}
 
 		string msg=string.format(
-			"\cd%s: Operator reporting in at [%i,%i].",
+			"%s\cd: Operator reporting in at [%i,%i].",
 			nickname,pos.x,pos.y
 		);
 
@@ -1241,7 +1241,7 @@ extend class HDMarine{
 				if(checksight(pmo)&&distance3d(pmo)<512)msg.appendformat(
 					" I'm right here, watch your fire!"
 				);
-				pmo.A_PlaySound("misc/chat",CHAN_VOICE);
+				pmo.A_PlaySound("misc/chat",CHAN_VOICE|CHAN_NOPAUSE);
 				pmo.A_Log(msg,true);
 			}
 		}
