@@ -310,6 +310,8 @@ class clg:CustomInventory{
 		fail;
 	}
 	action void GiveCustomItems(){
+		array<string> itemtype;
+		array<int> itemstored;
 		array<string> whichitem;
 		array<int> howmany;
 		//string loadlist=cvar.getcvar("hd_loadout_custom",getplayernumber()).getstring().tolower;
@@ -330,8 +332,14 @@ string loadlist="9mm 1; 7mm 32; smg; 9mm 30;";
 					if(whichitem[j]~==ref){
 						A_GiveInventory(reff.getclassname(),howmany[j]);
 					}
+//FOR BACKPACK
+					itemtype.push(reff.getclassname());
+					itemstored.push(random(0,32));
 				}
 			}
+		}
+		for(int i=0;i<itemtype.size();i++){
+			A_Log(string.format("%s  %i",itemtype[i],itemstored[i]),true);
 		}
 	}
 }
