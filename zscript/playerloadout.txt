@@ -314,8 +314,9 @@ class clg:CustomInventory{
 		array<int> howmany;
 		//string loadlist=cvar.getcvar("hd_loadout_custom",getplayernumber()).getstring().tolower;
 //TESTING
-string loadlist="9mm100 7mm32 smg";
-		loadlist.split(whichitem," ");
+string loadlist="9mm 100; 7mm 32; smg";
+		loadlist.replace(" ","");
+		loadlist.split(whichitem,";");
 		for(int i=0;i<whichitem.size();i++){
 			howmany.push((whichitem[i].mid(3,whichitem[i].length())).toint(10));
 			whichitem[i]=whichitem[i].left(3);
