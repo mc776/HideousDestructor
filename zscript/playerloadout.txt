@@ -310,13 +310,11 @@ class clg:CustomInventory{
 		fail;
 	}
 	action void GiveCustomItems(){
-		array<string> itemtype;
-		array<int> itemstored;
 		array<string> whichitem;
 		array<int> howmany;
-		//string loadlist=cvar.getcvar("hd_loadout_custom",getplayernumber()).getstring().tolower;
+		//string loadlist=cvar.getcvar("hd_loadout_custom",getplayernumber()).getstring();
 //TESTING
-string loadlist="9mm 1; 7mm 32; smg; 9mm 30;";
+string loadlist="9mm 1; 7mm 32; smg; 9mm 30; 915 2;";
 		loadlist.replace(" ","");
 		loadlist.split(whichitem,";");
 		for(int i=0;i<whichitem.size();i++){
@@ -332,14 +330,25 @@ string loadlist="9mm 1; 7mm 32; smg; 9mm 30;";
 					if(whichitem[j]~==ref){
 						A_GiveInventory(reff.getclassname(),howmany[j]);
 					}
-//FOR BACKPACK
-					itemtype.push(reff.getclassname());
-					itemstored.push(random(0,32));
 				}
 			}
 		}
+//FOR BACKPACK
+		array<string> itemtype;
+		array<int> itemstored;
+		for(int i=0;i<allactorclasses.size();i++){
+			class<actor> reff=allactorclasses[i];
+			if(reff is "HDPickup"){
+				string ref=getdefaultbytype(reff).damagetype;
+				if(ref~=="none"||ref=="")continue;
+				itemtype.push(reff.getclassname());
+				itemstored.push(0);
+			}
+		}
 		for(int i=0;i<itemtype.size();i++){
-			A_Log(string.format("%s  %i",itemtype[i],itemstored[i]),true);
+			A_Log(string.format("%s  %i",itemtype[i],countinv(itemtype[i])),true);
 		}
 	}
 }
+
+
