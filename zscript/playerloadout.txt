@@ -314,7 +314,7 @@ class clg:CustomInventory{
 		array<int> howmany;
 		//string loadlist=cvar.getcvar("hd_loadout_custom",getplayernumber()).getstring().tolower;
 //TESTING
-string loadlist="9mm 100; 7mm 32; smg";
+string loadlist="9mm 1; 7mm 32; smg; 9mm 30;";
 		loadlist.replace(" ","");
 		loadlist.split(whichitem,";");
 		for(int i=0;i<whichitem.size();i++){
@@ -325,7 +325,7 @@ string loadlist="9mm 100; 7mm 32; smg";
 			class<actor> reff=allactorclasses[i];
 			if(reff is "HDPickup"||reff is "HDWeapon"){
 				string ref=getdefaultbytype(reff).damagetype;
-				if(ref=="none")continue;
+				if(ref~=="none"||ref=="")continue;
 				for(int j=0;j<whichitem.size();j++){
 					if(whichitem[j]~==ref){
 						A_GiveInventory(reff.getclassname(),howmany[j]);
