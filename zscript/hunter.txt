@@ -360,7 +360,7 @@ class Hunter:HDShotgun replaces Shotgun{
 		goto rackreloadend;
 
 	unrack:
-		SHTG F 0 A_Overlay(120,"playsgco");
+		SHTG F 0 A_Overlay(120,"playsgco2");
 		SHTG E 1 A_JumpIf(!pressingfire(),1);
 		SHTG EA 2{
 			if(pressingfire())A_SetTics(1);
@@ -369,7 +369,11 @@ class Hunter:HDShotgun replaces Shotgun{
 		SHTG A 0 A_ClearRefire();
 		goto ready;
 	playsgco:
-		TNT1 A 8 A_PlaySound("weapons/huntrack",5);
+		TNT1 A 8 A_PlaySound("weapons/huntrackup",5);
+		TNT1 A 0 A_StopSound(5);
+		stop;
+	playsgco2:
+		TNT1 A 8 A_PlaySound("weapons/huntrackdown",5);
 		TNT1 A 0 A_StopSound(5);
 		stop;
 	chamberauto:
