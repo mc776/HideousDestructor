@@ -289,3 +289,48 @@ extend class HDPlayerPawn{
 		return "";
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+//experimental shit
+//class CustomLoadoutGiver:CustomInventory{
+class clg:CustomInventory{
+	states{
+	spawn:TNT1 A 0;stop;
+	pickup:
+		TNT1 A 0 GiveCustomItems();
+		fail;
+	}
+	action void GiveCustomItems(){
+		array<string> whichitem;
+		array<int> howmany;
+		//string loadlist=cvar.getcvar("hd_loadout_custom",getplayernumber()).getstring().tolower;
+//TESTING
+string loadlist="9mm100 7mm32 smg";
+		loadlist.split(whichitem," ");
+		for(int i=0;i<whichitem.size();i++){
+			howmany.push((whichitem[i].mid(3,whichitem[i].length())).toint(10));
+			whichitem[i]=whichitem[i].left(3);
+		}
+		for(int i=0;i<allactorclasses.size();i++){
+			class<actor> reff=allactorclasses[i];
+			if(reff is "HDPickup"||reff is "HDWeapon"){
+				string ref=getdefaultbytype(reff).damagetype;
+				if(ref=="none")continue;
+				for(int j=0;j<whichitem.size();j++){
+					if(whichitem[j]~==ref){
+						A_GiveInventory(reff.getclassname(),howmany[j]);
+					}
+				}
+			}
+		}
+	}
+}

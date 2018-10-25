@@ -6,6 +6,7 @@ class HDWeapon:Weapon{
 	double barrelwidth;
 	double barreldepth;
 	property barrelsize:barrellength,barrelwidth,barreldepth;
+	property refid:damagetype;
 	int weaponstatus[8];
 	int tipped;
 	int msgtimer;
@@ -32,6 +33,7 @@ class HDWeapon:Weapon{
 		weapon.bobrangex 0.2;
 		weapon.bobrangey 0.8;
 		hdweapon.barrelsize 0,0,0;
+		hdweapon.refid "";
 	}
 	override bool cancollidewith(actor other,bool passive){return HDPickerUpper(other);}
 	//wrapper for setpsprite

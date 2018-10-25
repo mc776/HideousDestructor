@@ -90,6 +90,7 @@ class HDPickup:CustomInventory{
 	property maxunitamount:maxunitamount;
 	bool multipickup; //lets you continue picking up without re-pressing the key
 	property multipickup:multipickup;
+	property refid:damagetype;
 	bool isbeingpickedup;
 	default{
 		+solid
@@ -100,6 +101,7 @@ class HDPickup:CustomInventory{
 		hdpickup.droptranslation true;
 		hdpickup.bulk 0;
 		hdpickup.multipickup false;
+		hdpickup.refid "";
 
 		radius 8; height 10; scale 0.8;
 		inventory.pickupsound "weapons/pocket";
