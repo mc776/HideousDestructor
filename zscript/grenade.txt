@@ -145,7 +145,7 @@ class HDFragGrenade:SlowProjectile{
 	death:
 		TNT1 A 10{
 			bmissile=false;
-			let gr=HDFragGrenadeRoller(spawn("HDFragGrenadeRoller",self.pos));
+			let gr=HDFragGrenadeRoller(spawn(rollertype,self.pos));
 			if(!gr)return;
 			gr.target=self.target;gr.master=self.master;
 			gr.fuze=self.fuze;
