@@ -100,14 +100,17 @@ class HDFragGrenadeRoller:HDActor{
 class HDFragGrenade:SlowProjectile{
 	int fuze;
 	vector3 keeprolling;
+	class<actor> rollertype;
+	property rollertype:rollertype;
 	default{
 		-noextremedeath -floorclip +bloodlessimpact
 		+shootable -noblockmap +noblood
+		+activatemcross -noteleport
 		radius 5;height 5;damagetype "none";
 		scale 0.3;
 		obituary "%o was fragged by %k.";
 		mass 500;
-		+activatemcross;-noteleport;
+		hdfraggrenade.rollertype "HDFragGrenadeRoller";
 	}
 	override void tick(){
 		ClearInterpolation();
@@ -124,7 +127,7 @@ class HDFragGrenade:SlowProjectile{
 				A_SpawnChunks("HDBulletFrag",360,300,900);
 				destroy();return;
 			}
-			let gr=HDFragGrenadeRoller(spawn("HDFragGrenadeRoller",pos));
+			let gr=HDFragGrenadeRoller(spawn(rollertype,pos));
 			gr.target=self.target;gr.master=self.master;gr.vel=self.vel;
 			gr.fuze=fuze;
 			destroy();return;
