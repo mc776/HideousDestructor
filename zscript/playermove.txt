@@ -101,8 +101,17 @@ extend class HDPlayerPawn{
 		}
 		//reduced turning while crouched.
 		else if(player.crouchfactor<0.7){
-			player.cmd.yaw=clamp(player.cmd.yaw,-(7*65536/360),(7*65536/360));
-			player.cmd.pitch=clamp(player.cmd.pitch,-(7*65536/360),(7*65536/360));
+			int thrsh=(8*65536/360);
+			int absch=abs(player.cmd.yaw);
+			if(absch>thrsh){
+				absch=(absch-thrsh)>>1;
+				player.cmd.yaw-=player.cmd.yaw>0?absch:-absch;
+			}
+			absch=abs(player.cmd.pitch);
+			if(absch>thrsh){
+				absch=(absch-thrsh)>>1;
+				player.cmd.pitch-=player.cmd.pitch>0?absch:-absch;
+			}
 		}
 
 
