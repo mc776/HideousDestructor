@@ -117,7 +117,10 @@ extend class HDHandlers{
 			}else ppp.A_DropInventory("HDRocketAmmo",amt);
 		}
 		else if(cw is "Blooper")ppp.A_DropInventory("HDRocketAmmo",amt);
-		else if(cw is "HDFragGrenades")ppp.A_DropInventory("HDFragGrenadeAmmo",amt);
+		else if(cw is "HDGrenadeThrower")
+			ppp.A_DropInventory(getdefaultbytype("HDGrenadeThrower").grenadeammotype,amt);
+		else if(cw is "Tripwire")
+			ppp.A_DropInventory(getdefaultbytype("Tripwire").grenadeammotype,amt);
 		else if(cw is "LiberatorRifle"){
 			if(
 				!(cw.weaponstatus[0]&LIBF_NOLAUNCHER)
