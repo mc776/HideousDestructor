@@ -432,6 +432,11 @@ class TrippingFrag:TrippingGrenade{
 		trippinggrenade.rollertype "HDFragGrenadeRoller";
 		trippinggrenade.spoontype "HDFragSpoon";
 		trippinggrenade.droptype "HDFragGrenadeAmmo";
+		hdupk.pickuptype "HDFragGrenadeAmmo";
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		pickupmessage=getdefaultbytype("HDFragGrenadeAmmo").pickupmessage();
 	}
 	states{
 	spawn:

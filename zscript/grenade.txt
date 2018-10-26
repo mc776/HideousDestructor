@@ -545,7 +545,7 @@ class HDFragGrenadeAmmo:HDAmmo{
 		inventory.amount 1;
 		inventory.maxamount 7;
 		scale 0.3;
-		inventory.pickupmessage "Picked up a hand grenade.";
+		inventory.pickupmessage "Picked up a fragmentation hand grenade.";
 		inventory.pickupsound "weapons/pocket";
 	}
 	states{
@@ -553,17 +553,21 @@ class HDFragGrenadeAmmo:HDAmmo{
 		FRAG A -1;stop;
 	}
 }
-class FragP:HDUPK replaces HDFragGrenadeAmmo{
+class FragP:HDUPK{
 	default{
 		+forcexybillboard
 		scale 0.3;height 3;radius 3;
 		hdupk.pickuptype "HDFragGrenadeAmmo";
 		hdupk.pickupsound "weapons/rifleclick2";
-		hdupk.pickupmessage "Picked up a hand grenade.";
 		stamina 1;
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		pickupmessage=getdefaultbytype("HDFragGrenadeAmmo").pickupmessage();
 	}
 	states{
 	spawn:
 		FRAG A -1;
 	}
 }
+
