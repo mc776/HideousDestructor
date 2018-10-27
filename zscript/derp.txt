@@ -31,7 +31,7 @@ class DERPBot:HDUPK{
 		hdupk.pickupmessage "Picked up a Defence, Engagement, Reconnaissance and Patrol robot.";
 		obituary "%o went derp.";
 	}
-	override bool cancollidewith(actor other,bool passive){return other.bmissile;}
+	override bool cancollidewith(actor other,bool passive){return other.bmissile||DERPBot(other);}
 	bool DerpTargetCheck(bool face=false){
 		if(!target)return false;
 		if(

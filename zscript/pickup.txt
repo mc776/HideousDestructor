@@ -79,6 +79,8 @@ class HDPickerUpper:Actor{
 	}
 }
 
+
+
 //Usable pickup.
 class HDPickup:CustomInventory{
 	actor picktarget;
@@ -91,6 +93,7 @@ class HDPickup:CustomInventory{
 	bool multipickup; //lets you continue picking up without re-pressing the key
 	property multipickup:multipickup;
 	property refid:damagetype;
+	property nicename:obituary;
 	bool isbeingpickedup;
 	default{
 		+solid
@@ -102,6 +105,7 @@ class HDPickup:CustomInventory{
 		hdpickup.bulk 0;
 		hdpickup.multipickup false;
 		hdpickup.refid "";
+		hdpickup.nicename "";
 
 		radius 8; height 10; scale 0.8;
 		inventory.pickupsound "weapons/pocket";
@@ -203,7 +207,7 @@ class HDAmmo:HDPickup{
 
 
 /*
- special uses:
+ Fake pickup for creating different actors that give the same item
  hdupk.pickupsound: pickup sound
  hdupk.pickuptype: default type of inventory item it replaces
  hdupk.pickupmessage: self-explanatory
@@ -285,3 +289,5 @@ class HDUPK:HDActor{
 		---- A -1;
 	}
 }
+
+
