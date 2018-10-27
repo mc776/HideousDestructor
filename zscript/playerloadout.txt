@@ -300,6 +300,7 @@ extend class HDPlayerPawn{
 
 
 
+
 //experimental shit
 //class CustomLoadoutGiver:CustomInventory{
 class clg:CustomInventory{
@@ -310,11 +311,11 @@ class clg:CustomInventory{
 		fail;
 	}
 	action void GiveCustomItems(){
-		array<string> whichitem;
-		array<int> howmany;
+		array<string> whichitem;whichitem.clear();
+		array<int> howmany;howmany.clear();
 		//string loadlist=cvar.getcvar("hd_loadout_custom",getplayernumber()).getstring();
 //TESTING
-string loadlist="9mm 1; 7mm 32; smg; 9mm 30; 915 2;";
+string loadlist="9mm 1; 7mm 48; smg; 9mm 30; 915 2;";
 		loadlist.replace(" ","");
 		loadlist.split(whichitem,";");
 		for(int i=0;i<whichitem.size();i++){
@@ -324,7 +325,9 @@ string loadlist="9mm 1; 7mm 32; smg; 9mm 30; 915 2;";
 		for(int i=0;i<allactorclasses.size();i++){
 			class<actor> reff=allactorclasses[i];
 			if(reff is "HDPickup"||reff is "HDWeapon"){
-				string ref=getdefaultbytype(reff).damagetype;
+				string ref;
+				if(reff is "HDPickup")ref=getdefaultbytype((class<hdpickup>)(reff)).refid;
+				else ref=getdefaultbytype((class<hdweapon>)(reff)).refid;
 				if(ref~=="none"||ref=="")continue;
 				for(int j=0;j<whichitem.size();j++){
 					if(whichitem[j]~==ref){
@@ -334,20 +337,40 @@ string loadlist="9mm 1; 7mm 32; smg; 9mm 30; 915 2;";
 			}
 		}
 //FOR BACKPACK
-		array<string> itemtype;
-		array<int> itemstored;
+/*
+	To do:
+	itemstored strings should be in this format:
+		"%s %i %i ...", with %s being the inventory actor class name
+	each interaction will just call split() and dynarray[0] is the actor name
+	for regular items, this is just "%s %i", %i being the amount
+	for mags, each %i is its own mag
+	for weapons, each *set of eight %i's* is its own weapon
+	treat the FIRST, LEFTMOST %i as the top of the stack
+	to add, remember: new.." "..existing
+*/
+		array<string> itemstored;
+		itemstored.clear();
 		for(int i=0;i<allactorclasses.size();i++){
 			class<actor> reff=allactorclasses[i];
 			if(reff is "HDPickup"){
-				string ref=getdefaultbytype(reff).damagetype;
+				string ref=getdefaultbytype((class<hdpickup>)(reff)).refid;
 				if(ref~=="none"||ref=="")continue;
-				itemtype.push(reff.getclassname());
-				itemstored.push(0);
+				itemstored.push(reff.getclassname().." 1".." 2".." 3".." 4".." 5".." "..countinv((class<inventory>)(reff)));
 			}
 		}
-		for(int i=0;i<itemtype.size();i++){
-			A_Log(string.format("%s  %i",itemtype[i],countinv(itemtype[i])),true);
+		for(int i=0;i<itemstored.size();i++){
+			string itemtype=itemstored[i];
+			array<string> thisitem;
+			thisitem.clear();
+			itemtype.split(thisitem," ");
+			itemtype=thisitem[0];
+			for(int j=1;j<thisitem.size();j++){
+				int thisint=thisitem[j].toint(10)+1000;
+				itemtype=itemtype..", "..thisint;
+			}
+			A_Log(itemtype,true);
 		}
 	}
 }
+
 
