@@ -64,7 +64,7 @@ class HDArmour:HDPickup{
 		}
 
 		if(
-			other==master
+			(other==master||!other.countinv("SpiritualArmour"))
 			&&other.player.buttons&BT_USE
 			&&!other.countinv("HDArmourWorn")
 			&&!other.countinv("WornRadsuit")
