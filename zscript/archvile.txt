@@ -287,6 +287,10 @@ class ArchFiend:Archvile replaces ArchVile{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
+		if(!bfriendly&&A_CheckProximity("null","Archfiend",2018,2,CPXF_NOZ)){
+			A_Die("mapmorph");
+			return;
+		}
 
 		//spawn shards instead if no archvile sprites
 		if(Wads.CheckNumForName("VILER0",wads.ns_sprites,-1,false)<0){
@@ -313,7 +317,10 @@ class ArchFiend:Archvile replaces ArchVile{
 		actor inflictor,actor source,int damage,
 		name mod,int flags,double angle
 	){
-		if(damage==TELEFRAG_DAMAGE)return super.damagemobj(inflictor,source,damage,mod,flags,angle);
+		if(
+			damage==TELEFRAG_DAMAGE
+			||mod=="mapmorph"
+		)return super.damagemobj(inflictor,source,damage,mod,flags,angle);
 		if(
 			mod!="thermal"
 			&&mod!="balefire"
@@ -465,6 +472,18 @@ class ArchFiend:Archvile replaces ArchVile{
 			A_SpawnItemEx("VileGhost",flags:SXF_ABSOLUTE|SXF_TRANSFERPOINTERS|SXF_SETMASTER);
 			bnointeraction=true;
 		}stop;
+	death.mapmorph:
+		TNT1 A 0 A_Jump(128,"rep_np","rep_baron");
+	rep_imp:
+		TNT1 AAAAA 0 A_SpawnItemEx("HealerImp",flags:SXF_NOCHECKPOSITION|SXF_TRANSFERAMBUSHFLAG);
+		stop;
+	rep_np:
+		TNT1 AAA 0 A_SpawnItemEx("NinjaPirate",flags:SXF_NOCHECKPOSITION|SXF_TRANSFERAMBUSHFLAG);
+		stop;
+	rep_baron:
+		TNT1 A 0 A_SpawnItemEx("HellPrince",flags:SXF_NOCHECKPOSITION|SXF_TRANSFERAMBUSHFLAG);
+		TNT1 AA 0 A_SpawnItemEx("HellKnave",flags:SXF_NOCHECKPOSITION|SXF_TRANSFERAMBUSHFLAG);
+		stop;
 	}
 }
 class VileDeathLight:PointLight{
