@@ -370,6 +370,17 @@ string loadlist="9mm 1; 7mm 48; smg; 9mm 30; 915 2;";
 			}
 			A_Log(itemtype,true);
 		}
+
+		//example of manipulation
+		A_Log(itemstored[2],true);
+		array<string>numbertwo;numbertwo.clear();
+		itemstored[2].split(numbertwo," ");
+		numbertwo.delete(1);
+		itemstored[2]=numbertwo[0];
+		for(int i=1;i<numbertwo.size();i++){
+			itemstored[2]=itemstored[2].." "..numbertwo[i];
+		}
+		A_Log(itemstored[2],true);
 	}
 }
 
