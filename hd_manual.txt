@@ -352,7 +352,7 @@ HUD: HD typically hides your complete inventory display. Pressing and holding us
 
 	Aiming and Turning
 
-If you are standing still, press and hold Use to reduce your mouse sensitivity (and enable the scope if hd_noscope is set to 1).
+If you are standing still, press and hold Use or Zoom to reduce your mouse sensitivity (and enable the scope if hd_noscope is set to true).
 
 If you have some map geometry right underneath where your weapon is pointing (including the floor when you are crouching), or your barrel is touching a vertical wall, this will also brace your gun against it for additional support and precision.
 
@@ -374,10 +374,6 @@ Hitting Reload while you have a medikit in hand, or double-tapping the use item 
 hd_dropone: This will drop one unit of each type of ammo that applies to your current weapon. If you have both full mags and loose ammo, you drop all your loose ammo first; otherwise, if you specify a number after this command, you will drop that number instead. (For shotgun shells 4 shells equals one default unit, but if you specify a number you will drop exactly that many shells if you have enough.)
 
 hd_purge: This will drop all ammunition for which you do not have an appropriate weapon, along with empty cells (in the absence of a BFG) and broken robots.
-
-+hd_zoom: Bind a key to this, and pressing it will set the hd_noscope cvar to 0, and letting go will set it to 2. As this bind messes with player settings, this is left unbound by default and does not appear in the menu.
-
-hd_zoomon, hd_zoomoff: These work like +hd_zoom but toggle instead of hold. If you bind a key to one of them, it will automatically function for both.
 
 hd_slideon, hd_slideoff: Like hd_zoomon and hd_zoomoff but for the hd_noslide cvar.
 
@@ -441,7 +437,7 @@ Set to 1 instead of 2 to get rid of the newbie tips that show up on map start.
 
 hd_hudsprite (false): Displays your current weapon as a pickup sprite graphic inside your HUD, Ghost Recon-style. Always on when r_drawplayersprites is off.
 
-hd_noscope (0): Many weapons have an optic sight that is represented as a sight picture just below HD's regular sight picture crosshair. If set to 0, this cvar lets this view appear whenever the regular sight picture crosshair appears. Set to 1, this makes the scoped view only visible with the extended HUD that pops up when you hold the use key. Set to 2, the scoped view never appears unless you hit zoom. Note that the zoom key overrides this setting, and this setting has no effect on the rocket launcher or Brontornis since they already have toggleable magnified sights.
+hd_noscope (false): Many weapons have an optic sight that is represented as a sight picture just below HD's regular sight picture crosshair. If set to true, this will only appear with the full HUD or while you are holding Zoom.
 
 hd_sightbob (true): HD's sight crosshairs by default will bob as the player moves. This can sometimes be useful for making trick shots, but for many it is more distracting than anything else. Turn this off to hide the entire thing when you're moving above a certain threshold. Note that your scope angle will still follow the bob which is still used to calculate the trajectory of your shot.
 

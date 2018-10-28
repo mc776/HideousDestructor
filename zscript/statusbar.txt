@@ -206,6 +206,8 @@ class HDStatusBar:DoomStatusBar{
 		);
 	}
 	void DrawCommonStuff(int state){
+		if(cplayer.buttons&BT_USE)gimmehud=max(0,gimmehud-1);
+			else gimmehud=max(cvar.getcvar("hd_hudusedelay",cplayer).getint(),-1);
 		if(!(cplayer.cmd.buttons&BT_USE)&&cvar.getcvar("hd_hudusedelay",cplayer).getint()<0)return;
 
 		let cp=HDPlayerPawn(CPlayer.mo);
@@ -300,8 +302,6 @@ class HDStatusBar:DoomStatusBar{
 
 
 		//full hud consequences
-		if(cplayer.buttons&BT_USE)gimmehud=max(0,gimmehud-1);
-			else gimmehud=max(cvar.getcvar("hd_hudusedelay",cplayer).getint(),0);
 		if(!gimmehud){
 			drawweaponstash();
 			drawammocounters(mxht);
