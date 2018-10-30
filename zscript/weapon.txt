@@ -8,6 +8,8 @@ class HDWeapon:Weapon{
 	property barrelsize:barrellength,barrelwidth,barreldepth;
 	string refid;
 	property refid:refid;
+	string nicename;
+	property nicename:nicename;
 	int weaponstatus[8];
 	int tipped;
 	int msgtimer;
@@ -35,6 +37,7 @@ class HDWeapon:Weapon{
 		weapon.bobrangey 0.8;
 		hdweapon.barrelsize 0,0,0;
 		hdweapon.refid "";
+		hdweapon.nicename "";
 	}
 	override bool cancollidewith(actor other,bool passive){return HDPickerUpper(other);}
 	//wrapper for setpsprite
