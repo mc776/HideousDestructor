@@ -76,13 +76,13 @@ class HDBarrel:HDActor replaces ExplosiveBarrel{
 		setstatelabel("inertjiggle");
 	}
 	void A_BarrelCheckCrowd(){
-		blockthingsiterator a=blockthingsiterator.create(self,320);
-		while(a.next()){
-			if(
-				a.thing is "BarrelExplodeMarker"
-			){
+		int bcc=0;
+		thinkeriterator bexpm=ThinkerIterator.create("BarrelExplodeMarker");
+		while(bexpm.next(true)){
+			bcc++;
+			if(bcc>random(1,12)){
 				setstatelabel("waittoexplode");
-				return;
+				break;
 			}
 		}
 	}
@@ -110,7 +110,7 @@ class HDBarrel:HDActor replaces ExplosiveBarrel{
 			A_UnsetShootable();
 			A_NoBlocking();
 			bsolid=false;
-			spawn("BarrelExplodeMarker",pos);
+			new("BarrelExplodeMarker");
 
 			//set counter for spawning chunks in a crowd
 			stamina=0;
@@ -171,14 +171,12 @@ class HDBarrel:HDActor replaces ExplosiveBarrel{
 		);
 	}
 }
-class BarrelExplodeMarker:IdleDummy{
-	default{
-		-noblockmap;
-	}
-	states{
-	spawn:
-		TNT1 A random(50,100);
-		stop;
+class BarrelExplodeMarker:Thinker{
+	int timer;
+	override void Tick(){
+		if(globalfreeze||level.Frozen)return;
+		timer++;
+		if(timer>200)destroy();
 	}
 }
 class BarrelGibs:IdleDummy{

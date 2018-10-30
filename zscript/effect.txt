@@ -441,6 +441,9 @@ class HDFlameRedBig:HDActor{
 			frandom(0,target.height*0.6))
 		);
 	}
+	void A_SmokeFade(){
+		vel.z*=0.9;scale*=1.1;alpha-=0.05;
+	}
 	states{
 	spawn:
 		FIR7 ABABABABABAB 1 A_FlameFade();
@@ -452,9 +455,8 @@ class HDFlameRedBig:HDActor{
 			A_SetRenderstyle(0.6,STYLE_Translucent);
 			vel.z+=2;
 		}
-		#### AAAAAAAAAAA 3{
-			vel.z*=0.9;scale*=1.1;alpha-=0.05;
-		}stop;
+		#### AAAAAAAAAAA 3 A_SmokeFade();
+		stop;
 	}
 }
 class HDSmokeSmall:HDFlameRed{
