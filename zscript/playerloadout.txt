@@ -373,12 +373,12 @@ string loadlist="9mm 1; 7mm 48; smg; 9mm 30; 915 2;";
 
 		//example of manipulation
 		A_Log(itemstored[2],true);
-		array<string>numbertwo;numbertwo.clear();
-		itemstored[2].split(numbertwo," ");
-		numbertwo.delete(1);
-		itemstored[2]=numbertwo[0];
-		for(int i=1;i<numbertwo.size();i++){
-			itemstored[2]=itemstored[2].." "..numbertwo[i];
+		array<string>stringparts;stringparts.clear();
+		itemstored[2].split(stringparts," ");
+		stringparts.delete(1);
+		itemstored[2]=stringparts[0];
+		for(int i=1;i<stringparts.size();i++){
+			itemstored[2]=itemstored[2].." "..stringparts[i];
 		}
 		A_Log(itemstored[2],true);
 	}
