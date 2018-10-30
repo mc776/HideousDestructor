@@ -63,22 +63,27 @@ class Condemned:LostSoul replaces LostSoul{
 			if(blockingline){
 				bounce=true;
 			}else if(blockingmobj){
+				actor bmj=blockingmobj;
 				if(
 					!target
-					||blockingmobj!=target
+					||bmj!=target
 					||absangle(angleto(target),angle)>30
+					||(
+						!CheckMove(pos.xy+vel.xy,1) //too far away
+						&&blockingmobj!=bmj //another intervening blocker
+					)
 				){
 					bounce=true;
-					hdf.give(blockingmobj,"heat",5);
-					blockingmobj.vel+=vel*min(mass/max(1,blockingmobj.mass),0.9);
-				}else{
+					hdf.give(bmj,"heat",5);
+					bmj.vel+=vel*min(mass/max(1,bmj.mass),0.9);
+				}else if(!CheckMove(pos.xy+vel.xy,1)){
 					A_FaceTarget();
-					latched=target;
-					latchangle=deltaangle(target.angle,target.angleto(self));
+					latched=bmj;
+					latchangle=deltaangle(bmj.angle,bmj.angleto(self));
 					latchdist=frandom(0.95,1.)*(latched.radius+radius);
 					latchz=pos.z-latched.height-latched.pos.z;
 					latchedlastangle=latched.angle;
-					hdf.give(blockingmobj,"heat",12);
+					hdf.give(bmj,"heat",12);
 					latched.damagemobj(self,self,random(2,7),"Teeth");
 					setstatelabel("latched");
 				}
@@ -185,7 +190,7 @@ class Condemned:LostSoul replaces LostSoul{
 		);
 		SKUL I 1{
 			HDActor.HDBlast(self,
-				fragradius:96,fragdamage:random(1,12),fragdamagetype:"Thermal",
+				blastradius:96,blastdamage:random(1,12),blastdamagetype:"Thermal",
 				immolateradius:96,immolateamount:random(4,20),immolatechance:32
 			);
 		}

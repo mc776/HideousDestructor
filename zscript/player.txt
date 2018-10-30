@@ -405,7 +405,7 @@ class HDPlayerPawn:PlayerPawn{
 				)
 			)
 		);
-		double targetviewbob=VB_MIN;
+		double targetviewbob=VB_MAX*0.45;
 		if(overloaded>1.){
 			maxspeed=max(0.1,4.-overloaded);
 			if(maxspeed<0.3){
@@ -413,13 +413,13 @@ class HDPlayerPawn:PlayerPawn{
 				mustwalk=true;
 				cansprint=false;
 			}else if(maxspeed<0.4){
-				targetviewbob=VB_ALMOST;
+				targetviewbob=(VB_MAX*0.85);
 				cansprint=false;
 			}else if(maxspeed<1.){
-				targetviewbob=VB_ABIT;
+				targetviewbob=(VB_MAX*0.7);
 				cansprint=false;
 			}else if(overloaded<1.2){
-				targetviewbob=VB_LITTLE;
+				targetviewbob=(VB_MAX*0.6);
 			}
 		}
 		if(viewbob>targetviewbob)viewbob=max(viewbob-0.1,targetviewbob);
@@ -656,12 +656,7 @@ class HDPlayerPawn:PlayerPawn{
 		oldinput=input;
 	}
 }
-const VB_MAX=1.2;
-const VB_ALMOST=VB_MAX*0.85;
-const VB_ABIT=VB_MAX*0.8;
-const VB_LITTLE=VB_MAX*0.65;
-const VB_MIN=VB_MAX*0.5;
-
+const VB_MAX=1.4;
 
 
 
