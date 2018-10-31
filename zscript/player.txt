@@ -405,7 +405,7 @@ class HDPlayerPawn:PlayerPawn{
 				)
 			)
 		);
-		double targetviewbob=VB_MAX*0.45;
+		double targetviewbob=VB_MAX*0.4;
 		if(overloaded>1.){
 			maxspeed=max(0.1,4.-overloaded);
 			if(maxspeed<0.3){
@@ -413,13 +413,13 @@ class HDPlayerPawn:PlayerPawn{
 				mustwalk=true;
 				cansprint=false;
 			}else if(maxspeed<0.4){
-				targetviewbob=(VB_MAX*0.85);
+				targetviewbob=(VB_MAX*0.82);
 				cansprint=false;
 			}else if(maxspeed<1.){
-				targetviewbob=(VB_MAX*0.7);
+				targetviewbob=(VB_MAX*0.65);
 				cansprint=false;
 			}else if(overloaded<1.2){
-				targetviewbob=(VB_MAX*0.6);
+				targetviewbob=(VB_MAX*0.5);
 			}
 		}
 		if(viewbob>targetviewbob)viewbob=max(viewbob-0.1,targetviewbob);
@@ -727,6 +727,7 @@ extend class HDPlayerPawn{
 		stunned=0;
 		stimcount=0;
 		zerk=0;
+		haszerked=0;
 
 		feetangle=angle;
 		hasgrabbed=false;
