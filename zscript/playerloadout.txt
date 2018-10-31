@@ -409,7 +409,6 @@ class HDBackpack:HDWeapon{
 				amounts.push("");
 			}
 		}
-		UpdateMessage(0);
 	}
 	void UpdateMessage(int num){
 		int nnsiz=nicenames.size();
@@ -439,6 +438,15 @@ class HDBackpack:HDWeapon{
 			has=(amounts[bbb]!=""||(owner&&owner.countinv(invclasses[bbb])));
 			str=str.."\n"..(has?"\cs":"")..nicenames[bbb];
 		}
+
+		string amt=amounts[index];
+		if(amt=="")amt="none";
+		else if(((class<actor>)(invclasses[index])) is "HDMagAmmo"){
+			array<string>mags;
+			amt.split(mags," ");
+			amt="\cy"..mags.size();
+		}
+		str=str.."\n\n\n"..nicenames[index].."\n"..amt.." in pack\n\cc"..owner.countinv(invclasses[index]).." carried\n";
 		wepmsg=str;
 	}
 	action void A_BPReady(){
