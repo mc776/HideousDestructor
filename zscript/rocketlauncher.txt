@@ -437,6 +437,7 @@ class HDRocketAmmo:HDAmmo replaces RocketAmmo{
 		inventory.maxamount 12;
 		inventory.pickupmessage "Picked up a rocket grenade.";
 		scale 0.33;
+		hdpickup.nicename "Rocket Grenade";
 	}
 	states{
 	spawn:
@@ -453,6 +454,7 @@ class HEATAmmo:HDAmmo{
 		+inventory.ignoreskill
 		inventory.maxamount (6+4); //never forget
 		inventory.pickupmessage "Picked up a H.E.A.T. round.";
+		hdpickup.nicename "H.E.A.T. Rocket";
 		xscale 0.24;
 		yscale 0.3;
 	}
@@ -483,6 +485,7 @@ class Blooper:HDWeapon{
 		inventory.pickupmessage "You got the grenade launcher!";
 		obituary "%o was blooped by %k.";
 		hdweapon.barrelsize 24,1.6,3;
+		hdweapon.nicename "Grenade Launcher";
 	}
 	override double gunmass(){
 		return weaponstatus[0]&BLOPF_LOADED?5:4;
