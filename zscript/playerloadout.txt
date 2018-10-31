@@ -446,7 +446,10 @@ class HDBackpack:HDWeapon{
 			amt.split(mags," ");
 			amt="\cy"..mags.size();
 		}
-		str=str.."\n\n\n"..nicenames[index].."\n"..amt.." in pack\n\cc"..owner.countinv(invclasses[index]).." carried\n";
+		string ininv;
+		if(!owner.countinv(invclasses[index]))ininv="none"
+		else ininv="\cc"..owner.countinv(invclasses[index]);
+		str=str.."\n\n\n"..nicenames[index].."\n"..amt.." in pack\n"..ininv.." carried\n";
 		wepmsg=str;
 	}
 	action void A_BPReady(){
