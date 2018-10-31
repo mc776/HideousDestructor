@@ -444,12 +444,12 @@ class HDBackpack:HDWeapon{
 		else if(((class<actor>)(invclasses[index])) is "HDMagAmmo"){
 			array<string>mags;
 			amt.split(mags," ");
-			amt="\cy"..mags.size();
-		}
+			amt="\ce"..mags.size();
+		}else amt="\ce"..amt;
 		string ininv;
-		if(!owner.countinv(invclasses[index]))ininv="none"
+		if(!owner.countinv(invclasses[index]))ininv="none";
 		else ininv="\cc"..owner.countinv(invclasses[index]);
-		str=str.."\n\n\n"..nicenames[index].."\n"..amt.." in pack\n"..ininv.." carried\n";
+		str=str.."\n\n\n\cy"..nicenames[index].."\n"..amt.." in pack\n"..ininv.." carried\n";
 		wepmsg=str;
 	}
 	action void A_BPReady(){
@@ -462,11 +462,12 @@ class HDBackpack:HDWeapon{
 		if(justpressed(BT_ATTACK))invoker.UpdateMessage(invoker.index-1);
 		else if(justpressed(BT_ALTATTACK))invoker.UpdateMessage(invoker.index+1);
 		else if(justpressed(BT_RELOAD)){
-			A_Log("TESTING CLASS RETURN ONLY");
-			A_SpawnItemEx(invoker.invclasses[invoker.index],
-				10,0,height-12,1,0,1,
-				0,SXF_NOCHECKPOSITION
-			);
+			let thisclass=(class<hdpickup>)(invoker.invclasses[invoker.index]);
+			if(thisclass&&countinv(thisclass)){
+				A_TakeInventory(thisclass,1);
+				invoker.amounts[invoker.index]=""..invoker.amounts[invoker.index].toint()+1;
+				invoker.UpdateMessage(invoker.index);
+			}
 		}
 		A_WeaponMessage(invoker.wepmsg,5);
 	}
