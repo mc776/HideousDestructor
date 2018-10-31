@@ -414,7 +414,14 @@ class HDBackpack:HDWeapon{
 	void UpdateMessage(int num){
 		int nnsiz=nicenames.size();
 		int maxindex=nicenames.size()-1;
-		if(max(0-num,num-nnsiz)<maxindex){
+		if(num!=index&&owner){
+			int toadd=num>index?1:-1;
+			do{
+				index+=toadd;
+				if(index>maxindex)index=0;
+				else if(index<0)index=maxindex;
+			}while(index&&amounts[index]==""&&(!owner.countinv(invclasses[index])));
+		}else if(max(0-num,num-nnsiz)<maxindex){
 			while(num<0)num+=nnsiz;
 			while(num>maxindex)num-=nnsiz;
 			index=num;
@@ -425,10 +432,12 @@ class HDBackpack:HDWeapon{
 		for(int i=0;i<5;i++){
 			aaa--;
 			if(aaa<0)aaa=maxindex;
-			str=nicenames[aaa].."\n"..str;
+			bool has=(amounts[aaa]!=""||(owner&&owner.countinv(invclasses[aaa])));
+			str=(has?"\cs":"")..nicenames[aaa].."\n"..str;
 			bbb++;
 			if(bbb>maxindex)bbb=0;
-			str=str.."\n"..nicenames[bbb];
+			has=(amounts[bbb]!=""||(owner&&owner.countinv(invclasses[bbb])));
+			str=str.."\n"..(has?"\cs":"")..nicenames[bbb];
 		}
 		wepmsg=str;
 	}
@@ -451,6 +460,9 @@ class HDBackpack:HDWeapon{
 		A_WeaponMessage(invoker.wepmsg,5);
 	}
 	states{
+	select:
+		TNT1 A 0{invoker.UpdateMessage(invoker.index);}
+		goto super::select;
 	ready:
 		TNT1 A 1 A_BPReady();
 		goto readyend;

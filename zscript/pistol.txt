@@ -12,7 +12,6 @@ class HDSecondPistol:HDAmmo replaces Pistol{
 		scale 0.63;
 		inventory.pickupmessage "You got the pistol!";
 		inventory.pickupsound "misc/w_pkup";
-		hdpickup.nicename "Pistol";
 	}
 	override void BeginPlay(){
 		weaponstatus[0]=0;
@@ -119,8 +118,6 @@ class HDAutoPistol:HDSecondPistol{
 		//$Category "Weapons/Hideous Destructor"
 		//$Title "Pistol (Select Fire)"
 		//$Sprite "PISTA0"
-
-		hdpickup.nicename "Pistol (Select Fire)";
 }
 	states{
 		spawn:
@@ -144,6 +141,7 @@ class HDPistol:HDWeapon{
 		weapon.bobstyle "normal";
 		obituary "%o got capped by %k's pea shooter.";
 		inventory.pickupmessage "You got the pistol!";
+		hdweapon.nicename "Pistol";
 	}
 	override void DetachFromOwner(){
 		//if owner has second, change it to first before detaching
