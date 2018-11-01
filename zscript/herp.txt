@@ -374,6 +374,8 @@ class HERPUsable:HDPickup{
 		inventory.icon "HERPEX";
 		inventory.pickupsound "misc/w_pkup";
 		inventory.pickupmessage "Picked up a Heavy Engagement Rotary Platform robot.";
+		hdpickup.nicename "H.E.R.P. Robot";
+		hdpickup.refid HDLD_HERPBOT;
 	}
 	override double getbulk(){
 		double enc=ENC_HERP;
@@ -479,9 +481,11 @@ class HERPDEAD:HDPickup{
 		inventory.pickupsound "misc/w_pkup";
 		inventory.pickupmessage "Picked up a Heavy Engagement Rotary Platform robot. It is damaged.";
 		scale 0.8;
+		hdpickup.bulk ENC_HERP;
+		hdpickup.nicename "H.E.R.P. (broken)";
 	}
 	override double getbulk(){
-		return ENC_HERP;
+		return bulk;
 	}
 	override void Consolidate(){
 		if(

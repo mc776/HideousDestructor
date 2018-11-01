@@ -15,6 +15,8 @@ class HDArmour:HDPickup{
 		inventory.maxamount HDCONST_GREENARMOUR;
 		inventory.amount HDCONST_GREENARMOUR;
 		hdpickup.maxunitamount HDCONST_GREENARMOUR;
+		hdpickup.nicename "Armour";
+		hdpickup.refid HDLD_ARMGREN;
 
 		inventory.icon "ARMSB0";
 
@@ -34,6 +36,7 @@ class HDArmour:HDPickup{
 			icon=texman.checkfortexture("ARMCB0",TexMan.Type_MiscPatch);
 			maxamount=HDCONST_BLUEARMOUR;
 			amount=min(maxamount,amount);
+			nicename="";
 		}
 	}
 	override inventory createtossable(int amount){
@@ -205,11 +208,12 @@ class HDArmourWorn:HDArmour{
 }
 
 
-class BlueArmour:Inventory replaces BlueArmor{
+class BlueArmour:HDPickup replaces BlueArmor{
 	default{
 		meleethreshold 3;
 		inventory.maxamount HDCONST_BLUEARMOUR;
 		inventory.amount HDCONST_BLUEARMOUR;
+		hdpickup.refid HDLD_ARMBLUE;
 	}
     override void postbeginplay(){
         super.postbeginplay();
@@ -234,6 +238,7 @@ class GreenArmour:BlueArmour replaces GreenArmor{
 		meleethreshold 1;
 		inventory.maxamount HDCONST_GREENARMOUR;
 		inventory.amount HDCONST_GREENARMOUR;
+		hdpickup.refid HDLD_ARMGREN;
 	}
 }
 
