@@ -500,7 +500,8 @@ class HDBackpack:HDWeapon{
 			if(thisclass){
 				if(thisclass is "HDMagAmmo"){
 					int tookmag=HDMagAmmo(findinventory(thisclass)).TakeMag(false);
-					invoker.amounts[invoker.index]=""..tookmag..invoker.amounts[invoker.index];
+					if(invoker.amounts[invoker.index]=="")invoker.amounts[invoker.index]=""..tookmag;
+					else invoker.amounts[invoker.index]=tookmag.." "..invoker.amounts[invoker.index];
 				}else{
 					invoker.amounts[invoker.index]=""..invoker.amounts[invoker.index].toint()+1;
 					A_TakeInventory(thisclass,1);
@@ -517,6 +518,7 @@ class HDBackpack:HDWeapon{
 			let wepth=(class<hdweapon>)(invoker.invclasses[invoker.index]);
 			if(wepth){
 				let newp=HDWeapon(spawn(wepth,pos+(0,0,height-12),ALLOW_REPLACE));
+				newp.angle=angle;newp.A_ChangeVelocity(1,1,1,CVF_RELATIVE);
 				for(int i=0;i<8;i++){
 					newp.weaponstatus[i]=amounts[0].toint();
 					amounts.delete(0);
@@ -527,13 +529,14 @@ class HDBackpack:HDWeapon{
 			if(thisclass){
 				int thisamt=amounts[0].toint();
 				if(thisclass is "HDMagAmmo"){
-					HDMagAmmo.SpawnMag(self,thisclass,thisamt);
+					HDMagAmmo.GiveMag(self,thisclass,thisamt);
 					amounts.delete(0);
 				}else{
 					basicpickup=true;
 					thisamt--;
 					amounts[0]=""..thisamt;
-					A_DropItem(thisclass);
+					if(A_JumpIfInventory(thisclass,0,"null"))A_DropItem(thisclass);
+					else HDF.Give(self,thisclass,1);
 				}
 				//allow continuous move for smaller items
 				if(getdefaultbytype(thisclass).multipickup)A_SetTics(6);else setweaponstate("nope");
@@ -544,7 +547,7 @@ class HDBackpack:HDWeapon{
 				if(amounts[0].toint()>0)newamounts=amounts[0];
 			}else{
 				for(int i=0;i<amounts.size();i++){
-					newamounts=newamounts.." "..amounts[i];
+					newamounts=newamounts..(i?" ":"")..amounts[i];
 				}
 			}
 			invoker.amounts[invoker.index]=newamounts;
