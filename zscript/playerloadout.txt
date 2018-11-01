@@ -440,6 +440,11 @@ class HDBackpack:HDWeapon{
 	//"10" for 10 rounds/medikits/whatever; "0 10 20" for 3 mags
 	//"0 0 0 0 0 0 0 0" for a single weapon
 
+	default{
+		hdweapon.nicename "Backpack";
+		hdweapon.refid HDLD_BACKPAK;
+	}
+
 	override void InitializeWepStats(bool idfa){
 		if(idfa)return;
 		for(int i=0;i<allactorclasses.size();i++){
@@ -458,29 +463,30 @@ class HDBackpack:HDWeapon{
 	override double,int weaponbulk(){
 		double blk=0;
 		for(int i=0;i<invclasses.size();i++){
+			if(amounts[i]=="")continue;
 			class<actor> reff=invclasses[i];
-			let mmm=getdefaultbytype((class<hdmagammo>)(reff));
-			let www=getdefaultbytype((class<hdweapon>)(reff));
-			let ppp=getdefaultbytype((class<hdpickup>)(reff));
 			array<string> theseamounts;
-			if(mmm){
+			if(((class<hdmagammo>)(reff))){
 				amounts[i].split(theseamounts," ");
+				let mmm=getdefaultbytype((class<hdmagammo>)(reff));
 				for(int j=0;j<theseamounts.size();j++){
-					blk+=mmm.magbulk+theseamounts[j].toint()*mmm.roundbulk;
+					//blk+=mmm.magbulk+theseamounts[j].toint()*mmm.roundbulk;
 				}
-			}else if(www){
-				blk+=100; //fix this lol
-			}else if(ppp){
-				if(((class<inventory>)(reff)) is "HDArmour")blk+=ENC_GREENARMOUR;
-				else blk+=amounts[i].toint()*ppp.bulk;
+			}else if(((class<hdweapon>)(reff))){
+				if(((class<inventory>)(reff)) is "HDPistol")blk+=30;
+				else blk+=125;
+			}else if(((class<hdpickup>)(reff))){
+				if(((class<hdpickup>)(reff)) is "HDArmour")blk+=ENC_GREENARMOUR;
+				else blk+=amounts[i].toint()*getdefaultbytype((class<hdpickup>)(reff)).bulk;
 			}
 		}
 		bulk=max(blk,100);
-		return bulk;
+		return bulk,0;
 	}
 	void UpdateMessage(int num){
 		int nnsiz=nicenames.size();
 		int maxindex=nicenames.size()-1;
+		//if(num!=index)getbulk();
 		if(num!=index&&owner){
 			int toadd=num>index?1:-1;
 			do{
@@ -524,7 +530,9 @@ class HDBackpack:HDWeapon{
 		else ininv="\cc"..owner.countinv(invclasses[index]);
 
 		//display selected item name and amounts carried
-		str=str.."\n\n\n\cy"..nicenames[index].."\n"..amt.." in pack\n"..ininv.." carried\n";
+		str=str.."\n\n\n\cy"..nicenames[index].."\n"..amt.." in pack\n"..ininv.." carried\n"
+			.."\n\n\n\nTotal Bulk:\n\cf"..int(bulk);
+
 		wepmsg=str;
 	}
 	action void A_BPReady(){
@@ -538,7 +546,7 @@ class HDBackpack:HDWeapon{
 		else if(justpressed(BT_ALTATTACK))invoker.UpdateMessage(invoker.index+1);
 		else if(pressingreload()&&countinv(invoker.invclasses[invoker.index])){
 			let wepth=((class<hdweapon>)(invoker.invclasses[invoker.index]));
-			if(wepth){
+			if(wepth&&!(invoker is wepth)){
 				let www=hdweapon(findinventory(wepth));
 				string newwep=
 					www.weaponstatus[0].." "..
