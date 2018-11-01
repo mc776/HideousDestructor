@@ -470,7 +470,7 @@ class HDBackpack:HDWeapon{
 				amounts[i].split(theseamounts," ");
 				let mmm=getdefaultbytype((class<hdmagammo>)(reff));
 				for(int j=0;j<theseamounts.size();j++){
-					//blk+=mmm.magbulk+theseamounts[j].toint()*mmm.roundbulk;
+					blk+=mmm.magbulk+theseamounts[j].toint()*mmm.roundbulk;
 				}
 			}else if(((class<hdweapon>)(reff))){
 				if(((class<inventory>)(reff)) is "HDPistol")blk+=30;
@@ -486,7 +486,8 @@ class HDBackpack:HDWeapon{
 	void UpdateMessage(int num){
 		int nnsiz=nicenames.size();
 		int maxindex=nicenames.size()-1;
-		//if(num!=index)getbulk();
+		if(num==index)weaponbulk();
+//A_LogFloat(bulk);
 		if(num!=index&&owner){
 			int toadd=num>index?1:-1;
 			do{
@@ -499,7 +500,24 @@ class HDBackpack:HDWeapon{
 			while(num>maxindex)num-=nnsiz;
 			index=num;
 		}
-		string str="\cx"..nicenames[index];
+
+		//translate "amounts" into an actual number of items
+		string amt=amounts[index];
+		let thisclass=((class<actor>)(invclasses[index]));
+		if(amt=="")amt="\cunone";
+		else if(thisclass is "HDWeapon"||thisclass is "HDMagAmmo"){
+			array<string>mags;
+			amt.split(mags," ");
+			if(thisclass is "HDWeapon")amt="\ce"..(mags.size()/8);
+			else amt="\ce"..mags.size();
+		}else amt="\ce"..amt;
+
+		//look for an actual amount on the player
+		string ininv;
+		if(!owner.countinv(invclasses[index]))ininv="\cunone";
+		else ininv="\cc"..owner.countinv(invclasses[index]);
+		string str="\n\cx"..nicenames[index].."\n"..amt.." in pack   "..ininv.." carried\n";
+
 		if(hd_debug)str=str.."   \cu"..invclasses[index];
 		int aaa=index;int bbb=index;
 		for(int i=0;i<5;i++){
@@ -513,26 +531,10 @@ class HDBackpack:HDWeapon{
 			str=str.."\n"..(has?"\cs":"")..nicenames[bbb];
 		}
 
-		//translate "amounts" into an actual number of items
-		string amt=amounts[index];
-		let thisclass=((class<actor>)(invclasses[index]));
-		if(amt=="")amt="none";
-		else if(thisclass is "HDWeapon"||thisclass is "HDMagAmmo"){
-			array<string>mags;
-			amt.split(mags," ");
-			if(thisclass is "HDWeapon")amt="\ce"..(mags.size()/8);
-			else amt="\ce"..mags.size();
-		}else amt="\ce"..amt;
-
-		//look for an actual amount on the player
-		string ininv;
-		if(!owner.countinv(invclasses[index]))ininv="none";
-		else ininv="\cc"..owner.countinv(invclasses[index]);
-
 		//display selected item name and amounts carried
-		str=str.."\n\n\n\cy"..nicenames[index].."\n"..amt.." in pack\n"..ininv.." carried\n"
-			.."\n\n\n\nTotal Bulk:\n\cf"..int(bulk)
-			.."\n\n\n\n(zoom=fast scroll; unload/reload=take/insert)";
+		str="\cs[] [] [] \cbBackpack \cs[] [] []\nzoom=fast scroll  unload/reload=take/insert\n\n\n\n"
+			..str
+			.."\n\n\nTotal Bulk:\n\cf"..int(bulk);
 
 		wepmsg=str;
 	}
