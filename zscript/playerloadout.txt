@@ -441,8 +441,25 @@ class HDBackpack:HDWeapon{
 	//"0 0 0 0 0 0 0 0" for a single weapon
 
 	default{
+		+inventory.invbar +weapon.wimpy_weapon
+		+weapon.no_auto_switch
+		weapon.selectionorder 1010;
+		inventory.icon "BPAKA0";
+		inventory.pickupmessage "Picked up a backpack to help fill your life with ammo!";
+		inventory.pickupsound "weapons/pocket";
+
 		hdweapon.nicename "Backpack";
 		hdweapon.refid HDLD_BACKPAK;
+	}
+	override inventory createtossable(int amount){
+		target=owner;
+		let ct=hdbackpack(super.createtossable(amount));
+		ct.weaponbulk();
+		if(ct&&target&&ct.bulk>0){
+			ct.target=target;
+			ct.translation=target.translation;
+		}
+		return ct;
 	}
 
 	override void InitializeWepStats(bool idfa){
@@ -476,12 +493,27 @@ class HDBackpack:HDWeapon{
 				if(((class<inventory>)(reff)) is "HDPistol")blk+=30;
 				else blk+=125;
 			}else if(((class<hdpickup>)(reff))){
-				if(((class<hdpickup>)(reff)) is "HDArmour")blk+=ENC_GREENARMOUR;
-				else blk+=amounts[i].toint()*getdefaultbytype((class<hdpickup>)(reff)).bulk;
+				let classref=((class<hdpickup>)(reff));
+				if(classref is "HDArmour")blk+=ENC_GREENARMOUR;
+				else{
+					//presets required for default ammos because of One Man Army
+					double unitbulk;
+					if(classref is "HDShellAmmo")unitbulk=ENC_SHELL;
+					else if(classref is "FourMilAmmo")unitbulk=ENC_426;
+					else if(classref is "SevenMilAmmo")unitbulk=ENC_776;
+					else if(classref is "HDPistolAmmo")unitbulk=ENC_9;
+					else if(classref is "HDRocketAmmo")unitbulk=ENC_ROCKET;
+					else if(classref is "HDBattery")unitbulk=ENC_BATTERY;
+					else if(classref is "BrontornisRound")unitbulk=ENC_BRONTOSHELL;
+					else if(classref is "HEATAmmo")unitbulk=ENC_HEATROCKET;
+					else if(classref is "HDFragGrenadeAmmo")unitbulk=ENC_FRAG;
+					else unitbulk=getdefaultbytype((class<hdpickup>)(reff)).bulk;
+					blk+=amounts[i].toint()*unitbulk;
+				}
 			}
 		}
-		bulk=max(blk,100);
-		return bulk,0;
+		bulk=blk;
+		return max(blk*0.6,100),0;
 	}
 	void UpdateMessage(int num){
 		int nnsiz=nicenames.size();
@@ -623,9 +655,22 @@ class HDBackpack:HDWeapon{
 		A_WeaponMessage(invoker.wepmsg,5);
 	}
 	states{
-	select:
-		TNT1 A 0{invoker.UpdateMessage(invoker.index);}
-		goto super::select;
+	spawn:
+		BPAK ABC -1 nodelay{
+			invoker.weaponbulk();
+			if(!invoker.bulk)frame=1;
+			else if(target){
+				translation=target.translation;
+				frame=2;
+			}
+			invoker.bno_auto_switch=false;
+		}
+	select0:
+		TNT1 A 10{
+			A_PlaySound("weapons/pocket",CHAN_WEAPON);
+			if(invoker.bulk>(HDBPC_CAPACITY*0.7))A_SetTics(20);
+			invoker.UpdateMessage(invoker.index);
+		}goto super::select0;
 	ready:
 		TNT1 A 1 A_BPReady();
 		goto readyend;
