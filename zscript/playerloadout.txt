@@ -315,13 +315,14 @@ class clg:CustomInventory{
 		array<int> howmany;howmany.clear();
 		//string loadlist=cvar.getcvar("hd_loadout_custom",getplayernumber()).getstring();
 //TESTING
-string loadlist="9mm 1; 7mm 48; smg; 9mm 30; 915 2;";
+string loadlist="9mm 1, 7mm 48, smg, 9mm 30, 915 2, smg 100";
 		loadlist.replace(" ","");
-		loadlist.split(whichitem,";");
+		loadlist.split(whichitem,",");
 		for(int i=0;i<whichitem.size();i++){
 			howmany.push((whichitem[i].mid(3,whichitem[i].length())).toint(10));
 			whichitem[i]=whichitem[i].left(3);
 		}
+		weapon firstwep=null;
 		for(int i=0;i<allactorclasses.size();i++){
 			class<actor> reff=allactorclasses[i];
 			if(reff is "HDPickup"||reff is "HDWeapon"){
@@ -334,56 +335,42 @@ string loadlist="9mm 1; 7mm 48; smg; 9mm 30; 915 2;";
 						A_GiveInventory(reff.getclassname(),howmany[j]);
 					}
 				}
+				if(!firstwep&&reff is "HDWeapon"){
+					firstwep=weapon(findinventory((class<inventory>)(reff)));
+				}
 			}
 		}
-//FOR BACKPACK
-/*
-	To do:
-	itemstored strings should be in this format:
-		"%s %i %i ...", with %s being the inventory actor class name
-	each interaction will just call split() and dynarray[0] is the actor name
-	for regular items, this is just "%s %i", %i being the amount
-	for mags, each %i is its own mag
-	for weapons, each *set of eight %i's* is its own weapon
-	treat the FIRST, LEFTMOST %i as the top of the stack
-	to add, remember: new.." "..existing
-*/
-		array<string> itemstored;
-		itemstored.clear();
-		for(int i=0;i<allactorclasses.size();i++){
-			class<actor> reff=allactorclasses[i];
-			if(reff is "HDPickup"){
-				string ref=getdefaultbytype((class<hdpickup>)(reff)).refid;
-				if(ref~=="none"||ref=="")continue;
-				itemstored.push(reff.getclassname().." 1".." 2".." 3".." 4".." 5".." "..countinv((class<inventory>)(reff)));
-			}
+		if(firstwep&&player){
+			player.readyweapon=firstwep;
+			player.pendingweapon=firstwep;
 		}
-		for(int i=0;i<itemstored.size();i++){
-			string itemtype=itemstored[i];
-			array<string> thisitem;
-			thisitem.clear();
-			itemtype.split(thisitem," ");
-			itemtype=thisitem[0];
-			for(int j=1;j<thisitem.size();j++){
-				int thisint=thisitem[j].toint(10)+1000;
-				itemtype=itemtype..", "..thisint;
-			}
-			A_Log(itemtype,true);
-		}
-
-		//example of manipulation
-		A_Log(itemstored[2],true);
-		array<string>stringparts;stringparts.clear();
-		itemstored[2].split(stringparts," ");
-		stringparts.delete(1);
-		itemstored[2]=stringparts[0];
-		for(int i=1;i<stringparts.size();i++){
-			itemstored[2]=itemstored[2].." "..stringparts[i];
-		}
-		A_Log(itemstored[2],true);
 	}
 }
 
+
+class loadoutcode:custominventory{
+	states{
+	pickup:
+		TNT1 A 0{
+			string lll="";
+			bool first=true;
+			for(inventory hdppp=inv;hdppp!=null;hdppp=hdppp.inv){
+				let hdw=hdweapon(hdppp);
+				let hdp=hdpickup(hdppp);
+				if(hdw&&hdw==player.readyweapon){
+					//readyweapon gets first position
+					lll=hdw.refid.." 1, "..lll;
+				}else{
+					//append all items to end
+					lll=lll..(hdw?hdw.refid:hdp.refid).." "..hdppp.amount..", ";
+				}
+				first=false;
+			}
+			lll=lll.left(lll.length()-1);
+			A_Log("The loadout code for your current gear is:  "..lll,true);
+		}fail;
+	}
+}
 
 
 class HDBackpack:HDWeapon{
@@ -392,9 +379,10 @@ class HDBackpack:HDWeapon{
 	array<string> nicenames;
 	array<string> invclasses;
 
-	//"10" for 10 rounds; "0 10 20" for 3 mags
-	//"0 0 0 0 0 0 0 0" for a single weapon
 	array<string> amounts;
+	//because the last time I tried nested dynamic arrays it did not work.
+	//"10" for 10 rounds/medikits/whatever; "0 10 20" for 3 mags
+	//"0 0 0 0 0 0 0 0" for a single weapon
 
 	override void InitializeWepStats(bool idfa){
 		if(idfa)return;
@@ -409,6 +397,30 @@ class HDBackpack:HDWeapon{
 				amounts.push("");
 			}
 		}
+	}
+	double bulk;
+	double GetBulk(){
+		double blk=0;
+		for(int i=0;i<invclasses.size();i++){
+			class<actor> reff=invclasses[i];
+			let mmm=getdefaultbytype((class<hdmagammo>)(reff));
+			let www=getdefaultbytype((class<hdweapon>)(reff));
+			let ppp=getdefaultbytype((class<hdpickup>)(reff));
+			array<string> theseamounts;
+			if(mmm){
+				amounts[i].split(theseamounts," ");
+				for(int j=0;j<theseamounts.size();j++){
+					blk+=mmm.magbulk+theseamounts[j].toint()*mmm.roundbulk;
+				}
+			}else if(www){
+				blk+=100; //fix this lol
+			}else if(ppp){
+				if(((class<inventory>)(reff)) is "HDArmour")blk+=ENC_GREENARMOUR;
+				else blk+=amounts[i].toint()*ppp.bulk;
+			}
+		}
+		bulk=max(blk,100);
+		return bulk;
 	}
 	void UpdateMessage(int num){
 		int nnsiz=nicenames.size();
@@ -439,35 +451,104 @@ class HDBackpack:HDWeapon{
 			str=str.."\n"..(has?"\cs":"")..nicenames[bbb];
 		}
 
+		//translate "amounts" into an actual number of items
 		string amt=amounts[index];
+		let thisclass=((class<actor>)(invclasses[index]));
 		if(amt=="")amt="none";
-		else if(((class<actor>)(invclasses[index])) is "HDMagAmmo"){
+		else if(thisclass is "HDWeapon"||thisclass is "HDMagAmmo"){
 			array<string>mags;
 			amt.split(mags," ");
-			amt="\ce"..mags.size();
+			if(thisclass is "HDWeapon")amt="\ce"..(mags.size()/8);
+			else amt="\ce"..mags.size();
 		}else amt="\ce"..amt;
+
+		//look for an actual amount on the player
 		string ininv;
 		if(!owner.countinv(invclasses[index]))ininv="none";
 		else ininv="\cc"..owner.countinv(invclasses[index]);
+
+		//display selected item name and amounts carried
 		str=str.."\n\n\n\cy"..nicenames[index].."\n"..amt.." in pack\n"..ininv.." carried\n";
 		wepmsg=str;
 	}
 	action void A_BPReady(){
 		A_WeaponReady(WRF_NOFIRE);
-		if(pressinguse()){
+		if(pressingzoom()){
 			int inputamt=player.cmd.pitch>>5;
 			invoker.UpdateMessage(invoker.index-inputamt);
 			HijackMouse();
 		}
 		if(justpressed(BT_ATTACK))invoker.UpdateMessage(invoker.index-1);
 		else if(justpressed(BT_ALTATTACK))invoker.UpdateMessage(invoker.index+1);
-		else if(justpressed(BT_RELOAD)){
-			let thisclass=(class<hdpickup>)(invoker.invclasses[invoker.index]);
-			if(thisclass&&countinv(thisclass)){
-				A_TakeInventory(thisclass,1);
-				invoker.amounts[invoker.index]=""..invoker.amounts[invoker.index].toint()+1;
-				invoker.UpdateMessage(invoker.index);
+		else if(pressingreload()&&countinv(invoker.invclasses[invoker.index])){
+			let wepth=((class<hdweapon>)(invoker.invclasses[invoker.index]));
+			if(wepth){
+				let www=hdweapon(findinventory(wepth));
+				string newwep=
+					www.weaponstatus[0].." "..
+					www.weaponstatus[1].." "..
+					www.weaponstatus[2].." "..
+					www.weaponstatus[3].." "..
+					www.weaponstatus[4].." "..
+					www.weaponstatus[5].." "..
+					www.weaponstatus[6].." "..
+					www.weaponstatus[7];
+				invoker.amounts[invoker.index]=invoker.amounts[invoker.index]..newwep;
+				A_TakeInventory(wepth,1);
 			}
+			let thisclass=(class<hdpickup>)(invoker.invclasses[invoker.index]);
+			if(thisclass){
+				if(thisclass is "HDMagAmmo"){
+					int tookmag=HDMagAmmo(findinventory(thisclass)).TakeMag(false);
+					invoker.amounts[invoker.index]=""..tookmag..invoker.amounts[invoker.index];
+				}else{
+					invoker.amounts[invoker.index]=""..invoker.amounts[invoker.index].toint()+1;
+					A_TakeInventory(thisclass,1);
+				}
+				//allow continuous move for smaller items
+				if(getdefaultbytype(thisclass).multipickup)A_SetTics(4);else setweaponstate("nope");
+			}
+			invoker.UpdateMessage(invoker.index);
+		}
+		else if(pressingunload()&&invoker.amounts[invoker.index]!=""){
+			array<string>amounts;
+			bool basicpickup=false;
+			invoker.amounts[invoker.index].split(amounts," ");
+			let wepth=(class<hdweapon>)(invoker.invclasses[invoker.index]);
+			if(wepth){
+				let newp=HDWeapon(spawn(wepth,pos+(0,0,height-12),ALLOW_REPLACE));
+				for(int i=0;i<8;i++){
+					newp.weaponstatus[i]=amounts[0].toint();
+					amounts.delete(0);
+				}
+				setweaponstate("nope");
+			}
+			let thisclass=(class<hdpickup>)(invoker.invclasses[invoker.index]);
+			if(thisclass){
+				int thisamt=amounts[0].toint();
+				if(thisclass is "HDMagAmmo"){
+					HDMagAmmo.SpawnMag(self,thisclass,thisamt);
+					amounts.delete(0);
+				}else{
+					basicpickup=true;
+					thisamt--;
+					amounts[0]=""..thisamt;
+					A_DropItem(thisclass);
+				}
+				//allow continuous move for smaller items
+				if(getdefaultbytype(thisclass).multipickup)A_SetTics(6);else setweaponstate("nope");
+			}
+			//put the string back together
+			string newamounts="";
+			if(basicpickup){
+				if(amounts[0].toint()>0)newamounts=amounts[0];
+			}else{
+				for(int i=0;i<amounts.size();i++){
+					newamounts=newamounts.." "..amounts[i];
+				}
+			}
+			invoker.amounts[invoker.index]=newamounts;
+			invoker.UpdateMessage(invoker.index);
 		}
 		A_WeaponMessage(invoker.wepmsg,5);
 	}
@@ -478,5 +559,8 @@ class HDBackpack:HDWeapon{
 	ready:
 		TNT1 A 1 A_BPReady();
 		goto readyend;
+	nope:
+		TNT1 A 0 A_WeaponMessage(invoker.wepmsg,5);
+		goto super::nope;
 	}
 }
