@@ -347,6 +347,59 @@ string loadlist="9mm 1, 7mm 48, smg, 9mm 30, 915 2, smg 100";
 	}
 }
 
+//these constants need to be defined ONLY
+//where an item needs to be selectable
+//through custom loadouts.
+
+const HDLD_NINEMIL="9mm";
+const HDLD_NIMAG15="915";
+const HDLD_NIMAG30="930";
+
+const HDLD_SEVNMIL="7mm";
+const HDLD_SEVNMAG="730";
+const HDLD_SEVCLIP="710";
+
+const HDLD_FOURMIL="4mm";
+const HDLD_FOURMAG="450";
+
+const HDLD_BATTERY="bat";
+const HDLD_SHOTSHL="shl";
+const HDLD_ROCKETS="rkt";
+const HDLD_HEATRKT="rkh";
+const HDLD_BROBOLT="brb";
+const HDLD_GREFRAG="frg";
+
+const HDLD_STIMPAK="stm";
+const HDLD_MEDIKIT="med";
+const HDLD_BERSERK="zrk";
+const HDLD_RADSUIT="rad";
+const HDLD_LITEAMP="lit";
+const HDLD_DOORBUS="dbs";
+const HDLD_BACKPAK="bak";
+
+const HDLD_DERPBOT="drp";
+const HDLD_HERPBOT="hrp";
+
+const HDLD_ARMGREN="arg";
+const HDLD_ARMBLUE="arb";
+
+const HDLD_PISTOL= "pis";  //consider uservars for ZM66/Liberator/pistol levels
+const HDLD_PISTAUT="pia";
+const HDLD_HUNTER= "hun";
+const HDLD_SLAYER= "sla";
+const HDLD_ZM66GL= "z66";
+const HDLD_ZM66AUT="z6a";
+const HDLD_ZM66SMI="z6s";
+const HDLD_VULCETT="vul";
+const HDLD_LAUNCHR="lau";
+const HDLD_BLOOPER="blo";
+const HDLD_THUNDER="thu";
+const HDLD_LIBGL=  "lib";
+const HDLD_LIBRAUT="lia";
+const HDLD_LIBSEMI="lis";
+const HDLD_BFG=    "bfg";
+const HDLD_BRONTO= "bro";
+const HDLD_BOSS=   "bos";
 
 class loadoutcode:custominventory{
 	states{
@@ -357,16 +410,19 @@ class loadoutcode:custominventory{
 			for(inventory hdppp=inv;hdppp!=null;hdppp=hdppp.inv){
 				let hdw=hdweapon(hdppp);
 				let hdp=hdpickup(hdppp);
-				if(hdw&&hdw==player.readyweapon){
+				string refid=(hdw?hdw.refid:hdp?hdp.refid:"");
+				if(refid=="")continue;
+				if(first&&hdw&&hdw==player.readyweapon){
 					//readyweapon gets first position
 					lll=hdw.refid.." 1, "..lll;
 				}else{
 					//append all items to end
-					lll=lll..(hdw?hdw.refid:hdp.refid).." "..hdppp.amount..", ";
+					if(first)lll=refid.." "..hdppp.amount..", ";
+					else lll=lll..refid.." "..hdppp.amount..", ";
 				}
 				first=false;
 			}
-			lll=lll.left(lll.length()-1);
+			lll=lll.left(lll.length()-2);
 			A_Log("The loadout code for your current gear is:  "..lll,true);
 		}fail;
 	}
@@ -399,7 +455,7 @@ class HDBackpack:HDWeapon{
 		}
 	}
 	double bulk;
-	double GetBulk(){
+	override double,int weaponbulk(){
 		double blk=0;
 		for(int i=0;i<invclasses.size();i++){
 			class<actor> reff=invclasses[i];
