@@ -28,7 +28,6 @@ class HDSecondPistol:HDAmmo replaces Pistol{
 		){
 			weaponstatus[PISS_AUTO]=1;
 		}
-		if(weaponstatus[PISS_AUTO]>=0)refid=HDLD_PISTAUT;
 	}
 	override double getbulk(){
 		int mgg=weaponstatus[PISS_MAG];
@@ -77,20 +76,12 @@ class HDSecondPistol:HDAmmo replaces Pistol{
 		}
 	}
 }
+//turns your FIRST pistol into an auto
 class HDPistolFullAuto:ActionItem{
 	states{
 	pickup:
 		TNT1 A 0{
 			let ppp=HDPistol(findinventory("HDPistol"));
-			if(ppp)ppp.weaponstatus[PISS_AUTO]=0;
-		}fail;
-	}
-}
-class HDSecondPistolFullAuto:ActionItem{
-	states{
-	pickup:
-		TNT1 A 0{
-			let ppp=HDSecondPistol(findinventory("HDSecondPistol"));
 			if(ppp)ppp.weaponstatus[PISS_AUTO]=0;
 		}fail;
 	}
@@ -119,7 +110,6 @@ class HDAutoPistol:HDSecondPistol{
 		//$Category "Weapons/Hideous Destructor"
 		//$Title "Pistol (Select Fire)"
 		//$Sprite "PISTA0"
-		hdpickup.refid HDLD_PISTAUT;
 	}
 	states{
 		spawn:
@@ -144,7 +134,6 @@ class HDPistol:HDWeapon{
 		obituary "%o got capped by %k's pea shooter.";
 		inventory.pickupmessage "You got the pistol!";
 		hdweapon.nicename "Pistol";
-		hdweapon.refid HDLD_PISTOL;
 	}
 	override void DetachFromOwner(){
 		//if owner has second, change it to first before detaching
@@ -476,6 +465,32 @@ enum pistolstatus{
 
 
 
-
-
+//use this to give a new pistol in a custom loadout
+class HDPistolGiver:HDPickup{
+	default{
+		hdpickup.refid HDLD_PISTOL;
+	}
+	override void attachtoowner(actor other){
+		super.attachtoowner(other);
+		if(owner==other){
+			bool hasfirst=other.countinv("HDPistol");
+			if(hasfirst&&other.countinv("HDSecondPistol")){
+				destroy();return;
+			}
+			string givetype=hasfirst?"HDSecondPistol":"HDPistol";
+			other.A_GiveInventory(givetype);
+			if(refid==HDLD_PISTAUT){
+				let ppp=(other.findinventory(givetype));
+				if(hasfirst)HDSecondPistol(ppp).weaponstatus[PISS_AUTO]=0;
+				else HDPistol(ppp).weaponstatus[PISS_AUTO]=0;
+			}
+		}
+		destroy();
+	}
+}
+class HDAutoPistolGiver:HDPistolGiver{
+	default{
+		hdpickup.refid HDLD_PISTAUT;
+	}
+}
 
