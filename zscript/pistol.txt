@@ -62,6 +62,8 @@ class HDSecondPistol:HDAmmo replaces Pistol{
 			ppp.attachtoowner(other);
 			destroy();
 		}else super.attachtoowner(other);
+		if(weaponstatus[PISS_AUTO]<0)refid=HDLD_PISTOL;
+		else refid=HDLD_PISTAUT;
 	}
 	states{
 	spawn:
@@ -149,6 +151,11 @@ class HDPistol:HDWeapon{
 				pppp.attachtoowner(owner);
 			}
 		}
+	}
+	override void attachtoowner(actor other){
+		super.attachtoowner(other);
+		if(weaponstatus[PISS_AUTO]<0)refid=HDLD_PISTOL;
+		else refid=HDLD_PISTAUT;
 	}
 	override double,int weaponbulk(){
 		int mgg=weaponstatus[PISS_MAG];
