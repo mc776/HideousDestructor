@@ -28,7 +28,8 @@ class ZM66AssaultRifle:HDWeapon{
 			barrellength=25;
 			barrelwidth=0.5;
 			barreldepth=1;
-			weaponstatus[0]&=~(LIBF_GRENADEMODE|ZM66F_GRENADELOADED);
+			weaponstatus[0]&=~(ZM66F_GLMODE|ZM66F_GRENADELOADED);
+			refid=(weaponstatus[0]&ZM66F_NOFIRESELECT)?HDLD_ZM66SMI:HDLD_ZM66AUT;
 		}else{
 			barrellength=28;
 			barrelwidth=1;
@@ -670,12 +671,13 @@ class ZM66AltStarter:ActionItem{
 		}fail;
 	}
 }
-class ZM66Semi:InventoryFlag{
+class ZM66Semi:HDPickup{
 	default{
 		//$Category "Weapons/Hideous Destructor"
 		//$Title "ZM66 Rifle (All)"
 		//$Sprite "RIFSA0"
 		stamina ZM66F_NOLAUNCHER|ZM66F_NOFIRESELECT;
+		hdpickup.refid HDLD_ZM66SMI;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -695,6 +697,7 @@ class ZM66Regular:ZM66Semi{
 		//$Title "ZM66 Rifle (All)"
 		//$Sprite "RIFLA0"
 		stamina ZM66F_NOLAUNCHER;
+		hdpickup.refid HDLD_ZM66AUT;
 	}
 }
 class ZM66Random:IdleDummy{

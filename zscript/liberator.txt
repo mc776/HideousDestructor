@@ -25,6 +25,7 @@ class LiberatorRifle:HDWeapon{
 			barrelwidth=0.7;
 			barreldepth=1.2;
 			weaponstatus[0]&=~(LIBF_GRENADEMODE|LIBF_GRENADELOADED);
+			refid=HDLD_LIBNOGL;
 		}else{
 			barrellength=29;
 			barrelwidth=1;
@@ -550,11 +551,12 @@ enum liberatorstatus{
 };
 
 
-class LiberatorNoGL:InventoryFlag{
+class LiberatorNoGL:HDPickup{
 	default{
 		//$Category "Weapons/Hideous Destructor"
 		//$Title "Liberator (no GL)"
 		//$Sprite "BRFLA0"
+		hdpickup.refid HDLD_LIBNOGL;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();

@@ -28,6 +28,7 @@ class HDSecondPistol:HDAmmo replaces Pistol{
 		){
 			weaponstatus[PISS_AUTO]=1;
 		}
+		if(weaponstatus[PISS_AUTO]>=0)refid=HDLD_PISTAUT;
 	}
 	override double getbulk(){
 		int mgg=weaponstatus[PISS_MAG];
@@ -118,8 +119,8 @@ class HDAutoPistol:HDSecondPistol{
 		//$Category "Weapons/Hideous Destructor"
 		//$Title "Pistol (Select Fire)"
 		//$Sprite "PISTA0"
-		hdpickup.refid HDLD_PISTOL;
-}
+		hdpickup.refid HDLD_PISTAUT;
+	}
 	states{
 		spawn:
 			TNT1 A 0 nodelay{
