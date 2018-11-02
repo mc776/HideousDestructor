@@ -30,16 +30,14 @@ class HDArmour:HDPickup{
 		if(meleethreshold==3)return 200;
 		else return 80;
 	}
-	int durability;
 	override void postbeginplay(){
 		super.postbeginplay();
 		if(meleethreshold==3){
 			icon=texman.checkfortexture("ARMCB0",TexMan.Type_MiscPatch);
-			durability=HDCONST_BLUEARMOUR;
 			maxamount=HDCONST_BLUEARMOUR;
 			amount=min(maxamount,amount);
 			nicename="";
-		}else durability=HDCONST_GREENARMOUR;
+		}
 	}
 	override inventory createtossable(int amount){
 		inventory iii=super.createtossable(amount);
@@ -155,7 +153,6 @@ class HDArmour:HDPickup{
 class HDArmourWorn:HDArmour{
 	default{
 		-inventory.invbar
-		hdpickup.nicename "";
 	}
 	override void doeffect(){
 		if(!amount)destroy();
