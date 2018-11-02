@@ -379,20 +379,20 @@ const HDLD_HERPBOT="hrp";
 const HDLD_ARMGREN="arg";
 const HDLD_ARMBLUE="arb";
 
-const HDLD_PISTOL= "pis";  //consider uservars for ZM66/Liberator/pistol levels
-const HDLD_PISTAUT="pia";
+const HDLD_PISTOL= "pis";  //make uservars for ZM66/Liberator/pistol levels
+	//const HDLD_PISTAUT="pia";
 const HDLD_HUNTER= "hun";
 const HDLD_SLAYER= "sla";
 const HDLD_ZM66GL= "z66";
-const HDLD_ZM66AUT="z6a";
-const HDLD_ZM66SMI="z6s";
+	//const HDLD_ZM66AUT="z6a";
+	//const HDLD_ZM66SMI="z6s";
 const HDLD_VULCETT="vul";
 const HDLD_LAUNCHR="lau";
 const HDLD_BLOOPER="blo";
 const HDLD_THUNDER="thu";
 const HDLD_LIBGL=  "lib";
-const HDLD_LIBRAUT="lia";
-const HDLD_LIBSEMI="lis";
+	//const HDLD_LIBRAUT="lia";
+	//const HDLD_LIBSEMI="lis";
 const HDLD_BFG=    "bfg";
 const HDLD_BRONTO= "bro";
 const HDLD_BOSS=   "bos";
@@ -408,17 +408,17 @@ class loadoutcode:custominventory{
 				let hdp=hdpickup(hdppp);
 				string refid=(hdw?hdw.refid:hdp?hdp.refid:"");
 				if(refid=="")continue;
-				if(first&&hdw&&hdw==player.readyweapon){
+				if(first){
+					lll=refid.." "..hdppp.amount;
+					first=false;
+				}else if(hdw&&hdw==player.readyweapon){
 					//readyweapon gets first position
 					lll=hdw.refid.." 1, "..lll;
 				}else{
 					//append all items to end
-					if(first)lll=refid.." "..hdppp.amount..", ";
-					else lll=lll..refid.." "..hdppp.amount..", ";
+					lll=lll..", "..refid.." "..hdppp.amount;
 				}
-				first=false;
 			}
-			lll=lll.left(lll.length()-2);
 			A_Log("The loadout code for your current gear is:  "..lll,true);
 		}fail;
 	}
@@ -426,7 +426,7 @@ class loadoutcode:custominventory{
 
 
 
-/*
+
 
 class HDBackpack:HDWeapon{
 	int index;
@@ -677,4 +677,3 @@ class HDBackpack:HDWeapon{
 		goto super::nope;
 	}
 }
-*/

@@ -14,6 +14,7 @@ class HDRL:HDWeapon{
 		inventory.pickupmessage "You got the rocket launcher!";
 		obituary "%o rode %k's rocket.";
 		hdweapon.barrelsize 32,3.1,5;
+		hdweapon.refid HDLD_LAUNCHR;
 	}
 	override void tick(){
 		super.tick();
@@ -488,6 +489,7 @@ class Blooper:HDWeapon{
 		obituary "%o was blooped by %k.";
 		hdweapon.barrelsize 24,1.6,3;
 		hdweapon.nicename "Grenade Launcher";
+		hdweapon.refid HDLD_BLOOPER;
 	}
 	override double gunmass(){
 		return weaponstatus[0]&BLOPF_LOADED?5:4;

@@ -118,6 +118,7 @@ class HDAutoPistol:HDSecondPistol{
 		//$Category "Weapons/Hideous Destructor"
 		//$Title "Pistol (Select Fire)"
 		//$Sprite "PISTA0"
+		hdpickup.refid HDLD_PISTOL;
 }
 	states{
 		spawn:
@@ -142,6 +143,7 @@ class HDPistol:HDWeapon{
 		obituary "%o got capped by %k's pea shooter.";
 		inventory.pickupmessage "You got the pistol!";
 		hdweapon.nicename "Pistol";
+		hdweapon.refid HDLD_PISTOL;
 	}
 	override void DetachFromOwner(){
 		//if owner has second, change it to first before detaching
