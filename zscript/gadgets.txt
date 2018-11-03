@@ -2,6 +2,13 @@
 // Environment/Radiation Suit
 //-------------------------------------------------
 class WornRadsuit:InventoryFlag{
+	default{-inventory.untossable}
+	states{spawn:TNT1 A 0;stop;}
+	override inventory createtossable(int amount){
+		let rrr=owner.findinventory("PortableRadsuit");
+		if(rrr)owner.useinventory(rrr);else destroy();
+		return null;
+	}
 	override void attachtoowner(actor owner){	
 		if(!owner.countinv("PortableRadsuit"))owner.A_GiveInventory("PortableRadsuit");
 		super.attachtoowner(owner);
