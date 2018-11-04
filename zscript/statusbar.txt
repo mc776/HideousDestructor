@@ -451,17 +451,17 @@ class HDStatusBar:DoomStatusBar{
 		);
 	}
 	void DrawArmour(vector2 armourcoords,int flags){
-		let armour=HDArmourWorn(cplayer.mo.findinventory("HDArmourWorn"));
+		let armour=GreenArmourWorn(cplayer.mo.findinventory("GreenArmourWorn"));
 		if(armour){
 			string armoursprite="ARMSA0";
 			string armourback="ARMER0";
-			if(armour.meleethreshold==3){
+			if(armour.mega){
 				armoursprite="ARMCA0";
 				armourback="ARMER1";
 			}
 			drawbar(
 				armoursprite,armourback,
-				armour.amount,armour.maxamount,
+				armour.durability,armour.mega?HDCONST_BLUEARMOUR:HDCONST_GREENARMOUR,
 				armourcoords,-1,SHADER_VERT,
 				flags
 			);
@@ -473,7 +473,7 @@ class HDStatusBar:DoomStatusBar{
 			drawinventoryicon(ivs,(posx,posy),
 				flags|DI_ITEM_CENTER
 				|((
-					ivs is "HDArmour"
+					ivs is "GreenArmour"
 					||ivs is "PortableStimpack"
 					||ivs is "PortableMedikit"
 				)?0:DI_TRANSLATABLE)
@@ -518,8 +518,7 @@ class HDStatusBar:DoomStatusBar{
 					(-18-xoffs,-56-20*(i/5)),
 					DI_ITEM_CENTER_BOTTOM|DI_SCREEN_RIGHT_BOTTOM
 					|((
-						item is "HDArmour"
-						||item is "PortableStimpack"
+						item is "PortableStimpack"
 						||item is "PortableMedikit"
 					)?0:DI_TRANSLATABLE),
 					alpha:isthis?1.:0.6,scale:isthis?(1.,1.):(0.6,0.6)

@@ -41,15 +41,7 @@ class HDBP:HDWeapon{
 
 
 		//where the magic happens
-		if(itp=="HDArmour"){
-			let armr=HDArmour(findinventory("HDArmour"));
-			if(
-				invoker.itemamount[which]>0 //limit one
-				||armr.meleethreshold>1
-			)return;
-			invoker.itemamount[which]=armr.amount;
-			A_TakeInventory(itp);
-		}else if(itp is "HDMagAmmo"){
+		if(itp is "HDMagAmmo"){
 			invoker.BPAddMag(invoker.itemtype[which]);
 		}else{
 			invoker.itemamount[which]++;
@@ -105,11 +97,7 @@ class HDBP:HDWeapon{
 		}
 
 		//where the magic happens
-		if(itp=="HDArmour"){
-			if(countinv("HDArmour"))return;
-			A_GiveInventory(itp,invoker.itemamount[which]);
-			invoker.itemamount[which]=0;
-		}else if(itp is "HDMagAmmo"){
+		if(itp is "HDMagAmmo"){
 			HDMagAmmo.GiveMag(self,itp,invoker.BPTakeMag(which));
 		}else{
 			A_GiveInventory(itp,1);
@@ -254,11 +242,7 @@ class HDBP:HDWeapon{
 			for(int i=0;i<HDBPC_NUMITEMS;i++){
 				if(invoker.itemtype[i]&&invoker.itemamount[i]>0){
 					class<inventory> itp=invoker.itemtype[i];
-					if(invoker.itemtype[i]=="HDArmour"){
-						inventory aaa=inventory(spawn("HDArmour",pos+(0,0,height*0.6)));
-						aaa.amount=invoker.itemamount[i];
-					}
-					else if(itp is "HDMagAmmo"){
+					if(itp is "HDMagAmmo"){
 						while(invoker.itemamount[i]>0)HDMagAmmo.SpawnMag(self,itp,invoker.BPTakeMag(i));
 					}
 					else A_DropItem(invoker.itemtype[i],invoker.itemamount[i]);
@@ -273,11 +257,7 @@ class HDBP:HDWeapon{
 	double getbulk(){
 		double ebulk=0;
 		for (int i=0;i<HDBPC_NUMITEMS;i++){
-			if(itemamount[i]>0){
-				if(itemtype[i]=="HDArmour"){ //always worth 1 suit
-					ebulk+=itembulk[i];
-				}else ebulk+=itembulk[i]*itemamount[i];
-			}
+			if(itemamount[i]>0)ebulk+=itembulk[i]*itemamount[i];
 		}
 		int magslength=pistmags.size();for(int i=0;i<magslength;i++){ebulk+=ENC_9_LOADED*pistmags[i];}
 		magslength=smgmags.size();for(int i=0;i<magslength;i++){ebulk+=ENC_9_LOADED*smgmags[i];}
@@ -299,8 +279,7 @@ class HDBP:HDWeapon{
 		if(!idfa)return;
 		for(int i=0;i<HDBPC_NUMITEMS;i++){
 
-			if(i==armourindex)itemamount[i]=HDCONST_GREENARMOUR;
-			else if(itemname[i]=="br"||itemname[i]=="cl")itemamount[i]=0;
+			if(itemname[i]=="br"||itemname[i]=="cl")itemamount[i]=0;
 			else itemamount[i]=max(
 				1,
 				itemamount[i],
@@ -309,7 +288,6 @@ class HDBP:HDWeapon{
 			getbulk();
 		}
 	}
-	int armourindex;
 	int derpindex;int bderpindex;
 	int sevenmilindex;int brassindex;int loosezedindex;
 	int potionindex;int talismanindex;
@@ -334,7 +312,7 @@ class HDBP:HDWeapon{
 
 	override void beginplay(){
 		int i=-1;
-		i++;itembulk[i]=ENC_GREENARMOUR;itemtype[i]="HDArmour";itemname[i]="Soft armour";armourindex=i;
+		i++;itemname[i]="br";
 		i++;itembulk[i]=ENC_LADDER;itemtype[i]="PortableLadder";itemname[i]="Ladder";
 		i++;itembulk[i]=ENC_RADSUIT;itemtype[i]="PortableRadSuit";itemname[i]="Environment suit";
 		i++;itembulk[i]=ENC_LITEAMP;itemtype[i]="PortableLiteAmp";itemname[i]="Light amplifier";
@@ -421,8 +399,7 @@ class HDBPPreset:Inventory replaces backpack{
 						owner.player
 					).getint();
 					if(thisamt>0){
-						if(bp.itemtype[i]=="HDArmour")bp.itemamount[bp.armourindex]=HDCONST_GREENARMOUR;
-						else bp.itemamount[i]=thisamt;
+						bp.itemamount[i]=thisamt;
 					}
 					if(bp.getbulk()>=HDBPC_CAPACITY){
 						bp.itemamount[i]=0;
@@ -459,7 +436,6 @@ class HDBPPreset:Inventory replaces backpack{
 						i!=bp.potionindex
 						&&i!=bp.talismanindex
 					)maxrand=random(50,250)/(max(1,bp.itembulk[i]));
-					if(i==bp.armourindex)maxrand=random(random((HDCONST_GREENARMOUR>>1),HDCONST_GREENARMOUR),HDCONST_GREENARMOUR);
 					if(!maxrand)continue;
 					bp.itemamount[i]=random(1,random(1,maxrand));
 					if(bp.getbulk()>=HDBPC_CAPACITY){

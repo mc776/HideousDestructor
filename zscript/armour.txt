@@ -4,241 +4,184 @@
 const HDCONST_BLUEARMOUR=33;
 const HDCONST_GREENARMOUR=144;
 
-class HDArmour:HDPickup{
-	int doubleclicktimer;
-	override void doeffect(){
-		if(doubleclicktimer>0)doubleclicktimer--;
-		if(!amount)destroy();
-	}
+class GreenArmour:HDMagAmmo{
 	default{
 		+inventory.invbar
-		inventory.maxamount HDCONST_GREENARMOUR;
-		inventory.amount HDCONST_GREENARMOUR;
-		hdpickup.maxunitamount HDCONST_GREENARMOUR;
-		hdpickup.nicename "Armour";
-		hdpickup.refid HDLD_ARMGREN;
-
+		inventory.amount 1;
+		inventory.maxamount 3;
+		hdmagammo.maxperunit HDCONST_GREENARMOUR;
 		inventory.icon "ARMSB0";
-
-		meleethreshold 1; //used as armour level
 	}
 	override string pickupmessage(){
-		if(meleethreshold==3)return "Picked up the combat armour.";
-		else return "Picked up the security armour.";
+		return "Picked up the "..(mags[0]<1000?"security":"combat").." armour.";
 	}
-	override double getbulk(){
-		if(meleethreshold==3)return 200;
-		else return 80;
+	bool mega;
+	int cooldown;
+	action void A_WearArmour(){
+		invoker.syncamount();
+		int dbl=invoker.mags[0];
+		//if holding use, cycle to next armour
+		if(player.cmd.buttons&BT_USE){
+			invoker.mags.push(dbl);
+			invoker.mags.delete(0);
+			invoker.syncamount();
+			return;
+		}
+		//strip intervening items on doubleclick
+		string dropfirst="";
+		if(countinv("HDBackpack"))dropfirst="HDBackpack";
+		else if(countinv("WornRadsuit"))dropfirst="WornRadsuit";
+		else if(countinv("GreenArmourWorn"))dropfirst="GreenArmourWorn";
+		if(dropfirst!=""){
+			if(invoker.cooldown)A_DropInventory(dropfirst);
+			else{
+				invoker.cooldown=5;
+				A_Log(string.format(
+					"Take off your %s first!%s",
+					dropfirst=="HDBackpack"?"backpack":
+					dropfirst=="WornRadsuit"?"environment suit":
+					"current armour",
+					getcvar("hd_helptext")?" (double-tap to do this)":""
+				),true);
+			}
+			return;
+		}
+		//and finally put on the actual armour
+		GreenArmour.ArmourChangeEffect(self);
+		let worn=GreenArmourWorn(GiveInventoryType("GreenArmourWorn"));
+		if(dbl>=1000){
+			dbl-=1000;
+			worn.mega=true;
+		}
+		worn.durability=dbl;
+		invoker.amount--;
+		invoker.mags.delete(0);
+
+		if(getcvar("hd_helptext")){
+			double qual=dbl/(worn.mega?HDCONST_BLUEARMOUR:HDCONST_GREENARMOUR);
+			if(qual<0.1)A_Log("Just don't get hit.",true);
+			else if(qual<0.3)A_Log("You cover your shameful nakedness with your filthy rags.",true);
+			else if(qual<0.6)A_Log("It's better than nothing.");
+			else if(qual<0.75)A_Log("This armour has definitely seen better days.",true);
+			else if(qual<0.95)A_Log("This armour does not pass certification.",true);
+		}
+		invoker.syncamount();
+	}
+	override void doeffect(){
+		if(cooldown>0)cooldown--;
+		if(amount<1)destroy();
+	}
+	override void syncamount(){
+		if(amount<1){destroy();return;}
+		super.syncamount();
+		mega=mags[0]>=1000;
+		icon=texman.checkfortexture(mega?"ARMCB0":"ARMSB0",TexMan.Type_MiscPatch);
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		if(meleethreshold==3){
-			icon=texman.checkfortexture("ARMCB0",TexMan.Type_MiscPatch);
-			maxamount=HDCONST_BLUEARMOUR;
-			amount=min(maxamount,amount);
-			nicename="";
-		}
+		mags.clear();
+		mega=icon==texman.checkfortexture("ARMCB0",TexMan.Type_MiscPatch);
+		mags.push((mega?(1000+HDCONST_BLUEARMOUR):HDCONST_GREENARMOUR));
+		cooldown=0;
 	}
-	override inventory createtossable(int amount){
-		inventory iii=super.createtossable(amount);
-		if(iii){
-			iii.translation=0;
-			iii.target=owner;
-			iii.meleethreshold=meleethreshold;
-			if(iii.amount<self.amount){
-				iii.amount+=self.amount;
-				self.amount=0;
-			}
-			destroy();
+	override void consolidate(){}
+	override double getbulk(){
+		syncamount();
+		double blk=0;
+		for(int i=0;i<amount;i++){
+			if(mags[i]>=1000)blk+=ENC_BLUEARMOUR;
+			else blk+=ENC_GREENARMOUR;
 		}
-		return iii;
+		return blk;
 	}
 	override void actualpickup(actor other){
-		if(!other)other=picktarget;
+		cooldown=0;
 		if(!other)return;
-
-		int heatamount=countinv("Heat");
-		if(countinv("Heat")>50){
-			other.A_Log("Too hot to pick up!",true);
-			return;
-		}else if(heatamount){
-			other.A_GiveInventory("Heat",heatamount);
-			A_TakeInventory("Heat");
-		}
-
+		//put on the armour right away
 		if(
-			(other==master||!other.countinv("SpiritualArmour"))
-			&&other.player.buttons&BT_USE
-			&&!other.countinv("HDArmourWorn")
-			&&!other.countinv("WornRadsuit")
-			&&!other.countinv("HDBP")
+			other.player&&other.player.cmd.buttons&BT_USE
+			&&!other.countinv("GreenArmourWorn")
 		){
-			HDF.TransferFire(self,other);
-			attachtoowner(other);
-			other.UseInventory(self);
-			if(!!self)other.DropInventory(self);
+			GreenArmour.ArmourChangeEffect(other);
+			let worn=GreenArmourWorn(other.GiveInventoryType("GreenArmourWorn"));
+			int durability=mags[0];
+			if(durability>=1000){
+				durability-=1000;
+				worn.mega=true;
+			}
+			worn.durability=durability;
+			destroy();
 			return;
 		}
-
-		if(trypickup(other)){
-			HDF.TransferFire(self,other);
-			other.A_PlaySound(pickupsound,CHAN_AUTO);
-			other.A_Log(string.format("\cg%s",pickupmessage()),true);
+		//one megaarmour = 3 armour for maxinv purposes
+		if(other.findinventory("GreenArmour")){
+			let oa=GreenArmour(other.findinventory("GreenArmour"));
+			if(oa.amount>=oa.maxamount)return;
+			bool othermega=false;
+			for(int i=0;i<oa.mags.size();i++){
+				if(oa.mags[i]>=1000){
+					othermega=true;
+					break;
+				}
+			}
+			if(othermega)return;
 		}
+		super.actualpickup(other);
+		WHY IS IT NOT PICKING UP
 	}
-	action bool StripLayer(class<inventory> type,string typename,class<inventory> useinstead=null){
-		if(!countinv(type))return false;
-		if(
-			getcvar("hd_autostrip")
-			||invoker.doubleclicktimer>25
-		){
-			if(getcvar("hd_helptext"))A_Log(string.format("Taking off %s.",typename),true);
-			if(useinstead!=null)UseInventory(findinventory(useinstead));
-			else A_DropInventory(type);
-			invoker.doubleclicktimer=0;
-		}else{
-			if(getcvar("hd_helptext")&&!invoker.stamina) A_Log(string.format("Take off your %s first! \cdhd_strip\c- in the console or double-tap the inventory icon to remove this item.",typename),true);
-			invoker.doubleclicktimer+=35;
-		}
-		return true;
+	static void ArmourChangeEffect(actor owner){
+		owner.A_SetBlend("00 00 00",1,6,"00 00 00");
+		owner.A_PlaySound("weapons/pocket",CHAN_BODY);
+		owner.A_ChangeVelocity(0,0,2);
+		let onr=HDPlayerPawn(owner);
+		if(onr)onr.stunned+=40;
 	}
 	states{
 	spawn:
-		TNT1 A 0;
-		ARMC A 0;
-		ARMS A -1{
-			if(meleethreshold==3){
-				sprite=getspriteindex("ARMCA0");
-			}
-		}stop;
+		ARMS A -1 nodelay A_JumpIf(invoker.mega,1);
+		AMRC A -1;
+		stop;
 	use:
-		TNT1 A 0{
-			if(striplayer("HDBP","backpack"))return;
-			else if(striplayer("WornRadsuit","environment suit","PortableRadsuit"))return;
-			else if(striplayer("HDArmourWorn","armour"))return;
-			else{
-				if(invoker.master!=self&&countinv("SpiritualArmour")){
-					spawn("HDSmoke",pos,ALLOW_REPLACE);
-					A_PlaySound("misc/p_pkup",6);
-					A_TakeInventory("SpiritualArmour");
-				}
-
-				A_SetBlend("00 00 00",1,6,"00 00 00");
-				A_PlaySound("weapons/pocket");
-				A_ChangeVelocity(0,0,2);
-				let onr=HDPlayerPawn(self);
-				if(onr)onr.stunned+=40;
-
-
-				A_SetInventory("HDArmourWorn",invoker.amount);
-				inventory iii=findinventory("HDArmourWorn");
-				int armourlevel=invoker.meleethreshold;
-				iii.meleethreshold=armourlevel;
-
-				double qual=armourlevel==3?HDCONST_BLUEARMOUR:HDCONST_GREENARMOUR;
-
-				if(getcvar("hd_helptext")){
-					if(qual)qual=invoker.amount/qual;else if(hd_debug)A_Log("armour calculation error.");
-					if(qual<0.1)A_Log("Just don't get hit.",true);
-					else if(qual<0.3)A_Log("You cover your shameful nakedness with your filthy rags.",true);
-					else if(qual<0.6)A_Log("It's better than nothing.");
-					else if(qual<0.75)A_Log("This armour has definitely seen better days.",true);
-					else if(qual<0.95)A_Log("This armour does not pass certification.",true);
-				}
-				invoker.destroy();
-			}
-		}fail;
+		TNT1 A 0 A_WearArmour();
+		fail;
 	}
 }
-class HDArmourWorn:HDArmour{
+class GreenArmourWorn:HDPickup{
+	int durability;
+	bool mega;property ismega:mega;
 	default{
-		-inventory.invbar
+		greenarmourworn.ismega false;
 	}
-	override void doeffect(){
-		if(!amount)destroy();
-	}
-	override double getbulk(){
-		if(meleethreshold==3)return 120;
-		else return 35;
+	override void postbeginplay(){
+		durability=mega?HDCONST_BLUEARMOUR:HDCONST_GREENARMOUR;
+		super.postbeginplay();
 	}
 	override inventory createtossable(int amount){
-		if(!owner)return null;
-		owner.angle+=20;
-		owner.A_DropInventory("HDBP");
-		owner.angle-=20;
+		if(owner.countinv("HDBackpack")){
+			owner.A_DropInventory("HDBackpack");
+			return null;
+		}
 		if(owner.countinv("WornRadsuit")){
-			owner.angle-=20;
-			owner.UseInventory(owner.findinventory("PortableRadsuit"));
-			owner.angle+=20;
+			owner.A_DropInventory("WornRadsuit");
+			return null;
 		}
-		inventory iiii=inventory(spawn("HDArmour",owner.pos+(0,0,owner.height*0.6),ALLOW_REPLACE));
-		if(iiii){
-			owner.A_SetBlend("00 00 00",1,6,"00 00 00");
-			owner.A_PlaySound("weapons/pocket");
-			owner.vel.z+=2;
-			let onr=HDPlayerPawn(owner);
-			if(onr)onr.stunned+=40;
-
-			iiii.amount=self.amount;
-			iiii.angle=owner.angle;
-			iiii.A_ChangeVelocity(1,0,2,CVF_RELATIVE);
-			iiii.vel+=owner.vel;
-			iiii.meleethreshold=meleethreshold;
-			iiii.master=owner;
-
-			int heatamount=owner.countinv("Heat")/2;
-			if(heatamount){
-				owner.A_TakeInventory("Heat",heatamount);
-				iiii.A_GiveInventory("Heat",heatamount);
-				
-			}
-			HDF.TransferFire(owner,iiii);
-
-			destroy();
-			return iiii;
-		}
-		return null;
+		GreenArmour.ArmourChangeEffect(owner);
+		let tossed=GreenArmour(owner.spawn("GreenArmour",
+			(owner.pos.x,owner.pos.y,owner.pos.z+owner.height-20)
+		));
+		tossed.mags.clear();
+		if(mega)durability+=1000;
+		tossed.mags.push(durability);
+		destroy();
+		return tossed;
 	}
 	states{
-	use:
 	spawn:
 		TNT1 A 0;
 		stop;
 	}
 }
+class BlueArmour:GreenArmour{default{inventory.icon "ARMCB0";}}
+class BlueArmourWorn:GreenArmourWorn{default{greenarmourworn.ismega true;}}
 
-
-class BlueArmour:HDPickup replaces BlueArmor{
-	default{
-		meleethreshold 3;
-		inventory.maxamount HDCONST_BLUEARMOUR;
-		inventory.amount HDCONST_BLUEARMOUR;
-		hdpickup.refid HDLD_ARMBLUE;
-	}
-    override void postbeginplay(){
-        super.postbeginplay();
-        inventory aaa=null;
-        if(owner){
-            owner.A_GiveInventory("HDArmourWorn");
-            aaa=owner.findinventory("HDArmourWorn");
-        }else{
-            aaa=inventory(spawn("HDArmour",pos,ALLOW_REPLACE));
-        }
-		aaa.changetid(tid);
-		if(aaa){
-			aaa.meleethreshold=meleethreshold;
-			aaa.maxamount=maxamount;
-			aaa.amount=amount;
-		}
-		destroy();
-	}
-}
-class GreenArmour:BlueArmour replaces GreenArmor{
-	default{
-		meleethreshold 1;
-		inventory.maxamount HDCONST_GREENARMOUR;
-		inventory.amount HDCONST_GREENARMOUR;
-		hdpickup.refid HDLD_ARMGREN;
-	}
-}
 

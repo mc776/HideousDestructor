@@ -30,7 +30,7 @@ class HDMagAmmo:HDAmmo{
 	//add mag amount or size as appropriate
 	//should be called at the start of each interaction
 	//should NEVER reduce the array to none if it was not none before
-	void SyncAmount(){
+	virtual void SyncAmount(){
 		amount=max(amount,mags.size());
 		while(amount>mags.size()){
 			//mags.push(random(1,maxperunit));	//testing
@@ -244,7 +244,6 @@ class HDMagAmmo:HDAmmo{
 		name gcn=getclassname();
 
 		//you're only ever picking up one at a time
-//		if(HDMath.MaxInv(other,gcn)<=other.countinv(gcn))return;
 		let alreadygot=HDMagAmmo(other.findinventory(gcn));
 		if(alreadygot){
 			alreadygot.syncamount();

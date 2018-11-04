@@ -153,7 +153,6 @@ extend class HDHandlers{
 				int unit=1;
 				if(what is "HDShellAmmo")unit=4;
 				else if(what is "FourMilAmmo")unit=random(1,49);
-				else if(what is "HDArmour")unit=howmany;
 				howmany=min(unit,howmany);
 				hdbp.itemamount[hdbp.weaponstatus[HDBPS_WHICH]]-=howmany;
 				inventory ddd=inventory(ppp.spawn(what,ppp.pos));
@@ -204,7 +203,7 @@ class DropMisc:ActionItem{
 			A_DropInventory("SquadSummoner",countinv("SquadSummoner"));
 			A_DropInventory("HDIEDKit",countinv("HDIEDKit"));
 			A_DropInventory("DudRocketAmmo",countinv("DudRocketAmmo"));
-			A_DropInventory("HDArmour");
+			A_DropInventory("GreenArmour");
 		}fail;
 	}
 }
