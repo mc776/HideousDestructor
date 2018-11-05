@@ -95,6 +95,8 @@ class HDArmour:HDMagAmmo{
 	override void actualpickup(actor other){
 		cooldown=0;
 		if(!other)return;
+		int durability=mags[0];
+		HDArmour aaa=HDArmour(other.findinventory("HDArmour"));
 		//put on the armour right away
 		if(
 			other.player&&other.player.cmd.buttons&BT_USE
@@ -102,7 +104,6 @@ class HDArmour:HDMagAmmo{
 		){
 			HDArmour.ArmourChangeEffect(other);
 			let worn=HDArmourWorn(other.GiveInventoryType("HDArmourWorn"));
-			int durability=mags[0];
 			if(durability>=1000){
 				durability-=1000;
 				worn.mega=true;
@@ -111,20 +112,20 @@ class HDArmour:HDMagAmmo{
 			destroy();
 			return;
 		}
-		//one megaarmour = 3 armour for maxinv purposes
-		if(other.findinventory("HDArmour")){
-			let oa=HDArmour(other.findinventory("HDArmour"));
-			if(oa.amount>=oa.maxamount)return;
-			bool othermega=false;
-			for(int i=0;i<oa.mags.size();i++){
-				if(oa.mags[i]>=1000){
-					othermega=true;
-				}
+		//one megaarmour = 2 armour for maxinv purposes
+		if(aaa){
+			int totalbulk=(durability>=1000)?2:1;
+			for(int i=0;i<aaa.mags.size();i++){
+				totalbulk+=(aaa.mags[i]>=1000)?2:1;
 			}
-			if(othermega)return;
+			if(totalbulk>aaa.maxamount)return;
 		}
 		//super.actualpickup(other); //WHY IS THIS NOT PICKING UP
 		if(!trypickup(other))return;
+		aaa=HDArmour(other.findinventory("HDArmour"));
+		aaa.syncamount();
+		aaa.mags.pop();
+		aaa.mags.push(durability);
 		other.A_PlaySound(pickupsound,CHAN_AUTO);
 		other.A_Log(string.format("\cg%s",pickupmessage()),true);
 	}
