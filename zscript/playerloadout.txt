@@ -20,7 +20,7 @@ class SoldierExtras:ActionItem{
 			A_SetInventory("PortableMedikit",max(1,countinv("PortableMedikit")));
 			A_SetInventory("PortableStimpack",max(2,countinv("PortableStimpack")));
 			if(
-				!countinv("GreenArmourWorn")
+				!countinv("HDArmourWorn")
 			)A_GiveInventory("GreenArmourWorn");
 
 			if(!countinv("HDPistol"))A_SetInventory("HDPistol",1);
@@ -249,10 +249,10 @@ extend class HDPlayerPawn{
 		else{ //all other shit
 			switch(num){
 				case 1:
-					A_TakeInventory("GreenArmourWorn");
+					A_TakeInventory("HDArmourWorn");
 					A_GiveInventory("GreenArmourWorn");break;
 				case 2:
-					A_TakeInventory("GreenArmourWorn");
+					A_TakeInventory("HDArmourWorn");
 					A_GiveInventory("BlueArmourWorn");break;
 				case 3: A_GiveInventory("PortableRadsuit",amt);break;
 
@@ -272,9 +272,9 @@ extend class HDPlayerPawn{
 				case 16: A_GiveInventory("BlueCard",amt);break;
 				case 17: A_GiveInventory("YellowCard",amt);break;
 
-				case 18: A_GiveInventory("GreenArmour");break;
+				case 18: A_GiveInventory("GreenArmourWorn");break;
 				case 19:
-					if(countinv("GreenArmour")<2)A_GiveInventory("BlueArmour",HDCONST_BLUEARMOUR);
+					if(!countinv("HDArmourWorn"))A_GiveInventory("BlueArmourWorn",HDCONST_BLUEARMOUR);
 					break;
 				case 99:
 					A_GiveInventory("SoldierExtras",amt);

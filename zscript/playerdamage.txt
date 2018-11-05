@@ -19,8 +19,8 @@ extend class HDPlayerPawn{
 		silentdeath=false;
 
 		//replace all armour with custom HD stuff
-		if(countinv("BasicArmor")&&!countinv("GreenArmourWorn")){
-			A_GiveInventory("GreenArmourWorn");
+		if(countinv("BasicArmor")&&!countinv("HDArmourWorn")){
+			A_GiveInventory("HDArmourWorn");
 			A_TakeInventory("BasicArmor");
 		}
 
@@ -30,7 +30,7 @@ extend class HDPlayerPawn{
 		}
 
 		if(inflictor&&inflictor.bpiercearmor)flags|=DMG_NO_ARMOR;
-		let armr=GreenArmourWorn(findinventory("GreenArmourWorn"));
+		let armr=HDArmourWorn(findinventory("HDArmourWorn"));
 
 		//factor in cheats and skills
 		if(!(flags&DMG_FORCED)){

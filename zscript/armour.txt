@@ -4,14 +4,13 @@
 const HDCONST_BLUEARMOUR=33;
 const HDCONST_GREENARMOUR=144;
 
-class GreenArmour:HDMagAmmo{
+class HDArmour:HDMagAmmo{
 	default{
 		+inventory.invbar
 		inventory.amount 1;
 		inventory.maxamount 3;
 		hdmagammo.maxperunit HDCONST_GREENARMOUR;
 		inventory.icon "ARMSB0";
-		hdpickup.refid HDLD_ARMGREN;
 		inventory.pickupmessage "Picked up the security armour.";
 	}
 	bool mega;
@@ -19,6 +18,10 @@ class GreenArmour:HDMagAmmo{
 	override int getsbarnum(int flags){
 		if(mags.size()<1)return -1000000;
 		return mags[0]%1000;
+	}
+	override string pickupmessage(){
+		if(mags[0]>=1000)return "Picked up the combat armour!";
+		return super.pickupmessage();
 	}
 	action void A_WearArmour(){
 		invoker.syncamount();
@@ -34,7 +37,7 @@ class GreenArmour:HDMagAmmo{
 		string dropfirst="";
 		if(countinv("HDBackpack"))dropfirst="HDBackpack";
 		else if(countinv("WornRadsuit"))dropfirst="WornRadsuit";
-		else if(countinv("GreenArmourWorn"))dropfirst="GreenArmourWorn";
+		else if(countinv("HDArmourWorn"))dropfirst="HDArmourWorn";
 		if(dropfirst!=""){
 			if(invoker.cooldown)A_DropInventory(dropfirst);
 			else{
@@ -50,8 +53,8 @@ class GreenArmour:HDMagAmmo{
 			return;
 		}
 		//and finally put on the actual armour
-		GreenArmour.ArmourChangeEffect(self);
-		let worn=GreenArmourWorn(GiveInventoryType("GreenArmourWorn"));
+		HDArmour.ArmourChangeEffect(self);
+		let worn=HDArmourWorn(GiveInventoryType("HDArmourWorn"));
 		if(dbl>=1000){
 			dbl-=1000;
 			worn.mega=true;
@@ -95,10 +98,10 @@ class GreenArmour:HDMagAmmo{
 		//put on the armour right away
 		if(
 			other.player&&other.player.cmd.buttons&BT_USE
-			&&!other.countinv("GreenArmourWorn")
+			&&!other.countinv("HDArmourWorn")
 		){
-			GreenArmour.ArmourChangeEffect(other);
-			let worn=GreenArmourWorn(other.GiveInventoryType("GreenArmourWorn"));
+			HDArmour.ArmourChangeEffect(other);
+			let worn=HDArmourWorn(other.GiveInventoryType("HDArmourWorn"));
 			int durability=mags[0];
 			if(durability>=1000){
 				durability-=1000;
@@ -109,8 +112,8 @@ class GreenArmour:HDMagAmmo{
 			return;
 		}
 		//one megaarmour = 3 armour for maxinv purposes
-		if(other.findinventory("GreenArmour")){
-			let oa=GreenArmour(other.findinventory("GreenArmour"));
+		if(other.findinventory("HDArmour")){
+			let oa=HDArmour(other.findinventory("HDArmour"));
 			if(oa.amount>=oa.maxamount)return;
 			bool othermega=false;
 			for(int i=0;i<oa.mags.size();i++){
@@ -120,8 +123,10 @@ class GreenArmour:HDMagAmmo{
 			}
 			if(othermega)return;
 		}
-		trypickup(other);
 		//super.actualpickup(other); //WHY IS THIS NOT PICKING UP
+		if(!trypickup(other))return;
+		other.A_PlaySound(pickupsound,CHAN_AUTO);
+		other.A_Log(string.format("\cg%s",pickupmessage()),true);
 	}
 	static void ArmourChangeEffect(actor owner){
 		owner.A_SetBlend("00 00 00",1,6,"00 00 00");
@@ -140,12 +145,12 @@ class GreenArmour:HDMagAmmo{
 		fail;
 	}
 }
-class GreenArmourWorn:HDPickup{
+class HDArmourWorn:HDPickup{
 	int durability;
 	bool mega;property ismega:mega;
 	default{
 		-inventory.invbar
-		greenarmourworn.ismega false;
+		HDArmourworn.ismega false;
 		hdpickup.refid HDLD_ARWGREN;
 	}
 	override void postbeginplay(){
@@ -170,8 +175,8 @@ class GreenArmourWorn:HDPickup{
 			owner.A_DropInventory("WornRadsuit");
 			return null;
 		}
-		GreenArmour.ArmourChangeEffect(owner);
-		let tossed=GreenArmour(owner.spawn("GreenArmour",
+		HDArmour.ArmourChangeEffect(owner);
+		let tossed=HDArmour(owner.spawn("HDArmour",
 			(owner.pos.x,owner.pos.y,owner.pos.z+owner.height-20)
 		));
 		tossed.mags.clear();
@@ -186,40 +191,59 @@ class GreenArmourWorn:HDPickup{
 		stop;
 	}
 }
+
+
 class BlueArmour:HDPickup{
 	default{
-		hdpickup.refid HDLD_ARMGREN;
-		inventory.pickupmessage "Picked up the security armour.";
+		+missilemore
+		hdpickup.refid HDLD_ARMBLUE;
+		inventory.pickupmessage "Picked up the combat armour.";
 	}
 	states{
 	spawn:
 		TNT1 A 0 nodelay{
-			let aaa=GreenArmour(spawn("GreenArmour",pos,ALLOW_REPLACE));
+			let aaa=HDArmour(spawn("HDArmour",pos,ALLOW_REPLACE));
 			aaa.mags.clear();
-			aaa.mags.push(1000+HDCONST_BLUEARMOUR);
+			aaa.mags.push(bmissilemore?(1000+HDCONST_BLUEARMOUR):HDCONST_GREENARMOUR);
 			aaa.syncamount();
+			aaa.changetid(tid);
 		}stop;
 	}
 	override void attachtoowner(actor owner){
-		owner.A_GiveInventory("GreenArmour");
-		let ga=GreenArmour(owner.findinventory("GreenArmour"));
-		ga.mags.push(1000+HDCONST_BLUEARMOUR);
+		owner.A_GiveInventory("HDArmour");
+		let ga=HDArmour(owner.findinventory("HDArmour"));
+		ga.mags.push(bmissilemore?(1000+HDCONST_BLUEARMOUR):HDCONST_GREENARMOUR);
 		ga.syncamount();
 		destroy();
 	}
 }
 class BlueArmourWorn:HDPickup{
 	default{
+		+missilemore
 		inventory.icon "ARMCB0";
 		hdpickup.refid HDLD_ARWBLUE;
 	}
 	override void attachtoowner(actor owner){
-		owner.A_GiveInventory("GreenArmourWorn");
-		let ga=GreenArmourWorn(owner.findinventory("GreenArmourWorn"));
-		ga.durability=HDCONST_BLUEARMOUR;
-		ga.mega=true;
+		owner.A_GiveInventory("HDArmourWorn");
+		let ga=HDArmourWorn(owner.findinventory("HDArmourWorn"));
+		ga.durability=(bmissilemore?(1000+HDCONST_BLUEARMOUR):HDCONST_GREENARMOUR);
+		ga.mega=bmissilemore;
 		destroy();
 	}
 }
 
+class GreenArmour:BlueArmour{
+	default{
+		-missilemore
+		hdpickup.refid HDLD_ARMGREN;
+		inventory.pickupmessage "Picked up the security armour.";
+	}
+}
+class GreenArmourWorn:BlueArmourWorn{
+	default{
+		-missilemore
+		inventory.icon "ARMCB0";
+		hdpickup.refid HDLD_ARWGREN;
+	}
+}
 

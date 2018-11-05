@@ -451,7 +451,7 @@ class HDStatusBar:DoomStatusBar{
 		);
 	}
 	void DrawArmour(vector2 armourcoords,int flags){
-		let armour=GreenArmourWorn(cplayer.mo.findinventory("GreenArmourWorn"));
+		let armour=HDArmourWorn(cplayer.mo.findinventory("HDArmourWorn"));
 		if(armour){
 			string armoursprite="ARMSA0";
 			string armourback="ARMER0";
@@ -478,7 +478,7 @@ class HDStatusBar:DoomStatusBar{
 			drawinventoryicon(ivs,(posx,posy),
 				flags|DI_ITEM_CENTER
 				|((
-					ivs is "GreenArmour"
+					ivs is "HDArmour"
 					||ivs is "PortableStimpack"
 					||ivs is "PortableMedikit"
 				)?0:DI_TRANSLATABLE)
