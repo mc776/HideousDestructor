@@ -288,6 +288,7 @@ class DoorBuster:HDPickup{
 		inventory.icon "BGRNA3A7";
 		scale 0.6;
 	}
+	override int getsbarnum(int flags){return botid;}
 	action void A_PlantDB(){
 		if(invoker.amount<1){
 			invoker.destroy();return;

@@ -16,6 +16,10 @@ class GreenArmour:HDMagAmmo{
 	}
 	bool mega;
 	int cooldown;
+	override int getsbarnum(int flags){
+		if(mags.size()<1)return -1000000;
+		return mags[0]%1000;
+	}
 	action void A_WearArmour(){
 		invoker.syncamount();
 		int dbl=invoker.mags[0];

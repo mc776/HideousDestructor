@@ -133,6 +133,8 @@ class HDPickup:CustomInventory{
 	override void doeffect(){
 		if(!amount)destroy();
 	}
+	//for the status bar
+	virtual ui int getsbarnum(int flags=0){return -1000000;}
 	override void touch(actor toucher){}
 	virtual void actualpickup(actor other){
 		if(!other)other=picktarget;
