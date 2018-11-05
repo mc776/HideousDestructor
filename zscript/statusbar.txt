@@ -465,6 +465,11 @@ class HDStatusBar:DoomStatusBar{
 				armourcoords,-1,SHADER_VERT,
 				flags
 			);
+			drawstring(
+				mamountfont,FormatNumber(armour.durability),
+				armourcoords+(10,-7),flags|DI_ITEM_CENTER|DI_TEXT_ALIGN_RIGHT,
+				Font.CR_BLACK
+			);
 		}
 	}
 	void DrawInvSel(int posx,int posy,int numposx,int numposy,int flags){
