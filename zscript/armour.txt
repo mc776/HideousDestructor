@@ -10,6 +10,7 @@ class HDArmour:HDMagAmmo{
 		inventory.amount 1;
 		inventory.maxamount 3;
 		hdmagammo.maxperunit HDCONST_GREENARMOUR;
+		hdpickup.nicename "Armour";
 		inventory.icon "ARMSB0";
 		inventory.pickupmessage "Picked up the security armour.";
 	}
@@ -22,6 +23,12 @@ class HDArmour:HDMagAmmo{
 	override string pickupmessage(){
 		if(mags[0]>=1000)return "Picked up the combat armour!";
 		return super.pickupmessage();
+	}
+	//because it can intentionally go over the maxperunit amount
+	override void AddAMag(int addamt){
+		if(addamt<0)addamt=maxperunit;
+		mags.push(addamt);
+		amount=mags.size();
 	}
 	action void A_WearArmour(){
 		invoker.syncamount();
@@ -67,7 +74,7 @@ class HDArmour:HDMagAmmo{
 	}
 	override void doeffect(){
 		if(cooldown>0)cooldown--;
-		if(amount<1)destroy();
+		if(!amount)destroy();
 	}
 	override void syncamount(){
 		if(amount<1){destroy();return;}
@@ -77,11 +84,9 @@ class HDArmour:HDMagAmmo{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		mags.clear();
 		mega=icon==texman.checkfortexture("ARMCB0",TexMan.Type_MiscPatch);
-		mags.push((mega?(1000+HDCONST_BLUEARMOUR):HDCONST_GREENARMOUR));
+		mags[0]=((mega?(1000+HDCONST_BLUEARMOUR):HDCONST_GREENARMOUR));
 		cooldown=0;
-		syncamount();
 	}
 	override void consolidate(){}
 	override double getbulk(){

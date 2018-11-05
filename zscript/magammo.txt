@@ -116,7 +116,7 @@ class HDMagAmmo:HDAmmo{
 	}
 	//add a mag
 	//use to unload
-	void AddAMag(int addamt=-1){
+	virtual void AddAMag(int addamt=-1){
 		SyncAmount();
 		if(amount>=maxamount)return;
 		if(addamt<0||addamt>maxperunit)addamt=maxperunit;
@@ -134,8 +134,7 @@ class HDMagAmmo:HDAmmo{
 			}
 			mmm.AddAMag(giveamt);
 		}else{
-			receiver.A_GiveInventory(type,1);
-			let mmm=HDMagAmmo(receiver.findinventory(type));
+			let mmm=HDMagAmmo(receiver.GiveInventoryType(type));
 			mmm.mags.clear();
 			mmm.amount=0;
 			mmm.AddAMag(giveamt);
