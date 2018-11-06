@@ -483,8 +483,10 @@ class HDBackpack:HDWeapon{
 			if(((class<hdmagammo>)(reff))){
 				amounts[i].split(theseamounts," ");
 				let mmm=getdefaultbytype((class<hdmagammo>)(reff));
+				bool armour=!!((class<HDArmour>)(reff));
 				for(int j=0;j<theseamounts.size();j++){
-					blk+=mmm.magbulk+theseamounts[j].toint()*mmm.roundbulk;
+					if(armour)blk+=theseamounts[j].toint()>=1000?ENC_BLUEARMOUR/2:ENC_GREENARMOUR;
+					else blk+=mmm.magbulk+theseamounts[j].toint()*mmm.roundbulk;
 				}
 			}else if(((class<hdweapon>)(reff))){
 				if(((class<inventory>)(reff)) is "HDPistol")blk+=30;
