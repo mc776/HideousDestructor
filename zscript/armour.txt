@@ -113,7 +113,6 @@ class HDArmour:HDMagAmmo{
 		cooldown=0;
 		if(!other)return;
 		int durability=mags[0];
-		A_LogInt(durability);
 		HDArmour aaa=HDArmour(other.findinventory("HDArmour"));
 		//put on the armour right away
 		if(
@@ -202,7 +201,7 @@ class HDArmourWorn:HDPickup{
 }
 
 
-class BlueArmour:HDPickup{
+class BlueArmour:HDPickup replaces BlueArmor{
 	default{
 		+missilemore
 		hdpickup.refid HDLD_ARMBLUE;
@@ -243,7 +242,7 @@ class BlueArmourWorn:HDPickup{
 	}
 }
 
-class GreenArmour:BlueArmour{
+class GreenArmour:BlueArmour replaces GreenArmor{
 	default{
 		-missilemore
 		hdpickup.refid HDLD_ARMGREN;
