@@ -212,8 +212,8 @@ class BlueArmour:HDPickup replaces BlueArmor{
 		if(owner){
 			owner.A_GiveInventory("HDArmour");
 			let ga=HDArmour(owner.findinventory("HDArmour"));
-			ga.mags.push(bmissilemore?(1000+HDCONST_BLUEARMOUR):HDCONST_GREENARMOUR);
 			ga.syncamount();
+			ga.mags[0]=(bmissilemore?(1000+HDCONST_BLUEARMOUR):HDCONST_GREENARMOUR);
 		}else{
 			let aaa=HDArmour(spawn("HDArmour",pos,ALLOW_REPLACE));
 			aaa.mags.clear();
@@ -227,7 +227,6 @@ class BlueArmour:HDPickup replaces BlueArmor{
 class BlueArmourWorn:HDPickup{
 	default{
 		+missilemore
-		inventory.icon "ARMCB0";
 		hdpickup.refid HDLD_ARWBLUE;
 	}
 	override void postbeginplay(){

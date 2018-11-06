@@ -379,8 +379,10 @@ const HDLD_ARMBLUE="arb";
 const HDLD_ARWGREN="awg";
 const HDLD_ARWBLUE="awb";
 
+const HDLD_CHAINSW= "cha";
 const HDLD_PISTOL= "pis"; 
 const HDLD_PISTAUT="pia";
+const HDLD_SMG    ="smg";
 const HDLD_HUNTER= "hun";
 const HDLD_SLAYER= "sla";
 const HDLD_ZM66GL= "z66";
@@ -575,7 +577,7 @@ class HDBackpack:HDWeapon{
 		bool notakeitout=false;
 		if(justpressed(BT_ATTACK))invoker.UpdateMessage(invoker.index-1);
 		else if(justpressed(BT_ALTATTACK))invoker.UpdateMessage(invoker.index+1);
-		else if(justpressed(BT_RELOAD)&&countinv(invoker.invclasses[invoker.index])){
+		else if(pressingreload()&&countinv(invoker.invclasses[invoker.index])){
 			let wepth=((class<hdweapon>)(invoker.invclasses[invoker.index]));
 			if(wepth&&!(invoker is wepth)){
 				let www=hdweapon(findinventory(wepth));
@@ -591,6 +593,8 @@ class HDBackpack:HDWeapon{
 					www.weaponstatus[7];
 				invoker.amounts[invoker.index]=invoker.amounts[invoker.index]..newwep;
 				A_TakeInventory(wepth,1);
+				A_SetTics(12);
+				invoker.weaponbulk();
 			}
 			let thisclass=(class<hdpickup>)(invoker.invclasses[invoker.index]);
 			if(thisclass){
@@ -604,9 +608,10 @@ class HDBackpack:HDWeapon{
 				}
 				//allow continuous move for smaller items
 				if(getdefaultbytype(thisclass).multipickup)A_SetTics(4);else A_SetTics(10);
+				invoker.weaponbulk();
 			}
-			if(invoker.weaponbulk()>1500){
-				A_Log("LIM");
+			if(invoker.bulk>1500){
+				A_Log("It falls unceremoniously out of your overstuffed pack.",true);
 				notakeitout=true;
 			}
 			else invoker.UpdateMessage(invoker.index);
@@ -654,7 +659,7 @@ class HDBackpack:HDWeapon{
 			invoker.UpdateMessage(invoker.index);
 		}
 		A_WeaponMessage(invoker.wepmsg,5);
-		A_WeaponReady(WRF_NOFIRE|WRF_ALLOWUSER3|((pressingunload()||pressingreload())?WRF_DISABLESWITCH:0));
+		A_WeaponReady(WRF_NOFIRE|WRF_ALLOWUSER3|((player.cmd.buttons&(BT_RELOAD|BT_UNLOAD|BT_USE))?WRF_DISABLESWITCH:0));
 	}
 	states{
 	spawn:
