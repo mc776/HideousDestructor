@@ -568,6 +568,20 @@ class HDBackpack:HDWeapon{
 
 		wepmsg=str;
 	}
+	//to be called when picking up an item while the backpack is the readyweapon
+	bool PutIntoBackpack(inventory item){
+		let wep=HDWeapon(item);
+		let mag=HDMagAmmo(item);
+		let pkup=HDPickup(item);
+		if(!wep&&!pkup)return false;
+		int index=invclasses.find(item.getclassname());
+		if(wep){
+		}else if(mag){
+		}else{
+		}
+		return false;
+	}
+	//main interface
 	action void A_BPReady(){
 		if(pressingzoom()){
 			int inputamt=player.cmd.pitch>>5;
