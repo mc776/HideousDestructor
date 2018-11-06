@@ -367,6 +367,7 @@ const HDLD_MEDIKIT="med";
 const HDLD_BERSERK="zrk";
 const HDLD_RADSUIT="rad";
 const HDLD_LITEAMP="lit";
+const HDLD_LADDER= "lad";
 const HDLD_DOORBUS="dbs";
 const HDLD_BACKPAK="bak";
 
@@ -572,6 +573,7 @@ class HDBackpack:HDWeapon{
 			invoker.UpdateMessage(invoker.index-inputamt);
 			HijackMouse();
 		}
+		bool notakeitout=false;
 		if(justpressed(BT_ATTACK))invoker.UpdateMessage(invoker.index-1);
 		else if(justpressed(BT_ALTATTACK))invoker.UpdateMessage(invoker.index+1);
 		else if(pressingreload()&&countinv(invoker.invclasses[invoker.index])){
@@ -603,9 +605,10 @@ class HDBackpack:HDWeapon{
 				//allow continuous move for smaller items
 				if(getdefaultbytype(thisclass).multipickup)A_SetTics(4);else A_SetTics(10);
 			}
-			invoker.UpdateMessage(invoker.index);
+			if(invoker.weaponbulk()>1500)notakeitout=true;
+			else invoker.UpdateMessage(invoker.index);
 		}
-		else if(pressingunload()&&invoker.amounts[invoker.index]!=""){
+		if(notakeitout||(pressingunload()&&invoker.amounts[invoker.index]!="")){
 			array<string>amounts;
 			bool basicpickup=false;
 			invoker.amounts[invoker.index].split(amounts," ");
