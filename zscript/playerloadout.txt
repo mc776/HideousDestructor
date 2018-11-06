@@ -567,7 +567,6 @@ class HDBackpack:HDWeapon{
 		wepmsg=str;
 	}
 	action void A_BPReady(){
-		A_WeaponReady(WRF_NOFIRE|WRF_ALLOWUSER3);
 		if(pressingzoom()){
 			int inputamt=player.cmd.pitch>>5;
 			invoker.UpdateMessage(invoker.index-inputamt);
@@ -576,7 +575,7 @@ class HDBackpack:HDWeapon{
 		bool notakeitout=false;
 		if(justpressed(BT_ATTACK))invoker.UpdateMessage(invoker.index-1);
 		else if(justpressed(BT_ALTATTACK))invoker.UpdateMessage(invoker.index+1);
-		else if(pressingreload()&&countinv(invoker.invclasses[invoker.index])){
+		else if(justpressed(BT_RELOAD)&&countinv(invoker.invclasses[invoker.index])){
 			let wepth=((class<hdweapon>)(invoker.invclasses[invoker.index]));
 			if(wepth&&!(invoker is wepth)){
 				let www=hdweapon(findinventory(wepth));
@@ -655,6 +654,7 @@ class HDBackpack:HDWeapon{
 			invoker.UpdateMessage(invoker.index);
 		}
 		A_WeaponMessage(invoker.wepmsg,5);
+		A_WeaponReady(WRF_NOFIRE|WRF_ALLOWUSER3|((pressingunload()||pressingreload())?WRF_DISABLESWITCH:0));
 	}
 	states{
 	spawn:
