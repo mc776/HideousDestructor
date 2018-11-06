@@ -581,6 +581,7 @@ class HDBackpack:HDWeapon{
 			if(wepth&&!(invoker is wepth)){
 				let www=hdweapon(findinventory(wepth));
 				string newwep=
+					(invoker.amounts[invoker.index]==""?"":" ")..
 					www.weaponstatus[0].." "..
 					www.weaponstatus[1].." "..
 					www.weaponstatus[2].." "..
@@ -605,7 +606,10 @@ class HDBackpack:HDWeapon{
 				//allow continuous move for smaller items
 				if(getdefaultbytype(thisclass).multipickup)A_SetTics(4);else A_SetTics(10);
 			}
-			if(invoker.weaponbulk()>1500)notakeitout=true;
+			if(invoker.weaponbulk()>1500){
+				A_Log("LIM");
+				notakeitout=true;
+			}
 			else invoker.UpdateMessage(invoker.index);
 		}
 		if(notakeitout||(pressingunload()&&invoker.amounts[invoker.index]!="")){
