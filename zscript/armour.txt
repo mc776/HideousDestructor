@@ -234,8 +234,9 @@ class BlueArmourWorn:HDPickup{
 	override void postbeginplay(){
 		super.postbeginplay();
 		if(owner){
-			let ga=HDArmourWorn(owner.GiveInventoryType("HDArmourWorn"));
-			ga.durability=(bmissilemore?(1000+HDCONST_BLUEARMOUR):HDCONST_GREENARMOUR);
+			owner.A_GiveInventory("HDArmourWorn");
+			let ga=HDArmourWorn(owner.findinventory("HDArmourWorn"));
+			ga.durability=(bmissilemore?HDCONST_BLUEARMOUR:HDCONST_GREENARMOUR);
 			ga.mega=bmissilemore;
 		}
 		destroy();

@@ -396,7 +396,7 @@ class HDPlayerPawn:PlayerPawn{
 
 		//encumbrance
 		if(findinventory("HDArmourWorn"))
-			armourlevel=HDArmourWorn(findinventory("HDArmourWorn")).mega?3:1;
+			armourlevel=((HDArmourWorn(findinventory("HDArmourWorn")).mega)?3:1);
 			else armourlevel=0;
 		double maxspeed=min(
 			2.8
