@@ -372,6 +372,7 @@ const HDLD_BACKPAK="bak";
 const HDLD_DERPBOT="drp";
 const HDLD_HERPBOT="hrp";
 
+const HDLD_ARMGINV="arm";
 const HDLD_ARMGREN="arg";
 const HDLD_ARMBLUE="arb";
 const HDLD_ARWGREN="awg";
@@ -488,7 +489,7 @@ class HDBackpack:HDWeapon{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		if(owner)initializeamount("smg 1,9mm 32, bro 3,arg5, 930 20");
+		if(owner)initializeamount("smg 1,9mm 30, bro 3,arm0, 930 20");
 	}
 	void initializeamount(string loadlist){
 		array<string> whichitem;whichitem.clear();
@@ -505,6 +506,7 @@ class HDBackpack:HDWeapon{
 			int whichindex=whichitem.find(ref);
 			if(whichindex>=whichitem.size())continue;
 
+A_Log(invclasses[i]);
 			let wep=(class<hdweapon>)(invclasses[i]);
 			let mag=(class<hdmagammo>)(invclasses[i]);
 			let pkup=(class<hdpickup>)(invclasses[i]);
