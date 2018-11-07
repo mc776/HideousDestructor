@@ -693,8 +693,7 @@ class HDBackpack:HDWeapon{
 		}else if(pressing(BT_ALTRELOAD)){
 			invoker.RemoveFromBackpack(invoker.index,false);
 			invoker.updatemessage(invoker.index+1);
-			ttt=3;
-			
+			if(self is "HDPlayerPawn")ttt=hdplayerpawn(self).flip;
 		}
 		A_SetTics(max(1,ttt));
 		if(!pressing(BT_ALTRELOAD))A_WeaponMessage(invoker.wepmsg,ttt+1);
