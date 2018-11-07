@@ -461,9 +461,9 @@ class HDBackpack:HDWeapon{
 		return ct;
 	}
 
+	int bpindex;
 	override void InitializeWepStats(bool idfa){
 		if(idfa)return;
-		cooldown=0;
 		for(int i=0;i<allactorclasses.size();i++){
 			class<actor> reff=allactorclasses[i];
 			string ref="";
@@ -475,6 +475,7 @@ class HDBackpack:HDWeapon{
 				amounts.push("");
 			}
 		}
+		bpindex=invclasses.find(getclassname());
 	}
 	double bulk;
 	override double,int weaponbulk(){
@@ -524,7 +525,7 @@ class HDBackpack:HDWeapon{
 				index+=toadd;
 				if(index>maxindex)index=0;
 				else if(index<0)index=maxindex;
-			}while(index&&amounts[index]==""&&(!owner.countinv(invclasses[index])));
+			}while(index!=bpindex&&amounts[index]==""&&(!owner.countinv(invclasses[index])));
 		}else if(max(0-num,num-nnsiz)<maxindex){
 			while(num<0)num+=nnsiz;
 			while(num>maxindex)num-=nnsiz;
@@ -676,7 +677,6 @@ class HDBackpack:HDWeapon{
 		return ticks;
 	}
 	//main interface
-	int cooldown;
 	action void A_BPReady(){
 		if(pressingzoom()){
 			int inputamt=player.cmd.pitch>>5;
@@ -690,21 +690,14 @@ class HDBackpack:HDWeapon{
 			ttt=invoker.ItemToBackpack(findinventory(invoker.invclasses[invoker.index]));
 		}else if(pressingunload()){
 			ttt=invoker.RemoveFromBackpack(invoker.index,true);
-		}else if(justpressed(BT_ALTRELOAD)){
-			invoker.cooldown+=7;
-			if(invoker.cooldown>14){
-				int clsmax=invoker.invclasses.size()-1;
-				for(int i=0;i<clsmax;i++){
-					invoker.RemoveFromBackpack(i,false);
-				}
-				invoker.cooldown=0;
-				dropinventory(invoker);
-				return;
-			}
+		}else if(pressing(BT_ALTRELOAD)){
+			invoker.RemoveFromBackpack(invoker.index,false);
+			invoker.updatemessage(invoker.index+1);
+			ttt=3;
+			
 		}
 		A_SetTics(max(1,ttt));
-		A_WeaponMessage(invoker.wepmsg,ttt+1);
-		if(invoker.cooldown>0)invoker.cooldown--;
+		if(!pressing(BT_ALTRELOAD))A_WeaponMessage(invoker.wepmsg,ttt+1);
 		A_WeaponReady(
 			WRF_NOFIRE|WRF_ALLOWUSER3
 			|((player.cmd.buttons&(BT_RELOAD|BT_UNLOAD|BT_USE))?WRF_DISABLESWITCH:0)
