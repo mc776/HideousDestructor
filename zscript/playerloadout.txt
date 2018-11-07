@@ -432,6 +432,7 @@ class HDBackpack:HDWeapon{
 	int index;
 
 	array<string> nicenames;
+	array<string> refids;
 	array<string> invclasses;
 
 	array<string> amounts;
@@ -467,16 +468,59 @@ class HDBackpack:HDWeapon{
 		for(int i=0;i<allactorclasses.size();i++){
 			class<actor> reff=allactorclasses[i];
 			string ref="";
-			if(reff is "HDPickup")ref=getdefaultbytype((class<hdpickup>)(reff)).nicename;
-			else if(reff is "HDWeapon")ref=getdefaultbytype((class<hdweapon>)(reff)).nicename;
-			if(ref!=""){
+			string nnm="";
+			if(reff is "HDPickup"){
+				nnm=getdefaultbytype((class<hdpickup>)(reff)).nicename;
+				ref=getdefaultbytype((class<hdpickup>)(reff)).refid;
+			}
+			else if(reff is "HDWeapon"){
+				nnm=getdefaultbytype((class<hdweapon>)(reff)).nicename;
+				ref=getdefaultbytype((class<hdweapon>)(reff)).refid;
+			}
+			if(nnm!=""){
 				invclasses.push(reff.getclassname());
-				nicenames.push(ref);
+				nicenames.push(nnm);
+				refids.push(ref);
 				amounts.push("");
 			}
 		}
 		bpindex=invclasses.find(getclassname());
 	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		if(owner)initializeamount("smg 1,9mm 32, bro 3,arg5, 930 20");
+	}
+	void initializeamount(string loadlist){
+		array<string> whichitem;whichitem.clear();
+		array<int> howmany;howmany.clear();
+		loadlist.replace(" ","");
+		loadlist.split(whichitem,",");
+		for(int i=0;i<whichitem.size();i++){
+			howmany.push((whichitem[i].mid(3,whichitem[i].length())).toint(10));
+			whichitem[i]=whichitem[i].left(3);
+		}
+		for(int i=0;i<refids.size();i++){
+			string ref=refids[i];
+			if(ref=="")continue;
+			int whichindex=whichitem.find(ref);
+			if(whichindex>=whichitem.size())continue;
+
+			let wep=(class<hdweapon>)(invclasses[i]);
+			let mag=(class<hdmagammo>)(invclasses[i]);
+			let pkup=(class<hdpickup>)(invclasses[i]);
+
+			if(wep||mag){
+				for(int j=0;j<howmany[whichindex];j++){
+					let iii=inventory(spawn(invclasses[i],pos,ALLOW_REPLACE));
+					iii.attachtoowner(owner);
+					itemtobackpack(iii);
+				}
+			}else if(pkup){
+				amounts[i]=""..amounts[i].toint(10)+howmany[whichindex];
+			}
+		}
+	}
+
 	double bulk;
 	override double,int weaponbulk(){
 		double blk=0;
@@ -693,10 +737,16 @@ class HDBackpack:HDWeapon{
 		}else if(pressing(BT_ALTRELOAD)){
 			invoker.RemoveFromBackpack(invoker.index,false);
 			invoker.updatemessage(invoker.index+1);
-			if(self is "HDPlayerPawn")ttt=hdplayerpawn(self).flip;
+			if(self is "HDPlayerPawn")ttt=randompick(0,0,0,0,0,1);
+			if(!invoker.bulk){
+				DropInventory(invoker);
+				return;
+			}
 		}
-		A_SetTics(max(1,ttt));
-		if(!pressing(BT_ALTRELOAD))A_WeaponMessage(invoker.wepmsg,ttt+1);
+		if(!pressing(BT_ALTRELOAD)){
+			A_WeaponMessage(invoker.wepmsg,ttt+1);
+			A_SetTics(max(1,ttt));
+		}else A_SetTics(ttt);
 		A_WeaponReady(
 			WRF_NOFIRE|WRF_ALLOWUSER3
 			|((player.cmd.buttons&(BT_RELOAD|BT_UNLOAD|BT_USE))?WRF_DISABLESWITCH:0)
