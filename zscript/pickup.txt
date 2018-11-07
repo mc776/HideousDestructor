@@ -14,7 +14,7 @@ class GrabThinker:Thinker{
 		super.postbeginplay();
 	}
 	override void tick(){
-		if(!picktarget||!pickobj){destroy();return;}
+		if(!picktarget||!picktarget.player||!pickobj){destroy();return;}
 		super.tick();
 		ticker++;
 		if(ticker<4)pickobj.setorigin(
@@ -42,29 +42,30 @@ class GrabThinker:Thinker{
 			pickobj.setorigin((pickobj.pos.xy+shiftpk,pickobj.pos.z),true);
 
 			let ht=hdupk(pickobj);
+			let bp=HDBackpack(picktarget.findinventory("HDBackpack"));
+			let pt=hdpickup(pickobj);
+			let wt=hdweapon(pickobj);
+			let tt=inventory(pickobj);
 			if(ht){
 				ht.picktarget=picktarget;
 				ht.a_hdupkgive();
+			}else if(
+				bp&&bp==picktarget.player.readyweapon
+				&&bp.ItemToBackpack(tt)!=1
+			){
 				destroy();
 				return;
 			}
-
-			let pt=hdpickup(pickobj);
 			if(pt){
 				pt.actualpickup(picktarget);
 				pt.isbeingpickedup=false;
-				destroy();
-				return;
-			}
-
-			let wt=hdweapon(pickobj);
-			if(wt){wt.actualpickup(picktarget);destroy();return;}
-
-			let tt=inventory(pickobj);
-			if(tt){
+			}else if(wt){
+				wt.actualpickup(picktarget);
+			}else if(tt){
 				if(picktarget.vel==(0,0,0))picktarget.A_ChangeVelocity(0.001,0,0,CVF_RELATIVE);
-				destroy();return;
 			}
+			destroy();
+			return;
 		}
 	}
 }

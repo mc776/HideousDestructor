@@ -67,15 +67,20 @@ class HDSecondPistol:HDAmmo replaces Pistol{
 	}
 	states{
 	spawn:
-		PIST ABCD -1 nodelay{
-			if(invoker.weaponstatus[PISS_CHAMBER]<1){
-				if(invoker.weaponstatus[PISS_AUTO]<0)frame=1;
-				else frame=3;
-			}else{
-				if(invoker.weaponstatus[PISS_AUTO]<0)frame=0;
-				else frame=2;
+		PIST A 1;
+		PIST A 0{
+			actor aaa;int bbb;
+			[bbb,aaa]=A_SpawnItemEx("HDPistol",
+				flags:SXF_TRANSFERSPECIAL|SXF_NOCHECKPOSITION
+			);
+			aaa.special=special;
+			let ppp=hdpistol(aaa);
+			if(!ppp)return;
+			for(int i=0;i<8;i++){
+				ppp.weaponstatus[i]=invoker.weaponstatus[i];
 			}
-		}
+			ppp.vel=vel;ppp.target=target;
+		}stop;
 	}
 }
 //turns your FIRST pistol into an auto
@@ -116,7 +121,7 @@ class HDAutoPistol:HDSecondPistol{
 	states{
 		spawn:
 			TNT1 A 0 nodelay{
-				let pppp=hdsecondpistol(spawn("HDSecondPistol",pos));
+				let pppp=hdpistol(spawn("HDPistol",pos));
 				pppp.weaponstatus[PISS_AUTO]=0;
 				pppp.special=special;
 			}stop;
@@ -124,7 +129,6 @@ class HDAutoPistol:HDSecondPistol{
 }
 class HDPistol:HDWeapon{
 	default{
-		-solid //only second can be picked up
 		scale 0.63;
 		weapon.selectionorder 50;
 		weapon.slotnumber 2;
@@ -156,6 +160,23 @@ class HDPistol:HDWeapon{
 		super.attachtoowner(other);
 		if(weaponstatus[PISS_AUTO]<0)refid=HDLD_PISTOL;
 		else refid=HDLD_PISTAUT;
+	}
+	override void actualpickup(actor other){
+		//if owner has no first, attach normally
+		if(!other.findinventory("HDPistol")){
+			super.actualpickup(other);
+			return;
+		}
+		if(other.findinventory("HDSecondPistol"))return;
+
+		let ppp=hdsecondpistol(spawn("HDsecondPistol",pos));
+		if(!ppp)return;
+		for(int i=0;i<8;i++){
+			ppp.weaponstatus[i]=weaponstatus[i];
+		}
+		ppp.weaponstatus[0]|=PISF_FROMSECOND;
+		ppp.attachtoowner(other);
+		destroy();
 	}
 	override double,int weaponbulk(){
 		int mgg=weaponstatus[PISS_MAG];
@@ -438,19 +459,14 @@ class HDPistol:HDWeapon{
 
 
 	spawn:
-		PIST A 1;
-		PIST A 0{
-			actor aaa;int bbb;
-			[bbb,aaa]=A_SpawnItemEx("HDSecondPistol",
-				flags:SXF_TRANSFERSPECIAL|SXF_NOCHECKPOSITION
-			);
-			aaa.special=special;
-			let ppp=hdsecondpistol(aaa);
-			if(!ppp)return;
-			for(int i=0;i<8;i++){
-				ppp.weaponstatus[i]=invoker.weaponstatus[i];
+		PIST ABCD -1 nodelay{
+			if(invoker.weaponstatus[PISS_CHAMBER]<1){
+				if(invoker.weaponstatus[PISS_AUTO]<0)frame=1;
+				else frame=3;
+			}else{
+				if(invoker.weaponstatus[PISS_AUTO]<0)frame=0;
+				else frame=2;
 			}
-			ppp.vel=vel;ppp.target=target;
 		}stop;
 	}
 	override void initializewepstats(bool idfa){
