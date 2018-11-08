@@ -435,8 +435,9 @@ class loadoutcode:custominventory{
 				let pkup=(class<hdpickup>)(bp.invclasses[i]);
 				int amt;
 				if(wep||mag){
-					array<string> amts;
+					array<string> amts;amts.clear();
 					bp.amounts[i].split(amts," ");
+					A_Log(bp.nicenames[i].."  "..bp.amounts[i]);
 					if(wep)amt=amts.size()/8;
 					else amt=amts.size();
 				}else{
@@ -542,7 +543,7 @@ class HDBackpack:HDWeapon{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		if(owner)initializeamount("smg 1,9mm 30000, bro 3,arm0, 930 20,9mm2");
+		if(owner)initializeamount("smg 3,9mm 30, bro 3,arm0, 930 20,9mm2");
 	}
 	void initializeamount(string loadlist){
 		array<string> whichitem;whichitem.clear();
@@ -559,7 +560,6 @@ class HDBackpack:HDWeapon{
 			int refindex=refids.find(ref);
 			if(refindex>=refids.size())continue;
 
-A_Log(invclasses[refindex]);
 			let wep=(class<hdweapon>)(invclasses[refindex]);
 			let mag=(class<hdmagammo>)(invclasses[refindex]);
 			let pkup=(class<hdpickup>)(invclasses[refindex]);
@@ -573,9 +573,10 @@ A_Log(invclasses[refindex]);
 					
 				}
 			}else if(pkup){
+				double bulkmax=(HDCONST_BPMAX-bulk)/max(1,getdefaultbytype(pkup).bulk);
+				int addamt=max(0,min(bulkmax,howmany[i]));
 				int amt=amounts[refindex].toint(10);
-				if(getdefaultbytype(pkup).bulk*amt+bulk<=HDCONST_BPMAX)
-					amounts[refindex]=""..amt+howmany[i];
+				if(addamt>0)amounts[refindex]=""..amt+addamt;
 				updatemessage(index);
 			}
 		}
