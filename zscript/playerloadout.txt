@@ -422,32 +422,35 @@ class loadoutcode:custominventory{
 					lll=lll..", "..refid.." "..hdppp.amount;
 				}
 			}
-			if(lll=="")lll="nothing, you're naked.";
-			A_Log("The loadout code for your current gear is:  "..lll,true);
 
 			let bp=HDBackpack(findinventory("HDBackpack"));
-			if(!bp)return;
-			lll="";
-			int imax=bp.invclasses.size();
-			for(int i=0;i<imax;i++){
-				if(bp.amounts[i]=="")continue;
-				let wep=(class<hdweapon>)(bp.invclasses[i]);
-				let mag=(class<hdmagammo>)(bp.invclasses[i]);
-				let pkup=(class<hdpickup>)(bp.invclasses[i]);
-				int amt;
-				if(wep||mag){
-					array<string> amts;amts.clear();
-					bp.amounts[i].split(amts," ");
-					if(wep)amt=amts.size()/8;
-					else amt=amts.size();
-				}else{
-					amt=bp.amounts[i].toint(10);
+			if(bp){
+				int imax=bp.invclasses.size();
+				bool first=true;
+				if(bp.bulk>0){
+					lll=lll.." | ";
+					for(int i=0;i<imax;i++){
+						if(bp.amounts[i]=="")continue;
+						let wep=(class<hdweapon>)(bp.invclasses[i]);
+						let mag=(class<hdmagammo>)(bp.invclasses[i]);
+						let pkup=(class<hdpickup>)(bp.invclasses[i]);
+						int amt;
+						if(wep||mag){
+							array<string> amts;amts.clear();
+							bp.amounts[i].split(amts," ");
+							if(wep)amt=amts.size()/8;
+							else amt=amts.size();
+						}else{
+							amt=bp.amounts[i].toint(10);
+						}
+						if(first)first=false;else lll=lll..", "; 
+						lll=lll..bp.refids[i].." "..amt;
+					}
 				}
-				if(lll!="")lll=lll..", ";
-				lll=lll..bp.refids[i].." "..amt;
 			}
-			if(lll=="")lll="nothing, it's empty.";
-			A_Log("The loadout code for your backpack contents is:  "..lll,true);
+
+			if(lll=="")lll="nothing, you're naked.";
+			A_Log("The loadout code for your current gear is:  "..lll,true);
 		}fail;
 	}
 }
