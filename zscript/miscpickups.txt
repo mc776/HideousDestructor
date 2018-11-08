@@ -594,8 +594,9 @@ class BrownSphere:BlueSphere replaces Megasphere{
 		//$Sprite "MEGAA0"
 
 	override bool used(actor user){
+		if(!super.used(user))return false;
 		user.A_GiveInventory("SpiritualArmour",1);
-		return super.used(user);
+		return true;
 	}
 	states{
 	spawn:
