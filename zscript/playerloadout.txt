@@ -463,18 +463,18 @@ class ListAllLoadoutItems:CustomInventory{
 			string blah="All loadout codes for all items including loaded mods:";
 			for(int i=0;i<allactorclasses.size();i++){
 				class<actor> reff=allactorclasses[i];
-				string ref;
+				string ref="";
 				string nnm="";
 				if(reff is "HDPickup"){
 					let gdb=getdefaultbytype((class<hdpickup>)(reff));
-					nnm=gdb.nicename;
+					nnm=gdb.nicename;if(nnm=="")nnm=gdb.getclassname();
 					ref=gdb.refid;
 				}else if(reff is "HDWeapon"){
 					let gdb=getdefaultbytype((class<hdweapon>)(reff));
-					nnm=gdb.nicename;
+					nnm=gdb.nicename;if(nnm=="")nnm=gdb.getclassname();
 					ref=gdb.refid;
 				}
-				if(nnm!=""){
+				if(ref!=""){
 					blah=blah.."\n"..ref.."   "..nnm;
 				}
 			}
