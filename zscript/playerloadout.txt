@@ -422,6 +422,7 @@ class loadoutcode:custominventory{
 					lll=lll..", "..refid.." "..hdppp.amount;
 				}
 			}
+			if(lll=="")lll="nothing, you're naked.";
 			A_Log("The loadout code for your current gear is:  "..lll,true);
 
 			let bp=HDBackpack(findinventory("HDBackpack"));
@@ -437,7 +438,6 @@ class loadoutcode:custominventory{
 				if(wep||mag){
 					array<string> amts;amts.clear();
 					bp.amounts[i].split(amts," ");
-					A_Log(bp.nicenames[i].."  "..bp.amounts[i]);
 					if(wep)amt=amts.size()/8;
 					else amt=amts.size();
 				}else{
@@ -446,6 +446,7 @@ class loadoutcode:custominventory{
 				if(lll!="")lll=lll..", ";
 				lll=lll..bp.refids[i].." "..amt;
 			}
+			if(lll=="")lll="nothing, it's empty.";
 			A_Log("The loadout code for your backpack contents is:  "..lll,true);
 		}fail;
 	}
@@ -543,7 +544,8 @@ class HDBackpack:HDWeapon{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		if(owner)initializeamount("smg 3,9mm 30, bro 3,arm0, 930 20,9mm2");
+//TESTING
+if(owner)initializeamount("smg 3,9mm 30, bro 3,arm0, 930 20,9mm2, bak 6");
 	}
 	void initializeamount(string loadlist){
 		array<string> whichitem;whichitem.clear();
