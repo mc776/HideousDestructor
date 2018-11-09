@@ -13,7 +13,10 @@ extend class HDPlayerPawn{
 }
 
 //loadout common to all soldier classes
-class SoldierExtras:ActionItem{
+class SoldierExtras:HDPickup{
+	default{
+		hdpickup.refid HDLD_SOLDIER;
+	}
 	states{
 	pickup:
 		TNT1 A 0{
@@ -125,8 +128,8 @@ extend class HDPlayerPawn{
 		}
 		if(player && newwep!=""){
 			player.pendingweapon=weapon(findinventory(newwep));
-			return;
 		}
+		A_GiveInventory("loadoutcode",999);
 	}
 	name NumForInv(int num,int amt){
 		name nw="";
@@ -342,6 +345,8 @@ string loadlist="9mm 1, 7mm 48, smg, 9mm 30, 915 2, smg 100, pis 2";
 //where an item needs to be selectable
 //through custom loadouts.
 
+const HDLD_SOLDIER="sol";
+
 const HDLD_NINEMIL="9mm";
 const HDLD_NIMAG15="915";
 const HDLD_NIMAG30="930";
@@ -367,6 +372,7 @@ const HDLD_RADSUIT="rad";
 const HDLD_LITEAMP="lit";
 const HDLD_LADDER= "lad";
 const HDLD_DOORBUS="dbs";
+const HDLD_IEDKIT= "ied";
 const HDLD_BACKPAK="bak";
 
 const HDLD_DERPBOT="drp";
@@ -397,7 +403,7 @@ const HDLD_BFG=    "bfg";
 const HDLD_BRONTO= "bro";
 const HDLD_BOSS=   "bos";
 
-class loadoutcode:custominventory{
+class LoadoutCode:custominventory{
 	default{
 		inventory.maxamount 999;
 	}
@@ -449,8 +455,18 @@ class loadoutcode:custominventory{
 				}
 			}
 
-			if(lll=="")lll="nothing, you're naked.";
-			A_Log("The loadout code for your current gear is:  "..lll,true);
+			A_Log("The loadout code for your current gear is:  "..(lll==""?"nothing, you're naked.":lll),true);
+
+			//update custom0
+			if(invoker.amount>990){
+				string whichcvar="hd_loadout_custom";
+				int iamt=invoker.amount%10;
+				if(iamt>0&&iamt<4)whichcvar=whichcvar..iamt;
+				else whichcvar=whichcvar..0;
+//				string loadlist=cvar.getcvar(whichcvar,player).getstring();
+				cvar.getcvar(whichcvar,player).setstring(lll);
+				A_Log("\cfYour \cy"..whichcvar.."\cf setting has been updated to reflect your current loadout.",true);
+			}
 		}fail;
 	}
 }
