@@ -656,7 +656,7 @@ extend class HDStatusBar{
 	}
 	//return value of the mag that would be selected on reload
 	int GetNextLoadMag(hdmagammo maggg){
-		if(!maggg||maggg.amount<1)return -1;
+		if(!maggg||maggg.mags.size()<1)return -1;
 		int maxperunit=maggg.maxperunit;
 		int maxindex=maggg.mags.find(maxperunit);
 		if(maxindex==maggg.mags.size())return maggg.mags[0];

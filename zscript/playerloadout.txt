@@ -309,7 +309,8 @@ class clg:CustomInventory{
 		array<int> howmany;howmany.clear();
 		//string loadlist=cvar.getcvar("hd_loadout_custom",getplayernumber()).getstring();
 //TESTING
-string loadlist="9mm 1, 7mm 48, smg, 9mm 30, 915 2, smg 100, pis 2";
+string loadlist="9mm 1, 7mm 48, smg, 9mm 30, 915 2, smg 100, bak 42 | pis 2";
+//loadlist="bak 1, awg 1, z66 1, 450 5, rkt 8, lad 1, drp 1, frg 3, 915 3, pis 1, stm 2, med 1, zrk 2, bro 1, brb 8 | dbs 4, med 2, zrk 2, rad 1, lit 1, ied 3, lad 2, bat 1, rkh 3";
 		loadlist.replace(" ","");
 		loadlist.split(whichitem,",");
 		for(int i=0;i<whichitem.size();i++){
@@ -457,9 +458,9 @@ class LoadoutCode:custominventory{
 
 			A_Log("The loadout code for your current gear is:  "..(lll==""?"nothing, you're naked.":lll),true);
 
-			//update custom0
-			if(invoker.amount>990){
-				string whichcvar="hd_loadout_custom";
+			//update hd_loadout0
+			if(invoker.amount>=990){
+				string whichcvar="hd_loadout";
 				int iamt=invoker.amount%10;
 				if(iamt>0&&iamt<4)whichcvar=whichcvar..iamt;
 				else whichcvar=whichcvar..0;
@@ -468,6 +469,19 @@ class LoadoutCode:custominventory{
 				A_Log("\cfYour \cy"..whichcvar.."\cf setting has been updated to reflect your current loadout.",true);
 			}
 		}fail;
+	}
+}
+
+
+//testing
+class Loadout1Butts:CustomInventory{
+	states{
+	pickup:
+		TNT1 A 0{
+			A_Log(cvar.getcvar("hd_loadout1",player).getstring());
+			cvar.getcvar("hd_loadout1",player).setstring("butts");
+			A_Log(cvar.getcvar("hd_loadout1",player).getstring());
+		}stop;
 	}
 }
 
