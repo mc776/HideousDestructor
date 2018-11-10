@@ -112,6 +112,7 @@ class CustomLoadout:InventoryFlag{
 		if(hdp){
 			hdp.GiveBasics();
 			hdp.GiveCustomLoadout();
+			hdp.A_GiveInventory("LoadoutCode",999);
 		}destroy();
 	}
 }
@@ -129,7 +130,6 @@ extend class HDPlayerPawn{
 		if(player && newwep!=""){
 			player.pendingweapon=weapon(findinventory(newwep));
 		}
-		A_GiveInventory("loadoutcode",999);
 	}
 	name NumForInv(int num,int amt){
 		name nw="";
@@ -364,6 +364,9 @@ const HDLD_BOSS=   "bos";
 
 class clg:CustomLoadoutGiver{}
 class CustomLoadoutGiver:CustomInventory{
+	default{
+		inventory.maxamount 5;
+	}
 	states{
 	spawn:TNT1 A 0;stop;
 	pickup:
@@ -377,7 +380,9 @@ class CustomLoadoutGiver:CustomInventory{
 		array<string> whichitem;whichitem.clear();
 		array<int> howmany;howmany.clear();
 		array<string> loadlist;
-		string loadinput=cvar.getcvar("hd_loadout0",player).getstring();
+
+		string whichloadout="hd_loadout"..invoker.amount;
+		string loadinput=cvar.getcvar(whichloadout,player).getstring();
 
 //TESTING
 loadinput="awg 1, z66 1, 450 5, rkt 8, lad 1, drp 1, frg 3, 915 3, pis 1, stm 2, med 1, zrk 2, bro 1, brb 8 | dbs 4, med 2, zrk 2, rad 1, lit 1, ied 3, lad 2, bat 1, rkh 3";
@@ -470,16 +475,12 @@ class LoadoutCode:custominventory{
 				}
 			}
 
-			A_Log("The loadout code for your current gear is:  "..(lll==""?"nothing, you're naked.":"\cy"..lll),true);
-
-			//update hd_loadout0
-			if(invoker.amount>=990){
-				string whichcvar="hd_loadout";
-				int iamt=invoker.amount%10;
-				if(iamt>0&&iamt<4)whichcvar=whichcvar..iamt;
-				else whichcvar=whichcvar..0;
-				cvar.getcvar(whichcvar,player).setstring(lll);
-				A_Log("\cfYour \cy"..whichcvar.."\cf setting has been updated to reflect your current loadout.",true);
+			string outstring="The loadout code for your current gear is:\n"..(lll==""?"nothing, you're naked.":"\cy"..lll);
+			A_Log(outstring,true);
+			if(invoker.amount>900){
+				string warning="\cxPLEASE UPDATE YOUR \cyHD_LOADOUT1\cx SETTING ACCORDINGLY.";
+				A_Log(warning);
+				A_Print(outstring.."\n\n\n"..warning.."\n\n\cuThis custom loadout playerclass will be \cgREMOVED\cu in a future version.",10,"smallfont");
 			}
 		}fail;
 	}
