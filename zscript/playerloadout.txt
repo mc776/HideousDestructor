@@ -380,7 +380,7 @@ class CustomLoadoutGiver:CustomInventory{
 		string loadinput=cvar.getcvar("hd_loadout0",player).getstring();
 
 //TESTING
-loadinput="z66 1, awg 1, 450 5, rkt 8, lad 1, drp 1, frg 3, 915 3, pis 1, stm 2, med 1, zrk 2, bro 1, brb 8 | dbs 4, med 2, zrk 2, rad 1, lit 1, ied 3, lad 2, bat 1, rkh 3";
+loadinput="awg 1, z66 1, 450 5, rkt 8, lad 1, drp 1, frg 3, 915 3, pis 1, stm 2, med 1, zrk 2, bro 1, brb 8 | dbs 4, med 2, zrk 2, rad 1, lit 1, ied 3, lad 2, bat 1, rkh 3";
 
 		loadinput.replace(" ","");
 		loadinput.split(whichitem,",");
@@ -388,7 +388,7 @@ loadinput="z66 1, awg 1, 450 5, rkt 8, lad 1, drp 1, frg 3, 915 3, pis 1, stm 2,
 			howmany.push((whichitem[i].mid(3,whichitem[i].length())).toint(10));
 			whichitem[i]=whichitem[i].left(3);
 		}
-		class<weapon> firstwep=null;
+		string firstwep="";
 		for(int i=0;i<allactorclasses.size();i++){
 			class<actor> reff=allactorclasses[i];
 			if(reff is "HDPickup"||reff is "HDWeapon"){
@@ -399,10 +399,8 @@ loadinput="z66 1, awg 1, 450 5, rkt 8, lad 1, drp 1, frg 3, 915 3, pis 1, stm 2,
 				for(int j=0;j<whichitem.size();j++){
 					if(whichitem[j]~==ref){
 						A_GiveInventory(reff.getclassname(),howmany[j]);
+						if(firstwep==""&&reff is "HDWeapon")firstwep=reff.getclassname();
 					}
-				}
-				if(!firstwep&&reff is "HDWeapon"){
-					firstwep=((class<weapon>)(reff));
 				}
 			}
 		}
@@ -415,11 +413,7 @@ loadinput="z66 1, awg 1, 450 5, rkt 8, lad 1, drp 1, frg 3, 915 3, pis 1, stm 2,
 		}
 
 		//select the correct weapon
-		if(firstwep&&player){
-			A_Log(firstwep.getclassname());
-			HDWeaponSelector.Select(self,firstwep);
-			WHY THE FUCK DOES THIS NOT WORK
-		}
+		if(firstwep&&player)HDWeaponSelector.Select(self,firstwep);
 	}
 }
 
