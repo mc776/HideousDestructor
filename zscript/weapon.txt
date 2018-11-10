@@ -14,6 +14,7 @@ class HDWeapon:Weapon{
 	int tipped;
 	int msgtimer;
 	string wepmsg;
+	bool dontfistondrop;property dontfistondrop:dontfistondrop;
 	enum HDWeaponFlagsets{
 		WRF_ALL=WRF_ALLOWRELOAD|WRF_ALLOWZOOM|WRF_ALLOWUSER1|WRF_ALLOWUSER2|WRF_ALLOWUSER3|WRF_ALLOWUSER4,
 		WRF_NONE=WRF_NOFIRE|WRF_DISABLESWITCH,
@@ -38,6 +39,7 @@ class HDWeapon:Weapon{
 		hdweapon.barrelsize 0,0,0;
 		hdweapon.refid "";
 		hdweapon.nicename "";
+		hdweapon.dontfistondrop false;
 	}
 	override bool cancollidewith(actor other,bool passive){return HDPickerUpper(other);}
 	//wrapper for setpsprite
@@ -46,7 +48,7 @@ class HDWeapon:Weapon{
 	}
 	//use target to help a dropped weapon remember its immediately prior owner
 	override void detachfromowner(){
-		if(owner.player&&!owner.player.readyweapon)owner.A_SelectWeapon("HDFist");
+		if(!dontfistondrop&&owner.player&&!owner.player.readyweapon)owner.A_SelectWeapon("HDFist");
 		angle=owner.angle;pitch=owner.pitch;
 		target=owner;
 		super.detachfromowner();

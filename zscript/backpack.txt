@@ -14,6 +14,35 @@ class HDBP:HDWeapon{
 		inventory.pickupmessage "Picked up a backpack to help fill your life with ammo!";
 		inventory.pickupsound "weapons/pocket";
 	}
+
+	//just replace the old backpack with the new one
+	void ReplaceWithNewBackpack(){
+		string newloadout="";
+		for(int i=0;i<HDBPC_NUMITEMS;i++){
+			if(itemtype[i]&&itemamount[i]>0){
+				string irefid=getdefaultbytype(((class<hdpickup>)(itemtype[i]))).refid;
+				if(irefid!=""){
+					if(i)newloadout=newloadout..", ";
+					newloadout=newloadout..irefid.." "..itemamount[i];
+				}
+			}
+		}
+		hdbackpack newbp;
+		if(owner){
+			owner.A_GiveInventory("HDBackpack");
+			newbp=HDBackpack(owner.findinventory("HDBackpack"));
+		}else{
+			newbp=HDBackpack(spawn("HDBackpack",pos,ALLOW_REPLACE));
+		}
+		newbp.initializeamount(newloadout);
+		dontfistondrop=true;
+		destroy();
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		replacewithnewbackpack();
+	}
+
 	override inventory createtossable(int amount){
 		target=owner;
 		let ct=hdbp(super.createtossable(amount));
