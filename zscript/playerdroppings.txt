@@ -141,28 +141,10 @@ extend class HDHandlers{
 			ppp.A_DropInventory("PortableMedikit",amt);
 			ppp.A_DropInventory("PortableBerserkPack",amt);
 			ppp.A_DropInventory("BluePotion",amt);
-		}else if(cw is "HDBP"){
-			let hdbp=hdbp(cw);
-			int which=hdbp.weaponstatus[HDBPS_WHICH];
-			int howmany=hdbp.itemamount[which];
-			class<inventory> what=hdbp.itemtype[which];
-			if(!howmany)return;
-			if(what is "HDMagAmmo"){
-				HDMagAmmo.SpawnMag(ppp,what,hdbp.BPTakeMag(which));
-			}else{
-				int unit=1;
-				if(what is "HDShellAmmo")unit=4;
-				else if(what is "FourMilAmmo")unit=random(1,49);
-				howmany=min(unit,howmany);
-				hdbp.itemamount[hdbp.weaponstatus[HDBPS_WHICH]]-=howmany;
-				inventory ddd=inventory(ppp.spawn(what,ppp.pos));
-				if(ddd){
-					ddd.addz(ppp.height-14);ddd.angle=ppp.angle;
-					ddd.A_ChangeVelocity(4,0,1,CVF_RELATIVE);
-					ddd.amount=howmany*amt;
-				}
-			}
-			hdbp.getbulk();
+		}else if(cw is "HDBackpack"){
+			let hdbp=HDBackpack(cw);
+			hdbp.removefrombackpack(hdbp.index,false);
+			if(hdbp.amounts[hdbp.index]=="")hdbp.updatemessage(hdbp.index+1);
 		}else if(cw is "MagManager"){
 			let mmm=HDMagAmmo(MagManager(cw).thismag);
 			if(!mmm)return;
