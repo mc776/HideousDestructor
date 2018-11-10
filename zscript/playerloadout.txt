@@ -385,10 +385,12 @@ class CustomLoadoutGiver:CustomInventory{
 		string loadinput=cvar.getcvar(whichloadout,player).getstring();
 
 //TESTING
-loadinput="awg 1, z66 1, 450 5, rkt 8, lad 1, drp 1, frg 3, 915 3, pis 1, stm 2, med 1, zrk 2, bro 1, brb 8 | dbs 4, med 2, zrk 2, rad 1, lit 1, ied 3, lad 2, bat 1, rkh 3";
+//loadinput="awg 1, z66 1, 450 5, rkt 8, lad 1, drp 1, frg 3, 915 3, pis 1, stm 2, med 1, zrk 2, bro 1, brb 8 | dbs 4, med 2, zrk 2, rad 1, lit 1, ied 3, lad 2, bat 1, rkh 3";
 
 		loadinput.replace(" ","");
-		loadinput.split(whichitem,",");
+		loadinput.split(loadlist,"|");
+		loadlist[0].split(whichitem,",");
+		if(hd_debug)A_Log("Loadout: "..loadlist[0]);
 		for(int i=0;i<whichitem.size();i++){
 			howmany.push((whichitem[i].mid(3,whichitem[i].length())).toint(10));
 			whichitem[i]=whichitem[i].left(3);
@@ -411,8 +413,8 @@ loadinput="awg 1, z66 1, 450 5, rkt 8, lad 1, drp 1, frg 3, 915 3, pis 1, stm 2,
 		}
 
 		//attend to backpack and contents
-		loadinput.split(loadlist,"|");
 		if(loadinput.indexof("|")>=0){
+			if(hd_debug)A_Log("Backpack Loadout: "..loadlist[1]);
 			A_GiveInventory("HDBackpack");
 			hdbackpack(findinventory("HDBackpack")).initializeamount(loadlist[1]);
 		}
@@ -483,40 +485,6 @@ class LoadoutCode:custominventory{
 				A_Print(outstring.."\n\n\n"..warning.."\n\n\cuThis custom loadout playerclass will be \cgREMOVED\cu in a future version.",10,"smallfont");
 			}
 		}fail;
-	}
-}
-
-
-//testing
-class Loadout1Butts:Inventory{
-	override void attachtoowner(actor other){
-		super.attachtoowner(other);
-		other.A_Log(cvar.getcvar("hd_loadout1",other.player).getstring());
-		cvar.getcvar("hd_loadout1",other.player).setstring("butts");
-		other.A_Log(cvar.getcvar("hd_loadout1",other.player).getstring());
-		destroy();
-	}
-}
-class Loadout1ButtsW:Weapon{
-	default{weapon.slotnumber 1;}
-	states{
-	select:
-		TNT1 A 0{
-			A_Log(cvar.getcvar("hd_loadout1",player).getstring());
-			cvar.getcvar("hd_loadout1",player).setstring("butts");
-			A_Log(cvar.getcvar("hd_loadout1",player).getstring());
-		}
-		TNT1 A 1 A_Raise();
-		wait;
-	deselect:
-		TNT1 A 1 A_Lower();
-		wait;
-	fire:
-		TNT1 A 1;
-		TNT1 A 0 A_Refire();
-	ready:
-		TNT1 A 1 A_WeaponReady();
-		wait;
 	}
 }
 
