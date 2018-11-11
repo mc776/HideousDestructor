@@ -546,6 +546,7 @@ class HDBackpack:HDWeapon{
 
 		hdweapon.nicename "Backpack";
 		hdweapon.refid HDLD_BACKPAK;
+		hdweapon.bpbulk 90;
 	}
 	override inventory createtossable(int amount){
 		target=owner;
@@ -571,8 +572,10 @@ class HDBackpack:HDWeapon{
 				ref=gdb.refid;
 			}else if(reff is "HDWeapon"){
 				let gdb=getdefaultbytype((class<hdweapon>)(reff));
-				nnm=gdb.nicename;
-				ref=gdb.refid;
+				if(gdb.bpbulk>0){
+					nnm=gdb.nicename;
+					ref=gdb.refid;
+				}
 			}
 			if(nnm!=""){
 				invclasses.push(reff.getclassname());
@@ -636,8 +639,9 @@ class HDBackpack:HDWeapon{
 					else blk+=mmm.magbulk+theseamounts[j].toint()*mmm.roundbulk;
 				}
 			}else if(((class<hdweapon>)(reff))){
-				if(((class<inventory>)(reff)) is "HDPistol")blk+=30;
-				else blk+=125;
+				//if(((class<inventory>)(reff)) is "HDPistol")blk+=30;
+				//else blk+=125;
+				blk+=getdefaultbytype((class<hdweapon>)(reff)).bpbulk;
 			}else if(((class<hdpickup>)(reff))){
 				let classref=((class<hdpickup>)(reff));
 				//presets required for default ammos because of One Man Army

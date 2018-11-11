@@ -15,6 +15,7 @@ class HDWeapon:Weapon{
 	int msgtimer;
 	string wepmsg;
 	bool dontfistondrop;property dontfistondrop:dontfistondrop;
+	double bpbulk;property bpbulk:bpbulk;
 	enum HDWeaponFlagsets{
 		WRF_ALL=WRF_ALLOWRELOAD|WRF_ALLOWZOOM|WRF_ALLOWUSER1|WRF_ALLOWUSER2|WRF_ALLOWUSER3|WRF_ALLOWUSER4,
 		WRF_NONE=WRF_NOFIRE|WRF_DISABLESWITCH,
@@ -40,6 +41,7 @@ class HDWeapon:Weapon{
 		hdweapon.refid "";
 		hdweapon.nicename "";
 		hdweapon.dontfistondrop false;
+		hdweapon.bpbulk -1;
 	}
 	override bool cancollidewith(actor other,bool passive){return HDPickerUpper(other);}
 	//wrapper for setpsprite
