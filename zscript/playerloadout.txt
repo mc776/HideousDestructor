@@ -605,7 +605,7 @@ class HDBackpack:HDWeapon{
 			if(wep||mag){
 				for(int j=0;j<howmany[i];j++){
 					let iii=inventory(spawn(invclasses[refindex],pos,ALLOW_REPLACE));
-					iii.attachtoowner(owner);
+					if(owner)iii.attachtoowner(owner);
 					itemtobackpack(iii);
 					if(iii)iii.destroy();
 					
@@ -659,6 +659,7 @@ class HDBackpack:HDWeapon{
 		return max(blk*0.6,100),0;
 	}
 	void UpdateMessage(int num){
+		if(!owner)return;
 		int nnsiz=nicenames.size();
 		int maxindex=nicenames.size()-1;
 		if(num==index)weaponbulk();
