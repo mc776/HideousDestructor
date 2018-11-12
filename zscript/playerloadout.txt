@@ -520,6 +520,7 @@ class ListAllLoadoutItems:CustomInventory{
 
 
 
+
 //this is the new... backpack
 
 
@@ -546,7 +547,7 @@ class HDBackpack:HDWeapon{
 
 		hdweapon.nicename "Backpack";
 		hdweapon.refid HDLD_BACKPAK;
-		hdweapon.bpbulk 90;
+		hdweapon.fitsinbackpack true;
 	}
 	override inventory createtossable(int amount){
 		target=owner;
@@ -562,6 +563,9 @@ class HDBackpack:HDWeapon{
 	int bpindex;
 	override void InitializeWepStats(bool idfa){
 		if(idfa)return;
+		nicenames.clear();
+		refids.clear();
+		invclasses.clear();
 		for(int i=0;i<allactorclasses.size();i++){
 			class<actor> reff=allactorclasses[i];
 			string ref="";
@@ -572,7 +576,7 @@ class HDBackpack:HDWeapon{
 				ref=gdb.refid;
 			}else if(reff is "HDWeapon"){
 				let gdb=getdefaultbytype((class<hdweapon>)(reff));
-				if(gdb.bpbulk>0){
+				if(gdb.fitsinbackpack){
 					nnm=gdb.nicename;
 					ref=gdb.refid;
 				}
