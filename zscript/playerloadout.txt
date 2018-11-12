@@ -523,7 +523,7 @@ class ListAllLoadoutItems:CustomInventory{
 //this is the new... backpack
 
 
-const HDCONST_BPMAX=1500;
+const HDCONST_BPMAX=1000;
 class HDBackpack:HDWeapon{
 	int index;
 
@@ -534,7 +534,7 @@ class HDBackpack:HDWeapon{
 	array<string> amounts;
 	//because the last time I tried nested dynamic arrays it did not work.
 	//"10" for 10 rounds/medikits/whatever; "0 10 20" for 3 mags
-	//"0 0 0 0 0 0 0 0" for a single weapon
+	//"0 0 0 0 0 0 0 0 0" for a single weapon: first # is bulk
 
 	default{
 		+inventory.invbar +weapon.wimpy_weapon
@@ -630,6 +630,7 @@ class HDBackpack:HDWeapon{
 			if(amounts[i]=="")continue;
 			class<actor> reff=invclasses[i];
 			array<string> theseamounts;
+			theseamounts.clear();
 			if(((class<hdmagammo>)(reff))){
 				amounts[i].split(theseamounts," ");
 				let mmm=getdefaultbytype((class<hdmagammo>)(reff));
@@ -639,9 +640,10 @@ class HDBackpack:HDWeapon{
 					else blk+=mmm.magbulk+theseamounts[j].toint()*mmm.roundbulk;
 				}
 			}else if(((class<hdweapon>)(reff))){
-				//if(((class<inventory>)(reff)) is "HDPistol")blk+=30;
-				//else blk+=125;
-				blk+=getdefaultbytype((class<hdweapon>)(reff)).bpbulk;
+				amounts[i].split(theseamounts," ");
+				for(int j=0;j<theseamounts.size();j++){
+					if(!((j+1)%9))blk+=theseamounts[j].toint();
+				}
 			}else if(((class<hdpickup>)(reff))){
 				let classref=((class<hdpickup>)(reff));
 				//presets required for default ammos because of One Man Army
@@ -687,7 +689,7 @@ class HDBackpack:HDWeapon{
 		else if(thisclass is "HDWeapon"||thisclass is "HDMagAmmo"){
 			array<string>mags;
 			amt.split(mags," ");
-			if(thisclass is "HDWeapon")amt="\ce"..(mags.size()/8);
+			if(thisclass is "HDWeapon")amt="\ce"..(mags.size()/9);
 			else amt="\ce"..mags.size();
 		}else amt="\ce"..amt;
 
@@ -744,8 +746,11 @@ class HDBackpack:HDWeapon{
 				wep.weaponstatus[4].." "..
 				wep.weaponstatus[5].." "..
 				wep.weaponstatus[6].." "..
-				wep.weaponstatus[7];
+				wep.weaponstatus[7].." "..
+				int(wep.weaponbulk());
+			A_Log(amounts[index]);
 			amounts[index]=amounts[index]..newwep;
+			if(hd_debug)A_Log(wep.getclassname().."  "..newwep);
 			item.amount--;if(item.amount<1)item.destroy();
 			weaponbulk();
 			UpdateMessage(index);
@@ -786,14 +791,14 @@ class HDBackpack:HDWeapon{
 			if(!trytopocket||owner.countinv(wepth)){
 				let newp=HDWeapon(spawn(wepth,owner.pos+(0,0,owner.height-12),ALLOW_REPLACE));
 				newp.angle=angle;newp.A_ChangeVelocity(1,1,1,CVF_RELATIVE);
-				for(int i=0;i<8;i++){
-					newp.weaponstatus[i]=tempamounts[0].toint();
+				for(int i=0;i<9;i++){
+					if(i<newp.weaponstatus.size())newp.weaponstatus[i]=tempamounts[0].toint();
 					tempamounts.delete(0);
 				}
 			}else{
 				let newp=HDWeapon(owner.GiveInventoryType(wepth));
-				for(int i=0;i<8;i++){
-					newp.weaponstatus[i]=tempamounts[0].toint();
+				for(int i=0;i<9;i++){
+					if(i<newp.weaponstatus.size())newp.weaponstatus[i]=tempamounts[0].toint();
 					tempamounts.delete(0);
 				}
 			}
