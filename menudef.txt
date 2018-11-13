@@ -326,6 +326,22 @@ OptionMenu "HDControlsMenu"{
 //loadout spamghetti
 OptionMenu "CustomLoadoutMenu"{
 	Title "CUSTOMIZE LOADOUT"
+
+	StaticText ""
+	StaticText "Type  'give LoadoutItemList'  in the console"
+	StaticText "to get the full list of items."
+	StaticText ""
+
+	TextField "Custom Loadout 1","hd_loadout1"
+	TextField "Custom Loadout 2","hd_loadout2"
+	TextField "Custom Loadout 3","hd_loadout3"
+	TextField "Custom Loadout 4","hd_loadout4"
+	TextField "Custom Loadout 5","hd_loadout5"
+
+
+/*
+	StaticText "(deprecated old loadout settings below)"
+	StaticText " "
 	Submenu "Set Backpack Contents...","CustomBackpackMenu"
 	SafeCommand "Reset Custom Loadout","hd_resetloadout","Really reset custom loadout?"
 	StaticText " "
@@ -393,6 +409,7 @@ OptionMenu "CustomLoadoutMenu"{
 	StaticText""
 	Option "Item 20",hd_load20,"CustomLoadoutItems"
 	TextField"amount","hd_load20a"
+*/
 }
 OptionValue "CustomLoadoutItems"{
 	0,"---"
