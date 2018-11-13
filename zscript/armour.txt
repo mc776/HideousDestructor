@@ -170,6 +170,7 @@ class HDArmourWorn:HDPickup{
 		-inventory.invbar
 		HDArmourworn.ismega false;
 		hdpickup.refid HDLD_ARWGREN;
+		hdpickup.nicename "Green Armour";
 	}
 	override void beginplay(){
 		durability=mega?HDCONST_BLUEARMOUR:HDCONST_GREENARMOUR;
@@ -206,6 +207,7 @@ class BlueArmour:HDPickup replaces BlueArmor{
 	default{
 		+missilemore
 		hdpickup.refid HDLD_ARMBLUE;
+		hdpickup.nicename "Blue Armour (spare)";
 		inventory.pickupmessage "Picked up the combat armour.";
 	}
 	override void postbeginplay(){
@@ -229,6 +231,7 @@ class BlueArmourWorn:HDPickup{
 	default{
 		+missilemore
 		hdpickup.refid HDLD_ARWBLUE;
+		hdpickup.nicename "Blue Armour";
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -246,6 +249,7 @@ class GreenArmour:BlueArmour replaces GreenArmor{
 	default{
 		-missilemore
 		hdpickup.refid HDLD_ARMGREN;
+		hdpickup.nicename "Green Armour (spare)";
 		inventory.pickupmessage "Picked up the security armour.";
 	}
 }
@@ -254,6 +258,7 @@ class GreenArmourWorn:BlueArmourWorn{
 		-missilemore
 		inventory.icon "ARMCB0";
 		hdpickup.refid HDLD_ARWGREN;
+		hdpickup.nicename "Green Armour";
 	}
 }
 

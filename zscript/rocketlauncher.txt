@@ -15,6 +15,7 @@ class HDRL:HDWeapon{
 		obituary "%o rode %k's rocket.";
 		hdweapon.barrelsize 32,3.1,5;
 		hdweapon.refid HDLD_LAUNCHR;
+		hdweapon.nicename "Rocket Launcher";
 	}
 	override void tick(){
 		super.tick();
@@ -490,6 +491,7 @@ class Blooper:HDWeapon{
 		hdweapon.barrelsize 24,1.6,3;
 		hdweapon.nicename "Grenade Launcher";
 		hdweapon.refid HDLD_BLOOPER;
+		hdweapon.fitsinbackpack true;
 	}
 	override double gunmass(){
 		return weaponstatus[0]&BLOPF_LOADED?5:4;

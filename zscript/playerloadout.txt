@@ -16,6 +16,7 @@ extend class HDPlayerPawn{
 class SoldierExtras:HDPickup{
 	default{
 		hdpickup.refid HDLD_SOLDIER;
+		hdpickup.nicename "Elite Soldier Kit";
 	}
 	states{
 	pickup:
@@ -385,10 +386,10 @@ class CustomLoadoutGiver:CustomInventory{
 		string loadinput=cvar.getcvar(whichloadout,player).getstring();
 
 //TESTING
-//loadinput="awg 1, z66 1, 450 5, rkt 8, lad 1, drp 1, frg 3, 915 3, pis 1, stm 2, med 1, zrk 2, bro 1, brb 8 | dbs 4, med 2, zrk 2, rad 1, lit 1, ied 3, lad 2, bat 1, rkh 3";
+//loadinput="awg 1, z66 1, 450 5, rkt 8, lad 1, drp 1, frg 3, 915 3, pis 1, stm 2, med 1, zrk 2, bro 1, brb 8 - dbs 4, med 2, zrk 2, rad 1, lit 1, ied 3, lad 2, bat 1, rkh 3";
 
 		loadinput.replace(" ","");
-		loadinput.split(loadlist,"|");
+		loadinput.split(loadlist,"-");
 		loadlist[0].split(whichitem,",");
 		if(hd_debug)A_Log("Loadout: "..loadlist[0]);
 		for(int i=0;i<whichitem.size();i++){
@@ -413,7 +414,7 @@ class CustomLoadoutGiver:CustomInventory{
 		}
 
 		//attend to backpack and contents
-		if(loadinput.indexof("|")>=0){
+		if(loadinput.indexof("-")>=0){
 			if(hd_debug)A_Log("Backpack Loadout: "..loadlist[1]);
 			A_GiveInventory("HDBackpack");
 			hdbackpack(findinventory("HDBackpack")).initializeamount(loadlist[1]);
@@ -456,7 +457,7 @@ class LoadoutCode:custominventory{
 				int imax=bp.invclasses.size();
 				bool first=true;
 				if(bp.bulk>0){
-					lll=lll.." | ";
+					lll=lll.." - ";
 					for(int i=0;i<imax;i++){
 						if(bp.amounts[i]=="")continue;
 						let wep=(class<hdweapon>)(bp.invclasses[i]);
