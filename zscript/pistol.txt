@@ -32,6 +32,16 @@ class HDPistol:HDWeapon{
 			expi.weaponstatus2[i]=weaponstatus[i];
 		}
 		expi.amount++;
+
+		//select
+		if(
+			other.player
+			&&!(cvar.getcvar("neverswitchonpickup",other.player).getbool())
+			&&other.player.readyweapon!=expi
+		){
+			expi.swappistols();
+			other.A_SelectWeapon("HDPistol");
+		}
 		destroy();
 	}
 	override double,int weaponbulk(){
