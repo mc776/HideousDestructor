@@ -345,6 +345,7 @@ const HDLD_ARMBLUE="arb";
 const HDLD_ARWGREN="awg";
 const HDLD_ARWBLUE="awb";
 
+const HDLD_FIST=    "fis";
 const HDLD_CHAINSW= "cha";
 const HDLD_PISTOL= "pis"; 
 const HDLD_PISTAUT="pia";
@@ -399,6 +400,13 @@ extend class HDPlayerPawn{
 		for(int i=0;i<whichitem.size();i++){
 			howmany.push((whichitem[i].mid(3,whichitem[i].length())).toint(10));
 			whichitem[i]=whichitem[i].left(3);
+			if(whichitem[i]=="map")A_GiveInventory("MapRevealer");
+			else if(whichitem[i]=="key"){
+				int whichkeys=howmany[i];
+				if(whichkeys&4)A_GiveInventory("BlueCard");
+				if(whichkeys&2)A_GiveInventory("YellowCard");
+				if(whichkeys&1)A_GiveInventory("RedCard");
+			}
 		}
 		for(int i=0;i<allactorclasses.size();i++){
 			class<actor> reff=allactorclasses[i];
