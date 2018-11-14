@@ -91,7 +91,10 @@ class HDWeaponSelector:Thinker{
 		thth.weptype=weptype;
 		thth.other=caller;
 	}
+	int ticker;
 	override void Tick(){
+		ticker++;
+		if(ticker<10)return;
 		other.A_SelectWeapon(weptype);
 		destroy();
 	}
@@ -375,18 +378,15 @@ class CustomLoadoutGiver:CustomInventory{
 		fail;
 	}
 	action void GiveCustomItems(){
-		//get this over with
 		if(HDPlayerPawn(self))HDPlayerPawn(self).GiveBasics();
 
 		array<string> whichitem;whichitem.clear();
 		array<int> howmany;howmany.clear();
-		array<string> loadlist;
+		array<string> loadlist;loadlist.clear();
 
 		string whichloadout="hd_loadout"..invoker.amount;
 		string loadinput=cvar.getcvar(whichloadout,player).getstring();
-
-//TESTING
-//loadinput="awg 1, z66 1, 450 5, rkt 8, lad 1, drp 1, frg 3, 915 3, pis 1, stm 2, med 1, zrk 2, bro 1, brb 8 - dbs 4, med 2, zrk 2, rad 1, lit 1, ied 3, lad 2, bat 1, rkh 3";
+		string firstwep="";
 
 		loadinput.replace(" ","");
 		loadinput.split(loadlist,"-");
@@ -396,7 +396,6 @@ class CustomLoadoutGiver:CustomInventory{
 			howmany.push((whichitem[i].mid(3,whichitem[i].length())).toint(10));
 			whichitem[i]=whichitem[i].left(3);
 		}
-		string firstwep="";
 		for(int i=0;i<allactorclasses.size();i++){
 			class<actor> reff=allactorclasses[i];
 			if(reff is "HDPickup"||reff is "HDWeapon"){
@@ -407,7 +406,21 @@ class CustomLoadoutGiver:CustomInventory{
 				for(int j=0;j<whichitem.size();j++){
 					if(whichitem[j]~==ref){
 						A_GiveInventory(reff.getclassname(),howmany[j]);
-						if(firstwep==""&&reff is "HDWeapon")firstwep=reff.getclassname();
+						if(!j){
+							//some codes give weapons but are not themselves weapons
+							if(ref~==HDLD_LIBNOGL)firstwep="LiberatorRifle";
+							else if(
+								ref~==HDLD_SOLDIER
+								||ref~==HDLD_PISTAUT
+							)firstwep="HDPistol";
+							else if(
+								ref~==HDLD_ZM66AUT
+								||ref~==HDLD_ZM66SMI
+							)firstwep="ZM66AssaultRifle";
+
+							//otherwise, just look to the weapon
+							else if(reff is "HDWeapon")firstwep=reff.getclassname();
+						}
 					}
 				}
 			}
@@ -421,7 +434,10 @@ class CustomLoadoutGiver:CustomInventory{
 		}
 
 		//select the correct weapon
-		if(firstwep&&player)HDWeaponSelector.Select(self,firstwep);
+		if(player){
+			player.pendingweapon=weapon(findinventory(firstwep));
+			player.readyweapon=weapon(findinventory(firstwep));
+		}
 	}
 }
 

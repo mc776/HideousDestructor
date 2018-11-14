@@ -27,6 +27,7 @@ class HDWeapon:Weapon{
 	default{
 		+solid
 		+weapon.ammo_optional +weapon.alt_ammo_optional +weapon.noalert +weapon.noautoaim
+		+weapon.no_auto_switch
 		+noblockmonst +notrigger +dontgib
 		weapon.ammogive 0;weapon.ammogive2 0;
 		weapon.ammouse1 0;weapon.ammouse2 0;
@@ -237,6 +238,10 @@ class HDWeapon:Weapon{
 		initializewepstats();
 		bobrangex*=3;bobrangey*=3;
 		super.beginplay();
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		bno_auto_switch=false;
 	}
 	//because A_Print doesn't cut it
 	action void A_WeaponMessage(string msg,int time=100){
