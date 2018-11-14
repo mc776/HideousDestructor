@@ -359,7 +359,7 @@ const HDLD_LAUNCHR="lau";
 const HDLD_BLOOPER="blo";
 const HDLD_THUNDER="thu";
 const HDLD_LIBGL=  "lib";
-const HDLD_LIBNOGL="lbn";
+const HDLD_LIBNOGL="lia";
 const HDLD_BFG=    "bfg";
 const HDLD_BRONTO= "bro";
 const HDLD_BOSS=   "bos";
@@ -374,17 +374,18 @@ class CustomLoadoutGiver:CustomInventory{
 	states{
 	spawn:TNT1 A 0;stop;
 	pickup:
-		TNT1 A 0 GiveCustomItems();
+		TNT1 A 0 GiveCustomItems(invoker.amount);
 		fail;
 	}
-	action void GiveCustomItems(){
+	action void GiveCustomItems(int whichloadout=1){
+		if(!player)return;
 		if(HDPlayerPawn(self))HDPlayerPawn(self).GiveBasics();
 
 		array<string> whichitem;whichitem.clear();
 		array<int> howmany;howmany.clear();
 		array<string> loadlist;loadlist.clear();
 
-		string whichloadout="hd_loadout"..invoker.amount;
+		string whichloadout="hd_loadout"..clamp(whichloadout,1,5);
 		string loadinput=cvar.getcvar(whichloadout,player).getstring();
 		string firstwep="";
 
@@ -438,6 +439,7 @@ class CustomLoadoutGiver:CustomInventory{
 			player.pendingweapon=weapon(findinventory(firstwep));
 			player.readyweapon=weapon(findinventory(firstwep));
 		}
+		HDWeaponSelector.Select(self,firstwep);
 	}
 }
 
