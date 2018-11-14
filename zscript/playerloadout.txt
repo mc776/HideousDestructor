@@ -367,17 +367,19 @@ const HDLD_BOSS=   "bos";
 
 
 class clg:CustomLoadoutGiver{}
-class CustomLoadoutGiver:CustomInventory{
+class CustomLoadoutGiver:Inventory{
 	default{
 		inventory.maxamount 5;
 	}
-	states{
-	spawn:TNT1 A 0;stop;
-	pickup:
-		TNT1 A 0 GiveCustomItems(invoker.amount);
-		fail;
+	//must be DoEffect as AttachToOwner and Pickup are not called during a range reset!
+	override void doeffect(){
+		if(HDPlayerPawn(owner))HDPlayerPawn(owner).GiveCustomItems("hd_loadout"..amount);
+		destroy();
 	}
-	action void GiveCustomItems(int whichloadout=1){
+}
+extend class HDPlayerPawn{
+	string startingloadout;property startingloadout:startingloadout;
+	void GiveCustomItems(string loadinput){
 		if(!player)return;
 		if(HDPlayerPawn(self))HDPlayerPawn(self).GiveBasics();
 
@@ -385,8 +387,9 @@ class CustomLoadoutGiver:CustomInventory{
 		array<int> howmany;howmany.clear();
 		array<string> loadlist;loadlist.clear();
 
-		string whichloadout="hd_loadout"..clamp(whichloadout,1,5);
-		string loadinput=cvar.getcvar(whichloadout,player).getstring();
+		if(loadinput.left(3)~=="hd_"){
+			loadinput=cvar.getcvar(loadinput,player).getstring();
+		}
 		string firstwep="";
 
 		loadinput.replace(" ","");
@@ -435,10 +438,6 @@ class CustomLoadoutGiver:CustomInventory{
 		}
 
 		//select the correct weapon
-		if(player){
-			player.pendingweapon=weapon(findinventory(firstwep));
-			player.readyweapon=weapon(findinventory(firstwep));
-		}
 		HDWeaponSelector.Select(self,firstwep);
 	}
 }
