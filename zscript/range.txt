@@ -46,11 +46,6 @@ class HDLoaded:ActionItem{
 			}
 
 			//unscriptified or non-HDWeapon weapons below
-			if(countinv("HDSecondPistol")){
-				let pst2=HDSecondPistol(findinventory("HDSecondPistol"));
-				pst2.weaponstatus[PISS_CHAMBER]=2;
-				pst2.weaponstatus[PISS_MAG]=15;
-			}
 			A_SetInventory("HDFragGrenadeAmmo",max(3,countinv("HDFragGrenadeAmmo")));
 		}fail;
 	}

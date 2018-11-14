@@ -1,133 +1,8 @@
 // ------------------------------------------------------------
 // Pistol
 // ------------------------------------------------------------
-class HDSecondPistol:HDAmmo replaces Pistol{
-	int weaponstatus[8];
-	default{
-		//$Category "Weapons/Hideous Destructor"
-		//$Title "Pistol"
-		//$Sprite "PISTA0"
-
-		inventory.maxamount 1;
-		scale 0.63;
-		inventory.pickupmessage "You got the pistol!";
-		inventory.pickupsound "misc/w_pkup";
-	}
-	override void BeginPlay(){
-		weaponstatus[0]=0;
-		weaponstatus[PISS_MAG]=15;
-		weaponstatus[PISS_CHAMBER]=2;
-		weaponstatus[PISS_AUTO]=-1;
-		super.beginplay();
-	}
-	override void postbeginplay(){
-		super.postbeginplay();
-		if(
-			owner&&owner.player&&weaponstatus[PISS_AUTO]>=0
-			&&cvar.getcvar("hd_pistauto",owner.player).getint()
-		){
-			weaponstatus[PISS_AUTO]=1;
-		}
-	}
-	override double getbulk(){
-		int mgg=weaponstatus[PISS_MAG];
-		return 30+(mgg<0?0:(ENC_9MAG_LOADED+mgg*ENC_9_LOADED));
-	}
-	override void actualpickup(actor other){
-		bool nodropclip=(
-			weaponstatus[PISS_MAG]<0
-			||!other.countinv("HDPistol")
-			||!other.countinv("HDSecondPistol")
-		);
-		super.actualpickup(other);
-		if(nodropclip)return;
-
-		//if it were a weapon, it would be failedpickupunloadmag(PISS_MAG,"HD9mMag15");
-		A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
-		A_PlaySound("weapons/rifleload",5);
-		HDMagAmmo.SpawnMag(self,"HD9mMag15",weaponstatus[PISS_MAG]);
-		weaponstatus[PISS_MAG]=-1;
-		setstatelabel("spawn");
-	}
-	override void AttachToOwner(actor other){
-		//if owner has no first, change self to first
-		//otherwise attach normally
-		if(!other.findinventory("HDPistol")){
-			let ppp=hdpistol(spawn("HDPistol",pos));
-			if(!ppp)return;
-			for(int i=0;i<8;i++){
-				ppp.weaponstatus[i]=weaponstatus[i];
-			}
-			ppp.weaponstatus[0]|=PISF_FROMSECOND;
-			ppp.attachtoowner(other);
-			destroy();
-		}else super.attachtoowner(other);
-		if(weaponstatus[PISS_AUTO]<0)refid=HDLD_PISTOL;
-		else refid=HDLD_PISTAUT;
-	}
-	states{
-	spawn:
-		PIST A 1;
-		PIST A 0{
-			actor aaa;int bbb;
-			[bbb,aaa]=A_SpawnItemEx("HDPistol",
-				flags:SXF_TRANSFERSPECIAL|SXF_NOCHECKPOSITION
-			);
-			aaa.special=special;
-			let ppp=hdpistol(aaa);
-			if(!ppp)return;
-			for(int i=0;i<8;i++){
-				ppp.weaponstatus[i]=invoker.weaponstatus[i];
-			}
-			ppp.vel=vel;ppp.target=target;
-		}stop;
-	}
-}
-//turns your FIRST pistol into an auto
-class HDPistolFullAuto:ActionItem{
-	states{
-	pickup:
-		TNT1 A 0{
-			let ppp=HDPistol(findinventory("HDPistol"));
-			if(ppp)ppp.weaponstatus[PISS_AUTO]=0;
-		}fail;
-	}
-}
-class HDAutoPistol:HDSecondPistol{
-	override void AttachToOwner(actor other){
-		//never itself attaches
-		//if HDPistol present, replace with second
-		//if HDPistol not present, replace with first
-		if(other.findinventory("HDPistol")){
-			let pppp=hdsecondpistol(spawn("HDSecondPistol",pos));
-			if(pppp){
-				pppp.weaponstatus[PISS_AUTO]=0;
-				pppp.attachtoowner(other);
-			}
-		}else{
-			let ppp=hdpistol(spawn("HDPistol",pos));
-			if(ppp){
-				ppp.weaponstatus[PISS_AUTO]=0;
-				ppp.attachtoowner(other);
-			}
-		}
-		destroy();
-	}
-	default{
-		//$Category "Weapons/Hideous Destructor"
-		//$Title "Pistol (Select Fire)"
-		//$Sprite "PISTA0"
-	}
-	states{
-		spawn:
-			TNT1 A 0 nodelay{
-				let pppp=hdpistol(spawn("HDPistol",pos));
-				pppp.weaponstatus[PISS_AUTO]=0;
-				pppp.special=special;
-			}stop;
-	}
-}
 class HDPistol:HDWeapon{
+	int weaponstatus2[8]; //no I'm NOT letting you carry an indefinite # of pistols, shut up
 	default{
 		scale 0.63;
 		weapon.selectionorder 50;
@@ -141,42 +16,22 @@ class HDPistol:HDWeapon{
 		inventory.pickupmessage "You got the pistol!";
 		hdweapon.nicename "Pistol";
 		hdweapon.fitsinbackpack true;
-	}
-	override void DetachFromOwner(){
-		//if owner has second, change it to first before detaching
-		let ppp=hdsecondpistol(owner.findinventory("HDSecondPistol"));
-		super.detachfromowner();
-		if(ppp){
-			let pppp=hdsecondpistol(spawn("HDSecondPistol",owner.pos));
-			if(pppp){
-				for(int i=0;i<8;i++){
-					pppp.weaponstatus[i]=ppp.weaponstatus[i];
-				}
-				ppp.destroy();
-				pppp.attachtoowner(owner);
-			}
-		}
-	}
-	override void attachtoowner(actor other){
-		super.attachtoowner(other);
-		if(weaponstatus[PISS_AUTO]<0)refid=HDLD_PISTOL;
-		else refid=HDLD_PISTAUT;
+		hdweapon.refid HDLD_PISTOL;
+		inventory.maxamount 2;
 	}
 	override void actualpickup(actor other){
 		//if owner has no first, attach normally
-		if(!other.findinventory("HDPistol")){
+		let expi=HDPistol(other.findinventory("HDPistol"));
+		if(!expi||expi.amount>=expi.maxamount){
 			super.actualpickup(other);
 			return;
 		}
-		if(other.findinventory("HDSecondPistol"))return;
 
-		let ppp=hdsecondpistol(spawn("HDsecondPistol",pos));
-		if(!ppp)return;
+		//add to second pistol
 		for(int i=0;i<8;i++){
-			ppp.weaponstatus[i]=weaponstatus[i];
+			expi.weaponstatus2[i]=weaponstatus[i];
 		}
-		ppp.weaponstatus[0]|=PISF_FROMSECOND;
-		ppp.attachtoowner(other);
+		expi.amount++;
 		destroy();
 	}
 	override double,int weaponbulk(){
@@ -185,20 +40,54 @@ class HDPistol:HDWeapon{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
+
+		//set configurations
 		if(
 			owner&&owner.player&&weaponstatus[PISS_AUTO]>=0
 			&&cvar.getcvar("hd_pistauto",owner.player).getint()
-			&&!(weaponstatus[0]&PISF_FROMSECOND)
 		){
 			weaponstatus[PISS_AUTO]=1;
 		}
+
+		if(amount>1){
+			//clone stats (including fire select cvar) to second pistol
+			for(int i=0;i<8;i++){
+				weaponstatus2[i]=weaponstatus[i];
+			}
+			//split the pickup
+			if(!owner){
+				let second=HDPistol(spawn("HDPistol",pos+(frandom(-2,2),frandom(-2,2),0)));
+				amount=1;
+				second.amount=1;
+				for(int i=0;i<8;i++){
+					second.weaponstatus[i]=weaponstatus2[i];
+					weaponstatus2[i]=-1;
+					second.weaponstatus2[i]=-1;
+				}
+			}
+		}
+	}
+	override inventory CreateTossable(int amt){
+		if(amount<2)return super.createtossable(amt);
+		let second=HDPistol(spawn("HDPistol",owner.pos+(0,0,owner.height-14)));
+		amount--;
+		second.amount=1;
+		//transfer the FIRST pistol's weaponstatus then switch to fist
+		//for consistency with other weapons
+		for(int i=0;i<8;i++){
+			second.weaponstatus[i]=weaponstatus[i];
+			second.weaponstatus2[i]=-1;
+			weaponstatus[i]=weaponstatus2[i];
+			weaponstatus2[i]=-1;
+		}
+		owner.A_SelectWeapon("HDFist");
+		return second;
 	}
 	action void SwapPistols(){
-		let second=hdsecondpistol(findinventory("HDSecondPistol"));
-		if(second){
+		if(invoker.amount>1){
 			for(int i=0;i<8;i++){
-				int wpbak=second.weaponstatus[i];
-				second.weaponstatus[i]=invoker.weaponstatus[i];
+				int wpbak=invoker.weaponstatus2[i];
+				invoker.weaponstatus2[i]=invoker.weaponstatus[i];
 				invoker.weaponstatus[i]=wpbak;
 			}
 		}
@@ -246,7 +135,7 @@ class HDPistol:HDWeapon{
 				invoker.weaponstatus[PISS_CHAMBER]!=2
 				&&invoker.weaponstatus[PISS_MAG]>0
 			)setweaponstate("chamber_manual");
-			else if(countinv("HDSecondPistol"))setweaponstate("retainswap");
+			else if(invoker.amount==2)setweaponstate("retainswap");
 		}goto nope;
 	chamber_manual:
 		---- A 0{
@@ -441,7 +330,7 @@ class HDPistol:HDWeapon{
 	user1:
 	altreload:
 	retainswap:
-		---- A 0 A_JumpIfInventory("HDSecondPistol",1,"swapfakedeselect");
+		---- A 0 A_JumpIf(invoker.amount==2,"swapfakedeselect");
 		goto nope;
 	swapfakedeselect:
 		---- A 0{
@@ -471,15 +360,33 @@ class HDPistol:HDWeapon{
 		}stop;
 	}
 	override void initializewepstats(bool idfa){
+		bool def=amount==1;
+		if(!idfa){
+			for(int i=0;i<8;i++){
+				weaponstatus2[i]=-def;
+			}
+		}
 		weaponstatus[0]=0;
 		weaponstatus[PISS_MAG]=15;
 		weaponstatus[PISS_CHAMBER]=2;
 		if(!idfa)weaponstatus[PISS_AUTO]=-1;
+		if(!def){
+			weaponstatus2[0]=0;
+			weaponstatus2[PISS_MAG]=15;
+			weaponstatus2[PISS_CHAMBER]=2;
+			if(!idfa)weaponstatus2[PISS_AUTO]=-1;
+		}
+		if(
+			idfa
+			&&weaponstatus[PISS_AUTO]<0
+		){
+			weaponstatus2[PISS_AUTO]=max(0,weaponstatus2[PISS_AUTO]);
+		}
+		return;
 	}
 }
 enum pistolstatus{
-	PISF_FROMSECOND=1,
-	PISF_JUSTUNLOAD=2,
+	PISF_JUSTUNLOAD=1,
 
 	PISS_FLAGS=0,
 	PISS_MAG=1,
@@ -489,34 +396,30 @@ enum pistolstatus{
 
 
 
-//use this to give a new pistol in a custom loadout
-class HDPistolGiver:HDPickup{
-	default{
-		hdpickup.refid HDLD_PISTOL;
-		hdpickup.nicename "Pistol";
-	}
-	override void attachtoowner(actor other){
-		super.attachtoowner(other);
-		if(owner==other){
-			bool hasfirst=other.countinv("HDPistol");
-			if(hasfirst&&other.countinv("HDSecondPistol")){
-				destroy();return;
-			}
-			string givetype=hasfirst?"HDSecondPistol":"HDPistol";
-			other.A_GiveInventory(givetype);
-			if(refid==HDLD_PISTAUT){
-				let ppp=(other.findinventory(givetype));
-				if(hasfirst)HDSecondPistol(ppp).weaponstatus[PISS_AUTO]=0;
-				else HDPistol(ppp).weaponstatus[PISS_AUTO]=0;
-			}
-		}
-		destroy();
-	}
-}
-class HDAutoPistolGiver:HDPistolGiver{
+//use this to give an autopistol in a custom loadout
+class HDAutoPistol:HDPickup{
 	default{
 		hdpickup.refid HDLD_PISTAUT;
 		hdpickup.nicename "Pistol (select-fire)";
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		if(!owner){
+			let spwn=HDPistol(spawn("HDPistol",pos,ALLOW_REPLACE));
+			spwn.weaponstatus[PISS_AUTO]=0;
+			destroy();
+		}
+	}
+	override void attachtoowner(actor other){
+		super.attachtoowner(other);
+		other.A_GiveInventory("HDPistol",1);
+		let expi=HDPistol(other.findinventory("HDPistol"));
+		if(expi){
+			//set the FIRST to auto
+			if(expi.weaponstatus[PISS_AUTO]<0)expi.weaponstatus[PISS_AUTO]=0;
+			else if(expi.amount>1) expi.weaponstatus2[PISS_AUTO]=max(0,expi.weaponstatus2[PISS_AUTO]);
+		}
+		destroy();
 	}
 }
 

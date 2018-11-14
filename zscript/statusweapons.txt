@@ -50,10 +50,9 @@ extend class HDStatusBar{
 			drawwepcounter(hdw.weaponstatus[PISS_AUTO]+1,
 				-22,-10,"blank","RBRSA3A7","STFULAUT"
 			);
-			let wpn2=hdsecondpistol(hpl.findinventory("HDSecondPistol"));
-			if(wpn2){
+			if(w.amount>1){
 				drawwepdot(-16,-13,(4,2.6));
-				if(wpn2.weaponstatus[PISS_AUTO]>=0)
+				if(hdpistol(w).weaponstatus2[PISS_AUTO]>=0)
 					drawwepdot(-21,-13,(2,2.6));
 			}
 			drawwepnum(hdw.weaponstatus[PISS_MAG],15);

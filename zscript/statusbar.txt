@@ -556,13 +556,12 @@ class HDStatusBar:DoomStatusBar{
 				if(pstl.weaponstatus[PISS_AUTO]>=0)
 					pistolsprite="PISTD0";else pistolsprite="PISTB0";
 			}
-			let pstl2=hdsecondpistol(hpl.findinventory("HDSecondPistol"));
-			if(pstl2){
-				if(pstl2.weaponstatus[PISS_CHAMBER]>0){
-					if(pstl2.weaponstatus[PISS_AUTO]>=0)
+			if(pstl.amount==2){
+				if(pstl.weaponstatus2[PISS_CHAMBER]>0){
+					if(pstl.weaponstatus2[PISS_AUTO]>=0)
 						pistolsprite2="PISTC0";else pistolsprite2="PISTA0";
 				}else{
-					if(pstl2.weaponstatus[PISS_AUTO]>=0)
+					if(pstl.weaponstatus2[PISS_AUTO]>=0)
 						pistolsprite2="PISTD0";else pistolsprite2="PISTB0";
 				}
 			}
@@ -672,7 +671,7 @@ class HDStatusBar:DoomStatusBar{
 	void drawweaponstash(bool rt=false,int yofs=0){
 		drawwep("Lumberjack","CSAWA0",-163+yofs,scl:0.6,right:rt);
 		drawwep("HDSMG",smgsprite,-141+yofs,scl:0.8,right:rt);
-		drawwep("HDSecondPistol",pistolsprite2,-139+yofs,scl:0.7,right:rt);
+		if(cplayer.mo.countinv("HDPistol")>1)drawwep("HDPistol",pistolsprite2,-139+yofs,scl:0.7,right:rt);
 		drawwep("HDPistol",pistolsprite,-143+yofs,scl:0.7,right:rt);
 		drawwep("Hunter",huntersprite,-128+yofs,right:rt);
 		drawwep("Slayer",slayersprite,-120+yofs,right:rt);
