@@ -368,12 +368,16 @@ const HDLD_BOSS=   "bos";
 class clg:CustomLoadoutGiver{}
 class CustomLoadoutGiver:Inventory{
 	default{
-		inventory.maxamount 5;
+		inventory.maxamount 6;
 	}
 	//must be DoEffect as AttachToOwner and Pickup are not called during a range reset!
 	override void doeffect(){
-		if(HDPlayerPawn(owner))HDPlayerPawn(owner).GiveCustomItems("hd_loadout"..amount);
-		destroy();
+		let hdp=HDPlayerPawn(owner);
+		if(hdp){
+			string lod=hdp.classloadout;
+			if(lod=="")hdp.GiveCustomItems("hd_loadout"..amount);
+			else hdp.GiveCustomItems(lod);
+		}destroy();
 	}
 }
 extend class HDPlayerPawn{
@@ -381,6 +385,10 @@ extend class HDPlayerPawn{
 	void GiveCustomItems(string loadinput){
 		if(!player)return;
 		if(HDPlayerPawn(self))HDPlayerPawn(self).GiveBasics();
+		if(hd_forcepistolstart){
+			A_GiveInventory("DoomguyLoadout");
+			return;
+		}
 		if(loadinput=="")return;
 
 		array<string> whichitem;whichitem.clear();

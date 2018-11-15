@@ -68,6 +68,7 @@ class HDPlayerPawn:PlayerPawn{
 		player.crouchsprite "PLYC";
 
 		hdplayerpawn.loadout "";
+		player.startitem "CustomLoadoutGiver";
 	}
 	override void PostBeginPlay(){
 		super.PostBeginPlay();
@@ -81,9 +82,6 @@ class HDPlayerPawn:PlayerPawn{
 		scopecamera.target=self;
 
 		if(player&&player.bot&&hd_nobots&&!countinv("WipedOut"))ReplaceBot();
-		else if(hd_forcepistolstart){
-			A_GiveInventory("DoomguyLoadout");
-		}else GiveCustomItems(classloadout);
 		A_TakeInventory("NullWeapon");
 
 		A_SetTeleFog("TeleportFog","TeleportFog");
