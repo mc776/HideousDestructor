@@ -485,7 +485,7 @@ class LoadoutCode:custominventory{
 				if(bp.bulk>0){
 					lll=lll.." - ";
 					for(int i=0;i<imax;i++){
-						if(bp.amounts[i]=="")continue;
+						if(bp.havenone(i))continue;
 						let wep=(class<hdweapon>)(bp.invclasses[i]);
 						let mag=(class<hdmagammo>)(bp.invclasses[i]);
 						let pkup=(class<hdpickup>)(bp.invclasses[i]);
@@ -664,7 +664,7 @@ class HDBackpack:HDWeapon{
 	override double,int weaponbulk(){
 		double blk=0;
 		for(int i=0;i<invclasses.size();i++){
-			if(amounts[i]=="")continue;
+			if(havenone(i))continue;
 			class<actor> reff=invclasses[i];
 			array<string> theseamounts;
 			theseamounts.clear();
@@ -712,7 +712,7 @@ class HDBackpack:HDWeapon{
 				index+=toadd;
 				if(index>maxindex)index=0;
 				else if(index<0)index=maxindex;
-			}while(index!=bpindex&&amounts[index]==""&&(!owner.countinv(invclasses[index])));
+			}while(index!=bpindex&&havenone(index)&&(!owner.countinv(invclasses[index])));
 		}else if(max(0-num,num-nnsiz)<maxindex){
 			while(num<0)num+=nnsiz;
 			while(num>maxindex)num-=nnsiz;
@@ -722,7 +722,7 @@ class HDBackpack:HDWeapon{
 		//translate "amounts" into an actual number of items
 		string amt=amounts[index];
 		let thisclass=((class<actor>)(invclasses[index]));
-		if(amt=="")amt="\cunone";
+		if(havenone(index))amt="\cunone";
 		else if(thisclass is "HDWeapon"||thisclass is "HDMagAmmo"){
 			array<string>mags;
 			amt.split(mags," ");
@@ -813,10 +813,17 @@ class HDBackpack:HDWeapon{
 		UpdateMessage(index);
 		if(pkup.multipickup)return 4;else return 10;
 	}
+	//returns whether empty
+	bool havenone(int which){
+		return(
+			amounts[which]==""
+			||amounts[which].toint()<1
+		);
+	}
 	//generic code for removing from backpack
 	int RemoveFromBackpack(int which=-1,bool trytopocket=true){
 		if(which<0||which>invclasses.size())which=index;
-		if(amounts[which]=="")return 1;
+		if(havenone(which))return 1;
 		array<string>tempamounts;
 		bool basicpickup=false;
 		amounts[which].split(tempamounts," ");
@@ -926,7 +933,7 @@ class HDBackpack:HDWeapon{
 		TNT1 A 10{
 			A_PlaySound("weapons/pocket",CHAN_WEAPON);
 			if(invoker.bulk>(HDBPC_CAPACITY*0.7))A_SetTics(20);
-			if(invoker.amounts[invoker.index]=="")invoker.updatemessage(invoker.index+1);
+			if(invoker.havenone(invoker.index))invoker.updatemessage(invoker.index+1);
 			else invoker.UpdateMessage(invoker.index);
 		}goto super::select0;
 	ready:
