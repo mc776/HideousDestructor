@@ -17,6 +17,7 @@ class SoldierExtras:HDPickup{
 	default{
 		hdpickup.refid HDLD_SOLDIER;
 		hdpickup.nicename "Elite Soldier Kit";
+		hdpickup.fitsinbackpack false;
 	}
 	states{
 	pickup:
@@ -564,6 +565,10 @@ class HDBackpack:HDWeapon{
 	//"0 0 0 0 0 0 0 0 0" for a single weapon: first # is bulk
 
 	default{
+		//$Category "Items/Hideous Destructor/Gear"
+		//$Title "Backpack"
+		//$Sprite "BPAKA0"
+
 		+inventory.invbar +weapon.wimpy_weapon
 		+weapon.no_auto_switch
 		weapon.selectionorder 1010;
@@ -598,8 +603,10 @@ class HDBackpack:HDWeapon{
 			string nnm="";
 			if(reff is "HDPickup"){
 				let gdb=getdefaultbytype((class<hdpickup>)(reff));
-				nnm=gdb.nicename;
-				ref=gdb.refid;
+				if(gdb.fitsinbackpack){
+					nnm=gdb.nicename;
+					ref=gdb.refid;
+				}
 			}else if(reff is "HDWeapon"){
 				let gdb=getdefaultbytype((class<hdweapon>)(reff));
 				if(gdb.fitsinbackpack){
@@ -729,7 +736,7 @@ class HDBackpack:HDWeapon{
 		else ininv="\cc"..owner.countinv(invclasses[index]);
 		string str="\n\cx"..nicenames[index].."\n"..amt.." in pack   "..ininv.." carried\n";
 
-		if(hd_debug)str=str.."   \cu"..invclasses[index];
+		if(hd_debug)str=str.."   \cr"..invclasses[index];
 		int aaa=index;int bbb=index;
 		for(int i=0;i<5;i++){
 			aaa--;
@@ -933,8 +940,17 @@ class HDBackpack:HDWeapon{
 
 
 
+
+
+
+
+
+
 //semi-filled backpacks at random
 class WildBackpack:IdleDummy{
+		//$Category "Items/Hideous Destructor/Gear"
+		//$Title "Backpack (Random Spawn)"
+		//$Sprite "BPAKC0"
 	override void postbeginplay(){
 		super.postbeginplay();
 		let aaa=HDBackpack(spawn("HDBackpack",pos,ALLOW_REPLACE));
@@ -948,27 +964,179 @@ extend class HDBackpack{
 	void RandomContents(){
 		for(int i=0;i<5;i++){
 			int thisitem=random(1,invclasses.size())-1;
-			let pkup=(class<hdpickup>)(invclasses[thisitem]);
 			let wep=(class<hdweapon>)(invclasses[thisitem]);
-			let mag=(class<hdmagammo>)(invclasses[thisitem]);
+			let pkup=(class<hdpickup>)(invclasses[thisitem]);
+			let mag=(class<hdmagammo>)(pkup);
 			if(wep){
 				let iii=inventory(spawn(wep));
 				itemtobackpack(iii);
 			}else if(mag){
-				int howmany=random(1,HDCONST_BPMAX/(
-					max(1.,getdefaultbytype(mag).roundbulk)
-					*max(1.,getdefaultbytype(mag).magbulk)
-					*3.
+				int howmany=max(1,random(1,
+					min(
+						getdefaultbytype(mag).maxamount>>1,
+						HDCONST_BPMAX/(
+							max(1.,getdefaultbytype(mag).roundbulk)
+							*max(1.,getdefaultbytype(mag).magbulk)
+							*3.
+						)
+					)
 				));
+				int magmax=getdefaultbytype(mag).maxperunit;
 				string ati=amounts[thisitem];
-				if(ati=="")ati=ati..howmany;
-				else ati=ati.." "..howmany;
+				for(int i=0;i<howmany;i++){
+					int mmx=min(magmax,magmax*frandom(0.1,5.));
+					if(ati=="")ati=ati..mmx;
+					else ati=ati.." "..mmx;
+				}
 				amounts[thisitem]=ati;
 			}else if(pkup){
-				int howmany=random(1,HDCONST_BPMAX/(max(1.,getdefaultbytype(pkup).bulk)*3.));
+				int howmany=max(1,random(1,
+					min(
+						getdefaultbytype(pkup).maxamount>>1,
+						HDCONST_BPMAX/(max(1.,getdefaultbytype(pkup).bulk)*3.)
+					)
+				));
+				if(
+					pkup is "BluePotion"
+					||pkup is "SquadSummoner"
+				){
+					howmany=random(-2,howmany);
+				}
 				amounts[thisitem]=""..howmany;
+				if(amounts[thisitem].toint()<1)amounts[thisitem]="";
 			}
 		}
 		weaponbulk();
+		updatemessage(index);
+	}
+}
+
+
+
+class InsurgentLoadout:Inventory{
+	override void Tick(){
+		if(!owner){destroy();return;}
+		//pick one or two random weapons
+		class<inventory> ammoforwep=null;
+		for(int i=0;i<randompick(1,1,1,1,1,1,1,1,1,2,2,2,3);i++){
+			switch(4+random(0,13)){
+			case 0:
+				owner.A_GiveInventory("HDPistol");
+				ammoforwep="HD9mMag15";
+				break;
+			case 1:
+				owner.A_GiveInventory("ZM66Semi");
+				ammoforwep="HD4mMag";
+				break;
+			case 2:
+				owner.A_GiveInventory("Hunter");
+				ammoforwep="HDShellAmmo";
+				break;
+			case 3:
+				owner.A_GiveInventory("Slayer");
+				ammoforwep="HDShellAmmo";
+				break;
+			case 4:
+				owner.A_GiveInventory("Lumberjack");
+				ammoforwep="HDBattery";
+				break;
+			case 5:
+				owner.A_GiveInventory("LiberatorNoGL");
+				ammoforwep="HD7mMag";
+				break;
+			case 6:
+				owner.A_GiveInventory("ZM66Regular");
+				ammoforwep="HD4mMag";
+				break;
+			case 7:
+				owner.A_GiveInventory("HDSMG");
+				ammoforwep="HD9mMag30";
+				break;
+			case 8:
+				owner.A_GiveInventory("BossRifle");
+				ammoforwep="HD7mClip";
+				break;
+			case 9:
+				owner.A_GiveInventory("HDAutoPistol");
+				ammoforwep="HD9mMag15";
+				break;
+			case 10:
+				owner.A_GiveInventory("ZM66AssaultRifle");
+				ammoforwep="HD4mMag";
+				owner.A_SetInventory("HDRocketAmmo",max(owner.countinv("HDRocketAmmo"),random(0,4)));
+				break;
+			case 11:
+				owner.A_GiveInventory("LiberatorRifle");
+				ammoforwep="HD7mMag";
+				owner.A_SetInventory("HDRocketAmmo",max(owner.countinv("HDRocketAmmo"),random(0,4)));
+				break;
+			case 12:
+				owner.A_GiveInventory("Vulcanette");
+				ammoforwep="HD4mMag";
+				owner.A_SetInventory("HDBattery",max(owner.countinv("HDBattery"),random(0,1)));
+				break;
+			case 13:
+				owner.A_GiveInventory("Blooper");
+				ammoforwep="HDRocketAmmo";
+				break;
+			case 14:
+				owner.A_GiveInventory("HDRL");
+				ammoforwep="HDRocketAmmo";
+				break;
+			case 15:
+				owner.A_GiveInventory("ThunderBuster");
+				ammoforwep="HDBattery";
+				break;
+			case 16:
+				owner.A_GiveInventory("Brontornis");
+				ammoforwep="BrontornisRound";
+				break;
+			case 17:
+				owner.A_GiveInventory("BFG9k");
+				ammoforwep="HDBattery";
+				break;
+			default:
+				break;
+			}
+			//give some random ammo for the new weapon
+			if(ammoforwep)owner.A_SetInventory(
+				ammoforwep,
+				max(1,random(0,getdefaultbytype(ammoforwep).maxamount/3))
+			);
+		}
+		//give random other gear, make 3 rolls, amount max(1,random(0,maxamount/3))
+		array<string> supplies;supplies.clear();
+		for(int i=0;i<allactorclasses.size();i++){
+			let thisclass=((class<hdpickup>)(allactorclasses[i]));
+			if(thisclass && getdefaultbytype(thisclass).refid!=""){
+				supplies.push(thisclass.getclassname());
+			}
+		}
+		int imax=random(3,6);
+		int smax=supplies.size()-1;
+		for(int i=0;i<imax;i++){
+			let thisclass=supplies[random(0,smax)];
+			int maxamt=getdefaultbytype((class<inventory>)(thisclass)).maxamount;
+			owner.A_GiveInventory(thisclass,max(1,random(0,maxamt/3)));
+		}
+		//randomize integrity of armour
+		let armourstored=HDArmour(owner.findinventory("HDArmour"));
+		if(armourstored){
+			armourstored.syncamount();
+			bool nomega=armourstored.amount>2;
+			for(int i=0;i<armourstored.amount;i++){
+				if(!nomega&&!random(0,12)){
+					armourstored.mags[i]=random(1001,1000+HDCONST_BLUEARMOUR);
+				}else{
+					armourstored.mags[i]=random(1,HDCONST_GREENARMOUR);
+				}
+			}
+		}
+		let armourworn=HDArmourWorn(owner.findinventory("HDArmourWorn"));
+		if(armourworn){
+			armourworn.mega=!random(0,12);
+			armourworn.durability=random(1,armourworn.mega?HDCONST_BLUEARMOUR:HDCONST_GREENARMOUR);
+		}
+		destroy();
 	}
 }
