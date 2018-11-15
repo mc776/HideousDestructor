@@ -41,6 +41,9 @@ class HDPlayerPawn:PlayerPawn{
 	double bobcounter;
 	vector2 hudbob;
 
+	string classloadout;
+	property loadout:classloadout;
+
 	default{
 		+interpolateangles
 		-telestomp
@@ -63,6 +66,8 @@ class HDPlayerPawn:PlayerPawn{
 		player.gruntspeed 16.0;
 		player.displayname "Marine";
 		player.crouchsprite "PLYC";
+
+		hdplayerpawn.loadout "";
 	}
 	override void PostBeginPlay(){
 		super.PostBeginPlay();
@@ -78,7 +83,7 @@ class HDPlayerPawn:PlayerPawn{
 		if(player&&player.bot&&hd_nobots&&!countinv("WipedOut"))ReplaceBot();
 		else if(hd_forcepistolstart){
 			A_GiveInventory("DoomguyLoadout");
-		}
+		}else GiveCustomItems(classloadout);
 		A_TakeInventory("NullWeapon");
 
 		A_SetTeleFog("TeleportFog","TeleportFog");

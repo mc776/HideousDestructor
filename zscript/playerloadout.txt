@@ -60,7 +60,7 @@ class InvReset:Inventory{
 			}
 		}
 		let d=HDPlayerPawn(resetee);
-		if(d)d.GiveBasics();
+		if(d)d.GiveCustomItems(d.classloadout);
 	}
 	override void attachtoowner(actor other){
 		reallyclearinventory(other);
@@ -380,6 +380,7 @@ extend class HDPlayerPawn{
 	void GiveCustomItems(string loadinput){
 		if(!player)return;
 		if(HDPlayerPawn(self))HDPlayerPawn(self).GiveBasics();
+		if(loadinput=="")return;
 
 		array<string> whichitem;whichitem.clear();
 		array<int> howmany;howmany.clear();
@@ -927,5 +928,47 @@ class HDBackpack:HDWeapon{
 	nope:
 		TNT1 A 0 A_WeaponMessage(invoker.wepmsg,5);
 		goto super::nope;
+	}
+}
+
+
+
+//semi-filled backpacks at random
+class WildBackpack:IdleDummy{
+	override void postbeginplay(){
+		super.postbeginplay();
+		let aaa=HDBackpack(spawn("HDBackpack",pos,ALLOW_REPLACE));
+		aaa.RandomContents();
+	}
+}
+
+//THIS GIVES WRONG RESULTS.
+//The problem is that the bulk is not actually set on ammo - see encumbrance.txt
+extend class HDBackpack{
+	void RandomContents(){
+		for(int i=0;i<5;i++){
+			int thisitem=random(1,invclasses.size())-1;
+			let pkup=(class<hdpickup>)(invclasses[thisitem]);
+			let wep=(class<hdweapon>)(invclasses[thisitem]);
+			let mag=(class<hdmagammo>)(invclasses[thisitem]);
+			if(wep){
+				let iii=inventory(spawn(wep));
+				itemtobackpack(iii);
+			}else if(mag){
+				int howmany=random(1,HDCONST_BPMAX/(
+					max(1.,getdefaultbytype(mag).roundbulk)
+					*max(1.,getdefaultbytype(mag).magbulk)
+					*3.
+				));
+				string ati=amounts[thisitem];
+				if(ati=="")ati=ati..howmany;
+				else ati=ati.." "..howmany;
+				amounts[thisitem]=ati;
+			}else if(pkup){
+				int howmany=random(1,HDCONST_BPMAX/(max(1.,getdefaultbytype(pkup).bulk)*3.));
+				amounts[thisitem]=""..howmany;
+			}
+		}
+		weaponbulk();
 	}
 }
