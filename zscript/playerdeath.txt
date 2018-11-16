@@ -33,6 +33,9 @@ extend class HDPlayerPawn{
 				player.cmd.buttons&=~BT_USE;
 				if(!(player.cheats & CF_PREDICTING))deathcounter++;
 			}
+			if(playercorpse){
+				playercorpse.setorigin((pos.xy-playercorpse.angletovector(angle),pos.z),true);
+			}
 		}
 		super.DeathThink();
 	}
@@ -335,18 +338,6 @@ class HDPlayerCorpse:HDActor{
 			);
 		}
 		stop;
-	}
-	override void Tick(){
-		if(
-			hdplayerpawn(master)
-			&&hdplayerpawn(master).playercorpse==self
-		){
-			//keep the corpse just behind the player's view
-			setorigin(
-				(master.pos.xy-angletovector(master.angle),master.pos.z),true
-			);
-		}else master=null;
-		super.Tick();
 	}
 }
 
