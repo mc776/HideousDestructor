@@ -1,7 +1,6 @@
 // ------------------------------------------------------------
 // Manually reload magazines! (and clips too!)
 // ------------------------------------------------------------
-
 class MagManager:HDWeapon{
 	default{
 		+weapon.wimpy_weapon
@@ -81,22 +80,6 @@ class MagManager:HDWeapon{
 		);
 		if(thismag){
 			thismagtype=thismag.getclassname();
-//			if(thismag.mags.size()>0){
-//				int finalindex=thismag.mags.size()-1;
-//				for(int i=0;i<finalindex;i++){
-//					toui.appendformat(" %i ",thismag.mags[i]);
-//				}
-//				toui.appendformat("\n\nCurrent Mag: \cy%i",thismag.mags[finalindex]);
-//			}
-//			toui.appendformat("\n\n\n");
-//			if(thismag is "HDBattery"){
-//				let battt=HDBattery(thismag).chargemode;
-//				string batts="uNone";
-//				if(battt==hdbattery.BATT_CHARGEMAX)batts="eAuto";
-//				else if(battt==hdbattery.BATT_CHARGETOP)batts="ySelected";
-//				toui.appendformat("\n                    Charging: \c%s\n                      (\cqReload\cu to cycle)",batts);
-//			}
-//			else if(thismag.roundtype!="")toui.appendformat("\n        Spare Rounds: \ce%i",owner.countinv(thismag.roundtype));
 		}
 		uitext=toui;
 	}
@@ -181,11 +164,26 @@ class MagManager:HDWeapon{
 		else return -1,null;
 	}
 	action void GetFromBackpack(name type){
-		int which;hdbp bbb;
-		[which,bbb]=invoker.GetBPIndex(type);
-		if(which>=0)HDMagAmmo.GiveMag(self,type,bbb.BPTakeMag(which));
+		let bp=hdbackpack(findinventory("HDBackpack"));
+		if(!bp)return;
+		int which=bp.invclasses.find(type);
+		if(bp.havenone(which))return;
+		array<string> amts;amts.clear();
+		bp.amounts[which].split(amts," ");
+		HDMagAmmo.GiveMag(self,type,amts[amts.size()-1].toint());
+		amts.pop();
+		string newamts="";
+		for(int i=0;i<amts.size();i++){
+			newamts=newamts..(i?" ":"")..amts[i];
+		}
+		bp.amounts[which]=newamts;
+		bp.weaponbulk();
+		bp.updatemessage(bp.index);
 	}
 	action void PutIntoBackpack(name type){
+		let bp=hdbackpack(findinventory("HDBackpack"));
+		if(!bp)return;
+
 		int which;hdbp bbb;
 		[which,bbb]=invoker.GetBPIndex(type);
 		if(which>=0)bbb.BPAddMag(type);
