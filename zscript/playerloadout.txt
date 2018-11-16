@@ -792,9 +792,11 @@ class HDBackpack:HDWeapon{
 				wep.weaponstatus[6].." "..
 				wep.weaponstatus[7].." "..
 				int(wep.weaponbulk());
-			A_Log(amounts[index]);
 			amounts[index]=amounts[index]..newwep;
-			if(hd_debug)A_Log(wep.getclassname().."  "..newwep);
+			if(hd_debug){
+				A_Log(nicenames[index]..":  "..wep.getclassname().."  "..newwep);
+				A_Log(amounts[index]);
+			}
 			item.amount--;if(item.amount<1)item.destroy();
 			weaponbulk();
 			UpdateMessage(index);
@@ -824,7 +826,11 @@ class HDBackpack:HDWeapon{
 	bool havenone(int which){
 		return(
 			amounts[which]==""
-			||amounts[which].toint()<1
+			||(
+				amounts[which].toint()<1
+				&&!((class<HDMagAmmo>)(invclasses[which]))
+				&&!((class<HDWeapon>)(invclasses[which]))
+			)
 		);
 	}
 	//generic code for removing from backpack
