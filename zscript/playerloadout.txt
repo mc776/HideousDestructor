@@ -742,12 +742,25 @@ class HDBackpack:HDWeapon{
 		for(int i=0;i<3;i++){
 			aaa--;
 			if(aaa<0)aaa=maxindex;
-			bool has=(amounts[aaa]!=""||(owner&&owner.countinv(invclasses[aaa])));
-			str=(has?"\cs":"")..nicenames[aaa].."\n"..str;
+			bool hasinbp=(!havenone(aaa));
+			bool hasininv=owner&&owner.countinv(invclasses[aaa]);
+			string whichcol="";
+			if(hasinbp){
+				if(hasininv)whichcol="\cs";
+				else whichcol="\ce";
+			}else if(hasininv)whichcol="\cc";
+			str=whichcol..nicenames[aaa].."\n"..str;
+
 			bbb++;
 			if(bbb>maxindex)bbb=0;
-			has=(amounts[bbb]!=""||(owner&&owner.countinv(invclasses[bbb])));
-			str=str.."\n"..(has?"\cs":"")..nicenames[bbb];
+			hasinbp=(!havenone(bbb));
+			hasininv=owner&&owner.countinv(invclasses[bbb]);
+			if(hasinbp){
+				if(hasininv)whichcol="\cs";
+				else whichcol="\ce";
+			}else if(hasininv)whichcol="\cc";
+			else whichcol="";
+			str=str.."\n"..whichcol..nicenames[bbb];
 		}
 
 		//display selected item name and amounts carried
