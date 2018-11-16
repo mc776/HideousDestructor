@@ -29,8 +29,8 @@ extend class HDPlayerPawn{
 		double anglechange=0;
 		double pitchchange=0;
 		if(!mousehijacked){
-			anglechange=player.cmd.yaw*(360./65536.);
-			pitchchange=player.cmd.pitch*(-360./65536.);
+			anglechange=double(player.cmd.yaw)*(360./65536.);
+			pitchchange=double(player.cmd.pitch)*(-360./65536.);
 		}
 		double vdv=vel dot vel;
 
@@ -301,12 +301,10 @@ extend class HDPlayerPawn{
 
 
 		//set everything and update old
-		A_SetAngle(lastangle+anglechange,
-			0//SPF_INTERPOLATE
-		);
+		A_SetAngle(lastangle+anglechange,SPF_INTERPOLATE);
 		A_SetPitch(
 			clamp(lastpitch+pitchchange,player.minpitch,player.maxpitch),
-			0//SPF_INTERPOLATE
+			SPF_INTERPOLATE
 		);
 
 

@@ -95,7 +95,7 @@ extend class HDPlayerPawn{
 			player.cmd.yaw>>=aimshift;
 			player.cmd.pitch>>=aimshift;
 			if(!gunbraced){
-				vector2 iyp=(cmd.yaw,-cmd.pitch)*(360./65536.*0.05);
+				vector2 iyp=(360./65536.*0.05)*(double(cmd.yaw),double(-cmd.pitch));
 				if(notpredicting&&!mousehijacked)A_MuzzleClimb(iyp*2,iyp,iyp,iyp);
 			}
 		}
