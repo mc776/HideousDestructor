@@ -746,7 +746,7 @@ class HDBackpack:HDWeapon{
 				bool hasinbp=!havenone(aaa);
 				bool hasininv=owner&&owner.countinv(invclasses[aaa]);
 				thisonesempty=(!hasinbp&&!hasininv);
-				if(!thisonesempty){
+				if(!thisonesempty&&aaa!=index){
 					string whichcol="";
 					if(hasinbp){
 						if(hasininv)whichcol="\ce";
@@ -765,7 +765,7 @@ class HDBackpack:HDWeapon{
 				bool hasinbp=!havenone(bbb);
 				bool hasininv=owner&&owner.countinv(invclasses[bbb]);
 				thisonesempty=(!hasinbp&&!hasininv);
-				if(!thisonesempty){
+				if(!thisonesempty&&bbb!=index){
 					string whichcol="";
 					if(hasinbp){
 						if(hasininv)whichcol="\ce";
