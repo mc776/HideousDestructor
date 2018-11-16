@@ -729,8 +729,8 @@ class HDBackpack:HDWeapon{
 			array<string>mags;
 			amt.split(mags," ");
 			if(thisclass is "HDWeapon")amt="\ce"..(mags.size()/9);
-			else amt="\ce"..mags.size();
-		}else amt="\ce"..amt;
+			else amt="\cs"..mags.size();
+		}else amt="\cs"..amt;
 
 		//look for an actual amount on the player
 		string ininv;
@@ -738,31 +738,44 @@ class HDBackpack:HDWeapon{
 		else ininv="\cc"..owner.countinv(invclasses[index]);
 		string str="\n\cx"..nicenames[index]..(hd_debug?(" \cr"..invclasses[index]):"").."\n"..amt.." in pack   "..ininv.." carried\n";
 
-		int aaa=index;int bbb=index;
+		int aaa=index-1;
 		for(int i=0;i<3;i++){
-			aaa--;
-			if(aaa<0)aaa=maxindex;
-			bool hasinbp=(!havenone(aaa));
-			bool hasininv=owner&&owner.countinv(invclasses[aaa]);
-			string whichcol="";
-			if(hasinbp){
-				if(hasininv)whichcol="\cs";
-				else whichcol="\ce";
-			}else if(hasininv)whichcol="\cc";
-			str=whichcol..nicenames[aaa].."\n"..str;
-
-			bbb++;
-			if(bbb>maxindex)bbb=0;
-			hasinbp=(!havenone(bbb));
-			hasininv=owner&&owner.countinv(invclasses[bbb]);
-			if(hasinbp){
-				if(hasininv)whichcol="\cs";
-				else whichcol="\ce";
-			}else if(hasininv)whichcol="\cc";
-			else whichcol="";
-			str=str.."\n"..whichcol..nicenames[bbb];
+			bool thisonesempty=true;
+			while(thisonesempty&&aaa!=index){
+				if(aaa<0)aaa=maxindex;
+				bool hasinbp=!havenone(aaa);
+				bool hasininv=owner&&owner.countinv(invclasses[aaa]);
+				thisonesempty=(!hasinbp&&!hasininv);
+				if(!thisonesempty){
+					string whichcol="";
+					if(hasinbp){
+						if(hasininv)whichcol="\ce";
+						else whichcol="\cs";
+					}else if(hasininv)whichcol="\cc";
+					str=whichcol..nicenames[aaa].."\n"..str;
+				}
+				aaa--;
+			}
 		}
-
+		int bbb=index+1;
+		for(int i=0;i<3;i++){
+			bool thisonesempty=true;
+			while(thisonesempty&&bbb!=index){
+				if(bbb>maxindex)bbb=0;
+				bool hasinbp=!havenone(bbb);
+				bool hasininv=owner&&owner.countinv(invclasses[bbb]);
+				thisonesempty=(!hasinbp&&!hasininv);
+				if(!thisonesempty){
+					string whichcol="";
+					if(hasinbp){
+						if(hasininv)whichcol="\ce";
+						else whichcol="\cs";
+					}else if(hasininv)whichcol="\cc";
+					str=str.."\n"..whichcol..nicenames[bbb];
+				}
+				bbb++;
+			}
+		}
 		//display selected item name and amounts carried
 		str="\cs[] [] [] \cbBackpack \cs[] [] []\nzoom=fast scroll  unload/reload=take/insert\n\n\n\n"
 			..str
