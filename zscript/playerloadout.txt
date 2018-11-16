@@ -768,13 +768,14 @@ class HDBackpack:HDWeapon{
 		if(index>=invclasses.size())return 1;
 		if(wep){
 			if(wep is "HDBackpack"&&HDBackpack(wep).bulk>0){
-				owner.A_Log("Empty this backpack first.",true);
+				if(owner)owner.A_Log("Empty this backpack first.",true);
 				return 1;
 			}
 			if(wep.weaponbulk()+bulk>HDCONST_BPMAX){
 				owner.A_Log("Your backpack is too full.",true);
 				return 1;
 			}
+			if(wep.owner)wep=HDWeapon(owner.dropinventory(wep));
 			string newwep=
 				(amounts[index]==""?"":" ")..
 				wep.weaponstatus[0].." "..
@@ -791,13 +792,13 @@ class HDBackpack:HDWeapon{
 				A_Log(nicenames[index]..":  "..wep.getclassname().."  "..newwep);
 				A_Log(amounts[index]);
 			}
-			item.amount--;if(item.amount<1)item.destroy();
+			wep.amount--;if(wep.amount<1)wep.destroy();
 			weaponbulk();
 			UpdateMessage(index);
 			return 12;
 		}else if(mag){
 			if(mag.magbulk+bulk>HDCONST_BPMAX){
-				owner.A_Log("Your backpack is too full.",true);
+				if(owner)owner.A_Log("Your backpack is too full.",true);
 				return 0;
 			}
 			int tookmag=mag.TakeMag(false);if(item.amount<1)item.destroy();
@@ -806,7 +807,7 @@ class HDBackpack:HDWeapon{
 		}else{
 			int units=item.owner?1:item.amount;
 			if(pkup.bulk*units+bulk>HDCONST_BPMAX){
-				A_Log("Your backpack is too full.",true);
+				if(owner)owner.A_Log("Your backpack is too full.",true);
 				return 0;
 			}
 			amounts[index]=""..amounts[index].toint()+units;
@@ -839,21 +840,18 @@ class HDBackpack:HDWeapon{
 		let wepth=(class<hdweapon>)(invclasses[which]);
 		let thisclass=(class<hdpickup>)(invclasses[which]);
 		if(wepth){
-			if(!trytopocket||owner.countinv(wepth)){
-				let newp=HDWeapon(spawn(wepth,owner.pos+(0,0,owner.height-12),ALLOW_REPLACE));
-				newp.angle=angle;newp.A_ChangeVelocity(1,1,1,CVF_RELATIVE);
-				for(int i=0;i<9;i++){
-					if(i<newp.weaponstatus.size())newp.weaponstatus[i]=tempamounts[0].toint();
-					tempamounts.delete(0);
-				}
-			}else{
-				let newp=HDWeapon(owner.GiveInventoryType(wepth));
-				for(int i=0;i<9;i++){
-					if(i<newp.weaponstatus.size())newp.weaponstatus[i]=tempamounts[0].toint();
-					tempamounts.delete(0);
-				}
+			let newp=HDWeapon(spawn(wepth,owner.pos+(0,0,owner.height-12),ALLOW_REPLACE));
+			newp.angle=owner.angle;newp.A_ChangeVelocity(1,1,1,CVF_RELATIVE);
+			for(int i=0;i<9;i++){
+				if(i<newp.weaponstatus.size())newp.weaponstatus[i]=tempamounts[0].toint();
+				tempamounts.delete(0);
 			}
-			ticks=10;
+			if(trytopocket&&owner.countinv(wepth)<getdefaultbytype(wepth).maxamount){
+				newp.actualpickup(owner);
+				ticks=12;
+			}else{
+				ticks=10;
+			}
 		}
 		if(thisclass){
 			int thisamt=tempamounts[0].toint();
