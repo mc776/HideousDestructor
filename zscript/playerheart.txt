@@ -129,7 +129,7 @@ extend class HDPlayerPawn{
 			}
 
 			//Because 100% health when 500% of your body is burnt to a crisp is silly.
-			if(maxhealth()<health){
+			if(maxhealth()<health+(zerk>>5)){
 				damagemobj(self,lastthingthatwoundedyou,random(-5,10),"internal");
 				beatmax--;
 			}
