@@ -301,11 +301,12 @@ extend class HDPlayerPawn{
 
 
 		//set everything and update old
-		A_SetAngle(lastangle+anglechange,SPF_INTERPOLATE);
-		A_SetPitch(
-			clamp(lastpitch+pitchchange,player.minpitch,player.maxpitch),
-			SPF_INTERPOLATE
-		);
+		double newa=lastangle+anglechange;
+		double newp=clamp(lastpitch+pitchchange,player.minpitch,player.maxpitch);
+		A_SetAngle(lastangle+anglechange*0.001,SPF_INTERPOLATE);
+		A_SetPitch(lastpitch+pitchchange*0.001,SPF_INTERPOLATE);
+		A_SetAngle(newa,SPF_INTERPOLATE);
+		A_SetPitch(newp,SPF_INTERPOLATE);
 
 
 		//feet angle
