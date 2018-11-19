@@ -22,9 +22,11 @@ extend class HDPlayerPawn{
 		MB_RIGHT=8,
 	}
 
+	double lastpitch;
+	double lastangle;
 	void TurnCheck(){
-		double lastangle=angle;
-		double lastpitch=pitch;
+//		double lastangle=angle;
+//		double lastpitch=pitch;
 
 		double anglechange=0;
 		double pitchchange=0;
@@ -34,9 +36,13 @@ extend class HDPlayerPawn{
 		}
 		double vdv=vel dot vel;
 
+		//testing: angle and pitch already updated in playermove, so just take difference
+		anglechange=deltaangle(lastangle,angle);
+		pitchchange=deltaangle(lastpitch,pitch);
+
 		//turn180
 		if(player.turnticks){
-			player.turnticks--;
+//			player.turnticks--;
 			anglechange+=(180./TURN180_TICKS);
 		}
 
@@ -302,8 +308,8 @@ extend class HDPlayerPawn{
 
 
 		//set everything and update old
-		A_SetAngle(lastangle+anglechange,SPF_INTERPOLATE);
-		A_SetPitch(clamp(lastpitch+pitchchange,player.minpitch,player.maxpitch),SPF_INTERPOLATE);
+//		A_SetAngle(lastangle+anglechange,SPF_INTERPOLATE);
+//		A_SetPitch(clamp(lastpitch+pitchchange,player.minpitch,player.maxpitch),SPF_INTERPOLATE);
 
 
 

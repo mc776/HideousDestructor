@@ -116,8 +116,23 @@ extend class HDPlayerPawn{
 
 
 		//some hacky shit with interpolations to remove HD's BEST QUALITY.
-		A_SetAngle(angle+0.0000001*player.cmd.yaw,SPF_INTERPOLATE);
-		A_SetPitch(pitch-0.0000001*player.cmd.pitch,SPF_INTERPOLATE);
+//		A_SetAngle(angle+0.0000001*player.cmd.yaw,SPF_INTERPOLATE);
+//		A_SetPitch(pitch-0.0000001*player.cmd.pitch,SPF_INTERPOLATE);
+
+		//moving all the angle changes back
+		double anglechange=clamp((360./65536.)*player.cmd.yaw,-40,40);
+		if(notpredicting){
+			lastpitch=pitch;
+			lastangle=angle;
+			if(player.turnticks){
+				player.turnticks--;
+				anglechange+=(180./TURN180_TICKS);
+			}
+		}
+		if(!mousehijacked){
+			A_SetAngle(angle+anglechange,SPF_INTERPOLATE);
+			A_SetPitch(clamp(pitch-(360./65536.)*player.cmd.pitch,player.minpitch,player.maxpitch),SPF_INTERPOLATE);
+		}
 
 
 		player.onground = (pos.z <= floorz) || bOnMobj || bMBFBouncer || (player.cheats & CF_NOCLIP2);
