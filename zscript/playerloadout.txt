@@ -594,6 +594,7 @@ class HDBackpack:HDWeapon{
 	}
 
 	int bpindex;
+	int maxindex;
 	override void InitializeWepStats(bool idfa){
 		if(idfa)return;
 		nicenames.clear();
@@ -624,6 +625,7 @@ class HDBackpack:HDWeapon{
 			}
 		}
 		bpindex=invclasses.find(getclassname());
+		maxindex=invclasses.size()-1;
 	}
 	void initializeamount(string loadlist){
 		array<string> whichitem;whichitem.clear();
@@ -706,7 +708,6 @@ class HDBackpack:HDWeapon{
 	void UpdateMessage(int num){
 		if(!owner)return;
 		int nnsiz=nicenames.size();
-		int maxindex=nicenames.size()-1;
 		if(num==index)weaponbulk();
 		if(num!=index&&owner){
 			int toadd=num>index?1:-1;
@@ -856,7 +857,7 @@ class HDBackpack:HDWeapon{
 	}
 	//generic code for removing from backpack
 	int RemoveFromBackpack(int which=-1,bool trytopocket=true){
-		if(which<0||which>invclasses.size())which=index;
+		if(which<0||which>=invclasses.size())which=index;
 		if(havenone(which))return 1;
 		array<string>tempamounts;
 		bool basicpickup=false;
@@ -964,6 +965,7 @@ class HDBackpack:HDWeapon{
 		TNT1 A 10{
 			A_PlaySound("weapons/pocket",CHAN_WEAPON);
 			if(invoker.bulk>(HDBPC_CAPACITY*0.7))A_SetTics(20);
+			invoker.index=clamp(invoker.index,0,invoker.maxindex);
 			if(invoker.havenone(invoker.index))invoker.updatemessage(invoker.index+1);
 			else invoker.UpdateMessage(invoker.index);
 		}goto super::select0;
