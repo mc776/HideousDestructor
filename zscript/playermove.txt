@@ -114,6 +114,10 @@ extend class HDPlayerPawn{
 			}
 		}
 
+		//some hacky shit with interpolations to remove HD's BEST QUALITY.
+		A_SetAngle(angle+0.000001*player.cmd.yaw,SPF_INTERPOLATE);
+		A_SetPitch(pitch-0.000001*player.cmd.pitch,SPF_INTERPOLATE);
+
 
 		player.onground = (pos.z <= floorz) || bOnMobj || bMBFBouncer || (player.cheats & CF_NOCLIP2);
 
