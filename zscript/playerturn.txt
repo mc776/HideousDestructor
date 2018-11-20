@@ -151,8 +151,8 @@ extend class HDPlayerPawn{
 			double highheight=height-6;
 			double midheight=highheight-max(1,barreldepth)*0.5;
 			double lowheight=highheight-max(1,barreldepth);
-			double testangle=angle+anglechange;
-			double testpitch=pitch+pitchchange;
+			double testangle=angle;
+			double testpitch=pitch;
 
 
 			//and now uh do stuff
@@ -250,26 +250,25 @@ extend class HDPlayerPawn{
 
 			//set angles
 			bool mvng=(lastheight!=height || vdv > 0.25);
-			double mvng2=vdv*0.001;
 			bool hitsnd=(max(abs(anglechange),abs(pitchchange))>1);
 
 //A_Log(string.format("%i %i %i %i",distleft,distright,disttop,distbottom));
 
 			if(notnull){
 				if(muzzleblocked&MB_LEFT){
-					anglechange=mvng?min(distleft-barrellength,-4):0;
+					anglechange=mvng?min(distleft-barrellength,-4):-lastanglechange;
 					A_ChangeVelocity(0,-0.05,0,CVF_RELATIVE);
 				}
 				if(muzzleblocked&MB_RIGHT){
-					anglechange=mvng?max(barrellength-distright,4):0;
+					anglechange=mvng?max(barrellength-distright,4):-lastanglechange;
 					A_ChangeVelocity(0,0.05,0,CVF_RELATIVE);
 				}
 
 				if(muzzleblocked&MB_BOTTOM){
-					pitchchange=mvng?max(distbottom-barrellength,-4):0;
+					pitchchange=mvng?max(distbottom-barrellength,-4):-lastpitchchange;
 				}
 				if(muzzleblocked&MB_TOP){
-					pitchchange=mvng?min(barrellength-disttop,4):0;
+					pitchchange=mvng?min(barrellength-disttop,4):-lastpitchchange;
 				}
 				pitchchange=clamp(pitchchange,-45,45);
 
