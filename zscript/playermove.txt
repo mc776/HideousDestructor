@@ -91,8 +91,6 @@ extend class HDPlayerPawn{
 		//Uses the fovscale method so a readyweapon is essential.
 		let readyweapon=player.readyweapon;
 		if(readyweapon){
-			//backup normal value for fov hack
-			let fovscalebak=readyweapon.fovscale;
 			double turnscale=1.;
 
 			if(mousehijacked){
@@ -106,8 +104,7 @@ extend class HDPlayerPawn{
 				&&!countinv("IsMoving")
 			){
 				double aimscale = CVar.GetCVar('hd_aimsensitivity', player).GetFloat();
-//TESTING
-aimscale=0.1;
+				if(aimscale>1.)aimscale=0.1;
 				turnscale*=clamp(aimscale,0.05,2.);
 				if(!gunbraced){
 					vector2 iyp=(360./65536.*0.05)*(double(cmd.yaw),double(-cmd.pitch));
@@ -137,15 +134,14 @@ aimscale=0.1;
 					anglechange+=(180./TURN180_TICKS);
 				}
 			}
+//			double fovscalebak=readyweapon.fovscale;  //in case we need it
 			readyweapon.fovscale=turnscale;
+			player.fov=cvar.getcvar("fov",player).getfloat();
 			if(!mousehijacked){
 				A_SetAngle(angle+anglechange,SPF_INTERPOLATE);
 				A_SetPitch(clamp(pitch-(360./65536.)*player.cmd.pitch,player.minpitch,player.maxpitch),SPF_INTERPOLATE);
 			}
 
-			//fov hack restore
-			player.fov=cvar.getcvar("fov",player).getfloat();
-//			readyweapon.fovscale=fovscalebak;
 		}
 
 
