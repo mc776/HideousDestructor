@@ -25,26 +25,18 @@ extend class HDPlayerPawn{
 	double lastpitch;
 	double lastangle;
 	void TurnCheck(){
-//		double lastangle=angle;
-//		double lastpitch=pitch;
 
+		//Any changes in this function should only cover those automatic changes
+		//that are part of HD's additional adjustments.
+		//Anything directly referencing mouse input should go to MovePlayer.
 		double anglechange=0;
 		double pitchchange=0;
-		if(!mousehijacked){
-			anglechange=double(player.cmd.yaw)*(360./65536.);
-			pitchchange=double(player.cmd.pitch)*(-360./65536.);
-		}
 		double vdv=vel dot vel;
 
-		//testing: angle and pitch already updated in playermove, so just take difference
-		anglechange=deltaangle(lastangle,angle);
-		pitchchange=deltaangle(lastpitch,pitch);
-
-		//turn180
-		if(player.turnticks){
-//			player.turnticks--;
-			anglechange+=(180./TURN180_TICKS);
-		}
+		//this is the net result of the above mentioned mouse input,
+		//used to measure weapon inertia.
+		double lastanglechange=deltaangle(lastangle,angle);
+		double lastpitchchange=deltaangle(lastpitch,pitch);
 
 
 		//get weapon size
@@ -86,7 +78,7 @@ extend class HDPlayerPawn{
 
 
 		//apply to weapon
-		vector2 apch=(anglechange,-pitchchange)*0.1*amt;
+		vector2 apch=(lastanglechange,-lastpitchchange)*0.1*amt;
 		if(isFocussing||wp is "HDPistol")apch=-apch;
 		hudbobrecoil1+=apch*0.1;
 		hudbobrecoil2+=apch*0.2;
@@ -111,9 +103,9 @@ extend class HDPlayerPawn{
 
 		muzzledrift+=(muzzlevel.y,muzzlevel.z)*driftproportion;
 		if(stunned){
-			vector2 muzzleclimbstun=(anglechange,pitchchange)*frandom(0.1,0.6);
-			anglechange*=0.3;
-			pitchchange*=0.3;
+			vector2 muzzleclimbstun=(lastanglechange,lastpitchchange)*frandom(0.1,0.6);
+			anglechange+=muzzleclimbstun.x;
+			pitchchange+=muzzleclimbstun.y;
 			muzzleclimb1+=muzzleclimbstun;
 			muzzleclimb2+=muzzleclimbstun;
 			muzzleclimb3+=muzzleclimbstun;
@@ -159,8 +151,8 @@ extend class HDPlayerPawn{
 			double highheight=height-6;
 			double midheight=highheight-max(1,barreldepth)*0.5;
 			double lowheight=highheight-max(1,barreldepth);
-			double testangle=lastangle+anglechange;
-			double testpitch=lastpitch+pitchchange;
+			double testangle=angle+anglechange;
+			double testpitch=pitch+pitchchange;
 
 
 			//and now uh do stuff
@@ -308,8 +300,8 @@ extend class HDPlayerPawn{
 
 
 		//set everything and update old
-//		A_SetAngle(lastangle+anglechange,SPF_INTERPOLATE);
-//		A_SetPitch(clamp(lastpitch+pitchchange,player.minpitch,player.maxpitch),SPF_INTERPOLATE);
+		if(anglechange)A_SetAngle(angle+anglechange,SPF_INTERPOLATE);
+		if(pitchchange)A_SetPitch(clamp(pitch+pitchchange,player.minpitch,player.maxpitch),SPF_INTERPOLATE);
 
 
 
@@ -404,9 +396,4 @@ extend class HDPlayerPawn{
 	}
 }
 
-class MuzzleBlockerPuff:IdleDummy{
-	default{
-		+nodecal +puffonactors +notrigger +bloodlessimpact +hittracer
-	}
-}
 

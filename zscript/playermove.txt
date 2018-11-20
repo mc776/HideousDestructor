@@ -86,52 +86,65 @@ extend class HDPlayerPawn{
 		UserCmd cmd = player.cmd;
 		bool notpredicting = !(player.cheats & CF_PREDICTING);
 
-		//reduced turning while supported.
-		if(
-			isFocussing
-			&&!countinv("IsMoving")
-		){
-			int aimshift = CVar.GetCVar('hd_aimsensitivity', player).GetInt();
-			player.cmd.yaw>>=aimshift;
-			player.cmd.pitch>>=aimshift;
-			if(!gunbraced){
-				vector2 iyp=(360./65536.*0.05)*(double(cmd.yaw),double(-cmd.pitch));
-				if(notpredicting&&!mousehijacked)A_MuzzleClimb(iyp*2,iyp,iyp,iyp);
-			}
-		}
-		//reduced turning while crouched.
-		else if(player.crouchfactor<0.7){
-			int thrsh=(8*65536/360);
-			int absch=abs(player.cmd.yaw);
-			if(absch>thrsh){
-				absch=(absch-thrsh)>>1;
-				player.cmd.yaw-=player.cmd.yaw>0?absch:-absch;
-			}
-			absch=abs(player.cmd.pitch);
-			if(absch>thrsh){
-				absch=(absch-thrsh)>>1;
-				player.cmd.pitch-=player.cmd.pitch>0?absch:-absch;
-			}
-		}
 
+		//HD's handling of voluntary player turning.
+		//Uses the fovscale method so a readyweapon is essential.
+		let readyweapon=player.readyweapon;
+		if(readyweapon){
+			//backup normal value for fov hack
+			let fovscalebak=readyweapon.fovscale;
+			double turnscale=1.;
 
-		//some hacky shit with interpolations to remove HD's BEST QUALITY.
-//		A_SetAngle(angle+0.0000001*player.cmd.yaw,SPF_INTERPOLATE);
-//		A_SetPitch(pitch-0.0000001*player.cmd.pitch,SPF_INTERPOLATE);
-
-		//moving all the angle changes back
-		double anglechange=clamp((360./65536.)*player.cmd.yaw,-40,40);
-		if(notpredicting){
-			lastpitch=pitch;
-			lastangle=angle;
-			if(player.turnticks){
-				player.turnticks--;
-				anglechange+=(180./TURN180_TICKS);
+			if(mousehijacked){
+				player.cmd.yaw=0;
+				player.cmd.pitch=0;
+				readyweapon.fovscale*=0.00001;
 			}
-		}
-		if(!mousehijacked){
-			A_SetAngle(angle+anglechange,SPF_INTERPOLATE);
-			A_SetPitch(clamp(pitch-(360./65536.)*player.cmd.pitch,player.minpitch,player.maxpitch),SPF_INTERPOLATE);
+			//reduced turning while supported.
+			else if(
+				isFocussing
+				&&!countinv("IsMoving")
+			){
+				double aimscale = CVar.GetCVar('hd_aimsensitivity', player).GetFloat();
+//TESTING
+aimscale=0.1;
+				turnscale*=clamp(aimscale,0.05,2.);
+				if(!gunbraced){
+					vector2 iyp=(360./65536.*0.05)*(double(cmd.yaw),double(-cmd.pitch));
+					if(notpredicting&&!mousehijacked)A_MuzzleClimb(iyp*2,iyp,iyp,iyp);
+				}
+			}
+			//reduced turning while crouched.
+			else if(player.crouchfactor<0.7){
+				int absch=max(abs(player.cmd.yaw),abs(player.cmd.pitch));
+				if(absch>(8*65536/360)){
+					turnscale*=0.6;
+				}
+			}
+			//reduced turning while stunned.
+			//all randomizing and inertia effects are in TurnCheck.
+			if(stunned){
+				turnscale*=0.3;
+			}
+
+			//apply input
+			double anglechange=clamp((360./65536.)*player.cmd.yaw,-40,40);
+			if(notpredicting){
+				lastpitch=pitch;
+				lastangle=angle;
+				if(player.turnticks){
+					player.turnticks--;
+					anglechange+=(180./TURN180_TICKS);
+				}
+			}
+			readyweapon.fovscale*=turnscale;
+			if(!mousehijacked){
+				A_SetAngle(angle+anglechange*turnscale,SPF_INTERPOLATE);
+				A_SetPitch(clamp(pitch-(360.*turnscale/65536.)*player.cmd.pitch,player.minpitch,player.maxpitch),SPF_INTERPOLATE);
+			}
+
+			//fov hack restore
+			readyweapon.fovscale=fovscalebak;
 		}
 
 
