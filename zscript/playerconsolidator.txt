@@ -10,6 +10,8 @@ extend class HDPlayerPawn{
 		for(inventory ppp=inv;ppp!=null;ppp=ppp.inv){
 			let hdp=hdpickup(ppp);
 			if(hdp)hdp.consolidate();
+			let hdw=hdweapon(ppp);
+			if(hdw)hdw.consolidate();
 		}
 
 		//use the BFG to charge everything

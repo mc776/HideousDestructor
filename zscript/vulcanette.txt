@@ -104,7 +104,7 @@ class Vulcanette:HDWeapon{
 		}
 	shoot:
 		GTLG A 2{
-			A_WeaponReady(WRF_NONE);
+			A_WeaponReady(WRF_NOFIRE);
 			if(
 				invoker.weaponstatus[VULCS_BATTERY]>0    
 				&&!random(0,invoker.weaponstatus[0]&VULCF_SPINNINGFAST?200:210)
@@ -128,7 +128,7 @@ class Vulcanette:HDWeapon{
 			VulcNextRound();
 		}
 		GTLG B 1{
-			A_WeaponReady(WRF_NONE);
+			A_WeaponReady(WRF_NOFIRE);
 			//check speed and then shoot
 			if(
 				invoker.weaponstatus[0]&VULCF_SPINNINGFAST&&

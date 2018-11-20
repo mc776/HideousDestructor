@@ -148,6 +148,9 @@ class HDWeapon:Weapon{
 	virtual double gunmass(){return 0;}
 	//determine bulk for weapon encumbrance purposes
 	virtual double,int weaponbulk(){return 0,0;}
+	//for consolidating stuff between maps
+	virtual void Consolidate(){}
+
 	//for smoking barrels
 	void drainheat(int ref,int smklength=18){
 		if(globalfreeze||level.Frozen)return;
