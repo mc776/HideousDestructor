@@ -135,7 +135,7 @@ extend class HDPlayerPawn{
 			}
 //			double fovscalebak=readyweapon.fovscale;  //in case we need it
 			readyweapon.fovscale=turnscale;
-			player.fov=(player.fov+cvar.getcvar("fov",player).getfloat())*0.5;
+			player.fov=cvar.getcvar("fov",player).getfloat();
 			if(!mousehijacked){
 				A_SetAngle(angle+anglechange,SPF_INTERPOLATE);
 				A_SetPitch(clamp(pitch-(360./65536.)*player.cmd.pitch,player.minpitch,player.maxpitch),SPF_INTERPOLATE);
