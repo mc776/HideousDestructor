@@ -135,13 +135,31 @@ Grimdark: You take 120% damage and monsters move fast and spawn at Ultra-Violenc
 Spooky: Same as Grimdark but monsters spawn at ITYTD/HNTR rates.
 
 
-	Player classes
+	Customizing your loadout
+
+HD lets you set custom loadouts through the cvars hd_loadout1 through 5.
+
+Each of these is a string that you can configure to add your loadout. What is available for backpacks is a subset of what is available generally (e.g., no BFG), but a backpack will let you carry multiple weapons beyond your normal capacity (e.g., you can start with a backpack containing several backup ZM66s in case one jams).
+The syntax is as follows:
+
+	xxx yy, zzz aa - bbb cc, ddd ee
+
+where xxx and zzz are 3-character codes referring to an item, and yy and aa are any whole number that you want (within reason). Items are separate by commas, and the spaces are optional. If you only want one of a given item, you may also omit the number (e.g. "bos,710,7mm20" for a Boss, a single 10-round 7.76mm clip and 20 loose 7.76mm rounds).
+
+The first item is the weapon you pull out at start. If the first item is not a weapon, you start with your hands free. If you want to start with a weapon and nothing else, but do not want it drawn at start, use the code for fists ("fis") at the start of your loadout.
+
+The "-" marks where the loadout information on your person ends and the loadout information for the contents of your backpack begins. You must actually specify having a backpack on your person in order for the backpack contents to have any effect.
+
+The loadout system will detect items from mods for HD like Ugly as Sin. (modding note: it must inherit from "HDPickup" or "HDWeapon" and have a unique "refid" defined and "fitsinbackpack" set to true if it is to be placed in a backpack.) To see a list of all items in the currently loaded session, type "give loadoutitemlist" in the console.
+
+Starting with keys is a bitmask. 7 = all 3 keys.
+
+
+	Player classes / predefined loadouts
 
 When you start a new game, you will be asked to select a player class. The classes all have the same inherent properties and differ only in starting equipment.
 
-You can also choose "Custom" to use a custom loadout instead of one of these presets. The customization options can be found in the player menu. You will start holding the first weapon you provide on the list. Amount must be explicitly set (so you can quickly disable and re-enable an item by reducing it to zero instead of scrolling all the way back to "Nothing").
-
-The standard soldier kit includes green armour, a pistol, 3 frags, a DERP and one ladder.
+The standard soldier kit (code "sol") includes green armour, a pistol, 3 frags, a DERP and one ladder.
 
 	Rifleman
 	Standard rifleman's loadout.
