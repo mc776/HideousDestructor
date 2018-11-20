@@ -110,6 +110,15 @@ extend class HDPlayerPawn{
 			muzzleclimb2+=muzzleclimbstun;
 			muzzleclimb3+=muzzleclimbstun;
 		}
+		if(isfocussing&&!gunbraced){
+			vector2 lstch=(lastanglechange,lastpitchchange);
+			anglechange+=lstch.x;
+			pitchchange+=lstch.y;
+			muzzleclimb1+=lstch*1.2;
+			muzzleclimb2+=lstch*0.8;
+			muzzleclimb3+=lstch*0.5;
+			muzzleclimb4+=lstch*0.2;
+		}
 
 
 		//NOW apply the drift!

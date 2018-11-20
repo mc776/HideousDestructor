@@ -137,14 +137,15 @@ aimscale=0.1;
 					anglechange+=(180./TURN180_TICKS);
 				}
 			}
-			readyweapon.fovscale*=turnscale;
+			readyweapon.fovscale=turnscale;
 			if(!mousehijacked){
-				A_SetAngle(angle+anglechange*turnscale,SPF_INTERPOLATE);
-				A_SetPitch(clamp(pitch-(360.*turnscale/65536.)*player.cmd.pitch,player.minpitch,player.maxpitch),SPF_INTERPOLATE);
+				A_SetAngle(angle+anglechange,SPF_INTERPOLATE);
+				A_SetPitch(clamp(pitch-(360./65536.)*player.cmd.pitch,player.minpitch,player.maxpitch),SPF_INTERPOLATE);
 			}
 
 			//fov hack restore
-			readyweapon.fovscale=fovscalebak;
+			player.fov=cvar.getcvar("fov",player).getfloat();
+//			readyweapon.fovscale=fovscalebak;
 		}
 
 
