@@ -1,6 +1,7 @@
 // ------------------------------------------------------------
 // Movement checks.
 // ------------------------------------------------------------
+const HDCONST_MAXFOCUSSCALE=0.5;
 extend class HDPlayerPawn{
 	//input is no longer considered in CheckPitch since it's already in HD's TurnCheck.
 	override void CheckPitch(){
@@ -104,8 +105,8 @@ extend class HDPlayerPawn{
 				&&!countinv("IsMoving")
 			){
 				double aimscale = CVar.GetCVar('hd_aimsensitivity', player).GetFloat();
-				if(aimscale>1.)aimscale=0.1;
-				turnscale*=clamp(aimscale,0.05,2.);
+				if(aimscale>HDCONST_MAXFOCUSSCALE)aimscale=0.1;
+				turnscale*=clamp(aimscale,0.05,HDCONST_MAXFOCUSSCALE);
 				if(!gunbraced){
 					vector2 iyp=(360./65536.*0.05)*(double(cmd.yaw),double(-cmd.pitch));
 					if(notpredicting&&!mousehijacked)A_MuzzleClimb(iyp*2,iyp,iyp,iyp);
@@ -141,7 +142,6 @@ extend class HDPlayerPawn{
 				A_SetAngle(angle+anglechange,SPF_INTERPOLATE);
 				A_SetPitch(clamp(pitch-(360./65536.)*player.cmd.pitch,player.minpitch,player.maxpitch),SPF_INTERPOLATE);
 			}
-
 		}
 
 
