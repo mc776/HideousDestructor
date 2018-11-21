@@ -141,7 +141,7 @@ class ZM66AssaultRifle:HDWeapon{
 
 			//shoot the bullet
 			//copypaste any changes to spawnshoot as well!
-			actor bbb=spawn("HDBullet426",pos+(0,0,height-6));
+			actor bbb=spawn("HDBullet426",pos+(0,0,height-6),ALLOW_REPLACE);
 			bbb.target=self;bbb.vel+=vel;bbb.pitch=pitch;bbb.angle=angle;
 			double brnd=invoker.weaponstatus[ZM66S_HEAT]*0.01;
 			if(brnd>0.12){
@@ -602,7 +602,7 @@ class ZM66AssaultRifle:HDWeapon{
 
 			//shoot the bullet
 			//copy any changes to flash as well!
-			actor bbb=spawn("HDBullet426",pos+(0,0,8));
+			actor bbb=spawn("HDBullet426",pos+(0,0,8),ALLOW_REPLACE);
 			bbb.target=self;bbb.vel+=vel;bbb.pitch=pitch;bbb.angle=angle;
 			double brnd=invoker.weaponstatus[ZM66S_HEAT]*0.01;
 			if(brnd>0.12){
@@ -664,7 +664,7 @@ class ZM66AltStarter:ActionItem{
 	states{
 	pickup:
 		TNT1 A 0{
-			let zzz=ZM66AssaultRifle(spawn("ZM66AssaultRifle",pos));if(!zzz)return;
+			let zzz=ZM66AssaultRifle(spawn("ZM66AssaultRifle",pos,ALLOW_REPLACE));if(!zzz)return;
 			if(invoker.amount==1)zzz.weaponstatus[0]|=ZM66F_NOLAUNCHER;
 			else if(invoker.amount==2)zzz.weaponstatus[0]|=ZM66F_NOLAUNCHER|ZM66F_NOFIRESELECT;
 			zzz.attachtoowner(self);
@@ -689,7 +689,7 @@ class ZM66Semi:HDPickup{
 		if(owner){
 			owner.A_SetInventory("ZM66AssaultRifle",1);
 			zzz=ZM66AssaultRifle(owner.findinventory("ZM66AssaultRifle"));
-		}else zzz=ZM66AssaultRifle(spawn("ZM66AssaultRifle",pos));
+		}else zzz=ZM66AssaultRifle(spawn("ZM66AssaultRifle",pos,ALLOW_REPLACE));
 		zzz.weaponstatus[0]|=stamina;
 		if(zzz.weaponstatus[0]&ZM66F_NOLAUNCHER)zzz.weaponstatus[0]&=~ZM66F_GRENADELOADED;
 		destroy();
@@ -709,7 +709,7 @@ class ZM66Random:IdleDummy{
 	states{
 	spawn:
 		TNT1 A 0 nodelay{
-			let zzz=ZM66AssaultRifle(spawn("ZM66AssaultRifle",pos));
+			let zzz=ZM66AssaultRifle(spawn("ZM66AssaultRifle",pos,ALLOW_REPLACE));
 			if(!zzz)return;
 			zzz.special=special;
 			if(!random(0,2)){
@@ -717,12 +717,12 @@ class ZM66Random:IdleDummy{
 				if(!random(0,3))zzz.weaponstatus[0]|=ZM66F_NOFIRESELECT;
 			}
 			if(zzz.weaponstatus[0]&ZM66F_NOLAUNCHER){
-				spawn("HD4mMag",pos+(7,0,0));
-				spawn("HD4mMag",pos+(5,0,0));
+				spawn("HD4mMag",pos+(7,0,0),ALLOW_REPLACE);
+				spawn("HD4mMag",pos+(5,0,0),ALLOW_REPLACE);
 			}else{
-				spawn("HDRocketAmmo",pos+(10,0,0));
-				spawn("HDRocketAmmo",pos+(8,0,0));
-				spawn("HD4mMag",pos+(5,0,0));
+				spawn("HDRocketAmmo",pos+(10,0,0),ALLOW_REPLACE);
+				spawn("HDRocketAmmo",pos+(8,0,0),ALLOW_REPLACE);
+				spawn("HD4mMag",pos+(5,0,0),ALLOW_REPLACE);
 			}
 		}stop;
 	}

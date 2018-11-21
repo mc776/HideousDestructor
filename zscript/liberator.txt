@@ -209,7 +209,7 @@ class LiberatorRifle:HDWeapon{
 			A_PlaySound("weapons/bigrifle",1);
 			A_ZoomFactor(0.97,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
 
-			actor p=spawn("HDBullet776",pos+(0,0,height-6));
+			actor p=spawn("HDBullet776",pos+(0,0,height-6),ALLOW_REPLACE);
 			p.target=self;p.angle=angle;p.pitch=pitch;
 			p.vel+=self.vel;
 			p.pitch-=(1./120.)*invoker.weaponstatus[LIBS_DROPADJUST];
@@ -569,7 +569,7 @@ class LiberatorNoGL:HDPickup{
 			owner.A_SetInventory("LiberatorRifle",1);
 			lll=LiberatorRifle(owner.findinventory("LiberatorRifle"));
 		}else{
-			lll=LiberatorRifle(spawn("LiberatorRifle",pos));
+			lll=LiberatorRifle(spawn("LiberatorRifle",pos,ALLOW_REPLACE));
 			lll.special=special;
 		}
 		lll.weaponstatus[0]|=LIBF_NOLAUNCHER;

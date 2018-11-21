@@ -34,7 +34,7 @@ class doordestroyer:hdactor{
 				actor aaa=spawn(chunktype,(
 					(v1pos+vfrac*i)+(frandom(-3,3),frandom(-3,3)),
 					frandom(bottom,top)
-				));
+				),ALLOW_REPLACE);
 				aaa.vel.xy=rotatevector(
 						vfrac,randompick(90,-90)+frandom(-60,60)
 					)*chunkspeed*frandom(0.4,1.4);
@@ -43,7 +43,7 @@ class doordestroyer:hdactor{
 			spawn("HDSmoke",(
 				(v1pos+vfrac*i),
 				bottom+frandom(1,32)
-			));
+			),ALLOW_REPLACE);
 		}
 	}
 	states{
@@ -126,7 +126,7 @@ class doordestroyer:hdactor{
 		if(!isdoor){
 			if(othersector!=sector.pointinsector(dlt.hitlocation.xy+depthcheck*frandom(0,2))){
 				//add a damage point
-				actor surprise=spawn("SectorDamageCounter",(justoverthere,dlt.hitlocation.z));
+				actor surprise=spawn("SectorDamageCounter",(justoverthere,dlt.hitlocation.z),ALLOW_REPLACE);
 				int checktid=SECTORDAMAGE_TID+othersector.index();
 				surprise.changetid(checktid);
 
@@ -233,7 +233,7 @@ class doordestroyer:hdactor{
 		//fancy effects
 		let db=doordestroyer(spawn("doordestroyer",(
 			(justoverthere+dlt.hitdir.xy),blockpoint
-		)));
+		),ALLOW_REPLACE));
 		db.setz(blockpoint);
 		db.v1pos=dlt.hitline.v1.p;
 		db.v2pos=dlt.hitline.v2.p;
@@ -304,7 +304,7 @@ class DoorBuster:HDPickup{
 			return;
 		}
 		vector3 plantspot=dlt.hitlocation-dlt.hitdir*3;
-		let ddd=DoorBusterPlanted(spawn("DoorBusterPlanted",plantspot));
+		let ddd=DoorBusterPlanted(spawn("DoorBusterPlanted",plantspot,ALLOW_REPLACE));
 		if(!ddd){
 			A_Log("Can't deploy here.",true);
 			return;

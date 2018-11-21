@@ -97,7 +97,7 @@ class HellKnave:HellKnight replaces HellKnight{
 		BOS2 F 5;
 		BOS2 E 3;
 		BOS2 H 12{
-			actor p=spawn("Putto",pos+(angletovector(angle,32),32));
+			actor p=spawn("Putto",pos+(angletovector(angle,32),32),ALLOW_REPLACE);
 			p.master=self;p.angle=angle;p.pitch=pitch;
 			p.A_ChangeVelocity(cos(pitch)*5,0,-sin(pitch)*5,CVF_RELATIVE);
 			p.bfriendly=bfriendly;p.target=target;
@@ -233,7 +233,7 @@ class BaleBall:hdfireball{
 	states{
 	spawn:
 		BAL7 A 0 nodelay{
-			actor bbl=spawn("BaronBallLight",pos);bbl.target=self;
+			actor bbl=spawn("BaronBallLight",pos,ALLOW_REPLACE);bbl.target=self;
 		}
 		BAL7 ABAB 3 A_FBTail();
 	spawn2:
@@ -247,7 +247,7 @@ class BaleBall:hdfireball{
 				tracer=null;
 				setstatelabel("burn");
 
-				lingerburner=spawn("BaleBallBurner",pos);
+				lingerburner=spawn("BaleBallBurner",pos,ALLOW_REPLACE);
 				lingerburner.target=target;lingerburner.master=self;
 				return;
 			}else if(target&&

@@ -188,7 +188,7 @@ class SlowProjectile:HDBullet{
 	}
 	virtual void ExplodeSlowMissile(line blockingline=null,actor blockingobject=null){
 		if(max(abs(pos.x),abs(pos.y))>=32768){destroy();return;}
-		actor a=spawn("IdleDummy",pos);
+		actor a=spawn("IdleDummy",pos,ALLOW_REPLACE);
 		a.stamina=10;
 		a.A_PlaySound(speed>50?"misc/punch":"misc/fragknock",CHAN_AUTO);
 		explodemissile(null,null);

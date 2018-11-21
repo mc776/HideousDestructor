@@ -53,7 +53,7 @@ class hdladdertop:hdactor{
 			){
 
 				//spawn the ladder end
-				target=spawn("hdladderbottom",tm.pos);
+				target=spawn("hdladderbottom",tm.pos,ALLOW_REPLACE);
 				target.target=self;
 				target.master=master;
 				target.angle=angle;
@@ -66,7 +66,7 @@ class hdladdertop:hdactor{
 				double sectionlength=min(htdiff,LADDER_MAX)/LADDER_SECTIONS;
 				for(int i=1;i<=LADDER_SECTIONS;i++){
 					newpos.xy+=mv2;
-					let sss=hdladdersection(spawn("hdladdersection",newpos));
+					let sss=hdladdersection(spawn("hdladdersection",newpos,ALLOW_REPLACE));
 					sss.master=self;sss.target=target;sss.angle=angle+frandom(-1.,1.);
 					sss.secnum=i;
 					target.setorigin(newpos+(0,0,-sectionlength*i),true);
@@ -94,7 +94,7 @@ class hdladdertop:hdactor{
 		if(master){
 			master.A_Log("Can't hang a ladder here.",true);
 		}else{
-			actor hdl=spawn("PortableLadder",pos);
+			actor hdl=spawn("PortableLadder",pos,ALLOW_REPLACE);
 			hdl.A_PlaySound("misc/ladder");
 		}
 		destroy();
@@ -177,7 +177,7 @@ class hdladderbottom:hdactor{
 							getdefaultbytype(currentuser.getclass()).height
 						){
 							currentuser.A_Log("Ladder taken up.",true);
-							actor hdl=spawn("PortableLadder",target.pos);
+							actor hdl=spawn("PortableLadder",target.pos,ALLOW_REPLACE);
 							hdl.A_PlaySound("misc/ladder");
 							hdl.translation=translation;
 							target.destroy();
@@ -265,7 +265,7 @@ class hdladderbottom:hdactor{
 						){
 							currentuser.A_Log("Ladder taken down.",true);
 
-							actor hdl=spawn("PortableLadder",target.pos);
+							actor hdl=spawn("PortableLadder",target.pos,ALLOW_REPLACE);
 							hdl.A_PlaySound("misc/ladder");
 							hdl.vel.xy=vl.xy*2;
 							hdl.translation=translation;

@@ -97,7 +97,7 @@ class BossRifle:HDWeapon{
 			A_PlaySound("weapons/bigrifle",6);
 			A_AlertMonsters();
 
-			actor p=spawn("HDBullet776",pos+(0,0,height-6));
+			actor p=spawn("HDBullet776",pos+(0,0,height-6),ALLOW_REPLACE);
 			p.target=self;p.angle=angle;p.pitch=pitch;
 			p.speed*=(invoker.weaponstatus[0]&BOSSF_CUSTOMCHAMBER)?1.06:1.27;
 			p.vel+=self.vel;
@@ -179,7 +179,7 @@ class BossRifle:HDWeapon{
 				invoker.weaponstatus[BOSSS_CHAMBER]=0;
 				if(chm<2||A_JumpIfInventory("SevenMilAmmo",0,"null")){
 					class<actor> whatkind=chm==2?"HDLoose7mm":"HDSpent7mm";
-					actor rrr=spawn(whatkind,pos+(cos(angle)*10,sin(angle)*10,height-12));
+					actor rrr=spawn(whatkind,pos+(cos(angle)*10,sin(angle)*10,height-12),ALLOW_REPLACE);
 					rrr.angle=angle;rrr.A_ChangeVelocity(1,2,1,CVF_RELATIVE);
 				}else HDF.Give(self,"SevenMilAmmo",1);
 				A_ChamberGrit(randompick(0,0,0,0,-1,1),true);

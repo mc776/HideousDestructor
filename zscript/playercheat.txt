@@ -6,7 +6,7 @@ extend class HDPlayerPawn{
 	bool cheatgivestatusailments(string name,int amount=1){
 		if(name~=="fire"){
 			if(!scopecamera){
-				scopecamera=spawn("ScopeCamera",pos);
+				scopecamera=spawn("ScopeCamera",pos,ALLOW_REPLACE);
 				scopecamera.target=self;
 			}
 			let hdsc=hdactor(scopecamera);

@@ -279,7 +279,7 @@ class HDBulletPuff:HDPuff{
 		super.postbeginplay();
 		if(max(abs(pos.x),abs(pos.y),abs(pos.z))>=32768){destroy();return;}
 		if(!random(0,scarechance)){
-			actor fff=spawn("idledummy",pos);
+			actor fff=spawn("idledummy",pos,ALLOW_REPLACE);
 			fff.stamina=random(60,120);
 			hdmobai.frighten(fff,256);
 		}
@@ -560,7 +560,7 @@ class DistantDummy:IdleDummy{
 				if((playeringame[i])&&(players[i].mo)){
 					dist=distance3d(players[i].mo);
 					if(dist>HDCONST_MINDISTANTSOUND){ //don't bother if too close
-						actor id=spawn("DistantNoisemaker",pos);
+						actor id=spawn("DistantNoisemaker",pos,ALLOW_REPLACE);
 						if(id){
 							id.target=players[i].mo;
 							id.deathsound=self.deathsound;
@@ -647,7 +647,7 @@ class DistantQuaker:IdleDummy{
 			if(playeringame[i] && players[i].mo){
 				dist=players[i].mo.distance3d(caller);
 				if(dist<=quakeradius){
-					let it=DistantQuaker(caller.spawn("DistantQuaker",players[i].mo.pos));
+					let it=DistantQuaker(caller.spawn("DistantQuaker",players[i].mo.pos,ALLOW_REPLACE));
 					if(it){
 						if(dist<=dropoffrate)it.intensity=intensity;
 							else it.intensity=clamp(intensity-floor(dist/dropoffrate),1,9);

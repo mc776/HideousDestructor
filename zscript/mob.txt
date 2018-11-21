@@ -454,7 +454,7 @@ class HDMobster:IdleDummy{
 		meleethreshold 0;
 	}
 	static hdmobster SpawnMobster(actor caller){
-		let hdmb=hdmobster(spawn("HDMobster",caller.pos));
+		let hdmb=hdmobster(spawn("HDMobster",caller.pos,ALLOW_REPLACE));
 		hdmb.master=caller;
 		hdmb.target=caller.target;
 		hdmb.bfrightened=caller.bfrightened;

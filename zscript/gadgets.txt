@@ -212,7 +212,7 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 			}
 			if(invoker.worn)invoker.worn=false;else{
 				invoker.worn=true;
-				if(!invoker.nozerolight)invoker.nozerolight=pointlight(spawn("visorlight",pos));
+				if(!invoker.nozerolight)invoker.nozerolight=pointlight(spawn("visorlight",pos,ALLOW_REPLACE));
 				invoker.nozerolight.target=self;
 			}
 		}fail;

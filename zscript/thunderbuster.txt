@@ -88,7 +88,7 @@ class ThunderBuster:HDWeapon{
 		//alt does a totally different thing
 		if(alt){
 			if(tlt.hittype==Trace_HitNone||tlt.distance>2000)return;
-			actor bbb=spawn("BeamSpotFlash",tlt.hitlocation-tlt.hitdir);
+			actor bbb=spawn("BeamSpotFlash",tlt.hitlocation-tlt.hitdir,ALLOW_REPLACE);
 			if(!random(0,3))(lingeringthunder.zap(bbb,bbb,caller,40,true));
 			beamspotflash(bbb).impactdistance=tlt.distance-16*battery;
 			bbb.angle=caller.angle;
@@ -124,13 +124,13 @@ class ThunderBuster:HDWeapon{
 				if(!random(0,7))(lingeringthunder.zap(hitactor,hitactor,caller,(basedmg<<1),true));
 				hitactor.damagemobj(null,caller,basedmg,"Electro",dmgflags);
 				hdf.give(hitactor,"Heat",(basedmg<<1));
-				actor sss=spawn("HDGunsmoke",tlt.hitlocation);
+				actor sss=spawn("HDGunsmoke",tlt.hitlocation,ALLOW_REPLACE);
 				sss.vel=(0,0,1)-tlt.hitdir;
 				return;
 			}
 		}
 		//where where the magic happens happens
-		actor bbb=spawn("BeamSpot",tlt.hitlocation-tlt.hitdir);
+		actor bbb=spawn("BeamSpot",tlt.hitlocation-tlt.hitdir,ALLOW_REPLACE);
 		bbb.target=caller;
 		bbb.stamina=basedmg;
 		bbb.angle=caller.angle;
@@ -369,7 +369,7 @@ class BeamSpot:HDActor{
 	}
 	void A_BeamSpotBoom(){
 		if(!target){ //how would this even happen?
-			spawn("HDExplosion",pos);
+			spawn("HDExplosion",pos,ALLOW_REPLACE);
 			A_Explode();
 			return;
 		}
@@ -388,7 +388,7 @@ class BeamSpot:HDActor{
 		//spawn little cracks along the way
 		vector3 toshooter=vec3to(target).unit();
 		for(int i=0;i<tgtdist;i+=64){
-			spawn("ThunderCracker",pos+toshooter*i);
+			spawn("ThunderCracker",pos+toshooter*i,ALLOW_REPLACE);
 		}
 
 		//crackity crack
@@ -430,18 +430,18 @@ class BeamSpot:HDActor{
 			immolateradius:128,immolateamount:-200,immolatechance:90,
 			gibradius:64,gibamount:random(2,4)*30
 		);
-		actor ltt=spawn("LingeringThunder",pos);
+		actor ltt=spawn("LingeringThunder",pos,ALLOW_REPLACE);
 		ltt.target=target;
 
 		A_SprayDecal("BusterScorch",14);
-		spawn("DistantRocket",pos);
-		spawn("DoubleDistantShotgun",pos);
+		spawn("DistantRocket",pos,ALLOW_REPLACE);
+		spawn("DoubleDistantShotgun",pos,ALLOW_REPLACE);
 		DistantQuaker.Quake(self,
 			5,50,2048,8,128,256,256
 		);
 
 		//check floor and ceiling and spawn more debris
-		spawn("DistantRocket",pos);
+		spawn("DistantRocket",pos,ALLOW_REPLACE);
 		for(int i=0;i<3;i++)A_SpawnItemEx("WallChunker",
 			frandom(-4,4),frandom(-4,4),-4,
 			flags:SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS
@@ -485,8 +485,8 @@ class BeamSpot:HDActor{
 		stop;
 	explode:
 		TNT1 A 0 A_BeamSpotBoom();
-		TNT1 AAAA 0 Spawn("HDExplosion",pos+(frandom(-4,4),frandom(-4,4),frandom(-4,4)));
-		TNT1 AAAA 0 Spawn("HDSmoke",pos+(frandom(-4,4),frandom(-4,4),frandom(-4,4)));
+		TNT1 AAAA 0 Spawn("HDExplosion",pos+(frandom(-4,4),frandom(-4,4),frandom(-4,4)),ALLOW_REPLACE);
+		TNT1 AAAA 0 Spawn("HDSmoke",pos+(frandom(-4,4),frandom(-4,4),frandom(-4,4)),ALLOW_REPLACE);
 		TNT1 AAAAAAAA 0 ArcZap(self);
 		TNT1 AAAAAAAAAAAAAAA 2 ArcZap(self);
 		stop;
@@ -656,7 +656,7 @@ class LingeringThunder:IdleDummy{
 		victim.A_PlaySound("weapons/plasidle",CHAN_BODY,frandom(0.2,0.6));
 		victim.A_PlaySound("misc/wallchunks",5);
 		victim.A_PlaySound("weapons/bigcrack",6,frandom(0.2,0.6));
-		actor bsfl=spawn("BeamSpotFlashLight",victim.pos);
+		actor bsfl=spawn("BeamSpotFlashLight",victim.pos,ALLOW_REPLACE);
 		bsfl.target=victim;
 
 		//make bodies spasm

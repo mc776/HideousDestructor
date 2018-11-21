@@ -99,13 +99,13 @@ class Tripwire:HDWeapon{
 				return;
 			}
 			if(!invoker.gumspot){
-				actor aaa=spawn("GumAndString",gumline.hitlocation-gumline.hitdir*0.6);
+				actor aaa=spawn("GumAndString",gumline.hitlocation-gumline.hitdir*0.6,ALLOW_REPLACE);
 				aaa.target=self;aaa.master=self;aaa.angle=angle;
 				aaa.A_PlaySound("misc/bulletflesh",CHAN_BODY);
 				invoker.gumspot=aaa;
 				A_Log("Wire end secured. Now to set the grenade...",true);
 			}else{
-				actor aaa=spawn(invoker.throwtype,gumline.hitlocation-gumline.hitdir*2);
+				actor aaa=spawn(invoker.throwtype,gumline.hitlocation-gumline.hitdir*2,ALLOW_REPLACE);
 				aaa.target=self;aaa.master=self;aaa.angle=angle;
 				aaa.A_PlaySound("weapons/rifleclick2",CHAN_BODY);
 				invoker.grenade=aaa;
@@ -270,10 +270,10 @@ class GumAndString:IdleDummy{
 	void PullPin(double vvx=0,double vvy=0,double vvz=0){
 		let trc=trippinggrenade(tracer);
 		if(!tracer)return;
-		actor ggg=trc.spawn(trc.rollertype,trc.pos);
+		actor ggg=trc.spawn(trc.rollertype,trc.pos,ALLOW_REPLACE);
 		ggg.target=trc.target;
 		ggg.vel=(pos-ggg.pos).unit();
-		actor hhh=trc.spawn(trc.spoontype,trc.pos);
+		actor hhh=trc.spawn(trc.spoontype,trc.pos,ALLOW_REPLACE);
 		hhh.vel=ggg.vel*5;
 		ggg.vel*=3;ggg.vel.z++;
 		ggg.A_PlaySound("weapons/rifleclick");
@@ -286,7 +286,7 @@ class GumAndString:IdleDummy{
 		A_PlaySound("weapons/bigcrack");
 		let trc=trippinggrenade(tracer);
 		if(trc){
-			actor trcr=spawn(trc.rollertype,trc.pos);
+			actor trcr=spawn(trc.rollertype,trc.pos,ALLOW_REPLACE);
 			trcr.A_PlaySound("weapons/bigcrack");
 			trc.destroy();
 		}else if(master)master.A_PlaySound("weapons/bigcrack");
@@ -335,7 +335,7 @@ class TrippingGrenade:HDUPK{
 				data:gum
 			);
 			if(gum.hittype!=Trace_HitNone){
-				tracer=spawn("GumAndString",gum.hitlocation-gum.hitdir*0.4);
+				tracer=spawn("GumAndString",gum.hitlocation-gum.hitdir*0.4,ALLOW_REPLACE);
 				tracer.tracer=self;
 				tracer.A_Face(self,0,0);
 			}
@@ -384,14 +384,14 @@ class TrippingGrenade:HDUPK{
 	}
 	void A_TripFragPain(){
 		if(!random(0,9)){
-			actor ggg=spawn(rollertype,pos);
+			actor ggg=spawn(rollertype,pos,ALLOW_REPLACE);
 			ggg.target=target;
 			if(tracer){
 				ggg.vel=(tracer.pos-ggg.pos).unit()*3+(0,0,1);
 				tracer.destroy();
 			}else ggg.vel=(random(-1,1),random(-1,1),1);
 			ggg.A_PlaySound("weapons/rifleclick");
-			actor hhh=spawn(spoontype,pos);
+			actor hhh=spawn(spoontype,pos,ALLOW_REPLACE);
 			hhh.vel=ggg.vel*2;
 			destroy();return;
 		}else if(!random(0,4)){

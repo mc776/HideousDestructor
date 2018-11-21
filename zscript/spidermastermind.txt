@@ -174,7 +174,7 @@ class Spiderdemon:SpiderMastermind replaces SpiderMastermind{
 			shotcount++;
 			A_PlaySound("weapons/bigrifle",shotchannel);
 
-			actor p=spawn("HDBullet776",pos+(0,0,32));
+			actor p=spawn("HDBullet776",pos+(0,0,32),ALLOW_REPLACE);
 			p.target=self;
 			p.angle=angle+frandom(-spread,spread);
 			p.pitch=pitch+frandom(-spread,spread);

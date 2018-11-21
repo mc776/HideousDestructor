@@ -64,7 +64,7 @@ class DERPBot:HDUPK{
 			if(bfriendly)A_AlertMonsters(0,AMF_TARGETEMITTER);
 			else A_AlertMonsters();
 		}
-		actor b=spawn("HDBullet9",pos+(0,0,2));
+		actor b=spawn("HDBullet9",pos+(0,0,2),ALLOW_REPLACE);
 		b.pitch=pitch;b.angle=angle;b.target=self;b.vel+=vel;
 	}
 	void A_DerpAttack(){
@@ -221,7 +221,7 @@ class DERPBot:HDUPK{
 				}
 			}
 			stuckline=null;
-			spawn("FragPuff",pos);
+			spawn("FragPuff",pos,ALLOW_REPLACE);
 			bnogravity=false;
 			A_ChangeVelocity(3,0,2,CVF_RELATIVE);
 			A_PlaySound("weapons/bigcrack",4);
@@ -471,7 +471,7 @@ extend class HDHandlers{
 				ppp.A_Log(string.format("\cd[DERP]  \cuUse this command to attach the D.E.R.P. to a switch."),true);
 				return;
 			}
-			let ddd=DERPBot(ppp.spawn("DERPBot",dlt.hitlocation-dlt.hitdir*4));
+			let ddd=DERPBot(ppp.spawn("DERPBot",dlt.hitlocation-dlt.hitdir*4,ALLOW_REPLACE));
 			if(!ddd){
 				ppp.A_Log(string.format("\cd[DERP]  \cuCan't deploy here."),true);
 				return;

@@ -30,7 +30,7 @@ class BFG9K:HDWeapon replaces BFG9000{
 			spp=caller.pitch+frandom(-20,20);
 			spa=caller.angle+frandom(-20,20);
 			spot=random(32,57)*(cos(spp)*cos(spa),cos(spp)*sin(spa),-sin(spp));
-			a=caller.spawn("BFGSpark",origin+spot);
+			a=caller.spawn("BFGSpark",origin+spot,ALLOW_REPLACE);
 			a.vel+=caller.vel*0.9-spot*0.03;
 		}
 	}
@@ -652,10 +652,10 @@ class BFGPuff:GreenParticleFountain{
 				)
 				&&!random(0,3)
 			){
-				spawn("TeleFog",tracer.pos);
+				spawn("TeleFog",tracer.pos,ALLOW_REPLACE);
 				tracer.setorigin(G_PickDeathmatchStart(),false);
 				tracer.vel=(frandom(-10,10),frandom(-10,10),frandom(10,20));
-				spawn("TeleFog",tracer.pos);
+				spawn("TeleFog",tracer.pos,ALLOW_REPLACE);
 			}
 		}
 		BFE2 ABCDE 2 bright A_FadeOut(0.1);

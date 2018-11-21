@@ -78,7 +78,7 @@ class HDPlayerPawn:PlayerPawn{
 		beatcap=35;beatmax=35;
 		feetangle=angle;
 
-		scopecamera=spawn("ScopeCamera",pos+(0,0,height-6));
+		scopecamera=spawn("ScopeCamera",pos+(0,0,height-6),ALLOW_REPLACE);
 		scopecamera.target=self;
 
 		if(player&&player.bot&&hd_nobots&&!countinv("WipedOut"))ReplaceBot();
@@ -283,7 +283,7 @@ class HDPlayerPawn:PlayerPawn{
 		if(!player.readyweapon)A_SelectWeapon("HDFist");
 
 		//same thing with scope camera
-		if(!scopecamera)scopecamera=spawn("ScopeCamera",pos);
+		if(!scopecamera)scopecamera=spawn("ScopeCamera",pos,ALLOW_REPLACE);
 		scopecamera.target=self;
 
 
@@ -534,7 +534,7 @@ class HDPlayerPawn:PlayerPawn{
 				while(hdpu=HDPickerUpper(hdpuf.Next())){
 					if(hdpu.master==self)break;
 				}
-				if(!hdpu||hdpu.master!=self)hdpu=HDPickerUpper(spawn("HDPickerUpper",pos));
+				if(!hdpu||hdpu.master!=self)hdpu=HDPickerUpper(spawn("HDPickerUpper",pos,ALLOW_REPLACE));
 				hdpu.master=self;
 
 				double cp=cos(pitch+3);
@@ -606,7 +606,7 @@ class HDPlayerPawn:PlayerPawn{
 				&&beatmax>10
 			){
 				bool kicked=false;
-				actor k=spawn("kickchecker",pos);
+				actor k=spawn("kickchecker",pos,ALLOW_REPLACE);
 				k.angle=angle;k.target=self;
 				vector2 kv=AngleToVector(angle,5);
 				for(int i=7;i;i--){

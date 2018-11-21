@@ -10,7 +10,7 @@ class PlayerAntenna:HDActor{
 extend class HDPlayerPawn{
 	actor antenna;
 	void A_MoveAntenna(vector3 newpos){
-		if(!antenna)antenna=spawn("PlayerAntenna",newpos);
+		if(!antenna)antenna=spawn("PlayerAntenna",newpos,ALLOW_REPLACE);
 		else antenna.setorigin(newpos,false);
 	}
 

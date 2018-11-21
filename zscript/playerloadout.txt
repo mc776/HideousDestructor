@@ -1008,7 +1008,7 @@ extend class HDBackpack{
 			let pkup=(class<hdpickup>)(invclasses[thisitem]);
 			let mag=(class<hdmagammo>)(pkup);
 			if(wep){
-				let iii=inventory(spawn(wep));
+				let iii=inventory(spawn(wep,pos,ALLOW_REPLACE));
 				itemtobackpack(iii);
 			}else if(mag){
 				int howmany=max(1,random(1,

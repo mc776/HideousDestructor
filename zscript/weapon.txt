@@ -175,13 +175,13 @@ class HDWeapon:Weapon{
 				}
 				smkvel=owner.vel;
 			}
-			actor a=spawn("HDGunsmoke",smkpos);
+			actor a=spawn("HDGunsmoke",smkpos,ALLOW_REPLACE);
 			smkvel*=0.4;
 			a.angle=smkang;a.vel+=smkvel;
 			a.A_ChangeVelocity(3,0,0,CVF_RELATIVE);
 			for(int i=30;i<weaponstatus[ref];i+=30){
 				if(!random(0,3)){
-					a=spawn("HDGunsmoke",smkpos);
+					a=spawn("HDGunsmoke",smkpos,ALLOW_REPLACE);
 					a.angle=smkang;a.vel+=smkvel;
 					a.A_ChangeVelocity(3,frandom(-2,2),frandom(-2,2),CVF_RELATIVE);
 				}

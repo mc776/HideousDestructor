@@ -117,7 +117,7 @@ class HDFireball:HDActor{
 	}
 	void A_FBTail(){
 		if(!missilename) return;
-		actor a=spawn(missilename,pos);
+		actor a=spawn(missilename,pos,ALLOW_REPLACE);
 		a.master=self;a.vel=self.vel*0.9;
 	}
 	int corkscrew;

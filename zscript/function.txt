@@ -261,7 +261,7 @@ class tempshield:HDActor{
 		actor caller,class<actor> type="tempshield",
 		bool deathheight=false,int shieldlength=16
 	){
-		actor sss=caller.spawn(type,caller.pos);
+		actor sss=caller.spawn(type,caller.pos,ALLOW_REPLACE);
 		if(!sss)return null;
 		sss.master=caller;
 		sss.A_SetSize(
@@ -415,7 +415,7 @@ struct HDF play{
 	static void SplitAmmoSpawn(inventory caller,int maxunit=1){
 		while(caller.amount>maxunit){
 			caller.amount-=maxunit;
-			inventory bbb=inventory(caller.spawn(caller.getclass(),caller.pos));
+			inventory bbb=inventory(caller.spawn(caller.getclass(),caller.pos,ALLOW_REPLACE));
 			bbb.amount=maxunit;bbb.vel=caller.vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
 		}
 	}
@@ -469,7 +469,7 @@ struct HDF play{
 		if(inflictor&&!inflictor.bismonster&&!inflictor.player){
 			int shrd=max(random(0,1),damage/50);
 			for(int i=0;i<shrd;i++){
-				actor aaa=inflictor.spawn("FragShard",inflictor.pos);
+				actor aaa=inflictor.spawn("FragShard",inflictor.pos,ALLOW_REPLACE);
 				aaa.vel=(frandom(-3,3),frandom(-3,3),frandom(-3,3));
 			}
 		}

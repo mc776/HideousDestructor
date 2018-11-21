@@ -202,7 +202,7 @@ class HDMarine:HDActor replaces ScriptedMarine{
 			hasdropped=true;
 			hdweapon dropped=null;
 			if(wep==HDMW_SMG){
-				dropped=hdweapon(spawn("HDSMG",pos));
+				dropped=hdweapon(spawn("HDSMG",pos,ALLOW_REPLACE));
 				if(gunloaded){
 					dropped.weaponstatus[SMGS_MAG]=gunloaded-1;
 					dropped.weaponstatus[SMGS_CHAMBER]=2;
@@ -211,7 +211,7 @@ class HDMarine:HDActor replaces ScriptedMarine{
 					dropped.weaponstatus[SMGS_CHAMBER]=0;
 				}
 			}else if(wep==HDMW_ZM66){
-				dropped=hdweapon(spawn("ZM66AssaultRifle",pos));
+				dropped=hdweapon(spawn("ZM66AssaultRifle",pos,ALLOW_REPLACE));
 				if(gunloaded){
 					dropped.weaponstatus[ZM66S_MAG]=gunloaded-1;
 					dropped.weaponstatus[0]=ZM66F_CHAMBER;
@@ -222,7 +222,7 @@ class HDMarine:HDActor replaces ScriptedMarine{
 				if(jammed||!random(0,15))dropped.weaponstatus[0]|=ZM66F_CHAMBERBROKEN;
 				if(glloaded)dropped.weaponstatus[0]|=ZM66F_GRENADELOADED;
 			}else if(wep==HDMW_ROCKET){
-				dropped=hdweapon(spawn("HDRL",pos));
+				dropped=hdweapon(spawn("HDRL",pos,ALLOW_REPLACE));
 				if(gunloaded){
 					dropped.weaponstatus[RLS_MAG]=gunloaded-1;
 					dropped.weaponstatus[RLS_CHAMBER]=1;
@@ -231,7 +231,7 @@ class HDMarine:HDActor replaces ScriptedMarine{
 					dropped.weaponstatus[RLS_CHAMBER]=0;
 				}
 			}else if(wep==HDMW_HUNTER){
-				dropped=hdweapon(spawn("Hunter",pos));
+				dropped=hdweapon(spawn("Hunter",pos,ALLOW_REPLACE));
 				if(gunloaded){
 					dropped.weaponstatus[HUNTS_TUBE]=gunloaded-1;
 					dropped.weaponstatus[HUNTS_CHAMBER]=2;
@@ -248,7 +248,7 @@ class HDMarine:HDActor replaces ScriptedMarine{
 			dropped.vel=vel+(frandom(-1,1),frandom(-1,1),2);
 
 			//drop the pistol
-			dropped=hdweapon(spawn("HDPistol",pos));
+			dropped=hdweapon(spawn("HDPistol",pos,ALLOW_REPLACE));
 			dropped.addz(32);
 			dropped.vel=vel+(frandom(-1,1),frandom(-1,1),2);
 			if(pistolloaded){
@@ -261,7 +261,7 @@ class HDMarine:HDActor replaces ScriptedMarine{
 
 			//drop the blooper
 			if(wep!=HDMW_SMG&&wep!=HDMW_HUNTER)return;
-			dropped=hdweapon(spawn("Blooper",pos));
+			dropped=hdweapon(spawn("Blooper",pos,ALLOW_REPLACE));
 			dropped.addz(32);
 			dropped.vel=vel+(frandom(-1,1),frandom(-1,1),2);
 			if(glloaded)dropped.weaponstatus[0]|=BLOPF_LOADED;
@@ -342,7 +342,7 @@ class HDMarine:HDActor replaces ScriptedMarine{
 		return aimadjust;
 	}
 	actor A_MarineShot(class<actor> missiletype,bool userocket=false){
-		actor mmm=spawn(missiletype,pos+(0,0,height-6));
+		actor mmm=spawn(missiletype,pos+(0,0,height-6),ALLOW_REPLACE);
 		mmm.pitch=pitch+frandom(0,spread)-frandom(0,spread);
 		mmm.angle=angle+frandom(0,spread)-frandom(0,spread);
 		mmm.target=self;
@@ -702,7 +702,7 @@ class HDMarine:HDActor replaces ScriptedMarine{
 		#### E 10;
 		#### E 0{
 			if(gunloaded>0){
-				let ooo=HDMagAmmo(spawn("HD4mMag",pos+(0,0,40)));
+				let ooo=HDMagAmmo(spawn("HD4mMag",pos+(0,0,40),ALLOW_REPLACE));
 				ooo.vel+=vel;
 				ooo.mags.clear();
 				ooo.mags.push(gunloaded);
@@ -970,7 +970,7 @@ class HDMarine:HDActor replaces ScriptedMarine{
 		#### SRQ 6;
 		#### PONMH 4;
 		#### IJKL 4;
-		#### M 0{spawn("DeadZombieStormtrooper",pos);}
+		#### M 0{spawn("DeadZombieStormtrooper",pos,ALLOW_REPLACE);}
 		stop;
 	}
 }
@@ -1455,7 +1455,7 @@ class GhostGyroGrenade:GyroGrenade{
 		);
 		TNT1 A 21{
 			A_AlertMonsters();
-			spawn("DistantRocket");
+			spawn("DistantRocket",pos,ALLOW_REPLACE);
 			A_Quake(2,21,0,200,"none");
 		}stop;
 	}
@@ -1618,7 +1618,7 @@ class BotBot:HDMarine{
 					seen=true;
 					warptimer=0;
 					A_PlaySound(seesound,CHAN_VOICE);
-					spawn("HDSmoke",pos);
+					spawn("HDSmoke",pos,ALLOW_REPLACE);
 				}else{
 					setorigin(posbak,false);
 				}

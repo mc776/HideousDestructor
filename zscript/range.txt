@@ -76,16 +76,16 @@ class TargetBarrel:Actor{
 			bnopain=true;
 			vel.x+=10;
 			bnogravity=false;
-			spawn("HDExplosion",pos+(0,0,16));
-			spawn("HDSmoke",pos+(0,0,16));
+			spawn("HDExplosion",pos+(0,0,16),ALLOW_REPLACE);
+			spawn("HDSmoke",pos+(0,0,16),ALLOW_REPLACE);
 		}
 		TNT1 A 0{
 			bnopain=0;
-			spawn("DistantRocket",pos);
+			spawn("DistantRocket",pos,ALLOW_REPLACE);
 		}
 	pain2:
 		BEXP B 1{
-			spawn("HDSmoke",pos+(0,0,16));
+			spawn("HDSmoke",pos+(0,0,16),ALLOW_REPLACE);
 			if(floorz>=pos.z)setstatelabel("pain3");
 		}wait;
 	pain3:

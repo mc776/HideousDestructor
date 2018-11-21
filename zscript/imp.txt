@@ -712,7 +712,7 @@ class MageImpBall2:HDImpBall{
 		loop;
 	death:
 		TNT1 A 0{
-			spawn("HDSmoke",pos);
+			spawn("HDSmoke",pos,ALLOW_REPLACE);
 			if(blockingmobj)A_Immolate(blockingmobj,target,random(10,32));
 		}
 		BAL1 CDE 4 bright A_FadeOut(0.2);

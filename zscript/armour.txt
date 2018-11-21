@@ -188,7 +188,8 @@ class HDArmourWorn:HDPickup{
 		}
 		HDArmour.ArmourChangeEffect(owner);
 		let tossed=HDArmour(owner.spawn("HDArmour",
-			(owner.pos.x,owner.pos.y,owner.pos.z+owner.height-20)
+			(owner.pos.x,owner.pos.y,owner.pos.z+owner.height-20),
+			ALLOW_REPLACE
 		));
 		tossed.mags.clear();
 		tossed.mags.push(mega?durability+1000:durability);

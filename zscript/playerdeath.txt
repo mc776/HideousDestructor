@@ -96,7 +96,7 @@ extend class HDPlayerPawn{
 
 		bool crouched=height<40;
 
-		playercorpse=spawn("HDPlayerCorpse",pos);
+		playercorpse=spawn("HDPlayerCorpse",pos,ALLOW_REPLACE);
 		playercorpse.vel=vel;playercorpse.master=self;
 		if(crouched)playercorpse.sprite=GetSpriteIndex("PLYCA0");
 			else playercorpse.sprite=GetSpriteIndex("PLAYA0");

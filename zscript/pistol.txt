@@ -66,7 +66,7 @@ class HDPistol:HDWeapon{
 			}
 			//split the pickup
 			if(!owner){
-				let second=HDPistol(spawn("HDPistol",pos+(frandom(-2,2),frandom(-2,2),0)));
+				let second=HDPistol(spawn("HDPistol",pos+(frandom(-2,2),frandom(-2,2),0),ALLOW_REPLACE));
 				amount=1;
 				second.amount=1;
 				for(int i=0;i<8;i++){
@@ -79,7 +79,7 @@ class HDPistol:HDWeapon{
 	}
 	override inventory CreateTossable(int amt){
 		if(amount<2)return super.createtossable(amt);
-		let second=HDPistol(spawn("HDPistol",owner.pos+(0,0,owner.height-14)));
+		let second=HDPistol(spawn("HDPistol",owner.pos+(0,0,owner.height-14),ALLOW_REPLACE));
 		amount--;
 		second.amount=1;
 		//transfer the FIRST pistol's weaponstatus then switch to fist

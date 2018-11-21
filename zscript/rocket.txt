@@ -5,7 +5,7 @@ extend class HDWeapon{
 	int airburst;
 	action void A_FireHDGL(){
 		A_PlaySound("weapons/grenadeshot",CHAN_WEAPON);
-		let ggg=gyrogrenade(spawn("GyroGrenade",pos+(0,0,height-8)));
+		let ggg=gyrogrenade(spawn("GyroGrenade",pos+(0,0,height-8),ALLOW_REPLACE));
 		ggg.angle=angle;ggg.pitch=pitch-2;ggg.target=self;ggg.master=self;
 		ggg.primed=false;
 		if(invoker.airburst)ggg.airburst=max(10,abs(invoker.airburst))*HDCONST_ONEMETRE;
@@ -64,7 +64,8 @@ class GyroGrenade:SlowProjectile{
 		//bounce
 		if(!primed&&random(0,20)){
 			if(speed>50)painsound="misc/punch";else painsound="misc/fragknock";
-			actor a=spawn("IdleDummy",pos);a.stamina=10;a.A_PlaySound(painsound,CHAN_AUTO);
+			actor a=spawn("IdleDummy",pos,ALLOW_REPLACE);
+			a.stamina=10;a.A_PlaySound(painsound,CHAN_AUTO);
 			[bmissileevenmore,a]=A_SpawnItemEx("DudRocket",0,0,0,
 				random(30,60),random(-10,10),random(-10,10),
 				random(0,360),SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS,0
@@ -131,7 +132,7 @@ class GyroGrenade:SlowProjectile{
 			}
 		}
 		---- AAA 0{
-			actor sss=spawn("HDGunSmoke",pos-vel*0.1+(0,0,-4));
+			actor sss=spawn("HDGunSmoke",pos-vel*0.1+(0,0,-4),ALLOW_REPLACE);
 			sss.vel=vel*-0.06+(frandom(-2,2),frandom(-2,2),frandom(-2,2));
 		}
 	spawnrocket2:
@@ -139,7 +140,7 @@ class GyroGrenade:SlowProjectile{
 			if(stamina>0){  
 				if(!inthesky){
 					brockettrail=true;
-					actor sss=spawn("HDGunsmoke",pos);
+					actor sss=spawn("HDGunsmoke",pos,ALLOW_REPLACE);
 					sss.vel=vel*0.1;
 				}else{
 					brockettrail=false;
@@ -350,7 +351,7 @@ class DudRocket:HDUPK{
 		---- A 0 A_PlaySound("weapons/grenopen");
 		stop;
 		ROCQ A 0 A_Jump(1,"Explode");
-		ROCQ A 0 spawn("DudRocketAmmo",pos);
+		ROCQ A 0 spawn("DudRocketAmmo",pos,ALLOW_REPLACE);
 		stop;
 	}
 }

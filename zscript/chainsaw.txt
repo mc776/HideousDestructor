@@ -296,7 +296,7 @@ class HDSawPuff:IdleDummy{
 			A_GiveInventory("WasChoppingFlesh",1,AAPTR_TARGET);
 			if(tracer){
 				if(tracer.bcorpse)hdf.give(tracer,"SawGib",random(5,10));
-				if(tracer.bnoblood)spawn("BulletPuffMedium",pos);
+				if(tracer.bnoblood)spawn("BulletPuffMedium",pos,ALLOW_REPLACE);
 				else hdwound.inflict(tracer,random(1,7));
 			}
 		}stop;
@@ -318,7 +318,7 @@ class HDSawPuff:IdleDummy{
 					target.A_TakeInventory("WasChoppingFlesh");
 				}
 			}
-			spawn("BulletPuffMedium",pos);
+			spawn("BulletPuffMedium",pos,ALLOW_REPLACE);
 			if(lmb && lmb.weaponstatus[CSAWS_BATTERY]>0 && !random(0,LUMBERJACKDRAIN*3))lmb.weaponstatus[CSAWS_BATTERY]--;
 		}stop;
 	}

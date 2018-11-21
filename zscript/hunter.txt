@@ -242,7 +242,7 @@ class Hunter:HDShotgun replaces Shotgun{
 	shoot:
 		SHTG A 2;
 		SHTG A 1 offset(0,36){
-			actor p=spawn("HDBullet00b",pos+(0,0,height-6));
+			actor p=spawn("HDBullet00b",pos+(0,0,height-6),ALLOW_REPLACE);
 			p.target=self;p.angle=angle;p.pitch=pitch;
 			p.vel+=(
 				frandom(-1.,1.),frandom(-1.,1.),frandom(-1.,1.)

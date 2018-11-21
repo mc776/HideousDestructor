@@ -116,7 +116,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 			A_ZoomFactor(0.98,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
 			invoker.weaponstatus[SLAYS_CHAMBER1]=1;
 
-			actor p=spawn("HDBullet00bfl",pos+(0,0,height-6));
+			actor p=spawn("HDBullet00bfl",pos+(0,0,height-6),ALLOW_REPLACE);
 			p.target=self;p.angle=angle;p.pitch=pitch;
 			p.vel+=(
 				frandom(-1.,1.),frandom(-1.,1.),frandom(-1.,1.)
@@ -136,7 +136,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 			A_ZoomFactor(0.98,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
 			invoker.weaponstatus[SLAYS_CHAMBER2]=1;
 
-			actor p=spawn("HDBullet00bfr",pos+(0,0,height-6));
+			actor p=spawn("HDBullet00bfr",pos+(0,0,height-6),ALLOW_REPLACE);
 			p.target=self;p.angle=angle;p.pitch=pitch;
 			p.vel+=(
 				frandom(-1.,1.),frandom(-1.,1.),frandom(-1.,1.)
@@ -165,7 +165,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 			invoker.weaponstatus[SLAYS_CHAMBER2]=1;
 
 
-			actor p=spawn("HDBullet00bf2",pos+(0,0,height-6));
+			actor p=spawn("HDBullet00bf2",pos+(0,0,height-6),ALLOW_REPLACE);
 			p.target=self;p.angle=angle;p.pitch=pitch;
 			p.vel+=(
 				frandom(-1.,1.),frandom(-1.,1.),frandom(-1.,1.)

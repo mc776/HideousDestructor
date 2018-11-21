@@ -33,7 +33,7 @@ class HDStealthPorter:Actor{
 		else A_Wander();
 	}
 	void A_PortIn(){
-		spawn("TeleFog",pos);
+		spawn("TeleFog",pos,ALLOW_REPLACE);
 		A_SpawnItemEx(spawntype,
 			flags:SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_TRANSFERAMBUSHFLAG
 		);

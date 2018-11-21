@@ -164,7 +164,7 @@ class HDPickup:CustomInventory{
 	virtual void SplitPickup(){
 		int maxpkamt=max(1,maxunitamount);
 		while(amount>maxpkamt){
-			let aaa=hdpickup(spawn(getclassname(),pos));
+			let aaa=hdpickup(spawn(getclassname(),pos,ALLOW_REPLACE));
 			aaa.amount=maxpkamt;amount-=maxpkamt;
 			aaa.vel=vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
 		}

@@ -146,7 +146,7 @@ class HDMagAmmo:HDAmmo{
 	//mostly for unloads
 	static actor SpawnMag(actor giver,class<inventory> type,int giveamt){
 		if(giveamt<0)return null;
-		let mmm=HDMagAmmo(giver.spawn(type,giver.pos));
+		let mmm=HDMagAmmo(giver.spawn(type,giver.pos,ALLOW_REPLACE));
 		mmm.addz(giver.height-12);mmm.angle=giver.angle;
 		mmm.A_ChangeVelocity(2,0,-1,CVF_RELATIVE);
 		mmm.vel+=giver.vel;
@@ -273,7 +273,7 @@ class HDMagAmmo:HDAmmo{
 		amt=min(max(1,amt),amount);
 		inventory iii;
 		for(int i=0;i<amt;i++){
-			iii=inventory(spawn(getclassname(),owner.pos));
+			iii=inventory(spawn(getclassname(),owner.pos,ALLOW_REPLACE));
 			if(iii){
 				iii.addz(owner.height*0.6);
 				iii.angle=owner.angle;iii.target=owner;iii.vel=owner.vel;
@@ -292,7 +292,7 @@ class HDMagAmmo:HDAmmo{
 	override void SplitPickup(){
 		SyncAmount();
 		while(amount>1){
-			let aaa=HDMagAmmo(inventory(spawn(getclassname(),pos)));
+			let aaa=HDMagAmmo(spawn(getclassname(),pos,ALLOW_REPLACE));
 			aaa.amount=1;amount--;
 			aaa.mags.clear();
 			aaa.mags.push(takemag(false));

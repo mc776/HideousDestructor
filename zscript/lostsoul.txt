@@ -27,7 +27,7 @@ class Condemned:LostSoul replaces LostSoul{
 		super.tick();
 		A_TakeInventory("Heat");
 		if(!bcorpse&&!(level.time%8)){
-			spawn("HDFlameRed",pos+(frandom(-4,4),frandom(-4,4),frandom(2,8)));
+			spawn("HDFlameRed",pos+(frandom(-4,4),frandom(-4,4),frandom(2,8)),ALLOW_REPLACE);
 		}
 	}
 	void A_SkullChase(){
@@ -39,13 +39,13 @@ class Condemned:LostSoul replaces LostSoul{
 	}
 	void A_SkullStrafe(){
 		A_FaceTarget(16,16);
-		spawn("HDSmoke",pos);
+		spawn("HDSmoke",pos,ALLOW_REPLACE);
 		A_ChangeVelocity(cos(pitch),randompick(-1,1)*frandom(3,6),0,CVF_RELATIVE);
 	}
 	void A_SkullLaunch(){
 		latched=null;
 		A_PlaySound("skull/melee",CHAN_VOICE);
-		spawn("HDSmoke",pos);spawn("HDSmoke",pos);spawn("HDSmoke",pos);
+		spawn("HDSmoke",pos,ALLOW_REPLACE);
 		A_FaceTarget(16,16);
 		A_ChangeVelocity(cos(pitch)*20,0,-sin(pitch)*20,CVF_RELATIVE);
 		flycheck=vel.xy*3;
@@ -260,7 +260,7 @@ class Jailer:PainElemental replaces PainElemental{
 		PAIN F 6 A_FaceTarget(10,10);
 		PAIN C 12{
 			if(brewing>20){
-				let aaa=Condemned(spawn("Condemned",pos));
+				let aaa=Condemned(spawn("Condemned",pos,ALLOW_REPLACE));
 				aaa.addz(32);
 				aaa.master=self;
 				aaa.target=target;
@@ -288,7 +288,7 @@ class Jailer:PainElemental replaces PainElemental{
 		PAIN G 6 A_Pain();
 		goto missile;
 	death.telefrag:
-		TNT1 A 0 spawn("Telefog",pos);
+		TNT1 A 0 spawn("Telefog",pos,ALLOW_REPLACE);
 		TNT1 A 0 A_NoBlocking();
 		TNT1 AAAAAAAAAAAAA 0 A_SpawnItemEx("BFGVileShard",
 			frandom(-4,4),frandom(-4,4),frandom(6,24),

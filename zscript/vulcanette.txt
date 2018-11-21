@@ -489,7 +489,7 @@ class Vulcanette:HDWeapon{
 		double offx=frandom(-0.1,0.1)*cm;
 		double offy=frandom(-0.1,0.1)*cm;
 
-		actor b=spawn("HDBullet426",pos+(0,0,height-8));
+		actor b=spawn("HDBullet426",pos+(0,0,height-8),ALLOW_REPLACE);
 		b.target=self;b.vel+=vel;b.angle=angle+offx;b.pitch=pitch+offy;
 
 		int heat=min(50,invoker.weaponstatus[VULCS_HEAT]);

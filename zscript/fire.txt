@@ -61,7 +61,7 @@ extend class HDActor{
 				perpetrator.getspecies()==victim.getspecies()
 			)
 		){
-			victim=spawn("PersistentDamager",self.pos);
+			victim=spawn("PersistentDamager",self.pos,ALLOW_REPLACE);
 			victim.target=perpetrator;
 		}
 		actor f=victim.spawn("HDFire",victim.pos,ALLOW_REPLACE);
@@ -111,7 +111,7 @@ class HDFire:IdleDummy{
 
 			if(!master)master=self;
 			if(!target){
-				target=spawn("PersistentDamager",self.pos);
+				target=spawn("PersistentDamager",self.pos,ALLOW_REPLACE);
 				target.target=master;
 				if(stamina>20)stamina=20;
 			}

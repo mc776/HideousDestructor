@@ -72,7 +72,7 @@ class SpentBottle:SpentStim{
 		---- A random(2,4){
 			if(frandom(0.1,0.9)<alpha){
 				angle+=random(-12,12);pitch=random(45,90);
-				actor a=spawn("HDGunSmoke",pos);
+				actor a=spawn("HDGunSmoke",pos,ALLOW_REPLACE);
 				a.scale=(0.4,0.4);a.angle=angle;
 			}
 			A_FadeOut(frandom(-0.03,0.032));
@@ -153,13 +153,13 @@ class HDStimpacker:HDWoundFixer{
 			A_SetPitch(pitch+2,SPF_INTERPOLATE);
 			A_PlaySound("*usemeds",CHAN_VOICE);
 			A_PlaySound("misc/bulletflesh",CHAN_WEAPON);
-			actor a=spawn(invoker.injecttype,pos);
+			actor a=spawn(invoker.injecttype,pos,ALLOW_REPLACE);
 			a.accuracy=40;a.target=self;
 		}
 		TNT1 AAAA 1 A_SetPitch(pitch-0.5,SPF_INTERPOLATE);
 		TNT1 A 6;
 		TNT1 A 0{
-			actor a=spawn(invoker.spentinjecttype,pos+(0,0,height-8));
+			actor a=spawn(invoker.spentinjecttype,pos+(0,0,height-8),ALLOW_REPLACE);
 			a.angle=angle;a.vel=vel;a.A_ChangeVelocity(3,1,2,CVF_RELATIVE);
 			a.A_PlaySound("weapons/grenopen",CHAN_VOICE);
 		}
@@ -217,7 +217,7 @@ class HDStimpacker:HDWoundFixer{
 				A_TakeInventory(invoker.inventorytype,1);
 				c.A_PlaySound("*usemeds",CHAN_VOICE);
 				c.A_SetBlend("7a 3a 18",0.1,4);
-				actor a=spawn(invoker.injecttype,c.pos);
+				actor a=spawn(invoker.injecttype,c.pos,ALLOW_REPLACE);
 				a.accuracy=40;a.target=c;
 				if(!countinv(invoker.inventorytype))return resolvestate("deselecthold");
 				return resolvestate("injected");
@@ -225,7 +225,7 @@ class HDStimpacker:HDWoundFixer{
 		}
 	injected:
 		TNT1 A 0{
-			actor a=spawn(invoker.spentinjecttype,pos+(0,0,height-8));
+			actor a=spawn(invoker.spentinjecttype,pos+(0,0,height-8),ALLOW_REPLACE);
 			a.angle=angle;a.vel=vel;a.A_ChangeVelocity(-2,1,4,CVF_RELATIVE);
 			A_PlaySound("weapons/grenopen",CHAN_VOICE);
 		}
@@ -430,9 +430,9 @@ class HDBlueBottler:HDWoundFixer{
 		TNT1 AAAA 1 A_SetPitch(pitch+0.5,SPF_INTERPOLATE);
 		TNT1 A 6;
 		TNT1 A 0{
-			actor a=spawn("SpentBottle",pos+(0,0,height-4));
+			actor a=spawn("SpentBottle",pos+(0,0,height-4),ALLOW_REPLACE);
 			a.angle=angle+2;a.vel=vel;a.A_ChangeVelocity(3,1,4,CVF_RELATIVE);
-			a=spawn("SpentCork",pos+(0,0,height-4));
+			a=spawn("SpentCork",pos+(0,0,height-4),ALLOW_REPLACE);
 			a.angle=angle+3;a.vel=vel;a.A_ChangeVelocity(5,3,4,CVF_RELATIVE);
 		}
 	injectedhold:
