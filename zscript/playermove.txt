@@ -108,16 +108,16 @@ extend class HDPlayerPawn{
 				isFocussing
 				&&!countinv("IsMoving")
 			){
-				double aimscale = CVar.GetCVar('hd_aimsensitivity', player).GetFloat();
-				if(aimscale>HDCONST_MAXFOCUSSCALE)aimscale=0.1;
+				double aimscale = CVar.GetCVar('hd_aimsensitivity',player).GetFloat();
+				if(aimscale>1.)aimscale=0.1;
 				turnscale*=clamp(aimscale,0.05,HDCONST_MAXFOCUSSCALE);
 				if(
 					notpredicting
 					&&!gunbraced
 					&&!mousehijacked
-					&&turnscale<0.5
 				){
 					vector2 iyp=(360./65536.*0.05)*(double(cmd.yaw),double(-cmd.pitch));
+					if(turnscale)iyp/=turnscale;
 					A_MuzzleClimb(iyp*2,iyp,iyp,iyp);
 				}
 			}
