@@ -87,6 +87,12 @@ extend class HDPlayerPawn{
 		UserCmd cmd = player.cmd;
 		bool notpredicting = !(player.cheats & CF_PREDICTING);
 
+		//update lastpitch and lastangle if teleported
+		if(notpredicting&&teleported){
+			lastpitch=pitch;
+			lastangle=angle;
+		}
+
 
 		//HD's handling of voluntary player turning.
 		//Uses the fovscale method so a readyweapon is essential.
