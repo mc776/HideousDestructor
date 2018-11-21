@@ -88,7 +88,7 @@ class SevenMilBrass:HDAmmo{
 	}
 	states{
 	spawn:
-		RBRS A -1 nodelay A_ChangeVelocity(0,frandom(-1,1),0,CVF_RELATIVE);
+		RBRS A -1;
 		stop;
 	}
 }
@@ -119,8 +119,10 @@ class HDSpent7mm:HDUPK{
 	}
 	states{
 	spawn:
-		RBRS A 2{angle+=45;}
-		wait;
+		RBRS A 2{
+			angle+=45;
+			if(floorz==pos.z&&!vel.z)A_Countdown();
+		}wait;
 	death:
 		RBRS A -1{
 			actor p=spawn("SevenMilBrass",self.pos,ALLOW_REPLACE);
