@@ -9,7 +9,7 @@ class HDArmour:HDMagAmmo{
 		+inventory.invbar
 		inventory.amount 1;
 		inventory.maxamount 3;
-		hdmagammo.maxperunit (HDCONST_GREENARMOUR+1000);
+		hdmagammo.maxperunit (HDCONST_BLUEARMOUR+1000);
 		hdmagammo.magbulk ENC_GREENARMOUR;
 		hdpickup.nicename "Armour";
 		hdpickup.refid HDLD_ARMGINV;
@@ -28,9 +28,17 @@ class HDArmour:HDMagAmmo{
 	}
 	//because it can intentionally go over the maxperunit amount
 	override void AddAMag(int addamt){
-		if(addamt<0)addamt=maxperunit;
+		if(addamt<0)addamt=HDCONST_GREENARMOUR;
 		mags.push(addamt);
 		amount=mags.size();
+	}
+	//keep types the same when maxing
+	override void MaxCheat(){
+		syncamount();
+		for(int i=0;i<amount;i++){
+			if(mags[i]>=1000)mags[i]=(HDCONST_BLUEARMOUR+1000);
+			else mags[i]=HDCONST_GREENARMOUR;
+		}
 	}
 	action void A_WearArmour(){
 		invoker.syncamount();
