@@ -227,17 +227,20 @@ class HDUPK:HDActor{
 	sound pickupsound;
 	int maxunitamount;
 	int amount;
+	bool multipickup;
 	property pickuptype:pickuptype;
 	property pickupmessage:pickupmessage;
 	property pickupsound:pickupsound;
 	property maxunitamount:maxunitamount;
 	property amount:amount;
+	property multipickup:multipickup;
 	default{
 		+solid
 		height 8;radius 8;
 		hdupk.pickupsound "weapons/pocket";//"misc/i_pkup";
 		hdupk.pickupmessage "Picked something up.";
 		hdupk.pickuptype "none";
+		hdupk.multipickup false;
 	}
 	override bool cancollidewith(actor other,bool passive){
 		return HDPickerUpper(other);

@@ -570,9 +570,9 @@ class HDPlayerPawn:PlayerPawn{
 						||grabbed is "inventory"
 					){
 						if(
-							grabbed is "hdupk"
-							||grabbed is "hdweapon"
+							grabbed is "hdweapon"
 							||(grabbed is "hdpickup"&&!hdpickup(grabbed).multipickup)
+							||(grabbed is "hdupk"&&!hdupk(grabbed).multipickup)
 						){
 							hasgrabbed=true;
 							grabbed.A_Face(self);
