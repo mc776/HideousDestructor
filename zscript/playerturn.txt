@@ -25,6 +25,10 @@ extend class HDPlayerPawn{
 	double lastpitch;
 	double lastangle;
 	void TurnCheck(){
+		if(teleported){
+			feetangle=angle;
+			return;
+		}
 
 		//Any changes in this function should only cover those automatic changes
 		//that are part of HD's additional adjustments.
