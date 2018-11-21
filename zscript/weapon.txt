@@ -44,6 +44,7 @@ class HDWeapon:Weapon{
 		hdweapon.dontfistondrop false;
 		hdweapon.fitsinbackpack false;
 	}
+	override bool getnoteleportfreeze(){return true;}
 	override bool cancollidewith(actor other,bool passive){return HDPickerUpper(other);}
 	//wrapper for setpsprite
 	action void SetWeaponState(statelabel st,int layer=PSP_WEAPON){
