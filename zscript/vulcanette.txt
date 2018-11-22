@@ -59,6 +59,9 @@ class Vulcanette:HDWeapon{
 		}
 		return blx,USE_426|USE_BATTERY;
 	}
+	override void consolidate(){
+		CheckBFGCharge(VULCS_BATTERY);
+	}
 	states{
 	select0:
 		GTLG A 0{

@@ -14,69 +14,6 @@ extend class HDPlayerPawn{
 			if(hdw)hdw.consolidate();
 		}
 
-		//use the BFG to charge everything
-		bool hasbfgchargeable=false;
-		if(bp&&bp.batteries.size()>0){
-			for(int i=0;i<bp.batteries.size();i++){
-				if(bp.batteries[i]>BFGC_MINCHARGE){
-					hasbfgchargeable=true;
-					break;
-				}
-			}
-		}
-		let bfug=HDWeapon(findinventory("BFG9k"));
-		let batts=HDBattery(findinventory("HDBattery"));
-		if(
-			bfug
-			&&(
-				hasbfgchargeable
-				||bfug.weaponstatus[BFGS_BATTERY]>BFGC_MINCHARGE
-				||(
-					bfug.weaponstatus[BFGS_CHARGE]>BFGC_MINCHARGE  
-					&&(
-						bfug.weaponstatus[BFGS_BATTERY]>=0  
-						||countinv("HDBattery")
-						||(
-							bp&&bp.itemamount[bp.batteryindex]>0
-						)
-					)
-				)||batts.BFGChargeable()
-			)
-		){
-			hdweapon(findinventory("BFG9k")).initializewepstats(true);
-			if(batts)batts.maxcheat();
-			if(countinv("ThunderBuster")){
-				hdweapon(findinventory("ThunderBuster")).weaponstatus[TBS_BATTERY]=20;
-			}
-			if(countinv("Lumberjack")){
-				hdweapon(findinventory("Lumberjack")).weaponstatus[CSAWS_BATTERY]=20;
-			}
-			if(countinv("Vulcanette")){
-				hdweapon(findinventory("Vulcanette")).weaponstatus[VULCS_BATTERY]=20;
-			}
-
-			//convert stuff in backpacks
-			if(bp){
-				bp.batteries.clear();
-				bp.SyncMagAmounts();
-			}
-		}
-
-
-		//repair *ERPs
-		while(bp
-			&&bp.itemamount[bp.derpindex]<1
-			&&bp.itemamount[bp.bderpindex]>0  
-		){
-			bp.itemamount[bp.bderpindex]--;
-			bp.itemamount[bp.derpindex]++;
-		}
-
-		if(countinv("BossRifle")){
-			hdweapon(findinventory("BossRifle")).weaponstatus[BOSSS_GRIME]=random(0,8);
-		}
-
-
 		//reload as much brass as possible and consolidate again
 		if(
 			(countinv("LiberatorRifle")||countinv("BossRifle"))

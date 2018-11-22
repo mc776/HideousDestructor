@@ -66,6 +66,9 @@ class BossRifle:HDWeapon{
 	override double,int weaponbulk(){
 		return 144+weaponstatus[BOSSS_MAG]*ENC_776_LOADED,USE_776;
 	}
+	override void consolidate(){
+		weaponstatus[BOSSS_GRIME]=random(20,40);
+	}
 	states{
 	select0:
 		BARG A 0;

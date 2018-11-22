@@ -39,6 +39,9 @@ class ThunderBuster:HDWeapon{
 	override void failedpickupunload(){
 		failedpickupunloadmag(TBS_BATTERY,"HDBattery");
 	}
+	override void consolidate(){
+		CheckBFGCharge(TBS_BATTERY);
+	}
 	static void ThunderZap(
 		actor caller,
 		double zoffset=32,
