@@ -195,3 +195,73 @@ extend class HDPlayerPawn{
 		}
 	}
 }
+
+
+
+extend class HDBackpack{
+	//go through all backpacked items and call their respective Consolidate()s
+	override void Consolidate(){
+		for(int i=0;i<invclasses.size();i++){
+			if(havenone(i))continue;
+			let type=(class<hdpickup>)(invclasses[i]);
+			if(!type)continue;
+			int onperson=BPToInv(owner,type);
+			let thisinv=hdpickup(owner.findinventory(type));
+
+			thisinv.Consolidate();
+
+			//then put everything back
+			int inbackpack=thisinv.amount-onperson;
+			if(type is "HDMagAmmo"){
+				let thismags=hdmagammo(thisinv);
+				string ibp="";
+				for(int i=0;i<inbackpack;i++){
+					ibp=ibp..(ibp==""?"":" ")..thismags.mags[0];
+					thismags.mags.delete(0);
+					thismags.amount--;
+				}
+				amounts[i]=ibp;
+			}else{
+				amounts[i]=""..inbackpack;
+				thisinv.amount=onperson;
+			}
+
+			thisinv.maxamount=getdefaultbytype(type).maxamount;
+		}
+	}
+
+	//increase maxamount by backpackamount
+	//take backpack contents and put them in inventory
+	//return original amount on person
+	static int BPToInv(actor caller,class<inventory> type){
+		int originalamount=caller.countinv(type);
+		let bp=hdbackpack(caller.findinventory("hdbackpack"));
+		if(
+			bp
+			&&bp.invclasses.find(type.getclassname())>=0
+		){
+			int bpindex=bp.invclasses.find(type.getclassname());
+			string addamt=bp.amounts[bpindex];
+			if(addamt!=""){
+				if(type is "HDMagAmmo"){
+					array<string> bpmags;bpmags.clear();
+					addamt.split(bpmags," ");
+					hdmagammo onp=hdmagammo(caller.findinventory(type));
+					for(int i=0;i<bpmags.size();i++){
+						caller.A_GiveInventory(type,1);
+						if(!onp)onp=hdmagammo(caller.findinventory(type));
+						onp.maxamount=max(onp.maxamount,originalamount+bpmags.size());
+						onp.mags.push(bpmags[i].toint());
+					}
+				}else if(type is "HDPickup"&&addamt.toint()>0){
+					int bpamt=addamt.toint();
+					caller.A_GiveInventory(type,bpamt);
+					let cfi=caller.findinventory(type);
+					cfi.maxamount=max(cfi.maxamount,originalamount+bpamt);
+				}
+			}
+			bp.amounts[bpindex]="";
+		}
+		return originalamount;
+	}
+}

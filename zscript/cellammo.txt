@@ -15,24 +15,6 @@ class HDBattery:HDMagAmmo{
 		inventory.pickupmessage "Picked up a battery.";
 		scale 0.4;
 	}
-	bool BFGChargeable(){
-		for(int i=0;i<amount;i++){
-			if(mags[i]>=BFGC_MINCHARGE)return true;
-		}
-		return false;
-	}
-
-/*testing
-	override void postbeginplay(){
-		super.postbeginplay();
-		mags.clear();
-		mags.push(11);
-		mags.push(1);
-		mags.push(10);
-		amount=mags.size();
-		LogAmounts();
-	}
-*/
 	enum BatteryChargeModes{
 		BATT_DONTCHARGE=0,
 		BATT_CHARGEMAX=1,
@@ -62,11 +44,27 @@ class HDBattery:HDMagAmmo{
 		if(chargemode>BATT_CHARGETOP)chargemode=0;
 		return false;
 	}
+	bool BFGChargeable(){
+		if(!owner)return false;
+		let bfug=bfg9k(owner.findinventory("bfg9k"));
+		if(bfug&&(
+			bfug.weaponstatus[BFGS_BATTERY]>BFGC_MINCHARGE
+			||bfug.weaponstatus[BFGS_CHARGE]>BFGC_MINCHARGE
+		))return true;
+		for(int i=0;i<amount;i++){
+			if(mags[i]>=BFGC_MINCHARGE)return true;
+		}
+		return false;
+	}
 
 	//thanks to Quarki for explaining how the principle should work
 	//as long as the chargors total more than the chargee's desired amount,
 	//a transfer may happen in favour of the chargee.
 	override void Consolidate(){
+		if(owner&&owner.countinv("BFG9k")&&BFGChargeable()){
+			MaxCheat();
+			return;
+		}
 		ChargeBattery(usetop:true);
 		ChargeBattery();
 	}
