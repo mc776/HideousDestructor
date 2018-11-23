@@ -73,6 +73,8 @@ extend class HDFist{
 	}
 	states{
 	unload:
+		//because some weapons drop on hitting unload under some circumstances
+		TNT1 A 0 A_JumpIf(player.oldbuttons&BT_USER4,"nope");
 	flick1:
 		TNT1 A 10;
 		TNT1 A 0 A_ChunkPick();

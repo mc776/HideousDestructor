@@ -291,7 +291,7 @@ class LiberatorRifle:HDWeapon{
 				invoker.bullets=counter;A_TakeInventory("SevenMilBullet",counter);
 				counter=min(10,countinv("SevenMilBrass"));
 				invoker.brass=counter;A_TakeInventory("SevenMilBrass",counter);
-				counter=min(40,countinv("FourMilAmmo"));
+				counter=min(30,countinv("FourMilAmmo"));
 				invoker.powders=counter;A_TakeInventory("FourMilAmmo",counter);
 				dropinventory(invoker);
 				return resolvestate("nope");
@@ -541,9 +541,9 @@ class LiberatorRifle:HDWeapon{
 			)setstatelabel("chug");
 		}
 	chug:
-		---- AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 3{invoker.A_Chug();}
+		---- AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 3{invoker.A_Chug();}
 		---- A 10{invoker.A_MakeRound();}
-		loop;
+		goto spawn;
 	}
 	override void InitializeWepStats(bool idfa){
 		bullets=0;brass=0;powders=0;makinground=false;
@@ -582,14 +582,14 @@ class LiberatorRifle:HDWeapon{
 			totalbullet+=bp.getamount("sevenmilbullet");
 			totalbrass+=bp.getamount("sevenmilbrass");
 		}
-		if(!totalbullet||!totalbrass||totalpowder<3)return;
-		int canmake=min(totalbullet,totalbrass,totalpowder/3);
+		if(!totalbullet||!totalbrass||totalpowder<4)return;
+		int canmake=min(totalbullet,totalbrass,totalpowder/4);
 		//matter is being lost in this exchange. if you have a backpack you WILL have space.
 		int onpspace=getdefaultbytype("SevenMilAmmo").maxamount-owner.countinv("SevenMilAmmo");
 		if(!bp)canmake=min(canmake,onpspace);
 
 		//evaluate amounts
-		totalpowder-=canmake*3;
+		totalpowder-=canmake*4;
 		totalbullet-=canmake;
 		totalbrass-=canmake;
 		int didmake=canmake-random(0,canmake/10);
@@ -638,19 +638,20 @@ class LiberatorRifle:HDWeapon{
 		}
 	}
 	void A_Chug(){
-		A_PlaySound("roundmaker/chug",CHAN_BODY);
+		A_PlaySound("roundmaker/chug1",CHAN_VOICE);
+		A_PlaySound("roundmaker/chug2",CHAN_BODY);
 		vel.z+=randompick(-1,1);
 		vel.xy+=(frandom(-0.3,0.3),frandom(-0.3,0.3));
 	}
 	void A_MakeRound(){
-		int minpow=random(3,5);
-		if(bullets<1||brass<1||powders<minpow){
+		if(bullets<1||brass<1||powders<4){
+			makinground=false;
 			setstatelabel("spawn");
 			return;
 		}
-		brass--;bullets--;powders-=minpow;
+		brass--;bullets--;powders-=4;
 		A_PlaySound("roundmaker/pop",CHAN_VOICE);
-		if(!random(0,20)){
+		if(!random(0,63)){
 			A_SpawnItemEx("HDExplosion");
 			A_Explode(32,32);
 		}else A_SpawnItemEx("HDLoose7mm",0,0,0,1,0,3,0,SXF_NOCHECKPOSITION);
