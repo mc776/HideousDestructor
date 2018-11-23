@@ -280,6 +280,22 @@ class LiberatorRifle:HDWeapon{
 	user4:
 	unload:
 		BRFG A 0{
+			if(
+				pressinguse()
+				&&countinv("SevenMilBullet")
+				&&countinv("SevenMilBrass")
+				&&countinv("FourMilAmmo")>=3
+			){
+				invoker.makinground=true;
+				int counter=min(10,countinv("SevenMilBullet"));
+				invoker.bullets=counter;A_TakeInventory("SevenMilBullet",counter);
+				counter=min(10,countinv("SevenMilBrass"));
+				invoker.brass=counter;A_TakeInventory("SevenMilBrass",counter);
+				counter=min(40,countinv("FourMilAmmo"));
+				invoker.powders=counter;A_TakeInventory("FourMilAmmo",counter);
+				dropinventory(invoker);
+				return resolvestate("nope");
+			}
 			invoker.weaponstatus[0]|=LIBF_JUSTUNLOAD;
 			if(
 				invoker.weaponstatus[0]&LIBF_GRENADEMODE
@@ -517,9 +533,20 @@ class LiberatorRifle:HDWeapon{
 				if(invoker.weaponstatus[LIBS_MAG]<0)frame=3;
 				else frame=1;
 			}
+			if(
+				invoker.makinground
+				&&invoker.bullets>0
+				&&invoker.brass>0
+				&&invoker.powders>=3
+			)setstatelabel("chug");
 		}
+	chug:
+		---- AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 3{invoker.A_Chug();}
+		---- A 10{invoker.A_MakeRound();}
+		loop;
 	}
 	override void InitializeWepStats(bool idfa){
+		bullets=0;brass=0;powders=0;makinground=false;
 		weaponstatus[LIBS_FLAGS]|=LIBF_GRENADELOADED;
 		weaponstatus[LIBS_MAG]=30;
 		weaponstatus[LIBS_CHAMBER]=2;
@@ -530,6 +557,103 @@ class LiberatorRifle:HDWeapon{
 			weaponstatus[LIBS_HEAT]=0;
 			weaponstatus[LIBS_DROPADJUST]=24;
 		}
+	}
+
+
+
+	/*
+		Reloading between and during maps
+	*/
+	int powders;
+	int bullets;
+	int brass;
+	bool makinground;
+	//make as many rounds as possible
+	override void Consolidate(){
+		int totalpowder=owner.countinv("FourMilAmmo");
+		int totalbullet=owner.countinv("SevenMilBullet")+random(0,3); //improvised bullets!
+		int totalbrass=owner.countinv("SevenMilBrass");
+		int onppowder=totalpowder;
+		int onpbullet=totalbullet;
+		int onpbrass=totalbrass;
+		let bp=hdbackpack(owner.findinventory("hdbackpack"));
+		if(bp){
+			totalpowder+=bp.getamount("fourmilammo");
+			totalbullet+=bp.getamount("sevenmilbullet");
+			totalbrass+=bp.getamount("sevenmilbrass");
+		}
+		if(!totalbullet||!totalbrass||totalpowder<3)return;
+		int canmake=min(totalbullet,totalbrass,totalpowder/3);
+		//matter is being lost in this exchange. if you have a backpack you WILL have space.
+		int onpspace=getdefaultbytype("SevenMilAmmo").maxamount-owner.countinv("SevenMilAmmo");
+		if(!bp)canmake=min(canmake,onpspace);
+
+		//evaluate amounts
+		totalpowder-=canmake*3;
+		totalbullet-=canmake;
+		totalbrass-=canmake;
+		int didmake=canmake-random(0,canmake/10);
+
+		//deduct inventory
+		//remove inv first, then bp
+		int deductfrombp=canmake-onpbrass;
+		owner.A_TakeInventory("sevenmilbrass",canmake);
+		if(deductfrombp>0)bp.addamount("sevenmilbrass",-deductfrombp);
+		deductfrombp=canmake-onpbullet;
+		owner.A_TakeInventory("sevenmilbullet",canmake);
+		if(deductfrombp>0)bp.addamount("sevenmilbullet",-deductfrombp);
+		deductfrombp=canmake-onppowder;
+		owner.A_TakeInventory("fourmilammo",canmake);
+		if(deductfrombp>0)bp.addamount("fourmilammo",-deductfrombp);
+
+		//add resulting rounds
+		//fill up inv first, then bp
+		if(didmake<1)return;
+		int bpadd=didmake-onpspace;
+		owner.A_GiveInventory("SevenMilAmmo",didmake);
+		if(bpadd>0)bp.addamount("sevenmilammo",bpadd);
+
+		owner.A_Log("You reloaded "..didmake.." 7.76mm rounds during your downtime.",true);
+	}
+	override void actualpickup(actor other){
+		super.actualpickup(other);
+		if(!owner)return;
+		while(bullets>0){
+			bullets--;
+			if(owner.A_JumpIfInventory("SevenMilBullet",0,"null"))
+				owner.A_SpawnItemEx("SevenMilBullet",0,0,owner.height-16,2,0,1);
+			else HDF.Give(owner,"SevenMilBullet",1);
+		}
+		while(powders>0){
+			powders--;
+			if(owner.A_JumpIfInventory("FourMilAmmo",0,"null"))
+				owner.A_SpawnItemEx("FourMilAmmo",0,0,owner.height-16,2,0,1);
+			else HDF.Give(owner,"FourMilAmmo",1);
+		}
+		while(brass>0){
+			brass--;
+			if(owner.A_JumpIfInventory("SevenMilBrass",0,"null"))
+				owner.A_SpawnItemEx("SevenMilBrass",0,0,owner.height-16,2,0,1);
+			else HDF.Give(owner,"SevenMilBrass",1);
+		}
+	}
+	void A_Chug(){
+		A_PlaySound("roundmaker/chug",CHAN_BODY);
+		vel.z+=randompick(-1,1);
+		vel.xy+=(frandom(-0.3,0.3),frandom(-0.3,0.3));
+	}
+	void A_MakeRound(){
+		int minpow=random(3,5);
+		if(bullets<1||brass<1||powders<minpow){
+			setstatelabel("spawn");
+			return;
+		}
+		brass--;bullets--;powders-=minpow;
+		A_PlaySound("roundmaker/pop",CHAN_VOICE);
+		if(!random(0,20)){
+			A_SpawnItemEx("HDExplosion");
+			A_Explode(32,32);
+		}else A_SpawnItemEx("HDLoose7mm",0,0,0,1,0,3,0,SXF_NOCHECKPOSITION);
 	}
 }
 enum liberatorstatus{

@@ -13,127 +13,8 @@ extend class HDPlayerPawn{
 			let hdw=hdweapon(ppp);
 			if(hdw)hdw.consolidate();
 		}
-
-		//reload as much brass as possible and consolidate again
-		if(
-			(countinv("LiberatorRifle")||countinv("BossRifle"))
-		){
-			int totalbrass=countinv("SevenMilBrass");
-			int totalpowder=countinv("FourMilAmmo");
-
-			//take recyclables out of guns
-			let boss=bossrifle(findinventory("BossRifle"));
-			if(boss){
-				int br=boss.weaponstatus[BOSSS_CHAMBER];
-				if(br!=2&&br!=4&&br>0){  
-					totalbrass++;
-					boss.weaponstatus[BOSSS_CHAMBER]=0;
-				}
-			}
-			let libb=liberatorrifle(findinventory("LiberatorRifle"));
-			if(libb){
-				if(libb.weaponstatus[LIBS_CHAMBER]==1){
-					libb.weaponstatus[LIBS_CHAMBER]=0;
-					totalbrass++;
-				}
-				int brasss=libb.weaponstatus[LIBS_BRASS];
-				libb.weaponstatus[LIBS_BRASS]=0;
-				if(brasss>0)totalbrass+=brasss;  
-			}
-			let zed=zm66assaultrifle(findinventory("zm66assaultrifle"));
-			if(
-				zed&&
-				zed.weaponstatus[0]
-				&ZM66F_CHAMBERBROKEN
-			){
-				zed.weaponstatus[0]&=~(ZM66F_CHAMBER|ZM66F_CHAMBERBROKEN);
-				totalpowder++;
-			}
-
-			//and other containers
-			int brassinbp=0;
-			int zedinbp=0;
-			if(bp){
-				brassinbp=bp.itemamount[bp.brassindex];
-				zedinbp=bp.itemamount[bp.loosezedindex];
-
-				totalbrass+=brassinbp;
-				totalpowder+=zedinbp;
-			}
-
-
-			//figure out what you can actually do
-			int max7=hdmath.maxinv(self,"SevenMilAmmo")-countinv("SevenMilAmmo");
-			int max7bp=0;
-			if(bp)max7bp=max(0,(HDBPC_CAPACITY-bp.getbulk())/(bp.itembulk[bp.sevenmilindex]));
-
-			//random losses
-			int scrapped=totalbrass*0.02+random(0,2);
-			totalbrass-=scrapped;
-			scrapped=totalpowder*0.05+random(0,12);
-			totalpowder-=scrapped;
-
-			//and now make the dang things
-			int made=min(
-				totalbrass,
-				totalpowder/3,
-				max7+max7bp
-			);
-			if(made>0){
-				totalbrass-=made;
-				totalpowder-=made*3;
-
-				string loadedsevensmsg=string.format("Reloaded %i 7.76mm rounds during downtime.",made);
-
-				//load Liberator mags to make room
-				let llbbmm=HD7mMag(findinventory("HD7mMag"));
-				bool sevensmagged=false;
-				if(llbbmm){
-					int llbbmmamt=llbbmm.mags.size();
-					for(int i=0;i<llbbmmamt;i++){
-						int intomag=min(
-							30-llbbmm.mags[i],
-							made
-						);
-						if(intomag>0){
-							sevensmagged=true;
-							llbbmm.mags[i]+=intomag;
-							made-=intomag;
-							if(made<1)break;
-						}
-					}
-				}
-				if(sevensmagged)loadedsevensmsg.appendformat(" Some were loaded into your Liberator mags.");
-				A_Log(loadedsevensmsg,true);
-
-				//fill inventory first, then backpack
-				//let the player load into mags after
-				max7=min(max7,made);
-				made-=max7;
-				A_GiveInventory("SevenMilAmmo",max7);
-
-				//put stuff back into backpack
-				if(bp){
-					bp.itemamount[bp.sevenmilindex]+=made;
-	
-					brassinbp=min(totalbrass,brassinbp);
-					zedinbp=min(totalpowder,zedinbp);
-					totalbrass-=brassinbp;
-					totalpowder-=zedinbp;
-	
-					bp.itemamount[bp.brassindex]=brassinbp;
-					bp.itemamount[bp.loosezedindex]=zedinbp;
-				}
-
-				//put stuff back into inventory
-				A_SetInventory("SevenMilBrass",totalbrass);
-				A_SetInventory("FourMilAmmo",totalpowder);
-			}
-		}
 	}
 }
-
-
 
 extend class HDBackpack{
 	//go through all backpacked items and call their respective Consolidate()s
@@ -148,6 +29,7 @@ extend class HDBackpack{
 			thisinv.Consolidate();
 
 			//then put everything back
+			if(!thisinv)return;
 			int inbackpack=thisinv.amount-onperson;
 			if(type is "HDMagAmmo"){
 				let thismags=hdmagammo(thisinv);

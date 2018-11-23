@@ -313,6 +313,8 @@ const HDLD_NIMAG30="930";
 const HDLD_SEVNMIL="7mm";
 const HDLD_SEVNMAG="730";
 const HDLD_SEVCLIP="710";
+const HDLD_SEVNBUL="7bl";
+const HDLD_SEVNBRA="7br";
 
 const HDLD_FOURMIL="4mm";
 const HDLD_FOURMAG="450";
@@ -705,6 +707,53 @@ class HDBackpack:HDWeapon{
 		bulk=blk;
 		return max(blk*0.6,100),0;
 	}
+
+	int GetAmount(class<inventory> type){
+		int thisindex=invclasses.find(type.getclassname());
+		if(thisindex>=invclasses.size())return 0;
+		let wep=(class<hdweapon>)(type);
+		let mag=(class<hdmagammo>)(type);
+		let pkup=(class<hdpickup>)(type);
+		if(wep||mag){
+			array<string>amts;
+			amounts[thisindex].split(amts," ");
+			if(wep)return amts.size()/9;
+			else return amts.size();
+		}
+		return amounts[thisindex].toint();
+	}
+	void AddAmount(class<inventory> type,int amt,int magamount=-1){
+		let wep=(class<hdweapon>)(type);
+		let mag=(class<hdmagammo>)(type);
+		let pkup=(class<hdpickup>)(type);
+		if((wep||mag)&&amt<1)return; //non-positive input for simple items only
+		int thisindex=invclasses.find(type.getclassname());
+		if(wep){
+			for(int i=0;i<amt;i++){
+				let itb=inventory(spawn(wep));
+				itemtobackpack(itb);
+			}
+			return;
+		}
+		if(mag){
+			if(magamount<0)magamount=getdefaultbytype(mag).maxperunit;
+			else magamount=min(magamount,getdefaultbytype(mag).maxperunit);
+			for(int i=0;i<amt;i++){
+				string newamts=amounts[thisindex];
+				if(havenone(thisindex))newamts=newamts.." ";
+				newamts=newamts..magamount;
+				amounts[thisindex]=newamts;
+			}
+			return;
+		}
+		if(pkup){
+			int newamt=amounts[thisindex].toint()+amt;
+			if(newamt<1)amounts[thisindex]="";
+			else amounts[thisindex]=""..newamt;
+		}
+	}
+
+
 	void UpdateMessage(int num){
 		if(!owner)return;
 		int nnsiz=nicenames.size();
