@@ -42,6 +42,11 @@ class ZM66AssaultRifle:HDWeapon{
 				clamp(cvar.getcvar("hd_zmfiremode",owner.player).getint(),0,2);
 			weaponstatus[ZM66S_ZOOM]=
 				clamp(cvar.getcvar("hd_zmzoom",owner.player).getint(),16,70);
+			if(!(weaponstatus[0]&ZM66F_CHAMBER)){
+				weaponstatus[0]|=ZM66F_CHAMBER;
+				if(weaponstatus[ZM66S_MAG]==51)weaponstatus[ZM66S_MAG]=49;
+					else weaponstatus[ZM66S_MAG]--;
+			}
 		}
 	}
 	override double gunmass(){
@@ -566,6 +571,7 @@ class ZM66AssaultRifle:HDWeapon{
 				!(invoker.weaponstatus[0]&ZM66F_CHAMBER)
 				&&!(invoker.weaponstatus[0]&ZM66F_CHAMBERBROKEN)
 				&&invoker.weaponstatus[ZM66S_MAG]>0
+				&&invoker.weaponstatus[ZM66S_MAG]<51
 			){
 				invoker.weaponstatus[ZM66S_MAG]--;
 				invoker.weaponstatus[0]|=ZM66F_CHAMBER;
@@ -629,7 +635,7 @@ class ZM66AssaultRifle:HDWeapon{
 	}
 
 	override void InitializeWepStats(bool idfa){
-		weaponstatus[ZM66S_FLAGS]|=ZM66F_CHAMBER|ZM66F_GRENADELOADED;
+		weaponstatus[ZM66S_FLAGS]|=ZM66F_GRENADELOADED;
 		weaponstatus[ZM66S_MAG]=51;
 		if(!idfa && !owner){
 			weaponstatus[ZM66S_ZOOM]=30;
