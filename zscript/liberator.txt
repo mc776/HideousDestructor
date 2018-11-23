@@ -282,14 +282,11 @@ class LiberatorRifle:HDWeapon{
 		BRFG A 0{
 			if(
 				pressinguse()
-				&&countinv("SevenMilBullet")
 				&&countinv("SevenMilBrass")
 				&&countinv("FourMilAmmo")>=3
 			){
 				invoker.makinground=true;
-				int counter=min(10,countinv("SevenMilBullet"));
-				invoker.bullets=counter;A_TakeInventory("SevenMilBullet",counter);
-				counter=min(10,countinv("SevenMilBrass"));
+				int counter=min(10,countinv("SevenMilBrass"));
 				invoker.brass=counter;A_TakeInventory("SevenMilBrass",counter);
 				counter=min(30,countinv("FourMilAmmo"));
 				invoker.powders=counter;A_TakeInventory("FourMilAmmo",counter);
@@ -535,7 +532,6 @@ class LiberatorRifle:HDWeapon{
 			}
 			if(
 				invoker.makinground
-				&&invoker.bullets>0
 				&&invoker.brass>0
 				&&invoker.powders>=3
 			)setstatelabel("chug");
@@ -546,7 +542,7 @@ class LiberatorRifle:HDWeapon{
 		goto spawn;
 	}
 	override void InitializeWepStats(bool idfa){
-		bullets=0;brass=0;powders=0;makinground=false;
+		brass=0;powders=0;makinground=false;
 		weaponstatus[LIBS_FLAGS]|=LIBF_GRENADELOADED;
 		weaponstatus[LIBS_MAG]=30;
 		weaponstatus[LIBS_CHAMBER]=2;
@@ -565,32 +561,27 @@ class LiberatorRifle:HDWeapon{
 		Reloading between and during maps
 	*/
 	int powders;
-	int bullets;
 	int brass;
 	bool makinground;
 	//make as many rounds as possible
 	override void Consolidate(){
 		int totalpowder=owner.countinv("FourMilAmmo");
-		int totalbullet=owner.countinv("SevenMilBullet")+random(0,12); //improvised bullets!
 		int totalbrass=owner.countinv("SevenMilBrass");
 		int onppowder=totalpowder;
-		int onpbullet=totalbullet;
 		int onpbrass=totalbrass;
 		let bp=hdbackpack(owner.findinventory("hdbackpack"));
 		if(bp){
 			totalpowder+=bp.getamount("fourmilammo");
-			totalbullet+=bp.getamount("sevenmilbullet");
 			totalbrass+=bp.getamount("sevenmilbrass");
 		}
-		if(!totalbullet||!totalbrass||totalpowder<4)return;
-		int canmake=min(totalbullet,totalbrass,totalpowder/4);
+		if(!totalbrass||totalpowder<4)return;
+		int canmake=min(totalbrass,totalpowder/4);
 		//matter is being lost in this exchange. if you have a backpack you WILL have space.
 		int onpspace=getdefaultbytype("SevenMilAmmo").maxamount-owner.countinv("SevenMilAmmo");
 		if(!bp)canmake=min(canmake,onpspace);
 
 		//evaluate amounts
 		totalpowder-=canmake*4;
-		totalbullet-=canmake;
 		totalbrass-=canmake;
 		int didmake=canmake-random(0,canmake/10);
 
@@ -599,9 +590,6 @@ class LiberatorRifle:HDWeapon{
 		int deductfrombp=canmake-onpbrass;
 		owner.A_TakeInventory("sevenmilbrass",canmake);
 		if(deductfrombp>0)bp.addamount("sevenmilbrass",-deductfrombp);
-		deductfrombp=canmake-onpbullet;
-		owner.A_TakeInventory("sevenmilbullet",canmake);
-		if(deductfrombp>0)bp.addamount("sevenmilbullet",-deductfrombp);
 		deductfrombp=canmake-onppowder;
 		owner.A_TakeInventory("fourmilammo",canmake);
 		if(deductfrombp>0)bp.addamount("fourmilammo",-deductfrombp);
@@ -618,12 +606,6 @@ class LiberatorRifle:HDWeapon{
 	override void actualpickup(actor other){
 		super.actualpickup(other);
 		if(!owner)return;
-		while(bullets>0){
-			bullets--;
-			if(owner.A_JumpIfInventory("SevenMilBullet",0,"null"))
-				owner.A_SpawnItemEx("SevenMilBullet",0,0,owner.height-16,2,0,1);
-			else HDF.Give(owner,"SevenMilBullet",1);
-		}
 		while(powders>0){
 			powders--;
 			if(owner.A_JumpIfInventory("FourMilAmmo",0,"null"))
@@ -644,12 +626,12 @@ class LiberatorRifle:HDWeapon{
 		vel.xy+=(frandom(-0.3,0.3),frandom(-0.3,0.3));
 	}
 	void A_MakeRound(){
-		if(bullets<1||brass<1||powders<4){
+		if(brass<1||powders<4){
 			makinground=false;
 			setstatelabel("spawn");
 			return;
 		}
-		brass--;bullets--;powders-=4;
+		brass--;powders-=4;
 		A_PlaySound("roundmaker/pop",CHAN_VOICE);
 		if(!random(0,63)){
 			A_SpawnItemEx("HDExplosion");

@@ -77,6 +77,7 @@ class HD7mClip:HDMagAmmo{
 		}stop;
 	}
 }
+//(primers and bullet lead can be cannibalized from 4.26mm rounds)
 class SevenMilBrass:HDAmmo{
 	default{
 		+inventory.ignoreskill +forcexybillboard +cannotpush
@@ -92,39 +93,6 @@ class SevenMilBrass:HDAmmo{
 	spawn:
 		RBRS A -1;
 		stop;
-	}
-}
-//(primers can be cannibalized from 4.26mm rounds)
-class SevenMilBullet:HDAmmo{
-	default{
-		+inventory.ignoreskill +forcexybillboard +cannotpush
-		hdpickup.multipickup true;
-		hdpickup.nicename "7.76mm Bullet";
-		hdpickup.refid HDLD_SEVNBUL;
-		inventory.maxamount 200;
-		xscale 0.4;yscale 0.3;
-		inventory.pickupmessage "Picked up a 7.76mm bullet.";
-	}
-	states{
-	spawn:
-		BLET A -1;
-		stop;
-	}
-}
-class SevenMilBulletBox:HDUPK{
-	default{
-		//$Category "Ammo/Hideous Destructor/"
-		//$Title "Box of 7.76 Bullets"
-		//$Sprite "7BBXA0"
-		scale 0.4;
-		hdupk.amount 50;
-		hdupk.pickupsound "weapons/pocket";
-		hdupk.pickupmessage "Picked up some 7.76 bullets.";
-		hdupk.pickuptype "SevenMilBullet";
-	}
-	states{
-	spawn:
-		7BBX A -1;
 	}
 }
 
