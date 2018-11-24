@@ -212,7 +212,11 @@ class HDAmmo:HDPickup{
 class HDItemGiver:HDPickup{
 	default{+nointeraction}
 	override void actualpickup(actor other){}
-	virtual void addtobackpack(hdbackpack bp){}
+	virtual void addtobackpack(hdbackpack bp){
+		if(!master)spawnmaster();
+		bp.itemtobackpack(inventory(master));
+	}
+	virtual void spawnmaster(){}
 	states{
 	spawn:
 		TNT1 A 1;

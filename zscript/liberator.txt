@@ -669,10 +669,6 @@ class LiberatorNoGL:HDItemGiver{
 		hdpickup.nicename "Liberator Rifle (no GL)";
 		hdpickup.fitsinbackpack true;
 	}
-	override void addtobackpack(hdbackpack bp){
-		if(!master)spawnmaster();
-		bp.itemtobackpack(inventory(master));
-	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		LiberatorRifle lll;
@@ -683,7 +679,7 @@ class LiberatorNoGL:HDItemGiver{
 			lll.weaponstatus[0]&=~LIBF_GRENADELOADED;
 		}else spawnmaster();
 	}
-	void spawnmaster(){
+	override void spawnmaster(){
 		let lll=LiberatorRifle(spawn("LiberatorRifle",pos,ALLOW_REPLACE));
 		lll.special=special;
 		lll.changetid(tid);

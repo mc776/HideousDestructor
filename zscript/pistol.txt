@@ -416,21 +416,14 @@ class HDAutoPistol:HDItemGiver{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		if(!owner){
-			let spwn=HDPistol(spawn("HDPistol",pos,ALLOW_REPLACE));
-			spwn.weaponstatus[PISS_AUTO]=0;
-			master=spwn;
-		}
+		if(!owner)spawnmaster();
 	}
-	override void addtobackpack(hdbackpack bp){
-		if(!master){
-			let spwn=HDPistol(spawn("HDPistol",pos,ALLOW_REPLACE));
-			spwn.special=special;
-			spwn.changetid(tid);
-			spwn.weaponstatus[PISS_AUTO]=0;
-			master=spwn;
-		}
-		bp.itemtobackpack(inventory(master));
+	override void spawnmaster(){
+		let spwn=HDPistol(spawn("HDPistol",pos,ALLOW_REPLACE));
+		spwn.special=special;
+		spwn.changetid(tid);
+		spwn.weaponstatus[PISS_AUTO]=0;
+		master=spwn;
 	}
 	override void attachtoowner(actor other){
 		super.attachtoowner(other);
