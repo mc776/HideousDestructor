@@ -433,12 +433,19 @@ class HDAutoPistol:HDItemGiver{
 			if(expi.weaponstatus[PISS_AUTO]>=0)
 				expi.weaponstatus2[PISS_AUTO]=max(0,expi.weaponstatus2[PISS_AUTO]);
 				else expi.weaponstatus[PISS_AUTO]=max(0,expi.weaponstatus[PISS_AUTO]);
+			destroy();
 		}else{
 			let expi=HDPistol(spawn("HDPistol"));
 			expi.weaponstatus[PISS_AUTO]=0;
-			expi.actualpickup(owner);
+			master=expi;
+		}
+	}
+	override void doeffect(){
+		if(HDPistol(master)){
+			HDPistol(master).actualpickup(owner);
 			owner.player.pendingweapon=WP_NOCHANGE;
 		}
+		if(master&&!inventory(master).owner)master.destroy();
 		destroy();
 	}
 }
