@@ -408,28 +408,40 @@ enum pistolstatus{
 
 
 //use this to give an autopistol in a custom loadout
-class HDAutoPistol:HDPickup{
+class HDAutoPistol:HDItemGiver{
 	default{
 		hdpickup.refid HDLD_PISTAUT;
 		hdpickup.nicename "Pistol (select-fire)";
-		hdpickup.fitsinbackpack false;
+		hdpickup.fitsinbackpack true;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		if(!owner){
 			let spwn=HDPistol(spawn("HDPistol",pos,ALLOW_REPLACE));
 			spwn.weaponstatus[PISS_AUTO]=0;
-			destroy();
+			master=spwn;
 		}
+	}
+	override void addtobackpack(hdbackpack bp){
+		if(!master){
+			let spwn=HDPistol(spawn("HDPistol",pos,ALLOW_REPLACE));
+			spwn.weaponstatus[PISS_AUTO]=0;
+			master=spwn;
+		}
+		bp.itemtobackpack(inventory(master));
 	}
 	override void attachtoowner(actor other){
 		super.attachtoowner(other);
-		other.A_GiveInventory("HDPistol",1);
-		let expi=HDPistol(other.findinventory("HDPistol"));
-		if(expi){
-			//set the FIRST to auto
-			if(expi.weaponstatus[PISS_AUTO]<0)expi.weaponstatus[PISS_AUTO]=0;
-			else if(expi.amount>1) expi.weaponstatus2[PISS_AUTO]=max(0,expi.weaponstatus2[PISS_AUTO]);
+		bool modonly=other.countinv("HDPistol")>1;
+		if(modonly){
+			let expi=HDPistol(other.findinventory("HDPistol"));
+			if(expi.weaponstatus[PISS_AUTO]>=0)
+				expi.weaponstatus2[PISS_AUTO]=max(0,expi.weaponstatus2[PISS_AUTO]);
+				else expi.weaponstatus[PISS_AUTO]=max(0,expi.weaponstatus[PISS_AUTO]);
+		}else{
+			let expi=HDPistol(spawn("HDPistol"));
+			expi.weaponstatus[PISS_AUTO]=0;
+			expi.actualpickup(other);
 		}
 		destroy();
 	}
