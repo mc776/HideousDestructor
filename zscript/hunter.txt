@@ -209,10 +209,12 @@ class Hunter:HDShotgun replaces Shotgun{
 		}
 		SHTG A 0 {
 			if(
-				PressingUnload()
-				||PressingReload()
+				PressingReload()
+				||PressingUnload()
 				||PressingFire()
 				||PressingAltfire()
+				||PressingZoom()
+				||PressingFiremode()
 			)setweaponstate("reloadSSend");
 			else if(
 				invoker.weaponstatus[SHOTS_SIDESADDLE]<12
