@@ -425,6 +425,8 @@ class HDAutoPistol:HDItemGiver{
 	override void addtobackpack(hdbackpack bp){
 		if(!master){
 			let spwn=HDPistol(spawn("HDPistol",pos,ALLOW_REPLACE));
+			spwn.special=special;
+			spwn.changetid(tid);
 			spwn.weaponstatus[PISS_AUTO]=0;
 			master=spwn;
 		}

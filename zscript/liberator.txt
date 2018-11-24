@@ -660,14 +660,18 @@ enum liberatorstatus{
 };
 
 
-class LiberatorNoGL:HDPickup{
+class LiberatorNoGL:HDItemGiver{
 	default{
 		//$Category "Weapons/Hideous Destructor"
 		//$Title "Liberator (no GL)"
 		//$Sprite "BRFLA0"
 		hdpickup.refid HDLD_LIBNOGL;
 		hdpickup.nicename "Liberator Rifle (no GL)";
-		hdpickup.fitsinbackpack false;
+		hdpickup.fitsinbackpack true;
+	}
+	override void addtobackpack(hdbackpack bp){
+		if(!master)spawnmaster();
+		bp.itemtobackpack(inventory(master));
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -675,13 +679,17 @@ class LiberatorNoGL:HDPickup{
 		if(owner){
 			owner.A_SetInventory("LiberatorRifle",1);
 			lll=LiberatorRifle(owner.findinventory("LiberatorRifle"));
-		}else{
-			lll=LiberatorRifle(spawn("LiberatorRifle",pos,ALLOW_REPLACE));
-			lll.special=special;
-		}
+			lll.weaponstatus[0]|=LIBF_NOLAUNCHER;
+			lll.weaponstatus[0]&=~LIBF_GRENADELOADED;
+		}else spawnmaster();
+	}
+	void spawnmaster(){
+		let lll=LiberatorRifle(spawn("LiberatorRifle",pos,ALLOW_REPLACE));
+		lll.special=special;
+		lll.changetid(tid);
 		lll.weaponstatus[0]|=LIBF_NOLAUNCHER;
 		lll.weaponstatus[0]&=~LIBF_GRENADELOADED;
-		destroy();
+		master=lll;
 	}
 }
 
