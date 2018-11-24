@@ -99,6 +99,14 @@ class HDArmour:HDMagAmmo{
 	override void syncamount(){
 		if(amount<1){destroy();return;}
 		super.syncamount();
+		checkmega();
+	}
+	override inventory createtossable(int amount){
+		let sct=super.createtossable(amount);
+		if(self)checkmega();
+		return sct;
+	}
+	void checkmega(){
 		mega=mags[0]>=1000;
 		icon=texman.checkfortexture(mega?"ARMCB0":"ARMSB0",TexMan.Type_MiscPatch);
 	}
@@ -111,6 +119,7 @@ class HDArmour:HDMagAmmo{
 	override void consolidate(){}
 	override double getbulk(){
 		syncamount();
+		checkmega();
 		double blk=0;
 		for(int i=0;i<amount;i++){
 			if(mags[i]>=1000)blk+=ENC_BLUEARMOUR;
@@ -146,11 +155,12 @@ class HDArmour:HDMagAmmo{
 			}
 			if(totalbulk>aaa.maxamount)return;
 		}
-		//super.actualpickup(other); //WHY IS THIS NOT PICKING UP
 		if(!trypickup(other))return;
 		aaa=HDArmour(other.findinventory("HDArmour"));
 		aaa.syncamount();
-		aaa.mags[0]=durability;
+		aaa.mags.insert(0,durability);
+		aaa.mags.pop();
+		aaa.checkmega();
 		other.A_PlaySound(pickupsound,CHAN_AUTO);
 		other.A_Log(string.format("\cg%s",pickupmessage()),true);
 	}
@@ -186,6 +196,17 @@ class HDArmourWorn:HDPickup{
 		super.beginplay();
 	}
 	override inventory createtossable(int amount){
+		if(durability<1){
+			for(int i=0;i<10;i++){
+				actor aaa=spawn("WallChunk",owner.pos+(0,0,owner.height-24),ALLOW_REPLACE);
+				vector3 offspos=(frandom(-12,12),frandom(-12,12),frandom(-16,4));
+				aaa.setorigin(aaa.pos+offspos,false);
+				aaa.vel=owner.vel+offspos*frandom(0.3,0.6);
+				aaa.scale*=frandom(0.8,2.);
+			}
+			destroy();
+			return null;
+		}
 		if(owner.countinv("HDBackpack")){
 			owner.A_DropInventory("HDBackpack");
 			return null;

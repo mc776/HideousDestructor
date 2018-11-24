@@ -31,6 +31,19 @@ extend class HDPlayerPawn{
 
 		if(inflictor&&inflictor.bpiercearmor)flags|=DMG_NO_ARMOR;
 		let armr=HDArmourWorn(findinventory("HDArmourWorn"));
+		if(armr){
+			if(armr.durability<1){
+				armr.durability=0;
+				if(!random(0,3)){
+					dropinventory(armr);
+					armr=null;
+				}
+			}else if(armr.durability<random(2,8)){
+				//it just goes through one of the gaping holes in your armour
+				armr=null;
+			}
+		}
+
 
 		//factor in cheats and skills
 		if(!(flags&DMG_FORCED)){
@@ -98,8 +111,13 @@ extend class HDPlayerPawn{
 		//regular armour...
 		int alv=(flags&DMG_NO_ARMOR||flags&DMG_FORCED)?0:self.armourlevel;
 
+		//excess hp
+		if(mod=="maxhpdrain"){
+			damage=min(health-1,damage);
+			flags|=DMG_NO_PAIN|DMG_THRUSTLESS;
+		}
 		//bleeding
-		if(
+		else if(
 			mod=="bleedout"||
 			mod=="internal"||
 			mod=="invisiblebleedout"

@@ -26,7 +26,7 @@ class SoldierExtras:HDPickup{
 			A_SetInventory("PortableStimpack",max(2,countinv("PortableStimpack")));
 			A_SetInventory("GreenArmourWorn",1);
 
-			if(!countinv("HDPistol"))A_GiveInventory("HDPistol",1);
+			A_SetInventory("HDPistol",max(countinv("HDPistol"),1));
 			A_SetInventory("HD9mMag15",max(3,countinv("HD9mMag15")));
 
 			A_SetInventory("HDFragGrenadeAmmo",max(3,countinv("HDFragGrenadeAmmo")));
@@ -367,7 +367,6 @@ const HDLD_BOSS=   "bos";
 
 
 
-class clg:CustomLoadoutGiver{}
 class CustomLoadoutGiver:Inventory{
 	//must be DoEffect as AttachToOwner and Pickup are not called during a range reset!
 	override void doeffect(){
@@ -422,7 +421,12 @@ extend class HDPlayerPawn{
 				if(ref~=="none"||ref=="")continue;
 				for(int j=0;j<whichitem.size();j++){
 					if(whichitem[j]~==ref){
-						A_GiveInventory(reff.getclassname(),howmany[j]);
+						if(reff is "HDWeapon"){
+							int wpcount=max(1,howmany[j]);
+							for(int i=0;i<wpcount;i++){
+								A_GiveInventory(reff.getclassname(),1);
+							}
+						}else A_GiveInventory(reff.getclassname(),howmany[j]);
 						if(!j){
 							//some codes give weapons but are not themselves weapons
 							if(ref~==HDLD_LIBNOGL)firstwep="LiberatorRifle";
