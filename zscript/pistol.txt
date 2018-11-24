@@ -436,7 +436,8 @@ class HDAutoPistol:HDItemGiver{
 		}else{
 			let expi=HDPistol(spawn("HDPistol"));
 			expi.weaponstatus[PISS_AUTO]=0;
-			expi.actualpickup(other);
+			expi.actualpickup(owner);
+			owner.player.pendingweapon=WP_NOCHANGE;
 		}
 		destroy();
 	}
