@@ -54,19 +54,18 @@ class HDPistol:HDWeapon{
 		//set configurations
 		if(
 			owner&&owner.player&&weaponstatus[PISS_AUTO]>=0
-			&&cvar.getcvar("hd_pistauto",owner.player).getint()
+			&&cvar.getcvar("hd_pistauto",owner.player).getbool()
 		){
 			weaponstatus[PISS_AUTO]=1;
 		}
 
-		if(amount>1){
+		if(amount>1&&weaponstatus2[0]<0){
 			//clone stats (including fire select cvar) to second pistol
 			for(int i=0;i<8;i++){
 				weaponstatus2[i]=weaponstatus[i];
 			}
 			//split the pickup
 			if(!owner){
-				A_Log("A");
 				let second=HDPistol(spawn("HDPistol",pos+(frandom(-2,2),frandom(-2,2),0),ALLOW_REPLACE));
 				amount=1;
 				second.amount=1;
@@ -425,29 +424,38 @@ class HDAutoPistol:HDItemGiver{
 		spwn.weaponstatus[PISS_AUTO]=0;
 		master=spwn;
 	}
-	override void attachtoowner(actor other){
-		A_Log("THIS DOES NOT WORK");
-		super.attachtoowner(other);
-		bool modonly=other.countinv("HDPistol")>1;
-		if(modonly){
-			let expi=HDPistol(other.findinventory("HDPistol"));
-			if(expi.weaponstatus[PISS_AUTO]>=0)
-				expi.weaponstatus2[PISS_AUTO]=max(0,expi.weaponstatus2[PISS_AUTO]);
-				else expi.weaponstatus[PISS_AUTO]=max(0,expi.weaponstatus[PISS_AUTO]);
-			destroy();
-		}else{
-			let expi=HDPistol(spawn("HDPistol"));
-			expi.weaponstatus[PISS_AUTO]=0;
-			master=expi;
-		}
-	}
-	override void doeffect(){
-		if(HDPistol(master)){
-			HDPistol(master).actualpickup(owner);
-			owner.player.pendingweapon=WP_NOCHANGE;
-		}
-		if(master&&!inventory(master).owner)master.destroy();
-		destroy();
+	states{
+	pickup:
+		TNT1 A 0{
+			bool startauto=cvar.getcvar("hd_pistauto",player).getbool();
+			let expi=HDPistol(findinventory("HDPistol"));
+			switch(expi.amount){
+			case 1:
+				expi.amount++;
+				for(int i=0;i<8;i++){
+					expi.weaponstatus2[i]=expi.weaponstatus[i];
+					expi.weaponstatus[i]=0;
+				}
+				expi.weaponstatus[PISS_AUTO]=max(0,startauto,expi.weaponstatus[PISS_AUTO]);
+				expi.weaponstatus[PISS_MAG]=15;
+				expi.weaponstatus[PISS_CHAMBER]=2;
+				break;
+			case 2:
+				int aut1=expi.weaponstatus[PISS_AUTO];
+				if(aut1<0)expi.weaponstatus[PISS_AUTO]=max(0,startauto,aut1);
+				else expi.weaponstatus2[PISS_AUTO]=max(0,startauto,expi.weaponstatus2[PISS_AUTO]);
+				break;
+			default:
+				A_GiveInventory("HDPistol");
+				HDPistol(findinventory("HDPistol")).weaponstatus[PISS_AUTO]=startauto;
+				break;
+			}
+			//overwrite everything if giving 2 autopistols
+			if(invoker.amount>1){
+				expi.weaponstatus[PISS_AUTO]=max(0,startauto,expi.weaponstatus[PISS_AUTO]);
+				expi.weaponstatus2[PISS_AUTO]=max(0,startauto,expi.weaponstatus2[PISS_AUTO]);
+			}
+		}fail;
 	}
 }
 
