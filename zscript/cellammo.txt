@@ -7,7 +7,6 @@ class HDBattery:HDMagAmmo{
 		//$Title "Cell Battery"
 		//$Sprite "CELLA0"
 
-		inventory.maxamount 10;
 		hdmagammo.maxperunit 20;
 		hdmagammo.roundtype "";
 		hdpickup.nicename "Batteries";
@@ -39,6 +38,7 @@ class HDBattery:HDMagAmmo{
 		}else ticker++;
 		super.doeffect();
 	}
+	override double getbulk(){return amount*bulk;}
 	override bool Extract(){return false;}
 	override bool Insert(){
 		chargemode++;

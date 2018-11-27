@@ -443,12 +443,16 @@ class HDStatusBar:DoomStatusBar{
 		inventory inv=cplayer.mo.findinventory(type);
 		if(!inv||!inv.amount){
 			drawimage(offgfx,coords,flags);
-		}else drawbar(
+		}else{
+			int arbitrarymax=inv.maxamount;
+			if(HDPickup(inv))arbitrarymax=HDCONST_MAXENC/max(1,HDPickup(inv).bulk);
+			drawbar(
 				ongfx,offgfx,
-				inv.amount,inv.maxamount,
+				min(arbitrarymax,inv.amount),arbitrarymax,
 				coords,-1,
 				SHADER_VERT,flags
-		);
+			);
+		}
 	}
 	void DrawArmour(vector2 armourcoords,int flags){
 		let armour=HDArmourWorn(cplayer.mo.findinventory("HDArmourWorn"));

@@ -1,6 +1,7 @@
 //-------------------------------------------------
 // Pickup Archetypes
 //-------------------------------------------------
+const HDCONST_MAXENC=888;
 class GrabThinker:Thinker{
 	actor picktarget;
 	actor pickobj;
@@ -23,10 +24,17 @@ class GrabThinker:Thinker{
 				+pickobj.pos
 			),true
 		);else{
+			let pt=hdpickup(pickobj);if(pt)pt.isbeingpickedup=false;
+			let wt=hdweapon(pickobj);
 			if(
 				!pickobj
 				||!picktarget
 				||picktarget.health<1
+				||(
+					!wt
+					&&hdplayerpawn(picktarget)
+					&&hdplayerpawn(picktarget).itemenc>HDCONST_MAXENC
+				)
 			){
 				destroy();
 				return;
@@ -43,8 +51,6 @@ class GrabThinker:Thinker{
 
 			let ht=hdupk(pickobj);
 			let bp=HDBackpack(picktarget.findinventory("HDBackpack"));
-			let pt=hdpickup(pickobj);
-			let wt=hdweapon(pickobj);
 			let tt=inventory(pickobj);
 			if(ht){
 				ht.picktarget=picktarget;
@@ -58,7 +64,6 @@ class GrabThinker:Thinker{
 			}
 			if(pt){
 				pt.actualpickup(picktarget);
-				pt.isbeingpickedup=false;
 			}else if(wt){
 				wt.actualpickup(picktarget);
 			}else if(tt){
@@ -102,6 +107,7 @@ class HDPickup:CustomInventory{
 		+inventory.invbar +inventory.persistentpower
 		+noblockmonst +notrigger +dontgib
 		inventory.interhubamount int.MAX;
+		inventory.maxamount int.MAX;
 
 		hdpickup.droptranslation true;
 		hdpickup.bulk 0;

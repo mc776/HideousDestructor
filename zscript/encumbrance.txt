@@ -11,14 +11,14 @@ const ENC_BATTERY_LOADED=ENC_BATTERY*0.4;
 //https://www.youtube.com/watch?v=mjuEJjzon-g
 const ENC_426MAG=10;
 const ENC_426MAG_EMPTY=ENC_426MAG*0.4;
-const ENC_426_LOADED=(ENC_426MAG-ENC_426MAG_EMPTY)/50.;
-const ENC_426=ENC_426_LOADED*4;
+const ENC_426=(ENC_426MAG-ENC_426MAG_EMPTY)/50.;
+const ENC_426_LOADED=ENC_426*0.25;
 const ENC_426MAG_LOADED=ENC_426MAG_EMPTY*0.4;
 
 const ENC_776MAG=30;
 const ENC_776MAG_EMPTY=ENC_776MAG*0.4;
-const ENC_776_LOADED=(ENC_776MAG-ENC_776MAG_EMPTY)/30.;
-const ENC_776=ENC_776_LOADED*3.5;
+const ENC_776=(ENC_776MAG-ENC_776MAG_EMPTY)/30.;
+const ENC_776_LOADED=ENC_776*0.3;
 const ENC_776MAG_LOADED=ENC_776MAG_EMPTY*0.5;
 const ENC_776B=ENC_776*0.3;
 const ENC_776CLIP_EMPTY=ENC_776B;
@@ -63,19 +63,13 @@ const ENC_DOORBUSTER=ENC_HEATROCKET;
 
 extend class HDPlayerPawn{
 	double enc;
+	double itemenc;
 	double CheckEncumbrance(){
 		if(!player)return 0;
 		//separate counters for encumbrance evaluations other than penalty
 		double weaponenc=0;
 		double weaponencsel=0;
-		double itemenc=0;
-
-		//evaluate onemanarmy mode
-		bool weaponly=(
-			hd_onemanarmy
-			&&!deathmatch
-			&&skill<5
-		);
+		itemenc=0;
 
 		//add everything up
 		double stacker=1.;
@@ -91,8 +85,8 @@ extend class HDPlayerPawn{
 					if(thisweapon)weaponencsel=gunbulk;
 					else weaponenc+=gunbulk;
 					stacker+=0.1;
+					//A_Log(string.format("%s  %.2f",hdw.getclassname(),gunbulk));
 				}
-				//if(gunbulk)A_Log(string.format("%s  %.2f",hdw.getclassname(),gunbulk));
 			}else{
 				let hdp=hdpickup(hdww);
 				if(hdp)itemenc+=hdp.getbulk();
@@ -149,6 +143,12 @@ extend class HDPlayerPawn{
 			stimcount*2
 		;
 		enc=weaponenc+weaponencsel+itemenc;
-		return (weaponly?weaponencsel*2:enc)/carrymax;
+
+		//evaluate onemanarmy mode
+		return ((
+			hd_onemanarmy
+			&&!deathmatch
+			&&skill<5
+		)?weaponencsel*2:enc)/carrymax;
 	}
 }
