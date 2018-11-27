@@ -271,6 +271,12 @@ class HDWeapon:Weapon{
 	action bool JustReleased(int whichbutton){return(
 		!(player.cmd.buttons&whichbutton)&&player.oldbuttons&whichbutton
 	);}
+	action void A_StartDeselect(bool gotodzero=true){
+		A_SetInventory("WeaponBusy",1);
+		A_SetCrosshair(21);
+		invoker.wepmsg="";invoker.msgtimer=0;
+		if(gotodzero)setweaponstate("deselect0");
+	}
 	states{
 	spawn:
 		TNT1 A 0;
@@ -292,12 +298,7 @@ class HDWeapon:Weapon{
 		---- A 0 A_Raise();
 		wait;
 	deselect:
-		TNT1 A 0{
-			A_SetInventory("WeaponBusy",1);
-			A_SetCrosshair(21);
-			invoker.wepmsg="";invoker.msgtimer=0;
-			return resolvestate("deselect0");
-		}
+		TNT1 A 0 A_StartDeselect();
 	deselect0:
 		---- A 0 A_Lower();
 		wait;

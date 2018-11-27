@@ -72,6 +72,11 @@ class HDBullet:HDActor{
 			actor m=spawn(distantsounder,pos,ALLOW_REPLACE);
 			m.target=target;
 		}
+
+		if(
+			frandom(0,ceilingz-floorz)<speed*0.3
+		)A_AlertMonsters();
+
 		grav=getgravity();
 		if(target && !pitch)pitch=target.pitch;
 
@@ -625,7 +630,9 @@ class SupersonicTrail:IdleDummy{
 		TNT1 A 10;stop;
 	}
 	override void postbeginplay(){
-		if(!random(0,2))A_AlertMonsters();
+		if(
+			frandom(0,ceilingz-floorz)<128
+		)A_AlertMonsters();
 		A_PlaySound("weapons/bulletcrack",CHAN_AUTO,0.32);
 	}
 }
@@ -637,12 +644,17 @@ class SupersonicTrailBig:SupersonicTrail{
 }
 class SupersonicTrailSmall:SupersonicTrail{
 	override void postbeginplay(){
-		if(!random(0,4))A_AlertMonsters();
+		if(
+			frandom(0,ceilingz-floorz)<64
+		)A_AlertMonsters();
 		A_PlaySound("weapons/bulletcrack",0,0.1);
 	}
 }
 class SubsonicTrail:SupersonicTrail{
 	override void postbeginplay(){
+		if(
+			frandom(0,ceilingz-floorz)<32
+		)A_AlertMonsters();
 		A_PlaySound("weapons/subfwoosh",0,0.03);
 	}
 }
