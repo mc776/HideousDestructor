@@ -66,7 +66,7 @@ extend class HDPlayerPawn{
 						magammoitem.mags.clear();
 						magammoitem.syncamount();
 					}
-					ammoitem.amount=min(ammoitem.maxamount,max(1,aibak,HDCONST_MAXENC/max(1,1*ammoitem.getbulk())));
+					ammoitem.amount=max(1,aibak,(HDCONST_MAXENC-itemenc)/max(1,ammoitem.getbulk()));
 					if(magammoitem)magammoitem.syncamount();
 				}
 			}
