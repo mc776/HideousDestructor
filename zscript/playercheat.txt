@@ -54,6 +54,8 @@ extend class HDPlayerPawn{
 					getdefaultbytype((class<HDAmmo>)(type)).nicename!=""
 					//garbage
 					&&type!="DudRocketAmmo"
+					//you already have armour
+					&&type!="HDArmour"
 				){
 					let ammoitem=hdpickup(findinventory(type));
 					if(!ammoitem)ammoitem=hdpickup(GiveInventoryType(type));
@@ -64,7 +66,7 @@ extend class HDPlayerPawn{
 						magammoitem.mags.clear();
 						magammoitem.syncamount();
 					}
-					ammoitem.amount=min(ammoitem.maxamount,max(1,aibak,HDCONST_MAXENC/max(1,5*ammoitem.getbulk())));
+					ammoitem.amount=min(ammoitem.maxamount,max(1,aibak,HDCONST_MAXENC/max(1,1*ammoitem.getbulk())));
 					if(magammoitem)magammoitem.syncamount();
 				}
 			}
