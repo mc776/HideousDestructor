@@ -67,6 +67,7 @@ extend class HDPlayerPawn{
 		if(!player)return 0;
 		//separate counters for encumbrance evaluations other than penalty
 		double weaponenc=0;
+		double weaponencsel=0;
 		double itemenc=0;
 
 		//evaluate onemanarmy mode
@@ -85,17 +86,13 @@ extend class HDPlayerPawn{
 					hdw==lastweapon||
 					hdw==player.readyweapon
 				);
-				if(
-					thisweapon
-					||!weaponly
-				){
-					double gunbulk=hdw.weaponbulk();
-					if(gunbulk){
-						weaponenc+=gunbulk;
-						stacker+=0.1;
-					}
-					//if(gunbulk)A_Log(string.format("%s  %.2f",hdw.getclassname(),gunbulk));
+				double gunbulk=hdw.weaponbulk();
+				if(gunbulk){
+					if(thisweapon)weaponencsel=gunbulk;
+					else weaponenc+=gunbulk;
+					stacker+=0.1;
 				}
+				//if(gunbulk)A_Log(string.format("%s  %.2f",hdw.getclassname(),gunbulk));
 			}else{
 				let hdp=hdpickup(hdww);
 				if(hdp)itemenc+=hdp.getbulk();
@@ -151,7 +148,7 @@ extend class HDPlayerPawn{
 			min(regenblues,150)+
 			stimcount*2
 		;
-		enc=weaponenc+itemenc;
-		return (weaponly?weaponenc*2:enc)/carrymax;
+		enc=weaponenc+weaponencsel+itemenc;
+		return (weaponly?weaponencsel*2:enc)/carrymax;
 	}
 }
