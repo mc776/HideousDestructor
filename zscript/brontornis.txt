@@ -160,8 +160,8 @@ class Brontornis:HDWeapon{
 		double amt=weaponstatus[BRONS_CHAMBER];
 		return 6+amt*amt;
 	}
-	override double,int weaponbulk(){
-		return 75+(weaponstatus[BRONS_CHAMBER]>1?ENC_BRONTOSHELLLOADED:0),USE_BRONTO;
+	override double weaponbulk(){
+		return 75+(weaponstatus[BRONS_CHAMBER]>1?ENC_BRONTOSHELLLOADED:0);
 	}
 	states{
 	select0:

@@ -114,6 +114,7 @@ class HDArmour:HDMagAmmo{
 		cooldown=0;
 		mega=icon==texman.checkfortexture("ARMCB0",TexMan.Type_MiscPatch);
 		mags.push((mega?(1000+HDCONST_BLUEARMOUR):HDCONST_GREENARMOUR));
+		bulk=mega?(ENC_BLUEARMOUR*0.4):(ENC_GREENARMOUR*0.4);
 		super.beginplay();
 	}
 	override void consolidate(){}

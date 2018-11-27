@@ -38,8 +38,8 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 	override double gunmass(){
 		return 5+weaponstatus[CSAWS_BATTERY]<0?0:1;
 	}
-	override double,int weaponbulk(){
-		return 100+(weaponstatus[CSAWS_BATTERY]>=0?ENC_BATTERY_LOADED:0),USE_BATTERY;
+	override double weaponbulk(){
+		return 100+(weaponstatus[CSAWS_BATTERY]>=0?ENC_BATTERY_LOADED:0);
 	}
 	override void consolidate(){
 		CheckBFGCharge(CSAWS_BATTERY);

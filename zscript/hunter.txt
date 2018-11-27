@@ -58,8 +58,8 @@ class Hunter:HDShotgun replaces Shotgun{
 		if(tube>4)tube+=(tube-4)*2;
 		return 8+tube*0.3+weaponstatus[SHOTS_SIDESADDLE]*0.08;
 	}
-	override double,int weaponbulk(){
-		return 125+(weaponstatus[SHOTS_SIDESADDLE]+weaponstatus[HUNTS_TUBE])*ENC_SHELLLOADED,USE_12;
+	override double weaponbulk(){
+		return 125+(weaponstatus[SHOTS_SIDESADDLE]+weaponstatus[HUNTS_TUBE])*ENC_SHELLLOADED;
 	}
 	action void A_SwitchFireMode(bool forwards=true){
 		int newfm=invoker.weaponstatus[HUNTS_FIREMODE]+(forwards?1:-1);

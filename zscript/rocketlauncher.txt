@@ -39,12 +39,12 @@ class HDRL:HDWeapon{
 	override double gunmass(){
 		return 10+weaponstatus[RLS_MAG]+weaponstatus[RLS_CHAMBER];
 	}
-	override double,int weaponbulk(){
+	override double weaponbulk(){
 		double blx=175+weaponstatus[RLS_MAG]*ENC_ROCKETLOADED;
 		int chmb=weaponstatus[RLS_CHAMBER];
 		if(chmb>1)blx+=ENC_HEATROCKETLOADED;
 		else if(chmb==1)blx+=ENC_ROCKETLOADED;
-		return blx,USE_ROCKET|USE_HEAT;
+		return blx;
 	}
 	states{
 	select0:
@@ -496,8 +496,8 @@ class Blooper:HDWeapon{
 	override double gunmass(){
 		return weaponstatus[0]&BLOPF_LOADED?5:4;
 	}
-	override double,int weaponbulk(){
-		return 75+(weaponstatus[0]&BLOPF_LOADED?ENC_ROCKETLOADED:0),USE_ROCKET;
+	override double weaponbulk(){
+		return 75+(weaponstatus[0]&BLOPF_LOADED?ENC_ROCKETLOADED:0);
 	}
 	states{
 	select0:

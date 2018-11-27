@@ -52,12 +52,12 @@ class Vulcanette:HDWeapon{
 		}
 		return amt;
 	}
-	override double,int weaponbulk(){
+	override double weaponbulk(){
 		double blx=200+(weaponstatus[VULCS_BATTERY]>=0?ENC_BATTERY_LOADED:0);
 		for(int i=0;i<5;i++){
 			if(vulcmag[i]>=0)blx+=ENC_426MAG_LOADED+(ENC_426_LOADED*vulcmag[i]);
 		}
-		return blx,USE_426|USE_BATTERY;
+		return blx;
 	}
 	override void consolidate(){
 		CheckBFGCharge(VULCS_BATTERY);

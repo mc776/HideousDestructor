@@ -148,16 +148,17 @@ class HDWeapon:Weapon{
 	//determine mass for weapon inertia purposes
 	virtual double gunmass(){return 0;}
 	//determine bulk for weapon encumbrance purposes
-	virtual double,int weaponbulk(){return 0,0;}
+	virtual double weaponbulk(){return 0;}
 	//for consolidating stuff between maps
 	virtual void Consolidate(){}
 
 	//for smoking barrels
 	void drainheat(int ref,int smklength=18){
-		if(globalfreeze||level.Frozen)return;
+		bool frozen=globalfreeze||level.Frozen;
+		if(frozen&&(!owner||!owner.player))return;
 		if(weaponstatus[ref]>0){
 			weaponstatus[ref]--;
-			if(random(1,10)>weaponstatus[ref])return;
+			if(frozen||random(1,10)>weaponstatus[ref])return;
 			vector3 smkpos=pos;
 			vector3 smkvel=vel;
 			double smkang=angle;

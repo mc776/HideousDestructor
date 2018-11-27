@@ -60,16 +60,14 @@ class ZM66AssaultRifle:HDWeapon{
 		if(weaponstatus[0]&ZM66F_NOFIRESELECT)return "Picked up a semi-automatic weapon. Time for some carnage!";
 		return super.pickupmessage();
 	}
-	override double,int weaponbulk(){
+	override double weaponbulk(){
 		double blx=90;
-		int uss=USE_426;
 		if(!(weaponstatus[0]&ZM66F_NOLAUNCHER)){
 			blx+=25;
-			uss|=USE_ROCKET;
 			if(weaponstatus[0]&ZM66F_GRENADELOADED)blx+=ENC_ROCKETLOADED;
 		}
 		int mgg=weaponstatus[ZM66S_MAG];
-		return blx+(mgg<0?0:(ENC_426MAG_LOADED+mgg*ENC_426_LOADED)),uss;
+		return blx+(mgg<0?0:(ENC_426MAG_LOADED+mgg*ENC_426_LOADED));
 	}
 	override void failedpickupunload(){
 		failedpickupunloadmag(ZM66S_MAG,"HD4mMag");

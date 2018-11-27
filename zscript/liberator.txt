@@ -56,16 +56,14 @@ class LiberatorRifle:HDWeapon{
 			return 10+weaponstatus[LIBS_MAG]*0.04+(weaponstatus[0]&LIBF_GRENADELOADED?1.:0.);
 		}
 	}
-	override double,int weaponbulk(){
+	override double weaponbulk(){
 		double blx=100;
-		int uss=USE_776;
 		if(!(weaponstatus[0]&LIBF_NOLAUNCHER)){
 			blx+=25;
-			uss|=USE_ROCKET;
 			if(weaponstatus[0]&LIBF_GRENADELOADED)blx+=ENC_ROCKETLOADED;
 		}
 		int mgg=weaponstatus[LIBS_MAG];
-		return blx+(mgg<0?0:(ENC_776MAG_LOADED+mgg*ENC_776_LOADED)),uss;
+		return blx+(mgg<0?0:(ENC_776MAG_LOADED+mgg*ENC_776_LOADED));
 	}
 	override void failedpickupunload(){
 		failedpickupunloadmag(LIBS_MAG,"HD7mMag");
