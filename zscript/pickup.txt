@@ -48,6 +48,7 @@ class GrabThinker:Thinker{
 				&&hdplayerpawn(picktarget)
 				&&hdplayerpawn(picktarget).itemenc>HDCONST_MAXENC
 			){
+				if(cvar.getcvar("hd_helptext",picktarget.player).getint())picktarget.A_Log("No room in pockets.",true);
 				destroy();
 				return;
 			}
