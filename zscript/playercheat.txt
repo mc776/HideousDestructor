@@ -59,15 +59,9 @@ extend class HDPlayerPawn{
 				){
 					let ammoitem=hdpickup(findinventory(type));
 					if(!ammoitem)ammoitem=hdpickup(GiveInventoryType(type));
-					int aibak=ammoitem.amount;
-					ammoitem.amount=1;
+					ammoitem.amount=max(1,ammoitem.amount,ammoitem.effectivemaxamount());
 					let magammoitem=hdmagammo(ammoitem);
-					if(magammoitem){
-						magammoitem.mags.clear();
-						magammoitem.syncamount();
-					}
-					ammoitem.amount=max(1,aibak,(HDCONST_MAXENC-itemenc)/max(1,ammoitem.getbulk()));
-					if(magammoitem)magammoitem.syncamount();
+					if(magammoitem)magammoitem.maxcheat();
 				}
 			}
 		}

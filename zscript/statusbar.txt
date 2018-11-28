@@ -445,7 +445,6 @@ class HDStatusBar:DoomStatusBar{
 			drawimage(offgfx,coords,flags);
 		}else{
 			int arbitrarymax=inv.maxamount;
-			if(HDPickup(inv))arbitrarymax=HDCONST_MAXENC/max(1,HDPickup(inv).bulk);
 			drawbar(
 				ongfx,offgfx,
 				min(arbitrarymax,inv.amount),arbitrarymax,

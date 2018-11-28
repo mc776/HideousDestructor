@@ -187,6 +187,7 @@ class HDArmourWorn:HDPickup{
 	default{
 		-inventory.invbar
 		HDArmourworn.ismega false;
+		inventory.maxamount 1;
 		hdpickup.refid HDLD_ARWGREN;
 		hdpickup.nicename "Green Armour";
 		hdpickup.fitsinbackpack false;
@@ -240,6 +241,7 @@ class HDArmourWorn:HDPickup{
 class BlueArmour:HDItemGiver replaces BlueArmor{
 	default{
 		+missilemore
+		hdpickup.bulk ENC_BLUEARMOUR;
 		hdpickup.fitsinbackpack true;
 		hdpickup.refid HDLD_ARMBLUE;
 		hdpickup.nicename "Blue Armour (spare)";
@@ -290,6 +292,7 @@ class BlueArmourWorn:HDPickup{
 class GreenArmour:BlueArmour replaces GreenArmor{
 	default{
 		-missilemore
+		hdpickup.bulk ENC_GREENARMOUR;
 		hdpickup.fitsinbackpack true;
 		hdpickup.refid HDLD_ARMGREN;
 		hdpickup.nicename "Green Armour (spare)";

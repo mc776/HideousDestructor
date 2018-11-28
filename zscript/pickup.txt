@@ -137,6 +137,10 @@ class HDPickup:CustomInventory{
 		}
 		return iii;
 	}
+	virtual int effectivemaxamount(){
+		return bulk?max(1,HDCONST_MAXENC/bulk):maxamount;
+	}
+
 	override void doeffect(){
 		if(!amount)destroy();
 	}
@@ -178,6 +182,7 @@ class HDPickup:CustomInventory{
 		GotoSpawn();
 	}
 	override void postbeginplay(){
+		maxamount=min(maxamount,effectivemaxamount());
 		super.postbeginplay();
 		isbeingpickedup=false;
 		let hdps=new("HDPickupSplitter");
@@ -214,7 +219,11 @@ class HDAmmo:HDPickup{
 
 
 class HDItemGiver:HDPickup{
-	default{+nointeraction}
+	default{
+		+nointeraction
+		-inventory.invbar
+		inventory.maxamount 1;
+	}
 	override void actualpickup(actor other){}
 	virtual void addtobackpack(hdbackpack bp){
 		if(!master)spawnmaster();

@@ -323,6 +323,18 @@ struct HDMath{
 	//HDMath.MaxInv(self,"FourMilAmmo")
 	static int MaxInv(actor holder,class<inventory> inv){
 		if(holder.findinventory(inv))return holder.findinventory(inv).maxamount;
+		else if((class<hdpickup>)(inv)){
+			let mag=(class<hdmagammo>)(inv);
+			if(mag){
+				let minvv=getdefaultbytype((class<hdmagammo>)(inv));
+				double unitbulk=(minvv.roundbulk*minvv.maxperunit*0.6)+minvv.magbulk;
+				return unitbulk?max(1,HDCONST_MAXENC/unitbulk):int.MAX;
+			}else{
+				let invv=getdefaultbytype((class<hdpickup>)(inv));
+				double bulk=invv.bulk;
+				return bulk?max(1,HDCONST_MAXENC/bulk):int.MAX;
+			}
+		}
 		return getdefaultbytype(inv).maxamount;
 	}
 	//counts stuff

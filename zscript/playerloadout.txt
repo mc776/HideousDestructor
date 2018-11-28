@@ -422,12 +422,12 @@ extend class HDPlayerPawn{
 				for(int j=0;j<whichitem.size();j++){
 					if(whichitem[j]~==ref){
 						if(reff is "HDWeapon"){
-							int wpcount=max(1,howmany[j]);
+							int wpcount=clamp(howmany[j],1,2);
 							name wpnam=reff.getclassname();
 							for(int i=0;i<wpcount;i++){
 								A_SetInventory(wpnam,max(countinv(wpnam)+1,1));
 							}
-						}else A_GiveInventory(reff.getclassname(),howmany[j]);
+						}else A_GiveInventory(reff.getclassname(),clamp(howmany[j],1,hdmath.maxinv(self,reff.getclassname())));
 						if(!j){
 							//some codes give weapons but are not themselves weapons
 							if(ref~==HDLD_LIBNOGL)firstwep="LiberatorRifle";
@@ -1088,7 +1088,7 @@ extend class HDBackpack{
 				int howmany=max(1,random(1,
 					min(
 						getdefaultbytype(pkup).maxamount>>1,
-						HDCONST_BPMAX/(max(1.,getdefaultbytype(pkup).bulk)*3.)
+						HDCONST_BPMAX/(max(1.,getdefaultbytype(pkup).bulk)*5.)
 					)
 				));
 				if(
@@ -1114,92 +1114,128 @@ class InsurgentLoadout:Inventory{
 		//pick one or two random weapons
 		class<inventory> ammoforwep=null;
 		for(int i=0;i<randompick(1,1,1,1,1,1,1,1,1,2,2,2,3);i++){
+			string thiswep="";
 			switch(4+random(0,13)){
 			case 0:
-				owner.A_GiveInventory("HDPistol");
+				thiswep="HDPistol";
+				owner.A_GiveInventory(thiswep);
+				owner.A_SelectWeapon(thiswep);
 				ammoforwep="HD9mMag15";
 				break;
 			case 1:
-				owner.A_GiveInventory("ZM66Semi");
+				thiswep="ZM66Semi";
+				owner.A_GiveInventory(thiswep);
+				owner.A_SelectWeapon(thiswep);
 				ammoforwep="HD4mMag";
 				break;
 			case 2:
-				owner.A_GiveInventory("Hunter");
+				thiswep="Hunter";
+				owner.A_GiveInventory(thiswep);
+				owner.A_SelectWeapon(thiswep);
 				ammoforwep="HDShellAmmo";
 				break;
 			case 3:
-				owner.A_GiveInventory("Slayer");
+				thiswep="Slayer";
+				owner.A_GiveInventory(thiswep);
+				owner.A_SelectWeapon(thiswep);
 				ammoforwep="HDShellAmmo";
 				break;
 			case 4:
-				owner.A_GiveInventory("Lumberjack");
+				thiswep="Lumberjack";
+				owner.A_GiveInventory(thiswep);
+				owner.A_SelectWeapon(thiswep);
 				ammoforwep="HDBattery";
 				break;
 			case 5:
 				owner.A_GiveInventory("LiberatorNoGL");
+				HDWeaponSelector.Select(owner,"LiberatorRifle");
 				ammoforwep="HD7mMag";
 				break;
 			case 6:
 				owner.A_GiveInventory("ZM66Regular");
+				HDWeaponSelector.Select(owner,"ZM66AssaultRifle");
 				ammoforwep="HD4mMag";
 				break;
 			case 7:
-				owner.A_GiveInventory("HDSMG");
+				thiswep="HDSMG";
+				owner.A_GiveInventory(thiswep);
+				owner.A_SelectWeapon(thiswep);
 				ammoforwep="HD9mMag30";
 				break;
 			case 8:
-				owner.A_GiveInventory("BossRifle");
+				thiswep="BossRifle";
+				owner.A_GiveInventory(thiswep);
+				owner.A_SelectWeapon(thiswep);
 				ammoforwep="HD7mClip";
 				break;
 			case 9:
 				owner.A_GiveInventory("HDAutoPistol");
+				HDWeaponSelector.Select(owner,"HDPistol");
 				ammoforwep="HD9mMag15";
 				break;
 			case 10:
-				owner.A_GiveInventory("ZM66AssaultRifle");
+				thiswep="ZM66AssaultRifle";
+				owner.A_GiveInventory(thiswep);
+				owner.A_SelectWeapon(thiswep);
 				ammoforwep="HD4mMag";
 				owner.A_SetInventory("HDRocketAmmo",max(owner.countinv("HDRocketAmmo"),random(0,4)));
 				break;
 			case 11:
-				owner.A_GiveInventory("LiberatorRifle");
+				thiswep="LiberatorRifle";
+				owner.A_GiveInventory(thiswep);
+				owner.A_SelectWeapon(thiswep);
 				ammoforwep="HD7mMag";
 				owner.A_SetInventory("HDRocketAmmo",max(owner.countinv("HDRocketAmmo"),random(0,4)));
 				break;
 			case 12:
-				owner.A_GiveInventory("Vulcanette");
+				thiswep="Vulcanette";
+				owner.A_GiveInventory(thiswep);
+				owner.A_SelectWeapon(thiswep);
 				ammoforwep="HD4mMag";
 				owner.A_SetInventory("HDBattery",max(owner.countinv("HDBattery"),random(0,1)));
 				break;
 			case 13:
-				owner.A_GiveInventory("Blooper");
+				thiswep="Blooper";
+				owner.A_GiveInventory(thiswep);
+				owner.A_SelectWeapon(thiswep);
 				ammoforwep="HDRocketAmmo";
 				break;
 			case 14:
-				owner.A_GiveInventory("HDRL");
+				thiswep="HDRL";
+				owner.A_GiveInventory(thiswep);
+				owner.A_SelectWeapon(thiswep);
 				ammoforwep="HDRocketAmmo";
 				break;
 			case 15:
-				owner.A_GiveInventory("ThunderBuster");
+				thiswep="ThunderBuster";
+				owner.A_GiveInventory(thiswep);
+				owner.A_SelectWeapon(thiswep);
 				ammoforwep="HDBattery";
 				break;
 			case 16:
-				owner.A_GiveInventory("Brontornis");
+				thiswep="Brontornis";
+				owner.A_GiveInventory(thiswep);
+				owner.A_SelectWeapon(thiswep);
 				ammoforwep="BrontornisRound";
 				break;
 			case 17:
-				owner.A_GiveInventory("BFG9k");
+				thiswep="BFG9k";
+				owner.A_GiveInventory(thiswep);
+				owner.A_SelectWeapon(thiswep);
 				ammoforwep="HDBattery";
 				break;
 			default:
 				break;
 			}
 			//give some random ammo for the new weapon
-			if(ammoforwep)owner.A_SetInventory(
-				ammoforwep,
-				max(1,random(0,getdefaultbytype(ammoforwep).maxamount/3))
-			);
+			if(ammoforwep){
+				let afwinv=hdpickup(owner.giveinventorytype(ammoforwep));
+				afwinv.amount=random(1,afwinv.effectivemaxamount()>>3);
+				let afwmag=hdmagammo(afwinv);
+				if(afwmag)afwmag.syncamount();
+			}
 		}
-		//give random other gear, make 3 rolls, amount max(1,random(0,maxamount/3))
+		//give random other gear
 		array<string> supplies;supplies.clear();
 		for(int i=0;i<allactorclasses.size();i++){
 			let thisclass=((class<hdpickup>)(allactorclasses[i]));
@@ -1211,8 +1247,12 @@ class InsurgentLoadout:Inventory{
 		int smax=supplies.size()-1;
 		for(int i=0;i<imax;i++){
 			let thisclass=supplies[random(0,smax)];
-			int maxamt=getdefaultbytype((class<inventory>)(thisclass)).maxamount;
-			owner.A_GiveInventory(thisclass,max(1,random(0,maxamt/3)));
+			let thisitem=HDPickup(owner.GiveInventoryType(thisclass));
+			if(!thisitem)continue;
+			if(hd_debug)A_Log("insurgent input: "..thisclass);
+			thisitem.amount=random(1,thisitem.effectivemaxamount()>>3);
+			if(hdmagammo(thisitem))hdmagammo(thisitem).syncamount();
+			if(hd_debug)A_Log(thisitem.getclassname().."  "..thisitem.amount);
 		}
 		//randomize integrity of armour
 		let armourstored=HDArmour(owner.findinventory("HDArmour"));

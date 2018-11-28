@@ -25,6 +25,10 @@ class HDMagAmmo:HDAmmo{
 		}
 		return result;
 	}
+	override int effectivemaxamount(){
+		double unitbulk=max(bulk,(roundbulk*maxperunit*0.6)+magbulk);
+		return unitbulk?max(1,HDCONST_MAXENC/unitbulk):maxamount;
+	}
 
 	//add mag amount or size as appropriate
 	//should be called at the start of each interaction
