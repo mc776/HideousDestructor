@@ -31,6 +31,7 @@ class HDBP:HDWeapon{
 		if(owner){
 			owner.A_GiveInventory("HDBackpack");
 			newbp=HDBackpack(owner.findinventory("HDBackpack"));
+			newbp.amount=1;
 		}else{
 			newbp=HDBackpack(spawn("HDBackpack",pos,ALLOW_REPLACE));
 		}

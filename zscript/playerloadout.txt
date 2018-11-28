@@ -116,8 +116,17 @@ class CustomLoadout:InventoryFlag{
 		if(hdp){
 			hdp.GiveBasics();
 			hdp.GiveCustomLoadout();
-			hdp.A_GiveInventory("LoadoutCode",999);
+			let dlc=new("DelayedLoadoutCode");
+			dlc.owner=hdp;
 		}destroy();
+	}
+}
+class DelayedLoadoutCode:Thinker{
+	hdplayerpawn owner;
+	override void Tick(){
+		super.Tick();
+		owner.A_GiveInventory("LoadoutCode",999);
+		destroy();
 	}
 }
 extend class HDPlayerPawn{
@@ -365,7 +374,13 @@ const HDLD_BFG=    "bfg";
 const HDLD_BRONTO= "bro";
 const HDLD_BOSS=   "bos";
 
-
+class LoadoutMenuHackToken:InventoryFlag{
+	override void tick(){
+		super.tick();
+		stamina++;
+		if(stamina>1)destroy();
+	}
+}
 
 class CustomLoadoutGiver:Inventory{
 	//must be DoEffect as AttachToOwner and Pickup are not called during a range reset!
@@ -492,7 +507,7 @@ class LoadoutCode:custominventory{
 				int imax=bp.invclasses.size();
 				bool first=true;
 				if(bp.bulk>0){
-					lll=lll.." - ";
+					lll=lll.." \ce-\cy ";
 					for(int i=0;i<imax;i++){
 						if(bp.havenone(i))continue;
 						let wep=(class<hdweapon>)(bp.invclasses[i]);
@@ -516,9 +531,11 @@ class LoadoutCode:custominventory{
 			string outstring="The loadout code for your current gear is:\n"..(lll==""?"nothing, you're naked.":"\cy"..lll);
 			A_Log(outstring,true);
 			if(invoker.amount>900){
-				string warning="\cxPLEASE UPDATE YOUR \cyHD_LOADOUT1\cx SETTING ACCORDINGLY.";
+				string warning="\cxYour \cyhd_loadout1\cx has been automatically updated.";
 				A_Log(warning);
 				A_Print(outstring.."\n\n\n"..warning.."\n\n\cuThis custom loadout playerclass will be \cgREMOVED\cu in a future version.",10,"smallfont");
+				let lodstor=giveinventorytype("loadoutmenuhacktoken");
+				lodstor.species=lll;
 			}
 		}fail;
 	}

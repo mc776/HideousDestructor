@@ -153,6 +153,13 @@ class HDStatusBar:DoomStatusBar{
 			)
 		)return;
 
+		//update loadout1 based on old custom
+		//delete once old custom is gone!
+		let lomt=cplayer.mo.findinventory("LoadoutMenuHackToken");
+		if(lomt){
+			cvar.findcvar("hd_loadout1").setstring(lomt.species);
+		}
+
 		if(blurred){
 			SetSize(0,320,200);
 			BeginHUD(forcescaled:true);
