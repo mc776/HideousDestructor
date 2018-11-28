@@ -687,3 +687,153 @@ class HDInvuln:InvulnerabilitySphere{
 }
 
 
+
+
+//-------------------------------------------------
+// Keys
+//-------------------------------------------------
+class HDUPKAlwaysGive:HDUPK{
+	class<inventory> toallplayers;property toallplayers:toallplayers;
+	string msgtoall;property msgtoall:msgtoall;
+	default{
+		hdupkalwaysgive.toallplayers "";
+		hdupkalwaysgive.msgtoall "";
+	}
+	override void OnGrab(actor grabber){
+		if(toallplayers){
+			for(int i=0;i<MAXPLAYERS;i++){
+				if(playeringame[i]&&players[i].mo){
+					players[i].mo.A_GiveInventory(toallplayers);
+				}
+			}
+			if(msgtoall!="")A_Log(msgtoall);
+			setstatelabel("give");
+		}
+	}
+}
+class HDRedKey:HDUPKAlwaysGive replaces RedCard{
+	default{
+		+wallsprite
+		scale 0.4;
+		hdupkalwaysgive.toallplayers "RedCard";
+		hdupkalwaysgive.msgtoall "\crRED\c- local area clearance code downloaded.";
+	}
+	states{
+	spawn:
+		RKEY A 0;
+	spawn1:
+		#### ABABABAB 2;
+		#### ABABABABABABABAB 3;
+		#### ABABAB 6;
+	spawn2:
+		---- A 1 A_SetTics(random(1,1000));
+	spawn3:
+		#### AB 1 A_SetTics(random(1,5));
+		---- A 0 A_Jump(16,"spawn2");
+		loop;
+	give:
+	beep:
+		---- A 0{
+			A_PlaySound("misc/i_pkup",0,1,0,0);
+		}goto spawn1;
+	}
+}
+class HDBlueKey:HDRedKey replaces BlueCard{
+	default{
+		hdupkalwaysgive.toallplayers "BlueCard";
+		hdupkalwaysgive.msgtoall "\cnBLUE\c- local area clearance code downloaded.";
+	}
+	states{
+	spawn:
+		BKEY A 0;
+		goto spawn1;
+	}
+}
+class HDYellowKey:HDRedKey replaces YellowCard{
+	default{
+		hdupkalwaysgive.toallplayers "YellowCard";
+		hdupkalwaysgive.msgtoall "\cfYELLOW\c- local area clearance code downloaded.";
+	}
+	states{
+	spawn:
+		YKEY A 0;
+		goto spawn1;
+	}
+}
+class HDRedSkull:HDUPKAlwaysGive replaces RedSkull{
+	default{
+		scale 0.6;
+		radius 20;
+		renderstyle "translucent";
+		alpha 0.75;
+		hdupkalwaysgive.toallplayers "RedSkull";
+		hdupkalwaysgive.msgtoall "\crRED\c-, the way of the blood shed for you in vain.";
+	}
+	states{
+	spawn:
+		RSKU AB 1 light("REDKEY") A_SetTics(random(1,6));
+		loop;
+	give:
+	effect:
+		---- A 0 A_PlaySound("brain/cube",0,1,0,0);
+		---- A 0 A_DamageTarget(1);
+		#### ##### 1 A_SpawnItemEx("HDSmoke",0,0,0,random(4,0),random(-2,2),random(1,3),0,SXF_NOCHECKPOSITION);
+		---- A 0 A_GiveToTarget("IsMoving",99);
+		---- A 0 A_Jump(256,"spawn");
+	}
+}
+class HDBlueSkull:HDRedSkull replaces BlueSkull{
+	default{
+		hdupkalwaysgive.toallplayers "BlueSkull";
+		hdupkalwaysgive.msgtoall "\cnBLUE\c-, the way of the heaven forever lost to you.";
+	}
+	states{
+	spawn:
+		BSKU AB 1 light("HEALTHPOTION") A_SetTics(random(1,3));
+		loop;
+	}
+}
+class HDYellowSkull:HDRedSkull replaces YellowSkull{
+	default{
+		hdupkalwaysgive.toallplayers "BlueSkull";
+		hdupkalwaysgive.msgtoall "\cfYELLOW\c-, the way of the gold that has lured all mankind to death.";
+	}
+	states{
+	spawn:
+		YSKU AB 1 light("YELLOWKEY") A_SetTics(random(1,3));
+		loop;
+	}
+}
+
+class HDMap:HDUPKAlwaysGive replaces Allmap{
+	default{
+		scale 0.3;
+		hdupkalwaysgive.toallplayers "MapRevealer";
+		hdupkalwaysgive.msgtoall "\c-Local area map downloaded.";
+	}
+	states{
+	give:
+		PMAP A 0 A_PlaySound("misc/i_pkup",0,1,0,0);
+	//fallthrough to spawn
+	spawn:
+		PMAP A 0 nodelay A_Jump(256,"a","b","c","d");
+	a:
+		PMAP AE 1 A_SetTics(random(1,3));
+		---- A 0 A_Jump(4,"spawn");
+		loop;
+	b:
+		PMAP BF 1 A_SetTics(random(1,3));
+		---- A 0 A_Jump(4,"spawn");
+		loop;
+	c:
+		PMAP CG 1 A_SetTics(random(1,3));
+		---- A 0 A_Jump(4,"spawn");
+		loop;
+	d:
+		PMAP DH 1 A_SetTics(random(1,3));
+		---- A 0 A_Jump(4,"spawn");
+		loop;
+	}
+}
+
+

@@ -30,11 +30,6 @@ class GrabThinker:Thinker{
 				!pickobj
 				||!picktarget
 				||picktarget.health<1
-				||(
-					!wt
-					&&hdplayerpawn(picktarget)
-					&&hdplayerpawn(picktarget).itemenc>HDCONST_MAXENC
-				)
 			){
 				destroy();
 				return;
@@ -48,6 +43,14 @@ class GrabThinker:Thinker{
 			vector2 shiftpk=actor.rotatevector((frandom(-0.4,-0.8),frandom(0.8,1.1)),picktarget.angle);
 			pickobj.vel.xy+=shiftpk;
 			pickobj.setorigin((pickobj.pos.xy+shiftpk,pickobj.pos.z),true);
+			if(
+				!wt
+				&&hdplayerpawn(picktarget)
+				&&hdplayerpawn(picktarget).itemenc>HDCONST_MAXENC
+			){
+				destroy();
+				return;
+			}
 
 			let ht=hdupk(pickobj);
 			let bp=HDBackpack(picktarget.findinventory("HDBackpack"));
