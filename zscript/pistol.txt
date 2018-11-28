@@ -433,7 +433,7 @@ class HDAutoPistol:HDItemGiver{
 		TNT1 A 0{
 			bool startauto=cvar.getcvar("hd_pistauto",player).getbool();
 			let expi=HDPistol(findinventory("HDPistol"));
-			switch(expi.amount){
+			switch(countinv("HDPistol")){
 			case 1:
 				expi.amount++;
 				for(int i=0;i<8;i++){
