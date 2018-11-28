@@ -123,8 +123,11 @@ class CustomLoadout:InventoryFlag{
 }
 class DelayedLoadoutCode:Thinker{
 	hdplayerpawn owner;
+	int counter;
 	override void Tick(){
 		super.Tick();
+		counter++;
+		if(counter<3)return;
 		owner.A_GiveInventory("LoadoutCode",999);
 		destroy();
 	}
@@ -507,7 +510,7 @@ class LoadoutCode:custominventory{
 				int imax=bp.invclasses.size();
 				bool first=true;
 				if(bp.bulk>0){
-					lll=lll.." \ce-\cy ";
+					lll=lll.." - ";
 					for(int i=0;i<imax;i++){
 						if(bp.havenone(i))continue;
 						let wep=(class<hdweapon>)(bp.invclasses[i]);
