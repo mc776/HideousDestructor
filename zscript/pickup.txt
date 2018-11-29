@@ -47,6 +47,8 @@ class GrabThinker:Thinker{
 				!wt
 				&&hdplayerpawn(picktarget)
 				&&hdplayerpawn(picktarget).itemenc>HDCONST_MAXENC
+				&&picktarget.countinv(pickobj.getclassname())
+				&&(!inventory(pickobj)||inventory(pickobj).balwayspickup)
 				&&(
 					!hd_onemanarmy
 					||deathmatch
@@ -308,16 +310,27 @@ class HDUPK:HDActor{
 			picktarget.A_Log(string.format("\cg%s",pickupmessage),true);
 			return;
 		}
-		int increase=picktarget.countinv(pickuptype);
-		picktarget.A_GiveInventory(pickuptype,amount);
-		increase=picktarget.countinv(pickuptype)-increase;
+		int maxtake=getdefaultbytype(pickuptype).maxamount;
+		let hdpk=(class<hdpickup>)(pickuptype);
+		let hdp=hdplayerpawn(picktarget);
+		if(hdp&&hdpk){
+			double hdpkubu=getdefaultbytype(hdpk).bulk;
+			let hdpm=(class<hdmagammo>)(pickuptype);
+			if(hdpm){
+				let hdpmd=getdefaultbytype(hdpm);
+				hdpkubu=max(hdpkubu,hdpmd.magbulk+hdpmd.roundbulk*hdpmd.maxperunit);
+			}
+			maxtake=min(maxtake,(HDCONST_MAXENC-hdp.itemenc)/hdpkubu);
+		}
+		int increase=min(maxtake,amount);
 		if(heat.getamount(self)>50)increase=0;
-		if(!increase){ //didn't pick any up
+		if(increase<1){ //didn't pick any up
 			setstatelabel("spawn");
 			return;
 		}
 		picktarget.A_PlaySound(pickupsound,5);
 		picktarget.A_Log(string.format("\cg%s",pickupmessage),true);
+		HDF.Give(picktarget,pickuptype,increase);
 		amount-=increase;
 		if(amount>0){ //only picked some up  
 			setstatelabel("spawn");
