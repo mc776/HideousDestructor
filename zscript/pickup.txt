@@ -49,6 +49,7 @@ class GrabThinker:Thinker{
 				&&hdplayerpawn(picktarget).itemenc>HDCONST_MAXENC
 				&&picktarget.countinv(pickobj.getclassname())
 				&&(!inventory(pickobj)||inventory(pickobj).balwayspickup)
+				&&(!hdpickup(pickobj)||hdpickup(pickobj).bulk>=0)
 				&&(
 					!hd_onemanarmy
 					||deathmatch
@@ -322,7 +323,12 @@ class HDUPK:HDActor{
 			}
 			maxtake=min(maxtake,(HDCONST_MAXENC-hdp.itemenc)/hdpkubu);
 		}
-		int increase=min(maxtake,amount);
+		int increase=amount;
+		if(
+			!hd_onemanarmy
+			||deathmatch
+			||skill>=5
+		)increase=min(maxtake,amount);
 		if(heat.getamount(self)>50)increase=0;
 		if(increase<1){ //didn't pick any up
 			setstatelabel("spawn");
