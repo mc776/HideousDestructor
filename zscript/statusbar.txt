@@ -338,11 +338,12 @@ class HDStatusBar:DoomStatusBar{
 					DI_SCREEN_LEFT_BOTTOM|DI_TRANSLATABLE|DI_ITEM_LEFT,
 					0.4,scale:(1.,20.)
 				);
+				bool blargh=hpl.flip&&hpl.itemenc>HDCONST_MAXENC;
 				drawimage(
-					hpl.itemenc>HDCONST_MAXENC?"YELOPXL":"BLETA0",
-					(4,mxht-(19-5)),
-					DI_SCREEN_LEFT_BOTTOM|DI_TRANSLATABLE|DI_ITEM_LEFT,
-					0.4
+					blargh?"YELOPXL":"BLETA0",
+					(4,mxht-(20-5)),
+					DI_SCREEN_LEFT_BOTTOM|DI_TRANSLATABLE|DI_ITEM_LEFT|DI_ITEM_TOP,
+					0.4,scale:(1.,blargh?3.:1.)
 				);
 			}
 
