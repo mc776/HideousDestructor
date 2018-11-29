@@ -877,7 +877,7 @@ class HDBackpack:HDWeapon{
 				return 1;
 			}
 			if(wep.weaponbulk()+bulk>HDCONST_BPMAX){
-				owner.A_Log("Your backpack is too full.",true);
+				if(owner)owner.A_Log("Your backpack is too full.",true);
 				return 1;
 			}
 			if(wep.owner)wep=HDWeapon(owner.dropinventory(wep));
