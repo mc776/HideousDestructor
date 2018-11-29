@@ -48,12 +48,18 @@ class GrabThinker:Thinker{
 				&&hdplayerpawn(picktarget)
 				&&hdplayerpawn(picktarget).itemenc>HDCONST_MAXENC
 				&&picktarget.countinv(pickobj.getclassname())
-				&&(!inventory(pickobj)||inventory(pickobj).balwayspickup)
-				&&(!hdpickup(pickobj)||hdpickup(pickobj).bulk>0)
 				&&(
 					!hd_onemanarmy
 					||deathmatch
 					||skill>=5
+				)
+				&&(!inventory(pickobj)||!inventory(pickobj).balwayspickup)
+				&&(
+					!hdpickup(pickobj)
+					||hdpickup(pickobj).bulk>0
+					||!hdmagammo(pickobj)
+					||hdmagammo(pickobj).magbulk>0
+					||hdmagammo(pickobj).roundbulk>0
 				)
 			){
 				if(cvar.getcvar("hd_helptext",picktarget.player).getint())picktarget.A_Log("No room in pockets.",true);

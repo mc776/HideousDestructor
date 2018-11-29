@@ -314,11 +314,37 @@ class HDStatusBar:DoomStatusBar{
 			drawammocounters(mxht);
 
 			//encumbrance
-			if(hpl.enc)drawstring(
-				mAmountFont,formatnumber(hpl.enc),
-				(8,mxht),DI_TEXT_ALIGN_LEFT|DI_SCREEN_LEFT_BOTTOM,
-				hpl.overloaded<1.2?Font.CR_OLIVE:(hpl.overloaded>2?Font.CR_RED:Font.CR_GOLD)
-			);
+			if(hpl.enc){
+				drawstring(
+					mAmountFont,formatnumber(hpl.enc),
+					(8,mxht),DI_TEXT_ALIGN_LEFT|DI_SCREEN_LEFT_BOTTOM,
+					hpl.overloaded<1.2?Font.CR_OLIVE:hpl.overloaded>2.?Font.CR_RED:Font.CR_GOLD
+				);
+				drawimage(
+					"GREENPXL",
+					(4,mxht+5),
+					DI_SCREEN_LEFT_BOTTOM|DI_TRANSLATABLE|DI_ITEM_LEFT,
+					1,scale:(1.,min(HDCONST_MAXENC,hpl.itemenc)*20./HDCONST_MAXENC)
+				);
+				drawimage(
+					"BLETA0",
+					(5,mxht+5),
+					DI_SCREEN_LEFT_BOTTOM|DI_TRANSLATABLE|DI_ITEM_LEFT,
+					0.4,scale:(1.,20.)
+				);
+				drawimage(
+					"BLETA0",
+					(3,mxht+5),
+					DI_SCREEN_LEFT_BOTTOM|DI_TRANSLATABLE|DI_ITEM_LEFT,
+					0.4,scale:(1.,20.)
+				);
+				drawimage(
+					hpl.itemenc>HDCONST_MAXENC?"YELOPXL":"BLETA0",
+					(4,mxht-(19-5)),
+					DI_SCREEN_LEFT_BOTTOM|DI_TRANSLATABLE|DI_ITEM_LEFT,
+					0.4
+				);
+			}
 
 			//compass
 			int STB_COMPRAD=12;vector2 compos=(-STB_COMPRAD,STB_COMPRAD)*2;
