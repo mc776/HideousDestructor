@@ -47,6 +47,11 @@ class GrabThinker:Thinker{
 				!wt
 				&&hdplayerpawn(picktarget)
 				&&hdplayerpawn(picktarget).itemenc>HDCONST_MAXENC
+				&&(
+					!hd_onemanarmy
+					||deathmatch
+					||skill>=5
+				)
 			){
 				if(cvar.getcvar("hd_helptext",picktarget.player).getint())picktarget.A_Log("No room in pockets.",true);
 				destroy();
