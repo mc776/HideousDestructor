@@ -82,7 +82,7 @@ extend class HDPlayerPawn{
 					hdw==player.readyweapon
 				);
 				double gunbulk=hdw.weaponbulk();
-				if(gunbulk){
+				if(gunbulk>0){
 					if(thisweapon)weaponencsel=gunbulk;
 					else weaponenc+=gunbulk;
 					stacker+=0.08;
@@ -90,7 +90,7 @@ extend class HDPlayerPawn{
 				}
 			}else{
 				let hdp=hdpickup(hdww);
-				if(hdp)itemenc+=hdp.getbulk();
+				if(hdp)itemenc+=max(0,hdp.getbulk());
 			}
 		}
 		weaponenc*=stacker;
