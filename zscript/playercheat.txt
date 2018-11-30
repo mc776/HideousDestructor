@@ -51,11 +51,8 @@ extend class HDPlayerPawn{
 				type=(class<HDAmmo>)(AllActorClasses[i]);
 				if(!type)continue;
 				if(
-					getdefaultbytype((class<HDAmmo>)(type)).nicename!=""
-					//garbage
-					&&type!="DudRocketAmmo"
-					//you already have armour
-					&&type!="HDArmour"
+					!getdefaultbytype((class<HDPickup>)(type)).cheatnogive
+					&&getdefaultbytype((class<HDAmmo>)(type)).nicename!=""
 				){
 					let ammoitem=hdpickup(findinventory(type));
 					if(!ammoitem)ammoitem=hdpickup(GiveInventoryType(type));
