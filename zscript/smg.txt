@@ -26,8 +26,8 @@ class HDSMG:HDWeapon{
 	}
 	override double weaponbulk(){
 		int mg=weaponstatus[SMGS_MAG];
-		if(mg<0)return 120-ENC_9MAG30_LOADED;
-		else return 120+mg*ENC_9_LOADED;
+		if(mg<0)return 90;
+		else return (90+ENC_9MAG30_LOADED)+mg*ENC_9_LOADED;
 	}
 	override void failedpickupunload(){
 		failedpickupunloadmag(SMGS_MAG,"HD9mMag30");
