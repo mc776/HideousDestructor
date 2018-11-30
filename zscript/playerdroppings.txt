@@ -85,11 +85,11 @@ extend class HDHandlers{
 		else amt=max(1,amt);
 
 		if(cw is "HDPistol"){
-			int ccc=ppp.countinv("HDPistolAmmo");
+			int ccc=min(100,ppp.countinv("HDPistolAmmo"));
 			if(ccc)ppp.A_DropInventory("HDPistolAmmo",ccc);
 			else if(amt>0)ppp.A_DropInventory("HD9mMag15",amt);
 		}else if(cw is "HDSMG"){
-			int ccc=ppp.countinv("HDPistolAmmo");
+			int ccc=min(100,ppp.countinv("HDPistolAmmo"));
 			if(ccc)ppp.A_DropInventory("HDPistolAmmo",ccc);
 			else if(amt>0)ppp.A_DropInventory("HD9mMag30",amt);
 		}else if(cw is "Hunter"||cw is "Slayer"){
@@ -98,12 +98,12 @@ extend class HDHandlers{
 			if(
 				!(cw.weaponstatus[0]&ZM66F_NOLAUNCHER)
 			)ppp.A_DropInventory("HDRocketAmmo",amt);
-			int ccc=ppp.countinv("FourMilAmmo");
+			int ccc=min(100,ppp.countinv("FourMilAmmo"));
 			if(ccc)ppp.A_DropInventory("FourMilAmmo",ccc);
 			else ppp.A_DropInventory("HD4mMag",amt);
 		}else if(cw is "Vulcanette"){
 			ppp.A_DropInventory("HDBattery",amt);
-			int ccc=ppp.countinv("FourMilAmmo");
+			int ccc=min(100,ppp.countinv("FourMilAmmo"));
 			if(ccc)ppp.A_DropInventory("FourMilAmmo",ccc);
 			else ppp.A_DropInventory("HD4mMag",amt);
 		}else if(cw is "HDRL"){
@@ -124,13 +124,13 @@ extend class HDHandlers{
 			if(
 				!(cw.weaponstatus[0]&LIBF_NOLAUNCHER)
 			)ppp.A_DropInventory("HDRocketAmmo",amt);
-			int ccc=ppp.countinv("SevenMilAmmo");
+			int ccc=min(100,ppp.countinv("SevenMilAmmo"));
 			if(ccc)ppp.A_DropInventory("SevenMilAmmo",ccc);
 			else if(amt>0)ppp.A_DropInventory("HD7mMag",amt);
 		}
 		else if(cw is "Brontornis")ppp.A_DropInventory("BrontornisRound",amt);
 		else if(cw is "BossRifle"){
-			int ccc=ppp.countinv("SevenMilAmmo");
+			int ccc=min(100,ppp.countinv("SevenMilAmmo"));
 			if(ccc)ppp.A_DropInventory("SevenMilAmmo",ccc);
 			else if(amt>0)ppp.A_DropInventory("HD7mClip",amt);
 		}else if(cw is "ThunderBuster"||cw is "Lumberjack"||cw is "BFG9k"){
@@ -149,7 +149,7 @@ extend class HDHandlers{
 			if(!mmm)return;
 			let what=mmm.roundtype;
 			if(!what)return;
-			int howmany=min(max(1,hdmath.maxinv(ppp,what)*0.2),ppp.countinv(what));
+			int howmany=min(100,max(1,hdmath.maxinv(ppp,what)*0.02),ppp.countinv(what));
 			if(!howmany)return;
 			ppp.A_DropInventory(what,howmany);
 		}else PurgeUselessAmmo(ppp);
