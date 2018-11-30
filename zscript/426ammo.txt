@@ -10,6 +10,7 @@ class FourMilAmmo:HDAmmo{
 		hdpickup.refid HDLD_FOURMIL;
 		hdpickup.bulk ENC_426;
 		hdpickup.cheatnogive true;
+		inventory.maxamount 300;
 	}
 	override string pickupmessage(){
 		string pms="Picked up a stray 4.26 UAC Standard round.";
@@ -21,9 +22,9 @@ class FourMilAmmo:HDAmmo{
 		super.postbeginplay();
 		if(owner)return;
 		if(amount==1)return;
-		int amm=min(amount,random(1,36));
+		int amm=min(amount,random(21,50));
 		while(amount>amm){
-			int ld=min(amount,random(1,36));
+			int ld=min(amount,random(21,50));
 			actor a=spawn("FourMilAmmo",pos);
 			a.vel+=vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
 			a.angle=frandom(0,360);
