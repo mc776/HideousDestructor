@@ -76,14 +76,14 @@ class HDWoundFixer:HDWeapon{
 				items.push(item);
 			}
 		}
-		double aang=caller.angle;double ppitch=caller.pitch;
+		double aang=caller.angle;
 		double ch=items.size()?20.:0;
 		caller.angle-=ch*(items.size()-1)*0.5;
 		for(int i=0;i<items.size();i++){
 			caller.a_dropinventory(items[i].getclassname(),items[i].amount);
-			caller.angle+=ch;caller.pitch=ppitch+frandom(-ch,ch);
+			caller.angle+=ch;
 		}
-		caller.angle=aang;caller.pitch=ppitch;
+		caller.angle=aang;
 	}
 	states{
 	reload:

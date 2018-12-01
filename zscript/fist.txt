@@ -43,14 +43,14 @@ class HDFist:HDWeapon replaces Fist{
 			HDWoundFixer.DropMeds(owner,true);
 			return null;
 		}
-		double aang=owner.angle;double ppitch=owner.pitch;
+		double aang=owner.angle;
 		double ch=items.size()?20.:0;
 		owner.angle-=ch*(items.size()-1)*0.5;
 		for(int i=0;i<items.size();i++){
 			owner.a_dropinventory(items[i].getclassname(),items[i].amount);
-			owner.angle+=ch;owner.pitch=ppitch+frandom(-ch,ch);
+			owner.angle+=ch;
 		}
-		owner.angle=aang;owner.pitch=ppitch;
+		owner.angle=aang;
 		return null;
 	}
 	override void DoEffect(){
