@@ -56,8 +56,10 @@ class GrabThinker:Thinker{
 				)
 				&&(
 					!tt
-					||!tt.balwayspickup
-					||picktarget.countinv(pickobj.getclassname())
+					||(
+						!tt.balwayspickup
+						&&picktarget.countinv(pickobj.getclassname())
+					)
 				)
 				&&(
 					!pt
