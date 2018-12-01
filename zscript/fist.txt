@@ -44,10 +44,11 @@ class HDFist:HDWeapon replaces Fist{
 			return null;
 		}
 		double aang=owner.angle;double ppitch=owner.pitch;
-		double ch=10.*items.size();
+		double ch=items.size()?20.:0;
+		owner.angle-=ch*(items.size()-1)*0.5;
 		for(int i=0;i<items.size();i++){
-			owner.angle=aang+frandom(-ch,ch);owner.pitch=ppitch+frandom(-ch,ch);
 			owner.a_dropinventory(items[i].getclassname(),items[i].amount);
+			owner.angle+=ch;owner.pitch=ppitch+frandom(-ch,ch);
 		}
 		owner.angle=aang;owner.pitch=ppitch;
 		return null;
