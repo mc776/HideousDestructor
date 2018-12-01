@@ -152,6 +152,9 @@ class HDWeapon:Weapon{
 	//for consolidating stuff between maps
 	virtual void Consolidate(){}
 
+	//what to do when hitting the "drop one unit of ammo" key
+	virtual void DropOneAmmo(int amt=1){}
+
 	//for smoking barrels
 	void drainheat(int ref,int smklength=18){
 		bool frozen=globalfreeze||level.Frozen;

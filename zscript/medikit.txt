@@ -65,7 +65,7 @@ class HDWoundFixer:HDWeapon{
 		}
 		return 0;
 	}
-	static void DropMeds(actor caller,bool all=false){
+	static void DropMeds(actor caller,int amt=1){
 		if(!caller)return;
 		array<inventory> items;items.clear();
 		for(inventory item=caller.inv;item!=null;item=!item?null:item.inv){
@@ -80,7 +80,7 @@ class HDWoundFixer:HDWeapon{
 		double ch=items.size()?20.:0;
 		caller.angle-=ch*(items.size()-1)*0.5;
 		for(int i=0;i<items.size();i++){
-			caller.a_dropinventory(items[i].getclassname(),items[i].amount);
+			caller.a_dropinventory(items[i].getclassname(),amt>0?amt:items[i].amount);
 			caller.angle+=ch;
 		}
 		caller.angle=aang;
@@ -519,6 +519,10 @@ class SelfBandage:HDWoundFixer{
 			slf.woundcount-=amt;
 			slf.unstablewoundcount+=amt;
 		}
+	}
+	override inventory CreateTossable(int amount){
+		HDWoundFixer.DropMeds(owner,0);
+		return null;
 	}
 	int targetlock;
 	states{
