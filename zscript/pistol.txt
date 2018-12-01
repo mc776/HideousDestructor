@@ -90,11 +90,13 @@ class HDPistol:HDWeapon{
 			weaponstatus[i]=weaponstatus2[i];
 			weaponstatus2[i]=-1;
 		}
-		owner.A_SetInventory("HDFist",1);
-		owner.A_SelectWeapon("HDFist");
-		let ops=weapon(findinventory("HDPistol"));
-		owner.player.pendingweapon=ops;
-		owner.player.readyweapon=ops;
+		if(!(owner.player.readyweapon is "HDBackpack")){
+			owner.A_SetInventory("HDFist",1);
+			owner.A_SelectWeapon("HDFist");
+			let ops=weapon(findinventory("HDPistol"));
+			owner.player.pendingweapon=ops;
+			owner.player.readyweapon=ops;
+		}
 		return second;
 	}
 	action void SwapPistols(){
