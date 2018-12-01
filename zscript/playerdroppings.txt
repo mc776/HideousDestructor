@@ -156,37 +156,3 @@ extend class HDHandlers{
 	}
 }
 
-class DropMeds:ActionItem{
-	states{
-	pickup:
-		TNT1 A 0{
-			if(health<1)return;
-			A_DropInventory("PortableStimpack",8);
-			A_DropInventory("PortableMedikit",8);
-			A_DropInventory("PortableBerserkPack",8);
-			A_DropInventory("BluePotion",8);
-		}fail;
-	}
-}
-class DropMisc:ActionItem{
-	states{
-	pickup:
-		TNT1 A 0{
-			if(health<1)return;
-			A_DropInventory("PortableLiteAmp",countinv("PortableLiteAmp"));
-			A_DropInventory("PortableLadder",countinv("PortableLadder"));
-			A_DropInventory("HERPUsable",countinv("HERPUsable"));
-			A_DropInventory("DERPUsable",countinv("DERPUsable"));
-			A_DropInventory("HERPDEAD",countinv("HERPDEAD"));
-			A_DropInventory("DERPDEAD",countinv("DERPDEAD"));
-//			A_DropInventory("HDBlurSphere"); //too precious to drop casually
-			A_DropInventory("PortableRadsuit",countinv("PortableRadsuit"));
-			A_DropInventory("SquadSummoner",countinv("SquadSummoner"));
-			A_DropInventory("HDIEDKit",countinv("HDIEDKit"));
-			A_DropInventory("DudRocketAmmo",countinv("DudRocketAmmo"));
-			A_DropInventory("HDArmour",countinv("HDArmour"));
-			A_DropInventory("DoorBuster",countinv("DoorBuster"));
-		}fail;
-	}
-}
-

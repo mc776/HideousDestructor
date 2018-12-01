@@ -28,10 +28,29 @@ class HDFist:HDWeapon replaces Fist{
 		hdweapon.refid HDLD_FIST;
 	}
 	override inventory CreateTossable(int amount){
-		owner.A_GiveInventory("DropMisc");
-		owner.A_GiveInventory("HDFist");
-		owner.A_SelectWeapon("HDFist");
-		return null;//super.createtossable(amount);
+		if(!owner)return null;
+		array<inventory> items;items.clear();
+		for(inventory item=owner.inv;item!=null;item=!item?null:item.inv){
+			if(
+				hdpickup(item)
+				&&item.binvbar
+				&&item.species!="HealingItem"
+			){
+				items.push(item);
+			}
+		}
+		if(!items.size()){
+			HDWoundFixer.DropMeds(owner,true);
+			return null;
+		}
+		double aang=owner.angle;double ppitch=owner.pitch;
+		double ch=10.*items.size();
+		for(int i=0;i<items.size();i++){
+			owner.angle=aang+frandom(-ch,ch);owner.pitch=ppitch+frandom(-ch,ch);
+			owner.a_dropinventory(items[i].getclassname(),items[i].amount);
+		}
+		owner.angle=aang;owner.pitch=ppitch;
+		return null;
 	}
 	override void DoEffect(){
 		super.DoEffect();

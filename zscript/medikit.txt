@@ -14,6 +14,7 @@ class PortableMedikit:HDPickup{
 		hdpickup.bulk ENC_MEDIKIT;
 		hdpickup.nicename "Medikit";
 		hdpickup.refid HDLD_MEDIKIT;
+		species "HealingItem";
 	}
 	bool hasstim;
 	override void postbeginplay(){
@@ -63,6 +64,25 @@ class HDWoundFixer:HDWeapon{
 			else return onr.woundcount;
 		}
 		return 0;
+	}
+	static void DropMeds(actor caller,bool all=false){
+		if(!caller)return;
+		array<inventory> items;items.clear();
+		for(inventory item=caller.inv;item!=null;item=!item?null:item.inv){
+			if(
+				hdpickup(item)
+				&&item.species=="HealingItem"
+			){
+				items.push(item);
+			}
+		}
+		double aang=caller.angle;double ppitch=caller.pitch;
+		double ch=10.*items.size();
+		for(int i=0;i<items.size();i++){
+			caller.angle=aang+frandom(-ch,ch);caller.pitch=ppitch+frandom(-ch,ch);
+			caller.a_dropinventory(items[i].getclassname(),items[i].amount);
+		}
+		caller.angle=aang;caller.pitch=ppitch;
 	}
 	states{
 	reload:
@@ -656,17 +676,9 @@ class SelfBandage:HDWoundFixer{
 
 	spawn:
 		TNT1 A 1;
-		TNT1 A 0{
-			if(
-				target
-				&&target.player
-				&&!target.countinv("SelfBandage")
-			){
-				A_GiveToTarget("SelfBandage");
-				A_GiveToTarget("DropMeds");
-			}
-		}
 		stop;
 	}
 }
+
+
 

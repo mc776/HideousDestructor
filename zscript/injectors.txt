@@ -13,6 +13,7 @@ class PortableStimpack:HDPickup{
 		hdpickup.bulk ENC_STIMPACK;
 		hdpickup.nicename "Stimpack";
 		hdpickup.refid HDLD_STIMPAK;
+		species "HealingItem";
 	}
 	states{
 	spawn:
@@ -102,6 +103,10 @@ class HDStimpacker:HDWoundFixer{
 	property spentinjecttype:spentinjecttype;
 	property inventorytype:inventorytype;
 	property noerror:noerror;
+	override inventory CreateTossable(int amount){
+		HDWoundFixer.DropMeds(owner,true);
+		return null;
+	}
 	default{
 		hdstimpacker.injecttype "InjectStimDummy";
 		hdstimpacker.spentinjecttype "SpentStim";
@@ -269,6 +274,7 @@ class PortableBerserkPack:HDPickup{
 		hdpickup.bulk ENC_STIMPACK;
 		hdpickup.nicename "Berserk Pack";
 		hdpickup.refid HDLD_BERSERK;
+		species "HealingItem";
 	}
 	states{
 	spawn:
@@ -343,6 +349,7 @@ class BluePotion:HDPickup{
 		scale 0.3;
 		hdpickup.bulk ENC_BLUEPOTION;
 		hdpickup.nicename "Blue Potion";
+		species "HealingItem";
 	}
 	states{
 	spawn:
