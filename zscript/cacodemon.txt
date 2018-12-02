@@ -19,7 +19,7 @@ class FooFighter:HDActor{
 
 		damagetype "Thermal";
 
-		seesound "weapons/plasidle";
+		seesound "caco/ballhum";
 	}
 	override void beginplay(){
 		super.beginplay();
@@ -211,7 +211,7 @@ class Foof:HDFireball{
 	}
 	void ZapSomething(){
 		roll=frandom(0,360);
-		A_PlaySound("weapons/plasidle",CHAN_BODY);
+		A_PlaySound("misc/arczap",CHAN_BODY);
 		blockthingsiterator it=blockthingsiterator.create(self,72);
 		actor tb=target;
 		actor zit=null;
@@ -350,7 +350,7 @@ class Cacademon:Cacodemon replaces Cacodemon{
 		hdmb.meleethreshold=0;
 	}
 	void A_CacoCorpseZap(){
-		A_PlaySound("weapons/plasidle",0,0.3,0,2);
+		A_PlaySound("misc/arczap",0,0.3,0,2);
 		A_CustomRailgun((random(1,4)),0,"","blueviolet",
 			RGF_SILENT|RGF_NOPIERCING|RGF_FULLbright|RGF_CENTERZ,
 			0,4000,"HDArcPuff",180,180,random(60,160),18,1.4,1.5
@@ -522,7 +522,7 @@ class Cacademon:Cacodemon replaces Cacodemon{
 		HEAD LLLLL 2 light("PLAZMABX1") A_CacoCorpseZap();
 	deadzapping:
 		HEAD L 1 light("PLAZMABX1") A_SetTics(random(1,4));
-		HEAD L 0 A_PlaySound("weapons/plasidle",0,0.6,0,2);
+		HEAD L 0 A_PlaySound("misc/arczap",0,0.6,0,2);
 		HEAD L 1{
 			A_CustomRailgun ((random(4,8)),random(-12,12),"","azure",
 				RGF_SILENT|RGF_FULLBRIGHT,
