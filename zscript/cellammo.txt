@@ -145,7 +145,15 @@ class HDBattery:HDMagAmmo{
 		}
 		if(hd_debug)LogAmounts();
 	}
-
+	override void GetItemsThatUseThis(){
+		itemsthatusethis.push("BFG9k");
+		itemsthatusethis.push("ThunderBuster");
+		itemsthatusethis.push("Vulcanette");
+		itemsthatusethis.push("Lumberjack");
+		itemsthatusethis.push("HERPUsable");
+		itemsthatusethis.push("HERPDEAD");
+		itemsthatusethis.push("PortableLiteAmp");
+	}
 	states(actor){
 	spawn:
 		CELL CAB -1 nodelay{

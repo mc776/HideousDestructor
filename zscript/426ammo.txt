@@ -33,6 +33,13 @@ class FourMilAmmo:HDAmmo{
 		}if(amount<1)destroy();
 		scale.y*=max(1,amount*0.333);
 	}
+	override void GetItemsThatUseThis(){
+		itemsthatusethis.push("HERPUsable");
+		itemsthatusethis.push("HERPDEAD");
+		itemsthatusethis.push("ZM66AssaultRifle");
+		itemsthatusethis.push("Vulcanette");
+		itemsthatusethis.push("LiberatorRifle");
+	}
 	states{
 	spawn:
 		RBRS A -1;
@@ -52,6 +59,12 @@ class HD4mMag:HDMagAmmo{
 		hdpickup.nicename "4.26mm UAC Standard Magazine";
 		hdpickup.refid HDLD_FOURMAG;
 		inventory.pickupmessage "Picked up a 4.26 UAC Standard magazine.";
+	}
+	override void GetItemsThatUseThis(){
+		itemsthatusethis.push("HERPUsable");
+		itemsthatusethis.push("HERPDEAD");
+		itemsthatusethis.push("ZM66AssaultRifle");
+		itemsthatusethis.push("Vulcanette");
 	}
 	override void postbeginplay(){
 		super.postbeginplay();

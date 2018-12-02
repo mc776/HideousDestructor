@@ -2,78 +2,21 @@
 // heh
 //-------------------------------------------------
 extend class HDHandlers{
-	//drops all ammo for which you do not have a weapon
+	//goes through all ammo, checks their lists, dumps if not found
 	void PurgeUselessAmmo(hdplayerpawn ppp){
-		if(
-			!ppp.countinv("HDPistol")
-			&&!ppp.countinv("HDSMG")
-			&&!ppp.countinv("DERPUsable")
-		){
-			ppp.A_DropInventory("HDPistolAmmo",ppp.countinv("HDPistolAmmo"));
-			ppp.A_DropInventory("HD9mMag30",ppp.countinv("HD9mMag30"));
-			ppp.A_DropInventory("HD9mMag15",ppp.countinv("HD9mMag15"));
+		if(!ppp)return;
+		array<inventory> items;items.clear();
+		for(inventory item=ppp.inv;item!=null;item=!item?null:item.inv){
+			let thisitem=hdpickup(item);
+			if(thisitem&&!thisitem.isused())items.push(item);
 		}
-		if(
-			!ppp.countinv("Slayer")
-			&&!ppp.countinv("Hunter")
-		){
-			ppp.A_DropInventory("HDShellAmmo",ppp.countinv("HDShellAmmo"));
+		double aang=ppp.angle;
+		double ch=items.size()?20.:0;
+		for(int i=0;i<items.size();i++){
+			ppp.a_dropinventory(items[i].getclassname(),items[i].amount);
+			ppp.angle+=ch;
 		}
-		if(
-			!ppp.countinv("ZM66AssaultRifle")
-			&&!ppp.countinv("Vulcanette")
-			&&!ppp.countinv("HERPUsable")
-		){
-			ppp.A_DropInventory("HD4mMag",ppp.countinv("HD4mMag"));
-			if(!ppp.countinv("LiberatorRifle")&&!ppp.countinv("BossRifle"))
-				ppp.A_DropInventory("FourMilAmmo",ppp.countinv("FourMilAmmo"));
-		}
-		if(
-			!ppp.countinv("HDRL")
-		){
-			ppp.A_DropInventory("HEATAmmo",ppp.countinv("HEATAmmo"));
-			if(
-				!ppp.countinv("Blooper")
-				&&(
-					!ppp.countinv("ZM66AssaultRifle")
-					||hdweapon(ppp.findinventory("ZM66AssaultRifle")).weaponstatus[0]
-						&ZM66F_NOLAUNCHER
-				)
-				&&!ppp.countinv("LiberatorRifle")
-				&&(
-					!ppp.countinv("LiberatorRifle")
-					||hdweapon(ppp.findinventory("LiberatorRifle")).weaponstatus[0]
-						&LIBF_NOLAUNCHER
-				)
-			)ppp.A_DropInventory("HDRocketAmmo",ppp.countinv("HDRocketAmmo"));
-		}
-		if(
-			!ppp.countinv("LiberatorRifle")
-			&&!ppp.countinv("BossRifle")
-		){
-			ppp.A_DropInventory("SevenMilBrass",ppp.countinv("SevenMilBrass"));
-			ppp.A_DropInventory("HD7mMag",ppp.countinv("HD7mMag"));
-			ppp.A_DropInventory("HD7mClip",ppp.countinv("HD7mClip"));
-			ppp.A_DropInventory("SevenMilAmmo",ppp.countinv("SevenMilAmmo"));
-		}
-		if(
-			!ppp.countinv("BFG9k")
-		){
-			if(
-				!ppp.countinv("ThunderBuster")
-				&&!ppp.countinv("Vulcanette")
-				&&!ppp.countinv("Lumberjack")
-				&&!ppp.countinv("HERPUsable")
-			)ppp.A_DropInventory("HDBattery",ppp.countinv("HDBattery"));
-		}
-		if(!ppp.countinv("Brontornis"))
-			ppp.A_DropInventory("BrontornisRound",ppp.countinv("BrontornisRound"));
-		if(!ppp.countinv("HDIEDKit"))
-			ppp.A_DropInventory("DudRocketAmmo",ppp.countinv("DudRocketAmmo"));
-		double aaa=ppp.angle;
-		ppp.angle+=frandom(-10,10);ppp.A_DropInventory("DERPDEAD");
-		ppp.angle+=frandom(-10,10);ppp.A_DropInventory("HERPDEAD");
-		ppp.angle=aaa;
+		ppp.angle=aang;
 	}
 	//drops one or more units of your selected weapon's ammo
 	void DropOne(hdplayerpawn ppp,playerinfo player,int amt){

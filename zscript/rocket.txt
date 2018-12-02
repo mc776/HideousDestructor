@@ -292,6 +292,9 @@ class DudRocketAmmo:HDAmmo{
 		hdpickup.bulk ENC_ROCKET;
 		hdpickup.cheatnogive true;
 	}
+	override void GetItemsThatUseThis(){
+		itemsthatusethis.push("HDIEDKit");
+	}
 	states{
 	spawn:
 		ROCQ A -1;stop;

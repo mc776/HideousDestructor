@@ -12,6 +12,10 @@ class SevenMilAmmo:HDAmmo{
 		hdpickup.nicename "7.76mm Round";
 		hdpickup.bulk ENC_776;
 	}
+	override void GetItemsThatUseThis(){
+		itemsthatusethis.push("LiberatorRifle");
+		itemsthatusethis.push("BossRifle");
+	}
 	states{
 	spawn:
 		RBRS A -1;
@@ -31,6 +35,9 @@ class HD7mMag:HDMagAmmo{
 		hdpickup.nicename "7.76mm Magazine";
 		inventory.pickupmessage "Picked up a 7.76mm magazine.";
 		scale 0.8;
+	}
+	override void GetItemsThatUseThis(){
+		itemsthatusethis.push("LiberatorRifle");
 	}
 	states{
 	spawn:
@@ -57,6 +64,9 @@ class HD7mClip:HDMagAmmo{
 		hdpickup.nicename "7.76mm Clip";
 		inventory.pickupmessage "Picked up a 7.76mm clip.";
 		scale 0.6;
+	}
+	override void GetItemsThatUseThis(){
+		itemsthatusethis.push("BossRifle");
 	}
 	states(actor){
 	spawn:
@@ -87,6 +97,9 @@ class SevenMilBrass:HDAmmo{
 		hdpickup.cheatnogive true;
 		xscale 0.7;yscale 0.8;
 		inventory.pickupmessage "Picked up some brass.";
+	}
+	override void GetItemsThatUseThis(){
+		itemsthatusethis.push("LiberatorRifle");
 	}
 	states{
 	spawn:

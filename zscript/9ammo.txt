@@ -14,6 +14,12 @@ class HDPistolAmmo:HDAmmo{
 		hdpickup.nicename "9mm Round";
 		hdpickup.bulk ENC_9;
 	}
+	override void GetItemsThatUseThis(){
+		itemsthatusethis.push("DERPUsable");
+		itemsthatusethis.push("DERPDEAD");
+		itemsthatusethis.push("HDPistol");
+		itemsthatusethis.push("HDSMG");
+	}
 	states{
 	spawn:
 		PBRS A -1;
@@ -33,6 +39,11 @@ class HD9mMag15:HDMagAmmo{
 		hdpickup.nicename "9mm Pistol Magazine";
 		inventory.pickupmessage "Picked up a pistol magazine.";
 		hdpickup.refid HDLD_NIMAG15;
+	}
+	override void GetItemsThatUseThis(){
+		itemsthatusethis.push("DERPUsable");
+		itemsthatusethis.push("DERPDEAD");
+		itemsthatusethis.push("HDPistol");
 	}
 	states{
 	spawn:
@@ -56,6 +67,9 @@ class HD9mMag30:HD9mMag15{
 		hdpickup.nicename "9mm SMG Magazine";
 		inventory.pickupmessage "Picked up an SMG magazine.";
 		hdpickup.refid HDLD_NIMAG30;
+	}
+	override void GetItemsThatUseThis(){
+		itemsthatusethis.push("HDSMG");
 	}
 	states{
 	spawn:

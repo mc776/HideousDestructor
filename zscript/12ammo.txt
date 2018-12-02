@@ -11,6 +11,10 @@ class HDShellAmmo:HDAmmo{
 		hdpickup.refid HDLD_SHOTSHL;
 		hdpickup.bulk ENC_SHELL;
 	}
+	override void GetItemsThatUseThis(){
+		itemsthatusethis.push("Hunter");
+		itemsthatusethis.push("Slayer");
+	}
 	states{
 	spawn:
 		SHL1 A -1 nodelay{

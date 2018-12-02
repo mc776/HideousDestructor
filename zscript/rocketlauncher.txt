@@ -455,6 +455,21 @@ class HDRocketAmmo:HDAmmo replaces RocketAmmo{
 		hdpickup.refid HDLD_ROCKETS;
 		hdpickup.bulk ENC_ROCKET;
 	}
+	override void GetItemsThatUseThis(){
+		itemsthatusethis.push("HDRL");
+		itemsthatusethis.push("Blooper");
+	}
+	override bool IsUsed(){
+		if(!owner)return true;
+		for(int i=0;i<itemsthatusethis.size();i++){
+			if(owner.countinv(itemsthatusethis[i]))return true;
+		}
+		let zzz=HDWeapon(owner.findinventory("ZM66AssaultRifle"));
+		if(zzz&&!(zzz.weaponstatus[0]&ZM66F_NOLAUNCHER))return true;
+		let lll=HDWeapon(owner.findinventory("LiberatorRifle"));
+		if(lll&&!(lll.weaponstatus[0]&LIBF_NOLAUNCHER))return true;
+		return false;
+	}
 	states{
 	spawn:
 		ROQP A -1;
@@ -475,6 +490,9 @@ class HEATAmmo:HDAmmo{
 		hdpickup.bulk ENC_HEATROCKET;
 		xscale 0.24;
 		yscale 0.3;
+	}
+	override void GetItemsThatUseThis(){
+		itemsthatusethis.push("HDRL");
 	}
 	states{
 	spawn:
