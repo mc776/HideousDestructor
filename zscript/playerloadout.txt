@@ -617,6 +617,11 @@ class HDBackpack:HDWeapon{
 		}
 		return ct;
 	}
+	override void DropOneAmmo(int amt){
+		if(owner){
+			RemoveFromBackpack(index,false);
+		}
+	}
 
 	int bpindex;
 	int maxindex;
@@ -942,6 +947,7 @@ class HDBackpack:HDWeapon{
 		amounts[which].split(tempamounts," ");
 		if(tempamounts.size()<1)return 1;
 		int ticks=0;
+		if(trytopocket&&hdplayerpawn(owner)&&hdplayerpawn(owner).itemenc>=HDCONST_MAXENC)trytopocket=false;
 		let wepth=(class<hdweapon>)(invclasses[which]);
 		let thisclass=(class<hdpickup>)(invclasses[which]);
 		if(wepth){

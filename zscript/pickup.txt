@@ -49,6 +49,7 @@ class GrabThinker:Thinker{
 				!wt
 				&&hdplayerpawn(picktarget)
 				&&hdplayerpawn(picktarget).itemenc>HDCONST_MAXENC
+				&&!(picktarget.player.readyweapon is "HDBackpack")
 				&&(
 					!hd_onemanarmy
 					||deathmatch
@@ -190,12 +191,16 @@ class HDPickup:CustomInventory{
 		other.A_PlaySound(pickupsound,CHAN_AUTO);
 		other.A_Log(string.format("\cg%s",pickupmessage()),true);
 	}
+
+	//delete once no longer needed
 	void GotoSpawn(){
 		if(findstate("spawn2")){
 			if(hd_debug)A_Log(string.format("%s still uses spawn2",getclassname()));
 			setstatelabel("spawn2");
 		}
 	}
+
+	//so you don't get a bullet pickup that's 2 bullets somehow
 	virtual void SplitPickup(){
 		int maxpkamt=max(1,maxunitamount);
 		while(amount>maxpkamt){
@@ -208,11 +213,20 @@ class HDPickup:CustomInventory{
 	}
 	override void postbeginplay(){
 		maxamount=min(maxamount,effectivemaxamount());
+		itemsthatusethis.clear();
+		GetItemsThatUseThis();
 		super.postbeginplay();
 		isbeingpickedup=false;
 		let hdps=new("HDPickupSplitter");
 		hdps.invoker=self;
 	}
+
+	//This is an array of item names created on an actor's initialization.
+	//If you have a sub-mod item that also uses a given ammo type,
+	//you can use an event handler to add that item to this array for that ammo type.
+	array<name> itemsthatusethis;
+	virtual bool IsUsed(){return true;}
+	virtual void GetItemsThatUseThis(){}
 	states{
 	use:
 		TNT1 A 0;
