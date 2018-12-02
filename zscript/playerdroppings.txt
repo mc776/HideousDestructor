@@ -77,82 +77,10 @@ extend class HDHandlers{
 	}
 	//drops one or more units of your selected weapon's ammo
 	void DropOne(hdplayerpawn ppp,playerinfo player,int amt){
+		if(!ppp||ppp.health<1)return;
 		let cw=hdweapon(player.readyweapon);
-		if(!cw)return;
-
-		//if unspecified, shotgun should drop in groups of 4
-		if(!amt&&(cw is "Hunter"||cw is "Slayer"))amt=4;
-		else amt=max(1,amt);
-
-		if(cw is "HDPistol"){
-			int ccc=min(100,ppp.countinv("HDPistolAmmo"));
-			if(ccc)ppp.A_DropInventory("HDPistolAmmo",ccc);
-			else if(amt>0)ppp.A_DropInventory("HD9mMag15",amt);
-		}else if(cw is "HDSMG"){
-			int ccc=min(100,ppp.countinv("HDPistolAmmo"));
-			if(ccc)ppp.A_DropInventory("HDPistolAmmo",ccc);
-			else if(amt>0)ppp.A_DropInventory("HD9mMag30",amt);
-		}else if(cw is "Hunter"||cw is "Slayer"){
-			ppp.A_DropInventory("HDShellAmmo",amt);
-		}else if(cw is "ZM66AssaultRifle"){
-			if(
-				!(cw.weaponstatus[0]&ZM66F_NOLAUNCHER)
-			)ppp.A_DropInventory("HDRocketAmmo",amt);
-			int ccc=min(100,ppp.countinv("FourMilAmmo"));
-			if(ccc)ppp.A_DropInventory("FourMilAmmo",ccc);
-			else ppp.A_DropInventory("HD4mMag",amt);
-		}else if(cw is "Vulcanette"){
-			ppp.A_DropInventory("HDBattery",amt);
-			int ccc=min(100,ppp.countinv("FourMilAmmo"));
-			if(ccc)ppp.A_DropInventory("FourMilAmmo",ccc);
-			else ppp.A_DropInventory("HD4mMag",amt);
-		}else if(cw is "HDRL"){
-			if(ppp.countinv("HEATAmmo")){
-				ppp.angle+=1;
-				ppp.A_DropInventory("HDRocketAmmo",amt);
-				ppp.angle-=2;
-				ppp.A_DropInventory("HEATAmmo",amt);
-				ppp.angle+=1;
-			}else ppp.A_DropInventory("HDRocketAmmo",amt);
-		}
-		else if(cw is "Blooper")ppp.A_DropInventory("HDRocketAmmo",amt);
-		else if(cw is "HDGrenadeThrower")
-			ppp.A_DropInventory(getdefaultbytype("HDGrenadeThrower").grenadeammotype,amt);
-		else if(cw is "Tripwire")
-			ppp.A_DropInventory(getdefaultbytype("Tripwire").grenadeammotype,amt);
-		else if(cw is "LiberatorRifle"){
-			if(
-				!(cw.weaponstatus[0]&LIBF_NOLAUNCHER)
-			)ppp.A_DropInventory("HDRocketAmmo",amt);
-			int ccc=min(100,ppp.countinv("SevenMilAmmo"));
-			if(ccc)ppp.A_DropInventory("SevenMilAmmo",ccc);
-			else if(amt>0)ppp.A_DropInventory("HD7mMag",amt);
-		}
-		else if(cw is "Brontornis")ppp.A_DropInventory("BrontornisRound",amt);
-		else if(cw is "BossRifle"){
-			int ccc=min(100,ppp.countinv("SevenMilAmmo"));
-			if(ccc)ppp.A_DropInventory("SevenMilAmmo",ccc);
-			else if(amt>0)ppp.A_DropInventory("HD7mClip",amt);
-		}else if(cw is "ThunderBuster"||cw is "Lumberjack"||cw is "BFG9k"){
-			ppp.A_DropInventory("HDBattery",amt);
-		}else if(cw is "SelfBandage"){
-			ppp.A_DropInventory("PortableStimpack",amt);
-			ppp.A_DropInventory("PortableMedikit",amt);
-			ppp.A_DropInventory("PortableBerserkPack",amt);
-			ppp.A_DropInventory("BluePotion",amt);
-		}else if(cw is "HDBackpack"){
-			let hdbp=HDBackpack(cw);
-			hdbp.removefrombackpack(hdbp.index,false);
-			if(hdbp.amounts[hdbp.index]=="")hdbp.updatemessage(hdbp.index+1);
-		}else if(cw is "MagManager"){
-			let mmm=HDMagAmmo(MagManager(cw).thismag);
-			if(!mmm)return;
-			let what=mmm.roundtype;
-			if(!what)return;
-			int howmany=min(100,max(1,hdmath.maxinv(ppp,what)*0.02),ppp.countinv(what));
-			if(!howmany)return;
-			ppp.A_DropInventory(what,howmany);
-		}else PurgeUselessAmmo(ppp);
+		if(cw)cw.DropOneAmmo(amt);
+		else PurgeUselessAmmo(ppp);
 	}
 }
 

@@ -72,6 +72,22 @@ class ZM66AssaultRifle:HDWeapon{
 	override void failedpickupunload(){
 		failedpickupunloadmag(ZM66S_MAG,"HD4mMag");
 	}
+	override void DropOneAmmo(int amt){
+		if(owner){
+			amt=clamp(amt,1,10);
+			if(owner.countinv("FourMilAmmo"))owner.A_DropInventory("FourMilAmmo",amt*50);
+			else{
+				double angchange=(weaponstatus[0]&ZM66F_NOLAUNCHER)?0:-10;
+				if(angchange)owner.angle-=angchange;
+				owner.A_DropInventory("HD4mMag",amt);
+				if(angchange){
+					owner.angle+=angchange*2;
+					owner.A_DropInventory("HDRocketAmmo",amt);
+					owner.angle-=angchange;
+				}
+			}
+		}
+	}
 	action bool brokenround(){
 		if(!(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBERBROKEN)){
 			int rnd=

@@ -69,6 +69,13 @@ class BossRifle:HDWeapon{
 	override void consolidate(){
 		weaponstatus[BOSSS_GRIME]=random(20,40);
 	}
+	override void DropOneAmmo(int amt){
+		if(owner){
+			amt=clamp(amt,1,10);
+			if(owner.countinv("SevenMilAmmo"))owner.A_DropInventory("SevenMilAmmo",10);
+			else owner.A_DropInventory("HD7mClip",1);
+		}
+	}
 	states{
 	select0:
 		BARG A 0;

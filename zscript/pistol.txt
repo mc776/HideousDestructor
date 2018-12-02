@@ -48,6 +48,13 @@ class HDPistol:HDWeapon{
 		int mgg=weaponstatus[PISS_MAG];
 		return 30+(mgg<0?0:(ENC_9MAG_LOADED+mgg*ENC_9_LOADED));
 	}
+	override void DropOneAmmo(int amt){
+		if(owner){
+			amt=clamp(amt,1,10);
+			if(owner.countinv("HDPistolAmmo"))owner.A_DropInventory("HDPistolAmmo",amt*15);
+			else owner.A_DropInventory("HD9mMag15",amt);
+		}
+	}
 	override void postbeginplay(){
 		super.postbeginplay();
 

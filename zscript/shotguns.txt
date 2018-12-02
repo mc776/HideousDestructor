@@ -83,6 +83,12 @@ class HDShotgun:HDWeapon{
 		weaponstatus[SHOTS_SIDESADDLE]-=dropamt;
 		setstatelabel("spawn");
 	}
+	override void DropOneAmmo(int amt){
+		if(owner){
+			amt=clamp(amt,1,10);
+			owner.A_DropInventory("HDShellAmmo",amt*4);
+		}
+	}
 }
 
 enum hdshottystatus{

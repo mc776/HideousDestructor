@@ -85,6 +85,9 @@ class HDWoundFixer:HDWeapon{
 		}
 		caller.angle=aang;
 	}
+	override void DropOneAmmo(int amt){
+		DropMeds(owner,clamp(amt,1,10));
+	}
 	states{
 	reload:
 		TNT1 A 14{
@@ -521,7 +524,7 @@ class SelfBandage:HDWoundFixer{
 		}
 	}
 	override inventory CreateTossable(int amount){
-		HDWoundFixer.DropMeds(owner,0);
+		DropMeds(owner,0);
 		return null;
 	}
 	int targetlock;

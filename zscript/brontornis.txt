@@ -163,6 +163,12 @@ class Brontornis:HDWeapon{
 	override double weaponbulk(){
 		return 75+(weaponstatus[BRONS_CHAMBER]>1?ENC_BRONTOSHELLLOADED:0);
 	}
+	override void DropOneAmmo(int amt){
+		if(owner){
+			amt=clamp(amt,1,10);
+			owner.A_DropInventory("BrontornisRound",1);
+		}
+	}
 	states{
 	select0:
 		BLSG A 0;

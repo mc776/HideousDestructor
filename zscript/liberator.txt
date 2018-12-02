@@ -68,6 +68,22 @@ class LiberatorRifle:HDWeapon{
 	override void failedpickupunload(){
 		failedpickupunloadmag(LIBS_MAG,"HD7mMag");
 	}
+	override void DropOneAmmo(int amt){
+		if(owner){
+			amt=clamp(amt,1,10);
+			if(owner.countinv("SevenMilAmmo"))owner.A_DropInventory("SevenMilAmmo",30);
+			else{
+				double angchange=(weaponstatus[0]&LIBF_NOLAUNCHER)?0:-10;
+				if(angchange)owner.angle-=angchange;
+				owner.A_DropInventory("HD7mMag",1);
+				if(angchange){
+					owner.angle+=angchange*2;
+					owner.A_DropInventory("HDRocketAmmo",1);
+					owner.angle-=angchange;
+				}
+			}
+		}
+	}
 	override void tick(){
 		super.tick();
 		drainheat(LIBS_HEAT,8);

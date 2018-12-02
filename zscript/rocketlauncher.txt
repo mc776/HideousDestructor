@@ -46,6 +46,19 @@ class HDRL:HDWeapon{
 		else if(chmb==1)blx+=ENC_ROCKETLOADED;
 		return blx;
 	}
+	override void DropOneAmmo(int amt){
+		if(owner){
+			amt=clamp(amt,1,10);
+			double angchange=owner.findinventory("HEATAmmo")?10:0;
+			if(angchange)owner.angle-=angchange;
+			owner.A_DropInventory("HDRocketAmmo",1);
+			if(angchange){
+				owner.angle+=angchange*2;
+				owner.A_DropInventory("HEATAmmo",1);
+				owner.angle-=angchange;
+			}
+		}
+	}
 	states{
 	select0:
 		MISG A 0;
@@ -499,6 +512,12 @@ class Blooper:HDWeapon{
 	}
 	override double weaponbulk(){
 		return 75+(weaponstatus[0]&BLOPF_LOADED?ENC_ROCKETLOADED:0);
+	}
+	override void DropOneAmmo(int amt){
+		if(owner){
+			amt=clamp(amt,1,10);
+			owner.A_DropInventory("HDRocketAmmo",1);
+		}
 	}
 	states{
 	select0:

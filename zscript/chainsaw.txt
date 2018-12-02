@@ -44,6 +44,12 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 	override void consolidate(){
 		CheckBFGCharge(CSAWS_BATTERY);
 	}
+	override void DropOneAmmo(int amt){
+		if(owner){
+			amt=clamp(amt,1,10);
+			owner.A_DropInventory("HDBattery",1);
+		}
+	}
 	states{
 	ready:
 		BEVG C 1{

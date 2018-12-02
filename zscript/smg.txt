@@ -32,6 +32,13 @@ class HDSMG:HDWeapon{
 	override void failedpickupunload(){
 		failedpickupunloadmag(SMGS_MAG,"HD9mMag30");
 	}
+	override void DropOneAmmo(int amt){
+		if(owner){
+			amt=clamp(amt,1,10);
+			if(owner.countinv("HDPistolAmmo"))owner.A_DropInventory("HDPistolAmmo",amt*30);
+			else owner.A_DropInventory("HD9mMag30",amt);
+		}
+	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		if(owner&&owner.player)weaponstatus[SMGS_AUTO]=clamp(

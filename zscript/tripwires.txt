@@ -30,6 +30,12 @@ class Tripwire:HDWeapon{
 		tripwire.spoontype "HDFragSpoon";
 		tripwire.weptype "HDFragGrenades";
 	}
+	override void DropOneAmmo(int amt){
+		if(owner){
+			amt=clamp(amt,1,10);
+			owner.A_DropInventory(grenadeammotype,1);
+		}
+	}
 	actor grenade;
 	actor gumspot;
 	action void UndoAll(){

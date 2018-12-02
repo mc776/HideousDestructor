@@ -38,6 +38,12 @@ class HDGrenadeThrower:HDWeapon{
 		owner.A_SelectWeapon("HDFist");
 		return null;
 	}
+	override void DropOneAmmo(int amt){
+		if(owner){
+			amt=clamp(amt,1,10);
+			owner.A_DropInventory(grenadeammotype,1);
+		}
+	}
 	//for involuntary dropping
 	void DropGrenade(){
 		if(

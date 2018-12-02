@@ -62,6 +62,19 @@ class Vulcanette:HDWeapon{
 	override void consolidate(){
 		CheckBFGCharge(VULCS_BATTERY);
 	}
+	override void DropOneAmmo(int amt){
+		if(owner){
+			amt=clamp(amt,1,10);
+			if(owner.countinv("FourMilAmmo"))owner.A_DropInventory("FourMilAmmo",50);
+			else{
+				owner.angle-=10;
+				owner.A_DropInventory("HD4mMag",1);
+				owner.angle+=20;
+				owner.A_DropInventory("HDBattery",1);
+				owner.angle-=10;
+			}
+		}
+	}
 	states{
 	select0:
 		GTLG A 0{
