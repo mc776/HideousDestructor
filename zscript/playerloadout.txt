@@ -103,215 +103,6 @@ class HDWeaponSelector:Thinker{
 
 
 
-/*
-	CUSTOM LOADOUTS!
-	000s: misc
-	100s: weapons, in format 1xy: x=slot, y=priority
-	200s: ammo, no spares allowed
-*/
-const HDCONST_CUSTOMWEPOFFSET=200;
-class CustomLoadout:InventoryFlag{
-	override void tick(){
-		let hdp=HDPlayerPawn(owner);
-		if(hdp){
-			hdp.GiveBasics();
-			hdp.GiveCustomLoadout();
-			let dlc=new("DelayedLoadoutCode");
-			dlc.owner=hdp;
-		}destroy();
-	}
-}
-class DelayedLoadoutCode:Thinker{
-	hdplayerpawn owner;
-	int counter;
-	override void Tick(){
-		super.Tick();
-		counter++;
-		if(counter<3)return;
-		owner.A_GiveInventory("LoadoutCode",999);
-		destroy();
-	}
-}
-extend class HDPlayerPawn{
-	void GiveCustomLoadout(){
-		int ldt;int lda;
-		name newwep="";
-		for(int i=100;i>=0;i--){ //reverse order so top weapons are added last
-			ldt=getcvar(string.format("hd_load%i",i));
-			lda=max(0,getcvar(string.format("hd_load%ia",i)));
-
-			name nw=NumForInv(ldt,lda);
-			if(nw!="")newwep=nw;
-		}
-		if(player && newwep!=""){
-			player.pendingweapon=weapon(findinventory(newwep));
-		}
-	}
-	name NumForInv(int num,int amt){
-		name nw="";
-		if(!num||!amt)return "";
-		else if(num>=HDCONST_CUSTOMWEPOFFSET){ //weapons
-			num-=HDCONST_CUSTOMWEPOFFSET;
-			switch(num){
-			case 0:
-				nw="HDFragGrenades";A_GiveInventory(nw);
-				A_GiveInventory("HDFragGrenadeAmmo",max(1,amt));
-				break;
-			case 10:
-				nw="Lumberjack";A_GiveInventory(nw);
-				break;
-			case 20:
-			case 21:
-				int which=0;
-				//give 2 pistols at once
-				if(amt>1){
-					A_GiveInventory("HDPistol",2);
-					nw="HDPistol";
-					which=3;
-				}else if(countinv("HDPistol")){
-					A_GiveInventory("HDPistol");
-					which=2;
-				}else{
-					nw="HDPistol";A_GiveInventory(nw);
-					which=1;
-				}
-				//give auto to either or both
-				if(num==21){
-					let ppp=hdpistol(findinventory("HDPistol"));
-					if(which&2)ppp.weaponstatus2[PISS_AUTO]=0;
-					if(which&1)ppp.weaponstatus[PISS_AUTO]=0;
-				}
-				break;
-			case 22:
-				nw="HDSMG";A_GiveInventory(nw);
-				break;
-			case 30:
-				nw="Slayer";A_GiveInventory(nw);
-				break;
-			case 31:
-				nw="Hunter";A_GiveInventory(nw);
-				break;
-			case 40:
-			case 41:
-			case 42:
-				nw="ZM66AssaultRifle";A_GiveInventory(nw);
-				let zzz=hdweapon(findinventory("ZM66AssaultRifle"));
-				if(zzz){
-					if(num<42){
-						zzz.weaponstatus[0]|=ZM66F_NOLAUNCHER;
-						if(num==40)zzz.weaponstatus[0]|=ZM66F_NOFIRESELECT;
-					}
-				}
-				break;
-			case 43:
-				nw="Vulcanette";A_GiveInventory(nw);
-				break;
-			case 50:
-				nw="Blooper";A_GiveInventory(nw);
-				break;
-			case 51:
-				nw="HDRL";A_GiveInventory(nw);
-				break;
-			case 60:
-			case 61:
-				nw="LiberatorRifle";A_GiveInventory(nw);
-				let llb=hdweapon(findinventory("LiberatorRifle"));
-				if(llb){
-					if(num==60){
-						llb.weaponstatus[0]|=LIBF_NOLAUNCHER;
-					}
-				}
-				break;
-			case 62:
-				nw="ThunderBuster";A_GiveInventory(nw);
-				break;
-			case 70:
-				nw="Brontornis";A_GiveInventory(nw);
-				break;
-			case 71:
-				nw="BFG9k";A_GiveInventory(nw);
-				break;
-			case 80:
-				nw="BossRifle";A_GiveInventory(nw);
-				break;
-			case 90:
-				nw="HDMedikitter";A_GiveInventory(nw);
-				break;
-			default:
-				break;
-			}
-			return nw;
-		}
-		else if(num>=100){ //ammo
-			switch(num){
-				case 100:A_GiveInventory("HDBattery",amt);break;
-				case 101:A_GiveInventory("HD9mMag15",amt);break;
-				case 102:A_GiveInventory("HD9mMag30",amt);break;
-				case 103:A_GiveInventory("HDShellAmmo",amt);break;
-				case 104:A_GiveInventory("HD4mMag",amt);break;
-				case 105:A_GiveInventory("HDRocketAmmo",amt);break;
-				case 106:A_GiveInventory("HEATAmmo",amt);break;
-				case 107:A_GiveInventory("HD7mMag",amt);break;
-				case 108:A_GiveInventory("HD7mClip",amt);break;
-				case 109:A_GiveInventory("BrontornisRound",amt);break;
-				case 110:A_GiveInventory("HDFragGrenadeAmmo",amt);break;
-				case 111:A_GiveInventory("HDPistolAmmo",amt);break;
-				case 112:A_GiveInventory("FourMilAmmo",amt);break;
-				case 113:A_GiveInventory("SevenMilAmmo",amt);break;
-				default:break;
-			}
-		}
-		else{ //all other shit
-			switch(num){
-				case 1:
-					A_TakeInventory("HDArmourWorn");
-					A_GiveInventory("GreenArmourWorn");break;
-				case 2:
-					A_TakeInventory("HDArmourWorn");
-					A_GiveInventory("BlueArmourWorn");break;
-				case 3: A_GiveInventory("PortableRadsuit",amt);break;
-
-				case 4: A_GiveInventory("PortableMedikit",amt);break;
-				case 5: A_GiveInventory("PortableStimpack",amt);break;
-				case 6: A_GiveInventory("PortableBerserkPack",amt);break;
-				case 7: A_GiveInventory("PortableLadder",amt);break;
-				case 8: A_GiveInventory("PortableLiteAmp");break;
-				case 9: A_GiveInventory("HDBPPreset",999);break;
-				case 10: A_GiveInventory("DERPUsable",amt);break;
-				case 11: A_GiveInventory("HERPUsable",amt);break;
-				case 12: A_GiveInventory("DoorBuster",amt);break;
-				case 13: A_GiveInventory("HDIEDKit",amt);break;
-
-				case 14: A_GiveInventory("MapRevealer",amt);break;
-				case 15: A_GiveInventory("RedCard",amt);break;
-				case 16: A_GiveInventory("BlueCard",amt);break;
-				case 17: A_GiveInventory("YellowCard",amt);break;
-
-				case 18: A_GiveInventory("GreenArmourWorn");break;
-				case 19:
-					if(!countinv("HDArmourWorn"))A_GiveInventory("BlueArmourWorn",HDCONST_BLUEARMOUR);
-					break;
-				case 99:
-					A_GiveInventory("SoldierExtras",amt);
-					return "HDPistol";
-					break;
-				default:break;
-			}
-		}
-		return "";
-	}
-}
-
-
-
-
-
-
-
-
-//this is the new shit
-
-
 //these constants need to be defined ONLY
 //where an item needs to be selectable
 //through custom loadouts.
@@ -577,7 +368,6 @@ class LoadoutItemList:CustomInventory{
 
 
 
-
 class InsurgentLoadout:Inventory{
 	override void Tick(){
 		if(!owner){destroy();return;}
@@ -745,3 +535,209 @@ class InsurgentLoadout:Inventory{
 		destroy();
 	}
 }
+
+
+
+
+
+/*
+	(the old) CUSTOM LOADOUTS!
+	000s: misc
+	100s: weapons, in format 1xy: x=slot, y=priority
+	200s: ammo, no spares allowed
+*/
+const HDCONST_CUSTOMWEPOFFSET=200;
+class CustomLoadout:InventoryFlag{
+	override void tick(){
+		let hdp=HDPlayerPawn(owner);
+		if(hdp){
+			hdp.GiveBasics();
+			hdp.GiveCustomLoadout();
+			let dlc=new("DelayedLoadoutCode");
+			dlc.owner=hdp;
+		}destroy();
+	}
+}
+class DelayedLoadoutCode:Thinker{
+	hdplayerpawn owner;
+	int counter;
+	override void Tick(){
+		super.Tick();
+		counter++;
+		if(counter<3)return;
+		owner.A_GiveInventory("LoadoutCode",999);
+		destroy();
+	}
+}
+extend class HDPlayerPawn{
+	void GiveCustomLoadout(){
+		int ldt;int lda;
+		name newwep="";
+		for(int i=100;i>=0;i--){ //reverse order so top weapons are added last
+			ldt=getcvar(string.format("hd_load%i",i));
+			lda=max(0,getcvar(string.format("hd_load%ia",i)));
+
+			name nw=NumForInv(ldt,lda);
+			if(nw!="")newwep=nw;
+		}
+		if(player && newwep!=""){
+			player.pendingweapon=weapon(findinventory(newwep));
+		}
+	}
+	name NumForInv(int num,int amt){
+		name nw="";
+		if(!num||!amt)return "";
+		else if(num>=HDCONST_CUSTOMWEPOFFSET){ //weapons
+			num-=HDCONST_CUSTOMWEPOFFSET;
+			switch(num){
+			case 0:
+				nw="HDFragGrenades";A_GiveInventory(nw);
+				A_GiveInventory("HDFragGrenadeAmmo",max(1,amt));
+				break;
+			case 10:
+				nw="Lumberjack";A_GiveInventory(nw);
+				break;
+			case 20:
+			case 21:
+				int which=0;
+				//give 2 pistols at once
+				if(amt>1){
+					A_GiveInventory("HDPistol",2);
+					nw="HDPistol";
+					which=3;
+				}else if(countinv("HDPistol")){
+					A_GiveInventory("HDPistol");
+					which=2;
+				}else{
+					nw="HDPistol";A_GiveInventory(nw);
+					which=1;
+				}
+				//give auto to either or both
+				if(num==21){
+					let ppp=hdpistol(findinventory("HDPistol"));
+					if(which&2)ppp.weaponstatus2[PISS_AUTO]=0;
+					if(which&1)ppp.weaponstatus[PISS_AUTO]=0;
+				}
+				break;
+			case 22:
+				nw="HDSMG";A_GiveInventory(nw);
+				break;
+			case 30:
+				nw="Slayer";A_GiveInventory(nw);
+				break;
+			case 31:
+				nw="Hunter";A_GiveInventory(nw);
+				break;
+			case 40:
+			case 41:
+			case 42:
+				nw="ZM66AssaultRifle";A_GiveInventory(nw);
+				let zzz=hdweapon(findinventory("ZM66AssaultRifle"));
+				if(zzz){
+					if(num<42){
+						zzz.weaponstatus[0]|=ZM66F_NOLAUNCHER;
+						if(num==40)zzz.weaponstatus[0]|=ZM66F_NOFIRESELECT;
+					}
+				}
+				break;
+			case 43:
+				nw="Vulcanette";A_GiveInventory(nw);
+				break;
+			case 50:
+				nw="Blooper";A_GiveInventory(nw);
+				break;
+			case 51:
+				nw="HDRL";A_GiveInventory(nw);
+				break;
+			case 60:
+			case 61:
+				nw="LiberatorRifle";A_GiveInventory(nw);
+				let llb=hdweapon(findinventory("LiberatorRifle"));
+				if(llb){
+					if(num==60){
+						llb.weaponstatus[0]|=LIBF_NOLAUNCHER;
+					}
+				}
+				break;
+			case 62:
+				nw="ThunderBuster";A_GiveInventory(nw);
+				break;
+			case 70:
+				nw="Brontornis";A_GiveInventory(nw);
+				break;
+			case 71:
+				nw="BFG9k";A_GiveInventory(nw);
+				break;
+			case 80:
+				nw="BossRifle";A_GiveInventory(nw);
+				break;
+			case 90:
+				nw="HDMedikitter";A_GiveInventory(nw);
+				break;
+			default:
+				break;
+			}
+			return nw;
+		}
+		else if(num>=100){ //ammo
+			switch(num){
+				case 100:A_GiveInventory("HDBattery",amt);break;
+				case 101:A_GiveInventory("HD9mMag15",amt);break;
+				case 102:A_GiveInventory("HD9mMag30",amt);break;
+				case 103:A_GiveInventory("HDShellAmmo",amt);break;
+				case 104:A_GiveInventory("HD4mMag",amt);break;
+				case 105:A_GiveInventory("HDRocketAmmo",amt);break;
+				case 106:A_GiveInventory("HEATAmmo",amt);break;
+				case 107:A_GiveInventory("HD7mMag",amt);break;
+				case 108:A_GiveInventory("HD7mClip",amt);break;
+				case 109:A_GiveInventory("BrontornisRound",amt);break;
+				case 110:A_GiveInventory("HDFragGrenadeAmmo",amt);break;
+				case 111:A_GiveInventory("HDPistolAmmo",amt);break;
+				case 112:A_GiveInventory("FourMilAmmo",amt);break;
+				case 113:A_GiveInventory("SevenMilAmmo",amt);break;
+				default:break;
+			}
+		}
+		else{ //all other shit
+			switch(num){
+				case 1:
+					A_TakeInventory("HDArmourWorn");
+					A_GiveInventory("GreenArmourWorn");break;
+				case 2:
+					A_TakeInventory("HDArmourWorn");
+					A_GiveInventory("BlueArmourWorn");break;
+				case 3: A_GiveInventory("PortableRadsuit",amt);break;
+
+				case 4: A_GiveInventory("PortableMedikit",amt);break;
+				case 5: A_GiveInventory("PortableStimpack",amt);break;
+				case 6: A_GiveInventory("PortableBerserkPack",amt);break;
+				case 7: A_GiveInventory("PortableLadder",amt);break;
+				case 8: A_GiveInventory("PortableLiteAmp");break;
+				case 9: A_GiveInventory("HDBPPreset",999);break;
+				case 10: A_GiveInventory("DERPUsable",amt);break;
+				case 11: A_GiveInventory("HERPUsable",amt);break;
+				case 12: A_GiveInventory("DoorBuster",amt);break;
+				case 13: A_GiveInventory("HDIEDKit",amt);break;
+
+				case 14: A_GiveInventory("MapRevealer",amt);break;
+				case 15: A_GiveInventory("RedCard",amt);break;
+				case 16: A_GiveInventory("BlueCard",amt);break;
+				case 17: A_GiveInventory("YellowCard",amt);break;
+
+				case 18: A_GiveInventory("GreenArmourWorn");break;
+				case 19:
+					if(!countinv("HDArmourWorn"))A_GiveInventory("BlueArmourWorn",HDCONST_BLUEARMOUR);
+					break;
+				case 99:
+					A_GiveInventory("SoldierExtras",amt);
+					return "HDPistol";
+					break;
+				default:break;
+			}
+		}
+		return "";
+	}
+}
+
+
+
