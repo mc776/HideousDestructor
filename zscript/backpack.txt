@@ -1,7 +1,19 @@
 // ------------------------------------------------------------
 // Backpack
 // ------------------------------------------------------------
-class HDBP:HDWeapon{
+const HDCONST_BPMAX=1000;
+class HDBackpack:HDWeapon{
+	int index;
+
+	array<string> nicenames;
+	array<string> refids;
+	array<string> invclasses;
+
+	array<string> amounts;
+	//because the last time I tried nested dynamic arrays it did not work.
+	//"10" for 10 rounds/medikits/whatever; "0 10 20" for 3 mags
+	//"0 0 0 0 0 0 0 0 0" for a single weapon: first # is bulk
+
 	default{
 		//$Category "Items/Hideous Destructor/Gear"
 		//$Title "Backpack"
@@ -13,166 +25,443 @@ class HDBP:HDWeapon{
 		inventory.icon "BPAKA0";
 		inventory.pickupmessage "Picked up a backpack to help fill your life with ammo!";
 		inventory.pickupsound "weapons/pocket";
-	}
 
-	//just replace the old backpack with the new one
-	void ReplaceWithNewBackpack(){
-		string newloadout="";
-		for(int i=0;i<HDBPC_NUMITEMS;i++){
-			if(itemtype[i]&&itemamount[i]>0){
-				string irefid=getdefaultbytype(((class<hdpickup>)(itemtype[i]))).refid;
-				if(irefid!=""){
-					if(i)newloadout=newloadout..", ";
-					newloadout=newloadout..irefid.." "..itemamount[i];
-				}
-			}
-		}
-		hdbackpack newbp;
-		if(owner){
-			owner.A_GiveInventory("HDBackpack");
-			newbp=HDBackpack(owner.findinventory("HDBackpack"));
-			newbp.amount=1;
-		}else{
-			newbp=HDBackpack(spawn("HDBackpack",pos,ALLOW_REPLACE));
-		}
-		newbp.initializeamount(newloadout);
-		dontfistondrop=true;
-		destroy();
+		hdweapon.nicename "Backpack";
+		hdweapon.refid HDLD_BACKPAK;
+		hdweapon.fitsinbackpack true;
 	}
-	override void postbeginplay(){
-		super.postbeginplay();
-		replacewithnewbackpack();
-	}
-
 	override inventory createtossable(int amount){
 		target=owner;
-		let ct=hdbp(super.createtossable(amount));
-		if(ct&&target&&ct.getbulk()){
+		let ct=hdbackpack(super.createtossable(amount));
+		ct.weaponbulk();
+		if(ct&&target&&ct.bulk>0){
 			ct.target=target;
 			ct.translation=target.translation;
 		}
 		return ct;
 	}
+	override void DropOneAmmo(int amt){
+		if(owner){
+			RemoveFromBackpack(index,false);
+		}
+	}
+
+	int bpindex;
+	int maxindex;
+	override void InitializeWepStats(bool idfa){
+		if(idfa)return;
+		nicenames.clear();
+		refids.clear();
+		invclasses.clear();
+		for(int i=0;i<allactorclasses.size();i++){
+			class<actor> reff=allactorclasses[i];
+			string ref="";
+			string nnm="";
+			if(reff is "HDPickup"){
+				let gdb=getdefaultbytype((class<hdpickup>)(reff));
+				if(gdb.fitsinbackpack){
+					nnm=gdb.nicename;
+					ref=gdb.refid;
+				}
+			}else if(reff is "HDWeapon"){
+				let gdb=getdefaultbytype((class<hdweapon>)(reff));
+				if(gdb.fitsinbackpack){
+					nnm=gdb.nicename;
+					ref=gdb.refid;
+				}
+			}
+			if(nnm!=""){
+				invclasses.push(reff.getclassname());
+				nicenames.push(nnm);
+				refids.push(ref);
+				amounts.push("");
+			}
+		}
+		bpindex=invclasses.find(getclassname());
+		maxindex=invclasses.size()-1;
+	}
+	void initializeamount(string loadlist){
+		array<string> whichitem;whichitem.clear();
+		array<int> howmany;howmany.clear();
+		loadlist.replace(" ","");
+		loadlist.split(whichitem,",");
+		for(int i=0;i<whichitem.size();i++){
+			howmany.push((whichitem[i].mid(3,whichitem[i].length())).toint(10));
+			whichitem[i]=whichitem[i].left(3);
+		}
+		for(int i=0;i<whichitem.size();i++){
+			string ref=whichitem[i];
+			if(ref=="")continue;
+			ref.tolower();
+			int refindex=refids.find(ref);
+			if(refindex>=refids.size())continue;
+
+			let igg=(class<hditemgiver>)(invclasses[refindex]);
+			let wep=(class<hdweapon>)(invclasses[refindex]);
+			let mag=(class<hdmagammo>)(invclasses[refindex]);
+			let pkup=(class<hdpickup>)(invclasses[refindex]);
+
+			if(igg||wep||mag){
+				howmany[i]=max(1,howmany[i]);
+				for(int j=0;j<howmany[i];j++){
+					inventory iii=inventory(spawn(invclasses[refindex],pos,ALLOW_REPLACE));
+					if(igg)hditemgiver(iii).addtobackpack(self);
+					else{
+						if(owner)iii.attachtoowner(owner);
+						itemtobackpack(iii);
+					}
+					if(iii)iii.destroy();
+					
+				}
+			}else if(pkup){
+				double bulkmax=(HDCONST_BPMAX-bulk)/max(1,getdefaultbytype(pkup).bulk);
+				int addamt=max(0,min(bulkmax,howmany[i]));
+				int amt=amounts[refindex].toint(10);
+				if(addamt>0)amounts[refindex]=""..amt+addamt;
+				updatemessage(index);
+			}
+		}
+	}
+
+	double bulk;
 	override double weaponbulk(){
-		return max(100,getbulk());
+		double blk=0;
+		for(int i=0;i<invclasses.size();i++){
+			if(havenone(i))continue;
+			class<actor> reff=invclasses[i];
+			array<string> theseamounts;
+			theseamounts.clear();
+			if(((class<hdmagammo>)(reff))){
+				amounts[i].split(theseamounts," ");
+				let mmm=getdefaultbytype((class<hdmagammo>)(reff));
+				bool armour=!!((class<HDArmour>)(reff));
+				for(int j=0;j<theseamounts.size();j++){
+					if(armour)blk+=theseamounts[j].toint()>=1000?ENC_BLUEARMOUR/2:ENC_GREENARMOUR;
+					else blk+=mmm.magbulk+theseamounts[j].toint()*mmm.roundbulk;
+				}
+			}else if(((class<hdweapon>)(reff))){
+				amounts[i].split(theseamounts," ");
+				for(int j=0;j<theseamounts.size();j++){
+					if(!((j+1)%9))blk+=theseamounts[j].toint();
+				}
+			}else if(((class<hdpickup>)(reff))){
+				let classref=((class<hdpickup>)(reff));
+				//presets required for default ammos because of One Man Army
+				double unitbulk;
+				if(classref is "HDShellAmmo")unitbulk=ENC_SHELL;
+				else if(classref is "FourMilAmmo")unitbulk=ENC_426;
+				else if(classref is "SevenMilAmmo")unitbulk=ENC_776;
+				else if(classref is "HDPistolAmmo")unitbulk=ENC_9;
+				else if(classref is "HDRocketAmmo")unitbulk=ENC_ROCKET;
+				else if(classref is "HDBattery")unitbulk=ENC_BATTERY;
+				else if(classref is "BrontornisRound")unitbulk=ENC_BRONTOSHELL;
+				else if(classref is "HEATAmmo")unitbulk=ENC_HEATROCKET;
+				else if(classref is "HDFragGrenadeAmmo")unitbulk=ENC_FRAG;
+				else unitbulk=getdefaultbytype(classref).bulk;
+				blk+=amounts[i].toint()*unitbulk;
+			}
+		}
+		bulk=blk;
+		return max(blk*0.7,100);
+	}
+
+	int GetAmount(class<inventory> type){
+		int thisindex=invclasses.find(type.getclassname());
+		if(thisindex>=invclasses.size())return 0;
+		let wep=(class<hdweapon>)(type);
+		let mag=(class<hdmagammo>)(type);
+		let pkup=(class<hdpickup>)(type);
+		if(wep||mag){
+			array<string>amts;
+			amounts[thisindex].split(amts," ");
+			if(wep)return amts.size()/9;
+			else return amts.size();
+		}
+		return amounts[thisindex].toint();
+	}
+	void AddAmount(class<inventory> type,int amt,int magamount=-1){
+		let wep=(class<hdweapon>)(type);
+		let mag=(class<hdmagammo>)(type);
+		let pkup=(class<hdpickup>)(type);
+		if((wep||mag)&&amt<1)return; //non-positive input for simple items only
+		int thisindex=invclasses.find(type.getclassname());
+		if(wep){
+			for(int i=0;i<amt;i++){
+				let itb=inventory(spawn(wep));
+				itemtobackpack(itb);
+			}
+			return;
+		}
+		if(mag){
+			if(magamount<0)magamount=getdefaultbytype(mag).maxperunit;
+			else magamount=min(magamount,getdefaultbytype(mag).maxperunit);
+			for(int i=0;i<amt;i++){
+				string newamts=amounts[thisindex];
+				if(havenone(thisindex))newamts=newamts.." ";
+				newamts=newamts..magamount;
+				amounts[thisindex]=newamts;
+			}
+			return;
+		}
+		if(pkup){
+			int newamt=amounts[thisindex].toint()+amt;
+			if(newamt<1)amounts[thisindex]="";
+			else amounts[thisindex]=""..newamt;
+		}
 	}
 
 
-	action void A_AddBackpackItem(int which){
-		class<inventory> itp=invoker.itemtype[which];
+	void UpdateMessage(int num){
+		if(!owner)return;
+		int nnsiz=nicenames.size();
+		if(num==index)weaponbulk();
+		if(num!=index&&owner){
+			int toadd=num>index?1:-1;
+			do{
+				index+=toadd;
+				if(index>maxindex)index=0;
+				else if(index<0)index=maxindex;
+			}while(index!=bpindex&&havenone(index)&&(!owner.countinv(invclasses[index])));
+		}else if(max(0-num,num-nnsiz)<maxindex){
+			while(num<0)num+=nnsiz;
+			while(num>maxindex)num-=nnsiz;
+			index=num;
+		}
 
-		if(
-			!countinv(itp)
+		//translate "amounts" into an actual number of items
+		string amt=amounts[index];
+		let thisclass=((class<actor>)(invclasses[index]));
+		if(havenone(index))amt="\cunone";
+		else if(thisclass is "HDWeapon"||thisclass is "HDMagAmmo"){
+			array<string>mags;
+			amt.split(mags," ");
+			if(thisclass is "HDWeapon")amt="\ce"..(mags.size()/9);
+			else amt="\cs"..mags.size();
+		}else amt="\cs"..amt;
+
+		//look for an actual amount on the player
+		string ininv;
+		if(!owner.countinv(invclasses[index]))ininv="\cunone";
+		else ininv="\cc"..owner.countinv(invclasses[index]);
+		string str="\n\cx"..nicenames[index]..(hd_debug?(" \cr"..invclasses[index]):"").."\n"..amt.." in pack   "..ininv.." carried\n";
+
+		int aaa=index-1;
+		for(int i=0;i<3;i++){
+			bool thisonesempty=true;
+			while(thisonesempty&&aaa!=index){
+				if(aaa<0)aaa=maxindex;
+				bool hasinbp=!havenone(aaa);
+				bool hasininv=owner&&owner.countinv(invclasses[aaa]);
+				thisonesempty=(!hasinbp&&!hasininv);
+				if(!thisonesempty&&aaa!=index){
+					string whichcol="";
+					if(hasinbp){
+						if(hasininv)whichcol="\ce";
+						else whichcol="\cs";
+					}else if(hasininv)whichcol="\cc";
+					str=whichcol..nicenames[aaa].."\n"..str;
+				}
+				aaa--;
+			}
+		}
+		int bbb=index+1;
+		for(int i=0;i<3;i++){
+			bool thisonesempty=true;
+			while(thisonesempty&&bbb!=index){
+				if(bbb>maxindex)bbb=0;
+				bool hasinbp=!havenone(bbb);
+				bool hasininv=owner&&owner.countinv(invclasses[bbb]);
+				thisonesempty=(!hasinbp&&!hasininv);
+				if(!thisonesempty&&bbb!=index){
+					string whichcol="";
+					if(hasinbp){
+						if(hasininv)whichcol="\ce";
+						else whichcol="\cs";
+					}else if(hasininv)whichcol="\cc";
+					str=str.."\n"..whichcol..nicenames[bbb];
+				}
+				bbb++;
+			}
+		}
+		//display selected item name and amounts carried
+		str="\cs[] [] [] \cbBackpack \cs[] [] []\nzoom=fast scroll  unload/reload=take/insert\n\n\n\n"
+			..str
+			.."\n\nTotal Bulk: \cf"..int(bulk);
+
+		wepmsg=str;
+	}
+	//generic code for inserting into backpack
+	int ItemToBackpack(inventory item){
+		if(item==self&&amount<2)return 1;
+		let wep=HDWeapon(item);
+		let mag=HDMagAmmo(item);
+		let pkup=HDPickup(item);
+		if(!wep&&!pkup)return false;
+		index=invclasses.find(item.getclassname());
+		if(index>=invclasses.size())return 1;
+		if(wep){
+			if(wep is "HDBackpack"&&HDBackpack(wep).bulk>0){
+				if(owner)owner.A_Log("Empty this backpack first.",true);
+				return 1;
+			}
+			if(wep.weaponbulk()+bulk>HDCONST_BPMAX){
+				if(owner)owner.A_Log("Your backpack is too full.",true);
+				return 1;
+			}
+			if(wep.owner)wep=HDWeapon(owner.dropinventory(wep));
+			string newwep=
+				(amounts[index]==""?"":" ")..
+				wep.weaponstatus[0].." "..
+				wep.weaponstatus[1].." "..
+				wep.weaponstatus[2].." "..
+				wep.weaponstatus[3].." "..
+				wep.weaponstatus[4].." "..
+				wep.weaponstatus[5].." "..
+				wep.weaponstatus[6].." "..
+				wep.weaponstatus[7].." "..
+				int(wep.weaponbulk());
+			amounts[index]=amounts[index]..newwep;
+			if(hd_debug){
+				A_Log(nicenames[index]..":  "..wep.getclassname().."  "..newwep);
+				A_Log(amounts[index]);
+			}
+			wep.amount--;if(wep.amount<1)wep.destroy();
+			weaponbulk();
+			UpdateMessage(index);
+			return 12;
+		}else if(mag){
+			if(mag.magbulk+bulk>HDCONST_BPMAX){
+				if(owner)owner.A_Log("Your backpack is too full.",true);
+				return 0;
+			}
+			int tookmag=mag.TakeMag(false);if(item.amount<1)item.destroy();
+			if(amounts[index]=="")amounts[index]=""..tookmag;
+			else amounts[index]=tookmag.." "..amounts[index];
+		}else{
+			int units=item.owner?1:item.amount;
+			if(pkup.bulk*units+bulk>HDCONST_BPMAX){
+				if(owner)owner.A_Log("Your backpack is too full.",true);
+				return 0;
+			}
+			amounts[index]=""..amounts[index].toint()+units;
+			item.amount-=units;if(item.amount<1)item.destroy();
+		}
+		weaponbulk();
+		UpdateMessage(index);
+		if(pkup.multipickup)return 4;else return 10;
+	}
+	//returns whether empty
+	bool havenone(int which){
+		return(
+			amounts[which]==""
 			||(
-				HDBPC_CAPACITY-invoker.itembulk[which]
-				<invoker.bulk
+				amounts[which].toint()<1
+				&&!((class<HDMagAmmo>)(invclasses[which]))
+				&&!((class<HDWeapon>)(invclasses[which]))
 			)
-		)return;
-
-
-		//where the magic happens
-		if(itp is "HDMagAmmo"){
-			invoker.BPAddMag(invoker.itemtype[which]);
+		);
+	}
+	//generic code for removing from backpack
+	int RemoveFromBackpack(int which=-1,bool trytopocket=true){
+		if(which<0||which>=invclasses.size())which=index;
+		if(havenone(which))return 1;
+		array<string>tempamounts;
+		bool basicpickup=false;
+		amounts[which].split(tempamounts," ");
+		if(tempamounts.size()<1)return 1;
+		int ticks=0;
+		if(trytopocket&&hdplayerpawn(owner)&&hdplayerpawn(owner).itemenc>=HDCONST_MAXENC)trytopocket=false;
+		let wepth=(class<hdweapon>)(invclasses[which]);
+		let thisclass=(class<hdpickup>)(invclasses[which]);
+		if(wepth){
+			let newp=HDWeapon(spawn(wepth,owner.pos+(0,0,owner.height-12),ALLOW_REPLACE));
+			newp.angle=owner.angle;newp.A_ChangeVelocity(1,1,1,CVF_RELATIVE);
+			for(int i=0;i<9;i++){
+				if(i<newp.weaponstatus.size())newp.weaponstatus[i]=tempamounts[0].toint();
+				tempamounts.delete(0);
+			}
+			if(trytopocket&&owner.countinv(wepth)<getdefaultbytype(wepth).maxamount){
+				newp.actualpickup(owner);
+				ticks=12;
+			}else{
+				ticks=10;
+			}
+		}
+		if(thisclass){
+			int thisamt=tempamounts[0].toint();
+			bool multipi=getdefaultbytype(thisclass).multipickup;
+			if(thisclass is "HDMagAmmo"){
+				if(trytopocket)HDMagAmmo.GiveMag(owner,thisclass,thisamt);
+				else HDMagAmmo.SpawnMag(owner,thisclass,thisamt);
+				tempamounts.delete(0);
+			}else{
+				basicpickup=true;
+				thisamt--;
+				if(!trytopocket||A_JumpIfInventory(thisclass,0,"null")){
+					int moar=0;
+					if(multipi&&thisamt>0)moar=min(random(10,50),thisamt);
+					let iii=inventory(spawn(thisclass,owner.pos+(0,0,owner.height-20),ALLOW_REPLACE));
+					iii.angle=owner.angle;iii.vel=owner.vel;
+					iii.A_ChangeVelocity(1,0,1,CVF_RELATIVE);
+					iii.amount=1+moar;
+					thisamt-=moar;
+				}
+				else HDF.Give(owner,thisclass,1);
+				tempamounts[0]=""..thisamt;
+			}
+			//allow continuous move for smaller items
+			if(multipi)ticks=6;else ticks=10;
+		}
+		//put the string back together
+		string newamounts="";
+		if(basicpickup){
+			if(tempamounts[0].toint()>0)newamounts=tempamounts[0];
 		}else{
-			invoker.itemamount[which]++;
-			A_TakeInventory(itp,1);
+			for(int i=0;i<tempamounts.size();i++){
+				newamounts=newamounts..(i?" ":"")..tempamounts[i];
+			}
 		}
-
-
-		if(
-			invoker.itemamount[which]>20
-			||invoker.itembulk[which]>40
-		)A_SetTics(4);
-
-		invoker.getbulk();
+		amounts[index]=newamounts;
+		UpdateMessage(index);
+		return ticks;
 	}
-	void BPAddMag(name what){
-		int dex=-1;
-		if(what=="HD9mMag15")dex=pistindex;
-		else if(what=="HD9mMag30")dex=smgindex;
-		else if(what=="HD4mMag")dex=zmindex;
-		else if(what=="HD7mMag")dex=libindex;
-		else if(what=="HD7mClip")dex=bossindex;
-		else if(what=="HDBattery")dex=batteryindex;
-		else return;
-		double unitbulk=itembulk[dex];
-		if(getbulk()+unitbulk>HDBPC_CAPACITY) return;
-
-		//finally, actually do the thing
-		let mgg=hdmagammo(owner.findinventory(what));
-		if(!mgg||!mgg.mags.size())return;
-		itemamount[dex]++;
-		if(dex==pistindex)pistmags.push(mgg.TakeMag(false));
-		else if(dex==smgindex)smgmags.push(mgg.TakeMag(false));
-		else if(dex==zmindex)zmmags.push(mgg.TakeMag(false));
-		else if(dex==libindex)libmags.push(mgg.TakeMag(false));
-		else if(dex==bossindex)bossclips.push(mgg.TakeMag(false));
-		else if(dex==batteryindex)batteries.push(mgg.TakeMag(false));
-		else return;
-	}
-	action void A_DropBackpackItem(int which){
-		class<inventory> itp=invoker.itemtype[which];
-		if(
-			invoker.itemamount[which]<1
-			||A_JumpIfInventory(itp,0,"null")
-		)return;
-
-		if(
-			invoker.itemamount[which]>20
-			||invoker.itembulk[which]>40
-		)A_SetTics(5);
-		else if(invoker.itembulk[which]<20){ //reaching
-			A_SetTics(10);
-			A_PlaySound("weapons/pocket",CHAN_WEAPON);
+	//main interface
+	action void A_BPReady(){
+		if(pressingzoom()){
+			int inputamt=player.cmd.pitch>>5;
+			invoker.UpdateMessage(invoker.index-inputamt);
+			HijackMouse();
 		}
-
-		//where the magic happens
-		if(itp is "HDMagAmmo"){
-			HDMagAmmo.GiveMag(self,itp,invoker.BPTakeMag(which));
-		}else{
-			A_GiveInventory(itp,1);
-			invoker.itemamount[which]--;
+		int ttt=1;
+		if(justpressed(BT_ATTACK))invoker.UpdateMessage(invoker.index-1);
+		else if(justpressed(BT_ALTATTACK))invoker.UpdateMessage(invoker.index+1);
+		else if(pressingreload()&&countinv(invoker.invclasses[invoker.index])){
+			ttt=invoker.ItemToBackpack(findinventory(invoker.invclasses[invoker.index]));
+		}else if(pressingunload()){
+			ttt=invoker.RemoveFromBackpack(invoker.index,true);
+		}else if(pressing(BT_ALTRELOAD)){
+			invoker.RemoveFromBackpack(invoker.index,false);
+			invoker.updatemessage(invoker.index+1);
+			if(self is "HDPlayerPawn")ttt=randompick(0,0,0,0,0,1);
+			if(!invoker.bulk){
+				DropInventory(invoker);
+				return;
+			}
 		}
-
-		invoker.getbulk();
+		if(!pressing(BT_ALTRELOAD)){
+			A_WeaponMessage(invoker.wepmsg,ttt+1);
+			A_SetTics(max(1,ttt));
+		}else A_SetTics(ttt);
+		A_WeaponReady(
+			WRF_NOFIRE|WRF_ALLOWUSER3
+			|((player.cmd.buttons&(BT_RELOAD|BT_UNLOAD|BT_USE))?WRF_DISABLESWITCH:0)
+		);
 	}
-	int BPTakeMag(int which){
-		int spawnamt=-1;
-		SyncMagAmounts();
-		if(itemamount[which]<1)return -1;
-		if(which==batteryindex){
-			spawnamt=batteries[batteries.size()-1];
-			batteries.pop();
-			itemamount[which]=batteries.size();
-		}else if(which==zmindex){
-			spawnamt=zmmags[zmmags.size()-1];
-			zmmags.pop();
-			itemamount[which]=zmmags.size();
-		}else if(which==libindex){
-			spawnamt=libmags[libmags.size()-1];
-			libmags.pop();
-			itemamount[which]=libmags.size();
-		}else if(which==bossindex){
-			spawnamt=bossclips[bossclips.size()-1];
-			bossclips.pop();
-			itemamount[which]=bossclips.size();
-		}else if(which==pistindex){
-			spawnamt=pistmags[pistmags.size()-1];
-			pistmags.pop();
-			itemamount[which]=pistmags.size();
-		}else if(which==smgindex){
-			spawnamt=smgmags[smgmags.size()-1];
-			smgmags.pop();
-			itemamount[which]=smgmags.size();
-		}
-		return spawnamt;
-	}
-
-
 	states{
 	spawn:
 		BPAK ABC -1 nodelay{
-			if(!invoker.getbulk())frame=1;
+			invoker.weaponbulk();
+			if(!invoker.bulk)frame=1;
 			else if(target){
 				translation=target.translation;
 				frame=2;
@@ -183,299 +472,153 @@ class HDBP:HDWeapon{
 		TNT1 A 10{
 			A_PlaySound("weapons/pocket",CHAN_WEAPON);
 			if(invoker.bulk>(HDBPC_CAPACITY*0.7))A_SetTics(20);
+			invoker.index=clamp(invoker.index,0,invoker.maxindex);
+			if(invoker.havenone(invoker.index))invoker.updatemessage(invoker.index+1);
+			else invoker.UpdateMessage(invoker.index);
 		}goto super::select0;
 	ready:
-		TNT1 A 1{
-			invoker.weaponstatus[HDBPS_COOLDOWN]=max(0,invoker.weaponstatus[HDBPS_COOLDOWN]-1);
-			A_WeaponReady(WRF_ALLOWUSER1|WRF_ALLOWUSER2|WRF_ALLOWUSER4|WRF_ALLOWZOOM|WRF_ALLOWRELOAD);
-		}goto readyend;
-	altreload:
-		TNT1 A 0{
-			class<inventory> what=invoker.itemtype[invoker.weaponstatus[HDBPS_WHICH]];
-			A_DropInventory(what,countinv(what));
-		}goto nope;
-	fire:
-	hold:
-	altfire:
-	althold:
-	firemode:
-	scrollitems:
-		TNT1 A 3{
-			int ispd=player.cmd.pitch;
-
-			//move direction
-			bool digitalscrolling=pressingfiremode()?false:true;
-			if(digitalscrolling){
-				if(pressingfire())
-					invoker.weaponstatus[HDBPS_WHICH]--;
-					else invoker.weaponstatus[HDBPS_WHICH]++;
-			}else{
-				if(ispd<0)invoker.weaponstatus[HDBPS_WHICH]++;
-				else if(ispd>0)invoker.weaponstatus[HDBPS_WHICH]--;
-				A_MuzzleClimb(0,ispd*0.0012);
-			}
-
-			//wrap, skip
-			if(
-				invoker.weaponstatus[HDBPS_WHICH]<0
-			){
-				invoker.weaponstatus[HDBPS_WHICH]=HDBPC_NUMITEMS-1;
-				while(!invoker.itemname[invoker.weaponstatus[HDBPS_WHICH]])
-					invoker.weaponstatus[HDBPS_WHICH]--;
-			}else if(
-				invoker.weaponstatus[HDBPS_WHICH]>=HDBPC_NUMITEMS
-				||!invoker.itemname[invoker.weaponstatus[HDBPS_WHICH]]
-			)invoker.weaponstatus[HDBPS_WHICH]=0;
-
-			//set tics
-			int which=invoker.weaponstatus[HDBPS_WHICH];
-
-			if(
-				which&&!countinv(invoker.itemtype[which])
-				&&invoker.itemamount[which]<1
-			){
-				if(pressingfiremode())setweaponstate("scrollitems");
-				A_Refire();
-			}else{
-				if(digitalscrolling){
-					if(invoker.itemamount[which]>0)A_SetTics(3);
-					else if(
-						which&&!countinv(invoker.itemtype[which])
-					){
-						if(pressingfiremode())setweaponstate("scrollitems");
-						A_Refire();
-					}else A_SetTics(3);
-				}else{
-					ispd=abs(ispd);
-					if(ispd>500&&which%3)A_SetTics(0);
-					else if(ispd>450&&which%2)A_SetTics(0);
-					else if(ispd>400)A_SetTics(1);
-					else if(ispd>200)A_SetTics(3);
-					else if(ispd>100)A_SetTics(5);
-					else A_SetTics(7);
-				}
-			}
-		}
-		TNT1 A 0 A_Refire();
-		goto ready;
-	reload:
-		TNT1 A 5 A_AddBackpackItem(invoker.weaponstatus[HDBPS_WHICH]);
-		goto ready;
-	unload:
-		TNT1 A 7 A_DropBackpackItem(invoker.weaponstatus[HDBPS_WHICH]);
-		goto ready;
-
-	zoom:
-		TNT1 A 0{
-			invoker.weaponstatus[HDBPS_COOLDOWN]+=8;
-			if(invoker.weaponstatus[HDBPS_COOLDOWN]<16)return;
-			for(int i=0;i<HDBPC_NUMITEMS;i++){
-				if(invoker.itemtype[i]&&invoker.itemamount[i]>0){
-					class<inventory> itp=invoker.itemtype[i];
-					if(itp is "HDMagAmmo"){
-						while(invoker.itemamount[i]>0)HDMagAmmo.SpawnMag(self,itp,invoker.BPTakeMag(i));
-					}
-					else A_DropItem(invoker.itemtype[i],invoker.itemamount[i]);
-					invoker.itemamount[i]=0;
-				}
-			}
-			invoker.getbulk();
-		}goto nope;
-	}
-
-	double bulk;
-	double getbulk(){
-		double ebulk=0;
-		for (int i=0;i<HDBPC_NUMITEMS;i++){
-			if(itemamount[i]>0)ebulk+=itembulk[i]*itemamount[i];
-		}
-		int magslength=pistmags.size();for(int i=0;i<magslength;i++){ebulk+=ENC_9_LOADED*pistmags[i];}
-		magslength=smgmags.size();for(int i=0;i<magslength;i++){ebulk+=ENC_9_LOADED*smgmags[i];}
-		magslength=zmmags.size();for(int i=0;i<magslength;i++){ebulk+=ENC_426_LOADED*zmmags[i];}
-		magslength=libmags.size();for(int i=0;i<magslength;i++){ebulk+=ENC_776_LOADED*libmags[i];}
-		magslength=bossclips.size();for(int i=0;i<magslength;i++){ebulk+=ENC_776*bossclips[i];}
-		bulk=ebulk;
-		return ebulk;
-	}
-
-	string itemname[HDBPC_NUMITEMS];
-	name itemtype[HDBPC_NUMITEMS];
-	int itemamount[HDBPC_NUMITEMS];
-	double itembulk[HDBPC_NUMITEMS];
-
-	override void initializewepstats(bool idfa){
-		return;
-		//old code below, for adding ammo in IDFA
-		if(!idfa)return;
-		for(int i=0;i<HDBPC_NUMITEMS;i++){
-
-			if(itemname[i]=="br"||itemname[i]=="cl")itemamount[i]=0;
-			else itemamount[i]=max(
-				1,
-				itemamount[i],
-				10/(max(1,itembulk[i]))
-			);
-			getbulk();
-		}
-	}
-	int derpindex;int bderpindex;
-	int sevenmilindex;int brassindex;int loosezedindex;
-	int potionindex;int talismanindex;
-
-	int pistindex;int smgindex;int zmindex;int libindex;int bossindex;int batteryindex;
-	array<int> pistmags;array<int> smgmags;array<int> zmmags;array<int> libmags;
-	array<int> bossclips;array<int> batteries;
-	void SyncMagAmounts(){
-		itemamount[pistindex]=max(itemamount[pistindex],pistmags.size());
-			while(itemamount[pistindex]>pistmags.size()){pistmags.push(15);}
-		itemamount[smgindex]=max(itemamount[smgindex],smgmags.size());
-			while(itemamount[smgindex]>smgmags.size()){smgmags.push(30);}
-		itemamount[zmindex]=max(itemamount[zmindex],zmmags.size());
-			while(itemamount[zmindex]>zmmags.size()){zmmags.push(51);}
-		itemamount[libindex]=max(itemamount[libindex],libmags.size());
-			while(itemamount[libindex]>libmags.size()){libmags.push(30);}
-		itemamount[bossindex]=max(itemamount[bossindex],bossclips.size());
-			while(itemamount[bossindex]>bossclips.size()){bossclips.push(10);}
-		itemamount[batteryindex]=max(itemamount[batteryindex],batteries.size());
-			while(itemamount[batteryindex]>batteries.size()){batteries.push(20);}
-	}
-
-	override void beginplay(){
-		int i=-1;
-		i++;itemname[i]="br";
-		i++;itembulk[i]=ENC_LADDER;itemtype[i]="PortableLadder";itemname[i]="Ladder";
-		i++;itembulk[i]=ENC_RADSUIT;itemtype[i]="PortableRadSuit";itemname[i]="Environment suit";
-		i++;itembulk[i]=ENC_LITEAMP;itemtype[i]="PortableLiteAmp";itemname[i]="Light amplifier";
-		i++;itemname[i]="br";
-
-		i++;itembulk[i]=ENC_MEDIKIT;itemtype[i]="PortableMedikit";itemname[i]="Medikit";
-		i++;itembulk[i]=ENC_STIMPACK;itemtype[i]="PortableBerserkPack";itemname[i]="Berserk pack";
-		i++;itembulk[i]=ENC_STIMPACK;itemtype[i]="PortableStimpack";itemname[i]="Stimpack";
-		i++;itembulk[i]=ENC_BLUEPOTION;itemtype[i]="BluePotion";itemname[i]="Healing potion";potionindex=i;
-		i++;itembulk[i]=ENC_SQUADSUMMONER;itemtype[i]="SquadSummoner";itemname[i]="Summoning talisman";talismanindex=i;
-		i++;itemname[i]="br";
-
-		i++;itembulk[i]=ENC_HEATROCKET;itemtype[i]="HEATAmmo";itemname[i]="H.E.A.T. rocket";
-		i++;itembulk[i]=ENC_ROCKET;itemtype[i]="HDRocketAmmo";itemname[i]="Rocket grenade";
-		i++;itembulk[i]=ENC_ROCKET;itemtype[i]="DudRocketAmmo";itemname[i]="Defused rocket";
-		i++;itemname[i]="br";
-
-		i++;itembulk[i]=ENC_FRAG;itemtype[i]="HDFragGrenadeAmmo";itemname[i]="Hand grenade";
-		i++;itembulk[i]=ENC_BATTERY;itemtype[i]="HDBattery";itemname[i]="Battery";batteryindex=i;
-		i++;itembulk[i]=ENC_BRONTOSHELL;itemtype[i]="BrontornisRound";itemname[i]="Brontornis shell";
-		i++;itemname[i]="br";
-
-		i++;itembulk[i]=ENC_426MAG_EMPTY;itemtype[i]="HD4mMag";itemname[i]="4.26mm mag";zmindex=i;
-		i++;itembulk[i]=ENC_426;itemtype[i]="FourMilAmmo";itemname[i]="Misc. 4.26mm ammo";loosezedindex=i;
-		i++;itemname[i]="cl";
-
-		i++;itembulk[i]=ENC_776MAG_EMPTY;itemtype[i]="HD7mMag";itemname[i]="7.76mm mag";libindex=i;
-		i++;itembulk[i]=ENC_776CLIP;itemtype[i]="HD7mClip";itemname[i]="7.76mm clip";bossindex=i;
-		i++;itembulk[i]=ENC_776;itemtype[i]="SevenMilAmmo";itemname[i]="Misc. 7.76mm ammo";sevenmilindex=i;
-		i++;itembulk[i]=ENC_776B;itemtype[i]="SevenMilBrass";itemname[i]="7.76mm casing";brassindex=i;
-		i++;itemname[i]="br";
-
-		i++;itembulk[i]=ENC_9MAG_EMPTY;itemtype[i]="HD9mMag15";itemname[i]="Pistol mag";pistindex=i;
-		i++;itembulk[i]=ENC_9MAG30_EMPTY;itemtype[i]="HD9mMag30";itemname[i]="SMG mag";smgindex=i;
-		i++;itembulk[i]=ENC_9;itemtype[i]="HDPistolAmmo";itemname[i]="Misc. 9mm ammo";
-		i++;itemname[i]="br";
-
-		i++;itembulk[i]=ENC_SHELL;itemtype[i]="HDShellAmmo";itemname[i]="Shotgun shell";
-		i++;itemname[i]="br";
-
-		i++;itembulk[i]=ENC_DERP;itemtype[i]="DERPUsable";itemname[i]="D.E.R.P. robot";derpindex=i;
-		i++;itembulk[i]=ENC_DERP;itemtype[i]="DERPDEAD";itemname[i]="Broken D.E.R.P. robot";bderpindex=i;
-		i++;itembulk[i]=ENC_DOORBUSTER;itemtype[i]="DoorBuster";itemname[i]="Door Buster";
-		i++;itembulk[i]=ENC_IEDKIT;itemtype[i]="HDIEDKit";itemname[i]="I.E.D. kit";
-		super.beginplay();
+		TNT1 A 1 A_BPReady();
+		goto readyend;
+	nope:
+		TNT1 A 0 A_WeaponMessage(invoker.wepmsg,5);
+		goto super::nope;
 	}
 }
-enum HDBackpackItems{
-	HDBPS_WHICH=1,
-	HDBPS_COOLDOWN=2,
 
-	HDBPF_NOAUTO=1,
 
-	HDBPC_CAPACITY=1000,
-	HDBPC_NUMITEMS=40, //should be the length of the array including brs
-}
 
-class HDBPPreset:Inventory{
-	default{
-		inventory.maxamount 999;
-	}
+
+
+
+
+
+
+//semi-filled backpacks at random
+class WildBackpack:IdleDummy replaces Backpack{
+		//$Category "Items/Hideous Destructor/Gear"
+		//$Title "Backpack (Random Spawn)"
+		//$Sprite "BPAKC0"
 	override void postbeginplay(){
 		super.postbeginplay();
-		actor prebp;
-		if(owner){
-			owner.A_SetInventory("HDBP",1);
-			prebp=owner.findinventory("HDBP");
-		}else{
-			prebp=spawn("HDBP",pos,ALLOW_REPLACE);
-			amount=random(1,20);
-		}
-		let bp=HDBP(prebp);
-		if(bp){
-			addstuff(bp);
-		}
-		destroy();
+		let aaa=HDBackpack(spawn("HDBackpack",pos,ALLOW_REPLACE));
+		aaa.RandomContents();
 	}
-	void addstuff(hdbp bp){
-		if(amount==999){ //custom
-			for(int i=0;i<HDBPC_NUMITEMS;i++){
-				if(bp.itemtype[i]){
-					int thisamt=cvar.getcvar(
-						string.format("hd_loadbp%i",i),
-						owner.player
-					).getint();
-					if(thisamt>0){
-						bp.itemamount[i]=thisamt;
-					}
-					if(bp.getbulk()>=HDBPC_CAPACITY){
-						bp.itemamount[i]=0;
-						break;
-					}
+}
+extend class HDBackpack{
+	void RandomContents(){
+		for(int i=0;i<5;i++){
+			int thisitem=random(1,invclasses.size())-1;
+			let wep=(class<hdweapon>)(invclasses[thisitem]);
+			let pkup=(class<hdpickup>)(invclasses[thisitem]);
+			let mag=(class<hdmagammo>)(pkup);
+			if(wep){
+				let iii=inventory(spawn(wep,pos,ALLOW_REPLACE));
+				itemtobackpack(iii);
+			}else if(mag){
+				int howmany=max(1,random(1,
+					min(
+						getdefaultbytype(mag).maxamount>>1,
+						HDCONST_BPMAX/(
+							max(1.,getdefaultbytype(mag).roundbulk)
+							*max(1.,getdefaultbytype(mag).magbulk)
+							*3.
+						)
+					)
+				));
+				int magmax=getdefaultbytype(mag).maxperunit;
+				string ati=amounts[thisitem];
+				for(int i=0;i<howmany;i++){
+					int mmx=min(magmax,magmax*frandom(0.1,5.));
+					if(ati=="")ati=ati..mmx;
+					else ati=ati.." "..mmx;
 				}
-			}
-		}else{
-			for(int i=0;i<HDBPC_NUMITEMS;i++){
-				class<inventory>bpi=bp.itemtype[i];
-				if(amount==1){ //contractor
-					if(bpi=="HDShellAmmo")bp.itemamount[i]=40;
-					else if(bpi=="HDRocketAmmo")bp.itemamount[i]=5;
-					else if(bpi=="PortableStimpack")bp.itemamount[i]=7;
-					else if(bpi=="PortableMedikit")bp.itemamount[i]=3;
-					else if(bpi=="HDFragGrenadeAmmo")bp.itemamount[i]=7;
-				}else if(amount==2){ //medic
-					if(bpi=="PortableMedikit")bp.itemamount[i]=5;
-					else if(bpi=="PortableBerserkPack")bp.itemamount[i]=5;
-					else if(bpi=="PortableStimpack")bp.itemamount[i]=5;
-					else if(bpi=="HDBattery")bp.itemamount[i]=2;
-					else if(bpi=="PortableRadsuit")bp.itemamount[i]=2;
-					else if(bpi=="PortableLadder")bp.itemamount[i]=1;
-					else if(bpi=="DoorBuster")bp.itemamount[i]=2;
-				}else if(amount==3){ //roboticist
-					if(bpi=="DERPDEAD")bp.itemamount[i]=1;
-					else if(bpi=="HDBattery")bp.itemamount[i]=6;
-					else if(bpi=="DudRocketAmmo")bp.itemamount[i]=5;
-					else if(bpi=="HD9mMag15")bp.itemamount[i]=10;
-					else if(bpi=="HD4mMag")bp.itemamount[i]=6;
-				}else if(!random(0,5)&&bpi){ //insurgent
-					int maxrand=random(0,3);
-					if(
-						i!=bp.potionindex
-						&&i!=bp.talismanindex
-					)maxrand=random(50,250)/(max(1,bp.itembulk[i]));
-					if(!maxrand)continue;
-					bp.itemamount[i]=random(1,random(1,maxrand));
-					if(bp.getbulk()>=HDBPC_CAPACITY){
-						bp.itemamount[i]=0;
-						break;
-					}
+				amounts[thisitem]=ati;
+			}else if(pkup){
+				int howmany=max(1,random(1,
+					min(
+						getdefaultbytype(pkup).maxamount>>1,
+						HDCONST_BPMAX/(max(1.,getdefaultbytype(pkup).bulk)*5.)
+					)
+				));
+				if(
+					pkup is "BluePotion"
+					||pkup is "SquadSummoner"
+				){
+					howmany=random(-2,howmany);
 				}
+				amounts[thisitem]=""..howmany;
+				if(amounts[thisitem].toint()<1)amounts[thisitem]="";
 			}
 		}
-		bp.getbulk();
-		destroy();
+		weaponbulk();
+		updatemessage(index);
+	}
+
+
+	//go through all backpacked items and call their respective Consolidate()s
+	override void Consolidate(){
+		for(int i=0;i<invclasses.size();i++){
+			if(havenone(i))continue;
+			let type=(class<hdpickup>)(invclasses[i]);
+			if(!type)continue;
+			int onperson=BPToInv(owner,type);
+			let thisinv=hdpickup(owner.findinventory(type));
+
+			thisinv.Consolidate();
+
+			//then put everything back
+			if(!thisinv)return;
+			int inbackpack=thisinv.amount-onperson;
+			if(type is "HDMagAmmo"){
+				let thismags=hdmagammo(thisinv);
+				string ibp="";
+				for(int i=0;i<inbackpack;i++){
+					ibp=ibp..(ibp==""?"":" ")..thismags.mags[0];
+					thismags.mags.delete(0);
+					thismags.amount--;
+				}
+				amounts[i]=ibp;
+			}else{
+				amounts[i]=""..inbackpack;
+				thisinv.amount=onperson;
+			}
+
+			thisinv.maxamount=getdefaultbytype(type).maxamount;
+		}
+	}
+
+	//increase maxamount by backpackamount
+	//take backpack contents and put them in inventory
+	//return original amount on person
+	static int BPToInv(actor caller,class<inventory> type){
+		int originalamount=caller.countinv(type);
+		let bp=hdbackpack(caller.findinventory("hdbackpack"));
+		if(
+			bp
+			&&bp.invclasses.find(type.getclassname())>=0
+		){
+			int bpindex=bp.invclasses.find(type.getclassname());
+			string addamt=bp.amounts[bpindex];
+			if(addamt!=""){
+				if(type is "HDMagAmmo"){
+					array<string> bpmags;bpmags.clear();
+					addamt.split(bpmags," ");
+					hdmagammo onp=hdmagammo(caller.findinventory(type));
+					for(int i=0;i<bpmags.size();i++){
+						caller.A_GiveInventory(type,1);
+						if(!onp)onp=hdmagammo(caller.findinventory(type));
+						onp.maxamount=max(onp.maxamount,originalamount+bpmags.size());
+						onp.mags.push(bpmags[i].toint());
+					}
+				}else if(type is "HDPickup"&&addamt.toint()>0){
+					int bpamt=addamt.toint();
+					caller.A_GiveInventory(type,bpamt);
+					let cfi=caller.findinventory(type);
+					cfi.maxamount=max(cfi.maxamount,originalamount+bpamt);
+				}
+			}
+			bp.amounts[bpindex]="";
+		}
+		return originalamount;
 	}
 }

@@ -104,7 +104,7 @@ class BossRifle:HDWeapon{
 		BARG A 1{
 			A_Gunflash();
 			invoker.weaponstatus[BOSSS_CHAMBER]=1;
-			A_PlaySound("weapons/bigrifle",6);
+			A_PlaySound("weapons/bigrifle2",6);
 			A_AlertMonsters();
 
 			actor p=spawn("HDBullet776",pos+(0,0,height-6),ALLOW_REPLACE);
@@ -183,7 +183,7 @@ class BossRifle:HDWeapon{
 		BARG E 2 offset(7,72);
 		TNT1 A 18 A_PlaySound("weapons/pocket",CHAN_WEAPON);
 		TNT1 A 4{
-			A_PlaySound("weapons/rifleload",CHAN_WEAPON,0.7);
+			A_PlaySound("weapons/bossload",CHAN_WEAPON,0.7);
 			if(invoker.weaponstatus[0]&BOSSF_UNLOADONLY){
 				int chm=invoker.weaponstatus[BOSSS_CHAMBER];
 				invoker.weaponstatus[BOSSS_CHAMBER]=0;
