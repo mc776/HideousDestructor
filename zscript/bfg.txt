@@ -165,7 +165,7 @@ class BFG9K:HDWeapon replaces BFG9000{
 				if(health>16)damagemobj(invoker,self,1,"internal");    
 			}
 			A_TakeInventory("WeaponBusy",1);
-			A_PlaySound("weapons/plasidle",5);
+			A_PlaySound("weapons/bfgcharge",5);
 			BFG9k.Spark(self,1,height-10);
 			A_WeaponReady(WRF_NOFIRE);
 		}
@@ -178,7 +178,7 @@ class BFG9K:HDWeapon replaces BFG9000{
 	chargeend:
 		BFGG B 2{
 			BFG9k.Spark(self,1,height-10);
-			A_PlaySound("weapons/plasidle",invoker.weaponstatus[BFGS_TIMER]>6?CHAN_AUTO:5);    
+			A_PlaySound("weapons/bfgcharge",invoker.weaponstatus[BFGS_TIMER]>6?CHAN_AUTO:5);    
 			A_WeaponReady(WRF_ALLOWRELOAD|WRF_NOFIRE|WRF_DISABLESWITCH);
 			A_SetTics(max(1,6-invoker.weaponstatus[BFGS_TIMER]*0.3));
 			invoker.weaponstatus[BFGS_TIMER]++;
@@ -197,7 +197,7 @@ class BFG9K:HDWeapon replaces BFG9000{
 		}
 		BFGG B 3{
 			invoker.weaponstatus[BFGS_CRITTIMER]--;
-			A_PlaySound("weapons/plasidle",random(5,6));
+			A_PlaySound("weapons/bfgcharge",random(5,6));
 			BFG9k.Spark(self,1,height-10);
 			if(invoker.weaponstatus[BFGS_CRITTIMER]<1){
 				invoker.weaponstatus[BFGS_CRITTIMER]=0;
@@ -357,7 +357,7 @@ class BFG9K:HDWeapon replaces BFG9000{
 	bwahahahaha:
 		BFUG A 3{
 			invoker.weaponstatus[BFGS_CRITTIMER]--;
-			A_PlaySound("weapons/plasidle",CHAN_AUTO);
+			A_PlaySound("weapons/bfgcharge",CHAN_AUTO);
 			BFG9k.Spark(self,1,6);
 			if(invoker.weaponstatus[BFGS_CRITTIMER]<1){
 				invoker.weaponstatus[BFGS_CRITTIMER]=0;
