@@ -178,7 +178,7 @@ class HDPistol:HDWeapon{
 		PISG B 3 offset(0,34);
 		PISG C 4 offset(0,37){
 			A_MuzzleClimb(frandom(0.4,0.5),-frandom(0.6,0.8));
-			A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
+			A_PlaySound("weapons/pismagclick",CHAN_WEAPON);
 			int psch=invoker.weaponstatus[PISS_CHAMBER];
 			invoker.weaponstatus[PISS_CHAMBER]=0;
 			if(psch==2){
@@ -229,7 +229,7 @@ class HDPistol:HDWeapon{
 			);
 			invoker.weaponstatus[PISS_CHAMBER]=0;
 			if(invoker.weaponstatus[PISS_MAG]<1){
-				A_PlaySound("weapons/rifleclick",7,0.9);
+				A_PlaySound("weapons/pistoldry",7,0.9);
 				setweaponstate("nope");
 			}
 		}
@@ -280,7 +280,7 @@ class HDPistol:HDWeapon{
 			if(countinv("HDPistolAmmo")){
 				A_TakeInventory("HDPistolAmmo",1,TIF_NOTAKEINFINITE);
 				invoker.weaponstatus[PISS_CHAMBER]=2;
-				A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
+				A_PlaySound("weapons/pischamber1",CHAN_WEAPON);
 			}
 		}
 		PISG B 3 offset(2,36);
@@ -301,7 +301,7 @@ class HDPistol:HDWeapon{
 		}
 		---- A 1 offset(1,38);
 		---- A 2 offset(2,42);
-		---- A 3 offset(3,46) A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
+		---- A 3 offset(3,46) A_PlaySound("weapons/pismagclick",CHAN_WEAPON);
 		---- A 0{
 			int pmg=invoker.weaponstatus[PISS_MAG];
 			invoker.weaponstatus[PISS_MAG]=-1;
@@ -338,14 +338,14 @@ class HDPistol:HDWeapon{
 			let mmm=hdmagammo(findinventory("HD9mMag15"));
 			if(mmm){
 				invoker.weaponstatus[PISS_MAG]=mmm.TakeMag(true);
-				A_PlaySound("weapons/rifleclick",CHAN_BODY);
+				A_PlaySound("weapons/pismagclick",CHAN_BODY);
 				if(invoker.weaponstatus[PISS_CHAMBER]<1){
 					invoker.weaponstatus[PISS_CHAMBER]=2;
 					invoker.weaponstatus[PISS_MAG]--;
 				}
 			}else setweaponstate("reloadend");
 		}
-		PISG A 3 offset(0,48) A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
+		PISG A 3 offset(0,48) A_PlaySound("weapons/pischamber2",CHAN_WEAPON);
 		PISG A 2 offset(0,45);
 		goto reloadend;
 	reloadend:
@@ -363,7 +363,7 @@ class HDPistol:HDWeapon{
 	swapfakedeselect:
 		---- A 0{
 			if(invoker.weaponstatus[PISS_CHAMBER]<1)
-				A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
+				A_PlaySound("weapons/pischamber2",CHAN_WEAPON);
 		}
 		PISG A 1 A_WeaponOffset(-2,38);
 		PISG B 1 A_WeaponOffset(-4,46);

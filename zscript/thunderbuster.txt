@@ -226,7 +226,7 @@ class ThunderBuster:HDWeapon{
 	firemode:
 		PLSG C 1 offset(1,32) A_GiveInventory("WeaponBusy");
 		PLSG C 2 offset(2,32);
-		PLSG C 1 offset(1,33) A_PlaySound("weapons/huntreload",CHAN_WEAPON);
+		PLSG C 1 offset(1,33) A_PlaySound("weapons/plasswitch",CHAN_WEAPON);
 		PLSG C 2 offset(0,34);
 		PLSG C 3 offset(-1,35);
 		PLSG C 4 offset(-1,36);
@@ -260,7 +260,7 @@ class ThunderBuster:HDWeapon{
 			A_MuzzleClimb(frandom(-1.2,-2.4),frandom(1.2,2.4));
 		}
 		PLSG A 3 offset(0,35);
-		PLSG A 2 offset(0,40) A_PlaySound("weapons/huntopen");
+		PLSG A 2 offset(0,40) A_PlaySound("weapons/plasopen");
 		PLSG A 0{
 			int bat=invoker.weaponstatus[TBS_BATTERY];
 			A_MuzzleClimb(frandom(-1.2,-2.4),frandom(1.2,2.4));
@@ -315,9 +315,9 @@ class ThunderBuster:HDWeapon{
 		PLSG A 2 offset(0,44) A_PlaySound("weapons/pocket",CHAN_WEAPON);
 		PLSG A 4 offset(0,43) A_PlaySound("weapons/pocket",CHAN_WEAPON);
 		PLSG A 6 offset(0,42);
-		PLSG A 8 offset(0,38)A_PlaySound("weapons/rifleload",CHAN_WEAPON);
+		PLSG A 8 offset(0,38)A_PlaySound("weapons/plasload",CHAN_WEAPON);
 		PLSG A 4 offset(0,37){if(health>39)A_SetTics(0);}
-		PLSG A 4 offset(0,36)A_PlaySound("weapons/grenopen",CHAN_WEAPON);
+		PLSG A 4 offset(0,36)A_PlaySound("weapons/plasclose",CHAN_WEAPON);
 
 		PLSG A 0{
 			let mmm=HDMagAmmo(findinventory("HDBattery"));
@@ -327,7 +327,7 @@ class ThunderBuster:HDWeapon{
 	reload3:
 		PLSG A 6 offset(0,40){
 			invoker.weaponstatus[TBS_MAXRANGEDISPLAY]=(8000+200*invoker.weaponstatus[TBS_BATTERY])/HDCONST_ONEMETRE;
-			A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
+			A_PlaySound("weapons/plasclose2",CHAN_WEAPON);
 		}
 		PLSG A 2 offset(0,36);
 		PLSG A 4 offset(0,33);
@@ -401,10 +401,10 @@ class BeamSpot:HDActor{
 		}
 
 		//crackity crack
-		target.A_PlaySound("weapons/bigcrack",CHAN_WEAPON);
-		target.A_PlaySound("weapons/bigcrack",CHAN_BODY);
-		target.A_PlaySound("weapons/bigcrack",5);
-		target.A_PlaySound("world/rocketfar",6);
+		target.A_PlaySound("weapons/plascrack",CHAN_WEAPON);
+		target.A_PlaySound("weapons/plascrack",CHAN_BODY);
+		target.A_PlaySound("weapons/plascrack",5);
+		target.A_PlaySound("world/tbfar",6);
 		target.A_PlaySound("world/explode",7,0.5);
 
 		//flash player's muzzle
@@ -521,7 +521,7 @@ class ThunderCracker:IdleDummy{
 	states{
 	spawn:
 		TNT1 A 1;
-		TNT1 A 10 A_PlaySound("weapons/bigcrack");
+		TNT1 A 10 A_PlaySound("weapons/plascrack");
 		TNT1 A 20 A_AlertMonsters();
 		stop;
 	}
@@ -663,8 +663,8 @@ class LingeringThunder:IdleDummy{
 		int zappower=random(baseamount>>2,baseamount);
 		if(victim.health<1)hdf.give(victim,"sawgib",zappower>>3);
 		victim.A_PlaySound("weapons/plasidle",CHAN_BODY,frandom(0.2,0.6));
-		victim.A_PlaySound("misc/wallchunks",5);
-		victim.A_PlaySound("weapons/bigcrack",6,frandom(0.2,0.6));
+		victim.A_PlaySound("misc/arccrackle",5);
+		victim.A_PlaySound("weapons/plascrack",6,frandom(0.2,0.6));
 		actor bsfl=spawn("BeamSpotFlashLight",victim.pos,ALLOW_REPLACE);
 		bsfl.target=victim;
 

@@ -165,7 +165,7 @@ class HDSMG:HDWeapon{
 			if(countinv("HDPistolAmmo")){
 				A_TakeInventory("HDPistolAmmo",1,TIF_NOTAKEINFINITE);
 				invoker.weaponstatus[SMGS_CHAMBER]=2;
-				A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
+				A_PlaySound("weapons/smgchamber",CHAN_WEAPON);
 			}
 		}
 		SMGG B 7 offset(5,37);
@@ -197,10 +197,10 @@ class HDSMG:HDWeapon{
 		SMGG A 1 offset(0,34) A_SetCrosshair(21);
 		SMGG A 1 offset(5,38);
 		SMGG A 1 offset(10,42);
-		SMGG B 2 offset(20,46) A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
+		SMGG B 2 offset(20,46) A_PlaySound("weapons/smgmagclick",CHAN_WEAPON);
 		SMGG B 4 offset(30,52){
 			A_MuzzleClimb(0.3,0.4);
-			A_PlaySound("weapons/rifleload",CHAN_WEAPON);
+			A_PlaySound("weapons/smgmagmove",CHAN_WEAPON);
 		}
 		SMGG B 0{
 			int magamt=invoker.weaponstatus[SMGS_MAG];
@@ -238,7 +238,7 @@ class HDSMG:HDWeapon{
 			let mmm=hdmagammo(findinventory("HD9mMag30"));
 			if(mmm){
 				invoker.weaponstatus[SMGS_MAG]=mmm.TakeMag(true);
-				A_PlaySound("weapons/rifleclick",CHAN_BODY);
+				A_PlaySound("weapons/smgmagclick",CHAN_BODY);
 			}
 			if(
 				invoker.weaponstatus[SMGS_MAG]<1
@@ -250,7 +250,7 @@ class HDSMG:HDWeapon{
 			invoker.weaponstatus[SMGS_MAG]--;
 			invoker.weaponstatus[SMGS_CHAMBER]=2;
 		}
-		SMGG B 4 offset(32,49) A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
+		SMGG B 4 offset(32,49) A_PlaySound("weapons/smgchamber",CHAN_WEAPON);
 
 	reloadend:
 		SMGG B 3 offset(30,52);
