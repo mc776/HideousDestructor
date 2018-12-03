@@ -61,13 +61,35 @@ marineb/taunt		dssawful
 
 weapons/bulletcrack	dsrifsbm
 weapons/bigcrack		dsthubm
+misc/arccrackle		dsdust $limit misc/arccrackle 0
 
 
 medikit/scan		dsplsidl
+medikit/staple		dsthubm
+medikit/stopper		dspunch
+medikit/done		dsitemup
+bandage/rip		dsclaw
+bandage/rustle		dspocket
 
 roundmaker/chug1		dsthubm
 roundmaker/chug2		dsgopen
 roundmaker/pop		dsbelt
+
+
+weapons/csawopen		dsriflod
+weapons/csawload		dsgopen
+weapons/csawclose	dsfclk
+weapons/csawtouch	dsrifclk
+weapons/csawbleh		dspocket
+
+weapons/pismagclick	dsrifclk
+weapons/pistoldry	dsrifclk
+weapons/pischamber1	dsrifck2
+weapons/pischamber2	dsrifck2
+
+weapons/smgchamber	dsrifck2
+weapons/smgmagclick	dsrifclk
+weapons/smgmagmove	dsriflod
 
 weapons/hunter		dsshotg
 weapons/huntopen		dsfclk
@@ -75,6 +97,7 @@ weapons/huntreload	dsdbload
 weapons/huntrack		dssgcock
 weapons/huntrackup	dssgcock
 weapons/huntrackdown	dssgcock
+weapons/huntshort	dsrifck2
 weapons/slayersingle	dsshotg
 
 weapons/pocket		dspocket
@@ -84,14 +107,17 @@ weapons/rifle		dsrifle
 weapons/bigrifle		dsbrifle
 weapons/smack		dspunch
 
-weapons/smg		dspistol
-	$volume weapons/smg 0.7
+weapons/smg		dspistol		$volume weapons/smg 0.7
 
 weapons/rifleclick	dsrifclk
 weapons/rifleclick2	dsrifck2
 weapons/rifleload	dsriflod
+weapons/grenreload	dsrlload
+weapons/riflejam		dsrifclk
+weapons/rifchamber	dsrifclk
 
 weapons/grenopen		dsgopen
+weapons/fmswitch		dsrifck2
 
 weapons/vulcanette	dsrifle
 weapons/vulcbelt		dsbelt
@@ -101,18 +127,50 @@ weapons/vulcchamber	dsrifck2
 weapons/vulcanup		dsvulcup
 weapons/vulcandown	dsvulcdn
 weapons/vulcanon		dsbelt
+weapons/vulcshunt	dsgopen
+weapons/vulcopen1	dsdbload //dsriflod in Doom1
+weapons/vulcopen2	dsfclk
+weapons/vulcextract	dsdrpcrl
+weapons/vulcforcemag	dsrifclk
 
 weapons/grenadeshot	dsgresht
+
 weapons/rockignite	dsrlaunc
 weapons/rocklaunch	dsfwoosh
 weapons/rockreload	dsrlload
+weapons/rockboom	dsdshtgn
+weapons/rockchamber	dssgcock
+weapons/rockopen	dsrifck2
+weapons/rockopen	dsgopen
+
+weapons/libchamber	dsrifclk
+weapons/libchamber2	dsrifck2
+weapons/libchamber2a	dsrlload
+weapons/grenreload	dsrlload
 
 weapons/plasmas		dsfwoosh
 weapons/plasidle		dsplsidl
+weapons/plasswitch	dsdbload //dssgcock in Doom1
+weapons/plasopen		dsfclk
+weapons/plasload		dsriflod
+weapons/plasclose	dsgopen
+weapons/plasclose2	dsrifck2
+weapons/plascrack	dsthubm $limit weapons/plascrack 0
 
 weapons/bfgcharge	dsplsidl
+weapons/bfgclick		dsrifclk
+weapons/bfglock		dssgcock
+weapons/bfgfwoosh	dsfwoosh
+weapons/bfgclick2	dsrifck2
+weapons/bfgopen		dsfclk
+weapons/bfgbattout	dsriflod
+weapons/bfgbattpop	dsgopen
 
 weapons/bronto		dsdshtgn
+weapons/bronto2		dsbrifle
+weapons/brontunload	dsrlload
+weapons/brontoload	dsriflod
+weapons/brontoclose	dsfclk
 
 weapons/bigrifle2	dsbrifle
 weapons/boltback		dsbarbwd
@@ -123,6 +181,9 @@ weapons/fragpinin	dssgcock
 weapons/fragpinout	dsrifclk
 weapons/fragspoonoff	dstink
 
+tripwire/gunsplat	dschlp
+tripwire/fragclick	dsrifck2
+tripwire/break		dsthubm
 
 
 
@@ -131,13 +192,15 @@ world/shotgunfar		dsshtfar
 world/chaingunfar	dsriffar
 world/rocketfar		dsrktfar
 world/plasmafar		dsplsfar
+world/tbfar		dsrktfar
 world/bfgfar		dsbfgfar
 world/explode		dsbarexp
 
-misc/arczap			dsplsidl	$limit misc/arczap 0
+misc/arczap		dsplsidl		$limit misc/arczap 0
+misc/arccrackle		dsdust		$limit misc/arccrackle 0
 misc/fragknock		dsknock
 misc/fragroll		dsfrgrol
-misc/punch			dspunch
+misc/punch		dspunch
 misc/bullethit		dspunch
 misc/bulletflesh		dschlp
 misc/wallchunks		dsdust
@@ -147,14 +210,10 @@ misc/bfgrail		dsfwoosh
 misc/fwoosh		dsfwoosh
 misc/tink		dstink
 misc/heart		dsheart
-misc/casing		dsding
-	$volume misc/casing 0.4
-misc/casing2		dsrifck2
-	$volume misc/casing2 0.3
-misc/casing3		dsrifck2
-	$volume misc/casing3 0.2
-misc/casing4		dsding
-	$volume misc/casing4 0.9
+misc/casing		dsding		$volume misc/casing 0.4
+misc/casing2		dsrifck2	$volume misc/casing2 0.3
+misc/casing3		dsrifck2	$volume misc/casing3 0.2
+misc/casing4		dsding		$volume misc/casing4 0.9
 misc/ladder		dsbelt
 
 
