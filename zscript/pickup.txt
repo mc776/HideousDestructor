@@ -184,12 +184,17 @@ class HDPickup:CustomInventory{
 			return;
 		}else if(maxtake<1){
 			return;
-		}else if(maxtake<amount){
+		}
+		bool gotpickedup=false;
+		if(maxtake<amount){
 			amount-=maxtake;
 			HDF.Give(other,gcn,maxtake);
-		}else trypickup(other);
-		other.A_PlaySound(pickupsound,CHAN_AUTO);
-		other.A_Log(string.format("\cg%s",pickupmessage()),true);
+			gotpickedup=true;
+		}else gotpickedup=trypickup(other);
+		if(gotpickedup){
+			other.A_PlaySound(pickupsound,CHAN_AUTO);
+			other.A_Log(string.format("\cg%s",pickupmessage()),true);
+		}
 	}
 
 	//delete once no longer needed
