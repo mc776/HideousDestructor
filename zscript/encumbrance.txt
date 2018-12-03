@@ -85,7 +85,10 @@ extend class HDPlayerPawn{
 				if(gunbulk>0){
 					if(thisweapon)weaponencsel=gunbulk;
 					else weaponenc+=gunbulk;
-					stacker+=0.08;
+					if(gunbulk>70){
+						double stacked=(gunbulk-70)*0.0003;
+						stacker+=stacked;
+					}
 					//A_Log(string.format("%s  %.2f",hdw.getclassname(),gunbulk));
 				}
 			}else{

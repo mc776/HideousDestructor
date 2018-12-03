@@ -46,7 +46,12 @@ class HDPistol:HDWeapon{
 	}
 	override double weaponbulk(){
 		int mgg=weaponstatus[PISS_MAG];
-		return 30+(mgg<0?0:(ENC_9MAG_LOADED+mgg*ENC_9_LOADED));
+		double totalbulk=30+(mgg<0?0:(ENC_9MAG_LOADED+mgg*ENC_9_LOADED));
+		if(amount>1){
+			mgg=weaponstatus2[PISS_MAG];
+			totalbulk+=30+(mgg<0?0:(ENC_9MAG_LOADED+mgg*ENC_9_LOADED));
+		}
+		return totalbulk;
 	}
 	override void DropOneAmmo(int amt){
 		if(owner){
