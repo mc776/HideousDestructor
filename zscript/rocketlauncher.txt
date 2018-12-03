@@ -128,7 +128,7 @@ class HDRL:HDWeapon{
 				invoker.airburst=0;
 				invoker.weaponstatus[RLS_CHAMBER]=0;
 				A_PlaySound("weapons/rockignite",CHAN_AUTO);
-				A_PlaySound("weapons/bronto",5);
+				A_PlaySound("weapons/rockboom",5);
 			}
 		}
 		MISG A 2{
@@ -175,7 +175,7 @@ class HDRL:HDWeapon{
 				setweaponstate("nope");
 				return;
 			}
-			A_PlaySound("weapons/shotgr",CHAN_AUTO);
+			A_PlaySound("weapons/rockchamber",CHAN_AUTO);
 		}
 		MISG A 1 offset(1,36){
 			if(invoker.weaponstatus[RLS_MAG]>0){
@@ -191,7 +191,7 @@ class HDRL:HDWeapon{
 				setweaponstate("nope");
 				return;
 			}
-			A_PlaySound("weapons/shotgr",CHAN_AUTO);
+			A_PlaySound("weapons/rockchamber",CHAN_AUTO);
 		}
 		MISG A 1 offset(0,37);
 		MISG A 2 offset(1,36){
@@ -213,7 +213,7 @@ class HDRL:HDWeapon{
 			}
 			A_GiveInventory("WeaponBusy");
 		}
-		MISG A 2 offset(0,36) A_PlaySound("weapons/shotgr",CHAN_AUTO);
+		MISG A 2 offset(0,36) A_PlaySound("weapons/rockchamber",CHAN_AUTO);
 		MISG A 1 offset(0,37);
 		MISG A 2 offset(1,38);
 		MISG A 3 offset(2,37){
@@ -243,9 +243,9 @@ class HDRL:HDWeapon{
 		MISG B 1 offset(10,38);
 		MISG B 4 offset(12,40){
 			A_MuzzleClimb(-frandom(1.2,2.4),frandom(1.2,2.4));
-			A_PlaySound("weapons/rifleclick2",7);
+			A_PlaySound("weapons/rockopen",7);
 		}
-		MISG B 10 offset(11,38) A_PlaySound("weapons/grenopen",7);
+		MISG B 10 offset(11,38) A_PlaySound("weapons/rockopen2",7);
 	reload2:
 		MISG B 0 A_JumpIf(
 			(invoker.weaponstatus[RLS_CHAMBER]>0&&invoker.weaponstatus[RLS_MAG]>=5)
@@ -272,8 +272,8 @@ class HDRL:HDWeapon{
 			)setweaponstate("reloadend");
 		}loop;
 	reloadend:
-		MISG B 5 offset(10,36) A_PlaySound("weapons/grenopen",CHAN_WEAPON);
-		MISG B 1 offset(8,38) A_PlaySound("weapons/rifleclick2",7);
+		MISG B 5 offset(10,36) A_PlaySound("weapons/rockopen2",CHAN_WEAPON);
+		MISG B 1 offset(8,38) A_PlaySound("weapons/rockopen",7);
 		MISG B 1 offset(4,36);
 		MISG B 1 offset(2,34);
 		goto nope;
@@ -289,8 +289,8 @@ class HDRL:HDWeapon{
 		MISG A 1 offset(0,34);
 		MISG A 1 offset(0,36);
 		MISG B 1 offset(0,38);
-		MISG B 4 offset(0,40) A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
-		MISG B 10 offset(0,38) A_PlaySound("weapons/grenopen",CHAN_WEAPON);
+		MISG B 4 offset(0,40) A_PlaySound("weapons/rockopen",CHAN_WEAPON);
+		MISG B 10 offset(0,38) A_PlaySound("weapons/rockopen2",CHAN_WEAPON);
 		MISG B 9 offset(1,38) A_PlaySound("weapons/pocket",CHAN_WEAPON);
 		MISG B 0{
 			if(health<40)A_SetTics(7);
@@ -345,8 +345,8 @@ class HDRL:HDWeapon{
 			}
 		}goto altreloadend;
 	altreloadend:
-		MISG B 5 offset(0,36) A_PlaySound("weapons/grenopen",CHAN_WEAPON);
-		MISG B 0 A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
+		MISG B 5 offset(0,36) A_PlaySound("weapons/rockopen2",CHAN_WEAPON);
+		MISG B 0 A_PlaySound("weapons/rockopen",CHAN_WEAPON);
 		MISG B 1 offset(0,38);
 		MISG A 1 offset(0,36);
 		MISG A 1 offset(0,34);
@@ -368,9 +368,9 @@ class HDRL:HDWeapon{
 		MISG B 1 offset(10,38);
 		MISG B 4 offset(12,40){
 			A_MuzzleClimb(-frandom(1.2,2.4),frandom(1.2,2.4));
-			A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
+			A_PlaySound("weapons/rockopen",CHAN_WEAPON);
 		}
-		MISG B 2 offset(11,38) A_PlaySound("weapons/grenopen",CHAN_WEAPON);
+		MISG B 2 offset(11,38) A_PlaySound("weapons/rockopen2",CHAN_WEAPON);
 	unload2:
 		MISG B 10 offset(12,40) A_PlaySound("weapons/rockreload",7);
 		MISG B 9 offset(10,38){
@@ -392,10 +392,10 @@ class HDRL:HDWeapon{
 				A_GiveInventory("HDRocketAmmo",1);
 			}
 		}
-		MISG B 5 offset(10,36) A_PlaySound("weapons/grenopen",CHAN_WEAPON);
+		MISG B 5 offset(10,36) A_PlaySound("weapons/rockopen2",CHAN_WEAPON);
 		MISG B 4{
 			if(health<40)A_SetTics(4);
-			A_PlaySound("weapons/rifleclick2",CHAN_AUTO);
+			A_PlaySound("weapons/rockopen",CHAN_AUTO);
 		}
 		MISG B 0{
 			if(
@@ -575,9 +575,9 @@ class Blooper:HDWeapon{
 		BLOG B 1 offset(10,38);
 		BLOG B 6 offset(12,40){
 			A_MuzzleClimb(-frandom(1.2,2.4),frandom(1.2,2.4));
-			A_PlaySound("weapons/rifleclick2",7);
+			A_PlaySound("weapons/rockopen",7);
 		}
-		BLOG B 9 offset(11,38) A_PlaySound("weapons/grenopen",CHAN_WEAPON);
+		BLOG B 9 offset(11,38) A_PlaySound("weapons/rockopen2",CHAN_WEAPON);
 		BLOG B 7 offset(10,38) A_PlaySound("weapons/pocket",CHAN_WEAPON);
 		BLOG B 0{
 			if(health<40)A_SetTics(7);
@@ -616,8 +616,8 @@ class Blooper:HDWeapon{
 			}
 		}
 	reloadend:
-		BLOG B 5 offset(10,36) A_PlaySound("weapons/grenopen",CHAN_WEAPON);
-		BLOG B 0 A_PlaySound("weapons/rifleclick2",7);
+		BLOG B 5 offset(10,36) A_PlaySound("weapons/rockopen2",CHAN_WEAPON);
+		BLOG B 0 A_PlaySound("weapons/rockopen",7);
 		BLOG B 1 offset(8,38);
 		BLOG B 1 offset(4,36);
 		BLOG B 1 offset(2,34);
