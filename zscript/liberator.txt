@@ -89,7 +89,7 @@ class LiberatorRifle:HDWeapon{
 		drainheat(LIBS_HEAT,8);
 	}
 	action void A_Chamber(bool unloadonly=false){
-		A_PlaySound("weapons/rifleclick",6);
+		A_PlaySound("weapons/libchamber",6);
 		actor brsss=null;
 		if(invoker.weaponstatus[LIBS_CHAMBER]==1){
 			int bss=invoker.weaponstatus[LIBS_BRASS];
@@ -248,7 +248,7 @@ class LiberatorRifle:HDWeapon{
 				||invoker.weaponstatus[LIBS_MAG]<1
 			)setweaponstate("nope");
 		}
-		BRFG B 1 offset(-2,36)A_PlaySound("weapons/rifleclick");
+		BRFG B 1 offset(-2,36)A_PlaySound("weapons/libchamber");
 		BRFG B 1 offset(-2,38)A_Chamber();
 		BRFG B 1 offset(-1,34);
 		goto nope;
@@ -282,8 +282,8 @@ class LiberatorRifle:HDWeapon{
 			if(countinv("SevenMilAmmo")){
 				A_TakeInventory("SevenMilAmmo",1,TIF_NOTAKEINFINITE);
 				invoker.weaponstatus[LIBS_CHAMBER]=2;
-				A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
-				A_PlaySound("weapons/rockreload",6,0.7);
+				A_PlaySound("weapons/libchamber2",CHAN_WEAPON);
+				A_PlaySound("weapons/libchamber2a",6,0.7);
 			}
 		}
 		BRFG B 7 offset(5,37);
@@ -518,7 +518,7 @@ class LiberatorRifle:HDWeapon{
 			if(invoker.weaponstatus[0]&LIBF_JUSTUNLOAD)setweaponstate("altreloaddone");
 		}
 		BRFG AA 8 offset(-16,56)A_MuzzleClimb(frandom(-0.2,0.8),frandom(-0.2,0.4));
-		BRFG A 18 offset(-14,54)A_PlaySound("weapons/rockreload",CHAN_WEAPON);
+		BRFG A 18 offset(-14,54)A_PlaySound("weapons/grenreload",CHAN_WEAPON);
 		BRFG B 4 offset(-12,50){
 			A_PlaySound("weapons/grenopen",CHAN_WEAPON);
 			A_TakeInventory("HDRocketAmmo",1,TIF_NOTAKEINFINITE);
