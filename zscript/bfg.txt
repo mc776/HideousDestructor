@@ -73,17 +73,17 @@ class BFG9K:HDWeapon replaces BFG9000{
 			A_GiveInventory("WeaponBusy");
 			if(invoker.weaponstatus[0]&BFGF_STRAPPED){
 				A_SetTics(6);
-				A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
+				A_PlaySound("weapons/bfgclick",CHAN_WEAPON);
 			}
 		}
 		BFGG AA 1 A_Lower(3);
 		BFGG AAA 1 A_Lower(5);
 		BFGG AA 2 A_Lower(3);
 		BFGG A 4{
-			A_PlaySound("weapons/shotgr",5);
+			A_PlaySound("weapons/bfglock",5);
 			if(!(invoker.weaponstatus[0]&BFGF_STRAPPED)){
 				A_SetTics(6);
-				A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
+				A_PlaySound("weapons/bfgclick",CHAN_WEAPON);
 			}
 			A_SetBlend("00 00 00",1,6,"00 00 00");
 			invoker.weaponstatus[0]^=BFGF_STRAPPED;
@@ -211,7 +211,7 @@ class BFG9K:HDWeapon replaces BFG9000{
 			A_GiveInventory("PowerFrightener");
 		}
 		BFGG B 2{
-			A_PlaySound("weapons/plasmas",CHAN_AUTO);
+			A_PlaySound("weapons/bfgfwoosh",CHAN_AUTO);
 			A_GiveInventory("PowerFrightener",1);
 
 			invoker.weaponstatus[BFGS_CHARGE]=0;
@@ -292,11 +292,11 @@ class BFG9K:HDWeapon replaces BFG9000{
 		BFGG C 2 offset(0,38) A_MuzzleClimb(-frandom(1.2,2.4),frandom(1.2,2.4));
 		BFGG C 4 offset(0,40){
 			A_MuzzleClimb(-frandom(1.2,2.4),frandom(1.2,2.4));
-			A_PlaySound("weapons/rifleclick2");
+			A_PlaySound("weapons/bfgclick2");
 		}
 		BFGG C 2 offset(0,42){
 			A_MuzzleClimb(-frandom(1.2,2.4),frandom(1.2,2.4));
-			A_PlaySound("weapons/huntopen");
+			A_PlaySound("weapons/bfgopen");
 			if(invoker.weaponstatus[BFGS_BATTERY]>=0){    
 				HDMagAmmo.SpawnMag(self,"HDBattery",invoker.weaponstatus[BFGS_BATTERY]);
 				A_SetTics(4);
@@ -325,8 +325,8 @@ class BFG9K:HDWeapon replaces BFG9000{
 			else A_PlaySound("weapons/pocket");
 		}
 		BFGG C 12;
-		BFGG C 12 offset(0,42)A_PlaySound("weapons/rifleload");
-		BFGG C 10 offset(0,36)A_PlaySound("weapons/grenopen");
+		BFGG C 12 offset(0,42)A_PlaySound("weapons/bfgbattout");
+		BFGG C 10 offset(0,36)A_PlaySound("weapons/bfgbattpop");
 		BFGG C 0{
 			let mmm=hdmagammo(findinventory("HDBattery"));
 			if(!mmm||mmm.amount<1){setweaponstate("reload3");return;}
@@ -338,8 +338,8 @@ class BFG9K:HDWeapon replaces BFG9000{
 			}
 		}
 	reload3:
-		BFGG C 12 offset(0,38) A_PlaySound("weapons/huntopen");
-		BFGG C 16 offset(0,37) A_PlaySound("weapons/rifleclick2");
+		BFGG C 12 offset(0,38) A_PlaySound("weapons/bfgopen");
+		BFGG C 16 offset(0,37) A_PlaySound("weapons/bfgclick2");
 		BFGG C 2 offset(0,38);
 		BFGG C 2 offset(0,36);
 		BFGG A 2 offset(0,34);
@@ -368,7 +368,7 @@ class BFG9K:HDWeapon replaces BFG9000{
 	heh:
 		BFUG A 8;
 		BFUG A 4{
-			invoker.A_PlaySound("weapons/plasmas",CHAN_AUTO);
+			invoker.A_PlaySound("weapons/bfgfwoosh",CHAN_AUTO);
 			invoker.weaponstatus[0]&=~BFGF_CRITICAL; //DO NOT DELETE THIS
 			invoker.weaponstatus[BFGS_CHARGE]=0;invoker.weaponstatus[BFGS_BATTERY]=0;
 
