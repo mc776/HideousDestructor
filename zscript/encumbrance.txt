@@ -84,10 +84,12 @@ extend class HDPlayerPawn{
 				double gunbulk=hdw.weaponbulk();
 				if(gunbulk>0){
 					if(thisweapon)weaponencsel=gunbulk;
-					else weaponenc+=gunbulk;
-					if(gunbulk>70){
-						double stacked=(gunbulk-70)*0.0003;
-						stacker+=stacked;
+					else{
+						weaponenc+=gunbulk;
+						if(gunbulk>70){
+							double stacked=(gunbulk-70)*0.0003;
+							stacker+=stacked;
+						}
 					}
 					//A_Log(string.format("%s  %.2f",hdw.getclassname(),gunbulk));
 				}
@@ -155,7 +157,7 @@ extend class HDPlayerPawn{
 			&&skill<5
 		){
 			double finalenc=weaponencsel*2;
-			if(hd_onemanarmy==1)finalenc+=itemenc*0.25;
+			if(hd_onemanarmy==1)finalenc+=itemenc*0.2;
 			return finalenc/carrymax;
 		}
 
