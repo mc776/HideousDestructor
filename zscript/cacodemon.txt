@@ -250,7 +250,7 @@ class Foof:HDFireball{
 		BAL2 AB 2 light("PLAZMABX1") A_Corkscrew();
 		loop;
 	death:
-		BAL2 C 0 A_SprayDecal("DoomImpScorch",radius*2);
+		BAL2 C 0 A_SprayDecal("CacoScorch",radius*2);
 		BAL2 C 0 A_PlaySound("misc/fwoosh",5);
 		BAL2 CCCDDDEEE 1 light("BAKAPOST1") ZapSomething();
 	death2:
@@ -290,7 +290,7 @@ class Cacasmaball:IdleDummy{
 	states{
 	spawn:
 		BAL2 A 40 bright light("BAKAPOST1") nodelay{
-			A_PlaySound("bakaslave/attack",CHAN_AUTO,1,0,1);
+			A_PlaySound("caco/charge",CHAN_AUTO,1,0,1);
 			theight=target.height*0.6;
 		}stop;
 	}
