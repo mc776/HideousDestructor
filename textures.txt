@@ -30,6 +30,7 @@ sprite BPAKC0,22,30{
 }
 
 
+//plant bits
 sprite SPLTA0,2,2{
 	offset 1,2
 	patch PLANTBIT,-30,-7{}
@@ -129,28 +130,6 @@ sprite RCLPF0,5,14{
 }
 
 
-sprite SMGGA0,118,105
-{
-	offset -138,-135
-	xscale 1.3
-	yscale 1.3
-	patch SMGGA0,0,0{}
-}
-sprite SMGGB0,118,105
-{
-	offset -131,-140
-	xscale 1.26
-	yscale 1.3
-	patch SMGGA0,0,0{}
-}
-sprite SMGFA0,80,46
-{
-	offset -232,-105
-	xscale 1.7
-	yscale 1.3
-	patch SMGFA0,0,0{}
-	patch SMGFA0,0,0{flipx}
-}
 sprite SMGNA0,59,18
 {
 	offset 30,18
@@ -309,19 +288,6 @@ sprite LADDD0,17,19{
 }
 
 
-//ZM66 psprite
-sprite RIFGA0,73,103{
-	offset -123,-90
-	patch autorifl,0,-105{}
-}
-sprite RIFGB0,74,103{
-	offset -123,-90
-	patch autorifl,-73,-105{}
-}
-sprite RIFFA0,58,98{
-	offset -130,-62
-	patch autorifl,0,-214{}
-}
 
 //ZM66 pickup
 sprite RIFSD0,42,16{
@@ -459,37 +425,8 @@ sprite BRFLB0,42,20{
 	patch LIBMAGAT,4,12{}
 }
 
-//Liberator psprite
-sprite BRFGA0,73,102{
-	offset -124,-90
-	patch autorifl,0,0{}
-}
-sprite BRFGB0,74,102{
-	offset -123,-90
-	patch autorifl,-73,0{}
-}
-sprite BRFFA0,63,103{
-	offset -129,-63
-	patch autorifl,-73,-209{}
-}
 
-sprite BARGF0,64,116
-{
-	offset -115,-73
-	xscale 0.9
-	yscale 0.94
-	patch BARGA0,0,0{}
-}
-
-sprite BLSGB0,122,110
-{
-	offset -82,-94
-	xscale 0.9
-	yscale 0.9
-	patch BLSGA0, 0,0{}
-}
-sprite BSHXA0,6,8
-{
+sprite BSHXA0,6,8{
 	offset 3,7
 	patch BSHXC8C6,0,0{rotate 90}
 }
@@ -499,11 +436,6 @@ sprite BSHXB0,6,8
 	patch BSHXC2C4,0,0{rotate 270}
 }
 
-sprite PLSGC0, 104, 111
-{
-	offset -140,-57
-	patch PLSGB0, 0,0{flipx}
-}
 
 sprite SHELA0,15,7
 {
@@ -610,14 +542,14 @@ graphic HUDLOD4,5,5
 	yscale 0.5
 	patch STAMBAR,0,0{}
 }
-graphic HDPISAMO, 6, 6
+graphic HDPISAMO,6,6
 {
-	patch PBRSC0G0, 0, 0 {}
-	patch PBRSC0G0, 0, 2 {}
-	patch PBRSC0G0, 0, 4 {}
-	patch PBRSC0G0, 3, 0 {}
-	patch PBRSC0G0, 3, 2 {}
-	patch PBRSC0G0, 3, 4 {}
+	patch PBRSC0G0,0,0 {}
+	patch PBRSC0G0,0,2 {}
+	patch PBRSC0G0,0,4 {}
+	patch PBRSC0G0,3,0 {}
+	patch PBRSC0G0,3,2 {}
+	patch PBRSC0G0,3,4 {}
 }
 graphic MAGSTAT,11,8
 {
@@ -630,10 +562,10 @@ graphic MAGSTAT,11,8
 graphic MAGRED,11,8
 {
 	offset 4,8
-	patch RBRSA3A7,7,0{translation red, flipx}
-	patch RBRSA3A7,7,2{translation red, flipx}
-	patch RBRSA3A7,7,4{translation red, flipx}
-	patch RBRSA3A7,7,6{translation red, flipx}
+	patch RBRSA3A7,7,0{translation red,flipx}
+	patch RBRSA3A7,7,2{translation red,flipx}
+	patch RBRSA3A7,7,4{translation red,flipx}
+	patch RBRSA3A7,7,6{translation red,flipx}
 }
 graphic CLIPRED,9,11
 {
@@ -746,9 +678,9 @@ sprite CLP3B0,20,9{
 	patch CLP3Y0,1,0{rotate 270}
 	patch CLP3X0,0,0{translation "161:167=104:111";rotate 270}
 }
-graphic CELLRED, 17, 12{
-	offset 8, 12
-	patch CELLA0, 0, 0 {translation red}
+graphic CELLRED,17,12{
+	offset 8,12
+	patch CELLA0,0,0 {translation red}
 }
 sprite CELLB0,17,12{
 	offset 8,12
@@ -762,93 +694,49 @@ sprite CELLD0,17,12{
 	offset 8,12
 	patch CELLA0,0,0{translation "112:120=96:111"}
 }
-graphic PISARED, 6, 6
+graphic PISARED,6,6
 {
-	patch PBRSC0G0, 0, 0 {translation red}
-	patch PBRSC0G0, 0, 2 {translation red}
-	patch PBRSC0G0, 0, 4 {translation red}
-	patch PBRSC0G0, 3, 0 {translation red}
-	patch PBRSC0G0, 3, 2 {translation red}
-	patch PBRSC0G0, 3, 4 {translation red}
+	patch PBRSC0G0,0,0 {translation red}
+	patch PBRSC0G0,0,2 {translation red}
+	patch PBRSC0G0,0,4 {translation red}
+	patch PBRSC0G0,3,0 {translation red}
+	patch PBRSC0G0,3,2 {translation red}
+	patch PBRSC0G0,3,4 {translation red}
 }
-graphic ARMER0, 31,17{
+graphic PBONA0,14,18{
+	offset -10,-6
+	patch BON1D0,0,0{}
+}
+graphic ARMER0,31,17{
 	offset 15,17
 	patch ARMSA0,0,0{translation "0:255=%[0,0,0]:[0.3,0.14,0]"}
 }
-graphic ARMER1, 31,17{
+graphic ARMER1,31,17{
 	offset 15,17
 	patch ARMCA0,0,0{translation "0:255=%[0,0,0]:[0.3,0.14,0]"}
 }
-graphic STBURAUT, 5, 3
+graphic STBURAUT,5,3
 {
-	patch PBRSC0G0, 0, 2 {}
-	patch PBRSC0G0, 1, 0 {}
-	patch PBRSC0G0, 2, 2 {}
+	patch PBRSC0G0,0,2 {}
+	patch PBRSC0G0,1,0 {}
+	patch PBRSC0G0,2,2 {}
 }
-graphic STFULAUT, 15, 3
+graphic STFULAUT,15,3
 {
-	patch PBRSC0G0, 0, 0 {}
-	patch PBRSC0G0, 2, 2 {}
-	patch PBRSC0G0, 4, 0 {}
-	patch PBRSC0G0, 6, 2 {}
-	patch PBRSC0G0, 8, 0 {}
-	patch PBRSC0G0, 10, 2 {}
-	patch PBRSC0G0, 12, 0 {}
+	patch PBRSC0G0,0,0 {}
+	patch PBRSC0G0,2,2 {}
+	patch PBRSC0G0,4,0 {}
+	patch PBRSC0G0,6,2 {}
+	patch PBRSC0G0,8,0 {}
+	patch PBRSC0G0,10,2 {}
+	patch PBRSC0G0,12,0 {}
 }
-sprite PRIFA0, 55, 22
+sprite PRIFA0,55,22
 {
-	offset 24, 20
-	patch ARM1A0, 6,0 {translation "112:117=144:151","118:124=108:111"}
-	patch BRFLB0, 0,5 {}
-	patch BON2A0, 4,7 {}
-}
-sprite BEVGA0,140,55{
-	offset -122,-166
-	xscale 1.3
-	yscale 1.3
-	patch SAWGA0, 0,0 {}
-}
-sprite BEVGB0,140,55{
-	offset -122,-166
-	xscale 1.3
-	yscale 1.3
-	patch SAWGB0, 0,0 {}
-}
-sprite BEVGC0,153,89{
-	offset -122,-136
-	xscale 1.3
-	yscale 1.3
-	patch SAWGC0, 0,0 {}
-}
-sprite BEVGD0,154,89{
-	offset -122,-136
-	xscale 1.3
-	yscale 1.3
-	patch SAWGD0, 0,0 {}
-}
-sprite GTLGA0,114,81{
-	offset -182,-176
-	xscale 1.5
-	yscale 1.5
-	patch CHGGA0,0,0{}
-}
-sprite GTLGB0,114,81{
-	offset -182, -178
-	xscale 1.5
-	yscale 1.5
-	patch CHGGB0, 0,0 {}
-}
-sprite VULFA0,86,46{
-	offset -196, -157
-	xscale 1.5
-	yscale 1.5
-	patch CHGFA0,0,0{}
-}
-sprite VULFB0,85,47{
-	offset -198, -156
-	xscale 1.5
-	yscale 1.5
-	patch CHGFB0,0,0{}
+	offset 24,20
+	patch ARM1A0,6,0 {translation "112:117=144:151","118:124=108:111"}
+	patch BRFLB0,0,5 {}
+	patch BON2A0,4,7 {}
 }
 sprite PISTA0,27,15
 {
@@ -865,86 +753,74 @@ sprite PISTZ0,27,5
 {
 	patch PISTA0,0,0{}
 }
-sprite PISTB0,30,15
-{
+sprite PISTB0,30,15{
 	offset 16,15
 	xscale 1.5
 	yscale 1.5
 	patch PISTY0,3,3{}
 	patch PISTZ0,0,0{}
 }
-sprite PISTC0,27,15
-{
+sprite PISTC0,27,15{
 	offset 13,15
 	xscale 1.5
 	yscale 1.5
 	patch PISTA0,0,0{}
 	patch FIRESEL,11,5{}
 }
-sprite PISTD0,30,15
-{
+sprite PISTD0,30,15{
 	offset 16,15
 	xscale 1.5
 	yscale 1.5
 	patch PISTB0,0,0{}
 	patch FIRESEL,14,5{}
 }
-sprite ROCKB0,12,27
-{
-	offset 6, 26
+sprite ROCKB0,12,27{
+	offset 6,26
 	xscale 1.8
 	yscale 1.8
-	patch ROCKA0, 0,0{}
+	patch ROCKA0,0,0{}
 }
-graphic STAMBAR0,25,5
-{
+
+
+
+//old status bar bits
+graphic STAMBAR0,25,5{
 	patch STAMBAR,0,0{}
 	patch STAMBAR,5,0{}
 	patch STAMBAR,10,0{}
 	patch STAMBAR,15,0{}
 	patch STAMBAR,20,0{}
 }
-graphic STAMBAR1,25,5
-{
+graphic STAMBAR1,25,5{
 	patch STAMBAR,0,0{translation red}
 	patch STAMBAR,5,0{translation red}
 	patch STAMBAR,10,0{translation red}
 	patch STAMBAR,15,0{translation red}
 	patch STAMBAR,20,0{translation red}
 }
-graphic SSTAMBAR,5,8
-{
+graphic SSTAMBAR,5,8{
 	yscale 0.7
 	patch STAMBAR,0,0{}
 	patch STAMBAR,0,3{translation red}
 }
-graphic STAMBARR,5,5
-{
+graphic STAMBARR,5,5{
 	patch STAMBAR,0,0{translation red}
 }
-graphic STAMBRRR,5,5
-{
+graphic STAMBRRR,5,5{
 	xscale 0.6
 	patch STAMBAR,0,0{translation red}
 }
-graphic STRMBRR1,25,5
-{
+graphic STRMBRR1,25,5{
 	patch STAMBAR,0,0{}
 	patch STAMBAR,5,0{}
 	patch STAMBAR,10,0{}
 	patch STAMBAR,15,0{}
 	patch STAMBAR,20,0{}
 }
-graphic STRMBRRR,25,20
-{
+graphic STRMBRRR,25,20{
 	offset 0,10
 	patch STRMBRR1,0,0{}
 	patch STRMBRR1,0,15{}
-}
-graphic PBONA0,14,18
-{
-	offset -10,-6
-	patch BON1D0,0,0{}
 }
 
 
@@ -998,95 +874,79 @@ sprite HLEGA0,6,14{
 	patch HERPBOT,-29,-16{}
 }
 graphic HERPEX,23,15{
-	offset -8, -10
+	offset -8,-10
 	patch HERPB8B2,0,0{}
 }
 
 
 // D.E.R.P.
-graphic DERPEX,20,14
-{
-	offset -8, -10
-	patch DERPBOT, -67,-17{}
+graphic DERPEX,20,14{
+	offset -8,-10
+	patch DERPBOT,-67,-17{}
 	patch PBRSB0H0,13,0{}
 	patch PBRSA0,19,3{}
 }
-sprite DERPA1,13,14
-{
-	offset 7, 13
-	patch DERPBOT, -89,0{}
+sprite DERPA1,13,14{
+	offset 7,13
+	patch DERPBOT,-89,0{}
 }
-sprite DERPA5,13,14
-{
-	offset 7, 13
-	patch DERPBOT, 0,0{}
+sprite DERPA5,13,14{
+	offset 7,13
+	patch DERPBOT,0,0{}
 }
-sprite DERPA8A2,15,14
-{
-	offset 6, 13
-	patch DERPBOT, -67,0{}
+sprite DERPA8A2,15,14{
+	offset 6,13
+	patch DERPBOT,-67,0{}
 }
-sprite DERPA7A3,20,14
-{
-	offset 9, 13
-	patch DERPBOT, -37,0{}
+sprite DERPA7A3,20,14{
+	offset 9,13
+	patch DERPBOT,-37,0{}
 }
-sprite DERPA6A4,16,14
-{
-	offset 6, 13
-	patch DERPBOT, -16,0{}
+sprite DERPA6A4,16,14{
+	offset 6,13
+	patch DERPBOT,-16,0{}
 }
 
-sprite DERPC1,13,14
-{
-	offset 7, 13
-	patch DERPBOT, -89,-17{}
+sprite DERPC1,13,14{
+	offset 7,13
+	patch DERPBOT,-89,-17{}
 }
-sprite DERPC5,13,14
-{
-	offset 7, 13
-	patch DERPBOT, 0,-17{}
+sprite DERPC5,13,14{
+	offset 7,13
+	patch DERPBOT,0,-17{}
 }
-sprite DERPC8C2,20,14
-{
-	offset 6, 13
-	patch DERPBOT, -67,-17{}
+sprite DERPC8C2,20,14{
+	offset 6,13
+	patch DERPBOT,-67,-17{}
 }
-sprite DERPC7C3,29,14
-{
-	offset 9, 13
-	patch DERPBOT, -37,-17{}
+sprite DERPC7C3,29,14{
+	offset 9,13
+	patch DERPBOT,-37,-17{}
 }
-sprite DERPC6C4,19,14
-{
-	offset 6, 13
-	patch DERPBOT, -16,-17{}
+sprite DERPC6C4,19,14{
+	offset 6,13
+	patch DERPBOT,-16,-17{}
 }
 
-sprite DERPD1,13,14
-{
-	offset 7, 13
-	patch DERPBOT, -89,-33{}
+sprite DERPD1,13,14{
+	offset 7,13
+	patch DERPBOT,-89,-33{}
 }
-sprite DERPD5,13,14
-{
-	offset 7, 13
-	patch DERPBOT, 0,-33{}
+sprite DERPD5,13,14{
+	offset 7,13
+	patch DERPBOT,0,-33{}
 }
-sprite DERPD8D2,15,13
-{
-	offset 6, 13
-	patch DERPBOT, -67,-33{}
+sprite DERPD8D2,15,13{
+	offset 6,13
+	patch DERPBOT,-67,-33{}
 }
-sprite DERPD7D3,20,14
-{
-	offset 9, 13
-	patch DERPBOT, -37,-33{}
+sprite DERPD7D3,20,14{
+	offset 9,13
+	patch DERPBOT,-37,-33{}
 }
-sprite DERPD6D4,16,13
-{
-	offset 6, 13
-	patch DERPBOT, -16,-33{}
+sprite DERPD6D4,16,13{
+	offset 6,13
+	patch DERPBOT,-16,-33{}
 }
 
 
@@ -1096,18 +956,15 @@ sprite DERPD6D4,16,13
      Extra smoke effects
 */
 
-sprite BAL1F0,37,35
-{
+sprite BAL1F0,37,35{
 	offset 19,18
 	patch BAL1C0,0,0{translation desaturate,31}
 }
-sprite BAL1G0,43,39
-{
+sprite BAL1G0,43,39{
 	offset 22,22
 	patch BAL1D0,0,0{translation desaturate,31}
 }
-sprite BAL1H0,50,44
-{
+sprite BAL1H0,50,44{
 	offset 25,24
 	patch BAL1E0,0,0{translation desaturate,31}
 }
@@ -1124,29 +981,24 @@ sprite FIR7B0,12,49{
 
 
 //IEDs
-sprite IEDSB0,9,20
-{
+sprite IEDSB0,9,20{
 	offset 5,19
 	patch IEDSA0,0,0{translation "112:127=176:191"}
 }
-sprite IEDSC0,9,20
-{
+sprite IEDSC0,9,20{
 	offset 5,19
 	patch IEDSA0,0,0{translation "112:127=96:111"}
 }
-graphic IEDI,9,20
-{
+graphic IEDI,9,20{
 	offset -6,-8
 	patch IEDSA0,0,0{translation "112:127=96:111"}
 }
 
-graphic SUITB0,24,22
-{
+graphic SUITB0,24,22{
 	offset -5,-5
 	patch SUITA0,0,0{}
 }
-graphic SUITC0,15,15
-{
+graphic SUITC0,15,15{
 	patch SUITA0,-5,-32{}
 }	
 
@@ -1172,15 +1024,13 @@ graphic RMAGGREY,10,9{
 	yscale 0.7
 	patch RMAGA0,0,0{translation "0:255=%[0,0,0]:[1.8,1.8,1.8]"}
 }
-sprite CLIPB0,11,9
-{
+sprite CLIPB0,11,9{
 	offset 5,9
 	patch CLIPA0,0,0{rotate 90}
 }
-sprite CLIPC0, 9, 11
-{
-	offset 2, 11
-	patch CLIPA0, 0, 0 {translation "160:167=176:191"}
+sprite CLIPC0,9,11{
+	offset 2,11
+	patch CLIPA0,0,0 {translation "160:167=176:191"}
 }
 graphic RBRSRED,4,1{
 	patch RBRSA3A7,0,0{translation "red"}
@@ -1189,100 +1039,3 @@ graphic RBRSICE,4,1{
 	patch RBRSA3A7,0,0{translation "ice"}
 }
 
-
-
-/*
-// some canonical sprites are badly off-center.
-// commented out due to conflict with the Minor Sprite Fix Project?f=46&t=36713
-// so I'm just stealing from that instead https://forum.zdoom.org/viewtopic.php
-
-//move 3 pixels to the left
-sprite MISGA0,87,79{
-	offset -116,-121
-	patch MISGA0,0,0{}
-}
-sprite MISGB0,102,75{
-	offset -109,-125
-	patch MISGB0,0,0{}
-}
-sprite MISFA0,53,31{
-	offset -133,-105
-	patch MISFA0,0,0{}
-}
-sprite MISFB0,73,51{
-	offset -123,-101
-	patch MISFB0,0,0{}
-}
-sprite MISFC0,88,58{
-	offset -114,-94
-	patch MISFC0,0,0{}
-}
-sprite MISFD0,105,79{
-	offset -109,-81
-	patch MISFD0,0,0{}
-}
-
-//move 5 pixels to the left
-sprite BFGGA0,170,84{
-	offset -75,-116
-	patch BFGGA0,0,0{}
-}
-sprite BFGGB0,170,84{
-	offset -75,-116
-	patch BFGGB0,0,0{}
-}
-sprite BFGGC0,156,83{
-	offset -82,-117
-	patch BFGGC0,0,0{}
-}
-sprite BFGFA0,82,40{
-	offset -119,-98
-	patch BFGFA0,0,0{}
-}
-sprite BFGFB0,139,67{
-	offset -91,-77
-	patch BFGFB0,0,0{}
-}
-
-//move 4 pixels to the left
-sprite SHTGA0,79,60{
-	offset -117,-108
-	patch SHTGA0,0,0{}
-}
-sprite SHTFA0,44,31{
-	offset -137,-95
-	patch SHTFA0,0,0{}
-}
-sprite SHTFB0,54,44{
-	offset -132,-86
-	patch SHTFB0,0,0{}
-}
-
-//move 4 pixels to the left
-sprite SHT2A0,59,55{
-	offset -130,-113
-	patch SHT2A0,0,0{}
-}
-sprite SHT2I0,55,37{
-	offset -133,-99
-	patch SHT2I0,0,0{}
-}
-sprite SHT2J0,65,46{
-	offset -127,-90
-	patch SHT2J0,0,0{}
-}
-
-//move 4 pixels to the left
-sprite PLSGA0,83,61{
-	offset -119,-107
-	patch PLSGA0,0,0{}
-}
-sprite PLSFA0,83,75{
-	offset -119,-93
-	patch PLSFA0,0,0{}
-}
-sprite PLSFB0,85,73{
-	offset -118,-95
-	patch PLSFB0,0,0{}
-}
-*/
