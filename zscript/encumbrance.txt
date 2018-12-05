@@ -78,8 +78,8 @@ extend class HDPlayerPawn{
 			let hdw=hdweapon(hdww);
 			if(hdw){
 				bool thisweapon=(
-					hdw==lastweapon||
 					hdw==player.readyweapon
+					||(hdw==lastweapon&&nullweapon(player.readyweapon))
 				);
 				double gunbulk=hdw.weaponbulk();
 				if(gunbulk>0){
