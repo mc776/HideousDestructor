@@ -518,16 +518,15 @@ extend class HDBackpack{
 				let iii=inventory(spawn(wep,pos,ALLOW_REPLACE));
 				itemtobackpack(iii);
 			}else if(mag){
-				howmany=max(1,random(1,max(random(1,5),
-					min(
-						getdefaultbytype(mag).maxamount>>1,
-						HDCONST_BPMAX/(
-							max(1.,getdefaultbytype(mag).roundbulk)
-							*max(1.,getdefaultbytype(mag).magbulk)
-							*12.
-						)
-					))
-				));
+				howmany=min(
+					random(1,7),
+					getdefaultbytype(mag).maxamount,
+					HDCONST_BPMAX/(
+						max(1.,getdefaultbytype(mag).roundbulk)
+						*max(1.,getdefaultbytype(mag).magbulk)
+						*2.
+					)
+				);
 				int magmax=getdefaultbytype(mag).maxperunit;
 				string ati=amounts[thisitem];
 				for(int j=0;j<howmany;j++){
@@ -537,12 +536,11 @@ extend class HDBackpack{
 				}
 				amounts[thisitem]=ati;
 			}else if(pkup){
-				howmany=max(1,random(1,
-					min(
-						getdefaultbytype(pkup).maxamount>>1,
-						HDCONST_BPMAX/(max(1.,getdefaultbytype(pkup).bulk)*10.)
-					)
-				));
+				howmany=min(
+					random(1,getdefaultbytype(pkup).multipickup?40:12),
+					getdefaultbytype(pkup).maxamount>>1,
+					HDCONST_BPMAX/(max(1.,getdefaultbytype(pkup).bulk)*10.)
+				);
 				if(
 					pkup is "BluePotion"
 					||pkup is "SquadSummoner"
