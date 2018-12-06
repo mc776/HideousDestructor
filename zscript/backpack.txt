@@ -502,26 +502,29 @@ class WildBackpack:IdleDummy replaces Backpack{
 		super.postbeginplay();
 		let aaa=HDBackpack(spawn("HDBackpack",pos,ALLOW_REPLACE));
 		aaa.RandomContents();
+		destroy();
 	}
 }
 extend class HDBackpack{
 	void RandomContents(){
+		if(hd_debug)A_Log("*  Backpack:  *");
 		for(int i=0;i<5;i++){
 			int thisitem=random(1,invclasses.size())-1;
 			let wep=(class<hdweapon>)(invclasses[thisitem]);
 			let pkup=(class<hdpickup>)(invclasses[thisitem]);
 			let mag=(class<hdmagammo>)(pkup);
+			int howmany=0;
 			if(wep){
 				let iii=inventory(spawn(wep,pos,ALLOW_REPLACE));
 				itemtobackpack(iii);
 			}else if(mag){
-				int howmany=max(1,random(1,
+				howmany=max(1,random(1,
 					min(
 						getdefaultbytype(mag).maxamount>>1,
 						HDCONST_BPMAX/(
 							max(1.,getdefaultbytype(mag).roundbulk)
 							*max(1.,getdefaultbytype(mag).magbulk)
-							*3.
+							*10.
 						)
 					)
 				));
@@ -534,10 +537,10 @@ extend class HDBackpack{
 				}
 				amounts[thisitem]=ati;
 			}else if(pkup){
-				int howmany=max(1,random(1,
+				howmany=max(1,random(1,
 					min(
 						getdefaultbytype(pkup).maxamount>>1,
-						HDCONST_BPMAX/(max(1.,getdefaultbytype(pkup).bulk)*5.)
+						HDCONST_BPMAX/(max(1.,getdefaultbytype(pkup).bulk)*10.)
 					)
 				));
 				if(
@@ -549,6 +552,7 @@ extend class HDBackpack{
 				amounts[thisitem]=""..howmany;
 				if(amounts[thisitem].toint()<1)amounts[thisitem]="";
 			}
+			if(hd_debug)A_Log(invclasses[thisitem].."  "..howmany);
 		}
 		weaponbulk();
 		updatemessage(index);
