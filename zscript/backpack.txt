@@ -518,15 +518,15 @@ extend class HDBackpack{
 				let iii=inventory(spawn(wep,pos,ALLOW_REPLACE));
 				itemtobackpack(iii);
 			}else if(mag){
-				howmany=max(1,random(1,
+				howmany=max(1,random(1,max(random(1,5),
 					min(
 						getdefaultbytype(mag).maxamount>>1,
 						HDCONST_BPMAX/(
 							max(1.,getdefaultbytype(mag).roundbulk)
 							*max(1.,getdefaultbytype(mag).magbulk)
-							*10.
+							*12.
 						)
-					)
+					))
 				));
 				int magmax=getdefaultbytype(mag).maxperunit;
 				string ati=amounts[thisitem];
