@@ -524,7 +524,7 @@ extend class HDBackpack{
 					HDCONST_BPMAX/(
 						max(1.,getdefaultbytype(mag).roundbulk)
 						*max(1.,getdefaultbytype(mag).magbulk)
-						*2.
+						*5.
 					)
 				);
 				int magmax=getdefaultbytype(mag).maxperunit;
@@ -539,7 +539,7 @@ extend class HDBackpack{
 				howmany=min(
 					random(1,getdefaultbytype(pkup).multipickup?40:12),
 					getdefaultbytype(pkup).maxamount>>1,
-					HDCONST_BPMAX/(max(1.,getdefaultbytype(pkup).bulk)*10.)
+					HDCONST_BPMAX/(max(1.,getdefaultbytype(pkup).bulk)*5.)
 				);
 				if(
 					pkup is "BluePotion"
