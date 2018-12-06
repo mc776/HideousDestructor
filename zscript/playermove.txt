@@ -108,18 +108,10 @@ extend class HDPlayerPawn{
 				isFocussing
 				&&!countinv("IsMoving")
 			){
-				double aimscale = CVar.GetCVar('hd_aimsensitivity',player).GetFloat();
+				double aimscale=CVar.GetCVar("hd_aimsensitivity",player).GetFloat();
 				if(aimscale>1.)aimscale=0.1;
+				if(!gunbraced)aimscale-=(aimscale-1.)*0.3;
 				turnscale*=clamp(aimscale,0.05,HDCONST_MAXFOCUSSCALE);
-				if(
-					notpredicting
-					&&!gunbraced
-					&&!mousehijacked
-				){
-					vector2 iyp=(360./65536.*0.05)*(double(cmd.yaw),double(-cmd.pitch));
-					if(turnscale)iyp/=turnscale;
-					A_MuzzleClimb(iyp*2,iyp,iyp,iyp);
-				}
 			}
 			//reduced turning while crouched.
 			else if(player.crouchfactor<0.7){
