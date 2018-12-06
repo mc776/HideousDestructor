@@ -52,8 +52,11 @@ extend class HDStatusBar{
 			);
 			if(w.amount>1){
 				drawwepdot(-16,-13,(4,2.6));
-				if(hdpistol(w).weaponstatus2[PISS_AUTO]>=0)
-					drawwepdot(-21,-13,(2,2.6));
+				if(hdpistol(w).weaponstatus2[PISS_AUTO]>=0){
+					drawwepdot(-20,-17,(1.6,0.6));
+					drawwepdot(-22,-15,(1.6,0.6));
+					drawwepdot(-21,-13,(1.6,0.6));
+				}
 			}
 			drawwepnum(hdw.weaponstatus[PISS_MAG],15);
 			if(hdw.weaponstatus[PISS_CHAMBER]==2)drawwepdot(-16,-10,(3,1));
