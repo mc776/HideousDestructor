@@ -372,19 +372,19 @@ struct HDMobAI play{
 			else caller.setstatelabel("spawn");
 			return;
 		}
-		if(!caller.checkmove(caller.pos.xy)){
-			caller.A_Wander();
-			return;
-		}
 		if(!caller.checkmove(caller.pos.xy+caller.vec2angle(caller.speed*0.2,0))){
 			if(caller.target)caller.newchasedir();
 			else caller.randomchasedir();
+			return;
+		}
+		if(!caller.checkmove(caller.pos.xy)){
+			caller.A_Wander();
+			return;
 		}
 
 		bool befrightened=caller.bfrightened;
 		bool bechasegoal=caller.bchasegoal;
 		bool benoteleport=caller.bnoteleport;
-		bool benodropoff=caller.bnodropoff;
 		vector3 oldpos=caller.pos;
 		double oldang=caller.angle;
 
@@ -404,7 +404,6 @@ struct HDMobAI play{
 		caller.bfrightened=befrightened;
 		caller.bchasegoal=bechasegoal;
 		caller.bnoteleport=benoteleport;
-		caller.bnodropoff=benodropoff;
 
 		//call a_chase again for more missile
 		if(
