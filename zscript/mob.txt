@@ -384,6 +384,7 @@ struct HDMobAI play{
 		bool befrightened=caller.bfrightened;
 		bool bechasegoal=caller.bchasegoal;
 		bool benoteleport=caller.bnoteleport;
+		bool benodropoff=caller.bnodropoff;
 		vector3 oldpos=caller.pos;
 		double oldang=caller.angle;
 
@@ -398,12 +399,12 @@ struct HDMobAI play{
 		vector3 posdif=caller.pos-oldpos;
 		caller.setorigin(oldpos,false);
 		caller.vel*=0.7;
-		if(posdif!=(0,0,0))caller.vel+=posdif.unit()*caller.speed*0.18;
+		if(posdif!=(0,0,0))caller.vel+=posdif.unit()*caller.speed*0.16;
 
-		if(!caller.bfloat)caller.bnodropoff=true;
 		caller.bfrightened=befrightened;
 		caller.bchasegoal=bechasegoal;
 		caller.bnoteleport=benoteleport;
+		caller.bnodropoff=benodropoff;
 
 		//call a_chase again for more missile
 		if(
@@ -411,7 +412,7 @@ struct HDMobAI play{
 			&&caller.curstate!=caller.findstate(missilestate)
 		)caller.A_Chase(meleestate,missilestate,flags:CHF_DONTMOVE|CHF_NODIRECTIONTURN);
 
-		//caller.angle=oldang+(deltaangle(oldang,angle))*0.3;
+		caller.angle+=caller.deltaangle(caller.angle,oldang)*0.6;
 	}
 
 	//eyeball out how much one's projectile will drop and raise pitch accordingly
