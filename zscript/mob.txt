@@ -325,6 +325,8 @@ struct HDMobAI play{
 		vector3 pg=caller.pos;
 
 		double speedbak=caller.speed;
+		bool benoteleport=caller.bnoteleport;
+		caller.bnoteleport=true;
 		if(!caller.target||caller.target.health<1)caller.speed*=0.5;
 
 		//wander and record the resulting position
@@ -348,6 +350,7 @@ struct HDMobAI play{
 		if(!dontlook)caller.A_Look();
 
 		//reset things
+		caller.bnoteleport=benoteleport;
 		caller.speed=getdefaultbytype(caller.getclass()).speed;
 	}
 	//smooth chase
@@ -373,37 +376,40 @@ struct HDMobAI play{
 			caller.A_Wander();
 			return;
 		}
-		if(caller.vel.xy==(0,0)){
+		if(!caller.checkmove(caller.pos.xy+caller.vec2angle(caller.speed*0.2,0))){
 			if(caller.target)caller.newchasedir();
 			else caller.randomchasedir();
 		}
 
 		bool befrightened=caller.bfrightened;
 		bool bechasegoal=caller.bchasegoal;
+		bool benoteleport=caller.bnoteleport;
 		vector3 oldpos=caller.pos;
 		double oldang=caller.angle;
+
+		caller.bnoteleport=true;
 		if(flee){
 			caller.bfrightened=true;
 			caller.bchasegoal=false;
 		}
+
 		caller.A_Chase(meleestate,missilestate,flags);
-		if(
-			caller.curstate==caller.findstate(meleestate)
-			||caller.curstate==caller.findstate(missilestate)
-			||caller.pos==oldpos
-		)return;
+
 		vector3 posdif=caller.pos-oldpos;
-		if(posdif dot posdif<(100*100)){
-			caller.setorigin(oldpos,false);
-			caller.vel*=0.7;
-			caller.vel+=posdif.unit()*caller.speed*0.18;
-		}
+		caller.setorigin(oldpos,false);
+		caller.vel*=0.7;
+		if(posdif!=(0,0,0))caller.vel+=posdif.unit()*caller.speed*0.18;
+
 		if(!caller.bfloat)caller.bnodropoff=true;
 		caller.bfrightened=befrightened;
 		caller.bchasegoal=bechasegoal;
+		caller.bnoteleport=benoteleport;
 
 		//call a_chase again for more missile
-		caller.A_Chase(meleestate,missilestate,CHF_DONTMOVE|CHF_NODIRECTIONTURN);
+		if(
+			caller.curstate!=caller.findstate(meleestate)
+			&&caller.curstate!=caller.findstate(missilestate)
+		)caller.A_Chase(meleestate,missilestate,flags:CHF_DONTMOVE|CHF_NODIRECTIONTURN);
 
 		//caller.angle=oldang+(deltaangle(oldang,angle))*0.3;
 	}
