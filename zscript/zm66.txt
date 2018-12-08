@@ -60,6 +60,52 @@ class ZM66AssaultRifle:HDWeapon{
 		if(weaponstatus[0]&ZM66F_NOFIRESELECT)return "Picked up a semi-automatic weapon. Time for some carnage!";
 		return super.pickupmessage();
 	}
+	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
+		if(sb.gimmehud){
+			int nextmagloaded=sb.GetNextLoadMag(hdmagammo(hpl.findinventory("HD4mMag")));
+			if(nextmagloaded>50){
+				sb.drawimage("ZMAGA0",(-46,-3),sb.DI_SCREEN_CENTER_BOTTOM,scale:(2,2));
+			}else if(nextmagloaded<1){
+				sb.drawimage("ZMAGC0",(-46,-3),sb.DI_SCREEN_CENTER_BOTTOM,alpha:nextmagloaded?0.6:1.,scale:(2,2));
+			}else sb.drawbar(
+				"ZMAGNORM","ZMAGGREY",
+				nextmagloaded,50,
+				(-46,-3),-1,
+				sb.SHADER_VERT,sb.DI_SCREEN_CENTER_BOTTOM
+			);
+			sb.drawnum(hpl.countinv("HD4mMag"),-43,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+			if(!(hdw.weaponstatus[0]&ZM66F_NOLAUNCHER)){
+				sb.drawimage("ROQPA0",(-62,-4),sb.DI_SCREEN_CENTER_BOTTOM,scale:(0.6,0.6));
+				sb.drawnum(hpl.countinv("HDRocketAmmo"),-56,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+			}
+		}
+
+		if(!(hdw.weaponstatus[0]&ZM66F_NOFIRESELECT))
+		sb.drawwepcounter(hdw.weaponstatus[ZM66S_AUTO],
+			-22,-10,"RBRSA3A7","STFULAUT","STBURAUT"
+		);
+		if(hdw.weaponstatus[0]&ZM66F_GRENADELOADED)sb.drawwepdot(-16,-13,(4,2.6));
+		int lod=clamp(hdw.weaponstatus[ZM66S_MAG]%100,0,50);
+		sb.drawwepnum(lod,50);
+		if(hdw.weaponstatus[0]&ZM66F_CHAMBER){
+			sb.drawwepdot(-16,-10,(3,1));
+			lod++;
+		}
+		if(hdw.weaponstatus[ZM66S_MAG]>100)lod=random[shitgun](10,99);
+		sb.drawnum(lod,-16,-22,sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TEXT_ALIGN_RIGHT,Font.CR_RED);
+		if(hdw.weaponstatus[0]&ZM66F_GLMODE){
+			int ab=hdw.airburst;
+			sb.drawnum(ab,
+				-30,-22,sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TEXT_ALIGN_RIGHT,
+				ab?Font.CR_WHITE:Font.CR_DARKGRAY
+			);
+			sb.drawwepdot(-30,-42+min(16,ab/10),(4,1));
+			sb.drawwepdot(-30,-26,(1,16));
+			sb.drawwepdot(-32,-26,(1,16));
+		}else sb.drawnum(hdw.weaponstatus[ZM66S_ZOOM],
+			-30,-22,sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
+		);
+	}
 	override double weaponbulk(){
 		double blx=90;
 		if(!(weaponstatus[0]&ZM66F_NOLAUNCHER)){

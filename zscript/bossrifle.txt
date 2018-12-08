@@ -66,6 +66,33 @@ class BossRifle:HDWeapon{
 	override double weaponbulk(){
 		return 144+weaponstatus[BOSSS_MAG]*ENC_776_LOADED;
 	}
+	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
+		if(sb.gimmehud){
+			int nextmagloaded=sb.GetNextLoadMag(hdmagammo(hpl.findinventory("HD7mClip")));
+			if(nextmagloaded<1){
+				sb.drawimage("RCLPF0",(-58,-3),sb.DI_SCREEN_CENTER_BOTTOM,alpha:nextmagloaded?0.6:1.,scale:(1.6,1.6));
+			}else if(nextmagloaded<3){
+				sb.drawimage("RCLPE0",(-58,-3),sb.DI_SCREEN_CENTER_BOTTOM,scale:(1.6,1.6));
+			}else if(nextmagloaded<5){
+				sb.drawimage("RCLPD0",(-58,-3),sb.DI_SCREEN_CENTER_BOTTOM,scale:(1.6,1.6));
+			}else if(nextmagloaded<7){
+				sb.drawimage("RCLPC0",(-58,-3),sb.DI_SCREEN_CENTER_BOTTOM,scale:(1.6,1.6));
+			}else if(nextmagloaded<9){
+				sb.drawimage("RCLPB0",(-58,-3),sb.DI_SCREEN_CENTER_BOTTOM,scale:(1.6,1.6));
+			}else sb.drawimage("RCLPA0",(-58,-3),sb.DI_SCREEN_CENTER_BOTTOM,scale:(1.6,1.6));
+			sb.drawnum(hpl.countinv("HD7mClip"),-45,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+		}
+		sb.drawwepnum(hdw.weaponstatus[BOSSS_MAG],10);
+		sb.drawwepcounter(hdw.weaponstatus[BOSSS_CHAMBER],
+			-16,-10,"blank","RBRSA1A5","RBRSA3A7","RBRSA4A6"
+		);
+		sb.drawnum(hdw.weaponstatus[BOSSS_ZOOM],
+			-30,-18,sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
+		);
+		sb.drawnum(hdw.weaponstatus[BOSSS_DROPADJUST],
+			-16,-18,sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TEXT_ALIGN_RIGHT,Font.CR_WHITE
+		);
+	}
 	override void consolidate(){
 		weaponstatus[BOSSS_GRIME]=random(20,40);
 	}

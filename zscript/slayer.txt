@@ -31,6 +31,32 @@ class Slayer:HDShotgun replaces HDShotgun{
 		)return "%o doubled over from the turgid size of %k's hot, manly lead.";
 		return obituary;
 	}
+	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
+		if(sb.gimmehud){
+			sb.drawimage("SHL1A0",(-47,-10),sb.DI_SCREEN_CENTER_BOTTOM);
+			sb.drawnum(hpl.countinv("HDShellAmmo"),-46,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+		}
+		int loffs=-28;int rofs=-16;
+		if(hdw.weaponstatus[0]&SLAYF_DOUBLE){
+			loffs=-24;rofs=-20;
+			sb.drawimage("STBURAUT",(-23,-17),sb.DI_SCREEN_CENTER_BOTTOM);
+		}
+		if(hdw.weaponstatus[SLAYS_CHAMBER1]>1){
+			sb.drawwepdot(loffs,-10,(3,5));
+			sb.drawwepdot(loffs,-7,(3,2));
+		}else if(hdw.weaponstatus[SLAYS_CHAMBER1]>0){
+			sb.drawwepdot(loffs,-7,(3,2));
+		}
+		if(hdw.weaponstatus[SLAYS_CHAMBER2]>1){
+			sb.drawwepdot(rofs,-10,(3,5));
+			sb.drawwepdot(rofs,-7,(3,2));
+		}else if(hdw.weaponstatus[SLAYS_CHAMBER2]>0){
+			sb.drawwepdot(rofs,-7,(3,2));
+		}
+		for(int i=hdw.weaponstatus[SHOTS_SIDESADDLE];i>0;i--){
+			sb.drawwepdot(-10-i*2,-2,(1,3));
+		}
+	}
 	override void PostBeginPlay(){
 		if(Wads.CheckNumForName("SHT2B0",wads.ns_sprites,-1,false)<0){
 			if(owner){

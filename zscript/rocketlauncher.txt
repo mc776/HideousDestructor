@@ -46,6 +46,40 @@ class HDRL:HDWeapon{
 		else if(chmb==1)blx+=ENC_ROCKETLOADED;
 		return blx;
 	}
+	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
+		if(sb.gimmehud){
+			sb.drawimage("ROQPA0",(-47,-4),sb.DI_SCREEN_CENTER_BOTTOM,scale:(0.6,0.6));
+			sb.drawimage("ROCKA0",(-58,-4),sb.DI_SCREEN_CENTER_BOTTOM,scale:(0.6,0.6));
+			sb.drawnum(hpl.countinv("HDRocketAmmo"),-41,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+			sb.drawnum(hpl.countinv("HEATAmmo"),-54,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+		}
+		int ab=hdw.airburst;
+		if(
+			hdw.weaponstatus[RLS_CHAMBER]>1||
+			!(hdw.weaponstatus[0]&RLF_GRENADEMODE)
+		){
+			if(hdw.weaponstatus[RLS_CHAMBER]>1){
+				sb.drawwepdot(-19,-13,(3,2));
+				sb.drawwepdot(-16,-13,(2,2));
+				sb.drawwepdot(-22,-11,(4,6));
+				sb.drawwepdot(-26,-12,(4,4));
+			}else{
+				sb.drawwepdot(-19,-12,(3,1));
+				sb.drawwepdot(-16,-12,(2,1));
+				sb.drawwepdot(-22,-11,(4,3));
+			}
+		}else{
+			sb.drawwepdot(-22,-26+min(16,ab/10),(4,1));
+			sb.drawwepdot(-22,-10,(1,16));
+			sb.drawwepdot(-24,-10,(1,16));
+		}
+		sb.drawnum(ab,
+			-32,-15,sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TEXT_ALIGN_RIGHT,
+			ab?Font.CR_WHITE:Font.CR_DARKGRAY
+		);
+		sb.drawwepnum(hdw.weaponstatus[RLS_MAG],6);
+		if(hdw.weaponstatus[RLS_CHAMBER]>0)sb.drawwepdot(-16,-10,(3,1));
+	}
 	override void DropOneAmmo(int amt){
 		if(owner){
 			amt=clamp(amt,1,10);
@@ -530,6 +564,22 @@ class Blooper:HDWeapon{
 	}
 	override double weaponbulk(){
 		return 60+(weaponstatus[0]&BLOPF_LOADED?ENC_ROCKETLOADED:0);
+	}
+	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
+		if(sb.gimmehud){
+			sb.drawimage("ROQPA0",(-52,-4),sb.DI_SCREEN_CENTER_BOTTOM,scale:(0.6,0.6));
+			sb.drawnum(hpl.countinv("HDRocketAmmo"),-45,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+		}
+		if(hdw.weaponstatus[0]&BLOPF_LOADED)sb.drawwepdot(-16,-10,(5,3));
+		int ab=hdw.airburst;
+		sb.drawnum(ab,
+			-28,-15,sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TEXT_ALIGN_RIGHT,
+			ab?Font.CR_WHITE:Font.CR_DARKGRAY
+		);
+		sb.drawwepnum(
+			hpl.countinv("HDRocketAmmo"),
+			hdmath.maxinv(hpl,"HDRocketAmmo")
+		);
 	}
 	override void DropOneAmmo(int amt){
 		if(owner){

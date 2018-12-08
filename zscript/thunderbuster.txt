@@ -36,6 +36,26 @@ class ThunderBuster:HDWeapon{
 	override double weaponbulk(){
 		return 175+(weaponstatus[1]>=0?ENC_BATTERY_LOADED:0);
 	}
+	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
+		if(sb.gimmehud){
+			sb.drawbattery(-54,-4,sb.DI_SCREEN_CENTER_BOTTOM,reloadorder:true);
+			sb.drawnum(hpl.countinv("HDBattery"),-46,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+		}
+		if(hdw.weaponstatus[0]&TBF_ALT){
+			sb.drawimage(
+				"STBURAUT",(-28,-10),
+				sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TRANSLATABLE|sb.DI_ITEM_RIGHT
+			);
+			sb.drawnum(2000/HDCONST_ONEMETRE,-16,-14,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_GRAY);
+		}else sb.drawnum(hdw.weaponstatus[TBS_MAXRANGEDISPLAY],-16,-14,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_GRAY);
+		int bat=hdw.weaponstatus[TBS_BATTERY];
+		if(bat>0)sb.drawwepnum(bat,20);
+		else if(!bat)sb.drawstring(
+			sb.mamountfont,"00000",
+			(-16,-9),sb.DI_TEXT_ALIGN_RIGHT|sb.DI_TRANSLATABLE|sb.DI_SCREEN_CENTER_BOTTOM,
+			Font.CR_DARKGRAY
+		);
+	}
 	override void failedpickupunload(){
 		failedpickupunloadmag(TBS_BATTERY,"HDBattery");
 	}

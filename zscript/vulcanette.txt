@@ -59,6 +59,56 @@ class Vulcanette:HDWeapon{
 		}
 		return blx;
 	}
+	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
+		if(sb.gimmehud){
+			int nextmagloaded=sb.GetNextLoadMag(hdmagammo(hpl.findinventory("HD4mMag")));
+			if(nextmagloaded>50){
+				sb.drawimage("ZMAGA0",(-46,-3),sb.DI_SCREEN_CENTER_BOTTOM,scale:(2,2));
+			}else if(nextmagloaded<1){
+				sb.drawimage("ZMAGC0",(-46,-3),sb.DI_SCREEN_CENTER_BOTTOM,alpha:nextmagloaded?0.6:1.,scale:(2,2));
+			}else sb.drawbar(
+				"ZMAGNORM","ZMAGGREY",
+				nextmagloaded,50,
+				(-46,-3),-1,
+				sb.SHADER_VERT,sb.DI_SCREEN_CENTER_BOTTOM
+			);
+			sb.drawbattery(-64,-4,sb.DI_SCREEN_CENTER_BOTTOM,reloadorder:true);
+			sb.drawnum(hpl.countinv("HD4mMag"),-43,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+			sb.drawnum(hpl.countinv("HDBattery"),-56,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+		}
+		let vvv=vulcanette(hdw);
+		if(vvv){
+			for(int i=1;i<5;i++){
+				if(vvv.vulcmag[i]>=0)sb.drawwepdot(-16-i*4,-13,(3,2));
+			}
+			sb.drawwepnum(vvv.vulcmag[0]<100?vvv.vulcmag[0]:vvv.vulcmag[0]-100,50,posy:-10);
+			sb.drawwepcounter(vvv.weaponstatus[0]&VULCF_FAST,
+				-28,-16,"blank","STFULAUT"
+			);
+			if(vvv.weaponstatus[1]>0){
+				for(int i=0;i<5;i++){
+					sb.drawwepcounter(vvv.vulcchamber[i],-14,
+						-11-i*2,"blank","RBRSA3A7"
+					);
+				}
+				int lod=random[shitgun](10,99);
+				if(vvv.vulcmag[0]<100)lod=clamp(vvv.vulcmag[0],0,50);
+				sb.drawnum(lod,-20,-22,
+					sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TEXT_ALIGN_RIGHT,Font.CR_RED
+				);
+				sb.drawwepnum(vvv.weaponstatus[1],20);
+			}else if(!vvv.weaponstatus[1])sb.drawstring(
+				sb.mamountfont,"00000",(-16,-8),
+				sb.DI_TEXT_ALIGN_RIGHT|sb.DI_TRANSLATABLE|sb.DI_SCREEN_CENTER_BOTTOM,
+				Font.CR_DARKGRAY
+			);
+			sb.drawnum(vvv.weaponstatus[2],
+				-30,-22,
+				sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TEXT_ALIGN_RIGHT,
+				Font.CR_DARKGRAY
+			);
+		}
+	}
 	override void consolidate(){
 		CheckBFGCharge(VULCS_BATTERY);
 	}

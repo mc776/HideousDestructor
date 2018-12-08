@@ -20,551 +20,125 @@ extend class HDStatusBar{
 		bool helptext=cvar.getcvar("hd_helptext",cplayer).getbool();
 		hudfont pSmallFont=HUDFont.Create("SmallFont");
 
-		if(w is "HDPistol"){
-			if(gimmehud){
-				int nextmagloaded=GetNextLoadMag(hdmagammo(hpl.findinventory("HD9mMag15")));
-				if(nextmagloaded>=15){
-					drawimage("CLP2A0",(-46,-3),DI_SCREEN_CENTER_BOTTOM,scale:(3,3));
-				}else if(nextmagloaded<1){
-					drawimage("CLP2B0",(-46,-3),DI_SCREEN_CENTER_BOTTOM,alpha:nextmagloaded?0.6:1.,scale:(3,3));
-				}else drawbar(
-					"CLP2NORM","CLP2GREY",
-					nextmagloaded,15,
-					(-46,-3),-1,
-					SHADER_VERT,DI_SCREEN_CENTER_BOTTOM
-				);
-				drawnum(hpl.countinv("HD9mMag15"),-43,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
-			}
-			drawwepcounter(hdw.weaponstatus[PISS_AUTO]+1,
-				-22,-10,"blank","RBRSA3A7","STFULAUT"
-			);
-			if(w.amount>1){
-				drawwepdot(-16,-13,(4,2.6));
-				if(hdpistol(w).weaponstatus2[PISS_AUTO]>=0){
-					drawwepdot(-20,-17,(1.6,0.6));
-					drawwepdot(-22,-15,(1.6,0.6));
-					drawwepdot(-21,-13,(1.6,0.6));
-				}
-			}
-			drawwepnum(hdw.weaponstatus[PISS_MAG],15);
-			if(hdw.weaponstatus[PISS_CHAMBER]==2)drawwepdot(-16,-10,(3,1));
-		}
-		else if(w is "HDSMG"){
-			if(gimmehud){
-				int nextmagloaded=GetNextLoadMag(hdmagammo(hpl.findinventory("HD9mMag30")));
-				if(nextmagloaded>=30){
-					drawimage("CLP3A0",(-46,-3),DI_SCREEN_CENTER_BOTTOM,scale:(3,3));
-				}else if(nextmagloaded<1){
-					drawimage("CLP3B0",(-46,-3),DI_SCREEN_CENTER_BOTTOM,alpha:nextmagloaded?0.6:1.,scale:(3,3));
-				}else drawbar(
-					"CLP3NORM","CLP3GREY",
-					nextmagloaded,30,
-					(-46,-3),-1,
-					SHADER_VERT,DI_SCREEN_CENTER_BOTTOM
-				);
-				drawnum(hpl.countinv("HD9mMag30"),-43,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
-			}
-			drawwepcounter(hdw.weaponstatus[SMGS_AUTO],
-				-22,-10,"RBRSA3A7","STBURAUT","STFULAUT"
-			);
-			drawwepnum(hdw.weaponstatus[SMGS_MAG],30);
-			if(hdw.weaponstatus[SMGS_CHAMBER]==2)drawwepdot(-16,-10,(3,1));
-		}
-		else if(w is "Slayer"){
-			if(gimmehud){
-				drawimage("SHL1A0",(-47,-10),DI_SCREEN_CENTER_BOTTOM);
-				drawnum(hpl.countinv("HDShellAmmo"),-46,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
-			}
-			int loffs=-28;int rofs=-16;
-			if(hdw.weaponstatus[0]&SLAYF_DOUBLE){
-				loffs=-24;rofs=-20;
-//				drawwepdot(-19,-17,(9,2));
-				drawimage("STBURAUT",(-23,-17),DI_SCREEN_CENTER_BOTTOM);
-			}
-			if(hdw.weaponstatus[SLAYS_CHAMBER1]>1){
-				drawwepdot(loffs,-10,(3,5));
-				drawwepdot(loffs,-7,(3,2));
-			}else if(hdw.weaponstatus[SLAYS_CHAMBER1]>0){
-				drawwepdot(loffs,-7,(3,2));
-			}
-			if(hdw.weaponstatus[SLAYS_CHAMBER2]>1){
-				drawwepdot(rofs,-10,(3,5));
-				drawwepdot(rofs,-7,(3,2));
-			}else if(hdw.weaponstatus[SLAYS_CHAMBER2]>0){
-				drawwepdot(rofs,-7,(3,2));
-			}
-			for(int i=hdw.weaponstatus[SHOTS_SIDESADDLE];i>0;i--){
-				drawwepdot(-10-i*2,-2,(1,3));
-			}
-		}
-		else if(w is "ZM66AssaultRifle"){
-			if(gimmehud){
-				int nextmagloaded=GetNextLoadMag(hdmagammo(hpl.findinventory("HD4mMag")));
-				if(nextmagloaded>50){
-					drawimage("ZMAGA0",(-46,-3),DI_SCREEN_CENTER_BOTTOM,scale:(2,2));
-				}else if(nextmagloaded<1){
-					drawimage("ZMAGC0",(-46,-3),DI_SCREEN_CENTER_BOTTOM,alpha:nextmagloaded?0.6:1.,scale:(2,2));
-				}else drawbar(
-					"ZMAGNORM","ZMAGGREY",
-					nextmagloaded,50,
-					(-46,-3),-1,
-					SHADER_VERT,DI_SCREEN_CENTER_BOTTOM
-				);
-				drawnum(hpl.countinv("HD4mMag"),-43,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
-				if(!(hdw.weaponstatus[0]&ZM66F_NOLAUNCHER)){
-					drawimage("ROQPA0",(-62,-4),DI_SCREEN_CENTER_BOTTOM,scale:(0.6,0.6));
-					drawnum(hpl.countinv("HDRocketAmmo"),-56,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
-				}
-			}
+		let sb=self; //easier to convert the stuff below to the new DrawHUDStuff override
+	if(w is "HDFist"){
+		let ww=HDFist(w);
+		if(ww && ww.targethealth)sb.drawwepnum(ww.targethealth,ww.targetspawnhealth);
+	}
+	else if(w is "MagManager"){
+		let thismag=magmanager(w).thismag;
+		if(!thismag||thismag.mags.size()<1)return;
+		int countermaxx=thismag.mags.size();
+		int countermax=countermaxx-1;
+		double scl=2.;
+		string roundsprite="";
+		name roundtype="";
+		int howmanylines=countermax/5;
+		int linecounter=countermax%5;
+		if(linecounter<0)linecounter=4;
 
-			if(!(hdw.weaponstatus[0]&ZM66F_NOFIRESELECT))
-			drawwepcounter(hdw.weaponstatus[ZM66S_AUTO],
-				-22,-10,"RBRSA3A7","STFULAUT","STBURAUT"
-			);
-			if(hdw.weaponstatus[0]&ZM66F_GRENADELOADED)drawwepdot(-16,-13,(4,2.6));
-			int lod=clamp(hdw.weaponstatus[ZM66S_MAG]%100,0,50);
-			drawwepnum(lod,50);
-			if(hdw.weaponstatus[0]&ZM66F_CHAMBER){
-				drawwepdot(-16,-10,(3,1));
-				lod++;
-			}
-			if(hdw.weaponstatus[ZM66S_MAG]>100)lod=random[shitgun](10,99);
-			drawnum(lod,-16,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_RED);
-			if(hdw.weaponstatus[0]&ZM66F_GLMODE){
-				int ab=hdw.airburst;
-				drawnum(ab,
-					-30,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,
-					ab?Font.CR_WHITE:Font.CR_DARKGRAY
-				);
-				drawwepdot(-30,-42+min(16,ab/10),(4,1));
-				drawwepdot(-30,-26,(1,16));
-				drawwepdot(-32,-26,(1,16));
-			}else drawnum(hdw.weaponstatus[ZM66S_ZOOM],
-				-30,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
-			);
-		}
-		else if(w is "Vulcanette"){
-			if(gimmehud){
-				int nextmagloaded=GetNextLoadMag(hdmagammo(hpl.findinventory("HD4mMag")));
-				if(nextmagloaded>50){
-					drawimage("ZMAGA0",(-46,-3),DI_SCREEN_CENTER_BOTTOM,scale:(2,2));
-				}else if(nextmagloaded<1){
-					drawimage("ZMAGC0",(-46,-3),DI_SCREEN_CENTER_BOTTOM,alpha:nextmagloaded?0.6:1.,scale:(2,2));
-				}else drawbar(
-					"ZMAGNORM","ZMAGGREY",
-					nextmagloaded,50,
-					(-46,-3),-1,
-					SHADER_VERT,DI_SCREEN_CENTER_BOTTOM
-				);
-				drawbattery(-64,-4,DI_SCREEN_CENTER_BOTTOM,reloadorder:true);
-				drawnum(hpl.countinv("HD4mMag"),-43,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
-				drawnum(hpl.countinv("HDBattery"),-56,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
-			}
-			let vvv=vulcanette(hdw);
-			if(vvv){
-				for(int i=1;i<5;i++){
-					if(vvv.vulcmag[i]>=0)drawwepdot(-16-i*4,-13,(3,2));
-				}
-				drawwepnum(vvv.vulcmag[0]<100?vvv.vulcmag[0]:vvv.vulcmag[0]-100,50,posy:-10);
-				drawwepcounter(vvv.weaponstatus[0]&VULCF_FAST,
-					-28,-16,"blank","STFULAUT"
-				);
-				if(vvv.weaponstatus[1]>0){
-					for(int i=0;i<5;i++){
-						drawwepcounter(vvv.vulcchamber[i],-14,
-							-11-i*2,"blank","RBRSA3A7"
-						);
-					}
-					int lod=random[shitgun](10,99);
-					if(vvv.vulcmag[0]<100)lod=clamp(vvv.vulcmag[0],0,50);
-					drawnum(lod,-20,-22,
-						DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_RED
-					);
-					drawwepnum(vvv.weaponstatus[1],20);
-				}else if(!vvv.weaponstatus[1])drawstring(
-					mamountfont,"00000",(-16,-8),
-					DI_TEXT_ALIGN_RIGHT|DI_TRANSLATABLE|DI_SCREEN_CENTER_BOTTOM,
-					Font.CR_DARKGRAY
-				);
-				drawnum(vvv.weaponstatus[2],
-					-30,-22,
-					DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,
-					Font.CR_DARKGRAY
-				);
-			}
-		}
-		else if(w is "Blooper"){
-			if(gimmehud){
-				drawimage("ROQPA0",(-52,-4),DI_SCREEN_CENTER_BOTTOM,scale:(0.6,0.6));
-				drawnum(hpl.countinv("HDRocketAmmo"),-45,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
-			}
-			if(hdw.weaponstatus[0]&BLOPF_LOADED)drawwepdot(-16,-10,(5,3));
-			int ab=hdw.airburst;
-			drawnum(ab,
-				-28,-15,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,
-				ab?Font.CR_WHITE:Font.CR_DARKGRAY
-			);
-			drawwepnum(
-				hpl.countinv("HDRocketAmmo"),
-				hdmath.maxinv(hpl,"HDRocketAmmo")
-			);
-		}
-		else if(w is "HDRL"){
-			if(gimmehud){
-				drawimage("ROQPA0",(-47,-4),DI_SCREEN_CENTER_BOTTOM,scale:(0.6,0.6));
-				drawimage("ROCKA0",(-58,-4),DI_SCREEN_CENTER_BOTTOM,scale:(0.6,0.6));
-				drawnum(hpl.countinv("HDRocketAmmo"),-41,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
-				drawnum(hpl.countinv("HEATAmmo"),-54,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
-			}
-			int ab=hdw.airburst;
-			if(
-				hdw.weaponstatus[RLS_CHAMBER]>1||
-				!(hdw.weaponstatus[0]&RLF_GRENADEMODE)
+		int offx=-64-18*howmanylines;
+		int offy=80;
+		for(int i=0;i<countermaxx;i++){
+
+			bool imax=i==countermax;
+			if(imax){
+				offx=-6;
+				offy=50;
+			}else if(
+				linecounter<1
 			){
-				if(hdw.weaponstatus[RLS_CHAMBER]>1){
-					drawwepdot(-19,-13,(3,2));
-					drawwepdot(-16,-13,(2,2));
-					drawwepdot(-22,-11,(4,6));
-					drawwepdot(-26,-12,(4,4));
-				}else{
-					drawwepdot(-19,-12,(3,1));
-					drawwepdot(-16,-12,(2,1));
-					drawwepdot(-22,-11,(4,3));
-				}
+				howmanylines--;
+				offx=-64-18*howmanylines;
+				offy=80;
+				linecounter=4;
 			}else{
-				drawwepdot(-22,-26+min(16,ab/10),(4,1));
-				drawwepdot(-22,-10,(1,16));
-				drawwepdot(-24,-10,(1,16));
-			}
-			drawnum(ab,
-				-32,-15,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,
-				ab?Font.CR_WHITE:Font.CR_DARKGRAY
-			);
-			drawwepnum(hdw.weaponstatus[RLS_MAG],6);
-			if(hdw.weaponstatus[RLS_CHAMBER]>0)drawwepdot(-16,-10,(3,1));
-		}
-		else if(w is "LiberatorRifle"){
-			if(gimmehud){
-				int nextmagloaded=GetNextLoadMag(hdmagammo(hpl.findinventory("HD7mMag")));
-				if(nextmagloaded>=30){
-					drawimage("RMAGA0",(-46,-3),DI_SCREEN_CENTER_BOTTOM,scale:(1.6,1.6));
-				}else if(nextmagloaded<1){
-					drawimage("RMAGB0",(-46,-3),DI_SCREEN_CENTER_BOTTOM,alpha:nextmagloaded?0.6:1.,scale:(1.6,1.6));
-				}else drawbar(
-					"RMAGNORM","RMAGGREY",
-					nextmagloaded,30,
-					(-46,-3),-1,
-					SHADER_VERT,DI_SCREEN_CENTER_BOTTOM
-				);
-				drawnum(hpl.countinv("HD7mMag"),-43,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
-				if(!(hdw.weaponstatus[0]&LIBF_NOLAUNCHER)){
-					drawimage("ROQPA0",(-62,-4),DI_SCREEN_CENTER_BOTTOM,scale:(0.6,0.6));
-					drawnum(hpl.countinv("HDRocketAmmo"),-56,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+				if(i>0){
+					offx+=2;
+					offy-=9;
 				}
+				linecounter--;
 			}
-			string llba="RBRSA3A7";
-			if(hdw.weaponstatus[0]&LIBF_FULLAUTO)llba="STFULAUT";
-			drawimage(
-				llba,(-22,-10),
-				DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE|DI_ITEM_RIGHT
+
+			int thismagamt=thismag.mags[i];
+			string magsprite="";
+			if(thismag is "HD9mMag30"){
+				roundtype="HDPistolAmmo";
+				roundsprite="PBRSA0";
+				if(thismagamt>0)magsprite="CLP3A0";
+				else magsprite="CLP3B0";
+			}else if(thismag is "HD9mMag15"){
+				roundtype="HDPistolAmmo";
+				roundsprite="PBRSA0";
+				if(thismagamt>0)magsprite="CLP2A0";
+				else magsprite="CLP2B0";
+			}else if(thismag is "HD4mMag"){
+				roundtype="FourMilAmmo";;
+				roundsprite="RBRSICE";
+				if(thismagamt>=51)magsprite="ZMAGA0";
+				else if(thismagamt>0)magsprite="ZMAGB0";
+				else magsprite="ZMAGC0";
+			}else if(thismag is "HD7mMag"){
+				roundtype="SevenMilAmmo";
+				roundsprite="RBRSA3A7";
+				if(thismagamt>0)magsprite="RMAGA0";
+				else magsprite="RMAGB0";
+				scl=1.7;
+			}else if(thismag is "HD7mClip"){
+				roundtype="SevenMilAmmo";
+				roundsprite="RBRSA3A7";
+				if(thismagamt>8)magsprite="RCLPA0";
+				else if(thismagamt>6)magsprite="RCLPB0";
+				else if(thismagamt>4)magsprite="RCLPC0";
+				else if(thismagamt>2)magsprite="RCLPD0";
+				else if(thismagamt>0)magsprite="RCLPE0";
+				else magsprite="RCLPF0";
+				scl=1.5;
+			}else if(thismag is "HDBattery"){
+				roundsprite="CELPA0";
+				if(thismagamt>13)magsprite="CELLA0";
+				else if(thismagamt>6)magsprite="CELLB0";
+				else if(thismagamt>0)magsprite="CELLC0";
+				else magsprite="CELLD0";
+				scl=0.8;
+			}
+			sb.drawimage(magsprite,(offx,offy),
+				sb.DI_SCREEN_CENTER|sb.DI_ITEM_RIGHT_TOP,
+				scale:(scl,scl)*(imax?1.6:1.)
 			);
-			if(hdw.weaponstatus[0]&LIBF_GRENADELOADED)drawwepdot(-16,-13,(4,2.6));
-			int lod=max(hdw.weaponstatus[LIBS_MAG],0);
-			drawwepnum(lod,30);
-			if(hdw.weaponstatus[LIBS_CHAMBER]==2){
-				drawwepdot(-16,-10,(3,1));
-				lod++;
-			}
-			if(hdw.weaponstatus[0]&LIBF_GRENADEMODE){
-				int ab=hdw.airburst;
-				drawnum(ab,
-					-30,-22,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,
-					ab?Font.CR_WHITE:Font.CR_DARKGRAY
+			sb.drawstring(
+				imax?pSmallFont:sb.mamountfont,FormatNumber(thismag.mags[i]),
+				(offx+2,offy),sb.DI_SCREEN_CENTER|sb.DI_TEXT_ALIGN_LEFT,
+				imax?font.CR_SAPPHIRE:font.CR_BROWN
+			);
+		}
+
+		if(roundsprite!=""){
+			offx+=40;
+			if(roundsprite=="CELPA0"){
+				scl=0.4;
+				let battt=HDBattery(thismag).chargemode;
+				string batts="uNone";
+				if(battt==hdbattery.BATT_CHARGEMAX)batts="eAuto";
+				else if(battt==hdbattery.BATT_CHARGETOP)batts="ySelected";
+				sb.drawstrings(
+					pSmallFont,string.format("%s\c%s%s",helptext?"Charging: ":"",batts,helptext?"\n(\cqReload\cu to cycle)":""),
+					(offx+2,offy),sb.DI_SCREEN_CENTER|sb.DI_TEXT_ALIGN_LEFT
 				);
-				drawwepdot(-30,-42+min(16,ab/10),(4,1));
-				drawwepdot(-30,-26,(1,16));
-				drawwepdot(-32,-26,(1,16));
-			}
-		}
-		else if(w is "ThunderBuster"){
-			if(gimmehud){
-				drawbattery(-54,-4,DI_SCREEN_CENTER_BOTTOM,reloadorder:true);
-				drawnum(hpl.countinv("HDBattery"),-46,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
-			}
-			if(hdw.weaponstatus[0]&TBF_ALT){
-				drawimage(
-					"STBURAUT",(-28,-10),
-					DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE|DI_ITEM_RIGHT
-				);
-				drawnum(2000/HDCONST_ONEMETRE,-16,-14,DI_SCREEN_CENTER_BOTTOM,font.CR_GRAY);
-			}else drawnum(hdw.weaponstatus[TBS_MAXRANGEDISPLAY],-16,-14,DI_SCREEN_CENTER_BOTTOM,font.CR_GRAY);
-			int bat=hdw.weaponstatus[TBS_BATTERY];
-			if(bat>0)drawwepnum(bat,20);
-			else if(!bat)drawstring(
-				mamountfont,"00000",
-				(-16,-9),DI_TEXT_ALIGN_RIGHT|DI_TRANSLATABLE|DI_SCREEN_CENTER_BOTTOM,
-				Font.CR_DARKGRAY
-			);
-		}
-		else if(w is "BFG9k"){
-			if(gimmehud){
-				drawbattery(-54,-4,DI_SCREEN_CENTER_BOTTOM,reloadorder:true);
-				drawnum(hpl.countinv("HDBattery"),-46,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
-			}
-			int bffb=hdw.weaponstatus[BFGS_BATTERY];
-			if(bffb>0)drawwepnum(bffb,20,posy:-10);
-			else if(!bffb)drawstring(
-				mamountfont,"00000",
-				(-16,-14),DI_TEXT_ALIGN_RIGHT|DI_TRANSLATABLE|DI_SCREEN_CENTER_BOTTOM,
-				Font.CR_DARKGRAY
-			);
-			if(hdw.weaponstatus[0]&BFGF_STRAPPED){
-				drawwepdot(-16,-16,(10,1));
-				drawwepdot(-16,-19,(8,1));
-				drawwepdot(-16,-22,(5,1));
-			}
-			drawwepnum(hdw.weaponstatus[BFGS_CHARGE],20);
-		}
-		else if(w is "Brontornis"){
-			if(gimmehud){
-				drawimage("BROCA0",(-48,-10),DI_SCREEN_CENTER_BOTTOM,scale:(0.7,0.7));
-				drawnum(hpl.countinv("BrontornisRound"),-45,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
-			}
-			if(hdw.weaponstatus[BRONS_CHAMBER]>1)drawwepdot(-16,-10,(5,3));
-			drawwepnum(
-				hpl.countinv("BrontornisRound"),
-				HDMath.MaxInv(hpl,"BrontornisRound")
-			);
-		}
-		else if(w is "BossRifle"){
-			if(gimmehud){
-				int nextmagloaded=GetNextLoadMag(hdmagammo(hpl.findinventory("HD7mClip")));
-				if(nextmagloaded<1){
-					drawimage("RCLPF0",(-58,-3),DI_SCREEN_CENTER_BOTTOM,alpha:nextmagloaded?0.6:1.,scale:(1.6,1.6));
-				}else if(nextmagloaded<3){
-					drawimage("RCLPE0",(-58,-3),DI_SCREEN_CENTER_BOTTOM,scale:(1.6,1.6));
-				}else if(nextmagloaded<5){
-					drawimage("RCLPD0",(-58,-3),DI_SCREEN_CENTER_BOTTOM,scale:(1.6,1.6));
-				}else if(nextmagloaded<7){
-					drawimage("RCLPC0",(-58,-3),DI_SCREEN_CENTER_BOTTOM,scale:(1.6,1.6));
-				}else if(nextmagloaded<9){
-					drawimage("RCLPB0",(-58,-3),DI_SCREEN_CENTER_BOTTOM,scale:(1.6,1.6));
-				}else drawimage("RCLPA0",(-58,-3),DI_SCREEN_CENTER_BOTTOM,scale:(1.6,1.6));
-				drawnum(hpl.countinv("HD7mClip"),-45,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
-			}
-			drawwepnum(hdw.weaponstatus[BOSSS_MAG],10);
-			drawwepcounter(hdw.weaponstatus[BOSSS_CHAMBER],
-				-16,-10,"blank","RBRSA1A5","RBRSA3A7","RBRSA4A6"
-			);
-			drawnum(hdw.weaponstatus[BOSSS_ZOOM],
-				-30,-18,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
-			);
-			drawnum(hdw.weaponstatus[BOSSS_DROPADJUST],
-				-16,-18,DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_WHITE
-			);
-		}
-		else if(w is "HDFragGrenades"||w is "Tripwire"){
-			if(gimmehud){
-				drawimage("FRAGA0",(-52,-4),DI_SCREEN_CENTER_BOTTOM,scale:(0.6,0.6));
-				drawnum(hpl.countinv("HDFragGrenadeAmmo"),-45,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
-			}
-			drawwepnum(
-				hpl.countinv("HDFragGrenadeAmmo"),
-				hdmath.maxinv(hpl,"HDFragGrenadeAmmo")
-			);
-			drawwepnum(hdw.weaponstatus[FRAGS_FORCE],50,posy:-10,alwaysprecise:true);
-			if(!(hdw.weaponstatus[0]&FRAGF_SPOONOFF)){
-				drawwepdot(-16,-15,(5,4));
-				if(!(hdw.weaponstatus[0]&FRAGF_PINOUT))drawwepdot(-22,-16,(3,2));
 			}else{
-				int timer=hdw.weaponstatus[FRAGS_TIMER];
-				if(timer%3)drawwepnum(140-timer,140,posy:-15,alwaysprecise:true);
-			}
-		}
-		else if(w is "HDFist"){
-			let ww=HDFist(w);
-			if(ww && ww.targethealth)drawwepnum(ww.targethealth,ww.targetspawnhealth);
-		}
-		else if(w is "SelfBandage"){
-			int of=0;
-			if(hpl.woundcount){
-				drawimage(
-					"BLUDC0",(-17,-6),
-					DI_SCREEN_CENTER_BOTTOM|DI_ITEM_RIGHT,
-					0.6
-				);
-				of=clamp(hpl.woundcount*0.2,1,3);
-				if(hpl.flip)of=-of;
-			}
-			drawwepdot(-22,-8+of,(2,10));
-			drawwepdot(-17,-12+of,(12,2));
-		}
-		else if(w is "HDMedikitter"){
-			let ww=hdmedikitter(w);
-			int of=0;
-			if(
-				hpl.woundcount
-				&&(!ww.usedon||ww.usedon==hpl)
-			){
-				of=clamp(hpl.woundcount*0.1,1,3);
-				if(hpl.flip)of=-of;
-			}
-			drawwepdot(-27,-11+of,(2,6));
-			drawwepdot(-25,-13+of,(6,2));
-			if(ww.useonother){
-				drawwepdot(-22,-20,(5,6));
-				drawwepdot(-24,-25,(1,7));
-				if(ww.usedon)drawimage(
-					"BLUDC0",(-22,-19),
-					DI_SCREEN_CENTER_BOTTOM|DI_ITEM_RIGHT,
-					0.4
+				scl*=1.6;
+				sb.drawstring(
+					pSmallFont,FormatNumber(hpl.countinv(roundtype)),
+					(offx+2,offy),sb.DI_SCREEN_CENTER|sb.DI_TEXT_ALIGN_LEFT,
+					font.CR_BROWN
 				);
 			}
-			if(ww.usedon)drawimage(
-				"BLUDC0",(-14,-7),
-				DI_SCREEN_CENTER_BOTTOM|DI_ITEM_RIGHT,
-				0.8
+			sb.drawimage(roundsprite,(offx,offy),
+				sb.DI_SCREEN_CENTER|sb.DI_ITEM_RIGHT_TOP,
+				scale:(scl,scl)
 			);
-			drawwepnum(HD_MEDPATCHLIMIT-ww.usedpatches,HD_MEDPATCHLIMIT);
-			if(ww.injectableflesh==2)drawwepdot(-20,-10,(3,3));
-			if(ww.injectableflesh>=1)drawwepdot(-16,-10,(3,3));
-			drawnum(hpl.countinv("PortableMedikit"),-43,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 		}
-		else if(w is "HDBlueBottler"){
-			drawimage(
-				"BON1A0",(-23,-7),
-				DI_SCREEN_CENTER_BOTTOM|DI_ITEM_RIGHT
-			);
-			drawnum(hpl.countinv("BluePotion"),-22,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
-		}
-		else if(w is "HDBerserker"){
-			drawimage(
-				"PSTRA0",(-24,-7),
-				DI_SCREEN_CENTER_BOTTOM|DI_ITEM_RIGHT
-			);
-			drawnum(hpl.countinv("PortableBerserkPack"),-22,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
-		}
-		else if(w is "HDStimpacker"){
-			drawimage(
-				"STIMA0",(-23,-7),
-				DI_SCREEN_CENTER_BOTTOM|DI_ITEM_RIGHT
-			);
-			drawnum(hpl.countinv("PortableStimPack"),-22,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
-		}
-		else if(w is "MagManager"){
-			let thismag=magmanager(w).thismag;
-			if(!thismag||thismag.mags.size()<1)return;
-			int countermaxx=thismag.mags.size();
-			int countermax=countermaxx-1;
-			double scl=2.;
-			string roundsprite="";
-			name roundtype="";
-			int howmanylines=countermax/5;
-			int linecounter=countermax%5;
-			if(linecounter<0)linecounter=4;
-
-			int offx=-64-18*howmanylines;
-			int offy=80;
-			for(int i=0;i<countermaxx;i++){
-
-				bool imax=i==countermax;
-				if(imax){
-					offx=-6;
-					offy=50;
-				}else if(
-					linecounter<1
-				){
-					howmanylines--;
-					offx=-64-18*howmanylines;
-					offy=80;
-					linecounter=4;
-				}else{
-					if(i>0){
-						offx+=2;
-						offy-=9;
-					}
-					linecounter--;
-				}
-
-				int thismagamt=thismag.mags[i];
-				string magsprite="";
-				if(thismag is "HD9mMag30"){
-					roundtype="HDPistolAmmo";
-					roundsprite="PBRSA0";
-					if(thismagamt>0)magsprite="CLP3A0";
-					else magsprite="CLP3B0";
-				}else if(thismag is "HD9mMag15"){
-					roundtype="HDPistolAmmo";
-					roundsprite="PBRSA0";
-					if(thismagamt>0)magsprite="CLP2A0";
-					else magsprite="CLP2B0";
-				}else if(thismag is "HD4mMag"){
-					roundtype="FourMilAmmo";;
-					roundsprite="RBRSICE";
-					if(thismagamt>=51)magsprite="ZMAGA0";
-					else if(thismagamt>0)magsprite="ZMAGB0";
-					else magsprite="ZMAGC0";
-				}else if(thismag is "HD7mMag"){
-					roundtype="SevenMilAmmo";
-					roundsprite="RBRSA3A7";
-					if(thismagamt>0)magsprite="RMAGA0";
-					else magsprite="RMAGB0";
-					scl=1.7;
-				}else if(thismag is "HD7mClip"){
-					roundtype="SevenMilAmmo";
-					roundsprite="RBRSA3A7";
-					if(thismagamt>8)magsprite="RCLPA0";
-					else if(thismagamt>6)magsprite="RCLPB0";
-					else if(thismagamt>4)magsprite="RCLPC0";
-					else if(thismagamt>2)magsprite="RCLPD0";
-					else if(thismagamt>0)magsprite="RCLPE0";
-					else magsprite="RCLPF0";
-					scl=1.5;
-				}else if(thismag is "HDBattery"){
-					roundsprite="CELPA0";
-					if(thismagamt>13)magsprite="CELLA0";
-					else if(thismagamt>6)magsprite="CELLB0";
-					else if(thismagamt>0)magsprite="CELLC0";
-					else magsprite="CELLD0";
-					scl=0.8;
-				}
-				drawimage(magsprite,(offx,offy),
-					DI_SCREEN_CENTER|DI_ITEM_RIGHT_TOP,
-					scale:(scl,scl)*(imax?1.6:1.)
-				);
-				drawstring(
-					imax?pSmallFont:mAmountFont,FormatNumber(thismag.mags[i]),
-					(offx+2,offy),DI_SCREEN_CENTER|DI_TEXT_ALIGN_LEFT,
-					imax?font.CR_SAPPHIRE:font.CR_BROWN
-				);
-			}
-
-			if(roundsprite!=""){
-				offx+=40;
-				if(roundsprite=="CELPA0"){
-					scl=0.4;
-					let battt=HDBattery(thismag).chargemode;
-					string batts="uNone";
-					if(battt==hdbattery.BATT_CHARGEMAX)batts="eAuto";
-					else if(battt==hdbattery.BATT_CHARGETOP)batts="ySelected";
-					drawstrings(
-						pSmallFont,string.format("%s\c%s%s",helptext?"Charging: ":"",batts,helptext?"\n(\cqReload\cu to cycle)":""),
-						(offx+2,offy),DI_SCREEN_CENTER|DI_TEXT_ALIGN_LEFT
-					);
-				}else{
-					scl*=1.6;
-					drawstring(
-						pSmallFont,FormatNumber(hpl.countinv(roundtype)),
-						(offx+2,offy),DI_SCREEN_CENTER|DI_TEXT_ALIGN_LEFT,
-						font.CR_BROWN
-					);
-				}
-				drawimage(roundsprite,(offx,offy),
-					DI_SCREEN_CENTER|DI_ITEM_RIGHT_TOP,
-					scale:(scl,scl)
-				);
-			}
-		}
+	}
 		else hdw.DrawHUDStuff(self,hdw,hpl);
 	}
 	void drawwepdot(int posx,int posy,vector2 dotscale=(3.,3.)){

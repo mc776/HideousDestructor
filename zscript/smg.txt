@@ -39,6 +39,27 @@ class HDSMG:HDWeapon{
 			else owner.A_DropInventory("HD9mMag30",amt);
 		}
 	}
+	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
+		if(sb.gimmehud){
+			int nextmagloaded=sb.GetNextLoadMag(hdmagammo(hpl.findinventory("HD9mMag30")));
+			if(nextmagloaded>=30){
+				sb.drawimage("CLP3A0",(-46,-3),sb.DI_SCREEN_CENTER_BOTTOM,scale:(3,3));
+			}else if(nextmagloaded<1){
+				sb.drawimage("CLP3B0",(-46,-3),sb.DI_SCREEN_CENTER_BOTTOM,alpha:nextmagloaded?0.6:1.,scale:(3,3));
+			}else sb.drawbar(
+				"CLP3NORM","CLP3GREY",
+				nextmagloaded,30,
+				(-46,-3),-1,
+				sb.SHADER_VERT,sb.DI_SCREEN_CENTER_BOTTOM
+			);
+			sb.drawnum(hpl.countinv("HD9mMag30"),-43,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+		}
+		sb.drawwepcounter(hdw.weaponstatus[SMGS_AUTO],
+			-22,-10,"RBRSA3A7","STBURAUT","STFULAUT"
+		);
+		sb.drawwepnum(hdw.weaponstatus[SMGS_MAG],30);
+		if(hdw.weaponstatus[SMGS_CHAMBER]==2)sb.drawwepdot(-16,-10,(3,1));
+	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		if(owner&&owner.player)weaponstatus[SMGS_AUTO]=clamp(

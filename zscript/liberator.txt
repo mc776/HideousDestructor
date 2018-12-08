@@ -65,6 +65,49 @@ class LiberatorRifle:HDWeapon{
 		int mgg=weaponstatus[LIBS_MAG];
 		return blx+(mgg<0?0:(ENC_776MAG_LOADED+mgg*ENC_776_LOADED));
 	}
+	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
+		if(sb.gimmehud){
+			int nextmagloaded=sb.GetNextLoadMag(hdmagammo(hpl.findinventory("HD7mMag")));
+			if(nextmagloaded>=30){
+				sb.drawimage("RMAGA0",(-46,-3),sb.DI_SCREEN_CENTER_BOTTOM,scale:(1.6,1.6));
+			}else if(nextmagloaded<1){
+				sb.drawimage("RMAGB0",(-46,-3),sb.DI_SCREEN_CENTER_BOTTOM,alpha:nextmagloaded?0.6:1.,scale:(1.6,1.6));
+			}else sb.drawbar(
+				"RMAGNORM","RMAGGREY",
+				nextmagloaded,30,
+				(-46,-3),-1,
+				sb.SHADER_VERT,sb.DI_SCREEN_CENTER_BOTTOM
+			);
+			sb.drawnum(hpl.countinv("HD7mMag"),-43,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+			if(!(hdw.weaponstatus[0]&LIBF_NOLAUNCHER)){
+				sb.drawimage("ROQPA0",(-62,-4),sb.DI_SCREEN_CENTER_BOTTOM,scale:(0.6,0.6));
+				sb.drawnum(hpl.countinv("HDRocketAmmo"),-56,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+			}
+		}
+		string llba="RBRSA3A7";
+		if(hdw.weaponstatus[0]&LIBF_FULLAUTO)llba="STFULAUT";
+		sb.drawimage(
+			llba,(-22,-10),
+			sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TRANSLATABLE|sb.DI_ITEM_RIGHT
+		);
+		if(hdw.weaponstatus[0]&LIBF_GRENADELOADED)sb.drawwepdot(-16,-13,(4,2.6));
+		int lod=max(hdw.weaponstatus[LIBS_MAG],0);
+		sb.drawwepnum(lod,30);
+		if(hdw.weaponstatus[LIBS_CHAMBER]==2){
+			sb.drawwepdot(-16,-10,(3,1));
+			lod++;
+		}
+		if(hdw.weaponstatus[0]&LIBF_GRENADEMODE){
+			int ab=hdw.airburst;
+			sb.drawnum(ab,
+				-30,-22,sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TEXT_ALIGN_RIGHT,
+				ab?Font.CR_WHITE:Font.CR_DARKGRAY
+			);
+			sb.drawwepdot(-30,-42+min(16,ab/10),(4,1));
+			sb.drawwepdot(-30,-26,(1,16));
+			sb.drawwepdot(-32,-26,(1,16));
+		}
+	}
 	override void failedpickupunload(){
 		failedpickupunloadmag(LIBS_MAG,"HD7mMag");
 	}
