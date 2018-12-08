@@ -25,7 +25,7 @@ class MagManager:HDWeapon{
 		magtypes[5]="HDBattery";
 	}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
-		let thismag=magmanager(w).thismag;
+		let thismag=magmanager(hdw).thismag;
 		if(!thismag||thismag.mags.size()<1)return;
 		int countermaxx=thismag.mags.size();
 		int countermax=countermaxx-1;
@@ -106,13 +106,14 @@ class MagManager:HDWeapon{
 				scale:(scl,scl)*(imax?1.6:1.)
 			);
 			sb.drawstring(
-				imax?pSmallFont:sb.mamountfont,FormatNumber(thismag.mags[i]),
+				imax?sb.pSmallFont:sb.mamountfont,sb.FormatNumber(thismag.mags[i]),
 				(offx+2,offy),sb.DI_SCREEN_CENTER|sb.DI_TEXT_ALIGN_LEFT,
 				imax?font.CR_SAPPHIRE:font.CR_BROWN
 			);
 		}
 
 		if(roundsprite!=""){
+			bool helptext=cvar.getcvar("hd_helptext",hpl.player).getbool();
 			offx+=40;
 			if(roundsprite=="CELPA0"){
 				scl=0.4;
@@ -121,13 +122,13 @@ class MagManager:HDWeapon{
 				if(battt==hdbattery.BATT_CHARGEMAX)batts="eAuto";
 				else if(battt==hdbattery.BATT_CHARGETOP)batts="ySelected";
 				sb.drawstrings(
-					pSmallFont,string.format("%s\c%s%s",helptext?"Charging: ":"",batts,helptext?"\n(\cqReload\cu to cycle)":""),
+					sb.pSmallFont,string.format("%s\c%s%s",helptext?"Charging: ":"",batts,helptext?"\n(\cqReload\cu to cycle)":""),
 					(offx+2,offy),sb.DI_SCREEN_CENTER|sb.DI_TEXT_ALIGN_LEFT
 				);
 			}else{
 				scl*=1.6;
 				sb.drawstring(
-					pSmallFont,FormatNumber(hpl.countinv(roundtype)),
+					sb.pSmallFont,sb.FormatNumber(hpl.countinv(roundtype)),
 					(offx+2,offy),sb.DI_SCREEN_CENTER|sb.DI_TEXT_ALIGN_LEFT,
 					font.CR_BROWN
 				);
@@ -141,6 +142,15 @@ class MagManager:HDWeapon{
 	override inventory createtossable(int amt){
 		if(owner)owner.A_DropInventory(thismagtype,1);
 		return null;
+	}
+	override void DropOneAmmo(int amt){
+		let mmm=HDMagAmmo(thismag);
+		if(!mmm)return;
+		let what=mmm.roundtype;
+		if(!what)return;
+		int howmany=min(max(1,hdmath.maxinv(owner,what)*0.2),owner.countinv(what),100);
+		if(!howmany)return;
+		owner.A_DropInventory(what,howmany);
 	}
 	action bool GetMags(){
 		invoker.thismag=hdmagammo(findinventory(invoker.thismagtype));
