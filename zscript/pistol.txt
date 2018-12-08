@@ -53,6 +53,35 @@ class HDPistol:HDWeapon{
 		}
 		return totalbulk;
 	}
+	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
+		if(sb.gimmehud){
+			int nextmagloaded=sb.GetNextLoadMag(hdmagammo(hpl.findinventory("HD9mMag15")));
+			if(nextmagloaded>=15){
+				sb.drawimage("CLP2A0",(-46,-3),sb.DI_SCREEN_CENTER_BOTTOM,scale:(3,3));
+			}else if(nextmagloaded<1){
+				sb.drawimage("CLP2B0",(-46,-3),sb.DI_SCREEN_CENTER_BOTTOM,alpha:nextmagloaded?0.6:1.,scale:(3,3));
+			}else sb.drawbar(
+				"CLP2NORM","CLP2GREY",
+				nextmagloaded,15,
+				(-46,-3),-1,
+				sb.SHADER_VERT,sb.DI_SCREEN_CENTER_BOTTOM
+			);
+			sb.drawnum(hpl.countinv("HD9mMag15"),-43,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+		}
+		sb.drawwepcounter(hdw.weaponstatus[PISS_AUTO]+1,
+			-22,-10,"blank","RBRSA3A7","STFULAUT"
+		);
+		if(hdw.amount>1){
+			sb.drawwepdot(-16,-13,(4,2.6));
+			if(hdpistol(hdw).weaponstatus2[PISS_AUTO]>=0){
+				sb.drawwepdot(-20,-17,(1.6,0.6));
+				sb.drawwepdot(-22,-15,(1.6,0.6));
+				sb.drawwepdot(-21,-13,(1.6,0.6));
+			}
+		}
+		sb.drawwepnum(hdw.weaponstatus[PISS_MAG],15);
+		if(hdw.weaponstatus[PISS_CHAMBER]==2)sb.drawwepdot(-16,-10,(3,1));
+	}
 	override void DropOneAmmo(int amt){
 		if(owner){
 			amt=clamp(amt,1,10);

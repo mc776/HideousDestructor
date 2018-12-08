@@ -173,8 +173,9 @@ class NinjaPirate:HDActor{ //replaces Spectre{
 				return;
 			}
 			if(
-				(A_JumpIfHealthLower(1,"null",AAPTR_TARGET))||
-				(getdistance(true,AAPTR_TARGET)>50)
+				!target
+				||target.health<1
+				||distance3d(target)>50
 			){
 					setstatelabel("meleeend");
 					return;

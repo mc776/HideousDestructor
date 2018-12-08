@@ -20,19 +20,7 @@ extend class HDStatusBar{
 		bool helptext=cvar.getcvar("hd_helptext",cplayer).getbool();
 		hudfont pSmallFont=HUDFont.Create("SmallFont");
 
-		if(w is "Lumberjack"){
-			if(gimmehud){
-				drawbattery(-54,-4,DI_SCREEN_CENTER_BOTTOM,reloadorder:true);
-				drawnum(hpl.countinv("HDBattery"),-46,-8,DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
-			}
-			if(!hdw.weaponstatus[1])drawstring(
-				mamountfont,"00000",(-16,-9),DI_TEXT_ALIGN_RIGHT|
-				DI_TRANSLATABLE|DI_SCREEN_CENTER_BOTTOM,
-				Font.CR_DARKGRAY
-			);else if(hdw.weaponstatus[1]>0)
-				drawwepnum(hdw.weaponstatus[1],20);
-		}
-		else if(w is "HDPistol"){
+		if(w is "HDPistol"){
 			if(gimmehud){
 				int nextmagloaded=GetNextLoadMag(hdmagammo(hpl.findinventory("HD9mMag15")));
 				if(nextmagloaded>=15){

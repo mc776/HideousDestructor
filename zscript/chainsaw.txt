@@ -35,6 +35,17 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 		)return "%o was felled by the power of %k's terribly eager beaver.";
 		return obituary;
 	}
+	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
+		if(sb.gimmehud){
+			sb.drawbattery(-54,-4,sb.DI_SCREEN_CENTER_BOTTOM,reloadorder:true);
+			sb.drawnum(hpl.countinv("HDBattery"),-46,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+		}
+		if(!hdw.weaponstatus[1])sb.drawstring(
+			sb.mamountfont,"00000",(-16,-9),sb.DI_TEXT_ALIGN_RIGHT|
+			sb.DI_TRANSLATABLE|sb.DI_SCREEN_CENTER_BOTTOM,
+			Font.CR_DARKGRAY
+		);else if(hdw.weaponstatus[1]>0)sb.drawwepnum(hdw.weaponstatus[1],20);
+	}
 	override double gunmass(){
 		return 5+weaponstatus[CSAWS_BATTERY]<0?0:1;
 	}
