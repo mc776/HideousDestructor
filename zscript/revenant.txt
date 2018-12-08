@@ -43,7 +43,7 @@ class bonerball:hdactor{
 			}
 			if(
 				A_JumpIfTargetInLOS("spawn",1,JLOSF_CHECKTRACER)
-				&& GetDistance(1,AAPTR_TRACER)<96
+				&&(tracer&&distance3d(tracer)<96)
 			)A_ChangeVelocity(Cos(Pitch)*5,0,Sin(-Pitch)*5,CVF_RELATIVE);
 			else A_ChangeVelocity(Cos(Pitch)*2,0,Sin(-Pitch)*2,CVF_RELATIVE);
 			if(pos.z-floorz<14)vel.z+=2;

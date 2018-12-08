@@ -174,7 +174,7 @@ class HellPrince:BaronOfHell replaces BaronofHell{
 		BOSS E 6 A_FaceTarget();
 		BOSS F 2;
 		BOSS G 6 A_CustomMeleeAttack(random(40,120),"baron/melee","","claws",true);
-		BOSS F 5 A_JumpIf(getdistance(true,AAPTR_TARGET)>84,"missilesweep");
+		BOSS F 5 A_JumpIf(target&&distance3d(target)>84,"missilesweep");
 		goto see;
 	death.telefrag:
 		TNT1 A 0 spawn("Telefog",pos,ALLOW_REPLACE);
