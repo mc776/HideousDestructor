@@ -27,6 +27,10 @@ class HDFist:HDWeapon replaces Fist{
 		hdweapon.nicename "Fists";
 		hdweapon.refid HDLD_FIST;
 	}
+	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
+		let ww=HDFist(hdw);
+		if(ww.targethealth)sb.drawwepnum(ww.targethealth,ww.targetspawnhealth);
+	}
 	override inventory CreateTossable(int amount){
 		if(!owner)return null;
 		array<inventory> items;items.clear();
