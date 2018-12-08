@@ -53,6 +53,28 @@ class Hunter:HDShotgun replaces Shotgun{
 		if(weaponstatus[0]&HUNTF_CANFULLAUTO)return string.format("%s You notice some tool marks near the fire selector...",super.pickupmessage());
 		return super.pickupmessage();
 	}
+	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
+		if(sb.gimmehud){
+			sb.drawimage("SHL1A0",(-47,-10),basestatusbar.DI_SCREEN_CENTER_BOTTOM);
+			sb.drawnum(hpl.countinv("HDShellAmmo"),-46,-8,
+				basestatusbar.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK
+			);
+		}
+		if(hdw.weaponstatus[HUNTS_CHAMBER]>1){
+			sb.drawwepdot(-19,-11,(5,3));
+			sb.drawwepdot(-16,-11,(2,3));
+		}
+		else if(hdw.weaponstatus[HUNTS_CHAMBER]>0){
+			sb.drawwepdot(-16,-11,(2,3));
+		}
+		sb.drawwepcounter(hdw.weaponstatus[HUNTS_FIREMODE],
+			-26,-12,"blank","RBRSA3A7","STFULAUT"
+		);
+		sb.drawwepnum(hdw.weaponstatus[HUNTS_TUBE],7,posy:-7);
+		for(int i=hdw.weaponstatus[SHOTS_SIDESADDLE];i>0;i--){
+			sb.drawwepdot(-15-i*2,-2,(1,3));
+		}
+	}
 	override double gunmass(){
 		int tube=weaponstatus[HUNTS_TUBE];
 		if(tube>4)tube+=(tube-4)*2;
