@@ -30,21 +30,6 @@ class HDFireDouse:InventoryFlag{
 }
 
 
-class HDFireStarter:ActionItem{
-	states{
-	pickup:
-		TNT1 A 0{
-			if(!self) return;
-			if(hd_debug)a_log("deprecated fire. please use A_Immolate() directly.");
-			actor f=spawn("HDFire",pos,ALLOW_REPLACE);
-			f.target=self;f.master=self.target;
-			f.stamina=random(40,80);
-			return;
-		}fail;
-	}
-}
-
-
 //how to immolate
 extend class HDActor{
 	//should be in HDActor once all conversions are done

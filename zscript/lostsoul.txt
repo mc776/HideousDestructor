@@ -322,3 +322,18 @@ class Jailer:PainElemental replaces PainElemental{
 		stop;
 	}
 }
+
+//old pre-ZScript fire thingy, now only used by PE because I don't care.
+class HDFireStarter:ActionItem{
+	states{
+	pickup:
+		TNT1 A 0{
+			if(!self) return;
+			if(hd_debug)a_log("deprecated fire. please use A_Immolate() directly.");
+			actor f=spawn("HDFire",pos,ALLOW_REPLACE);
+			f.target=self;f.master=self.target;
+			f.stamina=random(40,80);
+			return;
+		}fail;
+	}
+}

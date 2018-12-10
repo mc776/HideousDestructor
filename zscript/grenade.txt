@@ -56,6 +56,9 @@ class HDGrenadeThrower:HDWeapon{
 		owner.A_SelectWeapon("HDFist");
 		return null;
 	}
+	override void InitializeWepStats(bool idfa){
+		if(idfa)owner.A_SetInventory(grenadeammotype,max(3,owner.countinv(grenadeammotype)));
+	}
 	override void DropOneAmmo(int amt){
 		if(owner){
 			amt=clamp(amt,1,10);
