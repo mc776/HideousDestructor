@@ -224,24 +224,24 @@ class HDBackpack:HDWeapon{
 		return ddi;
 	}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
-		if(showindices[0]>=0)sb.drawtexture(BPInvIcon(showindices[0]),(-80,10),
-			sb.DI_ITEM_CENTER_BOTTOM|sb.DI_SCREEN_CENTER,
+		if(showindices[0]>=0)sb.drawtexture(BPInvIcon(showindices[0]),(-80,0),
+			sb.DI_ITEM_CENTER|sb.DI_SCREEN_CENTER,
 			alpha:amounts[showindices[0]]==""?0.3:0.6
 		);
-		if(showindices[3]>=0)sb.drawtexture(BPInvIcon(showindices[3]),(80,10),
-			sb.DI_ITEM_CENTER_BOTTOM|sb.DI_SCREEN_CENTER,
+		if(showindices[3]>=0)sb.drawtexture(BPInvIcon(showindices[3]),(80,0),
+			sb.DI_ITEM_CENTER|sb.DI_SCREEN_CENTER,
 			alpha:amounts[showindices[3]]==""?0.3:0.6
 		);
-		if(showindices[1]>=0)sb.drawtexture(BPInvIcon(showindices[1]),(-50,10),
-			sb.DI_ITEM_CENTER_BOTTOM|sb.DI_SCREEN_CENTER,
+		if(showindices[1]>=0)sb.drawtexture(BPInvIcon(showindices[1]),(-50,0),
+			sb.DI_ITEM_CENTER|sb.DI_SCREEN_CENTER,
 			alpha:amounts[showindices[1]]==""?0.4:0.8
 		);
-		if(showindices[2]>=0)sb.drawtexture(BPInvIcon(showindices[2]),(50,10),
-			sb.DI_ITEM_CENTER_BOTTOM|sb.DI_SCREEN_CENTER,
+		if(showindices[2]>=0)sb.drawtexture(BPInvIcon(showindices[2]),(50,0),
+			sb.DI_ITEM_CENTER|sb.DI_SCREEN_CENTER,
 			alpha:amounts[showindices[2]]==""?0.4:0.8
 		);
 		if(index>=0){
-			sb.drawtexture(BPInvIcon(index),(0,10),
+			sb.drawtexture(BPInvIcon(index),(0,0),
 				sb.DI_ITEM_CENTER_BOTTOM|sb.DI_SCREEN_CENTER,
 				alpha:amounts[index]==""?0.6:1.
 			);
@@ -551,7 +551,7 @@ extend class HDBackpack{
 					else ati=ati.." "..mmx;
 				}
 				amounts[thisitem]=ati;
-			}else if(pkup){
+			}else if(pkup&&!(pkup is "hditemgiver")){
 				howmany=min(
 					random(1,getdefaultbytype(pkup).multipickup?random(1,80):random(1,random(1,20))),
 					getdefaultbytype(pkup).maxamount,
