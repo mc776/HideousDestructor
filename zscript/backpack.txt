@@ -43,6 +43,7 @@ class HDBackpack:HDWeapon{
 	override void DropOneAmmo(int amt){
 		if(owner){
 			RemoveFromBackpack(index,false);
+			if(havenone(index))updatemessage(1);
 		}
 	}
 
@@ -111,7 +112,6 @@ class HDBackpack:HDWeapon{
 						itemtobackpack(iii);
 					}
 					if(iii)iii.destroy();
-					
 				}
 			}else if(pkup){
 				double bulkmax=(HDCONST_BPMAX-bulk)/max(1,getdefaultbytype(pkup).bulk);
@@ -527,6 +527,7 @@ extend class HDBackpack{
 		for(int i=0;i<5;i++){
 			int thisitem=random(1,invclasses.size())-1;
 			let wep=(class<hdweapon>)(invclasses[thisitem]);
+			let igg=(class<hditemgiver>)(invclasses[thisitem]);
 			let pkup=(class<hdpickup>)(invclasses[thisitem]);
 			let mag=(class<hdmagammo>)(pkup);
 			int howmany=0;
@@ -551,7 +552,11 @@ extend class HDBackpack{
 					else ati=ati.." "..mmx;
 				}
 				amounts[thisitem]=ati;
-			}else if(pkup&&!(pkup is "hditemgiver")){
+			}else if(igg){
+				inventory iii=inventory(spawn(igg,pos,ALLOW_REPLACE));
+				hditemgiver(iii).addtobackpack(self);
+				if(iii)iii.destroy();
+			}else if(pkup){
 				howmany=min(
 					random(1,getdefaultbytype(pkup).multipickup?random(1,80):random(1,random(1,20))),
 					getdefaultbytype(pkup).maxamount,
