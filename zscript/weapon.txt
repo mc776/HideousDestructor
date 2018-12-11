@@ -194,7 +194,10 @@ class HDWeapon:Weapon{
 		}
 	}
 	virtual ui void DrawHUDStuff(HDStatusBar sb,HDWeapon wp,HDPlayerPawn hpl){}
-	virtual ui void DrawSightPicture(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){}
+	virtual ui void DrawSightPicture(
+		HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl,
+		bool sightbob,vector2 bob,double fov,bool scopeview,actor hcp
+	){}
 	void ShowTip(bool forced=false){
 		if(
 			forced||(
