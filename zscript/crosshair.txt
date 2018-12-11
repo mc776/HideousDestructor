@@ -361,35 +361,6 @@ extend class HDStatusBar{
 				}
 			}
 		}
-		else if((wp is "Brontornis")){
-			int scaledyoffset=-4;
-			if(wp.weaponstatus[0]&BRONF_ZOOM){
-				texman.setcameratotexture(hpc,"HDXHCAM5",2.6);
-				drawimage(
-					"HDXHCAM5",(0,scaledyoffset)+bob,
-					DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
-					scale:(0.42,0.42)
-				);
-				scaledyoffset=-6;
-				drawimage(
-					"bstadia",(0,scaledyoffset)+bob,
-					DI_SCREEN_CENTER|DI_ITEM_HCENTER|DI_ITEM_TOP,
-					scale:(1.2,1.2)
-				);
-			}else{
-				double dotoff=max(abs(bob.x),abs(bob.y));
-				if(dotoff<10){
-					drawimage(
-						"riflsit4",(0,0)+bob*1.6,DI_SCREEN_CENTER|DI_ITEM_CENTER,
-						alpha:0.8-dotoff*0.04,scale:(1.6,1.6)
-					);
-				}
-				drawimage(
-					"xh25",(0,0)+bob,DI_SCREEN_CENTER|DI_ITEM_CENTER,
-					scale:(1.6,1.6)
-				);
-			}
-		}
 		else wp.DrawSightPicture(self,wp,hpl,sightbob,bob,fov,scopeview,hpc);
 	}
 }
