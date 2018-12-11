@@ -168,6 +168,7 @@ class HDBackpack:HDWeapon{
 	int GetAmount(class<inventory> type){
 		int thisindex=invclasses.find(type.getclassname());
 		if(thisindex>=invclasses.size())return 0;
+		if(amounts[thisindex]=="")return 0;
 		let wep=(class<hdweapon>)(type);
 		let mag=(class<hdmagammo>)(type);
 		let pkup=(class<hdpickup>)(type);
@@ -211,8 +212,60 @@ class HDBackpack:HDWeapon{
 	}
 
 
+	int showindices[4];
+	int selectedinbackpack;int selectedininventory;
+	ui textureid BPInvIcon(int which){
+		let item=getdefaultbytype((class<inventory>)(invclasses[which]));
+		let ddi=item.icon;
+		if(!ddi){
+			let dds=item.spawnstate;
+			if(dds!=null)ddi=dds.GetSpriteTexture(0); //see if this works on rotated sprites too...
+		}
+		return ddi;
+	}
+	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
+		if(showindices[0]>=0)sb.drawtexture(BPInvIcon(showindices[0]),(-80,10),
+			sb.DI_ITEM_CENTER_BOTTOM|sb.DI_SCREEN_CENTER,
+			alpha:amounts[showindices[0]]==""?0.3:0.6
+		);
+		if(showindices[3]>=0)sb.drawtexture(BPInvIcon(showindices[3]),(80,10),
+			sb.DI_ITEM_CENTER_BOTTOM|sb.DI_SCREEN_CENTER,
+			alpha:amounts[showindices[3]]==""?0.3:0.6
+		);
+		if(showindices[1]>=0)sb.drawtexture(BPInvIcon(showindices[1]),(-50,10),
+			sb.DI_ITEM_CENTER_BOTTOM|sb.DI_SCREEN_CENTER,
+			alpha:amounts[showindices[1]]==""?0.4:0.8
+		);
+		if(showindices[2]>=0)sb.drawtexture(BPInvIcon(showindices[2]),(50,10),
+			sb.DI_ITEM_CENTER_BOTTOM|sb.DI_SCREEN_CENTER,
+			alpha:amounts[showindices[2]]==""?0.4:0.8
+		);
+		if(index>=0){
+			sb.drawtexture(BPInvIcon(index),(0,10),
+				sb.DI_ITEM_CENTER_BOTTOM|sb.DI_SCREEN_CENTER,
+				alpha:amounts[index]==""?0.6:1.
+			);
+			sb.drawstring(
+				sb.pSmallFont,nicenames[index],
+				(0,18),sb.DI_SCREEN_CENTER|sb.DI_TEXT_ALIGN_CENTER,
+				font.CR_FIRE
+			);
+			sb.drawstring(
+				sb.pSmallFont,"In Backpack:  "..selectedinbackpack,
+				(-44,30),sb.DI_SCREEN_CENTER|sb.DI_TEXT_ALIGN_LEFT,
+				selectedinbackpack?font.CR_BROWN:font.CR_DARKBROWN
+			);
+			sb.drawstring(
+				sb.pSmallFont,"On Person:    "..selectedininventory,
+				(-44,38),sb.DI_SCREEN_CENTER|sb.DI_TEXT_ALIGN_LEFT,
+				selectedininventory?font.CR_WHITE:font.CR_DARKGRAY
+			);
+		}
+	}
 	void UpdateMessage(int num){
 		if(!owner)return;
+
+		//set index as necessary
 		int nnsiz=nicenames.size();
 		if(num==index)weaponbulk();
 		if(num!=index&&owner){
@@ -228,67 +281,30 @@ class HDBackpack:HDWeapon{
 			index=num;
 		}
 
-		//translate "amounts" into an actual number of items
-		string amt=amounts[index];
-		let thisclass=((class<actor>)(invclasses[index]));
-		if(havenone(index))amt="\cunone";
-		else if(thisclass is "HDWeapon"||thisclass is "HDMagAmmo"){
-			array<string>mags;
-			amt.split(mags," ");
-			if(thisclass is "HDWeapon")amt="\ce"..(mags.size()/9);
-			else amt="\cs"..mags.size();
-		}else amt="\cs"..amt;
+		showindices[0]=-1;showindices[1]=-1;showindices[2]=-1;showindices[3]=-1;
+		int bpindex=invclasses.find(getclassname());
+		for(int i=1;i<nnsiz;i++){
+			int plusi=index+i;
+			if(plusi>=nnsiz)plusi-=nnsiz;
+			if(!havenone(plusi)||owner.countinv(invclasses[plusi])){
+				if(showindices[2]<0)showindices[2]=plusi;
+				else if(showindices[3]<0)showindices[3]=plusi;
+			}
 
-		//look for an actual amount on the player
-		string ininv;
-		if(!owner.countinv(invclasses[index]))ininv="\cunone";
-		else ininv="\cc"..owner.countinv(invclasses[index]);
-		string str="\n\cx"..nicenames[index]..(hd_debug?(" \cr"..invclasses[index]):"").."\n"..amt.." in pack   "..ininv.." carried\n";
-
-		int aaa=index-1;
-		for(int i=0;i<3;i++){
-			bool thisonesempty=true;
-			while(thisonesempty&&aaa!=index){
-				if(aaa<0)aaa=maxindex;
-				bool hasinbp=!havenone(aaa);
-				bool hasininv=owner&&owner.countinv(invclasses[aaa]);
-				thisonesempty=(!hasinbp&&!hasininv);
-				if(!thisonesempty&&aaa!=index){
-					string whichcol="";
-					if(hasinbp){
-						if(hasininv)whichcol="\ce";
-						else whichcol="\cs";
-					}else if(hasininv)whichcol="\cc";
-					str=whichcol..nicenames[aaa].."\n"..str;
-				}
-				aaa--;
+			plusi=index-i;
+			if(plusi<0)plusi+=nnsiz;
+			if(!havenone(plusi)||owner.countinv(invclasses[plusi])){
+				if(showindices[1]<0)showindices[1]=plusi;
+				else if(showindices[0]<0)showindices[0]=plusi;
 			}
 		}
-		int bbb=index+1;
-		for(int i=0;i<3;i++){
-			bool thisonesempty=true;
-			while(thisonesempty&&bbb!=index){
-				if(bbb>maxindex)bbb=0;
-				bool hasinbp=!havenone(bbb);
-				bool hasininv=owner&&owner.countinv(invclasses[bbb]);
-				thisonesempty=(!hasinbp&&!hasininv);
-				if(!thisonesempty&&bbb!=index){
-					string whichcol="";
-					if(hasinbp){
-						if(hasininv)whichcol="\ce";
-						else whichcol="\cs";
-					}else if(hasininv)whichcol="\cc";
-					str=str.."\n"..whichcol..nicenames[bbb];
-				}
-				bbb++;
-			}
-		}
+		let thisinv=(class<inventory>)(invclasses[index]);
+		selectedinbackpack=getamount(thisinv);
+		selectedininventory=owner.countinv(thisinv);
+
 		//display selected item name and amounts carried
-		str="\cs[] [] [] \cbBackpack \cs[] [] []\nzoom=fast scroll  unload/reload=take/insert\n\n\n\n"
-			..str
+		wepmsg="\cs[] [] [] \cbBackpack \cs[] [] []\nzoom=fast scroll  unload/reload=take/insert\n\n"
 			.."\n\nTotal Bulk: \cf"..int(bulk);
-
-		wepmsg=str;
 	}
 	//generic code for inserting into backpack
 	int ItemToBackpack(inventory item){
