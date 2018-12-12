@@ -193,6 +193,19 @@ class HDStatusBar:DoomStatusBar{
 			alpha:0.6,scale:(1000,600)
 		);
 
+
+			//TESTING
+			let gogg=texman.checkfortexture("GOGGA0",texman.type_any);
+			int gww;int ghh;[gww,ghh]=texman.getsize(gogg);
+			screen.drawtexture(
+				gogg,
+				true,
+				((screen.getwidth()-gww)>>1)-int(hpl.hudbob.x*3),
+				((screen.getheight()-ghh)>>1)-int(hpl.hudbob.y*3),
+				DTA_DestWidth,screen.getwidth(),DTA_DestHeight,screen.getheight(),
+				false
+			);
+
 		//draw the goggles when they do something.
 		let hdla=portableliteamp(hpl.findinventory("PortableLiteAmp"));
 		if(hdla && hdla.worn){
