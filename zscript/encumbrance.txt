@@ -76,7 +76,7 @@ extend class HDPlayerPawn{
 		double stacker=1.;
 		for(inventory hdww=inv;hdww!=null;hdww=hdww.inv){
 			let hdw=hdweapon(hdww);
-			if(hdw){
+			if(hdw&&!(hdw is "HDBackpack")){
 				bool thisweapon=(
 					hdw==player.readyweapon
 					||(hdw==lastweapon&&nullweapon(player.readyweapon))
@@ -100,6 +100,10 @@ extend class HDPlayerPawn{
 		}
 		weaponenc*=stacker;
 
+		//add backpack
+		double bpenc=0;
+		let bp=hdbackpack(findinventory("HDBackpack"));
+		if(bp)bpenc=bp.weaponbulk();
 
 		//if sv_infiniteammo is on, give just enough to reload a gun once
 		if(sv_infiniteammo){
@@ -148,16 +152,20 @@ extend class HDPlayerPawn{
 			min(regenblues,150)+
 			stimcount*2
 		;
-		enc=weaponenc+weaponencsel+itemenc;
+		enc=weaponenc+weaponencsel+itemenc+bpenc;
 
 		//evaluate onemanarmy mode if applicable
 		if(
-			hd_onemanarmy
-			&&!deathmatch
+			!deathmatch
+			&&hd_onemanarmy>0
 			&&skill<5
 		){
-			double finalenc=weaponencsel*2;
-			if(hd_onemanarmy==1)finalenc+=itemenc*0.2;
+			double finalenc=weaponencsel;
+			if(hd_onemanarmy>1)finalenc+=weaponencsel;
+			else{
+				itemenc*=0.25;
+				finalenc+=itemenc+bpenc*0.25;
+			}
 			return finalenc/carrymax;
 		}
 

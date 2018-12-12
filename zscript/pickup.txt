@@ -51,8 +51,8 @@ class GrabThinker:Thinker{
 				&&hdplayerpawn(picktarget).itemenc>HDCONST_MAXENC
 				&&!(picktarget.player.readyweapon is "HDBackpack")
 				&&(
-					!hd_onemanarmy
-					||deathmatch
+					deathmatch
+					||hd_onemanarmy<2
 					||skill>=5
 				)
 				&&(
