@@ -43,7 +43,6 @@ class HDBackpack:HDWeapon{
 	override void DropOneAmmo(int amt){
 		if(owner){
 			RemoveFromBackpack(index,false);
-			if(havenone(index))updatemessage(1);
 		}
 	}
 
@@ -438,7 +437,8 @@ class HDBackpack:HDWeapon{
 			}
 		}
 		amounts[index]=newamounts;
-		UpdateMessage(index);
+		if(havenone(index)&&!owner.countinv(invclasses[index]))UpdateMessage(index+1);
+		else UpdateMessage(index);
 		return ticks;
 	}
 	//main interface
