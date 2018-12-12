@@ -109,6 +109,53 @@ class Vulcanette:HDWeapon{
 			);
 		}
 	}
+	override void DrawSightPicture(
+		HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl,
+		bool sightbob,vector2 bob,double fov,bool scopeview,actor hpc,string whichdot
+	){
+		double dotoff=max(abs(bob.x),abs(bob.y));
+		if(dotoff<20){
+			sb.drawimage(
+				whichdot,(0,0)+bob*1.6,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
+				alpha:0.8-dotoff*0.04
+			);
+		}
+		sb.drawimage(
+			"riflsite",(0,0)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER
+		);
+		int scaledyoffset=47;
+		if(scopeview){
+			double degree=(hdw.weaponstatus[VULCS_ZOOM])*0.1;
+			texman.setcameratotexture(hpc,"HDXHCAM3",degree);
+			sb.drawimage(
+				"HDXHCAM3",(0,scaledyoffset)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
+				scale:(0.31,0.31)
+			);
+			int scaledwidth=57;
+			int cx,cy,cw,ch;
+			[cx,cy,cw,ch]=screen.GetClipRect();
+			sb.SetClipRect(
+				-28+bob.x,19+bob.y,scaledwidth,scaledwidth,
+				sb.DI_SCREEN_CENTER
+			);
+			sb.drawimage(
+				"scophole",(0,scaledyoffset)+bob*3,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
+				scale:(0.78,0.78)
+			);
+			sb.SetClipRect(cx,cy,cw,ch);
+			sb.drawimage(
+				"zm66scop",(0,scaledyoffset)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
+				scale:(0.8,0.8)
+			);
+			sb.drawnum(degree*10,
+				3+bob.x,73+bob.y,sb.DI_SCREEN_CENTER,Font.CR_BLACK
+			);
+			sb.drawimage(
+				"BLETA0",(0,77)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
+				alpha:0.6,scale:(1.3,1.3)
+			);
+		}
+	}
 	override void consolidate(){
 		CheckBFGCharge(VULCS_BATTERY);
 	}

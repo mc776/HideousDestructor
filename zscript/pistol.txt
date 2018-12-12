@@ -82,6 +82,28 @@ class HDPistol:HDWeapon{
 		sb.drawwepnum(hdw.weaponstatus[PISS_MAG],15);
 		if(hdw.weaponstatus[PISS_CHAMBER]==2)sb.drawwepdot(-16,-10,(3,1));
 	}
+	override void DrawSightPicture(
+		HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl,
+		bool sightbob,vector2 bob,double fov,bool scopeview,actor hpc,string whichdot
+	){
+		int cx,cy,cw,ch;
+		[cx,cy,cw,ch]=screen.GetClipRect();
+		sb.SetClipRect(
+			-8+bob.x,-4+bob.y,16,10,
+			sb.DI_SCREEN_CENTER
+		);
+		vector2 bobb=bob*1.6;
+		bobb.y=clamp(bobb.y,-8,8);
+		sb.drawimage(
+			"frntsite",(0,0)+bobb,sb.DI_SCREEN_CENTER|sb.DI_ITEM_TOP,
+			alpha:0.9,scale:(0.6,0.6)
+		);
+		sb.SetClipRect(cx,cy,cw,ch);
+		sb.drawimage(
+			"backsite",(0,0)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_TOP,
+			scale:(0.6,0.6)
+		);
+	}
 	override void DropOneAmmo(int amt){
 		if(owner){
 			amt=clamp(amt,1,10);

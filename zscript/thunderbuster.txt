@@ -56,6 +56,54 @@ class ThunderBuster:HDWeapon{
 			Font.CR_DARKGRAY
 		);
 	}
+	override void DrawSightPicture(
+		HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl,
+		bool sightbob,vector2 bob,double fov,bool scopeview,actor hpc,string whichdot
+	){
+		int cx,cy,cw,ch;
+		[cx,cy,cw,ch]=screen.GetClipRect();
+		sb.SetClipRect(
+			-16+bob.x,-4+bob.y,32,16,
+			sb.DI_SCREEN_CENTER
+		);
+		vector2 bobb=bob*2;
+		bobb.y=clamp(bobb.y,-8,8);
+		sb.drawimage(
+			"frntsite",(0,0)+bobb,sb.DI_SCREEN_CENTER|sb.DI_ITEM_TOP,
+			alpha:0.9,scale:(1.6,2)
+		);
+		sb.SetClipRect(cx,cy,cw,ch);
+		sb.drawimage(
+			"backsite",(0,0)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_TOP,
+			scale:(2,1)
+		);
+
+		if(scopeview){
+			bool alt=hdw.weaponstatus[0]&TBF_ALT;
+			int scaledyoffset=36;
+			texman.setcameratotexture(hpc,"HDXHCAM1",3);
+			sb.drawimage(
+				"HDXHCAM1",(0,scaledyoffset)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
+				alpha:alt?(hpl.flip?0.7:0.8):1.,scale:(1,1)
+			);
+			sb.drawnum(hdw.weaponstatus[TBS_MAXRANGEDISPLAY],
+				24+bob.x,12+bob.y,sb.DI_SCREEN_CENTER,Font.CR_RED,0.4
+			);
+			if(alt)sb.drawnum(2000/HDCONST_ONEMETRE,
+				23+bob.x,11+bob.y,sb.DI_SCREEN_CENTER,Font.CR_BLACK,1.
+			);
+			sb.drawimage(
+				"tbwindow",(0,scaledyoffset)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
+				scale:(1,1)
+			);
+			bobb*=3.7;
+			double dotoff=max(abs(bobb.x),abs(bobb.y));
+			if(dotoff<40)sb.drawimage(
+				"redpxl",(0,scaledyoffset)+bobb,sb.DI_SCREEN_CENTER|sb.DI_ITEM_TOP,
+				alpha:(alt?0.4:0.9)*(1.-dotoff*0.04),scale:alt?(hpl.flip?(3,3):(1,1)):(2,2)
+			);
+		}
+	}
 	override void failedpickupunload(){
 		failedpickupunloadmag(TBS_BATTERY,"HDBattery");
 	}
