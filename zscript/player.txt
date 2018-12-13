@@ -523,6 +523,33 @@ class HDPlayerPawn:PlayerPawn{
 
 		//check use key
 		if(!(input&BT_USE))bpickup=false;else{
+			if(
+				//attempt to kick down the map geometry
+				input&BT_ZOOM
+				&&player.crouchfactor>0.8
+				&&!corpsekicktimer
+				&&linetrace(angle,42,pitch,flags:TRF_THRUACTORS,offsetz:height*0.4)
+			){
+				corpsekicktimer=20+unstablewoundcount*0.5;
+				stunned+=25;
+				bool db=zerk>0;
+				double kickback=db?1:4;
+				db=doordestroyer.destroydoor(self,db?128:64,db?24:random(0,random(1,12)));
+				if(!random(0,db?7:3)){
+					corpsekicktimer+=20;
+					damagemobj(self,self,random(1,5),"Bashing");
+					stunned+=70;
+					if(!random(0,6))woundcount++;
+					kickback*=frandom(1,2);
+				}
+				A_ChangeVelocity(-kickback,0,0,CVF_RELATIVE);
+				A_PlaySound("*fist",CHAN_BODY);
+				LineAttack(angle,48,pitch,0,"none",
+					zerk>0?"BulletPuffBig":"BulletPuffMedium",
+					flags:LAF_OVERRIDEZ,
+					offsetz:height*0.3
+				);
+			}
 			bpickup=true;
 			if(oldinput&BT_ATTACK)hasgrabbed=true;
 			else if(!(oldinput&BT_USE))hasgrabbed=false;
