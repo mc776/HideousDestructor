@@ -198,19 +198,18 @@ class HDStatusBar:DoomStatusBar{
 		let hdla=portableliteamp(hpl.findinventory("PortableLiteAmp"));
 		if(hdla && hdla.worn){
 			//can we do these calculations once somewhere else?
-			let gogg=texman.checkfortexture("GOGGA0",texman.type_any);
 			int gogheight=screen.getheight()*(1.9*90.)/cplayer.fov;
 			int gogwidth=screen.getwidth()*gogheight/screen.getheight();
 			int gogoffsx=-((gogwidth-screen.getwidth())>>1);
 			int gogoffsy=-((gogheight-screen.getheight())>>1);
 
 			screen.drawtexture(
-				gogg,
+				texman.checkfortexture("GOGGA0",texman.type_any),
 				true,
 				gogoffsx-(int(hpl.hudbob.x)),
 				gogoffsy-(int(hpl.hudbob.y)),
 				DTA_DestWidth,gogwidth,DTA_DestHeight,gogheight,
-				false
+				true
 			);
 		}
 
