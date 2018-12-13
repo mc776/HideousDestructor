@@ -123,6 +123,17 @@ class doordestroyer:hdactor{
 		isdoor=(othersector!=
 			sector.pointinsector(dlt.hitlocation.xy+depthcheck)
 		);
+
+		vector2 cspt=othersector.centerspot;
+		double sptd=0;
+		for(int i=0;i<othersector.lines.size();i++){
+			double xdif=abs(othersector.lines[i].v1.p.x-cspt.x);
+			if(xdif>sptd)sptd=xdif;
+			double ydif=abs(othersector.lines[i].v1.p.y-cspt.y);
+			if(ydif>sptd)sptd=ydif;
+		}
+		isdoor=sptd<maxdepth*2;
+
 		if(!isdoor){
 			if(othersector!=sector.pointinsector(dlt.hitlocation.xy+depthcheck*frandom(0,2))){
 				//add a damage point

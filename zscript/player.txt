@@ -523,6 +523,8 @@ class HDPlayerPawn:PlayerPawn{
 
 		//check use key
 		if(!(input&BT_USE))bpickup=false;else{
+			if(oldinput&BT_ATTACK)hasgrabbed=true;
+			else if(!(oldinput&BT_USE))hasgrabbed=false;
 			if(
 				//attempt to kick down the map geometry
 				input&BT_ZOOM
@@ -530,6 +532,7 @@ class HDPlayerPawn:PlayerPawn{
 				&&!corpsekicktimer
 				&&linetrace(angle,42,pitch,flags:TRF_THRUACTORS,offsetz:height*0.4)
 			){
+				hasgrabbed=true;
 				corpsekicktimer=20+unstablewoundcount*0.5;
 				stunned+=25;
 				bool db=zerk>0;
@@ -552,9 +555,7 @@ class HDPlayerPawn:PlayerPawn{
 					offsetz:height*0.3
 				);
 			}
-			bpickup=true;
-			if(oldinput&BT_ATTACK)hasgrabbed=true;
-			else if(!(oldinput&BT_USE))hasgrabbed=false;
+			bpickup=!hasgrabbed;
 			//pickerupper
 			overloaded=CheckEncumbrance();
 			if(!hasgrabbed){
