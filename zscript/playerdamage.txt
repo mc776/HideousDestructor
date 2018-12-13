@@ -111,6 +111,26 @@ extend class HDPlayerPawn{
 		//regular armour...
 		int alv=(flags&DMG_NO_ARMOR||flags&DMG_FORCED)?0:self.armourlevel;
 
+		//which is just a vest not a bubble...
+		if(
+			alv
+			&&inflictor
+			&&getdefaultbytype(inflictor.getclassname()).bmissile
+		){
+			double impactheight=inflictor.pos.z+inflictor.height*0.5;
+			double shoulderheight=pos.z+height-16;
+			double waistheight=pos.z+height*0.4;
+			double impactangle=absangle(angle,angleto(inflictor));
+			if(impactangle>90)impactangle=180-impactangle;
+			bool shouldhitflesh=(
+				impactheight>shoulderheight
+				||impactheight<waistheight
+				||impactangle>80
+			)?random(0,3):!random(0,31);
+			if(shouldhitflesh)alv=0;
+			else if(impactangle>80)alv=random(1,alv);
+		}
+
 		//excess hp
 		if(mod=="maxhpdrain"){
 			damage=min(health-1,damage);
