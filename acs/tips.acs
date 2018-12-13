@@ -27,7 +27,7 @@ function str gettip(int rsd){
 	int flp=0;
 	int rnd=lastrnd;
 	for(int i=0;i<rsd;i++){flp=random(0,1);}
-	while(rnd==lastrnd)rnd=random(0,29);
+	while(rnd==lastrnd)rnd=random(0,30);
 	lastrnd=rnd;
 	switch(rnd){
 	case 1: return "Remember to \cxBIND KEYS\cu for all
@@ -151,11 +151,15 @@ function str gettip(int rsd){
 	case 27: return "To \cxREMOTE ACTIVATE\cu a switch or a door,
 			\ntype \cqderp 555 <tag>\cu to stick your D.E.R.P.
 			\nonto it and \cqderp 556 <tag>\cu to hit the switch";
+
 	case 28: return "You automatically consolidate magazines and batteries
 			\nin your pockets \cxBETWEEN LEVELS\cu, but NOT any in your backpack.
 			\n(Robot repairs and reloading 7.76mm work with backpack contents, though.)";
+
 	case 29: return "To \cxDIVE\cu forwads, backwards or sideways,
 			\npress and hold \cqCrouch while moving\cu in that direction.";
+
+	case 30: return "Press \cqUse\cu while holding \cqZoom\cu to try to \cxKICK DOWN\cu a door.";
 	}
 
 	//default:
