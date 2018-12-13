@@ -194,26 +194,23 @@ class HDStatusBar:DoomStatusBar{
 		);
 
 
-			//TESTING
-			let gogg=texman.checkfortexture("GOGGA0",texman.type_any);
-			int gww;int ghh;[gww,ghh]=texman.getsize(gogg);
-			screen.drawtexture(
-				gogg,
-				true,
-				((screen.getwidth()-gww)>>1)-int(hpl.hudbob.x*3),
-				((screen.getheight()-ghh)>>1)-int(hpl.hudbob.y*3),
-				DTA_DestWidth,screen.getwidth(),DTA_DestHeight,screen.getheight(),
-				false
-			);
-
 		//draw the goggles when they do something.
 		let hdla=portableliteamp(hpl.findinventory("PortableLiteAmp"));
 		if(hdla && hdla.worn){
-			drawimage(
-				"GOGGA0",
-				-hpl.hudbob,
-				DI_SCREEN_CENTER|DI_ITEM_CENTER,
-				scale:(2.2,2.4)*90./cplayer.fov
+			//can we do these calculations once somewhere else?
+			let gogg=texman.checkfortexture("GOGGA0",texman.type_any);
+			int gogheight=screen.getheight()*(1.9*90.)/cplayer.fov;
+			int gogwidth=screen.getwidth()*gogheight/screen.getheight();
+			int gogoffsx=-((gogwidth-screen.getwidth())>>1);
+			int gogoffsy=-((gogheight-screen.getheight())>>1);
+
+			screen.drawtexture(
+				gogg,
+				true,
+				gogoffsx-(int(hpl.hudbob.x)<<2),
+				gogoffsy-(int(hpl.hudbob.y)<<2),
+				DTA_DestWidth,gogwidth,DTA_DestHeight,gogheight,
+				false
 			);
 		}
 

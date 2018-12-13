@@ -147,37 +147,6 @@ class doordestroyer:hdactor{
 		}
 		if(!isdoor)return false;
 
-/*
-		//see if a door special applies
-		//currently unused - it's a "door" destroyer without limitation
-		//keeping it in case we can disable remote door switches with this
-		isdoor=checkdoorspecial(dlt.hitline.special);
-		if(!isdoor){
-			//find the sector tag
-			int brutalforcery=0;
-			bool gotit=false;
-			for(brutalforcery=0;brutalforcery<100;brutalforcery++){
-				sectortagiterator sss=
-					sectortagiterator.create(brutalforcery);
-				int ssss=sss.next();
-				while(!gotit&&ssss>-1){
-					if(level.sectors[ssss]==othersector)gotit=true;
-					ssss=sss.next();
-				}
-				if(gotit)break;
-			}
-			if(brutalforcery>0){
-				lineiditerator lll=lineiditerator.create(brutalforcery);
-				int l=0;
-				while(!isdoor&&l>-1){
-					isdoor=checkdoorspecial(level.lines[l].special);
-					l=lll.next();
-				}
-			}
-		}
-		if(!isdoor)return false;
-*/
-
 		//blow that shit up
 		double doorwidth=doorline.length();
 		double holeheight=clamp(frandom(0.01,0.02)*maxdepth*maxwidth,32,doorwidth+frandom(-12,12));
