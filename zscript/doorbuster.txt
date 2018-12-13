@@ -132,7 +132,7 @@ class doordestroyer:hdactor{
 			double ydif=abs(othersector.lines[i].v1.p.y-cspt.y);
 			if(ydif>sptd)sptd=ydif;
 		}
-		isdoor=sptd<maxdepth*2;
+		isdoor=sptd<maxdepth*frandom(1.4,2.4);
 
 		if(!isdoor){
 			if(othersector!=sector.pointinsector(dlt.hitlocation.xy+depthcheck*frandom(0,2))){
