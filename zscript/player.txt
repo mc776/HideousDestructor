@@ -541,7 +541,9 @@ class HDPlayerPawn:PlayerPawn{
 					stunned+=70;
 					if(!random(0,6))woundcount++;
 					kickback*=frandom(1,2);
+					A_MuzzleClimb((frandom(-1,1),4),(frandom(-1,1),-1),(frandom(-1,1),-1),(frandom(-1,1),-1));
 				}
+				A_MuzzleClimb((0,-1),(0,-1),(0,-1),(0,-1));
 				A_ChangeVelocity(-kickback,0,0,CVF_RELATIVE);
 				A_PlaySound("*fist",CHAN_BODY);
 				LineAttack(angle,48,pitch,0,"none",
