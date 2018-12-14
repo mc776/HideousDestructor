@@ -292,9 +292,9 @@ class HERPBot:HDUPK{
 				}else{
 					let hu=HERPUsable(target.GiveInventoryType("HERPUsable"));
 					if(hu){
-						hu.ammo[0]=ammo[0];
-						hu.ammo[1]=ammo[1];
-						hu.ammo[2]=ammo[2];
+						hu.weaponstatus[1]=ammo[0];
+						hu.weaponstatus[2]=ammo[1];
+						hu.weaponstatus[3]=ammo[2];
 						HDMagAmmo.GiveMag(target,"HDBattery",battery);
 					}
 				}
@@ -361,39 +361,59 @@ class EnemyHERP:HERPBot{
 		translation "112:120=152:159","121:127=9:12";
 	}
 }
-class HERPUsable:HDPickup{
-	int ammo[3];
-	int botid;
+class HERPUsable:HDWeapon{
 	default{
 		//$Category "Items/Hideous Destructor"
 		//$Title "H.E.R.P. Robot (Pickup)"
 		//$Sprite "HERPA1"
 
+		+weapon.wimpy_weapon
+		+inventory.invbar
 		inventory.amount 1;
 		inventory.maxamount 1;
 		inventory.icon "HERPEX";
 		inventory.pickupsound "misc/w_pkup";
 		inventory.pickupmessage "Picked up a Heavy Engagement Rotary Platform robot.";
-		hdpickup.nicename "H.E.R.P. Robot";
-		hdpickup.refid HDLD_HERPBOT;
+		hdweapon.barrelsize 30,3,3;
+		hdweapon.nicename "H.E.R.P. Robot";
+		hdweapon.refid HDLD_HERPBOT;
+		hdweapon.fitsinbackpack true;
 	}
-	override double getbulk(){
+	override double gunmass(){
+		double amt=9+weaponstatus[HERP_BATTERY]<0?0:1;
+		if(weaponstatus[1]>=0)amt+=3.6;
+		if(weaponstatus[2]>=0)amt+=3.6;
+		if(weaponstatus[3]>=0)amt+=3.6;
+		return amt;
+	}
+	override double weaponbulk(){
 		double enc=ENC_HERP;
-		for(int i=0;i<3;i++){
-			if(ammo[i]>=0)enc+=max(ENC_426MAG*0.2,ammo[i]*ENC_426*0.8);
+		for(int i=1;i<4;i++){
+			if(weaponstatus[i]>=0)enc+=max(ENC_426MAG*0.2,weaponstatus[i]*ENC_426*0.8);
 		}
 		return enc;
 	}
-	override int getsbarnum(int flags){return botid;}
-	override void beginplay(){
-		ammo[0]=51;
-		ammo[1]=51;
-		ammo[2]=51;
-		botid=1;
-		super.beginplay();
+	override int getsbarnum(int flags){return weaponstatus[HERP_BOTID];}
+	override void InitializeWepStats(bool idfa){
+		weaponstatus[HERP_BATTERY]=20;
+		weaponstatus[1]=51;
+		weaponstatus[2]=51;
+		weaponstatus[3]=51;
+		weaponstatus[4]=20;
 	}
 	states{
-	use:
+	/*
+		TODO: actual friggin interface
+		Weaponstatus: Bars for 3 mags and battery; botid; starting mode
+		Unload/Reload
+		Firemode: Turn on/off
+		Zoom+Firemode: Turn on AND GO LIVE WHILE IN HAND
+		Fire: Deploy (based on status)
+		Mag manager goes to 4mil
+		No sight picture
+	*/
+	select:
+		//change this to a proper interface later
 		TNT1 A 0{
 			int loadcell=0;
 			int loadmag[3];
@@ -408,12 +428,12 @@ class HERPUsable:HDPickup{
 			//check for no mags at all
 			if(
 				(
-					invoker.ammo[0]>100
+					invoker.weaponstatus[1]>100
 					&&!random(0,7)
 				)||(
-					invoker.ammo[0]%100<0
-					&&invoker.ammo[1]%100<0
-					&&invoker.ammo[2]%100<0
+					invoker.weaponstatus[1]%100<0
+					&&invoker.weaponstatus[2]%100<0
+					&&invoker.weaponstatus[3]%100<0
 				)
 			){
 				if(!countinv("HD4mMag")){
@@ -427,21 +447,21 @@ class HERPUsable:HDPickup{
 							toadd+=100;
 							A_Log(string.format("\cd[HERP] \cj%s",HDCONST_426MAGMSG),true);
 						}
-						invoker.ammo[0]=toadd;
+						invoker.weaponstatus[1]=toadd;
 					}
 				}
 			}
 
 			//load the other two mags
-			for(int i=1;i<=2;i++){
-				if(invoker.ammo[i]%100<0){
+			for(int i=2;i<=3;i++){
+				if(invoker.weaponstatus[i]%100<0){
 					let mmm=HDMagAmmo(findinventory("HD4mMag"));
 					if(mmm&&!HDMagAmmo.NothingLoaded(self,"HD4mMag")){
 						int toadd=mmm.TakeMag(true);
 						if(toadd<51){
 							toadd+=100;
 							A_Log(string.format("\cd[HERP] \cj%s",HDCONST_426MAGMSG),true);
-						}invoker.ammo[i]=toadd;
+						}invoker.weaponstatus[i]=toadd;
 					}
 				}
 			}
@@ -457,18 +477,26 @@ class HERPUsable:HDPickup{
 			hhh.vel+=vel;hhh.angle=angle;
 			let hhhh=HERPBot(hhh);
 			hhhh.startangle=angle;
-			hhhh.ammo[0]=invoker.ammo[0];
-			hhhh.ammo[1]=invoker.ammo[1];
-			hhhh.ammo[2]=invoker.ammo[2];
+			hhhh.ammo[0]=invoker.weaponstatus[1];
+			hhhh.ammo[1]=invoker.weaponstatus[2];
+			hhhh.ammo[2]=invoker.weaponstatus[3];
 			hhhh.battery=loadcell;
-			hhhh.botid=invoker.botid;
-			A_Log(string.format("\cd[HERP] \cjDeployed with tag ID \cy%i",invoker.botid),true);
+			hhhh.botid=invoker.weaponstatus[HERP_BOTID];
+			A_Log(string.format("\cd[HERP] \cjDeployed with tag ID \cy%i",invoker.weaponstatus[HERP_BOTID]),true);
+			A_SelectWeapon("HDFist");
 			invoker.destroy();
-		}fail;
+		}stop;
 	spawn:
 		HERP A -1;
 		stop;
 	}
+}
+enum HERPNum{
+	HERP_MAG1=1,
+	HERP_MAG2=2,
+	HERP_MAG3=3,
+	HERP_BATTERY=4,
+	HERP_BOTID=5,
 }
 class HERPDEAD:HDPickup{
 	default{
@@ -511,12 +539,12 @@ class HERPDEAD:HDPickup{
 extend class HDHandlers{
 	void SetHERP(hdplayerpawn ppp,int botcmd,int botcmdid,int achange){
 		let herpinv=HERPUsable(ppp.findinventory("HERPUsable"));
-		int botid=herpinv?herpinv.botid:1;
+		int botid=herpinv?herpinv.weaponstatus[HERP_BOTID]:1;
 
 		//set HERP tag number with -#
 		if(botcmd<0){
 			if(!herpinv)return;
-			herpinv.botid=-botcmd;
+			herpinv.weaponstatus[HERP_BOTID]=-botcmd;
 			ppp.A_Log(string.format("\cd[HERP] \cjNext HERP tag set to \cy%i",-botcmd),true);
 			return;
 		}
@@ -524,8 +552,8 @@ extend class HDHandlers{
 		else if(botcmd==411){
 			if(!herpinv)return;
 			string ammo[3];
-			for(int i=0;i<3;i++){
-				int inherp=herpinv.ammo[i];
+			for(int i=1;i<4;i++){
+				int inherp=herpinv.weaponstatus[i];
 				if(inherp>=100)ammo[i]=string.format("\cg%i",random(0,99));
 				else if(inherp>50)ammo[i]=string.format("\cy50");
 				else if(inherp<0)ammo[i]=string.format("\cu0");
@@ -545,14 +573,14 @@ extend class HDHandlers{
 			bool takeall=(botcmd==413);
 			bool tookdirty=false;
 			bool tookany=false;
-			for(int i=0;i<3;i++){
-				int gettt=herpinv.ammo[i];
+			for(int i=1;i<4;i++){
+				int gettt=herpinv.weaponstatus[i];
 				if(
 					gettt<0
 					||(!takeall&&gettt>100)
 				)continue;
 				tookany=true;
-				herpinv.ammo[i]=-1;
+				herpinv.weaponstatus[i]=-1;
 				if(gettt>100){
 					tookdirty=true;
 					gettt=clamp(gettt,0,50);
