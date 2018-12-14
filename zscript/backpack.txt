@@ -210,39 +210,50 @@ class HDBackpack:HDWeapon{
 		}
 	}
 
-
 	int showindices[4];
 	int selectedinbackpack;int selectedininventory;
-	ui textureid BPInvIcon(int which){
+	ui textureid,vector2 BPInvIcon(int which){
 		let item=getdefaultbytype((class<inventory>)(invclasses[which]));
 		let ddi=item.icon;
+		vector2 ddv=(1.,1.);
 		if(!ddi){
 			let dds=item.spawnstate;
 			if(dds!=null)ddi=dds.GetSpriteTexture(0); //see if this works on rotated sprites too...
 		}
-		return ddi;
+		if(ddi){
+			vector2 dds=texman.getscaledsize(ddi);
+			if(min(dds.x,dds.y)<8.){
+				ddv*=(8./min(dds.x,dds.y));
+			}
+		}
+		return ddi,ddv;
 	}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
-		if(showindices[0]>=0)sb.drawtexture(BPInvIcon(showindices[0]),(-80,0),
-			sb.DI_ITEM_CENTER|sb.DI_SCREEN_CENTER,
-			alpha:amounts[showindices[0]]==""?0.3:0.6
-		);
-		if(showindices[3]>=0)sb.drawtexture(BPInvIcon(showindices[3]),(80,0),
-			sb.DI_ITEM_CENTER|sb.DI_SCREEN_CENTER,
-			alpha:amounts[showindices[3]]==""?0.3:0.6
-		);
-		if(showindices[1]>=0)sb.drawtexture(BPInvIcon(showindices[1]),(-50,0),
-			sb.DI_ITEM_CENTER|sb.DI_SCREEN_CENTER,
-			alpha:amounts[showindices[1]]==""?0.4:0.8
-		);
-		if(showindices[2]>=0)sb.drawtexture(BPInvIcon(showindices[2]),(50,0),
-			sb.DI_ITEM_CENTER|sb.DI_SCREEN_CENTER,
-			alpha:amounts[showindices[2]]==""?0.4:0.8
-		);
+		for(int i=0;i<4;i++){
+			if(showindices[i]>=0){
+				textureid bpi;vector2 bps;
+				[bpi,bps]=BPInvIcon(showindices[i]);
+				int xofs=-80;
+				switch(i){
+					case 1:xofs=-40;break;
+					case 2:xofs=40;break;
+					case 3:xofs=80;break;
+					default:break;
+				}
+				if(bpi)sb.drawtexture(bpi,(xofs,0),
+					sb.DI_ITEM_CENTER|sb.DI_SCREEN_CENTER,
+					alpha:amounts[showindices[0]]==""?0.3:0.6,
+					scale:bps
+				);
+			}
+		}
 		if(index>=0){
-			sb.drawtexture(BPInvIcon(index),(0,0),
+			textureid bpi;vector2 bps;
+			[bpi,bps]=BPInvIcon(index);
+			if(bpi)sb.drawtexture(bpi,(0,0),
 				sb.DI_ITEM_CENTER_BOTTOM|sb.DI_SCREEN_CENTER,
-				alpha:amounts[index]==""?0.6:1.
+				alpha:amounts[index]==""?0.6:1.,
+				scale:bps
 			);
 			sb.drawstring(
 				sb.pSmallFont,nicenames[index],
@@ -263,7 +274,6 @@ class HDBackpack:HDWeapon{
 	}
 	void UpdateMessage(int num){
 		if(!owner)return;
-
 		//set index as necessary
 		int nnsiz=nicenames.size();
 		if(num==index)weaponbulk();
