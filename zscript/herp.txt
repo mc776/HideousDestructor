@@ -563,13 +563,14 @@ class HERPUsable:HDWeapon{
 	}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
 		if(hdw.amount<1)return;
-		sb.drawimage("HERPA6A4",(10,14),
+		vector2 bob=hpl.hudbob*0.2;
+		sb.drawimage("HERPA7A3",(10,14)+bob,
 			sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER|sb.DI_TRANSLATABLE,
 			scale:(2,2)
 		);
 		for(int i=1;i<4;i++){
 			int bbb=hdw.weaponstatus[i];
-			if(bbb>=51)sb.drawimage("ZMAGA0",(-20,i*10),
+			if(bbb>=51)sb.drawimage("ZMAGA0",(-20,i*10)+bob,
 				sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
 				scale:(2,2)
 			);else if(bbb>=0)sb.drawbar(
@@ -585,7 +586,7 @@ class HERPUsable:HDWeapon{
 			if(batt>13)batsprite="CELLA0";
 			else if(batt>6)batsprite="CELLB0";
 			else batsprite="CELLC0";
-			sb.drawimage(batsprite,(0,30),
+			sb.drawimage(batsprite,(0,30)+bob,
 				sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER
 			);
 		}
