@@ -66,6 +66,11 @@ class BossRifle:HDWeapon{
 	override double weaponbulk(){
 		return 144+weaponstatus[BOSSS_MAG]*ENC_776_LOADED;
 	}
+	override void GunBounce(){
+		super.GunBounce();
+		weaponstatus[BOSSS_GRIME]+=random(-7,3);
+		if(weaponstatus[BOSSS_CHAMBER]>2&&!random(0,7))weaponstatus[BOSSS_CHAMBER]-=2;
+	}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
 		if(sb.gimmehud){
 			int nextmagloaded=sb.GetNextLoadMag(hdmagammo(hpl.findinventory("HD7mClip")));

@@ -56,6 +56,10 @@ class ZM66AssaultRifle:HDWeapon{
 			return 7.7+weaponstatus[ZM66S_MAG]*0.01+(weaponstatus[0]&ZM66F_GRENADELOADED?1.:0.);
 		}
 	}
+	override void GunBounce(){
+		super.GunBounce();
+		if(!random(0,5))weaponstatus[0]&=~ZM66F_CHAMBERBROKEN;
+	}
 	override string pickupmessage(){
 		if(weaponstatus[0]&ZM66F_NOFIRESELECT)return "Picked up a semi-automatic weapon. Time for some carnage!";
 		return super.pickupmessage();
