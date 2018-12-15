@@ -28,6 +28,14 @@ class HDGrenadeThrower:HDWeapon{
 				owner.health<1
 				||weaponstatus[FRAGS_TIMER]>136
 			)TossGrenade(true);
+		}else if(
+			weaponstatus[0]&FRAGF_INHAND
+			&&weaponstatus[0]&FRAGF_PINOUT
+			&&owner.player.cmd.buttons&BT_ATTACK
+			&&owner.player.cmd.buttons&BT_ALTFIRE
+			&&!(owner.player.oldbuttons&BT_ALTFIRE)
+		){
+			StartCooking();
 		}
 		super.doeffect();
 	}
@@ -134,6 +142,28 @@ class HDGrenadeThrower:HDWeapon{
 		invoker.weaponstatus[0]|=(FRAGF_PINOUT|FRAGF_INHAND);
 		A_TakeInventory(invoker.grenadeammotype,1,TIF_NOTAKEINFINITE);
 		A_PlaySound("weapons/fragpinout",CHAN_WEAPON);
+	}
+	//drop the spoon
+	action void A_StartCooking(){invoker.StartCooking();}
+	void StartCooking(){
+		if(!owner)return;
+		bool gbg;actor spn;
+		double ptch=owner.pitch;
+		double cpp=cos(ptch);double spp=sin(ptch);
+		[gbg,spn]=owner.A_SpawnItemEx(spoontype,
+			cpp*4,-1,height-6-spp*4,
+				cpp*4+vel.x,
+				0,
+				-sin(pitch)*4+vel.z,
+			0,SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
+		);
+		spn.vel+=owner.vel;
+		weaponstatus[0]|=FRAGF_SPOONOFF;
+		if(cvar.getcvar("hd_helptext",owner.player).getint()){
+			wepmsg="\cgThe fuze is lit!\n\n\n\n\cgRemember to throw!";
+			msgtimer=100;
+		}
+		owner.A_PlaySound("weapons/fragspoonoff",0,1,0,20);
 	}
 	//we need to start from the inventory itself so it can go into DoEffect
 	action void A_TossGrenade(bool oshit=false){invoker.TossGrenade(oshit);}
@@ -269,22 +299,7 @@ class HDGrenadeThrower:HDWeapon{
 		TNT1 A 0 A_Refire();
 		goto ready;
 	startcooking:
-		TNT1 A 6{
-			bool gbg;actor spn;
-			double cpp=cos(pitch);double spp=sin(pitch);
-			[gbg,spn]=A_SpawnItemEx(invoker.spoontype,
-				cpp*4,-1,height-6-spp*4,
-					cpp*4+vel.x,
-					0,
-					-sin(pitch)*4+vel.z,
-				0,SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
-			);
-			spn.vel+=vel;
-			invoker.weaponstatus[0]|=FRAGF_SPOONOFF;
-			if(getcvar("hd_helptext"))
-				A_WeaponMessage("\cgThe fuze is lit!\n\n\n\n\cgRemember to throw!");
-			A_PlaySound("weapons/fragspoonoff",0,1,0,20);
-		}
+		TNT1 A 6 A_StartCooking();
 		TNT1 A 0 A_Refire();
 		goto ready;
 	fire:
