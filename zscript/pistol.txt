@@ -160,6 +160,12 @@ class HDPistol:HDWeapon{
 			owner.player.pendingweapon=ops;
 			owner.player.readyweapon=ops;
 		}
+		let onr=owner;
+		if(onr&&onr.player&&onr.player.cmd.buttons&BT_ZOOM){
+			second.bmissile=true;
+			second.target=onr;
+			hdweapon(second).justchucked=true;
+		}
 		return second;
 	}
 	action void SwapPistols(){

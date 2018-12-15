@@ -29,6 +29,8 @@ class HDWeapon:Weapon{
 		+weapon.ammo_optional +weapon.alt_ammo_optional +weapon.noalert +weapon.noautoaim
 		+weapon.no_auto_switch
 		+noblockmonst +notrigger +dontgib
+		+usebouncestate +hittracer
+		bouncetype "doom";
 		weapon.ammogive 0;weapon.ammogive2 0;
 		weapon.ammouse1 0;weapon.ammouse2 0;
 		weapon.bobstyle "Alpha";
@@ -45,7 +47,7 @@ class HDWeapon:Weapon{
 		hdweapon.fitsinbackpack false;
 	}
 	override bool getnoteleportfreeze(){return true;}
-	override bool cancollidewith(actor other,bool passive){return HDPickerUpper(other);}
+	override bool cancollidewith(actor other,bool passive){return bmissile||HDPickerUpper(other);}
 	//wrapper for setpsprite
 	action void SetWeaponState(statelabel st,int layer=PSP_WEAPON){
 		if(player)player.setpsprite(layer,invoker.findstate(st));
@@ -124,6 +126,44 @@ class HDWeapon:Weapon{
 	action void HijackMouse(){
 		let ppp=hdplayerpawn(self);if(ppp)ppp.mousehijacked=true;
 		else player.cmd.pitch=0;player.cmd.yaw=0;
+	}
+
+	//for throwing a weapon
+	override inventory CreateTossable(int amount){
+		let onr=owner;
+		bool throw=(onr&&onr.player&&onr.player.cmd.buttons&BT_ZOOM);
+		let thrown=super.createtossable(amount);
+		if(!throw)return thrown;
+		thrown.bmissile=true;
+		thrown.target=onr;
+		hdweapon(thrown).justchucked=true;
+		return thrown;
+	}
+	action void A_GunBounce(){invoker.GunBounce();}
+	virtual void GunBounce(){
+		bmissile=false;
+		double dmg=throwvel*weaponbulk()*frandom(0.0005,0.003);
+		if(tracer)tracer.damagemobj(self,target,dmg,"Bashing");
+		A_PlaySound("weapons/smack",CHAN_BODY,min(0.5,dmg*0.02));
+		setstatelabel("spawn");
+	}
+	//an override is needed because DropInventory will undo anything done in CreateTossable
+	double throwvel;
+	bool justchucked;
+	override void Tick(){
+		super.Tick();
+		if(bmissile){
+			throwvel=vel dot vel;
+			if(justchucked&&target){
+				double cp=cos(target.pitch);
+				vel=target.vel+
+					(cp*cos(target.angle),cp*sin(target.angle),-sin(target.pitch)-0.01)
+					*min(20,1000/weaponbulk())
+					*((hdplayerpawn(target)&&hdplayerpawn(target).zerk>0)?4:1);
+				setz(target.pos.z+target.height-16);
+			}
+			justchucked=false;
+		}
 	}
 
 	//zoom adjuster for rifles
@@ -292,6 +332,10 @@ class HDWeapon:Weapon{
 	spawn:
 		TNT1 A 0;
 		stop;
+	bounce:
+	death:
+		---- A 0 A_GunBounce();
+		goto spawn;
 	select:
 		TNT1 A 0{
 			//these two don't actually work???
