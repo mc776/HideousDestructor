@@ -404,24 +404,22 @@ class HERPUsable:HDWeapon{
 	states{
 	ready:
 		TNT1 A 1 A_HERPWeaponReady();
-		loop;
+		goto readyend;
 	user3:
 		TNT1 A 0 A_MagManager("HD4mMag");
 		goto ready;
 
-	reload:
-		TNT1 A 0{
-			if(HD4mMag.NothingLoaded(self,"HD4mMag"))setweaponstate("nope");
-			else invoker.weaponstatus[0]&=~HERPF_UNLOADONLY;
-		}goto unloadmag;
 	unload:
+		TNT1 A 0 A_JumpIf(pressinguse()||pressingzoom(),"altunload");
 		TNT1 A 0{invoker.weaponstatus[0]|=HERPF_UNLOADONLY;}
 		//fallthrough to unloadmag
 	unloadmag:
 		TNT1 A 20;
 		TNT1 A 5 A_UnloadMag();
 		TNT1 A 0 A_JumpIf(invoker.weaponstatus[0]&HERPF_UNLOADONLY,"reloadend");
-	reloadmag:
+		goto reloadend;
+	reload:
+		TNT1 A 0 A_JumpIf(HD4mMag.NothingLoaded(self,"HD4mMag"),"nope");
 		TNT1 A 14 A_PlaySound("weapons/pocket",CHAN_WEAPON);
 		TNT1 A 5 A_LoadMag();
 		goto reloadend;
@@ -443,8 +441,8 @@ class HERPUsable:HDWeapon{
 		TNT1 A 14 A_PlaySound("weapons/pocket",CHAN_WEAPON);
 		TNT1 A 5 A_LoadBattery();
 	reloadend:
-		TNT1 A 14;
-		goto ready;
+		TNT1 A 6;
+		goto nope;
 	spawn:
 		HERP A -1;
 		stop;
@@ -498,19 +496,20 @@ class HERPUsable:HDWeapon{
 		invoker.weaponstatus[4]=-1;
 	}
 	action void A_HERPWeaponReady(){
-		if(justpressed(BT_ALTFIRE)){
-			invoker.weaponstatus[0]^=HERPF_STARTOFF;
-			A_PlaySound("weapons/fmswitch",CHAN_WEAPON);
-		}else if(pressingfiremode()){
-			int inputamt=clamp(player.cmd.pitch>>5,-4,4);
+		if(pressingfire()){
+			if(invoker.amount>0)A_DeployHERP();
+		}else if(invoker.amount<1)invoker.goawayanddie();
+		else if(pressingaltfire()){
+			int inputamt=clamp((player.cmd.pitch>>8),-4,4);
 			inputamt+=(justpressed(BT_ATTACK)?1:justpressed(BT_ALTATTACK)?-1:0);
 			hijackmouse();
 			invoker.weaponstatus[HERP_BOTID]=clamp(
 				invoker.weaponstatus[HERP_BOTID]-inputamt,0,63
 			);
-		}else if(pressingfire()){
-			if(invoker.amount>0)A_DeployHERP();
-		}else if(invoker.amount<1)invoker.goawayanddie();
+		}else if(justpressed(BT_FIREMODE)){
+			invoker.weaponstatus[0]^=HERPF_STARTOFF;
+			A_PlaySound("weapons/fmswitch",CHAN_WEAPON);
+		}else A_WeaponReady(WRF_NOFIRE|WRF_ALLOWRELOAD|WRF_ALLOWUSER1|WRF_ALLOWUSER3|WRF_ALLOWUSER4);
 	}
 	action bool A_CheckFail(){
 		if(invoker.weaponstatus[4]<1){
@@ -559,17 +558,20 @@ class HERPUsable:HDWeapon{
 		invoker.amount--;
 	}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
-		sb.drawimage("HERPA6A4",(20,20),
-			sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER|sb.DI_TRANSLATABLE
+		if(hdw.amount<1)return;
+		sb.drawimage("HERPA6A4",(10,14),
+			sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER|sb.DI_TRANSLATABLE,
+			scale:(2,2)
 		);
 		for(int i=1;i<4;i++){
 			int bbb=hdw.weaponstatus[i];
-			if(bbb>=51)sb.drawimage("ZMAGA0",(-40,i*20),
-				sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER
-			);else sb.drawbar(
+			if(bbb>=51)sb.drawimage("ZMAGA0",(-20,i*10),
+				sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
+				scale:(2,2)
+			);else if(bbb>=0)sb.drawbar(
 				"ZMAGNORM","ZMAGGREY",
 				bbb,50,
-				(-40,i*20),-1,
+				(-20,i*10),-1,
 				sb.SHADER_VERT,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER
 			);
 		}
@@ -579,19 +581,19 @@ class HERPUsable:HDWeapon{
 			if(batt>13)batsprite="CELLA0";
 			else if(batt>6)batsprite="CELLB0";
 			else batsprite="CELLC0";
-			sb.drawimage(batsprite,(-40,(4*20)),
+			sb.drawimage(batsprite,(0,30),
 				sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER
 			);
 		}
 
 		//bottom status bar
-		for(int i=1;i<3;i++){
-			if(hdw.weaponstatus[i]>=0)sb.drawwepdot(-16-i*4,-13,(3,2));
+		for(int i=2;i<4;i++){
+			if(hdw.weaponstatus[i]>=0)sb.drawwepdot(-8-i*4,-13,(3,2));
 		}
 		int magone=hdw.weaponstatus[1];
 		sb.drawwepnum(magone<100?magone:magone-100,50,posy:-10);
-		sb.drawwepcounter(hdw.weaponstatus[0]&VULCF_FAST,
-			-28,-16,"blank","STFULAUT"
+		sb.drawwepcounter(hdw.weaponstatus[0]&HERPF_STARTOFF,
+			-28,-16,"STBURAUT","blank"
 		);
 
 		if(!batt)sb.drawstring(
