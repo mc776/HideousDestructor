@@ -175,7 +175,7 @@ class HERPBot:HDUPK{
 		HERP A 2 scanturn();
 		wait;
 	postbeep:
-		HERP A 6 A_PlaySound("misc/i_pkup");
+		HERP A 6 A_PlaySound("herp/beep");
 		goto idle;
 	ready:
 		HERP A 7 A_PlaySound("weapons/vulcanup",CHAN_BODY);
@@ -402,93 +402,203 @@ class HERPUsable:HDWeapon{
 		weaponstatus[4]=20;
 	}
 	states{
-	/*
-		TODO: actual friggin interface
-		Weaponstatus: Bars for 3 mags and battery; botid; starting mode
-		Unload/Reload
-		Firemode: Turn on/off
-		Zoom+Firemode: Turn on AND GO LIVE WHILE IN HAND
-		Fire: Deploy (based on status)
-		Mag manager goes to 4mil
-		No sight picture
-	*/
-	select:
-		//change this to a proper interface later
+	ready:
+		TNT1 A 1 A_HERPWeaponReady();
+		loop;
+	user3:
+		TNT1 A 0 A_MagManager("HD4mMag");
+		goto ready;
+
+	reload:
 		TNT1 A 0{
-			int loadcell=0;
-			int loadmag[3];
-			if(HDMagAmmo.NothingLoaded(self,"HDBattery")){
-				A_Log("\cd[HERP]\cj  No power. Please load 1 cell pack before deploying.",true);
-				return;
-			}else{
-				let bbb=HDMagAmmo(findinventory("HDBattery"));
-				loadcell=bbb.TakeMag(true);
-			}
+			if(HD4mMag.NothingLoaded(self,"HD4mMag"))setweaponstate("nope");
+			else invoker.weaponstatus[0]&=~HERPF_UNLOADONLY;
+		}goto unloadmag;
+	unload:
+		TNT1 A 0{invoker.weaponstatus[0]|=HERPF_UNLOADONLY;}
+		//fallthrough to unloadmag
+	unloadmag:
+		TNT1 A 20;
+		TNT1 A 5 A_UnloadMag();
+		TNT1 A 0 A_JumpIf(invoker.weaponstatus[0]&HERPF_UNLOADONLY,"reloadend");
+	reloadmag:
+		TNT1 A 14 A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		TNT1 A 5 A_LoadMag();
+		goto reloadend;
 
-			//check for no mags at all
-			if(
-				(
-					invoker.weaponstatus[1]>100
-					&&!random(0,7)
-				)||(
-					invoker.weaponstatus[1]%100<0
-					&&invoker.weaponstatus[2]%100<0
-					&&invoker.weaponstatus[3]%100<0
-				)
-			){
-				if(!countinv("HD4mMag")){
-					A_Log("\cd[HERP]\cj  Please load at least 1 fresh 4.26mm UAC Standard magazine before deploying.",true);
-					return;
-				}else{
-					let mmm=HDMagAmmo(findinventory("HD4mMag"));
-					if(mmm){
-						int toadd=mmm.TakeMag(true);
-						if(toadd<51){
-							toadd+=100;
-							A_Log(string.format("\cd[HERP] \cj%s",HDCONST_426MAGMSG),true);
-						}
-						invoker.weaponstatus[1]=toadd;
-					}
-				}
-			}
-
-			//load the other two mags
-			for(int i=2;i<=3;i++){
-				if(invoker.weaponstatus[i]%100<0){
-					let mmm=HDMagAmmo(findinventory("HD4mMag"));
-					if(mmm&&!HDMagAmmo.NothingLoaded(self,"HD4mMag")){
-						int toadd=mmm.TakeMag(true);
-						if(toadd<51){
-							toadd+=100;
-							A_Log(string.format("\cd[HERP] \cj%s",HDCONST_426MAGMSG),true);
-						}invoker.weaponstatus[i]=toadd;
-					}
-				}
-			}
-
-			actor hhh;int iii;
-			[iii,hhh]=A_SpawnItemEx("HERPBot",5,0,height-16,
-				2.5*cos(pitch),0,-2.5*sin(pitch),
-				0,SXF_NOCHECKPOSITION|SXF_TRANSFERTRANSLATION
-				|SXF_TRANSFERPOINTERS|SXF_SETMASTER
-			);
-			hhh.A_PlaySound("misc/w_pkup",5);
-			hhh.ChangeTid(HERP_TID);
-			hhh.vel+=vel;hhh.angle=angle;
-			let hhhh=HERPBot(hhh);
-			hhhh.startangle=angle;
-			hhhh.ammo[0]=invoker.weaponstatus[1];
-			hhhh.ammo[1]=invoker.weaponstatus[2];
-			hhhh.ammo[2]=invoker.weaponstatus[3];
-			hhhh.battery=loadcell;
-			hhhh.botid=invoker.weaponstatus[HERP_BOTID];
-			A_Log(string.format("\cd[HERP] \cjDeployed with tag ID \cy%i",invoker.weaponstatus[HERP_BOTID]),true);
-			A_SelectWeapon("HDFist");
-			invoker.destroy();
-		}stop;
+	altreload:
+		TNT1 A 0 A_JumpIf(pressinguse()||pressingzoom(),"altunload");
+		TNT1 A 0{
+			if(HDBattery.NothingLoaded(self,"HDBattery"))setweaponstate("nope");
+			else invoker.weaponstatus[0]&=~HERPF_UNLOADONLY;
+		}goto unloadbattery;
+	altunload:
+		TNT1 A 0{invoker.weaponstatus[0]|=HERPF_UNLOADONLY;}
+		//fallthrough to unloadbattery
+	unloadbattery:
+		TNT1 A 20;
+		TNT1 A 5 A_UnloadBattery();
+		TNT1 A 0 A_JumpIf(invoker.weaponstatus[0]&HERPF_UNLOADONLY,"reloadend");
+	reloadbattery:
+		TNT1 A 14 A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		TNT1 A 5 A_LoadBattery();
+	reloadend:
+		TNT1 A 14;
+		goto ready;
 	spawn:
 		HERP A -1;
 		stop;
+	}
+	action void Message(string msg){
+		A_Log("\cd[HERP]\cj  "..msg,true);
+	}
+	action void A_LoadMag(){
+		let magg=HD4mMag(findinventory("HD4mMag"));
+		if(!magg)return;
+		for(int i=1;i<4;i++){
+			if(invoker.weaponstatus[i]<0){
+				int toload=magg.takemag(true);
+				invoker.weaponstatus[i]=toload;
+				break;
+			}
+		}
+	}
+	action void A_UnloadMag(){
+		bool unsafe=invoker.weaponstatus[0]&HERPF_UNSAFEUNLOAD;
+		for(int i=3;i>0;i--){
+			int thismag=invoker.weaponstatus[i];
+			if(thismag<0)continue;
+			if(unsafe||!thismag||thismag>50){
+				invoker.weaponstatus[i]=-1;
+				if(pressingunload()||pressingreload()){
+					HD4mMag.GiveMag(self,"HD4mMag",thismag);
+					A_PlaySound("weapons/pocket",CHAN_WEAPON);
+					A_SetTics(20);
+				}else HD4mMag.SpawnMag(self,"HD4mMag",thismag);
+				break;
+			}
+		}
+	}
+	action void A_LoadBattery(){
+		if(invoker.weaponstatus[4]>=0)return;
+		let batt=HDBattery(findinventory("HDBattery"));
+		if(!batt)return;
+		int toload=batt.takemag(true);
+		invoker.weaponstatus[4]=toload;
+		A_PlaySound("weapons/vulcopen1",CHAN_WEAPON);
+	}
+	action void A_UnloadBattery(){
+		int batt=invoker.weaponstatus[4];
+		if(batt<0)return;
+		if(pressingunload()||pressingreload()){
+			HDBattery.GiveMag(self,"HDBattery",batt);
+			A_PlaySound("weapons/pocket",CHAN_WEAPON);
+			A_SetTics(20);
+		}else HDBattery.SpawnMag(self,"HDBattery",batt);
+		invoker.weaponstatus[4]=-1;
+	}
+	action void A_HERPWeaponReady(){
+		if(justpressed(BT_ALTFIRE)){
+			invoker.weaponstatus[0]^=HERPF_STARTOFF;
+			A_PlaySound("weapons/fmswitch",CHAN_WEAPON);
+		}else if(pressingfiremode()){
+			int inputamt=clamp(player.cmd.pitch>>5,-4,4);
+			inputamt+=(justpressed(BT_ATTACK)?1:justpressed(BT_ALTATTACK)?-1:0);
+			hijackmouse();
+			invoker.weaponstatus[HERP_BOTID]=clamp(
+				invoker.weaponstatus[HERP_BOTID]-inputamt,0,63
+			);
+		}else if(pressingfire()){
+			if(invoker.amount>0)A_DeployHERP();
+		}else if(invoker.amount<1)invoker.goawayanddie();
+	}
+	action bool A_CheckFail(){
+		if(invoker.weaponstatus[4]<1){
+			message("No power. Please load 1 cell pack before deploying.");
+			return true;
+		}
+		if(
+			(
+				invoker.weaponstatus[1]>100
+				&&!random(0,7)
+			)||(
+				invoker.weaponstatus[1]%100<0
+				&&invoker.weaponstatus[2]%100<0
+				&&invoker.weaponstatus[3]%100<0
+			)
+		){
+			message("Please load at least 1 fresh 4.26mm UAC Standard magazine before deploying.");
+			return true;
+		}
+		return false;
+	}
+	action void A_DeployHERP(){
+		if(A_CheckFail()){
+			setweaponstate("nope");
+			return;
+		}
+
+		actor hhh;int iii;
+		[iii,hhh]=A_SpawnItemEx("HERPBot",5,0,height-16,
+			2.5*cos(pitch),0,-2.5*sin(pitch),
+			0,SXF_NOCHECKPOSITION|SXF_TRANSFERTRANSLATION
+			|SXF_TRANSFERPOINTERS|SXF_SETMASTER
+		);
+		hhh.A_PlaySound("misc/w_pkup",5);
+		hhh.changetid(HERP_TID);
+		hhh.vel+=vel;hhh.angle=angle;
+		let hhhh=HERPBot(hhh);
+		hhhh.startangle=angle;
+		hhhh.ammo[0]=invoker.weaponstatus[1];
+		hhhh.ammo[1]=invoker.weaponstatus[2];
+		hhhh.ammo[2]=invoker.weaponstatus[3];
+		hhhh.battery=invoker.weaponstatus[4];
+		hhhh.botid=invoker.weaponstatus[HERP_BOTID];
+		hhhh.bmissilemore=invoker.weaponstatus[0]&HERPF_STARTOFF?false:true;
+		A_Log(string.format("\cd[HERP] \cjDeployed with tag ID \cy%i",invoker.weaponstatus[HERP_BOTID]),true);
+		invoker.amount--;
+	}
+	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
+		sb.drawimage("HERPA6A4",(20,20),
+			sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER|sb.DI_TRANSLATABLE
+		);
+		for(int i=1;i<4;i++){
+			int bbb=hdw.weaponstatus[i];
+			if(bbb>=51)sb.drawimage("ZMAGA0",(-40,i*20),
+				sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER
+			);else sb.drawbar(
+				"ZMAGNORM","ZMAGGREY",
+				bbb,50,
+				(-40,i*20),-1,
+				sb.SHADER_VERT,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER
+			);
+		}
+		int batt=hdw.weaponstatus[4];
+		if(batt>=0){
+			string batsprite;
+			if(batt>13)batsprite="CELLA0";
+			else if(batt>6)batsprite="CELLB0";
+			else batsprite="CELLC0";
+			sb.drawimage(batsprite,(-40,(4*20)),
+				sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER
+			);
+		}
+
+		//bottom status bar
+		for(int i=1;i<3;i++){
+			if(hdw.weaponstatus[i]>=0)sb.drawwepdot(-16-i*4,-13,(3,2));
+		}
+		int magone=hdw.weaponstatus[1];
+		sb.drawwepnum(magone<100?magone:magone-100,50,posy:-10);
+		sb.drawwepcounter(hdw.weaponstatus[0]&VULCF_FAST,
+			-28,-16,"blank","STFULAUT"
+		);
+
+		if(!batt)sb.drawstring(
+			sb.mamountfont,"00000",(-16,-8),
+			sb.DI_TEXT_ALIGN_RIGHT|sb.DI_TRANSLATABLE|sb.DI_SCREEN_CENTER_BOTTOM,
+			Font.CR_DARKGRAY
+		);else if(batt>0)sb.drawwepnum(batt,20);
 	}
 }
 enum HERPNum{
@@ -497,6 +607,10 @@ enum HERPNum{
 	HERP_MAG3=3,
 	HERP_BATTERY=4,
 	HERP_BOTID=5,
+
+	HERPF_STARTOFF=1,
+	HERPF_UNLOADONLY=2,
+	HERPF_UNSAFEUNLOAD=4,
 }
 class HERPDEAD:HDPickup{
 	default{
