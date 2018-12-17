@@ -130,7 +130,6 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 	}
 	int spent;bool worn;
 	int brokenness; //400=totally broken
-	const LITEBAT=20000;
 	pointlight nozerolight;
 	override double getbulk(){return bulk;}
 	override void DetachFromOwner(){
@@ -201,7 +200,7 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 
 				//drain
 				spent+=max(1,nv*0.2);
-				if(spent>litebat*0.2){
+				if(spent>NITEVIS_BATCYCLE){
 					bbb.mags[bbbindex]=max(0,bbbi-1);
 					spent=0;
 				}
@@ -240,6 +239,7 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 		}fail;
 	}
 	enum NiteVis{
+		NITEVIS_BATCYCLE=32768;
 		NITEVIS_MAX=40,
 	}
 }
