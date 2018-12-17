@@ -139,9 +139,15 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 //			if(owner.player.fixedcolormap==5)owner.player.fixedcolormap=-1;
 //			owner.player.fixedlightlevel=-1;
 			Shader.SetEnabled(owner.player,"NiteVis",false);
-			Shader.SetEnabled(owner.player,"NiteVisRed",false);
 		}
 		super.DetachFromOwner();
+	}
+	double amplitude;
+	override int getsbarnum(int flags){return amplitude;}
+	override void AttachToOwner(actor other){
+		super.AttachToOwner(other);
+		if(owner&&owner.player)amplitude=cvar.getcvar("hd_nv",owner.player).getfloat();
+		else amplitude=frandom(-NITEVIS_MAX,NITEVIS_MAX);
 	}
 	override void DoEffect(){
 		super.DoEffect();
@@ -155,13 +161,6 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 				owner.player.fov=min(owner.player.fov,90);
 //				owner.player.fixedcolormap=5;
 //				owner.player.fixedlightlevel=1;
-				if(cvar.getcvar("hd_rednv",owner.player).getbool()){
-					Shader.SetEnabled(owner.player,"NiteVisRed",true);
-					Shader.SetEnabled(owner.player,"NiteVis",false);
-				}else{
-					Shader.SetEnabled(owner.player,"NiteVis",true);
-					Shader.SetEnabled(owner.player,"NiteVisRed",false);
-				}
 
 				//check if totally drained
 				if(HDMagAmmo.NothingLoaded(owner,"HDBattery")){
@@ -186,25 +185,31 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 				}
 				int bbbi=bbb.mags[bbbindex];
 
+				//show stuff
+				double nv=min(bbbi*2,NITEVIS_MAX);
+				nv=clamp(amplitude,-nv,nv);
+				if(!nv)return;
+				Shader.SetEnabled(owner.player,"NiteVis",true);
+				Shader.SetUniform1f(owner.player,"NiteVis","exposure",nv);
+
 				//flicker
 				if(!random[rand1](0,max(0,bbbi*bbbi-brokenness))){
 //						owner.player.fixedcolormap=-1;
 //						owner.player.fixedlightlevel=-1;
 					Shader.SetEnabled(owner.player,"NiteVis",false);
-					Shader.SetEnabled(owner.player,"NiteVisRed",false);
 				}
 
 				//drain
-				spent++;
-				if(spent>litebat){
+				spent+=max(1,nv*0.2);
+				if(spent>litebat*0.2){
 					bbb.mags[bbbindex]=max(0,bbbi-1);
 					spent=0;
 				}
+
 			}else{
 //				if(owner.player.fixedcolormap==5)owner.player.fixedcolormap=-1;
 //				owner.player.fixedlightlevel=-1;
 				Shader.SetEnabled(owner.player,"NiteVis",false);
-				Shader.SetEnabled(owner.player,"NiteVisRed",false);
 			}
 		}
 	}
@@ -213,17 +218,29 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 		PVIS B -1;
 	use:
 		TNT1 A 0{
-			A_SetBlend("01 00 00",0.8,16);
-			if(HDMagAmmo.NothingLoaded(self,"HDBattery")){
-				A_Log("No power for lite-amp. Need at least 1 battery on you.",true);
-				invoker.worn=false;
-			}
-			if(invoker.worn)invoker.worn=false;else{
-				invoker.worn=true;
-				if(!invoker.nozerolight)invoker.nozerolight=pointlight(spawn("visorlight",pos,ALLOW_REPLACE));
-				invoker.nozerolight.target=self;
+			int cmd=player.cmd.buttons;
+			if(cmd&BT_USE){
+				double am=cmd&BT_ZOOM?-5.:5.;
+				double plitude=max(0,(am+abs(invoker.amplitude))%NITEVIS_MAX);
+				invoker.amplitude=invoker.amplitude<0?-plitude:plitude;
+			}else if(cmd&BT_ZOOM){
+				invoker.amplitude=-invoker.amplitude;
+			}else{
+				A_SetBlend("01 00 00",0.8,16);
+				if(HDMagAmmo.NothingLoaded(self,"HDBattery")){
+					A_Log("No power for lite-amp. Need at least 1 battery on you.",true);
+					invoker.worn=false;
+				}
+				if(invoker.worn)invoker.worn=false;else{
+					invoker.worn=true;
+					if(!invoker.nozerolight)invoker.nozerolight=pointlight(spawn("visorlight",pos,ALLOW_REPLACE));
+					invoker.nozerolight.target=self;
+				}
 			}
 		}fail;
+	}
+	enum NiteVis{
+		NITEVIS_MAX=40,
 	}
 }
 class VisorLight:PointLight{

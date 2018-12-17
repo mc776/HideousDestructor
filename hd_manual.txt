@@ -467,6 +467,8 @@ hd_xhairscale (1): HD's sight crosshairs can scale unpredictably at different re
 
 hd_crosshair (0): This affects which image is displayed on the ZM66 and Liberator reflex sights. This is applied on a per-user basis and you will not need to set this every time you pick up a new gun. If you want to modify these, the lumps to replace are "riflsit1" through "riflsit5".
 
+hd_nv (7): This sets the starting amplitude of your light amplification visor, between 0 and 40. Negative values mean the display is red rather than green. Brighter displays drain more battery.
+
 hd_hudusedelay (12): This is how many tics you must hold Use before the full HUD shows up with all the ammo counts and compass (and scope view if hd_noscope is set to 1). Zero means it is always on. If below zero, your HUD disappears entirely, except only for your crosshair, when you are not pressing Use. At -2, even the crosshair disappears, but can be brought back with Zoom as well as Use.
 
 hd_aimsensitivity (0.1): Sets the amount to which your mouse sensitivity is reduced while aiming with the Zoom or Use key.
@@ -556,6 +558,11 @@ Its original "on-label" use was to save someone going into shock or cardiac arre
 Light Amplification Visor
 GZDoom actor name: PortableLiteAmp
 Use to turn on and off. Requires at least one operational battery in your inventory to use.
+Use the goggles while holding:
+- Use to increase amplitude.
+- Zoom to toggle green and red.
+- Use and Zoom to decrease amplitude.
+To set your startinv nightvision mode, use the hd_nv cvar to set a value between -40 and 40. Negative values are red and positive values are green.
 
 Ladder
 GZdoom actor name: PortableLadder
