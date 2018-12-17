@@ -201,14 +201,14 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 				Shader.SetUniform1f(owner.player,"NiteVis","exposure",nv);
 
 				//flicker
-				if(!random[rand1](0,max(0,bbbi*bbbi-brokenness))){
+				if(brokenness>0&&!random[rand1](0,max(0,bbbi*bbbi-brokenness))){
 //						owner.player.fixedcolormap=-1;
 //						owner.player.fixedlightlevel=-1;
 					Shader.SetEnabled(owner.player,"NiteVis",false);
 				}
 
 				//drain
-				spent+=max(1,nv*0.2);
+				spent+=max(1,nv);
 				if(spent>NITEVIS_BATCYCLE){
 					bbb.mags[bbbindex]=max(0,bbbi-1);
 					spent=0;
