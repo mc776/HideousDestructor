@@ -4,12 +4,11 @@ void main(){
 	float exp=exposure;
 	if(exp<0){
 		exp=abs(exp);
-		colour.r=min(colour.r*6.2,1.6);
+		colour.r=atan(atan(colour.r*exp));
 		colour.g=0;
 	}else{
 		colour.r=0;
-		colour.g=min(colour.g*6.2,1.6);
+		colour.g=atan(atan(colour.g*exp));
 	}
-	colour*=exp;
 	FragColor = vec4(colour.r,colour.g,0,1.);
 }
