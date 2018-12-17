@@ -88,7 +88,11 @@ extend class HDPlayerPawn{
 		hudbobrecoil2+=apch*0.2;
 		hudbobrecoil3+=apch*0.4;
 		hudbobrecoil4+=apch*0.6;
-		if(!countinv("WeaponBusy"))A_WeaponOffset(hudbobrecoil1.x*0.3,abs(hudbobrecoil1.y)*0.3,WOF_ADD);
+		if(!countinv("WeaponBusy")&&player.readyweapon)A_WeaponOffset(
+			hudbobrecoil1.x*0.3+hudbob.x,
+			(abs(hudbobrecoil1.y)+hudbob.y)*0.3+player.readyweapon.bobrangey,
+			WOF_ADD
+		);
 
 
 		//see if there's any change in velocity overall
