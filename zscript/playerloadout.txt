@@ -296,6 +296,12 @@ class LoadoutCode:custominventory{
 				}
 			}
 
+			int havekey=0;
+			if(countinv("BlueCard"))havekey|=1;
+			if(countinv("YellowCard"))havekey|=2;
+			if(countinv("RedCard"))havekey|=4;
+			if(havekey)lll=lll..", key "..havekey;
+
 			let bp=HDBackpack(findinventory("HDBackpack"));
 			if(bp){
 				int imax=bp.invclasses.size();
