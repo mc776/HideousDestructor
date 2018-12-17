@@ -142,11 +142,13 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 		super.DetachFromOwner();
 	}
 	double amplitude;
+	double lastcvaramplitude;
 	override int getsbarnum(int flags){return amplitude;}
 	override void AttachToOwner(actor other){
 		super.AttachToOwner(other);
 		if(owner&&owner.player)amplitude=cvar.getcvar("hd_nv",owner.player).getfloat();
 		else amplitude=frandom(-NITEVIS_MAX,NITEVIS_MAX);
+		lastcvaramplitude=amplitude;
 	}
 	override void DoEffect(){
 		super.DoEffect();
@@ -166,6 +168,13 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 					owner.A_SetBlend("01 00 00",0.8,16);
 					worn=false;
 					return;
+				}
+
+				//update amplitude if player has set in the console
+				double thiscvaramplitude=cvar.getcvar("hd_nv",owner.player).getfloat();
+				if(thiscvaramplitude!=lastcvaramplitude){
+					lastcvaramplitude=thiscvaramplitude;
+					amplitude=thiscvaramplitude;
 				}
 
 				let bbb=HDBattery(owner.findinventory("HDBattery"));
@@ -239,8 +248,8 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 		}fail;
 	}
 	enum NiteVis{
-		NITEVIS_BATCYCLE=32768;
-		NITEVIS_MAX=40,
+		NITEVIS_BATCYCLE=20000,
+		NITEVIS_MAX=20,
 	}
 }
 class VisorLight:PointLight{

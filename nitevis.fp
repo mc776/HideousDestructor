@@ -4,14 +4,12 @@ void main(){
 	float exp=exposure;
 	if(exp<0){
 		exp=abs(exp);
-		colour.r*=6.2;
-		colour.g*=0.3;
-		colour.b*=0.3;
+		colour.r=min(colour.r*6.2,1.6);
+		colour.g=0;
 	}else{
-		colour.r*=0.3;
-		colour.g*=6.2;
-		colour.b*=0.3;
+		colour.r=0;
+		colour.g=min(colour.g*6.2,1.6);
 	}
 	colour*=exp;
-	FragColor = vec4(colour.r, colour.g, colour.b, 1.);
+	FragColor = vec4(colour.r,colour.g,0,1.);
 }
