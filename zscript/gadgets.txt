@@ -143,7 +143,7 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 	}
 	double amplitude;
 	double lastcvaramplitude;
-	override int getsbarnum(int flags){return amplitude;}
+	override int getsbarnum(int flags){return amplitude*100;}
 	override void AttachToOwner(actor other){
 		super.AttachToOwner(other);
 		if(owner&&owner.player)amplitude=cvar.getcvar("hd_nv",owner.player).getfloat();
@@ -228,7 +228,7 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 		TNT1 A 0{
 			int cmd=player.cmd.buttons;
 			if(cmd&BT_USE){
-				double am=cmd&BT_ZOOM?-5.:5.;
+				double am=cmd&BT_ZOOM?-0.25:0.25;
 				double plitude=max(0,(am+abs(invoker.amplitude))%NITEVIS_MAX);
 				invoker.amplitude=invoker.amplitude<0?-plitude:plitude;
 			}else if(cmd&BT_ZOOM){
