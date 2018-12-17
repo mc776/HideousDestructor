@@ -27,8 +27,9 @@ function str gettip(int rsd){
 	int flp=0;
 	int rnd=lastrnd;
 	for(int i=0;i<rsd;i++){flp=random(0,1);}
-	while(rnd==lastrnd)rnd=random(0,30);
+	while(rnd==lastrnd)rnd=random(0,31);
 	lastrnd=rnd;
+	rnd=31;
 	switch(rnd){
 	case 1: return "Remember to \cxBIND KEYS\cu for all
 			\n\cqweapon functions\cu and \cqweapon drop\cu!";
@@ -160,6 +161,10 @@ function str gettip(int rsd){
 			\npress and hold \cqCrouch while moving\cu in that direction.";
 
 	case 30: return "Press \cqUse\cu while holding \cqZoom\cu to try to \cxKICK DOWN\cu a door.";
+
+	case 31: return "Hold \cqZoom\cu and/or \cqUse\cu when using the \cxGOGGLES\cu to set amplitude.
+			\n\cqUse\cu alone increments, but \cqUse\cu and \cqZoom\cu combined decrement.
+			\n\cqZoom\cu alone toggles red and green mode.";
 	}
 
 	//default:
