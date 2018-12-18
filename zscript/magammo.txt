@@ -249,7 +249,13 @@ class HDMagAmmo:HDAmmo{
 		let alreadygot=HDMagAmmo(other.findinventory(gcn));
 		if(alreadygot){
 			alreadygot.syncamount();
-			while(alreadygot.amount>=alreadygot.maxamount){
+			while(
+				alreadygot.amount>=alreadygot.maxamount
+				||(
+					hdplayerpawn(picktarget)
+					&&HDCONST_MAXENC-hdplayerpawn(picktarget).itemenc<(magbulk+roundbulk*mags[0])
+				)
+			){
 				int thismag=mags[0];
 				bool thisisbetter=false;
 				for(int i=0;!thisisbetter&&i<alreadygot.amount;i++){
