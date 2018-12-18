@@ -373,9 +373,9 @@ bdontbob=true;
 		wait;
 	deselect0big:
 		---- A 0 A_JumpIfInventory("NulledWeapon",1,"deselect1big");
-		---- A 1 A_Lower(-2);
 		---- A 1 A_Lower(0);
-		---- AA 1 A_Lower(2);
+		---- A 1 A_Lower(1);
+		---- AA 1 A_Lower(1);
 		---- A 1 A_Lower(3);
 		---- AA 1 A_Lower();
 		---- A 1 A_Lower(12);
@@ -384,8 +384,8 @@ bdontbob=true;
 		---- A 1 A_Lower();
 		wait;
 	deselect1big:
-		---- AA 1 A_Lower(-2);
-		---- AA 1 A_Lower();
+		---- AA 1 A_Lower(1);
+		---- AA 1 A_Lower(2);
 		---- A 1 A_Lower(24);
 		---- A 1 A_Lower(24);
 		---- A 1 A_Lower(30);
@@ -414,7 +414,7 @@ bdontbob=true;
 		wait;
 	deselect0small:
 		---- A 0 A_JumpIfInventory("NulledWeapon",1,"deselect1small");
-		---- A 1 A_Lower(-1);
+		---- A 1 A_Lower(1);
 		---- AA 1 A_Lower(2);
 		---- AA 1 A_Lower();
 		---- A 1 A_Lower(12);
@@ -423,7 +423,7 @@ bdontbob=true;
 		---- A 1 A_Lower();
 		wait;
 	deselect1small:
-		---- A 1 A_Lower(-3);
+		---- A 1 A_Lower(1);
 		---- A 1 A_Lower();
 		---- A 1 A_Lower(12);
 		---- A 1 A_Lower(24);
@@ -436,7 +436,6 @@ bdontbob=true;
 		---- A 1 A_Raise(30);
 		---- A 1 A_Raise(16);
 		---- A 1 A_Raise(12);
-		---- A 1 A_WeaponOffset(0,-4,WOF_ADD);
 		---- A 1 A_WeaponOffset(0,2,WOF_ADD);
 		---- A 1 A_Raise(1);
 		wait;
@@ -450,7 +449,7 @@ bdontbob=true;
 		---- AAA 1 A_Raise();
 		---- A 1 A_Raise(-2);
 		---- AA 1 A_Raise(-1);
-		---- AA 1 {
+		---- AA 1{
 			A_MuzzleClimb(0.3,0.8);
 			A_Raise(-1);
 		}
@@ -463,13 +462,13 @@ bdontbob=true;
 	deselect0bfg:
 		---- A 0 A_JumpIfHealthLower(1,"deselect1big");
 		---- A 0 A_JumpIfInventory("NulledWeapon",1,"deselect1bfg");
-		---- AA 1 A_Lower(-1);
+		---- AA 1 A_Lower(0);
 		---- AA 1 A_Lower();
-		---- A 1 A_Lower(-2);
-		---- AA 1 A_Lower(-1);
+		---- A 1 A_Lower(1);
+		---- AA 1 A_Lower(1);
 		---- AA 1{
 			A_MuzzleClimb(0.3,0.8);
-			A_Lower(-1);
+			A_Lower(0);
 		}
 		---- AA 1{
 			A_MuzzleClimb(-0.1,-0.4);
