@@ -7,6 +7,7 @@ class HDStatusBar:DoomStatusBar{
 	hudfont psmallfont;
 	hdplayerpawn hpl;
 	bool blurred;
+	string mug;
 	override void Init(){
 		BaseStatusBar.Init();
 		SetSize(0,320,200);
@@ -40,6 +41,16 @@ class HDStatusBar:DoomStatusBar{
 		blurred=hpl.bshadow&&hpl.countinv("HDBlurSphere");
 
 		setwepsprites(cplayer.mo);
+
+		int mugnum=cvar.getcvar("hd_mugshot",cplayer).getint();
+		if(mugnum<0)mugnum=cplayer.getgender();
+		switch(mugnum){
+			case 0:mug="STF";break;
+			case 1:mug="SFF";break;
+			case 2:mug="STC";break;
+			case 3:mug="STC";break;
+			default:mug="STC";break;
+		}
 
 		if(automapactive){
 			DrawAutomapHUD(ticfrac);
@@ -86,10 +97,7 @@ class HDStatusBar:DoomStatusBar{
 		);
 
 		//mugshot
-		int cpg=cplayer.getgender();
-		if(!cpg)DrawTexture(GetMugShot(5),(6,-14),DI_BOTTOMLEFT,alpha:blurred?0.2:1.);
-		else if(cpg>2)DrawTexture(GetMugShot(5,Mugshot.CUSTOM,"STC"),(6,-14),DI_BOTTOMLEFT,alpha:blurred?0.2:1.);
-		else DrawTexture(GetMugShot(5,Mugshot.CUSTOM,"SFF"),(6,-14),DI_BOTTOMLEFT,alpha:blurred?0.2:1.);
+		DrawTexture(GetMugShot(5,Mugshot.CUSTOM,mug),(6,-14),DI_BOTTOMLEFT,alpha:blurred?0.2:1.);
 
 		//heartbeat/playercolour tracker
 		if(hpl && hpl.beatmax){
@@ -141,10 +149,7 @@ class HDStatusBar:DoomStatusBar{
 		);
 	}
 	void DrawFullScreenStuff(){
-		int cpg=cplayer.getgender();
-		if(!cpg)DrawTexture(GetMugShot(5),(0,-14),DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM,alpha:blurred?0.2:1.);
-		else if(cpg>2)DrawTexture(GetMugShot(5,Mugshot.CUSTOM,"STC"),(0,-14),DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM,alpha:blurred?0.2:1.);
-		else DrawTexture(GetMugShot(5,Mugshot.CUSTOM,"SFF"),(0,-14),DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM,alpha:blurred?0.2:1.);
+		DrawTexture(GetMugShot(5,Mugshot.CUSTOM,mug),(0,-14),DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM,alpha:blurred?0.2:1.);
 	}
 	void DrawAlwaysStuff(){
 		if(
