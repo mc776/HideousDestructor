@@ -147,8 +147,8 @@ class HDFire:IdleDummy{
 				}
 				A_AlertMonsters();
 				A_TakeFromTarget("PowerFrightener");
-				A_GiveToTarget("WeaponBusy",1);
 				A_GiveToTarget("IsMoving",4);
+				HDWeapon.SetBusy(target);
 			}else stamina-=3; //monsters assumed to be trying to douse
 			//damage the target
 			target.A_GiveInventory("Heat",clamp(stamina,20,random(20,80)));

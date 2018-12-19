@@ -245,7 +245,7 @@ class BossRifle:HDWeapon{
 		}stop;
 	altfire:
 		BARG A 2 offset(0,34);
-		BARG B 1 offset(2,36) A_GiveInventory("WeaponBusy");
+		BARG B 1 offset(2,36) A_WeaponBusy();
 		BARG B 1 offset(4,38){
 			if(invoker.weaponstatus[BOSSS_CHAMBER]>2)setweaponstate("jamderp");
 		}

@@ -89,7 +89,7 @@ class BFG9K:HDWeapon replaces BFG9000{
 	altfire:
 	togglestrap:
 		BFGG A 3{
-			A_GiveInventory("WeaponBusy");
+			A_WeaponBusy();
 			if(invoker.weaponstatus[0]&BFGF_STRAPPED){
 				A_SetTics(6);
 				A_PlaySound("weapons/bfgclick",CHAN_WEAPON);
@@ -183,7 +183,7 @@ class BFG9K:HDWeapon replaces BFG9000{
 				A_SetTics(4);
 				if(health>16)damagemobj(invoker,self,1,"internal");    
 			}
-			A_TakeInventory("WeaponBusy",1);
+			A_WeaponBusy(false);
 			A_PlaySound("weapons/bfgcharge",5);
 			BFG9k.Spark(self,1,height-10);
 			A_WeaponReady(WRF_NOFIRE);

@@ -96,7 +96,7 @@ class Tripwire:HDWeapon{
 		TNT1 A 1{
 			if(!countinv(invoker.grenadeammotype))A_SelectWeapon("HDFist");
 			else A_SetCrosshair(0);
-			A_SetInventory("WeaponBusy",invoker.gumspot!=null);
+			A_WeaponBusy(invoker.gumspot!=null);
 			A_WeaponReady(WRF_ALLOWUSER3);
 		}goto readyend;
 	fire:

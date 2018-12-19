@@ -90,7 +90,7 @@ class HDPlayerPawn:PlayerPawn{
 		btelestomp=true;
 	}
 	void A_CheckGunBraced(){
-		if(countinv("WeaponBusy"))gunbraced=false;
+		if(HDWeapon.IsBusy(self))gunbraced=false;
 		else if(
 			!barehanded
 			&&!gunbraced
@@ -303,17 +303,18 @@ class HDPlayerPawn:PlayerPawn{
 		if(vel dot vel>1)gunbraced=false;
 
 		//add inventory flags for inputs
-		A_SetInventory("WeaponBusy",max(countinv("WeaponBusy"),
-			input&BT_RELOAD
+		//this will be used a few times hereon in
+		bool weaponbusy=(
+			HDWeapon.IsBusy(self)
+			||input&BT_RELOAD
 			||input&BT_USER1
 //			||input&BT_USER2
 			||input&BT_USER3
 			||input&BT_USER4
-		));
+		);
+		HDWeapon.SetBusy(self,weaponbusy);
 		if((fm||sm)&&runwalksprint>=0)A_GiveInventory("IsMoving");
 
-		//this will be used a few times hereon in
-		bool weaponbusy=countinv("WeaponBusy");
 
 		//"falling" damage
 		int fallvel=teleported?0:(lastvel-vel).length();
@@ -790,8 +791,8 @@ extend class HDPlayerPawn{
 
 		overloaded=CheckEncumbrance();
 
+		HDWeapon.SetBusy(self,false);
 		A_TakeInventory("WipedOut");
-		A_TakeInventory("WeaponBusy");
 		A_TakeInventory("IsMoving");
 		A_TakeInventory("Heat");
 		gunbraced=false;

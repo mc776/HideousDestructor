@@ -68,7 +68,7 @@ extend class HDPlayerPawn{
 		}else if(countinv("PowerStrength")||countinv("PowerInvulnerable")){
 			amt*=0.2;
 		}
-		if(notnull&&countinv("WeaponBusy")){
+		if(notnull&&HDWeapon.IsBusy(self)){
 			barrellength=radius+2;
 			barrelwidth*=2;
 			amt=min(amt*1.5,20);
@@ -88,7 +88,7 @@ extend class HDPlayerPawn{
 		hudbobrecoil2+=apch*0.2;
 		hudbobrecoil3+=apch*0.4;
 		hudbobrecoil4+=apch*0.6;
-		if(!countinv("WeaponBusy")&&player.readyweapon)A_WeaponOffset(
+		if(!HDWeapon.IsBusy(self)&&player.readyweapon)A_WeaponOffset(
 			(hudbobrecoil1.x+hudbob.x)*0.3,
 			(abs(hudbobrecoil1.y)+hudbob.y)*0.3+player.readyweapon.bobrangey,
 			WOF_ADD|WOF_INTERPOLATE

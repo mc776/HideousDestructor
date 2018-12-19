@@ -256,7 +256,7 @@ class HDGrenadeThrower:HDWeapon{
 	ready3:
 		---- A 0{
 			invoker.weaponstatus[0]&=~FRAGF_JUSTTHREW;
-			A_TakeInventory("WeaponBusy");
+			A_WeaponBusy(false);
 		}goto readyend;
 
 	zoom:
