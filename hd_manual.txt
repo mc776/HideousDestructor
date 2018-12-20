@@ -446,6 +446,8 @@ hd_safelifts: With HD's reduced player speed and falling damage, some classic Do
 
 hd_dirtywindows: Before limit-removing sourceports the only windows in Doom were wholly see-through, even if they were supposed to block absolutely everything. This can be a bit frustrating when you have no idea what your shots can or cannot go through unimpeded. This setting will overlay all of these blocking surfaces with a translucent dirt texture to make them look like a poorly cleaned window. Default true.
 
+hd_novilespam: At map start, if this is true and multiple archviles are stacked too close together, some of them will be replaced with other monsters. Default true.
+
 hd_3speed: The frequently varying player speeds in HD do not play well with the movement prediction in network play. If you are experiencing an unusual amount of "rubber banding" while playing online, you can enable this option so that you are restricted to one of only 3 possible pre-set speeds at any time in multiplayer.
 
 hd_debug: Turns on some debug logging messages and displays, such as damage reports and (at level 2) bullet trails. Default 0.
@@ -467,7 +469,10 @@ hd_xhairscale (1): HD's sight crosshairs can scale unpredictably at different re
 
 hd_crosshair (0): This affects which image is displayed on the ZM66 and Liberator reflex sights. This is applied on a per-user basis and you will not need to set this every time you pick up a new gun. If you want to modify these, the lumps to replace are "riflsit1" through "riflsit5".
 
+hd_mugshot(-1): This sets the status bar mugshot and nothing else. -1 means use the one intended for your "gender" cvar setting. 0 and 1 are respectively masculine and feminine, while 3 is the robot.
+
 hd_nv (7): This sets the starting amplitude of your light amplification visor, between 0 and 100. Negative values mean the display is red rather than green. Brighter displays drain more battery.
+You can also set it to 999 to get the vanilla Doom behaviour where the renderer just omits lighting reduction. This is considered a cheat in multiplayer.
 
 hd_hudusedelay (12): This is how many tics you must hold Use before the full HUD shows up with all the ammo counts and compass (and scope view if hd_noscope is set to 1). Zero means it is always on. If below zero, your HUD disappears entirely, except only for your crosshair, when you are not pressing Use. At -2, even the crosshair disappears, but can be brought back with Zoom as well as Use.
 

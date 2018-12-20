@@ -287,7 +287,11 @@ class ArchFiend:Archvile replaces ArchVile{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		if(!bfriendly&&A_CheckProximity("null","Archfiend",2018,2,CPXF_NOZ)){
+		if(
+			!bfriendly
+			&&hd_novilespam
+			&&A_CheckProximity("null","Archfiend",2018,2,CPXF_NOZ)
+		){
 			A_Die("mapmorph");
 			return;
 		}
