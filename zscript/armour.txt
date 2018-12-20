@@ -19,6 +19,7 @@ class HDArmour:HDMagAmmo{
 	}
 	bool mega;
 	int cooldown;
+	override bool isused(){return true;}
 	override int getsbarnum(int flags){
 		if(mags.size()<1)return -1000000;
 		return mags[0]%1000;

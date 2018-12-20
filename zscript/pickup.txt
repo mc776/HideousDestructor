@@ -271,26 +271,6 @@ class HDAmmo:HDPickup{
 }
 
 
-class HDItemGiver:HDPickup{
-	default{
-		+nointeraction
-		-inventory.invbar
-		inventory.maxamount 1;
-	}
-	override void actualpickup(actor other){}
-	virtual void addtobackpack(hdbackpack bp){
-		if(!master)spawnmaster();
-		bp.itemtobackpack(inventory(master));
-	}
-	virtual void spawnmaster(){}
-	states{
-	spawn:
-		TNT1 A 1;
-		stop;
-	}
-}
-
-
 
 /*
  Fake pickup for creating different actors that give the same item
