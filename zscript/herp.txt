@@ -420,7 +420,9 @@ class HERPUsable:HDWeapon{
 		goto nope;
 
 	unload:
-		TNT1 A 0 A_JumpIf(pressinguse()||pressingzoom(),"altunload");
+		TNT1 A 0 A_JumpIf(invoker.weaponstatus[1]<0
+			&&invoker.weaponstatus[2]<0
+			&&invoker.weaponstatus[3]<0,"altunload");
 		TNT1 A 0{invoker.weaponstatus[0]|=HERPF_UNLOADONLY;}
 		//fallthrough to unloadmag
 	unloadmag:
@@ -472,7 +474,7 @@ class HERPUsable:HDWeapon{
 		}
 	}
 	action void A_UnloadMag(){
-		bool unsafe=invoker.weaponstatus[0]&HERPF_UNSAFEUNLOAD;
+		bool unsafe=(player.cmd.buttons&BT_USE)||(player.cmd.buttons&BT_ZOOM);
 		for(int i=3;i>0;i--){
 			int thismag=invoker.weaponstatus[i];
 			if(thismag<0)continue;
@@ -623,7 +625,6 @@ enum HERPNum{
 
 	HERPF_STARTOFF=1,
 	HERPF_UNLOADONLY=2,
-	HERPF_UNSAFEUNLOAD=4,
 }
 class HERPDEAD:HDPickup{
 	default{
