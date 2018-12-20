@@ -56,6 +56,12 @@ class HERPBot:HDUPK{
 	int botid;
 
 	override bool cancollidewith(actor other,bool passive){return other.bmissile;}
+	override void ongrab(actor other){
+		if(ishostile(other)){
+			bmissilemore=false;
+			setstatelabel("off");
+		}
+	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		startangle=angle;
@@ -295,7 +301,7 @@ class HERPBot:HDUPK{
 						hu.weaponstatus[1]=ammo[0];
 						hu.weaponstatus[2]=ammo[1];
 						hu.weaponstatus[3]=ammo[2];
-						HDMagAmmo.GiveMag(target,"HDBattery",battery);
+						hu.weaponstatus[4]=battery;
 					}
 				}
 				destroy();return;
