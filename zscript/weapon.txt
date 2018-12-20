@@ -54,7 +54,11 @@ class HDWeapon:Weapon{
 	}
 	//use target to help a dropped weapon remember its immediately prior owner
 	override void detachfromowner(){
-		if(!dontfistondrop&&owner.player&&!owner.player.readyweapon)owner.A_SelectWeapon("HDFist");
+		if(!dontfistondrop&&owner.player&&!owner.player.readyweapon){
+			owner.A_SelectWeapon("HDFist");
+			let fff=HDFist(owner.findinventory("HDFist"));
+			if(fff)fff.washolding=true;
+		}
 		angle=owner.angle;pitch=owner.pitch;
 		target=owner;
 		super.detachfromowner();
@@ -67,6 +71,7 @@ class HDWeapon:Weapon{
 	action bool gunbraced(){
 		return hdplayerpawn(self)&&hdplayerpawn(self).gunbraced;
 	}
+	//set the weapon as "busy" to reduce movement, etc.
 	bool weaponbusy;
 	action void A_WeaponBusy(bool yes=true){invoker.weaponbusy=yes;}
 	static void SetBusy(actor onr,bool yes=true){
