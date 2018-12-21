@@ -339,16 +339,7 @@ class DERPBot:HDUPK{
 			A_ClearTarget();
 			DerpAlert("\cjOut of ammo. Await retrieval.");
 			bnodropoff=true;
-			if(!master)setstatelabel("dead");
-		}
-	chasemaster:
-		DERP A 4{
-			if(distance3d(master)<40){
-				angle=-angle;A_FaceMaster(30,0);angle=-angle;
-				A_PlaySound("derp/crawl",CHAN_BODY);
-				A_Recoil(0.4);
-			}else A_SetTics(20);
-		}loop;
+		}goto spawn;
 	}
 }
 
