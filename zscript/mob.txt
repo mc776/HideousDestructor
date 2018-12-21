@@ -363,10 +363,6 @@ struct HDMobAI play{
 			if(caller.findstate("idle"))caller.setstatelabel("idle");
 			else caller.setstatelabel("spawn");
 			return;
-		}
-		if(!caller.checkmove(caller.pos.xy+caller.vec2angle(caller.speed*0.2,0))){
-			if(caller.target)caller.newchasedir();
-			else caller.randomchasedir();
 		}else if(!caller.checkmove(caller.pos.xy)){
 			caller.A_Wander();
 			return;
@@ -376,7 +372,6 @@ struct HDMobAI play{
 			bool benoteleport=caller.bnoteleport;
 			int bminmissilechance=caller.minmissilechance;
 			vector3 oldpos=caller.pos;
-			double oldangle=caller.angle;
 
 			caller.minmissilechance<<=1;
 			caller.bnoteleport=true;
@@ -390,7 +385,7 @@ struct HDMobAI play{
 			vector3 posdif=caller.pos-oldpos;
 			caller.setorigin(oldpos,false);
 			caller.vel*=0.7;
-			if(posdif!=(0,0,0))caller.vel+=posdif.unit()*caller.speed*0.3;;
+			if(posdif!=(0,0,0))caller.vel+=posdif.unit()*caller.speed*0.16;
 
 			caller.bfrightened=befrightened;
 			caller.bchasegoal=bechasegoal;
