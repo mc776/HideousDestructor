@@ -63,10 +63,16 @@ extend class HDPlayerPawn{
 			onground
 			&&!(oldinput & BT_JUMP)
 		){
-			if(!countinv("PowerStrength") && fatigue<HDCONST_SPRINTFATIGUE)vel.z+=4;
+			if(
+				zerk<1
+				&&fatigue>HDCONST_SPRINTFATIGUE
+			)vel.z+=4;
 			else vel.z+=7;
 			fatigue+=random(1,2);
-		}else vel.z+=3;
+		}else{
+			double pdif=zerk>0?5.:((antenna.floorz-pos.z)*0.03);
+			if(pdif>0)vel.z+=pdif;
+		}
 		return 1;
 	}
 	double jumppower(){
