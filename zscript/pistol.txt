@@ -528,6 +528,8 @@ class HDAutoPistol:HDItemGiver{
 			}
 			//overwrite everything if giving 2 autopistols
 			if(invoker.amount>1){
+				let expi=HDPistol(findinventory("HDPistol"));
+				expi.amount=invoker.amount;
 				expi.weaponstatus[PISS_AUTO]=max(0,startauto,expi.weaponstatus[PISS_AUTO]);
 				expi.weaponstatus2[PISS_AUTO]=max(0,startauto,expi.weaponstatus2[PISS_AUTO]);
 			}
