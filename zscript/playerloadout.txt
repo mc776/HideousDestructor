@@ -214,19 +214,27 @@ extend class HDPlayerPawn{
 	void GiveCustomItems(string loadinput){
 		if(!player)return;
 		if(HDPlayerPawn(self))HDPlayerPawn(self).GiveBasics();
+
+		//special conditions that completely overwrite the loadout giving
 		if(hd_forcepistolstart){
 			A_GiveInventory("DoomguyLoadout");
 			return;
 		}
 		if(loadinput=="")return;
+		if(loadinput~=="insurgent"){
+			A_GiveInventory("InsurgentLoadout");
+			return;
+		}
+
+		//special conditions that replace or modify the input string
+		if(loadinput.left(3)~=="hd_"){
+			loadinput=cvar.getcvar(loadinput,player).getstring();
+		}
 
 		array<string> whichitem;whichitem.clear();
 		array<int> howmany;howmany.clear();
 		array<string> loadlist;loadlist.clear();
 
-		if(loadinput.left(3)~=="hd_"){
-			loadinput=cvar.getcvar(loadinput,player).getstring();
-		}
 		string firstwep="";
 
 		loadinput.replace(" ","");

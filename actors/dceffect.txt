@@ -1,5 +1,5 @@
 // ------------------------------------------------------------
-//   Misc. special effects
+// Misc. special effects
 // ------------------------------------------------------------
 actor ParticleWhiteSmall:WhiteParticleFountain{
 	height 10 radius 10
@@ -7,15 +7,6 @@ actor ParticleWhiteSmall:WhiteParticleFountain{
 	states{
 	spawn:
 		TNT1 A 2
-		stop
-	}
-}
-actor ParticleBlackSmall:BlackParticleFountain{
-	height 10 radius 10
-	+nointeraction
-	states{
-	spawn:
-		TNT1 A 3
 		stop
 	}
 }
@@ -48,9 +39,8 @@ actor HDExplosionBoss:HDExplosion{
 
 
 // ------------------------------------------------------------
-//   Potentially hellish objects
+// Potentially hellish objects
 // ------------------------------------------------------------
-
 actor HDShortRedColumn:ShortRedColumn replaces ShortRedColumn{
 	+forceybillboard +shootable +nodamage +noblood +dontthrust
 }
