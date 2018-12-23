@@ -144,7 +144,10 @@ The syntax is as follows:
 
 	xxx yy, zzz aa - bbb cc, ddd ee
 
-where xxx and zzz are 3-character codes referring to an item, and yy and aa are any whole number that you want (within reason). Items are separate by commas, and the spaces are optional. If you only want one of a given item, you may also omit the number (e.g. "bos,710,7mm20" for a Boss, a single 10-round 7.76mm clip and 20 loose 7.76mm rounds).
+where xxx and zzz are 3-character codes referring to an item, and yy and aa are any whole number that you want (within reason).
+
+Items are separated by commas, and the spaces are optional. If you only want one of a given item, you may also omit the number (e.g. "bos,710,7mm20" for a Boss, a single 10-round 7.76mm clip and 20 loose 7.76mm rounds).
+NOTE: Due to technical reasons spaces *must* be omitted from loadout strings if they're being set via the "+set" method at the command line.
 
 The first item is the weapon you pull out at start. If the first item is not a weapon, you start with your hands free. If you want to start with a weapon and nothing else, but do not want it drawn at start, use the code for fists ("fis") at the start of your loadout.
 
@@ -153,6 +156,11 @@ The "-" marks where the loadout information on your person ends and the loadout 
 The loadout system will detect items from mods for HD like Ugly as Sin. (modding note: it must inherit from "HDPickup" or "HDWeapon" and have a unique "refid" defined and "fitsinbackpack" set to true if it is to be placed in a backpack.) To see a list of all items in the currently loaded session, type "give loadoutitemlist" in the console.
 
 Starting with keys is a bitmask. 7 = all 3 keys.
+
+Some shortcuts:
+"doomguy": Fully tac-loaded pistol with 2 extra mags and 4 loose rounds (total 50 shots)
+"insurgent": Randomized as in Insurgent class.
+"hd_loadout*": Only relevant for hd_forceloadout, this forces everyone to use whatever they've set for the loadout number placed where the star is.
 
 
 	Player classes / predefined loadouts
@@ -423,7 +431,8 @@ hd_doomguy (cheat): This command, available anytime and not considered a cheat, 
 
 	CVars (host only)
 
-hd_forcepistolstart: This has the same effect as if everyone voluntarily picked the Doomed Guy class, with more griping.
+hd_forceloadout: Set this to "" or "none" (without quotes) to let everyone choose their own loadout. Set this to anything else and it becomes everyone's loadout. Does not affect anyone's current inventory.
+Default is blank. This cvar is not saved between sessions.
 
 hd_onemanarmy: This alters the rules for how encumbered you are by your inventory.
 0: Normal: you can only carry so many things on your person. All items contribute to your encumbrance.
