@@ -216,7 +216,8 @@ extend class HDPlayerPawn{
 		if(HDPlayerPawn(self))HDPlayerPawn(self).GiveBasics();
 
 		//special conditions that completely overwrite the loadout giving
-		if(hd_forcepistolstart){
+		if(hd_forceloadout!="")loadinput=hd_forceloadout;
+		else if(hd_forcepistolstart){
 			A_GiveInventory("DoomguyLoadout");
 			return;
 		}
