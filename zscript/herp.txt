@@ -676,52 +676,6 @@ extend class HDHandlers{
 			ppp.A_Log(string.format("\cd[HERP] \cjNext HERP tag set to \cy%i",-botcmd),true);
 			return;
 		}
-		//get some info
-		else if(botcmd==411){
-			if(!herpinv)return;
-			string ammo[3];
-			for(int i=1;i<4;i++){
-				int inherp=herpinv.weaponstatus[i];
-				if(inherp>=100)ammo[i]=string.format("\cg%i",random(0,99));
-				else if(inherp>50)ammo[i]=string.format("\cy50");
-				else if(inherp<0)ammo[i]=string.format("\cu0");
-				else if(inherp<1)ammo[i]=string.format("\cg-");
-				else ammo[i]=string.format("\cw%i",min(50,inherp));
-//				ammo[i]=string.format("%i",inherp);	//debug
-			}
-			ppp.A_Log(string.format("\cd[HERP] \cjSTATUS UPDATE:\n\cjCartridges loaded: \cy%s %s %s",ammo[0],ammo[1],ammo[2]),true);
-			return;
-		}
-		//unload
-		else if(
-			botcmd==412
-			||botcmd==413
-		){
-			if(!herpinv)return;
-			bool takeall=(botcmd==413);
-			bool tookdirty=false;
-			bool tookany=false;
-			for(int i=1;i<4;i++){
-				int gettt=herpinv.weaponstatus[i];
-				if(
-					gettt<0
-					||(!takeall&&gettt>100)
-				)continue;
-				tookany=true;
-				herpinv.weaponstatus[i]=-1;
-				if(gettt>100){
-					tookdirty=true;
-					gettt=clamp(gettt,0,50);
-				}else{
-					gettt=clamp(gettt,0,51);
-				}
-				HDMagAmmo.GiveMag(ppp,"HD4mMag",gettt);
-			}
-			ppp.A_PlaySound("misc/w_pkup",5);
-			if(tookany)ppp.A_Log("\cd[HERP] \cjUnloaded.",true);
-			if(tookdirty)ppp.A_Log(HDCONST_426MAGMSG,true);
-			return;
-		}
 
 		//give actual commands
 		bool anybots=false;
@@ -804,7 +758,7 @@ extend class HDHandlers{
 				botcmdid?string.format("with tag \ca%i\cj ",botcmdid):"",
 				verb
 			),true);
-		}else if(badcommand)ppp.A_Log(string.format("\cd[HERP] \cj%sCommand format:\cu herp <option> <tag number> <direction>\n\cjOptions\n 1 = ON\n 2 = OFF\n 3 = DIRECTION (counterclockwise in degrees)\n 123 = QUERY\n -n = set tag number\n 411 = examine\n 412 = unload\n 413 = unload (unsafe)\n\cj  tag number on next deployment: \cy%i",anybots?"":"No HERPs currently deployed.\n",botid),true);
+		}else if(badcommand)ppp.A_Log(string.format("\cd[HERP] \cj%sCommand format:\cu herp <option> <tag number> <direction>\n\cjOptions\n 1 = ON\n 2 = OFF\n 3 = DIRECTION (counterclockwise in degrees)\n 123 = QUERY\n -n = set tag number\n\cj  tag number on next deployment: \cy%i",anybots?"":"No HERPs currently deployed.\n",botid),true);
 	}
 }
 
