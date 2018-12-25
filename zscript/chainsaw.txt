@@ -61,6 +61,52 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 			owner.A_DropInventory("HDBattery",1);
 		}
 	}
+	action void A_HDSaw(){
+		A_WeaponReady(WRF_NONE);
+		int battery=invoker.weaponstatus[CSAWS_BATTERY];
+		int inertia=invoker.weaponstatus[CSAWS_INERTIA];
+		if(inertia<12)invoker.weaponstatus[CSAWS_INERTIA]++;
+
+		int drainprob=LUMBERJACKDRAIN;
+		int dmg=0;
+		if((inertia>11)&&(battery>random(5,8))){
+			dmg=random(5,50);
+			A_MuzzleClimb(
+				randompick(-1,1)*frandom(0.2,0.3),
+				randompick(-1,1)*frandom(0.2,0.4)
+			);
+		}else if((inertia>6)&&(battery>random(2,4))){
+			dmg=random(3,30);
+			A_SetTics(2);
+			A_MuzzleClimb(
+				randompick(-1,1)*frandom(0.1,0.3),
+				randompick(-1,1)*frandom(0.1,0.4)
+			);
+		}else if((inertia>1)&&(battery>random(1,4))){
+			drainprob*=3/2;
+			dmg=random(1,11);
+			A_SetTics(random(2,4));
+			A_MuzzleClimb(
+				randompick(-1,1)*frandom(0.05,0.6),
+				randompick(-1,1)*frandom(0.05,0.2)
+			);
+		}else{
+			drainprob*=4;
+			A_PlaySound("weapons/sawidle",CHAN_WEAPON);
+			A_FireProjectile("HDSawPuffShitty");
+			A_SetTics(random(3,6));
+			A_MuzzleClimb(
+				frandom(-0.2,0.2),
+				frandom(-0.2,0.2)
+			);
+		}
+		if(battery>0&&!random(0,drainprob))invoker.weaponstatus[CSAWS_BATTERY]--;
+
+		if(dmg>0){
+			LineAttack(angle,64,pitch,dmg,"Chainsaw","HDSawPuff",LAF_ISMELEEATTACK,offsetz:-12);
+			A_AlertMonsters();
+		}
+	}
 	states{
 	ready:
 		BEVG C 1{
@@ -96,47 +142,9 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 		BEVG C 4 A_JumpIf(invoker.weaponstatus[CSAWS_BATTERY]>0,"saw");
 		goto beatdown;
 	saw:
-		BEVG AB 1{
-			A_WeaponReady(WRF_NONE);
-			int drainprob=LUMBERJACKDRAIN;
-			if(invoker.weaponstatus[CSAWS_INERTIA]<12)invoker.weaponstatus[CSAWS_INERTIA]++;
-			if((invoker.weaponstatus[CSAWS_BATTERY]>random(5,8))&&(invoker.weaponstatus[CSAWS_INERTIA]>11)){
-				A_MuzzleClimb(
-					randompick(-1,1)*frandom(-0.2,-0.3),
-					randompick(-1,1)*frandom(0.2,0.4)
-				);
-				A_Saw("weapons/sawfull","weapons/sawhit",5,"HDSawPuff",SF_NOPULLIN);
-				A_AlertMonsters();
-			}else if((invoker.weaponstatus[CSAWS_BATTERY]>random(2,4))&&(invoker.weaponstatus[CSAWS_INERTIA]>6)){
-				A_MuzzleClimb(
-					randompick(-1,1)*frandom(-0.1,-0.3),
-					randompick(-1,1)*frandom(0.1,0.4)
-				);
-				A_Saw("weapons/sawfull","weapons/sawhit",3,"HDSawPuff",SF_NOPULLIN);
-				A_SetTics(2);
-				A_AlertMonsters();
-			}else if((invoker.weaponstatus[CSAWS_BATTERY]>random(1,4))&&(invoker.weaponstatus[CSAWS_INERTIA]>1)){
-				drainprob*=1.5;
-				A_MuzzleClimb(
-					randompick(-1,1)*frandom(-0.05,-0.6),
-					randompick(-1,1)*frandom(0.05,0.2)
-				);
-				A_Saw("weapons/sawfull","weapons/sawhit",1,"HDSawPuff",SF_NOPULLIN);
-				A_SetTics(random(2,4));
-				A_AlertMonsters();
-			}else{
-				drainprob*=4;
-				A_MuzzleClimb(frandom(-0.2,0.2),frandom(-0.2,0.2));
-				A_PlaySound("weapons/sawidle",CHAN_WEAPON);
-				A_FireProjectile("HDSawPuffShitty");
-				A_SetTics(random(3,6));
-			}
-			if(!random(0,drainprob)&&invoker.weaponstatus[CSAWS_BATTERY]>0)invoker.weaponstatus[CSAWS_BATTERY]--;
-		}
-		BEVG B 1{
-			A_WeaponReady(WRF_NONE);
-			A_Refire();
-		}goto ready;
+		BEVG AB 1 A_HDSaw();
+		BEVG B 0 A_Refire();
+		goto ready;
 
 	altfire:
 	beatdown:
