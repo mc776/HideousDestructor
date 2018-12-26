@@ -410,6 +410,12 @@ class DERPDEAD:DERPUsable{
 		hdpickup.refid "";
 		hdpickup.nicename "D.E.R.P. (broken)";
 	}
+	override bool isused(){return false;}
+	states{
+	use:
+		TNT1 A 0 A_Log("\cd[DERP]\cj  ERROR",true);
+		fail;
+	}
 	override void Consolidate(){
 		if(
 			owner
