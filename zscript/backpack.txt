@@ -595,7 +595,10 @@ extend class HDBackpack{
 			let type=(class<hdpickup>)(invclasses[i]);
 			if(!type)continue;
 			int onperson=BPToInv(owner,type);
+
 			let thisinv=hdpickup(owner.findinventory(type));
+			int maxinvbak=thisinv.maxamount;
+			thisinv.maxamount=int.MAX;
 
 			thisinv.Consolidate();
 
@@ -616,7 +619,7 @@ extend class HDBackpack{
 				thisinv.amount=onperson;
 			}
 
-			thisinv.maxamount=getdefaultbytype(type).maxamount;
+			thisinv.maxamount=maxinvbak;
 		}
 	}
 
@@ -647,7 +650,7 @@ extend class HDBackpack{
 					int bpamt=addamt.toint();
 					caller.A_GiveInventory(type,bpamt);
 					let cfi=caller.findinventory(type);
-					cfi.maxamount=max(cfi.maxamount,originalamount+bpamt);
+					cfi.maxamount=int.MAX;
 				}
 			}
 			bp.amounts[bpindex]="";
