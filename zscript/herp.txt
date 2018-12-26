@@ -426,7 +426,7 @@ class HERPUsable:HDWeapon{
 		TNT1 A 0{invoker.weaponstatus[0]|=HERPF_UNLOADONLY;}
 		//fallthrough to unloadmag
 	unloadmag:
-		TNT1 A 20;
+		TNT1 A 14;
 		TNT1 A 5 A_UnloadMag();
 		TNT1 A 0 A_JumpIf(invoker.weaponstatus[0]&HERPF_UNLOADONLY,"reloadend");
 		goto reloadend;
@@ -454,7 +454,7 @@ class HERPUsable:HDWeapon{
 		TNT1 A 5 A_LoadBattery();
 	reloadend:
 		TNT1 A 6;
-		goto nope;
+		goto ready;
 	spawn:
 		HERP A -1;
 		stop;
