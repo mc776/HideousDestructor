@@ -338,14 +338,8 @@ class HDRL:HDWeapon{
 			if(invoker.weaponstatus[RLS_CHAMBER]<1)invoker.weaponstatus[RLS_CHAMBER]=1;
 			else invoker.weaponstatus[RLS_MAG]++;
 		}
-		MISG BB 1 offset(10,34){
-			if(
-				PressingUnload()
-				||PressingReload()
-				||PressingFire()
-				||PressingAltfire()
-			)setweaponstate("reloadend");
-		}loop;
+		MISG BB 1 offset(10,34) A_JumpIf(!pressingreload(),"reloadend");
+		loop;
 	reloadend:
 		MISG B 5 offset(10,36) A_PlaySound("weapons/rockopen2",CHAN_WEAPON);
 		MISG B 1 offset(8,38) A_PlaySound("weapons/rockopen",7);
@@ -447,6 +441,7 @@ class HDRL:HDWeapon{
 		}
 		MISG B 2 offset(11,38) A_PlaySound("weapons/rockopen2",CHAN_WEAPON);
 	unload2:
+		MISG B 0 A_JumpIf(invoker.weaponstatus[RLS_MAG]<1&&invoker.weaponstatus[RLS_CHAMBER]<1,"unloadend");
 		MISG B 10 offset(12,40) A_PlaySound("weapons/rockreload",7);
 		MISG B 9 offset(10,38){
 			if(!invoker.weaponstatus[RLS_CHAMBER]){
@@ -472,15 +467,8 @@ class HDRL:HDWeapon{
 			if(health<40)A_SetTics(4);
 			A_PlaySound("weapons/rockopen",CHAN_AUTO);
 		}
-		MISG B 0{
-			if(
-				(invoker.weaponstatus[RLS_CHAMBER]<1&&invoker.weaponstatus[RLS_MAG]<1)
-				||PressingUnload()
-				||PressingReload()
-				||PressingFire()
-				||PressingAltfire()
-			)setweaponstate("unloadend");
-		}goto unload2;
+		MISG B 0 A_JumpIf(!pressingunload(),"unloadend");
+		goto unload2;
 	unloadend:
 		MISG B 1 offset(8,38);
 		MISG B 1 offset(4,36);
