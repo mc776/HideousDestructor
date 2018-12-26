@@ -82,7 +82,7 @@ class HDArmour:HDMagAmmo{
 		invoker.amount--;
 		invoker.mags.delete(0);
 
-		if(getcvar("hd_helptext")){
+		if(cvar.getcvar("hd_helptext",player).getbool()){
 			string blah=string.format("You put on the %s armour. ",worn.mega?"combat":"security");
 			double qual=double(worn.durability)/(worn.mega?HDCONST_BLUEARMOUR:HDCONST_GREENARMOUR);
 			if(qual<0.1)A_Log(blah.."Just don't get hit.",true);
