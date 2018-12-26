@@ -57,7 +57,7 @@ class BossRifle:HDWeapon{
 				else weaponstatus[BOSSS_ZOOM]=
 				clamp(cvar.getcvar("hd_libzoom",owner.player).getint(),5,60);
 			weaponstatus[BOSSS_DROPADJUST]=
-				clamp(cvar.getcvar("hd_bossmoa",owner.player).getint(),0,120);
+				clamp(cvar.getcvar("hd_bossmoa",owner.player).getint(),0,600);
 		}
 	}
 	override double gunmass(){
@@ -162,7 +162,7 @@ class BossRifle:HDWeapon{
 			sb.drawnum(degree*10,
 				4+bob.x,105+bob.y,sb.DI_SCREEN_CENTER,Font.CR_BLACK
 			);
-			sb.drawnum(hdw.weaponstatus[BOSSS_DROPADJUST]*5,
+			sb.drawnum(hdw.weaponstatus[BOSSS_DROPADJUST],
 				6+bob.x,9+bob.y,sb.DI_SCREEN_CENTER,Font.CR_BLACK
 			);
 			sb.drawimage(
@@ -171,8 +171,6 @@ class BossRifle:HDWeapon{
 			);
 		}
 		// the scope display is in 10ths of an arcminute.
-		// every 2 BossMOA (item) should be one arcminute.
-		// every 60 BossMOA (scope) should be one dot.
 		// one dot = 6 arcminutes.
 	}
 	override void consolidate(){
@@ -197,7 +195,7 @@ class BossRifle:HDWeapon{
 		BARG A 1{
 			if(pressingzoom()){
 				if(player.cmd.buttons&BT_USE){
-					A_ZoomAdjust(BOSSS_DROPADJUST,0,60,BT_USE);
+					A_ZoomAdjust(BOSSS_DROPADJUST,0,600,BT_USE);
 				}else if(invoker.weaponstatus[0]&BOSSF_FRONTRETICLE)A_ZoomAdjust(BOSSS_ZOOM,12,40);
 				else A_ZoomAdjust(BOSSS_ZOOM,5,60);
 				A_WeaponReady(WRF_NONE);
@@ -220,7 +218,7 @@ class BossRifle:HDWeapon{
 			p.target=self;p.angle=angle;p.pitch=pitch;
 			p.speed*=(invoker.weaponstatus[0]&BOSSF_CUSTOMCHAMBER)?1.06:1.27;
 			p.vel+=self.vel;
-			p.pitch-=(1./120.)*invoker.weaponstatus[BOSSS_DROPADJUST];
+			p.pitch-=(1./600.)*invoker.weaponstatus[BOSSS_DROPADJUST];
 
 			A_MuzzleClimb(
 				0,0,
@@ -585,7 +583,7 @@ class BossRifle:HDWeapon{
 			if(random(0,20))weaponstatus[0]&=~BOSSF_CUSTOMCHAMBER;
 				else weaponstatus[0]|=BOSSF_CUSTOMCHAMBER;
 			weaponstatus[BOSSS_ZOOM]=20;
-			weaponstatus[BOSSS_DROPADJUST]=24;
+			weaponstatus[BOSSS_DROPADJUST]=100;
 		}
 	}
 }

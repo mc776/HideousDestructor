@@ -232,7 +232,7 @@ class LiberatorRifle:AutoReloadingThingy{
 				else weaponstatus[LIBS_ZOOM]=
 				clamp(cvar.getcvar("hd_libzoom",owner.player).getint(),6,70);
 			weaponstatus[LIBS_DROPADJUST]=
-				clamp(cvar.getcvar("hd_libmoa",owner.player).getint(),0,60);
+				clamp(cvar.getcvar("hd_libmoa",owner.player).getint(),0,600);
 		}
 	}
 	override double gunmass(){
@@ -353,7 +353,7 @@ class LiberatorRifle:AutoReloadingThingy{
 				sb.drawnum(degree*10,
 					4+bob.x,95+bob.y,sb.DI_SCREEN_CENTER,Font.CR_BLACK
 				);
-				sb.drawnum(hdw.weaponstatus[LIBS_DROPADJUST]*5,
+				sb.drawnum(hdw.weaponstatus[LIBS_DROPADJUST],
 					6+bob.x,17+bob.y,sb.DI_SCREEN_CENTER,Font.CR_BLACK
 				);
 				sb.drawimage(
@@ -471,7 +471,7 @@ class LiberatorRifle:AutoReloadingThingy{
 		BRFG A 1{
 			if(pressingzoom()){
 				if(player.cmd.buttons&BT_USE){
-					A_ZoomAdjust(LIBS_DROPADJUST,0,60,BT_USE);
+					A_ZoomAdjust(LIBS_DROPADJUST,0,600,BT_USE);
 				}else if(invoker.weaponstatus[0]&LIBF_FRONTRETICLE)A_ZoomAdjust(LIBS_ZOOM,20,40);
 				else A_ZoomAdjust(LIBS_ZOOM,6,70);
 				A_WeaponReady(WRF_NONE);
@@ -524,7 +524,7 @@ class LiberatorRifle:AutoReloadingThingy{
 			actor p=spawn("HDBullet776",pos+(0,0,height-6),ALLOW_REPLACE);
 			p.target=self;p.angle=angle;p.pitch=pitch;
 			p.vel+=self.vel;
-			p.pitch-=(1./120.)*invoker.weaponstatus[LIBS_DROPADJUST];
+			p.pitch-=(1./600.)*invoker.weaponstatus[LIBS_DROPADJUST];
 
 			A_MuzzleClimb(
 				0,0,
@@ -846,7 +846,7 @@ class LiberatorRifle:AutoReloadingThingy{
 			if(randompick(0,0,1))weaponstatus[0]|=LIBF_ALTRETICLE;
 			weaponstatus[LIBS_ZOOM]=30;
 			weaponstatus[LIBS_HEAT]=0;
-			weaponstatus[LIBS_DROPADJUST]=24;
+			weaponstatus[LIBS_DROPADJUST]=100;
 		}
 	}
 }
