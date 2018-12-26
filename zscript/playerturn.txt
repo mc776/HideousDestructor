@@ -91,7 +91,7 @@ extend class HDPlayerPawn{
 		if(!HDWeapon.IsBusy(self)&&player.readyweapon){
 			double hdbbx=(hudbobrecoil1.x+hudbob.x)*0.3;
 			double hdbby=max(0,(hudbobrecoil1.y+hudbob.y)*0.3+player.readyweapon.bobrangey*2);
-			A_WeaponOffset(hdbbx,hdbby,WOF_ADD|WOF_INTERPOLATE);
+			A_WeaponOffset(hdbbx,hdbby+WEAPONTOP,WOF_INTERPOLATE);
 		}
 
 
