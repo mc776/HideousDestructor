@@ -11,18 +11,26 @@ class MagManager:HDWeapon{
 	hdmagammo thismag;
 	name thismagtype;
 	string uitext;
-	name magtypes[7];
+	array<string>magtypes;
+
 	override void beginplay(){
 		super.beginplay();
 		uitext="Mag Manager\n\nNo mags selected";
 		thismagtype="HDMagAmmo";
 		if(owner)thismag=hdmagammo(owner.findinventory(thismagtype));
-		magtypes[0]="HD9mMag15";
-		magtypes[1]="HD9mMag30";
-		magtypes[2]="HD4mMag";
-		magtypes[3]="HD7mClip";
-		magtypes[4]="HD7mMag";
-		magtypes[5]="HDBattery";
+
+		magtypes.clear();
+		for(int i=0;i<allactorclasses.size();i++){
+			let mmmm=(class<hdmagammo>)(allactorclasses[i]);
+			if(!mmmm)continue;
+			let mmm=getdefaultbytype(mmmm);
+			if(
+				mmm.mustshowinmagmanager
+				||(mmm.roundtype!="")
+			){
+				magtypes.push(mmm.getclassname());
+			}
+		}
 	}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
 		let thismag=magmanager(hdw).thismag;

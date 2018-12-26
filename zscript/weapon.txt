@@ -207,6 +207,7 @@ class HDWeapon:Weapon{
 	virtual double gunmass(){return 0;}
 	//determine bulk for weapon encumbrance purposes
 	virtual double weaponbulk(){return 0;}
+
 	//for consolidating stuff between maps
 	virtual void Consolidate(){}
 
@@ -311,7 +312,7 @@ class HDWeapon:Weapon{
 		msgtimer=0;wepmsg="";
 		initializewepstats();
 		bobrangex*=3;bobrangey*=3;
-bdontbob=true;
+		bdontbob=true;
 		super.beginplay();
 	}
 	override void postbeginplay(){
