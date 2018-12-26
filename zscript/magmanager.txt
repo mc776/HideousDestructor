@@ -246,22 +246,28 @@ class MagManager:HDWeapon{
 		}goto super::select;
 	ready:
 		TNT1 A 1{
-			A_WeaponMessage(invoker.uitext);
-			A_WeaponReady(WRF_ALL&~WRF_ALLOWUSER2);
+			int bt=player.cmd.buttons;
+			if(pressingzoom()){
+				int inputamt=player.cmd.pitch>>6;
+				if(inputamt){
+					NextMagType(inputamt>0?true:false);
+					invoker.UpdateText();
+				}
+				if(justpressed(BT_ATTACK))NextMagType(false);
+				if(justpressed(BT_ALTATTACK))NextMagType();
+				HijackMouse();
+			}else A_WeaponReady(WRF_ALL&~WRF_ALLOWUSER2);
 			if(!invoker.thismag)NextMagType();
 			invoker.UpdateText();
+			A_WeaponMessage(invoker.uitext);
 		}
 		goto readyend;
 	fire:
-		TNT1 A 1{
-			if(PressingFireMode())NextMagType(false);
-			else LastToFirst(false);
-		}goto nope;
+		TNT1 A 1 LastToFirst(false);
+		goto nope;
 	altfire:
-		TNT1 A 1{
-			if(PressingFireMode())NextMagType();
-			else LastToFirst();
-		}goto nope;
+		TNT1 A 1 LastToFirst();
+		goto nope;
 	reload:
 		TNT1 A 8{
 			if(PressingFireMode())PutIntoBackpack(invoker.thismagtype);
@@ -274,10 +280,7 @@ class MagManager:HDWeapon{
 				A_SetTics(8);
 			}else Extract();
 		}goto readyend;
-	firemode:
-		TNT1 A 0;
-		goto nope;
-	zoom:
+	altreload:
 		TNT1 A 0 LowestToLast();
 		goto nope;
 	}
