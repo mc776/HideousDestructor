@@ -29,15 +29,30 @@ if(cplayer)translatedloadout=gettranslatedloadout(cvar.getcvar("hd_loadout1",cpl
 	string GetTranslatedLoadout(string input){
 		string ttl="";
 		array<string>items;items.clear();
+		array<string>bpitems;bpitems.clear();
+		input.tolower();
 		input.replace(" ","");
-		input.split(items,",");
+		input.split(items,"-");
+		bool inbp=items.size()>1&&items[0]!="";
+		if(inbp)items[1].split(bpitems,",");
+		string iitems=items[0];items.clear();
+		iitems.split(items,",");
 		for(int i=0;i<items.size();i++){
 			string refid=items[i].left(3);
-			refid.tolower();
 			int whichindex=refids.find(refid);
 			if(whichindex>=refids.size())continue;
 			int howmany=max((items[i].mid(3,items[i].length())).toint(10),1);
 			ttl=ttl.."\n"..howmany.."x   "..nicenames[whichindex];
+		}
+		if(inbp){
+			ttl=ttl.."\n\nIN BACKPACK:";
+			for(int i=0;i<bpitems.size();i++){
+				string refid=bpitems[i].left(3);
+				int whichindex=refids.find(refid);
+				if(whichindex>=refids.size())continue;
+				int howmany=max((bpitems[i].mid(3,bpitems[i].length())).toint(10),1);
+				ttl=ttl.."\n  "..howmany.."x   "..nicenames[whichindex];
+			}
 		}
 		return ttl;
 	}
@@ -46,10 +61,11 @@ if(cplayer)translatedloadout=gettranslatedloadout(cvar.getcvar("hd_loadout1",cpl
 		playerinfo cplayer=players[consoleplayer];
 		if(!cplayer)return;
 
+translatedloadout=gettranslatedloadout(cvar.getcvar("hd_loadout1",cplayer).getstring());
 		string s=translatedloadout;
 		screen.DrawText (SmallFont, OptionMenuSettings.mFontColorValue,
 			(screen.GetWidth() - SmallFont.StringWidth (s) * CleanXfac_1) / 2,
-			SmallFont.GetHeight()*CleanYFac_1*20,
+			SmallFont.GetHeight()*CleanYFac_1*19,
 			s,DTA_CleanNoMove_1, true
 		);
 	}
