@@ -22,9 +22,21 @@ class HDLoadoutMenu:OptionMenu{
 				}
 			}
 		}
-
-playerinfo cplayer=players[consoleplayer];
-if(cplayer)translatedloadout=gettranslatedloadout(cvar.getcvar("hd_loadout1",cplayer).getstring());
+	}
+	override bool MenuEvent(int mkey, bool fromcontroller){
+		int startedAt = mDesc.mSelectedItem;
+		switch(mkey){
+		case MKEY_Up:
+		case MKEY_Down:
+			playerinfo cplayer=players[consoleplayer];
+			if(cplayer)translatedloadout=gettranslatedloadout(cvar.getcvar("hd_loadout1",cplayer).getstring());
+			break;
+		}
+		return super.menuevent(mkey,fromcontroller);
+	}
+	override void releasefocus(){
+		playerinfo cplayer=players[consoleplayer];
+		if(cplayer)translatedloadout=gettranslatedloadout(cvar.getcvar("hd_loadout1",cplayer).getstring());
 	}
 	string GetTranslatedLoadout(string input){
 		string ttl="";
@@ -33,12 +45,16 @@ if(cplayer)translatedloadout=gettranslatedloadout(cvar.getcvar("hd_loadout1",cpl
 		input.tolower();
 		input.replace(" ","");
 		input.split(items,"-");
-		bool inbp=items.size()>1&&items[0]!="";
+		bool inbp=items.size()>1;
 		if(inbp)items[1].split(bpitems,",");
 		string iitems=items[0];items.clear();
 		iitems.split(items,",");
 		for(int i=0;i<items.size();i++){
 			string refid=items[i].left(3);
+			if(refid=="bak"){
+				inbp=true;
+				continue;
+			}
 			int whichindex=refids.find(refid);
 			if(whichindex>=refids.size())continue;
 			int howmany=max((items[i].mid(3,items[i].length())).toint(10),1);
@@ -46,10 +62,19 @@ if(cplayer)translatedloadout=gettranslatedloadout(cvar.getcvar("hd_loadout1",cpl
 		}
 		if(inbp){
 			ttl=ttl.."\n\nIN BACKPACK:";
-			for(int i=0;i<bpitems.size();i++){
+			if(!bpitems.size())ttl=ttl.."\n  <nothing>";
+			else for(int i=0;i<bpitems.size();i++){
 				string refid=bpitems[i].left(3);
 				int whichindex=refids.find(refid);
-				if(whichindex>=refids.size())continue;
+				if(
+					whichindex>=refids.size()
+					||nicenames[whichindex]==""
+				){
+					if(i+1==bpitems.size()){
+						ttl=ttl.."\n  <nothing>";
+						break;
+					}else continue;
+				}
 				int howmany=max((bpitems[i].mid(3,bpitems[i].length())).toint(10),1);
 				ttl=ttl.."\n  "..howmany.."x   "..nicenames[whichindex];
 			}
@@ -60,8 +85,6 @@ if(cplayer)translatedloadout=gettranslatedloadout(cvar.getcvar("hd_loadout1",cpl
 		Super.Drawer();
 		playerinfo cplayer=players[consoleplayer];
 		if(!cplayer)return;
-
-translatedloadout=gettranslatedloadout(cvar.getcvar("hd_loadout1",cplayer).getstring());
 		string s=translatedloadout;
 		screen.DrawText (SmallFont, OptionMenuSettings.mFontColorValue,
 			(screen.GetWidth() - SmallFont.StringWidth (s) * CleanXfac_1) / 2,
