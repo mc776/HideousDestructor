@@ -207,7 +207,7 @@ class MagManager:HDWeapon{
 	}
 	void UpdateText(){
 		string toui=string.format(
-			"\cf///\cyMag Manager\cf\\\\\\\n\n\cqFire\cu/\cqAltfire\cu  select mag\n\cqZoom\cu+\cqF\cu/\cqAF\cu  select ammo type\n\cqReload\cu/\cqUnload\cu  load/unload selected mag\n\cqFM\cu+\cqR\cu/\cqU\cu  move to/from backpack\n\cqDrop\cu  drop current mag\n\cqAlt.Reload\cu bring up lowest mag\n\cqDrop one\cu drop some loose rounds\n\n\n\cj%s\n",thismag?thismag.nicename:"No mags selected."
+			"\cf///\cyMag Manager\cf\\\\\\\n\n\cqFire\cu/\cqAltfire\cu  select mag\n\cqFiremode\cu+\cqF\cu/\cqAF\cu  select ammo type\n\cqReload\cu/\cqUnload\cu  load/unload selected mag\n\cqFM\cu+\cqR\cu/\cqU\cu  move to/from backpack\n\cqDrop\cu  drop current mag\n\cqAlt.Reload\cu bring up lowest mag\n\cqDrop one\cu drop some loose rounds\n\n\n\cj%s\n",thismag?thismag.nicename:"No mags selected."
 		);
 		if(thismag){
 			thismagtype=thismag.getclassname();
@@ -247,16 +247,21 @@ class MagManager:HDWeapon{
 	ready:
 		TNT1 A 1{
 			int bt=player.cmd.buttons;
-			if(pressingzoom()){
+			if(pressingfiremode()){
 				int inputamt=player.cmd.pitch>>6;
 				if(inputamt){
 					NextMagType(inputamt>0?true:false);
 					invoker.UpdateText();
 				}
 				if(justpressed(BT_ATTACK))NextMagType(false);
-				if(justpressed(BT_ALTATTACK))NextMagType();
+				else if(justpressed(BT_ALTATTACK))NextMagType();
+				else if(justpressed(BT_RELOAD))PutIntoBackpack(invoker.thismagtype);
+				else if(justpressed(BT_USER4)){
+					GetFromBackpack(invoker.thismagtype);
+					A_SetTics(8);
+				}
 				HijackMouse();
-			}else A_WeaponReady(WRF_ALL&~WRF_ALLOWUSER2);
+			}else A_WeaponReady();
 			if(!invoker.thismag)NextMagType();
 			invoker.UpdateText();
 			A_WeaponMessage(invoker.uitext);
@@ -269,17 +274,11 @@ class MagManager:HDWeapon{
 		TNT1 A 1 LastToFirst();
 		goto nope;
 	reload:
-		TNT1 A 8{
-			if(PressingFireMode())PutIntoBackpack(invoker.thismagtype);
-			else Insert();
-		}goto readyend;
+		TNT1 A 8 Insert();
+		goto readyend;
 	unload:
-		TNT1 A 4{
-			if(PressingFireMode()){
-				GetFromBackpack(invoker.thismagtype);
-				A_SetTics(8);
-			}else Extract();
-		}goto readyend;
+		TNT1 A 4 Extract();
+		goto readyend;
 	altreload:
 		TNT1 A 0 LowestToLast();
 		goto nope;

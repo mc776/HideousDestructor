@@ -313,7 +313,7 @@ class HDBackpack:HDWeapon{
 		selectedininventory=owner.countinv(thisinv);
 
 		//display selected item name and amounts carried
-		wepmsg="\cs[] [] [] \cbBackpack \cs[] [] []\nzoom=fast scroll  unload/reload=take/insert\n\n"
+		wepmsg="\cs[] [] [] \cbBackpack \cs[] [] []\nfiremode=fast scroll  unload/reload=take/insert\n\n"
 			.."\n\nTotal Bulk: \cf"..int(bulk);
 	}
 	//generic code for inserting into backpack
@@ -454,7 +454,7 @@ class HDBackpack:HDWeapon{
 	}
 	//main interface
 	action void A_BPReady(){
-		if(pressingzoom()){
+		if(pressingfiremode()){
 			int inputamt=player.cmd.pitch>>5;
 			invoker.UpdateMessage(invoker.index-inputamt);
 			HijackMouse();
