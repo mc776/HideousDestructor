@@ -313,7 +313,7 @@ class HDPlayerPawn:PlayerPawn{
 			||input&BT_USER4
 		);
 		HDWeapon.SetBusy(self,weaponbusy);
-		if((fm||sm)&&runwalksprint>=0)A_GiveInventory("IsMoving");
+		if((fm||sm)&&runwalksprint>=0&&vel!=(0,0,0))A_GiveInventory("IsMoving");
 
 
 		//"falling" damage
