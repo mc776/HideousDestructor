@@ -1,0 +1,16 @@
+class HDLoadoutMenu:OptionMenu{
+	override void Init(menu parent,optionmenudescriptor desc){
+		super.Init(parent,desc);
+		//and fuck I have no idea what I'm doing
+	}
+	override void Drawer(){
+		Super.Drawer();
+		playerinfo cplayer=players[consoleplayer];
+		if(!cplayer)return;
+		String s = cvar.getcvar("hd_loadout1",cplayer).getstring();
+		screen.DrawText (SmallFont, OptionMenuSettings.mFontColorValue,
+			(screen.GetWidth() - SmallFont.StringWidth (s) * CleanXfac_1) / 2,
+			SmallFont.GetHeight()*CleanXFac_1,
+			s,DTA_CleanNoMove_1, true);
+	}
+}

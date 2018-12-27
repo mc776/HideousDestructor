@@ -80,7 +80,9 @@ OptionValue "BeamSpray"{
 }
 
 
-
+OptionMenu "HDLoadoutMenu"{
+	Class "HDLoadoutMenu"
+}
 ListMenu "MainMenu"{
 	IfGame(Doom,Chex){
 		StaticPatch 94,2,"M_DOOM"
@@ -109,6 +111,7 @@ ListMenu "MainMenu"{
 		PatchItem "M_NGAME","n","PlayerclassMenu"
 			TextItem "HD Options","o","HDOptionsMenu"
 			TextItem "HD Loadout","o","CustomLoadoutMenu"
+//			TextItem "HD Loadout (beta)","o","HDLoadoutMenu"
 			TextItem "HD Controls","o","HDControlsMenu"
 		ifOption(SwapMenu){
 			PatchItem "M_LOADG","l","LoadGameMenu"
