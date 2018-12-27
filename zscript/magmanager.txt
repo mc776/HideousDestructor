@@ -287,17 +287,6 @@ class MagManager:HDWeapon{
 
 
 	//backpack stuff
-	int,hdbp GetBPIndex(name type){
-		let bbb=HDBP(owner.findinventory("HDBP"));
-		if(!bbb)return -1,null;
-		if(type=="HD9mMag15")return bbb.pistindex,bbb;
-		else if(type=="HD9mMag30")return bbb.smgindex,bbb;
-		else if(type=="HD4mMag")return bbb.zmindex,bbb;
-		else if(type=="HD7mMag")return bbb.libindex,bbb;
-		else if(type=="HD7mClip")return bbb.bossindex,bbb;
-		else if(type=="HDBattery")return bbb.batteryindex,bbb;
-		else return -1,null;
-	}
 	action void GetFromBackpack(name type){
 		let bp=hdbackpack(findinventory("HDBackpack"));
 		if(!bp)return;
