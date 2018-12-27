@@ -80,9 +80,6 @@ OptionValue "BeamSpray"{
 }
 
 
-OptionMenu "HDLoadoutMenu"{
-	Class "HDLoadoutMenu"
-}
 ListMenu "MainMenu"{
 	IfGame(Doom,Chex){
 		StaticPatch 94,2,"M_DOOM"
@@ -111,7 +108,6 @@ ListMenu "MainMenu"{
 		PatchItem "M_NGAME","n","PlayerclassMenu"
 			TextItem "HD Options","o","HDOptionsMenu"
 			TextItem "HD Loadout","o","CustomLoadoutMenu"
-//
 			TextItem "HD Loadout (pre-alpha)","o","HDLoadoutMenu"
 			TextItem "HD Controls","o","HDControlsMenu"
 		ifOption(SwapMenu){
@@ -340,6 +336,31 @@ OptionMenu "HDControlsMenu"{
 
 
 //loadout spamghetti
+OptionMenu "HDLoadoutMenu"{
+	Title "CUSTOMIZE LOADOUT"
+	StaticText ""
+	StaticText "Syntax:  xxx, yyy z, aaa b - ccc d"
+	StaticText "xxx: your selected weapon; yyy, aaa, ccc: other items"
+	StaticText "-: begin backpack settings or use item 'bak' for empty"
+	StaticText "z, b, d: amounts of each listed item"
+	StaticText "(multiple weapons only in backpack)"
+
+	StaticText ""
+	StaticText "'map' gives you a map."
+	StaticText "'key' gives you keys: b4, y2, r1, 7 for all"
+
+	StaticText ""
+	StaticText "Type  'give LoadoutItemList'  in the console"
+	StaticText "to get the full list of all other items."
+	StaticText ""
+
+	TextField "Custom Loadout 1","hd_loadout1"
+	TextField "Custom Loadout 2","hd_loadout2"
+	TextField "Custom Loadout 3","hd_loadout3"
+	TextField "Custom Loadout 4","hd_loadout4"
+	TextField "Custom Loadout 5","hd_loadout5"
+	Class "HDLoadoutMenu"
+}
 OptionMenu "CustomLoadoutMenu"{
 	Title "CUSTOMIZE LOADOUT"
 
@@ -364,155 +385,6 @@ OptionMenu "CustomLoadoutMenu"{
 	TextField "Custom Loadout 3","hd_loadout3"
 	TextField "Custom Loadout 4","hd_loadout4"
 	TextField "Custom Loadout 5","hd_loadout5"
-
-
-/*
-	StaticText "(deprecated old loadout settings below)"
-	StaticText " "
-	Submenu "Set Backpack Contents...","CustomBackpackMenu"
-	SafeCommand "Reset Custom Loadout","hd_resetloadout","Really reset custom loadout?"
-	StaticText " "
-
-	Option "Item 0",hd_load0,"CustomLoadoutItems"
-	TextField"amount","hd_load0a"
-	StaticText""
-	Option "Item 1",hd_load1,"CustomLoadoutItems"
-	TextField"amount","hd_load1a"
-	StaticText""
-	Option "Item 2",hd_load2,"CustomLoadoutItems"
-	TextField"amount","hd_load2a"
-	StaticText""
-	Option "Item 3",hd_load3,"CustomLoadoutItems"
-	TextField"amount","hd_load3a"
-	StaticText""
-	Option "Item 4",hd_load4,"CustomLoadoutItems"
-	TextField"amount","hd_load4a"
-	StaticText""
-	Option "Item 5",hd_load5,"CustomLoadoutItems"
-	TextField"amount","hd_load5a"
-	StaticText""
-	Option "Item 6",hd_load6,"CustomLoadoutItems"
-	TextField"amount","hd_load6a"
-	StaticText""
-	Option "Item 7",hd_load7,"CustomLoadoutItems"
-	TextField"amount","hd_load7a"
-	StaticText""
-	Option "Item 8",hd_load8,"CustomLoadoutItems"
-	TextField"amount","hd_load8a"
-	StaticText""
-	Option "Item 9",hd_load9,"CustomLoadoutItems"
-	TextField"amount","hd_load9a"
-
-	StaticText""
-	Option "Item 10",hd_load10,"CustomLoadoutItems"
-	TextField"amount","hd_load10a"
-	StaticText""
-	Option "Item 11",hd_load11,"CustomLoadoutItems"
-	TextField"amount","hd_load11a"
-	StaticText""
-	Option "Item 12",hd_load12,"CustomLoadoutItems"
-	TextField"amount","hd_load12a"
-	StaticText""
-	Option "Item 13",hd_load13,"CustomLoadoutItems"
-	TextField"amount","hd_load13a"
-	StaticText""
-	Option "Item 14",hd_load14,"CustomLoadoutItems"
-	TextField"amount","hd_load14a"
-	StaticText""
-	Option "Item 15",hd_load15,"CustomLoadoutItems"
-	TextField"amount","hd_load15a"
-	StaticText""
-	Option "Item 16",hd_load16,"CustomLoadoutItems"
-	TextField"amount","hd_load16a"
-	StaticText""
-	Option "Item 17",hd_load17,"CustomLoadoutItems"
-	TextField"amount","hd_load17a"
-	StaticText""
-	Option "Item 18",hd_load18,"CustomLoadoutItems"
-	TextField"amount","hd_load18a"
-	StaticText""
-	Option "Item 19",hd_load19,"CustomLoadoutItems"
-	TextField"amount","hd_load19a"
-	StaticText""
-	Option "Item 20",hd_load20,"CustomLoadoutItems"
-	TextField"amount","hd_load20a"
-}
-OptionValue "CustomLoadoutItems"{
-	0,"---"
-
-	210,"Chainsaw"
-	220,"Pistol"221,"Automatic Pistol"222,"SMG"
-	231,"Shotgun"230,"Double-Barreled Shotgun"
-	242,"ZM66 AR with GL"241,"ZM66 AR"240,"ZM66 Marksman"
-	243,"Vulcanette"
-	251,"Rocket Launcher"250,"Grenade Launcher"
-	261,"Liberator Battle Rifle with GL"260,"Liberator Battle Rifle"
-	262,"Pulsed Particle Beam Projector"
-	271,"Botis Field Glyph 9(Kurz)"270,"Brontornis Ultralight Cannon"
-	280,"Boss Mk. IV Marksman's Rifle"
-
-	290,"Unwrapped Medikit"
-	200,"Fragmentation Hand Grenade (weapon)"
-
-	100,"Power Cell"
-	101,"9mm Magazine (15rd)"
-	102,"9mm Magazine (30rd)"
-	111,"9mm Round"
-	103,"Shotgun Shell"
-	104,"4.26mm Magazine"
-	112,"4.26mm Round"
-	105,"Gyro-Rocket Grenade"
-	106,"H.E.A.T. Rocket"
-	107,"7.76mm Magazine"
-	108,"7.76mm Clip"
-	113,"7.76mm Round"
-	109,"Brontornis Round"
-	110,"Fragmentation Hand Grenade"
-
-	99,"Basic Soldier Kit"
-	3,"Radiation Suit"
-	4,"Medikit"5,"Stimpack"6,"Berserk"7,"Ladder"
-	8,"Light Amp"9,"Backpack"10,"D.E.R.P."11,"H.E.R.P."12,"Door Buster"13,"I.E.D. Kit"
-	14,"Automap"15,"Red Keycard"16,"Blue Keycard"17,"Yellow Keycard"
-}
-//backpackloadout spamghetti
-OptionMenu "CustomBackpackMenu"{
-	Title "CUSTOMIZE BACKPACK"
-	Slider"Ladder","hd_loadbp1",0,5,1,0
-	Slider"Environment suit","hd_loadbp2",0,5,1,0
-	Slider"Light amplifier","hd_loadbp3",0,3,1,0
-	statictext""
-	TextField"Medikit","hd_loadbp5"
-	TextField"Berserk pack","hd_loadbp6"
-	TextField"Stimpack","hd_loadbp7"
-	statictext""
-	TextField"H.E.A.T. rocket","hd_loadbp11"
-	TextField"Rocket grenade","hd_loadbp12"
-	TextField"Defused rocket","hd_loadbp13"
-	statictext""
-	TextField"Hand grenade","hd_loadbp15"
-	TextField"Battery","hd_loadbp16"
-	TextField"Brontornis shell","hd_loadbp17"
-	statictext""
-	TextField"4.26mm magazine","hd_loadbp19"
-	TextField"Misc. 4.26mm ammo","hd_loadbp20"
-	statictext""
-	TextField"7.76mm magazine","hd_loadbp22"
-	TextField"7.76mm clip","hd_loadbp23"
-	TextField"Misc. 7.76mm ammo","hd_loadbp24"
-	TextField"7.76mm casing","hd_loadbp25"
-	statictext""
-	TextField"Pistol magazine","hd_loadbp27"
-	TextField"SMG magazine","hd_loadbp28"
-	TextField"Misc. 9mm ammo","hd_loadbp29"
-	statictext""
-	TextField"Shotgun shell","hd_loadbp31"
-	statictext""
-	TextField"D.E.R.P. robot","hd_loadbp33"
-	TextField"Broken D.E.R.P. robot","hd_loadbp34"
-	TextField"Door Buster","hd_loadbp35"
-	TextField"I.E.D. kit","hd_loadbp36"
-*/
 }
 
 

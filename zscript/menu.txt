@@ -28,7 +28,7 @@ if(cplayer)translatedloadout=gettranslatedloadout(cvar.getcvar("hd_loadout1",cpl
 	}
 	string GetTranslatedLoadout(string input){
 		string ttl="";
-		array<string>items;
+		array<string>items;items.clear();
 		input.replace(" ","");
 		input.split(items,",");
 		for(int i=0;i<items.size();i++){
@@ -45,18 +45,11 @@ if(cplayer)translatedloadout=gettranslatedloadout(cvar.getcvar("hd_loadout1",cpl
 		Super.Drawer();
 		playerinfo cplayer=players[consoleplayer];
 		if(!cplayer)return;
-		String s = cvar.getcvar("hd_loadout1",cplayer).getstring();
-		screen.DrawText (SmallFont, OptionMenuSettings.mFontColorValue,
-			(screen.GetWidth() - SmallFont.StringWidth (s) * CleanXfac_1) / 2,
-			SmallFont.GetHeight()*CleanYFac_1,
-			s,DTA_CleanNoMove_1, true
-		);
 
-translatedloadout=gettranslatedloadout(s);
-		s=translatedloadout;
+		string s=translatedloadout;
 		screen.DrawText (SmallFont, OptionMenuSettings.mFontColorValue,
 			(screen.GetWidth() - SmallFont.StringWidth (s) * CleanXfac_1) / 2,
-			SmallFont.GetHeight()*CleanYFac_1*3,
+			SmallFont.GetHeight()*CleanYFac_1*20,
 			s,DTA_CleanNoMove_1, true
 		);
 	}
