@@ -377,11 +377,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 		SHT2 A 0{
 			if(
 				invoker.weaponstatus[SHOTS_SIDESADDLE]<12
-				&&!pressingfire()
-				&&!pressingaltfire()
-				&&!pressingreload()
-				&&!pressingunload()
-				&&!pressingzoom()
+				&&(pressingreload()||pressingaltreload())
 				&&countinv("HDShellAmmo")
 			)setweaponstate("reloadssrestart");
 		}
@@ -391,7 +387,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 	unloadss:
 		SHT2 A 0 EmptyHand();
 		SHT2 A 2 offset(2,34) A_JumpIf(invoker.weaponstatus[SHOTS_SIDESADDLE]<1,"nope");
-		SHT2 A 1 offset(3,36) A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		SHT2 A 1 offset(3,36);
 	unloadssloop1:
 		SHT2 A 4 offset(4,36);
 		SHT2 A 2 offset(5,37) A_UnloadSideSaddle(SHOTS_SIDESADDLE);
