@@ -1,7 +1,45 @@
 class HDLoadoutMenu:OptionMenu{
+	array<string> refids;
+	array<string> nicenames;
+	string translatedloadout;
 	override void Init(menu parent,optionmenudescriptor desc){
 		super.Init(parent,desc);
-		//and fuck I have no idea what I'm doing
+		refids.clear();
+		nicenames.clear();
+		translatedloadout="";
+
+		for(int i=0;i<allactorclasses.size();i++){
+			class<actor> reff=allactorclasses[i];
+			if(reff is "HDPickup"||reff is "HDWeapon"){
+				if(reff is "HDPickup"){
+					let ref=getdefaultbytype((class<hdpickup>)(reff));
+					refids.push(ref.refid);
+					nicenames.push(ref.nicename);
+				}else{
+					let ref=getdefaultbytype((class<hdweapon>)(reff));
+					refids.push(ref.refid);
+					nicenames.push(ref.nicename);
+				}
+			}
+		}
+
+playerinfo cplayer=players[consoleplayer];
+if(cplayer)translatedloadout=gettranslatedloadout(cvar.getcvar("hd_loadout1",cplayer).getstring());
+	}
+	string GetTranslatedLoadout(string input){
+		string ttl="";
+		array<string>items;
+		input.replace(" ","");
+		input.split(items,",");
+		for(int i=0;i<items.size();i++){
+			string refid=items[i].left(3);
+			refid.tolower();
+			int whichindex=refids.find(refid);
+			if(whichindex>=refids.size())continue;
+			int howmany=max((items[i].mid(3,items[i].length())).toint(10),1);
+			ttl=ttl.."\n"..howmany.."x   "..nicenames[whichindex];
+		}
+		return ttl;
 	}
 	override void Drawer(){
 		Super.Drawer();
@@ -10,7 +48,16 @@ class HDLoadoutMenu:OptionMenu{
 		String s = cvar.getcvar("hd_loadout1",cplayer).getstring();
 		screen.DrawText (SmallFont, OptionMenuSettings.mFontColorValue,
 			(screen.GetWidth() - SmallFont.StringWidth (s) * CleanXfac_1) / 2,
-			SmallFont.GetHeight()*CleanXFac_1,
-			s,DTA_CleanNoMove_1, true);
+			SmallFont.GetHeight()*CleanYFac_1,
+			s,DTA_CleanNoMove_1, true
+		);
+
+translatedloadout=gettranslatedloadout(s);
+		s=translatedloadout;
+		screen.DrawText (SmallFont, OptionMenuSettings.mFontColorValue,
+			(screen.GetWidth() - SmallFont.StringWidth (s) * CleanXfac_1) / 2,
+			SmallFont.GetHeight()*CleanYFac_1*3,
+			s,DTA_CleanNoMove_1, true
+		);
 	}
 }
