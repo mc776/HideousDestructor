@@ -429,6 +429,9 @@ class HDBullet:HDActor{
 			setorigin(blt.hitlocation-blt.hitdir,false);
 			if(penetration>0)A_SprayDecal(penetration>4?"BulletChip":"BulletChipSmall",10);
 
+			//gross hack until 3.7 destructible geometry is properly opened to zs
+			lineattack(angle,1,pitch,(speed+mass)*0.012+woundhealth,"SmallArms1","FragPuff");
+
 			//ricochet
 			if(!random(0,10)){
 				flinetracedata ricosuave;
