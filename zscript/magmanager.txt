@@ -261,7 +261,7 @@ class MagManager:HDWeapon{
 					A_SetTics(8);
 				}
 				HijackMouse();
-			}else A_WeaponReady();
+			}else A_WeaponReady(WRF_ALL&~WRF_ALLOWUSER2);
 			if(!invoker.thismag)NextMagType();
 			invoker.UpdateText();
 			A_WeaponMessage(invoker.uitext);
