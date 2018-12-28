@@ -27,9 +27,8 @@ function str gettip(int rsd){
 	int flp=0;
 	int rnd=lastrnd;
 	for(int i=0;i<rsd;i++){flp=random(0,1);}
-	while(rnd==lastrnd)rnd=random(0,31);
+	while(rnd==lastrnd)rnd=random(0,30);
 	lastrnd=rnd;
-	rnd=31;
 	switch(rnd){
 	case 1: return "Remember to \cxBIND KEYS\cu for all
 			\n\cqweapon functions\cu and \cqweapon drop\cu!";
@@ -77,9 +76,9 @@ function str gettip(int rsd){
 			\nor when you are holding \cqZoom\cu.";
 
 	case 11: return "Rifle scopes can \cxZOOM IN AND OUT\cu.
-			\n\cqHold Zoom\cu and \cqFiremode\cu and press \cqFire\cu and
-			\n\cqAltfire\cu to go up and down respectively.
-			\nSame goes for \cqZoom and Firemode\cu the Boss's MOA
+			\n\cqHold Zoom and Firemode\cu and press \cqFire\cu or
+			\n\cqAltfire\cu or move the mouse up and down.
+			\nSame goes for \cqZoom and Use\cu for the Boss's MOA
 			\nadjustment and \cqFiremode\cu for the grenade airburst.";
 
 	case 12: return "To consolidate \cxMAGAZINES\cu for the 9mm
@@ -153,16 +152,12 @@ function str gettip(int rsd){
 			\ntype \cqderp 555 <tag>\cu to stick your D.E.R.P.
 			\nonto it and \cqderp 556 <tag>\cu to hit the switch";
 
-	case 28: return "You automatically consolidate magazines and batteries
-			\nin your pockets \cxBETWEEN LEVELS\cu, but NOT any in your backpack.
-			\n(Robot repairs and reloading 7.76mm work with backpack contents, though.)";
-
-	case 29: return "To \cxDIVE\cu forwads, backwards or sideways,
+	case 28: return "To \cxDIVE\cu forwads, backwards or sideways,
 			\npress and hold \cqCrouch while moving\cu in that direction.";
 
-	case 30: return "Press \cqUse\cu while holding \cqZoom\cu to try to \cxKICK DOWN\cu a door.";
+	case 29: return "Press \cqUse\cu while holding \cqZoom\cu to try to \cxKICK DOWN\cu a door.";
 
-	case 31: return "Hold \cqZoom\cu and/or \cqUse\cu when using the \cxGOGGLES\cu to set amplitude.
+	case 30: return "Hold \cqZoom\cu and/or \cqUse\cu when using the \cxGOGGLES\cu to set amplitude.
 			\n\cqUse\cu alone increments, but \cqUse\cu and \cqZoom\cu combined decrement.
 			\n\cqZoom\cu alone toggles red and green mode.";
 	}
