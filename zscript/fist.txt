@@ -70,8 +70,8 @@ class HDFist:HDWeapon replaces Fist{
 		if(player){
 			int gnd=player.getgender();
 			if(!gnd)gnd=getspriteindex("PUNGA0");
-			else if(gnd==1)gnd=getspriteindex("PUNFA0");
-			else gnd=getspriteindex("TNT1A0");
+			else if(gnd==3)gnd=getspriteindex("TNT1A0");
+			else gnd=getspriteindex("PUNFA0");
 			player.findPSprite(PSP_WEAPON).sprite=gnd;
 		}
 	}
@@ -86,7 +86,7 @@ class HDFist:HDWeapon replaces Fist{
 		if(!punchy)return;
 
 		//actual puff effect if the shot connects
-		LineAttack(angle,48,pitch,0,"none",
+		LineAttack(angle,48,pitch,punchline.hitline?(countinv("PowerStrength")?random(50,120):random(5,15)):0,"none",
 			countinv("PowerStrength")?"BulletPuffMedium":"BulletPuffSmall",
 			flags:LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ,
 			offsetz:height-12
