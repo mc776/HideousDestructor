@@ -32,7 +32,7 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 		}
 		if(
 			clam
-		)return "%o was felled by the power of %k's terribly eager beaver.";
+		)return "%o was chewed up in the teeth of %k's extremely eager beaver.";
 		return obituary;
 	}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
@@ -103,17 +103,18 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 		}
 		if(battery>0&&!random(0,drainprob))invoker.weaponstatus[CSAWS_BATTERY]--;
 
-		ftranslatedlinetarget aaa;
-		LineAttack(angle,64,pitch,max(0,dmg),"Chainsaw","HDSawPuff",LAF_ISMELEEATTACK,victim:aaa,offsetz:-12);
+		ftranslatedlinetarget t;
+		LineAttack(angle,64,pitch,max(0,dmg),"Chainsaw","HDSawPuff",LAF_ISMELEEATTACK,victim:t,offsetz:-12);
 		if(dmg>0){
 			A_AlertMonsters();
-			A_PlaySound("weapons/sawfull",CHAN_WEAPON);
+			if(t.linetarget)A_PlaySound("weapons/sawhit",CHAN_WEAPON);
+			else A_PlaySound("weapons/sawfull",CHAN_WEAPON);
 		}
 	}
 	states{
 	ready:
 		BEVG C 1{
-			A_TakeInventory("WasChoppingFlesh");
+			invoker.weaponstatus[0]&=~CSAWF_CHOPPINGFLESH;
 			if(invoker.weaponstatus[CSAWS_INERTIA]>0)setweaponstate("ready2");
 			else A_WeaponReady(WRF_ALLOWRELOAD|WRF_ALLOWUSER3|WRF_ALLOWUSER4);
 		}goto readyend;
@@ -143,52 +144,11 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 	fire:
 		BEVG C 2;
 		BEVG C 4 A_JumpIf(invoker.weaponstatus[CSAWS_BATTERY]>0,"saw");
-		goto beatdown;
+		goto nope;
 	saw:
 		BEVG AB 1 A_HDSaw();
 		BEVG B 0 A_Refire();
 		goto readyend;
-
-	altfire:
-	beatdown:
-		BEVG C 0 A_JumpIfInventory("PowerStrength",1,"beatdownstrong");
-		BEVG C 1 offset(0,33);
-		BEVG C 1 offset(0,32);
-		BEVG DC 1 A_SetPitch(pitch-1,SPF_INTERPOLATE);
-		BEVG DC 2 A_SetPitch(pitch-1,SPF_INTERPOLATE);
-		BEVG CC 2 A_SetPitch(pitch-2,SPF_INTERPOLATE);
-		BEVG C 0 A_Refire("beatdown2");
-		goto whack;
-	beatdownstrong:
-		BEVG D 1 A_SetPitch(pitch-4,SPF_INTERPOLATE);
-		BEVG C 1 A_SetPitch(pitch-6,SPF_INTERPOLATE);
-		BEVG C 1 A_SetPitch(pitch-8,SPF_INTERPOLATE);
-		BEVG C 0 A_Refire("beatdown2");
-		goto whack;
-	althold:
-	beatdown2:
-		BEVG C 1{
-			A_SetAngle(angle+frandom(-0.1,0.08),SPF_INTERPOLATE);
-			A_SetPitch(pitch+frandom(-0.05,0.1),SPF_INTERPOLATE);
-		}
-		BEVG C 0 A_Refire("beatdown2");
-	whack:
-		BEVG D 1 A_JumpIf(pitch>25,"nowhack");
-		BEVG AB 1 offset(0,36) A_SetPitch(pitch+10,SPF_INTERPOLATE);
-		BEVG AAAAA 0 A_CustomPunch(random(1,5),0,0,"HDFistPuncher",46);
-		BEVG A 1 offset(0,35){
-			if(countinv("PowerStrength")>0){A_CustomPunch(random(10,20),0,0,"HDFistPuncher",46);}  
-			A_SetPitch(pitch+10,SPF_INTERPOLATE);
-		}
-		BEVG B 2 offset(0,34);
-		BEVG C 2 offset(0,33);
-	nowhack:
-		BEVG C 2 offset(0,32);
-		BEVG CCCCC 1 A_WeaponReady(WRF_NOFIRE);
-		BEVG C 0 A_JumpIfInventory("PowerStrength",1,6);
-		BEVG CCCCC 1 A_WeaponReady(WRF_NOFIRE);
-		BEVG C 0 A_Refire("beatdown2");
-		goto ready;
 
 	reload:
 		BEVG C 0{
@@ -287,6 +247,7 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 }
 enum lumberstatus{
 	CSAWF_JUSTUNLOAD=1,
+	CSAWF_CHOPPINGFLESH=2,
 
 	CSAWS_FLAGS=0,
 	CSAWS_BATTERY=1,
@@ -308,17 +269,17 @@ class HDSawPuffShitty:IdleDummy{
 }
 
 
-class WasChoppingFlesh:InventoryFlag{}
 class HDSawPuff:IdleDummy{
 	default{
 		+puffonactors +bloodsplatter +puffgetsowner +hittracer +nointeraction
 		damagetype "Chainsaw";decal "BulletChipSmall";
 	}
-	lumberjack lmb;
 	states{
 	spawn:
 		TNT1 A 1 nodelay{
-			A_GiveInventory("WasChoppingFlesh",1,AAPTR_TARGET);
+			if(target&&target.findinventory("Lumberjack")){
+				Lumberjack(target.findinventory("Lumberjack")).weaponstatus[0]|=CSAWF_CHOPPINGFLESH;
+			}
 			if(tracer){
 				if(tracer.bcorpse)hdf.give(tracer,"SawGib",random(5,10));
 				if(tracer.bnoblood)spawn("BulletPuffMedium",pos,ALLOW_REPLACE);
@@ -327,24 +288,24 @@ class HDSawPuff:IdleDummy{
 		}stop;
 	crash:
 		TNT1 A 1{
-			if(target){
-				if(!random(0,LUMBERJACKDRAIN)){
-					lmb=lumberjack(target.findinventory("lumberjack"));
-					if(lmb && lmb.weaponstatus[CSAWS_BATTERY]>0)lmb.weaponstatus[CSAWS_BATTERY]--;
-				}
-				if(target && target.countinv("WasChoppingFlesh")){
-					let tgt=HDPlayerPawn(target);
-					if(tgt){
-						tgt.muzzleclimb1.x+=random(-30,10);
-						tgt.muzzleclimb1.y+=random(-10,6);
-					}
-					target.A_Recoil(random(-1,2));
-					target.damagemobj(self,target,1,"chainsaw");
-					target.A_TakeInventory("WasChoppingFlesh");
-				}
-			}
 			spawn("BulletPuffMedium",pos,ALLOW_REPLACE);
-			if(lmb && lmb.weaponstatus[CSAWS_BATTERY]>0 && !random(0,LUMBERJACKDRAIN*3))lmb.weaponstatus[CSAWS_BATTERY]--;
+			if(!target)return;
+			let lmb=lumberjack(target.findinventory("lumberjack"));
+			if(!lmb)return;
+			if(
+				lmb.weaponstatus[CSAWS_BATTERY]>0
+				&&!random(0,LUMBERJACKDRAIN*3)
+			)lmb.weaponstatus[CSAWS_BATTERY]--;
+			if(lmb.weaponstatus[0]&CSAWF_CHOPPINGFLESH){
+				Lumberjack(target.findinventory("Lumberjack")).weaponstatus[0]&=~CSAWF_CHOPPINGFLESH;
+				let tgt=HDPlayerPawn(target);
+				if(tgt){
+					tgt.muzzleclimb1.x+=random(-30,10);
+					tgt.muzzleclimb1.y+=random(-10,6);
+				}
+				target.A_Recoil(random(-1,2));
+				target.damagemobj(self,target,1,"chainsaw");
+			}
 		}stop;
 	}
 }
