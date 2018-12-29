@@ -104,15 +104,15 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 		if(battery>0&&!random(0,drainprob))invoker.weaponstatus[CSAWS_BATTERY]--;
 
 		ftranslatedlinetarget t;
-		LineAttack(angle,64,pitch,max(0,dmg),"Chainsaw","HDSawPuff",LAF_ISMELEEATTACK,victim:t,offsetz:-12);
 		if(dmg>0){
 			A_AlertMonsters();
+			LineAttack(angle,48,pitch,max(0,dmg),"Chainsaw","HDSawPuff",LAF_ISMELEEATTACK,victim:t,offsetz:-12);
 			if(t.linetarget)A_PlaySound("weapons/sawhit",CHAN_WEAPON);
 			else{
 				A_PlaySound("weapons/sawfull",CHAN_WEAPON);
-				if(dmg>random(20,80)){
+				if(dmg>30){
 					doordestroyer.destroydoor(
-						self,random(0,random(1,128)),random(0,random(1,64)),64,true
+						self,random(0,random(1,dmg)),random(0,random(1,dmg/2)),48,true
 					);
 				}
 			}
