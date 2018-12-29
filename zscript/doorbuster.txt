@@ -82,10 +82,10 @@ class doordestroyer:hdactor{
 		}
 		return false;
 	}
-	static bool destroydoor(actor caller,double maxwidth=140,double maxdepth=32,double range=0){
+	static bool destroydoor(actor caller,double maxwidth=140,double maxdepth=32,double range=0,bool nolineattack=false){
 
 		//gross hack until 3.7 destructible geometry is properly opened to zs
-		caller.lineattack(caller.angle,caller.radius,caller.pitch,maxwidth*maxdepth,"SmallArms1","FragPuff");
+		if(!nolineattack)caller.lineattack(caller.angle,caller.radius,caller.pitch,maxwidth*maxdepth,"SmallArms1","FragPuff");
 
 		if(hd_nodoorbuster)return false;
 		if(!range)range=max(4,caller.radius*2);
