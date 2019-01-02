@@ -381,6 +381,12 @@ class HDBullet:HDActor{
 			return;
 		}
 
+		//gross hack because I can't handle whether it's a 3D floor otherwise
+		lineattack(
+			angle,1,pitch,(speed+mass)*0.012+woundhealth,
+			"SmallArms1","FragPuff",
+			offsetz:-blt.hitdir.z,offsetforward:-1
+		);
 
 		//it's (probably) not coming back up
 		bool zricochet=false;
@@ -424,9 +430,6 @@ class HDBullet:HDActor{
 				destroy();
 				return;
 			}
-
-			//gross hack until 3.7 destructible geometry is properly opened to zs
-			lineattack(angle,1,pitch,(speed+mass)*0.012+woundhealth,"SmallArms1","FragPuff");
 
 			blt.hitline.activate(target,blt.lineside,SPAC_Impact);
 			setorigin(blt.hitlocation-blt.hitdir,false);
@@ -497,15 +500,6 @@ class HDBullet:HDActor{
 				inthesky=true;
 				return;
 			}
-
-			//and possibly break something
-			if(
-				0<
-				(hitresult==BLT_HITTOP)?blt.hitsector.healthceiling:blt.hitsector.healthfloor
-			)Destructible.DamageSector(
-				blt.hitsector,target,(speed+mass)*0.012+woundhealth,
-				"SmallArms1",(hitresult==BLT_HITTOP)?SECPART_Ceiling:SECPART_Floor,pos,false
-			);
 
 			bool areaclear=false;
 			vector3 hitdir=blt.hitdir*4; //4 because we don't want to waste too much time
