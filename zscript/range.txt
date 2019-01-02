@@ -59,6 +59,14 @@ class TargetBarrel:Actor{
 		+nevertarget +shootable +quicktoretaliate +float +nogravity +nodamage +noblood
 		height 34;radius 16;mass 25;painchance 256;speed 2;
 	}
+	//3.7.1 does not allow painstates with +nodamage.
+	override int damagemobj(
+		actor inflictor,actor source,int damage,
+		name mod,int flags,double angle
+	){
+		if(!bnopain)setstatelabel("pain");
+		return 0;
+	}
 	states{
 	spawn:
 		BEXP B 2{
@@ -133,4 +141,8 @@ class PunchDummy:HDActor{
 		BEXP B -1 nodelay{scale.y=1.4;}
 	}
 }
+
+
+
+
 
