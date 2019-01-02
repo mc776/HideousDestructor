@@ -406,7 +406,10 @@ class TrippingGrenade:HDUPK{
 			break;
 		}
 	}
-	void A_TripFragPain(){
+	override int damagemobj(
+		actor inflictor,actor source,int damage,
+		name mod,int flags,double angle
+	){
 		if(!random(0,9)){
 			actor ggg=spawn(rollertype,pos,ALLOW_REPLACE);
 			ggg.target=target;
@@ -417,21 +420,19 @@ class TrippingGrenade:HDUPK{
 			ggg.A_PlaySound("tripwire/fragpain");
 			actor hhh=spawn(spoontype,pos,ALLOW_REPLACE);
 			hhh.vel=ggg.vel*2;
-			destroy();return;
+			destroy();return -1;
 		}else if(!random(0,4)){
 			if(tracer)tracer.destroy();
 			actor aaa=spawn(droptype,pos,ALLOW_REPLACE);
 			aaa.vel=vel;
-			destroy();
+			destroy();return -1;
 		}else setstatelabel("spawn");
+		return -1;
 	}
 	states{
-	oldspawn:
+	spawn:
 		---- A -1;
 		stop;
-	pain:
-		---- A 0 A_TripFragPain();
-		goto spawn;
 	}
 }
 
