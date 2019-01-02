@@ -83,12 +83,25 @@ class doordestroyer:hdactor{
 		return false;
 	}
 	static bool destroydoor(actor caller,double maxwidth=140,double maxdepth=32,double range=0,bool nolineattack=false){
+		if(!range)range=max(4,caller.radius*2);
 
 		//gross hack until 3.7 destructible geometry is properly opened to zs
-		if(!nolineattack)caller.lineattack(caller.angle,caller.radius,caller.pitch,maxwidth*maxdepth,"SmallArms1","FragPuff");
+		if(!nolineattack){
+			ftranslatedlinetarget t;
+			caller.lineattack(
+				caller.angle,range,caller.pitch,
+				0,
+				"","CheckPuff",
+				victim:t
+			);
+			if(!t.linetarget)caller.lineattack(
+				caller.angle,range,caller.pitch,
+				maxwidth*maxdepth,
+				"SmallArms1","FragPuff"
+			);else caller.A_Log("A");
+		}
 
 		if(hd_nodoorbuster)return false;
-		if(!range)range=max(4,caller.radius*2);
 		flinetracedata dlt;
 		caller.linetrace(
 			caller.angle,range,0,
