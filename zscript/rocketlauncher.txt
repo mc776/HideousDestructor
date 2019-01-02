@@ -16,7 +16,7 @@ class HDRL:HDWeapon{
 		hdweapon.barrelsize 32,3.1,5;
 		hdweapon.refid HDLD_LAUNCHR;
 		hdweapon.nicename "Rocket Launcher";
-		inventory.maxamount 2;
+		inventory.maxamount 4; //1 use user setting; 2 HEAT; 3 regular; 4 grenade
 	}
 	override void tick(){
 		super.tick();
@@ -24,23 +24,35 @@ class HDRL:HDWeapon{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		if(owner&&owner.player){
-			int glm=cvar.getcvar("hd_rlmode",owner.player).getint();
-			if(!glm)weaponstatus[0]|=RLF_GRENADEMODE;
-			else{
-				weaponstatus[0]&=~RLF_GRENADEMODE;
-				if(glm>1)weaponstatus[RLS_CHAMBER]=2;
-			}
-
-			if(cvar.getcvar("hd_rlzoom",owner.player).getbool())
-				weaponstatus[0]|=RLF_ZOOM;
-				else weaponstatus[0]&=~RLF_ZOOM;
-		}
-		if(amount>1){
+		switch(amount){
+		case 4:
+			weaponstatus[RLS_CHAMBER]=1;
+			weaponstatus[0]|=RLF_GRENADEMODE;
+			break;
+		case 3:
+			weaponstatus[RLS_CHAMBER]=1;
+			weaponstatus[0]&=~RLF_GRENADEMODE;
+			break;
+		case 2:
 			weaponstatus[RLS_CHAMBER]=2;
 			weaponstatus[0]&=~RLF_GRENADEMODE;
-			amount=1;maxamount=1;
+			break;
+		default:
+			if(owner&&owner.player){
+				int glm=cvar.getcvar("hd_rlmode",owner.player).getint();
+				if(!glm)weaponstatus[0]|=RLF_GRENADEMODE;
+				else{
+					weaponstatus[0]&=~RLF_GRENADEMODE;
+					if(glm>1)weaponstatus[RLS_CHAMBER]=2;
+				}
+
+				if(cvar.getcvar("hd_rlzoom",owner.player).getbool())
+					weaponstatus[0]|=RLF_ZOOM;
+					else weaponstatus[0]&=~RLF_ZOOM;
+			}
+			break;
 		}
+		amount=1;maxamount=1;
 	}
 	override double gunmass(){
 		return 10+weaponstatus[RLS_MAG]+weaponstatus[RLS_CHAMBER];
