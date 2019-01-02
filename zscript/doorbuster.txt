@@ -143,11 +143,12 @@ class doordestroyer:hdactor{
 			&&(cspt-dlt.hitlocation.xy).length()<mwd;
 
 		if(!isdoor){
-			if(othersector!=sector.pointinsector(dlt.hitlocation.xy+depthcheck*frandom(0,2))){
+			if(othersector!=sector.pointinsector(dlt.hitlocation.xy+depthcheck*frandom(0,10.))){
 				//add a damage point
 				actor surprise=spawn("SectorDamageCounter",(justoverthere,dlt.hitlocation.z),ALLOW_REPLACE);
 				int checktid=SECTORDAMAGE_TID+othersector.index();
 				surprise.changetid(checktid);
+				if(hd_debug)caller.A_Log("Sector damaged");
 
 				//count how many
 				actoriterator buttesecs=actoriterator.create(checktid,"SectorDamageCounter");
@@ -156,7 +157,7 @@ class doordestroyer:hdactor{
 				while(buttesec=buttesecs.next()){
 					if(buttesec.cursector==othersector)buttecracked.push(buttesec);
 				}
-				if(buttecracked.size()>random(5,7)){
+				if(buttecracked.size()>random(15,21)){
 					isdoor=true;
 					for(int i=0;i<buttecracked.size();i++){
 						buttecracked[i].destroy();
