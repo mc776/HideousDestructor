@@ -82,32 +82,29 @@ class doordestroyer:hdactor{
 		}
 		return false;
 	}
-	static bool destroydoor(actor caller,double maxwidth=140,double maxdepth=32,double range=0,bool nolineattack=false){
+	static bool destroydoor(actor caller,double maxwidth=140,double maxdepth=32,double range=0,double ofsz=-1){
 		if(!range)range=max(4,caller.radius*2);
-
-		//gross hack until 3.7 destructible geometry is properly opened to zs
-		if(!nolineattack){
-			ftranslatedlinetarget t;
-			caller.lineattack(
-				caller.angle,range,caller.pitch,
-				0,
-				"","CheckPuff",
-				victim:t
-			);
-			if(!t.linetarget)caller.lineattack(
-				caller.angle,range,caller.pitch,
-				maxwidth*maxdepth,
-				"SmallArms1","FragPuff"
-			);else caller.A_Log("A");
-		}
+		if(ofsz<0)ofsz=caller.height*0.5;
 
 		if(hd_nodoorbuster)return false;
 		flinetracedata dlt;
 		caller.linetrace(
 			caller.angle,range,0,
 			flags:TRF_THRUACTORS,
-			offsetz:caller.height*0.5,data:dlt
+			offsetz:ofsz,data:dlt
 		);
+
+		//gross hack
+		if(!dlt.hitactor){
+			caller.lineattack(
+				caller.angle,range,caller.pitch,
+				maxwidth*maxdepth,
+				"SmallArms3","PenePuff",
+				flags:LAF_OVERRIDEZ,
+				offsetz:ofsz
+			);
+		}
+
 		if(!dlt.hitline)return false;
 		sector othersector=hdmath.oppositesector(dlt.hitline,dlt.hitsector);
 		if(!othersector)return false;
