@@ -267,8 +267,6 @@ extend class HDPlayerPawn{
 							for(int k=0;k<wpcount;k++){
 								A_SetInventory(wpnam,max(countinv(wpnam)+1,1));
 							}
-							A_LogInt(max(countinv(wpnam)+1,1));
-							A_Log(wpcount.."  "..countinv(wpnam));
 						}else A_GiveInventory(reff.getclassname(),clamp(howmany[j],1,hdmath.maxinv(self,reff.getclassname())));
 						if(!j){
 							//some codes give weapons but are not themselves weapons
