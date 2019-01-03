@@ -1,7 +1,7 @@
 // ------------------------------------------------------------
 // Because sometimes, things get caught in map geometry.
 // ------------------------------------------------------------
-class SectorDamageCounter:IdleDummy{}
+class SectorDamageCounter:IdleDummy{double counter;}
 class doordestroyer:hdactor{
 	default{
 		+solid +nogravity +dontgib +ghost
@@ -82,11 +82,14 @@ class doordestroyer:hdactor{
 		}
 		return false;
 	}
-	static bool destroydoor(actor caller,double maxwidth=140,double maxdepth=32,double range=0,double ofsz=-1){
+	static bool destroydoor(
+		actor caller,
+		double maxwidth=140,double maxdepth=32,
+		double range=0,double ofsz=-1
+	){
 		if(!range)range=max(4,caller.radius*2);
 		if(ofsz<0)ofsz=caller.height*0.5;
 
-		if(hd_nodoorbuster)return false;
 		flinetracedata dlt;
 		caller.linetrace(
 			caller.angle,range,0,
@@ -99,23 +102,44 @@ class doordestroyer:hdactor{
 			caller.lineattack(
 				caller.angle,range,caller.pitch,
 				maxwidth*maxdepth,
-				"SmallArms3","PenePuff",
+				"SmallArms3","CheckPuff",
 				flags:LAF_OVERRIDEZ,
 				offsetz:ofsz
 			);
 		}
 
-		if(!dlt.hitline)return false;
-		sector othersector=hdmath.oppositesector(dlt.hitline,dlt.hitsector);
-		if(!othersector)return false;
-
-		//the first point within the othersector is used a few times
-		vector2 justoverthere=dlt.hitlocation.xy+dlt.hitdir.xy;
+		if(hd_nodoorbuster)return false;
 
 		//figure out if it hit above or below
-		//0 top, 1 middle, 2 bottom
-		if(dlt.linepart==1)return false;
-		bool floornotdoor=dlt.linepart==2;//othersector.floorplane.zatpoint(justoverthere)>dlt.hitlocation.z;
+		//0 top, 1 middle, 2 bottom - same as dlt.linepart
+		int whichflat=dlt.hittype==TRACE_HitCeiling?0:dlt.hittype==TRACE_HitFloor?2:1;
+
+		//if hitline, get the sector on the other side
+		//otherwise get the floor or ceiling as appropriate
+		sector othersector=null;
+		if(dlt.hitline){
+			othersector=hdmath.oppositesector(dlt.hitline,dlt.hitsector);
+			//figure out if it hit above or below: 0 top, 1 middle, 2 bottom
+			if(dlt.linepart==1)return false;
+			else if(dlt.linepart==2)whichflat=2;
+			else if(dlt.linepart==0)whichflat=0;
+		}else{
+			if(whichflat!=1)othersector=dlt.hitsector;
+			//check if it's actually sticking out - don't constantly drop it below grade
+			vertex gbg;
+			double competinglevel;
+			if(whichflat==2){
+				[competinglevel,gbg]=othersector.findhighestfloorsurrounding();
+				double ownheight=othersector.findhighestfloorpoint();
+				if(ownheight-competinglevel<=0)return false;
+			}else if(whichflat==0){
+				[competinglevel,gbg]=othersector.findlowestceilingsurrounding();
+				double ownheight=othersector.findlowestceilingpoint();
+				if(ownheight-competinglevel>=0)return false;
+			}
+		}
+		if(!othersector)return false;
+
 
 		//see if there are at least 2 2-sided lines
 		int num2sided=0;
@@ -125,63 +149,76 @@ class doordestroyer:hdactor{
 			}
 		}if(num2sided<2)return false;
 
-		//see how wide the door is
-		vector2 doorline=dlt.hitline.v1.p-dlt.hitline.v2.p;
-		maxwidth*=frandom(0.4,1.8);
-		if(doorline dot doorline > maxwidth*maxwidth)return false;
 
-		bool isdoor=false;
-
-		//see how thick the door is
-		vector2 depthcheck=dlt.hitdir.xy*maxdepth*frandom(0.8,1.2);
-		isdoor=(othersector!=
-			sector.pointinsector(dlt.hitlocation.xy+depthcheck)
-		);
-
-		vector2 cspt=othersector.centerspot;
-		double sptd=0;
-		for(int i=0;i<othersector.lines.size();i++){
-			double xdif=abs(othersector.lines[i].v1.p.x-cspt.x);
-			if(xdif>sptd)sptd=xdif;
-			double ydif=abs(othersector.lines[i].v1.p.y-cspt.y);
-			if(ydif>sptd)sptd=ydif;
+		//see how big the sector is
+		vector2 centerspot=othersector.centerspot;
+		double maxradius=0;
+		int othersectorlinecount=othersector.lines.size();
+		for(int i=0;i<othersectorlinecount;i++){
+			double xdif=abs(othersector.lines[i].v1.p.x-centerspot.x);
+			if(xdif>maxradius)maxradius=xdif;
+			double ydif=abs(othersector.lines[i].v1.p.y-centerspot.y);
+			if(ydif>maxradius)maxradius=ydif;
 		}
-		double mwd=maxwidth*frandom(0.4,0.6);
-		isdoor=
-			isdoor
-			&&sptd<mwd
-			&&(cspt-dlt.hitlocation.xy).length()<mwd;
+		if(maxradius*2.>maxwidth)return false;
 
-		if(!isdoor){
-			if(othersector!=sector.pointinsector(dlt.hitlocation.xy+depthcheck*frandom(0,10.))){
-				//add a damage point
-				actor surprise=spawn("SectorDamageCounter",(justoverthere,dlt.hitlocation.z),ALLOW_REPLACE);
-				int checktid=SECTORDAMAGE_TID+othersector.index();
-				surprise.changetid(checktid);
-				if(hd_debug)caller.A_Log("Sector damaged");
 
-				//count how many
-				actoriterator buttesecs=actoriterator.create(checktid,"SectorDamageCounter");
-				actor buttesec=null;
-				array<actor>buttecracked;
-				while(buttesec=buttesecs.next()){
-					if(buttesec.cursector==othersector)buttecracked.push(buttesec);
-				}
-				if(buttecracked.size()>random(15,21)){
-					isdoor=true;
-					for(int i=0;i<buttecracked.size();i++){
-						buttecracked[i].destroy();
-					}
-				}
+		double damageinflicted=maxdepth*frandom(8,12)/maxradius;
+
+
+		//damage bonus if you can blast right through that spot
+		//adjusted for angle to centre because the corner trick is just a bit OP
+		double angletomiddle=atan2(centerspot.y-caller.pos.y,centerspot.x-caller.pos.x);
+		double depthchecklength=maxdepth*(1.-absangle(caller.angle,angletomiddle)*(1./180.));
+		vector2 depthcheck=dlt.hitdir.xy*depthchecklength*frandom(0.8,1.2);
+		if(othersector!=sector.pointinsector(dlt.hitlocation.xy+depthcheck))damageinflicted*=2.;
+
+
+		//the first point within the othersector is used a few times
+		vector2 justoverthere=dlt.hitlocation.xy+dlt.hitdir.xy;
+
+
+		//add to damage
+		//look for an existing damage counter and create one if none found
+		actor buttesec=null;
+		sectordamagecounter buttecracked=null;
+		int checktid=SECTORDAMAGE_TID+othersector.index();
+		actoriterator buttesecs=actoriterator.create(checktid,"SectorDamageCounter");
+		while(buttesec=buttesecs.next()){
+			if(buttesec.cursector==othersector){
+				buttecracked=sectordamagecounter(buttesec);
+				break;
 			}
 		}
-		if(!isdoor)return false;
+		if(!buttecracked){
+			buttecracked=sectordamagecounter(
+				spawn("SectorDamageCounter",(justoverthere,dlt.hitlocation.z),ALLOW_REPLACE)
+			);
+			buttecracked.changetid(checktid);
+			buttecracked.counter=0;
+		}
+
+
+		//see if we're going to kill or damage
+		bool blowitup=false;
+		if(buttecracked.counter+damageinflicted>2.)blowitup=true;
+		else{
+			buttecracked.counter+=damageinflicted*0.1;
+			if(buttecracked.counter>1.)blowitup=true;
+		}
+		if(hd_debug)caller.A_Log("Sector damage factor:  "..buttecracked.counter);
+
+
+		if(!blowitup)return false;
+
 
 		//blow that shit up
-		double doorwidth=doorline.length();
+		if(buttecracked)buttecracked.destroy();
+		double doorwidth=maxradius*2.;//doorline.length();
 		double holeheight=clamp(frandom(0.01,0.02)*maxdepth*maxwidth,32,doorwidth+frandom(-12,12));
 		double blockpoint;
 		othersector.flags|=sector.SECF_SILENTMOVE;
+		bool floornotdoor=whichflat==2; //may revise this later
 		if(floornotdoor){
 			double lowestsurrounding;vertex garbage;
 			[lowestsurrounding,garbage]=othersector.findlowestfloorsurrounding();
