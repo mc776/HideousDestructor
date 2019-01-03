@@ -72,6 +72,7 @@ extend class HDPlayerPawn{
 		}else{
 			double pdif=zerk>0?5.:((antenna.floorz-pos.z)*0.03);
 			if(pdif>0)vel.z+=pdif;
+			vel.z+=getgravity();
 		}
 		return 1;
 	}
