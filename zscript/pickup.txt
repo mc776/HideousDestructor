@@ -65,9 +65,12 @@ class GrabThinker:Thinker{
 				&&(
 					!pt
 					||pt.bulk>0
-					||!hdmagammo(pickobj)
-//					||hdmagammo(pickobj).magbulk>0
-//					||hdmagammo(pickobj).roundbulk>0
+					||(
+						hdmagammo(pickobj)&&(
+							hdmagammo(pickobj).magbulk>0
+							||hdmagammo(pickobj).roundbulk>0
+						)
+					)
 				)
 			){
 				if(cvar.getcvar("hd_helptext",picktarget.player).getint())picktarget.A_Log("No room in pockets.",true);
