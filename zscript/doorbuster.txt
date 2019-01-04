@@ -84,14 +84,17 @@ class doordestroyer:hdactor{
 	static bool destroydoor(
 		actor caller,
 		double maxwidth=140,double maxdepth=32,
-		double range=0,double ofsz=-1
+		double range=0,double ofsz=-1,
+		double angle=361,double pitch=99
 	){
 		if(!range)range=max(4,caller.radius*2);
 		if(ofsz<0)ofsz=caller.height*0.5;
+		if(angle==361)angle=caller.angle;
+		if(pitch==99)pitch=caller.pitch;
 
 		flinetracedata dlt;
 		caller.linetrace(
-			caller.angle,range,0,
+			angle,range,pitch,
 			flags:TRF_THRUACTORS,
 			offsetz:ofsz,data:dlt
 		);
@@ -99,7 +102,7 @@ class doordestroyer:hdactor{
 		//gross hack because I can't handle whether it's a 3D floor otherwise
 		if(!dlt.hitactor){
 			caller.lineattack(
-				caller.angle,range,caller.pitch,
+				angle,range,pitch,
 				maxwidth*maxdepth,
 				"SmallArms3","CheckPuff",
 				flags:LAF_OVERRIDEZ,
@@ -138,7 +141,6 @@ class doordestroyer:hdactor{
 			}
 		}
 		if(!othersector)return false;
-
 
 		//see if there are at least 2 2-sided lines
 		int num2sided=0;
@@ -289,8 +291,13 @@ class doordestroyer:hdactor{
 			(justoverthere+dlt.hitdir.xy),blockpoint
 		),ALLOW_REPLACE));
 		db.setz(blockpoint);
-		db.v1pos=dlt.hitline.v1.p;
-		db.v2pos=dlt.hitline.v2.p;
+		if(dlt.hitline){
+			db.v1pos=dlt.hitline.v1.p;
+			db.v2pos=dlt.hitline.v2.p;
+		}else{
+			db.v1pos=justoverthere+rotatevector((maxradius,0),angle-90);
+			db.v1pos=justoverthere+rotatevector((maxradius,0),angle+90);
+		}
 		db.target=caller.target;
 		if(floornotdoor){
 			db.top=db.floorz+holeheight;
