@@ -539,7 +539,7 @@ class HDPlayerPawn:PlayerPawn{
 				stunned+=25;
 				bool zk=zerk>0;
 				double kickback=zk?1:4;
-				bool db=doordestroyer.destroydoor(self,random(32,zk?196:72),random(0,random(1,zk?48:16)));
+				bool db=doordestroyer.destroydoor(self,frandom(32,zk?196:72),frandom(0,frandom(1,zk?48:16)),ofsz:24);
 				if(!random(0,db?7:3)){
 					corpsekicktimer+=20;
 					damagemobj(self,self,random(1,5),"Bashing");
