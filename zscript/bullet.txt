@@ -389,7 +389,8 @@ class HDBullet:HDActor{
 		}
 		lineattack(
 			angle,2.,pitch,(speed+mass)*0.012+woundhealth,
-			"SmallArms1","FragPuff",LAF_NORANDOMPUFFZ|LAF_TARGETISSOURCE|LAF_NOIMPACTDECAL|LAF_OVERRIDEZ,
+			"SmallArms1","CheckPuff",
+			LAF_NORANDOMPUFFZ|LAF_TARGETISSOURCE|LAF_NOIMPACTDECAL|LAF_OVERRIDEZ,
 			offsetz:-blt.hitdir.z,offsetforward:-cos(pitch)
 		);
 		if(target)target.bshootable=bsht;
