@@ -71,13 +71,13 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 		int dmg=0;
 		name sawpuff="HDSawPuff";
 		if((inertia>11)&&(battery>random(5,8))){
-			dmg=random(5,50);
+			dmg=random(5,16);
 			A_MuzzleClimb(
 				randompick(-1,1)*frandom(0.2,0.3),
 				randompick(-1,1)*frandom(0.2,0.4)
 			);
 		}else if((inertia>6)&&(battery>random(2,4))){
-			dmg=random(3,30);
+			dmg=random(3,12);
 			A_SetTics(2);
 			A_MuzzleClimb(
 				randompick(-1,1)*frandom(0.1,0.3),
@@ -85,7 +85,7 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 			);
 		}else if((inertia>1)&&(battery>random(1,4))){
 			drainprob*=3/2;
-			dmg=random(1,11);
+			dmg=random(1,8);
 			A_SetTics(random(2,4));
 			A_MuzzleClimb(
 				randompick(-1,1)*frandom(0.05,0.6),
@@ -112,9 +112,9 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 			if(t.linetarget)A_PlaySound("weapons/sawhit",CHAN_WEAPON);
 			else{
 				A_PlaySound("weapons/sawfull",CHAN_WEAPON);
-				if(dmg>0.30){
+				if(dmg>6){
 					doordestroyer.destroydoor(
-						self,dmg*3,0.06,48,height-20,
+						self,dmg*10,0.06,48,height-20,
 						angle,pitch
 					);
 				}
