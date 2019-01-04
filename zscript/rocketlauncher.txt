@@ -45,14 +45,13 @@ class HDRL:HDWeapon{
 					weaponstatus[0]&=~RLF_GRENADEMODE;
 					if(glm>1)weaponstatus[RLS_CHAMBER]=2;
 				}
-
-				if(cvar.getcvar("hd_rlzoom",owner.player).getbool())
-					weaponstatus[0]|=RLF_ZOOM;
-					else weaponstatus[0]&=~RLF_ZOOM;
 			}
 			break;
 		}
 		amount=1;maxamount=1;
+		if(owner&&owner.player&&cvar.getcvar("hd_rlzoom",owner.player).getbool())
+			weaponstatus[0]|=RLF_ZOOM;
+			else weaponstatus[0]&=~RLF_ZOOM;
 	}
 	override double gunmass(){
 		return 10+weaponstatus[RLS_MAG]+weaponstatus[RLS_CHAMBER];
