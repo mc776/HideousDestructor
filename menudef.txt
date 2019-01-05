@@ -106,9 +106,8 @@ ListMenu "MainMenu"{
 	}
 	IfGame(Doom,Strife,Chex){
 		PatchItem "M_NGAME","n","PlayerclassMenu"
-			TextItem "HD Options","o","HDOptionsMenu"
-//			TextItem "HD Loadout","o","CustomLoadoutMenu"
 			TextItem "HD Loadout","o","HDLoadoutMenu"
+			TextItem "HD Options","o","HDOptionsMenu"
 			TextItem "HD Controls","o","HDControlsMenu"
 		ifOption(SwapMenu){
 			PatchItem "M_LOADG","l","LoadGameMenu"
@@ -171,7 +170,7 @@ ListMenu "PlayerMenu"{
 
 	Linespacing 10
 	Font "SmallFont","White","Gold"
-	TextItem "Customize Loadout...","L","CustomLoadoutMenu"
+	TextItem "Customize Loadout...","L","HDLoadoutMenu"
 	Class "PlayerMenu"
 }
 
@@ -210,7 +209,7 @@ OptionMenu "HDOptionsMenu"{
 
 	StaticText " "
 	StaticText "User Personal Weapon Settings",1
-	Submenu "Set Custom Loadout...","CustomLoadoutMenu"
+	Submenu "Set Custom Loadout...","HDLoadoutMenu"
 	StaticText " "
 	Option "DERP mode","hd_derpmode","DERPModes"
 	Option "IEDs start active","hd_autoactivateied","YesNo"
@@ -316,8 +315,6 @@ OptionMenu "HDControlsMenu"{
 }
 
 
-
-//loadout spamghetti
 OptionMenu "HDLoadoutMenu"{
 	Title "CUSTOMIZE LOADOUT"
 	StaticText ""
@@ -336,31 +333,6 @@ OptionMenu "HDLoadoutMenu"{
 	StaticText "to get the full list of all other items."
 
 	Class "HDLoadoutMenu"
-}
-OptionMenu "CustomLoadoutMenu"{
-	Title "CUSTOMIZE LOADOUT"
-
-	StaticText ""
-	StaticText "Syntax:  xxx, yyy z, aaa b - ccc d"
-	StaticText "xxx: your selected weapon; yyy, aaa, ccc: other items"
-	StaticText "-: begin backpack settings or use item 'bak' for empty"
-	StaticText "z, b, d: amounts of each listed item"
-	StaticText "(multiple weapons only in backpack)"
-
-	StaticText ""
-	StaticText "'map' gives you a map."
-	StaticText "'key' gives you keys: b4, y2, r1, 7 for all"
-
-	StaticText ""
-	StaticText "Type  'give LoadoutItemList'  in the console"
-	StaticText "to get the full list of all other items."
-	StaticText ""
-
-	TextField "Custom Loadout 1","hd_loadout1"
-	TextField "Custom Loadout 2","hd_loadout2"
-	TextField "Custom Loadout 3","hd_loadout3"
-	TextField "Custom Loadout 4","hd_loadout4"
-	TextField "Custom Loadout 5","hd_loadout5"
 }
 
 
