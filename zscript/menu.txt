@@ -6,10 +6,12 @@ class HDLoadoutMenu:OptionMenu{
 	string statusstring;
 	string clipboard;
 	string undo;
+	string reflist;
 	int cursx;
 	int cursy;
 	int tlcursy;
 	bool different;
+	bool viewlist;
 	override void Init(menu parent,optionmenudescriptor desc){
 		super.Init(parent,desc);
 		refids.clear();
@@ -19,7 +21,9 @@ class HDLoadoutMenu:OptionMenu{
 		different=false;
 		statusstring="Now editing loadout no. "..cursy;
 		statustimer=0;
+		reflist="";viewlist=false;
 
+		int jw=0;int jp=0;
 		for(int i=0;i<allactorclasses.size();i++){
 			class<actor> reff=allactorclasses[i];
 			if(reff is "HDPickup"||reff is "HDWeapon"){
@@ -28,12 +32,16 @@ class HDLoadoutMenu:OptionMenu{
 					if(ref.refid!=""){
 						refids.push(ref.refid);
 						nicenames.push(ref.nicename);
+						if(!(jp%5))reflist=reflist.."\n";jp++;
+						reflist=reflist.."\n\cy"..ref.refid.."\cj   "..ref.nicename;
 					}
 				}else{
 					let ref=getdefaultbytype((class<hdweapon>)(reff));
 					if(ref.refid!=""){
 						refids.push(ref.refid);
 						nicenames.push(ref.nicename);
+						if(!(jw%5))reflist="\n"..reflist;jw++;
+						reflist="\n\cx"..ref.refid.."\cj   "..ref.nicename..reflist;
 					}
 				}
 			}
@@ -41,6 +49,7 @@ class HDLoadoutMenu:OptionMenu{
 		workingstring=cvar.findcvar("hd_loadout"..cursy).getstring();
 		translatedloadout=gettranslatedloadout(workingstring);
 		undo=workingstring;
+		reflist=reflist.mid(1); //get rid of the first "\n"
 	}
 	override bool MenuEvent(int mkey, bool fromcontroller){
 		int startedAt = mDesc.mSelectedItem;
@@ -133,6 +142,9 @@ class HDLoadoutMenu:OptionMenu{
 					}else if(inp~=="v"){
 						workingstring=clipboard;
 						statustext("\cxPasted from clipboard.");
+					}else if(inp~=="f"){
+						if(viewlist)viewlist=false;else viewlist=true;
+						tlcursy=0;
 					}
 				}else{
 					workingstring=workingstring.left(cursx)..inp..workingstring.mid(cursx);
@@ -175,43 +187,46 @@ class HDLoadoutMenu:OptionMenu{
 	string GetTranslatedLoadout(string input){
 		if(input=="")return "";
 		string ttl="";
-		array<string>items;items.clear();
-		array<string>bpitems;bpitems.clear();
-		input.tolower();
-		input.replace(" ","");
-		input.split(items,"-");
-		bool inbp=items.size()>1;
-		if(inbp)items[1].split(bpitems,",");
-		string iitems=items[0];items.clear();
-		iitems.split(items,",");
-		for(int i=0;i<items.size();i++){
-			string refid=items[i].left(3);
-			if(refid=="bak"){
-				inbp=true;
-				continue;
-			}
-			int whichindex=refids.find(refid);
-			if(whichindex>=refids.size())continue;
-			int howmany=max((items[i].mid(3,items[i].length())).toint(10),1);
-			ttl=ttl..(i?"\n":"")..howmany.." x    "..nicenames[whichindex];
-		}
-		if(inbp){
-			ttl=ttl.."\n\nIN BACKPACK:";
-			if(!bpitems.size())ttl=ttl.."\n  <nothing>";
-			else for(int i=0;i<bpitems.size();i++){
-				string refid=bpitems[i].left(3);
-				int whichindex=refids.find(refid);
-				if(
-					whichindex>=refids.size()
-					||nicenames[whichindex]==""
-				){
-					if(bpitems.size()==1){
-						ttl=ttl.."\n  <nothing>";
-						break;
-					}else continue;
+		if(viewlist)ttl=reflist;
+		else{
+			array<string>items;items.clear();
+			array<string>bpitems;bpitems.clear();
+			input.tolower();
+			input.replace(" ","");
+			input.split(items,"-");
+			bool inbp=items.size()>1;
+			if(inbp)items[1].split(bpitems,",");
+			string iitems=items[0];items.clear();
+			iitems.split(items,",");
+			for(int i=0;i<items.size();i++){
+				string refid=items[i].left(3);
+				if(refid=="bak"){
+					inbp=true;
+					continue;
 				}
-				int howmany=max((bpitems[i].mid(3,bpitems[i].length())).toint(10),1);
-				ttl=ttl.."\n  "..howmany.." x    "..nicenames[whichindex];
+				int whichindex=refids.find(refid);
+				if(whichindex>=refids.size())continue;
+				int howmany=max((items[i].mid(3,items[i].length())).toint(10),1);
+				ttl=ttl..(i?"\n":"")..howmany.." x    "..nicenames[whichindex];
+			}
+			if(inbp){
+				ttl=ttl.."\n\nIN BACKPACK:";
+				if(!bpitems.size())ttl=ttl.."\n  <nothing>";
+				else for(int i=0;i<bpitems.size();i++){
+					string refid=bpitems[i].left(3);
+					int whichindex=refids.find(refid);
+					if(
+						whichindex>=refids.size()
+						||nicenames[whichindex]==""
+					){
+						if(bpitems.size()==1){
+							ttl=ttl.."\n  <nothing>";
+							break;
+						}else continue;
+					}
+					int howmany=max((bpitems[i].mid(3,bpitems[i].length())).toint(10),1);
+					ttl=ttl.."\n  "..howmany.." x    "..nicenames[whichindex];
+				}
 			}
 		}
 		int skiplines=tlcursy;
@@ -223,6 +238,9 @@ class HDLoadoutMenu:OptionMenu{
 				break;
 			}else ttl=ttl.mid(brk+1);
 		}
+		ttl="\n\cu(hit Ctrl+F to toggle)\cj\n"..ttl;
+		if(viewlist)ttl="\cdC O D E   R E F E R E N C E   L I S T            "..ttl;
+		       else ttl="\caL O A D O U T   P R E V I E W                    "..ttl;
 		return ttl;
 	}
 	int blinktimer;
