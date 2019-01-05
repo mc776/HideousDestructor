@@ -2,43 +2,178 @@ class HDLoadoutMenu:OptionMenu{
 	array<string> refids;
 	array<string> nicenames;
 	string translatedloadout;
+	string workingstring;
+	string statusstring;
+	string clipboard;
+	string undo;
+	int cursx;
+	int cursy;
+	int tlcursy;
+	bool different;
 	override void Init(menu parent,optionmenudescriptor desc){
 		super.Init(parent,desc);
 		refids.clear();
 		nicenames.clear();
-		translatedloadout="";
+		cursx=0;cursy=1;
+		tlcursy=0;
+		different=false;
+		statusstring="Now editing loadout no. "..cursy;
+		statustimer=0;
 
 		for(int i=0;i<allactorclasses.size();i++){
 			class<actor> reff=allactorclasses[i];
 			if(reff is "HDPickup"||reff is "HDWeapon"){
 				if(reff is "HDPickup"){
 					let ref=getdefaultbytype((class<hdpickup>)(reff));
-					refids.push(ref.refid);
-					nicenames.push(ref.nicename);
+					if(ref.refid!=""){
+						refids.push(ref.refid);
+						nicenames.push(ref.nicename);
+					}
 				}else{
 					let ref=getdefaultbytype((class<hdweapon>)(reff));
-					refids.push(ref.refid);
-					nicenames.push(ref.nicename);
+					if(ref.refid!=""){
+						refids.push(ref.refid);
+						nicenames.push(ref.nicename);
+					}
 				}
 			}
 		}
+		workingstring=cvar.findcvar("hd_loadout"..cursy).getstring();
+		translatedloadout=gettranslatedloadout(workingstring);
+		undo=workingstring;
 	}
 	override bool MenuEvent(int mkey, bool fromcontroller){
 		int startedAt = mDesc.mSelectedItem;
 		switch(mkey){
+		case MKEY_Left:
+			cursx=max(0,cursx-1);
+			break;
+		case MKEY_Right:
+			cursx=min(workingstring.length(),cursx+1);
+			break;
+		case MKEY_Clear:
+			workingstring=workingstring.left(cursx-1)..workingstring.mid(cursx);
+			cursx=max(0,cursx-1);
+			checkdifferent();
+			break;
+		case MKEY_Back:
+			if(checkdifferent()){
+				resetws();
+				return false;
+			}
+			break;
 		case MKEY_Up:
+			if(checkdifferent()){
+				statustext("\cjENTER or Ctrl+S to save, or ESC to abort.");
+			}else{
+				cursy--;
+				if(cursy<1)cursy=5;
+				statustimer=0;
+				resetws();
+			}
+			break;
 		case MKEY_Down:
-			playerinfo cplayer=players[consoleplayer];
-			if(cplayer)translatedloadout=gettranslatedloadout(cvar.getcvar("hd_loadout1",cplayer).getstring());
+			if(checkdifferent()){
+				statustext("\cjENTER or Ctrl+S to save, or ESC to abort.");
+			}else{
+				cursy++;
+				if(cursy>5)cursy=1;
+				statustimer=0;
+				resetws();
+			}
+			break;
+		case MKEY_Enter:
+			savechanges();
+			break;
+		case MKEY_PageUp:
+			tlcursy=max(0,tlcursy-1);
+			break;
+		case MKEY_PageDown:
+			tlcursy++;
 			break;
 		}
+		translatedloadout=gettranslatedloadout(workingstring);
 		return super.menuevent(mkey,fromcontroller);
 	}
-	override void releasefocus(){
-		playerinfo cplayer=players[consoleplayer];
-		if(cplayer)translatedloadout=gettranslatedloadout(cvar.getcvar("hd_loadout1",cplayer).getstring());
+	override bool OnUIEvent(UIEvent ev){
+		if(ev.Type==UIEvent.Type_KeyDown){
+			translatedloadout="\n\n"..ev.KeyChar;
+			switch(ev.KeyChar){
+			case UIEvent.Key_Home:
+				cursx=0;
+				break;
+			case UIEvent.Key_End:
+				cursx=workingstring.length();
+				break;
+			case UIEvent.Key_Del:
+				workingstring=workingstring.left(cursx)..workingstring.mid(cursx+1);
+				checkdifferent();
+				break;
+			default:
+				string inp="";
+				inp.appendformat("%c",ev.KeyChar);
+				if(ev.IsCtrl){
+					if(inp~=="r"){
+						string bak=cvar.findcvar("hd_loadout"..cursy).getstring();
+						cvar.findcvar("hd_loadout"..cursy).resettodefault();
+						statustext("\cyRESET TO DEFAULT.");
+						resetws();
+						undo=bak;
+					}else if(inp~=="s"){
+						savechanges();
+					}else if(inp~=="z"){
+						workingstring=undo;
+					}else if(inp~=="x"){
+						clipboard=workingstring;
+						workingstring="";
+						statustext("\caCut to clipboard.");
+					}else if(inp~=="c"){
+						clipboard=workingstring;
+						statustext("\cdCopied to clipboard.");
+					}else if(inp~=="v"){
+						workingstring=clipboard;
+						statustext("\cxPasted from clipboard.");
+					}
+				}else{
+					workingstring=workingstring.left(cursx)..inp..workingstring.mid(cursx);
+					cursx++;
+				}
+				checkdifferent();
+				break;
+			}
+			translatedloadout=gettranslatedloadout(workingstring);
+		}
+		return Super.OnUIEvent(ev);
+	}
+	void StatusText(string input,int timer=70){
+		statusstring=input;
+		statustimer=timer;
+	}
+	void savechanges(){
+		if(checkdifferent()){
+			undo=cvar.findcvar("hd_loadout"..cursy).getstring();
+			cvar.findcvar("hd_loadout"..cursy).setstring(workingstring);
+			statustext("\cy- SAVED TO LOADOUT NO. "..cursy.." -");
+			checkdifferent();
+		}
+		tlcursy=0;
+	}
+	void resetws(){
+		string def=cvar.findcvar("hd_loadout"..cursy).getstring();
+		if(def!=workingstring)workingstring=def;
+		different=false;
+		translatedloadout=gettranslatedloadout(workingstring);
+		cursx=workingstring.length();
+		undo=workingstring;
+		tlcursy=0;
+	}
+	bool checkdifferent(){
+		string def=cvar.findcvar("hd_loadout"..cursy).getstring();
+		different=def!=workingstring;
+		return different;
 	}
 	string GetTranslatedLoadout(string input){
+		if(input=="")return "";
 		string ttl="";
 		array<string>items;items.clear();
 		array<string>bpitems;bpitems.clear();
@@ -58,7 +193,7 @@ class HDLoadoutMenu:OptionMenu{
 			int whichindex=refids.find(refid);
 			if(whichindex>=refids.size())continue;
 			int howmany=max((items[i].mid(3,items[i].length())).toint(10),1);
-			ttl=ttl.."\n"..howmany.."x   "..nicenames[whichindex];
+			ttl=ttl..(i?"\n":"")..howmany.." x    "..nicenames[whichindex];
 		}
 		if(inbp){
 			ttl=ttl.."\n\nIN BACKPACK:";
@@ -76,19 +211,78 @@ class HDLoadoutMenu:OptionMenu{
 					}else continue;
 				}
 				int howmany=max((bpitems[i].mid(3,bpitems[i].length())).toint(10),1);
-				ttl=ttl.."\n  "..howmany.."x   "..nicenames[whichindex];
+				ttl=ttl.."\n  "..howmany.." x    "..nicenames[whichindex];
 			}
+		}
+		int skiplines=tlcursy;
+		while(skiplines>0){
+			skiplines--;
+			int brk=ttl.indexof("\n");
+			if(brk<0){
+				tlcursy-=skiplines+1;
+				break;
+			}else ttl=ttl.mid(brk+1);
 		}
 		return ttl;
 	}
+	int blinktimer;
+	int statustimer;
 	override void Drawer(){
 		Super.Drawer();
 		playerinfo cplayer=players[consoleplayer];
 		if(!cplayer)return;
-		string s=translatedloadout;
-		screen.DrawText (SmallFont, OptionMenuSettings.mFontColorValue,
+		string ws=workingstring;
+		int tempcursx=cursx;
+		int maxwidth=screen.GetWidth()*0.6/(SmallFont.StringWidth("_")*CleanXfac_1);
+		int halfmaxwidth=maxwidth/2;
+		if(ws.length()>maxwidth){
+			int wsl=ws.length();
+			if(
+				cursx>=halfmaxwidth
+				&&wsl-cursx>=halfmaxwidth
+			){
+				//enough space on both sides of cursor
+				tempcursx=halfmaxwidth+4;
+				ws="<<  "..ws.mid(cursx-halfmaxwidth,cursx+halfmaxwidth).."  >>";
+			}else if(cursx<halfmaxwidth){
+				//beginning
+				ws=ws.left(maxwidth).."  >>";
+			}else{
+				//end
+				ws="<< "..ws.mid(ws.length()-maxwidth);
+				tempcursx-=workingstring.length()-ws.length();
+			}
+		}
+		screen.DrawText(SmallFont,
+			different?OptionMenuSettings.mFontColorHeader:OptionMenuSettings.mFontColorValue,
+			(screen.GetWidth() - SmallFont.StringWidth(ws) * CleanXfac_1) / 2,
+			SmallFont.GetHeight()*CleanYFac_1*15,
+			ws,DTA_CleanNoMove_1, true
+		);
+		blinktimer++;
+		if(blinktimer>7){
+			if(blinktimer>14)blinktimer=0;
+			screen.DrawText(SmallFont,OptionMenuSettings.mFontColorHighlight,
+				(screen.GetWidth() - SmallFont.StringWidth(ws) * CleanXfac_1) / 2
+					+SmallFont.StringWidth(ws.left(tempcursx))*CleanXfac_1,
+				SmallFont.GetHeight()*CleanYFac_1*15,
+				"_",DTA_CleanNoMove_1,true
+			);
+		}
+		string s="Now editing loadout no.  "..cursy;
+		if(statustimer>0){
+			statustimer--;
+			s=statusstring;
+		}
+		screen.DrawText(SmallFont,OptionMenuSettings.mTitleColor,
+			(screen.GetWidth() - SmallFont.StringWidth(s) * CleanXfac_1) / 2,
+			SmallFont.GetHeight()*CleanYFac_1*16,
+			s,DTA_CleanNoMove_1, true
+		);
+		s=translatedloadout;
+		screen.DrawText(SmallFont,OptionMenuSettings.mFontColorValue,
 			(screen.GetWidth() - SmallFont.StringWidth (s) * CleanXfac_1) / 2,
-			SmallFont.GetHeight()*CleanYFac_1*19,
+			SmallFont.GetHeight()*CleanYFac_1*18,
 			s,DTA_CleanNoMove_1, true
 		);
 	}

@@ -107,9 +107,8 @@ ListMenu "MainMenu"{
 	IfGame(Doom,Strife,Chex){
 		PatchItem "M_NGAME","n","PlayerclassMenu"
 			TextItem "HD Options","o","HDOptionsMenu"
-			TextItem "HD Loadout","o","CustomLoadoutMenu"
-//
-			TextItem "HD Loadout (pre-alpha)","o","HDLoadoutMenu"
+//			TextItem "HD Loadout","o","CustomLoadoutMenu"
+			TextItem "HD Loadout","o","HDLoadoutMenu"
 			TextItem "HD Controls","o","HDControlsMenu"
 		ifOption(SwapMenu){
 			PatchItem "M_LOADG","l","LoadGameMenu"
@@ -326,7 +325,7 @@ OptionMenu "HDLoadoutMenu"{
 	StaticText "xxx: your selected weapon; yyy, aaa, ccc: other items"
 	StaticText "-: begin backpack settings or use item 'bak' for empty"
 	StaticText "z, b, d: amounts of each listed item"
-	StaticText "(multiple weapons only in backpack)"
+	StaticText "ENTER saves, ESC resets, CTRL+R resets to HD default"
 
 	StaticText ""
 	StaticText "'map' gives you a map."
@@ -335,13 +334,7 @@ OptionMenu "HDLoadoutMenu"{
 	StaticText ""
 	StaticText "Type  'give LoadoutItemList'  in the console"
 	StaticText "to get the full list of all other items."
-	StaticText ""
 
-	TextField "Custom Loadout 1","hd_loadout1"
-	TextField "Custom Loadout 2","hd_loadout2"
-	TextField "Custom Loadout 3","hd_loadout3"
-	TextField "Custom Loadout 4","hd_loadout4"
-	TextField "Custom Loadout 5","hd_loadout5"
 	Class "HDLoadoutMenu"
 }
 OptionMenu "CustomLoadoutMenu"{
