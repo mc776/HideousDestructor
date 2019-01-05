@@ -106,7 +106,6 @@ class HDLoadoutMenu:OptionMenu{
 	}
 	override bool OnUIEvent(UIEvent ev){
 		if(ev.Type==UIEvent.Type_KeyDown){
-			translatedloadout="\n\n"..ev.KeyChar;
 			switch(ev.KeyChar){
 			case UIEvent.Key_Home:
 				cursx=0;
@@ -117,6 +116,25 @@ class HDLoadoutMenu:OptionMenu{
 			case UIEvent.Key_Del:
 				workingstring=workingstring.left(cursx)..workingstring.mid(cursx+1);
 				checkdifferent();
+				break;
+			case UIEvent.Key_F1:
+				if(viewlist)viewlist=false;else viewlist=true;
+				tlcursy=0;
+				break;
+			case UIEvent.Key_F2:
+			case UIEvent.Key_F3:
+			case UIEvent.Key_F4:
+			case UIEvent.Key_F5:
+			case UIEvent.Key_F6:
+			case UIEvent.Key_F7:
+			case UIEvent.Key_F8:
+			case UIEvent.Key_F9:
+			case UIEvent.Key_F11:
+			case UIEvent.Key_F12:
+				break;
+			case UIEvent.Key_F10:
+				resetws();
+				close();
 				break;
 			default:
 				string inp="";
@@ -148,6 +166,7 @@ class HDLoadoutMenu:OptionMenu{
 					}
 				}else{
 					workingstring=workingstring.left(cursx)..inp..workingstring.mid(cursx);
+					//workingstring=ev.keychar.."   "..workingstring; //debug
 					cursx++;
 				}
 				checkdifferent();
@@ -238,7 +257,7 @@ class HDLoadoutMenu:OptionMenu{
 				break;
 			}else ttl=ttl.mid(brk+1);
 		}
-		ttl="\n\cu(hit Ctrl+F to toggle)\cj\n"..ttl;
+		ttl="\n\cu  Ctrl+F toggle   PgUp/PgDn scroll\cj\n"..ttl;
 		if(viewlist)ttl="\cdC O D E   R E F E R E N C E   L I S T            "..ttl;
 		       else ttl="\caL O A D O U T   P R E V I E W                    "..ttl;
 		return ttl;
