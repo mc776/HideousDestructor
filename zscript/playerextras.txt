@@ -83,6 +83,7 @@ extend class HDPlayerPawn{
 			else if(fatigue>20) jumppower=3.5;
 		}
 		if(overloaded)jumppower/=max(1,overloaded);
+		if(countinv("WornRadSuit"))jumppower*=0.7;
 		return jumppower;
 	}
 	//and jump. don't separate from mantling.
@@ -109,7 +110,6 @@ extend class HDPlayerPawn{
 					||cansprint
 				)
 				&&!MantleCheck()
-				&&!countinv("WornRadsuit")
 				&&!(oldinput & BT_JUMP)
 			){
 				double jumppower=jumppower();
