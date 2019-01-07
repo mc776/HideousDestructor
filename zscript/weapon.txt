@@ -317,7 +317,7 @@ class HDWeapon:Weapon{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		bno_auto_switch=false;
+		if(!bwimpy_weapon)bno_auto_switch=false;
 	}
 	//because A_Print doesn't cut it
 	action void A_WeaponMessage(string msg,int time=100){
