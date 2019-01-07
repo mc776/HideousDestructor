@@ -290,7 +290,7 @@ class HDLoadoutMenu:OptionMenu{
 				&&wsl-cursx>=halfmaxwidth
 			){
 				//enough space on both sides of cursor
-				tempcursx=halfmaxwidth+4;
+				tempcursx=halfmaxwidth;
 				ws=ws.mid(cursx-halfmaxwidth,cursx+halfmaxwidth);
 				addarrows|=1|2;
 			}else if(cursx<halfmaxwidth){
@@ -316,8 +316,7 @@ class HDLoadoutMenu:OptionMenu{
 		if(blinktimer>3){
 			if(blinktimer>6)blinktimer=0;
 			screen.DrawText(SmallFont,OptionMenuSettings.mFontColorHighlight,
-				(screen.GetWidth() - SmallFont.StringWidth(ws) * CleanXfac_1) / 2
-					+SmallFont.StringWidth(ws.left(tempcursx))*CleanXfac_1,
+				wsxpos+SmallFont.StringWidth(ws.left(tempcursx))*CleanXfac_1,
 				SmallFont.GetHeight()*CleanYFac_1*14 + clfp3,
 				"_",DTA_CleanNoMove_1,true
 			);
