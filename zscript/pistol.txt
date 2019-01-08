@@ -422,7 +422,7 @@ class HDPistol:HDWeapon{
 			if(invoker.weaponstatus[PISS_CHAMBER]<1)
 				A_PlaySound("weapons/pischamber2",CHAN_WEAPON);
 		}
-		PISG A 1 A_WeaponOffset(-2,38);
+		PISG A 1 A_WeaponOffset(-2,40);
 		PISG B 1 A_WeaponOffset(-4,46);
 		PISG B 1 A_WeaponOffset(-8,58);
 		PISG C 1 A_WeaponOffset(-12,70);
@@ -430,7 +430,15 @@ class HDPistol:HDWeapon{
 		TNT1 A 2{
 			A_PlaySound("weapons/pocket",CHAN_WEAPON);
 			SwapPistols();
-		}goto select0;
+		}//goto select0;
+		PISG C 1 A_WeaponOffset(-12,70);
+		PISG B 1 A_WeaponOffset(-8,58);
+		PISG B 1 A_WeaponOffset(-4,46);
+		PISG A 0 A_JumpIf(invoker.weaponstatus[PISS_CHAMBER]<1,2);
+		PISG A 1 A_WeaponOffset(-2,40);
+		goto ready;
+		PISG C 1 A_WeaponOffset(-2,40);
+		goto ready;
 
 
 	spawn:
@@ -482,58 +490,49 @@ enum pistolstatus{
 
 
 //use this to give an autopistol in a custom loadout
-class HDAutoPistol:HDItemGiver{
+class HDAutoPistol:HDWeaponGiver{
 	default{
-		hdpickup.refid HDLD_PISTAUT;
-		hdpickup.nicename "Pistol (select-fire)";
-		hdpickup.fitsinbackpack true;
-		hdpickup.bulk 34;
+		//$Category "Weapons/Hideous Destructor"
+		//$Title "Pistol (select-fire)"
+		//$Sprite "PISTA0"
+		hdweapon.refid HDLD_PISTAUT;
+		hdweapon.nicename "Pistol (select-fire)";
+		hdweapon.fitsinbackpack true;
+		hdweapongiver.bulk 34;
+		hdweapongiver.actualweapon "HDPistol";
+		inventory.maxamount 2;
 	}
-	override void postbeginplay(){
-		super.postbeginplay();
-		if(!owner)spawnmaster();
-	}
-	override void spawnmaster(){
-		let spwn=HDPistol(spawn("HDPistol",pos,ALLOW_REPLACE));
-		spwn.special=special;
-		spwn.changetid(tid);
-		spwn.weaponstatus[PISS_AUTO]=0;
-		master=spwn;
-	}
-	states{
-	pickup:
-		TNT1 A 0{
-			bool startauto=cvar.getcvar("hd_pistauto",player).getbool();
-			let expi=HDPistol(findinventory("HDPistol"));
-			switch(countinv("HDPistol")){
-			case 1:
-				expi.amount++;
-				for(int i=0;i<8;i++){
-					expi.weaponstatus2[i]=expi.weaponstatus[i];
-					expi.weaponstatus[i]=0;
-				}
-				expi.weaponstatus[PISS_AUTO]=max(0,startauto,expi.weaponstatus[PISS_AUTO]);
-				expi.weaponstatus[PISS_MAG]=15;
-				expi.weaponstatus[PISS_CHAMBER]=2;
-				break;
-			case 2:
-				int aut1=expi.weaponstatus[PISS_AUTO];
-				if(aut1<0)expi.weaponstatus[PISS_AUTO]=max(0,startauto,aut1);
-				else expi.weaponstatus2[PISS_AUTO]=max(0,startauto,expi.weaponstatus2[PISS_AUTO]);
-				break;
-			default:
-				A_GiveInventory("HDPistol");
-				HDPistol(findinventory("HDPistol")).weaponstatus[PISS_AUTO]=startauto;
-				break;
+	override void configureweapon(){
+		let wp=hdweapon(actualweaponactor);
+		bool startauto=0;
+		if(owner)cvar.getcvar("hd_pistauto",owner.player).getbool();
+		let expi=HDPistol(wp);
+		switch(expi.amount){
+		case 1:
+			expi.amount++;
+			for(int i=0;i<8;i++){
+				expi.weaponstatus2[i]=expi.weaponstatus[i];
+				expi.weaponstatus[i]=0;
 			}
-			//overwrite everything if giving 2 autopistols
-			if(invoker.amount>1){
-				let expi=HDPistol(findinventory("HDPistol"));
-				expi.amount=invoker.amount;
-				expi.weaponstatus[PISS_AUTO]=max(0,startauto,expi.weaponstatus[PISS_AUTO]);
-				expi.weaponstatus2[PISS_AUTO]=max(0,startauto,expi.weaponstatus2[PISS_AUTO]);
-			}
-		}fail;
+			expi.weaponstatus[PISS_AUTO]=max(0,startauto,expi.weaponstatus[PISS_AUTO]);
+			expi.weaponstatus[PISS_MAG]=15;
+			expi.weaponstatus[PISS_CHAMBER]=2;
+			break;
+		case 2:
+			int aut1=expi.weaponstatus[PISS_AUTO];
+			if(aut1<0)expi.weaponstatus[PISS_AUTO]=max(0,startauto,aut1);
+			else expi.weaponstatus2[PISS_AUTO]=max(0,startauto,expi.weaponstatus2[PISS_AUTO]);
+			break;
+		default:
+			expi.weaponstatus[PISS_AUTO]=startauto;
+			break;
+		}
+		//overwrite everything if giving 2 autopistols
+		if(amount>1){
+			expi.amount=amount;
+			expi.weaponstatus[PISS_AUTO]=max(0,startauto,expi.weaponstatus[PISS_AUTO]);
+			expi.weaponstatus2[PISS_AUTO]=max(0,startauto,expi.weaponstatus2[PISS_AUTO]);
+		}
 	}
 }
 
