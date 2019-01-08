@@ -871,35 +871,20 @@ enum liberatorstatus{
 };
 
 
-class LiberatorNoGL:HDItemGiver{
+class LiberatorNoGL:HDWeaponGiver{
 	default{
 		//$Category "Weapons/Hideous Destructor"
 		//$Title "Liberator (no GL)"
 		//$Sprite "BRFLA0"
-		hdpickup.refid HDLD_LIBNOGL;
-		hdpickup.nicename "Liberator Rifle (no GL)";
-		hdpickup.fitsinbackpack true;
-		hdpickup.bulk (100.+(ENC_776MAG_LOADED+30.*ENC_776_LOADED));
+		hdweapon.refid HDLD_LIBNOGL;
+		hdweapon.nicename "Liberator Rifle (no GL)";
+		hdweapon.fitsinbackpack true;
+		hdweapongiver.bulk (100.+(ENC_776MAG_LOADED+30.*ENC_776_LOADED));
+		hdweapongiver.actualweapon "LiberatorRifle";
 	}
-	override void postbeginplay(){
-		super.postbeginplay();
-		LiberatorRifle lll;
-		if(owner){
-			owner.A_SetInventory("LiberatorRifle",1);
-			lll=LiberatorRifle(owner.findinventory("LiberatorRifle"));
-			lll.weaponstatus[0]|=LIBF_NOLAUNCHER;
-			lll.weaponstatus[0]&=~LIBF_GRENADELOADED;
-		}else spawnmaster();
-	}
-	override void spawnmaster(){
-		let lll=LiberatorRifle(spawn("LiberatorRifle",pos,ALLOW_REPLACE));
-		lll.special=special;
-		lll.changetid(tid);
-		lll.weaponstatus[0]|=LIBF_NOLAUNCHER;
-		lll.weaponstatus[0]&=~LIBF_GRENADELOADED;
-		master=lll;
+	override void configureweapon(){
+		let wp=hdweapon(actualweaponactor);
+		wp.weaponstatus[0]|=LIBF_NOLAUNCHER;
+		wp.weaponstatus[0]&=~LIBF_GRENADELOADED;
 	}
 }
-
-
-

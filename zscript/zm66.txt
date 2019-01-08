@@ -789,48 +789,22 @@ enum zm66status{
 };
 
 
-class ZM66AltStarter:ActionItem{
-	default{inventory.maxamount 2;} //we don't need this but that's probably a bug
-	states{
-	pickup:
-		TNT1 A 0{
-			let zzz=ZM66AssaultRifle(spawn("ZM66AssaultRifle",pos,ALLOW_REPLACE));if(!zzz)return;
-			if(invoker.amount==1)zzz.weaponstatus[0]|=ZM66F_NOLAUNCHER;
-			else if(invoker.amount==2)zzz.weaponstatus[0]|=ZM66F_NOLAUNCHER|ZM66F_NOFIRESELECT;
-			zzz.attachtoowner(self);
-			zzz.special=special;
-			HDWeaponSelector.Select(self,"ZM66AssaultRifle");
-		}fail;
-	}
-}
-class ZM66Semi:HDItemGiver{
+
+class ZM66Semi:HDWeaponGiver{
 	default{
 		//$Category "Weapons/Hideous Destructor"
 		//$Title "ZM66 Rifle (Semi)"
 		//$Sprite "RIFSA0"
-		stamina ZM66F_NOLAUNCHER|ZM66F_NOFIRESELECT;
-		hdpickup.refid HDLD_ZM66SMI;
-		hdpickup.nicename "ZM66 Assault Rifle (Semi only)";
-		hdpickup.fitsinbackpack true;
-		hdpickup.bulk (90.+(ENC_426MAG_LOADED+50.*ENC_426_LOADED));
+		hdweapon.refid HDLD_ZM66SMI;
+		hdweapon.nicename "ZM66 Assault Rifle (Semi only)";
+		hdweapon.fitsinbackpack true;
+		hdweapongiver.bulk (90.+(ENC_426MAG_LOADED+50.*ENC_426_LOADED));
+		hdweapongiver.actualweapon "ZM66AssaultRifle";
 	}
-	override void spawnmaster(){
-		let zzz=ZM66AssaultRifle(spawn("ZM66AssaultRifle",pos,ALLOW_REPLACE));
-		zzz.special=special;
-		zzz.changetid(tid);
-		zzz.weaponstatus[0]|=stamina;
-		if(zzz.weaponstatus[0]&ZM66F_NOLAUNCHER)zzz.weaponstatus[0]&=~ZM66F_GRENADELOADED;
-		master=zzz;
-	}
-	override void postbeginplay(){
-		super.postbeginplay();
-		ZM66AssaultRifle zzz;
-		if(owner){
-			owner.A_SetInventory("ZM66AssaultRifle",1);
-			zzz=ZM66AssaultRifle(owner.findinventory("ZM66AssaultRifle"));
-			zzz.weaponstatus[0]|=stamina;
-			if(zzz.weaponstatus[0]&ZM66F_NOLAUNCHER)zzz.weaponstatus[0]&=~ZM66F_GRENADELOADED;
-		}else spawnmaster();
+	override void configureweapon(){
+		let wp=hdweapon(actualweaponactor);
+		wp.weaponstatus[0]|=ZM66F_NOLAUNCHER|ZM66F_NOFIRESELECT;
+		wp.weaponstatus[0]&=~ZM66F_GRENADELOADED;
 	}
 }
 class ZM66Regular:ZM66Semi{
@@ -838,9 +812,13 @@ class ZM66Regular:ZM66Semi{
 		//$Category "Weapons/Hideous Destructor"
 		//$Title "ZM66 Rifle (No GL)"
 		//$Sprite "RIFLA0"
-		stamina ZM66F_NOLAUNCHER;
-		hdpickup.refid HDLD_ZM66AUT;
-		hdpickup.nicename "ZM66 Assault Rifle (No GL)";
+		hdweapon.refid HDLD_ZM66AUT;
+		hdweapon.nicename "ZM66 Assault Rifle (No GL)";
+	}
+	override void configureweapon(){
+		let wp=hdweapon(actualweaponactor);
+		wp.weaponstatus[0]|=ZM66F_NOLAUNCHER;
+		wp.weaponstatus[0]&=~ZM66F_GRENADELOADED;
 	}
 }
 class ZM66Random:IdleDummy{

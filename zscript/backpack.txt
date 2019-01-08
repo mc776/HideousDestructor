@@ -105,7 +105,8 @@ class HDBackpack:HDWeapon{
 				howmany[i]=max(1,howmany[i]);
 				for(int j=0;j<howmany[i];j++){
 					inventory iii=inventory(spawn(invclasses[refindex],pos,ALLOW_REPLACE));
-					if(igg)hditemgiver(iii).addtobackpack(self);
+					if(hdweapongiver(iii))hdweapongiver(iii).addtobackpack(self);
+					else if(igg)hditemgiver(iii).addtobackpack(self);
 					else{
 						if(owner)iii.attachtoowner(owner);
 						itemtobackpack(iii);
@@ -216,6 +217,36 @@ class HDBackpack:HDWeapon{
 		let item=getdefaultbytype((class<inventory>)(invclasses[which]));
 		let ddi=item.icon;
 		vector2 ddv=(1.,1.);
+
+		//static virtuals aren't a thing, so any other exceptions will be going here :(
+		string specicon="";
+		if((HDArmour)(item)){
+			specicon=amounts[which].toint()>=1000?"ARMCA0":"ARMSA0";
+		}else if((HDWeapon)(item)){
+			array<string> wepstatus;
+			amounts[which].split(wepstatus," ");
+			if(wepstatus.size()>=9){
+				if((HDPistol)(item)){
+					specicon=(wepstatus[PISS_AUTO].toint()<0)?"PISTA0":"PISTC0";
+				}else if((ZM66AssaultRifle)(item)){
+					string fr=(wepstatus[ZM66S_MAG].toint()<0)?"D":"A";
+					int st=wepstatus[0].toint();
+					if(!(st&ZM66F_NOLAUNCHER))specicon="RIGL";
+					else if(st&ZM66F_NOFIRESELECT)specicon="RIFS";
+					else specicon="RIFL";
+					specicon=specicon..fr..0;
+				}else if((LiberatorRifle)(item)){
+					bool ul=(wepstatus[LIBS_MAG].toint()<0);
+					int st=wepstatus[0].toint();
+					if(st&LIBF_NOLAUNCHER)specicon=ul?"BRFLC0":"BRFLA0";
+					else specicon=ul?"BRFLD0":"BRFLB0";
+				}else if((HDSMG)(item)){
+					specicon=(wepstatus[SMGS_MAG].toint()<0)?"SMGNB0":"SMGNA0";
+				}
+			}
+		}
+		if(specicon!="")ddi=texman.checkfortexture(specicon,texman.type_any);
+
 		if(!ddi){
 			let dds=item.spawnstate;
 			if(dds!=null)ddi=dds.GetSpriteTexture(0); //see if this works on rotated sprites too...
@@ -336,7 +367,6 @@ class HDBackpack:HDWeapon{
 			}
 			if(wep.owner)wep=HDWeapon(owner.dropinventory(wep));
 			string newwep=
-				(amounts[index]==""?"":" ")..
 				wep.weaponstatus[0].." "..
 				wep.weaponstatus[1].." "..
 				wep.weaponstatus[2].." "..
@@ -345,8 +375,9 @@ class HDBackpack:HDWeapon{
 				wep.weaponstatus[5].." "..
 				wep.weaponstatus[6].." "..
 				wep.weaponstatus[7].." "..
-				int(wep.weaponbulk());
-			amounts[index]=amounts[index]..newwep;
+				int(wep.weaponbulk())..
+				(amounts[index]==""?"":" ");
+			amounts[index]=newwep..amounts[index];
 			if(hd_debug){
 				A_Log(nicenames[index]..":  "..wep.getclassname().."  "..newwep);
 				A_Log(amounts[index]);
@@ -546,7 +577,8 @@ extend class HDBackpack{
 			int howmany=0;
 			if(wep){
 				let iii=inventory(spawn(wep,pos,ALLOW_REPLACE));
-				itemtobackpack(iii);
+				if(hdweapongiver(iii))hdweapongiver(iii).addtobackpack(self);
+				else itemtobackpack(iii);
 			}else if(mag){
 				howmany=min(
 					random(1,random(1,20)),

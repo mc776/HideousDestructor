@@ -200,6 +200,47 @@ class HDItemGiver:HDPickup{
 		destroy();
 	}
 }
+class HDWeaponGiver:HDWeapon{
+	inventory actualweaponactor;
+	class<inventory> actualweapon;
+	property actualweapon:actualweapon;
+	double bulk;property bulk:bulk;
+	default{
+		+nointeraction
+		-inventory.invbar
+		inventory.maxamount 1;
+		hdweapongiver.bulk 0;
+		hdweapongiver.actualweapon "HDFist";
+	}
+	virtual void addtobackpack(hdbackpack bp){
+		if(!actualweaponactor)actualweaponactor=inventory(spawn(actualweapon,pos,ALLOW_REPLACE));
+		configureweapon();
+		bp.itemtobackpack(actualweaponactor);
+	}
+	virtual void configureweapon(){}
+	override void PostBeginPlay(){
+		super.PostBeginPlay();
+		if(owner)actualweaponactor=owner.giveinventorytype(actualweapon);
+		else actualweaponactor=inventory(spawn(actualweapon,pos,ALLOW_REPLACE));
+		configureweapon();
+		actualweaponactor.special=special;
+		actualweaponactor.changetid(tid);
+	}
+	override double weaponbulk(){return bulk;}
+	override void tick(){
+		super.tick();
+		if(
+			owner
+			&&owner.player
+			&&owner.player.readyweapon==self
+			&&actualweapon is "HDWeapon"
+		){
+			let wp=actualweapon.getclassname();
+			owner.A_SelectWeapon(wp);
+		}
+		destroy();
+	}
+}
 
 class CustomLoadoutGiver:Inventory{
 	//must be DoEffect as AttachToOwner and Pickup are not called during a range reset!
@@ -267,22 +308,16 @@ extend class HDPlayerPawn{
 							for(int k=0;k<wpcount;k++){
 								A_SetInventory(wpnam,max(countinv(wpnam)+1,1));
 							}
-						}else A_GiveInventory(reff.getclassname(),clamp(howmany[j],1,hdmath.maxinv(self,reff.getclassname())));
-						if(!j){
-							//some codes give weapons but are not themselves weapons
-							if(ref~==HDLD_LIBNOGL)firstwep="LiberatorRifle";
-							else if(
-								ref~==HDLD_SOLDIER
-								||ref~==HDLD_PISTAUT
-							)firstwep="HDPistol";
-							else if(
-								ref~==HDLD_ZM66AUT
-								||ref~==HDLD_ZM66SMI
-							)firstwep="ZM66AssaultRifle";
-
-							//otherwise, just look to the weapon
-							else if(reff is "HDWeapon")firstwep=reff.getclassname();
-						}
+							if(!j){
+								if(reff is "HDWeaponGiver"){
+									let greff=getdefaultbytype((class<HDWeaponGiver>)(reff)).actualweapon;
+									if(greff)firstwep=greff.getclassname();
+								}else firstwep=reff.getclassname();
+							}
+						}else A_GiveInventory(
+							reff.getclassname(),
+							clamp(howmany[j],1,hdmath.maxinv(self,reff.getclassname()))
+						);
 					}
 				}
 			}
