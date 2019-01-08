@@ -138,9 +138,9 @@ class Hunter:HDShotgun replaces Shotgun{
 				);
 			}
 		}else if(chm>0){	
-			cockdir*=1.2;
+			cockdir*=frandom(1.,1.3);
 			[gbg,fbs]=A_SpawnItemEx("HDSpentShell",
-				cos(pitch)*8,0,height-8-sin(pitch)*8,
+				cos(pitch)*8,frandom(-0.1,0.1),height-8-sin(pitch)*8,
 				vel.x+cockdir.x,vel.y+cockdir.y,vel.z+cockdir.z,
 				0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
 			);
