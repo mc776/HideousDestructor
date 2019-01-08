@@ -198,8 +198,12 @@ class HDWeaponGiver:HDWeapon{
 	virtual void configureweapon(){}
 	override void PostBeginPlay(){
 		super.PostBeginPlay();
-		if(owner)actualweaponactor=owner.giveinventorytype(actualweapon);
-		else actualweaponactor=inventory(spawn(actualweapon,pos,ALLOW_REPLACE));
+		if(owner){
+			if(!owner.countinv(actualweapon)){
+				owner.A_GiveInventory(actualweapon);
+				actualweaponactor=owner.findinventory(actualweapon);
+			}
+		}else actualweaponactor=inventory(spawn(actualweapon,pos,ALLOW_REPLACE));
 		if(actualweaponactor){
 			configureweapon();
 			actualweaponactor.special=special;

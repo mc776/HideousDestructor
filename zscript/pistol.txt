@@ -500,6 +500,10 @@ class HDAutoPistol:HDWeaponGiver{
 		hdweapongiver.actualweapon "HDPistol";
 		inventory.maxamount 2;
 	}
+	override void PostBeginPlay(){
+		if(owner)actualweaponactor=owner.findinventory(actualweapon);
+		super.PostBeginPlay();
+	}
 	override void configureweapon(){
 		let wp=hdweapon(actualweaponactor);
 		bool startauto=0;
