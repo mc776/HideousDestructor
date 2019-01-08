@@ -192,7 +192,7 @@ class HDWeaponGiver:HDWeapon{
 	}
 	virtual void addtobackpack(hdbackpack bp){
 		if(!actualweaponactor)actualweaponactor=inventory(spawn(actualweapon,pos,ALLOW_REPLACE));
-		configureweapon();
+		if(actualweaponactor)configureweapon();
 		bp.itemtobackpack(actualweaponactor);
 	}
 	virtual void configureweapon(){}
@@ -200,9 +200,11 @@ class HDWeaponGiver:HDWeapon{
 		super.PostBeginPlay();
 		if(owner)actualweaponactor=owner.giveinventorytype(actualweapon);
 		else actualweaponactor=inventory(spawn(actualweapon,pos,ALLOW_REPLACE));
-		configureweapon();
-		actualweaponactor.special=special;
-		actualweaponactor.changetid(tid);
+		if(actualweaponactor){
+			configureweapon();
+			actualweaponactor.special=special;
+			actualweaponactor.changetid(tid);
+		}
 	}
 	override double weaponbulk(){return bulk;}
 	override void tick(){
