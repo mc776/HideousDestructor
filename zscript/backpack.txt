@@ -96,17 +96,15 @@ class HDBackpack:HDWeapon{
 			int refindex=refids.find(ref);
 			if(refindex>=refids.size())continue;
 
-			let igg=(class<hditemgiver>)(invclasses[refindex]);
 			let wep=(class<hdweapon>)(invclasses[refindex]);
 			let mag=(class<hdmagammo>)(invclasses[refindex]);
 			let pkup=(class<hdpickup>)(invclasses[refindex]);
 
-			if(igg||wep||mag){
+			if(wep||mag){
 				howmany[i]=max(1,howmany[i]);
 				for(int j=0;j<howmany[i];j++){
 					inventory iii=inventory(spawn(invclasses[refindex],pos,ALLOW_REPLACE));
 					if(hdweapongiver(iii))hdweapongiver(iii).addtobackpack(self);
-					else if(igg)hditemgiver(iii).addtobackpack(self);
 					else{
 						if(owner)iii.attachtoowner(owner);
 						itemtobackpack(iii);
@@ -571,7 +569,6 @@ extend class HDBackpack{
 		for(int i=0;i<5;i++){
 			int thisitem=random(1,invclasses.size())-1;
 			let wep=(class<hdweapon>)(invclasses[thisitem]);
-			let igg=(class<hditemgiver>)(invclasses[thisitem]);
 			let pkup=(class<hdpickup>)(invclasses[thisitem]);
 			let mag=(class<hdmagammo>)(pkup);
 			int howmany=0;
@@ -597,10 +594,6 @@ extend class HDBackpack{
 					else ati=ati.." "..mmx;
 				}
 				amounts[thisitem]=ati;
-			}else if(igg){
-				inventory iii=inventory(spawn(igg,pos,ALLOW_REPLACE));
-				hditemgiver(iii).addtobackpack(self);
-				if(iii)iii.destroy();
 			}else if(pkup){
 				howmany=min(
 					random(1,getdefaultbytype(pkup).multipickup?random(1,80):random(1,random(1,20))),

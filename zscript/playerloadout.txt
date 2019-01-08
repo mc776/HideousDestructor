@@ -178,28 +178,6 @@ class LoadoutMenuHackToken:InventoryFlag{
 	}
 }
 //hacky shit: give another item based on loadout code
-class HDItemGiver:HDPickup{
-	default{
-		+nointeraction
-		-inventory.invbar
-		inventory.maxamount 1;
-	}
-	override void actualpickup(actor other){}
-	virtual void addtobackpack(hdbackpack bp){
-		if(!master)spawnmaster();
-		bp.itemtobackpack(inventory(master));
-	}
-	virtual void spawnmaster(){}
-	states{
-	spawn:
-		TNT1 A 1;
-		stop;
-	}
-	override void tick(){
-		super.tick();
-		destroy();
-	}
-}
 class HDWeaponGiver:HDWeapon{
 	inventory actualweaponactor;
 	class<inventory> actualweapon;
