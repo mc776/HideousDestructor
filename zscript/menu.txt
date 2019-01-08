@@ -41,7 +41,8 @@ class HDLoadoutMenu:OptionMenu{
 						refids.push(ref.refid);
 						nicenames.push(ref.nicename);
 						if(!(jw%5))reflist="\n"..reflist;jw++;
-						reflist="\n\cx"..ref.refid.."\cj   "..ref.nicename..reflist;
+						if(ref.bwimpy_weapon)reflist=reflist.."\n\cy"..ref.refid.."\cj   "..ref.nicename;
+						else reflist="\n\cx"..ref.refid.."\cj   "..ref.nicename..reflist;
 					}
 				}
 			}
