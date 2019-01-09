@@ -269,8 +269,8 @@ extend class HDPlayerPawn{
 			whichitem[i]=whichitem[i].left(3);
 
 			//handle it directly now if keys or map
-			if(whichitem[i]=="map")A_GiveInventory("MapRevealer");
-			else if(whichitem[i]=="key"){
+			if(whichitem[i]~=="map")A_GiveInventory("MapRevealer");
+			else if(whichitem[i]~=="key"){
 				int whichkeys=howmany[i];
 				if(whichkeys&4)A_GiveInventory("BlueCard");
 				if(whichkeys&2)A_GiveInventory("YellowCard");
