@@ -101,7 +101,7 @@ class DERPBot:HDUPK{
 	vector2 goalpoint;
 	vector2 originalgoalpoint;
 	double angletogoal(){
-		vector2 vecdiff=goalpoint-pos.xy;
+		vector2 vecdiff=level.vec2diff(pos.xy,goalpoint);
 		return atan2(vecdiff.y,vecdiff.x);
 	}
 	void A_DerpCrawl(bool attack=true){
@@ -587,7 +587,7 @@ extend class HDHandlers{
 					break;
 				}
 				if(goalset){
-					derp.movestamina=20-(derp.pos.xy-derp.goalpoint).length()/derp.speed;
+					derp.movestamina=20-(level.vec2diff(derp.pos.xy,derp.goalpoint)).length()/derp.speed;
 					derp.goalangle=derp.angletogoal();
 					derp.setstatelabel("turn");
 				}
