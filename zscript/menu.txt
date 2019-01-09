@@ -284,6 +284,8 @@ class HDLoadoutMenu:OptionMenu{
 		int maxwidth=screen.GetWidth()*0.6/(SmallFont.StringWidth("_")*CleanXfac_1);
 		int halfmaxwidth=maxwidth/2;
 		int addarrows=0;
+		int textstart=0;
+		int textend=ws.length();
 		if(ws.length()>maxwidth){
 			int wsl=ws.length();
 			if(
@@ -292,17 +294,21 @@ class HDLoadoutMenu:OptionMenu{
 			){
 				//enough space on both sides of cursor
 				tempcursx=halfmaxwidth;
-				ws=ws.mid(cursx-halfmaxwidth,cursx+halfmaxwidth);
+				ws=ws.mid(cursx-halfmaxwidth,maxwidth);
 				addarrows|=1|2;
+				textstart=cursx-halfmaxwidth;
+				textend=cursx+halfmaxwidth;
 			}else if(cursx<halfmaxwidth){
 				//beginning
 				ws=ws.left(maxwidth);
 				addarrows|=2;
+				textend=maxwidth;
 			}else{
 				//end
 				ws=ws.mid(ws.length()-maxwidth);
 				tempcursx-=workingstring.length()-ws.length();
 				addarrows|=1;
+				textstart=textend-maxwidth;
 			}
 		}
 		int wsline=SmallFont.GetHeight()*CleanYFac_1*14;
