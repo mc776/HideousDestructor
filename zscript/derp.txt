@@ -101,7 +101,7 @@ class DERPBot:HDUPK{
 	vector2 goalpoint;
 	vector2 originalgoalpoint;
 	double angletogoal(){
-		vector3 vecdiff=levellocals.vec3diff(pos,(goalpoint,0));
+		vector2 vecdiff=goalpoint-pos.xy;
 		return atan2(vecdiff.y,vecdiff.x);
 	}
 	void A_DerpCrawl(bool attack=true){
@@ -671,8 +671,7 @@ class DERPController:HDWeapon{
 	states{
 	select:
 		TNT1 A 10{
-			//invoker.
-			weaponstatus[DERPS_TIMER]=3;
+			invoker.weaponstatus[DERPS_TIMER]=3;
 			if(!getcvar("hd_helptext"))return;
 			A_WeaponMessage("\cf/// \cdD.E.R.P. \cf\\\\\\\c-\n\n\nReload cycles through D.E.R.P.s, Zoom modes.\n\nHold Firemode to control.\nFire shoot, Altfire forward, Use backward.",175);
 		}
