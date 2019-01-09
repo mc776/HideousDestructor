@@ -382,6 +382,7 @@ class DERPUsable:HDPickup{
 		TNT1 A 0{
 			A_SetInventory("DERPController",1);
 			findinventory("DERPController").binvbar=true;
+			DERPController(findinventory("DERPController")).updatederps(false);
 			actor a;int b;
 			[b,a]=A_SpawnItemEx("DERPBot",12,0,height-12,
 				cos(pitch)*6,0,-sin(pitch)*6,0,
@@ -626,14 +627,14 @@ class DERPController:HDWeapon{
 		inventory.icon "DERPA5";
 	}
 	array<derpbot> derps;
-	action derpbot UpdateDerps(){
+	action derpbot UpdateDerps(bool resetindex=true){
 		invoker.derps.clear();
 		ThinkerIterator derpfinder=thinkerIterator.Create("DERPBot");
 		derpbot mo;
 		while(mo=DERPBot(derpfinder.Next())){
 			if(mo.master==self)invoker.derps.push(mo);
 		}
-		invoker.weaponstatus[DERPS_INDEX]=0;
+		if(resetindex)invoker.weaponstatus[DERPS_INDEX]=0;
 		if(!invoker.derps.size())return null;
 		derpbot ddd=invoker.derps[0];
 		ddd.oldcmd=ddd.cmd;
@@ -650,24 +651,25 @@ class DERPController:HDWeapon{
 		let derpcam=derps[weaponstatus[DERPS_INDEX]];
 		if(!derpcam)return;
 
+		bool dead=(derpcam.health<1);
 		int scaledyoffset=66;
 		texman.setcameratotexture(derpcam,"HDXHCAM1",60);
 		sb.drawimage(
 			"HDXHCAM1",(0,scaledyoffset)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
-			alpha:1.,scale:(1,1)
+			alpha:dead?frandom[derpyderp](0.1,1.1):1.,scale:(1,1)
 		);
 		sb.drawimage(
 			"tbwindow",(0,scaledyoffset)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
 			scale:(1,1)
 		);
-		sb.drawimage(
+		if(!dead)sb.drawimage(
 			"redpxl",(0,scaledyoffset)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_TOP,
 			alpha:0.4,scale:(2,2)
 		);
-		sb.drawnum(derpcam.ammo,
+		sb.drawnum(dead?random[derpyderp](0,99):derpcam.ammo,
 			24+bob.x,42+bob.y,sb.DI_SCREEN_CENTER,Font.CR_RED,0.4
 		);
-		int cmd=derpcam.oldcmd;
+		int cmd=dead?0:derpcam.oldcmd;
 		sb.drawnum(cmd,
 			24+bob.x,52+bob.y,sb.DI_SCREEN_CENTER,cmd==3?Font.CR_BRICK:cmd==1?Font.CR_GOLD:Font.CR_LIGHTBLUE,0.4
 		);
@@ -705,22 +707,6 @@ class DERPController:HDWeapon{
 				return;
 			}
 			int bt=player.cmd.buttons;
-			if(ddd.health<1){
-				if(
-					(bt&BT_ATTACK)
-					||(bt&BT_ALTATTACK)
-					||(bt&BT_RELOAD)
-					||(bt&BT_ZOOM)
-					||(bt&BT_USER1)
-					||(bt&BT_USER2)
-					||(bt&BT_USER3)
-					||(bt&BT_USER4)
-				){
-					if(ddd=updatederps())A_Log("D.E.R.P. deactivated. Resetting list.",true);
-					else A_Log("No D.E.R.P.s deployed. Abort.",true);
-					setweaponstate("nope");
-				}return;
-			}
 
 
 			if(justpressed(BT_RELOAD)){
@@ -734,6 +720,7 @@ class DERPController:HDWeapon{
 				return;
 			}
 
+			if(ddd.health<1)return;
 
 			int cmd=ddd.oldcmd;
 			bool moved=false;
