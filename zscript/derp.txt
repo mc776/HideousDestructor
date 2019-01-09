@@ -381,6 +381,7 @@ class DERPUsable:HDPickup{
 		TNT1 A 0 A_JumpIf(HDMagAmmo.NothingLoaded(self,"HD9mMag15"),"dontuse");
 		TNT1 A 0{
 			A_SetInventory("DERPController",1);
+			findinventory("DERPController").binvbar=true;
 			actor a;int b;
 			[b,a]=A_SpawnItemEx("DERPBot",12,0,height-12,
 				cos(pitch)*6,0,-sin(pitch)*6,0,
@@ -622,7 +623,7 @@ class DERPController:HDWeapon{
 	default{
 		+inventory.invbar
 		+weapon.wimpy_weapon
-		inventory.icon "DERPA7A3";
+		inventory.icon "DERPA5";
 	}
 	array<derpbot> derps;
 	action derpbot UpdateDerps(){
@@ -680,6 +681,12 @@ class DERPController:HDWeapon{
 		TNT1 A 1{
 			if(!invoker.derps.size()||invoker.weaponstatus[DERPS_INDEX]>=invoker.derps.size()){
 				updatederps();
+				if(!invoker.derps.size()){
+					A_Log("No D.E.R.P.s deployed. Abort.",true);
+					A_SelectWeapon("HDFist");
+					setweaponstate("nope");
+					invoker.binvbar=false;
+				}
 				return;
 			}
 			A_WeaponReady(WRF_NOFIRE);
@@ -690,6 +697,7 @@ class DERPController:HDWeapon{
 					A_Log("No D.E.R.P.s deployed. Abort.",true);
 					A_SelectWeapon("HDFist");
 					setweaponstate("nope");
+					invoker.binvbar=false;
 				}
 				return;
 			}
