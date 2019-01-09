@@ -643,7 +643,10 @@ class DERPController:HDWeapon{
 		HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl,
 		bool sightbob,vector2 bob,double fov,bool scopeview,actor hpc,string whichdot
 	){
-		if(!derps.size())return;
+		if(
+			!scopeview
+			||!derps.size()
+		)return;
 		let derpcam=derps[weaponstatus[DERPS_INDEX]];
 		if(!derpcam)return;
 
