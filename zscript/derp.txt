@@ -776,7 +776,7 @@ class DERPController:HDWeapon{
 				int ptch=player.cmd.pitch>>6;
 				if(yaw||ptch){
 					ddd.A_PlaySound("derp/crawl",CHAN_BODY);
-					ddd.pitch-=clamp(ptch,-10,10);
+					ddd.pitch=clamp(ddd.pitch-clamp(ptch,-10,10),-90,60);
 					ddd.angle+=clamp(yaw,-DERP_MAXTICTURN,DERP_MAXTICTURN);
 					ddd.goalangle=999;
 					ddd.movestamina=1001;
