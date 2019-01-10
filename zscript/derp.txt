@@ -297,6 +297,7 @@ class DERPBot:HDUPK{
 	ready:
 		DERP A 0 A_PlaySound("derp/crawl",CHAN_BODY,0.6);
 		DERP AAA 1 A_FaceTarget(20,20,0,0,FAF_TOP,-4);
+		DERP A 0 A_JumpIf(cmd==DERP_AMBUSH,"spawn");
 		DERP A 0 A_JumpIfTargetInLOS(1,1);
 		loop;
 	aim:
@@ -756,8 +757,11 @@ class DERPController:HDWeapon{
 						ddd.A_PlaySound("derp/crawl",CHAN_BODY);
 						vector2 nv2=(cos(ddd.angle),sin(ddd.angle))*ddd.speed;
 						if(bt&BT_USE)nv2*=-1;
-						if(ddd.floorz>=ddd.pos.z)ddd.TryMove(ddd.pos.xy+nv2,true);
-						moved=true;
+						if(ddd.floorz>=ddd.pos.z){
+							ddd.bnodropoff=false;
+							ddd.TryMove(ddd.pos.xy+nv2,true);
+							ddd.bnodropoff=true;
+						}moved=true;
 					}
 				}
 				int yaw=player.cmd.yaw>>6;
