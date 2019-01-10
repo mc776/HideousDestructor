@@ -382,9 +382,7 @@ class DERPUsable:HDPickup{
 	use:
 		TNT1 A 0 A_JumpIf(HDMagAmmo.NothingLoaded(self,"HD9mMag15"),"dontuse");
 		TNT1 A 0{
-			A_SetInventory("DERPController",1);
-			findinventory("DERPController").binvbar=true;
-			DERPController(findinventory("DERPController")).updatederps(false);
+			DERPController.GiveController(self);
 			actor a;int b;
 			[b,a]=A_SpawnItemEx("DERPBot",12,0,height-12,
 				cos(pitch)*6,0,-sin(pitch)*6,0,
@@ -513,6 +511,7 @@ extend class HDHandlers{
 					ddd.stucktier=0;
 				}
 			}
+			DERPController.GiveController(ppp);
 			return;
 		}
 		actoriterator it=actoriterator.create(DERP_TID,"DERPBot");
@@ -642,6 +641,11 @@ class DERPController:HDWeapon{
 		ddd.oldcmd=ddd.cmd;
 		return ddd;
 	}
+	static void GiveController(actor caller){
+		caller.A_SetInventory("DERPController",1);
+		caller.findinventory("DERPController").binvbar=true;
+		DERPController(caller.findinventory("DERPController")).updatederps(false);
+	}
 	override void DrawSightPicture(
 		HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl,
 		bool sightbob,vector2 bob,double fov,bool scopeview,actor hpc,string whichdot
@@ -668,7 +672,7 @@ class DERPController:HDWeapon{
 			"redpxl",(0,scaledyoffset)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_TOP,
 			alpha:0.4,scale:(2,2)
 		);
-		sb.drawnum(dead?random[derpyderp](0,99):derpcam.ammo,
+		sb.drawnum(dead?0:max(0,derpcam.ammo),
 			24+bob.x,42+bob.y,sb.DI_SCREEN_CENTER,Font.CR_RED,0.4
 		);
 		int cmd=dead?0:derpcam.oldcmd;
