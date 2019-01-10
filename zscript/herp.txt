@@ -841,7 +841,7 @@ class HERPController:HDWeapon{
 		TNT1 A 10{
 			invoker.weaponstatus[HERPS_TIMER]=3;
 			if(!getcvar("hd_helptext"))return;
-			A_WeaponMessage("\cf/// \cdH.E.R.P. \cf\\\\\\\c-\n\n\nReload cycles through H.E.R.P.s, Zoom modes.\n\nHold Firemode to control.\nFire shoot, Altfire forward, Use backward.",175);
+			A_WeaponMessage("\cf/// \cdH.E.R.P. \cf\\\\\\\c-\n\n\nReload cycles through H.E.R.P.s, Alt Reload modes.\n\nHold Firemode to control.\nFire shoot, Altfire forward, Use backward.",175);
 		}
 		goto super::select;
 	ready:
@@ -887,7 +887,7 @@ class HERPController:HDWeapon{
 			int cmd=ddd.oldcmd;
 			bool moved=false;
 
-			if(justpressed(BT_ZOOM)){
+			if(justpressed(BT_ALTRELOAD)){
 				cmd++;
 				if(cmd>3)cmd=1;
 				if(cmd==HERP_AMBUSH)A_Log("Ambush mode.",true);
