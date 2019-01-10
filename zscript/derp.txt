@@ -625,6 +625,7 @@ class DERPController:HDWeapon{
 	default{
 		+inventory.invbar
 		+weapon.wimpy_weapon
+		+inventory.untossable
 		inventory.icon "DERPA5";
 	}
 	array<derpbot> derps;
@@ -659,7 +660,7 @@ class DERPController:HDWeapon{
 
 		bool dead=(derpcam.health<1);
 		int scaledyoffset=66;
-		texman.setcameratotexture(derpcam,"HDXHCAM1",60);
+		texman.setcameratotexture(dead?null:derpcam,"HDXHCAM1",60);
 		sb.drawimage(
 			"HDXHCAM1",(0,scaledyoffset)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
 			alpha:dead?frandom[derpyderp](0.1,1.1):1.,scale:(1,1)

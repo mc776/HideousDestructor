@@ -780,6 +780,7 @@ class HERPController:HDWeapon{
 	default{
 		+inventory.invbar
 		+weapon.wimpy_weapon
+		+inventory.untossable
 		inventory.icon "HERPA5";
 	}
 	array<herpbot> herps;
@@ -795,6 +796,11 @@ class HERPController:HDWeapon{
 		herpbot ddd=invoker.herps[0];
 		ddd.oldcmd=ddd.cmd;
 		return ddd;
+	}
+	static void GiveController(actor caller){
+		caller.A_SetInventory("HERPController",1);
+		caller.findinventory("HERPController").binvbar=true;
+		HERPController(caller.findinventory("HERPController")).updateherps(false);
 	}
 	override void DrawSightPicture(
 		HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl,
