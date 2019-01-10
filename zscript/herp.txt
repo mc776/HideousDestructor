@@ -95,6 +95,14 @@ class HERPBot:HDUPK{
 		HERPLeg(lll).relpos=lll.pos-pos;
 		lll.pitch=-60;
 	}
+	void herpbeep(string snd="herp/beep",double vol=1.){
+		A_PlaySound(snd,CHAN_VOICE);
+		if(
+			master
+			&&master.player
+//			&&master.player.readyweapon is "HERPController"
+		)master.A_PlaySound(snd,CHAN_WEAPON,0.4);
+	}
 	void message(string msg){
 		if(!master)return;
 		master.A_Log(string.format("\cd[HERP]\cj  %s",msg),true);
@@ -181,11 +189,11 @@ class HERPBot:HDUPK{
 		HERP A 2 scanturn();
 		wait;
 	postbeep:
-		HERP A 6 A_PlaySound("herp/beep");
+		HERP A 6 herpbeep("herp/beep");
 		goto idle;
 	ready:
 		HERP A 7 A_PlaySound("weapons/vulcanup",CHAN_BODY);
-		HERP AAA 1 A_PlaySound("herp/beepready",CHAN_VOICE);
+		HERP AAA 1 herpbeep("herp/beepready");
 	aim:
 		HERP A 2 A_FaceTarget(2.,2.,0,0,FAF_TOP,-4);
 	shoot:
@@ -763,3 +771,179 @@ extend class HDHandlers{
 }
 
 
+
+
+
+/*
+
+class HERPController:HDWeapon{
+	default{
+		+inventory.invbar
+		+weapon.wimpy_weapon
+		inventory.icon "HERPA5";
+	}
+	array<herpbot> herps;
+	action herpbot UpdateHerps(bool resetindex=true){
+		invoker.herps.clear();
+		ThinkerIterator herpfinder=thinkerIterator.Create("HERPBot");
+		herpbot mo;
+		while(mo=HERPBot(herpfinder.Next())){
+			if(mo.master==self)invoker.herps.push(mo);
+		}
+		if(resetindex)invoker.weaponstatus[HERPS_INDEX]=0;
+		if(!invoker.herps.size())return null;
+		herpbot ddd=invoker.herps[0];
+		ddd.oldcmd=ddd.cmd;
+		return ddd;
+	}
+	override void DrawSightPicture(
+		HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl,
+		bool sightbob,vector2 bob,double fov,bool scopeview,actor hpc,string whichdot
+	){
+		if(
+			!scopeview
+			||!herps.size()
+		)return;
+		let herpcam=herps[weaponstatus[HERPS_INDEX]];
+		if(!herpcam)return;
+
+		bool dead=(herpcam.health<1);
+		int scaledyoffset=66;
+		texman.setcameratotexture(herpcam,"HDXHCAM1",60);
+		sb.drawimage(
+			"HDXHCAM3",(0,scaledyoffset)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
+			alpha:dead?frandom[herpyherp](0.1,1.1):1.,scale:(1,1)
+		);
+		sb.drawimage(
+			"tbwindow",(0,scaledyoffset)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
+			scale:(1,1)
+		);
+		if(!dead)sb.drawimage(
+			"redpxl",(0,scaledyoffset)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_TOP,
+			alpha:0.4,scale:(2,2)
+		);
+		sb.drawnum(dead?random[herpyherp](0,99):herpcam.ammo,
+			24+bob.x,42+bob.y,sb.DI_SCREEN_CENTER,Font.CR_RED,0.4
+		);
+		int cmd=dead?0:herpcam.oldcmd;
+		sb.drawnum(cmd,
+			24+bob.x,52+bob.y,sb.DI_SCREEN_CENTER,cmd==3?Font.CR_BRICK:cmd==1?Font.CR_GOLD:Font.CR_LIGHTBLUE,0.4
+		);
+	}
+	states{
+	select:
+		TNT1 A 10{
+			invoker.weaponstatus[HERPS_TIMER]=3;
+			if(!getcvar("hd_helptext"))return;
+			A_WeaponMessage("\cf/// \cdH.E.R.P. \cf\\\\\\\c-\n\n\nReload cycles through H.E.R.P.s, Zoom modes.\n\nHold Firemode to control.\nFire shoot, Altfire forward, Use backward.",175);
+		}
+		goto super::select;
+	ready:
+		TNT1 A 1{
+			if(!invoker.herps.size()||invoker.weaponstatus[HERPS_INDEX]>=invoker.herps.size()){
+				updateherps();
+				if(!invoker.herps.size()){
+					A_Log("No H.E.R.P.s deployed. Abort.",true);
+					A_SelectWeapon("HDFist");
+					setweaponstate("nope");
+					invoker.binvbar=false;
+				}
+				return;
+			}
+			A_WeaponReady(WRF_NOFIRE);
+			herpbot ddd=invoker.herps[invoker.weaponstatus[HERPS_INDEX]];
+			if(!ddd){
+				if(ddd=updateherps())A_Log("H.E.R.P. not found. Resetting list.",true);
+				else{
+					A_Log("No H.E.R.P.s deployed. Abort.",true);
+					A_SelectWeapon("HDFist");
+					setweaponstate("nope");
+					invoker.binvbar=false;
+				}
+				return;
+			}
+			int bt=player.cmd.buttons;
+
+
+			if(justpressed(BT_RELOAD)){
+				int newindex=invoker.weaponstatus[HERPS_INDEX];
+				newindex++;
+				if(newindex>=invoker.herps.size())newindex=0;
+				if(invoker.weaponstatus[HERPS_INDEX]!=newindex){
+					A_Log("Switching to next H.E.R.P. in the list.",true);
+					invoker.weaponstatus[HERPS_INDEX]=newindex;
+				}
+				return;
+			}
+
+			if(ddd.health<1)return;
+
+			int cmd=ddd.oldcmd;
+			bool moved=false;
+
+			if(justpressed(BT_ZOOM)){
+				cmd++;
+				if(cmd>3)cmd=1;
+				if(cmd==HERP_AMBUSH)A_Log("Ambush mode.",true);
+				else if(cmd==HERP_TURRET)A_Log("Turret mode.",true);
+				else if(cmd==HERP_PATROL)A_Log("Patrol mode.",true);
+			}
+
+			ddd.oldcmd=cmd;
+			if(bt&BT_FIREMODE){
+				ddd.cmd=HERP_AMBUSH;
+				if(!invoker.weaponstatus[HERPS_TIMER]){
+					if(
+						justpressed(BT_ATTACK)
+					){
+						invoker.weaponstatus[HERPS_TIMER]+=4;
+						if(ddd.ammo>0)ddd.setstatelabel("noreallyfire");
+						else ddd.setstatelabel("noammo");
+						return;
+					}else if(
+						(
+							(bt&BT_ALTATTACK)
+							||(bt&BT_USE)
+						)
+						&&!invoker.weaponstatus[HERPS_TIMER]
+					){
+						invoker.weaponstatus[HERPS_TIMER]+=2;
+						ddd.A_PlaySound("derp/crawl",CHAN_BODY);
+						vector2 nv2=(cos(ddd.angle),sin(ddd.angle))*ddd.speed;
+						if(bt&BT_USE)nv2*=-1;
+						if(ddd.floorz>=ddd.pos.z)ddd.TryMove(ddd.pos.xy+nv2,true);
+						moved=true;
+					}
+				}
+				int yaw=player.cmd.yaw>>6;
+				int ptch=player.cmd.pitch>>6;
+				if(yaw||ptch){
+					ddd.A_PlaySound("derp/crawl",CHAN_BODY);
+					ddd.pitch=clamp(ddd.pitch-clamp(ptch,-10,10),-90,60);
+					ddd.angle+=clamp(yaw,-HERP_MAXTICTURN,HERP_MAXTICTURN);
+					ddd.goalangle=999;
+					ddd.movestamina=1001;
+					if(yaw)moved=true;
+				}
+				hijackmouse();
+			}else ddd.cmd=cmd;
+
+			if(moved&&!!ddd.stuckline){
+				ddd.setstatelabel("unstuck");
+			}
+
+			if(invoker.weaponstatus[HERPS_TIMER]>0)invoker.weaponstatus[HERPS_TIMER]--;
+		}goto readyend;
+	spawn:
+		TNT1 A 0;
+		stop;
+	}
+}
+enum HERPControllerNums{
+	HERPS_INDEX=1,
+	HERPS_AMMO=2,
+	HERPS_MODE=3,
+	HERPS_TIMER=4,
+}
+
+*/
