@@ -625,7 +625,6 @@ class DERPController:HDWeapon{
 	default{
 		+inventory.invbar
 		+weapon.wimpy_weapon
-		+inventory.untossable
 		inventory.icon "DERPA5";
 	}
 	array<derpbot> derps;
@@ -646,6 +645,28 @@ class DERPController:HDWeapon{
 		caller.A_SetInventory("DERPController",1);
 		caller.findinventory("DERPController").binvbar=true;
 		DERPController(caller.findinventory("DERPController")).updatederps(false);
+	}
+	int NextDerp(){
+		int newindex=weaponstatus[DERPS_INDEX]+1;
+		if(newindex>=derps.size())newindex=0;
+		if(weaponstatus[DERPS_INDEX]!=newindex){
+			owner.A_Log("Switching to next D.E.R.P. in the list.",true);
+			weaponstatus[DERPS_INDEX]=newindex;
+		}
+		return newindex;
+	}
+	action void Abort(){
+		A_Log("No D.E.R.P.s deployed. Abort.",true);
+		A_SelectWeapon("HDFist");
+		setweaponstate("nope");
+		dropinventory(invoker);
+	}
+	override inventory CreateTossable(int amount){
+		if(
+			(derps.size()&&derps[NextDerp()])
+			||updatederps()
+		)return null;
+		return weapon.createtossable(amount);
 	}
 	override void DrawSightPicture(
 		HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl,
@@ -686,7 +707,7 @@ class DERPController:HDWeapon{
 		TNT1 A 10{
 			invoker.weaponstatus[DERPS_TIMER]=3;
 			if(!getcvar("hd_helptext"))return;
-			A_WeaponMessage("\cf/// \cdD.E.R.P. \cf\\\\\\\c-\n\n\nReload cycles through D.E.R.P.s, Alt Reload modes.\n\nHold Firemode to control.\nFire shoot, Altfire forward, Use backward.",175);
+			A_WeaponMessage("\cf/// \cdD.E.R.P. \cf\\\\\\\c-\n\n\nDrop cycles through D.E.R.P.s, Reload modes.\n\nHold Firemode to control.\nFire shoot, Altfire forward, Use backward.",175);
 		}
 		goto super::select;
 	ready:
@@ -694,45 +715,30 @@ class DERPController:HDWeapon{
 			if(!invoker.derps.size()||invoker.weaponstatus[DERPS_INDEX]>=invoker.derps.size()){
 				updatederps();
 				if(!invoker.derps.size()){
-					A_Log("No D.E.R.P.s deployed. Abort.",true);
-					A_SelectWeapon("HDFist");
-					setweaponstate("nope");
-					invoker.binvbar=false;
+					Abort();
 				}
 				return;
 			}
-			A_WeaponReady(WRF_NOFIRE);
+			A_WeaponReady(WRF_NOFIRE|WRF_ALLOWUSER3);
 			derpbot ddd=invoker.derps[invoker.weaponstatus[DERPS_INDEX]];
 			if(!ddd){
 				if(ddd=updatederps())A_Log("D.E.R.P. not found. Resetting list.",true);
 				else{
-					A_Log("No D.E.R.P.s deployed. Abort.",true);
-					A_SelectWeapon("HDFist");
-					setweaponstate("nope");
-					invoker.binvbar=false;
+					Abort();
 				}
 				return;
 			}
 			int bt=player.cmd.buttons;
-
-
-			if(justpressed(BT_RELOAD)){
-				int newindex=invoker.weaponstatus[DERPS_INDEX];
-				newindex++;
-				if(newindex>=invoker.derps.size())newindex=0;
-				if(invoker.weaponstatus[DERPS_INDEX]!=newindex){
-					A_Log("Switching to next D.E.R.P. in the list.",true);
-					invoker.weaponstatus[DERPS_INDEX]=newindex;
-				}
-				return;
-			}
 
 			if(ddd.health<1)return;
 
 			int cmd=ddd.oldcmd;
 			bool moved=false;
 
-			if(justpressed(BT_ALTRELOAD)){
+			if(justpressed(BT_UNLOAD)){
+				cmd=2;
+				A_Log("Ambush mode.",true);
+			}else if(justpressed(BT_RELOAD)){
 				cmd++;
 				if(cmd>3)cmd=1;
 				if(cmd==DERP_AMBUSH)A_Log("Ambush mode.",true);
@@ -786,8 +792,12 @@ class DERPController:HDWeapon{
 				ddd.setstatelabel("unstuck");
 			}
 
+			if(!invoker.weaponbusy&&hdplayerpawn(self))hdplayerpawn(self).nocrosshair=0;
 			if(invoker.weaponstatus[DERPS_TIMER]>0)invoker.weaponstatus[DERPS_TIMER]--;
 		}goto readyend;
+	user3:
+		---- A 0 A_MagManager("HD9mMag15");
+		goto ready;
 	spawn:
 		TNT1 A 0;
 		stop;
