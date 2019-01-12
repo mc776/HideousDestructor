@@ -67,6 +67,7 @@ class DERPBot:HDUPK{
 		}
 		actor b=spawn("HDBullet9",pos+(0,0,2),ALLOW_REPLACE);
 		b.pitch=pitch;b.angle=angle;b.target=self;b.vel+=vel;
+		pitch+=frandom(-1.,1.);angle+=frandom(-1.,1.);
 	}
 	void A_DerpAttack(){
 		if(DerpTargetCheck(false))DerpShot();
@@ -628,6 +629,7 @@ class DERPController:HDWeapon{
 		+inventory.invbar
 		+weapon.wimpy_weapon
 		inventory.icon "DERPA5";
+		weapon.selectionorder 1012;
 	}
 	array<derpbot> derps;
 	action derpbot A_UpdateDerps(bool resetindex=true){
@@ -690,10 +692,10 @@ class DERPController:HDWeapon{
 
 		bool dead=(derpcam.health<1);
 		int scaledyoffset=66;
-		texman.setcameratotexture(dead?null:derpcam,"HDXHCAM1",60);
+		texman.setcameratotexture(derpcam,"HDXHCAM1",60);
 		sb.drawimage(
 			"HDXHCAM1",(0,scaledyoffset)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
-			alpha:dead?frandom[derpyderp](0.1,1.1):1.,scale:(1,1)
+			alpha:dead?frandom[derpyderp](0.6,0.9):1.,scale:(1,1)
 		);
 		sb.drawimage(
 			"tbwindow",(0,scaledyoffset)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
