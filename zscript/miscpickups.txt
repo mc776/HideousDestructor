@@ -771,6 +771,7 @@ class HDRedSkull:HDUPK replaces RedSkull{
 	}
 	override void ongrab(actor grabber){
 		target=grabber;
+		grabber.A_GiveInventory(missilename);
 		setstatelabel("effect");
 	}
 	states{
