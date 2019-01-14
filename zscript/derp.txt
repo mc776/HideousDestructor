@@ -770,7 +770,8 @@ class DERPController:HDWeapon{
 						return;
 					}else if(
 						(
-							(bt&BT_ALTATTACK)
+							player.cmd.forwardmove
+							||(bt&BT_ALTATTACK)
 							||(bt&BT_USE)
 						)
 						&&!invoker.weaponstatus[DERPS_TIMER]
@@ -778,7 +779,7 @@ class DERPController:HDWeapon{
 						invoker.weaponstatus[DERPS_TIMER]+=2;
 						ddd.A_PlaySound("derp/crawl",CHAN_BODY);
 						vector2 nv2=(cos(ddd.angle),sin(ddd.angle))*ddd.speed;
-						if(bt&BT_USE)nv2*=-1;
+						if(bt&BT_USE||player.cmd.forwardmove<0)nv2*=-1;
 						if(ddd.floorz>=ddd.pos.z){
 							ddd.bnodropoff=false;
 							ddd.TryMove(ddd.pos.xy+nv2,true);
@@ -796,7 +797,13 @@ class DERPController:HDWeapon{
 					ddd.movestamina=1001;
 					if(yaw)moved=true;
 				}
+				if(player.cmd.sidemove){
+					ddd.A_PlaySound("derp/crawl",CHAN_BODY);
+					ddd.angle+=player.cmd.sidemove<0?10:-10;
+					player.cmd.sidemove*=-1;
+				}
 				hijackmouse();
+				hijackmove();
 			}else ddd.cmd=cmd;
 
 			if(moved&&!!ddd.stuckline){

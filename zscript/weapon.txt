@@ -127,6 +127,7 @@ class HDWeapon:Weapon{
 		let p=HDPlayerPawn(self);
 		if(!p)return;
 		p.mousehijacked=false;
+		p.movehijacked=false;
 		if(
 			player&&
 			p&&!p.beatcount&&p.zerk>900
@@ -144,6 +145,12 @@ class HDWeapon:Weapon{
 	action void HijackMouse(){
 		let ppp=hdplayerpawn(self);if(ppp)ppp.mousehijacked=true;
 		else player.cmd.pitch=0;player.cmd.yaw=0;
+	}
+
+	//stops turning input
+	action void HijackMove(){
+		let ppp=hdplayerpawn(self);if(ppp)ppp.movehijacked=true;
+		else player.cmd.forwardmove=0;player.cmd.sidemove=0;
 	}
 
 	//for throwing a weapon
