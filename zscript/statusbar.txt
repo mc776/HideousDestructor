@@ -561,7 +561,7 @@ class HDStatusBar:DoomStatusBar{
 		int i=0;
 		int thisindex=-1;
 		inventory item;
-		array<inventory> items;
+		array<inventory> items;items.clear();
 		for(item=cplayer.mo.inv;item!=NULL;item=item.inv){
 			if(!item||!item.binvbar)continue;
 			items.push(item);
