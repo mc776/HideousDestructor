@@ -96,16 +96,20 @@ extend class HDPlayerPawn{
 		//set amount by which the player may lean
 		double leanamt=leaned?(5./(3.+checkencumbrance())):0;
 
-		int leanmove=cmdleanmove;
+		int leanmove=0;
 		if(
-			leanmove==999
+			cmdleanmove&HDCMD_STRAFE
 			||(
 				cmd.buttons&BT_ZOOM
 				&&!cvar.getcvar("hd_nozoomlean",player).getbool()
 			)
 		){
-			leanmove=cmd.sidemove;
+			if(cmd.sidemove<0&&leaned<=0)leanmove--;
+			if(cmd.sidemove>0&&leaned>=0)leanmove++;
 			cmd.sidemove=0;
+		}else{
+			if(cmdleanmove&HDCMD_LEFT&&leaned<=0)leanmove--;
+			if(cmdleanmove&HDCMD_RIGHT&&leaned>=0)leanmove++;
 		}
 
 		//HD's handling of voluntary player turning.
@@ -281,17 +285,25 @@ extend class HDPlayerPawn{
 extend class HDHandlers{
 	void Lean(hdplayerpawn ppp,int dir){
 		if(!ppp.player)return;
-		int cmdleanmove;
-		if(!dir){
-			cmdleanmove=0;
-		}else if(dir==999){
-			cmdleanmove=999;
-		}else{
-			cmdleanmove=clamp(dir,-1,1);
-		}
+		int cmdleanmove=ppp.cmdleanmove;
+		if(dir==999){
+			cmdleanmove|=HDCMD_STRAFE;
+		}else if(dir==99){
+			cmdleanmove&=~HDCMD_RIGHT;
+		}else if(dir==-99){
+			cmdleanmove&=~HDCMD_LEFT;
+		}else if(dir==1){
+			cmdleanmove|=HDCMD_RIGHT;
+		}else if(dir==-1){
+			cmdleanmove|=HDCMD_LEFT;
+		}else cmdleanmove=0;
 		ppp.cmdleanmove=cmdleanmove;
 	}
 }
-
+enum leanmovecmd{
+	HDCMD_STRAFE=1,
+	HDCMD_LEFT=2,
+	HDCMD_RIGHT=4,
+}
 
 
