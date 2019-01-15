@@ -203,6 +203,7 @@ OptionMenu "HDOptionsMenu"{
 	Slider "HUD use key delay","hd_hudusedelay",-2,70,1,0
 	Option "Use key doubles as focus key","hd_usefocus","YesNo"
 	Slider "Focus key aiming sensitivity","hd_aimsensitivity",0.05,0.99,0.05,2
+	Option "Don't hold Zoom to lean","hd_nozoomlean","YesNo"
 	Option "Auto-strip for medikit","hd_autostrip","YesNo"
 	Option "No crouch-strafe slide","hd_noslide","YesNo"
 	SafeCommand "Reset User Settings","hd_clearucv","Really clear all user settings?"
@@ -279,6 +280,9 @@ OptionMenu "HDControlsMenu"{
 	Control "Drop one ammo","hd_dropone"
 	Control "Drop useless ammo","hd_purge"
 	Control "Toggle crouch-slide","hd_slideoff"
+	Control "Lean Left","+hd_leanleft"
+	Control "Lean Right","+hd_leanright"
+	Control "Lean (use strafe keys)","+hd_lean"
 	Control "Set team spawn here","teamspawn 666"
 	Control "Clear team spawn","teamspawn -1"
 	Control "Query all team positions","checkin"

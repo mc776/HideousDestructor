@@ -95,7 +95,18 @@ extend class HDPlayerPawn{
 
 		//set amount by which the player may lean
 		double leanamt=leaned?(5./(3.+checkencumbrance())):0;
-		if(leaned<0)leanamt=-leanamt;
+
+		int leanmove=cmdleanmove;
+		if(
+			leanmove==999
+			||(
+				cmd.buttons&BT_ZOOM
+				&&!cvar.getcvar("hd_nozoomlean",player).getbool()
+			)
+		){
+			leanmove=cmd.sidemove;
+			cmd.sidemove=0;
+		}
 
 		//HD's handling of voluntary player turning.
 		//Uses the fovscale method so a readyweapon is essential.
@@ -158,7 +169,7 @@ extend class HDPlayerPawn{
 		// ice, because the player still "works just as hard" to move, while the
 		// thrust applied to the movement varies with 'movefactor'.
 
-		if(!movehijacked&&(cmd.forwardmove||cmd.sidemove)){
+		if(!movehijacked&&(cmd.forwardmove||cmd.sidemove||leanmove)){
 			double forwardmove=0;double sidemove=0;
 			double bobfactor=0;
 			double friction=0;double movefactor=0;
@@ -215,21 +226,19 @@ extend class HDPlayerPawn{
 			}
 			if(sidemove){
 				let a = Angle - 90;
-				if(
-					player.cmd.buttons&BT_ZOOM
-				){
-					sidemove=0;
-					leaned=clamp((sm>0)?leaned+1:leaned-1,-8,8);
-					if(abs(leaned)<8){
-						TryMove(
-							pos.xy+(cos(a),sin(a))*leanamt,
-							false
-						);
-					}
-				}else{
-					Bob(a, cmd.sidemove * bobfactor / 256., false);
-					Thrust(sidemove, a);
-					if(leaned>0)leaned--;if(leaned<0)leaned++;
+				Bob(a, cmd.sidemove * bobfactor / 256., false);
+				Thrust(sidemove, a);
+			}
+			if(leanmove){
+				let a = Angle - 90;
+				bool poscmd=leanmove>0;
+				leaned=clamp(poscmd?leaned+1:leaned-1,-8,8);
+				if(!poscmd)leanamt=-leanamt;
+				if(abs(leaned)<8){
+					TryMove(
+						pos.xy+(cos(a),sin(a))*leanamt,
+						false
+					);
 				}
 			}
 
@@ -247,15 +256,42 @@ extend class HDPlayerPawn{
 		}
 
 		//undo leaning
-		if(!cmd.sidemove&&leaned){
+		if(!cmd.sidemove&&!leanmove&&leaned){
 			let a=angle+90;
+			if(leaned>0)leaned--;
+			else if(leaned<0){
+				leaned++;
+				leanamt=-leanamt;
+			}
 			TryMove(
 				pos.xy+(cos(a),sin(a))*leanamt,
 				false
 			);
-			if(leaned>0)leaned--;if(leaned<0)leaned++;
 		}
 		A_SetRoll((leaned>0?leaned:-leaned)*leanamt,SPF_INTERPOLATE);
 	}
 	int leaned;
+	int cmdleanmove;
 }
+
+
+
+
+//handler for receiving direct button lean input
+extend class HDHandlers{
+	void Lean(hdplayerpawn ppp,int dir){
+		if(!ppp.player)return;
+		int cmdleanmove;
+		if(!dir){
+			cmdleanmove=0;
+		}else if(dir==999){
+			cmdleanmove=999;
+		}else{
+			cmdleanmove=clamp(dir,-1,1);
+		}
+		ppp.cmdleanmove=cmdleanmove;
+	}
+}
+
+
+

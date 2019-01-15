@@ -6,8 +6,12 @@ addmenukey "Mag Manager" +user3
 addmenukey "Unload Weapon" +user4
 addmenukey "Purge Weaponless Ammo" hd_purge
 addmenukey "Drop One Ammo Unit" hd_dropone
-addmenukey "Strip Armour" hd_strip
 addmenukey "Taunt" hd_taunt
+addmenukey "Lean Left" +hd_leanleft
+addmenukey "Lean Right" +hd_leanright
+addmenukey "Lean (use strafe keys)" +hd_lean
+
+addmenukey "Strip Armour" hd_strip
 addmenukey "Query all marines" checkin
 addmenukey "Rangefinder" hd_findrange
 addmenukey "Use Pistol" hd_pistol
@@ -50,6 +54,13 @@ alias -hd_unload -user4;
 alias hd_slideon "hd_noslide false;rebind hd_slideoff;"
 alias hd_slideoff "hd_noslide true;rebind hd_slideon;"
 
+alias +hd_leanleft "netevent hd_lean -1;"
+alias +hd_leanright "netevent hd_lean 1;"
+alias +hd_lean "netevent hd_lean 999;"
+alias -hd_lean "netevent hd_lean 0;"
+alias -hd_leanleft -hd_lean;
+alias -hd_leanright -hd_lean;
+
 alias hd_doomguy "give DoomGuyLoadout";
 alias hd_strip "use HDArmour;drop HDArmourWorn";
 alias hd_purge "netevent hd_purge";
@@ -67,7 +78,7 @@ alias hd_band "use SelfBandage";
 
 alias hd_clearscv "hd_forceloadout none;hd_nobots 0;hd_onemanarmy 1;hd_killerbarrels 5;hd_safelifts true;hd_dirtywindows true;hd_nodoorbuster false;hd_novilespam true;hd_dropeverythingondeath false;hd_lowdamage 0;hd_nobleed 0;hd_3speed 0;echo Hideous Destructor Server CVars reset"
 
-alias hd_clearucv "hd_mugshot -1;hd_helptext 2;hd_noscope 0;hd_xhscale 1.0;hd_sightbob true;hd_hudsprite 0;hd_hudusedelay 12;hd_aimsensitivity 3;hd_usefocus true;hd_autostrip 0;hd_noslide false;hd_crosshair 0;echo Hideous Destructor User CVars reset"
+alias hd_clearucv "hd_mugshot -1;hd_helptext 2;hd_noscope 0;hd_xhscale 1.0;hd_sightbob true;hd_hudsprite 0;hd_hudusedelay 12;hd_aimsensitivity 3;hd_usefocus true;hd_nozoomlean false;hd_autostrip 0;hd_noslide false;hd_crosshair 0;echo Hideous Destructor User CVars reset"
 
 alias hd_clearwepcv "hd_derpmode 3;hd_nv 7;hd_pistauto false;hd_smgfiremode 0;hd_huntauto 0;hd_huntfullauto false;hd_zmfiremode 0;hd_zmzoom 14;hd_vulcsuper 0;hd_vulczoom 0;hd_rlmode 1;hd_rlzoom 0;hd_libauto 0;hd_libzoom 16;hd_libmoa 150;hd_libfrontreticle false;hd_libaltreticle false;hd_tbmode 0;hd_brontozoom 0;hd_bossmoa 100;hd_bosszoom 20;hd_bossfrontreticle false;hd_bosscustomchamber false;echo Hideous Destructor Weapon CVars reset"
 
