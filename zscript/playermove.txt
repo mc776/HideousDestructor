@@ -93,24 +93,38 @@ extend class HDPlayerPawn{
 			lastangle=angle;
 		}
 
-		//set amount by which the player may lean
-		double leanamt=leaned?(5./(3.+checkencumbrance())):0;
 
+		//set up leaning
+		double leanamt=leaned?(10./(3+checkencumbrance())):0;
 		int leanmove=0;
 		if(
-			cmdleanmove&HDCMD_STRAFE
-			||(
-				cmd.buttons&BT_ZOOM
-				&&!cvar.getcvar("hd_nozoomlean",player).getbool()
+			cmdleanmove&HDCMD_LEFT
+			&&(
+				leaned<=0
+				||cmdleanmove&HDCMD_RIGHT
+			)
+		)leanmove--;
+		if(
+			cmdleanmove&HDCMD_RIGHT
+			&&(
+				leaned>=0
+				||cmdleanmove&HDCMD_LEFT
+			)
+		)leanmove++;
+		if(
+			!leanmove&&(
+				cmdleanmove&HDCMD_STRAFE
+				||(
+					cmd.buttons&BT_ZOOM
+					&&!cvar.getcvar("hd_nozoomlean",player).getbool()
+				)
 			)
 		){
 			if(cmd.sidemove<0&&leaned<=0)leanmove--;
 			if(cmd.sidemove>0&&leaned>=0)leanmove++;
 			cmd.sidemove=0;
-		}else{
-			if(cmdleanmove&HDCMD_LEFT&&leaned<=0)leanmove--;
-			if(cmdleanmove&HDCMD_RIGHT&&leaned>=0)leanmove++;
 		}
+
 
 		//HD's handling of voluntary player turning.
 		//Uses the fovscale method so a readyweapon is essential.
@@ -260,7 +274,7 @@ extend class HDPlayerPawn{
 		}
 
 		//undo leaning
-		if(!cmd.sidemove&&!leanmove&&leaned){
+		if(!leanmove&&leaned){
 			let a=angle+90;
 			if(leaned>0)leaned--;
 			else if(leaned<0){
