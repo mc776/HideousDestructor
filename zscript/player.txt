@@ -439,7 +439,7 @@ class HDPlayerPawn:PlayerPawn{
 		//apply all movement speed modifiers
 		speed=1.-overloaded*0.02;
 		//walk
-		if(mustwalk||runwalksprint<0)speed=0.36;
+		if(mustwalk||leaned||runwalksprint<0)speed=0.36;
 		else if(cansprint && runwalksprint>0){
 			//sprint
 			bool lowspeed=skill>=5;
