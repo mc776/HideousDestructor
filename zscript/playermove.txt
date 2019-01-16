@@ -247,7 +247,7 @@ extend class HDPlayerPawn{
 				Bob(a, cmd.sidemove * bobfactor / 256., false);
 				Thrust(sidemove, a);
 			}
-			if(leanmove){
+			if(leanmove&&notpredicting){
 				bool poscmd=leanmove>0;
 				bool zrk=zerk>0;
 				if(zrk&&!random(0,63)){
@@ -284,19 +284,21 @@ extend class HDPlayerPawn{
 		}
 
 		//undo leaning
-		if(!leanmove&&leaned){
-			let a=angle+90;
-			if(leaned>0)leaned--;
-			else if(leaned<0){
-				leaned++;
-				leanamt=-leanamt;
+		if(notpredicting){
+			if(!leanmove&&leaned){
+				let a=angle+90;
+				if(leaned>0)leaned--;
+				else if(leaned<0){
+					leaned++;
+					leanamt=-leanamt;
+				}
+				TryMove(
+					pos.xy+(cos(a),sin(a))*leanamt,
+					false
+				);
 			}
-			TryMove(
-				pos.xy+(cos(a),sin(a))*leanamt,
-				false
-			);
+			A_SetRoll((leaned>0?leaned:-leaned)*leanamt,SPF_INTERPOLATE);
 		}
-		A_SetRoll((leaned>0?leaned:-leaned)*leanamt,SPF_INTERPOLATE);
 	}
 	int leaned;
 	int cmdleanmove;
