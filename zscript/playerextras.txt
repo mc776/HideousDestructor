@@ -88,9 +88,10 @@ extend class HDPlayerPawn{
 	}
 	//and jump. don't separate from mantling.
 	override void CheckJump(){}
-	void JumpCheck(double fm,double sm){
+	void JumpCheck(double fm,double sm,bool forceslide=false){
 		if(
-			player.cmd.buttons & BT_JUMP
+			!forceslide
+			&&player.cmd.buttons&BT_JUMP
 		){
 			if(player.crouchoffset){
 				// Jumping while crouching will force an un-crouch but not jump
@@ -147,14 +148,16 @@ extend class HDPlayerPawn{
 		}
 		//slides, too!
 		else if(
-			(
-				!cvar.getcvar("hd_noslide",player).getbool()
-				||runwalksprint>0
+			forceslide||(
+				(
+					!cvar.getcvar("hd_noslide",player).getbool()
+					||runwalksprint>0
+				)
+				&&player.crouchdir<0&&height>46
+				&&(fm||sm)
+				&&floorz==pos.z
+				&&countinv("IsMoving")>1
 			)
-			&&player.crouchdir<0&&height>46
-			&&(fm||sm)
-			&&floorz==pos.z
-			&&countinv("IsMoving")>1
 		){
 			double mm=jumppower()*1.5;
 			double fmm=fm>0?mm:fm<0?-mm*0.6:0;
