@@ -266,6 +266,7 @@ extend class HDPlayerPawn{
 		string firstwep="";
 
 		loadinput.replace(" ","");
+		loadinput.tolower();
 		loadinput.split(loadlist,"-");
 		loadlist[0].split(whichitem,",");
 		if(hd_debug)A_Log("Loadout: "..loadlist[0]);
