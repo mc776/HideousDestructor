@@ -205,7 +205,13 @@ class doordestroyer:hdactor{
 		}
 		if(hd_debug)caller.A_Log("Sector damage factor:  "..buttecracked.counter);
 
-		if(!blowitup)return false;
+		if(!blowitup){
+			if(!random(0,5)){
+				actor puf=spawn("PenePuff",dlt.hitlocation-dlt.hitdir*2,ALLOW_REPLACE);
+				puf.vel-=dlt.hitdir;
+			}
+			return false;
+		}
 
 
 
