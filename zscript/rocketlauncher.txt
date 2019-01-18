@@ -102,24 +102,6 @@ class HDRL:HDWeapon{
 		bool sightbob,vector2 bob,double fov,bool scopeview,actor hpc,string whichdot
 	){
 			if(hdw.weaponstatus[0]&RLF_GRENADEMODE)sb.drawgrenadeladder(hdw.airburst,bob);
-			else if(hdw.weaponstatus[0]&RLF_ZOOM){
-				int scaledyoffset=4;
-				texman.setcameratotexture(hpc,"HDXHCAM6",1.6);
-				sb.drawimage(
-					"HDXHCAM6",(0,scaledyoffset)+bob,
-					sb.DI_SCREEN_CENTER|sb.DI_ITEM_HCENTER|sb.DI_ITEM_TOP,
-					scale:(0.35,0.35)
-				);
-				sb.drawimage(
-					"rlstadia",bob,
-					sb.DI_SCREEN_CENTER|sb.DI_ITEM_HCENTER|sb.DI_ITEM_TOP,
-					scale:(0.77,0.77)
-				);
-				int airburst=hdw.airburst;
-				if(airburst)sb.drawnum(airburst,
-					17+bob.x,15+bob.y,sb.DI_SCREEN_CENTER,Font.CR_DARKRED,0.5
-				);
-			}
 			else{
 				double dotoff=max(abs(bob.x),abs(bob.y));
 				if(dotoff<10){
@@ -136,6 +118,24 @@ class HDRL:HDWeapon{
 				if(airburst)sb.drawnum(airburst,
 					10+bob.x,9+bob.y,sb.DI_SCREEN_CENTER,Font.CR_BLACK
 				);
+				if(hdw.weaponstatus[0]&RLF_ZOOM){
+					int scaledyoffset=4;
+					texman.setcameratotexture(hpc,"HDXHCAM6",1.6);
+					sb.drawimage(
+						"HDXHCAM6",(bob.x,bob.y+scaledyoffset+4),
+						sb.DI_SCREEN_CENTER|sb.DI_ITEM_HCENTER|sb.DI_ITEM_TOP,
+						scale:(0.35,0.35)
+					);
+					sb.drawimage(
+						"rlstadia",(bob.x,bob.y+scaledyoffset),
+						sb.DI_SCREEN_CENTER|sb.DI_ITEM_HCENTER|sb.DI_ITEM_TOP,
+						scale:(0.77,0.77)
+					);
+					int airburst=hdw.airburst;
+					if(airburst)sb.drawnum(airburst,
+						17+bob.x,15+bob.y,sb.DI_SCREEN_CENTER,Font.CR_DARKRED,0.5
+					);
+				}
 			}
 	}
 	override void DropOneAmmo(int amt){
