@@ -93,7 +93,11 @@ class HDLoadoutMenu:OptionMenu{
 			}
 			break;
 		case MKEY_Enter:
-			savechanges();
+			if(different)savechanges();
+			else{
+				cvar.findcvar("playerclass").setstring("Custom "..cursy);
+				statustext("\cxLoadout set to Custom no. "..cursy);
+			}
 			break;
 		case MKEY_PageUp:
 			tlcursy=max(0,tlcursy-1);
