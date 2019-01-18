@@ -106,6 +106,10 @@ class DERPBot:HDUPK{
 		vector2 vecdiff=level.vec2diff(pos.xy,goalpoint);
 		return atan2(vecdiff.y,vecdiff.x);
 	}
+	void A_DerpCrawlSound(int chance=50){
+		A_PlaySound("derp/crawl",CHAN_BODY);
+		if(bfriendly&&!random(0,50))A_AlertMonsters(0,AMF_TARGETEMITTER);
+	}
 	void A_DerpCrawl(bool attack=true){
 		bool moved=true;
 		//ambush(1) does nothing, not even make noise
@@ -119,13 +123,13 @@ class DERPBot:HDUPK{
 			cmd==DERP_PATROL
 			||movestamina<20
 		){
-			A_PlaySound("derp/crawl",CHAN_BODY);
+			A_DerpCrawlSound();
 			moved=TryMove(pos.xy+(cos(angle),sin(angle))*speed,false);
 			movestamina++;
 		}else if(
 			cmd==DERP_TURRET
 		){
-			A_PlaySound("derp/crawl",CHAN_BODY);
+			A_DerpCrawlSound();
 			angle+=36;
 		}
 
@@ -149,7 +153,7 @@ class DERPBot:HDUPK{
 			setstatelabel("see");
 			return;
 		}
-		A_PlaySound("derp/crawl",CHAN_BODY);
+		A_DerpCrawlSound();
 		double norm=deltaangle(goalangle,angle);
 		if(abs(norm)<DERP_MAXTICTURN){
 			angle=goalangle;
@@ -777,7 +781,7 @@ class DERPController:HDWeapon{
 						&&!invoker.weaponstatus[DERPS_TIMER]
 					){
 						invoker.weaponstatus[DERPS_TIMER]+=2;
-						ddd.A_PlaySound("derp/crawl",CHAN_BODY);
+						ddd.A_DerpCrawlSound();
 						vector2 nv2=(cos(ddd.angle),sin(ddd.angle))*ddd.speed;
 						if(bt&BT_USE||player.cmd.forwardmove<0)nv2*=-1;
 						if(ddd.floorz>=ddd.pos.z){
@@ -790,7 +794,7 @@ class DERPController:HDWeapon{
 				int yaw=player.cmd.yaw>>6;
 				int ptch=player.cmd.pitch>>6;
 				if(yaw||ptch){
-					ddd.A_PlaySound("derp/crawl",CHAN_BODY);
+					ddd.A_DerpCrawlSound(150);
 					ddd.pitch=clamp(ddd.pitch-clamp(ptch,-10,10),-90,60);
 					ddd.angle+=clamp(yaw,-DERP_MAXTICTURN,DERP_MAXTICTURN);
 					ddd.goalangle=999;
@@ -799,6 +803,7 @@ class DERPController:HDWeapon{
 				}
 				if(player.cmd.sidemove){
 					ddd.A_PlaySound("derp/crawl",CHAN_BODY);
+					ddd.A_DerpCrawlSound(150);
 					ddd.angle+=player.cmd.sidemove<0?10:-10;
 					player.cmd.sidemove*=-1;
 				}
