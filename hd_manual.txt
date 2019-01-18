@@ -114,11 +114,7 @@ For the most part Hideous Destructor functions like Doom: point the middle of yo
 
 There is no auto-aim anywhere in HD. In fact, if you move or turn too quickly it can throw off your aim a bit.
 
-Hold Use or Zoom to lower your mouse sensitivity, subject to the hd_aimsensitivity setting. Setting hd_usefocus to false will restrict this behaviour to Zoom. Zoom will also bring up your scope view if your weapon has one and it is not up already.
-
-Typically, if a weapon has a magnified view, hitting both Zoom (NOT Use) and Firemode will let you do things with it. For the rocket launcher (in rocket mode) and Brontornis, this toggles the magnified view.
-
-For the rifles, if you hold both buttons you can move your mouse up and down to adjust the zoom, or tap fire or altfire for more fine-tuned adjustments. If a rifle lets you adjust compensation for bullet drop, you can do the same but with Use instead of Firemode.
+Hold Use or Zoom to lower your mouse sensitivity, subject to the hd_aimsensitivity setting. Setting hd_usefocus to false will restrict this behaviour to Zoom. Zoom will also bring up your scope view if your weapon has one and it is not up already, and change your strafe keys to lean keys unless hd_nozoomlean is set to true.
 
 
 	Difficulty levels
@@ -155,7 +151,7 @@ The "-" marks where the loadout information on your person ends and the loadout 
 
 The loadout system will detect items from mods for HD like Ugly as Sin. (modding note: it must inherit from "HDPickup" or "HDWeapon" and have a unique "refid" defined and "fitsinbackpack" set to true if it is to be placed in a backpack.) To see a list of all items in the currently loaded session, type "give loadoutitemlist" in the console.
 
-Starting with keys is a bitmask. 7 = all 3 keys.
+The amount for "key" is treated as a bitmask: 1 red, 2 yellow, 4 blue, 7 all.
 
 Some shortcuts:
 "doomguy": Fully tac-loaded pistol with 2 extra mags and 4 loose rounds (total 50 shots)
@@ -407,7 +403,8 @@ Lunge/Slide: If you are standing while moving forward or sideways, hit the Crouc
 	Commands
 
 hd_strip: You do not automatically "overwrite" your currently worn armour by picking up and using new armour. Use the hd_strip command to take off what you're wearing first. If you are not wearing any armour, this command will put on any spare armour you happen to be carrying.
-Hitting Reload while you have a medikit in hand, or double-tapping the use item key with another armour selected, will also strip your armour.
+Hitting Reload while you have a medikit or bandages in hand, or double-tapping the use item key with another armour selected, will also strip your armour.
+You may need to strip off your backpack and/or environment suit first.
 
 hd_dropone: This will drop one unit of each type of ammo that applies to your current weapon. If you have both full mags and loose ammo, you drop all your loose ammo first; otherwise, if you specify a number after this command, you will drop that number instead. (For shotgun shells 4 shells equals one default unit, but if you specify a number you will drop exactly that many shells if you have enough.)
 
@@ -416,10 +413,6 @@ hd_purge: This will drop all ammunition for which you do not have an appropriate
 hd_slideon, hd_slideoff: Like hd_zoomon and hd_zoomoff but for the hd_noslide cvar.
 
 hd_clearcvs: Resets all archived CVars (other than loadout cvars) to their defaults.
-
-hd_resetloadout: Resets the custom loadout to default.
-
-hd_resetbackpack. Resets the backpack for the custom loadout to empty.
 
 ab: Type "ab <number>" in the console to set the airburst counter whenever you have an automatic rifle, blooper or rocket launcher out and ready to fire a grenade.
 
@@ -442,7 +435,7 @@ hd_doomguy (cheat): This command, available anytime and not considered a cheat, 
 
 	CVars (host only)
 
-hd_forceloadout: Set this to "", "false", "0" or "none" (all without quotes) to let everyone choose their own loadout. Set this to anything else and it becomes everyone's loadout. Does not affect anyone's current inventory.
+hd_forceloadout: Set this to "false", "0" or "none" (all without quotes) to let everyone choose their own loadout. Set this to anything else and it becomes everyone's loadout. Takes effect on player spawn.
 Default is blank. This cvar is not saved between sessions.
 
 hd_onemanarmy: This alters the rules for how encumbered you are by your inventory.
@@ -766,13 +759,11 @@ Chainsaw
 GZDoom actor name: Lumberjack
 Default weapon slot: 1
 
-Description: A small, rugged chainsaw.
+Description: A small, rugged, not terribly precise-cutting chainsaw, good for destroying things that would otherwise get in your way.
 
-Instructions: Press fire to cut things. Eats cell power like popcorn; reload as any other weapon.
+Instructions: Press fire to cut things. Eats cell power like popcorn; reload as any other weapon. Check your angle and distance as you cut as the blade will slip out of position from time to time. Do not let the blade catch hard surfaces while cutting up a dead body.
 
-Hold altfire and point up while the chainsaw is off to raise it. Release fire to smash it down into whatever's in front of you for a surprising amount of damage.
-
-Protip: This, berserk fist and explosives are the only remotely efficient ways to gib corpses. Keep changing your angle and distance as you cut as the blade will slip out of position from time to time.
+Protip: Some of the above mentioned hard surfaces are themselves destructible.
 
 
 Pistol
@@ -782,7 +773,7 @@ GZDoom ammo actor names: HD9mMag15, HDPistolAmmo
 Default weapon slot: 2
 Loadout code: pis (pia for auto version; amount can be up to 2)
 
-Description: With its compact high-capacity design and extremely powerful 9mm Magnum round, the Mouletta 99FX has followed and surpassed the tradition of its forebears as the standard complement to any arsenal. There was also a limited production of a full-auto variant that may occasionally be found as a PDW.
+Description: With its compact high-capacity design and extremely powerful 9x22mm Parumpudicum round, the Mouletta 99FX has followed and surpassed the tradition of its forebears as the standard complement to any arsenal. There was also a limited production of a full-auto variant that may occasionally be found as a PDW.
 
 Instructions: Press the fire button to further your effort to bust as many caps in your target's body part of choice as possible. Fire mode works if you have the lucky pistol that allows it.
 
@@ -806,7 +797,7 @@ Instructions: Press and hold the fire button to further your effort to bust as m
 
 As with the pistol, hit the user3 button to load and unload mags.
 
-Protip: The SMG is quieter than the pistol. It is the best stealth weapon over beating someone over the head with an unpowered chainsaw!
+Protip: The SMG is both harder hitting and quieter than the pistol.
 
 
 Shotgun
@@ -826,9 +817,9 @@ Instructions: Altfire cycles the next round; make sure you press hard and long e
 
 Holding down the trigger while you chamber a new round lets you slam-fire the shotgun, firing the round immediately when it is ready to fire. Semiauto disables this.
 
-Hold Reload and Unload to continually reload and unload the tube; otherwise you will do it one handful at a time.
+Hold Reload and Unload to continually reload and unload the tube.
 
-To reload quickly from the shotgun's side saddles, press the reload key. To slowly fish a shell or two from somewhere in your pockets to load those, press the secondary reload key. To reload the side saddles, hit the reload key while the Hunter itself is full, or while holding the fire mode key.
+To reload quickly from the shotgun's side saddles, press the reload key. To slowly fish a shell or two from somewhere in your pockets to load those, press the secondary reload key. To reload the side saddles, hold the reload key while the Hunter itself is full, or while holding the fire mode key.
 
 If you hit reload and unload while the pump is pulled back, you will reload and unload the chamber.
 
@@ -858,7 +849,7 @@ Secondary reload works in a similar manner to the Hunter. Side saddles work iden
 
 If you have the Hunter, pressing Unload while holding Use or Zoom will remove up to 4 shells at a time from its side saddles and place them in your general inventory.
 
-Protip: Protip: For a quick double, tap the sprint key to momentarily lower the Slayer, then hold on to both fire buttons to shoot both barrels at once.
+Protip: The game interface is intentionally designed so that you can begin holding the fire buttons while the weapon is still being drawn, but the shots only go off once that animation has finished. This lets you reliably fire off both barrels at once if you shoot immediately after mantling, jumping or sprinting.
 
 
 Assault Rifle
@@ -868,11 +859,11 @@ GZDoom ammo actor names: HD4mMag, HDRocketAmmo
 Default weapon slot: 4
 Loadout code: z66 (z6a and z6s for GL-less versions)
 
-Description: The basic infantryman's weapon of the 22nd century. A very lightweight select-fire weapon that fires up to 2100 rounds per minute, the Volt ZM66 represents the highest evolution of its state-of-the-art ammunition. As a refinement of the principles behind the old 5.56 NATO, the 4.26mm UAC Standard round packs an incredible amount of punch for its size. The 4.26mm UAC Standard round is protected by a special non-terminating legislative patent and a 99-year automatically renewed confidential exclusive contract with the militaries of all developed Western nations worth mentioning, guaranteeing a safe and reliable supply.
+Description: The basic infantryman's weapon of the 22nd century. A very lightweight select-fire weapon that fires up to 2100 rounds per minute, the Volt ZM66 represents the highest evolution of its state-of-the-art ammunition. As a refinement of the principles behind the old 5.56 NATO, the 4.26mm UAC Standard round packs an incredible amount of punch for its size. The 4.26mm UAC Standard round is protected by a special non-terminating legislative patent and a 99-year automatically renewed confidential exclusive contract with the militaries of all developed Western nations listed in the federal Officially Freedom-Loving Foreign Countries Trade Partnership Protocols, guaranteeing a safe and reliable supply.
 
 To get around prior overheating issues with the caseless 4.26mm round, the ZM66 chamber and barrel are lined with a patented heat-sink polymer that contracts when placed under extreme stress and heat, returning to its original form after having a chance to cool down. This reduces friction with subsequent bullets and allows for vastly increased tolerance thresholds that let the ZM66 continue firing where most rifles will have broken down. This temporary warping sacrifices some accuracy and power under sustained fire, but if you're in that spray-and-pray situation to begin with, chances are you won't even notice it. [a handwritten note reads: or the ensuing cookoff.]
 
-You may occasionally find some old variants of the ZM66 that were made for the civilian market shortly before private consumer assault weapon bans were prohibited by treaty in all APEC nations thanks to the efforts of many freedom-loving lobbyists back home, sponsored by the Volt Strategic Systems Group (and the 2/3 of Congress that have sat in their and UAC's various boards of directors). Some people actually prefer the semi variant for its reportedly greater reliability, though numerous UAC-sponsored independent reviews have found no evidence for it.
+You may occasionally find some old variants of the ZM66 that were made for the civilian market shortly before private consumer assault weapon bans were prohibited by treaty in all APEC nations thanks to the efforts of many freedom-loving lobbyists back home, sponsored by the Volt Strategic Systems Group (and the 2/3 of Congress that have sat in their and UAC's various boards of directors). Some people actually prefer the semi variant for its reportedly greater reliability, though numerous UAC-sponsored independent reviews have found no evidence for such a claim.
 
 The ZM66 has a telescopic sight with a backup dot on top.
 
@@ -882,7 +873,7 @@ Instructions: Press the fire button to shoot, altfire to switch to and from the 
 
 The scope can be adjusted by holding Zoom and Firemode, and using either aim up/down or the fire and altfire buttons.
 
-The grenade does not arm for the first 15 feet or so. While usually firing at close range would leave you with a dud grenade, there is no guarantee the projectile will not arm and detonate at some later point!
+The grenade does not arm for the first 15 feet or so. While usually firing at close range would leave you with a dud grenade, there is no guarantee the projectile will not arm and detonate at some later point if left unattended!
 
 Reload key reloads the rifle. Alternate reload reloads the grenade launcher. If you are using the rifle and it is jammed, press reload to try to clear the jam.
 
@@ -960,7 +951,7 @@ GZDoom ammo actor names: HDBattery
 Default weapon slot: 6
 Loadout code: thu
 
-Description: In recent years Heckler & Mok were going through their typical occasional experimental infantry energy weapons research kick. Their latest casualty of common sense is the Atmospheric Mk.XI "Thunder Buster", an adaptation of the big phased particle beam cannons found in large Bishop-class high-orbital patrollers. It is indeed a fine and powerful weapon, but nonetheless based on something shooting through space at massive inanimate objects with highly predictable trajectories. For want of any commercial application they somehow sold the specs to the UAC at an exorbitant price, officially as part of a settlement amid accusations of corporate espionage and stealing of trade secrets in UAC's old, officially scrapped Martian weapons project.
+Description: In recent years Heckler & Mok were going through their typical occasional experimental infantry energy weapons research kick. Their latest casualty of common sense is the Atmospheric Mk.XI "Thunder Buster", an adaptation of the big phased particle beam cannons found in large Bishop-class high-orbital patrollers. It is indeed a fine and powerful weapon, but nonetheless based on something shooting through space at massive inanimate objects with highly predictable trajectories. For want of any commercial application they sold the specs to the UAC, at an exorbitantly inflated price if one were to include a portion that was ostensibly part of a settlement amid accusations of corporate espionage and stealing of trade secrets in UAC's old, officially scrapped Martian weapons project.
 
 Instructions: Press and hold fire to shoot the beam. The beam must be focussed on a single spot until you see the plasma ball. Keep holding the beam there - you'll know when something has happened. Warning: For best results, only engage targets more than 20 metres and less than 200 metres away.
 
@@ -978,9 +969,9 @@ Loadout code: lib (lia for GL-less version)
 
 Description: Back before the days of the ZM66, the Volt-Shepard Arms Group (at the time independent of UAC) had in limited production an extremely durable, almost jam-free long-range automatic rifle chambered for its 7.76mm full-power cased round that could be produced by virtually anyone. A few government contracts, failed bids and five US Supreme Court appeals resolved against Volt-Shepard later (all 5/4 splits along Democrat/Republican lines and despite extensive advocacy by several military intervenors) the UAC Standard was fully recognized and the Volt-Shepard companies were subject to an immediate hostile takeover by UAC. During the chaos Heckler & Mok bought the rights to the patent, rebranded it as the "ZM7 Liberator", and made a killing selling it at a huge markup to people who resented the state-sponsored UAC/Volt near-monopoly over their right to bear arms. A vague rumour on the Internet that the government was going to ban future production to regulate the copper supply and/or prevent future spree killings (a murderer would not be stopped by a jam or overheat!) also helped sales.
 
-Today a few are still made for the civilian market and can be found among special forces personnel from Canada and several African states. Its biggest drawback, besides market share, is cost: the rate of barrel foulings, breakages and jams more than quintuples if the casings are not made from real brass rather than ordinary plastic or steel.
+Today a few are still made for the civilian market and can be found among special forces personnel from Canada and several African states. Its biggest drawback, besides market share, is cost: the rate of barrel foulings, breakages and jams more than septuagintuples if the casings are not made from real brass rather than ordinary plastic or steel.
 
-Instructions: As with the ZM66 unless noted otherwise. There is no 3-round burst, the idea being that the much more powerful 7.76mm round should be enough without the spray-and-pray often encouraged by the burst function.
+Instructions: As with the ZM66 unless noted otherwise. There is no 3-round burst.
 
 Hit the user3 button to load and unload mags.
 
@@ -1028,7 +1019,7 @@ GZDoom ammo actor names: BrontornisRound
 Default weapon slot: 7
 Loadout code: bro
 
-Description: The Freeley "Brontornis" series Mk.VII Ultralight Cannon was one of the candidates for the military's Urban Artillery project, ultimately losing out to Heckler & Mok's bid for its versatility and wide-area firepower. It fires a heavy, non-self-propelled 35mm hi-ex anti-materiel/incendiary round (colloquially known as a "bolt") that can punch through most hard targets while remaining highly effective at decisively neutralizing soft targets on impact (colloquially known as "gibbing people").
+Description: The Freeley "Brontornis" series Mk.VII Ultralight Cannon was one of the candidates for the military's Urban Artillery project, ultimately losing out to Heckler & Mok's bid for its versatility and wide-area firepower. It fires a heavy, non-self-propelled 35mm hi-ex anti-materiel/incendiary round (colloquially known as a "bolt") that can punch through most hard targets while remaining highly effective at decisively neutralizing soft targets (colloquially known as "gibbing people").
 
 In the post-invasion paradigm, where surprise teleportations of heavily armoured infantry units into sensitive populated areas is a routine enemy tactic and there is a renewed interest in concentrated, maneuverable firepower in urban combat regularly blurring the line between anti-personnel and anti-materiel, the Freeley Intellectual Properties Group have announced plans on bringing the Brontornis back into full production but thus far supply has not met demand.
 
@@ -1059,8 +1050,6 @@ When it jams, hold altfire to keep trying to unjam it. It's a little less finick
 If it's jamming more than it was before, you may need to clean some gunk out of the action. With the gun completely unloaded, hold altfire to pull the bolt back and and hit unload while pulled.
 
 To load a single round directly into the chamber, hold altfire to pull the bolt back and hit reload while pulled.
-
-Alternate reload strips a clip to get loose rounds (which then may be loaded individually into the Boss or used to fill a Liberator mag). If no clips are available, a Liberator magazine is cannibalized instead.
 
 As with the other rifles, hold zoom and firemode or use to adjust scope zoom.
 
@@ -1170,7 +1159,7 @@ Babuin
 GZDoom actor name: Babuin
 Replaces: Demon
 
-Description: Of course these evil godless Communists don't have dogs. Instead, they have these little devils who would like nothing more than to chew your gonads off and vomit them into your eyes.
+Description: Of course these evil godless Communists don't have dogs. Instead, they have these little devils who would like nothing more than to chew your gonads off and vomit them into your eyes (because they don't have any).
 
 Protip: Crouching to shoot reduces your room for error significantly. When grappling with one, try to bump it into the map geometry. Remember your pistol.
 
@@ -1220,7 +1209,7 @@ Putto
 GZDoom actor name: Putto
 Replaces: some boss cubes
 
-Description: These ghostly little four-faced metal terrors drift through the polluted air, flinging toxic balls of balefire at you. Where these flames come from no one knows, since the source is instantly destroyed in a searing fireball once the monster has been damaged beyond its ability to function in combat.
+Description: These ghoulish little four-faced metal terrors drift through the polluted air, flinging toxic balls of balefire at you. Where these flames come from no one knows, since the source is instantly destroyed in a searing fireball once the thing has been damaged beyond its ability to function in combat.
 
 Protip: Getting caught by the blast of a bursting fireball may prevent you from returning fire long enough for the putto to hit you again. The best strategy is to remain on the move until you can land a good, clean hit with a rifle or shotgun.
 
@@ -1261,7 +1250,7 @@ GZDoom actor name: CacaDemon
 Replaces; Cacodemon
 Description: One thing is for sure: the Tyrant did not attack us to steal our plasma rifle technology. These monsters send swathes of vaporizingly hot charged material that gently drift towards the target, scorching anything in its path. To make things worse, sometimes it follows this up with a savage power attack that can send you flying one piece at a time.
 
-Once you see the flash, you have two options: duck and cover, or shoot it until it dies. A single ZM66 magazine is plenty enough firepower to make sure that a cacodemon is dead: full auto is your friend.
+Once you see the flash, you have two options: duck and cover, or shoot it until it dies.
 
 Protip: The cacodemon's ball lightning travels so slowly that at closer engagements you're actually better off circlestrafing it with a pistol.
 
@@ -1283,7 +1272,7 @@ Replaces: Revenant
 
 Description: These tall, rigid warriors stand at attention ready to slap you around and shoot their load all over your face. The bad news is that the innuendo is unwarranted, and these undead, un-sexy fleshless skeletal automatons of average height are only after some distinctly un-erotic murder. And their posture is just awful.
 
-Protip: Shotguns fare somewhat better than rifles against revenants. The spread may also be helpful against their missiles, which are one of the rare projectiles that can be shot down.
+Protip: Their missiles can be shot down and are particularly weak against explosives - including each other.
 
 
 Mancubus
@@ -1291,9 +1280,9 @@ Mancubus
 GZDoom actor name: Mancubus
 Replaces: Fatso
 
-Description: The Tyrant feels no shame in mocking the defeated. Originally built from the corpses of morbidly obese humans captured after the invasion of Earth, armed with a pair of grossly inefficient gasoline-fueled plasma launchers, these sweaty, greasy, smoky cyborgs stand tall and proud as a shining symbol of humanity's perpetual need for cheap energy and resources that got us tampering with the horrors of the Anomalies to begin with.
+Description: Armed with a pair of grossly inefficient gasoline-fueled plasma launchers, these sweaty, greasy, smoky cyborgs stand tall and proud as a shining symbol of humanity's perpetual need for cheap, quick energy that got us tampering with the horrors of the Anomalies to begin with.
 
-Protip: The mancubus is so slow that even an alert one with a clear path to you can be taken out with an uncooked hand grenade. Which can be quite useful for something you really don't want line of sight with for any period of time.
+Protip: The mancubus' slow, heavy projectiles mean it must make significant adjustments for distance and movement. The trick is not only to get it to miss, but miss far enough that none of the burning ichor splashes on you and you don't end up running into the affected area immediately after.
 
 
 Hell Knave
@@ -1361,7 +1350,7 @@ The Tyrant
 GZDoom actor name: TheTyrant, HDBBE
 Replaces: BossBrain, BossEye
 
-Description: If only the source of all evil in the world were so singular and killable. This is the mortal avatar of the Tyrant, a vast demonic force that births its nightmare armies from its invincible stone skull like a billion spined, hissing Pallas Athenae.
+Description: If only the source of all evil in the world were so singular and killable. This is the mortal avatar of the Tyrant, a vast demonic force that births its nightmare armies from its invincible stone skull like a billion spiny, hissing Pallas Athenae.
 
 Protip: Don't bother with that stupid platform, just aim and shoot and hope and be ready to shoot again if your first shot was blocked by a cube. The Thunder Buster is a powerful asset if you can keep the defenders from throwing off your aim. As with the archvile, the Tyrant must feel pain a certain number of times before its avatar will depart this world (or whichever one its form happens to be inhabiting).
 
