@@ -271,6 +271,8 @@ class HERPBot:HDUPK{
 			}
 		}
 		HERP A 2{
+			angle-=frandom(0.4,1.);
+			pitch-=frandom(0.8,1.3);
 			if(bfriendly)A_AlertMonsters(0,AMF_TARGETEMITTER);
 			else A_AlertMonsters();
 		}
@@ -894,12 +896,12 @@ class HERPController:HDWeapon{
 		let herpcam=herps[weaponstatus[HERPS_INDEX]];
 		if(!herpcam)return;
 
-		bool dead=(herpcam.health<1);
+		bool dead=herpcam.health<1;
+		bool nobat=dead||!herpcam.bmissilemore||herpcam.battery<1;
 		int scaledyoffset=66;
-		texman.setcameratotexture(herpcam,"HDXHCAM1",60);
+		if(!nobat)texman.setcameratotexture(herpcam,"HDXHCAM1",60);
 		sb.drawimage(
-			"HDXHCAM1",(0,scaledyoffset)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
-			alpha:dead?frandom[herpyherp](0.6,0.9):1.,scale:(1,1)
+			nobat?"HDXHCAM1BLANK":"HDXHCAM1",(0,scaledyoffset)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER
 		);
 		sb.drawimage(
 			"tbwindow",(0,scaledyoffset)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
@@ -922,7 +924,7 @@ class HERPController:HDWeapon{
 		TNT1 A 10{
 			invoker.weaponstatus[HERPS_TIMER]=3;
 			if(!getcvar("hd_helptext"))return;
-			A_WeaponMessage("\cd/// \ccH.E.R.P. \cd\\\\\\\c-\n\n\nDrop cycles through H.E.R.P.s. Reload toggles input mode.\n\nHold Firemode to control.\nFire to shoot.",175);
+			A_WeaponMessage("\cd/// \ccH.E.R.P. \cd\\\\\\\c-\n\n\nDrop cycles through H.E.R.P.s. Reload toggles input mode.\n\nAlt. Reload sets home angle.\n\nHold Firemode to control.\nFire to shoot.",175);
 		}
 		goto super::select;
 	ready:
@@ -947,13 +949,27 @@ class HERPController:HDWeapon{
 
 			if(ddd.health<1)return;
 
-			if(ddd.bmissileevenmore){
+			if(justpressed(BT_ALTATTACK)){
+				ddd.bmissilemore=ddd.bmissilemore?false:true;
+				ddd.herpbeep();
+			}
+
+			if(
+				ddd.bmissileevenmore
+				&&ddd.bmissilemore
+			){
 				if(justpressed(BT_RELOAD)){
 					ddd.setstatelabel("inputabort");
 				}else if(bt&BT_FIREMODE){
+					if(justpressed(BT_USER1)){
+						ddd.startangle=ddd.angle;
+						ddd.herpbeep();
+						A_Log("Home angle set.",true);
+					}
 					if(
 						bt&BT_ATTACK
 						&&!invoker.weaponstatus[HERPS_TIMER]
+						&&ddd.ammo[0]>0
 					){
 						invoker.weaponstatus[HERPS_TIMER]+=4;
 						ddd.setstatelabel("shoot");
