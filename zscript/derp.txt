@@ -645,7 +645,10 @@ class DERPController:HDWeapon{
 		ThinkerIterator derpfinder=thinkerIterator.Create("DERPBot");
 		derpbot mo;
 		while(mo=DERPBot(derpfinder.Next())){
-			if(mo.master==owner)derps.push(mo);
+			if(
+				mo.master==owner
+				&&mo.distance3d(owner)<frandom(1024,2048)
+			)derps.push(mo);
 		}
 		if(resetindex)weaponstatus[DERPS_INDEX]=0;
 		if(!derps.size())return null;
@@ -722,12 +725,14 @@ class DERPController:HDWeapon{
 		TNT1 A 10{
 			invoker.weaponstatus[DERPS_TIMER]=3;
 			if(!getcvar("hd_helptext"))return;
-			A_WeaponMessage("\cf/// \cdD.E.R.P. \cf\\\\\\\c-\n\n\nDrop cycles through D.E.R.P.s, Reload modes.\n\nHold Firemode to control.\nFire shoot, Altfire forward, Use backward.",175);
+			A_WeaponMessage("\cf/// \cdD.E.R.P. \cf\\\\\\\c-\n\n\nDrop cycles through D.E.R.P.s, Reload modes.\n\nHold Firemode to control.\nFire shoot, Altfire forward, Use backward.\n\n\nAlt. Reload to re-ping all deployed D.E.R.P.s",175);
 		}
 		goto super::select;
 	ready:
 		TNT1 A 1{
-			if(!invoker.derps.size()||invoker.weaponstatus[DERPS_INDEX]>=invoker.derps.size()){
+			if(!invoker.derps.size()||invoker.weaponstatus[DERPS_INDEX]>=invoker.derps.size()
+				||justpressed(BT_USER1)
+			){
 				a_updatederps();
 				if(!invoker.derps.size()){
 					Abort();
