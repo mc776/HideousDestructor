@@ -104,36 +104,36 @@ class HDRL:HDWeapon{
 			if(hdw.weaponstatus[0]&RLF_GRENADEMODE)sb.drawgrenadeladder(hdw.airburst,bob);
 			else{
 				double dotoff=max(abs(bob.x),abs(bob.y));
-				if(dotoff<10){
-					sb.drawimage(
-						"riflsit3",(0,0)+bob*1.6,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
-						alpha:0.8-dotoff*0.04,scale:(0.8,0.8)
-					);
-				}
-				sb.drawimage(
-					"xh25",(0,0)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
-					scale:(1.6,1.6)
-				);
-				int airburst=hdw.airburst;
-				if(airburst)sb.drawnum(airburst,
-					10+bob.x,9+bob.y,sb.DI_SCREEN_CENTER,Font.CR_BLACK
-				);
 				if(hdw.weaponstatus[0]&RLF_ZOOM){
-					int scaledyoffset=4;
 					texman.setcameratotexture(hpc,"HDXHCAM6",1.6);
 					sb.drawimage(
-						"HDXHCAM6",(bob.x,bob.y+scaledyoffset+4),
+						"HDXHCAM6",(bob.x,bob.y+4),
 						sb.DI_SCREEN_CENTER|sb.DI_ITEM_HCENTER|sb.DI_ITEM_TOP,
 						scale:(0.35,0.35)
 					);
 					sb.drawimage(
-						"rlstadia",(bob.x,bob.y+scaledyoffset),
+						"rlstadia",bob,
 						sb.DI_SCREEN_CENTER|sb.DI_ITEM_HCENTER|sb.DI_ITEM_TOP,
 						scale:(0.77,0.77)
 					);
 					int airburst=hdw.airburst;
 					if(airburst)sb.drawnum(airburst,
 						17+bob.x,15+bob.y,sb.DI_SCREEN_CENTER,Font.CR_DARKRED,0.5
+					);
+				}else{
+					if(dotoff<10){
+						sb.drawimage(
+							"riflsit3",(0,0)+bob*1.6,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
+							alpha:0.8-dotoff*0.04,scale:(0.8,0.8)
+						);
+					}
+					sb.drawimage(
+						"xh25",(0,0)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
+						scale:(1.6,1.6)
+					);
+					int airburst=hdw.airburst;
+					if(airburst)sb.drawnum(airburst,
+						10+bob.x,9+bob.y,sb.DI_SCREEN_CENTER,Font.CR_BLACK
 					);
 				}
 			}
