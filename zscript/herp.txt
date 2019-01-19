@@ -840,11 +840,14 @@ class HERPController:HDWeapon{
 		ThinkerIterator herpfinder=thinkerIterator.Create("HERPBot");
 		herpbot mo;
 		while(mo=HERPBot(herpfinder.Next())){
-			if(mo.master==owner)herps.push(mo);
+			if(
+				mo.master==owner
+				&&mo.battery>0
+			)herps.push(mo);
 		}
 		if(resetindex)weaponstatus[HERPS_INDEX]=0;
 		if(!herps.size()){
-			owner.dropinventory(self);
+			goawayanddie();
 			return null;
 		}
 		herpbot ddd=herps[0];
