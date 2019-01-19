@@ -743,9 +743,21 @@ class DERPController:HDWeapon{
 				}
 				return;
 			}
+
 			int bt=player.cmd.buttons;
 
-			if(ddd.health<1)return;
+			if(
+				ddd.health<1
+				||(
+					bt
+					&&!invoker.weaponstatus[DERPS_TIMER]
+					&&ddd.distance3d(self)>frandom(1024,2048)
+				)
+			){
+				invoker.derps.delete(invoker.weaponstatus[DERPS_INDEX]);
+				A_Log("CONNECTION FAILURE, REBOOT REQUIRED!: D.E.R.P. last position given at ("..int(ddd.pos.x)+random(-100,100)..","..int(ddd.pos.y)+random(-100,100)..")",true);
+				return;
+			}
 
 			int cmd=ddd.oldcmd;
 			bool moved=false;
