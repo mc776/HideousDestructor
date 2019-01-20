@@ -470,6 +470,11 @@ extend class HDHandlers{
 			}
 			return;
 		}
+		else if(cmd==1024){
+			ppp.A_SetInventory("DERPController",1);
+			ppp.UseInventory(ppp.findinventory("DERPController"));
+			return;
+		}
 		else if(cmd==555){
 			let dpu=DERPUsable(ppp.findinventory("DERPUsable"));
 			if(!dpu)return;

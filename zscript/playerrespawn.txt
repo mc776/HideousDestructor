@@ -35,7 +35,14 @@ extend class HDHandlers{
 		if(!hde)return;
 
 		//replenish ammo to mitigate spawncamping
-		if(!hd_dropeverythingondeath)hde.A_GiveInventory("HDLoaded");
+		if(!hd_dropeverythingondeath){
+			for(inventory hdww=hde.inv;hdww!=null;hdww=hdww.inv){
+				let hdw=hdweapon(hdww);
+				if(hdw&&!hdbackpack(hdw))hdw.initializewepstats(true);
+				let hdm=hdmagammo(hdww);
+				if(hdm)hdm.maxcheat();
+			}
+		}
 
 		if(wiped[e.playernumber]){
 			hde.A_GiveInventory("WipedOut");
