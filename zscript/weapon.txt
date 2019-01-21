@@ -328,13 +328,9 @@ class HDWeapon:Weapon{
 			multiplayer
 			&&!deathmatch
 			&&sv_noweaponspawn
-			&&!bwimpy_weapon
 			&&bweaponspawn
 		){
-			if(
-				!(spawnflags&MTF_SINGLE)
-				//(flags&(MTF_DEATHMATCH|MTF_SINGLE))==MTF_DEATHMATCH
-			){
+			if(!(spawnflags&MTF_SINGLE)){
 				destroy();
 				return;
 			}
