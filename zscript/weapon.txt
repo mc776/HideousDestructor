@@ -324,6 +324,21 @@ class HDWeapon:Weapon{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
+		if(
+			multiplayer
+			&&!deathmatch
+			&&sv_noweaponspawn
+			&&!bwimpy_weapon
+			&&bweaponspawn
+		){
+			if(
+				!(spawnflags&MTF_SINGLE)
+				//(flags&(MTF_DEATHMATCH|MTF_SINGLE))==MTF_DEATHMATCH
+			){
+				destroy();
+				return;
+			}
+		}
 		if(!bwimpy_weapon)bno_auto_switch=false;
 	}
 	//because A_Print doesn't cut it
