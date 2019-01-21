@@ -327,15 +327,15 @@ class HDBullet:HDActor{
 					bool gbg;actor blood;
 					[gbg,blood]=hitactor.A_SpawnItemEx(
 						hitactor.bloodtype,
-						flags:SXF_USEBLOODCOLOR|
-						SXF_NOCHECKPOSITION
+						hitactor.radius*0.6,0,pos.z-hitactor.pos.z,
+						angle:hitactor.angleto(self),
+						flags:SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
 					);
 					if(blood){
-						blood.setorigin(pos,false);
 						blood.vel=
-							throughthis==hitactor?hitdir:-hitdir
-							*dmg*0.01
-						+(frandom(-2,2),frandom(-2,2),frandom(-2,2));
+							(throughthis==hitactor?hitdir:-hitdir)
+							*(0.03*dmg)
+							+(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.4));
 					}
 				}
 			}
