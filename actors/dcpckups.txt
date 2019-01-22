@@ -24,17 +24,20 @@ actor PortableHealingItemBigger:RandomSpawner replaces Berserk{
 // Other Replacements
 //-------------------------------------------------
 actor PlasmaReplaces:RandomSpawner replaces PlasmaRifle{
+	+weaponspawn
 	dropitem "LiberatorNoGL" 256 2
 	dropitem "LiberatorRifle" 256 1
 	dropitem "ThunderBuster" 256 5
 }
 actor ChaingunReplaces:RandomSpawner replaces Chaingun{
+	+weaponspawn
 	dropitem "LiberatorNoGL" 256 1
 	dropitem "HDAutoPistol" 256 1
 	dropitem "HERPUsable" 256 2
 	dropitem "Vulcanette" 256 9
 }
 actor SSGReplaces:RandomSpawner replaces SuperShotgun{
+	+weaponspawn
 	dropitem "BloopMapPickup" 256 2
 	dropitem "HDAutoPistol" 256 1
 	dropitem "BossRifleSpawner" 256 1
@@ -43,10 +46,12 @@ actor SSGReplaces:RandomSpawner replaces SuperShotgun{
 	dropitem "Slayer" 256 4
 }
 actor RLReplaces:RandomSpawner replaces RocketLauncher{
+	+weaponspawn
 	dropitem "BloopMapPickup" 256 1
 	dropitem "HDRL" 256 4
 }
 actor BloopMapPickup{
+	+weaponspawn
 	states{
 	spawn:
 		TNT1 A 0 nodelay{
