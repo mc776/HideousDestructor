@@ -4,6 +4,7 @@
 class HDPistol:HDWeapon{
 	int weaponstatus2[8]; //no I'm NOT letting you carry an indefinite # of pistols, shut up
 	default{
+		+hdweapon.fitsinbackpack
 		scale 0.63;
 		weapon.selectionorder 50;
 		weapon.slotnumber 2;
@@ -15,7 +16,6 @@ class HDPistol:HDWeapon{
 		obituary "%o got capped by %k's pea shooter.";
 		inventory.pickupmessage "You got the pistol!";
 		hdweapon.nicename "Pistol";
-		hdweapon.fitsinbackpack true;
 		hdweapon.refid HDLD_PISTOL;
 		inventory.maxamount 2;
 	}
@@ -493,9 +493,9 @@ class HDAutoPistol:HDWeaponGiver{
 		//$Category "Weapons/Hideous Destructor"
 		//$Title "Pistol (select-fire)"
 		//$Sprite "PISTA0"
+		+hdweapon.fitsinbackpack
 		hdweapon.refid HDLD_PISTAUT;
 		hdweapon.nicename "Pistol (select-fire)";
-		hdweapon.fitsinbackpack true;
 		hdweapongiver.bulk 34;
 		hdweapongiver.actualweapon "HDPistol";
 		inventory.maxamount 2;

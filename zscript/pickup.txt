@@ -24,7 +24,7 @@ class GrabThinker:Thinker{
 				+pickobj.pos
 			),true
 		);else{
-			let pt=hdpickup(pickobj);if(pt)pt.isbeingpickedup=false;
+			let pt=hdpickup(pickobj);if(pt)pt.bisbeingpickedup=false;
 			let wt=hdweapon(pickobj);
 			let ht=hdupk(pickobj);
 			let tt=inventory(pickobj);
@@ -119,7 +119,7 @@ class HDPickup:CustomInventory{
 	int HDPickupFlags;
 	flagdef DropTranslation:HDPickupFlags,0;
 	flagdef FitsInBackpack:HDPickupFlags,1;
-	flagdef MultiPickup:HDPickupFlags,2;
+	flagdef MultiPickup:HDPickupFlags,2; //lets you continue picking up without re-pressing the key
 	flagdef IsBeingPickedUp:HDPickupFlags,3;
 	flagdef CheatNoGive:HDPickupFlags,4;
 	flagdef MustShowInMagManager:HDPickupFlags,5;
@@ -129,27 +129,24 @@ class HDPickup:CustomInventory{
 	property bulk:bulk;
 	int maxunitamount;
 	property maxunitamount:maxunitamount;
-	bool multipickup; //lets you continue picking up without re-pressing the key
-	property multipickup:multipickup;
 	string refid;property refid:refid;
 	string nicename;property nicename:nicename;
-	bool fitsinbackpack;property fitsinbackpack:fitsinbackpack;
-	bool isbeingpickedup;
-	bool cheatnogive;property cheatnogive:cheatnogive;
 	default{
 		+solid
 		+inventory.invbar +inventory.persistentpower
 		+noblockmonst +notrigger +dontgib
+
 		+hdpickup.droptranslation
+		-hdpickup.multipickup
+		+hdpickup.fitsinbackpack
+		-hdpickup.cheatnogive
+
 		inventory.interhubamount int.MAX;
 		inventory.maxamount int.MAX;
 
 		hdpickup.bulk 0;
-		hdpickup.multipickup false;
 		hdpickup.refid "";
 		hdpickup.nicename "";
-		hdpickup.fitsinbackpack true;
-		hdpickup.cheatnogive false;
 
 		radius 8; height 10; scale 0.8;
 		inventory.pickupsound "weapons/pocket";
@@ -230,7 +227,7 @@ class HDPickup:CustomInventory{
 		itemsthatusethis.clear();
 		GetItemsThatUseThis();
 		super.postbeginplay();
-		isbeingpickedup=false;
+		bisbeingpickedup=false;
 		let hdps=new("HDPickupSplitter");
 		hdps.invoker=self;
 	}
@@ -299,20 +296,18 @@ class HDUPK:HDActor{
 	sound pickupsound;
 	int maxunitamount;
 	int amount;
-	bool multipickup;
 	property pickuptype:pickuptype;
 	property pickupmessage:pickupmessage;
 	property pickupsound:pickupsound;
 	property maxunitamount:maxunitamount;
 	property amount:amount;
-	property multipickup:multipickup;
 	default{
 		+solid
+		-hdupk.multipickup
 		height 8;radius 8;
 		hdupk.pickupsound "weapons/pocket";//"misc/i_pkup";
 		hdupk.pickupmessage "Picked something up.";
 		hdupk.pickuptype "none";
-		hdupk.multipickup false;
 	}
 	override bool cancollidewith(actor other,bool passive){
 		return HDPickerUpper(other);

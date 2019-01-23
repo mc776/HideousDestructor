@@ -112,13 +112,13 @@ class AutoReloader:AutoReloadingThingy{
 
 		+weapon.wimpy_weapon
 		+inventory.invbar
+		+hdweapon.fitsinbackpack
 		inventory.maxamount 20;
 		inventory.pickupsound "misc/w_pkup";
 		inventory.pickupmessage "You got the 7.76 reloading machine!";
 		scale 0.5;
 		hdweapon.refid HDLD_776RL;
 		hdweapon.nicename "7.76mm Auto-Reloader";
-		hdweapon.fitsinbackpack true;
 	}
 	override double gunmass(){return 0;}
 	override double weaponbulk(){
@@ -193,6 +193,7 @@ class LiberatorRifle:AutoReloadingThingy{
 		//$Title "Liberator"
 		//$Sprite "BRFLB0"
 
+		+hdweapon.fitsinbackpack
 		weapon.slotnumber 6;
 		weapon.kickback 20;
 		weapon.selectionorder 27;
@@ -204,7 +205,6 @@ class LiberatorRifle:AutoReloadingThingy{
 		obituary "%o was liberated by %k.";
 		hdweapon.refid HDLD_LIBGL;
 		hdweapon.nicename "Liberator Battle Rifle";
-		hdweapon.fitsinbackpack true;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -876,9 +876,9 @@ class LiberatorNoGL:HDWeaponGiver{
 		//$Category "Weapons/Hideous Destructor"
 		//$Title "Liberator (no GL)"
 		//$Sprite "BRFLA0"
+		+hdweapon.fitsinbackpack
 		hdweapon.refid HDLD_LIBNOGL;
 		hdweapon.nicename "Liberator Rifle (no GL)";
-		hdweapon.fitsinbackpack true;
 		hdweapongiver.bulk (100.+(ENC_776MAG_LOADED+30.*ENC_776_LOADED));
 		hdweapongiver.actualweapon "LiberatorRifle";
 	}

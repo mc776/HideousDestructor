@@ -606,8 +606,8 @@ class HDPlayerPawn:PlayerPawn{
 					){
 						if(
 							grabbed is "hdweapon"
-							||(grabbed is "hdpickup"&&!hdpickup(grabbed).multipickup)
-							||(grabbed is "hdupk"&&!hdupk(grabbed).multipickup)
+							||(grabbed is "hdpickup"&&!hdpickup(grabbed).bmultipickup)
+							||(grabbed is "hdupk"&&!hdupk(grabbed).bmultipickup)
 						){
 							hasgrabbed=true;
 						}
@@ -623,8 +623,8 @@ class HDPlayerPawn:PlayerPawn{
 						}
 						if(!hdupkcustomgrabstate){
 							let hdpg=hdpickup(grabbed);
-							if(!hdpg||!hdpg.isbeingpickedup){
-								if(hdpg)hdpg.isbeingpickedup=true;
+							if(!hdpg||!hdpg.bisbeingpickedup){
+								if(hdpg)hdpg.bisbeingpickedup=true;
 								let grabthink=new("GrabThinker");
 								grabthink.picktarget=self;
 								grabthink.pickobj=grabbed;

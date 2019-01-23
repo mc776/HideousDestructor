@@ -7,11 +7,11 @@ const HDCONST_GREENARMOUR=144;
 class HDArmour:HDMagAmmo{
 	default{
 		+inventory.invbar
+		+hdpickup.cheatnogive
 		inventory.amount 1;
 		inventory.maxamount 3;
 		hdmagammo.maxperunit (HDCONST_BLUEARMOUR+1000);
 		hdmagammo.magbulk ENC_GREENARMOUR;
-		hdpickup.cheatnogive true;
 		hdpickup.nicename "Armour";
 //		hdpickup.refid HDLD_ARMGINV;
 		inventory.icon "ARMSB0";
@@ -188,11 +188,10 @@ class HDArmourWorn:HDPickup{
 	bool mega;property ismega:mega;
 	default{
 		-inventory.invbar
+		-hdpickup.fitsinbackpack
 		HDArmourworn.ismega false;
 		inventory.maxamount 1;
-//		hdpickup.refid HDLD_ARWGREN;
 		hdpickup.nicename "Green Armour";
-		hdpickup.fitsinbackpack false;
 	}
 	override void beginplay(){
 		durability=mega?HDCONST_BLUEARMOUR:HDCONST_GREENARMOUR;
@@ -248,7 +247,7 @@ class BlueArmour:HDWeaponGiver replaces BlueArmor{
 		//$Sprite "ARMCA0"
 		+missilemore
 		+weapon.wimpy_weapon
-		hdweapon.fitsinbackpack true;
+		+hdweapon.fitsinbackpack
 		hdweapongiver.actualweapon "HDArmour";
 		hdweapon.refid HDLD_ARMBLUE;
 		hdweapon.nicename "Blue Armour (spare)";
@@ -265,7 +264,7 @@ class BlueArmour:HDWeaponGiver replaces BlueArmor{
 class BlueArmourWorn:HDPickup{
 	default{
 		+missilemore
-		hdpickup.fitsinbackpack false;
+		-hdpickup.fitsinbackpack
 		hdpickup.refid HDLD_ARWBLUE;
 		hdpickup.nicename "Blue Armour";
 		inventory.maxamount 1;
@@ -297,7 +296,7 @@ class GreenArmour:BlueArmour replaces GreenArmor{
 class GreenArmourWorn:BlueArmourWorn{
 	default{
 		-missilemore
-		hdpickup.fitsinbackpack false;
+		-hdpickup.fitsinbackpack
 		inventory.icon "ARMCB0";
 		hdpickup.refid HDLD_ARWGREN;
 		hdpickup.nicename "Green Armour";

@@ -5,9 +5,9 @@ class SevenMilAmmo:HDAmmo{
 	default{
 		+forcexybillboard +cannotpush
 		+inventory.ignoreskill
+		+hdpickup.multipickup
 		xscale 0.7;yscale 0.8;
 		inventory.pickupmessage "Picked up a 7.76mm round.";
-		hdpickup.multipickup true;
 		hdpickup.refid HDLD_SEVNMIL;
 		hdpickup.nicename "7.76mm Round";
 		hdpickup.bulk ENC_776;
@@ -89,12 +89,12 @@ class HD7mClip:HDMagAmmo{
 class SevenMilBrass:HDAmmo{
 	default{
 		+inventory.ignoreskill +forcexybillboard +cannotpush
+		+hdpickup.multipickup
+		+hdpickup.cheatnogive
 		height 16;radius 8;
-		hdpickup.multipickup true;
 		hdpickup.nicename "7.76mm Casing";
 		hdpickup.refid HDLD_SEVNBRA;
 		hdpickup.bulk ENC_776B;
-		hdpickup.cheatnogive true;
 		xscale 0.7;yscale 0.8;
 		inventory.pickupmessage "Picked up some brass.";
 	}
@@ -122,11 +122,11 @@ class HDSpent7mm:HDUPK{
 	}
 	default{
 		+missile
+		+hdupk.multipickup
 		height 4;radius 2;
 		bouncetype "doom";
 		hdupk.pickuptype "SevenMilBrass";
 		hdupk.pickupmessage "Picked up some brass.";
-		hdupk.multipickup true;
 
 		bouncesound "misc/casing";
 		xscale 0.7;yscale 0.8;

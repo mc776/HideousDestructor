@@ -20,8 +20,6 @@ class HDWeapon:Weapon{
 	int tipped;
 	int msgtimer;
 	string wepmsg;
-	bool dontfistondrop;property dontfistondrop:dontfistondrop;
-	bool fitsinbackpack;property fitsinbackpack:fitsinbackpack;
 	enum HDWeaponFlagsets{
 		WRF_ALL=WRF_ALLOWRELOAD|WRF_ALLOWZOOM|WRF_ALLOWUSER1|WRF_ALLOWUSER2|WRF_ALLOWUSER3|WRF_ALLOWUSER4,
 		WRF_NONE=WRF_NOFIRE|WRF_DISABLESWITCH,
@@ -36,6 +34,8 @@ class HDWeapon:Weapon{
 		+weapon.no_auto_switch
 		+noblockmonst +notrigger +dontgib
 		+usebouncestate +hittracer
+		-hdweapon.dontfistondrop
+		-hdweapon.fitsinbackpack
 		bouncetype "doom";
 		weapon.ammogive 0;weapon.ammogive2 0;
 		weapon.ammouse1 0;weapon.ammouse2 0;
@@ -49,8 +49,6 @@ class HDWeapon:Weapon{
 		hdweapon.barrelsize 0,0,0;
 		hdweapon.refid "";
 		hdweapon.nicename "";
-		hdweapon.dontfistondrop false;
-		hdweapon.fitsinbackpack false;
 	}
 	override bool getnoteleportfreeze(){return true;}
 	override bool cancollidewith(actor other,bool passive){return bmissile||HDPickerUpper(other);}
@@ -60,7 +58,7 @@ class HDWeapon:Weapon{
 	}
 	//use target to help a dropped weapon remember its immediately prior owner
 	override void detachfromowner(){
-		if(!dontfistondrop&&owner.player&&!owner.player.readyweapon){
+		if(!bdontfistondrop&&owner.player&&!owner.player.readyweapon){
 			owner.A_SelectWeapon("HDFist");
 			let fff=HDFist(owner.findinventory("HDFist"));
 			if(fff)fff.washolding=true;
@@ -79,17 +77,16 @@ class HDWeapon:Weapon{
 		return hdplayerpawn(self)&&hdplayerpawn(self).gunbraced;
 	}
 	//set the weapon as "busy" to reduce movement, etc.
-	bool weaponbusy;
-	action void A_WeaponBusy(bool yes=true){invoker.weaponbusy=yes;}
+	action void A_WeaponBusy(bool yes=true){invoker.bweaponbusy=yes;}
 	static void SetBusy(actor onr,bool yes=true){
 		if(onr.player&&hdweapon(onr.player.readyweapon))
-		hdweapon(onr.player.readyweapon).weaponbusy=yes;
+		hdweapon(onr.player.readyweapon).bweaponbusy=yes;
 	}
 	static bool IsBusy(actor onr){
 		return(
 			onr.player
 			&&hdweapon(onr.player.readyweapon)
-			&&hdweapon(onr.player.readyweapon).weaponbusy
+			&&hdweapon(onr.player.readyweapon).bweaponbusy
 		);
 	}
 	//use this to set flash translucency and make it additive

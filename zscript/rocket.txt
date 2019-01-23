@@ -282,13 +282,13 @@ class Gyrosploder:HDActor{
 
 class DudRocketAmmo:HDAmmo{
 	default{
+		+hdpickup.cheatnogive
 		inventory.pickupmessage "picked up a defused rocket grenade.";
 		inventory.amount 1;
 		radius 2;height 2;
 		scale 0.33;
 		hdpickup.nicename "Dud Rocket";
 		hdpickup.bulk ENC_ROCKET;
-		hdpickup.cheatnogive true;
 	}
 	override void GetItemsThatUseThis(){
 		itemsthatusethis.push("HDIEDKit");

@@ -8,6 +8,7 @@ class ZM66AssaultRifle:HDWeapon{
 		//$Title "ZM66 Rifle (All)"
 		//$Sprite "RIGLA0"
 
+		+hdweapon.fitsinbackpack
 		weapon.selectionorder 20;
 		weapon.slotnumber 4;
 		inventory.pickupsound "misc/w_pkup";
@@ -18,7 +19,6 @@ class ZM66AssaultRifle:HDWeapon{
 		obituary "%o was assaulted by %k.";
 		hdweapon.refid HDLD_ZM66GL;
 		hdweapon.nicename "ZM66 Assault Rifle";
-		hdweapon.fitsinbackpack true;
 	}
 	override void tick(){
 		super.tick();
@@ -795,9 +795,9 @@ class ZM66Semi:HDWeaponGiver{
 		//$Category "Weapons/Hideous Destructor"
 		//$Title "ZM66 Rifle (Semi)"
 		//$Sprite "RIFSA0"
+		+hdweapon.fitsinbackpack
 		hdweapon.refid HDLD_ZM66SMI;
 		hdweapon.nicename "ZM66 Assault Rifle (Semi only)";
-		hdweapon.fitsinbackpack true;
 		hdweapongiver.bulk (90.+(ENC_426MAG_LOADED+50.*ENC_426_LOADED));
 		hdweapongiver.actualweapon "ZM66AssaultRifle";
 	}

@@ -22,6 +22,7 @@ class HDBackpack:HDWeapon{
 		+inventory.invbar +weapon.wimpy_weapon
 		+weapon.no_auto_switch
 		+hdweapon.droptranslation
+		+hdweapon.fitsinbackpack
 		weapon.selectionorder 1010;
 		inventory.icon "BPAKA0";
 		inventory.pickupmessage "Picked up a backpack to help fill your life with ammo!";
@@ -29,7 +30,6 @@ class HDBackpack:HDWeapon{
 
 		hdweapon.nicename "Backpack";
 		hdweapon.refid HDLD_BACKPAK;
-		hdweapon.fitsinbackpack true;
 	}
 	override void DropOneAmmo(int amt){
 		if(owner){
@@ -50,13 +50,13 @@ class HDBackpack:HDWeapon{
 			string nnm="";
 			if(reff is "HDPickup"){
 				let gdb=getdefaultbytype((class<hdpickup>)(reff));
-				if(gdb.fitsinbackpack){
+				if(gdb.bfitsinbackpack){
 					nnm=gdb.nicename;
 					ref=gdb.refid;
 				}
 			}else if(reff is "HDWeapon"){
 				let gdb=getdefaultbytype((class<hdweapon>)(reff));
-				if(gdb.fitsinbackpack){
+				if(gdb.bfitsinbackpack){
 					nnm=gdb.nicename;
 					ref=gdb.refid;
 				}
@@ -394,7 +394,7 @@ class HDBackpack:HDWeapon{
 		}
 		weaponbulk();
 		UpdateMessage(index);
-		if(pkup.multipickup)return 4;else return 10;
+		if(pkup.bmultipickup)return 4;else return 10;
 	}
 	//returns whether empty
 	bool havenone(int which){
@@ -431,11 +431,12 @@ class HDBackpack:HDWeapon{
 				ticks=12;
 			}else{
 				ticks=10;
+				if(newp.bdroptranslation)newp.translation=owner.translation;
 			}
 		}
 		if(thisclass){
 			int thisamt=tempamounts[0].toint();
-			bool multipi=getdefaultbytype(thisclass).multipickup;
+			bool multipi=getdefaultbytype(thisclass).bmultipickup;
 			if(thisclass is "HDMagAmmo"){
 				if(trytopocket)HDMagAmmo.GiveMag(owner,thisclass,thisamt);
 				else HDMagAmmo.SpawnMag(owner,thisclass,thisamt);
@@ -450,6 +451,7 @@ class HDBackpack:HDWeapon{
 					iii.angle=owner.angle;iii.vel=owner.vel;
 					iii.A_ChangeVelocity(1,0,1,CVF_RELATIVE);
 					iii.amount=1+moar;
+					if(hdpickup(iii)&&hdpickup(iii).bdroptranslation)iii.translation=owner.translation;
 					thisamt-=moar;
 				}
 				else HDF.Give(owner,thisclass,1);
@@ -587,7 +589,7 @@ extend class HDBackpack{
 				amounts[thisitem]=ati;
 			}else if(pkup){
 				howmany=min(
-					random(1,getdefaultbytype(pkup).multipickup?random(1,80):random(1,random(1,20))),
+					random(1,getdefaultbytype(pkup).bmultipickup?random(1,80):random(1,random(1,20))),
 					getdefaultbytype(pkup).maxamount,
 					HDCONST_BPMAX/(max(1.,getdefaultbytype(pkup).bulk)*5.)
 				);

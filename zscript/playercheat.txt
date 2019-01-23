@@ -51,7 +51,7 @@ extend class HDPlayerPawn{
 				type=(class<HDAmmo>)(AllActorClasses[i]);
 				if(!type)continue;
 				if(
-					!getdefaultbytype((class<HDPickup>)(type)).cheatnogive
+					!getdefaultbytype((class<HDPickup>)(type)).bcheatnogive
 					&&getdefaultbytype((class<HDAmmo>)(type)).nicename!=""
 				){
 					let ammoitem=hdpickup(findinventory(type));
