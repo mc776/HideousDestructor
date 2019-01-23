@@ -21,6 +21,7 @@ class HDBackpack:HDWeapon{
 
 		+inventory.invbar +weapon.wimpy_weapon
 		+weapon.no_auto_switch
+		+hdweapon.droptranslation
 		weapon.selectionorder 1010;
 		inventory.icon "BPAKA0";
 		inventory.pickupmessage "Picked up a backpack to help fill your life with ammo!";
@@ -29,16 +30,6 @@ class HDBackpack:HDWeapon{
 		hdweapon.nicename "Backpack";
 		hdweapon.refid HDLD_BACKPAK;
 		hdweapon.fitsinbackpack true;
-	}
-	override inventory createtossable(int amount){
-		target=owner;
-		let ct=hdbackpack(super.createtossable(amount));
-		ct.weaponbulk();
-		if(ct&&target&&ct.bulk>0){
-			ct.target=target;
-			ct.translation=target.translation;
-		}
-		return ct;
 	}
 	override void DropOneAmmo(int amt){
 		if(owner){
