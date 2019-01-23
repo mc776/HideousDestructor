@@ -464,7 +464,7 @@ class HERPUsable:HDWeapon{
 	}
 	states{
 	select:
-		TNT1 A 0 A_WeaponMessage("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHold Use while hitting Alt. Reload\nto unload battery.\n\nHold Use while hitting Unload\nto remove partially-spent mags.\n\nHold Altfire to change BotID.\n\nPress Fire to deploy.",3500);
+		TNT1 A 0 A_WeaponMessage("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHold Use while hitting Alt. Reload\nto unload battery.\n\nHold Use while hitting Unload\nto remove partially-spent mags.\n\nHold Firemode to change BotID, Altfire to toggle on/off.\n\nPress Fire to deploy.",3500);
 		goto super::select;
 	ready:
 		TNT1 A 1 A_HERPWeaponReady();
@@ -566,14 +566,14 @@ class HERPUsable:HDWeapon{
 		if(pressingfire()){
 			if(invoker.amount>0)A_DeployHERP();
 		}else if(invoker.amount<1)invoker.goawayanddie();
-		else if(pressingaltfire()){
+		else if(pressingfiremode()){
 			int inputamt=clamp((player.cmd.pitch>>8),-4,4);
 			inputamt+=(justpressed(BT_ATTACK)?1:justpressed(BT_ALTATTACK)?-1:0);
 			hijackmouse();
 			invoker.weaponstatus[HERP_BOTID]=clamp(
 				invoker.weaponstatus[HERP_BOTID]-inputamt,0,63
 			);
-		}else if(justpressed(BT_FIREMODE)){
+		}else if(justpressed(BT_ALTATTACK)){
 			invoker.weaponstatus[0]^=HERPF_STARTOFF;
 			A_PlaySound("weapons/fmswitch",CHAN_WEAPON);
 		}else A_WeaponReady(WRF_NOFIRE|WRF_ALLOWRELOAD|WRF_ALLOWUSER1|WRF_ALLOWUSER3|WRF_ALLOWUSER4);
