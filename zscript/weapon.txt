@@ -2,6 +2,12 @@
 // Prototype weapon
 // ------------------------------------------------------------
 class HDWeapon:Weapon{
+	int HDWeaponFlags;
+	flagdef DropTranslation:HDWeaponFlags,0;
+	flagdef WeaponBusy:HDWeaponFlags,1;
+	flagdef FitsInBackpack:HDweaponFlags,2;
+	flagdef DontFistOnDrop:HDweaponFlags,3;
+
 	double barrellength;
 	double barrelwidth;
 	double barreldepth;
@@ -61,6 +67,7 @@ class HDWeapon:Weapon{
 		}
 		angle=owner.angle;pitch=owner.pitch;
 		target=owner;
+		if(bdroptranslation)translation=owner.translation;
 		super.detachfromowner();
 	}
 	//wrapper for HDMath.MaxInv because we're gonna need this a lot

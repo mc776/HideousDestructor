@@ -116,9 +116,15 @@ class HDPickerUpper:Actor{
 
 //Usable pickup.
 class HDPickup:CustomInventory{
+	int HDPickupFlags;
+	flagdef DropTranslation:HDPickupFlags,0;
+	flagdef FitsInBackpack:HDPickupFlags,1;
+	flagdef MultiPickup:HDPickupFlags,2;
+	flagdef IsBeingPickedUp:HDPickupFlags,3;
+	flagdef CheatNoGive:HDPickupFlags,4;
+	flagdef MustShowInMagManager:HDPickupFlags,5;
+
 	actor picktarget;
-	bool droptranslation;
-	property droptranslation:droptranslation;
 	double bulk;
 	property bulk:bulk;
 	int maxunitamount;
@@ -134,10 +140,10 @@ class HDPickup:CustomInventory{
 		+solid
 		+inventory.invbar +inventory.persistentpower
 		+noblockmonst +notrigger +dontgib
+		+hdpickup.droptranslation
 		inventory.interhubamount int.MAX;
 		inventory.maxamount int.MAX;
 
-		hdpickup.droptranslation true;
 		hdpickup.bulk 0;
 		hdpickup.multipickup false;
 		hdpickup.refid "";
@@ -160,7 +166,7 @@ class HDPickup:CustomInventory{
 	virtual double getbulk(){return amount*bulk;}
 	override inventory createtossable(int amount){
 		inventory iii=super.createtossable(amount);
-		if(droptranslation&&owner){
+		if(bdroptranslation&&owner){
 			actor onr=owner;
 			if(iii)iii.translation=onr.translation;
 		}
@@ -262,7 +268,7 @@ class HDPickupSplitter:Thinker{
 class HDAmmo:HDPickup{
 	default{
 		-inventory.invbar
-		hdpickup.droptranslation false;
+		-hdpickup.droptranslation
 	}
 	override bool IsUsed(){
 		if(!owner)return true;
@@ -284,7 +290,9 @@ class HDAmmo:HDPickup{
  hdupk.amount: amount in this item, if it is a container
 */
 class HDUPK:HDActor{
-	//do NOT use this for pickupable casings, 1x1 is intolerably pixelbitchy!
+	int HDUPKFlags;
+	flagdef MultiPickup:HDUPKFlags,0;
+
 	actor picktarget;
 	class<inventory> pickuptype;
 	string pickupmessage;
