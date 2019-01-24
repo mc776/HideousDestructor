@@ -61,10 +61,12 @@ class HDLoadoutMenu:OptionMenu{
 		case MKEY_Right:
 			cursx=min(workingstring.length(),cursx+1);
 			break;
-		case MKEY_Clear:
-			workingstring=workingstring.left(cursx-1)..workingstring.mid(cursx);
-			cursx=max(0,cursx-1);
-			checkdifferent();
+		case MKEY_Clear: //backspace
+			if(cursx>0){
+				workingstring=workingstring.left(cursx-1)..workingstring.mid(cursx);
+				cursx--;
+				checkdifferent();
+			}
 			break;
 		case MKEY_Back:
 			if(checkdifferent()){
