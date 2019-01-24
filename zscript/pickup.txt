@@ -218,6 +218,7 @@ class HDPickup:CustomInventory{
 			let aaa=hdpickup(spawn(getclassname(),pos,ALLOW_REPLACE));
 			aaa.amount=maxpkamt;amount-=maxpkamt;
 			aaa.vel=vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
+			if(bdroptranslation)aaa.translation=translation;
 		}
 		vel+=(frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(-0.6,0.6));
 		GotoSpawn();
