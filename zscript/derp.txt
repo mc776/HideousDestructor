@@ -138,11 +138,11 @@ class DERPBot:HDUPK{
 		}else if(
 			movestamina>20
 			&&movestamina<1000
-			&&!random(0,20)
+			&&!random(0,7)
 		){
 			goalangle=angletogoal();
 			if(cmd==DERP_PATROL){
-				goalangle=angle+frandom(-20,20);
+				goalangle+=frandom(-100,100);
 				movestamina=0;
 			}
 		}else goalangle=999;
@@ -887,6 +887,7 @@ class DERPController:HDWeapon{
 			){
 				invoker.derps.delete(invoker.weaponstatus[DERPS_INDEX]);
 				A_Log("CONNECTION FAILURE, REBOOT REQUIRED!: D.E.R.P. last position given at ("..int(ddd.pos.x)+random(-100,100)..","..int(ddd.pos.y)+random(-100,100)..")",true);
+				ddd.cmd=ddd.oldcmd;
 				return;
 			}
 
