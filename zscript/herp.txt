@@ -569,9 +569,10 @@ class HERPUsable:HDWeapon{
 			return;
 		}
 		if(pressingfire()){
-			invoker.weaponstatus[HERP_YOFS]+=12;
-			invoker.weaponstatus[HERP_YOFS]*=3/2;
-			if(invoker.weaponstatus[HERP_YOFS]>80)A_DeployHERP();
+			int yofs=invoker.weaponstatus[HERP_YOFS];
+			yofs=max(yofs+12,yofs*3/2);
+			if(yofs>100)A_DeployHERP();
+			invoker.weaponstatus[HERP_YOFS]=yofs;
 		}else invoker.weaponstatus[HERP_YOFS]=invoker.weaponstatus[HERP_YOFS]*2/3;
 		if(pressingfiremode()){
 			int inputamt=clamp((player.cmd.pitch>>8),-4,4);
