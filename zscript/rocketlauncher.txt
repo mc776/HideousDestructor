@@ -156,7 +156,7 @@ class HDRL:HDWeapon{
 		LAUG A 0;
 		goto select0big;
 	deselect0:
-		LAUG A 0;
+		#### A 0;
 		goto deselect0small;
 
 	ready:
@@ -166,7 +166,7 @@ class HDRL:HDWeapon{
 			&&pressingfiremode(),
 			"zoomtoggle"
 		);
-		LAUG A 1 A_WeaponReady(WRF_ALL);
+		#### A 1 A_WeaponReady(WRF_ALL);
 		goto readyend;
 
 	firemode:
@@ -174,14 +174,14 @@ class HDRL:HDWeapon{
 
 
 	fire:
-		LAUG A 1;
+		#### A 1;
 		goto shoot;
 	althold:
 	hold:
 		---- A 0;
 		goto nope;
 	shoot:
-		LAUG A 2{
+		#### A 2{
 			int chm=invoker.weaponstatus[RLS_CHAMBER];
 			if(chm<1){
 				setweaponstate("chamber_manual");
@@ -223,7 +223,7 @@ class HDRL:HDWeapon{
 				A_PlaySound("weapons/rockboom",5);
 			}
 		}
-		LAUG A 2{
+		#### A 2{
 			A_ZoomFactor(0.98);
 			if(gunbraced()){
 				hdplayerpawn(self).gunbraced=false;
@@ -246,7 +246,7 @@ class HDRL:HDWeapon{
 			}
 			A_Gunflash();
 		} 
-		LAUG B 5000{
+		#### B 5{
 			A_ZoomFactor(1.);
 		}goto chamber;
 	flash:
@@ -262,42 +262,42 @@ class HDRL:HDWeapon{
 		stop;
 
 	chamber:
-		LAUG A 1 offset(0,34){
+		#### A 1 offset(0,34){
 			if(invoker.weaponstatus[RLS_CHAMBER]>0){
 				setweaponstate("nope");
 				return;
 			}
 			A_PlaySound("weapons/rockchamber",CHAN_AUTO);
 		}
-		LAUG A 1 offset(1,36){
+		#### A 1 offset(1,36){
 			if(invoker.weaponstatus[RLS_MAG]>0){
 				invoker.weaponstatus[RLS_CHAMBER]=1;
 				invoker.weaponstatus[RLS_MAG]--;
 			}
 		}
-		LAUG A 1 offset(0,34);
+		#### A 1 offset(0,34);
 		goto nope;
 	chamber_manual:
-		LAUG A 1 offset(0,34){
+		#### A 1 offset(0,34){
 			if(invoker.weaponstatus[RLS_CHAMBER]>0){
 				setweaponstate("nope");
 				return;
 			}
 			A_PlaySound("weapons/rockchamber",CHAN_AUTO);
 		}
-		LAUG A 1 offset(0,37);
-		LAUG A 2 offset(1,36){
+		#### A 1 offset(0,37);
+		#### A 2 offset(1,36){
 			if(invoker.weaponstatus[RLS_MAG]>0){
 				invoker.weaponstatus[RLS_CHAMBER]=1;
 				invoker.weaponstatus[RLS_MAG]--;
 			}
 		}
-		LAUG A 1 offset(0,34);
+		#### A 1 offset(0,34);
 		goto nope;
 
 	altfire:
 	grenadeorrocket:
-		LAUG A 1 offset(0,34){
+		#### A 1 offset(0,34){
 			if(invoker.weaponstatus[RLS_CHAMBER]>1){
 				invoker.weaponstatus[0]&=~RLF_GRENADEMODE;
 				setweaponstate("nope");
@@ -305,86 +305,86 @@ class HDRL:HDWeapon{
 			}
 			A_WeaponBusy();
 		}
-		LAUG A 2 offset(0,36) A_PlaySound("weapons/rockchamber",CHAN_AUTO);
-		LAUG A 1 offset(0,37);
-		LAUG A 2 offset(1,38);
-		LAUG A 3 offset(2,37){
+		#### A 2 offset(0,36) A_PlaySound("weapons/rockchamber",CHAN_AUTO);
+		#### A 1 offset(0,37);
+		#### A 2 offset(1,38);
+		#### A 3 offset(2,37){
 			invoker.weaponstatus[0]^=RLF_GRENADEMODE;
 		}
-		LAUG A 2 offset(1,36);
-		LAUG A 1 offset(0,34);
+		#### A 2 offset(1,36);
+		#### A 1 offset(0,34);
 		goto nope;
 	zoomtoggle:
-		LAUG A 1 offset(0,34);
-		LAUG A 1 offset(0,36);
-		LAUG A 2 offset(2,37){
+		#### A 1 offset(0,34);
+		#### A 1 offset(0,36);
+		#### A 2 offset(2,37){
 			invoker.weaponstatus[0]^=RLF_ZOOM;
 		}
-		LAUG A 1 offset(1,36);
-		LAUG A 1 offset(0,34);
+		#### A 1 offset(1,36);
+		#### A 1 offset(0,34);
 		goto nope;
 	reload:
-		LAUG A 0 A_JumpIf(invoker.weaponstatus[RLS_CHAMBER]>1,"altreload");
-		LAUG A 0 A_JumpIf(
+		#### A 0 A_JumpIf(invoker.weaponstatus[RLS_CHAMBER]>1,"altreload");
+		#### A 0 A_JumpIf(
 			(invoker.weaponstatus[RLS_CHAMBER]>0&&invoker.weaponstatus[RLS_MAG]>=5)
 			||!countinv("HDRocketAmmo"),
 			"nope"
 		);
-		LAUG B 1 offset(2,34);
-		LAUG B 1 offset(4,36) A_MuzzleClimb(-frandom(1.2,2.4),frandom(1.2,2.4));
-		LAUG B 1 offset(10,38);
-		LAUG B 4 offset(12,40){
+		#### B 1 offset(2,34);
+		#### B 1 offset(4,36) A_MuzzleClimb(-frandom(1.2,2.4),frandom(1.2,2.4));
+		#### B 1 offset(10,38);
+		#### B 4 offset(12,40){
 			A_MuzzleClimb(-frandom(1.2,2.4),frandom(1.2,2.4));
 			A_PlaySound("weapons/rockopen",7);
 		}
-		LAUG B 10 offset(11,38) A_PlaySound("weapons/rockopen2",7);
+		#### B 10 offset(11,38) A_PlaySound("weapons/rockopen2",7);
 	reload2:
-		LAUG B 0 A_JumpIf(
+		#### B 0 A_JumpIf(
 			(invoker.weaponstatus[RLS_CHAMBER]>0&&invoker.weaponstatus[RLS_MAG]>=5)
 			||!countinv("HDRocketAmmo"),
 			"reloadend"
 		);
-		LAUG B 9 offset(10,38) A_PlaySound("weapons/pocket",CHAN_WEAPON);
-		LAUG B 0{
+		#### B 9 offset(10,38) A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		#### B 0{
 			if(health<40)A_SetTics(7);
 			else if(health<60)A_SetTics(3);
 		}
-		LAUG B 2 offset(12,40)A_PlaySound("weapons/rockreload",CHAN_WEAPON);
-		LAUG B 3 offset(10,38){
+		#### B 2 offset(12,40)A_PlaySound("weapons/rockreload",CHAN_WEAPON);
+		#### B 3 offset(10,38){
 			A_TakeInventory("HDRocketAmmo",1,TIF_NOTAKEINFINITE);
 			if(invoker.weaponstatus[RLS_CHAMBER]<1)invoker.weaponstatus[RLS_CHAMBER]=1;
 			else invoker.weaponstatus[RLS_MAG]++;
 		}
-		LAUG BB 1 offset(10,34) A_JumpIf(!pressingreload(),"reloadend");
+		#### BB 1 offset(10,34) A_JumpIf(!pressingreload(),"reloadend");
 		loop;
 	reloadend:
-		LAUG B 5 offset(10,36) A_PlaySound("weapons/rockopen2",CHAN_WEAPON);
-		LAUG B 1 offset(8,38) A_PlaySound("weapons/rockopen",7);
-		LAUG B 1 offset(4,36);
-		LAUG B 1 offset(2,34);
+		#### B 5 offset(10,36) A_PlaySound("weapons/rockopen2",CHAN_WEAPON);
+		#### B 1 offset(8,38) A_PlaySound("weapons/rockopen",7);
+		#### B 1 offset(4,36);
+		#### B 1 offset(2,34);
 		goto nope;
 
 	user1:
 	altreload:
-		LAUG A 4{
+		#### A 4{
 			if(
 				invoker.weaponstatus[RLS_CHAMBER]<2
 				&&!countinv("HEATAmmo")
 			)setweaponstate("nope");
 		}
-		LAUG A 1 offset(0,34);
-		LAUG A 1 offset(0,36);
-		LAUG B 1 offset(0,38);
-		LAUG B 4 offset(0,40) A_PlaySound("weapons/rockopen",CHAN_WEAPON);
-		LAUG B 10 offset(0,38) A_PlaySound("weapons/rockopen2",CHAN_WEAPON);
-		LAUG B 9 offset(1,38) A_PlaySound("weapons/pocket",CHAN_WEAPON);
-		LAUG B 0{
+		#### A 1 offset(0,34);
+		#### A 1 offset(0,36);
+		#### B 1 offset(0,38);
+		#### B 4 offset(0,40) A_PlaySound("weapons/rockopen",CHAN_WEAPON);
+		#### B 10 offset(0,38) A_PlaySound("weapons/rockopen2",CHAN_WEAPON);
+		#### B 9 offset(1,38) A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		#### B 0{
 			if(health<40)A_SetTics(7);
 			else if(health<60)A_SetTics(3);
 		}
-		LAUG B 4 offset(0,40) A_PlaySound("weapons/rockreload",CHAN_WEAPON);
+		#### B 4 offset(0,40) A_PlaySound("weapons/rockreload",CHAN_WEAPON);
 
-		LAUG B 6{
+		#### B 6{
 			int chh=invoker.weaponstatus[RLS_CHAMBER];
 			if(chh>1){
 				setweaponstate("removeheatfromchamber");
@@ -407,14 +407,14 @@ class HDRL:HDWeapon{
 			}
 		}goto loadheatintoemptychamber;
 	loadheatintoemptychamber:
-		LAUG B 3 offset(0,38);
-		LAUG B 2 offset(0,34){
+		#### B 3 offset(0,38);
+		#### B 2 offset(0,34){
 			invoker.weaponstatus[RLS_CHAMBER]=2;
 			invoker.weaponstatus[0]&=~RLF_GRENADEMODE;
 			A_TakeInventory("HEATAmmo",1,TIF_NOTAKEINFINITE);
 		}goto altreloadend;
 	removeheatfromchamber:
-		LAUG B 10 offset(1,35){
+		#### B 10 offset(1,35){
 			invoker.weaponstatus[RLS_CHAMBER]=0;
 			if(
 				A_JumpIfInventory("HEATAmmo",0,"null")
@@ -431,16 +431,16 @@ class HDRL:HDWeapon{
 			}
 		}goto altreloadend;
 	altreloadend:
-		LAUG B 5 offset(0,36) A_PlaySound("weapons/rockopen2",CHAN_WEAPON);
-		LAUG B 0 A_PlaySound("weapons/rockopen",CHAN_WEAPON);
-		LAUG B 1 offset(0,38);
-		LAUG A 1 offset(0,36);
-		LAUG A 1 offset(0,34);
+		#### B 5 offset(0,36) A_PlaySound("weapons/rockopen2",CHAN_WEAPON);
+		#### B 0 A_PlaySound("weapons/rockopen",CHAN_WEAPON);
+		#### B 1 offset(0,38);
+		#### A 1 offset(0,36);
+		#### A 1 offset(0,34);
 		goto nope;
 
 	user4:
 	unload:
-		LAUG B 4{
+		#### B 4{
 			if(
 				invoker.weaponstatus[RLS_CHAMBER]>1
 			)setweaponstate("altreload");
@@ -449,18 +449,18 @@ class HDRL:HDWeapon{
 				&&invoker.weaponstatus[RLS_MAG]<1
 			)setweaponstate("nope");
 		}
-		LAUG B 1 offset(2,34);
-		LAUG B 1 offset(4,36) A_MuzzleClimb(-frandom(1.2,2.4),frandom(1.2,2.4));
-		LAUG B 1 offset(10,38);
-		LAUG B 4 offset(12,40){
+		#### B 1 offset(2,34);
+		#### B 1 offset(4,36) A_MuzzleClimb(-frandom(1.2,2.4),frandom(1.2,2.4));
+		#### B 1 offset(10,38);
+		#### B 4 offset(12,40){
 			A_MuzzleClimb(-frandom(1.2,2.4),frandom(1.2,2.4));
 			A_PlaySound("weapons/rockopen",CHAN_WEAPON);
 		}
-		LAUG B 2 offset(11,38) A_PlaySound("weapons/rockopen2",CHAN_WEAPON);
+		#### B 2 offset(11,38) A_PlaySound("weapons/rockopen2",CHAN_WEAPON);
 	unload2:
-		LAUG B 0 A_JumpIf(invoker.weaponstatus[RLS_MAG]<1&&invoker.weaponstatus[RLS_CHAMBER]<1,"unloadend");
-		LAUG B 10 offset(12,40) A_PlaySound("weapons/rockreload",7);
-		LAUG B 9 offset(10,38){
+		#### B 0 A_JumpIf(invoker.weaponstatus[RLS_MAG]<1&&invoker.weaponstatus[RLS_CHAMBER]<1,"unloadend");
+		#### B 10 offset(12,40) A_PlaySound("weapons/rockreload",7);
+		#### B 9 offset(10,38){
 			if(!invoker.weaponstatus[RLS_CHAMBER]){
 				invoker.weaponstatus[RLS_MAG]--;
 			}else{
@@ -479,17 +479,17 @@ class HDRL:HDWeapon{
 				A_GiveInventory("HDRocketAmmo",1);
 			}
 		}
-		LAUG B 5 offset(10,36) A_PlaySound("weapons/rockopen2",CHAN_WEAPON);
-		LAUG B 4{
+		#### B 5 offset(10,36) A_PlaySound("weapons/rockopen2",CHAN_WEAPON);
+		#### B 4{
 			if(health<40)A_SetTics(4);
 			A_PlaySound("weapons/rockopen",CHAN_AUTO);
 		}
-		LAUG B 0 A_JumpIf(!pressingunload(),"unloadend");
+		#### B 0 A_JumpIf(!pressingunload(),"unloadend");
 		goto unload2;
 	unloadend:
-		LAUG B 1 offset(8,38);
-		LAUG B 1 offset(4,36);
-		LAUG B 1 offset(2,34);
+		#### B 1 offset(8,38);
+		#### B 1 offset(4,36);
+		#### B 1 offset(2,34);
 		goto nope;
 
 	spawn:
