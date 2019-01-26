@@ -467,12 +467,15 @@ hd_debug: Turns on some debug logging messages and displays, such as damage repo
 
 hd_clearscv: Resets all archived host options to their defaults.
 
+
 	CVars (user-based)
 
 hd_helptext (2): Some events (e.g., picking up a rifle variant, pulling the pin and lighting the fuze on a grenade) generate text messages on your screen that remind you of certain non-obvious events. By setting this cvar to zero, you turn those reminders off. At your own risk.
 Set to 1 instead of 2 to get rid of the newbie tips that show up on map start.
 
 hd_hudsprite (false): Displays your current weapon as a pickup sprite graphic inside your HUD, Ghost Recon-style. Always on when r_drawplayersprites is off.
+
+hd_idspritefix (false): The rocket launcher, plasma rifle and BFG sprites are off centre in the original id games. Enabling swaps out those sprites for ones realigned using the TEXTURES lump in those games only. (The shotgun does not use this since it replaces all the centered frames in both Doom and Freedoom anyway.)
 
 hd_noscope (false): Many weapons have an optic sight that is represented as a sight picture just below HD's regular sight picture crosshair. If set to true, this will only appear with the full HUD or while you are holding Zoom.
 
