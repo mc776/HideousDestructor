@@ -320,6 +320,7 @@ class HDWeapon:Weapon{
 	action void A_CheckIdSprite(string altsprite,string regsprite,int layer=PSP_WEAPON){
 		if(
 			Wads.CheckNumForName("id",0)!=-1
+			&&cvar.getcvar("hd_idspritefix",player).getbool()
 			&&texman.checkfortexture(altsprite,texman.type_sprite).isvalid()
 		)Player.GetPSprite(layer).sprite=GetSpriteIndex(altsprite);
 		else Player.GetPSprite(layer).sprite=GetSpriteIndex(regsprite);
