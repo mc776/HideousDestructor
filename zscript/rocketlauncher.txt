@@ -153,14 +153,16 @@ class HDRL:HDWeapon{
 	}
 	states{
 	select0:
-		LAUG A 0;
+		MISG A 0 A_CheckFreedoomSprite("LAUGA0","MISGA0");
 		goto select0big;
 	deselect0:
-		#### A 0;
+		MISG # 0 A_CheckFreedoomSprite("LAUGA0","MISGA0");
+		---- A 0;
 		goto deselect0small;
 
 	ready:
-		LAUG A 0 A_JumpIf(
+		MISG A 0 A_CheckFreedoomSprite("LAUGA0","MISGA0");
+		MISG A 0 A_JumpIf(
 			!(invoker.weaponstatus[0]&RLF_GRENADEMODE)
 			&&pressingzoom()
 			&&pressingfiremode(),
@@ -251,13 +253,14 @@ class HDRL:HDWeapon{
 		}goto chamber;
 	flash:
 		LAUF A 2 bright{
+			A_CheckFreedoomSprite("LAUFA0","MISFA0",PSP_FLASH);
 			A_PlaySound("weapons/rocklaunch",CHAN_AUTO,0.6);
 			HDFlashAlpha(128);
 			A_Light1();
 		}
-		LAUF B 2 bright A_Light2();
-		LAUF C 2 bright A_Light1();
-		LAUF D 1 bright A_Light0();
+		#### B 2 bright A_Light2();
+		#### C 2 bright A_Light1();
+		#### D 1 bright A_Light0();
 		TNT1 A 0 A_AlertMonsters();
 		stop;
 

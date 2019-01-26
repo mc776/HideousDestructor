@@ -227,7 +227,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 			A_MuzzleClimb(1.2,-8.,1.2,-8.8);
 		}goto flasheither;
 	recoil:
-		#### G 1;
+		#### K 1;
 		goto ready;
 
 	altreload:
@@ -252,10 +252,10 @@ class Slayer:HDShotgun replaces HDShotgun{
 		}goto reloadstart;
 	reloadstart:
 	unloadstart:
-		#### G 2 offset(0,34) EmptyHand();
-		#### G 1 offset(0,40);
-		#### G 3 offset(0,46);
-		#### G 5 offset(0,47) A_PlaySound("weapons/sshoto",CHAN_AUTO);
+		#### K 2 offset(0,34) EmptyHand();
+		#### K 1 offset(0,40);
+		#### K 3 offset(0,46);
+		#### K 5 offset(0,47) A_PlaySound("weapons/sshoto",CHAN_AUTO);
 		#### B 4 offset(0,46) A_MuzzleClimb(
 			frandom(0.6,1.2),frandom(0.6,1.2),
 			frandom(0.6,1.2),frandom(0.6,1.2),
@@ -338,14 +338,14 @@ class Slayer:HDShotgun replaces HDShotgun{
 		TNT1 A 4 A_PlaySound("weapons/sshotl",CHAN_WEAPON);
 		#### B 2 offset(0,46);
 		#### B 1 offset(0,42);
-		#### G 2 offset(0,42) A_PlaySound("weapons/sshotc",CHAN_WEAPON);
+		#### K 2 offset(0,42) A_PlaySound("weapons/sshotc",CHAN_WEAPON);
 		#### A 2;
 		goto ready;
 	unloadend:
 		#### C 5 A_PlaySound("weapons/sshotl",CHAN_WEAPON);
 		#### B 2 offset(0,46);
 		#### B 1 offset(0,42);
-		#### G 2 offset(0,42) A_PlaySound("weapons/sshotc",CHAN_WEAPON);
+		#### K 2 offset(0,42) A_PlaySound("weapons/sshotc",CHAN_WEAPON);
 		#### A 2;
 		goto ready;
 
@@ -396,7 +396,6 @@ class Slayer:HDShotgun replaces HDShotgun{
 				&&!pressingfire()
 				&&!pressingaltfire()
 				&&!pressingreload()
-//				&&!pressingunload()
 			)setweaponstate("unloadssloop1");
 		}
 		#### A 3 offset(4,35);
@@ -404,7 +403,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 		#### A 1 offset(2,34);
 		goto nope;
 	unload:
-		#### G 2 offset(0,34){
+		#### K 2 offset(0,34){
 			if(invoker.weaponstatus[SHOTS_SIDESADDLE]>0)setweaponstate("unloadss");
 			else invoker.weaponstatus[0]|=SLAYF_UNLOADONLY;
 		}goto unloadstart;

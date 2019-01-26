@@ -114,7 +114,8 @@ class BFG9K:HDWeapon replaces BFG9000{
 		#### AA 1 A_Raise(3);
 		goto nope;
 	ready:
-		B9KG A 1{
+		BFGG A 1{
+			A_CheckFreedoomSprite("B9KGA0","BFGGA0");
 			if(invoker.weaponstatus[0]&BFGF_STRAPPED){
 				invoker.bobstyle=Bob_Alpha;
 				invoker.bobrangex=1.4;
@@ -128,10 +129,11 @@ class BFG9K:HDWeapon replaces BFG9000{
 			A_WeaponReady(WRF_ALL);
 		}goto readyend;
 	select0:
-		B9KG A 0;
+		BFGG C 0 A_CheckFreedoomSprite("B9KGA0","BFGGA0");
 		goto select0bfg;
 	deselect0:
-		#### A 0 A_JumpIf(
+		BFGG C 0 A_CheckFreedoomSprite("B9KGA0","BFGGA0");
+		---- A 0 A_JumpIf(
 			invoker.weaponstatus[0]&BFGF_STRAPPED
 			&&!countinv("NulledWeapon")
 			,"togglestrap"
@@ -141,6 +143,7 @@ class BFG9K:HDWeapon replaces BFG9000{
 		stop;
 	flash:
 		B9KF B 3 bright{
+			A_CheckFreedoomSprite("B9KFA0","BFGFA0",PSP_FLASH);
 			A_Light1();
 			HDFlashAlpha(0,true);
 		}
@@ -342,10 +345,10 @@ class BFG9K:HDWeapon replaces BFG9000{
 			else if(!random(0,15))A_FireProjectile("YokaiSpawner");
 		}goto harmless;
 	vile:
-		TNT1 AAAAA 0 A_FireProjectile("BFGVileShard",random(170,190),spawnofs_xy:random(-20,20));
+		---- AAAAA 0 A_FireProjectile("BFGVileShard",random(170,190),spawnofs_xy:random(-20,20));
 		goto batteryout;
 	harmless:
-		TNT1 AAAAA 0 A_FireProjectile("BFGShard",random(170,190),spawnofs_xy:random(-20,20));
+		---- AAAAA 0 A_FireProjectile("BFGShard",random(170,190),spawnofs_xy:random(-20,20));
 		goto batteryout;
 	batteryout:
 		#### C 4 offset(0,42){
