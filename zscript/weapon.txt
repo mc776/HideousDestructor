@@ -316,6 +316,14 @@ class HDWeapon:Weapon{
 		setstatelabel("spawn");
 	}
 
+	//swap out alternative "fixed" weapon sprites
+	action void A_CheckFreedoomSprite(string altsprite,string regsprite){
+		if(
+			Wads.CheckNumForName("FREEDOOM",0)!=-1
+			||Wads.CheckNumForName(altsprite,0)!=-1
+		)Player.GetPSprite(PSP_WEAPON).sprite=GetSpriteIndex(regsprite);
+	}
+
 	//because weapons don't use proper "ammo" anymore for loaded items
 	virtual void InitializeWepStats(bool idfa=false){}
 	override void beginplay(){
