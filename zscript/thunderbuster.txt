@@ -286,14 +286,16 @@ class ThunderBuster:HDWeapon{
 			A_GunFlash();
 		}goto ready;
 	flash:
-		PLSF A 1 bright{
+		THBF A 1 bright{
+			if(Wads.CheckNumForName("FREEDOOM",0)!=-1)
+				Player.GetPSprite(PSP_FLASH).sprite=GetSpriteIndex("PLSFA0");
 			HDFlashAlpha(64);
 			A_Light2();
 		}
-		PLSF BA 1 bright;
-		PLSF B 1 bright A_Light1();
-		PLSF AB 1 bright;
-		PLSF B 0 bright A_Light0();
+		#### BA 1 bright;
+		#### B 1 bright A_Light1();
+		#### AB 1 bright;
+		#### B 0 bright A_Light0();
 		stop;
 	altfire:
 	firemode:
