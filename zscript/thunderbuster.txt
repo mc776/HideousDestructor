@@ -253,7 +253,7 @@ class ThunderBuster:HDWeapon{
 	states{
 	ready:
 		PLSG A 1{
-			A_CheckFreedoomSprite("THBGA0","PLSGA0");
+			A_CheckIdSprite("THBGA0","PLSGA0");
 			A_SetCrosshair(21);
 			invoker.weaponstatus[TBS_WARMUP]=0;
 			A_WeaponReady(WRF_ALL);
@@ -287,7 +287,7 @@ class ThunderBuster:HDWeapon{
 		}goto ready;
 	flash:
 		THBF AB 0;
-		#### A 0 A_CheckFreedoomSprite("THBFA0","PLSFA0",PSP_FLASH);
+		#### A 0 A_CheckIdSprite("THBFA0","PLSFA0",PSP_FLASH);
 		#### A 1 bright{
 			HDFlashAlpha(64);
 			A_Light2();
@@ -317,10 +317,10 @@ class ThunderBuster:HDWeapon{
 	select0:
 		PLSG A 0{
 			invoker.weaponstatus[TBS_MAXRANGEDISPLAY]=(8000+200*invoker.weaponstatus[TBS_BATTERY])/HDCONST_ONEMETRE;
-			A_CheckFreedoomSprite("THBGA0","PLSGA0");
+			A_CheckIdSprite("THBGA0","PLSGA0");
 		}goto select0big;
 	deselect0:
-		PLSG A 0 A_CheckFreedoomSprite("THBGA0","PLSGA0");
+		PLSG A 0 A_CheckIdSprite("THBGA0","PLSGA0");
 		#### A 0 A_Light0();
 		goto deselect0big;
 

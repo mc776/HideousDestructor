@@ -107,6 +107,14 @@ class Slayer:HDShotgun replaces HDShotgun{
 			weapon.detachfromowner();
 		}else hdweapon.detachfromowner();
 	}
+	//swap out alternative "fixed" weapon sprites - Freedoom
+	action void A_CheckFreedoomSprite(string altsprite,string regsprite,int layer=PSP_WEAPON){
+		if(
+			Wads.CheckNumForName("FREEDOOM",0)==-1
+			&&texman.checkfortexture(altsprite,texman.type_sprite).isvalid()
+		)Player.GetPSprite(layer).sprite=GetSpriteIndex(altsprite);
+		else Player.GetPSprite(layer).sprite=GetSpriteIndex(regsprite);
+	}
 	states{
 	select0:
 		SH2G A 0 A_CheckFreedoomSprite("SH2GA0","SHT2A0");

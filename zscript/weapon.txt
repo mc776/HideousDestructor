@@ -316,10 +316,10 @@ class HDWeapon:Weapon{
 		setstatelabel("spawn");
 	}
 
-	//swap out alternative "fixed" weapon sprites
-	action void A_CheckFreedoomSprite(string altsprite,string regsprite,int layer=PSP_WEAPON){
+	//swap out alternative "fixed" weapon sprites - id
+	action void A_CheckIdSprite(string altsprite,string regsprite,int layer=PSP_WEAPON){
 		if(
-			Wads.CheckNumForName("FREEDOOM",0)==-1
+			Wads.CheckNumForName("id",0)!=-1
 			&&texman.checkfortexture(altsprite,texman.type_sprite).isvalid()
 		)Player.GetPSprite(layer).sprite=GetSpriteIndex(altsprite);
 		else Player.GetPSprite(layer).sprite=GetSpriteIndex(regsprite);
