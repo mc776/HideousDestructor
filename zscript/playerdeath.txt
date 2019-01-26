@@ -319,10 +319,11 @@ class HDPlayerCorpse:HDActor{
 		---- A 0{
 			bnotargetswitch=false;
 			actor masbak=master;
-			[bavoidmelee,master]=A_SpawnItemEx("ReallyDeadRifleman",flags:
+			A_SpawnItemEx("ReallyDeadRifleman",flags:
 				SXF_NOCHECKPOSITION|
 				SXF_TRANSFERPOINTERS|
-				SXF_TRANSFERTRANSLATION
+				SXF_TRANSFERTRANSLATION|
+				SXF_ISMASTER
 			);
 			A_RaiseMaster(RF_NOCHECKPOSITION|RF_TRANSFERFRIENDLINESS);
 			master.master=masbak;

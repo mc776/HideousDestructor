@@ -254,7 +254,6 @@ extend class HDPlayerPawn{
 						plantbit.spawnplants(self,33,144);
 						switch(random(0,3)){
 						case 0:
-							actor masbak=master;
 							blockthingsiterator rezz=
 								blockthingsiterator.create(self,512);
 							while(rezz.next()){
@@ -263,19 +262,14 @@ extend class HDPlayerPawn{
 									rezzz.health<1
 									&&rezzz.findstate("raise")
 								){
-									master=rezzz;
-									A_RaiseMaster(RF_NOCHECKPOSITION);
+									RaiseActor(rezzz,RF_NOCHECKPOSITION);
 									rezzz.bfriendly=true;
 									rezzz.master=self;
 									plantbit.spawnplants(rezzz,12,33);
 									regenblues--;
-									if(!random(0,2)){
-										master=masbak;
-										break;
-									}
+									if(!random(0,2))break;
 								}
 							}
-							master=masbak;
 							break;
 						case 1:
 							blockthingsiterator fffren=
