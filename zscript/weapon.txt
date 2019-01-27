@@ -318,11 +318,19 @@ class HDWeapon:Weapon{
 
 	//swap out alternative "fixed" weapon sprites - id
 	action void A_CheckIdSprite(string altsprite,string regsprite,int layer=PSP_WEAPON){
+		bool needspritefix=false;
 		if(
 			Wads.CheckNumForName("id",0)!=-1
-			&&cvar.getcvar("hd_idspritefix",player).getbool()
 			&&texman.checkfortexture(altsprite,texman.type_sprite).isvalid()
-		)Player.GetPSprite(layer).sprite=GetSpriteIndex(altsprite);
+		){
+			int i=-1,counter=0;
+			do{
+				i=wads.findLump(regsprite,i+1,1);
+				counter++;
+			}until (i<0);
+			if(counter<=2)needspritefix=true; //original + textures replacement = 2
+		}
+		if(needspritefix)Player.GetPSprite(layer).sprite=GetSpriteIndex(altsprite);
 		else Player.GetPSprite(layer).sprite=GetSpriteIndex(regsprite);
 	}
 
