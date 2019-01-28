@@ -107,20 +107,12 @@ class Slayer:HDShotgun replaces HDShotgun{
 			weapon.detachfromowner();
 		}else hdweapon.detachfromowner();
 	}
-	//swap out alternative "fixed" weapon sprites - Freedoom
-	action void A_CheckFreedoomSprite(string altsprite,string regsprite,int layer=PSP_WEAPON){
-		if(
-			Wads.CheckNumForName("FREEDOOM",0)==-1
-			&&texman.checkfortexture(altsprite,texman.type_sprite).isvalid()
-		)Player.GetPSprite(layer).sprite=GetSpriteIndex(altsprite);
-		else Player.GetPSprite(layer).sprite=GetSpriteIndex(regsprite);
-	}
 	states{
 	select0:
-		SH2G A 0 A_CheckFreedoomSprite("SH2GA0","SHT2A0");
+		SH2G A 0 A_CheckIdSprite("SH2GA0","SHT2A0");
 		goto select0small;
 	deselect0:
-		SH2G A 0 A_CheckFreedoomSprite("SH2GA0","SHT2A0");
+		SH2G A 0 A_CheckIdSprite("SH2GA0","SHT2A0");
 		#### A 0;
 		goto deselect0small;
 	fire:
@@ -128,7 +120,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 		#### A 0 A_ClearRefire();
 	ready:
 		TNT1 A 0; //let the PostBeginPlay handle the presence of the relevant sprite
-		SH2G A 0 A_CheckFreedoomSprite("SH2GA0","SHT2A0");
+		SH2G A 0 A_CheckIdSprite("SH2GA0","SHT2A0");
 		#### A 0 A_JumpIf(pressingunload()&&(pressinguse()||pressingzoom()),"cannibalize");
 		#### A 1{
 			if(PressingFireMode()){
@@ -213,6 +205,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 		}stop;
 	flashboth:
 		SH2F C 1 bright{
+			A_CheckIdSprite("SH2FA0","SHT2J0",PSP_FLASH);
 			A_Light2();
 			HDFlashAlpha(128);
 			A_PlaySound("weapons/slayersingle",5);
