@@ -468,6 +468,25 @@ class HDNewGameLoadoutMenu:HDLoadoutMenu{
 				close();
 				return true;
 			default:
+				string inp="";
+				inp.appendformat("%c",ev.KeyChar);
+				if(ev.IsCtrl){
+					if(inp~=="r"){
+						MenuSound("menu/choose");
+						cvar.findcvar("playerclass").setstring("Random");
+						Menu.SetMenu("PlayerclassMenu");
+						return true;
+					}
+				}
+				int inpt=inp.toint(16);
+				if(inp~=="g")inpt=16;
+				else if(inp~=="h")inpt=17;
+				else if(inp~=="0")inpt=1;
+				if(inpt>0&&inpt<=HD_MAXLOADOUTS){
+					cursy=inpt;
+					resetws();
+					return true;
+				}
 				return true;
 			}
 			translatedloadout=gettranslatedloadout(workingstring);
@@ -480,7 +499,7 @@ class HDNewGameLoadoutMenu:HDLoadoutMenu{
 		if(!cplayer)return;
 		int clfp3=CleanYFac_1*3;
 
-		string hs="Select a Loadout:\n\cuUp/Down to select\nEnter to confirm";
+		string hs="Select a Loadout:\n\cuUp/Down to select\nEnter to confirm\nCtrl+R for random";
 		screen.DrawText(SmallFont,
 			OptionMenuSettings.mFontColor,
 			(screen.GetWidth() - SmallFont.StringWidth(hs) * CleanXfac_1) / 2,
