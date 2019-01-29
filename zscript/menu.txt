@@ -249,11 +249,11 @@ class HDLoadoutMenu:OptionMenu{
 			string finalinput;
 			[finalinput,loadoutname]=HDMath.GetLoadoutStrings(input);
 			if(finalinput=="doomguy"){
-				ttl="<pistol and fifty bullets.>";
+				ttl="Pistol and fifty bullets.";
 			}else if(finalinput=="insurgent"){
-				ttl="it's a surprise...";
+				ttl="It's a surprise...";
 			}else if(finalinput==""){
-				ttl="nothing";
+				ttl="Nothing.";
 			}else{
 				finalinput.split(items,"-");
 				bool inbp=items.size()>1;
@@ -491,7 +491,7 @@ class HDNewGameLoadoutMenu:HDLoadoutMenu{
 		string ws=workingstring.mid(workingstring.indexof(":")+1);
 		while(ws.charat(0)==" ")ws=ws.mid(1);
 
-		if(ws=="")ws="\cu<nothing>";
+		if(ws=="")ws="<nothing>";
 
 		int tempcursx=cursx;
 		int maxwidth=screen.GetWidth()*0.6/(SmallFont.StringWidth("_")*CleanXfac_1);
@@ -504,8 +504,8 @@ class HDNewGameLoadoutMenu:HDLoadoutMenu{
 			if(cursx<halfmaxwidth)cursx=halfmaxwidth;
 			else cursx=min(cursx,wsl-halfmaxwidth);
 			if(
-				cursx>=halfmaxwidth
-				&&wsl-cursx>=halfmaxwidth
+				cursx>halfmaxwidth
+				&&wsl-cursx>halfmaxwidth
 			){
 				//enough space on both sides of cursor
 				tempcursx=halfmaxwidth;
@@ -513,7 +513,7 @@ class HDNewGameLoadoutMenu:HDLoadoutMenu{
 				addarrows|=1|2;
 				textstart=cursx-halfmaxwidth;
 				textend=cursx+halfmaxwidth;
-			}else if(cursx<halfmaxwidth){
+			}else if(cursx<=halfmaxwidth){
 				//beginning
 				ws=ws.left(maxwidth);
 				addarrows|=2;
@@ -526,12 +526,12 @@ class HDNewGameLoadoutMenu:HDLoadoutMenu{
 				textstart=textend-maxwidth;
 			}
 		}
-		int wsline=SmallFont.GetHeight()*CleanYFac_1*8;
+		int wsline=SmallFont.GetHeight()*CleanYFac_1*11;
 		int wswidth=SmallFont.StringWidth(ws) * CleanXfac_1;
 		int wsxpos=(screen.GetWidth() - wswidth) / 2;
 		screen.DrawText(SmallFont,
 			different?OptionMenuSettings.mFontColorHeader:OptionMenuSettings.mFontColorValue,
-			wsxpos,wsline,ws,DTA_CleanNoMove_1,true
+			wsxpos,wsline,"\cp"..ws,DTA_CleanNoMove_1,true
 		);
 
 		blinktimer++;
@@ -539,7 +539,7 @@ class HDNewGameLoadoutMenu:HDLoadoutMenu{
 			if(addarrows&1)screen.DrawText(SmallFont,
 				OptionMenuSettings.mFontColor,
 				wsxpos-SmallFont.StringWidth("<<  ") * CleanXfac_1,
-				wsline,"<<  ",DTA_CleanNoMove_1, true
+				wsline,"<<  ",DTA_CleanNoMove_1,true
 			);
 			if(addarrows&2)screen.DrawText(SmallFont,
 				OptionMenuSettings.mFontColor,
@@ -547,19 +547,16 @@ class HDNewGameLoadoutMenu:HDLoadoutMenu{
 				wsline,"  >>",DTA_CleanNoMove_1, true
 			);
 		}
+
 		string s="Loadout no.  "..cursy;
-		if(statustimer>0){
-			statustimer--;
-			s=statusstring;
-		}
 		screen.DrawText(SmallFont,OptionMenuSettings.mTitleColor,
 			(screen.GetWidth() - SmallFont.StringWidth(s) * CleanXfac_1) / 2,
-			SmallFont.GetHeight()*CleanYFac_1*9 + clfp3,
+			SmallFont.GetHeight()*CleanYFac_1*8 + clfp3,
 			s,DTA_CleanNoMove_1, true
 		);
-		screen.DrawText(SmallFont,OptionMenuSettings.mFontColorHighlight,
-			(screen.GetWidth() - SmallFont.StringWidth(loadoutname) * CleanXfac_1) / 2,
-			SmallFont.GetHeight()*CleanYFac_1*11 + clfp3,
+		screen.DrawText(BigFont,OptionMenuSettings.mFontColorHighlight,
+			(screen.GetWidth() - BigFont.StringWidth(loadoutname) * CleanXfac_1) / 2,
+			SmallFont.GetHeight()*CleanYFac_1*9 + clfp3,
 			loadoutname,DTA_CleanNoMove_1, true
 		);
 		s=translatedloadout;
