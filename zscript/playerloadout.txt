@@ -257,16 +257,13 @@ extend class HDPlayerPawn{
 			return;
 		}
 
-		//special conditions that replace or modify the input string
-
 		array<string> whichitem;whichitem.clear();
 		array<int> howmany;howmany.clear();
 		array<string> loadlist;loadlist.clear();
 
 		string firstwep="";
 
-		loadinput.replace(" ","");
-		loadinput.tolower();
+		loadinput=HDMath.GetLoadoutStrings(loadinput);
 		loadinput.split(loadlist,"-");
 		loadlist[0].split(whichitem,",");
 		if(hd_debug)A_Log("Loadout: "..loadlist[0]);

@@ -374,6 +374,16 @@ struct HDMath{
 		else if(angle>=293&&angle<=338)return("southeast");
 		return("east");
 	}
+	//return a loadout and its name, e.g. "Robber: pis, bak"
+	static string,string GetLoadoutStrings(string input,bool keepspaces=false){
+		int colon=input.indexof(":");
+		string loadoutname="";
+		if(colon>0)loadoutname=input.left(colon);
+		string loadout=input.mid(colon+1);
+		loadout.tolower();
+		if(!keepspaces)loadout.replace(" ","");
+		return loadout,loadoutname;
+	}
 }
 struct HDF play{
 	//transfer inventory: one gets, the other loses
