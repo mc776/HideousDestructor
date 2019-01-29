@@ -1,3 +1,6 @@
+enum HDLoadoutMenuNums{
+	HD_MAXLOADOUTS=5,
+}
 class HDLoadoutMenu:OptionMenu{
 	array<string> refids;
 	array<string> nicenames;
@@ -25,7 +28,7 @@ class HDLoadoutMenu:OptionMenu{
 
 		string curclass=cvar.findcvar("playerclass").getstring();
 		if(curclass.left(7)~=="Custom "){
-			cursy=clamp(curclass.mid(7,8).toint(),1,5);
+			cursy=clamp(curclass.mid(7,8).toint(),1,HD_MAXLOADOUTS);
 		}
 
 		int jw=0;int jp=0;
@@ -84,7 +87,7 @@ class HDLoadoutMenu:OptionMenu{
 				statustext("\cjENTER or Ctrl+S to save, or ESC to abort.");
 			}else{
 				cursy--;
-				if(cursy<1)cursy=5;
+				if(cursy<1)cursy=HD_MAXLOADOUTS;
 				statustimer=0;
 				resetws();
 			}
@@ -94,7 +97,7 @@ class HDLoadoutMenu:OptionMenu{
 				statustext("\cjENTER or Ctrl+S to save, or ESC to abort.");
 			}else{
 				cursy++;
-				if(cursy>5)cursy=1;
+				if(cursy>HD_MAXLOADOUTS)cursy=1;
 				statustimer=0;
 				resetws();
 			}
