@@ -247,17 +247,17 @@ extend class HDPlayerPawn{
 			&&hd_forceloadout!="false"
 			&&hd_forceloadout!="none"
 		)loadinput=hd_forceloadout;
-		else if(loadinput=="doomguy")loadinput="pis,9152,9mm4";
+		if(loadinput.left(3)~=="hd_"){
+			loadinput=cvar.getcvar(loadinput,player).getstring();
+		}
 		if(loadinput=="")return;
+		if(loadinput~=="doomguy")loadinput="pis,9152,9mm4";
 		if(loadinput~=="insurgent"){
 			A_GiveInventory("InsurgentLoadout");
 			return;
 		}
 
 		//special conditions that replace or modify the input string
-		if(loadinput.left(3)~=="hd_"){
-			loadinput=cvar.getcvar(loadinput,player).getstring();
-		}
 
 		array<string> whichitem;whichitem.clear();
 		array<int> howmany;howmany.clear();
