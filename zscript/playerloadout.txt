@@ -250,6 +250,7 @@ extend class HDPlayerPawn{
 		if(loadinput.left(3)~=="hd_"){
 			loadinput=cvar.getcvar(loadinput,player).getstring();
 		}
+		loadinput=HDMath.GetLoadoutStrings(loadinput);
 		if(loadinput=="")return;
 		if(loadinput~=="doomguy")loadinput="pis,9152,9mm4";
 		if(loadinput~=="insurgent"){
@@ -263,7 +264,6 @@ extend class HDPlayerPawn{
 
 		string firstwep="";
 
-		loadinput=HDMath.GetLoadoutStrings(loadinput);
 		loadinput.split(loadlist,"-");
 		loadlist[0].split(whichitem,",");
 		if(hd_debug)A_Log("Loadout: "..loadlist[0]);
