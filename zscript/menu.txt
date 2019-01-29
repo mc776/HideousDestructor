@@ -23,6 +23,11 @@ class HDLoadoutMenu:OptionMenu{
 		statustimer=0;
 		reflist="";viewlist=false;
 
+		string curclass=cvar.findcvar("playerclass").getstring();
+		if(curclass.left(7)~=="Custom "){
+			cursy=clamp(curclass.mid(7,8).toint(),1,5);
+		}
+
 		int jw=0;int jp=0;
 		for(int i=0;i<allactorclasses.size();i++){
 			class<actor> reff=allactorclasses[i];
@@ -170,6 +175,17 @@ class HDLoadoutMenu:OptionMenu{
 					}else if(inp~=="f"){
 						if(viewlist)viewlist=false;else viewlist=true;
 						tlcursy=0;
+					}
+					else if(inp~=="n"){
+						if(
+							workingstring==cvar.findcvar("hd_loadout"..cursy).getstring()
+						){
+							Menu.SetMenu("PlayerclassMenu");
+							MenuSound("menu/choose");
+						}else{
+							statustext("\ca- Save your loadout first!");
+						}
+						return true;
 					}
 				}else if(ev.KeyChar){
 					workingstring=workingstring.left(cursx)..inp..workingstring.mid(cursx);
