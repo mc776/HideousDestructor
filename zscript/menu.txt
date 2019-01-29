@@ -398,6 +398,7 @@ class HDNewGameLoadoutMenu:HDLoadoutMenu{
 	override void Init(menu parent,optionmenudescriptor desc){
 		super.Init(parent,desc);
 		isnewgamemenu=true;
+		translatedloadout=gettranslatedloadout(workingstring);
 	}
 	override bool MenuEvent(int mkey, bool fromcontroller){
 		int startedAt = mDesc.mSelectedItem;
