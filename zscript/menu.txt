@@ -111,8 +111,8 @@ class HDLoadoutMenu:OptionMenu{
 		case MKEY_Enter:
 			if(different)savechanges();
 			else{
-				cvar.findcvar("playerclass").setstring("Custom "..cursy);
-				statustext("\cxLoadout set to Custom no. "..cursy);
+				cvar.findcvar("playerclass").setstring("Loadout "..cursy);
+				statustext("\cxLoadout set to number "..cursy);
 			}
 			break;
 		case MKEY_PageUp:
@@ -191,7 +191,7 @@ class HDLoadoutMenu:OptionMenu{
 							workingstring==cvar.findcvar("hd_loadout"..cursy).getstring()
 						){
 							MenuSound("menu/choose");
-							cvar.findcvar("playerclass").setstring("Custom "..cursy);
+							cvar.findcvar("playerclass").setstring("Loadout "..cursy);
 							Menu.SetMenu("PlayerclassMenu");
 						}else{
 							statustext("\ca- Save your loadout first!");
@@ -241,7 +241,6 @@ class HDLoadoutMenu:OptionMenu{
 		return different;
 	}
 	virtual string GetTranslatedLoadout(string input){
-		if(input=="")return "";
 		string ttl="";
 		if(viewlist)ttl=reflist;
 		else{
@@ -249,39 +248,47 @@ class HDLoadoutMenu:OptionMenu{
 			array<string>bpitems;bpitems.clear();
 			string finalinput;
 			[finalinput,loadoutname]=HDMath.GetLoadoutStrings(input);
-			finalinput.split(items,"-");
-			bool inbp=items.size()>1;
-			if(inbp)items[1].split(bpitems,",");
-			string iitems=items[0];items.clear();
-			iitems.split(items,",");
-			for(int i=0;i<items.size();i++){
-				string refid=items[i].left(3);
-				if(refid=="bak"){
-					inbp=true;
-					continue;
-				}
-				int whichindex=refids.find(refid);
-				if(whichindex>=refids.size())continue;
-				int howmany=max((items[i].mid(3,items[i].length())).toint(10),1);
-				ttl=ttl..(i?"\n":"")..howmany.." x    "..nicenames[whichindex];
-			}
-			if(inbp){
-				ttl=ttl.."\n\nIN BACKPACK:";
-				if(!bpitems.size())ttl=ttl.."\n  <nothing>";
-				else for(int i=0;i<bpitems.size();i++){
-					string refid=bpitems[i].left(3);
-					int whichindex=refids.find(refid);
-					if(
-						whichindex>=refids.size()
-						||nicenames[whichindex]==""
-					){
-						if(bpitems.size()==1){
-							ttl=ttl.."\n  <nothing>";
-							break;
-						}else continue;
+			if(finalinput=="doomguy"){
+				ttl="<pistol and fifty bullets.>";
+			}else if(finalinput=="insurgent"){
+				ttl="it's a surprise...";
+			}else if(finalinput==""){
+				ttl="nothing";
+			}else{
+				finalinput.split(items,"-");
+				bool inbp=items.size()>1;
+				if(inbp)items[1].split(bpitems,",");
+				string iitems=items[0];items.clear();
+				iitems.split(items,",");
+				for(int i=0;i<items.size();i++){
+					string refid=items[i].left(3);
+					if(refid=="bak"){
+						inbp=true;
+						continue;
 					}
-					int howmany=max((bpitems[i].mid(3,bpitems[i].length())).toint(10),1);
-					ttl=ttl.."\n  "..howmany.." x    "..nicenames[whichindex];
+					int whichindex=refids.find(refid);
+					if(whichindex>=refids.size())continue;
+					int howmany=max((items[i].mid(3,items[i].length())).toint(10),1);
+					ttl=ttl..(i?"\n":"")..howmany.." x    "..nicenames[whichindex];
+				}
+				if(inbp){
+					ttl=ttl.."\n\nIN BACKPACK:";
+					if(!bpitems.size())ttl=ttl.."\n  <nothing>";
+					else for(int i=0;i<bpitems.size();i++){
+						string refid=bpitems[i].left(3);
+						int whichindex=refids.find(refid);
+						if(
+							whichindex>=refids.size()
+							||nicenames[whichindex]==""
+						){
+							if(bpitems.size()==1){
+								ttl=ttl.."\n  <nothing>";
+								break;
+							}else continue;
+						}
+						int howmany=max((bpitems[i].mid(3,bpitems[i].length())).toint(10),1);
+						ttl=ttl.."\n  "..howmany.." x    "..nicenames[whichindex];
+					}
 				}
 			}
 		}
@@ -428,7 +435,7 @@ class HDNewGameLoadoutMenu:HDLoadoutMenu{
 			return true;
 		case MKEY_Enter:
 			MenuSound("menu/choose");
-			cvar.findcvar("playerclass").setstring("Custom "..cursy);
+			cvar.findcvar("playerclass").setstring("Loadout "..cursy);
 			Menu.SetMenu("PlayerclassMenu");
 			return true;
 		case MKEY_PageUp:
@@ -473,7 +480,7 @@ class HDNewGameLoadoutMenu:HDLoadoutMenu{
 		if(!cplayer)return;
 		int clfp3=CleanYFac_1*3;
 
-		string hs="Select a Loadout:";
+		string hs="Select a Loadout:\n\cuUp/Down to select\nEnter to confirm";
 		screen.DrawText(SmallFont,
 			OptionMenuSettings.mFontColor,
 			(screen.GetWidth() - SmallFont.StringWidth(hs) * CleanXfac_1) / 2,
@@ -482,7 +489,10 @@ class HDNewGameLoadoutMenu:HDLoadoutMenu{
 		);
 
 		string ws=workingstring.mid(workingstring.indexof(":")+1);
-		if(ws.charat(0)==" ")ws=ws.mid(1);
+		while(ws.charat(0)==" ")ws=ws.mid(1);
+
+		if(ws=="")ws="\cu<nothing>";
+
 		int tempcursx=cursx;
 		int maxwidth=screen.GetWidth()*0.6/(SmallFont.StringWidth("_")*CleanXfac_1);
 		int halfmaxwidth=maxwidth/2;
