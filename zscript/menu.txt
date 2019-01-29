@@ -15,12 +15,14 @@ class HDLoadoutMenu:OptionMenu{
 	int tlcursy;
 	bool different;
 	bool viewlist;
+	bool isnewgamemenu;
 	override void Init(menu parent,optionmenudescriptor desc){
 		super.Init(parent,desc);
 		refids.clear();
 		nicenames.clear();
 		cursx=0;cursy=1;
 		tlcursy=0;
+		isnewgamemenu=false;
 		different=false;
 		statusstring="Now editing loadout no. "..cursy;
 		statustimer=0;
@@ -89,6 +91,7 @@ class HDLoadoutMenu:OptionMenu{
 				cursy--;
 				if(cursy<1)cursy=HD_MAXLOADOUTS;
 				statustimer=0;
+				MenuSound("menu/cursor");
 				resetws();
 			}
 			break;
@@ -99,6 +102,7 @@ class HDLoadoutMenu:OptionMenu{
 				cursy++;
 				if(cursy>HD_MAXLOADOUTS)cursy=1;
 				statustimer=0;
+				MenuSound("menu/cursor");
 				resetws();
 			}
 			break;
@@ -148,6 +152,7 @@ class HDLoadoutMenu:OptionMenu{
 			case UIEvent.Key_F12:
 				break;
 			case UIEvent.Key_F10:
+				MenuSound("menu/clear");
 				resetws();
 				close();
 				break;
@@ -183,8 +188,9 @@ class HDLoadoutMenu:OptionMenu{
 						if(
 							workingstring==cvar.findcvar("hd_loadout"..cursy).getstring()
 						){
-							Menu.SetMenu("PlayerclassMenu");
 							MenuSound("menu/choose");
+							cvar.findcvar("playerclass").setstring("Custom "..cursy);
+							Menu.SetMenu("PlayerclassMenu");
 						}else{
 							statustext("\ca- Save your loadout first!");
 						}
@@ -283,6 +289,7 @@ class HDLoadoutMenu:OptionMenu{
 				break;
 			}else ttl=ttl.mid(brk+1);
 		}
+		if(isnewgamemenu)return ttl;
 		ttl="\n\cu  Ctrl+F "..(viewlist?"preview":"refID list").."   PgUp/PgDn scroll\cj\n"..ttl;
 		if(viewlist)ttl="\cnC O D E   R E F E R E N C E   L I S T            "..ttl;
 		       else ttl="\ceL O A D O U T   P R E V I E W                    "..ttl;
@@ -349,7 +356,7 @@ class HDLoadoutMenu:OptionMenu{
 			if(blinktimer>6)blinktimer=0;
 			screen.DrawText(SmallFont,OptionMenuSettings.mFontColorHighlight,
 				wsxpos+SmallFont.StringWidth(ws.left(tempcursx))*CleanXfac_1,
-				SmallFont.GetHeight()*CleanYFac_1*14 + clfp3,
+				wsline + clfp3,
 				"_",DTA_CleanNoMove_1,true
 			);
 		}
@@ -379,6 +386,161 @@ class HDLoadoutMenu:OptionMenu{
 		screen.DrawText(SmallFont,OptionMenuSettings.mFontColorValue,
 			(screen.GetWidth() - SmallFont.StringWidth (s) * CleanXfac_1) / 2,
 			SmallFont.GetHeight()*CleanYFac_1*18,
+			s,DTA_CleanNoMove_1, true
+		);
+	}
+}
+
+
+
+
+class HDNewGameLoadoutMenu:HDLoadoutMenu{
+	override void Init(menu parent,optionmenudescriptor desc){
+		super.Init(parent,desc);
+		isnewgamemenu=true;
+	}
+	override bool MenuEvent(int mkey, bool fromcontroller){
+		int startedAt = mDesc.mSelectedItem;
+		switch(mkey){
+		case MKEY_Up:
+			cursy--;
+			if(cursy<1)cursy=HD_MAXLOADOUTS;
+			statustimer=0;
+			MenuSound("menu/cursor");
+			resetws();
+			return true;
+		case MKEY_Down:
+			cursy++;
+			if(cursy>HD_MAXLOADOUTS)cursy=1;
+			statustimer=0;
+			MenuSound("menu/cursor");
+			resetws();
+			return true;
+		case MKEY_Enter:
+			MenuSound("menu/choose");
+			cvar.findcvar("playerclass").setstring("Custom "..cursy);
+			Menu.SetMenu("PlayerclassMenu");
+			return true;
+		case MKEY_PageUp:
+			tlcursy=max(0,tlcursy-1);
+			break;
+		case MKEY_PageDown:
+			tlcursy++;
+			break;
+		}
+		translatedloadout=gettranslatedloadout(workingstring);
+		return super.menuevent(mkey,fromcontroller);
+	}
+	override bool OnUIEvent(UIEvent ev){
+		if(ev.Type==UIEvent.Type_KeyDown){
+			switch(ev.KeyChar){
+			case UIEvent.Key_Home:
+				cursx=0;
+				return true;
+			case UIEvent.Key_End:
+				cursx=workingstring.length();
+				return true;
+			case UIEvent.Key_F10:
+				MenuSound("menu/clear");
+				resetws();
+				close();
+				return true;
+			default:
+				return true;
+			}
+			translatedloadout=gettranslatedloadout(workingstring);
+		}
+		return false;
+	}
+	override void Drawer(){
+		Optionmenu.Drawer();
+		playerinfo cplayer=players[consoleplayer];
+		if(!cplayer)return;
+		int clfp3=CleanYFac_1*3;
+
+		string hs="Select a Loadout:";
+		screen.DrawText(SmallFont,
+			OptionMenuSettings.mFontColor,
+			(screen.GetWidth() - SmallFont.StringWidth(hs) * CleanXfac_1) / 2,
+			SmallFont.GetHeight()*CleanYFac_1*4 - clfp3,
+			hs,DTA_CleanNoMove_1, true
+		);
+
+		string ws=workingstring;
+		int tempcursx=cursx;
+		int maxwidth=screen.GetWidth()*0.6/(SmallFont.StringWidth("_")*CleanXfac_1);
+		int halfmaxwidth=maxwidth/2;
+		int addarrows=0;
+		int textstart=0;
+		int textend=ws.length();
+		if(ws.length()>maxwidth){
+			int wsl=ws.length();
+			if(
+				cursx>=halfmaxwidth
+				&&wsl-cursx>=halfmaxwidth
+			){
+				//enough space on both sides of cursor
+				tempcursx=halfmaxwidth;
+				ws=ws.mid(cursx-halfmaxwidth,maxwidth);
+				addarrows|=1|2;
+				textstart=cursx-halfmaxwidth;
+				textend=cursx+halfmaxwidth;
+			}else if(cursx<halfmaxwidth){
+				//beginning
+				ws=ws.left(maxwidth);
+				addarrows|=2;
+				textend=maxwidth;
+			}else{
+				//end
+				ws=ws.mid(ws.length()-maxwidth);
+				tempcursx-=workingstring.length()-ws.length();
+				addarrows|=1;
+				textstart=textend-maxwidth;
+			}
+		}
+		int wsline=SmallFont.GetHeight()*CleanYFac_1*8;
+		int wswidth=SmallFont.StringWidth(ws) * CleanXfac_1;
+		int wsxpos=(screen.GetWidth() - wswidth) / 2;
+		screen.DrawText(SmallFont,
+			different?OptionMenuSettings.mFontColorHeader:OptionMenuSettings.mFontColorValue,
+			wsxpos,wsline,ws,DTA_CleanNoMove_1,true
+		);
+
+		blinktimer++;
+		if(blinktimer>3){
+			if(blinktimer>6)blinktimer=0;
+			screen.DrawText(SmallFont,OptionMenuSettings.mFontColor,
+				wsxpos+SmallFont.StringWidth(ws.left(tempcursx))*CleanXfac_1,
+				wsline + clfp3,
+				"_",DTA_CleanNoMove_1,true
+			);
+		}
+		if(addarrows&&blinktimer>2){
+			if(addarrows&1)screen.DrawText(SmallFont,
+				OptionMenuSettings.mFontColor,
+				wsxpos-SmallFont.StringWidth("<<  ") * CleanXfac_1,
+				wsline,"<<  ",DTA_CleanNoMove_1, true
+			);
+			if(addarrows&2)screen.DrawText(SmallFont,
+				OptionMenuSettings.mFontColor,
+				wsxpos+wswidth,
+				wsline,"  >>",DTA_CleanNoMove_1, true
+			);
+		}
+		string s="Loadout no.  "..cursy;
+		if(statustimer>0){
+			statustimer--;
+			s=statusstring;
+		}
+		screen.DrawText(SmallFont,OptionMenuSettings.mTitleColor,
+			(screen.GetWidth() - SmallFont.StringWidth(s) * CleanXfac_1) / 2,
+			SmallFont.GetHeight()*CleanYFac_1*10 + clfp3,
+			s,DTA_CleanNoMove_1, true
+		);
+		s=translatedloadout;
+		screen.DrawText(SmallFont,OptionMenuSettings.mFontColorValue,
+			(screen.GetWidth() - SmallFont.StringWidth (s) * CleanXfac_1) / 2,
+			SmallFont.GetHeight()*CleanYFac_1*13,
 			s,DTA_CleanNoMove_1, true
 		);
 	}
