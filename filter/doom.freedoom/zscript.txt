@@ -30,3 +30,27 @@ class FreeWormCC:Demon{
 		stop;
 	}
 }
+class FreeZombieCC:ShotgunGuy{
+	default{
+		translation "FreedoomGreycoat";
+	}
+	states{
+	see:
+		SPOS ABCD 4;
+		loop;
+	missile:
+		POSS E 10;
+		POSS F 1;
+		POSS E 2;
+		POSS F 1;
+		POSS E 2;
+		POSS F 1;
+		POSS E 10;
+		goto see;
+	death:
+		SPOS H 5 A_Scream();
+		SPOS IJK 5;
+		SPOS L 40;
+		stop;
+	}
+}
