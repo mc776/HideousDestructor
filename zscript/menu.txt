@@ -254,7 +254,6 @@ class HDLoadoutMenu:OptionMenu{
 			string lon=input.left(poundex);
 			loadoutpic=texman.checkfortexture(lon,texman.type_any);
 			if(poundex>=0)input=input.mid(poundex+2);
-			if(!loadoutpic.isvalid())loadoutpic=texman.checkfortexture("AMMOA0",texman.type_sprite);
 
 			string finalinput;
 			[finalinput,loadoutname]=HDMath.GetLoadoutStrings(input);
@@ -301,7 +300,6 @@ class HDLoadoutMenu:OptionMenu{
 					}
 				}
 			}
-			if(loadoutname=="")loadoutname="Loadout "..cursy;
 		}
 		int skiplines=tlcursy;
 		while(skiplines>0){
@@ -433,6 +431,12 @@ class HDNewGameLoadoutMenu:HDLoadoutMenu{
 		isnewgamemenu=true;
 		translatedloadout=gettranslatedloadout(workingstring);
 		cursx=workingstring.length();
+	}
+	override string GetTranslatedLoadout(string input){
+		string sss=super.GetTranslatedLoadout(input);
+		if(loadoutname=="")loadoutname="Loadout "..cursy;
+		if(!loadoutpic.isvalid())loadoutpic=texman.checkfortexture("AMMOA0",texman.type_sprite);
+		return sss;
 	}
 	override bool MenuEvent(int mkey, bool fromcontroller){
 		int startedAt = mDesc.mSelectedItem;
