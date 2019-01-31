@@ -249,6 +249,12 @@ class HDLoadoutMenu:OptionMenu{
 		else{
 			array<string>items;items.clear();
 			array<string>bpitems;bpitems.clear();
+
+			int poundex=input.indexof("##");
+			string lon=input.left(poundex);
+			loadoutpic=texman.checkfortexture(lon,texman.type_any);
+			if(poundex>=0)input=input.mid(poundex+2);
+
 			string finalinput;
 			[finalinput,loadoutname]=HDMath.GetLoadoutStrings(input);
 			if(finalinput=="doomguy"){
@@ -294,10 +300,6 @@ class HDLoadoutMenu:OptionMenu{
 					}
 				}
 			}
-			int poundex=loadoutname.indexof("##");
-			string lon=loadoutname.left(poundex);
-			loadoutpic=texman.checkfortexture(lon,texman.type_any);
-			if(poundex>=0)loadoutname=loadoutname.mid(poundex+2);
 		}
 		int skiplines=tlcursy;
 		while(skiplines>0){
