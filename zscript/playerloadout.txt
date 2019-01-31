@@ -250,7 +250,10 @@ extend class HDPlayerPawn{
 		if(loadinput.left(3)~=="hd_"){
 			loadinput=cvar.getcvar(loadinput,player).getstring();
 		}
-		loadinput=HDMath.GetLoadoutStrings(loadinput);
+		string loadoutname;
+		[loadinput,loadoutname]=HDMath.GetLoadoutStrings(loadinput);
+		loadoutname=loadoutname.mid(loadoutname.indexof("##")+2);
+		if(loadoutname!="")A_Log("Starting Loadout: "..loadoutname,true);
 		if(loadinput=="")return;
 		if(loadinput~=="doomguy")loadinput="pis,9152,9mm4";
 		if(loadinput~=="insurgent"){
