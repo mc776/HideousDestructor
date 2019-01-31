@@ -254,6 +254,7 @@ class HDLoadoutMenu:OptionMenu{
 			string lon=input.left(poundex);
 			loadoutpic=texman.checkfortexture(lon,texman.type_any);
 			if(poundex>=0)input=input.mid(poundex+2);
+			if(!loadoutpic.isvalid())loadoutpic=texman.checkfortexture("AMMOA0",texman.type_sprite);
 
 			string finalinput;
 			[finalinput,loadoutname]=HDMath.GetLoadoutStrings(input);
@@ -262,7 +263,7 @@ class HDLoadoutMenu:OptionMenu{
 			}else if(finalinput=="insurgent"){
 				ttl="It's a surprise...";
 			}else if(finalinput==""){
-				ttl="Nothing.";
+				ttl="Because showing up is half the battle.";
 			}else{
 				finalinput.split(items,"-");
 				bool inbp=items.size()>1;
@@ -300,6 +301,7 @@ class HDLoadoutMenu:OptionMenu{
 					}
 				}
 			}
+			if(loadoutname=="")loadoutname="Loadout "..cursy;
 		}
 		int skiplines=tlcursy;
 		while(skiplines>0){
