@@ -246,7 +246,10 @@ extend class HDPlayerPawn{
 			&&hd_forceloadout!="0"
 			&&hd_forceloadout!="false"
 			&&hd_forceloadout!="none"
-		)loadinput=hd_forceloadout;
+		){
+			loadinput=hd_forceloadout;
+			A_Log("Loadout settings forced by administrator:  "..hd_forceloadout,true);
+		}
 		if(loadinput.left(3)~=="hd_"){
 			loadinput=cvar.getcvar(loadinput,player).getstring();
 		}
