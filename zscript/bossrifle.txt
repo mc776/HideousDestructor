@@ -26,6 +26,7 @@ class BossRifle:HDWeapon{
 		hdweapon.barrelsize 40,1,2;
 		hdweapon.refid HDLD_BOSS;
 		hdweapon.nicename "Boss Rifle";
+		inventory.maxamount 3; //1 use user setting; 2 custom chamber; 3 regular
 	}
 	action void A_ChamberGrit(int amt,bool onlywhileempty=false){
 		int ibg=invoker.weaponstatus[BOSSS_GRIME];
@@ -43,15 +44,35 @@ class BossRifle:HDWeapon{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		weaponstatus[BOSSS_GRIME]=random(0,10);
+
+		switch(amount){
+		case 3:
+			weaponstatus[0]&=~BOSSF_CUSTOMCHAMBER;
+			break;
+		case 2:
+			weaponstatus[0]|=BOSSF_CUSTOMCHAMBER;
+			break;
+		default:
+			if(
+				!random(0,31)
+				||(
+					owner&&owner.player
+					&&cvar.getcvar("hd_bosscustomchamber",owner.player).getbool()
+				)
+			){
+				weaponstatus[0]|=BOSSF_CUSTOMCHAMBER;
+			}else weaponstatus[0]&=~BOSSF_CUSTOMCHAMBER;
+			break;
+		}
+		amount=1;maxamount=1;
+
+		if(weaponstatus[0]&BOSSF_CUSTOMCHAMBER)weaponstatus[BOSSS_GRIME]=random(0,5);
+		else weaponstatus[BOSSS_GRIME]=random(0,10);
+
 		if(owner&&owner.player){
 			if(cvar.getcvar("hd_bossfrontreticle",owner.player).getbool())
 				weaponstatus[0]|=BOSSF_FRONTRETICLE;
 				else weaponstatus[0]&=~BOSSF_FRONTRETICLE;
-			if(cvar.getcvar("hd_bosscustomchamber",owner.player).getbool()){
-				weaponstatus[0]|=BOSSF_CUSTOMCHAMBER;
-				weaponstatus[BOSSS_GRIME]=random(0,5);
-			}else weaponstatus[0]&=~BOSSF_CUSTOMCHAMBER;
 			if(weaponstatus[0]&BOSSF_FRONTRETICLE)weaponstatus[BOSSS_ZOOM]=
 				clamp(cvar.getcvar("hd_libzoom",owner.player).getint(),12,40);
 				else weaponstatus[BOSSS_ZOOM]=
