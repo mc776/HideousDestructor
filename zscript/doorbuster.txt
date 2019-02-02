@@ -119,7 +119,7 @@ class doordestroyer:hdactor{
 			othersector=hdmath.oppositesector(dlt.hitline,dlt.hitsector);
 			//figure out if it hit above or below: 0 top, 1 middle, 2 bottom
 			if(dlt.linepart==1){
-				//I've always hated polyobjects.
+				//polyobjs get special treatment
 				if(
 					dlt.hitline.special==Polyobj_DoorSlide
 					||dlt.hitline.special==Polyobj_DoorSwing
@@ -139,6 +139,21 @@ class doordestroyer:hdactor{
 					||dlt.hitline.special==Polyobj_StartLine
 					||dlt.hitline.special==Polyobj_Stop
 				){
+					//see if we're going to kill or damage
+					vector2 vdif=dlt.hitline.v1.p-dlt.hitline.v2.p;
+					double durability=vdif dot vdif;
+					double damageinflicted=maxdepth*maxwidth;
+					bool blowitup=damageinflicted>frandom(5.,durability);
+					if(hd_debug)caller.A_Log(damageinflicted.."   "..durability);
+
+					if(!blowitup){
+						if(!random(0,5)){
+							actor puf=spawn("PenePuff",dlt.hitlocation-dlt.hitdir*2,ALLOW_REPLACE);
+							puf.vel-=dlt.hitdir;
+						}
+						return false;
+					}
+
 					dlt.hitline.special=Polyobj_MoveTo;
 					dlt.hitline.args[1]=32000;
 					dlt.hitline.args[2]=32000;
