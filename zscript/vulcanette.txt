@@ -236,7 +236,7 @@ class Vulcanette:HDWeapon{
 				invoker.weaponstatus[0]&VULCF_FAST
 				&&invoker.weaponstatus[VULCS_BATTERY]>=4
 				&&invoker.vulcchamber[0]
-				&&invoker.breakchance<random(200,5000)
+				&&invoker.breakchance<random(100,5000)
 			){
 				A_SetTics(1);
 				invoker.weaponstatus[0]|=VULCF_SPINNINGFAST;
@@ -597,10 +597,10 @@ class Vulcanette:HDWeapon{
 		invoker.breakchance+=random(0,random(0,invoker.weaponstatus[VULCS_HEAT]/100));
 		if(invoker.vulcchamber[0]!=1){ //0 is empty, 2 is broken
 			if(invoker.vulcchamber[0])invoker.breakchance+=random(0,15);
-			else if(!random(0,15))invoker.breakchance++;
+			else if(!random(0,63))invoker.breakchance++;
 			return;
 		}
-		if(random(random(1,5000),5000)<invoker.breakchance){
+		if(random(random(1,500),5000)<invoker.breakchance){
 			setweaponstate("nope");
 			return;
 		}
