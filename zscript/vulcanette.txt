@@ -20,7 +20,7 @@ class Vulcanette:HDWeapon{
 		//$Sprite "VULCA0"
 
 		scale 0.8;
-		inventory.pickupmessage "You got the Vulcanette! Now it's coward killing time!";
+		inventory.pickupmessage "You got the Vulcanette!";
 		weapon.selectionorder 40;
 		weapon.slotnumber 4;
 		weapon.kickback 24;
@@ -32,6 +32,18 @@ class Vulcanette:HDWeapon{
 		hdweapon.barrelsize 30,3,4;
 		hdweapon.refid HDLD_VULCETT;
 		hdweapon.nicename "Vulcanette";
+	}
+	override string pickupmessage(){
+		string msg=super.pickupmessage();
+		if(!breakchance)msg=msg.." It's coward killing time!";
+		else if(breakchance>500)msg=msg.." that might be salvaged for ammo.";
+		else if(breakchance>200)msg=msg.." in dire need of repair.";
+		else if(breakchance>100)msg=msg..". It has seen better days.";
+		if(breakchance>100){
+			msg.replace("!","");
+			msg.replace("the","a");
+		}
+		return msg;
 	}
 	override void tick(){
 		if(justchucked)breakchance+=random(10,50);
@@ -159,9 +171,20 @@ class Vulcanette:HDWeapon{
 			);
 		}
 	}
+	int permadamage;
 	override void consolidate(){
 		CheckBFGCharge(VULCS_BATTERY);
-		breakchance=random(breakchance*2/3,breakchance);
+		if(breakchance>0){
+			if(breakchance>permadamage)permadamage+=max(1,breakchance>>7);
+			int oldbreakchance=breakchance;
+			breakchance=random(breakchance*2/3,breakchance)+permadamage;
+			if(!owner)return;
+			string msg="You try to unwarp some of the parts of your Vulcanette";
+			if(breakchance>oldbreakchance)msg=msg..", but only made things worse.";
+			else if(breakchance<oldbreakchance*9/10)msg=msg..". It seems to scroll more smoothly now.";
+			else msg=msg..", to little if any avail.";
+			owner.A_Log(msg,true);
+		}
 	}
 	override void DropOneAmmo(int amt){
 		if(owner){
@@ -594,7 +617,7 @@ class Vulcanette:HDWeapon{
 	//move this somewhere sensible
 	action void VulcShoot(bool flash2=false){
 		if(hd_debug)A_Log("Break chance: "..invoker.breakchance);
-		invoker.breakchance+=random(0,random(0,invoker.weaponstatus[VULCS_HEAT]/100));
+		invoker.breakchance+=random(0,random(0,invoker.weaponstatus[VULCS_HEAT]/256));
 		if(invoker.vulcchamber[0]!=1){ //0 is empty, 2 is broken
 			if(invoker.vulcchamber[0])invoker.breakchance+=random(0,15);
 			else if(!random(0,63))invoker.breakchance++;
