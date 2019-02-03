@@ -324,6 +324,43 @@ class DragonGuard:Chaingunguy{
 		CPOS G 3 A_Pain();
 		CPOS G 0 A_Jump(196,"see","scan");
 		goto missile;
+
+
+	death:
+		CPOS H 5{
+			hdmobai.CorpseFlags(self);
+			A_SpawnItemEx("tempshield",0,0,0,vel.x,vel.y,vel.z,0,40);
+		}
+		CPOS I 5{
+			A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
+			A_Scream();
+		}
+		CPOS J 5{
+			A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
+			A_SpawnItemEx("tempshield2",0,0,0,vel.x,vel.y,vel.z,0,40);
+			A_VulcNoBlocking();
+		}
+		CPOS KL 5;
+		CPOS M 5;
+	dead:
+		CPOS M 3;
+		CPOS N 5 canraise{
+			if(abs(vel.z)>1)setstatelabel("dead");
+		}wait;
+	xdeathbrewtlelulz:
+		CPOS L 3{
+			bshootable=false;
+			A_GiveInventory("IsGibbed");
+		}
+		CPOS KO 3;
+		CPOS P 3{
+			A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
+			A_XScream();
+		}
+		CPOS R 2 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
+		CPOS QRS 5 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
+		goto xdead;
+
 	xdeath:
 		CPOS O 5{hdmobai.corpseflags(self,true);}
 		CPOS P 3{

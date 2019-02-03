@@ -435,7 +435,39 @@ class HDNewGameLoadoutMenu:HDLoadoutMenu{
 	override string GetTranslatedLoadout(string input){
 		string sss=super.GetTranslatedLoadout(input);
 		if(loadoutname=="")loadoutname="Loadout "..cursy;
-		if(!loadoutpic.isvalid())loadoutpic=texman.checkfortexture("AMMOA0",texman.type_sprite);
+		if(!loadoutpic.isvalid()){
+			string ws=workingstring.mid(workingstring.indexof(":")+1);
+			ws.replace(" ","");
+			ws=ws.left(3);
+			for(int i=0;i<allactorclasses.size();i++){
+				let ai=(class<hdpickup>)(allactorclasses[i]);
+				let aw=(class<hdweapon>)(allactorclasses[i]);
+				if(!ai&&!aw)continue;
+				bool match=false;
+				if(ai){
+					let aai=getdefaultbytype(ai);
+					if(ws~==aai.refid){
+						match=true;
+						loadoutpic=aai.icon;
+					}
+					if(loadoutpic.isvalid())break;
+				}else if(aw){
+					let aaw=getdefaultbytype(aw);
+					if(ws~==aaw.refid){
+						match=true;
+						loadoutpic=aaw.icon;
+					}
+					if(loadoutpic.isvalid())break;
+				}
+				if(match&&!loadoutpic.isvalid()){
+					let gdi=getdefaultbytype(allactorclasses[i]);
+					let dds=gdi.spawnstate;
+					if(dds!=null)loadoutpic=dds.GetSpriteTexture(0);
+				}
+				if(loadoutpic.isvalid())break;
+			}
+			if(!loadoutpic.isvalid())loadoutpic=texman.checkfortexture("AMMOA0",texman.type_sprite);
+		}
 		return sss;
 	}
 	override bool MenuEvent(int mkey, bool fromcontroller){
