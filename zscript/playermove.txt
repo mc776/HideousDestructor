@@ -96,6 +96,11 @@ extend class HDPlayerPawn{
 
 		//set up leaning
 		double leanamt=leaned?(10./(3+checkencumbrance())):0;
+		if(
+			hdweapon(player.readyweapon)
+		){
+			leanamt*=5./max(5.,hdweapon(player.readyweapon).gunmass());
+		}
 		int leanmove=0;
 		if(
 			cmdleanmove&HDCMD_LEFT
