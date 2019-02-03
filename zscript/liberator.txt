@@ -205,6 +205,7 @@ class LiberatorRifle:AutoReloadingThingy{
 		obituary "%o was liberated by %k.";
 		hdweapon.refid HDLD_LIBGL;
 		hdweapon.nicename "Liberator Battle Rifle";
+		inventory.icon "BRFLB0";
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -881,6 +882,7 @@ class LiberatorNoGL:HDWeaponGiver{
 		hdweapon.nicename "Liberator Rifle (no GL)";
 		hdweapongiver.bulk (100.+(ENC_776MAG_LOADED+30.*ENC_776_LOADED));
 		hdweapongiver.actualweapon "LiberatorRifle";
+		inventory.icon "BRFLA0";
 	}
 	override void configureweapon(){
 		let wp=hdweapon(actualweaponactor);

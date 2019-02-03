@@ -19,6 +19,7 @@ class ZM66AssaultRifle:HDWeapon{
 		obituary "%o was assaulted by %k.";
 		hdweapon.refid HDLD_ZM66GL;
 		hdweapon.nicename "ZM66 Assault Rifle";
+		inventory.icon "RIGLA0";
 	}
 	override void tick(){
 		super.tick();
@@ -800,6 +801,7 @@ class ZM66Semi:HDWeaponGiver{
 		hdweapon.nicename "ZM66 Assault Rifle (Semi only)";
 		hdweapongiver.bulk (90.+(ENC_426MAG_LOADED+50.*ENC_426_LOADED));
 		hdweapongiver.actualweapon "ZM66AssaultRifle";
+		inventory.icon "RIFSA0";
 	}
 	override void configureweapon(){
 		let wp=hdweapon(actualweaponactor);
@@ -814,6 +816,7 @@ class ZM66Regular:ZM66Semi{
 		//$Sprite "RIFLA0"
 		hdweapon.refid HDLD_ZM66AUT;
 		hdweapon.nicename "ZM66 Assault Rifle (No GL)";
+		inventory.icon "RIFLA0";
 	}
 	override void configureweapon(){
 		let wp=hdweapon(actualweaponactor);

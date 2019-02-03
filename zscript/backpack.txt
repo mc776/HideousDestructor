@@ -104,7 +104,7 @@ class HDBackpack:HDWeapon{
 				}
 			}else if(pkup){
 				double bulkmax=(HDCONST_BPMAX-bulk)/max(1,getdefaultbytype(pkup).bulk);
-				int addamt=max(0,min(bulkmax,howmany[i]));
+				int addamt=max(1,min(bulkmax,howmany[i]));
 				int amt=amounts[refindex].toint(10);
 				if(addamt>0)amounts[refindex]=""..amt+addamt;
 				updatemessage(index);
