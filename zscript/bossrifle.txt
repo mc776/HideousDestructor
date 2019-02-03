@@ -424,12 +424,13 @@ class BossRifle:HDWeapon{
 			);else A_MuzzleClimb(
 				frandom(-0.2,0.8),frandom(-0.4,0.8)
 			);
-			if(
-				random(0,300)<
+			int jamchance=
 				invoker.weaponstatus[BOSSS_GRIME]
 				+(invoker.weaponstatus[BOSSS_HEAT]>>2)
 				+invoker.weaponstatus[BOSSS_CHAMBER]
-			)setweaponstate("jam");
+			;
+			if(hd_debug)A_Log("jam chance: "..jamchance);
+			if(random(0,100)<jamchance)setweaponstate("jam");
 		}
 		BARG D 2 offset(6,42){
 			//eject
@@ -534,7 +535,6 @@ class BossRifle:HDWeapon{
 			let ccc=hdmagammo(findinventory("HD7mClip"));
 			if(ccc){
 				invoker.weaponstatus[BOSSS_MAG]=ccc.TakeMag(true);
-				HDMagAmmo.GiveMag(self,"HD7mClip",0);
 			}
 		}goto reloaddone;
 	reloaddone:
