@@ -121,23 +121,7 @@ class doordestroyer:hdactor{
 			if(dlt.linepart==1){
 				//polyobjs get special treatment
 				if(
-					dlt.hitline.special==Polyobj_DoorSlide
-					||dlt.hitline.special==Polyobj_DoorSwing
-					||dlt.hitline.special==Polyobj_ExplicitLine
-					||dlt.hitline.special==Polyobj_Move
-					||dlt.hitline.special==Polyobj_MoveTimes8
-					||dlt.hitline.special==Polyobj_MoveTo
-					||dlt.hitline.special==Polyobj_MoveToSpot
-					||dlt.hitline.special==Polyobj_OR_Move
-					||dlt.hitline.special==Polyobj_OR_MoveTimes8
-					||dlt.hitline.special==Polyobj_OR_MoveTo
-					||dlt.hitline.special==Polyobj_OR_MoveToSpot
-					||dlt.hitline.special==Polyobj_OR_RotateLeft
-					||dlt.hitline.special==Polyobj_OR_RotateRight
-					||dlt.hitline.special==Polyobj_RotateLeft
-					||dlt.hitline.special==Polyobj_RotateRight
-					||dlt.hitline.special==Polyobj_StartLine
-					||dlt.hitline.special==Polyobj_Stop
+					dlt.hitline.sidedef[0].flags&side.WALLF_POLYOBJ
 				){
 					//see if we're going to kill or damage
 					vector2 vdif=dlt.hitline.v1.p-dlt.hitline.v2.p;
@@ -154,12 +138,6 @@ class doordestroyer:hdactor{
 						return false;
 					}
 
-					dlt.hitline.special=Polyobj_MoveTo;
-					dlt.hitline.args[1]=32000;
-					dlt.hitline.args[2]=32000;
-					dlt.hitline.args[3]=32000;
-					dlt.hitline.locknumber=0;
-					dlt.hitline.activation=SPAC_Impact;
 
 					//spawn the DD actor for debris only
 					for(int i=0;i<3;i++){
@@ -175,6 +153,25 @@ class doordestroyer:hdactor{
 						db.bottom=db.pos.z;
 						db.top=db.pos.z+ddd;
 					}
+
+					othersector=dlt.hitline.frontsector;
+					int othersectorlinecount=othersector.lines.size();
+					for(int i=0;i<othersectorlinecount;i++){
+						if(othersector.lines[i].args[0]==dlt.hitline.args[0]){
+							let thisline=othersector.lines[i];
+							thisline.flags=line.ML_DONTDRAW|line.ML_TWOSIDED;
+							thisline.sidedef[0].settexture(side.mid,
+								texman.checkfortexture("TNT1A0",texman.type_sprite)
+							);
+							thisline.special=Polyobj_MoveTo;
+							thisline.args[1]=32000;
+							thisline.args[2]=32000;
+							thisline.args[3]=32000;
+							thisline.locknumber=0;
+							thisline.activation=SPAC_PlayerActivate;
+						}
+					}
+
 					dlt.hitline.activate(caller.target,dlt.lineside,SPAC_Impact);
 					return true;
 				}
