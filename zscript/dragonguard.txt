@@ -8,6 +8,7 @@ class newdg:Chaingunguy{
 	}
 	bool hasdropped;
 	bool turnleft;
+	bool superauto;
 	int thismag;
 	int mags;
 	int chambers;
@@ -17,6 +18,7 @@ class newdg:Chaingunguy{
 		super.postbeginplay();
 		chambers=5;
 		burstcount=random(4,20);
+		superauto=randompick(0,0,0,1);
 		mags=4;
 		thismag=50;
 	}
@@ -28,6 +30,8 @@ class newdg:Chaingunguy{
 
 		//dragons, lizards, herpetology, get it?
 		int c=-2;
+		double oldangle=angle;
+		double oldpitch=pitch;
 		while(
 			c<=1
 		){
@@ -35,8 +39,8 @@ class newdg:Chaingunguy{
 			//shoot a line out
 			flinetracedata hlt;
 			int ccc=0;
-			double aimangle=angle+frandom(-4,4);
-			double aimpitch=c*2+frandom(-4,4);
+			double aimangle=oldangle+frandom(-4,4);
+			double aimpitch=oldpitch+c*2+frandom(-4,4);
 			do{
 				ccc++;
 				linetrace(
@@ -152,8 +156,7 @@ class newdg:Chaingunguy{
 					chambers--;
 				}
 			}
-			if(bmissilemore)vvv.weaponstatus[0]|=VULCF_FAST;
-			bmissilemore=false;
+			if(superauto)vvv.weaponstatus[0]|=VULCF_FAST;
 			vvv.weaponstatus[1]=random(1,20);
 		}else if(!bfriendly){
 			A_DropItem("HD4mMag",0,96);
@@ -221,7 +224,10 @@ class newdg:Chaingunguy{
 		loop;
 	aim:
 		CPOS E 4{
-			if(target)coverdir=(angleto(target),atan2(target.pos.z-pos.z,distance2d(target)));
+			if(target){
+				coverdir=(angleto(target),atan2(pos.z-target.pos.z,distance2d(target)));
+				if(target.spawnhealth()>random(50,1000))superauto=true;
+			}
 		}
 		CPOS E 0 A_TurnTowardsTarget("shoot",5,5);
 		loop;
@@ -242,7 +248,7 @@ class newdg:Chaingunguy{
 
 	shoot:
 		CPOS F 1 bright light("SHOT") A_DragonShot();
-		CPOS E 2 A_JumpIf(bmissilemore,"shoot");
+		CPOS E 2 A_JumpIf(superauto,"shoot");
 		loop;
 	postshot:
 		CPOS E 1{
@@ -250,11 +256,16 @@ class newdg:Chaingunguy{
 			if(turnleft)angle-=frandom(3,6);
 			else angle+=frandom(3,6);
 		}
+		CPOS E 0 A_MonsterRefire(16,"considercover");
+		goto missile;
+	considercover:
+		CPOS E 0 A_JumpIf(thismag<1&&mags<1,"reload");
 		CPOS E 0 A_JumpIf(target&&target.health>0&&!checksight(target),"cover");
 		CPOS E 3 A_ScanForTargets();
 		goto scan;
 	cover:
 		CPOS E 0{
+			superauto=randompick(0,0,0,0,0,0,1);
 			angle=coverdir.x;
 			pitch=coverdir.y;
 			if(!random(0,99))setstatelabel("see");
@@ -301,8 +312,10 @@ class newdg:Chaingunguy{
 		CPOS E 10{
 			if(thismag<0)thismag=50;
 			else if(mags<4)mags++;
-			else return;
-			A_PlaySound("weapons/rifleclick2");
+			else{
+				setstatelabel("see2");
+				return;
+			}A_PlaySound("weapons/rifleclick2");
 		}loop;
 
 	pain:
