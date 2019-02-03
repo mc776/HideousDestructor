@@ -616,11 +616,11 @@ class Vulcanette:HDWeapon{
 	//shooting and cycling actions
 	//move this somewhere sensible
 	action void VulcShoot(bool flash2=false){
-		if(hd_debug)A_Log("Break chance: "..invoker.breakchance);
 		invoker.breakchance+=random(0,random(0,invoker.weaponstatus[VULCS_HEAT]/256));
 		if(invoker.vulcchamber[0]!=1){ //0 is empty, 2 is broken
 			if(invoker.vulcchamber[0])invoker.breakchance+=random(0,15);
 			else if(!random(0,63))invoker.breakchance++;
+			if(hd_debug)A_Log("Break chance: "..invoker.breakchance);
 			return;
 		}
 		if(random(random(1,500),5000)<invoker.breakchance){
