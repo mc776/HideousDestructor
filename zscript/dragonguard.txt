@@ -1,6 +1,264 @@
 // ------------------------------------------------------------
 // Red Dragon Guard
 // ------------------------------------------------------------
+class newdg:Chaingunguy{
+//class DragonGuard:Chaingunguy{
+	default{
+		health 160;
+	}
+	bool hasdropped;
+	bool turnleft;
+	int thismag;
+	int mags;
+	int chambers;
+	int burstcount;
+	override void postbeginplay(){
+		super.postbeginplay();
+		chambers=5;
+		burstcount=random(4,20);
+		mags=4;
+		thismag=50;
+	}
+	void A_ScanForTargets(){
+		//dragons, lizards, herpetology, get it?
+		int c=-2;
+		while(
+			c<=1
+		){
+			c++;
+			//shoot a line out
+			flinetracedata hlt;
+			double aimangle=angle+frandom(-2,2);
+			double aimpitch=c*2+frandom(-2,2);
+			linetrace(
+				aimangle,16384,aimpitch,
+				flags:TRF_NOSKY,
+				offsetz:9.5,
+				data:hlt
+			);
+
+			if(!c&&hlt.hittype!=Trace_HitNone)a_spawnparticle(
+				"red",SPF_FULLBRIGHT,lifetime:2,size:2,0,
+				hlt.hitlocation.x-pos.x,
+				hlt.hitlocation.y-pos.y,
+				hlt.hitlocation.z-pos.z
+			);
+
+			//if the line hits a valid target, go into shooting state
+			actor hitactor=hlt.hitactor;
+			if(
+				hitactor==target
+				||(
+					hitactor
+					&&isHostile(hitactor)
+					&&hitactor.bshootable
+					&&!hitactor.bnotarget
+					&&!hitactor.bnevertarget
+					&&(hitactor.bismonster||hitactor.player)
+					&&(!hitactor.player||!(hitactor.player.cheats&CF_NOTARGET))
+					&&hitactor.health>random(-4,5)
+				)
+			){
+				angle=aimangle+frandom(-1,1);
+				pitch=aimpitch+frandom(-1,1);
+				burstcount=random(3,max(8,hitactor.health/10));
+				setstatelabel("scanshoot");
+				return;
+			}
+		}
+		if(turnleft)angle+=frandom(3,4);
+		else angle-=frandom(3,4);
+	}
+	void A_DragonShot(){
+		//abort if burst is over
+		if(burstcount<1){
+			burstcount=random(3,5);
+			setstatelabel("postshot");
+			return;
+		}
+
+		//check for ammo
+		if(
+			thismag<1
+			&&mags>0
+		){
+			setstatelabel("shuntmag");
+			return;
+		}
+		if(chambers<1)setstatelabel("chamber");
+
+		//shoot the bullet
+		A_PlaySound("weapons/vulcanette",randompick(CHAN_WEAPON,5,6));
+		actor p=Spawn("HDBullet426",pos+(0,0,height-24),ALLOW_REPLACE);
+		if(p){
+			p.target=self;p.angle=angle;p.pitch=pitch;
+			p.vel+=(
+				frandom(-2,2),frandom(-2,2),frandom(-2,2)
+			);
+			p.speed+=10*frandom(-2,2);
+			p.vel+=vel;
+		}
+		pitch+=frandom(-0.5,0.4);angle+=frandom(-0.5,0.5);
+		burstcount--;
+		chambers--;
+
+		//cycle the next round
+		if(chambers<5 && thismag){
+			thismag--;
+			chambers++;
+			A_PlaySound("weapons/rifleclick2",CHAN_BODY);
+		}
+	}
+	void A_TurnTowardsTarget(
+		statelabel shootstate="shoot",
+		double maxturn=20,
+		double maxvariance=10
+	){
+		A_FaceTarget(maxturn,maxturn);
+		if(
+			!target
+			||maxvariance>absangle(angle,angleto(target))
+			||!checksight(target)
+		)setstatelabel(shootstate);
+		if(bfloat||floorz>=pos.z)A_ChangeVelocity(frandom(-0.05,0.1)*speed,0,0,CVF_RELATIVE);
+	}
+	void A_VulcNoBlocking(){
+		A_NoBlocking();
+		if(!hasdropped){
+			hasdropped=true;
+			A_DropItem("HDBattery",0,16);
+			A_DropItem("HDPistol",0,16);
+			vulcanette vvv=vulcanette(spawn("vulcanette",pos+(0,0,32),ALLOW_REPLACE));
+			if(!vvv)return;
+			vvv.vel=vel;vvv.angle=angle;
+			vvv.A_ChangeVelocity(1,0,2,CVF_RELATIVE);
+			for(int i=0;i<5;i++){
+				if(i==0){
+					vvv.vulcmag[i]=thismag;
+				}else if(mags>0){
+					vvv.vulcmag[i]=51;
+					mags--;
+				}else vvv.vulcmag[i]=-1;
+				if(chambers>0){    
+					vvv.vulcchamber[i]=randompick(1,1,2);
+					chambers--;
+				}
+			}
+			if(bmissilemore)vvv.weaponstatus[0]|=VULCF_FAST;
+			bmissilemore=false;
+			vvv.weaponstatus[1]=random(1,20);
+		}else if(!bfriendly){
+			A_DropItem("HD4mMag",0,96);
+			A_DropItem("HD4mMag",0,96);
+			A_DropItem("HDBattery",0,8);
+		}
+	}
+	states{
+	see:
+		CPOS A 0{
+			if(!target||!checksight(target))healthing(random(1,6));
+			if(!mags&&thismag<1)setstatelabel("reload");
+			else bfrightened=0;
+		}
+		CPOS AABBCCDD 4 {hdmobai.chase(self);}
+		goto scan;
+	missile:
+		CPOS ABCD 3 A_TurnTowardsTarget("scanshoot");
+		loop;
+	scan:
+		CPOS E 2{
+			turnleft=randompick(0,0,0,1);
+			if(turnleft)angle-=frandom(18,24);
+			else angle+=frandom(18,24);
+		}
+	scanturn:
+		CPOS EEEEEE 3 A_ScanForTargets();
+		CPOS E 0 A_Jump(32,"scanturn","scanturn","scan");
+		goto see;
+	scanshoot:
+		CPOS E 4;
+		goto shoot;
+	shoot:
+		CPOS F 1 bright light("SHOT") A_DragonShot();
+		loop;
+	postshot:
+		CPOS E 4 A_ScanForTargets();
+		goto see;
+	shuntmag:
+		CPOS E 1;
+		CPOS E 3{
+			A_PlaySound("weapons/vulcshunt",CHAN_WEAPON);
+			if(thismag>=0){
+				actor mmm=HDMagAmmo.SpawnMag(self,"HD4mMag",0);
+				mmm.A_ChangeVelocity(3,frandom(-3,2),frandom(0,-2),CVF_RELATIVE|CVF_REPLACE);
+			}
+			thismag=-1;
+			if(mags>0){
+				mags--;
+				thismag=50;
+			}
+		}
+		goto shoot;
+	chamber:
+		CPOS E 3{
+			if(chambers<5&&thismag>0){
+				thismag--;
+				chambers++;
+				A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
+			}
+		}goto shoot;
+	pain:
+		CPOS G 3;
+		CPOS G 3 A_Pain();
+		CPOS G 0 A_Jump(196,"see","scan");
+		goto missile;
+	xdeath:
+		CPOS O 5{hdmobai.corpseflags(self,true);}
+		CPOS P 3{
+			A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
+			A_XScream();
+		}
+		CPOS R 2 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
+		CPOS Q 5 A_VulcNoBlocking();
+		CPOS Q 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
+		CPOS RS 5 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
+	xdead:
+		CPOS S 3;
+		CPOS T 5 canraise{
+			if(abs(vel.z)>1)setstatelabel("dead");    
+		}wait;
+	raise:
+		CPOS N 0{hdmobai.corpseflags(self,true,true);}
+		CPOS N 2 A_SpawnItemEx("MegaBloodSplatter",0,0,4,0,0,3,0,SXF_NOCHECKPOSITION);
+		CPOS NML 6;
+		CPOS KJIH 4;
+		goto see;
+	raisegibbed:
+		CPOS T 6 A_SpawnItemEx("MegaBloodSplatter",0,0,4,0,0,3,0,SXF_NOCHECKPOSITION);
+		CPOS TS 12 A_SpawnItemEx("MegaBloodSplatter",0,0,4,0,0,3,0,SXF_NOCHECKPOSITION);
+		CPOS RQ 7;
+		CPOS POH 5;
+		CPOS H 5 A_Die("ungibbed");
+	death.ungibbed:
+		CPOS H 5{hdmobai.CorpseFlags(self);}
+		CPOS I 5 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
+		CPOS J 5 A_NoBlocking();
+		CPOS KLM 5;
+		goto dead;
+	}
+}
+
+
+
+
+
+
+
+
+//pre-2019
+
+
+
 class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 	default{
 		dropitem "DragonGuard",256,6;
