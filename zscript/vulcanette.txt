@@ -51,7 +51,6 @@ class Vulcanette:HDWeapon{
 		drainheat(3,18);
 	}
 	override void postbeginplay(){
-		breakchance=0;
 		super.postbeginplay();
 		if(owner&&owner.player){
 			if(cvar.getcvar("hd_vulcsuper",owner.player).getint())weaponstatus[0]|=VULCF_FAST;
@@ -607,6 +606,7 @@ class Vulcanette:HDWeapon{
 	int vulcchamber[5]; //2 is broken round
 
 	override void InitializeWepStats(bool idfa){
+		breakchance=0;
 		weaponstatus[VULCS_BATTERY]=20;
 		weaponstatus[VULCS_ZOOM]=30;
 		for(int i=0;i<5;i++)vulcmag[i]=51;
