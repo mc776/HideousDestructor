@@ -1,9 +1,18 @@
 // ------------------------------------------------------------
 // Red Dragon Guard
 // ------------------------------------------------------------
-class DragonGuard:Chaingunguy{
+class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 	default{
-		health 160;
+		dropitem "DragonGuard",256,6;
+		dropitem "UndeadRifleman",256,2;
+		dropitem "EnemyHERP",256,1;
+		dropitem "EnemyDERP",256,1;
+	}
+}class DragonGuard:Chaingunguy{
+	default{
+		health 180;
+		dropitem "";
+		maxtargetrange 6000;
 	}
 	bool hasdropped;
 	bool turnleft;
@@ -111,7 +120,7 @@ class DragonGuard:Chaingunguy{
 			p.speed+=10*frandom(-2,2);
 			p.vel+=vel;
 		}
-		pitch+=frandom(-0.5,0.4);angle+=frandom(-0.5,0.5);
+		pitch+=frandom(-0.4,0.3);angle+=frandom(-0.3,0.3);
 		burstcount--;
 		chambers--;
 
@@ -124,7 +133,7 @@ class DragonGuard:Chaingunguy{
 	}
 	void A_TurnTowardsTarget(
 		statelabel shootstate="shoot",
-		double maxturn=20,
+		double maxturn=10,
 		double maxvariance=10
 	){
 		A_FaceTarget(maxturn,maxturn);
@@ -189,7 +198,7 @@ class DragonGuard:Chaingunguy{
 			if(!random(0,8))A_PlaySound("grunt/active",CHAN_VOICE);
 		}wait;
 	spawnstill:
-		CPOS C 0 A_Jump(128,"scan");
+		CPOS C 0 A_Jump(128,"scan","scan","spawnwander");
 		CPOS C 0{
 			A_Look();
 			A_Recoil(random(-1,1)*0.4);
@@ -218,7 +227,8 @@ class DragonGuard:Chaingunguy{
 			if(!mags&&thismag<1)setstatelabel("reload");
 			else bfrightened=0;
 		}
-		CPOS AABBCCDD 4 {hdmobai.chase(self);}
+		CPOS AABBCCDD 3 {hdmobai.chase(self);}
+		CPOS A 0 A_Jump(196,"see2");
 		goto scan;
 	missile:
 		CPOS ABCD 3 A_TurnTowardsTarget("aim");
@@ -229,7 +239,7 @@ class DragonGuard:Chaingunguy{
 				coverdir=(angleto(target),atan2(pos.z-target.pos.z,distance2d(target)));
 				if(target.spawnhealth()>random(50,1000))superauto=true;
 			}
-			A_TurnTowardsTarget("shoot",5,5);
+			A_TurnTowardsTarget("scanshoot",5,5);
 		}
 		loop;
 	see:
@@ -244,7 +254,10 @@ class DragonGuard:Chaingunguy{
 		CPOS E 0 A_Jump(32,"scanturn","scanturn","scan");
 		goto see2;
 	scanshoot:
-		CPOS E 4;
+		CPOS E 4{
+			angle+=frandom(-2,2);
+			pitch+=frandom(-2,2);
+		}
 		goto shoot;
 
 	shoot:
@@ -265,6 +278,7 @@ class DragonGuard:Chaingunguy{
 		CPOS E 3 A_ScanForTargets();
 		goto scan;
 	cover:
+		CPOS E 0 A_JumpIf(!target||target.health<1,"see");
 		CPOS E 0{
 			superauto=randompick(0,0,0,0,0,0,1);
 			angle=coverdir.x;
