@@ -256,7 +256,8 @@ class ThunderBuster:HDWeapon{
 			A_CheckIdSprite("THBGA0","PLSGA0");
 			A_SetCrosshair(21);
 			invoker.weaponstatus[TBS_WARMUP]=0;
-			A_WeaponReady(WRF_ALL);
+			if(justpressed(BT_USER1))FindRange();
+			A_WeaponReady(WRF_ALL&~WRF_ALLOWUSER1);
 		}goto readyend;
 		PLSG AB 0;
 		PLSF AB 0;
