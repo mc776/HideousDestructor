@@ -55,7 +55,7 @@ class HERPBot:HDUPK{
 	bool scanright;
 	int botid;
 
-	override bool cancollidewith(actor other,bool passive){return other.bmissile;}
+	override bool cancollidewith(actor other,bool passive){return other.bmissile||HDPickerUpper(other);}
 	override void ongrab(actor other){
 		if(ishostile(other)){
 			bmissilemore=false;
