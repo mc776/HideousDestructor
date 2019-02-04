@@ -142,7 +142,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 			||maxvariance>absangle(angle,angleto(target))
 			||!checksight(target)
 		)setstatelabel(shootstate);
-		if(bfloat||floorz>=pos.z)A_ChangeVelocity(frandom(-0.05,0.1)*speed,0,0,CVF_RELATIVE);
+		if(bfloat||floorz>=pos.z)A_ChangeVelocity(0,frandom(-0.1,0.1)*speed,0,CVF_RELATIVE);
 	}
 	void A_VulcNoBlocking(){
 		A_NoBlocking();
