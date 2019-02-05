@@ -913,13 +913,13 @@ class HERPController:HDWeapon{
 		bool dead=herpcam.health<1;
 		bool nobat=dead||!herpcam.bmissilemore||herpcam.battery<1;
 		int scaledyoffset=66;
-		if(!nobat)texman.setcameratotexture(herpcam,"HDXHCAM1",60);
+		if(!nobat)texman.setcameratotexture(herpcam,"HDXHCAM7",60);
 		sb.drawimage(
-			nobat?"HDXHCAM1BLANK":"HDXHCAM1",(0,scaledyoffset)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER
+			nobat?"HDXHCAM1BLANK":"HDXHCAM7",(0,scaledyoffset)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
+			scale:nobat?(1,1):(0.5,0.5)
 		);
 		sb.drawimage(
-			"tbwindow",(0,scaledyoffset)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
-			scale:(1,1)
+			"tbwindow",(0,scaledyoffset)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER
 		);
 		if(!dead)sb.drawimage(
 			"redpxl",(0,scaledyoffset)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_TOP,
