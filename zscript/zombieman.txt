@@ -135,11 +135,11 @@ class ZombieStormtrooper:ZombieMan{
 			A_Look();
 			A_Recoil(frandom(-0.1,0.1));
 		}
-		#### EEE 1{
+		#### XXX 1{
 			A_SetTics(random(5,17));
 			A_Look();
 		}
-		#### E 1{
+		#### X 1{
 			A_Recoil(frandom(-0.1,0.1));
 			A_SetTics(random(10,40));
 		}
@@ -193,7 +193,7 @@ class ZombieStormtrooper:ZombieMan{
 		#### A 0 A_JumpIf(mag<1,"reload");
 		#### A 0 A_JumpIfTargetInLOS(3,120);
 		#### CD 2 A_FaceTarget(90);
-		#### E 1 A_SetTics(random(4,10)); //when they just start to aim,not for followup shots!
+		#### X 1 A_SetTics(random(4,10)); //when they just start to aim,not for followup shots!
 		#### A 0 A_JumpIfTargetInLOS("missile2");
 		#### A 0 A_CheckLOF("see",
 			CLOFF_JUMPNONHOSTILE|CLOFF_SKIPTARGET|
@@ -213,20 +213,20 @@ class ZombieStormtrooper:ZombieMan{
 			else turnamount=10;
 		}goto turntoaim;
 	turntoaim:
-		#### E 2 A_FaceTarget(turnamount,turnamount);
+		#### X 2 A_FaceTarget(turnamount,turnamount);
 		#### A 0 A_JumpIfTargetInLOS(1);
 		goto see;
 		#### A 0 A_JumpIfTargetInLOS(1,10);
 		loop;
-		#### E 1{
+		#### X 1{
 			A_FaceTarget(turnamount,turnamount);
 			A_SetTics(random(1,120/clamp(turnamount,1,turnamount+1)+4));
 			spread=frandom(0.12,0.27)*turnamount;
 		}
 		#### A 0 A_Jump(256,"shoot");
 	shoot:
-		#### F 0 A_JumpIf(jammed,"jammed");
-		#### F 1 bright light("SHOT"){
+		#### Y 0 A_JumpIf(jammed,"jammed");
+		#### Y 1 bright light("SHOT"){
 			if(mag<1){
 				setstatelabel("ohforfuckssake");
 				return;
@@ -259,7 +259,7 @@ class ZombieStormtrooper:ZombieMan{
 
 			mag--;
 		}
-		#### E 2{
+		#### X 2{
 			if(
 				//conditions under which no autofire can happen
 				!firemode
@@ -281,7 +281,7 @@ class ZombieStormtrooper:ZombieMan{
 		#### A 0 A_Jump(120,"shoot");
 		//fallthrough to postshot
 	postshot:
-		#### E 5{
+		#### X 5{
 			if(!random(0,127))A_PlaySound("grunt/active");
 			if(mag<1){
 				setstatelabel("reload");
@@ -290,21 +290,21 @@ class ZombieStormtrooper:ZombieMan{
 			spread=max(0,spread-1);
 			A_SetTics(random(2,6));
 		}
-		#### E 3;
-		#### E 0 A_JumpIfTargetInLOS(1);
+		#### X 3;
+		#### X 0 A_JumpIfTargetInLOS(1);
 		goto coverfire;//even if not in los,occasionally keep shooting anyway
-		#### E 3 A_FaceTarget(10,10);
-		#### E 0 A_Jump(30,"see");//even if in los,occasionally stop shooting anyway
+		#### X 3 A_FaceTarget(10,10);
+		#### X 0 A_Jump(30,"see");//even if in los,occasionally stop shooting anyway
 		goto coverfire;
 
 	coverfire:
-		#### E 1 A_SetTics(random(2,12));
-		#### E 0{
+		#### X 1 A_SetTics(random(2,12));
+		#### X 0{
 			spread=2;
 		}
-		#### E 0 A_Jump(90,"roam");
-		#### E 0 A_JumpIfTargetInLOS("missile2");
-		#### E 0 A_Jump(216,"shoot");
+		#### X 0 A_Jump(90,"roam");
+		#### X 0 A_JumpIfTargetInLOS("missile2");
+		#### X 0 A_Jump(216,"shoot");
 		loop;
 
 	frag:
@@ -322,13 +322,13 @@ class ZombieStormtrooper:ZombieMan{
 		goto see;
 
 	jammed:
-		#### E 8;
-		#### E 0 A_Jump(128,"see");
-		#### E 4 A_PlaySound(random(0,2)?seesound:painsound,CHAN_VOICE);
+		#### X 8;
+		#### X 0 A_Jump(128,"see");
+		#### X 4 A_PlaySound(random(0,2)?seesound:painsound,CHAN_VOICE);
 		goto see;
 
 	ohforfuckssake:
-		#### E 8;
+		#### X 8;
 	reload:
 		---- A 4{
 			A_PlaySound("weapons/rifleclick2");
@@ -342,9 +342,9 @@ class ZombieStormtrooper:ZombieMan{
 			HDMagAmmo.SpawnMag(self,emptymag,0);
 		}
 		#### BCD 2 {hdmobai.chase(self,"melee",null);}
-		#### E 12 A_PlaySound("weapons/pocket");
-		#### E 8 A_PlaySound("weapons/rifleload");
-		#### E 2{
+		#### X 12 A_PlaySound("weapons/pocket");
+		#### X 8 A_PlaySound("weapons/rifleload");
+		#### X 2{
 			A_PlaySound("weapons/rifleclick2");
 			if(firemode==-2)mag=30;else mag=50;
 			bfrightened=false;
@@ -365,11 +365,11 @@ class ZombieStormtrooper:ZombieMan{
 		#### A 0 A_Jump(24,"roam");
 		loop;
 	roam:
-		#### E 3 A_Jump(60,"roam2");
-		#### E 0{spread=1;}
-		#### EEEE 1 A_Chase("melee","turnaround",CHF_DONTMOVE);
-		#### E 0{spread=0;}
-		#### EEEEEEEEEEEEE 1 A_Chase("melee","turnaround",CHF_DONTMOVE);
+		#### X 3 A_Jump(60,"roam2");
+		#### X 0{spread=1;}
+		#### XXXX 1 A_Chase("melee","turnaround",CHF_DONTMOVE);
+		#### X 0{spread=0;}
+		#### XXXXXXXXXXXXX 1 A_Chase("melee","turnaround",CHF_DONTMOVE);
 		#### A 0 A_Jump(60,"roam");
 	roam2:
 		#### A 0 A_Jump(8,"see");
@@ -383,18 +383,18 @@ class ZombieStormtrooper:ZombieMan{
 		loop;
 	turnaround:
 		#### A 0 A_FaceTarget(15,0);
-		#### E 2 A_JumpIfTargetInLOS("missile2",40);
-		#### E 0{spread=3;}
+		#### X 2 A_JumpIfTargetInLOS("missile2",40);
+		#### X 0{spread=3;}
 		#### A 0 A_FaceTarget(15,0);
-		#### E 0{spread=6;}
-		#### E 2 A_JumpIfTargetInLOS("missile2",40);
-		#### E 0{spread=4;}
+		#### X 0{spread=6;}
+		#### X 2 A_JumpIfTargetInLOS("missile2",40);
+		#### X 0{spread=4;}
 		#### ABCD 3{hdmobai.chase(self);}
 		goto see;
 	melee:
 		#### C 8 A_FaceTarget();
 		#### D 4;
-		#### E 4{
+		#### X 4{
 			A_CustomMeleeAttack(
 				random(3,20),"weapons/smack","","none",randompick(0,0,0,1)
 			);
@@ -405,8 +405,8 @@ class ZombieStormtrooper:ZombieMan{
 				A_PlaySound("weapons/rifleclick",5);
 			}
 		}
-		#### E 3 A_JumpIfCloser(64,2);
-		#### E 4 A_FaceTarget(10,10);
+		#### X 3 A_JumpIfCloser(64,2);
+		#### X 4 A_FaceTarget(10,10);
 		goto missile2;
 		#### A 4;
 		goto see;

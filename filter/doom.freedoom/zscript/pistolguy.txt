@@ -217,7 +217,7 @@ bool bhasdroppedgun;
 			A_SetTics(random(30,80));
 			if(!random(0,7))A_PlaySound("grunt/active");
 		}
-		#### A 0 A_Jump(256,"spawn2");
+		#### A 0 A_Jump(256,"spawn");
 	spawnswitch:
 		#### A 0 A_JumpIf(bambush,"spawnstill");
 		goto spawnwander;
@@ -231,13 +231,13 @@ bool bhasdroppedgun;
 		}
 		#### AB 5 A_SetAngle(angle+random(-4,4));
 		#### B 1 A_SetTics(random(10,40));
-		#### A 0 A_Jump(256,"spawn2");
+		#### A 0 A_Jump(256,"spawn");
 	spawnwander:
 		#### CDAB 5{hdmobai.wander(self,false);}
 		#### A 0{
 			if(!random(0,127))A_PlaySound("grunt/active");
 		}
-		#### A 0 A_Jump(64,"spawn2");
+		#### A 0 A_Jump(64,"spawn");
 		loop;
 
 	see:
