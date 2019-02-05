@@ -133,7 +133,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 	}
 	void A_TurnTowardsTarget(
 		statelabel shootstate="shoot",
-		double maxturn=10,
+		double maxturn=13,
 		double maxvariance=10
 	){
 		A_FaceTarget(maxturn,maxturn);
@@ -228,7 +228,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 			if(!mags&&thismag<1)setstatelabel("reload");
 			else bfrightened=0;
 		}
-		CPOS AABBCCDD 3 {hdmobai.chase(self);}
+		CPOS AABBCCDD 3 {hdmobai.chase(self,flags:CHF_NOPOSTATTACKTURN);}
 		CPOS A 0 A_Jump(196,"see2");
 		goto scan;
 	missile:
@@ -271,8 +271,6 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 			if(turnleft)angle-=frandom(3,6);
 			else angle+=frandom(3,6);
 		}
-		CPOS E 0 A_MonsterRefire(16,"considercover");
-		goto missile;
 	considercover:
 		CPOS E 0 A_JumpIf(thismag<1&&mags<1,"reload");
 		CPOS E 0 A_JumpIf(target&&target.health>0&&!checksight(target),"cover");
@@ -282,8 +280,8 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		CPOS E 0 A_JumpIf(!target||target.health<1,"see");
 		CPOS E 0{
 			superauto=randompick(0,0,0,0,0,0,1);
-			angle=coverdir.x;
-			pitch=coverdir.y;
+			angle+=clamp(coverdir.x-angle,-20,20);
+			pitch=clamp(coverdir.y-angle,-20,20);
 			if(!random(0,99))setstatelabel("see");
 		}
 		CPOS EEEEEEEEEEEE 1 A_JumpIf(
