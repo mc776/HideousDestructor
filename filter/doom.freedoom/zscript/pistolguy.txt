@@ -100,12 +100,12 @@ class UndeadHomeboy:ZombieMan{
 
 
 	//the movement stuff
-	virtual void A_HDWander(bool dontlook){
+	virtual void A_HDWander(bool dontlook=false){
 		hdmobai.wander(self,dontlook);
 	}
 	virtual void A_HDChase(statelabel mlstate="melee",statelabel msstate="missile",int flags=0){
-		if(A_JumpIfTargetInLOS("null"))hdmobai.chase(self,mlstate,msstate,flags);
-		else hdmobai.wander(self);
+		if(!target||checksight(target))hdmobai.chase(self,mlstate,msstate,flags);
+		else hdmobai.wander(self,true);
 	}
 
 	//will routinely be overridden
@@ -232,7 +232,7 @@ class UndeadHomeboy:ZombieMan{
 		#### B 1 A_SetTics(random(10,40));
 		#### A 0 A_Jump(256,"spawn");
 	spawnwander:
-		#### CDAB 5{hdmobai.wander(self,false);}
+		#### CDAB 5 A_HDWander();
 		#### A 0{
 			if(!random(0,127))A_PlaySound("grunt/active");
 		}
@@ -259,8 +259,11 @@ class UndeadHomeboy:ZombieMan{
 		#### E 0{
 			if(
 				firemode>0
-			)setstatelabel("fire");
-			else A_SetTics(random(3,10));
+			){
+				pitch+=frandom(-2.4,2);
+				angle+=frandom(-2,2);
+				setstatelabel("fire");
+			}else A_SetTics(random(3,10));
 		}
 		#### E 0 A_JumpIf(
 			random(0,3)
