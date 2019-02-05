@@ -32,6 +32,9 @@ class UndeadHomeboy:ZombieMan{
 	int hdmobflags;
 	flagdef hasdroppedgun: hdmobflags, 1;
 
+	//specific to undead homeboy
+	bool user_weapon; //0 random, 1 semi, 2 auto
+
 	override void postbeginplay(){
 		super.postbeginplay();
 		hdmobster.spawnmobster(self);
@@ -42,10 +45,16 @@ class UndeadHomeboy:ZombieMan{
 		aimpoint2=(-1,-1);
 
 		//specific to undead homeboy
-		if(!random(0,15))firemode=randompick(0,0,0,1);
-		else firemode=-1;
 		thismag=random(1,15);
 		chamber=2;
+		if(
+			user_weapon==2
+			||(
+				user_weapon!=1
+				&&!random(0,15)
+			)
+		)firemode=randompick(0,0,0,1);
+		else firemode=-1;
 	}
 	virtual bool noammo(){
 		return chamber<1&&thismag<1;
