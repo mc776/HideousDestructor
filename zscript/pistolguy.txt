@@ -100,6 +100,20 @@ class UndeadHomeboy:ZombieMan{
 	}
 
 
+	//post-shot checks
+	void A_HDMonsterRefire(statelabel jumpto,int chancetocontinue=0){
+		if(
+			random(1,100)>chancetocontinue
+			&&(
+				!target
+				||!checksight(target)
+				||target.health<1
+				||absangle(angle,angleto(target))>3
+			)
+		)setstatelabel(jumpto);
+	}
+
+
 	//the movement stuff
 	virtual void A_HDWander(bool dontlook=false){
 		hdmobai.wander(self,dontlook);
@@ -274,15 +288,7 @@ class UndeadHomeboy:ZombieMan{
 				setstatelabel("fire");
 			}else A_SetTics(random(3,10));
 		}
-		#### E 0 A_JumpIf(	//replacement for monster refire - no assumptions about facing targets!
-			random(0,3)
-			&&(
-				!target
-				||!checksight(target)
-				||target.health<1
-				||absangle(angle,angleto(target))>3
-			)
-		,"see");
+		#### E 0 A_HDMonsterRefire("see",25);
 		goto fire;
 	nope:
 		#### E 10;
