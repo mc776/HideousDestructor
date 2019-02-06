@@ -436,6 +436,7 @@ class DERPDeployer:HDWeapon{
 	default{
 		+weapon.wimpy_weapon +weapon.no_auto_switch +weapon.cheatnotweapon
 		hdweapon.barrelsize 0,0,0;
+		weapon.selectionorder 1014;
 	}
 	override inventory createtossable(int amount){
 		owner.a_dropinventory("DERPUsable",amount);
@@ -488,6 +489,10 @@ class DERPDeployer:HDWeapon{
 			if(!countinv("DERPUsable")){
 				A_SelectWeapon("HDFist");
 				A_WeaponReady(WRF_NOFIRE);
+				return;
+			}
+			if(pressinguser3()){
+				A_MagManager("HD9mMag15");
 				return;
 			}
 			int iofs=invoker.weaponstatus[DERPS_USEOFFS];
