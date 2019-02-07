@@ -25,7 +25,11 @@ class HDMagAmmo:HDAmmo{
 	}
 	override int effectivemaxamount(){
 		double unitbulk=max(bulk,(roundbulk*maxperunit*0.6)+magbulk);
-		return unitbulk?max(1,HDCONST_MAXENC/unitbulk):maxamount;
+		if(!unitbulk)return maxamount;
+		double gdpsp;
+		if(hdplayerpawn(owner))gdpsp=hdplayerpawn(owner).maxpocketspace;
+		else gdpsp=getdefaultbytype("hdplayerpawn").maxpocketspace;
+		return max(1,gdpsp/unitbulk);
 	}
 
 	//add mag amount or size as appropriate
@@ -251,7 +255,8 @@ class HDMagAmmo:HDAmmo{
 				alreadygot.amount>=alreadygot.maxamount
 				||(
 					hdplayerpawn(picktarget)
-					&&HDCONST_MAXENC-hdplayerpawn(picktarget).itemenc<(magbulk+roundbulk*mags[0])
+					&&hdplayerpawn(picktarget).maxpocketspace-hdplayerpawn(picktarget).itemenc
+						<(magbulk+roundbulk*mags[0])
 				)
 			){
 				int thismag=mags[0];

@@ -324,15 +324,18 @@ struct HDMath{
 	static int MaxInv(actor holder,class<inventory> inv){
 		if(holder.findinventory(inv))return holder.findinventory(inv).maxamount;
 		else if((class<hdpickup>)(inv)){
+			double gdpsp;
+			if(hdplayerpawn(holder))gdpsp=hdplayerpawn(holder).maxpocketspace;
+			else gdpsp=getdefaultbytype("hdplayerpawn").maxpocketspace;
 			let mag=(class<hdmagammo>)(inv);
 			if(mag){
 				let minvv=getdefaultbytype((class<hdmagammo>)(inv));
 				double unitbulk=(minvv.roundbulk*minvv.maxperunit*0.6)+minvv.magbulk;
-				return unitbulk?max(1,HDCONST_MAXENC/unitbulk):int.MAX;
+				return unitbulk?max(1,gdpsp/unitbulk):int.MAX;
 			}else{
 				let invv=getdefaultbytype((class<hdpickup>)(inv));
 				double bulk=invv.bulk;
-				return bulk?max(1,HDCONST_MAXENC/bulk):int.MAX;
+				return bulk?max(1,gdpsp/bulk):int.MAX;
 			}
 		}
 		return getdefaultbytype(inv).maxamount;
@@ -496,6 +499,39 @@ struct HDF play{
 			}
 		}
 		return shields,damage;
+	}
+}
+
+
+
+
+
+
+//debug thingy
+class HDRaiseWep:HDWeapon{
+	default{
+		-weapon.no_auto_switch
+		+weapon.cheat_not_weapon
+		weapon.slotnumber 0;
+	}
+	states{
+	ready:
+		TNT1 A 1 A_WeaponReady();
+		goto readyend;
+	fire:
+		TNT1 A 0{
+			flinetracedata rlt;
+			LineTrace(
+				angle,128,pitch,
+				TRF_ALLACTORS,
+				offsetz:height-6,
+				data:rlt
+			);
+			if(rlt.hitactor){
+				a_weaponmessage(rlt.hitactor.getclassname().." raised!",30);
+				RaiseActor(rlt.hitactor,RF_NOCHECKPOSITION);
+			}else a_weaponmessage("click on something\nto raise it.",25);
+		}goto nope;
 	}
 }
 

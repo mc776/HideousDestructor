@@ -1,7 +1,6 @@
 //-------------------------------------------------
 // Pickup Archetypes
 //-------------------------------------------------
-const HDCONST_MAXENC=600;
 class GrabThinker:Thinker{
 	actor picktarget;
 	actor pickobj;
@@ -48,7 +47,7 @@ class GrabThinker:Thinker{
 			if(
 				!wt
 				&&hdplayerpawn(picktarget)
-				&&hdplayerpawn(picktarget).itemenc>HDCONST_MAXENC
+				&&hdplayerpawn(picktarget).itemenc>hdplayerpawn(picktarget).maxpocketspace
 				&&!(picktarget.player.readyweapon is "HDBackpack")
 				&&(
 					deathmatch
@@ -171,7 +170,11 @@ class HDPickup:CustomInventory{
 		return iii;
 	}
 	virtual int effectivemaxamount(){
-		return bulk?max(1,HDCONST_MAXENC/bulk):maxamount;
+		if(!bulk)return maxamount;
+		double gdpsp;
+		if(hdplayerpawn(owner))gdpsp=hdplayerpawn(owner).maxpocketspace;
+		else gdpsp=getdefaultbytype("hdplayerpawn").maxpocketspace;
+		return max(1,gdpsp/bulk);
 	}
 
 	override void doeffect(){
@@ -379,7 +382,7 @@ class HDUPK:HDActor{
 				let hdpmd=getdefaultbytype(hdpm);
 				hdpkubu=max(hdpkubu,hdpmd.magbulk+hdpmd.roundbulk*hdpmd.maxperunit);
 			}
-			maxtake=min(maxtake,(HDCONST_MAXENC-hdp.itemenc)/hdpkubu);
+			maxtake=min(maxtake,(hdp.maxpocketspace-hdp.itemenc)/hdpkubu);
 		}
 		int increase=amount;
 		if(
