@@ -266,6 +266,13 @@ class HDPlayerPawn:PlayerPawn{
 			if(player.crouchfactor<0.75)sprite=crouchsprite;
 			else sprite=getspriteindex("PLAYA1");
 		}
+		//that stupid ef/xy thing
+		if(
+			sprite==crouchsprite
+		){
+			if(frame==23)frame=4;
+			else if(frame==24)frame=5;
+		}
 
 		HeartTicker(fm,sm,input);
 		if(inpain>0)inpain--;
