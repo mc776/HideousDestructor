@@ -1,0 +1,166 @@
+// ------------------------------------------------------------
+// Lives counter
+// ------------------------------------------------------------
+class HDLivesCounter:Thinker{
+	int lastfraglimit;
+	bool lastteamplay;
+	bool lastlivesmode;
+	bool endgametriggered;
+	int deaths[MAXPLAYERS];
+
+	override void postbeginplay(){
+		super.postbeginplay();
+		lastfraglimit=0;
+		lastteamplay=false;
+		endgametriggered=false;
+	}
+	override void tick(){
+		super.tick();
+
+		//reset if lives mode is changed midgame
+		bool thislivesmode=livesmode();
+		if(lastlivesmode!=thislivesmode){
+			lastlivesmode=thislivesmode;
+			for(int i=0;i<MAXPLAYERS;i++){
+				if(playeringame[i])players[i].fragcount=0;
+				deaths[i]=0;
+			}
+		}
+
+		//update the counters every time the limit is adjusted
+		if(
+			lastfraglimit!=fraglimit
+			||lastteamplay!=teamplay
+		){
+			lastfraglimit=fraglimit;
+			lastteamplay=teamplay;
+			updatefragcounts(self);
+		}
+	}
+	//obtain the thinker
+	static hdlivescounter get(){
+		hdlivescounter hdlc=null;
+		thinkeriterator hdlcit=thinkeriterator.create("hdlivescounter");
+		while(hdlc=hdlivescounter(hdlcit.next())){
+			if(hdlc)break;
+		}
+		if(!hdlc)hdlc=new("hdlivescounter");
+		return hdlc;
+	}
+	//because it's not just "!fraglimit"!
+	//fraglimit is nonzero and either coop or FL>=100
+	static bool livesmode(){
+		return(
+			fraglimit
+			&&(
+				!deathmatch
+				||fraglimit>=100
+			)
+		);
+	}
+	//update all the fragcounts
+	static void updatefragcounts(hdlivescounter hdlc){
+		if(!hdlivescounter.livesmode())return;
+		for(int i=0;i<MAXPLAYERs;i++){
+			if(playeringame[i])players[i].fragcount=(fraglimit%100)-hdlivescounter.owndeaths(i);
+		}
+	}
+	//get total death count
+	static int alldeaths(hdlivescounter hdlc){
+		int dths=0;
+		for(int i=0;i<MAXPLAYERs;i++){
+			dths+=hdlc.deaths[i];
+		}
+		return dths;
+	}
+	//get total death count for this player
+	static int owndeaths(int playernum){
+		let hdlc=hdlivescounter.get();
+
+		//coop, count everyone's deaths
+		if(!deathmatch)return hdlivescounter.alldeaths(hdlc);
+
+		//ffa, just count own deaths
+		if(!teamplay)return hdlc.deaths[playernum];
+
+		//teamplay, add up deaths for all players on this team
+		//if you switch teams, you bring your shame with you
+		int dths=0;
+		int pteam=players[playernum].getteam();
+		for(int i=0;i<MAXPLAYERS;i++){
+			if(pteam==players[i].getteam())dths+=hdlc.deaths[i];
+		}
+		return dths;
+	}
+	//check if player has been wiped
+	static bool wiped(int playernum){
+		return(
+			hdlivescounter.livesmode()
+			&&hdlivescounter.owndeaths(playernum)>fraglimit%100
+		);
+	}
+	//check remaining number of teams
+	static int,int teamsleft(){
+		array<int> countedteams;countedteams.clear();
+		for(int i=0;i<MAXPLAYERS;i++){
+			if(!playeringame[i]||hdlivescounter.wiped(i))continue;
+			int thisteam=players[i].getteam();
+			bool alreadylisted=false;
+			for(int j=0;j<countedteams.size();j++){
+				if(countedteams[j]==thisteam){
+					alreadylisted=true;
+					break;
+				}
+			}
+			if(!alreadylisted)countedteams.push(thisteam);
+		}
+		int whichfirst=countedteams.size()?countedteams[0]:-1;
+		return countedteams.size(),whichfirst;
+	}
+	//check endgame
+	static bool checkendgame(){
+		if(!hdlivescounter.livesmode())return false;
+		let hdlc=hdlivescounter.get();
+		if(hdlc.endgametriggered)return false;
+		bool ending=false;
+		if(!deathmatch){
+			//coop: if fraglimit<100, count deaths; >=100, check if all wiped
+			bool wipedout=true;
+			if(fraglimit<100)wipedout=fraglimit<=hdlivescounter.alldeaths(hdlc);
+			else for(int i=0;i<MAXPLAYERS;i++){
+				if(playeringame[i]&&!hdlivescounter.wiped(i)){
+					wipedout=false;
+					break;
+				}
+			}
+			ending=wipedout;
+		}
+		else if(!teamplay){
+			//ffa: check if at least 2 survivors
+			int survivors=0;
+			int survivingplayer=-1;
+			for(int i=0;i<MAXPLAYERS;i++){
+				if(playeringame[i]&&!hdlivescounter.wiped(i)){
+					survivors++;
+					if(survivingplayer<0)survivingplayer=i;
+				}
+			}
+			ending=(survivors<2);
+		}
+		else{
+			//teams: check if at least 2 surviving teams
+			int teamsleft,lastteam;
+			[teamsleft,lastteam]=hdlivescounter.teamsleft();
+			ending=(teamsleft<2);
+		}
+		hdlc.endgametriggered=ending;
+		return ending;
+	}
+	static void playerdied(int playernum){
+		if(!playeringame[playernum])return;
+		let hdlc=hdlivescounter.get();
+
+		hdlc.deaths[playernum]++;
+		hdlivescounter.updatefragcounts(hdlc);
+	}
+}
