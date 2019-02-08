@@ -6,6 +6,7 @@
 class HDHandlers:EventHandler{
 	//the only thing that should be up here, otherwise use "extend"
 	override void worldtick(){
+if(players[0].mo)players[0].mo.A_LogInt(players[0].cmd.buttons);
 		//for changing fraglimit on the fly
 		if(fl!=fraglimit){
 			int oldfl;
