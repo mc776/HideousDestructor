@@ -44,7 +44,6 @@ script "WipedSpecMessage"(void){
 script "CoopFail"(void){
 	if(!ending){
 		ending=true;
-		Log(s:"Respawn limit reached.");
 		HudMessageBold(s:" ";0,3,0,0,0,0);
 		delay(34);
 		setfont("bigfont");
@@ -64,7 +63,6 @@ script "CoopFail"(void){
 script "CoopWipe"(void){
 	ending=true;
 	wiped=true;
-	Log(s:"Players eliminated.");
 	HudMessageBold(s:"";0,4,0,0,0,0);
 	HudMessageBold(s:"";0,3,0,0,0,0);
 	delay(34);
@@ -126,7 +124,6 @@ script "TDMEndWin"(int survivingteam){
 }
 script "FFAWin"(int survivingplayer){
 	ending=true;
-	Log(n:survivingplayer,s:" alone remains.");
 
 	HudMessageBold(s:"";0,4,0,0,0,0);
 	HudMessageBold(s:"";0,3,0,0,0,0);
