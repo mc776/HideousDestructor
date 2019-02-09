@@ -207,8 +207,8 @@ extend class HDHandlers{
 
 			teamdeaths[gtm]++;
 			int lvs=fl-teamdeaths[gtm];
-			if(hd_debug)eee.A_Log(string.format("Team %i has %s li%s left.",
-				gtm,
+			if(hd_debug)eee.A_Log(string.format("%s team has %s li%s left.",
+				teams[gtm].mname,
 				lvs>0?string.format("%i",lvs):"no",
 				lvs==1?"fe":"ves"
 			));
@@ -221,7 +221,6 @@ extend class HDHandlers{
 					int newlives=max(0,fl-teamdeaths[gtmi]);
 					players[i].fragcount=newlives;
 					lives[i]=newlives;
-//					if(players[i].getteam()==gtm)lives[i]=players[i].fragcount;
 
 					//figure out which teams remain
 					if(!wiped[i]){
@@ -234,7 +233,10 @@ extend class HDHandlers{
 			if(standingteam<0||(!endgame&&!twoteamsleft)){
 				endgame=true;
 				if(standingteam<0)eee.ACS_NamedExecuteAlways("CoopWipe",0,0,0);
-				else eee.ACS_NamedExecuteAlways("TDMEndWin",0,standingteam,0);
+				else{
+					eee.ACS_NamedExecuteAlways("TDMEndWin",0,standingteam);
+					console.printf(teams[standingteam].mname.." team alone remains.");
+				}
 			}
 		}
 		else if(deathmatch && !teamplay && fraglimit>=100){
