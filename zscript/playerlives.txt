@@ -127,6 +127,16 @@ class HDLivesCounter:Thinker{
 		let hdlc=hdlivescounter.get();
 		if(hdlc.endgametriggered)return false;
 		bool ending=false;
+
+//the unindentex stuff in this function reflects the old ACS calls.
+playerpawn pmo;
+for(int i=0;i<MAXPLAYERS;i++){
+	if(playeringame[i]&&players[i].mo){
+		pmo=players[i].mo;
+		break;
+	}
+}
+
 		if(!deathmatch){
 			//coop: if fraglimit<100, count deaths; >=100, check if all wiped
 			bool wipedout=true;
@@ -137,11 +147,14 @@ class HDLivesCounter:Thinker{
 					break;
 				}
 			}
-			if(wipedout){
+			ending=wipedout;
+			if(ending){
 				string wipetext=fraglimit<100?"Casualty budget exceeded.":"Team eliminated.";
 				console.printf(wipetext);
+
+if(fraglimit<100)pmo.ACS_NamedExecuteAlways("CoopFail",0,0,0);
+else pmo.ACS_NamedExecuteAlways("CoopWipe",0,0,0);
 			}
-			ending=wipedout;
 		}
 		else if(!teamplay){
 			//ffa: check if at least 2 survivors
@@ -154,16 +167,27 @@ class HDLivesCounter:Thinker{
 				}
 			}
 			ending=(survivors<2);
-			if(ending)console.printf(players[survivingplayer].getusername().." alone remains.");
+			if(ending){
+				console.printf(players[survivingplayer].getusername().." alone remains.");
+
+if(!survivors)pmo.ACS_NamedExecuteAlways("CoopWipe",0,0,0);
+else pmo.ACS_NamedExecuteAlways("FFAWin",0,survivingplayer+1,0);
+			}
 		}
 		else{
 			//teams: check if at least 2 surviving teams
 			int teamsleft,lastteam;
 			[teamsleft,lastteam]=hdlivescounter.teamsleft();
 			ending=(teamsleft<2);
-			if(ending)console.printf(teams[lastteam].mname.." Team alone remains.");
+			if(ending){
+				console.printf(teams[lastteam].mname.." Team alone remains.");
+pmo.ACS_NamedExecuteAlways("TDMEndWin",0,lastteam);
+			}
 		}
 		hdlc.endgametriggered=ending;
+
+/*
+		//end the map immediately
 		if(ending){
 			if(!deathmatch)level.nextmap=level.mapname;
 			for(int i=0;i<MAXPLAYERS;i++){
@@ -171,6 +195,8 @@ class HDLivesCounter:Thinker{
 			}
 			Exit_Normal(0);
 		}
+*/
+
 		return ending;
 	}
 	static void playerdied(int playernum){
