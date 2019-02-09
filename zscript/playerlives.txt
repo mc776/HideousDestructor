@@ -126,20 +126,19 @@ class HDLivesCounter:Thinker{
 		return countedteams.size(),whichfirst;
 	}
 	//check endgame
+	actor endgamecaller;
 	static bool checkendgame(){
 		if(!hdlivescounter.livesmode())return false;
 		let hdlc=hdlivescounter.get();
 		if(hdlc.endgametriggered)return false;
 		bool ending=false;
 
-//the unindented stuff in this function reflects the old ACS calls.
-playerpawn pmo;
-for(int i=0;i<MAXPLAYERS;i++){
-	if(playeringame[i]&&players[i].mo){
-		pmo=players[i].mo;
-		break;
-	}
-}
+		//create an actor that does the acs stuff
+		actor endgamecaller=hdlc.endgamecaller;
+		if(!endgamecaller){
+			endgamecaller=actor.spawn("idledummy",(0,0,0));
+			hdlc.endgamecaller=endgamecaller;
+		}
 
 		if(!deathmatch){
 			//coop: if fraglimit<100, count deaths; >=100, check if all wiped
@@ -156,8 +155,8 @@ for(int i=0;i<MAXPLAYERS;i++){
 				string wipetext=fraglimit<100?"Casualty budget exceeded.":"Team eliminated.";
 				console.printf(wipetext);
 
-if(fraglimit<100)pmo.ACS_NamedExecuteAlways("CoopFail",0,0,0);
-else pmo.ACS_NamedExecuteAlways("CoopWipe",0,0,0);
+				if(fraglimit<100)endgamecaller.ACS_NamedExecuteAlways("CoopFail",0,0,0);
+				else endgamecaller.ACS_NamedExecuteAlways("CoopWipe",0,0,0);
 			}
 		}
 		else if(!teamplay){
@@ -174,8 +173,8 @@ else pmo.ACS_NamedExecuteAlways("CoopWipe",0,0,0);
 			if(ending){
 				console.printf(players[survivingplayer].getusername().." alone remains.");
 
-if(!survivors)pmo.ACS_NamedExecuteAlways("CoopWipe",0,0,0);
-else pmo.ACS_NamedExecuteAlways("FFAWin",0,survivingplayer+1,0);
+				if(!survivors)endgamecaller.ACS_NamedExecuteAlways("CoopWipe",0,0,0);
+				else endgamecaller.ACS_NamedExecuteAlways("FFAWin",0,survivingplayer+1,0);
 			}
 		}
 		else{
@@ -185,7 +184,9 @@ else pmo.ACS_NamedExecuteAlways("FFAWin",0,survivingplayer+1,0);
 			ending=(teamsleft<2);
 			if(ending){
 				console.printf(teams[lastteam].mname.." Team alone remains.");
-pmo.ACS_NamedExecuteAlways("TDMEndWin",0,lastteam);
+
+				if(teamsleft<1)endgamecaller.ACS_NamedExecuteAlways("CoopWipe",0,0,0);
+				endgamecaller.ACS_NamedExecuteAlways("TDMEndWin",0,lastteam);
 			}
 		}
 		hdlc.endgametriggered=ending;
