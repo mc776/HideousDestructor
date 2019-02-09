@@ -93,13 +93,16 @@ class HDLivesCounter:Thinker{
 		return dths;
 	}
 	//check if player has been wiped
-	static bool wiped(int playernum){
+	static bool wiped(int playernum,bool checkspawned=false){
 		return(
 			hdlivescounter.livesmode()
-			&&hdlivescounter.owndeaths(playernum)>fraglimit%100
+			&&hdlivescounter.owndeaths(playernum)>=fraglimit%100
 			&&(
-				!hdplayerpawn(players[playernum].mo)
-				||players[playernum].mo.health<1
+				!checkspawned
+				||(
+					!hdplayerpawn(players[playernum].mo)
+					||players[playernum].mo.health<1
+				)
 			)
 		);
 	}
@@ -107,7 +110,7 @@ class HDLivesCounter:Thinker{
 	static int,int teamsleft(){
 		array<int> countedteams;countedteams.clear();
 		for(int i=0;i<MAXPLAYERS;i++){
-			if(!playeringame[i]||hdlivescounter.wiped(i))continue;
+			if(!playeringame[i]||hdlivescounter.wiped(i,true))continue;
 			int thisteam=players[i].getteam();
 			bool alreadylisted=false;
 			for(int j=0;j<countedteams.size();j++){
@@ -128,7 +131,7 @@ class HDLivesCounter:Thinker{
 		if(hdlc.endgametriggered)return false;
 		bool ending=false;
 
-//the unindentex stuff in this function reflects the old ACS calls.
+//the unindented stuff in this function reflects the old ACS calls.
 playerpawn pmo;
 for(int i=0;i<MAXPLAYERS;i++){
 	if(playeringame[i]&&players[i].mo){
@@ -142,7 +145,7 @@ for(int i=0;i<MAXPLAYERS;i++){
 			bool wipedout=true;
 			if(fraglimit<100)wipedout=fraglimit<=hdlivescounter.alldeaths(hdlc);
 			else for(int i=0;i<MAXPLAYERS;i++){
-				if(playeringame[i]&&!hdlivescounter.wiped(i)){
+				if(playeringame[i]&&!hdlivescounter.wiped(i,true)){
 					wipedout=false;
 					break;
 				}
@@ -161,7 +164,7 @@ else pmo.ACS_NamedExecuteAlways("CoopWipe",0,0,0);
 			int survivors=0;
 			int survivingplayer=-1;
 			for(int i=0;i<MAXPLAYERS;i++){
-				if(playeringame[i]&&!hdlivescounter.wiped(i)){
+				if(playeringame[i]&&!hdlivescounter.wiped(i,true)){
 					survivors++;
 					if(survivingplayer<0)survivingplayer=i;
 				}
@@ -190,9 +193,6 @@ pmo.ACS_NamedExecuteAlways("TDMEndWin",0,lastteam);
 		//end the map immediately
 		if(ending){
 			if(!deathmatch)level.nextmap=level.mapname;
-			for(int i=0;i<MAXPLAYERS;i++){
-				if(players[i].mo)players[i].mo.A_TakeInventory("WipedOut");
-			}
 			Exit_Normal(0);
 		}
 */
@@ -207,7 +207,6 @@ pmo.ACS_NamedExecuteAlways("TDMEndWin",0,lastteam);
 		hdlivescounter.updatefragcounts(hdlc);
 
 		playerinfo player=players[playernum];
-		hdlivescounter.playerdied(playernum);
 		if(hdlivescounter.wiped(playernum)){
 			console.printf(player.getusername().." is OUT!");
 			if(teamplay)console.printf(teams[player.getteam()].mname.." Team is ELIMINATED!");

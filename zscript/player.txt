@@ -86,7 +86,7 @@ class HDPlayerPawn:PlayerPawn{
 		scopecamera=spawn("ScopeCamera",pos+(0,0,height-6),ALLOW_REPLACE);
 		scopecamera.target=self;
 
-		if(player&&player.bot&&hd_nobots&&!countinv("WipedOut"))ReplaceBot();
+		if(player&&player.bot&&hd_nobots&&!hdlivescounter.wiped(playernumber()))ReplaceBot();
 		A_TakeInventory("NullWeapon");
 
 		A_SetTeleFog("TeleportFog","TeleportFog");
@@ -736,13 +736,13 @@ extend class HDHandlers{
 		let p=HDPlayerPawn(players[e.PlayerNumber].mo);
 		if(p){
 			p.levelreset();
-			setplayerlives(e.playernumber);
+			hdlivescounter.get();
 			if(deathmatch)p.spawn("TeleFog",p.pos,ALLOW_REPLACE);
 
 			if(
 				hd_nobots
 				&&players[e.PlayerNumber].bot
-				&&!p.countinv("WipedOut")
+				&&!hdlivescounter.wiped(e.playernumber)
 			){
 				p.ReplaceBot();
 			}
@@ -789,7 +789,6 @@ extend class HDPlayerPawn{
 		overloaded=CheckEncumbrance();
 
 		HDWeapon.SetBusy(self,false);
-		A_TakeInventory("WipedOut");
 		A_TakeInventory("IsMoving");
 		A_TakeInventory("Heat");
 		gunbraced=false;

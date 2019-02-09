@@ -34,7 +34,6 @@ class HDStatusBar:DoomStatusBar{
 		if(
 			!cplayer
 			||!hpl
-			||hpl.countinv("WipedOut")
 		)return;
 		cplayer.inventorytics=0;
 
@@ -85,12 +84,8 @@ class HDStatusBar:DoomStatusBar{
 		if(hpl.countinv("YellowSkull"))drawimage("YSKUA0",(6,50),DI_TOPLEFT);
 		if(hpl.countinv("RedSkull"))drawimage("RSKUB0",(6,70),DI_TOPLEFT);
 
-		//lives
-		if(!(deathmatch&&teamplay)) //TDM just uses your frags anyway
-		drawlives(30,deathmatch?44:24,DI_TOPLEFT|DI_TEXT_ALIGN_LEFT);
-
 		//frags
-		if(deathmatch)drawstring(
+		if(deathmatch||fraglimit>0)drawstring(
 			mHUDFont,FormatNumber(CPlayer.fragcount),
 			(30,24),DI_TOPLEFT|DI_TEXT_ALIGN_LEFT,
 			Font.CR_RED
@@ -295,16 +290,11 @@ class HDStatusBar:DoomStatusBar{
 
 
 		//frags
-		if(deathmatch)drawstring(
+		if(deathmatch||fraglimit>0)drawstring(
 			mHUDFont,FormatNumber(CPlayer.fragcount),
 			(74,mhht),DI_TEXT_ALIGN_LEFT|DI_SCREEN_CENTER_BOTTOM,
 			Font.CR_RED
 		);
-
-
-		//lives
-		if(!(deathmatch&&teamplay)) //TDM just uses your frags anyway
-		drawlives(-74,mhht,DI_TEXT_ALIGN_RIGHT|DI_SCREEN_CENTER_BOTTOM);
 
 
 		//heartbeat/playercolour tracker
@@ -441,24 +431,6 @@ class HDStatusBar:DoomStatusBar{
 			}
 			DrawString(font,stringpiece,pos,flags,translation,Alpha,wrapwidth,linespacing);
 			pos.y+=breakspace;
-		}
-	}
-	void drawlives(int posx,int posy,int flags){
-		if(
-			(
-				multiplayer||level.allowrespawn||skill>5
-			)&&(
-				fraglimit>100||
-				(fraglimit>0&&!deathmatch)
-			)
-		){
-			int liv=HDHandlers(eventhandler.find("HDHandlers")).lives[consoleplayer];
-			drawstring(
-				mHUDFont,FormatNumber(liv),
-				(posx,posy),flags|DI_ITEM_RIGHT_BOTTOM|DI_TEXT_ALIGN_LEFT,
-				liv>3?Font.CR_GOLD:(liv?Font.CR_BRICK:Font.CR_DARKGRAY)
-			);
-			
 		}
 	}
 	void DrawHealthTicker(

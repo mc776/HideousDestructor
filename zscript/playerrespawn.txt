@@ -18,9 +18,6 @@ class RestartMap:ActionItem{
 	pickup:
 		TNT1 A 0{
 			level.nextmap=level.mapname;
-			for(int i=0;i<MAXPLAYERS;i++){
-				if(players[i].mo)players[i].mo.A_TakeInventory("WipedOut");
-			}
 			Exit_Normal(0);
 		}fail;
 	}
@@ -43,13 +40,10 @@ extend class HDHandlers{
 				if(hdm)hdm.maxcheat();
 			}
 		}
-
-		if(wiped[e.playernumber]){
-			hde.A_GiveInventory("WipedOut");
-			hde.A_GiveInventory("SpecMorph");
+		if(hdlivescounter.wiped(e.playernumber)){
+			hde.A_GiveInventory("SpecMorph"); //keep as an inv for ease of testing
+			hde.A_GiveInventory("InvReset");
 		}else{
-			setplayerlives(e.playernumber);
-
 			if(
 				teamplay&&deathmatch
 			){
@@ -66,24 +60,6 @@ extend class HDHandlers{
 			}
 
 			hde.spawn("TeleFog",hde.pos,ALLOW_REPLACE); //HDPP only sets telefog in postbeginplay
-		}
-	}
-	void setplayerlives(int pnum){
-		if(fraglimit&&!deathmatch){
-			int fl=fraglimit>=100?fraglimit-100:fraglimit;
-			lives[pnum]=max(0,fl-coopdeaths);
-		}
-		else if(deathmatch&&fraglimit>100){
-			int fl=fraglimit-100;
-			int lvs;
-			if(teamplay){
-				lvs=fl-teamdeaths[players[pnum].getteam()];
-				players[pnum].fragcount=lvs;
-			}
-			else{
-				lvs=max(0,fl-ffadeaths[pnum]);
-				lives[pnum]=lvs;
-			}
 		}
 	}
 
@@ -164,7 +140,7 @@ class HDSpectator:PlayerPawn{
 		super.postbeginplay();
 		setz(min(floorz+64,ceilingz-4));
 		if(!multiplayer)return;
-		if(countinv("WipedOut"))ACS_NamedExecuteAlways("WipedSpecMessage");
+		if(hdlivescounter.wiped(playernumber()))ACS_NamedExecuteAlways("WipedSpecMessage");
 		else A_Print("Now spectating.\n\n\n\ccpress fire and altfire to\n\n\ccwarp to remaining players\n\n\cc(if any).",6,"SMALLFONT");
 	}
 	override bool cancollidewith(actor other,bool passive){return false;}

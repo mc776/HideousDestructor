@@ -4,19 +4,7 @@
 
 //event handler
 class HDHandlers:EventHandler{
-	//the only thing that should be up here, otherwise use "extend"
-	override void worldtick(){
-		//for changing fraglimit on the fly
-		if(fl!=fraglimit){
-			int oldfl;
-			fl=fraglimit>=100?fraglimit-100:fraglimit;
-			for(int i=0;i<MAXPLAYERS;i++){
-				lives[i]+=(fl-oldfl);
-			}
-		}
-	}
 	override void WorldLoaded(WorldEvent e){
-		livesinit();
 		textureid dirtyglass=texman.checkfortexture("WALL47_2",texman.type_any);
 
 		int itmax=level.lines.size();
