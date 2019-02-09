@@ -208,8 +208,23 @@ pmo.ACS_NamedExecuteAlways("TDMEndWin",0,lastteam);
 
 		playerinfo player=players[playernum];
 		if(hdlivescounter.wiped(playernum,true)){
-			console.printf(player.getusername().." is OUT!");
-			if(teamplay)console.printf(teams[player.getteam()].mname.." Team is ELIMINATED!");
+			console.printf("\ci-- "..player.getusername().." is OUT!");
+			if(deathmatch&&teamplay){
+				bool teamwiped=true;
+				int ownteam=players[playernum].getteam();
+				for(int i=0;i<MAXPLAYERS;i++){
+					if(
+						playeringame[i]
+						&&players[i].getteam()==ownteam
+						&&hdplayerpawn(players[i].mo)
+						&&players[i].mo.health>0
+					){
+						teamwiped=false;
+						break;
+					}
+				}
+				if(teamwiped)console.printf("\cg*** "..teams[player.getteam()].mname.." Team has been ELIMINATED!");
+			}
 		}
 
 		hdlivescounter.checkendgame();
