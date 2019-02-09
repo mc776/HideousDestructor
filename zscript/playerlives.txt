@@ -61,7 +61,7 @@ class HDLivesCounter:Thinker{
 	//update all the fragcounts
 	static void updatefragcounts(hdlivescounter hdlc){
 		if(!hdlivescounter.livesmode())return;
-		for(int i=0;i<MAXPLAYERs;i++){
+		for(int i=0;i<MAXPLAYERS;i++){
 			if(playeringame[i])players[i].fragcount=(fraglimit%100)-hdlivescounter.owndeaths(i);
 		}
 	}
@@ -76,6 +76,7 @@ class HDLivesCounter:Thinker{
 	//get total death count for this player
 	static int owndeaths(int playernum){
 		let hdlc=hdlivescounter.get();
+		if(!playeringame[playernum])return 0;
 
 		//coop, count everyone's deaths
 		if(!deathmatch)return hdlivescounter.alldeaths(hdlc);
@@ -88,7 +89,7 @@ class HDLivesCounter:Thinker{
 		int dths=0;
 		int pteam=players[playernum].getteam();
 		for(int i=0;i<MAXPLAYERS;i++){
-			if(pteam==players[i].getteam())dths+=hdlc.deaths[i];
+			if(playeringame[i]&&pteam==players[i].getteam())dths+=hdlc.deaths[i];
 		}
 		return dths;
 	}
