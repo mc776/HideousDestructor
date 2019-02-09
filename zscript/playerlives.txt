@@ -207,7 +207,7 @@ pmo.ACS_NamedExecuteAlways("TDMEndWin",0,lastteam);
 		hdlivescounter.updatefragcounts(hdlc);
 
 		playerinfo player=players[playernum];
-		if(hdlivescounter.wiped(playernum)){
+		if(hdlivescounter.wiped(playernum,true)){
 			console.printf(player.getusername().." is OUT!");
 			if(teamplay)console.printf(teams[player.getteam()].mname.." Team is ELIMINATED!");
 		}
