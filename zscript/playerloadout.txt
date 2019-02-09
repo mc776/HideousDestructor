@@ -39,19 +39,6 @@ class SoldierExtras:HDPickup{
 
 
 //reset inventory
-class InvResetLater:InventoryFlag{
-	override void tick(){
-		super.tick();
-		stamina++;
-		if(
-			hdplayerpawn(owner)
-			&&stamina>2
-		){
-			owner.A_GiveInventory("InvReset");
-			destroy();
-		}
-	}
-}
 class InvReset:Inventory{
 	void ReallyClearInventory(actor resetee,bool keepkeys=false){
 		for(inventory item=resetee.inv;item!=null;item=!item?null:item.inv){
