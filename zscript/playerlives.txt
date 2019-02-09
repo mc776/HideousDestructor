@@ -130,8 +130,6 @@ class HDLivesCounter:Thinker{
 	static bool checkendgame(){
 		if(!hdlivescounter.livesmode())return false;
 		let hdlc=hdlivescounter.get();
-		if(hdlc.endgametriggered)return false;
-		bool ending=false;
 
 		//create an actor that does the acs stuff
 		actor endgamecaller=hdlc.endgamecaller;
@@ -139,6 +137,27 @@ class HDLivesCounter:Thinker{
 			endgamecaller=actor.spawn("idledummy",(0,0,0));
 			hdlc.endgamecaller=endgamecaller;
 		}
+
+		//sudden death cyber-cyberdemons
+		if(hdlc.endgametriggered){
+			bool wipedout=true;
+			for(int i=0;i<MAXPLAYERS;i++){
+				if(playeringame[i]&&!hdlivescounter.wiped(i,true)){
+					wipedout=false;
+					break;
+				}
+			}
+			if(wipedout){
+				endgamecaller.ACS_NamedTerminate("CoopFail",0);
+				endgamecaller.ACS_NamedTerminate("TDMEndWin",0);
+				endgamecaller.ACS_NamedTerminate("FFAWin",0);
+				endgamecaller.ACS_NamedExecute("CoopWipe",0,0,0);
+				return true;
+			}
+			return true;
+		}
+
+		bool ending=false;
 
 		if(!deathmatch){
 			//coop: if fraglimit<100, count deaths; >=100, check if all wiped
