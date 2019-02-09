@@ -97,6 +97,10 @@ class HDLivesCounter:Thinker{
 		return(
 			hdlivescounter.livesmode()
 			&&hdlivescounter.owndeaths(playernum)>fraglimit%100
+			&&(
+				!hdplayerpawn(players[playernum].mo)
+				||players[playernum].mo.health<1
+			)
 		);
 	}
 	//check remaining number of teams
@@ -133,6 +137,10 @@ class HDLivesCounter:Thinker{
 					break;
 				}
 			}
+			if(wipedout){
+				string wipetext=fraglimit<100?"Casualty budget exceeded.":"Team eliminated.";
+				console.printf(wipetext);
+			}
 			ending=wipedout;
 		}
 		else if(!teamplay){
@@ -146,14 +154,23 @@ class HDLivesCounter:Thinker{
 				}
 			}
 			ending=(survivors<2);
+			if(ending)console.printf(players[survivingplayer].getusername().." alone remains.");
 		}
 		else{
 			//teams: check if at least 2 surviving teams
 			int teamsleft,lastteam;
 			[teamsleft,lastteam]=hdlivescounter.teamsleft();
 			ending=(teamsleft<2);
+			if(ending)console.printf(getteamname(lastteam).." Team alone remains.");
 		}
 		hdlc.endgametriggered=ending;
+		if(ending){
+			level.nextmap=level.mapname;
+			for(int i=0;i<MAXPLAYERS;i++){
+				if(players[i].mo)players[i].mo.A_TakeInventory("WipedOut");
+			}
+			Exit_Normal(0);
+		}
 		return ending;
 	}
 	static void playerdied(int playernum){
@@ -162,5 +179,32 @@ class HDLivesCounter:Thinker{
 
 		hdlc.deaths[playernum]++;
 		hdlivescounter.updatefragcounts(hdlc);
+
+		playerinfo player=players[playernum];
+		hdlivescounter.playerdied(playernum);
+		if(hdlivescounter.wiped(playernum)){
+			console.printf(player.getusername().." is OUT!");
+			if(teamplay)console.printf(getteamname(playernum).." Team is ELIMINATED!");
+		}
+
+		hdlivescounter.checkendgame();
+	}
+
+
+	//because teams[n].getname() doesn't work yet
+	static string getteamname(int playernum){
+		if(!playeringame[playernum])return "The Worst";
+		switch(players[playernum].getteam()){
+		case 0:return "Green";
+		case 1:return "Blue";
+		case 2:return "Black";
+		case 3:return "Brown";
+		case 4:return "Grey";
+		case 5:return "Pink";
+		default:return "The Best";
+		}
 	}
 }
+
+
+
