@@ -91,6 +91,8 @@ class HDPlayerPawn:PlayerPawn{
 
 		A_SetTeleFog("TeleportFog","TeleportFog");
 		btelestomp=true;
+
+		hdlivescounter.updatefragcounts(hdlivescounter.get());
 	}
 	void A_CheckGunBraced(){
 		if(HDWeapon.IsBusy(self))gunbraced=false;
