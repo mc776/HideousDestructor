@@ -252,4 +252,16 @@ class HDLivesCounter:Thinker{
 }
 
 
+//will eventually replace the ACS
+extend class HDHandlers{
+	override void RenderOverlay(renderevent e){
+		return;
+		screen.drawtexture(
+			texman.checkfortexture("BAL1A0",texman.type_any),false,100,smallfont.getheight()*14,
+			DTA_Clean,false,DTA_320x200,true,DTA_TopOffset,true,DTA_LeftOffset,true
+		);
+	}
+}
+
+
 
