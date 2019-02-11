@@ -254,8 +254,15 @@ class HDLivesCounter:Thinker{
 
 //will eventually replace the ACS
 extend class HDHandlers{
-	override void RenderOverlay(renderevent e){
-		return;
+//	override void RenderOverlay(renderevent e){
+	ui void NotRenderOverlay(renderevent e){
+		string bigmsg="EEE";
+		if(playerpawn(e.camera)&&playerpawn(e.camera).playernumber()>0)bigmsg="FFF";
+		screen.DrawText(BigFont,OptionMenuSettings.mFontColorHighlight,
+			(screen.GetWidth() - BigFont.StringWidth(bigmsg) * CleanXfac_1) / 2,
+			SmallFont.GetHeight()*CleanYFac_1*11,
+			bigmsg,DTA_CleanNoMove_1,true
+		);
 		screen.drawtexture(
 			texman.checkfortexture("BAL1A0",texman.type_any),false,100,smallfont.getheight()*14,
 			DTA_Clean,false,DTA_320x200,true,DTA_TopOffset,true,DTA_LeftOffset,true
