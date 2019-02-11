@@ -254,15 +254,29 @@ class HDLivesCounter:Thinker{
 
 //will eventually replace the ACS
 extend class HDHandlers{
+	int bluh;
+//	override void WorldTick(){
+	void NotWorldTick(){
+		bluh++;
+		if(bluh>=70)bluh=0;
+	}
 //	override void RenderOverlay(renderevent e){
 	ui void NotRenderOverlay(renderevent e){
-		string bigmsg="EEE";
+		if(bluh>40)return;
+		string bigmsg="W I P E D   O U T !";
 		if(playerpawn(e.camera)&&playerpawn(e.camera).playernumber()>0)bigmsg="FFF";
 		screen.DrawText(BigFont,OptionMenuSettings.mFontColorHighlight,
 			(screen.GetWidth() - BigFont.StringWidth(bigmsg) * CleanXfac_1) / 2,
 			SmallFont.GetHeight()*CleanYFac_1*11,
-			bigmsg,DTA_CleanNoMove_1,true
+			bigmsg.left(bluh),DTA_CleanNoMove_1,true
 		);
+		string smallmsg="t r y   a g a i n .";
+		screen.DrawText(smallfont,OptionMenuSettings.mFontColorValue,
+			(screen.GetWidth() - smallfont.StringWidth(smallmsg) * CleanXfac_1) / 2,
+			SmallFont.GetHeight()*CleanYFac_1*12+BigFont.GetHeight()*CleanYFac_1,
+			smallmsg,DTA_CleanNoMove_1,true
+		);
+		return;
 		screen.drawtexture(
 			texman.checkfortexture("BAL1A0",texman.type_any),false,100,smallfont.getheight()*14,
 			DTA_Clean,false,DTA_320x200,true,DTA_TopOffset,true,DTA_LeftOffset,true
