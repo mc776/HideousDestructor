@@ -24,9 +24,19 @@ extend class HDPlayerPawn{
 			A_TakeInventory("BasicArmor");
 		}
 
-		if(damage==TELEFRAG_DAMAGE&&source==self){
-			flags|=DMG_FORCED;
-			A_TakeInventory("SpiritualArmour");
+		if(damage==TELEFRAG_DAMAGE){
+			//because spawn telefrags are bullshit
+			if(
+				source.player
+				&&source.getage()<10
+			){
+				return 0;
+			}
+
+			if(source==self){
+				flags|=DMG_FORCED;
+				A_TakeInventory("SpiritualArmour");
+			}
 		}
 
 		if(inflictor&&inflictor.bpiercearmor)flags|=DMG_NO_ARMOR;

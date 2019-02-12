@@ -265,6 +265,17 @@ class HDLivesCounter:Thinker{
 		endgametypecounterstartsmalltext=endbigstring.length()+35;
 		endgametypecounterend=endgametypecounterstartsmalltext+endsmallstring.length()+70;
 		endgametypecounternext=endgametypecounterend+35;
+
+		//additional changes
+		for(int i=0;i<MAXPLAYERS;i++){
+			if(
+				playeringame[i]
+				&&players[i].mo
+				&&hdweapon(players[i].mo.player.readyweapon)
+			){
+				hdweapon(players[i].mo.player.readyweapon).wepmsg="";
+			}
+		}
 	}
 	static void playerdied(int playernum){
 		if(!playeringame[playernum])return;
