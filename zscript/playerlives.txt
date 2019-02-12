@@ -55,7 +55,10 @@ class HDLivesCounter:Thinker{
 		//tick the typeon effect
 		if(endgametypecounter>-36){
 			endgametypecounter++;
-			if(endgametypecounter>endgametypecounternext){
+			if(
+				endgametypecounter>endgametypecounternext
+				&&checkendgame(true)
+			){
 				if(!deathmatch)level.nextmap=level.mapname;
 				Exit_Normal(0);
 			}
@@ -150,83 +153,88 @@ class HDLivesCounter:Thinker{
 		return countedteams.size(),whichfirst;
 	}
 	//check endgame
-	static int checkendgame(){
+	static int checkendgame(bool checkonly=false){
 		if(!hdlivescounter.livesmode())return false;
 		let hdlc=hdlivescounter.get();
+		int endgametype=0;
+		int survivorindex=-1;
+		string endtext="";
 
 		//sudden death cyber-cyberdemons
-		if(
-			hdlc.endgametriggered
-			&&hdlc.endgametriggered!=hdlivescounter.HDEND_WIPE
-		){
-			bool wipedout=true;
-			for(int i=0;i<MAXPLAYERS;i++){
-				if(playeringame[i]&&!hdlivescounter.wiped(i,true)){
-					wipedout=false;
-					break;
-				}
-			}
-			if(wipedout)hdlc.startendgameticker(hdlivescounter.HDEND_WIPE);
-			return hdlivescounter.HDEND_WIPE;
-		}
-
-		if(!deathmatch){
-			//coop: if fraglimit<100, count deaths; >=100, check if all wiped
-			bool wipedout=true;
-			if(fraglimit<100)wipedout=fraglimit<=hdlivescounter.alldeaths(hdlc);
-			else for(int i=0;i<MAXPLAYERS;i++){
-				if(playeringame[i]&&!hdlivescounter.wiped(i,true)){
-					wipedout=false;
-					break;
-				}
-			}
-			if(wipedout){
-				string wipetext=fraglimit<100?"Casualty budget exceeded.":"Team eliminated.";
-				console.printf(wipetext);
-
-				if(fraglimit<100)hdlc.startendgameticker(hdlivescounter.HDEND_COOPFAIL);
-				else hdlc.startendgameticker(hdlivescounter.HDEND_WIPE);
+		bool wipedout=true;
+		for(int i=0;i<MAXPLAYERS;i++){
+			if(playeringame[i]&&!hdlivescounter.wiped(i,true)){
+				wipedout=false;
+				break;
 			}
 		}
-		else if(!teamplay){
-			//ffa: check if at least 2 survivors
-			int survivors=0;
-			int survivingplayer=-1;
-			for(int i=0;i<MAXPLAYERS;i++){
-				if(playeringame[i]&&!hdlivescounter.wiped(i,true)){
-					survivors++;
-					if(survivingplayer<0)survivingplayer=i;
-				}
-			}
-			bool ending=(survivors<2);
-			if(ending){
+		if(wipedout){
+			endgametype=hdlivescounter.HDEND_WIPE;
 
-				if(!survivors){
-					console.printf("All players eliminated.");
-					hdlc.startendgameticker(hdlivescounter.HDEND_WIPE);
-				}else{
-					console.printf(players[survivingplayer].getusername().." alone remains.");
-					hdlc.startendgameticker(hdlivescounter.HDEND_LMSWIN,survivingplayer);
+			if(!deathmatch)endtext="Team eliminated.";
+			else if(teamplay)endtext="All teams eliminated.";
+			else endtext="All players eliminated.";
+		}
+
+		//all other checks are conditional on non-wipeout
+		if(endgametype!=hdlivescounter.HDEND_WIPE){
+			if(!deathmatch){
+				//coop: count deaths
+				if(fraglimit<=hdlivescounter.alldeaths(hdlc)){
+					endtext="Casualty budget exceeded.";
+					endgametype=hdlivescounter.HDEND_COOPFAIL;
 				}
 			}
-		}
-		else{
-			//teams: check if at least 2 surviving teams
-			int teamsleft,lastteam;
-			[teamsleft,lastteam]=hdlivescounter.teamsleft();
-			bool ending=(teamsleft<2);
-			if(ending){
-				if(teamsleft<1){
-					console.printf("All teams eliminated.");
-					hdlc.startendgameticker(hdlivescounter.HDEND_WIPE);
-				}else{
-					console.printf(teams[lastteam].mname.." Team alone remains.");
-					hdlc.startendgameticker(hdlivescounter.HDEND_TEAMWIN,lastteam);
+			else if(!teamplay){
+				//ffa: check if at least 2 survivors
+				int survivors=0;
+				int survivingplayer=-1;
+				for(int i=0;i<MAXPLAYERS;i++){
+					if(playeringame[i]&&!hdlivescounter.wiped(i,true)){
+						survivors++;
+						if(survivingplayer<0)survivingplayer=i;
+					}
+				}
+				bool ending=(survivors<2);
+				if(ending){
+
+					if(!survivors){
+						endtext="All players eliminated.";
+						endgametype=hdlivescounter.HDEND_WIPE;
+					}else{
+						endtext=players[survivingplayer].getusername().." alone remains.";
+						survivorindex=survivingplayer;
+						endgametype=hdlivescounter.HDEND_LMSWIN;
+					}
+				}
+			}
+			else{
+				//teams: check if at least 2 surviving teams
+				int teamsleft,lastteam;
+				[teamsleft,lastteam]=hdlivescounter.teamsleft();
+				bool ending=(teamsleft<2);
+				if(ending){
+					if(teamsleft<1){
+						endtext="All teams eliminated.";
+						endgametype=hdlivescounter.HDEND_WIPE;
+					}else{
+						endtext=teams[lastteam].mname.." Team alone remains.";
+						survivorindex=lastteam;
+						endgametype=hdlivescounter.HDEND_TEAMWIN;
+					}
 				}
 			}
 		}
 
-		return hdlc.endgametriggered;
+		if(!checkonly||hd_debug)console.printf(endtext);
+		if(endgametype&&endgametype!=hdlc.endgametriggered){
+			hdlc.startendgameticker(endgametype,survivorindex);
+		}else if(!endgametype){
+			hdlc.endgametypecounter=-36;
+		}
+
+		hdlc.endgametriggered=endgametype;
+		return endgametype;
 	}
 	//start the endgame sequence
 	void startendgameticker(int endtype,int winner=-1){
