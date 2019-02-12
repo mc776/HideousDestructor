@@ -5,14 +5,29 @@ class HDLivesCounter:Thinker{
 	int lastfraglimit;
 	bool lastteamplay;
 	bool lastlivesmode;
-	bool endgametriggered;
+	int endgametriggered;
 	int deaths[MAXPLAYERS];
+
+	//for the typeon effect
+	int endgametypecounter;
+	int endgametypecounterstartsmalltext;
+	int endgametypecounterend;
+	int endgametypecounternext;
+	string endbigstring;
+	string endsmallstring;
 
 	override void postbeginplay(){
 		super.postbeginplay();
 		lastfraglimit=0;
 		lastteamplay=false;
-		endgametriggered=false;
+		endgametriggered=0;
+
+		endgametypecounter=-36; //1-second lag before it starts = start at -35
+		endgametypecounterstartsmalltext=0;
+		endgametypecounterend=0;
+		endgametypecounternext=0;
+		endbigstring="";
+		endsmallstring="";
 	}
 	override void tick(){
 		super.tick();
@@ -35,6 +50,15 @@ class HDLivesCounter:Thinker{
 			lastfraglimit=fraglimit;
 			lastteamplay=teamplay;
 			updatefragcounts(self);
+		}
+
+		//tick the typeon effect
+		if(endgametypecounter>-36){
+			endgametypecounter++;
+			if(endgametypecounter>endgametypecounternext){
+				if(!deathmatch)level.nextmap=level.mapname;
+				Exit_Normal(0);
+			}
 		}
 	}
 	//obtain the thinker
@@ -97,7 +121,7 @@ class HDLivesCounter:Thinker{
 	static bool wiped(int playernum,bool checkspawned=false){
 		return(
 			hdlivescounter.livesmode()
-			&&hdlivescounter.owndeaths(playernum)>=fraglimit%100
+			&&hdlivescounter.owndeaths(playernum)>fraglimit%100
 			&&(
 				!checkspawned
 				||(
@@ -126,20 +150,15 @@ class HDLivesCounter:Thinker{
 		return countedteams.size(),whichfirst;
 	}
 	//check endgame
-	actor endgamecaller;
-	static bool checkendgame(){
+	static int checkendgame(){
 		if(!hdlivescounter.livesmode())return false;
 		let hdlc=hdlivescounter.get();
 
-		//create an actor that does the acs stuff
-		actor endgamecaller=hdlc.endgamecaller;
-		if(!endgamecaller){
-			endgamecaller=actor.spawn("idledummy",(0,0,0));
-			hdlc.endgamecaller=endgamecaller;
-		}
-
 		//sudden death cyber-cyberdemons
-		if(hdlc.endgametriggered){
+		if(
+			hdlc.endgametriggered
+			&&hdlc.endgametriggered!=hdlivescounter.HDEND_WIPE
+		){
 			bool wipedout=true;
 			for(int i=0;i<MAXPLAYERS;i++){
 				if(playeringame[i]&&!hdlivescounter.wiped(i,true)){
@@ -147,16 +166,9 @@ class HDLivesCounter:Thinker{
 					break;
 				}
 			}
-			if(wipedout){
-				endgamecaller.ACS_NamedTerminate("CoopFail",0);
-				endgamecaller.ACS_NamedTerminate("TDMEndWin",0);
-				endgamecaller.ACS_NamedTerminate("FFAWin",0);
-				endgamecaller.ACS_NamedExecute("CoopWipe",0,0,0);
-			}
-			return true;
+			if(wipedout)hdlc.startendgameticker(hdlivescounter.HDEND_WIPE);
+			return hdlivescounter.HDEND_WIPE;
 		}
-
-		bool ending=false;
 
 		if(!deathmatch){
 			//coop: if fraglimit<100, count deaths; >=100, check if all wiped
@@ -168,13 +180,12 @@ class HDLivesCounter:Thinker{
 					break;
 				}
 			}
-			ending=wipedout;
-			if(ending){
+			if(wipedout){
 				string wipetext=fraglimit<100?"Casualty budget exceeded.":"Team eliminated.";
 				console.printf(wipetext);
 
-				if(fraglimit<100)endgamecaller.ACS_NamedExecuteAlways("CoopFail",0,0,0);
-				else endgamecaller.ACS_NamedExecuteAlways("CoopWipe",0,0,0);
+				if(fraglimit<100)hdlc.startendgameticker(hdlivescounter.HDEND_COOPFAIL);
+				else hdlc.startendgameticker(hdlivescounter.HDEND_WIPE);
 			}
 		}
 		else if(!teamplay){
@@ -187,37 +198,73 @@ class HDLivesCounter:Thinker{
 					if(survivingplayer<0)survivingplayer=i;
 				}
 			}
-			ending=(survivors<2);
+			bool ending=(survivors<2);
 			if(ending){
-				console.printf(players[survivingplayer].getusername().." alone remains.");
 
-				if(!survivors)endgamecaller.ACS_NamedExecuteAlways("CoopWipe",0,0,0);
-				else endgamecaller.ACS_NamedExecuteAlways("FFAWin",0,survivingplayer+1,0);
+				if(!survivors){
+					console.printf("All players eliminated.");
+					hdlc.startendgameticker(hdlivescounter.HDEND_WIPE);
+				}else{
+					console.printf(players[survivingplayer].getusername().." alone remains.");
+					hdlc.startendgameticker(hdlivescounter.HDEND_LMSWIN,survivingplayer);
+				}
 			}
 		}
 		else{
 			//teams: check if at least 2 surviving teams
 			int teamsleft,lastteam;
 			[teamsleft,lastteam]=hdlivescounter.teamsleft();
-			ending=(teamsleft<2);
+			bool ending=(teamsleft<2);
 			if(ending){
-				console.printf(teams[lastteam].mname.." Team alone remains.");
-
-				if(teamsleft<1)endgamecaller.ACS_NamedExecuteAlways("CoopWipe",0,0,0);
-				endgamecaller.ACS_NamedExecuteAlways("TDMEndWin",0,lastteam);
+				if(teamsleft<1){
+					console.printf("All teams eliminated.");
+					hdlc.startendgameticker(hdlivescounter.HDEND_WIPE);
+				}else{
+					console.printf(teams[lastteam].mname.." Team alone remains.");
+					hdlc.startendgameticker(hdlivescounter.HDEND_TEAMWIN,lastteam);
+				}
 			}
 		}
-		hdlc.endgametriggered=ending;
 
-/*
-		//end the map immediately
-		if(ending){
-			if(!deathmatch)level.nextmap=level.mapname;
-			Exit_Normal(0);
+		return hdlc.endgametriggered;
+	}
+	//start the endgame sequence
+	void startendgameticker(int endtype,int winner=-1){
+		endgametriggered=endtype;
+		endgametypecounter=-35;
+		static const string smtx[]={
+			"Good game!",
+			"Well played, everyone!",
+			"Everyone else, better luck next time!",
+			"Shit your pants before their awesome!",
+			"Congratulations on being sufficiently hideous!",
+			"And now to survive the sudden death cyber-cyberdemons..."
+		};
+		switch(endtype){
+		case HDEND_LMSWIN:
+			endbigstring=players[winner].getusername().." has won the match!";
+			endsmallstring=smtx[random(0,smtx.size())];
+			break;
+		case HDEND_TEAMWIN:
+			endbigstring=teams[winner].mname.." Team has won the match!";
+			endsmallstring=smtx[random(0,smtx.size())];
+			break;
+		case HDEND_COOPFAIL:
+			endbigstring="W E   A R E   L E A V I N G !";
+			endsmallstring="Too many casualties, HQ has ordered a retreat!";
+			break;
+		case HDEND_WIPE:
+			endbigstring="W I P E D   O U T !";
+			endsmallstring="T r y   a g a i n.";
+			break;
+		default:
+			endgametypecounter=-36;
+			return;
+			break;
 		}
-*/
-
-		return ending;
+		endgametypecounterstartsmalltext=endbigstring.length()+35;
+		endgametypecounterend=endgametypecounterstartsmalltext+endsmallstring.length()+70;
+		endgametypecounternext=endgametypecounterend+35;
 	}
 	static void playerdied(int playernum){
 		if(!playeringame[playernum])return;
@@ -249,38 +296,49 @@ class HDLivesCounter:Thinker{
 
 		hdlivescounter.checkendgame();
 	}
+	enum EndgameType{
+		HDEND_WIPE=1,
+		HDEND_COOPFAIL=2,
+		HDEND_LMSWIN=3,
+		HDEND_TEAMWIN=4,
+	}
 }
 
 
-//will eventually replace the ACS
 extend class HDHandlers{
-	int bluh;
-//	override void WorldTick(){
-	void NotWorldTick(){
-		bluh++;
-		if(bluh>=70)bluh=0;
-	}
-//	override void RenderOverlay(renderevent e){
-	ui void NotRenderOverlay(renderevent e){
-		if(bluh>40)return;
-		string bigmsg="W I P E D   O U T !";
-		if(playerpawn(e.camera)&&playerpawn(e.camera).playernumber()>0)bigmsg="FFF";
-		screen.DrawText(BigFont,OptionMenuSettings.mFontColorHighlight,
-			(screen.GetWidth() - BigFont.StringWidth(bigmsg) * CleanXfac_1) / 2,
-			SmallFont.GetHeight()*CleanYFac_1*11,
-			bigmsg.left(bluh),DTA_CleanNoMove_1,true
-		);
-		string smallmsg="t r y   a g a i n .";
-		screen.DrawText(smallfont,OptionMenuSettings.mFontColorValue,
-			(screen.GetWidth() - smallfont.StringWidth(smallmsg) * CleanXfac_1) / 2,
-			SmallFont.GetHeight()*CleanYFac_1*12+BigFont.GetHeight()*CleanYFac_1,
-			smallmsg,DTA_CleanNoMove_1,true
-		);
-		return;
-		screen.drawtexture(
-			texman.checkfortexture("BAL1A0",texman.type_any),false,100,smallfont.getheight()*14,
-			DTA_Clean,false,DTA_320x200,true,DTA_TopOffset,true,DTA_LeftOffset,true
-		);
+	override void RenderOverlay(renderevent e){
+//	static ui void RenderEndgameText(){
+		hdlivescounter hdlc=null;
+		thinkeriterator hdlcit=thinkeriterator.create("hdlivescounter");
+		while(hdlc=hdlivescounter(hdlcit.next())){
+			if(hdlc)break;
+		}
+		if(!hdlc)return;
+		int counter=hdlc.endgametypecounter;
+		if(counter>0){
+			double calpha=1.;
+			if(counter>hdlc.endgametypecounterend){
+				double totaltics=max(1.,hdlc.endgametypecounternext-hdlc.endgametypecounterend);
+				calpha-=double(counter-hdlc.endgametypecounterend)/totaltics;
+			}
+			string bigmsg=hdlc.endbigstring;
+			screen.DrawText(BigFont,OptionMenuSettings.mFontColorHighlight,
+				(screen.GetWidth() - BigFont.StringWidth(bigmsg) * CleanXfac_1) / 2,
+				SmallFont.GetHeight()*CleanYFac_1*11,
+				bigmsg.left(counter),DTA_CleanNoMove_1,true,
+				DTA_Alpha,calpha
+			);
+			counter-=hdlc.endgametypecounterstartsmalltext;
+			if(counter>0){
+				string smallmsg=hdlc.endsmallstring;
+				screen.DrawText(smallfont,OptionMenuSettings.mFontColorValue,
+					(screen.GetWidth() - smallfont.StringWidth(smallmsg) * CleanXfac_1) / 2,
+					SmallFont.GetHeight()*CleanYFac_1*12+BigFont.GetHeight()*CleanYFac_1,
+					smallmsg.left(counter),DTA_CleanNoMove_1,true,
+					DTA_Alpha,calpha
+				);
+			}
+		}
 	}
 }
 
