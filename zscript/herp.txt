@@ -11,7 +11,7 @@ class HERPLeg:Actor{
 	vector3 relpos;
 	double oldfloorz;
 	override void Tick(){
-		if(!master){destroy();return;}
+		if(!master||master.bcorpse){destroy();return;}
 		if(
 			master.pos.z<floorz+12
 			&&oldfloorz==floorz
@@ -61,6 +61,10 @@ class HERPBot:HDUPK{
 			bmissilemore=false;
 			setstatelabel("off");
 		}
+	}
+	override void Die(actor source,actor inflictor,int dmgflags){
+		super.Die(source,inflictor,dmgflags);
+		bsolid=true;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -337,8 +341,7 @@ class HERPBot:HDUPK{
 	give:
 		---- A 0{
 			if(
-				health>0
-				&&!target.countinv("HERPUsable")
+				!target.countinv("HERPUsable")
 			){
 				let hu=HERPUsable(target.GiveInventoryType("HERPUsable"));
 				if(hu){
@@ -419,11 +422,19 @@ class EnemyHERP:HERPBot{
 	}
 }
 class BrokenHERP:HERPBot{
+	default{
+		//$Category "Monsters/Hideous Destructor"
+		//$Title "H.E.R.P. Robot (Broken)"
+		//$Sprite "HERPA1"
+		translation "112:120=152:159","121:127=9:12";
+	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		A_Die("spawndead");
 	}
 	states{
+	spawn:
+		HERP A -1;
 	death.spawndead:
 		HERP A -1{
 			ammo[0]=random(0,ammo[0]+randompick(0,0,0,100));
