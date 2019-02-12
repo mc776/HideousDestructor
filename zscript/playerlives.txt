@@ -243,11 +243,11 @@ class HDLivesCounter:Thinker{
 		switch(endtype){
 		case HDEND_LMSWIN:
 			endbigstring=players[winner].getusername().." has won the match!";
-			endsmallstring=smtx[random(0,smtx.size())];
+			endsmallstring=smtx[random(0,smtx.size()-1)];
 			break;
 		case HDEND_TEAMWIN:
 			endbigstring=teams[winner].mname.." Team has won the match!";
-			endsmallstring=smtx[random(0,smtx.size())];
+			endsmallstring=smtx[random(0,smtx.size()-1)];
 			break;
 		case HDEND_COOPFAIL:
 			endbigstring="W E   A R E   L E A V I N G !";
