@@ -307,18 +307,7 @@ class HDLivesCounter:Thinker{
 
 		hdlivescounter.checkendgame();
 	}
-	enum EndgameType{
-		HDEND_WIPE=1,
-		HDEND_COOPFAIL=2,
-		HDEND_LMSWIN=3,
-		HDEND_TEAMWIN=4,
-	}
-}
-
-
-extend class HDHandlers{
-	override void RenderOverlay(renderevent e){
-//	static ui void RenderEndgameText(){
+	static ui void RenderEndgameText(actor camera){
 		hdlivescounter hdlc=null;
 		thinkeriterator hdlcit=thinkeriterator.create("hdlivescounter");
 		while(hdlc=hdlivescounter(hdlcit.next())){
@@ -351,11 +340,11 @@ extend class HDHandlers{
 			}
 		}else if(
 			counter<35
-			&&hdspectator(e.camera)
+			&&hdspectator(camera)
 		){
-			let spec=hdspectator(e.camera);
+			let spec=hdspectator(camera);
 			double calpha=spec.textalpha;
-			if(e.camera.getage()<30)calpha=e.camera.getage()*(1./35.);
+			if(camera.getage()<30)calpha=camera.getage()*(1./35.);
 			string msg=spec.spectitle;
 			screen.DrawText(BigFont,OptionMenuSettings.mTitleColor,
 				(screen.GetWidth() - BigFont.StringWidth(msg) * CleanXfac_1) / 2,
@@ -366,13 +355,17 @@ extend class HDHandlers{
 			msg="Hit fire/altfire to jump to the remaining players.";
 			screen.DrawText(smallfont,OptionMenuSettings.mFontColorValue,
 				(screen.GetWidth() - smallfont.StringWidth(msg) * CleanXfac_1) / 2,
-				SmallFont.GetHeight()*CleanYFac_1*2+BigFont.GetHeight()*CleanYFac_1,
+				(SmallFont.GetHeight()+3)*CleanYFac_1*2+BigFont.GetHeight()*CleanYFac_1,
 				msg.left(counter),DTA_CleanNoMove_1,true,
 				DTA_Alpha,calpha
 			);
 		}
 	}
+	enum EndgameType{
+		HDEND_WIPE=1,
+		HDEND_COOPFAIL=2,
+		HDEND_LMSWIN=3,
+		HDEND_TEAMWIN=4,
+	}
 }
-
-
 

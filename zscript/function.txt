@@ -4,6 +4,9 @@
 
 //event handler
 class HDHandlers:EventHandler{
+	override void RenderOverlay(renderevent e){
+		hdlivescounter.RenderEndgameText(e.camera);
+	}
 	override void WorldLoaded(WorldEvent e){
 		textureid dirtyglass=texman.checkfortexture("WALL47_2",texman.type_any);
 
