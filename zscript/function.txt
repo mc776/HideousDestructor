@@ -12,6 +12,13 @@ class HDHandlers:EventHandler{
 		hdlivescounter.RenderEndgameText(e.camera);
 	}
 	override void WorldLoaded(WorldEvent e){
+		//seed a few more spawnpoints
+		for (int i=0;i<5;i++){
+			vector3 ip=G_PickDeathmatchStart();
+			invposx.push(ip.x);
+			invposy.push(ip.y);
+			invposz.push(ip.z);
+		}
 
 		//misc. map hacks
 		textureid dirtyglass=texman.checkfortexture("WALL47_2",texman.type_any);
