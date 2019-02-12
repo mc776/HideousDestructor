@@ -4,12 +4,17 @@
 
 //event handler
 class HDHandlers:EventHandler{
+	array<double> invposx;
+	array<double> invposy;
+	array<double> invposz;
+
 	override void RenderOverlay(renderevent e){
 		hdlivescounter.RenderEndgameText(e.camera);
 	}
 	override void WorldLoaded(WorldEvent e){
-		textureid dirtyglass=texman.checkfortexture("WALL47_2",texman.type_any);
 
+		//misc. map hacks
+		textureid dirtyglass=texman.checkfortexture("WALL47_2",texman.type_any);
 		int itmax=level.lines.size();
 		for(int i=0;i<itmax;i++){
 			line lll=level.lines[i];
