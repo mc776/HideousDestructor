@@ -245,7 +245,7 @@ class DERPBot:HDUPK{
 					&&!target.A_JumpIfInventory("DERPUsable",0,"null")
 				)||(
 					health<1
-					&&!target.countinv("DERPDEAD")
+					&&!target.A_JumpIfInventory("DERPDEAD",0,"null")
 				)
 			){
 				if(health>0)target.A_GiveInventory("DERPUsable");
@@ -382,6 +382,7 @@ class DERPDEAD:DERPUsable{
 			&&!owner.A_JumpIfInventory("DERPUsable",0,"null")
 		){
 			HDF.Give(owner,"DERPUsable");
+			owner.A_Log("You manage to put together one (more) functioning D.E.R.P. robot.",true);
 			amount-=random(1,2);
 			if(amount<1)destroy();
 		}
