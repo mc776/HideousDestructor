@@ -11,7 +11,7 @@ class HERPLeg:Actor{
 	vector3 relpos;
 	double oldfloorz;
 	override void Tick(){
-		if(!master||master.bcorpse){destroy();return;}
+		if(!master){destroy();return;}
 		if(
 			master.pos.z<floorz+12
 			&&oldfloorz==floorz
@@ -185,6 +185,18 @@ class HERPBot:HDUPK{
 			else scanright=false;
 			setstatelabel("postbeep");
 		}
+	}
+	void A_SpawnPickup(){
+		let hu=HERPUsable(spawn("HERPUsable",pos,ALLOW_REPLACE));
+		if(hu){
+			hu.translation=translation;
+			if(health<1)hu.weaponstatus[0]|=HERPF_BROKEN;
+			hu.weaponstatus[1]=ammo[0];
+			hu.weaponstatus[2]=ammo[1];
+			hu.weaponstatus[3]=ammo[2];
+			hu.weaponstatus[4]=battery;
+		}
+		destroy();
 	}
 
 	states{
@@ -407,7 +419,8 @@ class HERPBot:HDUPK{
 		HERP AAA 1 A_SpawnItemEx("HDSmoke",random(-2,2),random(-2,2),random(-2,2), vel.x+random(-2,2),vel.y+random(-2,2),vel.z+random(1,4),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);
 		HERP AAA 3 A_SpawnItemEx("HDSmoke",random(-2,2),random(-2,2),random(-2,2), vel.x+random(-2,2),vel.y+random(-2,2),vel.z+random(1,4),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);
 		HERP AAA 9 A_SpawnItemEx("HDSmoke",random(-2,2),random(-2,2),random(-2,2), vel.x+random(-2,2),vel.y+random(-2,2),vel.z+random(1,4),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);
-		HERP A -1;
+	dead:
+		HERP A -1 A_SpawnPickup();
 		stop;
 	}
 }
@@ -435,6 +448,7 @@ class BrokenHERP:HERPBot{
 	states{
 	spawn:
 		HERP A -1;
+		stop;
 	death.spawndead:
 		HERP A -1{
 			ammo[0]=random(0,ammo[0]+randompick(0,0,0,100));
@@ -445,6 +459,7 @@ class BrokenHERP:HERPBot{
 				ammo[0]=0;ammo[1]=0;ammo[2]=0;
 			}
 			A_NoBlocking();
+			A_SpawnPickup();
 		}stop;
 	}
 }
@@ -742,6 +757,8 @@ class HERPUsable:HDWeapon{
 							inbp.delete(0);
 							if(inbp.size())inbps=inbps.." ";
 						}
+						bp.amounts[herpindex]=inbps;
+						bp.updatemessage(bp.index);
 						weaponstatus[0]&=~HERPF_BROKEN;
 						owner.A_Log("You cannibalize some parts from the H.E.R.P.s your backpack to fix the one you were using.",true);
 						return;
