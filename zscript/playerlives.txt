@@ -349,6 +349,27 @@ extend class HDHandlers{
 					DTA_Alpha,calpha
 				);
 			}
+		}else if(
+			counter<35
+			&&hdspectator(e.camera)
+		){
+			let spec=hdspectator(e.camera);
+			double calpha=spec.textalpha;
+			if(e.camera.getage()<30)calpha=e.camera.getage()*(1./35.);
+			string msg=spec.spectitle;
+			screen.DrawText(BigFont,OptionMenuSettings.mTitleColor,
+				(screen.GetWidth() - BigFont.StringWidth(msg) * CleanXfac_1) / 2,
+				SmallFont.GetHeight()*CleanYFac_1*2,
+				msg,DTA_CleanNoMove_1,true,
+				DTA_Alpha,calpha
+			);
+			msg="Hit fire/altfire to jump to the remaining players.";
+			screen.DrawText(smallfont,OptionMenuSettings.mFontColorValue,
+				(screen.GetWidth() - smallfont.StringWidth(msg) * CleanXfac_1) / 2,
+				SmallFont.GetHeight()*CleanYFac_1*2+BigFont.GetHeight()*CleanYFac_1,
+				msg.left(counter),DTA_CleanNoMove_1,true,
+				DTA_Alpha,calpha
+			);
 		}
 	}
 }

@@ -12,17 +12,6 @@ extend class HDPlayerPawn{
 		A_Morph("HDBotSpectator",int.MAX,MRF_FULLHEALTH,"CheckPuff","CheckPuff");
 	}
 }
-//hacks given by ACS map restart/change
-class RestartMap:ActionItem{
-	states{
-	pickup:
-		TNT1 A 0{
-			level.nextmap=level.mapname;
-			Exit_Normal(0);
-		}fail;
-	}
-}
-
 
 
 //respawn event
@@ -140,12 +129,15 @@ class HDSpectator:PlayerPawn{
 		super.postbeginplay();
 		setz(min(floorz+64,ceilingz-4));
 		if(!multiplayer)return;
-		if(hdlivescounter.wiped(playernumber()))ACS_NamedExecuteAlways("WipedSpecMessage");
-		else A_Print("Now spectating.\n\n\n\ccpress fire and altfire to\n\n\ccwarp to remaining players\n\n\cc(if any).",6,"SMALLFONT");
+		textalpha=0;
+		titleticker=0;
 	}
 	override bool cancollidewith(actor other,bool passive){return false;}
 	override void checkcrouch(bool totallyfrozen){}
 	int destplayer;
+	double textalpha;
+	string spectitle;
+	int titleticker;
 	override void tick(){
 		playerpawn.tick();
 		if(!player||player.bot||player.mo!=self)return;
@@ -153,6 +145,13 @@ class HDSpectator:PlayerPawn{
 		int oldinput=getplayerinput(MODINPUT_OLDBUTTONS);
 		vel*=0.9;
 		if(player.cmd.buttons&BT_CROUCH)vel.z-=1;
+
+		if(textalpha<0.7)textalpha+=0.02;
+		if(!titleticker){
+			if(hdlivescounter.owndeaths(playernumber())>fraglimit%100)spectitle="Out of lives.";
+			else spectitle="Now spectating.";
+			titleticker=-1;
+		}else if(titleticker>0)titleticker--;
 
 		//warp to players
 		int chosenplayer=-1;int choosedir;
@@ -174,10 +173,8 @@ class HDSpectator:PlayerPawn{
 					pmo &&
 					!(pmo is "HDSpectator")
 				){
-					A_Print(string.format(
-						"Now viewing %s.",
-						players[destplayer].getusername()
-					));
+					titleticker=70;
+					spectitle="Now viewing: \cx"..players[destplayer].getusername();
 					setorigin(pmo.pos,true);
 					angle=pmo.angle;pitch=10;
 					A_ChangeVelocity(-6,0,12,CVF_RELATIVE|CVF_REPLACE);
