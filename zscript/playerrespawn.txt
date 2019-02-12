@@ -174,7 +174,8 @@ class HDSpectator:PlayerPawn{
 					pmo
 					&&!(pmo is "HDSpectator")
 					&&(
-						bot_allowspy
+						!teamplay
+						||bot_allowspy
 						||players[destplayer].getteam()==player.getteam()
 					)
 				){
