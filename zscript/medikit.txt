@@ -16,21 +16,6 @@ class PortableMedikit:HDPickup{
 		hdpickup.refid HDLD_MEDIKIT;
 		species "HealingItem";
 	}
-	bool hasstim;
-	override void postbeginplay(){
-		super.postbeginplay();
-		hasstim=(!owner&&vel==(0,0,0));
-	}
-	override void actualpickup(actor other){
-		if(hasstim){
-			hasstim=false;
-			A_PlaySound("weapons/pocket");
-			if(other.A_JumpIfInventory("PortableStimpack",0,"null"))
-				A_DropItem("PortableStimpack",1);
-				else other.A_GiveInventory("PortableStimpack",1);
-		}
-		super.actualpickup(other);
-	}
 	states{
 	spawn:
 		MEDI A -1 nodelay{
