@@ -96,6 +96,7 @@ class HDFlagBanner:Actor{
 		+wallsprite
 		renderstyle "add";
 		height 1;radius 1;
+		alpha 0.8;
 	}
 	states{
 	spawn:
@@ -103,6 +104,21 @@ class HDFlagBanner:Actor{
 		---- A 1{
 			alpha=frandom(0.7,0.9);
 			angle+=1.;
+		}wait;
+	}
+}
+class HDFlagCappedBanner:HDFlagBanner{
+	default{
+		+floatbob
+		scale 2.;
+	}
+	states{
+	spawn:
+		BAL1 A 0;
+		---- A 1{
+			alpha+=frandom(-0.007,0.004);
+			angle+=1.;
+			if(alpha<0.001)destroy();
 		}wait;
 	}
 }
@@ -229,7 +245,8 @@ class HDCapFlag:HDWeapon{
 				hhh.SpawnFlagpole();
 
 				//destroy the old ones
-				spawn("HDExplosion",fp.pos);
+				spawn("HDExplosion",(fp.pos.xy,fp.pos.z+16),ALLOW_REPLACE);
+				spawn("HDFlagCappedBanner",(fp.pos.xy,fp.pos.z+24),ALLOW_REPLACE);
 				fp.destroy();
 				invoker.weaponstatus[CAPFS_PROGRESS]=0;
 				invoker.goawayanddie();
