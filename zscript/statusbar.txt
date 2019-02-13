@@ -549,6 +549,7 @@ class HDStatusBar:DoomStatusBar{
 					|((
 						item is "PortableStimpack"
 						||item is "PortableMedikit"
+						||item is "HDArmour"
 					)?0:DI_TRANSLATABLE),
 					alpha:isthis?1.:0.6,scale:isthis?(1.,1.):(0.6,0.6)
 				);
@@ -569,7 +570,12 @@ class HDStatusBar:DoomStatusBar{
 			int xoffs=!i?-10:10;
 			drawtexture(icon,
 				(posx+xoffs,posy-17),
-				flags|DI_ITEM_CENTER_BOTTOM,
+				flags|DI_ITEM_CENTER_BOTTOM
+					|((
+						item is "PortableStimpack"
+						||item is "PortableMedikit"
+						||item is "HDArmour"
+					)?0:DI_TRANSLATABLE),
 				alpha:0.6,scale:(0.6,0.6)
 			);
 		}
