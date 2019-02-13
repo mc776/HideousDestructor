@@ -4,7 +4,10 @@
 extend class HDHandlers{
 	void SpawnFlagpole(){
 		vector3 spawnfirst=getrandomspawnpoint();
-		vector3 spawnsecond=getrandomspawnpoint(spawnfirst);
+		vector3 spawnsecond;
+		do{
+			spawnsecond=getrandomspawnpoint(spawnfirst);
+		}while(spawnsecond==spawnfirst);
 		actor.spawn("HDCapFlagpole",spawnfirst,ALLOW_REPLACE);
 		actor.spawn("HDCapFlag",spawnsecond,ALLOW_REPLACE);
 		if(hd_debug){
@@ -113,8 +116,10 @@ class HDCapFlag:HDWeapon{
 	}
 	states{
 	spawn:
-		BAL1 A -1;
-		stop;
+		BAL1 A 140;
+		BAL1 A 0{
+		}
+		loop;
 	ready:
 		TNT1 A 1{
 			invoker.weaponstatus[CAPFS_PROGRESS]=0;
@@ -163,24 +168,24 @@ class HDCapFlag:HDWeapon{
 				}else{
 					let hdlc=hdlivescounter.get();
 					for(int i=0;i<MAXPLAYERS;i++){
+						if(!playeringame[i])continue;
+						if(players[i].mo)players[i].mo.UndoPlayerMorph(player,0,true);
 						if(
-							playeringame[i]
-							&&player.getteam()==players[i].getteam()
+							player.getteam()==players[i].getteam()
 						){
 							hdlc.deaths[i]--;
-							if(players[i].mo)players[i].mo.UndoPlayerMorph(player,0,true);
+						}else{
+							if(!random(0,2))hdlc.deaths[i]++;
 						}
 					}
 					hdlc.updatefragcounts(hdlc);
 				}
 
 				//reset the flag and pole
-				vector3 newflagpoint=hhh.getrandomspawnpoint(pos);
-				vector3 newpolepoint=hhh.getrandomspawnpoint(pos,newflagpoint);
-				spawn("HDCapFlag",newflagpoint);
-				spawn("HDCapFlagpole",newpolepoint);
+				hhh.SpawnFlagpole();
 
 				//destroy the old ones
+				spawn("HDExplosion",fp.pos);
 				fp.destroy();
 				invoker.weaponstatus[CAPFS_PROGRESS]=0;
 				invoker.goawayanddie();
