@@ -118,6 +118,8 @@ class HDCapFlag:HDWeapon{
 	spawn:
 		BAL1 A 140;
 		BAL1 A 0{
+			let hhh=hdhandlers(eventhandler.find("hdhandlers"));
+			setorigin(hhh.getrandomspawnpoint(),false);
 		}
 		loop;
 	ready:
@@ -140,7 +142,7 @@ class HDCapFlag:HDWeapon{
 		TNT1 A 1{
 			if(!CheckProximity("HDCapFlagpole",96,flags:CPXF_CHECKSIGHT|CPXF_SETTRACER)){
 				if(HDCapFlagpole(tracer)){
-					A_Print("\cgOut of range!\n\n\cjGo back in there and restart.");
+					A_WeaponMessage("\n\n\n\cgOut of range!\n\cjGo back in there and restart.",70);
 				}
 				tracer=null;
 			}
@@ -153,7 +155,7 @@ class HDCapFlag:HDWeapon{
 
 			invoker.weaponstatus[CAPFS_PROGRESS]++;
 			if(invoker.weaponstatus[CAPFS_PROGRESS]>=CAPF_PROGRESSMAX){
-				A_PrintBold("Flag planted by "..teams[player.getteam()].mname.." team!");
+				A_PrintBold("\cxFlag planted\nby \cd"..teams[player.getteam()].mname.."\cx team!",5,"BIGFONT");
 				let hhh=hdhandlers(eventhandler.find("hdhandlers"));
 
 				//if in lives mode, undo deaths
@@ -197,7 +199,7 @@ class HDCapFlag:HDWeapon{
 		TNT1 A 1{
 			invoker.weaponstatus[CAPFS_PROGRESS]++;
 			if(invoker.weaponstatus[CAPFS_PROGRESS]>=CAPF_PROGRESSMAX){
-				A_PrintBold("Flag programmed to Team "..teams[player.getteam()].mname.."!");
+				A_PrintBold("\crFlag programmed\nto \cd"..teams[player.getteam()].mname.."\cr team!",3,"BIGFONT");
 				invoker.weaponstatus[CAPFS_TEAM]=player.getteam();
 				invoker.weaponstatus[CAPFS_PROGRESS]=0;
 				setweaponstate("nope");
