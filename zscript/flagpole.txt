@@ -1,0 +1,206 @@
+// ------------------------------------------------------------
+// Flagpole mode
+// ------------------------------------------------------------
+extend class HDHandlers{
+	void SpawnFlagpole(){
+		vector3 spawnfirst=getrandomspawnpoint();
+		vector3 spawnsecond=getrandomspawnpoint(spawnfirst);
+		actor.spawn("HDCapFlagpole",spawnfirst,ALLOW_REPLACE);
+		actor.spawn("HDCapFlag",spawnsecond,ALLOW_REPLACE);
+		if(hd_debug){
+			console.printf("Flagpole spawned at ["
+				..spawnfirst.x..", "
+				..spawnfirst.y..", "
+				..spawnfirst.z.."]\nFlag spawned at ["
+				..spawnsecond.x..", "
+				..spawnsecond.y..", "
+				..spawnsecond.z.."]"
+			);
+		}
+	}
+	vector3 GetRandomSpawnPoint(
+		vector3 compare1=(0,0,32000),
+		vector3 compare2=(0,0,32000),
+		vector3 compare3=(0,0,32000)
+	){
+		let hhh=hdhandlers(eventhandler.find("hdhandlers"));
+
+		//if all (0,0,32k) simply pick a random point and be done with it
+		if(
+			compare1.z==32000
+			&&compare2.z==32000
+			&&compare3.z==32000
+		){
+			int whch=random(0,invposx.size()-1);
+			return (hhh.invposx[whch],hhh.invposy[whch],hhh.invposz[whch]);
+		}
+
+		//pick 5 random points and get the furthest one
+		vector3 candidatepoint[5];
+		int highestcandidate=0;
+		double highestdist=0;
+		for(int i=0;i<candidatepoint.size();i++){
+			//obtain a random point
+			int whch=random(0,invposx.size()-1);
+			candidatepoint[i]=(hhh.invposx[whch],hhh.invposy[whch],hhh.invposz[whch]);
+
+			//determine the lowest distance from each of the comparison points
+			double lowestdist=(65000.*65000.);
+			for(int j=0;j<3;j++){
+				vector3 ddd;
+				if(j==0)ddd=compare1;
+				else if(j==0)ddd=compare2;
+				else ddd=compare3;
+				if(ddd.z==32000)continue;
+
+				ddd=level.vec3offset(candidatepoint[i],ddd);
+				double compdist=ddd dot ddd;
+				if(compdist<lowestdist)lowestdist=compdist;
+			}
+			//if the above result is higher, update best candidate
+			if(lowestdist>highestdist){
+				highestdist=lowestdist;
+				highestcandidate=i;
+			}
+		}
+		return candidatepoint[highestcandidate];
+	}
+}
+
+
+class HDCapFlagpole:Actor{
+	default{
+		+flatsprite
+		renderstyle "add";
+		height 1;radius 1;
+	}
+	states{
+	spawn:
+		BAL2 C 1{
+			alpha=frandom(0.2,0.7);
+			A_SetAngle(angle+frandom(6,18),SPF_INTERPOLATE);
+			scale=(1.,1.)*clamp(scale.x+frandom(-0.3,0.3),0.4,3.6);
+		}
+		wait;
+	}
+}
+class HDCapFlag:HDWeapon{
+	default{
+		+weapon.wimpy_weapon
+		+weapon.cheatnotweapon
+		+inventory.invbar
+		inventory.pickupsound "misc/p_pkup";
+		inventory.pickupmessage "You got the flag!";
+	}
+	override void ownerdied(){
+		owner.dropinventory(self);
+		weaponstatus[CAPFS_PROGRESS]=0;
+	}
+	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
+		sb.drawimage("BAL1A0",(-47,-4),sb.DI_SCREEN_CENTER_BOTTOM,scale:(0.6,0.6));
+		sb.drawwepnum(hdw.weaponstatus[CAPFS_PROGRESS],100);
+		string teamname;
+		if(hdw.weaponstatus[CAPFS_TEAM]<1)teamname="\cu<none>";
+		else teamname=teams[hpl.player.getteam()].mname;
+		sb.drawstring(
+			sb.psmallfont,teamname,(-12,-16),
+			sb.DI_TEXT_ALIGN_RIGHT|sb.DI_TRANSLATABLE|sb.DI_SCREEN_CENTER_BOTTOM,
+			Font.CR_BRICK
+		);
+	}
+	states{
+	spawn:
+		BAL1 A -1;
+		stop;
+	ready:
+		TNT1 A 1{
+			invoker.weaponstatus[CAPFS_PROGRESS]=0;
+			A_WeaponReady();
+		}
+		goto readyend;
+	fire:
+		TNT1 A 0{
+			if(invoker.weaponstatus[CAPFS_TEAM]!=player.getteam()){
+				setweaponstate("holdprogram");
+			}else{
+				setweaponstate("holdplant");
+			}
+		}
+		TNT1 A 0 A_ClearRefire();
+		goto readyend;
+	holdplant:
+		BFGG A 1{
+			if(!CheckProximity("HDCapFlagpole",96,flags:CPXF_CHECKSIGHT|CPXF_SETTRACER))tracer=null;
+			let fp=HDCapFlagpole(tracer);
+			if(!fp){
+				invoker.weaponstatus[CAPFS_PROGRESS]=0;
+				setweaponstate("nope");
+				return;
+			}
+
+			invoker.weaponstatus[CAPFS_PROGRESS]++;
+			if(invoker.weaponstatus[CAPFS_PROGRESS]>=CAPF_PROGRESSMAX){
+				A_PrintBold("Flag planted by "..teams[player.getteam()].mname.." team!");
+				let hhh=hdhandlers(eventhandler.find("hdhandlers"));
+
+				//if in lives mode, undo deaths
+				//else add points
+				if(fraglimit<100){
+					for(int i=0;i<MAXPLAYERS;i++){
+						if(
+							playeringame[i]
+							&&player.getteam()==players[i].getteam()
+						)players[i].fragcount+=5;
+					}
+				}else{
+					let hdlc=hdlivescounter.get();
+					for(int i=0;i<MAXPLAYERS;i++){
+						if(
+							playeringame[i]
+							&&player.getteam()==players[i].getteam()
+						){
+							hdlc.deaths[i]--;
+							if(players[i].mo)players[i].mo.UndoPlayerMorph(player,0,true);
+						}
+					}
+					hdlc.updatefragcounts(hdlc);
+				}
+
+				//reset the flag and pole
+				vector3 newflagpoint=hhh.getrandomspawnpoint(pos);
+				vector3 newpolepoint=hhh.getrandomspawnpoint(pos,newflagpoint);
+				spawn("HDCapFlag",newflagpoint);
+				spawn("HDCapFlagpole",newpolepoint);
+
+				//destroy the old ones
+				fp.destroy();
+				invoker.weaponstatus[CAPFS_PROGRESS]=0;
+				invoker.goawayanddie();
+			}
+		}
+		TNT1 A 0 A_Refire("holdplant");
+		goto readyend;
+	holdprogram:
+		PLSG A 1{
+			invoker.weaponstatus[CAPFS_PROGRESS]++;
+			if(invoker.weaponstatus[CAPFS_PROGRESS]>=CAPF_PROGRESSMAX){
+				A_Print("Flag programmed and ready to plant!");
+				invoker.weaponstatus[CAPFS_TEAM]=player.getteam();
+				invoker.weaponstatus[CAPFS_PROGRESS]=0;
+				setweaponstate("nope");
+			}
+		}
+		TNT1 A 0 A_Refire("holdprogram");
+		goto readyend;
+	altfire:
+		TNT1 A 1 A_DropInventory("HDCapFlag");
+		TNT1 A 1 A_ClearRefire();
+		goto ready;
+	}
+}
+enum HDCapFlagNums{
+	CAPFS_TEAM=1,
+	CAPFS_PROGRESS=2,
+
+	CAPF_PROGRESSMAX=100,
+}
