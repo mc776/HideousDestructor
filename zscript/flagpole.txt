@@ -142,7 +142,7 @@ class HDCapFlag:HDWeapon{
 		sb.drawwepnum(hdw.weaponstatus[CAPFS_PROGRESS],100);
 		string teamname;
 		if(hdw.weaponstatus[CAPFS_TEAM]<0)teamname="\cu<none>";
-		else teamname=teams[hpl.player.getteam()].mname;
+		else teamname=teamplay?teams[hpl.player.getteam()].mname:hpl.player.getusername();
 		sb.drawstring(
 			sb.psmallfont,teamname,(-12,-16),
 			sb.DI_TEXT_ALIGN_RIGHT|sb.DI_TRANSLATABLE|sb.DI_SCREEN_CENTER_BOTTOM,
@@ -188,7 +188,10 @@ class HDCapFlag:HDWeapon{
 		goto readyend;
 	fire:
 		TNT1 A 0{
-			if(invoker.weaponstatus[CAPFS_TEAM]!=player.getteam()){
+			int ownnum=teamplay?player.getteam():playernumber();
+			if(
+				invoker.weaponstatus[CAPFS_TEAM]!=ownnum
+			){
 				setweaponstate("holdprogram");
 			}else{
 				setweaponstate("holdplant");
@@ -213,32 +216,55 @@ class HDCapFlag:HDWeapon{
 
 			invoker.weaponstatus[CAPFS_PROGRESS]++;
 			if(invoker.weaponstatus[CAPFS_PROGRESS]>=CAPF_PROGRESSMAX){
-				A_PrintBold("\cxFlag planted\n\cxby \cd"..teams[player.getteam()].mname.."\cx team!",5,"BIGFONT");
+				string planter;
+				if(teamplay)planter=teams[player.getteam()].mname.."\cx team!";
+				else planter=player.getusername().."\cx!";
+				A_PrintBold("\cxFlag planted\n\cxby \cd"..planter,5,"BIGFONT");
 				let hhh=hdhandlers(eventhandler.find("hdhandlers"));
 
 				//if in lives mode, undo deaths
 				//else add points
-				if(fraglimit<100){
-					for(int i=0;i<MAXPLAYERS;i++){
-						if(
-							playeringame[i]
-							&&player.getteam()==players[i].getteam()
-						)players[i].fragcount+=5;
+				if(teamplay){
+					if(fraglimit<100){
+						for(int i=0;i<MAXPLAYERS;i++){
+							if(
+								playeringame[i]
+								&&player.getteam()==players[i].getteam()
+							)players[i].fragcount+=5;
+						}
+					}else{
+						let hdlc=hdlivescounter.get();
+						for(int i=0;i<MAXPLAYERS;i++){
+							if(!playeringame[i])continue;
+							if(players[i].mo)players[i].mo.UndoPlayerMorph(player,0,true);
+							if(
+								player.getteam()==players[i].getteam()
+							){
+								hdlc.deaths[i]--;
+							}else{
+								if(!random(0,2))hdlc.deaths[i]++;
+							}
+						}
+						hdlc.updatefragcounts(hdlc);
 					}
 				}else{
-					let hdlc=hdlivescounter.get();
-					for(int i=0;i<MAXPLAYERS;i++){
-						if(!playeringame[i])continue;
-						if(players[i].mo)players[i].mo.UndoPlayerMorph(player,0,true);
-						if(
-							player.getteam()==players[i].getteam()
-						){
-							hdlc.deaths[i]--;
-						}else{
-							if(!random(0,2))hdlc.deaths[i]++;
+					if(fraglimit<100){
+						player.fragcount+=10;
+					}else{
+						let hdlc=hdlivescounter.get();
+						int pn=playernumber();
+						hdlc.deaths[pn]-=MAXPLAYERS;
+						for(int i=0;i<MAXPLAYERS;i++){
+							if(
+								playeringame[i]
+								&&i!=pn
+							){
+								hdlc.deaths[i]++;
+								hdlc.deaths[pn]++;
+							}
 						}
+						hdlc.updatefragcounts(hdlc);
 					}
-					hdlc.updatefragcounts(hdlc);
 				}
 
 				//reset the flag and pole
@@ -258,8 +284,11 @@ class HDCapFlag:HDWeapon{
 		TNT1 A 1{
 			invoker.weaponstatus[CAPFS_PROGRESS]++;
 			if(invoker.weaponstatus[CAPFS_PROGRESS]>=CAPF_PROGRESSMAX){
-				A_PrintBold("\crFlag programmed\n\crto \cd"..teams[player.getteam()].mname.."\cr team!",3,"BIGFONT");
-				invoker.weaponstatus[CAPFS_TEAM]=player.getteam();
+				string planter;
+				if(teamplay)planter=teams[player.getteam()].mname.."\cr team!";
+				else planter=player.getusername().."\cr!";
+				A_PrintBold("\crFlag programmed\n\crto \cd"..planter,3,"BIGFONT");
+				invoker.weaponstatus[CAPFS_TEAM]=teamplay?player.getteam():playernumber();
 				invoker.weaponstatus[CAPFS_PROGRESS]=0;
 				invoker.translation=translation;
 				setweaponstate("nope");
