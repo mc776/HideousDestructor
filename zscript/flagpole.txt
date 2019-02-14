@@ -76,13 +76,15 @@ class HDCapFlagpole:Actor{
 	default{
 		+flatsprite
 		+nointeraction
+		+rollsprite
+		+rollcenter
 		renderstyle "add";
 		height 1;radius 1;
 	}
 	states{
 	spawn:
-		BAL2 C 1{
-			alpha=frandom(0.2,0.7);
+		BAL2 DE 1 bright light("EX1"){
+			alpha=frandom(0.,0.3);
 			A_SetAngle(angle+frandom(6,18),SPF_INTERPOLATE);
 			scale=(1.,1.)*clamp(scale.x+frandom(-0.3,0.3),0.4,3.6);
 			setz(floorz+frandom(0,4));
@@ -105,7 +107,7 @@ class HDCapFlagpole:Actor{
 				spawn(baddie,pos,ALLOW_REPLACE);
 			}
 		}
-		wait;
+		loop;
 	}
 }
 class HDFlagBanner:Actor{
