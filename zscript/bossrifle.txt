@@ -534,6 +534,7 @@ class BossRifle:HDWeapon{
 			A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
 			let ccc=hdmagammo(findinventory("HD7mClip"));
 			if(ccc){
+				ccc.addamag(0);
 				invoker.weaponstatus[BOSSS_MAG]=ccc.TakeMag(true);
 			}
 		}goto reloaddone;
