@@ -92,7 +92,17 @@ class HDCapFlagpole:Actor{
 				&&!(level.time%1024)
 			){
 				spawn("telefog",pos,ALLOW_REPLACE);
-				spawn("tango",pos,ALLOW_REPLACE);
+				class<actor>baddie;
+				switch(random(0,random(0,6))){
+				case 1:baddie="mageimp";break;
+				case 2:baddie="healerimp";break;
+				case 3:baddie="cacademon";break;
+				case 4:baddie="hellknight";break;
+				case 5:baddie="ninjapirate";break;
+				case 6:baddie="undeadrifleman";break;
+				default:baddie="fighterimp";break;
+				}
+				spawn(baddie,pos,ALLOW_REPLACE);
 			}
 		}
 		wait;
@@ -222,7 +232,7 @@ class HDCapFlag:HDWeapon{
 				weaponstatus[CAPFS_PROGRESS]++;
 				if(weaponstatus[CAPFS_PROGRESS]>=CAPF_PROGRESSMAX){
 					string planter;
-					if(teamplay)planter=teams[player.getteam()].mname.."\cr team!";
+					if(deathmatch&&teamplay)planter=teams[player.getteam()].mname.."\cr team!";
 					else planter=player.getusername().."\cr!";
 					A_PrintBold("\crFlag programmed\n\crto \cd"..planter,3,"BIGFONT");
 					weaponstatus[CAPFS_TEAM]=teamplay?player.getteam():owner.playernumber();
@@ -259,7 +269,7 @@ class HDCapFlag:HDWeapon{
 	fire:
 		TNT1 A 0{
 			if(
-				invoker.weaponstatus[CAPFS_TEAM]==(teamplay?player.getteam():playernumber())
+				invoker.weaponstatus[CAPFS_TEAM]==((deathmatch&&teamplay)?player.getteam():playernumber())
 			){
 				if(CheckProximity("HDCapFlagpole",96,flags:CPXF_CHECKSIGHT|CPXF_SETTRACER)){
 					setweaponstate("holdplant");
@@ -289,7 +299,7 @@ class HDCapFlag:HDWeapon{
 			invoker.weaponstatus[CAPFS_PROGRESS]++;
 			if(invoker.weaponstatus[CAPFS_PROGRESS]>=CAPF_PROGRESSMAX){
 				string planter;
-				if(teamplay)planter=teams[player.getteam()].mname.."\cx team!";
+				if(deathmatch&&teamplay)planter=teams[player.getteam()].mname.."\cx team!";
 				else planter=player.getusername().."\cx!";
 				A_PrintBold("\cxFlag planted\n\cxby \cd"..planter,5,"BIGFONT");
 				let hhh=hdhandlers(eventhandler.find("hdhandlers"));
