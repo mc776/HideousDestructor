@@ -239,7 +239,7 @@ class HDCapFlag:HDWeapon{
 			&&!(level.time%4)
 			&&abs(owner.vel.x)>0.6
 			&&abs(owner.vel.y)>0.6
-			&&weaponstatus[CAPFS_TEAM]!=(teamplay?owner.player.getteam():owner.playernumber())
+			&&weaponstatus[CAPFS_TEAM]!=((deathmatch&&teamplay)?owner.player.getteam():owner.playernumber())
 		){
 			if(
 				!owner.CheckProximity("HDCapFlagpole",256)
@@ -252,7 +252,7 @@ class HDCapFlag:HDWeapon{
 					if(deathmatch&&teamplay)planter=teams[player.getteam()].mname.."\cr team!";
 					else planter=player.getusername().."\cr!";
 					A_PrintBold("\crFlag programmed\n\crto \cd"..planter,3,"BIGFONT");
-					weaponstatus[CAPFS_TEAM]=(teamplay?player.getteam():owner.playernumber());
+					weaponstatus[CAPFS_TEAM]=((deathmatch&&teamplay)?player.getteam():owner.playernumber());
 					weaponstatus[CAPFS_PROGRESS]=0;
 					translation=owner.translation;
 					if(banner)banner.destroy();
@@ -406,6 +406,7 @@ class HDCapFlag:HDWeapon{
 				);
 				capban.selectedteam=invoker.weaponstatus[CAPFS_TEAM];
 				capban.translation=translation;
+				A_LogInt(capban.selectedteam);
 				fp.destroy();
 				invoker.weaponstatus[CAPFS_PROGRESS]=0;
 				invoker.goawayanddie();
