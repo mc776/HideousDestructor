@@ -235,7 +235,7 @@ class HDCapFlag:HDWeapon{
 					if(deathmatch&&teamplay)planter=teams[player.getteam()].mname.."\cr team!";
 					else planter=player.getusername().."\cr!";
 					A_PrintBold("\crFlag programmed\n\crto \cd"..planter,3,"BIGFONT");
-					weaponstatus[CAPFS_TEAM]=teamplay?player.getteam():owner.playernumber();
+					weaponstatus[CAPFS_TEAM]=0;//(teamplay?player.getteam():owner.playernumber());
 					weaponstatus[CAPFS_PROGRESS]=0;
 					translation=owner.translation;
 					if(banner)banner.destroy();
