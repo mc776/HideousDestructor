@@ -1,5 +1,5 @@
 enum HDLoadoutMenuNums{
-	HD_MAXLOADOUTS=17,
+	HD_MAXLOADOUTS=20,
 }
 class HDLoadoutMenu:OptionMenu{
 	array<string> refids;
@@ -539,6 +539,9 @@ class HDNewGameLoadoutMenu:HDLoadoutMenu{
 				int inpt=inp.toint(16);
 				if(inp~=="g")inpt=16;
 				else if(inp~=="h")inpt=17;
+				else if(inp~=="i")inpt=18;
+				else if(inp~=="j")inpt=19;
+				else if(inp~=="k")inpt=20;
 				else if(inp~=="0")inpt=1;
 				if(inpt>0&&inpt<=HD_MAXLOADOUTS){
 					cursy=inpt;

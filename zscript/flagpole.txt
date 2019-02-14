@@ -184,6 +184,7 @@ class HDCapFlag:HDWeapon{
 		}
 		sb.drawimage(bannername.."0",(-32,-22),sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TRANSLATABLE,scale:(1.,1.));
 
+/*
 		string teamname;
 		if(bannernum<0)teamname="\cu<none>";
 		else teamname=teamplay?teams[hpl.player.getteam()].mname:hpl.player.getusername();
@@ -192,8 +193,17 @@ class HDCapFlag:HDWeapon{
 			sb.DI_TEXT_ALIGN_RIGHT|sb.DI_SCREEN_CENTER_BOTTOM,
 			Font.CR_BRICK
 		);
+*/
 
-		sb.drawwepnum(hdw.weaponstatus[CAPFS_PROGRESS],100);
+		int progress=hdw.weaponstatus[CAPFS_PROGRESS];
+		if(progress>0){
+			sb.drawwepnum(progress,100,alwaysprecise:true);
+			sb.drawstring(
+				sb.mAmountFont,sb.formatnumber(progress),
+				(-16,-16),sb.DI_TEXT_ALIGN_RIGHT|sb.DI_SCREEN_CENTER_BOTTOM,
+				progress<35?Font.CR_RED:progress<70?Font.CR_ORANGE:Font.CR_GREEN
+			);
+		}
 	}
 	override void ondestroy(){
 		super.ondestroy();
@@ -220,8 +230,8 @@ class HDCapFlag:HDWeapon{
 		if(
 			owner
 			&&!(level.time%4)
-			&&abs(owner.vel.x)>1.
-			&&abs(owner.vel.y)>1.
+			&&abs(owner.vel.x)>0.6
+			&&abs(owner.vel.y)>0.6
 			&&weaponstatus[CAPFS_TEAM]!=(teamplay?owner.player.getteam():owner.playernumber())
 		){
 			if(
@@ -235,7 +245,7 @@ class HDCapFlag:HDWeapon{
 					if(deathmatch&&teamplay)planter=teams[player.getteam()].mname.."\cr team!";
 					else planter=player.getusername().."\cr!";
 					A_PrintBold("\crFlag programmed\n\crto \cd"..planter,3,"BIGFONT");
-					weaponstatus[CAPFS_TEAM]=0;//(teamplay?player.getteam():owner.playernumber());
+					weaponstatus[CAPFS_TEAM]=(teamplay?player.getteam():owner.playernumber());
 					weaponstatus[CAPFS_PROGRESS]=0;
 					translation=owner.translation;
 					if(banner)banner.destroy();
@@ -297,6 +307,7 @@ class HDCapFlag:HDWeapon{
 			}
 
 			invoker.weaponstatus[CAPFS_PROGRESS]++;
+			A_WeaponMessage("\n\n\nPlanting flag...\n\cd"..invoker.weaponstatus[CAPFS_PROGRESS].." %",10);
 			if(invoker.weaponstatus[CAPFS_PROGRESS]>=CAPF_PROGRESSMAX){
 				string planter;
 				if(deathmatch&&teamplay)planter=teams[player.getteam()].mname.."\cx team!";
