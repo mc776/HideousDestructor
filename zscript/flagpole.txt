@@ -2,6 +2,7 @@
 // Flagpole mode
 // ------------------------------------------------------------
 extend class HDHandlers{
+	int flagcaps[MAXPLAYERS];
 	void SpawnFlagpole(){
 		vector3 spawnfirst=getrandomspawnpoint();
 		vector3 spawnsecond;
@@ -79,7 +80,7 @@ class HDCapFlagpole:Actor{
 		+rollsprite
 		+rollcenter
 		renderstyle "add";
-		height 1;radius 1;
+		height 56;radius 8;
 	}
 	states{
 	spawn:
@@ -320,6 +321,9 @@ class HDCapFlag:HDWeapon{
 				else planter=player.getusername().."\cx!";
 				A_PrintBold("\cxFlag planted\n\cxby \cd"..planter,5,"BIGFONT");
 				let hhh=hdhandlers(eventhandler.find("hdhandlers"));
+
+				//nothing is being done with this yet...
+				hhh.flagcaps[playernumber()]++;
 
 				//if in lives mode, undo deaths
 				//else add points
