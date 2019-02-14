@@ -404,9 +404,10 @@ class HDCapFlag:HDWeapon{
 				let capban=HDFlagCappedBanner(
 					spawn("HDFlagCappedBanner",fp.pos,ALLOW_REPLACE)
 				);
-				capban.selectedteam=invoker.weaponstatus[CAPFS_TEAM];
+				int cst=invoker.weaponstatus[CAPFS_TEAM];
+				if(cst<0)cst=playernumber();
+				capban.selectedteam=cst;
 				capban.translation=translation;
-				A_LogInt(capban.selectedteam);
 				fp.destroy();
 				invoker.weaponstatus[CAPFS_PROGRESS]=0;
 				invoker.goawayanddie();
