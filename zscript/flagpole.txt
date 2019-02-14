@@ -112,7 +112,9 @@ class HDFlagBanner:Actor{
 	int selectedteam;
 	void CheckBannerSprite(){
 		trackalpha=alpha;
-		if(selectedteam<0||selectedteam>8)selectedteam=8;
+		if(selectedteam<0||selectedteam>8){
+			selectedteam=8;
+		}
 		frame=selectedteam;
 	}
 	virtual void BannerSpin(){
@@ -136,7 +138,7 @@ class HDFlagCappedBanner:HDFlagBanner{
 		trackalpha+=frandom(-0.007,0.004);
 		alpha=frandom(0.,trackalpha+0.5);
 		angle+=1.;
-		if(alpha<0.001)destroy();
+		if(trackalpha<0.001)destroy();
 	}
 }
 class HDCapFlag:HDWeapon{
@@ -147,6 +149,7 @@ class HDCapFlag:HDWeapon{
 		+inventory.invbar
 		inventory.pickupsound "misc/p_pkup";
 		inventory.pickupmessage "You got the flag!";
+		translation 0;
 	}
 	override void ownerdied(){
 		owner.dropinventory(self);
@@ -169,14 +172,14 @@ class HDCapFlag:HDWeapon{
 		case 7:bannername=bannername.."H";break;
 		default:bannername=bannername.."I";break;
 		}
-		sb.drawimage(bannername.."0",(-32,-22),sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TRANSLATABLE,scale:(0.4,0.4));
+		sb.drawimage(bannername.."0",(-32,-22),sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TRANSLATABLE,scale:(1.,1.));
 
 		string teamname;
 		if(bannernum<0)teamname="\cu<none>";
 		else teamname=teamplay?teams[hpl.player.getteam()].mname:hpl.player.getusername();
 		sb.drawstring(
 			sb.psmallfont,teamname,(-12,-16),
-			sb.DI_TEXT_ALIGN_RIGHT|sb.DI_TRANSLATABLE|sb.DI_SCREEN_CENTER_BOTTOM,
+			sb.DI_TEXT_ALIGN_RIGHT|sb.DI_SCREEN_CENTER_BOTTOM,
 			Font.CR_BRICK
 		);
 
@@ -198,8 +201,10 @@ class HDCapFlag:HDWeapon{
 		if(owner||floorz<pos.z){
 			banner.binvisible=true;
 		}else{
+			banner.translation=translation;
 			banner.setorigin(pos,true);
 			banner.binvisible=false;
+			weaponstatus[CAPFS_PROGRESS]=0;
 		}
 
 		if(
@@ -210,8 +215,8 @@ class HDCapFlag:HDWeapon{
 			&&weaponstatus[CAPFS_TEAM]!=(teamplay?owner.player.getteam():owner.playernumber())
 		){
 			if(
-				!CheckProximity("HDCapFlagpole",256)
-				&&!CheckProximity("HDCapFlagpole",512,flags:CPXF_CHECKSIGHT)
+				!owner.CheckProximity("HDCapFlagpole",256)
+				&&!owner.CheckProximity("HDCapFlagpole",512,flags:CPXF_CHECKSIGHT)
 			){
 				let player=owner.player;
 				weaponstatus[CAPFS_PROGRESS]++;
@@ -223,6 +228,7 @@ class HDCapFlag:HDWeapon{
 					weaponstatus[CAPFS_TEAM]=teamplay?player.getteam():owner.playernumber();
 					weaponstatus[CAPFS_PROGRESS]=0;
 					translation=owner.translation;
+					if(banner)banner.destroy();
 				}
 			}
 		}
@@ -240,6 +246,8 @@ class HDCapFlag:HDWeapon{
 			else invoker.A_Log("The flag has moved!");
 			invoker.weaponstatus[CAPFS_TEAM]=-1;
 			invoker.setorigin(dest,false);
+			invoker.translation=getdefaultbytype("HDCapFlag").translation;
+			if(invoker.banner)invoker.banner.destroy();
 		}
 		loop;
 	select:
@@ -250,9 +258,8 @@ class HDCapFlag:HDWeapon{
 		goto readyend;
 	fire:
 		TNT1 A 0{
-			int ownnum=teamplay?player.getteam():playernumber();
 			if(
-				invoker.weaponstatus[CAPFS_TEAM]!=ownnum
+				invoker.weaponstatus[CAPFS_TEAM]==(teamplay?player.getteam():playernumber())
 			){
 				if(CheckProximity("HDCapFlagpole",96,flags:CPXF_CHECKSIGHT|CPXF_SETTRACER)){
 					setweaponstate("holdplant");
