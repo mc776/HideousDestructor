@@ -356,6 +356,15 @@ class HDMarine:HDActor replaces ScriptedMarine{
 		);
 		return mmm;
 	}
+	//replaces with zombie if dying while zombie-sprited
+	void A_DeathZombieZombieDeath(){
+		if(sprite==getspriteindex("POSSA1")){
+			actor zzz=spawn("ZombieStormtrooper",pos,ALLOW_REPLACE);
+			zzz.vel=vel;
+			zzz.A_Die("extreme");
+			destroy();
+		}
+	}
 	enum HDMarineStats{
 		HDMW_RANDOM=0,
 		HDMW_ZM66=1,
@@ -857,6 +866,7 @@ class HDMarine:HDActor replaces ScriptedMarine{
 		#### I 5;
 		goto deathpostscream;
 	death:
+		---- A 0 A_DeathZombieZombieDeath();
 		#### H 5{
 			hdmobai.corpseflags(self);
 			bpushable=false;
@@ -905,6 +915,7 @@ class HDMarine:HDActor replaces ScriptedMarine{
 		}goto see;
 
 	xdeath:
+		---- A 0 A_DeathZombieZombieDeath();
 		#### O 5{
 			bpushable=false;
 			hdmobai.corpseflags(self,true);
@@ -925,6 +936,7 @@ class HDMarine:HDActor replaces ScriptedMarine{
 	death.raisebotch:
 		#### O 0{hdmobai.corpseflags(self,true);}
 	xdeathbrewtlelulz:
+		---- A 0 A_DeathZombieZombieDeath();
 		#### O 5{
 			bshootable=false;
 			A_GiveInventory("IsGibbed");

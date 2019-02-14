@@ -539,5 +539,23 @@ class HDRaiseWep:HDWeapon{
 		}goto nope;
 	}
 }
-
+class HDRaise:CustomInventory{
+	states{
+	spawn:TNT1 A 0;stop;
+	pickup:
+		TNT1 A 0{
+			flinetracedata rlt;
+			LineTrace(
+				angle,128,pitch,
+				TRF_ALLACTORS,
+				offsetz:height-6,
+				data:rlt
+			);
+			if(rlt.hitactor){
+				a_log(rlt.hitactor.getclassname().." raised!");
+				RaiseActor(rlt.hitactor,RF_NOCHECKPOSITION);
+			}else a_log("point at something\nto raise it.",true);
+		}fail;
+	}
+}
 

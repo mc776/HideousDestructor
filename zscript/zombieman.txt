@@ -462,7 +462,7 @@ class ZombieStormtrooper:ZombieMan{
 		#### QRST 5;
 		goto xdead;
 	xdead:
-		#### T 3 canraise{if(abs(vel.z)<2.)frame++;}
+		#### T 3 canraise A_JumpIf(abs(vel.z)<2.,1);
 		#### U 5 canraise A_JumpIf(abs(vel.z)>=2.,"xdead");
 		wait;
 	raise:
