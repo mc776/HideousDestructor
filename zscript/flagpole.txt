@@ -95,7 +95,7 @@ class HDCapFlagpole:Actor{
 			setz(floorz+frandom(0,4));
 			if(
 				!deathmatch
-				&&!random(0,4)
+				&&!random(0,3)
 				&&!(level.time%1024)
 			){
 				spawn("telefog",pos,ALLOW_REPLACE);
@@ -109,7 +109,18 @@ class HDCapFlagpole:Actor{
 				case 6:baddie="undeadrifleman";break;
 				default:baddie="fighterimp";break;
 				}
-				spawn(baddie,pos,ALLOW_REPLACE);
+				actor badnotyetdead=spawn(baddie,pos,ALLOW_REPLACE);
+				array<actor>candidatetargets;candidatetargets.clear();
+				for(int i=0;i<MAXPLAYERS;i++){
+					if(
+						playeringame[i]
+						&&hdplayerpawn(players[i].mo)
+					){
+						candidatetargets.push(players[i].mo);
+					}
+				}
+				badnotyetdead.target=candidatetargets[random(0,candidatetargets.size()-1)];
+				badnotyetdead.A_AlertMonsters(0,AMF_EMITFROMTARGET);
 			}
 		}
 		loop;
@@ -190,17 +201,6 @@ class HDCapFlag:HDWeapon{
 		default:bannername=bannername.."I";break;
 		}
 		sb.drawimage(bannername.."0",(-32,-22),sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TRANSLATABLE,scale:(1.,1.));
-
-/*
-		string teamname;
-		if(bannernum<0)teamname="\cu<none>";
-		else teamname=teamplay?teams[hpl.player.getteam()].mname:hpl.player.getusername();
-		sb.drawstring(
-			sb.psmallfont,teamname,(-12,-16),
-			sb.DI_TEXT_ALIGN_RIGHT|sb.DI_SCREEN_CENTER_BOTTOM,
-			Font.CR_BRICK
-		);
-*/
 
 		int progress=hdw.weaponstatus[CAPFS_PROGRESS];
 		if(progress>0){
