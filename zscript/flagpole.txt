@@ -86,6 +86,14 @@ class HDCapFlagpole:Actor{
 			A_SetAngle(angle+frandom(6,18),SPF_INTERPOLATE);
 			scale=(1.,1.)*clamp(scale.x+frandom(-0.3,0.3),0.4,3.6);
 			setz(floorz+frandom(0,4));
+			if(
+				!deathmatch
+				&&!random(0,4)
+				&&(level.time%1024)
+			){
+				spawn("telefog",pos,ALLOW_REPLACE);
+				spawn("tango",pos,ALLOW_REPLACE);
+			}
 		}
 		wait;
 	}
@@ -97,35 +105,45 @@ class HDFlagBanner:Actor{
 		renderstyle "add";
 		height 1;radius 1;
 		alpha 0.8;
+		scale 1.;
+		translation 0;
+	}
+	double trackalpha;
+	int selectedteam;
+	void CheckBannerSprite(){
+		trackalpha=alpha;
+		if(selectedteam<0||selectedteam>8)selectedteam=8;
+		frame=selectedteam;
+	}
+	virtual void BannerSpin(){
+		alpha=frandom(0.3,1.);
+		angle+=2.;
 	}
 	states{
 	spawn:
-		BAL1 A 0;
-		---- A 1{
-			alpha=frandom(0.7,0.9);
-			angle+=1.;
-		}wait;
+		CBAN ABCDEFGHI 0;
+		CBAN A 0 CheckBannerSprite();
+		---- A 1 BannerSpin();
+		wait;
 	}
 }
 class HDFlagCappedBanner:HDFlagBanner{
 	default{
 		+floatbob
-		scale 2.;
+		scale 3.;
 	}
-	states{
-	spawn:
-		BAL1 A 0;
-		---- A 1{
-			alpha+=frandom(-0.007,0.004);
-			angle+=1.;
-			if(alpha<0.001)destroy();
-		}wait;
+	override void BannerSpin(){
+		trackalpha+=frandom(-0.007,0.004);
+		alpha=frandom(0.,trackalpha+0.5);
+		angle+=1.;
+		if(alpha<0.001)destroy();
 	}
 }
 class HDCapFlag:HDWeapon{
 	default{
 		+weapon.wimpy_weapon
 		+weapon.cheatnotweapon
+		-weapon.no_auto_switch
 		+inventory.invbar
 		inventory.pickupsound "misc/p_pkup";
 		inventory.pickupmessage "You got the flag!";
@@ -138,32 +156,75 @@ class HDCapFlag:HDWeapon{
 		weaponstatus[CAPFS_TEAM]=-1;
 	}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
-		sb.drawimage("BAL1A0",(-32,-22),sb.DI_SCREEN_CENTER_BOTTOM,scale:(0.6,0.6));
-		sb.drawwepnum(hdw.weaponstatus[CAPFS_PROGRESS],100);
+		string bannername="CBAN";
+		int bannernum=hdw.weaponstatus[CAPFS_TEAM];
+		switch(bannernum){
+		case 0:bannername=bannername.."A";break;
+		case 1:bannername=bannername.."B";break;
+		case 2:bannername=bannername.."C";break;
+		case 3:bannername=bannername.."D";break;
+		case 4:bannername=bannername.."E";break;
+		case 5:bannername=bannername.."F";break;
+		case 6:bannername=bannername.."G";break;
+		case 7:bannername=bannername.."H";break;
+		default:bannername=bannername.."I";break;
+		}
+		sb.drawimage(bannername.."0",(-32,-22),sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TRANSLATABLE,scale:(0.4,0.4));
+
 		string teamname;
-		if(hdw.weaponstatus[CAPFS_TEAM]<0)teamname="\cu<none>";
+		if(bannernum<0)teamname="\cu<none>";
 		else teamname=teamplay?teams[hpl.player.getteam()].mname:hpl.player.getusername();
 		sb.drawstring(
 			sb.psmallfont,teamname,(-12,-16),
 			sb.DI_TEXT_ALIGN_RIGHT|sb.DI_TRANSLATABLE|sb.DI_SCREEN_CENTER_BOTTOM,
 			Font.CR_BRICK
 		);
+
+		sb.drawwepnum(hdw.weaponstatus[CAPFS_PROGRESS],100);
 	}
 	override void ondestroy(){
 		super.ondestroy();
 		if(banner)banner.destroy();
 	}
-	actor banner;
+	HDFlagBanner banner;
 	override void tick(){
 		super.tick();
 		if(!banner){
-			banner=spawn("HDFlagBanner",pos);
+			banner=HDFlagBanner(spawn("HDFlagBanner",pos));
+			banner.selectedteam=weaponstatus[CAPFS_TEAM];
+			if(weaponstatus[CAPFS_TEAM]<0)banner.translation=0;
+			else banner.translation=translation;
 		}
 		if(owner||floorz<pos.z){
 			banner.binvisible=true;
 		}else{
-			banner.setorigin((pos.xy,pos.z+24),true);
+			banner.setorigin(pos,true);
 			banner.binvisible=false;
+		}
+
+		if(
+			owner
+			&&!(level.time%4)
+			&&abs(owner.vel.x)>1.
+			&&abs(owner.vel.y)>1.
+			&&weaponstatus[CAPFS_TEAM]!=(teamplay?owner.player.getteam():owner.playernumber())
+		){
+			if(
+				!CheckProximity("HDCapFlagpole",256)
+				&&!CheckProximity("HDCapFlagpole",512,flags:CPXF_CHECKSIGHT)
+			){
+				let player=owner.player;
+				weaponstatus[CAPFS_PROGRESS]++;
+				if(weaponstatus[CAPFS_PROGRESS]>=CAPF_PROGRESSMAX){
+					string planter;
+					if(teamplay)planter=teams[player.getteam()].mname.."\cr team!";
+					else planter=player.getusername().."\cr!";
+					A_PrintBold("\crFlag programmed\n\crto \cd"..planter,3,"BIGFONT");
+					weaponstatus[CAPFS_TEAM]=teamplay?player.getteam():owner.playernumber();
+					weaponstatus[CAPFS_PROGRESS]=0;
+					translation=owner.translation;
+				}
+			}
 		}
 	}
 	states{
@@ -172,19 +233,20 @@ class HDCapFlag:HDWeapon{
 		HCAP A 0{
 			let hhh=hdhandlers(eventhandler.find("hdhandlers"));
 			vector3 dest=hhh.getrandomspawnpoint();
-			while(dest==pos){dest=hhh.getrandomspawnpoint();}
-			spawn("telefog",pos,ALLOW_REPLACE);
+			while(dest==invoker.pos){dest=hhh.getrandomspawnpoint();}
+			spawn("telefog",invoker.pos,ALLOW_REPLACE);
 			spawn("telefog",dest,ALLOW_REPLACE);
-			if(hd_debug)A_Log("Flag moved to ["..dest.x..", "..dest.y..", "..dest.z.."]");
-			else A_Log("The flag has moved!");
-			setorigin(dest,false);
+			if(hd_debug)invoker.A_Log("Flag moved to ["..dest.x..", "..dest.y..", "..dest.z.."]");
+			else invoker.A_Log("The flag has moved!");
+			invoker.weaponstatus[CAPFS_TEAM]=-1;
+			invoker.setorigin(dest,false);
 		}
 		loop;
+	select:
+		TNT1 A 0{if(!countinv("NulledWeapon"))A_WeaponMessage("You have the flag!\n\nMove around outside of range of\nthe flagpole to program it\nfor yourself.");}
+		goto super::select;
 	ready:
-		TNT1 A 1{
-			invoker.weaponstatus[CAPFS_PROGRESS]=0;
-			A_WeaponReady();
-		}
+		TNT1 A 1 A_WeaponReady();
 		goto readyend;
 	fire:
 		TNT1 A 0{
@@ -192,13 +254,16 @@ class HDCapFlag:HDWeapon{
 			if(
 				invoker.weaponstatus[CAPFS_TEAM]!=ownnum
 			){
-				setweaponstate("holdprogram");
-			}else{
-				setweaponstate("holdplant");
+				if(CheckProximity("HDCapFlagpole",96,flags:CPXF_CHECKSIGHT|CPXF_SETTRACER)){
+					setweaponstate("holdplant");
+				}else{
+					A_WeaponMessage("\n\n\n\cgOut of range!\n\cjFind the flagpole!",70);
+					tracer=null;
+					setweaponstate("nope");
+				}
 			}
 		}
-		TNT1 A 0 A_ClearRefire();
-		goto readyend;
+		goto nope;
 	holdplant:
 		TNT1 A 1{
 			if(!CheckProximity("HDCapFlagpole",96,flags:CPXF_CHECKSIGHT|CPXF_SETTRACER)){
@@ -224,7 +289,33 @@ class HDCapFlag:HDWeapon{
 
 				//if in lives mode, undo deaths
 				//else add points
-				if(teamplay){
+				if(!deathmatch){
+					if(fraglimit>0){
+						let hdlc=hdlivescounter.get();
+						for(int i=0;i<MAXPLAYERS;i++){
+							if(!playeringame[i])continue;
+							if(players[i].mo)players[i].mo.UndoPlayerMorph(player,0,true);
+							hdlc.deaths[i]--;
+						}
+					}else{
+						for(int i=0;i<MAXPLAYERS;i++){
+							if(!playeringame[i])continue;
+							let hdp=hdplayerpawn(players[i].mo);
+							if(hdp){
+								hdp.aggravateddamage=0;
+								hdp.oldwoundcount=0;
+								hdp.burncount=0;
+								hdp.woundcount=0;
+								hdp.unstablewoundcount=0;
+								hdp.stunned=0;
+								hdp.fatigue=0;
+								hdp.givebody(100);
+							}
+							let hdw=hdweapon(players[i].readyweapon);
+							if(hdw)hdw.initializewepstats(true);
+						}
+					}
+				}else if(teamplay){
 					if(fraglimit<100){
 						for(int i=0;i<MAXPLAYERS;i++){
 							if(
@@ -272,29 +363,17 @@ class HDCapFlag:HDWeapon{
 
 				//destroy the old ones
 				spawn("HDExplosion",(fp.pos.xy,fp.pos.z+16),ALLOW_REPLACE);
-				spawn("HDFlagCappedBanner",(fp.pos.xy,fp.pos.z+24),ALLOW_REPLACE);
+				let capban=HDFlagCappedBanner(
+					spawn("HDFlagCappedBanner",fp.pos,ALLOW_REPLACE)
+				);
+				capban.selectedteam=invoker.weaponstatus[CAPFS_TEAM];
+				capban.translation=translation;
 				fp.destroy();
 				invoker.weaponstatus[CAPFS_PROGRESS]=0;
 				invoker.goawayanddie();
 			}
 		}
 		TNT1 A 0 A_Refire("holdplant");
-		goto readyend;
-	holdprogram:
-		TNT1 A 1{
-			invoker.weaponstatus[CAPFS_PROGRESS]++;
-			if(invoker.weaponstatus[CAPFS_PROGRESS]>=CAPF_PROGRESSMAX){
-				string planter;
-				if(teamplay)planter=teams[player.getteam()].mname.."\cr team!";
-				else planter=player.getusername().."\cr!";
-				A_PrintBold("\crFlag programmed\n\crto \cd"..planter,3,"BIGFONT");
-				invoker.weaponstatus[CAPFS_TEAM]=teamplay?player.getteam():playernumber();
-				invoker.weaponstatus[CAPFS_PROGRESS]=0;
-				invoker.translation=translation;
-				setweaponstate("nope");
-			}
-		}
-		TNT1 A 0 A_Refire("holdprogram");
 		goto readyend;
 	altfire:
 		TNT1 A 1 A_DropInventory("HDCapFlag");
