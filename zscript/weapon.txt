@@ -199,6 +199,10 @@ class HDWeapon:Weapon{
 			}
 			justchucked=false;
 		}
+		if(owner&&amount<1){
+			destroy();
+			return;
+		}
 	}
 
 	//zoom adjuster for rifles

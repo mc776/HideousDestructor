@@ -122,10 +122,11 @@ class HDStimpacker:HDWoundFixer{
 		stop;
 	select:
 		TNT1 A 0{
+			bool helptext=getcvar("hd_helptext");
 			if(!countinv(invoker.inventorytype)){
-				if(getcvar("hd_helptext"))A_WeaponMessage(invoker.noerror);
+				if(helptext)A_WeaponMessage(invoker.noerror);
 				A_SelectWeapon("HDFist");
-			}else if(getcvar("hd_helptext"))A_WeaponMessage("\cd<<< \cjSTIMPACK \cd>>>\c-\n\n\nStimpacks help reduce\nbleeding temporarily\n\nand boost performance when injured.\n\n\Press altfire to use on someone else.\n\n\cgDO NOT OVERDOSE.");
+			}else if(helptext)A_WeaponMessage("\cd<<< \cjSTIMPACK \cd>>>\c-\n\n\nStimpacks help reduce\nbleeding temporarily\n\nand boost performance when injured.\n\n\Press altfire to use on someone else.\n\n\cgDO NOT OVERDOSE.");
 		}
 		goto super::select;
 	deselecthold:
@@ -139,11 +140,12 @@ class HDStimpacker:HDWoundFixer{
 	hold:
 		TNT1 A 1;
 		TNT1 A 0{
+			bool helptext=getcvar("hd_helptext");
 			if(!countinv(invoker.inventorytype)){
-				if(getcvar("hd_helptext"))A_WeaponMessage(invoker.noerror);
+				if(helptext)A_WeaponMessage(invoker.noerror);
 				A_Refire("deselecthold");
 			}else if(countinv("PortableRadsuit") && countinv("WornRadsuit")){
-				if(getcvar("hd_helptext"))A_WeaponMessage("Take off your environment suit first!",2);
+				if(helptext)A_WeaponMessage("Take off your environment suit first!",2);
 				A_Refire("nope");
 			}else if(pitch<55){
 				A_SetPitch(pitch+8,SPF_INTERPOLATE);
@@ -182,6 +184,7 @@ class HDStimpacker:HDWoundFixer{
 			}
 		}
 		TNT1 A 8{
+			bool helptext=getcvar("hd_helptext");
 			flinetracedata injectorline;
 			linetrace(
 				angle,42,pitch,
@@ -190,15 +193,16 @@ class HDStimpacker:HDWoundFixer{
 			);
 			let c=HDPlayerPawn(injectorline.hitactor);
 			if(!c){
-				if(getcvar("hd_helptext"))A_WeaponMessage("Nothing to be done here.\n\nStimulate thyself? (press fire)",2);
+				if(helptext)A_WeaponMessage("Nothing to be done here.\n\nStimulate thyself? (press fire)",2);
 				return resolvestate("nope");
 			}else if(c.countinv("IsMoving")>4){
+				bool chelptext=c.getcvar("hd_helptext");
 				if(c.stimcount){
-					if(c.getcvar("hd_helptext"))c.A_Print(string.format("Run away!!!\n\n%s is trying to overdose you\n\n(and possibly bugger you)...",player.getusername()));
-					if(getcvar("hd_helptext"))A_WeaponMessage("They seem a bit fidgety...");
+					if(chelptext)c.A_Print(string.format("Run away!!!\n\n%s is trying to overdose you\n\n(and possibly bugger you)...",player.getusername()));
+					if(helptext)A_WeaponMessage("They seem a bit fidgety...");
 				}else{
-					if(c.getcvar("hd_helptext"))c.A_Print(string.format("Stop squirming!\n\n%s only wants to\n\ngive you some drugs...",player.getusername()));
-					if(getcvar("hd_helptext"))A_WeaponMessage("You'll need them to stay still...");
+					if(chelptext)c.A_Print(string.format("Stop squirming!\n\n%s only wants to\n\ngive you some drugs...",player.getusername()));
+					if(helptext)A_WeaponMessage("You'll need them to stay still...");
 				}
 				return resolvestate("nope");
 			}else if(

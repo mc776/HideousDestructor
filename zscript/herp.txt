@@ -677,9 +677,10 @@ class HERPUsable:HDWeapon{
 		hhhh.botid=invoker.weaponstatus[HERP_BOTID];
 		hhhh.bmissilemore=invoker.weaponstatus[0]&HERPF_STARTOFF?false:true;
 		A_Log(string.format("\cd[HERP] \cjDeployed with tag ID \cy%i",invoker.weaponstatus[HERP_BOTID]),true);
-		invoker.amount--;
 		A_GiveInventory("HERPController");
 		HERPController(findinventory("HERPController")).UpdateHerps(false);
+		invoker.amount--;
+		invoker.goawayanddie();
 	}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
 		if(hdw.amount<1)return;

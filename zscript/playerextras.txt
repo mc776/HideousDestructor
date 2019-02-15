@@ -149,14 +149,14 @@ extend class HDPlayerPawn{
 		//slides, too!
 		else if(
 			forceslide||(
-				(
-					!cvar.getcvar("hd_noslide",player).getbool()
-					||runwalksprint>0
-				)
-				&&player.crouchdir<0&&height>46
-				&&(fm||sm)
+				(fm||sm)
 				&&floorz==pos.z
+				&&player.crouchdir<0&&height>46
 				&&countinv("IsMoving")>1
+				&&(
+					runwalksprint>0
+					||!cvar.getcvar("hd_noslide",player).getbool()
+				)
 			)
 		){
 			double mm=jumppower()*1.5;

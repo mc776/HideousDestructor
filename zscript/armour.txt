@@ -43,6 +43,7 @@ class HDArmour:HDMagAmmo{
 		}
 	}
 	action void A_WearArmour(){
+		bool helptext=cvar.getcvar("hd_helptext",player).getbool();
 		invoker.syncamount();
 		int dbl=invoker.mags[0];
 		//if holding use, cycle to next armour
@@ -66,7 +67,7 @@ class HDArmour:HDMagAmmo{
 					dropfirst=="HDBackpack"?"backpack":
 					dropfirst=="WornRadsuit"?"environment suit":
 					"current armour",
-					getcvar("hd_helptext")?" (double-tap to do this)":""
+					helptext?" (double-tap to do this)":""
 				),true);
 			}
 			return;
@@ -82,7 +83,7 @@ class HDArmour:HDMagAmmo{
 		invoker.amount--;
 		invoker.mags.delete(0);
 
-		if(cvar.getcvar("hd_helptext",player).getbool()){
+		if(helptext){
 			string blah=string.format("You put on the %s armour. ",worn.mega?"combat":"security");
 			double qual=double(worn.durability)/(worn.mega?HDCONST_BLUEARMOUR:HDCONST_GREENARMOUR);
 			if(qual<0.1)A_Log(blah.."Just don't get hit.",true);

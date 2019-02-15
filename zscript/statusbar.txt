@@ -223,9 +223,10 @@ class HDStatusBar:DoomStatusBar{
 		);
 	}
 	void DrawCommonStuff(int state){
+		int hudusedelay=cvar.getcvar("hd_hudusedelay",cplayer).getint();
 		if(cplayer.buttons&BT_USE)gimmehud=max(0,gimmehud-1);
-			else gimmehud=max(cvar.getcvar("hd_hudusedelay",cplayer).getint(),-1);
-		if(!(cplayer.cmd.buttons&BT_USE)&&cvar.getcvar("hd_hudusedelay",cplayer).getint()<0)return;
+			else gimmehud=max(hudusedelay,-1);
+		if(!(cplayer.cmd.buttons&BT_USE)&&hudusedelay<0)return;
 
 		let cp=HDPlayerPawn(CPlayer.mo);
 		if(!cp)return;
@@ -382,9 +383,9 @@ class HDStatusBar:DoomStatusBar{
 
 		//weapon sprite
 		if(
-			cvar.getcvar("hd_hudsprite",cplayer).getbool()
+			!gimmehud
+			||cvar.getcvar("hd_hudsprite",cplayer).getbool()
 			||!cvar.getcvar("r_drawplayersprites",cplayer).getbool()
-			||!gimmehud
 		)
 		drawselectedweapon(58,-6,DI_SCREEN_CENTER_BOTTOM|DI_ITEM_LEFT_BOTTOM);
 
