@@ -128,8 +128,8 @@ class Vulcanette:HDWeapon{
 		bool sightbob,vector2 bob,double fov,bool scopeview,actor hpc,string whichdot
 	){
 		if(
-			!(owner.player.cmd.buttons&BT_ZOOM)
-			&&!(owner.player.cmd.buttons&BT_ALTFIRE)
+			!(hpl.player.cmd.buttons&BT_ZOOM)
+			&&!(hpl.player.cmd.buttons&BT_ALTFIRE)
 		)return;
 
 		double dotoff=max(abs(bob.x),abs(bob.y));
