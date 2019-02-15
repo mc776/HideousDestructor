@@ -123,6 +123,18 @@ class HDCapFlagpole:Actor{
 				badnotyetdead.A_AlertMonsters(0,AMF_EMITFROMTARGET);
 			}
 		}
+		---- A 0{
+			stamina++;
+			if(stamina<(TICRATE*180))return;
+			stamina=0;
+			let hhh=hdhandlers(eventhandler.find("hdhandlers"));
+			vector3 dest=hhh.getrandomspawnpoint();
+			spawn("telefog",pos,ALLOW_REPLACE);
+			spawn("telefog",dest,ALLOW_REPLACE);
+			setorigin(dest,false);
+			if(hd_debug)A_Log("Flagpole moved to ["..dest.x..", "..dest.y..", "..dest.z.."]");
+			else A_Log("The flagpole has moved!");
+		}
 		loop;
 	}
 }
@@ -328,6 +340,7 @@ class HDCapFlag:HDWeapon{
 				return;
 			}
 
+			fp.stamina=0;
 			invoker.weaponstatus[CAPFS_PROGRESS]++;
 			A_WeaponMessage("\n\n\nPlanting flag...\n\cd"..invoker.weaponstatus[CAPFS_PROGRESS].." %",10);
 			if(invoker.weaponstatus[CAPFS_PROGRESS]>=CAPF_PROGRESSMAX){
