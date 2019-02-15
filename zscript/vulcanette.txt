@@ -24,8 +24,8 @@ class Vulcanette:HDWeapon{
 		weapon.selectionorder 40;
 		weapon.slotnumber 4;
 		weapon.kickback 24;
-		weapon.bobrangex 0.6;
-		weapon.bobrangey 1.4;
+		weapon.bobrangex 1.4;
+		weapon.bobrangey 2.1;
 		weapon.bobspeed 2.1;
 		weapon.bobstyle "normal";
 		obituary "%o met the budda-budda-budda on the street,and %k killed %h.";
@@ -127,6 +127,11 @@ class Vulcanette:HDWeapon{
 		HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl,
 		bool sightbob,vector2 bob,double fov,bool scopeview,actor hpc,string whichdot
 	){
+		if(
+			!(owner.player.cmd.buttons&BT_ZOOM)
+			&&!(owner.player.cmd.buttons&BT_ALTFIRE)
+		)return;
+
 		double dotoff=max(abs(bob.x),abs(bob.y));
 		if(dotoff<20){
 			sb.drawimage(
@@ -210,7 +215,7 @@ class Vulcanette:HDWeapon{
 	droop:
 		TNT1 A 1{
 			if(pitch<frandom(5,8)&&(!gunbraced())){
-				if(countinv("IsMoving")>2 && countinv("PowerStrength")<1){    
+				if(countinv("IsMoving")>2 && countinv("PowerStrength")<1){
 					A_MuzzleClimb(frandom(-0.1,0.1),
 						frandom(0.1,clamp(1-pitch,0.1,0.3)));
 				}else{
@@ -223,17 +228,36 @@ class Vulcanette:HDWeapon{
 	ready:
 		GTLG A 1{
 			A_SetCrosshair(21);
-			if(pressingzoom())A_ZoomAdjust(VULCS_ZOOM,16,70);
-			else if(justpressed(BT_FIREMODE|BT_ALTFIRE)){
+			if(pressingaltfire()||pressingzoom()){
+				if(pressingzoom())A_ZoomAdjust(VULCS_ZOOM,16,70);
+				if(pitch<frandom(7,10)&&(!gunbraced())){
+					if(countinv("PowerStrength")<1){
+						A_MuzzleClimb(frandom(-0.4,0.4),
+							frandom(0.4,clamp(1-pitch,0.1,0.8)));
+					}else{
+						A_MuzzleClimb(frandom(-0.1,0.1),
+							frandom(0.1,clamp(1-pitch,0.1,0.2)));
+					}
+				}
+				invoker.bobrangex=getdefaultbytype("Vulcanette").bobrangex*4.;
+				invoker.bobrangey=getdefaultbytype("Vulcanette").bobrangey*4.;
+				A_WeaponReady(WRF_NOSECONDARY);
+				Player.GetPSprite(PSP_WEAPON).sprite=GetSpriteIndex("CHGGA0");
+			}
+			else if(justpressed(BT_FIREMODE)){
 				invoker.weaponstatus[0]^=VULCF_FAST;
 				A_PlaySound("weapons/fmswitch",7,0.4);
 				A_WeaponReady(WRF_NONE);
-			}else A_WeaponReady(WRF_ALL);
+			}else{
+				A_WeaponReady(WRF_ALL);
+				invoker.bobrangex=getdefaultbytype("Vulcanette").bobrangex;
+				invoker.bobrangey=getdefaultbytype("Vulcanette").bobrangey;
+			}
 		}
 		goto readyend;
 
 	fire:
-		GTLG A 1{
+		#### A 1{
 			A_WeaponReady(WRF_NONE);
 			if(
 				invoker.weaponstatus[VULCS_BATTERY]>0 
@@ -241,11 +265,11 @@ class Vulcanette:HDWeapon{
 			)invoker.weaponstatus[VULCS_BATTERY]--;
 		}goto shoot;
 	hold:
-		GTLG A 0{
+		#### A 0{
 			if(invoker.weaponstatus[VULCS_BATTERY]<1)setweaponstate("nope");
 		}
 	shoot:
-		GTLG A 2{
+		#### A 2{
 			A_WeaponReady(WRF_NOFIRE);
 			if(
 				invoker.weaponstatus[VULCS_BATTERY]>0    
@@ -270,7 +294,7 @@ class Vulcanette:HDWeapon{
 			VulcShoot();
 			VulcNextRound();
 		}
-		GTLG B 1{
+		#### B 1{
 			A_WeaponReady(WRF_NOFIRE);
 			//check speed and then shoot
 			if(
@@ -286,37 +310,43 @@ class Vulcanette:HDWeapon{
 				A_SetTics(random(2,3));
 			}
 		}
-		GTLG B 1{
+		#### B 1{
 			A_WeaponReady(WRF_NONE);
 			if(invoker.weaponstatus[VULCS_BATTERY]<1)setweaponstate("spindown");
 			else A_Refire("holdswap");
 		}goto spindown;
 	holdswap:
-		GTLG A 0{
+		#### A 0{
 			if(invoker.vulcmag[0]<1){
 				VulcNextMag();
 				A_PlaySound("weapons/vulcshunt",CHAN_BODY);
 			}
 		}goto hold;
 	spindown:
-		GTLG B 0{
+		#### B 0{
 			A_ClearRefire();
 			if(!(invoker.weaponstatus[0]&VULCF_SPINNINGFAST))setweaponstate("nope");
 			invoker.weaponstatus[0]&=~VULCF_SPINNINGFAST;
 		}
-		GTLG AB 1{
+		#### AB 1{
 			A_WeaponReady(WRF_NONE);
 			A_MuzzleClimb(frandom(0.4,0.6),-frandom(0.4,0.6));
 		}
-		GTLG ABAABB 2 A_WeaponReady(WRF_NOFIRE|WRF_NOSWITCH);
+		#### ABAABB 2 A_WeaponReady(WRF_NOFIRE|WRF_NOSWITCH);
 		goto ready;
 
 
 	flash2:
-		VULF B 0;
+		VULF B 0{
+			if(pressingaltfire()||pressingzoom())
+				player.getpsprite(PSP_FLASH).sprite=getspriteindex("CHGFA0");
+		}
 		goto flashfollow;
 	flash:
-		VULF A 0;
+		VULF A 0{
+			if(pressingaltfire()||pressingzoom())
+				player.getpsprite(PSP_FLASH).sprite=getspriteindex("CHGFA0");
+		}
 		goto flashfollow;
 	flashfollow:
 		---- A 0{
