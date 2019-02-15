@@ -278,7 +278,17 @@ class HDCapFlag:HDWeapon{
 		}
 		loop;
 	select:
-		TNT1 A 0{if(!countinv("NulledWeapon"))A_WeaponMessage("You have the flag!\n\nMove around outside of range of\nthe flagpole to program it\nfor yourself.");}
+		TNT1 A 0{
+			if(countinv("NulledWeapon"))return;
+			string whatdo;
+			if(
+				invoker.weaponstatus[CAPFS_TEAM]==(
+					(deathmatch&&teamplay)?player.getteam():playernumber()
+				)
+			)whatdo="Get to the flagpole and\nhold \cdFire\cx to plant it!";
+			else whatdo="Move around outside of range of\nthe flagpole to program it\nfor yourself.";
+			A_WeaponMessage("You have the flag!\n\n"..whatdo,144);
+		}
 		goto super::select;
 	ready:
 		TNT1 A 1 A_WeaponReady();
@@ -286,8 +296,13 @@ class HDCapFlag:HDWeapon{
 	fire:
 		TNT1 A 0{
 			if(
-				invoker.weaponstatus[CAPFS_TEAM]==((deathmatch&&teamplay)?player.getteam():playernumber())
+				invoker.weaponstatus[CAPFS_TEAM]!=(
+					(deathmatch&&teamplay)?player.getteam():playernumber()
+				)
 			){
+				A_WeaponMessage("\n\n\n\caFlag not yet attuned!\n\cjKeep moving away\n\cjthe flagpole!",70);
+				setweaponstate("nope");
+			}else{
 				if(CheckProximity("HDCapFlagpole",96,flags:CPXF_CHECKSIGHT|CPXF_SETTRACER)){
 					setweaponstate("holdplant");
 				}else{
