@@ -15,7 +15,6 @@ enum vulcstatus{
 	VULCS_CHANNEL=6,
 };
 class Vulcanette:HDWeapon{
-	int breakchance;
 	default{
 		//$Category "Weapons/Hideous Destructor"
 		//$Title "Vulcanette"
@@ -37,18 +36,19 @@ class Vulcanette:HDWeapon{
 	}
 	override string pickupmessage(){
 		string msg=super.pickupmessage();
-		if(!breakchance)msg=msg.." It's coward killing time!";
-		else if(breakchance>500)msg=msg.." that might be salvaged for ammo.";
-		else if(breakchance>200)msg=msg.." in dire need of repair.";
-		else if(breakchance>100)msg=msg..". It has seen better days.";
-		if(breakchance>100){
+		int bc=weaponstatus[VULCS_BREAKCHANCE];
+		if(!bc)msg=msg.." It's coward killing time!";
+		else if(bc>500)msg=msg.." that might be salvaged for ammo.";
+		else if(bc>200)msg=msg.." in dire need of repair.";
+		else if(bc>100)msg=msg..". It has seen better days.";
+		if(bc>100){
 			msg.replace("!","");
 			msg.replace("the","a");
 		}
 		return msg;
 	}
 	override void tick(){
-		if(justchucked)breakchance+=random(10,50);
+		if(justchucked)weaponstatus[VULCS_BREAKCHANCE]+=random(10,50);
 		super.tick();
 		drainheat(VULCS_HEAT,18);
 	}
@@ -181,14 +181,15 @@ class Vulcanette:HDWeapon{
 	int permadamage;
 	override void consolidate(){
 		CheckBFGCharge(VULCS_BATTERY);
-		if(breakchance>0){
-			if(breakchance>permadamage)permadamage+=max(1,breakchance>>7);
-			int oldbreakchance=breakchance;
-			breakchance=random(breakchance*2/3,breakchance)+permadamage;
+		if(weaponstatus[VULCS_BREAKCHANCE]>0){
+			int bc=weaponstatus[VULCS_BREAKCHANCE];
+			if(bc>permadamage)permadamage+=max(1,bc>>7);
+			int oldbc=bc;
+			weaponstatus[VULCS_BREAKCHANCE]=random(bc*2/3,bc)+permadamage;
 			if(!owner)return;
 			string msg="You try to unwarp some of the parts of your Vulcanette";
-			if(breakchance>oldbreakchance)msg=msg..", but only made things worse.";
-			else if(breakchance<oldbreakchance*9/10)msg=msg..". It seems to scroll more smoothly now.";
+			if(bc>oldbc)msg=msg..", but only made things worse.";
+			else if(bc<oldbc*9/10)msg=msg..". It seems to scroll more smoothly now.";
 			else msg=msg..", to little if any avail.";
 			owner.A_Log(msg,true);
 		}
@@ -245,7 +246,7 @@ class Vulcanette:HDWeapon{
 			A_WeaponReady(WRF_NONE);
 			if(
 				invoker.weaponstatus[VULCS_BATTERY]>0 
-				&&!random(0,max(0,700-(invoker.breakchance>>1)))
+				&&!random(0,max(0,700-(invoker.weaponstatus[VULCS_BREAKCHANCE]>>1)))
 			)invoker.weaponstatus[VULCS_BATTERY]--;
 		}goto shoot;
 	hold:
@@ -266,7 +267,7 @@ class Vulcanette:HDWeapon{
 				invoker.weaponstatus[0]&VULCF_FAST
 				&&invoker.weaponstatus[VULCS_BATTERY]>=4
 				&&invoker.vulcchamber[0]
-				&&invoker.breakchance<random(100,5000)
+				&&invoker.weaponstatus[VULCS_BREAKCHANCE]<random(100,5000)
 			){
 				A_SetTics(1);
 				invoker.weaponstatus[0]|=VULCF_SPINNINGFAST;
@@ -614,9 +615,9 @@ class Vulcanette:HDWeapon{
 	int vulcchamber[5]; //2 is broken round
 
 	override void InitializeWepStats(bool idfa){
-		breakchance=0;
 		weaponstatus[VULCS_BATTERY]=20;
 		weaponstatus[VULCS_ZOOM]=30;
+		weaponstatus[VULCS_MAGS]=9999999999;
 		for(int i=0;i<5;i++)vulcmag[i]=51;
 		if(idfa)for(int i=0;i<5;i++)vulcchamber[i]=1;
 	}
@@ -624,14 +625,14 @@ class Vulcanette:HDWeapon{
 	//shooting and cycling actions
 	//move this somewhere sensible
 	action void VulcShoot(bool flash2=false){
-		invoker.breakchance+=random(0,random(0,invoker.weaponstatus[VULCS_HEAT]/256));
+		invoker.weaponstatus[VULCS_BREAKCHANCE]+=random(0,random(0,invoker.weaponstatus[VULCS_HEAT]/256));
 		if(invoker.vulcchamber[0]!=1){ //0 is empty, 2 is broken
-			if(invoker.vulcchamber[0])invoker.breakchance+=random(0,15);
-			else if(!random(0,63))invoker.breakchance++;
-			if(hd_debug)A_Log("Break chance: "..invoker.breakchance);
+			if(invoker.vulcchamber[0])invoker.weaponstatus[VULCS_BREAKCHANCE]+=random(0,15);
+			else if(!random(0,63))invoker.weaponstatus[VULCS_BREAKCHANCE]++;
+			if(hd_debug)A_Log("Break chance: "..invoker.weaponstatus[VULCS_BREAKCHANCE]);
 			return;
 		}
-		if(random(random(1,500),5000)<invoker.breakchance){
+		if(random(random(1,500),5000)<invoker.weaponstatus[VULCS_BREAKCHANCE]){
 			setweaponstate("nope");
 			return;
 		}
