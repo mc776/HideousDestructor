@@ -55,6 +55,7 @@ class SpentBottle:SpentStim{
 	default{
 		alpha 0.6;renderstyle "translucent";
 		bouncesound "misc/casing";bouncefactor 0.7;scale 0.3;radius 4;height 4;
+		translation "10:15=241:243","150:151=206:207";
 	}
 	override void ondestroy(){
 		plantbit.spawnplants(self,7,33);
@@ -62,6 +63,7 @@ class SpentBottle:SpentStim{
 	}
 	states{
 	spawn:
+		BON1 A -1;
 		BON1 A 0;
 		goto spawn2;
 	death:
