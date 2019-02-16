@@ -8,9 +8,11 @@ enum vulcstatus{
 	VULCF_LOADCELL=8,
 
 	VULCS_BATTERY=1,
-	VULCS_ZOOM=2,
-	VULCS_HEAT=3,
-	VULCS_CHANNEL=4,
+	VULCS_MAGS=2,
+	VULCS_ZOOM=3,
+	VULCS_HEAT=4,
+	VULCS_BREAKCHANCE=5,
+	VULCS_CHANNEL=6,
 };
 class Vulcanette:HDWeapon{
 	int breakchance;
@@ -60,7 +62,7 @@ class Vulcanette:HDWeapon{
 		}
 	}
 	override double gunmass(){
-		double amt=12+weaponstatus[1]<0?0:1;
+		double amt=12+weaponstatus[VULCS_BATTERY]<0?0:1;
 		for(int i=0;i<5;i++){
 			if(vulcmag[i]>=0)amt+=3.6;
 		}
@@ -99,7 +101,7 @@ class Vulcanette:HDWeapon{
 			sb.drawwepcounter(vvv.weaponstatus[0]&VULCF_FAST,
 				-28,-16,"blank","STFULAUT"
 			);
-			if(vvv.weaponstatus[1]>0){
+			if(vvv.weaponstatus[VULCS_BATTERY]>0){
 				for(int i=0;i<5;i++){
 					sb.drawwepcounter(vvv.vulcchamber[i],-14,
 						-11-i*2,"blank","RBRSA3A7"
@@ -110,13 +112,13 @@ class Vulcanette:HDWeapon{
 				sb.drawnum(lod,-20,-22,
 					sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TEXT_ALIGN_RIGHT,Font.CR_RED
 				);
-				sb.drawwepnum(vvv.weaponstatus[1],20);
-			}else if(!vvv.weaponstatus[1])sb.drawstring(
+				sb.drawwepnum(vvv.weaponstatus[VULCS_BATTERY],20);
+			}else if(!vvv.weaponstatus[VULCS_BATTERY])sb.drawstring(
 				sb.mamountfont,"00000",(-16,-8),
 				sb.DI_TEXT_ALIGN_RIGHT|sb.DI_TRANSLATABLE|sb.DI_SCREEN_CENTER_BOTTOM,
 				Font.CR_DARKGRAY
 			);
-			sb.drawnum(vvv.weaponstatus[2],
+			sb.drawnum(vvv.weaponstatus[VULCS_ZOOM],
 				-30,-22,
 				sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TEXT_ALIGN_RIGHT,
 				Font.CR_DARKGRAY
