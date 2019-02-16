@@ -79,13 +79,6 @@ extend class HDPlayerPawn{
 				let hdw=hdweapon(hdww);
 				if(hdw)hdw.initializewepstats(true);
 			}
-
-			//pistol hack
-			let pstl=HDPistol(findinventory("HDPistol"));
-			if(pstl){
-				pstl.weaponstatus[PISS_AUTO]=max(0,pstl.weaponstatus[PISS_AUTO]);
-				if(pstl.amount>1)pstl.weaponstatus2[PISS_AUTO]=max(0,pstl.weaponstatus2[PISS_AUTO]);
-			}
 		}
 
 		//clean up some stuff
