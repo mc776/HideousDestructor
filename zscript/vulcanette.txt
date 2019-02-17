@@ -68,6 +68,21 @@ class Vulcanette:HDWeapon{
 		if(justchucked)weaponstatus[VULCS_BREAKCHANCE]+=random(10,50);
 		super.tick();
 		drainheat(VULCS_HEAT,18);
+
+//testing the counter thingy
+if(level.time>0&&!(level.time%35)){
+for(int i=0;i<5;i++){
+	//setmagcount(getmagcount(i+1),i);
+	A_LogInt(getmagcount(i));
+}
+	setmagcount(getmagcount(1),0);
+	setmagcount(getmagcount(2),1);
+	setmagcount(getmagcount(3),2);
+	setmagcount(getmagcount(4),3);
+	if((level.time%140))setmagcount(random(0,52),4);
+	else setmagcount(0,4);
+	A_Log("");
+}
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -80,7 +95,7 @@ class Vulcanette:HDWeapon{
 	}
 	//translate the number from and to the internal stored data in the vulc.
 	int getmagcount(int which){
-		if(which>4||which<0)return -1;
+		if(which>4||which<0)return 0;
 		int res=weaponstatus[VULCS_MAGS];
 		int mul=1;
 		for(int i=0;i<which;i++){
@@ -89,7 +104,8 @@ class Vulcanette:HDWeapon{
 		return (res/mul)%VULC_MAGBASE;
 	}
 	int setmagcount(int count,int which){
-		if(which>4||which<0)return -1;
+		if(which>4||which<0)return 0;
+		count=clamp(count,0,VULC_MAG_FULLSEALED);
 		int res=weaponstatus[VULCS_MAGS];
 		int mags[5];
 		int returntotal=0;
@@ -107,12 +123,9 @@ class Vulcanette:HDWeapon{
 	override double gunmass(){
 		double amt=12+weaponstatus[VULCS_BATTERY]<0?0:1;
 		int mul=1;
-//		setmagcount(49,0);
 		for(int i=0;i<5;i++){
 			if(vulcmag[i]>=0)amt+=3.6;
-//			A_LogInt(getmagcount(i));
 		}
-//		A_Log("");
 		return amt;
 	}
 	override double weaponbulk(){
