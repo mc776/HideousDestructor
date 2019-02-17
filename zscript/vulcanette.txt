@@ -23,12 +23,13 @@ enum vulcstatus{
 		(I originally tried using base 100 but int.MAX is under 3 billion whereas we'd need 5.3 billion for this.)
 	*/
 	VULC_MAGBASE=53,
+	VULC_MAG_FULLSEALED=VULC_MAGBASE-1,
 	VULC_MAGS_MAX=
-		(VULC_MAGBASE*VULC_MAGBASE*VULC_MAGBASE*VULC_MAGBASE*(VULC_MAGBASE-1))
-		+(VULC_MAGBASE*VULC_MAGBASE*VULC_MAGBASE*(VULC_MAGBASE-1))
-		+(VULC_MAGBASE*VULC_MAGBASE*(VULC_MAGBASE-1))
-		+(VULC_MAGBASE*(VULC_MAGBASE-1))
-		+(VULC_MAGBASE-1),
+		(VULC_MAGBASE*VULC_MAGBASE*VULC_MAGBASE*VULC_MAGBASE*VULC_MAG_FULLSEALED)
+		+(VULC_MAGBASE*VULC_MAGBASE*VULC_MAGBASE*VULC_MAG_FULLSEALED)
+		+(VULC_MAGBASE*VULC_MAGBASE*VULC_MAG_FULLSEALED)
+		+(VULC_MAGBASE*VULC_MAG_FULLSEALED)
+		+VULC_MAG_FULLSEALED,
 };
 class Vulcanette:HDWeapon{
 	default{
@@ -98,10 +99,8 @@ class Vulcanette:HDWeapon{
 			for(int j=0;j<i;j++){
 				mags[i]*=VULC_MAGBASE;
 			}
-			A_LogInt(mags[i]);
 			returntotal+=mags[i];
 		}
-		A_Log(returntotal.."   "..weaponstatus[VULCS_MAGS]);
 		weaponstatus[VULCS_MAGS]=returntotal;
 		return returntotal;
 	}
