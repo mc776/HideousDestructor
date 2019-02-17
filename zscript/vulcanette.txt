@@ -7,12 +7,23 @@ enum vulcstatus{
 	VULCF_JUSTUNLOAD=4,
 	VULCF_LOADCELL=8,
 
-	VULCS_BATTERY=1,
-	VULCS_MAGS=2,
+	VULCS_MAGS=1,
+	VULCS_BATTERY=2,
 	VULCS_ZOOM=3,
 	VULCS_HEAT=4,
 	VULCS_BREAKCHANCE=5,
 	VULCS_CHANNEL=6,
+
+	/*
+		For counting mags in VULCS_MAGS.
+		After each multiple of VULC_MAGBASE:
+		0=unloaded, 1=empty, 51=full but seal broken, 52=full and sealed.
+		So the first mag is 52, the second mag is 2756, etc.
+		Or, in "base 53": 52, 5200, ...
+		(I originally tried using base 100 but int.MAX is under 3 billion whereas we'd need 5.3 billion for this.)
+	*/
+	VULC_MAGBASE=53,
+	VULC_MAGS_MAX=VULC_MAGBASE*VULC_MAGBASE*VULC_MAGBASE*VULC_MAGBASE*VULC_MAGBASE, //410305012
 };
 class Vulcanette:HDWeapon{
 	default{
@@ -61,11 +72,27 @@ class Vulcanette:HDWeapon{
 			);
 		}
 	}
+	//translate the number into the internal stored data in the vulc.
+	int getmagcount(int which){
+		if(which>4||which<0)return -1;
+		int res=VULC_MAGS_MAX;
+		for(int i=0;i<which;i++){
+			res/=VULC_MAGBASE;
+		}
+		return res%(VULC_MAGBASE*(VULC_MAGBASE-1));
+	}
+	int setmagcount(int which){
+		if(which>4||which<0)return -1;
+		return 1; //dummy
+	}
 	override double gunmass(){
 		double amt=12+weaponstatus[VULCS_BATTERY]<0?0:1;
+		int mul=1;
 		for(int i=0;i<5;i++){
 			if(vulcmag[i]>=0)amt+=3.6;
+//			A_LogInt(getmagcount(i));
 		}
+//		A_Log("");
 		return amt;
 	}
 	override double weaponbulk(){
@@ -617,7 +644,7 @@ class Vulcanette:HDWeapon{
 	override void InitializeWepStats(bool idfa){
 		weaponstatus[VULCS_BATTERY]=20;
 		weaponstatus[VULCS_ZOOM]=30;
-		weaponstatus[VULCS_MAGS]=9999999999;
+		weaponstatus[VULCS_MAGS]=VULC_MAGS_MAX;
 		for(int i=0;i<5;i++)vulcmag[i]=51;
 		if(idfa)for(int i=0;i<5;i++)vulcchamber[i]=1;
 	}
