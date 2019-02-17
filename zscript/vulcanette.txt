@@ -85,12 +85,11 @@ class Vulcanette:HDWeapon{
 		for(int i=0;i<which;i++){
 			mul*=VULC_MAGBASE;
 		}
-		return (res/mul)%(VULC_MAGBASE*(VULC_MAGBASE-1));
+		return (res/mul)%VULC_MAGBASE;
 	}
 	int setmagcount(int count,int which){
 		if(which>4||which<0)return -1;
 		int res=weaponstatus[VULCS_MAGS];
-
 		int mags[5];
 		int returntotal=0;
 		for(int i=0;i<5;i++){
@@ -102,19 +101,19 @@ class Vulcanette:HDWeapon{
 			A_LogInt(mags[i]);
 			returntotal+=mags[i];
 		}
-		A_LogInt(returntotal);
+		A_Log(returntotal.."   "..weaponstatus[VULCS_MAGS]);
 		weaponstatus[VULCS_MAGS]=returntotal;
 		return returntotal;
 	}
 	override double gunmass(){
 		double amt=12+weaponstatus[VULCS_BATTERY]<0?0:1;
 		int mul=1;
-		setmagcount(52,4);
+//		setmagcount(49,0);
 		for(int i=0;i<5;i++){
 			if(vulcmag[i]>=0)amt+=3.6;
-			A_LogInt(getmagcount(i));
+//			A_LogInt(getmagcount(i));
 		}
-		A_Log("");
+//		A_Log("");
 		return amt;
 	}
 	override double weaponbulk(){
