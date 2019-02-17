@@ -72,16 +72,17 @@ class Vulcanette:HDWeapon{
 			);
 		}
 	}
-	//translate the number into the internal stored data in the vulc.
+	//translate the number from and to the internal stored data in the vulc.
 	int getmagcount(int which){
 		if(which>4||which<0)return -1;
 		int res=VULC_MAGS_MAX;
+		int mul=1;
 		for(int i=0;i<which;i++){
-			res/=VULC_MAGBASE;
+			mul*=VULC_MAGBASE;
 		}
-		return res%(VULC_MAGBASE*(VULC_MAGBASE-1));
+		return (res/mul)%(VULC_MAGBASE*(VULC_MAGBASE-1));
 	}
-	int setmagcount(int which){
+	int setmagcount(int which,int count){
 		if(which>4||which<0)return -1;
 		return 1; //dummy
 	}
