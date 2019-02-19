@@ -84,18 +84,6 @@ class Vulcanette:HDWeapon{
 		if(justchucked)weaponstatus[VULCS_BREAKCHANCE]+=random(10,50);
 		super.tick();
 		drainheat(VULCS_HEAT,18);
-
-//testing the counter thingy
-if(level.time>0&&!(level.time%35)){
-for(int i=0;i<5;i++){
-	A_LogInt(getmagcount(i));
-}
-	for(int i=0;i<5;i++){
-		setmagcount(getmagcount(i+1),i); //do NOT check for array bounds, already defaults to 0! :D
-	}
-	if((level.time%140))setmagcount(random(0,52),4);
-	A_Log("");
-}
 	}
 	override void postbeginplay(){
 		super.postbeginplay();

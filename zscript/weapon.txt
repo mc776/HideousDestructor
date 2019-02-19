@@ -249,9 +249,16 @@ class HDWeapon:Weapon{
 				smkpos=owner.pos;
 				if(owner.player && owner.player.readyweapon==self){
 					//spawn smoke from muzzle
-					smkang=owner.angle;
-					smkpos.z+=owner.height-9-sin(owner.pitch)*smklength;
-					smkpos.xy+=cos(owner.pitch)*smklength*(cos(smkang),sin(smkang));
+					if(hdplayerpawn(owner)&&hdplayerpawn(owner).scopecamera){
+						let sccam=hdplayerpawn(owner).scopecamera;
+						smkang=sccam.angle;
+						smkpos.z+=owner.height-9-sin(sccam.pitch)*smklength;
+						smkpos.xy+=cos(sccam.pitch)*smklength*(cos(smkang),sin(smkang));
+					}else{
+						smkang=owner.angle;
+						smkpos.z+=owner.height-9-sin(owner.pitch)*smklength;
+						smkpos.xy+=cos(owner.pitch)*smklength*(cos(smkang),sin(smkang));
+					}
 				}else{
 					//spawn smoke from behind owner
 					smkang=owner.angle;
