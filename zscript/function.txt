@@ -386,7 +386,10 @@ struct HDMath{
 	//return a loadout and its name, e.g. "Robber: pis, bak"
 	static string,string GetLoadoutStrings(string input,bool keepspaces=false){
 		int colon=input.indexof(":");
-		if(colon<=0)colon=input.indexof("##")+1;
+		if(colon<0){
+			colon=input.indexof("##");
+			if(colon>=0)colon+=1;
+		}
 		string loadoutname="";
 		if(colon>0)loadoutname=input.left(colon);
 		string loadout=input.mid(colon+1);
