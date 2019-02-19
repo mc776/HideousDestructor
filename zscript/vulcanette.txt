@@ -75,12 +75,10 @@ for(int i=0;i<5;i++){
 	//setmagcount(getmagcount(i+1),i);
 	A_LogInt(getmagcount(i));
 }
-	setmagcount(getmagcount(1),0);
-	setmagcount(getmagcount(2),1);
-	setmagcount(getmagcount(3),2);
-	setmagcount(getmagcount(4),3);
+	for(int i=0;i<5;i++){
+		setmagcount(getmagcount(i+1),i); //do NOT check for array bounds, already defaults to 0! :D
+	}
 	if((level.time%140))setmagcount(random(0,52),4);
-	else setmagcount(0,4);
 	A_Log("");
 }
 	}
@@ -96,12 +94,15 @@ for(int i=0;i<5;i++){
 	//translate the number from and to the internal stored data in the vulc.
 	int getmagcount(int which){
 		if(which>4||which<0)return 0;
-		int res=weaponstatus[VULCS_MAGS];
-		int mul=1;
-		for(int i=0;i<which;i++){
-			mul*=VULC_MAGBASE;
-		}
-		return (res/mul)%VULC_MAGBASE;
+		static const int multiplier[]={
+			1,
+			VULC_MAGBASE,
+			VULC_MAGBASE*VULC_MAGBASE,
+			VULC_MAGBASE*VULC_MAGBASE*VULC_MAGBASE,
+			VULC_MAGBASE*VULC_MAGBASE*VULC_MAGBASE*VULC_MAGBASE,
+			VULC_MAGBASE*VULC_MAGBASE*VULC_MAGBASE*VULC_MAGBASE*VULC_MAGBASE
+		};
+		return (weaponstatus[VULCS_MAGS]/multiplier[which])%VULC_MAGBASE;
 	}
 	int setmagcount(int count,int which){
 		if(which>4||which<0)return 0;
