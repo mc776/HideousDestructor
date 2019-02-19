@@ -16,7 +16,7 @@ class HDPistol:HDWeapon{
 		inventory.pickupmessage "You got the pistol!";
 		hdweapon.nicename "Pistol";
 		hdweapon.refid HDLD_PISTOL;
-		inventory.maxamount 2;
+		inventory.maxamount 3;
 	}
 	override double weaponbulk(){
 		int mgg=weaponstatus[PISS_MAG];
@@ -75,15 +75,29 @@ class HDPistol:HDWeapon{
 	override void postbeginplay(){
 		super.postbeginplay();
 
-		//set configurations
-		if(
-			owner
-			&&owner.player
-			&&weaponstatus[PISS_AUTO]>=0
-			&&cvar.getcvar("hd_pistauto",owner.player).getbool()
-		){
-			weaponstatus[PISS_AUTO]=1;
+		switch(amount){
+		case 3:
+			weaponstatus[PISS_AUTO]=-1;
+			break;
+		case 2:
+			weaponstatus[PISS_AUTO]=0;
+			break;
+		default:
+			if(
+				!random(0,127)
+			){
+				weaponstatus[PISS_AUTO]=0;
+			}else weaponstatus[PISS_AUTO]=-1;
+			break;
 		}
+		amount=1;maxamount=1;
+
+		if(
+			weaponstatus[PISS_AUTO]>=0
+			&&owner
+			&&owner.player
+			&&cvar.getcvar("hd_pistauto",owner.player).getbool()
+		)weaponstatus[PISS_AUTO]=1;
 	}
 	states{
 	select0:
@@ -365,12 +379,12 @@ class HDAutoPistol:HDWeaponGiver{
 		hdweapon.nicename "Pistol (select-fire)";
 		hdweapongiver.bulk 34;
 		hdweapongiver.actualweapon "HDPistol";
-		inventory.maxamount 2;
 		inventory.icon "PISTC0";
 	}
 	override void PostBeginPlay(){
 		if(owner)actualweaponactor=owner.findinventory(actualweapon);
 		super.PostBeginPlay();
+		actualweaponactor.amount=2;
 	}
 	override void configureweapon(){
 		let wp=HDPistol(actualweaponactor);
