@@ -161,10 +161,16 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 					vvv.vulcmag[i]=51;
 					mags--;
 				}else vvv.vulcmag[i]=-1;
-				if(chambers>0){    
-					vvv.vulcchamber[i]=randompick(1,1,2);
-					chambers--;
-				}
+				vvv.weaponstatus[0]&=VULCF_CHAMBER1;
+				vvv.weaponstatus[0]&=VULCF_CHAMBER2;
+				vvv.weaponstatus[0]&=VULCF_CHAMBER3;
+				vvv.weaponstatus[0]&=VULCF_CHAMBER4;
+				vvv.weaponstatus[0]&=VULCF_CHAMBER5;
+				if(!random(0,3))vvv.weaponstatus[0]&=VULCF_BROKEN1;
+				if(!random(0,3))vvv.weaponstatus[0]&=VULCF_BROKEN2;
+				if(!random(0,3))vvv.weaponstatus[0]&=VULCF_BROKEN3;
+				if(!random(0,3))vvv.weaponstatus[0]&=VULCF_BROKEN4;
+				if(!random(0,3))vvv.weaponstatus[0]&=VULCF_BROKEN5;
 			}
 			if(superauto)vvv.weaponstatus[0]|=VULCF_FAST;
 			vvv.weaponstatus[1]=random(1,20);
