@@ -144,6 +144,15 @@ class HDMagAmmo:HDAmmo{
 			mmm.amount=0;
 			mmm.AddAMag(giveamt);
 		}
+
+			if(
+				receiver.player
+				&&magmanager(receiver.player.readyweapon)
+			){
+				let mm=magmanager(receiver.player.readyweapon);
+				mm.thismag=hdmagammo(receiver.findinventory(type));
+				mm.updatetext();
+			}
 		return true;
 	}
 	//spawn and drop
