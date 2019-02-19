@@ -155,7 +155,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 			vvv.vel=vel;vvv.angle=angle;
 			vvv.A_ChangeVelocity(1,0,2,CVF_RELATIVE);
 			for(int i=0;i<5;i++){
-				if(i==0){
+				if(!i){
 					vvv.setmagcount(i,thismag);
 				}else if(mags>0){
 					vvv.setmagcount(i,VULC_MAG_FULLSEALED);
@@ -173,7 +173,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 				if(!random(0,3))vvv.weaponstatus[0]&=VULCF_BROKEN5;
 			}
 			if(superauto)vvv.weaponstatus[0]|=VULCF_FAST;
-			vvv.weaponstatus[1]=random(1,20);
+			vvv.weaponstatus[VULCS_BATTERY]=random(1,20);
 			vvv.weaponstatus[VULCS_BREAKCHANCE]=random(0,random(1,500));
 			vvv.weaponstatus[VULCS_ZOOM]=random(16,70);
 		}else if(!bfriendly){
