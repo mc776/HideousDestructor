@@ -172,47 +172,44 @@ class Vulcanette:HDWeapon{
 			sb.drawnum(hpl.countinv("HD4mMag"),-43,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			sb.drawnum(hpl.countinv("HDBattery"),-56,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 		}
-		let vvv=vulcanette(hdw);
-		if(vvv){
-			bool bat=vvv.weaponstatus[VULCS_BATTERY]>0;
-			int mags=vvv.weaponstatus[VULCS_MAGS];
-			for(int i=1;i<5;i++){
-				if(
-					mags>magmultindex[i]
-					||(!i&&mags>0)
-				)sb.drawwepdot(-16-i*4,-13,(3,2));
-				if(bat&&hdw.weaponstatus[0]&chamberflag[i])sb.drawimage(
-					"GREENPXL",(-14,-15+i*2),
-					sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TRANSLATABLE|sb.DI_ITEM_RIGHT,
-					1,(4,1)
-				);
-			}
-			sb.drawwepnum(
-				(vvv.weaponstatus[VULCS_MAGS]%VULC_MAGBASE)-1,
-				50,posy:-10
-			);
-			sb.drawwepcounter(vvv.weaponstatus[0]&VULCF_FAST,
-				-28,-16,"blank","STFULAUT"
-			);
-			if(bat){
-				int lod;
-				if(vvv.weaponstatus[0]&VULCF_DIRTYMAG)lod=random[shitgun](10,99);
-				else lod=clamp((mags%VULC_MAGBASE)-1,0,50);
-				sb.drawnum(lod,-20,-22,
-					sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TEXT_ALIGN_RIGHT,Font.CR_RED
-				);
-				sb.drawwepnum(vvv.weaponstatus[VULCS_BATTERY],20);
-			}else if(!vvv.weaponstatus[VULCS_BATTERY])sb.drawstring(
-				sb.mamountfont,"00000",(-16,-8),
-				sb.DI_TEXT_ALIGN_RIGHT|sb.DI_TRANSLATABLE|sb.DI_SCREEN_CENTER_BOTTOM,
-				Font.CR_DARKGRAY
-			);
-			sb.drawnum(vvv.weaponstatus[VULCS_ZOOM],
-				-30,-22,
-				sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TEXT_ALIGN_RIGHT,
-				Font.CR_DARKGRAY
+		bool bat=hdw.weaponstatus[VULCS_BATTERY]>0;
+		int mags=hdw.weaponstatus[VULCS_MAGS];
+		for(int i=1;i<5;i++){
+			if(
+				mags>magmultindex[i]
+				||(!i&&mags>0)
+			)sb.drawwepdot(-16-i*4,-13,(3,2));
+			if(bat&&hdw.weaponstatus[0]&chamberflag[i])sb.drawimage(
+				"GREENPXL",(-14,-15+i*2),
+				sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TRANSLATABLE|sb.DI_ITEM_RIGHT,
+				1,(4,1)
 			);
 		}
+		sb.drawwepnum(
+			(hdw.weaponstatus[VULCS_MAGS]%VULC_MAGBASE)-1,
+			50,posy:-10
+		);
+		sb.drawwepcounter(hdw.weaponstatus[0]&VULCF_FAST,
+			-28,-16,"blank","STFULAUT"
+		);
+		if(bat){
+			int lod;
+			if(hdw.weaponstatus[0]&VULCF_DIRTYMAG)lod=random[shitgun](10,99);
+			else lod=clamp((mags%VULC_MAGBASE)-1,0,50);
+			sb.drawnum(lod,-20,-22,
+				sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TEXT_ALIGN_RIGHT,Font.CR_RED
+			);
+			sb.drawwepnum(hdw.weaponstatus[VULCS_BATTERY],20);
+		}else if(!hdw.weaponstatus[VULCS_BATTERY])sb.drawstring(
+			sb.mamountfont,"00000",(-16,-8),
+			sb.DI_TEXT_ALIGN_RIGHT|sb.DI_TRANSLATABLE|sb.DI_SCREEN_CENTER_BOTTOM,
+			Font.CR_DARKGRAY
+		);
+		sb.drawnum(hdw.weaponstatus[VULCS_ZOOM],
+			-30,-22,
+			sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TEXT_ALIGN_RIGHT,
+			Font.CR_DARKGRAY
+		);
 	}
 	override void DrawSightPicture(
 		HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl,
@@ -544,9 +541,9 @@ class Vulcanette:HDWeapon{
 			A_MuzzleClimb(-frandom(1.2,1.8),-frandom(1.8,2.4));
 		}
 	//remove mag #2 first, #1 only if out of options
-	unmag0:
+	unmagpick:
 		GTLG A 0{
-			if(invoker.getmagcount(1)>0)setweaponstate("unmag2");    
+			if(invoker.getmagcount(1)>0)setweaponstate("unmag1");    
 			else if(
 				invoker.getmagcount(2)>0
 				||invoker.getmagcount(3)>0
@@ -554,7 +551,7 @@ class Vulcanette:HDWeapon{
 			)setweaponstate("unmagshunt");
 			else if(
 				invoker.getmagcount(0)>0    
-			)setweaponstate("unmag1");
+			)setweaponstate("unmag0");
 		}goto reloadend;
 	unmagshunt:
 		GTLG A 0{
@@ -566,12 +563,12 @@ class Vulcanette:HDWeapon{
 		GTLG AB 2 A_MuzzleClimb(-frandom(0.4,0.6),frandom(0.4,0.6));
 		goto ready;
 
-	unmag2:
+	unmag1:
 		VULC A 0{
 			int mg=invoker.getmagcount(1);
 			invoker.setmagcount(1,0);
 			if(mg<1){
-				setweaponstate("mag2out");
+				setweaponstate("mag1out");
 				return;
 			}
 			if(
@@ -579,18 +576,18 @@ class Vulcanette:HDWeapon{
 				&&!PressingReload()
 			){
 				HDMagAmmo.SpawnMag(self,"HD4mMag",mg-1);
-				setweaponstate("mag2out");
+				setweaponstate("mag1out");
 			}else{
 				HDMagAmmo.GiveMag(self,"HD4mMag",mg-1);
 				setweaponstate("pocketmag");
 			}
-		}goto mag2out;
-	unmag1:
+		}goto mag1out;
+	unmag0:
 		VULC A 0{
 			int mg=invoker.getmagcount(0);
 			invoker.setmagcount(0,0);
 			if(mg<1){
-				setweaponstate("mag2out");
+				setweaponstate("mag1out");
 				return;
 			}
 			if(
@@ -598,7 +595,7 @@ class Vulcanette:HDWeapon{
 				&&!PressingReload()
 			){
 				HDMagAmmo.SpawnMag(self,"HD4mMag",mg-1);
-				setweaponstate("mag2out"); //this really is mag2 not mag1
+				setweaponstate("mag1out"); //this really is mag2 not mag1
 			}else{
 				HDMagAmmo.GiveMag(self,"HD4mMag",mg-1);
 				setweaponstate("pocketmag");
@@ -607,11 +604,11 @@ class Vulcanette:HDWeapon{
 	pocketmag:
 		GTLG A 0 A_PlaySound("weapons/pocket");
 		GTLG AA 6 A_MuzzleClimb(frandom(0.4,0.6),-frandom(0.4,0.6));
-		GTLG A 0 A_JumpIf(invoker.getmagcount(0)<1,"mag1out");
-		goto mag2out;
-	mag2out:
+		goto mag1out;
+	mag1out:
 		GTLG A 1{
-			for(int i=0;i<5;i++){
+			int starti=(invoker.getmagcount(0)>0)?1:0;
+			for(int i=starti;i<5;i++){
 				invoker.setmagcount(i,invoker.getmagcount(i+1));
 			}
 			A_PlaySound("weapons/vulcshunt",CHAN_BODY);
@@ -619,9 +616,9 @@ class Vulcanette:HDWeapon{
 		GTLG AB 2 A_MuzzleClimb(-frandom(0.4,0.6),frandom(0.4,0.6));
 		GTLG A 6{
 			if(
-				invoker.weaponstatus[VULCS_MAGS]<1
+				invoker.weaponstatus[VULCS_MAGS]<VULC_MAGBASE
 			)setweaponstate("reloadend");
-		}goto unmag0;
+		}goto unmag1;
 
 	loadmag:
 		//pick the first empty slot and fill that
