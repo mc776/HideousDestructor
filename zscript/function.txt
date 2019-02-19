@@ -399,34 +399,6 @@ struct HDMath{
 	}
 }
 struct HDF play{
-	//transfer inventory: one gets, the other loses
-	enum TransferInventoryFlags{
-		ITRF_ADD=1,
-		ITRF_KEEPGIVER=2,
-	};
-	static int TransferInventory(
-		actor giver,
-		actor receiver,
-		class<inventory> item,
-		int flags=0,
-		int amt=0
-	){
-		//set the amount
-		if(amt<1)amt=giver.countinv(item);
-		else amt=min(amt,giver.countinv(item));
-
-		//give the amount as appropriate
-		if(flags & ITRF_ADD){
-			amt=min(amt,hdmath.maxinv(receiver,item)-receiver.countinv(item));
-			if(amt)receiver.A_GiveInventory(item,amt);
-		}else receiver.A_SetInventory(item,amt);
-
-		//remove from giver if true
-		if(!(flags & ITRF_KEEPGIVER)){
-			giver.A_TakeInventory(item,amt);
-		}
-		return amt;
-	}
 	//because this is 10 times faster than A_GiveInventory
 	static void Give(actor whom,class<inventory> what,int howmany=1){
 		whom.A_SetInventory(what,whom.countinv(what)+howmany);
