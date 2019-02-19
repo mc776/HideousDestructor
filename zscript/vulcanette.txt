@@ -175,7 +175,7 @@ class Vulcanette:HDWeapon{
 		let vvv=vulcanette(hdw);
 		if(vvv){
 			bool bat=vvv.weaponstatus[VULCS_BATTERY]>0;
-			int mags=vvv.weaponstatus[0]&VULCS_MAGS;
+			int mags=vvv.weaponstatus[VULCS_MAGS];
 			for(int i=1;i<5;i++){
 				if(
 					mags>magmultindex[i]
@@ -188,9 +188,7 @@ class Vulcanette:HDWeapon{
 				);
 			}
 			sb.drawwepnum(
-				vvv.weaponstatus[0]&VULCF_DIRTYMAG?
-					random[shitgun](0,99)
-					:((vvv.weaponstatus[VULCS_MAGS]%VULC_MAGBASE)-1),
+				(vvv.weaponstatus[VULCS_MAGS]%VULC_MAGBASE)-1,
 				50,posy:-10
 			);
 			sb.drawwepcounter(vvv.weaponstatus[0]&VULCF_FAST,
@@ -766,6 +764,10 @@ class Vulcanette:HDWeapon{
 		for(int i=0;i<5;i++){
 			invoker.setmagcount(i,invoker.getmagcount(i+1));
 		}
+		int intothismag=invoker.getmagcount(0);
+		if(intothismag&&intothismag!=VULC_MAG_FULLSEALED){
+			invoker.weaponstatus[0]|=VULCF_DIRTYMAG;
+		}
 	}
 	action void VulcNextRound(){
 		if(
@@ -773,7 +775,7 @@ class Vulcanette:HDWeapon{
 			||invoker.weaponstatus[0]&VULCF_BROKEN1
 		){
 			//spit out a misfired, wasted or broken round
-			if(invoker.weaponstatus[0]&VULCF_BROKEN1){    
+			if(invoker.weaponstatus[0]&VULCF_BROKEN1){
 				for(int i=0;i<5;i++){
 					A_SpawnItemEx("TinyWallChunk",3,0,height-18,
 						random(4,7),random(-2,2),random(-2,1),
@@ -811,9 +813,8 @@ class Vulcanette:HDWeapon{
 		if(invoker.getmagcount(0)==VULC_MAG_FULLSEALED){
 			invoker.setmagcount(0,50); //open the seal
 			invoker.weaponstatus[0]&=~VULCF_DIRTYMAG;
-		}else{
-			invoker.weaponstatus[0]|=VULCF_DIRTYMAG;
 		}
+A_LogInt(invoker.weaponstatus[0]);
 
 		//figure out what's in the mag and load it to the final chamber
 		int inmag=invoker.getmagcount(0);
