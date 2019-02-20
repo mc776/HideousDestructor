@@ -29,6 +29,7 @@ class ZM66AssaultRifle:HDWeapon{
 	override hdweapon GetSpareWeapon(actor newowner){return GetSpareWeaponRegular(newowner);}
 	override void postbeginplay(){
 		super.postbeginplay();
+
 		if(weaponstatus[0]&ZM66F_NOLAUNCHER){
 			barrellength=25;
 			barrelwidth=0.5;
@@ -40,7 +41,8 @@ class ZM66AssaultRifle:HDWeapon{
 			barrelwidth=1;
 			barreldepth=3;
 		}
-		if(owner&&owner.player){
+
+		if(owner&&owner.player&&owner.getage()<5){
 			weaponstatus[ZM66S_AUTO]=
 				clamp(cvar.getcvar("hd_zmfiremode",owner.player).getint(),0,2);
 			weaponstatus[ZM66S_ZOOM]=

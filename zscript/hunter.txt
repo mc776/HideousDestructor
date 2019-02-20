@@ -21,6 +21,7 @@ class Hunter:HDShotgun replaces Shotgun{
 		super.postbeginplay();
 		int startfm;
 		bool startfa;
+		if(owner&&owner.getage()>5){amount=1;maxamount=1;return;}
 		if(owner&&owner.player){
 			startfm=cvar.getcvar("hd_huntauto",owner.player).getint();
 			startfa=cvar.getcvar("hd_huntfullauto",owner.player).getbool();

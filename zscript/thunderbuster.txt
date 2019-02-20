@@ -27,6 +27,7 @@ class ThunderBuster:HDWeapon{
 		super.postbeginplay();
 		if(
 			owner&&owner.player
+			&&owner.getage()<5
 			&&cvar.getcvar("hd_tbmode",owner.player).getint()
 		){
 			weaponstatus[0]|=TBF_ALT;

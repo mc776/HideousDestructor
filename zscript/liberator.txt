@@ -222,7 +222,7 @@ class LiberatorRifle:AutoReloadingThingy{
 			barrelwidth=1;
 			barreldepth=3;
 		}
-		if(owner&&owner.player){
+		if(owner&&owner.player&&owner.getage()<5){
 			if(cvar.getcvar("hd_libauto",owner.player).getint())weaponstatus[0]|=LIBF_FULLAUTO;
 			if(cvar.getcvar("hd_libfrontreticle",owner.player).getbool())
 				weaponstatus[0]|=LIBF_FRONTRETICLE;
