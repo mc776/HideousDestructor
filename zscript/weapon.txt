@@ -68,9 +68,6 @@ class HDWeapon:Weapon{
 		target=oldowner;
 		if(bdroptranslation)translation=oldowner.translation;
 		super.detachfromowner();
-
-		let newwep=GetSpareWeapon(oldowner);
-		if(newwep)newwep.actualpickup(oldowner);
 	}
 	//wrapper for HDMath.MaxInv because we're gonna need this a lot
 	action int AmmoCap(class<inventory> inv){
@@ -172,6 +169,8 @@ class HDWeapon:Weapon{
 		let onr=owner;
 		bool throw=(onr&&onr.player&&onr.player.cmd.buttons&BT_ZOOM);
 		let thrown=super.createtossable(amount);
+		let newwep=GetSpareWeapon(onr);
+		if(newwep)newwep.actualpickup(onr);
 		if(!throw)return thrown;
 		thrown.bmissile=true;
 		thrown.target=onr;
@@ -706,7 +705,7 @@ class SpareWeapons:HDPickup{
 		return bulksum,i;
 	}
 	override inventory createtossable(int amount){
-		while(weaponbulk.size()){
+		while(weapontype.size()){
 			let newwep=hdweapon(spawn(weapontype[0],(owner.pos.xy,owner.pos.z+owner.height*0.6)));
 			weapontype.delete(0);
 			newwep.weaponstatus[0]=weaponstatus0[0];
@@ -727,6 +726,7 @@ class SpareWeapons:HDPickup{
 			weaponstatus7.delete(0);
 			newwep.ApplySpareWeaponMisc(weaponmisc[0]);
 			weaponmisc.delete(0);
+			weaponbulk.delete(0);
 			newwep.vel+=owner.vel;
 			newwep.angle=owner.angle;
 			newwep.A_ChangeVelocity(2,0,0,CVF_RELATIVE);
@@ -741,6 +741,7 @@ class SpareWeapons:HDPickup{
 }
 extend class HDWeapon{
 	//override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
+	//override hdweapon GetSpareWeapon(actor newowner){return GetSpareWeaponRegular(newowner);}
 	virtual string AddSpareWeaponMisc(actor newowner){return "";}
 	virtual void ApplySpareWeaponMisc(string input){}
 	virtual bool AddSpareWeapon(actor newowner){return false;}
@@ -752,22 +753,39 @@ extend class HDWeapon{
 			&&wbulk+hdp.enc>((hdp.zerk>0)?4000:2000)
 		)return false;
 		let mwt=SpareWeapons(newowner.findinventory("SpareWeapons"));
-		if(!mwt)mwt=SpareWeapons(newowner.giveinventorytype("SpareWeapons"));
-		mwt.weaponbulk.push(wbulk);
-		mwt.weapontype.push(getclassname());
-		mwt.weaponmisc.push(addspareweaponmisc(newowner));
-		mwt.weaponstatus0.push(weaponstatus[0]);
-		mwt.weaponstatus1.push(weaponstatus[1]);
-		mwt.weaponstatus2.push(weaponstatus[2]);
-		mwt.weaponstatus3.push(weaponstatus[3]);
-		mwt.weaponstatus4.push(weaponstatus[4]);
-		mwt.weaponstatus5.push(weaponstatus[5]);
-		mwt.weaponstatus6.push(weaponstatus[6]);
-		mwt.weaponstatus7.push(weaponstatus[7]);
+		if(!mwt){
+			mwt=SpareWeapons(newowner.giveinventorytype("SpareWeapons"));
+			mwt.amount=1;
+			mwt.weaponbulk.clear();
+			mwt.weapontype.clear();
+			mwt.weaponmisc.clear();
+			mwt.weaponstatus0.clear();
+			mwt.weaponstatus1.clear();
+			mwt.weaponstatus2.clear();
+			mwt.weaponstatus3.clear();
+			mwt.weaponstatus4.clear();
+			mwt.weaponstatus5.clear();
+			mwt.weaponstatus6.clear();
+			mwt.weaponstatus7.clear();
+		}
+		mwt.weaponbulk.insert(0,wbulk);
+		mwt.weapontype.insert(0,getclassname());
+		mwt.weaponmisc.insert(0,addspareweaponmisc(newowner));
+		mwt.weaponstatus0.insert(0,weaponstatus[0]);
+		mwt.weaponstatus1.insert(0,weaponstatus[1]);
+		mwt.weaponstatus2.insert(0,weaponstatus[2]);
+		mwt.weaponstatus3.insert(0,weaponstatus[3]);
+		mwt.weaponstatus4.insert(0,weaponstatus[4]);
+		mwt.weaponstatus5.insert(0,weaponstatus[5]);
+		mwt.weaponstatus6.insert(0,weaponstatus[6]);
+		mwt.weaponstatus7.insert(0,weaponstatus[7]);
+console.printf(""..mwt.weaponstatus3[0]);
 		destroy();
+console.printf(""..mwt.weaponstatus3[0]);
 		return true;
 	}
-	virtual hdweapon GetSpareWeapon(actor newowner){
+	virtual hdweapon GetSpareWeapon(actor newowner){return null;}
+	hdweapon GetSpareWeaponRegular(actor newowner){
 		let mwt=SpareWeapons(newowner.findinventory("SpareWeapons"));
 		if(!mwt)return null;
 
