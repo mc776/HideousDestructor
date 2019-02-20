@@ -58,15 +58,19 @@ class HDWeapon:Weapon{
 	}
 	//use target to help a dropped weapon remember its immediately prior owner
 	override void detachfromowner(){
-		if(!bdontfistondrop&&owner.player&&!owner.player.readyweapon){
-			owner.A_SelectWeapon("HDFist");
-			let fff=HDFist(owner.findinventory("HDFist"));
+		actor oldowner=owner;
+		if(!bdontfistondrop&&oldowner.player&&!oldowner.player.readyweapon){
+			oldowner.A_SelectWeapon("HDFist");
+			let fff=HDFist(oldowner.findinventory("HDFist"));
 			if(fff)fff.washolding=true;
 		}
-		angle=owner.angle;pitch=owner.pitch;
-		target=owner;
-		if(bdroptranslation)translation=owner.translation;
+		angle=oldowner.angle;pitch=oldowner.pitch;
+		target=oldowner;
+		if(bdroptranslation)translation=oldowner.translation;
 		super.detachfromowner();
+
+		let newwep=GetSpareWeapon(oldowner);
+		if(newwep)newwep.actualpickup(oldowner);
 	}
 	//wrapper for HDMath.MaxInv because we're gonna need this a lot
 	action int AmmoCap(class<inventory> inv){
@@ -311,9 +315,14 @@ class HDWeapon:Weapon{
 	//for picking up
 	override void touch(actor toucher){}
 	virtual void actualpickup(actor other){
-		if(other.countinv(getclassname())){
-			angle=other.angle-70;
-			failedpickupunload();
+		let oldwep=hdweapon(other.findinventory(getclassname()));
+		if(
+			oldwep
+			&&!oldwep.AddSpareWeapon(other)
+		){
+			//fast-unload weapon without picking it up
+//			angle=other.angle-70;
+//			failedpickupunload();
 			return;
 		}
 		other.A_Log(string.format("\cg%s",pickupmessage()),true);
@@ -669,5 +678,124 @@ class NullWeapon:HDWeapon{
 }
 
 
+//database for spare weapons
+class SpareWeapons:HDPickup{
+	array<double> weaponbulk;
+	array<string> weapontype;
+	array<int> weaponstatus0;
+	array<int> weaponstatus1;
+	array<int> weaponstatus2;
+	array<int> weaponstatus3;
+	array<int> weaponstatus4;
+	array<int> weaponstatus5;
+	array<int> weaponstatus6;
+	array<int> weaponstatus7;
+	array<string> weaponmisc;
+	default{
+		+nointeraction
+		hdpickup.bulk 0;
+	}
+	double,int getwepbulk(){
+		//in encumbrance, have a special check for this actor - add to weapon count
+		int i;
+		double bulksum;
+		for(i=0;i<weaponbulk.size();i++){
+			i++;
+			bulksum+=weaponbulk[i];
+		}
+		return bulksum,i;
+	}
+	override inventory createtossable(int amount){
+		while(weaponbulk.size()){
+			let newwep=hdweapon(spawn(weapontype[0],(owner.pos.xy,owner.pos.z+owner.height*0.6)));
+			weapontype.delete(0);
+			newwep.weaponstatus[0]=weaponstatus0[0];
+			weaponstatus0.delete(0);
+			newwep.weaponstatus[1]=weaponstatus1[0];
+			weaponstatus1.delete(0);
+			newwep.weaponstatus[2]=weaponstatus2[0];
+			weaponstatus2.delete(0);
+			newwep.weaponstatus[3]=weaponstatus3[0];
+			weaponstatus3.delete(0);
+			newwep.weaponstatus[4]=weaponstatus4[0];
+			weaponstatus4.delete(0);
+			newwep.weaponstatus[5]=weaponstatus5[0];
+			weaponstatus5.delete(0);
+			newwep.weaponstatus[6]=weaponstatus6[0];
+			weaponstatus6.delete(0);
+			newwep.weaponstatus[7]=weaponstatus7[0];
+			weaponstatus7.delete(0);
+			newwep.ApplySpareWeaponMisc(weaponmisc[0]);
+			weaponmisc.delete(0);
+			newwep.vel+=owner.vel;
+			newwep.angle=owner.angle;
+			newwep.A_ChangeVelocity(2,0,0,CVF_RELATIVE);
+		}
+		return null;
+	}
+	states{
+	spawn:
+		TNT1 A 1;
+		stop;
+	}
+}
+extend class HDWeapon{
+	//override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
+	virtual string AddSpareWeaponMisc(actor newowner){return "";}
+	virtual void ApplySpareWeaponMisc(string input){}
+	virtual bool AddSpareWeapon(actor newowner){return false;}
+	bool AddSpareWeaponRegular(actor newowner){
+		double wbulk=weaponbulk();
+		let hdp=hdplayerpawn(newowner);
+		if(
+			hdp
+			&&wbulk+hdp.enc>((hdp.zerk>0)?4000:2000)
+		)return false;
+		let mwt=SpareWeapons(newowner.findinventory("SpareWeapons"));
+		if(!mwt)mwt=SpareWeapons(newowner.giveinventorytype("SpareWeapons"));
+		mwt.weaponbulk.push(wbulk);
+		mwt.weapontype.push(getclassname());
+		mwt.weaponmisc.push(addspareweaponmisc(newowner));
+		mwt.weaponstatus0.push(weaponstatus[0]);
+		mwt.weaponstatus1.push(weaponstatus[1]);
+		mwt.weaponstatus2.push(weaponstatus[2]);
+		mwt.weaponstatus3.push(weaponstatus[3]);
+		mwt.weaponstatus4.push(weaponstatus[4]);
+		mwt.weaponstatus5.push(weaponstatus[5]);
+		mwt.weaponstatus6.push(weaponstatus[6]);
+		mwt.weaponstatus7.push(weaponstatus[7]);
+		destroy();
+		return true;
+	}
+	virtual hdweapon GetSpareWeapon(actor newowner){
+		let mwt=SpareWeapons(newowner.findinventory("SpareWeapons"));
+		if(!mwt)return null;
 
+		int getindex=mwt.weapontype.find(getclassname());
+		if(getindex==mwt.weapontype.size())return null;
 
+		//apply each of the items at getindex and delete the entry from the spares
+		let newwep=hdweapon(spawn(getclassname(),newowner.pos));
+		if(!newwep)return null;
+		mwt.weapontype.delete(getindex);
+		newwep.weaponstatus[0]=mwt.weaponstatus0[getindex];
+		mwt.weaponstatus0.delete(getindex);
+		newwep.weaponstatus[1]=mwt.weaponstatus1[getindex];
+		mwt.weaponstatus1.delete(getindex);
+		newwep.weaponstatus[2]=mwt.weaponstatus2[getindex];
+		mwt.weaponstatus2.delete(getindex);
+		newwep.weaponstatus[3]=mwt.weaponstatus3[getindex];
+		mwt.weaponstatus3.delete(getindex);
+		newwep.weaponstatus[4]=mwt.weaponstatus4[getindex];
+		mwt.weaponstatus4.delete(getindex);
+		newwep.weaponstatus[5]=mwt.weaponstatus5[getindex];
+		mwt.weaponstatus5.delete(getindex);
+		newwep.weaponstatus[6]=mwt.weaponstatus6[getindex];
+		mwt.weaponstatus6.delete(getindex);
+		newwep.weaponstatus[7]=mwt.weaponstatus7[getindex];
+		mwt.weaponstatus7.delete(getindex);
+		newwep.ApplySpareWeaponMisc(mwt.weaponmisc[getindex]);
+		mwt.weaponmisc.delete(getindex);
+		return newwep;
+	}
+}
