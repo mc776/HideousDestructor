@@ -147,6 +147,8 @@ class Brontornis:HDWeapon{
 		hdweapon.nicename "Brontornis Cannon";
 		hdweapon.refid HDLD_BRONTO;
 	}
+	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
+	override hdweapon GetSpareWeapon(actor newowner){return GetSpareWeaponRegular(newowner);}
 	override void tick(){
 		super.tick();
 		drainheat(BRONS_HEAT,12);

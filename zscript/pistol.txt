@@ -76,6 +76,8 @@ class HDPistol:HDWeapon{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
+
+		if(owner&&owner.getage()>5){amount=1;maxamount=1;return;}
 		switch(amount){
 		case 3:
 			weaponstatus[PISS_AUTO]=-1;

@@ -21,6 +21,8 @@ class HDSMG:HDWeapon{
 		hdweapon.refid HDLD_SMG;
 		hdweapon.nicename "SMG";
 	}
+	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
+	override hdweapon GetSpareWeapon(actor newowner){return GetSpareWeaponRegular(newowner);}
 	override double gunmass(){
 		return 5+(weaponstatus[SMGS_MAG]<0)?-0.5:(weaponstatus[SMGS_MAG]*0.02);
 	}

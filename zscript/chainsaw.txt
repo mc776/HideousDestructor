@@ -22,6 +22,8 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 		hdweapon.refid HDLD_CHAINSW;
 		hdweapon.nicename "Chainsaw";
 	}
+	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
+	override hdweapon GetSpareWeapon(actor newowner){return GetSpareWeaponRegular(newowner);}
 	override string getobituary(actor victim,actor inflictor,name mod,bool playerattack){
 		bool clam=true;
 		for(int i=0;i<MAXPLAYERS;i++){

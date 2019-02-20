@@ -9,6 +9,8 @@ class HDShotgun:HDWeapon{
 		inventory.pickupmessage "You got a shotgun!";
 		obituary "%o was shot with %k's gun.";
 	}
+	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
+	override hdweapon GetSpareWeapon(actor newowner){return GetSpareWeaponRegular(newowner);}
 	int handshells;
 	action void EmptyHand(int amt=-1,bool careful=false){
 		if(!amt)return;

@@ -17,6 +17,8 @@ class ThunderBuster:HDWeapon{
 		hdweapon.refid HDLD_THUNDER;
 		hdweapon.nicename "Thunder Buster";
 	}
+	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
+	override hdweapon GetSpareWeapon(actor newowner){return GetSpareWeaponRegular(newowner);}
 	override void tick(){
 		super.tick();
 		drainheat(TBS_HEAT,12);

@@ -101,6 +101,15 @@ extend class HDPlayerPawn{
 		}
 		weaponenc*=stacker;
 
+		//now add the spare weapons
+		let spares=SpareWeapons(findinventory("SpareWeapons"));
+		if(spares){
+			double sparebulk;int sparesize;
+			[sparebulk,sparesize]=spares.getwepbulk();
+			for(int i=0;i<sparesize;i++){sparebulk*=1.1;}
+			weaponenc+=sparebulk;
+		}
+
 		//add backpack
 		double bpenc=0;
 		let bp=hdbackpack(findinventory("HDBackpack"));

@@ -18,12 +18,16 @@ class HDRL:HDWeapon{
 		hdweapon.nicename "Rocket Launcher";
 		inventory.maxamount 4; //1 use user setting; 2 HEAT; 3 regular; 4 grenade
 	}
+	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
+	override hdweapon GetSpareWeapon(actor newowner){return GetSpareWeaponRegular(newowner);}
 	override void tick(){
 		super.tick();
 		drainheat(RLS_SMOKE,12);
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
+
+		if(owner&&owner.getage()>5){amount=1;maxamount=1;return;}
 		switch(amount){
 		case 4:
 			weaponstatus[RLS_CHAMBER]=1;
@@ -612,6 +616,8 @@ class Blooper:HDWeapon{
 		hdweapon.nicename "Grenade Launcher";
 		hdweapon.refid HDLD_BLOOPER;
 	}
+	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
+	override hdweapon GetSpareWeapon(actor newowner){return GetSpareWeaponRegular(newowner);}
 	override double gunmass(){
 		return weaponstatus[0]&BLOPF_LOADED?5:4;
 	}

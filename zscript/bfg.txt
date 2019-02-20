@@ -20,6 +20,8 @@ class BFG9K:HDWeapon replaces BFG9000{
 		hdweapon.refid HDLD_BFG;
 		hdweapon.nicename "BFG 9k";
 	}
+	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
+	override hdweapon GetSpareWeapon(actor newowner){return GetSpareWeaponRegular(newowner);}
 	//BFG9k.Spark(self,4);
 	//BFG9k.Spark(self,4,height-10);
 	static void Spark(actor caller,int sparks=1,int sparkheight=10){

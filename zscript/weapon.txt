@@ -692,6 +692,7 @@ class SpareWeapons:HDPickup{
 	array<string> weaponmisc;
 	default{
 		+nointeraction
+		-inventory.invbar
 		hdpickup.bulk 0;
 	}
 	double,int getwepbulk(){
@@ -699,7 +700,6 @@ class SpareWeapons:HDPickup{
 		int i;
 		double bulksum;
 		for(i=0;i<weaponbulk.size();i++){
-			i++;
 			bulksum+=weaponbulk[i];
 		}
 		return bulksum,i;
@@ -779,10 +779,7 @@ extend class HDWeapon{
 		mwt.weaponstatus5.insert(0,weaponstatus[5]);
 		mwt.weaponstatus6.insert(0,weaponstatus[6]);
 		mwt.weaponstatus7.insert(0,weaponstatus[7]);
-console.printf(""..weaponstatus[3]);
-console.printf(""..mwt.weaponstatus3[0]);
 		destroy();
-console.printf(""..mwt.weaponstatus3[0]);
 		return true;
 	}
 	virtual hdweapon GetSpareWeapon(actor newowner){return null;}
@@ -815,6 +812,7 @@ console.printf(""..mwt.weaponstatus3[0]);
 		mwt.weaponstatus7.delete(getindex);
 		newwep.ApplySpareWeaponMisc(mwt.weaponmisc[getindex]);
 		mwt.weaponmisc.delete(getindex);
+		mwt.weaponbulk.delete(getindex);
 		return newwep;
 	}
 }

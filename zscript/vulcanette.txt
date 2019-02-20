@@ -67,6 +67,8 @@ class Vulcanette:HDWeapon{
 		hdweapon.refid HDLD_VULCETT;
 		hdweapon.nicename "Vulcanette";
 	}
+	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
+	override hdweapon GetSpareWeapon(actor newowner){return GetSpareWeaponRegular(newowner);}
 	override string pickupmessage(){
 		string msg=super.pickupmessage();
 		int bc=weaponstatus[VULCS_BREAKCHANCE];
