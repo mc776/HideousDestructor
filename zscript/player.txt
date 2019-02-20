@@ -171,7 +171,7 @@ class HDPlayerPawn:PlayerPawn{
 
 		if(player.readyweapon&&player.readyweapon!=WP_NOCHANGE){
 			player.readyweapon.bobspeed=getdefaultbytype(player.readyweapon.getclass()).bobspeed;
-			if(stunned||runwalksprint<0){
+			if(stunned||mustwalk||runwalksprint<0){
 				player.readyweapon.bobspeed*=0.6;
 			}
 		}
@@ -422,7 +422,7 @@ class HDPlayerPawn:PlayerPawn{
 		);
 		double targetviewbob=VB_MAX*0.4;
 		if(overloaded>1.){
-			maxspeed=max(0.1,4.-overloaded);
+			maxspeed=max(0.02,4.-overloaded);
 			if(maxspeed<0.3){
 				targetviewbob=VB_MAX;
 				mustwalk=true;
@@ -474,7 +474,7 @@ class HDPlayerPawn:PlayerPawn{
 
 
 		//special hud bobbing
-		double bobvel=max(abs(vel.x),abs(vel.y))*viewbob;
+		double bobvel=max((mustwalk&&vel.xy!=(0,0))?1:0,abs(vel.x),abs(vel.y))*viewbob;
 		let pr=weapon(player.readyweapon);
 		if(player.onground&&bobvel&&pr){
 			bobcounter+=5.3*pr.bobspeed;
