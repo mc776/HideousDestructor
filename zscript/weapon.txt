@@ -324,6 +324,7 @@ class HDWeapon:Weapon{
 			failedpickupunload();
 			return;
 		}
+		if(!self)return;
 		other.A_Log(string.format("\cg%s",pickupmessage()),true);
 		other.A_PlaySound(pickupsound,CHAN_AUTO);
 		attachtoowner(other);
