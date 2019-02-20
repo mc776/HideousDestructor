@@ -727,7 +727,7 @@ class SpareWeapons:HDPickup{
 			newwep.ApplySpareWeaponMisc(weaponmisc[0]);
 			weaponmisc.delete(0);
 			weaponbulk.delete(0);
-			newwep.vel+=owner.vel;
+			newwep.vel+=owner.vel+(frandom(-1,1),frandom(-1,1),frandom(0,2));
 			newwep.angle=owner.angle;
 			newwep.A_ChangeVelocity(2,0,0,CVF_RELATIVE);
 		}
