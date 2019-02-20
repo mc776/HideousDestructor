@@ -170,7 +170,6 @@ class HDWeapon:Weapon{
 		bool throw=(onr&&onr.player&&onr.player.cmd.buttons&BT_ZOOM);
 		let thrown=super.createtossable(amount);
 		let newwep=GetSpareWeapon(onr);
-		if(newwep)newwep.actualpickup(onr);
 		if(!throw)return thrown;
 		thrown.bmissile=true;
 		thrown.target=onr;
@@ -792,8 +791,9 @@ extend class HDWeapon{
 		if(getindex==mwt.weapontype.size())return null;
 
 		//apply each of the items at getindex and delete the entry from the spares
-		let newwep=hdweapon(spawn(getclassname(),newowner.pos));
+		let newwep=hdweapon(newowner.giveinventorytype(getclassname()));
 		if(!newwep)return null;
+		newwep.amount=1;
 		mwt.weapontype.delete(getindex);
 		newwep.weaponstatus[0]=mwt.weaponstatus0[getindex];
 		mwt.weaponstatus0.delete(getindex);
