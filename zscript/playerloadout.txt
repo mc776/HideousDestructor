@@ -297,6 +297,12 @@ extend class HDPlayerPawn{
 				for(int j=0;j<whichitem.size();j++){
 					if(whichitem[j]~==ref){
 						if(reff is "HDWeapon"){
+							let oldwep=hdweapon(findinventory((class<hdweapon>)(reff)));
+							if(oldwep){
+								oldwep.postbeginplay();
+								oldwep.AddSpareWeapon(self);
+							}
+
 							int wpcount=clamp(howmany[j],1,getdefaultbytype((class<hdweapon>)(reff)).maxamount);
 							name wpnam=reff.getclassname();
 							for(int k=0;k<wpcount;k++){
