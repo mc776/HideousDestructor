@@ -222,21 +222,22 @@ class LiberatorRifle:AutoReloadingThingy{
 			barrelwidth=1;
 			barreldepth=3;
 		}
-		if(owner&&owner.player&&owner.getage()<5){
-			if(cvar.getcvar("hd_libauto",owner.player).getint())weaponstatus[0]|=LIBF_FULLAUTO;
-			if(cvar.getcvar("hd_libfrontreticle",owner.player).getbool())
-				weaponstatus[0]|=LIBF_FRONTRETICLE;
-				else weaponstatus[0]&=~LIBF_FRONTRETICLE;
-			if(cvar.getcvar("hd_libaltreticle",owner.player).getbool())
-				weaponstatus[0]|=LIBF_ALTRETICLE;
-				else weaponstatus[0]&=~LIBF_ALTRETICLE;
-			if(weaponstatus[0]&LIBF_FRONTRETICLE)weaponstatus[LIBS_ZOOM]=
-				clamp(cvar.getcvar("hd_libzoom",owner.player).getint(),20,40);
-				else weaponstatus[LIBS_ZOOM]=
-				clamp(cvar.getcvar("hd_libzoom",owner.player).getint(),6,70);
-			weaponstatus[LIBS_DROPADJUST]=
-				clamp(cvar.getcvar("hd_libmoa",owner.player).getint(),0,600);
-		}
+	}
+	override void startconfigure(){
+		if(!owner||!owner.player)return;
+		if(cvar.getcvar("hd_libauto",owner.player).getint())weaponstatus[0]|=LIBF_FULLAUTO;
+		if(cvar.getcvar("hd_libfrontreticle",owner.player).getbool())
+			weaponstatus[0]|=LIBF_FRONTRETICLE;
+			else weaponstatus[0]&=~LIBF_FRONTRETICLE;
+		if(cvar.getcvar("hd_libaltreticle",owner.player).getbool())
+			weaponstatus[0]|=LIBF_ALTRETICLE;
+			else weaponstatus[0]&=~LIBF_ALTRETICLE;
+		if(weaponstatus[0]&LIBF_FRONTRETICLE)weaponstatus[LIBS_ZOOM]=
+			clamp(cvar.getcvar("hd_libzoom",owner.player).getint(),20,40);
+			else weaponstatus[LIBS_ZOOM]=
+			clamp(cvar.getcvar("hd_libzoom",owner.player).getint(),6,70);
+		weaponstatus[LIBS_DROPADJUST]=
+			clamp(cvar.getcvar("hd_libmoa",owner.player).getint(),0,600);
 	}
 	override double gunmass(){
 		if(weaponstatus[0]&LIBF_NOLAUNCHER){

@@ -17,11 +17,9 @@ class Hunter:HDShotgun replaces Shotgun{
 		hdweapon.refid HDLD_HUNTER;
 		hdweapon.nicename "Hunter";
 	}
-	override void postbeginplay(){
-		super.postbeginplay();
+	override void startconfigure(){
 		int startfm;
 		bool startfa;
-		if(owner&&owner.getage()>5){amount=1;maxamount=1;return;}
 		if(owner&&owner.player){
 			startfm=cvar.getcvar("hd_huntauto",owner.player).getint();
 			startfa=cvar.getcvar("hd_huntfullauto",owner.player).getbool();

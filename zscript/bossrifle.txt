@@ -44,10 +44,7 @@ class BossRifle:HDWeapon{
 		super.tick();
 		drainheat(BOSSS_HEAT,4);
 	}
-	override void postbeginplay(){
-		super.postbeginplay();
-
-		if(owner&&owner.getage()>5){amount=1;maxamount=1;return;}
+	override void startconfigure(){
 		switch(amount){
 		case 3:
 			weaponstatus[0]&=~BOSSF_CUSTOMCHAMBER;

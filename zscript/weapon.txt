@@ -7,6 +7,8 @@ class HDWeapon:Weapon{
 	flagdef WeaponBusy:HDWeaponFlags,1;
 	flagdef FitsInBackpack:HDweaponFlags,2;
 	flagdef DontFistOnDrop:HDweaponFlags,3;
+	flagdef JustChucked:HDWeaponFlags,4;
+	flagdef StartConfigured:HDWeaponFlags,5;
 
 	double barrellength;
 	double barrelwidth;
@@ -169,7 +171,7 @@ class HDWeapon:Weapon{
 		bool throw=(onr&&onr.player&&onr.player.cmd.buttons&BT_ZOOM);
 		let thrown=super.createtossable(amount);
 		let newwep=GetSpareWeapon(onr);
-		hdweapon(thrown).justchucked=true;
+		hdweapon(thrown).bjustchucked=true;
 		if(throw){
 			thrown.bmissile=true;
 			thrown.target=onr;
@@ -188,10 +190,9 @@ class HDWeapon:Weapon{
 	}
 	//an override is needed because DropInventory will undo anything done in CreateTossable
 	double throwvel;
-	bool justchucked;
 	override void Tick(){
 		super.Tick();
-		if(justchucked&&target){
+		if(bjustchucked&&target){
 			double cp=cos(target.pitch);
 			if(bmissile){
 				vel=target.vel+
@@ -202,7 +203,7 @@ class HDWeapon:Weapon{
 			}else vel=target.vel+2*(cp*cos(target.angle),cp*sin(target.angle),-sin(target.pitch))*2;
 			setz(target.pos.z+target.height-16);
 			throwvel=vel dot vel;
-			justchucked=false;
+			bjustchucked=false;
 		}
 		if(owner&&amount<1){
 			destroy();
@@ -386,8 +387,14 @@ class HDWeapon:Weapon{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
+		if(!bstartconfigured){
+			StartConfigure();
+			bstartconfigured=true;
+		}
 		if(!bwimpy_weapon)bno_auto_switch=false;
 	}
+	//because some cvar, amount, etc. handling needs to be done after postbeginplay
+	virtual void StartConfigure(){}
 	//because A_Print doesn't cut it
 	action void A_WeaponMessage(string msg,int time=100){
 		invoker.wepmsg=msg;
@@ -809,6 +816,7 @@ extend class HDWeapon{
 		//apply each of the items at getindex and delete the entry from the spares
 		let newwep=hdweapon(newowner.giveinventorytype(getclassname()));
 		if(!newwep)return null;
+		newwep.bstartconfigured=true;
 		newwep.amount=1;
 		mwt.weapontype.delete(getindex);
 		newwep.weaponstatus[0]=mwt.weaponstatus0[getindex];

@@ -83,12 +83,10 @@ class HDSMG:HDWeapon{
 			"backsite",(0,0)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_TOP
 		);
 	}
-	override void postbeginplay(){
-		super.postbeginplay();
-		if(owner&&owner.player&&owner.getage()<5){
+	override void startconfigure(){
+		if(owner&&owner.player){
 			weaponstatus[SMGS_AUTO]=clamp(
-				cvar.getcvar("hd_smgfiremode",owner.player).getint(),
-				0,2
+				cvar.getcvar("hd_smgfiremode",owner.player).getint(),0,2
 			);
 		}
 	}
