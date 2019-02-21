@@ -86,16 +86,17 @@ class DoomguyLoadout:InvReset{
 class HDWeaponSelector:Thinker{
 	actor other;
 	class<Weapon> weptype;
-	static void Select(actor caller,class<Weapon> weptype){
+	static void Select(actor caller,class<Weapon> weptype,int waittime=10){
 		let thth=new("HDWeaponSelector");
 		thth.weptype=weptype;
 		thth.other=caller;
+		thth.ticker=waittime;
 	}
 	int ticker;
 	override void Tick(){
-		ticker++;
-		if(ticker<10)return;
-		other.A_SelectWeapon(weptype);
+		ticker--;
+		if(ticker>0)return;
+		if(other)other.A_SelectWeapon(weptype);
 		destroy();
 	}
 }

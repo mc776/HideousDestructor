@@ -829,7 +829,7 @@ extend class HDWeapon{
 		newwep.ApplySpareWeaponMisc(mwt.weaponmisc[getindex]);
 		mwt.weaponmisc.delete(getindex);
 		mwt.weaponbulk.delete(getindex);
-		HDWeaponSelector.Select(newowner,newwep.getclassname());
+		HDWeaponSelector.Select(newowner,newwep.getclassname(),max(4,newwep.gunmass()));
 		return newwep;
 	}
 }
