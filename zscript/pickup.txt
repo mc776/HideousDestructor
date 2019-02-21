@@ -17,12 +17,15 @@ class GrabThinker:Thinker{
 		if(!picktarget||!picktarget.player||!pickobj){destroy();return;}
 		super.tick();
 		ticker++;
-		if(ticker<4)pickobj.setorigin(
-			0.5*(
-				(picktarget.pos+(0,0,picktarget.height-10))
-				+pickobj.pos
-			),true
-		);else{
+		if(ticker<4){
+			pickobj.setorigin(
+				0.5*(
+					(picktarget.pos+(0,0,picktarget.height-10))
+					+pickobj.pos
+				),true
+			);
+			pickobj.bsolid=false;
+		}else{
 			let pt=hdpickup(pickobj);if(pt)pt.bisbeingpickedup=false;
 			let wt=hdweapon(pickobj);
 			let ht=hdupk(pickobj);
@@ -73,6 +76,7 @@ class GrabThinker:Thinker{
 				)
 			){
 				if(cvar.getcvar("hd_helptext",picktarget.player).getint())picktarget.A_Log("No room in pockets.",true);
+				pickobj.bsolid=true;
 				destroy();
 				return;
 			}
@@ -95,6 +99,7 @@ class GrabThinker:Thinker{
 			}else if(tt){
 				if(picktarget.vel==(0,0,0))picktarget.A_ChangeVelocity(0.001,0,0,CVF_RELATIVE);
 			}
+			if(pickobj&&(!inventory(pickobj)||!inventory(pickobj).owner))pickobj.bsolid=true;
 			destroy();
 			return;
 		}

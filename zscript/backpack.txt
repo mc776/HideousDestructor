@@ -342,7 +342,7 @@ class HDBackpack:HDWeapon{
 		let wep=HDWeapon(item);
 		let mag=HDMagAmmo(item);
 		let pkup=HDPickup(item);
-		if(!wep&&!pkup)return false;
+		if(!wep&&!pkup)return 0;
 		index=invclasses.find(item.getclassname());
 		if(index>=invclasses.size())return 1;
 		if(wep){
