@@ -170,10 +170,14 @@ class HDWeapon:Weapon{
 		bool throw=(onr&&onr.player&&onr.player.cmd.buttons&BT_ZOOM);
 		let thrown=super.createtossable(amount);
 		let newwep=GetSpareWeapon(onr);
-		if(!throw)return thrown;
-		thrown.bmissile=true;
-		thrown.target=onr;
-		hdweapon(thrown).justchucked=true;
+		if(throw){
+			thrown.bmissile=true;
+			thrown.target=onr;
+			hdweapon(thrown).justchucked=true;
+		}else{
+			thrown.bmissile=false;
+			hdweapon(thrown).justchucked=false;
+		}
 		return thrown;
 	}
 	action void A_GunBounce(){invoker.GunBounce();}
