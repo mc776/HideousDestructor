@@ -36,7 +36,6 @@ class HDWeapon:Weapon{
 		+usebouncestate +hittracer
 		-hdweapon.dontfistondrop
 		-hdweapon.fitsinbackpack
-		bouncetype "doom";
 		weapon.ammogive 0;weapon.ammogive2 0;
 		weapon.ammouse1 0;weapon.ammouse2 0;
 		weapon.bobstyle "Alpha";
@@ -170,45 +169,57 @@ class HDWeapon:Weapon{
 		bool throw=(onr&&onr.player&&onr.player.cmd.buttons&BT_ZOOM);
 		let thrown=super.createtossable(amount);
 		let newwep=GetSpareWeapon(onr);
+		hdweapon(thrown).justchucked=true;
 		if(throw){
 			thrown.bmissile=true;
 			thrown.target=onr;
-			hdweapon(thrown).justchucked=true;
+			thrown.bBOUNCEONWALLS=true;
+			thrown.bBOUNCEONFLOORS=true;
+			thrown.bALLOWBOUNCEONACTORS=true;
+			thrown.bBOUNCEAUTOOFF=true;
 		}else{
 			thrown.bmissile=false;
-			hdweapon(thrown).justchucked=false;
+			thrown.bBOUNCEONWALLS=false;
+			thrown.bBOUNCEONFLOORS=false;
+			thrown.bALLOWBOUNCEONACTORS=false;
+			thrown.bBOUNCEAUTOOFF=false;
 		}
 		return thrown;
-	}
-	action void A_GunBounce(){invoker.GunBounce();}
-	virtual void GunBounce(){
-		bmissile=false;
-		double dmg=throwvel*weaponbulk()*frandom(0.0005,0.003);
-		if(tracer)tracer.damagemobj(self,target,dmg,"Bashing");
-		A_PlaySound("weapons/smack",CHAN_BODY,min(0.5,dmg*0.02));
-		setstatelabel("spawn");
 	}
 	//an override is needed because DropInventory will undo anything done in CreateTossable
 	double throwvel;
 	bool justchucked;
 	override void Tick(){
 		super.Tick();
-		if(bmissile){
-			throwvel=vel dot vel;
-			if(justchucked&&target){
-				double cp=cos(target.pitch);
+		if(justchucked&&target){
+			double cp=cos(target.pitch);
+			if(bmissile){
 				vel=target.vel+
-					(cp*cos(target.angle),cp*sin(target.angle),-sin(target.pitch)-0.01)
+					(cp*cos(target.angle),cp*sin(target.angle),-sin(target.pitch)+1)
 					*min(20,1000/weaponbulk())
-					*((hdplayerpawn(target)&&hdplayerpawn(target).zerk>0)?frandom(1,4):1);
-				setz(target.pos.z+target.height-16);
-			}
+					*((hdplayerpawn(target)&&hdplayerpawn(target).zerk>0)?frandom(1,4):1
+				);
+			}else vel=target.vel+2*(cp*cos(target.angle),cp*sin(target.angle),-sin(target.pitch))*2;
+			setz(target.pos.z+target.height-16);
+			throwvel=vel dot vel;
 			justchucked=false;
 		}
 		if(owner&&amount<1){
 			destroy();
 			return;
 		}
+	}
+	action void A_GunBounce(){invoker.GunBounce();}
+	virtual void GunBounce(){
+		bmissile=false;
+		bBOUNCEONWALLS=false;
+		bBOUNCEONFLOORS=false;
+		bALLOWBOUNCEONACTORS=false;
+		bBOUNCEAUTOOFF=false;
+		double dmg=throwvel*weaponbulk()*frandom(0.0005,0.003);
+		if(tracer)tracer.damagemobj(self,target,dmg,"Bashing");
+		A_PlaySound("weapons/smack",CHAN_BODY,min(0.5,dmg*0.02));
+		setstatelabel("spawn");
 	}
 
 	//zoom adjuster for rifles
