@@ -48,8 +48,8 @@ class AutoReloadingThingy:HDWeapon{
 
 		owner.A_Log("You reloaded "..didmake.." 7.76mm rounds during your downtime.",true);
 	}
-	override void actualpickup(actor other){
-		super.actualpickup(other);
+	override void actualpickup(actor other,bool silent){
+		super.actualpickup(other,silent);
 		if(!owner)return;
 		while(powders>0){
 			powders--;

@@ -328,7 +328,7 @@ class HDWeapon:Weapon{
 
 	//for picking up
 	override void touch(actor toucher){}
-	virtual void actualpickup(actor other){
+	virtual void actualpickup(actor other,bool silent=false){
 		let oldwep=hdweapon(other.findinventory(getclassname()));
 		if(
 			oldwep
@@ -340,8 +340,10 @@ class HDWeapon:Weapon{
 			return;
 		}
 		if(!self)return;
-		other.A_Log(string.format("\cg%s",pickupmessage()),true);
-		other.A_PlaySound(pickupsound,CHAN_AUTO);
+		if(!silent){
+			other.A_Log(string.format("\cg%s",pickupmessage()),true);
+			other.A_PlaySound(pickupsound,CHAN_AUTO);
+		}
 		attachtoowner(other);
 		tipped=0;
 	}
