@@ -343,6 +343,10 @@ extend class HDPlayerPawn{
 					if(whichitem[j]~==ref){
 						if(reff is "HDWeapon"){
 							let oldwep=hdweapon(findinventory((class<hdweapon>)(reff)));
+							if(
+								!oldwep
+								&&reff is "HDWeaponGiver"
+							)oldwep=hdweapon(findinventory(getdefaultbytype((class<HDWeaponGiver>)(reff)).weapontogive));
 							if(oldwep){
 								oldwep.postbeginplay();
 								oldwep.AddSpareWeapon(self);
