@@ -241,27 +241,40 @@ class HDArmourWorn:HDPickup{
 
 
 
-class BlueArmour:HDWeaponGiver replaces BlueArmor{
+class BlueArmour:HDPickupGiver replaces BlueArmor{
 	default{
 		//$Category "Items/Hideous Destructor"
 		//$Title "Blue Armour"
 		//$Sprite "ARMCA0"
 		+missilemore
-		+weapon.wimpy_weapon
-		+hdweapon.fitsinbackpack
-		hdweapongiver.actualweapon "HDArmour";
-		hdweapon.refid HDLD_ARMBLUE;
-		hdweapon.nicename "Blue Armour (spare)";
-		hdweapongiver.bulk ENC_BLUEARMOUR;
+		+hdpickup.fitsinbackpack
+		hdpickupgiver.pickuptogive "HDArmour";
+		hdpickup.bulk ENC_BLUEARMOUR;
+		hdpickup.refid HDLD_ARMBLUE;
+		hdpickup.nicename "Blue Armour (spare)";
 		inventory.pickupmessage "Picked up the combat armour.";
 	}
-	override void configureweapon(){
-		let aaa=HDArmour(actualweaponactor);
+	override void configureactualpickup(){
+		let aaa=HDArmour(actualitem);
 		aaa.mags.clear();
 		aaa.mags.push(bmissilemore?(1000+HDCONST_BLUEARMOUR):HDCONST_GREENARMOUR);
 		aaa.syncamount();
 	}
 }
+class GreenArmour:BlueArmour replaces GreenArmor{
+	default{
+		//$Category "Items/Hideous Destructor"
+		//$Title "Green Armour"
+		//$Sprite "ARMSA0"
+		-missilemore
+		hdpickup.bulk ENC_GREENARMOUR;
+		hdpickup.refid HDLD_ARMGREN;
+		hdpickup.nicename "Green Armour (spare)";
+		inventory.pickupmessage "Picked up the security armour.";
+	}
+}
+
+
 class BlueArmourWorn:HDPickup{
 	default{
 		+missilemore
@@ -279,19 +292,6 @@ class BlueArmourWorn:HDPickup{
 			ga.mega=bmissilemore;
 		}
 		destroy();
-	}
-}
-
-class GreenArmour:BlueArmour replaces GreenArmor{
-	default{
-		//$Category "Items/Hideous Destructor"
-		//$Title "Green Armour"
-		//$Sprite "ARMSA0"
-		-missilemore
-		hdweapongiver.bulk ENC_GREENARMOUR;
-		hdweapon.refid HDLD_ARMGREN;
-		hdweapon.nicename "Green Armour (spare)";
-		inventory.pickupmessage "Picked up the security armour.";
 	}
 }
 class GreenArmourWorn:BlueArmourWorn{

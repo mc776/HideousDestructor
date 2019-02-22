@@ -803,13 +803,12 @@ class ZM66Semi:HDWeaponGiver{
 		hdweapon.refid HDLD_ZM66SMI;
 		hdweapon.nicename "ZM66 Assault Rifle (Semi only)";
 		hdweapongiver.bulk (90.+(ENC_426MAG_LOADED+50.*ENC_426_LOADED));
-		hdweapongiver.actualweapon "ZM66AssaultRifle";
+		hdweapongiver.weapontogive "ZM66AssaultRifle";
 		inventory.icon "RIFSA0";
 	}
-	override void configureweapon(){
-		let wp=hdweapon(actualweaponactor);
-		wp.weaponstatus[0]|=ZM66F_NOLAUNCHER|ZM66F_NOFIRESELECT;
-		wp.weaponstatus[0]&=~ZM66F_GRENADELOADED;
+	override void configureactualweapon(){
+		actualweapon.weaponstatus[0]|=ZM66F_NOLAUNCHER|ZM66F_NOFIRESELECT;
+		actualweapon.weaponstatus[0]&=~ZM66F_GRENADELOADED;
 	}
 }
 class ZM66Regular:ZM66Semi{
@@ -821,10 +820,9 @@ class ZM66Regular:ZM66Semi{
 		hdweapon.nicename "ZM66 Assault Rifle (No GL)";
 		inventory.icon "RIFLA0";
 	}
-	override void configureweapon(){
-		let wp=hdweapon(actualweaponactor);
-		wp.weaponstatus[0]|=ZM66F_NOLAUNCHER;
-		wp.weaponstatus[0]&=~ZM66F_GRENADELOADED;
+	override void configureactualweapon(){
+		actualweapon.weaponstatus[0]|=ZM66F_NOLAUNCHER;
+		actualweapon.weaponstatus[0]&=~ZM66F_GRENADELOADED;
 	}
 }
 class ZM66Random:IdleDummy{

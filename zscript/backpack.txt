@@ -95,8 +95,11 @@ class HDBackpack:HDWeapon{
 				howmany[i]=max(1,howmany[i]);
 				for(int j=0;j<howmany[i];j++){
 					inventory iii=inventory(spawn(invclasses[refindex],pos,ALLOW_REPLACE));
-					if(hdweapongiver(iii))hdweapongiver(iii).addtobackpack(self);
-					else{
+					if(hdweapongiver(iii)){
+						itemtobackpack(hdweapongiver(iii).actualweapon);
+					}else if(hdpickupgiver(iii)){
+						itemtobackpack(hdpickupgiver(iii).actualitem);
+					}else{
 						if(owner)iii.attachtoowner(owner);
 						itemtobackpack(iii);
 					}
@@ -568,7 +571,8 @@ extend class HDBackpack{
 			int howmany=0;
 			if(wep){
 				let iii=inventory(spawn(wep,pos,ALLOW_REPLACE));
-				if(hdweapongiver(iii))hdweapongiver(iii).addtobackpack(self);
+				if(hdweapongiver(iii))itemtobackpack(hdweapongiver(iii).actualweapon);
+				else if(hdpickupgiver(iii))itemtobackpack(hdpickupgiver(iii).actualitem);
 				else itemtobackpack(iii);
 			}else if(mag){
 				howmany=min(

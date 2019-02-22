@@ -884,12 +884,11 @@ class LiberatorNoGL:HDWeaponGiver{
 		hdweapon.refid HDLD_LIBNOGL;
 		hdweapon.nicename "Liberator Rifle (no GL)";
 		hdweapongiver.bulk (100.+(ENC_776MAG_LOADED+30.*ENC_776_LOADED));
-		hdweapongiver.actualweapon "LiberatorRifle";
+		hdweapongiver.weapontogive "LiberatorRifle";
 		inventory.icon "BRFLA0";
 	}
-	override void configureweapon(){
-		let wp=hdweapon(actualweaponactor);
-		wp.weaponstatus[0]|=LIBF_NOLAUNCHER;
-		wp.weaponstatus[0]&=~LIBF_GRENADELOADED;
+	override void configureactualweapon(){
+		actualweapon.weaponstatus[0]|=LIBF_NOLAUNCHER;
+		actualweapon.weaponstatus[0]&=~LIBF_GRENADELOADED;
 	}
 }

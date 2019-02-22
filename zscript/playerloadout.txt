@@ -178,40 +178,84 @@ class LoadoutMenuHackToken:InventoryFlag{
 		if(stamina>1)destroy();
 	}
 }
-//hacky shit: give another item based on loadout code
+
+
+//used for loadout configurations and custom spawns
+class HDPickupGiver:HDPickup{
+	class<hdpickup> pickuptogive;
+	property pickuptogive:pickuptogive;
+	hdpickup actualitem;
+	virtual void configureactualpickup(){}
+	override void postbeginplay(){
+		super.postbeginplay();
+
+		//check if the owner already has this pickup
+		actualitem=hdpickup(owner.findinventory(pickuptogive));
+
+		//spawn or give the pickup
+		if(actualitem){
+			//if actor present, just give more
+			owner.A_GiveInventory(pickuptogive);
+		}else{
+			actualitem=hdpickup(spawn(pickuptogive,pos));
+			actualitem.special=special;
+			actualitem.changetid(tid);
+			if(owner)actualitem.attachtoowner(owner);
+		}
+
+		//now apply the changes this pickupgiver is for
+		configureactualpickup();
+		destroy();
+	}
+	//this stuff must be done after the first tick,
+	//as the loadout configurator needs time to read the actualpickup
+	override void tick(){
+		super.tick();
+		destroy();
+	}
+}
 class HDWeaponGiver:HDWeapon{
-	inventory actualweaponactor;
-	class<inventory> actualweapon;
-	property actualweapon:actualweapon;
+	class<hdweapon> weapontogive;
+	property weapontogive:weapontogive;
 	double bulk;property bulk:bulk;
+	hdweapon actualweapon;
 	default{
 		+nointeraction
 		-inventory.invbar
 		inventory.maxamount 1;
-		hdweapongiver.bulk 0;
-		hdweapongiver.actualweapon "HDFist";
 	}
-	virtual void addtobackpack(hdbackpack bp){
-		if(!actualweaponactor)actualweaponactor=inventory(spawn(actualweapon,pos,ALLOW_REPLACE));
-		if(actualweaponactor)configureweapon();
-		bp.itemtobackpack(actualweaponactor);
-	}
-	virtual void configureweapon(){}
-	override void PostBeginPlay(){
-		super.PostBeginPlay();
+	virtual void configureactualweapon(){}
+	override void postbeginplay(){
+		super.postbeginplay();
+
+		//check if the owner already has this weapon
+		bool hasprevious=(
+			owner
+			&&owner.findinventory(weapontogive)
+		);
+
+		//spawn the weapon
+		actualweapon=hdweapon(spawn(weapontogive,pos));
+		actualweapon.special=special;
+		actualweapon.changetid(tid);
 		if(owner){
-			if(!owner.countinv(actualweapon)){
-				owner.A_GiveInventory(actualweapon);
-				actualweaponactor=owner.findinventory(actualweapon);
-			}
-		}else actualweaponactor=inventory(spawn(actualweapon,pos,ALLOW_REPLACE));
-		if(actualweaponactor){
-			configureweapon();
-			actualweaponactor.special=special;
-			actualweaponactor.changetid(tid);
+			actualweapon.attachtoowner(owner);
+		}
+
+		//apply the default changes and mark as done
+		actualweapon.startconfigure();
+		actualweapon.bstartconfigured=true;
+
+		//now apply the changes this weapongiver is for
+		configureactualweapon();
+
+		//if there was a previous weapon, bring this one down to the spares
+		if(hasprevious){
+			actualweapon.AddSpareWeaponRegular(owner);
 		}
 	}
-	override double weaponbulk(){return bulk;}
+	//this stuff must be done after the first tick,
+	//as the loadout configurator needs time to read the actualweapon
 	override void tick(){
 		super.tick();
 		if(
@@ -226,6 +270,7 @@ class HDWeaponGiver:HDWeapon{
 		destroy();
 	}
 }
+
 
 class CustomLoadoutGiver:Inventory{
 	//must be DoEffect as AttachToOwner and Pickup are not called during a range reset!
@@ -310,7 +355,7 @@ extend class HDPlayerPawn{
 							}
 							if(!j){
 								if(reff is "HDWeaponGiver"){
-									let greff=getdefaultbytype((class<HDWeaponGiver>)(reff)).actualweapon;
+									let greff=getdefaultbytype((class<HDWeaponGiver>)(reff)).weapontogive;
 									if(greff)firstwep=greff.getclassname();
 								}else firstwep=reff.getclassname();
 							}

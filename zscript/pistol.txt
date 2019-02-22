@@ -376,19 +376,13 @@ class HDAutoPistol:HDWeaponGiver{
 		hdweapon.refid HDLD_PISTAUT;
 		hdweapon.nicename "Pistol (select-fire)";
 		hdweapongiver.bulk 34;
-		hdweapongiver.actualweapon "HDPistol";
+		hdweapongiver.weapontogive "HDPistol";
 		inventory.icon "PISTC0";
 	}
-	override void PostBeginPlay(){
-		if(owner)actualweaponactor=owner.findinventory(actualweapon);
-		super.PostBeginPlay();
-		actualweaponactor.amount=2;
-	}
-	override void configureweapon(){
-		let wp=HDPistol(actualweaponactor);
+	override void configureactualweapon(){
 		bool startauto=0;
 		if(owner)startauto=cvar.getcvar("hd_pistauto",owner.player).getbool();
-		wp.weaponstatus[PISS_AUTO]=max(0,startauto,wp.weaponstatus[PISS_AUTO]);
+		actualweapon.weaponstatus[PISS_AUTO]=max(0,startauto,actualweapon.weaponstatus[PISS_AUTO]);
 	}
 }
 
