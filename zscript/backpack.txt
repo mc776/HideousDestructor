@@ -96,7 +96,13 @@ class HDBackpack:HDWeapon{
 				for(int j=0;j<howmany[i];j++){
 					inventory iii=inventory(spawn(invclasses[refindex],pos,ALLOW_REPLACE));
 					if(hdweapongiver(iii)){
-						itemtobackpack(hdweapongiver(iii).actualweapon);
+						hdweapongiver(iii).spawnactualweapon();
+						let newwep=hdweapongiver(iii).actualweapon;
+						newwep.attachtoowner(self);
+						newwep.startconfigure();
+						newwep.bstartconfigured=true;
+						dropinventory(newwep);
+						itemtobackpack(newwep);
 					}else if(hdpickupgiver(iii)){
 						itemtobackpack(hdpickupgiver(iii).actualitem);
 					}else{
