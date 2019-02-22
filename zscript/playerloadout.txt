@@ -188,7 +188,9 @@ class HDPickupGiver:HDPickup{
 	virtual void configureactualpickup(){}
 	override void postbeginplay(){
 		super.postbeginplay();
-
+		spawnactualitem();
+	}
+	void spawnactualitem(){
 		//check if the owner already has this pickup
 		if(owner)actualitem=hdpickup(owner.findinventory(pickuptogive));
 

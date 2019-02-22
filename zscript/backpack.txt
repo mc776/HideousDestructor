@@ -89,10 +89,11 @@ class HDBackpack:HDWeapon{
 
 			let wep=(class<hdweapon>)(invclasses[refindex]);
 			let mag=(class<hdmagammo>)(invclasses[refindex]);
+			let pkgv=(class<hdpickupgiver>)(invclasses[refindex]);
 			let pkup=(class<hdpickup>)(invclasses[refindex]);
 
+			howmany[i]=max(1,howmany[i]);
 			if(wep||mag){
-				howmany[i]=max(1,howmany[i]);
 				for(int j=0;j<howmany[i];j++){
 					inventory iii=inventory(spawn(invclasses[refindex],pos,ALLOW_REPLACE));
 					if(hdweapongiver(iii)){
@@ -104,12 +105,17 @@ class HDBackpack:HDWeapon{
 						newwep.bstartconfigured=true;
 						dropinventory(newwep);
 						itemtobackpack(newwep);
-					}else if(hdpickupgiver(iii)){
-						itemtobackpack(hdpickupgiver(iii).actualitem);
 					}else{
 						if(owner)iii.attachtoowner(owner);
 						itemtobackpack(iii);
 					}
+					if(iii)iii.destroy();
+				}
+			}else if(pkgv){
+				for(int j=0;j<howmany[i];j++){
+					inventory iii=inventory(spawn(invclasses[refindex],pos,ALLOW_REPLACE));
+					hdpickupgiver(iii).spawnactualitem();
+					itemtobackpack(hdpickupgiver(iii).actualitem);
 					if(iii)iii.destroy();
 				}
 			}else if(pkup){
