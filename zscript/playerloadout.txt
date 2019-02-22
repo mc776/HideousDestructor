@@ -227,7 +227,9 @@ class HDWeaponGiver:HDWeapon{
 	virtual void configureactualweapon(){}
 	override void postbeginplay(){
 		super.postbeginplay();
-
+		spawnactualweapon();
+	}
+	virtual void spawnactualweapon(){
 		//check if the owner already has this weapon
 		bool hasprevious=(
 			owner
@@ -250,7 +252,7 @@ class HDWeaponGiver:HDWeapon{
 		configureactualweapon();
 
 		//if there was a previous weapon, bring this one down to the spares
-		if(hasprevious){
+		if(hasprevious&&owner.getage()>5){
 			actualweapon.AddSpareWeaponRegular(owner);
 		}
 	}
@@ -332,6 +334,7 @@ extend class HDPlayerPawn{
 				if(whichkeys&1)A_GiveInventory("RedCard");
 			}
 		}
+		hdweapon firstwepactor;
 		for(int i=0;i<allactorclasses.size();i++){
 			class<actor> reff=allactorclasses[i];
 			if(reff is "HDPickup"||reff is "HDWeapon"){
@@ -339,30 +342,30 @@ extend class HDPlayerPawn{
 				if(reff is "HDPickup")ref=getdefaultbytype((class<hdpickup>)(reff)).refid;
 				else ref=getdefaultbytype((class<hdweapon>)(reff)).refid;
 				if(ref~=="none"||ref=="")continue;
-				for(int j=0;j<whichitem.size();j++){
+				for(int j=whichitem.size()-1;j>=0;j--){
 					if(whichitem[j]~==ref){
 						if(reff is "HDWeapon"){
-							let oldwep=hdweapon(findinventory((class<hdweapon>)(reff)));
-							if(
-								!oldwep
-								&&reff is "HDWeaponGiver"
-							)oldwep=hdweapon(findinventory(getdefaultbytype((class<HDWeaponGiver>)(reff)).weapontogive));
-							if(oldwep){
-								oldwep.postbeginplay();
-								oldwep.AddSpareWeapon(self);
-							}
-
-							int wpcount=clamp(howmany[j],1,getdefaultbytype((class<hdweapon>)(reff)).maxamount);
-							name wpnam=reff.getclassname();
-							for(int k=0;k<wpcount;k++){
-								A_SetInventory(wpnam,max(countinv(wpnam)+1,1));
-							}
 							if(!j){
 								if(reff is "HDWeaponGiver"){
 									let greff=getdefaultbytype((class<HDWeaponGiver>)(reff)).weapontogive;
 									if(greff)firstwep=greff.getclassname();
-								}else firstwep=reff.getclassname();
+								}else{
+									firstwep=reff.getclassname();
+								}
 							}
+							hdweapon newwep;
+							if(reff is "HDWeaponGiver"){
+								let newgiver=hdweapongiver(spawn(reff,pos));
+								newgiver.spawnactualweapon();
+								newwep=newgiver.actualweapon;
+							}else{
+								newwep=hdweapon(spawn(reff,pos));
+							}
+							newwep.attachtoowner(self);
+							newwep.startconfigure();
+							newwep.bstartconfigured=true;
+							dropinventory(newwep);
+							newwep.actualpickup(self);
 						}else A_GiveInventory(
 							reff.getclassname(),
 							clamp(howmany[j],1,hdmath.maxinv(self,reff.getclassname()))
