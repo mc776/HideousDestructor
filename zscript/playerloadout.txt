@@ -190,7 +190,7 @@ class HDPickupGiver:HDPickup{
 		super.postbeginplay();
 
 		//check if the owner already has this pickup
-		actualitem=hdpickup(owner.findinventory(pickuptogive));
+		if(owner)actualitem=hdpickup(owner.findinventory(pickuptogive));
 
 		//spawn or give the pickup
 		if(actualitem){

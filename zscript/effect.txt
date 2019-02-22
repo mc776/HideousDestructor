@@ -290,8 +290,14 @@ class HDBulletPuff:HDPuff{
 		fadeafter=frandom(0,1);
 		scale*=frandom(0.9,1.1);
 		for(int i=0;i<stamina;i++){
-			actor ch=spawn(missilename,self.pos,ALLOW_REPLACE);
-			ch.vel=self.vel+(random(-stm,stm),random(-stm,stm),random(-2,12));
+			A_SpawnParticle("gray",
+				SPF_RELATIVE,70,frandom(4,20)*getdefaultbytype((class<actor>)(missilename)).scale.x,0,
+				frandom(-3,3),frandom(-3,3),frandom(0,4),
+				frandom(-0.4,0.4)*stm,frandom(-0.4,0.4)*stm,frandom(0.4,1.2)*stm,
+				frandom(-0.1,0.1),frandom(-0.1,0.1),-1.
+			);
+//			actor ch=spawn(missilename,self.pos,ALLOW_REPLACE);
+//			ch.vel=self.vel+(random(-stm,stm),random(-stm,stm),random(-2,12));
 		}
 	}
 	states{
