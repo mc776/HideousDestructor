@@ -98,6 +98,7 @@ class HDBackpack:HDWeapon{
 					if(hdweapongiver(iii)){
 						hdweapongiver(iii).spawnactualweapon();
 						let newwep=hdweapongiver(iii).actualweapon;
+						newwep.amount=clamp(newwep.amount,howmany[i],newwep.maxamount);
 						newwep.attachtoowner(self);
 						newwep.startconfigure();
 						newwep.bstartconfigured=true;

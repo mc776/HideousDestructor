@@ -362,6 +362,7 @@ extend class HDPlayerPawn{
 							}else{
 								newwep=hdweapon(spawn(reff,pos));
 							}
+							newwep.amount=clamp(newwep.amount,howmany[j],newwep.maxamount);
 							newwep.attachtoowner(self);
 							newwep.startconfigure();
 							newwep.bstartconfigured=true;
