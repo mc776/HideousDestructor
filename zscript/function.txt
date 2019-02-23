@@ -387,13 +387,17 @@ struct HDMath{
 	static string,string,string,string GetLoadoutStrings(string input,bool keepspaces=false){
 		int pnd=input.indexof("#");
 		int col=input.indexof(":");
-		int til=input.indexof("/");
-		int grt=max(pnd,col);
-		int lss=min(pnd,col);
+		int sls=input.indexof("/");
+
+		//"STFEVL0#Voorhees:saw/Chainsaw: Your #1 communicator!"
+		if(sls>0){
+			if(sls<pnd)pnd=-1;
+			if(sls<col)col=-1;
+		}
 
 		string pic;if(pnd<0)pic="";else pic=input.left(pnd);
 		string nam;if(col<0)nam="";else nam=input.left(col);
-		string desc;if(til<0)desc="";else desc=input.mid(til+1);
+		string desc;if(sls<0)desc="";else desc=input.mid(sls+1);
 		if(nam!="")pic.replace(nam,"");
 		pic.replace("#","");
 		pic.replace(":","");
@@ -408,7 +412,7 @@ struct HDMath{
 		if(desc!="")lod.replace(desc,"");
 		lod.replace("#","");
 		lod.replace(":","");
-		lod.replace("~","");
+		lod.replace("/","");
 		if(!keepspaces)lod.replace(" ","");
 		lod.tolower();
 

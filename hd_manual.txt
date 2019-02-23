@@ -138,11 +138,13 @@ HD lets you set custom loadouts through the cvars hd_loadout1 through 20.
 Each of these is a string that you can configure to add your loadout. What is available for backpacks is a subset of what is available generally (e.g., no BFG), but a backpack will let you carry multiple weapons beyond your normal capacity (e.g., you can start with a backpack containing several backup ZM66s in case one jams).
 The syntax is as follows:
 
-	<pic>##<name>: xxx yy, zzz aa - bbb cc, ddd ee
+	<pic>#<name>: xxx yy, zzz aa - bbb cc, ddd ee /<description>
 
 where xxx and zzz are 3-character codes referring to an item, and yy and aa are any whole number that you want (within reason).
 
-<pic> is the lump name for the graphic ("PISTA0", etc.) and must be separated by ##, while <name> is the display name for the loadout selection menu and must be separated by colon; these are optional (and you may specify either without the other) and will default, respectively, to the icon/sprite of the first item indicated and "Loadout <number>".
+<pic> is the lump name for the graphic ("PISTA0", etc.) and must be followed by #, while <name> is the display name for the loadout selection menu and must be followed by a colon; these are optional (and you may specify either without the other, or specify the name before the pic as long as both precede the loadout data) and will default, respectively, to the icon/sprite of the first item indicated and "Loadout <number>".
+
+<description> is completely optional and must be placed at the very end.
 
 Items are separated by commas, and the spaces are optional. If you only want one of a given item, you may also omit the number (e.g. "bos,710,7mm20" for a Boss, a single 10-round 7.76mm clip and 20 loose 7.76mm rounds).
 NOTE: Due to technical reasons spaces *must* be omitted from loadout strings if they're being set via the "+set" method at the command line.
