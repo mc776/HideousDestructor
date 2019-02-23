@@ -284,7 +284,12 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		CPOS E 3 A_ScanForTargets();
 		goto scan;
 	cover:
-		CPOS E 0 A_JumpIf(!target||target.health<1,"see");
+		CPOS E 0 A_JumpIf(
+			!target
+			||target.health<1
+			||hdmobai.tryshoot(self,pradius:6,pheight:6),
+			"see"
+		);
 		CPOS E 0{
 			superauto=randompick(0,0,0,0,0,0,1);
 			angle+=clamp(coverdir.x-angle,-20,20);
