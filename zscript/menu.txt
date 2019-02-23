@@ -202,9 +202,22 @@ class HDLoadoutMenu:OptionMenu{
 					}
 				}else if(ev.KeyChar){
 					if(ev.IsShift){
+						//there's got to be a better way to do this :(
 						if(inp~==";")inp=":";
+						else if(inp~=="1")inp="!";
+						else if(inp~=="2")inp="@";
 						else if(inp~=="3")inp="#";
-					}
+						else if(inp~=="4")inp="$";
+						else if(inp~=="5")inp="%";
+						else if(inp~=="6")inp="^";
+						else if(inp~=="7")inp="&";
+						else if(inp~=="8")inp="*";
+						else if(inp~=="9")inp="(";
+						else if(inp~=="0")inp=")";
+						else if(inp~=="-")inp="_";
+						else if(inp~=="=")inp="+";
+						else inp.toupper();
+					}else inp.tolower();
 					workingstring=workingstring.left(cursx)..inp..workingstring.mid(cursx);
 					//workingstring=ev.keychar.."   "..workingstring; //debug
 					cursx++;
@@ -250,13 +263,11 @@ class HDLoadoutMenu:OptionMenu{
 			array<string>items;items.clear();
 			array<string>bpitems;bpitems.clear();
 
-			int poundex=input.indexof("##");
-			string lon=input.left(poundex);
-			loadoutpic=texman.checkfortexture(lon,texman.type_any);
-			if(poundex>=0)input=input.mid(poundex+2);
-
+			string lon;
 			string finalinput;
-			[finalinput,loadoutname]=HDMath.GetLoadoutStrings(input);
+			string desc;
+			[finalinput,loadoutname,lon,desc]=HDMath.GetLoadoutStrings(input);
+			loadoutpic=texman.checkfortexture(lon,texman.type_any);
 			if(finalinput=="doomguy"){
 				ttl="Pistol and fifty bullets.";
 			}else if(finalinput=="insurgent"){
@@ -264,6 +275,7 @@ class HDLoadoutMenu:OptionMenu{
 			}else if(finalinput==""){
 				ttl="Because showing up is half the battle.";
 			}else{
+				if(desc!="")ttl=desc.."\n\n"..ttl;
 				finalinput.split(items,"-");
 				bool inbp=items.size()>1;
 				if(inbp)items[1].split(bpitems,",");

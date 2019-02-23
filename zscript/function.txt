@@ -384,18 +384,35 @@ struct HDMath{
 		return("east");
 	}
 	//return a loadout and its name, e.g. "Robber: pis, bak"
-	static string,string GetLoadoutStrings(string input,bool keepspaces=false){
-		int colon=input.indexof(":");
-		if(colon<0){
-			colon=input.indexof("##");
-			if(colon>=0)colon+=1;
-		}
-		string loadoutname="";
-		if(colon>0)loadoutname=input.left(colon);
-		string loadout=input.mid(colon+1);
-		loadout.tolower();
-		if(!keepspaces)loadout.replace(" ","");
-		return loadout,loadoutname;
+	static string,string,string,string GetLoadoutStrings(string input,bool keepspaces=false){
+		int pnd=input.indexof("#");
+		int col=input.indexof(":");
+		int til=input.indexof("/");
+		int grt=max(pnd,col);
+		int lss=min(pnd,col);
+
+		string pic;if(pnd<0)pic="";else pic=input.left(pnd);
+		string nam;if(col<0)nam="";else nam=input.left(col);
+		string desc;if(til<0)desc="";else desc=input.mid(til+1);
+		if(nam!="")pic.replace(nam,"");
+		pic.replace("#","");
+		pic.replace(":","");
+		if(pic!="")nam.replace(pic,"");
+		nam.replace("#","");
+		nam.replace(":","");
+		desc.replace("/","");
+
+		string lod=input;
+		if(pic!="")lod.replace(pic,"");
+		if(nam!="")lod.replace(nam,"");
+		if(desc!="")lod.replace(desc,"");
+		lod.replace("#","");
+		lod.replace(":","");
+		lod.replace("~","");
+		if(!keepspaces)lod.replace(" ","");
+		lod.tolower();
+
+		return lod,nam,pic,desc;
 	}
 }
 struct HDF play{
