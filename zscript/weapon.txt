@@ -167,14 +167,22 @@ class HDWeapon:Weapon{
 
 	//for throwing a weapon
 	override inventory CreateTossable(int amount){
-		let onr=owner;
-		bool throw=(onr&&onr.player&&onr.player.cmd.buttons&BT_ZOOM);
+		let onr=hdplayerpawn(owner);
+		bool throw=(
+			onr&&(
+				onr.zerk
+				||(
+					onr.player
+					&&onr.player.cmd.buttons&BT_ZOOM
+				)
+			)
+		);
 		let thrown=super.createtossable(amount);
 		let newwep=GetSpareWeapon(onr);
 		hdweapon(thrown).bjustchucked=true;
+		thrown.target=onr;
 		if(throw){
 			thrown.bmissile=true;
-			thrown.target=onr;
 			thrown.bBOUNCEONWALLS=true;
 			thrown.bBOUNCEONFLOORS=true;
 			thrown.bALLOWBOUNCEONACTORS=true;
@@ -196,7 +204,7 @@ class HDWeapon:Weapon{
 			double cp=cos(target.pitch);
 			if(bmissile){
 				vel=target.vel+
-					(cp*cos(target.angle),cp*sin(target.angle),-sin(target.pitch)+1)
+					(cp*cos(target.angle),cp*sin(target.angle),-sin(target.pitch))
 					*min(20,1000/weaponbulk())
 					*((hdplayerpawn(target)&&hdplayerpawn(target).zerk>0)?frandom(1,4):1
 				);
@@ -205,9 +213,31 @@ class HDWeapon:Weapon{
 			throwvel=vel dot vel;
 			bjustchucked=false;
 		}
-		if(owner&&amount<1){
-			destroy();
-			return;
+		if(owner){
+			if(amount<1){
+				destroy();
+				return;
+			}
+			let onr=hdplayerpawn(owner);
+			if(
+				!bwimpy_weapon
+				&&!hdfist(self)
+				&&onr
+				&&!onr.barehanded
+				&&onr.zerk
+				&&onr.player
+				&&(
+					onr.player.cmd.buttons&BT_ATTACK
+					||onr.player.cmd.buttons&BT_ALTATTACK
+					||onr.player.cmd.buttons&BT_ZOOM
+					||bweaponbusy
+					||onr.vel.xy==(0,0)
+				)
+				&&!random(0,255)
+			){
+				onr.A_PlaySound("*xdeath",CHAN_VOICE);
+				onr.dropinventory(self);
+			}
 		}
 	}
 	action void A_GunBounce(){invoker.GunBounce();}
