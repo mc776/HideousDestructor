@@ -29,7 +29,7 @@ class BossRifle:HDWeapon{
 		inventory.maxamount 3; //1 use user setting; 2 custom chamber; 3 regular
 	}
 	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
-	override hdweapon GetSpareWeapon(actor newowner){return GetSpareWeaponRegular(newowner);}
+	override hdweapon GetSpareWeapon(actor newowner,bool reverse){return GetSpareWeaponRegular(newowner,reverse);}
 	action void A_ChamberGrit(int amt,bool onlywhileempty=false){
 		int ibg=invoker.weaponstatus[BOSSS_GRIME];
 		bool customchamber=(invoker.weaponstatus[0]&BOSSF_CUSTOMCHAMBER);

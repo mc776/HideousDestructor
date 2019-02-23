@@ -26,7 +26,7 @@ class ZM66AssaultRifle:HDWeapon{
 		drainheat(ZM66S_HEAT,12);
 	}
 	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
-	override hdweapon GetSpareWeapon(actor newowner){return GetSpareWeaponRegular(newowner);}
+	override hdweapon GetSpareWeapon(actor newowner,bool reverse){return GetSpareWeaponRegular(newowner,reverse);}
 	override void postbeginplay(){
 		super.postbeginplay();
 		if(weaponstatus[0]&ZM66F_NOLAUNCHER){

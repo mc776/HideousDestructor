@@ -208,7 +208,7 @@ class LiberatorRifle:AutoReloadingThingy{
 		inventory.icon "BRFLB0";
 	}
 	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
-	override hdweapon GetSpareWeapon(actor newowner){return GetSpareWeaponRegular(newowner);}
+	override hdweapon GetSpareWeapon(actor newowner,bool reverse){return GetSpareWeaponRegular(newowner,reverse);}
 	override void postbeginplay(){
 		super.postbeginplay();
 		if(weaponstatus[0]&LIBF_NOLAUNCHER){

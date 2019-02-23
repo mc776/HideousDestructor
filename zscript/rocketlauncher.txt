@@ -19,7 +19,7 @@ class HDRL:HDWeapon{
 		inventory.maxamount 4; //1 use user setting; 2 HEAT; 3 regular; 4 grenade
 	}
 	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
-	override hdweapon GetSpareWeapon(actor newowner){return GetSpareWeaponRegular(newowner);}
+	override hdweapon GetSpareWeapon(actor newowner,bool reverse){return GetSpareWeaponRegular(newowner,reverse);}
 	override void tick(){
 		super.tick();
 		drainheat(RLS_SMOKE,12);
@@ -614,7 +614,7 @@ class Blooper:HDWeapon{
 		hdweapon.refid HDLD_BLOOPER;
 	}
 	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
-	override hdweapon GetSpareWeapon(actor newowner){return GetSpareWeaponRegular(newowner);}
+	override hdweapon GetSpareWeapon(actor newowner,bool reverse){return GetSpareWeaponRegular(newowner,reverse);}
 	override double gunmass(){
 		return weaponstatus[0]&BLOPF_LOADED?5:4;
 	}

@@ -762,11 +762,21 @@ class SpareWeapons:HDPickup{
 	spawn:
 		TNT1 A 1;
 		stop;
+	use:
+		TNT1 A 0{
+			let hdw=hdweapon(player.readyweapon);
+			if(
+				hdw
+				&&hdw.addspareweapon(self)
+			){
+				hdw.getspareweapon(self,reverse:true);
+			}
+		}fail;
 	}
 }
 extend class HDWeapon{
 	//override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
-	//override hdweapon GetSpareWeapon(actor newowner){return GetSpareWeaponRegular(newowner);}
+	//override hdweapon GetSpareWeapon(actor newowner,bool reverse){return GetSpareWeaponRegular(newowner,reverse);}
 	virtual string AddSpareWeaponMisc(actor newowner){return "";}
 	virtual void ApplySpareWeaponMisc(string input){}
 	virtual bool AddSpareWeapon(actor newowner){return false;}
@@ -807,13 +817,26 @@ extend class HDWeapon{
 		destroy();
 		return true;
 	}
-	virtual hdweapon GetSpareWeapon(actor newowner){return null;}
-	hdweapon GetSpareWeaponRegular(actor newowner){
+	virtual hdweapon GetSpareWeapon(actor newowner,bool reverse=false){return null;}
+	hdweapon GetSpareWeaponRegular(actor newowner,bool reverse=false){
 		let mwt=SpareWeapons(newowner.findinventory("SpareWeapons"));
 		if(!mwt)return null;
 
-		int getindex=mwt.weapontype.find(getclassname());
-		if(getindex==mwt.weapontype.size())return null;
+		int getindex;
+		if(reverse){
+			getindex=mwt.weapontype.size();
+			let checkclassname=getclassname();
+			for(int i=getindex-1;i>=0;i--){
+				if(mwt.weapontype[i]==checkclassname){
+					getindex=i;
+					break;
+				}
+				else if(!i)return null;
+			}
+		}else{
+			getindex=mwt.weapontype.find(getclassname());
+			if(getindex==mwt.weapontype.size())return null;
+		}
 
 		//apply each of the items at getindex and delete the entry from the spares
 		let newwep=hdweapon(newowner.giveinventorytype(getclassname()));
