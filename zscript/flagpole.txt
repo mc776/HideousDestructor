@@ -367,7 +367,7 @@ class HDCapFlag:HDWeapon{
 						for(int i=0;i<MAXPLAYERS;i++){
 							if(!playeringame[i])continue;
 							let hdp=hdplayerpawn(players[i].mo);
-							if(hdp){
+							if(hdp&&hdp!=self){
 								hdp.aggravateddamage=0;
 								hdp.oldwoundcount=0;
 								hdp.burncount=0;
@@ -400,7 +400,7 @@ class HDCapFlag:HDWeapon{
 								player.getteam()==players[i].getteam()
 							){
 								hdlc.deaths[i]--;
-								if(hdp&&flip){
+								if(hdp&&flip&&hdp!=self){
 									hdp.aggravateddamage=0;
 									hdp.oldwoundcount=0;
 									hdp.burncount=0;
