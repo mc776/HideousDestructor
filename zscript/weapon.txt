@@ -235,7 +235,8 @@ class HDWeapon:Weapon{
 				)
 				&&!random(0,255)
 			){
-				onr.A_PlaySound("*xdeath",CHAN_VOICE);
+				onr.A_PlaySound(random(0,5)?"*xdeath":"*taunt",CHAN_VOICE);
+				onr.A_AlertMonsters();
 				onr.dropinventory(self);
 			}
 		}
