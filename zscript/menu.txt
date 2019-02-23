@@ -345,7 +345,7 @@ class HDLoadoutMenu:OptionMenu{
 			);
 		}
 
-		string hs="\cgSyntax:   \cazzzz##xxx n, yyy n - yyy n\n\cazzzz\cu preview picture (optional)\n\caxxx\cu starting weapon   \cayyy\cu anything else\n\can\cu number given\cu (optional, default 1)\n\ca-\cu begin backpack settings (use \cabak\cu for empty)\n\camap\cu for map   \cakey\cu for keys (bitflag BYR)\n\n\cdENTER\cu save   \cdESC\cu clear changes   \cdCtrl+R\cu reset";
+		string hs="\cgSyntax:   \cazzzz#xxx n, yyy n - yyy n\n\cazzzz\cu preview picture (optional)\n\caxxx\cu starting weapon   \cayyy\cu anything else\n\can\cu number given\cu (optional, default 1)\n\ca-\cu begin backpack settings (use \cabak\cu for empty)\n\camap\cu for map   \cakey\cu for keys (bitflag BYR)\n\n\cdENTER\cu save   \cdESC\cu clear changes   \cdCtrl+R\cu reset";
 		screen.DrawText(SmallFont,
 			OptionMenuSettings.mFontColor,
 			(screen.GetWidth() - SmallFont.StringWidth(hs) * CleanXfac_1) / 2,
@@ -444,8 +444,10 @@ class HDNewGameLoadoutMenu:HDLoadoutMenu{
 		translatedloadout=gettranslatedloadout(workingstring);
 		cursx=workingstring.length();
 	}
+	string ws;
 	override string GetTranslatedLoadout(string input){
 		string sss=super.GetTranslatedLoadout(input);
+		ws=hdmath.getloadoutstrings(workingstring,true);
 		if(loadoutname=="")loadoutname="Loadout "..cursy;
 		if(!loadoutpic.isvalid()){
 			string ws=workingstring.mid(workingstring.indexof(":")+1);
@@ -589,7 +591,6 @@ class HDNewGameLoadoutMenu:HDLoadoutMenu{
 			);
 		}
 
-		string ws=workingstring.mid(workingstring.indexof(":")+1);
 		while(ws.charat(0)==" ")ws=ws.mid(1);
 
 		if(ws=="")ws="<nothing>";
