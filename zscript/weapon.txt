@@ -223,9 +223,10 @@ class HDWeapon:Weapon{
 				!bwimpy_weapon
 				&&!hdfist(self)
 				&&onr
+				&&onr.player
+				&&onr.player.readyweapon==self
 				&&!onr.barehanded
 				&&onr.zerk
-				&&onr.player
 				&&(
 					onr.player.cmd.buttons&BT_ATTACK
 					||onr.player.cmd.buttons&BT_ALTATTACK
