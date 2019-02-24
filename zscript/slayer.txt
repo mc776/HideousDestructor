@@ -230,7 +230,13 @@ class Slayer:HDShotgun replaces HDShotgun{
 
 	altreload:
 		#### A 0{
-			if(countinv("HDShellAmmo"))
+			if(
+				countinv("HDShellAmmo")
+				&&(
+					invoker.weaponstatus[SLAYS_CHAMBER1]<2
+					||invoker.weaponstatus[SLAYS_CHAMBER2]<2
+				)
+			)
 				invoker.weaponstatus[0]|=SLAYF_FROMPOCKETS;
 			else setweaponstate("nope");
 		}goto reloadstart;
