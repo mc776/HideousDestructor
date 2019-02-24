@@ -142,8 +142,10 @@ extend class HDPlayerPawn{
 			if(
 				beatmax<HDCONST_MINHEARTTICS+3
 				||fatigue>HDCONST_DAMAGEFATIGUE  
-			)DamageMobj(self,null,1,"internal");
-			else{
+			){
+				damagemobj(self,null,1,"internal");
+				stunned=min(10,stunned);
+			}else{
 				if(health<maxhealth()){
 					if(random(1,30)+countinv("IsMoving")<beatmax)healthing(1);
 					if(random(1,40)<stimcount)healthing(1);
@@ -164,6 +166,7 @@ extend class HDPlayerPawn{
 				);
 				if(!stimcount && !zerk && fatigue>=HDCONST_SPRINTFATIGUE){
 					fatigue+=20;
+					stunned+=400;
 					A_Pain();
 				}
 				if(!random(0,35))bloodpressure++;
@@ -208,10 +211,13 @@ extend class HDPlayerPawn{
 			}
 
 			//every 4 beats
+			int minbeatmax=HDCONST_MINHEARTTICS+random(random(-2,5),5);
 			if(beatcounter%4==0){ //==0, !() both 3 characters
 				//recovering heart rate
 				if(fatigue){
-					beatmax=min(beatmax,33-fatigue);
+					if(beatmax>minbeatmax){
+						beatmax=max(minbeatmax,min(beatmax,35-fatigue));
+					}
 					if(fatigue>20)stunned=clamp(stunned,stunned+10,fatigue*10);
 					if(bloodpressure<fatigue)bloodpressure=fatigue;
 				}
