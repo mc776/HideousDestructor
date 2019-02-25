@@ -517,8 +517,10 @@ class Vulcanette:HDWeapon{
 
 
 	unchamber:
-		GTLG B 4 A_PlaySound("weapons/vulcextract",CHAN_AUTO,0.3);
-		GTLG A 4;
+		GTLG B 4{
+			A_PlaySound("weapons/vulcextract",CHAN_AUTO,0.3);
+			VulcNextRound();
+		}GTLG A 4;
 		GTLG A 0 A_JumpIf(PressingUnload(),"unchamber");
 		goto nope;
 	unmag:

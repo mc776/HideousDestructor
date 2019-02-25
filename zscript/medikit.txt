@@ -2,6 +2,17 @@
 // Medikit
 //-------------------------------------------------
 const HD_MEDPATCHLIMIT=42;
+class HDMedikitPickup:Actor{
+	states{
+	spawn:
+		TNT1 A 0 nodelay{
+			spawn("PortableStimpack",(pos.x+randompick(-3,3),pos.y+randompick(-3,3),pos.z));
+			actor aaa=spawn("PortableMedikit",pos);
+			aaa.special=special;
+			aaa.changetid(tid);
+		}stop;
+	}
+}
 class PortableMedikit:HDPickup{
 	default{
 		//$Category "Items/Hideous Destructor/Supplies"
