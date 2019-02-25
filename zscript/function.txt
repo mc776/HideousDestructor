@@ -398,7 +398,7 @@ struct HDMath{
 		string pic;if(pnd<0)pic="";else pic=input.left(pnd);
 		string nam;if(col<0)nam="";else nam=input.left(col);
 		string desc;if(sls<0)desc="";else desc=input.mid(sls+1);
-		if(nam!="")pic.replace(nam,"");
+		if(nam!="")pic.replace(nam,"");	//delete these !="" checks later, it's a GZ bug that's been fixed
 		pic.replace("#","");
 		pic.replace(":","");
 		if(pic!="")nam.replace(pic,"");
