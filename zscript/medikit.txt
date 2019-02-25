@@ -2,17 +2,6 @@
 // Medikit
 //-------------------------------------------------
 const HD_MEDPATCHLIMIT=42;
-class HDMedikitPickup:Actor{
-	states{
-	spawn:
-		TNT1 A 0 nodelay{
-			spawn("PortableStimpack",(pos.x+randompick(-3,3),pos.y+randompick(-3,3),pos.z));
-			actor aaa=spawn("PortableMedikit",pos);
-			aaa.special=special;
-			aaa.changetid(tid);
-		}stop;
-	}
-}
 class PortableMedikit:HDPickup{
 	default{
 		//$Category "Items/Hideous Destructor/Supplies"
@@ -38,6 +27,8 @@ class PortableMedikit:HDPickup{
 		TNT1 A 0{
 			if(!FindInventory("HDMedikitter")){
 				A_GiveInventory("HDMedikitter");
+				if(A_JumpIfInventory("PortableStimpack",0,"null"))A_DropInventory("PortableStimpack",1);
+				else A_GiveInventory("PortableStimpack");
 				A_TakeInventory("PortableMedikit",1);
 			}else{
 				A_Log("You pull out the medikit you've already unwrapped.",true);
