@@ -789,12 +789,11 @@ class Vulcanette:HDWeapon{
 			}
 			A_MuzzleClimb(frandom(0.6,2.4),frandom(1.2,2.4));
 		}
-		invoker.weaponstatus[0]&=~VULCF_ALLCHAMBER1;
 
 		//cycle all chambers
+		invoker.weaponstatus[0]&=~VULCF_ALLCHAMBER1;
 		if(invoker.weaponstatus[0]&VULCF_BROKEN2)invoker.weaponstatus[0]|=VULCF_BROKEN1;
 		else if(invoker.weaponstatus[0]&VULCF_CHAMBER2)invoker.weaponstatus[0]|=VULCF_CHAMBER1;
-		else invoker.weaponstatus[0]&=~(VULCF_BROKEN1|VULCF_CHAMBER1);
 
 		invoker.weaponstatus[0]&=~(VULCF_BROKEN2|VULCF_CHAMBER2);
 		if(invoker.weaponstatus[0]&VULCF_BROKEN3)invoker.weaponstatus[0]|=VULCF_BROKEN2;
@@ -820,7 +819,7 @@ class Vulcanette:HDWeapon{
 			A_PlaySound("weapons/vulcchamber",CHAN_BODY);
 			invoker.weaponstatus[0]|=VULCF_CHAMBER5;
 			if(random(0,2000)<=
-				1+invoker.weaponstatus[0]&VULCF_DIRTYMAG?(invoker.weaponstatus[0]&VULCF_FAST?13:9):0
+				1+(invoker.weaponstatus[0]&VULCF_DIRTYMAG?(invoker.weaponstatus[0]&VULCF_FAST?13:9):0)
 			)invoker.weaponstatus[0]|=VULCF_BROKEN5;
 			invoker.setmagcount(0,inmag-1);
 		}
