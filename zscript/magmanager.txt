@@ -301,7 +301,7 @@ class MagManager:HDWeapon{
 		}
 		bp.amounts[which]=newamts;
 		bp.weaponbulk();
-		bp.updatemessage(bp.index);
+		bp.updatemessage(which);
 	}
 	action void PutIntoBackpack(name type){
 		let bp=hdbackpack(findinventory("HDBackpack"));
@@ -317,6 +317,7 @@ class MagManager:HDWeapon{
 		mg.mags.pop();
 		mg.amount--;
 		bp.amounts[which]=newamts;
+		bp.updatemessage(which);
 	}
 }
 
