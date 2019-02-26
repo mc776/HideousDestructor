@@ -358,7 +358,11 @@ class HDBackpack:HDWeapon{
 		let wep=HDWeapon(item);
 		let mag=HDMagAmmo(item);
 		let pkup=HDPickup(item);
-		if(!wep&&!pkup)return 0;
+		if(!wep&&!pkup)return 1;
+		if(
+			(wep&&!wep.bfitsinbackpack)
+			||(pkup&&!pkup.bfitsinbackpack)
+		)return 1;
 		int newindex=invclasses.find(item.getclassname());
 		if(newindex>=invclasses.size())return 1;
 		index=newindex;
@@ -488,12 +492,13 @@ class HDBackpack:HDWeapon{
 				newamounts=newamounts..(i?" ":"")..tempamounts[i];
 			}
 		}
-		amounts[index]=newamounts;
-		if(havenone(index)&&!owner.countinv(invclasses[index]))UpdateMessage(index+1);
+		amounts[which]=newamounts;
+		if(havenone(which)&&!owner.countinv(invclasses[which]))UpdateMessage(which+1);
 		UpdateMessage(index);
 		return ticks;
 	}
 	//main interface
+	string curamt;
 	action void A_BPReady(){
 		if(pressingfiremode()){
 			int inputamt=player.cmd.pitch>>5;
