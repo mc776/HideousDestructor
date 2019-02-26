@@ -429,7 +429,13 @@ class Vulcanette:HDWeapon{
 		GTLG A 0{
 			if(
 				//abort if all mag slots taken or no spare ammo
-				invoker.weaponstatus[VULCS_MAGS]>invoker.magmultindex[4]
+				(
+					invoker.weaponstatus[VULCS_MAGS]>invoker.magmultindex[0]
+					&&invoker.weaponstatus[VULCS_MAGS]>invoker.magmultindex[1]
+					&&invoker.weaponstatus[VULCS_MAGS]>invoker.magmultindex[2]
+					&&invoker.weaponstatus[VULCS_MAGS]>invoker.magmultindex[3]
+					&&invoker.weaponstatus[VULCS_MAGS]>invoker.magmultindex[4]
+				)
 				||!countinv("HD4mMag")
 			)setweaponstate("nope");else{
 				invoker.weaponstatus[0]&=~(VULCF_JUSTUNLOAD|VULCF_LOADCELL);
@@ -597,7 +603,7 @@ class Vulcanette:HDWeapon{
 				&&!PressingReload()
 			){
 				HDMagAmmo.SpawnMag(self,"HD4mMag",mg-1);
-				setweaponstate("mag1out"); //this really is mag2 not mag1
+				setweaponstate("mag1out"); //this really is mag1 not mag0
 			}else{
 				HDMagAmmo.GiveMag(self,"HD4mMag",mg-1);
 				setweaponstate("pocketmag");
@@ -638,11 +644,8 @@ class Vulcanette:HDWeapon{
 				}
 			}
 			if(magslot<0){
-				//mag1 is loaded but empty
-				HDMagAmmo.SpawnMag(self,"HD4mMag",0);
-				A_SetTics(9);
-				magslot=0;
-				invoker.setmagcount(0,0);
+				setweaponstate("reloadend");
+				return;
 			}
 
 			//REMEMBER: IN THE VULC, ADD ONE
