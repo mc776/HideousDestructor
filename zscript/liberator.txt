@@ -246,7 +246,7 @@ class LiberatorRifle:AutoReloadingThingy{
 			clamp(cvar.getcvar("hd_libmoa",owner.player).getint(),0,600);
 	}
 	override double gunmass(){
-		double howmuch=(weaponstatus[0]&LIBF_NOBULLPUP)?12:9;
+		double howmuch=(weaponstatus[0]&LIBF_NOBULLPUP)?11:9;
 		if(weaponstatus[0]&LIBF_NOLAUNCHER)return howmuch+weaponstatus[LIBS_MAG]*0.04;
 		return howmuch+1.+weaponstatus[LIBS_MAG]*0.04+(weaponstatus[0]&LIBF_GRENADELOADED?1.:0.);
 	}
@@ -547,12 +547,12 @@ class LiberatorRifle:AutoReloadingThingy{
 
 			if(invoker.weaponstatus[0]&LIBF_NOBULLPUP){
 				A_OverlayAlpha(PSP_FLASH,0.5);
-				A_ZoomFactor(0.96,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
+				A_ZoomFactor(0.93,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
 				A_MuzzleClimb(
 					0,0,
-					-0.1,-0.14,
-					-frandom(0.4,0.7),-frandom(1.5,1.7),
-					-frandom(0.3,0.5),-frandom(1.5,1.7)
+					-0.07,-0.14,
+					-frandom(0.3,0.6),-frandom(1.,1.4),
+					-frandom(0.2,0.4),-frandom(1.,1.4)
 				);
 			}else{
 				A_ZoomFactor(0.97,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
