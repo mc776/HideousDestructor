@@ -178,6 +178,7 @@ class HDWeapon:Weapon{
 			)
 		);
 		let thrown=super.createtossable(amount);
+		if(!thrown)return null;
 		let newwep=GetSpareWeapon(onr);
 		hdweapon(thrown).bjustchucked=true;
 		thrown.target=onr;
