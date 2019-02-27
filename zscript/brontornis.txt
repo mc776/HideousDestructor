@@ -262,11 +262,10 @@ class Brontornis:HDWeapon{
 			A_Light1();
 		}
 		TNT1 A 2{
-			A_ZoomFactor(0.92,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
+			A_ZoomRecoil(0.5);
 			A_Light0();
 		}
 		TNT1 A 0{
-			A_ZoomFactor(1.0,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
 			int recoilside=randompick(-1,1);
 			if(gunbraced()){
 				A_GiveInventory("IsMoving",2);

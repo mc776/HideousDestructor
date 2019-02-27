@@ -123,6 +123,14 @@ class HDWeapon:Weapon{
 			A_SetAngle(angle+mc0.x,SPF_INTERPOLATE);
 		}
 	}
+	action void A_ZoomRecoil(double prop){
+		let hdp=hdplayerpawn(self);
+		if(hdp){
+			if(hdp.zerk)prop=(prop+1.)*0.5;
+			if(hdp.gunbraced)prop=(prop+1.)*0.5;
+			hdp.recoilfov*=prop;
+		}
+	}
 	//do these whenever the gun is ready
 	action void A_ReadyEnd(){
 		A_WeaponBusy(false);

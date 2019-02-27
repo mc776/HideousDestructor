@@ -171,7 +171,7 @@ class HDSMG:HDWeapon{
 			);
 			p.vel+=self.vel;
 
-			A_ZoomFactor(0.995,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
+			A_ZoomRecoil(0.995);
 			A_PlaySound("weapons/smg",CHAN_WEAPON);
 			invoker.weaponstatus[SMGS_RATCHET]++;
 			invoker.weaponstatus[SMGS_CHAMBER]=1;
@@ -180,12 +180,8 @@ class HDSMG:HDWeapon{
 			HDFlashAlpha(-200);
 			A_Light1();
 		}
-		TNT1 A 0{
-			A_Light0();
-			A_ZoomFactor(1.0,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
-		}
-		TNT1 AA 1 A_MuzzleClimb(-frandom(0.4,0.6),-frandom(0.5,0.8));
-		stop;
+		TNT1 A 0 A_MuzzleClimb(-frandom(0.4,0.6),-frandom(0.5,0.8),-frandom(0.4,0.6),-frandom(0.5,0.8));
+		goto lightdone;
 
 
 	unloadchamber:

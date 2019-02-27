@@ -428,12 +428,10 @@ class Hunter:HDShotgun replaces Shotgun{
 			A_Light2();
 			HDFlashAlpha(-32);
 		}
-		TNT1 A 1 A_ZoomFactor(0.98,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
-		TNT1 A 0{
-			A_Light0();
-			A_AlertMonsters();
-			A_ZoomFactor(1.0,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
-		}stop;
+		TNT1 A 1 A_ZoomRecoil(0.9);
+		TNT1 A 0 A_Light0();
+		TNT1 A 0 A_AlertMonsters();
+		stop;
 	altreload:
 	reloadfrompockets:
 		SHTG A 0{

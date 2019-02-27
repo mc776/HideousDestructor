@@ -258,9 +258,7 @@ class ZM66AssaultRifle:HDWeapon{
 			A_Light1();
 			HDFlashAlpha(-16);
 			A_PlaySound("weapons/rifle",CHAN_WEAPON);
-			A_ZoomFactor(min(0.99,1.01-0.01*min(invoker.weaponstatus[ZM66S_AUTO],3)),
-				ZOOM_INSTANT|ZOOM_NOSCALETURNING
-			);
+			A_ZoomRecoil(min(0.95,1.-0.05*min(invoker.weaponstatus[ZM66S_AUTO],3)));
 
 			//shoot the bullet
 			//copypaste any changes to spawnshoot as well!
@@ -283,7 +281,6 @@ class ZM66AssaultRifle:HDWeapon{
 			invoker.weaponstatus[ZM66S_HEAT]+=random(3,5);
 			A_AlertMonsters();
 		}
-		RIFF A 0 A_ZoomFactor(1.0,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
 		goto lightdone;
 
 
@@ -608,10 +605,10 @@ class ZM66AssaultRifle:HDWeapon{
 			A_FireHDGL();
 			invoker.weaponstatus[ZM66S_FLAGS]&=~ZM66F_GRENADELOADED;
 			A_PlaySound("weapons/grenadeshot",CHAN_WEAPON);
-			A_ZoomFactor(0.99,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
+			A_ZoomRecoil(0.95);
 		}
-		RIFG A 2 A_ZoomFactor(1.0,ZOOM_INSTANT|ZOOM_NOSCALETURNING);
-		RIFG A 0 A_MuzzleClimb(
+		RIFG A 2 A_MuzzleClimb(
+			0,0,0,0,
 			-1.2,-3.,
 			-1.,-2.8
 		);

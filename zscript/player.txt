@@ -29,6 +29,7 @@ class HDPlayerPawn:PlayerPawn{
 	int stunned;
 	int fatigue;
 	int nocrosshair;
+	double recoilfov;
 
 	int armourlevel;
 
@@ -489,6 +490,8 @@ class HDPlayerPawn:PlayerPawn{
 		hudbobrecoil2=hudbobrecoil3;
 		hudbobrecoil3=hudbobrecoil4;
 		hudbobrecoil4=(0,0);
+
+		if(recoilfov!=1.)recoilfov=(recoilfov+1.)*0.5;
 
 
 		//lowering weapon for sprint/mantle/jump
