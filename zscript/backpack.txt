@@ -34,6 +34,16 @@ class HDBackpack:HDWeapon{
 	override void DropOneAmmo(int amt){
 		if(owner){
 			RemoveFromBackpack(index,false);
+			if(
+				havenone(index)
+				&&(
+					!findinventory(invclasses[index])
+					||(
+						hdweapon(findinventory(invclasses[index]))
+						&&!hdweapon(findinventory(invclasses[index])).bfitsinbackpack
+					)
+				)
+			)updatemessage(index+1);
 		}
 	}
 
@@ -320,7 +330,17 @@ class HDBackpack:HDWeapon{
 				index+=toadd;
 				if(index>maxindex)index=0;
 				else if(index<0)index=maxindex;
-			}while(index!=bpindex&&havenone(index)&&(!owner.countinv(invclasses[index])));
+			}while(
+				index!=bpindex
+				&&havenone(index)
+				&&(
+					!owner.countinv(invclasses[index])
+					||(
+						hdweapon(owner.findinventory(invclasses[index]))
+						&&!hdweapon(owner.findinventory(invclasses[index])).bfitsinbackpack
+					)
+				)
+			);
 		}else if(max(0-num,num-nnsiz)<maxindex){
 			while(num<0)num+=nnsiz;
 			while(num>maxindex)num-=nnsiz;
@@ -332,14 +352,32 @@ class HDBackpack:HDWeapon{
 		for(int i=1;i<nnsiz;i++){
 			int plusi=index+i;
 			if(plusi>=nnsiz)plusi-=nnsiz;
-			if(!havenone(plusi)||owner.countinv(invclasses[plusi])){
+			if(
+				!havenone(plusi)
+				||(
+					owner.countinv(invclasses[plusi])
+					&&(
+						!hdweapon(owner.findinventory(invclasses[plusi]))
+						||hdweapon(owner.findinventory(invclasses[plusi])).bfitsinbackpack
+					)
+				)
+			){
 				if(showindices[2]<0)showindices[2]=plusi;
 				else if(showindices[3]<0)showindices[3]=plusi;
 			}
 
 			plusi=index-i;
 			if(plusi<0)plusi+=nnsiz;
-			if(!havenone(plusi)||owner.countinv(invclasses[plusi])){
+			if(
+				!havenone(plusi)
+				||(
+					owner.countinv(invclasses[plusi])
+					&&(
+						!hdweapon(owner.findinventory(invclasses[plusi]))
+						||hdweapon(owner.findinventory(invclasses[plusi])).bfitsinbackpack
+					)
+				)
+			){
 				if(showindices[1]<0)showindices[1]=plusi;
 				else if(showindices[0]<0)showindices[0]=plusi;
 			}
