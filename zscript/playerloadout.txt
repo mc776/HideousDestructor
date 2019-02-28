@@ -316,6 +316,7 @@ extend class HDPlayerPawn{
 		}
 
 		array<string> whichitem;whichitem.clear();
+		array<int> whichitemclass;whichitemclass.clear();
 		array<int> howmany;howmany.clear();
 		array<string> loadlist;loadlist.clear();
 
@@ -325,6 +326,7 @@ extend class HDPlayerPawn{
 		loadlist[0].split(whichitem,",");
 		if(hd_debug)A_Log("Loadout: "..loadlist[0]);
 		for(int i=0;i<whichitem.size();i++){
+			whichitemclass.push(0);
 			howmany.push((whichitem[i].mid(3,whichitem[i].length())).toint(10));
 			whichitem[i]=whichitem[i].left(3);
 
@@ -337,47 +339,52 @@ extend class HDPlayerPawn{
 				if(whichkeys&1)A_GiveInventory("RedCard");
 			}
 		}
-		hdweapon firstwepactor;
 		for(int i=0;i<allactorclasses.size();i++){
 			class<actor> reff=allactorclasses[i];
 			if(reff is "HDPickup"||reff is "HDWeapon"){
 				string ref;
 				if(reff is "HDPickup")ref=getdefaultbytype((class<hdpickup>)(reff)).refid;
 				else ref=getdefaultbytype((class<hdweapon>)(reff)).refid;
-				if(ref~=="none"||ref=="")continue;
-				for(int j=whichitem.size()-1;j>=0;j--){
-					if(whichitem[j]~==ref){
-						if(reff is "HDWeapon"){
-							if(!j){
-								if(reff is "HDWeaponGiver"){
-									let greff=getdefaultbytype((class<HDWeaponGiver>)(reff)).weapontogive;
-									if(greff)firstwep=greff.getclassname();
-								}else{
-									firstwep=reff.getclassname();
-								}
-							}
-							hdweapon newwep;
-							if(reff is "HDWeaponGiver"){
-								let newgiver=hdweapongiver(spawn(reff,pos));
-								newgiver.spawnactualweapon();
-								newwep=newgiver.actualweapon;
-								newgiver.destroy();
-							}else{
-								newwep=hdweapon(spawn(reff,pos));
-							}
-							newwep.amount=clamp(newwep.amount,howmany[j],newwep.maxamount);
-							newwep.attachtoowner(self);
-							newwep.startconfigure();
-							newwep.bstartconfigured=true;
-							dropinventory(newwep);
-							newwep.actualpickup(self,true);
-						}else A_GiveInventory(
-							reff.getclassname(),
-							clamp(howmany[j],1,hdmath.maxinv(self,reff.getclassname()))
-						);
-					}
+				if(ref=="")continue;
+				for(int j=0;j<whichitem.size();j++){
+					if(
+						!whichitemclass[j]
+						&&whichitem[j]~==ref
+					)whichitemclass[j]=i;
 				}
 			}
+		}
+		hdweapon firstwepactor;
+		for(int i=whichitemclass.size()-1;i>=0;i--){
+			class<actor> reff=allactorclasses[whichitemclass[i]];
+			if(reff is "HDWeapon"){
+				if(!i){
+					if(reff is "HDWeaponGiver"){
+						let greff=getdefaultbytype((class<HDWeaponGiver>)(reff)).weapontogive;
+						if(greff)firstwep=greff.getclassname();
+					}else{
+						firstwep=reff.getclassname();
+					}
+				}
+				hdweapon newwep;
+				if(reff is "HDWeaponGiver"){
+					let newgiver=hdweapongiver(spawn(reff,pos));
+					newgiver.spawnactualweapon();
+					newwep=newgiver.actualweapon;
+					newgiver.destroy();
+				}else{
+					newwep=hdweapon(spawn(reff,pos));
+				}
+				newwep.amount=clamp(newwep.amount,howmany[i],newwep.maxamount);
+				newwep.attachtoowner(self);
+				newwep.startconfigure();
+				newwep.bstartconfigured=true;
+				dropinventory(newwep);
+				newwep.actualpickup(self,true);
+			}else A_GiveInventory(
+				reff.getclassname(),
+				clamp(howmany[i],1,hdmath.maxinv(self,reff.getclassname()))
+			);
 		}
 
 		//attend to backpack and contents
