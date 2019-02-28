@@ -12,6 +12,7 @@ class Babuin:HDActor{
 		hdmobai.resize(self,0.9,1.1);
 		let hdmb=hdmobster(hdmobster.spawnmobster(self));
 		hdmb.meleethreshold=200;
+		lastpointinmap=pos;
 	}
 	void TryLatch(){
 		if(
@@ -51,7 +52,15 @@ class Babuin:HDActor{
 		latchtarget=null;
 		super.Die(source,inflictor,dmgflags);
 	}
+	vector3 lastpointinmap;
 	override void Tick(){
+		//brutal force
+		if(
+			!level.ispointinmap(pos)
+			||!checkmove(pos.xy,PCM_DROPOFF|PCM_NOACTORS)
+		)setorigin(lastpointinmap,true);
+		else lastpointinmap=pos;
+
 		if(!latchtarget||latchtarget==self||latchtarget.health<1){
 			latchtarget=null;
 			latchtarget=null;
@@ -73,9 +82,11 @@ class Babuin:HDActor{
 				setorigin(lp,false);
 			}else setorigin((lp+pos)*0.5,true);
 
+			bool inmap=level.IsPointInMap(pos);
+
 			//can try to bump or shake it off
 			if(
-				level.IsPointInMap(pos)
+				inmap
 				&&(
 					absangle(latchtarget.angle,targangle)>random(30,180)
 					||floorz>pos.z
