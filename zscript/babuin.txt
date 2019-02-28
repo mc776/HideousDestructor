@@ -75,11 +75,14 @@ class Babuin:HDActor{
 
 			//can try to bump or shake it off
 			if(
-				absangle(latchtarget.angle,targangle)>random(30,180)||
-				floorz>pos.z||  
-				ceilingz<pos.z+height||
-				(!trymove(pos.xy,true)&&(
-						blockingmobj!=latchtarget
+				level.IsPointInMap(pos)
+				&&(
+					absangle(latchtarget.angle,targangle)>random(30,180)
+					||floorz>pos.z
+					||ceilingz<pos.z+height
+					||(
+						!trymove(pos.xy,true)
+						&&blockingmobj!=latchtarget
 					)
 				)
 			){
