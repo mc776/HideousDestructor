@@ -258,8 +258,12 @@ class HDWeapon:Weapon{
 		bBOUNCEONFLOORS=false;
 		bALLOWBOUNCEONACTORS=false;
 		bBOUNCEAUTOOFF=false;
-		double dmg=throwvel*weaponbulk()*frandom(0.0005,0.003);
-		if(tracer)tracer.damagemobj(self,target,dmg,"Bashing");
+		double wb=weaponbulk();
+		int dmg=int(throwvel*wb*wb*frandom(0.000001,0.00002));
+		if(tracer){
+			tracer.damagemobj(self,target,dmg,"Bashing");
+			if(hd_debug)A_Log(tracer.getclassname().." hit for "..dmg.." damage with thrown "..getclassname());
+		}
 		A_PlaySound("weapons/smack",CHAN_BODY,min(0.5,dmg*0.02));
 		setstatelabel("spawn");
 	}
