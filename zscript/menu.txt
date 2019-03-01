@@ -284,21 +284,26 @@ class HDLoadoutMenu:OptionMenu{
 				iitems.split(items,",");
 				for(int i=0;i<items.size();i++){
 					string refid=items[i].left(3);
+					if(refid=="")continue;
 					if(refid=="bak"){
 						inbp=true;
 						continue;
 					}
 					int whichindex=refids.find(refid);
-					if(whichindex>=refids.size())continue;
+					string thisname;
+					if(whichindex>=refids.size())thisname="\ca ? ? ?\cj";
+					else thisname=nicenames[whichindex];
 					int howmany=max((items[i].mid(3,items[i].length())).toint(10),1);
-					ttl=ttl..(i?"\n":"")..howmany.." x    "..nicenames[whichindex];
+					ttl=ttl..(i?"\n":"")..howmany.." x    "..thisname;
 				}
 				if(inbp){
 					ttl=ttl.."\n\nIN BACKPACK:";
 					if(!bpitems.size())ttl=ttl.."\n  <nothing>";
 					else for(int i=0;i<bpitems.size();i++){
 						string refid=bpitems[i].left(3);
+						if(refid=="")continue;
 						int whichindex=refids.find(refid);
+						string thisname;
 						if(
 							whichindex>=refids.size()
 							||nicenames[whichindex]==""
@@ -306,10 +311,10 @@ class HDLoadoutMenu:OptionMenu{
 							if(bpitems.size()==1){
 								ttl=ttl.."\n  <nothing>";
 								break;
-							}else continue;
-						}
+							}else thisname="\ca ? ? ?\cj";
+						}else thisname=nicenames[whichindex];
 						int howmany=max((bpitems[i].mid(3,bpitems[i].length())).toint(10),1);
-						ttl=ttl.."\n  "..howmany.." x    "..nicenames[whichindex];
+						ttl=ttl.."\n  "..howmany.." x    "..thisname;
 					}
 				}
 			}
