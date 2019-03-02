@@ -30,30 +30,12 @@ class HDPlayerDying:HDPlayerPawn{
 	}
 	override void GiveBasics(){}
 	override void tick(){
+		//I could write a virtual, or I could just do this...
+		bool actuallypressinguse=player.cmd.buttons&BT_USE;
+		if(health>0)player.cmd.buttons&=~BT_USE;
+
 		super.tick();
 		if(!player||player.bot||player.mo!=self)return;
-
-		let pend=player.pendingweapon;
-		let readyw=player.readyweapon;
-		if(
-			(
-				readyw
-				&&(
-					hdfist(pend)
-					||!pend.bwimpy_weapon
-				)
-			)||(
-				pend
-				&&pend!=WP_NOCHANGE
-				&&(
-					hdfist(pend)
-					||!pend.bwimpy_weapon
-				)
-			)
-		){
-			A_GiveInventory("NullWeapon");
-			A_SelectWeapon("NullWeapon");
-		}
 
 		if(health>min(12,getmaxhealth()-1)){		
 			excesshealth++;	
@@ -61,7 +43,7 @@ class HDPlayerDying:HDPlayerPawn{
 				excesshealth>7
 			){
 				if(
-					player.cmd.buttons&BT_USE
+					actuallypressinguse
 					||player.cmd.buttons&BT_JUMP
 					||(
 						player.cmd.buttons&BT_SPEED
