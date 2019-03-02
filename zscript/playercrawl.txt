@@ -37,6 +37,8 @@ class HDPlayerDying:HDPlayerPawn{
 		super.tick();
 		if(!player||player.bot||player.mo!=self)return;
 
+		invsel=null; //prevent player from using items
+
 		if(health>min(12,getmaxhealth()-1)){		
 			excesshealth++;	
 			if(

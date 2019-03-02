@@ -253,7 +253,17 @@ class HDPlayerPawn:PlayerPawn{
 			)&&!countinv("IsMoving")
 		);
 
-
+		//re-enable item selection after unmorph from incapacitated
+		if(!invsel){
+			for(let item=inv;item!=null;item=item.inv){
+				if(
+					item.binvbar
+				){
+					invsel=item;
+					break;
+				}
+			}
+		}
 
 
 		super.Tick();
