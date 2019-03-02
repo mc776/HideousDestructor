@@ -16,6 +16,8 @@ extend class HDPlayerPawn{
 		//which in turn nukes the data which is being checked in DamageMobj."
 		if(!self || health<1)return damage;
 
+		int originaldamage=damage;
+
 		silentdeath=false;
 
 		//replace all armour with custom HD stuff
@@ -486,7 +488,7 @@ extend class HDPlayerPawn{
 			let ppp=player;
 			A_Morph("HDPlayerDying",int.MAX,MRF_TRANSFERTRANSLATION,"CheckPuff","CheckPuff");
 			let pppmo=hdplayerpawn(ppp.mo);
-			if(finaldmg>10)pppmo.A_PlayerScream();
+			if(originaldamage>10)pppmo.A_PlayerScream();
 			pppmo.viewheight=self.viewheight*ppp.crouchfactor;
 			pppmo.regenblues=regenblues;
 			pppmo.stimcount=stimcount;

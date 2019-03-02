@@ -67,8 +67,12 @@ class HDPlayerDying:HDPlayerPawn{
 				if(pppmo.health>1)pppmo.damagemobj(null,null,pppmo.health-10,"internal");
 				ppp.crouchfactor=0.1;
 				HDWeaponSelector.Select(pppmo,"HDFist",4);
+				pppmo.A_PlaySound("*grunt",CHAN_VOICE);
 				pppmo.fatigue=(HDCONST_SPRINTFATIGUE*4/5);
 				pppmo.stunned=100;
+				pppmo.lastpitch=lastpitch;
+				pppmo.lastangle=lastangle;
+				pppmo.feetangle=feetangle;
 				pppmo.regenblues=regenblues;
 				pppmo.stimcount=stimcount;
 				pppmo.woundcount=woundcount;
