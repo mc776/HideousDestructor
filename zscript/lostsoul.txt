@@ -28,8 +28,10 @@ class Condemned:LostSoul replaces LostSoul{
 		if(
 			!level.ispointinmap(pos)
 			||!checkmove(pos.xy,PCM_DROPOFF|PCM_NOACTORS)
-		)setorigin(lastpointinmap,true);
-		else lastpointinmap=pos;
+		){
+			setorigin(lastpointinmap,true);
+			setz(clamp(pos.z,floorz,ceilingz-height));
+		}else lastpointinmap=pos;
 		super.tick();
 		A_TakeInventory("Heat");
 		if(!bcorpse&&!(level.time%8)){

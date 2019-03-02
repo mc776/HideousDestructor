@@ -58,8 +58,10 @@ class Babuin:HDActor{
 		if(
 			!level.ispointinmap(pos)
 			||!checkmove(pos.xy,PCM_DROPOFF|PCM_NOACTORS)
-		)setorigin(lastpointinmap,true);
-		else lastpointinmap=pos;
+		){
+			setorigin(lastpointinmap,true);
+			setz(clamp(pos.z,floorz,ceilingz-height));
+		}else lastpointinmap=pos;
 
 		if(!latchtarget||latchtarget==self||latchtarget.health<1){
 			latchtarget=null;
