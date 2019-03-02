@@ -247,12 +247,14 @@ class MagManager:HDWeapon{
 	ready:
 		TNT1 A 1{
 			int bt=player.cmd.buttons;
-			if(pressingfiremode()){
+			if(bt&BT_ZOOM){
 				int inputamt=player.cmd.pitch>>6;
 				if(inputamt){
 					NextMagType(inputamt>0?true:false);
 					invoker.UpdateText();
 				}
+				HijackMouse();
+			}else if(bt&BT_FIREMODE){
 				if(justpressed(BT_ATTACK))NextMagType(false);
 				else if(justpressed(BT_ALTATTACK))NextMagType();
 				else if(justpressed(BT_RELOAD))PutIntoBackpack(invoker.thismagtype);
@@ -260,7 +262,6 @@ class MagManager:HDWeapon{
 					GetFromBackpack(invoker.thismagtype);
 					A_SetTics(8);
 				}
-				HijackMouse();
 			}else A_WeaponReady(WRF_ALL&~WRF_ALLOWUSER2);
 			if(!invoker.thismag)NextMagType();
 			invoker.UpdateText();
