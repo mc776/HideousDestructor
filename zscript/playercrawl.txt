@@ -14,7 +14,6 @@ class HDPlayerDying:HDPlayerPawn{
 		player.jumpz 0;maxstepheight 8;
 		player.morphweapon "SelfBandage";
 		player.startitem "SelfBandage";
-		player.startitem "HDFist";
 		player.viewheight 12;player.attackzoffset 4;
 		height 16;
 	}
@@ -28,6 +27,7 @@ class HDPlayerDying:HDPlayerPawn{
 		super.postbeginplay();
 		excesshealth=0;
 	}
+	override void GiveBasics(){}
 	override void tick(){
 		super.tick();
 		if(!player||player.bot||player.mo!=self)return;
@@ -57,6 +57,7 @@ class HDPlayerDying:HDPlayerPawn{
 		if(health>12){
 			excesshealth++;
 			if(health>10)damagemobj(null,null,health-10,"maxhpdrain");
+			A_TakeInventory("IsMoving");
 		}
 		if(excesshealth>7){
 			playerinfo ppp=player;
@@ -70,6 +71,10 @@ class HDPlayerDying:HDPlayerPawn{
 				pppmo.stunned=100;
 				pppmo.regenblues=regenblues;
 				pppmo.stimcount=stimcount;
+				pppmo.woundcount=woundcount;
+				pppmo.oldwoundcount=oldwoundcount;
+				pppmo.unstablewoundcount=unstablewoundcount;
+				pppmo.aggravateddamage=aggravateddamage;
 			}
 		}
 		speed=min(speed,frandom(0,0.06));
@@ -103,7 +108,7 @@ class HDPlayerDying:HDPlayerPawn{
 	see:
 	melee:
 	missile:
-		PLAY L 5 A_StillBreathing();
+		PLAY L 2 A_StillBreathing();
 		wait;
 	pain:
 		PLAY L 3{excesshealth--;}
