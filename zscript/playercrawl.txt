@@ -55,32 +55,47 @@ class HDPlayerDying:HDPlayerPawn{
 			A_SelectWeapon("NullWeapon");
 		}
 
-		if(health>12){			
-			if(excesshealth>7){
-				playerinfo ppp=player;
-				UndoPlayerMorph(player,0,true);
-				let pppmo=hdplayerpawn(ppp.mo);
-				if(ppp.mo){
-					pppmo.damagemobj(null,null,pppmo.health-health,"internal");
-					ppp.crouchfactor=0.1;
-					HDWeaponSelector.Select(pppmo,"HDFist",4);
-					pppmo.A_PlaySound("*grunt",CHAN_VOICE);
-					pppmo.fatigue=(HDCONST_SPRINTFATIGUE*4/5);
-					pppmo.stunned=100;
-					pppmo.lastpitch=lastpitch;
-					pppmo.lastangle=lastangle;
-					pppmo.feetangle=feetangle;
-					pppmo.regenblues=regenblues;
-					pppmo.stimcount=stimcount;
-					pppmo.woundcount=woundcount;
-					pppmo.oldwoundcount=oldwoundcount;
-					pppmo.unstablewoundcount=unstablewoundcount;
-					pppmo.aggravateddamage=aggravateddamage;
+		if(health>min(12,getmaxhealth()-1)){		
+			excesshealth++;	
+			if(
+				excesshealth>7
+			){
+				if(
+					player.cmd.buttons&BT_USE
+					||player.cmd.buttons&BT_JUMP
+					||(
+						player.cmd.buttons&BT_SPEED
+						&&(
+							player.cmd.forwardmove
+							||player.cmd.sidemove
+						)
+					)
+				){
+					playerinfo ppp=player;
+					UndoPlayerMorph(player,0,true);
+					let pppmo=hdplayerpawn(ppp.mo);
+					if(ppp.mo){
+						pppmo.damagemobj(null,null,pppmo.health-health,"internal");
+						ppp.crouchfactor=0.1;
+						HDWeaponSelector.Select(pppmo,"HDFist",4);
+						pppmo.A_PlaySound("*grunt",CHAN_VOICE);
+						pppmo.fatigue=(HDCONST_SPRINTFATIGUE*4/5);
+						pppmo.stunned=100;
+						pppmo.lastpitch=lastpitch;
+						pppmo.lastangle=lastangle;
+						pppmo.feetangle=feetangle;
+						pppmo.zerk=regenblues;
+						pppmo.regenblues=regenblues;
+						pppmo.stimcount=stimcount;
+						pppmo.woundcount=woundcount;
+						pppmo.oldwoundcount=oldwoundcount;
+						pppmo.unstablewoundcount=unstablewoundcount;
+						pppmo.aggravateddamage=aggravateddamage;
+					}
 				}
 				return;
 			}else{
-				excesshealth++;
-				if(health>10)damagemobj(null,null,health-10,"maxhpdrain");
+				damagemobj(null,null,health-10,"maxhpdrain");
 			}
 		}
 		speed=min(speed,frandom(0,0.06));
@@ -129,8 +144,13 @@ class HDPlayerDying:HDPlayerPawn{
 	}
 }
 
-//ugggghhhhhhh i hate the way weapons are handled in morphing
 class SelfBandageDying:SelfBandage{
+	states{
+	altfire:
+	althold:
+		TNT1 A 0;
+		goto nope;
+	}
 }
 
 
