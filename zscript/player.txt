@@ -283,6 +283,7 @@ class HDPlayerPawn:PlayerPawn{
 		}
 
 		HeartTicker(fm,sm,input);
+		if(!player)return; //needed in case of morph
 		if(inpain>0)inpain--;
 
 		//prevent odd screwups that leave you unable to throw grenades or something

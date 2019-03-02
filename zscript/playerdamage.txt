@@ -478,6 +478,20 @@ extend class HDPlayerPawn{
 			if(inflictor.master==self)inflictor.master=playercorpse;
 		}
 
+		//go into dying/collapsed mode
+		if(
+			health>0
+			&&health<random(-1,3)
+		){
+			let ppp=player;
+			A_Morph("HDPlayerDying",int.MAX,MRF_TRANSFERTRANSLATION,"CheckPuff","CheckPuff");
+			let pppmo=hdplayerpawn(ppp.mo);
+			if(finaldmg>10)pppmo.A_PlayerScream();
+			pppmo.viewheight=self.viewheight*ppp.crouchfactor;
+			pppmo.regenblues=regenblues;
+			pppmo.stimcount=stimcount;
+		}
+
 		return finaldmg;
 	}
 	states{
