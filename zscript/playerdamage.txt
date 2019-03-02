@@ -483,6 +483,7 @@ extend class HDPlayerPawn{
 		//go into dying/collapsed mode
 		if(
 			health>0
+			&&!HDPlayerDying(self)
 			&&health<random(-1,3)
 		){
 			let ppp=player;
