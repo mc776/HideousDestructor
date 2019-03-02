@@ -10,7 +10,7 @@ class DyingMorph:ActionItem{
 }
 class HDPlayerDying:HDPlayerPawn{
 	default{
-		player.viewbob 2.;
+		player.viewbob 1.5;
 		player.jumpz 0;maxstepheight 8;
 		player.morphweapon "SelfBandage";
 		player.startitem "SelfBandage";
@@ -22,6 +22,7 @@ class HDPlayerDying:HDPlayerPawn{
 	override void playattacking(){}
 	override void playattacking2(){}
 	override void playidle(){}
+	override void jumpcheck(double fm,double sm,bool forceslide){}
 	int excesshealth;
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -81,13 +82,13 @@ class HDPlayerDying:HDPlayerPawn{
 				excesshealth++;
 				if(health>10)damagemobj(null,null,health-10,"maxhpdrain");
 			}
-			A_TakeInventory("IsMoving");
 		}
 		speed=min(speed,frandom(0,0.06));
 		gunbraced=false;
 		fatigue=(HDCONST_SPRINTFATIGUE>>1);
 		viewbob=12.;
 		if(pitch<70)A_MuzzleClimb((frandom(-0.1,0.1),frandom(0.1,0.6)),(0,0),(0,0),(0,0));
+		else A_TakeInventory("IsMoving");
 	}
 	int breathtics;
 	void A_StillBreathing(){

@@ -88,7 +88,7 @@ extend class HDPlayerPawn{
 	}
 	//and jump. don't separate from mantling.
 	override void CheckJump(){}
-	void JumpCheck(double fm,double sm,bool forceslide=false){
+	virtual void JumpCheck(double fm,double sm,bool forceslide=false){
 		if(
 			!forceslide
 			&&player.cmd.buttons&BT_JUMP
