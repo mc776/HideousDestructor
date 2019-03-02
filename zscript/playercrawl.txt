@@ -54,32 +54,34 @@ class HDPlayerDying:HDPlayerPawn{
 			A_SelectWeapon("NullWeapon");
 		}
 
-		if(health>12){
-			excesshealth++;
-			if(health>10)damagemobj(null,null,health-10,"maxhpdrain");
-			A_TakeInventory("IsMoving");
-		}
-		if(excesshealth>7){
-			playerinfo ppp=player;
-			UndoPlayerMorph(player,0,true);
-			let pppmo=hdplayerpawn(ppp.mo);
-			if(ppp.mo){
-				if(pppmo.health>1)pppmo.damagemobj(null,null,pppmo.health-10,"internal");
-				ppp.crouchfactor=0.1;
-				HDWeaponSelector.Select(pppmo,"HDFist",4);
-				pppmo.A_PlaySound("*grunt",CHAN_VOICE);
-				pppmo.fatigue=(HDCONST_SPRINTFATIGUE*4/5);
-				pppmo.stunned=100;
-				pppmo.lastpitch=lastpitch;
-				pppmo.lastangle=lastangle;
-				pppmo.feetangle=feetangle;
-				pppmo.regenblues=regenblues;
-				pppmo.stimcount=stimcount;
-				pppmo.woundcount=woundcount;
-				pppmo.oldwoundcount=oldwoundcount;
-				pppmo.unstablewoundcount=unstablewoundcount;
-				pppmo.aggravateddamage=aggravateddamage;
+		if(health>12){			
+			if(excesshealth>7){
+				playerinfo ppp=player;
+				UndoPlayerMorph(player,0,true);
+				let pppmo=hdplayerpawn(ppp.mo);
+				if(ppp.mo){
+					pppmo.damagemobj(null,null,pppmo.health-health,"internal");
+					ppp.crouchfactor=0.1;
+					HDWeaponSelector.Select(pppmo,"HDFist",4);
+					pppmo.A_PlaySound("*grunt",CHAN_VOICE);
+					pppmo.fatigue=(HDCONST_SPRINTFATIGUE*4/5);
+					pppmo.stunned=100;
+					pppmo.lastpitch=lastpitch;
+					pppmo.lastangle=lastangle;
+					pppmo.feetangle=feetangle;
+					pppmo.regenblues=regenblues;
+					pppmo.stimcount=stimcount;
+					pppmo.woundcount=woundcount;
+					pppmo.oldwoundcount=oldwoundcount;
+					pppmo.unstablewoundcount=unstablewoundcount;
+					pppmo.aggravateddamage=aggravateddamage;
+				}
+				return;
+			}else{
+				excesshealth++;
+				if(health>10)damagemobj(null,null,health-10,"maxhpdrain");
 			}
+			A_TakeInventory("IsMoving");
 		}
 		speed=min(speed,frandom(0,0.06));
 		gunbraced=false;
