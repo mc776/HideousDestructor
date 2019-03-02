@@ -357,30 +357,26 @@ class HDCapFlag:HDWeapon{
 				//if in lives mode, undo deaths
 				//else add points
 				if(!deathmatch){
-					if(fraglimit>0){
-						let hdlc=hdlivescounter.get();
-						for(int i=0;i<MAXPLAYERS;i++){
-							if(!playeringame[i])continue;
-							if(players[i].mo)players[i].mo.UndoPlayerMorph(player,0,true);
-							hdlc.deaths[i]--;
+					let hdlc=hdlivescounter.get();
+					for(int i=0;i<MAXPLAYERS;i++){
+						if(!playeringame[i])continue;
+						if(fraglimit>0)hdlc.deaths[i]--;
+
+						if(players[i].mo&&players[i].mo!=self)players[i].mo.UndoPlayerMorph(player,0,true);
+						let hdp=hdplayerpawn(players[i].mo);
+						if(hdp&&hdp!=self){
+							hdp.aggravateddamage=0;
+							hdp.oldwoundcount=0;
+							hdp.burncount=0;
+							hdp.woundcount=0;
+							hdp.unstablewoundcount=0;
+							hdp.stunned=0;
+							hdp.fatigue=0;
+							hdp.givebody(100);
 						}
-					}else{
-						for(int i=0;i<MAXPLAYERS;i++){
-							if(!playeringame[i])continue;
-							let hdp=hdplayerpawn(players[i].mo);
-							if(hdp&&hdp!=self){
-								hdp.aggravateddamage=0;
-								hdp.oldwoundcount=0;
-								hdp.burncount=0;
-								hdp.woundcount=0;
-								hdp.unstablewoundcount=0;
-								hdp.stunned=0;
-								hdp.fatigue=0;
-								hdp.givebody(100);
-							}
-							let hdw=hdweapon(players[i].readyweapon);
-							if(hdw)hdw.initializewepstats(true);
-						}
+
+						let hdw=hdweapon(players[i].readyweapon);
+						if(hdw)hdw.initializewepstats(true);
 					}
 				}else if(teamplay){
 					if(fraglimit<100){
@@ -394,7 +390,7 @@ class HDCapFlag:HDWeapon{
 						let hdlc=hdlivescounter.get();
 						for(int i=0;i<MAXPLAYERS;i++){
 							if(!playeringame[i])continue;
-							if(players[i].mo)players[i].mo.UndoPlayerMorph(player,0,true);
+							if(players[i].mo&&players[i].mo!=self)players[i].mo.UndoPlayerMorph(player,0,true);
 							let hdp=hdplayerpawn(players[i].mo);
 							bool flip=(level.time%2);
 							if(
