@@ -79,18 +79,10 @@ class HDPlayerDying:HDPlayerPawn{
 						ppp.crouchfactor=0.1;
 						HDWeaponSelector.Select(pppmo,"HDFist",4);
 						pppmo.A_PlaySound("*grunt",CHAN_VOICE);
+						A_TransferConditions(pppmo);
+
+						pppmo.stunned=max(pppmo.stunned,100);
 						pppmo.fatigue=(HDCONST_SPRINTFATIGUE*4/5);
-						pppmo.stunned=100;
-						pppmo.lastpitch=lastpitch;
-						pppmo.lastangle=lastangle;
-						pppmo.feetangle=feetangle;
-						pppmo.zerk=regenblues;
-						pppmo.regenblues=regenblues;
-						pppmo.stimcount=stimcount;
-						pppmo.woundcount=woundcount;
-						pppmo.oldwoundcount=oldwoundcount;
-						pppmo.unstablewoundcount=unstablewoundcount;
-						pppmo.aggravateddamage=aggravateddamage;
 					}
 				}
 				return;

@@ -491,16 +491,26 @@ extend class HDPlayerPawn{
 			let pppmo=hdplayerpawn(ppp.mo);
 			if(originaldamage>10)pppmo.A_PlayerScream();
 			pppmo.viewheight=self.viewheight*ppp.crouchfactor;
-			pppmo.zerk=regenblues;
-			pppmo.regenblues=regenblues;
-			pppmo.stimcount=stimcount;
-			pppmo.woundcount=woundcount;
-			pppmo.oldwoundcount=oldwoundcount;
-			pppmo.unstablewoundcount=unstablewoundcount;
-			pppmo.aggravateddamage=aggravateddamage;
+			A_TransferConditions(pppmo);
 		}
 
 		return finaldmg;
+	}
+	//for when morphing into incapacitated state
+	void A_TransferConditions(hdplayerpawn pppmo){
+		if(!pppmo)return;
+		pppmo.lastpitch=lastpitch;
+		pppmo.lastangle=lastangle;
+		pppmo.feetangle=feetangle;
+		pppmo.zerk=regenblues;
+		pppmo.regenblues=regenblues;
+		pppmo.stimcount=stimcount;
+		pppmo.woundcount=woundcount;
+		pppmo.oldwoundcount=oldwoundcount;
+		pppmo.unstablewoundcount=unstablewoundcount;
+		pppmo.aggravateddamage=aggravateddamage;
+		pppmo.stunned=stunned;
+		pppmo.fatigue=fatigue;
 	}
 	states{
 	pain:
