@@ -553,7 +553,7 @@ class HDPlayerPawn:PlayerPawn{
 				)
 			){
 				blockingmobj.trymove(blockingmobj.pos.xy+vel.xy*1.2,true);
-				if(zerk>0)speed*=sm?0.1:0.4;
+				if(zerk<=0)speed*=sm?0.1:0.4;
 				corpsekicktimer=max(corpsekicktimer,35);
 			}else if(
 				//attempt to kick down the map geometry
