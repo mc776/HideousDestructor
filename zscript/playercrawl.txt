@@ -30,12 +30,13 @@ class HDPlayerDying:HDPlayerPawn{
 	}
 	override void GiveBasics(){}
 	override void tick(){
-		//I could write a virtual, or I could just do this...
-		bool actuallypressinguse=player.cmd.buttons&BT_USE;
-		if(health>0)player.cmd.buttons&=~BT_USE;
 
 		super.tick();
 		if(!player||player.bot||player.mo!=self)return;
+
+		//I could write a virtual, or I could just do this...
+		bool actuallypressinguse=player.cmd.buttons&BT_USE;
+		if(health>0)player.cmd.buttons&=~BT_USE;
 
 		invsel=null; //prevent player from using items
 

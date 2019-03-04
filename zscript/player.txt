@@ -543,7 +543,19 @@ class HDPlayerPawn:PlayerPawn{
 		if(!(input&BT_USE))bpickup=false;else{
 			if(oldinput&BT_ATTACK)hasgrabbed=true;
 			else if(!(oldinput&BT_USE))hasgrabbed=false;
+
 			if(
+				!checkmove(pos.xy+(cos(angle),sin(angle))*12,PCM_DROPOFF|PCM_NOLINES)
+				&&fm<=0
+				&&(
+					blockingmobj is "HDPlayerDying"
+					||blockingmobj is "HDBarrel"
+				)
+			){
+				blockingmobj.trymove(blockingmobj.pos.xy+vel.xy*1.2,true);
+				speed*=sm?0.1:0.4;
+				corpsekicktimer=max(corpsekicktimer,35);
+			}else if(
 				//attempt to kick down the map geometry
 				input&BT_SPEED
 				&&input&BT_ZOOM
