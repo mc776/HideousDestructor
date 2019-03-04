@@ -39,6 +39,12 @@ class HDPlayerDying:HDPlayerPawn{
 
 		invsel=null; //prevent player from using items
 
+		viewbob=12.;
+		speed=min(speed,frandom(0,0.06));
+		if(pitch<70)A_MuzzleClimb((frandom(-0.1,0.1),frandom(0.1,0.6)),(0,0),(0,0),(0,0));
+		else A_TakeInventory("IsMoving");
+		gunbraced=false;
+
 		if(health>min(12,getmaxhealth()-1)){		
 			excesshealth++;	
 			if(
@@ -75,12 +81,7 @@ class HDPlayerDying:HDPlayerPawn{
 				damagemobj(null,null,health-10,"maxhpdrain");
 			}
 		}
-		speed=min(speed,frandom(0,0.06));
-		gunbraced=false;
 		fatigue=(HDCONST_SPRINTFATIGUE>>1);
-		viewbob=12.;
-		if(pitch<70)A_MuzzleClimb((frandom(-0.1,0.1),frandom(0.1,0.6)),(0,0),(0,0),(0,0));
-		else A_TakeInventory("IsMoving");
 	}
 	int breathtics;
 	void A_StillBreathing(){
