@@ -546,14 +546,14 @@ class HDPlayerPawn:PlayerPawn{
 
 			if(
 				!checkmove(pos.xy+(cos(angle),sin(angle))*12,PCM_DROPOFF|PCM_NOLINES)
-				&&fm<=0
+				&&(fm<=0||zerk>0)
 				&&(
 					blockingmobj is "HDPlayerDying"
 					||blockingmobj is "HDBarrel"
 				)
 			){
 				blockingmobj.trymove(blockingmobj.pos.xy+vel.xy*1.2,true);
-				if(!zerk)speed*=sm?0.1:0.4;
+				if(zerk>0)speed*=sm?0.1:0.4;
 				corpsekicktimer=max(corpsekicktimer,35);
 			}else if(
 				//attempt to kick down the map geometry
