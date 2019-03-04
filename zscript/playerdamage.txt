@@ -500,10 +500,17 @@ extend class HDPlayerPawn{
 	//for when morphing into incapacitated state
 	void A_TransferConditions(hdplayerpawn pppmo){
 		if(!pppmo)return;
+		pppmo.beatcount=beatcount;
+		pppmo.beatmax=beatmax;
+		pppmo.beatcap=beatcap;
+		pppmo.beatcounter=beatcounter;
+		pppmo.bloodpressure=bloodpressure;
 		pppmo.lastpitch=lastpitch;
 		pppmo.lastangle=lastangle;
 		pppmo.feetangle=feetangle;
 		pppmo.zerk=zerk;
+		pppmo.lastthingthatwoundedyou=lastthingthatwoundedyou;
+		pppmo.haszerked=haszerked;
 		pppmo.regenblues=regenblues;
 		pppmo.stimcount=stimcount;
 		pppmo.woundcount=woundcount;
