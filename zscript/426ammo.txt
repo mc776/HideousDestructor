@@ -30,8 +30,10 @@ class FourMilAmmo:HDAmmo{
 			a.angle=frandom(0,360);
 			inventory(a).amount=ld;
 			amount-=ld;
-		}if(amount<1)destroy();
-		scale.y*=max(1,amount*0.333);
+		}if(amount<1){
+			destroy();
+			return;
+		}
 	}
 	override void GetItemsThatUseThis(){
 		itemsthatusethis.push("HERPUsable");
@@ -39,9 +41,14 @@ class FourMilAmmo:HDAmmo{
 		itemsthatusethis.push("Vulcanette");
 		itemsthatusethis.push("LiberatorRifle");
 	}
-	states{
+	states(actor){
 	spawn:
-		RCLS A -1;
+		RCLS A -1 nodelay{
+			if(amount>1){
+				scale.y*=max(0.333,amount*0.1);
+				frame=1;
+			}
+		}
 		stop;
 	}
 }
