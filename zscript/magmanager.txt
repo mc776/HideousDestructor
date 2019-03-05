@@ -66,7 +66,25 @@ class MagManager:HDWeapon{
 				}
 				linecounter--;
 			}
+/*
 
+	string magsprite;
+	string roundsprite;
+	class<inventory> roundtype;
+	double drawscale;
+	int thismagamt=thismag.mags[i];
+	[magsprite,roundsprite,roundtype,drawscale]=getmagsprite(thismag);
+
+	virtual string,string,class<inventory>,double getmagsprite(hdmagammo thismag,int thismagamt){
+		return "CLIPA0","PUFFA0","Clip",1.;
+	}
+
+	override string,string,class<inventory>,double getmagsprite(hdmagammo thismag,int thismagamt){
+		string magsprite=(thismagamt>0)?"CLP3A0":"CLP3B0";
+		return magsprite,"PBRSA0","HDPistolAmmo",1.;
+	}
+
+*/
 			int thismagamt=thismag.mags[i];
 			string magsprite="";
 			if(thismag is "HD9mMag30"){
