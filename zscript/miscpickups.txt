@@ -703,6 +703,35 @@ class HDInvuln:InvulnerabilitySphere{
 //-------------------------------------------------
 // Keys
 //-------------------------------------------------
+class MapLoadoutGiver:HDPickup{
+	default{
+		hdpickup.refid HDLD_MAP;
+		hdpickup.nicename "Map";
+	}
+	states{
+	spawn:TNT1 A 0;stop;
+	pickup:
+		TNT1 A 0 A_GiveInventory("MapRevealer");
+		fail;
+	}
+}
+class KeyLoadoutGiver:HDPickup{
+	default{
+		inventory.maxamount 7;
+		hdpickup.refid HDLD_KEY;
+		hdpickup.nicename "Keys";
+	}
+	states{
+	spawn:TNT1 A 0;stop;
+	pickup:
+		TNT1 A 0{
+			int whichkeys=invoker.amount;
+			if(whichkeys&4)A_GiveInventory("BlueCard");
+			if(whichkeys&2)A_GiveInventory("YellowCard");
+			if(whichkeys&1)A_GiveInventory("RedCard");
+		}fail;
+	}
+}
 class HDUPKAlwaysGive:HDUPK{
 	class<inventory> toallplayers;property toallplayers:toallplayers;
 	string msgtoall;property msgtoall:msgtoall;
