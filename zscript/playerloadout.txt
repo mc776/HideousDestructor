@@ -290,6 +290,7 @@ extend class HDPlayerPawn{
 	string startingloadout;property startingloadout:startingloadout;
 	void GiveCustomItems(string loadinput){
 		if(!player)return;
+		loadinput.tolower();
 		if(HDPlayerPawn(self))HDPlayerPawn(self).GiveBasics();
 
 		//special conditions that completely overwrite the loadout giving
@@ -356,6 +357,10 @@ extend class HDPlayerPawn{
 		}
 		hdweapon firstwepactor;
 		for(int i=whichitemclass.size()-1;i>=0;i--){
+			if(
+				whichitem[i]~=="map"
+				||whichitem[i]~=="key"
+			)continue;
 			if(whichitemclass[i]<0){
 				A_Log("\ca*** Unknown loadout code:  \cx"..whichitem[i],true);
 				continue;
