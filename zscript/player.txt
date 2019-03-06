@@ -265,9 +265,17 @@ class HDPlayerPawn:PlayerPawn{
 			}
 		}
 
-		super.Tick();
-		if(!player||!player.mo||player.mo!=self){super.tick();return;} //that xkcd xorg graph, but with morphing
 
+
+
+		super.Tick();
+
+
+
+
+		HeartTicker(fm,sm,input);
+		if(inpain>0)inpain--;
+		if(!player||!player.mo||player.mo!=self){super.tick();return;} //that xkcd xorg graph, but with morphing
 
 
 		//female player sprites
@@ -291,10 +299,6 @@ class HDPlayerPawn:PlayerPawn{
 			if(frame==23)frame=4;
 			else if(frame==24)frame=5;
 		}
-
-		HeartTicker(fm,sm,input);
-		if(!player)return; //needed in case of morph
-		if(inpain>0)inpain--;
 
 		//prevent odd screwups that leave you unable to throw grenades or something
 		if(!countinv("HDFist"))GiveBasics();
