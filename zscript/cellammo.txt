@@ -146,6 +146,14 @@ class HDBattery:HDMagAmmo{
 		}
 		if(hd_debug)LogAmounts();
 	}
+	override string,string,name,double getmagsprite(int thismagamt){
+		string magsprite;
+		if(thismagamt>13)magsprite="CELLA0";
+		else if(thismagamt>6)magsprite="CELLB0";
+		else if(thismagamt>0)magsprite="CELLC0";
+		else magsprite="CELLD0";
+		return magsprite,"CELPA0","HDBattery",0.8;
+	}
 	override void GetItemsThatUseThis(){
 		itemsthatusethis.push("BFG9k");
 		itemsthatusethis.push("ThunderBuster");

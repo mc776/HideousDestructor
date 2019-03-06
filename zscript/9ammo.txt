@@ -40,6 +40,10 @@ class HD9mMag15:HDMagAmmo{
 		inventory.pickupmessage "Picked up a pistol magazine.";
 		hdpickup.refid HDLD_NIMAG15;
 	}
+	override string,string,name,double getmagsprite(int thismagamt){
+		string magsprite=(thismagamt>0)?"CLP2A0":"CLP2B0";
+		return magsprite,"PBRSA0","HDPistolAmmo",2.;
+	}
 	override void GetItemsThatUseThis(){
 		itemsthatusethis.push("DERPUsable");
 		itemsthatusethis.push("DERPDEAD");
@@ -67,6 +71,10 @@ class HD9mMag30:HD9mMag15{
 		hdpickup.nicename "9mm SMG Magazine";
 		inventory.pickupmessage "Picked up an SMG magazine.";
 		hdpickup.refid HDLD_NIMAG30;
+	}
+	override string,string,name,double getmagsprite(int thismagamt){
+		string magsprite=(thismagamt>0)?"CLP3A0":"CLP3B0";
+		return magsprite,"PBRSA0","HDPistolAmmo",2.;
 	}
 	override void GetItemsThatUseThis(){
 		itemsthatusethis.push("HDSMG");

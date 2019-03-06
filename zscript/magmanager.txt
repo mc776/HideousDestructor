@@ -69,48 +69,10 @@ class MagManager:HDWeapon{
 				}
 				linecounter--;
 			}
-/*
-	override string,string,name,double getmagsprite(int thismagamt){
-		string magsprite=(thismagamt>0)?"CLP3A0":"CLP3B0";
-		return magsprite,"PBRSA0","HDPistolAmmo",2.;
-	}
-*/
+
 			int thismagamt=thismag.mags[i];
 			string magsprite="";
-			if(thismag is "HD9mMag30"){
-				roundtype="HDPistolAmmo";
-				roundsprite="PBRSA0";
-				if(thismagamt>0)magsprite="CLP3A0";
-				else magsprite="CLP3B0";
-			}else if(thismag is "HD9mMag15"){
-				roundtype="HDPistolAmmo";
-				roundsprite="PBRSA0";
-				if(thismagamt>0)magsprite="CLP2A0";
-				else magsprite="CLP2B0";
-			}else if(thismag is "HD7mMag"){
-				roundtype="SevenMilAmmo";
-				roundsprite="RBRSA3A7";
-				if(thismagamt>0)magsprite="RMAGA0";
-				else magsprite="RMAGB0";
-				scl=1.7;
-			}else if(thismag is "HD7mClip"){
-				roundtype="SevenMilAmmo";
-				roundsprite="RBRSA3A7";
-				if(thismagamt>8)magsprite="RCLPA0";
-				else if(thismagamt>6)magsprite="RCLPB0";
-				else if(thismagamt>4)magsprite="RCLPC0";
-				else if(thismagamt>2)magsprite="RCLPD0";
-				else if(thismagamt>0)magsprite="RCLPE0";
-				else magsprite="RCLPF0";
-				scl=1.5;
-			}else if(thismag is "HDBattery"){
-				roundsprite="CELPA0";
-				if(thismagamt>13)magsprite="CELLA0";
-				else if(thismagamt>6)magsprite="CELLB0";
-				else if(thismagamt>0)magsprite="CELLC0";
-				else magsprite="CELLD0";
-				scl=0.8;
-			}else [magsprite,roundsprite,roundtype,scl]=thismag.getmagsprite(thismagamt);
+			[magsprite,roundsprite,roundtype,scl]=thismag.getmagsprite(thismagamt);
 
 			sb.drawimage(magsprite,(offx,offy),
 				sb.DI_SCREEN_CENTER|sb.DI_ITEM_RIGHT_TOP,

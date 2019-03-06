@@ -36,6 +36,10 @@ class HD7mMag:HDMagAmmo{
 		inventory.pickupmessage "Picked up a 7.76mm magazine.";
 		scale 0.8;
 	}
+	override string,string,name,double getmagsprite(int thismagamt){
+		string magsprite=(thismagamt>0)?"RMAGA0":"RMAGB0";
+		return magsprite,"RBRSA3A7","SevenMilAmmo",1.7;
+	}
 	override void GetItemsThatUseThis(){
 		itemsthatusethis.push("LiberatorRifle");
 	}
@@ -64,6 +68,16 @@ class HD7mClip:HDMagAmmo{
 		hdpickup.nicename "7.76mm Clip";
 		inventory.pickupmessage "Picked up a 7.76mm clip.";
 		scale 0.6;
+	}
+	override string,string,name,double getmagsprite(int thismagamt){
+		string magsprite;
+		if(thismagamt>8)magsprite="RCLPA0";
+		else if(thismagamt>6)magsprite="RCLPB0";
+		else if(thismagamt>4)magsprite="RCLPC0";
+		else if(thismagamt>2)magsprite="RCLPD0";
+		else if(thismagamt>0)magsprite="RCLPE0";
+		else magsprite="RCLPF0";
+		return magsprite,"RBRSA3A7","SevenMilAmmo",1.5;
 	}
 	override void GetItemsThatUseThis(){
 		itemsthatusethis.push("BossRifle");
