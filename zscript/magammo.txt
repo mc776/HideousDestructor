@@ -239,6 +239,11 @@ class HDMagAmmo:HDAmmo{
 		}
 	}
 
+	//set sprite for mag manager
+	virtual clearscope string,string,name,double getmagsprite(int thismagamt){
+		return "","","Clip",2.;
+	}
+
 	//debug: log amounts
 	void LogAmounts(bool owneronly=false){
 		string stt=string.format("%i  %s: ",amount,getclassname());

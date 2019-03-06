@@ -37,9 +37,12 @@ class MagManager:HDWeapon{
 		if(!thismag||thismag.mags.size()<1)return;
 		int countermaxx=thismag.mags.size();
 		int countermax=countermaxx-1;
+
 		double scl=2.;
+		string magsprite="";
 		string roundsprite="";
 		name roundtype="";
+
 		int howmanylines=countermax/5;
 		int linecounter=countermax%5;
 		if(linecounter<0)linecounter=4;
@@ -67,23 +70,10 @@ class MagManager:HDWeapon{
 				linecounter--;
 			}
 /*
-
-	string magsprite;
-	string roundsprite;
-	class<inventory> roundtype;
-	double drawscale;
-	int thismagamt=thismag.mags[i];
-	[magsprite,roundsprite,roundtype,drawscale]=getmagsprite(thismag);
-
-	virtual string,string,class<inventory>,double getmagsprite(hdmagammo thismag,int thismagamt){
-		return "CLIPA0","PUFFA0","Clip",1.;
-	}
-
-	override string,string,class<inventory>,double getmagsprite(hdmagammo thismag,int thismagamt){
+	override string,string,name,double getmagsprite(int thismagamt){
 		string magsprite=(thismagamt>0)?"CLP3A0":"CLP3B0";
-		return magsprite,"PBRSA0","HDPistolAmmo",1.;
+		return magsprite,"PBRSA0","HDPistolAmmo",2.;
 	}
-
 */
 			int thismagamt=thismag.mags[i];
 			string magsprite="";
@@ -97,12 +87,6 @@ class MagManager:HDWeapon{
 				roundsprite="PBRSA0";
 				if(thismagamt>0)magsprite="CLP2A0";
 				else magsprite="CLP2B0";
-			}else if(thismag is "HD4mMag"){
-				roundtype="FourMilAmmo";;
-				roundsprite="RBRSICE";
-				if(thismagamt>=51)magsprite="ZMAGA0";
-				else if(thismagamt>0)magsprite="ZMAGB0";
-				else magsprite="ZMAGC0";
 			}else if(thismag is "HD7mMag"){
 				roundtype="SevenMilAmmo";
 				roundsprite="RBRSA3A7";
@@ -126,7 +110,8 @@ class MagManager:HDWeapon{
 				else if(thismagamt>0)magsprite="CELLC0";
 				else magsprite="CELLD0";
 				scl=0.8;
-			}
+			}else [magsprite,roundsprite,roundtype,scl]=thismag.getmagsprite(thismagamt);
+
 			sb.drawimage(magsprite,(offx,offy),
 				sb.DI_SCREEN_CENTER|sb.DI_ITEM_RIGHT_TOP,
 				scale:(scl,scl)*(imax?1.6:1.)
