@@ -673,31 +673,37 @@ class HDStatusBar:DoomStatusBar{
 			);
 		}
 	}
+	array<string> wepsprites;
+	array<double> wepspritescales;
+	array<int> wepspriteofs;
 	void drawweaponstash(bool rt=false,int yofs=0){
-		drawwep("Lumberjack","CSAWA0",-163+yofs,scl:0.6,right:rt);
-		drawwep("HDSMG",smgsprite,-141+yofs,scl:0.8,right:rt);
-		if(cplayer.mo.countinv("HDPistol")>1)drawwep("HDPistol",pistolsprite2,-139+yofs,scl:0.7,right:rt);
-		drawwep("HDPistol",pistolsprite,-143+yofs,scl:0.7,right:rt);
-		drawwep("Hunter",huntersprite,-128+yofs,right:rt);
-		drawwep("Slayer",slayersprite,-120+yofs,right:rt);
-		drawwep("Vulcanette","VULCA0",-108+yofs,right:rt);
-		drawwep("ZM66AssaultRifle",zm66sprite,-103+yofs,right:rt);
-		drawwep("HDRL","LAUNA0",-83+yofs,scl:0.9,right:rt);
-		drawwep("Blooper","BLOPA0",-78+yofs,right:rt);
-		drawwep("ThunderBuster","PLASA0",-63+yofs,scl:0.8,right:rt);
-		drawwep("LiberatorRifle",liberatorsprite,-53+yofs,right:rt);
-		drawwep("BFG9k","BFUGA0",-28+yofs,right:rt);
-		drawwep("Brontornis","BLSTA0",-23+yofs,right:rt);
-		drawwep("BossRifle","BORFA0",-16+yofs,right:rt);
-		if(
-			cplayer.mo.countinv("HDFragGrenadeAmmo")
-			&&!(cplayer.readyweapon is "HDFragGrenades")
-		)drawimage(
-			"FRAGA0",(rt?-8:8,-11+yofs),
-			(rt?DI_SCREEN_RIGHT_BOTTOM:DI_SCREEN_LEFT_BOTTOM)|
-			(rt?DI_ITEM_RIGHT:DI_ITEM_LEFT),
-			scale:(0.6,0.6)
-		);
+		wepsprites.clear();wepspritescales.clear();wepspriteofs.clear();
+		for(inventory item=cplayer.mo.inv;item!=null;item=item.inv){
+			let witem=hdweapon(item);
+			if(
+				witem
+				&&!witem.bwimpy_weapon
+				&&witem!=cplayer.readyweapon
+			){
+				string wpsp;double wpscl;
+				[wpsp,wpscl]=witem.getpickupsprite();
+				wepsprites.push(wpsp);
+				wepspritescales.push(wpscl);
+				int sln=witem.slotnumber*24;
+				for(int i=0;i<wepspriteofs.size();i++){
+					if(wepspriteofs[i]==sln)sln-=7;
+				}
+				wepspriteofs.push(sln);
+			}
+		}
+		for(int i=wepsprites.size()-1;i>=0;i--){
+			double scl=wepspritescales[i];
+			drawimage(wepsprites[i],(rt?-8:8,yofs-wepspriteofs[i]),
+				(rt?DI_SCREEN_RIGHT_BOTTOM:DI_SCREEN_LEFT_BOTTOM)|
+				(rt?DI_ITEM_RIGHT:DI_ITEM_LEFT)|DI_ITEM_BOTTOM,
+				scale:(scl,scl)
+			);
+		}
 	}
 	void drawammocounters(int mxht){
 		int mxhtplus=mxht-24;
