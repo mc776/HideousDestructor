@@ -3,6 +3,7 @@
 //-------------------------------------------------
 class HDInvRandomSpawner:RandomSpawner{
 	override void beginplay(){
+		if(!level.ispointinmap(pos))return;
 		let hhh=HDHandlers(eventhandler.find("HDHandlers"));
 		if(hhh){
 			hhh.invposx.push(pos.x);
