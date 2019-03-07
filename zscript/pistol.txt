@@ -24,6 +24,17 @@ class HDPistol:HDWeapon{
 		int mgg=weaponstatus[PISS_MAG];
 		return 30+(mgg<0?0:(ENC_9MAG_LOADED+mgg*ENC_9_LOADED));
 	}
+	override string,double getpickupsprite(){
+		string spr;
+		if(weaponstatus[PISS_CHAMBER]<1){
+			if(weaponstatus[PISS_AUTO]<0)spr="B";
+			else spr="D";
+		}else{
+			if(weaponstatus[PISS_AUTO]<0)spr="A";
+			else spr="C";
+		}
+		return "PIST"..spr.."0",1.;
+	}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
 		if(sb.gimmehud){
 			int nextmagloaded=sb.GetNextLoadMag(hdmagammo(hpl.findinventory("HD9mMag15")));

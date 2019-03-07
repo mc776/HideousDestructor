@@ -658,36 +658,11 @@ class HDStatusBar:DoomStatusBar{
 		}
 	}
 	void drawselectedweapon(int posx,int posy,int flags){
-		weapon w=cplayer.readyweapon;
-		if(!w||w==WP_NOCHANGE)return;
-		string wx="";
-		if(w is "")wx="";
-		else if(w is "Lumberjack")wx="CSAWA0";
-		else if(w is "HDPistol"){
-			wx=pistolsprite;
-			if(hdpistol(w).weaponstatus[PISS_CHAMBER]>0)posx+=2;
-		}
-		else if(w is "HDSMG")wx=smgsprite;
-		else if(w is "Slayer")wx=slayersprite;
-		else if(w is "Hunter")wx=huntersprite;
-		else if(w is "ZM66AssaultRifle")wx=zm66sprite;
-		else if(w is "Vulcanette")wx="VULCA0";
-		else if(w is "Blooper")wx="BLOPA0";
-		else if(w is "HDRL")wx="LAUNA0";
-		else if(w is "LiberatorRifle")wx=liberatorsprite;
-		else if(w is "ThunderBuster")wx="PLASA0";
-		else if(w is "Brontornis")wx="BLSTA0";
-		else if(w is "BFG9k")wx="BFUGA0";
-		else if(w is "BossRifle")wx="BORFA0";
-		else if(w is "HDFragGrenades" || w is "Tripwire")wx="FRAGA0";
-		else if(w is "HDMedikitter")wx=medisprite;
-		else if(w is "HDBerserker")wx="PSTRA0";
-		else if(w is "HDBlueBottler")wx="BON1A0";
-		else if(w is "HDStimpacker")wx="STIMA0";
-		else if(w is "SelfBandage")wx="BLUDC0";
-		if(wx!="")drawimage(wx,(posx,posy),flags,
-			scale:wx=="CSAWA0"?(0.7,0.7):(wx=="FRAGA0"||wx==medisprite?(0.6,0.6):(1,1))
-		);
+		let w=hdweapon(cplayer.readyweapon);
+		if(!w)return;
+		string wx;double ws;
+		[wx,ws]=w.getpickupsprite();
+		if(wx!="")drawimage(wx,(posx,posy),flags,scale:(ws,ws));
 	}
 	void drawwep(class<inventory> type,string img,int zoffs,float scl=1.,bool right=false){
 		if(cplayer.mo.countinv(type) && !(cplayer.readyweapon is type)){

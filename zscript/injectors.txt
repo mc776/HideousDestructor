@@ -115,6 +115,7 @@ class HDStimpacker:HDWoundFixer{
 		HDWoundFixer.DropMeds(owner,0);
 		return null;
 	}
+	override string,double getpickupsprite(){return "STIMA0",1.;}
 	default{
 		hdstimpacker.injecttype "InjectStimDummy";
 		hdstimpacker.spentinjecttype "SpentStim";
@@ -306,6 +307,7 @@ class HDBerserker:HDStimpacker{
 		hdwoundfixer.injectoricon "PSTRA0";
 		hdwoundfixer.injectortype "PortableBerserkPack";
 	}
+	override string,double getpickupsprite(){return "PSTRA0",1.;}
 	states{
 	select:
 		TNT1 A 0{
@@ -376,6 +378,7 @@ class HDBlueBottler:HDWoundFixer{
 		hdwoundfixer.injectoricon "BON1A0";
 		hdwoundfixer.injectortype "BluePotion";
 	}
+	override string,double getpickupsprite(){return "BON1A0",1.;}
 	states{
 	spawn:
 		TNT1 A 1;

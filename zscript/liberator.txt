@@ -124,6 +124,7 @@ class AutoReloader:AutoReloadingThingy{
 	override double weaponbulk(){
 		return 20*amount;
 	}
+	override string,double getpickupsprite(){return "RLDRA0",1.;}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
 		vector2 bob=hpl.hudbob*0.3;
 		int brass=hpl.countinv("SevenMilBrass");
@@ -258,6 +259,21 @@ class LiberatorRifle:AutoReloadingThingy{
 		}
 		int mgg=weaponstatus[LIBS_MAG];
 		return blx+(mgg<0?0:(ENC_776MAG_LOADED+mgg*ENC_776_LOADED));
+	}
+	override string,double getpickupsprite(){
+		string spr;
+		// A: -g +m
+		// B: +g +m
+		// C: -g -m
+		// D: +g -m
+		if(weaponstatus[0]&LIBF_NOLAUNCHER){
+			if(weaponstatus[LIBS_MAG]<0)spr="C";
+			else spr="A";
+		}else{
+			if(weaponstatus[LIBS_MAG]<0)spr="D";
+			else spr="B";
+		}
+		return ((weaponstatus[0]&LIBF_NOBULLPUP)?"BRLL":"BRFL")..spr.."0",1.;
 	}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
 		if(sb.gimmehud){

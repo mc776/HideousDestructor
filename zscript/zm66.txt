@@ -68,6 +68,21 @@ class ZM66AssaultRifle:HDWeapon{
 		if(weaponstatus[0]&ZM66F_NOFIRESELECT)return "Picked up a semi-automatic weapon. Time for some carnage!";
 		return super.pickupmessage();
 	}
+	override string,double getpickupsprite(){
+		string spr;
+		int wepstat0=weaponstatus[0];
+		if(wepstat0&ZM66F_NOLAUNCHER){
+			if(wepstat0&ZM66F_NOFIRESELECT)
+				spr="RIFS";
+			else spr="RIFL";
+		}else spr="RIGL";
+
+		//set to no-mag frame
+		if(weaponstatus[ZM66S_MAG]<0)spr=spr.."D";
+		else spr=spr.."A";
+
+		return spr.."0",1.;
+	}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
 		if(sb.gimmehud){
 			int nextmagloaded=sb.GetNextLoadMag(hdmagammo(hpl.findinventory("HD4mMag")));

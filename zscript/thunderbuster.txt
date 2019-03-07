@@ -37,6 +37,7 @@ class ThunderBuster:HDWeapon{
 	override double weaponbulk(){
 		return 175+(weaponstatus[1]>=0?ENC_BATTERY_LOADED:0);
 	}
+	override string,double getpickupsprite(){return "PLASA0",1.;}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
 		if(sb.gimmehud){
 			sb.drawbattery(-54,-4,sb.DI_SCREEN_CENTER_BOTTOM,reloadorder:true);

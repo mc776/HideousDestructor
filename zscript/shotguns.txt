@@ -91,6 +91,16 @@ class HDShotgun:HDWeapon{
 			owner.A_DropInventory("HDShellAmmo",amt*4);
 		}
 	}
+	clearscope string getpickupframe(){
+		int ssh=weaponstatus[SHOTS_SIDESADDLE];
+		if(ssh>=11)return "A",1.;
+		if(ssh>=9)return "B",1.;
+		if(ssh>=7)return "C",1.;
+		if(ssh>=5)return "D",1.;
+		if(ssh>=3)return "E",1.;
+		if(ssh>=1)return "F",1.;
+		return "G",1.;
+	}
 }
 
 enum hdshottystatus{

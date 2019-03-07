@@ -31,6 +31,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 		)return "%o doubled over from the turgid size of %k's hot, manly lead.";
 		return obituary;
 	}
+	override string,double getpickupsprite(){return "SLAY"..getpickupframe().."0",1.;}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
 		if(sb.gimmehud){
 			sb.drawimage("SHL1A0",(-47,-10),sb.DI_SCREEN_CENTER_BOTTOM);

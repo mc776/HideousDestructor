@@ -55,6 +55,7 @@ class BFG9K:HDWeapon replaces BFG9000{
 		double blx=(weaponstatus[0]&BFGF_STRAPPED)?400:240;
 		return blx+(weaponstatus[BFGS_BATTERY]>=0?ENC_BATTERY_LOADED:0);
 	}
+	override string,double getpickupsprite(){return "BFUGA0",1.;}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
 		if(sb.gimmehud){
 			sb.drawbattery(-54,-4,sb.DI_SCREEN_CENTER_BOTTOM,reloadorder:true);

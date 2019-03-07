@@ -52,6 +52,7 @@ class Hunter:HDShotgun replaces Shotgun{
 		if(weaponstatus[0]&HUNTF_CANFULLAUTO)return string.format("%s You notice some tool marks near the fire selector...",super.pickupmessage());
 		return super.pickupmessage();
 	}
+	override string,double getpickupsprite(){return "HUNT"..getpickupframe().."0",1.;}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
 		if(sb.gimmehud){
 			sb.drawimage("SHL1A0",(-47,-10),basestatusbar.DI_SCREEN_CENTER_BOTTOM);

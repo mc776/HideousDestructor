@@ -64,6 +64,7 @@ class HDRL:HDWeapon{
 		else if(chmb==1)blx+=ENC_ROCKETLOADED;
 		return blx;
 	}
+	override string,double getpickupsprite(){return "LAUNA0",1.;}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
 		if(sb.gimmehud){
 			sb.drawimage("ROQPA0",(-47,-4),sb.DI_SCREEN_CENTER_BOTTOM,scale:(0.6,0.6));
@@ -621,6 +622,7 @@ class Blooper:HDWeapon{
 	override double weaponbulk(){
 		return 60+(weaponstatus[0]&BLOPF_LOADED?ENC_ROCKETLOADED:0);
 	}
+	override string,double getpickupsprite(){return "BLOPA0",1.;}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
 		if(sb.gimmehud){
 			sb.drawimage("ROQPA0",(-52,-4),sb.DI_SCREEN_CENTER_BOTTOM,scale:(0.6,0.6));

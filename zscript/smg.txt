@@ -41,6 +41,9 @@ class HDSMG:HDWeapon{
 			else owner.A_DropInventory("HD9mMag30",amt);
 		}
 	}
+	override string,double getpickupsprite(){
+		return "SMGN"..((weaponstatus[SMGS_MAG]<0)?"B":"A").."0";
+	}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
 		if(sb.gimmehud){
 			int nextmagloaded=sb.GetNextLoadMag(hdmagammo(hpl.findinventory("HD9mMag30")));
