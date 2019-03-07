@@ -29,17 +29,34 @@ class HDStatusBar:DoomStatusBar{
 		DI_BOTTOMLEFT=DI_SCREEN_LEFT_BOTTOM|DI_ITEM_LEFT_BOTTOM,
 		DI_BOTTOMRIGHT=DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM,
 	}
-	override void Draw(int state,double TicFrac){
+	override void Tick(){
 		hpl=hdplayerpawn(cplayer.mo);
 		if(
 			!cplayer
 			||!hpl
 		)return;
-		cplayer.inventorytics=0;
+
+		wepsprites.clear();wepspritescales.clear();wepspriteofs.clear();
+		for(inventory item=cplayer.mo.inv;item!=null;item=item.inv){
+			let witem=hdweapon(item);
+			if(
+				witem
+				&&!witem.bwimpy_weapon
+				&&witem!=cplayer.readyweapon
+			){
+				string wpsp;double wpscl;
+				[wpsp,wpscl]=witem.getpickupsprite();
+				wepsprites.push(wpsp);
+				wepspritescales.push(wpscl);
+				int sln=witem.slotnumber*24;
+				for(int i=0;i<wepspriteofs.size();i++){
+					if(wepspriteofs[i]==sln)sln-=7;
+				}
+				wepspriteofs.push(sln);
+			}
+		}
 
 		blurred=hpl.bshadow&&hpl.countinv("HDBlurSphere");
-
-		setwepsprites(cplayer.mo);
 
 		int mugnum=cvar.getcvar("hd_mugshot",cplayer).getint();
 		if(mugnum<0)mugnum=cplayer.getgender();
@@ -50,6 +67,18 @@ class HDStatusBar:DoomStatusBar{
 			case 3:mug="STC";break;
 			default:mug="STC";break;
 		}
+
+		hudusedelay=cvar.getcvar("hd_hudusedelay",cplayer).getint();
+		if(cplayer.buttons&BT_USE)gimmehud=max(0,gimmehud-1);
+		else gimmehud=max(hudusedelay,-1);
+	}
+	override void Draw(int state,double TicFrac){
+		hpl=hdplayerpawn(cplayer.mo);
+		if(
+			!cplayer
+			||!hpl
+		)return;
+		cplayer.inventorytics=0;
 
 		if(automapactive){
 			DrawAutomapHUD(ticfrac);
@@ -222,10 +251,8 @@ class HDStatusBar:DoomStatusBar{
 			wrapwidth:300
 		);
 	}
+	int hudusedelay;
 	void DrawCommonStuff(int state){
-		int hudusedelay=cvar.getcvar("hd_hudusedelay",cplayer).getint();
-		if(cplayer.buttons&BT_USE)gimmehud=max(0,gimmehud-1);
-			else gimmehud=max(hudusedelay,-1);
 		if(!(cplayer.cmd.buttons&BT_USE)&&hudusedelay<0)return;
 
 		let cp=HDPlayerPawn(CPlayer.mo);
@@ -581,82 +608,6 @@ class HDStatusBar:DoomStatusBar{
 			);
 		}
 	}
-	string huntersprite;string slayersprite;
-	string smgsprite;string zm66sprite;string liberatorsprite;
-	string medisprite;string pistolsprite;string pistolsprite2;
-	void setwepsprites(playerpawn cp){
-		let pstl=hdpistol(hpl.findinventory("HDPistol"));
-		if(pstl){
-			if(pstl.weaponstatus[PISS_CHAMBER]>0){
-				if(pstl.weaponstatus[PISS_AUTO]>=0)
-					pistolsprite="PISTC0";else pistolsprite="PISTA0";
-			}else{
-				if(pstl.weaponstatus[PISS_AUTO]>=0)
-					pistolsprite="PISTD0";else pistolsprite="PISTB0";
-			}
-		}
-
-		//smg
-		let smgg=hdsmg(hpl.findinventory("HDSMG"));
-		if(smgg){
-			if(smgg.weaponstatus[SMGS_MAG]<0)smgsprite="SMGNB0";else smgsprite="SMGNA0";
-		}
-
-		//zm66
-		if(hpl.countinv("ZM66AssaultRifle")){
-			string zm66pre;
-			let zzz=ZM66AssaultRifle(hpl.findinventory("ZM66AssaultRifle"));
-			if(zzz.weaponstatus[0]&ZM66F_NOFIRESELECT)zm66pre="RIFS";
-			else if(zzz.weaponstatus[0]&ZM66F_NOLAUNCHER)zm66pre="RIFL";
-			else zm66pre="RIGL";
-			if(zzz.weaponstatus[ZM66S_MAG]<0)zm66sprite="D";else zm66sprite="A";
-			zm66sprite=string.format("%s%s0",zm66pre,zm66sprite);
-		}
-
-		//liberator
-		if(hpl.countinv("LiberatorRifle")){
-			let llb=LiberatorRifle(hpl.findinventory("LiberatorRifle"));
-			if(llb.weaponstatus[0]&LIBF_NOLAUNCHER){
-				if(llb.weaponstatus[LIBS_MAG]<0)liberatorsprite="BRFLC0";
-				else liberatorsprite="BRFLA0";
-			}else{
-				if(llb.weaponstatus[LIBS_MAG]<0)liberatorsprite="BRFLD0";
-				else liberatorsprite="BRFLB0";
-			}
-			if(llb.weaponstatus[0]&LIBF_NOBULLPUP)liberatorsprite.replace("BRFL","BRLL");
-		}
-
-		//hunter
-		if(hpl.countinv("Hunter")){
-			int shl=HDWeapon(hpl.findinventory("Hunter")).weaponstatus[SHOTS_SIDESADDLE];
-			if(shl>10)huntersprite="HUNTA0";
-			else if(shl>8)huntersprite="HUNTB0";
-			else if(shl>6)huntersprite="HUNTC0";
-			else if(shl>4)huntersprite="HUNTD0";
-			else if(shl>2)huntersprite="HUNTE0";
-			else if(shl)huntersprite="HUNTF0";
-			else huntersprite="HUNTG0";
-		}
-
-		//slayer
-		if(hpl.countinv("Slayer")){
-			int shl=HDWeapon(hpl.findinventory("Slayer")).weaponstatus[SHOTS_SIDESADDLE];
-			if(shl>10)slayersprite="SLAYA0";
-			else if(shl>8)slayersprite="SLAYB0";
-			else if(shl>6)slayersprite="SLAYC0";
-			else if(shl>4)slayersprite="SLAYD0";
-			else if(shl>2)slayersprite="SLAYE0";
-			else if(shl)slayersprite="SLAYF0";
-			else slayersprite="SLAYG0";
-		}
-
-		//medikit
-		HDMedikitter mdk=HDMedikitter(hpl.findinventory("HDMedikitter"));
-		if(mdk){
-			if(mdk.usedon)medisprite="MEDIC0";
-			else medisprite="MEDIB0";
-		}
-	}
 	void drawselectedweapon(int posx,int posy,int flags){
 		let w=hdweapon(cplayer.readyweapon);
 		if(!w)return;
@@ -664,38 +615,10 @@ class HDStatusBar:DoomStatusBar{
 		[wx,ws]=w.getpickupsprite();
 		if(wx!="")drawimage(wx,(posx,posy),flags,scale:(ws,ws));
 	}
-	void drawwep(class<inventory> type,string img,int zoffs,float scl=1.,bool right=false){
-		if(cplayer.mo.countinv(type) && !(cplayer.readyweapon is type)){
-			drawimage(img,(right?-8:8,zoffs),
-				(right?DI_SCREEN_RIGHT_BOTTOM:DI_SCREEN_LEFT_BOTTOM)|
-				(right?DI_ITEM_RIGHT:DI_ITEM_LEFT),
-				scale:(scl,scl)
-			);
-		}
-	}
 	array<string> wepsprites;
 	array<double> wepspritescales;
 	array<int> wepspriteofs;
 	void drawweaponstash(bool rt=false,int yofs=0){
-		wepsprites.clear();wepspritescales.clear();wepspriteofs.clear();
-		for(inventory item=cplayer.mo.inv;item!=null;item=item.inv){
-			let witem=hdweapon(item);
-			if(
-				witem
-				&&!witem.bwimpy_weapon
-				&&witem!=cplayer.readyweapon
-			){
-				string wpsp;double wpscl;
-				[wpsp,wpscl]=witem.getpickupsprite();
-				wepsprites.push(wpsp);
-				wepspritescales.push(wpscl);
-				int sln=witem.slotnumber*24;
-				for(int i=0;i<wepspriteofs.size();i++){
-					if(wepspriteofs[i]==sln)sln-=7;
-				}
-				wepspriteofs.push(sln);
-			}
-		}
 		for(int i=wepsprites.size()-1;i>=0;i--){
 			double scl=wepspritescales[i];
 			drawimage(wepsprites[i],(rt?-8:8,yofs-wepspriteofs[i]),
