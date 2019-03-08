@@ -8,6 +8,13 @@ class DyingMorph:ActionItem{
 		fail;
 	}
 }
+extend class HDHandlers{
+	void PlayDead(hdplayerpawn ppp){
+		let playr=ppp.player;
+		ppp.A_Morph("HDPlayerDying",int.MAX,MRF_TRANSFERTRANSLATION,"CheckPuff","CheckPuff");
+		hdplayerdying(playr.mo).excesshealth=999;
+	}
+}
 class HDPlayerDying:HDPlayerPawn{
 	default{
 		player.viewbob 1.5;
@@ -26,17 +33,17 @@ class HDPlayerDying:HDPlayerPawn{
 	int excesshealth;
 	override void postbeginplay(){
 		super.postbeginplay();
-		excesshealth=0;
+		if(excesshealth<999)excesshealth=0;
 	}
 	override void GiveBasics(){}
 	override void tick(){
 
+		//I could write a virtual, or I could just do this...
+		bool actuallypressinguse=player&&player.cmd.buttons&BT_USE;
+		if(actuallypressinguse&&health>0)player.cmd.buttons&=~BT_USE;
+
 		super.tick();
 		if(!player||player.bot||player.mo!=self)return;
-
-		//I could write a virtual, or I could just do this...
-		bool actuallypressinguse=player.cmd.buttons&BT_USE;
-		if(health>0)player.cmd.buttons&=~BT_USE;
 
 		invsel=null; //prevent player from using items
 
