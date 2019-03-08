@@ -682,20 +682,23 @@ class HDStatusBar:DoomStatusBar{
 	array<double> ammoscales;
 	void drawammocounters(int mxht){
 		actor cp=cplayer.mo;
+		int ii=0;
 		for(int i=0;i<ammosprites.size();i++){
 			let count=cp.countinv(ammotypes[i]);
+			if(!count)continue;
 			drawimage(ammosprites[i],
-				(-8-(i%8)*16,mxht-(i/8)*14),
+				(-8-(ii%8)*16,mxht-(ii/8)*14),
 				DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM,
-				alpha:count?1.:0.2,
+				//alpha:count?1.:0.2,
 				scale:(ammoscales[i],ammoscales[i])
 			);
-			if(count)drawstring(
+			drawstring(
 				mamountfont,""..count,
-				(-6-(i%8)*16,mxht-(i/8)*14),
+				(-6-(ii%8)*16,mxht-(ii/8)*14),
 				DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM|DI_TEXT_ALIGN_RIGHT,
 				Font.CR_TAN
 			);
+			ii++;
 		}
 	}
 	void drawbattery(int posx,int posy,int flags=0,bool reloadorder=false){
