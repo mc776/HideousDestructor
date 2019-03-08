@@ -8,6 +8,7 @@ class HDStatusBar:DoomStatusBar{
 	hdplayerpawn hpl;
 	bool blurred;
 	string mug;
+	int bigitemyofs;
 	override void Init(){
 		BaseStatusBar.Init();
 		SetSize(0,320,200);
@@ -45,6 +46,7 @@ class HDStatusBar:DoomStatusBar{
 				}
 			}
 		}
+		bigitemyofs=-(ammosprites.size()/SBAR_MAXAMMOCOLS)*SBAR_AMMOROW-20;
 	}
 	enum HDStatBar{
 		STB_COMPRAD=12,
@@ -606,12 +608,11 @@ class HDStatusBar:DoomStatusBar{
 			if(item==cplayer.mo.invsel)thisindex=i;
 
 			if(drawfull&&!gimmehud){
-				int bigyofs=-(ammosprites.size()/SBAR_MAXAMMOCOLS)*SBAR_AMMOROW-20;
 				textureid icon=getinventoryicon(item,0);
 				int xoffs=(i%5)*20;
 				bool isthis=i==thisindex;
 				drawtexture(icon,
-					(-18-xoffs,bigyofs-20*(i/5)),
+					(-18-xoffs,bigitemyofs-20*(i/5)),
 					DI_ITEM_CENTER_BOTTOM|DI_SCREEN_RIGHT_BOTTOM
 					|((
 						item is "PortableStimpack"
