@@ -26,7 +26,10 @@ extend class HDPlayerPawn{
 			A_TakeInventory("BasicArmor");
 		}
 
-		if(damage==TELEFRAG_DAMAGE){
+		if(
+			damage==TELEFRAG_DAMAGE
+			&&source
+		){
 			//because spawn telefrags are bullshit
 			if(
 				source.player
