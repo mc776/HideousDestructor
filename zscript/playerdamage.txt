@@ -26,20 +26,21 @@ extend class HDPlayerPawn{
 			A_TakeInventory("BasicArmor");
 		}
 
-		if(damage==TELEFRAG_DAMAGE){
-			if(source){ //workaround for special 115 (Instant death)
-				//because spawn telefrags are bullshit
-				if(
-					source.player
-					&&source.getage()<10
-				){
-					return 0;
-				}
+		if(
+			damage==TELEFRAG_DAMAGE
+			&&source
+		){
+			//because spawn telefrags are bullshit
+			if(
+				source.player
+				&&source.getage()<10
+			){
+				return 0;
+			}
 
-				if(source==self){
-					flags|=DMG_FORCED;
-					A_TakeInventory("SpiritualArmour");
-				}
+			if(source==self){
+				flags|=DMG_FORCED;
+				A_TakeInventory("SpiritualArmour");
 			}
 		}
 
