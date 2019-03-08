@@ -239,7 +239,7 @@ extend class HDPlayerPawn{
 				){
 					actor p;bool q;
 					if(alv>1){
-						armr.durability-=random(1,type+1);
+						armr.durability-=max(0,random(1,type+1));
 						[q,p]=A_SpawnItemEx("PenePuff",
 							0,0,height*1.6,
 							4,0,1
@@ -248,7 +248,7 @@ extend class HDPlayerPawn{
 						let pp=HDActor(p);
 						pp.A_SpawnChunks("WallChunk",random(8,16),3,8);
 					}else{
-						armr.durability-=random(1,type+1);
+						armr.durability-=max(0,random(1,type+1));
 						[q,p]=A_SpawnItemEx("FragPuff",
 							0,0,height*1.6,
 							4,0,1,
@@ -290,11 +290,11 @@ extend class HDPlayerPawn{
 			if(armr&&random(0,5)){
 				if(alv==3){
 					damage-=30;
-					if(!random(0,200-damage))armr.durability-=damage*0.2;
+					if(!random(0,200-damage))armr.durability-=max(0,damage*0.2);
 				}
 				else if(alv==1){
 					damage-=30;
-					if(!random(0,220-damage))armr.durability-=damage*0.1;
+					if(!random(0,220-damage))armr.durability-=max(0,damage*0.1);
 				}
 			}
 			if(damage<=1){
