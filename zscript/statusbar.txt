@@ -606,11 +606,12 @@ class HDStatusBar:DoomStatusBar{
 			if(item==cplayer.mo.invsel)thisindex=i;
 
 			if(drawfull&&!gimmehud){
+				int bigyofs=-(ammosprites.size()/SBAR_MAXAMMOCOLS)*SBAR_AMMOROW-20;
 				textureid icon=getinventoryicon(item,0);
 				int xoffs=(i%5)*20;
 				bool isthis=i==thisindex;
 				drawtexture(icon,
-					(-18-xoffs,-56-20*(i/5)),
+					(-18-xoffs,bigyofs-20*(i/5)),
 					DI_ITEM_CENTER_BOTTOM|DI_SCREEN_RIGHT_BOTTOM
 					|((
 						item is "PortableStimpack"
@@ -687,14 +688,14 @@ class HDStatusBar:DoomStatusBar{
 			let count=cp.countinv(ammotypes[i]);
 			if(!count)continue;
 			drawimage(ammosprites[i],
-				(-8-(ii%8)*16,mxht-(ii/8)*14),
+				(-8-(ii%SBAR_MAXAMMOCOLS)*16,mxht-(ii/SBAR_MAXAMMOCOLS)*SBAR_AMMOROW),
 				DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM,
 				//alpha:count?1.:0.2,
 				scale:(ammoscales[i],ammoscales[i])
 			);
 			drawstring(
 				mamountfont,""..count,
-				(-6-(ii%8)*16,mxht-(ii/8)*14),
+				(-6-(ii%SBAR_MAXAMMOCOLS)*16,mxht-(ii/SBAR_MAXAMMOCOLS)*SBAR_AMMOROW),
 				DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM|DI_TEXT_ALIGN_RIGHT,
 				Font.CR_OLIVE
 			);
@@ -719,6 +720,10 @@ class HDStatusBar:DoomStatusBar{
 			else if(amt<=13)cellsprite="CELLB0";
 		}else cellsprite="CELLD0";
 		drawimage(cellsprite,(posx,posy),flags:flags,alpha:bttc?1.:0.3);
+	}
+	enum HDSBarNums{
+		SBAR_MAXAMMOCOLS=8,
+		SBAR_AMMOROW=14,
 	}
 }
 
