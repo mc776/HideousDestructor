@@ -697,69 +697,6 @@ class HDStatusBar:DoomStatusBar{
 				Font.CR_TAN
 			);
 		}
-		return;
-
-//		actor cp=cplayer.mo;
-		int mxhtplus=mxht-24;
-		drawimage("CLP3A0",(-78,mxhtplus+4),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM,scale:(2.4,2.4));
-		drawimage("CLP2A0",(-74,mxhtplus),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM,scale:(2.4,2.4));
-		drawambar("PISARED","HDPISAMO","HDPistolAmmo",(-76,mxhtplus-1));
-		drawambar("CLIPRED","CLIPC0","FourMilAmmo",(-54,mxhtplus));
-		drawimage("RMAGA0",(-32,mxhtplus+3),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM,scale:(1.5,1.5));
-
-		drawambar("MAGRED","MAGSTAT","SevenMilAmmo",(-35,mxhtplus-1));
-		drawbar(
-				"RBRSRED","RBRSA3A7",
-				hpl.countinv("SevenMilBrass"),hdmath.maxinv(cp,"SevenMilBrass"),
-				(-38,mxhtplus+2),-1,
-				SHADER_HORZ,DI_ITEM_RIGHT_BOTTOM|DI_SCREEN_RIGHT_BOTTOM
-		);
-		drawimage("SHELA0",(-10,mxhtplus-1),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM);
-
-		drawimage("BROCA0",(-81,mxht),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM);		
-		drawimage("ROCKB0",(-58,mxht-2),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM);
-		drawimage("ROQPA0",(-62,mxht+2),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM,scale:(0.85,0.85));
-
-		drawbattery(-38,mxht);
-		drawimage("FRAGA0",(-10,mxht),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM,scale:(0.7,0.7));
-
-		drawnum(hpl.countinv("HD9mMag15"),-71,mxhtplus-6);
-		drawnum(hpl.countinv("HD9mMag30"),-71,mxhtplus);
-
-		drawnum(hpl.countinv("HD4mMag"),-52,mxhtplus);
-
-		drawnum(hpl.countinv("HD7mClip"),-30,mxhtplus-6);
-		drawnum(hpl.countinv("HD7mMag"),-30,mxhtplus);
-
-		if(hpl.countinv("Slayer"))drawnum(
-			hdweapon(hpl.findinventory("Slayer")).weaponstatus[SHOTS_SIDESADDLE],-4,mxhtplus-14,
-			DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_BOTTOM,
-			Font.CR_BROWN
-		);
-		if(hpl.countinv("Hunter"))drawnum(
-			hdweapon(hpl.findinventory("Hunter")).weaponstatus[SHOTS_SIDESADDLE],-4,mxhtplus-8,
-			DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_BOTTOM,
-			fnt:Font.CR_BROWN
-		);
-		drawnum(hpl.countinv("HDShellAmmo"),-5,mxhtplus,
-			DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_BOTTOM
-		);
-
-		drawnum(hpl.countinv("BrontornisRound"),-76,mxht);
-
-		drawnum(hpl.countinv("HEATAmmo"),-54,mxht-6);
-		drawnum(hpl.countinv("HDRocketAmmo"),-54,mxht);
-		drawnum(hpl.countinv("DudRocketAmmo"),-66,mxht-2,
-			DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_BOTTOM,
-			fnt:Font.CR_BROWN
-		);
-
-		drawnum(hpl.countinv("HDBattery"),-28,mxht,
-			DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_BOTTOM
-		);
-		drawnum(hpl.countinv("HDFragGrenadeAmmo"),-6,mxht,
-			DI_TEXT_ALIGN_RIGHT|DI_SCREEN_RIGHT_BOTTOM
-		);
 	}
 	void drawbattery(int posx,int posy,int flags=0,bool reloadorder=false){
 		let hpl=hdplayerpawn(cplayer.mo);
