@@ -46,7 +46,7 @@ class HDStatusBar:DoomStatusBar{
 				}
 			}
 		}
-		bigitemyofs=-(ammosprites.size()/SBAR_MAXAMMOCOLS)*SBAR_AMMOROW-20;
+		bigitemyofs=-20;
 	}
 	enum HDStatBar{
 		STB_COMPRAD=12,
@@ -702,6 +702,7 @@ class HDStatusBar:DoomStatusBar{
 			);
 			ii++;
 		}
+		bigitemyofs=-(ii/SBAR_MAXAMMOCOLS)*SBAR_AMMOROW-26;
 	}
 	void drawbattery(int posx,int posy,int flags=0,bool reloadorder=false){
 		let hpl=hdplayerpawn(cplayer.mo);
