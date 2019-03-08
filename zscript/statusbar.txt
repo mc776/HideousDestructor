@@ -20,6 +20,31 @@ class HDStatusBar:DoomStatusBar{
 		mIndexFont = HUDFont.Create(fnt,fnt.GetCharWidth("0"),true);
 		mAmountFont = HUDFont.Create("INDEXFONT");
 		diparms = InventoryBarState.Create();
+
+		//populate the list of ammo types for the ammo display
+		ammotypes.clear();ammosprites.clear();ammoscales.clear();
+		for(int i=0;i<allactorclasses.size();i++){
+			let thisinv=(class<hdammo>)(allactorclasses[i]);
+			if(thisinv){
+				let thisinvd=getdefaultbytype(thisinv);
+				if(thisinvd.binvbar)continue;
+				let thisicon=thisinvd.icon;
+				if(!thisicon.isvalid()){
+					let dds=thisinvd.spawnstate;
+					if(dds!=null)thisicon=dds.GetSpriteTexture(0);
+				}
+				if(thisicon.isvalid()){
+					vector2 dds=texman.getscaledsize(thisicon);
+					double ddv=0.7;
+					if(max(dds.x,dds.y)<8.){
+						ddv*=(8./min(dds.x,dds.y));
+					}
+					ammoscales.push(clamp(ddv,0.2,2.));
+					ammosprites.push(texman.getname(thisicon));
+					ammotypes.push(thisinv.getclassname());
+				}
+			}
+		}
 	}
 	enum HDStatBar{
 		STB_COMPRAD=12,
@@ -652,9 +677,30 @@ class HDStatusBar:DoomStatusBar{
 			);
 		}
 	}
+	array<string> ammosprites;
+	array<string> ammotypes;
+	array<double> ammoscales;
 	void drawammocounters(int mxht){
-		int mxhtplus=mxht-24;
 		actor cp=cplayer.mo;
+		for(int i=0;i<ammosprites.size();i++){
+			let count=cp.countinv(ammotypes[i]);
+			drawimage(ammosprites[i],
+				(-8-(i%8)*16,mxht-(i/8)*14),
+				DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM,
+				alpha:count?1.:0.2,
+				scale:(ammoscales[i],ammoscales[i])
+			);
+			if(count)drawstring(
+				mamountfont,""..count,
+				(-6-(i%8)*16,mxht-(i/8)*14),
+				DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM|DI_TEXT_ALIGN_RIGHT,
+				Font.CR_TAN
+			);
+		}
+		return;
+
+//		actor cp=cplayer.mo;
+		int mxhtplus=mxht-24;
 		drawimage("CLP3A0",(-78,mxhtplus+4),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM,scale:(2.4,2.4));
 		drawimage("CLP2A0",(-74,mxhtplus),DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM,scale:(2.4,2.4));
 		drawambar("PISARED","HDPISAMO","HDPistolAmmo",(-76,mxhtplus-1));
