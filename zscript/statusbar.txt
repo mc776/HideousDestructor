@@ -37,23 +37,35 @@ class HDStatusBar:DoomStatusBar{
 			||!hpl
 		)return;
 
-		wepsprites.clear();wepspritescales.clear();wepspriteofs.clear();
+		wepsprites.clear();wepspritescales.clear();wepspriteofs.clear();wepspritecounts.clear();
 		for(inventory item=cplayer.mo.inv;item!=null;item=item.inv){
 			let witem=hdweapon(item);
 			if(
 				witem
 				&&!witem.bwimpy_weapon
-				&&witem!=cplayer.readyweapon
 			){
 				string wpsp;double wpscl;
 				[wpsp,wpscl]=witem.getpickupsprite();
-				wepsprites.push(wpsp);
-				wepspritescales.push(wpscl);
-				int sln=witem.slotnumber*24;
-				for(int i=0;i<wepspriteofs.size();i++){
-					if(wepspriteofs[i]==sln)sln-=7;
+				if(wpsp!=""){
+					int sln=witem.slotnumber*24;
+					for(int i=0;i<wepspriteofs.size();i++){
+						if(wepspriteofs[i]==sln)sln-=7;
+					}
+
+					int amt=(witem==cplayer.readyweapon)?0:1;
+					let spw=spareweapons(cplayer.mo.findinventory("spareweapons"));
+					if(spw){
+						for(int i=0;i<spw.weapontype.size();i++){
+							if(spw.weapontype[i]==witem.getclassname())amt++;
+						}
+					}
+					if(amt){
+						wepspritecounts.push(amt);
+						wepsprites.push(wpsp);
+						wepspritescales.push(wpscl);
+						wepspriteofs.push(sln);
+					}
 				}
-				wepspriteofs.push(sln);
 			}
 		}
 
@@ -619,13 +631,24 @@ class HDStatusBar:DoomStatusBar{
 	array<string> wepsprites;
 	array<double> wepspritescales;
 	array<int> wepspriteofs;
+	array<int> wepspritecounts;
 	void drawweaponstash(bool rt=false,int yofs=0){
 		for(int i=wepsprites.size()-1;i>=0;i--){
 			double scl=wepspritescales[i];
-			drawimage(wepsprites[i],(rt?-8:8,yofs-wepspriteofs[i]),
+			int xofs=rt?-8:8;
+			int yofsfinal=yofs-wepspriteofs[i];
+			drawimage(wepsprites[i],(xofs,yofsfinal),
 				(rt?DI_SCREEN_RIGHT_BOTTOM:DI_SCREEN_LEFT_BOTTOM)|
 				(rt?DI_ITEM_RIGHT:DI_ITEM_LEFT)|DI_ITEM_BOTTOM,
 				scale:(scl,scl)
+			);
+			int count=wepspritecounts[i];
+			if(count>1)drawstring(
+				psmallfont,count.."x",
+				(xofs-2,yofsfinal-3),
+				(rt?DI_SCREEN_RIGHT_BOTTOM:DI_SCREEN_LEFT_BOTTOM)|
+				(rt?DI_ITEM_RIGHT:DI_ITEM_LEFT)|DI_ITEM_BOTTOM|DI_TEXT_ALIGN_LEFT,
+				Font.CR_DARKGRAY
 			);
 		}
 	}
