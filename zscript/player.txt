@@ -816,9 +816,8 @@ extend class HDPlayerPawn{
 		woundcount=0;
 		unstablewoundcount=0;
 
-		oldwoundcount--;
-		burncount--;
-
+		oldwoundcount=min(90,oldwoundcount-1);
+		burncount=min(90,burncount-1);
 		if(!random(0,7))aggravateddamage--;
 
 		givebody(max(0,maxhealth()-health));

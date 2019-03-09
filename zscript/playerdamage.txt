@@ -26,10 +26,6 @@ extend class HDPlayerPawn{
 			A_TakeInventory("BasicArmor");
 		}
 
-		if(hd_yolo&&!alldown()){
-			damage=min(health-1,damage);
-		}
-
 		if(
 			damage==TELEFRAG_DAMAGE
 			&&source
@@ -438,34 +434,37 @@ extend class HDPlayerPawn{
 
 
 		//player survives at cost
-		if(
-			damage>=health
-			&&mod!="internal"
-			&&mod!="bleedout"
-			&&mod!="invisiblebleedout"
-			&&damage<random(12,70)
-			&&random(0,3)
-		){
-			int wnddmg=random(0,max(0,damage>>2));
-			if(mod=="bashing")wnddmg>>=1;
-			damage=health-random(1,3);
-			if(
-				mod=="fire"
-				||mod=="ice"
-				||mod=="heat"
-				||mod=="cold"
-				||mod=="plasma"
-				||mod=="burning"
-				||mod=="thermal"
-			){
-				burncount+=wnddmg;
+		if(damage>=health){
+			if(hd_yolo&&!alldown()){
+				damage=min(health-1,damage);
 			}else if(
-				mod=="slime"
-				||mod=="balefire"
+				mod!="internal"
+				&&mod!="bleedout"
+				&&mod!="invisiblebleedout"
+				&&damage<random(12,70)
+				&&random(0,3)
 			){
-				aggravateddamage+=wnddmg;
-			}else{
-				unstablewoundcount+=wnddmg;
+				int wnddmg=random(0,max(0,damage>>2));
+				if(mod=="bashing")wnddmg>>=1;
+				damage=health-random(1,3);
+				if(
+					mod=="fire"
+					||mod=="ice"
+					||mod=="heat"
+					||mod=="cold"
+					||mod=="plasma"
+					||mod=="burning"
+					||mod=="thermal"
+				){
+					burncount+=wnddmg;
+				}else if(
+					mod=="slime"
+					||mod=="balefire"
+				){
+					aggravateddamage+=wnddmg;
+				}else{
+					unstablewoundcount+=wnddmg;
+				}
 			}
 		}
 
@@ -493,18 +492,24 @@ extend class HDPlayerPawn{
 			&&player
 			&&!HDPlayerDying(self)
 			&&health<random(-1,3)
-		){
-			let ppp=player;
-			A_Morph("HDPlayerDying",int.MAX,MRF_TRANSFERTRANSLATION,"CheckPuff","CheckPuff");
-			let pppmo=hdplayerpawn(ppp.mo);
-			if(originaldamage>10)pppmo.A_PlayerScream();
-			pppmo.viewheight=self.viewheight*ppp.crouchfactor;
-			A_TransferConditions(pppmo);
-		}
+		)A_Incapacitated((originaldamage>10)?HDINCAP_SCREAM:0);
 
 		return finaldmg;
 	}
 	//for when morphing into incapacitated state
+	void A_Incapacitated(int flags=0){
+		let ppp=player;
+		A_Morph("HDPlayerDying",int.MAX,MRF_TRANSFERTRANSLATION,"CheckPuff","CheckPuff");
+		let pppmo=HDPlayerDying(ppp.mo);
+		if(flags&HDINCAP_SCREAM)pppmo.A_PlayerScream();
+		pppmo.viewheight=self.viewheight*ppp.crouchfactor;
+		A_TransferConditions(pppmo);
+		if(flags&HDINCAP_FAKING)pppmo.excesshealth=999;
+	}
+	enum IncapFlags{
+		HDINCAP_FAKING=1,
+		HDINCAP_SCREAM=2,
+	}
 	void A_TransferConditions(hdplayerpawn pppmo){
 		if(!pppmo)return;
 		pppmo.beatcount=beatcount;

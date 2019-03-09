@@ -10,9 +10,7 @@ class DyingMorph:ActionItem{
 }
 extend class HDHandlers{
 	void PlayDead(hdplayerpawn ppp){
-		let playr=ppp.player;
-		ppp.A_Morph("HDPlayerDying",int.MAX,MRF_TRANSFERTRANSLATION,"CheckPuff","CheckPuff");
-		hdplayerdying(playr.mo).excesshealth=999;
+		ppp.A_Incapacitated(hdplayerpawn.HDINCAP_FAKING);
 	}
 }
 class HDPlayerDying:HDPlayerPawn{
@@ -44,6 +42,8 @@ class HDPlayerDying:HDPlayerPawn{
 
 		super.tick();
 		if(!player||player.bot||player.mo!=self)return;
+
+		if(viewheight>16)viewheight=max(16,viewheight-2);
 
 		invsel=null; //prevent player from using items
 
@@ -108,11 +108,7 @@ class HDPlayerDying:HDPlayerPawn{
 	states{
 	spawn:
 		PLAY H 5 A_SetBlend("00 00 00",1.,140,"00 00 00");
-		PLAY IIIIIJJJJJKKKKKLLLLL 1{
-			if(viewheight>16){
-				viewheight=max(16,viewheight-2);
-			}
-		}
+		PLAY IJKL 5;
 	see:
 	melee:
 	missile:
