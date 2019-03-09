@@ -95,7 +95,7 @@ extend class HDPlayerPawn{
 			}
 		}
 
-		bool crouched=height<40;
+		bool crouched=!hdplayerdying(self)&&height<40;
 
 		playercorpse=spawn("HDPlayerCorpse",pos,ALLOW_REPLACE);
 		playercorpse.vel=vel;playercorpse.master=self;
@@ -166,6 +166,7 @@ class HDPlayerCorpse:HDActor{
 	states{
 	spawn:
 		#### A -1;// nodelay A_Die();
+		PLAY A 0;
 	death:
 		#### H 10{
 			A_NoBlocking();

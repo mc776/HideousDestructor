@@ -15,6 +15,7 @@ extend class HDHandlers{
 }
 class HDPlayerDying:HDPlayerPawn{
 	default{
+		+notarget
 		player.viewbob 1.5;
 		player.jumpz 0;maxstepheight 8;
 		player.morphweapon "SelfBandageDying";
@@ -98,17 +99,20 @@ class HDPlayerDying:HDPlayerPawn{
 		scale.y=1.+0.03*sin(breathtics);
 	}
 	override void Die(actor source,actor inflictor,int dmgflags,name MeansOfDeath){
+		silentdeath=true;
 		super.die(source,inflictor,dmgflags,MeansOfDeath);
 		if(playercorpse){
 			playercorpse.setstatelabel("dead");
-			playercorpse.sprite=sprite;
 			playercorpse.tics=6;
+			playercorpse.scale=scale;
 		}
 	}
 	states{
 	spawn:
 		PLAY H 5 A_SetBlend("00 00 00",1.,140,"00 00 00");
-		PLAY IJKL 5;
+		PLAY I 2{if(!excesshealth)bshootable=false;}
+		PLAY I 3{bshootable=true;}
+		PLAY JKL 5;
 	see:
 	melee:
 	missile:
