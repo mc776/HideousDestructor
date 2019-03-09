@@ -123,13 +123,18 @@ class HDLivesCounter:Thinker{
 	//check if player has been wiped
 	static bool wiped(int playernum,bool checkspawned=false){
 		return(
-			hdlivescounter.livesmode()
-			&&hdlivescounter.owndeaths(playernum)>fraglimit%100
-			&&(
-				!checkspawned
-				||(
-					!hdplayerpawn(players[playernum].mo)
-					||players[playernum].mo.health<1
+			(
+				hd_yolo
+				&&hdlivescounter.owndeaths(playernum)>0
+			)||(
+				hdlivescounter.livesmode()
+				&&hdlivescounter.owndeaths(playernum)>fraglimit%100
+				&&(
+					!checkspawned
+					||(
+						!hdplayerpawn(players[playernum].mo)
+						||players[playernum].mo.health<1
+					)
 				)
 			)
 		);

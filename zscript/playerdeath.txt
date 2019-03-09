@@ -23,6 +23,7 @@ extend class HDPlayerPawn{
 	int deathcounter;
 	override void DeathThink(){
 		if(player&&!player.bot){
+			if(hd_yolo&&!alldown())player.cmd.buttons&=~BT_USE;
 			if(deathcounter==144&&!(player.cmd.buttons&BT_USE)){
 				A_Log("\clPress \cdUse\cl to continue.",true);
 				deathcounter=145;
@@ -116,6 +117,33 @@ extend class HDPlayerPawn{
 
 		//THE BUG IS FIXED
 		super.die(source,inflictor,dmgflags,MeansOfDeath);
+	}
+	bool alldown(){
+		if(!player)return false;
+		if(
+			!teamplay
+			&&deathmatch
+		){
+			cvar.findcvar("hd_yolo").setbool(false);
+			return false;
+		}
+		bool ad=true;
+		for(int i=0;i<MAXPLAYERS;i++){
+			if(
+				playeringame[i]
+				&&players[i].mo
+				&&players[i].mo.health>0
+				&&!hdplayerdying(players[i].mo)
+				&&(
+					!teamplay
+					||players[i].getteam()==player.getteam()
+				)
+			){
+				ad=false;
+				break;
+			}
+		}
+		return ad;
 	}
 }
 
