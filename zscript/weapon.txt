@@ -166,7 +166,7 @@ class HDWeapon:Weapon{
 		else player.cmd.pitch=0;player.cmd.yaw=0;
 	}
 
-	//stops turning input
+	//stops moving input
 	action void HijackMove(){
 		let ppp=hdplayerpawn(self);if(ppp)ppp.movehijacked=true;
 		else player.cmd.forwardmove=0;player.cmd.sidemove=0;
@@ -741,7 +741,9 @@ class NullWeapon:HDWeapon{
 }
 
 
-//database for spare weapons
+// ------------------------------------------------------------
+// Database for spare weapons
+// ------------------------------------------------------------
 class SpareWeapons:HDPickup{
 	array<double> weaponbulk;
 	array<string> weapontype;
@@ -907,6 +909,8 @@ extend class HDWeapon{
 		return newwep;
 	}
 }
+
+
 
 //defaults for weapon helptext
 const WEPHELP_BTCOL="\cy";
