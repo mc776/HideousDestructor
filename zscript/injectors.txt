@@ -116,6 +116,7 @@ class HDStimpacker:HDWoundFixer{
 		return null;
 	}
 	override string,double getpickupsprite(){return "STIMA0",1.;}
+	override string gethelptext(){return "\cuStimpack\n"..WEPHELP_INJECTOR;}
 	default{
 		hdstimpacker.injecttype "InjectStimDummy";
 		hdstimpacker.spentinjecttype "SpentStim";
@@ -308,6 +309,7 @@ class HDBerserker:HDStimpacker{
 		hdwoundfixer.injectortype "PortableBerserkPack";
 	}
 	override string,double getpickupsprite(){return "PSTRA0",1.;}
+	override string gethelptext(){return "\cuBerserk Pack\n"..WEPHELP_INJECTOR;}
 	states{
 	select:
 		TNT1 A 0{
@@ -379,6 +381,7 @@ class HDBlueBottler:HDWoundFixer{
 		hdwoundfixer.injectortype "BluePotion";
 	}
 	override string,double getpickupsprite(){return "BON1A0",1.;}
+	override string gethelptext(){return "\cuPotion\n"..WEPHELP_FIRE.."  Drink";}
 	states{
 	spawn:
 		TNT1 A 1;
