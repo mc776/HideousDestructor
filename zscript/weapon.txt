@@ -352,6 +352,12 @@ class HDWeapon:Weapon{
 		string whichdot="redpxl"
 	){}
 	virtual string gethelptext(){return "";}
+	action void A_SetHelpText(){
+		let hdp=hdplayerpawn(self);if(hdp){
+			string ttt=invoker.gethelptext();
+			if(ttt!="")hdp.wephelptext="\cu"..invoker.nicename.."\n"..ttt;
+		}
+	}
 	//that said, why get picky when you can just shoot twice?
 	action void A_MagManager(name type){
 		A_SetInventory("MagManager",1);
@@ -476,11 +482,7 @@ class HDWeapon:Weapon{
 
 			A_WeaponBusy();
 			A_SetCrosshair(21);
-
-			let hdp=hdplayerpawn(self);if(hdp){
-				string ttt=invoker.gethelptext();
-				if(ttt!="")hdp.wephelptext=invoker.nicename.."\n"..ttt;
-			}
+			A_SetHelpText();
 
 			return resolvestate("select0");
 		}
@@ -904,3 +906,18 @@ extend class HDWeapon{
 		return newwep;
 	}
 }
+
+//defaults for weapon helptext
+const WEPHELP_BTCOL="\cy";
+const WEPHELP_RGCOL="\cj";
+const WEPHELP_FIRE=WEPHELP_BTCOL.."Fire"..WEPHELP_RGCOL;
+const WEPHELP_ALTFIRE=WEPHELP_BTCOL.."Altfire"..WEPHELP_RGCOL;
+const WEPHELP_RELOAD=WEPHELP_BTCOL.."Reload"..WEPHELP_RGCOL;
+const WEPHELP_ZOOM=WEPHELP_BTCOL.."Zoom"..WEPHELP_RGCOL;
+const WEPHELP_ALTRELOAD=WEPHELP_BTCOL.."Alt.Reload"..WEPHELP_RGCOL;
+const WEPHELP_FIREMODE=WEPHELP_BTCOL.."Firemode"..WEPHELP_RGCOL;
+const WEPHELP_USER3=WEPHELP_BTCOL.."User3"..WEPHELP_RGCOL;
+const WEPHELP_UNLOAD=WEPHELP_BTCOL.."Unload"..WEPHELP_RGCOL;
+const WEPHELP_UPDOWN=WEPHELP_BTCOL.."Mouselook"..WEPHELP_RGCOL;
+const WEPHELP_FIRESHOOT=WEPHELP_FIRE.."  Shoot\n";
+const WEPHELP_UNLOADUNLOAD=WEPHELP_UNLOAD.."  Unload\n";

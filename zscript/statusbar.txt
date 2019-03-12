@@ -454,6 +454,15 @@ class HDStatusBar:DoomStatusBar{
 				DI_TEXT_ALIGN_CENTER|DI_SCREEN_RIGHT_TOP,Font.CR_RED
 			);
 			drawmypos();
+
+			string s=hpl.wephelptext;
+			screen.DrawText(SmallFont,OptionMenuSettings.mFontColorValue,
+				8,
+				SmallFont.GetHeight()*5,
+				s,
+				DTA_VirtualWidth,640,
+				DTA_VirtualHeight,480
+			);
 		}
 
 		//debug centre line
