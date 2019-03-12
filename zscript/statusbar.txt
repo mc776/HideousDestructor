@@ -380,6 +380,17 @@ class HDStatusBar:DoomStatusBar{
 			DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM
 		);
 
+		//weapon readouts!
+		if(cplayer.readyweapon&&cplayer.readyweapon!=WP_NOCHANGE)drawweaponstatus(cplayer.readyweapon);
+
+		//weapon sprite
+		if(
+			!gimmehud
+			||cvar.getcvar("hd_hudsprite",cplayer).getbool()
+			||!cvar.getcvar("r_drawplayersprites",cplayer).getbool()
+		)
+		drawselectedweapon(58,-6,DI_SCREEN_CENTER_BOTTOM|DI_ITEM_LEFT_BOTTOM);
+
 
 		//full hud consequences
 		if(!gimmehud){
@@ -444,17 +455,6 @@ class HDStatusBar:DoomStatusBar{
 			);
 			drawmypos();
 		}
-
-		//weapon readouts!
-		if(cplayer.readyweapon&&cplayer.readyweapon!=WP_NOCHANGE)drawweaponstatus(cplayer.readyweapon);
-
-		//weapon sprite
-		if(
-			!gimmehud
-			||cvar.getcvar("hd_hudsprite",cplayer).getbool()
-			||!cvar.getcvar("r_drawplayersprites",cplayer).getbool()
-		)
-		drawselectedweapon(58,-6,DI_SCREEN_CENTER_BOTTOM|DI_ITEM_LEFT_BOTTOM);
 
 		//debug centre line
 		if(hd_debug)drawimage(
@@ -724,7 +724,7 @@ class HDStatusBar:DoomStatusBar{
 		drawimage(cellsprite,(posx,posy),flags:flags,alpha:bttc?1.:0.3);
 	}
 	enum HDSBarNums{
-		SBAR_MAXAMMOCOLS=8,
+		SBAR_MAXAMMOCOLS=7,
 		SBAR_AMMOROW=14,
 	}
 }
