@@ -120,7 +120,17 @@ class BossRifle:HDWeapon{
 			-16,-18,sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TEXT_ALIGN_RIGHT,Font.CR_WHITE
 		);
 	}
-
+	override string gethelptext(){
+		return
+		WEPHELP_FIRESHOOT
+		..WEPHELP_ALTFIRE.."  Work bolt\n"
+		..WEPHELP_RELOAD.."  Reload rounds/clip\n"
+		..WEPHELP_ZOOM.."+"..WEPHELP_FIREMODE.."  Zoom\n"
+		..WEPHELP_ZOOM.."+"..WEPHELP_USE.."  Bullet drop\n"
+		..WEPHELP_ALTFIRE.."+"..WEPHELP_UNLOAD.."  Unload chamber/Clean rifle\n"
+		..WEPHELP_UNLOADUNLOAD
+		;
+	}
 	override void DrawSightPicture(
 		HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl,
 		bool sightbob,vector2 bob,double fov,bool scopeview,actor hpc,string whichdot

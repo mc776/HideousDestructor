@@ -75,6 +75,15 @@ class BFG9K:HDWeapon replaces BFG9000{
 		}
 		sb.drawwepnum(hdw.weaponstatus[BFGS_CHARGE],20);
 	}
+	override string gethelptext(){
+		return
+		WEPHELP_FIRE.."  Shoot/Charge\n"
+		..WEPHELP_ALTFIRE.."  Toggle harness\n"
+		..WEPHELP_RELOAD.."  Abort charge/Reload battery\n"
+		..WEPHELP_ALTRELOAD.."  Reload depleted battery\n"
+		..WEPHELP_UNLOADUNLOAD
+		;
+	}
 	override void failedpickupunload(){
 		failedpickupunloadmag(BFGS_BATTERY,"HDBattery");
 	}

@@ -32,6 +32,14 @@ class HDFist:HDWeapon replaces Fist{
 		let ww=HDFist(hdw);
 		if(ww.targethealth)sb.drawwepnum(ww.targethealth,ww.targetspawnhealth);
 	}
+	override string gethelptext(){
+		return
+		WEPHELP_FIRE.."  Punch\n"
+		..WEPHELP_ALTFIRE.."   Lunge\n"
+		..WEPHELP_RELOAD.."   Distracting strike\n"
+		..WEPHELP_UNLOAD.."   Distracting projectile\n"
+		;
+	}
 	override inventory CreateTossable(int amount){
 		if(!owner)return null;
 		array<inventory> items;items.clear();

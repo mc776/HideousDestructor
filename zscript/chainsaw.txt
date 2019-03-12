@@ -49,6 +49,13 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 			Font.CR_DARKGRAY
 		);else if(hdw.weaponstatus[1]>0)sb.drawwepnum(hdw.weaponstatus[1],20);
 	}
+	override string gethelptext(){
+		return
+		WEPHELP_FIRE.."  Cut\n"
+		..WEPHELP_RELOADRELOAD
+		..WEPHELP_UNLOADUNLOAD
+		;
+	}
 	override double gunmass(){
 		return 5+weaponstatus[CSAWS_BATTERY]<0?0:1;
 	}
