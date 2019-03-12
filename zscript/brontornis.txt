@@ -180,6 +180,14 @@ class Brontornis:HDWeapon{
 			HDMath.MaxInv(hpl,"BrontornisRound")
 		);
 	}
+	override string gethelptext(){
+		return
+		WEPHELP_FIRESHOOT
+		..WEPHELP_ALTFIRE.." or "..WEPHELP_FIREMODE.."  Toggle zoom\n"
+		..WEPHELP_RELOADRELOAD
+		..WEPHELP_UNLOADUNLOAD
+		;
+	}
 	override void DrawSightPicture(
 		HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl,
 		bool sightbob,vector2 bob,double fov,bool scopeview,actor hpc,string whichdot

@@ -58,6 +58,14 @@ class ThunderBuster:HDWeapon{
 			Font.CR_DARKGRAY
 		);
 	}
+	override string gethelptext(){
+		return
+		WEPHELP_FIRESHOOT
+		..WEPHELP_ALTFIRE.."  Switch to "..(weaponstatus[0]&TBF_ALT?"detonator":"scattershot").." mode\n"
+		..WEPHELP_RELOADRELOAD
+		..WEPHELP_UNLOADUNLOAD
+		;
+	}
 	override void DrawSightPicture(
 		HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl,
 		bool sightbob,vector2 bob,double fov,bool scopeview,actor hpc,string whichdot
@@ -310,6 +318,7 @@ class ThunderBuster:HDWeapon{
 		#### B 3 offset(-1,35);
 		#### B 2 offset(0,34){
 			invoker.weaponstatus[0]^=TBF_ALT;
+			A_SetHelpText();
 		}
 		#### A 1;
 		#### A 1 offset(0,34);
