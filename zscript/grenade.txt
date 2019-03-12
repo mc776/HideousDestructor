@@ -160,7 +160,7 @@ class HDGrenadeThrower:HDWeapon{
 		);
 		spn.vel+=owner.vel;
 		weaponstatus[0]|=FRAGF_SPOONOFF;
-		if(cvar.getcvar("hd_helptext",owner.player).getint()){
+		if(cvar.getcvar("hd_helptext",owner.player).getbool()){
 			wepmsg="\cgThe fuze is lit!\n\n\n\n\cgRemember to throw!";
 			msgtimer=100;
 		}

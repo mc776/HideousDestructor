@@ -77,7 +77,7 @@ extend class HDPlayerPawn{
 		if(player.attacker is "HDFire")player.attacker=player.attacker.master;
 
 		if(
-			cvar.getcvar("hd_helptext",player).getint()>1
+			cvar.getcvar("hd_helptext",player).getbool()
 		)CallACS("TipMessage",70,random(1,fatigue)+beatcount*flip);
 
 		//drop parting gifts

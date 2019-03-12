@@ -16,11 +16,6 @@ extend class HDHandlers{
 
 		if(e.name~=="ab")SetAirburst(ppp,e.args[0]);
 
-		if(e.name~=="weaptip"){
-			let wp=HDWeapon(players[e.player].readyweapon);
-			if(wp)wp.ShowTip(true);
-		}
-
 		else if(alive&&e.name~=="hd_lean")Lean(ppp,e.args[0]);
 		else if(alive&&e.name~=="hd_taunt")Taunt(ppp);
 		else if(alive&&e.name~=="hd_findrange")FindRange(ppp);

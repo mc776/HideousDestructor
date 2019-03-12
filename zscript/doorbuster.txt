@@ -460,7 +460,7 @@ class DoorBuster:HDPickup{
 			}
 		}
 		string feedback=string.format("DoorBuster planted with tag \cy%i",ddd.botid);
-		if(cvar.getcvar("hd_helptext",player).getint()) feedback.appendformat(string.format("\cj. Use \cddb 999 \cy%i\cj to detonate.",ddd.botid));
+		if(cvar.getcvar("hd_helptext",player).getbool()) feedback.appendformat(string.format("\cj. Use \cddb 999 \cy%i\cj to detonate.",ddd.botid));
 		A_Log(feedback,true);
 		invoker.amount--;
 		if(invoker.amount<1)invoker.destroy();

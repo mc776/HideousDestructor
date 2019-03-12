@@ -75,7 +75,7 @@ class GrabThinker:Thinker{
 					)
 				)
 			){
-				if(cvar.getcvar("hd_helptext",picktarget.player).getint())picktarget.A_Log("No room in pockets.",true);
+				if(cvar.getcvar("hd_helptext",picktarget.player).getbool())picktarget.A_Log("No room in pockets.",true);
 				pickobj.bsolid=true;
 				destroy();
 				return;

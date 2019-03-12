@@ -351,18 +351,7 @@ class HDWeapon:Weapon{
 		bool sightbob,vector2 bob,double fov,bool scopeview,actor hcp,
 		string whichdot="redpxl"
 	){}
-	void ShowTip(bool forced=false){
-		if(
-			forced||(
-				tipped<3&&
-				owner&&owner.player&&
-				cvar.getcvar("hd_helptext",owner.player).getint()>1
-			)
-		){
-			owner.ACS_NamedExecuteAlways("TipMessage",0,-1,selectionorder);
-			if(!forced)tipped++;
-		}
-	}
+	virtual string gethelptext(){return "";}
 	//that said, why get picky when you can just shoot twice?
 	action void A_MagManager(name type){
 		A_SetInventory("MagManager",1);
@@ -488,7 +477,10 @@ class HDWeapon:Weapon{
 			A_WeaponBusy();
 			A_SetCrosshair(21);
 
-			if(!countinv("NulledWeapon"))invoker.ShowTip();
+			let hdp=hdplayerpawn(self);if(hdp){
+				string ttt=invoker.gethelptext();
+				if(ttt!="")hdp.wephelptext=invoker.nicename.."\n"..ttt;
+			}
 
 			return resolvestate("select0");
 		}

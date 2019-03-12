@@ -39,6 +39,8 @@ class HDPlayerPawn:PlayerPawn{
 
 	bool flip;
 
+	string wephelptext;
+
 	double bobcounter;
 	vector2 hudbob;
 
@@ -787,7 +789,7 @@ extend class HDHandlers{
 			if(
 				p.player&&
 				!players[e.PlayerNumber].bot&&
-				cvar.getcvar("hd_helptext",players[e.playernumber]).getint()>1
+				cvar.getcvar("hd_helptext",players[e.playernumber]).getbool()
 			)CallACS("TipMessage",2,random(1,3));
 		}
 	}
