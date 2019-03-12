@@ -56,6 +56,14 @@ class HDPistol:HDWeapon{
 		sb.drawwepnum(hdw.weaponstatus[PISS_MAG],15);
 		if(hdw.weaponstatus[PISS_CHAMBER]==2)sb.drawwepdot(-16,-10,(3,1));
 	}
+	override string gethelptext(){
+		return
+		WEPHELP_FIRESHOOT
+		..(weaponstatus[PISS_AUTO]<0?"":(WEPHELP_FIREMODE.."  Semi/Auto\n"))
+		..WEPHELP_MAGMANAGER
+		..WEPHELP_UNLOADUNLOAD
+		;
+	}
 	override void DrawSightPicture(
 		HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl,
 		bool sightbob,vector2 bob,double fov,bool scopeview,actor hpc,string whichdot

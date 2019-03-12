@@ -212,6 +212,17 @@ class Vulcanette:HDWeapon{
 			Font.CR_DARKGRAY
 		);
 	}
+	override string gethelptext(){
+		return
+		WEPHELP_FIRESHOOT
+		..WEPHELP_RELOAD.."  Reload mags\n"
+		..WEPHELP_ALTRELOAD.."  Reload battery\n"
+		..WEPHELP_FIREMODE.."  Switch to "..(weaponstatus[0]&VULCF_FAST?"2100":"700").." RPM\n"
+		..WEPHELP_ZOOM.."+"..WEPHELP_FIREMODE.."+"..WEPHELP_UPDOWN.."  Zoom\n"
+		..WEPHELP_MAGMANAGER
+		..WEPHELP_UNLOADUNLOAD
+		;
+	}
 	override void DrawSightPicture(
 		HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl,
 		bool sightbob,vector2 bob,double fov,bool scopeview,actor hpc,string whichdot
@@ -322,6 +333,7 @@ class Vulcanette:HDWeapon{
 			else if(justpressed(BT_FIREMODE|BT_ALTFIRE)){
 				invoker.weaponstatus[0]^=VULCF_FAST;
 				A_PlaySound("weapons/fmswitch",7,0.4);
+				A_SetHelpText();
 				A_WeaponReady(WRF_NONE);
 			}else A_WeaponReady(WRF_ALL);
 		}

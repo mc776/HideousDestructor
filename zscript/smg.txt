@@ -65,6 +65,15 @@ class HDSMG:HDWeapon{
 		sb.drawwepnum(hdw.weaponstatus[SMGS_MAG],30);
 		if(hdw.weaponstatus[SMGS_CHAMBER]==2)sb.drawwepdot(-16,-10,(3,1));
 	}
+	override string gethelptext(){
+		return
+		WEPHELP_FIRESHOOT
+		..WEPHELP_RELOAD.."  Reload\n"
+		..WEPHELP_FIREMODE.."  Semi/Burst/Auto\n"
+		..WEPHELP_MAGMANAGER
+		..WEPHELP_UNLOADUNLOAD
+		;
+	}
 	override void DrawSightPicture(
 		HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl,
 		bool sightbob,vector2 bob,double fov,bool scopeview,actor hpc,string whichdot

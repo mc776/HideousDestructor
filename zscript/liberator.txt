@@ -156,7 +156,7 @@ class AutoReloader:AutoReloadingThingy{
 	override string gethelptext(){
 		return
 		WEPHELP_FIRE.."  Assemble rounds\n"
-		..WEPHELP_UNLOAD.."+"..WEPHELP_BTCOL.."USE"..WEPHELP_RGCOL.."  same"
+		..WEPHELP_UNLOAD.."+"..WEPHELP_USE.."  same"
 		;
 	}
 	states{
@@ -336,8 +336,9 @@ class LiberatorRifle:AutoReloadingThingy{
 			:(
 			(WEPHELP_FIREMODE.."  Semi/Auto\n")
 			..WEPHELP_ZOOM.."+"..WEPHELP_FIREMODE.."+"..WEPHELP_UPDOWN.."  Zoom\n"))
+		..WEPHELP_MAGMANAGER
 		..WEPHELP_UNLOAD.."  Unload "..(glmode?"GL\n":"magazine\n")
-		..WEPHELP_UNLOAD.."+"..WEPHELP_BTCOL.."USE"..WEPHELP_RGCOL.."  Assemble rounds"
+		..WEPHELP_UNLOAD.."+"..WEPHELP_USE.."  Assemble rounds"
 		;
 	}
 	override void DrawSightPicture(

@@ -75,6 +75,18 @@ class Hunter:HDShotgun replaces Shotgun{
 			sb.drawwepdot(-15-i*2,-2,(1,3));
 		}
 	}
+	override string gethelptext(){
+		return
+		WEPHELP_FIRESHOOT
+		..WEPHELP_ALTFIRE.."  Pump\n"
+		..WEPHELP_RELOAD.."  Reload (side saddles first)\n"
+		..WEPHELP_ALTRELOAD.."  Reload (pockets only)\n"
+		..WEPHELP_FIREMODE.."  Pump/Semi"..(weaponstatus[0]&HUNTF_CANFULLAUTO?"/Auto":"").."\n"
+		..WEPHELP_FIREMODE.."+"..WEPHELP_RELOAD.."  Load side saddles\n"
+		..WEPHELP_USE.."+"..WEPHELP_UNLOAD.."  Steal ammo from Slayer\n"
+		..WEPHELP_UNLOADUNLOAD
+		;
+	}
 	override void DrawSightPicture(
 		HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl,
 		bool sightbob,vector2 bob,double fov,bool scopeview,actor hpc,string whichdot
