@@ -153,11 +153,17 @@ class AutoReloader:AutoReloadingThingy{
 			fourm?Font.CR_LIGHTBLUE:Font.CR_DARKGRAY,alpha:lph
 		);
 	}
+	override string gethelptext(){
+		return
+		WEPHELP_FIRE.."  Assemble rounds\n"
+		..WEPHELP_UNLOAD.."+"..WEPHELP_BTCOL.."USE"..WEPHELP_RGCOL.."  same"
+		;
+	}
 	states{
-	select:
+	select0:
 		TNT1 A 0 A_Raise(999);
 		wait;
-	deselect:
+	deselect0:
 		TNT1 A 0 A_Lower(999);
 		wait;
 	ready:
@@ -317,6 +323,22 @@ class LiberatorRifle:AutoReloadingThingy{
 			sb.drawwepdot(-30,-26,(1,16));
 			sb.drawwepdot(-32,-26,(1,16));
 		}
+	}
+	override string gethelptext(){
+		bool gl=!(weaponstatus[0]&LIBF_NOLAUNCHER);
+		bool glmode=gl&&(weaponstatus[0]&LIBF_GRENADEMODE);
+		return
+		WEPHELP_FIRESHOOT
+		..(gl?(WEPHELP_ALTFIRE..(glmode?("  Rifle mode\n"):("  GL mode\n"))):"")
+		..WEPHELP_RELOAD.."  Reload mag\n"
+		..(gl?(WEPHELP_ALTRELOAD.."  Reload GL\n"):"")
+		..(glmode?(WEPHELP_FIREMODE.."+"..WEPHELP_UPDOWN.."  Airburst\n")
+			:(
+			(WEPHELP_FIREMODE.."  Semi/Auto\n")
+			..WEPHELP_ZOOM.."+"..WEPHELP_FIREMODE.."+"..WEPHELP_UPDOWN.."  Zoom\n"))
+		..WEPHELP_UNLOAD.."  Unload "..(glmode?"GL\n":"magazine\n")
+		..WEPHELP_UNLOAD.."+"..WEPHELP_BTCOL.."USE"..WEPHELP_RGCOL.."  Assemble rounds"
+		;
 	}
 	override void DrawSightPicture(
 		HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl,
@@ -771,6 +793,7 @@ class LiberatorRifle:AutoReloadingThingy{
 		BRFG A 1 offset(0,34);
 		BRFG A 0{
 			invoker.weaponstatus[0]^=LIBF_GRENADEMODE;
+			A_SetHelpText();
 			A_Refire();
 		}goto ready;
 	althold:

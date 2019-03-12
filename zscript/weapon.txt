@@ -356,6 +356,7 @@ class HDWeapon:Weapon{
 		let hdp=hdplayerpawn(self);if(hdp){
 			string ttt=invoker.gethelptext();
 			if(ttt!="")hdp.wephelptext="\cu"..invoker.nicename.."\n"..ttt;
+			else hdp.wephelptext=ttt;
 		}
 	}
 	//that said, why get picky when you can just shoot twice?
@@ -717,7 +718,7 @@ class NullWeapon:HDWeapon{
 	spawn:
 		TNT1 A 0;
 		stop;
-	select:
+	select0:
 		TNT1 A 0{
 			A_TakeInventory("PowerFrightener");
 			A_SetInventory("NulledWeapon",1);
@@ -725,7 +726,7 @@ class NullWeapon:HDWeapon{
 		}
 		TNT1 A 0 A_Raise();
 		wait;
-	deselect:
+	deselect0:
 		TNT1 A 0 A_SetCrosshair(21);
 		TNT1 A 0 A_Lower();
 		wait;
