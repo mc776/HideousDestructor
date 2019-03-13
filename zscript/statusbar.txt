@@ -481,6 +481,7 @@ class HDStatusBar:DoomStatusBar{
 	void drawtip(){
 		double spectipalpha=hpl.specialtipalpha;
 		if(spectipalpha>0.){
+			if(spectipalpha>1000)spectipalpha=1.-(spectipalpha-1000);
 			string s=hpl.specialtip;
 			screen.DrawText(SmallFont,OptionMenuSettings.mFontColorValue,
 				2,

@@ -237,7 +237,13 @@ class HDPlayerPawn:PlayerPawn{
 		if(!flip)flip=true;else flip=false; //for things that must alternate every tic
 
 		//for fadeout of tips
-		if(specialtipalpha>0.)specialtipalpha-=0.1;
+		if(specialtipalpha>0.){
+			specialtipalpha-=0.1;
+			if(
+				specialtipalpha>999.
+				&&specialtipalpha<1000.
+			)specialtipalpha=specialtipalpha=12.+0.08*specialtip.length();
+		}
 
 		//only do anything below this while the player is alive!
 		if(bkilled||health<1){
