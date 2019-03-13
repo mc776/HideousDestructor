@@ -466,6 +466,20 @@ class HDStatusBar:DoomStatusBar{
 			);
 		}
 
+		//tip of your lifetime!
+		double spectipalpha=hpl.specialtipalpha;
+		if(spectipalpha>0.){
+			string s=hpl.specialtip;
+			screen.DrawText(SmallFont,OptionMenuSettings.mFontColorValue,
+				2,
+				300-SmallFont.GetHeight()*8,
+				s,
+				DTA_VirtualWidth,480,
+				DTA_VirtualHeight,300,
+				DTA_Alpha,spectipalpha
+			);
+		}
+
 		//debug centre line
 		if(hd_debug)drawimage(
 			"GREENPXL",(0,0),DI_SCREEN_CENTER_BOTTOM,

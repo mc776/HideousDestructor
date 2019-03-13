@@ -96,6 +96,7 @@ class HDPlayerPawn:PlayerPawn{
 		btelestomp=true;
 
 		hdlivescounter.updatefragcounts(hdlivescounter.get());
+		showgametip();
 	}
 	void A_CheckGunBraced(){
 		if(HDWeapon.IsBusy(self))gunbraced=false;
@@ -234,6 +235,8 @@ class HDPlayerPawn:PlayerPawn{
 		lastpos=pos;
 
 		if(!flip)flip=true;else flip=false; //for things that must alternate every tic
+
+		if(specialtipalpha>0.)specialtipalpha-=0.1; //for fadeout of tips
 
 		//only do anything below this while the player is alive!
 		if(bkilled||health<1){
@@ -845,6 +848,8 @@ extend class HDPlayerPawn{
 
 		A_GiveInventory("PowerFrightener",1);
 		ConsolidateAmmo();
+
+		showgametip();
 
 		if(player){
 			Shader.SetEnabled(player,"NiteVis",false);
