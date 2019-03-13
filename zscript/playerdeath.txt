@@ -25,9 +25,9 @@ extend class HDPlayerPawn{
 		if(player&&!player.bot){
 			if(hd_yolo&&!alldown())player.cmd.buttons&=~BT_USE;
 			if(deathcounter==144&&!(player.cmd.buttons&BT_USE)){
-				A_Log("\clPress \cdUse\cl to continue.",true);
-				deathcounter=145;
 				showgametip();
+				specialtip=specialtip.."\n\n\clPress \cdUse\cl to continue.";
+				deathcounter=145;
 			}else if(
 				deathcounter<144
 				&&player
