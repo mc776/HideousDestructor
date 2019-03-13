@@ -236,7 +236,8 @@ class HDPlayerPawn:PlayerPawn{
 
 		if(!flip)flip=true;else flip=false; //for things that must alternate every tic
 
-		if(specialtipalpha>0.)specialtipalpha-=0.1; //for fadeout of tips
+		//for fadeout of tips
+		if(specialtipalpha>0.)specialtipalpha-=0.1;
 
 		//only do anything below this while the player is alive!
 		if(bkilled||health<1){
@@ -788,12 +789,6 @@ extend class HDHandlers{
 			){
 				p.ReplaceBot();
 			}
-
-			if(
-				p.player&&
-				!players[e.PlayerNumber].bot&&
-				cvar.getcvar("hd_helptext",players[e.playernumber]).getbool()
-			)CallACS("TipMessage",2,random(1,3));
 		}
 	}
 }
@@ -849,11 +844,10 @@ extend class HDPlayerPawn{
 		A_GiveInventory("PowerFrightener",1);
 		ConsolidateAmmo();
 
-		showgametip();
-
 		if(player){
 			Shader.SetEnabled(player,"NiteVis",false);
 			Shader.SetEnabled(player,"NiteVisRed",false);
+			showgametip();
 		}
 	}
 }

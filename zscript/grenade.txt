@@ -58,6 +58,16 @@ class HDGrenadeThrower:HDWeapon{
 			if(timer%3)sb.drawwepnum(140-timer,140,posy:-15,alwaysprecise:true);
 		}
 	}
+	override string gethelptext(){
+		if(weaponstatus[0]&FRAGF_SPOONOFF)return
+		WEPHELP_FIRE.."  Wind up, release to throw\n(\cxSTOP READING AND DO THIS"..WEPHELP_RGCOL..")";
+		return
+		WEPHELP_FIRE.."  Pull pin/wind up (release to throw)\n"
+		..WEPHELP_ALTFIRE.."  Pull pin, again to drop spoon\n"
+		..WEPHELP_RELOAD.."  Abort/Replace pin\n"
+		..WEPHELP_ZOOM.."  Start planting tripwire traps"
+		;
+	}
 	override inventory CreateTossable(int amount){
 		ReturnHandToOwner();
 		owner.A_DropInventory(grenadeammotype,owner.countinv(grenadeammotype));
@@ -145,7 +155,10 @@ class HDGrenadeThrower:HDWeapon{
 		A_PlaySound("weapons/fragpinout",CHAN_WEAPON);
 	}
 	//drop the spoon
-	action void A_StartCooking(){invoker.StartCooking();}
+	action void A_StartCooking(){
+		invoker.StartCooking();
+		A_SetHelpText();
+	}
 	void StartCooking(){
 		if(!owner)return;
 		bool gbg;actor spn;
@@ -167,7 +180,10 @@ class HDGrenadeThrower:HDWeapon{
 		owner.A_PlaySound("weapons/fragspoonoff",0,1,0,20);
 	}
 	//we need to start from the inventory itself so it can go into DoEffect
-	action void A_TossGrenade(bool oshit=false){invoker.TossGrenade(oshit);}
+	action void A_TossGrenade(bool oshit=false){
+		invoker.TossGrenade(oshit);
+		A_SetHelpText();
+	}
 	void TossGrenade(bool oshit=false){
 		if(!owner)return;
 		int garbage;actor ggg;

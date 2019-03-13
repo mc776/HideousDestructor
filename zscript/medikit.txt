@@ -153,6 +153,15 @@ class HDMedikitter:HDWoundFixer{
 		if(ww.injectableflesh>=1)sb.drawwepdot(-16,-10,(3,3));
 		sb.drawnum(hpl.countinv("PortableMedikit"),-43,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 	}
+	override string gethelptext(){
+		return
+		WEPHELP_FIRE.."  Staple and patch\n"
+		..WEPHELP_ALTFIRE.."  Apply Second Flesh\n"
+		..WEPHELP_RELOAD.."  Take off armour\n"
+		..WEPHELP_FIREMODE.."  Run diagnostic\n"
+		..WEPHELP_ZOOM.."  Toggle self/other\n"
+		;
+	}
 	void patchwound(int amt,actor targ){
 		let slf=HDPlayerPawn(targ);
 		if(!slf)return;

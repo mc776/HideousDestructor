@@ -125,7 +125,10 @@ class HDStatusBar:DoomStatusBar{
 			DrawAutomapStuff();
 		}else if(cplayer.mo==cplayer.camera){
 			DrawAlwaysStuff();
-			if(hpl.health<1)return;
+			if(hpl.health<1){
+				drawtip();
+				return;
+			}
 			BeginHUD(forcescaled:true);
 			if(state==HUD_StatusBar){
 				DrawCommonStuff(state);
@@ -466,7 +469,16 @@ class HDStatusBar:DoomStatusBar{
 			);
 		}
 
-		//tip of your lifetime!
+		drawtip();
+
+		//debug centre line
+		if(hd_debug)drawimage(
+			"GREENPXL",(0,0),DI_SCREEN_CENTER_BOTTOM,
+			0.06,scale:(0.6,100)
+		);
+
+	}
+	void drawtip(){
 		double spectipalpha=hpl.specialtipalpha;
 		if(spectipalpha>0.){
 			string s=hpl.specialtip;
@@ -479,13 +491,6 @@ class HDStatusBar:DoomStatusBar{
 				DTA_Alpha,spectipalpha
 			);
 		}
-
-		//debug centre line
-		if(hd_debug)drawimage(
-			"GREENPXL",(0,0),DI_SCREEN_CENTER_BOTTOM,
-			0.06,scale:(0.6,100)
-		);
-
 	}
 	void drawnum(
 		int num,double xpos,double ypos,

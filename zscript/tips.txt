@@ -3,6 +3,11 @@ extend class hdplayerpawn{
 	string specialtip;
 	int lasttip;
 	void showgametip(){
+		if(
+			!player
+			||(hdplayerdying(self)&&health>0)
+			||!cvar.getcvar("hd_helptext",player).getbool()
+		)return;
 		static const string specialtips[]={
 			"Read the manual!\n(open the pk7 with 7Zip and look for \cdhd_manual.txt\cu)",
 			"Hold \cdUse\cu to check what options are available for a given weapon.",
@@ -19,14 +24,14 @@ extend class hdplayerpawn{
 			"Use stimpacks to slow down bleeding.",
 
 			"If the sight picture is getting in your way when you're on the move,\ntry changing the \cdhd_noscope\cu and \cdhd_sightbob\cu settings to taste.",
-			"Holding \cdZoom\cu will greatly stabilize your aim,\nand implicitly brace your weapon against nearby map geometry.",
+			"Holding \cdZoom\cu will greatly stabilize your aim,\nand implicitly brace your weapon\nagainst nearby map geometry.",
 			"Hit the \cdDrop One\cu key or use the\cdhd_dropone\cu command\nto drop a single unit of each ammo type used by your current weapon.",
 			"If you don't want the diving action when you hit crouch while running,\nset \cdhd_noslide\cu to true.",
 			"If you want multiples of the same weapon in your loadout,\nthey must be entered in multiple instances, e.g. \"lib,lna\".",
 
 			"Set \cdfraglimit\cu to 100+ to enable HD's elimination mode.\nIn co-op, a positive fraglimit under 100\nalso serves as a lives limit.",
 			"Turn on \cdhd_yolo\cu in co-op for a one-life mode where\nyou don't die until all players\nhave been incapacitated.",
-			"Turn on \cdhd_flagpole\cu in multiplayer to create an objective!\n(Tip: move AWAY from the flagpole to program the flag.)",
+			"Turn on \cdhd_flagpole\cu in multiplayer to create an objective!\n(Move AWAY from the flagpole to program the flag.)",
 			"Turn on \cdhd_nobots\cu to cause the bots to be replaced by HD marines.",
 
 			"To remote activate a switch or door, type \cdderp 555\cu\nto stick a D.E.R.P. on to it,\nthen \cdderp 556\cu to make it flick the switch.",
@@ -35,6 +40,6 @@ extend class hdplayerpawn{
 		int newtip;
 		do{newtip=random(0,specialtips.size()-1);}while(newtip==lasttip);
 		specialtip="\crT I P :  \cu\n"..specialtips[newtip];
-		specialtipalpha=12.+0.05*specialtip.length();
+		specialtipalpha=12.+0.08*specialtip.length();
 	}
 }

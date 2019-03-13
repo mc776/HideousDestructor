@@ -27,6 +27,7 @@ extend class HDPlayerPawn{
 			if(deathcounter==144&&!(player.cmd.buttons&BT_USE)){
 				A_Log("\clPress \cdUse\cl to continue.",true);
 				deathcounter=145;
+				showgametip();
 			}else if(
 				deathcounter<144
 				&&player
@@ -75,10 +76,6 @@ extend class HDPlayerPawn{
 			DropInventory(player.readyweapon);
 		}
 		if(player.attacker is "HDFire")player.attacker=player.attacker.master;
-
-		if(
-			cvar.getcvar("hd_helptext",player).getbool()
-		)CallACS("TipMessage",70,random(1,fatigue)+beatcount*flip);
 
 		//drop parting gifts
 		if(countinv("BFG9k")){

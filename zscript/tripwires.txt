@@ -49,6 +49,12 @@ class Tripwire:HDWeapon{
 			if(timer%3)sb.drawwepnum(140-timer,140,posy:-15,alwaysprecise:true);
 		}
 	}
+	override string gethelptext(){
+		return
+		WEPHELP_FIRE.."  Place "..(gumspot?"grenade":"end of string").."\n"
+		..WEPHELP_ALTFIRE.."  Abort\n"
+		;
+	}
 	override void DropOneAmmo(int amt){
 		if(owner){
 			amt=clamp(amt,1,10);

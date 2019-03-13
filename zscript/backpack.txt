@@ -320,6 +320,14 @@ class HDBackpack:HDWeapon{
 			);
 		}
 	}
+	override string gethelptext(){
+		return
+		WEPHELP_FIRE.."/"..WEPHELP_ALTFIRE.."  Previous/Next item\n"
+		..WEPHELP_FIREMODE.."+"..WEPHELP_UPDOWN.."  Scroll through items\n"
+		..WEPHELP_RELOAD.."  Place into backpack\n"
+		..WEPHELP_UNLOAD.."  Remove from backpack\n"
+		;
+	}
 	void UpdateMessage(int num){
 		if(!owner)return;
 		//set index as necessary

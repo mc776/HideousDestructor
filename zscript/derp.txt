@@ -474,6 +474,13 @@ class DERPDeployer:HDWeapon{
 			sb.DI_TEXT_ALIGN_CENTER|sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER
 		);
 	}
+	override string gethelptext(){
+		return
+		WEPHELP_FIRE.."  Deploy\n"
+		..WEPHELP_ALTFIRE.."  Cycle modes\n"
+		..WEPHELP_FIREMODE.."+"..WEPHELP_UPDOWN.."  Set BotID"
+		;
+	}
 	action void A_AddOffset(int ofs){
 		invoker.weaponstatus[DERPS_USEOFFS]+=ofs;
 	}
@@ -820,6 +827,17 @@ class DERPController:HDWeapon{
 			||updatederps(false)
 		)return null;
 		return weapon.createtossable(amount);
+	}
+	override string gethelptext(){
+		return
+		WEPHELP_FIREMODE.."  Hold to pilot\n"
+		..WEPHELP_FIRESHOOT
+		..WEPHELP_ALTFIRE.."  Forwards\n"
+		..WEPHELP_USE.."  Backwards\n"
+		..WEPHELP_RELOAD.."  Cycle through modes\n"
+		..WEPHELP_UNLOAD.."  Jump to Passive mode\n"
+		..WEPHELP_DROP.."  Next D.E.R.P."
+		;
 	}
 	override void DrawSightPicture(
 		HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl,

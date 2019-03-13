@@ -112,6 +112,14 @@ class MagManager:HDWeapon{
 			);
 		}
 	}
+	override string gethelptext(){
+		return
+		WEPHELP_FIRE.."/"..WEPHELP_ALTFIRE.."  Previous/Next mag/clip\n"
+		..WEPHELP_RELOAD.."/"..WEPHELP_UNLOAD.."  Insert/Remove round\n"
+		..WEPHELP_FIREMODE.."+"..WEPHELP_FIRE.."/"..WEPHELP_ALTFIRE.."  Previous/Next item type\n"
+		..WEPHELP_FIREMODE.."+"..WEPHELP_RELOAD.."/"..WEPHELP_UNLOAD.."  Insert/Remove from backpack\n"
+		;
+	}
 	override inventory createtossable(int amt){
 		if(owner)owner.A_DropInventory(thismagtype,1);
 		return null;

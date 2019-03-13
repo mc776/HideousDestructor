@@ -732,6 +732,18 @@ class HERPUsable:HDWeapon{
 			Font.CR_DARKGRAY
 		);else if(batt>0)sb.drawwepnum(batt,20);
 	}
+	override string gethelptext(){
+		return
+		WEPHELP_FIRE.."  Deploy\n"
+		..WEPHELP_ALTFIRE.."  Cycle modes\n"
+		..WEPHELP_FIREMODE.."+"..WEPHELP_UPDOWN.."  Set BotID\n"
+		..WEPHELP_RELOAD.."  Reload mag\n"
+		..WEPHELP_ALTRELOAD.."  Reload battery\n"
+		..WEPHELP_UNLOAD.."  Unload mag\n"
+		..WEPHELP_USE.."+"..WEPHELP_ALTRELOAD.."  Unload battery\n"
+		..WEPHELP_USE.."+"..WEPHELP_UNLOAD.."  Unload partial mag"
+		;
+	}
 	override void consolidate(){
 		if(
 			!(weaponstatus[0]&HERPF_BROKEN)
@@ -951,6 +963,28 @@ class HERPController:HDWeapon{
 		)return null;
 		return weapon.createtossable(amount);
 	}
+	override string gethelptext(){
+		let herpcam=herps[weaponstatus[HERPS_INDEX]];
+		if(!herpcam)return "ERROR";
+		if(
+			herpcam.health<1
+			||herpcam.battery<1
+		)return WEPHELP_DROP.."  Next H.E.R.P.";
+		bool connected=(herpcam.bmissileevenmore);
+		bool turnedon=(herpcam.bmissilemore);
+		if(connected)return
+		WEPHELP_FIREMODE.."  Hold to pilot\n"
+		..WEPHELP_FIRESHOOT
+		..WEPHELP_ALTFIRE.."  Turn "..(turnedon?"Off":"On").."\n"
+		..WEPHELP_RELOAD.."  Disconnect manual mode\n"
+		..WEPHELP_ALTRELOAD.."  Set home angle\n"
+		..WEPHELP_DROP.."  Next H.E.R.P."
+		;
+		return
+		WEPHELP_RELOAD.."  Connect manual mode\n"
+		..WEPHELP_DROP.."  Next H.E.R.P."
+		;
+	}
 	override void DrawSightPicture(
 		HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl,
 		bool sightbob,vector2 bob,double fov,bool scopeview,actor hpc,string whichdot
@@ -1013,6 +1047,7 @@ class HERPController:HDWeapon{
 		goto super::select;
 	ready:
 		TNT1 A 1{
+			A_SetHelpText();
 			if(!invoker.herps.size()||invoker.weaponstatus[HERPS_INDEX]>=invoker.herps.size()){
 				a_updateherps();
 				if(!invoker.herps.size()){
