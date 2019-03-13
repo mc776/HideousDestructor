@@ -41,8 +41,8 @@ extend class hdplayerpawn{
 		int lasttip=cvar.getcvar("hd_lasttip",player).getint();
 		do{newtip=random(0,specialtips.size()-1);}while(newtip==lasttip);
 		cvar.getcvar("hd_lasttip",player).setint(newtip);
-		A_Log(specialtip,true);
 		specialtip="\crTIP: \cu"..specialtips[newtip];
 		specialtipalpha=12.+0.08*specialtip.length();
+		A_Log(specialtip,true);
 	}
 }
