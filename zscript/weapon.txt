@@ -19,7 +19,6 @@ class HDWeapon:Weapon{
 	string nicename;
 	property nicename:nicename;
 	int weaponstatus[8];
-	int tipped;
 	int msgtimer;
 	string wepmsg;
 	enum HDWeaponFlagsets{
@@ -386,7 +385,6 @@ class HDWeapon:Weapon{
 			other.A_PlaySound(pickupsound,CHAN_AUTO);
 		}
 		attachtoowner(other);
-		tipped=0;
 	}
 
 	//when you have the same gun, just strip the new one
@@ -923,11 +921,18 @@ const WEPHELP_ALTRELOAD=WEPHELP_BTCOL.."Alt.Reload"..WEPHELP_RGCOL;
 const WEPHELP_FIREMODE=WEPHELP_BTCOL.."Firemode"..WEPHELP_RGCOL;
 const WEPHELP_USER3=WEPHELP_BTCOL.."User3"..WEPHELP_RGCOL;
 const WEPHELP_UNLOAD=WEPHELP_BTCOL.."Unload"..WEPHELP_RGCOL;
+
 const WEPHELP_UPDOWN=WEPHELP_BTCOL.."Mouselook"..WEPHELP_RGCOL;
 const WEPHELP_USE=WEPHELP_BTCOL.."Use"..WEPHELP_RGCOL;
+const WEPHELP_DROP=WEPHELP_BTCOL.."Drop"..WEPHELP_RGCOL;
+
 const WEPHELP_FIRESHOOT=WEPHELP_FIRE.."  Shoot\n";
 const WEPHELP_RELOADRELOAD=WEPHELP_RELOAD.."  Reload\n";
 const WEPHELP_UNLOADUNLOAD=WEPHELP_UNLOAD.."  Unload\n";
 const WEPHELP_MAGMANAGER=WEPHELP_USER3.."  Magazine Manager\n";
 const WEPHELP_INJECTOR=WEPHELP_FIRE.."  Use on yourself\n"..WEPHELP_ALTFIRE.."  Use on someone else";
+
+
+
+
 
