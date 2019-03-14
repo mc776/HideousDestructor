@@ -105,7 +105,6 @@ class HDMedikitter:HDWoundFixer{
 	enum MediNums{
 		MEDIKIT_MAXFLESH=2,
 	}
-	bool useonother;
 	int injectableflesh;
 	int usedpatches;
 	actor usedon;
@@ -114,7 +113,7 @@ class HDMedikitter:HDWoundFixer{
 	override void beginplay(){
 		injectableflesh=MEDIKIT_MAXFLESH;
 		usedpatches=0;
-		useonother=false;usedon=null;
+		usedon=null;
 		super.beginplay();
 	}
 	override double weaponbulk(){
@@ -135,15 +134,6 @@ class HDMedikitter:HDWoundFixer{
 		}
 		sb.drawwepdot(-27,-11+of,(2,6));
 		sb.drawwepdot(-25,-13+of,(6,2));
-		if(ww.useonother){
-			sb.drawwepdot(-22,-20,(5,6));
-			sb.drawwepdot(-24,-25,(1,7));
-			if(ww.usedon)sb.drawimage(
-				"BLUDC0",(-22,-19),
-				sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_ITEM_RIGHT,
-				0.4
-			);
-		}
 		if(ww.usedon)sb.drawimage(
 			"BLUDC0",(-14,-7),
 			sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_ITEM_RIGHT,
@@ -157,11 +147,12 @@ class HDMedikitter:HDWoundFixer{
 	override string gethelptext(){
 		return
 		"\cuMedikit\n"
-		..WEPHELP_FIRE.."  Staple and patch\n"
-		..WEPHELP_ALTFIRE.."  Apply Second Flesh\n"
 		..WEPHELP_RELOAD.."  Take off armour\n"
-		..WEPHELP_FIREMODE.."  Run diagnostic\n"
-		..WEPHELP_ZOOM.."  Toggle self/other\n"
+		..WEPHELP_INJECTOR
+		.."\n  ...while pressing:\n"
+		.."  <\cunothing"..WEPHELP_RGCOL..">  Staple and patch\n"
+		.."  "..WEPHELP_FIREMODE.."  Run diagnostic\n"
+		.."  "..WEPHELP_FIREMODE.."+"..WEPHELP_ZOOM.."  Apply Second Flesh"
 		;
 	}
 	void patchwound(int amt,actor targ){
@@ -184,9 +175,12 @@ class HDMedikitter:HDWoundFixer{
 		}
 		TNT1 A 10{
 			if(!getcvar("hd_helptext")) return;
-			A_WeaponMessage("\cg+++ \cjMEDIKIT \cg+++\c-\n\n\nPress and hold Fire\nto patch yourself up.\n\nAltfire deploys Second Flesh.\n\nFire Mode runs a diagnostic.\n\nPress Zoom to start\nusing on someone else.",175);
+			A_WeaponMessage("\cg+++ \cjMEDIKIT \cg+++\c-\n\n\nPress and hold Fire\nto patch yourself up.",175);
 		}
 		goto super::select;
+	ready:
+		TNT1 A 1 A_WeaponReady(WRF_ALL&~WRF_ALLOWUSER2);
+		goto readyend;
 	flashstaple:
 		TNT1 A 1{
 			A_PlaySound("medikit/staple",CHAN_WEAPON);
@@ -207,21 +201,10 @@ class HDMedikitter:HDWoundFixer{
 			A_ChangeVelocity(frandom(-1,0.1),frandom(-1,1),0.5,CVF_RELATIVE);
 		}
 		stop;
-	zoom:
-		TNT1 A 1{
-			if(invoker.useonother){
-				invoker.useonother=false;
-				A_WeaponMessage("Using this on yourself.");
-			}else{
-				invoker.useonother=true;
-				A_WeaponMessage("Using this on someone else.");
-			}
-		}
-		TNT1 A 1 A_JumpIf(!pressingzoom(),"readyend");
-		wait;
 	altfire:
 	althold:
 	fireother:
+		TNT1 A 0 A_JumpIf(pressingfiremode(),"diagnoseother");
 		TNT1 A 10{
 			flinetracedata mediline;
 			linetrace(
@@ -231,7 +214,7 @@ class HDMedikitter:HDWoundFixer{
 			);
 			let c=HDPlayerPawn(mediline.hitactor);
 			if(!c){
-				if(getcvar("hd_helptext"))A_WeaponMessage("Nothing to be done here.\n\nHeal thyself? (press zoom)",150);
+				if(getcvar("hd_helptext"))A_WeaponMessage("Nothing to be done here.\n\nHeal thyself? (press fire)",150);
 				return resolvestate("nope");
 			}
 			if(invoker.usedon&&c!=invoker.usedon){
@@ -304,7 +287,7 @@ class HDMedikitter:HDWoundFixer{
 			}
 		}
 		goto nope;
-	secondflesh:
+	firesecondflesh:
 		TNT1 A 0{
 			if(invoker.injectableflesh<1){
 				A_WeaponMessage("You are out of Second Flesh.");
@@ -312,7 +295,7 @@ class HDMedikitter:HDWoundFixer{
 			}else A_Refire("hold");
 		}
 	fire:
-		TNT1 A 0 A_JumpIf(pressingfiremode()&&pressingzoom(),"secondflesh");
+		TNT1 A 0 A_JumpIf(pressingfiremode(),"hold");
 		TNT1 A 0{
 			if(invoker.usedpatches>HD_MEDPATCHLIMIT){
 				A_WeaponMessage("You are out of Auto-Sutures.");
@@ -339,11 +322,12 @@ class HDMedikitter:HDWoundFixer{
 		}
 		TNT1 A 1;
 		TNT1 A 0{
+			bool pfm=pressingfiremode();
 			if(pitch<55){
 				A_SetPitch(pitch+8,SPF_INTERPOLATE);
 				A_Refire();
 			}
-			else if(pressingfiremode()&&pressingzoom()){
+			else if(pressingzoom()&&pfm){
 				let a=HDPlayerPawn(self);
 				if(a){
 					if(a.oldwoundcount+a.burncount+a.unstablewoundcount<1){
@@ -353,6 +337,8 @@ class HDMedikitter:HDWoundFixer{
 						A_Refire("secondflesh");
 					}
 				}
+			}else if(pfm){
+				A_Refire("diagnose");
 			}else{
 				if(invoker.usedpatches>HD_MEDPATCHLIMIT){
 					A_WeaponMessage("You are out of Auto-Sutures.");
@@ -399,8 +385,7 @@ class HDMedikitter:HDWoundFixer{
 		}
 		goto nope;
 
-	firemode:
-		TNT1 A 0 A_JumpIf(invoker.useonother,"firemodeother");
+	diagnose:
 		TNT1 A 0 A_WeaponMessage("\cdMedikit Auto-Diagnostic Tool engaged.\c-\n\n\ccScanning, please wait...");
 		TNT1 AAAAAAAAAAAA 2{
 			A_PlaySound("medikit/scan",CHAN_WEAPON,0.4);
@@ -408,7 +393,7 @@ class HDMedikitter:HDWoundFixer{
 		}
 		TNT1 A 0 A_ScanResults(self,12);
 		goto nope;
-	firemodeother:
+	diagnoseother:
 		TNT1 A 0{
 			A_WeaponMessage("\cdMedikit Auto-Diagnostic Tool engaged.\c-\n\n\ccScanning, please wait...");
 			invoker.scantarget=null;
