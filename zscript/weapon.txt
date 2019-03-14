@@ -828,12 +828,12 @@ extend class HDWeapon{
 	bool AddSpareWeaponRegular(actor newowner){
 		double wbulk=weaponbulk();
 		let hdp=hdplayerpawn(newowner);
-		if(
-			hdp
-			&&wbulk+hdp.enc>((hdp.zerk>0)?4000:2000)
-		){
-			hdp.A_Log("You can't even move to put away your weapon. Throw something out!",true);
-			return false;
+		if(hdp){
+			hdp.overloaded=hdp.CheckEncumbrance();
+			if(wbulk+hdp.enc>((hdp.zerk>0)?4000:2000)){
+				if(hdp.getage()>10)hdp.A_Log("You can't even move to put away your weapon. Throw something out!",true);
+				return false;
+			}
 		}
 		let mwt=SpareWeapons(newowner.findinventory("SpareWeapons"));
 		if(!mwt){
