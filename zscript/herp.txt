@@ -375,13 +375,15 @@ class HERPBot:HDUPK{
 		}goto spawn;
 	death:
 		HERP A 0{
-			ammo[0]=random(0,ammo[0]+randompick(0,0,0,100));
-			ammo[1]=random(0,ammo[1]+randompick(0,0,0,100));
-			ammo[2]=random(0,ammo[2]+randompick(0,0,0,100));
+			if(ammo[0]>=0)ammo[0]=random(0,ammo[0]+randompick(0,0,0,100));
+			if(ammo[1]>=0)ammo[1]=random(0,ammo[1]+randompick(0,0,0,100));
+			if(ammo[2]>=0)ammo[2]=random(0,ammo[2]+randompick(0,0,0,100));
 			battery=min(battery,random(-1,20));
 			if(battery<0){
 				A_GiveInventory("Heat",1000);
-				ammo[0]=0;ammo[1]=0;ammo[2]=0;
+				ammo[0]=min(ammo[0],0);
+				ammo[1]=min(ammo[1],0);
+				ammo[2]=min(ammo[2],0);
 			}
 			A_NoBlocking();
 			A_PlaySound("world/shotgunfar",CHAN_BODY,0.4);
