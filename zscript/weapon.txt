@@ -831,7 +831,10 @@ extend class HDWeapon{
 		if(
 			hdp
 			&&wbulk+hdp.enc>((hdp.zerk>0)?4000:2000)
-		)return false;
+		){
+			A_Log("You can't even move to put away your weapon. Throw something out!",true);
+			return false;
+		}
 		let mwt=SpareWeapons(newowner.findinventory("SpareWeapons"));
 		if(!mwt){
 			mwt=SpareWeapons(newowner.giveinventorytype("SpareWeapons"));
