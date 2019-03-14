@@ -638,7 +638,8 @@ class HDStatusBar:DoomStatusBar{
 			if(item==cplayer.mo.invsel)thisindex=i;
 
 			if(drawfull&&!gimmehud){
-				textureid icon=getinventoryicon(item,0);
+				textureid icon;vector2 applyscale;
+				[icon,applyscale]=geticon(item,0);
 				int xoffs=(i%5)*20;
 				bool isthis=i==thisindex;
 				drawtexture(icon,
@@ -649,7 +650,7 @@ class HDStatusBar:DoomStatusBar{
 						||item is "PortableMedikit"
 						||item is "HDArmour"
 					)?0:DI_TRANSLATABLE),
-					alpha:isthis?1.:0.6,scale:isthis?(1.,1.):(0.6,0.6)
+					alpha:isthis?1.:0.6,scale:applyscale*(isthis?1.:0.6)
 				);
 			}
 
@@ -663,18 +664,20 @@ class HDStatusBar:DoomStatusBar{
 		if(items.size()>2)drawitems[0]=items[previndex];
 		drawitems[1]=items[nextindex];
 		for(i=0;i<2;i++){
-			if(!drawitems[i])continue;
-			textureid icon=getinventoryicon(drawitems[i],0);
+			let thisitem=drawitems[i];
+			if(!thisitem)continue;
+			textureid icon;vector2 applyscale;
+			[icon,applyscale]=geticon(thisitem,0);
 			int xoffs=!i?-10:10;
 			drawtexture(icon,
 				(posx+xoffs,posy-17),
 				flags|DI_ITEM_CENTER_BOTTOM
 					|((
-						item is "PortableStimpack"
-						||item is "PortableMedikit"
-						||item is "HDArmour"
+						thisitem is "PortableStimpack"
+						||thisitem is "PortableMedikit"
+						||thisitem is "HDArmour"
 					)?0:DI_TRANSLATABLE),
-				alpha:0.6,scale:(0.6,0.6)
+				alpha:0.6,scale:applyscale*0.6
 			);
 		}
 	}
