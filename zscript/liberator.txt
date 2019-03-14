@@ -253,14 +253,20 @@ class LiberatorRifle:AutoReloadingThingy{
 			clamp(cvar.getcvar("hd_libmoa",owner.player).getint(),0,600);
 	}
 	override double gunmass(){
-		double howmuch=(weaponstatus[0]&LIBF_NOBULLPUP)?11:9;
-		if(weaponstatus[0]&LIBF_NOLAUNCHER)return howmuch+weaponstatus[LIBS_MAG]*0.04;
-		return howmuch+1.+weaponstatus[LIBS_MAG]*0.04+(weaponstatus[0]&LIBF_GRENADELOADED?1.:0.);
+		if(weaponstatus[0]&LIBF_NOBULLPUP){
+			double howmuch=11;
+			if(weaponstatus[0]&LIBF_NOLAUNCHER)return howmuch+weaponstatus[LIBS_MAG]*0.04;
+			return howmuch+1.1+weaponstatus[LIBS_MAG]*0.05+(weaponstatus[0]&LIBF_GRENADELOADED?1.2:0.9);
+		}else{
+			double howmuch=9;
+			if(weaponstatus[0]&LIBF_NOLAUNCHER)return howmuch+weaponstatus[LIBS_MAG]*0.04;
+			return howmuch+1.+weaponstatus[LIBS_MAG]*0.04+(weaponstatus[0]&LIBF_GRENADELOADED?1.:0.6);
+		}
 	}
 	override double weaponbulk(){
 		double blx=(weaponstatus[0]&LIBF_NOBULLPUP)?120:100;
 		if(!(weaponstatus[0]&LIBF_NOLAUNCHER)){
-			blx+=25;
+			blx+=28;
 			if(weaponstatus[0]&LIBF_GRENADELOADED)blx+=ENC_ROCKETLOADED;
 		}
 		int mgg=weaponstatus[LIBS_MAG];
