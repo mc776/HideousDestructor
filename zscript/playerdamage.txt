@@ -172,7 +172,8 @@ extend class HDPlayerPawn{
 				bloodpressure+=random(0,2);
 			}
 			if(
-				health<=damage
+				!(flags&DMG_FORCED)
+				&&health<=damage
 				&&damage<random(random(1,20),20)+bloodpressure
 				&&beatcap>HDCONST_MINHEARTTICS+3
 			){
@@ -531,6 +532,7 @@ extend class HDPlayerPawn{
 		pppmo.aggravateddamage=aggravateddamage;
 		pppmo.stunned=stunned;
 		pppmo.fatigue=fatigue;
+		pppmo.bledout=bledout;
 	}
 	states{
 	pain:
