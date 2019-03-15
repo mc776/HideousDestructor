@@ -367,20 +367,20 @@ if(hd_debug&&bledout)console.printf("bled: "..bledout);
 					if(unstablewoundcount>0){
 						unstablewoundcount--;
 						oldwoundcount++;
-					}else if(woundcount>0)woundcount--;
-				}
-				if(beatcounter==120){	//every 120 beats
-					beatcounter=0;	//reset
-					if(random(1,health)>70){
-						oldwoundcount--;
-						burncount--;
 					}
-
-					//grimspawn
-					if(skill>=5)
-						for(int i=0;i<3;i++)
-							spawn("BFGVileShard",pos,ALLOW_REPLACE);
 				}
+			}
+			if(beatcounter==120){	//every 120 beats
+				beatcounter=0;	//reset
+				if(random(1,health)>70){
+					oldwoundcount--;
+					burncount--;
+				}
+
+				//grimspawn
+				if(skill>=5)
+				for(int i=0;i<3;i++)
+				spawn("BFGVileShard",pos,ALLOW_REPLACE);
 			}
 		}
 	}
