@@ -75,14 +75,16 @@ class HDPlayerDying:HDPlayerPawn{
 					UndoPlayerMorph(player,0,true);
 					let pppmo=hdplayerpawn(ppp.mo);
 					if(ppp.mo){
-						pppmo.damagemobj(null,null,pppmo.health-health,"internal");
 						ppp.crouchfactor=0.1;
-						HDWeaponSelector.Select(pppmo,"HDFist",4);
+						pppmo.damagemobj(null,null,pppmo.health-health,"internal");
 						pppmo.A_PlaySound("*grunt",CHAN_VOICE);
 						A_TransferConditions(pppmo);
-
-						pppmo.stunned=max(pppmo.stunned,100);
-						pppmo.fatigue=(HDCONST_SPRINTFATIGUE*4/5);
+						pppmo.fatigue+=10;
+						pppmo.muzzleclimb1.y=10.;
+						pppmo.muzzleclimb2.y=20.;
+						pppmo.muzzleclimb3.y=20.;
+						pppmo.muzzleclimb4.y=10.;
+						pppmo.overloaded=5.;
 					}
 				}
 				return;
