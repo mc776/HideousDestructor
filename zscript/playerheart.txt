@@ -23,6 +23,8 @@ extend class HDPlayerPawn{
 	int oldwoundcount;
 	int aggravateddamage;
 
+	int bledout;
+
 	int maxhealth(){
 		if(regenblues<0)regenblues=0;
 		if(woundcount<0)woundcount=0;
@@ -31,6 +33,7 @@ extend class HDPlayerPawn{
 		if(burncount<0)burncount=0;
 		if(aggravateddamage<0)aggravateddamage=0;
 		if(stunned<0)stunned=0;
+		if(bledout<0)bledout=0;
 		return max(0,100
 			+min(0,
 				-aggravateddamage
@@ -38,6 +41,7 @@ extend class HDPlayerPawn{
 				-oldwoundcount
 				-woundcount
 				-unstablewoundcount
+				-(bledout>>3)
 				+(stimcount>>1)
 			)
 			+max(fatigue-HDCONST_SPRINTFATIGUE,0)
@@ -45,9 +49,14 @@ extend class HDPlayerPawn{
 	}
 
 	void HeartTicker(double fm,double sm,int input){
+		//these will be used repeatedly
+		int healthcap=maxhealth();
+		int ismv=countinv("IsMoving");
+		bool iszerk=(zerk>0);
+
 		//zerk!!!!
 		if(zerk){
-			if(zerk>0){
+			if(iszerk){
 				zerk=max(zerk-1,0);
 				if(zerk>5000){
 					zerk--;
@@ -55,7 +64,7 @@ extend class HDPlayerPawn{
 					angle+=random(-2,2);pitch+=random(-2,2);
 					vel+=(frandom(-0.5,0.5),frandom(-0.5,0.5),frandom(-0.5,0.5));
 					if(!random(0,3)){
-						healthing(1);
+						givebody(1);
 						A_SetBlend("20 0a 0f",0.4,3);
 						if(!random(0,8-zerk*0.0005)){
 							woundcount+=random(0,2);
@@ -72,14 +81,14 @@ extend class HDPlayerPawn{
 					angle+=random(-1,1);pitch+=random(-1,1);
 					vel+=(frandom(-0.5,0.5),frandom(-0.5,0.5),frandom(-0.5,0.5));
 					if(!random(0,3)){
-						healthing(1);
+						givebody(1);
 						if(!(player.readyweapon is "HDFist")){
 							DropInventory(player.readyweapon);
 							A_SelectWeapon("HDFist");
 						}
 					}
 				}else{
-					healthing(1);
+					givebody(1);
 					if(stunned)stunned*=0.8;
 					if(!zerk){
 						A_SetBlend("20 0a 0f",0.8,35);
@@ -105,6 +114,7 @@ extend class HDPlayerPawn{
 			beatcount--;
 			A_SetPitch(pitch-0.0005*bloodpressure,SPF_INTERPOLATE);
 		}else{
+if(hd_debug&&bledout)console.printf("bled: "..bledout);
 			A_SetPitch(pitch+0.0005*beatmax*bloodpressure,SPF_INTERPOLATE);
 			beatmax=min(beatmax,beatcap);
 
@@ -115,30 +125,33 @@ extend class HDPlayerPawn{
 				A_PlaySound("misc/heart",CHAN_BODY,0.05*max(bloodpressure,22-beatmax),false,30);
 			}
 
-			//MY ORIFICE IS BLEEDING!!!
+			//bleed
 			if(woundcount){
 				int dm=(random(10,woundcount)-random(0,bloodpressure))*4/10;
-				if(dm>0)damagemobj(self,lastthingthatwoundedyou,dm,"bleedout",DMG_THRUSTLESS);
+				if(dm>0){
+					damagemobj(self,lastthingthatwoundedyou,dm,"bleedout",DMG_THRUSTLESS);
+					bledout+=(dm<<2);
+				}
 			}
 
-			//ZERK IS NO SUBSTITUTE FOR OXYGEN TO BRAIN
+			//fatigue eventually overrides zerk
 			if(fatigue>HDCONST_DAMAGEFATIGUE*1.4){
 				if(zerk)damagemobj(self,self,beatmax+6,"internal");
 				else damagemobj(self,self,2,"internal");
 				stunned=min(10,stunned);
 			}
 
-			//Because 100% health when 500% of your body is burnt to a crisp is silly.
-			if(maxhealth()<health){
+			//enforce health cap
+			if(healthcap<health){
 				damagemobj(self,null,1,"maxhpdrain");
 				if(beatmax>16)beatmax--;
 			}
 
 			//limit beatmax subject to zerk
-			if(countinv("PowerStrength")) beatmax=clamp(beatmax,4,14);
+			if(iszerk)beatmax=clamp(beatmax,4,14);
 			else beatmax=clamp(beatmax,HDCONST_MINHEARTTICS,35);
 
-			if(fatigue>0)fatigue--;
+			if(fatigue>bledout)fatigue--;
 			if(
 				beatmax<HDCONST_MINHEARTTICS+3
 				||fatigue>HDCONST_DAMAGEFATIGUE  
@@ -146,20 +159,24 @@ extend class HDPlayerPawn{
 				damagemobj(self,null,1,"internal");
 				stunned=min(10,stunned);
 			}else{
-				if(health<maxhealth()){
-					if(random(1,30)+countinv("IsMoving")<beatmax)healthing(1);
-					if(random(1,40)<stimcount)healthing(1);
+				if(health<healthcap){
+					if(random(1,30)+ismv<beatmax)givebody(1);
+					if(random(1,40)<stimcount)givebody(1);
 				}
 			}
 
 			//reset beatcount
 			beatcount=beatmax;
-			A_SetBlend("20 12 0f",0.003*min(bloodpressure,100),beatcount);
+			if(bloodpressure>3)A_SetBlend("20 12 0f",0.003*min(bloodpressure,100),beatcount);
 			beatcounter++;
 
 			//sprinting
-			if(cansprint && runwalksprint>0 && (fm||sm)){
-				fatigue+=2+(
+			if(
+				cansprint
+				&&runwalksprint>0
+				&&(fm||sm)
+			){
+				fatigue+=2+bledout+(
 					countinv("WornRadsuit")?randompick(0,1,1):
 					(armourlevel==3?randompick(0,1):
 					armourlevel==1?randompick(0,0,0,1):0)
@@ -173,7 +190,10 @@ extend class HDPlayerPawn{
 			}
 
 			//blood pressure
-			if(stimcount>0 && bloodpressure<12)bloodpressure++;
+			if(
+				stimcount>0
+				&&bloodpressure<12-(bledout>>4)
+			)bloodpressure++;
 			else if(bloodpressure>0)bloodpressure--;
 
 			//don't go negatives
@@ -203,8 +223,13 @@ extend class HDPlayerPawn{
 					stimcount-=4;
 					regenblues--;
 				}
+				if(bledout>0)bledout-=3;
+
 				//heal shorter-term damage
-				if(unstablewoundcount>0||woundcount>0){  
+				if(
+					unstablewoundcount>0
+					||woundcount>0
+				){
 					if(woundcount>0)woundcount--;else unstablewoundcount--;
 					regenblues--;
 				}
@@ -230,7 +255,10 @@ extend class HDPlayerPawn{
 				if(stimcount>0)stimcount--;
 
 				//twitchy zerk
-				if(zerk>0 && !countinv("IsMoving")){
+				if(
+					iszerk
+					&&!ismv
+				){
 					if(floorz>=pos.z)A_ChangeVelocity(frandom(-2,3),frandom(-2,2),1,CVF_RELATIVE);
 					if(!(input&BT_ATTACK))muzzledrift+=(random(-14,14),random(-24,14));
 					else muzzledrift+=(frandom(-2,2),frandom(-3,2));
@@ -254,7 +282,10 @@ extend class HDPlayerPawn{
 						oldwoundcount--;burncount--;aggravateddamage--;
 						regenblues--;
 					}
-					if(beatcounter%60==0&&!random(0,7)){
+					if(
+						beatcounter%60==0
+						&&!random(0,7)
+					){
 						A_Log("You feel power coming out of you.",true);
 						regenblues-=20;
 						plantbit.spawnplants(self,33,144);
@@ -314,6 +345,9 @@ extend class HDPlayerPawn{
 			if(beatcounter%20==0){	//every 20 beats
 				beatcap=clamp(beatcap+8,1,35);
 
+				//blood starts growing back
+				if(bledout>0)bledout--;
+
 				//updating beatcap (minimum heart rate)
 				if(health<40) beatcap=clamp(beatcap,1,24);
 				else if(health<60) beatcap=clamp(beatcap,1,32);
@@ -321,7 +355,7 @@ extend class HDPlayerPawn{
 				//bandages come undone
 				if(unstablewoundcount && countinv("IsMoving")>random(0,12)){
 					unstablewoundcount--;
-					if(!random(0,1))oldwoundcount++;else woundcount++;
+					if(flip)oldwoundcount++;else woundcount++;
 				}
 
 				//wounds start settling
@@ -331,16 +365,18 @@ extend class HDPlayerPawn{
 						oldwoundcount++;
 					}else if(woundcount>0)woundcount--;
 				}
-			}
-			if(beatcounter==120){	//every 120 beats
-				beatcounter=0;	//reset
-				if(random(1,health)>70){
-					oldwoundcount--;
-					burncount--;
-				}
+				if(beatcounter==120){	//every 120 beats
+					beatcounter=0;	//reset
+					if(random(1,health)>70){
+						oldwoundcount--;
+						burncount--;
+					}
 
-				//grimspawn
-				if(skill>=5)for(int i=0;i<3;i++)spawn("BFGVileShard",pos,ALLOW_REPLACE);
+					//grimspawn
+					if(skill>=5)
+						for(int i=0;i<3;i++)
+							spawn("BFGVileShard",pos,ALLOW_REPLACE);
+				}
 			}
 		}
 	}
