@@ -492,7 +492,7 @@ extend class HDPlayerPawn{
 			health>0
 			&&player
 			&&!HDPlayerDying(self)
-			&&health<random(-1,3)
+			&&health<random(-1,max((originaldamage>>3),3))
 		)A_Incapacitated((originaldamage>10)?HDINCAP_SCREAM:0);
 
 		return finaldmg;
@@ -500,6 +500,7 @@ extend class HDPlayerPawn{
 	//for when morphing into incapacitated state
 	void A_Incapacitated(int flags=0){
 		let ppp=player;
+		if(!(flags&HDINCAP_FAKING)&&!random(0,15))dropinventory(ppp.readyweapon);
 		A_Morph("HDPlayerDying",int.MAX,MRF_TRANSFERTRANSLATION,"CheckPuff","CheckPuff");
 		let pppmo=HDPlayerDying(ppp.mo);
 		if(flags&HDINCAP_SCREAM)pppmo.A_PlayerScream();
