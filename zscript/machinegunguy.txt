@@ -3,16 +3,19 @@
 // ------------------------------------------------------------
 class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 	default{
-		dropitem "DragonGuard",256,6;
+		dropitem "RedPillbox",256,6;
 		dropitem "UndeadRifleman",256,2;
 		dropitem "EnemyHERP",256,1;
 		dropitem "EnemyDERP",256,1;
 	}
-}class DragonGuard:Chaingunguy{
+}class RedPillbox:Chaingunguy{
 	default{
 		health 180;
-		dropitem "";
+		speed 9;
+		mass 300;
 		maxtargetrange 6000;
+		dropitem "";
+		attacksound "";
 	}
 	bool hasdropped;
 	bool turnleft;
@@ -343,6 +346,19 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 				return;
 			}A_PlaySound("weapons/rifleclick2");
 		}loop;
+
+	melee:
+		CPOS DAB 4 A_FaceTarget(10,10);
+		CPOS C 7 A_FaceTarget();
+		CPOS D 2;
+		CPOS E 4 A_CustomMeleeAttack(
+			random(6,66),"weapons/smack","","none",randompick(0,0,0,1)
+		);
+		CPOS E 3 A_JumpIfTargetInsideMeleeRange(2);
+		goto considercover;
+		CPOS E 0 A_MonsterRefire(64,"see");
+		CPOS EC 3;
+		goto melee;
 
 	pain:
 		CPOS G 3;
