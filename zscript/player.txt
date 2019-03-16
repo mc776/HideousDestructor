@@ -86,7 +86,7 @@ class HDPlayerPawn:PlayerPawn{
 		beatcap=35;beatmax=35;
 		feetangle=angle;
 
-		scopecamera=spawn("ScopeCamera",pos+(0,0,height-6),ALLOW_REPLACE);
+		if(!scopecamera)scopecamera=spawn("ScopeCamera",pos+(0,0,height-6),ALLOW_REPLACE);
 		scopecamera.target=self;
 
 		if(player&&player.bot&&hd_nobots&&!hdlivescounter.wiped(playernumber()))ReplaceBot();
