@@ -809,14 +809,37 @@ class SpareWeapons:HDPickup{
 		stop;
 	use:
 		TNT1 A 0{
-			let hdw=hdweapon(player.readyweapon);
+			if(!player)return;
+			A_GiveInventory("WeaponStashSwitcher");
+			let wss=WeaponStashSwitcher(findinventory("WeaponStashSwitcher"));
+			wss.thisweapon=hdweapon(player.readyweapon);
+			A_SelectWeapon("WeaponStashSwitcher");
+		}fail;
+	}
+}
+class WeaponStashSwitcher:HDWeapon{
+	default{
+		+weapon.wimpy_weapon
+		+weapon.cheatnotweapon
+	}
+	hdweapon thisweapon;
+	states{
+	ready:
+		TNT1 A 1{
+			A_WeaponReady(WRF_NOFIRE);
+			let sww=SpareWeapons(GiveInventoryType("SpareWeapons"));
+			let hdw=invoker.thisweapon;
 			if(
-				hdw
+				sww
+				&&hdw
 				&&hdw.addspareweapon(self)
 			){
 				hdw.getspareweapon(self,reverse:true);
 			}
-		}fail;
+			invoker.thisweapon=null;
+		}
+		TNT1 A 1 A_SelectWeapon("HDFist");
+		goto readyend;
 	}
 }
 extend class HDWeapon{
