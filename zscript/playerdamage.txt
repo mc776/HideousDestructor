@@ -167,10 +167,6 @@ extend class HDPlayerPawn{
 			flags|=(DMG_NO_ARMOR|DMG_NO_PAIN|DMG_THRUSTLESS);
 			silentdeath=true;
 			if(!random(0,127))oldwoundcount++;
-			if(beatcap>20){
-				beatmax+=random(-2,random(-1,4));
-				bloodpressure+=random(0,2);
-			}
 			if(
 				!(flags&DMG_FORCED)
 				&&health<=damage

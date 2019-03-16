@@ -145,16 +145,13 @@ extend class HDPlayerPawn{
 			}
 
 			//enforce health cap
-			if(healthcap<health){
-				damagemobj(self,null,1,"maxhpdrain");
-				if(beatmax>16)beatmax--;
-			}
+			if(healthcap<health)damagemobj(self,null,1,"maxhpdrain");
 
 			//limit beatmax subject to zerk
 			if(iszerk)beatmax=clamp(beatmax,4,14);
 			else beatmax=clamp(beatmax,HDCONST_MINHEARTTICS,35);
 
-			if(fatigue>bledout)fatigue--;
+			if(fatigue>(bledout>>3))fatigue--;
 			if(
 				beatmax<HDCONST_MINHEARTTICS+3
 				||fatigue>HDCONST_DAMAGEFATIGUE  
@@ -179,7 +176,7 @@ extend class HDPlayerPawn{
 				&&runwalksprint>0
 				&&(fm||sm)
 			){
-				fatigue+=2+bledout+(
+				fatigue+=2+max(0,bledout-1024)+(
 					countinv("WornRadsuit")?randompick(0,1,1):
 					(armourlevel==3?randompick(0,1):
 					armourlevel==1?randompick(0,0,0,1):0)
