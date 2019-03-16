@@ -16,6 +16,8 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		maxtargetrange 6000;
 		dropitem "";
 		attacksound "";
+		obituary "%o met the budda-budda-budda on the street, and it killed %h.";
+		hitobituary "%o took the wrong pill.";
 	}
 	bool hasdropped;
 	bool turnleft;
@@ -348,16 +350,16 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		}loop;
 
 	melee:
-		CPOS DAB 4 A_FaceTarget(10,10);
-		CPOS C 7 A_FaceTarget();
+		CPOS DAB 2 A_FaceTarget(10,10);
+		CPOS C 6 A_FaceTarget();
 		CPOS D 2;
-		CPOS E 4 A_CustomMeleeAttack(
-			random(6,66),"weapons/smack","","none",randompick(0,0,0,1)
+		CPOS E 3 A_CustomMeleeAttack(
+			random(9,99),"weapons/smack","","none",randompick(0,0,0,1)
 		);
-		CPOS E 3 A_JumpIfTargetInsideMeleeRange(2);
+		CPOS E 2 A_JumpIfTargetInsideMeleeRange(2);
 		goto considercover;
 		CPOS E 0 A_MonsterRefire(64,"see");
-		CPOS EC 3;
+		CPOS EC 2;
 		goto melee;
 
 	pain:
