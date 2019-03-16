@@ -358,7 +358,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		);
 		CPOS E 2 A_JumpIfTargetInsideMeleeRange(2);
 		goto considercover;
-		CPOS E 0 A_MonsterRefire(64,"see");
+		CPOS E 0 A_JumpIf(target.health<random(-3,1),"see");
 		CPOS EC 2;
 		goto melee;
 
