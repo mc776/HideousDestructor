@@ -810,9 +810,15 @@ class SpareWeapons:HDPickup{
 	use:
 		TNT1 A 0{
 			if(!player)return;
+			let thwep=hdweapon(player.readyweapon);
+			if(
+				thwep.bwimpy_weapon
+				||thwep is "NullWeapon"
+				||thwep is "HDFist"
+			)return;
 			A_GiveInventory("WeaponStashSwitcher");
 			let wss=WeaponStashSwitcher(findinventory("WeaponStashSwitcher"));
-			wss.thisweapon=hdweapon(player.readyweapon);
+			wss.thisweapon=thwep;
 			A_SelectWeapon("WeaponStashSwitcher");
 		}fail;
 	}
