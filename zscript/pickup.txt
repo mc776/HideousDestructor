@@ -167,9 +167,9 @@ class HDPickup:CustomInventory{
 	//called to get the encumbrance
 	virtual double getbulk(){return amount*bulk;}
 	override inventory createtossable(int amount){
+		let onr=owner;
 		inventory iii=super.createtossable(amount);
-		if(bdroptranslation&&owner){
-			actor onr=owner;
+		if(bdroptranslation&&onr){
 			if(iii)iii.translation=onr.translation;
 		}
 		return iii;
