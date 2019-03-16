@@ -765,6 +765,7 @@ class ScopeCamera:IdleDummy{
 		}
 		A_SetAngle(hpl.angle-hpl.hudbob.x*0.27,SPF_INTERPOLATE);
 		A_SetPitch(hpl.pitch+hpl.hudbob.y*0.27,SPF_INTERPOLATE);
+		A_SetRoll(hpl.roll);
 		vector2 fwd=angletovector(angle,2);
 
 		if(abs(pitch)>89)setxyz(hpl.pos+(
