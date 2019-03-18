@@ -360,15 +360,7 @@ class HDPlayerPawn:PlayerPawn{
 				int fdmg=random(fallvel*2,fallvel*3);
 				damagemobj(self,self,fdmg,"falling");
 				beatmax-=fallvel/2;
-				if(random(1,fallvel)>7){
-					if(
-						player.readyweapon
-						&&!(player.readyweapon is "HDFist")
-					)
-						if((player.readyweapon is "HDFragGrenades")){
-							HDFragGrenades(player.readyweapon).DropGrenade();
-						}else DropInventory(player.readyweapon);
-				}
+				if(random(1,fallvel)>7)Disarm(self);
 			}
 		}
 		stunned=max(stunned-1,0);

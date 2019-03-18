@@ -334,8 +334,7 @@ class InjectZerkDummy:InjectStimDummy{
 		TNT1 A 1{
 			if(tg.zerk<666){
 				tg.A_PlaySound("*xdeath",CHAN_VOICE);
-				if(!(tg.player.readyweapon is "HDFist"))
-					tg.DropInventory(tg.player.readyweapon);
+				HDPlayerPawn.Disarm(self);
 				tg.A_SelectWeapon("HDFist");
 			}else{
 				tg.A_PlaySound("*pain",CHAN_VOICE);

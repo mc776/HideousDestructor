@@ -70,26 +70,31 @@ extend class HDPlayerPawn{
 		}
 
 
-		if(player&&player.readyweapon&&deathmatch&&!sv_weapondrop&&!barehanded){
+		if(
+			player
+			&&deathmatch
+			&&!sv_weapondrop
+			&&player.readyweapon
+			&&!barehanded
+		){
 			let zzz=zm66assaultrifle(findinventory("ZM66AssaultRifle"));
 			if(zzz&&!random(0,15))zzz.weaponstatus[0]|=ZM66F_CHAMBERBROKEN;
-			DropInventory(player.readyweapon);
+			Disarm(self);
 		}
 		if(player.attacker is "HDFire")player.attacker=player.attacker.master;
 
 		//drop parting gifts
-		if(countinv("BFG9k")){
-			let bfg=bfg9k(findinventory("bfg9k"));
-			if(bfg&&bfg.weaponstatus[BFGS_CRITTIMER]>0){
-				bfg.buntossable=false;
-				DropInventory(bfg);
-			}
+		let bfg=bfg9k(findinventory("bfg9k"));
+		if(
+			bfg
+			&&bfg.weaponstatus[BFGS_CRITTIMER]>0
+		){
+			bfg.buntossable=false;
+			DropInventory(bfg);
 		}
-		if(countinv("ZM66AssaultRifle")){
-			let zzz=zm66assaultrifle(findinventory("ZM66AssaultRifle"));
-			if(zzz&&zzz.weaponstatus[ZM66S_HEAT]>HDCONST_ZM66COOKOFF){
-				DropInventory(zzz);
-			}
+		let zzz=zm66assaultrifle(findinventory("ZM66AssaultRifle"));
+		if(zzz&&zzz.weaponstatus[ZM66S_HEAT]>HDCONST_ZM66COOKOFF){
+			DropInventory(zzz);
 		}
 
 		bool crouched=!hdplayerdying(self)&&height<40;
