@@ -64,6 +64,10 @@ class ZM66AssaultRifle:HDWeapon{
 		super.GunBounce();
 		if(!random(0,5))weaponstatus[0]&=~ZM66F_CHAMBERBROKEN;
 	}
+	override void OnPlayerDrop(){
+		if(!random(0,15))weaponstatus[0]|=ZM66F_CHAMBERBROKEN;
+		if(owner&&weaponstatus[ZM66S_HEAT]>HDCONST_ZM66COOKOFF)owner.dropinventory(self);
+	}
 	override string pickupmessage(){
 		if(weaponstatus[0]&ZM66F_NOFIRESELECT)return "Picked up a semi-automatic weapon. Time for some carnage!";
 		return super.pickupmessage();

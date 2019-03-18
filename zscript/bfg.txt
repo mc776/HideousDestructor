@@ -36,6 +36,14 @@ class BFG9K:HDWeapon replaces BFG9000{
 			a.vel+=caller.vel*0.9-spot*0.03;
 		}
 	}
+	override void OnPlayerDrop(){
+		if(
+			weaponstatus[BFGS_CRITTIMER]>0
+		){
+			buntossable=false;
+			if(owner)owner.DropInventory(self);
+		}
+	}
 	override void doeffect(){
 		if(hdplayerpawn(owner)){
 			if(weaponstatus[0]&BFGF_STRAPPED&&(owner&&owner.health>0))buntossable=true;    

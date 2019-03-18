@@ -85,6 +85,12 @@ class HDGrenadeThrower:HDWeapon{
 		}
 	}
 	//for involuntary dropping
+	override void OnPlayerDrop(){
+		if(
+			weaponstatus[0]&FRAGF_SPOONOFF
+			||weaponstatus[0]&FRAGF_PINOUT
+		)TossGrenade(true);
+	}
 	void DropGrenade(){
 		if(
 			weaponstatus[0]&FRAGF_SPOONOFF

@@ -70,32 +70,12 @@ extend class HDPlayerPawn{
 		}
 
 
-		if(
-			player
-			&&deathmatch
-			&&!sv_weapondrop
-			&&player.readyweapon
-			&&!barehanded
-		){
-			let zzz=zm66assaultrifle(findinventory("ZM66AssaultRifle"));
-			if(zzz&&!random(0,15))zzz.weaponstatus[0]|=ZM66F_CHAMBERBROKEN;
-			Disarm(self);
+		if(player){
+			let www=hdweapon(player.readyweapon);
+			if(www)www.OnPlayerDrop();
 		}
 		if(player.attacker is "HDFire")player.attacker=player.attacker.master;
 
-		//drop parting gifts
-		let bfg=bfg9k(findinventory("bfg9k"));
-		if(
-			bfg
-			&&bfg.weaponstatus[BFGS_CRITTIMER]>0
-		){
-			bfg.buntossable=false;
-			DropInventory(bfg);
-		}
-		let zzz=zm66assaultrifle(findinventory("ZM66AssaultRifle"));
-		if(zzz&&zzz.weaponstatus[ZM66S_HEAT]>HDCONST_ZM66COOKOFF){
-			DropInventory(zzz);
-		}
 
 		bool crouched=!hdplayerdying(self)&&height<40;
 

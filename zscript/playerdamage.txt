@@ -498,11 +498,15 @@ extend class HDPlayerPawn{
 	//for when morphing into incapacitated state
 	void A_Incapacitated(int flags=0){
 		let ppp=player;
+		if(!ppp)return;
 		if(
 			!(flags&HDINCAP_FAKING)
-			&&ppp.readyweapon
 			&&!random(0,15)
-		)dropinventory(ppp.readyweapon);
+		)Disarm(self);
+		else{
+			let www=hdweapon(ppp.readyweapon);
+			if(www)www.OnPlayerDrop();
+		}
 		A_Morph("HDPlayerDying",int.MAX,MRF_TRANSFERTRANSLATION,"CheckPuff","CheckPuff");
 		let pppmo=HDPlayerDying(ppp.mo);
 		if(flags&HDINCAP_SCREAM)pppmo.A_PlayerScream();
@@ -513,14 +517,15 @@ extend class HDPlayerPawn{
 	//disarm
 	static void Disarm(actor victim){
 		if(!victim.player)return;
-		let pwep=victim.player.readyweapon;
+		let pwep=hdweapon(victim.player.readyweapon);
+		pwep.OnPlayerDrop();
 		if(
 			pwep
+			&&pwep.owner==victim //onplayerdrop might change this
+			&&!(pwep is "HDGrenadeThrower")
 			&&!(pwep is "HDFist")
 		){
-			if((pwep is "HDGrenadeThrower"))
-				HDGrenadeThrower(pwep).DropGrenade();
-			else victim.DropInventory(pwep);
+			victim.DropInventory(pwep);
 		}
 	}
 	enum IncapFlags{
