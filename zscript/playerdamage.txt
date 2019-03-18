@@ -157,6 +157,8 @@ extend class HDPlayerPawn{
 			mod=="internal"||
 			mod=="invisiblebleedout"
 		){
+			if(mod!="internal")bledout+=(damage<<2);
+
 			damage=min(health,damage);
 			if(regenblues>0&&health<=damage){
 				regenblues--;
@@ -185,7 +187,6 @@ extend class HDPlayerPawn{
 					woundcount=0;
 					return 0;
 				}
-				bledout+=(damage<<2);
 				if(
 					!waterlevel
 					&&!checkliquidtexture()
