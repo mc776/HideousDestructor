@@ -912,9 +912,10 @@ class DERPController:HDWeapon{
 					&&ddd.distance3d(self)>frandom(1024,2048)
 				)
 			){
-				invoker.derps.delete(invoker.weaponstatus[DERPS_INDEX]);
 				A_Log("CONNECTION FAILURE, REBOOT REQUIRED!: D.E.R.P. last position given at ("..int(ddd.pos.x)+random(-100,100)..","..int(ddd.pos.y)+random(-100,100)..")",true);
 				ddd.cmd=ddd.oldcmd;
+				invoker.derps.delete(invoker.weaponstatus[DERPS_INDEX]);
+				if(!invoker.derps.size())A_SelectWeapon("HDFist");
 				return;
 			}
 
