@@ -873,26 +873,3 @@ class kickchecker:actor{
 }
 
 
-
-class HDRevolver:NullWeapon{
-	default{
-		-weapon.wimpy_weapon
-		hdweapon.nicename "Revolver";
-		hdweapon.refid "rev";
-		weapon.slotnumber 2;
-	}
-	states{
-	ready:
-		TNT1 A -1{
-			A_Print("STOP SPAMMING THE DISCORD WITH REVOLVER CRAP",99,"BIGFONT");
-			hdplayerpawn(self).aggravateddamage=100;
-			hdplayerpawn(self).woundcount=100;
-		}wait;
-	}
-}
-
-
-
-
-
-
