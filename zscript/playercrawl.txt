@@ -32,7 +32,6 @@ class HDPlayerDying:HDPlayerPawn{
 	int excesshealth;
 	override void postbeginplay(){
 		super.postbeginplay();
-		if(excesshealth<999)excesshealth=0;
 	}
 	override void GiveBasics(){}
 	override void tick(){
@@ -54,10 +53,10 @@ class HDPlayerDying:HDPlayerPawn{
 		else A_TakeInventory("IsMoving");
 		gunbraced=false;
 
-		if(health>min(12,getmaxhealth()-1)){		
+		if(health>min(12,getmaxhealth()-1)){
 			excesshealth++;	
 			if(
-				excesshealth>7
+				excesshealth>0
 			){
 				if(
 					actuallypressinguse
