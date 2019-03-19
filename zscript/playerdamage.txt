@@ -491,11 +491,16 @@ extend class HDPlayerPawn{
 			&&player
 			&&!HDPlayerDying(self)
 			&&health<random(-1,max((originaldamage>>3),3))
+			&&(
+				mod!="bleedout"
+				||bledout>random(2048,3072)
+			)
 		){
 			let plr=player;
 			A_Incapacitated((originaldamage>10)?HDINCAP_SCREAM:0);
 			let hdpd=HDPlayerDying(plr.mo);
-			if(hdpd)hdpd.excesshealth=-max(3,(originaldamage>>3));
+			if(hdpd)hdpd.excesshealth=-max(3,(originaldamage>>4));
+			A_LogInt(originaldamage>>4);
 		}
 
 		return finaldmg;
