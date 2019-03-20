@@ -174,6 +174,124 @@ extend class HDPlayerPawn{
 			}
 		}
 	}
+
+
+	//all use button stuff other than normal using should go here
+	virtual void UseButtonCheck(int input,int fm,int sm){
+		if(corpsekicktimer>0)corpsekicktimer--;
+		if(!(input&BT_USE)){
+			bpickup=false;
+			return;
+		}
+		if(oldinput&BT_ATTACK)hasgrabbed=true;
+		else if(!(oldinput&BT_USE))hasgrabbed=false;
+
+		//player/barrel dragging
+		if(
+			!checkmove(pos.xy+(cos(angle),sin(angle))*12,PCM_DROPOFF|PCM_NOLINES)
+			&&(fm<=0||zerk>0)
+			&&(
+				blockingmobj is "HDPlayerDying"
+				||blockingmobj is "HDBarrel"
+			)
+		){
+			blockingmobj.trymove(blockingmobj.pos.xy+vel.xy*1.2,true);
+			if(zerk<=0)speed*=sm?0.1:0.4;
+			corpsekicktimer=max(corpsekicktimer,35);
+		}
+
+		//door kicking
+		if(
+			input&BT_SPEED
+			&&input&BT_ZOOM
+			&&!corpsekicktimer
+			&&player.crouchfactor>0.8
+			&&linetrace(angle,42,pitch,flags:TRF_THRUACTORS,offsetz:height*0.4)
+		){
+			hasgrabbed=true;
+			corpsekicktimer=20+unstablewoundcount*0.5;
+			stunned+=25;
+			bool zk=zerk>0;
+			double kickback=zk?1:4;
+			bool db=doordestroyer.destroydoor(self,frandom(32,zk?196:72),frandom(0,frandom(1,zk?48:16)),ofsz:24);
+			if(!random(0,db?7:3)){
+				corpsekicktimer+=20;
+				damagemobj(self,self,random(1,5),"Bashing");
+				stunned+=70;
+				kickback*=frandom(1,2);
+				A_MuzzleClimb((frandom(-1,1),4),(frandom(-1,1),-1),(frandom(-1,1),-1),(frandom(-1,1),-1));
+			}
+			if(!random(0,db?3:6))woundcount++;
+			A_MuzzleClimb((0,-1),(0,-1),(0,-1),(0,-1));
+			A_ChangeVelocity(-kickback,0,0,CVF_RELATIVE);
+			A_PlaySound("*fist",CHAN_BODY);
+			LineAttack(angle,48,pitch,0,"none",
+				zk?"BulletPuffBig":"BulletPuffMedium",
+				flags:LAF_OVERRIDEZ,
+				offsetz:height*0.3
+			);
+		}
+
+		bpickup=!hasgrabbed;
+		PickupGrabber();
+
+		//corpse kicking
+		if(
+			!corpsekicktimer
+			&&floorz==pos.z
+			&&height>45
+			&&beatmax>10
+		){
+			bool kicked=false;
+			actor k=spawn("kickchecker",pos,ALLOW_REPLACE);
+			k.angle=angle;k.target=self;
+			vector2 kv=AngleToVector(angle,5);
+			for(int i=7;i;i--){
+				if(!k.TryMove(k.pos.xy+kv,true) && k.blockingmobj){
+					let kbmo=k.blockingmobj;
+					double kbmolowerby=pos.z-kbmo.pos.z;
+					if(
+						kbmolowerby>4
+						||kbmolowerby<-16
+					)continue;
+					if(
+						kbmo.bcorpse
+						||kbmo is "HDFragGrenade"
+						||kbmo is "HDFragGrenadeRoller"
+					){
+						if(!(oldinput&BT_USE)){
+							int forc=80;if(zerk>0)forc*=3;
+							corpsekicktimer=20+unstablewoundcount*0.5;
+							kbmo.vel+=(kv.x,kv.y,4)*forc/kbmo.mass;
+							kbmo.A_PlaySound("misc/punch");
+							kicked=true;
+						}
+					}else if(
+						kbmo.bismonster
+						||(
+							kbmo.player
+							&&!isteammate(kbmo)
+						)
+					){
+						corpsekicktimer=17+unstablewoundcount*0.5;
+						kicked=true;
+						HDFist.kick(self,kbmo,k);
+					}else{
+						double forc=0.4;if(zerk>0)forc=1.2;
+						corpsekicktimer=20+unstablewoundcount*0.6;
+						vel-=(kv.x,kv.y,4)*forc;
+						kbmo.A_PlaySound("misc/punch");
+						kicked=true;
+					}
+					break;
+				}
+			}
+			if(kicked){
+				fatigue++;bloodpressure++;stunned+=2;
+			}
+			if(k)k.destroy();
+		}
+	}
 }
 
 

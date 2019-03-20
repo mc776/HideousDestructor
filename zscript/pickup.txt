@@ -117,6 +117,85 @@ class HDPickerUpper:Actor{
 	}
 }
 
+extend class HDPlayerPawn{
+	void PickupGrabber(int putimes=-1){
+		overloaded=CheckEncumbrance();
+		if(!hasgrabbed){
+			actor grabbed=null;
+
+			//get an antenna
+			hdpickerupper hdpu=null;
+			ThinkerIterator hdpuf=ThinkerIterator.Create("HDPickerUpper");
+			while(hdpu=HDPickerUpper(hdpuf.Next())){
+				if(hdpu.master==self)break;
+			}
+			if(!hdpu||hdpu.master!=self)hdpu=HDPickerUpper(spawn("HDPickerUpper",pos,ALLOW_REPLACE));
+			hdpu.master=self;
+
+			double cp=cos(pitch+3);
+			vector3 pudir=2*(cp*cos(angle),cp*sin(angle),-sin(pitch+3));
+			hdpu.setorigin((pos.xy,pos.z+height-12),false);
+			if(putimes<0)putimes=(pudir.z<0.1)?24:18;
+			for(int i=0;i<putimes;i++){
+				hdpu.setorigin(hdpu.pos+pudir,false);
+				if(
+					!hdpu.checkmove(hdpu.pos.xy,PCM_DROPOFF|PCM_NOLINES)
+					&&hdpu.blockingmobj
+				){
+					grabbed=hdpu.blockingmobj;
+
+					//don't hoover the big things
+					if(
+						grabbed is "HDWeapon"
+						||grabbed is "HDMagAmmo"
+					)hasgrabbed=true;
+				}
+			}
+
+			if(
+				grabbed
+				&&checksight(grabbed)
+				&&(
+					hdupk(grabbed)
+					||inventory(grabbed)
+				)
+			){
+				if(
+					grabbed is "hdupk"
+					||grabbed is "inventory"
+				){
+					if(
+						grabbed is "hdweapon"
+						||(grabbed is "hdpickup"&&!hdpickup(grabbed).bmultipickup)
+						||(grabbed is "hdupk"&&!hdupk(grabbed).bmultipickup)
+					){
+						hasgrabbed=true;
+					}
+					bool hdupkcustomgrabstate=false;
+					if(grabbed is "hdupk"){
+						let hdpk=hdupk(grabbed);
+						hdpk.picktarget=self;
+						if(hdpk.findstate("grab",true)){
+							grabbed.setstatelabel("grab");
+							hdupkcustomgrabstate=true;
+						}
+						hdpk.OnGrab(self);
+					}
+					if(!hdupkcustomgrabstate){
+						let hdpg=hdpickup(grabbed);
+						if(!hdpg||!hdpg.bisbeingpickedup){
+							if(hdpg)hdpg.bisbeingpickedup=true;
+							let grabthink=new("GrabThinker");
+							grabthink.picktarget=self;
+							grabthink.pickobj=grabbed;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
 
 
 //Usable pickup.
