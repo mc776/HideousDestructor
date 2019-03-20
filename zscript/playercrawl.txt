@@ -36,11 +36,6 @@ class HDPlayerDying:HDPlayerPawn{
 	}
 	override void GiveBasics(){}
 	override void tick(){
-
-		//I could write a virtual, or I could just do this...
-		bool actuallypressinguse=player&&player.cmd.buttons&BT_USE;
-		if(actuallypressinguse&&health>0)player.cmd.buttons&=~BT_USE;
-
 		super.tick();
 		if(!player||player.bot||player.mo!=self)return;
 
@@ -59,8 +54,7 @@ class HDPlayerDying:HDPlayerPawn{
 				excesshealth>0
 			){
 				if(
-					actuallypressinguse
-					||zerk>0
+					zerk>0
 					||player.cmd.buttons&BT_JUMP
 					||(
 						player.cmd.buttons&BT_SPEED
@@ -107,6 +101,16 @@ class HDPlayerDying:HDPlayerPawn{
 			playercorpse.setstatelabel("dead");
 			playercorpse.tics=6;
 			playercorpse.scale=scale;
+		}
+	}
+	//can't kick, can only pick up objects that can be used while in this state
+	override void UseButtonCheck(int input,int fm,int sm){
+		if(!(input&BT_USE))bpickup=false;else{
+			if(oldinput&BT_ATTACK)hasgrabbed=true;
+			else if(!(oldinput&BT_USE))hasgrabbed=false;
+
+			bpickup=!hasgrabbed;
+			PickupGrabber(12);
 		}
 	}
 	states{
