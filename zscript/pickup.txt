@@ -316,7 +316,7 @@ class HDUPK:HDActor{
 		-hdupk.multipickup
 		height 8;radius 8;
 		hdupk.pickupsound "weapons/pocket";//"misc/i_pkup";
-		hdupk.pickupmessage "Picked something up.";
+		hdupk.pickupmessage "";
 		hdupk.pickuptype "none";
 	}
 	override bool cancollidewith(actor other,bool passive){
@@ -346,7 +346,7 @@ class HDUPK:HDActor{
 			setstatelabel("give");
 			if(!bdestroyed)return;
 			picktarget.A_PlaySound(pickupsound,5);
-			picktarget.A_Log(string.format("\cg%s",pickupmessage),true);
+			if(pickupmessage!="")picktarget.A_Log(string.format("\cg%s",pickupmessage),true);
 			return;
 		}
 
