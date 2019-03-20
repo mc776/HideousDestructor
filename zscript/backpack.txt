@@ -741,7 +741,10 @@ extend class HDBackpack{
 				}else if(type is "HDPickup"&&addamt.toint()>0){
 					int bpamt=addamt.toint();
 					let cfi=caller.findinventory(type);
-					if(!cfi)cfi=caller.giveinventorytype(type);
+					if(!cfi){
+						cfi=caller.giveinventorytype(type);
+						cfi.amount=0;
+					}
 					if(cfi){
 						cfi.maxamount=int.MAX;
 						cfi.amount+=bpamt;
