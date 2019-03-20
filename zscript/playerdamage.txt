@@ -499,7 +499,7 @@ extend class HDPlayerPawn{
 			let plr=player;
 			A_Incapacitated((originaldamage>10)?HDINCAP_SCREAM:0);
 			let hdpd=HDPlayerDying(plr.mo);
-			if(hdpd)hdpd.excesshealth=-random(0,2)-(originaldamage>>4);
+			if(hdpd)hdpd.excesshealth=min(-1,-random(0,2)-(originaldamage>>4));
 			A_LogInt(originaldamage>>4);
 		}
 

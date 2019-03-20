@@ -55,7 +55,6 @@ class HDPlayerDying:HDPlayerPawn{
 		gunbraced=false;
 
 		if(health>min(12,getmaxhealth()-1)){
-			excesshealth++;	
 			if(
 				excesshealth>0
 			){
@@ -91,6 +90,7 @@ class HDPlayerDying:HDPlayerPawn{
 			}else{
 				damagemobj(null,null,health-10,"maxhpdrain");
 			}
+			excesshealth++;
 		}
 		fatigue=(HDCONST_SPRINTFATIGUE>>1);
 	}
