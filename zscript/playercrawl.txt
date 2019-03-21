@@ -147,23 +147,24 @@ class IncapMorphWeapon:SelfBandage{
 	}
 	action void A_PickInventoryType(){
 		static const class<inventory> types[]={
+			"IncapMorphWeapon",
 			"PortableStimpack",
 			"PortableBerserkpack",
 			"HDFragGrenadeAmmo"
 		};
-		int which;
-		if(health<12)which=random(0,types.size()-1);
-		else{
-			which=invoker.weaponstatus[INCS_INDEX]+1;
+
+		int which=invoker.weaponstatus[INCS_INDEX];
+		do{
+			which++;
 			if(which>=types.size())which=0;
-		}
+		}while(!countinv(types[which]));
+		invoker.weaponstatus[INCS_INDEX]=which;
+
 		let inventorytype=types[which];
 		if(
 			!countinv(inventorytype)
-			||which==invoker.weaponstatus[INCS_INDEX]
 		){
 			inventorytype="IncapMorphWeapon";
-			invoker.weaponstatus[INCS_INDEX]=-1;
 			return;
 		}else if(inventorytype=="PortableBerserkPack"){
 			invoker.spentinjecttype="SpentZerk";
@@ -178,7 +179,6 @@ class IncapMorphWeapon:SelfBandage{
 			invoker.injecttype="HDFragGrenadeRoller";
 		}
 		invoker.inventorytype=inventorytype;
-		invoker.weaponstatus[INCS_INDEX]=which;
 	}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
 		super.DrawHUDStuff(sb,hdw,hpl);
