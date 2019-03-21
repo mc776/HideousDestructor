@@ -181,7 +181,7 @@ class IncapMorphWeapon:SelfBandage{
 		vector2 bob=(hpl.hudbob.x*0.2,hpl.hudbob.y*0.2+yofss);
 		if(inventorytype=="HDFragGrenadeAmmo"){
 			sb.drawimage(
-				(weaponstatus[0]&INCF_PULLEDPIN)?"FRAGF0":"FRAGA0",
+				(weaponstatus[0]&INCF_PINOUT)?"FRAGF0":"FRAGA0",
 				bob,sb.DI_SCREEN_CENTER_BOTTOM,scale:(1.6,1.6)
 			);
 		}else if(inventorytype=="PortableBerserkpack"){
@@ -226,7 +226,7 @@ class IncapMorphWeapon:SelfBandage{
 		goto nope;
 	altfire:
 	althold:
-		TNT1 A 0 A_JumpIf(invoker.weaponstatus[0]&INCF_PULLEDPIN,"holdfrag");
+		TNT1 A 0 A_JumpIf(invoker.weaponstatus[0]&INCF_PINOUT,"holdfrag");
 		TNT1 A 10 A_Jump(32,"nope");
 		TNT1 A 20 A_PlaySound("weapons/pocket",CHAN_WEAPON);
 		TNT1 A 0 A_JumpIf(!countinv(invoker.inventorytype),"fumbleforsomething");
@@ -259,7 +259,7 @@ class IncapMorphWeapon:SelfBandage{
 		TNT1 A 3 A_Jump(128,"readyend");
 		TNT1 A 0{
 			if(!countinv(invoker.inventorytype))return;
-			invoker.weaponstatus[0]|=INCF_PULLEDPIN;
+			invoker.weaponstatus[0]|=INCF_PINOUT;
 			A_PlaySound("weapons/fragpinout",CHAN_WEAPON);
 			A_TakeInventory(invoker.inventorytype,1);
 		}
@@ -279,7 +279,7 @@ class IncapMorphWeapon:SelfBandage{
 		TNT1 A 0 A_Jump(196,"holdfrag");
 		TNT1 A 20{
 			A_PlaySound("weapons/fragpinout",CHAN_WEAPON);
-			invoker.weaponstatus[0]&=~INCF_PULLEDPIN;
+			invoker.weaponstatus[0]&=~INCF_PINOUT;
 			A_GiveInventory("HDFragGrenadeAmmo",1);
 		}
 		goto nope;
@@ -299,10 +299,10 @@ class IncapMorphWeapon:SelfBandage{
 	}
 	void DropFrag(){
 		if(
-			!(weaponstatus[0]&INCF_PULLEDPIN)
+			!(weaponstatus[0]&INCF_PINOUT)
 			||!owner
 		)return;
-		weaponstatus[0]&=~INCF_PULLEDPIN;
+		weaponstatus[0]&=~INCF_PINOUT;
 		//create the spoon
 		owner.A_SpawnItemEx(spentinjecttype,
 			-4,-3,owner.height-8,
@@ -317,7 +317,7 @@ class IncapMorphWeapon:SelfBandage{
 		);
 	}
 	enum CrawlingInts{
-		INCF_PULLEDPIN=1,
+		INCF_PINOUT=1,
 		INCS_YOFS=1,
 		INCS_INDEX=2,
 	}

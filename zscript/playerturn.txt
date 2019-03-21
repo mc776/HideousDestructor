@@ -50,8 +50,7 @@ extend class HDPlayerPawn{
 		bool notnull=false;
 		let wp=HDWeapon(player.readyweapon);
 		if(wp){
-			if(wp is "HDPistol")amt=10; //pistol is effective gunmass -10
-			else amt=max(1,wp.gunmass());
+			amt=max(1,wp.gunmass());
 			barrellength=wp.barrellength;
 			barrelwidth=wp.barrelwidth;
 			barreldepth=wp.barreldepth;
@@ -84,7 +83,7 @@ extend class HDPlayerPawn{
 
 		//apply to weapon
 		vector2 apch=(lastanglechange,-lastpitchchange)*0.1*amt;
-		if(isFocussing||wp is "HDPistol")apch=-apch;
+		if(isFocussing||(wp&&wp.breverseguninertia))apch=-apch;
 		hudbobrecoil1+=apch*0.1;
 		hudbobrecoil2+=apch*0.2;
 		hudbobrecoil3+=apch*0.4;

@@ -4,6 +4,7 @@
 class HDPistol:HDWeapon replaces Pistol{
 	default{
 		+hdweapon.fitsinbackpack
+		+hdweapon.reverseguninertia
 		scale 0.63;
 		weapon.selectionorder 50;
 		weapon.slotnumber 2;
@@ -23,6 +24,9 @@ class HDPistol:HDWeapon replaces Pistol{
 	override double weaponbulk(){
 		int mgg=weaponstatus[PISS_MAG];
 		return 30+(mgg<0?0:(ENC_9MAG_LOADED+mgg*ENC_9_LOADED));
+	}
+	override double gunmass(){
+		return 10;
 	}
 	override string,double getpickupsprite(){
 		string spr;
