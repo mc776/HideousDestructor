@@ -141,8 +141,8 @@ class IncapMorphWeapon:SelfBandage{
 	class<inventory> inventorytype;
 	default{
 		weapon.bobspeed 0.7;
-		weapon.bobrangex 2.;
-		weapon.bobrangey 2.6;
+		weapon.bobrangex 3.;
+		weapon.bobrangey 4.6;
 	}
 	action void A_PickInventoryType(){
 		static const class<inventory> types[]={
@@ -178,7 +178,7 @@ class IncapMorphWeapon:SelfBandage{
 		super.DrawHUDStuff(sb,hdw,hpl);
 		if(hpl.player.cmd.buttons&BT_ATTACK)return;
 		int yofss=weaponstatus[INCS_YOFS]-((hpl.player.cmd.buttons&BT_ALTATTACK)?(50+5*hpl.flip):60);
-		vector2 bob=(hpl.hudbob.x*0.6,hpl.hudbob.y*0.6+yofss);
+		vector2 bob=(hpl.hudbob.x*0.2,hpl.hudbob.y*0.2+yofss);
 		if(inventorytype=="HDFragGrenadeAmmo"){
 			sb.drawimage(
 				(weaponstatus[0]&INCF_PULLEDPIN)?"FRAGF0":"FRAGA0",
@@ -238,7 +238,6 @@ class IncapMorphWeapon:SelfBandage{
 		goto nope;
 	injectstim:
 		TNT1 A 1{
-			A_TakeInventory(invoker.inventorytype,1);
 			A_SetBlend("7a 3a 18",0.1,4);
 			A_SetPitch(pitch+2,SPF_INTERPOLATE);
 			A_PlaySound("*usemeds",CHAN_VOICE);
@@ -252,6 +251,8 @@ class IncapMorphWeapon:SelfBandage{
 			actor a=spawn(invoker.spentinjecttype,pos+(0,0,height-8),ALLOW_REPLACE);
 			a.angle=angle;a.vel=vel;a.A_ChangeVelocity(3,1,2,CVF_RELATIVE);
 			a.A_PlaySound("weapons/grenopen",CHAN_WEAPON);
+			A_TakeInventory(invoker.inventorytype,1);
+			if(!countinv(invoker.inventorytype))invoker.inventorytype="";
 		}
 		goto nope;
 	pullpin:
@@ -281,7 +282,7 @@ class IncapMorphWeapon:SelfBandage{
 			invoker.weaponstatus[0]&=~INCF_PULLEDPIN;
 			A_GiveInventory("HDFragGrenadeAmmo",1);
 		}
-		goto readyend;
+		goto nope;
 	}
 	override void OwnerDied(){
 		DropFrag();
