@@ -1,13 +1,6 @@
 // ------------------------------------------------------------
 // CRAAAAAAAAAAAWWWWLING IN MY SKIN
 // ------------------------------------------------------------
-class DyingMorph:ActionItem{
-	states{
-	pickup:
-		TNT1 A 0 A_Morph("HDPlayerDying",int.MAX,MRF_TRANSFERTRANSLATION,"CheckPuff","CheckPuff");
-		fail;
-	}
-}
 extend class HDHandlers{
 	void PlayDead(hdplayerpawn ppp){
 		ppp.A_Incapacitated(hdplayerpawn.HDINCAP_FAKING);
@@ -142,8 +135,6 @@ class IncapMorphWeapon:SelfBandage{
 	default{
 		+hdweapon.reverseguninertia
 		weapon.bobspeed 0.7;
-		weapon.bobrangex 3.;
-		weapon.bobrangey 4.6;
 	}
 	action void A_PickInventoryType(){
 		static const class<inventory> types[]={
