@@ -378,8 +378,10 @@ extend class HDPlayerPawn{
 				newwep.attachtoowner(self);
 				newwep.startconfigure();
 				newwep.bstartconfigured=true;
-				dropinventory(newwep);
-				newwep.actualpickup(self,true);
+				if(!hdfist(newwep)){
+					dropinventory(newwep);
+					newwep.actualpickup(self,true);
+				}
 			}else A_GiveInventory(
 				reff.getclassname(),
 				clamp(howmany[i],1,hdmath.maxinv(self,reff.getclassname()))
