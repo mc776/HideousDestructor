@@ -655,6 +655,11 @@ extend class HDBackpack{
 				string ati=amounts[thisitem];
 				for(int j=0;j<howmany;j++){
 					int mmx=min(magmax,magmax*frandom(0.1,5.));
+
+					//arbitrary bullshit hack
+					let arm=(class<hdarmour>)(mag);
+					if(arm&&mmx<1000)mmx=min(HDCONST_GREENARMOUR,HDCONST_GREENARMOUR*frandom(0.1,5.));
+
 					if(ati=="")ati=ati..mmx;
 					else ati=ati.." "..mmx;
 				}
