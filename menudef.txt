@@ -50,6 +50,11 @@ OptionValue "PumpSemiAuto"{
 	1, "Semi"
 	2, "Auto (if available)"
 }
+OptionValue "PumpRegularAuto"{
+	-1, "Pump Only"
+	1, "Regular"
+	2, "Auto Hack"
+}
 OptionValue "LoHi"{
 	0, "Low"
 	1, "High"
@@ -217,7 +222,7 @@ OptionMenu "HDOptionsMenu"{
 	Option "Pistol full-auto","hd_pistauto","OnOff"
 	Option "SMG fire mode","hd_smgfiremode","SemiBurstAuto"
 	Option "Hunter semiauto","hd_huntauto","PumpSemiAuto"
-	Option "Hunter full-auto hack","hd_huntfullauto","OnOff"
+	Option "Hunter variant","hd_huntfullauto","PumpRegularAuto"
 	StaticText " "
 	Option "ZM66 fire mode","hd_zmfiremode","SemiAutoSalvo"
 	Slider "ZM66 zoom level","hd_zmzoom",16,70,1,0
