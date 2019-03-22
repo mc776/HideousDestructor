@@ -30,7 +30,11 @@ extend class HDPlayerPawn{
 		}
 
 		frame=clamp(6+abs(incapacitated>>2),6,11);
-		if(incapacitated<((11-6)<<2))incapacitated++;
+
+		if(incapacitated<((11-6)<<2)){
+			if(zerk>0&&incapacitated<0)incapacitated=min(0,incapacitated+4);
+			incapacitated++;
+		}
 
 		if(pitch<70)muzzleclimb1.y+=frandom(0.1,0.4);
 
@@ -39,8 +43,11 @@ extend class HDPlayerPawn{
 		userange=20;
 		if(
 			health>13
-			&&player.cmd.buttons&BT_JUMP
 			&&incaptimer<1
+			&&(
+				player.cmd.buttons&BT_JUMP
+				||(zerk>500&&!random(0,255))
+			)
 		){
 			scale.y=1.;
 			incapacitated=-((11-6)<<2);
