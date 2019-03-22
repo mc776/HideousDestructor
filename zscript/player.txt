@@ -99,7 +99,7 @@ class HDPlayerPawn:PlayerPawn{
 		showgametip();
 	}
 	void A_CheckGunBraced(){
-		if(HDWeapon.IsBusy(self))gunbraced=false;
+		if(incapacitated||HDWeapon.IsBusy(self))gunbraced=false;
 		else if(
 			!barehanded
 			&&!gunbraced
@@ -332,8 +332,10 @@ class HDPlayerPawn:PlayerPawn{
 
 		//if this is put into playermove bad things happen
 		TurnCheck();
-		JumpCheck(fm,sm);
-		CrouchCheck();
+		if(!incapacitated){
+			JumpCheck(fm,sm);
+			CrouchCheck();
+		}
 
 		//prevent some support exploits
 		if(vel dot vel>1)gunbraced=false;
@@ -555,6 +557,8 @@ class HDPlayerPawn:PlayerPawn{
 		//check use key
 		UseButtonCheck(input,fm,sm);
 
+		//this must be at the end since it needs to overwrite a lot of what has just happened
+		IncapacitatedCheck();
 
 		//record old shit
 		oldfm=fm;
@@ -625,6 +629,9 @@ extend class HDPlayerPawn{
 		lastheight=height;
 		lastangle=angle;
 		lastpitch=pitch;
+
+		incapacitated=0;
+		incaptimer=0;
 
 		beatcap=35;beatmax=35;
 		bloodpressure=0;beatcounter=0;

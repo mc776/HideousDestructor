@@ -7,7 +7,62 @@ extend class HDHandlers{
 	}
 }
 extend class HDPlayerPawn{
+	int incapacitated;
+	int incaptimer;
+	override void calcheight(){if(!incapacitated)super.calcheight();}
+	void IncapacitatedCheck(){
+		if(!incapacitated)return;
+		if(incaptimer>0)incaptimer--;
+
+		A_SetInventory("HDIncapWeapon",1);
+		A_SelectWeapon("HDIncapWeapon");
+		if(incapacitated>0){
+			A_SetSize(radius,max(16,height-3));
+		}else{
+			A_SetSize(radius,min(48,height+3));
+		}
+		player.viewz=pos.z+viewheight*(height/48.)+hudbob.y*0.1;
+
+		frame=clamp(6+abs(incapacitated>>2),6,11);
+		if(incapacitated<((11-6)<<2))incapacitated++;
+
+		runwalksprint=-1;
+		speed=0.02;
+		userange=20;
+		if(
+			zerk>4000
+			||(
+				health>13
+				&&player.cmd.buttons&BT_JUMP
+				&&incaptimer<1
+			)
+		){
+			scale.y=1.;
+			incapacitated=-((11-6)<<2);
+		}
+		if(
+			incaptimer>0
+			&&health>12
+			&&health<15
+		){
+			damagemobj(null,null,min(5,health-10),"maxhpdrain");
+		}
+
+		if(!incapacitated){
+			A_TakeInventory("HDIncapWeapon");
+			A_SelectWeapon("HDFist");
+			userange=getdefaultbytype("HDPlayerPawn").userange;
+			setstatelabel("spawn");
+			incapacitated=false;
+			player.crouchfactor=0.3;
+			player.viewheight=viewheight*player.crouchfactor;
+		}
+	}
 	void A_Incapacitated(int flags=0){
+		incapacitated=1;
+		incaptimer=100; //damage calculation
+		return;
+
 		let ppp=player;
 		if(!ppp)return;
 		if(
@@ -61,8 +116,8 @@ class HDPlayerDying:HDPlayerPawn{
 		+notarget
 		player.viewbob 1.5;
 		player.jumpz 0;maxstepheight 8;
-		player.morphweapon "IncapMorphWeapon";
-		player.startitem "IncapMorphWeapon";
+		player.morphweapon "HDIncapWeapon";
+		player.startitem "HDIncapWeapon";
 		player.viewheight 12;player.attackzoffset 4;
 		player.userange 20;
 		height 16;
@@ -98,7 +153,7 @@ class HDPlayerDying:HDPlayerPawn{
 			){
 				if(
 					zerk>0
-					||player.cmd.buttons&BT_JUMP
+					||player.cmd.buttons
 					||(
 						player.cmd.buttons&BT_SPEED
 						&&(
@@ -178,7 +233,7 @@ class HDPlayerDying:HDPlayerPawn{
 }
 
 
-class IncapMorphWeapon:SelfBandage{
+class HDIncapWeapon:SelfBandage{
 	class<actor> injecttype;
 	class<actor> spentinjecttype;
 	class<inventory> inventorytype;
@@ -188,7 +243,7 @@ class IncapMorphWeapon:SelfBandage{
 	}
 	action void A_PickInventoryType(){
 		static const class<inventory> types[]={
-			"IncapMorphWeapon",
+			"HDIncapWeapon",
 			"PortableStimpack",
 			"PortableBerserkpack",
 			"HDFragGrenadeAmmo"
@@ -205,7 +260,7 @@ class IncapMorphWeapon:SelfBandage{
 		if(
 			!countinv(inventorytype)
 		){
-			inventorytype="IncapMorphWeapon";
+			inventorytype="HDIncapWeapon";
 			return;
 		}else if(inventorytype=="PortableBerserkPack"){
 			invoker.spentinjecttype="SpentZerk";
@@ -250,6 +305,9 @@ class IncapMorphWeapon:SelfBandage{
 		;
 	}
 	states{
+	select:
+		TNT1 A 0 A_Raise();
+		wait;
 	ready:
 		TNT1 A 0 A_WeaponReady(WRF_NOFIRE|WRF_ALLOWUSER2);
 		TNT1 A 0{
