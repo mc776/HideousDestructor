@@ -56,7 +56,10 @@ extend class HDPlayerPawn{
 			damagemobj(null,null,min(5,health-10),"maxhpdrain");
 		}
 
-		if(!incapacitated){
+		if(
+			!incapacitated
+			||zerk>0
+		){
 			A_TakeInventory("HDIncapWeapon");
 			userange=getdefaultbytype("HDPlayerPawn").userange;
 			setstatelabel("spawn");
