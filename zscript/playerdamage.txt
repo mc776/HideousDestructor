@@ -505,26 +505,6 @@ extend class HDPlayerPawn{
 
 		return finaldmg;
 	}
-	//for when morphing into incapacitated state
-	void A_Incapacitated(int flags=0){
-		let ppp=player;
-		if(!ppp)return;
-		if(
-			!(flags&HDINCAP_FAKING)
-			&&!random(0,15)
-		)Disarm(self);
-		else{
-			let www=hdweapon(ppp.readyweapon);
-			if(www)www.OnPlayerDrop();
-		}
-		A_Morph("HDPlayerDying",int.MAX,MRF_TRANSFERTRANSLATION,"CheckPuff","CheckPuff");
-		let pppmo=HDPlayerDying(ppp.mo);
-		if(flags&HDINCAP_SCREAM)pppmo.A_PlayerScream();
-		pppmo.viewheight=self.viewheight*ppp.crouchfactor;
-		A_TransferConditions(pppmo);
-		if(flags&HDINCAP_FAKING)pppmo.excesshealth=999;
-		pppmo.damagemobj(null,null,pppmo.health-health,"maxhpdrain");
-	}
 	//disarm
 	static void Disarm(actor victim){
 		if(!victim.player)return;
@@ -538,35 +518,6 @@ extend class HDPlayerPawn{
 		){
 			victim.DropInventory(pwep);
 		}
-	}
-	enum IncapFlags{
-		HDINCAP_FAKING=1,
-		HDINCAP_SCREAM=2,
-	}
-	void A_TransferConditions(hdplayerpawn pppmo){
-		if(!pppmo)return;
-		pppmo.beatcount=beatcount;
-		pppmo.beatmax=beatmax;
-		pppmo.beatcap=beatcap;
-		pppmo.beatcounter=beatcounter;
-		pppmo.bloodpressure=bloodpressure;
-		pppmo.lastpitch=lastpitch;
-		pppmo.lastangle=lastangle;
-		pppmo.feetangle=feetangle;
-		pppmo.zerk=zerk;
-		pppmo.lastthingthatwoundedyou=lastthingthatwoundedyou;
-		pppmo.haszerked=haszerked;
-		pppmo.regenblues=regenblues;
-		pppmo.stimcount=stimcount;
-		pppmo.woundcount=woundcount;
-		pppmo.oldwoundcount=oldwoundcount;
-		pppmo.unstablewoundcount=unstablewoundcount;
-		pppmo.aggravateddamage=aggravateddamage;
-		pppmo.stunned=stunned;
-		pppmo.fatigue=fatigue;
-		pppmo.bledout=bledout;
-		pppmo.specialtipalpha=specialtipalpha;
-		pppmo.specialtip=specialtip;
 	}
 	states{
 	pain:
