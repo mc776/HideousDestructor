@@ -62,7 +62,7 @@ class HDPlayerDying:HDPlayerPawn{
 					let pppmo=hdplayerpawn(ppp.mo);
 					if(ppp.mo){
 						ppp.crouchfactor=0.1;
-						pppmo.damagemobj(null,null,pppmo.health-health,"internal");
+						pppmo.damagemobj(null,null,pppmo.health-health,"maxhpdrain");
 						pppmo.A_PlaySound("*grunt",CHAN_VOICE);
 						A_TransferConditions(pppmo);
 						pppmo.fatigue+=10;
@@ -75,7 +75,7 @@ class HDPlayerDying:HDPlayerPawn{
 				}
 				return;
 			}else{
-				damagemobj(null,null,health-10,"maxhpdrain");
+				damagemobj(null,null,min(5,health-10),"maxhpdrain");
 			}
 			excesshealth++;
 		}

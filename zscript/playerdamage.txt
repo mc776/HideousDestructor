@@ -522,10 +522,8 @@ extend class HDPlayerPawn{
 		if(flags&HDINCAP_SCREAM)pppmo.A_PlayerScream();
 		pppmo.viewheight=self.viewheight*ppp.crouchfactor;
 		A_TransferConditions(pppmo);
-		if(flags&HDINCAP_FAKING){
-			pppmo.excesshealth=999;
-			pppmo.damagemobj(null,null,pppmo.health-health,"maxhpdrain");
-		}
+		if(flags&HDINCAP_FAKING)pppmo.excesshealth=999;
+		pppmo.damagemobj(null,null,pppmo.health-health,"maxhpdrain");
 	}
 	//disarm
 	static void Disarm(actor victim){
