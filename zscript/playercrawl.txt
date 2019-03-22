@@ -10,6 +10,7 @@ extend class HDPlayerPawn{
 	int incapacitated;
 	int incaptimer;
 	override void calcheight(){if(!incapacitated)super.calcheight();}
+	inventory invselbak;
 	void IncapacitatedCheck(){
 		if(!incapacitated)return;
 		if(incaptimer>0)incaptimer--;
@@ -23,8 +24,15 @@ extend class HDPlayerPawn{
 		}
 		player.viewz=pos.z+viewheight*(height/48.)+hudbob.y*0.1;
 
+		if(invsel){
+			invselbak=invsel;
+			invsel=null;
+		}
+
 		frame=clamp(6+abs(incapacitated>>2),6,11);
 		if(incapacitated<((11-6)<<2))incapacitated++;
+
+		if(pitch<70)muzzleclimb1.y+=1.;
 
 		runwalksprint=-1;
 		speed=0.02;
@@ -56,179 +64,16 @@ extend class HDPlayerPawn{
 			incapacitated=false;
 			player.crouchfactor=0.3;
 			player.viewheight=viewheight*player.crouchfactor;
+			if(invselbak)invsel=invselbak;
 		}
 	}
 	void A_Incapacitated(int flags=0){
 		incapacitated=1;
-		incaptimer=100; //damage calculation
-		return;
-
-		let ppp=player;
-		if(!ppp)return;
-		if(
-			!(flags&HDINCAP_FAKING)
-			&&!random(0,15)
-		)Disarm(self);
-		else{
-			let www=hdweapon(ppp.readyweapon);
-			if(www)www.OnPlayerDrop();
-		}
-		A_Morph("HDPlayerDying",int.MAX,MRF_TRANSFERTRANSLATION,"CheckPuff","CheckPuff");
-		let pppmo=HDPlayerDying(ppp.mo);
-		if(flags&HDINCAP_SCREAM)pppmo.A_PlayerScream();
-		pppmo.viewheight=self.viewheight*ppp.crouchfactor;
-		A_TransferConditions(pppmo);
-		if(flags&HDINCAP_FAKING)pppmo.excesshealth=999;
-		pppmo.damagemobj(null,null,pppmo.health-health,"maxhpdrain");
+		if(flags&HDINCAP_SCREAM)A_PlayerScream();
 	}
 	enum IncapFlags{
 		HDINCAP_FAKING=1,
 		HDINCAP_SCREAM=2,
-	}
-	void A_TransferConditions(hdplayerpawn pppmo){
-		if(!pppmo)return;
-		pppmo.beatcount=beatcount;
-		pppmo.beatmax=beatmax;
-		pppmo.beatcap=beatcap;
-		pppmo.beatcounter=beatcounter;
-		pppmo.bloodpressure=bloodpressure;
-		pppmo.lastpitch=lastpitch;
-		pppmo.lastangle=lastangle;
-		pppmo.feetangle=feetangle;
-		pppmo.zerk=zerk;
-		pppmo.lastthingthatwoundedyou=lastthingthatwoundedyou;
-		pppmo.haszerked=haszerked;
-		pppmo.regenblues=regenblues;
-		pppmo.stimcount=stimcount;
-		pppmo.woundcount=woundcount;
-		pppmo.oldwoundcount=oldwoundcount;
-		pppmo.unstablewoundcount=unstablewoundcount;
-		pppmo.aggravateddamage=aggravateddamage;
-		pppmo.stunned=stunned;
-		pppmo.fatigue=fatigue;
-		pppmo.bledout=bledout;
-		pppmo.specialtipalpha=specialtipalpha;
-		pppmo.specialtip=specialtip;
-	}
-}
-class HDPlayerDying:HDPlayerPawn{
-	default{
-		+notarget
-		player.viewbob 1.5;
-		player.jumpz 0;maxstepheight 8;
-		player.morphweapon "HDIncapWeapon";
-		player.startitem "HDIncapWeapon";
-		player.viewheight 12;player.attackzoffset 4;
-		player.userange 20;
-		height 16;
-	}
-	override void checkcrouch(bool totallyfrozen){}
-	override void playrunning(){}
-	override void playattacking(){}
-	override void playattacking2(){}
-	override void playidle(){}
-	override void jumpcheck(double fm,double sm,bool forceslide){}
-	int excesshealth;
-	override void postbeginplay(){
-		super.postbeginplay();
-	}
-	override void GiveBasics(){}
-	override void tick(){
-		super.tick();
-		if(!player||player.bot||player.mo!=self)return;
-
-		if(viewheight>16)viewheight=max(16,viewheight-2);
-
-		invsel=null; //prevent player from using items
-
-		viewbob=12.;
-		speed=min(speed,frandom(0,0.06));
-		if(pitch<70)A_MuzzleClimb((frandom(-0.1,0.1),frandom(0.1,0.6)),(0,0),(0,0),(0,0));
-		else A_TakeInventory("IsMoving");
-		gunbraced=false;
-
-		if(health>min(12,getmaxhealth()-1)){
-			if(
-				excesshealth>0
-			){
-				if(
-					zerk>0
-					||player.cmd.buttons
-					||(
-						player.cmd.buttons&BT_SPEED
-						&&(
-							player.cmd.forwardmove
-							||player.cmd.sidemove
-						)
-					)
-				){
-					playerinfo ppp=player;
-					UndoPlayerMorph(player,0,true);
-					let pppmo=hdplayerpawn(ppp.mo);
-					if(ppp.mo){
-						ppp.crouchfactor=0.1;
-						pppmo.damagemobj(null,null,pppmo.health-health,"maxhpdrain");
-						pppmo.A_PlaySound("*grunt",CHAN_VOICE);
-						A_TransferConditions(pppmo);
-						pppmo.fatigue+=10;
-						pppmo.muzzleclimb1.y=10.;
-						pppmo.muzzleclimb2.y=20.;
-						pppmo.muzzleclimb3.y=20.;
-						pppmo.muzzleclimb4.y=10.;
-						pppmo.overloaded=5.;
-					}
-				}
-				return;
-			}else{
-				damagemobj(null,null,min(5,health-10),"maxhpdrain");
-			}
-			excesshealth++;
-		}
-		fatigue=(HDCONST_SPRINTFATIGUE>>1);
-	}
-	int breathtics;
-	void A_StillBreathing(){
-		if(breathtics>180)breathtics=0;
-		breathtics+=15;
-		scale.y=1.+0.03*sin(breathtics);
-	}
-	override void Die(actor source,actor inflictor,int dmgflags,name MeansOfDeath){
-		silentdeath=true;
-		super.die(source,inflictor,dmgflags,MeansOfDeath);
-		if(playercorpse){
-			playercorpse.setstatelabel("dead");
-			playercorpse.tics=6;
-			playercorpse.scale=scale;
-		}
-	}
-	//can't kick, can only pick up objects that can be used while in this state
-	override void UseButtonCheck(int input,int fm,int sm){
-		if(!(input&BT_USE))bpickup=false;else{
-			if(oldinput&BT_ATTACK)hasgrabbed=true;
-			else if(!(oldinput&BT_USE))hasgrabbed=false;
-
-			bpickup=!hasgrabbed;
-			PickupGrabber(12);
-		}
-	}
-	states{
-	spawn:
-		PLAY H 5 A_SetBlend("00 00 00",1.,140,"00 00 00");
-		PLAY IJKL 5;
-	see:
-	melee:
-	missile:
-		PLAY L 2 A_StillBreathing();
-		wait;
-	pain:
-		PLAY L 3{excesshealth--;}
-		PLAY L 10 A_Pain();
-		goto see;
-	death:
-	xdeath:
-		TNT1 A 0 A_NoBlocking();
-		TNT1 A 10 A_CheckPlayerDone();
-		wait;
 	}
 }
 
@@ -299,8 +144,9 @@ class HDIncapWeapon:SelfBandage{
 		..WEPHELP_ALTFIRE.."  Use the item in hand\n"
 		..WEPHELP_FIREMODE.."  Fumble for something else\n"
 		..((
-			!hdplayerdying(owner)
-			||hdplayerdying(owner).excesshealth>0
+			hdplayerpawn(owner)
+			&&hdplayerpawn(owner).incapacitated
+			&&hdplayerpawn(owner).incaptimer<1
 		)?(WEPHELP_BTCOL.."Jump"..WEPHELP_RGCOL.."  Get up\n"):"")
 		;
 	}

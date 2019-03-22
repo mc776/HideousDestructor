@@ -489,7 +489,7 @@ extend class HDPlayerPawn{
 		if(
 			health>0
 			&&player
-			&&!HDPlayerDying(self)
+			&&incapacitated<1
 			&&health<random(-1,max((originaldamage>>3),3))
 			&&(
 				mod!="bleedout"
@@ -498,9 +498,8 @@ extend class HDPlayerPawn{
 		){
 			let plr=player;
 			A_Incapacitated((originaldamage>10)?HDINCAP_SCREAM:0);
-			let hdpd=HDPlayerDying(plr.mo);
-			if(hdpd)hdpd.excesshealth=min(-1,-random(0,2)-(originaldamage>>4));
-			A_LogInt(originaldamage>>4);
+			incaptimer=originaldamage<<3;
+			if(health<10)GiveBody(7);
 		}
 
 		return finaldmg;

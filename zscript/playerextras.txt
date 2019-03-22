@@ -191,8 +191,11 @@ extend class HDPlayerPawn{
 			!checkmove(pos.xy+(cos(angle),sin(angle))*12,PCM_DROPOFF|PCM_NOLINES)
 			&&(fm<=0||zerk>0)
 			&&(
-				blockingmobj is "HDPlayerDying"
-				||blockingmobj is "HDBarrel"
+				blockingmobj is "HDBarrel"
+				||(
+					hdplayerpawn(blockingmobj)
+					&&hdplayerpawn(blockingmobj).incapacitated>0
+				)
 			)
 		){
 			blockingmobj.trymove(blockingmobj.pos.xy+vel.xy*1.2,true);

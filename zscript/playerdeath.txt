@@ -77,7 +77,7 @@ extend class HDPlayerPawn{
 		if(player.attacker is "HDFire")player.attacker=player.attacker.master;
 
 
-		bool crouched=!hdplayerdying(self)&&height<40;
+		bool crouched=(!incapacitated)&&height<40;
 
 		playercorpse=spawn("HDPlayerCorpse",pos,ALLOW_REPLACE);
 		playercorpse.vel=vel;playercorpse.master=self;
@@ -116,7 +116,7 @@ extend class HDPlayerPawn{
 				&&players[i].mo
 				&&players[i].mo.health>0
 				&&hdplayerpawn(players[i].mo)
-				&&!hdplayerdying(players[i].mo)
+				&&hdplayerpawn(players[i].mo).incapacitated<1
 				&&(
 					!teamplay
 					||players[i].getteam()==player.getteam()

@@ -4,7 +4,6 @@ extend class hdplayerpawn{
 	void showgametip(){
 		if(
 			!player
-			||(hdplayerdying(self)&&health>0)
 			||!cvar.getcvar("hd_helptext",player).getbool()
 		)return;
 		static const string specialtips[]={
