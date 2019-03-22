@@ -79,7 +79,12 @@ extend class HDPlayerPawn{
 			if(www)www.OnPlayerDrop();
 			if(flags&HDINCAP_SCREAM)A_PlayerScream();
 		}
+		if(
+			!(flags&HDINCAP_FAKING)
+			&&health<10
+		)GiveBody(7);
 		incapacitated=1;
+		setstatelabel("spawn");
 	}
 	enum IncapFlags{
 		HDINCAP_FAKING=1,
