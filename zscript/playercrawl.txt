@@ -62,12 +62,11 @@ extend class HDPlayerPawn{
 			userange=getdefaultbytype("HDPlayerPawn").userange;
 			setstatelabel("spawn");
 			incapacitated=false;
-			player.crouchfactor=0.3;
 			player.viewheight=viewheight*player.crouchfactor;
 			if(invselbak)invsel=invselbak;
 		}
 	}
-	void A_Incapacitated(int flags=0){
+	void A_Incapacitated(int flags=0,int incaptime=35){
 		let ppp=player;
 		if(!ppp)return;
 		if(
@@ -84,6 +83,7 @@ extend class HDPlayerPawn{
 			&&health<10
 		)GiveBody(7);
 		incapacitated=1;
+		incaptimer=incaptime;
 		setstatelabel("spawn");
 	}
 	enum IncapFlags{

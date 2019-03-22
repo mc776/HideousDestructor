@@ -497,8 +497,7 @@ extend class HDPlayerPawn{
 			)
 		){
 			let plr=player;
-			A_Incapacitated((originaldamage>10)?HDINCAP_SCREAM:0);
-			incaptimer=originaldamage<<3;
+			A_Incapacitated((originaldamage>10)?HDINCAP_SCREAM:0,originaldamage<<3);
 		}
 
 		return finaldmg;
