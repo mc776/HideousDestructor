@@ -38,12 +38,9 @@ extend class HDPlayerPawn{
 		speed=0.02;
 		userange=20;
 		if(
-			zerk>4000
-			||(
-				health>13
-				&&player.cmd.buttons&BT_JUMP
-				&&incaptimer<1
-			)
+			health>13
+			&&player.cmd.buttons&BT_JUMP
+			&&incaptimer<1
 		){
 			scale.y=1.;
 			incapacitated=-((11-6)<<2);
@@ -58,7 +55,7 @@ extend class HDPlayerPawn{
 
 		if(
 			!incapacitated
-			||zerk>0
+			||zerk>4000
 		){
 			A_TakeInventory("HDIncapWeapon");
 			userange=getdefaultbytype("HDPlayerPawn").userange;
