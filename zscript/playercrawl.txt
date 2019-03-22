@@ -68,8 +68,18 @@ extend class HDPlayerPawn{
 		}
 	}
 	void A_Incapacitated(int flags=0){
+		let ppp=player;
+		if(!ppp)return;
+		if(
+			!(flags&HDINCAP_FAKING)
+			&&!random(0,15)
+		)Disarm(self);
+		else{
+			let www=hdweapon(ppp.readyweapon);
+			if(www)www.OnPlayerDrop();
+			if(flags&HDINCAP_SCREAM)A_PlayerScream();
+		}
 		incapacitated=1;
-		if(flags&HDINCAP_SCREAM)A_PlayerScream();
 	}
 	enum IncapFlags{
 		HDINCAP_FAKING=1,
