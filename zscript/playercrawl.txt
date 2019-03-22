@@ -32,7 +32,7 @@ extend class HDPlayerPawn{
 		frame=clamp(6+abs(incapacitated>>2),6,11);
 		if(incapacitated<((11-6)<<2))incapacitated++;
 
-		if(pitch<70)muzzleclimb1.y+=1.;
+		if(pitch<70)muzzleclimb1.y+=frandom(0.1,0.4);
 
 		runwalksprint=-1;
 		speed=0.02;
@@ -58,7 +58,6 @@ extend class HDPlayerPawn{
 
 		if(!incapacitated){
 			A_TakeInventory("HDIncapWeapon");
-			A_SelectWeapon("HDFist");
 			userange=getdefaultbytype("HDPlayerPawn").userange;
 			setstatelabel("spawn");
 			incapacitated=false;
