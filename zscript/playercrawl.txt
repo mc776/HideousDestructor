@@ -21,7 +21,7 @@ extend class HDPlayerPawn{
 		}else{
 			A_SetSize(radius,min(48,height+3));
 		}
-		player.viewz=pos.z+viewheight*(height/48.)+hudbob.y*0.1;
+		player.viewz=min(ceilingz,pos.z+viewheight*(height/48.)+hudbob.y*0.1);
 
 		if(invsel){
 			invselbak=invsel;
@@ -69,6 +69,7 @@ extend class HDPlayerPawn{
 			incapacitated=false;
 			player.viewheight=viewheight*player.crouchfactor;
 			if(invselbak)invsel=invselbak;
+			if(pos.z+height>ceilingz)player.crouchfactor=((ceilingz-pos.z)/height);
 		}
 	}
 	void A_Incapacitated(int flags=0,int incaptime=35){
