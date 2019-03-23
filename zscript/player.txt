@@ -266,8 +266,8 @@ class HDPlayerPawn:PlayerPawn{
 			)&&!countinv("IsMoving")
 		);
 
-		//re-enable item selection after unmorph from incapacitated
-		if(!invsel){
+		//re-enable item selection after de-incapacitation
+		if(!incapacitated&&!invsel){
 			for(let item=inv;item!=null;item=item.inv){
 				if(
 					item.binvbar
