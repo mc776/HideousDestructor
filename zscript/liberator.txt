@@ -35,8 +35,8 @@ class AutoReloadingThingy:HDWeapon{
 		int deductfrombp=canmake-onpbrass;
 		owner.A_TakeInventory("sevenmilbrass",canmake);
 		if(deductfrombp>0)bp.addamount("sevenmilbrass",-deductfrombp);
-		deductfrombp=canmake-onppowder;
-		owner.A_TakeInventory("fourmilammo",canmake);
+		deductfrombp=canmake*4-onppowder;
+		owner.A_TakeInventory("fourmilammo",canmake*4);
 		if(deductfrombp>0)bp.addamount("fourmilammo",-deductfrombp);
 
 		//add resulting rounds
