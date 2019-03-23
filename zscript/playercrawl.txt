@@ -115,6 +115,18 @@ class HDIncapWeapon:SelfBandage{
 			"HDFragGrenadeAmmo"
 		};
 
+		if(
+			!invoker.weaponstatus[INCS_INDEX]
+			&&!countinv("PortableStimpack")
+			&&countinv("PortableMedikit")
+		){
+			UseInventory(findinventory("PortableMedikit"));
+			invoker.spentinjecttype="SpentStim";
+			invoker.injecttype="InjectStimDummy";
+			return;
+		}
+
+
 		int which=invoker.weaponstatus[INCS_INDEX];
 		do{
 			which++;
