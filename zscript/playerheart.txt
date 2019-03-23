@@ -151,7 +151,7 @@ extend class HDPlayerPawn{
 			if(iszerk)beatmax=clamp(beatmax,4,14);
 			else beatmax=clamp(beatmax,HDCONST_MINHEARTTICS,35);
 
-			if(fatigue>(bledout>>3))fatigue--;
+			if(fatigue>random(0,(bledout>>7)))fatigue--;
 			if(
 				beatmax<HDCONST_MINHEARTTICS+3
 				||fatigue>HDCONST_DAMAGEFATIGUE  
@@ -176,7 +176,7 @@ extend class HDPlayerPawn{
 				&&runwalksprint>0
 				&&(fm||sm)
 			){
-				fatigue+=2+max(0,bledout-1024)+(
+				fatigue+=2+max(0,(bledout>>6))+(
 					countinv("WornRadsuit")?randompick(0,1,1):
 					(armourlevel==3?randompick(0,1):
 					armourlevel==1?randompick(0,0,0,1):0)
