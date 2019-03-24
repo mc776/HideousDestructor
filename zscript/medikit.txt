@@ -306,7 +306,7 @@ class HDMedikitter:HDWoundFixer{
 	altfire:
 	althold:
 	fireother:
-		TNT1 A 0 A_JumpIf(pressingfiremode(),"diagnoseother");
+		TNT1 A 0 A_JumpIf(pressingfiremode()&&!pressingzoom(),"diagnoseother");
 		TNT1 A 10{
 			flinetracedata mediline;
 			linetrace(
