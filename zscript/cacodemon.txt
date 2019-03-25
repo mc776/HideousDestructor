@@ -363,6 +363,9 @@ class Cacademon:Cacodemon replaces Cacodemon{
 			0,4000,"FoofPuff",4,4,200,8,1.4,1.5,"none",-12
 		);
 	}
+	override bool CanResurrect(actor other,bool passive){
+		return !passive||tics<0;
+	}
 	states{
 	spawn:
 		HEAD A 10{

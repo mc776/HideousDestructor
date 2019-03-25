@@ -485,6 +485,7 @@ class HDMobster:IdleDummy{
 					actor itt=it.thing;
 					if(
 						itt.bcorpse
+						&&itt.canresurrect(self,true)
 						&&itt.findstate("raise")
 						&&!random(0,4)
 						&&abs(itt.pos.z-master.pos.z)<master.maxstepheight*2
