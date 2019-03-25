@@ -63,14 +63,18 @@ extend class HDPlayerPawn{
 			!incapacitated
 			||zerk>4000
 		){
-			A_TakeInventory("HDIncapWeapon");
-			userange=getdefaultbytype("HDPlayerPawn").userange;
-			setstatelabel("spawn");
-			incapacitated=false;
-			player.viewheight=viewheight*player.crouchfactor;
-			if(invselbak)invsel=invselbak;
-			if(pos.z+height>ceilingz)player.crouchfactor=((ceilingz-pos.z)/height);
+			A_Capacitated();
 		}
+	}
+	void A_Capacitated(){
+		incapacitated=0;
+		A_TakeInventory("HDIncapWeapon");
+		A_SetSize(getdefaultbytype("HDPlayerPawn").radius,getdefaultbytype("HDPlayerPawn").height);
+		userange=getdefaultbytype("HDPlayerPawn").userange;
+		player.viewheight=viewheight*player.crouchfactor;
+		if(invselbak)invsel=invselbak;
+		if(pos.z+height>ceilingz)player.crouchfactor=((ceilingz-pos.z)/height);
+		setstatelabel("spawn");
 	}
 	void A_Incapacitated(int flags=0,int incaptime=35){
 		let ppp=player;
