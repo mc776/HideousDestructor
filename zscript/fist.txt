@@ -219,6 +219,11 @@ class HDFist:HDWeapon replaces Fist{
 				&&(
 					!hdplayerpawn(grabbed)
 					||!hdplayerpawn(grabbed).incapacitated
+				)&&(
+					grabbed.player.cmd.forwardmove
+					||grabbed.player.cmd.sidemove
+					||grabbed.player.cmd.pitch
+					||grabbed.player.cmd.yaw
 				)
 			)
 		);
@@ -228,6 +233,7 @@ class HDFist:HDWeapon replaces Fist{
 		);
 		//chance to break away
 		if(resisting){
+			vel+=(frandom(-1,1),frandom(-1,1),frandom(-1,1));
 			let grabbedmass=grabbed.mass;
 			if(random(grabbedmass*0.1,grabbedmass)>random(mass*0.6,mass*(zerk?5:1))){
 				vector2 thrustforce=(cos(angle),sin(angle))*frandom(0.,2.);
@@ -237,8 +243,11 @@ class HDFist:HDWeapon replaces Fist{
 				return;
 			}
 			if(absangle(angle,grabangle)>10)invoker.grabangle-=frandom(10,20);
-			if(!random(0,35)){
+			if(!random(0,7)){
 				grabbed.damagemobj(self,self,1,"Melee");
+				double newgrangle=(grabbed.angle+angle)*0.5;
+				grabbed.angle=newgrangle;
+				invoker.grabangle=newgrangle;
 			}
 		}
 		double massfactor=max(1.,grabbed.mass*(1./200.));
