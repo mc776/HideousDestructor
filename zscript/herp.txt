@@ -332,8 +332,8 @@ class HERPBot:HDUPK{
 					let mmm=hd4mmag(spawn("hd4mmag",(pos.xy,pos.z-6)));
 					mmm.mags.clear();mmm.mags.push(max(0,currammo));
 					double angloff=angle+100;
+					mmm.vel=(cos(angloff),sin(angloff),1)*frandom(0.7,1.3)+vel;
 				}
-				mmm.vel=(cos(angloff),sin(angloff),1)+vel;
 				ammo[0]=ammo[1];
 				ammo[1]=ammo[2];
 				ammo[2]=-1;
