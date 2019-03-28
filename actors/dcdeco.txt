@@ -2,7 +2,7 @@
 //   Misc. decorations
 // ------------------------------------------------------------
 
-actor HDTechPillar:TechPillar replaces TechPillar{+dontthrust +shootable +nodamage +noblood +forceybillboard}
+actor HDTechPillar:TechPillar replaces TechPillar{+dontthrust +shootable +nodamage +noblood +forceybillboard mass 2000}
 actor HDColumn:Column replaces Column{radius 6 +dontthrust +shootable +nodamage +noblood +forceybillboard}actor HDTechLamp:TechLamp replaces TechLamp{radius 6 +dontthrust +shootable +nodamage +noblood +forceybillboard}
 actor HDTechLamp_:HDActor replaces TechLamp{ //used in the range, so gotta check
 	radius 6 +dontthrust +shootable +nodamage +noblood +forceybillboard
@@ -53,18 +53,18 @@ actor HDHeadStickBlack:HDHeadStickBase{translation "112:120=152:159","121:127=9:
 actor HDHeadStickOld:HDHeadStickBase{translation "58:66=128:136","214:223=141:148", "176:191=24:47","16:34=68:79"}
 actor HDHeadStick:RandomSpawner replaces HeadOnAStick{dropitem "HDHeadStickBase" 256 dropitem "HDHeadStickOld" 256 dropitem "HDHeadStickBlack" 256}
 
-actor HDDeadStick:HDStickDeco replaces DeadStick{radius 16 scale 0.9 -noblood translation "58:66=128:136","214:223=141:148", "176:191=24:47","16:34=68:79" states{spawn: POL1 A -1
+actor HDDeadStick:HDStickDeco replaces DeadStick{radius 16 scale 0.9 -noblood mass 200 translation "58:66=128:136","214:223=141:148", "176:191=24:47","16:34=68:79" states{spawn: POL1 A -1
 stop}}
 actor HDTwitchStick:HDDeadStick replaces LiveStick{painchance 32 translation "none" states{spawn: POL6 A random(1,60)nodelay A_SetAngle(random(1,360)) POL6 AAAAA 1 A_SpawnItemEx("BloodTrail",0,0,random(32,40),random(-2,2),0,random(-2,-4),random(-1,1),SXF_NOCHECKPOSITION) POL6 B random(2,6)
 loop pain: POL6 BABABABABAABB random(3,4)
 goto spawn}}
 
-actor HDTwitchHang:HDTwitchStick replaces BloodyTwitch{+nogravity +spawnceiling scale  0.8 states{spawn: GOR1 ABCB random(8,30) nodelay A_SetAngle(random(1,360))
+actor HDTwitchHang:HDTwitchStick replaces BloodyTwitch{+nogravity +spawnceiling scale 0.8 mass 20000 states{spawn: GOR1 ABCB random(8,30) nodelay A_SetAngle(random(1,360))
 loop pain: GOR1 CABCABCBAACBB random(3,4)
 goto spawn}}
 actor HDTwitchHangNS:HDTwitchHang replaces NonsolidTwitch {-solid -shootable}
 
-actor HDHTNoGuts:HDDeadStick replaces HangNoGuts{+nogravity +spawnceiling radius 8 height 79 states{spawn: HDB1 A -1 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) stop}}
+actor HDHTNoGuts:HDDeadStick replaces HangNoGuts{+nogravity +spawnceiling radius 8 height 79 mass 20000 states{spawn: HDB1 A -1 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) stop}}
 actor HDHTLkDown:HDHTNoGuts replaces HangTLookingDown{radius 12 height 12 height 51 states{spawn: HDB3 A -1 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) stop}}
 actor HDHTLkUp:HDHTLkDown replaces HangTLookingUp{height 51 states{spawn: HDB5 A -1 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) stop}}
 actor HDHTNoBrain:HDHTLkDown replaces HangTNoBrain{height 56 states{spawn: HDB6 A -1 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) stop}}

@@ -237,9 +237,9 @@ class HDFist:HDWeapon replaces Fist{
 			let grabbedmass=grabbed.mass;
 			if(random(grabbedmass*0.1,grabbedmass)>random(mass*0.6,mass*(zerk?5:1))){
 				vector2 thrustforce=(cos(angle),sin(angle))*frandom(0.,2.);
-				grabbed.vel.xy+=thrustforce;
+				grabbed.vel.xy+=thrustforce*min(mass/grabbed.mass,1.);
 				vel.xy-=thrustforce;
-				grabbed=null;
+				invoker.grabbed=null;
 				return;
 			}
 			if(absangle(angle,grabangle)>10)invoker.grabangle-=frandom(10,20);
@@ -260,7 +260,7 @@ class HDFist:HDWeapon replaces Fist{
 		double mindist=grabbed.radius;
 		vector3 destpos=(pos.xy+(cos(angle),sin(angle))*(mindist),pos.z);
 		if(distance2d(grabbed)>radius)grabbed.vel+=(destpos-grabbed.pos).unit()*(zerk?0.9:0.2);
-		vel*=min(1.,0.6*mass/grabbed.mass);
+		player.cmd.forwardmove=min(1.,0.6*mass/grabbed.mass)*player.cmd.forwardmove;
 		if(
 			absangle(angle,invoker.grabangle)>1.
 			||distance3d(grabbed)>(mindist+16)
