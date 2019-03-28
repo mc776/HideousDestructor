@@ -269,7 +269,7 @@ class HDFist:HDWeapon replaces Fist{
 		double mindist=grabbed.radius;
 		vector3 destpos=(pos.xy+(cos(angle),sin(angle))*(mindist),pos.z);
 		if(distance2d(grabbed)>radius)grabbed.vel+=(destpos-grabbed.pos).unit()*(zerk?0.9:0.2);
-		player.cmd.forwardmove=min(1.,0.6*mass/grabbed.mass)*player.cmd.forwardmove;
+		player.cmd.forwardmove=min(0.8,0.4*mass/grabbed.mass)*clamp(player.cmd.forwardmove,-6400,6400);
 		if(
 			absangle(angle,invoker.grabangle)>1.
 			||distance3d(grabbed)>(mindist+16)
