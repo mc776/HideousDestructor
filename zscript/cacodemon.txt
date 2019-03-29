@@ -66,7 +66,7 @@ class FooFighter:HDActor{
 				//bzz
 				if(blockingmobj){
 					if(
-						blockingmobj is "Cacademon"
+						blockingmobj is "CaeloBite"
 						&&target
 						&&target.target!=blockingmobj
 					)continue;
@@ -325,7 +325,7 @@ class CacoShellBlood:BloodSplatSilent{
 		)destroy();
 	}
 }
-class Cacademon:Cacodemon replaces Cacodemon{
+class CaeloBite:Cacodemon replaces Cacodemon{
 	int charge;
 	double sweepangle;
 	default{
@@ -547,7 +547,7 @@ class Cacademon:Cacodemon replaces Cacodemon{
 		}goto super::raise;
 	}
 }
-class DeadCacademon:Cacademon replaces DeadCacodemon{
+class DeadCaeloBite:CaeloBite replaces DeadCacodemon{
 	override void postbeginplay(){
 		super.postbeginplay();
 		A_Die("spawndead");
