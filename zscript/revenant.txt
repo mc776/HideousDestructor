@@ -109,6 +109,11 @@ class Boner:Revenant replaces Revenant{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
+		if(Wads.CheckNumForName("FREEDOOM",0)!=-1){
+			scale=(1.,1.);
+			mass=200;
+			hdmobai.resize(self,0.8,1.1);
+		}
 		let hdmb=hdmobster(hdmobster.spawnmobster(self));
 		hdmb.meleethreshold=200;
 		balls=100;
