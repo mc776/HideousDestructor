@@ -237,9 +237,21 @@ class HDPlayerPawn:PlayerPawn{
 		}
 		---- A 0 A_Jump(256,"missile");
 	}
+	transient cvar hd_nozoomlean;
+	transient cvar hd_aimsensitivity;
+	transient cvar hd_noslide;
+	transient cvar hd_usefocus;
 	override void Tick(){
 		if(!player||!player.mo||player.mo!=self){super.tick();return;} //anti-voodoodoll
 		let player=self.player;
+
+		//cache cvars as necessary
+		if(!hd_nozoomlean){
+			hd_nozoomlean=cvar.getcvar("hd_nozoomlean",player);
+			hd_aimsensitivity=cvar.getcvar("hd_aimsensitivity",player);
+			hd_noslide=cvar.getcvar("hd_noslide",player);
+			hd_usefocus=cvar.getcvar("hd_usefocus",player);
+		}
 
 		lastpos=pos;
 
@@ -258,14 +270,6 @@ class HDPlayerPawn:PlayerPawn{
 		if(bkilled||health<1){
 			super.Tick();
 			return;
-		}
-
-		//cache cvars as necessary
-		if(!hd_nozoomlean){
-			hd_nozoomlean=cvar.getcvar("hd_nozoomlean",player);
-			hd_aimsensitivity=cvar.getcvar("hd_aimsensitivity",player);
-			hd_noslide=cvar.getcvar("hd_noslide",player);
-			hd_usefocus=cvar.getcvar("hd_usefocus",player);
 		}
 
 		//log all new inputs
@@ -640,10 +644,6 @@ extend class HDHandlers{
 
 extend class HDPlayerPawn{
 	//reset various... things.
-	transient cvar hd_nozoomlean;
-	transient cvar hd_aimsensitivity;
-	transient cvar hd_noslide;
-	transient cvar hd_usefocus;
 	void levelreset(){
 		lastpos=pos;
 		lastvel=vel;
