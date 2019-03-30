@@ -446,7 +446,8 @@ class HDFragGrenadeRoller:HDActor{
 	override bool used(actor user){
 		angle=user.angle;
 		A_PlaySound(bouncesound);
-		A_ChangeVelocity(12,0,4,CVF_RELATIVE);
+		if(hdplayerpawn(user)&&hdplayerpawn(user).incapacitated)A_ChangeVelocity(4,0,1,CVF_RELATIVE);
+		else A_ChangeVelocity(12,0,4,CVF_RELATIVE);
 		return true;
 	}
 	states{
