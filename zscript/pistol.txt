@@ -28,6 +28,9 @@ class HDPistol:HDWeapon replaces Pistol{
 	override double gunmass(){
 		return 10;
 	}
+	override void failedpickupunload(){
+		failedpickupunloadmag(PISS_MAG,"HD9mMag15");
+	}
 	override string,double getpickupsprite(){
 		string spr;
 		if(weaponstatus[PISS_CHAMBER]<1){
