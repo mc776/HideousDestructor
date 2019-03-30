@@ -169,21 +169,7 @@ extend class HDPlayerPawn{
 		;
 		enc=weaponenc+weaponencsel+itemenc+bpenc;
 
-		//evaluate onemanarmy mode if applicable
-		if(
-			!deathmatch
-			&&hd_onemanarmy>0
-			&&skill<5
-		){
-			double finalenc=weaponencsel;
-			if(hd_onemanarmy>1)finalenc+=weaponencsel;
-			else{
-				itemenc*=0.25;
-				finalenc+=itemenc+bpenc*0.25;
-			}
-			return finalenc/carrymax;
-		}
-
-		return enc/carrymax;
+		//include encumbrance multiplier before outputting final
+		return enc*hdmath.getencumbrancemult()/carrymax;
 	}
 }

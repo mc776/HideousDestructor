@@ -863,7 +863,10 @@ extend class HDWeapon{
 		let hdp=hdplayerpawn(newowner);
 		if(hdp){
 			hdp.overloaded=hdp.CheckEncumbrance();
-			if(wbulk+hdp.enc>((hdp.zerk>0)?4000:2000)*((hd_onemanarmy>0)?4:1)){
+			if(
+				(wbulk+hdp.enc)*hdmath.getencumbrancemult()
+				>((hdp.zerk>0)?4000:2000)
+			){
 				if(hdp.getage()>10)hdp.A_Log("You can't even move to put away your weapon. Throw something out!",true);
 				return false;
 			}

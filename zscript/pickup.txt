@@ -50,13 +50,9 @@ class GrabThinker:Thinker{
 			if(
 				!wt
 				&&hdplayerpawn(picktarget)
-				&&hdplayerpawn(picktarget).itemenc>hdplayerpawn(picktarget).maxpocketspace
+				&&hdplayerpawn(picktarget).itemenc*hdmath.getencumbrancemult()
+					>hdplayerpawn(picktarget).maxpocketspace
 				&&!(picktarget.player.readyweapon is "HDBackpack")
-				&&(
-					deathmatch
-					||hd_onemanarmy<2
-					||skill>=5
-				)
 				&&(
 					!tt
 					||(
@@ -466,14 +462,10 @@ class HDUPK:HDActor{
 				let hdpmd=getdefaultbytype(hdpm);
 				hdpkubu=max(hdpkubu,hdpmd.magbulk+hdpmd.roundbulk*hdpmd.maxperunit);
 			}
-			maxtake=min(maxtake,(hdp.maxpocketspace-hdp.itemenc)/hdpkubu);
+			maxtake=min(maxtake,(hdp.maxpocketspace-hdp.itemenc)/(hdpkubu*hdmath.getencumbrancemult()));
 		}
 		int increase=amount;
-		if(
-			!hd_onemanarmy
-			||deathmatch
-			||skill>=5
-		)increase=min(maxtake,amount);
+		increase=min(maxtake,amount);
 		if(heat.getamount(self)>50)increase=0;
 		if(increase<1){ //didn't pick any up
 			setstatelabel("spawn");

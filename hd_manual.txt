@@ -362,10 +362,7 @@ hd_doomguy (cheat): This command, available anytime and not considered a cheat, 
 hd_forceloadout: Set this to "false", "0" or "none" (all without quotes) to let everyone choose their own loadout. Set this to anything else and it becomes everyone's loadout. Takes effect on player spawn.
 Default is blank. This cvar is not saved between sessions.
 
-hd_onemanarmy: This alters the rules for how encumbered you are by your inventory.
-0: Normal: you can only carry so many things on your person. All items contribute to your encumbrance.
-1 (default): One Man Army mode: as normal, but everything other than your selected weapon has only 1/4 encumbrance, and you can carry 4x as much stuff on your person.
-2: Weapon Only mode: Your encumbrance penalty is based only on double your current weapon. Your pickups are limited only by the inherent limit set for each type.
+hd_encumbrance: This is a multiplier for how much encumbrance affects you. Due to the way Doom is traditionally balanced, this defaults to 0.25, letting one player carry 4 times as much as you "ought" to be able to carry. This is clamped to a minimum of 1 in deathmatch and grimdark/spooky, and a maximum of 2 in any event.
 
 hd_nobots: This causes bots to be replaced with riflemen. Can be used for coop and deathmatch. Generally far more competent, but cannot use customized loadouts and can sometimes appear in odd places.
 
