@@ -79,6 +79,7 @@ class HDPlayerPawn:PlayerPawn{
 	override bool cancollidewith(actor other,bool passive){
 		return(
 			!player
+			||other.floorz==other.pos.z
 			||!hdfist(player.readyweapon)
 			||hdfist(player.readyweapon).grabbed!=other
 		);
