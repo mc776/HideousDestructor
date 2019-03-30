@@ -287,6 +287,7 @@ class HDFist:HDWeapon replaces Fist{
 		grabbed.maxstepheight=maxstepheight;
 		grabbed.trymove(grabbed.pos.xy+dragmove,true);
 		grabbed.maxstepheight=gdst;
+		grabbed.setz(max(grabbed.pos.z,grabbed.floorz));
 
 		if(
 			absangle(angle,angleto(grabbed))>60.

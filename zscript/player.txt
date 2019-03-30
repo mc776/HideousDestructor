@@ -76,6 +76,13 @@ class HDPlayerPawn:PlayerPawn{
 		hdplayerpawn.maxpocketspace 600.;
 		player.startitem "CustomLoadoutGiver";
 	}
+	override bool cancollidewith(actor other,bool passive){
+		return(
+			!player
+			||!hdfist(player.readyweapon)
+			||hdfist(player.readyweapon).grabbed!=other
+		);
+	}
 	override void PostBeginPlay(){
 		super.PostBeginPlay();
 		lastpos=pos;
