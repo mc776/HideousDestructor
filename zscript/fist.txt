@@ -209,10 +209,13 @@ class HDFist:HDWeapon replaces Fist{
 				36,
 				pitch,
 				TRF_ALLACTORS,
-				height-16,
+				height-18,
 				data:glt
 			);
-			if(!glt.hitactor)return;
+			if(!glt.hitactor){
+				A_ClearGrabbing();
+				return;
+			}
 			let grbd=glt.hitactor;
 			grabbed=grbd;
 			grabangle=grbd.angle;
@@ -248,7 +251,7 @@ class HDFist:HDWeapon replaces Fist{
 				vector2 thrustforce=(cos(angle),sin(angle))*frandom(0.,2.);
 				grabbed.vel.xy+=thrustforce*min(mass/grabbed.mass,1.);
 				vel.xy-=thrustforce;
-				invoker.grabbed=null;
+				A_ClearGrabbing();
 				return;
 			}
 			if(absangle(angle,grabangle)>10)invoker.grabangle-=frandom(10,20);
@@ -267,28 +270,36 @@ class HDFist:HDWeapon replaces Fist{
 
 		//drag
 		double mindist=grabbed.radius+radius;
-		vector3 destpos=(pos.xy+(cos(angle),sin(angle))*(mindist),pos.z);
 
-		grabbed.trymove(grabbed.pos.xy+vel.xy,true);
-
-		double dragfactor=min(0.4,0.04*mass/grabbed.mass);
+		double dragfactor=min(0.8,0.8*mass/grabbed.mass);
 		usercmd cmd=player.cmd;
-		if(!cmd.sidemove&&cmd.forwardmove<0)dragfactor*=1.7;
-
 		int fm=cmd.forwardmove>0?1:cmd.forwardmove<0?-1:0;
 		int sm=cmd.sidemove>0?1:cmd.sidemove<0?-1:0;
-		vel.xy+=rotatevector((dragfactor*fm,-dragfactor*sm),angle);
-		player.cmd.forwardmove=0;
-		player.cmd.sidemove=0;
+		if(!sm&&fm<0)dragfactor*=1.7;
+
+		vector2 dragmove=rotatevector((dragfactor*fm,-dragfactor*sm),angle);
+		if(trymove(pos.xy+dragmove,true)){
+			let p=HDPlayerPawn(self);
+			if(p)p.movehijacked=true;
+		}
+
+		let gdst=grabbed.maxstepheight;
+		grabbed.maxstepheight=maxstepheight;
+		grabbed.trymove(grabbed.pos.xy+dragmove,true);
+		grabbed.maxstepheight=gdst;
 
 		if(
-			absangle(angle,invoker.grabangle)>1.
+			absangle(angle,angleto(grabbed))>60.
 			||distance3d(grabbed)>(mindist+16)
 		){
-			invoker.grabbed=null;
+			A_ClearGrabbing();
 			return;
 		}
 		invoker.grabangle=angle;
+	}
+	action void A_ClearGrabbing(){
+		let p=HDPlayerPawn(self);if(p)p.movehijacked=false;
+		invoker.grabbed=null;
 	}
 	states{
 	female:
@@ -370,7 +381,6 @@ class HDFist:HDWeapon replaces Fist{
 		TNT1 A 1 A_CheckGrabbing();
 		TNT1 A 0 A_JumpIf(pressingfire(),"fire");
 		TNT1 A 0 A_JumpIf(pressingfiremode(),"grabhold");
-		TNT1 A 0{invoker.grabbed=null;}
 		goto nope;
 	firemode:
 	grab:
