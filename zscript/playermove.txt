@@ -121,7 +121,7 @@ extend class HDPlayerPawn{
 				cmdleanmove&HDCMD_STRAFE
 				||(
 					cmd.buttons&BT_ZOOM
-					&&!cvar.getcvar("hd_nozoomlean",player).getbool()
+					&&!hd_nozoomlean.getbool()
 				)
 			)
 		){
@@ -145,7 +145,7 @@ extend class HDPlayerPawn{
 				isFocussing
 				&&!countinv("IsMoving")
 			){
-				double aimscale=CVar.GetCVar("hd_aimsensitivity",player).GetFloat();
+				double aimscale=hd_aimsensitivity.GetFloat();
 				if(aimscale>1.)aimscale=0.1;
 				if(!gunbraced)aimscale-=(aimscale-1.)*0.3;
 				turnscale*=clamp(aimscale,0.05,HDCONST_MAXFOCUSSCALE);

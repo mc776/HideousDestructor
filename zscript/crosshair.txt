@@ -12,17 +12,17 @@ extend class HDStatusBar{
 		);
 	}
 	virtual void DrawHDXHair(hdplayerpawn hpl){
-		int nscp=cvar.getcvar("hd_noscope",cplayer).getint();
+		int nscp=hd_noscope.getint();
 		if(
 			!(cplayer.cmd.buttons&(BT_USE|BT_ZOOM))
 			&&(
 				nscp>1
-				||cvar.getcvar("hd_hudusedelay",cplayer).getint()<-1
+				||hd_hudusedelay.getint()<-1
 			)
 		)return;
 
 		let wp=hdweapon(cplayer.readyweapon);
-		bool sightbob=cvar.getcvar("hd_sightbob",cplayer).getbool();
+		bool sightbob=hd_sightbob.getbool();
 		vector2 bob=hpl.hudbob;
 		double fov=cplayer.fov;
 
@@ -39,7 +39,7 @@ extend class HDStatusBar{
 
 		//multiple weapons use this
 		string whichdot="redpxl";
-		int whichdotthough=cvar.getcvar("hd_crosshair",hpl.player).getint();
+		int whichdotthough=hd_crosshair.getint();
 		switch(whichdotthough){
 			case 1:case 2:case 3:case 4:case 5:
 			whichdot=string.format("riflsit%i",whichdotthough);
@@ -48,7 +48,7 @@ extend class HDStatusBar{
 
 
 		//all weapon sights go here
-		double scl=fov/(90.*clamp(cvar.getcvar("hd_xhscale",cplayer).getfloat(),0.1,3.0));
+		double scl=fov/(90.*clamp(hd_xhscale.getfloat(),0.1,3.0));
 		SetSize(0,400*scl,250*scl);
 		BeginHUD(forcescaled:true);
 

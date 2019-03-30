@@ -629,8 +629,12 @@ extend class HDHandlers{
 		}
 	}
 }
+
 extend class HDPlayerPawn{
 	//reset various... things.
+	cvar hd_nozoomlean;
+	cvar hd_aimsensitivity;
+	cvar hd_noslide;
 	void levelreset(){
 		lastpos=pos;
 		lastvel=vel;
@@ -692,6 +696,10 @@ extend class HDPlayerPawn{
 			Shader.SetEnabled(player,"NiteVis",false);
 			Shader.SetEnabled(player,"NiteVisRed",false);
 			if(getage()>10)showgametip();
+
+			hd_nozoomlean=cvar.getcvar("hd_nozoomlean",player);
+			hd_aimsensitivity=cvar.getcvar("hd_aimsensitivity",player);
+			hd_noslide=cvar.getcvar("hd_noslide",player);
 		}
 	}
 }

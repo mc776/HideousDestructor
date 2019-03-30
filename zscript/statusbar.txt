@@ -56,6 +56,24 @@ class HDStatusBar:DoomStatusBar{
 		DI_BOTTOMLEFT=DI_SCREEN_LEFT_BOTTOM|DI_ITEM_LEFT_BOTTOM,
 		DI_BOTTOMRIGHT=DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM,
 	}
+
+	//cache some cvars
+	cvar hd_mugshot;
+	cvar hd_hudusedelay;
+	cvar hd_noscope;
+	cvar hd_sightbob;
+	cvar hd_crosshair;
+	cvar hd_xhscale;
+	override void AttachToPlayer(PlayerInfo player){
+		super.attachtoplayer(player);
+		hd_mugshot=cvar.getcvar("hd_mugshot",cplayer);
+		hd_hudusedelay=cvar.getcvar("hd_hudusedelay",cplayer);
+		hd_noscope=cvar.getcvar("hd_noscope",cplayer);
+		hd_sightbob=cvar.getcvar("hd_sightbob",cplayer);
+		hd_crosshair=cvar.getcvar("hd_crosshair",cplayer);
+		hd_xhscale=cvar.getcvar("hd_xhscale",cplayer);
+	}
+
 	override void Tick(){
 		super.tick();
 		hpl=hdplayerpawn(cplayer.mo);
@@ -98,7 +116,7 @@ class HDStatusBar:DoomStatusBar{
 
 		blurred=hpl.bshadow&&hpl.countinv("HDBlurSphere");
 
-		int mugnum=cvar.getcvar("hd_mugshot",cplayer).getint();
+		int mugnum=hd_mugshot.getint();
 		if(mugnum<0)mugnum=cplayer.getgender();
 		switch(mugnum){
 			case 0:mug="STF";break;
@@ -108,9 +126,8 @@ class HDStatusBar:DoomStatusBar{
 			default:mug="STC";break;
 		}
 
-		hudusedelay=cvar.getcvar("hd_hudusedelay",cplayer).getint();
 		if(cplayer.buttons&BT_USE)gimmehud=max(0,gimmehud-1);
-		else gimmehud=max(hudusedelay,-1);
+		else gimmehud=max(hd_hudusedelay.getint(),-1);
 	}
 	override void Draw(int state,double TicFrac){
 		hpl=hdplayerpawn(cplayer.mo);
