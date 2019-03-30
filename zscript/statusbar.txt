@@ -58,23 +58,22 @@ class HDStatusBar:DoomStatusBar{
 	}
 
 	//cache some cvars
-	cvar hd_mugshot;
-	cvar hd_hudusedelay;
-	cvar hd_noscope;
-	cvar hd_sightbob;
-	cvar hd_crosshair;
-	cvar hd_xhscale;
-	override void AttachToPlayer(PlayerInfo player){
-		super.attachtoplayer(player);
-		hd_mugshot=cvar.getcvar("hd_mugshot",cplayer);
-		hd_hudusedelay=cvar.getcvar("hd_hudusedelay",cplayer);
-		hd_noscope=cvar.getcvar("hd_noscope",cplayer);
-		hd_sightbob=cvar.getcvar("hd_sightbob",cplayer);
-		hd_crosshair=cvar.getcvar("hd_crosshair",cplayer);
-		hd_xhscale=cvar.getcvar("hd_xhscale",cplayer);
-	}
+	transient cvar hd_mugshot;
+	transient cvar hd_hudusedelay;
+	transient cvar hd_noscope;
+	transient cvar hd_sightbob;
+	transient cvar hd_crosshair;
+	transient cvar hd_xhscale;
 
 	override void Tick(){
+		if(!hd_mugshot){
+			hd_mugshot=cvar.getcvar("hd_mugshot",cplayer);
+			hd_hudusedelay=cvar.getcvar("hd_hudusedelay",cplayer);
+			hd_noscope=cvar.getcvar("hd_noscope",cplayer);
+			hd_sightbob=cvar.getcvar("hd_sightbob",cplayer);
+			hd_crosshair=cvar.getcvar("hd_crosshair",cplayer);
+			hd_xhscale=cvar.getcvar("hd_xhscale",cplayer);
+		}
 		super.tick();
 		hpl=hdplayerpawn(cplayer.mo);
 		if(

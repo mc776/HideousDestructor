@@ -260,6 +260,14 @@ class HDPlayerPawn:PlayerPawn{
 			return;
 		}
 
+		//cache cvars as necessary
+		if(!hd_nozoomlean){
+			hd_nozoomlean=cvar.getcvar("hd_nozoomlean",player);
+			hd_aimsensitivity=cvar.getcvar("hd_aimsensitivity",player);
+			hd_noslide=cvar.getcvar("hd_noslide",player);
+			hd_usefocus=cvar.getcvar("hd_usefocus",player);
+		}
+
 		//log all new inputs
 		int input=player.cmd.buttons;
 		double fm=player.cmd.forwardmove;
@@ -269,7 +277,7 @@ class HDPlayerPawn:PlayerPawn{
 				player.cmd.buttons&BT_ZOOM
 				||(
 					player.cmd.buttons&BT_USE
-					&&CVar.GetCVar("hd_usefocus",player).GetBool()
+					&&hd_usefocus.GetBool()
 				)
 			)&&!countinv("IsMoving")
 		);
@@ -632,9 +640,10 @@ extend class HDHandlers{
 
 extend class HDPlayerPawn{
 	//reset various... things.
-	cvar hd_nozoomlean;
-	cvar hd_aimsensitivity;
-	cvar hd_noslide;
+	transient cvar hd_nozoomlean;
+	transient cvar hd_aimsensitivity;
+	transient cvar hd_noslide;
+	transient cvar hd_usefocus;
 	void levelreset(){
 		lastpos=pos;
 		lastvel=vel;
@@ -696,10 +705,6 @@ extend class HDPlayerPawn{
 			Shader.SetEnabled(player,"NiteVis",false);
 			Shader.SetEnabled(player,"NiteVisRed",false);
 			if(getage()>10)showgametip();
-
-			hd_nozoomlean=cvar.getcvar("hd_nozoomlean",player);
-			hd_aimsensitivity=cvar.getcvar("hd_aimsensitivity",player);
-			hd_noslide=cvar.getcvar("hd_noslide",player);
 		}
 	}
 }
