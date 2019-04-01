@@ -816,8 +816,7 @@ class SpareWeapons:HDPickup{
 			if(!player)return;
 			let thwep=hdweapon(player.readyweapon);
 			if(
-				thwep.bwimpy_weapon
-				||thwep is "NullWeapon"
+				thwep is "NullWeapon"
 				||thwep is "HDFist"
 			)return;
 			A_GiveInventory("WeaponStashSwitcher");
@@ -834,6 +833,7 @@ class WeaponStashSwitcher:HDWeapon{
 	}
 	hdweapon thisweapon;
 	states{
+	spawn:TNT1 A 0;stop;
 	ready:
 		TNT1 A 1{
 			A_WeaponReady(WRF_NOFIRE);
