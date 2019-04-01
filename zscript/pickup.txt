@@ -440,7 +440,8 @@ class HDUPK:HDActor{
 					let hdpmdef=getdefaultbytype(hdpm);
 					defunitbulk=max(defunitbulk,hdpmdef.magbulk+hdpmdef.roundbulk*hdpmdef.maxperunit);
 				}
-				int maxtake=(HDCONST_BPMAX-bp.bulk)/defunitbulk;
+				int maxtake;
+				if(!defunitbulk)maxtake=int.MAX;else (HDCONST_BPMAX-bp.bulk)/defunitbulk;
 				int increase=min(maxtake,amount);
 				amount-=increase;
 				bp.amounts[bpindex]=""..(bp.amounts[bpindex].toint()+increase);
