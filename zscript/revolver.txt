@@ -1,0 +1,47 @@
+//The ReVolVer!!!!!111
+class HDRevolver:HDWeapon{
+	default{
+		+rollsprite
+		+rollcenter
+		hdweapon.nicename "Revolver";
+		hdweapon.refid "rev";
+		weapon.slotnumber 2;
+		inventory.pickupmessage "You got the Revolver!";
+	}
+	states{
+	spawn:
+		REVO A 0 nodelay {target=players[0].mo;}
+		REVO A -1 nodelay A_JumpIf(target,"revolve");
+		stop;
+	revolve:
+		REVO A 1{
+			vel=(0,0,0);
+			if(!target){
+				A_Explode();
+				spawn("HDExplosion",pos,ALLOW_REPLACE);
+				destroy();
+				return;
+			}
+			vector3 newpos;
+			newpos.z=target.height+target.pos.z+accuracy;
+			accuracy=clamp(accuracy+random(-2,2),-32,-12);
+			mass=clamp(mass+random(-4,4),60,120);
+			newpos.xy=target.pos.xy+angletovector(stamina,mass);
+			setorigin(newpos,true);
+			stamina+=6;
+			if(stamina>360)stamina-=360;
+			roll=stamina;
+		}wait;
+	ready:
+		REVO A 1 A_WeaponReady(WRF_NOSECONDARY);
+		goto readyend;
+	fire:
+		TNT1 A 1;
+		TNT1 A 0 A_Log("You deploy the Revolver. As advertised, it revolves around you.",true);
+		TNT1 A 0 A_ClearRefire();
+		TNT1 A 0 DropInventory(invoker);
+		TNT1 A 0 {invoker.target=self;}
+		TNT1 A 1 A_WeaponReady(WRF_NOFIRE);
+		goto readyend;
+	}
+}
