@@ -434,13 +434,13 @@ class HDUPK:HDActor{
 			int bpindex=bp.invclasses.find(pickuptype.getclassname());
 			if(bpindex<bp.invclasses.size()){
 				let hdpk=(class<hdpickup>)(pickuptype);
-				double hdpkubu=getdefaultbytype(hdpk).bulk;
+				double defunitbulk=getdefaultbytype(hdpk).bulk;
 				let hdpm=(class<hdmagammo>)(pickuptype);
 				if(hdpm){
-					let hdpmd=getdefaultbytype(hdpm);
-					hdpkubu=max(hdpkubu,hdpmd.magbulk+hdpmd.roundbulk*hdpmd.maxperunit);
+					let hdpmdef=getdefaultbytype(hdpm);
+					defunitbulk=max(defunitbulk,hdpmdef.magbulk+hdpmdef.roundbulk*hdpmdef.maxperunit);
 				}
-				int maxtake=(HDCONST_BPMAX-bp.bulk)/hdpkubu;
+				int maxtake=(HDCONST_BPMAX-bp.bulk)/defunitbulk;
 				int increase=min(maxtake,amount);
 				amount-=increase;
 				bp.amounts[bpindex]=""..(bp.amounts[bpindex].toint()+increase);
@@ -456,13 +456,15 @@ class HDUPK:HDActor{
 		let hdpk=(class<hdpickup>)(pickuptype);
 		let hdp=hdplayerpawn(picktarget);
 		if(hdp&&hdpk){
-			double hdpkubu=getdefaultbytype(hdpk).bulk;
+			double defunitbulk=getdefaultbytype(hdpk).bulk;
 			let hdpm=(class<hdmagammo>)(pickuptype);
 			if(hdpm){
-				let hdpmd=getdefaultbytype(hdpm);
-				hdpkubu=max(hdpkubu,hdpmd.magbulk+hdpmd.roundbulk*hdpmd.maxperunit);
+				let hdpmdef=getdefaultbytype(hdpm);
+				defunitbulk=max(defunitbulk,hdpmdef.magbulk+hdpmdef.roundbulk*hdpmdef.maxperunit);
 			}
-			maxtake=min(maxtake,(hdp.maxpocketspace-hdp.itemenc)/max(1,hdpkubu*hdmath.getencumbrancemult()));
+			double divamt=defunitbulk*hdmath.getencumbrancemult();
+			if(!divamt)maxtake=int.MAX;
+			else maxtake=min(maxtake,(hdp.maxpocketspace-hdp.itemenc)/divamt);
 		}
 		int increase=amount;
 		increase=min(maxtake,amount);
