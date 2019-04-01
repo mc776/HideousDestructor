@@ -284,9 +284,12 @@ class HDFist:HDWeapon replaces Fist{
 		}
 
 		let gdst=grabbed.maxstepheight;
+		let gddo=grabbed.bnodropoff;
 		grabbed.maxstepheight=maxstepheight;
+		grabbed.bnodropoff=false;
 		grabbed.trymove(grabbed.pos.xy+dragmove,true);
 		grabbed.maxstepheight=gdst;
+		grabbed.bnodropoff=gddo;
 		grabbed.setz(max(grabbed.pos.z,grabbed.floorz));
 
 		if(
