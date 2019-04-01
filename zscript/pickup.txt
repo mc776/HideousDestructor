@@ -441,6 +441,7 @@ class HDUPK:HDActor{
 					defunitbulk=max(defunitbulk,hdpmdef.magbulk+hdpmdef.roundbulk*hdpmdef.maxperunit);
 				}
 				int maxtake;
+				defunitbulk*=hdmath.getencumbrancemult();
 				if(!defunitbulk)maxtake=int.MAX;else (HDCONST_BPMAX-bp.bulk)/defunitbulk;
 				int increase=min(maxtake,amount);
 				amount-=increase;
