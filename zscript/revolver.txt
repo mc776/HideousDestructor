@@ -11,7 +11,7 @@ class HDRevolver:HDWeapon{
 	states{
 	spawn:
 		REVO A 0 nodelay {target=players[0].mo;}
-		REVO A -1 nodelay A_JumpIf(target,"revolve");
+		REVO A -1 A_JumpIf(target,"revolve");
 		stop;
 	revolve:
 		REVO A 1{

@@ -462,7 +462,7 @@ class HDUPK:HDActor{
 				let hdpmd=getdefaultbytype(hdpm);
 				hdpkubu=max(hdpkubu,hdpmd.magbulk+hdpmd.roundbulk*hdpmd.maxperunit);
 			}
-			maxtake=min(maxtake,(hdp.maxpocketspace-hdp.itemenc)/(hdpkubu*hdmath.getencumbrancemult()));
+			maxtake=min(maxtake,(hdp.maxpocketspace-hdp.itemenc)/max(1,hdpkubu*hdmath.getencumbrancemult()));
 		}
 		int increase=amount;
 		increase=min(maxtake,amount);
