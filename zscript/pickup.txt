@@ -466,7 +466,10 @@ class HDUPK:HDActor{
 			}
 			double divamt=defunitbulk*hdmath.getencumbrancemult();
 			if(!divamt)maxtake=int.MAX;
-			else maxtake=min(maxtake,(hdp.maxpocketspace-hdp.itemenc)/divamt);
+			else maxtake=min(maxtake,
+				(hdp.maxpocketspace-hdp.itemenc*hdmath.getencumbrancemult())
+				/divamt
+			);
 		}
 		int increase=amount;
 		increase=min(maxtake,amount);
