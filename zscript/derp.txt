@@ -543,6 +543,22 @@ class DERPDeployer:HDWeapon{
 				A_SelectWeapon("HDFist");
 				return;
 			}
+
+			//stick it to a door
+			if(pressingunload()&&pressingzoom()){
+				int cid=countinv("DERPUsable");
+				let hhh=hdhandlers(eventhandler.find("hdhandlers"));
+				hhh.SetDERP(hdplayerpawn(self),555,DERPUsable(findinventory("DERPUsable")).botid,0);
+				if(cid==countinv("DERPUsable")){
+					setweaponstate("nope");
+					return;
+				}else{
+					A_SelectWeapon("HDFist");
+					return;
+				}
+			}
+
+			//don't deploy unloaded unintentionally
 			if(
 				!pressingunload()
 				&&HDMagAmmo.NothingLoaded(self,"HD9mMag15")
