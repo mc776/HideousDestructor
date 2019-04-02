@@ -647,19 +647,6 @@ class HERPUsable:HDWeapon{
 			message("No power. Please load 1 cell pack before deploying.");
 			return true;
 		}
-		if(
-			(
-				invoker.weaponstatus[1]>100
-				&&!random(0,7)
-			)||(
-				invoker.weaponstatus[1]%100<0
-				&&invoker.weaponstatus[2]%100<0
-				&&invoker.weaponstatus[3]%100<0
-			)
-		){
-			message("Please load at least 1 fresh 4.26mm UAC Standard magazine before deploying.");
-			return true;
-		}
 		return false;
 	}
 	action void A_DeployHERP(){
