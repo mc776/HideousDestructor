@@ -552,8 +552,6 @@ class DERPDeployer:HDWeapon{
 				return;
 			}
 
-			A_PlaySound("weapons/pismagclick",CHAN_WEAPON);
-
 			actor a;int b;
 			[b,a]=A_SpawnItemEx("DERPBot",12,0,height-12,
 				cos(pitch)*6,0,-sin(pitch)*6,0,
@@ -566,8 +564,10 @@ class DERPDeployer:HDWeapon{
 			derp.botid=DERPUsable(findinventory("DERPUsable")).botid;
 
 			let mmm=HDMagAmmo(findinventory("HD9mMag15"));
-			if(mmm&&!pressingunload())derp.ammo=mmm.TakeMag(true);
-			else derp.ammo=-1;
+			if(mmm&&!pressingunload()){
+				derp.ammo=mmm.TakeMag(true);
+				A_PlaySound("weapons/pismagclick",CHAN_WEAPON);
+			}else derp.ammo=-1;
 			DERPController.GiveController(self);
 
 			A_TakeInventory("DERPUsable",1);
