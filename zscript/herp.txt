@@ -923,9 +923,6 @@ class HERPController:HDWeapon{
 		weapon.selectionorder 1013;
 	}
 	array<herpbot> herps;
-	action herpbot A_UpdateHerps(bool resetindex=true){
-		return invoker.UpdateHerps(resetindex);
-	}
 	herpbot UpdateHerps(bool resetindex=true){
 		herps.clear();
 		if(!owner)return null;
@@ -939,6 +936,10 @@ class HERPController:HDWeapon{
 		}
 		if(resetindex)weaponstatus[HERPS_INDEX]=0;
 		if(!herps.size()){
+			if(owner){
+				owner.A_Log("No H.E.R.P.s deployed. Abort.",true);
+				owner.A_SelectWeapon("HDFist");
+			}
 			destroy();
 			return null;
 		}
@@ -950,7 +951,7 @@ class HERPController:HDWeapon{
 		caller.findinventory("HERPController").binvbar=true;
 		let ddc=HERPController(caller.findinventory("HERPController"));
 		ddc.updateherps(false);
-		if(!ddc.herps.size())caller.dropinventory(ddc);
+		if(ddc&&!ddc.herps.size())caller.dropinventory(ddc);
 	}
 	int NextHerp(){
 		int newindex=weaponstatus[HERPS_INDEX]+1;
@@ -961,18 +962,13 @@ class HERPController:HDWeapon{
 		}
 		return newindex;
 	}
-	action void Abort(){
-		A_Log("No H.E.R.P.s deployed. Abort.",true);
-		A_SelectWeapon("HDFist");
-		setweaponstate("nope");
-		dropinventory(invoker);
-	}
 	override inventory CreateTossable(int amount){
 		if(
 			(herps.size()&&herps[NextHerp()])
 			||updateherps(false)
 		)return null;
-		return weapon.createtossable(amount);
+		if(self)return weapon.createtossable(amount);
+		return null;
 	}
 	override string gethelptext(){
 		let herpcam=herps[weaponstatus[HERPS_INDEX]];
@@ -1059,20 +1055,17 @@ class HERPController:HDWeapon{
 	ready:
 		TNT1 A 1{
 			A_SetHelpText();
-			if(!invoker.herps.size()||invoker.weaponstatus[HERPS_INDEX]>=invoker.herps.size()){
-				a_updateherps();
-				if(!invoker.herps.size()){
-					Abort();
-				}
+			if(
+				!invoker.herps.size()
+				||invoker.weaponstatus[HERPS_INDEX]>=invoker.herps.size()
+			){
+				invoker.updateherps();
 				return;
 			}
 			A_WeaponReady(WRF_NOFIRE|WRF_ALLOWUSER3);
 			herpbot ddd=invoker.herps[invoker.weaponstatus[HERPS_INDEX]];
 			if(!ddd){
-				if(ddd=a_updateherps())A_Log("H.E.R.P. not found. Resetting list.",true);
-				else{
-					Abort();
-				}
+				if(ddd=invoker.updateherps())A_Log("H.E.R.P. not found. Resetting list.",true);
 				return;
 			}
 			int bt=player.cmd.buttons;
