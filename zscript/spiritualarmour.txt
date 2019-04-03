@@ -16,6 +16,11 @@ class SpiritualArmour:HDPickup{
 		inventory.pickupsound "misc/p_pkup";
 		scale 0.8;
 	}
+	action void A_PsalterReading(){
+		string ps=SpiritualArmour.FromPsalter();
+		double pstime=ps.length()*0.05;
+		A_Print(ps,pstime);
+	}
 	states{
 	use:TNT1 A 0;fail;
 	spawn:
@@ -35,174 +40,115 @@ class SpiritualArmour:HDPickup{
 				hdp.unstablewoundcount=0;
 				hdp.aggravateddamage=max(0,hdp.aggravateddamage-1);
 			}
+			A_PsalterReading();
 		}
-		TNT1 A 0 A_Jump(256,
-		"Pss003v3",
-		"Pss003v6t7",
-		"Pss005v12",
-		"Pss008v4",
-		"Pss009v20t21",
-		"Pss011v4t5",
-		"Pss011v6t7",
-		"Pss012v8",
-		"Pss013v1",
-		"Pss016v8t10",
-		"Pss017v7",
-		"Pss018v2",
-		"Pss018v3t4",
-		"Pss018v5t6",
-		"Pss018v30t32",
-		"Pss018v33t34",
-		"Pss018v35",
-		"Pss021v3t4",
-		"Pss022v1",
-		"Pss022v23t24",
-		"Pss023v4",
-		"Pss027v1",
-		"Pss027v6",
-		"Pss028v7",
-		"Pss031v2",
-		"Pss031v3",
-		"Pss031v22",
-		"Pss032v1",
-		"Pss032v7",
-		"Pss034v20",
-		"Pss037v35",
-		"Pss037v36",
-		"Pss039v4",
-		"Pss039v7",
-		"Pss039v12t13",
-		"Pss045v4",
-		"Pss045v13",
-		"Pss046v8",
-		"Pss046v9",
-		"Pss046v11",
-		"Pss047v6",
-		"Pss047v9",
-		"Pss048v13t14",
-		"Pss050v14t15",
-		"Pss050v18t19",
-		"Pss058v6t7",
-		"Pss071v7",
-		"Pss077v10",
-		"Pss078v49",
-		"Pss091v5t6",
-		"Pss091v7",
-		"Pss104v33",
-		"Pss104v34",
-		"Pss110v1",
-		"Pss110v2",
-		"Pss110v3",
-		"Pss110v4",
-		"Pss110v5",
-		"Pss110v6",
-		"Pss110v7",
-		"Pss112v10",
-		"Pss116v15",
-		"Pss118v10",
-		"Pss118v17",
-		"Pss118v22",
-		"Pss118v24",
-		"Pss118v27",
-		"Pss119v1",
-		"Pss119v176",
-		"Pss120v6t7",
-		"Pss122v6t7",
-		"Pss124v6",
-		"Pss125v2",
-		"Pss137v4t6",
-		"Pss139v8",
-		"Pss140v4",
-		"Pss140v7",
-		"Pss141v8t10",
-		"Pss144v1t2",
-		"Pss147v12t13");
 		stop;
-Pss003v3: TNT1 A 0 A_Print("But thou, O LORD, \n\nart a shield for me; \n\nmy glory, and the \n\nlifter up of mine head.",8);stop;
-Pss003v6t7: TNT1 A 0 A_Print("I will not be afraid of ten thousands of people, \n\nthat have set themselves against me round about. \n\n\n\nArise, O LORD; save me, O my God: for thou hast \n\nsmitten all mine enemies upon the cheek bone; \n\nthou hast broken the teeth of the ungodly.",10);stop;
-Pss005v12: TNT1 A 0 A_Print("For thou, LORD, wilt bless the righteous; \n\nwith favour wilt thou compass him as with a shield.",8);stop;
-Pss008v4: TNT1 A 0 A_Print("What is man, that thou art mindful of him? \n\nand the son of man, that thou visitest him?",8);stop;
-Pss009v20t21: TNT1 A 0 A_Print("Put them in fear, O LORD:\n\nthat the nations may know\n\nthemselves to be but men.\n\n\cuSelah.\c-\n\n\n\nWhy standest thou afar off, O LORD?\n\nwhy hidest thou thyself\n\nin times of trouble?",10);stop;
-Pss011v4t5: TNT1 A 0 A_Print("The LORD is in his holy temple, the LORD's throne is in heaven: \n\nhis eyes behold, his eyelids try, the children of men.\n\n\n\nThe LORD trieth the righteous: but the wicked and \n\nhim that loveth violence his soul hateth.",9);stop;
-Pss011v6t7: TNT1 A 0 A_Print("Upon the wicked he shall rain snares, fire and brimstone, \n\nand an horrible tempest: this shall be the portion of their cup.\n\n\n\nFor the righteous LORD loveth righteousness; \n\nhis countenance doth behold the upright.",9);stop;
-Pss012v8: TNT1 A 0 A_Print("The wicked walk on every side,\n\nwhen the vilest men are exalted.",8);stop;
-Pss013v1: TNT1 A 0 A_Print("How long wilt thou\n\nforget me, O LORD?\n\nfor ever?\n\nhow long wilt thou\n\nhide thy face from me?",8);stop;
-Pss016v8t10: TNT1 A 0 A_Print("I have set the LORD always before me: \n\nbecause he is at my right hand, I shall not be moved.\n\n\n\nTherefore my heart is glad, and my glory rejoiceth: \n\nmy flesh also shall rest in hope.\n\n\n\nFor thou wilt not leave my soul in hell; \n\nneither wilt thou suffer thine Holy One to see corruption.",12);stop;
-Pss017v7: TNT1 A 0 A_Print("Shew thy marvellous lovingkindness, \n\nO thou that savest by thy right hand \n\nthem which put their trust in thee \n\nfrom those that rise up against them.",8);stop;
-Pss018v2: TNT1 A 0 A_Print("The LORD is my rock, and my fortress, and my deliverer; \n\nmy God, my strength, in whom I will trust; my buckler, \n\nand the horn of my salvation, and my high tower.",8);stop;
-Pss018v3t4: TNT1 A 0 A_Print("I will call upon the LORD, \n\nwho is worthy to be praised: \n\nso shall I be saved from mine enemies.\n\n\n\nThe sorrows of death compassed me, \n\nand the floods of ungodly men made me afraid.",8);stop;
-Pss018v5t6: TNT1 A 0 A_Print("The sorrows of hell compassed me about: \n\nthe snares of death prevented me.\n\n\n\nIn my distress I called upon the LORD, \n\nand cried unto my God: \n\nhe heard my voice out of his temple, \n\nand my cry came before him, even into his ears.",10);stop;
-Pss018v30t32: TNT1 A 0 A_Print("As for God, his way is perfect: the word of the LORD is tried: \n\nhe is a buckler to all those that trust in him.\n\n\n\nFor who is God save the LORD? \n\nor who is a rock save our God?\n\n\n\nIt is God that girdeth me with strength, \n\nand maketh my way perfect.",10);stop;
-Pss018v33t34: TNT1 A 0 A_Print("He maketh my feet like hinds' feet, \n\nand setteth me upon my high places.\n\n\n\nHe teacheth my hands to war, \n\nso that a bow of steel is broken by mine arms.",8);stop;
-Pss018v35: TNT1 A 0 A_Print("Thou hast also given me the shield of thy salvation: \n\nand thy right hand hath holden me up, \n\nand thy gentleness hath made me great.",8);stop;
-Pss021v3t4: TNT1 A 0 A_Print("For thou preventest him with the blessings of goodness: \n\nthou settest a crown of pure gold on his head.\n\n\n\nHe asked life of thee, and thou gavest it him, \n\neven length of days for ever and ever.",9);stop;
-Pss022v1:TNT1 A 0 A_Print("My God, my God, why hast thou forsaken me? \n\nwhy art thou so far from helping me, \n\nand from the words of my roaring?",8);stop;
-Pss022v23t24: TNT1 A 0 A_Print("Ye that fear the LORD,\npraise him;\n\nall ye the seed of Jacob,\nglorify him;\n\nand fear him,\nall ye the seed of Israel.\n\n\n\nFor he hath not despised nor abhorred \n\nthe affliction of the afflicted; \n\nneither hath he hid his face from him; \n\nbut when he cried unto him,\n\nhe heard.",12);stop;
-Pss023v4: TNT1 A 0 A_Print("Yea, though I walk through the valley \n\nof the shadow of death, I will fear no evil: for thou art with me; \n\nthy rod and thy staff they comfort me.",8);stop;
-Pss027v1: TNT1 A 0 A_Print("The LORD is my light \n\nand my salvation; \n\nwhom shall I fear? \n\nthe LORD is the strength \n\nof my life; of whom \n\nshall I be afraid?",8);stop;
-Pss027v6: TNT1 A 0 A_Print("And now shall mine head be lifted up above mine enemies round about me: \n\ntherefore will I offer in his tabernacle sacrifices of joy; \n\nI will sing, yea, I will sing praises unto the LORD.",8);stop;
-Pss028v7: TNT1 A 0 A_Print("The LORD is my strength and my shield; my heart trusted \n\nin him, and I am helped: therefore my heart greatly rejoiceth; \n\nand with my song will I praise him.",8);stop;
-Pss031v2: TNT1 A 0 A_Print("Bow down thine ear to me;\n\ndeliver me speedily:\n\nbe thou my strong rock,\n\nfor an house of defence\n\nto save me.",8);stop;
-Pss031v3: TNT1 A 0 A_Print("For thou art my rock and my fortress;\n\ntherefore for thy name's sake lead me,\n\nand guide me.",8);stop;
-Pss031v22: TNT1 A 0 A_Print("For I said in my haste,\n\nI am cut off from\n\nbefore thine eyes:\n\nnevertheless thou heardest\n\nthe voice of my supplications\n\nwhen I cried unto thee.",9);stop;
-Pss032v1: TNT1 A 0 A_Print("Blessed is he whose\n\ntransgression is forgiven,\n\nwhose sin is covered.",8);stop; 
-Pss032v7: TNT1 A 0 A_Print("Thou art my hiding place;\n\nthou shalt preserve me from trouble;\n\nthou shalt compass me about\n\nwith songs of deliverance.\n\n\cuSelah.",10);stop; 
-Pss034v20: TNT1 A 0 A_Print("He keepeth all his bones:\n\nnot one of them is broken.",8);stop; 
-Pss037v35: TNT1 A 0 A_Print("I have seen the wicked\n\nin great power, and spreading \n\n himself like a green bay tree.",8);stop; 
-Pss037v36: TNT1 A 0 A_Print(" Yet he passed away, \n\n and, lo, he was not: \n\n yea, I sought him, \n\n but he could not be found.",8);stop; 
-Pss039v4: TNT1 A 0 A_Print(" LORD, make me to know mine end, \n\n and the measure of my days, \n\n what it is; that I may know \n\n how frail I am. ",8);stop; 
-Pss039v7: TNT1 A 0 A_Print(" And now, Lord,\n\nwhat wait I for? \n\n my hope is in thee.",8);stop; 
-Pss039v12t13: TNT1 A 0 A_Print(" Hear my prayer, O LORD, and give ear unto my cry; \n\n hold not thy peace at my tears: \n\n for I am a stranger with thee, \n\n and a sojourner, as all my fathers were.\n\n\n\nO spare me, that I may recover \n\n strength, before I go hence, \n\n and be no more." ,12);stop; 
-Pss045v4: TNT1 A 0 A_Print("And in thy majesty ride \n\nprosperously because of truth \n\nand meekness and righteousness; \n\nand thy right hand shall \n\nteach thee terrible things.",8);stop;
-Pss045v13: TNT1 A 0 A_Print("The king's daughter is \n\nall glorious within: \n\nher clothing is \n\nof wrought gold.",8);stop;
-Pss046v8: TNT1 A 0 A_Print("Come, \n\nbehold the works of the LORD, \n\nwhat desolations he hath made \n\nin the earth.",8);stop;
-Pss046v9: TNT1 A 0 A_Print("He maketh wars to cease \n\nunto the end of the earth; \n\nhe breaketh the bow, and cutteth \n\nthe spear in sunder; he burneth \n\nthe chariot in the fire.",8);stop;
-Pss046v11: TNT1 A 0 A_Print("The LORD of hosts is with us; \n\nthe God of Jacob is our refuge. \n\n\cuSelah.",8);stop;
-Pss047v6: TNT1 A 0 A_Print("Sing praises to God, \n\nsing praises: \n\nsing praises unto our King, \n\nsing praises.",8);stop;
-Pss047v9: TNT1 A 0 A_Print("The princes of the people \n\nare gathered together, \n\neven the people of \n\nthe God of Abraham: \n\nfor the shields of the earth \n\nbelong unto God: \n\nhe is greatly exalted.",8);stop;
-Pss048v13t14: TNT1 A 0 A_Print("Mark ye well her bulwarks, \n\nconsider her palaces; \n\nthat ye may tell it \n\nto the generation following.\n\n\n\nFor this God is our God \n\nfor ever and ever: \n\nhe will be our guide \n\neven unto death.",9);stop;
-Pss050v14t15: TNT1 A 0 A_Print("Offer unto God thanksgiving; \n\nand pay thy vows unto the most High:\n\n\n\nAnd call upon me \n\nin the day of trouble: \n\nI will deliver thee, \n\nand thou shalt glorify me.",8);stop;
-Pss050v18t19: TNT1 A 0 A_Print("Do good in thy good pleasure unto Zion: \n\nbuild thou the walls of Jerusalem.\n\n\n\nThen shalt thou be pleased with \n\nthe sacrifices of righteousness, \n\nwith burnt offering and whole burnt offering: \n\nthen shall they offer bullocks upon thine altar.",10);stop;
-Pss058v6t7: TNT1 A 0 A_Print("Break their teeth, O God, in their mouth: \n\nbreak out the great teeth of the young lions, O LORD. \n\n\n\nLet them melt away as waters which run continually: \n\nwhen he bendeth his bow to shoot his arrows, \n\nlet them be as cut in pieces.",10);stop;
-Pss071v7: TNT1 A 0 A_Print("I am as a wonder unto many; \n\nbut thou art my strong refuge.",8);stop;
-Pss077v10: TNT1 A 0 A_Print("And I said\n\nThis is my infirmity:\n\n\n\nbut I will remember\n\nthe years of the right\n\nhand of the most High.",8);stop;
-Pss078v49: TNT1 A 0 A_Print("He cast upon them the fierceness \n\nof his anger, wrath, \n\nand indignation, and trouble, \n\nby sending evil angels among them.",8);stop;
-Pss091v5t6: TNT1 A 0 A_Print("Thou shalt not be afraid for the terror by night; \n\nnor for the arrow that flieth by day; \n\n\n\nNor for the pestilence that walketh in darkness; \n\nnor for the destruction that wasteth at noonday.",8);stop;
-Pss091v7: TNT1 A 0 A_Print("A thousand shall fall at thy side, and \n\nten thousand at thy right hand; \n\nbut it shall not come nigh thee.",8);stop;
-Pss103v15t16: TNT1 A 0 A_Print("As for man, his days are as grass: \n\nas a flower of the field, so he flourisheth.\n\n\n\nFor the wind passeth over it, and it is gone; \n\nand the place thereof shall know it no more.",8);stop;
-Pss104v33: TNT1 A 0 A_Print("I will sing unto the LORD \n\nas long as I live: \n\nI will sing praise to \n\nmy God while I have my being.",8);stop;
-Pss104v34: TNT1 A 0 A_Print("My meditation of him shall be sweet: \n\nI will be glad in the LORD.",8);stop;
-Pss110v1: TNT1 A 0 A_Print("The LORD said unto my Lord,\n\n\nSit thou at my right hand,\n\nuntil I make\n\nthine enemies thy footstool.",9);stop;
-Pss110v2: TNT1 A 0 A_Print("The LORD shall send the rod of\n\nthy strength out of Zion:\n\n\nrule thou in\n\nthe midst of thine enemies.",9);stop;
-Pss110v3: TNT1 A 0 A_Print("Thy people shall be willing\n\nin the day of thy power,\n\nin the beauties of holiness\n\nfrom the womb of the morning:\n\nthou hast the dew of thy youth.",11);stop;
-Pss110v4: TNT1 A 0 A_Print("The LORD hath sworn,\n\nand will not repent,\n\n\nThou art a priest for ever\n\nafter the order of Melchizedek.",9);stop;
-Pss110v5: TNT1 A 0 A_Print("The Lord at thy right hand shall\n\nstrike through kings\n\nin the day of his wrath.",6);stop;
-Pss110v6: TNT1 A 0 A_Print("He shall judge among the heathen,\n\nhe shall fill the places\n\nwith the dead bodies;\n\n\nhe shall wound the heads\n\nover many countries.",9);stop;
-Pss110v7: TNT1 A 0 A_Print("He shall drink of\n\nthe brook in the way:\n\n\ntherefore shall he\n\nlift up the head.",7);stop;
-Pss112v10: TNT1 A 0 A_Print("The wicked shall see it,\n\nand be grieved;\n\nhe shall gnash\n\nwith his teeth,\n\nand melt away:\n\nthe desire of the\n\nwicked shall perish.",9);stop;
-Pss116v15: TNT1 A 0 A_Print("Precious in the \n\nsight of the LORD \n\nis the death \n\nof his saints.",8);stop;
-Pss118v10: TNT1 A 0 A_Print("All nations compassed me about: \n\nbut in the name of the LORD \n\nwill I destroy them.",8);stop;
-Pss118v17: TNT1 A 0 A_Print("I shall not die, but live, \n\nand declare the works of the LORD.",8);stop;
-Pss118v22: TNT1 A 0 A_Print("The stone which the builders \n\nrefused is become the head \n\nstone of the corner.",8);stop;
-Pss118v24: TNT1 A 0 A_Print("This is the day which \n\nthe LORD hath made; \n\nwe will rejoice \n\nand be glad in it.",8);stop;
-Pss118v27: TNT1 A 0 A_Print("God is the LORD, which \n\nhath shewed us light: \n\nbind the sacrifice with cords, \n\neven unto the horns \n\nof the altar.",8);stop;
-Pss119v1: TNT1 A 0 A_Print("Blessed are the undefiled\n\nin the way, who walk in\n\nthe law of the LORD.",8);stop;
-Pss119v176: TNT1 A 0 A_Print("I have gone astray like a lost sheep; \n\nseek thy servant; for I do not \n\nforget thy commandments.",8);stop;
-Pss120v6t7: TNT1 A 0 A_Print("My soul hath long dwelt \n\nwith him that hateth peace.\n\n\n\nI am for peace: \n\nbut when I speak, \n\nthey are for war.",8);stop;
-Pss122v6t7: TNT1 A 0 A_Print("Pray for the peace of Jerusalem: \n\nthey shall prosper that love thee. \n\n\n\nPeace be within thy walls, \n\nand prosperity within thy palaces.",8);stop;
-Pss124v6: TNT1 A 0 A_Print("Blessed be the LORD,\n\nwho hath not given us\n\nas a prey to their teeth.",8);stop;
-Pss125v2: TNT1 A 0 A_Print("As the mountains are round about Jerusalem, \n\nso the LORD is round about his people \n\nfrom henceforth even for ever.",8);stop;
-Pss137v4t6: TNT1 A 0 A_Print("How shall we sing the LORD's song in a strange land? \n\n\n\nIf I forget thee, O Jerusalem, \n\nlet my right hand forget her cunning. \n\n\n\nIf I do not remember thee, \n\nlet my tongue cleave to the roof of my mouth; \n\nif I prefer not Jerusalem \n\nabove my chief joy.",11);stop;
-Pss139v8: TNT1 A 0 A_Print("If I ascend up into heaven, \n\nthou art there: \n\nif I make my bed in hell, \n\nbehold, thou art there.",8);stop;
-Pss140v4: TNT1 A 0 A_Print("Keep me, O LORD, from the hands of the wicked; \n\npreserve me from the violent man; \n\nwho have purposed to overthrow my goings.",8);stop;
-Pss140v7: TNT1 A 0 A_Print("O GOD the Lord, \n\nthe strength of my salvation, \n\nthou hast covered my head \n\nin the day of battle.",8);stop;
-Pss141v8t10: TNT1 A 0 A_Print("But mine eyes are unto thee, O GOD the Lord: \n\nin thee is my trust; leave not my soul destitute. \n\n\n\nKeep me from the snares which they have laid for me, \n\nand the gins of the workers of iniquity. \n\n\n\nLet the wicked fall into their own nets, \n\nwhilst that I withal escape.",12);stop;
-Pss144v1t2: TNT1 A 0 A_Print("Blessed be the LORD my strength, which teacheth \n\nmy hands to war, and my fingers to fight: \n\n\n\nMy goodness, and my fortress; my high tower, \n\nand my deliverer; my shield, and he in whom I trust; \n\nwho subdueth my people under me.",10);stop;
-Pss147v12t13: TNT1 A 0 A_Print("Praise the LORD, O Jerusalem; \n\npraise thy God, O Zion. \n\n\n\nFor he hath strengthened the bars of thy gates; \n\nhe hath blessed thy children within thee.",8);stop;
+	}
 
-
-
-//Pss: TNT1 A 0 A_Print("",8);stop;
+	static string FromPsalter(){
+		static const string psslist[]={
+			"1:1 Blessed is the man that walketh not|in the counsel of the ungodly,/nor standeth in |the way of sinners,/nor sitteth in|the seat of the scornful.",
+			"2:9 Thou shalt break them|with a rod of iron;/thou shalt dash them in pieces|like a potter's vessel.",
+			"3:3 But thou, O LORD,/art a shield for me;/my glory, and the/lifter up of mine head.",
+			"3:6-7 I will not be afraid of ten thousands of people,/that have set themselves against me round about.//Arise, O LORD; save me, O my God: for thou hast/smitten all mine enemies upon the cheek bone;/thou hast broken the teeth of the ungodly.",
+			"5:12 For thou, LORD, wilt bless the righteous;/with favour wilt thou compass him as with a shield.",
+			"8:4 What is man, that thou art mindful of him?/and the son of man, that thou visitest him?",
+			"9:20-21 Put them in fear, O LORD:/that the nations may know/themselves to be but men./\cuSelah.\c-//Why standest thou afar off, O LORD?/why hidest thou thyself/in times of trouble?",
+			"11:4-5 The LORD is in his holy temple, the LORD's throne is in heaven:/his eyes behold, his eyelids try, the children of men.//The LORD trieth the righteous: but the wicked and/him that loveth violence his soul hateth.",
+			"11:6-7 Upon the wicked he shall rain snares, fire and brimstone,/and an horrible tempest: this shall be the portion of their cup.//For the righteous LORD loveth righteousness;/his countenance doth behold the upright.",
+			"12:8 The wicked walk on every side,/when the vilest men are exalted.",
+			"13:1 How long wilt thou/forget me, O LORD?/for ever?/how long wilt thou/hide thy face from me?",
+			"16:8-10 I have set the LORD always before me:/because he is at my right hand, I shall not be moved.//Therefore my heart is glad, and my glory rejoiceth:/my flesh also shall rest in hope.//For thou wilt not leave my soul in hell;/neither wilt thou suffer thine Holy One to see corruption.",
+			"17:7 Shew thy marvellous lovingkindness,/O thou that savest by thy right hand/them which put their trust in thee/from those that rise up against them.",
+			"18:2 The LORD is my rock, and my fortress, and my deliverer;/my God, my strength, in whom I will trust; my buckler,/and the horn of my salvation, and my high tower.",
+			"18:3-4 I will call upon the LORD,/who is worthy to be praised:/so shall I be saved from mine enemies.//The sorrows of death compassed me,/and the floods of ungodly men made me afraid.",
+			"18:5-6 The sorrows of hell compassed me about:/the snares of death prevented me.//In my distress I called upon the LORD,/and cried unto my God:/he heard my voice out of his temple,/and my cry came before him, even into his ears.",
+			"18:30-32 As for God, his way is perfect: the word of the LORD is tried:/he is a buckler to all those that trust in him.//For who is God save the LORD?/or who is a rock save our God?//It is God that girdeth me with strength,/and maketh my way perfect.",
+			"18:33-34 He maketh my feet like hinds' feet,/and setteth me upon my high places.//He teacheth my hands to war,/so that a bow of steel is broken by mine arms.",
+			"18:35 Thou hast also given me the shield of thy salvation:/and thy right hand hath holden me up,/and thy gentleness hath made me great.",
+			"21:3-4 For thou preventest him with the blessings of goodness:/thou settest a crown of pure gold on his head.//He asked life of thee, and thou gavest it him,/even length of days for ever and ever.",
+			"22:1 My God, my God, why hast thou forsaken me?/why art thou so far from helping me,/and from the words of my roaring?",
+			"22:23-24 Ye that fear the LORD,|praise him;/all ye the seed of Jacob,|glorify him;/and fear him,|all ye the seed of Israel.//For he hath not despised nor abhorred/the affliction of the afflicted;/neither hath he hid his face from him;/but when he cried unto him,/he heard.",
+			"23:4 Yea, though I walk through the valley/of the shadow of death, I will fear no evil: for thou art with me;/thy rod and thy staff they comfort me.",
+			"27:1 The LORD is my light/and my salvation;/whom shall I fear?/the LORD is the strength/of my life; of whom/shall I be afraid?",
+			"27:6 And now shall mine head be lifted up above mine enemies round about me:/therefore will I offer in his tabernacle sacrifices of joy;/I will sing, yea, I will sing praises unto the LORD.",
+			"28:7 The LORD is my strength and my shield; my heart trusted/in him, and I am helped: therefore my heart greatly rejoiceth;/and with my song will I praise him.",
+			"31:2 Bow down thine ear to me;/deliver me speedily:/be thou my strong rock,/for an house of defence/to save me.",
+			"31:3 For thou art my rock and my fortress;/therefore for thy name's sake lead me,/and guide me.",
+			"31:22 For I said in my haste,/I am cut off from/before thine eyes:/nevertheless thou heardest/the voice of my supplications/when I cried unto thee.",
+			"32:1 Blessed is he whose/transgression is forgiven,/whose sin is covered.",
+			"32:7 Thou art my hiding place;/thou shalt preserve me from trouble;/thou shalt compass me about/with songs of deliverance./\cuSelah.",
+			"34:20 He keepeth all his bones:/not one of them is broken.",
+			"37:35 I have seen the wicked/in great power, and spreading/himself like a green bay tree.",
+			"37:36 Yet he passed away,/and, lo, he was not:/yea, I sought him,/but he could not be found.",
+			"39:4 LORD, make me to know mine end,/and the measure of my days,/what it is; that I may know/how frail I am.",
+			"39:7 And now, Lord,/what wait I for?/my hope is in thee.",
+			"39:12-13 Hear my prayer, O LORD, and give ear unto my cry;/hold not thy peace at my tears:/for I am a stranger with thee,/and a sojourner, as all my fathers were.//O spare me, that I may recover/strength, before I go hence,/and be no more.",
+			"45:4 And in thy majesty ride/prosperously because of truth/and meekness and righteousness;/and thy right hand shall/teach thee terrible things.",
+			"45:13 The king's daughter is/all glorious within:/her clothing is/of wrought gold.",
+			"46:8 Come,/behold the works of the LORD,/what desolations he hath made/in the earth.",
+			"46:9 He maketh wars to cease/unto the end of the earth;/he breaketh the bow, and cutteth/the spear in sunder; he burneth/the chariot in the fire.",
+			"46:11 The LORD of hosts is with us;/the God of Jacob is our refuge./\cuSelah.",
+			"47:6 Sing praises to God,/sing praises:/sing praises unto our King,/sing praises.",
+			"47:9 The princes of the people/are gathered together,/even the people of/the God of Abraham:/for the shields of the earth/belong unto God:/he is greatly exalted.",
+			"48:13-14 Mark ye well her bulwarks,/consider her palaces;/that ye may tell it/to the generation following.//For this God is our God/for ever and ever:/he will be our guide/even unto death.",
+			"50:14-15 Offer unto God thanksgiving;/and pay thy vows unto the most High://And call upon me/in the day of trouble:/I will deliver thee,/and thou shalt glorify me.",
+			"50:18-19 Do good in thy good pleasure unto Zion:/build thou the walls of Jerusalem.//Then shalt thou be pleased with/the sacrifices of righteousness,/with burnt offering and whole burnt offering:/then shall they offer bullocks upon thine altar.",
+			"58:6-7 Break their teeth, O God, in their mouth:/break out the great teeth of the young lions, O LORD.//Let them melt away as waters which run continually:/when he bendeth his bow to shoot his arrows,/let them be as cut in pieces.",
+			"60:8 Moab is my washpot;/over Edom will I cast out my shoe:/Philistia, triumph thou|because of me.",
+			"61:6 Thou wilt prolong/the king's life://and his years as/many generations.",
+			"71:7 I am as a wonder unto many;/but thou art my strong refuge.",
+			"73:12 Behold,/these are the ungodly,|who prosper in the world;/they increase in riches.",
+			"73:16-17 When I thought to know this,/it was too painful for me;//Until I went into the sanctuary of God;/then understood I their end.",
+			"73:18 Surely thou didst set them|in slippery places://thou castedst them down|into destruction.",
+			"73:19 How are they brought into desolation,|as in a moment!//they are utterly consumed with terrors.",
+			"73:20 As a dream when one awaketh;/so, O Lord, when thou awakest,/thou shalt despise their image.",
+			"73:25 Whom have I in heaven but thee?/and there is none upon earth/that I desire beside thee.",
+			"73:26 My flesh and my heart faileth://but God is the strength of my heart,/and my portion for ever.",
+			"73:27-28 For, lo, they that are far from thee shall perish:/thou hast destroyed all them that go a whoring from thee.///But it is good for me to draw near to God:/I have put my trust in the Lord GOD,/that I may declare all thy works.",
+			"74:20 Have respect unto the covenant:/for the dark places of the earth|are full of the habitations of cruelty.",
+			"77:10 And I said/This is my infirmity://but I will remember/the years of the right/hand of the most High.",
+			"78:49 He cast upon them the fierceness/of his anger, wrath,/and indignation, and trouble,/by sending evil angels among them.",
+			"91:5-6 Thou shalt not be afraid for the terror by night;/nor for the arrow that flieth by day;//Nor for the pestilence that walketh in darkness;/nor for the destruction that wasteth at noonday.",
+			"91:7 A thousand shall fall at thy side, and/ten thousand at thy right hand;/but it shall not come nigh thee.",
+			"103:15-16 As for man, his days are as grass:/as a flower of the field, so he flourisheth.//For the wind passeth over it, and it is gone;/and the place thereof shall know it no more.",
+			"104:33 I will sing unto the LORD/as long as I live:/I will sing praise to/my God while I have my being.",
+			"104:34 My meditation of him shall be sweet:/I will be glad in the LORD.",
+			"110:1 The LORD said unto my Lord,/|Sit thou at my right hand,/until I make/thine enemies thy footstool.",
+			"110:2 The LORD shall send the rod of/thy strength out of Zion:/|rule thou in/the midst of thine enemies.",
+			"110:3 Thy people shall be willing/in the day of thy power,/in the beauties of holiness/from the womb of the morning:/thou hast the dew of thy youth.",
+			"110:4 The LORD hath sworn,/and will not repent,/|Thou art a priest for ever/after the order of Melchizedek.",
+			"110:5 The Lord at thy right hand shall/strike through kings/in the day of his wrath.",
+			"110:6 He shall judge among the heathen,/he shall fill the places/with the dead bodies;/|he shall wound the heads/over many countries.",
+			"110:7 He shall drink of/the brook in the way:/|therefore shall he/lift up the head.",
+			"112:10 The wicked shall see it,/and be grieved;/he shall gnash/with his teeth,/and melt away:/the desire of the/wicked shall perish.",
+			"116:15 Precious in the/sight of the LORD/is the death/of his saints.",
+			"118:10 All nations compassed me about:/but in the name of the LORD/will I destroy them.",
+			"118:17 I shall not die, but live,/and declare the works of the LORD.",
+			"118:22 The stone which the builders/refused is become the head/stone of the corner.",
+			"118:24 This is the day which/the LORD hath made;/we will rejoice/and be glad in it.",
+			"118:27 God is the LORD, which/hath shewed us light:/bind the sacrifice with cords,/even unto the horns/of the altar.",
+			"119:1 Blessed are the undefiled/in the way, who walk in/the law of the LORD.",
+			"119:176 I have gone astray like a lost sheep;/seek thy servant; for I do not/forget thy commandments.",
+			"120:6-7 My soul hath long dwelt/with him that hateth peace.//I am for peace:/but when I speak,/they are for war.",
+			"122:6-7 Pray for the peace of Jerusalem:/they shall prosper that love thee.//Peace be within thy walls,/and prosperity within thy palaces.",
+			"124:6 Blessed be the LORD,/who hath not given us/as a prey to their teeth.",
+			"125:2 As the mountains are round about Jerusalem,/so the LORD is round about his people/from henceforth even for ever.",
+			"137:4-6 How shall we sing the LORD's song in a strange land?//If I forget thee, O Jerusalem,/let my right hand forget her cunning.//If I do not remember thee,/let my tongue cleave to the roof of my mouth;/if I prefer not Jerusalem/above my chief joy.",
+			"139:8 If I ascend up into heaven,/thou art there:/if I make my bed in hell,/behold, thou art there.",
+			"140:4 Keep me, O LORD, from the hands of the wicked;/preserve me from the violent man;/who have purposed to overthrow my goings.",
+			"140:7 O GOD the Lord,/the strength of my salvation,/thou hast covered my head/in the day of battle.",
+			"141:8-10 But mine eyes are unto thee, O GOD the Lord:/in thee is my trust; leave not my soul destitute.//Keep me from the snares which they have laid for me,/and the gins of the workers of iniquity.//Let the wicked fall into their own nets,/whilst that I withal escape.",
+			"144:1-2 Blessed be the LORD my strength, which teacheth/my hands to war, and my fingers to fight://My goodness, and my fortress; my high tower,/and my deliverer; my shield, and he in whom I trust;/who subdueth my people under me.",
+			"147:12-13 Praise the LORD, O Jerusalem; /praise thy God, O Zion. //For he hath strengthened the bars of thy gates; /he hath blessed thy children within thee.",
+			"149:6-9 Let the high praises of God be in their mouth,/and a twoedged sword in their hand;//To execute vengeance upon the heathen,|and punishments upon the people;//To bind their kings with chains,|and their nobles with fetters of iron;//To execute upon them the judgment written:/this honour have all his saints.///Praise ye the LORD.",
+			"150:6 Let every thing/that hath breath/praise the LORD.//Praise ye the LORD."
+		};
+		string ps=psslist[random(0,psslist.size()-1)];
+		ps=ps.mid(ps.indexof(" ")+1);
+		ps.replace("/","\n\n");
+		ps.replace("|","\n");
+		return ps;
 	}
 }
 
