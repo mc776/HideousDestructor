@@ -292,6 +292,12 @@ class HDFist:HDWeapon replaces Fist{
 		grabbed.bnodropoff=gddo;
 		grabbed.setz(max(grabbed.pos.z,grabbed.floorz));
 
+		string grbng="dragging ";
+		if(grabbed.bcorpse)grbng=grbng.."corpse";
+		else if(inventory(grabbed)||hdupk(grabbed))grbng=grbng.."item";
+		else grbng=grbng.."object";
+		A_WeaponMessage(grbng.."...",3);
+
 		if(
 			absangle(angle,angleto(grabbed))>60.
 			||distance3d(grabbed)>(mindist+16)
@@ -304,6 +310,7 @@ class HDFist:HDWeapon replaces Fist{
 	action void A_ClearGrabbing(){
 		let p=HDPlayerPawn(self);if(p)p.movehijacked=false;
 		invoker.grabbed=null;
+		A_WeaponMessage("");
 	}
 	states{
 	female:
