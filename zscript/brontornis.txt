@@ -193,7 +193,7 @@ class Brontornis:HDWeapon{
 		bool sightbob,vector2 bob,double fov,bool scopeview,actor hpc,string whichdot
 	){
 		int scaledyoffset=-4;
-		if(hdw.weaponstatus[0]&BRONF_ZOOM){
+		if(scopeview&&hdw.weaponstatus[0]&BRONF_ZOOM){
 			texman.setcameratotexture(hpc,"HDXHCAM5",2.6);
 			sb.drawimage(
 				"HDXHCAM5",(0,scaledyoffset)+bob,

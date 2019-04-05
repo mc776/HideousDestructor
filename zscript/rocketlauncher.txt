@@ -121,7 +121,7 @@ class HDRL:HDWeapon{
 			if(hdw.weaponstatus[0]&RLF_GRENADEMODE)sb.drawgrenadeladder(hdw.airburst,bob);
 			else{
 				double dotoff=max(abs(bob.x),abs(bob.y));
-				if(hdw.weaponstatus[0]&RLF_ZOOM){
+				if(scopeview&&hdw.weaponstatus[0]&RLF_ZOOM){
 					texman.setcameratotexture(hpc,"HDXHCAM6",1.6);
 					sb.drawimage(
 						"HDXHCAM6",(bob.x,bob.y+4),
