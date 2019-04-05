@@ -550,6 +550,13 @@ class HDPlayerPawn:PlayerPawn{
 				A_SetInventory("NulledWeapon",1);
 				A_SetInventory("NullWeapon",1);
 				A_SelectWeapon("NullWeapon");
+				if(lastweapon){
+					let nw=hdweapon(findinventory("NullWeapon"));
+					let lw=hdweapon(lastweapon);
+					nw.barrellength=lw.barrellength+0.1;
+					nw.barrelwidth=lw.barrelwidth+0.1;
+					nw.barreldepth=lw.barreldepth+0.1;
+				}
 			}
 		}else if(
 			player.readyweapon is "NullWeapon"
