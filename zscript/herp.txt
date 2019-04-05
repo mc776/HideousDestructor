@@ -6,23 +6,15 @@ enum HERPConst{
 }
 class HERPLeg:Actor{
 	default{
-		+flatsprite +nointeraction +nogravity
+		+flatsprite +nointeraction +noblockmap
 	}
 	vector3 relpos;
 	double oldfloorz;
 	override void Tick(){
 		if(!master){destroy();return;}
-		if(
-			master.pos.z<floorz+12
-			&&oldfloorz==floorz
-		){
-			master.setz(floorz+12);
-			master.vel.z=max(0,master.vel.z);
-		}
 		binvisible=oldfloorz!=floorz;
 		setorigin(master.pos+relpos,true);
 		oldfloorz=floorz;
-		if(pos.z<=floorz)master.vel.xy*=getfriction();
 	}
 	states{
 	spawn:
@@ -65,6 +57,17 @@ class HERPBot:HDUPK{
 	override void Die(actor source,actor inflictor,int dmgflags){
 		super.Die(source,inflictor,dmgflags);
 		bsolid=true;
+	}
+	override void Tick(){
+		if(
+			pos.z+vel.z<floorz+12
+		){
+			vel.z=0;
+			setz(floorz+12);
+			bnogravity=true;
+		}else bnogravity=pos.z-floorz<=12;
+		if(bnogravity)vel.xy*=getfriction();
+		super.tick();
 	}
 	override void postbeginplay(){
 		super.postbeginplay();

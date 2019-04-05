@@ -225,6 +225,7 @@ class HDFist:HDWeapon replaces Fist{
 		bool resisting=(
 			(
 				grabbed.bismonster
+				&&!grabbed.bnofear&&!grabbed.bghost //*ERPs use both of these flags
 				&&grabbed.health>0
 			)||(
 				grabbed.player
@@ -277,7 +278,7 @@ class HDFist:HDWeapon replaces Fist{
 		int sm=cmd.sidemove>0?1:cmd.sidemove<0?-1:0;
 		if(!sm&&fm<0)dragfactor*=1.7;
 
-		vector2 dragmove=rotatevector((dragfactor*fm,-dragfactor*sm),angle);
+		vector2 dragmove=rotatevector((dragfactor*fm,-dragfactor*sm),angle)*player.crouchfactor;
 		if(trymove(pos.xy+dragmove,true)){
 			let p=HDPlayerPawn(self);
 			if(p)p.movehijacked=true;
@@ -296,6 +297,7 @@ class HDFist:HDWeapon replaces Fist{
 		if(grabbed.bcorpse)grbng=grbng.."corpse";
 		else if(inventory(grabbed)||hdupk(grabbed))grbng=grbng.."item";
 		else grbng=grbng.."object";
+		if(hd_debug)grbng=grbng.."\n"..grabbed.getclassname();
 		A_WeaponMessage(grbng.."...",3);
 
 		if(
