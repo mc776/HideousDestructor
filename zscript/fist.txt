@@ -39,10 +39,15 @@ class HDFist:HDWeapon replaces Fist{
 		..WEPHELP_RELOAD.."   Distracting strike\n"
 		..WEPHELP_FIREMODE.."   Grab/Drag\n"
 		..WEPHELP_UNLOAD.."   Distracting projectile\n"
+		..WEPHELP_ZOOM.."+"..WEPHELP_DROP.."   Drop misc. items\n"
 		;
 	}
 	override inventory CreateTossable(int amount){
-		if(!owner)return null;
+		if(
+			!owner
+			||!owner.player
+			||!(owner.player.cmd.buttons&BT_ZOOM)
+		)return null;
 		array<inventory> items;items.clear();
 		for(inventory item=owner.inv;item!=null;item=!item?null:item.inv){
 			if(
