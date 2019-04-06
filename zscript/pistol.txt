@@ -17,7 +17,6 @@ class HDPistol:HDWeapon replaces Pistol{
 		inventory.pickupmessage "You got the pistol!";
 		hdweapon.nicename "Pistol";
 		hdweapon.refid HDLD_PISTOL;
-		hdweapon.barrelsize (12*HDCONST_SQRTTWO),0.3,0.5;
 		inventory.maxamount 3;
 	}
 	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
@@ -161,7 +160,6 @@ class HDPistol:HDWeapon replaces Pistol{
 		PISG # 1{
 			A_SetCrosshair(21);
 			A_WeaponReady(WRF_ALL);
-			invoker.barrellength=radius*HDCONST_SQRTTWO+frandom(0,1);
 		}goto readyend;
 	user3:
 		---- A 0 A_MagManager("HD9mMag15");
