@@ -40,15 +40,6 @@ extend class HDPlayerPawn{
 			unstablewoundcount=min(unstablewoundcount,30);
 			burncount=min(burncount,30);
 			aggravateddamage=min(aggravateddamage,30);
-			return max(0,100
-				+min(0,
-					+(stimcount>>1)
-					-(bledout>>5)
-					-aggravateddamage
-					-woundcount
-				)
-				+max(fatigue-HDCONST_SPRINTFATIGUE,0)
-			);
 		}
 		return max(0,100
 			+min(0,
