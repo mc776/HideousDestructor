@@ -530,7 +530,7 @@ class HDPlayerPawn:PlayerPawn{
 		hudbob=(
 			cos(bobcounter)*(sm?5.:2.)*(pr?pr.bobrangex:1.),
 			sin(bobcounter*2)*6.*(pr?pr.bobrangey:1.)
-		)*bobvel+hudbobrecoil1;
+		)*bobvel*((!mustwalk&&runwalksprint<0)?0.5:1.)+hudbobrecoil1;
 		hudbobrecoil1=hudbobrecoil1*0.2+hudbobrecoil2;
 		hudbobrecoil2=hudbobrecoil3;
 		hudbobrecoil3=hudbobrecoil4;
