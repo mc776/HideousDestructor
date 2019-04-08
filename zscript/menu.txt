@@ -399,9 +399,9 @@ class HDLoadoutMenu:GenericMenu{
 			}
 		}
 		int wsline=SmallFont.GetHeight()*CleanYFac_1*14;
-		int wswidth=SmallFont.StringWidth(ws) * CleanXfac_1;
+		int wswidth=NewSmallFont.StringWidth(ws) * CleanXfac_1;
 		int wsxpos=(screen.GetWidth() - wswidth) / 2;
-		screen.DrawText(SmallFont,
+		screen.DrawText(NewSmallFont,
 			different?OptionMenuSettings.mFontColorHeader:OptionMenuSettings.mFontColorValue,
 			wsxpos,wsline,ws,DTA_CleanNoMove_1,true
 		);
@@ -409,19 +409,19 @@ class HDLoadoutMenu:GenericMenu{
 		blinktimer++;
 		if(blinktimer>3){
 			if(blinktimer>6)blinktimer=0;
-			screen.DrawText(SmallFont,OptionMenuSettings.mFontColorHighlight,
-				wsxpos+SmallFont.StringWidth(ws.left(tempcursx))*CleanXfac_1,
+			screen.DrawText(NewSmallFont,OptionMenuSettings.mFontColorHighlight,
+				wsxpos+NewSmallFont.StringWidth(ws.left(tempcursx))*CleanXfac_1,
 				wsline + clfp3,
 				"_",DTA_CleanNoMove_1,true
 			);
 		}
 		if(addarrows&&blinktimer>2){
-			if(addarrows&1)screen.DrawText(SmallFont,
+			if(addarrows&1)screen.DrawText(NewSmallFont,
 				OptionMenuSettings.mFontColor,
-				wsxpos-SmallFont.StringWidth("<<  ") * CleanXfac_1,
+				wsxpos-NewSmallFont.StringWidth("<<  ") * CleanXfac_1,
 				wsline,"<<  ",DTA_CleanNoMove_1, true
 			);
-			if(addarrows&2)screen.DrawText(SmallFont,
+			if(addarrows&2)screen.DrawText(NewSmallFont,
 				OptionMenuSettings.mFontColor,
 				wsxpos+wswidth,
 				wsline,"  >>",DTA_CleanNoMove_1, true
@@ -435,12 +435,12 @@ class HDLoadoutMenu:GenericMenu{
 		}
 		screen.DrawText(SmallFont,OptionMenuSettings.mTitleColor,
 			(screen.GetWidth() - SmallFont.StringWidth(s) * CleanXfac_1) / 2,
-			SmallFont.GetHeight()*CleanYFac_1*15 + clfp3,
+			(SmallFont.GetHeight()*14+NewSmallFont.GetHeight())*CleanYFac_1 + clfp3,
 			s,DTA_CleanNoMove_1, true
 		);
 		s=translatedloadout;
-		screen.DrawText(SmallFont,OptionMenuSettings.mFontColorValue,
-			(screen.GetWidth() - SmallFont.StringWidth (s) * CleanXfac_1) / 2,
+		screen.DrawText(NewSmallFont,OptionMenuSettings.mFontColorValue,
+			(screen.GetWidth() - NewSmallFont.StringWidth (s) * CleanXfac_1) / 2,
 			SmallFont.GetHeight()*CleanYFac_1*18,
 			s,DTA_CleanNoMove_1, true
 		);
