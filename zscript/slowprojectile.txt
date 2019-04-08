@@ -33,7 +33,7 @@ class SlowProjectile:HDBullet{
 		distancetravelled=0;
 	}
 	override void Tick(){
-		if(globalfreeze||level.Frozen) return;
+		if(isfrozen())return;
 		if(!bmissile){
 			//nexttic
 			if(CheckNoDelay()){

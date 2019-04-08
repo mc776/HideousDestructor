@@ -174,7 +174,7 @@ class HDBarrel:HDActor replaces ExplosiveBarrel{
 class BarrelExplodeMarker:Thinker{
 	int timer;
 	override void Tick(){
-		if(globalfreeze||level.Frozen)return;
+		if(level.isfrozen())return;
 		timer++;
 		if(timer>200)destroy();
 	}
@@ -253,7 +253,7 @@ class HDFireCan:HDBarrel replaces BurningBarrel{
 	}
 	override void tick(){
 		super.tick();
-		if(globalfreeze||level.Frozen) return;
+		if(isFrozen())return;
 		if(!bkilled){
 			fireticker++;
 			if(fireticker<6) return;

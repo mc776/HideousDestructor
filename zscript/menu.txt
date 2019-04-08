@@ -1,7 +1,7 @@
 enum HDLoadoutMenuNums{
 	HD_MAXLOADOUTS=20,
 }
-class HDLoadoutMenu:OptionMenu{
+class HDLoadoutMenu:GenericMenu{
 	array<string> refids;
 	array<string> nicenames;
 	string translatedloadout;
@@ -19,8 +19,8 @@ class HDLoadoutMenu:OptionMenu{
 	bool different;
 	bool viewlist;
 	bool isnewgamemenu;
-	override void Init(menu parent,optionmenudescriptor desc){
-		super.Init(parent,desc);
+	override void Init(menu parent){
+		super.Init(parent);
 		refids.clear();
 		nicenames.clear();
 		cursx=0;cursy=1;
@@ -68,7 +68,6 @@ class HDLoadoutMenu:OptionMenu{
 		reflist=reflist.mid(1); //get rid of the first "\n"
 	}
 	override bool MenuEvent(int mkey, bool fromcontroller){
-		int startedAt = mDesc.mSelectedItem;
 		switch(mkey){
 		case MKEY_Left:
 			cursx=max(0,cursx-1);
@@ -444,8 +443,8 @@ class HDLoadoutMenu:OptionMenu{
 
 
 class HDNewGameLoadoutMenu:HDLoadoutMenu{
-	override void Init(menu parent,optionmenudescriptor desc){
-		super.Init(parent,desc);
+	override void Init(menu parent){
+		super.Init(parent);
 		isnewgamemenu=true;
 		translatedloadout=gettranslatedloadout(workingstring);
 		cursx=workingstring.length();
@@ -489,7 +488,6 @@ class HDNewGameLoadoutMenu:HDLoadoutMenu{
 		return lod;
 	}
 	override bool MenuEvent(int mkey, bool fromcontroller){
-		int startedAt = mDesc.mSelectedItem;
 		switch(mkey){
 		case MKEY_Up:
 			cursy--;
@@ -573,12 +571,19 @@ class HDNewGameLoadoutMenu:HDLoadoutMenu{
 		return false;
 	}
 	override void Drawer(){
-		Optionmenu.Drawer();
+		Genericmenu.Drawer();
 		playerinfo cplayer=players[consoleplayer];
 		if(!cplayer)return;
-		int clfp3=CleanYFac_1*3;
+		int clfp3=CleanYFac_1*3-6;
 
-		string hs="\cuUp/Down select\nEnter confirm\nR random, +Ctrl lucky";
+		string hs="Select Loadout";
+		screen.DrawText(BigFont,OptionMenuSettings.mFontColor,
+			(screen.GetWidth() - BigFont.StringWidth(hs) * CleanXfac_1)/2,
+			clfp3,
+			hs,DTA_CleanNoMove_1,true
+		);
+
+		hs="\cuUp/Down select\nEnter confirm\nR random, +Ctrl lucky";
 		screen.DrawText(SmallFont,
 			OptionMenuSettings.mFontColor,
 			(screen.GetWidth() - SmallFont.StringWidth(hs) * CleanXfac_1) / 2,
@@ -591,7 +596,8 @@ class HDNewGameLoadoutMenu:HDLoadoutMenu{
 			[picsx,picsy]=texman.getsize(loadoutpic);
 			screen.drawtexture(
 				loadoutpic,false,160-picsx/2,smallfont.getheight()*7-picsy-2,
-				DTA_Clean,false,DTA_320x200,true,DTA_TopOffset,true,DTA_LeftOffset,true
+				DTA_Clean,false,DTA_VirtualWidth,320,DTA_VirtualHeight,200,
+				true,DTA_TopOffset,true,DTA_LeftOffset,true
 			);
 		}
 

@@ -226,7 +226,7 @@ class doordestroyer:hdactor{
 		double angletomiddle=atan2(centerspot.y-caller.pos.y,centerspot.x-caller.pos.x);
 		double depthchecklength=maxdepth*(1.-absangle(caller.angle,angletomiddle)*(1./180.));
 		vector2 depthcheck=dlt.hitdir.xy*depthchecklength*frandom(0.8,1.2);
-		if(othersector!=sector.pointinsector(dlt.hitlocation.xy+depthcheck))damageinflicted*=2.;
+		if(othersector!=level.pointinsector(dlt.hitlocation.xy+depthcheck))damageinflicted*=2.;
 
 
 		//the first point within the othersector is used a few times
@@ -238,7 +238,7 @@ class doordestroyer:hdactor{
 		actor buttesec=null;
 		sectordamagecounter buttecracked=null;
 		int checktid=SECTORDAMAGE_TID+othersector.index();
-		actoriterator buttesecs=actoriterator.create(checktid,"SectorDamageCounter");
+		actoriterator buttesecs=level.createactoriterator(checktid,"SectorDamageCounter");
 		while(buttesec=buttesecs.next()){
 			if(buttesec.cursector==othersector){
 				buttecracked=sectordamagecounter(buttesec);
@@ -628,7 +628,7 @@ extend class HDHandlers{
 		if(cmd!=999&&cmd!=123){
 			ppp.A_Log(string.format("DoorBuster Command format:\n\cu db <option> <tag number> \n\cjOptions:\n 999 = DETONATE\n 123 = QUERY\n -n = set tag number\n\cj  tag number on next deployment: \cy%i",botid),true);
 		}
-		actoriterator it=actoriterator.create(HDDB_TID,"DoorBusterPlanted");
+		actoriterator it=level.createactoriterator(HDDB_TID,"DoorBusterPlanted");
 		actor dbs;
 		while(dbs=it.Next()){
 			let dbss=DoorBusterPlanted(dbs);

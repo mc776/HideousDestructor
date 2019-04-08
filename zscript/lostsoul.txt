@@ -26,7 +26,7 @@ class Condemned:LostSoul replaces LostSoul{
 	}
 	override void tick(){
 		if(
-			!level.ispointinmap(pos)
+			!level.ispointinlevel(pos)
 			||!checkmove(pos.xy,PCM_DROPOFF|PCM_NOACTORS)
 		){
 			setorigin(lastpointinmap,true);

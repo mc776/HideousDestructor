@@ -35,7 +35,7 @@ class FooFighter:HDActor{
 		hdmobster.spawnmobster(self);
 	}
 	override void tick(){
-		if(globalfreeze||level.Frozen){
+		if(isfrozen()){
 			clearinterpolation();
 			return;
 		}
@@ -181,7 +181,7 @@ class FooFighter:HDActor{
 					return;
 				}
 				actor itt=null;
-				actoriterator it=actoriterator.create(424707,"FooFighter");
+				actoriterator it=level.createactoriterator(424707,"FooFighter");
 				while(itt=it.next()){
 					if(checksight(itt))
 					itt.vel+=itt.vec3to(tracer).unit()*2;
@@ -270,7 +270,7 @@ class Cacasmaball:IdleDummy{
 	double theight;
 	override void tick(){
 		if(!target){destroy();return;}
-		if(globalfreeze||level.Frozen){
+		if(isfrozen()){
 			clearinterpolation();
 			return;
 		}

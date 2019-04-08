@@ -106,7 +106,7 @@ class HDBullet:HDActor{
 		}stop;
 	}
 	override void tick(){
-		if(globalfreeze||level.Frozen) return;
+		if(isfrozen())return;
 		if(!bmissile){
 			bnointeraction=true;
 			actor.tick();
@@ -712,14 +712,14 @@ class HDBulletDamager:Thinker{
 		return hdbdd;
 	}
 	override void tick(){
-		if(globalfreeze||level.Frozen)return;
-		super.tick();
-		ticker--;
-		if(ticker>0)return;
 		if(!victim){
 			destroy();
 			return;
 		}
+		if(victim.isfrozen())return;
+		super.tick();
+		ticker--;
+		if(ticker>0)return;
 
 		while(damages.size()<damagetypes.size()){
 			damagetypes.pop();

@@ -95,8 +95,8 @@ class HDWound:Thinker{
 	int amount;
 	actor owner;
 	override void tick(){
-		if(globalfreeze||level.Frozen)return;
 		if(!owner||owner.health<1){destroy();return;}
+		if(owner.isfrozen())return;
 		ticker++;
 		if(ticker>3){
 //owner.A_LogInt(amount);

@@ -302,11 +302,10 @@ class HDWeapon:Weapon{
 
 	//for smoking barrels
 	void drainheat(int ref,int smklength=18){
-		bool frozen=globalfreeze||level.Frozen;
-		if(frozen&&(!owner||!owner.player))return;
+		if(isfrozen())return;
 		if(weaponstatus[ref]>0){
 			weaponstatus[ref]--;
-			if(frozen||random(1,10)>weaponstatus[ref])return;
+			if(random(1,10)>weaponstatus[ref])return;
 			vector3 smkpos=pos;
 			vector3 smkvel=vel;
 			double smkang=angle;

@@ -5,7 +5,7 @@ class ImmunityToFire:InventoryFlag{
 	override void attachtoowner(actor user){
 		super.attachtoowner(user);
 		if(owner){
-			actoriterator it=actoriterator.create(-7677,"HDFire");
+			actoriterator it=level.createactoriterator(-7677,"HDFire");
 			actor fff;
 			while(fff=it.next()){
 				if(fff.target==owner){
@@ -177,7 +177,7 @@ class PersistentDamager:HDActor{
 	}
 	int ticker;
 	override void tick(){
-		if(globalfreeze||level.Frozen) return;
+		if(isfrozen())return;
 
 		if(master)setorigin(master.pos+relpos,false);
 		if(ticker<4)ticker++;else{
@@ -254,7 +254,7 @@ class Heat:Inventory{
 	}
 	override void DoEffect(){
 		if(!owner){destroy();return;}
-		if(!owner.player&&(globalfreeze||level.Frozen))return;
+		if(!owner.player&&isfrozen())return;
 
 		//make adjustments based on armour and player status
 		let hdp=hdplayerpawn(owner);

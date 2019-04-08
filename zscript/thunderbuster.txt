@@ -551,7 +551,7 @@ class BeamSpot:HDActor{
 	}
 	void A_CheckNeighbourSpots(){
 		array<actor>beamspots;
-		actoriterator it=actoriterator.create(TB_BEAMSPOTTID,"BeamSpot");
+		actoriterator it=level.createactoriterator(TB_BEAMSPOTTID,"BeamSpot");
 		while(master=it.Next()){
 			double dist=master.distance3d(self)*0.01;
 			if(master && dist<8){

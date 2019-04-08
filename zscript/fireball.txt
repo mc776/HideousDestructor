@@ -12,7 +12,7 @@ class HDFireballTail:IdleDummy{
 		speed -0.3;height 1.0;radius 0.6;deathheight 0.7;friction 1.1;
 	}
 	override void tick(){
-		if(globalfreeze||level.Frozen){
+		if(isfrozen()){
 			clearinterpolation();
 			return;
 		}
@@ -128,7 +128,7 @@ class HDFireball:HDActor{
 		corkscrew+=adjustdegree;if(corkscrew>720)corkscrew-=360;
 	}
 	override void Tick(){
-		if(globalfreeze||level.frozen){
+		if(isfrozen()){
 			clearinterpolation();
 			return;
 		}

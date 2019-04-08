@@ -56,7 +56,7 @@ class Babuin:HDActor{
 	override void Tick(){
 		//brutal force
 		if(
-			!level.ispointinmap(pos)
+			!level.ispointinlevel(pos)
 			||!checkmove(pos.xy,PCM_DROPOFF|PCM_NOACTORS)
 		){
 			setorigin(lastpointinmap,true);
@@ -84,7 +84,7 @@ class Babuin:HDActor{
 				setorigin(lp,false);
 			}else setorigin((lp+pos)*0.5,true);
 
-			bool inmap=level.IsPointInMap(pos);
+			bool inmap=level.ispointinlevel(pos);
 
 			//can try to bump or shake it off
 			if(

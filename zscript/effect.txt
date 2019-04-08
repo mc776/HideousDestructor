@@ -26,7 +26,7 @@ class HDDebris:HDActor{
 		minrollspeed=maxstepheight*0.2;
 	}
 	override void Tick(){
-		if(globalfreeze||level.Frozen)return;
+		if(isfrozen())return;
 		if(bmovewithsector){
 			actor.tick();
 			if(bnointeraction)return;
@@ -225,7 +225,7 @@ class HDPuff:HDActor{
 		grav=getgravity();
 	}
 	override void Tick(){
-		if(globalfreeze||level.Frozen) return;
+		if(isfrozen())return;
 
 		alpha*=fade;
 		if(alpha<minalpha){
@@ -521,7 +521,7 @@ class HDCopyTrail:IdleDummy{
 	}
 	override void Tick(){
 		clearinterpolation();
-		if(globalfreeze||level.Frozen)return;
+		if(isfrozen())return;
 		scale.x+=frandom(-0.01,0.01);scale.y=scale.x;
 		accuracy++;
 		if(accuracy>=4){
@@ -825,7 +825,7 @@ class FragShard:IdleDummy{
 		renderstyle "add";+forcexybillboard;scale 0.3;alpha 0;
 	}
 	override void tick(){
-		if(globalfreeze||level.Frozen) return;
+		if(isfrozen())return;
 		trymove(self.pos.xy+vel.xy,true);
 		if(alpha<1)alpha+=0.05;
 		addz(vel.z,true);

@@ -14,7 +14,7 @@ class HDHandlers:EventHandler{
 	override void WorldLoaded(WorldEvent e){
 		//seed a few more spawnpoints
 		for (int i=0;i<5;i++){
-			vector3 ip=G_PickDeathmatchStart();
+			vector3 ip=level.PickDeathmatchStart();
 			invposx.push(ip.x);
 			invposy.push(ip.y);
 			invposz.push(ip.z);
@@ -67,7 +67,7 @@ class HDHandlers:EventHandler{
 				case Light_RaiseByValue:
 					if(lll.args[1]>=0)break;
 				case Light_LowerByValue:
-					sectortagiterator sss=sectortagiterator.create(lll.args[0]);
+					sectortagiterator sss=level.createsectortagiterator(lll.args[0]);
 					int ssss=sss.next();
 					int lowestlight=255;
 					while(ssss>-1){
@@ -442,7 +442,7 @@ struct HDF play{
 	}
 	//transfer fire. returns # of fire actors affected.
 	static int TransferFire(actor ror,actor ree,int maxfires=-1){
-		actoriterator it=actoriterator.create(-7677,"HDFire");
+		actoriterator it=level.createactoriterator(-7677,"HDFire");
 		actor fff;int counter;
 		bool eee;if(ree)eee=true;
 		while(maxfires && (fff=it.next())){

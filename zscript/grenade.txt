@@ -497,7 +497,7 @@ class HDFragGrenadeRoller:HDActor{
 		stop;
 	}
 	override void tick(){
-		if(globalfreeze||level.Frozen)return;
+		if(isfrozen())return;
 		else if(bnointeraction){
 			//nexttic
 			if(CheckNoDelay()){
@@ -544,7 +544,7 @@ class HDFragGrenade:SlowProjectile{
 	}
 	override void tick(){
 		ClearInterpolation();
-		if(globalfreeze||level.Frozen)return;
+		if(isfrozen())return;
 		if(!bmissile){
 			hdactor.tick();return;
 		}else if(fuze<140){
