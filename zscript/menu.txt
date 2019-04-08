@@ -258,14 +258,14 @@ class HDLoadoutMenu:GenericMenu{
 	}
 	virtual string GetTranslatedLoadout(string input){
 		string ttl="";
+		string lon;
+		string desc;
+		[loadoutdisplaystring,loadoutname,lon,desc]=HDMath.GetLoadoutStrings(input,true);
 		if(viewlist)ttl=reflist;
 		else{
 			array<string>items;items.clear();
 			array<string>bpitems;bpitems.clear();
 
-			string lon;
-			string desc;
-			[loadoutdisplaystring,loadoutname,lon,desc]=HDMath.GetLoadoutStrings(input,true);
 			string finalinput=loadoutdisplaystring;finalinput.replace(" ","");
 			loadoutpic=texman.checkfortexture(lon,texman.type_any);
 			if(finalinput=="doomguy"){
