@@ -585,7 +585,7 @@ class HDNewGameLoadoutMenu:HDLoadoutMenu{
 		);
 		vcurs+=BigFont.GetHeight()+2;
 
-		hs="\cuUp/Down select\nEnter confirm\nR random, +Ctrl lucky";
+		hs="\cuUp/Down select, Enter confirm, R random, Ctrl+R lucky";
 		screen.DrawText(SmallFont,
 			OptionMenuSettings.mFontColor,
 			160-SmallFont.StringWidth(hs)/2,
@@ -593,20 +593,19 @@ class HDNewGameLoadoutMenu:HDLoadoutMenu{
 			hs,
 			DTA_Clean,true
 		);
-		vcurs+=SmallFont.GetHeight()*3+1;
+		vcurs+=SmallFont.GetHeight()*3+35;
 
 		if(loadoutpic.isvalid()){
 			int picsx,picsy;
 			[picsx,picsy]=texman.getsize(loadoutpic);
 			screen.drawtexture(
 				loadoutpic,false,160-picsx/2,
-				vcurs+32-picsy,
+				vcurs-2-picsy,
 				DTA_Clean,true,DTA_VirtualWidth,320,DTA_VirtualHeight,200,
 				DTA_TopOffset,true,
 				DTA_LeftOffset,true
 			);
 		}
-		vcurs+=35;
 
 		string ws=loadoutdisplaystring;
 		while(ws.charat(0)==" ")ws=ws.mid(1);
