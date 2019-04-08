@@ -341,11 +341,12 @@ class HDLoadoutMenu:GenericMenu{
 		Super.Drawer();
 		playerinfo cplayer=players[consoleplayer];
 		if(!cplayer)return;
-		int clfp3=CleanYFac_1*3;
+		int vcurs=9;
 
 		if(loadoutpic.isvalid()){
 			screen.drawtexture(
-				loadoutpic,false,300-texman.getsize(loadoutpic),smallfont.getheight()*14,
+				loadoutpic,false,300-texman.getsize(loadoutpic),
+				smallfont.getheight()*14,
 				DTA_Clean,false,DTA_320x200,true,DTA_TopOffset,true,DTA_LeftOffset,true
 			);
 		}
@@ -354,17 +355,19 @@ class HDLoadoutMenu:GenericMenu{
 		screen.DrawText(BigFont,
 			OptionMenuSettings.mTitleColor,
 			(screen.GetWidth() - BigFont.StringWidth(hs) * CleanXfac_1) / 2,
-			7*CleanYFac_1,
+			vcurs,
 			hs,DTA_CleanNoMove_1, true
 		);
+		vcurs+=BigFont.GetHeight();
 
 		hs="\cgSyntax:   \cazzzz#xxx n, yyy n - yyy n\n\cazzzz\cu preview picture (optional)\n\caxxx\cu starting weapon   \cayyy\cu anything else\n\can\cu number given\cu (optional, default 1)\n\ca-\cu begin backpack settings (use \cabak\cu for empty)\n\camap\cu for map   \cakey\cu for keys (bitflag BYR)\n\n\cdENTER\cu save   \cdESC\cu clear changes   \cdCtrl+R\cu reset";
 		screen.DrawText(SmallFont,
 			OptionMenuSettings.mFontColor,
 			(screen.GetWidth() - SmallFont.StringWidth(hs) * CleanXfac_1) / 2,
-			SmallFont.GetHeight()*CleanYFac_1*4 - clfp3,
+			vcurs*CleanYfac_1,
 			hs,DTA_CleanNoMove_1, true
 		);
+		vcurs+=SmallFont.GetHeight()*10;
 
 		string ws=workingstring;
 		int tempcursx=cursx;
@@ -398,7 +401,7 @@ class HDLoadoutMenu:GenericMenu{
 				textstart=textend-maxwidth;
 			}
 		}
-		int wsline=SmallFont.GetHeight()*CleanYFac_1*14;
+		int wsline=vcurs*CleanYfac_1;
 		int wswidth=NewSmallFont.StringWidth(ws) * CleanXfac_1;
 		int wsxpos=(screen.GetWidth() - wswidth) / 2;
 		screen.DrawText(NewSmallFont,
@@ -411,7 +414,7 @@ class HDLoadoutMenu:GenericMenu{
 			if(blinktimer>6)blinktimer=0;
 			screen.DrawText(NewSmallFont,OptionMenuSettings.mFontColorHighlight,
 				wsxpos+NewSmallFont.StringWidth(ws.left(tempcursx))*CleanXfac_1,
-				wsline + clfp3,
+				wsline,
 				"_",DTA_CleanNoMove_1,true
 			);
 		}
@@ -427,6 +430,8 @@ class HDLoadoutMenu:GenericMenu{
 				wsline,"  >>",DTA_CleanNoMove_1, true
 			);
 		}
+		vcurs+=NewSmallFont.GetHeight();
+
 		string s="Now editing loadout no. "..cursy;
 		if(loadoutname!="")s=s..", \""..loadoutname.."\"";
 		if(statustimer>0){
@@ -435,13 +440,15 @@ class HDLoadoutMenu:GenericMenu{
 		}
 		screen.DrawText(SmallFont,OptionMenuSettings.mTitleColor,
 			(screen.GetWidth() - SmallFont.StringWidth(s) * CleanXfac_1) / 2,
-			(SmallFont.GetHeight()*14+NewSmallFont.GetHeight())*CleanYFac_1 + clfp3,
+			vcurs*CleanYfac_1,
 			s,DTA_CleanNoMove_1, true
 		);
+		vcurs+=SmallFont.GetHeight()*2;
+
 		s=translatedloadout;
 		screen.DrawText(NewSmallFont,OptionMenuSettings.mFontColorValue,
 			(screen.GetWidth() - NewSmallFont.StringWidth (s) * CleanXfac_1) / 2,
-			SmallFont.GetHeight()*CleanYFac_1*18,
+			vcurs*CleanYfac_1,
 			s,DTA_CleanNoMove_1, true
 		);
 	}
