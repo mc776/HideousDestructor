@@ -287,7 +287,13 @@ class HDPlayerPawn:PlayerPawn{
 		);
 
 		//re-enable item selection after de-incapacitation
-		if(!incapacitated&&!invsel){
+		if(
+			!incapacitated
+			&&(
+				!invsel
+				||invsel.owner!=self
+			)
+		){
 			for(let item=inv;item!=null;item=item.inv){
 				if(
 					item.binvbar

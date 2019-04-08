@@ -72,7 +72,16 @@ extend class HDPlayerPawn{
 		A_SetSize(getdefaultbytype("HDPlayerPawn").radius,getdefaultbytype("HDPlayerPawn").height);
 		userange=getdefaultbytype("HDPlayerPawn").userange;
 		player.viewheight=viewheight*player.crouchfactor;
-		if(invselbak)invsel=invselbak;
+		if(invselbak&&invselbak.owner==self)invsel=invselbak;else{
+			for(let item=inv;item!=null;item=item.inv){
+				if(
+					item.binvbar
+				){
+					invsel=item;
+					break;
+				}
+			}
+		}
 		if(pos.z+height>ceilingz)player.crouchfactor=((ceilingz-pos.z)/height);
 		setstatelabel("spawn");
 	}
