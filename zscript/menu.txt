@@ -608,12 +608,19 @@ class HDNewGameLoadoutMenu:HDLoadoutMenu{
 			[picsx,picsy]=texman.getsize(loadoutpic);
 			screen.drawtexture(
 				loadoutpic,false,160-picsx/2,
-				vcurs-2-picsy,
+				vcurs-picsy,
 				DTA_Clean,true,DTA_VirtualWidth,320,DTA_VirtualHeight,200,
 				DTA_TopOffset,true,
 				DTA_LeftOffset,true
 			);
 		}
+
+		screen.DrawText(BigFont,OptionMenuSettings.mFontColorHighlight,
+			(320-BigFont.StringWidth(loadoutname))/2,
+			vcurs,
+			loadoutname,DTA_Clean,true
+		);
+		vcurs+=BigFont.GetHeight();
 
 		string ws=loadoutdisplaystring;
 		while(ws.charat(0)==" ")ws=ws.mid(1);
@@ -684,13 +691,6 @@ class HDNewGameLoadoutMenu:HDLoadoutMenu{
 			s,DTA_Clean,true
 		);
 		vcurs+=SmallFont.GetHeight();
-
-		screen.DrawText(BigFont,OptionMenuSettings.mFontColorHighlight,
-			(320-BigFont.StringWidth(loadoutname))/2,
-			vcurs,
-			loadoutname,DTA_Clean,true
-		);
-		vcurs+=BigFont.GetHeight();
 
 		s=translatedloadout;
 		screen.DrawText(SmallFont,OptionMenuSettings.mFontColorValue,
