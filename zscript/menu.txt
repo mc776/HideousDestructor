@@ -574,30 +574,33 @@ class HDNewGameLoadoutMenu:HDLoadoutMenu{
 		Genericmenu.Drawer();
 		playerinfo cplayer=players[consoleplayer];
 		if(!cplayer)return;
-		int clfp3=CleanYFac_1*3-6;
+		int clfp3=CleanYFac_1*12-6;
 
-		string hs="Select Loadout";
-		screen.DrawText(BigFont,OptionMenuSettings.mFontColor,
-			(screen.GetWidth() - BigFont.StringWidth(hs) * CleanXfac_1)/2,
-			clfp3,
-			hs,DTA_CleanNoMove_1,true
+		string hs="New Game: Select Loadout";
+		screen.DrawText(BigFont,OptionMenuSettings.mTitleColor,
+			0,
+			0,
+			hs,
+			DTA_Clean,true
 		);
 
 		hs="\cuUp/Down select\nEnter confirm\nR random, +Ctrl lucky";
 		screen.DrawText(SmallFont,
 			OptionMenuSettings.mFontColor,
-			(screen.GetWidth() - SmallFont.StringWidth(hs) * CleanXfac_1) / 2,
-			SmallFont.GetHeight()*CleanYFac_1*3-clfp3,
-			hs,DTA_CleanNoMove_1, true
+			SmallFont.StringWidth(hs)/2,//(screen.GetWidth() - SmallFont.StringWidth(hs) * CleanXfac_1) / 2,
+			BigFont.GetHeight()+2,
+			hs,DTA_Clean,true
 		);
 
 		if(loadoutpic.isvalid()){
 			int picsx,picsy;
 			[picsx,picsy]=texman.getsize(loadoutpic);
 			screen.drawtexture(
-				loadoutpic,false,160-picsx/2,smallfont.getheight()*7-picsy-2,
-				DTA_Clean,false,DTA_VirtualWidth,320,DTA_VirtualHeight,200,
-				DTA_TopOffset,true,DTA_LeftOffset,true
+				loadoutpic,false,160-picsx/2,
+				(BigFont.GetHeight()+SmallFont.GetHeight()*7)-picsy,
+				DTA_Clean,true,DTA_VirtualWidth,320,DTA_VirtualHeight,200,
+				DTA_TopOffset,true,
+				DTA_LeftOffset,true
 			);
 		}
 
