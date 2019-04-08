@@ -350,7 +350,15 @@ class HDLoadoutMenu:GenericMenu{
 			);
 		}
 
-		string hs="\cgSyntax:   \cazzzz#xxx n, yyy n - yyy n\n\cazzzz\cu preview picture (optional)\n\caxxx\cu starting weapon   \cayyy\cu anything else\n\can\cu number given\cu (optional, default 1)\n\ca-\cu begin backpack settings (use \cabak\cu for empty)\n\camap\cu for map   \cakey\cu for keys (bitflag BYR)\n\n\cdENTER\cu save   \cdESC\cu clear changes   \cdCtrl+R\cu reset";
+		string hs="Configure Loadout";
+		screen.DrawText(BigFont,
+			OptionMenuSettings.mTitleColor,
+			(screen.GetWidth() - BigFont.StringWidth(hs) * CleanXfac_1) / 2,
+			7*CleanYFac_1,
+			hs,DTA_CleanNoMove_1, true
+		);
+
+		hs="\cgSyntax:   \cazzzz#xxx n, yyy n - yyy n\n\cazzzz\cu preview picture (optional)\n\caxxx\cu starting weapon   \cayyy\cu anything else\n\can\cu number given\cu (optional, default 1)\n\ca-\cu begin backpack settings (use \cabak\cu for empty)\n\camap\cu for map   \cakey\cu for keys (bitflag BYR)\n\n\cdENTER\cu save   \cdESC\cu clear changes   \cdCtrl+R\cu reset";
 		screen.DrawText(SmallFont,
 			OptionMenuSettings.mFontColor,
 			(screen.GetWidth() - SmallFont.StringWidth(hs) * CleanXfac_1) / 2,
