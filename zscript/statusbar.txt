@@ -477,12 +477,12 @@ class HDStatusBar:DoomStatusBar{
 			drawmypos();
 
 			string s=hpl.wephelptext;
-			if(s!="")screen.DrawText(SmallFont,OptionMenuSettings.mFontColorValue,
+			if(s!="")screen.DrawText(NewSmallFont,OptionMenuSettings.mFontColorValue,
 				8,
-				SmallFont.GetHeight()*5,
+				NewSmallFont.GetHeight()*5,
 				s,
-				DTA_VirtualWidth,640,
-				DTA_VirtualHeight,400,
+				DTA_VirtualWidth,800,
+				DTA_VirtualHeight,600,
 				DTA_Alpha,0.8
 			);
 		}
@@ -501,12 +501,12 @@ class HDStatusBar:DoomStatusBar{
 		if(spectipalpha>0.){
 			if(spectipalpha>1000)spectipalpha=1.-(spectipalpha-1000);
 			string s=hpl.specialtip;
-			screen.DrawText(SmallFont,OptionMenuSettings.mFontColorValue,
+			screen.DrawText(NewSmallFont,OptionMenuSettings.mFontColorValue,
 				2,
-				300-SmallFont.GetHeight()*8,
+				450-NewSmallFont.GetHeight()*5,
 				s,
-				DTA_VirtualWidth,480,
-				DTA_VirtualHeight,300,
+				DTA_VirtualWidth,600,
+				DTA_VirtualHeight,450,
 				DTA_Alpha,spectipalpha
 			);
 		}

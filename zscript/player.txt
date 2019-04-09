@@ -86,6 +86,8 @@ class HDPlayerPawn:PlayerPawn{
 	}
 	override void PostBeginPlay(){
 		super.PostBeginPlay();
+		cachecvars();
+
 		lastpos=pos;
 		lastvel=vel;
 		lastheight=height;
@@ -241,17 +243,22 @@ class HDPlayerPawn:PlayerPawn{
 	transient cvar hd_aimsensitivity;
 	transient cvar hd_noslide;
 	transient cvar hd_usefocus;
+	transient cvar hd_lasttip;
+	transient cvar hd_helptext;
+	void cachecvars(){
+		hd_nozoomlean=cvar.getcvar("hd_nozoomlean",player);
+		hd_aimsensitivity=cvar.getcvar("hd_aimsensitivity",player);
+		hd_noslide=cvar.getcvar("hd_noslide",player);
+		hd_usefocus=cvar.getcvar("hd_usefocus",player);
+		hd_lasttip=cvar.getcvar("hd_lasttip",player);
+		hd_helptext=cvar.getcvar("hd_helptext",player);
+	}
 	override void Tick(){
 		if(!player||!player.mo||player.mo!=self){super.tick();return;} //anti-voodoodoll
 		let player=self.player;
 
 		//cache cvars as necessary
-		if(!hd_nozoomlean){
-			hd_nozoomlean=cvar.getcvar("hd_nozoomlean",player);
-			hd_aimsensitivity=cvar.getcvar("hd_aimsensitivity",player);
-			hd_noslide=cvar.getcvar("hd_noslide",player);
-			hd_usefocus=cvar.getcvar("hd_usefocus",player);
-		}
+		if(!hd_nozoomlean)cachecvars();
 
 		lastpos=pos;
 

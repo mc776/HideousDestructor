@@ -4,7 +4,7 @@ extend class hdplayerpawn{
 	void showgametip(){
 		if(
 			!player
-			||!cvar.getcvar("hd_helptext",player).getbool()
+			||!hd_helptext.getbool()
 		)return;
 		static const string specialtips[]={
 			"Read the manual!\n(open the pk7 with 7Zip and look for \cdhd_manual.txt\cu)",
@@ -39,7 +39,7 @@ extend class hdplayerpawn{
 		int newtip;
 		int lasttip=cvar.getcvar("hd_lasttip",player).getint();
 		do{newtip=random(0,specialtips.size()-1);}while(newtip==lasttip);
-		cvar.getcvar("hd_lasttip",player).setint(newtip);
+		hd_lasttip.setint(newtip);
 		specialtip="\crTIP: \cu"..specialtips[newtip];
 		specialtipalpha=1001.;
 		A_Log(specialtip,true);
