@@ -268,13 +268,8 @@ class DERPBot:HDUPK{
 		DERP A 3 A_DerpCrawl();
 		loop;
 	see:
-		DERP A 0{
-			A_ClearTarget();
-			if(floorz>=pos.z)bnodropoff=true;
-			else bnodropoff=false;
-
-			if(ammo<1&&movestamina<1&&goalangle==-999)setstatelabel("noammo");
-		}
+		DERP A 0 A_ClearTarget();
+		DERP A 0 A_JumpIf(ammo<1&&movestamina<1&&goalangle==-999,"noammo");
 	see2:
 		DERP A 2 A_DerpCrawl();
 		DERP A 0 A_DerpLook(LOF_NOJUMP);
@@ -347,7 +342,6 @@ class DERPBot:HDUPK{
 		DERP A 10{
 			A_ClearTarget();
 			DerpAlert("\cjOut of ammo. Await retrieval.");
-			bnodropoff=true;
 		}goto spawn;
 	}
 }
@@ -978,11 +972,8 @@ class DERPController:HDWeapon{
 						ddd.A_DerpCrawlSound();
 						vector2 nv2=(cos(ddd.angle),sin(ddd.angle))*ddd.speed;
 						if(bt&BT_USE||player.cmd.forwardmove<0)nv2*=-1;
-						if(ddd.floorz>=ddd.pos.z){
-							ddd.bnodropoff=false;
-							ddd.TryMove(ddd.pos.xy+nv2,true);
-							ddd.bnodropoff=true;
-						}moved=true;
+						if(ddd.floorz>=ddd.pos.z)ddd.TryMove(ddd.pos.xy+nv2,true);
+						moved=true;
 					}
 				}
 				int yaw=player.cmd.yaw>>6;
