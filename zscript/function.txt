@@ -380,6 +380,10 @@ struct HDMath{
 		double l2=(newpos1-newpos2).length();
 		return l1-l2;
 	}
+	//kind of like angleto
+	static double pitchto(vector3 this,vector3 that){
+		return atan2(this.z-that.z,(this.xy-that.xy).length());
+	}
 	//return a string indicating a rough cardinal direction
 	static string CardinalDirection(int angle){
 		angle%=360;
