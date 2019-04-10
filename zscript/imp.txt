@@ -568,11 +568,16 @@ class MageImp:FighterImp{
 		-missilemore
 		translation "none";
 		radius 14;
-		speed 6;
+		speed 8;
 		scale 1.1;
 		health 110;
 		obituary "%o experienced the magic.";
 		hitobituary "%o experienced ALL the magic.";
+	}
+	override void tick(){
+		super.tick();
+		if(instatesequence(curstate,findstate("missile3a")))gravity=0;
+		else gravity=1;
 	}
 	states{
 	recharge:
@@ -624,12 +629,13 @@ class MageImp:FighterImp{
 		#### E 0 A_Jump(16,"missile1");
 		#### E 0 A_Jump(32,"missile2");
 		#### EEH 3 A_FaceTarget(0,0);
-		#### H 2 A_NoGravity();
+	missile3a:
+		#### H 2;
 		#### H 16 bright{
 			vel.z+=2;
 			stamina+=8;
 		}
-		#### H 8 bright A_Stop();
+		#### HHHH 2 bright{vel.z*=0.6;}
 		#### H 0 A_SpawnProjectile("MageImpBall2",32,0,162,2,60);
 		#### H 2 bright A_SpawnProjectile("MageImpBall2",32,0,-162,2,60);
 		#### H 0 A_SpawnProjectile("MageImpBall2",32,0,156,2,40);
@@ -642,8 +648,8 @@ class MageImp:FighterImp{
 		#### H 2 bright A_SpawnProjectile("MageImpBall2",32,0,-138,2,-10);
 		#### H 0 A_SpawnProjectile("MageImpBall2",32,0,132,2,-14);
 		#### H 8 bright A_SpawnProjectile("MageImpBall2",32,0,-132,2,-14);
-		#### H 8 A_LowGravity();
-		#### H 0 A_Gravity();
+	missile3b:
+		#### H 8;
 		goto missile1;
 	pain:
 		---- A 0 A_GiveInventory("HDFireEnder",3);
