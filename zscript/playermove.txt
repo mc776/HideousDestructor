@@ -84,6 +84,7 @@ extend class HDPlayerPawn{
 	}
 	override void MovePlayer(){
 		let player = self.player;
+		if(!player)return;
 		UserCmd cmd = player.cmd;
 		bool notpredicting = !(player.cheats & CF_PREDICTING);
 
@@ -132,13 +133,12 @@ extend class HDPlayerPawn{
 
 
 		//HD's handling of voluntary player turning.
-		//Uses the fovscale method so a readyweapon is essential.
 		let readyweapon=player.readyweapon;
 		if(readyweapon){
 			double turnscale=1.;
 
 			if(mousehijacked){
-				readyweapon.fovscale*=0.00001;
+				readyweapon.lookscale=0.00001;
 			}
 			//reduced turning while supported.
 			else if(
@@ -159,9 +159,7 @@ extend class HDPlayerPawn{
 			}
 			//reduced turning while stunned.
 			//all randomizing and inertia effects are in TurnCheck.
-			if(stunned){
-				turnscale*=0.3;
-			}
+			if(stunned)turnscale*=0.3;
 
 			//apply input
 			double anglechange=clamp((360./65536.)*player.cmd.yaw,-40,40);
@@ -173,7 +171,7 @@ extend class HDPlayerPawn{
 					anglechange+=(180./TURN180_TICKS);
 				}
 			}
-			readyweapon.fovscale=turnscale;
+			readyweapon.lookscale=turnscale;
 			player.fov=player.desiredfov*recoilfov;
 			if(!mousehijacked){
 				A_SetAngle(angle+anglechange,SPF_INTERPOLATE);
