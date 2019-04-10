@@ -41,8 +41,8 @@ class HD9mMag15:HDMagAmmo{
 		hdpickup.refid HDLD_NIMAG15;
 	}
 	override string,string,name,double getmagsprite(int thismagamt){
-		string magsprite=(thismagamt>0)?"CLP2A0":"CLP2B0";
-		return magsprite,"PBRSA0","HDPistolAmmo",2.;
+		string magsprite=(thismagamt>0)?"CLP2NORM":"CLP2EMPTY";
+		return magsprite,"PBRSA0","HDPistolAmmo",0.6;
 	}
 	override void GetItemsThatUseThis(){
 		itemsthatusethis.push("DERPUsable");
