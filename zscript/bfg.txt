@@ -806,7 +806,8 @@ class BFGAccelerator:IdleDummy{
 			){
 				let bfff=BFG9k(Bff);
 				if(bfff){
-					bfff.weaponstatus[randompick(BFGS_BATTERY,BFGS_CHARGE)]++;
+					int which=randompick(BFGS_BATTERY,BFGS_CHARGE);
+					bfff.weaponstatus[which]=min(bfff.weaponstatus[which]+1,20);
 				}
 			}
 		}stop;
