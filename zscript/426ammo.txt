@@ -95,7 +95,7 @@ class HD4mMag:HDMagAmmo{
 		if(thismagamt>=51)magsprite="ZMAGA0";
 		else if(thismagamt>0)magsprite="ZMAGB0";
 		else magsprite="ZMAGC0";
-		return magsprite,"RBRSICE","FourMilAmmo",2.;
+		return magsprite,"RBRSBRN","FourMilAmmo",2.;
 	}
 	bool DirtyMagsOnly(){
 		for(int i=0;i<amount;i++){
@@ -188,12 +188,12 @@ class ZM66DroppedRound:HDDebris{
 	default{
 		projectile;
 		+cannotpush +forcexybillboard -nogravity +doombounce +bounceonactors
-		xscale 0.5; yscale 0.6; height 2; radius 2; translation "ice";
+		xscale 0.5; yscale 0.6; height 2; radius 2;
 		damagefunction(0);bouncefactor 0.2;seesound "misc/casing3";
 	}
 	states{
 	spawn:
-		RBRS A 2 A_SetAngle(angle+45);
+		RCLS A 2 A_SetAngle(angle+45);
 		wait;
 	death:
 		---- A -1{
