@@ -18,6 +18,11 @@ class Hunter:HDShotgun replaces Shotgun{
 		hdweapon.nicename "Hunter";
 	}
 	int tubesize;
+	override void postbeginplay(){
+		super.postbeginplay();
+		tubesize=((weaponstatus[0]&HUNTF_EXPORT)?5:7);
+		if(weaponstatus[HUNTS_TUBE]>tubesize)weaponstatus[HUNTS_TUBE]=tubesize;
+	}
 	override void startconfigure(){
 		int startfm;
 		int startfa;
@@ -39,8 +44,6 @@ class Hunter:HDShotgun replaces Shotgun{
 			startfm=clamp(startfm,0,2);
 		}else startfm=clamp(startfm,0,1);
 		weaponstatus[HUNTS_FIREMODE]=startfm;
-		tubesize=((weaponstatus[0]&HUNTF_EXPORT)?5:7);
-		if(weaponstatus[HUNTS_TUBE]>tubesize)weaponstatus[HUNTS_TUBE]=tubesize;
 	}
 	override string getobituary(actor victim,actor inflictor,name mod,bool playerattack){
 		bool sausage=true;
