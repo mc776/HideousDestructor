@@ -15,7 +15,7 @@ class HDPlayerPawn:PlayerPawn{
 	actor playercorpse;
 	actor scopecamera;
 
-	weapon lastweapon;
+	hdweapon lastweapon;
 	bool barehanded;
 	bool gunbraced;
 	
@@ -559,13 +559,13 @@ class HDPlayerPawn:PlayerPawn{
 			||input&BT_JUMP
 		){
 			if(!barehanded){
-				if(player.readyweapon&&player.readyweapon!=WP_NOCHANGE)lastweapon=player.readyweapon;
+				let lw=hdweapon(player.readyweapon);
 				A_SetInventory("NulledWeapon",1);
 				A_SetInventory("NullWeapon",1);
 				A_SelectWeapon("NullWeapon");
-				if(lastweapon){
+				if(lw){
+					lastweapon=lw;
 					let nw=hdweapon(findinventory("NullWeapon"));
-					let lw=hdweapon(lastweapon);
 					nw.barrellength=lw.barrellength+0.1;
 					nw.barrelwidth=lw.barrelwidth+0.1;
 					nw.barreldepth=lw.barreldepth+0.1;

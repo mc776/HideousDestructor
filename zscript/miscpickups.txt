@@ -754,12 +754,37 @@ class HDUPKAlwaysGive:HDUPK{
 		}
 	}
 }
+class HDKeyLight:PointLight{
+	override void tick(){
+		super.tick();
+		if(!target)destroy();
+		else args[3]=(target.frame)?16:0;
+	}
+}
 class HDRedKey:HDUPKAlwaysGive replaces RedCard{
 	default{
 		+wallsprite
 		scale 0.4;
 		hdupkalwaysgive.toallplayers "RedCard";
 		hdupkalwaysgive.msgtoall "\crRED\c- local area clearance code downloaded.";
+	}
+	override void PostBeginPlay(){
+		super.PostBeginPlay();
+		actor lite=spawn("HDKeyLight",pos,ALLOW_REPLACE);
+		lite.target=self;
+		if(sprite==getspriteindex("YKEYA0")){
+			lite.args[0]=128;
+			lite.args[1]=128;
+			lite.args[2]=0;
+		}else if(sprite==getspriteindex("BKEYA0")){
+			lite.args[0]=64;
+			lite.args[1]=64;
+			lite.args[2]=128;
+		}else{
+			lite.args[0]=256;
+			lite.args[0]=64;
+			lite.args[0]=64;
+		}
 	}
 	states{
 	spawn:
