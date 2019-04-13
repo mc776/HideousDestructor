@@ -460,7 +460,7 @@ class HDStatusBar:DoomStatusBar{
 			double compangle2=hpl.deltaangle(0,compangle);
 			if(abs(compangle2)<120)screen.DrawText(NewSmallFont,
 				font.CR_GOLD,
-				500+compangle2*32/cplayer.fov,
+				600+compangle2*32/cplayer.fov,
 				wephelpheight,
 				"E",
 				DTA_VirtualWidth,640,DTA_VirtualHeight,480
@@ -468,7 +468,7 @@ class HDStatusBar:DoomStatusBar{
 			compangle2=hpl.deltaangle(-90,compangle);
 			if(abs(compangle2)<120)screen.DrawText(NewSmallFont,
 				font.CR_BLACK,
-				500+compangle2*32/cplayer.fov,
+				600+compangle2*32/cplayer.fov,
 				wephelpheight,
 				"S",
 				DTA_VirtualWidth,640,DTA_VirtualHeight,480
@@ -476,7 +476,7 @@ class HDStatusBar:DoomStatusBar{
 			compangle2=hpl.deltaangle(180,compangle);
 			if(abs(compangle2)<120)screen.DrawText(NewSmallFont,
 				font.CR_RED,
-				500+compangle2*32/cplayer.fov,
+				600+compangle2*32/cplayer.fov,
 				wephelpheight,
 				"W",
 				DTA_VirtualWidth,640,DTA_VirtualHeight,480
@@ -484,20 +484,11 @@ class HDStatusBar:DoomStatusBar{
 			compangle2=hpl.deltaangle(90,compangle);
 			if(abs(compangle2)<120)screen.DrawText(NewSmallFont,
 				font.CR_WHITE,
-				500+compangle2*32/cplayer.fov,
+				600+compangle2*32/cplayer.fov,
 				wephelpheight,
 				"N",
 				DTA_VirtualWidth,640,DTA_VirtualHeight,480
 			);
-			screen.DrawText(NewSmallFont,
-				font.CR_OLIVE,
-				500,
-				wephelpheight+NewSmallFont.GetHeight(),
-				"^",
-				DTA_VirtualWidth,640,DTA_VirtualHeight,480
-			);
-
-			drawmypos();
 
 			string s=hpl.wephelptext;
 			if(s!="")screen.DrawText(NewSmallFont,OptionMenuSettings.mFontColorValue,
@@ -507,6 +498,23 @@ class HDStatusBar:DoomStatusBar{
 				DTA_VirtualWidth,800,
 				DTA_VirtualHeight,600,
 				DTA_Alpha,0.8
+			);
+
+			wephelpheight+=NewSmallFont.GetHeight();
+			screen.DrawText(NewSmallFont,
+				font.CR_OLIVE,
+				600,
+				wephelpheight,
+				"^",
+				DTA_VirtualWidth,640,DTA_VirtualHeight,480
+			);
+			string postxt=string.format("%i,%i,%i",hpl.pos.x,hpl.pos.y,hpl.pos.z);
+			screen.DrawText(NewSmallFont,
+				font.CR_OLIVE,
+				600-(NewSmallFont.StringWidth(postxt)>>1),
+				wephelpheight+6,
+				postxt,
+				DTA_VirtualWidth,640,DTA_VirtualHeight,480
 			);
 		}
 
