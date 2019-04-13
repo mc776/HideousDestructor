@@ -451,6 +451,8 @@ class HDStatusBar:DoomStatusBar{
 				);
 			}
 
+			int wephelpheight=NewSmallFont.GetHeight()*5;
+
 			//compass
 			int STB_COMPRAD=12;vector2 compos=(-STB_COMPRAD,STB_COMPRAD)*2;
 			double compangle=hpl.angle;
@@ -459,7 +461,7 @@ class HDStatusBar:DoomStatusBar{
 			if(abs(compangle2)<120)screen.DrawText(NewSmallFont,
 				font.CR_GOLD,
 				500+compangle2*32/cplayer.fov,
-				56,
+				wephelpheight,
 				"E",
 				DTA_VirtualWidth,640,DTA_VirtualHeight,480
 			);
@@ -467,7 +469,7 @@ class HDStatusBar:DoomStatusBar{
 			if(abs(compangle2)<120)screen.DrawText(NewSmallFont,
 				font.CR_BLACK,
 				500+compangle2*32/cplayer.fov,
-				56,
+				wephelpheight,
 				"S",
 				DTA_VirtualWidth,640,DTA_VirtualHeight,480
 			);
@@ -475,7 +477,7 @@ class HDStatusBar:DoomStatusBar{
 			if(abs(compangle2)<120)screen.DrawText(NewSmallFont,
 				font.CR_RED,
 				500+compangle2*32/cplayer.fov,
-				56,
+				wephelpheight,
 				"W",
 				DTA_VirtualWidth,640,DTA_VirtualHeight,480
 			);
@@ -483,14 +485,14 @@ class HDStatusBar:DoomStatusBar{
 			if(abs(compangle2)<120)screen.DrawText(NewSmallFont,
 				font.CR_WHITE,
 				500+compangle2*32/cplayer.fov,
-				56,
+				wephelpheight,
 				"N",
 				DTA_VirtualWidth,640,DTA_VirtualHeight,480
 			);
 			screen.DrawText(NewSmallFont,
 				font.CR_OLIVE,
 				500,
-				56+NewSmallFont.GetHeight(),
+				wephelpheight+NewSmallFont.GetHeight(),
 				"^",
 				DTA_VirtualWidth,640,DTA_VirtualHeight,480
 			);
@@ -500,7 +502,7 @@ class HDStatusBar:DoomStatusBar{
 			string s=hpl.wephelptext;
 			if(s!="")screen.DrawText(NewSmallFont,OptionMenuSettings.mFontColorValue,
 				8,
-				NewSmallFont.GetHeight()*5,
+				wephelpheight,
 				s,
 				DTA_VirtualWidth,800,
 				DTA_VirtualHeight,600,
