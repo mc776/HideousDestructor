@@ -627,7 +627,7 @@ class HDMarine:HDActor replaces ScriptedMarine{
 		#### E 1{
 			if(gunspent){
 				gunspent=0;
-				A_PlaySound("weapons/shotgr",5);
+				A_PlaySound("weapons/huntrack",5);
 				A_SetTics(random(4,6));
 				A_SpawnItemEx("HDSpentShell",
 					cos(pitch)*8,0,height-7-sin(pitch)*8,
@@ -662,7 +662,7 @@ class HDMarine:HDActor replaces ScriptedMarine{
 			A_Recoil(-4);
 			A_PlaySound("weapons/rocklaunch",CHAN_AUTO,0.6);
 		}
-		#### E 0 A_PlaySound("weapons/shotgr",5);
+		#### E 0 A_PlaySound("weapons/huntrack",5);
 		goto see;
 	shootgl:
 		#### E 1{
