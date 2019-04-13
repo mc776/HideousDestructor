@@ -72,8 +72,8 @@ class ZombieStormtrooper:ZombieMan{
 		if(firemode==-2){
 			if(!hasdropped){
 				if(wp=hdweapon(spawn("HDSMG",pos,ALLOW_REPLACE))){
-					wp.weaponstatus[SMGS_AUTO]=2;
-					wp.weaponstatus[SMGS_MAG]=random(0,30);
+					wp.weaponstatus[SMGS_AUTO]=random(0,2);
+					wp.weaponstatus[SMGS_MAG]=mag;
 					wp.weaponstatus[SMGS_CHAMBER]=2;
 				}
 				A_DropItem("HDFragGrenadeAmmo",0,8);
@@ -85,27 +85,19 @@ class ZombieStormtrooper:ZombieMan{
 				A_DropItem("HDFragGrenadeAmmo",0,4);
 				A_DropItem("HDFragGrenadeAmmo",0,4);
 			}
-		}else if(firemode==-1){
-			if(!hasdropped){
-				if(wp=hdweapon(spawn("ZM66AssaultRifle",pos,ALLOW_REPLACE))){
-					wp.weaponstatus[0]=
-					ZM66F_NOFIRESELECT|ZM66F_NOLAUNCHER|(random(0,1)*ZM66F_CHAMBER);
-					wp.weaponstatus[ZM66S_MAG]=random(0,50);
-					if(wp.weaponstatus[ZM66S_MAG]==50)wp.weaponstatus[ZM66S_MAG]=51;
-					wp.weaponstatus[ZM66S_ZOOM]=random(16,70);
-					if(jammed||!random(0,15))wp.weaponstatus[0]|=ZM66F_CHAMBERBROKEN;
-				}
-			}else{
-				A_DropItem("HD4mMag",0,96);
-			}
 		}else{
 			if(!hasdropped){
 				if(wp=hdweapon(spawn("ZM66AssaultRifle",pos,ALLOW_REPLACE))){
-					wp.weaponstatus[0]=
-					ZM66F_NOLAUNCHER|(random(0,1)*ZM66F_CHAMBER);
-					wp.weaponstatus[ZM66S_MAG]=random(0,50);
-					wp.weaponstatus[ZM66S_AUTO]=random(0,1);
-					wp.weaponstatus[ZM66S_ZOOM]=random(0,27);
+					wp.weaponstatus[0]=ZM66F_NOLAUNCHER|(random(0,1)*ZM66F_CHAMBER);
+					if(firemode==-1)wp.weaponstatus[0]|=ZM66F_NOFIRESELECT;
+
+					wp.weaponstatus[ZM66S_MAG]=mag;
+					if(wp.weaponstatus[ZM66S_MAG]==50)wp.weaponstatus[ZM66S_MAG]=51;
+
+					wp.weaponstatus[ZM66S_ZOOM]=random(16,70);
+
+					if(jammed||!random(0,15))wp.weaponstatus[0]|=ZM66F_CHAMBERBROKEN;
+					else wp.weaponstatus[ZM66S_AUTO]=clamp(firemode,0,2);
 				}
 			}else{
 				A_DropItem("HD4mMag",0,96);
