@@ -148,3 +148,74 @@ class HDTechPillar:TechPillar replaces TechPillar{
 	default{+dontthrust +shootable +nodamage +noblood +forceybillboard mass 2000;}
 }
 
+
+
+class HDTorchLight:PointLight{
+	default{+dynamiclight.additive}
+	override void tick(){
+		if(!target)destroy();
+		args[3]=random(64,96);
+		setorigin((target.pos.xy,target.pos.z+target.missileheight),true);
+	}
+}
+class HDBlueTorch:BlueTorch replaces BlueTorch{
+	default{+dontthrust +shootable +nodamage +noblood +forceybillboard
+		radius 6;
+		missileheight 42; //used for light
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		scale.x=randompick(-1,1);
+		actor lite=spawn("HDTorchLight",pos,ALLOW_REPLACE);
+		if(lite){
+			lite.target=self;
+			SetLights(lite);
+		}
+	}
+	virtual void SetLights(actor lite){
+		lite.args[0]=64;
+		lite.args[1]=32;
+		lite.args[2]=128;
+	}
+	states{
+	spawn:
+		TBLU A 0;
+		goto spawn2;
+	spawn2:
+		#### ABCD random(1,2);
+		loop;
+	}
+}
+class HDGreenTorch:HDBlueTorch replaces GreenTorch{
+	states{spawn:TGRN A 0;goto spawn2;}
+	override void SetLights(actor lite){
+		lite.args[0]=32;
+		lite.args[1]=128;
+		lite.args[2]=64;
+	}
+}
+class HDRedTorch:HDBlueTorch replaces RedTorch{
+	states{spawn:TRED A 0;goto spawn2;}
+	override void SetLights(actor lite){
+		lite.args[0]=128;
+		lite.args[1]=64;
+		lite.args[2]=32;
+	}
+}
+class HDShortBlueTorch:HDBlueTorch replaces ShortBlueTorch{
+	default{height 32;}
+	states{spawn:SMBT A 0;goto spawn2;}
+}
+class HDShortGreenTorch:HDGreenTorch replaces ShortGreenTorch{
+	default{height 32;}
+	states{spawn:SMGT A 0;goto spawn2;}
+}
+class HDShortRedTorch:HDRedTorch replaces ShortRedTorch{
+	default{height 32;}
+	states{spawn:SMRT A 0;goto spawn2;}
+}
+
+
+
+
+

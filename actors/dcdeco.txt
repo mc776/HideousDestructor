@@ -2,22 +2,6 @@
 //   Misc. decorations
 // ------------------------------------------------------------
 
-actor HDBlueTorch:BlueTorch replaces BlueTorch{radius 2 +dontthrust +shootable +nodamage +noblood +forceybillboard states{spawn: TNT1 A 0 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) spawn2: TBLU ABCD random(1,2) bright light("BIGBLUETORCH")
-loop}}
-actor HDGreenTorch:HDBlueTorch replaces GreenTorch{states{spawn: TNT1 A 0 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) spawn2: TGRN ABCD random(1,2) bright light("BIGGREENTORCH")
-loop}}
-actor HDRedTorch:HDBlueTorch replaces RedTorch{states{spawn: TNT1 A 0 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) spawn2: TRED ABCD random(1,2) bright light("BIGREDTORCH")
-loop}}
-
-
-actor HDShortBlueTorch:HDBlueTorch replaces ShortBlueTorch{projectilepassheight -16 height 37 states{spawn: TNT1 A 0 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) spawn2: SMBT ABCD random(1,2) bright light("SMALLBLUETORCH")
-loop}}
-actor HDShortGreenTorch:HDShortBlueTorch replaces ShortGreenTorch{states{spawn: TNT1 A 0 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) spawn2: SMGT ABCD random(1,2) bright light("SMALLGREENTORCH")
-loop}}
-actor HDShortRedTorch:HDShortBlueTorch replaces ShortRedTorch{states{spawn: TNT1 A 0 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) spawn2: SMRT ABCD random(1,2) bright light("SMALLREDTORCH")
-loop}}
-
-
 actor HDHeadCandles:HeadCandles replaces HeadCandles{radius 12 height 27 scale 0.75 +shootable +dontthrust +nodamage +noblood states {spawn: POL3 AB random(1,6) bright light("HDIMPBALL")
 loop}}
 
