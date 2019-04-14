@@ -130,7 +130,7 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 	}
 	int spent;bool worn;
 	int brokenness; //400=totally broken
-	pointlight nozerolight;
+	TargetPointLight nozerolight;
 	override double getbulk(){return bulk;}
 	override void DetachFromOwner(){
 		worn=false;
@@ -263,7 +263,7 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 				}
 				if(invoker.worn)invoker.worn=false;else{
 					invoker.worn=true;
-					if(!invoker.nozerolight)invoker.nozerolight=pointlight(spawn("visorlight",pos,ALLOW_REPLACE));
+					if(!invoker.nozerolight)invoker.nozerolight=TargetPointLight(spawn("visorlight",pos,ALLOW_REPLACE));
 					invoker.nozerolight.target=self;
 				}
 			}
@@ -272,6 +272,7 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 }
 class VisorLight:PointLight{
 	override void postbeginplay(){
+		super.postbeginplay();
 		args[0]=1;
 		args[1]=0;
 		args[2]=0;
@@ -279,10 +280,12 @@ class VisorLight:PointLight{
 		args[4]=0;
 	}
 	override void tick(){
-		super.tick();
+		if(!target){
+			destroy();
+			return;
+		}
 		if(
-			target
-			&&target.findinventory("PortableLiteAmp")
+			target.findinventory("PortableLiteAmp")
 			&&portableliteamp(target.findinventory("PortableLiteAmp")).worn
 		)args[3]=256;else args[3]=0;
 	}

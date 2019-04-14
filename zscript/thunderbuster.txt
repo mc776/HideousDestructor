@@ -590,8 +590,9 @@ class BeamSpot:HDActor{
 		stop;
 	}
 }
-class BeamSpotLight:PointLight{
+class BeamSpotLight:TargetPointLight{
 	override void postbeginplay(){
+		super.postbeginplay();
 		args[0]=128;
 		args[1]=96;
 		args[2]=224;
@@ -673,6 +674,7 @@ class BeamSpotFlash:IdleDummy{
 
 class BeamSpotFlashLight:PointLight{
 	override void postbeginplay(){
+		super.postbeginplay();
 		args[0]=128;
 		args[1]=96;
 		args[2]=224;
@@ -680,7 +682,7 @@ class BeamSpotFlashLight:PointLight{
 		args[4]=0;
 	}
 	override void tick(){
-		super.tick();
+		if(isfrozen())return;
 		args[3]+=randompick(-10,5,-20);
 		if(args[3]<1)destroy();
 	}

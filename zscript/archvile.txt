@@ -152,6 +152,7 @@ class BloodyHellFireTail:HDActor{
 class VileFireLight:PointLight{
 	bool triggered;
 	override void postbeginplay(){
+		super.postbeginplay();
 		args[0]=200;
 		args[1]=160;
 		args[2]=70;
@@ -160,8 +161,8 @@ class VileFireLight:PointLight{
 		triggered=false;
 	}
 	override void tick(){
-		super.tick();
 		if(!target||target.bnointeraction){destroy();return;}
+		setorigin(target.pos,true);
 		if(!target.bnofear){
 			if(!triggered){
 				args[3]=128;
@@ -494,6 +495,7 @@ class ArchFiend:Archvile replaces ArchVile{
 }
 class VileDeathLight:PointLight{
 	override void postbeginplay(){
+		super.postbeginplay();
 		args[0]=255;
 		args[1]=200;
 		args[2]=100;
@@ -501,9 +503,10 @@ class VileDeathLight:PointLight{
 		args[4]=0;
 	}
 	override void tick(){
-		super.tick();
+		if(isfrozen())return;
 		if(!target||target.bnointeraction){destroy();return;}
-		else args[3]=target.alpha*randompick(1,3,7)*random(12,16);
+		args[3]=target.alpha*randompick(1,3,7)*random(12,16);
+		setorigin(target.pos,true);
 	}
 }
 class ArchAngel:ArchFiend{

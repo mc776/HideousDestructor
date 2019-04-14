@@ -406,9 +406,10 @@ class Heat:Inventory{
 	}
 }
 
-class HDFireLight:PointLight{
+class HDFireLight:TargetPointLight{
 	heat heattarget;
 	override void postbeginplay(){
+		super.postbeginplay();
 		args[0]=200;
 		args[1]=150;
 		args[2]=100;
@@ -416,8 +417,8 @@ class HDFireLight:PointLight{
 		args[4]=0;
 	}
 	override void tick(){
-		super.tick();
 		if(!heattarget||!target){destroy();return;}
+		if(isfrozen())return;
 		if(args[3]<1){
 			args[0]=0;
 			args[1]=0;

@@ -53,7 +53,8 @@ class HDBarrel:HDActor replaces ExplosiveBarrel{
 			painsound="barrel/pain";
 			A_SpawnItemEx("BarrelGremlin",flags:SXF_NOCHECKPOSITION|SXF_SETMASTER);
 		}
-		A_SpawnItemEx(lighttype,flags:SXF_NOCHECKPOSITION|SXF_SETTARGET);
+		let lll=spawn(lighttype,pos,ALLOW_REPLACE);
+		lll.target=self;
 	}
 	void A_BarrelMove(){
 		if(floorz!=pos.z)return;
@@ -195,6 +196,7 @@ class BarrelGibs:IdleDummy{
 }
 class HDBarrelLight:PointLight{
 	override void postbeginplay(){
+		super.postbeginplay();
 		args[0]=3;
 		args[1]=50;
 		args[2]=10;
@@ -202,9 +204,9 @@ class HDBarrelLight:PointLight{
 		args[4]=0;
 	}
 	override void tick(){
-		super.tick();
-		args[3]=random(20,26);
 		if(!target||target.health<1)destroy();
+		setorigin((target.pos.xy,target.pos.z+36),true);
+		args[3]=random(20,26);
 	}
 }
 
@@ -465,6 +467,7 @@ class BarrelFireCrawler:HDActor{
 }
 class HDFireCanLight:HDBarrelLight{
 	override void postbeginplay(){
+		super.postbeginplay();
 		args[0]=120;
 		args[1]=20;
 		args[2]=10;

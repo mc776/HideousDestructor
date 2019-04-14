@@ -191,6 +191,7 @@ class Satanball:HDFireball{
 }
 class SatanBallLight:PointLight{
 	override void postbeginplay(){
+		super.postbeginplay();
 		args[0]=52;
 		args[1]=206;
 		args[2]=48;
@@ -198,12 +199,14 @@ class SatanBallLight:PointLight{
 		args[4]=0;
 	}
 	override void tick(){
-		super.tick();
 		if(!target){
 			args[3]+=random(-10,1);
 			if(args[3]<1)destroy();
-		}else if(target.bmissile)args[3]-=random(32,40);
-		else args[3]=random(48,64);
+		}else{
+			if(target.bmissile)args[3]=random(32,40);
+			else args[3]=random(48,64);
+			setorigin(target.pos,true);
+		}
 	}
 }
 

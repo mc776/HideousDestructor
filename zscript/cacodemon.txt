@@ -655,7 +655,7 @@ class KekBlight:PointLight{
 		args[4]=0;
 	}
 	override void tick(){
-		super.tick();
+		if(isfrozen())return;
 		if(bstandstill||!target){
 			args[3]+=randompick(-30,15,-60);
 			if(args[3]<1)destroy();

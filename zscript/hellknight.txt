@@ -305,6 +305,7 @@ class BaleBallBurner:PersistentDamager{
 
 class BaronBallLight:PointLight{
 	override void postbeginplay(){
+		super.postbeginplay();
 		args[0]=64;
 		args[1]=196;
 		args[2]=48;
@@ -312,12 +313,14 @@ class BaronBallLight:PointLight{
 		args[4]=0;
 	}
 	override void tick(){
-		super.tick();
 		if(!target){
 			args[3]+=random(-10,1);
 			if(args[3]<1)destroy();
-		}else if(target.bmissile)args[3]=random(32,40);
-		else args[3]=random(48,64);
+		}else{
+			setorigin(target.pos,true);
+			if(target.bmissile)args[3]=random(32,40);
+			else args[3]=random(48,64);
+		}
 	}
 }
 

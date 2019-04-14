@@ -248,6 +248,7 @@ class WraithLight:PointLight{
 		+dynamiclight.subtractive
 	}
 	override void postbeginplay(){
+		super.postbeginplay();
 		args[0]=66;
 		args[1]=17;
 		args[2]=13;
@@ -255,12 +256,14 @@ class WraithLight:PointLight{
 		args[4]=0;
 	}
 	override void tick(){
-		super.tick();
 		if(!target){
 			args[3]+=random(-5,2);
 			if(args[3]<1)destroy();
-		}else if(target.bmissile)args[3]=random(32,40);
-		else args[3]=random(48,64);
+		}else{
+			setorigin(target.pos,true);
+			if(target.bmissile)args[3]=random(32,40);
+			else args[3]=random(48,64);
+		}
 	}
 }
 //In geometry, a spherical shell is a generalization of an annulus to three dimensions.
