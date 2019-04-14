@@ -2,21 +2,6 @@
 //   Misc. decorations
 // ------------------------------------------------------------
 
-actor HDTechPillar:TechPillar replaces TechPillar{+dontthrust +shootable +nodamage +noblood +forceybillboard mass 2000}
-actor HDColumn:Column replaces Column{radius 6 +dontthrust +shootable +nodamage +noblood +forceybillboard}actor HDTechLamp:TechLamp replaces TechLamp{radius 6 +dontthrust +shootable +nodamage +noblood +forceybillboard}
-actor HDTechLamp_:HDActor replaces TechLamp{ //used in the range, so gotta check
-	radius 6 +dontthrust +shootable +nodamage +noblood +forceybillboard
-	states{
-	spawn:
-		TNT1 A 0 nodelay{
-			if(CheckLump("TLMPA0"))
-			{A_SpawnItemEx("HDTechLamp",0,0,0,0,0,0,0,SXF_NOCHECKPOSITION);}
-			else{A_SpawnItemEx("HDColumn",0,0,0,0,0,0,0,SXF_NOCHECKPOSITION);}
-		}stop
-	}
-}
-actor HDTechLamp2:TechLamp2 replaces TechLamp2{radius 6 +dontthrust +shootable +nodamage +noblood +forceybillboard}
-
 actor HDBlueTorch:BlueTorch replaces BlueTorch{radius 2 +dontthrust +shootable +nodamage +noblood +forceybillboard states{spawn: TNT1 A 0 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) spawn2: TBLU ABCD random(1,2) bright light("BIGBLUETORCH")
 loop}}
 actor HDGreenTorch:HDBlueTorch replaces GreenTorch{states{spawn: TNT1 A 0 nodelay A_SetScale((random(0,1)*2-1)*scalex,scaley) spawn2: TGRN ABCD random(1,2) bright light("BIGGREENTORCH")

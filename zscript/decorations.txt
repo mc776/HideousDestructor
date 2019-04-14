@@ -89,3 +89,62 @@ class HDTree:HDActor{
 		goto spawn2;
 	}
 }
+
+
+
+
+class HDElectricLampLight:PointLight{
+	override void postbeginplay(){
+		super.postbeginplay();
+		if(!target){destroy();return;}
+		args[0]=140;
+		args[1]=164;
+		args[2]=196;
+		args[3]=32+target.height;
+		args[4]=0;
+	}
+	override void Tick(){
+		if(!target){destroy();return;}
+		setorigin((target.pos.xy,target.pos.z+target.height-7),true);
+	}
+}
+class HDTechPillar:TechPillar replaces TechPillar{
+	default{+dontthrust +shootable +nodamage +noblood +forceybillboard mass 2000;}
+}
+class HDColumn:Column replaces Column{
+	default{+dontthrust +shootable +nodamage +noblood +forceybillboard radius 6;
+		height 42;
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		A_SpawnItemEx("HDElectricLampLight",SXF_SETTARGET);
+	}
+}
+class HDTechLamp:TechLamp replaces TechLamp{
+	default{+dontthrust +shootable +nodamage +noblood +forceybillboard radius 6;
+		height 69;
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		A_SpawnItemEx("HDElectricLampLight",SXF_SETTARGET);
+	}
+}
+class HDTechLamp_:HDActor replaces TechLamp{ //used in the range, so gotta check
+	default{+dontthrust +shootable +nodamage +noblood +forceybillboard radius 6;}
+	override void postbeginplay(){
+		super.postbeginplay();
+		if(texman.checkfortexture("TLMPA0",texman.type_sprite).isvalid())spawn("HDTechLamp",pos,ALLOW_REPLACE);
+		else spawn("HDColumn",pos,ALLOW_REPLACE);
+		destroy();
+	}
+}
+class HDTechLamp2:TechLamp2 replaces TechLamp2{
+	default{+dontthrust +shootable +nodamage +noblood +forceybillboard radius 6;}
+	override void postbeginplay(){
+		super.postbeginplay();
+		A_SpawnItemEx("HDElectricLampLight",SXF_SETTARGET);
+	}
+}
+
+
+
