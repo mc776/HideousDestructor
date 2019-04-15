@@ -358,7 +358,10 @@ class HDMarine:HDActor replaces ScriptedMarine{
 	}
 	//replaces with zombie if dying while zombie-sprited
 	void A_DeathZombieZombieDeath(){
-		if(sprite==getspriteindex("POSSA1")){
+		if(
+			sprite==getspriteindex("POSSA1")
+			||sprite==getspriteindex("SPOSA1")
+		){
 			actor zzz=spawn("ZombieStormtrooper",pos,ALLOW_REPLACE);
 			zzz.vel=vel;
 			zzz.A_Die("extreme");
