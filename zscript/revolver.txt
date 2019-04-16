@@ -48,8 +48,6 @@ class HDRevolver:HDWeapon{
 
 
 
-
-
 /*
 
 const HDLD_REVOLVER="rev";
@@ -130,8 +128,8 @@ class BugerDeinonychus:HDWeapon{
 		..WEPHELP_ZOOM.."+"..WEPHELP_ALTFIRE.." Cycle other way\n"
 		..WEPHELP_UNLOAD..(
 			cylinderopen
-			?(" Hit extractor \(Hold "..WEPHELP_ZOOM.." to dump live rounds\)\n")
-			:" Open cylinder\n"
+			?(" Hit extractor \(double-tap to dump live rounds\)\n")
+			:"/"..WEPHELP_RELOAD.." Open cylinder\n"
 		)
 		..(
 			cylinderopen?(
@@ -306,20 +304,29 @@ class BugerDeinonychus:HDWeapon{
 		HDFlashAlpha(masterball?72:64);
 		A_PlaySound("weapons/pistol",CHAN_WEAPON);
 		if(masterball){
-			A_MuzzleClimb(-frandom(0.6,1.4),-frandom(0.8,1.8));
+			A_MuzzleClimb(-frandom(0.8,1.6),-frandom(1.6,2.));
 			A_PlaySound("weapons/pistol",5,0.5);
 			A_PlaySound("weapons/shotgunfar",6,0.3);
 		}else{
-			A_MuzzleClimb(-frandom(0.4,1.2),-frandom(0.5,1.6));
+			A_MuzzleClimb(-frandom(0.6,1.2),-frandom(0.8,1.8));
 			A_PlaySound("weapons/shotgunfar",5,0.3);
 		}
 	}
+	int cooldown;
 	action void A_ReadyOpen(){
 		A_WeaponReady(WRF_NOFIRE|WRF_ALLOWUSER3);
 		if(justpressed(BT_ALTATTACK))setweaponstate("open_rotatecylinder");
-		else if(justpressed(BT_UNLOAD))setweaponstate("open_dumpcylinder");
 		else if(justpressed(BT_ATTACK))setweaponstate("open_loadround");
 		else if(justpressed(BT_RELOAD))setweaponstate("open_closecylinder");
+		else if(justpressed(BT_UNLOAD)){
+			if(!invoker.cooldown){
+				setweaponstate("open_dumpcylinder");
+				invoker.cooldown=6;
+			}else{
+				setweaponstate("open_dumpcylinder_all");
+			}
+		}
+		if(invoker.cooldown>0)invoker.cooldown--;
 	}
 	action void A_RoundReady(int layer){
 		//get the main weapon sprite frame
@@ -356,7 +363,7 @@ class BugerDeinonychus:HDWeapon{
 	ready:
 		TNT1 A 0; //so I can test this before we have the sprites
 		REVG A 0 A_JumpIf(invoker.cylinderopen,"readyopen");
-		REVG A 1 A_WeaponReady(WRF_ALLOWUSER3|WRF_ALLOWUSER4);
+		REVG A 1 A_WeaponReady(WRF_ALLOWRELOAD|WRF_ALLOWUSER3|WRF_ALLOWUSER4);
 		goto readyend;
 	fire:
 		REVG B 1 A_RotateCylinder();
@@ -373,6 +380,7 @@ class BugerDeinonychus:HDWeapon{
 		REVG B 1;
 		REVG B 1 A_RotateCylinder(!pressingzoom());
 		goto nope;
+	reload:
 	unload:
 		REVG C 3 A_OpenCylinder();
 		goto readyopen;
@@ -391,8 +399,7 @@ class BugerDeinonychus:HDWeapon{
 		REVG A 0 A_CloseCylinder();
 		goto nope;
 	open_dumpcylinder:
-		REVG D 0 A_HitExtractor();
-		REVG D 3 A_JumpIf(pressingzoom(),"open_dumpcylinder_all");
+		REVG D 3 A_HitExtractor();
 		goto readyopen;
 	open_dumpcylinder_all:
 		REVG D 1 offset(0,34);
@@ -444,6 +451,7 @@ class HDRevolverAmmo:HDPistolAmmo{
 		itemsthatusethis.push("BugerDeinonychus");
 	}
 }
+
 
 
 */
