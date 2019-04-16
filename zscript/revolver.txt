@@ -122,21 +122,16 @@ class BugerDeinonychus:HDWeapon{
 		}
 	}
 	override string gethelptext(){
+		if(cylinderopen)return
+		WEPHELP_FIRE.." Load round \(Hold "..WEPHELP_FIREMODE.." to force using 9mm\)\n"
+		..WEPHELP_ALTFIRE.." Cycle cylinder \(Hold "..WEPHELP_ZOOM.." to reverse\)\n"
+		..WEPHELP_UNLOAD.." Hit extractor \(double-tap to dump live rounds\)\n"
+		..WEPHELP_RELOAD.." Close cylinder\n"
+		;
 		return
 		WEPHELP_FIRESHOOT
-		..WEPHELP_ALTFIRE.." Cycle cylinder\n"
-		..WEPHELP_ZOOM.."+"..WEPHELP_ALTFIRE.." Cycle other way\n"
-		..WEPHELP_UNLOAD..(
-			cylinderopen
-			?(" Hit extractor \(double-tap to dump live rounds\)\n")
-			:"/"..WEPHELP_RELOAD.." Open cylinder\n"
-		)
-		..(
-			cylinderopen?(
-				WEPHELP_FIRE.." Load round \(Hold "..WEPHELP_FIREMODE.." to force using 9mm\)\n"
-				..WEPHELP_RELOAD.." Close cylinder\n"
-			):("")
-		)
+		..WEPHELP_ALTFIRE.." Cycle cylinder \(Hold "..WEPHELP_ZOOM.." to reverse\)\n"
+		..WEPHELP_UNLOAD.."/"..WEPHELP_RELOAD.." Open cylinder\n"
 		;
 	}
 	override void DrawSightPicture(
@@ -423,7 +418,7 @@ enum DeinovolverStats{
 	BUGS_CYL5=5,
 	BUGS_CYL6=6,
 
-	//even means spent
+	//odd means spent
 	BUGS_NINEMILSPENT=1,
 	BUGS_NINEMIL=2,
 	BUGS_MASTERBALLSPENT=3,
