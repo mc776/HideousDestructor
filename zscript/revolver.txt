@@ -46,48 +46,328 @@ class HDRevolver:HDWeapon{
 	}
 }
 
+
+
 /*
-Don't let any of the players see this
 
-::Jedi hand wave:: Cali you have better things to do that are very urgent right now
+const HDLD_REVOLVER="rev";
+const HDLD_355="355";
+class BugerDeinonychus:HDWeapon{
+	bool cylinderopen; //don't use weaponstatus since it shouldn't be saved anyway
+	default{
+		+hdweapon.fitsinbackpack
+		+hdweapon.reverseguninertia
+		scale 0.63;
+		weapon.selectionorder 49;
+		weapon.slotnumber 2;
+		weapon.kickback 30;
+		weapon.bobrangex 0.1;
+		weapon.bobrangey 0.6;
+		weapon.bobspeed 2.5;
+		weapon.bobstyle "normal";
+		obituary "%o got capped by %k's six-pea shooter.";
+		inventory.pickupmessage "You got the revolver!";
+		hdweapon.nicename "Revolver";
+		hdweapon.refid HDLD_REVOLVER;
+		hdweapon.barrelsize 6,0.3,0.5; //physically longer than auto but can shoot at contact
+	}
+	override double gunmass(){
+		return 9;
+	}
+	override string,double getpickupsprite(){
+		return "REVLA0";
+	}
 
-In all actual seriousness though:
-https://www.thetruthaboutguns.com/2017/03/daniel-zimmerman/12-advantages-revolver-semi-auto-may-not-thought-content-contest/
+	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
+		if(sb.gimmehud){
+			//draw ammo counters for both ammo types
+		}
+		for(int i=BUGS_CYL1;i<=BUGS_CYL6;i++){
+			string which=(hdw.weaponstatus[i]>0)?"YELOPXL":"DRKGRNPX";
+			int plf=hpl.player.getpsprite(PSP_WEAPON).frame;
+			double drawangle=-i*(360./6.);
+			if(
+				plf!=1
+				&&plf!=4
+			)drawangle-=(360./12.);
+			vector2 drawpos=(cylinderopen?-48:-28,-16)+(cos(drawangle),sin(drawangle))*6;
+			sb.drawimage(
+				which,drawpos,
+				sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TRANSLATABLE|sb.DI_ITEM_RIGHT,
+				1,scale:(3,3)
+			);
+			//sb.drawwepnum(i,100,drawpos.x,drawpos.y,true,true);
+		}
+	}
+	override string gethelptext(){
+		return
+		WEPHELP_FIRESHOOT
+		..WEPHELP_ALTFIRE.." Cycle cylinder\n"
+		..WEPHELP_ZOOM.."+"..WEPHELP_ALTFIRE.." Cycle other way\n"
+		..WEPHELP_UNLOAD..(
+			cylinderopen
+			?(" Hit extractor \(Hold "..WEPHELP_ZOOM.." to dump live rounds\)\n")
+			:" Open cylinder\n"
+		)
+		..(
+			cylinderopen?(
+				WEPHELP_FIRE.." Load round \(Hold "..WEPHELP_FIREMODE.." to force using 9mm\)\n"
+				..WEPHELP_RELOAD.." Close cylinder\n"
+			):("")
+		)
+		;
+	}
+	override void DrawSightPicture(
+		HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl,
+		bool sightbob,vector2 bob,double fov,bool scopeview,actor hpc,string whichdot
+	){
+		int cx,cy,cw,ch;
+		[cx,cy,cw,ch]=screen.GetClipRect();
+		sb.SetClipRect(
+			-8+bob.x,-4+bob.y,16,10,
+			sb.DI_SCREEN_CENTER
+		);
+		vector2 bobb=bob*1.6;
+		bobb.y=clamp(bobb.y,-8,8);
+		sb.drawimage(
+			"frntsite",(0,0)+bobb,sb.DI_SCREEN_CENTER|sb.DI_ITEM_TOP,
+			alpha:0.9,scale:(0.6,0.6)
+		);
+		sb.SetClipRect(cx,cy,cw,ch);
+		sb.drawimage(
+			"backsite",(0,0)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_TOP,
+			scale:(0.6,0.6)
+		);
+	}
+	override void DropOneAmmo(int amt){
+		if(owner){
+			amt=clamp(amt,18,60);
+			if(owner.countinv("HDRevolverAmmo"))owner.A_DropInventory("HDRevolverAmmo",amt);
+			else owner.A_DropInventory("HDPistolAmmo",amt);
+		}
+	}
+	override void initializewepstats(bool idfa){
+		weaponstatus[BUGS_CYL1]=BUGS_MASTERBALL;
+		weaponstatus[BUGS_CYL2]=BUGS_MASTERBALL;
+		weaponstatus[BUGS_CYL3]=BUGS_MASTERBALL;
+		weaponstatus[BUGS_CYL4]=BUGS_MASTERBALL;
+		weaponstatus[BUGS_CYL5]=BUGS_MASTERBALL;
+		weaponstatus[BUGS_CYL6]=BUGS_MASTERBALL;
+	}
 
-Most of a revolver's advantages are ergonomic things of the sort that can only be very roughly approximated with dynamic equivalence in a video game.
+	action void A_RotateCylinder(bool clockwise=true){
+		invoker.RotateCylinder(clockwise);
+		A_PlaySound("weapons/deinocyl",CHAN_WEAPON);
+	}
+	void RotateCylinder(bool clockwise=true){
+		if(clockwise){
+			int cylbak=weaponstatus[BUGS_CYL1];
+			weaponstatus[BUGS_CYL1]=weaponstatus[BUGS_CYL6];
+			weaponstatus[BUGS_CYL6]=weaponstatus[BUGS_CYL5];
+			weaponstatus[BUGS_CYL5]=weaponstatus[BUGS_CYL4];
+			weaponstatus[BUGS_CYL4]=weaponstatus[BUGS_CYL3];
+			weaponstatus[BUGS_CYL3]=weaponstatus[BUGS_CYL2];
+			weaponstatus[BUGS_CYL2]=cylbak;
+		}else{
+			int cylbak=weaponstatus[BUGS_CYL1];
+			weaponstatus[BUGS_CYL1]=weaponstatus[BUGS_CYL2];
+			weaponstatus[BUGS_CYL2]=weaponstatus[BUGS_CYL3];
+			weaponstatus[BUGS_CYL3]=weaponstatus[BUGS_CYL4];
+			weaponstatus[BUGS_CYL4]=weaponstatus[BUGS_CYL5];
+			weaponstatus[BUGS_CYL5]=weaponstatus[BUGS_CYL6];
+			weaponstatus[BUGS_CYL6]=cylbak;
+		}
+	}
+	action void A_LoadRound(){
+		if(invoker.weaponstatus[BUGS_CYL1]>0)return;
+		bool useninemil=(
+			player.cmd.buttons&BT_FIREMODE
+			||!countinv("HDRevolverAmmo")
+		);
+		if(useninemil&&!countinv("HDPistolAmmo"))return;
+		class<inventory>ammotype=useninemil?"HDPistolAmmo":"HDRevolverAmmo";
+		A_TakeInventory(ammotype,1,TIF_NOTAKEINFINITE);
+		invoker.weaponstatus[BUGS_CYL1]=useninemil?BUGS_NINEMIL:BUGS_MASTERBALL;
+	}
+	action void A_OpenCylinder(){
+		A_PlaySound("weapons/deinoopen",CHAN_WEAPON);
+		invoker.cylinderopen=true;
+		A_SetHelpText();
+	}
+	action void A_CloseCylinder(){
+		A_PlaySound("weapons/deinoclose",CHAN_WEAPON);
+		invoker.cylinderopen=false;
+		A_SetHelpText();
+	}
+	action void A_HitExtractor(){
+		//check if we're extracting everything
+		bool dumpall=player.cmd.buttons&BT_ZOOM;
+		bool dumpedall=false;
 
-Doomguy fires the pistol one-handed anyway, so there's no disadvantage to the revolver there.
+		double cosp=cos(pitch);
+		for(int i=BUGS_CYL1;i<=BUGS_CYL6;i++){
+			int thischamber=invoker.weaponstatus[i];
+			if(thischamber<1)continue;
+			if(
+				thischamber==BUGS_NINEMILSPENT
+				||thischamber==BUGS_MASTERBALLSPENT
+			){
+				actor aaa=spawn("HDSpent9mm",
+					(pos.xy,pos.z+height-10)
+					+(cosp*cos(angle),cosp*sin(angle),sin(pitch))*7,
+					ALLOW_REPLACE
+				);
+				aaa.vel=vel+(frandom(-1,1),frandom(-1,1),-1);
+				invoker.weaponstatus[i]=0;
+			}else if(dumpall){
+				//give or spawn either 9mm or 355
+				class<inventory>ammotype=
+					thischamber==BUGS_MASTERBALL?
+					"HDRevolverAmmo":"HDPistolAmmo";
+				if(A_JumpIfInventory(ammotype,0,"null")){
+					actor aaa=spawn(ammotype,
+						(pos.xy,pos.z+height-10)
+						+(cosp*cos(angle),cosp*sin(angle),sin(pitch))*7,
+						ALLOW_REPLACE
+					);
+					aaa.vel=vel+(frandom(-1,1),frandom(-1,1),-1);
+				}else A_GiveInventory(ammotype,1);
+				invoker.weaponstatus[i]=0;
+				dumpedall=true;
+			}
+		}
+		if(dumpedall)setweaponstate("open_dumpcylinder_all");
+	}
+	action void A_FireRevolver(){
+		int cyl=invoker.weaponstatus[BUGS_CYL1];
+		if(
+			cyl!=BUGS_MASTERBALL
+			&&cyl!=BUGS_NINEMIL
+		)return;
+		invoker.weaponstatus[BUGS_CYL1]--;
+		bool masterball=cyl==BUGS_MASTERBALL;
 
-One advantage of being able to fire at point blank is already the HD pistol's advantage.
+		actor p=spawn(masterball?"HDBullet355":"HDBullet9",pos+(0,0,height-6),ALLOW_REPLACE);
+		p.target=self;p.angle=angle;p.pitch=pitch;
+		if(p){
+			p.vel+=self.vel+(frandom(-2.,2.),frandom(-2.,2.),frandom(-2.,2.));
+			p.speed+=10*frandom(-2.,2.);
+		}
 
-Some of the objections/mitigations to the disadvantages are 100% n/a to Doom: "What percentage of DGUs involve more than five or six shots from the defender." "You don’t have to worry about limp wrist with a revolver."
+		A_GunFlash();
+		A_Light1();
+		A_ZoomRecoil(0.995);
+		HDFlashAlpha(masterball?72:64);
+		if(masterball)A_MuzzleClimb(-frandom(0.6,1.4),-frandom(0.8,1.8));
+		else A_MuzzleClimb(-frandom(0.4,1.2),-frandom(0.5,1.6));
+	}
+	action void A_ReadyOpen(){
+		A_WeaponReady(WRF_NOFIRE);
+		if(justpressed(BT_ALTATTACK))setweaponstate("open_rotatecylinder");
+		else if(justpressed(BT_UNLOAD))setweaponstate("open_dumpcylinder");
+		else if(justpressed(BT_ATTACK))setweaponstate("open_loadround");
+		else if(justpressed(BT_RELOAD))setweaponstate("open_closecylinder");
+	}
+	action void A_RoundReady(int layer){
+		//get the main weapon sprite frame
+		//A-B,F: TNT1A0
+		//C: swinging out
+		//D: swung out
+		//E: swung out midframe
+	}
+	states{
+	spawn:
+		TNT1 A -1;
+		stop;
+	select0:
+		TNT1 A 0; //so I can test this before we have the sprites
+		REVG A 0{invoker.cylinderopen=false;}
+		---- A 1 A_Raise();
+		---- A 1 A_Raise(50);
+		---- A 1 A_Raise(50);
+		---- A 1 A_Raise(34);
+		---- A 1 A_Raise(20);
+		wait;
+	deselect0:
+		REVG F 0 A_JumpIf(!invoker.cylinderopen,"deselect0a");
+		REVG C 2;
+		REVG A 0 A_CloseCylinder();
+		goto deselect0a;
+	deselect0a:
+		REVG AF 1 A_Lower();
+		---- A 1 A_Lower(20);
+		---- A 1 A_Lower(34);
+		---- A 1 A_Lower(50);
+		wait;
+	ready:
+		TNT1 A 0; //so I can test this before we have the sprites
+		REVG A 0 A_JumpIf(invoker.cylinderopen,"readyopen");
+		REVG A 1 A_WeaponReady(WRF_ALLOWUSER3|WRF_ALLOWUSER4);
+		goto readyend;
+	fire:
+		REVG B 1;
+		REVG B 1 A_RotateCylinder();
+		REVG A 0 A_Refire("hammertime");
+		goto ready;
+	hammertime:
+		REVG A 1 A_FireRevolver();
+		REVG F 2 A_ClearRefire();
+		goto nope;
+	flash:
+		REVF A 1;
+		stop;
+	altfire:
+		REVG B 1;
+		REVG B 1 A_RotateCylinder(!pressingzoom());
+		goto nope;
+	unload:
+		REVG C 3 A_OpenCylinder();
+		goto readyopen;
+	readyopen:
+		REVG D 1 A_ReadyOpen();
+		goto readyend;
+	open_rotatecylinder:
+		REVG E 2 A_RotateCylinder(!pressingzoom());
+		goto readyopen;
+	open_loadround:
+		REVG D 2;
+		REVG D 1 A_LoadRound();
+		goto open_rotatecylinder;
+	open_closecylinder:
+		REVG C 2;
+		REVG A 0 A_CloseCylinder();
+		goto nope;
+	open_dumpcylinder:
+		REVG D 3 A_HitExtractor();
+		goto readyopen;
+	open_dumpcylinder_all:
+		REVG D 1 offset(0,34);
+		REVG D 1 offset(0,42);
+		REVG D 1 offset(0,54);
+		REVG D 1 offset(0,68);
+		TNT1 A 6;
+		REVG D 1 offset(0,68);
+		REVG D 1 offset(0,54);
+		REVG D 1 offset(0,42);
+		REVG D 1 offset(0,34);
+		goto readyopen;
+	}
+}
+enum DeinovolverStats{
+	//chamber 1 is the shooty one
+	BUGS_CYL1=1,
+	BUGS_CYL2=2,
+	BUGS_CYL3=3,
+	BUGS_CYL4=4,
+	BUGS_CYL5=5,
+	BUGS_CYL6=6,
 
-So, that said, any actual substantive differences that we CAN translate:
-- faster draw
-- bigger bullets
-- *MORE* muzzle climb :ohno:
-- hits harder if you throw it
-- ???no jam if you're bleeding to death at <5hp and/or zerk withdrawal???
-
-So, no remotely meaningful advantage within the encounters prescribed in your typcial Doom situation.
-BUT
-- everybody wants one IRL
-- they're much easier to keep on an everyday basis.
-
-This should eventually be done just as a matter of simulation. HD should be able to deal with civvies who WILL find themselves using weapons like this in a "Hell On Earth" scenario.
-
-https://www.youtube.com/watch?v=nT14mlv92t4
-Why do I keep hearing "CYLINDER... CYLINDER..."
-
-Unload opens the CYLINDER...
-Hit Unload again (justpressed(BT_UNLOAD)) to dump out whatever is loaded in it
-Hit Reload to place a round into the currently selected chamber
-Hit Alt.Reload to extract the round (or casing) from the selected chamber
-Hit Firemode to swap between 9mm Parumpudicum and .355 Masterball
-Always retain rounds when feasible, just give and drop casings
-Altfire rotates the CYLINDER by one (this also goes for when it is closed)
-
-the 5-shot Buger Blue Deinonychus can take 9mm Parumpudicum in a pinch but is chambered for .355 Masterball
+	//even means spent
+	BUGS_NINEMILSPENT=1,
+	BUGS_NINEMIL=2,
+	BUGS_MASTERBALLSPENT=3,
+	BUGS_MASTERBALL=4,
+}
 class HDBullet355:HDBullet{
 	default{
 		pushfactor 0.4;
@@ -97,4 +377,18 @@ class HDBullet355:HDBullet{
 		woundhealth 4;
 	}
 }
+class HDRevolverAmmo:HDPistolAmmo{
+	default{
+		scale 0.7;
+		inventory.pickupmessage "Picked up a .355 round.";
+		hdpickup.refid HDLD_355;
+		hdpickup.nicename ".355 Round";
+		hdpickup.bulk ENC_9*1.03;
+	}
+	override void GetItemsThatUseThis(){
+		itemsthatusethis.push("BugerDeinonychus");
+	}
+}
+
+
 */
