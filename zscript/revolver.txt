@@ -48,6 +48,8 @@ class HDRevolver:HDWeapon{
 
 
 
+
+
 /*
 
 const HDLD_REVOLVER="rev";
@@ -90,6 +92,7 @@ class BugerDeinonychus:HDWeapon{
 				plf!=1
 				&&plf!=4
 			)drawangle-=(360./12.);
+			if(cylinderopen)drawangle-=90;
 			vector2 drawpos=(cylinderopen?-48:-28,-16)+(cos(drawangle),sin(drawangle))*6;
 			sb.drawimage(
 				which,drawpos,
