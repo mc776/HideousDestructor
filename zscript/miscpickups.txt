@@ -754,10 +754,13 @@ class HDUPKAlwaysGive:HDUPK{
 		}
 	}
 }
-class HDKeyLight:TargetPointLight{
+class HDKeyLight:PointLight{
 	override void tick(){
 		if(!target)destroy();
-		else args[3]=(target.frame)?16:0;
+		else{
+			args[3]=(target.frame)?16:0;
+			setorigin(target.pos,true);
+		}
 	}
 }
 class HDRedKey:HDUPKAlwaysGive replaces RedCard{
