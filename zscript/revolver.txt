@@ -393,7 +393,8 @@ class BugerDeinonychus:HDWeapon{
 		goto readyend;
 	open_rotatecylinder:
 		REVG E 2 A_RotateCylinder(!pressingzoom());
-		goto readyopen;
+		REVG D 2 A_JumpIf(!pressingaltfire(),"readyopen");
+		loop;
 	open_loadround:
 		REVG D 2;
 		REVG D 1 A_LoadRound();
