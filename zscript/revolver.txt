@@ -48,7 +48,6 @@ class HDRevolver:HDWeapon{
 
 
 
-/*
 
 const HDLD_REVOLVER="rev";
 const HDLD_355="355";
@@ -224,9 +223,10 @@ class BugerDeinonychus:HDWeapon{
 			if(thischamber<1)continue;
 			if(
 				thischamber==BUGS_NINEMILSPENT
+				||thischamber==BUGS_NINEMIL
 				||thischamber==BUGS_MASTERBALLSPENT
 			){
-				actor aaa=spawn("HDSpent9mm",
+				actor aaa=spawn(thischamber==BUGS_NINEMIL?"HDLoose9mm":"HDSpent9mm",
 					(pos.xy,pos.z+height-10)
 					+(cosp*cos(angle),cosp*sin(angle),sin(pitch))*7,
 					ALLOW_REPLACE
@@ -297,14 +297,14 @@ class BugerDeinonychus:HDWeapon{
 		A_Light1();
 		A_ZoomRecoil(0.995);
 		HDFlashAlpha(masterball?72:64);
-		A_PlaySound("weapons/pistol",CHAN_WEAPON);
+		A_PlaySound("weapons/deinoblast1",CHAN_WEAPON);
 		if(masterball){
 			A_MuzzleClimb(-frandom(0.8,1.6),-frandom(1.6,2.));
-			A_PlaySound("weapons/pistol",5,0.5);
-			A_PlaySound("weapons/shotgunfar",6,0.3);
+			A_PlaySound("weapons/deinoblast1",5,0.5);
+			A_PlaySound("weapons/deinoblast2",6,0.3);
 		}else{
 			A_MuzzleClimb(-frandom(0.6,1.2),-frandom(0.8,1.8));
-			A_PlaySound("weapons/shotgunfar",5,0.3);
+			A_PlaySound("weapons/deinoblast2",5,0.3);
 		}
 	}
 	int cooldown;
@@ -449,4 +449,5 @@ class HDRevolverAmmo:HDPistolAmmo{
 
 
 
+/*
 */

@@ -160,27 +160,3 @@ class HD9mBoxPickup:HDUPK{
 	}
 }
 
-
-
-// ------------------------------------------------------------
-// Pistol Bullet Extras
-// ------------------------------------------------------------
-class HDNineMilNoisemaker:IdleDummy{
-	states{
-	spawn:
-		TNT1 A 1;
-		TNT1 A 0{
-			if(
-				ceilingpic==skyflatnum||
-				ceilingz-floorz>256
-			)A_AlertMonsters(860);
-		}stop;
-	}
-}
-class HDNineMilTrail:IdleDummy{
-	states{
-	spawn:
-		TNT1 A 10 nodelay A_PlaySound("weapons/subfwoosh",0,0.02);
-		stop;
-	}
-}
