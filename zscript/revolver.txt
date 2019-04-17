@@ -450,13 +450,28 @@ class HDRevolverAmmo:HDPistolAmmo{
 		inventory.pickupmessage "Picked up a .355 round.";
 		hdpickup.refid HDLD_355;
 		hdpickup.nicename ".355 Round";
-		hdpickup.bulk ENC_9*1.03;
+		hdpickup.bulk ENC_9*1.2;
 	}
 	override void GetItemsThatUseThis(){
 		itemsthatusethis.push("BugerDeinonychus");
 	}
 }
-
+class HD355BoxPickup:HDUPK{
+	default{
+		//$Category "Ammo/Hideous Destructor/"
+		//$Title "Box of .355"
+		//$Sprite "3BOXA0"
+		scale 0.4;
+		hdupk.amount 72;
+		hdupk.pickupsound "weapons/pocket";
+		hdupk.pickupmessage "Picked up some .355 ammo.";
+		hdupk.pickuptype "HDRevolverAmmo";
+	}
+	states{
+	spawn:
+		3BOX A -1;
+	}
+}
 
 
 /*
