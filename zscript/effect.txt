@@ -91,16 +91,6 @@ class HDDebris:HDActor{
 	}
 }
 
-class TargetPointLight:PointLight{
-	override void postbeginplay(){
-		super.postbeginplay();
-		if(target)setorigin(target.pos,true);
-	}
-	override void Tick(){
-		if(isfrozen())return;
-		if(!target)destroy();else setorigin(target.pos,true);
-	}
-}
 
 //the wallchunk!
 class WallChunk:HDDebris{
@@ -416,7 +406,7 @@ class HDFlameRed:HDPuff{
 		wait;
 	}
 }
-class HDRedFireLight:TargetPointLight{
+class HDRedFireLight:PointLight{
 	default{+dynamiclight.additive}
 	override void postbeginplay(){
 		super.postbeginplay();

@@ -590,7 +590,7 @@ class BeamSpot:HDActor{
 		stop;
 	}
 }
-class BeamSpotLight:TargetPointLight{
+class BeamSpotLight:PointLight{
 	override void postbeginplay(){
 		super.postbeginplay();
 		args[0]=128;
@@ -600,11 +600,13 @@ class BeamSpotLight:TargetPointLight{
 		args[4]=0;
 	}
 	override void tick(){
-		super.tick();
 		if(!target){
 			args[3]+=randompick(-10,10,-5,-20);
 			if(args[3]<1)destroy();
-		}else args[3]=randompick(14,24,44);
+		}else{
+			args[3]=randompick(14,24,44);
+			setorigin(target.pos,true);
+		}
 	}
 }
 class ThunderCracker:IdleDummy{

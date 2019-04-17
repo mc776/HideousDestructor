@@ -16,7 +16,7 @@ class manjuicetrail:hdfireballtail{
 	}
 }
 
-class manjuicelight:TargetPointLight{
+class manjuicelight:PointLight{
 	override void postbeginplay(){
 		super.postbeginplay();
 		args[0]=164;
@@ -26,12 +26,14 @@ class manjuicelight:TargetPointLight{
 		args[4]=0;
 	}
 	override void tick(){
-		super.tick();
 		if(!target){
 			args[3]+=random(-20,4);
 			if(args[3]<1)destroy();
-		}else if(target.bmissile)args[3]=random(28,44);
-		else args[3]=random(32,64);
+		}else{
+			setorigin(target.pos,true);
+			if(target.bmissile)args[3]=random(28,44);
+			else args[3]=random(32,64);
+		}
 	}
 }
 class manjuiceburner:PersistentDamager{
