@@ -148,6 +148,7 @@ extend class HDPlayerPawn{
 				double aimscale=hd_aimsensitivity.GetFloat();
 				if(aimscale>1.)aimscale=0.1;
 				if(!gunbraced)aimscale+=(1.-aimscale)*0.3;
+				else aimscale=min(aimscale,hd_bracesensitivity.GetFloat());
 				turnscale*=clamp(aimscale,0.05,HDCONST_MAXFOCUSSCALE);
 			}
 			//reduced turning while crouched.

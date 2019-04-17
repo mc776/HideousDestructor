@@ -116,7 +116,7 @@ For the most part Hideous Destructor functions like Doom: point the middle of yo
 
 There is no auto-aim anywhere in HD. In fact, if you move or turn too quickly it can throw off your aim a bit.
 
-Hold Use or Zoom to lower your mouse sensitivity, subject to the hd_aimsensitivity setting. Setting hd_usefocus to false will restrict this behaviour to Zoom. Zoom will also bring up your scope view if your weapon has one and it is not up already, and change your strafe keys to lean keys unless hd_nozoomlean is set to true.
+Hold Use or Zoom to lower your mouse sensitivity, subject to the hd_aim/bracesensitivity setting. Setting hd_usefocus to false will restrict this behaviour to Zoom. Zoom will also bring up your scope view if your weapon has one and it is not up already, and change your strafe keys to lean keys unless hd_nozoomlean is set to true.
 
 
 	Difficulty levels
@@ -413,6 +413,8 @@ You can also set it to 999 to get the vanilla Doom behaviour where the renderer 
 hd_hudusedelay (12): This is how many tics you must hold Use before the full HUD shows up with all the ammo counts and compass (and scope view if hd_noscope is set to 1). Zero means it is always on. If below zero, your HUD disappears entirely, except only for your crosshair, when you are not pressing Use. At -2, even the crosshair disappears, but can be brought back with Zoom as well as Use.
 
 hd_aimsensitivity (0.1): Sets the amount to which your mouse sensitivity is reduced while aiming with the Zoom or Use key.
+
+hd_bracesensitivity (1.0): Sets the amount to which your mouse sensitivity is reduced while aiming with the Zoom or Use key while your weapon is braced. The final sensitivity is the minimum of this value and your hd_aimsensitivity setting.
 
 hd_usefocus (true): Holding the Zoom key will normally reduce your aim sensitivity, subject to the hd_aimsensitivity setting. Normally the Use key will also cause this to happen, for the benefit of those who may be running low on room on their keyboards; if this is not a concern for you, or you find that the numerous functions of the Use key are clashing against each other, set this to false so that only the Zoom key will affect your aim.
 
