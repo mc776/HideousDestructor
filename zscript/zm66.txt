@@ -88,7 +88,7 @@ class ZM66AssaultRifle:HDWeapon{
 		return spr.."0",1.;
 	}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
-		if(sb.gimmehud){
+		if(sb.hudlevel==1){
 			int nextmagloaded=sb.GetNextLoadMag(hdmagammo(hpl.findinventory("HD4mMag")));
 			if(nextmagloaded>50){
 				sb.drawimage("ZMAGA0",(-46,-3),sb.DI_SCREEN_CENTER_BOTTOM,scale:(2,2));

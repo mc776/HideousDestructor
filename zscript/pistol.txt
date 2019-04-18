@@ -44,7 +44,7 @@ class HDPistol:HDWeapon replaces Pistol{
 		return "PIST"..spr.."0",1.;
 	}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
-		if(sb.gimmehud){
+		if(sb.hudlevel==1){
 			int nextmagloaded=sb.GetNextLoadMag(hdmagammo(hpl.findinventory("HD9mMag15")));
 			if(nextmagloaded>=15){
 				sb.drawimage("CLP2NORM",(-46,-3),sb.DI_SCREEN_CENTER_BOTTOM,scale:(1,1));

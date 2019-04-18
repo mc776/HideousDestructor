@@ -101,7 +101,7 @@ class BossRifle:HDWeapon{
 	}
 	override string,double getpickupsprite(){return "BORFA0",1.;}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
-		if(sb.gimmehud){
+		if(sb.hudlevel==1){
 			int nextmagloaded=sb.GetNextLoadMag(hdmagammo(hpl.findinventory("HD7mClip")));
 			if(nextmagloaded<1){
 				sb.drawimage("RCLPF0",(-58,-3),sb.DI_SCREEN_CENTER_BOTTOM,alpha:nextmagloaded?0.6:1.,scale:(1.6,1.6));

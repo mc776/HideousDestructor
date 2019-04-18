@@ -2,7 +2,8 @@
 // HD HUD. HUD for HD. Hdhdhdhdhhdhdhhdhd
 // ------------------------------------------------------------
 class HDStatusBar:DoomStatusBar{
-	int gimmehud;
+	int hudlevel;
+	int hudusetimer;
 	int healthbars[14];
 	hudfont psmallfont;
 	hdplayerpawn hpl;
@@ -125,8 +126,14 @@ class HDStatusBar:DoomStatusBar{
 			default:mug="STC";break;
 		}
 
-		if(cplayer.buttons&BT_USE)gimmehud=max(0,gimmehud-1);
-		else gimmehud=max(hd_hudusedelay.getint(),-1);
+		//all the hud use timer determinations go here
+		if(cplayer.buttons&BT_USE)hudusetimer++;
+		else hudusetimer=0;
+		int hudthreshold1=max(12,hd_hudusedelay.getint());
+		int hudthreshold2=hudthreshold1%100;
+		if(hudusetimer>=hudthreshold2)hudlevel=2;
+		else if(hudusetimer>=hudthreshold1/100)hudlevel=1;
+		else hudlevel=0;
 	}
 	override void Draw(int state,double TicFrac){
 		hpl=hdplayerpawn(cplayer.mo);
@@ -147,18 +154,17 @@ class HDStatusBar:DoomStatusBar{
 			}
 			BeginHUD(forcescaled:true);
 			if(state==HUD_StatusBar){
-				DrawCommonStuff(state);
+				if(hudlevel>0)DrawCommonStuff(state);
 			}
 			else if(state==HUD_Fullscreen){
-				DrawCommonStuff(state);
-				DrawFullScreenStuff();
+				if(hudlevel>0){
+					DrawCommonStuff(state);
+					DrawFullScreenStuff();
+				}
 			}
 			else{
-				let www=cplayer.readyweapon;
-				if(
-					www is "HDBackpack"
-					||www is "MagManager"
-				)drawweaponstatus(www);
+				let www=hdweapon(cplayer.readyweapon);
+				if(www.balwaysshowstatus)drawweaponstatus(www);
 			}
 		}
 		if(idmypos)drawmypos();
@@ -312,10 +318,7 @@ class HDStatusBar:DoomStatusBar{
 			wrapwidth:300
 		);
 	}
-	int hudusedelay;
 	void DrawCommonStuff(int state){
-		if(!(cplayer.cmd.buttons&BT_USE)&&hudusedelay<0)return;
-
 		let cp=HDPlayerPawn(CPlayer.mo);
 		if(!cp)return;
 
@@ -397,7 +400,7 @@ class HDStatusBar:DoomStatusBar{
 
 		//armour
 		DrawArmour(
-			state==HUD_Fullscreen?((gimmehud?-85:-55),-4):(0,-mIndexFont.mFont.GetHeight()*2),
+			state==HUD_Fullscreen?((hudlevel==1?-85:-55),-4):(0,-mIndexFont.mFont.GetHeight()*2),
 			DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM
 		);
 
@@ -406,14 +409,14 @@ class HDStatusBar:DoomStatusBar{
 
 		//weapon sprite
 		if(
-			!gimmehud
+			hudlevel==2
 			||cvar.getcvar("hd_hudsprite",cplayer).getbool()
 			||!cvar.getcvar("r_drawplayersprites",cplayer).getbool()
 		)
 		drawselectedweapon(58,-6,DI_SCREEN_CENTER_BOTTOM|DI_ITEM_LEFT_BOTTOM);
 
 		//full hud consequences
-		if(!gimmehud){
+		if(hudlevel==2){
 			drawweaponstash();
 			drawammocounters(mxht);
 
@@ -686,7 +689,7 @@ class HDStatusBar:DoomStatusBar{
 			items.push(item);
 			if(item==cplayer.mo.invsel)thisindex=i;
 
-			if(drawfull&&!gimmehud){
+			if(drawfull&&hudlevel==2){
 				textureid icon;vector2 applyscale;
 				[icon,applyscale]=geticon(item,0);
 				int xoffs=(i%5)*20;

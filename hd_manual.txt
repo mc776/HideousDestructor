@@ -410,7 +410,7 @@ hd_mugshot(-1): This sets the status bar mugshot and nothing else. -1 means use 
 hd_nv (7): This sets the starting amplitude of your light amplification visor, between 0 and 100. Negative values mean the display is red rather than green. Brighter displays drain more battery.
 You can also set it to 999 to get the vanilla Doom behaviour where the renderer just omits lighting reduction. This is considered a cheat in multiplayer.
 
-hd_hudusedelay (12): This is how many tics you must hold Use before the full HUD shows up with all the ammo counts and compass (and scope view if hd_noscope is set to 1). Zero means it is always on. If below zero, your HUD disappears entirely, except only for your crosshair, when you are not pressing Use. At -2, even the crosshair disappears, but can be brought back with Zoom as well as Use.
+hd_hudusedelay (12): This is how many tics (1/35 of a second) you must hold Use before the full HUD shows up with all the ammo counts and compass (and scope view if hd_noscope is set to 1). Minimum delay is 12. If you set the value over 100, the digits preceding the tens place will be parsed as the delay before even the partial HUD appears, e.g., a value of 1212 means an all-or-nothing with no partial HUD while 120 means you can quickly hit Use to check your vitals and hold much longer to get everything.
 
 hd_aimsensitivity (0.1): Sets the amount to which your mouse sensitivity is reduced while aiming with the Zoom or Use key.
 
