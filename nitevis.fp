@@ -1,7 +1,6 @@
 void main(){
 	if(
 		int(TexCoord.y*5000)%2==0
-		&&TexCoord.y>0
 	){
 		vec2 offset=vec2(0.,-0.0002);
 		vec3 colour=texture(InputTexture,TexCoord+offset).rgb;
