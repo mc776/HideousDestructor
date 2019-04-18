@@ -78,6 +78,7 @@ class BugerDeinonychus:HDWeapon{
 	}
 
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
+if(hd_debug)sb.drawwepnum(hpl.player.getpsprite(PSP_WEAPON).frame,int.MAX,-26,-40,true,true);
 		if(sb.hudlevel==1){
 			//draw ammo counters for both ammo types
 			sb.drawimage("PBRSA0",(-48,-13),
