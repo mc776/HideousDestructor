@@ -352,7 +352,7 @@ extend class HDPlayerPawn{
 		hdweapon firstwepactor;
 		for(int i=whichitemclass.size()-1;i>=0;i--){
 			if(whichitemclass[i]<0){
-				A_Log("\ca*** Unknown loadout code:  \cx"..whichitem[i],true);
+				A_Log("\ca*** Unknown loadout code:  \"\cx"..whichitem[i].."\ca\"",true);
 				continue;
 			}
 			class<actor> reff=allactorclasses[whichitemclass[i]];
