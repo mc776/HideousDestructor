@@ -16,15 +16,24 @@ class HDShellAmmo:HDAmmo{
 		itemsthatusethis.push("Hunter");
 		itemsthatusethis.push("Slayer");
 	}
+	override void SplitPickup(){
+		while(amount>=4){
+			let sss=hdupk(spawn("ShellPickup",pos));
+			sss.amount=4;
+			sss.vel=vel+(frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(-0.6,0.6));
+			sss.angle=angle;
+			amount-=4;
+		}
+		if(amount<1){
+			destroy();
+			return;
+		}
+		super.splitpickup();
+	}
 	states{
 	spawn:
-		SHL1 A -1 nodelay{
-			if(invoker.amount==4){
-				actor sss=spawn("ShellPickup",pos);
-				sss.vel=vel;
-				destroy();return;
-			}
-		}
+		SHL1 A -1;
+		stop;
 	death:
 		ESHL A -1{
 			frame=randompick(0,0,0,0,4,4,4,4,2,2,5);

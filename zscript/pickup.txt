@@ -148,6 +148,7 @@ extend class HDPlayerPawn{
 				}
 			}
 
+
 			if(
 				grabbed
 				&&checksight(grabbed)
@@ -393,7 +394,7 @@ class HDUPK:HDActor{
 		hdupk.pickupsound "weapons/pocket";//"misc/i_pkup";
 		hdupk.pickupmessage "";
 		hdupk.pickuptype "none";
-		hdupk.maxunitamount 1;
+		hdupk.maxunitamount -1;
 		hdupk.amount 1;
 	}
 	override bool cancollidewith(actor other,bool passive){
@@ -403,7 +404,7 @@ class HDUPK:HDActor{
 		super.postbeginplay();
 
 		if(!maxunitamount)return;
-		if(maxunitamount<0)maxunitamount=abs(maxunitamount);
+		if(maxunitamount<0)maxunitamount=abs(getdefaultbytype(getclass()).amount);
 		while(amount>maxunitamount){  
 			let a=hdupk(spawn(getclassname(),pos,ALLOW_REPLACE));
 			a.amount=maxunitamount;
