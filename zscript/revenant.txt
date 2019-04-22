@@ -55,6 +55,9 @@ class bonerball:hdactor{
 		FATB A 0 A_JumpIf(
 			stamina>3
 			||(vel==(0,0,0))
+			||!target
+			||target.health<1
+			||!target.checksight(self)
 			||(
 				!checkmove(pos.xy+vel.xy)
 				&&blockingmobj
@@ -116,7 +119,7 @@ class Boner:Revenant replaces Revenant{
 		}
 		let hdmb=hdmobster(hdmobster.spawnmobster(self));
 		hdmb.meleethreshold=200;
-		balls=100;
+		balls=300;
 	}
 	override int damagemobj(
 		actor inflictor,actor source,int damage,
@@ -131,7 +134,7 @@ class Boner:Revenant replaces Revenant{
 	states{
 	see:
 		SKEL ABCDEF 3{
-			if(balls>100)hdmobai.chase(self);
+			if(balls>300)hdmobai.chase(self);
 			else hdmobai.chase(self,"melee",null);
 			balls++;
 		}loop;
