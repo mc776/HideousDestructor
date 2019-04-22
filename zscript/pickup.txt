@@ -310,6 +310,7 @@ class HDPickup:CustomInventory{
 	}
 	override void postbeginplay(){
 		maxamount=min(maxamount,effectivemaxamount());
+		if(maxunitamount<0)maxunitamount=abs(getdefaultbytype(getclass()).amount);
 		itemsthatusethis.clear();
 		GetItemsThatUseThis();
 		super.postbeginplay();

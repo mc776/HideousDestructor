@@ -17,8 +17,8 @@ class HDShellAmmo:HDAmmo{
 		itemsthatusethis.push("Slayer");
 	}
 	override void SplitPickup(){
-		while(amount>=4){
-			let sss=hdupk(spawn("ShellPickup",pos));
+		while(amount>4){
+			let sss=hdpickup(spawn("HDShellAmmo",pos+(frandom(-1,1),frandom(-1,1),frandom(-1,1))));
 			sss.amount=4;
 			sss.vel=vel+(frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(-0.6,0.6));
 			sss.angle=angle;
@@ -26,6 +26,10 @@ class HDShellAmmo:HDAmmo{
 		}
 		if(amount<1){
 			destroy();
+			return;
+		}
+		if(amount==4){
+			sprite=getspriteindex("SHELA0");
 			return;
 		}
 		super.splitpickup();
@@ -122,26 +126,21 @@ class ShellBoxPickup:HDUPK{
 		SBOX A -1;
 	}
 }
-class ShellPickup:ShellBoxPickup{
+class ShellPickup:IdleDummy{
 	default{
 		//$Category "Ammo/Hideous Destructor/"
 		//$Title "Four Shotgun Shells"
 		//$Sprite "SHELA0"
-		scale 0.3;
-		hdupk.amount 4;
 	}
 	states{
 	spawn:
-		SHEL A -1 nodelay{
-			if(amount<4){
-				while(amount>0){
-					amount--;
-					A_SpawnItemEx("HDShellAmmo",0,random(-1,1),0,
-						random(3,3),0,0,random(-3,3),SXF_NOCHECKPOSITION
-					);
-				}
-				destroy();
-			}
-		}
+		SHEL A 0 nodelay{
+			let iii=hdpickup(spawn("HDShellAmmo",pos,ALLOW_REPLACE));
+			iii.amount=4;
+			iii.special=special;
+			iii.changetid(tid);
+			iii.angle=angle;
+			iii.vel=vel;
+		}stop;
 	}
 }
