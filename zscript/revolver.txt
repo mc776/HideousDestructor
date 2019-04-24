@@ -153,7 +153,6 @@ if(hd_debug)sb.drawwepnum(hpl.player.getpsprite(PSP_WEAPON).frame,int.MAX,-26,-4
 		let sightpic=texman.checkfortexture("frntsite",texman.type_any);
 		[bx,by]=texman.getsize(sightpic);
 		int clbt=125*screen.getheight()/250+(bob.y+10)*screen.getheight()/vwy;
-		console.printf(vwy.."  "..clbt);
 		screen.drawtexture(
 			sightpic,false,
 			(vwx>>1)+bobb.x,(vwy>>1)+by+bobb.y,
@@ -161,6 +160,15 @@ if(hd_debug)sb.drawwepnum(hpl.player.getpsprite(PSP_WEAPON).frame,int.MAX,-26,-4
 			DTA_VirtualWidth,vwx,DTA_VirtualHeight,vwy,
 			DTA_Alpha,0.9,
 			DTA_ClipBottom,clbt
+		);
+		screen.drawtexture(
+			sightpic,false,
+			(vwx>>1)+bobb.x,(vwy>>1)+by+bobb.y,
+			DTA_CenterBottomOffset,true,
+			DTA_VirtualWidth,vwx,DTA_VirtualHeight,vwy,
+			DTA_Alpha,1.-hpl.cursector.lightlevel*0.004,
+			DTA_ClipBottom,clbt,
+			DTA_FillColor,1
 		);
 		sightpic=texman.checkfortexture("backsite",texman.type_any);
 		[bx,by]=texman.getsize(sightpic);
@@ -171,6 +179,15 @@ if(hd_debug)sb.drawwepnum(hpl.player.getpsprite(PSP_WEAPON).frame,int.MAX,-26,-4
 			DTA_VirtualWidth,vwx,DTA_VirtualHeight,vwy,
 			DTA_Alpha,0.9,
 			DTA_ClipBottom,clbt
+		);
+		screen.drawtexture(
+			sightpic,false,
+			(vwx>>1)+bob.x,int((vwy>>1)+by+bob.y),
+			DTA_CenterBottomOffset,true,
+			DTA_VirtualWidth,vwx,DTA_VirtualHeight,vwy,
+			DTA_Alpha,1.-hpl.cursector.lightlevel*0.004,
+			DTA_ClipBottom,clbt,
+			DTA_FillColor,1
 		);
 
 		return;
