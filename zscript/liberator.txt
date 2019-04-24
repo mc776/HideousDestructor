@@ -219,13 +219,11 @@ class LiberatorRifle:AutoReloadingThingy{
 	override void postbeginplay(){
 		super.postbeginplay();
 		if(weaponstatus[0]&LIBF_NOLAUNCHER){
-			barrellength=27;
 			barrelwidth=0.7;
 			barreldepth=1.2;
 			weaponstatus[0]&=~(LIBF_GRENADEMODE|LIBF_GRENADELOADED);
 			refid=HDLD_LIBNOGL;
 		}else{
-			barrellength=29;
 			barrelwidth=1;
 			barreldepth=3;
 		}
@@ -234,6 +232,8 @@ class LiberatorRifle:AutoReloadingThingy{
 			if(weaponstatus[0]&LIBF_NOLAUNCHER)refid=HDLD_LIBNOBPNOGL;
 			else refid=HDLD_LIBNOBP;
 			bfitsinbackpack=false;
+		}else{
+			barrellength=27;
 		}
 	}
 	override void startconfigure(){

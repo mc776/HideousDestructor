@@ -543,6 +543,9 @@ class DoorBusterPlanted:HDUPK{
 			A_PlaySound("weapons/bigcrack",4);
 			A_PlaySound("word/explode",CHAN_VOICE);
 
+			target=master;
+			A_AlertMonsters();
+
 			A_SpawnChunks("HDExplosion",busted?1:6,0,1);
 			if(!busted){
 				A_ChangeVelocity(-7,0,1,CVF_RELATIVE);
