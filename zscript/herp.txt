@@ -926,7 +926,11 @@ class HERPController:HDWeapon{
 		}
 		if(resetindex)weaponstatus[HERPS_INDEX]=0;
 		if(!herps.size()){
-			if(owner){
+			if(
+				owner
+				&&owner.player
+				&&owner.player.readyweapon==self
+			){
 				owner.A_Log("No H.E.R.P.s deployed. Abort.",true);
 				owner.A_SelectWeapon("HDFist");
 			}
