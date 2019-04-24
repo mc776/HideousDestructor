@@ -141,13 +141,47 @@ if(hd_debug)sb.drawwepnum(hpl.player.getpsprite(PSP_WEAPON).frame,int.MAX,-26,-4
 		HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl,
 		bool sightbob,vector2 bob,double fov,bool scopeview,actor hpc,string whichdot
 	){
+		bob*=90./fov;
+		vector2 bobb=(
+			clamp(bob.x*1.6,bob.x-8,bob.x+8),
+			clamp(bob.y*1.6,bob.y-8,bob.y+8)
+		);
+		int vwx=400*fov/90;
+		int vwy=250*fov/90;
+		int bx,by;
+
+		let sightpic=texman.checkfortexture("frntsite",texman.type_any);
+		[bx,by]=texman.getsize(sightpic);
+		int clbt=125*screen.getheight()/250+(bob.y+10)*screen.getheight()/vwy;
+		console.printf(vwy.."  "..clbt);
+		screen.drawtexture(
+			sightpic,false,
+			(vwx>>1)+bobb.x,(vwy>>1)+by+bobb.y,
+			DTA_CenterBottomOffset,true,
+			DTA_VirtualWidth,vwx,DTA_VirtualHeight,vwy,
+			DTA_Alpha,0.9,
+			DTA_ClipBottom,clbt
+		);
+		sightpic=texman.checkfortexture("backsite",texman.type_any);
+		[bx,by]=texman.getsize(sightpic);
+		screen.drawtexture(
+			sightpic,false,
+			(vwx>>1)+bob.x,int((vwy>>1)+by+bob.y),
+			DTA_CenterBottomOffset,true,
+			DTA_VirtualWidth,vwx,DTA_VirtualHeight,vwy,
+			DTA_Alpha,0.9,
+			DTA_ClipBottom,clbt
+		);
+
+		return;
+
 		int cx,cy,cw,ch;
 		[cx,cy,cw,ch]=screen.GetClipRect();
 		sb.SetClipRect(
 			-8+bob.x,-4+bob.y,16,10,
 			sb.DI_SCREEN_CENTER
 		);
-		vector2 bobb=bob*1.6;
+//		vector2 bobb=bob*1.6;
 		bobb.y=clamp(bobb.y,-8,8);
 		sb.drawimage(
 			"frntsite",(0,0)+bobb,sb.DI_SCREEN_CENTER|sb.DI_ITEM_TOP,
