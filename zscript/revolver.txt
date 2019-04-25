@@ -49,6 +49,7 @@ class HDRevolver:HDWeapon{
 
 
 
+
 const HDLD_REVOLVER="rev";
 const HDLD_355="355";
 class BugerDeinonychus:HDWeapon{
@@ -137,10 +138,97 @@ if(hd_debug)sb.drawwepnum(hpl.player.getpsprite(PSP_WEAPON).frame,int.MAX,-26,-4
 		..WEPHELP_UNLOAD.."/"..WEPHELP_RELOAD.." Open cylinder\n"
 		;
 	}
+	ui int,int,int,int,int,int,int,int GetXHairCoords(
+		textureid pic,
+		int screenwidth,
+		int screenheight,
+		double yscale,
+		double xscale=1.,
+		double fypos=0.5,
+		double fcliptop=0.,
+		double fclipbottom=1.,
+		double fclipleft=0.,
+		double fclipright=1.,
+		vector2 bob=(0,0)
+	){
+		int
+			picwidth,
+			picheight,
+			xpos,
+			ypos,
+			destwidth,
+			destheight,
+			clipbottom,
+			cliptop,
+			clipleft,
+			clipright;
+		[picwidth,picheight]=texman.getsize(pic);
+
+		double SCREENDRAW_BOBMULT=0.003;
+
+		destheight=screenheight*yscale;
+		destwidth=(destheight*screenwidth/screenheight)*xscale;
+		xpos=screenwidth*(0.5+SCREENDRAW_BOBMULT*bob.x);
+		ypos=screenheight*(fypos+SCREENDRAW_BOBMULT*bob.y)+destheight;
+
+		clipbottom=screenheight*fclipbottom+SCREENDRAW_BOBMULT*screenheight*bob.y;
+		cliptop=screenheight*fcliptop+SCREENDRAW_BOBMULT*screenheight*bob.y;
+		clipleft=screenwidth*fclipleft+SCREENDRAW_BOBMULT*screenheight*bob.x;
+		clipright=screenwidth*fclipright+SCREENDRAW_BOBMULT*screenheight*bob.x;
+
+		return
+			xpos,
+			ypos,
+			destwidth,
+			destheight,
+			clipbottom,
+			cliptop,
+			clipleft,
+			clipright;
+	}
 	override void DrawSightPicture(
 		HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl,
 		bool sightbob,vector2 bob,double fov,bool scopeview,actor hpc,string whichdot
 	){
+		int 
+			xpos,
+			ypos,
+			destwidth,
+			destheight,
+			clipbottom,
+			cliptop,
+			clipleft,
+			clipright;
+		let sightpic=texman.checkfortexture("backsite",texman.type_any);
+		int screenwidth=screen.getwidth();
+		int screenheight=screen.getheight();
+		[
+			xpos,
+			ypos,
+			destwidth,
+			destheight,
+			clipbottom,
+			cliptop,
+			clipleft,
+			clipright
+		]=GetXHairCoords(
+			sightpic,
+			screenwidth,
+			screenheight,
+			0.04,
+			0.9,
+			fclipbottom:0.58,
+			bob:bob
+		);
+		screen.drawtexture(
+			sightpic,false,
+			xpos,ypos,
+			DTA_CenterBottomOffset,true,
+			DTA_DestWidth,destwidth,DTA_DestHeight,destheight,
+			DTA_ClipBottom,clipbottom
+		);
+		return;
+/*
 		bob*=90./fov;
 		vector2 bobb=(
 			clamp(bob.x*1.6,bob.x-8,bob.x+8),
@@ -209,6 +297,7 @@ if(hd_debug)sb.drawwepnum(hpl.player.getpsprite(PSP_WEAPON).frame,int.MAX,-26,-4
 			"backsite",(0,0)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_TOP,
 			scale:(0.6,0.6)
 		);
+*/
 	}
 	override void DropOneAmmo(int amt){
 		if(owner){
