@@ -151,7 +151,8 @@ if(hd_debug)sb.drawwepnum(hpl.player.getpsprite(PSP_WEAPON).frame,int.MAX,-26,-4
 		double fclipbottom=1.,
 		double fclipleft=0.,
 		double fclipright=1.,
-		vector2 bob=(0,0)
+		vector2 bob=(0,0),
+		bool drawnow=false
 	){
 		int
 			picwidth,
@@ -184,6 +185,17 @@ if(hd_debug)sb.drawwepnum(hpl.player.getpsprite(PSP_WEAPON).frame,int.MAX,-26,-4
 		cliptop=screenheight*fcliptop+screenheight*bob.y;
 		clipleft=screenwidth*fclipleft+screenheight*bob.x;
 		clipright=screenwidth*fclipright+screenheight*bob.x;
+
+		if(drawnow)screen.drawtexture(
+			sightpic,false,
+			xpos,ypos,
+			DTA_CenterBottomOffset,true,
+			DTA_DestWidth,destwidth,DTA_DestHeight,destheight,
+			DTA_ClipTop,cliptop,
+			DTA_ClipBottom,clipbottom
+			DTA_ClipLeft,clipleft,
+			DTA_ClipRight,clipright
+		);
 
 		return
 			xpos,
