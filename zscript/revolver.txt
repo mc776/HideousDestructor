@@ -139,6 +139,8 @@ if(hd_debug)sb.drawwepnum(hpl.player.getpsprite(PSP_WEAPON).frame,int.MAX,-26,-4
 		;
 	}
 	ui int,int,int,int,int,int,int,int GetXHairCoords(
+		playerinfo player,
+		hdstatusbar sb,
 		textureid pic,
 		int screenwidth,
 		int screenheight,
@@ -164,9 +166,10 @@ if(hd_debug)sb.drawwepnum(hpl.player.getpsprite(PSP_WEAPON).frame,int.MAX,-26,-4
 			clipright;
 		[picwidth,picheight]=texman.getsize(pic);
 
-		double SCREENDRAW_BOBMULT=0.003;
+		double modscale=90.*sb.hd_xhscale.getfloat()/player.fov;
+		double SCREENDRAW_BOBMULT=0.003*modscale;
 
-		destheight=screenheight*yscale;
+		destheight=screenheight*yscale*modscale;
 		destwidth=(destheight*picwidth/picheight)*xscale;
 		xpos=screenwidth*(0.5+SCREENDRAW_BOBMULT*bob.x);
 		ypos=screenheight*(fypos+SCREENDRAW_BOBMULT*bob.y)+destheight;
@@ -213,6 +216,8 @@ if(hd_debug)sb.drawwepnum(hpl.player.getpsprite(PSP_WEAPON).frame,int.MAX,-26,-4
 			clipleft,
 			clipright
 		]=GetXHairCoords(
+			hpl.player,
+			sb,
 			sightpic,
 			screenwidth,
 			screenheight,
