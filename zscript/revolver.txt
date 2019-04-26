@@ -167,17 +167,23 @@ if(hd_debug)sb.drawwepnum(hpl.player.getpsprite(PSP_WEAPON).frame,int.MAX,-26,-4
 		[picwidth,picheight]=texman.getsize(pic);
 
 		double modscale=90.*sb.hd_xhscale.getfloat()/player.fov;
-		double SCREENDRAW_BOBMULT=0.003*modscale;
+		bob*=modscale*0.003;
+		bob*=90./player.fov; //why do I have to do this again??? math is hard
 
 		destheight=screenheight*yscale*modscale;
 		destwidth=(destheight*picwidth/picheight)*xscale;
-		xpos=screenwidth*(0.5+SCREENDRAW_BOBMULT*bob.x);
-		ypos=screenheight*(fypos+SCREENDRAW_BOBMULT*bob.y)+destheight;
+		xpos=screenwidth*(0.5+bob.x);
+		ypos=screenheight*(fypos+bob.y)+destheight;
 
-		clipbottom=screenheight*fclipbottom+SCREENDRAW_BOBMULT*screenheight*bob.y;
-		cliptop=screenheight*fcliptop+SCREENDRAW_BOBMULT*screenheight*bob.y;
-		clipleft=screenwidth*fclipleft+SCREENDRAW_BOBMULT*screenheight*bob.x;
-		clipright=screenwidth*fclipright+SCREENDRAW_BOBMULT*screenheight*bob.x;
+		fclipbottom=0.5+(fclipbottom-0.5)*modscale;
+		fcliptop=0.5-(fcliptop-0.5)*modscale;
+		fclipleft=0.5-(fclipleft-0.5)*modscale;
+		fclipright=0.5+(fclipright-0.5)*modscale;
+
+		clipbottom=screenheight*fclipbottom+screenheight*bob.y;
+		cliptop=screenheight*fcliptop+screenheight*bob.y;
+		clipleft=screenwidth*fclipleft+screenheight*bob.x;
+		clipright=screenwidth*fclipright+screenheight*bob.x;
 
 		return
 			xpos,
@@ -204,6 +210,7 @@ if(hd_debug)sb.drawwepnum(hpl.player.getpsprite(PSP_WEAPON).frame,int.MAX,-26,-4
 			clipright;
 		let sightpic=texman.checkfortexture("backsite",texman.type_any);
 //texman.setcameratotexture(hpc,"HDXHCAM3",10);sightpic=texman.checkfortexture("HDXHCAM3",texman.type_any);
+sightpic=texman.checkfortexture("bal1a0",texman.type_any);
 		int screenwidth=screen.getwidth();
 		int screenheight=screen.getheight();
 		[
@@ -223,7 +230,7 @@ if(hd_debug)sb.drawwepnum(hpl.player.getpsprite(PSP_WEAPON).frame,int.MAX,-26,-4
 			screenheight,
 			0.04,
 			0.9,
-			fclipbottom:0.58,
+			fclipbottom:0.518,
 			bob:bob
 		);
 		screen.drawtexture(
