@@ -173,12 +173,12 @@ if(hd_debug)sb.drawwepnum(hpl.player.getpsprite(PSP_WEAPON).frame,int.MAX,-26,-4
 
 		destheight=screenheight*yscale*modscale;
 		destwidth=(destheight*picwidth/picheight)*xscale;
-		xpos=screenwidth*(0.5+bob.x);
+		xpos=screenwidth*0.5+screenheight*bob.x;
 		ypos=screenheight*(fypos+bob.y)+destheight;
 
 		fclipbottom=0.5+(fclipbottom-0.5)*modscale;
-		fcliptop=0.5-(fcliptop-0.5)*modscale;
-		fclipleft=0.5-(fclipleft-0.5)*modscale;
+		fcliptop=0.5+(fcliptop-0.5)*modscale;
+		fclipleft=0.5+(fclipleft-0.5)*modscale;
 		fclipright=0.5+(fclipright-0.5)*modscale;
 
 		clipbottom=screenheight*fclipbottom+screenheight*bob.y;
@@ -187,14 +187,14 @@ if(hd_debug)sb.drawwepnum(hpl.player.getpsprite(PSP_WEAPON).frame,int.MAX,-26,-4
 		clipright=screenwidth*fclipright+screenheight*bob.x;
 
 		if(drawnow)screen.drawtexture(
-			sightpic,false,
+			pic,false,
 			xpos,ypos,
 			DTA_CenterBottomOffset,true,
 			DTA_DestWidth,destwidth,DTA_DestHeight,destheight,
+			DTA_ClipLeft,clipleft,
+			DTA_ClipRight,clipright,
 			DTA_ClipTop,cliptop,
 			DTA_ClipBottom,clipbottom
-			DTA_ClipLeft,clipleft,
-			DTA_ClipRight,clipright
 		);
 
 		return
@@ -243,16 +243,11 @@ sightpic=texman.checkfortexture("bal1a0",texman.type_any);
 			0.04,
 			0.9,
 			fclipbottom:0.518,
-			bob:bob
+			fclipleft:0.497,
+			fclipright:0.503,
+			bob:bob,
+			drawnow:true
 		);
-		screen.drawtexture(
-			sightpic,false,
-			xpos,ypos,
-			DTA_CenterBottomOffset,true,
-			DTA_DestWidth,destwidth,DTA_DestHeight,destheight,
-			DTA_ClipBottom,clipbottom
-		);
-		return;
 	}
 	override void DropOneAmmo(int amt){
 		if(owner){
