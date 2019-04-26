@@ -269,7 +269,10 @@ class HDFist:HDWeapon replaces Fist{
 			}
 		}
 		double massfactor=max(1.,grabbed.mass*(1./200.));
-		if(massfactor>7.)return;
+		if(massfactor>7.){
+			A_ClearGrabbing();
+			return;
+		}
 
 		double grangle=grabbed.angle*2;
 		grabbed.A_SetAngle((grabangle+grangle)*0.333333333333333,SPF_INTERPOLATE);
