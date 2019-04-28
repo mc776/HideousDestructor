@@ -147,6 +147,26 @@ class HDPlayerCorpse:HDActor{
 		monster; -countkill +solid +friendly
 		height 52;radius 12;health 100;mass 160;
 	}
+	override void Tick(){
+		let ppp=hdplayerpawn(master);
+		if(
+			ppp
+			&&ppp.health>0
+		){
+			ppp.regenblues=0;
+			ppp.woundcount=0;
+			ppp.oldwoundcount=0;
+			ppp.unstablewoundcount=0;
+			ppp.burncount=0;
+			ppp.aggravateddamage=0;
+			ppp.stunned=0;
+			ppp.bledout=0;
+			ppp.playercorpse=null;
+			ppp.levelreset();
+			master=null;
+		}
+		super.Tick();
+	}
 	states{
 	spawn:
 		#### A -1;// nodelay A_Die();
