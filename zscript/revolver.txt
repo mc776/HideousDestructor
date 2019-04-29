@@ -249,8 +249,12 @@ sightpic=texman.checkfortexture("bal1a0",texman.type_any);
 			bob:bob,
 			drawnow:true
 		);
+		string numtxt="-12.34";
+		destheight=6*screenwidth*0.0016;
 		screen.drawtext(
-			"NUMFONT_DOOM",Font.CR_DARKGRAY,screenwidth*0.5,ypos,"-12.34"
+			"NUMFONT_DOOM",Font.CR_DARKGRAY,screenwidth*0.5,ypos,numtxt,
+			DTA_CellY,destheight,
+			DTA_CellX,destheight*screenheight/screenwidth
 		);
 	}
 	override void DropOneAmmo(int amt){
