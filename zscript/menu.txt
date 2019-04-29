@@ -217,7 +217,7 @@ class HDLoadoutMenu:GenericMenu{
 						else if(inp~=="-")inp="_";
 						else if(inp~=="=")inp="+";
 						else inp.toupper();
-					}else inp.tolower();
+					}else inp.makelower();
 					workingstring=workingstring.left(cursx)..inp..workingstring.mid(cursx);
 					//workingstring=ev.keychar.."   "..workingstring; //debug
 					cursx++;
@@ -630,7 +630,7 @@ class HDNewGameLoadoutMenu:HDLoadoutMenu{
 		vcurs+=BigFont.GetHeight();
 
 		string ws=loadoutdisplaystring;
-		while(ws.charat(0)==" ")ws=ws.mid(1);
+		while(ws.byteat(0)==" ")ws=ws.mid(1);
 
 		if(ws=="")ws="<nothing>";
 
