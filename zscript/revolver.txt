@@ -211,6 +211,7 @@ if(hd_debug)sb.drawwepnum(hpl.player.getpsprite(PSP_WEAPON).frame,int.MAX,-26,-4
 		HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl,
 		bool sightbob,vector2 bob,double fov,bool scopeview,actor hpc,string whichdot
 	){
+		double fvscl=90.*sb.hd_xhscale.getfloat()/fov;
 		int 
 			xpos,
 			ypos,
@@ -250,7 +251,7 @@ sightpic=texman.checkfortexture("bal1a0",texman.type_any);
 			drawnow:true
 		);
 		string numtxt="-12.34";
-		destheight=6*screenwidth*0.0016;
+		destheight=6*screenwidth*0.0016*fvscl;
 		screen.drawtext(
 			"NUMFONT_DOOM",Font.CR_DARKGRAY,screenwidth*0.5,ypos,numtxt,
 			DTA_CellY,destheight,
