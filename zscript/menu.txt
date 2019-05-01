@@ -200,33 +200,15 @@ class HDLoadoutMenu:GenericMenu{
 						}
 						return true;
 					}
-				}else if(ev.KeyChar){
-					if(ev.IsShift){
-						//there's got to be a better way to do this :(
-						if(inp~==";")inp=":";
-						else if(inp~=="1")inp="!";
-						else if(inp~=="2")inp="@";
-						else if(inp~=="3")inp="#";
-						else if(inp~=="4")inp="$";
-						else if(inp~=="5")inp="%";
-						else if(inp~=="6")inp="^";
-						else if(inp~=="7")inp="&";
-						else if(inp~=="8")inp="*";
-						else if(inp~=="9")inp="(";
-						else if(inp~=="0")inp=")";
-						else if(inp~=="-")inp="_";
-						else if(inp~=="=")inp="+";
-						else inp.makeupper();
-					}else inp.makelower();
-					workingstring=workingstring.left(cursx)..inp..workingstring.mid(cursx);
-					//workingstring=ev.keychar.."   "..workingstring; //debug
-					cursx++;
 				}
-				checkdifferent();
 				break;
 			}
-			translatedloadout=gettranslatedloadout(workingstring);
+		}else if(ev.Type==UIEvent.Type_Char){
+			workingstring=workingstring.left(cursx)..ev.KeyString..workingstring.mid(cursx);
+			cursx++;
 		}
+		checkdifferent();
+		translatedloadout=gettranslatedloadout(workingstring);
 		return Super.OnUIEvent(ev);
 	}
 	void StatusText(string input,int timer=70){

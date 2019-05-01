@@ -92,9 +92,8 @@ class HDBackpack:HDWeapon{
 			whichitem[i]=whichitem[i].left(3);
 		}
 		for(int i=0;i<whichitem.size();i++){
-			string ref=whichitem[i];
+			string ref=whichitem[i].makelower();
 			if(ref=="")continue;
-			ref.makelower();
 			int refindex=refids.find(ref);
 			if(refindex>=refids.size())continue;
 
