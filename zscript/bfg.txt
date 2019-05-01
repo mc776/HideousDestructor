@@ -15,7 +15,7 @@ class BFG9K:HDWeapon replaces BFG9000{
 		weapon.bobspeed 1.8;
 		weapon.bobstyle "normal";
 		scale 0.7;
-		inventory.pickupmessage "You got the BFG 9000! Oh yes.";
+		inventory.pickupmessage "You got the BFG 9k! Oh yes.";
 		hdweapon.barrelsize 32,3.5,7;
 		hdweapon.refid HDLD_BFG;
 		hdweapon.nicename "BFG 9k";
@@ -607,7 +607,6 @@ class BFGBalle:HDFireball{
 			actor itt=it.thing;
 			if(
 				(itt.bismonster||itt.player)
-				&&!(itt is "Archfiend")
 				&&itt!=target
 				&&itt.health>0    
 				&&!target.isfriend(itt)
@@ -615,7 +614,7 @@ class BFGBalle:HDFireball{
 				&&checksight(itt)
 			){
 				A_Face(itt,0,0);
-				int hhh=itt.health;
+				int hhh=min(itt.health,4096);
 				for(int i=0;i<hhh;i+=1024){
 					A_CustomRailgun((0),0,"","55 ff 88",
 						RGF_CENTERZ|RGF_SILENT|RGF_NOPIERCING|RGF_FULLBRIGHT,
