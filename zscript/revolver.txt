@@ -488,9 +488,9 @@ sightpic=texman.checkfortexture("bal1a0",texman.type_any);
 		REVG B 1 offset(0,34) A_ClearRefire();
 		REVG B 2 offset(0,36) A_RotateCylinder();
 	cocked:
-		REVG B 0 A_WeaponReady(WRF_NOFIRE);
-		REVG B 0 A_JumpIf(justpressed(BT_ALTATTACK),"uncock");
-		REVG B 1 A_JumpIf(justpressed(BT_ATTACK),"hammertime");
+		REVG G 0 A_WeaponReady(WRF_NOFIRE);
+		REVG G 0 A_JumpIf(justpressed(BT_ALTATTACK),"uncock");
+		REVG G 1 A_JumpIf(justpressed(BT_ATTACK),"hammertime");
 		loop;
 	uncock:
 		REVG A 1 offset(0,34);
