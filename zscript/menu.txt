@@ -338,18 +338,18 @@ class HDLoadoutMenu:GenericMenu{
 			OptionMenuSettings.mTitleColor,
 			(screen.GetWidth() - BigFont.StringWidth(hs) * CleanXfac_1) / 2,
 			vcurs,
-			hs,DTA_CleanNoMove_1, true
+			hs,DTA_CleanNoMove_1,true
 		);
-		vcurs+=BigFont.GetHeight();
+		vcurs+=BigFont.GetHeight()+NewSmallFont.GetHeight()*0.5;
 
-		hs="\cgSyntax:   \cazzzz#xxx n, yyy n - yyy n\n\cazzzz\cu preview picture (optional)\n\caxxx\cu starting weapon   \cayyy\cu anything else\n\can\cu number given\cu (optional, default 1)\n\ca-\cu begin backpack settings (use \cabak\cu for empty)\n\camap\cu for map   \cakey\cu for keys (bitflag BYR)\n\n\cdENTER\cu save   \cdESC\cu clear changes   \cdCtrl+R\cu reset";
-		screen.DrawText(SmallFont,
+		hs="\cgSyntax:   \cazzzz#aaaa:xxx n, yyy n - yyy n\n\cazzzz\cu name (optional)   \caaaaa\cu preview picture (optional)\n\caxxx\cu starting weapon   \cayyy\cu anything else\n\can\cu number given\cu (optional, default 1)\n\ca-\cu begin backpack settings (use \cabak\cu for empty)\n\camap\cu for map   \cakey\cu for keys (bitflag BYR)\n\n\cdENTER\cu save   \cdESC\cu clear changes   \cdCtrl+R\cu reset";
+		screen.DrawText(NewSmallFont,
 			OptionMenuSettings.mFontColor,
-			(screen.GetWidth() - SmallFont.StringWidth(hs) * CleanXfac_1) / 2,
+			(screen.GetWidth() - NewSmallFont.StringWidth(hs) * CleanXfac_1) / 2,
 			vcurs*CleanYfac_1,
 			hs,DTA_CleanNoMove_1, true
 		);
-		vcurs+=SmallFont.GetHeight()*10;
+		vcurs+=NewSmallFont.GetHeight()*10;
 
 		string ws=workingstring;
 		int tempcursx=cursx;
