@@ -93,11 +93,13 @@ class BossRifle:HDWeapon{
 		if(weaponstatus[BOSSS_CHAMBER]>2&&!random(0,7))weaponstatus[BOSSS_CHAMBER]-=2;
 	}
 	int jamchance(){
-		return
+		int jc=
 		weaponstatus[BOSSS_GRIME]
 		+(weaponstatus[BOSSS_HEAT]>>2)
 		+weaponstatus[BOSSS_CHAMBER]
 		;
+		if(weaponstatus[0]&BOSSF_CUSTOMCHAMBER)return jc>>5;
+		return jc;
 	}
 	override string,double getpickupsprite(){return "BORFA0",1.;}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
@@ -255,7 +257,7 @@ class BossRifle:HDWeapon{
 
 			actor p=spawn("HDBullet776",pos+(0,0,height-6),ALLOW_REPLACE);
 			p.target=self;p.angle=angle;p.pitch=pitch;
-			p.speed*=(invoker.weaponstatus[0]&BOSSF_CUSTOMCHAMBER)?1.06:1.27;
+			p.speed*=(invoker.weaponstatus[0]&BOSSF_CUSTOMCHAMBER)?1.01:1.27;
 			p.vel+=self.vel;
 			p.pitch-=(1./600.)*invoker.weaponstatus[BOSSS_DROPADJUST];
 
