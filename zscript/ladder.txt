@@ -148,7 +148,13 @@ class hdladderbottom:hdactor{
 		);
 
 		if(currentuser){
-			if(currentuser.health<1){disengageladder(false);return;}
+			if(
+				currentuser.health<1
+				||(
+					hdplayerpawn(currentuser)
+					&&hdplayerpawn(currentuser).incapacitated
+				)
+			){disengageladder(false);return;}
 
 
 			//check if facing the ladder
