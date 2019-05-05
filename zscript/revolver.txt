@@ -105,7 +105,7 @@ if(hd_debug)sb.drawwepnum(hpl.player.getpsprite(PSP_WEAPON).frame,int.MAX,-26,-4
 			double drawangle=-i*(360./6.);
 			if(
 				plf!=1
-				&&plf!=4
+				&&plf!=6
 			)drawangle-=(360./12.);
 			vector2 cylpos;
 			if(plf==2){
@@ -437,11 +437,21 @@ sightpic=texman.checkfortexture("bal1a0",texman.type_any);
 	}
 	action void A_RoundReady(int layer){
 		//get the main weapon sprite frame
-		//A-B,F: TNT1A0
-		//C: swinging out
-		//D: swung out
-		//E: swung out midframe
+		//A-C,G: TNT1A0
+		//D: swinging out
+		//E: swung out
+		//F: swung out midframe
 	}
+
+//
+	A normal ready
+	B ready cylinder midframe
+	C hammer fully cocked (maybe renumber these lol)
+	D recoil frame
+	E cylinder swinging out - left hand passing to right
+	F cylinder swung out - held in right hand, working chamber in middle
+	G cylinder swung out midframe
+//
 	states{
 	spawn:
 		TNT1 A 0;
@@ -457,12 +467,12 @@ sightpic=texman.checkfortexture("bal1a0",texman.type_any);
 		---- A 1 A_Raise(20);
 		wait;
 	deselect0:
-		REVG F 0 A_JumpIf(!invoker.cylinderopen,"deselect0a");
-		REVG C 2;
+		REVG D 0 A_JumpIf(!invoker.cylinderopen,"deselect0a");
+		REVG E 2;
 		REVG A 0 A_CloseCylinder();
 		goto deselect0a;
 	deselect0a:
-		REVG AF 1 A_Lower();
+		REVG AD 1 A_Lower();
 		---- A 1 A_Lower(20);
 		---- A 1 A_Lower(34);
 		---- A 1 A_Lower(50);
@@ -474,7 +484,7 @@ sightpic=texman.checkfortexture("bal1a0",texman.type_any);
 		goto readyend;
 	fire:
 		REVG B 1 offset(0,34);
-		REVG B 2 offset(0,36) A_RotateCylinder();
+		REVG C 2 offset(0,36) A_RotateCylinder();
 		REVG A 0 offset(0,32) A_Refire("hammertime");
 		goto ready;
 	hammertime:
@@ -488,9 +498,9 @@ sightpic=texman.checkfortexture("bal1a0",texman.type_any);
 		REVG B 1 offset(0,34) A_ClearRefire();
 		REVG B 2 offset(0,36) A_RotateCylinder();
 	cocked:
-		REVG G 0 A_WeaponReady(WRF_NOFIRE);
-		REVG G 0 A_JumpIf(justpressed(BT_ALTATTACK),"uncock");
-		REVG G 1 A_JumpIf(justpressed(BT_ATTACK),"hammertime");
+		REVG C 0 A_WeaponReady(WRF_NOFIRE);
+		REVG C 0 A_JumpIf(justpressed(BT_ALTATTACK),"uncock");
+		REVG C 1 A_JumpIf(justpressed(BT_ATTACK),"hammertime");
 		loop;
 	uncock:
 		REVG A 1 offset(0,34);
@@ -499,36 +509,36 @@ sightpic=texman.checkfortexture("bal1a0",texman.type_any);
 		goto nope;
 	reload:
 	unload:
-		REVG C 3 A_OpenCylinder();
+		REVG E 3 A_OpenCylinder();
 		goto readyopen;
 	readyopen:
-		REVG D 1 A_ReadyOpen();
+		REVG F 1 A_ReadyOpen();
 		goto readyend;
 	open_rotatecylinder:
-		REVG E 2 A_RotateCylinder(!pressingzoom());
-		REVG D 2 A_JumpIf(!pressingaltfire(),"readyopen");
+		REVG G 2 A_RotateCylinder(!pressingzoom());
+		REVG F 2 A_JumpIf(!pressingaltfire(),"readyopen");
 		loop;
 	open_loadround:
-		REVG D 2;
-		REVG D 1 A_LoadRound();
+		REVG F 2;
+		REVG F 1 A_LoadRound();
 		goto open_rotatecylinder;
 	open_closecylinder:
-		REVG C 2;
+		REVG E 2;
 		REVG A 0 A_CloseCylinder();
 		goto nope;
 	open_dumpcylinder:
-		REVG D 3 A_HitExtractor();
+		REVG F 3 A_HitExtractor();
 		goto readyopen;
 	open_dumpcylinder_all:
 		REVG D 1 offset(0,34);
-		REVG D 1 offset(0,42);
-		REVG D 1 offset(0,54);
-		REVG D 1 offset(0,68);
+		REVG F 1 offset(0,42);
+		REVG F 1 offset(0,54);
+		REVG F 1 offset(0,68);
 		TNT1 A 6 A_ExtractAll();
-		REVG D 1 offset(0,68);
-		REVG D 1 offset(0,54);
-		REVG D 1 offset(0,42);
-		REVG D 1 offset(0,34);
+		REVG F 1 offset(0,68);
+		REVG F 1 offset(0,54);
+		REVG F 1 offset(0,42);
+		REVG F 1 offset(0,34);
 		goto readyopen;
 	}
 }
@@ -546,6 +556,8 @@ enum DeinovolverStats{
 	BUGS_NINEMIL=2,
 	BUGS_MASTERBALLSPENT=3,
 	BUGS_MASTERBALL=4,
+
+	BUGF_RIGHTHANDED=1,
 }
 class HDBullet355:HDBullet{
 	default{
