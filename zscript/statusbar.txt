@@ -170,6 +170,9 @@ class HDStatusBar:DoomStatusBar{
 		if(idmypos)drawmypos();
 	}
 	void DrawAutomapStuff(){
+		SetSize(0,480,300);
+		BeginHUD();
+
 		//KEYS!
 		if(hpl.countinv("BlueCard"))drawimage("BKEYB0",(10,24),DI_TOPLEFT);
 		if(hpl.countinv("YellowCard"))drawimage("YKEYB0",(10,44),DI_TOPLEFT);
