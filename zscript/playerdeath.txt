@@ -130,6 +130,16 @@ extend class HDPlayerPawn{
 		}
 		return ad;
 	}
+	void healthreset(){
+		regenblues=0;
+		woundcount=0;
+		oldwoundcount=0;
+		unstablewoundcount=0;
+		burncount=0;
+		aggravateddamage=0;
+		stunned=0;
+		bledout=0;
+	}
 }
 
 
@@ -153,15 +163,8 @@ class HDPlayerCorpse:HDActor{
 			ppp
 			&&ppp.health>0
 		){
-			ppp.regenblues=0;
-			ppp.woundcount=0;
-			ppp.oldwoundcount=0;
-			ppp.unstablewoundcount=0;
-			ppp.burncount=0;
-			ppp.aggravateddamage=0;
-			ppp.stunned=0;
-			ppp.bledout=0;
 			ppp.playercorpse=null;
+			ppp.healthreset();
 			ppp.levelreset();
 			master=null;
 		}
