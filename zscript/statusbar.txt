@@ -739,9 +739,9 @@ class HDStatusBar:DoomStatusBar{
 	void drawselectedweapon(int posx,int posy,int flags){
 		let w=hdweapon(cplayer.readyweapon);
 		if(!w)return;
-		string wx;double ws;
+		string wx;double ws=1.;
 		[wx,ws]=w.getpickupsprite();
-		if(wx!="")drawimage(wx,(posx,posy),flags,scale:(ws,ws));
+		if(wx!="")drawimage(wx,(posx,posy),flags,scale:ws?(ws,ws):(1.,1.));
 	}
 	array<string> wepsprites;
 	array<double> wepspritescales;
