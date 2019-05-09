@@ -417,7 +417,7 @@ class HDBlueBottler:HDWoundFixer{
 			A_PlaySound("weapons/grenopen",CHAN_WEAPON);
 			A_Refire();
 		}
-		TNT1 A 0 A_PlaySound("misc/potion",CHAN_WEAPON);
+		TNT1 A 0 A_PlaySound("potion/swish",CHAN_WEAPON);
 		goto nope;
 	hold:
 		TNT1 A 1;
@@ -442,7 +442,7 @@ class HDBlueBottler:HDWoundFixer{
 			A_TakeInventory("BluePotion",1);
 			A_SetBlend("5a 6a a0",0.1,8);
 			A_SetPitch(pitch-2,SPF_INTERPOLATE);
-			A_PlaySound("misc/gibbed",CHAN_VOICE);
+			A_PlaySound("potion/chug",CHAN_VOICE);
 			let onr=HDPlayerPawn(self);
 			if(onr)onr.regenblues+=144;
 		}
