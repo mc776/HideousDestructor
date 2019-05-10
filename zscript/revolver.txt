@@ -502,9 +502,8 @@ class BugerDeinonychus:HDWeapon{
 		---- A 1 A_Lower(50);
 		wait;
 	ready:
-		TNT1 A 0; //so I can test this before we have the sprites
 		REVG A 0 A_JumpIf(invoker.cylinderopen,"readyopen");
-		RRVG A 1 A_WeaponReady(WRF_ALLOWRELOAD|WRF_ALLOWUSER3|WRF_ALLOWUSER4);
+		REVG A 1 A_WeaponReady(WRF_ALLOWRELOAD|WRF_ALLOWUSER3|WRF_ALLOWUSER4);
 		goto readyend;
 	fire:
 		#### B 1 offset(0,34);
