@@ -1,7 +1,50 @@
 // ------------------------------------------------------------
 // Pistol
 // ------------------------------------------------------------
-class HDPistol:HDWeapon replaces Pistol{
+class HDHandgun:HDWeapon{
+	bool wronghand;
+	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
+	override hdweapon GetSpareWeapon(actor newowner,bool reverse){return GetSpareWeaponRegular(newowner,reverse);}
+	action void A_SwapHandguns(){
+		let mwt=SpareWeapons(findinventory("SpareWeapons"));
+		if(!mwt){
+			setweaponstate("nope");
+			return;
+		}
+		int pistindex=mwt.weapontype.find(invoker.getclassname());
+		if(pistindex==mwt.weapontype.size()){
+			setweaponstate("nope");
+			return;
+		}
+		A_WeaponBusy();
+		int bk=mwt.weaponstatus0[pistindex];
+		mwt.weaponstatus0[pistindex]=invoker.weaponstatus[0];
+		invoker.weaponstatus[0]=bk;
+		bk=mwt.weaponstatus1[pistindex];
+		mwt.weaponstatus1[pistindex]=invoker.weaponstatus[1];
+		invoker.weaponstatus[1]=bk;
+		bk=mwt.weaponstatus2[pistindex];
+		mwt.weaponstatus2[pistindex]=invoker.weaponstatus[2];
+		invoker.weaponstatus[2]=bk;
+		bk=mwt.weaponstatus3[pistindex];
+		mwt.weaponstatus3[pistindex]=invoker.weaponstatus[3];
+		invoker.weaponstatus[3]=bk;
+		bk=mwt.weaponstatus4[pistindex];
+		mwt.weaponstatus4[pistindex]=invoker.weaponstatus[4];
+		invoker.weaponstatus[4]=bk;
+		bk=mwt.weaponstatus5[pistindex];
+		mwt.weaponstatus5[pistindex]=invoker.weaponstatus[5];
+		invoker.weaponstatus[5]=bk;
+		bk=mwt.weaponstatus6[pistindex];
+		mwt.weaponstatus6[pistindex]=invoker.weaponstatus[6];
+		invoker.weaponstatus[6]=bk;
+		bk=mwt.weaponstatus7[pistindex];
+		mwt.weaponstatus7[pistindex]=invoker.weaponstatus[7];
+		invoker.weaponstatus[7]=bk;
+		invoker.wronghand=!invoker.wronghand;
+	}
+}
+class HDPistol:HDHandgun replaces Pistol{
 	default{
 		+hdweapon.fitsinbackpack
 		+hdweapon.reverseguninertia
@@ -20,9 +63,6 @@ class HDPistol:HDWeapon replaces Pistol{
 		hdweapon.barrelsize 10,0.3,0.5;
 		inventory.maxamount 3;
 	}
-	bool wronghand;
-	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
-	override hdweapon GetSpareWeapon(actor newowner,bool reverse){return GetSpareWeaponRegular(newowner,reverse);}
 	override double weaponbulk(){
 		int mgg=weaponstatus[PISS_MAG];
 		return 30+(mgg<0?0:(ENC_9MAG_LOADED+mgg*ENC_9_LOADED));
@@ -386,44 +426,7 @@ class HDPistol:HDWeapon replaces Pistol{
 
 	user1:
 	swappistols:
-		---- A 0{
-			let mwt=SpareWeapons(findinventory("SpareWeapons"));
-			if(!mwt){
-				setweaponstate("nope");
-				return;
-			}
-			int pistindex=mwt.weapontype.find(invoker.getclassname());
-			if(pistindex==mwt.weapontype.size()){
-				setweaponstate("nope");
-				return;
-			}
-			A_WeaponBusy();
-			int bk=mwt.weaponstatus0[pistindex];
-			mwt.weaponstatus0[pistindex]=invoker.weaponstatus[0];
-			invoker.weaponstatus[0]=bk;
-			bk=mwt.weaponstatus1[pistindex];
-			mwt.weaponstatus1[pistindex]=invoker.weaponstatus[1];
-			invoker.weaponstatus[1]=bk;
-			bk=mwt.weaponstatus2[pistindex];
-			mwt.weaponstatus2[pistindex]=invoker.weaponstatus[2];
-			invoker.weaponstatus[2]=bk;
-			bk=mwt.weaponstatus3[pistindex];
-			mwt.weaponstatus3[pistindex]=invoker.weaponstatus[3];
-			invoker.weaponstatus[3]=bk;
-			bk=mwt.weaponstatus4[pistindex];
-			mwt.weaponstatus4[pistindex]=invoker.weaponstatus[4];
-			invoker.weaponstatus[4]=bk;
-			bk=mwt.weaponstatus5[pistindex];
-			mwt.weaponstatus5[pistindex]=invoker.weaponstatus[5];
-			invoker.weaponstatus[5]=bk;
-			bk=mwt.weaponstatus6[pistindex];
-			mwt.weaponstatus6[pistindex]=invoker.weaponstatus[6];
-			invoker.weaponstatus[6]=bk;
-			bk=mwt.weaponstatus7[pistindex];
-			mwt.weaponstatus7[pistindex]=invoker.weaponstatus[7];
-			invoker.weaponstatus[7]=bk;
-			invoker.wronghand=!invoker.wronghand;
-		}
+		---- A 0 A_SwapHandguns();
 		#### A 1 offset(0,40);
 		#### A 1 offset(0,52);
 		#### A 0 A_JumpIf(!invoker.wronghand,"swappistols2");

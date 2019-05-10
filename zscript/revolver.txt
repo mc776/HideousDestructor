@@ -50,9 +50,7 @@ class HDRevolver:HDWeapon{
 
 
 
-const HDLD_REVOLVER="rev";
-const HDLD_355="355";
-class BugerDeinonychus:HDWeapon{
+class BugerDeinonychus:HDHandgun{
 	bool cylinderopen; //don't use weaponstatus since it shouldn't be saved anyway
 	default{
 		+hdweapon.fitsinbackpack
@@ -134,6 +132,7 @@ class BugerDeinonychus:HDWeapon{
 		return
 		WEPHELP_FIRESHOOT
 		..WEPHELP_ALTFIRE.." Pull back hammer\n"
+		..WEPHELP_ALTRELOAD.."  Quick-Swap (if available)\n"
 		..WEPHELP_UNLOAD.."/"..WEPHELP_RELOAD.." Open cylinder\n"
 		;
 	}
@@ -271,6 +270,19 @@ class BugerDeinonychus:HDWeapon{
 		weaponstatus[BUGS_CYL6]=BUGS_MASTERBALL;
 	}
 
+	action void A_CheckRevolverHand(){
+		bool righthanded=invoker.wronghand;
+		righthanded=
+		(
+			righthanded
+			&&Wads.CheckNumForName("id",0)!=-1
+		)||(
+			!righthanded
+			&&Wads.CheckNumForName("id",0)==-1
+		);
+		if(righthanded)player.getpsprite(PSP_WEAPON).sprite=getspriteindex("RRVGA0");
+		else player.getpsprite(PSP_WEAPON).sprite=getspriteindex("REVGA0");
+	}
 	action void A_RotateCylinder(bool clockwise=true){
 		invoker.RotateCylinder(clockwise);
 		A_PlaySound("weapons/deinocyl",5);
@@ -474,8 +486,9 @@ class BugerDeinonychus:HDWeapon{
 	round5:RVR5 A 1 A_RoundReady(BUGS_CYL5);wait;
 	round6:RVR6 A 1 A_RoundReady(BUGS_CYL6);wait;
 	select0:
-		TNT1 A 0; //so I can test this before we have the sprites
 		REVG A 0{
+			if(countinv("NulledWeapon"))invoker.wronghand=false;
+			else A_CheckRevolverHand();
 			invoker.cylinderopen=false;
 			A_Overlay(BUGS_OVRCYL+BUGS_CYL1,"round1");
 			A_Overlay(BUGS_OVRCYL+BUGS_CYL2,"round2");
@@ -491,19 +504,22 @@ class BugerDeinonychus:HDWeapon{
 		---- A 1 A_Raise(20);
 		wait;
 	deselect0:
-		REVG D 0 A_JumpIf(!invoker.cylinderopen,"deselect0a");
+		REVG A 0 A_CheckRevolverHand();
+		#### D 0 A_JumpIf(!invoker.cylinderopen,"deselect0a");
 		REVG E 2;
 		REVG A 0 A_CloseCylinder();
+		REVG A 0 A_CheckRevolverHand();
 		goto deselect0a;
 	deselect0a:
-		REVG AD 1 A_Lower();
+		#### AD 1 A_Lower();
 		---- A 1 A_Lower(20);
 		---- A 1 A_Lower(34);
 		---- A 1 A_Lower(50);
 		wait;
 	ready:
-		REVG A 0 A_JumpIf(invoker.cylinderopen,"readyopen");
-		REVG A 1 A_WeaponReady(WRF_ALLOWRELOAD|WRF_ALLOWUSER3|WRF_ALLOWUSER4);
+		REVG A 0 A_CheckRevolverHand();
+		#### A 0 A_JumpIf(invoker.cylinderopen,"readyopen");
+		#### A 1 A_WeaponReady(WRF_ALLOWRELOAD|WRF_ALLOWUSER1|WRF_ALLOWUSER3|WRF_ALLOWUSER4);
 		goto readyend;
 	fire:
 		#### B 1 offset(0,34);
@@ -517,6 +533,8 @@ class BugerDeinonychus:HDWeapon{
 		goto nope;
 	flash:
 		REVF A 1 bright;
+		stop;
+		RRVG ABCD 0;
 		stop;
 	altfire:
 		#### B 1 offset(0,34) A_ClearRefire();
@@ -564,6 +582,21 @@ class BugerDeinonychus:HDWeapon{
 		REVG F 1 offset(0,42);
 		REVG F 1 offset(0,34);
 		goto readyopen;
+
+	user1:
+	swappistols:
+		---- A 0 A_SwapHandguns();
+		#### D 1 offset(0,40);
+		#### D 1 offset(0,52);
+		#### D 0 A_JumpIf(player.getpsprite(PSP_WEAPON).sprite==getspriteindex("RRVGA0"),"swappistols2");
+	swappistols1:
+		RR3G AB 1;
+		RRVG D 1 offset(0,40);
+		goto nope;
+	swappistols2:
+		RR4G AB 1;
+		REVG D 1 offset(0,40);
+		goto nope;
 	}
 }
 enum DeinovolverStats{
