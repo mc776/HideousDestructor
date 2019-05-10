@@ -435,12 +435,25 @@ sightpic=texman.checkfortexture("bal1a0",texman.type_any);
 		}
 		if(invoker.cooldown>0)invoker.cooldown--;
 	}
-	action void A_RoundReady(int layer){
-		//get the main weapon sprite frame
-		//A-C,G: TNT1A0
-		//D: swinging out
-		//E: swung out
-		//F: swung out midframe
+	action void A_RoundReady(int rndnm){
+		int gunframe=-1;
+		if(invoker.weaponstatus[rndnm]>0)gunframe=player.getpsprite(PSP_WEAPON).frame;
+		let thissprite=player.getpsprite(BUGS_OVRCYL+rndnm);
+		switch(gunframe){
+		case 4: //E
+			thissprite.frame=0;
+			break;
+		case 5: //F
+			thissprite.frame=1;
+			break;
+		case 6: //G
+			thissprite.frame=2;
+			break;
+		default:
+			thissprite.sprite=getspriteindex("TNT1A0");
+			thissprite.frame=0;
+			return;break;
+		}
 	}
 
 /*
@@ -457,9 +470,23 @@ sightpic=texman.checkfortexture("bal1a0",texman.type_any);
 		TNT1 A 0;
 		REVL A -1;
 		stop;
+	round1:RVR1 A 1 A_RoundReady(BUGS_CYL1);wait;
+	round2:RVR2 A 1 A_RoundReady(BUGS_CYL2);wait;
+	round3:RVR3 A 1 A_RoundReady(BUGS_CYL3);wait;
+	round4:RVR4 A 1 A_RoundReady(BUGS_CYL4);wait;
+	round5:RVR5 A 1 A_RoundReady(BUGS_CYL5);wait;
+	round6:RVR6 A 1 A_RoundReady(BUGS_CYL6);wait;
 	select0:
 		TNT1 A 0; //so I can test this before we have the sprites
-		REVG A 0{invoker.cylinderopen=false;}
+		REVG A 0{
+			invoker.cylinderopen=false;
+			A_Overlay(BUGS_OVRCYL+BUGS_CYL1,"round1");
+			A_Overlay(BUGS_OVRCYL+BUGS_CYL2,"round2");
+			A_Overlay(BUGS_OVRCYL+BUGS_CYL3,"round3");
+			A_Overlay(BUGS_OVRCYL+BUGS_CYL4,"round4");
+			A_Overlay(BUGS_OVRCYL+BUGS_CYL5,"round5");
+			A_Overlay(BUGS_OVRCYL+BUGS_CYL6,"round6");
+		}
 		---- A 1 A_Raise();
 		---- A 1 A_Raise(50);
 		---- A 1 A_Raise(50);
@@ -480,7 +507,7 @@ sightpic=texman.checkfortexture("bal1a0",texman.type_any);
 	ready:
 		TNT1 A 0; //so I can test this before we have the sprites
 		REVG A 0 A_JumpIf(invoker.cylinderopen,"readyopen");
-		REVG A 1 A_WeaponReady(WRF_ALLOWRELOAD|WRF_ALLOWUSER3|WRF_ALLOWUSER4);
+		REVG E 1 A_WeaponReady(WRF_ALLOWRELOAD|WRF_ALLOWUSER3|WRF_ALLOWUSER4);
 		goto readyend;
 	fire:
 		REVG B 1 offset(0,34);
@@ -551,6 +578,7 @@ enum DeinovolverStats{
 	BUGS_CYL4=4,
 	BUGS_CYL5=5,
 	BUGS_CYL6=6,
+	BUGS_OVRCYL=355,
 
 	//odd means spent
 	BUGS_NINEMILSPENT=1,
