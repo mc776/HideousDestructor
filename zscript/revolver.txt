@@ -489,10 +489,11 @@ sightpic=texman.checkfortexture("bal1a0",texman.type_any);
 		goto ready;
 	hammertime:
 		REVG A 1 A_FireRevolver();
-		REVG F 2 A_ClearRefire();
+		REVG D 2 A_ClearRefire();
+		REVG A 0;
 		goto nope;
 	flash:
-		REVF A 1;
+		REVF A 1 bright;
 		stop;
 	altfire:
 		REVG B 1 offset(0,34) A_ClearRefire();
