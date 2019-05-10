@@ -667,6 +667,13 @@ class HDWeapon:Weapon{
 		---- A 1{
 			A_ClearRefire();
 			A_WeaponReady(WRF_NOFIRE);
+			if(invoker.bweaponbusy){
+				let ppp=hdplayerpawn(self);
+				if(!ppp)return;
+				double hdbbx=(ppp.hudbobrecoil1.x+ppp.hudbob.x)*0.5;
+				double hdbby=max(0,(ppp.hudbobrecoil1.y+ppp.hudbob.y)*0.5+invoker.bobrangey*2);
+				A_WeaponOffset(hdbbx,hdbby+WEAPONTOP,WOF_INTERPOLATE);
+			}
 		}
 		---- A 0{
 			int inp=getplayerinput(MODINPUT_BUTTONS);
