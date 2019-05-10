@@ -551,6 +551,15 @@ class BugerDeinonychus:HDHandgun{
 		goto nope;
 	reload:
 	unload:
+		#### A 0 A_JumpIf(player.getpsprite(PSP_WEAPON).sprite==getspriteindex("RRVGA0"),"openup");
+		REVG A 1 offset(2,39);
+		REVG A 1 offset(4,50);
+		REVG A 1 offset(8,64);
+		REVG A 1 offset(10,86);
+		REVG E 1 offset(-6,56);
+		REVG E 1 offset(-2,40);
+		REVG E 1 offset(0,32);
+	openup:
 		REVG E 3 A_OpenCylinder();
 		goto readyopen;
 	readyopen:
@@ -565,9 +574,25 @@ class BugerDeinonychus:HDHandgun{
 		REVG F 1 A_LoadRound();
 		goto open_rotatecylinder;
 	open_closecylinder:
-		REVG E 2;
-		REVG A 0 A_CloseCylinder();
+		REVG E 2 A_JumpIf(pressingfire(),"open_fastclose");
+		REVG E 0 A_CloseCylinder();
+		REVG A 0 A_CheckRevolverHand();
+		#### A 0 A_JumpIf(player.getpsprite(PSP_WEAPON).sprite==getspriteindex("RRVGA0"),"nope");
+		REVG E 1 offset(0,32);
+		REVG E 1 offset(-2,40);
+		REVG E 1 offset(-6,56);
+		REVG A 1 offset(10,86);
+		REVG A 1 offset(8,64);
+		REVG A 1 offset(4,50);
+		REVG A 1 offset(2,39);
 		goto nope;
+	open_fastclose:
+		REVG E 2;
+		REVG A 0{
+			A_CloseCylinder();
+			invoker.wronghand=(Wads.CheckNumForName("id",0)!=-1);
+			A_CheckRevolverHand();
+		}goto nope;
 	open_dumpcylinder:
 		REVG F 3 A_HitExtractor();
 		goto readyopen;
