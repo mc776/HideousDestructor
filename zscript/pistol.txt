@@ -325,7 +325,7 @@ class HDPistol:HDHandgun replaces Pistol{
 			p.target=self;p.angle=angle;p.pitch=pitch;
 			if(p){
 				p.vel+=self.vel+(frandom(-2.,2.),frandom(-2.,2.),frandom(-2.,2.));
-				p.speed+=10*frandom(-2.,2.);
+				p.speed+=frandom(-20.,20.);
 			}
 			invoker.weaponstatus[PISS_CHAMBER]=1;
 			A_ZoomRecoil(0.995);
