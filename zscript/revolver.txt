@@ -401,8 +401,8 @@ class BugerDeinonychus:HDHandgun{
 		actor p=spawn(masterball?"HDBullet355":"HDBullet9",pos+(0,0,height-6),ALLOW_REPLACE);
 		p.target=self;p.angle=angle;p.pitch=pitch;
 		if(p){
-			p.vel+=self.vel+(frandom(-2.,2.),frandom(-2.,2.),frandom(-2.,2.));
-			p.speed+=10*frandom(-2.,2.);
+			p.vel+=self.vel+(frandom(-1.,1.),frandom(-1.,1.),frandom(-1.,1.));
+			p.speed+=frandom(-8.,8.);
 		}
 
 		A_GunFlash();
