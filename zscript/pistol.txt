@@ -1,6 +1,12 @@
 // ------------------------------------------------------------
 // Pistol
 // ------------------------------------------------------------
+class HDHandgunRandomDrop:RandomSpawner{
+	default{
+		dropitem "HDPistol",16,5;
+		dropitem "BugerDeinonychus",16,1;
+	}
+}
 class HDHandgun:HDWeapon{
 	bool wronghand;
 	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
