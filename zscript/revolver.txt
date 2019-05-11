@@ -550,7 +550,10 @@ class BugerDeinonychus:HDHandgun{
 		goto nope;
 	reload:
 	unload:
-		#### A 0 A_JumpIf(player.getpsprite(PSP_WEAPON).sprite==getspriteindex("RRVGA0"),"openup");
+		#### A 0 A_JumpIf(player.getpsprite(PSP_WEAPON).sprite!=getspriteindex("RRVGA0"),"openslow");
+		REVG E 3 A_OpenCylinder();
+		goto readyopen;
+	openslow:
 		REVG A 1 offset(2,39);
 		REVG A 1 offset(4,50);
 		REVG A 1 offset(8,64);
@@ -560,7 +563,6 @@ class BugerDeinonychus:HDHandgun{
 		REVG E 1 offset(-6,56);
 		REVG E 1 offset(-2,40);
 		REVG E 1 offset(0,32);
-	openup:
 		REVG E 1 A_OpenCylinder();
 		goto readyopen;
 	readyopen:
