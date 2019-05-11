@@ -495,7 +495,7 @@ class HERPUsable:HDWeapon{
 		weapon.selectionorder 1015;
 	}
 	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
-	override hdweapon GetSpareWeapon(actor newowner,bool reverse){return GetSpareWeaponRegular(newowner,reverse);}
+	override hdweapon GetSpareWeapon(actor newowner,bool reverse,bool doselect){return GetSpareWeaponRegular(newowner,reverse,doselect);}
 	override double gunmass(){
 		double amt=9+weaponstatus[HERP_BATTERY]<0?0:1;
 		if(weaponstatus[1]>=0)amt+=3.6;

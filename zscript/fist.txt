@@ -51,7 +51,7 @@ class HDFist:HDWeapon replaces Fist{
 		array<inventory> items;items.clear();
 		for(inventory item=owner.inv;item!=null;item=!item?null:item.inv){
 			if(
-				hdpickup(item)
+				inventory(item)
 				&&item.binvbar
 				&&item.species!="HealingItem"
 			){
@@ -59,12 +59,13 @@ class HDFist:HDWeapon replaces Fist{
 			}
 		}
 		if(!items.size()){
-			HDWoundFixer.DropMeds(owner,0);
+			if(!HDWoundFixer.DropMeds(owner,0))owner.A_DropInventory("SpareWeapons");
 			return null;
 		}
 		double aang=owner.angle;
 		double ch=items.size()?20.:0;
 		owner.angle-=ch*(items.size()-1)*0.5;
+		owner.player.cmd.buttons&=~BT_ZOOM;
 		for(int i=0;i<items.size();i++){
 			owner.a_dropinventory(items[i].getclassname(),items[i].amount);
 			owner.angle+=ch;

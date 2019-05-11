@@ -10,7 +10,7 @@ class HDShotgun:HDWeapon{
 		obituary "%o was shot with %k's gun.";
 	}
 	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
-	override hdweapon GetSpareWeapon(actor newowner,bool reverse){return GetSpareWeaponRegular(newowner,reverse);}
+	override hdweapon GetSpareWeapon(actor newowner,bool reverse,bool doselect){return GetSpareWeaponRegular(newowner,reverse,doselect);}
 	int handshells;
 	action void EmptyHand(int amt=-1,bool careful=false){
 		if(!amt)return;

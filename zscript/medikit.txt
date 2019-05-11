@@ -51,8 +51,8 @@ class HDWoundFixer:HDWeapon{
 		}
 		return 0;
 	}
-	static void DropMeds(actor caller,int amt=1){
-		if(!caller)return;
+	static bool DropMeds(actor caller,int amt=1){
+		if(!caller)return false;
 		array<inventory> items;items.clear();
 		for(inventory item=caller.inv;item!=null;item=!item?null:item.inv){
 			if(
@@ -62,6 +62,7 @@ class HDWoundFixer:HDWeapon{
 				items.push(item);
 			}
 		}
+		if(!items.size())return false;
 		double aang=caller.angle;
 		double ch=items.size()?20.:0;
 		caller.angle-=ch*(items.size()-1)*0.5;
@@ -70,6 +71,7 @@ class HDWoundFixer:HDWeapon{
 			caller.angle+=ch;
 		}
 		caller.angle=aang;
+		return true;
 	}
 	string injectoricon;property injectoricon:injectoricon;
 	class<inventory> injectortype;property injectortype:injectortype;

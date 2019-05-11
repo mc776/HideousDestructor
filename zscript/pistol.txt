@@ -4,7 +4,7 @@
 class HDHandgun:HDWeapon{
 	bool wronghand;
 	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
-	override hdweapon GetSpareWeapon(actor newowner,bool reverse){return GetSpareWeaponRegular(newowner,reverse);}
+	override hdweapon GetSpareWeapon(actor newowner,bool reverse,bool doselect){return GetSpareWeaponRegular(newowner,reverse,doselect);}
 	action void A_SwapHandguns(){
 		let mwt=SpareWeapons(findinventory("SpareWeapons"));
 		if(!mwt){

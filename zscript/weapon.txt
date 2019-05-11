@@ -188,9 +188,11 @@ class HDWeapon:Weapon{
 				)
 			)
 		);
+		bool isreadyweapon=onr&&onr.player&&onr.player.readyweapon==self;
+		if(!isreadyweapon)throw=false;
 		let thrown=super.createtossable(amount);
 		if(!thrown)return null;
-		let newwep=GetSpareWeapon(onr);
+		let newwep=GetSpareWeapon(onr,doselect:isreadyweapon);
 		hdweapon(thrown).bjustchucked=true;
 		thrown.target=onr;
 		if(throw){
@@ -861,7 +863,7 @@ class WeaponStashSwitcher:HDWeapon{
 }
 extend class HDWeapon{
 	//override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
-	//override hdweapon GetSpareWeapon(actor newowner,bool reverse){return GetSpareWeaponRegular(newowner,reverse);}
+	//override hdweapon GetSpareWeapon(actor newowner,bool reverse,bool doselect){return GetSpareWeaponRegular(newowner,reverse,doselect);}
 	virtual string AddSpareWeaponMisc(actor newowner){return "";}
 	virtual void ApplySpareWeaponMisc(string input){}
 	virtual bool AddSpareWeapon(actor newowner){return false;}
@@ -908,8 +910,8 @@ extend class HDWeapon{
 		destroy();
 		return true;
 	}
-	virtual hdweapon GetSpareWeapon(actor newowner,bool reverse=false){return null;}
-	hdweapon GetSpareWeaponRegular(actor newowner,bool reverse=false){
+	virtual hdweapon GetSpareWeapon(actor newowner,bool reverse=false,bool doselect=true){return null;}
+	hdweapon GetSpareWeaponRegular(actor newowner,bool reverse=false,bool doselect=true){
 		let mwt=SpareWeapons(newowner.findinventory("SpareWeapons"));
 		if(!mwt)return null;
 
@@ -954,7 +956,7 @@ extend class HDWeapon{
 		newwep.ApplySpareWeaponMisc(mwt.weaponmisc[getindex]);
 		mwt.weaponmisc.delete(getindex);
 		mwt.weaponbulk.delete(getindex);
-		HDWeaponSelector.Select(newowner,newwep.getclassname(),max(4,newwep.gunmass()));
+		if(doselect)HDWeaponSelector.Select(newowner,newwep.getclassname(),max(4,newwep.gunmass()));
 		return newwep;
 	}
 }
