@@ -441,12 +441,17 @@ class BugerDeinonychus:HDHandgun{
 		if(justpressed(BT_ALTATTACK))setweaponstate("open_rotatecylinder");
 		else if(justpressed(BT_RELOAD)){
 			if(
-				invoker.weaponstatus[BUGS_CYL1]>0
-				&&invoker.weaponstatus[BUGS_CYL2]>0
-				&&invoker.weaponstatus[BUGS_CYL3]>0
-				&&invoker.weaponstatus[BUGS_CYL4]>0
-				&&invoker.weaponstatus[BUGS_CYL5]>0
-				&&invoker.weaponstatus[BUGS_CYL6]>0
+				(
+					invoker.weaponstatus[BUGS_CYL1]>0
+					&&invoker.weaponstatus[BUGS_CYL2]>0
+					&&invoker.weaponstatus[BUGS_CYL3]>0
+					&&invoker.weaponstatus[BUGS_CYL4]>0
+					&&invoker.weaponstatus[BUGS_CYL5]>0
+					&&invoker.weaponstatus[BUGS_CYL6]>0
+				)||(
+					!countinv("HDPistolAmmo")
+					&&!countinv("HDRevolverAmmo")
+				)
 			)setweaponstate("open_closecylinder");
 			else setweaponstate("open_loadround");
 		}else if(justpressed(BT_ATTACK))setweaponstate("open_closecylinder");
