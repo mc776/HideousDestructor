@@ -10,11 +10,11 @@ class HDRevolver:HDWeapon{
 	}
 	states{
 	spawn:
-		REVO A 0 nodelay {target=players[0].mo;}
-		REVO A -1 A_JumpIf(target,"revolve");
+		REVL A 0 nodelay {target=players[0].mo;}
+		REVL A -1 A_JumpIf(target,"revolve");
 		stop;
 	revolve:
-		REVO A 1{
+		REVL A 1{
 			vel=(0,0,0);
 			if(!target){
 				A_Explode();
@@ -33,7 +33,7 @@ class HDRevolver:HDWeapon{
 			roll=stamina;
 		}wait;
 	ready:
-		REVO A 1 A_WeaponReady(WRF_NOSECONDARY);
+		REVL A 1 A_WeaponReady(WRF_NOSECONDARY);
 		goto readyend;
 	fire:
 		TNT1 A 1;
