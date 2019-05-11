@@ -555,11 +555,13 @@ class BugerDeinonychus:HDHandgun{
 		REVG A 1 offset(4,50);
 		REVG A 1 offset(8,64);
 		REVG A 1 offset(10,86);
+		REVG A 1 offset(12,96);
+		REVG E 1 offset(-7,66);
 		REVG E 1 offset(-6,56);
 		REVG E 1 offset(-2,40);
 		REVG E 1 offset(0,32);
 	openup:
-		REVG E 3 A_OpenCylinder();
+		REVG E 1 A_OpenCylinder();
 		goto readyopen;
 	readyopen:
 		REVG F 1 A_ReadyOpen();
@@ -580,6 +582,8 @@ class BugerDeinonychus:HDHandgun{
 		REVG E 1 offset(0,32);
 		REVG E 1 offset(-2,40);
 		REVG E 1 offset(-6,56);
+		REVG E 1 offset(-7,66);
+		REVG A 1 offset(12,96);
 		REVG A 1 offset(10,86);
 		REVG A 1 offset(8,64);
 		REVG A 1 offset(4,50);
@@ -596,7 +600,7 @@ class BugerDeinonychus:HDHandgun{
 		REVG F 3 A_HitExtractor();
 		goto readyopen;
 	open_dumpcylinder_all:
-		REVG D 1 offset(0,34);
+		REVG F 1 offset(0,34);
 		REVG F 1 offset(0,42);
 		REVG F 1 offset(0,54);
 		REVG F 1 offset(0,68);
