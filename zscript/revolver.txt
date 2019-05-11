@@ -681,5 +681,11 @@ class HD355BoxPickup:HDUPK{
 		3BOX A -1;
 	}
 }
+class DeinoSpawn:HD355BoxPickup{
+	override void postbeginplay(){
+		super.postbeginplay();
+		spawn("BugerDeinonychus",pos,ALLOW_REPLACE);
+	}
+}
 
 
