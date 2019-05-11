@@ -73,7 +73,13 @@ class BugerDeinonychus:HDHandgun{
 		return 9;
 	}
 	override double weaponbulk(){
-		return 32;
+		double blk=0;
+		for(int i=BUGS_CYL1;i<=BUGS_CYL6;i++){
+			int wi=weaponstatus[i];
+			if(wi==BUGS_MASTERBALL)blk+=ENC_9MAG_LOADED;
+			else if(wi==BUGS_NINEMIL)blk+=ENC_355_LOADED;
+		}
+		return blk+32;
 	}
 	override string,double getpickupsprite(){
 		return "REVLA0";
@@ -673,7 +679,7 @@ class HDRevolverAmmo:HDPistolAmmo{
 		inventory.pickupmessage "Picked up a .355 round.";
 		hdpickup.refid HDLD_355;
 		hdpickup.nicename ".355 Round";
-		hdpickup.bulk ENC_9*1.2;
+		hdpickup.bulk ENC_355;
 	}
 	override void GetItemsThatUseThis(){
 		itemsthatusethis.push("BugerDeinonychus");
