@@ -99,11 +99,7 @@ class BugerDeinonychus:HDHandgun{
 		int plf=hpl.player.getpsprite(PSP_WEAPON).frame;
 		for(int i=BUGS_CYL1;i<=BUGS_CYL6;i++){
 			string which=(hdw.weaponstatus[i]>0)?"YELOPXL":"DRKGRNPX";
-			double drawangle=i*(360./6.)-120;
-			if(
-				plf!=1
-				&&plf!=6
-			)drawangle-=(360./12.);
+			double drawangle=i*(360./6.)-150;
 			vector2 cylpos;
 			if(plf==4){
 				drawangle-=45.;
@@ -456,7 +452,7 @@ class BugerDeinonychus:HDHandgun{
 			thissprite.frame=1;
 			break;
 		case 6: //G
-			thissprite.frame=2;
+			thissprite.frame=pressingzoom()?3:2;
 			break;
 		default:
 			thissprite.sprite=getspriteindex("TNT1A0");
