@@ -957,8 +957,10 @@ class DERPController:HDWeapon{
 						justpressed(BT_ATTACK)
 					){
 						invoker.weaponstatus[DERPS_TIMER]+=4;
-						if(ddd.ammo>0)ddd.setstatelabel("noreallyfire");
-						else ddd.setstatelabel("noammo");
+						if(ddd.ammo>0){
+							ddd.setstatelabel("noreallyfire");
+							ddd.tics=2; //for some reason a 1-tic firing frame won't show
+						}else ddd.setstatelabel("noammo");
 						return;
 					}else if(
 						(
