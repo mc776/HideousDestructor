@@ -304,7 +304,10 @@ class BugerDeinonychus:HDHandgun{
 		if(
 			cyl!=BUGS_MASTERBALL
 			&&cyl!=BUGS_NINEMIL
-		)return;
+		){
+			A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
+			return;
+		}
 		invoker.weaponstatus[BUGS_CYL1]--;
 		bool masterball=cyl==BUGS_MASTERBALL;
 
