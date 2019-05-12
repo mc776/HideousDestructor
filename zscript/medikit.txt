@@ -552,11 +552,11 @@ class SecondFleshBeast:IdleDummy{
 		TNT1 A 4{
 			let tgt=HDPlayerPawn(target);
 			if(!tgt || tgt.bkilled || stamina<1){destroy();return;}
-			if(tgt.health>10)tgt.damagemobj(tgt,tgt,min(tgt.health-10,10),"internal",DMG_NO_ARMOR);
+			if(tgt.health>10)tgt.damagemobj(tgt,tgt,min(tgt.health-10,3),"internal",DMG_NO_ARMOR);
 			tics=clamp(200-stamina,4,random(4,40));
 			if(tics<10)tgt.A_Pain();
 			tgt.stunned+=10;
-			switch(random(0,21)){
+			switch(random(0,tgt.incapacitated?10:21)){
 			case 0:
 			case 1:
 				tgt.burncount--;
