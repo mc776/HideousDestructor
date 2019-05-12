@@ -138,136 +138,30 @@ class BugerDeinonychus:HDHandgun{
 		..WEPHELP_UNLOAD.."/"..WEPHELP_RELOAD.." Open cylinder\n"
 		;
 	}
-	ui int,int,int,int,int,int,int,int GetXHairCoords(
-		playerinfo player,
-		hdstatusbar sb,
-		textureid pic,
-		int screenwidth,
-		int screenheight,
-		double yscale,
-		double xscale=1.,
-		double fypos=0.5,
-		double fcliptop=0.,
-		double fclipbottom=1.,
-		double fclipleft=0.,
-		double fclipright=1.,
-		vector2 bob=(0,0),
-		bool drawnow=false
-	){
-		int
-			picwidth,
-			picheight,
-			xpos,
-			ypos,
-			destwidth,
-			destheight,
-			clipbottom,
-			cliptop,
-			clipleft,
-			clipright;
-		[picwidth,picheight]=texman.getsize(pic);
-
-		double modscale=90.*sb.hd_xhscale.getfloat()/player.fov;
-		bob*=modscale*0.003
-			*90./player.fov; //why do I have to do this again??? math is hard
-
-		destheight=screenheight*yscale*modscale;
-		destwidth=(destheight*picwidth/picheight)*xscale;
-		xpos=screenwidth*0.5+screenheight*bob.x;
-		ypos=screenheight*(fypos+bob.y)+destheight;
-
-		fclipbottom=0.5+(fclipbottom-0.5)*modscale;
-		fcliptop=0.5+(fcliptop-0.5)*modscale;
-		fclipleft=0.5+(fclipleft-0.5)*modscale;
-		fclipright=0.5+(fclipright-0.5)*modscale;
-
-		clipbottom=screenheight*fclipbottom+screenheight*bob.y;
-		cliptop=screenheight*fcliptop+screenheight*bob.y;
-		clipleft=screenwidth*fclipleft+screenheight*bob.x;
-		clipright=screenwidth*fclipright+screenheight*bob.x;
-
-		if(drawnow)screen.drawtexture(
-			pic,false,
-			xpos,ypos,
-			DTA_CenterBottomOffset,true,
-			DTA_DestWidth,destwidth,DTA_DestHeight,destheight,
-			DTA_ClipLeft,clipleft,
-			DTA_ClipRight,clipright,
-			DTA_ClipTop,cliptop,
-			DTA_ClipBottom,clipbottom
-		);
-
-		return
-			xpos,
-			ypos,
-			destwidth,
-			destheight,
-			clipbottom,
-			cliptop,
-			clipleft,
-			clipright;
-	}
 	override void DrawSightPicture(
 		HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl,
 		bool sightbob,vector2 bob,double fov,bool scopeview,actor hpc,string whichdot
 	){
-		double fvscl=90.*sb.hd_xhscale.getfloat()/fov;
-		int 
-			xpos,
-			ypos,
-			destwidth,
-			destheight,
-			clipbottom,
-			cliptop,
-			clipleft,
-			clipright;
-		let sightpic=texman.checkfortexture("backsite",texman.type_any);
-		int screenwidth=screen.getwidth();
-		int screenheight=screen.getheight();
-		[
-			xpos,
-			ypos,
-			destwidth,
-			destheight,
-			clipbottom,
-			cliptop,
-			clipleft,
-			clipright
-		]=GetXHairCoords(
-			hpl.player,
-			sb,
-			sightpic,
-			screenwidth,
-			screenheight,
-			0.04,
-			0.9,
-			fclipbottom:0.53,
-			bob:bob,
-			drawnow:true
-		);
+		int cx,cy,cw,ch;
+		[cx,cy,cw,ch]=screen.GetClipRect();
+		vector2 scc;
+		vector2 bobb=bob*1.6;
 
-		sightpic=texman.checkfortexture("frntsite",texman.type_any);
-		GetXHairCoords(
-			hpl.player,
-			sb,
-			sightpic,
-			screenwidth,
-			screenheight,
-			0.04,
-			0.9,
-			fclipbottom:0.53,
-			bob:bob*1.3,
-			drawnow:true
+		sb.SetClipRect(
+			-8+bob.x,-4+bob.y,16,10,
+			sb.DI_SCREEN_CENTER
 		);
-		return;
+		scc=(0.9,0.7);
+		bobb.y=clamp(bobb.y,-8,8);
 
-		//testing some crap
-		string numtxt="-12.34";
-		destheight=6*0.0016*screenwidth*fvscl;
-		screen.drawtext(
-			"NUMFONT_DOOM",Font.CR_DARKGRAY,xpos,ypos,numtxt,
-			DTA_CellY,destheight,
-			DTA_CellX,destheight*screenheight/screenwidth
+		sb.drawimage(
+			"frntsite",(0,0)+bobb,sb.DI_SCREEN_CENTER|sb.DI_ITEM_TOP,
+			alpha:0.9,scale:scc
+		);
+		sb.SetClipRect(cx,cy,cw,ch);
+		sb.drawimage(
+			"backsite",(0,0)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_TOP,
+			scale:scc
 		);
 	}
 	override void DropOneAmmo(int amt){
