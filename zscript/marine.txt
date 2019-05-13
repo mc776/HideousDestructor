@@ -171,17 +171,18 @@ class HDMarine:HDActor replaces ScriptedMarine{
 		name mod,int flags,double angle
 	){
 		if(
-			damage>=health
+			health>0
+			&&damage>=health
 			&&damage<random(12,300)
 			&&mod!="raisedrop"
 			&&mod!="spawndead"
 			&&(
 				(mod=="bleedout"&&random(0,12))
-				||(random(0,7))
+				||(random(0,3))
 			)
 		){
 			lastinginjury+=max(1,(damage>>5));
-			damage=min(damage,health-1);
+			damage=health-1;
 		}
 		return super.damagemobj(inflictor,source,damage,mod,flags,angle);
 	}
