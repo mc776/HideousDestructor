@@ -404,8 +404,9 @@ class BugerDeinonychus:HDHandgun{
 	round6:RVR6 A 1 A_RoundReady(BUGS_CYL6);wait;
 	select0:
 		REVG A 0{
-			if(countinv("NulledWeapon"))invoker.wronghand=false;
-			else A_CheckRevolverHand();
+			if(!countinv("NulledWeapon"))invoker.wronghand=false;
+			A_TakeInventory("NulledWeapon");
+			A_CheckRevolverHand();
 			invoker.cylinderopen=false;
 			A_Overlay(BUGS_OVRCYL+BUGS_CYL1,"round1");
 			A_Overlay(BUGS_OVRCYL+BUGS_CYL2,"round2");
@@ -562,18 +563,18 @@ class BugerDeinonychus:HDHandgun{
 		RRVG D 1 offset(50,86);
 		stop;
 	raiseleft:
-		REVG D 1 offset(-28,86);
-		REVG D 1 offset(-20,76);
-		REVG A 1 offset(-10,60);
-		REVG A 1 offset(-6,48);
-		REVG A 1 offset(-3,38);
+		REVG D 1 offset(-50,86);
+		REVG D 1 offset(-34,76);
+		REVG A 1 offset(-20,60);
+		REVG A 1 offset(-12,48);
+		REVG A 1 offset(-6,38);
 		stop;
 	raiseright:
-		RRVG D 1 offset(28,86);
-		RRVG D 1 offset(20,76);
-		RRVG A 1 offset(10,60);
-		RRVG A 1 offset(6,48);
-		RRVG A 1 offset(3,38);
+		RRVG D 1 offset(50,86);
+		RRVG D 1 offset(34,76);
+		RRVG A 1 offset(20,60);
+		RRVG A 1 offset(12,48);
+		RRVG A 1 offset(6,38);
 		stop;
 	}
 }
