@@ -129,6 +129,7 @@ class HDFist:HDWeapon replaces Fist{
 		){
 			let hdpch=hdplayerpawn(punchee);
 			bool dotherite=hdpch.maxhealth()<50;
+			dotherite=true;
 			if(dotherite){
 				for(int i=0;i<MAXPLAYERS;i++){
 					if(
@@ -164,11 +165,11 @@ class HDFist:HDWeapon replaces Fist{
 					if(hdp==hdpch){
 						hdp.aggravateddamage=10;
 						hdp.stunned=1400;
-						hdp.zerk=-2000;
+//						hdp.zerk=-2000;
 					}else{
 						hdp.aggravateddamage=min(hdp.aggravateddamage+3,12);
 						hdp.stunned=1000;
-						hdp.zerk=-1000;
+//						hdp.zerk=-1000;
 					}
 				}
 				A_Log("The Rite of the Once-Mortal is complete.");
