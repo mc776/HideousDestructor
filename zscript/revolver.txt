@@ -87,19 +87,12 @@ class BugerDeinonychus:HDHandgun{
 
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
 		if(sb.hudlevel==1){
-			//draw ammo counters for both ammo types
-			sb.drawimage("PBRSA0",(-48,-13),
-				sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TRANSLATABLE|sb.DI_ITEM_RIGHT,
-				1,scale:(2.1,2.55)
-			);
-			sb.drawwepnum(hpl.countinv("HDRevolverAmmo"),int.MAX,-48,-10,true,true);
+			sb.drawimage("PBRSA0",(-47,-10),sb.DI_SCREEN_CENTER_BOTTOM,scale:(2.1,2.55));
+			sb.drawnum(hpl.countinv("HDRevolverAmmo"),-44,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			int ninemil=hpl.countinv("HDPistolAmmo");
 			if(ninemil>0){
-				sb.drawimage("PBRSA0",(-66,-13),
-					sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TRANSLATABLE|sb.DI_ITEM_RIGHT,
-					1,scale:(2.1,2.1)
-				);
-				sb.drawwepnum(ninemil,int.MAX,-66,-10,true,true);
+				sb.drawimage("PBRSA0",(-64,-10),sb.DI_SCREEN_CENTER_BOTTOM,scale:(2.1,2.1));
+				sb.drawnum(ninemil,-60,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
 		}
 		int plf=hpl.player.getpsprite(PSP_WEAPON).frame;
