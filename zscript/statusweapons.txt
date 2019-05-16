@@ -23,16 +23,10 @@ extend class HDStatusBar{
 			1,scale:dotscale
 		);
 	}
-	void drawwepnum(int value,int maxvalue,int posx=-16,int posy=-6,bool num=false,bool alwaysprecise=false){
+	void drawwepnum(int value,int maxvalue,int posx=-16,int posy=-6,bool alwaysprecise=false){
 		if(!maxvalue)return;
 		hdplayerpawn cp=hdplayerpawn(cplayer.mo);if(!cp)return;
-		if(num){
-			drawstring(
-				mAmountFont,formatnumber(value),
-				(posx,posy),DI_TEXT_ALIGN_RIGHT|DI_TRANSLATABLE|DI_SCREEN_CENTER_BOTTOM,
-				cp.overloaded<1.5?Font.CR_OLIVE:(cp.overloaded>2?Font.CR_RED:Font.CR_YELLOW)
-			);
-		}else drawimage(
+		drawimage(
 			"GREENPXL",
 			(posx,posy),
 			DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE|DI_ITEM_RIGHT,
