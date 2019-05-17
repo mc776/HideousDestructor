@@ -156,8 +156,11 @@ class HDSpent7mm:HDUPK{
 	death:
 		RBRS A -1{
 			actor p=spawn("SevenMilBrass",self.pos,ALLOW_REPLACE);
-			p.vel=self.vel;p.vel.xy*=3;
-			p.A_FaceMovementDirection();p.angle+=90;
+			p.vel=self.vel;p.vel.xy*=3;p.angle=angle;
+			if(p.vel!=(0,0,0)){
+				p.A_FaceMovementDirection();
+				p.angle+=90;
+			}
 			destroy();
 		}stop;
 	}
