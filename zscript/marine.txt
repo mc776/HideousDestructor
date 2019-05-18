@@ -119,8 +119,10 @@ class HDMarine:HDActor replaces ScriptedMarine{
 	}
 	string nickname;
 	virtual string SetNickname(){
-		if(!bfriendly)nickname="Anonymous";
-
+		if(!bfriendly){
+			nickname="Anonymous";
+			return nickname;
+		}
 		static const string davidswarriors[]={
 			"Ishbaal","Eleazar","Shammah","Abishai","Benaiah","Asahel","Elhanan",
 			"Elika","Helez","Ira","Abiezer","Mebunnai","Zalmon","Mahari","Heleb",
@@ -128,7 +130,6 @@ class HDMarine:HDActor replaces ScriptedMarine{
 			"Eliphelet","Eliam","Hezro","Paarai","Igal","Haggadi","Jashen","Zelek",
 			"Naharai","Gareb","Uriah"
 		};
-
 		nickname=davidswarriors[random(0,davidswarriors.size()-1)];
 
 		bool isunique;
@@ -174,6 +175,8 @@ class HDMarine:HDActor replaces ScriptedMarine{
 			nickname="~*"..nickname.."*~";break;
 		case 6:
 			nickname="oxxx[="..nickname.."==>";break;
+		case 7:
+			nickname="The_"..nickname;break;
 		default:
 			break;
 		}
