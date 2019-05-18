@@ -121,19 +121,15 @@ class HDMarine:HDActor replaces ScriptedMarine{
 	virtual string SetNickname(){
 		if(!bfriendly)nickname="Anonymous";
 
-		static const string pokemon[]={
-			"Abra","Bulbasaur","Charmander","Digglett","Eevee","Farfetch'd","Garbodor",
-			"Heracross","Ivysaur","Jigglypuff","Koffing","Lickitung","Magnemite","Nidoran",
-			"Oddish","Pikachu","Quagsire","Rattata","Squirtle","Teddiursa","Umbreon",
-			"Venusaur","Wooper","Xatu","Yamask","Zubat"
-		};
-		static const string baseball[]={
-			"Angel","Brave","Cub","Diamondback","Jay","Astro","Mariner","Marlin",
-			"Pirate","Giant","Brewer","Padre","Oriole","Cardinal",
-			"Hawk","Lion","Tiger","Eagle","Buffalo","Dragon","Fighter","BayStar"
+		static const string davidswarriors[]={
+			"Ishbaal","Eleazar","Shammah","Abishai","Benaiah","Asahel","Elhanan",
+			"Elika","Helez","Ira","Abiezer","Mebunnai","Zalmon","Mahari","Heleb",
+			"Ithai","Hiddai","Abi-Albon","Azmaveth","Eliahba","Jonathan","Ahiam",
+			"Eliphelet","Eliam","Hezro","Paarai","Igal","Haggadi","Jashen","Zelek",
+			"Naharai","Gareb","Uriah"
 		};
 
-		nickname=pokemon[random(0,pokemon.size()-1)];
+		nickname=davidswarriors[random(0,davidswarriors.size()-1)];
 
 		bool isunique;
 		array<string> nicknames;
@@ -146,14 +142,41 @@ class HDMarine:HDActor replaces ScriptedMarine{
 			if(nmm!=self)nicknames.push(nmm.nickname);
 		}
 		do{
-			isunique=true;
+			isunique=random(0,15);
 			for(int i=0;i<nicknames.size();i++){
 				if(nickname==nicknames[i]){
 					isunique=false;
-					nickname.appendformat("-%i",random(0,99));
+					nickname=nickname..random(0,999);
 				}
 			}
 		}while(!isunique);
+
+		if(!random(0,3)){
+			static const string titles[]={
+				"_the_Destroyer","_the_Slayer","Knight","Seraphim","_Raven",
+				"_Sniper","Wolf","Samurai","Ronin",".EXE","Ninja","_Judge",
+				"_Warrior","_no_Ken","Sword","_of_Doom","MetalUpYourAss"
+			};
+			nickname=nickname..titles[random(0,titles.size()-1)];
+		}
+		switch(random(0,24)){
+		case 0:
+			nickname="xX_"..nickname.."_Xx";break;
+		case 1:
+			nickname="xXx"..nickname.."xXx";break;
+		case 2:
+			nickname=nickname.makeupper();break;
+		case 3:
+			nickname=nickname.makelower();break;
+		case 4:
+			nickname="((("..nickname..")))";break;
+		case 5:
+			nickname="~*"..nickname.."*~";break;
+		case 6:
+			nickname="oxxx[="..nickname.."==>";break;
+		default:
+			break;
+		}
 
 		return nickname;
 	}
