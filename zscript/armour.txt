@@ -142,6 +142,7 @@ class HDArmour:HDMagAmmo{
 		if(
 			other.player&&other.player.cmd.buttons&BT_USE
 			&&!other.countinv("HDArmourWorn")
+			&&!other.countinv("HDBackpack")
 		){
 			HDArmour.ArmourChangeEffect(other);
 			let worn=HDArmourWorn(other.GiveInventoryType("HDArmourWorn"));
