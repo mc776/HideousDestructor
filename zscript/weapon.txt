@@ -912,6 +912,7 @@ extend class HDWeapon{
 	}
 	virtual hdweapon GetSpareWeapon(actor newowner,bool reverse=false,bool doselect=true){return null;}
 	hdweapon GetSpareWeaponRegular(actor newowner,bool reverse=false,bool doselect=true){
+		if(!newowner)return null;
 		let mwt=SpareWeapons(newowner.findinventory("SpareWeapons"));
 		if(!mwt)return null;
 
