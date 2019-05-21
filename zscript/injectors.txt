@@ -392,7 +392,7 @@ class HDBlueBottler:HDWoundFixer{
 				if(getcvar("hd_helptext"))A_WeaponMessage("No potion.");
 				A_SelectWeapon("HDFist");
 			}else if(getcvar("hd_helptext"))A_WeaponMessage("\ct\(\(\( \cnPOTION \ct\)\)\)\c-\n\n\nNot made\nby human hands.\n\nBeware.");
-			A_PlaySound("misc/casing",CHAN_WEAPON);
+			A_PlaySound("potion/swish",CHAN_WEAPON);
 		}
 		goto super::select;
 	deselecthold:
@@ -414,7 +414,7 @@ class HDBlueBottler:HDWoundFixer{
 		}
 		TNT1 A 4 A_WeaponReady(WRF_NOFIRE);
 		TNT1 A 1{
-			A_PlaySound("weapons/grenopen",CHAN_WEAPON);
+			A_PlaySound("potion/open",CHAN_WEAPON);
 			A_Refire();
 		}
 		TNT1 A 0 A_PlaySound("potion/swish",CHAN_WEAPON);
@@ -435,7 +435,7 @@ class HDBlueBottler:HDWoundFixer{
 				A_Refire("inject");
 			}
 		}
-		TNT1 A 0 A_PlaySound("weapons/huntopen",CHAN_WEAPON,0.4);
+		TNT1 A 0 A_PlaySound("potion/away",CHAN_WEAPON,0.4);
 		goto nope;
 	inject:
 		TNT1 A 1{
