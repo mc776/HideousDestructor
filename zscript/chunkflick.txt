@@ -8,7 +8,7 @@ class FlickChunk:HDBullet{
 		woundhealth 0;
 		accuracy 0;
 		mass 10;
-		deathsound "misc/casing3";
+		deathsound "weapons/chunkslap";
 	}
 	override actor Puff(int sp){
 		bmissile=false;
@@ -55,7 +55,7 @@ extend class HDFist{
 		p.vel+=self.vel;
 
 		if(!countinv("WallChunkAmmo")){
-			p.deathsound="misc/bloodchunks";
+			p.deathsound="weapons/chunksplat";
 			p.A_SetTranslation(isrobot?"allred":"booger");
 		}else A_TakeInventory("WallChunkAmmo",1);
 		A_PlaySound("weapons/chunkflick",CHAN_WEAPON,0.3);
