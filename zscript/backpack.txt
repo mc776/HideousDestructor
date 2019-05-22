@@ -400,6 +400,7 @@ class HDBackpack:HDWeapon{
 			.."\n\nTotal Bulk: \cf"..int(bulk);
 	}
 	//generic code for inserting into backpack
+	//return 1 to indicate a FAILED pickup
 	int ItemToBackpack(inventory item){
 		if(item==self&&amount<2)return 1;
 		let wep=HDWeapon(item);
@@ -447,7 +448,7 @@ class HDBackpack:HDWeapon{
 		}else if(mag){
 			if(mag.magbulk+bulk>HDCONST_BPMAX){
 				if(owner)owner.A_Log("Your backpack is too full.",true);
-				return 0;
+				return 1;
 			}
 			int tookmag=mag.TakeMag(false);if(item.amount<1)item.destroy();
 			if(amounts[index]=="")amounts[index]=""..tookmag;
@@ -456,7 +457,7 @@ class HDBackpack:HDWeapon{
 			int units=item.owner?1:item.amount;
 			if(pkup.bulk*units+bulk>HDCONST_BPMAX){
 				if(owner)owner.A_Log("Your backpack is too full.",true);
-				return 0;
+				return 1;
 			}
 			amounts[index]=""..max(0,amounts[index].toint())+units;
 			item.amount-=units;if(item.amount<1)item.destroy();

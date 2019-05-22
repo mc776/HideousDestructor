@@ -221,6 +221,7 @@ class HDPickup:CustomInventory{
 		-hdpickup.multipickup
 		+hdpickup.fitsinbackpack
 		-hdpickup.cheatnogive
+		-hdpickup.isbeingpickedup
 
 		inventory.interhubamount int.MAX;
 		inventory.maxamount int.MAX;
@@ -314,7 +315,6 @@ class HDPickup:CustomInventory{
 		itemsthatusethis.clear();
 		GetItemsThatUseThis();
 		super.postbeginplay();
-		bisbeingpickedup=false;
 		let hdps=new("HDPickupSplitter");
 		hdps.invoker=self;
 	}
