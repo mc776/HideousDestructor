@@ -360,6 +360,17 @@ class HDRevolver:HDHandgun{
 			A_CheckRevolverHand();
 			invoker.cylinderopen=false;
 			invoker.weaponstatus[0]&=~BUGF_COCKED;
+
+			//uncock all spare revolvers
+			if(findinventory("SpareWeapons")){
+				let spw=SpareWeapons(findinventory("SpareWeapons"));
+				for(int i=0;i<spw.weapontype.size();i++){
+					if(spw.weapontype[i]==invoker.getclassname()){
+						spw.weaponstatus0[i]&=~BUGF_COCKED;
+					}
+				}
+			}
+
 			A_Overlay(BUGS_OVRCYL+BUGS_CYL1,"round1");
 			A_Overlay(BUGS_OVRCYL+BUGS_CYL2,"round2");
 			A_Overlay(BUGS_OVRCYL+BUGS_CYL3,"round3");
