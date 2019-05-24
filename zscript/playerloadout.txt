@@ -321,6 +321,19 @@ extend class HDPlayerPawn{
 			return;
 		}
 
+		string blacklist=hd_blacklist;
+		if(blacklist!=""){
+			A_Log("Some items in your loadout may have been blacklisted from this game and not be given at start.",true);
+			blacklist=blacklist.makelower();
+			blacklist.replace(" ","");
+			array<string>blist;blist.clear();
+			blacklist.split(blist,",");
+			for(int i=0;i<blist.size();i++){
+				if(blist[i].length()>=3)loadinput.replace(blist[i].left(3),"fis");
+			}
+		}
+
+
 		array<string> whichitem;whichitem.clear();
 		array<int> whichitemclass;whichitemclass.clear();
 		array<int> howmany;howmany.clear();
