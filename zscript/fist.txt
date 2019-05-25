@@ -85,8 +85,9 @@ class HDFist:HDWeapon replaces Fist{
 		if(player){
 			int gnd=player.getgender();
 			if(!gnd)gnd=getspriteindex("PUNGA0");
-			else if(gnd==3)gnd=getspriteindex("TNT1A0");
-			else gnd=getspriteindex("PUNFA0");
+			else if(gnd==1)gnd=getspriteindex("PUNFA0");
+			else if(gnd==2)gnd=getspriteindex("PUNFA0");
+			else gnd=getspriteindex("PUNCA0");
 			player.findPSprite(layer).sprite=gnd;
 		}
 	}
@@ -389,10 +390,11 @@ class HDFist:HDWeapon replaces Fist{
 		A_WeaponMessage("");
 	}
 	states{
-	female:
-		PUNF A 0;goto nope;
-	male:
-		PUNG A 0;goto nope;
+	preload:
+		PUNF ABCD 0;
+		PUNG ABCD 0;
+		PUNC ABCD 0;
+		goto nope;
 	ready:
 		TNT1 A 1{
 			if(invoker.washolding&&pressingfire()){
