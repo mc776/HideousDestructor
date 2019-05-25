@@ -3,7 +3,7 @@
 //-------------------------------------------------
 class FlickChunk:HDBullet{
 	default{
-		+rollsprite +rollcenter
+		+rollsprite +rollcenter +bloodlessimpact +nodamage
 		speed 256;
 		woundhealth 0;
 		accuracy 0;
@@ -25,6 +25,8 @@ class FlickChunk:HDBullet{
 		}
 	death:
 		---- A 4 A_Scream();
+		TNT1 A random(0,32);
+		TNT1 A 0{if(!random(0,tracer?2:10))A_AlertMonsters(32);}
 		stop;
 	}
 }
