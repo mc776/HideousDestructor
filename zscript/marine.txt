@@ -123,14 +123,11 @@ class HDMarine:HDActor replaces ScriptedMarine{
 			nickname="Anonymous";
 			return nickname;
 		}
-		static const string davidswarriors[]={
-			"Ishbaal","Eleazar","Shammah","Abishai","Benaiah","Asahel","Elhanan",
-			"Elika","Helez","Ira","Abiezer","Mebunnai","Zalmon","Mahari","Heleb",
-			"Ithai","Hiddai","Abi-Albon","Azmaveth","Eliahba","Jonathan","Ahiam",
-			"Eliphelet","Eliam","Hezro","Paarai","Igal","Haggadi","Jashen","Zelek",
-			"Naharai","Gareb","Uriah"
-		};
-		nickname=davidswarriors[random(0,davidswarriors.size()-1)];
+		array<string>mnamebases;
+		string mmmn=Wads.ReadLump(Wads.FindLump("marinenames"));
+		mmmn.split(mnamebases,"\n");
+
+		nickname=mnamebases[random(0,mnamebases.size()-1)];
 
 		bool isunique;
 		array<string> nicknames;
