@@ -146,15 +146,19 @@ class Slayer:HDShotgun replaces HDShotgun{
 			int pff=PressingFire()+(PressingAltfire()<<1);
 			bool ch1=invoker.weaponstatus[SLAYS_CHAMBER1]==2;
 			bool ch2=invoker.weaponstatus[SLAYS_CHAMBER2]==2;
+			bool dbl=invoker.weaponstatus[0]&SLAYF_DOUBLE;
 			if(ch1&&ch2){
 				if(pff==3){
 					A_Overlay(PSP_FLASH,"flashboth");
 					return;
 				}
-				else if(pff&&invoker.weaponstatus[0]&SLAYF_DOUBLE){
+				else if(pff&&dbl){
 					setweaponstate("double");
 					return;
 				}
+			}else if(pff&&dbl){
+				if(ch1)A_Overlay(11,"flashleft");
+				if(ch2)A_Overlay(12,"flashright");
 			}
 			if(ch1&&pff%2)A_Overlay(11,"flashleft");
 			else if(ch2&&pff>1)A_Overlay(12,"flashright");
