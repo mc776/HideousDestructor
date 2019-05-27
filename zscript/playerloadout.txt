@@ -336,7 +336,7 @@ extend class HDPlayerPawn{
 
 		array<string> whichitem;whichitem.clear();
 		array<int> whichitemclass;whichitemclass.clear();
-		array<int> howmany;howmany.clear();
+		array<string> howmany;howmany.clear();
 		array<string> loadlist;loadlist.clear();
 
 		string firstwep="";
@@ -346,7 +346,7 @@ extend class HDPlayerPawn{
 		if(hd_debug)A_Log("Loadout: "..loadlist[0]);
 		for(int i=0;i<whichitem.size();i++){
 			whichitemclass.push(-1);
-			howmany.push((whichitem[i].mid(3,whichitem[i].length())).toint(10));
+			howmany.push(whichitem[i].mid(3,whichitem[i].length()));
 			whichitem[i]=whichitem[i].left(3);
 		}
 		for(int i=0;i<allactorclasses.size();i++){
@@ -389,7 +389,7 @@ extend class HDPlayerPawn{
 				}else{
 					newwep=hdweapon(spawn(reff,pos));
 				}
-				newwep.amount=clamp(newwep.amount,howmany[i],newwep.maxamount);
+				newwep.amount=clamp(newwep.amount,howmany[i].toint(),newwep.maxamount);
 				newwep.attachtoowner(self);
 				newwep.startconfigure();
 				newwep.bstartconfigured=true;
@@ -399,7 +399,7 @@ extend class HDPlayerPawn{
 				}
 			}else A_GiveInventory(
 				reff.getclassname(),
-				clamp(howmany[i],1,hdmath.maxinv(self,reff.getclassname()))
+				clamp(howmany[i].toint(),1,hdmath.maxinv(self,reff.getclassname()))
 			);
 		}
 
