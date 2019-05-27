@@ -127,7 +127,9 @@ class HDMarine:HDActor replaces ScriptedMarine{
 		string mmmn=Wads.ReadLump(Wads.FindLump("marinenames"));
 		mmmn.split(mnamebases,"\n");
 
-		nickname=mnamebases[random(0,mnamebases.size()-1)];
+		nickname="";
+		do{nickname=mnamebases[random(0,mnamebases.size()-1)];}
+		while(nickname=="");
 
 		bool isunique;
 		array<string> nicknames;
