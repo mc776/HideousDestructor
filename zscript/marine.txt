@@ -123,8 +123,9 @@ class HDMarine:HDActor replaces ScriptedMarine{
 			nickname="Anonymous";
 			return nickname;
 		}
-		array<string>mnamebases;
+		array<string>mnamebases;mnamebases.clear();
 		string mmmn=Wads.ReadLump(Wads.FindLump("marinenames"));
+		mmmn=mmmn.left(mmmn.indexof("\n---"));
 		mmmn.split(mnamebases,"\n");
 
 		nickname="";
@@ -132,7 +133,7 @@ class HDMarine:HDActor replaces ScriptedMarine{
 		while(nickname=="");
 
 		bool isunique;
-		array<string> nicknames;
+		array<string> nicknames;nicknames.clear();
 		for(int i=0;i<MAXPLAYERS;i++){
 			if(playeringame[i])nicknames.push(players[i].getusername());
 		}
@@ -152,32 +153,35 @@ class HDMarine:HDActor replaces ScriptedMarine{
 		}while(!isunique);
 
 		if(!random(0,3)){
-			static const string titles[]={
-				"_the_Destroyer","_the_Slayer","Knight","Seraphim","_Raven",
-				"_Sniper","Wolf","Samurai","Ronin",".EXE","Ninja","_Judge",
-				"_Warrior","_no_Ken","Sword","_of_Doom","MetalUpYourAss"
-			};
-			nickname=nickname..titles[random(0,titles.size()-1)];
+			array<string>titles;titles.clear();
+			string titleset=Wads.ReadLump(Wads.FindLump("marinenames"));
+			titleset=titleset.mid(titleset.indexof("\n---")+5);
+			titleset=titleset.left(titleset.indexof("\n---"));
+			titleset.split(titles,"\n");
+			string title="";
+			do{title=titles[random(0,titles.size()-1)];}
+			while(title=="");
+
+			title.replace(" ","_");
+			if(!random(0,2))title.replace("_","");
+			title.replace("NNN",nickname);
+			nickname=title;
 		}
-		switch(random(0,24)){
-		case 0:
-			nickname="xX_"..nickname.."_Xx";break;
-		case 1:
-			nickname="xXx"..nickname.."xXx";break;
-		case 2:
-			nickname=nickname.makeupper();break;
-		case 3:
-			nickname=nickname.makelower();break;
-		case 4:
-			nickname="((("..nickname..")))";break;
-		case 5:
-			nickname="~*"..nickname.."*~";break;
-		case 6:
-			nickname="oxxx[="..nickname.."==>";break;
-		case 7:
-			nickname="The_"..nickname;break;
-		default:
-			break;
+		if(!random(0,16))nickname.makeupper();
+		else if(!random(0,16))nickname.makelower();
+		if(!random(0,7)){
+			array<string>titles;titles.clear();
+			string titleset=Wads.ReadLump(Wads.FindLump("marinenames"));
+			titleset=titleset.mid(titleset.indexof("\n---")+5);
+			titleset=titleset.mid(titleset.indexof("\n---")+5);
+			if(titleset!=""){
+				titleset.split(titles,"\n");
+				string title="";
+				do{title=titles[random(0,titles.size()-1)];}
+				while(title=="");
+				title.replace("NNN",nickname);
+				nickname=title;
+			}
 		}
 
 		return nickname;
