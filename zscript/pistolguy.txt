@@ -12,7 +12,7 @@ class UndeadHomeboy:ZombieMan{
 	//tracking ammo
 	int chamber;
 	int thismag;
-	int firemode;
+	int firemode; //based on the old pistol method: -1=semi only, 0=semi selected, 1=full auto
 
 	//aiming and leading targets
 	vector2 aimpoint1;
@@ -161,7 +161,10 @@ class UndeadHomeboy:ZombieMan{
 			let ppp=HDPistol(spawn("HDPistol",(pos.xy,pos.z+40)));
 			ppp.weaponstatus[PISS_MAG]=thismag;
 			ppp.weaponstatus[PISS_CHAMBER]=chamber;
-			ppp.weaponstatus[PISS_AUTO]=firemode;
+			if(firemode>=0){
+				ppp.weaponstatus[0]|=PISF_SELECTFIRE;
+				if(firemode>0)ppp.weaponstatus[0]|=PISF_FIREMODE;
+			}
 		}
 	}
 	virtual void A_HDUnload(int which=0){

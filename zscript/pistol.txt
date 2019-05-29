@@ -82,11 +82,11 @@ class HDPistol:HDHandgun replaces Pistol{
 	override string,double getpickupsprite(){
 		string spr;
 		if(weaponstatus[PISS_CHAMBER]<1){
-			if(weaponstatus[PISS_AUTO]<0)spr="B";
-			else spr="D";
+			if(weaponstatus[0]&PISF_SELECTFIRE)spr="D";
+			else spr="B";
 		}else{
-			if(weaponstatus[PISS_AUTO]<0)spr="A";
-			else spr="C";
+			if(weaponstatus[0]&PISF_SELECTFIRE)spr="C";
+			else spr="A";
 		}
 		return "PIST"..spr.."0",1.;
 	}
@@ -105,8 +105,8 @@ class HDPistol:HDHandgun replaces Pistol{
 			);
 			sb.drawnum(hpl.countinv("HD9mMag15"),-43,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 		}
-		sb.drawwepcounter(hdw.weaponstatus[PISS_AUTO]+1,
-			-22,-10,"blank","RBRSA3A7","STFULAUT"
+		if(hdw.weaponstatus[0]&PISF_SELECTFIRE)sb.drawwepcounter(hdw.weaponstatus[0]&PISF_FIREMODE,
+			-22,-10,"RBRSA3A7","STFULAUT"
 		);
 		sb.drawwepnum(hdw.weaponstatus[PISS_MAG],15);
 		if(hdw.weaponstatus[PISS_CHAMBER]==2)sb.drawwepdot(-16,-10,(3,1));
@@ -114,7 +114,7 @@ class HDPistol:HDHandgun replaces Pistol{
 	override string gethelptext(){
 		return
 		WEPHELP_FIRESHOOT
-		..(weaponstatus[PISS_AUTO]<0?"":(WEPHELP_FIREMODE.."  Semi/Auto\n"))
+		..((weaponstatus[0]&PISF_SELECTFIRE)?(WEPHELP_FIREMODE.."  Semi/Auto\n"):"")
 		..WEPHELP_ALTRELOAD.."  Quick-Swap (if available)\n"
 		..WEPHELP_RELOADRELOAD
 		..WEPHELP_MAGMANAGER
@@ -169,25 +169,25 @@ class HDPistol:HDHandgun replaces Pistol{
 	override void startconfigure(){
 		switch(amount){
 		case 3:
-			weaponstatus[PISS_AUTO]=-1;
+			weaponstatus[0]&=~PISF_SELECTFIRE;
 			break;
 		case 2:
-			weaponstatus[PISS_AUTO]=0;
+			weaponstatus[0]|=PISF_SELECTFIRE;
 			break;
 		default:
 			if(
 				!random(0,127)
-			)weaponstatus[PISS_AUTO]=0;
+			)weaponstatus[0]|=PISF_SELECTFIRE;
 			break;
 		}
 		amount=1;maxamount=1;
 
 		if(
-			weaponstatus[PISS_AUTO]>=0
+			weaponstatus[0]&PISF_SELECTFIRE
 			&&owner
 			&&owner.player
 			&&cvar.getcvar("hd_pistauto",owner.player).getbool()
-		)weaponstatus[PISS_AUTO]=1;
+		)weaponstatus[0]|=PISF_FIREMODE;
 	}
 	states{
 	select0:
@@ -227,10 +227,9 @@ class HDPistol:HDHandgun replaces Pistol{
 	user2:
 	firemode:
 		---- A 0{
-			int pa=invoker.weaponstatus[PISS_AUTO];
-			if(pa>=0){
-				invoker.weaponstatus[PISS_AUTO]=pa==0?1:0;
-			}
+			if(invoker.weaponstatus[0]&PISF_SELECTFIRE)
+			invoker.weaponstatus[0]^=PISF_FIREMODE;
+			else invoker.weaponstatus[0]&=~PISF_FIREMODE;
 		}goto nope;
 	altfire:
 		---- A 0{
@@ -312,7 +311,7 @@ class HDPistol:HDHandgun replaces Pistol{
 			A_WeaponReady(WRF_NOFIRE);
 			invoker.weaponstatus[PISS_CHAMBER]=2;
 			invoker.weaponstatus[PISS_MAG]--;
-			if(invoker.weaponstatus[PISS_AUTO]==1){
+			if(invoker.weaponstatus[0]&(PISF_FIREMODE|PISF_SELECTFIRE)){
 				let pnr=HDPlayerPawn(self);
 				if(
 					pnr&&countinv("IsMoving")
@@ -498,30 +497,28 @@ class HDPistol:HDHandgun replaces Pistol{
 	spawn:
 		PIST ABCD -1 nodelay{
 			if(invoker.weaponstatus[PISS_CHAMBER]<1){
-				if(invoker.weaponstatus[PISS_AUTO]<0)frame=1;
-				else frame=3;
+				if(invoker.weaponstatus[0]&PISF_SELECTFIRE)frame=3;
+				else frame=1;
 			}else{
-				if(invoker.weaponstatus[PISS_AUTO]<0)frame=0;
-				else frame=2;
+				if(invoker.weaponstatus[0]&PISF_SELECTFIRE)frame=2;
+				else frame=0;
 			}
 		}stop;
 	}
 	override void initializewepstats(bool idfa){
-		int autobak=weaponstatus[PISS_AUTO];
-		weaponstatus[0]=0;
 		weaponstatus[PISS_MAG]=15;
 		weaponstatus[PISS_CHAMBER]=2;
-		if(idfa)weaponstatus[PISS_AUTO]=max(0,autobak);
-		else weaponstatus[PISS_AUTO]=-1;
+		if(idfa)weaponstatus[0]|=PISF_SELECTFIRE;
 	}
 }
 enum pistolstatus{
-	PISF_JUSTUNLOAD=1,
+	PISF_SELECTFIRE=1,
+	PISF_FIREMODE=2,
+	PISF_JUSTUNLOAD=4,
 
 	PISS_FLAGS=0,
 	PISS_MAG=1,
 	PISS_CHAMBER=2, //0 empty, 1 spent, 2 loaded
-	PISS_AUTO=3 //-1 is no fire select
 };
 
 
@@ -540,9 +537,11 @@ class HDAutoPistol:HDWeaponGiver{
 		inventory.icon "PISTC0";
 	}
 	override void configureactualweapon(){
-		bool startauto=0;
-		if(owner)startauto=cvar.getcvar("hd_pistauto",owner.player).getbool();
-		actualweapon.weaponstatus[PISS_AUTO]=max(0,startauto,actualweapon.weaponstatus[PISS_AUTO]);
+		actualweapon.weaponstatus[0]|=PISF_SELECTFIRE;
+		if(
+			owner
+			&&cvar.getcvar("hd_pistauto",owner.player).getbool()
+		)actualweapon.weaponstatus[0]|=PISF_FIREMODE;
 	}
 }
 

@@ -242,7 +242,7 @@ class HDBackpack:HDWeapon{
 			amounts[which].split(wepstatus," ");
 			if(wepstatus.size()>=9){
 				if((HDPistol)(item)){
-					specicon=(wepstatus[PISS_AUTO].toint()<0)?"PISTA0":"PISTC0";
+					specicon=(wepstatus[0].toint()&PISF_SELECTFIRE)?"PISTC0":"PISTA0";
 				}else if((ZM66AssaultRifle)(item)){
 					string fr=(wepstatus[ZM66S_MAG].toint()<0)?"D":"A";
 					int st=wepstatus[0].toint();
