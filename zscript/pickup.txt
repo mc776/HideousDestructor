@@ -47,12 +47,28 @@ class GrabThinker:Thinker{
 			vector2 shiftpk=actor.rotatevector((frandom(-0.4,-0.8),frandom(0.8,1.1)),picktarget.angle);
 			pickobj.vel.xy+=shiftpk;
 			pickobj.setorigin((pickobj.pos.xy+shiftpk,pickobj.pos.z),true);
+
+			//if backpack is out, try to move into backpack
+			if(picktarget.player.readyweapon is "HDBackpack"){
+				let bp=HDBackpack(picktarget.findinventory("HDBackpack"));
+				if(ht){
+					ht.picktarget=picktarget;
+					ht.a_hdupkgive();
+				}else if(
+					bp&&bp==picktarget.player.readyweapon
+					&&bp.ItemToBackpack(tt)!=1 //ITB returns 1 if fail to pickup
+				){
+					destroy();
+					return;
+				}
+			}
+
+			//check for pocket space
 			if(
 				!wt
 				&&hdplayerpawn(picktarget)
 				&&hdplayerpawn(picktarget).itemenc*hdmath.getencumbrancemult()
 					>hdplayerpawn(picktarget).maxpocketspace
-				&&!(picktarget.player.readyweapon is "HDBackpack")
 				&&(
 					!tt
 					||(
@@ -77,17 +93,7 @@ class GrabThinker:Thinker{
 				return;
 			}
 
-			let bp=HDBackpack(picktarget.findinventory("HDBackpack"));
-			if(ht){
-				ht.picktarget=picktarget;
-				ht.a_hdupkgive();
-			}else if(
-				bp&&bp==picktarget.player.readyweapon
-				&&bp.ItemToBackpack(tt)!=1
-			){
-				destroy();
-				return;
-			}
+			//handle actual pickups
 			if(pt){
 				pt.actualpickup(picktarget);
 			}else if(wt){
