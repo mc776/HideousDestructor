@@ -149,6 +149,13 @@ class HDBullet:HDActor{
 			throughthis.bshootable=false;
 		}
 
+
+		//gross hack for triggering passable lines
+		LineAttack(angle,speed,pitch,0,"None",null,
+			LAF_NORANDOMPUFFZ|LAF_OVERRIDEZ|LAF_NOIMPACTDECAL|LAF_TARGETISSOURCE
+		,offsetz:0);
+
+
 		//get the line
 		LineTrace(
 			angle,
