@@ -1,30 +1,41 @@
 //-------------------------------------------------
 // Flick a piece of tiny debris at something to set off a shootable switch.
 //-------------------------------------------------
-class FlickChunk:HDBullet{
+//class FlickChunk:HDBullet{
+class FlickChunk:FastProjectile{
 	default{
 		+rollsprite +rollcenter +bloodlessimpact +nodamage
-		speed 256;
+		speed 64;
+		+hittracer height 0.1;radius 0.05;
 		woundhealth 0;
 		accuracy 0;
 		mass 10;
 		deathsound "weapons/chunkslap";
+		scale 5;
 	}
-	override actor Puff(int sp){
+	//override 
+	actor Puff(int sp){
 		bmissile=false;
 		setstatelabel("death");
 		return null;
 	}
-	override void GunSmoke(){}
+	override void Tick(){
+		super.Tick();
+		if(bmissile&&!isfrozen())vel.z--;
+	}
+	//override void GunSmoke(){}
 	states{
 	spawn:
 		DUST ABCD -1 nodelay{
+			A_ChangeVelocity(cos(pitch)*speed,0,-sin(pitch)*speed,CVF_RELATIVE);
 			frame=random(0,3);
 			roll=frandom(0,360);
 			scale=(randompick(-1,1),randompick(-1,1))*frandom(0.05,0.12);
 		}
 	death:
-		---- A 4 A_Scream();
+		---- A 4{
+			A_Scream();
+		}
 		TNT1 A 0{
 			if(tracer&&tracer.health>0&&(tracer.player||!random(0,3)))tracer.A_Pain();
 		}
@@ -53,7 +64,6 @@ extend class HDFist{
 
 		actor p=spawn("FlickChunk",pos+(0,0,height-6),ALLOW_REPLACE);
 		p.target=self;p.angle=angle;p.pitch=pitch;
-		p.speed=256;
 		p.vel+=(
 			frandom(-1.,1.),frandom(-1.,1.),frandom(-1.,1.)
 		);
