@@ -311,7 +311,10 @@ class HDPistol:HDHandgun replaces Pistol{
 			A_WeaponReady(WRF_NOFIRE);
 			invoker.weaponstatus[PISS_CHAMBER]=2;
 			invoker.weaponstatus[PISS_MAG]--;
-			if(invoker.weaponstatus[0]&(PISF_FIREMODE|PISF_SELECTFIRE)){
+			if(
+				(invoker.weaponstatus[0]&(PISF_FIREMODE|PISF_SELECTFIRE))
+				==(PISF_FIREMODE|PISF_SELECTFIRE)
+			){
 				let pnr=HDPlayerPawn(self);
 				if(
 					pnr&&countinv("IsMoving")
