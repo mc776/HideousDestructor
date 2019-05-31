@@ -45,7 +45,7 @@ class HDLoadoutMenu:GenericMenu{
 				if(reff is "HDPickup"){
 					let ref=getdefaultbytype((class<hdpickup>)(reff));
 					if(ref.refid!=""){
-						refids.push(ref.refid);
+						refids.push(ref.refid.makelower());
 						nicenames.push(ref.nicename);
 						if(!(jp%5))reflist=reflist.."\n";jp++;
 						reflist=reflist.."\n\cy"..ref.refid.."\cj   "..ref.nicename;
@@ -250,9 +250,9 @@ class HDLoadoutMenu:GenericMenu{
 
 			string finalinput=loadoutdisplaystring;finalinput.replace(" ","");
 			loadoutpic=texman.checkfortexture(lon,texman.type_any);
-			if(finalinput=="doomguy"){
+			if(finalinput~=="doomguy"){
 				ttl="Pistol and fifty bullets.";
-			}else if(finalinput=="insurgent"){
+			}else if(finalinput~=="insurgent"){
 				ttl="It's a surprise...";
 			}else if(finalinput==""){
 				ttl="Because showing up is half the battle.";
@@ -266,7 +266,7 @@ class HDLoadoutMenu:GenericMenu{
 				for(int i=0;i<items.size();i++){
 					string refid=items[i].left(3);
 					if(refid=="")continue;
-					if(refid=="bak"){
+					if(refid~=="bak"){
 						inbp=true;
 						continue;
 					}
