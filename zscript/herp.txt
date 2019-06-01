@@ -376,7 +376,9 @@ class HERPBot:HDUPK{
 				hu.weaponstatus[3]=ammo[2];
 				hu.weaponstatus[4]=battery;
 				hu.translation=translation;
-				hu.actualpickup(target);
+				if(target.player&&target.player.readyweapon is "HDBackpack"){
+					hdbackpack(target.player.readyweapon).ItemToBackpack(hu);
+				}else hu.actualpickup(target);
 			}
 			destroy();
 			let ctr=HERPController(target.findinventory("HERPController"));
