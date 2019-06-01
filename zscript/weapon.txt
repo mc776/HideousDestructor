@@ -22,6 +22,7 @@ class HDWeapon:Weapon{
 	property nicename:nicename;
 	int weaponstatus[8];
 	int msgtimer;
+	int actualamount;
 	string wepmsg;
 	enum HDWeaponFlagsets{
 		WRF_ALL=WRF_ALLOWRELOAD|WRF_ALLOWZOOM|WRF_ALLOWUSER1|WRF_ALLOWUSER2|WRF_ALLOWUSER3|WRF_ALLOWUSER4,
@@ -231,6 +232,16 @@ class HDWeapon:Weapon{
 			if(amount<1){
 				destroy();
 				return;
+			}else{
+				//update count
+				actualamount=1;
+				if(owner&&owner.findinventory("SpareWeapons")){
+					let spw=spareweapons(owner.findinventory("SpareWeapons"));
+					string gcn=getclassname();
+					for(int i=0;i<spw.weapontype.size();i++){
+						if(spw.weapontype[i]==gcn)actualamount++;
+					}
+				}
 			}
 			let onr=hdplayerpawn(owner);
 			if(

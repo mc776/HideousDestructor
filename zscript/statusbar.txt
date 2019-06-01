@@ -677,7 +677,8 @@ class HDStatusBar:DoomStatusBar{
 				);
 			}
 
-			drawstring(mAmountFont,FormatNumber(ivs.amount),
+			int invamt=hdweapon(ivs)?hdweapon(ivs).actualamount:ivs.amount;
+			drawstring(mAmountFont,FormatNumber(invamt),
 				(numposx,numposy),flags|DI_TEXT_ALIGN_RIGHT,Font.CR_OLIVE
 			);
 		}
