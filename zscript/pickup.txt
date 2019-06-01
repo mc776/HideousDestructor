@@ -48,15 +48,24 @@ class GrabThinker:Thinker{
 			pickobj.vel.xy+=shiftpk;
 			pickobj.setorigin((pickobj.pos.xy+shiftpk,pickobj.pos.z),true);
 
+
+			if(ht){
+				ht.picktarget=picktarget;
+				ht.a_hdupkgive();
+				destroy();
+				return;
+			}
+
 			//if backpack is out, try to move into backpack
 			if(picktarget.player.readyweapon is "HDBackpack"){
 				let bp=HDBackpack(picktarget.findinventory("HDBackpack"));
-				if(ht){
-					ht.picktarget=picktarget;
-					ht.a_hdupkgive();
-				}else if(
-					bp&&bp==picktarget.player.readyweapon
-					&&bp.ItemToBackpack(tt)!=1 //ITB returns 1 if fail to pickup
+				if(
+					bp
+					&&bp==picktarget.player.readyweapon
+					&&(
+						bp.ItemToBackpack(tt)!=1 //ITB returns 1 if fail to pickup
+						||!pickobj //if totally picked up, don't do the rest of the checks
+					)
 				){
 					destroy();
 					return;
