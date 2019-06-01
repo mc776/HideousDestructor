@@ -181,7 +181,7 @@ class HDMedikitter:HDWoundFixer{
 		slf.oldwoundcount+=amt;
 	}
 	action void A_MedikitReady(){
-		A_WeaponReady(WRF_NOFIRE);
+		A_WeaponReady(WRF_NOFIRE|WRF_ALLOWUSER3);
 		if(!player)return;
 		int bt=player.cmd.buttons;
 
