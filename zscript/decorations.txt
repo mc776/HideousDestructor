@@ -153,7 +153,10 @@ class HDTechPillar:TechPillar replaces TechPillar{
 class HDTorchLight:PointLight{
 	default{+dynamiclight.additive}
 	override void tick(){
-		if(!target)destroy();
+		if(!target){
+			destroy();
+			return;
+		}
 		args[3]=random(64,96);
 		setorigin((target.pos.xy,target.pos.z+target.missileheight),true);
 	}
