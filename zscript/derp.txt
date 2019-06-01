@@ -29,7 +29,7 @@ class DERPBot:HDUPK{
 		health 100;mass 20;
 		maxtargetrange DERP_RANGE;
 		hdupk.pickupsound "derp/crawl";
-		hdupk.pickupmessage "Picked up a Defence, Engagement, Reconnaissance and Patrol robot.";
+		hdupk.pickupmessage ""; //let the pickup do this
 		obituary "%o went derp.";
 	}
 	override bool cancollidewith(actor other,bool passive){return other.bmissile||HDPickerUpper(other)||DERPBot(other);}
@@ -239,26 +239,20 @@ class DERPBot:HDUPK{
 				A_PlaySound("weapons/rifleclick2",CHAN_AUTO);
 				cmd=DERP_AMBUSH;
 			}
-			if(
-				(
-					health>0
-					&&!target.A_JumpIfInventory("DERPUsable",0,"null")
-				)||(
-					health<1
-					&&!target.A_JumpIfInventory("DERPDEAD",0,"null")
-				)
-			){
-				if(health>0)target.A_GiveInventory("DERPUsable");
-				else target.A_GiveInventory("DERPDEAD");
-				HDMagAmmo.GiveMag(target,"HD9mMag15",ammo);
-				destroy();
-				DERPController.GiveController(target);
-				return;
-			}else if(ammo>=0){
+
+			if(ammo>=0){
 				target.A_PlaySound("weapons/rifleclick",CHAN_AUTO);
-				HDMagAmmo.SpawnMag(target,"HD9mMag15",ammo);
-				ammo=-1;
+				let mmm=HDMagAmmo.SpawnMag(target,"HD9mMag15",ammo);
+				if(mmm)grabthinker.grab(target,mmm);
 			}
+			actor ddd=spawn(health>0?"DERPUsable":"DERPDEAD",pos);
+			if(ddd){
+				ddd.translation=self.translation;
+				grabthinker.grab(target,ddd);
+			}
+			destroy();
+			DERPController.GiveController(target);
+			return;
 		}goto spawn;
 	spawn:
 		DERP A 0 nodelay A_JumpIf(!!stuckline,"stuck");
