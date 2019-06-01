@@ -13,6 +13,9 @@ class GrabThinker:Thinker{
 	override void postbeginplay(){
 		super.postbeginplay();
 	}
+	override void ondestroy(){
+		if(pickobj)pickobj.bsolid=true;
+	}
 	override void tick(){
 		if(!picktarget||!picktarget.player||!pickobj){destroy();return;}
 		super.tick();
@@ -47,7 +50,6 @@ class GrabThinker:Thinker{
 			vector2 shiftpk=actor.rotatevector((frandom(-0.4,-0.8),frandom(0.8,1.1)),picktarget.angle);
 			pickobj.vel.xy+=shiftpk;
 			pickobj.setorigin((pickobj.pos.xy+shiftpk,pickobj.pos.z),true);
-
 
 			if(ht){
 				ht.picktarget=picktarget;
@@ -97,7 +99,6 @@ class GrabThinker:Thinker{
 				)
 			){
 				if(cvar.getcvar("hd_helptext",picktarget.player).getbool())picktarget.A_Log("No room in pockets.",true);
-				pickobj.bsolid=true;
 				destroy();
 				return;
 			}
@@ -110,7 +111,6 @@ class GrabThinker:Thinker{
 			}else if(tt){
 				if(picktarget.vel==(0,0,0))picktarget.A_ChangeVelocity(0.001,0,0,CVF_RELATIVE);
 			}
-			if(pickobj&&(!inventory(pickobj)||!inventory(pickobj).owner))pickobj.bsolid=true;
 			destroy();
 			return;
 		}
@@ -461,7 +461,7 @@ class HDUPK:HDActor{
 				}
 				int maxtake;
 				defunitbulk*=hdmath.getencumbrancemult();
-				if(!defunitbulk)maxtake=int.MAX;else (HDCONST_BPMAX-bp.bulk)/defunitbulk;
+				if(!defunitbulk)maxtake=int.MAX;else maxtake=(HDCONST_BPMAX-bp.bulk)/defunitbulk;
 				int increase=min(maxtake,amount);
 				amount-=increase;
 				bp.amounts[bpindex]=""..(bp.amounts[bpindex].toint()+increase);
