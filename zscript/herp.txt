@@ -189,7 +189,7 @@ class HERPBot:HDUPK{
 			setstatelabel("postbeep");
 		}
 	}
-	void A_SpawnPickup(){
+	actor A_SpawnPickup(){
 		let hu=HERPUsable(spawn("HERPUsable",pos,ALLOW_REPLACE));
 		if(hu){
 			hu.translation=translation;
@@ -200,6 +200,7 @@ class HERPBot:HDUPK{
 			hu.weaponstatus[4]=battery;
 		}
 		destroy();
+		return hu;
 	}
 
 	states{
@@ -368,22 +369,14 @@ class HERPBot:HDUPK{
 		}goto idle;
 	give:
 		---- A 0{
-			let hu=HERPUsable(spawn("HERPUsable",pos));
+			let hu=A_SpawnPickup();
 			if(hu){
-				if(health<1)hu.weaponstatus[0]|=HERPF_BROKEN;
-				hu.weaponstatus[1]=ammo[0];
-				hu.weaponstatus[2]=ammo[1];
-				hu.weaponstatus[3]=ammo[2];
-				hu.weaponstatus[4]=battery;
-				hu.translation=translation;
-				if(target.player&&target.player.readyweapon is "HDBackpack"){
-					hdbackpack(target.player.readyweapon).ItemToBackpack(hu);
-				}else hu.actualpickup(target);
+				hu.translation=self.translation;
+				grabthinker.grab(target,hu);
 			}
-			destroy();
 			let ctr=HERPController(target.findinventory("HERPController"));
 			if(ctr)ctr.UpdateHerps(false);
-		}goto spawn;
+		}stop;
 	death:
 		HERP A 0{
 			if(ammo[0]>=0)ammo[0]=random(0,ammo[0]+randompick(0,0,0,100));
