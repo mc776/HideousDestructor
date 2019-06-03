@@ -94,6 +94,8 @@ extend class HDPlayerPawn{
 			lastangle=angle;
 		}
 
+		//cache cvars as necessary
+		if(!hd_nozoomlean)cachecvars();
 
 		//set up leaning
 		double leanamt=leaned?(10./(3+checkencumbrance())):0;
