@@ -298,6 +298,10 @@ extend class HDPlayerPawn{
 		if(!player)return;
 		if(HDPlayerPawn(self))HDPlayerPawn(self).GiveBasics();
 
+		string weapondefaults=cvar.getcvar("hd_weapondefaults",player).getstring();
+		weapondefaults=weapondefaults.makelower();
+		weapondefaults.replace(" ","");
+
 		//special conditions that completely overwrite the loadout giving
 		if(
 			hd_forceloadout!=""
@@ -347,6 +351,7 @@ extend class HDPlayerPawn{
 
 		string firstwep="";
 
+
 		loadinput.split(loadlist,"-");
 		loadlist[0].split(whichitem,",");
 		if(hd_debug)A_Log("Loadout: "..loadlist[0]);
@@ -395,14 +400,33 @@ extend class HDPlayerPawn{
 				}else{
 					newwep=hdweapon(spawn(reff,pos));
 				}
-				newwep.amount=clamp(newwep.amount,howmany[i].toint(),newwep.maxamount);
-				newwep.attachtoowner(self);
-				newwep.startconfigure();
-				newwep.bstartconfigured=true;
-				if(!hdfist(newwep)){
-					dropinventory(newwep);
-					newwep.actualpickup(self,true);
+				//if amountable, loop
+				if(newwep.bloadoutamount){
+					int thismany=howmany[i].toint()-1;
+					while(thismany>0){
+						thismany--;
+						let nwp=hdweapon(spawn(reff,pos));
+						nwp.actualpickup(self,true);
+					}
+				}else{
+					//clear any randomized garbage
+					newwep.weaponstatus[0]=0;
+					//apply the default based on user cvar first
+					int defvarstart=weapondefaults.indexof(whichitem[i]);
+					if(defvarstart>=0){
+						string wepdefault=weapondefaults.mid(defvarstart);
+						int defcomma=wepdefault.indexof(",");
+						if(defcomma>=0)wepdefault=wepdefault.left(defcomma);
+						wepdefault=wepdefault.makelower();
+						newwep.loadoutconfigure(wepdefault);
+					}
+					//now apply the loadout input to overwrite the defaults
+					string wepinput=howmany[i];
+					wepinput.replace(" ","");
+					wepinput=wepinput.makelower();
+					if(wepinput!="")newwep.loadoutconfigure(wepinput);
 				}
+				newwep.actualpickup(self,true);
 			}else A_GiveInventory(
 				reff.getclassname(),
 				clamp(howmany[i].toint(),1,hdmath.maxinv(self,reff.getclassname()))

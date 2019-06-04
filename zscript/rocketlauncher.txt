@@ -24,36 +24,6 @@ class HDRL:HDWeapon{
 		super.tick();
 		drainheat(RLS_SMOKE,12);
 	}
-	override void startconfigure(){
-		switch(amount){
-		case 4:
-			weaponstatus[RLS_CHAMBER]=1;
-			weaponstatus[0]|=RLF_GRENADEMODE;
-			break;
-		case 3:
-			weaponstatus[RLS_CHAMBER]=1;
-			weaponstatus[0]&=~RLF_GRENADEMODE;
-			break;
-		case 2:
-			weaponstatus[RLS_CHAMBER]=2;
-			weaponstatus[0]&=~RLF_GRENADEMODE;
-			break;
-		default:
-			if(owner&&owner.player){
-				int glm=cvar.getcvar("hd_rlmode",owner.player).getint();
-				if(!glm)weaponstatus[0]|=RLF_GRENADEMODE;
-				else{
-					weaponstatus[0]&=~RLF_GRENADEMODE;
-					if(glm>1)weaponstatus[RLS_CHAMBER]=2;
-				}
-			}
-			break;
-		}
-		if(owner&&owner.player&&cvar.getcvar("hd_rlzoom",owner.player).getbool())
-			weaponstatus[0]|=RLF_ZOOM;
-			else weaponstatus[0]&=~RLF_ZOOM;
-		amount=1;maxamount=1;
-	}
 	override double gunmass(){
 		return 10+weaponstatus[RLS_MAG]+weaponstatus[RLS_CHAMBER];
 	}
@@ -534,6 +504,23 @@ class HDRL:HDWeapon{
 				weaponstatus[0]+=random(0,1)*RLF_GRENADEMODE;
 				weaponstatus[0]+=random(0,1)*RLF_ZOOM;
 			}
+		}
+	}
+	override void loadoutconfigure(string input){
+		int zoom=getloadoutvar(input,"zoom",1);
+		if(!zoom)weaponstatus[0]&=~RLF_ZOOM;
+		else if(zoom>0)weaponstatus[0]|=RLF_ZOOM;
+
+		int heatloaded=getloadoutvar(input,"heat",1);
+		if(!heatloaded)weaponstatus[RLS_CHAMBER]=1;
+		else if(heatloaded>0)weaponstatus[RLS_CHAMBER]=2;
+
+		//if no heat, evaluate grenade mode
+		if(weaponstatus[RLS_CHAMBER]!=2){
+			weaponstatus[RLS_CHAMBER]=1;
+			int grenademode=getloadoutvar(input,"grenade",1);
+			if(!grenademode)weaponstatus[0]&=~RLF_GRENADEMODE;
+			else if(grenademode>0)weaponstatus[0]|=RLF_GRENADEMODE;
 		}
 	}
 }

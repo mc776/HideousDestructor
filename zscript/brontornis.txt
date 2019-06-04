@@ -153,14 +153,6 @@ class Brontornis:HDWeapon{
 		super.tick();
 		drainheat(BRONS_HEAT,12);
 	}
-	override void postbeginplay(){
-		super.postbeginplay();
-		if(owner&&owner.player){
-			if(cvar.getcvar("hd_brontozoom",owner.player).getbool())
-				weaponstatus[0]|=BRONF_ZOOM;
-				else weaponstatus[0]&=~BRONF_ZOOM;
-		}
-	}
 	override double gunmass(){
 		double amt=weaponstatus[BRONS_CHAMBER];
 		return 6+amt*amt;
@@ -407,10 +399,12 @@ class Brontornis:HDWeapon{
 		if(!idfa){
 			weaponstatus[0]=0;
 			weaponstatus[BRONS_HEAT]=0;
-			if(!owner){
-				weaponstatus[0]+=random(0,1)*BRONF_ZOOM;
-			}
 		}
+	}
+	override void loadoutconfigure(string input){
+		int zoom=getloadoutvar(input,"zoom",1);
+		if(!zoom)weaponstatus[0]&=~BRONF_ZOOM;
+		else if(zoom>0)weaponstatus[0]|=BRONF_ZOOM;
 	}
 }
 enum brontostatus{
