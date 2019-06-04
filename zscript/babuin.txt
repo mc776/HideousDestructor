@@ -389,6 +389,8 @@ class DeadSpecBabuin:SpecBabuin{
 	override void postbeginplay(){
 		super.postbeginplay();
 		A_CheckFreedoomSprite();
+		A_NoBlocking();
+		A_SetTranslucent(1,0);
 		A_Die("spawndead");
 	}
 }

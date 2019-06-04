@@ -355,9 +355,11 @@ class DeadSpectre:NinjaPirate{
 	}
 	states{
 	death:spawndead:
-		---- A 0 {hdmobai.corpseflags(self);}
-		TNT1 A 0 A_NoBlocking();
-		TNT1 A 0 A_SetTranslucent(1,0);
+		---- A 0 {
+			hdmobai.corpseflags(self);
+			A_NoBlocking();
+			A_SetTranslucent(1,0);
+		}
 		goto super::dead;
 	}
 }

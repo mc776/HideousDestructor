@@ -154,6 +154,8 @@ struct HDMobAI play{
 				caller.A_TakeInventory("IsGibbed");
 			}
 			caller.bshootable=true;
+			let aff=new("AngelFire");
+			aff.master=caller;aff.ticker=0;
 
 		}else{
 			caller.A_NoBlocking();
@@ -425,6 +427,38 @@ struct HDMobAI play{
 class TryShootPuff:CheckPuff{
 	default{
 		-alwayspuff
+	}
+}
+
+//not just an old web 1.0 host anymore
+class AngelFire:Thinker{
+	actor master;
+	int ticker;
+	override void Tick(){
+		ticker++;
+		if(!ticker||(ticker%7))return;
+		if(
+			!master
+			||!master.bfriendly
+			||master.health<1
+		){
+			destroy();
+			return;
+		}
+		if(ticker>(35*60*15)){
+			master.A_Die();
+			destroy();
+			return;
+		}
+		master.givebody(1);
+		double mrad=master.radius*0.6;
+		vector3 flamepos=master.pos+(
+			frandom(-mrad,mrad),
+			frandom(-mrad,mrad),
+			frandom(0.1,0.6)*master.height
+		);
+		let fff=actor.spawn("HDFlameRed",flamepos,ALLOW_REPLACE);
+		fff.vel=master.vel+(frandom(-1.,1.),frandom(-1.,1.),frandom(0.6,1.6));
 	}
 }
 
