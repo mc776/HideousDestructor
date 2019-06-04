@@ -927,11 +927,11 @@ class LiberatorRifle:AutoReloadingThingy{
 		int nogl=getloadoutvar(input,"nogl",1);
 		if(!nogl){
 			weaponstatus[0]&=~LIBF_NOLAUNCHER;
-			weaponstatus[0]|=LIBF_GRENADELOADED;
 		}else if(nogl>0){
 			weaponstatus[0]|=LIBF_NOLAUNCHER;
 			weaponstatus[0]&=~LIBF_GRENADELOADED;
 		}
+		if(!(weaponstatus[0]&LIBF_NOLAUNCHER))weaponstatus[0]|=LIBF_GRENADELOADED;
 
 		int nobp=getloadoutvar(input,"nobp",1);
 		if(!nobp)weaponstatus[0]&=~LIBF_NOBULLPUP;
