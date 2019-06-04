@@ -14,12 +14,12 @@ class HDHandgun:HDWeapon{
 	action void A_SwapHandguns(){
 		let mwt=SpareWeapons(findinventory("SpareWeapons"));
 		if(!mwt){
-			setweaponstate("nope");
+			setweaponstate("whyareyousmiling");
 			return;
 		}
 		int pistindex=mwt.weapontype.find(invoker.getclassname());
 		if(pistindex==mwt.weapontype.size()){
-			setweaponstate("nope");
+			setweaponstate("whyareyousmiling");
 			return;
 		}
 		A_WeaponBusy();
@@ -495,6 +495,19 @@ class HDPistol:HDHandgun replaces Pistol{
 		#### A 1 offset(12,48);
 		#### A 1 offset(6,38);
 		stop;
+	whyareyousmiling:
+		#### B 1 offset(0,48);
+		#### B 1 offset(0,60);
+		#### B 1 offset(0,76);
+		TNT1 A 7;
+		PISG A 0{
+			invoker.wronghand=!invoker.wronghand;
+			A_CheckPistolHand();
+		}
+		#### B 1 offset(0,76);
+		#### B 1 offset(0,60);
+		#### B 1 offset(0,48);
+		goto nope;
 
 
 	spawn:

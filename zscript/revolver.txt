@@ -562,6 +562,19 @@ class HDRevolver:HDHandgun{
 		---- A 1 offset(12,48);
 		---- A 1 offset(6,38);
 		stop;
+	whyareyousmiling:
+		#### D 1 offset(0,38);
+		#### D 1 offset(0,48);
+		#### D 1 offset(0,60);
+		TNT1 A 7;
+		REVG A 0{
+			invoker.wronghand=!invoker.wronghand;
+			A_CheckRevolverHand();
+		}
+		#### D 1 offset(0,60);
+		#### D 1 offset(0,48);
+		#### D 1 offset(0,38);
+		goto nope;
 	}
 }
 enum DeinovolverStats{
