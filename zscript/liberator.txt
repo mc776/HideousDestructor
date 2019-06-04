@@ -236,22 +236,6 @@ class LiberatorRifle:AutoReloadingThingy{
 			barrellength=27;
 		}
 	}
-	override void startconfigure(){
-		if(!owner||!owner.player)return;
-		if(cvar.getcvar("hd_libauto",owner.player).getint())weaponstatus[0]|=LIBF_FULLAUTO;
-		if(cvar.getcvar("hd_libfrontreticle",owner.player).getbool())
-			weaponstatus[0]|=LIBF_FRONTRETICLE;
-			else weaponstatus[0]&=~LIBF_FRONTRETICLE;
-		if(cvar.getcvar("hd_libaltreticle",owner.player).getbool())
-			weaponstatus[0]|=LIBF_ALTRETICLE;
-			else weaponstatus[0]&=~LIBF_ALTRETICLE;
-		if(weaponstatus[0]&LIBF_FRONTRETICLE)weaponstatus[LIBS_ZOOM]=
-			clamp(cvar.getcvar("hd_libzoom",owner.player).getint(),20,40);
-			else weaponstatus[LIBS_ZOOM]=
-			clamp(cvar.getcvar("hd_libzoom",owner.player).getint(),6,70);
-		weaponstatus[LIBS_DROPADJUST]=
-			clamp(cvar.getcvar("hd_libmoa",owner.player).getint(),0,600);
-	}
 	override double gunmass(){
 		if(weaponstatus[0]&LIBF_NOBULLPUP){
 			double howmuch=11;
@@ -936,8 +920,43 @@ class LiberatorRifle:AutoReloadingThingy{
 			if(randompick(0,0,1))weaponstatus[0]|=LIBF_ALTRETICLE;
 			weaponstatus[LIBS_ZOOM]=30;
 			weaponstatus[LIBS_HEAT]=0;
-			weaponstatus[LIBS_DROPADJUST]=100;
+			weaponstatus[LIBS_DROPADJUST]=140;
 		}
+	}
+	override void loadoutconfigure(string input){
+		int nogl=getloadoutvar(input,"nogl",1);
+		if(!nogl){
+			weaponstatus[0]&=~LIBF_NOLAUNCHER;
+			weaponstatus[0]|=LIBF_GRENADELOADED;
+		}else if(nogl>0){
+			weaponstatus[0]|=LIBF_NOLAUNCHER;
+			weaponstatus[0]&=~LIBF_GRENADELOADED;
+		}
+
+		int nobp=getloadoutvar(input,"nobp",1);
+		if(!nobp)weaponstatus[0]&=~LIBF_NOBULLPUP;
+		else if(nobp>0)weaponstatus[0]|=LIBF_NOBULLPUP;
+
+		int altreticle=getloadoutvar(input,"altreticle",1);
+		if(!altreticle)weaponstatus[0]&=~LIBF_ALTRETICLE;
+		else if(altreticle>0)weaponstatus[0]|=LIBF_ALTRETICLE;
+
+		int frontreticle=getloadoutvar(input,"frontreticle",1);
+		if(!frontreticle)weaponstatus[0]&=~LIBF_FRONTRETICLE;
+		else if(frontreticle>0)weaponstatus[0]|=LIBF_FRONTRETICLE;
+
+		int bulletdrop=getloadoutvar(input,"bulletdrop",3);
+		if(bulletdrop>=0)weaponstatus[LIBS_DROPADJUST]=clamp(bulletdrop,0,600);
+
+		int zoom=getloadoutvar(input,"zoom",3);
+		if(zoom>0)weaponstatus[LIBS_ZOOM]=
+			(weaponstatus[0]&LIBF_FRONTRETICLE)?
+			clamp(bulletdrop,20,40):
+			clamp(bulletdrop,6,70);
+
+		int firemode=getloadoutvar(input,"firemode",1);
+		if(!firemode)weaponstatus[0]&=~LIBF_FULLAUTO;
+		else if(firemode>0)weaponstatus[0]|=LIBF_FULLAUTO;
 	}
 }
 enum liberatorstatus{
