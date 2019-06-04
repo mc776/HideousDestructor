@@ -56,8 +56,11 @@ class Babuin:HDActor{
 	override void Tick(){
 		//brutal force
 		if(
-			!level.ispointinlevel(pos)
-			||!checkmove(pos.xy,PCM_DROPOFF|PCM_NOACTORS)
+			health>0
+			&&(
+				!level.ispointinlevel(pos)
+				||!checkmove(pos.xy,PCM_DROPOFF|PCM_NOACTORS)
+			)
 		){
 			setorigin(lastpointinmap,true);
 			setz(clamp(pos.z,floorz,ceilingz-height));

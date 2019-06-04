@@ -451,14 +451,14 @@ class AngelFire:Thinker{
 			return;
 		}
 		master.givebody(1);
-		double mrad=master.radius*0.6;
+		double mrad=master.radius*0.3;
 		vector3 flamepos=master.pos+(
 			frandom(-mrad,mrad),
 			frandom(-mrad,mrad),
-			frandom(0.1,0.6)*master.height
+			frandom(0.4,0.6)*master.height
 		);
 		let fff=actor.spawn("HDFlameRed",flamepos,ALLOW_REPLACE);
-		fff.vel=master.vel+(frandom(-1.,1.),frandom(-1.,1.),frandom(0.6,1.6));
+		fff.vel=master.vel+(frandom(-0.3,0.3),frandom(-0.3,0.3),0.6);
 	}
 }
 
