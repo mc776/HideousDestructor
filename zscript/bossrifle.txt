@@ -44,43 +44,6 @@ class BossRifle:HDWeapon{
 		super.tick();
 		drainheat(BOSSS_HEAT,4);
 	}
-	override void startconfigure(){
-		switch(amount){
-		case 3:
-			weaponstatus[0]&=~BOSSF_CUSTOMCHAMBER;
-			break;
-		case 2:
-			weaponstatus[0]|=BOSSF_CUSTOMCHAMBER;
-			break;
-		default:
-			if(
-				!random(0,31)
-				||(
-					owner&&owner.player
-					&&cvar.getcvar("hd_bosscustomchamber",owner.player).getbool()
-				)
-			){
-				weaponstatus[0]|=BOSSF_CUSTOMCHAMBER;
-			}else weaponstatus[0]&=~BOSSF_CUSTOMCHAMBER;
-			break;
-		}
-		amount=1;maxamount=1;
-
-		if(weaponstatus[0]&BOSSF_CUSTOMCHAMBER)weaponstatus[BOSSS_GRIME]=random(0,5);
-		else weaponstatus[BOSSS_GRIME]=random(0,10);
-
-		if(owner&&owner.player){
-			if(cvar.getcvar("hd_bossfrontreticle",owner.player).getbool())
-				weaponstatus[0]|=BOSSF_FRONTRETICLE;
-				else weaponstatus[0]&=~BOSSF_FRONTRETICLE;
-			if(weaponstatus[0]&BOSSF_FRONTRETICLE)weaponstatus[BOSSS_ZOOM]=
-				clamp(cvar.getcvar("hd_libzoom",owner.player).getint(),12,40);
-				else weaponstatus[BOSSS_ZOOM]=
-				clamp(cvar.getcvar("hd_libzoom",owner.player).getint(),5,60);
-			weaponstatus[BOSSS_DROPADJUST]=
-				clamp(cvar.getcvar("hd_bossmoa",owner.player).getint(),0,600);
-		}
-	}
 	override double gunmass(){
 		return 12;
 	}
@@ -622,8 +585,26 @@ class BossRifle:HDWeapon{
 			if(random(0,20))weaponstatus[0]&=~BOSSF_CUSTOMCHAMBER;
 				else weaponstatus[0]|=BOSSF_CUSTOMCHAMBER;
 			weaponstatus[BOSSS_ZOOM]=20;
-			weaponstatus[BOSSS_DROPADJUST]=100;
+			weaponstatus[BOSSS_DROPADJUST]=113;
 		}
+	}
+	override void loadoutconfigure(string input){
+		int customchamber=getloadoutvar(input,"customchamber",1);
+		if(!customchamber)weaponstatus[0]&=~BOSSF_CUSTOMCHAMBER;
+		else if(customchamber>0)weaponstatus[0]|=BOSSF_CUSTOMCHAMBER;
+
+		int frontreticle=getloadoutvar(input,"frontreticle",1);
+		if(!frontreticle)weaponstatus[0]&=~BOSSF_FRONTRETICLE;
+		else if(frontreticle>0)weaponstatus[0]|=BOSSF_FRONTRETICLE;
+
+		int bulletdrop=getloadoutvar(input,"bulletdrop",3);
+		if(bulletdrop>=0)weaponstatus[BOSSS_DROPADJUST]=clamp(bulletdrop,0,600);
+
+		int zoom=getloadoutvar(input,"zoom",3);
+		if(zoom>0)weaponstatus[BOSSS_ZOOM]=
+			(weaponstatus[0]&BOSSF_FRONTRETICLE)?
+			clamp(zoom,12,40):
+			clamp(zoom,5,60);
 	}
 }
 enum bossstatus{

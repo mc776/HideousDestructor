@@ -949,10 +949,10 @@ class LiberatorRifle:AutoReloadingThingy{
 		if(bulletdrop>=0)weaponstatus[LIBS_DROPADJUST]=clamp(bulletdrop,0,600);
 
 		int zoom=getloadoutvar(input,"zoom",3);
-		if(zoom>0)weaponstatus[LIBS_ZOOM]=
+		if(zoom>=0)weaponstatus[LIBS_ZOOM]=
 			(weaponstatus[0]&LIBF_FRONTRETICLE)?
-			clamp(bulletdrop,20,40):
-			clamp(bulletdrop,6,70);
+			clamp(zoom,20,40):
+			clamp(zoom,6,70);
 
 		int firemode=getloadoutvar(input,"firemode",1);
 		if(!firemode)weaponstatus[0]&=~LIBF_FULLAUTO;
