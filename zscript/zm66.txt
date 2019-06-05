@@ -40,18 +40,6 @@ class ZM66AssaultRifle:HDWeapon{
 			barreldepth=3;
 		}
 	}
-	override void startconfigure(){
-		if(!owner||!owner.player)return;
-		weaponstatus[ZM66S_AUTO]=
-			clamp(cvar.getcvar("hd_zmfiremode",owner.player).getint(),0,2);
-		weaponstatus[ZM66S_ZOOM]=
-			clamp(cvar.getcvar("hd_zmzoom",owner.player).getint(),16,70);
-		if(!(weaponstatus[0]&ZM66F_CHAMBER)){
-			weaponstatus[0]|=ZM66F_CHAMBER;
-			if(weaponstatus[ZM66S_MAG]==51)weaponstatus[ZM66S_MAG]=49;
-				else weaponstatus[ZM66S_MAG]--;
-		}
-	}
 	override double gunmass(){
 		if(weaponstatus[0]&ZM66F_NOLAUNCHER){
 			return 6.2+weaponstatus[ZM66S_MAG]*0.02;
@@ -78,7 +66,11 @@ class ZM66AssaultRifle:HDWeapon{
 			if(wepstat0&ZM66F_NOFIRESELECT)
 				spr="RIFS";
 			else spr="RIFL";
-		}else spr="RIGL";
+		}else{
+			if(wepstat0&ZM66F_NOFIRESELECT)
+				spr="RIGS";
+			else spr="RIGL";
+		}
 
 		//set to no-mag frame
 		if(weaponstatus[ZM66S_MAG]<0)spr=spr.."D";
@@ -324,7 +316,7 @@ class ZM66AssaultRifle:HDWeapon{
 			else if(invoker.weaponstatus[ZM66S_AUTO])A_SetTics(3);
 		}goto shootgun;
 	hold:
-		RIFG A 0 A_JumpIf(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_GLMODE,"FireFrag");
+		RIFG A 0 A_JumpIf(invoker.weaponstatus[0]&ZM66F_GLMODE,"FireFrag");
 		RIFG A 0 A_JumpIf(invoker.weaponstatus[0]&ZM66F_NOFIRESELECT,"nope");
 		RIFG A 0 A_JumpIf(invoker.weaponstatus[ZM66S_AUTO]>4,"nope");
 		RIFG A 0 A_JumpIf(invoker.weaponstatus[ZM66S_AUTO],"shootgun");
@@ -725,6 +717,7 @@ class ZM66AssaultRifle:HDWeapon{
 		RIFL DCBA 0;
 		RIGL DCBA 0;
 		RIFS DCBA 0;
+		RIGS DA 0;
 		---- A 0{
 			//don't jam just because
 			if(
@@ -745,7 +738,11 @@ class ZM66AssaultRifle:HDWeapon{
 				if(invoker.weaponstatus[0]&ZM66F_NOFIRESELECT)
 					sprite=getspriteindex("RIFSA0");
 				else sprite=getspriteindex("RIFLA0");
-			}else sprite=getspriteindex("RIGLA0");
+			}else{
+				if(invoker.weaponstatus[0]&ZM66F_NOFIRESELECT)
+					sprite=getspriteindex("RIGSA0");
+				else sprite=getspriteindex("RIGLA0");
+			}
 
 			//set to no-mag frame
 			if(invoker.weaponstatus[ZM66S_MAG]<0){
@@ -801,6 +798,37 @@ class ZM66AssaultRifle:HDWeapon{
 			weaponstatus[ZM66S_ZOOM]=30;
 			weaponstatus[ZM66S_AUTO]=0;
 			weaponstatus[ZM66S_HEAT]=0;
+		}
+	}
+	override void loadoutconfigure(string input){
+		int nogl=getloadoutvar(input,"nogl",1);
+		if(!nogl){
+			weaponstatus[0]&=~ZM66F_NOLAUNCHER;
+		}else if(nogl>0){
+			weaponstatus[0]|=ZM66F_NOLAUNCHER;
+			weaponstatus[0]&=~ZM66F_GRENADELOADED;
+		}
+		if(!(weaponstatus[0]&ZM66F_NOLAUNCHER))weaponstatus[0]|=ZM66F_GRENADELOADED;
+
+		int zoom=getloadoutvar(input,"zoom",3);
+		if(zoom>=0)weaponstatus[ZM66S_ZOOM]=clamp(zoom,16,70);
+
+		int semi=getloadoutvar(input,"semi",1);
+		if(semi>0){
+			weaponstatus[ZM66S_AUTO]=-1;
+			weaponstatus[0]|=ZM66F_NOFIRESELECT;
+		}else{
+			int firemode=getloadoutvar(input,"firemode",1);
+			if(firemode>=0){
+				weaponstatus[0]&=~ZM66F_NOFIRESELECT;
+				weaponstatus[ZM66S_AUTO]=clamp(firemode,0,2);
+			}
+		}
+
+		if(getloadoutvar(input,"dontchamber",1)<1){
+			weaponstatus[0]|=ZM66F_CHAMBER;
+			if(weaponstatus[ZM66S_MAG]==51)weaponstatus[ZM66S_MAG]=49;
+			else weaponstatus[ZM66S_MAG]--;
 		}
 	}
 }
