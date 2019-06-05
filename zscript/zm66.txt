@@ -583,7 +583,9 @@ class ZM66AssaultRifle:HDWeapon{
 				invoker.weaponstatus[ZM66S_FLAGS]|=ZM66F_CHAMBER;
 				brokenround();
 			}else setweaponstate("reloadend");
+			A_WeaponBusy();
 		}
+		goto nope;
 		RIFG B 4 offset(-14,45);
 		goto reloadend;
 
