@@ -1,9 +1,18 @@
 // ------------------------------------------------------------
 // Lost Soul
 // ------------------------------------------------------------
-class Condemned:LostSoul replaces LostSoul{
+class Condemned:HDMobBase replaces LostSoul{
 	default{
-		+noblood +pushable -floorclip +avoidmelee +nogravity
+		mass 50;
+		painchance 256;
+		monster;
+		+float +nogravity +missilemore +dontfall +noicedeath
+		attacksound "skull/melee";
+		painsound "skull/pain";
+		deathsound "skull/death";
+		tag "$fn_lost";
+
+		+noblood +pushable -floorclip +avoidmelee
 		+bright
 		obituary "%o found a skull.";
 		activesound "";
@@ -212,8 +221,21 @@ class Condemned:LostSoul replaces LostSoul{
 // ------------------------------------------------------------
 // Pain Elemental
 // ------------------------------------------------------------
-class Jailer:PainElemental replaces PainElemental{
+class Jailer:HDMobBase replaces PainElemental{
 	default{
+		health 400;
+		radius 31;
+		height 56;
+		mass 400;
+		painchance 128;
+		+float 
+		+nogravity
+		seesound "pain/sight";
+		painsound "pain/pain";
+		deathsound "pain/death";
+		activesound "pain/active";
+		tag "$fn_pain";
+
 		+pushable
 		pushfactor 0.3;
 		obituary "%o braved the elements.";
@@ -251,6 +273,9 @@ class Jailer:PainElemental replaces PainElemental{
 	}
 	int brewing;
 	states{
+	spawn:
+		PAIN A 10 A_Look;
+		loop;
 	see:
 		PAIN AAABBBCCC 8{
 			hdmobai.chase(self);
@@ -329,6 +354,9 @@ class Jailer:PainElemental replaces PainElemental{
 		PAIN LLLMMMM 1 A_SpawnItemEx("HDSmoke", random(-4,4), random(-4,4), random(-2,4), vel.x,vel.y,vel.z+random(1,4), random(0,360), 168, 72);
 		TNT1 AAAAAAA 3 A_SpawnItemEx("HDSmoke", random(-4,4), random(-4,4), random(-2,4), 0, 0, 0, random(0,360), 160, 92);
 		stop;
+	raise:
+		PAIN MLKJIH 8;
+		goto see;
 	}
 }
 

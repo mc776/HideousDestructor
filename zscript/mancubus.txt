@@ -100,8 +100,20 @@ class manjuice:hdfireball{
 	}
 }
 
-class Mancubus:Fatso replaces Fatso{
+class Mancubus:HDMobBase replaces Fatso{
 	default{
+		health 600;
+		mass 1000;
+		speed 8;
+		monster;
+		+floorclip
+		+bossdeath
+		seesound "fatso/sight";
+		painsound "fatso/pain";
+		deathsound "fatso/death";
+		activesound "fatso/active";
+		tag "$fn_mancu";
+
 		+dontharmspecies
 		deathheight 20;
 		radius 38;
@@ -119,6 +131,9 @@ class Mancubus:Fatso replaces Fatso{
 	vector2 leadoffset;
 	double targdist;
 	states{
+	spawn:
+		FATT AB 15 A_Look;
+		loop;
 	see:
 		FATT AABBCCDDEEFF 3 {hdmobai.chase(self);}
 		loop;
@@ -213,6 +228,10 @@ class Mancubus:Fatso replaces Fatso{
 				setstatelabel("shoot");
 			}else accuracy=0;
 		}
+		goto see;
+	pain:
+		FATT J 3;
+		FATT J 3 A_Pain;
 		goto see;
 	death:
 		FATT K 6{

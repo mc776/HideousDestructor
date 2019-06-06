@@ -8,8 +8,19 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		dropitem "EnemyHERP",256,1;
 		dropitem "EnemyDERP",256,1;
 	}
-}class VulcanetteGuy:Chaingunguy{
+}class VulcanetteGuy:HDMobBase{
 	default{
+		radius 20;
+		height 56;
+		painchance 170;
+		monster;
+		+floorclip
+		seesound "chainguy/sight";
+		painsound "chainguy/pain";
+		deathsound "chainguy/death";
+		activesound "chainguy/active";
+		tag "$fn_heavy";
+
 		health 180;
 		speed 9;
 		mass 300;

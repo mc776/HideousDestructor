@@ -93,8 +93,21 @@ class bonerball:hdactor{
 	}
 }
 
-class Boner:Revenant replaces Revenant{
+class Boner:HDMobBase replaces Revenant{
 	default{
+		radius 20;
+		height 56;
+		painchance 100;
+		meleethreshold 196;
+		+missilemore 
+		+floorclip
+		seesound "skeleton/sight";
+		painsound "skeleton/pain";
+		deathsound "skeleton/death";
+		activesound "skeleton/active";
+		meleesound "skeleton/melee";
+		tag "$fn_reven";
+
 		+noblooddecals
 		-longmeleerange
 		bloodtype "notquitebloodsplat";
@@ -165,7 +178,9 @@ class Boner:Revenant replaces Revenant{
 		wait;
 	raise:
 		---- A 0 {hdmobai.corpseflags(self,false,true);}
-		goto super::raise;
+		SKEL Q 5;
+		SKEL PONML 5;
+		goto see;
 	}
 }
 

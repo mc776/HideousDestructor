@@ -1,8 +1,19 @@
 // ------------------------------------------------------------
 // Hell Knight
 // ------------------------------------------------------------
-class HellKnave:HellKnight replaces HellKnight{
+class HellKnave:HDMobBase replaces HellKnight{
 	default{
+		radius 24;
+		mass 1000;
+		painchance 50;
+		+floorclip
+		health 500;
+		seesound "knight/sight";
+		activesound "knight/active";
+		painsound "knight/pain";
+		deathsound "knight/death";
+		tag "$fn_hell";
+
 		damagefactor "Balefire",0.3;
 		damagefactor "Thermal",0.8;
 		damagefactor "SmallArms0",0.9;
@@ -64,6 +75,10 @@ class HellKnave:HellKnight replaces HellKnight{
 		}
 		BOS2 AABBCCDD 3{hdmobai.chase(self);}
 		loop;
+	pain:
+		BOS2 H 2;
+		BOS2 H 2 A_Pain;
+		goto see;
 	pain.balefire:
 		BOS2 H 3{
 			A_Recoil(0.4);

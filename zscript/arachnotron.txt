@@ -1,8 +1,19 @@
 // ------------------------------------------------------------
 // Arachnotron
 // ------------------------------------------------------------
-class Krangling:Arachnotron replaces Arachnotron{
+class Krangling:HDMobBase replaces Arachnotron{
 	default{
+		health 500;
+		height 64;
+		mass 600;
+		painchance 128;
+		+floorclip
+		+bossdeath
+		seesound "baby/sight";
+		painsound "baby/pain";
+		deathsound "baby/death";
+		activesound "baby/active";
+		tag "$fn_arach";
 		+dontharmspecies +missilemore
 		obituary "%o was fried by the Wrath of Krang.";
 		speed 16;
@@ -165,6 +176,10 @@ class Krangling:Arachnotron replaces Arachnotron{
 		BSPI A 8 A_PlaySound("baby/walk",CHAN_BODY);
 		BSPI A 20 A_PlaySound("baby/walk",CHAN_WEAPON);
 		BSPI A 0 {battery=20;}
+		goto see;
+	pain:
+		BSPI I 3;
+		BSPI I 3 A_Pain;
 		goto see;
 	death:
 		---- A 0{hdmobai.corpseflags(self);}

@@ -15,7 +15,7 @@
 	Set an variable to zero to use the actor default. (HDMarine is random)
 */
 
-class HDMarine:HDActor replaces ScriptedMarine{
+class HDMarine:HDMobBase replaces ScriptedMarine{
 	default{
 		//$Category "Monsters/Hideous Destructor/Marines"
 		//$Title "Marine"
@@ -1309,7 +1309,7 @@ extend class HDMarine{
 // ------------------------------------------------------------
 // Raging Erech shun.
 // ------------------------------------------------------------
-class GhostMarine:HDActor{
+class GhostMarine:HDMobBase{
 	bool A_GhostShot(actor victim){
 		if(!victim||absangle(angle,angleto(victim))>20)return false;
 		bool np=victim.bnopain;

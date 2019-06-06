@@ -102,7 +102,7 @@ class HDImpBall:HDFireball{
 			tracer=null;
 			if(blockingmobj){
 				if(
-					blockingmobj is "DoomImp"
+					blockingmobj is "FighterImp"
 					&&(!target||blockingmobj!=target.target)
 				)blockingmobj.givebody(random(1,10));
 				else{
@@ -119,12 +119,11 @@ class HDImpBall:HDFireball{
 				//HEAD SHOT
 				if(
 					pos.z-tracer.pos.z>tracer.height*0.8
-					&&!(tracer is "Cacodemon")
-					&&!(tracer is "Demon")
-					&&!(tracer is "SpiderMastermind")
-					&&!(tracer is "Arachnotron")
-					&&!(tracer is "PainElemental")
-					&&!(tracer is "LostSoul")
+					&&!(tracer is "CaeloBite")
+					&&!(tracer is "SpiderDemon")
+					&&!(tracer is "Krangling")
+					&&!(tracer is "Jailer")
+					&&!(tracer is "Condemned")
 					&&!(tracer is "Putto")
 					&&!(tracer is "Yokai")
 				){
@@ -140,11 +139,19 @@ class HDImpBall:HDFireball{
 }
 
 
-class FighterImp:DoomImp{
+class FighterImp:HDMobBase{
 	default{
 		//$Category "Monsters/Hideous Destructor"
 		//$Title "Imp Fighter"
 		//$Sprite "TROOA1"
+
+		mass 100;
+		+floorclip
+		seesound "imp/sight";
+		painsound "imp/pain";
+		deathsound "imp/death";
+		activesound "imp/active";
+		tag "$fn_imp";
 
 		damagefactor "Thermal",0.66;
 		Health 100;

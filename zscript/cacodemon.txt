@@ -227,7 +227,7 @@ class Foof:HDFireball{
 					&&(
 						!tb
 						||zit==tb.target
-						||!(zit is "Cacodemon")
+						||!(zit is "CaeloBite")
 					)
 				){
 					zit.damagemobj(self,tb,random(0,7),"Electro");
@@ -325,10 +325,22 @@ class CacoShellBlood:BloodSplatSilent{
 		)destroy();
 	}
 }
-class CaeloBite:Cacodemon replaces Cacodemon{
+class CaeloBite:HDMobBase replaces Cacodemon{
 	int charge;
 	double sweepangle;
 	default{
+		health 400;
+		radius 31;
+		height 56;
+		mass 400;
+		+float +nogravity
+		seesound "caco/sight";
+		painsound "caco/pain";
+		deathsound "caco/death";
+		activesound "caco/active";
+		hitobituary "$ob_cacohit";
+		tag "$fn_caco";
+
 		+noblooddecals
 		+pushable
 		pushfactor 0.05;
@@ -544,7 +556,10 @@ class CaeloBite:Cacodemon replaces Cacodemon{
 			accuracy=0;
 			hdmobai.corpseflags(self,false,true);
 			bpushable=true;
-		}goto super::raise;
+		}
+		HEAD L 8 A_UnSetFloorClip;
+		HEAD KJIHG 8;
+		goto see;
 	}
 }
 class DeadCaeloBite:CaeloBite replaces DeadCacodemon{
