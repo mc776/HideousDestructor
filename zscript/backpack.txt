@@ -492,7 +492,7 @@ class HDBackpack:HDWeapon{
 		if(tempamounts.size()<1)return 1;
 		int ticks=0;
 		let hdp=hdplayerpawn(owner);
-		if(trytopocket&&hdp&&hdp.itemenc>=hdp.maxpocketspace)trytopocket=false;
+		if(trytopocket&&hdp&&hdp.itemenc*hdmath.getencumbrancemult()>=hdp.maxpocketspace)trytopocket=false;
 		let wepth=(class<hdweapon>)(invclasses[which]);
 		let thisclass=(class<hdpickup>)(invclasses[which]);
 		if(wepth){
