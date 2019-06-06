@@ -16,8 +16,23 @@ extend class HDPlayerPawn{
 
 		if(incapacitated>0){
 			A_SetSize(radius,max(16,height-3));
-			A_SetInventory("HDIncapWeapon",1);
-			A_SelectWeapon("HDIncapWeapon");
+			if(!countinv("HDIncapWeapon")){
+				A_SetInventory("HDIncapWeapon",1);
+				if(player&&player.readyweapon){
+					if(
+						player.cmd.buttons&(
+							BT_ATTACK|BT_ALTATTACK|BT_RELOAD|BT_ZOOM
+							|BT_USER1|BT_USER2|BT_USER3|BT_USER4
+						)||(
+							hdweapon(player.readyweapon)
+							&&hdweapon(player.readyweapon).bweaponbusy
+						)
+					)DropInventory(player.readyweapon);
+					else player.setpsprite(PSP_WEAPON,player.readyweapon.findstate("deselect"));
+				}
+			}else{
+				A_SelectWeapon("HDIncapWeapon");
+			}
 		}else{
 			A_SetSize(radius,min(48,height+3));
 		}
@@ -203,7 +218,7 @@ class HDIncapWeapon:SelfBandage{
 		TNT1 A 0 A_Raise();
 		wait;
 	ready:
-		TNT1 A 0 A_WeaponReady(WRF_ALLOWUSER2|WRF_ALLOWRELOAD);
+		TNT1 A 0 A_WeaponReady(WRF_ALLOWUSER2|WRF_ALLOWRELOAD|WRF_DISABLESWITCH);
 		TNT1 A 1{
 			invoker.weaponstatus[INCS_YOFS]=invoker.weaponstatus[INCS_YOFS]*2/3;
 			A_SetHelpText();
