@@ -87,13 +87,6 @@ class Vulcanette:HDWeapon{
 		super.tick();
 		drainheat(VULCS_HEAT,18);
 	}
-	override void startconfigure(){
-		if(!owner||!owner.player)return;
-		if(cvar.getcvar("hd_vulcsuper",owner.player).getint())weaponstatus[0]|=VULCF_FAST;
-		weaponstatus[VULCS_ZOOM]=clamp(
-			cvar.getcvar("hd_vulczoom",owner.player).getint(),16,70
-		);
-	}
 
 	//translate the number from and to the internal stored data in the vulc.
 	//REMEMBER: 1 = EMPTY, 2 = ONE SHOT LEFT, 52 = FIFTY PLUS SEAL
@@ -709,6 +702,14 @@ class Vulcanette:HDWeapon{
 		weaponstatus[VULCS_MAGS]=VULC_MAGS_MAX;
 		if(idfa)weaponstatus[0]|=VULCF_ALLCHAMBERED;
 		weaponstatus[0]&=~VULCF_ALLBROKEN;
+	}
+	override void loadoutconfigure(string input){
+		int fast=getloadoutvar(input,"fast",1);
+		if(!fast)weaponstatus[0]&=~VULCF_FAST;
+		else if(fast>0)weaponstatus[0]|=VULCF_FAST;
+
+		int zoom=getloadoutvar(input,"zoom",3);
+		if(zoom>=0)weaponstatus[VULCS_ZOOM]=clamp(zoom,16,70);
 	}
 
 	//shooting and cycling actions

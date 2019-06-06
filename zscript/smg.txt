@@ -95,13 +95,6 @@ class HDSMG:HDWeapon{
 			"backsite",(0,0)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_TOP
 		);
 	}
-	override void startconfigure(){
-		if(owner&&owner.player){
-			weaponstatus[SMGS_AUTO]=clamp(
-				cvar.getcvar("hd_smgfiremode",owner.player).getint(),0,2
-			);
-		}
-	}
 	states{
 	select0:
 		SMGG A 0;
@@ -323,6 +316,10 @@ class HDSMG:HDWeapon{
 		weaponstatus[SMGS_MAG]=30;
 		weaponstatus[SMGS_CHAMBER]=2;
 		if(!idfa)weaponstatus[SMGS_AUTO]=0;
+	}
+	override void loadoutconfigure(string input){
+		int firemode=getloadoutvar(input,"firemode",1);
+		if(firemode>0)weaponstatus[SMGS_AUTO]=clamp(firemode,0,2);
 	}
 }
 enum smgstatus{

@@ -525,6 +525,20 @@ class HDPistol:HDHandgun replaces Pistol{
 		weaponstatus[PISS_MAG]=15;
 		weaponstatus[PISS_CHAMBER]=2;
 	}
+	override void loadoutconfigure(string input){
+		int selectfire=getloadoutvar(input,"selectfire",1);
+		if(!selectfire){
+			weaponstatus[0]&=~PISF_SELECTFIRE;
+			weaponstatus[0]&=~PISF_FIREMODE;
+		}else if(selectfire>0){
+			weaponstatus[0]|=PISF_SELECTFIRE;
+		}
+		if(weaponstatus[0]&PISF_SELECTFIRE){
+			int firemode=getloadoutvar(input,"auto",1);
+			if(!firemode)weaponstatus[0]&=~PISF_FIREMODE;
+			else if(firemode>0)weaponstatus[0]|=PISF_FIREMODE;
+		}
+	}
 }
 enum pistolstatus{
 	PISF_SELECTFIRE=1,

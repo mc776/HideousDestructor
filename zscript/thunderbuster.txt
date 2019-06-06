@@ -23,14 +23,6 @@ class ThunderBuster:HDWeapon{
 		super.tick();
 		drainheat(TBS_HEAT,12);
 	}
-	override void startconfigure(){
-		if(
-			owner&&owner.player
-			&&cvar.getcvar("hd_tbmode",owner.player).getint()
-		){
-			weaponstatus[0]|=TBF_ALT;
-		}
-	}
 	override double gunmass(){
 		return 10+(weaponstatus[TBS_BATTERY]<0?0:2);
 	}
@@ -432,6 +424,11 @@ class ThunderBuster:HDWeapon{
 	}
 	override void initializewepstats(bool idfa){
 		weaponstatus[TBS_BATTERY]=20;
+	}
+	override void loadoutconfigure(string input){
+		int fm=getloadoutvar(input,"alt",1);
+		if(!fm)weaponstatus[0]&=~TBF_ALT;
+		else if(fm>0)weaponstatus[0]|=TBF_ALT;
 	}
 }
 enum tbstatus{
