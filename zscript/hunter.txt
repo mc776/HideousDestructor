@@ -23,28 +23,6 @@ class Hunter:HDShotgun{
 		tubesize=((weaponstatus[0]&HUNTF_EXPORT)?5:7);
 		if(weaponstatus[HUNTS_TUBE]>tubesize)weaponstatus[HUNTS_TUBE]=tubesize;
 	}
-	override void startconfigure(){
-		int startfm;
-		int startfa;
-		if(owner&&owner.player){
-			startfm=cvar.getcvar("hd_huntauto",owner.player).getint();
-			startfa=cvar.getcvar("hd_huntfullauto",owner.player).getint();
-		}else{
-			if(!random(0,31))startfa=1;
-			else if(!random(0,15))startfa=-1;
-			startfm=randompick(0,0,0,0,1,1,2);
-		}
-		if(startfa<0){
-			weaponstatus[0]|=HUNTF_EXPORT;
-			weaponstatus[0]&=~HUNTF_CANFULLAUTO;
-			startfm=0;
-		}else if(startfa>0){
-			weaponstatus[0]&=~HUNTF_EXPORT;
-			weaponstatus[0]|=HUNTF_CANFULLAUTO;
-			startfm=clamp(startfm,0,2);
-		}else startfm=clamp(startfm,0,1);
-		weaponstatus[HUNTS_FIREMODE]=startfm;
-	}
 	override string getobituary(actor victim,actor inflictor,name mod,bool playerattack){
 		bool sausage=true;
 		for(int i=0;i<MAXPLAYERS;i++){
@@ -677,6 +655,27 @@ class Hunter:HDShotgun{
 		weaponstatus[HUNTS_TUBE]=idfa?tubesize:7;
 		weaponstatus[SHOTS_SIDESADDLE]=12;
 		handshells=0;
+	}
+	override void loadoutconfigure(string input){
+		int type=getloadoutvar(input,"type",1);
+		switch(type){
+		case 0:
+			weaponstatus[0]|=HUNTF_EXPORT;
+			weaponstatus[0]&=~HUNTF_CANFULLAUTO;
+			break;
+		case 1:
+			weaponstatus[0]&=~HUNTF_EXPORT;
+			weaponstatus[0]&=~HUNTF_CANFULLAUTO;
+			break;
+		case 2:
+			weaponstatus[0]&=~HUNTF_EXPORT;
+			weaponstatus[0]|=HUNTF_CANFULLAUTO;
+			break;
+		default:
+			break;
+		}
+		int firemode=getloadoutvar(input,"firemode",1);
+		if(firemode>=0)weaponstatus[HUNTS_FIREMODE]=clamp(firemode,0,type);
 	}
 }
 enum hunterstatus{
