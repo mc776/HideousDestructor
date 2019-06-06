@@ -1,8 +1,20 @@
 // ------------------------------------------------------------
 // Baron Of Hell
 // ------------------------------------------------------------
-class HellPrince:BaronOfHell replaces BaronofHell{
+class HellPrince:HDMobBase replaces BaronofHell{
 	default{
+		radius 24;
+		mass 1000;
+		+floorclip
+		+bossdeath
+		seesound "baron/sight";
+		painsound "baron/pain";
+		deathsound "baron/death";
+		activesound "baron/active";
+		obituary "$ob_baron";
+		hitobituary "$ob_baronhit";
+		tag "$fn_baron";
+
 		+missilemore +seeinvisible +dontharmspecies
 		maxtargetrange 65536;
 		bloodcolor "44 99 22";

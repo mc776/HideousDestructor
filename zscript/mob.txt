@@ -1,3 +1,9 @@
+class HDMobBase : HDActor{
+	default{
+		monster;
+	}
+}
+
 // ------------------------------------------------------------
 // Nice movement your objects have there.
 // Shame if something happened to them.
@@ -72,15 +78,15 @@ class HDWound:Thinker{
 			||bleeder.bloodtype=="ShieldNeverBlood"
 
 			//sorry there's no simple way to do this in the actor
-			||bleeder is "Revenant"
+			||bleeder is "Boner"
 			||bleeder is "Yokai"
 			||bleeder is "Putto"
-			||bleeder is "LostSoul"
-			||bleeder is "PainElemental"
+			||bleeder is "Condemned"
+			||bleeder is "Jailer"
 			||bleeder is "HDBarrel"
 			||bleeder is "ExplosiveBarrel"
 			||bleeder is "BloodyHellFire"
-			||bleeder is "Archvile"
+			||bleeder is "ArchFiend"
 		)return;
 
 		let wwnd=new("HDWound");

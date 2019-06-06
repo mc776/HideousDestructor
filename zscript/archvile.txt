@@ -215,15 +215,24 @@ class HeckFire:HDActor{
 	}
 }
 
-class ArchFiend:Archvile replaces ArchVile{
+class ArchFiend:HDMobBase replaces ArchVile{
 	default{
+		mass 500;
+		maxtargetrange 896;
+		seesound "vile/sight";
+		painsound "vile/pain";
+		deathsound "vile/death";
+		activesound "vile/active";
+		meleesound "vile/stop";
+		obituary "$OB_VILE";
+		tag "$FN_ARCH";
+		
 		+shadow
 		+nofear
-		-notarget
-		-quicktoretaliate
 		+seeinvisible
 		+frightening
 		+dontgib
+		+floorclip
 		radius 16;
 		height 56;
 		scale 0.8;
@@ -348,6 +357,9 @@ class ArchFiend:Archvile replaces ArchVile{
 		return 0;
 	}
 	states{
+	spawn:
+		VILE AB 10 A_Look;
+		loop;
 	see:
 		VILE A 0 A_JumpIf(bfriendly,"seefriendly");
 		VILE A 0 A_AlertMonsters(0,AMF_TARGETNONPLAYER);

@@ -1,11 +1,24 @@
 // ------------------------------------------------------------
 // Spider Mastermind
 // ------------------------------------------------------------
-class Spiderdemon:SpiderMastermind replaces SpiderMastermind{
+class Spiderdemon:HDMobBase replaces SpiderMastermind{
 	default{
+		height 100;
+		mass 1000;
+		+boss
+		+missilemore
+		+floorclip
+		+dontmorph
+		+bossdeath
+		seesound "spider/sight";
+		attacksound "spider/attack";
+		painsound "spider/pain";
+		deathsound "spider/death";
+		activesound "spider/active";
+		tag "$fn_spider";
+
 		+noblooddecals
 		+nodropoff +nofear
-		-noradiusdmg
 		bloodtype "ShieldNotBlood";
 		maxstepheight 72;
 		maxdropoffheight 72;

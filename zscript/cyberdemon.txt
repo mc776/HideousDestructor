@@ -210,10 +210,22 @@ class SatanBallLight:PointLight{
 	}
 }
 
-class SatanRobo:Cyberdemon replaces CyberDemon{
+class SatanRobo:HDMobBase replaces CyberDemon{
 	double launcheroffset;
 	property launcheroffset:launcheroffset;
 	default{
+		radius 40;
+		+boss 
+		+missilemore
+		+floorclip
+		+dontmorph
+		+bossdeath
+		seesound "cyber/sight";
+		painsound "cyber/pain";
+		deathsound "cyber/death";
+		activesound "cyber/active";
+		tag "$fn_cyber";
+
 		+avoidmelee +nofear +seeinvisible +nodropoff
 		-noradiusdmg
 		+noblooddecals

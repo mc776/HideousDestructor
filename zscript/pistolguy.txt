@@ -2,7 +2,7 @@
 Freedoom pistol guy
 Intended to be a prototype for future mobs when Actor can finally be extended
 ////////////////////////////*/
-class UndeadHomeboy:ZombieMan{
+class UndeadHomeboy:HDMobBase{
 	//remembering goals and targets
 	vector3 targetlastpos;
 	vector3 goalpos;
@@ -207,6 +207,13 @@ class UndeadHomeboy:ZombieMan{
 		//$Category "Monsters/Hideous Destructor"
 		//$Title "Pistol Zombie"
 		//$Sprite "POSSA1"
+
+		+floorclip
+		seesound "grunt/sight";
+		painsound "grunt/pain";
+		deathsound "grunt/death";
+		activesound "grunt/active";
+		tag "$fn_zombie";
 
 		health 90;gibhealth 100;
 		height 54;radius 10;

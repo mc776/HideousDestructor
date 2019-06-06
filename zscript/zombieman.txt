@@ -8,11 +8,18 @@
 	1=ZM66 regular; 2=ZM66 marksman; 3=SMG
 */
 
-class ZombieStormtrooper:ZombieMan{
+class ZombieStormtrooper:HDMobBase{
 	default{
 		//$Category "Monsters/Hideous Destructor"
 		//$Title "Zombieman"
 		//$Sprite "POSSA1"
+
+		+floorclip
+		seesound "grunt/sight";
+		painsound "grunt/pain";
+		deathsound "grunt/death";
+		activesound "grunt/active";
+		tag "$fn_zombie";
 
 		translation "58:66=128:136","214:223=141:148","176:191=24:47","16:34=68:79";
 		health 80; gibhealth 100;
