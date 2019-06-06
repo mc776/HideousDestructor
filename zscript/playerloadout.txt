@@ -254,10 +254,6 @@ class HDWeaponGiver:HDWeapon{
 			actualweapon.attachtoowner(owner);
 		}
 
-		//apply the default changes and mark as done
-		actualweapon.startconfigure();
-		actualweapon.bstartconfigured=true;
-
 		//now apply the changes this weapongiver is for
 		configureactualweapon();
 
@@ -298,9 +294,7 @@ extend class HDPlayerPawn{
 		if(!player)return;
 		if(HDPlayerPawn(self))HDPlayerPawn(self).GiveBasics();
 
-		string weapondefaults=cvar.getcvar("hd_weapondefaults",player).getstring();
-		weapondefaults=weapondefaults.makelower();
-		weapondefaults.replace(" ","");
+		string weapondefaults=hdweapon.getdefaultcvar(player);
 
 		//special conditions that completely overwrite the loadout giving
 		if(

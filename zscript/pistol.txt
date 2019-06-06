@@ -166,29 +166,6 @@ class HDPistol:HDHandgun replaces Pistol{
 	action void A_CheckPistolHand(){
 		if(invoker.wronghand)player.getpsprite(PSP_WEAPON).sprite=getspriteindex("PI2GA0");
 	}
-	override void startconfigure(){
-		switch(amount){
-		case 3:
-			weaponstatus[0]&=~PISF_SELECTFIRE;
-			break;
-		case 2:
-			weaponstatus[0]|=PISF_SELECTFIRE;
-			break;
-		default:
-			if(
-				!random(0,127)
-			)weaponstatus[0]|=PISF_SELECTFIRE;
-			break;
-		}
-		amount=1;maxamount=1;
-
-		if(
-			weaponstatus[0]&PISF_SELECTFIRE
-			&&owner
-			&&owner.player
-			&&cvar.getcvar("hd_pistauto",owner.player).getbool()
-		)weaponstatus[0]|=PISF_FIREMODE;
-	}
 	states{
 	select0:
 		PISG A 0{

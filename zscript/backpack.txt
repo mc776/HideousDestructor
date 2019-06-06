@@ -85,13 +85,15 @@ class HDBackpack:HDWeapon{
 	}
 	void initializeamount(string loadlist){
 		array<string> whichitem;whichitem.clear();
-		array<int> howmany;howmany.clear();
+		array<string> howmany;howmany.clear();
 		loadlist.replace(" ","");
 		loadlist.split(whichitem,",");
 		for(int i=0;i<whichitem.size();i++){
-			howmany.push((whichitem[i].mid(3,whichitem[i].length())).toint(10));
+			howmany.push((whichitem[i].mid(3,whichitem[i].length())));
 			whichitem[i]=whichitem[i].left(3);
 		}
+		string weapondefaults="";
+		if(owner&&owner.player)weapondefaults=hdweapon.getdefaultcvar(owner.player);
 		for(int i=0;i<whichitem.size();i++){
 			string ref=whichitem[i].makelower();
 			if(ref=="")continue;
@@ -103,27 +105,29 @@ class HDBackpack:HDWeapon{
 			let pkgv=(class<hdpickupgiver>)(invclasses[refindex]);
 			let pkup=(class<hdpickup>)(invclasses[refindex]);
 
-			howmany[i]=max(1,howmany[i]);
+			int howmanyi=max(1,howmany[i].toint());
 			if(wep||mag){
-				for(int j=0;j<howmany[i];j++){
+				for(int j=0;j<howmanyi;j++){
 					inventory iii=inventory(spawn(invclasses[refindex],pos,ALLOW_REPLACE));
 					if(hdweapongiver(iii)){
 						hdweapongiver(iii).spawnactualweapon();
 						let newwep=hdweapongiver(iii).actualweapon;
-						newwep.amount=clamp(newwep.amount,howmany[i],newwep.maxamount);
+						newwep.amount=clamp(newwep.amount,howmanyi,newwep.maxamount);
 						newwep.attachtoowner(self);
-						newwep.startconfigure();
-						newwep.bstartconfigured=true;
 						dropinventory(newwep);
 						itemtobackpack(newwep);
 					}else{
 						if(owner)iii.attachtoowner(owner);
+						if(hdweapon(iii)){
+							hdweapon(iii).loadoutconfigure(weapondefaults);
+							hdweapon(iii).loadoutconfigure(howmany[i]);
+						}
 						itemtobackpack(iii);
 					}
 					if(iii)iii.destroy();
 				}
 			}else if(pkgv){
-				for(int j=0;j<howmany[i];j++){
+				for(int j=0;j<howmanyi;j++){
 					inventory iii=inventory(spawn(invclasses[refindex],pos,ALLOW_REPLACE));
 					hdpickupgiver(iii).spawnactualitem();
 					itemtobackpack(hdpickupgiver(iii).actualitem);
@@ -131,7 +135,7 @@ class HDBackpack:HDWeapon{
 				}
 			}else if(pkup){
 				double bulkmax=(HDCONST_BPMAX-bulk)/max(1,getdefaultbytype(pkup).bulk);
-				int addamt=max(1,min(bulkmax,howmany[i]));
+				int addamt=max(1,min(bulkmax,howmanyi));
 				int amt=amounts[refindex].toint(10);
 				if(addamt>0)amounts[refindex]=""..amt+addamt;
 				updatemessage(index);
