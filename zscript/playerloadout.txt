@@ -418,6 +418,12 @@ extend class HDPlayerPawn{
 					wepinput.replace(" ","");
 					wepinput=wepinput.makelower();
 					newwep.loadoutconfigure(wepinput);
+					//the only way I know to force the weapongiver to go last: make it go again
+					if(reff is "HDWeaponGiver"){
+						let hdwgreff=(class<hdweapongiver>)(reff);
+						let gdhdwgreff=getdefaultbytype(hdwgreff);
+						newwep.loadoutconfigure(gdhdwgreff.config);
+					}
 				}
 				newwep.actualpickup(self,true);
 			}else A_GiveInventory(

@@ -989,11 +989,10 @@ class LiberatorNoGL:HDWeaponGiver{
 		hdweapon.nicename "Liberator Rifle (no GL)";
 		hdweapongiver.bulk (100.+(ENC_776MAG_LOADED+30.*ENC_776_LOADED));
 		hdweapongiver.weapontogive "LiberatorRifle";
-		hdweapongiver.config "nogl";
+		hdweapongiver.config "noglnobp0";
 		inventory.icon "BRFLA0";
 	}
 }
-
 
 class LiberatorNoBullpup:HDWeaponGiver{
 	default{
@@ -1004,10 +1003,8 @@ class LiberatorNoBullpup:HDWeaponGiver{
 		hdweapon.nicename "Liberator Rifle (Classic)";
 		hdweapongiver.bulk (145.+(ENC_776MAG_LOADED+30.*ENC_776_LOADED)+ENC_ROCKETLOADED);
 		hdweapongiver.weapontogive "LiberatorRifle";
+		hdweapongiver.config "nogl0nobp";
 		inventory.icon "BRLLB0";
-	}
-	override void configureactualweapon(){
-		actualweapon.weaponstatus[0]|=LIBF_NOBULLPUP;
 	}
 }
 class LiberatorNoBullpupNoGL:HDWeaponGiver{
@@ -1019,12 +1016,8 @@ class LiberatorNoBullpupNoGL:HDWeaponGiver{
 		hdweapon.nicename "Liberator Rifle (Classic no GL)";
 		hdweapongiver.bulk (120.+(ENC_776MAG_LOADED+30.*ENC_776_LOADED));
 		hdweapongiver.weapontogive "LiberatorRifle";
+		hdweapongiver.config "noglnobp";
 		inventory.icon "BRLLA0";
-	}
-	override void configureactualweapon(){
-		actualweapon.weaponstatus[0]|=LIBF_NOBULLPUP;
-		actualweapon.weaponstatus[0]|=LIBF_NOLAUNCHER;
-		actualweapon.weaponstatus[0]&=~LIBF_GRENADELOADED;
 	}
 }
 
