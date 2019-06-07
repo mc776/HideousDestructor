@@ -330,6 +330,7 @@ class HDPickup:CustomInventory{
 		itemsthatusethis.clear();
 		GetItemsThatUseThis();
 		super.postbeginplay();
+		if(hdpickup.checkblacklist(self,refid))return;
 		let hdps=new("HDPickupSplitter");
 		hdps.invoker=self;
 	}
@@ -341,6 +342,27 @@ class HDPickup:CustomInventory{
 	array<string> itemsthatusethis;
 	virtual void GetItemsThatUseThis(){}
 	virtual bool IsUsed(){return true;}
+
+	//destroy caller if a refid is mentioned in hd_blacklist
+	static bool checkblacklist(actor caller,string refid){
+		string bl=hd_blacklist;
+		if(bl=="")return false;
+		bl=bl.makelower();
+		bl.replace(" ","");
+		int bldex=bl.rightindexof(refid.makelower());
+		// this must use RightIndexOf not IndexOf!
+		// consider: "bfg=zrk,zrk=fis" - zerk replaced with none added
+		// versus "bfg=zrk,zrk=fis,hrp=zrk" - zerk replaced, then added elsewhere
+		// only if the FINAL instance of the refid does not follow "=" that it is truly blacklisted.
+		if(bldex>=0){
+			string prevchar=bl.mid(bldex-1,1);
+			if(prevchar!="="){
+				caller.destroy();
+				return true;
+			}
+		}
+		return false;
+	}
 
 	states{
 	use:

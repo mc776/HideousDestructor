@@ -487,6 +487,7 @@ class HDWeapon:Weapon{
 
 	override void postbeginplay(){
 		super.postbeginplay();
+		if(hdpickup.checkblacklist(self,refid))return;
 		if(!bwimpy_weapon)bno_auto_switch=false;
 	}
 	//because A_Print doesn't cut it
