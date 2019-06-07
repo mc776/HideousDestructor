@@ -228,6 +228,8 @@ class HDPickupGiver:HDPickup{
 class HDWeaponGiver:HDWeapon{
 	class<hdweapon> weapontogive;
 	property weapontogive:weapontogive;
+	string weprefid;
+	property weprefid:weprefid;
 	string config;
 	property config:config;
 	double bulk;property bulk:bulk;
@@ -237,6 +239,7 @@ class HDWeaponGiver:HDWeapon{
 		-inventory.invbar
 		inventory.maxamount 1;
 		hdweapongiver.config "";
+		hdweapongiver.weprefid "";
 	}
 	virtual void configureactualweapon(){}
 	override void postbeginplay(){
@@ -244,6 +247,8 @@ class HDWeaponGiver:HDWeapon{
 		spawnactualweapon();
 	}
 	virtual void spawnactualweapon(){
+		if(hdpickup.checkblacklist(self,weprefid,true))return;
+
 		//check if the owner already has this weapon
 		bool hasprevious=(
 			owner
@@ -401,32 +406,34 @@ extend class HDPlayerPawn{
 				}else{
 					newwep=hdweapon(spawn(reff,pos));
 				}
-				//if amountable, loop
-				if(newwep.bloadoutamount){
-					int thismany=howmany[i].toint()-1;
-					while(thismany>0){
-						thismany--;
-						let nwp=hdweapon(spawn(reff,pos));
-						nwp.actualpickup(self,true);
+				if(newwep){
+					//if amountable, loop
+					if(newwep.bloadoutamount){
+						int thismany=howmany[i].toint()-1;
+						while(thismany>0){
+							thismany--;
+							let nwp=hdweapon(spawn(reff,pos));
+							nwp.actualpickup(self,true);
+						}
+					}else{
+						//clear any randomized garbage
+						newwep.weaponstatus[0]=0;
+						//apply the default based on user cvar first
+						newwep.defaultconfigure(player);
+						//now apply the loadout input to overwrite the defaults
+						string wepinput=howmany[i];
+						wepinput.replace(" ","");
+						wepinput=wepinput.makelower();
+						newwep.loadoutconfigure(wepinput);
+						//the only way I know to force the weapongiver to go last: make it go again
+						if(reff is "HDWeaponGiver"){
+							let hdwgreff=(class<hdweapongiver>)(reff);
+							let gdhdwgreff=getdefaultbytype(hdwgreff);
+							newwep.loadoutconfigure(gdhdwgreff.config);
+						}
 					}
-				}else{
-					//clear any randomized garbage
-					newwep.weaponstatus[0]=0;
-					//apply the default based on user cvar first
-					newwep.defaultconfigure(player);
-					//now apply the loadout input to overwrite the defaults
-					string wepinput=howmany[i];
-					wepinput.replace(" ","");
-					wepinput=wepinput.makelower();
-					newwep.loadoutconfigure(wepinput);
-					//the only way I know to force the weapongiver to go last: make it go again
-					if(reff is "HDWeaponGiver"){
-						let hdwgreff=(class<hdweapongiver>)(reff);
-						let gdhdwgreff=getdefaultbytype(hdwgreff);
-						newwep.loadoutconfigure(gdhdwgreff.config);
-					}
+					newwep.actualpickup(self,true);
 				}
-				newwep.actualpickup(self,true);
 			}else A_GiveInventory(
 				reff.getclassname(),
 				clamp(howmany[i].toint(),1,hdmath.maxinv(self,reff.getclassname()))

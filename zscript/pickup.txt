@@ -344,10 +344,11 @@ class HDPickup:CustomInventory{
 	virtual bool IsUsed(){return true;}
 
 	//destroy caller if a refid is mentioned in hd_blacklist
-	static bool checkblacklist(actor caller,string refid){
+	static bool checkblacklist(actor caller,string refid,bool force=false){
+		if(refid=="")return false;
 		string bl=hd_blacklist;
 		bl=bl.makelower();
-		if(bl.left(3)!="all")return false;
+		if(!force&&bl.left(3)!="all")return false;
 		bl.replace(" ","");
 		int bldex=bl.rightindexof(refid.makelower());
 		// this must use RightIndexOf not IndexOf!
