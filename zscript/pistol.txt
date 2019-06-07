@@ -540,14 +540,8 @@ class HDAutoPistol:HDWeaponGiver{
 		hdweapon.nicename "Pistol (select-fire)";
 		hdweapongiver.bulk 34;
 		hdweapongiver.weapontogive "HDPistol";
+		hdweapongiver.config "selectfire";
 		inventory.icon "PISTC0";
-	}
-	override void configureactualweapon(){
-		actualweapon.weaponstatus[0]|=PISF_SELECTFIRE;
-		if(
-			owner
-			&&cvar.getcvar("hd_pistauto",owner.player).getbool()
-		)actualweapon.weaponstatus[0]|=PISF_FIREMODE;
 	}
 }
 

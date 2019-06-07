@@ -251,8 +251,10 @@ class HDBackpack:HDWeapon{
 				}else if((ZM66AssaultRifle)(item)){
 					string fr=(wepstatus[ZM66S_MAG].toint()<0)?"D":"A";
 					int st=wepstatus[0].toint();
-					if(!(st&ZM66F_NOLAUNCHER))specicon="RIGL";
-					else if(st&ZM66F_NOFIRESELECT)specicon="RIFS";
+					if(!(st&ZM66F_NOLAUNCHER)){
+						if(st&ZM66F_NOFIRESELECT)specicon="RIGS";
+						else specicon="RIGL";
+					}else if(st&ZM66F_NOFIRESELECT)specicon="RIFS";
 					else specicon="RIFL";
 					specicon=specicon..fr..0;
 				}else if((LiberatorRifle)(item)){
