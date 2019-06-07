@@ -112,15 +112,12 @@ class HDBackpack:HDWeapon{
 					if(hdweapongiver(iii)){
 						hdweapongiver(iii).spawnactualweapon();
 						let newwep=hdweapongiver(iii).actualweapon;
-						newwep.amount=clamp(newwep.amount,howmanyi,newwep.maxamount);
-						newwep.attachtoowner(self);
-						dropinventory(newwep);
 						itemtobackpack(newwep);
 					}else{
-						if(owner)iii.attachtoowner(owner);
-						if(hdweapon(iii)){
+						if(wep){
 							hdweapon(iii).loadoutconfigure(weapondefaults);
 							hdweapon(iii).loadoutconfigure(howmany[i]);
+							A_Log(howmany[i].."  "..hdweapon(iii).bfitsinbackpack);
 						}
 						itemtobackpack(iii);
 					}
