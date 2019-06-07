@@ -934,6 +934,7 @@ class LiberatorRifle:AutoReloadingThingy{
 		int nobp=getloadoutvar(input,"nobp",1);
 		if(!nobp)weaponstatus[0]&=~LIBF_NOBULLPUP;
 		else if(nobp>0)weaponstatus[0]|=LIBF_NOBULLPUP;
+		if(weaponstatus[0]&LIBF_NOBULLPUP)bfitsinbackpack=false;
 
 		int altreticle=getloadoutvar(input,"altreticle",1);
 		if(!altreticle)weaponstatus[0]&=~LIBF_ALTRETICLE;
