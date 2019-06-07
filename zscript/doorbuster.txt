@@ -324,7 +324,15 @@ class doordestroyer:hdactor{
 			shwal=texman.checkfortexture("ASHWALL",texman.type_any);
 		othersector.settexture(floornotdoor?sector.floor:sector.ceiling,shwal,true);
 		for(int i=0;i<othersector.lines.size();i++){
-			othersector.lines[i].special=0;
+			//press the phantom switch with your mind.
+			//do not merely exit the level. TRANSCEND it
+			let lspecial=othersector.lines[i].special;
+			if(
+				lspecial!=Exit_Normal
+				&&lspecial!=Exit_Secret
+				&&lspecial!=Teleport_NewMap
+				&&lspecial!=Teleport_EndGame
+			)othersector.lines[i].special=0;
 			for(int j=0;j<2;j++){
 				side sdd=othersector.lines[i].sidedef[j];
 				if(sdd){
