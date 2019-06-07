@@ -247,7 +247,8 @@ class HDWeaponGiver:HDWeapon{
 		spawnactualweapon();
 	}
 	virtual void spawnactualweapon(){
-		if(hdpickup.checkblacklist(self,weprefid,true))return;
+		//check blacklist for the target weapon
+		if(hdpickup.checkblacklist(self,weprefid))return;
 
 		//check if the owner already has this weapon
 		bool hasprevious=(
@@ -403,6 +404,7 @@ extend class HDPlayerPawn{
 					newgiver.spawnactualweapon();
 					newwep=newgiver.actualweapon;
 					newgiver.destroy();
+					if(newwep&&hdpickup.checkblacklist(newwep,newwep.refid,true))return;
 				}else{
 					newwep=hdweapon(spawn(reff,pos));
 				}
