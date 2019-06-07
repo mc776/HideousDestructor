@@ -45,7 +45,8 @@ class HDLoadoutMenu:GenericMenu{
 				if(reff is "HDPickup"){
 					let ref=getdefaultbytype((class<hdpickup>)(reff));
 					if(ref.refid!=""){
-						refids.push(ref.refid.makelower());
+						string lrefid=ref.refid.makelower();
+						refids.push(lrefid);
 						nicenames.push(ref.nicename);
 						if(!(jp%5))reflist=reflist.."\n";jp++;
 						reflist=reflist.."\n\cy"..ref.refid.."\cj   "..ref.nicename;
@@ -53,7 +54,8 @@ class HDLoadoutMenu:GenericMenu{
 				}else{
 					let ref=getdefaultbytype((class<hdweapon>)(reff));
 					if(ref.refid!=""){
-						refids.push(ref.refid);
+						string lrefid=ref.refid.makelower();
+						refids.push(lrefid);
 						nicenames.push(ref.nicename);
 						if(!(jw%5))reflist="\n"..reflist;jw++;
 						if(ref.bwimpy_weapon)reflist=reflist.."\n\cy"..ref.refid.."\cj   "..ref.nicename;
