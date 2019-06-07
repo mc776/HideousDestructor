@@ -444,8 +444,9 @@ class HDWeapon:Weapon{
 		super.beginplay();
 	}
 
-	//parses what would normally be the amount string as a set of variables
+	//parse what would normally be the amount string as a set of variables
 	virtual void loadoutconfigure(string input){}
+	//retrieves the entire hd_weapondefaults cvar for a given player
 	static string getdefaultcvar(playerinfo pl){
 		if(!pl)return "";
 		string weapondefaults=cvar.getcvar("hd_weapondefaults",pl).getstring();
@@ -453,7 +454,22 @@ class HDWeapon:Weapon{
 		weapondefaults.replace(" ","");
 		return weapondefaults;
 	}
-	//parses a weapon loadout variable to an int
+	//apply config from owner's hd_weapondefaults cvar
+	void defaultconfigure(playerinfo whichplayer,string weapondefaults="cvar"){
+		if(!whichplayer)return;
+		if(weapondefaults=="cvar")weapondefaults=hdweapon.getdefaultcvar(whichplayer);
+		if(weapondefaults=="")return;
+		weapondefaults.replace(" ","");
+		weapondefaults.makelower();
+		int defvarstart=weapondefaults.indexof(refid);
+		if(defvarstart>=0){
+			string wepdefault=weapondefaults.mid(defvarstart);
+			int defcomma=wepdefault.indexof(",");
+			if(defcomma>=0)wepdefault=wepdefault.left(defcomma);
+			loadoutconfigure(wepdefault);
+		}
+	}
+	//parse a weapon loadout variable to an int
 	int getloadoutvar(string input,string varname,int maxdigits=int.MAX){
 		int varstart=input.indexof(varname);
 		if(varstart<0)return -1;

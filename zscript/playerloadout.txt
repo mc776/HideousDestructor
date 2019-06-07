@@ -227,12 +227,15 @@ class HDPickupGiver:HDPickup{
 class HDWeaponGiver:HDWeapon{
 	class<hdweapon> weapontogive;
 	property weapontogive:weapontogive;
+	string config;
+	property config:config;
 	double bulk;property bulk:bulk;
 	hdweapon actualweapon;
 	default{
 		+nointeraction
 		-inventory.invbar
 		inventory.maxamount 1;
+		hdweapongiver.config "";
 	}
 	virtual void configureactualweapon(){}
 	override void postbeginplay(){
@@ -252,10 +255,13 @@ class HDWeaponGiver:HDWeapon{
 		actualweapon.changetid(tid);
 		if(owner){
 			actualweapon.attachtoowner(owner);
+
+			//apply defaults from owner
+			actualweapon.defaultconfigure(player);
 		}
 
-		//now apply the changes this weapongiver is for
-		configureactualweapon();
+		//apply config applicable to this weapongiver
+		actualweapon.loadoutconfigure(config);
 
 		//if there was a previous weapon, bring this one down to the spares
 		if(hasprevious&&owner.getage()>5){
@@ -406,14 +412,7 @@ extend class HDPlayerPawn{
 					//clear any randomized garbage
 					newwep.weaponstatus[0]=0;
 					//apply the default based on user cvar first
-					int defvarstart=weapondefaults.indexof(whichitem[i]);
-					if(defvarstart>=0){
-						string wepdefault=weapondefaults.mid(defvarstart);
-						int defcomma=wepdefault.indexof(",");
-						if(defcomma>=0)wepdefault=wepdefault.left(defcomma);
-						wepdefault=wepdefault.makelower();
-						newwep.loadoutconfigure(wepdefault);
-					}
+					newwep.defaultconfigure(player);
 					//now apply the loadout input to overwrite the defaults
 					string wepinput=howmany[i];
 					wepinput.replace(" ","");
