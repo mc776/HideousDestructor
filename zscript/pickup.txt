@@ -346,8 +346,8 @@ class HDPickup:CustomInventory{
 	//destroy caller if a refid is mentioned in hd_blacklist
 	static bool checkblacklist(actor caller,string refid){
 		string bl=hd_blacklist;
-		if(bl=="")return false;
 		bl=bl.makelower();
+		if(bl.left(3)!="all")return false;
 		bl.replace(" ","");
 		int bldex=bl.rightindexof(refid.makelower());
 		// this must use RightIndexOf not IndexOf!
