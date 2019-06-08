@@ -428,10 +428,20 @@ extend class HDPlayerPawn{
 		}
 
 
+		//disintegrator mode keeps things simple
+		if(hd_disintegrator)return super.DamageMobj(
+			inflictor,
+			source,
+			damage,
+			mod,
+			flags|DMG_NO_ARMOR,
+			angle
+		);
+
+
 		//player survives at cost
 		if(
-			!hd_disintegrator
-			&&damage>=health
+			damage>=health
 		){
 			if(hd_yolo&&!alldown()){
 				damage=min(health-1,damage);
