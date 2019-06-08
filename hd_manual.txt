@@ -134,7 +134,7 @@ The syntax is as follows:
 
 where xxx and zzz are 3-character codes referring to an item.
 
-For non-weapons, yy, aa, etc. are the quantity of the item. For weapons, this is usually a longer string that defines specific configurations for the given weapon (more on this below); if you want multiple weapons of this sort, you must list the weapon multiple times, configuring each one separately.
+For non-weapons, yy, aa, etc. are the quantity of the item. For weapons, the number may be followed by a longer string that defines specific configurations for the given weapon (more on this below).
 
 <pic> is the lump name for the graphic ("PISTA0", etc.) and must be followed by #, while <name> is the display name for the loadout selection menu and must be followed by a colon; these are optional (and you may specify either without the other, or specify the name before the pic as long as both precede the loadout data) and will default, respectively, to the icon/sprite of the first item indicated and "Loadout <number>".
 
@@ -168,6 +168,8 @@ The syntax is as follows:
 where xxx is the item code, yyyy/aaaa are the variable names and zz/bb are the values assigned to them.
 
 Spaces are optional but the variable name must be written in full. If you do not assign a value it will default to 1 (i.e., true for a boolean value). A value less than zero means to use the default. "true"/"false"/"t"/"f" will be internally translated to 1 and 0.
+
+You can have multiple weapons of the same type configured in the same way or in different ways, e.g., "z66, z66 3 nogl semi dontchamber" will give you a main and 3 emergency backup plinkers for your mouse problem.
 
 Please see the individual weapon entries in this manual for the variables available for each.
 
@@ -669,7 +671,7 @@ Chainsaw
 
 GZDoom actor name: Lumberjack
 Default weapon slot: 1
-Loadout code: saw (quantity)
+Loadout code: saw
 
 Description: A small, rugged, not terribly precise-cutting chainsaw, good for destroying things that would otherwise get in your way.
 
@@ -699,7 +701,7 @@ Alternate reload lets you swap to the other pistol in your other hand, if you ha
 Revolver
 
 GZDoom actor name: HDRevolver
-Loadout code: rev (quantity)
+Loadout code: rev
 
 Compact and ergonomic, the Buger Blue Deinonychus makes for an excellent and stylish everyday civilian carry. The Deinonychus can take 9mm Parumpudicum in a pinch but is chambered for the more powerful .355 Masterball.
 
@@ -767,7 +769,7 @@ Super Shotgun
 GZDoom actor name: Slayer
 GZDoom ammo actor names: HDShellAmmo
 Default weapon slot: 3
-Loadout code: sla (quantity)
+Loadout code: sla
 
 Description: Accurate, ergonomic and compact, deceptively primitive yet rugged enough to withstand anything the bad guys might ever think to throw at you, the ambidextrously designed Calvary Arms SL41 "Slayer" side-by-side is an instant classic among big game hunters throughout the solar system. Big, armoured, bipedal game.
 
@@ -877,7 +879,7 @@ Grenade Launcher
 GZDoom actor name: Blooper
 GZDoom ammo actor names: HDRocketAmmo
 Default weapon slot: 5
-Loadout code: blo (quantity)
+Loadout code: blo
 
 Description: Eventually demand for a simpler, more portable weapon compatible with the new standard Short-Range Reduced-Arc Hybrid Rocket Grenade resulted in the production of a much simpler weapon from previous centuries. Name and all, it seems.
 
@@ -937,7 +939,7 @@ BFG9K
 GZDoom actor name: BFG9K
 GZDoom ammo actor names: HDBattery
 Default weapon slot: 7
-Loadout code: bfg (quantity)
+Loadout code: bfg
 
 Description: An attempt to merge conventional human technology with the power of the Anomalies before the invasion of Phobos, the Botis Field Glyph, Mark 9 was part a greater work that would have made Union Aerospace the single biggest player in the energy market for centuries.
 

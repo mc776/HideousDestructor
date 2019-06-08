@@ -65,6 +65,7 @@ class HDStatusBar:DoomStatusBar{
 	transient cvar hd_sightbob;
 	transient cvar hd_crosshair;
 	transient cvar hd_xhscale;
+	transient cvar hd_weapondefaults; //TEMPORARY - TO DELETE LATER
 
 	override void Tick(){
 		if(!hd_mugshot){
@@ -74,6 +75,7 @@ class HDStatusBar:DoomStatusBar{
 			hd_sightbob=cvar.getcvar("hd_sightbob",cplayer);
 			hd_crosshair=cvar.getcvar("hd_crosshair",cplayer);
 			hd_xhscale=cvar.getcvar("hd_xhscale",cplayer);
+			hd_weapondefaults=cvar.getcvar("hd_weapondefaults",cplayer); //TEMPORARY - TO DELETE LATER
 		}
 		super.tick();
 		hpl=hdplayerpawn(cplayer.mo);
@@ -81,6 +83,37 @@ class HDStatusBar:DoomStatusBar{
 			!cplayer
 			||!hpl
 		)return;
+
+
+//TEMPORARY - TO DELETE LATER
+/*
+if(hd_weapondefaults~=="convert"){
+	int rlmode=cvar.getcvar("hd_rlmode",cplayer).getint();
+	string cdef=""
+	.."pis firemode "..cvar.getcvar("hd_pistauto",cplayer).getint()
+	..",smg firemode "..cvar.getcvar("hd_smgfiremode",cplayer).getint()
+	..",hun type "..cvar.getcvar("hd_huntauto",cplayer).getint()
+	..", firemode "..cvar.getcvar("hd_huntfullauto",cplayer).getint()+1
+	..",z66 firemode "..cvar.getcvar("hd_zmfiremode",cplayer).getint()
+	..", zoom "..cvar.getcvar("hd_zmzoom",cplayer).getint()
+	..",vul fast "..cvar.getcvar("hd_vulcsuper",cplayer).getint()
+	..",lau zoom "..cvar.getcvar("hd_rlzoom",cplayer).getint()
+	..(rlmode==2)?" heat grenade 0":(!rlmode)?" heat 0 grenade":"heat 0 grenade 0"
+	..",lib auto "..cvar.getcvar("hd_libauto",cplayer).getint()
+	.." bulletdrop "..cvar.getcvar("hd_libmoa",cplayer).getint()
+	.." zoom "..cvar.getcvar("hd_libzoom",cplayer).getint()
+	.." frontreticle "..cvar.getcvar("hd_libfrontreticle",cplayer).getint()
+	.." altreticle "..cvar.getcvar("hd_libaltreticle",cplayer).getint()
+	..",thu alt "..cvar.getcvar("hd_tbmode",cplayer).getint()
+	..",bro zoom "..cvar.getcvar("hd_tbmode",cplayer).getint()
+user bool hd_brontozoom=false;       //0-1, toggles stadia sight
+user int hd_bossmoa=100;     //0-600, 10ths of minute of angle
+user int hd_bosszoom=20;     //5-60, zoom level
+user bool hd_bossfrontreticle=false;     //if true, reticle size follows zoom
+user bool hd_bosscustomchamber=false;     //if true, custom chamber with looser tolerance
+}
+*/
+
 
 		wepsprites.clear();wepspritescales.clear();wepspriteofs.clear();wepspritecounts.clear();
 		for(inventory item=cplayer.mo.inv;item!=null;item=item.inv){

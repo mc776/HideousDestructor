@@ -398,26 +398,20 @@ extend class HDPlayerPawn{
 						firstwep=reff.getclassname();
 					}
 				}
-				hdweapon newwep;
-				if(reff is "HDWeaponGiver"){
-					let newgiver=hdweapongiver(spawn(reff,pos));
-					newgiver.spawnactualweapon();
-					newwep=newgiver.actualweapon;
-					newgiver.destroy();
-					if(newwep&&hdpickup.checkblacklist(newwep,newwep.refid,true))return;
-				}else{
-					newwep=hdweapon(spawn(reff,pos));
-				}
-				if(newwep){
-					//if amountable, loop
-					if(newwep.bloadoutamount){
-						int thismany=howmany[i].toint()-1;
-						while(thismany>0){
-							thismany--;
-							let nwp=hdweapon(spawn(reff,pos));
-							nwp.actualpickup(self,true);
-						}
+				int thismany=max(1,howmany[i].toint());
+				while(thismany>0){
+					thismany--;
+					hdweapon newwep;
+					if(reff is "HDWeaponGiver"){
+						let newgiver=hdweapongiver(spawn(reff,pos));
+						newgiver.spawnactualweapon();
+						newwep=newgiver.actualweapon;
+						newgiver.destroy();
+						if(newwep&&hdpickup.checkblacklist(newwep,newwep.refid,true))return;
 					}else{
+						newwep=hdweapon(spawn(reff,pos));
+					}
+					if(newwep){
 						//clear any randomized garbage
 						newwep.weaponstatus[0]=0;
 						//apply the default based on user cvar first
@@ -433,8 +427,8 @@ extend class HDPlayerPawn{
 							let gdhdwgreff=getdefaultbytype(hdwgreff);
 							newwep.loadoutconfigure(gdhdwgreff.config);
 						}
+						newwep.actualpickup(self,true);
 					}
-					newwep.actualpickup(self,true);
 				}
 			}else A_GiveInventory(
 				reff.getclassname(),
