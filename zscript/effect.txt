@@ -570,7 +570,7 @@ class DistantDummy:IdleDummy{
 				if((playeringame[i])&&(players[i].mo)){
 					dist=distance3d(players[i].mo);
 					if(dist>HDCONST_MINDISTANTSOUND){ //don't bother if too close
-						actor id=spawn("DistantNoisemaker",pos,ALLOW_REPLACE);
+						actor id=spawn("DistantNoisemaker",(0,0,0),ALLOW_REPLACE);
 						if(id){
 							id.target=players[i].mo;
 							id.deathsound=self.deathsound;
@@ -593,7 +593,6 @@ class DistantNoisemaker:IdleDummy{
 	spawn:
 		TNT1 A 1 nodelay A_SetTics(stamina);
 		TNT1 A 0{
-			setorigin((0,0,0),false);
 			A_PlaySound(deathsound,CHAN_VOICE,1,0,24);
 			if(bmissilemore)A_PlaySound(deathsound,CHAN_WEAPON,1,0,24);
 		}
