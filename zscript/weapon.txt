@@ -825,7 +825,7 @@ class SpareWeapons:HDPickup{
 		-inventory.invbar
 		hdpickup.bulk 0;
 	}
-	override bool isused(){return false;}
+	override bool isused(){return owner&&owner.player&&!(owner.player.cmd.buttons&BT_ZOOM);}
 	double,int getwepbulk(){
 		//in encumbrance, have a special check for this actor - add to weapon count
 		int i;
