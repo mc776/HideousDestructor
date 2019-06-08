@@ -214,7 +214,8 @@ class SatanRobo:HDMobBase replaces CyberDemon{
 	double launcheroffset;
 	property launcheroffset:launcheroffset;
 	default{
-		radius 40;
+		height 100;
+		radius 32;
 		+boss 
 		+missilemore
 		+floorclip
@@ -238,7 +239,6 @@ class SatanRobo:HDMobBase replaces CyberDemon{
 		health 4000;
 		mass 12000;
 		speed 15;
-		height 108;
 		deathheight 110;
 		painchance 32;
 		painthreshold 200;
@@ -336,6 +336,7 @@ class SatanRobo:HDMobBase replaces CyberDemon{
 		HDCB_ROCKETMAX=99,
 	}
 	states{
+	spawn:
 		CYBR EEEE 10{
 			A_Look();
 			angle+=frandom(-5,5);

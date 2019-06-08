@@ -95,7 +95,7 @@ class bonerball:hdactor{
 
 class Boner:HDMobBase replaces Revenant{
 	default{
-		radius 20;
+		radius 12;
 		height 56;
 		painchance 100;
 		meleethreshold 196;
@@ -145,6 +145,9 @@ class Boner:HDMobBase replaces Revenant{
 	}
 	uint balls;
 	states{
+	spawn:
+		SKEL AABB 10 A_Look();
+		loop;
 	see:
 		SKEL ABCDEF 3{
 			if(balls>300)hdmobai.chase(self);
