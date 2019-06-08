@@ -1685,6 +1685,10 @@ class BotBot:HDMarine{
 	override void A_HDMScream(){
 		if(master)master.A_PlayerScream();
 		master=null;masterplayer=-1;
+		if(hd_disintegrator){
+			A_SpawnItemEx("Telefog",0,0,0,vel.x,vel.y,vel.z,0,SXF_ABSOLUTEMOMENTUM);
+			destroy();
+		}
 	}
 	int masterplayer;
 	override void postbeginplay(){
