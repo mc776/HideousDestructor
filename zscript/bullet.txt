@@ -146,6 +146,7 @@ class HDBullet:HDActor{
 		//hack to escape shooter
 		array<bool> sflags;sflags.clear();
 		for(int i=0;i<throughthese.size();i++){
+			if(!throughthese[i])continue;
 			sflags.push(throughthese[i].bshootable);
 			throughthese[i].bshootable=false;
 		}
