@@ -429,7 +429,10 @@ extend class HDPlayerPawn{
 
 
 		//player survives at cost
-		if(damage>=health){
+		if(
+			!hd_disintegrator
+			&&damage>=health
+		){
 			if(hd_yolo&&!alldown()){
 				damage=min(health-1,damage);
 			}else if(

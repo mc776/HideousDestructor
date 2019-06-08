@@ -39,6 +39,7 @@ extend class HDPlayerPawn{
 				playercorpse.setorigin((pos.xy-playercorpse.angletovector(angle),pos.z),true);
 			}
 		}
+		if(hd_disintegrator)A_SetBlend("00 00 00",1.,10);
 		super.DeathThink();
 	}
 	override void Die(actor source,actor inflictor,int dmgflags,name MeansOfDeath){
@@ -79,23 +80,27 @@ extend class HDPlayerPawn{
 
 		bool crouched=(!incapacitated)&&height<40;
 
-		playercorpse=spawn("HDPlayerCorpse",pos,ALLOW_REPLACE);
-		playercorpse.vel=vel;playercorpse.master=self;
-		if(
-			crouched
-		)playercorpse.sprite=GetSpriteIndex("PLYCA0");
-			else playercorpse.sprite=GetSpriteIndex("PLAYA0");
-		playercorpse.translation=translation;
-		playercorpse.A_SetSize(12,52);
+		if(hd_disintegrator){
+			A_SpawnItemEx("Telefog",0,0,0,vel.x,vel.y,vel.z,0,SXF_ABSOLUTEMOMENTUM);
+		}else{
+			playercorpse=spawn("HDPlayerCorpse",pos,ALLOW_REPLACE);
+			playercorpse.vel=vel;playercorpse.master=self;
+			if(
+				crouched
+			)playercorpse.sprite=GetSpriteIndex("PLYCA0");
+				else playercorpse.sprite=GetSpriteIndex("PLAYA0");
+			playercorpse.translation=translation;
+			playercorpse.A_SetSize(12,52);
 
-		if(
-			(!inflictor||!inflictor.bnoextremedeath)
-			&&(-health>gibhealth||aggravateddamage>40)
-		)playercorpse.A_Die("extreme");
-		else{
-			playercorpse.A_Die(MeansOfDeath);
-			if(!silentdeath){
-				A_PlayerScream();
+			if(
+				(!inflictor||!inflictor.bnoextremedeath)
+				&&(-health>gibhealth||aggravateddamage>40)
+			)playercorpse.A_Die("extreme");
+			else{
+				playercorpse.A_Die(MeansOfDeath);
+				if(!silentdeath){
+					A_PlayerScream();
+				}
 			}
 		}
 

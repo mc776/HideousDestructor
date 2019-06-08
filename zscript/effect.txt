@@ -593,6 +593,7 @@ class DistantNoisemaker:IdleDummy{
 	spawn:
 		TNT1 A 1 nodelay A_SetTics(stamina);
 		TNT1 A 0{
+			setorigin((0,0,0),false);
 			A_PlaySound(deathsound,CHAN_VOICE,1,0,24);
 			if(bmissilemore)A_PlaySound(deathsound,CHAN_WEAPON,1,0,24);
 		}
