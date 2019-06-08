@@ -83,9 +83,14 @@ class Vulcanette:HDWeapon{
 		return msg;
 	}
 	override void tick(){
-		if(bjustchucked)weaponstatus[VULCS_BREAKCHANCE]+=random(10,50);
 		super.tick();
 		drainheat(VULCS_HEAT,18);
+	}
+	override inventory createtossable(){
+		let ctt=vulcanette(super.createtossable());
+		if(!ctt)return null;
+		if(ctt.bmissile)ctt.weaponstatus[VULCS_BREAKCHANCE]+=random(10,50);
+		return ctt;
 	}
 
 	//translate the number from and to the internal stored data in the vulc.

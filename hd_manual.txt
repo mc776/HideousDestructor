@@ -11,9 +11,7 @@
 
 		* Use medikits (in inventory or second weapon on slot 9) or bandages to stop bleeding.
 
-		* Hit the reload key to reload. Hold on some weapons to keep the mag.
-
-		* Hit the unload key to take ammo out of a weapon.
+		* Hit the unload key (user4) to take ammo out of a weapon.
 
 		* Use items to pick them up, and enemies to melee them.
 
@@ -21,7 +19,7 @@
 
 		* Hold the run/walk key to sprint. Use run/walk toggle to switch from walk and run.
 
-		* Stop moving and hold the use/open door key to view all inventory.
+		* Hold the use/open door key to view all inventory and available weapon functions.
 
 
 
@@ -47,51 +45,42 @@
 
 	   I. INTRODUCTION
 
-The Hideous Destructor weapons and monsters mod is a speculative re-imagining of Doom's gameplay: what if Doom, with its demons and zombies and 80s-metal horrors and ridiculous firepower, didn't hold anything back for the benefit of the player? What if a lone zombie coming at you with an assault rifle became a cause of concern *now*, rather than ten minutes later when your health suddenly dips to single digits because your teammate ran in front of your rocket? What if your guns actually had some serious range and stopping power - as did the enemy's, creating opportunities and risks that would have been much harder to model before? What if, on Phobos, you had to face a force that was much more plausibly capable of wiping out an entire platoon of space marines?
+The Hideous Destructor weapons and monsters mod is a speculative re-imagining of Doom's gameplay: what if Doom, with its gun-toting zombies and 80s-metal daemoniac horrors and ridiculous firepower, didn't hold anything back for the benefit of the player? What if a lone zombie coming at you with an assault rifle became a cause of concern *now*, rather than ten minutes later when your health suddenly dips to single digits because your teammate ran in front of your rocket? What if your guns actually had some serious range and stopping power - as did the enemy's, creating opportunities and risks that would have been much harder to model before? What if, on Phobos, you had to face a force that was much more plausibly capable of wiping out an entire platoon of space marines?
 
 To accomplish this design objective, HD makes four main changes:
 
 - Slowing the player to relatively plausible human speeds subject to fatigue and (some) injury, while providing more options to go faster or slower with appropriate tradeoffs.
-- Exaggerating both the strengths and their (relative) weaknesses of all weapons and monsters, turning into key gameplay elements implications hinted at by lore and artwork that are glossed over in canon.
-- Creating more incentives for the player not to get hit, while making it much harder to avoid damage without some coherent attack plan and proper use of cover.
+- Exaggerating both the strengths and (relative) weaknesses of all weapons and monsters, turning into key gameplay elements implications hinted at by lore and artwork that are glossed over in canon.
+- Creating more incentives for the player not to get hit, while making it harder to avoid damage without some coherent attack plan and proper use of cover.
 - Adding an inventory system to give the player more control over what they collect and use and when.
 
 The result is a more intense, frustrating and brutal experience where everyone is fighting at a much more equal level than before and nothing can be taken for granted. Have fun.
 
-The setting fluff is primarily written to fit the events express and implied in the id Software games Doom and Doom II: Hell on Earth. Please read hd_lore_freedoom.txt for the Freedoom versions of some of the weapons and monsters. There is no continuity whatsoever with the Doom novels or the 2016 reboot.
-
-
-	Using Hideous Destructor with other wads
-
-Hideous Destructor is designed to be run on any map that does not define its own weapons and monsters. Running with other weapon or monster mods is generally not supported.
+The setting fluff is primarily written to fit the events express and implied in the id Software games Doom and Doom II: Hell on Earth. Please read hd_lore_freedoom.txt for the Freedoom versions of some of the weapons and monsters. There is no continuity whatsoever with the Doom novels, Doom 3 or the Bethesda games.
 
 
 	  II. GETTING STARTED
 
 To play Hideous Destructor, save the GitHub download into a folder and load that folder as you would any normal GZDoom mod file.
 
-If GZDoom aborts with an error message saying that something has already been defined, then there is a conflict between HD and some other mod you are loading. In that case, unless you know how to go into the mods themselves and mess around with them you'll only be able to run one of those mods at a time. Please e-mail me or post on the ZDoom forums to let me know about the problem so I can rename the actor in future revisions.
+Hideous Destructor is designed to be run on any map that does not define its own weapons and monsters.
 
-The first thing you should do after starting is to check your key bindings. Make sure your run/walk key is set to something you can hold down comfortably while moving, and Reload, Zoom, Drop Weapon and the additional buttons Alternate Reload, Fire Mode and Unload (user buttons 1, 2 and 4 respectively), somewhere easily accessible without being too easy to hit by accident. More about these controls can be found in Part III of this text.
+HD makes use of all canonical Doom keys. Make sure your run/walk key is set to something you can hold down comfortably while moving, and Reload, Zoom, Drop Weapon and the additional buttons Alternate Reload, Fire Mode and Unload (user buttons 1, 2 and 4 respectively), somewhere easily accessible without being too easy to hit by accident. More about these controls can be found in Part III of this text.
 
 With that done, you're ready to begin.
-
-If you want to try out some of the weapons, load the firing range and try shooting a few things.
 
 
 	The bleeding system
 
-When you get hit in HD, you not only lose health right away, you also add to a hidden counter that determines how quickly your injuries worsen. This is an abstract system meant to cover everything from body envelope violations to toxicity and radiation poisoning to magical corruption and smoke inhalation, but for convenience I'll refer to this as the bleeding system.
+When you get hit in HD, the injury is recorded in addition to your hitpoint loss.
 
-Look down every so often to see if you are leaving a blood trail, or check what message comes up when you use weapon slot 9. Bleeding means you are losing health and will eventually die if it is not stopped. You might randomly recover from bleeding injuries, but for most things you'll likely bleed out before you heal.
+Look down every so often to see if you are leaving a blood trail, or check what message comes up when you use weapon slot 9. Bleeding means you are losing health and will eventually die if it is not stopped.
 
 Armour not only blocks damage but also reduces the bleeding rate of any injury it blocks.
 
-Supernatural healing bonuses rapidly seal up wounds as needed, buying you time to escape and naturally recuperate. If after you manage to stop bleeding you're still charged up with supernatural healing, it will be used to replenish your health at a much faster than normal rate.
-
 Of the mundane tech items, only medikits can help stop bleeding permanently, though stimpacks and berserk packs might buy you some time.
 
-Absent a proper medikit, you can try to bandage yourself using improvised objects. This is abstracted into weapon #9: just stand still and hold the fire button until the help text tells you you're done. You may take some minor damage and no attempt is guaranteed to work. Your armour is designed to apply pressure and aid you in this so do NOT take it off the way you must to prepare for a medikit. You can do this to someone else, which has a much lower change of causing damage and is much more reliable.
+Absent a proper medikit, you can try to bandage yourself using improvised objects. This is abstracted into weapon #9: just stand still and hold the fire button until the help text tells you you're done. No attempt is guaranteed to work. Your armour is designed to apply pressure and aid you in this so do NOT take it off the way you must to prepare for a medikit. Doing this to someone else is generally more reliable.
 
 Side note about being on fire: As you cannot truly "stop, drop and roll" in the Doom engine, there is an option of spinning around or turning left and right very quickly to try to put out a fire earlier. Doing so* in liquids**, sand or gooey snake floors while crouched greatly increase your chances of putting out the flames in time.
 
@@ -101,18 +90,18 @@ Side note about being on fire: As you cannot truly "stop, drop and roll" in the 
 
 	The damage system 
 
-In addition to regular damage, Hideous Destructor tracks burn damage and "aggravated" damage, as well as non-bleeding but still existent wounds. All accumulate to the detriment of your maximum HP.
+Hideous Destructor tracks burn damage and "aggravated" damage, as well as non-bleeding but still existent wounds. All accumulate to the detriment of your maximum HP.
 
 You slowly heal from all but aggravated damage over time.
 
 Aggravated damage represents long-term damage that cannot be readily healed due to fundamental interference with your body's metaphysical pattern. It can only be healed by supernatural means, but may be inflicted by both supernatural and technological means (most notably balefire and the berserk pack's aftereffects).
 
-Soul sphere and blue potion magic will remove lethal and aggravated damage at the same rate as it helps you recover health.
+Soul sphere and blue potion magic will remove lethal and aggravated damage.
 
 
 	The aiming system 
 
-For the most part Hideous Destructor functions like Doom: point the middle of your screen at the monster, hit the fire button, and insha Allah the monster will die.
+For the most part Hideous Destructor functions like Doom: point the middle of your screen at the monster, hit the fire button, and insha Allah the monster will fall down and stop hurting you.
 
 There is no auto-aim anywhere in HD. In fact, if you move or turn too quickly it can throw off your aim a bit.
 
@@ -121,28 +110,31 @@ Hold Use or Zoom to lower your mouse sensitivity, subject to the hd_aim/bracesen
 
 	Difficulty levels
 
-Homely: You take 30% damage and you don't bleed from injuries, nor suffer from aggravated or lethal damage, but monsters spawn at Ultra-Violence rates.
+Homely: You take 30% damage and you don't bleed from injuries, but spawns are Hard.
 
-Ugly: You take 100% damage and spawn at ITYTD/HNTR rates.
-Grotesque: You take 100% damage and spawn at Hurt Me Plenty rates. (Default)
-Hideous: You take 100% damage and spawn at Ultra-Violence rates.
+Ugly: 100% damage, Easy spawns.
+Grotesque: 100% damage, Medium spawns. (Default)
+Hideous: 100% damage, Hard spawns.
 Nightmare!: As Hideous, but with fast respawning monsters. Shortcut key N.
 
-Grimdark: You take 120% damage and monsters move fast and spawn at Ultra-Violence rates. Megaspheres are replaced with major armour pickups, stimpacks are replaced with medikits, and health bonuses are replaced with armour bonuses. Active Frag shards continuously spawn, reviving enemies randomly. Monsters shoot on sight. Encumbrance is mandatory. Shortcut key G.
+Grimdark: 120% damage, Hard spawns. Megaspheres are replaced with major armour pickups, stimpacks are replaced with medikits, and health bonuses are replaced with armour bonuses. Active Frag shards continuously spawn, reviving enemies randomly. Monsters shoot on sight. Encumbrance is mandatory. Shortcut key G.
 
-Spooky: Same as Grimdark but monsters spawn at ITYTD/HNTR rates.
+Spooky: Same as Grimdark but with Easy spawns.
 
 
 	Customizing your loadout
 
 HD lets you set custom loadouts through the cvars hd_loadout1 through 20.
 
-Each of these is a string that you can configure to add your loadout. What is available for backpacks is a subset of what is available generally (e.g., no BFG), but a backpack will let you carry multiple weapons beyond your normal capacity (e.g., you can start with a backpack containing several backup ZM66s in case one jams).
+Each of these is a string that you can configure to add your loadout. What is available for backpacks is a subset of what is available generally (e.g., no BFG).
+
 The syntax is as follows:
 
 	<pic>#<name>: xxx yy, zzz aa - bbb cc, ddd ee /<description>
 
-where xxx and zzz are 3-character codes referring to an item, and yy and aa are any whole number that you want (within reason).
+where xxx and zzz are 3-character codes referring to an item.
+
+For non-weapons, yy, aa, etc. are the quantity of the item. For weapons, this is usually a longer string that defines specific configurations for the given weapon (more on this below); if you want multiple weapons of this sort, you must list the weapon multiple times, configuring each one separately.
 
 <pic> is the lump name for the graphic ("PISTA0", etc.) and must be followed by #, while <name> is the display name for the loadout selection menu and must be followed by a colon; these are optional (and you may specify either without the other, or specify the name before the pic as long as both precede the loadout data) and will default, respectively, to the icon/sprite of the first item indicated and "Loadout <number>".
 
@@ -167,56 +159,43 @@ Some shortcuts:
 "hd_loadout*": Only relevant for hd_forceloadout, this forces everyone to use whatever they've set for the loadout number placed where the star is.
 
 
+	Customizing your weapons
+
+The syntax is as follows:
+
+	... xxx yyyy zz aaaa bb ...
+
+where xxx is the item code, yyyy/aaaa are the variable names and zz/bb are the values assigned to them.
+
+Spaces are optional but the variable name must be written in full. If you do not assign a value it will default to 1 (i.e., true for a boolean value). A value less than zero means to use the default. "true"/"false"/"t"/"f" will be internally translated to 1 and 0.
+
+Please see the individual weapon entries in this manual for the variables available for each.
+
+
 
 	 III. CONTROLS
 
-Hideous Destructor adds a few non-standard functions. Please read carefully as you will spend most of your gameplay hours unarmed and dead if you do not learn how these things work.
+	General
+
+Hideous Destructor uses all eight of GZDoom's canonical weapon buttons. The four generic "User" buttons have special names, being respectively: Alternate Reload, Fire Mode, Mag Manager and Unload.
+
+Press and hold Use to bring up a list of available functions for your selected weapon.
+
+Some weapon functions may require you to hold down one button (or two) while hitting another.
 
 
-	Reloading
+	Dropping items
 
-Console commands: +reload, +hd_altreload (or +user1)
-Default keys: r, j
+You will be moving things in and out of your inventory frequently. It is recommended that you bind the following, in descending order of importance:
 
-Description: Hit the reload key to refill your weapon with your spare ammo. The reload key also serves a few secondary weapon functions (e.g., aborting a hand grenade toss and starting an alternate fist attack) - see those weapon descriptions for details.
+1. Dropping your weapon, in the usual manner
+2. hd_dropone
+3. hd_purge
 
-When you reload a fixed-magazine weapon like a shotgun or grenade launcher, you load one unit at a time. You will automatically load as many units as you can until you are out of spare units, the gun is full, or you have interrupted the process because you needed to shoot right then (i.e., hold the attack button until you stop reloading).
-
-When you reload a detachable-magazine weapon like a pistol, you will load one full mag, and the old mag is either dropped or (by holding the reload key until you hear yourself going through your pockets) placed back into your inventory with the amount it had at the time of removal. The next time you will reload you will either take one full mag if available, or if there is none, the oldest mag in your stack. These mags will be automatically consolidated between levels; to do this manually, use the mag manager described below.
-
-The alternate reload key lets you:
-- with a grenade rifle, reload the underslung grenade;
-- with either of the shotguns, load shells from your pockets without touching the ones in the side saddles;
-- with the Vulcanette, load a cell;
-- with the rocket launcher, load a HEAT rocket; and
-- with the plasma rifle and BFG, unload one cell.
+See "Commands and CVars" below for details.
 
 
-	Fire Mode
-
-Console command: +hd_firemode (or +user2)
-Default key: h
-
-Description: A couple weapons have alternate fire modes in addition to their primary and secondary attacks.
-
-The assault rifle and SMG have semi, burst and full auto modes. When in burst or full auto, you will see a small yellow bullet icon above the mag counter. Same goes for the battle rifle but without the burst.
-
-The Vulcanette has 2 rates of fire, 2100 and 700 RPM. Setting 2100 RPM will show the same yellow "bullet spam" indicator as other guns' full-auto mode.
-
-All grenade and rocket launchers (for the rifles you must switch to grenade mode first) use fire mode to control airburst, in the same manner as zoom.
-
-
-	Unload
-
-Console command: +hd_unload (or +user4)
-Default key: l
-
-Description: Strips some ammo off the weapon you are carrying. For the shotguns you take the side saddles first; for the vulcanette you take the mags first before the cell.
-
-With both reload and unload, if you hold down the key you will pocket whatever it is you are extracting. However, holding down (or interrupting a sequence by tapping) the reload or unload key in a multi-sequence unload (Vulcanette, rocket launcher, shotgun) will abort the sequence, meaning that with the non-shotguns you can either spill everything everywhere in your haste, or pocket one mag or rocket at a time. (The shotguns will be pocketed whenever possible since you have to pull them out and they'll be in hand anyway.)
-
-
-	Manage mags (and clips)
+	Managing ammo
 
 Console command: +user3 or "use MagManager"
 Default key: none
@@ -232,35 +211,15 @@ Tap fire/altfire to switch between mags one at a time; if you do this while Zoom
 Reload/Unload while holding Fire Mode will take mags in and out of your backpack if you have one.
 
 
-	Rangefinder
+	Aiming and Turning
 
-Console command: hd_findrange
-Default key: none
+If you are standing still, press and hold Use or Zoom to reduce your mouse sensitivity (and enable the scope if hd_noscope is set to true).
 
-Description: Logs the distance of the object or map geometry you're pointing at.
+If you have some map geometry right underneath where your weapon is pointing (including the floor when you are crouching), or your barrel is touching a vertical wall, this will also brace your gun against it for additional support and precision.
 
+If you must make a very wide turn, you will automatically step to the side as you adjust your body. Turning while already moving ignores this function.
 
-	Play Dead
-
-Console command: hd_playdead
-Default key: none
-
-Description: Puts yourself in incapacitated mode without actually losing health. Press Jump or attempt to sprint forward to get back up. While in this state (whether faking it or not), your only possible actions are to strip armour, press Fire to attempt to bandage wounds, or press Altfire to fumble for a stimpack.
-
-
-	Taunt
-
-Console command: hd_taunt
-Default key: b
-
-Description: Yells at the monsters, waking them and causing them to attack you. Sound, depending on player's gender, is either Kuni from the movie UHF (Wheel of Fish scene), Jay's mom from Jay & Silent Bob Strike Back (opening), or a chainsaw.
-
-
-	Leaning
-
-Console commands: +hd_leanleft, +hd_leanright, +hd_lean
-
-Description: These are, respectively, commands that can be bound to buttons for leaning left, leaning right, and holding to lean in the direction of your sidemove input. The latter is also done through the Zoom key.
+Your turn may be stopped by the muzzle of your weapon colliding with a wall; hold the sprint key or switch to fist or a shorter weapon to avoid this.
 
 
 	Sprinting
@@ -268,17 +227,15 @@ Description: These are, respectively, commands that can be bound to buttons for 
 Console command: +speed
 Default key: Whatever you have set it to
 
-Description: Your unburdened, ininjured movement speed, with "always run" off, is a walk of about 5 km/h. To make a quick dash at full speed (comparable to Usain Bolt), hold on to the +speed key while moving. You will put away your weapon as you sprint (except in the case of your fist and hand grenades).
+Description: Your unburdened, ininjured movement speed, with "always run" off, is a walk of about 5 km/h. To make a quick dash at full speed (comparable to Usain Bolt), hold on to the +speed key while moving. You will generally put away your weapon as you sprint.
 
 If you have "always run" on, your normal speed increases to about 18 km/h, but you cannot recover from fatigue while moving at that speed.
 
 Holding sprint and crouch at the same time has you scrambling along the ground, unable to shoot but achieving something close to your normal, unencumbered moving speed.
 
-Your fatigue only increases while you are moving; merely holding the sprint key will not drain your energy.
-
 You can sprint forward continuously for about 100m before tiring out. If at any time you stop sprinting, you must substantially recover from your fatigue before you can start again.
 
-Protip: Holding a lighter weapon lets you start sprinting sooner. If you know you'll have to make a break for it very soon, don't bring out that BFG! (But if you're stuck with it anyway and you absolutely must begin sprinting immediately, dropping the weapon can give you a split second of time.)
+Lunge/Slide: If you are standing while moving forward or sideways, hit the Crouch button to drop and lunge in the direction you are moving. Your turning will also be affected when you do this. Set hd_noslide to true to limit this behaviour to while sprinting.
 
 
 	Jumping
@@ -287,6 +244,8 @@ Console command: +jump
 Default key: Whatever you have set it to
 
 Description: If you walk right up to a ledge between waist and shoulder height, you can press and hold the jump key for about half a second to hoist yourself onto that ledge. You will briefly be unable to fire while doing this. This action cannot be done while crouching.
+
+Switch to fist to empty your hands for a better climbing experience.
 
 If you jump while moving forward and the way ahead of you is clear, you will leap forward. Good for crossing gaps and closing in for a beatdown.
 
@@ -300,7 +259,7 @@ Default key: Whatever you have set it to
 
 Description: You can open doors with it, as usual. But you also get two other functions:
 
-Pickups: For most things, you must "use" an item to pick it up. If you cannot carry the item, you will put it back on the floor in front of you. For smaller items like loose ammo, you must hold the use key while moving over it to pick it up.
+Pickups: For most things, you must "use" an item to pick it up. If you cannot carry the item, you will put it back on the floor in front of you. For smaller items like loose rounds, you may hold the use key to continuously pick up many of them.
 
 Kicking: pressing use in front of an enemy lets you kick them. (There is no animation for this; this mod is called hideous for a reason.) You can also kick away corpses and hand grenades if they're in the way.
 Hold both Zoom and Speed while hitting Use on a thin door to try to kick it down. It might hurt a bit.
@@ -308,17 +267,35 @@ Hold both Zoom and Speed while hitting Use on a thin door to try to kick it down
 HUD: HD typically hides your complete inventory display. Pressing and holding use brings this up. It will also show how many arbitrary "blocks'" worth of equipment you are carrying.
 
 
-	Aiming and Turning
+	Leaning
 
-If you are standing still, press and hold Use or Zoom to reduce your mouse sensitivity (and enable the scope if hd_noscope is set to true).
+Console commands: +hd_leanleft, +hd_leanright, +hd_lean
 
-If you have some map geometry right underneath where your weapon is pointing (including the floor when you are crouching), or your barrel is touching a vertical wall, this will also brace your gun against it for additional support and precision.
+Description: These are, respectively, commands that can be bound to buttons for leaning left, leaning right, and holding to lean in the direction of your sidemove input. The latter is also done through the Zoom key.
 
-If you must make a very wide turn, you will automatically step to the side as you adjust your body. Turning while already moving ignores this function.
 
-Your turning speed is capped and, depending on your weapon, subject to a bit of inertia. In addition, your turn may be stopped by the muzzle of your weapon colliding with a wall; hold the sprint key or switch to fist or pistol to avoid this.
+	Taunting
 
-Lunge/Slide: If you are standing while moving forward or sideways, hit the Crouch button to drop and lunge in the direction you are moving. Your turning will also be affected when you do this. Set hd_noslide to true to limit this behaviour to while sprinting.
+Console command: hd_taunt
+Default key: b
+
+Description: Yells at the monsters, waking them and causing them to attack you.
+
+
+	Playing Dead
+
+Console command: hd_playdead
+Default key: none
+
+Description: Puts yourself in incapacitated mode without actually getting hurt. Press Jump or attempt to sprint forward to get back up. While in this state (whether faking it or not), your only possible actions are to strip armour, press Fire to attempt to bandage wounds, or press Altfire to fumble for a stimpack - or a round, olive green parting gift for those nearby.
+
+
+	Rangefinder
+
+Console command: hd_findrange
+Default key: none
+
+Description: Logs the distance of the object or map geometry you're pointing at.
 
 
 
@@ -326,7 +303,7 @@ Lunge/Slide: If you are standing while moving forward or sideways, hit the Crouc
 
 	Commands
 
-hd_strip: You do not automatically "overwrite" your currently worn armour by picking up and using new armour. Use the hd_strip command to take off what you're wearing first. If you are not wearing any armour, this command will put on any spare armour you happen to be carrying.
+hd_strip: Takes off your armour. If you are not wearing any armour, this command will put on any spare armour you happen to be carrying.
 Hitting Reload while you have a medikit or bandages in hand, or double-tapping the use item key with another armour selected, will also strip your armour.
 You may need to strip off your backpack and/or environment suit first.
 
@@ -337,6 +314,13 @@ hd_purge: This will drop all ammunition for which you do not have an appropriate
 hd_slideon, hd_slideoff: Like hd_zoomon and hd_zoomoff but for the hd_noslide cvar.
 
 hd_clearcvs: Resets all archived CVars (other than loadout cvars) to their defaults.
+
+teamspawn: In team deathmatch, any member of a team can type "teamspawn 666" in the console to set their own current position as the team spawnpoint. Similarly, any member of a team can type "teamspawn -1" or "teamspawn 999" to clear the team spawnpoint and resume respawning in random places. This is intended to allow your team to establish a well-fortified camping ground to cause as much grief to the opposing team as possible.
+
+hd_doomguy (cheat): This command, available anytime and not considered a cheat, will set you back to the good old naked marine with a pistol and 50 bullets.
+
+
+	Commands (equipment-specific)
 
 ab: Type "ab <number>" in the console to set the airburst counter whenever you have an automatic rifle, blooper or rocket launcher out and ready to fire a grenade.
 
@@ -351,23 +335,18 @@ herptag: as iedtag.
 
 herpdir: Type "herp <direction> <tag>" as a shortcut alternative to "herp 3 <tag> <direction>". Useful if you only have one HERP and don't want to bother typing that extra zero.
 
-teamspawn: In team deathmatch, any member of a team can type "teamspawn 666" in the console to set their own current position as the team spawnpoint. Similarly, any member of a team can type "teamspawn -1" or "teamspawn 999" to clear the team spawnpoint and resume respawning in random places. This is intended to allow your team to establish a well-fortified camping ground to cause as much grief to the opposing team as possible. THIS CAN CAUSE A TELEFRAG IF YOU FAIL TO COORDINATE.
-
-hd_doomguy (cheat): This command, available anytime and not considered a cheat, will set you back to the good old naked marine with a pistol and 50 bullets.
-
-
 
 	CVars (host only)
 
-hd_forceloadout: Set this to "false", "0" or "none" (all without quotes) to let everyone choose their own loadout. Set this to anything else and it becomes everyone's loadout. Takes effect on player spawn.
+hd_forceloadout: If this has been set, set this to "", "false", "0" or "none" to let everyone choose their own loadout. Set this to anything else and it becomes everyone's loadout. Takes effect on player spawn.
 Default is blank. This cvar is not saved between sessions.
 
-hd_blacklist: Add some item codes to this, separated by commas. Counts will be ignored. Unfortunately the system is not very smart so you will need to blacklist all variants individually, e.g. "lib,lnb,lia,lna" to cover all four possible Liberator GL/bullpup combos, but let's be honest here we only need this to stop the deathmatch BFG spam.
-You can also use the blacklist to change one type of item to another by using the right angle bracket, e.g., "bfg=thu" to replace starting BFGs with Thunder Busters or "zrk=stm" to replace berserk packs with stimpacks.
+hd_blacklist: Add some item codes to this, separated by commas. Counts will be ignored.
+You can also use the blacklist to change one type of item to another by using the right angle bracket, e.g., "bfg=thu" to replace starting BFGs with Thunder Busters or "zrk=stm" to replace berserk packs with stimpacks. Unfortunately the system is not very smart so certain shortcuts will not be affected (e.g. blacklist "z66=lib" will replace "z66 nogl" with "lib nogl", but someone with "z6a" will spawn without a rifle at all).
 Default is blank. This cvar is not saved between sessions.
 If you add the keyword "all" to your blacklist, e.g. "all,bfg" or "all,bfg=thu", all items blacklisted will be deleted from the world the moment they appear anywhere.
 
-hd_encumbrance: This is a multiplier for how much encumbrance affects you. Due to the way Doom is traditionally balanced, this defaults to 0.25, letting one player carry 4 times as much as you "ought" to be able to carry. This is clamped to a minimum of 1 in deathmatch and grimdark/spooky, and a maximum of 2 in any event.
+hd_encumbrance: This is a multiplier for how much encumbrance affects you. Due to the way Doom is traditionally balanced, this defaults to 0.25, letting you carry 4 times as much as you "ought" to be able to carry. This is clamped to a minimum of 1 in deathmatch and grimdark/spooky, and a maximum of 2 in any event.
 
 hd_nobots: This causes bots to be replaced with riflemen. Can be used for coop and deathmatch. Generally far more competent, but cannot use customized loadouts and can sometimes appear in odd places.
 
@@ -379,7 +358,7 @@ hd_killerbarrels: Sets the percentage chance that any barrel (nukage or flaming)
 
 hd_nodoorbuster: Some weapons such as the H.E.A.T. rocket and the Brontornis can destroy small pieces of map geometry, letting you bypass tedious or impossible-to-reach areas. This can result in unpredictable or unwanted behaviour, so enabling this option will prevent such weapons from being able to affect map geometry this way. Enabling this midgame will not reverse any damage already done. Default false.
 
-hd_dropeverythingondeath: HD mostly goes with regular Doom inventory behaviour when dying and respawning: you keep your stuff in co-op, reset your stuff in deathmatch, maybe drop an extra copy of your weapon. Enabling this cvar will cause you to drop *all* your inventory except keys, leaving a stash of loot for your opponents (or buddies) in deathmatch or, in co-op, forcing you to do a naked walk of shame back to where you'd died.  Default false.
+hd_dropeverythingondeath: HD mostly goes with regular (GZ)Doom inventory behaviour when dying and respawning: you keep your stuff in co-op, reset your stuff in deathmatch, maybe drop an extra copy of your weapon. Enabling this cvar will cause you to drop *all* your inventory except keys, leaving a stash of loot for your opponents (or buddies) in deathmatch or, in co-op, forcing you to do a naked walk of shame back to where you'd died.  Default false.
 
 hd_safelifts: With HD's reduced player speed and falling damage, some classic Doom lifts end up creating scenarios that resemble a superimposition of a Simone Giertz comedy routine and the deposition materials from a factory class action suit. HD automatically scales all these lifts at level start to more reasonable speeds. This may break some levels, so this option is provided. Note that the level must be restarted for the changes to take effect. Default true.
 
@@ -398,17 +377,17 @@ hd_yolo: With this on, you will trigger the wipeout counter the first time you d
 
 	CVars (user-based)
 
-hd_helptext (true): Some events (e.g., picking up a rifle variant, pulling the pin and lighting the fuze on a grenade) generate text messages on your screen that remind you of certain non-obvious events. By setting this cvar to zero, you turn those reminders off. At your own risk.
+hd_helptext (true): Some events generate text messages on your screen that remind you of certain non-obvious events. By setting this cvar to zero, you turn those reminders off. At your own risk.
 
 hd_hudsprite (false): Displays your current weapon as a pickup sprite graphic inside your HUD, Ghost Recon-style. Always on when r_drawplayersprites is off.
 
-hd_noscope (false): Many weapons have an optic sight that is represented as a sight picture just below HD's regular sight picture crosshair. If set to true, this will only appear with the full HUD or while you are holding Zoom.
+hd_noscope (0): Many weapons have an optic sight that is represented as a sight picture just below HD's regular sight picture crosshair. By default, this always appears when the main sight picture is visible. Set to 1 to show only while the full HUD is visible or Zoom is pressed. Set to 2 to show only while Zoom is pressed.
 
 hd_sightbob (true): HD's sight crosshairs by default will bob as the player moves. This can sometimes be useful for making trick shots, but for many it is more distracting than anything else. Turn this off to hide the entire thing when you're moving above a certain threshold. Note that your scope angle will still follow the bob which is still used to calculate the trajectory of your shot.
 
 hd_xhairscale (1): HD's sight crosshairs can scale unpredictably at different resolutions. Other people just don't like the size. Use this setting to make adjustments. Values are between 0.1 and 3.0 inclusive and default is 1.
 
-hd_crosshair (0): This affects which image is displayed on the ZM66 and Liberator reflex sights. This is applied on a per-user basis and you will not need to set this every time you pick up a new gun. If you want to modify these, the lumps to replace are "riflsit1" through "riflsit5".
+hd_crosshair (0): This affects which image is displayed on the ZM66, Vulcanette and Liberator reflex sights. This is applied on a per-user basis and you will not need to set this every time you pick up a new gun. If you want to modify these, the lumps to replace are "riflsit1" through "riflsit5".
 
 hd_mugshot(-1): This sets the status bar mugshot and nothing else. -1 means use the one intended for your "gender" cvar setting. 0 and 1 are respectively masculine and feminine, while 3 is the robot.
 
@@ -425,11 +404,10 @@ hd_usefocus (true): Holding the Zoom key will normally reduce your aim sensitivi
 
 hd_nozoomlean (false): When you're holding Zoom, the sidestep keys turn into lean keys. Enabling this cvar disables this behaviour, limiting leaning to the dedicated controls only.
 
-hd_autostrip (false): Normally you must hit hd_strip to strip off your armour, or hit Reload with the medikit out. With this option enabled you will automatically strip when you hit fire or altfire.
-
 hd_noslide (false): Normally if you hit Crouch while moving, you will dive/slide/lunge in that direction. This can be pretty useful to defend against certain attacks (or to inflict certain attacks) but it is bad for fine control and cover manipulation. Set this to true to just simply crouch for this input if you are not sprinting.
 
 hd_clearucv: Resets all archived user options to their defaults.
+
 
 	CVars (user-based): weapon default options
 
@@ -439,42 +417,16 @@ hd_derpmode (0): Sets the starting mode for the DERP. 1=turret; 2=ambush; 3=patr
 
 hd_autoactivateied (true): If false, you have to manually activate your IEDs using the "ied 1 [tag]" command. If true, they activate after a 2-second warning period without any further input.
 
-hd_pistauto, hd_smgfiremode, hd_zmfiremode, hd_libauto (0): Set semi or full automatic for the pistol, SMG, ZM66 and Liberator. 1=full auto for the rifles, but burst for the SMG. 2=burst for the ZM66, but full auto for the SMG.
-
-hd_huntauto (0): Sets your Hunter to start pump, semi, or full-auto.
-
-hd_huntfullauto (0): Set to 1 to enable the Hunter full-auto hack. Set to -1 to get the pump-only reduced-mag variant.
-
-hd_vulcsuper (0): If set to 1, starts in 2100 RPM mode rather than 700.
-
-hd_zmzoom, hd_vulczoom, hd_libzoom (varies): Starts with the ZM66, Vulcanette and Liberator scope at various zoom levels, up to a maximum of 27 for the ZM66 and Vulcanette and 32 for the Liberator.
-
-hd_rlzoom, hd_brontozoom (false): Starts with the rocket launcher and the Brontornis using the magnified view with the stadia lines. Useful mostly for engagements well over 50m.
-
-hd_rlmode (0): If set to 1, starts in grenade rather than rocket mode. If set to 2, you lose 1 loaded rocket and start with a HEAT loaded instead.
-
-hd_tbmode (0): If set to 1, starts the Thunder Buster in its alternate CQB spray setting.
-
-hd_libmoa, hd_bossmoa (600): Presets the reticle bullet drop adjustment. Each unit represents 1/10 of a minute of angle.
-
-hd_bosszoom (0): Starts with the Boss scope at various zoom levels, up to a maximum of 55.
-
-hd_bosscustomchamber (false): If true, your starting Boss rifle is a fancy custom with a special loose-tolerance action that doesn't gum up as easily and jams significantly less often even with minimal maintenance work. This sacrifices a bit of the extreme power of the Boss, but it should still hit harder per bullet than the Liberator.
-
-hd_libfrontreticle, hd_bossfrontreticle (false): If true, your rifle scope is fitted with a front reticle that follows the magnification of your target. This means the dots are consistent with the adjustments you need to make, but the resulting range of possible magnifications is much smaller.
+hd_weapondefaults: See "Customizing your weapons" above for details. Similar format to loadouts, except for weapons only. This lets you set some defaults overriding HD's own so you don't need to specify each time. For instance, if you know you will always prefer reliability over damage per shot, you can add "bos customchamber" to this string and any Boss-bearing loadout where you don't specify the variable will include the custom chamber. This has no effect for weapons that take quantities instead of variables.
 
 hd_clearwepcv: Resets all archived weapon options to their defaults.
 
 
-All the above cvars can be changed in ZDoom's gameplay options menu.
-
-
-
 	   V. ITEMS
 
-To pick up an item, use it as you would use a door or switch, or hold Use and look and move towards it. Even if you do not pick it up, you will bring it towards yourself, so this can also be done to get an unwanted item out of the way of another (or an actual door or switch) that you do want.
+To pick up an item, use it as you would use a door or switch, or hold Use and look towards it. Even if you do not pick it up, you will bring it towards yourself, so this can also be done to quickly get an unwanted item out of the way of another (or an actual door or switch) that you do want.
 
-Armour comes in two flavours: military green and militarized-police/unaccountable non-state-actor corporate "civilian" blue. Blue mitigates the most damage, while green lasts longer generally. All armour restricts movement very slightly, with the encumbrance increasing with more powerful protection.
+Armour comes in two flavours: military green and militarized-police/unaccountable non-state-actor corporate "civilian" blue. Blue mitigates the most damage, while green lasts longer generally and restricts less movement.
 
 Supernatural health bonuses (potions, soul spheres, megaspheres) are stored and gradually "leak" into your system whenever you are injured, allowing recovery from nearly anything that does not immediately kill you.
 
@@ -496,14 +448,14 @@ To use, remove armour and unseal one package.
 Once the applicator is in hand, look down at yourself and press and hold the fire button to begin applying items 1 and 2 (automatically applied as necessary) to stop virtually any bleeding.
 If lasting injuries or burns require treatment, press and hold fire while holding both firemode and zoom to apply the Second Flesh(tm).
 Press and hold fire while holding firemode only to use the medikit's auto-diagnostic function. Try not to move while it is scanning. The scan *can* be done while wearing armour but accuracy suffers as a result.
-To apply the medikit to someone else, use altfire.
+To apply the medikit to someone else, use altfire instead of fire.
 WARNING: Do NOT attempt to apply the Second Flesh(tm) while in combat. Retreat to a secure position first!
 WARNING: DO NOT USE THE SAME APPLICATOR ON MULTIPLE PATIENTS. (Seriously, if half of what your buddies say about their R&R exploits were true...)
 
 Berserk Pack
 GZDoom actor name: PortableBerserkPack
-It doesn't quite make your punch ten times as strong, but when you've got more monsters than time to reload, this thing is a godsend. The burst of strength also lets you carry heavy weapons more efficiently. The effect only lasts a very short while, so use it while you've got it!
 Its original "on-label" use was to save someone going into shock or cardiac arrest, though it was found that sometimes it made things worse after it wore off.
+When you've got more monsters than time to reload, this thing is a godsend. The burst of strength also lets you carry heavy weapons more efficiently. The effect only lasts a short while, so use it while you've got it!
 
 Light Amplification Visor
 GZDoom actor name: PortableLiteAmp
@@ -536,7 +488,7 @@ Use from inventory to bring it up. Fire and altfire select your item; hold fire 
 
 Defence, Engagement, Reconnaissance and Patrol Robot
 GZDoom actor name: DERPBot
-The gun that runs around killing people by itself! Basically a pistol wired to a webcam and treads, made of bullets, aggression and shitty programmer art. Must be manually recovered after use. They can't climb and run out of ammo quickly, but you can pick them back up anytime as you would an ordinary item for later redeployment. Uses up one pistol mag each time you deploy, and any unused ammo is recovered on pickup.
+The gun that runs around killing people by itself! Basically a pistol wired to a webcam and treads, made of bullets, aggression and shitty programmer art. They can't climb and run out of ammo quickly, but you can pick them back up anytime as you would an ordinary item for later redeployment. Takes one pistol mag to deploy, and any unused ammo is recovered on pickup.
 If it breaks, you will not be able to use it again until you start a new level.
 The DERP can be programmed to one of several behaviours. Type the following into the console, or "derp <number shown>", to set what mode it will engage in at any time.
 	1. derpt = TURRET: Stand ground and engage targets from wherever it is.
@@ -676,7 +628,7 @@ Flagpole
 
 Set the cvar hd_flagpole to true. The next map you load, two objects will spawn at random places: a "flag" and a "flagpole".
 
-Pick up the flag. It is usable like a HERP. It must be "programmed" to indicate you or your team before it can be planted: to do this, get out of the range of the flagpole and move around.
+Pick up the flag. It is usable like a HERP. It must be "programmed" to indicate you or your team before it can be planted: to do this, get out of range of the flagpole and move around.
 
 To plant the flag, go back to the flagpole, use the flag, and hold Fire without leaving range or LOS. The exact effect of planting a flag varies depending on game mode, but it is always significantly beneficial.
 
@@ -689,6 +641,7 @@ Unarmed
 
 GZDoom actor name: HDFist
 Default weapon slot: 1
+Loadout code: fis
 
 Description: Punching people and things.
 
@@ -716,6 +669,7 @@ Chainsaw
 
 GZDoom actor name: Lumberjack
 Default weapon slot: 1
+Loadout code: saw (quantity)
 
 Description: A small, rugged, not terribly precise-cutting chainsaw, good for destroying things that would otherwise get in your way.
 
@@ -729,7 +683,9 @@ Pistol
 GZDoom actor name: HDPistol
 GZDoom ammo actor names: HD9mMag15, HDPistolAmmo
 Default weapon slot: 2
-Loadout code: pis (pis 2 for auto version)
+Loadout codes: pis
+ selectfire - 0/1, whether it has a fire selector enabled
+ firemode - 0/1, semi/auto, subject to the above
 
 Description: With its compact high-capacity design and extremely powerful 9x22mm Parumpudicum round, the Mouletta 99FX has followed and surpassed the tradition of its forebears as the standard complement to any arsenal. There was also a limited production of a full-auto variant that may occasionally be found as a PDW.
 
@@ -737,15 +693,13 @@ Instructions: Press the fire button to further your effort to bust as many caps 
 
 While both the pistol and the SMG use the same rounds, the magazines are not cross-compatible. Hit the user3 button to load and unload mags.
 
-Alternate reload lets you swap to the other pistol in your other hand, if you have one.
-
-Protip: The pistol does not count, or counts only nominally, for many of HD's mobility checks against weapons. It is ideal for close combat where you're too panicked or immobilized to land a proper punch.
+Alternate reload lets you swap to the other pistol in your other hand, if you have one. If you don't, it's in your other hand now.
 
 
 Revolver
 
 GZDoom actor name: HDRevolver
-Loadout code: rev
+Loadout code: rev (quantity)
 
 Compact and ergonomic, the Buger Blue Deinonychus makes for an excellent and stylish everyday civilian carry. The Deinonychus can take 9mm Parumpudicum in a pinch but is chambered for the more powerful .355 Masterball.
 
@@ -755,7 +709,7 @@ Hit Altfire to pull back the hammer and cycle the cylinder in preparation for a 
 
 Hit Reload or Unload to open up the cylinder. Once it is opened, hit Reload to load a round into the selected chamber, Altfire to turn the cylinder (or Zoom+Altfire to turn it the other way), Unload again to eject all spent cartridges, or double-tap Unload to empty the entire cylinder. Once finished, hit Reload or Fire to close the cylinder.
 
-Protip: Sorry, but the 15+1-round Mouletta is the standard issue sidearm for a reason. Good luck, you'll need it!
+Hand switching works similarly to the automatic but you can also use fire mode.
 
 
 SMG
@@ -763,7 +717,8 @@ SMG
 GZDoom actor name: HDSMG
 GZDoom ammo actor names: HD9mMag30, HDPistolAmmo
 Default weapon slot: 2
-Loadout code: smg
+Loadout codes: smg
+ firemode - 0-2, semi/burst/auto
 
 Description: The Heckler and Mok MP-46 heavy automatic pistol - nicknamed the "Sexy Manly Guy" in reference to a rather untimely scandal involving one of the company's directors (then a senator) who was supervising the development, an 18-year-old male intern, allegations of insider trading, an unidentified leather object found with some early prototype drawings and some saucy emails revealed during a deposition - fills that niche where a rifle is too noisy and unwieldy, a shotgun is too bulky and lethal, and a pistol just can't hit fast or far enough. Mostly bought by collectors and casing-loving hipsters, as well as law enforcement looking for a weapon with less kick and noise than the ZM66 but better suppressive capability (both tactical and PR-strategic) for use while keeping us all safe from alleged drug dealers and their alleged drug money.
 
@@ -779,7 +734,9 @@ Shotgun
 GZDoom actor name: Hunter
 GZDoom ammo actor names: HDShellAmmo
 Default weapon slot: 3
-Loadout code: hun
+Loadout codes: hun
+ type - 0-2, export/regular/hacked
+ firemode - 0-2, pump/semi/auto, subject to the above
 
 Description: The DiFranco SPOS-E28 scattergun is easily the most widespread firearm in known space. Formerly marketed as the "Man-Hunter" before the liberals got the name banned in eleven states after a spate of shooting sprees, the Hunter's reliability, (relative) safety while firing in pressurized quarters, and ability to take just about any ammo given to it are unsurpassed by any current weapon. Also good for home defence and hunting big game - up close.
 
@@ -803,7 +760,6 @@ To change fire mode, hit the fire mode key. There is no guarantee as to the qual
 
 If you have the Slayer, pressing Unload while holding Use or Zoom will remove up to 4 shells at a time from its side saddles and place them in your general inventory.
 
-Protip: People will develop personal preferences for pump or auto and it's probably best to train and stick with one.
 
 
 Super Shotgun
@@ -811,7 +767,7 @@ Super Shotgun
 GZDoom actor name: Slayer
 GZDoom ammo actor names: HDShellAmmo
 Default weapon slot: 3
-Loadout code: sla
+Loadout code: sla (quantity)
 
 Description: Accurate, ergonomic and compact, deceptively primitive yet rugged enough to withstand anything the bad guys might ever think to throw at you, the ambidextrously designed Calvary Arms SL41 "Slayer" side-by-side is an instant classic among big game hunters throughout the solar system. Big, armoured, bipedal game.
 
@@ -825,15 +781,18 @@ Secondary reload works in a similar manner to the Hunter. Side saddles work iden
 
 If you have the Hunter, pressing Unload while holding Use or Zoom will remove up to 4 shells at a time from its side saddles and place them in your general inventory.
 
-Protip: The game interface is intentionally designed so that you can begin holding the fire buttons while the weapon is still being drawn, but the shots only go off once that animation has finished. This lets you reliably fire off both barrels at once if you shoot immediately after mantling, jumping or sprinting.
-
 
 Assault Rifle
 
 ZDoom actor names: ZM66AssaultRifle
 GZDoom ammo actor names: HD4mMag, HDRocketAmmo
 Default weapon slot: 4
-Loadout code: z66 (z6a and z6s for GL-less versions)
+Loadout codes: z66
+ nogl - 0/1, whether it has a launcher
+ semi - 0/1, whether it has a fire selector enabled
+ firemode - 0-2, semi/auto/burst
+ zoom - 16-70, 10x the resulting FOV in degrees
+ dontchamber - 0/1, whether to start with a chambered round (and the mag thus "locked" to this rifle)
 
 Description: The basic infantryman's weapon of the 22nd century. A very lightweight select-fire weapon that fires up to 2100 rounds per minute, the Volt ZM66 represents the highest evolution of its state-of-the-art ammunition. As a refinement of the principles behind the old 5.56 NATO, the 4.26mm UAC Standard round packs an incredible amount of punch for its size. The 4.26mm UAC Standard round is protected by a special non-terminating legislative patent and a 99-year automatically renewed confidential exclusive contract with the militaries of all developed Western nations listed in the federal Officially Freedom-Loving Foreign Countries Trade Partnership Protocols, guaranteeing a safe and reliable supply.
 
@@ -865,7 +824,9 @@ Rotary Support Weapon
 GZDoom actor name: Vulcanette
 GZDoom ammo actor names: HD4mMag
 Default weapon slot: 4
-Loadout code: vul
+Loadout codes: vul
+ fast - 0/1, whether to start in "fuller auto" mode
+ zoom - 16-70, 10x the resulting FOV in degrees
 
 Description: At the same time as the ZM66's development, the UAC was experimenting with its own designs for a 4.26 Standard support weapon. One method of overcoming the heat issue was to cycle multiple barrels at slightly looser tolerances, which led to the UAC Standard Mk. III "Vulcanette".
 
@@ -887,7 +848,10 @@ Rocket Launcher
 GZDoom actor name: HDRL
 GZDoom ammo actor names: HDRocketAmmo, HEATAmmo
 Default weapon slot: 5
-Loadout code: lau ("lau 2" to start with HEAT loaded)
+Loadout codes: lau
+ zoom - 0/1, which sight comes up first
+ heat - 0/1, whether you start with a H.E.A.T. loaded
+ grenade - 0/1, whether you start in grenade mode
 
 Description: The Heckler and Mok Urban Artillery series was developed as a response to a growing need for more powerful but more containable infantry firepower for fighting in built-up areas. While the grenade launcher still prevails in ease of use and responsiveness, sometimes one simply hasn't the luxury of arcing a grenade under the low ceilings of a rebel base. The patented Short-Range Reduced-Arc Hybrid Rocket Grenade combines the functions of both RPG and fragmentation grenade in a single neat, deadly, digital precise package.
 
@@ -913,7 +877,7 @@ Grenade Launcher
 GZDoom actor name: Blooper
 GZDoom ammo actor names: HDRocketAmmo
 Default weapon slot: 5
-Loadout code: blo
+Loadout code: blo (quantity)
 
 Description: Eventually demand for a simpler, more portable weapon compatible with the new standard Short-Range Reduced-Arc Hybrid Rocket Grenade resulted in the production of a much simpler weapon from previous centuries. Name and all, it seems.
 
@@ -927,7 +891,8 @@ Pulsed Particle Beam Projector
 GZDoom actor name: ThunderBuster
 GZDoom ammo actor names: HDBattery
 Default weapon slot: 6
-Loadout code: thu
+Loadout codes: thu
+ alt - 0/1, whether to start in spray fire mode
 
 Description: In recent years Heckler & Mok were going through their typical occasional experimental infantry energy weapons research kick. Their latest casualty of common sense is the Atmospheric Mk.XI "Thunder Buster", an adaptation of the big phased particle beam cannons found in large Bishop-class high-orbital patrollers. It is indeed a fine and powerful weapon, but nonetheless based on something shooting through space at massive inanimate objects with highly predictable trajectories. For want of any commercial application they sold the specs to the UAC, at an exorbitantly inflated price if one were to include a portion that was ostensibly part of a settlement amid accusations of corporate espionage and stealing of trade secrets in UAC's old, officially scrapped Martian weapons project.
 
@@ -945,7 +910,14 @@ Battle Rifle
 ZDoom actor names: LiberatorRifle
 GZDoom ammo actor names: HD7mMag, SevenMilAmmo
 Default weapon slot: 6
-Loadout code: lib (lia for GL-less version; lnb and lna for non-bullpup)
+Loadout codes: lib
+ nogl - 0/1, whether it has a launcher
+ nobp - 0/1, whether it is bullpup
+ altreticle - 0/1, whether to use the glowing crosshair
+ frontreticle - 0/1, whether to scale the crosshair with zoom
+ firemode - 0/1, whether you start in full auto
+ bulletdrop - 0-600, amount of compensation for bullet drop
+ zoom - ??-70, 10x the resulting FOV in degrees
 
 Description: Back before the days of the ZM66, the Volt-Shepard Arms Group (at the time independent of UAC) had in limited production an extremely durable, almost jam-free long-range automatic rifle chambered for its 7.76mm full-power cased round that could be produced by virtually anyone. A few government contracts, failed bids and five US Supreme Court appeals resolved against Volt-Shepard later (all 5/4 splits along Democrat/Republican lines and despite extensive advocacy by several military intervenors) the UAC Standard was fully recognized and the Volt-Shepard companies were subject to an immediate hostile takeover by UAC. During the chaos Heckler & Mok bought the rights to the patent, rebranded it as the "ZM7 Liberator", and made a killing selling it at a huge markup to people who resented the state-sponsored UAC/Volt near-monopoly over their right to bear arms. A vague rumour on the Internet that the government was going to ban future production to regulate the copper supply and/or prevent future spree killings (a murderer would not be stopped by a jam or overheat!) also helped sales.
 
@@ -955,7 +927,7 @@ Instructions: As with the ZM66 unless noted otherwise. There is no 3-round burst
 
 Hit the user3 button to load and unload mags.
 
-The scope can be adjusted by holding Zoom and Firemode, and using either aim up/down or the fire and altfire buttons. You can similarly adjust bullet drop compensation by holding Zoom and Use; a value of 150 is roughly the entire length of HD's firing range.
+The scope can be adjusted by holding Zoom and Firemode, and using either aim up/down or the fire and altfire buttons. You can similarly adjust bullet drop compensation by holding Zoom and Use; the default is roughly the entire length of HD's firing range.
 
 Protip: Every Liberator has a portable reloading bot built into its stock. Hold Use and hit Unload to activate it when you have enough powder and brass.
 
@@ -965,7 +937,7 @@ BFG9K
 GZDoom actor name: BFG9K
 GZDoom ammo actor names: HDBattery
 Default weapon slot: 7
-Loadout code: bfg
+Loadout code: bfg (quantity)
 
 Description: An attempt to merge conventional human technology with the power of the Anomalies before the invasion of Phobos, the Botis Field Glyph, Mark 9 was part a greater work that would have made Union Aerospace the single biggest player in the energy market for centuries.
 
@@ -997,7 +969,8 @@ Cannon
 GZDoom actor name: Brontornis
 GZDoom ammo actor names: BrontornisRound
 Default weapon slot: 7
-Loadout code: bro
+Loadout codes: bro
+ zoom - 0/1, which sight comes up first
 
 Description: The Freeley "Brontornis" series Mk.VII Ultralight Cannon was one of the candidates for the military's Urban Artillery project, ultimately losing out to Heckler & Mok's bid for its versatility and wide-area firepower. It fires a heavy, non-self-propelled 35mm hi-ex anti-materiel/incendiary round (colloquially known as a "bolt") that can punch through most hard targets while remaining highly effective at decisively neutralizing soft targets (colloquially known as "gibbing people").
 
@@ -1015,7 +988,11 @@ Bolt-Action Rifle
 ZDoom actor names: BossRifle
 GZDoom ammo actor names: HD7mClip, SevenMilAmmo
 Default weapon slot: 8
-Loadout code: bos ("bos 2" to force start with the custom chamber, "bos 3" to force start without)
+Loadout codes: bos
+ customchamber - 0/1, whether to use the "good" version
+ frontreticle - 0/1, whether to scale the crosshair with zoom
+ bulletdrop - 0-600, amount of compensation for bullet drop
+ zoom - ??-60, 10x the resulting FOV in degrees
 
 The Mk. IV Boss rifle is a deadly accurate weapon. Its long barrel, tighter reinforced chamber and manual action allow much greater muzzle velocity than an identical load in the Liberator. Its traditional action and extremely tight trigger allow pinpoint accuracy. The Boss rifle requires clean ammunition to prevent jamming. Good luck!
 
@@ -1033,13 +1010,7 @@ To load a single round directly into the chamber, hold altfire to pull the bolt 
 
 As with the other rifles, hold zoom and firemode or use to adjust scope zoom.
 
-You can also adjust the bullet drop compensation, with fire mode instead of zoom. Zero means no adjustment and your shot will start parallel with your view. 100 is roughly the length of HD's firing range.
-
-The numbers on the screen read thus:
-- the status bar displays the actual unit count by which you can make adjustments.
-- the scope display is in 10ths of an arcminute, drop adjust on top and FOV on the bottom.
-- every 2 drop adjust units should be one arcminute.
-- if you are using a front plane reticle, one dot = 6 arcminutes.
+You can also adjust the bullet drop compensation, with fire mode instead of zoom. Zero means no adjustment and your shot will start parallel with your view. The default is roughly the length of HD's firing range.
 
 Protip: It is nothing short of murder to send out men against the enemy with such a weapon. Find a Liberator.
 
@@ -1114,6 +1085,8 @@ Description: Some people you meet are soldiers just like yourself in the war aga
 Protip: In a normal Doom map you'll only see these guys if they've been raised by a healer imp or an archvile. They are far deadlier than any of the zombies, so try not to let the enemy create too many of them. If you end up with one anyway, a double-tap from the Slayer should do the trick, though explosives are generally safer.
 
 The good news is that normal, non-hellspawn human bodies cannot be raised without some degeneration. After a few cycles undead marines become indistinguishable from ordinary zombies.
+
+Protip: if in doubt, type "checkin" in the console and you and all allied marines will report their positions.
 
 * NOTE TO MAPPERS: Please see "marine.txt" in the ZScript folder for customizing individually placed marines.
 
