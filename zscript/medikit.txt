@@ -207,11 +207,8 @@ class HDMedikitter:HDWoundFixer{
 			if(countinv("WornRadsuit")){
 				if(!countinv("PortableRadsuit"))A_TakeInventory("WornRadsuit");
 				else{
-					if(getcvar("hd_autostrip"))setweaponstate("reload");
-					else{
-						if(getcvar("hd_helptext"))A_WeaponMessage("Take off your environment suit first!\n\n(toggle it in your inventory or hit reload)",100);
-						setweaponstate("nope");
-					}
+					if(getcvar("hd_helptext"))A_WeaponMessage("Take off your environment suit first!\n\n(toggle it in your inventory or hit reload)",100);
+					setweaponstate("nope");
 					return;
 				}
 			}
@@ -227,11 +224,8 @@ class HDMedikitter:HDWoundFixer{
 					!scanning
 					&&countinv("HDArmourWorn")
 				){
-					if(getcvar("hd_autostrip"))setweaponstate("reload");
-					else{
-						if(getcvar("hd_helptext"))A_WeaponMessage("Take off your armour first!\n\n(\cdhd_strip\c- in the console\n\nor hit reload)",100);
-						A_Refire("nope");
-					}
+					if(getcvar("hd_helptext"))A_WeaponMessage("Take off your armour first!\n\n(\cdhd_strip\c- in the console\n\nor hit reload)",100);
+					A_Refire("nope");
 					return;
 				}
 				//diagnose
