@@ -156,8 +156,8 @@ class FighterImp:HDMobBase{
 		damagefactor "Thermal",0.66;
 		Health 100;
 		gibhealth 100;
-		Radius 12;
-		Height 54;
+		Radius 14;
+		Height 56;
 		Speed 12;
 		Damage 4;
 		MeleeDamage 4;
@@ -490,18 +490,19 @@ class HealerImp:FighterImp{
 		//$Sprite "TROOA1"
 
 		-missilemore
-		scale 0.8;
 		speed 6;
-		height 47;
-		radius 10;
 		health 120;
 		gibhealth 140;
-		translation "64:77=50:76";
+		translation "64:77=50:76","128:141=208:223";
 		seesound "";
 		activesound "";
 		meleedamage 3;
 		obituary "%o could feel the schadenfreude.";
 		hitobituary "%o said I want a second opinion, so the imps said okay you're ugly too.";
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		hdmobai.resize(self,0.6,0.85);
 	}
 	override void A_ImpChase(){
 		hdmobai.chase(self,flags:CHF_RESURRECT);
@@ -573,13 +574,15 @@ class MageImp:FighterImp{
 		//$Sprite "TROOA1"
 
 		-missilemore
-		translation "none";
-		radius 14;
+		translation "128:151=#[197,164,64]","160:167=16:47";
 		speed 8;
-		scale 1.1;
 		health 110;
 		obituary "%o experienced the magic.";
 		hitobituary "%o experienced ALL the magic.";
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		hdmobai.resize(self,0.9,1.2);
 	}
 	override void tick(){
 		super.tick();
