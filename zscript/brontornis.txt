@@ -22,7 +22,7 @@ class TerrorBolt:HDBullet{
 		}
 	}
 	override void DieOnImpact(vector3 deathspot){
-		if(throughthis&&throughthis!=target)return;
+		if(!throughthis(target))return;
 		deathspot=blt.hitlocation-blt.hitdir*4;
 		setorigin(deathspot,true);
 		setstatelabel("death");

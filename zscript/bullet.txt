@@ -32,7 +32,7 @@ class HDBullet:HDActor{
 	vector3 skypos;
 	transient flinetracedata blt;
 	sector othersector;
-	actor throughthis;
+	array<actor> throughthese;
 	double penetration; //juvenile giggling
 
 	class<actor> distantsounder;
@@ -67,7 +67,8 @@ class HDBullet:HDActor{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		throughthis=target;
+		throughthese.clear();
+		throughthese.push(target);
 		if(distantsounder!="none"){
 			actor m=spawn(distantsounder,(0,0,0),ALLOW_REPLACE);
 			m.target=target;
@@ -143,10 +144,10 @@ class HDBullet:HDActor{
 		A_FaceMovementDirection();
 
 		//hack to escape shooter
-		bool bsbak=false;
-		if(throughthis){
-			bsbak=throughthis.bshootable;
-			throughthis.bshootable=false;
+		array<bool> sflags;sflags.clear();
+		for(int i=0;i<throughthese.size();i++){
+			sflags.push(throughthese[i].bshootable);
+			throughthese[i].bshootable=false;
 		}
 
 
@@ -166,10 +167,11 @@ class HDBullet:HDActor{
 		);
 
 		//reset hacks
-		if(throughthis){
-			throughthis.bshootable=bsbak;
-			throughthis=null;
+		for(int i=0;i<throughthese.size();i++){
+			if(!throughthese[i])continue;
+			throughthese[i].bshootable=sflags[i];
 		}
+		throughthese.clear();sflags.clear();
 		vector3 plushitdir=blt.hitlocation+blt.hitdir;
 
 
@@ -291,13 +293,13 @@ class HDBullet:HDActor{
 			//pierce/ricochet?
 			if(critangle>frandom(70,120)){
 				if(hd_debug>1)A_Log("Ricochet!");
-				throughthis=hitactor;
+				throughthese.push(hitactor);
 				angle+=deltaangle(angleto(hitactor),angle)+frandom(-10,10);
 				pitch+=frandom(-10,10);
 				A_ChangeVelocity(cos(pitch)*speed,0,sin(pitch)*-speed,CVF_RELATIVE|CVF_REPLACE);
 			}else if(netpenetration>1.){
 				if(hd_debug>1)A_Log("--- pierce! --->");
-				throughthis=hitactor;
+				throughthese.push(hitactor);
 				pierce=true;
 			}else if(netpenetration>0.24){
 				if(hd_debug>1)A_Log("-pierce->");
@@ -341,7 +343,7 @@ class HDBullet:HDActor{
 					);
 					if(blood){
 						blood.vel=
-							(throughthis==hitactor?hitdir:-hitdir)
+							(throughthis(hitactor)?hitdir:-hitdir)
 							*(0.03*dmg)
 							+(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.4));
 					}
@@ -384,7 +386,7 @@ class HDBullet:HDActor{
 			vel+=(frandom(-rvel,rvel),frandom(-rvel,rvel),frandom(-rvel,rvel));
 
 			//destroy if too slow
-			if(hitactor!=throughthis||vel dot vel<(50*50)){
+			if(!throughthis(hitactor)||vel dot vel<(50*50)){
 				bmissile=false;
 				setstatelabel("death");
 			}
@@ -582,6 +584,13 @@ class HDBullet:HDActor{
 		}
 	}
 
+	bool throughthis(actor thisactor){
+		if(!thisactor)return true;
+		for(int i=0;i<throughthese.size();i++){
+			if(throughthese[i]==thisactor)return true;
+		}
+		return false;
+	}
 	virtual void DieOnImpact(vector3 deathspot){
 		setorigin(deathspot,true);
 		Puff();
@@ -862,7 +871,7 @@ class HDBullet00b:HDBullet00{
 		double p=pushfactor;
 		for(int i=stamina;i;i--){
 			bb=spawn("HDBullet00",pos,ALLOW_REPLACE);
-			hdbullet(bb).throughthis=target;
+			hdbullet(bb).throughthese.push(target);
 			bb.target=target;bb.pitch=pitch;bb.angle=angle;if(target)bb.vel=target.vel;
 			bb.speed=speed+speed*frandom(-p,p);
 			bb.pitch+=frandom(-p,p);
@@ -888,7 +897,7 @@ class HDBullet00bfl:HDBullet00b{
 		double p=pushfactor;
 		for(int i=stamina;i;i--){
 			bb=spawn("HDBullet00",pos,ALLOW_REPLACE);
-			hdbullet(bb).throughthis=target;
+			hdbullet(bb).throughthese.push(target);
 			bb.target=target;bb.pitch=pitch;bb.angle=angle;if(target)bb.vel=target.vel;
 			bb.speed=speed+speed*frandom(-p,p);
 			bb.pitch+=frandom(-p,p);
@@ -918,7 +927,7 @@ class HDBullet00bf2:HDBullet00bfl{
 			double p=pushfactor;
 			for(int ii=stamina;ii;ii--){
 				bb=spawn("HDBullet00",pos,ALLOW_REPLACE);
-				hdbullet(bb).throughthis=target;
+				hdbullet(bb).throughthese.push(target);
 				bb.target=target;bb.pitch=pitch;bb.angle=angle;if(target)bb.vel=target.vel;
 				bb.speed=speed+speed*frandom(-p,p);
 				bb.pitch+=frandom(-p,p);
