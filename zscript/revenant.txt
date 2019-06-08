@@ -111,7 +111,7 @@ class Boner:HDMobBase replaces Revenant{
 		+noblooddecals
 		-longmeleerange
 		bloodtype "notquitebloodsplat";
-		scale 0.8;
+		scale 0.74;
 		speed 14;
 		mass 60;
 		health 250;
@@ -146,8 +146,8 @@ class Boner:HDMobBase replaces Revenant{
 	uint balls;
 	states{
 	spawn:
-		SKEL AABB 10 A_Look();
-		loop;
+		SKEL B 10 A_Look();
+		wait;
 	see:
 		SKEL ABCDEF 3{
 			if(balls>300)hdmobai.chase(self);
