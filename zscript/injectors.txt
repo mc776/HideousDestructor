@@ -402,7 +402,11 @@ class HDBlueBottler:HDWoundFixer{
 		hdwoundfixer.injectortype "BluePotion";
 	}
 	override string,double getpickupsprite(){return "BON1A0",1.;}
-	override string gethelptext(){return "\cuPotion\n"..WEPHELP_FIRE.."  Drink";}
+	override string gethelptext(){return "\cuPotion\n"
+		..WEPHELP_FIRE.."  Drink\n"
+		..WEPHELP_USE.." + "..WEPHELP_USE.."(item)  Cycle"
+		;
+	}
 	override inventory CreateTossable(int amount){
 		owner.A_DropInventory("BluePotion",amount);
 		if(!owner.countinv("BluePotion"))destroy();
