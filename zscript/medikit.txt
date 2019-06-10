@@ -56,8 +56,7 @@ class HDWoundFixer:HDWeapon{
 		array<inventory> items;items.clear();
 		for(inventory item=caller.inv;item!=null;item=!item?null:item.inv){
 			if(
-				hdpickup(item)
-				&&item.species=="HealingItem"
+				item.species=="HealingItem"
 			){
 				items.push(item);
 			}
