@@ -1,9 +1,12 @@
 //-------------------------------------------------
 // Stims and berserk
 //-------------------------------------------------
-class HDInjectorMaker:HDPickup{
+class HDInjectorMaker:HDMagAmmo{
 	class<weapon>injectortype;
 	property injectortype:injectortype;
+	default{
+		+inventory.invbar
+	}
 	states{
 	use:
 		TNT1 A 0{
@@ -363,8 +366,10 @@ class BluePotion:hdinjectormaker{
 		inventory.pickupsound "potion/swish";
 		inventory.icon "PBONA0";
 		scale 0.3;
-		hdpickup.bulk ENC_BLUEPOTION;
 		hdpickup.nicename "Blue Potion";
+		hdmagammo.maxperunit 12;
+		hdmagammo.magbulk ENC_BLUEPOTION*0.7;
+		hdmagammo.roundbulk ENC_BLUEPOTION*0.04;
 		species "HealingItem";
 		hdinjectormaker.injectortype "HDBlueBottler";
 	}
@@ -438,17 +443,33 @@ class HDBlueBottler:HDWoundFixer{
 		TNT1 A 0 A_PlaySound("potion/away",CHAN_WEAPON,0.4);
 		goto nope;
 	inject:
-		TNT1 A 1{
-			A_TakeInventory("BluePotion",1);
-			A_SetBlend("5a 6a a0",0.1,8);
+		TNT1 A 7{
+			let bp=BluePotion(findinventory("BluePotion"));
+			if(!bp||!bp.mags.size()||bp.mags[0]<1){
+				setweaponstate("injectend");
+				return;
+			}
+			bp.mags[0]--;
 			A_SetPitch(pitch-2,SPF_INTERPOLATE);
 			A_PlaySound("potion/chug",CHAN_VOICE);
 			let onr=HDPlayerPawn(self);
-			if(onr)onr.regenblues+=144;
+			if(onr)onr.regenblues+=12;
 		}
-		TNT1 AAAA 1 A_SetPitch(pitch+0.5,SPF_INTERPOLATE);
+		TNT1 AAAAA 1 A_SetPitch(pitch+0.5,SPF_INTERPOLATE);
+		TNT1 A 5 A_JumpIf(!pressingfire(),"injectend");
+		loop;
+	injectend:
 		TNT1 A 6;
 		TNT1 A 0{
+			let bp=BluePotion(findinventory("BluePotion"));
+			if(bp&&bp.mags.size()&&bp.mags[0]>0){
+				A_PlaySound("potion/away",CHAN_WEAPON,0.4);
+				setweaponstate("nope");
+				return;
+			}
+			bp.mags.delete(0);
+			bp.amount--;
+			A_PlaySound("potion/open",CHAN_VOICE);
 			actor a=spawn("SpentBottle",pos+(0,0,height-4),ALLOW_REPLACE);
 			a.angle=angle+2;a.vel=vel;a.A_ChangeVelocity(3,1,4,CVF_RELATIVE);
 			a=spawn("SpentCork",pos+(0,0,height-4),ALLOW_REPLACE);

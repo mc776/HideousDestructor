@@ -321,7 +321,7 @@ class HDMagAmmo:HDAmmo{
 			aaa.mags.clear();
 			aaa.mags.push(takemag(false));
 		}
-		if(!mags[0])setstatelabel("spawnempty");
+		if(!mags[0]&&findstate("spawnempty"))setstatelabel("spawnempty");
 		else if(findstate("spawn2")){
 			if(hd_debug)A_Log(string.format("%s still uses spawn2",getclassname()));
 			setstatelabel("spawn2");
@@ -363,9 +363,6 @@ class HDMagAmmo:HDAmmo{
 		}fail;
 	spawn:
 		CELL A -1;
-		stop;
-	spawnempty:
-		CELL D -1;
 		stop;
 	}
 }
