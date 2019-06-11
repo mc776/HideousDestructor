@@ -489,6 +489,7 @@ class HDWeapon:Weapon{
 		super.postbeginplay();
 		if(hdpickup.checkblacklist(self,refid))return;
 		if(!bwimpy_weapon)bno_auto_switch=false;
+		if(owner&&owner.player)defaultconfigure(owner.player);
 	}
 	//because A_Print doesn't cut it
 	action void A_WeaponMessage(string msg,int time=100){
