@@ -398,7 +398,7 @@ extend class HDPlayerPawn{
 						firstwep=reff.getclassname();
 					}
 				}
-				int thismany=max(1,howmany[i].toint());
+				int thismany=clamp(howmany[i].toint(),1,40);
 				while(thismany>0){
 					thismany--;
 					hdweapon newwep;

@@ -113,7 +113,6 @@ class AutoReloader:AutoReloadingThingy{
 		+weapon.wimpy_weapon
 		+inventory.invbar
 		+hdweapon.fitsinbackpack
-		inventory.maxamount 20;
 		inventory.pickupsound "misc/w_pkup";
 		inventory.pickupmessage "You got the 7.76 reloading machine!";
 		scale 0.5;
@@ -159,6 +158,8 @@ class AutoReloader:AutoReloadingThingy{
 		..WEPHELP_UNLOAD.."+"..WEPHELP_USE.."  same"
 		;
 	}
+	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
+	override hdweapon GetSpareWeapon(actor newowner,bool reverse,bool doselect){return GetSpareWeaponRegular(newowner,reverse,doselect);}
 	states{
 	select0:
 		TNT1 A 0 A_Raise(999);
