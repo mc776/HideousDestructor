@@ -11,6 +11,7 @@ class HDWeapon:Weapon{
 	flagdef LoadoutAmount:HDWeaponFlags,5;
 	flagdef ReverseGunInertia:HDWeaponFlags,6;
 	flagdef AlwaysShowStatus:HDWeaponFlags,7;
+	flagdef DontDefaultConfigure:HDWeaponFlags,8;
 
 	double barrellength;
 	double barrelwidth;
@@ -456,6 +457,7 @@ class HDWeapon:Weapon{
 	}
 	//apply config from owner's hd_weapondefaults cvar
 	void defaultconfigure(playerinfo whichplayer,string weapondefaults="cvar"){
+		bdontdefaultconfigure=true;
 		if(!whichplayer)return;
 		if(weapondefaults=="cvar")weapondefaults=hdweapon.getdefaultcvar(whichplayer);
 		if(weapondefaults=="")return;
@@ -489,7 +491,7 @@ class HDWeapon:Weapon{
 		super.postbeginplay();
 		if(hdpickup.checkblacklist(self,refid))return;
 		if(!bwimpy_weapon)bno_auto_switch=false;
-		if(owner&&owner.player)defaultconfigure(owner.player);
+		if(!bdontdefaultconfigure&&owner&&owner.player)defaultconfigure(owner.player);
 	}
 	//because A_Print doesn't cut it
 	action void A_WeaponMessage(string msg,int time=100){
@@ -984,6 +986,7 @@ extend class HDWeapon{
 		//apply each of the items at getindex and delete the entry from the spares
 		let newwep=hdweapon(newowner.giveinventorytype(getclassname()));
 		if(!newwep)return null;
+		newwep.bdontdefaultconfigure=true;
 		mwt.weapontype.delete(getindex);
 		newwep.weaponstatus[0]=mwt.weaponstatus0[getindex];
 		mwt.weaponstatus0.delete(getindex);
