@@ -320,7 +320,7 @@ class HDRevolver:HDHandgun{
 			thissprite.frame=1;
 			break;
 		case 6: //G
-			thissprite.frame=pressingzoom()?3:2;
+			thissprite.frame=pressingzoom()?4:2;
 			break;
 		default:
 			thissprite.sprite=getspriteindex("TNT1A0");
@@ -463,7 +463,7 @@ class HDRevolver:HDHandgun{
 		REVG F 1 A_ReadyOpen();
 		goto readyend;
 	open_rotatecylinder:
-		REVG G 2 A_RotateCylinder(!pressingzoom());
+		REVG G 2 A_RotateCylinder(pressingzoom());
 		REVG F 2 A_JumpIf(!pressingaltfire(),"readyopen");
 		loop;
 	open_loadround:
