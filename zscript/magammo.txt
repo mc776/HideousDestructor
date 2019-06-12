@@ -89,9 +89,9 @@ class HDMagAmmo:HDAmmo{
 	}
 	//bring up the lowest-value mag
 	//useful for refilling and discarding
-	void LowestToLast(){
+	int LowestToLast(){
 		SyncAmount();
-		if(amount<2)return;
+		if(amount<2)return mags[0];
 		int lowestindex=-1;
 		int lowest=maxperunit;
 		for(int i=0;i<amount;i++){
@@ -100,9 +100,10 @@ class HDMagAmmo:HDAmmo{
 				lowestindex=i;
 			}
 		}
-		if(lowestindex<0)return;
+		if(lowestindex<0)return maxperunit;
 		mags.delete(lowestindex);
 		mags.push(lowest);
+		return lowest;
 	}
 	//bring up the highest-value non-full mag
 	//useful for refilling and discarding
@@ -133,28 +134,33 @@ class HDMagAmmo:HDAmmo{
 	//give a mag to someone
 	static bool GiveMag(actor receiver,class<inventory> type,int giveamt){
 		if(giveamt<0)return false;
+		hdmagammo mmm;
 		if(receiver.findinventory(type)){
-			let mmm=HDMagAmmo(receiver.findinventory(type));
+			mmm=HDMagAmmo(receiver.findinventory(type));
 			if(mmm.amount>=mmm.maxamount){
 				HDMagAmmo.SpawnMag(receiver,type,giveamt);
 				return false;
 			}
 			mmm.AddAMag(giveamt);
 		}else{
-			let mmm=HDMagAmmo(receiver.GiveInventoryType(type));
+			mmm=HDMagAmmo(receiver.GiveInventoryType(type));
 			mmm.mags.clear();
 			mmm.amount=0;
 			mmm.AddAMag(giveamt);
 		}
 
-			if(
-				receiver.player
-				&&magmanager(receiver.player.readyweapon)
-			){
-				let mm=magmanager(receiver.player.readyweapon);
-				mm.thismag=hdmagammo(receiver.findinventory(type));
-				mm.updatetext();
-			}
+		if(
+			receiver.player
+			&&magmanager(receiver.player.readyweapon)
+			&&(
+				mmm.mustshowinmagmanager
+				||mmm.roundtype!=""
+			)
+		){
+			let mm=magmanager(receiver.player.readyweapon);
+			mm.thismag=hdmagammo(receiver.findinventory(type));
+			mm.updatetext();
+		}
 		return true;
 	}
 	//spawn and drop
@@ -241,7 +247,7 @@ class HDMagAmmo:HDAmmo{
 		}
 	}
 
-	//set sprite for mag manager
+	//set sprite for mag manager: magsprite, roundsprite, roundtype, scale
 	virtual clearscope string,string,name,double getmagsprite(int thismagamt){
 		return "","","Clip",2.;
 	}
