@@ -430,10 +430,17 @@ extend class HDPlayerPawn{
 						newwep.actualpickup(self,true);
 					}
 				}
-			}else A_GiveInventory(
-				reff.getclassname(),
-				clamp(howmany[i].toint(),1,hdmath.maxinv(self,reff.getclassname()))
-			);
+			}else{
+				A_GiveInventory(
+					reff.getclassname(),
+					clamp(howmany[i].toint(),1,int.MAX)
+				);
+				let iii=hdpickup(findinventory(reff.getclassname()));
+				if(iii){
+					iii.amount=min(iii.amount,iii.effectivemaxamount());
+					if(hdmagammo(iii))hdmagammo(iii).syncamount();
+				}
+			}
 		}
 
 		//attend to backpack and contents
