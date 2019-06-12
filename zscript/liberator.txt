@@ -393,8 +393,10 @@ class LiberatorRifle:AutoReloadingThingy{
 					(6+bob.x,95+bob.y),sb.DI_SCREEN_CENTER|sb.DI_TEXT_ALIGN_RIGHT,
 					Font.CR_BLACK
 				);
-				sb.drawnum(hdw.weaponstatus[LIBS_DROPADJUST],
-					6+bob.x,17+bob.y,sb.DI_SCREEN_CENTER,Font.CR_BLACK
+				sb.drawstring(
+					sb.mAmountFont,string.format("%.1f",hdw.weaponstatus[LIBS_DROPADJUST]*0.1),
+					(6+bob.x,17+bob.y),sb.DI_SCREEN_CENTER|sb.DI_TEXT_ALIGN_RIGHT,
+					Font.CR_BLACK
 				);
 			}
 		}

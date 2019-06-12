@@ -85,11 +85,13 @@ class BossRifle:HDWeapon{
 		sb.drawwepcounter(hdw.weaponstatus[BOSSS_CHAMBER],
 			-16,-10,"blank","RBRSA1A5","RBRSA3A7","RBRSA4A6"
 		);
-		sb.drawnum(hdw.weaponstatus[BOSSS_ZOOM],
-			-30,-18,sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
+		sb.drawstring(
+			sb.mAmountFont,string.format("%.1f",hdw.weaponstatus[BOSSS_ZOOM]*0.1),
+			(-36,-18),sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TEXT_ALIGN_RIGHT,Font.CR_DARKGRAY
 		);
-		sb.drawnum(hdw.weaponstatus[BOSSS_DROPADJUST],
-			-16,-18,sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TEXT_ALIGN_RIGHT,Font.CR_WHITE
+		sb.drawstring(
+			sb.mAmountFont,string.format("%.1f",hdw.weaponstatus[BOSSS_DROPADJUST]*0.1),
+			(-16,-18),sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TEXT_ALIGN_RIGHT,Font.CR_WHITE
 		);
 	}
 	override string gethelptext(){
@@ -168,8 +170,10 @@ class BossRifle:HDWeapon{
 				(6+bob.x,105+bob.y),sb.DI_SCREEN_CENTER|sb.DI_TEXT_ALIGN_RIGHT,
 				Font.CR_BLACK
 			);
-			sb.drawnum(hdw.weaponstatus[BOSSS_DROPADJUST],
-				6+bob.x,9+bob.y,sb.DI_SCREEN_CENTER,Font.CR_BLACK
+			sb.drawstring(
+				sb.mAmountFont,string.format("%.1f",hdw.weaponstatus[BOSSS_DROPADJUST]*0.1),
+				(6+bob.x,9+bob.y),sb.DI_SCREEN_CENTER|sb.DI_TEXT_ALIGN_RIGHT,
+				Font.CR_BLACK
 			);
 		}
 		// the scope display is in 10ths of an arcminute.
