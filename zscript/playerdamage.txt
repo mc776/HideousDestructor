@@ -174,7 +174,10 @@ extend class HDPlayerPawn{
 					woundcount=0;
 					return 0;
 				}
-				bledout+=(damage<<2);
+
+				if(hd_yolo)bledout=min(bledout+(damage<<2),666);
+				else bledout+=(damage<<2);
+
 				if(!(flags&DMG_FORCED))damage=min(damage,health-1);
 				if(!random(0,health)){
 					beatcap--;
