@@ -389,6 +389,15 @@ class BluePotion:hdinjectormaker{
 		mags[0]--;
 		mags[lowindex]++;
 		owner.A_PlaySound("potion/swish",CHAN_WEAPON);
+		if(mags[0]<1){
+			mags.delete(0);
+			amount--;
+			owner.A_PlaySound("potion/open",CHAN_VOICE);
+			actor a=owner.spawn("SpentBottle",owner.pos+(0,0,owner.height-4),ALLOW_REPLACE);
+			a.angle=owner.angle+2;a.vel=owner.vel;a.A_ChangeVelocity(3,1,4,CVF_RELATIVE);
+			a=owner.spawn("SpentCork",owner.pos+(0,0,owner.height-4),ALLOW_REPLACE);
+			a.angle=owner.angle+3;a.vel=owner.vel;a.A_ChangeVelocity(5,3,4,CVF_RELATIVE);
+		}
 		return true;
 	}
 	states{
@@ -506,7 +515,7 @@ class HDBlueBottler:HDWoundFixer{
 		}
 		TNT1 AAAAA 1 A_SetPitch(pitch+0.5,SPF_INTERPOLATE);
 		TNT1 A 5 A_JumpIf(!pressingfire(),"injectend");
-		loop;
+		goto hold;
 	injectend:
 		TNT1 A 6;
 		TNT1 A 0{
