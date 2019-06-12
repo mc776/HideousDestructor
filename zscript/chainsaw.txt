@@ -16,7 +16,6 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 		weapon.bobspeed 2.1;
 		weapon.kickback 2;
 		scale 0.4;
-		inventory.pickupmessage "You got the chainsaw! Go find some meat!";
 		obituary "%o got cut by %k.";
 		hdweapon.barrelsize 26,1,2;
 		hdweapon.refid HDLD_CHAINSW;
@@ -24,7 +23,12 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 	}
 	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
 	override hdweapon GetSpareWeapon(actor newowner,bool reverse,bool doselect){return GetSpareWeaponRegular(newowner,reverse,doselect);}
+	override string pickupmessage(){
+		if(Wads.CheckNumForName("freedoom",0)==-1)return "You got the chainsaw! Go find some meat!";
+		return "You got the angle grinder!";
+	}
 	override string getobituary(actor victim,actor inflictor,name mod,bool playerattack){
+		if(Wads.CheckNumForName("id",0)==-1)return obituary; //i'll think of a grinding joke later
 		bool clam=true;
 		for(int i=0;i<MAXPLAYERS;i++){
 			if(playeringame[i]&&(players[i].getgender()!=1)){
