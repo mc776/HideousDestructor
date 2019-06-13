@@ -723,6 +723,11 @@ class Blooper:HDWeapon{
 	spawn:
 		BLOP A -1;
 	}
+	override void loadoutconfigure(string input){
+		//there isn't actually anything to configure,
+		//but we need this to keep it loaded
+		weaponstatus[0]|=BLOPF_LOADED;
+	}
 	override void InitializeWepStats(bool idfa){
 		weaponstatus[0]|=BLOPF_LOADED;
 		if(!idfa && !owner){
