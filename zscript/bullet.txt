@@ -31,6 +31,10 @@ class HDBulletTracer:LineTracer{
 			tp=("C");
 		}else if(results.hittype==TRACE_HitWall){
 			tp=("W");
+			int skipsize=bullet.tracelines.size();
+			for(int i=0;i<skipsize;i++){
+				if(bullet.tracelines[i]==results.hitline)res=TRACE_Skip;
+			}
 		}else if(results.hittype==TRACE_HitActor){
 			tp=("A");
 			int skipsize=bullet.traceactors.size();
@@ -45,6 +49,8 @@ class HDBulletTracer:LineTracer{
 class HDBulletActor:Actor{
 	double penetration; //more juvenile giggling
 	property penetration:penetration;
+	array<line> tracelines;
+	array<actor> traceactors;
 	default{
 		+noblockmap
 		+missile
@@ -56,8 +62,6 @@ class HDBulletActor:Actor{
 		BLET A -1 A_SetScale(0.3);
 		stop;
 	}
-	array<actor> tracelines;
-	array<actor> traceactors;
 	override void tick(){
 		if(isfrozen())return;
 		if(!bmissile){
@@ -68,6 +72,7 @@ class HDBulletActor:Actor{
 
 		tracelines.clear();
 		traceactors.clear();
+		array<double>tracedistances;tracedistances.clear();
 
 		hdbullettracer blt=HDBulletTracer(new("HDBulletTracer"));
 		if(!blt)return;
@@ -77,7 +82,7 @@ class HDBulletActor:Actor{
 		//get speed, set counter
 		speed=vel.length();
 		double traversed=0;
-		while(traversed<speed){
+		do{
 			double cosp=cos(pitch);
 			blt.trace(
 				(pos.xy,pos.z+height-6),
@@ -86,23 +91,34 @@ class HDBulletActor:Actor{
 				1024,
 				TRACE_ReportPortals
 			);
-			/*
-				great, now what...
-				blt.results something something
+			traceresults bres=blt.results;
+			traversed=bres.distance;
+			if(bres.hitline){
+				tracelines.push(bres.hitline);
+				traceactors.push(null);
+				tracedistances.push(bres.distance);
+			}else if(bres.hitactor){
+				tracelines.push(null);
+				traceactors.push(bres.hitactor);
+				tracedistances.push(bres.distance);
+			}
+		}while(traversed<speed);
+/*
+	great, now what...
+	blt.results something something
 
-				hit wall or floor or ceiling:
-				see if it penetrates
-				if it doesn't penetrate, ricochet
-					how do you get the angle of impact though
-					if hitting a wall (vertical):
-						angle of line
-						above plus 180, normalized
-						pick the one closer to the bullet's own angle
-					if hitting a floor/ceiling (flat):
-						pitch a little down if ceil, a little up if floor
-						leave the angle alone
-			*/
-		}
+	hit wall or floor or ceiling:
+	see if it penetrates
+	if it doesn't penetrate, ricochet
+		how do you get the angle of impact though
+		if hitting a wall (vertical):
+			angle of line
+			above plus 180, normalized
+			pick the one closer to the bullet's own angle
+		if hitting a floor/ceiling (flat):
+			pitch a little down if ceil, a little up if floor
+			leave the angle alone
+*/
 
 
 		//destroy the linetracer just in case it interferes with savegames
