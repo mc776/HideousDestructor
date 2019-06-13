@@ -27,19 +27,16 @@ class HDBulletTracer:LineTracer{
 		int res=TRACE_Stop;
 		if(results.hittype==TRACE_HitFloor){
 			tp=("F");
-			//something something penetration
 		}else if(results.hittype==TRACE_HitCeiling){
 			tp=("C");
-			//something something penetration
 		}else if(results.hittype==TRACE_HitWall){
 			tp=("W");
-			//trigger any pcross lines
-			//default continue
-			//something something penetration
 		}else if(results.hittype==TRACE_HitActor){
 			tp=("A");
-			//if(bullet.skipthisactor(results.hitactor))res=TRACE_Skip;
-			//else bullet.skipactors.push(results.hitactor); that answers that question then!
+			int skipsize=bullet.traceactors.size();
+			for(int i=0;i<skipsize;i++){
+				if(bullet.traceactors[i]==results.hitactor)res=TRACE_Skip;
+			}
 		}
 		console.printf(tp.."  "..results.hitpos.x..","..results.hitpos.y..","..results.hitpos.z);
 		return res;
@@ -59,14 +56,8 @@ class HDBulletActor:Actor{
 		BLET A -1 A_SetScale(0.3);
 		stop;
 	}
-	array<actor> skipactors;
-	bool skipthisactor(actor testactor){
-		int skipsize=skipactors.size();
-		for(int i=0;i<skipsize;i++){
-			if(skipactors[i]==testactor)return true;
-		}
-		return false;
-	}
+	array<actor> tracelines;
+	array<actor> traceactors;
 	override void tick(){
 		if(isfrozen())return;
 		if(!bmissile){
@@ -75,10 +66,8 @@ class HDBulletActor:Actor{
 		}
 		if(vel==(0,0,0))bmissile=false;
 
-		//create list of skipped actors
-		skipactors.clear();
-		//add the shooter
-		if(cancollidewith(target,false))skipactors.push(target);
+		tracelines.clear();
+		traceactors.clear();
 
 		hdbullettracer blt=HDBulletTracer(new("HDBulletTracer"));
 		if(!blt)return;
