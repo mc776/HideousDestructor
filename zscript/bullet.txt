@@ -1,3 +1,147 @@
+
+
+class bltest:hdweapon{
+	default{hdweapon.refid "blt";}
+	states{
+	fire:
+		TNT1 A 0{
+			console.printf("");
+			let blt=HDBulletTracer(new("HDBulletTracer"));
+			blt.shooter=self;
+			double cosp=cos(pitch);
+			blt.trace(
+				(pos.xy,pos.z+height-6),
+				cursector,
+				(cosp*(cos(angle),sin(angle)),-sin(pitch)),
+				1024,
+				TRACE_ReportPortals
+			);
+		}goto nope;
+	}
+}
+class HDBulletTracer:LineTracer{
+	hdbulletactor bullet;
+	actor shooter;
+	override etracestatus tracecallback(){
+		string tp;
+		int res=TRACE_Stop;
+		if(results.hittype==TRACE_HitFloor){
+			tp=("F");
+			//something something penetration
+		}else if(results.hittype==TRACE_HitCeiling){
+			tp=("C");
+			//something something penetration
+		}else if(results.hittype==TRACE_HitWall){
+			tp=("W");
+			//trigger any pcross lines
+			//default continue
+			//something something penetration
+		}else if(results.hittype==TRACE_HitActor){
+			tp=("A");
+			if(bullet.skipthisactor(results.hitactor))res=TRACE_Skip;
+			//else bullet.skipactors.push(results.hitactor); that answers that question then!
+		}
+		console.printf(tp.."  "..results.hitpos.x..","..results.hitpos.y..","..results.hitpos.z);
+		return res;
+	}
+}
+class HDBulletActor:Actor{
+	double penetration; //more juvenile giggling
+	property penetration:penetration;
+	default{
+		+noblockmap
+		+missile
+		hdbulletactor.penetration 0;
+	}
+	states{
+	spawn:
+		BAL1 A -1 nodelay A_JumpIf(!hd_debug,1);
+		BLET A -1 A_SetScale(0.3);
+		stop;
+	}
+	array<actor> skipactors;
+	bool skipthisactor(actor testactor){
+		int skipsize=skipactors.size();
+		for(int i=0;i<skipsize;i++){
+			if(skipactors[i]==testactor)return true;
+		}
+		return false;
+	}
+	override void tick(){
+		if(isfrozen())return;
+		if(!bmissile){
+			super.tick();
+			return;
+		}
+		if(vel==(0,0,0))bmissile=false;
+
+		//create list of skipped actors
+		skipactors.clear();
+		//add the shooter
+		if(cancollidewith(target))skipactors.push(target);
+
+		hdbullettracer blt=HDBulletTracer(new("HDBulletTracer"));
+		if(!blt)return;
+		blt.bullet=hdbulletactor(self);
+		blt.shooter=target;
+
+		//get speed, set counter
+		speed=vel.length();
+		double traversed=0;
+		while(traversed<speed){
+			double cosp=cos(pitch);
+			blt.trace(
+				(pos.xy,pos.z+height-6),
+				cursector,
+				(cosp*(cos(angle),sin(angle)),-sin(pitch)),
+				1024,
+				TRACE_ReportPortals
+			);
+			/*
+				great, now what...
+				blt.results something something
+
+				hit wall or floor or ceiling:
+				see if it penetrates
+				if it doesn't penetrate, ricochet
+					how do you get the angle of impact though
+					if hitting a wall (vertical):
+						angle of line
+						above plus 180, normalized
+						pick the one closer to the bullet's own angle
+					if hitting a floor/ceiling (flat):
+						pitch a little down if ceil, a little up if floor
+						leave the angle alone
+			*/
+		}
+
+
+		//destroy the linetracer just in case it interferes with savegames
+		blt.destroy();
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//old shit below (still in use)
+
+
+
 // ------------------------------------------------------------
 // The Bullet!
 // ------------------------------------------------------------
@@ -949,35 +1093,3 @@ class HDBullet00bf2:HDBullet00bfl{
 
 
 
-class bltest:hdweapon{
-	default{hdweapon.refid "blt";}
-	states{
-	fire:
-		TNT1 A 0{
-			console.printf("");
-			let blt=HDBulletTracer(new("HDBulletTracer"));
-			blt.shooter=self;
-			double cosp=cos(pitch);
-			blt.trace(
-				(pos.xy,pos.z+height-6),
-				cursector,
-				(cosp*(cos(angle),sin(angle)),-sin(pitch)),
-				1024,
-				TRACE_ReportPortals
-			);
-		}goto nope;
-	}
-}
-class HDBulletTracer:LineTracer{
-	actor bullet;
-	actor shooter;
-	override etracestatus tracecallback(){
-		string tp;
-		if(results.hittype==TRACE_HitFloor)tp=("F");
-		else if(results.hittype==TRACE_HitCeiling)tp=("C");
-		else if(results.hittype==TRACE_HitWall)tp=("W");
-		else if(results.hittype==TRACE_HitActor)tp=("A");
-		console.printf(tp.."  "..results.hitpos.x..","..results.hitpos.y..","..results.hitpos.z);
-		return TRACE_Skip;
-	}
-}
