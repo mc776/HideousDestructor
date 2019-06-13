@@ -38,7 +38,7 @@ class HDBulletTracer:LineTracer{
 			//something something penetration
 		}else if(results.hittype==TRACE_HitActor){
 			tp=("A");
-			if(bullet.skipthisactor(results.hitactor))res=TRACE_Skip;
+			//if(bullet.skipthisactor(results.hitactor))res=TRACE_Skip;
 			//else bullet.skipactors.push(results.hitactor); that answers that question then!
 		}
 		console.printf(tp.."  "..results.hitpos.x..","..results.hitpos.y..","..results.hitpos.z);
@@ -78,7 +78,7 @@ class HDBulletActor:Actor{
 		//create list of skipped actors
 		skipactors.clear();
 		//add the shooter
-		if(cancollidewith(target))skipactors.push(target);
+		if(cancollidewith(target,false))skipactors.push(target);
 
 		hdbullettracer blt=HDBulletTracer(new("HDBulletTracer"));
 		if(!blt)return;

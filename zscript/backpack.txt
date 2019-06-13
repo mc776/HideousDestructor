@@ -152,9 +152,11 @@ class HDBackpack:HDWeapon{
 				let mmm=getdefaultbytype((class<hdmagammo>)(reff));
 				bool armour=!!((class<HDArmour>)(reff));
 				for(int j=0;j<theseamounts.size();j++){
-					if(armour)blk+=theseamounts[j].toint()>=1000?ENC_BLUEARMOUR/2:ENC_GREENARMOUR;
-					else blk+=mmm.magbulk+theseamounts[j].toint()*mmm.roundbulk;
+					int thamt=theseamounts[j].toint();
+					if(armour)blk+=thamt>=1000?ENC_BLUEARMOUR/2:ENC_GREENARMOUR;
+					else blk+=mmm.magbulk+thamt*mmm.roundbulk;
 				}
+				if(!blk)blk=mmm.bulk*theseamounts.size();
 			}else if(((class<hdweapon>)(reff))){
 				amounts[i].split(theseamounts," ");
 				for(int j=0;j<theseamounts.size();j++){
