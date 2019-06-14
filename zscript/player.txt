@@ -492,7 +492,7 @@ class HDPlayerPawn:PlayerPawn{
 		);
 		double targetviewbob=VB_MAX*0.4;
 		if(overloaded>1.){
-			maxspeed=max(0.02,4.-overloaded);
+			maxspeed=max(0.02,min(maxspeed,4.-overloaded));
 			if(maxspeed<0.3){
 				targetviewbob=VB_MAX;
 				mustwalk=true;

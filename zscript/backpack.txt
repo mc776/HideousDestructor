@@ -153,7 +153,7 @@ class HDBackpack:HDWeapon{
 				bool armour=!!((class<HDArmour>)(reff));
 				for(int j=0;j<theseamounts.size();j++){
 					int thamt=theseamounts[j].toint();
-					if(armour)blk+=thamt>=1000?ENC_BLUEARMOUR/2:ENC_GREENARMOUR;
+					if(armour)blk+=thamt>=1000?ENC_BLUEARMOUR:ENC_GREENARMOUR;
 					else blk+=mmm.magbulk+thamt*mmm.roundbulk;
 				}
 				if(!blk)blk=mmm.bulk*theseamounts.size();

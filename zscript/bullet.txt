@@ -23,27 +23,26 @@ class HDBulletTracer:LineTracer{
 	hdbulletactor bullet;
 	actor shooter;
 	override etracestatus tracecallback(){
-		string tp;
-		int res=TRACE_Stop;
-		if(results.hittype==TRACE_HitFloor){
-			tp=("F");
-		}else if(results.hittype==TRACE_HitCeiling){
-			tp=("C");
-		}else if(results.hittype==TRACE_HitWall){
-			tp=("W");
+		if(results.hittype==TRACE_HitWall){
 			int skipsize=bullet.tracelines.size();
 			for(int i=0;i<skipsize;i++){
-				if(bullet.tracelines[i]==results.hitline)res=TRACE_Skip;
+				if(bullet.tracelines[i]==results.hitline)return TRACE_Skip;
 			}
 		}else if(results.hittype==TRACE_HitActor){
-			tp=("A");
 			int skipsize=bullet.traceactors.size();
 			for(int i=0;i<skipsize;i++){
-				if(bullet.traceactors[i]==results.hitactor)res=TRACE_Skip;
+				if(bullet.traceactors[i]==results.hitactor)return TRACE_Skip;
+			}
+		}else if(
+			results.hittype==TRACE_HitFloor
+			||results.hittype==TRACE_HitCeiling
+		){
+			int skipsize=bullet.tracesectors.size();
+			for(int i=0;i<skipsize;i++){
+				if(bullet.tracesectors[i]==results.hitsector)return TRACE_Skip;
 			}
 		}
-		console.printf(tp.."  "..results.hitpos.x..","..results.hitpos.y..","..results.hitpos.z);
-		return res;
+		return TRACE_Stop;
 	}
 }
 class HDBulletActor:Actor{
@@ -51,6 +50,7 @@ class HDBulletActor:Actor{
 	property penetration:penetration;
 	array<line> tracelines;
 	array<actor> traceactors;
+	array<sector> tracesectors;
 	default{
 		+noblockmap
 		+missile
@@ -72,7 +72,7 @@ class HDBulletActor:Actor{
 
 		tracelines.clear();
 		traceactors.clear();
-		array<double>tracedistances;tracedistances.clear();
+		tracesectors.clear();
 
 		hdbullettracer blt=HDBulletTracer(new("HDBulletTracer"));
 		if(!blt)return;
@@ -92,15 +92,44 @@ class HDBulletActor:Actor{
 				TRACE_ReportPortals
 			);
 			traceresults bres=blt.results;
-			traversed=bres.distance;
+			traversed+=bres.distance;
 			if(bres.hitline){
-				tracelines.push(bres.hitline);
-				traceactors.push(null);
-				tracedistances.push(bres.distance);
+				let hitline=bres.hitline;
+				tracelines.push(hitline);
+				//trigger all projectile pass and attack lines
+				//inflict damage on destructibles
+				//check if the spot immediately ahead is a pointinmap
+					//if it is, do nothing and let the loop continue
+				//see if the bullet penetrates: "ispointinmap" loop up to max penetration point
+					// http://www.how-i-did-it.org/drywall/ammunition.html
+						//note: according to this test, buckshot penetrated everything
+						//fast makes this penetrate LESS
+						//hardness
+						//mass
+						//tumbling
+				//if it does NOT penetrate:
+					//flesh: bloodsplat and destroy
+					//fluids: splash and destroy
+					//dirt/wood: puff and destroy
+					//ricochet:
+						//angle of line
+						//above plus 180, normalized
+						//pick the one closer to the bullet's own angle
+						//if impact is too steep, randomly just puff and destroy
+						//reduce penetration and streamlinedness
 			}else if(bres.hitactor){
-				tracelines.push(null);
-				traceactors.push(bres.hitactor);
-				tracedistances.push(bres.distance);
+				let hitactor=bres.hitactor;
+				traceactors.push(hitactor);
+				//set up the damage thinker
+				//spawn blood as necessary
+				//see if the bullet ricochets
+					//just have it fly off in a random direction, we can revisit this later
+					//reduce penetration and streamlinedness
+				//if not ricochet, see if the bullet penetrates, and if it does:
+					//
+				//destroy if not ricocheting or penetrating
+			}else if(bres.hitsector){
+				tracesectors.push(bres.hitsector);
 			}
 		}while(traversed<speed);
 /*
