@@ -122,7 +122,14 @@ class BloodBagWorn:Inventory{
 	override void touch(actor toucher){}
 	override inventory createtossable(int amount){
 		let onr=hdplayerpawn(owner);
-		if(onr)onr.woundcount++;
+		if(
+			onr
+			&&onr.player
+			&&(
+				!onr.player.readyweapon
+				||!(onr.player.readyweapon is "HDWoundFixer")
+			)
+		)onr.woundcount++;
 		return super.createtossable(amount);
 	}
 	override void DoEffect(){
@@ -142,12 +149,12 @@ class BloodBagWorn:Inventory{
 		PBLD B 3{
 			if(bloodleft>0){
 				if(floorz==pos.z&&vel!=(0,0,0))A_SpawnItemEx("HDBloodTrailFloor");
-				if(level.time%3)bloodleft--;
+				if(!(level.time%2))bloodleft--;
 				angle+=frandom(3,6);
 				A_SpawnParticle("red",
-					SPF_RELATIVE,70,frandom(0.6,1.6),0,
-					0,2,frandom(2.5,3),
-					frandom(-0.4,0.4),frandom(-0.4,0.4),frandom(1.1,1.2),
+					SPF_RELATIVE,70,frandom(1.6,1.9),0,
+					0,2,4,
+					frandom(-0.4,0.4),frandom(-0.4,0.4),frandom(5.,5.2),
 					frandom(-0.1,0.1),frandom(-0.1,0.1),-1.
 				);
 			}

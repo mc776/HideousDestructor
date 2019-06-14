@@ -91,6 +91,15 @@ class HDWoundFixer:HDWeapon{
 			A_ClearRefire();
 		}
 		goto readyend;
+	altreload:
+		TNT1 A 15 A_JumpIf(!countinv("BloodBagWorn"),"nope");
+		TNT1 A 10{
+			A_SetBlend("7a 3a 18",0.1,4);
+			A_SetPitch(pitch+2,SPF_INTERPOLATE);
+			A_PlaySound("*usemeds",CHAN_VOICE);
+			A_DropInventory("BloodBagWorn");
+		}
+		goto nope;
 	}
 }
 class HDMedikitter:HDWoundFixer{
@@ -163,7 +172,8 @@ class HDMedikitter:HDWoundFixer{
 		.."\n  ...while pressing:\n"
 		.."  <\cunothing"..WEPHELP_RGCOL..">  Staple and patch\n"
 		.."  "..WEPHELP_FIREMODE.."  Run diagnostic\n"
-		.."  "..WEPHELP_FIREMODE.."+"..WEPHELP_ZOOM.."  Apply Second Flesh"
+		.."  "..WEPHELP_FIREMODE.."+"..WEPHELP_ZOOM.."  Apply Second Flesh\n"
+		..(owner.countinv("BloodBagWorn")?"  "..WEPHELP_ALTRELOAD.."  Remove blood feeder":"")
 		;
 	}
 	void patchwound(int amt,actor targ){
@@ -180,7 +190,7 @@ class HDMedikitter:HDWoundFixer{
 		slf.oldwoundcount+=amt;
 	}
 	action void A_MedikitReady(){
-		A_WeaponReady(WRF_NOFIRE|WRF_ALLOWUSER3);
+		A_WeaponReady(WRF_NOFIRE|WRF_ALLOWUSER1|WRF_ALLOWUSER3);
 		if(!player)return;
 		int bt=player.cmd.buttons;
 
@@ -597,7 +607,8 @@ class SelfBandage:HDWoundFixer{
 		}
 	}
 	override string,double getpickupsprite(){return "BLUDC0",1.;}
-	override string gethelptext(){return "\cuImprovised Bandaging\n"..WEPHELP_INJECTOR;}
+	override string gethelptext(){return "\cuImprovised Bandaging\n"..WEPHELP_INJECTOR
+		..(owner.countinv("BloodBagWorn")?"\n"..WEPHELP_ALTRELOAD.."  Remove blood feeder":"");}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
 		int of=0;
 		if(hpl.woundcount){
