@@ -245,6 +245,7 @@ if(hd_weapondefaults.getstring()~=="convert"){
 		//inventory
 		DrawInvSel(6,100,10,109,DI_TOPLEFT);
 		if(hpl.countinv("WornRadsuit"))drawimage("SUITC0",(11,137),DI_TOPLEFT);
+		if(hpl.countinv("BloodBagWorn"))drawimage("PBLDA0",(8,134),DI_TOPLEFT,scale:(0.6,0.6));
 
 		//guns
 		drawselectedweapon(-100,-24,DI_BOTTOMRIGHT);
@@ -406,6 +407,11 @@ if(hd_weapondefaults.getstring()~=="convert"){
 		//radsuit
 		if(hpl.countinv("WornRadsuit"))drawimage(
 			"SUITC0",(64,-4),DI_SCREEN_CENTER_BOTTOM|DI_ITEM_CENTER_BOTTOM
+		);
+
+		//bloodpack
+		if(hpl.countinv("BloodBagWorn"))drawimage(
+			"PBLDA0",(68,-10),DI_SCREEN_CENTER_BOTTOM|DI_ITEM_CENTER_BOTTOM,scale:(0.6,0.6)
 		);
 
 
