@@ -7,7 +7,7 @@ class SecondBlood:HDWeapon{
 		//$Title "Synhetic Blood"
 		//$Sprite "PBLDA0"
 
-		scale 0.37;
+		scale 0.5;
 		-hdweapon.droptranslation
 		+inventory.invbar
 		inventory.pickupmessage "Picked up a synthblood pack.";
@@ -29,7 +29,7 @@ class SecondBlood:HDWeapon{
 			A_ClearRefire();
 		}goto readyend;
 	ready:
-		TNT1 A 1 A_WeaponReady();
+		TNT1 A 1 A_WeaponReady(WRF_ALLOWRELOAD);
 		goto readyend;
 	fire:
 	altfire:
@@ -97,6 +97,8 @@ class SecondBlood:HDWeapon{
 			if(invoker.weaponstatus[SBS_INJECTCOUNTER]>70){
 				patient.A_GiveInventory("BloodBagWorn");
 				A_PlaySound("bloodbag/inject",CHAN_WEAPON);
+				A_SetBlend("7a 3a 18",0.1,4);
+				A_SetPitch(pitch+2,SPF_INTERPOLATE);
 				setweaponstate("nope");
 				invoker.amount=0;
 			}
@@ -112,8 +114,10 @@ class BloodBagWorn:Inventory{
 	int bloodleft;
 	default{
 		-solid -noblockmap
+		+rollsprite
 		inventory.maxamount 1;
-		height 3;radius 3;
+		height 2;radius 2;
+		scale 0.5;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -146,6 +150,10 @@ class BloodBagWorn:Inventory{
 	}
 	states{
 	spawn:
+		PBLD B 0 nodelay{
+			if(!random(0,1))scale.x=-scale.x;
+			roll=frandom(-20,20);
+		}
 		PBLD B 3{
 			if(bloodleft>0){
 				if(floorz==pos.z&&vel!=(0,0,0))A_SpawnItemEx("HDBloodTrailFloor");
