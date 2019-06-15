@@ -176,8 +176,7 @@ class BloodBagWorn:Inventory{
 			if(hp.fatigue<HDCONST_SPRINTFATIGUE)hp.fatigue++;
 		}
 		//fall off
-		//nah, let's make the player work for it
-		//if(bloodleft<1)owner.dropinventory(self);
+		if(onr.inpain>0&&!random(0,31))owner.dropinventory(self);
 	}
 	states{
 	spawn:
