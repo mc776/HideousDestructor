@@ -170,7 +170,7 @@ class BloodBagWorn:Inventory{
 	override void DoEffect(){
 		let hp=HDPlayerPawn(owner);
 		if(!hp){destroy();return;}
-		if(!hp.beatcount){
+		if(!hp.beatcount&&bloodleft>0){
 			bloodleft--;
 			hp.bledout=max(0,hp.bledout-4);
 			if(hp.fatigue<HDCONST_SPRINTFATIGUE)hp.fatigue++;
