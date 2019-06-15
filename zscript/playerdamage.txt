@@ -518,6 +518,7 @@ extend class HDPlayerPawn{
 	static void Disarm(actor victim){
 		if(!victim.player)return;
 		let pwep=hdweapon(victim.player.readyweapon);
+		if(!pwep)return;
 		pwep.OnPlayerDrop();
 		if(
 			pwep
