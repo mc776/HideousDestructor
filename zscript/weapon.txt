@@ -477,8 +477,6 @@ class HDWeapon:Weapon{
 		int digitstart=varstart+varname.length();
 		string inp=input.mid(digitstart,maxdigits);
 		if(inp=="0")return 0;
-		if(inp.left(1)=="t")return 1; //"true
-		else if(inp.left(1)=="f")return 0; //"false"
 		if(inp.indexof("e")>=0)inp=inp.left(inp.indexof("e")); //"123e45"
 		if(inp.indexof("x")>=0)inp=inp.left(inp.indexof("x")); //"0xffffff..."
 		int inpint=inp.toint();

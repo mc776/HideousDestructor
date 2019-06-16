@@ -66,6 +66,7 @@ class HDStatusBar:DoomStatusBar{
 	transient cvar hd_crosshair;
 	transient cvar hd_xhscale;
 	transient cvar hd_weapondefaults; //TEMPORARY - TO DELETE LATER
+	transient cvar hd_setweapondefault;
 
 	override void Tick(){
 		if(!hd_mugshot){
@@ -76,6 +77,7 @@ class HDStatusBar:DoomStatusBar{
 			hd_crosshair=cvar.getcvar("hd_crosshair",cplayer);
 			hd_xhscale=cvar.getcvar("hd_xhscale",cplayer);
 			hd_weapondefaults=cvar.getcvar("hd_weapondefaults",cplayer); //TEMPORARY - TO DELETE LATER
+			hd_setweapondefault=cvar.getcvar("hd_setweapondefault",cplayer);
 		}
 		super.tick();
 		hpl=hdplayerpawn(cplayer.mo);
@@ -113,6 +115,49 @@ if(hd_weapondefaults.getstring()~=="convert"){
 	console.printf("hd_weapondefaults set from old cvars:  "..cdef);
 	cvar.findcvar("hd_weapondefaults").setstring(cdef);
 }
+if(hd_setweapondefault.getstring()!=""){
+	string wpdefs=cvar.getcvar("hd_weapondefaults",cplayer).getstring().makelower();
+	string wpdlastchar=wpdefs.mid(wpdefs.length()-1,1);
+	while(
+		wpdlastchar==" "
+		||wpdlastchar==","
+	){
+		wpdefs=wpdefs.left(wpdefs.length()-1);
+		wpdlastchar=wpdefs.mid(wpdefs.length()-1,1);
+	}
+	string newdef=hd_setweapondefault.getstring().makelower();
+	newdef.replace(",","");
+	string newdefwep=newdef.left(3);
+	int whereisold=wpdefs.rightindexof(newdefwep);
+	if(whereisold<0){
+		wpdefs=wpdefs..","..newdef;
+	}else{
+		string leftofdef=wpdefs.left(whereisold);
+		wpdefs=wpdefs.mid(whereisold);
+		int whereiscomma=wpdefs.indexof(",");
+		if(whereiscomma<0){
+			wpdefs=newdef;
+		}else{
+			wpdefs=newdef..wpdefs.mid(whereiscomma);
+		}
+		if(leftofdef!=""){
+			wpdlastchar=leftofdef.mid(leftofdef.length()-1,1);
+			while(
+				wpdlastchar==" "
+				||wpdlastchar==","
+			){
+				leftofdef=leftofdef.left(leftofdef.length()-1);
+				wpdlastchar=leftofdef.mid(leftofdef.length()-1,1);
+			}
+			wpdefs=leftofdef..","..wpdefs;
+		}
+	}
+
+	hd_setweapondefault.setstring("");
+	cvar.findcvar("hd_weapondefaults").setstring(wpdefs);
+}
+
+
 
 
 		wepsprites.clear();wepspritescales.clear();wepspriteofs.clear();wepspritecounts.clear();
