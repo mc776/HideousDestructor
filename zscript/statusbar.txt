@@ -311,7 +311,8 @@ if(hd_weapondefaults.getstring()~=="convert"){
 					wpdefs=wpdefs.mid(whereisold);
 					int whereiscomma=wpdefs.indexof(",");
 					if(whereiscomma<0){
-						wpdefs=newdef;
+						if(newdef==newdefwep)wpdefs="";
+						else wpdefs=newdef;
 					}else{
 						if(newdef==newdefwep)wpdefs=wpdefs.mid(whereiscomma);
 						else wpdefs=newdef..wpdefs.mid(whereiscomma);
@@ -329,6 +330,14 @@ if(hd_weapondefaults.getstring()~=="convert"){
 					}
 				}
 				wpdefs.replace(",,",",");
+				wpdlastchar=wpdefs.mid(wpdefs.length()-1,1);
+				while(
+					wpdlastchar==" "
+					||wpdlastchar==","
+				){
+					wpdefs=wpdefs.left(wpdefs.length()-1);
+					wpdlastchar=wpdefs.mid(wpdefs.length()-1,1);
+				}
 
 				hd_setweapondefault.setstring("");
 				cvar.findcvar("hd_weapondefaults").setstring(wpdefs);
