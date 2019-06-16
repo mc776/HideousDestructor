@@ -300,33 +300,39 @@ if(hd_weapondefaults.getstring()~=="convert"){
 			string newdef=hd_setweapondefault.getstring().makelower();
 			newdef.replace(",","");
 			string newdefwep=newdef.left(3);
-			int whereisold=wpdefs.rightindexof(newdefwep);
-			if(whereisold<0){
-				wpdefs=wpdefs..","..newdef;
-			}else{
-				string leftofdef=wpdefs.left(whereisold);
-				wpdefs=wpdefs.mid(whereisold);
-				int whereiscomma=wpdefs.indexof(",");
-				if(whereiscomma<0){
-					wpdefs=newdef;
+			newdefwep.replace(" ","");
+			newdefwep.replace(",","");
+			if(newdefwep.length()==3){
+				int whereisold=wpdefs.rightindexof(newdefwep);
+				if(whereisold<0){
+					wpdefs=wpdefs..","..newdef;
 				}else{
-					wpdefs=newdef..wpdefs.mid(whereiscomma);
-				}
-				if(leftofdef!=""){
-					wpdlastchar=leftofdef.mid(leftofdef.length()-1,1);
-					while(
-						wpdlastchar==" "
-						||wpdlastchar==","
-					){
-						leftofdef=leftofdef.left(leftofdef.length()-1);
-						wpdlastchar=leftofdef.mid(leftofdef.length()-1,1);
+					string leftofdef=wpdefs.left(whereisold);
+					wpdefs=wpdefs.mid(whereisold);
+					int whereiscomma=wpdefs.indexof(",");
+					if(whereiscomma<0){
+						wpdefs=newdef;
+					}else{
+						if(newdef==newdefwep)wpdefs=wpdefs.mid(whereiscomma);
+						else wpdefs=newdef..wpdefs.mid(whereiscomma);
 					}
-					wpdefs=leftofdef..","..wpdefs;
+					if(leftofdef!=""){
+						wpdlastchar=leftofdef.mid(leftofdef.length()-1,1);
+						while(
+							wpdlastchar==" "
+							||wpdlastchar==","
+						){
+							leftofdef=leftofdef.left(leftofdef.length()-1);
+							wpdlastchar=leftofdef.mid(leftofdef.length()-1,1);
+						}
+						wpdefs=leftofdef..","..wpdefs;
+					}
 				}
-			}
+				wpdefs.replace(",,",",");
 
-			hd_setweapondefault.setstring("");
-			cvar.findcvar("hd_weapondefaults").setstring(wpdefs);
+				hd_setweapondefault.setstring("");
+				cvar.findcvar("hd_weapondefaults").setstring(wpdefs);
+			}
 		}
 
 
