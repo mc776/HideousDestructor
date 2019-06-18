@@ -694,9 +694,10 @@ if(hd_weapondefaults.getstring()~=="convert"){
 			for(int i=0;i<(STB_BEATERSIZE-2);i++){
 				healthbars[i]=healthbars[i+2];
 			}
-			int erraticalness=(max(100-hpl.health,hpl.bloodpressure,0)>>4);
-			healthbars[STB_BEATERSIZE-2]=clamp(4+random[heart](-erraticalness,erraticalness+1),1,8);
-			healthbars[STB_BEATERSIZE-1]=clamp(random[heart](1,erraticalness+1),1,8);
+			int err=(100-hpl.health)>>3;
+			err=random[heart](0,err);
+			healthbars[STB_BEATERSIZE-2]=clamp(18-(hpl.bledout>>7)-(err>>2),1,18);
+			healthbars[STB_BEATERSIZE-1]=(hpl.inpain?random[heart](1,7):1)+err;
 		}
 		for(int i=0;i<STB_BEATERSIZE;i++){
 			drawimage(
