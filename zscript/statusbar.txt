@@ -216,7 +216,14 @@ class HDStatusBar:DoomStatusBar{
 		//inventory
 		DrawInvSel(6,100,10,109,DI_TOPLEFT);
 		if(hpl.countinv("WornRadsuit"))drawimage("SUITC0",(11,137),DI_TOPLEFT);
-		if(hpl.countinv("BloodBagWorn"))drawimage("PBLDA0",(8,134),DI_TOPLEFT,scale:(0.6,0.6));
+		if(hpl.countinv("BloodBagWorn")){
+			drawimage("PBLDA0",(8,134),DI_TOPLEFT,scale:(0.6,0.6));
+			drawstring(
+				mAmountFont,FormatNumber(BloodBagWorn(hpl.findinventory("BloodBagWorn")).bloodleft),
+				(14,136),DI_TOPLEFT|DI_TEXT_ALIGN_RIGHT,
+				Font.CR_RED
+			);
+		}
 
 		//guns
 		drawselectedweapon(-100,-24,DI_BOTTOMRIGHT);
@@ -470,9 +477,15 @@ if(hd_weapondefaults.getstring()~=="convert"){
 		);
 
 		//bloodpack
-		if(hpl.countinv("BloodBagWorn"))drawimage(
-			"PBLDA0",(68,-10),DI_SCREEN_CENTER_BOTTOM|DI_ITEM_CENTER_BOTTOM,scale:(0.6,0.6)
-		);
+		if(hpl.countinv("BloodBagWorn")){
+			drawimage(
+				"PBLDA0",(68,-10),DI_SCREEN_CENTER_BOTTOM|DI_ITEM_CENTER_BOTTOM,scale:(0.6,0.6)
+			);
+			if(hudlevel==2)drawstring(
+				mAmountFont,FormatNumber(BloodBagWorn(hpl.findinventory("BloodBagWorn")).bloodleft),
+				(72,-10),DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_RED
+			);
+		}
 
 
 		//health
@@ -704,7 +717,7 @@ if(hd_weapondefaults.getstring()~=="convert"){
 				(cp.health>70?"GREENPXL":cp.health>33?"YELOPXL":"REDPXL"),
 				drawpos+(i-(STB_BEATERSIZE>>2),0),
 				flags|DI_ITEM_CENTER|(cp.health>70?DI_TRANSLATABLE:0),
-				scale:(0.8,healthbars[i])
+				scale:(0.8,healthbars[i]*0.6)
 			);
 		}
 	}
