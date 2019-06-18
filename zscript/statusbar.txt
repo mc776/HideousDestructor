@@ -4,7 +4,7 @@
 class HDStatusBar:DoomStatusBar{
 	int hudlevel;
 	int hudusetimer;
-	int healthbars[14];
+	int healthbars[STB_BEATERSIZE];
 	hudfont psmallfont;
 	hdplayerpawn hpl;
 	bool blurred;
@@ -51,7 +51,7 @@ class HDStatusBar:DoomStatusBar{
 	}
 	enum HDStatBar{
 		STB_COMPRAD=12,
-		STB_BEATERSIZE=14,
+		STB_BEATERSIZE=15,
 		DI_TOPRIGHT=DI_SCREEN_RIGHT_TOP|DI_ITEM_RIGHT_TOP,
 		DI_TOPLEFT=DI_SCREEN_LEFT_TOP|DI_ITEM_LEFT_TOP,
 		DI_BOTTOMLEFT=DI_SCREEN_LEFT_BOTTOM|DI_ITEM_LEFT_BOTTOM,
@@ -495,7 +495,7 @@ if(hd_weapondefaults.getstring()~=="convert"){
 		if(hpl.beatmax){
 			float cpb=hpl.beatcount*1./hpl.beatmax;
 			drawimage(
-				"GREENPXL",(-8,-6-cpb*2),DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE,
+				"GREENPXL",(-10,-6-cpb*2),DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE,
 				cpb,scale:(3,3+hpl.bloodpressure*0.03)
 			);
 		}
@@ -686,7 +686,7 @@ if(hd_weapondefaults.getstring()~=="convert"){
 		}
 	}
 	void DrawHealthTicker(
-		vector2 drawpos=(-1,-7),
+		vector2 drawpos=(-3,-7),
 		int flags=DI_SCREEN_CENTER_BOTTOM
 	){
 		let cp=hdplayerpawn(cplayer.mo);
@@ -694,10 +694,10 @@ if(hd_weapondefaults.getstring()~=="convert"){
 			for(int i=0;i<(STB_BEATERSIZE-2);i++){
 				healthbars[i]=healthbars[i+2];
 			}
-			int err=(100-hpl.health)>>3;
+			int err=max(0,((100-hpl.health)>>3));
 			err=random[heart](0,err);
 			healthbars[STB_BEATERSIZE-2]=clamp(18-(hpl.bledout>>7)-(err>>2),1,18);
-			healthbars[STB_BEATERSIZE-1]=(hpl.inpain?random[heart](1,7):1)+err;
+			healthbars[STB_BEATERSIZE-1]=(hpl.inpain?random[heart](1,7):1)+err+random[heart](0,(hpl.bloodpressure>>3));
 		}
 		for(int i=0;i<STB_BEATERSIZE;i++){
 			drawimage(
