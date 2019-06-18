@@ -827,7 +827,11 @@ class ZM66AssaultRifle:HDWeapon{
 			}
 		}
 
-		if(getloadoutvar(input,"dontchamber",1)<1){
+		if(
+			!getloadoutvar(input,"dontchamber",1)
+			&&!(weaponstatus[0]&ZM66F_CHAMBER)
+			&&weaponstatus[ZM66S_MAG]>0
+		){
 			weaponstatus[0]|=ZM66F_CHAMBER;
 			if(weaponstatus[ZM66S_MAG]==51)weaponstatus[ZM66S_MAG]=49;
 			else weaponstatus[ZM66S_MAG]--;
@@ -869,10 +873,6 @@ class ZM66Semi:HDWeaponGiver{
 		hdweapongiver.weprefid HDLD_ZM66GL;
 		hdweapongiver.config "noglsemi";
 		inventory.icon "RIFSA0";
-	}
-	override void configureactualweapon(){
-		actualweapon.weaponstatus[0]|=ZM66F_NOLAUNCHER|ZM66F_NOFIRESELECT;
-		actualweapon.weaponstatus[0]&=~ZM66F_GRENADELOADED;
 	}
 }
 class ZM66Regular:ZM66Semi{
