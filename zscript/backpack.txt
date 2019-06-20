@@ -130,11 +130,17 @@ class HDBackpack:HDWeapon{
 					if(iii)iii.destroy();
 				}
 			}else if(pkup){
-				double bulkmax=(HDCONST_BPMAX-bulk)/max(1,getdefaultbytype(pkup).bulk);
-				int addamt=max(1,min(bulkmax,howmanyi));
-				int amt=amounts[refindex].toint(10);
-				if(addamt>0)amounts[refindex]=""..amt+addamt;
-				updatemessage(index);
+				let iii=spawn(invclasses[refindex],pos,ALLOW_REPLACE);
+				if(iii){
+					iii.destroy();
+					double bulkmax=(HDCONST_BPMAX-bulk)/max(1,getdefaultbytype(pkup).bulk);
+					int addamt=max(1,min(bulkmax,howmanyi));
+					if(addamt>0){
+						int amt=amounts[refindex].toint(10);
+						amounts[refindex]=""..amt+addamt;
+						updatemessage(index);
+					}
+				}
 			}
 		}
 	}
