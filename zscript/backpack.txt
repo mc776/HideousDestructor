@@ -665,32 +665,30 @@ extend class HDBackpack{
 						*5.
 					)
 				);
-				int magmax=getdefaultbytype(mag).maxperunit;
-				string ati=amounts[thisitem];
 				for(int j=0;j<howmany;j++){
-					int mmx=min(magmax,magmax*frandom(0.1,5.));
-
-					//arbitrary bullshit hack
-					let arm=(class<hdarmour>)(mag);
-					if(arm&&mmx<1000)mmx=min(HDCONST_GREENARMOUR,HDCONST_GREENARMOUR*frandom(0.1,5.));
-
-					if(ati=="")ati=ati..mmx;
-					else ati=ati.." "..mmx;
+					inventory iii=inventory(spawn(mag,pos,ALLOW_REPLACE));
+					if(iii){
+						itemtobackpack(iii);
+						if(iii)iii.destroy();
+					}
 				}
-				amounts[thisitem]=ati;
 			}else if(pkup){
-				howmany=min(
-					random(1,getdefaultbytype(pkup).bmultipickup?random(1,80):random(1,random(1,20))),
-					getdefaultbytype(pkup).maxamount,
-					HDCONST_BPMAX/(max(1.,getdefaultbytype(pkup).bulk)*5.)
-				);
-				if(
-					getdefaultbytype(pkup).refid==""
-				){
-					howmany=random(-2,howmany);
+				let iii=spawn(pkup,pos,ALLOW_REPLACE);
+				if(iii){
+					iii.destroy();
+					howmany=min(
+						random(1,getdefaultbytype(pkup).bmultipickup?random(1,80):random(1,random(1,20))),
+						getdefaultbytype(pkup).maxamount,
+						HDCONST_BPMAX/(max(1.,getdefaultbytype(pkup).bulk)*5.)
+					);
+					if(
+						getdefaultbytype(pkup).refid==""
+					){
+						howmany=random(-2,howmany);
+					}
+					amounts[thisitem]=""..howmany;
+					if(amounts[thisitem].toint()<1)amounts[thisitem]="";
 				}
-				amounts[thisitem]=""..howmany;
-				if(amounts[thisitem].toint()<1)amounts[thisitem]="";
 			}
 			if(hd_debug)A_Log(invclasses[thisitem].."  "..howmany);
 		}
