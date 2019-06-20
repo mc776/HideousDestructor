@@ -8,9 +8,6 @@ class HDHandlers:EventHandler{
 	array<double> invposy;
 	array<double> invposz;
 
-	override void worldthingspawned(worldevent e){
-		if(e.thing is "HDAmmo")e.thing.destroy();
-	}
 	override void RenderOverlay(renderevent e){
 		hdlivescounter.RenderEndgameText(e.camera);
 	}
