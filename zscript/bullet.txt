@@ -60,6 +60,9 @@ class HDBulletActor:Actor{
 		BAL1 A -1 nodelay A_JumpIf(!hd_debug,1);
 		BLET A -1 A_SetScale(0.3);
 		stop;
+	death:
+		TNT1 A 0;
+		stop;
 	}
 	override void tick(){
 		if(isfrozen())return;
@@ -152,9 +155,14 @@ class HDBulletActor:Actor{
 			}
 		}while(distanceleft>0);
 
+		//move bullet to next position
+
 
 		//destroy the linetracer just in case it interferes with savegames
 		blt.destroy();
+
+		//update velocity
+//		vel.z--;
 	}
 }
 

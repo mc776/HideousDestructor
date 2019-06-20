@@ -778,3 +778,24 @@ extend class HDBackpack{
 }
 
 
+
+
+
+//modding extension: remove a specified item type from all backpacks
+//returns true if something was deleted
+extend class HDBackpack{
+	bool DeleteItem(string invclass){
+		int dexof=invclasses.find(invclass);
+		if(
+			dexof==invclasses.size()
+			||!amounts[dexof]
+			||amounts[dexof]==""
+		)return false;
+		amounts[dexof]="";
+		return true;
+	}
+}
+
+
+
+
