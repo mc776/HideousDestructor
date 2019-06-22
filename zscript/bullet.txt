@@ -19,6 +19,7 @@ class HDBulletTracer:LineTracer{
 				if(bullet.tracelines[i]==results.hitline)return TRACE_Skip;
 			}
 		}else if(results.hittype==TRACE_HitActor){
+			if(results.hitactor==bullet)return TRACE_Skip;
 			int skipsize=bullet.traceactors.size();
 			for(int i=0;i<skipsize;i++){
 				if(bullet.traceactors[i]==results.hitactor)return TRACE_Skip;
@@ -44,6 +45,7 @@ class HDBulletActor:Actor{
 	default{
 		+noblockmap
 		+missile
+		height 0.1;radius 0.1;
 		hdbulletactor.penetration 0;
 		speed 128;
 	}
@@ -52,7 +54,7 @@ class HDBulletActor:Actor{
 		bbb.target=caller;
 		bbb.angle=caller.angle;bbb.pitch=caller.pitch;
 		bbb.vel=caller.vel;
-		bbb.A_ChangeVelocity(bbb.speed*cos(bbb.pitch),0,-bbb.speed*sin(bbb.pitch),CVF_RELATIVE);
+		bbb.A_ChangeVelocity(bbb.speed*cos(bbb.pitch),0,bbb.speed*sin(-bbb.pitch),CVF_RELATIVE);
 		return bbb;
 	}
 	states{
@@ -88,13 +90,14 @@ class HDBulletActor:Actor{
 		do{
 			double cosp=cos(pitch);
 			blt.trace(
-				(pos.xy,pos.z+height-6),
+				pos,
 				cursector,
-				(cosp*(cos(angle),sin(angle)),-sin(pitch)),
+				vel.unit(),
 				distanceleft,
 				TRACE_ReportPortals
 			);
 			traceresults bres=blt.results;
+			newpos=bres.hitpos;
 			distanceleft-=max(bres.distance,0.1); //safeguard against infinite loops
 			if(bres.hitline){
 				let hitline=bres.hitline;
@@ -166,7 +169,7 @@ class HDBulletActor:Actor{
 		blt.destroy();
 
 		//update velocity
-//		vel.z--;
+		vel.z--;
 	}
 }
 
