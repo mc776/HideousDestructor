@@ -80,6 +80,7 @@ class HDBulletActor:Actor{
 		if(!blt)return;
 		blt.bullet=hdbulletactor(self);
 		blt.shooter=target;
+		vector3 newpos=pos;
 
 		//get speed, set counter
 		double distanceleft=vel.length();
@@ -94,7 +95,7 @@ class HDBulletActor:Actor{
 				TRACE_ReportPortals
 			);
 			traceresults bres=blt.results;
-			distanceleft-=bres.distance;
+			distanceleft-=max(bres.distance,0.1); //safeguard against infinite loops
 			if(bres.hitline){
 				let hitline=bres.hitline;
 				tracelines.push(hitline);
@@ -143,12 +144,14 @@ class HDBulletActor:Actor{
 				let hitactor=bres.hitactor;
 				traceactors.push(hitactor);
 				//set up the damage thinker
+				//move a little into the actor
 				//spawn blood as necessary
 				//see if the bullet ricochets
 					//just have it fly off in a random direction, we can revisit this later
 					//reduce penetration and streamlinedness
 				//if not ricochet, see if the bullet penetrates, and if it does:
-					//
+					//move to the other side of the actor
+					//spawn more blood for the exit wound
 				//destroy if not ricocheting or penetrating
 			}else if(bres.hitsector){
 				tracesectors.push(bres.hitsector);
@@ -156,6 +159,7 @@ class HDBulletActor:Actor{
 		}while(distanceleft>0);
 
 		//move bullet to next position
+		setorigin(newpos,true);
 
 
 		//destroy the linetracer just in case it interferes with savegames
