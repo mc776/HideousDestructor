@@ -13,7 +13,7 @@ class HDBulletTracer:LineTracer{
 	hdbulletactor bullet;
 	actor shooter;
 	override etracestatus tracecallback(){
-		if(results.hittype==TRACE_HitWall){
+		if(!!results.hitline){
 			int skipsize=bullet.tracelines.size();
 			for(int i=0;i<skipsize;i++){
 				if(bullet.tracelines[i]==results.hitline)return TRACE_Skip;
@@ -97,6 +97,7 @@ class HDBulletActor:Actor{
 				TRACE_ReportPortals
 			);
 			traceresults bres=blt.results;
+console.printf(""..bres.distance);
 			newpos=bres.hitpos;
 			distanceleft-=max(bres.distance,0.1); //safeguard against infinite loops
 			if(bres.hitline){
