@@ -99,13 +99,13 @@ if(level.time%17)return;
 				TRACE_ReportPortals
 			);
 			traceresults bres=blt.results;
-console.printf(""..bres.distance);
+console.printf(getage().."   "..bres.distance);
 			if(bres.hittype==TRACE_HitNone){
 				newpos=pos+vu*distanceleft;
 				distanceleft=0;
 			}else{
 				newpos=bres.hitpos;
-				distanceleft-=max(bres.distance,0.1); //safeguard against infinite loops
+				distanceleft-=max(bres.distance,0.01); //safeguard against infinite loops
 				if(bres.hitline){
 					let hitline=bres.hitline;
 					tracelines.push(hitline);
@@ -167,10 +167,10 @@ console.printf(""..bres.distance);
 					tracesectors.push(bres.hitsector);
 				}
 			}
+			//move bullet to next position
+			setorigin(newpos,true);
 		}while(distanceleft>0);
 
-		//move bullet to next position
-		setorigin(newpos,true);
 
 
 		//destroy the linetracer just in case it interferes with savegames
