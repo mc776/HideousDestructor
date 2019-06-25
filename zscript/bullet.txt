@@ -99,7 +99,6 @@ if(level.time%17)return;
 				TRACE_ReportPortals
 			);
 			traceresults bres=blt.results;
-console.printf(getage().."   "..bres.distance);
 			if(bres.hittype==TRACE_HitNone){
 				newpos=pos+vu*distanceleft;
 				distanceleft=0;
@@ -107,7 +106,6 @@ console.printf(getage().."   "..bres.distance);
 				newpos=bres.hitpos;
 				distanceleft-=max(bres.distance,0.01); //safeguard against infinite loops
 				if(bres.hitline){
-console.printf("   "..bres.tier);
 					let hitline=bres.hitline;
 					tracelines.push(hitline);
 					//trigger all projectile pass and attack lines
@@ -115,8 +113,8 @@ console.printf("   "..bres.tier);
 						//one-sided
 						//blockall
 						//blockhitscan
-						//tier is above or below
-							//AND the floor/ceiling is not sky
+						//bres.tier (i.e. not zero)
+							//AND (if not TIER_FFloor) the floor/ceiling is not sky
 						//if not, "continue"
 					//inflict damage on destructibles
 						//GZDoom native first
