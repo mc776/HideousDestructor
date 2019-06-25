@@ -91,17 +91,18 @@ if(level.time%17)return;
 		speed=distanceleft;
 		do{
 			double cosp=cos(pitch);
+			vector3 vu=vel.unit();
 			blt.trace(
 				pos,
 				cursector,
-				vel.unit(),
+				vu,
 				distanceleft,
 				TRACE_ReportPortals
 			);
 			traceresults bres=blt.results;
 console.printf(""..bres.distance);
 			if(bres.hittype==TRACE_HitNone){
-				newpos=pos+vel;
+				newpos=pos+vu*distanceleft;
 				distanceleft=0;
 			}else{
 				newpos=bres.hitpos;
