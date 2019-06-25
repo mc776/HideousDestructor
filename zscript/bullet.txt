@@ -13,6 +13,7 @@ class HDBulletTracer:LineTracer{
 	hdbulletactor bullet;
 	actor shooter;
 	override etracestatus tracecallback(){
+	return TRACE_Skip;
 		if(!!results.hitline){
 			int skipsize=bullet.tracelines.size();
 			for(int i=0;i<skipsize;i++){
@@ -68,6 +69,7 @@ class HDBulletActor:Actor{
 	}
 	override void tick(){
 		if(isfrozen())return;
+if(level.time%17)return;
 		if(!bmissile){
 			super.tick();
 			return;
@@ -98,67 +100,72 @@ class HDBulletActor:Actor{
 			);
 			traceresults bres=blt.results;
 console.printf(""..bres.distance);
-			newpos=bres.hitpos;
-			distanceleft-=max(bres.distance,0.1); //safeguard against infinite loops
-			if(bres.hitline){
-				let hitline=bres.hitline;
-				tracelines.push(hitline);
-				//trigger all projectile pass and attack lines
-				//check if the line is even blocking the bullet
-					//one-sided
-					//blockall
-					//blockhitscan
-					//tier is above or below
-						//AND the floor/ceiling is not sky
-					//if not, "continue"
-				//inflict damage on destructibles
-					//GZDoom native first
-					//then doorbuster
-				//check if the spot immediately ahead (+dir*0.5) is a pointinmap
-					//if it is, "continue"
-				//puff
-					//flesh: bloodsplat
-					//fluids: splash
-					//anything else: puff
-				//see if the bullet penetrates:
-					//"ispointinmap" loop up to max penetration point
-					//http://www.how-i-did-it.org/drywall/ammunition.html
-						//note: according to this test, buckshot penetrated everything
-						//fast makes this penetrate LESS
-						//hardness
-						//mass
-						//tumbling
-					//check pointinmap in a loop up to max penetration point
-				//if it DOES penetrate:
-					//move to the other side
-					//check the texture immediately behind the new position
-						//puff
-						//add a bullet hole
-					//reduce penetration and streamlinedness
-				//if it does NOT penetrate:
-					//ricochet:
-						//don't ricochet on meat
-						//angle of line
-						//above plus 180, normalized
-						//pick the one closer to the bullet's own angle
-						//if impact is too steep, randomly fail to ricochet
+			if(bres.hittype==TRACE_HitNone){
+				newpos=pos+vel;
+				distanceleft=0;
+			}else{
+				newpos=bres.hitpos;
+				distanceleft-=max(bres.distance,0.1); //safeguard against infinite loops
+				if(bres.hitline){
+					let hitline=bres.hitline;
+					tracelines.push(hitline);
+					//trigger all projectile pass and attack lines
+					//check if the line is even blocking the bullet
+						//one-sided
+						//blockall
+						//blockhitscan
+						//tier is above or below
+							//AND the floor/ceiling is not sky
+						//if not, "continue"
+					//inflict damage on destructibles
+						//GZDoom native first
+						//then doorbuster
+					//check if the spot immediately ahead (+dir*0.5) is a pointinmap
+						//if it is, "continue"
+					//puff
+						//flesh: bloodsplat
+						//fluids: splash
+						//anything else: puff
+					//see if the bullet penetrates:
+						//"ispointinmap" loop up to max penetration point
+						//http://www.how-i-did-it.org/drywall/ammunition.html
+							//note: according to this test, buckshot penetrated everything
+							//fast makes this penetrate LESS
+							//hardness
+							//mass
+							//tumbling
+						//check pointinmap in a loop up to max penetration point
+					//if it DOES penetrate:
+						//move to the other side
+						//check the texture immediately behind the new position
+							//puff
+							//add a bullet hole
 						//reduce penetration and streamlinedness
-					//set death if not ricochet
-			}else if(bres.hitactor){
-				let hitactor=bres.hitactor;
-				traceactors.push(hitactor);
-				//set up the damage thinker
-				//move a little into the actor
-				//spawn blood as necessary
-				//see if the bullet ricochets
-					//just have it fly off in a random direction, we can revisit this later
-					//reduce penetration and streamlinedness
-				//if not ricochet, see if the bullet penetrates, and if it does:
-					//move to the other side of the actor
-					//spawn more blood for the exit wound
-				//destroy if not ricocheting or penetrating
-			}else if(bres.hitsector){
-				tracesectors.push(bres.hitsector);
+					//if it does NOT penetrate:
+						//ricochet:
+							//don't ricochet on meat
+							//angle of line
+							//above plus 180, normalized
+							//pick the one closer to the bullet's own angle
+							//if impact is too steep, randomly fail to ricochet
+							//reduce penetration and streamlinedness
+						//set death if not ricochet
+				}else if(bres.hitactor){
+					let hitactor=bres.hitactor;
+					traceactors.push(hitactor);
+					//set up the damage thinker
+					//move a little into the actor
+					//spawn blood as necessary
+					//see if the bullet ricochets
+						//just have it fly off in a random direction, we can revisit this later
+						//reduce penetration and streamlinedness
+					//if not ricochet, see if the bullet penetrates, and if it does:
+						//move to the other side of the actor
+						//spawn more blood for the exit wound
+					//destroy if not ricocheting or penetrating
+				}else if(bres.hitsector){
+					tracesectors.push(bres.hitsector);
+				}
 			}
 		}while(distanceleft>0);
 
