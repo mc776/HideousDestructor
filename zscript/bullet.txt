@@ -94,6 +94,13 @@ if(level.time%17)return;
 		blt.shooter=target;
 		vector3 newpos=pos;
 
+		//if in the sky
+		if(ceilingz-pos.z<vel.z){
+			setorigin(pos+vel,false);
+			vel.z--;
+			return;
+		}
+
 		//get speed, set counter
 		double distanceleft=vel.length();
 		speed=distanceleft;
@@ -109,13 +116,13 @@ if(level.time%17)return;
 			);
 			traceresults bres=blt.results;
 
-//TEST FOR NOW
+//this doesn't work
 if(bres.hittype==TRACE_HasHitSky)console.printf("AIR SHOT");
 
 			sector sectortodamage=null;
 
 			if(bres.hittype==TRACE_HitNone){
-				newpos=pos+vu*distanceleft;
+				newpos=pos+vu*speed;
 				distanceleft=0;
 			}else{
 				newpos=bres.hitpos;
