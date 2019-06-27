@@ -198,7 +198,10 @@ class HDMedikitter:HDWoundFixer{
 
 		//use on someone else
 		if(bt&BT_ALTATTACK){
-			setweaponstate("fireother");
+			if(invoker.usedpatches>HD_MEDPATCHLIMIT){
+				A_WeaponMessage("You are out of Auto-Sutures.");
+				setweaponstate("nope");
+			}else setweaponstate("fireother");
 			return;
 		}
 
