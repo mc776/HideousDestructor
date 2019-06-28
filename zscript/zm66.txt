@@ -826,10 +826,8 @@ class ZM66AssaultRifle:HDWeapon{
 				weaponstatus[ZM66S_AUTO]=clamp(firemode,0,2);
 			}
 		}
-
 		if(
-			!getloadoutvar(input,"dontchamber",1)
-			&&!(weaponstatus[0]&ZM66F_CHAMBER)
+			!(weaponstatus[0]&ZM66F_CHAMBER)
 			&&weaponstatus[ZM66S_MAG]>0
 		){
 			weaponstatus[0]|=ZM66F_CHAMBER;
