@@ -193,13 +193,15 @@ class HDRevolver:HDHandgun{
 				||thischamber==BUGS_NINEMIL
 				||thischamber==BUGS_MASTERBALLSPENT
 			){
-				actor aaa=spawn(thischamber==BUGS_NINEMIL?"HDLoose9mm":"HDSpent9mm",
+				actor aaa=spawn(
+					thischamber==BUGS_NINEMIL?"HDLoose9mm"
+						:thischamber==BUGS_MASTERBALLSPENT?"HDSpent355"
+						:"HDSpent9mm",
 					(pos.xy,pos.z+height-10)
 					+(cosp*cos(angle),cosp*sin(angle),sin(pitch))*7,
 					ALLOW_REPLACE
 				);
 				aaa.vel=vel+(frandom(-1,1),frandom(-1,1),-1);
-				if(thischamber==BUGS_MASTERBALLSPENT)aaa.scale.y=0.85;
 				invoker.weaponstatus[i]=0;
 			}
 		}
@@ -605,6 +607,7 @@ class HDBullet355:HDBullet{
 		woundhealth 4;
 	}
 }
+class HDSpent355:HDSpent9mm{default{yscale 0.85;}}
 class HDRevolverAmmo:HDPistolAmmo{
 	default{
 		xscale 0.7;

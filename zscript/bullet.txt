@@ -218,21 +218,21 @@ if(level.time%17)return;
 				//if not explode, reduce velocity
 				//"continue"
 		//"puff"
-		//virtual void puff(textureid hittex,bool reverse=false){}
-			//flesh: bloodsplat
-			//fluids: splash
-			//anything else: puff and add bullet hole
+			//virtual void puff(textureid hittex,bool reverse=false){}
+				//flesh: bloodsplat
+				//fluids: splash
+				//anything else: puff and add bullet hole
 		//see if the bullet penetrates:
-		//virtual bool checkpenetration(actor hitactor,line hitline,sector hitsector){}
-			//if penetration rating is less than zero, just say no
-			//"ispointinlevel" loop up to max penetration point (check 3d floor first)
-			//http://www.how-i-did-it.org/drywall/ammunition.html
-				//note: according to this test, buckshot penetrated everything
-				//fast makes this penetrate LESS
-				//hardness
-				//mass
-				//tumbling
-			//check pointinmap in a loop up to max penetration point
+			//virtual bool checkpenetration(actor hitactor,line hitline,sector hitsector){}
+				//if penetration rating is less than zero, just say no
+				//"ispointinlevel" loop up to max penetration point (check 3d floor first)
+				//http://www.how-i-did-it.org/drywall/ammunition.html
+					//note: according to this test, buckshot penetrated everything
+					//fast makes this penetrate LESS
+					//hardness
+					//mass
+					//tumbling
+				//check pointinmap in a loop up to max penetration point
 		//if it DOES penetrate:
 			//move to the other side
 			//check the texture immediately behind the new position
