@@ -765,13 +765,14 @@ if(hd_weapondefaults.getstring()~=="convert"){
 	void DrawInvSel(int posx,int posy,int numposx,int numposy,int flags){
 		if(CPlayer.mo.InvSel){
 			inventory ivs=cplayer.mo.invsel;
+			let ivsh=hdpickup(ivs);
+			let ivsw=hdweapon(ivs);
 			drawinventoryicon(ivs,(posx,posy),
 				flags|DI_ITEM_CENTER
 				|((
-					ivs is "HDArmour"
-					||ivs is "PortableStimpack"
-					||ivs is "PortableMedikit"
-				)?0:DI_TRANSLATABLE)
+					(ivsh&&ivsh.bdroptranslation)
+					||(ivsw&&ivsw.bdroptranslation)
+				)?DI_TRANSLATABLE:0)
 			);
 
 			let pivs=HDPickup(ivs);
@@ -811,14 +812,15 @@ if(hd_weapondefaults.getstring()~=="convert"){
 				[icon,applyscale]=geticon(item,0);
 				int xoffs=(i%5)*20;
 				bool isthis=i==thisindex;
+				let ivsh=hdpickup(item);
+				let ivsw=hdweapon(item);
 				drawtexture(icon,
 					(-18-xoffs,bigitemyofs-20*(i/5)),
 					DI_ITEM_CENTER_BOTTOM|DI_SCREEN_RIGHT_BOTTOM
 					|((
-						item is "PortableStimpack"
-						||item is "PortableMedikit"
-						||item is "HDArmour"
-					)?0:DI_TRANSLATABLE),
+						(ivsh&&ivsh.bdroptranslation)
+						||(ivsw&&ivsw.bdroptranslation)
+					)?DI_TRANSLATABLE:0),
 					alpha:isthis?1.:0.6,scale:applyscale*(isthis?1.:0.6)
 				);
 			}
@@ -838,14 +840,15 @@ if(hd_weapondefaults.getstring()~=="convert"){
 			textureid icon;vector2 applyscale;
 			[icon,applyscale]=geticon(thisitem,0);
 			int xoffs=!i?-10:10;
+			let ivsh=hdpickup(thisitem);
+			let ivsw=hdweapon(thisitem);
 			drawtexture(icon,
 				(posx+xoffs,posy-17),
 				flags|DI_ITEM_CENTER_BOTTOM
 					|((
-						thisitem is "PortableStimpack"
-						||thisitem is "PortableMedikit"
-						||thisitem is "HDArmour"
-					)?0:DI_TRANSLATABLE),
+						(ivsh&&ivsh.bdroptranslation)
+						||(ivsw&&ivsw.bdroptranslation)
+					)?DI_TRANSLATABLE:0),
 				alpha:0.6,scale:applyscale*0.6
 			);
 		}
