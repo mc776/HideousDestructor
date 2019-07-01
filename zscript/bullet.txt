@@ -142,14 +142,12 @@ if(level.time%17)return;
 						//||hitline.flags&line.ML_BLOCKPROJECTILE //let's say they go too fast for now
 						||bres.tier==TIER_FFloor //3d floor
 						||( //the tier being hit is not sky
-							bres.tier
-							&&(
-								(
-									(bres.tier==TIER_Upper)
-									&&(othersector.gettexture(othersector.ceiling)!=skyflatnum)
-								)||(
-									othersector.gettexture(othersector.floor)!=skyflatnum
-								)
+							(
+								(bres.tier==TIER_Upper)
+								&&(othersector.gettexture(othersector.ceiling)!=skyflatnum)
+							)||(
+								(bres.tier==TIER_Lower)
+								&&(othersector.gettexture(othersector.floor)!=skyflatnum)
 							)
 						)
 					);
@@ -158,6 +156,7 @@ if(level.time%17)return;
 						hitline.activate(target,bres.side,SPAC_PCross|SPAC_AnyCross);
 						continue;
 					}
+//if(othersector)othersector.movefloor(12,12,0,1,false);
 
 					//"SPAC_Impact" is so wonderfully onomatopoeic
 					//would add SPAC_Damage but it doesn't work in 4.1.3???
@@ -215,7 +214,6 @@ if(level.time%17)return;
 			int geodmg=100; //placeholder
 			if(hitline)destructible.DamageLinedef(hitline,self,geodmg,"SmallArms2",hitpart,pos,false);
 			if(hitsector){
-hitsector.movefloor(12,12,0,1,false);
 				switch(hitpart-999){
 				case TIER_Upper:
 					hitpart=SECPART_Ceiling;
