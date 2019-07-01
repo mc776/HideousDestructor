@@ -129,7 +129,9 @@ if(level.time%17)return;
 					tracelines.push(hitline);
 
 					//get the sector on the opposite side of the impact
-					sector othersector=bres.side?hitline.frontsector:hitline.backsector;
+					sector othersector;
+					if(bres.hitsector==hitline.frontsector)othersector=hitline.backsector;
+					else othersector=hitline.frontsector;
 
 					//check if the line is even blocking the bullet
 					bool isblocking=(
@@ -139,13 +141,15 @@ if(level.time%17)return;
 						||hitline.flags&line.ML_BLOCKHITSCAN
 						//||hitline.flags&line.ML_BLOCKPROJECTILE //let's say they go too fast for now
 						||bres.tier==TIER_FFloor //3d floor
-						||( //upper or lower and sky
+						||( //the tier being hit is not sky
 							bres.tier
 							&&(
 								(
 									(bres.tier==TIER_Upper)
-									&&(othersector.gettexture(othersector.ceiling)==skyflatnum)
-								)||(othersector.gettexture(othersector.floor)==skyflatnum)
+									&&(othersector.gettexture(othersector.ceiling)!=skyflatnum)
+								)||(
+									othersector.gettexture(othersector.floor)!=skyflatnum
+								)
 							)
 						)
 					);
@@ -159,10 +163,7 @@ if(level.time%17)return;
 					//would add SPAC_Damage but it doesn't work in 4.1.3???
 					hitline.activate(target,bres.side,SPAC_Impact|SPAC_Use);
 
-					//get the sector of the wall that is being hit
-					sectortodamage=othersector;
-
-					HitGeometry(hitline,sectortodamage);
+					HitGeometry(hitline,othersector,bres.side,999+bres.tier);
 				}else if(
 					bres.hittype==TRACE_HitFloor
 					||bres.hittype==TRACE_HitCeiling
@@ -180,7 +181,7 @@ if(level.time%17)return;
 						)
 					)continue;
 
-					HitGeometry(null,hitsector);
+					HitGeometry(null,hitsector,0,999+bres.tier);
 				}else if(bres.hittype==TRACE_HitActor){
 					let hitactor=bres.hitactor;
 					traceactors.push(hitactor);
@@ -208,15 +209,30 @@ if(level.time%17)return;
 		//update velocity
 		vel.z--;
 	}
-	virtual void HitGeometry(line hitline,sector hitsector){
+	virtual void HitGeometry(line hitline,sector hitsector,int hitside,int hitpart){
 		//inflict damage on destructibles
 			//GZDoom native first
-			//then doorbuster
-		//check if the spot immediately ahead (+dir*0.5) is a pointinlevel
-			//if it is:
-				//consider exploding
-				//if not explode, reduce velocity
-				//"continue"
+			int geodmg=100; //placeholder
+			if(hitline)destructible.DamageLinedef(hitline,self,geodmg,"SmallArms2",hitpart,pos,false);
+			if(hitsector){
+hitsector.movefloor(12,12,0,1,false);
+				switch(hitpart-999){
+				case TIER_Upper:
+					hitpart=SECPART_Ceiling;
+					break;
+				case TIER_Lower:
+					hitpart=SECPART_Floor;
+					break;
+				case TIER_FFloor:
+					hitpart=SECPART_3D;
+					break;
+				default:
+					if(hitpart>=999)hitpart=SECPART_Floor;
+					break;
+				}
+				destructible.DamageSector(hitsector,self,geodmg,"SmallArms2",hitpart,pos,false);
+			}
+			//then doorbuster??? --do later, maybe
 		//"puff"
 			//virtual void puff(textureid hittex,bool reverse=false){}
 				//flesh: bloodsplat
