@@ -14,4 +14,4 @@ Make sure you have keys bound for speed, crouch, reload, zoom, and user1 through
 hd_manual.txt contains the full manual.
 hd.txt contains a draft of the relevant information for any future archival in /idgames.
 
-<a rel="me" href="https://x0r.be/@carcinopithecus">Mastodon</a>
+<a rel="me" href="https://x0r.be/@carcinopithecus">click here if you enjoy floss shitposting</a>
