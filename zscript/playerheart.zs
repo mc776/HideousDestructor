@@ -296,8 +296,7 @@ extend class HDPlayerPawn{
 							while(rezz.next()){
 								actor rezzz=rezz.thing;
 								if(
-									rezzz.health<1
-									&&rezzz.findstate("raise")
+									canresurrect(rezzz,false)
 								){
 									RaiseActor(rezzz,RF_NOCHECKPOSITION);
 									rezzz.bfriendly=true;
