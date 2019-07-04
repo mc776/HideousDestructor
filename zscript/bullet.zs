@@ -280,5 +280,5 @@ if(level.time%17)return;
 
 
 
-#include "zscript/bullet_old.txt"
+#include "zscript/bullet_old.zs"
 
