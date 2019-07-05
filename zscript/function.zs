@@ -380,6 +380,11 @@ struct HDMath{
 		double l2=(newpos1-newpos2).length();
 		return l1-l2;
 	}
+	//angle between any two vec2s
+	static double angleto(vector2 v1,vector2 v2,bool absolute=false){
+		let diff=absolute?v2-v1:level.Vec2Diff(v1,v2);
+		return -atan2(diff.y,diff.x);
+	}
 	//kind of like angleto
 	static double pitchto(vector3 this,vector3 that){
 		return atan2(this.z-that.z,(this.xy-that.xy).length());

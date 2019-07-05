@@ -68,7 +68,7 @@ class TauntHandler:EventHandler{
 			ppp.A_TakeInventory("powerfrightener");
 			ppp.A_AlertMonsters();
 		}
-        }
+	}
 }
 
 //generic bleeding

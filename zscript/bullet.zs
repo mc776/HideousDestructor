@@ -107,6 +107,8 @@ if(level.time%17)return;
 		double distanceleft=vel.length();
 		speed=distanceleft;
 		do{
+			A_FaceMovementDirection();
+
 			double cosp=cos(pitch);
 			vector3 vu=vel.unit();
 			blt.trace(
