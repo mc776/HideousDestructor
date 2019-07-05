@@ -141,9 +141,9 @@ if(level.time%17)return;
 					bool isblocking=(
 						!(hitline.flags&line.ML_TWOSIDED) //one-sided
 						||hitline.flags&line.ML_BLOCKING
-						||hitline.flags&line.ML_BLOCKEVERYTHING
 						||hitline.flags&line.ML_BLOCKHITSCAN
 						//||hitline.flags&line.ML_BLOCKPROJECTILE //let's say they go too fast for now
+						//||hitline.flags&line.ML_BLOCKEVERYTHING //not the fences on the range!
 						||bres.tier==TIER_FFloor //3d floor
 						||( //the tier being hit is not sky
 							(
@@ -266,6 +266,15 @@ if(level.time%17)return;
 				//pick the one closer to the bullet's own angle
 				//if impact is too steep, randomly fail to ricochet
 				//reduce penetration and streamlinedness
+
+				if(hitline){
+					double aaa1=hdmath.angleto(hitline.v1.p,hitline.v2.p);
+					double aaa2=aaa1+180;
+					double ppp=angle;
+					double aaa=(absangle(aaa1,ppp)>absangle(aaa2,ppp))?aaa2:aaa1;
+					vel.xy=rotatevector(vel.xy,deltaangle(ppp,aaa)*frandom(1.,1.2));
+				}
+
 			//set death if not ricochet
 	}
 	virtual void HitActor(actor hitactor,out vector3 newpos){
