@@ -15,6 +15,10 @@ class HDBulletTracer:LineTracer{
 	hdbulletactor bullet;
 	actor shooter;
 	override etracestatus tracecallback(){
+		if(results.hittype==TRACE_CrossingPortal){
+			results.hittype=TRACE_HitNone;
+			return TRACE_Continue;
+		}
 		if(results.hittype==TRACE_HitActor){
 			if(results.hitactor==bullet)return TRACE_Skip;
 			int skipsize=bullet.traceactors.size();
@@ -116,7 +120,7 @@ if(level.time%17)return;
 				cursector,
 				vu,
 				distanceleft,
-				TRACE_NoSky
+				TRACE_NoSky|TRACE_ReportPortals
 			);
 			traceresults bres=blt.results;
 			sector sectortodamage=null;
@@ -281,7 +285,27 @@ if(level.time%17)return;
 						vel.z*=xyvlz/xyl;
 						vel.xy*=xyl/xyvlz;
 					}
+				}else if(
+					hitpart==SECPART_Floor
+					||hitpart==SECPART_Ceiling
+				){
+					secplane plaen=hitsector.floorplane;
+					if(hitpart==SECPART_CEILING)hitsector.ceilingplane;
+					double zdiff=plaen.zatpoint(pos.xy+vel.xy.unit())-pos.z;
+					double plaenpitch=atan2(zdiff,1.);
+					if(absangle(-pitch,plaenpitch)>90){
+						//bullet ricochets "backward"
+						pitch=plaenpitch-(zdiff>0?-frandom(0.,3.):frandom(0.,3.));
+						angle+=180;
+					}else{
+						//bullet ricochets "forward"
+						pitch=-plaenpitch+(zdiff>0?-frandom(0.,3.):frandom(0.,3.));
+					}
+					A_ChangeVelocity(cos(pitch),0,sin(-pitch),CVF_RELATIVE|CVF_REPLACE);
+					vel*=speed;
+console.printf("pp"..plaenpitch.."   v"..speed);
 				}
+
 
 			//set death if not ricochet
 	}
