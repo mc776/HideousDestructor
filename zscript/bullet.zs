@@ -16,7 +16,6 @@ class HDBulletTracer:LineTracer{
 	actor shooter;
 	override etracestatus tracecallback(){
 		if(results.hittype==TRACE_HitActor){
-return TRACE_Skip;
 			if(results.hitactor==bullet)return TRACE_Skip;
 			int skipsize=bullet.traceactors.size();
 			for(int i=0;i<skipsize;i++){
@@ -275,11 +274,12 @@ if(level.time%17)return;
 					vel.xy=rotatevector(vel.xy,deltaangle(ppp,aaa)*frandom(1.,1.2));
 
 					//transfer some of the deflection upwards or downwards
-					double vlz=vel.z*0;
+					double vlz=vel.z;
 					if(vlz){
-						double xyl=vel.xy.length();
-						vel.z*=(xyl/(xyl+vlz));
-						vel/=(xyl+vlz);
+						double xyl=vel.xy.length()*frandom(0.9,1.1);
+						double xyvlz=xyl+vlz;
+						vel.z*=xyvlz/xyl;
+						vel.xy*=xyl/xyvlz;
 					}
 				}
 
