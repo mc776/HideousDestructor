@@ -120,10 +120,14 @@ if(level.time%17)return;
 				cursector,
 				vu,
 				distanceleft,
-				TRACE_NoSky|TRACE_ReportPortals
+				//TRACE_NoSky|
+				TRACE_ReportPortals
 			);
 			traceresults bres=blt.results;
 			sector sectortodamage=null;
+
+//WHAT THE FUCK
+if(bres.hittype==TRACE_Hitceiling)A_Log("A");
 
 			if(bres.hittype==TRACE_HitNone){
 				newpos=pos+vu*(bres.distance);
@@ -187,7 +191,7 @@ if(level.time%17)return;
 						)
 					)continue;
 
-					HitGeometry(null,hitsector,0,999+bres.tier);
+					HitGeometry(null,hitsector,0,bres.hittype==TRACE_HitCeiling?SECPART_Ceiling:SECPART_Floor);
 				}else if(bres.hittype==TRACE_HitActor){
 					let hitactor=bres.hitactor;
 					traceactors.push(hitactor);
@@ -291,15 +295,15 @@ if(level.time%17)return;
 				){
 					secplane plaen=hitsector.floorplane;
 					if(hitpart==SECPART_CEILING)hitsector.ceilingplane;
-					double zdiff=plaen.zatpoint(pos.xy+vel.xy.unit())-pos.z;
+					double zdiff=plaen.zatpoint(pos.xy+vel.xy.unit())-plaen.zatpoint(pos.xy);
 					double plaenpitch=atan2(zdiff,1.);
 					if(absangle(-pitch,plaenpitch)>90){
 						//bullet ricochets "backward"
-						pitch=plaenpitch-(zdiff>0?-frandom(0.,3.):frandom(0.,3.));
+						pitch=plaenpitch-(zdiff<0?frandom(0.,3.):-frandom(0.,3.));
 						angle+=180;
 					}else{
 						//bullet ricochets "forward"
-						pitch=-plaenpitch+(zdiff>0?-frandom(0.,3.):frandom(0.,3.));
+						pitch=-plaenpitch+(zdiff<0?frandom(0.,3.):-frandom(0.,3.));
 					}
 					A_ChangeVelocity(cos(pitch),0,sin(-pitch),CVF_RELATIVE|CVF_REPLACE);
 					vel*=speed;
