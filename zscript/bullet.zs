@@ -15,16 +15,17 @@ class HDBulletTracer:LineTracer{
 	hdbulletactor bullet;
 	actor shooter;
 	override etracestatus tracecallback(){
-		if(results.hittype==TRACE_HitWall){
-			int skipsize=bullet.tracelines.size();
-			for(int i=0;i<skipsize;i++){
-				if(bullet.tracelines[i]==results.hitline)return TRACE_Skip;
-			}
-		}else if(results.hittype==TRACE_HitActor){
+		if(results.hittype==TRACE_HitActor){
+return TRACE_Skip;
 			if(results.hitactor==bullet)return TRACE_Skip;
 			int skipsize=bullet.traceactors.size();
 			for(int i=0;i<skipsize;i++){
 				if(bullet.traceactors[i]==results.hitactor)return TRACE_Skip;
+			}
+		}else if(results.hittype==TRACE_HitWall){
+			int skipsize=bullet.tracelines.size();
+			for(int i=0;i<skipsize;i++){
+				if(bullet.tracelines[i]==results.hitline)return TRACE_Skip;
 			}
 		}else if(
 			results.hittype==TRACE_HitFloor
@@ -116,17 +117,18 @@ if(level.time%17)return;
 				cursector,
 				vu,
 				distanceleft,
-				0//TRACE_ReportPortals
+				TRACE_NoSky
 			);
 			traceresults bres=blt.results;
-
 			sector sectortodamage=null;
 
 			if(bres.hittype==TRACE_HitNone){
-				newpos=pos+vu*speed;
-				distanceleft=0;
+				newpos=pos+vu*(bres.distance);
+				setorigin(newpos,true);
+				distanceleft-=max(bres.distance,0.01); //safeguard against infinite loops
 			}else{
-				newpos=bres.hitpos;
+				newpos=pos+vu*(bres.distance-0.1);
+				setorigin(newpos,true);
 				distanceleft-=max(bres.distance,0.01); //safeguard against infinite loops
 				if(bres.hittype==TRACE_HitWall){
 					let hitline=bres.hitline;
@@ -158,14 +160,13 @@ if(level.time%17)return;
 					//if not blocking, pass through and continue
 					if(!isblocking){
 						hitline.activate(target,bres.side,SPAC_PCross|SPAC_AnyCross);
-						continue;
+						setorigin(newpos+vu*0.2,true);
+					}else{
+						//"SPAC_Impact" is so wonderfully onomatopoeic
+						//would add SPAC_Damage but it doesn't work in 4.1.3???
+						hitline.activate(target,bres.side,SPAC_Impact|SPAC_Use);
+						HitGeometry(hitline,othersector,bres.side,999+bres.tier);
 					}
-
-					//"SPAC_Impact" is so wonderfully onomatopoeic
-					//would add SPAC_Damage but it doesn't work in 4.1.3???
-					hitline.activate(target,bres.side,SPAC_Impact|SPAC_Use);
-
-					HitGeometry(hitline,othersector,bres.side,999+bres.tier);
 				}else if(
 					bres.hittype==TRACE_HitFloor
 					||bres.hittype==TRACE_HitCeiling
@@ -199,8 +200,6 @@ if(level.time%17)return;
 					//destroy if not ricocheting or penetrating
 				}
 			}
-			//move bullet to next position
-			setorigin(newpos,true);
 		}while(distanceleft>0);
 
 
@@ -268,11 +267,20 @@ if(level.time%17)return;
 				//reduce penetration and streamlinedness
 
 				if(hitline){
+					//deflect along the line
 					double aaa1=hdmath.angleto(hitline.v1.p,hitline.v2.p);
 					double aaa2=aaa1+180;
 					double ppp=angle;
 					double aaa=(absangle(aaa1,ppp)>absangle(aaa2,ppp))?aaa2:aaa1;
 					vel.xy=rotatevector(vel.xy,deltaangle(ppp,aaa)*frandom(1.,1.2));
+
+					//transfer some of the deflection upwards or downwards
+					double vlz=vel.z*0;
+					if(vlz){
+						double xyl=vel.xy.length();
+						vel.z*=(xyl/(xyl+vlz));
+						vel/=(xyl+vlz);
+					}
 				}
 
 			//set death if not ricochet
