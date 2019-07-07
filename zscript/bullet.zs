@@ -24,7 +24,10 @@ class HDBulletTracer:LineTracer{
 				if(bullet.tracesectors[i]==results.hitsector)return TRACE_Skip;
 			}
 		}else if(results.hittype==TRACE_HitActor){
-			if(results.hitactor==bullet)return TRACE_Skip;
+			if(
+				results.hitactor==bullet
+				||results.hitactor==shooter
+			)return TRACE_Skip;
 			int skipsize=bullet.traceactors.size();
 			for(int i=0;i<skipsize;i++){
 				if(bullet.traceactors[i]==results.hitactor)return TRACE_Skip;
@@ -97,7 +100,10 @@ if(level.time%17)return;
 		vector3 newpos=pos;
 
 		//if in the sky
-		if(ceilingz-pos.z<vel.z){
+		if(
+			ceilingz<pos.z
+			&&ceilingz-pos.z<vel.z
+		){
 			setorigin(pos+vel,false);
 			vel.z--;
 			return;
@@ -120,6 +126,10 @@ if(level.time%17)return;
 			);
 			traceresults bres=blt.results;
 			sector sectortodamage=null;
+
+console.printf(blt.results.hittype.."  F"..TRACE_HitFloor.."  C"..TRACE_HitCeiling.."  A"..TRACE_HitActor.."  W"..TRACE_HitWall);
+spawn("BulletPuff",bres.hitpos);
+
 
 			if(bres.hittype==TRACE_HitNone){
 				newpos=bres.hitpos;
