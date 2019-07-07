@@ -15,11 +15,15 @@ class HDBulletTracer:LineTracer{
 	hdbulletactor bullet;
 	actor shooter;
 	override etracestatus tracecallback(){
-		if(results.hittype==TRACE_CrossingPortal){
-			results.hittype=TRACE_HitNone;
-			return TRACE_Continue;
-		}
-		if(results.hittype==TRACE_HitActor){
+		if(
+			results.hittype==TRACE_HitFloor
+			||results.hittype==TRACE_HitCeiling
+		){
+			int skipsize=bullet.tracesectors.size();
+			for(int i=0;i<skipsize;i++){
+				if(bullet.tracesectors[i]==results.hitsector)return TRACE_Skip;
+			}
+		}else if(results.hittype==TRACE_HitActor){
 			if(results.hitactor==bullet)return TRACE_Skip;
 			int skipsize=bullet.traceactors.size();
 			for(int i=0;i<skipsize;i++){
@@ -29,14 +33,6 @@ class HDBulletTracer:LineTracer{
 			int skipsize=bullet.tracelines.size();
 			for(int i=0;i<skipsize;i++){
 				if(bullet.tracelines[i]==results.hitline)return TRACE_Skip;
-			}
-		}else if(
-			results.hittype==TRACE_HitFloor
-			||results.hittype==TRACE_HitCeiling
-		){
-			int skipsize=bullet.tracesectors.size();
-			for(int i=0;i<skipsize;i++){
-				if(bullet.tracesectors[i]==results.hitsector)return TRACE_Skip;
 			}
 		}
 		return TRACE_Stop;
@@ -120,21 +116,17 @@ if(level.time%17)return;
 				cursector,
 				vu,
 				distanceleft,
-				//TRACE_NoSky|
-				TRACE_ReportPortals
+				TRACE_NoSky
 			);
 			traceresults bres=blt.results;
 			sector sectortodamage=null;
 
-//WHAT THE FUCK
-if(bres.hittype==TRACE_Hitceiling)A_Log("A");
-
 			if(bres.hittype==TRACE_HitNone){
-				newpos=pos+vu*(bres.distance);
+				newpos=bres.hitpos;
 				setorigin(newpos,true);
 				distanceleft-=max(bres.distance,0.01); //safeguard against infinite loops
 			}else{
-				newpos=pos+vu*(bres.distance-0.1);
+				newpos=bres.hitpos-vu*0.1;
 				setorigin(newpos,true);
 				distanceleft-=max(bres.distance,0.01); //safeguard against infinite loops
 				if(bres.hittype==TRACE_HitWall){
@@ -178,6 +170,7 @@ if(bres.hittype==TRACE_Hitceiling)A_Log("A");
 					bres.hittype==TRACE_HitFloor
 					||bres.hittype==TRACE_HitCeiling
 				){
+console.printf("FC "..bres.hittype);
 					sector hitsector=bres.hitsector;
 					tracesectors.push(hitsector);
 
@@ -297,13 +290,17 @@ if(bres.hittype==TRACE_Hitceiling)A_Log("A");
 					if(hitpart==SECPART_CEILING)hitsector.ceilingplane;
 					double zdiff=plaen.zatpoint(pos.xy+vel.xy.unit())-plaen.zatpoint(pos.xy);
 					double plaenpitch=atan2(zdiff,1.);
+
+					if(hitpart==SECPART_FLOOR)plaenpitch+=frandom(0.,10.);
+					else plaenpitch-=frandom(0.,10.);
+
 					if(absangle(-pitch,plaenpitch)>90){
 						//bullet ricochets "backward"
-						pitch=plaenpitch-(zdiff<0?frandom(0.,3.):-frandom(0.,3.));
+						pitch=plaenpitch;
 						angle+=180;
 					}else{
 						//bullet ricochets "forward"
-						pitch=-plaenpitch+(zdiff<0?frandom(0.,3.):-frandom(0.,3.));
+						pitch=-plaenpitch;
 					}
 					A_ChangeVelocity(cos(pitch),0,sin(-pitch),CVF_RELATIVE|CVF_REPLACE);
 					vel*=speed;
