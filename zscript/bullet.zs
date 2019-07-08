@@ -52,7 +52,7 @@ class HDBulletActor:Actor{
 	flagdef neverricochet:hdbulletflags,0;
 
 	default{
-		+noblockmap
+		+solid //+noblockmap
 		+missile
 		height 0.1;radius 0.1;
 		hdbulletactor.penetration 0;
@@ -127,10 +127,6 @@ if(level.time%17)return;
 			traceresults bres=blt.results;
 			sector sectortodamage=null;
 
-console.printf(blt.results.hittype.."  F"..TRACE_HitFloor.."  C"..TRACE_HitCeiling.."  A"..TRACE_HitActor.."  W"..TRACE_HitWall);
-spawn("BulletPuff",bres.hitpos);
-
-
 			if(bres.hittype==TRACE_HitNone){
 				newpos=bres.hitpos;
 				setorigin(newpos,true);
@@ -155,8 +151,8 @@ spawn("BulletPuff",bres.hitpos);
 						||hitline.flags&line.ML_BLOCKHITSCAN
 						//||hitline.flags&line.ML_BLOCKPROJECTILE //let's say they go too fast for now
 						//||hitline.flags&line.ML_BLOCKEVERYTHING //not the fences on the range!
-						||bres.tier==TIER_FFloor //3d floor
-						||( //the tier being hit is not sky
+						//||bres.tier==TIER_FFloor //3d floor - does not work as of 4.1.3
+						||( //upper or lower tier, not sky
 							(
 								(bres.tier==TIER_Upper)
 								&&(othersector.gettexture(othersector.ceiling)!=skyflatnum)
@@ -165,6 +161,7 @@ spawn("BulletPuff",bres.hitpos);
 								&&(othersector.gettexture(othersector.floor)!=skyflatnum)
 							)
 						)
+						||!checkmove(bres.hitpos.xy+vu.xy*0.4) //if in any event it won't fit
 					);
 					//if not blocking, pass through and continue
 					if(!isblocking){
@@ -180,7 +177,6 @@ spawn("BulletPuff",bres.hitpos);
 					bres.hittype==TRACE_HitFloor
 					||bres.hittype==TRACE_HitCeiling
 				){
-console.printf("FC "..bres.hittype);
 					sector hitsector=bres.hitsector;
 					tracesectors.push(hitsector);
 
@@ -296,31 +292,33 @@ console.printf("FC "..bres.hittype);
 					hitpart==SECPART_Floor
 					||hitpart==SECPART_Ceiling
 				){
-					secplane plaen=hitsector.floorplane;
-					if(hitpart==SECPART_CEILING)hitsector.ceilingplane;
-					double zdiff=plaen.zatpoint(pos.xy+vel.xy.unit())-plaen.zatpoint(pos.xy);
-					double plaenpitch=atan2(zdiff,1.);
+					bool isceiling=hitpart==SECPART_CEILING;
+					double planepitch=0;
 
-					if(hitpart==SECPART_FLOOR)plaenpitch+=frandom(0.,10.);
-					else plaenpitch-=frandom(0.,10.);
+					double zdif;
+					if(checkmove(pos.xy+vel.xy.unit()*0.5))zdif=getzat(0.5,flags:isceiling?GZF_CEILING:0)-pos.z;
+					else zdif=pos.z-getzat(-0.5,flags:isceiling?GZF_CEILING:0);
+					if(zdif)planepitch=atan2(zdif,0.5);
 
-					if(absangle(-pitch,plaenpitch)>90){
+					if(isceiling)planepitch-=frandom(0.,10.);
+					else planepitch+=frandom(0.,10.);
+
+					if(absangle(-pitch,planepitch)>90){
 						//bullet ricochets "backward"
-						pitch=plaenpitch;
+						pitch=planepitch;
 						angle+=180;
 					}else{
 						//bullet ricochets "forward"
-						pitch=-plaenpitch;
+						pitch=-planepitch;
 					}
 					A_ChangeVelocity(cos(pitch),0,sin(-pitch),CVF_RELATIVE|CVF_REPLACE);
 					vel*=speed;
-console.printf("pp"..plaenpitch.."   v"..speed);
 				}
 
 
 			//set death if not ricochet
 	}
-	virtual void HitActor(actor hitactor,out vector3 newpos){
+	virtual void HitActor(actor hitactor){
 	}
 }
 
