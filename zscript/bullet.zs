@@ -26,7 +26,7 @@ class HDBulletTracer:LineTracer{
 		}else if(results.hittype==TRACE_HitActor){
 			if(
 				results.hitactor==bullet
-				||results.hitactor==shooter
+				||(results.hitactor==shooter&&bullet.getage()<2)
 			)return TRACE_Skip;
 			int skipsize=bullet.traceactors.size();
 			for(int i=0;i<skipsize;i++){
@@ -82,7 +82,7 @@ class HDBulletActor:Actor{
 	}
 	override void tick(){
 		if(isfrozen())return;
-if(level.time%17)return;
+if(getage()%17)return;
 		if(!bmissile){
 			super.tick();
 			return;
@@ -194,6 +194,7 @@ if(level.time%17)return;
 				}else if(bres.hittype==TRACE_HitActor){
 					let hitactor=bres.hitactor;
 					traceactors.push(hitactor);
+console.printf(hitactor.getclassname());
 					//set up the damage thinker
 					//move a little into the actor
 					//spawn blood as necessary
@@ -220,32 +221,90 @@ if(level.time%17)return;
 	//add 999 to "hitpart" to use the tier # instead
 	virtual void HitGeometry(line hitline,sector hitsector,int hitside,int hitpart){
 		//inflict damage on destructibles
-			//GZDoom native first
-			int geodmg=100; //placeholder
-			if(hitline)destructible.DamageLinedef(hitline,self,geodmg,"SmallArms2",hitpart,pos,false);
-			if(hitsector){
-				switch(hitpart-999){
-				case TIER_Upper:
-					hitpart=SECPART_Ceiling;
-					break;
-				case TIER_Lower:
-					hitpart=SECPART_Floor;
-					break;
-				case TIER_FFloor:
-					hitpart=SECPART_3D;
-					break;
-				default:
-					if(hitpart>=999)hitpart=SECPART_Floor;
-					break;
-				}
-				destructible.DamageSector(hitsector,self,geodmg,"SmallArms2",hitpart,pos,false);
+		//GZDoom native first
+		int geodmg=100; //placeholder
+		if(hitline)destructible.DamageLinedef(hitline,self,geodmg,"SmallArms2",hitpart,pos,false);
+		if(hitsector){
+			switch(hitpart-999){
+			case TIER_Upper:
+				hitpart=SECPART_Ceiling;
+				break;
+			case TIER_Lower:
+				hitpart=SECPART_Floor;
+				break;
+			case TIER_FFloor:
+				hitpart=SECPART_3D;
+				break;
+			default:
+				if(hitpart>=999)hitpart=SECPART_Floor;
+				break;
 			}
-			//then doorbuster??? --do later, maybe
+			destructible.DamageSector(hitsector,self,geodmg,"SmallArms2",hitpart,pos,false);
+		}
+		//then doorbuster??? --do later, maybe
+
 		//"puff"
 			//virtual void puff(textureid hittex,bool reverse=false){}
 				//flesh: bloodsplat
 				//fluids: splash
 				//anything else: puff and add bullet hole
+
+		//see if the bullet ricochets
+			//don't ricochet on meat
+			//require much shallower angle for liquids
+
+			//if impact is too steep, randomly fail to ricochet
+			//reduce penetration and streamlinedness
+
+		if(hitline){
+			//angle of line
+			//above plus 180, normalized
+			//pick the one closer to the bullet's own angle
+
+			//deflect along the line
+			double aaa1=hdmath.angleto(hitline.v1.p,hitline.v2.p);
+			double aaa2=aaa1+180;
+			double ppp=angle;
+			double aaa=(absangle(aaa1,ppp)>absangle(aaa2,ppp))?aaa2:aaa1;
+			vel.xy=rotatevector(vel.xy,deltaangle(ppp,aaa)*frandom(1.,1.2));
+
+			//transfer some of the deflection upwards or downwards
+			double vlz=vel.z;
+			if(vlz){
+				double xyl=vel.xy.length()*frandom(0.9,1.1);
+				double xyvlz=xyl+vlz;
+				vel.z*=xyvlz/xyl;
+				vel.xy*=xyl/xyvlz;
+			}
+		}else if(
+			hitpart==SECPART_Floor
+			||hitpart==SECPART_Ceiling
+		){
+			bool isceiling=hitpart==SECPART_CEILING;
+			double planepitch=0;
+
+			//get the relative pitch of the surface
+			double zdif;
+			if(checkmove(pos.xy+vel.xy.unit()*0.5))zdif=getzat(0.5,flags:isceiling?GZF_CEILING:0)-pos.z;
+			else zdif=pos.z-getzat(-0.5,flags:isceiling?GZF_CEILING:0);
+			if(zdif)planepitch=atan2(zdif,0.5);
+
+			if(isceiling)planepitch-=frandom(0.,10.);
+			else planepitch+=frandom(0.,10.);
+
+			//at certain angles the ricochet should reverse xy direction
+			if(absangle(-pitch,planepitch)>90){
+				//bullet ricochets "backward"
+				pitch=planepitch;
+				angle+=180;
+			}else{
+				//bullet ricochets "forward"
+				pitch=-planepitch;
+			}
+			A_ChangeVelocity(cos(pitch),0,sin(-pitch),CVF_RELATIVE|CVF_REPLACE);
+			vel*=speed;
+		}
+
 		//see if the bullet penetrates:
 			//virtual bool checkpenetration(actor hitactor,line hitline,sector hitsector){}
 				//if penetration rating is less than zero, just say no
@@ -263,69 +322,11 @@ if(level.time%17)return;
 				//"puff"
 				//add a bullet hole
 			//reduce penetration and streamlinedness
-		//if it does NOT penetrate:
-			//ricochet:
-				//don't ricochet on meat
-				//angle of line
-				//above plus 180, normalized
-				//pick the one closer to the bullet's own angle
-				//if impact is too steep, randomly fail to ricochet
-				//reduce penetration and streamlinedness
-
-				if(hitline){
-					//deflect along the line
-					double aaa1=hdmath.angleto(hitline.v1.p,hitline.v2.p);
-					double aaa2=aaa1+180;
-					double ppp=angle;
-					double aaa=(absangle(aaa1,ppp)>absangle(aaa2,ppp))?aaa2:aaa1;
-					vel.xy=rotatevector(vel.xy,deltaangle(ppp,aaa)*frandom(1.,1.2));
-
-					//transfer some of the deflection upwards or downwards
-					double vlz=vel.z;
-					if(vlz){
-						double xyl=vel.xy.length()*frandom(0.9,1.1);
-						double xyvlz=xyl+vlz;
-						vel.z*=xyvlz/xyl;
-						vel.xy*=xyl/xyvlz;
-					}
-				}else if(
-					hitpart==SECPART_Floor
-					||hitpart==SECPART_Ceiling
-				){
-					bool isceiling=hitpart==SECPART_CEILING;
-					double planepitch=0;
-
-					double zdif;
-					if(checkmove(pos.xy+vel.xy.unit()*0.5))zdif=getzat(0.5,flags:isceiling?GZF_CEILING:0)-pos.z;
-					else zdif=pos.z-getzat(-0.5,flags:isceiling?GZF_CEILING:0);
-					if(zdif)planepitch=atan2(zdif,0.5);
-
-					if(isceiling)planepitch-=frandom(0.,10.);
-					else planepitch+=frandom(0.,10.);
-
-					if(absangle(-pitch,planepitch)>90){
-						//bullet ricochets "backward"
-						pitch=planepitch;
-						angle+=180;
-					}else{
-						//bullet ricochets "forward"
-						pitch=-planepitch;
-					}
-					A_ChangeVelocity(cos(pitch),0,sin(-pitch),CVF_RELATIVE|CVF_REPLACE);
-					vel*=speed;
-				}
-
-
-			//set death if not ricochet
+		//set death if not penetrate
 	}
 	virtual void HitActor(actor hitactor){
 	}
 }
-
-
-
-
-
 
 
 
