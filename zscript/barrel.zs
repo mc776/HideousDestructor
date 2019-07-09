@@ -204,7 +204,7 @@ class HDBarrelLight:PointLight{
 		args[4]=0;
 	}
 	override void tick(){
-		if(!target||target.health<1)destroy();
+		if(!target||target.health<1){destroy();return;}
 		setorigin((target.pos.xy,target.pos.z+36),true);
 		args[3]=random(20,26);
 	}
