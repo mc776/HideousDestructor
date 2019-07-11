@@ -287,11 +287,9 @@ class PortableBerserkPack:hdinjectormaker{
 		//$Title "Berserk"
 		//$Sprite "PSTRA0"
 
-		inventory.amount 4;
 		inventory.pickupmessage "Picked up a berserk pack.";
 		inventory.icon "PPSTA0";
 		scale 0.3;
-		hdpickup.maxunitamount 4;
 		hdpickup.bulk ENC_STIMPACK;
 		hdpickup.nicename "Berserk Pack";
 		hdpickup.refid HDLD_BERSERK;

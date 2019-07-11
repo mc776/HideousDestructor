@@ -17,6 +17,7 @@ class SecondBlood:HDWeapon{
 		inventory.icon "PBLDA0";
 		hdweapon.nicename "Synthetic Blood";
 		hdweapon.refid HDLD_BLODPAK;
+		inventory.pickupsound "weapons/pocket";
 		species "HealingItem";
 	}
 	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
