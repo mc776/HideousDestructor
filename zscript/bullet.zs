@@ -254,8 +254,10 @@ console.printf(hitactor.getclassname());
 			//don't ricochet on meat
 			//require much shallower angle for liquids
 
-			//if impact is too steep, randomly fail to ricochet
 			//reduce penetration and streamlinedness
+
+		//if impact is too steep, randomly fail to ricochet
+		double maxricangle=frandom(50,90);
 
 		if(hitline){
 			//angle of line
@@ -271,16 +273,19 @@ console.printf(hitactor.getclassname());
 			double abs2=absangle(aaa2,ppp);
 			double hitangle=min(abs1,abs2);
 
-			double aaa=(abs1>abs2)?aaa2:aaa1;
-			vel.xy=rotatevector(vel.xy,deltaangle(ppp,aaa)*frandom(1.,1.2));
+			if(hitangle<maxricangle){
+				didricochet=true;
+				double aaa=(abs1>abs2)?aaa2:aaa1;
+				vel.xy=rotatevector(vel.xy,deltaangle(ppp,aaa)*frandom(1.,1.2));
 
-			//transfer some of the deflection upwards or downwards
-			double vlz=vel.z;
-			if(vlz){
-				double xyl=vel.xy.length()*frandom(0.9,1.1);
-				double xyvlz=xyl+vlz;
-				vel.z*=xyvlz/xyl;
-				vel.xy*=xyl/xyvlz;
+				//transfer some of the deflection upwards or downwards
+				double vlz=vel.z;
+				if(vlz){
+					double xyl=vel.xy.length()*frandom(0.9,1.1);
+					double xyvlz=xyl+vlz;
+					vel.z*=xyvlz/xyl;
+					vel.xy*=xyl/xyvlz;
+				}
 			}
 		}else if(
 			hitpart==SECPART_Floor
@@ -301,17 +306,20 @@ console.printf(hitactor.getclassname());
 			double hitangle=absangle(-pitch,planepitch);
 			if(hitangle>90)hitangle=180-hitangle;
 
-			//at certain angles the ricochet should reverse xy direction
-			if(hitangle>90){
-				//bullet ricochets "backward"
-				pitch=planepitch;
-				angle+=180;
-			}else{
-				//bullet ricochets "forward"
-				pitch=-planepitch;
+			if(hitangle<maxricangle){
+				didricochet=true;
+				//at certain angles the ricochet should reverse xy direction
+				if(hitangle>90){
+					//bullet ricochets "backward"
+					pitch=planepitch;
+					angle+=180;
+				}else{
+					//bullet ricochets "forward"
+					pitch=-planepitch;
+				}
+				A_ChangeVelocity(cos(pitch),0,sin(-pitch),CVF_RELATIVE|CVF_REPLACE);
+				vel*=speed;
 			}
-			A_ChangeVelocity(cos(pitch),0,sin(-pitch),CVF_RELATIVE|CVF_REPLACE);
-			vel*=speed;
 		}
 
 		//see if the bullet penetrates:
