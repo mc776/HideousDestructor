@@ -250,6 +250,7 @@ console.printf(hitactor.getclassname());
 				//anything else: puff and add bullet hole
 
 		//see if the bullet ricochets
+		bool didricochet=false;
 			//don't ricochet on meat
 			//require much shallower angle for liquids
 
@@ -265,7 +266,12 @@ console.printf(hitactor.getclassname());
 			double aaa1=hdmath.angleto(hitline.v1.p,hitline.v2.p);
 			double aaa2=aaa1+180;
 			double ppp=angle;
-			double aaa=(absangle(aaa1,ppp)>absangle(aaa2,ppp))?aaa2:aaa1;
+
+			double abs1=absangle(aaa1,ppp);
+			double abs2=absangle(aaa2,ppp);
+			double hitangle=min(abs1,abs2);
+
+			double aaa=(abs1>abs2)?aaa2:aaa1;
 			vel.xy=rotatevector(vel.xy,deltaangle(ppp,aaa)*frandom(1.,1.2));
 
 			//transfer some of the deflection upwards or downwards
@@ -292,8 +298,11 @@ console.printf(hitactor.getclassname());
 			if(isceiling)planepitch-=frandom(0.,10.);
 			else planepitch+=frandom(0.,10.);
 
+			double hitangle=absangle(-pitch,planepitch);
+			if(hitangle>90)hitangle=180-hitangle;
+
 			//at certain angles the ricochet should reverse xy direction
-			if(absangle(-pitch,planepitch)>90){
+			if(hitangle>90){
 				//bullet ricochets "backward"
 				pitch=planepitch;
 				angle+=180;
