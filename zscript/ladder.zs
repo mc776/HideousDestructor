@@ -31,7 +31,7 @@ class hdladdertop:hdactor{
 	}
 	states{
 	spawn:
-		LADD A 1 nodelay{setz(floorz+4);}
+		LADD A 1 nodelay{setz(getzat()+4);}
 		wait;
 	}
 	override void postbeginplay(){
