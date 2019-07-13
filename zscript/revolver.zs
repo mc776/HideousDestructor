@@ -410,8 +410,7 @@ class HDRevolver:HDHandgun{
 		#### A 0 A_JumpIf(invoker.weaponstatus[0]&BUGF_COCKED,"hammertime");
 		#### B 1 offset(0,34);
 		#### C 2 offset(0,36) A_RotateCylinder();
-		#### A 0 offset(0,32) A_Refire("hammertime");
-		goto cocked;
+		#### A 0 offset(0,32);
 	hammertime:
 		#### A 0 A_ClearRefire();
 		#### A 1 A_FireRevolver();
