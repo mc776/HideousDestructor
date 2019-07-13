@@ -377,7 +377,7 @@ struct HDMobAI play{
 		double oldang=caller.angle;
 		if(!caller.target){
 			caller.A_ClearTarget();
-			if(curstate==resolvestate("see")){
+			if(caller.curstate==caller.resolvestate("see")){
 				if(caller.findstate("idle"))caller.setstatelabel("idle");
 				else caller.setstatelabel("spawn");
 			}

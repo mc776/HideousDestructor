@@ -77,7 +77,7 @@ class HDBulletActor:Actor{
 		BLET A -1 A_SetScale(0.3);
 		stop;
 	death:
-		TNT1 A 0;
+		TNT1 A 1;
 		stop;
 	}
 	override void tick(){
@@ -171,7 +171,7 @@ if(getage()%17)return;
 						//"SPAC_Impact" is so wonderfully onomatopoeic
 						//would add SPAC_Damage but it doesn't work in 4.1.3???
 						hitline.activate(target,bres.side,SPAC_Impact|SPAC_Use);
-						HitGeometry(hitline,othersector,bres.side,999+bres.tier);
+						HitGeometry(hitline,othersector,bres.side,999+bres.tier,vu);
 					}
 				}else if(
 					bres.hittype==TRACE_HitFloor
@@ -190,7 +190,7 @@ if(getage()%17)return;
 						)
 					)continue;
 
-					HitGeometry(null,hitsector,0,bres.hittype==TRACE_HitCeiling?SECPART_Ceiling:SECPART_Floor);
+					HitGeometry(null,hitsector,0,bres.hittype==TRACE_HitCeiling?SECPART_Ceiling:SECPART_Floor,vu);
 				}else if(bres.hittype==TRACE_HitActor){
 					let hitactor=bres.hitactor;
 					traceactors.push(hitactor);
@@ -219,7 +219,7 @@ console.printf(hitactor.getclassname());
 	}
 	//when a bullet hits a flat or wall
 	//add 999 to "hitpart" to use the tier # instead
-	virtual void HitGeometry(line hitline,sector hitsector,int hitside,int hitpart){
+	virtual void HitGeometry(line hitline,sector hitsector,int hitside,int hitpart,vector3 vu){
 		//inflict damage on destructibles
 		//GZDoom native first
 		int geodmg=100; //placeholder
@@ -243,11 +243,7 @@ console.printf(hitactor.getclassname());
 		}
 		//then doorbuster??? --do later, maybe
 
-		//"puff"
-			//virtual void puff(textureid hittex,bool reverse=false){}
-				//flesh: bloodsplat
-				//fluids: splash
-				//anything else: puff and add bullet hole
+		puff();
 
 		//see if the bullet ricochets
 		bool didricochet=false;
@@ -332,16 +328,58 @@ console.printf(hitactor.getclassname());
 					//hardness
 					//mass
 					//tumbling
-				//check pointinmap in a loop up to max penetration point
-		//if it DOES penetrate:
-			//move to the other side
-			//check the texture immediately behind the new position
-				//"puff"
-				//add a bullet hole
-			//reduce penetration and streamlinedness
-		//set death if not penetrate
+		if(!didricochet){
+			//twist it "inwards" a little to make it more perpendicular to the hitline
+				//on line, add (hitangle-90)*frandom(0.1,1.)
+				//on flat, uhhhhh
+			double pendistance=17.;
+			//calculate the penetration distance
+			//if that point is in the map:
+			vector3 pendest=pos+vu*pendistance;
+			if(level.
+				ispointinlevel(pendest)
+			){
+				//warp forwards to that distance
+				setorigin(pendest,true);
+
+				//do a REGULAR ACTOR linetrace
+				angle-=180;pitch=-pitch;
+				flinetracedata penlt;
+				LineTrace(
+					angle,
+					pendistance+1,
+					pitch,
+					flags:0,
+					data:penlt
+				);
+
+				//move to emergence point and spray a decal
+				setorigin(penlt.hitlocation+vu*0.1,false);
+				puff();
+				angle+=180;pitch=-pitch;
+
+				if(penlt.hittype==TRACE_HitActor){
+					//if it hits an actor, affect that actor
+				}
+				//reduce momentum, increase tumbling, etc.
+			}else{
+				puff();
+				setstatelabel("death");
+				return;
+			}
+		}
 	}
 	virtual void HitActor(actor hitactor){
+	}
+	virtual actor Puff(){
+		//TODO: virtual actor puff(textureid hittex,bool reverse=false){}
+			//flesh: bloodsplat
+			//fluids: splash
+			//anything else: puff and add bullet hole
+		A_SprayDecal(penetration>4?"BulletChip":"BulletChipSmall",10);
+		let aaa=spawn("FragPuff",pos,ALLOW_REPLACE);
+		aaa.pitch=pitch;aaa.angle=angle;
+		return aaa;
 	}
 }
 
