@@ -122,12 +122,16 @@ if(getage()%17)return;
 				cursector,
 				vu,
 				distanceleft,
-				TRACE_NoSky
+				TRACE_HitSky
 			);
 			traceresults bres=blt.results;
 			sector sectortodamage=null;
 
-			if(bres.hittype==TRACE_HitNone){
+			if(bres.hittype==TRACE_HasHitSky){
+				setorigin(pos+vel,false);
+				vel.z--;
+				return;
+			}else if(bres.hittype==TRACE_HitNone){
 				newpos=bres.hitpos;
 				setorigin(newpos,true);
 				distanceleft-=max(bres.distance,0.01); //safeguard against infinite loops
@@ -244,6 +248,7 @@ console.printf(hitactor.getclassname());
 		//then doorbuster??? --do later, maybe
 
 		puff();
+		A_SprayDecal(speed>400?"BulletChip":"BulletChipSmall",10);
 
 		//see if the bullet ricochets
 		bool didricochet=false;
@@ -356,6 +361,7 @@ console.printf(hitactor.getclassname());
 				//move to emergence point and spray a decal
 				setorigin(penlt.hitlocation+vu*0.1,false);
 				puff();
+				A_SprayDecal(speed>400?"BulletChip":"BulletChipSmall",10);
 				angle+=180;pitch=-pitch;
 
 				if(penlt.hittype==TRACE_HitActor){
@@ -364,6 +370,8 @@ console.printf(hitactor.getclassname());
 				//reduce momentum, increase tumbling, etc.
 			}else{
 				puff();
+A_Log("A");
+				bmissile=false;
 				setstatelabel("death");
 				return;
 			}
@@ -376,7 +384,6 @@ console.printf(hitactor.getclassname());
 			//flesh: bloodsplat
 			//fluids: splash
 			//anything else: puff and add bullet hole
-		A_SprayDecal(penetration>4?"BulletChip":"BulletChipSmall",10);
 		let aaa=spawn("FragPuff",pos,ALLOW_REPLACE);
 		aaa.pitch=pitch;aaa.angle=angle;
 		return aaa;
