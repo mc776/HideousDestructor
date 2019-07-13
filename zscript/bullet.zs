@@ -56,7 +56,7 @@ class HDBulletActor:Actor{
 		+missile
 		height 0.1;radius 0.1;
 		hdbulletactor.penetration 0;
-		speed 128;
+		speed 1280;
 	}
 	static HDBulletActor FireBullet(
 		actor caller,
@@ -136,6 +136,9 @@ if(getage()%17)return;
 				setorigin(newpos,true);
 				distanceleft-=max(bres.distance,0.01); //safeguard against infinite loops
 			}else{
+				//the decal must be shot out from here to be reliable
+				A_SprayDecal(speed>400?"BulletChip":"BulletChipSmall",distanceleft+100);
+
 				newpos=bres.hitpos-vu*0.1;
 				setorigin(newpos,true);
 				distanceleft-=max(bres.distance,0.01); //safeguard against infinite loops
@@ -248,7 +251,6 @@ console.printf(hitactor.getclassname());
 		//then doorbuster??? --do later, maybe
 
 		puff();
-		A_SprayDecal(speed>400?"BulletChip":"BulletChipSmall",10);
 
 		//see if the bullet ricochets
 		bool didricochet=false;
@@ -359,9 +361,9 @@ console.printf(hitactor.getclassname());
 				);
 
 				//move to emergence point and spray a decal
-				setorigin(penlt.hitlocation+vu*0.1,false);
+				setorigin(penlt.hitlocation+vu*0.3,false);
 				puff();
-				A_SprayDecal(speed>400?"BulletChip":"BulletChipSmall",10);
+				A_SprayDecal(speed>400?"BulletChip":"BulletChipSmall");
 				angle+=180;pitch=-pitch;
 
 				if(penlt.hittype==TRACE_HitActor){
@@ -370,7 +372,6 @@ console.printf(hitactor.getclassname());
 				//reduce momentum, increase tumbling, etc.
 			}else{
 				puff();
-A_Log("A");
 				bmissile=false;
 				setstatelabel("death");
 				return;
