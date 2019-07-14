@@ -202,19 +202,7 @@ if(getage()%17)return;
 
 					HitGeometry(null,hitsector,0,bres.hittype==TRACE_HitCeiling?SECPART_Ceiling:SECPART_Floor,vu);
 				}else if(bres.hittype==TRACE_HitActor){
-					let hitactor=bres.hitactor;
-					traceactors.push(hitactor);
-console.printf(hitactor.getclassname());
-					//set up the damage thinker
-					//move a little into the actor
-					//spawn blood as necessary
-					//see if the bullet ricochets
-						//just have it fly off in a random direction, we can revisit this later
-						//reduce penetration and streamlinedness
-					//if not ricochet, see if the bullet penetrates, and if it does:
-						//move to the other side of the actor
-						//spawn more blood for the exit wound
-					//destroy if not ricocheting or penetrating
+					hitactor(bres.hitactor);
 				}
 			}
 		}while(
@@ -355,9 +343,9 @@ console.printf(hitactor.getclassname());
 				pendest+=vu;
 				if(
 					level.ispointinlevel(pendest)
-//performance???
-//					&&pendest.z>getzat(pendest.x,pendest.y,0,GZF_ABSOLUTEPOS)
-//					&&pendest.z<getzat(pendest.x,pendest.y,0,GZF_CEILING|GZF_ABSOLUTEPOS)
+					//performance???
+					//&&pendest.z>getzat(pendest.x,pendest.y,0,GZF_ABSOLUTEPOS)
+					//&&pendest.z<getzat(pendest.x,pendest.y,0,GZF_CEILING|GZF_ABSOLUTEPOS)
 				){
 					dopenetrate=true;
 					break;
@@ -386,6 +374,7 @@ console.printf(hitactor.getclassname());
 
 				if(penlt.hittype==TRACE_HitActor){
 					//if it hits an actor, affect that actor
+					traceactors.push(penlt.hitactor);
 				}
 				//reduce momentum, increase tumbling, etc.
 				//reduce remaining distance left
@@ -398,6 +387,18 @@ console.printf(hitactor.getclassname());
 		}
 	}
 	virtual void HitActor(actor hitactor){
+		traceactors.push(hitactor);
+console.printf(hitactor.getclassname());
+			//set up the damage thinker
+			//move a little into the actor
+			//spawn blood as necessary
+			//see if the bullet ricochets
+				//just have it fly off in a random direction, we can revisit this later
+				//reduce penetration and streamlinedness
+			//if not ricochet, see if the bullet penetrates, and if it does:
+				//move to the other side of the actor
+				//spawn more blood for the exit wound
+			//destroy if not ricocheting or penetrating
 	}
 	virtual actor Puff(){
 		//TODO: virtual actor puff(textureid hittex,bool reverse=false){}
