@@ -56,7 +56,10 @@ class HDBulletActor:Actor{
 		+missile
 		height 0.1;radius 0.1;
 		hdbulletactor.penetration 0;
-		speed 1280;
+		speed 128;
+	}
+	override bool cancollidewith(actor other,bool passive){
+		return !passive;
 	}
 	static HDBulletActor FireBullet(
 		actor caller,
@@ -214,7 +217,10 @@ console.printf(hitactor.getclassname());
 					//destroy if not ricocheting or penetrating
 				}
 			}
-		}while(distanceleft>0);
+		}while(
+			bmissile
+			&&distanceleft>0
+		);
 
 
 
@@ -339,13 +345,25 @@ console.printf(hitactor.getclassname());
 			//twist it "inwards" a little to make it more perpendicular to the hitline
 				//on line, add (hitangle-90)*frandom(0.1,1.)
 				//on flat, uhhhhh
+				//repeat the process on vu
 			double pendistance=17.;
 			//calculate the penetration distance
 			//if that point is in the map:
-			vector3 pendest=pos+vu*pendistance;
-			if(level.
-				ispointinlevel(pendest)
-			){
+			vector3 pendest=pos;
+			bool dopenetrate=false;
+			for(int i=0;i<pendistance;i++){
+				pendest+=vu;
+				if(
+					level.ispointinlevel(pendest)
+//performance???
+//					&&pendest.z>getzat(pendest.x,pendest.y,0,GZF_ABSOLUTEPOS)
+//					&&pendest.z<getzat(pendest.x,pendest.y,0,GZF_CEILING|GZF_ABSOLUTEPOS)
+				){
+					dopenetrate=true;
+					break;
+				}
+			}
+			if(dopenetrate){
 				//warp forwards to that distance
 				setorigin(pendest,true);
 
@@ -361,7 +379,7 @@ console.printf(hitactor.getclassname());
 				);
 
 				//move to emergence point and spray a decal
-				setorigin(penlt.hitlocation+vu*0.3,false);
+				setorigin(pendest+vu*0.3,true);
 				puff();
 				A_SprayDecal(speed>400?"BulletChip":"BulletChipSmall");
 				angle+=180;pitch=-pitch;
@@ -370,6 +388,7 @@ console.printf(hitactor.getclassname());
 					//if it hits an actor, affect that actor
 				}
 				//reduce momentum, increase tumbling, etc.
+				//reduce remaining distance left
 			}else{
 				puff();
 				bmissile=false;
