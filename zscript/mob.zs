@@ -374,18 +374,11 @@ struct HDMobAI play{
 		int flags=0,
 		bool flee=false
 	){
-		double oldang=caller.angle;
-		if(!caller.target){
-			caller.A_ClearTarget();
-			if(caller.curstate==caller.resolvestate("see")){
-				if(caller.findstate("idle"))caller.setstatelabel("idle");
-				else caller.setstatelabel("spawn");
-			}
-			return;
-		}else if(!caller.checkmove(caller.pos.xy)){
+		if(!caller.checkmove(caller.pos.xy)){
 			caller.A_Wander();
 			return;
 		}else{
+			double oldang=caller.angle;
 			bool befrightened=caller.bfrightened;
 			bool bechasegoal=caller.bchasegoal;
 			bool benoteleport=caller.bnoteleport;
