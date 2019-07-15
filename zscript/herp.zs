@@ -958,6 +958,8 @@ class HERPController:HDWeapon{
 		return null;
 	}
 	override string gethelptext(){
+		if(!herps.size())return "ERROR";
+		weaponstatus[HERPS_INDEX]=clamp(weaponstatus[HERPS_INDEX],0,herps.size()-1);
 		let herpcam=herps[weaponstatus[HERPS_INDEX]];
 		if(!herpcam)return "ERROR";
 		if(
