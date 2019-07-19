@@ -85,7 +85,7 @@ class HDWound:Thinker{
 			||bleeder.health<1
 			||bleeder.bloodtype=="ShieldNeverBlood"
 
-			//sorry there's no simple way to do this in the actor
+			//TODO: add a flagdef specifically to handle this in HDMobBase
 			||bleeder is "Boner"
 			||bleeder is "Yokai"
 			||bleeder is "Putto"

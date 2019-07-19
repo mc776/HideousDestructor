@@ -51,12 +51,27 @@ class HDBulletActor:Actor{
 	int hdbulletflags;
 	flagdef neverricochet:hdbulletflags,0;
 
+
+	class<actor> distantsounder;
+	property distantsounder:distantsounder;
+
+	enum BulletConsts{
+		BULLET_TERMINALVELOCITY=-277,
+		BULLET_CRACKINTERVAL=64,
+
+		BLT_HITTOP=1,
+		BLT_HITBOTTOM=2,
+		BLT_HITMIDDLE=3,
+		BLT_HITONESIDED=4,
+	}
+
+
 	default{
 		+solid //+noblockmap
 		+missile
 		height 0.1;radius 0.1;
 		hdbulletactor.penetration 0;
-		speed 128;
+		speed 1280;
 	}
 	override bool cancollidewith(actor other,bool passive){
 		return !passive;
@@ -205,6 +220,50 @@ if(getage()%17)return;
 					hitactor(bres.hitactor);
 				}
 			}
+
+
+			//find points close to players and spawn crackers
+			//also spawn trails if applicable
+			if(speed>256){
+				name cracker="";
+				if(speed>1000){
+					if(mass>200) cracker="SupersonicTrailBig";
+					else cracker="SupersonicTrail";
+				}else if(speed>800){
+					cracker="SupersonicTrail";
+				}else if(speed>HDCONST_SPEEDOFSOUND){
+					cracker="SupersonicTrailSmall";
+				}else if(speed>100){
+					cracker="SubsonicTrail";
+				}
+				if(cracker!=""){
+					vector3 crackbak=pos;
+					vector3 crackinterval=vu*BULLET_CRACKINTERVAL;
+					int j=max(1,bres.distance*(1./BULLET_CRACKINTERVAL));
+					for(int i=0;i<j;i++){
+						setxyz(crackbak+crackinterval*i);
+						if(hd_debug>1)A_SpawnParticle("yellow",SPF_RELVEL|SPF_RELANG,
+							size:12,
+							velx:speed*cos(pitch)*0.001,
+							velz:-speed*sin(pitch)*0.001
+						);
+						if(missilename)spawn(missilename,pos,ALLOW_REPLACE);
+						bool gotplayer=false;
+						for(int k=0;!gotplayer && k<MAXPLAYERS;k++){
+							if(playeringame[k] && players[k].mo){
+								if(
+									distance3d(players[k].mo)<256
+								){
+									gotplayer=true;
+									spawn(cracker,pos,ALLOW_REPLACE);
+								}
+							}
+						}
+					}
+					setxyz(crackbak);
+				}
+			}
+
 		}while(
 			bmissile
 			&&distanceleft>0
