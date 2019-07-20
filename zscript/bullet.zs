@@ -78,7 +78,6 @@ class HDBulletActor:Actor{
 			hardness: 1-5 - 1=pure lead, 5=steel (NOTE: this setting's bullets are (Teflon-coated) steel by default; will implement lead casts "later")
 		*/
 		speed 1100;
-//speed 128;
 		mass 1344;
 		pushfactor 0.05;
 		accuracy 600;
@@ -305,7 +304,7 @@ if(getage()%17)return;
 
 		//inflict damage on destructibles
 		//GZDoom native first
-		int geodmg=100; //placeholder
+		int geodmg=int(pen*(1+pushfactor));
 		if(hitline)destructible.DamageLinedef(hitline,self,geodmg,"SmallArms2",hitpart,pos,false);
 		if(hitsector){
 			switch(hitpart-999){
@@ -482,18 +481,18 @@ console.printf(hitactor.getclassname());
 					hdmb.bdoesntbleed
 					||!random(0,pen)
 				){
-					int dmg=(int(mass*speed*speed))>>22;
-					HDBulletDamager.Get(hitactor,self,target,random((dmg>>2),dmg*pushfactor),"Piercing");
+					int dmg=(int(mass*speed*speed))>>24;
+					HDBulletDamager.Get(hitactor,self,target,random((dmg>>2),dmg*(1+pushfactor)),"Piercing");
 				}else{
 					//hit some MEAT and maybe a major blood vessel
 					int dmg=(int(mass*speed*speed))>>24;
-					HDBulletDamager.Get(hitactor,self,target,dmg*pushfactor,"Piercing");
-					hdwound.inflict(hitactor,randompick(pen,dmg,pen+dmg));
+					HDBulletDamager.Get(hitactor,self,target,dmg*(0.1+pushfactor),"Piercing");
+					hdwound.inflict(hitactor,randompick(pen,dmg,random(pen,dmg),pen+dmg));
 				}
 				if(pen>hitactor.radius*2){
 					//random direction
 					//decelerate a bit
-					speed*=frandom(0.6,0.8)*pushfactor;
+					speed*=1.-frandom(0.1,0.2)*pushfactor;
 					if(speed<64)setstatelabel("death");else{
 						angle+=frandom(-4,4)*pushfactor;
 						pitch+=frandom(-4,4)*pushfactor;
