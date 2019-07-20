@@ -20,10 +20,6 @@ class UndeadHomeboy:HDMobBase{
 	int aimpointtics;
 	double spread;
 
-	//misc flagdefs
-	int hdmobflags;
-	flagdef hasdroppedgun: hdmobflags, 1;
-
 	//specific to undead homeboy
 	bool user_weapon; //0 random, 1 semi, 2 auto
 

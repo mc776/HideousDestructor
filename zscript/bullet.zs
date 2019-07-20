@@ -78,6 +78,7 @@ class HDBulletActor:Actor{
 			hardness: 1-5 - 1=pure lead, 5=steel (NOTE: this setting's bullets are (Teflon-coated) steel by default; will implement lead casts "later")
 		*/
 		speed 1100;
+//speed 128;
 		mass 1344;
 		pushfactor 0.05;
 		accuracy 600;
@@ -237,7 +238,7 @@ if(getage()%17)return;
 
 					HitGeometry(null,hitsector,0,bres.hittype==TRACE_HitCeiling?SECPART_Ceiling:SECPART_Floor,vu);
 				}else if(bres.hittype==TRACE_HitActor){
-					hitactor(bres.hitactor);
+					onhitactor(bres.hitactor,bres.hitpos,vu);
 				}
 			}
 
@@ -454,19 +455,55 @@ if(getage()%17)return;
 			}
 		}
 	}
-	virtual void HitActor(actor hitactor){
+	void OnHitActor(actor hitactor,vector3 hitpos,vector3 vu){
 		traceactors.push(hitactor);
 console.printf(hitactor.getclassname());
-			//set up the damage thinker
-			//move a little into the actor
-			//spawn blood as necessary
-			//see if the bullet ricochets
-				//just have it fly off in a random direction, we can revisit this later
-				//reduce penetration and streamlinedness
-			//if not ricochet, see if the bullet penetrates, and if it does:
-				//move to the other side of the actor
-				//spawn more blood for the exit wound
-			//destroy if not ricocheting or penetrating
+
+		double pen=penetration();
+		let hdmb=hdmobbase(hitactor);
+		if(!hdmb){
+			hitactor.damagemobj(self,target,pen*pushfactor,"Piercing");
+		}else{
+			//modify penetration by material of target
+			//ignore mass: if lighter, less dense but is pushed back
+			pen*=frandom(hdmb.bulletfactormin,hdmb.bulletfactormax);
+
+			if(pen<hdmb.radius*0.05){
+				//glances off target
+				hdmb.damagemobj(self,target,int(pen)>>3,"Bashing");
+				speed*=frandom(0.1*hardness,0.8);
+				if(speed<64)setstatelabel("death");else{
+					angle+=frandom(-160,160);
+					pitch+=frandom(-80,80);
+					A_ChangeVelocity(cos(pitch)*speed,0,sin(pitch)*speed,CVF_RELATIVE|CVF_REPLACE);
+				}
+			}else{
+				if(
+					hdmb.bdoesntbleed
+					||!random(0,pen)
+				){
+					int dmg=(int(mass*speed*speed))>>22;
+					HDBulletDamager.Get(hitactor,self,target,random((dmg>>2),dmg*pushfactor),"Piercing");
+				}else{
+					//hit some MEAT and maybe a major blood vessel
+					int dmg=(int(mass*speed*speed))>>24;
+					HDBulletDamager.Get(hitactor,self,target,dmg*pushfactor,"Piercing");
+					hdwound.inflict(hitactor,randompick(pen,dmg,pen+dmg));
+				}
+				if(pen>hitactor.radius*2){
+					//random direction
+					//decelerate a bit
+					speed*=frandom(0.6,0.8)*pushfactor;
+					if(speed<64)setstatelabel("death");else{
+						angle+=frandom(-4,4)*pushfactor;
+						pitch+=frandom(-4,4)*pushfactor;
+						A_ChangeVelocity(cos(pitch)*speed,0,sin(pitch)*speed,CVF_RELATIVE|CVF_REPLACE);
+					}
+				}else{
+					setstatelabel("death");
+				}
+			}
+		}
 	}
 	virtual actor Puff(){
 		//TODO: virtual actor puff(textureid hittex,bool reverse=false){}

@@ -6,12 +6,17 @@
 
 //All monsters should inherit from this.
 class HDMobBase : HDActor{
-	double bulletresistance;
-	property bulletresistance:bulletresistance;
+	int hdmobflags;
+	flagdef doesntbleed:hdmobflags,0;
+	flagdef hasdroppedgun:hdmobflags,1;
+
+	double bulletfactormin;double bulletfactormax;
+	property bulletfactor:bulletfactormin,bulletfactormax;
+
 	default{
 		monster;
 		radius 12;
-		hdmobbase.bulletresistance 1.;
+		hdmobbase.bulletfactor 0.8,1.0;
 	}
 }
 
