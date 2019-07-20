@@ -79,6 +79,8 @@ class HDBulletActor:Actor{
 		*/
 		speed 1100;
 		mass 1344;
+speed 1100;
+mass 2240;
 		pushfactor 0.05;
 		accuracy 600;
 		hdbulletactor.hardness 5;
@@ -461,7 +463,8 @@ console.printf(hitactor.getclassname());
 		double pen=penetration();
 		let hdmb=hdmobbase(hitactor);
 		if(!hdmb){
-			hitactor.damagemobj(self,target,pen*pushfactor,"Piercing");
+			//what kind of a SICK MAN sends VANILLA BABIES to fight
+			hitactor.damagemobj(self,target,pen+frandom(0,pen*pushfactor),"Piercing");
 		}else{
 			//modify penetration by material of target
 			//ignore mass: if lighter, less dense but is pushed back
@@ -477,31 +480,29 @@ console.printf(hitactor.getclassname());
 					A_ChangeVelocity(cos(pitch)*speed,0,sin(pitch)*speed,CVF_RELATIVE|CVF_REPLACE);
 				}
 			}else{
+				int dmg=int((int(mass*speed)>>10)*speed)>>14; //gotta split this
 				if(
 					hdmb.bdoesntbleed
 					||!random(0,pen)
 				){
-					int dmg=(int(mass*speed*speed))>>24;
 					HDBulletDamager.Get(hitactor,self,target,random((dmg>>2),dmg*(1+pushfactor)),"Piercing");
 				}else{
 					//hit some MEAT and maybe a major blood vessel
-					int dmg=(int(mass*speed*speed))>>24;
 					HDBulletDamager.Get(hitactor,self,target,dmg*(0.1+pushfactor),"Piercing");
 					hdwound.inflict(hitactor,randompick(pen,dmg,random(pen,dmg),pen+dmg));
-
-					for(int i=0;i<dmg;i+=60){
-						bool gbg;actor blood;
-						[gbg,blood]=hitactor.A_SpawnItemEx(
-							hitactor.bloodtype,
-							hitactor.radius*0.6,0,pos.z-hitactor.pos.z,
-							angle:hitactor.angleto(self),
-							flags:SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
-						);
-						if(blood)blood.vel=vu*(0.03*dmg)
-							+(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.4))
-						;
-					}
-
+				}
+				//spawn the blood actor
+				for(int i=0;i<dmg;i+=60){
+					bool gbg;actor blood;
+					[gbg,blood]=hitactor.A_SpawnItemEx(
+						hitactor.bloodtype,
+						hitactor.radius*0.6,0,pos.z-hitactor.pos.z,
+						angle:hitactor.angleto(self),
+						flags:SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
+					);
+					if(blood)blood.vel=vu*(0.03*dmg)
+						+(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.4))
+					;
 				}
 				if(pen>hitactor.radius*2){
 					//random direction
