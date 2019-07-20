@@ -1,29 +1,36 @@
 //-------------------------------------------------
 // Blood Substitute
 //-------------------------------------------------
-class SecondBlood:HDWeapon{
+class SecondBlood:HDInjectorMaker{
 	default{
 		//$Category "Items/Hideous Destructor/Supplies"
 		//$Title "Synhetic Blood"
 		//$Sprite "PBLDA0"
 
 		scale 0.5;
-		-hdweapon.droptranslation
-		+weapon.wimpy_weapon
-		+inventory.invbar
-		+hdweapon.fitsinbackpack
-		weapon.selectionorder 1012;
+		-hdpickup.droptranslation
 		inventory.pickupmessage "Picked up a synthblood pack.";
 		inventory.icon "PBLDA0";
-		hdweapon.nicename "Synthetic Blood";
-		hdweapon.refid HDLD_BLODPAK;
-		inventory.pickupsound "weapons/pocket";
+		hdpickup.bulk ENC_STIMPACK*2;
+		hdpickup.nicename "Synthetic Blood";
+		hdpickup.refid HDLD_BLODPAK;
 		species "HealingItem";
+		hdinjectormaker.injectortype "SecondBloodSticker";
 	}
-	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
-	override hdweapon GetSpareWeapon(actor newowner,bool reverse,bool doselect){return GetSpareWeaponRegular(newowner,reverse,doselect);}
-	override double weaponbulk(){
-		return ENC_STIMPACK;
+	states{
+	spawn:
+		PBLD A -1;
+		stop;
+	}
+}
+class SecondBloodSticker:HDWoundFixer{
+	default{
+		+weapon.wimpy_weapon
+		weapon.selectionorder 1012;
+	}
+	override inventory CreateTossable(int amount){
+		HDWoundFixer.DropMeds(owner,0);
+		return null;
 	}
 	override string gethelptext(){
 		return "\cuSynthetic Blood\n"
@@ -32,7 +39,7 @@ class SecondBlood:HDWeapon{
 	;}
 	states{
 	spawn:
-		PBLD A -1;
+		PBLD A 0;
 		stop;
 	select:
 		TNT1 A 10{
@@ -53,10 +60,18 @@ class SecondBlood:HDWeapon{
 		TNT1 A 0 A_Refire();
 		goto readyend;
 	ready:
+		TNT1 A 0{
+			if(!countinv("SecondBlood")){
+				A_SelectWeapon("HDFist");
+				setweaponstate("deselect");
+				invoker.goawayanddie();
+			}
+		}
 		TNT1 A 1 A_WeaponReady(WRF_ALLOWRELOAD|WRF_ALLOWUSER1|WRF_ALLOWUSER4);
 		goto readyend;
 	fire:
 	altfire:
+		TNT1 A 0 A_JumpIf(!countinv("SecondBlood"),"nope");
 		TNT1 A 10 A_PlaySound("bloodpack/open");
 		TNT1 AAA 8 A_PlaySound("bloodpack/shake",CHAN_WEAPON);
 		TNT1 A 4;
@@ -99,6 +114,13 @@ class SecondBlood:HDWeapon{
 				return;
 			}
 			if(
+				patient.countinv("BloodBagWorn")
+			){
+				A_WeaponMessage(((bt&BT_ALTATTACK)?"Patient has":"You have").." a blood injector already!");
+				invoker.weaponstatus[SBS_INJECTCOUNTER]=0;
+				return;
+			}
+			if(
 				patient.countinv("WornRadsuit")
 				||patient.countinv("HDArmourWorn")
 			){
@@ -114,20 +136,20 @@ class SecondBlood:HDWeapon{
 				return;
 			}
 			if(
-				patient.countinv("BloodBagWorn")
+				!countinv("SecondBlood")
 			){
-				A_WeaponMessage(((bt&BT_ALTATTACK)?"Patient has":"You have").." a blood injector already!");
+				A_WeaponMessage("Where did the blood pack go?");
 				invoker.weaponstatus[SBS_INJECTCOUNTER]=0;
 				return;
 			}
 			if(invoker.weaponstatus[SBS_INJECTCOUNTER]>30){
+				A_TakeInventory("SecondBlood",1);
 				patient.A_GiveInventory("BloodBagWorn");
 				A_PlaySound("bloodbag/inject",CHAN_WEAPON);
 				A_SetBlend("7a 3a 18",0.1,4);
 				A_SetPitch(pitch+2,SPF_INTERPOLATE);
 				hdweaponselector.select(self,"HDFist");
 				setweaponstate("nope");
-				dropinventory(invoker);
 				invoker.goawayanddie();
 			}
 		}
