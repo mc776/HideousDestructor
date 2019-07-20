@@ -70,25 +70,24 @@ class HDBulletActor:Actor{
 		+solid //+noblockmap
 		+missile
 		height 0.1;radius 0.1;
-		speed 1280;
 		/*
 			speed: 200-1000
 			mass: 500-2000
 			pushfactor: 0.05-5.0 - imagine it being horizontal speed blowing in the wind
-			accuracy: 0,20,20-70 - angle of outline from perpendicular, round deemed to be 20
+			accuracy: 0,200,200-700 - angle of outline from perpendicular, round deemed to be 20
 			hardness: 1-5 - 1=pure lead, 5=steel (NOTE: this setting's bullets are (Teflon-coated) steel by default; will implement lead casts "later")
 		*/
-		mass 1000;
-		pushfactor 0.3;
-		accuracy 20;
+		speed 1100;
+		mass 1344;
+		pushfactor 0.05;
+		accuracy 600;
 		hdbulletactor.hardness 5;
 	}
 	double penetration(){ //still juvenile giggling
 		double pen=
 			clamp(speed,0,hardness*200)
-			*mass
-			*accuracy
-			*(1./1000000)
+			*(mass+accuracy)
+			*(1./50000)
 		;
 		if(pushfactor>0)pen/=(1.+pushfactor);
 console.printf("penetration:  "..pen);
@@ -301,6 +300,8 @@ if(getage()%17)return;
 	//when a bullet hits a flat or wall
 	//add 999 to "hitpart" to use the tier # instead
 	virtual void HitGeometry(line hitline,sector hitsector,int hitside,int hitpart,vector3 vu){
+		double pen=penetration();
+
 		//inflict damage on destructibles
 		//GZDoom native first
 		int geodmg=100; //placeholder
@@ -334,7 +335,7 @@ if(getage()%17)return;
 			//reduce penetration and streamlinedness
 
 		//if impact is too steep, randomly fail to ricochet
-		double maxricangle=frandom(50,90);
+		double maxricangle=frandom(50,90)-pen;
 
 		if(hitline){
 			//angle of line
@@ -401,17 +402,12 @@ if(getage()%17)return;
 
 		//see if the bullet penetrates
 		if(!didricochet){
-			//twist it "inwards" a little to make it more perpendicular to the hitline
-				//on line, add (hitangle-90)*frandom(0.1,1.)
-				//on flat, uhhhhh
-				//repeat the process on vu
-			double pendistance=penetration();
 //TODO: MATERIALS
 			//calculate the penetration distance
 			//if that point is in the map:
 			vector3 pendest=pos;
 			bool dopenetrate=false;
-			for(int i=0;i<pendistance;i++){
+			for(int i=0;i<pen;i++){
 				pendest+=vu;
 				if(
 					level.ispointinlevel(pendest)
@@ -432,7 +428,7 @@ if(getage()%17)return;
 				flinetracedata penlt;
 				LineTrace(
 					angle,
-					pendistance+1,
+					pen+1,
 					pitch,
 					flags:0,
 					data:penlt
