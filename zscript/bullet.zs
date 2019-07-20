@@ -488,6 +488,20 @@ console.printf(hitactor.getclassname());
 					int dmg=(int(mass*speed*speed))>>24;
 					HDBulletDamager.Get(hitactor,self,target,dmg*(0.1+pushfactor),"Piercing");
 					hdwound.inflict(hitactor,randompick(pen,dmg,random(pen,dmg),pen+dmg));
+
+					for(int i=0;i<dmg;i+=60){
+						bool gbg;actor blood;
+						[gbg,blood]=hitactor.A_SpawnItemEx(
+							hitactor.bloodtype,
+							hitactor.radius*0.6,0,pos.z-hitactor.pos.z,
+							angle:hitactor.angleto(self),
+							flags:SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
+						);
+						if(blood)blood.vel=vu*(0.03*dmg)
+							+(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.4))
+						;
+					}
+
 				}
 				if(pen>hitactor.radius*2){
 					//random direction
