@@ -42,8 +42,6 @@ class HDBulletTracer:LineTracer{
 	}
 }
 class HDBulletActor:Actor{
-	double penetration; //more juvenile giggling
-	property penetration:penetration;
 	array<line> tracelines;
 	array<actor> traceactors;
 	array<sector> tracesectors;
@@ -51,6 +49,8 @@ class HDBulletActor:Actor{
 	int hdbulletflags;
 	flagdef neverricochet:hdbulletflags,0;
 
+	int hardness;
+	property hardness:hardness;
 
 	class<actor> distantsounder;
 	property distantsounder:distantsounder;
@@ -70,8 +70,29 @@ class HDBulletActor:Actor{
 		+solid //+noblockmap
 		+missile
 		height 0.1;radius 0.1;
-		hdbulletactor.penetration 0;
 		speed 1280;
+		/*
+			speed: 200-1000
+			mass: 500-2000
+			pushfactor: 0.05-5.0 - imagine it being horizontal speed blowing in the wind
+			accuracy: 0,20,20-70 - angle of outline from perpendicular, round deemed to be 20
+			hardness: 1-5 - 1=pure lead, 5=steel (NOTE: this setting's bullets are (Teflon-coated) steel by default; will implement lead casts "later")
+		*/
+		mass 1000;
+		pushfactor 0.3;
+		accuracy 20;
+		hdbulletactor.hardness 5;
+	}
+	double penetration(){ //still juvenile giggling
+		double pen=
+			clamp(speed,0,hardness*200)
+			*mass
+			*accuracy
+			*(1./1000000)
+		;
+		if(pushfactor>0)pen/=(1.+pushfactor);
+console.printf("penetration:  "..pen);
+		return pen;
 	}
 	override bool cancollidewith(actor other,bool passive){
 		return !passive;
@@ -378,22 +399,14 @@ if(getage()%17)return;
 			}
 		}
 
-		//see if the bullet penetrates:
-			//virtual bool checkpenetration(actor hitactor,line hitline,sector hitsector){}
-				//if penetration rating is less than zero, just say no
-				//"ispointinlevel" loop up to max penetration point (check 3d floor first)
-				//http://www.how-i-did-it.org/drywall/ammunition.html
-					//note: according to this test, buckshot penetrated everything
-					//fast makes this penetrate LESS
-					//hardness
-					//mass
-					//tumbling
+		//see if the bullet penetrates
 		if(!didricochet){
 			//twist it "inwards" a little to make it more perpendicular to the hitline
 				//on line, add (hitangle-90)*frandom(0.1,1.)
 				//on flat, uhhhhh
 				//repeat the process on vu
-			double pendistance=17.;
+			double pendistance=penetration();
+//TODO: MATERIALS
 			//calculate the penetration distance
 			//if that point is in the map:
 			vector3 pendest=pos;
