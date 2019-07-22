@@ -79,7 +79,6 @@ class HDBulletActor:Actor{
 		*/
 		speed 1100;
 		mass 1344;
-speed 1100;
 mass 2240;
 		pushfactor 0.05;
 		accuracy 600;

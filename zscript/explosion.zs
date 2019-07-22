@@ -258,7 +258,7 @@ extend class HDActor{
 								|SXF_ABSOLUTEMOMENTUM
 								|SXF_NOCHECKPOSITION
 							);
-							blaaa.vel+=it.vel;
+							if(blaaa)blaaa.vel+=it.vel;
 						}
 					}
 
