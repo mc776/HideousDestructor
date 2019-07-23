@@ -76,14 +76,31 @@ class HDBulletActor:Actor{
 			mass: 500-2000
 			pushfactor: 0.05-5.0 - imagine it being horizontal speed blowing in the wind
 			accuracy: 0,200,200-700 - angle of outline from perpendicular, round deemed to be 20
+			stamina: 900, 776, 426, you get the idea
 			hardness: 1-5 - 1=pure lead, 5=steel (NOTE: this setting's bullets are (Teflon-coated) steel by default; will implement lead casts "later")
 		*/
 		speed 1100;
 		mass 1344;
 		pushfactor 0.05;
 		accuracy 600;
+		stamina 776;
 		hdbulletactor.hardness 5;
 
+
+//zm
+		pushfactor 0.4;
+		mass 320;
+		speed 1200;
+		accuracy 666;
+		stamina 426;
+
+
+//00
+		pushfactor 0.9;
+		mass 576;
+		speed 700;
+		accuracy 200;
+		stamina 838;
 
 
 
@@ -496,12 +513,12 @@ console.printf(hitactor.getclassname());
 					A_ChangeVelocity(cos(pitch)*speed,0,sin(pitch)*speed,CVF_RELATIVE|CVF_REPLACE);
 				}
 			}else{
-				int dmg=(int((int(mass*speed)>>14)*speed)>>10)*(4.+pushfactor);
+				int dmg=(int((int(mass*speed)>>12)*speed+stamina)>>12);
 				if(
 					hdmb.bdoesntbleed
 					||!random(0,pen)
 				){
-					HDBulletDamager.Get(hitactor,self,target,random((dmg>>2),dmg*(1+pushfactor)),"Piercing");
+					HDBulletDamager.Get(hitactor,self,target,random(dmg,(dmg*stamina>>7)),"Piercing");
 				}else{
 					//hit some MEAT and maybe a major blood vessel
 					//if middle of target or freak chance, more wound. not that realistic but
@@ -516,12 +533,13 @@ console.printf(hitactor.getclassname());
 							)>hitactor.height*0.4
 						)
 					){
-						instadmg=dmg*(0.6+0.3*pushfactor);
+						instadmg=dmg*(0.6+0.001*stamina);
 						wounddamage=randompick(max(pen,dmg),pen+dmg);
 					}else{
-						instadmg=dmg*(0.1+0.1*pushfactor);
+						instadmg=dmg*(0.1+0.001*stamina);
 						wounddamage=randompick(pen,dmg,random(pen,dmg));
 					}
+A_LogInt(instadmg);
 					hdwound.inflict(hitactor,wounddamage);
 					HDBulletDamager.Get(hitactor,self,target,instadmg,"Piercing");
 				}
