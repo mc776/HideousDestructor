@@ -69,6 +69,7 @@ class HDBulletActor:Actor{
 	default{
 		+solid //+noblockmap
 		+missile
+		+noextremedeath
 		height 0.1;radius 0.1;
 		/*
 			speed: 200-1000
@@ -79,10 +80,22 @@ class HDBulletActor:Actor{
 		*/
 		speed 1100;
 		mass 1344;
-mass 2240;
 		pushfactor 0.05;
 		accuracy 600;
 		hdbulletactor.hardness 5;
+
+
+
+
+		hdbulletactor.distantsounder "none";
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		gunsmoke();
+		if(distantsounder!="none"){
+			actor m=spawn(distantsounder,pos,ALLOW_REPLACE);
+			m.target=target;
+		}
 	}
 	double penetration(){ //still juvenile giggling
 		double pen=
@@ -97,6 +110,7 @@ console.printf("penetration:  "..pen);
 	override bool cancollidewith(actor other,bool passive){
 		return !passive;
 	}
+	virtual void GunSmoke(){}
 	static HDBulletActor FireBullet(
 		actor caller,
 		class<HDBulletActor> type="HDBulletActor",
@@ -144,7 +158,7 @@ if(getage()%17)return;
 			&&ceilingz-pos.z<vel.z
 		){
 			setorigin(pos+vel,false);
-			vel.z--;
+			vel.z-=getgravity();
 			return;
 		}
 
@@ -168,7 +182,7 @@ if(getage()%17)return;
 
 			if(bres.hittype==TRACE_HasHitSky){
 				setorigin(pos+vel,false);
-				vel.z--;
+				vel.z-=getgravity();
 				return;
 			}else if(bres.hittype==TRACE_HitNone){
 				newpos=bres.hitpos;
@@ -296,12 +310,13 @@ if(getage()%17)return;
 		blt.destroy();
 
 		//update velocity
-		vel.z--;
+		vel.z-=getgravity();
 	}
 	//when a bullet hits a flat or wall
 	//add 999 to "hitpart" to use the tier # instead
 	virtual void HitGeometry(line hitline,sector hitsector,int hitside,int hitpart,vector3 vu){
 		double pen=penetration();
+//TODO: MATERIALS AFFECTING PENETRATION AMOUNT
 
 		//inflict damage on destructibles
 		//GZDoom native first
@@ -327,6 +342,9 @@ if(getage()%17)return;
 		//then doorbuster??? --do later, maybe
 
 		puff();
+
+		//in case the puff() detonated or destroyed the bullet
+		if(!self||!bmissile)return;
 
 		//see if the bullet ricochets
 		bool didricochet=false;
@@ -403,11 +421,10 @@ if(getage()%17)return;
 
 		//see if the bullet penetrates
 		if(!didricochet){
-//TODO: MATERIALS
 			//calculate the penetration distance
 			//if that point is in the map:
 			vector3 pendest=pos;
-			bool dopenetrate=false;
+			bool dopenetrate=false; //"dope netrate". sounds pleasantly fast.
 			for(int i=0;i<pen;i++){
 				pendest+=vu;
 				if(
@@ -431,7 +448,7 @@ if(getage()%17)return;
 					angle,
 					pen+1,
 					pitch,
-					flags:0,
+					flags:TRF_THRUACTORS|TRF_ABSOFFSET,
 					data:penlt
 				);
 
@@ -455,7 +472,7 @@ if(getage()%17)return;
 			}
 		}
 	}
-	void OnHitActor(actor hitactor,vector3 hitpos,vector3 vu){
+	virtual void OnHitActor(actor hitactor,vector3 hitpos,vector3 vu){
 		traceactors.push(hitactor);
 console.printf(hitactor.getclassname());
 
@@ -479,7 +496,7 @@ console.printf(hitactor.getclassname());
 					A_ChangeVelocity(cos(pitch)*speed,0,sin(pitch)*speed,CVF_RELATIVE|CVF_REPLACE);
 				}
 			}else{
-				int dmg=int((int(mass*speed)>>10)*speed)>>14; //gotta split this
+				int dmg=(int((int(mass*speed)>>14)*speed)>>10)*(4.+pushfactor);
 				if(
 					hdmb.bdoesntbleed
 					||!random(0,pen)
@@ -487,8 +504,26 @@ console.printf(hitactor.getclassname());
 					HDBulletDamager.Get(hitactor,self,target,random((dmg>>2),dmg*(1+pushfactor)),"Piercing");
 				}else{
 					//hit some MEAT and maybe a major blood vessel
-					HDBulletDamager.Get(hitactor,self,target,dmg*(0.1+pushfactor),"Piercing");
-					hdwound.inflict(hitactor,randompick(pen,dmg,random(pen,dmg),pen+dmg));
+					//if middle of target or freak chance, more wound. not that realistic but
+					int instadmg;
+					int wounddamage;
+					if(
+						!random(0,max(3,hitactor.radius*2-pen))||(
+							absangle(angle,angleto(hitactor))<12
+							&&(
+								pos.z-hitactor.pos.z
+								+vu.z*hitactor.radius
+							)>hitactor.height*0.4
+						)
+					){
+						instadmg=dmg*(0.6+0.3*pushfactor);
+						wounddamage=randompick(max(pen,dmg),pen+dmg);
+					}else{
+						instadmg=dmg*(0.1+0.1*pushfactor);
+						wounddamage=randompick(pen,dmg,random(pen,dmg));
+					}
+					hdwound.inflict(hitactor,wounddamage);
+					HDBulletDamager.Get(hitactor,self,target,instadmg,"Piercing");
 				}
 				//spawn the blood actor
 				for(int i=0;i<dmg;i+=60){
@@ -503,22 +538,25 @@ console.printf(hitactor.getclassname());
 						+(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.4))
 					;
 				}
+				//penetrate through or stop and disappear
 				if(pen>hitactor.radius*2){
 					//random direction
-					//decelerate a bit
 					speed*=1.-frandom(0.1,0.2)*pushfactor;
+					speed-=pen;
 					if(speed<64)setstatelabel("death");else{
 						angle+=frandom(-4,4)*pushfactor;
 						pitch+=frandom(-4,4)*pushfactor;
 						A_ChangeVelocity(cos(pitch)*speed,0,sin(pitch)*speed,CVF_RELATIVE|CVF_REPLACE);
 					}
 				}else{
+					if(bpuffonactors)puff();
 					setstatelabel("death");
 				}
 			}
 		}
 	}
 	virtual actor Puff(){
+		setstatelabel("death");
 		//TODO: virtual actor puff(textureid hittex,bool reverse=false){}
 			//flesh: bloodsplat
 			//fluids: splash
