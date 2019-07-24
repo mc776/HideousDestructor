@@ -261,7 +261,13 @@ class HDFist:HDWeapon replaces Fist{
 		kickee.A_PlaySound("weapons/smack",CHAN_BODY);
 		bool kzk=kicker.countinv("PowerStrength");
 		kickee.damagemobj(kicking,kicker,kzk?random(20,40):random(10,20),"bashing");
-		if(kickee&&!kickee.bnopain&&kickee.health>0&&random(0,4))kickee.setstatelabel("pain");
+		if(
+			kickee
+			&&kickee.findstate("pain")
+			&&!kickee.bnopain
+			&&kickee.health>0
+			&&random(0,4)
+		)kickee.setstatelabel("pain");
 		vector3 kickdir=(kickee.pos-kicker.pos).unit();
 		if(kickee)kickee.vel=kickdir*(kzk?10:2)*kicker.mass/max(kicker.mass*0.3,kickee.mass);
 		kicker.vel-=kickdir;
