@@ -11,6 +11,7 @@ class BloodyHellFire:HDActor{
 		+alwayspuff +puffonactors +fixmapthingpos +puffgetsowner +bloodlessimpact
 		+nofear
 		+bright
+		+hdmobbase.doesntbleed
 		health 60;
 		damagefactor "thermal",0;
 		bloodcolor "44 3c 22";
@@ -234,6 +235,7 @@ class ArchFiend:HDMobBase replaces ArchVile{
 		+frightening
 		+dontgib
 		+floorclip
+		+hdmobbase.doesntbleed
 		radius 16;
 		height 56;
 		scale 0.8;

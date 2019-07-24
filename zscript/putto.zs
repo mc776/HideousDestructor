@@ -10,6 +10,7 @@ class Putto:HDMobBase{
 		monster; +nogravity +float +floatbob
 		+avoidmelee +lookallaround
 		+pushable +dontfall +cannotpush +thruspecies
+		+hdmobbase.doesntbleed
 		-telestomp -solid
 		species "BaronOfHell";
 		damagefactor "Thermal", 1.2;

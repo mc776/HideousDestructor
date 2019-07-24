@@ -81,9 +81,9 @@ class HDBulletActor:Actor{
 		*/
 		hdbulletactor.distantsounder "none";
 		hdbulletactor.hardness 5;
+		pushfactor 0.05;
 		speed 1100;
 		mass 1344;
-		pushfactor 0.05;
 		accuracy 600;
 		stamina 776;
 
@@ -95,19 +95,26 @@ class HDBulletActor:Actor{
 		accuracy 200;
 		stamina 838;
 
+//776
+		pushfactor 0.05;
+		speed 1100;
+		mass 1344;
+		accuracy 600;
+		stamina 776;
+
+//9mm
+		pushfactor 0.5;
+		mass 1539;
+		speed 420;
+		accuracy 200;
+		stamina 900;
+
 //zm
 		pushfactor 0.4;
 		mass 320;
 		speed 1200;
 		accuracy 666;
 		stamina 426;
-
-//776
-		speed 1100;
-		mass 1344;
-		pushfactor 0.05;
-		accuracy 600;
-		stamina 776;
 
 
 	}
@@ -594,6 +601,74 @@ A_LogInt(instadmg);
 }
 
 
+
+//a thinker that constantly bleeds
+class HDBleedingWound:Thinker{
+	bool hitvital;
+	actor bleeder;
+	int bleedrate;
+	int bleedpoints;
+	int ticker;
+	double zed;
+	enum bleednums{
+		BLEED_MAXTICS=140,
+	}
+	override void tick(){
+		if(ticker>0){
+			ticker--;
+			return;
+		}
+		if(
+			!bleedpoints
+			||!bleeder
+			||bleeder.health<1
+		){
+			destroy();
+			return;
+		}
+		bleedpoints--;
+		ticker=max(0,BLEED_MAXTICS-bleedrate);
+		int bleeds=1;
+		int excessbleedrate=bleedrate-BLEED_MAXTICS;
+		if(excessbleedrate>0)bleeds+=random(0,excessbleedrate);
+		for(int i=0;i<bleeds;i++){
+			bleeder.damagemobj(bleeder,null,bleeds,"bleedout",DMG_NO_PAIN);
+			if(bleeder.health<1&&bleedrate<random(10,60))bleeder.deathsound="";
+			bleeder.A_SpawnItemEx(bleeder.bloodtype,
+				frandom(-12,12),frandom(-12,12),
+				flags:SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
+			);
+		}
+	}
+	static void inflict(
+		actor bleeder,
+		int bleedrate,
+		int bleedpoints,
+		bool hitvital=false
+	){
+		if(
+			!skill||hd_nobleed
+			||!bleeder.bshootable
+			||bleeder.bnoblood
+			||bleeder.bnoblooddecals
+			||bleeder.bnodamage
+			||bleeder.bdormant
+			||bleeder.health<1
+			||bleeder.bloodtype=="ShieldNeverBlood"
+			||(
+				hdmobbase(bleeder)
+				&&hdmobbase(bleeder).bdoesntbleed
+			)
+		)return;
+
+		let wwnd=new("HDBleedingWound");
+		wwnd.bleeder=bleeder;
+		wwnd.ticker=0;
+		wwnd.bleedrate=bleedrate;
+		if(hitvital)wwnd.bleedpoints=-1;
+		else wwnd.bleedpoints=bleedpoints;
+	}
+}
 
 
 

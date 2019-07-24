@@ -89,17 +89,10 @@ class HDWound:Thinker{
 			||bleeder.bdormant
 			||bleeder.health<1
 			||bleeder.bloodtype=="ShieldNeverBlood"
-
-			//TODO: add a flagdef specifically to handle this in HDMobBase
-			||bleeder is "Boner"
-			||bleeder is "Yokai"
-			||bleeder is "Putto"
-			||bleeder is "Condemned"
-			||bleeder is "Jailer"
-			||bleeder is "HDBarrel"
-			||bleeder is "ExplosiveBarrel"
-			||bleeder is "BloodyHellFire"
-			||bleeder is "ArchFiend"
+			||(
+				hdmobbase(bleeder)
+				&&hdmobbase(bleeder).bdoesntbleed
+			)
 		)return;
 
 		let wwnd=new("HDWound");
