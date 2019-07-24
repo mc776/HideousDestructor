@@ -1,7 +1,7 @@
 // ------------------------------------------------------------
 // Killer(?) Barrel
 // ------------------------------------------------------------
-class HDBarrel:HDActor replaces ExplosiveBarrel{
+class HDBarrel:HDMobBase replaces ExplosiveBarrel{
 	int musthavegremlin;
 	property musthavegremlin:musthavegremlin;
 	class<actor> lighttype;

@@ -11,7 +11,6 @@ class BloodyHellFire:HDActor{
 		+alwayspuff +puffonactors +fixmapthingpos +puffgetsowner +bloodlessimpact
 		+nofear
 		+bright
-		+hdmobbase.doesntbleed
 		health 60;
 		damagefactor "thermal",0;
 		bloodcolor "44 3c 22";
