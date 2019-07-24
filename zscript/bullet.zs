@@ -79,20 +79,13 @@ class HDBulletActor:Actor{
 			stamina: 900, 776, 426, you get the idea
 			hardness: 1-5 - 1=pure lead, 5=steel (NOTE: this setting's bullets are (Teflon-coated) steel by default; will implement lead casts "later")
 		*/
+		hdbulletactor.distantsounder "none";
+		hdbulletactor.hardness 5;
 		speed 1100;
 		mass 1344;
 		pushfactor 0.05;
 		accuracy 600;
 		stamina 776;
-		hdbulletactor.hardness 5;
-
-
-//zm
-		pushfactor 0.4;
-		mass 320;
-		speed 1200;
-		accuracy 666;
-		stamina 426;
 
 
 //00
@@ -102,9 +95,21 @@ class HDBulletActor:Actor{
 		accuracy 200;
 		stamina 838;
 
+//zm
+		pushfactor 0.4;
+		mass 320;
+		speed 1200;
+		accuracy 666;
+		stamina 426;
+
+//776
+		speed 1100;
+		mass 1344;
+		pushfactor 0.05;
+		accuracy 600;
+		stamina 776;
 
 
-		hdbulletactor.distantsounder "none";
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -117,7 +122,10 @@ class HDBulletActor:Actor{
 	double penetration(){ //still juvenile giggling
 		double pen=
 			clamp(speed,0,hardness*200)
-			*(mass+accuracy)
+			*(
+				mass
+				+(1000.*accuracy)/stamina
+			)
 			*(1./50000)
 		;
 		if(pushfactor>0)pen/=(1.+pushfactor);
@@ -152,7 +160,7 @@ console.printf("penetration:  "..pen);
 	}
 	override void tick(){
 		if(isfrozen())return;
-if(getage()%17)return;
+//if(getage()%17)return;
 		if(!bmissile){
 			super.tick();
 			return;
