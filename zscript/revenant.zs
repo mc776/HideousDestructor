@@ -167,6 +167,10 @@ class Boner:HDMobBase replaces Revenant{
 		SKEL J 7 bright A_SpawnProjectile("BonerBall",42,-4,24,2,4);
 		SKEL K 12{balls=0;}
 		goto see;
+	pain:
+		SKEL L 5;
+		SKEL L 5 A_Pain();
+		goto see;
 	death:
 		---- A 0 {hdmobai.corpseflags(self);}
 		TNT1 A 0 A_SpawnItemEx("tempshieldpuff",flags:SXF_NOCHECKPOSITION|SXF_SETMASTER);
