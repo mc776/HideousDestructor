@@ -642,8 +642,8 @@ class HDBleedingWound:Thinker{
 	}
 	static void inflict(
 		actor bleeder,
-		int bleedrate,
 		int bleedpoints,
+		int bleedrate=17,
 		bool hitvital=false
 	){
 		if(
