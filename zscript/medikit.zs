@@ -27,8 +27,8 @@ class PortableMedikit:HDPickup{
 				A_GiveInventory("HDMedikitter");
 				if(A_JumpIfInventory("PortableStimpack",0,"null"))A_DropItem("PortableStimpack");
 				else A_GiveInventory("PortableStimpack");
-				let sb=hdweapon(spawn("SecondBlood",pos));
-				if(sb)sb.actualpickup(self);
+				if(A_JumpIfInventory("SecondBlood",0,"null"))A_DropItem("SecondBlood");
+				else A_GiveInventory("SecondBlood");
 				A_TakeInventory("PortableMedikit",1);
 			}else{
 				A_Log("You pull out the medikit you've already unwrapped.",true);
