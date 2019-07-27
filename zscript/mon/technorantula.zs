@@ -1,7 +1,7 @@
 // ------------------------------------------------------------
 // Spider Mastermind
 // ------------------------------------------------------------
-class Spiderdemon:HDMobBase replaces SpiderMastermind{
+class Technorantula:HDMobBase replaces SpiderMastermind{
 	default{
 		height 100;
 		mass 1000;
@@ -68,7 +68,7 @@ class Spiderdemon:HDMobBase replaces SpiderMastermind{
 		[shields,damage]=hdf.gothroughshields(shields,damage,inflictor,mod,flags);
 
 		if(damage<1)return 0;
-//			else A_Log(string.format("spiderdemon took %i damage",damage));
+//			else A_Log(string.format("Technorantula took %i damage",damage));
 		return super.damagemobj(
 			inflictor,source,damage,mod,flags,angle
 		);

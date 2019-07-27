@@ -102,7 +102,7 @@ class HDImpBall:HDFireball{
 			tracer=null;
 			if(blockingmobj){
 				if(
-					blockingmobj is "FighterImp"
+					blockingmobj is "Serpentipede"
 					&&(!target||blockingmobj!=target.target)
 				)blockingmobj.givebody(random(1,10));
 				else{
@@ -120,10 +120,10 @@ class HDImpBall:HDFireball{
 				if(
 					pos.z-tracer.pos.z>tracer.height*0.8
 					&&!(tracer is "CaeloBite")
-					&&!(tracer is "SpiderDemon")
-					&&!(tracer is "Krangling")
-					&&!(tracer is "Jailer")
-					&&!(tracer is "Condemned")
+					&&!(tracer is "Technorantula")
+					&&!(tracer is "TechnoSpider")
+					&&!(tracer is "HivePit")
+					&&!(tracer is "Begotten")
 					&&!(tracer is "Putto")
 					&&!(tracer is "Yokai")
 				){
@@ -139,7 +139,7 @@ class HDImpBall:HDFireball{
 }
 
 
-class FighterImp:HDMobBase{
+class Serpentipede:HDMobBase{
 	default{
 		//$Category "Monsters/Hideous Destructor"
 		//$Title "Imp Fighter"
@@ -483,7 +483,7 @@ class ShieldImpBall:DoomImpBall{
 		stop;
 	}
 }
-class HealerImp:FighterImp{
+class Regentipede:Serpentipede{
 	default{
 		//$Category "Monsters/Hideous Destructor"
 		//$Title "Imp Healer"
@@ -567,7 +567,7 @@ class HealerImp:FighterImp{
 // ------------------------------------------------------------
 // Mage Imp
 // ------------------------------------------------------------
-class MageImp:FighterImp{
+class Ardentipede:Serpentipede{
 	default{
 		//$Category "Monsters/Hideous Destructor"
 		//$Title "Imp Caster"
@@ -618,7 +618,7 @@ class MageImp:FighterImp{
 		---- A 0 A_Jump(256,2);
 		---- A 0 A_FaceTarget(0,0);
 		#### F 6;
-		#### G 8 A_SpawnProjectile("MageImpBall",(random(30,34)),0,(random(-6,6)),CMF_AIMDIRECTION,pitch);
+		#### G 8 A_SpawnProjectile("ArdentipedeBall",(random(30,34)),0,(random(-6,6)),CMF_AIMDIRECTION,pitch);
 		goto see;
 	missile2:
 		#### E 0 A_Jump(96,"Missile1");
@@ -631,7 +631,7 @@ class MageImp:FighterImp{
 		---- A 0 A_FaceTarget(0,0);
 		#### F 6;
 
-		#### GGGGGGGG 0 A_SpawnProjectile("MageImpBall2",random(29,34),6,(random(-18,18)),CMF_AIMDIRECTION,pitch+frandom(-2,4));
+		#### GGGGGGGG 0 A_SpawnProjectile("ArdentipedeBall2",random(29,34),6,(random(-18,18)),CMF_AIMDIRECTION,pitch+frandom(-2,4));
 		---- A 0{stamina+=5;}
 		#### GGFE 5;
 		goto see;
@@ -646,18 +646,18 @@ class MageImp:FighterImp{
 			stamina+=8;
 		}
 		#### HHHH 2 bright{vel.z*=0.6;}
-		#### H 0 A_SpawnProjectile("MageImpBall2",32,0,162,2,60);
-		#### H 2 bright A_SpawnProjectile("MageImpBall2",32,0,-162,2,60);
-		#### H 0 A_SpawnProjectile("MageImpBall2",32,0,156,2,40);
-		#### H 2 bright A_SpawnProjectile("MageImpBall2",32,0,-156,2,40);
-		#### H 0 A_SpawnProjectile("MageImpBall2",32,0,150,2,20);
-		#### H 2 bright A_SpawnProjectile("MageImpBall2",32,0,-150,2,20);
-		#### H 0 A_SpawnProjectile("MageImpBall2",32,0,144,2,0);
-		#### H 2 bright A_SpawnProjectile("MageImpBall2",32,0,-144,2,0);
-		#### H 0 A_SpawnProjectile("MageImpBall2",32,0,138,2,-10);
-		#### H 2 bright A_SpawnProjectile("MageImpBall2",32,0,-138,2,-10);
-		#### H 0 A_SpawnProjectile("MageImpBall2",32,0,132,2,-14);
-		#### H 8 bright A_SpawnProjectile("MageImpBall2",32,0,-132,2,-14);
+		#### H 0 A_SpawnProjectile("ArdentipedeBall2",32,0,162,2,60);
+		#### H 2 bright A_SpawnProjectile("ArdentipedeBall2",32,0,-162,2,60);
+		#### H 0 A_SpawnProjectile("ArdentipedeBall2",32,0,156,2,40);
+		#### H 2 bright A_SpawnProjectile("ArdentipedeBall2",32,0,-156,2,40);
+		#### H 0 A_SpawnProjectile("ArdentipedeBall2",32,0,150,2,20);
+		#### H 2 bright A_SpawnProjectile("ArdentipedeBall2",32,0,-150,2,20);
+		#### H 0 A_SpawnProjectile("ArdentipedeBall2",32,0,144,2,0);
+		#### H 2 bright A_SpawnProjectile("ArdentipedeBall2",32,0,-144,2,0);
+		#### H 0 A_SpawnProjectile("ArdentipedeBall2",32,0,138,2,-10);
+		#### H 2 bright A_SpawnProjectile("ArdentipedeBall2",32,0,-138,2,-10);
+		#### H 0 A_SpawnProjectile("ArdentipedeBall2",32,0,132,2,-14);
+		#### H 8 bright A_SpawnProjectile("ArdentipedeBall2",32,0,-132,2,-14);
 	missile3b:
 		#### H 8;
 		goto missile1;
@@ -672,9 +672,9 @@ class MageImp:FighterImp{
 	}
 }
 
-class MageImpBall:HDImpBall{
+class ArdentipedeBall:HDImpBall{
 	default{
-		missiletype "MageImpBallTail";
+		missiletype "ArdentipedeBallTail";
 		speed 10;
 		scale 1.2;
 	}
@@ -695,9 +695,9 @@ class MageImpBall:HDImpBall{
 		goto super::death;
 	}
 }
-class MageImpBall2:HDImpBall{
+class ArdentipedeBall2:HDImpBall{
 	default{
-		missiletype "MageImpBallTail2";
+		missiletype "ArdentipedeBallTail2";
 		damage 2;
 		speed 7;
 		height 4;radius 4;
@@ -735,7 +735,7 @@ class MageImpBall2:HDImpBall{
 		stop;
 	}
 }
-class MageImpBallTail:HDFireballTail{
+class ArdentipedeBallTail:HDFireballTail{
 	default{
 		deathheight 0.9;
 		gravity 0;
@@ -750,7 +750,7 @@ class MageImpBallTail:HDFireballTail{
 		}loop;
 	}
 }
-class MageImpBallTail2:MageImpBallTail{
+class ArdentipedeBallTail2:ArdentipedeBallTail{
 	default{
 		deathheight 0.86;
 		radius 0.7;
@@ -764,32 +764,32 @@ class MageImpBallTail2:MageImpBallTail{
 class ImpSpawner:RandomSpawner replaces DoomImp{
 	default{
 		+ismonster
-		dropitem "FighterImp",256,5;
-		dropitem "HealerImp",256,2;
-		dropitem "MageImp",256,3;
+		dropitem "Serpentipede",256,5;
+		dropitem "Regentipede",256,2;
+		dropitem "Ardentipede",256,3;
 	}
 }
 class DeadImpSpawner:RandomSpawner replaces DeadDoomImp{
 	default{
 		+ismonster
-		dropitem "DeadFighterImp",256,5;
-		dropitem "DeadHealerImp",256,2;
-		dropitem "DeadMageImp",256,3;
+		dropitem "DeadSerpentipede",256,5;
+		dropitem "DeadRegentipede",256,2;
+		dropitem "DeadArdentipede",256,3;
 	}
 }
-class DeadFighterImp:FighterImp{
+class DeadSerpentipede:Serpentipede{
 	override void postbeginplay(){
 		super.postbeginplay();
 		A_Die("spawndead");
 	}
 }
-class DeadHealerImp:HealerImp{
+class DeadRegentipede:Regentipede{
 	override void postbeginplay(){
 		super.postbeginplay();
 		A_Die("spawndead");
 	}
 }
-class DeadMageImp:MageImp{
+class DeadArdentipede:Ardentipede{
 	override void postbeginplay(){
 		super.postbeginplay();
 		A_Die("spawndead");

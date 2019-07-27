@@ -101,14 +101,14 @@ class HDCapFlagpole:Actor{
 				spawn("telefog",pos,ALLOW_REPLACE);
 				class<actor>baddie;
 				switch(random(0,random(0,7))){
-				case 1:baddie="mageimp";break;
-				case 2:baddie="healerimp";break;
+				case 1:baddie="Ardentipede";break;
+				case 2:baddie="Regentipede";break;
 				case 3:baddie="CaeloBite";break;
 				case 4:baddie="hellknight";break;
 				case 5:baddie="ninjapirate";break;
 				case 6:baddie="undeadrifleman";break;
 				case 7:baddie="baronofhell";break;
-				default:baddie="fighterimp";break;
+				default:baddie="Serpentipede";break;
 				}
 				actor badnotyetdead=spawn(baddie,pos,ALLOW_REPLACE);
 				array<actor>candidatetargets;candidatetargets.clear();

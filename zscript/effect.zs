@@ -748,8 +748,8 @@ class ShieldNotBlood:NotQuiteBloodSplat{
 		bloodsplat.postbeginplay();
 		if(
 			(satanrobo(target)&&satanrobo(target).shields>50)
-			||(spiderdemon(target)&&spiderdemon(target).shields>50)
-			||(jailer(target)&&jailer(target).shields>50)
+			||(Technorantula(target)&&Technorantula(target).shields>50)
+			||(HivePit(target)&&HivePit(target).shields>50)
 		){
 			A_SetTranslucent(1,1);
 			grav=-0.6;

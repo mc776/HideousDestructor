@@ -1,7 +1,7 @@
 // ------------------------------------------------------------
 // Arachnotron
 // ------------------------------------------------------------
-class Krangling:HDMobBase replaces Arachnotron{
+class TechnoSpider:HDMobBase replaces Arachnotron{
 	default{
 		health 500;
 		height 52;

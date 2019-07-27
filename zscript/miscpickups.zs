@@ -680,7 +680,7 @@ class GreenSphere:BlueSphere replaces Invulnerabilitysphere{
 				);
 			}
 			A_Quake(3,26,0,220,"none");
-			actor aaa=spawn("Archangel",pos,ALLOW_REPLACE);
+			actor aaa=spawn("LightBearer",pos,ALLOW_REPLACE);
 		}
 		TNT1 AAAAA 2 A_SpawnItemEx("HDSmoke",
 			frandom(-4,4),frandom(-4,4),frandom(1,4),

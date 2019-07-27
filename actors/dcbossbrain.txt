@@ -455,13 +455,13 @@ ACTOR HDBBP
 		TNT1 A 0 A_Jump(16,"caco","vileshards")
 		TNT1 A 0 A_Jump(256,"imp")
 	angel:
-		TNT1 A 0 A_SpawnItemEx("ArchFiend",random(-12,12),random(-12,12),0,velx,vely,velz+random(1,8),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
+		TNT1 A 0 A_SpawnItemEx("FlameBringer",random(-12,12),random(-12,12),0,velx,vely,velz+random(1,8),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
 		goto burnout
 	paine:
-		TNT1 A 0 A_SpawnItemEx("Jailer",random(-12,12),random(-12,12),0,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
+		TNT1 A 0 A_SpawnItemEx("HivePit",random(-12,12),random(-12,12),0,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
 		goto burnout
 	knight:
-		TNT1 A 0 A_SpawnItemEx("HellKnave",random(-12,12),random(-12,12),0,velx,vely,velz+random(1,8),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
+		TNT1 A 0 A_SpawnItemEx("PainBringer",random(-12,12),random(-12,12),0,velx,vely,velz+random(1,8),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
 		goto burnout
 	spectre:
 		TNT1 A 0 A_SpawnItemEx("NinjaPirate",random(-12,12),random(-12,12),0,velx,vely,velz+random(1,8),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
@@ -471,13 +471,13 @@ ACTOR HDBBP
 		goto burnout
 	imp:
 		TNT1 A 0 A_Jump(64,"mage","healer")
-		TNT1 A 0 A_SpawnItemEx("FighterImp",random(-12,12),random(-12,12),0,velx,vely,velz+random(1,8),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
+		TNT1 A 0 A_SpawnItemEx("Serpentipede",random(-12,12),random(-12,12),0,velx,vely,velz+random(1,8),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
 		goto burnout
 	mage:
-		TNT1 A 0 A_SpawnItemEx("MageImp",random(-12,12),random(-12,12),0,velx,vely,velz+random(1,8),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
+		TNT1 A 0 A_SpawnItemEx("Ardentipede",random(-12,12),random(-12,12),0,velx,vely,velz+random(1,8),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
 		goto burnout
 	healer:
-		TNT1 A 0 A_SpawnItemEx("HealerImp",0,0,0,velx,vely,velz+random(1,8),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
+		TNT1 A 0 A_SpawnItemEx("Regentipede",0,0,0,velx,vely,velz+random(1,8),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
 		goto burnout
 	burnout:
 		TNT1 A 0 A_UnsetShootable

@@ -215,7 +215,7 @@ class HeckFire:HDActor{
 	}
 }
 
-class ArchFiend:HDMobBase replaces ArchVile{
+class FlameBringer:HDMobBase replaces ArchVile{
 	string nickname;
 	default{
 		mass 500;
@@ -304,7 +304,7 @@ class ArchFiend:HDMobBase replaces ArchVile{
 		if(
 			!bfriendly
 			&&hd_novilespam
-			&&A_CheckProximity("null","Archfiend",2018,2,CPXF_NOZ)
+			&&A_CheckProximity("null","FlameBringer",2018,2,CPXF_NOZ)
 		){
 			A_Die("mapmorph");
 			return;
@@ -326,7 +326,7 @@ class ArchFiend:HDMobBase replaces ArchVile{
 			return;
 		}
 
-		nickname=archangel.randomname();
+		nickname=LightBearer.randomname();
 
 		hdmobster.spawnmobster(self);
 		HDMobAI.Resize(self,0.8,1.3);
@@ -498,14 +498,14 @@ class ArchFiend:HDMobBase replaces ArchVile{
 	death.mapmorph:
 		TNT1 A 0 A_Jump(128,"rep_np","rep_baron");
 	rep_imp:
-		TNT1 AAAA 0 A_SpawnItemEx("HealerImp",flags:SXF_NOCHECKPOSITION|SXF_TRANSFERAMBUSHFLAG);
+		TNT1 AAAA 0 A_SpawnItemEx("Regentipede",flags:SXF_NOCHECKPOSITION|SXF_TRANSFERAMBUSHFLAG);
 		stop;
 	rep_np:
 		TNT1 AAA 0 A_SpawnItemEx("NinjaPirate",flags:SXF_NOCHECKPOSITION|SXF_TRANSFERAMBUSHFLAG);
 		stop;
 	rep_baron:
-		TNT1 A 0 A_SpawnItemEx("HellPrince",flags:SXF_NOCHECKPOSITION|SXF_TRANSFERAMBUSHFLAG);
-		TNT1 AA 0 A_SpawnItemEx("HellKnave",flags:SXF_NOCHECKPOSITION|SXF_TRANSFERAMBUSHFLAG);
+		TNT1 A 0 A_SpawnItemEx("PainLord",flags:SXF_NOCHECKPOSITION|SXF_TRANSFERAMBUSHFLAG);
+		TNT1 AA 0 A_SpawnItemEx("PainBringer",flags:SXF_NOCHECKPOSITION|SXF_TRANSFERAMBUSHFLAG);
 		stop;
 	}
 }
@@ -525,7 +525,7 @@ class VileDeathLight:PointLight{
 		setorigin(target.pos,true);
 	}
 }
-class ArchAngel:ArchFiend{
+class LightBearer:FlameBringer{
 	default{
 		+friendly
 		+noclip
@@ -535,7 +535,7 @@ class ArchAngel:ArchFiend{
 		painchance 56;
 		scale 1.0;
 		speed 18;
-		species "Archangel";
+		species "LightBearer";
 	}
 	static string randomname(){
 		static const string vwl[]={"a","i","u","e","o","y"};
@@ -598,7 +598,7 @@ class VileGhost:HDActor{
 		TNT1 A 80 A_Quake(1,40,0,512,"vile/active");
 		TNT1 AAAAAA 0 A_SpawnItemEx("VileGhostShard",flags:SXF_TRANSFERPOINTERS|SXF_NOCHECKPOSITION);
 		TNT1 A 40;
-		TNT1 A 1{ArchFiend.A_MassHeal(self);}
+		TNT1 A 1{FlameBringer.A_MassHeal(self);}
 		stop;
 	}
 }
@@ -612,7 +612,7 @@ class VileGhostShard:VileGhost{
 		TNT1 A 2 A_VileChase();
 		loop;
 	heal:
-		TNT1 A 1{ArchFiend.A_MassHeal(self);}
+		TNT1 A 1{FlameBringer.A_MassHeal(self);}
 		stop;
 	}
 }

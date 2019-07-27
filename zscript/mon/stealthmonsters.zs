@@ -62,13 +62,13 @@ class HDStealthPorter:Actor{
 	}
 }
 class HDStealthArachnotron:HDStealthPorter replaces StealthArachnotron{
-	default{hdstealthporter.spawntype "Krangling";}
+	default{hdstealthporter.spawntype "TechnoSpider";}
 }
 class HDStealthArchvile:HDStealthPorter replaces StealthArchvile{
-	default{hdstealthporter.spawntype "ArchFiend";}
+	default{hdstealthporter.spawntype "FlameBringer";}
 }
 class HDStealthBaron:HDStealthPorter replaces StealthBaron{
-	default{hdstealthporter.spawntype "HellPrince";}
+	default{hdstealthporter.spawntype "PainLord";}
 }
 class HDStealthCacodemon:HDStealthPorter replaces StealthCacodemon{
 	default{
@@ -88,13 +88,13 @@ class HDStealthDemon:RandomSpawner replaces StealthDemon{
 	}
 }
 class HDStealthHellKnight:HDStealthPorter replaces StealthHellKnight{
-	default{hdstealthporter.spawntype "HellKnave";}
+	default{hdstealthporter.spawntype "PainBringer";}
 }
 class HDStealthDoomImp:HDStealthPorter replaces StealthDoomImp{
-	default{hdstealthporter.spawntype "FighterImp";}
+	default{hdstealthporter.spawntype "Serpentipede";}
 }
-class HDStealthMancubus:HDStealthPorter replaces StealthFatso{
-	default{hdstealthporter.spawntype "Mancubus";}
+class HDStealthCombatSlug:HDStealthPorter replaces StealthFatso{
+	default{hdstealthporter.spawntype "CombatSlug";}
 }
 class HDStealthBoner:HDStealthPorter replaces StealthRevenant{
 	default{hdstealthporter.spawntype "Boner";}

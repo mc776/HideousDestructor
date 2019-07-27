@@ -918,7 +918,7 @@ class HDMarine:HDMobBase replaces ScriptedMarine{
 		wait;
 	raise:
 		#### A 0{
-			nickname=archangel.randomname();
+			nickname=LightBearer.randomname();
 
 			lastinginjury=random(0,(lastinginjury>>3));
 			A_SetSolid();

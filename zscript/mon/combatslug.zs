@@ -100,7 +100,7 @@ class manjuice:hdfireball{
 	}
 }
 
-class Mancubus:HDMobBase replaces Fatso{
+class CombatSlug:HDMobBase replaces Fatso{
 	default{
 		health 600;
 		mass 1000;
@@ -119,7 +119,7 @@ class Mancubus:HDMobBase replaces Fatso{
 		radius 28;
 		height 60;
 		damagefactor "Thermal", 0.7;
-		obituary "%o was smoked by a mancubus.";
+		obituary "%o was smoked by a CombatSlug.";
 		painchance 80;
 	}
 	override void postbeginplay(){

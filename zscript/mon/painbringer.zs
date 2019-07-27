@@ -1,7 +1,7 @@
 // ------------------------------------------------------------
 // Hell Knight
 // ------------------------------------------------------------
-class HellKnave:HDMobBase replaces HellKnight{
+class PainBringer:HDMobBase replaces HellKnight{
 	default{
 		height 60;
 		radius 14;

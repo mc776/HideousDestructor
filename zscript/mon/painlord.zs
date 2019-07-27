@@ -1,7 +1,7 @@
 // ------------------------------------------------------------
 // Baron Of Hell
 // ------------------------------------------------------------
-class HellPrince:HDMobBase replaces BaronofHell{
+class PainLord:HDMobBase replaces BaronofHell{
 	default{
 		height 64;
 		radius 17;
@@ -33,7 +33,7 @@ class HellPrince:HDMobBase replaces BaronofHell{
 		hitobituary "%o was shredded by a baron of hell.";
 	}
 	void A_BaronSoul(){
-			let aaa=Condemned(spawn("Condemned",pos,ALLOW_REPLACE));
+			let aaa=Begotten(spawn("Begotten",pos,ALLOW_REPLACE));
 			aaa.addz(32);
 			aaa.master=self;
 			aaa.target=target;
@@ -231,7 +231,7 @@ class HellPrince:HDMobBase replaces BaronofHell{
 		---- A 0{
 			hdmobai.corpseflags(self,false,true);
 			if(
-				A_CheckProximity("null","ArchAngel",
+				A_CheckProximity("null","LightBearer",
 					64,1,CPXF_CHECKSIGHT|CPXF_NOZ|CPXF_SETTRACER
 				)&&tracer&&tracer.bfriendly
 			)raisesneeded=0;
