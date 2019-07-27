@@ -1,7 +1,7 @@
 // ------------------------------------------------------------
 // born to forever sucker fruit hawaiian in the motherfuckin
 // ------------------------------------------------------------
-class HoopBubble:WolfensteinSS replaces WolfensteinSS{
+class HoopBubble:HDMobBase replaces WolfensteinSS{
 	default{
 		painchance 170;
 		+floorclip
@@ -25,6 +25,9 @@ class HoopBubble:WolfensteinSS replaces WolfensteinSS{
 		hdmobster.spawnmobster(self);
 		hasdropped=false;
 		gunloaded=31;
+		if(Wads.CheckNumForName("FREEDOOM",0)!=-1){
+			scale=(0.81,0.81);
+		}
 	}
 	bool hasdropped;
 	double spread;
