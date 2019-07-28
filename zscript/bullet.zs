@@ -67,7 +67,8 @@ class HDBulletActor:Actor{
 
 
 	default{
-		+solid //+noblockmap
+//		+solid
+		+noblockmap
 		+missile
 		+noextremedeath
 		height 0.1;radius 0.1;
@@ -519,6 +520,9 @@ console.printf("penetration:  "..pen);
 		double hitangle=absangle(angle,angleto(hitactor)); //0 is dead centre
 		double pen=penetration();
 
+		//because radius alone is not correct
+		double fakeradius=5.+0.05*hitactor.mass+0.1*hitactor.radius;
+
 		double bff;
 		if(hdmobbase(hitactor))bff=hdmobbase(hitactor).bulletfactor();
 		else bff=0.6;
@@ -528,7 +532,7 @@ console.printf("penetration:  "..pen);
 
 		pen*=bff;
 		//if not deep enough, treat as bashing and ricochet or splat
-		bool deepenough=pen>hitactor.radius*frandom(0.06,0.3);
+		bool deepenough=pen>fakeradius*frandom(0.06,0.3);
 
 		//deform the bullet
 		hardness=max(1,hardness-random(0,random(0,3)));
@@ -569,15 +573,16 @@ console.printf("penetration:  "..pen);
 
 		//bullet penetrated, both impact and temp cavity do bashing
 		//if over 10% maxhealth, force pain
-		impact+=tinyspeedsquared*frandom(6,16);
+		impact+=tinyspeedsquared*frandom(0.03,0.08)*stamina;
+A_LogFLoat(tinyspeedsquared*frandom(0.03,0.08)*stamina);
 		if(speed>HDCONST_SPEEDOFSOUND){
-			hitactor.damagemobj(self,target,impact*frandom(0.6,1.6),"Bashing",DMG_THRUSTLESS);
+			hitactor.damagemobj(self,target,impact,"Bashing",DMG_THRUSTLESS);
 			forcepain(hitactor);
 		}
 
 		//check if going right through the body
 		//it's not "deep enough", it's "too deep" now!
-		deepenough=pen<hitactor.radius*2-frandom(0,0.01*hitangle);
+		deepenough=pen<fakeradius*2-frandom(0,0.01*hitangle);
 
 		//determine what kind of blood to use
 		class<actor>hitblood;
@@ -615,7 +620,7 @@ console.printf("penetration:  "..pen);
 		//major-artery incurable bleeding
 		//can't be done on "just" a graze (abs(angle,angleto(hitactor))>50)
 		//random chance depending on amount of penetration
-		bool suckingwound=frandom(0,pen*2)>hitactor.radius;
+		bool suckingwound=frandom(0,pen*2)>fakeradius;
 
 		//spawn entry wound blood
 		//do more if there's a sucking wound
@@ -634,22 +639,22 @@ console.printf("penetration:  "..pen);
 
 		//cns severance
 		//small column in middle centre
-		//only if NET penetration is at least hitactor.radius
+		//only if NET penetration is at least fakeradius
 		//add size of channel to damage
 		if(
 			hitangle<8
 			&&hitpos.z-hitactor.pos.z>hitactor.height*0.6
-			&&frandom(0,pen*1.2)>hitactor.radius
+			&&frandom(0,pen*1.2)>fakeradius
 		){
 			if(hd_debug)console.printf("CRIT!");
-			hitactor.damagemobj(self,target,random(impact,hitactor.health),"Piercing",DMG_THRUSTLESS);
+			hitactor.damagemobj(self,target,random(impact,(int(impact)<<3)),"Piercing",DMG_THRUSTLESS);
 			forcepain(hitactor);
 			suckingwound=true;
 		}
 
 		//inflict wound
 		//note the suckingwound bool
-		hdbleedingwound.inflict(hitactor,channelwidth,pen,suckingwound);
+		hdbleedingwound.inflict(hitactor,pen,channelwidth,suckingwound);
 	}
 	virtual actor Puff(){
 		setstatelabel("death");
@@ -677,10 +682,6 @@ class HDBleedingWound:Thinker{
 		BLEED_MAXTICS=40,
 	}
 	override void tick(){
-		if(ticker>0){
-			ticker--;
-			return;
-		}
 		if(
 			!bleedpoints
 			||!bleeder
@@ -689,13 +690,20 @@ class HDBleedingWound:Thinker{
 			destroy();
 			return;
 		}
+		if(bleeder.isfrozen())return;
+		if(ticker>0){
+			ticker--;
+			return;
+		}
 		bleedpoints--;
 		ticker=max(0,BLEED_MAXTICS-bleedrate);
 		int bleeds=1;
 		int excessbleedrate=bleedrate-BLEED_MAXTICS;
 		if(excessbleedrate>0)bleeds+=random(0,excessbleedrate);
 		for(int i=0;i<bleeds;i++){
-			bleeder.damagemobj(bleeder,null,bleeds,"bleedout",DMG_NO_PAIN);
+			bleeder.damagemobj(bleeder,null,bleeds,"bleedout",DMG_NO_PAIN|DMG_THRUSTLESS);
+			if(!bleeder)return;
+if(hd_debug)console.printf(bleeder.getclassname().." bled to "..bleeder.health);
 			if(bleeder.health<1&&bleedrate<random(10,60))bleeder.deathsound="";
 			bleeder.A_SpawnItemEx(bleeder.bloodtype,
 				frandom(-12,12),frandom(-12,12),
