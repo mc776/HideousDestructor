@@ -504,89 +504,138 @@ console.printf("penetration:  "..pen);
 			}
 		}
 	}
-	virtual void OnHitActor(actor hitactor,vector3 hitpos,vector3 vu){
-		traceactors.push(hitactor);
-console.printf(hitactor.getclassname());
-
+	void onhitactor(actor hitactor,vector3 hitpos,vector3 vu){
+		double hitangle=absangle(angle,angleto(hitactor)); //0 is dead centre
 		double pen=penetration();
-		let hdmb=hdmobbase(hitactor);
-		if(!hdmb){
-			//what kind of a SICK MAN sends VANILLA BABIES to fight
-			hitactor.damagemobj(self,target,pen+frandom(0,pen*pushfactor),"Piercing");
-		}else{
-			//modify penetration by material of target
-			//ignore mass: if lighter, less dense but is pushed back
-			pen*=frandom(hdmb.bulletfactormin,hdmb.bulletfactormax);
 
-			if(pen<hdmb.radius*0.05){
-				//glances off target
-				hdmb.damagemobj(self,target,int(pen)>>3,"Bashing");
-				speed*=frandom(0.1*hardness,0.8);
-				if(speed<64)setstatelabel("death");else{
-					angle+=frandom(-160,160);
-					pitch+=frandom(-80,80);
-					A_ChangeVelocity(cos(pitch)*speed,0,sin(pitch)*speed,CVF_RELATIVE|CVF_REPLACE);
-				}
-			}else{
-				int dmg=(int((int(mass*speed)>>12)*speed+stamina)>>12);
-				if(
-					hdmb.bdoesntbleed
-					||!random(0,pen)
-				){
-					HDBulletDamager.Get(hitactor,self,target,random(dmg,(dmg*stamina>>7)),"Piercing");
-				}else{
-					//hit some MEAT and maybe a major blood vessel
-					//if middle of target or freak chance, more wound. not that realistic but
-					int instadmg;
-					int wounddamage;
-					if(
-						!random(0,max(3,hitactor.radius*2-pen))||(
-							absangle(angle,angleto(hitactor))<12
-							&&(
-								pos.z-hitactor.pos.z
-								+vu.z*hitactor.radius
-							)>hitactor.height*0.4
-						)
-					){
-						instadmg=dmg*(0.6+0.001*stamina);
-						wounddamage=randompick(max(pen,dmg),pen+dmg);
-					}else{
-						instadmg=dmg*(0.1+0.001*stamina);
-						wounddamage=randompick(pen,dmg,random(pen,dmg));
-					}
-A_LogInt(instadmg);
-					hdwound.inflict(hitactor,wounddamage);
-					HDBulletDamager.Get(hitactor,self,target,instadmg,"Piercing");
-				}
-				//spawn the blood actor
-				for(int i=0;i<dmg;i+=60){
-					bool gbg;actor blood;
-					[gbg,blood]=hitactor.A_SpawnItemEx(
-						hitactor.bloodtype,
-						hitactor.radius*0.6,0,pos.z-hitactor.pos.z,
-						angle:hitactor.angleto(self),
-						flags:SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
-					);
-					if(blood)blood.vel=vu*(0.03*dmg)
-						+(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.4))
-					;
-				}
-				//penetrate through or stop and disappear
-				if(pen>hitactor.radius*2){
-					//random direction
-					speed*=1.-frandom(0.1,0.2)*pushfactor;
-					speed-=pen;
-					if(speed<64)setstatelabel("death");else{
-						angle+=frandom(-4,4)*pushfactor;
-						pitch+=frandom(-4,4)*pushfactor;
-						A_ChangeVelocity(cos(pitch)*speed,0,sin(pitch)*speed,CVF_RELATIVE|CVF_REPLACE);
-					}
-				}else{
-					if(bpuffonactors)puff();
-					setstatelabel("death");
-				}
+		double bff;
+		if(hdmobbase(hitactor))bff=hdmobbase(hitactor).bulletfactor();
+		else bff=0.6;
+
+		//decelerate
+		vel-=vu*pen/max(0.0001,bff);
+
+		pen*=bff;
+		//if not deep enough, treat as bashing and ricochet or splat
+		bool deepenough=pen>hitactor.radius*frandom(0.06,0.3);
+
+		//deform the bullet
+		hardness=max(1,hardness-random(0,random(0,3)));
+		stamina+=random(0,(stamina>>1));
+
+		//immediate impact
+		//highly random
+		double impact=speed*speed*0.0001*mass;
+
+		//bullet hits without penetrating
+		//abandon all damage after impact, then check ricochet
+		if(!deepenough){
+			//if bullet too soft and/or slow, just die
+			if(speed<32||hardness<random(1,3)){
+				bmissile=false;
+				setstatelabel("death");
 			}
+
+			//randomly deflect
+			//if deflected, reduce impact
+			if(
+				bmissile
+				&&hitangle>10
+			){
+				double dump=min(1.,0.01*(90-hitangle));
+				impact*=dump;
+				speed*=(1.-dump);
+				angle+=frandom(-45,45);
+				pitch+=frandom(-45,45);
+				A_ChangeVelocity(cos(pitch),0,sin(-pitch),CVF_RELATIVE|CVF_REPLACE);
+			}
+
+			hitactor.damagemobj(self,target,impact,"Bashing");
+			if(
+				!hitactor.bnopain
+				&&hitactor.findstate("pain")
+				&&impact>hitactor.health*0.3
+			)hitactor.setstatelabel("pain");
+			return;
 		}
+
+		//bullet penetrated, both impact and temp cavity do bashing
+		//if over 10% maxhealth, force pain
+		impact+=speed*speed*0.000001;
+		if(speed>HDCONST_SPEEDOFSOUND){
+			hitactor.damagemobj(self,target,impact,"Bashing");
+			if(
+				!hitactor.bnopain
+				&&hitactor.findstate("pain")
+				&&impact>hitactor.health*0.1
+			)hitactor.setstatelabel("pain");
+		}
+
+		//check if going right through the body
+		//it's not "deep enough", it's "too deep" now!
+		deepenough=pen<hitactor.radius*2-frandom(0,0.01*hitangle);
+
+		//basic threshold bleeding
+		//proportionate to permanent wound channel
+		//stamina, pushfactor, hardness
+		double channelwidth=
+			stamina*0.01
+			*frandom(3.,3+pushfactor)
+			*max(1,frandom(1.,7-hardness))
+		;
+		if(!deepenough){
+			channelwidth*=1.1;
+			//then spawn exit wound blood
+			for(int i=0;i<pen;i+=10){
+				bool gbg;actor blood;
+				[gbg,blood]=hitactor.A_SpawnItemEx(
+					hitactor.bloodtype,
+					hitactor.radius*0.6,0,pos.z-hitactor.pos.z,
+					angle:hitactor.angleto(self),
+					flags:SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
+				);
+				if(blood)blood.vel=vu*(0.6*pen)
+					+(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.4))
+				;
+			}
+		}else{
+			bmissile=false;
+			setstatelabel("death");
+		}
+
+		//major-artery incurable bleeding
+		//can't be done on "just" a graze (abs(angle,angleto(hitactor))>50)
+		//random chance depending on amount of penetration
+		bool suckingwound=frandom(0,pen*2)>hitactor.radius;
+
+		//spawn entry wound blood
+		//do more if there's a sucking wound
+		for(int i=-1;i<suckingwound;i++){
+			bool gbg;actor blood;
+			[gbg,blood]=hitactor.A_SpawnItemEx(
+				hitactor.bloodtype,
+				-hitactor.radius*0.6,0,pos.z-hitactor.pos.z,
+				angle:hitactor.angleto(self),
+				flags:SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
+			);
+			if(blood)blood.vel=-vu*(0.03*impact)
+				+(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.4))
+			;
+		}
+
+		//cns severance
+		//small column in middle centre
+		//only if NET penetration is at least hitactor.radius
+		//add size of channel to damage
+		if(frandom(0,pen*1.2)>hitactor.radius){
+			hitactor.damagemobj(self,target,random(impact,hitactor.health),"Piercing");
+			if(!hitactor.bnopain&&hitactor.health>0&&hitactor.findstate("pain"))hitactor.setstatelabel("pain");
+			suckingwound=true;
+		}
+
+		//inflict wound
+		//note the suckingwound bool
+		hdbleedingwound.inflict(hitactor,channelwidth,pen,suckingwound);
 	}
 	virtual actor Puff(){
 		setstatelabel("death");

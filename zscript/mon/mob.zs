@@ -9,14 +9,19 @@ class HDMobBase : HDActor{
 	int hdmobflags;
 	flagdef doesntbleed:hdmobflags,0;
 	flagdef hasdroppedgun:hdmobflags,1;
+	flagdef hasnodistincthead:hdmobflags,2;
 
 	double bulletfactormin;double bulletfactormax;
 	property bulletfactor:bulletfactormin,bulletfactormax;
+	double bulletfactor(){
+		if(bulletfactormin==bulletfactormax)return bulletfactormin;
+		return frandom(bulletfactormin,bulletfactormax);
+	}
 
 	default{
 		monster;
 		radius 12;
-		hdmobbase.bulletfactor 0.8,1.0;
+		hdmobbase.bulletfactor 0.5,0.8;
 	}
 }
 
