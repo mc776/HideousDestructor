@@ -95,12 +95,12 @@ class HDBulletActor:Actor{
 		accuracy 200;
 		stamina 838;
 
-//776
-		pushfactor 0.05;
-		speed 1100;
-		mass 1344;
-		accuracy 600;
-		stamina 776;
+//zm
+		pushfactor 0.4;
+		mass 320;
+		speed 1200;
+		accuracy 666;
+		stamina 426;
 
 //9mm
 		pushfactor 0.5;
@@ -109,12 +109,12 @@ class HDBulletActor:Actor{
 		accuracy 200;
 		stamina 900;
 
-//zm
-		pushfactor 0.4;
-		mass 320;
-		speed 1200;
-		accuracy 666;
-		stamina 426;
+//776
+		pushfactor 0.05;
+		speed 1100;
+		mass 1344;
+		accuracy 600;
+		stamina 776;
 
 
 	}
@@ -504,7 +504,18 @@ console.printf("penetration:  "..pen);
 			}
 		}
 	}
+	void forcepain(actor victim){
+		if(
+			victim
+			&&!victim.bnopain
+			&&victim.health>0
+			&&victim.findstate("pain")
+		)victim.setstatelabel("pain");
+	}
 	void onhitactor(actor hitactor,vector3 hitpos,vector3 vu){
+		traceactors.push(hitactor);
+		if(!hitactor.bshootable)return;
+
 		double hitangle=absangle(angle,angleto(hitactor)); //0 is dead centre
 		double pen=penetration();
 
@@ -525,7 +536,8 @@ console.printf("penetration:  "..pen);
 
 		//immediate impact
 		//highly random
-		double impact=speed*speed*0.0001*mass;
+		double tinyspeedsquared=speed*speed*0.000001;
+		double impact=tinyspeedsquared*0.01*mass;
 
 		//bullet hits without penetrating
 		//abandon all damage after impact, then check ricochet
@@ -550,46 +562,45 @@ console.printf("penetration:  "..pen);
 				A_ChangeVelocity(cos(pitch),0,sin(-pitch),CVF_RELATIVE|CVF_REPLACE);
 			}
 
-			hitactor.damagemobj(self,target,impact,"Bashing");
-			if(
-				!hitactor.bnopain
-				&&hitactor.findstate("pain")
-				&&impact>hitactor.health*0.3
-			)hitactor.setstatelabel("pain");
+			hitactor.damagemobj(self,target,impact,"Bashing",DMG_THRUSTLESS);
+			forcepain(hitactor);
 			return;
 		}
 
 		//bullet penetrated, both impact and temp cavity do bashing
 		//if over 10% maxhealth, force pain
-		impact+=speed*speed*0.000001;
+		impact+=tinyspeedsquared*frandom(6,16);
 		if(speed>HDCONST_SPEEDOFSOUND){
-			hitactor.damagemobj(self,target,impact,"Bashing");
-			if(
-				!hitactor.bnopain
-				&&hitactor.findstate("pain")
-				&&impact>hitactor.health*0.1
-			)hitactor.setstatelabel("pain");
+			hitactor.damagemobj(self,target,impact*frandom(0.6,1.6),"Bashing",DMG_THRUSTLESS);
+			forcepain(hitactor);
 		}
 
 		//check if going right through the body
 		//it's not "deep enough", it's "too deep" now!
 		deepenough=pen<hitactor.radius*2-frandom(0,0.01*hitangle);
 
+		//determine what kind of blood to use
+		class<actor>hitblood;
+		if(hitactor.bnoblood)hitblood="FragPuff";else hitblood=hitactor.bloodtype;
+
 		//basic threshold bleeding
 		//proportionate to permanent wound channel
 		//stamina, pushfactor, hardness
 		double channelwidth=
-			stamina*0.01
-			*frandom(3.,3+pushfactor)
-			*max(1,frandom(1.,7-hardness))
+			stamina*0.001
+			*frandom(10.,10+pushfactor)
+			*(1+frandom(0.,max(0,6-hardness)))
 		;
-		if(!deepenough){
+		if(deepenough){
+			bmissile=false;
+			setstatelabel("death");
+		}else{
 			channelwidth*=1.1;
 			//then spawn exit wound blood
 			for(int i=0;i<pen;i+=10){
 				bool gbg;actor blood;
 				[gbg,blood]=hitactor.A_SpawnItemEx(
-					hitactor.bloodtype,
+					hitblood,
 					hitactor.radius*0.6,0,pos.z-hitactor.pos.z,
 					angle:hitactor.angleto(self),
 					flags:SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
@@ -598,10 +609,8 @@ console.printf("penetration:  "..pen);
 					+(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.4))
 				;
 			}
-		}else{
-			bmissile=false;
-			setstatelabel("death");
 		}
+		if(hd_debug)console.printf("wound channel:  "..channelwidth.." x "..pen);
 
 		//major-artery incurable bleeding
 		//can't be done on "just" a graze (abs(angle,angleto(hitactor))>50)
@@ -613,7 +622,7 @@ console.printf("penetration:  "..pen);
 		for(int i=-1;i<suckingwound;i++){
 			bool gbg;actor blood;
 			[gbg,blood]=hitactor.A_SpawnItemEx(
-				hitactor.bloodtype,
+				hitblood,
 				-hitactor.radius*0.6,0,pos.z-hitactor.pos.z,
 				angle:hitactor.angleto(self),
 				flags:SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
@@ -627,9 +636,14 @@ console.printf("penetration:  "..pen);
 		//small column in middle centre
 		//only if NET penetration is at least hitactor.radius
 		//add size of channel to damage
-		if(frandom(0,pen*1.2)>hitactor.radius){
-			hitactor.damagemobj(self,target,random(impact,hitactor.health),"Piercing");
-			if(!hitactor.bnopain&&hitactor.health>0&&hitactor.findstate("pain"))hitactor.setstatelabel("pain");
+		if(
+			hitangle<8
+			&&hitpos.z-hitactor.pos.z>hitactor.height*0.6
+			&&frandom(0,pen*1.2)>hitactor.radius
+		){
+			if(hd_debug)console.printf("CRIT!");
+			hitactor.damagemobj(self,target,random(impact,hitactor.health),"Piercing",DMG_THRUSTLESS);
+			forcepain(hitactor);
 			suckingwound=true;
 		}
 
@@ -660,7 +674,7 @@ class HDBleedingWound:Thinker{
 	int ticker;
 	double zed;
 	enum bleednums{
-		BLEED_MAXTICS=140,
+		BLEED_MAXTICS=40,
 	}
 	override void tick(){
 		if(ticker>0){
