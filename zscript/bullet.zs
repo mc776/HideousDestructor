@@ -30,7 +30,13 @@ class HDBulletTracer:LineTracer{
 			)return TRACE_Skip;
 			int skipsize=bullet.traceactors.size();
 			for(int i=0;i<skipsize;i++){
-				if(bullet.traceactors[i]==results.hitactor)return TRACE_Skip;
+				if(
+					bullet.traceactors[i]==results.hitactor
+					||(
+						results.hitactor is "TempShield"
+						&&bullet.traceactors[i]==results.hitactor.master
+					)
+				)return TRACE_Skip;
 			}
 		}else if(results.hittype==TRACE_HitWall){
 			int skipsize=bullet.tracelines.size();
@@ -90,19 +96,19 @@ class HDBulletActor:Actor{
 		stamina 776;
 
 
-//00
-		pushfactor 0.9;
-		mass 576;
-		speed 700;
-		accuracy 200;
-		stamina 838;
-
 //zm
 		pushfactor 0.4;
 		mass 320;
 		speed 1200;
 		accuracy 666;
 		stamina 426;
+
+//00
+		pushfactor 0.9;
+		mass 576;
+		speed 700;
+		accuracy 200;
+		stamina 838;
 
 //9mm
 		pushfactor 0.5;
@@ -517,7 +523,7 @@ console.printf("penetration:  "..pen);
 	}
 	void onhitactor(actor hitactor,vector3 hitpos,vector3 vu){
 		if(!hitactor.bshootable)return;
-
+A_Log(hitactor.getclassname()..hitactor.pos.x);
 		double hitangle=absangle(angle,angleto(hitactor)); //0 is dead centre
 		double pen=penetration();
 
@@ -644,12 +650,14 @@ console.printf("penetration:  "..pen);
 		if(
 			hitangle<12
 			&&hitpos.z-hitactor.pos.z>hitactor.height*0.6
-			&&frandom(0,pen*1.2)>fakeradius
+			&&pen*frandom(2.,3.)>fakeradius
 		){
 			if(hd_debug)console.printf("CRIT!");
-			hitactor.damagemobj(self,target,random(impact,(int(impact)<<2)),"Piercing",DMG_THRUSTLESS);
+			hitactor.damagemobj(self,target,impact+random(0,hitactor.health),"Piercing",DMG_THRUSTLESS);
 			forcepain(hitactor);
 			suckingwound=true;
+			pen*=2;
+			channelwidth*=2;
 		}
 
 		//inflict wound
