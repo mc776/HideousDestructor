@@ -71,6 +71,7 @@ class HDBulletActor:Actor{
 		+noblockmap
 		+missile
 		+noextremedeath
+		+cannotpush
 		height 0.1;radius 0.1;
 		/*
 			speed: 200-1000
@@ -567,7 +568,7 @@ console.printf("penetration:  "..pen);
 			}
 
 			hitactor.damagemobj(self,target,impact,"Bashing",DMG_THRUSTLESS);
-			forcepain(hitactor);
+			if(impact>(hitactor.health>>3))forcepain(hitactor);
 			return;
 		}
 
