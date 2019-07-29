@@ -285,6 +285,7 @@ console.printf("penetration:  "..pen);
 
 					HitGeometry(null,hitsector,0,bres.hittype==TRACE_HitCeiling?SECPART_Ceiling:SECPART_Floor,vu);
 				}else if(bres.hittype==TRACE_HitActor){
+					traceactors.push(bres.hitactor);
 					onhitactor(bres.hitactor,bres.hitpos,vu);
 				}
 			}
@@ -514,7 +515,6 @@ console.printf("penetration:  "..pen);
 		)victim.setstatelabel("pain");
 	}
 	void onhitactor(actor hitactor,vector3 hitpos,vector3 vu){
-		traceactors.push(hitactor);
 		if(!hitactor.bshootable)return;
 
 		double hitangle=absangle(angle,angleto(hitactor)); //0 is dead centre
@@ -574,7 +574,6 @@ console.printf("penetration:  "..pen);
 		//bullet penetrated, both impact and temp cavity do bashing
 		//if over 10% maxhealth, force pain
 		impact+=tinyspeedsquared*frandom(0.03,0.08)*stamina;
-A_LogFLoat(tinyspeedsquared*frandom(0.03,0.08)*stamina);
 		if(speed>HDCONST_SPEEDOFSOUND){
 			hitactor.damagemobj(self,target,impact,"Bashing",DMG_THRUSTLESS);
 			forcepain(hitactor);
@@ -642,12 +641,12 @@ A_LogFLoat(tinyspeedsquared*frandom(0.03,0.08)*stamina);
 		//only if NET penetration is at least fakeradius
 		//add size of channel to damage
 		if(
-			hitangle<8
+			hitangle<12
 			&&hitpos.z-hitactor.pos.z>hitactor.height*0.6
 			&&frandom(0,pen*1.2)>fakeradius
 		){
 			if(hd_debug)console.printf("CRIT!");
-			hitactor.damagemobj(self,target,random(impact,(int(impact)<<3)),"Piercing",DMG_THRUSTLESS);
+			hitactor.damagemobj(self,target,random(impact,(int(impact)<<2)),"Piercing",DMG_THRUSTLESS);
 			forcepain(hitactor);
 			suckingwound=true;
 		}
