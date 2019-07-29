@@ -582,7 +582,7 @@ A_LogFLoat(tinyspeedsquared*frandom(0.03,0.08)*stamina);
 
 		//check if going right through the body
 		//it's not "deep enough", it's "too deep" now!
-		deepenough=pen<fakeradius*2-frandom(0,0.01*hitangle);
+		deepenough=pen<hitactor.radius*2-frandom(0,0.01*hitangle);
 
 		//determine what kind of blood to use
 		class<actor>hitblood;
