@@ -121,11 +121,13 @@ class Satanball:HDFireball{
 		damagefunction(256);
 	}
 	actor lite;
+	string pcol;
 	override void postbeginplay(){
 		super.postbeginplay();
 		bool gbg;
 		lite=spawn("SatanBallLight",pos,ALLOW_REPLACE);lite.target=self;
 		if(satanrobo(target))satanrobo(target).shields-=40;
+		pcol=(Wads.CheckNumForName("FREEDOOM",0)!=-1)?"55 88 ff":"55 ff 88";
 	}
 	states{
 	spawn:
@@ -140,7 +142,7 @@ class Satanball:HDFireball{
 		}
 		BFS1 ABAB 1 bright{
 			for(int i=0;i<10;i++){
-				A_SpawnParticle("green",SPF_RELATIVE|SPF_FULLBRIGHT,35,frandom(1,4),0,
+				A_SpawnParticle(pcol,SPF_RELATIVE|SPF_FULLBRIGHT,35,frandom(1,4),0,
 					frandom(-8,8)-5*cos(pitch),frandom(-8,8),frandom(0,8)+sin(pitch)*5,
 					frandom(-1,1),frandom(-1,1),frandom(1,2),
 					-0.1,frandom(-0.1,0.1),-0.05
@@ -193,8 +195,9 @@ class SatanBallLight:PointLight{
 	override void postbeginplay(){
 		super.postbeginplay();
 		args[0]=52;
-		args[1]=206;
-		args[2]=48;
+		bool freedoom=(Wads.CheckNumForName("FREEDOOM",0)!=-1);
+		args[1]=freedoom?48:206;
+		args[2]=freedoom?206:48;
 		args[3]=0;
 		args[4]=0;
 	}

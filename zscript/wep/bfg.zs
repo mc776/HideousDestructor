@@ -669,16 +669,16 @@ class BFGBalle:HDFireball{
 	}
 }
 class BFGBallRemains:IdleDummy{
-	bool freedoom;
+	string pcol;
 	states{
 	spawn:
 		TNT1 A 0 nodelay{
-			freedoom=(Wads.CheckNumForName("FREEDOOM",0)!=-1);
+			pcol=(Wads.CheckNumForName("FREEDOOM",0)!=-1)?"55 88 ff":"55 ff 88";
 			stamina=0;
 		}
 	spawn2:
 		TNT1 AAAA 1 A_SpawnParticle(
-			freedoom?"55 88 ff":"55 ff 88",SPF_FULLBRIGHT,35,
+			pcol,SPF_FULLBRIGHT,35,
 			size:frandom(1,8),0,
 			frandom(-16,16),frandom(-16,16),frandom(0,8),
 			frandom(-1,1),frandom(-1,1),frandom(1,2),
@@ -688,7 +688,7 @@ class BFGBallRemains:IdleDummy{
 		TNT1 A 0{stamina++;}
 		TNT1 A 0 A_JumpIf(stamina<10,"spawn2");
 		TNT1 AAAAAA 2 A_SpawnParticle(
-			freedoom?"55 88 ff":"55 ff 88",SPF_FULLBRIGHT,35,
+			pcol,SPF_FULLBRIGHT,35,
 			size:frandom(1,8),0,
 			frandom(-16,16),frandom(-16,16),frandom(0,8),
 			frandom(-1,1),frandom(-1,1),frandom(1,2),
