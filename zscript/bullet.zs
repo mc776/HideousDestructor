@@ -604,9 +604,9 @@ A_Log(hitactor.getclassname()..hitactor.pos.x);
 		//if over 10% maxhealth, force pain
 		impact+=tinyspeedsquared*frandom(0.03,0.08)*stamina;
 		if(speed>HDCONST_SPEEDOFSOUND){
-			hitactor.damagemobj(self,target,impact,"Bashing",DMG_THRUSTLESS);
+			hitactor.damagemobj(self,target,max(random(1,5),impact),"Bashing",DMG_THRUSTLESS);
 			forcepain(hitactor);
-		}
+		}else hitactor.damagemobj(self,target,max(1,impact),"Bashing",DMG_THRUSTLESS);
 
 		//check if going right through the body
 		//it's not "deep enough", it's "too deep" now!
