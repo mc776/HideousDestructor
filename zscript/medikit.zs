@@ -603,7 +603,8 @@ class SelfBandage:HDWoundFixer{
 	}
 	override string,double getpickupsprite(){return "BLUDC0",1.;}
 	override string gethelptext(){return "\cuImprovised Bandaging\n"..WEPHELP_INJECTOR
-		..(owner.countinv("BloodBagWorn")?"\n"..WEPHELP_ALTRELOAD.."  Remove blood feeder":"");}
+		.."\n"..WEPHELP_ALTRELOAD.."  Remove blood feeder"
+		..(owner.countinv("BloodBagWorn")?"":"(if any)");}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
 		int of=0;
 		if(hpl.woundcount){
