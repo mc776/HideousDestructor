@@ -7,7 +7,11 @@ class bltest:hdweapon{
 	states{
 	fire:
 		TNT1 A 0{
-			HDBulletActor.FireBullet(self);
+			HDBulletActor.FireBullet(self,"HDNBullet9");
+		}goto nope;
+	altfire:
+		TNT1 A 0{
+			HDBulletActor.FireBullet(self,"HDNBullet776");
 		}goto nope;
 	}
 }
@@ -45,6 +49,24 @@ class HDBulletTracer:LineTracer{
 			}
 		}
 		return TRACE_Stop;
+	}
+}
+class HDNBullet776:HDBulletActor{
+	default{
+		pushfactor 0.05;
+		speed 1100;
+		mass 1344;
+		accuracy 600;
+		stamina 776;
+	}
+}
+class HDNBullet9:HDBulletActor{
+	default{
+		pushfactor 0.5;
+		mass 1539;
+		speed 420;
+		accuracy 200;
+		stamina 900;
 	}
 }
 class HDBulletActor:Actor{
@@ -103,13 +125,6 @@ class HDBulletActor:Actor{
 		accuracy 666;
 		stamina 426;
 
-//00
-		pushfactor 0.9;
-		mass 576;
-		speed 700;
-		accuracy 200;
-		stamina 838;
-
 //9mm
 		pushfactor 0.5;
 		mass 1539;
@@ -123,6 +138,13 @@ class HDBulletActor:Actor{
 		mass 1344;
 		accuracy 600;
 		stamina 776;
+
+//00
+		pushfactor 0.9;
+		mass 576;
+		speed 700;
+		accuracy 200;
+		stamina 838;
 
 
 	}
