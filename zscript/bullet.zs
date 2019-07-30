@@ -735,7 +735,10 @@ class HDBleedingWound:Thinker{
 			if(!bleeder)return;
 if(hd_debug)console.printf(bleeder.getclassname().." bled to "..bleeder.health);
 			if(bleeder.health<1&&bleedrate<random(10,60))bleeder.deathsound="";
-			bleeder.A_SpawnItemEx(bleeder.bloodtype,
+			if(
+				level.time&4
+				&&!(level.time&1)
+			)bleeder.A_SpawnItemEx(bleeder.bloodtype,
 				frandom(-12,12),frandom(-12,12),
 				flags:SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
 			);
