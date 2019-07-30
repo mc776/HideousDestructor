@@ -1,7 +1,7 @@
 // ------------------------------------------------------------
 // Lost Soul
 // ------------------------------------------------------------
-class Begotten:HDMobBase replaces LostSoul{
+class FlyingSkull:HDMobBase replaces LostSoul{
 	default{
 		mass 50;
 		painchance 256;
@@ -221,7 +221,7 @@ class Begotten:HDMobBase replaces LostSoul{
 // ------------------------------------------------------------
 // Pain Elemental
 // ------------------------------------------------------------
-class HivePit:HDMobBase replaces PainElemental{
+class SkullSpitter:HDMobBase replaces PainElemental{
 	default{
 		radius 24;
 		height 56;
@@ -246,7 +246,7 @@ class HivePit:HDMobBase replaces PainElemental{
 		bloodtype "ShieldNotBlood";
 	}
 	int shields;
-	enum HivePitStats{
+	enum SkullSpitterStats{
 		PE_SHIELDMAX=200,
 	}
 	override int damagemobj(
@@ -294,7 +294,7 @@ class HivePit:HDMobBase replaces PainElemental{
 		PAIN F 6 A_FaceTarget(10,10);
 		PAIN C 12{
 			if(brewing>20){
-				let aaa=Begotten(spawn("Begotten",pos,ALLOW_REPLACE));
+				let aaa=FlyingSkull(spawn("FlyingSkull",pos,ALLOW_REPLACE));
 				aaa.addz(32);
 				aaa.master=self;
 				aaa.target=target;
@@ -342,13 +342,13 @@ class HivePit:HDMobBase replaces PainElemental{
 		PAIN JJJKKK 1 A_SpawnItemEx("HDSmoke", random(-4,4), random(-4,4), random(-2,4), vel.x,vel.y,vel.z+random(1,4), random(0,360), 168, 16);
 		PAIN LLL 0{
 			actor aaa;
-			[bseesdaggers,aaa]=A_SpawnItemEx("Begotten",
+			[bseesdaggers,aaa]=A_SpawnItemEx("FlyingSkull",
 				randompick(-20,0,20),randompick(-20,0,20),frandom(1,12),
 				frandom(2,7),frandom(-4,4),frandom(1,3),
 				frandom(-45,45),
 				flags:SXF_NOCHECKPOSITION|SXF_SETMASTER
 			);
-			let ccc=Begotten(aaa);if(ccc)ccc.A_SkullLaunch();
+			let ccc=FlyingSkull(aaa);if(ccc)ccc.A_SkullLaunch();
 		}
 		PAIN LL 1 A_SpawnItemEx("HDSmoke", random(-4,4), random(-4,4), random(-2,4), vel.x,vel.y,vel.z+random(1,4), random(0,360), 168, 16);
 		PAIN LLLMMMM 1 A_SpawnItemEx("HDSmoke", random(-4,4), random(-4,4), random(-2,4), vel.x,vel.y,vel.z+random(1,4), random(0,360), 168, 72);

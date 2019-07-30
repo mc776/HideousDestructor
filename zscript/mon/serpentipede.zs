@@ -122,8 +122,8 @@ class HDImpBall:HDFireball{
 					&&!(tracer is "CaeloBite")
 					&&!(tracer is "Technorantula")
 					&&!(tracer is "TechnoSpider")
-					&&!(tracer is "HivePit")
-					&&!(tracer is "Begotten")
+					&&!(tracer is "SkullSpitter")
+					&&!(tracer is "FlyingSkull")
 					&&!(tracer is "Putto")
 					&&!(tracer is "Yokai")
 				){

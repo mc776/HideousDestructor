@@ -749,7 +749,7 @@ class ShieldNotBlood:NotQuiteBloodSplat{
 		if(
 			(satanrobo(target)&&satanrobo(target).shields>50)
 			||(Technorantula(target)&&Technorantula(target).shields>50)
-			||(HivePit(target)&&HivePit(target).shields>50)
+			||(SkullSpitter(target)&&SkullSpitter(target).shields>50)
 		){
 			A_SetTranslucent(1,1);
 			grav=-0.6;

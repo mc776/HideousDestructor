@@ -33,7 +33,7 @@ class PainLord:HDMobBase replaces BaronofHell{
 		hitobituary "%o was shredded by a baron of hell.";
 	}
 	void A_BaronSoul(){
-			let aaa=Begotten(spawn("Begotten",pos,ALLOW_REPLACE));
+			let aaa=FlyingSkull(spawn("FlyingSkull",pos,ALLOW_REPLACE));
 			aaa.addz(32);
 			aaa.master=self;
 			aaa.target=target;
