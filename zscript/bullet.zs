@@ -417,7 +417,7 @@ console.printf("penetration:  "..pen);
 			//reduce penetration and streamlinedness
 
 		//if impact is too steep, randomly fail to ricochet
-		double maxricangle=frandom(50,90)-pen;
+		double maxricangle=frandom(50,90)-pen-hardness;
 
 		if(hitline){
 			//angle of line
