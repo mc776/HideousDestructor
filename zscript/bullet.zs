@@ -182,9 +182,12 @@ class HDBulletActor:Actor{
 
 
 	}
+	virtual void gunsmoke(){}
+	virtual void longarmwobble(){}
 	override void postbeginplay(){
 		super.postbeginplay();
 		gunsmoke();
+		longarmwobble();
 		if(distantsounder!="none"){
 			actor m=spawn(distantsounder,pos,ALLOW_REPLACE);
 			m.target=target;
@@ -206,7 +209,6 @@ console.printf("penetration:  "..pen);
 	override bool cancollidewith(actor other,bool passive){
 		return !passive;
 	}
-	virtual void GunSmoke(){}
 	static HDBulletActor FireBullet(
 		actor caller,
 		class<HDBulletActor> type="HDBulletActor",
