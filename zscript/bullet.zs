@@ -37,6 +37,10 @@ class bltest:hdweapon{
 		TNT1 A 0{
 			HDBulletActor.FireBullet(self,"HDNBullet426");
 		}goto nope;
+	user2:
+		TNT1 AAAAAAA 0{
+			HDBulletActor.FireBullet(self,"HDNBullet00",spread:1,variation:0.1);
+		}goto nope;
 	}
 }
 class HDBulletTracer:LineTracer{
@@ -82,7 +86,7 @@ class HDNBullet426:HDBulletActor{
 		speed 1200;
 		accuracy 666;
 		stamina 426;
-		hdbulletactor.hardness 3;
+		hdbulletactor.hardness 2;
 	}
 }
 class HDNBullet776:HDBulletActor{
@@ -101,6 +105,25 @@ class HDNBullet9:HDBulletActor{
 		speed 420;
 		accuracy 200;
 		stamina 900;
+		hdbulletactor.hardness 3;
+	}
+}
+class HDNBullet355:HDBulletActor{
+	default{
+		pushfactor 0.4;
+		mass 1570;
+		speed 440;
+		accuracy 200;
+		stamina 900;
+	}
+}
+class HDNBullet00:HDBulletActor{
+	default{
+		pushfactor 0.9;
+		mass 576;
+		speed 700;
+		accuracy 200;
+		stamina 838;
 	}
 }
 class HDBulletActor:Actor{
@@ -203,7 +226,7 @@ class HDBulletActor:Actor{
 			*(1./50000)
 		;
 		if(pushfactor>0)pen/=(1.+pushfactor);
-console.printf("penetration:  "..pen);
+if(hd_debug)console.printf("penetration:  "..pen);
 		return pen;
 	}
 	override bool cancollidewith(actor other,bool passive){
@@ -212,7 +235,11 @@ console.printf("penetration:  "..pen);
 	static HDBulletActor FireBullet(
 		actor caller,
 		class<HDBulletActor> type="HDBulletActor",
-		double zofs=999
+		double zofs=999,
+		double spread=0,
+		double variation=0,
+		double aimoffx=0,
+		double aimoffy=0
 	){
 		if(zofs==999)zofs=caller.height-6;
 		let bbb=HDBulletActor(spawn(type,(caller.pos.x,caller.pos.y,caller.pos.z+zofs)));
@@ -220,6 +247,13 @@ console.printf("penetration:  "..pen);
 		bbb.traceactors.push(caller);
 		bbb.angle=caller.angle;bbb.pitch=caller.pitch;
 		bbb.vel=caller.vel;
+		if(variation)bbb.speed*=(1+frandom(-variation,variation));
+		if(spread){
+			bbb.angle+=frandom(-spread,spread);
+			bbb.pitch+=frandom(-spread,spread);
+		}
+		if(aimoffx)bbb.angle+=aimoffx;
+		if(aimoffy)bbb.angle+=aimoffy;
 		bbb.A_ChangeVelocity(bbb.speed*cos(bbb.pitch),0,bbb.speed*sin(-bbb.pitch),CVF_RELATIVE);
 		return bbb;
 	}
@@ -582,7 +616,6 @@ console.printf("penetration:  "..pen);
 	}
 	void onhitactor(actor hitactor,vector3 hitpos,vector3 vu){
 		if(!hitactor.bshootable)return;
-A_Log(hitactor.getclassname()..hitactor.pos.x);
 		double hitangle=absangle(angle,angleto(hitactor)); //0 is dead centre
 		double pen=penetration();
 
@@ -658,7 +691,13 @@ A_Log(hitactor.getclassname()..hitactor.pos.x);
 		//stamina, pushfactor, hardness
 		double channelwidth=
 			stamina
-			*0.0001
+			*(
+				//if it doesn't bleed, it's probably rigid
+				(
+					hdmobbase(hitactor)
+					&&hdmobbase(hitactor).bdoesntbleed
+				)?0.0002:0.0001
+			)
 			*frandom(10.,10+pushfactor)
 			*(1+frandom(0.,max(0,6-hardness)))
 		;
@@ -705,7 +744,7 @@ A_Log(hitactor.getclassname()..hitactor.pos.x);
 
 		//add size of channel to damage
 		int chdmg=int(channelwidth*pen)>>5;
-console.printf("channel HP damage: "..chdmg);
+if(hd_debug)console.printf("channel HP damage: "..chdmg);
 		bnoextremedeath=(chdmg<<2)<getdefaultbytype(hitactor.getclass()).health;
 
 		//cns severance
