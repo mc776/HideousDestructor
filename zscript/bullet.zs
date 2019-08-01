@@ -186,8 +186,8 @@ class HDBulletActor:Actor{
 	virtual void longarmwobble(){}
 	override void postbeginplay(){
 		super.postbeginplay();
-		gunsmoke();
 		longarmwobble();
+		gunsmoke();
 		if(distantsounder!="none"){
 			actor m=spawn(distantsounder,pos,ALLOW_REPLACE);
 			m.target=target;
