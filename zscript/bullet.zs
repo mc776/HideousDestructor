@@ -4,6 +4,26 @@
 
 class bltest:hdweapon{
 	default{hdweapon.refid "blt";}
+	override void DrawSightPicture(
+		HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl,
+		bool sightbob,vector2 bob,double fov,bool scopeview,actor hpc,string whichdot
+	){
+		double dotoff=max(abs(bob.x),abs(bob.y));
+		if(dotoff<10){
+			sb.drawimage(
+				"riflsit3",(0,0)+bob*1.6,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
+				alpha:0.8-dotoff*0.04,scale:(0.8,0.8)
+			);
+		}
+		sb.drawimage(
+			"xh25",(0,0)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
+			scale:(1.6,1.6)
+		);
+		int airburst=hdw.airburst;
+		if(airburst)sb.drawnum(airburst,
+			10+bob.x,9+bob.y,sb.DI_SCREEN_CENTER,Font.CR_BLACK
+		);
+	}
 	states{
 	fire:
 		TNT1 A 0{
@@ -12,6 +32,10 @@ class bltest:hdweapon{
 	altfire:
 		TNT1 A 0{
 			HDBulletActor.FireBullet(self,"HDNBullet776");
+		}goto nope;
+	reload:
+		TNT1 A 0{
+			HDBulletActor.FireBullet(self,"HDNBullet426");
 		}goto nope;
 	}
 }
@@ -49,6 +73,16 @@ class HDBulletTracer:LineTracer{
 			}
 		}
 		return TRACE_Stop;
+	}
+}
+class HDNBullet426:HDBulletActor{
+	default{
+		pushfactor 0.4;
+		mass 320;
+		speed 1200;
+		accuracy 666;
+		stamina 426;
+		hdbulletactor.hardness 3;
 	}
 }
 class HDNBullet776:HDBulletActor{
@@ -181,6 +215,7 @@ console.printf("penetration:  "..pen);
 		if(zofs==999)zofs=caller.height-6;
 		let bbb=HDBulletActor(spawn(type,(caller.pos.x,caller.pos.y,caller.pos.z+zofs)));
 		bbb.target=caller;
+		bbb.traceactors.push(caller);
 		bbb.angle=caller.angle;bbb.pitch=caller.pitch;
 		bbb.vel=caller.vel;
 		bbb.A_ChangeVelocity(bbb.speed*cos(bbb.pitch),0,bbb.speed*sin(-bbb.pitch),CVF_RELATIVE);
@@ -620,7 +655,8 @@ A_Log(hitactor.getclassname()..hitactor.pos.x);
 		//proportionate to permanent wound channel
 		//stamina, pushfactor, hardness
 		double channelwidth=
-			stamina*0.001
+			stamina
+			*0.0001
 			*frandom(10.,10+pushfactor)
 			*(1+frandom(0.,max(0,6-hardness)))
 		;
@@ -665,21 +701,35 @@ A_Log(hitactor.getclassname()..hitactor.pos.x);
 			;
 		}
 
+		//add size of channel to damage
+		int chdmg=int(channelwidth*pen)>>5;
+console.printf("channel HP damage: "..chdmg);
+		bnoextremedeath=(chdmg<<2)<getdefaultbytype(hitactor.getclass()).health;
+
 		//cns severance
 		//small column in middle centre
 		//only if NET penetration is at least fakeradius
-		//add size of channel to damage
 		if(
 			hitangle<12
 			&&hitpos.z-hitactor.pos.z>hitactor.height*0.6
 			&&pen*frandom(2.,3.)>fakeradius
 		){
 			if(hd_debug)console.printf("CRIT!");
-			hitactor.damagemobj(self,target,impact+random(0,hitactor.health),"Piercing",DMG_THRUSTLESS);
+			hitactor.damagemobj(
+				self,target,
+				chdmg+random(0,hitactor.health),
+				"Piercing",DMG_THRUSTLESS
+			);
 			forcepain(hitactor);
 			suckingwound=true;
 			pen*=2;
 			channelwidth*=2;
+		}else{
+			hitactor.damagemobj(
+				self,target,
+				chdmg,
+				"Piercing",DMG_THRUSTLESS
+			);
 		}
 
 		//inflict wound
@@ -727,22 +777,21 @@ class HDBleedingWound:Thinker{
 		}
 		bleedpoints--;
 		ticker=max(0,BLEED_MAXTICS-bleedrate);
-		int bleeds=1;
-		int excessbleedrate=bleedrate-BLEED_MAXTICS;
-		if(excessbleedrate>0)bleeds+=random(0,excessbleedrate);
-		for(int i=0;i<bleeds;i++){
-			bleeder.damagemobj(bleeder,null,bleeds,"bleedout",DMG_NO_PAIN|DMG_THRUSTLESS);
-			if(!bleeder)return;
-if(hd_debug)console.printf(bleeder.getclassname().." bled to "..bleeder.health);
-			if(bleeder.health<1&&bleedrate<random(10,60))bleeder.deathsound="";
-			if(
-				level.time&4
-				&&!(level.time&1)
-			)bleeder.A_SpawnItemEx(bleeder.bloodtype,
+		int bleeds=(bleedrate>>4);
+		do{
+			bleeds--;
+			bleeder.A_SpawnItemEx(bleeder.bloodtype,
 				frandom(-12,12),frandom(-12,12),
 				flags:SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
 			);
+		}while(bleeds>0);
+		int bled=bleeder.damagemobj(bleeder,null,bleedrate,"bleedout",DMG_NO_PAIN|DMG_THRUSTLESS);
+		if(bled<1){
+			destroy();
+			return;
 		}
+		if(bleeder&&bleeder.health<1&&bleedrate<random(10,60))bleeder.deathsound="";
+if(hd_debug&&bleeder)console.printf(bleeder.getclassname().." bled to "..bleeder.health);
 	}
 	static void inflict(
 		actor bleeder,

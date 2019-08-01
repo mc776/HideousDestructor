@@ -23,6 +23,25 @@ class HDMobBase : HDActor{
 		radius 12;
 		hdmobbase.bulletfactor 0.5,0.8;
 	}
+
+	override int damagemobj(
+		actor inflictor,actor source,int damage,
+		name mod,int flags,double angle
+	){
+		//bashing
+		if(
+			mod=="bashing"
+			&&damage>=health-20
+			&&damage<getdefaultbytype(getclass()).health
+			&&random(0,7)
+		){
+			damage=max(1,health-20);
+		}
+
+		return super.damagemobj(
+			inflictor,source,damage,mod,flags,angle
+		);
+	}
 }
 
 
