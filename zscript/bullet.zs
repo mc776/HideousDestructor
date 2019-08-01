@@ -27,19 +27,19 @@ class bltest:hdweapon{
 	states{
 	fire:
 		TNT1 A 0{
-			HDBulletActor.FireBullet(self,"HDNBullet9");
+			HDBulletActor.FireBullet(self,"HDB_9");
 		}goto nope;
 	altfire:
 		TNT1 A 0{
-			HDBulletActor.FireBullet(self,"HDNBullet776");
+			HDBulletActor.FireBullet(self,"HDB_776");
 		}goto nope;
 	reload:
 		TNT1 A 0{
-			HDBulletActor.FireBullet(self,"HDNBullet426");
+			HDBulletActor.FireBullet(self,"HDB_426");
 		}goto nope;
 	user2:
 		TNT1 AAAAAAA 0{
-			HDBulletActor.FireBullet(self,"HDNBullet00",spread:1,variation:0.1);
+			HDBulletActor.FireBullet(self,"HDB_00",spread:1,variation:0.1);
 		}goto nope;
 	}
 }
@@ -79,7 +79,7 @@ class HDBulletTracer:LineTracer{
 		return TRACE_Stop;
 	}
 }
-class HDNBullet426:HDBulletActor{
+class HDB_426:HDBulletActor{
 	default{
 		pushfactor 0.4;
 		mass 320;
@@ -89,7 +89,7 @@ class HDNBullet426:HDBulletActor{
 		hdbulletactor.hardness 2;
 	}
 }
-class HDNBullet776:HDBulletActor{
+class HDB_776:HDBulletActor{
 	default{
 		pushfactor 0.05;
 		speed 1100;
@@ -98,7 +98,7 @@ class HDNBullet776:HDBulletActor{
 		stamina 776;
 	}
 }
-class HDNBullet9:HDBulletActor{
+class HDB_9:HDBulletActor{
 	default{
 		pushfactor 0.5;
 		mass 1539;
@@ -108,7 +108,7 @@ class HDNBullet9:HDBulletActor{
 		hdbulletactor.hardness 3;
 	}
 }
-class HDNBullet355:HDBulletActor{
+class HDB_355:HDBulletActor{
 	default{
 		pushfactor 0.4;
 		mass 1570;
@@ -117,7 +117,7 @@ class HDNBullet355:HDBulletActor{
 		stamina 900;
 	}
 }
-class HDNBullet00:HDBulletActor{
+class HDB_00:HDBulletActor{
 	default{
 		pushfactor 0.9;
 		mass 576;
@@ -480,6 +480,13 @@ if(hd_debug)console.printf("penetration:  "..pen);
 		//in case the puff() detonated or destroyed the bullet
 		if(!self||!bmissile)return;
 
+		//no one cares after this
+		if(pen<0.1){
+			setstatelabel("death");
+			vel=(0,0,0);
+			return;
+		}
+
 		//see if the bullet ricochets
 		bool didricochet=false;
 			//don't ricochet on meat
@@ -549,6 +556,7 @@ if(hd_debug)console.printf("penetration:  "..pen);
 					pitch=-planepitch;
 				}
 				A_ChangeVelocity(cos(pitch),0,sin(-pitch),CVF_RELATIVE|CVF_REPLACE);
+				speed*=(1-frandom(0.,0.02)*(7-hardness)-(hitangle*0.003));
 				vel*=speed;
 			}
 		}
@@ -635,7 +643,7 @@ if(hd_debug)console.printf("penetration:  "..pen);
 
 		//deform the bullet
 		hardness=max(1,hardness-random(0,random(0,3)));
-		stamina+=random(0,(stamina>>1));
+		stamina+=stamina+random(0,(stamina>>1));
 
 		//immediate impact
 		//highly random
