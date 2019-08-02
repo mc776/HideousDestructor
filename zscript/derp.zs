@@ -675,7 +675,6 @@ extend class HDHandlers{
 		int derps=0;
 		bool badcommand=true;
 		while(bot=it.Next()){
-			badcommand=false;
 			let derp=DERPBot(bot);
 			if(
 				derp&&derp.master==ppp
@@ -684,10 +683,12 @@ extend class HDHandlers{
 			){
 				bool goalset=false;
 				if(cmd==6){
+					badcommand=false;
 					if(derp.cmd==DERP_AMBUSH)cmd=DERP_TURRET;
 					else cmd=DERP_AMBUSH;
 				}
 				if(cmd&&cmd<4){
+					badcommand=false;
 					derp.cmd=cmd;
 					derp.oldcmd=cmd;
 					string mode;
@@ -705,10 +706,12 @@ extend class HDHandlers{
 					}
 					ppp.A_Log(string.format("\cd[DERP]  \c%s  \cjmode",mode),true);
 				}else if(cmd==4){
+					badcommand=false;
 					goalset=true;
 					derp.goalpoint=ppp.pos.xy;
 					ppp.A_Log("\cd[DERP]  \cugoal set to  \cyYOUR POSITION",true);
 				}else if(cmd==5){
+					badcommand=false;
 					flinetracedata derpgoal;
 					ppp.linetrace(
 						ppp.angle,2048,ppp.pitch,
@@ -722,6 +725,7 @@ extend class HDHandlers{
 						ppp.A_Log(string.format("\cd[DERP]  \cugoal set to  \cx[%i,%i]",derpgoal.hitlocation.x,derpgoal.hitlocation.y),true);
 					}
 				}else if(cmd>800&&cmd<810){
+					badcommand=false;
 					vector2 which;
 					switch(cmd-800){
 						case 1:which=(-1,-1);break;
@@ -741,13 +745,12 @@ extend class HDHandlers{
 				}else if(
 					cmd==556&&derp.stuckline
 				){
+					badcommand=false;
 					derp.setstatelabel("unstuck");
 				}else if(cmd==123){
+					badcommand=false;
 					int ammo=derp.ammo;
 					ppp.A_Log(string.format("\cd[DERP] \cjtag #\cx%i \cjreporting in at [\cx%i\cj,\cx%i\cj] with %s",derp.botid,derp.pos.x,derp.pos.y,ammo>0?string.format("\cy%i\cj bullets left!",derp.ammo):"\crno ammo left!\cj Help!"),true);
-				}else{
-					badcommand=true;
-					break;
 				}
 				if(goalset){
 					derp.movestamina=20-(level.vec2diff(derp.pos.xy,derp.goalpoint)).length()/derp.speed;
