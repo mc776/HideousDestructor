@@ -784,7 +784,11 @@ if(hd_debug)console.printf("channel HP damage: "..chdmg);
 		//inflict wound
 		//note the suckingwound bool
 		hdbleedingwound.inflict(hitactor,pen,channelwidth,suckingwound);
+
+		//is there anything else you would like to share
+		additionaleffects(hitactor,pen,vu);
 	}
+	virtual void AdditionalEffects(actor hitactor,double pen,vector3 vu){}
 	virtual actor Puff(){
 		setstatelabel("death");
 		//TODO: virtual actor puff(textureid hittex,bool reverse=false){}
