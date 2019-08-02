@@ -402,6 +402,7 @@ class HDWeapon:Weapon{
 			other.A_PlaySound(pickupsound,CHAN_AUTO);
 		}
 		attachtoowner(other);
+		other.A_SelectWeapon(getclassname());
 	}
 
 	//when you have the same gun, just strip the new one

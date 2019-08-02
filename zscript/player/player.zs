@@ -246,6 +246,7 @@ class HDPlayerPawn:PlayerPawn{
 	transient cvar hd_usefocus;
 	transient cvar hd_lasttip;
 	transient cvar hd_helptext;
+	transient cvar neverswitchonpickup;
 	void cachecvars(){
 		playerinfo plr;
 		if(player)plr=player;
@@ -264,6 +265,7 @@ class HDPlayerPawn:PlayerPawn{
 		hd_usefocus=cvar.getcvar("hd_usefocus",plr);
 		hd_lasttip=cvar.getcvar("hd_lasttip",plr);
 		hd_helptext=cvar.getcvar("hd_helptext",plr);
+		neverswitchonpickup=cvar.getcvar("neverswitchonpickup",plr);
 	}
 	override void Tick(){
 		if(!player||!player.mo||player.mo!=self){super.tick();return;} //anti-voodoodoll
