@@ -3,7 +3,7 @@
 // ------------------------------------------------------------
 
 class bltest:hdweapon{
-	default{hdweapon.refid "blt";}
+	default{+inventory.undroppable weapon.slotnumber 1; hdweapon.refid "blt";}
 	override void DrawSightPicture(
 		HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl,
 		bool sightbob,vector2 bob,double fov,bool scopeview,actor hpc,string whichdot
@@ -340,9 +340,9 @@ if(hd_debug)console.printf("penetration:  "..pen);
 					//check if the line is even blocking the bullet
 					bool isblocking=(
 						!(hitline.flags&line.ML_TWOSIDED) //one-sided
-						||hitline.flags&line.ML_BLOCKING
 						||hitline.flags&line.ML_BLOCKHITSCAN
-						//||hitline.flags&line.ML_BLOCKPROJECTILE //let's say they go too fast for now
+						||hitline.flags&line.ML_BLOCKPROJECTILE //maybe? they'll penetrate anyway
+						//||hitline.flags&line.ML_BLOCKING //too many of these arbitrarily restrict the player
 						//||hitline.flags&line.ML_BLOCKEVERYTHING //not the fences on the range!
 						//||bres.tier==TIER_FFloor //3d floor - does not work as of 4.1.3
 						||( //upper or lower tier, not sky
