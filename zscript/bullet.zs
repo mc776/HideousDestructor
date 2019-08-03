@@ -199,7 +199,7 @@ class HDBulletActor:Actor{
 			*(1./4000)
 		;
 		if(pushfactor>0)pen/=(1.+pushfactor);
-if(hd_debug)console.printf("penetration:  "..pen);
+if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 		return pen;
 	}
 	override bool cancollidewith(actor other,bool passive){
@@ -242,6 +242,7 @@ if(hd_debug)console.printf("penetration:  "..pen);
 	override void tick(){
 		if(isfrozen())return;
 //if(getage()%17)return;
+		if(abs(pos.x)>32000||abs(pos.y)>32000){destroy();return;}
 		if(!bmissile){
 			super.tick();
 			return;
@@ -582,6 +583,7 @@ if(hd_debug)console.printf("penetration:  "..pen);
 			}else{
 				puff();
 				bmissile=false;
+				vel=(0,0,0);
 				setstatelabel("death");
 				return;
 			}
