@@ -30,17 +30,14 @@ class PainBringer:HDMobBase replaces HellKnight{
 
 		stamina 0;
 	}
-	override bool CanCollideWith(actor other,bool passive){
-		//headshot code - rocket pass shoulder
-		return(
-			(health<1)
-			||(other.pos.z<pos.z+(height*0.8))
-			||(
-				abs(pos.x-other.pos.x)<(radius*0.3)
-				&&abs(pos.y-other.pos.y)<(radius*0.3)
-			)
-		);
+
+	override double bulletshell(vector3 hitpos,double hitangle){
+		return frandom(3,7);
 	}
+	override double bulletresistance(double hitangle){
+		return max(0,frandom(0.6,0.9)-hitangle*0.01);
+	}
+
 	override void postbeginplay(){
 		super.postbeginplay();
 		hdmobai.resize(self,0.9,1.1);

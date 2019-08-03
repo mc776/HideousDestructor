@@ -827,7 +827,7 @@ class HDBloodTrailFloor:IdleDummy{
 }
 
 
-//Ominous shards of green energy
+//Ominous shards of green or blue energy
 class FragShard:IdleDummy{
 	default{
 		renderstyle "add";+forcexybillboard;scale 0.3;alpha 0;
@@ -849,18 +849,19 @@ class FragShard:IdleDummy{
 	}
 	states{
 	spawn:
-		BFE2 D 20 bright{
+		BFE2 D 20 bright nodelay{
 			if(stamina>0) A_SetTics(stamina);
 		}stop;
 	}
 }
 extend class HDActor{
 	//A_ShardSuck(self.pos+(0,0,32),20);
-	virtual void A_ShardSuck(vector3 aop,int range=4){
-		actor a=self.spawn("FragShard",aop,ALLOW_REPLACE);
+	virtual void A_ShardSuck(vector3 aop,int range=4,bool forcegreen=false){
+		actor a=spawn("FragShard",aop,ALLOW_REPLACE);
 		a.setxyz(aop+(random(-range,range)*6,random(-range,range)*6,random(-range,range)*6));
 		a.vel=(aop-a.pos)*0.05;
 		a.stamina=20;
+		if(forcegreen)a.A_SetTranslation("AllGreen");
 	}
 }
 
@@ -876,16 +877,16 @@ class TeleFog:IdleDummy replaces TeleportFog{
 	}
 	states{
 	spawn:
-		TFOG AA 2 nodelay bright light("BFS1") A_FadeIn(0.2);
-		TFOG BBCCCDDEEFGHII 2 bright light("BFS1"){
-			A_ShardSuck(self.pos+(0,0,random(1,4)*12+24));
+		TFOG AA 2 nodelay bright light("TLS1") A_FadeIn(0.2);
+		TFOG BBCCCDDEEFGHII 2 bright light("TLS1"){
+			A_ShardSuck(pos+(0,0,frandom(24,48)),forcegreen:true);
 		}
-		TFOG JJJJ random(2,3) bright light("BFS1"){
+		TFOG JJJJ random(2,3) bright light("TLS1"){
 			alpha-=0.2;
-			A_ShardSuck(self.pos+(0,0,random(1,4)*12+24));
+			A_ShardSuck(pos+(0,0,frandom(24,48)),forcegreen:true);
 		}stop;
 	nope:
-		TNT1 A 20 light("BFS1");
+		TNT1 A 20 light("TLS1");
 		stop;
 	}
 }

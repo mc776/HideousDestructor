@@ -52,6 +52,14 @@ class PainLord:HDMobBase replaces BaronofHell{
 		BE_OKAY=BE_HPMAX*7/10,
 		BE_BAD=BE_HPMAX*3/10,
 	}
+
+
+	override double bulletshell(vector3 hitpos,double hitangle){
+		return frandom(5,14);
+	}
+	override double bulletresistance(double hitangle){
+		return max(0,frandom(0.7,0.9)-hitangle*0.01);
+	}
 	override int damagemobj(
 		actor inflictor,actor source,int damage,
 		name mod,int flags,double angle

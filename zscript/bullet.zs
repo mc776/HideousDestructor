@@ -196,7 +196,7 @@ class HDBulletActor:Actor{
 				mass
 				+(100.*accuracy)/stamina
 			)
-			*(1./3000)
+			*(1./4000)
 		;
 		if(pushfactor>0)pen/=(1.+pushfactor);
 if(hd_debug)console.printf("penetration:  "..pen);
@@ -406,7 +406,6 @@ if(hd_debug)console.printf("penetration:  "..pen);
 					setxyz(crackbak);
 				}
 			}
-
 		}while(
 			bmissile
 			&&distanceleft>0
@@ -455,7 +454,7 @@ if(hd_debug)console.printf("penetration:  "..pen);
 		if(!self||!bmissile)return;
 
 		//no one cares after this
-		if(pen<0.1){
+		if(pen<1.){
 			setstatelabel("death");
 			vel=(0,0,0);
 			return;
@@ -602,7 +601,7 @@ if(hd_debug)console.printf("penetration:  "..pen);
 		double pen=penetration();
 
 		//because radius alone is not correct
-		double deemedradius=hitactor.radius*frandom(0.8,1.);//10.+hitactor.radius*frandom(0.08,0.1);
+		double deemedradius=hitactor.radius*frandom(0.9,1.);//10.+hitactor.radius*frandom(0.08,0.1);
 
 		
 		//decelerate
