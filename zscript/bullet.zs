@@ -418,7 +418,12 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 		blt.destroy();
 
 		//update velocity
-		vel.z-=getgravity();
+		A_ChangeVelocity(
+			frandom(-pushfactor,0),
+			frandom(-pushfactor,pushfactor),
+			frandom(-pushfactor,pushfactor)-1,
+			CVF_RELATIVE
+		);
 	}
 	//when a bullet hits a flat or wall
 	//add 999 to "hitpart" to use the tier # instead
