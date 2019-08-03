@@ -3,7 +3,11 @@
 // ------------------------------------------------------------
 
 class bltest:hdweapon{
-	default{+inventory.undroppable weapon.slotnumber 1; hdweapon.refid "blt";}
+	default{
+		+inventory.undroppable
+		weapon.slotnumber 1;
+//		hdweapon.refid "blt";
+	}
 	override void DrawSightPicture(
 		HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl,
 		bool sightbob,vector2 bob,double fov,bool scopeview,actor hpc,string whichdot
