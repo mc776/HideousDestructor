@@ -24,8 +24,8 @@ class HDMobBase : HDActor{
 		hdmobbase.bulletfactor 0.5,0.8;
 	}
 
-	int notdamagemobj(
-//	override int damagemobj(
+//	int notdamagemobj(
+	override int damagemobj(
 		actor inflictor,actor source,int damage,
 		name mod,int flags,double angle
 	){

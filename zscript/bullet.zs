@@ -6,7 +6,7 @@ class bltest:hdweapon{
 	default{
 		+inventory.undroppable
 		weapon.slotnumber 1;
-//		hdweapon.refid "blt";
+		hdweapon.refid "blt";
 	}
 	override void DrawSightPicture(
 		HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl,
