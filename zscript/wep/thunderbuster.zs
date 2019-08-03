@@ -709,6 +709,7 @@ class LingeringThunder:IdleDummy{
 			actor zt=zit.thing;
 			if(
 				(!zt.bshootable&&!zt.bsolid)
+				||abs(zt.pos.z-pos.z)>96
 				||zt.floorz+(stamina>>2)<zt.pos.z
 				||random(0,3)
 				||!checksight(zt)
