@@ -86,7 +86,7 @@ class HDBulletTracer:LineTracer{
 class HDB_426:HDBulletActor{
 	default{
 		pushfactor 0.4;
-		mass 320;
+		mass 55;
 		speed 1200;
 		accuracy 666;
 		stamina 426;
@@ -96,8 +96,8 @@ class HDB_426:HDBulletActor{
 class HDB_776:HDBulletActor{
 	default{
 		pushfactor 0.05;
+		mass 160;
 		speed 1100;
-		mass 1344;
 		accuracy 600;
 		stamina 776;
 	}
@@ -105,7 +105,7 @@ class HDB_776:HDBulletActor{
 class HDB_9:HDBulletActor{
 	default{
 		pushfactor 0.5;
-		mass 1539;
+		mass 86;
 		speed 420;
 		accuracy 200;
 		stamina 900;
@@ -115,7 +115,7 @@ class HDB_9:HDBulletActor{
 class HDB_355:HDBulletActor{
 	default{
 		pushfactor 0.4;
-		mass 1570;
+		mass 83;
 		speed 440;
 		accuracy 200;
 		stamina 900;
@@ -123,8 +123,8 @@ class HDB_355:HDBulletActor{
 }
 class HDB_00:HDBulletActor{
 	default{
-		pushfactor 0.9;
-		mass 576;
+		pushfactor 0.6;
+		mass 32;
 		speed 700;
 		accuracy 200;
 		stamina 838;
@@ -164,7 +164,7 @@ class HDBulletActor:Actor{
 		height 0.1;radius 0.1;
 		/*
 			speed: 200-1000
-			mass: 500-2000
+			mass: in tenths of a gram
 			pushfactor: 0.05-5.0 - imagine it being horizontal speed blowing in the wind
 			accuracy: 0,200,200-700 - angle of outline from perpendicular, round deemed to be 20
 			stamina: 900, 776, 426, you get the idea
@@ -173,41 +173,10 @@ class HDBulletActor:Actor{
 		hdbulletactor.distantsounder "none";
 		hdbulletactor.hardness 5;
 		pushfactor 0.05;
+		mass 160;
 		speed 1100;
-		mass 1344;
 		accuracy 600;
 		stamina 776;
-
-
-//zm
-		pushfactor 0.4;
-		mass 320;
-		speed 1200;
-		accuracy 666;
-		stamina 426;
-
-//9mm
-		pushfactor 0.5;
-		mass 1539;
-		speed 420;
-		accuracy 200;
-		stamina 900;
-
-//776
-		pushfactor 0.05;
-		speed 1100;
-		mass 1344;
-		accuracy 600;
-		stamina 776;
-
-//00
-		pushfactor 0.9;
-		mass 576;
-		speed 700;
-		accuracy 200;
-		stamina 838;
-
-
 	}
 	virtual void gunsmoke(){}
 	virtual void longarmwobble(){}
@@ -225,9 +194,9 @@ class HDBulletActor:Actor{
 			clamp(speed,0,hardness*200)
 			*(
 				mass
-				+(1000.*accuracy)/stamina
+				+(100.*accuracy)/stamina
 			)
-			*(1./50000)
+			*(1./3000)
 		;
 		if(pushfactor>0)pen/=(1.+pushfactor);
 if(hd_debug)console.printf("penetration:  "..pen);
@@ -327,7 +296,8 @@ if(hd_debug)console.printf("penetration:  "..pen);
 				distanceleft-=max(bres.distance,0.01); //safeguard against infinite loops
 			}else{
 				//the decal must be shot out from here to be reliable
-				A_SprayDecal(speed>400?"BulletChip":"BulletChipSmall",distanceleft+100);
+				if(bres.hittype==TRACE_HitWall)
+					A_SprayDecal(speed>400?"BulletChip":"BulletChipSmall",distanceleft+100);
 
 				newpos=bres.hitpos-vu*0.1;
 				setorigin(newpos,true);
@@ -632,18 +602,22 @@ if(hd_debug)console.printf("penetration:  "..pen);
 		double pen=penetration();
 
 		//because radius alone is not correct
-		double fakeradius=5.+0.05*hitactor.mass+0.1*hitactor.radius;
+		double deemedradius=hitactor.radius*frandom(0.8,1.);
 
-		double bff;
-		if(hdmobbase(hitactor))bff=hdmobbase(hitactor).bulletfactor();
-		else bff=0.6;
-
+		
 		//decelerate
-		vel-=vu*pen/max(0.0001,bff);
+		let hdmb=hdmobbase(hitactor);
+		double hitactorresistance=hdmb?hdmb.bulletresistance(hitangle):0.6;
+		double shortpen=pen-max(
+			hdmb?hdmb.bulletshell(hitpos,hitangle):0,
+			hitactorresistance*deemedradius*0.05
+		);
+		vel*=shortpen/pen;
+		pen=shortpen;
 
-		pen*=bff;
+
 		//if not deep enough, treat as bashing and ricochet or splat
-		bool deepenough=pen>fakeradius*frandom(0.06,0.3);
+		bool deepenough=pen>deemedradius*0.07;
 
 		//deform the bullet
 		hardness=max(1,hardness-random(0,random(0,3)));
@@ -652,7 +626,7 @@ if(hd_debug)console.printf("penetration:  "..pen);
 		//immediate impact
 		//highly random
 		double tinyspeedsquared=speed*speed*0.000001;
-		double impact=tinyspeedsquared*0.01*mass;
+		double impact=tinyspeedsquared*0.1*mass;
 
 		//bullet hits without penetrating
 		//abandon all damage after impact, then check ricochet
@@ -692,7 +666,7 @@ if(hd_debug)console.printf("penetration:  "..pen);
 
 		//check if going right through the body
 		//it's not "deep enough", it's "too deep" now!
-		deepenough=pen<hitactor.radius*2-frandom(0,0.01*hitangle);
+		deepenough=pen<deemedradius*2-0.02*hitangle;
 
 		//determine what kind of blood to use
 		class<actor>hitblood;
@@ -737,7 +711,7 @@ if(hd_debug)console.printf("penetration:  "..pen);
 		//major-artery incurable bleeding
 		//can't be done on "just" a graze (abs(angle,angleto(hitactor))>50)
 		//random chance depending on amount of penetration
-		bool suckingwound=frandom(0,pen*2)>fakeradius;
+		bool suckingwound=frandom(0,pen*2)>deemedradius;
 
 		//spawn entry wound blood
 		//do more if there's a sucking wound
@@ -761,11 +735,11 @@ if(hd_debug)console.printf("channel HP damage: "..chdmg);
 
 		//cns severance
 		//small column in middle centre
-		//only if NET penetration is at least fakeradius
+		//only if NET penetration is at least deemedradius
 		if(
 			hitangle<12
 			&&hitpos.z-hitactor.pos.z>hitactor.height*0.6
-			&&pen*frandom(2.,3.)>fakeradius
+			&&pen*frandom(2.,3.)>deemedradius
 		){
 			if(hd_debug)console.printf("CRIT!");
 			hitactor.damagemobj(
@@ -791,6 +765,8 @@ if(hd_debug)console.printf("channel HP damage: "..chdmg);
 
 		//is there anything else you would like to share
 		additionaleffects(hitactor,pen,vu);
+
+		setorigin(hitpos+vu*shortpen,true);
 	}
 	virtual void AdditionalEffects(actor hitactor,double pen,vector3 vu){}
 	virtual actor Puff(){
