@@ -602,21 +602,20 @@ if(hd_debug)console.printf("penetration:  "..pen);
 		double pen=penetration();
 
 		//because radius alone is not correct
-		double deemedradius=hitactor.radius*frandom(0.8,1.);
+		double deemedradius=hitactor.radius*frandom(0.8,1.);//10.+hitactor.radius*frandom(0.08,0.1);
 
 		
 		//decelerate
 		let hdmb=hdmobbase(hitactor);
 		double hitactorresistance=hdmb?hdmb.bulletresistance(hitangle):0.6;
-		double shortpen=pen-max(
+		double penshell=max(
 			hdmb?hdmb.bulletshell(hitpos,hitangle):0,
 			hitactorresistance*deemedradius*0.05
 		);
+		double shortpen=pen-penshell;
 		vel*=shortpen/pen;
 		pen=shortpen;
 
-
-		//if not deep enough, treat as bashing and ricochet or splat
 		bool deepenough=pen>deemedradius*0.07;
 
 		//deform the bullet
@@ -643,12 +642,12 @@ if(hd_debug)console.printf("penetration:  "..pen);
 				bmissile
 				&&hitangle>10
 			){
-				double dump=min(1.,0.01*(90-hitangle));
+				double dump=min(1.,0.011*(90-hitangle));
 				impact*=dump;
 				speed*=(1.-dump);
-				angle+=frandom(-45,45);
-				pitch+=frandom(-45,45);
-				A_ChangeVelocity(cos(pitch),0,sin(-pitch),CVF_RELATIVE|CVF_REPLACE);
+				angle+=frandom(10,25)*randompick(1,-1);
+				pitch+=frandom(-25,25);
+				A_ChangeVelocity(cos(pitch)*speed,0,sin(-pitch)*speed,CVF_RELATIVE|CVF_REPLACE);
 			}
 
 			hitactor.damagemobj(self,target,impact,"Bashing",DMG_THRUSTLESS);
@@ -701,7 +700,7 @@ if(hd_debug)console.printf("penetration:  "..pen);
 					angle:hitactor.angleto(self),
 					flags:SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
 				);
-				if(blood)blood.vel=vu*(0.6*pen)
+				if(blood)blood.vel=vu*(0.6*min(pen*0.2,12))
 					+(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.4))
 				;
 			}

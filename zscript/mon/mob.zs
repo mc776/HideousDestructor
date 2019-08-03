@@ -35,7 +35,7 @@ class HDMobBase : HDActor{
 	virtual double bulletresistance(
 		double hitangle //abs(bullet.angleto(hitactor),bullet.angle)
 	){
-		return max(0,(frandom(0.8,1.0)-hitangle*0.01)*radius);
+		return max(0,frandom(0.8,1.0)-hitangle*0.01);
 	}
 
 
