@@ -271,9 +271,10 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 
 		//get speed, set counter
 		double distanceleft=vel.length();
-		speed=distanceleft;
+		double curspeed=distanceleft;
 		do{
 			A_FaceMovementDirection();
+			if(speed>curspeed)distanceleft-=(speed-curspeed);
 
 			double cosp=cos(pitch);
 			vector3 vu=vel.unit();
@@ -546,6 +547,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 			//if that point is in the map:
 			vector3 pendest=pos;
 			bool dopenetrate=false; //"dope netrate". sounds pleasantly fast.
+			int penunits=0;
 			for(int i=0;i<pen;i++){
 				pendest+=vu;
 				if(
@@ -555,6 +557,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 					//&&pendest.z<getzat(pendest.x,pendest.y,0,GZF_CEILING|GZF_ABSOLUTEPOS)
 				){
 					dopenetrate=true;
+					penunits=i;
 					break;
 				}
 			}
@@ -582,9 +585,17 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 				if(penlt.hittype==TRACE_HitActor){
 					//if it hits an actor, affect that actor
 					traceactors.push(penlt.hitactor);
+					onhitactor(penlt.hitactor,penlt.hitlocation,vu);
 				}
+
 				//reduce momentum, increase tumbling, etc.
 				//reduce remaining distance left
+				hardness=max(1,hardness-random(0,random(0,3)));
+				stamina=stamina+random(0,(stamina>>1));
+				angle+=frandom(-pushfactor,pushfactor)*penunits;
+				pitch+=frandom(-pushfactor,pushfactor)*penunits;
+				speed=max(0,speed-frandom(-pushfactor,pushfactor)*penunits*10);
+				A_ChangeVelocity(cos(pitch)*speed,0,-sin(pitch)*speed,CVF_RELATIVE|CVF_REPLACE);
 			}else{
 				puff();
 				bmissile=false;
@@ -626,7 +637,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 
 		//deform the bullet
 		hardness=max(1,hardness-random(0,random(0,3)));
-		stamina+=stamina+random(0,(stamina>>1));
+		stamina=stamina+random(0,(stamina>>1));
 
 		//immediate impact
 		//highly random
