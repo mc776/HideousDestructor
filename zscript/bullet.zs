@@ -494,7 +494,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 			if(hitangle<maxricangle){
 				didricochet=true;
 				double aaa=(abs1>abs2)?aaa2:aaa1;
-				vel.xy=rotatevector(vel.xy,deltaangle(ppp,aaa)*frandom(1.,1.2));
+				vel.xy=rotatevector(vel.xy,deltaangle(ppp,aaa)*frandom(1.,1.05));
 
 				//transfer some of the deflection upwards or downwards
 				double vlz=vel.z;
@@ -504,6 +504,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 					vel.z*=xyvlz/xyl;
 					vel.xy*=xyl/xyvlz;
 				}
+				vel.z+=frandom(-0.01,0.01)*speed;
 			}
 		}else if(
 			hitpart==SECPART_Floor
@@ -535,9 +536,8 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 					//bullet ricochets "forward"
 					pitch=-planepitch;
 				}
-				A_ChangeVelocity(cos(pitch),0,sin(-pitch),CVF_RELATIVE|CVF_REPLACE);
 				speed*=(1-frandom(0.,0.02)*(7-hardness)-(hitangle*0.003));
-				vel*=speed;
+				A_ChangeVelocity(cos(pitch)*speed,0,sin(-pitch)*speed,CVF_RELATIVE|CVF_REPLACE);
 			}
 		}
 
@@ -590,8 +590,6 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 
 				//reduce momentum, increase tumbling, etc.
 				//reduce remaining distance left
-				hardness=max(1,hardness-random(0,random(0,3)));
-				stamina=stamina+random(0,(stamina>>1));
 				angle+=frandom(-pushfactor,pushfactor)*penunits;
 				pitch+=frandom(-pushfactor,pushfactor)*penunits;
 				speed=max(0,speed-frandom(-pushfactor,pushfactor)*penunits*10);
@@ -604,6 +602,10 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 				return;
 			}
 		}
+
+		//warp the bullet
+		hardness=max(1,hardness-random(0,random(0,3)));
+		stamina=stamina+random(0,(stamina>>1));
 	}
 	void forcepain(actor victim){
 		if(
