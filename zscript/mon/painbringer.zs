@@ -35,7 +35,7 @@ class PainBringer:HDMobBase replaces HellKnight{
 		return frandom(3,7);
 	}
 	override double bulletresistance(double hitangle){
-		return max(0,frandom(0.6,0.9)-hitangle*0.01);
+		return max(0,frandom(0.8,1.)-hitangle*0.008);
 	}
 
 	override void postbeginplay(){

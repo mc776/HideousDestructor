@@ -243,21 +243,15 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 		if(isfrozen())return;
 //if(getage()%17)return;
 		if(abs(pos.x)>32000||abs(pos.y)>32000){destroy();return;}
+		if(vel==(0,0,0))bmissile=false;
 		if(!bmissile){
 			super.tick();
 			return;
 		}
-		if(vel==(0,0,0))bmissile=false;
 
 		tracelines.clear();
 		traceactors.clear();
 		tracesectors.clear();
-
-		hdbullettracer blt=HDBulletTracer(new("HDBulletTracer"));
-		if(!blt)return;
-		blt.bullet=hdbulletactor(self);
-		blt.shooter=target;
-		vector3 newpos=pos;
 
 		//if in the sky
 		if(
@@ -265,9 +259,16 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 			&&ceilingz-pos.z<vel.z
 		){
 			setorigin(pos+vel,false);
+			vel-=vel.unit()*pushfactor;
 			vel.z-=getgravity();
 			return;
 		}
+
+		hdbullettracer blt=HDBulletTracer(new("HDBulletTracer"));
+		if(!blt)return;
+		blt.bullet=hdbulletactor(self);
+		blt.shooter=target;
+		vector3 newpos=pos;
 
 		//get speed, set counter
 		double distanceleft=vel.length();
@@ -290,6 +291,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 
 			if(bres.hittype==TRACE_HasHitSky){
 				setorigin(pos+vel,false);
+				vel-=vel.unit()*pushfactor;
 				vel.z-=getgravity();
 				return;
 			}else if(bres.hittype==TRACE_HitNone){
@@ -414,7 +416,6 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 		);
 
 
-
 		//destroy the linetracer just in case it interferes with savegames
 		blt.destroy();
 
@@ -462,6 +463,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 
 		//no one cares after this
 		if(pen<1.){
+			bmissile=false;
 			setstatelabel("death");
 			vel=(0,0,0);
 			return;
@@ -519,8 +521,8 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 			else zdif=pos.z-getzat(-0.5,flags:isceiling?GZF_CEILING:0);
 			if(zdif)planepitch=atan2(zdif,0.5);
 
-			if(isceiling)planepitch-=frandom(0.,10.);
-			else planepitch+=frandom(0.,10.);
+			planepitch+=frandom(0.,1.);
+			if(isceiling)planepitch*=-1;
 
 			double hitangle=absangle(-pitch,planepitch);
 			if(hitangle>90)hitangle=180-hitangle;
@@ -620,8 +622,8 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 		double pen=penetration();
 
 		//because radius alone is not correct
-		double deemedradius=hitactor.radius*frandom(0.9,1.);//10.+hitactor.radius*frandom(0.08,0.1);
-		double deemedwidth=deemedradius*2;
+		double deemedwidth=hitactor.radius*frandom(0.9,1.);//10.+hitactor.radius*frandom(0.08,0.1);
+		deemedwidth*=2;
 
 		
 		//decelerate
@@ -629,13 +631,13 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 		double hitactorresistance=hdmb?hdmb.bulletresistance(hitangle):0.6;
 		double penshell=max(
 			hdmb?hdmb.bulletshell(hitpos,hitangle):0,
-			hitactorresistance*deemedradius*0.05
+			hitactorresistance*deemedwidth*0.03
 		);
 		double shortpen=pen-penshell;
 		vel*=shortpen/pen;
 		pen=shortpen;
 
-		bool deepenough=pen>deemedradius*0.07;
+		bool deepenough=pen>deemedwidth*0.04;
 
 		//deform the bullet
 		hardness=max(1,hardness-random(0,random(0,3)));
@@ -652,6 +654,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 			//if bullet too soft and/or slow, just die
 			if(speed<32||hardness<random(1,3)){
 				bmissile=false;
+				vel=(0,0,0);
 				setstatelabel("death");
 			}
 
@@ -684,7 +687,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 
 		//check if going right through the body
 		//it's not "deep enough", it's "too deep" now!
-		deepenough=pen<deemedradius*2-0.02*hitangle;
+		deepenough=pen<deemedwidth-0.02*hitangle;
 
 		//determine what kind of blood to use
 		class<actor>hitblood;
@@ -707,6 +710,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 		;
 		if(deepenough){
 			bmissile=false;
+			vel=(0,0,0);
 			setstatelabel("death");
 		}else{
 			channelwidth*=1.1;
@@ -724,9 +728,10 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 				;
 			}
 			//reduce momentum, increase tumbling, etc.
-			angle+=frandom(-pushfactor,pushfactor)*deemedwidth;
-			pitch+=frandom(-pushfactor,pushfactor)*deemedwidth;
-			speed=max(0,speed-frandom(-pushfactor,pushfactor)*deemedwidth*10);
+			double totalresistance=hitactorresistance*deemedwidth;
+			angle+=frandom(-pushfactor,pushfactor)*totalresistance;
+			pitch+=frandom(-pushfactor,pushfactor)*totalresistance;
+			speed=max(0,speed-frandom(-pushfactor,pushfactor)*totalresistance*10);
 			A_ChangeVelocity(cos(pitch)*speed,0,-sin(pitch)*speed,CVF_RELATIVE|CVF_REPLACE);
 		}
 		if(hd_debug)console.printf("wound channel:  "..channelwidth.." x "..pen);
@@ -734,7 +739,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 		//major-artery incurable bleeding
 		//can't be done on "just" a graze (abs(angle,angleto(hitactor))>50)
 		//random chance depending on amount of penetration
-		bool suckingwound=frandom(0,pen*2)>deemedradius;
+		bool suckingwound=frandom(0,pen)>deemedwidth;
 
 		//spawn entry wound blood
 		//do more if there's a sucking wound
@@ -758,11 +763,11 @@ if(hd_debug)console.printf("channel HP damage: "..chdmg);
 
 		//cns severance
 		//small column in middle centre
-		//only if NET penetration is at least deemedradius
+		//only if NET penetration is at least deemedwidth
 		if(
 			hitangle<12
 			&&hitpos.z-hitactor.pos.z>hitactor.height*0.6
-			&&pen*frandom(2.,3.)>deemedradius
+			&&pen*frandom(1.,1.5)>deemedwidth
 		){
 			if(hd_debug)console.printf("CRIT!");
 			hitactor.damagemobj(
@@ -793,7 +798,6 @@ if(hd_debug)console.printf("channel HP damage: "..chdmg);
 	}
 	virtual void AdditionalEffects(actor hitactor,double pen,vector3 vu){}
 	virtual actor Puff(){
-		setstatelabel("death");
 		//TODO: virtual actor puff(textureid hittex,bool reverse=false){}
 			//flesh: bloodsplat
 			//fluids: splash

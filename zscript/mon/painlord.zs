@@ -55,10 +55,10 @@ class PainLord:HDMobBase replaces BaronofHell{
 
 
 	override double bulletshell(vector3 hitpos,double hitangle){
-		return frandom(5,14);
+		return frandom(3,12);
 	}
 	override double bulletresistance(double hitangle){
-		return max(0,frandom(0.7,0.9)-hitangle*0.01);
+		return max(0,frandom(0.8,1.)-hitangle*0.008);
 	}
 	override int damagemobj(
 		actor inflictor,actor source,int damage,
