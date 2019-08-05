@@ -589,7 +589,6 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 				}
 
 				//reduce momentum, increase tumbling, etc.
-				//reduce remaining distance left
 				angle+=frandom(-pushfactor,pushfactor)*penunits;
 				pitch+=frandom(-pushfactor,pushfactor)*penunits;
 				speed=max(0,speed-frandom(-pushfactor,pushfactor)*penunits*10);
@@ -622,6 +621,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 
 		//because radius alone is not correct
 		double deemedradius=hitactor.radius*frandom(0.9,1.);//10.+hitactor.radius*frandom(0.08,0.1);
+		double deemedwidth=deemedradius*2;
 
 		
 		//decelerate
@@ -723,6 +723,11 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 					+(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.4))
 				;
 			}
+			//reduce momentum, increase tumbling, etc.
+			angle+=frandom(-pushfactor,pushfactor)*deemedwidth;
+			pitch+=frandom(-pushfactor,pushfactor)*deemedwidth;
+			speed=max(0,speed-frandom(-pushfactor,pushfactor)*deemedwidth*10);
+			A_ChangeVelocity(cos(pitch)*speed,0,-sin(pitch)*speed,CVF_RELATIVE|CVF_REPLACE);
 		}
 		if(hd_debug)console.printf("wound channel:  "..channelwidth.." x "..pen);
 
