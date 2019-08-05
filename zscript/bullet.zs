@@ -854,7 +854,7 @@ class HDBleedingWound:Thinker{
 			return;
 		}
 		if(bleeder&&bleeder.health<1&&bleedrate<random(10,60))bleeder.deathsound="";
-if(hd_debug&&bleeder)console.printf(bleeder.getclassname().." bled to "..bleeder.health);
+		if(hd_debug&&bleeder)console.printf(bleeder.getclassname().." bled to "..bleeder.health);
 	}
 	static void inflict(
 		actor bleeder,
@@ -862,6 +862,12 @@ if(hd_debug&&bleeder)console.printf(bleeder.getclassname().." bled to "..bleeder
 		int bleedrate=17,
 		bool hitvital=false
 	){
+		//TODO: proper array of wounds for the player
+		if(hdplayerpawn(bleeder)){
+			hdplayerpawn(bleeder).woundcount+=bleedpoints;
+			return;
+		}
+
 		if(
 			!skill||hd_nobleed
 			||!bleeder.bshootable
