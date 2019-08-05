@@ -47,42 +47,6 @@ class bltest:hdweapon{
 		}goto nope;
 	}
 }
-class HDBulletTracer:LineTracer{
-	hdbulletactor bullet;
-	actor shooter;
-	override etracestatus tracecallback(){
-		if(
-			results.hittype==TRACE_HitFloor
-			||results.hittype==TRACE_HitCeiling
-		){
-			int skipsize=bullet.tracesectors.size();
-			for(int i=0;i<skipsize;i++){
-				if(bullet.tracesectors[i]==results.hitsector)return TRACE_Skip;
-			}
-		}else if(results.hittype==TRACE_HitActor){
-			if(
-				results.hitactor==bullet
-				||(results.hitactor==shooter&&bullet.getage()<2)
-			)return TRACE_Skip;
-			int skipsize=bullet.traceactors.size();
-			for(int i=0;i<skipsize;i++){
-				if(
-					bullet.traceactors[i]==results.hitactor
-					||(
-						results.hitactor is "TempShield"
-						&&bullet.traceactors[i]==results.hitactor.master
-					)
-				)return TRACE_Skip;
-			}
-		}else if(results.hittype==TRACE_HitWall){
-			int skipsize=bullet.tracelines.size();
-			for(int i=0;i<skipsize;i++){
-				if(bullet.tracelines[i]==results.hitline)return TRACE_Skip;
-			}
-		}
-		return TRACE_Stop;
-	}
-}
 class HDB_426:HDBulletActor{
 	default{
 		pushfactor 0.4;
@@ -128,6 +92,45 @@ class HDB_00:HDBulletActor{
 		speed 700;
 		accuracy 200;
 		stamina 838;
+	}
+}
+
+
+
+class HDBulletTracer:LineTracer{
+	hdbulletactor bullet;
+	actor shooter;
+	override etracestatus tracecallback(){
+		if(
+			results.hittype==TRACE_HitFloor
+			||results.hittype==TRACE_HitCeiling
+		){
+			int skipsize=bullet.tracesectors.size();
+			for(int i=0;i<skipsize;i++){
+				if(bullet.tracesectors[i]==results.hitsector)return TRACE_Skip;
+			}
+		}else if(results.hittype==TRACE_HitActor){
+			if(
+				results.hitactor==bullet
+				||(results.hitactor==shooter&&bullet.getage()<2)
+			)return TRACE_Skip;
+			int skipsize=bullet.traceactors.size();
+			for(int i=0;i<skipsize;i++){
+				if(
+					bullet.traceactors[i]==results.hitactor
+					||(
+						results.hitactor is "TempShield"
+						&&bullet.traceactors[i]==results.hitactor.master
+					)
+				)return TRACE_Skip;
+			}
+		}else if(results.hittype==TRACE_HitWall){
+			int skipsize=bullet.tracelines.size();
+			for(int i=0;i<skipsize;i++){
+				if(bullet.tracelines[i]==results.hitline)return TRACE_Skip;
+			}
+		}
+		return TRACE_Stop;
 	}
 }
 class HDBulletActor:Actor{
@@ -721,7 +724,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 					hitblood,
 					hitactor.radius*0.6,0,pos.z-hitactor.pos.z,
 					angle:hitactor.angleto(self),
-					flags:SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
+					flags:SXF_ABSOLUTEANGLE|SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
 				);
 				if(blood)blood.vel=vu*(0.6*min(pen*0.2,12))
 					+(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.4))
@@ -749,7 +752,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 				hitblood,
 				-hitactor.radius*0.6,0,pos.z-hitactor.pos.z,
 				angle:hitactor.angleto(self),
-				flags:SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
+					flags:SXF_ABSOLUTEANGLE|SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
 			);
 			if(blood)blood.vel=-vu*(0.03*impact)
 				+(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.4))
