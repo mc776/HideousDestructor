@@ -436,11 +436,15 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 			CVF_RELATIVE
 		);
 
-		if(oldpos==pos){
-			vel=(0,0,0);
-			bmissile=false;
-			setstatelabel("death");
-		}
+		//force disappearance if stuck
+		//not a fix but a workaround
+		if(oldpos==pos)bulletdie();
+	}
+	//set to full stop, unflag as missile, death state
+	void bulletdie(){
+		vel=(0,0,0);
+		bmissile=false;
+		setstatelabel("death");
 	}
 	//when a bullet hits a flat or wall
 	//add 999 to "hitpart" to use the tier # instead
@@ -478,9 +482,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 
 		//no one cares after this
 		if(pen<1.){
-			bmissile=false;
-			setstatelabel("death");
-			vel=(0,0,0);
+			bulletdie();
 			return;
 		}
 
@@ -612,9 +614,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 				A_ChangeVelocity(cos(pitch)*speed,0,-sin(pitch)*speed,CVF_RELATIVE|CVF_REPLACE);
 			}else{
 				puff();
-				bmissile=false;
-				vel=(0,0,0);
-				setstatelabel("death");
+				bulletdie();
 				return;
 			}
 		}
@@ -667,11 +667,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 		//abandon all damage after impact, then check ricochet
 		if(!deepenough){
 			//if bullet too soft and/or slow, just die
-			if(speed<32||hardness<random(1,3)){
-				bmissile=false;
-				vel=(0,0,0);
-				setstatelabel("death");
-			}
+			if(speed<32||hardness<random(1,3))bulletdie();
 
 			//randomly deflect
 			//if deflected, reduce impact
@@ -723,11 +719,8 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 			*frandom(10.,10+pushfactor)
 			*(1+frandom(0.,max(0,6-hardness)))
 		;
-		if(deepenough){
-			bmissile=false;
-			vel=(0,0,0);
-			setstatelabel("death");
-		}else{
+		if(deepenough)bulletdie();
+		else{
 			channelwidth*=1.1;
 			//then spawn exit wound blood
 			for(int i=0;i<pen;i+=10){
