@@ -271,7 +271,8 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 		if(!blt)return;
 		blt.bullet=hdbulletactor(self);
 		blt.shooter=target;
-		vector3 newpos=pos;
+		vector3 oldpos=pos;
+		vector3 newpos=oldpos;
 
 		//get speed, set counter
 		double distanceleft=vel.length();
@@ -279,7 +280,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 		do{
 			A_FaceMovementDirection();
 
-			//wait, what was this for again????
+			//update distanceleft if speed changed
 			if(curspeed>speed){
 				distanceleft-=(curspeed-speed);
 				curspeed=speed;
@@ -434,6 +435,12 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 			frandom(-pushfactor,pushfactor)-1,
 			CVF_RELATIVE
 		);
+
+		if(oldpos==pos){
+			vel=(0,0,0);
+			bmissile=false;
+			setstatelabel("death");
+		}
 	}
 	//when a bullet hits a flat or wall
 	//add 999 to "hitpart" to use the tier # instead
