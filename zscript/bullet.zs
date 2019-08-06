@@ -261,7 +261,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 			ceilingz<pos.z
 			&&ceilingz-pos.z<vel.z
 		){
-			setorigin(pos+vel,false);
+			setxyz(pos+vel);
 			vel-=vel.unit()*pushfactor;
 			vel.z-=getgravity();
 			return;
@@ -278,7 +278,12 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 		double curspeed=distanceleft;
 		do{
 			A_FaceMovementDirection();
-			if(speed>curspeed)distanceleft-=(speed-curspeed);
+
+			//wait, what was this for again????
+			if(curspeed>speed){
+				distanceleft-=(curspeed-speed);
+				curspeed=speed;
+			}
 
 			double cosp=cos(pitch);
 			vector3 vu=vel.unit();
@@ -293,7 +298,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 			sector sectortodamage=null;
 
 			if(bres.hittype==TRACE_HasHitSky){
-				setorigin(pos+vel,false);
+				setxyz(pos+vel);
 				vel-=vel.unit()*pushfactor;
 				vel.z-=getgravity();
 				return;
@@ -667,7 +672,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 				bmissile
 				&&hitangle>10
 			){
-				double dump=min(1.,0.011*(90-hitangle));
+				double dump=clamp(0.011*(90-hitangle),0.01,1.);
 				impact*=dump;
 				speed*=(1.-dump);
 				angle+=frandom(10,25)*randompick(1,-1);
