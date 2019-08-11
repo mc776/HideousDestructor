@@ -33,7 +33,7 @@ class PortableMedikit:HDPickup{
 			}else{
 				A_Log("You pull out the medikit you've already unwrapped.",true);
 			}
-			if(!hdplayerpawn(self)&&!hdplayerpawn(self).incapacitated)A_SelectWeapon("HDMedikitter");
+			if(!hdplayerpawn(self)||!hdplayerpawn(self).incapacitated)A_SelectWeapon("HDMedikitter");
 			A_PlaySound("weapons/pocket",CHAN_WEAPON);
 		}
 		fail;

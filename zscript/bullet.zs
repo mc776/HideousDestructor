@@ -723,17 +723,19 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 		else{
 			channelwidth*=1.1;
 			//then spawn exit wound blood
-			for(int i=0;i<pen;i+=10){
-				bool gbg;actor blood;
-				[gbg,blood]=hitactor.A_SpawnItemEx(
-					hitblood,
-					hitactor.radius*0.6,0,pos.z-hitactor.pos.z,
-					angle:hitactor.angleto(self),
-					flags:SXF_ABSOLUTEANGLE|SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
-				);
-				if(blood)blood.vel=vu*(0.6*min(pen*0.2,12))
-					+(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.4))
-				;
+			if(!bbloodlessimpact){
+				for(int i=0;i<pen;i+=10){
+					bool gbg;actor blood;
+					[gbg,blood]=hitactor.A_SpawnItemEx(
+						hitblood,
+						hitactor.radius*0.6,0,pos.z-hitactor.pos.z,
+						angle:hitactor.angleto(self),
+						flags:SXF_ABSOLUTEANGLE|SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
+					);
+					if(blood)blood.vel=vu*(0.6*min(pen*0.2,12))
+						+(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.4))
+					;
+				}
 			}
 			//reduce momentum, increase tumbling, etc.
 			double totalresistance=hitactorresistance*deemedwidth;
@@ -751,17 +753,19 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 
 		//spawn entry wound blood
 		//do more if there's a sucking wound
-		for(int i=-1;i<suckingwound;i++){
-			bool gbg;actor blood;
-			[gbg,blood]=hitactor.A_SpawnItemEx(
-				hitblood,
-				-hitactor.radius*0.6,0,pos.z-hitactor.pos.z,
-				angle:hitactor.angleto(self),
-					flags:SXF_ABSOLUTEANGLE|SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
-			);
-			if(blood)blood.vel=-vu*(0.03*impact)
-				+(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.4))
-			;
+		if(!bbloodlessimpact){
+			for(int i=-1;i<suckingwound;i++){
+				bool gbg;actor blood;
+				[gbg,blood]=hitactor.A_SpawnItemEx(
+					hitblood,
+					-hitactor.radius*0.6,0,pos.z-hitactor.pos.z,
+					angle:hitactor.angleto(self),
+						flags:SXF_ABSOLUTEANGLE|SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
+				);
+				if(blood)blood.vel=-vu*(0.03*impact)
+					+(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.4))
+				;
+			}
 		}
 
 		//add size of channel to damage
