@@ -182,10 +182,8 @@ class HDBulletActor:Actor{
 		stamina 776;
 	}
 	virtual void gunsmoke(){}
-	virtual void longarmwobble(){}
 	override void postbeginplay(){
 		super.postbeginplay();
-		longarmwobble();
 		gunsmoke();
 		if(distantsounder!="none"){
 			actor m=spawn(distantsounder,pos,ALLOW_REPLACE);
@@ -221,7 +219,22 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 		let bbb=HDBulletActor(spawn(type,(caller.pos.x,caller.pos.y,caller.pos.z+zofs)));
 		bbb.target=caller;
 		bbb.traceactors.push(caller);
-		bbb.angle=caller.angle;bbb.pitch=caller.pitch;
+
+		if(hdplayerpawn(caller)){
+			let hdpc=hdplayerpawn(caller).scopecamera;
+			if(hdpc){
+				bbb.pitch=hdpc.pitch;
+				bbb.angle=hdpc.angle;
+			}else{
+				let hdp=hdplayerpawn(caller);
+				bbb.pitch=hdp.pitch;
+				bbb.angle=hdp.angle;
+			}
+		}else{
+			bbb.angle=caller.angle;
+			bbb.pitch=caller.pitch;
+		}
+
 		bbb.vel=caller.vel;
 		if(variation)bbb.speed*=(1+frandom(-variation,variation));
 		if(spread){
@@ -229,7 +242,8 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 			bbb.pitch+=frandom(-spread,spread);
 		}
 		if(aimoffx)bbb.angle+=aimoffx;
-		if(aimoffy)bbb.angle+=aimoffy;
+		if(aimoffy)bbb.pitch+=aimoffy;
+
 		bbb.A_ChangeVelocity(bbb.speed*cos(bbb.pitch),0,bbb.speed*sin(-bbb.pitch),CVF_RELATIVE);
 		return bbb;
 	}
