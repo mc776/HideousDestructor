@@ -94,6 +94,16 @@ class HDB_00:HDBulletActor{
 		stamina 838;
 	}
 }
+class HDB_frag:HDBulletActor{
+	default{
+		pushfactor 0.8;
+		mass 30;
+		speed 700;
+		accuracy 200;
+		stamina 800;
+	}
+	override void gunsmoke(){}
+}
 
 
 
