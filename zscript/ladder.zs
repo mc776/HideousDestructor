@@ -143,7 +143,7 @@ class hdladderbottom:hdactor{
 	override void tick(){
 		if(!target){destroy();return;}
 		setz(
-			clamp(pos.z,
+			clamp(floorz,
 				max(target.pos.z-LADDER_MAX,floorz),
 				target.pos.z+LADDER_MAX
 			)
