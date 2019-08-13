@@ -43,7 +43,7 @@ class bltest:hdweapon{
 		}goto nope;
 	user2:
 		TNT1 AAAAAAA 0{
-			HDBulletActor.FireBullet(self,"HDB_00",spread:1,variation:0.1);
+			let bbb=HDBulletActor.FireBullet(self,"HDB_00",spread:6);
 		}goto nope;
 	}
 }
@@ -181,7 +181,17 @@ class HDBulletActor:Actor{
 		accuracy 600;
 		stamina 776;
 	}
-	virtual void gunsmoke(){}
+	virtual void gunsmoke(){
+		actor gs;
+		double j=cos(pitch);
+		vector3 vk=(j*cos(angle),j*sin(angle),-sin(pitch));
+		j=clamp(speed*max(mass,1)*0.00002,0,5);
+		if(frandom(0,1)>j)return;
+		for(int i=0;i<j;i++){
+			gs=spawn("HDGunSmoke",pos+i*vk,ALLOW_REPLACE);
+			gs.pitch=pitch;gs.angle=angle;gs.vel=vk*j;
+		}
+	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		gunsmoke();
@@ -209,9 +219,8 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 	static HDBulletActor FireBullet(
 		actor caller,
 		class<HDBulletActor> type="HDBulletActor",
-		double zofs=999,
-		double spread=0,
-		double variation=0,
+		double zofs=999, //default: height-6
+		double spread=0, //range of random velocity added
 		double aimoffx=0,
 		double aimoffy=0
 	){
@@ -223,28 +232,31 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 		if(hdplayerpawn(caller)){
 			let hdpc=hdplayerpawn(caller).scopecamera;
 			if(hdpc){
-				bbb.pitch=hdpc.pitch;
-				bbb.angle=hdpc.angle;
+				aimoffx+=hdpc.angle;
+				aimoffy+=hdpc.pitch;
 			}else{
 				let hdp=hdplayerpawn(caller);
-				bbb.pitch=hdp.pitch;
-				bbb.angle=hdp.angle;
+				aimoffx+=hdp.angle;
+				aimoffy+=hdp.pitch;
 			}
 		}else{
-			bbb.angle=caller.angle;
-			bbb.pitch=caller.pitch;
+			aimoffx+=caller.angle;
+			aimoffy+=caller.pitch;
 		}
+		bbb.angle=aimoffx;
+		bbb.pitch=aimoffy;
 
 		bbb.vel=caller.vel;
-		if(variation)bbb.speed*=(1+frandom(-variation,variation));
+		double forward=bbb.speed*cos(bbb.pitch);
+		double side=0;
+		double updown=bbb.speed*sin(-bbb.pitch);
 		if(spread){
-			bbb.angle+=frandom(-spread,spread);
-			bbb.pitch+=frandom(-spread,spread);
+			forward+=frandom(-spread,spread);
+			side+=frandom(-spread,spread);
+			updown+=frandom(-spread,spread);
 		}
-		if(aimoffx)bbb.angle+=aimoffx;
-		if(aimoffy)bbb.pitch+=aimoffy;
 
-		bbb.A_ChangeVelocity(bbb.speed*cos(bbb.pitch),0,bbb.speed*sin(-bbb.pitch),CVF_RELATIVE);
+		bbb.A_ChangeVelocity(forward,side,updown,CVF_RELATIVE);
 		return bbb;
 	}
 	states{
