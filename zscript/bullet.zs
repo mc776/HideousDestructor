@@ -311,6 +311,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 		vector3 newpos=oldpos;
 
 		//get speed, set counter
+		int iterations=0;
 		double distanceleft=vel.length();
 		double curspeed=distanceleft;
 		do{
@@ -387,7 +388,10 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 						//"SPAC_Impact" is so wonderfully onomatopoeic
 						//would add SPAC_Damage but it doesn't work in 4.1.3???
 						hitline.activate(target,bres.side,SPAC_Impact|SPAC_Use);
-						HitGeometry(hitline,othersector,bres.side,999+bres.tier,vu);
+						HitGeometry(
+							hitline,othersector,bres.side,999+bres.tier,vu,
+							iterations?bres.distance:999
+						);
 					}
 				}else if(
 					bres.hittype==TRACE_HitFloor
@@ -406,12 +410,17 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 						)
 					)continue;
 
-					HitGeometry(null,hitsector,0,bres.hittype==TRACE_HitCeiling?SECPART_Ceiling:SECPART_Floor,vu);
+					HitGeometry(
+						null,hitsector,0,
+						bres.hittype==TRACE_HitCeiling?SECPART_Ceiling:SECPART_Floor,
+						vu,iterations?bres.distance:999
+					);
 				}else if(bres.hittype==TRACE_HitActor){
 					traceactors.push(bres.hitactor);
 					onhitactor(bres.hitactor,bres.hitpos,vu);
 				}
 			}
+			iterations++;
 
 
 			//find points close to players and spawn crackers
@@ -484,7 +493,14 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 	}
 	//when a bullet hits a flat or wall
 	//add 999 to "hitpart" to use the tier # instead
-	virtual void HitGeometry(line hitline,sector hitsector,int hitside,int hitpart,vector3 vu){
+	virtual void HitGeometry(
+		line hitline,
+		sector hitsector,
+		int hitside,
+		int hitpart,
+		vector3 vu,
+		double lastdist
+	){
 		double pen=penetration();
 //TODO: MATERIALS AFFECTING PENETRATION AMOUNT
 
@@ -527,8 +543,6 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 			//don't ricochet on meat
 			//require much shallower angle for liquids
 
-			//reduce penetration and streamlinedness
-
 		//if impact is too steep, randomly fail to ricochet
 		double maxricangle=frandom(50,90)-pen-hardness;
 
@@ -538,28 +552,31 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 			//pick the one closer to the bullet's own angle
 
 			//deflect along the line
-			double aaa1=hdmath.angleto(hitline.v1.p,hitline.v2.p);
-			double aaa2=aaa1+180;
-			double ppp=angle;
+			if(lastdist>128){ //to avoid infinite back-and-forth at certain angles
+				double aaa1=hdmath.angleto(hitline.v1.p,hitline.v2.p);
+				double aaa2=aaa1+180;
+				double ppp=angle;
 
-			double abs1=absangle(aaa1,ppp);
-			double abs2=absangle(aaa2,ppp);
-			double hitangle=min(abs1,abs2);
+				double abs1=absangle(aaa1,ppp);
+				double abs2=absangle(aaa2,ppp);
+				double hitangle=min(abs1,abs2);
 
-			if(hitangle<maxricangle){
-				didricochet=true;
-				double aaa=(abs1>abs2)?aaa2:aaa1;
-				vel.xy=rotatevector(vel.xy,deltaangle(ppp,aaa)*frandom(1.,1.05));
+				if(hitangle<maxricangle){
+					didricochet=true;
+					double aaa=(abs1>abs2)?aaa2:aaa1;
+					vel.xy=rotatevector(vel.xy,deltaangle(ppp,aaa)*frandom(1.,1.05));
 
-				//transfer some of the deflection upwards or downwards
-				double vlz=vel.z;
-				if(vlz){
-					double xyl=vel.xy.length()*frandom(0.9,1.1);
-					double xyvlz=xyl+vlz;
-					vel.z*=xyvlz/xyl;
-					vel.xy*=xyl/xyvlz;
+					//transfer some of the deflection upwards or downwards
+					double vlz=vel.z;
+					if(vlz){
+						double xyl=vel.xy.length()*frandom(0.9,1.1);
+						double xyvlz=xyl+vlz;
+						vel.z*=xyvlz/xyl;
+						vel.xy*=xyl/xyvlz;
+					}
+					vel.z+=frandom(-0.01,0.01)*speed;
+					vel*=1.-hitangle*0.011;
 				}
-				vel.z+=frandom(-0.01,0.01)*speed;
 			}
 		}else if(
 			hitpart==SECPART_Floor
@@ -569,30 +586,33 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 			double planepitch=0;
 
 			//get the relative pitch of the surface
-			double zdif;
-			if(checkmove(pos.xy+vel.xy.unit()*0.5))zdif=getzat(0.5,flags:isceiling?GZF_CEILING:0)-pos.z;
-			else zdif=pos.z-getzat(-0.5,flags:isceiling?GZF_CEILING:0);
-			if(zdif)planepitch=atan2(zdif,0.5);
+			if(lastdist>128){ //to avoid infinite back-and-forth at certain angles
+				double zdif;
+				if(checkmove(pos.xy+vel.xy.unit()*0.5))zdif=getzat(0.5,flags:isceiling?GZF_CEILING:0)-pos.z;
+				else zdif=pos.z-getzat(-0.5,flags:isceiling?GZF_CEILING:0);
+				if(zdif)planepitch=atan2(zdif,0.5);
 
-			planepitch+=frandom(0.,1.);
-			if(isceiling)planepitch*=-1;
+				planepitch+=frandom(0.,1.);
+				if(isceiling)planepitch*=-1;
 
-			double hitangle=absangle(-pitch,planepitch);
-			if(hitangle>90)hitangle=180-hitangle;
+				double hitangle=absangle(-pitch,planepitch);
+				if(hitangle>90)hitangle=180-hitangle;
 
-			if(hitangle<maxricangle){
-				didricochet=true;
-				//at certain angles the ricochet should reverse xy direction
-				if(hitangle>90){
-					//bullet ricochets "backward"
-					pitch=planepitch;
-					angle+=180;
-				}else{
-					//bullet ricochets "forward"
-					pitch=-planepitch;
+				if(hitangle<maxricangle){
+					didricochet=true;
+					//at certain angles the ricochet should reverse xy direction
+					if(hitangle>90){
+						//bullet ricochets "backward"
+						pitch=planepitch;
+						angle+=180;
+					}else{
+						//bullet ricochets "forward"
+						pitch=-planepitch;
+					}
+					speed*=(1-frandom(0.,0.02)*(7-hardness)-(hitangle*0.003));
+					A_ChangeVelocity(cos(pitch)*speed,0,sin(-pitch)*speed,CVF_RELATIVE|CVF_REPLACE);
+					vel*=1.-hitangle*0.011;
 				}
-				speed*=(1-frandom(0.,0.02)*(7-hardness)-(hitangle*0.003));
-				A_ChangeVelocity(cos(pitch)*speed,0,sin(-pitch)*speed,CVF_RELATIVE|CVF_REPLACE);
 			}
 		}
 
@@ -676,7 +696,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 		double deemedwidth=hitactor.radius*frandom(0.9,1.);//10.+hitactor.radius*frandom(0.08,0.1);
 		deemedwidth*=2;
 
-		
+
 		//decelerate
 		let hdmb=hdmobbase(hitactor);
 		double hitactorresistance=hdmb?hdmb.bulletresistance(hitangle):0.6;
