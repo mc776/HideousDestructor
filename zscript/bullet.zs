@@ -104,6 +104,68 @@ class HDB_frag:HDBulletActor{
 	}
 	override void gunsmoke(){}
 }
+class HDB_bronto:HDBulletActor{
+	default{
+		pushfactor 0.05;
+		mass 5000;
+		speed 700;
+		accuracy 600;
+		stamina 3700;
+
+		hdbulletactor.distantsounder "DoubleDistantShotgun";
+		missiletype "HDGunsmoke";
+		scale 0.08;translation "128:151=%[1,1,1]:[0.2,0.2,0.2]";
+		seesound "weapons/riflecrack";
+		obituary "%o played %k's cannon.";
+	}
+	override actor Puff(){
+		bulletdie();
+		bmissile=false;
+		return null;
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		for(int i=2;i;i--){
+			A_SpawnItemEx("TerrorSabotPiece",0,0,0,
+				speed*cos(pitch)*0.01,(i==2?3:-3),speed*sin(pitch)*0.01,0,
+				SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS
+			);
+		}
+	}
+	states{
+	spawn:
+		MISL A -1;
+	death:
+		TNT1 A 16{
+			A_SprayDecal("BrontoScorch",16);
+			bmissile=false;
+			vel*=0.01;
+			if(tracer)tracer.damagemobj( //warhead damage
+				self,target,
+				random(12,24)*60,
+				"SmallArms3",DMG_THRUSTLESS
+			);
+			doordestroyer.destroydoor(self,128,frandom(24,36),6);
+			A_HDBlast(
+				fragradius:256,fragdamage:256,fragdamagetype:"SmallArms1",
+				immolateradius:64,immolateamount:random(4,20),immolatechance:32,
+				gibradius:16,gibamount:random(4,20),
+				source:target
+			);
+			if(tracer&&tracer.bcorpse)tracer.A_SetInventory("SawGib",tracer.countinv("SawGib")+100);
+			DistantQuaker.Quake(self,3,35,256,12);
+
+			if(max(abs(pos.x),abs(pos.y))>=32768)return;
+			actor aaa=Spawn("WallChunker",pos,ALLOW_REPLACE);
+			A_SpawnChunks("BigWallChunk",20,4,20);
+			A_SpawnChunks("HDSmoke",4,1,7);
+			aaa=spawn("HDExplosion",pos,ALLOW_REPLACE);aaa.vel.z=2;
+			spawn("DistantRocket",pos,ALLOW_REPLACE);
+			vel.z+=10;
+			A_SpawnChunks("HDSmokeChunk",random(3,4),6,12);
+		}
+	}
+}
 
 
 
@@ -122,7 +184,7 @@ class HDBulletTracer:LineTracer{
 		}else if(results.hittype==TRACE_HitActor){
 			if(
 				results.hitactor==bullet
-				||(results.hitactor==shooter&&bullet.getage()<2)
+				||(results.hitactor==shooter&&!bullet.bincombat)
 			)return TRACE_Skip;
 			int skipsize=bullet.traceactors.size();
 			for(int i=0;i<skipsize;i++){
@@ -143,7 +205,7 @@ class HDBulletTracer:LineTracer{
 		return TRACE_Stop;
 	}
 }
-class HDBulletActor:Actor{
+class HDBulletActor:HDActor{
 	array<line> tracelines;
 	array<actor> traceactors;
 	array<sector> tracesectors;
@@ -335,6 +397,9 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 			traceresults bres=blt.results;
 			sector sectortodamage=null;
 
+			//set +INCOMBAT now, assumedly having cleared the shooter
+			if(!bincombat)bincombat=true;
+
 			if(bres.hittype==TRACE_HasHitSky){
 				setxyz(pos+vel);
 				vel-=vel.unit()*pushfactor;
@@ -493,7 +558,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 	}
 	//when a bullet hits a flat or wall
 	//add 999 to "hitpart" to use the tier # instead
-	virtual void HitGeometry(
+	void HitGeometry(
 		line hitline,
 		sector hitsector,
 		int hitside,
