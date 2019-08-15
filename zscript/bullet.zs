@@ -31,7 +31,8 @@ class bltest:hdweapon{
 	states{
 	fire:
 		TNT1 A 0{
-			HDBulletActor.FireBullet(self,"HDB_9");
+			//HDBulletActor.FireBullet(self,"HDB_9");
+			HDBulletActor.FireBullet(self,"HDB_bronto");
 		}goto nope;
 	altfire:
 		TNT1 A 0{
@@ -398,7 +399,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 			sector sectortodamage=null;
 
 			//set +INCOMBAT now, assumedly having cleared the shooter
-			if(!bincombat)bincombat=true;
+			if(!bincombat||1)bincombat=true;
 
 			if(bres.hittype==TRACE_HasHitSky){
 				setxyz(pos+vel);
@@ -770,7 +771,9 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 			hitactorresistance*deemedwidth*0.03
 		);
 		double shortpen=pen-penshell;
-		vel*=shortpen/pen;
+		double shortshortpen=min(shortpen,hitactor.radius*2);
+		vel*=shortshortpen/pen;
+		speed-=shortshortpen;
 		pen=shortpen;
 
 		bool deepenough=pen>deemedwidth*0.04;
@@ -813,8 +816,10 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 		//if over 10% maxhealth, force pain
 		impact+=tinyspeedsquared*frandom(0.03,0.08)*stamina;
 		if(speed>HDCONST_SPEEDOFSOUND){
+			bnoextremedeath=impact*2<getdefaultbytype(hitactor.getclass()).health;
 			hitactor.damagemobj(self,target,max(random(1,5),impact),"Bashing",DMG_THRUSTLESS);
 			forcepain(hitactor);
+			bnoextremedeath=true;
 		}else hitactor.damagemobj(self,target,max(1,impact),"Bashing",DMG_THRUSTLESS);
 
 		//check if going right through the body
@@ -892,7 +897,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 		//add size of channel to damage
 		int chdmg=int(channelwidth*pen)>>5;
 if(hd_debug)console.printf("channel HP damage: "..chdmg);
-		bnoextremedeath=(chdmg<<2)<getdefaultbytype(hitactor.getclass()).health;
+		bnoextremedeath=(chdmg<<3)<getdefaultbytype(hitactor.getclass()).health;
 
 		//cns severance
 		//small column in middle centre
@@ -927,7 +932,8 @@ if(hd_debug)console.printf("channel HP damage: "..chdmg);
 		//is there anything else you would like to share
 		additionaleffects(hitactor,pen,vu);
 
-		setorigin(hitpos+vu*shortpen,true);
+		if(hitactor)tracer=hitactor;
+		setorigin(hitpos+vu*shortshortpen,true);
 	}
 	virtual void AdditionalEffects(actor hitactor,double pen,vector3 vu){}
 	virtual actor Puff(){
