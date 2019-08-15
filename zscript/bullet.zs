@@ -99,7 +99,7 @@ class HDB_frag:HDBulletActor{
 	default{
 		pushfactor 0.8;
 		mass 30;
-		speed 300;
+		speed 700;
 		accuracy 200;
 		stamina 800;
 	}
@@ -360,7 +360,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 			ceilingz<pos.z
 			&&ceilingz-pos.z<vel.z
 		){
-			setxyz(pos+vel);
+			setorigin(pos+vel,false);
 			vel-=vel.unit()*pushfactor;
 			vel.z-=getgravity();
 			return;
