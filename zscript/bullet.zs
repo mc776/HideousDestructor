@@ -399,7 +399,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 			sector sectortodamage=null;
 
 			//set +INCOMBAT now, assumedly having cleared the shooter
-			if(!bincombat||1)bincombat=true;
+			if(!bincombat&&(!target||speed-distanceleft>target.height*2))bincombat=true;
 
 			if(bres.hittype==TRACE_HasHitSky){
 				setxyz(pos+vel);
