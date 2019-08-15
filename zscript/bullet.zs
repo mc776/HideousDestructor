@@ -99,7 +99,7 @@ class HDB_frag:HDBulletActor{
 	default{
 		pushfactor 0.8;
 		mass 30;
-		speed 700;
+		speed 300;
 		accuracy 200;
 		stamina 800;
 	}

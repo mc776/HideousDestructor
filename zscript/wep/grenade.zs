@@ -491,7 +491,7 @@ class HDFragGrenadeRoller:HDActor{
 			xpl=spawn("HDExplosion",self.pos-(0,0,1),ALLOW_REPLACE);
 				xpl.target=target;xpl.master=master;xpl.stamina=stamina;
 			A_SpawnChunks("BigWallChunk",14,4,12);
-			A_SpawnChunks("HDBulletFrag",360,300,900);
+			A_SpawnChunks("HDB_frag",360,300,900);
 			spawn("DistantRocket",pos,ALLOW_REPLACE);
 		}
 		stop;
@@ -554,7 +554,7 @@ class HDFragGrenade:SlowProjectile{
 		}else{
 			if(inthesky){
 				spawn("DistantRocket",pos,ALLOW_REPLACE);
-				A_SpawnChunks("HDBulletFrag",360,300,900);
+				A_SpawnChunks("HDB_frag",360,300,900);
 				destroy();return;
 			}
 			let gr=HDFragGrenadeRoller(spawn(rollertype,pos,ALLOW_REPLACE));

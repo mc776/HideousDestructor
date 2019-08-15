@@ -26,6 +26,13 @@ extend class HDActor{
 			passwalls
 		);
 	}
+	enum UpperMidLower{
+		FTIER_TOP=1,
+		FTIER_MID=2,
+		FTIER_MIDL=4, //left and right relative to the grenade, facing the victim
+		FTIER_MIDR=8,
+		FTIER_BOTTOM=16
+	}
 	static void HDBlast(actor caller,
 		double blastradius=0,int blastdamage=0,double fullblastradius=0,name blastdamagetype="None",
 		double pushradius=0,double pushamount=0,double fullpushradius=0,bool pushmass=true,
@@ -84,51 +91,83 @@ extend class HDActor{
 
 			int playerattack=0;//source&&source.player?DMG_PLAYERATTACK:0;
 
-			//check LOS
-			if(passwalls)losmul=1.;
-			else{
-				double biggerradius=bigradius+it.radius;
-				double smallerradius=it.radius-1;
+			//some variables that will be reused
+			double biggerradius=bigradius+it.radius;
+			double smallerradius=it.radius-1;
+			double difz=it.pos.z-caller.pos.z;
+			double pitchtotop=-atan2(difz+it.height,dist2);
+			double pitchtomid=-atan2(difz+ithalfheight,dist2);
+			double pitchtobottom=-atan2(difz,dist2);
+			double angletomid=caller.angleto(it);
+			double edgeshot=atan2(smallerradius,dist);
+
+
+			//check how much of the actor is exposed
+			int tiershit=0;
+			if(passwalls){
+				losmul=1.;
+				tiershit=FTIER_TOP|FTIER_MIDL|FTIER_MIDR|FTIER_BOTTOM;
+			}else{
+				//shoot lines to the top, middle, bottom and sides
+				//if some of these fail, target is partially covered
+				//assumes legs that have smaller profile than upper body
 				flinetracedata blt;
-				double difz=it.pos.z-caller.pos.z;
-				double pitchtotop=-atan2(difz+it.height,dist2);
-				double pitchtomid=-atan2(difz+ithalfheight,dist2);
-				double pitchtobottom=-atan2(difz,dist2);
-				double angletomid=caller.angleto(it);
 
 				caller.linetrace(angletomid,biggerradius,pitchtotop,0,
 					0, //caller is already raised by half its height for other things
 					data:blt
 				);
-				if(blt.hitactor==it)losmul+=0.25;
+				if(blt.hitactor==it){
+					tiershit|=FTIER_TOP;
+					losmul+=0.25;
+				}
+
+				blt.hitactor=null; //reset before each call just in case
 				caller.linetrace(angletomid,biggerradius,pitchtomid,0,
 					0, //caller is already raised by half its height for other things
 					data:blt
 				);
-				if(blt.hitactor==it)losmul+=0.25;
+				if(blt.hitactor==it){
+					tiershit|=FTIER_MID;
+					losmul+=0.25;
+				}
 
-				double edgeshot=atan2(smallerradius,dist);
+				blt.hitactor=null;
 				caller.linetrace(angletomid+edgeshot,biggerradius,pitchtomid,0,
 					0, //caller is already raised by half its height for other things
 					data:blt
 				);
-				if(blt.hitactor==it)losmul+=0.17;
+				if(blt.hitactor==it){
+					tiershit|=FTIER_MIDL;
+					losmul+=0.17;
+				}
+
+				blt.hitactor=null;
 				caller.linetrace(angletomid-edgeshot,biggerradius,pitchtomid,0,
 					0, //caller is already raised by half its height for other things
 					data:blt
 				);
-				if(blt.hitactor==it)losmul+=0.17;
+				if(blt.hitactor==it){
+					tiershit|=FTIER_MIDR;
+					losmul+=0.17;
+				}
 
+				blt.hitactor=null;
 				caller.linetrace(angletomid,biggerradius,pitchtobottom,0,
 					0, //caller is already raised by half its height for other things
 					data:blt
 				);
-				if(blt.hitactor==it)losmul+=0.16;
-				losmul=min(losmul,1.);
+				if(blt.hitactor==it){
+					tiershit|=FTIER_BOTTOM;
+					losmul+=0.16;
+				}
+
+				//the final multiplier should not exceed 1
+				if(losmul>1.)losmul=1.;
 			}
 //				if(losmul){caller.A_Log(string.format("%s  %f",it.getclassname(),losmul));}
 
-			if(!losmul)continue;
+			if(!tiershit)continue;
 			double divmass=1.;if(it.mass>0)divmass=1./it.mass;
 
 			//immolate before all damage, to avoid bypassing player death transfer
@@ -227,67 +266,65 @@ extend class HDActor{
 					//randomize count and abort if none end up hitting
 					fragshit*=frandom(0.9,1.1);
 					if(fragshit<1)continue;
-
-					//base damage
-					int dmg=min(fragshit*max(fragdamage>>4-random(0,it.countinv("BulletResistance")),1),fragdamage);
-					//crits
-					if(frandom(0,1)<(0.01*fragshit))dmg*=frandom(1.,2.);
-
-					//SO MUCH BLOOD
-					if(
-						!(it is "TempShield")
-					){
-						caller.A_Face(it,0,0);
-						name bld="FragPuff";
-						if(!it.bnoblood&&it.bloodtype)bld=it.bloodtype;
-						int gbg;actor blaaa;vector2 blooddir=(caller.pos.xy-it.pos.xy).unit();
-						if(blooddir.x!=blooddir.x)blooddir.x=frandom(3,3);
-						if(blooddir.y!=blooddir.y)blooddir.y=frandom(3,3);
-						int bloodshit=min(fragshit,it.height*0.5);
-						for(int i=0;i<bloodshit;i++){
-							[gbg,blaaa]=it.A_SpawnItemEx(bld,
-								frandom(-1,it.radius),
-								frandom(-it.radius,it.radius)*0.6,
-								frandom(4,it.height),
-								blooddir.x*frandom(-1,4),
-								blooddir.y*frandom(-4,4),
-								frandom(-1,3),
-								-caller.angle,
-								SXF_USEBLOODCOLOR
-								|SXF_ABSOLUTEANGLE
-								|SXF_ABSOLUTEMOMENTUM
-								|SXF_NOCHECKPOSITION
-							);
-							if(blaaa)blaaa.vel+=it.vel;
-						}
-					}
-
-					//limit damage to non-gibbing levels
-					//can still gib, just takes a lot more
-					int itgibhealth=it.gibhealth;
-					int ithealth=it.health;
-					if(
-						ithealth>0&&
-						itgibhealth>0
-					){
-						int gh=ithealth+itgibhealth;
-						if(dmg>gh){
-							dmg=min(gh,gh-itgibhealth*3);
-							if(dmg<1)dmg=ithealth+1;
-						}
-					}
-
-
-					//and finally the good stuff
 					if(hd_debug)caller.A_Log(
-						string.format("%s fragged %i times by %s for %i damage",
-							it.getclassname(),fragshit,caller.getclassname(),dmg
+						string.format("%s fragged %i times",
+							it.getclassname(),fragshit,caller.getclassname()
 						)
 					);
-					int pcbak=it.painchance;
-					it.painchance*=fragshit;
-					it.DamageMobj(caller,source,dmg,fragdamagetype,DMG_THRUSTLESS|playerattack);
-					if(it)it.painchance=pcbak;
+
+					//resolve the impacts using a single bullet
+					let bbb=hdbulletactor(spawn("hdb_frag",caller.pos));
+					if(!bbb)continue;
+					bbb.target=target;
+					bbb.vel+=caller.vel;
+					bbb.traceactors.push(caller); //does this even work?
+
+					//set the base properties of the frag bullet
+					//TODO: replace with frag type parameter in this function
+					double fragpushfactor=bbb.pushfactor;
+					double fragmass=bbb.mass;
+					double fragspeed=bbb.speed;
+					double fragaccuracy=bbb.accuracy;
+					double fragstamina=bbb.stamina;
+
+					//all the above are subject to this variation
+					//TODO: add a parameter in this function for this
+					double fragvariance=0.3;
+
+					//limit number of frags and increase size to compensate
+					if(fragshit>20){
+						fragstamina+=((fragshit-20)<<4);
+						fragshit=20;
+					}
+
+					double fragangle=caller.angleto(it);
+					vector3 vu=(cos(bbb.pitch)*(cos(fragangle),sin(fragangle)),sin(bbb.pitch));
+					fragradius-=it.stamina; //to be used to place the bullet, not inside target
+
+					//resolve the impacts using the same bullet, resetting each time
+					for(int i=0;i<fragshit;i++){
+						bbb.mass=fragmass*(1.+frandom(-fragvariance,fragvariance));
+						bbb.pushfactor=fragpushfactor*(1.+frandom(-fragvariance,fragvariance));
+						bbb.stamina=fragstamina*(1.+frandom(-fragvariance,fragvariance));
+						bbb.accuracy=fragaccuracy*(1.+frandom(-fragvariance,fragvariance));
+						bbb.speed=fragspeed*(1.+frandom(-fragvariance,fragvariance));
+
+						if(i>10)bbb.bbloodlessimpact=true;
+
+						double fragtop=it.height;
+						double fragbottom=0;
+						if(!(tiershit&FTIER_BOTTOM))fragbottom=fragtop*0.3;
+						if(!(tiershit&FTIER_TOP))fragtop*=0.7;
+
+						bbb.setxyz((
+							rotatevector((0,fragradius),fragangle),
+							it.pos.z+frandom(fragbottom,fragtop)
+						));
+						bbb.onhitactor(it,bbb.pos,vu);
+					}
+					bbb.bulletdie();
+
+					//don't forget to spawn the moving frags!
 				}
 			}
 		}

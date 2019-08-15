@@ -107,7 +107,7 @@ class GyroGrenade:SlowProjectile{
 		}else{
 			spawn("DistantRocket",self.pos,ALLOW_REPLACE);
 		}
-		A_SpawnChunks("HDBulletFrag",180,100,700+50*stamina);
+		A_SpawnChunks("HDB_frag",180,100,700+50*stamina);
 
 		destroy();return;
 	}
@@ -208,7 +208,7 @@ class HDHEAT:GyroGrenade{
 			actor xpl=spawn("Gyrosploder",self.pos-(0,0,1),ALLOW_REPLACE);
 			xpl.target=target;xpl.master=master;xpl.stamina=stamina;
 		}else{spawn("DistantRocket",self.pos,ALLOW_REPLACE);}
-		A_SpawnChunks("HDBulletFrag",80,100,600);
+		A_SpawnChunks("HDB_frag",80,100,600);
 
 		destroy();return;
 	}

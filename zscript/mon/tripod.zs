@@ -50,7 +50,7 @@ class Roboball:SlowProjectile{
 		}else{
 			spawn("DistantRocket",self.pos,ALLOW_REPLACE);
 		}
-		A_SpawnChunks("HDBulletFrag",240,300,900);
+		A_SpawnChunks("HDB_frag",240,300,900);
 
 		//destroy();return;
 		bmissile=false;
