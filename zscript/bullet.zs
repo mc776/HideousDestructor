@@ -453,7 +453,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 					}else{
 						//"SPAC_Impact" is so wonderfully onomatopoeic
 						//would add SPAC_Damage but it doesn't work in 4.1.3???
-						hitline.activate(target,bres.side,SPAC_Impact|SPAC_Use);
+//						hitline.activate(target,bres.side,SPAC_Impact|SPAC_Use); //testing only
 						HitGeometry(
 							hitline,othersector,bres.side,999+bres.tier,vu,
 							iterations?bres.distance:999
@@ -763,13 +763,24 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 		deemedwidth*=2;
 
 
+		//determine bullet resistance
+		double hitactorresistance;
+		double penshell;
+		if(hdmobbase(hitactor)){
+			let hdmb=hdmobbase(hitactor);
+			hitactorresistance=hdmb.bulletresistance(hitangle);
+			penshell=hdmb.bulletshell(hitpos,hitangle);
+		}else if(hdplayerpawn(hitactor)){
+			hitactorresistance=0.6;
+			penshell=0;
+//TODO: determine penshell based on hit location and player armour!
+		}else{
+			hitactorresistance=0.6;
+			penshell=0;
+		}
+		penshell=max(penshell,hitactorresistance*deemedwidth*0.03);
+
 		//decelerate
-		let hdmb=hdmobbase(hitactor);
-		double hitactorresistance=hdmb?hdmb.bulletresistance(hitangle):0.6;
-		double penshell=max(
-			hdmb?hdmb.bulletshell(hitpos,hitangle):0,
-			hitactorresistance*deemedwidth*0.03
-		);
 		double shortpen=pen-penshell;
 		double shortshortpen=min(shortpen,hitactor.radius*2);
 		vel*=shortshortpen/pen;
