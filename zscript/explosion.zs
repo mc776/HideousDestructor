@@ -322,6 +322,7 @@ extend class HDActor{
 						));
 						bbb.onhitactor(it,bbb.pos,vu);
 					}
+					bbb.setorigin(pos);
 					bbb.bulletdie();
 
 					//don't forget to spawn the moving frags!

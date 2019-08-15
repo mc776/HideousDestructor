@@ -402,7 +402,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 			if(!bincombat&&(!target||speed-distanceleft>target.height*2))bincombat=true;
 
 			if(bres.hittype==TRACE_HasHitSky){
-				setxyz(pos+vel);
+				setorigin(pos+vel,true);
 				vel-=vel.unit()*pushfactor;
 				vel.z-=getgravity();
 				return;
