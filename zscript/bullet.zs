@@ -435,7 +435,8 @@ class HDBulletActor:HDActor{
 						||hitline.flags&line.ML_BLOCKPROJECTILE //maybe? they'll penetrate anyway
 						//||hitline.flags&line.ML_BLOCKING //too many of these arbitrarily restrict the player
 						//||hitline.flags&line.ML_BLOCKEVERYTHING //not the fences on the range!
-						//||bres.tier==TIER_FFloor //3d floor - does not work as of 4.1.3
+						//||bres.tier==TIER_FFloor //3d floor - does not work as of 4.2.0
+						||hitline.gethealth()>0
 						||( //upper or lower tier, not sky
 							(
 								(bres.tier==TIER_Upper)
@@ -454,7 +455,7 @@ class HDBulletActor:HDActor{
 					}else{
 						//"SPAC_Impact" is so wonderfully onomatopoeic
 						//would add SPAC_Damage but it doesn't work in 4.1.3???
-//						hitline.activate(target,bres.side,SPAC_Impact|SPAC_Use); //testing only
+						hitline.activate(target,bres.side,SPAC_Impact);
 						HitGeometry(
 							hitline,othersector,bres.side,999+bres.tier,vu,
 							iterations?bres.distance:999
@@ -574,7 +575,9 @@ class HDBulletActor:HDActor{
 		//inflict damage on destructibles
 		//GZDoom native first
 		int geodmg=int(pen*(1+pushfactor));
-		if(hitline)destructible.DamageLinedef(hitline,self,geodmg,"SmallArms2",hitpart,pos,false);
+		if(hitline){
+			destructible.DamageLinedef(hitline,self,geodmg,"SmallArms2",hitpart,pos,false);
+		}
 		if(hitsector){
 			switch(hitpart-999){
 			case TIER_Upper:
