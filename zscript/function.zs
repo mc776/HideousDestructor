@@ -124,7 +124,7 @@ class HDActor:Actor{
 	}
 	//"After that many drinks anyone would be blowing chunks all night!"
 	//"Chunks is the name of my dog."
-	//for frags: A_SpawnChunks("HDFrag",42,100,700);
+	//for frags: A_SpawnChunks("HDB_frag",42,100,700);
 	void A_SpawnChunks(
 		class<actor> chunk,
 		int number=12,
@@ -158,7 +158,7 @@ class HDActor:Actor{
 				SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH|SXF_TRANSFERPOINTERS
 			);
 			frg.vel+=vel;
-			frg.bseeinvisible=true; //work around hack that normally lets HDBullet out
+			frg.bincombat=true; //work around hack that normally lets HDBulletActor out
 		}
 	}
 	//roughly equivalent to CacoZapper

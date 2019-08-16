@@ -292,7 +292,7 @@ extend class HDActor{
 					double fragangle=caller.angleto(it);
 					vector3 vu=(cos(bbb.pitch)*(cos(fragangle),sin(fragangle)),sin(bbb.pitch));
 					fragradius-=it.stamina; //to be used to place the bullet, not inside target
-
+fragshit=0;
 					//resolve the impacts using the same bullet, resetting each time
 					for(int i=0;i<fragshit;i++){
 						bbb.mass=fragmass*(1.+frandom(-fragvariance,fragvariance));
