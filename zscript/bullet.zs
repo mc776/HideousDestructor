@@ -120,6 +120,7 @@ class HDB_bronto:HDBulletActor{
 		obituary "%o played %k's cannon.";
 	}
 	override actor Puff(){
+		setorigin(pos-(2*(cos(angle),sin(angle)),0),false);
 		bulletdie();
 		bmissile=false;
 		return null;
