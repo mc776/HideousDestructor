@@ -399,9 +399,6 @@ class HDBulletActor:HDActor{
 			traceresults bres=blt.results;
 			sector sectortodamage=null;
 
-			//set +INCOMBAT now, assumedly having cleared the shooter
-			if(!bincombat&&(!target||speed-distanceleft>target.height*2))bincombat=true;
-
 			if(bres.hittype==TRACE_HasHitSky){
 				setorigin(pos+vel,true);
 				vel-=vel.unit()*pushfactor;
@@ -484,8 +481,14 @@ class HDBulletActor:HDActor{
 						vu,iterations?bres.distance:999
 					);
 				}else if(bres.hittype==TRACE_HitActor){
-					traceactors.push(bres.hitactor);
-					onhitactor(bres.hitactor,bres.hitpos,vu);
+					if(
+						bres.hitactor==target
+						&&!bincombat
+					)bincombat=true;
+					else{
+						traceactors.push(bres.hitactor);
+						onhitactor(bres.hitactor,bres.hitpos,vu);
+					}
 				}
 			}
 			iterations++;
@@ -777,10 +780,14 @@ class HDBulletActor:HDActor{
 		}else if(hdplayerpawn(hitactor)){
 			hitactorresistance=0.6;
 
-			//TODO: destroy radsuit if worn and pen below frandom(2,5)
-
 			let hpl=hdplayerpawn(hitactor);
 			double hitheight=(hitpos.z-hpl.pos.z)/hpl.height;
+
+			//destroy radsuit if worn and pen above threshold
+			if(hpl.countinv("WornRadsuit")&&pen>frandom(1,4)){
+				hpl.A_TakeInventory("WornRadsuit");
+				hpl.A_PlaySound("misc/fwoosh",CHAN_AUTO);
+			}
 
 			int alv=hpl.armourlevel;
 			if(!alv||!random(0,15))penshell=0;
@@ -795,8 +802,24 @@ class HDBulletActor:HDActor{
 
 				penshell=frandom(4+alv,alv*10);
 
+				//degrade armour and puff
+				let armr=HDArmourWorn(hpl.findinventory("HDArmourWorn"));
+				if(armr){
+					int ddd=random(0,min(pen,penshell)+random(0,pen*0.2));
+					if(ddd<1&&pen>penshell)ddd=1;
+					armr.durability-=ddd;
+					if(ddd>2){
+						actor p;bool q;
+						[q,p]=hpl.A_SpawnItemEx("FragPuff",
+							0,0,hpl.height*1.6,
+							4,0,1,
+							0,0,64
+						);
+						if(p)p.vel+=hpl.vel;
+					}
+				}
+
 				//TODO: side effects
-				//TODO: degrade armour
 			}
 
 		}else{
