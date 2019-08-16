@@ -284,7 +284,7 @@ class HDBulletActor:HDActor{
 			*(1./4000)
 		;
 		if(pushfactor>0)pen/=(1.+pushfactor);
-if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
+//if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 		return pen;
 	}
 	override bool cancollidewith(actor other,bool passive){

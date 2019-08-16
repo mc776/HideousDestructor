@@ -237,20 +237,13 @@ extend class HDActor{
 						)
 					)
 				){
-					//determine size of arc exposed to frags
-					//ideally it would be the arc from corner to corner
-					//but this will do for now
-					double angcover=atan2(
-						it.height,//(it.radius*2+it.height)*0.5,
-						dist
-					);
-//caller.A_Log(string.format("%s  %f",it.getclassname(),angcover));
-					int fragshit=5000;
+					int fragshit=2500;
 					if(dist>0){
-						//HIGH SCHOOL GEOMETRY
+						//determine size of arc exposed to frags
 						//https://en.wikipedia.org/wiki/Spherical_sector
-						double domeheight=abs(sin(90-0.5*angcover));
-						double domearea=HDCONST_TAU*domeheight; //*dist
+						double angcover=(abs(pitchtotop-pitchtobottom)+edgeshot*2)*0.5;
+//console.printf(string.format("%s  %f",it.getclassname(),angcover));
+						double domearea=HDCONST_TAU*angcover; //*dist
 						double blastarea=(HDCONST_TAU*2)*dist; //*dist
 						double proportionfragged=domearea/blastarea;
 
@@ -261,16 +254,15 @@ extend class HDActor{
 						fragshit*=proportionfragged;
 					}
 
-//caller.A_Log(string.format("%s  %i",it.getclassname(),fragshit));
+//console.printf(string.format("%s  %i",it.getclassname(),fragshit));
 
 					//randomize count and abort if none end up hitting
 					fragshit*=frandom(0.9,1.1);
 					if(fragshit<1)continue;
-					if(hd_debug)caller.A_Log(
-						string.format("%s fragged %i times",
-							it.getclassname(),fragshit,caller.getclassname()
-						)
-					);
+					if(hd_debug){
+						string nm;if(it.player)nm=it.player.getusername();else nm=it.getclassname();
+						console.printf(nm.." fragged "..fragshit.." times");
+					}
 
 					//resolve the impacts using a single bullet
 					let bbb=hdbulletactor(spawn("hdb_frag",caller.pos));
