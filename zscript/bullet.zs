@@ -31,8 +31,8 @@ class bltest:hdweapon{
 	states{
 	fire:
 		TNT1 A 0{
-			//HDBulletActor.FireBullet(self,"HDB_9");
-			HDBulletActor.FireBullet(self,"HDB_bronto");
+			if(player.cmd.buttons&BT_USE)HDBulletActor.FireBullet(self,"HDB_bronto");
+			else HDBulletActor.FireBullet(self,"HDB_9");
 		}goto nope;
 	altfire:
 		TNT1 A 0{
@@ -99,8 +99,8 @@ class HDB_frag:HDBulletActor{
 	default{
 		pushfactor 0.8;
 		mass 30;
-		speed 700;
-		accuracy 200;
+		speed 500;
+		accuracy 140;
 		stamina 800;
 	}
 	override void gunsmoke(){}
@@ -776,13 +776,35 @@ class HDBulletActor:HDActor{
 			penshell=hdmb.bulletshell(hitpos,hitangle);
 		}else if(hdplayerpawn(hitactor)){
 			hitactorresistance=0.6;
-			penshell=0;
-//TODO: determine penshell based on hit location and player armour!
+
+			//TODO: destroy radsuit if worn and pen below frandom(2,5)
+
+			let hpl=hdplayerpawn(hitactor);
+			double hitheight=(hitpos.z-hpl.pos.z)/hpl.height;
+
+			int alv=hpl.armourlevel;
+			if(!alv||!random(0,15))penshell=0;
+			else{
+				int hitlevel;
+				if(hitheight>0.8)hitlevel=2;
+				else if(hitheight>0.4)hitlevel=1;
+				else hitlevel=0;
+
+				if(hitlevel==2)alv=random(0,alv);
+				else if(hitlevel==0)alv=max(alv-randompick(0,0,1,1,1,1,2),0);
+
+				penshell=frandom(4+alv,alv*10);
+
+				//TODO: side effects
+				//TODO: degrade armour
+			}
+
 		}else{
 			hitactorresistance=0.6;
 			penshell=0;
 		}
 		penshell=max(penshell,hitactorresistance*deemedwidth*0.03);
+
 
 		//decelerate
 		double shortpen=pen-penshell;
@@ -822,7 +844,7 @@ class HDBulletActor:HDActor{
 				A_ChangeVelocity(cos(pitch)*speed,0,sin(-pitch)*speed,CVF_RELATIVE|CVF_REPLACE);
 			}
 
-			hitactor.damagemobj(self,target,impact,"Bashing",DMG_THRUSTLESS);
+			hitactor.damagemobj(self,target,impact,"bashing",DMG_THRUSTLESS);
 			if(impact>(hitactor.health>>3))forcepain(hitactor);
 			return;
 		}
@@ -832,10 +854,10 @@ class HDBulletActor:HDActor{
 		impact+=tinyspeedsquared*frandom(0.03,0.08)*stamina;
 		if(speed>HDCONST_SPEEDOFSOUND){
 			bnoextremedeath=impact*2<getdefaultbytype(hitactor.getclass()).health;
-			hitactor.damagemobj(self,target,max(random(1,5),impact),"Bashing",DMG_THRUSTLESS);
+			hitactor.damagemobj(self,target,max(random(1,5),impact),"bashing",DMG_THRUSTLESS);
 			forcepain(hitactor);
 			bnoextremedeath=true;
-		}else hitactor.damagemobj(self,target,max(1,impact),"Bashing",DMG_THRUSTLESS);
+		}else hitactor.damagemobj(self,target,max(1,impact),"bashing",DMG_THRUSTLESS);
 
 		//check if going right through the body
 		//it's not "deep enough", it's "too deep" now!
