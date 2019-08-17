@@ -115,10 +115,10 @@ class HDB_frag:HDBulletActor{
 		stamina*=pushfactor;
 	}
 }
-class HDB_skull:HDB_frag{
+class HDB_scrap:HDB_frag{
 	default{
 		pushfactor 1.;
-		mass 10;
+		mass 30;
 		speed 200;
 		accuracy 100;
 		stamina 800;
@@ -169,7 +169,7 @@ class HDB_bronto:HDBulletActor{
 			);
 			doordestroyer.destroydoor(self,128,frandom(24,36),6);
 			A_HDBlast(
-				fragradius:256,fragtype:"HDB_skull",fragvariance:3.,
+				fragradius:256,fragtype:"HDB_scrap",fragvariance:3.,
 				immolateradius:64,immolateamount:random(4,20),immolatechance:32,
 				gibradius:16,gibamount:random(4,20),
 				source:target
