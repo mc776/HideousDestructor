@@ -721,7 +721,6 @@ class HDBulletActor:HDActor{
 				pendest+=vu;
 				if(
 					level.ispointinlevel(pendest)
-					&&TestMobjLocation()
 					//performance???
 					//&&pendest.z>getzat(pendest.x,pendest.y,0,GZF_ABSOLUTEPOS)
 					//&&pendest.z<getzat(pendest.x,pendest.y,0,GZF_CEILING|GZF_ABSOLUTEPOS)
@@ -824,7 +823,7 @@ class HDBulletActor:HDActor{
 
 			int alv;
 			if(!random(0,max((armr.durability>>2),3)))alv=-1; //slips through a gap
-			else if(hitlevel==2)alv=random(0,alv);
+			else if(hitlevel==2)alv=randompick(0,1,random(0,alv),alv);
 			else if(hitlevel==0)alv=max(alv-randompick(0,0,1,1,1,1,2),0);
 			else alv=armr.mega?3:1;
 
