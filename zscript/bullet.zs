@@ -382,11 +382,13 @@ class HDBulletActor:HDActor{
 			ceilingz<pos.z
 			&&ceilingz-pos.z<vel.z
 		){
+			bnointeraction=true;
 			setorigin(pos+vel,false);
 			vel-=vel.unit()*pushfactor;
 			vel.z-=getgravity();
 			return;
 		}
+		if(bnointeraction)bnointeraction=false;
 
 		hdbullettracer blt=HDBulletTracer(new("HDBulletTracer"));
 		if(!blt)return;
@@ -577,9 +579,9 @@ class HDBulletActor:HDActor{
 
 		//update velocity
 		A_ChangeVelocity(
-			frandom(-pushfactor,0),
 			frandom(-pushfactor,pushfactor),
-			frandom(-pushfactor,pushfactor)-1,
+			frandom(-pushfactor,pushfactor),
+			-getgravity(),
 			CVF_RELATIVE
 		);
 
