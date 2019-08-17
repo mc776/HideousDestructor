@@ -720,6 +720,7 @@ class HDBulletActor:HDActor{
 				pendest+=vu;
 				if(
 					level.ispointinlevel(pendest)
+					&&TestMobjLocation()
 					//performance???
 					//&&pendest.z>getzat(pendest.x,pendest.y,0,GZF_ABSOLUTEPOS)
 					//&&pendest.z<getzat(pendest.x,pendest.y,0,GZF_CEILING|GZF_ABSOLUTEPOS)

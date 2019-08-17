@@ -379,7 +379,7 @@ class doordestroyer:hdactor{
 		db.llength=doorwidth;
 		hdactor.HDBlast(caller,
 			pushradius:doorwidth,pushamount:24,
-			fragradius:doorwidth,fragtype:"HDB_skull",fragvariance:8.,
+			fragradius:doorwidth*2,fragtype:"HDB_skull",fragvariance:8.,fragspeedfactor:0.3,
 			immolateradius:doorwidth,
 			immolateamount:random(10,30),
 			immolatechance:12,
@@ -561,14 +561,14 @@ class DoorBusterPlanted:HDUPK{
 				DistantQuaker.Quake(self,4,35,512,10);
 				A_HDBlast(
 					pushradius:256,pushamount:128,fullpushradius:96,
-					fragradius:128,fragtype:"HDB_skull",fragvariance:7.,
+					fragradius:256,fragtype:"HDB_skull",fragvariance:7.,fragspeedfactor:0.3,
 					gibradius:16,gibamount:random(1,20)
 				);
 			}else{
 				DistantQuaker.Quake(self,2,35,256,10);
 				A_HDBlast(
 					pushradius:128,pushamount:64,fullpushradius:16,
-					fragradius:64,fragtype:"HDB_skull",fragvariance:7.,
+					fragradius:128,fragtype:"HDB_skull",fragvariance:7.,fragspeedfactor:0.2,
 					gibradius:16,gibamount:random(1,20)
 				);
 			}
