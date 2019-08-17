@@ -418,6 +418,7 @@ class HDBulletActor:HDActor{
 				bincombat=true;
 			}
 
+
 			double cosp=cos(pitch);
 			vector3 vu=vel.unit();
 			blt.trace(
@@ -830,11 +831,10 @@ class HDBulletActor:HDActor{
 			else if(hitheight>0.4)hitlevel=1;
 			else hitlevel=0;
 
-			int alv;
+			int alv=armr.mega?3:1;
 			if(!random(0,max((armr.durability>>2),3)))alv=-1; //slips through a gap
 			else if(hitlevel==2)alv=randompick(0,1,random(0,alv),alv);
-			else if(hitlevel==0)alv=max(alv-randompick(0,0,1,1,1,1,2),0);
-			else alv=armr.mega?3:1;
+			else if(hitlevel==0)alv=max(alv-randompick(0,0,0,1,1,1,1,2),0);
 
 			if(alv>0){
 				addpenshell=frandom(2+alv,alv*10);
