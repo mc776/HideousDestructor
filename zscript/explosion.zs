@@ -8,7 +8,7 @@ extend class HDActor{
 	void A_HDBlast(
 		double blastradius=0,int blastdamage=0,double fullblastradius=0,name blastdamagetype="None",
 		double pushradius=0,double pushamount=0,double fullpushradius=0,bool pushmass=true,
-		double fragradius=0,int fragdamage=0,name fragdamagetype="SmallArms1",
+		double fragradius=0,class<HDBulletActor> fragtype="HDB_frag",double fragvariance=0.05,double fragspeedfactor=1.,
 		double immolateradius=0,int immolateamount=1,int immolatechance=100,
 		double gibradius=0,int gibamount=1,
 		bool hurtspecies=true,
@@ -18,7 +18,7 @@ extend class HDActor{
 		hdactor.HDBlast(self,
 			blastradius,blastdamage,fullblastradius,blastdamagetype,
 			pushradius,pushamount,fullpushradius,pushmass,
-			fragradius,fragdamage,fragdamagetype,
+			fragradius,fragtype,fragvariance,fragspeedfactor,
 			immolateradius,immolateamount,immolatechance,
 			gibradius,gibamount,
 			hurtspecies,
@@ -36,7 +36,7 @@ extend class HDActor{
 	static void HDBlast(actor caller,
 		double blastradius=0,int blastdamage=0,double fullblastradius=0,name blastdamagetype="None",
 		double pushradius=0,double pushamount=0,double fullpushradius=0,bool pushmass=true,
-		double fragradius=0,int fragdamage=0,name fragdamagetype="SmallArms1",
+		double fragradius=0,class<HDBulletActor> fragtype="HDB_frag",double fragvariance=0.05,double fragspeedfactor=1.,
 		double immolateradius=0,int immolateamount=1,int immolatechance=100,
 		double gibradius=0,int gibamount=1,
 		bool hurtspecies=true,
@@ -226,7 +226,6 @@ extend class HDActor{
 				dist<=fragradius
 				&&(it.bsolid || it.bshootable || it.bvulnerable)
 			){
-				if(it.radiusdamagefactor)fragdamage*=it.radiusdamagefactor;
 				caller.A_Face(it);
 				if(
 					(
@@ -237,7 +236,7 @@ extend class HDActor{
 						)
 					)
 				){
-					int fragshit=2500;
+					int fragshit=1400; //
 					if(dist>0){
 						//determine size of arc exposed to frags
 						//https://en.wikipedia.org/wiki/Spherical_sector
@@ -250,7 +249,6 @@ extend class HDActor{
 						//NOW incorporate the cover
 						proportionfragged*=losmul;
 
-						//2500 frags = 2-45 frags on any given target
 						fragshit*=proportionfragged;
 					}
 
@@ -265,7 +263,7 @@ extend class HDActor{
 					}
 
 					//resolve the impacts using a single bullet
-					let bbb=hdbulletactor(spawn("hdb_frag",caller.pos));
+					let bbb=hdbulletactor(spawn(fragtype,caller.pos));
 					if(!bbb)continue;
 					bbb.target=target;
 					bbb.vel+=caller.vel;
@@ -275,13 +273,9 @@ extend class HDActor{
 					//TODO: replace with frag type parameter in this function
 					double fragpushfactor=bbb.pushfactor;
 					double fragmass=bbb.mass;
-					double fragspeed=bbb.speed;
+					double fragspeed=bbb.speed*fragspeedfactor;
 					double fragaccuracy=bbb.accuracy;
 					double fragstamina=bbb.stamina;
-
-					//all the above are subject to this variation
-					//TODO: add a parameter in this function for this
-					double fragvariance=0.3;
 
 					//limit number of frags and increase size to compensate
 					if(fragshit>20){

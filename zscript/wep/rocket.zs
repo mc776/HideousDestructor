@@ -97,7 +97,7 @@ class GyroGrenade:SlowProjectile{
 			A_HDBlast(
 				pushradius:256,pushamount:128,fullpushradius:96,
 				fragradius:HDCONST_SPEEDOFSOUND,
-				fragdamage:random(160,200+8*stamina),
+				fragvariance:(0.005*stamina),
 				immolateradius:128,immolateamount:random(3,60),
 				immolatechance:isrocket?random(1,stamina):25,
 				gibradius:16,gibamount:random(1,8)*10
@@ -200,7 +200,7 @@ class HDHEAT:GyroGrenade{
 			A_HDBlast(
 				pushradius:256,pushamount:128,fullpushradius:96,
 				fragradius:HDCONST_SPEEDOFSOUND,
-				fragdamage:random(60,240),
+				fragvariance:(0.007*stamina),
 				immolateradius:128,immolateamount:random(3,60),
 				immolatechance:2,
 				gibradius:16,gibamount:random(1,8)*10
@@ -398,7 +398,7 @@ class DudRocket:HDUPK{
 			A_HDBlast(
 				pushradius:256,pushamount:128,fullpushradius:96,
 				fragradius:HDCONST_SPEEDOFSOUND,
-				fragdamage:random(160,200+8*stamina),
+				fragvariance:(0.005*stamina),
 				immolateradius:128,immolateamount:random(3,60),
 				immolatechance:random(1,25),
 				gibradius:16,gibamount:random(1,8)*10

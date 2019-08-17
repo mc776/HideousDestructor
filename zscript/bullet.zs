@@ -99,11 +99,31 @@ class HDB_frag:HDBulletActor{
 	default{
 		pushfactor 0.8;
 		mass 30;
-		speed 500;
+		speed 400;
 		accuracy 140;
 		stamina 800;
 	}
 	override void gunsmoke(){}
+	virtual double setscalefactor(){return frandom(0.5,3.);}
+	override void beginplay(){
+		super.beginplay();
+		double scalefactor=setscalefactor();
+		pushfactor=1./scalefactor;
+		mass*=pushfactor;
+		speed*=scalefactor;
+		accuracy*=scalefactor;
+		stamina*=pushfactor;
+	}
+}
+class HDB_skull:HDB_frag{
+	default{
+		pushfactor 1.;
+		mass 10;
+		speed 200;
+		accuracy 100;
+		stamina 800;
+	}
+	override double setscalefactor(){return frandom(0.3,1.2);}
 }
 class HDB_bronto:HDBulletActor{
 	default{
@@ -149,7 +169,7 @@ class HDB_bronto:HDBulletActor{
 			);
 			doordestroyer.destroydoor(self,128,frandom(24,36),6);
 			A_HDBlast(
-				fragradius:256,fragdamage:256,fragdamagetype:"SmallArms1",
+				fragradius:256,fragtype:"HDB_skull",fragvariance:3.,
 				immolateradius:64,immolateamount:random(4,20),immolatechance:32,
 				gibradius:16,gibamount:random(4,20),
 				source:target
@@ -777,60 +797,70 @@ class HDBulletActor:HDActor{
 			let hdmb=hdmobbase(hitactor);
 			hitactorresistance=hdmb.bulletresistance(hitangle);
 			penshell=hdmb.bulletshell(hitpos,hitangle);
-		}else if(hdplayerpawn(hitactor)){
-			hitactorresistance=0.6;
-
-			let hpl=hdplayerpawn(hitactor);
-			double hitheight=(hitpos.z-hpl.pos.z)/hpl.height;
-
-			//destroy radsuit if worn and pen above threshold
-			if(hpl.countinv("WornRadsuit")&&pen>frandom(1,4)){
-				hpl.A_TakeInventory("WornRadsuit");
-				hpl.A_PlaySound("misc/fwoosh",CHAN_AUTO);
-			}
-
-			int alv=hpl.armourlevel;
-			if(!alv||!random(0,15))penshell=0;
-			else{
-				int hitlevel;
-				if(hitheight>0.8)hitlevel=2;
-				else if(hitheight>0.4)hitlevel=1;
-				else hitlevel=0;
-
-				if(hitlevel==2)alv=random(0,alv);
-				else if(hitlevel==0)alv=max(alv-randompick(0,0,1,1,1,1,2),0);
-
-				penshell=frandom(4+alv,alv*10);
-
-				//degrade armour and puff
-				let armr=HDArmourWorn(hpl.findinventory("HDArmourWorn"));
-				if(armr){
-					int ddd=random(0,min(pen,penshell)+random(0,pen*0.2));
-					if(ddd<1&&pen>penshell)ddd=1;
-					armr.durability-=ddd;
-					if(ddd>2){
-						actor p;bool q;
-						[q,p]=hpl.A_SpawnItemEx("FragPuff",
-							0,0,hpl.height*1.6,
-							4,0,1,
-							0,0,64
-						);
-						if(p)p.vel+=hpl.vel;
-					}
-				}
-
-				//TODO: side effects
-			}
-
 		}else{
 			hitactorresistance=0.6;
 			penshell=0;
 		}
-		penshell=max(penshell,hitactorresistance*deemedwidth*0.03);
+
+		//destroy radsuit if worn and pen above threshold
+		if(hitactor.countinv("WornRadsuit")&&pen>frandom(1,4)){
+			hitactor.A_TakeInventory("WornRadsuit");
+			hitactor.A_PlaySound("misc/fwoosh",CHAN_AUTO);
+		}
+
+		//apply armour if any
+		let armr=HDArmourWorn(hitactor.findinventory("HDArmourWorn"));
+		if(armr){
+			double hitheight=(hitpos.z-hitactor.pos.z)/hitactor.height;
+
+			double addpenshell=0;
+
+			int hitlevel;
+			if(hitheight>0.8)hitlevel=2;
+			else if(hitheight>0.4)hitlevel=1;
+			else hitlevel=0;
+
+			int alv;
+			if(!random(0,max((armr.durability>>2),3)))alv=-1; //slips through a gap
+			else if(hitlevel==2)alv=random(0,alv);
+			else if(hitlevel==0)alv=max(alv-randompick(0,0,1,1,1,1,2),0);
+			else alv=armr.mega?3:1;
+
+			if(alv>0){
+				addpenshell=frandom(2+alv,alv*10);
+
+				//degrade and puff
+				int ddd=random(0,min(pen,addpenshell)+random(0,pen*0.2));
+				if(ddd<1&&pen>addpenshell)ddd=1;
+				armr.durability-=ddd;
+				if(ddd>2){
+					actor p;bool q;
+					[q,p]=hitactor.A_SpawnItemEx("FragPuff",
+						0,0,hitactor.height*1.6,
+						4,0,1,
+						0,0,64
+					);
+					if(p)p.vel+=hitactor.vel;
+				}
+
+				//TODO: side effects
+			}else if(!alv){
+				//bullet leaves a hole in the webbing
+				armr.durability-=max(random(0,1),(stamina>>7));
+			}
+
+			penshell+=addpenshell;
+		}
+
+		penshell=max(0,penshell+hitactorresistance*deemedwidth*0.03);
 
 
 		//decelerate
 		double shortpen=pen-penshell;
+		if(shortpen<=0){
+			bulletdie();
+			return;
+		}
 		double shortshortpen=min(shortpen,hitactor.radius*2);
 		vel*=shortshortpen/pen;
 		speed-=shortshortpen;
@@ -851,7 +881,7 @@ class HDBulletActor:HDActor{
 		//abandon all damage after impact, then check ricochet
 		if(!deepenough){
 			//if bullet too soft and/or slow, just die
-			if(speed<32||hardness<random(1,3))bulletdie();
+			if(speed<32||hardness<random(1,3)||!random(0,6))bulletdie();
 
 			//randomly deflect
 			//if deflected, reduce impact

@@ -49,7 +49,7 @@ class TerrorBolt:HDBullet{
 			);
 			doordestroyer.destroydoor(self,128,frandom(24,36),6);
 			A_HDBlast(
-				fragradius:256,fragdamage:256,fragdamagetype:"SmallArms1",
+				fragradius:256,fragvariance:0.1,
 				immolateradius:64,immolateamount:random(4,20),immolatechance:32,
 				gibradius:16,gibamount:random(4,20),
 				source:target
