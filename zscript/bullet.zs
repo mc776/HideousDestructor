@@ -101,12 +101,11 @@ class HDB_frag:HDBulletActor{
 		mass 30;
 		speed 400;
 		accuracy 140;
-		stamina 800;
+		stamina 500;
 	}
 	override void gunsmoke(){}
 	virtual double setscalefactor(){return frandom(0.5,3.);}
-	override void beginplay(){
-		super.beginplay();
+	override void resetrandoms(){
 		double scalefactor=setscalefactor();
 		pushfactor=1./scalefactor;
 		mass*=pushfactor;
@@ -275,6 +274,7 @@ class HDBulletActor:HDActor{
 		accuracy 600;
 		stamina 776;
 	}
+	virtual void resetrandoms(){}
 	virtual void gunsmoke(){
 		actor gs;
 		double j=cos(pitch);
@@ -287,6 +287,7 @@ class HDBulletActor:HDActor{
 		}
 	}
 	override void postbeginplay(){
+		resetrandoms();
 		super.postbeginplay();
 		gunsmoke();
 		if(distantsounder!="none"){
@@ -961,7 +962,6 @@ class HDBulletActor:HDActor{
 			speed=max(0,speed-frandom(-pushfactor,pushfactor)*totalresistance*10);
 			A_ChangeVelocity(cos(pitch)*speed,0,-sin(pitch)*speed,CVF_RELATIVE|CVF_REPLACE);
 		}
-		if(hd_debug)console.printf("wound channel:  "..channelwidth.." x "..pen);
 
 		//major-artery incurable bleeding
 		//can't be done on "just" a graze (abs(angle,angleto(hitactor))>50)
@@ -987,7 +987,7 @@ class HDBulletActor:HDActor{
 
 		//add size of channel to damage
 		int chdmg=int(channelwidth*pen)>>5;
-if(hd_debug)console.printf("channel HP damage: "..chdmg);
+if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channelwidth.." x "..pen.."    channel HP damage: "..chdmg);
 		bnoextremedeath=(chdmg<<3)<getdefaultbytype(hitactor.getclass()).health;
 
 		//cns severance

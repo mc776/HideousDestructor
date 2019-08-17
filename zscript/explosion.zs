@@ -289,6 +289,7 @@ extend class HDActor{
 
 					//resolve the impacts using the same bullet, resetting each time
 					for(int i=0;i<fragshit;i++){
+						bbb.resetrandoms();
 						bbb.mass=fragmass*(1.+frandom(-fragvariance,fragvariance));
 						bbb.pushfactor=fragpushfactor*(1.+frandom(-fragvariance,fragvariance));
 						bbb.stamina=fragstamina*(1.+frandom(-fragvariance,fragvariance));
