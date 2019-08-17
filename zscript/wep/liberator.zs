@@ -569,11 +569,13 @@ class LiberatorRifle:AutoReloadingThingy{
 			A_Light1();
 			A_PlaySound("weapons/bigrifle",1);
 
+			HDBulletActor.FireBullet(self,"HDB_776");
+/*
 			actor p=spawn("HDBullet776",pos+(0,0,height-6),ALLOW_REPLACE);
 			p.target=self;p.angle=angle;p.pitch=pitch;
 			p.vel+=self.vel;
 			p.pitch-=(1./600.)*invoker.weaponstatus[LIBS_DROPADJUST];
-
+*/
 			if(invoker.weaponstatus[0]&LIBF_NOBULLPUP){
 				HDFlashAlpha(16);
 				A_ZoomRecoil(0.90);

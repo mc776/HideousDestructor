@@ -860,7 +860,7 @@ class HDBulletActor:HDActor{
 				//bullet leaves a hole in the webbing
 				armr.durability-=max(random(0,1),(stamina>>7));
 			}
-
+console.printf(hitactor.getclassname().."  armour resistance:  "..addpenshell);
 			penshell+=addpenshell;
 		}
 
@@ -918,7 +918,7 @@ class HDBulletActor:HDActor{
 		//if over 10% maxhealth, force pain
 		impact+=tinyspeedsquared*frandom(0.03,0.08)*stamina;
 		if(speed>HDCONST_SPEEDOFSOUND){
-			bnoextremedeath=impact*2<getdefaultbytype(hitactor.getclass()).health;
+			bnoextremedeath=impact*5<getdefaultbytype(hitactor.getclass()).health;
 			hitactor.damagemobj(self,target,max(random(1,5),impact),"bashing",DMG_THRUSTLESS);
 			forcepain(hitactor);
 			bnoextremedeath=true;
@@ -998,7 +998,7 @@ class HDBulletActor:HDActor{
 		//add size of channel to damage
 		int chdmg=int(channelwidth*pen)>>5;
 if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channelwidth.." x "..pen.."    channel HP damage: "..chdmg);
-		bnoextremedeath=(chdmg<<3)<getdefaultbytype(hitactor.getclass()).health;
+		bnoextremedeath=(chdmg<<1)<getdefaultbytype(hitactor.getclass()).health;
 
 		//cns severance
 		//small column in middle centre
