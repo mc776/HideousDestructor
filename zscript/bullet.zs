@@ -44,7 +44,7 @@ class bltest:hdweapon{
 		}goto nope;
 	user2:
 		TNT1 A 0{
-			let bbb=HDBulletActor.FireBullet(self,"HDB_00",spread:6,amount:7);
+			HDBulletActor.FireBullet(self,"HDB_00",spread:6,amount:7);
 		}goto nope;
 	}
 }
@@ -56,6 +56,7 @@ class HDB_426:HDBulletActor{
 		accuracy 666;
 		stamina 426;
 		hdbulletactor.hardness 2;
+		hdbulletactor.distantsounder "DistantRifle";
 	}
 }
 class HDB_776:HDBulletActor{
@@ -65,6 +66,7 @@ class HDB_776:HDBulletActor{
 		speed 1100;
 		accuracy 600;
 		stamina 776;
+		hdbulletactor.distantsounder "DoubleDistantRifle";
 	}
 }
 class HDB_9:HDBulletActor{
@@ -93,6 +95,7 @@ class HDB_00:HDBulletActor{
 		speed 700;
 		accuracy 200;
 		stamina 838;
+		// hdbulletactor.distantsounder "DoubleDistantRifle"; //don't enable this here
 	}
 }
 class HDB_frag:HDBulletActor{
