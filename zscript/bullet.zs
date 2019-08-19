@@ -43,8 +43,8 @@ class bltest:hdweapon{
 			HDBulletActor.FireBullet(self,"HDB_426");
 		}goto nope;
 	user2:
-		TNT1 AAAAAAA 0{
-			let bbb=HDBulletActor.FireBullet(self,"HDB_00",spread:6);
+		TNT1 A 0{
+			let bbb=HDBulletActor.FireBullet(self,"HDB_00",spread:6,amount:7);
 		}goto nope;
 	}
 }
@@ -318,45 +318,47 @@ class HDBulletActor:HDActor{
 		double spread=0, //range of random velocity added
 		double aimoffx=0,
 		double aimoffy=0,
-		double speedfactor=0
+		double speedfactor=0,
+		int amount=1
 	){
 		if(zofs==999)zofs=caller.height-6;
-		let bbb=HDBulletActor(spawn(type,(caller.pos.x,caller.pos.y,caller.pos.z+zofs)));
+		HDBulletActor bbb=null;
+		do{
+			amount--;
+			bbb=HDBulletActor(spawn(type,(caller.pos.x,caller.pos.y,caller.pos.z+zofs)));
 
-		if(speedfactor>0)bbb.speed*=speedfactor;
-		else if(speedfactor<0)bbb.speed=-speedfactor;
+			if(speedfactor>0)bbb.speed*=speedfactor;
+			else if(speedfactor<0)bbb.speed=-speedfactor;
 
-		bbb.target=caller;
-		bbb.traceactors.push(caller);
+			bbb.target=caller;
+			bbb.traceactors.push(caller);
 
-		if(hdplayerpawn(caller)){
-			let hdpc=hdplayerpawn(caller).scopecamera;
-			if(hdpc){
-				aimoffx+=hdpc.angle;
-				aimoffy+=hdpc.pitch;
+			if(hdplayerpawn(caller)){
+				let hdpc=hdplayerpawn(caller).scopecamera;
+				if(hdpc){
+					bbb.angle+=hdpc.angle;
+					bbb.pitch+=hdpc.pitch;
+				}else{
+					let hdp=hdplayerpawn(caller);
+					bbb.angle+=hdp.angle;
+					bbb.pitch+=hdp.pitch;
+				}
 			}else{
-				let hdp=hdplayerpawn(caller);
-				aimoffx+=hdp.angle;
-				aimoffy+=hdp.pitch;
+				bbb.angle+=caller.angle;
+				bbb.pitch+=caller.pitch;
 			}
-		}else{
-			aimoffx+=caller.angle;
-			aimoffy+=caller.pitch;
-		}
-		bbb.angle=aimoffx;
-		bbb.pitch=aimoffy;
 
-		bbb.vel=caller.vel;
-		double forward=bbb.speed*cos(bbb.pitch);
-		double side=0;
-		double updown=bbb.speed*sin(-bbb.pitch);
-		if(spread){
-			forward+=frandom(-spread,spread);
-			side+=frandom(-spread,spread);
-			updown+=frandom(-spread,spread);
-		}
-
-		bbb.A_ChangeVelocity(forward,side,updown,CVF_RELATIVE);
+			bbb.vel=caller.vel;
+			double forward=bbb.speed*cos(bbb.pitch);
+			double side=0;
+			double updown=bbb.speed*sin(-bbb.pitch);
+			if(spread){
+				forward+=frandom(-spread,spread);
+				side+=frandom(-spread,spread);
+				updown+=frandom(-spread,spread);
+			}
+			bbb.A_ChangeVelocity(forward,side,updown,CVF_RELATIVE);
+		}while(amount>0);
 		return bbb;
 	}
 	states{
