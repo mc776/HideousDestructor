@@ -327,9 +327,7 @@ class HideousShotgunGuy:HDMobBase replaces ShotgunGuy{
 
 			gunspent++;
 			gunloaded--;
-			actor p=spawn("HDBullet426",pos+(0,0,height-6),ALLOW_REPLACE);
-			p.target=self;p.angle=angle;p.pitch=pitch;
-			p.vel+=self.vel;
+			HDBulletActor.FireBullet(self,"HDB_426");
 			if(random(0,2000)<gunspent+2){
 				jammed=true;
 				A_PlaySound("weapons/rifleclick",5);

@@ -288,6 +288,11 @@ class ZM66AssaultRifle:HDWeapon{
 
 			//shoot the bullet
 			//copypaste any changes to spawnshoot as well!
+			double brnd=invoker.weaponstatus[ZM66S_HEAT]*0.01;
+			HDBulletActor.FireBullet(self,"HDB_776",
+				spread:brnd>1.2?invoker.weaponstatus[ZM66S_HEAT]*0.1:0
+			);
+/*
 			actor bbb=spawn("HDBullet426",pos+(0,0,height-6),ALLOW_REPLACE);
 			bbb.target=self;bbb.vel+=vel;bbb.pitch=pitch;bbb.angle=angle;
 			double brnd=invoker.weaponstatus[ZM66S_HEAT]*0.01;
@@ -296,6 +301,7 @@ class ZM66AssaultRifle:HDWeapon{
 				bbb.pitch=pitch+frandom(-brnd,brnd);
 				bbb.speed-=brnd*100.;
 			}
+*/
 
 			A_MuzzleClimb(
 				-frandom(0.1,0.1),-frandom(0,0.1),
@@ -767,14 +773,10 @@ class ZM66AssaultRifle:HDWeapon{
 
 			//shoot the bullet
 			//copy any changes to flash as well!
-			actor bbb=spawn("HDBullet426",pos+(0,0,8),ALLOW_REPLACE);
-			bbb.target=self;bbb.vel+=vel;bbb.pitch=pitch;bbb.angle=angle;
 			double brnd=invoker.weaponstatus[ZM66S_HEAT]*0.01;
-			if(brnd>0.12){
-				bbb.angle=angle+frandom(-brnd,brnd);
-				bbb.pitch=pitch+frandom(-brnd,brnd);
-				bbb.speed-=brnd*1000.;
-			}
+			HDBulletActor.FireBullet(self,"HDB_426",
+				spread:brnd>1.2?invoker.weaponstatus[ZM66S_HEAT]*0.1:0
+			);
 
 			A_ChangeVelocity(frandom(-0.4,0.1),frandom(-0.1,0.08),1,CVF_RELATIVE);
 			A_PlaySound("weapons/rifle",CHAN_VOICE);

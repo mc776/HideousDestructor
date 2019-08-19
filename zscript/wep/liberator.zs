@@ -569,7 +569,7 @@ class LiberatorRifle:AutoReloadingThingy{
 			A_Light1();
 			A_PlaySound("weapons/bigrifle",1);
 
-			let p=HDBulletActor.FireBullet(self,"HDB_776",
+			HDBulletActor.FireBullet(self,"HDB_776",
 				aimoffy:(-1./600.)*invoker.weaponstatus[LIBS_DROPADJUST]
 			);
 /*

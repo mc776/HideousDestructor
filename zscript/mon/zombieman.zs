@@ -230,13 +230,14 @@ class ZombieStormtrooper:HDMobBase{
 				setstatelabel("ohforfuckssake");
 				return;
 			}
-			actor p;
 			if(firemode==-2){
 				pitch+=frandom(0,spread)-frandom(0,spread);
 				angle+=frandom(0,spread)-frandom(0,spread);
 				A_PlaySound("weapons/smg",CHAN_WEAPON);
-				p=spawn("HDBullet9",pos+(0,0,height-6),ALLOW_REPLACE);
+				actor p=spawn("HDBullet9",pos+(0,0,height-6),ALLOW_REPLACE);
 				p.speed=500+10*frandom(-1.,1.);
+				p.target=self;p.angle=angle;p.pitch=pitch;
+				p.vel+=self.vel;
 				A_SpawnItemEx("HDSpent9mm",
 					cos(pitch)*10,0,height-8-sin(pitch)*10,
 					vel.x,vel.y,vel.z,
@@ -246,15 +247,13 @@ class ZombieStormtrooper:HDMobBase{
 				pitch+=frandom(-spread,spread);
 				angle+=frandom(-spread,spread);
 				A_PlaySound("weapons/rifle",CHAN_WEAPON);
-				p=spawn("HDBullet426",pos+(0,0,height-6),ALLOW_REPLACE);
+				HDBulletActor.FireBullet(self,"HDB_426");
 				if(random(0,2000)<firemode){
 					jammed=true;
 					A_PlaySound("weapons/rifleclick",5);
 					setstatelabel("jammed");
 				}
 			}
-			p.target=self;p.angle=angle;p.pitch=pitch;
-			p.vel+=self.vel;
 
 			mag--;
 		}
