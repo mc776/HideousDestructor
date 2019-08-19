@@ -289,7 +289,7 @@ class ZM66AssaultRifle:HDWeapon{
 			//shoot the bullet
 			//copypaste any changes to spawnshoot as well!
 			double brnd=invoker.weaponstatus[ZM66S_HEAT]*0.01;
-			HDBulletActor.FireBullet(self,"HDB_776",
+			HDBulletActor.FireBullet(self,"HDB_426",
 				spread:brnd>1.2?invoker.weaponstatus[ZM66S_HEAT]*0.1:0
 			);
 /*

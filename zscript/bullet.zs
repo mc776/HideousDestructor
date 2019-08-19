@@ -317,10 +317,12 @@ class HDBulletActor:HDActor{
 		double zofs=999, //default: height-6
 		double spread=0, //range of random velocity added
 		double aimoffx=0,
-		double aimoffy=0
+		double aimoffy=0,
+		double speed=0
 	){
 		if(zofs==999)zofs=caller.height-6;
 		let bbb=HDBulletActor(spawn(type,(caller.pos.x,caller.pos.y,caller.pos.z+zofs)));
+		if(speed)bbb.speed=speed;
 		bbb.target=caller;
 		bbb.traceactors.push(caller);
 

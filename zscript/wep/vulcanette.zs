@@ -751,11 +751,15 @@ class Vulcanette:HDWeapon{
 		double offx=frandom(-0.1,0.1)*cm;
 		double offy=frandom(-0.1,0.1)*cm;
 
+		int heat=min(50,invoker.weaponstatus[VULCS_HEAT]);
+		HDBulletActor.FireBullet(self,"HDB_426",zofs:height-8,
+			spread:heat>20?heat*0.1:0
+		);
+/*
 		actor b=spawn("HDBullet426",pos+(0,0,height-8),ALLOW_REPLACE);
 		b.target=self;b.vel+=vel;b.angle=angle+offx;b.pitch=pitch+offy;
-
-		int heat=min(50,invoker.weaponstatus[VULCS_HEAT]);
 		if(heat>20)b.vel+=(frandom(-heat,heat),frandom(-heat,heat),frandom(-heat,heat))*0.1;    
+*/
 		invoker.weaponstatus[VULCS_HEAT]+=2;
 
 		if(random(0,8192)<min(10,heat))invoker.weaponstatus[VULCS_BATTERY]++;
