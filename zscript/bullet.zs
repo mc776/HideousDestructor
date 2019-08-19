@@ -322,10 +322,10 @@ class HDBulletActor:HDActor{
 	){
 		if(zofs==999)zofs=caller.height-6;
 		let bbb=HDBulletActor(spawn(type,(caller.pos.x,caller.pos.y,caller.pos.z+zofs)));
-		if(speedfactor){
-			if(speedfactor<0)bbb.speed=-speedfactor;
-			bbb.speed*=speedfactor;
-		}
+
+		if(speedfactor>0)bbb.speed*=speedfactor;
+		else if(speedfactor<0)bbb.speed=-speedfactor;
+
 		bbb.target=caller;
 		bbb.traceactors.push(caller);
 
