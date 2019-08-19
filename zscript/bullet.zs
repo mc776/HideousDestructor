@@ -1006,7 +1006,7 @@ console.printf(hitactor.getclassname().."  armour resistance:  "..addpenshell);
 		}
 
 		//add size of channel to damage
-		int chdmg=int(channelwidth*pen)>>5;
+		int chdmg=max(1,(int(channelwidth*pen)>>5));
 if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channelwidth.." x "..pen.."    channel HP damage: "..chdmg);
 		bnoextremedeath=(chdmg<<1)<getdefaultbytype(hitactor.getclass()).health;
 
@@ -1021,7 +1021,7 @@ if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channe
 			if(hd_debug)console.printf("CRIT!");
 			hitactor.damagemobj(
 				self,target,
-				chdmg+random(0,hitactor.health),
+				max(chdmg,random(chdmg,hitactor.health)),
 				"Piercing",DMG_THRUSTLESS
 			);
 			forcepain(hitactor);
