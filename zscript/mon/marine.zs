@@ -586,7 +586,7 @@ class HDMarine:HDMobBase replaces ScriptedMarine{
 				setstatelabel("unjam");
 				return;
 			}
-			class<actor> mn="HDBullet426";
+			class<actor> mn="HDB_426";
 			A_LeadTarget2(shotspeed:getdefaultbytype(mn).speed,adjusttics:1);
 			hdmobai.DropAdjust(self,mn);
 			gunspent=min(gunloaded,randompick(1,1,1,1,1,3));
@@ -596,7 +596,7 @@ class HDMarine:HDMobBase replaces ScriptedMarine{
 			if(gunloaded<1||gunspent<1)setstatelabel("firezm66end");
 			gunloaded--;gunspent--;
 			A_PlaySound("weapons/rifle",CHAN_WEAPON);
-			A_MarineShot("HDBullet426");
+			A_MarineShot("HDB_426");
 			if(!random(0,1999-gunspent)){
 				jammed=true;
 				setstatelabel("unjam");

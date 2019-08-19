@@ -127,6 +127,8 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 
 		//shoot the bullet
 		A_PlaySound("weapons/vulcanette",randompick(CHAN_WEAPON,5,6));
+		HDBulletActor.FireBullet(self,"HDB_426",spread:2);
+/*
 		actor p=Spawn("HDBullet426",pos+(0,0,height-24),ALLOW_REPLACE);
 		if(p){
 			p.target=self;p.angle=angle;p.pitch=pitch;
@@ -136,6 +138,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 			p.speed+=10*frandom(-2,2);
 			p.vel+=vel;
 		}
+*/
 		pitch+=frandom(-0.4,0.3);angle+=frandom(-0.3,0.3);
 		burstcount--;
 		chambers--;
