@@ -318,11 +318,14 @@ class HDBulletActor:HDActor{
 		double spread=0, //range of random velocity added
 		double aimoffx=0,
 		double aimoffy=0,
-		double speed=0
+		double speedfactor=0
 	){
 		if(zofs==999)zofs=caller.height-6;
 		let bbb=HDBulletActor(spawn(type,(caller.pos.x,caller.pos.y,caller.pos.z+zofs)));
-		if(speed)bbb.speed=speed;
+		if(speedfactor){
+			if(speedfactor<0)bbb.speed=-speedfactor;
+			bbb.speed*=speedfactor;
+		}
 		bbb.target=caller;
 		bbb.traceactors.push(caller);
 
