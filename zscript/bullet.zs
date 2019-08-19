@@ -436,8 +436,10 @@ class HDBulletActor:HDActor{
 			//check distance until clear of target
 			if(
 				!bincombat
-				&&target
-				&&bres.distance>target.height
+				&&(
+					!target||
+					bres.distance>target.height
+				)
 			){
 				bincombat=true;
 			}
