@@ -420,17 +420,6 @@ class HDBulletActor:HDActor{
 				curspeed=speed;
 			}
 
-
-			//check distance until clear of target
-			if(
-				!bincombat
-				&&target
-				&&distance3d(target)>target.height
-			){
-				bincombat=true;
-			}
-
-
 			double cosp=cos(pitch);
 			vector3 vu=vel.unit();
 			blt.trace(
@@ -442,6 +431,17 @@ class HDBulletActor:HDActor{
 			);
 			traceresults bres=blt.results;
 			sector sectortodamage=null;
+
+
+			//check distance until clear of target
+			if(
+				!bincombat
+				&&target
+				&&bres.distance>target.height
+			){
+				bincombat=true;
+			}
+
 
 			if(bres.hittype==TRACE_HasHitSky){
 				setorigin(pos+vel,true);
