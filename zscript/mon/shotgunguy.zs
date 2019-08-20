@@ -354,20 +354,14 @@ class HideousShotgunGuy:HDMobBase replaces ShotgunGuy{
 				A_PlaySound("weapons/slayersingle",5);
 				gunspent=2;
 				gunloaded=0;
-				actor p=spawn("HDBullet00bf2",pos+(0,0,height-6),ALLOW_REPLACE);
-				p.target=self;p.angle=angle;p.pitch=pitch;
-				p.vel+=self.vel;
-				p.speed+=frandom(-10.,10.);
+				Slayer.Fire(self,0);
+				Slayer.Fire(self,1);
 			}else{
 				//single barrel
 				gunspent++;
 				gunloaded--;
-				class<actor> whichbf="HDBullet00bfl";
-				if(gunspent)whichbf="HDBullet00bfr";
-				actor p=spawn(whichbf,pos+(0,0,height-6),ALLOW_REPLACE);
-				p.target=self;p.angle=angle;p.pitch=pitch;
-				p.vel+=self.vel;
-				p.speed+=frandom(-10.,10.);
+				if(gunspent)Slayer.Fire(self,1);
+				else Slayer.Fire(self,0);
 			}
 		}
 		#### E 1 A_SetTics(random(2,4));

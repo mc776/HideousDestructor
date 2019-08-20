@@ -17,6 +17,11 @@ class Slayer:HDShotgun replaces HDShotgun{
 		hdweapon.nicename "Slayer";
 		hdweapon.refid HDLD_SLAYER;
 	}
+	static void Fire(actor caller,bool right){
+		HDBulletActor.FireBullet(caller,"HDB_00",xyofs:right?0.8:-0.8,
+			spread:3,aimoffx:right?0.2:-0.2,speedfactor:1.2,amount:7
+		);
+	}
 	override string getobituary(actor victim,actor inflictor,name mod,bool playerattack){
 		bool sausage=true;
 		for(int i=0;i<MAXPLAYERS;i++){
@@ -180,13 +185,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 			A_ZoomRecoil(0.9);
 			invoker.weaponstatus[SLAYS_CHAMBER1]=1;
 
-			actor p=spawn("HDBullet00bfl",pos+(0,0,height-6),ALLOW_REPLACE);
-			p.target=self;p.angle=angle;p.pitch=pitch;
-			p.vel+=(
-				frandom(-1.,1.),frandom(-1.,1.),frandom(-1.,1.)
-			);
-			p.speed+=frandom(-10.,10.);
-			p.vel+=self.vel;
+			invoker.Fire(self,0);
 		}
 		TNT1 A 1{
 			A_Light0();
@@ -200,13 +199,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 			A_ZoomRecoil(0.9);
 			invoker.weaponstatus[SLAYS_CHAMBER2]=1;
 
-			actor p=spawn("HDBullet00bfr",pos+(0,0,height-6),ALLOW_REPLACE);
-			p.target=self;p.angle=angle;p.pitch=pitch;
-			p.vel+=(
-				frandom(-1.,1.),frandom(-1.,1.),frandom(-1.,1.)
-			);
-			p.speed+=frandom(-10.,10.);
-			p.vel+=self.vel;
+			invoker.Fire(self,1);
 		}
 		TNT1 A 1{
 			A_Light0();
@@ -226,14 +219,8 @@ class Slayer:HDShotgun replaces HDShotgun{
 			invoker.weaponstatus[SLAYS_CHAMBER1]=1;
 			invoker.weaponstatus[SLAYS_CHAMBER2]=1;
 
-
-			actor p=spawn("HDBullet00bf2",pos+(0,0,height-6),ALLOW_REPLACE);
-			p.target=self;p.angle=angle;p.pitch=pitch;
-			p.vel+=(
-				frandom(-1.,1.),frandom(-1.,1.),frandom(-1.,1.)
-			);
-			p.speed+=10*frandom(-1.,1.);
-			p.vel+=self.vel;
+			invoker.Fire(self,0);
+			invoker.Fire(self,1);
 		}
 		TNT1 A 1{
 			A_Light0();

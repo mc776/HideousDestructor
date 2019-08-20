@@ -44,9 +44,7 @@ class bltest:hdweapon{
 		}goto nope;
 	user2:
 		TNT1 A 0{
-//			HDBulletActor.FireBullet(self,"HDB_00",spread:6,amount:7);
-			HDBulletActor.FireBullet(self,"HDB_00",xyofs:-1,spread:3,aimoffx:-0.2,speedfactor:1.2,amount:7);
-			HDBulletActor.FireBullet(self,"HDB_00",xyofs:1,spread:3,aimoffy:0.2,speedfactor:1.2,amount:7);
+			HDBulletActor.FireBullet(self,"HDB_00",spread:6,amount:7);
 		}goto nope;
 	}
 }
@@ -1004,7 +1002,7 @@ console.printf(hitactor.getclassname().."  armour resistance:  "..addpenshell);
 					angle:hitactor.angleto(self),
 						flags:SXF_ABSOLUTEANGLE|SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
 				);
-				if(blood)blood.vel=-vu*(0.03*impact)
+				if(blood)blood.vel=-vu*(0.03*min(12,impact))
 					+(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.4))
 				;
 			}
