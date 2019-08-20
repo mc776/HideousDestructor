@@ -71,7 +71,7 @@ class HDB_776:HDBulletActor{
 }
 class HDB_9:HDBulletActor{
 	default{
-		pushfactor 0.5;
+		pushfactor 0.4;
 		mass 86;
 		speed 420;
 		accuracy 200;
@@ -81,7 +81,7 @@ class HDB_9:HDBulletActor{
 }
 class HDB_355:HDBulletActor{
 	default{
-		pushfactor 0.4;
+		pushfactor 0.3;
 		mass 83;
 		speed 440;
 		accuracy 200;

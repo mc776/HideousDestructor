@@ -48,12 +48,13 @@ extend class HDMobBase{
 		//bashing
 		if(mod=="bashing"){
 			bashed+=(damage<<2);
+			int bashthreshold=health-(spawnhealth()>>3);
 			if(
-				damage>=health-20
+				damage>=bashthreshold
 				&&damage<spawnhealth()
 				&&random(0,7)
 			){
-				damage=max(1,health-20);
+				damage=max(1,bashthreshold);
 				forcepain();
 			}
 		}

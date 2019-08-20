@@ -30,11 +30,12 @@ class HDMobBase : HDActor{
 				if(!bashed){
 					speed=getdefaultbytype(getclass()).speed;
 				}else{
-					if(!(bashed&(1|2)))givebody(1);
+					if(bashed>50)bjustattacked=random(0,bashed>>3);
+					if(!(bashed&(1|2|4|8)))givebody(1);
 					speed=frandom(0,getdefaultbytype(getclass()).speed);
 				}
 			}
-			if(!(level.time&(1|2|4|8|16)))GiveBody(1);
+			if(!(level.time&(1|2|4|8|16|32)))GiveBody(1);
 		}
 	}
 }
