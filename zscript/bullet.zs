@@ -965,11 +965,12 @@ console.printf(hitactor.getclassname().."  armour resistance:  "..addpenshell);
 			channelwidth*=1.1;
 			//then spawn exit wound blood
 			if(!bbloodlessimpact){
+				double hrad=hitactor.radius*0.6;
 				for(int i=0;i<pen;i+=10){
 					bool gbg;actor blood;
 					[gbg,blood]=hitactor.A_SpawnItemEx(
 						hitblood,
-						hitactor.radius*0.6,0,pos.z-hitactor.pos.z,
+						hrad,0,pos.z-hitactor.pos.z,
 						angle:hitactor.angleto(self),
 						flags:SXF_ABSOLUTEANGLE|SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
 					);
