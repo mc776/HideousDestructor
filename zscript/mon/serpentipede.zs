@@ -225,7 +225,6 @@ class Serpentipede:HDMobBase{
 		#### ABCD 4 A_ImpChase();
 		---- A 0 A_Jump(180,2);
 		---- A 0 A_AlertMonsters();
-		#### A 0 GiveBody(random(2,8));
 		loop;
 	missile:
 		#### ABCD 4{
@@ -509,10 +508,8 @@ class Regentipede:Serpentipede{
 	}
 	states{
 	see:
-		#### AABBCCDD 2{
-			A_ImpChase();
-			if(!random(0,1))HealThing(random(1,2));
-		}loop;
+		#### AABBCCDD 2 A_ImpChase();
+		loop;
 	missile:
 		#### E 0 A_Jump(128,"Missile2");
 		#### E 4 A_FaceTarget(0,0);
@@ -546,7 +543,6 @@ class Regentipede:Serpentipede{
 		goto see;
 	heal:
 		#### AHAHAHAHAHA 4 light("HEAL");
-		#### A 0 HealThing(stamina);
 		goto see;
 	death:
 		---- A 0 A_SpawnItemEx("BFGVileShard",0,0,24,0,0,8,0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS,164);

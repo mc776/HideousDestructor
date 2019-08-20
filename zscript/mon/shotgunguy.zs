@@ -227,7 +227,6 @@ class HideousShotgunGuy:HDMobBase replaces ShotgunGuy{
 		#### A 0 A_Jump(60,"roam");
 	roam2:
 		#### A 0 A_Jump(8,"see");
-		#### A 0{healthing(random(1,2));}
 		#### AA 3{hdmobai.chase(self);}
 		#### A 0 A_Chase("melee","turnaround",CHF_DONTMOVE);
 		#### BBCC 3{hdmobai.wander(self,false);}

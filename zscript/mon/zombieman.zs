@@ -371,7 +371,6 @@ class ZombieStormtrooper:HDMobBase{
 		#### A 0 A_Jump(60,"roam");
 	roam2:
 		#### A 0 A_Jump(8,"see");
-		#### A 0 HealThing(random(0,2));
 		#### A 5{hdmobai.chase(self);}
 		#### BC 5{hdmobai.wander(self,true);}
 		#### D 5{hdmobai.chase(self);}

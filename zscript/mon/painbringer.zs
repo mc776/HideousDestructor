@@ -68,7 +68,6 @@ class PainBringer:HDMobBase replaces HellKnight{
 				A_PlaySound(seesound,CHAN_VOICE);
 				A_AlertMonsters();
 			}
-			healthing(random(1,3));
 		}
 		BOS2 AABBCCDD 3{hdmobai.chase(self);}
 		loop;
@@ -79,7 +78,7 @@ class PainBringer:HDMobBase replaces HellKnight{
 	pain.balefire:
 		BOS2 H 3{
 			A_Recoil(0.4);
-			HealThing(20);
+			GiveBody(20);
 			if(!random(0,3))A_KillChildren();
 		}
 		goto pain;

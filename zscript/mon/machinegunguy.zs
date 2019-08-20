@@ -250,7 +250,6 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		loop;
 	see2:
 		CPOS A 0{
-			if(!target||!checksight(target))healthing(random(1,6));
 			if(!mags&&thismag<1)setstatelabel("reload");
 			else bfrightened=0;
 		}

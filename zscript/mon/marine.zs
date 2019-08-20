@@ -418,7 +418,6 @@ class HDMarine:HDMobBase replaces ScriptedMarine{
 		#### CC 4{hdmobai.wander(self);}
 		#### A 0 A_Look();
 		#### DD 4{hdmobai.wander(self);}
-		#### A 0 HealThing(1);
 	spawn2:
 		#### A 0 A_Jump(60,"spawn");
 		#### A 0{angle+=random(-30,30);}
@@ -435,7 +434,6 @@ class HDMarine:HDMobBase replaces ScriptedMarine{
 			);
 		}
 		#### A 0{
-			HealThing(1);
 			speed=max(0,16-random((lastinginjury>>1),lastinginjury));
 			if(lastinginjury>0&&!random(0,50+lastinginjury))lastinginjury--;
 
@@ -467,7 +465,6 @@ class HDMarine:HDMobBase replaces ScriptedMarine{
 		#### CC 3{hdmobai.wander(self);}
 		#### A 0 A_Chase(flags:CHF_DONTMOVE);
 		#### DD 3{hdmobai.wander(self);}
-		#### A 0 HealThing(1);
 		#### E 0 A_Jump(128,"spwander");
 	spwander2:
 		#### A 0 A_Look();

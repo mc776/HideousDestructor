@@ -67,7 +67,7 @@ class Yokai:HDMobBase{
 
 			A_PlaySound("putto/sight",CHAN_AUTO,1,0,0.9);
 			A_SetScale(0.666);
-			HealThing(4);
+			GiveBody(4);
 			if(!target)return;
 			A_GiveToTarget("IsMoving",2);
 			target.damagemobj(

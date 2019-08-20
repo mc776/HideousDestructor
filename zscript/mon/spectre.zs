@@ -31,7 +31,7 @@ class NinjaPirate:HDMobBase{ //replaces Spectre{
 	}
 	override string getobituary(actor victim,actor inflictor,name mod,bool playerattack){
 		//he kills to heal himself
-		HealThing(spawnhealth());
+		GiveBody(spawnhealth());
 		return "";
 	}
 	bool cloaked;
@@ -67,7 +67,7 @@ class NinjaPirate:HDMobBase{ //replaces Spectre{
 		TNT1 A 0 A_SpawnItemEx("HDSmoke",random(-1,1),random(-1,1),random(4,24),vel.x,vel.y,vel.z+random(1,3),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION,0);
 		TNT1 A 0 Cloak();
 	spawnstillcloaked:
-		TNT1 A 0 HealThing(2);
+		TNT1 A 0 GiveBody(2);
 		TNT1 A 10 A_Look();
 		loop;
 	spawnwander:
@@ -79,7 +79,7 @@ class NinjaPirate:HDMobBase{ //replaces Spectre{
 		TNT1 A 0 A_SpawnItemEx("HDSmoke",random(-1,1),random(-1,1),random(4,24),vel.x,vel.y,vel.z+random(1,3),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION,0);
 		TNT1 A 0 Cloak();
 	spawnwandercloaked:
-		TNT1 A 0 HealThing(2);
+		TNT1 A 0 GiveBody(2);
 		TNT1 A 0 A_Look();
 		TNT1 A 7 A_Wander();
 		TNT1 A 0 A_Jump(12,1);
@@ -108,11 +108,9 @@ class NinjaPirate:HDMobBase{ //replaces Spectre{
 		goto seerunnin;
 	seerunnin:
 		SARG ABCD 4 A_BlurChase();
-		TNT1 A 0 HealThing(1);
 		TNT1 A 0 Cloak(randompick(0,0,0,1));
 		goto see;
 	seecloaked:
-		TNT1 A 0 HealThing(1);
 		TNT1 A 0 A_JumpIfHealthLower(90,"seecloakedflee");
 		goto seecloakedchase;
 	seecloakedflee:

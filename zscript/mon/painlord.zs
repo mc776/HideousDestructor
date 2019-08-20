@@ -121,7 +121,6 @@ class PainLord:HDMobBase replaces BaronofHell{
 		BOSS ABCD 8{
 			hdmobai.wander(self,true);
 			if(health>0&&shields<BE_SHIELDMAX)shields+=2;
-			HealThing(random(1,2));
 		}
 		loop;
 	missile:

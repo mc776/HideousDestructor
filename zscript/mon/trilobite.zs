@@ -382,13 +382,11 @@ class CaeloBite:HDMobBase replaces Cacodemon{
 	spawn:
 		HEAD A 10{
 			A_Look();
-			healthing(random(0,10));
 			if(health>(CACO_MAXHEALTH*0.5))bfloatbob=false;
 			if(!bambush&&!random(0,10))hdmobai.wander(self,true);
 		}wait;
 	see:
 		HEAD A 4{
-			healthing(random(0,5));
 			if(health>(CACO_MAXHEALTH*0.5))bfloatbob=false;
 			hdmobai.chase(self);
 		}loop;
