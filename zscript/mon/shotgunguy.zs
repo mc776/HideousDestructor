@@ -389,18 +389,11 @@ class HideousShotgunGuy:HDMobBase replaces ShotgunGuy{
 			A_PlaySound("weapons/hunter",CHAN_WEAPON);
 
 			//same as Hunter jam
-			double shotpowervariation=frandom(0.85,1.05);
-			if(shotpowervariation>0.86)semi=false;
+			double shotpowervariation=frandom(0.9,1.05);
+			if(shotpowervariation>0.91)semi=false;
 
 			let p=HDBulletActor.FireBullet(self,"HDB_00",spread:6,amount:7);
 			p.spawn("DistantShotgun",pos,ALLOW_REPLACE);
-/*
-			gunspent++;
-			gunloaded--;
-			actor p=spawn("HDBullet00b",pos+(0,0,height-6),ALLOW_REPLACE);
-			p.target=self;p.angle=angle;p.pitch=pitch;
-			p.vel+=self.vel;
-*/
 		}
 		#### E 3{
 			if(semi){

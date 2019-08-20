@@ -291,19 +291,9 @@ class Hunter:HDShotgun{
 		SHTG A 2;
 		SHTG A 1 offset(0,36){
 
-			invoker.shotpowervariation=frandom(0.85,1.05);
+			invoker.shotpowervariation=frandom(0.9,1.05);
 			let p=HDBulletActor.FireBullet(self,"HDB_00",spread:6,amount:7);
 			p.spawn("DistantShotgun",pos,ALLOW_REPLACE);
-/*
-			actor p=spawn("HDBullet00b",pos+(0,0,height-6),ALLOW_REPLACE);
-			p.target=self;p.angle=angle;p.pitch=pitch;
-			p.vel+=(
-				frandom(-1.,1.),frandom(-1.,1.),frandom(-1.,1.)
-			);
-			invoker.shotpowervariation=frandom(-10.,10.);
-			p.speed+=invoker.shotpowervariation;
-			p.vel+=self.vel;
-*/
 
 			A_GunFlash();
 			invoker.weaponstatus[HUNTS_CHAMBER]=1;
@@ -316,7 +306,7 @@ class Hunter:HDShotgun{
 		SHTG E 0{
 			if(
 				invoker.weaponstatus[HUNTS_FIREMODE]>0
-				&&invoker.shotpowervariation>0.86
+				&&invoker.shotpowervariation>0.91
 			)setweaponstate("chamberauto");
 		}goto ready;
 	altfire:
