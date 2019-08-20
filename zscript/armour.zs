@@ -206,7 +206,7 @@ class HDArmourWorn:HDPickup{
 		return mega?(ENC_BLUEARMOUR*0.1):(ENC_GREENARMOUR*0.1);
 	}
 	override inventory createtossable(int amount){
-		if(durability<random(0,3)){
+		if(durability<random(1,3)){
 			for(int i=0;i<10;i++){
 				actor aaa=spawn("WallChunk",owner.pos+(0,0,owner.height-24),ALLOW_REPLACE);
 				vector3 offspos=(frandom(-12,12),frandom(-12,12),frandom(-16,4));
