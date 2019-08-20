@@ -111,10 +111,10 @@ class HDB_frag:HDBulletActor{
 	override void resetrandoms(){
 		double scalefactor=setscalefactor();
 		pushfactor=1./scalefactor;
-		mass*=pushfactor;
+		mass=max(1,mass*scalefactor);
 		speed*=scalefactor;
-		accuracy*=scalefactor;
-		stamina*=pushfactor;
+		accuracy=max(1,accuracy*scalefactor);
+		stamina=max(1,stamina*pushfactor);
 	}
 }
 class HDB_scrap:HDB_frag{
