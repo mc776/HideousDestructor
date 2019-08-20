@@ -44,7 +44,9 @@ class bltest:hdweapon{
 		}goto nope;
 	user2:
 		TNT1 A 0{
-			HDBulletActor.FireBullet(self,"HDB_00",spread:6,amount:7);
+//			HDBulletActor.FireBullet(self,"HDB_00",spread:6,amount:7);
+			HDBulletActor.FireBullet(self,"HDB_00",xyofs:-1,spread:3,aimoffx:-0.2,speedfactor:1.2,amount:7);
+			HDBulletActor.FireBullet(self,"HDB_00",xyofs:1,spread:3,aimoffy:0.2,speedfactor:1.2,amount:7);
 		}goto nope;
 	}
 }
@@ -318,6 +320,7 @@ class HDBulletActor:HDActor{
 		actor caller,
 		class<HDBulletActor> type="HDBulletActor",
 		double zofs=999, //default: height-6
+		double xyofs=0,
 		double spread=0, //range of random velocity added
 		double aimoffx=0,
 		double aimoffy=0,
@@ -329,12 +332,12 @@ class HDBulletActor:HDActor{
 		do{
 			amount--;
 			bbb=HDBulletActor(spawn(type,(caller.pos.x,caller.pos.y,caller.pos.z+zofs)));
+			if(xyofs)bbb.setorigin(bbb.pos+(sin(caller.angle)*xyofs,cos(caller.angle)*xyofs,0),false);
 
 			if(speedfactor>0)bbb.speed*=speedfactor;
 			else if(speedfactor<0)bbb.speed=-speedfactor;
 
 			bbb.target=caller;
-			bbb.traceactors.push(caller);
 
 			if(hdplayerpawn(caller)){
 				let hdpc=hdplayerpawn(caller).scopecamera;
