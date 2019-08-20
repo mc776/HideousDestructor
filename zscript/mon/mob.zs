@@ -26,9 +26,11 @@ class HDMobBase : HDActor{
 			//regeneration
 			//recover from bashing damage
 			if(bashed>0){
-				bashed--;
-				if(!bashed){
+				bashed-=max(1,(spawnhealth()>>7));
+				if(bashed<0){
 					speed=getdefaultbytype(getclass()).speed;
+					bjustattacked=false;
+					bashed=0;
 				}else{
 					if(bashed>50)bjustattacked=random(0,bashed>>3);
 					if(!(bashed&(1|2|4|8)))givebody(1);
