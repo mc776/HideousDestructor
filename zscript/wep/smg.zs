@@ -168,13 +168,7 @@ class HDSMG:HDWeapon{
 		goto ready;
 	flash:
 		SMGG B 0{
-			actor p=spawn("HDBullet9",pos+(0,0,height-6),ALLOW_REPLACE);
-			p.target=self;p.angle=angle;p.pitch=pitch;
-			p.speed=440;
-			p.vel+=(
-				frandom(-1.,1.),frandom(-1.,1.),frandom(-1.,1.)
-			);
-			p.vel+=self.vel;
+			HDBulletActor.FireBullet(self,"HDB_9",speedfactor:1.1);
 
 			A_ZoomRecoil(0.995);
 			A_PlaySound("weapons/smg",CHAN_WEAPON);

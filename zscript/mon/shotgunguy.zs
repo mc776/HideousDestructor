@@ -62,7 +62,7 @@ class HideousShotgunGuy:HDMobBase replaces ShotgunGuy{
 		if(
 			sausage
 			&&!wep //"pumped"
-			&&inflictor is "HDBullet" //"brutally!" "full!" - not just bleeding!
+			&&inflictor is "HDBulletActor" //"brutally!" "full!" - not just bleeding!
 			&&!random(0,4) //novelty value
 		)return "%o was brutally pumped full of a shotgun sergeant's hot, manly lead.";
 		else if(inflictor==self) return hitobituary;

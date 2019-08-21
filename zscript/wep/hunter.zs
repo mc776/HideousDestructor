@@ -293,7 +293,7 @@ class Hunter:HDShotgun{
 
 			invoker.shotpowervariation=frandom(0.9,1.05);
 			let p=HDBulletActor.FireBullet(self,"HDB_00",spread:6,amount:7);
-			p.spawn("DistantShotgun",pos,ALLOW_REPLACE);
+			p.spawn("DistantShotgun",p.pos,ALLOW_REPLACE);
 
 			A_GunFlash();
 			invoker.weaponstatus[HUNTS_CHAMBER]=1;

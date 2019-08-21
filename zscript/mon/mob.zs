@@ -99,7 +99,6 @@ class TauntHandler:EventHandler{
 }
 
 //generic bleeding
-//maybe use this for players too in the future???
 class HDWound:Thinker{
 	static void Inflict(actor bleeder,int amount){
 		if(
