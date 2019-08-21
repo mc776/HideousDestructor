@@ -292,16 +292,6 @@ class ZM66AssaultRifle:HDWeapon{
 			HDBulletActor.FireBullet(self,"HDB_426",
 				spread:brnd>1.2?invoker.weaponstatus[ZM66S_HEAT]*0.1:0
 			);
-/*
-			actor bbb=spawn("HDBullet426",pos+(0,0,height-6),ALLOW_REPLACE);
-			bbb.target=self;bbb.vel+=vel;bbb.pitch=pitch;bbb.angle=angle;
-			double brnd=invoker.weaponstatus[ZM66S_HEAT]*0.01;
-			if(brnd>0.12){
-				bbb.angle=angle+frandom(-brnd,brnd);
-				bbb.pitch=pitch+frandom(-brnd,brnd);
-				bbb.speed-=brnd*100.;
-			}
-*/
 
 			A_MuzzleClimb(
 				-frandom(0.1,0.1),-frandom(0,0.1),
@@ -372,10 +362,6 @@ class ZM66AssaultRifle:HDWeapon{
 				setweaponstate("nope");
 				return;
 			}
-			if(brokenround()){
-				setweaponstate("jam");
-				return;
-			}
 			if(invoker.weaponstatus[ZM66S_MAG]%100>0){  
 				if(invoker.weaponstatus[ZM66S_MAG]==51)invoker.weaponstatus[ZM66S_MAG]=50;
 				invoker.weaponstatus[ZM66S_MAG]--;
@@ -383,6 +369,10 @@ class ZM66AssaultRifle:HDWeapon{
 			}else{
 				invoker.weaponstatus[ZM66S_MAG]=min(invoker.weaponstatus[ZM66S_MAG],0);
 				A_PlaySound("weapons/rifchamber",5);
+			}
+			if(brokenround()){
+				setweaponstate("jam");
+				return;
 			}
 			if(!invoker.weaponstatus[ZM66S_AUTO])A_SetTics(1);
 			else if(invoker.weaponstatus[ZM66S_AUTO]>1)A_SetTics(0);

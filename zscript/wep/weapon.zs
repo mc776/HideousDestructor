@@ -130,7 +130,7 @@ class HDWeapon:Weapon{
 		if(hdp){
 			if(hdp.zerk)prop=(prop+1.)*0.5;
 			if(hdp.gunbraced)prop=(prop+1.)*0.5;
-			hdp.recoilfov*=prop;
+			hdp.recoilfov=(hdp.recoilfov+prop)*0.5;
 		}
 	}
 	//do these whenever the gun is ready
