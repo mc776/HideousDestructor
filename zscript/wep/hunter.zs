@@ -34,7 +34,7 @@ class Hunter:HDShotgun{
 		if(
 			sausage
 			&&!(weaponstatus[HUNTS_FIREMODE]<1) //"pumped"
-			&&inflictor is "HDBullet" //"brutally!" "full!" - not just bleeding!
+			&&inflictor is "HDBulletActor" //"brutally!" "full!" - not just bleeding!
 		)return "%o was brutally pumped full of %k's hot, manly lead.";
 		return obituary;
 	}
