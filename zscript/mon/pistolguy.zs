@@ -133,7 +133,7 @@ class UndeadHomeboy:HDMobBase{
 
 		pitch+=frandom(0,spread)-frandom(0,spread);
 		angle+=frandom(0,spread)-frandom(0,spread);
-		HDBulletActor.FireBullet(self,"HDB_9");
+		HDBulletActor.FireBullet(self,"HDB_9",spread:2.,speedfactor:frandom(0.97,1.03));
 
 		A_PlaySound("weapons/pistol",CHAN_WEAPON);
 		pitch+=frandom(-0.4,0.3);

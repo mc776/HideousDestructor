@@ -65,8 +65,7 @@ class DERPBot:HDUPK{
 			if(bfriendly)A_AlertMonsters(0,AMF_TARGETEMITTER);
 			else A_AlertMonsters();
 		}
-		actor b=spawn("HDBullet9",pos+(0,0,2),ALLOW_REPLACE);
-		b.pitch=pitch;b.angle=angle;b.target=self;b.vel+=vel;
+		HDBulletActor.FireBullet(self,"HDB_9",zofs:2,spread:2.,speedfactor:frandom(0.97,1.03));
 		pitch+=frandom(-1.,1.);angle+=frandom(-1.,1.);
 	}
 	void A_DerpAttack(){

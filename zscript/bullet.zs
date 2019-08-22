@@ -928,10 +928,9 @@ console.printf(hitactor.getclassname().."  armour resistance:  "..addpenshell);
 		}
 
 		//bullet penetrated, both impact and temp cavity do bashing
-		//if over 10% maxhealth, force pain
 		impact+=tinyspeedsquared*frandom(0.03,0.08)*stamina;
 		if(speed>HDCONST_SPEEDOFSOUND){
-			bnoextremedeath=impact*5<getdefaultbytype(hitactor.getclass()).health;
+			bnoextremedeath=impact*5<hitactor.spawnhealth();
 			hitactor.damagemobj(self,target,max(random(1,5),impact),"bashing",DMG_THRUSTLESS);
 			forcepain(hitactor);
 			bnoextremedeath=true;
@@ -1020,7 +1019,7 @@ if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channe
 		if(
 			hitangle<12
 			&&hitpos.z-hitactor.pos.z>hitactor.height*0.6
-			&&pen*frandom(1.,1.5)>deemedwidth
+			&&pen*frandom(1.,2.)>deemedwidth
 		){
 			if(hd_debug)console.printf("CRIT!");
 			hitactor.damagemobj(
