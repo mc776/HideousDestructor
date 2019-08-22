@@ -1018,7 +1018,7 @@ console.printf(hitactor.getclassname().."  armour resistance:  "..addpenshell);
 		//add size of channel to damage
 		int chdmg=max(1,(int(channelwidth*pen)>>5));
 if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channelwidth.." x "..pen.."    channel HP damage: "..chdmg);
-		bnoextremedeath=(chdmg<<1)<getdefaultbytype(hitactor.getclass()).health;
+		bnoextremedeath=(chdmg<<1)<hitactor.spawnhealth();
 
 		//cns severance
 		//small column in middle centre

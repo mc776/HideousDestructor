@@ -300,6 +300,7 @@ class Babuin:HDMobBase{
 			hdmobai.corpseflags(self,true,true);
 		}
 		#### NMLKJI 5;
+		SRG2 A 0 A_CheckFreedoomSprite();
 		goto see;
 	raisegibbed:
 		TROO U 6{
