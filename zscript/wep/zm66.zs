@@ -284,7 +284,7 @@ class ZM66AssaultRifle:HDWeapon{
 			A_Light1();
 			HDFlashAlpha(-16);
 			A_PlaySound("weapons/rifle",CHAN_WEAPON);
-			A_ZoomRecoil(min(0.95,1.-0.05*min(invoker.weaponstatus[ZM66S_AUTO],3)));
+			A_ZoomRecoil(max(0.95,1.-0.05*min(invoker.weaponstatus[ZM66S_AUTO],3)));
 
 			//shoot the bullet
 			//copypaste any changes to spawnshoot as well!

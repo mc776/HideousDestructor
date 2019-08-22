@@ -55,6 +55,7 @@ class HDB_426:HDBulletActor{
 		speed 1200;
 		accuracy 666;
 		stamina 426;
+		woundhealth 40;
 		hdbulletactor.hardness 2;
 		hdbulletactor.distantsounder "DistantRifle";
 	}
@@ -66,6 +67,7 @@ class HDB_776:HDBulletActor{
 		speed 1100;
 		accuracy 600;
 		stamina 776;
+		woundhealth 5;
 		hdbulletactor.distantsounder "DoubleDistantRifle";
 	}
 }
@@ -76,6 +78,7 @@ class HDB_9:HDBulletActor{
 		speed 420;
 		accuracy 200;
 		stamina 900;
+		woundhealth 10;
 		hdbulletactor.hardness 3;
 	}
 }
@@ -86,6 +89,7 @@ class HDB_355:HDBulletActor{
 		speed 440;
 		accuracy 200;
 		stamina 900;
+		woundhealth 15;
 	}
 }
 class HDB_00:HDBulletActor{
@@ -95,6 +99,7 @@ class HDB_00:HDBulletActor{
 		speed 700;
 		accuracy 200;
 		stamina 838;
+		woundhealth 3;
 		// hdbulletactor.distantsounder "DoubleDistantRifle"; //don't enable this here
 	}
 }
@@ -105,6 +110,7 @@ class HDB_frag:HDBulletActor{
 		speed 400;
 		accuracy 140;
 		stamina 500;
+		woundhealth 5;
 	}
 	override void gunsmoke(){}
 	virtual double setscalefactor(){return frandom(0.5,3.);}
@@ -124,6 +130,7 @@ class HDB_scrap:HDB_frag{
 		speed 200;
 		accuracy 100;
 		stamina 800;
+		woundhealth 20;
 	}
 	override double setscalefactor(){return frandom(0.3,1.2);}
 }
@@ -1048,6 +1055,41 @@ if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channe
 
 		if(hitactor)tracer=hitactor;
 		setorigin(hitpos+vu*shortshortpen,true);
+
+
+		//fragmentation
+		if(random(0,100)<woundhealth){
+			int fragments=clamp(random(2,(woundhealth>>4)),1,5);
+			while(fragments){
+				fragments--;
+				let bbb=HDBulletActor(spawn("HDBulletActor",pos));
+				bbb.target=target;
+				bbb.bincombat=true;
+				double newspeed;
+				if(!fragments){
+					bbb.mass=mass;
+					newspeed=speed;
+					bbb.stamina=stamina;
+				}else{
+					//consider distributing this more randomly between the fragments?
+					bbb.mass=random(1,mass);
+					bbb.stamina=random(1,stamina);
+					newspeed=frandom(0,speed);
+					mass-=bbb.mass;
+					stamina=max(1,stamina-bbb.stamina);
+					speed-=newspeed;
+				}
+				bbb.pushfactor=frandom(0.6,5.);
+				bbb.accuracy=random(50,300);
+				double newangle=angle+frandom(-45,45);
+				double newpitch=pitch+frandom(-45,45);
+				bbb.A_ChangeVelocity(
+					cos(newpitch)*newspeed,0,sin(newpitch)*newspeed,CVF_RELATIVE|CVF_REPLACE
+				);
+			}
+			bulletdie();
+			return;
+		}
 	}
 	virtual void AdditionalEffects(actor hitactor,double pen,vector3 vu){}
 	virtual actor Puff(){

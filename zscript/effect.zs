@@ -681,6 +681,7 @@ class DistantQuaker:IdleDummy{
 	spawn:
 		TNT1 A 1 nodelay A_SetTics(stamina);
 		TNT1 A 0{
+			if(max(abs(pos.x),abs(pos.y),abs(pos.z))>32000)return;
 			if(wave){
 				A_PlaySound("weapons/subfwoosh",CHAN_AUTO,0.1*intensity);
 				if(target && target.pos.z<target.floorz+8)
