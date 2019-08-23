@@ -803,7 +803,7 @@ class HDBulletActor:HDActor{
 
 		//warp the bullet
 		hardness=max(1,hardness-random(0,random(0,3)));
-		stamina=stamina+random(0,(stamina>>1));
+		stamina=max(1,stamina+random(0,(stamina>>1)));
 	}
 	void forcepain(actor victim){
 		if(
@@ -903,7 +903,7 @@ if(hd_debug)console.printf(hitactor.getclassname().."  armour resistance:  "..ad
 
 		//deform the bullet
 		hardness=max(1,hardness-random(0,random(0,3)));
-		stamina=stamina+random(0,(stamina>>1));
+		stamina=max(1,stamina+random(0,(stamina>>1)));
 
 		//immediate impact
 		//highly random
@@ -937,12 +937,11 @@ if(hd_debug)console.printf(hitactor.getclassname().."  armour resistance:  "..ad
 
 		//bullet penetrated, both impact and temp cavity do bashing
 		impact+=tinyspeedsquared*frandom(0.03,0.08)*stamina;
-		if(speed>HDCONST_SPEEDOFSOUND){
-			bnoextremedeath=impact*5<hitactor.spawnhealth();
-			hitactor.damagemobj(self,target,max(random(1,5),impact),"bashing",DMG_THRUSTLESS);
-			forcepain(hitactor);
-			bnoextremedeath=true;
-		}else hitactor.damagemobj(self,target,max(1,impact),"bashing",DMG_THRUSTLESS);
+
+		bnoextremedeath=impact*3<hitactor.spawnhealth();
+		hitactor.damagemobj(self,target,max(1,tinyspeedsquared*pen+impact),"bashing",DMG_THRUSTLESS);
+		forcepain(hitactor);
+		bnoextremedeath=true;
 
 		//check if going right through the body
 		//it's not "deep enough", it's "too deep" now!
@@ -1024,15 +1023,21 @@ if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channe
 		//cns severance
 		//small column in middle centre
 		//only if NET penetration is at least deemedwidth
+		double mincritheight=hitactor.height*0.6;
+		double basehitz=hitpos.z-hitactor.pos.z;
 		if(
 			hitangle<12
-			&&hitpos.z-hitactor.pos.z>hitactor.height*0.6
-			&&pen*frandom(1.,2.)>deemedwidth
+			&&(
+				basehitz>mincritheight
+				||basehitz+shortpen*vu.z>mincritheight
+			)
+//			&&pen*frandom(1.,2.)>deemedwidth
+			&&pen>hitactor.radius
 		){
 			if(hd_debug)console.printf("CRIT!");
 			hitactor.damagemobj(
 				self,target,
-				max(chdmg,random(chdmg,hitactor.health)),
+				max(chdmg,random(chdmg,hitactor.spawnhealth())),
 				"Piercing",DMG_THRUSTLESS
 			);
 			forcepain(hitactor);

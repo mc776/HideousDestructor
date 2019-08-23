@@ -259,12 +259,7 @@ class HDRevolver:HDHandgun{
 		invoker.weaponstatus[BUGS_CYL1]--;
 		bool masterball=cyl==BUGS_MASTERBALL;
 
-		actor p=spawn(masterball?"HDBullet355":"HDBullet9",pos+(0,0,height-6),ALLOW_REPLACE);
-		p.target=self;p.angle=angle;p.pitch=pitch;
-		if(p){
-			p.vel+=self.vel+(frandom(-1.,1.),frandom(-1.,1.),frandom(-1.,1.));
-			p.speed+=frandom(-8.,8.);
-		}
+		HDBulletActor.FireBullet(self,"HDB_355",spread:1.,speedfactor:frandom(0.99,1.01));
 
 		A_GunFlash();
 		A_Light1();
