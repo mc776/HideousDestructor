@@ -202,72 +202,6 @@ extend class HDPlayerPawn{
 				}
 			}
 		}else if(
-			mod=="smallarms0"||
-			mod=="smallarms1"||
-			mod=="smallarms2"||
-			mod=="smallarms3"||
-			mod=="bullet"||
-			mod=="gunshot"
-		){
-			//shot
-			int type=0;
-			if(mod=="smallarms1")type=1;
-			else if(mod=="smallarms2")type=2;
-			else if(mod=="smallarms3")type=3;
-
-			if(!armr||!alv){
-				towound+=max(2,damage*0.6);
-				damage*=0.7;
-			}else{
-				int basedamage=damage;
-
-				//reduce damage and wounding
-				if(type>alv+randompick(0,1,1,1,1,1,2)){
-					towound+=max(1,damage*0.12);
-					damage*=0.7;
-				}else{
-					damage*=alv==3?0.3:(alv==2?0.4:0.6);
-					tostun+=damage;
-					tobreak+=max(randompick(0,0,0,1),damage/10);
-					mod="Bashing";
-					if(damage<random(300,400)&&type<alv+randompick(0,1,1,1,1,1,2)){
-						damage=min(damage,health-(random(1,alv)));
-					}
-				}
-				//degrade armour and puff
-				if(
-					alv<type+random(0,(basedamage>>3))
-				){
-					actor p;bool q;
-					if(alv>1){
-						armr.durability-=max(0,random(1,type+1));
-						[q,p]=A_SpawnItemEx("PenePuff",
-							0,0,height*1.6,
-							4,0,1
-						);
-						p.vel+=vel;
-						let pp=HDActor(p);
-						pp.A_SpawnChunks("WallChunk",random(8,16),3,8);
-					}else{
-						armr.durability-=max(0,random(1,type+1));
-						[q,p]=A_SpawnItemEx("FragPuff",
-							0,0,height*1.6,
-							4,0,1,
-							0,0,64
-						);
-						if(p)p.vel+=vel;
-					}
-				}
-				damage=max(1,damage);
-			}
-			//radsuit completely envelops you so it will always get it
-			if(radsuit){
-				if(type>1||(type && !random(0,3))){
-					A_TakeInventory("WornRadsuit");
-					A_PlaySound("radsuit/rip",CHAN_AUTO);
-				}
-			}
-		}else if(
 			mod=="thermal"||
 			mod=="fire"||
 			mod=="ice"||
@@ -318,7 +252,7 @@ extend class HDPlayerPawn{
 			}
 			toburn+=max(damage*frandom(0.2,0.5),random(0,1));
 			if(!random(0,35))towound+=max(1,damage*0.05);
-			if(!random(0,1))stunned+=damage;
+			if(!random(0,1))tostun+=damage;
 		}else if(
 			mod=="balefire"||
 			mod=="hellfire"||
@@ -371,10 +305,13 @@ extend class HDPlayerPawn{
 			flags|=DMG_NO_ARMOR;
 
 			if(mod=="falling"){
-				if(!source)return 0; //ignore regular fall damage
+				if(!source)return -1; //ignore regular fall damage
 				else tostun+=damage*random(20,25);
 			}
 			else if(mod=="slime"&&!random(0,99))aggravateddamage++;
+		}else if(mod=="bashing"){
+			if((damage)<spawnhealth()+random(0,20))damage=clamp(damage,1,health-7);
+			tostun+=(damage>>2);
 		}else{
 			//anything else
 			damage*=(1-(alv*0.2));
@@ -401,6 +338,11 @@ extend class HDPlayerPawn{
 
 		//abort if damage is less than zero
 		if(damage<0)return 0;
+
+
+		//HDBulletActor has its separate wound handling
+		if(inflictor is "HDBulletActor")towound=0;
+
 
 		//add to wounds and burns after team damage multiplier
 		//(super.damagemobj() takes care of the actual damage amount)
