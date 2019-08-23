@@ -13,14 +13,15 @@ class HDMobMan:HDMobBase{
 	}
 	//give armour
 	hdarmourworn givearmour(double chance=1.,double megachance=0.,double minimum=0.){
-		if(frandom(0.,1.)>chance)return;
+		if(frandom(0.,1.)>chance)return null;
 		let arw=hdarmourworn(giveinventorytype("hdarmourworn"));
 		int maxdurability;
-		if(frandom(0.,1.)<megachance){
+			if(frandom(0.,1.)<megachance){
 			arw.mega=true;
-			durability=HDCONST_BLUEARMOUR;
-		}else durability=HDCONST_GREENARMOUR;
+			arw.durability=HDCONST_BLUEARMOUR;
+		}else arw.durability=HDCONST_GREENARMOUR;
 		arw.durability=max(1,frandom(min(1.,minimum),1.)*maxdurability);
+		return arw;
 	}
 }
 
