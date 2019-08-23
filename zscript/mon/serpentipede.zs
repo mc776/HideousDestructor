@@ -223,7 +223,7 @@ class Serpentipede:HDMobBase{
 		loop;
 	see:
 		#### ABCD 4 A_ImpChase();
-		---- A 0 A_Jump(180,2);
+		---- A 0 A_Jump(180,"see");
 		---- A 0 A_AlertMonsters();
 		loop;
 	missile:
