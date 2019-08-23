@@ -880,7 +880,7 @@ class HDBulletActor:HDActor{
 				//bullet leaves a hole in the webbing
 				armr.durability-=max(random(0,1),(stamina>>7));
 			}
-console.printf(hitactor.getclassname().."  armour resistance:  "..addpenshell);
+if(hd_debug)console.printf(hitactor.getclassname().."  armour resistance:  "..addpenshell);
 			penshell+=addpenshell;
 		}
 
@@ -894,8 +894,9 @@ console.printf(hitactor.getclassname().."  armour resistance:  "..addpenshell);
 			return;
 		}
 		double shortshortpen=min(shortpen,hitactor.radius*2);
-		vel*=shortshortpen/pen;
-		speed-=shortshortpen;
+		double sspratio=shortshortpen/pen;
+		vel*=sspratio;
+		speed*=sspratio;
 		pen=shortpen;
 
 		bool deepenough=pen>deemedwidth*0.04;
@@ -1146,7 +1147,7 @@ class HDBleedingWound:Thinker{
 			return;
 		}
 		if(bleeder&&bleeder.health<1&&bleedrate<random(10,60))bleeder.deathsound="";
-		if(hd_debug&&bleeder)console.printf(bleeder.getclassname().." bled to "..bleeder.health);
+		if(hd_debug&&bleeder)if(hd_debug)console.printf(bleeder.getclassname().." bled to "..bleeder.health);
 	}
 	static void inflict(
 		actor bleeder,
