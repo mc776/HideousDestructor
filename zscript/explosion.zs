@@ -195,7 +195,7 @@ extend class HDActor{
 						it.angleto(caller),
 						SXF_ABSOLUTEANGLE|SXF_NOCHECKPOSITION|SXF_USEBLOODCOLOR
 					);
-					bld.vel+=it.vel;
+					if(bld)bld.vel+=it.vel;
 				}
 				if(!it.bdontthrust)it.vel+=(it.pos-caller.pos)*divdist*divmass*10;
 			}
