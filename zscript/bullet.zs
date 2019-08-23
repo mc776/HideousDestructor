@@ -938,7 +938,7 @@ if(hd_debug)console.printf(hitactor.getclassname().."  armour resistance:  "..ad
 		//bullet penetrated, both impact and temp cavity do bashing
 		impact+=tinyspeedsquared*frandom(0.03,0.08)*stamina;
 
-		bnoextremedeath=impact*3<hitactor.spawnhealth();
+		bnoextremedeath=impact*3<hitactor.gibhealth;
 		hitactor.damagemobj(self,target,max(1,tinyspeedsquared*pen+impact),"bashing",DMG_THRUSTLESS);
 		forcepain(hitactor);
 		bnoextremedeath=true;
@@ -1018,7 +1018,7 @@ if(hd_debug)console.printf(hitactor.getclassname().."  armour resistance:  "..ad
 		//add size of channel to damage
 		int chdmg=max(1,(int(channelwidth*pen)>>5));
 if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channelwidth.." x "..pen.."    channel HP damage: "..chdmg);
-		bnoextremedeath=(chdmg<<1)<hitactor.spawnhealth();
+		bnoextremedeath=(chdmg<<1)<hitactor.gibhealth;
 
 		//cns severance
 		//small column in middle centre

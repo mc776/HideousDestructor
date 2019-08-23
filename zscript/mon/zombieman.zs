@@ -1,4 +1,31 @@
 // ------------------------------------------------------------
+// Humanoid template
+// ------------------------------------------------------------
+class HDMobMan:HDMobBase{
+	default{
+		gibhealth 140;
+		health 100;
+		height 54;
+		radius 12;
+		deathheight 12;
+		mass 120;
+		speed 10;
+	}
+	//give armour
+	hdarmourworn givearmour(double chance=1.,double megachance=0.,double minimum=0.){
+		if(frandom(0.,1.)>chance)return;
+		let arw=hdarmourworn(giveinventorytype("hdarmourworn"));
+		int maxdurability;
+		if(frandom(0.,1.)<megachance){
+			arw.mega=true;
+			durability=HDCONST_BLUEARMOUR;
+		}else durability=HDCONST_GREENARMOUR;
+		arw.durability=max(1,frandom(min(1.,minimum),1.)*maxdurability);
+	}
+}
+
+
+// ------------------------------------------------------------
 // Former Human
 // ------------------------------------------------------------
 
@@ -8,7 +35,7 @@
 	1=ZM66 regular; 2=ZM66 marksman; 3=SMG
 */
 
-class ZombieStormtrooper:HDMobBase{
+class ZombieStormtrooper:HDMobMan{
 	default{
 		//$Category "Monsters/Hideous Destructor"
 		//$Title "Zombieman"
@@ -22,8 +49,6 @@ class ZombieStormtrooper:HDMobBase{
 		tag "$fn_zombie";
 
 		translation "58:66=128:136","214:223=141:148","176:191=24:47","16:34=68:79";
-		health 80; gibhealth 100;
-		height 54;radius 12;
 		speed 8;
 		dropitem "";attacksound "";decal "BulletScratch";
 		painchance 250;

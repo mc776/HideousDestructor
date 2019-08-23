@@ -19,28 +19,20 @@ class UndeadJackbootman:HideousShotgunGuy{default{
 		//$Sprite "PLAYF1"
 		accuracy 3;
 }}
-class HideousShotgunGuy:HDMobBase replaces ShotgunGuy{
+class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 	default{
 		//$Category "Monsters/Hideous Destructor"
 		//$Title "Shotgun Guy"
 		//$Sprite "SPOSA1"
 
-		mass 100;
-		+floorclip
 		seesound "shotguy/sight";
 		painsound "shotguy/pain";
 		deathsound "shotguy/death";
 		activesound "shotguy/active";
 		tag "$fn_shotgun";
 
-		dropitem "";
-		health 100;
-		gibhealth 100;
 		speed 10;
-		height 54;
-		radius 12;
 		decal "BulletScratch";
-		attacksound "";
 		meleesound "weapons/smack";
 		meleedamage 4;
 		maxtargetrange 4000;

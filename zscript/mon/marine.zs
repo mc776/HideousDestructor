@@ -24,10 +24,6 @@ class HDMarine:HDMobBase replaces ScriptedMarine{
 		monster;
 		+friendly
 		+quicktoretaliate
-		height 54;
-		deathheight 12;
-		radius 12;
-		health 200;
 		speed 16;
 		maxdropoffheight 48;
 		maxstepheight 48;

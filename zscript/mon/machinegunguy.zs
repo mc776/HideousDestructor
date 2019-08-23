@@ -8,7 +8,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		dropitem "EnemyHERP",256,1;
 		dropitem "EnemyDERP",256,1;
 	}
-}class VulcanetteGuy:HDMobBase{
+}class VulcanetteGuy:HDMobMan{
 	default{
 		radius 14;
 		height 54;
@@ -21,12 +21,10 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		activesound "chainguy/active";
 		tag "$fn_heavy";
 
-		health 180;
+		health 120;
 		speed 9;
-		mass 300;
+		mass 200;
 		maxtargetrange 6000;
-		dropitem "";
-		attacksound "";
 		obituary "%o met the budda-budda-budda on the street, and it killed %h.";
 		hitobituary "%o took the wrong pill.";
 	}

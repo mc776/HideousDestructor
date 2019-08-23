@@ -3,21 +3,15 @@
 // ------------------------------------------------------------
 class HoopBubble:HDMobBase replaces WolfensteinSS{
 	default{
-		painchance 170;
-		+floorclip
 		seesound "wolfss/sight";
 		painsound "wolfss/pain";
 		deathsound "wolfss/death";
 		activesound "wolfss/active";
 		tag "$fn_wolfss";
 
-		health 120;
-		height 54;
-		radius 12;
-		speed 10;
+		painchance 170;
+
 		obituary "%o invoked Godwin's Law.";
-		dropitem "";
-		attacksound "";
 		translation "192:207=103:111","240:247=5:8";
 	}
 	override void postbeginplay(){
