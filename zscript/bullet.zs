@@ -307,14 +307,13 @@ class HDBulletActor:HDActor{
 	}
 	double penetration(){ //still juvenile giggling
 		double pen=
-			clamp(speed,0,hardness*200)
-			*(
+			clamp(speed*0.01,0,hardness*200)
+			+(
 				mass
-				+(100.*accuracy)/stamina
-			)
-			*(1./4000)
+				+double(accuracy)/max(1,stamina)
+			)*0.3
 		;
-		if(pushfactor>0)pen/=(1.+pushfactor);
+		pen/=(1.+pushfactor);
 //if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 		return pen;
 	}
@@ -893,10 +892,12 @@ if(hd_debug)console.printf(hitactor.getclassname().."  armour resistance:  "..ad
 			bulletdie();
 			return;
 		}
-		double shortshortpen=min(shortpen,hitactor.radius*2);
-		double sspratio=shortshortpen/pen;
-		vel*=sspratio;
-		speed*=sspratio;
+		double shortshortpen=min(shortpen,hitactor.radius*2); //used to place bullet on other side of actor
+		double sspratio=shortpen/pen;
+		if(sspratio<1.){
+			vel*=sspratio;
+			speed*=sspratio;
+		}
 		pen=shortpen;
 
 		bool deepenough=pen>deemedwidth*0.04;
@@ -938,8 +939,8 @@ if(hd_debug)console.printf(hitactor.getclassname().."  armour resistance:  "..ad
 		//bullet penetrated, both impact and temp cavity do bashing
 		impact+=tinyspeedsquared*frandom(0.03,0.08)*stamina;
 
-		bnoextremedeath=impact*3<hitactor.gibhealth;
-		hitactor.damagemobj(self,target,max(1,tinyspeedsquared*pen+impact),"bashing",DMG_THRUSTLESS);
+		bnoextremedeath=impact<(hitactor.gibhealth<<3);
+		hitactor.damagemobj(self,target,max(impact,pen*impact*0.02),"bashing",DMG_THRUSTLESS);
 		forcepain(hitactor);
 		bnoextremedeath=true;
 
@@ -1026,15 +1027,15 @@ if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channe
 		double mincritheight=hitactor.height*0.6;
 		double basehitz=hitpos.z-hitactor.pos.z;
 		if(
-			hitangle<12
+			hitangle<10+tinyspeedsquared*7
 			&&(
 				basehitz>mincritheight
 				||basehitz+shortpen*vu.z>mincritheight
 			)
-//			&&pen*frandom(1.,2.)>deemedwidth
 			&&pen>hitactor.radius
 		){
 			if(hd_debug)console.printf("CRIT!");
+			bnoextremedeath=(chdmg>>1)<hitactor.gibhealth;
 			hitactor.damagemobj(
 				self,target,
 				max(chdmg,random(chdmg,hitactor.spawnhealth())),
@@ -1072,25 +1073,27 @@ if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channe
 				bbb.target=target;
 				bbb.bincombat=true;
 				double newspeed;
+				speed*=0.8;
 				if(!fragments){
 					bbb.mass=mass;
 					newspeed=speed;
 					bbb.stamina=stamina;
 				}else{
 					//consider distributing this more randomly between the fragments?
-					bbb.mass=random(1,mass);
-					bbb.stamina=random(1,stamina);
-					newspeed=frandom(0,speed);
+					bbb.mass=max(1,random(1,mass-1));
+					bbb.stamina=max(1,random(1,stamina-1));
+					newspeed=frandom(0,speed-1);
 					mass-=bbb.mass;
 					stamina=max(1,stamina-bbb.stamina);
 					speed-=newspeed;
 				}
 				bbb.pushfactor=frandom(0.6,5.);
 				bbb.accuracy=random(50,300);
-				double newangle=angle+frandom(-45,45);
+				bbb.angle=angle+frandom(-45,45);
 				double newpitch=pitch+frandom(-45,45);
+				bbb.pitch=newpitch;
 				bbb.A_ChangeVelocity(
-					cos(newpitch)*newspeed,0,sin(newpitch)*newspeed,CVF_RELATIVE|CVF_REPLACE
+					cos(newpitch)*newspeed,0,-sin(newpitch)*newspeed,CVF_RELATIVE|CVF_REPLACE
 				);
 			}
 			bulletdie();

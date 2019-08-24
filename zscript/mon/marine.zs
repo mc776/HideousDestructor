@@ -15,7 +15,7 @@
 	Set an variable to zero to use the actor default. (HDMarine is random)
 */
 
-class HDMarine:HDMobBase replaces ScriptedMarine{
+class HDMarine:HDMobMan replaces ScriptedMarine{
 	default{
 		//$Category "Monsters/Hideous Destructor/Marines"
 		//$Title "Marine"

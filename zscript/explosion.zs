@@ -275,7 +275,7 @@ extend class HDActor{
 					double fragmass=bbb.mass;
 					double fragspeed=bbb.speed*fragspeedfactor;
 					double fragaccuracy=bbb.accuracy;
-					double fragstamina=bbb.stamina;
+					double fragstamina=max(1,bbb.stamina);
 
 					//limit number of frags and increase size to compensate
 					if(fragshit>20){
