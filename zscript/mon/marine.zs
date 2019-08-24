@@ -603,7 +603,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 	shootsmg:
 		#### E 1 A_LeadTarget1();
 		#### E 1{
-			class<actor> mn="HDBullet9";
+			class<actor> mn="HDB_9";
 			A_LeadTarget2(shotspeed:getdefaultbytype(mn).speed,adjusttics:1);
 			hdmobai.DropAdjust(self,mn);
 		}
@@ -611,8 +611,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		#### F 1 bright light("SHOT"){
 			gunloaded--;
 			A_PlaySound("weapons/smg",CHAN_WEAPON,0.7);
-			actor bbb=A_MarineShot("HDBullet9");
-			bbb.A_ChangeVelocity(cos(bbb.pitch)*20,0,-sin(bbb.pitch)*20,CVF_RELATIVE);
+			HDBulletActor.FireBullet(self,"HDB_9",speedfactor:1.1);
 			if(!random(0,7))A_AlertMonsters(0,bfriendly?AMF_TARGETEMITTER:0);
 		}
 		#### E 2 A_SpawnItemEx("HDSpent9mm",
@@ -627,7 +626,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		#### E 1;
 		#### E 1 A_LeadTarget1();
 		#### E 1{
-			class<actor> mn="HDBullet00b";
+			class<actor> mn="HDB_00";
 			A_LeadTarget2(shotspeed:getdefaultbytype(mn).speed,adjusttics:1);
 			hdmobai.DropAdjust(self,mn);
 		}
@@ -714,14 +713,14 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 	shootpistol:
 		#### E 1 A_LeadTarget1();
 		#### E 1{
-			class<actor> mn="HDBullet9";
+			class<actor> mn="HDB_9";
 			A_LeadTarget2(shotspeed:getdefaultbytype(mn).speed,adjusttics:random(1,4));
 			hdmobai.DropAdjust(self,mn);
 		}
 		#### F 1 bright light("SHOT"){
 			pistolloaded--;
 			A_PlaySound("weapons/pistol",CHAN_WEAPON);
-			A_MarineShot("HDBullet9");
+			HDBulletActor.FireBullet(self,"HDB_9",spread:2.,speedfactor:frandom(0.97,1.03));
 			if(!random(0,3))A_AlertMonsters(0,bfriendly?AMF_TARGETEMITTER:0);
 		}
 		#### E random(1,4) A_SpawnItemEx("HDSpent9mm",

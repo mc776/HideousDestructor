@@ -260,10 +260,7 @@ class ZombieStormtrooper:HDMobMan{
 				pitch+=frandom(0,spread)-frandom(0,spread);
 				angle+=frandom(0,spread)-frandom(0,spread);
 				A_PlaySound("weapons/smg",CHAN_WEAPON);
-				actor p=spawn("HDBullet9",pos+(0,0,height-6),ALLOW_REPLACE);
-				p.speed=500+10*frandom(-1.,1.);
-				p.target=self;p.angle=angle;p.pitch=pitch;
-				p.vel+=self.vel;
+				HDBulletActor.FireBullet(self,"HDB_9",speedfactor:1.1);
 				A_SpawnItemEx("HDSpent9mm",
 					cos(pitch)*10,0,height-8-sin(pitch)*10,
 					vel.x,vel.y,vel.z,
