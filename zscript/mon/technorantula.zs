@@ -187,11 +187,7 @@ class Technorantula:HDMobBase replaces SpiderMastermind{
 			shotcount++;
 			A_PlaySound("weapons/bigrifle",shotchannel);
 
-			actor p=spawn("HDBullet776",pos+(0,0,32),ALLOW_REPLACE);
-			p.target=self;
-			p.angle=angle+frandom(-spread,spread);
-			p.pitch=pitch+frandom(-spread,spread);
-			p.vel+=self.vel;
+			HDBulletActor.FireBullet(self,"HDB_776",zofs:32,spread:1.,aimoffx:spread,aimoffy:spread);
 		}
 		SPID G 0 A_JumpIf(shotcount>50,"stopshot");
 		SPID # 0 A_JumpIfTargetInLOS(1,20);
