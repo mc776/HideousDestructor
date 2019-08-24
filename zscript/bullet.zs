@@ -310,10 +310,10 @@ class HDBulletActor:HDActor{
 			clamp(speed*0.01,0,hardness*200)
 			+(
 				mass
-				+double(accuracy)/max(1,stamina)
+				+double(accuracy)/max(1,stamina) //HOW THE FUCK DOES THIS ALWAYS SOMEHOW GET TO ZERO
 			)*0.3
 		;
-		pen/=(1.+pushfactor);
+		if(pushfactor>0)pen/=(1.+pushfactor);
 //if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 		return pen;
 	}
