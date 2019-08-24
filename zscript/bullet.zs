@@ -1118,8 +1118,15 @@ if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channe
 			//flesh: bloodsplat
 			//fluids: splash
 			//anything else: puff and add bullet hole
-		let aaa=spawn("FragPuff",pos,ALLOW_REPLACE);
-		aaa.pitch=pitch;aaa.angle=angle;
+
+		if(max(abs(pos.x),abs(pos.y))>32000)return null;
+		double sp=speed;
+		name pufftype="BulletPuffBig";
+		if(sp>800)pufftype="BulletPuffBig";
+		else if(sp>512)pufftype="BulletPuffMedium";
+		else pufftype="BulletPuffSmall";
+		let aaa=spawn(pufftype,pos);
+		aaa.angle=angle;aaa.pitch=pitch;
 		return aaa;
 	}
 }

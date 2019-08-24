@@ -219,8 +219,7 @@ class HDAmBox:HDUPK{
 				A_FaceTarget(0,0);
 				angle+=frandom(-20,20);
 				pitch+=frandom(-20,20);
-				actor b=spawn("HDBullet9",pos+(0,0,12),ALLOW_REPLACE);
-				b.pitch=pitch;b.angle=angle;b.target=self;b.vel+=vel;
+				HDBulletActor.FireBullet(self,"HDB_9",zofs:2,spread:2.,speedfactor:frandom(0.97,1.03));
 				A_SpawnItemEx("HDSpent9mm", -3,1,-1,
 					random(-1,-3),random(-1,1),random(-3,-4),
 					0,SXF_NOCHECKPOSITION|SXF_SETTARGET
