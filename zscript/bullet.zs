@@ -103,6 +103,18 @@ class HDB_00:HDBulletActor{
 		// hdbulletactor.distantsounder "DoubleDistantRifle"; //don't enable this here
 	}
 }
+class HDB_wad:HDBulletActor{
+	default{
+		pushfactor 10.;
+		mass 12;
+		speed 690; //presumably most energy is transferred to the shot
+		accuracy 0;
+		stamina 1860;
+		woundhealth 5;
+		hdbulletactor.hardness 0; //should we change this to a double...
+	}
+	override void gunsmoke(){}
+}
 class HDB_frag:HDBulletActor{
 	default{
 		pushfactor 0.8;

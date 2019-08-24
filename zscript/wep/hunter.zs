@@ -292,6 +292,7 @@ class Hunter:HDShotgun{
 		SHTG A 1 offset(0,36){
 
 			invoker.shotpowervariation=frandom(0.9,1.05);
+			HDBulletActor.FireBullet(self,"HDB_wad");
 			let p=HDBulletActor.FireBullet(self,"HDB_00",spread:6,amount:7);
 			p.spawn("DistantShotgun",p.pos,ALLOW_REPLACE);
 

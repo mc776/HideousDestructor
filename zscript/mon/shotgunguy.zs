@@ -377,6 +377,7 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 			double shotpowervariation=frandom(0.9,1.05);
 			if(shotpowervariation>0.91)semi=false;
 
+			HDBulletActor.FireBullet(self,"HDB_wad");
 			let p=HDBulletActor.FireBullet(self,"HDB_00",spread:6,amount:7);
 			p.spawn("DistantShotgun",pos,ALLOW_REPLACE);
 		}

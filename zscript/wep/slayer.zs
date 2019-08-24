@@ -18,6 +18,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 		hdweapon.refid HDLD_SLAYER;
 	}
 	static void Fire(actor caller,bool right){
+		HDBulletActor.FireBullet(caller,"HDB_wad",xyofs:right?0.8:-0.8,aimoffx:right?0.2:-0.2);
 		let p=HDBulletActor.FireBullet(caller,"HDB_00",xyofs:right?0.8:-0.8,
 			spread:3,aimoffx:right?0.2:-0.2,speedfactor:1.2,amount:7
 		);
