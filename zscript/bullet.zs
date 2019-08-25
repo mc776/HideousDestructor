@@ -914,8 +914,8 @@ if(hd_debug)console.printf(hitactor.getclassname().."  armour resistance:  "..ad
 
 		penshell=max(
 			0,
-			(penshell+hitactorresistance*deemedwidth*0.03)
-			*(1.+HDCONST_SPEEDOFSOUND/speed)
+			(penshell+hitactorresistance*deemedwidth*0.05)
+			*(1.+(HDCONST_SPEEDOFSOUND+stamina)/(speed+accuracy))
 		);
 
 

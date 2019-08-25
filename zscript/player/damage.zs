@@ -492,6 +492,10 @@ extend class HDPlayerPawn{
 				);
 				A_TakeInventory("PowerFrightener");
 			}
+			if(incapacitated){
+				A_Pain();
+				setstatelabel("spawn");
+			}
 		}
 		#### G 3 A_Pain();
 		---- A 0 setstatelabel("spawn");
