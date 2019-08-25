@@ -599,11 +599,28 @@ class HDBulletActor:HDActor{
 					setxyz(crackbak);
 				}
 			}
+
+			//spawn particle trail
+			if(hd_debug>1){
+				vector3 neg10vu=vu*-10;
+				vector3 trailpos=(0,0,0);
+				for(int i=bres.distance*0.1;i>0;i--){
+					trailpos+=neg10vu;				
+					A_SpawnParticle("yellow",SPF_RELVEL|SPF_RELANG,
+						size:12,
+						xoff:trailpos.x,
+						yoff:trailpos.y,
+						zoff:trailpos.z,
+						velx:speed*cos(pitch)*0.001,
+						velz:-speed*sin(pitch)*0.001
+					);
+				}
+			}
+
 		}while(
 			bmissile
 			&&distanceleft>0
 		);
-
 
 		//destroy the linetracer just in case it interferes with savegames
 		blt.destroy();
@@ -895,7 +912,11 @@ if(hd_debug)console.printf(hitactor.getclassname().."  armour resistance:  "..ad
 			penshell+=addpenshell;
 		}
 
-		penshell=max(0,penshell+hitactorresistance*deemedwidth*0.03);
+		penshell=max(
+			0,
+			(penshell+hitactorresistance*deemedwidth*0.03)
+			*(1.+HDCONST_SPEEDOFSOUND/speed)
+		);
 
 
 		//decelerate
