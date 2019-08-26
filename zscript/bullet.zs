@@ -1007,7 +1007,7 @@ class HDBulletActor:HDActor{
 						blood.vel=vu*(0.6*min(pen*0.2,12))
 						+(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.4)
 						);
-						if(!i)blood.A_PlaySound("misc/bloodchunks",CHAN_BODY);
+						if(!i)blood.A_PlaySound(blood.seesound,CHAN_BODY);
 					}
 				}
 			}
@@ -1035,9 +1035,12 @@ class HDBulletActor:HDActor{
 					angle:hitactor.angleto(self),
 						flags:SXF_ABSOLUTEANGLE|SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
 				);
-				if(blood)blood.vel=-vu*(0.03*min(12,impact))
-					+(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.4))
-				;
+				if(blood){
+					blood.vel=-vu*(0.03*min(12,impact))
+						+(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.4)
+					);
+					if(!i)blood.A_PlaySound(blood.seesound,CHAN_BODY);
+				}
 			}
 		}
 
@@ -1175,12 +1178,12 @@ class HDBleedingWound:Thinker{
 		int bleeds=(bleedrate>>4);
 		do{
 			bleeds--;
-			actor bbb;bool gbg;
-			[gbg,bbb]=bleeder.A_SpawnItemEx(bleeder.bloodtype,
+			bool gbg;actor blood;
+			[gbg,blood]=bleeder.A_SpawnItemEx(bleeder.bloodtype,
 				frandom(-12,12),frandom(-12,12),
 				flags:SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
 			);
-			if(bbb)bbb.bambush=true;
+			if(blood)blood.bambush=true;
 		}while(bleeds>0);
 		int bled=bleeder.damagemobj(bleeder,null,bleedrate,"bleedout",DMG_NO_PAIN|DMG_THRUSTLESS);
 		if(bled<1){
