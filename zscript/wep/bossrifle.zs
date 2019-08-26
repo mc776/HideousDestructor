@@ -189,6 +189,10 @@ class BossRifle:HDWeapon{
 			else owner.A_DropInventory("HD7mClip",1);
 		}
 	}
+	override void ForceBasicAmmo(){
+		owner.A_TakeInventory("HD7mClip");
+		owner.A_GiveInventory("HD7mClip");
+	}
 	states{
 	select0:
 		BARG A 0;

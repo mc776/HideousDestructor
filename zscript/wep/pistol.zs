@@ -163,6 +163,10 @@ class HDPistol:HDHandgun replaces Pistol{
 			else owner.A_DropInventory("HD9mMag15",amt);
 		}
 	}
+	override void ForceBasicAmmo(){
+		owner.A_TakeInventory("HD9mMag15");
+		owner.A_GiveInventory("HD9mMag15");
+	}
 	action void A_CheckPistolHand(){
 		if(invoker.wronghand)player.getpsprite(PSP_WEAPON).sprite=getspriteindex("PI2GA0");
 	}

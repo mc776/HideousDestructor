@@ -1,7 +1,7 @@
 // ------------------------------------------------------------
 // Thunder Buster
 // ------------------------------------------------------------
-class ThunderBuster:HDWeapon{
+class ThunderBuster:HDCellWeapon{
 	default{
 		//$Category "Weapons/Hideous Destructor"
 		//$Title "Thunder Buster"
@@ -112,12 +112,6 @@ class ThunderBuster:HDWeapon{
 	}
 	override void consolidate(){
 		CheckBFGCharge(TBS_BATTERY);
-	}
-	override void DropOneAmmo(int amt){
-		if(owner){
-			amt=clamp(amt,1,10);
-			owner.A_DropInventory("HDBattery",1);
-		}
 	}
 	static void ThunderZap(
 		actor caller,

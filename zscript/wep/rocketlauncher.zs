@@ -138,6 +138,10 @@ class HDRL:HDWeapon{
 			}
 		}
 	}
+	override void ForceBasicAmmo(){
+		owner.A_SetInventory("HEATAmmo",1);
+		owner.A_SetInventory("HDRocketAmmo",5);
+	}
 	states{
 	select0:
 		LAUG AB 0;
@@ -607,6 +611,9 @@ class Blooper:HDWeapon{
 			amt=clamp(amt,1,10);
 			owner.A_DropInventory("HDRocketAmmo",1);
 		}
+	}
+	override void ForceBasicAmmo(){
+		owner.A_SetInventory("HDRocketAmmo",1);
 	}
 	states{
 	select0:

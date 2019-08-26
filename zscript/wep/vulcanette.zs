@@ -303,6 +303,12 @@ class Vulcanette:HDWeapon{
 			}
 		}
 	}
+	override void ForceBasicAmmo(){
+		owner.A_TakeInventory("HD4mMag");
+		owner.A_GiveInventory("HD4mMag",5);
+		owner.A_TakeInventory("HDBattery");
+		owner.A_GiveInventory("HDBattery");
+	}
 	states{
 	select0:
 		GTLG A 0 A_Overlay(2,"droop");

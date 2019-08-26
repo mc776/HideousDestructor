@@ -123,44 +123,11 @@ extend class HDPlayerPawn{
 		let bp=hdbackpack(findinventory("HDBackpack"));
 		if(bp)bpenc=bp.weaponbulk();
 
+
 		//if sv_infiniteammo is on, give just enough to reload a gun once
 		if(sv_infiniteammo){
-			if(
-				countinv("HDPistol")
-				||countinv("DERPUsable")
-			)A_SetInventory("HD9mMag15",2);
-			if(
-				countinv("HDSMG")
-			)A_SetInventory("HD9mMag30",1);
-			if(
-				countinv("Hunter")
-				||countinv("Slayer")
-			)A_SetInventory("HDShellAmmo",12);
-			if(
-				countinv("ZM66AssaultRifle")
-				||countinv("Vulcanette")
-				||countinv("HERPUsable")
-			)A_SetInventory("HD4mMag",5);
-			if(
-				countinv("Blooper")
-				||countinv("HDRL")
-				||countinv("ZM66AssaultRifle")
-				||countinv("LiberatorRifle")
-				||countinv("HDIEDKit")
-			)A_SetInventory("HDRocketAmmo",6);
-			if(
-				countinv("Brontornis")
-			)A_SetInventory("BrontornisRound",1);
-			if(
-				countinv("HDRL")
-			)A_SetInventory("HEATAmmo",1);
-			if(
-				countinv("BossRifle")
-			)A_SetInventory("HD7mClip",1);
-			if(
-				countinv("LiberatorRifle")
-			)A_SetInventory("HD7mMag",1);
-			A_SetInventory("HDFragGrenadeAmmo",1);
+			let www=hdweapon(player.readyweapon);
+			if(www)www.ForceBasicAmmo();
 		}
 
 

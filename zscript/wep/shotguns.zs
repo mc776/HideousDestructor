@@ -91,6 +91,9 @@ class HDShotgun:HDWeapon{
 			owner.A_DropInventory("HDShellAmmo",amt*4);
 		}
 	}
+	override void ForceBasicAmmo(){
+		owner.A_SetInventory("HDShellAmmo",20);
+	}
 	clearscope string getpickupframe(){
 		int ssh=weaponstatus[SHOTS_SIDESADDLE];
 		if(ssh>=11)return "A";

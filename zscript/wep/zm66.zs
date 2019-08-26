@@ -218,6 +218,9 @@ class ZM66AssaultRifle:HDWeapon{
 			}
 		}
 	}
+	override void ForceBasicAmmo(){
+		owner.A_SetInventory("HDRevolverAmmo",6);
+	}
 	action bool brokenround(){
 		if(!(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBERBROKEN)){
 			int rnd=

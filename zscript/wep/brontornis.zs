@@ -218,6 +218,9 @@ class Brontornis:HDWeapon{
 			owner.A_DropInventory("BrontornisRound",1);
 		}
 	}
+	override void ForceBasicAmmo(){
+		owner.A_SetInventory("BrontornisRound",1);
+	}
 	states{
 	select0:
 		BLSG A 0;

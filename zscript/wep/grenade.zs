@@ -87,6 +87,9 @@ class HDGrenadeThrower:HDWeapon{
 			owner.A_DropInventory(grenadeammotype,1);
 		}
 	}
+	override void ForceBasicAmmo(){
+		owner.A_SetInventory("HDFragGrenadeAmmo",1);
+	}
 	//for involuntary dropping
 	override void OnPlayerDrop(){
 		if(

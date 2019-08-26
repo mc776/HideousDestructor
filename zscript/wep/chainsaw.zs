@@ -1,4 +1,21 @@
 // ------------------------------------------------------------
+// Some items common to multiple cell weapons
+// ------------------------------------------------------------
+class HDCellWeapon:HDWeapon{
+	override void DropOneAmmo(int amt){
+		if(owner){
+			amt=clamp(amt,1,10);
+			owner.A_DropInventory("HDBattery",1);
+		}
+	}
+	override void ForceBasicAmmo(){
+		owner.A_TakeInventory("HDBattery");
+		owner.A_GiveInventory("HDBattery");
+	}
+}
+
+
+// ------------------------------------------------------------
 // Chainsaw
 // ------------------------------------------------------------
 const LUMBERJACKDRAIN=1023;
@@ -68,12 +85,6 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 	}
 	override void consolidate(){
 		CheckBFGCharge(CSAWS_BATTERY);
-	}
-	override void DropOneAmmo(int amt){
-		if(owner){
-			amt=clamp(amt,1,10);
-			owner.A_DropInventory("HDBattery",1);
-		}
 	}
 	action void A_HDSaw(){
 		A_WeaponReady(WRF_NONE);

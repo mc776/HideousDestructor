@@ -41,6 +41,10 @@ class HDSMG:HDWeapon{
 			else owner.A_DropInventory("HD9mMag30",amt);
 		}
 	}
+	override void ForceBasicAmmo(){
+		owner.A_TakeInventory("HD9mMag30");
+		owner.A_GiveInventory("HD9mMag30");
+	}
 	override string,double getpickupsprite(){
 		return "SMGN"..((weaponstatus[SMGS_MAG]<0)?"B":"A").."0",1.;
 	}

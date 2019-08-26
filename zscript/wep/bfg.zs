@@ -99,12 +99,6 @@ class BFG9K:HDWeapon replaces BFG9000{
 		CheckBFGCharge(BFGS_BATTERY);
 		CheckBFGCharge(BFGS_CHARGE);
 	}
-	override void DropOneAmmo(int amt){
-		if(owner){
-			amt=clamp(amt,1,10);
-			owner.A_DropInventory("HDBattery",1);
-		}
-	}
 	states{
 	altfire:
 	togglestrap:

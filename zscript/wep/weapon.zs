@@ -159,6 +159,9 @@ class HDWeapon:Weapon{
 	//for when the player dies or collapses
 	virtual void OnPlayerDrop(){}
 
+	//forces you to have some ammo, called in encumbrance
+	virtual void ForceBasicAmmo(){}
+
 	//activate a laser rangefinder
 	//because every gun should have one of these
 	action void FindRange(){
