@@ -265,6 +265,7 @@ extend class HDActor{
 					//resolve the impacts using a single bullet
 					let bbb=hdbulletactor(spawn(fragtype,caller.pos));
 					if(!bbb)continue;
+					bbb.woundhealth=0;
 					bbb.setz(clamp(bbb.pos.z,bbb.floorz+1,bbb.ceilingz-1));
 					bbb.target=target;
 					bbb.vel+=caller.vel;
