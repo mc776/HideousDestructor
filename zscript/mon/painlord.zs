@@ -1,5 +1,5 @@
 // ------------------------------------------------------------
-// Baron Of Hell
+// Pain Lord
 // ------------------------------------------------------------
 class PainLord:HDMobBase replaces BaronofHell{
 	default{

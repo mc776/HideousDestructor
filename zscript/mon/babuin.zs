@@ -323,7 +323,7 @@ class Babuin:HDMobBase{
 		}goto deathend;
 	xdeath:
 		TROO O 0{hdmobai.corpseflags(self,true);}
-	XDeathBrewtleLulz: //it's ALMOST identical
+	xxxdeath: //it's ALMOST identical
 		TROO O 0{
 			bpushable=false;
 			bnodropoff=false;

@@ -36,11 +36,14 @@ extend class HDMobBase{
 
 			if(!findstate("xdeath",true))return -1;
 			if(mod=="bashing")damage=(damage>>2);
+			else if(mod=="piercing")damage=(damage>>1);
+			corpsedamage+=damage;
 			if((corpsedamage>>3)>spawnhealth()){
-//TODO: mass string search for the old "XDeathBrewtleLulz"
 				if(findstate("xxxdeath",true))setstatelabel("xxxdeath");
 				else setstatelabel("xdeath");
 				bgibbed=true;
+				A_GiveInventory("IsGibbed"); //deprecated, needs to be replaced for all monsters
+				corpsedamage=0;
 			}
 			return -1;
 		}

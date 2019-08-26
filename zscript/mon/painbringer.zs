@@ -1,5 +1,5 @@
 // ------------------------------------------------------------
-// Hell Knight
+// Pain Bringer
 // ------------------------------------------------------------
 class PainBringer:HDMobBase replaces HellKnight{
 	default{

@@ -65,7 +65,7 @@ class HDStealthArachnotron:HDStealthPorter replaces StealthArachnotron{
 	default{hdstealthporter.spawntype "TechnoSpider";}
 }
 class HDStealthArchvile:HDStealthPorter replaces StealthArchvile{
-	default{hdstealthporter.spawntype "FlameBringer";}
+	default{hdstealthporter.spawntype "Necromancer";}
 }
 class HDStealthBaron:HDStealthPorter replaces StealthBaron{
 	default{hdstealthporter.spawntype "PainLord";}

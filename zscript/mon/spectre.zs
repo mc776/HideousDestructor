@@ -275,7 +275,7 @@ class NinjaPirate:HDMobBase{ //replaces Spectre{
 		}goto deathend;
 	xdeath:
 		TROO O 0{hdmobai.corpseflags(self,true);}
-	XDeathBrewtleLulz:
+	xxxdeath:
 		TROO O 0{
 			bpushable=false;
 			bnodropoff=false;

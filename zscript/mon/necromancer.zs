@@ -1,5 +1,5 @@
 // ------------------------------------------------------------
-// Archvile
+// Necromancer
 // ------------------------------------------------------------
 class BloodyHellFire:HDActor{
 	default{
@@ -25,7 +25,7 @@ class BloodyHellFire:HDActor{
 		maxdropoffheight 1024;
 		seesound "misc/firecrkl";
 		deathsound "weapons/plasmas";
-		obituary "%o was roasted by an archvile.";
+		obituary "%o met the firepower of the necromancer.";
 	}
 	int firetimer;
 	override void postbeginplay(){
@@ -215,7 +215,7 @@ class HeckFire:HDActor{
 	}
 }
 
-class FlameBringer:HDMobBase replaces ArchVile{
+class Necromancer:HDMobBase replaces ArchVile{
 	string nickname;
 	default{
 		mass 500;
@@ -304,7 +304,7 @@ class FlameBringer:HDMobBase replaces ArchVile{
 		if(
 			!bfriendly
 			&&hd_novilespam
-			&&A_CheckProximity("null","FlameBringer",2018,2,CPXF_NOZ)
+			&&A_CheckProximity("null","Necromancer",2018,2,CPXF_NOZ)
 		){
 			A_Die("mapmorph");
 			return;
@@ -525,7 +525,7 @@ class VileDeathLight:PointLight{
 		setorigin(target.pos,true);
 	}
 }
-class LightBearer:FlameBringer{
+class LightBearer:Necromancer{
 	default{
 		+friendly
 		+noclip
@@ -598,7 +598,7 @@ class VileGhost:HDActor{
 		TNT1 A 80 A_Quake(1,40,0,512,"vile/active");
 		TNT1 AAAAAA 0 A_SpawnItemEx("VileGhostShard",flags:SXF_TRANSFERPOINTERS|SXF_NOCHECKPOSITION);
 		TNT1 A 40;
-		TNT1 A 1{FlameBringer.A_MassHeal(self);}
+		TNT1 A 1{Necromancer.A_MassHeal(self);}
 		stop;
 	}
 }
@@ -612,7 +612,7 @@ class VileGhostShard:VileGhost{
 		TNT1 A 2 A_VileChase();
 		loop;
 	heal:
-		TNT1 A 1{FlameBringer.A_MassHeal(self);}
+		TNT1 A 1{Necromancer.A_MassHeal(self);}
 		stop;
 	}
 }

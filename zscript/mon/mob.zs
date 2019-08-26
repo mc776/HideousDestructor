@@ -76,7 +76,7 @@ class SawGib:InventoryFlag{
 			else{
 				o.bshootable=false;
 				//use the old death state first
-				if(o.findstate("XDeathBrewtleLulz"))o.setstatelabel("XDeathBrewtleLulz");
+				if(o.findstate("xxxdeath"))o.setstatelabel("xxxdeath");
 				else if(o.findstate("XXDeath"))o.setstatelabel("XXDeath");
 				else o.bshootable=true;
 				if(!o.bshootable)amount=0;

@@ -345,7 +345,7 @@ class Serpentipede:HDMobBase{
 		loop;
 		#### M 5 canraise A_JumpIf(abs(vel.z)>=2,"Dead");
 		loop;
-	XDeathBrewtleLulz:
+	xxxdeath:
 		---- A 0 A_GiveInventory("IsGibbed",1);
 		---- A 0 {hdmobai.corpseflags(self,true);}
 		#### N 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
