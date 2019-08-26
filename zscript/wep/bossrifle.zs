@@ -224,12 +224,17 @@ class BossRifle:HDWeapon{
 			A_PlaySound("weapons/bigrifle2",6);
 			A_AlertMonsters();
 
+			HDBulletActor.FireBullet(self,"HDB_776",
+				aimoffy:(-1./600.)*invoker.weaponstatus[BOSSS_DROPADJUST],
+				speedfactor:(invoker.weaponstatus[0]&BOSSF_CUSTOMCHAMBER)?1.01:1.27
+			);
+/*
 			actor p=spawn("HDBullet776",pos+(0,0,height-6),ALLOW_REPLACE);
 			p.target=self;p.angle=angle;p.pitch=pitch;
 			p.speed*=(invoker.weaponstatus[0]&BOSSF_CUSTOMCHAMBER)?1.01:1.27;
 			p.vel+=self.vel;
 			p.pitch-=(1./600.)*invoker.weaponstatus[BOSSS_DROPADJUST];
-
+*/
 			A_MuzzleClimb(
 				0,0,
 				-frandom(0.2,0.4),-frandom(0.6,1.),
