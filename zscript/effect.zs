@@ -731,7 +731,7 @@ class BloodSplatSilent:HDPuff{
 class BloodSplat:BloodSplatSilent replaces Blood{
 	override void postbeginplay(){
 		super.postbeginplay();
-		A_PlaySound("misc/bulletflesh",0,0.02);
+		if(!bambush)A_PlaySound("misc/bulletflesh",0,0.2);
 	}
 }
 class BloodSplattest:BloodSplat replaces BloodSplatter{}

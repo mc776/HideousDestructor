@@ -663,7 +663,7 @@ class SupersonicTrail:IdleDummy{
 class SupersonicTrailBig:SupersonicTrail{
 	override void postbeginplay(){
 		A_AlertMonsters();
-		A_PlaySound("weapons/bulletcrack",CHAN_AUTO,0.42);
+		A_PlaySound("weapons/bulletcrack",CHAN_AUTO,0.64);
 	}
 }
 class SupersonicTrailSmall:SupersonicTrail{

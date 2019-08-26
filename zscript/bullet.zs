@@ -563,7 +563,7 @@ class HDBulletActor:HDActor{
 			if(speed>256){
 				name cracker="";
 				if(speed>1000){
-					if(mass>200) cracker="SupersonicTrailBig";
+					if(mass>100) cracker="SupersonicTrailBig";
 					else cracker="SupersonicTrail";
 				}else if(speed>800){
 					cracker="SupersonicTrail";
@@ -599,24 +599,6 @@ class HDBulletActor:HDActor{
 					setxyz(crackbak);
 				}
 			}
-
-			//spawn particle trail
-			if(hd_debug>1){
-				vector3 neg10vu=vu*-10;
-				vector3 trailpos=(0,0,0);
-				for(int i=bres.distance*0.1;i>0;i--){
-					trailpos+=neg10vu;				
-					A_SpawnParticle("yellow",SPF_RELVEL|SPF_RELANG,
-						size:12,
-						xoff:trailpos.x,
-						yoff:trailpos.y,
-						zoff:trailpos.z,
-						velx:speed*cos(pitch)*0.001,
-						velz:-speed*sin(pitch)*0.001
-					);
-				}
-			}
-
 		}while(
 			bmissile
 			&&distanceleft>0
@@ -1014,9 +996,12 @@ if(hd_debug)console.printf(hitactor.getclassname().."  armour resistance:  "..ad
 						angle:hitactor.angleto(self),
 						flags:SXF_ABSOLUTEANGLE|SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
 					);
-					if(blood)blood.vel=vu*(0.6*min(pen*0.2,12))
-						+(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.4))
-					;
+					if(blood){
+						blood.vel=vu*(0.6*min(pen*0.2,12))
+						+(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.4)
+						);
+						if(!i)blood.A_PlaySound("misc/bloodchunks",CHAN_BODY);
+					}
 				}
 			}
 			//reduce momentum, increase tumbling, etc.
@@ -1184,10 +1169,12 @@ class HDBleedingWound:Thinker{
 		int bleeds=(bleedrate>>4);
 		do{
 			bleeds--;
-			bleeder.A_SpawnItemEx(bleeder.bloodtype,
+			actor bbb;bool gbg;
+			[gbg,bbb]=bleeder.A_SpawnItemEx(bleeder.bloodtype,
 				frandom(-12,12),frandom(-12,12),
 				flags:SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
 			);
+			if(bbb)bbb.bambush=true;
 		}while(bleeds>0);
 		int bled=bleeder.damagemobj(bleeder,null,bleedrate,"bleedout",DMG_NO_PAIN|DMG_THRUSTLESS);
 		if(bled<1){
