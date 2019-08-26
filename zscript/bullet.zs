@@ -869,7 +869,7 @@ class HDBulletActor:HDActor{
 			else if(hitlevel==0)alv=max(alv-randompick(0,0,0,1,1,1,1,2),0);
 
 			if(alv>0){
-				addpenshell=frandom(2+alv,alv*10);
+				addpenshell=frandom(9,11)*alv;
 
 				//degrade and puff
 				int ddd=random(0,min(pen,addpenshell)+random(0,pen*0.2));
@@ -890,20 +890,22 @@ class HDBulletActor:HDActor{
 				//bullet leaves a hole in the webbing
 				armr.durability-=max(random(0,1),(stamina>>7));
 			}
-if(hd_debug)console.printf(hitactor.getclassname().."  armour resistance:  "..addpenshell);
+			if(hd_debug)console.printf(hitactor.getclassname().."  armour resistance:  "..addpenshell);
 			penshell+=addpenshell;
 		}
 
 		penshell=max(
 			0,
 			(penshell+hitactorresistance*deemedwidth*0.05)
-			*(1.+(HDCONST_SPEEDOFSOUND+stamina)/(speed+accuracy))
+			*(HDCONST_SPEEDOFSOUND+stamina)
+			/(speed+accuracy)
 		);
 
 
 		//decelerate
 		double shortpen=pen-penshell;
 		if(shortpen<=0){
+			puff();
 			bulletdie();
 			return;
 		}
@@ -948,6 +950,7 @@ if(hd_debug)console.printf(hitactor.getclassname().."  armour resistance:  "..ad
 
 			hitactor.damagemobj(self,target,impact,"bashing",DMG_THRUSTLESS);
 			if(impact>(hitactor.health>>3))forcepain(hitactor);
+			if(hd_debug)console.printf(hitactor.getclassname().." resisted, impact:  "..impact);
 			return;
 		}
 
