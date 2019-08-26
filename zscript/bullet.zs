@@ -396,7 +396,6 @@ class HDBulletActor:HDActor{
 		if(isfrozen())return;
 //if(getage()%17)return;
 		if(abs(pos.x)>32000||abs(pos.y)>32000){destroy();return;}
-		if(vel==(0,0,0))bmissile=false;
 		if(!bmissile){
 			super.tick();
 			return;
@@ -418,6 +417,11 @@ class HDBulletActor:HDActor{
 			return;
 		}
 		if(bnointeraction)bnointeraction=false;
+
+		if(vel.xy==(0,0)&&abs(vel.z)<64){
+			bulletdie();
+			return;
+		}
 
 		hdbullettracer blt=HDBulletTracer(new("HDBulletTracer"));
 		if(!blt)return;
@@ -1083,7 +1087,6 @@ if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channe
 
 		if(hitactor)tracer=hitactor;
 		setorigin(hitpos+vu*shortshortpen,true);
-
 
 		//fragmentation
 		if(random(0,100)<woundhealth){

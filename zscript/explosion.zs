@@ -265,6 +265,7 @@ extend class HDActor{
 					//resolve the impacts using a single bullet
 					let bbb=hdbulletactor(spawn(fragtype,caller.pos));
 					if(!bbb)continue;
+					bbb.setz(clamp(bbb.pos.z,bbb.floorz+1,bbb.ceilingz-1));
 					bbb.target=target;
 					bbb.vel+=caller.vel;
 					bbb.traceactors.push(caller); //does this even work?
@@ -303,16 +304,14 @@ extend class HDActor{
 						if(!(tiershit&FTIER_BOTTOM))fragbottom=fragtop*0.3;
 						if(!(tiershit&FTIER_TOP))fragtop*=0.7;
 
-						bbb.setxyz((
-							rotatevector((0,fragradius),fragangle),
+						bbb.setxyz(caller.pos+(
+							rotatevector((dist2,0),fragangle),
 							it.pos.z+frandom(fragbottom,fragtop)
 						));
 						bbb.onhitactor(it,bbb.pos,vu);
 					}
 					bbb.setorigin(caller.pos,false);
 					bbb.bulletdie();
-
-					//don't forget to spawn the moving frags!
 				}
 			}
 		}
