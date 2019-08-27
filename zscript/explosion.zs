@@ -281,7 +281,7 @@ extend class HDActor{
 
 					//limit number of frags and increase size to compensate
 					if(fragshit>20){
-						fragstamina+=((fragshit-20)<<4);
+						fragstamina+=(fragshit-20);
 						fragshit=20;
 					}
 

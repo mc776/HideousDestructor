@@ -129,10 +129,10 @@ class HDB_frag:HDBulletActor{
 	override void resetrandoms(){
 		double scalefactor=setscalefactor();
 		pushfactor=1./scalefactor;
-		mass=max(1,mass*scalefactor);
+		mass=max(1,getdefaultbytype(getclass()).mass*pushfactor);
 		speed*=scalefactor;
-		accuracy=max(1,accuracy*scalefactor);
-		stamina=max(1,stamina*pushfactor);
+		accuracy=max(1,getdefaultbytype(getclass()).accuracy*scalefactor);
+		stamina=max(1,getdefaultbytype(getclass()).stamina*pushfactor);
 	}
 }
 class HDB_scrap:HDB_frag{
@@ -144,7 +144,7 @@ class HDB_scrap:HDB_frag{
 		stamina 800;
 		woundhealth 20;
 	}
-	override double setscalefactor(){return frandom(0.3,1.2);}
+	override double setscalefactor(){return frandom(0.6,6.);}
 }
 class HDB_bronto:HDBulletActor{
 	default{
@@ -319,13 +319,14 @@ class HDBulletActor:HDActor{
 	}
 	double penetration(){ //still juvenile giggling
 		double pen=
-			clamp(speed*0.01,0,hardness*200)
+			clamp(speed*0.01,0,((hardness*mass)>>3))
 			+(
 				mass
-				+double(accuracy)/max(1,stamina) //HOW THE FUCK DOES THIS ALWAYS SOMEHOW GET TO ZERO
+				+double(accuracy)/max(1,stamina)
 			)*0.3
 		;
-		if(pushfactor>0)pen/=(1.+pushfactor);
+		if(pushfactor>0)pen/=(1.+pushfactor*2.);
+		if(stamina<100)pen*=stamina*0.01;
 //if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 		return pen;
 	}
@@ -878,8 +879,8 @@ class HDBulletActor:HDActor{
 				//degrade and puff
 				int ddd=random(0,min(pen,addpenshell)+random(0,pen*0.2));
 				if(ddd<1&&pen>addpenshell)ddd=1;
-				armr.durability-=ddd;
-				if(ddd>2){
+				armr.durability-=(ddd>>3);
+				if(ddd>6){
 					actor p;bool q;
 					[q,p]=hitactor.A_SpawnItemEx("FragPuff",
 						0,0,hitactor.height*1.6,
