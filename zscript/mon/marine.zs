@@ -216,7 +216,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		if(hasdropped){
 			class<actor> dropammo="";
 			if(wep==HDMW_SMG)dropammo="HD9mMag30";
-			else if(wep==HDMW_ZM66)dropammo="HD9mMag15";
+			else if(wep==HDMW_ZM66)dropammo="HD4mMag";
 			else if(wep==HDMW_ROCKET)dropammo="HDRocketAmmo";
 			else if(wep==HDMW_HUNTER)dropammo="ShellPickup";
 			if(!random(0,timesdied))A_DropItem(dropammo);
@@ -589,7 +589,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 			if(gunloaded<1||gunspent<1)setstatelabel("firezm66end");
 			gunloaded--;gunspent--;
 			A_PlaySound("weapons/rifle",CHAN_WEAPON);
-			A_MarineShot("HDB_426");
+			HDBulletActor.FireBullet(self,"HDB_426");
 			if(!random(0,1999-gunspent)){
 				jammed=true;
 				setstatelabel("unjam");
