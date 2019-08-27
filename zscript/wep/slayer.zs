@@ -476,7 +476,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 	override void loadoutconfigure(string input){
 		int choke=min(getloadoutvar(input,"lchoke",1),7);
 		if(choke>=0)weaponstatus[SLAYS_CHOKE1]=choke;
-		choke=getloadoutvar(input,"rchoke",1);
+		int choke=min(getloadoutvar(input,"rchoke",1),7);
 		if(choke>=0)weaponstatus[SLAYS_CHOKE2]=choke;
 	}
 }
