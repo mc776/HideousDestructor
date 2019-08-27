@@ -351,7 +351,7 @@ class UndeadHomeboy:HDMobMan{
 		#### K 3 canraise{if(abs(vel.z)<2.)frame++;}
 		#### L 5 canraise{if(abs(vel.z)>=2.)setstatelabel("dead");}
 		wait;
-	xdeathbrewtlelulz:
+	xxxdeath:
 		#### M 5{
 			bshootable=false;
 			A_GiveInventory("IsGibbed");

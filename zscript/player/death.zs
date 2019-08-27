@@ -157,7 +157,7 @@ extend class HDHandlers{
 
 
 //corpse substituter
-class HDPlayerCorpse:HDActor{
+class HDPlayerCorpse:HDMobMan{
 	default{
 		monster; -countkill +solid +friendly
 		height 52;radius 12;health 100;mass 160;
@@ -202,7 +202,7 @@ class HDPlayerCorpse:HDActor{
 		}
 		#### PQRSTUV 5;
 		#### W -1;
-	xdeathbrewtlelulz:
+	xxxdeath:
 		#### O 5{
 			bshootable=false;
 			A_GiveInventory("IsGibbed");

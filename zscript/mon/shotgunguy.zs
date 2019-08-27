@@ -571,8 +571,8 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 		#### K 3 canraise{if(abs(vel.z)<2.)frame++;}
 		#### L 5 canraise{if(abs(vel.z)>=2.)setstatelabel("dead");}
 		wait;
-	xdeathbrewtlelulz:
-		#### M 0 A_JumpIf(wep<0,"xdeathbrewtlelulz2");
+	xxxdeath:
+		#### M 0 A_JumpIf(wep<0,"xxxdeath2");
 		#### M 5{
 			bshootable=false;
 			A_GiveInventory("IsGibbed");
@@ -583,7 +583,7 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 		}
 		#### OPQRST 5;
 		goto xdead;
-	xdeathbrewtlelulz2:
+	xxxdeath2:
 		#### O 5{
 			bshootable=false;
 			A_GiveInventory("IsGibbed");

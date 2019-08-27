@@ -401,7 +401,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		CPOS N 5 canraise{
 			if(abs(vel.z)>1)setstatelabel("dead");
 		}wait;
-	xdeathbrewtlelulz:
+	xxxdeath:
 		CPOS L 3{
 			bshootable=false;
 			A_GiveInventory("IsGibbed");

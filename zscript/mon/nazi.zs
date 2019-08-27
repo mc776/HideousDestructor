@@ -222,7 +222,7 @@ class HoopBubble:HDMobBase replaces WolfensteinSS{
 		loop;
 		SSWV M 5 A_JumpIf(abs(vel.z)>=2,"dead");
 		loop;
-	xdeathbrewtlelulz:
+	xxxdeath:
 		SSWV N 5{
 			bshootable=false;
 			A_GiveInventory("IsGibbed",1);

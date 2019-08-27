@@ -962,7 +962,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		stop;
 	death.raisebotch:
 		#### O 0{hdmobai.corpseflags(self,true);}
-	xdeathbrewtlelulz:
+	xxxdeath:
 		---- A 0 A_DeathZombieZombieDeath();
 		#### O 5{
 			bshootable=false;
