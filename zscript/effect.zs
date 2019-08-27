@@ -435,10 +435,10 @@ class HDFlameRedBig:HDActor{
 		addz(frandom(-0.1,0.1));
 		scale*=frandom(0.98,1.01);
 		scale.x*=randompick(1,1,-1);
-		if(target)setxyz(target.pos+(
+		if(target)setorigin(target.pos+(
 			(frandom(-target.radius,target.radius),frandom(-target.radius,target.radius))*0.6,
 			frandom(0,target.height*0.6))
-		);
+		,true);
 	}
 	void A_SmokeFade(){
 		vel.z*=0.9;scale*=1.1;alpha-=0.05;
@@ -534,7 +534,7 @@ class HDCopyTrail:IdleDummy{
 			vel*=deathheight;
 			if(alpha<0.04){destroy();return;}
 		}
-		setxyz(pos+vel);
+		setorigin(pos+vel,true);
 		//don't even bother with nexttic, it's just one frame!
 	}
 }
@@ -862,7 +862,7 @@ extend class HDActor{
 	//A_ShardSuck(self.pos+(0,0,32),20);
 	virtual void A_ShardSuck(vector3 aop,int range=4,bool forcegreen=false){
 		actor a=spawn("FragShard",aop,ALLOW_REPLACE);
-		a.setxyz(aop+(random(-range,range)*6,random(-range,range)*6,random(-range,range)*6));
+		a.setorigin(aop+(random(-range,range)*6,random(-range,range)*6,random(-range,range)*6),false);
 		a.vel=(aop-a.pos)*0.05;
 		a.stamina=20;
 		if(forcegreen)a.A_SetTranslation("AllGreen");

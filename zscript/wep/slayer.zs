@@ -18,9 +18,21 @@ class Slayer:HDShotgun replaces HDShotgun{
 		hdweapon.refid HDLD_SLAYER;
 	}
 	static void Fire(actor caller,bool right){
+		double shotpower=varyshotpower();
+		double spread=3.;
+		double speedfactor=1.2;
+		let sss=Slayer(caller.findinventory("Slayer"));
+		if(sss){
+			int choke=sss.weaponstatus[right?SLAYS_CHOKE2:SLAYS_CHOKE1];
+			spread=6.5-0.5*choke;
+			speedfactor=1.+0.02857*choke;
+			sss.shotpower=shotpower;
+		}
+		spread*=shotpower;
+		speedfactor*=shotpower;
 		HDBulletActor.FireBullet(caller,"HDB_wad",xyofs:right?0.8:-0.8,aimoffx:right?0.2:-0.2);
 		let p=HDBulletActor.FireBullet(caller,"HDB_00",xyofs:right?0.8:-0.8,
-			spread:3,aimoffx:right?0.2:-0.2,speedfactor:1.2,amount:7
+			spread:spread,aimoffx:right?0.2:-0.2,speedfactor:speedfactor,amount:7
 		);
 		p.spawn("DistantShotgun",p.pos,ALLOW_REPLACE);
 	}
@@ -67,8 +79,8 @@ class Slayer:HDShotgun replaces HDShotgun{
 	}
 	override string gethelptext(){
 		return
-		WEPHELP_FIRE.."  Shoot Left\n"
-		..WEPHELP_ALTFIRE.."  Shoot Right\n"
+		WEPHELP_FIRE.."  Shoot Left (choke: "..weaponstatus[SLAYS_CHOKE1]..")\n"
+		..WEPHELP_ALTFIRE.."  Shoot Right (choke: "..weaponstatus[SLAYS_CHOKE2]..")\n"
 		..WEPHELP_RELOAD.."  Reload (side saddles first)\n"
 		..WEPHELP_ALTRELOAD.."  Reload (pockets only)\n"
 		..WEPHELP_FIREMODE.."  Hold to force double shot\n"
@@ -127,9 +139,10 @@ class Slayer:HDShotgun replaces HDShotgun{
 			weapon.detachfromowner();
 		}else hdweapon.detachfromowner();
 	}
+	transient cvar swapbarrels;
 	states{
 	select0:
-		SH2G A 0;
+		SH2G A 0{invoker.swapbarrels=cvar.getcvar("hd_swapbarrels",player);}
 		goto select0small;
 	deselect0:
 		SH2G A 0;
@@ -150,9 +163,18 @@ class Slayer:HDShotgun replaces HDShotgun{
 				}
 			}else invoker.weaponstatus[0]&=~SLAYF_DOUBLE;
 
-			int pff=PressingFire()+(PressingAltfire()<<1);
+			int pff;
+			if(invoker.swapbarrels&&invoker.swapbarrels.getbool()){
+				pff=PressingAltfire();
+				if(PressingFire())pff|=2;
+			}else{
+				pff=PressingFire();
+				if(PressingAltfire())pff|=2;
+			}
+
 			bool ch1=invoker.weaponstatus[SLAYS_CHAMBER1]==2;
 			bool ch2=invoker.weaponstatus[SLAYS_CHAMBER2]==2;
+
 			bool dbl=invoker.weaponstatus[0]&SLAYF_DOUBLE;
 			if(ch1&&ch2){
 				if(pff==3){
@@ -191,7 +213,8 @@ class Slayer:HDShotgun replaces HDShotgun{
 		}
 		TNT1 A 1{
 			A_Light0();
-			A_MuzzleClimb(1.6,-3.9,1.6,-3.9);
+			double shotpower=invoker.shotpower;
+			A_MuzzleClimb(1.6*shotpower,-3.9*shotpower,1.6*shotpower,-3.9*shotpower);
 		}goto flasheither;
 	flashright:
 		SH2F B 1 bright{
@@ -205,7 +228,8 @@ class Slayer:HDShotgun replaces HDShotgun{
 		}
 		TNT1 A 1{
 			A_Light0();
-			A_MuzzleClimb(-1.6,-3.9,-1.6,-3.9);
+			double shotpower=invoker.shotpower;
+			A_MuzzleClimb(-1.6*shotpower,-3.9*shotpower,-1.6*shotpower,-3.9*shotpower);
 		}goto flasheither;
 	flasheither:
 		TNT1 A 0 A_AlertMonsters();
@@ -442,7 +466,17 @@ class Slayer:HDShotgun replaces HDShotgun{
 		weaponstatus[SLAYS_CHAMBER1]=2;
 		weaponstatus[SLAYS_CHAMBER2]=2;
 		weaponstatus[SHOTS_SIDESADDLE]=12;
+		if(!idfa){
+			weaponstatus[SLAYS_CHOKE1]=7;
+			weaponstatus[SLAYS_CHOKE2]=7;
+		}
 		handshells=0;
+	}
+	override void loadoutconfigure(string input){
+		int choke=min(getloadoutvar(input,"lchoke",1),7);
+		if(choke>=0)weaponstatus[SLAYS_CHOKE1]=choke;
+		choke=getloadoutvar(input,"rchoke",1);
+		if(choke>=0)weaponstatus[SLAYS_CHOKE2]=choke;
 	}
 }
 enum slayerstatus{
@@ -455,4 +489,6 @@ enum slayerstatus{
 	//3 is for side saddles
 	SLAYS_HEAT1=4,
 	SLAYS_HEAT2=5,
+	SLAYS_CHOKE1=6,
+	SLAYS_CHOKE2=7
 };

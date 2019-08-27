@@ -17,6 +17,38 @@ class Hunter:HDShotgun{
 		hdweapon.refid HDLD_HUNTER;
 		hdweapon.nicename "Hunter";
 	}
+	//returns the power of the load just fired
+	static double Fire(actor caller){
+		double spread=6.;
+		double speedfactor=1.;
+		let hhh=Hunter(caller.findinventory("Hunter"));
+		if(hhh){
+			int choke=hhh.weaponstatus[HUNTS_CHOKE];
+			spread=6.5-0.5*choke;
+			speedfactor=1.+0.02857*choke;
+		}
+
+		double shotpower=varyshotpower();
+		spread*=shotpower;
+		speedfactor*=shotpower;
+		HDBulletActor.FireBullet(caller,"HDB_wad");
+		let p=HDBulletActor.FireBullet(caller,"HDB_00",
+			spread:spread,speedfactor:speedfactor,amount:7
+		);
+		p.spawn("DistantShotgun",p.pos,ALLOW_REPLACE);
+		caller.A_PlaySound("weapons/hunter",CHAN_WEAPON);
+		return shotpower;
+	}
+	action void A_FireHunter(){
+		double shotpower=invoker.Fire(self);
+		A_GunFlash();
+		vector2 shotrecoil=(randompick(-1,1),-2.6);
+		if(invoker.weaponstatus[HUNTS_FIREMODE]>0)shotrecoil=(randompick(-1,1)*1.4,-3.4);
+		shotrecoil*=shotpower;
+		A_MuzzleClimb(0,0,shotrecoil.x,shotrecoil.y,randompick(-1,1)*1.,-0.3);
+		invoker.weaponstatus[HUNTS_CHAMBER]=1;
+		invoker.shotpower=shotpower;
+	}
 	int tubesize;
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -206,7 +238,6 @@ class Hunter:HDShotgun{
 		}
 		return true;
 	}
-	double shotpowervariation;
 	states{
 	select0:
 		SHTG A 0;
@@ -289,25 +320,12 @@ class Hunter:HDShotgun{
 		goto ready;
 	shoot:
 		SHTG A 2;
-		SHTG A 1 offset(0,36){
-
-			invoker.shotpowervariation=frandom(0.9,1.05);
-			HDBulletActor.FireBullet(self,"HDB_wad");
-			let p=HDBulletActor.FireBullet(self,"HDB_00",spread:6,amount:7);
-			p.spawn("DistantShotgun",p.pos,ALLOW_REPLACE);
-
-			A_GunFlash();
-			invoker.weaponstatus[HUNTS_CHAMBER]=1;
-			A_PlaySound("weapons/hunter",CHAN_WEAPON);
-			vector2 shotrecoil=(randompick(-1,1),-2.6);
-			if(invoker.weaponstatus[HUNTS_FIREMODE]>0)shotrecoil=(randompick(-1,1)*1.4,-3.4);
-			A_MuzzleClimb(0,0,shotrecoil.x,shotrecoil.y,randompick(-1,1)*1.,-0.3);
-		}
+		SHTG A 1 offset(0,36) A_FireHunter();
 		SHTG E 1;
 		SHTG E 0{
 			if(
 				invoker.weaponstatus[HUNTS_FIREMODE]>0
-				&&invoker.shotpowervariation>0.91
+				&&invoker.shotpower>0.91
 			)setweaponstate("chamberauto");
 		}goto ready;
 	altfire:
@@ -650,6 +668,7 @@ class Hunter:HDShotgun{
 		weaponstatus[HUNTS_CHAMBER]=2;
 		weaponstatus[HUNTS_TUBE]=idfa?tubesize:7;
 		weaponstatus[SHOTS_SIDESADDLE]=12;
+		if(!idfa)weaponstatus[HUNTS_CHOKE]=1;
 		handshells=0;
 	}
 	override void loadoutconfigure(string input){
@@ -672,6 +691,8 @@ class Hunter:HDShotgun{
 		}
 		int firemode=getloadoutvar(input,"firemode",1);
 		if(firemode>=0)weaponstatus[HUNTS_FIREMODE]=clamp(firemode,0,type);
+		int choke=min(getloadoutvar(input,"choke",1),7);
+		if(choke>=0)weaponstatus[HUNTS_CHOKE]=choke;
 	}
 }
 enum hunterstatus{
@@ -689,5 +710,6 @@ enum hunterstatus{
 	HUNTS_TUBE=4,
 	HUNTS_HEAT=5,
 	HUNTS_HAND=6,
+	HUNTS_CHOKE=7,
 };
 

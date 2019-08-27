@@ -632,12 +632,10 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		}
 		#### F 1 bright light("SHOT"){
 			gunloaded--;
-			A_PlaySound("weapons/hunter",CHAN_WEAPON);
 			A_AlertMonsters(0,bfriendly?AMF_TARGETEMITTER:0);
 
-			HDBulletActor.FireBullet(self,"HDB_wad");
-			let p=HDBulletActor.FireBullet(self,"HDB_00",spread:6,amount:7);
-			p.spawn("DistantShotgun",pos,ALLOW_REPLACE);
+			//semi is for nubs
+			Hunter.Fire(self);
 		}
 		#### E 1{
 			if(random(0,4)){
