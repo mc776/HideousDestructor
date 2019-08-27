@@ -18,7 +18,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 		hdweapon.refid HDLD_SLAYER;
 	}
 	static void Fire(actor caller,bool right){
-		double shotpower=varyshotpower();
+		double shotpower=getshotpower();
 		double spread=3.;
 		double speedfactor=1.2;
 		let sss=Slayer(caller.findinventory("Slayer"));
@@ -214,7 +214,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 		TNT1 A 1{
 			A_Light0();
 			double shotpower=invoker.shotpower;
-			A_MuzzleClimb(1.6*shotpower,-3.9*shotpower,1.6*shotpower,-3.9*shotpower);
+			A_MuzzleClimb(0.8*shotpower,-1.6*shotpower,0.8*shotpower,-1.6*shotpower);
 		}goto flasheither;
 	flashright:
 		SH2F B 1 bright{
@@ -229,7 +229,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 		TNT1 A 1{
 			A_Light0();
 			double shotpower=invoker.shotpower;
-			A_MuzzleClimb(-1.6*shotpower,-3.9*shotpower,-1.6*shotpower,-3.9*shotpower);
+			A_MuzzleClimb(-0.8*shotpower,-1.6*shotpower,-0.8*shotpower,-1.6*shotpower);
 		}goto flasheither;
 	flasheither:
 		TNT1 A 0 A_AlertMonsters();
@@ -250,7 +250,8 @@ class Slayer:HDShotgun replaces HDShotgun{
 		}
 		TNT1 A 1{
 			A_Light0();
-			A_MuzzleClimb(1.2,-8.,1.2,-8.8);
+			double shotpower=invoker.shotpower;
+			A_MuzzleClimb(0.6*shotpower,-3.*shotpower,0.6*shotpower,-3.*shotpower);
 		}goto flasheither;
 	recoil:
 		#### K 1;

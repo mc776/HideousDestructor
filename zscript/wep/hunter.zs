@@ -28,7 +28,7 @@ class Hunter:HDShotgun{
 			speedfactor=1.+0.02857*choke;
 		}
 
-		double shotpower=varyshotpower();
+		double shotpower=getshotpower();
 		spread*=shotpower;
 		speedfactor*=shotpower;
 		HDBulletActor.FireBullet(caller,"HDB_wad");
@@ -45,7 +45,7 @@ class Hunter:HDShotgun{
 		vector2 shotrecoil=(randompick(-1,1),-2.6);
 		if(invoker.weaponstatus[HUNTS_FIREMODE]>0)shotrecoil=(randompick(-1,1)*1.4,-3.4);
 		shotrecoil*=shotpower;
-		A_MuzzleClimb(0,0,shotrecoil.x,shotrecoil.y,randompick(-1,1)*1.,-0.3);
+		A_MuzzleClimb(0,0,shotrecoil.x,shotrecoil.y,randompick(-1,1)*shotpower,-0.3*shotpower);
 		invoker.weaponstatus[HUNTS_CHAMBER]=1;
 		invoker.shotpower=shotpower;
 	}
