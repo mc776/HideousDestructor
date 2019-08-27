@@ -115,6 +115,9 @@ class HDRevolver:HDHandgun{
 			else owner.A_DropInventory("HDPistolAmmo",amt);
 		}
 	}
+	override void ForceBasicAmmo(){
+		owner.A_SetInventory("HDRevolverAmmo",6);
+	}
 	override void initializewepstats(bool idfa){
 		weaponstatus[BUGS_CYL1]=BUGS_MASTERBALL;
 		weaponstatus[BUGS_CYL2]=BUGS_MASTERBALL;

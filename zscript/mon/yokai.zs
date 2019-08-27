@@ -90,6 +90,7 @@ class Yokai:HDMobBase{
 		#### C 0 A_JumpIfInTargetLOS("missile2",80);
 		goto see;
 	pain:
+		---- A 1;
 		---- A 0{
 			bfrightened=true;
 			A_PlaySound("putto/sight");
