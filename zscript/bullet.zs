@@ -953,7 +953,7 @@ class HDBulletActor:HDActor{
 				A_ChangeVelocity(cos(pitch)*speed,0,sin(-pitch)*speed,CVF_RELATIVE|CVF_REPLACE);
 			}
 
-			hitactor.damagemobj(self,target,impact,"bashing",DMG_THRUSTLESS);
+			hitactor.damagemobj(self,target,impact,"bashing");
 			if(impact>(hitactor.health>>3))forcepain(hitactor);
 			if(hd_debug)console.printf(hitactor.getclassname().." resisted, impact:  "..impact);
 			return;

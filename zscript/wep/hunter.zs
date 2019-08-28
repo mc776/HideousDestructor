@@ -100,7 +100,7 @@ class Hunter:HDShotgun{
 	}
 	override string gethelptext(){
 		return
-		WEPHELP_FIRESHOOT
+		WEPHELP_FIRE.."  Shoot (choke: "..weaponstatus[HUNTS_CHOKE]..")\n"
 		..WEPHELP_ALTFIRE.."  Pump\n"
 		..WEPHELP_RELOAD.."  Reload (side saddles first)\n"
 		..WEPHELP_ALTRELOAD.."  Reload (pockets only)\n"

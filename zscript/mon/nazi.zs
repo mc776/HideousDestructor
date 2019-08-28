@@ -1,7 +1,7 @@
 // ------------------------------------------------------------
 // born to forever sucker fruit hawaiian in the motherfuckin
 // ------------------------------------------------------------
-class HoopBubble:HDMobBase replaces WolfensteinSS{
+class HoopBubble:HDMobMan replaces WolfensteinSS{
 	default{
 		seesound "wolfss/sight";
 		painsound "wolfss/pain";
