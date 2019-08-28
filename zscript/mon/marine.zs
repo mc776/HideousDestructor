@@ -1145,6 +1145,7 @@ class UndeadRifleman:HDMarine{
 		//$Category "Monsters/Hideous Destructor/"
 		//$Title "Undead Marine"
 		//$Sprite "PLAYA1"
+		-friendly
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
