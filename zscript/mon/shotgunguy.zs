@@ -94,6 +94,7 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 		}
 		semi=randompick(0,0,1);
 		hdmobster.spawnmobster(self);
+		givearmour(0.12,0.12);
 	}
 	void noblockwepdrop(){
 		A_NoBlocking();

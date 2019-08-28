@@ -39,6 +39,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 	override void postbeginplay(){
 		super.postbeginplay();
 		hdmobster.spawnmobster(self);
+		givearmour(0.12,0.12);
 		chambers=5;
 		burstcount=random(4,20);
 		superauto=randompick(0,0,0,1);

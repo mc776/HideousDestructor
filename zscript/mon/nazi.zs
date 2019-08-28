@@ -22,6 +22,7 @@ class HoopBubble:HDMobMan replaces WolfensteinSS{
 		if(Wads.CheckNumForName("FREEDOOM",0)!=-1){
 			scale=(0.81,0.81);
 		}
+		givearmour(1.);
 	}
 	bool hasdropped;
 	double spread;

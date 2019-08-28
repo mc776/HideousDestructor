@@ -188,6 +188,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 	override void postbeginplay(){
 		super.postbeginplay();
 		hdmobster.spawnmobster(self);
+		givearmour(1.,0.12,0.6);
 		SetNickname();
 	}
 	int lastinginjury;
@@ -1147,6 +1148,7 @@ class UndeadRifleman:HDMarine{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
+		givearmour(0.6,0.12,0.1);
 		timesdied+=random(1,3);
 		hasdropped=true;
 		speed=max(1,speed-random(0,2));
@@ -1164,6 +1166,7 @@ class UndeadRifleman:HDMarine{
 class DeadRifleman:HDMarine replaces DeadMarine{
 	override void postbeginplay(){
 		super.postbeginplay();
+		A_TakeInventory("HDArmourWorn");
 		hasdropped=true;
 		A_Die("spawndead");
 	}
@@ -1172,6 +1175,7 @@ class DeadRifleman:HDMarine replaces DeadMarine{
 		---- A 0{
 			A_NoBlocking();
 			hdmobai.corpseflags(self);
+			givearmour(0.6,0.12,0.1);
 		}goto dead;
 	}
 }
@@ -1685,6 +1689,7 @@ class BotBot:HDMarine{
 	int masterplayer;
 	override void postbeginplay(){
 		HDActor.postbeginplay();
+		givearmour(1.,0.12,1.);
 		if(!master){
 			for(int i=0;i<MAXPLAYERS;i++){
 				if(playeringame[i]&&players[i].mo){

@@ -250,6 +250,7 @@ extend class HDPlayerPawn{
 							corpsekicktimer=20+unstablewoundcount*0.5;
 							kbmo.vel+=(kv.x,kv.y,4)*forc/kbmo.mass;
 							kbmo.A_PlaySound("misc/punch");
+							kbmo.A_DropInventory("HDArmourWorn");
 							kicked=true;
 						}
 					}else if(

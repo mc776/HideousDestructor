@@ -18,8 +18,8 @@ class HDMobMan:HDMobBase{
 		int maxdurability;
 			if(frandom(0.,1.)<megachance){
 			arw.mega=true;
-			arw.durability=HDCONST_BATTLEARMOUR;
-		}else arw.durability=HDCONST_GARRISONARMOUR;
+			maxdurability=HDCONST_BATTLEARMOUR;
+		}else maxdurability=HDCONST_GARRISONARMOUR;
 		arw.durability=max(1,frandom(min(1.,minimum),1.)*maxdurability);
 		return arw;
 	}
@@ -80,6 +80,7 @@ class ZombieStormtrooper:HDMobMan{
 			maxtargetrange=6000;
 		}
 		hdmobster.spawnmobster(self);
+		givearmour(0.12);
 	}
 	void A_ZomFrag(){
 		bool garbage;actor gg;
