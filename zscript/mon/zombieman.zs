@@ -13,8 +13,8 @@ class HDMobMan:HDMobBase{
 	}
 	//give armour
 	hdarmourworn givearmour(double chance=1.,double megachance=0.,double minimum=0.){
-		if(frandom(0.,1.)>chance)return null;
 		a_takeinventory("hdarmourworn");
+		if(frandom(0.,1.)>chance)return null;
 		let arw=hdarmourworn(giveinventorytype("hdarmourworn"));
 		int maxdurability;
 			if(frandom(0.,1.)<megachance){
