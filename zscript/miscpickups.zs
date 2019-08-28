@@ -508,7 +508,7 @@ class RedSphere:HDInvRandomSpawner replaces BlurSphere{
 		dropitem "SquadSummoner",256,14;
 		dropitem "HDFragGrenades",256,6;
 		dropitem "HDBlurSphere",256,1;
-		dropitem "GreenArmor",256,2;
+		dropitem "GarrisonArmour",256,2;
 		dropitem "BluePotion",256,2;
 	}
 }

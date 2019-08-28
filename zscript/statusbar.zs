@@ -751,7 +751,7 @@ if(hd_weapondefaults.getstring()~=="convert"){
 			}
 			drawbar(
 				armoursprite,armourback,
-				armour.durability,armour.mega?HDCONST_BLUEARMOUR:HDCONST_GREENARMOUR,
+				armour.durability,armour.mega?HDCONST_BATTLEARMOUR:HDCONST_GARRISONARMOUR,
 				armourcoords,-1,SHADER_VERT,
 				flags
 			);

@@ -160,7 +160,7 @@ class HDBackpack:HDWeapon{
 				bool usemagbulk=(mmm.magbulk>0||mmm.roundbulk>0);
 				for(int j=0;j<theseamounts.size();j++){
 					int thamt=theseamounts[j].toint();
-					if(armour)blk+=thamt>=1000?ENC_BLUEARMOUR:ENC_GREENARMOUR;
+					if(armour)blk+=thamt>=1000?ENC_BATTLEARMOUR:ENC_GARRISONARMOUR;
 					else{
 						if(usemagbulk)blk+=mmm.magbulk+thamt*mmm.roundbulk;
 						else blk+=mmm.bulk;

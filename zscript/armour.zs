@@ -1,8 +1,8 @@
 //-------------------------------------------------
 // Armour
 //-------------------------------------------------
-const HDCONST_BLUEARMOUR=70;
-const HDCONST_GREENARMOUR=144;
+const HDCONST_BATTLEARMOUR=70;
+const HDCONST_GARRISONARMOUR=144;
 
 class HDArmour:HDMagAmmo{
 	default{
@@ -10,8 +10,8 @@ class HDArmour:HDMagAmmo{
 		+hdpickup.cheatnogive
 		inventory.amount 1;
 		inventory.maxamount 3;
-		hdmagammo.maxperunit (HDCONST_BLUEARMOUR+1000);
-		hdmagammo.magbulk ENC_GREENARMOUR;
+		hdmagammo.maxperunit (HDCONST_BATTLEARMOUR+1000);
+		hdmagammo.magbulk ENC_GARRISONARMOUR;
 		hdpickup.nicename "Armour";
 		inventory.icon "ARMSB0";
 		inventory.pickupmessage "Picked up the security armour.";
@@ -24,12 +24,12 @@ class HDArmour:HDMagAmmo{
 		return mags[0]%1000;
 	}
 	override string pickupmessage(){
-		if(mags[0]>=1000)return "Picked up the combat armour!";
+		if(mags[0]>=1000)return "Picked up the battle armour!";
 		return super.pickupmessage();
 	}
 	//because it can intentionally go over the maxperunit amount
 	override void AddAMag(int addamt){
-		if(addamt<0)addamt=HDCONST_GREENARMOUR;
+		if(addamt<0)addamt=HDCONST_GARRISONARMOUR;
 		mags.push(addamt);
 		amount=mags.size();
 	}
@@ -37,8 +37,8 @@ class HDArmour:HDMagAmmo{
 	override void MaxCheat(){
 		syncamount();
 		for(int i=0;i<amount;i++){
-			if(mags[i]>=1000)mags[i]=(HDCONST_BLUEARMOUR+1000);
-			else mags[i]=HDCONST_GREENARMOUR;
+			if(mags[i]>=1000)mags[i]=(HDCONST_BATTLEARMOUR+1000);
+			else mags[i]=HDCONST_GARRISONARMOUR;
 		}
 	}
 	action void A_WearArmour(){
@@ -84,7 +84,7 @@ class HDArmour:HDMagAmmo{
 
 		if(helptext){
 			string blah=string.format("You put on the %s armour. ",worn.mega?"combat":"security");
-			double qual=double(worn.durability)/(worn.mega?HDCONST_BLUEARMOUR:HDCONST_GREENARMOUR);
+			double qual=double(worn.durability)/(worn.mega?HDCONST_BATTLEARMOUR:HDCONST_GARRISONARMOUR);
 			if(qual<0.1)A_Log(blah.."Just don't get hit.",true);
 			else if(qual<0.3)A_Log(blah.."You cover your shameful nakedness with your filthy rags.",true);
 			else if(qual<0.6)A_Log(blah.."It's better than nothing.");
@@ -103,7 +103,7 @@ class HDArmour:HDMagAmmo{
 		super.syncamount();
 		for(int i=0;i<amount;i++){
 			if(mags[i]>=1000)mags[i]=max(mags[i],1001);
-			else mags[i]=min(mags[i],HDCONST_GREENARMOUR);
+			else mags[i]=min(mags[i],HDCONST_GARRISONARMOUR);
 		}
 		checkmega();
 	}
@@ -119,7 +119,7 @@ class HDArmour:HDMagAmmo{
 	override void beginplay(){
 		cooldown=0;
 		mega=icon==texman.checkfortexture("ARMCB0",TexMan.Type_MiscPatch);
-		mags.push((mega?(1000+HDCONST_BLUEARMOUR):HDCONST_GREENARMOUR));
+		mags.push((mega?(1000+HDCONST_BATTLEARMOUR):HDCONST_GARRISONARMOUR));
 		super.beginplay();
 	}
 	override void consolidate(){}
@@ -128,8 +128,8 @@ class HDArmour:HDMagAmmo{
 		checkmega();
 		double blk=0;
 		for(int i=0;i<amount;i++){
-			if(mags[i]>=1000)blk+=ENC_BLUEARMOUR;
-			else blk+=ENC_GREENARMOUR;
+			if(mags[i]>=1000)blk+=ENC_BATTLEARMOUR;
+			else blk+=ENC_GARRISONARMOUR;
 		}
 		return blk;
 	}
@@ -196,14 +196,14 @@ class HDArmourWorn:HDPickup{
 		-hdpickup.fitsinbackpack
 		HDArmourworn.ismega false;
 		inventory.maxamount 1;
-		hdpickup.nicename "Green Armour";
+		hdpickup.nicename "Garrison Armour";
 	}
 	override void beginplay(){
-		durability=mega?HDCONST_BLUEARMOUR:HDCONST_GREENARMOUR;
+		durability=mega?HDCONST_BATTLEARMOUR:HDCONST_GARRISONARMOUR;
 		super.beginplay();
 	}
 	override double getbulk(){
-		return mega?(ENC_BLUEARMOUR*0.1):(ENC_GREENARMOUR*0.1);
+		return mega?(ENC_BATTLEARMOUR*0.1):(ENC_GARRISONARMOUR*0.1);
 	}
 	override inventory createtossable(int amount){
 		if(durability<random(1,3)){
@@ -245,48 +245,48 @@ class HDArmourWorn:HDPickup{
 
 
 
-class BlueArmour:HDPickupGiver replaces BlueArmor{
+class BattleArmour:HDPickupGiver replaces BlueArmor{
 	default{
 		//$Category "Items/Hideous Destructor"
-		//$Title "Blue Armour"
+		//$Title "Battle Armour"
 		//$Sprite "ARMCA0"
 		+missilemore
 		+hdpickup.fitsinbackpack
 		inventory.icon "ARMCA0";
 		hdpickupgiver.pickuptogive "HDArmour";
-		hdpickup.bulk ENC_BLUEARMOUR;
-		hdpickup.refid HDLD_ARMBLUE;
-		hdpickup.nicename "Blue Armour (spare)";
-		inventory.pickupmessage "Picked up the combat armour.";
+		hdpickup.bulk ENC_BATTLEARMOUR;
+		hdpickup.refid HDLD_ARMB;
+		hdpickup.nicename "Battle Armour (spare)";
+		inventory.pickupmessage "Picked up the battle armour.";
 	}
 	override void configureactualpickup(){
 		let aaa=HDArmour(actualitem);
 		aaa.mags.clear();
-		aaa.mags.push(bmissilemore?(1000+HDCONST_BLUEARMOUR):HDCONST_GREENARMOUR);
+		aaa.mags.push(bmissilemore?(1000+HDCONST_BATTLEARMOUR):HDCONST_GARRISONARMOUR);
 		aaa.syncamount();
 	}
 }
-class GreenArmour:BlueArmour replaces GreenArmor{
+class GarrisonArmour:BattleArmour replaces GreenArmor{
 	default{
 		//$Category "Items/Hideous Destructor"
-		//$Title "Green Armour"
+		//$Title "Garrison Armour"
 		//$Sprite "ARMSA0"
 		-missilemore
 		inventory.icon "ARMSA0";
-		hdpickup.bulk ENC_GREENARMOUR;
-		hdpickup.refid HDLD_ARMGREN;
-		hdpickup.nicename "Green Armour (spare)";
-		inventory.pickupmessage "Picked up the security armour.";
+		hdpickup.bulk ENC_GARRISONARMOUR;
+		hdpickup.refid HDLD_ARMG;
+		hdpickup.nicename "Garrison Armour (spare)";
+		inventory.pickupmessage "Picked up the garrison armour.";
 	}
 }
 
 
-class BlueArmourWorn:HDPickup{
+class BattleArmourWorn:HDPickup{
 	default{
 		+missilemore
 		-hdpickup.fitsinbackpack
-		hdpickup.refid HDLD_ARWBLUE;
-		hdpickup.nicename "Blue Armour";
+		hdpickup.refid HDLD_ARWB;
+		hdpickup.nicename "Battle Armour";
 		inventory.maxamount 1;
 	}
 	override void postbeginplay(){
@@ -294,19 +294,19 @@ class BlueArmourWorn:HDPickup{
 		if(owner){
 			owner.A_GiveInventory("HDArmourWorn");
 			let ga=HDArmourWorn(owner.findinventory("HDArmourWorn"));
-			ga.durability=(bmissilemore?HDCONST_BLUEARMOUR:HDCONST_GREENARMOUR);
+			ga.durability=(bmissilemore?HDCONST_BATTLEARMOUR:HDCONST_GARRISONARMOUR);
 			ga.mega=bmissilemore;
 		}
 		destroy();
 	}
 }
-class GreenArmourWorn:BlueArmourWorn{
+class GarrisonArmourWorn:BattleArmourWorn{
 	default{
 		-missilemore
 		-hdpickup.fitsinbackpack
 		inventory.icon "ARMCB0";
-		hdpickup.refid HDLD_ARWGREN;
-		hdpickup.nicename "Green Armour";
+		hdpickup.refid HDLD_ARWG;
+		hdpickup.nicename "Garrison Armour";
 	}
 }
 

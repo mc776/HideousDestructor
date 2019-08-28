@@ -24,7 +24,7 @@ class SoldierExtras:HDPickup{
 		TNT1 A 0{
 			A_SetInventory("PortableMedikit",max(1,countinv("PortableMedikit")));
 			A_SetInventory("PortableStimpack",max(2,countinv("PortableStimpack")));
-			A_SetInventory("GreenArmourWorn",1);
+			A_SetInventory("GarrisonArmourWorn",1);
 
 			A_SetInventory("HDPistol",max(countinv("HDPistol"),1));
 			A_SetInventory("HD9mMag15",max(3,countinv("HD9mMag15")));
@@ -151,10 +151,10 @@ const HDLD_DERPBOT="drp";
 const HDLD_HERPBOT="hrp";
 
 //const HDLD_ARMGINV="arm";
-const HDLD_ARMGREN="arg";
-const HDLD_ARMBLUE="arb";
-const HDLD_ARWGREN="awg";
-const HDLD_ARWBLUE="awb";
+const HDLD_ARMG="arg";
+const HDLD_ARMB="arb";
+const HDLD_ARWG="awg";
+const HDLD_ARWB="awb";
 
 const HDLD_FIST=    "fis";
 const HDLD_CHAINSW= "saw";
@@ -731,16 +731,16 @@ class InsurgentLoadout:Inventory{
 			bool nomega=armourstored.amount>2;
 			for(int i=0;i<armourstored.amount;i++){
 				if(!nomega&&!random(0,12)){
-					armourstored.mags[i]=random(1001,1000+HDCONST_BLUEARMOUR);
+					armourstored.mags[i]=random(1001,1000+HDCONST_BATTLEARMOUR);
 				}else{
-					armourstored.mags[i]=random(1,HDCONST_GREENARMOUR);
+					armourstored.mags[i]=random(1,HDCONST_GARRISONARMOUR);
 				}
 			}
 		}
 		let armourworn=HDArmourWorn(owner.findinventory("HDArmourWorn"));
 		if(armourworn){
 			armourworn.mega=!random(0,12);
-			armourworn.durability=random(1,armourworn.mega?HDCONST_BLUEARMOUR:HDCONST_GREENARMOUR);
+			armourworn.durability=random(1,armourworn.mega?HDCONST_BATTLEARMOUR:HDCONST_GARRISONARMOUR);
 		}
 
 		let bp=hdbackpack(owner.findinventory("HDBackpack"));

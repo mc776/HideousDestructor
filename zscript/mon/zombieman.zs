@@ -18,8 +18,8 @@ class HDMobMan:HDMobBase{
 		int maxdurability;
 			if(frandom(0.,1.)<megachance){
 			arw.mega=true;
-			arw.durability=HDCONST_BLUEARMOUR;
-		}else arw.durability=HDCONST_GREENARMOUR;
+			arw.durability=HDCONST_BATTLEARMOUR;
+		}else arw.durability=HDCONST_GARRISONARMOUR;
 		arw.durability=max(1,frandom(min(1.,minimum),1.)*maxdurability);
 		return arw;
 	}

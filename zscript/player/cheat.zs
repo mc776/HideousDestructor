@@ -66,7 +66,7 @@ extend class HDPlayerPawn{
 		//just work around armour
 		if(allthings||name~=="armor"||name~=="armour"){
 			A_TakeInventory("HDArmourWorn");
-			A_GiveInventory("BlueArmourWorn");
+			A_GiveInventory("BattleArmourWorn");
 			return;
 		}
 
