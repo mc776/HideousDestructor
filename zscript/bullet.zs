@@ -893,7 +893,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 				if(ddd>2){
 					actor p;bool q;
 					[q,p]=hitactor.A_SpawnItemEx("FragPuff",
-						0,0,hitactor.height*1.6,
+						0,0,0,
 						4,0,1,
 						0,0,64
 					);
@@ -1056,7 +1056,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 		}
 
 		//add size of channel to damage
-		int chdmg=max(1,(int(channelwidth*pen)>>5));
+		int chdmg=max(1,(int(channelwidth*pen)>>4));
 if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channelwidth.." x "..pen.."    channel HP damage: "..chdmg);
 		bnoextremedeath=(chdmg<<1)<hitactor.gibhealth;
 
