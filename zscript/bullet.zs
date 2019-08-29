@@ -327,7 +327,8 @@ class HDBulletActor:HDActor{
 		;
 		if(pushfactor>0)pen/=(1.+pushfactor*2.);
 		if(stamina<100)pen*=stamina*0.01;
-//if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
+//
+if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 		return pen;
 	}
 	override bool cancollidewith(actor other,bool passive){
@@ -835,8 +836,7 @@ class HDBulletActor:HDActor{
 
 
 		//because radius alone is not correct
-		double deemedwidth=hitactor.radius*frandom(0.9,1.);//10.+hitactor.radius*frandom(0.08,0.1);
-		deemedwidth*=2;
+		double deemedwidth=hitactor.radius*frandom(1.8,2.);
 
 
 		//pass over shoulder, kinda
@@ -855,7 +855,7 @@ class HDBulletActor:HDActor{
 				pos.z+vu.z*hitactor.radius*0.6-hitactor.pos.z
 			)/hitactor.height;
 			if(haa>0.8){
-				if(hitangle>24.)return;
+				if(hitangle>40.)return;
 				deemedwidth*=0.6;
 			}
 		}
@@ -965,10 +965,9 @@ class HDBulletActor:HDActor{
 
 		penshell=max(
 			0,
-			(penshell+hitactorresistance*deemedwidth*0.05)
-			*(HDCONST_SPEEDOFSOUND+stamina)
-			/(speed+accuracy)
-		);
+			penshell,
+			hitactorresistance
+		)*(HDCONST_SPEEDOFSOUND+stamina)/(speed+accuracy);
 
 
 		//decelerate
@@ -986,7 +985,7 @@ class HDBulletActor:HDActor{
 		}
 		pen=shortpen;
 
-		bool deepenough=pen>deemedwidth*0.04;
+		bool deepenough=pen>deemedwidth*0.01;
 
 		//deform the bullet
 		hardness=max(1,hardness-random(0,random(0,3)));
@@ -1097,12 +1096,12 @@ class HDBulletActor:HDActor{
 				[gbg,blood]=hitactor.A_SpawnItemEx(
 					hitblood,
 					-hitactor.radius*0.6,0,pos.z-hitactor.pos.z,
-					angle:hitactor.angleto(self),
+					angle:angleto(hitactor),
 						flags:SXF_ABSOLUTEANGLE|SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
 				);
 				if(blood){
 					blood.vel=-vu*(0.03*min(12,impact))
-						+(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.4)
+						+(frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(-0.2,0.4)
 					);
 					if(!i)blood.A_PlaySound(blood.seesound,CHAN_BODY);
 				}

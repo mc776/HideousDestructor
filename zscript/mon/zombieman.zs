@@ -34,6 +34,9 @@ class shootest:HDMobMan{
 		POSS A -1;
 	}
 }
+class shoothicc:shootest{
+	default{radius 48;}
+}
 
 
 // ------------------------------------------------------------
