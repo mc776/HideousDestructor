@@ -63,7 +63,7 @@ class HDB_426:HDBulletActor{
 class HDB_776:HDBulletActor{
 	default{
 		pushfactor 0.05;
-		mass 160;
+		mass 100;
 		speed 1100;
 		accuracy 600;
 		stamina 776;
@@ -75,7 +75,7 @@ class HDB_9:HDBulletActor{
 	default{
 		pushfactor 0.4;
 		mass 86;
-		speed 420;
+		speed 550;
 		accuracy 200;
 		stamina 900;
 		woundhealth 10;
@@ -85,8 +85,8 @@ class HDB_9:HDBulletActor{
 class HDB_355:HDBulletActor{
 	default{
 		pushfactor 0.3;
-		mass 83;
-		speed 440;
+		mass 90;
+		speed 580;
 		accuracy 200;
 		stamina 900;
 		woundhealth 15;
@@ -96,7 +96,7 @@ class HDB_00:HDBulletActor{
 	default{
 		pushfactor 0.6;
 		mass 32;
-		speed 700;
+		speed 720;
 		accuracy 200;
 		stamina 838;
 		woundhealth 3;
@@ -107,7 +107,7 @@ class HDB_wad:HDBulletActor{
 	default{
 		pushfactor 10.;
 		mass 12;
-		speed 690; //presumably most energy is transferred to the shot
+		speed 700; //presumably most energy is transferred to the shot
 		accuracy 0;
 		stamina 1860;
 		woundhealth 5;
@@ -877,10 +877,10 @@ class HDBulletActor:HDActor{
 				addpenshell=frandom(9,11)*alv;
 
 				//degrade and puff
-				int ddd=random(0,min(pen,addpenshell)+random(0,pen*0.2));
+				int ddd=int(min(pen,addpenshell)*stamina)>>10;
 				if(ddd<1&&pen>addpenshell)ddd=1;
-				armr.durability-=(ddd>>3);
-				if(ddd>6){
+				armr.durability-=ddd;
+				if(ddd>2){
 					actor p;bool q;
 					[q,p]=hitactor.A_SpawnItemEx("FragPuff",
 						0,0,hitactor.height*1.6,
