@@ -99,6 +99,7 @@ class HD4mMag:HDMagAmmo{
 		return magsprite,"RBRSBRN","FourMilAmmo",2.;
 	}
 	bool DirtyMagsOnly(){
+		if(mags.size()!=amount)return false;
 		for(int i=0;i<amount;i++){
 			if(mags[i]>=51)return false;
 		}

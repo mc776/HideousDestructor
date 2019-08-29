@@ -512,8 +512,7 @@ class ZM66AssaultRifle:HDWeapon{
 			let zmag=HD4mMag(findinventory("HD4mMag"));
 			if(!zmag){setweaponstate("reloadend");return;}
 			A_PlaySound("weapons/pocket",CHAN_WEAPON);
-			bool dmo=zmag.DirtyMagsOnly();
-			if(dmo)invoker.weaponstatus[0]|=ZM66F_LOADINGDIRTY;
+			if(zmag.DirtyMagsOnly())invoker.weaponstatus[0]|=ZM66F_LOADINGDIRTY;
 			else{
 				invoker.weaponstatus[0]&=~ZM66F_LOADINGDIRTY;
 				A_SetTics(10);

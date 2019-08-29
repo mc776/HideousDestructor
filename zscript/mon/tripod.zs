@@ -255,7 +255,7 @@ class SatanRobo:HDMobBase replaces CyberDemon{
 		satanrobo.launcheroffset 24;
 	}
 	override double bulletresistance(double hitangle){
-		return max(0,frandom(1.6,7.0)-hitangle*0.01);
+		return max(0,frandom(0.6,4.0)-hitangle*0.01);
 	}
 	void A_CyberGunSmoke(){
 		A_SpawnItemEx("HDSmoke",

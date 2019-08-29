@@ -319,15 +319,16 @@ class HDBulletActor:HDActor{
 	}
 	double penetration(){ //still juvenile giggling
 		double pen=
-			clamp(speed*0.01,0,((hardness*mass)>>3))
+			clamp(speed*0.007,0,((hardness*mass)>>3))
 			+(
 				mass
 				+double(accuracy)/max(1,stamina)
-			)*0.3
+			)*0.2
 		;
 		if(pushfactor>0)pen/=(1.+pushfactor*2.);
 		if(stamina<100)pen*=stamina*0.01;
-//if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
+//
+if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 		return pen;
 	}
 	override bool cancollidewith(actor other,bool passive){
@@ -972,7 +973,7 @@ class HDBulletActor:HDActor{
 		impact+=tinyspeedsquared*frandom(0.03,0.08)*stamina;
 
 		bnoextremedeath=impact<(hitactor.gibhealth<<3);
-		hitactor.damagemobj(self,target,max(impact,pen*impact*0.02),"bashing",DMG_THRUSTLESS);
+		hitactor.damagemobj(self,target,max(impact,pen*impact*0.03*hitactorresistance),"bashing",DMG_THRUSTLESS);
 		forcepain(hitactor);
 		bnoextremedeath=true;
 
@@ -1061,7 +1062,6 @@ if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channe
 
 		//cns severance
 		//small column in middle centre
-		//only if NET penetration is at least deemedwidth
 		double mincritheight=hitactor.height*0.6;
 		double basehitz=hitpos.z-hitactor.pos.z;
 		if(
@@ -1070,13 +1070,13 @@ if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channe
 				basehitz>mincritheight
 				||basehitz+shortpen*vu.z>mincritheight
 			)
-			&&pen>hitactor.radius
+			&&pen>hitactor.radius*0.8
 		){
 			if(hd_debug)console.printf("CRIT!");
 			bnoextremedeath=(chdmg>>1)<hitactor.gibhealth;
 			hitactor.damagemobj(
 				self,target,
-				max(chdmg,random(chdmg,hitactor.spawnhealth())),
+				max(chdmg,random(chdmg,chdmg+(stamina>>4))),
 				"Piercing",DMG_THRUSTLESS
 			);
 			forcepain(hitactor);
