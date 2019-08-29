@@ -9,8 +9,10 @@ class HDMobBase : HDActor{
 	flagdef doesntbleed:hdmobflags,0;
 	flagdef hasdroppedgun:hdmobflags,1;
 	flagdef gibbed:hdmobflags,2;
-	flagdef hasnodistincthead:hdmobflags,3;
+	flagdef novitalshots:hdmobflags,3;
 	flagdef hashelmet:hdmobflags,4;
+	flagdef smallhead:hdmobflags,5;
+	flagdef biped:hdmobflags,6;
 
 	default{
 		monster;

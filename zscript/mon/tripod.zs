@@ -233,6 +233,8 @@ class SatanRobo:HDMobBase replaces CyberDemon{
 		+avoidmelee +nofear +seeinvisible +nodropoff
 		-noradiusdmg
 		+noblooddecals
+		+hdmobbase.smallhead
+		+hdmobbase.biped
 		damagefactor "Thermal", 0.5;
 		damagefactor "SmallArms0", 0.2;
 		damagefactor "SmallArms1", 0.3;
@@ -251,6 +253,9 @@ class SatanRobo:HDMobBase replaces CyberDemon{
 		obituary "%o was experimented upon by a cyberdemon.";
 		minmissilechance 196;
 		satanrobo.launcheroffset 24;
+	}
+	override double bulletresistance(double hitangle){
+		return max(0,frandom(1.6,7.0)-hitangle*0.01);
 	}
 	void A_CyberGunSmoke(){
 		A_SpawnItemEx("HDSmoke",

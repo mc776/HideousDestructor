@@ -10,6 +10,8 @@ class HDMobMan:HDMobBase{
 		deathheight 12;
 		mass 120;
 		speed 10;
+		+hdmobbase.smallhead
+		+hdmobbase.biped
 	}
 	//give armour
 	hdarmourworn givearmour(double chance=1.,double megachance=0.,double minimum=0.){
