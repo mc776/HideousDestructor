@@ -27,6 +27,13 @@ class HDMobMan:HDMobBase{
 		return arw;
 	}
 }
+class shootest:HDMobMan{
+	default{+nodamage +nopain health int.MAX;}
+	states{
+	spawn:
+		POSS A -1;
+	}
+}
 
 
 // ------------------------------------------------------------

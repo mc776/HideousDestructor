@@ -834,6 +834,11 @@ class HDBulletActor:HDActor{
 		double pen=penetration();
 
 
+		//because radius alone is not correct
+		double deemedwidth=hitactor.radius*frandom(0.9,1.);//10.+hitactor.radius*frandom(0.08,0.1);
+		deemedwidth*=2;
+
+
 		//pass over shoulder, kinda
 		//intended to be somewhat bigger than the visible head on any sprite
 		if(
@@ -847,15 +852,12 @@ class HDBulletActor:HDActor{
 		){
 			double haa=min(
 				pos.z-hitactor.pos.z,
-				pos.z*vu.z*hitactor.radius-hitactor.pos.z
+				pos.z+vu.z*hitactor.radius*0.6-hitactor.pos.z
 			)/hitactor.height;
-			if(
-				haa>0.8
-				&&(
-					hitangle>30.
-					||distance2d(hitactor)>hitactor.radius //in case shooting from above
-				)
-			)return;
+			if(haa>0.8){
+				if(hitangle>24.)return;
+				deemedwidth*=0.6;
+			}
 		}
 		//randomly pass through putative gap between legs and feet
 		if(
@@ -873,7 +875,7 @@ class HDBulletActor:HDActor{
 
 			haa=max(
 				pos.z-hitactor.pos.z,
-				pos.z*vu.z*hitactor.radius-hitactor.pos.z
+				pos.z+vu.z*hitactor.radius-hitactor.pos.z
 			)/hitactor.height;
 
 			//do the rest only if the shot is low enough
@@ -889,11 +891,6 @@ class HDBulletActor:HDActor{
 				}
 			}
 		}
-
-
-		//because radius alone is not correct
-		double deemedwidth=hitactor.radius*frandom(0.9,1.);//10.+hitactor.radius*frandom(0.08,0.1);
-		deemedwidth*=2;
 
 
 		//determine bullet resistance
