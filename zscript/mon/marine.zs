@@ -200,7 +200,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		if(
 			health>0
 			&&damage>=health
-			&&damage<random(12+lastinginjury,300)
+			&&damage<random(12,300-(lastinginjury<<3))
 			&&mod!="raisedrop"
 			&&mod!="spawndead"
 			&&(
