@@ -13,6 +13,7 @@ class Babuin:HDMobBase{
 		let hdmb=hdmobster(hdmobster.spawnmobster(self));
 		hdmb.meleethreshold=200;
 		lastpointinmap=pos;
+		bbiped=Wads.CheckNumForName("FREEDOOM",0)==-1;
 	}
 	void TryLatch(){
 		if(

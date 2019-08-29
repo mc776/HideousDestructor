@@ -235,6 +235,7 @@ class Necromancer:HDMobBase replaces ArchVile{
 		+dontgib
 		+floorclip
 		+hdmobbase.doesntbleed
+		+hdmobbase.biped;
 		radius 16;
 		height 56;
 		scale 0.8;
@@ -309,6 +310,8 @@ class Necromancer:HDMobBase replaces ArchVile{
 			A_Die("mapmorph");
 			return;
 		}
+
+		bsmallhead=Wads.CheckNumForName("FREEDOOM",0)==-1;
 
 		//spawn shards instead if no archvile sprites
 		if(Wads.CheckNumForName("VILER0",wads.ns_sprites,-1,false)<0){

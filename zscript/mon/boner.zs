@@ -101,6 +101,8 @@ class Boner:HDMobBase replaces Revenant{
 		meleethreshold 196;
 		+missilemore 
 		+floorclip
+		+hdmobbase.smallhead
+		+hdmobbase.biped
 		seesound "skeleton/sight";
 		painsound "skeleton/pain";
 		deathsound "skeleton/death";

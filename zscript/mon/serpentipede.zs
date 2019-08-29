@@ -171,6 +171,10 @@ class Serpentipede:HDMobBase{
 		super.postbeginplay();
 		hdmobster.spawnmobster(self);
 		hdmobai.resize(self,0.8,1.1);
+		if(Wads.CheckNumForName("FREEDOOM",0)==-1){
+			bsmallhead=true;
+			bbiped=true;
+		}
 	}
 	override string GetObituary(actor victim,actor inflictor,name mod,bool playerattack){
 		if(mod=="claws")return hitobituary;

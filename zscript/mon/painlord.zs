@@ -12,6 +12,7 @@ class PainMonster:HDMobBase{
 		bsmallhead=Wads.CheckNumForName("FREEDOOM",0)==-1;
 	}
 	override double bulletresistance(double hitangle){
+		return 0;
 		return max(0,frandom(0.1,2.0)-hitangle*0.01);
 	}
 }

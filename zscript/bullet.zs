@@ -327,8 +327,7 @@ class HDBulletActor:HDActor{
 		;
 		if(pushfactor>0)pen/=(1.+pushfactor*2.);
 		if(stamina<100)pen*=stamina*0.01;
-//
-if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
+//if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 		return pen;
 	}
 	override bool cancollidewith(actor other,bool passive){
@@ -833,6 +832,64 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 		if(!hitactor.bshootable)return;
 		double hitangle=absangle(angle,angleto(hitactor)); //0 is dead centre
 		double pen=penetration();
+
+
+		//pass over shoulder, kinda
+		//intended to be somewhat bigger than the visible head on any sprite
+		if(
+			(
+				hdplayerpawn(hitactor)
+				||(
+					hdmobbase(hitactor)&&hdmobbase(hitactor).bsmallhead
+				)
+			)
+			&&hitactor.height>42
+		){
+			double haa=min(
+				pos.z-hitactor.pos.z,
+				pos.z*vu.z*hitactor.radius-hitactor.pos.z
+			)/hitactor.height;
+			if(
+				haa>0.8
+				&&(
+					hitangle>30.
+					||distance2d(hitactor)>hitactor.radius //in case shooting from above
+				)
+			)return;
+		}
+		//randomly pass through putative gap between legs and feet
+		if(
+			(
+				hdplayerpawn(hitactor)
+				||(
+					hdmobbase(hitactor)&&hdmobbase(hitactor).bbiped
+				)
+			)
+			&&hitactor.height>42
+		){
+			double aat=angleto(hitactor);
+			double haa=hitactor.angle;
+			aat=min(absangle(aat,haa),absangle(aat,haa+180));
+
+			haa=max(
+				pos.z-hitactor.pos.z,
+				pos.z*vu.z*hitactor.radius-hitactor.pos.z
+			)/hitactor.height;
+
+			//do the rest only if the shot is low enough
+			if(haa<0.35){
+				//if directly in front or behind, assume the space exists
+				if(aat<7.){
+					if(hitangle<7.)return;
+				}else{
+					//if not directly in front, increase space as you go down
+					//this isn't actually intended to reflect any particular sprite
+					int whichtick=level.time&(1|2); //0,1,2,3
+					if(hitangle<3.+whichtick*(1.-haa))return;
+				}
+			}
+		}
+
 
 		//because radius alone is not correct
 		double deemedwidth=hitactor.radius*frandom(0.9,1.);//10.+hitactor.radius*frandom(0.08,0.1);
