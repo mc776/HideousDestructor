@@ -1,32 +1,29 @@
 // ------------------------------------------------------------
 // Pain Bringer
 // ------------------------------------------------------------
-class PainBringer:HDMobBase replaces HellKnight{
+class PainBringer:PainMonster replaces HellKnight{
 	default{
 		height 60;
 		radius 14;
 		mass 1000;
 		painchance 50;
-		+floorclip
 		health 500;
 		seesound "knight/sight";
 		activesound "knight/active";
 		painsound "knight/pain";
 		deathsound "knight/death";
+		obituary "$ob_knight";
+		hitobituary "$ob_knighthit";
 		tag "$fn_hell";
 
 		damagefactor "Balefire",0.3;
 		damagefactor "Thermal",0.8;
 		damagefactor "SmallArms0",0.9;
-		bloodcolor "44 99 22";
 		scale 0.9;
 		speed 12;
 		meleedamage 10;
 		meleerange 56;
-		meleesound "baron/melee";
 		minmissilechance 42;
-		Obituary "%o didn't get quite medieval enough on a hell knight's ass.";
-		HitObituary "%o had %p loins tendered by sir knight.";
 
 		stamina 0;
 	}

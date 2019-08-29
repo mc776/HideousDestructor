@@ -1,12 +1,29 @@
 // ------------------------------------------------------------
+// Pain Lord/Pain Bringer common
+// ------------------------------------------------------------
+class PainMonster:HDMobBase{
+	default{
+		meleesound "baron/melee";
+		bloodcolor "44 99 22";
+		+hdmobbase.biped
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		bsmallhead=Wads.CheckNumForName("FREEDOOM",0)==-1;
+	}
+	override double bulletresistance(double hitangle){
+		return max(0,frandom(0.1,2.0)-hitangle*0.01);
+	}
+}
+
+// ------------------------------------------------------------
 // Pain Lord
 // ------------------------------------------------------------
-class PainLord:HDMobBase replaces BaronofHell{
+class PainLord:PainMonster replaces BaronofHell{
 	default{
 		height 64;
 		radius 17;
 		mass 1000;
-		+floorclip
 		+bossdeath
 		seesound "baron/sight";
 		painsound "baron/pain";
@@ -18,7 +35,6 @@ class PainLord:HDMobBase replaces BaronofHell{
 
 		+missilemore +seeinvisible +dontharmspecies
 		maxtargetrange 65536;
-		bloodcolor "44 99 22";
 		damagefactor "thermal",0.8;
 		damagefactor "smallarms0",0.86;
 		damagefactor "smallarms1",0.95;
@@ -26,11 +42,8 @@ class PainLord:HDMobBase replaces BaronofHell{
 		meleedamage 12;
 		meleerange 58;
 		health BE_HPMAX;
-		meleesound "baron/melee";
 		speed 6;
 		painchance 4;
-		obituary "%o was sauteed by a baron of hell.";
-		hitobituary "%o was shredded by a baron of hell.";
 	}
 	void A_BaronSoul(){
 			let aaa=FlyingSkull(spawn("FlyingSkull",pos,ALLOW_REPLACE));
