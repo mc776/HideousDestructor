@@ -200,7 +200,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		if(
 			health>0
 			&&damage>=health
-			&&damage<random(12,300)
+			&&damage<random(12+lastinginjury,300)
 			&&mod!="raisedrop"
 			&&mod!="spawndead"
 			&&(
@@ -208,7 +208,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 				||(random(0,2))
 			)
 		){
-			lastinginjury+=max(1,(damage>>5));
+			lastinginjury+=max((mod=="bashing"?0:1),(damage>>5));
 			damage=health-1;
 		}
 		return super.damagemobj(inflictor,source,damage,mod,flags,angle);
@@ -879,7 +879,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		#### AB 2 A_FaceTarget(50,50);
 		#### CD 3{
 			hdmobai.chase(self);
-			A_ChangeVelocity(frandom(-1,1),randompick(-1,1)*min(12,12-random(0,lastinginjury>>3)),0,CVF_RELATIVE);
+			A_ChangeVelocity(frandom(-1,1),frandom(1,max(0,5-lastinginjury*0.1))*randompick(-1,1),0,CVF_RELATIVE);
 		}
 		#### G 0 A_CPosRefire();
 		goto missile;

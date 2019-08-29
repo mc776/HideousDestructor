@@ -1133,7 +1133,7 @@ if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channe
 			bnoextremedeath=(chdmg>>1)<hitactor.gibhealth;
 			hitactor.damagemobj(
 				self,target,
-				max(chdmg,random(chdmg,chdmg+(stamina>>4))),
+				random(chdmg,chdmg+(stamina>>4))*(1.+pushfactor),
 				"Piercing",DMG_THRUSTLESS
 			);
 			forcepain(hitactor);
