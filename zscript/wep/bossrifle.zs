@@ -227,7 +227,7 @@ class BossRifle:HDWeapon{
 
 			HDBulletActor.FireBullet(self,"HDB_776",
 				aimoffy:(-1./600.)*invoker.weaponstatus[BOSSS_DROPADJUST],
-				speedfactor:(invoker.weaponstatus[0]&BOSSF_CUSTOMCHAMBER)?1.01:1.27
+				speedfactor:(invoker.weaponstatus[0]&BOSSF_CUSTOMCHAMBER)?0.99:1.07
 			);
 			A_MuzzleClimb(
 				0,0,
