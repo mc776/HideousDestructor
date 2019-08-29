@@ -68,6 +68,7 @@ class HDB_776:HDBulletActor{
 		accuracy 600;
 		stamina 776;
 		woundhealth 5;
+		hdbulletactor.hardness 4;
 		hdbulletactor.distantsounder "DoubleDistantRifle";
 	}
 }
@@ -76,7 +77,7 @@ class HDB_9:HDBulletActor{
 		pushfactor 0.4;
 		mass 86;
 		speed 550;
-		accuracy 200;
+		accuracy 300;
 		stamina 900;
 		woundhealth 10;
 		hdbulletactor.hardness 3;
@@ -85,17 +86,18 @@ class HDB_9:HDBulletActor{
 class HDB_355:HDBulletActor{
 	default{
 		pushfactor 0.3;
-		mass 90;
-		speed 580;
-		accuracy 200;
-		stamina 900;
+		mass 99;
+		speed 600;
+		accuracy 240;
+		stamina 890;
 		woundhealth 15;
+		hdbulletactor.hardness 3;
 	}
 }
 class HDB_00:HDBulletActor{
 	default{
-		pushfactor 0.6;
-		mass 32;
+		pushfactor 0.5;
+		mass 35;
 		speed 720;
 		accuracy 200;
 		stamina 838;
@@ -319,11 +321,11 @@ class HDBulletActor:HDActor{
 	}
 	double penetration(){ //still juvenile giggling
 		double pen=
-			clamp(speed*0.007,0,((hardness*mass)>>3))
+			clamp(speed*0.02,0,((hardness*mass)>>2))
 			+(
 				mass
 				+double(accuracy)/max(1,stamina)
-			)*0.2
+			)*0.16
 		;
 		if(pushfactor>0)pen/=(1.+pushfactor*2.);
 		if(stamina<100)pen*=stamina*0.01;
