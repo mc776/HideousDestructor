@@ -841,8 +841,8 @@ class HDBulletActor:HDActor{
 		//determine bullet resistance
 		double hitactorresistance;
 		double penshell;
-		if(hdmobbase(hitactor)){
-			let hdmb=hdmobbase(hitactor);
+		let hdmb=hdmobbase(hitactor);
+		if(hdmb){
 			hitactorresistance=hdmb.bulletresistance(hitangle);
 			penshell=hdmb.bulletshell(hitpos,hitangle);
 		}else{
@@ -870,7 +870,16 @@ class HDBulletActor:HDActor{
 
 			int alv=armr.mega?3:1;
 			if(!random(0,max((armr.durability>>2),3)))alv=-1; //slips through a gap
-			else if(hitlevel==2)alv=randompick(0,1,random(0,alv),alv);
+			else if(
+				hitlevel==2
+				&&(
+					hitactor is "hdplayerpawn"
+					||(
+						!!hdmb
+						&&hdmb.bhashelmet
+					)
+				)
+			)alv=randompick(0,1,random(0,alv),alv);
 			else if(hitlevel==0)alv=max(alv-randompick(0,0,0,1,1,1,1,2),0);
 
 			if(alv>0){
