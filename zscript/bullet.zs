@@ -967,7 +967,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 			0,
 			penshell,
 			hitactorresistance
-		)*(HDCONST_SPEEDOFSOUND+stamina)/(speed+accuracy);
+		)*(HDCONST_SPEEDOFSOUND+stamina)/(speed+accuracy)*(1.-hitangle*0.006);
 
 
 		//decelerate
