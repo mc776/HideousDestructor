@@ -45,6 +45,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		superauto=randompick(0,0,0,1);
 		mags=4;
 		thismag=50;
+		bhashelmet=Wads.CheckNumForName("FREEDOOM",0)!=-1;
 	}
 	void A_ScanForTargets(){
 		if(noammo()){

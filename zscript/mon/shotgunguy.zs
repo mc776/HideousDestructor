@@ -84,6 +84,7 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 	override void postbeginplay(){
 		super.postbeginplay();
 		if(wep<0){
+			bhashelmet=true;
 			sprite=GetSpriteIndex("PLAYA1");
 			A_SetTranslation("HattedJackboot");
 			gunloaded=random(10,50);

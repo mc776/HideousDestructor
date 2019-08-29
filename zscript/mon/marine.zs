@@ -24,6 +24,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		monster;
 		+friendly
 		+quicktoretaliate
+		+hdmobbase.hashelmet
 		speed 16;
 		maxdropoffheight 48;
 		maxstepheight 48;
