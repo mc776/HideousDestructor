@@ -1128,7 +1128,7 @@ if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channe
 			&&pen>hitactor.radius*0.8
 		){
 			if(hd_debug)console.printf("CRIT!");
-			bnoextremedeath=(chdmg>>1)<hitactor.gibhealth;
+			bnoextremedeath=(chdmg)<hitactor.getgibhealth();
 			hitactor.damagemobj(
 				self,target,
 				random(chdmg,chdmg+(stamina>>4))*(1.+pushfactor),

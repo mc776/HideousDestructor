@@ -19,35 +19,15 @@ class HDMobBase : HDActor{
 		radius 12;
 	}
 
+	override void postbeginplay(){
+		super.postbeginplay();
+		resetdamagecounters();bloodloss=0;
+	}
+
 	override void Tick(){
 		super.tick();
-		if(isfrozen())return;
-
-		//do these only while the monster is still alive
-		if(health>0){
-
-			//regeneration
-			//recover from bashing damage
-			if(bashed>0){
-				bashed-=max(1,(spawnhealth()>>7));
-				if(bashed<1){
-					speed=getdefaultbytype(getclass()).speed;
-					bjustattacked=false;
-					bashed=0;
-				}else{
-					if(
-						bashed>50
-						&&(
-							!target
-							||distance2d(target)>meleerange+target.radius*HDCONST_SQRTTWO
-						)
-					)bjustattacked=random(0,bashed>>3);
-					if(!(bashed&(1|2|4|8)))givebody(1);
-					speed=frandom(0,getdefaultbytype(getclass()).speed);
-				}
-			}
-			if(!(level.time&(1|2|4|8|16|32)))GiveBody(1);
-		}
+		if(!self||isfrozen())return;
+		DamageTicker();
 	}
 }
 
