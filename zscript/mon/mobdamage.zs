@@ -20,7 +20,7 @@ extend class HDMobBase{
 		if(
 			!bnopain
 			&&health>0
-			&&findstate("pain")
+			&&findstate("pain",true)
 		)setstatelabel("pain");
 	}
 
@@ -169,7 +169,8 @@ extend class HDMobBase{
 
 		//check gibbing
 		bgibbed=(
-			(
+			findstate("xdeath",true)
+			&&(
 				!inflictor
 				||!inflictor.bnoextremedeath
 			)&&(
