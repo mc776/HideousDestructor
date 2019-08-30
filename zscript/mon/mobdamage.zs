@@ -84,7 +84,7 @@ extend class HDMobBase{
 		}
 
 		//bleeding
-		else if(mod=="bleedout"){
+		if(mod=="bleedout"){
 			bloodloss+=damage;
 			if(!(bloodloss&(1|2|4|8))){
 				bodydamage++;
@@ -96,9 +96,16 @@ extend class HDMobBase{
 			);
 		}
 
+
 		//make sure bodily integrity tracker is affected
 		if(health<1)bodydamage+=(damage>>2);
 		else bodydamage+=damage;
+
+
+		//rapid damage stacking
+		damage+=pain;
+		pain+=max(1,(damage>>3));
+
 
 		if(hd_debug)console.printf(getclassname().." "..damage.." "..mod..", est. remain "..health-damage);
 
@@ -131,7 +138,7 @@ extend class HDMobBase{
 			}
 		}
 
-		if(pain>0)pain--;
+		if(pain>0)pain>>=1;
 
 		//regeneration
 		if(!(level.time&(1|2|4|8|16|32|64|128|256|512|1024)))GiveBody(1);
