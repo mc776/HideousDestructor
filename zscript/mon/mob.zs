@@ -17,6 +17,7 @@ class HDMobBase : HDActor{
 	default{
 		monster;
 		radius 12;
+		+dontgib
 	}
 
 	override void postbeginplay(){

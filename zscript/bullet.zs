@@ -943,7 +943,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 				addpenshell=frandom(9,11)*alv;
 
 				//degrade and puff
-				int ddd=int(min(pen,addpenshell)*stamina)>>10;
+				int ddd=int(min(pen,addpenshell)*stamina)>>12;
 				if(ddd<1&&pen>addpenshell)ddd=1;
 				armr.durability-=ddd;
 				if(ddd>2){

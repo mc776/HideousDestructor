@@ -133,16 +133,18 @@ extend class HDMobBase{
 
 
 
-	override void Die(actor source,actor inflictor,int dmgflags){
+	override void die(actor source,actor inflictor,int dmgflags){
 		super.Die(source,inflictor,dmgflags);
 		if(!self)return;
 
 		//check gibbing
 		bgibbed=(
-			!inflictor.bnoextremedeath
-			&&(
+			(
+				!inflictor
+				||!inflictor.bnoextremedeath
+			)&&(
 				health < getgibhealth()
-				||inflictor.bextremedeath
+				||(inflictor&&inflictor.bextremedeath)
 			)
 		);
 
