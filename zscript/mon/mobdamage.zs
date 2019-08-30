@@ -45,26 +45,6 @@ extend class HDMobBase{
 	){
 		int sphlth=spawnhealth();
 
-		//check for gibbing
-		if(
-			findstate("xdeath",true)
-			&&bodydamage>gibhealth+sphlth
-		){
-			if(
-				health<1
-				&&bodydamage>(sphlth<<1)
-			){
-				A_GiveInventory("IsGibbed"); //deprecated, needs to be replaced for all monsters
-				bgibbed=true;
-				bshootable=false;
-				if(findstate("xxxdeath",true))setstatelabel("xxxdeath");
-				else setstatelabel("xdeath");
-				return -1;
-			}else{
-				return super.damagemobj(inflictor,source,health,"extreme",flags,angle);
-			}
-		}
-
 		//force death if body appears to be totally shredded
 		if(health>0&&bodydamage>sphlth){
 			int ret=super.damagemobj(inflictor,source,damage,mod,flags,angle);
@@ -74,8 +54,8 @@ extend class HDMobBase{
 
 
 		//rapid damage stacking
-		damage+=pain;
-		pain+=max(1,(damage>>3));
+		if(pain>0)damage+=pain;
+		pain+=max(1,(damage>>4));
 
 
 		//bashing
@@ -108,16 +88,39 @@ extend class HDMobBase{
 
 
 		//make sure bodily integrity tracker is affected
-		if(bodydamage<(sphlth<<5))bodydamage+=damage;
+		if(bodydamage<(sphlth<<(HDMOB_GIBSHIFT+1)))bodydamage+=damage;
 
 
 		if(hd_debug)console.printf(getclassname().." "..damage.." "..mod..", est. remain "..health-damage);
 
-		return super.damagemobj(
-			inflictor,source,damage,mod,flags,angle
-		);
+
+		//check for gibbing
+		if(
+			findstate("xdeath",true)
+			&&bodydamage>(gibhealth+sphlth)
+		){
+			if(
+				health<1
+				&&bodydamage>(sphlth<<HDMOB_GIBSHIFT)
+			){
+				A_GiveInventory("IsGibbed"); //deprecated, needs to be replaced for all monsters
+				bgibbed=true;
+				bshootable=false;
+				if(findstate("xxxdeath",true))setstatelabel("xxxdeath");
+				else setstatelabel("xdeath");
+				return -1;
+			}else{
+				return super.damagemobj(inflictor,source,health,"extreme",flags,angle);
+			}
+		}
+
+		return super.damagemobj(inflictor,source,damage,mod,flags,angle);
 	}
 
+
+	enum MobDamage{
+		HDMOB_GIBSHIFT=7,
+	}
 
 
 	//tracks what is to be done about all this damage
@@ -127,10 +130,7 @@ extend class HDMobBase{
 			if(
 				!bnoshootablecorpse
 				&&height>deathheight
-			){
-				A_SetSize(-1,max(deathheight,height-liveheight*0.06));
-				A_LogFloat(height);
-			}
+			)A_SetSize(-1,max(deathheight-0.1,height-liveheight*0.06));
 			return;
 		}
 
