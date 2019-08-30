@@ -329,8 +329,8 @@ class HDBulletActor:HDActor{
 		;
 		if(pushfactor>0)pen/=(1.+pushfactor*2.);
 		if(stamina<100)pen*=stamina*0.01;
-//
-if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
+
+		if(hd_debug>1)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 		return pen;
 	}
 	override bool cancollidewith(actor other,bool passive){
@@ -943,7 +943,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 				addpenshell=frandom(9,11)*alv;
 
 				//degrade and puff
-				int ddd=int(min(pen,addpenshell)*stamina)>>12;
+				int ddd=int(min(pen,addpenshell)*stamina)>>14;
 				if(ddd<1&&pen>addpenshell)ddd=1;
 				armr.durability-=ddd;
 				if(ddd>2){
@@ -961,7 +961,9 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 				//bullet leaves a hole in the webbing
 				armr.durability-=max(random(0,1),(stamina>>7));
 			}
+			else console.printf("missed the armour!");
 			if(hd_debug)console.printf(hitactor.getclassname().."  armour resistance:  "..addpenshell);
+			addpenshell*=60./mass;
 			penshell+=addpenshell;
 		}
 
@@ -1111,7 +1113,7 @@ if(hd_debug)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 		}
 
 		//add size of channel to damage
-		int chdmg=max(1,(int(channelwidth*pen)>>4));
+		int chdmg=max(1,(int(channelwidth*pen)>>3));
 if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channelwidth.." x "..pen.."    channel HP damage: "..chdmg);
 		bnoextremedeath=(chdmg<<1)<hitactor.gibhealth;
 
@@ -1125,13 +1127,13 @@ if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channe
 				basehitz>mincritheight
 				||basehitz+shortpen*vu.z>mincritheight
 			)
-			&&pen>hitactor.radius*0.8
+			&&pen>deemedwidth*0.4
 		){
 			if(hd_debug)console.printf("CRIT!");
-			bnoextremedeath=(chdmg)<hitactor.getgibhealth();
+			bnoextremedeath=chdmg<(hitactor.getgibhealth()<<2);
 			hitactor.damagemobj(
 				self,target,
-				random(chdmg,chdmg+(stamina>>4))*(1.+pushfactor),
+				chdmg+random(0,(stamina>>4))*(1.+pushfactor),
 				"Piercing",DMG_THRUSTLESS
 			);
 			forcepain(hitactor);
@@ -1251,12 +1253,7 @@ class HDBleedingWound:Thinker{
 			if(blood)blood.bambush=true;
 		}while(bleeds>0);
 		int bled=bleeder.damagemobj(bleeder,null,bleedrate,"bleedout",DMG_NO_PAIN|DMG_THRUSTLESS);
-		if(bled<1){
-			destroy();
-			return;
-		}
 		if(bleeder&&bleeder.health<1&&bleedrate<random(10,60))bleeder.deathsound="";
-		if(hd_debug&&bleeder)if(hd_debug)console.printf(bleeder.getclassname().." bled to "..bleeder.health);
 	}
 	static void inflict(
 		actor bleeder,

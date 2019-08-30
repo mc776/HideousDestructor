@@ -62,7 +62,7 @@ extend class HDMobBase{
 		}
 
 		//force death if body appears to be totally shredded
-		if(health>0&&bodydamage>1.){
+		if(health>0&&bodydamage>sphlth){
 			int ret=super.damagemobj(inflictor,source,damage,mod,flags,angle);
 			if(self)super.damagemobj(inflictor,source,health,mod,DMG_THRUSTLESS|DMG_NO_FACTOR,angle);
 			return ret;
@@ -89,12 +89,18 @@ extend class HDMobBase{
 			if(!(bloodloss&(1|2|4|8))){
 				bodydamage++;
 			}
-			if(bloodloss<(sphlth<<2))return -1;
-			flags|=DMG_NO_PAIN|DMG_THRUSTLESS;
+			if(hd_debug)console.printf(getclassname().." bleed "..damage..", est. remain "..sphlth-bloodloss);
+			if(bloodloss<sphlth)return 1;
+			return super.damagemobj(
+				inflictor,source,random(damage,health),mod,DMG_NO_PAIN|DMG_THRUSTLESS,angle
+			);
 		}
 
 		//make sure bodily integrity tracker is affected
-		bodydamage+=damage;
+		if(health<1)bodydamage+=(damage>>2);
+		else bodydamage+=damage;
+
+		if(hd_debug)console.printf(getclassname().." "..damage.." "..mod..", est. remain "..health-damage);
 
 		return super.damagemobj(
 			inflictor,source,damage,mod,flags,angle
@@ -182,6 +188,7 @@ extend class HDMobBase{
 		balwaystelefrag=false;
 
 		bshootable=true;
+		deathsound=getdefaultbytype(getclass()).deathsound;
 		let aff=new("AngelFire");
 		aff.master=self;aff.ticker=0;
 
