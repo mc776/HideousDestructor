@@ -458,11 +458,7 @@ class ZombieStormtrooper:HDMobMan{
 		#### G 0{bfrightened=false;}
 		goto see;
 	death:
-		#### H 5{
-			hdmobai.corpseflags(self);
-			actor ttt=spawn("tempshield",pos,ALLOW_REPLACE);
-			ttt.vel=vel;ttt.master=self;
-		}
+		#### H 5;
 		#### I 5 A_Scream();
 		#### J 5{
 			actor ttt=spawn("tempshield2",pos,ALLOW_REPLACE);

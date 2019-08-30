@@ -13,6 +13,7 @@ class HDMobBase : HDActor{
 	flagdef hashelmet:hdmobflags,4;
 	flagdef smallhead:hdmobflags,5;
 	flagdef biped:hdmobflags,6;
+	flagdef noshootablecorpse:hdmobflags,7;
 
 	default{
 		monster;
@@ -31,6 +32,31 @@ class HDMobBase : HDActor{
 		DamageTicker();
 	}
 }
+
+
+//TODO: move to playerextras not mob
+class TauntHandler:EventHandler{
+	override void NetworkProcess(ConsoleEvent e){
+
+		//check to ensure the acting player can taunt
+		let ppp = playerpawn(players[e.player].mo);
+		if(!ppp) return;
+
+		if(
+			e.name~=="taunt"
+			&&ppp.health>0 //delete if you want corpses taunting the enemy
+		){
+			ppp.A_PlaySound("*taunt",CHAN_VOICE);
+			ppp.A_TakeInventory("powerfrightener");
+			ppp.A_AlertMonsters();
+		}
+	}
+}
+
+
+
+
+//below this, only deprecated code
 
 
 
@@ -69,24 +95,6 @@ class SawGib:InventoryFlag{
 	}
 }
 
-
-class TauntHandler:EventHandler{
-	override void NetworkProcess(ConsoleEvent e){
-
-		//check to ensure the acting player can taunt
-		let ppp = playerpawn(players[e.player].mo);
-		if(!ppp) return;
-
-		if(
-			e.name~=="taunt"
-			&&ppp.health>0 //delete if you want corpses taunting the enemy
-		){
-			ppp.A_PlaySound("*taunt",CHAN_VOICE);
-			ppp.A_TakeInventory("powerfrightener");
-			ppp.A_AlertMonsters();
-		}
-	}
-}
 
 //generic bleeding
 class HDWound:Thinker{

@@ -50,11 +50,15 @@ extend class HDMobBase{
 			findstate("xdeath",true)
 			&&bodydamage>gibhealth+sphlth
 		){
-			if(health<1){
+			if(
+				health<1
+				&&bodydamage>(sphlth<<1)
+			){
+				A_GiveInventory("IsGibbed"); //deprecated, needs to be replaced for all monsters
+				bgibbed=true;
+				bshootable=false;
 				if(findstate("xxxdeath",true))setstatelabel("xxxdeath");
 				else setstatelabel("xdeath");
-				bgibbed=true;
-				A_GiveInventory("IsGibbed"); //deprecated, needs to be replaced for all monsters
 				return -1;
 			}else{
 				return super.damagemobj(inflictor,source,health,"extreme",flags,angle);
@@ -67,6 +71,12 @@ extend class HDMobBase{
 			if(self)super.damagemobj(inflictor,source,health,mod,DMG_THRUSTLESS|DMG_NO_FACTOR,angle);
 			return ret;
 		}
+
+
+		//rapid damage stacking
+		damage+=pain;
+		pain+=max(1,(damage>>3));
+
 
 		//bashing
 		if(mod=="bashing"){
@@ -98,13 +108,7 @@ extend class HDMobBase{
 
 
 		//make sure bodily integrity tracker is affected
-		if(health<1)bodydamage+=(damage>>2);
-		else bodydamage+=damage;
-
-
-		//rapid damage stacking
-		damage+=pain;
-		pain+=max(1,(damage>>3));
+		if(bodydamage<(sphlth<<5))bodydamage+=damage;
 
 
 		if(hd_debug)console.printf(getclassname().." "..damage.." "..mod..", est. remain "..health-damage);
@@ -118,7 +122,17 @@ extend class HDMobBase{
 
 	//tracks what is to be done about all this damage
 	void DamageTicker(){
-		if(health<1)return;
+		if(health<1){
+			//fall down if dead
+			if(
+				!bnoshootablecorpse
+				&&height>deathheight
+			){
+				A_SetSize(-1,max(deathheight,height-liveheight*0.06));
+				A_LogFloat(height);
+			}
+			return;
+		}
 
 		if(stunned>0){
 			stunned-=max(1,(spawnhealth()>>7));
@@ -145,8 +159,11 @@ extend class HDMobBase{
 	}
 
 
-
+	double liveheight;
 	override void die(actor source,actor inflictor,int dmgflags){
+		//retrieve actor's current height
+		liveheight=height;
+
 		super.Die(source,inflictor,dmgflags);
 		if(!self)return;
 
@@ -167,8 +184,13 @@ extend class HDMobBase{
 		bnotautoaimed=true;
 		balwaystelefrag=true;
 
-		if(!bgibbed)bshootable=true;
+		if(!bgibbed)bshootable=!bnoshootablecorpse;
 		else A_GiveInventory("IsGibbed"); //delete this line later
+
+		//set height
+		//TODO: replace all tempshields
+		//TODO: test this to ensure it does, in fact, block shots
+		if(bshootable)A_SetSize(-1,liveheight);
 	}
 
 
@@ -179,8 +201,8 @@ extend class HDMobBase{
 			bgibbed=false;
 			A_Die("ungib");
 		}
-		bodydamage-=100/mass;
-		if(bodydamage>0.4){
+		bodydamage=max(0,bodydamage-100);
+		if(bodydamage>(health<<2)/10){
 			A_Die("needmore");
 			return;
 		}
@@ -194,7 +216,7 @@ extend class HDMobBase{
 		bnotautoaimed=false;
 		balwaystelefrag=false;
 
-		bshootable=true;
+		if(!bnoshootablecorpse)bshootable=true;
 		deathsound=getdefaultbytype(getclass()).deathsound;
 		let aff=new("AngelFire");
 		aff.master=self;aff.ticker=0;
@@ -203,3 +225,14 @@ extend class HDMobBase{
 	}
 
 }
+
+
+extend class HDHandlers{
+	override void WorldThingRevived(WorldEvent e){
+		console.printf(e.thing.height.." height, health "..e.thing.health);
+		let mbb=hdmobbase(e.thing);
+		if(mbb)mbb.AttemptRaise();
+	}
+}
+
+
