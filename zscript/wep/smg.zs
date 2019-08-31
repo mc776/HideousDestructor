@@ -155,7 +155,7 @@ class HDSMG:HDWeapon{
 		SMGG A 0{
 			if(invoker.weaponstatus[SMGS_CHAMBER]==1){
 				A_SpawnItemEx("HDSpent9mm",
-					cos(pitch)*10,0,height-8-sin(pitch)*10,
+					cos(pitch)*10,0,height-10-sin(pitch)*10,
 					vel.x,vel.y,vel.z,
 					0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
 				);

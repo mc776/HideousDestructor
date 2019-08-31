@@ -237,10 +237,10 @@ class HDPistol:HDHandgun replaces Pistol{
 			int psch=invoker.weaponstatus[PISS_CHAMBER];
 			invoker.weaponstatus[PISS_CHAMBER]=0;
 			if(psch==2){
-				A_SpawnItemEx("HDPistolAmmo",cos(pitch*12),0,height-8-sin(pitch)*12,1,2,3,0);
+				A_SpawnItemEx("HDPistolAmmo",cos(pitch*12),0,height-9-sin(pitch)*12,1,2,3,0);
 			}else if(psch==1){
 				A_SpawnItemEx("HDSpent9mm",
-					cos(pitch)*12,0,height-7-sin(pitch)*12,
+					cos(pitch)*12,0,height-9-sin(pitch)*12,
 					vel.x,vel.y,vel.z,
 					0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
 				);
@@ -278,7 +278,7 @@ class HDPistol:HDHandgun replaces Pistol{
 		}
 		#### C 0{
 			A_SpawnItemEx("HDSpent9mm",
-				cos(pitch)*12,0,height-7-sin(pitch)*12,
+				cos(pitch)*12,0,height-9-sin(pitch)*12,
 				vel.x,vel.y,vel.z,
 				0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
 			);
