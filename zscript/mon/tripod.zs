@@ -215,7 +215,6 @@ class SatanBallLight:PointLight{
 
 class SatanRobo:HDMobBase replaces CyberDemon{
 	double launcheroffset;
-	property launcheroffset:launcheroffset;
 	default{
 		height 100;
 		radius 32;
@@ -235,6 +234,7 @@ class SatanRobo:HDMobBase replaces CyberDemon{
 		+noblooddecals
 		+hdmobbase.smallhead
 		+hdmobbase.biped
+		+hdmobbase.noshootablecorpse
 		damagefactor "Thermal", 0.5;
 		damagefactor "SmallArms0", 0.2;
 		damagefactor "SmallArms1", 0.3;
@@ -252,7 +252,6 @@ class SatanRobo:HDMobBase replaces CyberDemon{
 		bloodtype "ShieldNotBlood";
 		obituary "%o was experimented upon by a cyberdemon.";
 		minmissilechance 196;
-		satanrobo.launcheroffset 24;
 	}
 	override double bulletresistance(double hitangle){
 		return max(0,frandom(0.6,4.0)-hitangle*0.01);
@@ -333,6 +332,7 @@ class SatanRobo:HDMobBase replaces CyberDemon{
 		shields=HDCB_SHIELDMAX;
 		rockets=HDCB_ROCKETMAX;
 		shottype="Roboball";
+		if(bplayingid)launcheroffset=24;
 		hdmobster.spawnmobster(self);
 	}
 	vector2 oldaim;vector2 aimadjust;
@@ -491,7 +491,9 @@ class SatanRobo:HDMobBase replaces CyberDemon{
 		goto see;
 
 	death:
-		CYBR G 12 A_Pain();
+		CYBR G 1 A_Pain();
+		CYBR G 0 A_SetSolid();
+		CYBR G 12 A_SetShootable();
 		CYBR DD 6 A_Recoil(-2);
 		CYBR A 12;
 		CYBR A 0{
@@ -592,6 +594,8 @@ class SatanRobo:HDMobBase replaces CyberDemon{
 			random(-1,1),random(-1,1),random(3,6)
 		);
 	xdeath:
+		CYBR E 0 A_UnSetSolid();
+		CYBR E 0 A_UnSetShootable();
 		CYBR EEEEEE 1 A_SpawnItemEx("HDSmoke",54,-24,52,
 			random(-1,1),random(-1,1),random(4,8)
 		);

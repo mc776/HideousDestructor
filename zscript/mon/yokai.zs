@@ -10,6 +10,7 @@ class Yokai:HDMobBase{
 		monster;
 		+nodamagethrust +noblooddecals +nogravity +floatbob -solid
 		+notrigger
+		+hdmobbase.noshootablecorpse
 		height 42;radius 10;
 		renderstyle "Add";
 		maxtargetrange 666;health 66;

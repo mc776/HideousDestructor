@@ -14,6 +14,7 @@ class HDMobBase : HDActor{
 	flagdef smallhead:hdmobflags,5;
 	flagdef biped:hdmobflags,6;
 	flagdef noshootablecorpse:hdmobflags,7;
+	flagdef playingid:hdmobflags,8;
 
 	default{
 		monster;
@@ -24,6 +25,7 @@ class HDMobBase : HDActor{
 	override void postbeginplay(){
 		super.postbeginplay();
 		resetdamagecounters();bloodloss=0;
+		bplayingid=(Wads.CheckNumForName("id",0)!=-1);
 	}
 
 	override void Tick(){

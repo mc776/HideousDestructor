@@ -14,6 +14,7 @@ class FlyingSkull:HDMobBase replaces LostSoul{
 
 		+noblood +pushable -floorclip +avoidmelee
 		+bright
+		+hdmobbase.noshootablecorpse
 		obituary "%o found a skull.";
 		activesound "";
 		scale 0.6;

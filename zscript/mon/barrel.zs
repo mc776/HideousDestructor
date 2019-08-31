@@ -103,6 +103,7 @@ class HDBarrel:HDMobBase replaces ExplosiveBarrel{
 	death:
 		#### A 0;
 		---- A 0 A_NoBlocking();
+		---- A 0 A_SetSize(-1,getdefaultbytype(getclass()).height);
 	waittoexplode:
 		---- A 0 A_SetSolid();
 		---- A 0 A_SetShootable();
@@ -113,6 +114,7 @@ class HDBarrel:HDMobBase replaces ExplosiveBarrel{
 			A_UnsetSolid();
 			A_UnsetShootable();
 			A_NoBlocking();
+			A_SetSize(-1,deathheight);
 			bsolid=false;
 			new("BarrelExplodeMarker");
 

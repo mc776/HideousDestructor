@@ -1021,7 +1021,7 @@ class HDBulletActor:HDActor{
 			}
 
 			hitactor.damagemobj(self,target,impact,"bashing");
-			if(impact>(hitactor.health>>3))forcepain(hitactor);
+			if(impact>(hitactor.spawnhealth()>>2))forcepain(hitactor);
 			if(hd_debug)console.printf(hitactor.getclassname().." resisted, impact:  "..impact);
 			return;
 		}

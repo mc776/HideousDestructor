@@ -125,6 +125,8 @@ extend class HDMobBase{
 
 	//tracks what is to be done about all this damage
 	void DamageTicker(){
+		if(pain>0)pain>>=1;
+
 		if(health<1){
 			//fall down if dead
 			if(
@@ -151,8 +153,6 @@ extend class HDMobBase{
 				speed=frandom(0,getdefaultbytype(getclass()).speed);
 			}
 		}
-
-		if(pain>0)pain>>=1;
 
 		//regeneration
 		if(!(level.time&(1|2|4|8|16|32|64|128|256|512|1024)))GiveBody(1);
