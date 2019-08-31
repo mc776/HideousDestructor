@@ -63,7 +63,7 @@ class HDB_426:HDBulletActor{
 class HDB_776:HDBulletActor{
 	default{
 		pushfactor 0.05;
-		mass 100;
+		mass 120;
 		speed 1100;
 		accuracy 600;
 		stamina 776;
@@ -1130,10 +1130,10 @@ if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channe
 			&&pen>deemedwidth*0.4
 		){
 			if(hd_debug)console.printf("CRIT!");
-			bnoextremedeath=chdmg<(hitactor.getgibhealth()<<2);
+			bnoextremedeath=chdmg<(hitactor.getgibhealth()<<3);
 			hitactor.damagemobj(
 				self,target,
-				chdmg+random(0,(stamina>>4))*(1.+pushfactor),
+				(chdmg+(stamina>>3))*(1.+pushfactor),
 				"Piercing",DMG_THRUSTLESS
 			);
 			forcepain(hitactor);
