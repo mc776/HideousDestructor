@@ -19,6 +19,7 @@ class HDMobBase : HDActor{
 	default{
 		monster;
 		radius 12;
+		gibhealth 100;
 		+dontgib
 	}
 
