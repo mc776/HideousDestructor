@@ -9,7 +9,7 @@ class PainMonster:HDMobBase{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		bsmallhead=Wads.CheckNumForName("FREEDOOM",0)==-1;
+		bsmallhead=bplayingid;
 	}
 	override double bulletresistance(double hitangle){
 		return super.bulletresistance(hitangle);

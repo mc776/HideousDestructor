@@ -19,7 +19,7 @@ class HoopBubble:HDMobMan replaces WolfensteinSS{
 		hdmobster.spawnmobster(self);
 		hasdropped=false;
 		gunloaded=31;
-		if(Wads.CheckNumForName("FREEDOOM",0)!=-1){
+		if(!bplayingid){
 			scale=(0.81,0.81);
 		}
 		givearmour(1.);

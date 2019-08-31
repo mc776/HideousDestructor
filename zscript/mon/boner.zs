@@ -113,9 +113,8 @@ class Boner:HDMobBase replaces Revenant{
 		+noblooddecals
 		-longmeleerange
 		bloodtype "notquitebloodsplat";
-		scale 0.74;
 		speed 14;
-		mass 60;
+		mass 200;
 		health 250;
 		obituary "%o was bagged by a boner.";
 		hitobituary "%o was slapped by a boner.";
@@ -127,9 +126,10 @@ class Boner:HDMobBase replaces Revenant{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		if(Wads.CheckNumForName("FREEDOOM",0)!=-1){
-			scale=(1.,1.);
-			mass=200;
+		if(bplayingid){
+			scale=(0.74,0.74);
+			mass=80;
+		}else{
 			hdmobai.resize(self,0.8,1.1);
 		}
 		let hdmb=hdmobster(hdmobster.spawnmobster(self));

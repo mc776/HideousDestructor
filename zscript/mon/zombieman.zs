@@ -161,10 +161,11 @@ class ZombieStormtrooper:HDMobMan{
 		}
 	}
 	void A_CheckFreedoomSprite(){
-		if(Wads.CheckNumForName("FREEDOOM",0)!=-1){
+		if(bplayingid)sprite=getspriteindex("POSS");
+		else{
 			sprite=getspriteindex("SPOS");
 			A_SetTranslation("FreedoomGreycoat");
-		}else sprite=getspriteindex("POSS");
+		}
 	}
 	states{
 	spawn:

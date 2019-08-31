@@ -41,7 +41,7 @@ class NinjaPirate:HDMobBase{ //replaces Spectre{
 		HDMobAI.Resize(self,frandom(0.9,1.1));
 		HDMobster.SpawnMobster(self);
 		cloaked=false;
-		bbiped=Wads.CheckNumForName("FREEDOOM",0)==-1;
+		bbiped=bplayingid;
 	}
 	void A_BlurWander(bool dontlook=false){
 		hdmobai.wander(self,dontlook);

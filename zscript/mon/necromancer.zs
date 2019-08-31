@@ -311,7 +311,7 @@ class Necromancer:HDMobBase replaces ArchVile{
 			return;
 		}
 
-		bsmallhead=Wads.CheckNumForName("FREEDOOM",0)==-1;
+		bsmallhead=bplayingid;
 
 		//spawn shards instead if no archvile sprites
 		if(Wads.CheckNumForName("VILER0",wads.ns_sprites,-1,false)<0){

@@ -13,7 +13,7 @@ class Babuin:HDMobBase{
 		let hdmb=hdmobster(hdmobster.spawnmobster(self));
 		hdmb.meleethreshold=200;
 		lastpointinmap=pos;
-		bbiped=Wads.CheckNumForName("FREEDOOM",0)==-1;
+		bbiped=!bplayingid;
 	}
 	void TryLatch(){
 		if(
@@ -134,8 +134,8 @@ class Babuin:HDMobBase{
 		else super.Tick();
 	}
 	void A_CheckFreedoomSprite(){
-		if(Wads.CheckNumForName("FREEDOOM",0)!=-1)sprite=getspriteindex("SARG");
-		else sprite=getspriteindex("SRG2");
+		if(bplayingid)sprite=getspriteindex("SRG2");
+		else sprite=getspriteindex("SARG");
 	}
 	default{
 		//$Category "Monsters/Hideous Destructor"

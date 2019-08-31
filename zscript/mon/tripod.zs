@@ -127,7 +127,7 @@ class Satanball:HDFireball{
 		bool gbg;
 		lite=spawn("SatanBallLight",pos,ALLOW_REPLACE);lite.target=self;
 		if(satanrobo(target))satanrobo(target).shields-=40;
-		pcol=(Wads.CheckNumForName("FREEDOOM",0)!=-1)?"55 88 ff":"55 ff 88";
+		pcol=(Wads.CheckNumForName("id",0)!=-1)?"55 ff 88":"55 88 ff";
 	}
 	states{
 	spawn:

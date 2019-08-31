@@ -171,7 +171,7 @@ class Serpentipede:HDMobBase{
 		super.postbeginplay();
 		hdmobster.spawnmobster(self);
 		hdmobai.resize(self,0.8,1.1);
-		if(Wads.CheckNumForName("FREEDOOM",0)==-1){
+		if(bplayingid){
 			bsmallhead=true;
 			bbiped=true;
 		}
