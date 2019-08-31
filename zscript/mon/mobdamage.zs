@@ -54,7 +54,7 @@ extend class HDMobBase{
 
 
 		//rapid damage stacking
-		if(pain>0)damage+=pain;
+		if(pain>0)damage+=(pain>>2);
 
 		if(mod!="bleedout")pain+=max(1,(damage>>5));
 

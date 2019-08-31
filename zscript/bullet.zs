@@ -1115,7 +1115,7 @@ class HDBulletActor:HDActor{
 		//add size of channel to damage
 		int chdmg=max(1,(int(channelwidth*pen)>>3));
 if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channelwidth.." x "..pen.."    channel HP damage: "..chdmg);
-		bnoextremedeath=(chdmg<<1)<hitactor.gibhealth;
+		bnoextremedeath=(chdmg<(max(hitactor.spawnhealth(),hitactor.getgibhealth())<<3));
 
 		//cns severance
 		//small column in middle centre
@@ -1130,10 +1130,9 @@ if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channe
 			&&pen>deemedwidth*0.4
 		){
 			if(hd_debug)console.printf("CRIT!");
-			bnoextremedeath=chdmg<(hitactor.getgibhealth()<<3);
 			hitactor.damagemobj(
 				self,target,
-				(chdmg+(stamina>>3))*(1.+pushfactor),
+				(chdmg+random((stamina>>5),(stamina>>3)))*(1.+pushfactor),
 				"Piercing",DMG_THRUSTLESS
 			);
 			forcepain(hitactor);
