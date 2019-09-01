@@ -1130,11 +1130,9 @@ if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channe
 			&&pen>deemedwidth*0.4
 		){
 			if(hd_debug)console.printf("CRIT!");
-			hitactor.damagemobj(
-				self,target,
-				(chdmg+random((stamina>>4),(stamina>>3)+(int(speed)>>5)))*(1.+pushfactor),
-				"Piercing",DMG_THRUSTLESS
-			);
+			int critdmg=(chdmg+random((stamina>>4),(stamina>>3)+(int(speed)>>5)))*(1.+pushfactor);
+			if(bnoextremedeath)critdmg=min(critdmg,hitactor.gibhealth+hitactor.health-1);
+			hitactor.damagemobj(self,target,critdmg,"Piercing",DMG_THRUSTLESS);
 			forcepain(hitactor);
 			suckingwound=true;
 			pen*=2;
