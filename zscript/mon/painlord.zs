@@ -121,7 +121,6 @@ class PainLord:PainMonster replaces BaronofHell{
 		TNT1 A 0 A_PlaySound("baron/active");
 		loop;
 	see:
-		TNT1 A 0 A_JumpIfInventory("VileCount",1,"NotVileEnough");
 		TNT1 A 0 A_AlertMonsters();
 		BOSS ABCD 6{
 			hdmobai.chase(self);

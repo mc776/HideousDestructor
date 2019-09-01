@@ -415,9 +415,8 @@ class Necromancer:HDMobBase replaces ArchVile{
 					data:hlt
 				);
 				if(hlt.hitactor){
-					if(hlt.hitactor.countinv("VileCount")){
-						hlt.hitactor.A_GiveInventory("VileCount",7);
-					}
+					let hdmb=hdmobbase(hlt.hitactor);
+					if(hdmb)hdmb.bodydamage=0;
 					hlt.hitactor.bfriendly=bfriendly;
 				}
 			}else{

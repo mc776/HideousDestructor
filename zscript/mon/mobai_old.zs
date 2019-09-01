@@ -25,32 +25,6 @@ struct HDMobAI play{
 		caller.meleerange*=scl;
 	}
 
-	//set and unset shootable corpse
-	//in raise states, set gibbed to true to enable going to a raise-from-gib state
-	static void CorpseFlags(actor caller,bool gibbed=false,bool raise=false){
-		caller.A_TakeInventory("SawGib");
-		caller.bdontgib=true;
-		if(raise||caller.health>0){
-			if(!caller.bfloat)caller.bnodropoff=true;
-			caller.maxstepheight=getdefaultbytype(caller.getclass()).maxstepheight;
-			caller.bnotautoaimed=false;
-			caller.balwaystelefrag=false;
-			caller.deathsound=getdefaultbytype(caller.getclass()).deathsound;
-			if(gibbed)caller.setstatelabel("raisegibbed");
-			caller.bshootable=true;
-			let aff=new("AngelFire");
-			aff.master=caller;aff.ticker=0;
-
-		}else{
-			caller.A_NoBlocking();
-			caller.bnodropoff=false;
-			caller.maxstepheight=caller.height*0.1;
-			caller.bnotautoaimed=true;
-			caller.balwaystelefrag=true;
-			caller.bshootable=true;
-		}
-	}
-
 	//taking all the same flags as A_LookEx
 	static void Look(
 		actor caller,

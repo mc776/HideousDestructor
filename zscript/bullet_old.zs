@@ -350,28 +350,23 @@ class HDBullet:HDActor{
 
 			//apply damage
 			if(!bnodamage){
-				if(hitactor.health<1){
-					int gibs=max(randompick(0,0,0,1),dmg*0.1);
-					hdf.give(hitactor,"SawGib",gibs);
+				if(pierce||pushfactor<1.){
+					HDBulletDamager.Get(hitactor,self,target,dmg,damagetype);
+					if(
+						pierce
+						&&hitactor.bshootable
+						&&!hitactor.bnodamage
+						&&!hdp
+					)hdwound.inflict(hitactor,
+						random((mass>>6),dmg)
+					);
 				}else{
-					if(pierce||pushfactor<1.){
-						HDBulletDamager.Get(hitactor,self,target,dmg,damagetype);
-						if(
-							pierce
-							&&hitactor.bshootable
-							&&!hitactor.bnodamage
-							&&!hdp
-						)hdwound.inflict(hitactor,
-							random((mass>>6),dmg)
-						);
-					}else{
-						hitactor.damagemobj(self,target,dmg,damagetype,DMG_THRUSTLESS);
-						if(hd_debug){
-							string targ="";
-							if(hitactor.player)targ=hitactor.player.getusername();
-								else targ=hitactor.getclassname();
-							A_Log(string.format("%s \ca%i \cj%s  \cu(%s)",self.getclassname(),dmg,targ,damagetype));
-						}
+					hitactor.damagemobj(self,target,dmg,damagetype,DMG_THRUSTLESS);
+					if(hd_debug){
+						string targ="";
+						if(hitactor.player)targ=hitactor.player.getusername();
+							else targ=hitactor.getclassname();
+						A_Log(string.format("%s \ca%i \cj%s  \cu(%s)",self.getclassname(),dmg,targ,damagetype));
 					}
 				}
 			}

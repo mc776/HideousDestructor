@@ -289,27 +289,21 @@ class Heat:Inventory{
 		int ticker=level.time;
 
 		//flame
-		int sawgib=owner.countinv("SawGib");
 		if(
 			!(ticker%3)
 			&&realamount>frandom(100,140)
 			&&owner.bshootable
 			&&!owner.bnodamage
 			&&!owner.countinv("ImmunityToFire")
-			&&sawgib<burnoutthreshold*frandom(0.7,2.)
 		){
 			if(owner.bshootable){
 				realamount+=frandom(1.2,3.0);
-				if(realamount>random(150,1000))hdf.give(owner,"SawGib",1);
-				if(!random(0,15))owner.A_TakeInventory("VileCount",1);
 			}
 			if(owner.waterlevel<=random(0,1)){
 				actor aaa;
-				double raa=health<1?realamount*sawgib/burnoutthreshold:realamount;
 				if(
 					owner is "PersistentDamager"
-					||raa<600
-					||burnoutthreshold<sawgib
+					||realamount<600
 				){
 					aaa=spawn("HDFlameRed",owner.pos+(
 						frandom(-radius,radius),
@@ -322,17 +316,13 @@ class Heat:Inventory{
 						frandom(-radius,radius)*0.6,
 						frandom(5,owner.height*0.2)
 					),ALLOW_REPLACE);
-					aaa.scale=(randompick(-1,1)*frandom(0.9,1.2),frandom(0.9,1.1))*clamp((raa-600)*0.0003,0.6,2.);
+					aaa.scale=(randompick(-1,1)*frandom(0.9,1.2),frandom(0.9,1.1))*clamp((realamount-600)*0.0003,0.6,2.);
 					if(!heatlight)heatlight=HDFireLight(spawn("HDFireLight",pos,ALLOW_REPLACE));
 					heatlight.target=owner;hdfirelight(heatlight).heattarget=self;
 					heatlight.args[0]=200;
 					heatlight.args[1]=150;
 					heatlight.args[2]=90;
 					heatlight.args[3]=min(realamount*0.1,256);
-					if(!random(0,3)){
-						hdf.give(owner,"SawGib",1);
-						owner.A_TakeInventory("VileCount",1);
-					}
 				}
 				aaa.target=owner;
 				aaa.A_PlaySound("misc/firecrkl",CHAN_BODY,clamp(realamount*0.001,0,0.2));

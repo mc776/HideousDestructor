@@ -63,42 +63,6 @@ class TauntHandler:EventHandler{
 
 
 
-//general corpse-gibbing
-class SawGib:InventoryFlag{
-	default{
-		inventory.maxamount int.MAX;
-	}
-	override void attachtoowner(actor user){
-		super.attachtoowner(user);
-		actor o=owner;
-		if(owner){
-			stamina=max(o.gibhealth,o.spawnhealth());
-		}else destroy();
-	}
-	override void doeffect(){
-		if(amount>stamina){
-			actor o=owner;
-			if(o)o.bdontgib=false;
-			if(bmissileevenmore)return;
-			bmissileevenmore=true;
-			if(
-				!o.bcorpse
-				||!o.bshootable
-				||o.health>0
-			)destroy();
-			else{
-				o.bshootable=false;
-				//use the old death state first
-				if(o.findstate("xxxdeath"))o.setstatelabel("xxxdeath");
-				else if(o.findstate("XXDeath"))o.setstatelabel("XXDeath");
-				else o.bshootable=true;
-				if(!o.bshootable)amount=0;
-			}
-		}
-	}
-}
-
-
 //generic bleeding
 class HDWound:Thinker{
 	static void Inflict(actor bleeder,int amount){

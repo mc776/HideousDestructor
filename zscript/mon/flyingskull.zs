@@ -290,7 +290,6 @@ class SkullSpitter:HDMobBase replaces PainElemental{
 		TNT1 A 0 A_Jump(40,"missile2");
 		goto see;
 	missile2:
-		PAIN A 0 A_JumpIfInventory("VileCount",1,"NotVileEnough");
 		PAIN DE 4 A_FaceTarget(5,5);
 		PAIN F 6 A_FaceTarget(10,10);
 		PAIN C 12{
@@ -313,7 +312,6 @@ class SkullSpitter:HDMobBase replaces PainElemental{
 			}
 		}goto see;
 	melee:
-		PAIN A 0 A_JumpIfInventory("VileCount",1,"NotVileEnough");
 		PAIN DE 4 A_FaceTarget(10,10);
 		PAIN F 6 A_FaceTarget(10,10);
 		PAIN C 12 A_CustomMeleeAttack(random(20,40));

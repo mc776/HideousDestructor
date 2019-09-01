@@ -60,7 +60,6 @@ class PainBringer:PainMonster replaces HellKnight{
 		}loop;
 	see:
 		BOS2 A 0{
-			if(countinv("vilecount"))setstatelabel("notvileenough");
 			if(!random(0,127)){
 				A_PlaySound(seesound,CHAN_VOICE);
 				A_AlertMonsters();
@@ -168,8 +167,7 @@ class PainBringer:PainMonster replaces HellKnight{
 		BOS2 O -1 A_BossDeath();
 	raise:
 		BOS2 ONMLKJI 5;
-		BOS2 H 8 A_JumpIfInventory("VileCount",2,"ReallyRaise");
-		BOS2 H 0 A_PlaySound("knight/sight",CHAN_VOICE);
+		BOS2 H 8 A_PlaySound("knight/sight",CHAN_VOICE);
 		BOS2 AAABB 3 A_Chase("NotVileEnough","NotVileEnough");
 	NotVileEnough:
 		BOS2 H 1{
@@ -183,8 +181,7 @@ class PainBringer:PainMonster replaces HellKnight{
 		BOS2 MN 5;
 		BOS2 O -1;
 	ReallyRaise:
-		BOS2 H 5 A_TakeInventory("VileCount");
-		BOS2 H 0 A_PlaySound("knight/sight",CHAN_BODY);
+		BOS2 H 5 A_PlaySound("knight/sight",CHAN_BODY);
 		goto see;
 	}
 }

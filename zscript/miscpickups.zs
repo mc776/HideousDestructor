@@ -340,8 +340,11 @@ class HDAmBox:HDUPK{
 			0,0,frandom(0,2),0,SXF_NOCHECKPOSITION
 		);
 		---- A 0{
-			actor bbb=spawn("TerrorBolt",pos,ALLOW_REPLACE);
-			bbb.vel.z=min(-50,bbb.floorz-bbb.pos.z);
+			let bbb=HDBulletActor.FireBullet(
+				self,"HDB_bronto",
+				zofs:1.,
+				aimoffy:90
+			);
 		}
 		---- AAAA 0 A_SpawnItemEx("HDSmokeChunk",
 			frandom(-10,10),frandom(-10,10),frandom(1,10),

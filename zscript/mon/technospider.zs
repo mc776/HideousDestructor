@@ -25,21 +25,6 @@ class TechnoSpider:HDMobBase replaces Arachnotron{
 		damagefactor "SmallArms1",0.8;
 		damagefactor "SmallArms2",0.9;
 	}
-	override int damagemobj(
-		actor inflictor,actor source,int damage,
-		name mod,int flags,double angle
-	){
-		if(health>0){
-			if(countinv("VileCount"))return super.damagemobj(
-				inflictor,source,health+1,
-				"NeedMoreVile",DMG_THRUSTLESS|DMG_NO_PAIN
-			);
-		}
-		return super.damagemobj(
-			inflictor,source,damage,mod,flags,angle
-		);
-
-	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		hdmobster.spawnmobster(self);
@@ -158,7 +143,6 @@ class TechnoSpider:HDMobBase replaces Arachnotron{
 		BSPI FF 3 A_FaceTarget(20,0);
 		loop;
 	shoot:
-		---- A 0 A_JumpIfInventory("VileCount",1,"NotVileEnough");
 		---- A 0 A_JumpIf(!hdmobai.tryshoot(self,32,256,1,1),"roam");
 		BSPI A 10 A_FaceTarget(20,20,z_ofs:(alt?0:frandom(10,-60)));
 	shootpb:
@@ -197,13 +181,11 @@ class TechnoSpider:HDMobBase replaces Arachnotron{
 		BSPI KLMN 7 A_SpawnItemEx("MegaBloodSplatter",0,0,28,0,0,0,0,160,0);
 		---- A 0 A_SpawnItemEx("MegaBloodSplatter",0,0,14,0,0,0,0,160,0);
 		BSPI O 7;
-		---- A 0 A_JumpIfInventory("VileCount",1,"NeededMoreVile");
 		BSPI P -1 A_BossDeath();
 	xdeath:
 		stop;
 	raise:
 		BSPI PONMLKJ 5;
-		---- A 0 A_JumpIfInventory("VileCount",3,"ReallyRaise");
 		BSPI I 8;
 		BSPI I 0 A_PlaySound("baby/sight");
 		BSPI AAABB 3 A_Chase("NotVileEnough","NotVileEnough");
@@ -212,7 +194,7 @@ class TechnoSpider:HDMobBase replaces Arachnotron{
 	neededmorevile:
 		BSPI P -1;
 	reallyraise:
-		BSPI I 5 A_TakeInventory("VileCount");
+		BSPI I 5;
 		BSPI I 0{
 			A_PlaySound("baby/sight");
 			if(!random(0,3))hasdropped=false;
