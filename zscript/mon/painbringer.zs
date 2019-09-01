@@ -159,12 +159,9 @@ class PainBringer:PainMonster replaces HellKnight{
 		BOS2 F 5;
 		goto see;
 	death:
-		BOS2 I 8{
-			hdmobai.corpseflags(self);
-			A_SpawnItemEx("tempshieldgreen",0,0,0,vel.x,vel.y,vel.z,0,SXF_NOCHECKPOSITION);
-		}
+		BOS2 I 8;
 		BOS2 J 8 A_Scream();
-		BOS2 K 8 A_SpawnItemEx("tempshield2green",0,0,0,vel.x,vel.y,vel.z,0,SXF_NOCHECKPOSITION);
+		BOS2 K 8;
 		BOS2 L 8 A_NoBlocking();
 		BOS2 M 8;
 		BOS2 N 8;
@@ -184,15 +181,8 @@ class PainBringer:PainMonster replaces HellKnight{
 			A_Die("NeedMoreVile");
 		}
 	Death.NeedMoreVile:
-		BOS2 H 5{
-			hdmobai.corpseflags(self);
-			A_SpawnItemEx("tempshieldgreen",0,0,0,vel.x,vel.y,vel.z,0,SXF_NOCHECKPOSITION);
-			 A_PlaySound("misc/gibbed",CHAN_BODY);
-		}
-		BOS2 H 5;
-		BOS2 I 5 A_SpawnItemEx("tempshieldgreen",0,0,0,vel.x,vel.y,vel.z,0,SXF_NOCHECKPOSITION);
-		BOS2 J 5;
-		BOS2 K 5 A_SpawnItemEx("tempshield2green",0,0,0,vel.x,vel.y,vel.z,0,SXF_NOCHECKPOSITION);
+		BOS2 H 5 A_PlaySound("misc/gibbed",CHAN_BODY);
+		BOS2 HIJK 5;
 		BOS2 L 5 A_NoBlocking();
 		BOS2 MN 5;
 		BOS2 O -1;

@@ -182,10 +182,8 @@ class TechnoSpider:HDMobBase replaces Arachnotron{
 		BSPI I 3 A_Pain;
 		goto see;
 	death:
-		---- A 0{hdmobai.corpseflags(self);}
 		---- AAAAAAAA 0 A_SpawnItemEx("HugeWallChunk",frandom(-4,4),frandom(-4,4),frandom(28,34),frandom(-6,6),frandom(-6,6),frandom(-2,16),0,160,0);
 		---- AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 0 A_SpawnItemEx("BigWallChunk",frandom(-3,3),frandom(-3,3),frandom(28,34),frandom(-2,2),frandom(-2,2),frandom(2,14),0,160,0);
-		---- A 0 A_SpawnItemEx("tempshield",0,0,0,vel.x,vel.y,vel.z,0,40);
 		BSPI J 4 A_Scream();
 		BSPI J 6 A_SpawnItemEx("MegaBloodSplatter",frandom(-10,10),frandom(-10,10),32,0,0,0,0,160,0);
 		BSPI J 10 A_SpawnItemEx("MegaBloodSplatter",frandom(-4,4),frandom(-4,4),32,0,0,0,0,160,0);
@@ -196,7 +194,6 @@ class TechnoSpider:HDMobBase replaces Arachnotron{
 				mmm.vel=vel+(frandom(-1,1),frandom(-1,1),1);
 			}
 		}
-		---- A 0 A_SpawnItemEx("tempshield2",0,0,0,vel.x,vel.y,vel.z,0,40);
 		BSPI KLMN 7 A_SpawnItemEx("MegaBloodSplatter",0,0,28,0,0,0,0,160,0);
 		---- A 0 A_SpawnItemEx("MegaBloodSplatter",0,0,14,0,0,0,0,160,0);
 		BSPI O 7;

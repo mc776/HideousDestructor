@@ -508,29 +508,17 @@ class CaeloBite:HDMobBase replaces Cacodemon{
 		}goto dead;
 	death:
 		HEAD F 3{
-			bpushable=false;
 			bfloatbob=false;
 			bnogravity=false;
-			hdmobai.corpseflags(self);
-			A_SpawnItemEx("tempshieldblue",flags:SXF_NOCHECKPOSITION|SXF_SETMASTER);
-			A_NoBlocking();
 			A_PlaySound(seesound,CHAN_VOICE);
 		}
 		HEAD GH 3;
 		HEAD H 2 A_JumpIf(vel.z>=0,"deadsplatting");
 		wait;
 	deadsplatting:
-		HEAD I 4{
-			A_Scream();
-			bpushable=false;
-			bfloatbob=false;
-			hdmobai.corpseflags(self);
-			A_SpawnItemEx("tempshield2blue",flags:SXF_NOCHECKPOSITION|SXF_SETMASTER);
-		}
+		HEAD I 4 A_Scream();
 		HEAD J 4;
-		HEAD JKKK 1 light("PLAZMABX1") A_CacoCorpseZap();
-		HEAD K 1 A_SpawnItemEx("tempshield2blue",flags:SXF_NOCHECKPOSITION|SXF_SETMASTER);
-		HEAD KKKK 1 light("PLAZMABX1") A_CacoCorpseZap();
+		HEAD JKKKKKKK 1 light("PLAZMABX1") A_CacoCorpseZap();
 		HEAD L 1 A_SetTics(random(5,25));
 		HEAD LLLLL 2 light("PLAZMABX1") A_CacoCorpseZap();
 	deadzapping:

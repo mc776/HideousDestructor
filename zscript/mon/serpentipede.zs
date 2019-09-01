@@ -336,14 +336,10 @@ class Serpentipede:HDMobBase{
 		#### BCD 2 A_FastChase();
 		goto missile;
 	death:
-		---- A 0 A_Gravity();
-		---- A 0 {hdmobai.corpseflags(self);}
-		---- A 0 A_SpawnItemEx("tempshield",0,0,0,vel.x,vel.y,vel.z,0,40);
-		#### I 6;
+		#### I 6 A_Gravity();
 		#### J 6 A_Scream();
-		#### K 5 A_SpawnItemEx("tempshield2",0,0,0,vel.x,vel.y,vel.z,0,40);
-		---- A 0 NoBlockWepDrop();
-		#### L 5;
+		#### K 5;
+		#### L 5 NoBlockWepDrop();
 	Dead:
 		#### L 3 canraise A_JumpIf(abs(vel.z)<2,1);
 		loop;
@@ -388,15 +384,12 @@ class Serpentipede:HDMobBase{
 		#### PON 4;
 		#### H 4 A_Die("Ungibbed");
 	Death.Ungibbed:
-		---- A 0 {hdmobai.corpseflags(self);}
-		---- A 0 A_SpawnItemEx("tempshield",0,0,0,vel.x,vel.y,vel.z,0,40);
-		#### I 6;
-		#### J 6;
-		#### K 5 A_SpawnItemEx("tempshield2",0,0,0,vel.x,vel.y,vel.z,0,40);
+		#### IJ 6;
+		#### K 5;
 		#### L 5 A_NoBlocking();
 		goto dead;
 	death.spawndead:
-		---- A 0 {hdmobai.corpseflags(self);}
+		---- A 0;
 		goto dead;
 	}
 }

@@ -217,22 +217,20 @@ class NinjaPirate:HDMobBase{ //replaces Spectre{
 		SARG GGG 0 A_SpawnItemEx("HDSmoke",random(-1,1),random(-1,1),random(4,24),vel.x,vel.y,vel.z+random(1,3),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION,0);
 	deathend:
 		TNT1 A 0 A_SetTranslucent(1);
-		SARG I 8 A_SpawnItemEx("tempshield",flags:SXF_SETMASTER);
+		SARG I 8;
 		SARG J 8 A_Scream();
-		SARG K 4 A_SpawnItemEx("tempshield2",flags:SXF_SETMASTER);
+		SARG K 4;
 		SARG L 4 A_NoBlocking();
 		SARG M 4;
 	dead:
+	death.spawndead:
 		TNT1 A 0 A_FadeIn(0.01);
 		SARG M 3 canraise A_JumpIf(floorz>pos.z-6,1);
 		loop;
 		SARG N 5 canraise A_JumpIf(floorz<=pos.z-6,"dead");
 		loop;
 	deathcloaked:
-		TNT1 A 0 A_SetTranslucent(1);
-		TNT1 A 8 A_SpawnItemEx("tempshield",flags:SXF_SETMASTER);
-		TNT1 A 8;
-		TNT1 A 4 A_SpawnItemEx("tempshield2",flags:SXF_SETMASTER);
+		TNT1 A 20 A_SetTranslucent(1);
 		TNT1 A 4 A_NoBlocking;
 		TNT1 A 4 A_SetTranslucent(0,0);
 		SARG N 350 A_SetTics(random(10,15)*35);
@@ -270,17 +268,12 @@ class NinjaPirate:HDMobBase{ //replaces Spectre{
 	death.ungibbed:
 		SARG I 5{
 			bpushable=false;
-			bnodropoff=false;
-			hdmobai.corpseflags(self);
-			A_SpawnItemEx("tempshield2",flags:SXF_NOCHECKPOSITION|SXF_SETMASTER);
 		}goto deathend;
 	xdeath:
 		TROO O 0{hdmobai.corpseflags(self,true);}
 	xxxdeath:
 		TROO O 0{
 			bpushable=false;
-			bnodropoff=false;
-			A_GiveInventory("IsGibbed");
 			A_XScream();
 			A_NoBlocking();
 		}
@@ -291,12 +284,6 @@ class NinjaPirate:HDMobBase{ //replaces Spectre{
 		TROO T 5 canraise{
 			if(abs(vel.z)<2)frame++;
 		}loop;
-	death.spawndead:
-		---- A 0{
-			bpushable=false;
-			A_NoBlocking();
-			hdmobai.corpseflags(self);
-		}goto dead;
 	}
 }
 class DeadRingerNinjaPirate:HDActor{

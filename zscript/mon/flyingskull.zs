@@ -332,7 +332,7 @@ class SkullSpitter:HDMobBase replaces PainElemental{
 		);
 		stop;
 	death:
-		PAIN H 2 A_SpawnItemEx("tempshield",flags:SXF_SETMASTER);
+		PAIN H 2;
 		PAIN I 3 A_Scream();
 		TNT1 A 0 A_NoBlocking();
 		TNT1 AAAA 0 A_SpawnItemEx("HDSmokeChunk", random(-7,7),random(-7,7),random(2,6), vel.x+random(-7,7),vel.y+random(-7,7),vel.z+random(4,8),0, SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);

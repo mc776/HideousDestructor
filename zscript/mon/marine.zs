@@ -885,20 +885,12 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		goto missile;
 
 	death.bleedout:
-		#### H 5{
-			hdmobai.corpseflags(self);
-			bpushable=false;
-			A_SpawnItemEx("tempshield",0,0,0,vel.x,vel.y,vel.z,0,SXF_SETMASTER);
-		}
+		#### H 5{bpushable=false;}
 		#### I 5;
 		goto deathpostscream;
 	death:
 		---- A 0 A_DeathZombieZombieDeath();
-		#### H 5{
-			hdmobai.corpseflags(self);
-			bpushable=false;
-			A_SpawnItemEx("tempshield2",0,0,0,vel.x,vel.y,vel.z,0,SXF_SETMASTER);
-		}
+		#### H 5{bpushable=false;}
 		#### I 5 A_HDMScream();
 	deathpostscream:
 		#### J 5 noblockwepdrop();
@@ -990,8 +982,6 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		#### H 5{
 			timesdied+=4;
 			bpushable=false;
-			A_SpawnItemEx("tempshield2",0,0,0,vel.x,vel.y,vel.z,0,SXF_SETMASTER);
-			hdmobai.corpseflags(self);
 		}
 		#### IJK 5;
 		goto dead;

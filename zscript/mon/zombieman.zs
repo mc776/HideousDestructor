@@ -461,11 +461,7 @@ class ZombieStormtrooper:HDMobMan{
 	death:
 		#### H 5;
 		#### I 5 A_Scream();
-		#### J 5{
-			actor ttt=spawn("tempshield2",pos,ALLOW_REPLACE);
-			ttt.vel=vel;ttt.master=self;
-			noblockwepdrop();
-		}
+		#### J 5 noblockwepdrop();
 		#### K 5;
 	dead:
 		#### K 3 canraise{if(abs(vel.z)<2.)frame++;}
@@ -513,18 +509,7 @@ class ZombieStormtrooper:HDMobMan{
 		#### PONM 4;
 		#### L 0 A_Die("Ungibbed");
 	death.ungibbed:
-		#### H 5{
-			hdmobai.corpseflags(self);
-			actor ttt=spawn("tempshield",pos,ALLOW_REPLACE);
-			ttt.vel=vel;ttt.master=self;
-		}
-		#### I 5;
-		#### J 5{
-			actor ttt=spawn("tempshield2",pos,ALLOW_REPLACE);
-			ttt.vel=vel;ttt.master=self;
-			A_NoBlocking();
-		}
-		#### K 5;
+		#### HIJK 5;
 		goto dead;
 	}
 }

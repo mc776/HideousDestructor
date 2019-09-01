@@ -125,6 +125,7 @@ extend class HDMobBase{
 
 
 	//tracks what is to be done about all this damage
+	int deathticks;
 	void DamageTicker(){
 		if(pain>0)pain>>=1;
 
@@ -134,6 +135,14 @@ extend class HDMobBase{
 				!bnoshootablecorpse
 				&&height>deathheight
 			)A_SetSize(-1,max(deathheight-0.1,height-liveheight*0.06));
+
+			if(deathticks<8){
+				deathticks++;
+				if(deathticks==8){
+					A_NoBlocking();
+					deathticks=9;
+				}
+			}
 			return;
 		}
 
@@ -165,6 +174,8 @@ extend class HDMobBase{
 		//retrieve actor's current height
 		liveheight=height;
 
+		deathticks=0;
+
 		super.Die(source,inflictor,dmgflags);
 		if(!self)return;
 
@@ -182,16 +193,16 @@ extend class HDMobBase{
 
 		//set corpse stuff
 		bnodropoff=false;
-		maxstepheight=deathheight*0.1;
 		bnotautoaimed=true;
 		balwaystelefrag=true;
+		bpushable=false;
+		maxstepheight=deathheight*0.1;
 
 		if(!bgibbed)bshootable=!bnoshootablecorpse;
 		else A_GiveInventory("IsGibbed"); //delete this line later
 
 		//set height
 		//TODO: replace all tempshields
-		//TODO: test this to ensure it does, in fact, block shots
 		if(bshootable)A_SetSize(-1,liveheight);
 	}
 
@@ -213,10 +224,15 @@ extend class HDMobBase{
 		A_TakeInventory("SawGib");
 
 		//reset corpse stuff
-		if(!bfloat)bnodropoff=true;
-		maxstepheight=getdefaultbytype(getclass()).maxstepheight;
-		bnotautoaimed=false;
-		balwaystelefrag=false;
+		let deff=getdefaultbytype(getclass());
+		bnodropoff=deff.bnodropoff;
+		bfloatbob=deff.bfloatbob;
+		maxstepheight=deff.maxstepheight;
+		bnotautoaimed=deff.bnotautoaimed;
+		balwaystelefrag=deff.balwaystelefrag;
+		bnogravity=deff.bnogravity;
+		bpushable=deff.bpushable;
+		gravity=deff.gravity;
 
 		if(!bnoshootablecorpse)bshootable=true;
 		deathsound=getdefaultbytype(getclass()).deathsound;

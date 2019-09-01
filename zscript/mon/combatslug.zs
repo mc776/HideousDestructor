@@ -234,15 +234,9 @@ class CombatSlug:HDMobBase replaces Fatso{
 		FATT J 3 A_Pain;
 		goto see;
 	death:
-		FATT K 6{
-			hdmobai.CorpseFlags(self);
-			A_SpawnItemEx("tempshield",flags:SXF_NOCHECKPOSITION|SXF_SETMASTER);
-			A_SpawnItemEx("HDExplosion",0,0,36,flags:SXF_SETTARGET);
-		}
+		FATT K 6 A_SpawnItemEx("HDExplosion",0,0,36,flags:SXF_SETTARGET);
 		FATT L 6 A_Scream();
-		FATT M 4 A_NoBlocking();
-		FATT M 2 A_SpawnItemEx("tempshield2",flags:SXF_NOCHECKPOSITION|SXF_SETMASTER);
-		FATT NOPQRS 6 A_SpawnItemEx("HDSmoke",
+		FATT MNOPQRS 6 A_SpawnItemEx("HDSmoke",
 			frandom(-4,4),frandom(-4,4),frandom(26,32),
 			0,0,frandom(1,4),
 			0,SXF_NOCHECKPOSITION

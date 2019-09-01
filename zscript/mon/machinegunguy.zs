@@ -383,17 +383,13 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 
 
 	death:
-		CPOS H 5{
-			hdmobai.CorpseFlags(self);
-			A_SpawnItemEx("tempshield",0,0,0,vel.x,vel.y,vel.z,0,40);
-		}
+		CPOS H 5;
 		CPOS I 5{
 			A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
 			A_Scream();
 		}
 		CPOS J 5{
 			A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
-			A_SpawnItemEx("tempshield2",0,0,0,vel.x,vel.y,vel.z,0,40);
 			A_VulcNoBlocking();
 		}
 		CPOS KL 5;

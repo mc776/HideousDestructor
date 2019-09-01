@@ -210,14 +210,10 @@ class HoopBubble:HDMobMan replaces WolfensteinSS{
 		#### D 4;
 		goto see;
 	death:
-		SSWV I 5{
-			hdmobai.corpseflags(self);
-			A_SpawnItemEx("tempshield",flags:SXF_SETMASTER|SXF_NOCHECKPOSITION);
-		}
+		SSWV I 5;
 		SSWV J 5 A_Scream();
-		SSWV A 0 A_SpawnItemEx("tempshield2",flags:SXF_SETMASTER|SXF_NOCHECKPOSITION);
-		SSWV A 0 noblockwepdrop();
-		SSWV KL 5;
+		SSWV K 5 noblockwepdrop();
+		SSWV L 5;
 	dead:
 		SSWV L 3 canraise A_JumpIf(abs(vel.z)<2,1);
 		loop;
@@ -273,12 +269,7 @@ class HoopBubble:HDMobMan replaces WolfensteinSS{
 		SSWV PON 4;
 		SSWV H 4 A_Die("ungibbed");
 	death.ungibbed:
-		SSWV I 5{
-			hdmobai.corpseflags(self);
-			A_SpawnItemEx("tempshield",flags:SXF_SETMASTER|SXF_NOCHECKPOSITION);
-		}
-		SSWV J 5;
-		SSWV A 0 A_SpawnItemEx("tempshield2",flags:SXF_SETMASTER|SXF_NOCHECKPOSITION);
+		SSWV IJ 5;
 		SSWV K 5 A_NoBlocking();
 		goto dead;
 	}

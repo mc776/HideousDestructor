@@ -284,22 +284,17 @@ class Babuin:HDMobBase{
 			A_CheckFreedoomSprite();
 			A_Scream();
 			bpushable=false;
-			hdmobai.corpseflags(self);
-			A_SpawnItemEx("tempshield2", 0,0,0, vel.x,vel.y,vel.z, 0,SXF_NOCHECKPOSITION);
 			A_SpawnItemEx("BFGVileShard",flags:SXF_TRANSFERPOINTERS|SXF_SETMASTER,240);
 		}
 	deathend:
 		#### J 5 A_NoBlocking();
 		#### KLM 5;
 	dead:
+	death.spawndead:
 		#### M 3 canraise{
 			if(abs(vel.z)<2)frame++;
 		}loop;
 	raise:
-		---- A 0{
-			if(!countinv("IsGibbed"))bpushable=true;
-			hdmobai.corpseflags(self,true,true);
-		}
 		#### NMLKJI 5;
 		SRG2 A 0 A_CheckFreedoomSprite();
 		goto see;
@@ -316,34 +311,17 @@ class Babuin:HDMobBase{
 		SRG2 A 0 A_CheckFreedoomSprite();
 		#### H 4 A_Die("Ungibbed");
 	death.ungibbed:
-		#### I 5{
-			bpushable=false;
-			bnodropoff=false;
-			hdmobai.corpseflags(self);
-			A_SpawnItemEx("tempshield2",flags:SXF_NOCHECKPOSITION|SXF_SETMASTER);
-		}goto deathend;
+		#### I 5;
+		goto deathend;
 	xdeath:
-		TROO O 0{hdmobai.corpseflags(self,true);}
-	xxxdeath: //it's ALMOST identical
-		TROO O 0{
-			bpushable=false;
-			bnodropoff=false;
-			A_GiveInventory("IsGibbed");
-			A_XScream();
-			A_NoBlocking();
-		}
+	xxxdeath:
+		TROO O 0 A_XScream();
 		TROO OPQ 4{spawn("MegaBloodSplatter",pos+(0,0,34),ALLOW_REPLACE);}
 		TROO RST 4;
 	xdead:
 		TROO T 5 canraise{
 			if(abs(vel.z)<2)frame++;
 		}loop;
-	death.spawndead:
-		---- A 0{
-			bpushable=false;
-			A_NoBlocking();
-			hdmobai.corpseflags(self);
-		}goto dead;
 	}
 }
 

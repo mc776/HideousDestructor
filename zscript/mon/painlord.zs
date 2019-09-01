@@ -220,18 +220,16 @@ class PainLord:PainMonster replaces BaronofHell{
 		stop;
 	death:
 		---- A 0{
-			hdmobai.corpseflags(self,false);
 			if(raisesneeded>0)setstatelabel("death.needmorevile");
 			else raisesneeded=5;
 		}
 		---- A 0 A_Quake(2,64,0,600);
-		BOSS I 0 A_SpawnItemEx("tempshieldgreen",flags:SXF_SETMASTER);
 		BOSS I 2 A_SpawnItemEx("BFGVileShard",0,0,20,10,0,8,45,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS);
 		BOSS I 2 A_SpawnItemEx("BFGVileShard",0,0,35,10,0,8,135,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS);
 		BOSS I 2 A_SpawnItemEx("BFGVileShard",0,0,50,10,0,8,225,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS);
 		BOSS I 2 A_SpawnItemEx("BFGVileShard",0,0,65,10,0,8,315,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS);
 		BOSS J 8 A_Scream();
-		BOSS K 8 A_SpawnItemEx("tempshield2green",flags:SXF_SETMASTER);
+		BOSS K 8;
 		BOSS L 8 A_NoBlocking();
 		BOSS M 8;
 		BOSS N 8;
@@ -239,18 +237,13 @@ class PainLord:PainMonster replaces BaronofHell{
 		BOSS O -1 A_BossDeath();
 		stop;
 	death.needmorevile:
-		BOSS J 5{
-			hdmobai.corpseflags(self,false);
-			A_PlaySound("misc/gibbed",CHAN_BODY);
-			A_SpawnItemEx("tempshieldgreen",flags:SXF_SETMASTER);
-		}
-		BOSS K 5 A_SpawnItemEx("tempshield2green",flags:SXF_SETMASTER);
+		BOSS J 5 A_PlaySound("misc/gibbed",CHAN_BODY);
+		BOSS K 5;
 		BOSS L 5 A_NoBlocking();
 		BOSS MN 5;
 		BOSS O -1;
 	raise:
 		---- A 0{
-			hdmobai.corpseflags(self,false,true);
 			if(
 				A_CheckProximity("null","LightBearer",
 					64,1,CPXF_CHECKSIGHT|CPXF_NOZ|CPXF_SETTRACER
