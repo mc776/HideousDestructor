@@ -220,9 +220,6 @@ extend class HDMobBase{
 			return;
 		}
 
-		//handle deprecated flag
-		A_TakeInventory("SawGib");
-
 		//reset corpse stuff
 		let deff=getdefaultbytype(getclass());
 		bnodropoff=deff.bnodropoff;
@@ -240,6 +237,11 @@ extend class HDMobBase{
 		aff.master=self;aff.ticker=0;
 
 		resetdamagecounters();
+	}
+	states{
+	death.needmore:
+		---- A 0 A_Jump(256,"dead");
+		stop;
 	}
 
 }

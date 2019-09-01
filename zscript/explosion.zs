@@ -10,7 +10,7 @@ extend class HDActor{
 		double pushradius=0,double pushamount=0,double fullpushradius=0,bool pushmass=true,
 		double fragradius=0,class<HDBulletActor> fragtype="HDB_frag",double fragvariance=0.05,double fragspeedfactor=1.,
 		double immolateradius=0,int immolateamount=1,int immolatechance=100,
-		double gibradius=0,int gibamount=1,
+		double gibradius=0,int gibamount=1, //TODO: delete these and references to them
 		bool hurtspecies=true,
 		actor source=null,
 		bool passwalls=false
@@ -178,26 +178,6 @@ extend class HDActor{
 					if(hdactor(caller))hdactor(caller).A_Immolate(it,target,immolateamount);
 					else HDF.Give(it,"Heat",immolateamount*2);
 				}
-			}
-			//gibbing
-			if(!it)continue;if(dist<=gibradius && it.bcorpse && it.bshootable){
-				hdf.give(it,"sawgib",gibamount-dist/3);
-				actor bld;bool gbg;
-				double minbloodheight=min(4.,it.height*0.2);
-				for(int i=0;i<gibamount;i+=3){
-					[gbg,bld]=it.A_SpawnItemEx(it.bloodtype,
-						it.radius*frandom(0.6,1),
-						frandom(-it.radius,it.radius)*0.5,
-						frandom(minbloodheight,it.height),
-						frandom(-1,4),
-						frandom(-4,4),
-						frandom(1,7),
-						it.angleto(caller),
-						SXF_ABSOLUTEANGLE|SXF_NOCHECKPOSITION|SXF_USEBLOODCOLOR
-					);
-					if(bld)bld.vel+=it.vel;
-				}
-				if(!it.bdontthrust)it.vel+=(it.pos-caller.pos)*divdist*divmass*10;
 			}
 			//push
 			if(!it)continue;if(dist<=pushradius && it.bshootable && !it.bdontthrust){

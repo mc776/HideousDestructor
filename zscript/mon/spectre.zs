@@ -210,7 +210,6 @@ class NinjaPirate:HDMobBase{ //replaces Spectre{
 		TNT1 AAAAA 0 A_Chase(null);
 		goto see;
 	death:
-		---- A 0 {hdmobai.corpseflags(self);}
 		---- A 0 A_SpawnItemEx("BFGVileShard",0,0,0,0,0,5,0,SXF_TRANSFERPOINTERS|SXF_SETMASTER,196);
 		TNT1 A 0 A_Jump(128,2);
 		TNT1 A 0 A_JumpIf(cloaked,"DeathCloaked");
@@ -239,7 +238,6 @@ class NinjaPirate:HDMobBase{ //replaces Spectre{
 		SARG N -1;
 		stop;
 	raise:
-		---- A 0{hdmobai.corpseflags(self,true,true);}
 		SARG N 4 A_SetTranslucent(1,0);
 		TNT1 A 0 A_JumpIf(cloaked,"RaiseCloaked");
 		SARG NMLKJI 6;
@@ -270,13 +268,9 @@ class NinjaPirate:HDMobBase{ //replaces Spectre{
 			bpushable=false;
 		}goto deathend;
 	xdeath:
-		TROO O 0{hdmobai.corpseflags(self,true);}
 	xxxdeath:
-		TROO O 0{
-			bpushable=false;
-			A_XScream();
-			A_NoBlocking();
-		}
+		TROO O 0 A_XScream();
+		TROO O 0 A_NoBlocking();
 		TROO OPQ 4 spawn("MegaBloodSplatter",pos+(0,0,34),ALLOW_REPLACE);
 		TROO RST 4;
 	xdead:
@@ -341,8 +335,7 @@ class DeadSpectre:NinjaPirate{
 	}
 	states{
 	death:spawndead:
-		---- A 0 {
-			hdmobai.corpseflags(self);
+		---- A 0{
 			A_NoBlocking();
 			A_SetTranslucent(1,0);
 		}

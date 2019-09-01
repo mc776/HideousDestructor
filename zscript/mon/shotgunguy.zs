@@ -589,7 +589,6 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 		#### QRSTUV 5;
 		goto xdead2;
 	xdeath:
-		#### M 0 {hdmobai.corpseflags(self,true);}
 		#### M 0 A_JumpIf(wep<0,"xdeath2");
 		#### M 5;
 		#### N 5{
@@ -620,7 +619,6 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 		wait;
 	raise:
 		#### A 0{
-			hdmobai.corpseflags(self,true,true);
 			jammed=false;
 		}
 		#### A 0 A_JumpIfInventory("IsGibbed",1,"RaiseGibbed");

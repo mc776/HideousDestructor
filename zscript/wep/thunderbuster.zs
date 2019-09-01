@@ -747,7 +747,6 @@ class LingeringThunder:IdleDummy{
 		}
 
 		int zappower=random(baseamount>>2,baseamount);
-		if(victim.health<1)hdf.give(victim,"sawgib",zappower>>3);
 		victim.A_PlaySound("weapons/plasidle",CHAN_BODY,frandom(0.2,0.6));
 		victim.A_PlaySound("misc/arccrackle",5);
 		victim.A_PlaySound("weapons/plascrack",6,frandom(0.2,0.6));

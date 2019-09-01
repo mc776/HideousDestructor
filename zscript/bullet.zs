@@ -197,7 +197,6 @@ class HDB_bronto:HDBulletActor{
 				gibradius:16,gibamount:random(4,20),
 				source:target
 			);
-			if(tracer&&tracer.bcorpse)tracer.A_SetInventory("SawGib",tracer.countinv("SawGib")+100);
 			DistantQuaker.Quake(self,3,35,256,12);
 
 			if(max(abs(pos.x),abs(pos.y))>=32768)return;

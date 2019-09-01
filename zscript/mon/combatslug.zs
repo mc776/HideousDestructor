@@ -251,26 +251,14 @@ class CombatSlug:HDMobBase replaces Fatso{
 			balwaystelefrag=true; //not needed?
 		}stop;
 	raise:
-		FATT T 0{
-			if(countinv("VileCount")<2){
-				a_die("notvileenough");
-				return;
-			}
-			hdmobai.CorpseFlags(self,false,true);
-			A_TakeInventory("VileCount");
-		}
 		FATT ST 14 A_SpawnItemEx("MegaBloodSplatter",
 			frandom(-1,1),frandom(-1,1),frandom(10,16),
 			vel.x,vel.y,vel.z,0,SXF_NOCHECKPOSITION
 		);
-		FATT TTSSRRQPONMLK 5;
+		FATT TSR 10;
+		FATT QPONMLK 5;
 		goto see;
 	death.notvileenough:
-		FATT S 0{
-			A_NoBlocking();
-			hdmobai.CorpseFlags(self);
-			A_GiveInventory("VileCount");
-		}
 		FATT STST 14 A_SpawnItemEx("MegaBloodSplatter",
 			frandom(-1,1),frandom(-1,1),frandom(10,16),
 			vel.x,vel.y,vel.z,0,SXF_NOCHECKPOSITION

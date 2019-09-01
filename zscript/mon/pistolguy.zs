@@ -355,7 +355,7 @@ class UndeadHomeboy:HDMobMan{
 		#### OPQRST 5;
 		goto xdead;
 	xdeath:
-		#### M 5{hdmobai.corpseflags(self,true);}
+		#### M 5;
 		#### N 5{
 			spawn("MegaBloodSplatter",pos+(0,0,34),ALLOW_REPLACE);
 			A_XScream();
@@ -369,8 +369,6 @@ class UndeadHomeboy:HDMobMan{
 		#### U 5 canraise A_JumpIf(abs(vel.z)>=2.,"xdead");
 		wait;
 	raise:
-		#### A 0{hdmobai.corpseflags(self,true,true);}
-		#### A 0 A_JumpIfInventory("IsGibbed",1,"RaiseGibbed");
 		#### L 4 spawn("MegaBloodSplatter",pos+(0,0,34),ALLOW_REPLACE);
 		#### LK 6;
 		#### JIH 4;
@@ -382,9 +380,7 @@ class UndeadHomeboy:HDMobMan{
 		#### PONM 4;
 		#### L 0 A_Die("Ungibbed");
 	death.ungibbed:
-		#### HI 5;
-		#### J 5 A_NoBlocking();
-		#### K 5;
+		#### HIJK 5;
 		goto dead;
 	}
 }

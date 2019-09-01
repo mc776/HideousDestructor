@@ -317,7 +317,6 @@ class HDSawPuff:IdleDummy{
 				Lumberjack(target.findinventory("Lumberjack")).weaponstatus[0]|=CSAWF_CHOPPINGFLESH;
 			}
 			if(tracer){
-				if(tracer.bcorpse)hdf.give(tracer,"SawGib",random(5,10));
 				if(tracer.bnoblood)spawn("BulletPuffMedium",pos,ALLOW_REPLACE);
 				else hdwound.inflict(tracer,random(1,7));
 			}

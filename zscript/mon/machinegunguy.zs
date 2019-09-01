@@ -414,7 +414,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		goto xdead;
 
 	xdeath:
-		CPOS O 5{hdmobai.corpseflags(self,true);}
+		CPOS O 5;
 		CPOS P 3{
 			A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
 			A_XScream();
@@ -429,7 +429,6 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 			if(abs(vel.z)>1)setstatelabel("dead");    
 		}wait;
 	raise:
-		CPOS N 0{hdmobai.corpseflags(self,true,true);}
 		CPOS N 2 A_SpawnItemEx("MegaBloodSplatter",0,0,4,0,0,3,0,SXF_NOCHECKPOSITION);
 		CPOS NML 6;
 		CPOS KJIH 4;
@@ -441,10 +440,9 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		CPOS POH 5;
 		CPOS H 5 A_Die("ungibbed");
 	death.ungibbed:
-		CPOS H 5{hdmobai.CorpseFlags(self);}
+		CPOS H 5;
 		CPOS I 5 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
-		CPOS J 5 A_NoBlocking();
-		CPOS KLM 5;
+		CPOS JKLM 5;
 		goto dead;
 	}
 }

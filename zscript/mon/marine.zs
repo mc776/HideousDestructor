@@ -909,7 +909,6 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 			lastinginjury=random(0,(lastinginjury>>3));
 			A_SetSolid();
 			if(bfriendly)bpushable=true;
-			hdmobai.corpseflags(self,true,true);
 		}
 		#### MMK 7 A_SpawnItemEx("MegaBloodSplatter",0,0,4,
 			vel.x,vel.y,vel.z,0,
@@ -937,10 +936,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 
 	xdeath:
 		---- A 0 A_DeathZombieZombieDeath();
-		#### O 5{
-			bpushable=false;
-			hdmobai.corpseflags(self,true);
-		}
+		#### O 5;
 		#### P 5{
 			A_SpawnItemEx("MegaBloodSplatter",0,0,34,flags:SXF_NOCHECKPOSITION);
 			A_XScream();
@@ -955,7 +951,6 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		#### W -1 canraise;
 		stop;
 	death.raisebotch:
-		#### O 0{hdmobai.corpseflags(self,true);}
 	xxxdeath:
 		---- A 0 A_DeathZombieZombieDeath();
 		#### O 5{
@@ -1165,22 +1160,16 @@ class DeadRifleman:HDMarine replaces DeadMarine{
 	}
 	states{
 	death.spawndead:
-		---- A 0{
-			A_NoBlocking();
-			hdmobai.corpseflags(self);
-			givearmour(0.6,0.12,0.1);
-		}goto dead;
+		---- A 0 givearmour(0.6,0.12,0.1);
+		goto dead;
 	}
 }
 class ReallyDeadRifleman:DeadRifleman replaces GibbedMarine{
 	states{
 	death.spawndead:
 		---- A 0{
-			A_NoBlocking();
-			hdmobai.corpseflags(self);
 			A_UnsetShootable();
 			timesdied++;
-			A_GiveInventory("IsGibbed");
 		}goto xdead;
 	}
 }

@@ -167,10 +167,6 @@ class PainBringer:PainMonster replaces HellKnight{
 		BOS2 N 8;
 		BOS2 O -1 A_BossDeath();
 	raise:
-		BOS2 I 0{
-			hdmobai.corpseflags(self,false,true);
-			hdf.give(self,"VileCount",1);
-		}
 		BOS2 ONMLKJI 5;
 		BOS2 H 8 A_JumpIfInventory("VileCount",2,"ReallyRaise");
 		BOS2 H 0 A_PlaySound("knight/sight",CHAN_VOICE);
@@ -256,9 +252,6 @@ class BaleBall:hdfireball{
 			else if(tracer&&blockingmobj==tracer){
 				vel.z=2;
 				tracer.damagemobj(self,target,random(16,32),"balefire");
-				if(tracer&&tracer.bcorpse){
-					hdf.give(tracer,"SawGib",random(10,20));
-				}
 				alpha=1;scale*=1.2;
 				setstatelabel("burn");
 			}
@@ -283,9 +276,7 @@ class BaleBall:hdfireball{
 			setxyz(tracer.pos+(frandom(-trad,trad),frandom(-trad,trad),frandom(tht*0.5,tht)));
 
 			if(alpha>0.3){
-				if(tracer.bcorpse){
-					hdf.give(tracer,"SawGib",random(1,3));
-				}else tracer.damagemobj(self,target,random(1,3),"balefire");
+				tracer.damagemobj(self,target,random(1,3),"balefire");
 			}else{
 				A_Immolate(tracer,target,random(10,20));
 				destroy();

@@ -202,8 +202,6 @@ class TechnoSpider:HDMobBase replaces Arachnotron{
 	xdeath:
 		stop;
 	raise:
-		---- A 0{hdmobai.corpseflags(self);}
-		---- A 0 A_GiveInventory("VileCount");
 		BSPI PONMLKJ 5;
 		---- A 0 A_JumpIfInventory("VileCount",3,"ReallyRaise");
 		BSPI I 8;
@@ -212,7 +210,6 @@ class TechnoSpider:HDMobBase replaces Arachnotron{
 	notvileenough:
 		BSPI I 0 A_Die();
 	neededmorevile:
-		---- A 0{hdmobai.corpseflags(self);}
 		BSPI P -1;
 	reallyraise:
 		BSPI I 5 A_TakeInventory("VileCount");

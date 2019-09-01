@@ -233,10 +233,7 @@ class HoopBubble:HDMobMan replaces WolfensteinSS{
 		SSWV QRSTU 5;
 		goto xdead;
 	xdeath:
-		SSWV N 5{
-			hdmobai.corpseflags(self,true);
-			A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
-		}
+		SSWV N 5 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
 		SSWV O 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
 		SSWV O 5 A_XScream();
 		SSWV P 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
@@ -249,13 +246,10 @@ class HoopBubble:HDMobMan replaces WolfensteinSS{
 		SSWV V 5 canraise A_JumpIf(abs(vel.z)>=2,"xdead");
 		wait;
 	raise:
-		SSWV M 4{
-			hdmobai.corpseflags(self,true,true);
-			A_SpawnItemEx("MegaBloodSplatter",0,0,4,
-				vel.x,vel.y,vel.z+3,
-				0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM
-			);
-		}
+		SSWV M 4 A_SpawnItemEx("MegaBloodSplatter",0,0,4,
+			vel.x,vel.y,vel.z+3,
+			0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM
+		);
 		SSWV MLK 6;
 		SSWV JIH 4;
 		goto see;
@@ -269,8 +263,7 @@ class HoopBubble:HDMobMan replaces WolfensteinSS{
 		SSWV PON 4;
 		SSWV H 4 A_Die("ungibbed");
 	death.ungibbed:
-		SSWV IJ 5;
-		SSWV K 5 A_NoBlocking();
+		SSWV IJK 5;
 		goto dead;
 	}
 }

@@ -479,7 +479,7 @@ class ZombieStormtrooper:HDMobMan{
 		#### OPQRST 5;
 		goto xdead;
 	xdeath:
-		#### M 5{hdmobai.corpseflags(self,true);}
+		#### M 5;
 		#### N 5{
 			spawn("MegaBloodSplatter",pos+(0,0,34),ALLOW_REPLACE);
 			A_XScream();
@@ -494,7 +494,6 @@ class ZombieStormtrooper:HDMobMan{
 		wait;
 	raise:
 		#### A 0{
-			hdmobai.corpseflags(self,true,true);
 			jammed=false;
 		}
 		#### A 0 A_JumpIfInventory("IsGibbed",1,"RaiseGibbed");
@@ -549,11 +548,7 @@ class DeadZombieStormtrooper:ZombieStormtrooper replaces DeadZombieMan{
 	states{
 	death.spawndead:
 		SPOS A 0;
-		POSS A 0{
-			A_CheckFreedoomSprite();
-			hdmobai.CorpseFlags(self);
-			bnodropoff=false;
-		}
+		POSS A 0 A_CheckFreedoomSprite();
 		goto dead;
 	}
 }

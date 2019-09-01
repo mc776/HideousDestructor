@@ -174,7 +174,6 @@ class Boner:HDMobBase replaces Revenant{
 		SKEL L 5 A_Pain();
 		goto see;
 	death:
-		---- A 0 {hdmobai.corpseflags(self);}
 		TNT1 A 0 A_SpawnItemEx("tempshieldpuff",flags:SXF_NOCHECKPOSITION|SXF_SETMASTER);
 		SKEL LM 7;
 		TNT1 A 0 A_SpawnItemEx("tempshield2puff",flags:SXF_NOCHECKPOSITION|SXF_SETMASTER);
@@ -186,7 +185,6 @@ class Boner:HDMobBase replaces Revenant{
 		SKEL Q 5 canraise A_JumpIf(floorz<=pos.z-6,"dead");
 		wait;
 	raise:
-		---- A 0 {hdmobai.corpseflags(self,false,true);}
 		SKEL Q 5;
 		SKEL PONML 5;
 		goto see;

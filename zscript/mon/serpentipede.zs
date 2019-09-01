@@ -346,8 +346,6 @@ class Serpentipede:HDMobBase{
 		#### M 5 canraise A_JumpIf(abs(vel.z)>=2,"Dead");
 		loop;
 	xxxdeath:
-		---- A 0 A_GiveInventory("IsGibbed",1);
-		---- A 0 {hdmobai.corpseflags(self,true);}
 		#### N 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
 		#### O 5 A_XScream();
 		#### O 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
@@ -358,7 +356,6 @@ class Serpentipede:HDMobBase{
 		goto XDead;
 	XDeath:
 		---- A 0 A_Gravity();
-		---- A 0 {hdmobai.corpseflags(self,true);}
 		#### N 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
 		#### O 5 A_XScream();
 		#### O 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
@@ -372,7 +369,6 @@ class Serpentipede:HDMobBase{
 		#### U 5 canraise A_JumpIf(abs(vel.z)>=2,"XDead");
 		wait;
 	Raise:
-		---- A 0 {hdmobai.corpseflags(self,true,true);}
 		#### M 4 A_SpawnItemEx("MegaBloodSplatter",0,0,4,vel.x,vel.y,vel.z+3,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);
 		#### ML 6;
 		#### KJI 4;
@@ -548,7 +544,6 @@ class Regentipede:Serpentipede{
 		---- A 0 A_SpawnItemEx("BFGVileShard",0,0,24,0,0,8,0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS,188);
 		goto super::xdeath;
 	raise:
-		---- A 0 {hdmobai.corpseflags(self,true,true);}
 		#### M 4 A_SpawnItemEx("MegaBloodSplatter",0,0,4,vel.x,vel.y,vel.z+3,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);
 		#### ML 6;
 		#### KJI 4;

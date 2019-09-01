@@ -500,11 +500,8 @@ class CaeloBite:HDMobBase replaces Cacodemon{
 		goto see;
 	death.spawndead:
 		HEAD G 0{
-			bpushable=false;
 			bfloatbob=false;
 			bnogravity=false;
-			hdmobai.corpseflags(self);
-			A_NoBlocking();
 		}goto dead;
 	death:
 		HEAD F 3{
@@ -540,8 +537,6 @@ class CaeloBite:HDMobBase replaces Cacodemon{
 	raise:
 		---- A 0{
 			accuracy=0;
-			hdmobai.corpseflags(self,false,true);
-			bpushable=true;
 		}
 		HEAD L 8 A_UnSetFloorClip;
 		HEAD KJIHG 8;
