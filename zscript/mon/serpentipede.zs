@@ -340,7 +340,8 @@ class Serpentipede:HDMobBase{
 		#### J 6 A_Scream();
 		#### K 5;
 		#### L 5 NoBlockWepDrop();
-	Dead:
+	dead:
+	death.spawndead:
 		#### L 3 canraise A_JumpIf(abs(vel.z)<2,1);
 		loop;
 		#### M 5 canraise A_JumpIf(abs(vel.z)>=2,"Dead");
@@ -353,8 +354,8 @@ class Serpentipede:HDMobBase{
 		#### P 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
 		#### QRS 5;
 		#### T 5;
-		goto XDead;
-	XDeath:
+		goto xdead;
+	xdeath:
 		---- A 0 A_Gravity();
 		#### N 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
 		#### O 5 A_XScream();
@@ -363,30 +364,22 @@ class Serpentipede:HDMobBase{
 		#### P 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
 		#### QRS 5;
 		#### T 5;
-	XDead:
+	xdead:
 		#### T 5 canraise A_JumpIf(abs(vel.z)<2,1);
 		wait;
 		#### U 5 canraise A_JumpIf(abs(vel.z)>=2,"XDead");
 		wait;
-	Raise:
+	raise:
 		#### M 4 A_SpawnItemEx("MegaBloodSplatter",0,0,4,vel.x,vel.y,vel.z+3,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);
 		#### ML 6;
 		#### KJI 4;
 		goto see;
-	RaiseGibbed:
+	ungib:
 		#### U 6 A_SpawnItemEx("MegaBloodSplatter",0,0,4,vel.x,vel.y,vel.z+3,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);
 		#### UT 8;
 		#### SRQ 6;
-		#### PON 4;
-		#### H 4 A_Die("Ungibbed");
-	Death.Ungibbed:
-		#### IJ 6;
-		#### K 5;
-		#### L 5 A_NoBlocking();
-		goto dead;
-	death.spawndead:
-		---- A 0;
-		goto dead;
+		#### PONH 4;
+		goto see;
 	}
 }
 

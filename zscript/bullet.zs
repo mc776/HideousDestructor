@@ -977,7 +977,7 @@ class HDBulletActor:HDActor{
 
 		//decelerate
 		double shortpen=pen-penshell;
-		if(shortpen<=0){
+		if(shortpen<0.1){
 			puff();
 			bulletdie();
 			return;

@@ -145,6 +145,12 @@ extend class HDMobBase{
 			return;
 		}
 
+		//this must be done here and not AttemptRaise because reasons
+		if(bgibbed){
+			bgibbed=false;
+			if(findstatelabel("ungib"))setstatelabel("ungib");
+		}
+
 		if(stunned>0){
 			stunned-=max(1,(spawnhealth()>>7));
 			if(stunned<1){
@@ -201,24 +207,12 @@ extend class HDMobBase{
 		else bshootable=false;
 
 		//set height
-		//TODO: replace all tempshields
 		if(bshootable)A_SetSize(-1,liveheight);
 	}
 
 
 	//should be placed at the start of every raise state
 	void AttemptRaise(){
-		if(!findstate("raise"))return;
-		if(bgibbed){
-			bgibbed=false;
-			A_Die("ungib");
-		}
-		bodydamage=max(0,bodydamage-100);
-		if(bodydamage>(health<<2)/10){
-			A_Die("needmore");
-			return;
-		}
-
 		//reset corpse stuff
 		let deff=getdefaultbytype(getclass());
 		bnodropoff=deff.bnodropoff;
@@ -232,10 +226,14 @@ extend class HDMobBase{
 
 		if(!bnoshootablecorpse)bshootable=true;
 		deathsound=getdefaultbytype(getclass()).deathsound;
-		let aff=new("AngelFire");
-		aff.master=self;aff.ticker=0;
+
+		bodydamage=max(0,bodydamage-666);
+		if(hd_debug)console.printf(getclassname().." revived with remaining damage: "..bodydamage);
 
 		resetdamagecounters();
+
+		let aff=new("AngelFire");
+		aff.master=self;aff.ticker=0;
 	}
 	states{
 	death.needmore:
