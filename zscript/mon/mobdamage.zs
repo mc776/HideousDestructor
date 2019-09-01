@@ -148,7 +148,7 @@ extend class HDMobBase{
 		//this must be done here and not AttemptRaise because reasons
 		if(bgibbed){
 			bgibbed=false;
-			if(findstatelabel("ungib"))setstatelabel("ungib");
+			if(findstate("ungib"))setstatelabel("ungib");
 		}
 
 		if(stunned>0){
@@ -236,9 +236,9 @@ extend class HDMobBase{
 		aff.master=self;aff.ticker=0;
 	}
 	states{
-	death.needmore:
-		---- A 0 A_Jump(256,"dead");
-		stop;
+	checkraise:
+		---- A 0 damagemobj(self,self,1,"maxhpdrain",DMG_FORCED|DMG_NO_FACTOR);
+		goto see;
 	}
 
 }

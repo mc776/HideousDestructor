@@ -373,13 +373,13 @@ class Serpentipede:HDMobBase{
 		#### M 4 A_SpawnItemEx("MegaBloodSplatter",0,0,4,vel.x,vel.y,vel.z+3,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);
 		#### ML 6;
 		#### KJI 4;
-		goto see;
+		goto checkraise;
 	ungib:
 		#### U 6 A_SpawnItemEx("MegaBloodSplatter",0,0,4,vel.x,vel.y,vel.z+3,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);
 		#### UT 8;
 		#### SRQ 6;
 		#### PONH 4;
-		goto see;
+		goto checkraise;
 	}
 }
 
