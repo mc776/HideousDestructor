@@ -203,11 +203,7 @@ class HDPlayerCorpse:HDMobMan{
 		#### PQRSTUV 5;
 		#### W -1;
 	xxxdeath:
-		#### O 5{
-			bshootable=false;
-			A_GiveInventory("IsGibbed");
-			A_SpawnItemEx("MegaBloodSplatter",0,0,34,flags:SXF_NOCHECKPOSITION);
-		}
+		#### O 5 A_SpawnItemEx("MegaBloodSplatter",0,0,34,flags:SXF_NOCHECKPOSITION);
 		#### P 5 A_XScream();
 		#### QR 5 A_SpawnItemEx("MegaBloodSplatter",0,0,34,flags:SXF_NOCHECKPOSITION);
 		#### STUV 5;

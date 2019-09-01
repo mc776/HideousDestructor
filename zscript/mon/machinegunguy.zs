@@ -400,11 +400,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 			if(abs(vel.z)>1)setstatelabel("dead");
 		}wait;
 	xxxdeath:
-		CPOS L 3{
-			bshootable=false;
-			A_GiveInventory("IsGibbed");
-		}
-		CPOS KO 3;
+		CPOS LKO 3;
 		CPOS P 3{
 			A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
 			A_XScream();

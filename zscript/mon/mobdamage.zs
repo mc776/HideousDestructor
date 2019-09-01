@@ -104,7 +104,6 @@ extend class HDMobBase{
 				health<1
 				&&bodydamage>(sphlth<<HDMOB_GIBSHIFT)
 			){
-				A_GiveInventory("IsGibbed"); //deprecated, needs to be replaced for all monsters
 				bgibbed=true;
 				bshootable=false;
 				if(findstate("xxxdeath",true))setstatelabel("xxxdeath");
@@ -120,7 +119,7 @@ extend class HDMobBase{
 
 
 	enum MobDamage{
-		HDMOB_GIBSHIFT=7,
+		HDMOB_GIBSHIFT=4,
 	}
 
 
@@ -199,7 +198,7 @@ extend class HDMobBase{
 		maxstepheight=deathheight*0.1;
 
 		if(!bgibbed)bshootable=!bnoshootablecorpse;
-		else A_GiveInventory("IsGibbed"); //delete this line later
+		else bshootable=false;
 
 		//set height
 		//TODO: replace all tempshields

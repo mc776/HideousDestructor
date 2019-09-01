@@ -468,10 +468,7 @@ class ZombieStormtrooper:HDMobMan{
 		#### L 5 canraise{if(abs(vel.z)>=2.)setstatelabel("dead");}
 		wait;
 	xxxdeath:
-		#### M 5{
-			bshootable=false;
-			A_GiveInventory("IsGibbed");
-		}
+		#### M 5;
 		#### N 5{
 			spawn("MegaBloodSplatter",pos+(0,0,34),ALLOW_REPLACE);
 			A_XScream();
@@ -496,7 +493,6 @@ class ZombieStormtrooper:HDMobMan{
 		#### A 0{
 			jammed=false;
 		}
-		#### A 0 A_JumpIfInventory("IsGibbed",1,"RaiseGibbed");
 		#### L 4 spawn("MegaBloodSplatter",pos+(0,0,34),ALLOW_REPLACE);
 		#### LK 6;
 		#### JIH 4;

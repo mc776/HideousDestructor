@@ -220,11 +220,7 @@ class HoopBubble:HDMobMan replaces WolfensteinSS{
 		SSWV M 5 A_JumpIf(abs(vel.z)>=2,"dead");
 		loop;
 	xxxdeath:
-		SSWV N 5{
-			bshootable=false;
-			A_GiveInventory("IsGibbed",1);
-			A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
-		}
+		SSWV N 5 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
 		SSWV O 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
 		SSWV O 5 A_XScream();
 		SSWV P 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);

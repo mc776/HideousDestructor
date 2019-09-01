@@ -152,7 +152,7 @@ class HDB_bronto:HDBulletActor{
 	default{
 		pushfactor 0.05;
 		mass 5000;
-		speed 700;
+		speed 500;
 		accuracy 600;
 		stamina 3700;
 
@@ -372,6 +372,8 @@ class HDBulletActor:HDActor{
 				bbb.angle+=caller.angle;
 				bbb.pitch+=caller.pitch;
 			}
+			if(aimoffx)bbb.angle+=aimoffx;
+			if(aimoffy)bbb.pitch+=aimoffy;
 
 			bbb.vel=caller.vel;
 			double forward=bbb.speed*cos(bbb.pitch);

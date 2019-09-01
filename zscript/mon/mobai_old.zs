@@ -36,10 +36,7 @@ struct HDMobAI play{
 			caller.bnotautoaimed=false;
 			caller.balwaystelefrag=false;
 			caller.deathsound=getdefaultbytype(caller.getclass()).deathsound;
-			if(gibbed&&caller.findinventory("IsGibbed")){
-				caller.setstatelabel("raisegibbed");
-				caller.A_TakeInventory("IsGibbed");
-			}
+			if(gibbed)caller.setstatelabel("raisegibbed");
 			caller.bshootable=true;
 			let aff=new("AngelFire");
 			aff.master=caller;aff.ticker=0;
@@ -50,8 +47,7 @@ struct HDMobAI play{
 			caller.maxstepheight=caller.height*0.1;
 			caller.bnotautoaimed=true;
 			caller.balwaystelefrag=true;
-			if(gibbed)caller.A_GiveInventory("IsGibbed");
-			else caller.bshootable=true;
+			caller.bshootable=true;
 		}
 	}
 

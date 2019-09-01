@@ -249,12 +249,10 @@ class Brontornis:HDWeapon{
 			A_PlaySound("weapons/bronto",CHAN_WEAPON);
 			A_PlaySound("weapons/bronto",6);
 			A_PlaySound("weapons/bronto2",7);
-			actor tb;int grb;
-			[grb,tb]=A_SpawnItemEx("TerrorBolt",
-				0,0,height-6,vel.x,vel.y,vel.z,0,
-				SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
+			let tb=HDBulletActor.FireBullet(
+				self,"HDB_bronto",
+				aimoffy:(invoker.weaponstatus[0]&BRONF_ZOOM)?-2:0
 			);
-			if(invoker.weaponstatus[0]&BRONF_ZOOM)tb.pitch-=2;
 			invoker.weaponstatus[BRONS_CHAMBER]=1;
 			invoker.weaponstatus[BRONS_HEAT]+=32;
 		}
