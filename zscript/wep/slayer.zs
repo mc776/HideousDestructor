@@ -30,9 +30,11 @@ class Slayer:HDShotgun replaces HDShotgun{
 		}
 		spread*=shotpower;
 		speedfactor*=shotpower;
-		HDBulletActor.FireBullet(caller,"HDB_wad",xyofs:right?0.8:-0.8,aimoffx:right?0.2:-0.2);
-		let p=HDBulletActor.FireBullet(caller,"HDB_00",xyofs:right?0.8:-0.8,
-			spread:spread,aimoffx:right?0.2:-0.2,speedfactor:speedfactor,amount:7
+		vector2 barreladjust=(0.8,-0.05);
+		if(right)barreladjust=-barreladjust;
+		HDBulletActor.FireBullet(caller,"HDB_wad",xyofs:barreladjust.x,aimoffx:barreladjust.y);
+		let p=HDBulletActor.FireBullet(caller,"HDB_00",xyofs:barreladjust.x,
+			spread:spread,aimoffx:barreladjust.y,speedfactor:speedfactor,amount:7
 		);
 		p.spawn("DistantShotgun",p.pos,ALLOW_REPLACE);
 	}
