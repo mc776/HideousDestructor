@@ -164,6 +164,7 @@ class HDPistol:HDHandgun replaces Pistol{
 		}
 	}
 	override void ForceBasicAmmo(){
+		owner.A_TakeInventory("HDPistolAmmo");
 		owner.A_TakeInventory("HD9mMag15");
 		owner.A_GiveInventory("HD9mMag15");
 	}

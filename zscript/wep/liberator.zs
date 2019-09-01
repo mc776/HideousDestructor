@@ -421,8 +421,9 @@ class LiberatorRifle:AutoReloadingThingy{
 		}
 	}
 	override void ForceBasicAmmo(){
-		owner.A_TakeInventory("SevenMilBrass");
 		owner.A_TakeInventory("SevenMilAmmo");
+		owner.A_TakeInventory("SevenMilBrass");
+		owner.A_TakeInventory("FourMilAmmo");
 		owner.A_TakeInventory("HD7mMag");
 		owner.A_GiveInventory("HD7mMag");
 		if(!(weaponstatus[0]&LIBF_NOLAUNCHER))owner.A_SetInventory("HDRocketAmmo",1);

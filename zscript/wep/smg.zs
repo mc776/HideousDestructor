@@ -42,6 +42,7 @@ class HDSMG:HDWeapon{
 		}
 	}
 	override void ForceBasicAmmo(){
+		owner.A_TakeInventory("HDPistolAmmo");
 		owner.A_TakeInventory("HD9mMag30");
 		owner.A_GiveInventory("HD9mMag30");
 	}

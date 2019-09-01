@@ -304,6 +304,7 @@ class Vulcanette:HDWeapon{
 		}
 	}
 	override void ForceBasicAmmo(){
+		owner.A_TakeInventory("FourMilAmmo");
 		owner.A_TakeInventory("HD4mMag");
 		owner.A_GiveInventory("HD4mMag",5);
 		owner.A_TakeInventory("HDBattery");
