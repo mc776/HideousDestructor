@@ -45,6 +45,8 @@ extend class HDMobBase{
 	){
 		int sphlth=spawnhealth();
 
+
+//TODO: DELETE THIS, but in a way such that a final proper raise does not disappear the actor
 		//force death if body appears to be totally shredded
 		if(health>0&&bodydamage>sphlth){
 			int ret=super.damagemobj(inflictor,source,damage,mod,flags,angle);
