@@ -1131,7 +1131,7 @@ if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channe
 		){
 			if(hd_debug)console.printf("CRIT!");
 			int critdmg=(chdmg+random((stamina>>4),(stamina>>3)+(int(speed)>>5)))*(1.+pushfactor);
-			if(bnoextremedeath)critdmg=min(critdmg,hitactor.gibhealth+hitactor.health-1);
+			if(bnoextremedeath)critdmg=min(critdmg,hitactor.health+1);
 			hitactor.damagemobj(self,target,critdmg,"Piercing",DMG_THRUSTLESS);
 			forcepain(hitactor);
 			suckingwound=true;

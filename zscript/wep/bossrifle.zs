@@ -190,6 +190,8 @@ class BossRifle:HDWeapon{
 		}
 	}
 	override void ForceBasicAmmo(){
+		owner.A_SetInventory("SevenMilAmmo",11);
+		owner.A_TakeInventory("SevenMilBrass");
 		owner.A_TakeInventory("HD7mClip");
 		owner.A_GiveInventory("HD7mClip");
 	}
