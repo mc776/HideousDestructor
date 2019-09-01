@@ -194,7 +194,6 @@ class HDB_bronto:HDBulletActor{
 			A_HDBlast(
 				fragradius:256,fragtype:"HDB_scrap",fragvariance:3.,
 				immolateradius:64,immolateamount:random(4,20),immolatechance:32,
-				gibradius:16,gibamount:random(4,20),
 				source:target
 			);
 			DistantQuaker.Quake(self,3,35,256,12);

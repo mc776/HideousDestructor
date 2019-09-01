@@ -99,7 +99,6 @@ class FooFighter:HDActor{
 					blastradius:128,blastdamage:128,blastdamagetype:"Electro",
 					pushradius:256,pushamount:512,pushmass:true,
 					immolateradius:72,immolateamount:random(30,80),immolatechance:40,
-					gibradius:64,gibamount:3,
 					hurtspecies:false
 				);
 				spawn("distantrifle",pos,ALLOW_REPLACE);
@@ -596,8 +595,7 @@ class kekb:HDBullet{
 		A_HDBlast(
 			320,random(24,42)*10,128,"SmallArms0",
 			pushradius:420,pushamount:420,
-			immolateradius:256,immolateamount:-200,immolatechance:90,
-			gibradius:64,gibamount:random(2,4)*30
+			immolateradius:256,immolateamount:-200,immolatechance:90
 		);
 		A_SprayDecal("BusterScorch",14);
 		spawn("DistantRocket",pos,ALLOW_REPLACE);

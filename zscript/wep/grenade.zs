@@ -483,8 +483,7 @@ class HDFragGrenadeRoller:HDActor{
 			bsolid=false;bpushable=false;bmissile=false;bnointeraction=true;bshootable=false;
 			A_HDBlast(
 				pushradius:256,pushamount:128,fullpushradius:96,
-				fragradius:HDCONST_SPEEDOFSOUND,
-				gibradius:24,gibamount:random(2,9)*10
+				fragradius:HDCONST_SPEEDOFSOUND
 			);
 			DistantQuaker.Quake(self,4,35,512,10);
 			A_PlaySound("world/explode",1,7);

@@ -45,16 +45,6 @@ extend class HDMobBase{
 	){
 		int sphlth=spawnhealth();
 
-
-//TODO: DELETE THIS, but in a way such that a final proper raise does not disappear the actor
-		//force death if body appears to be totally shredded
-		if(health>0&&bodydamage>sphlth){
-			int ret=super.damagemobj(inflictor,source,damage,mod,flags,angle);
-			if(self)super.damagemobj(inflictor,source,health,mod,DMG_THRUSTLESS|DMG_NO_FACTOR,angle);
-			return ret;
-		}
-
-
 		//rapid damage stacking
 		if(pain>0)damage+=(pain>>2);
 
@@ -240,7 +230,8 @@ extend class HDMobBase{
 	states{
 	checkraise:
 		---- A 0 damagemobj(self,self,1,"maxhpdrain",DMG_FORCED|DMG_NO_FACTOR);
-		goto see;
+		---- A 0 A_Jump(256,"see");
+		stop;
 	}
 
 }

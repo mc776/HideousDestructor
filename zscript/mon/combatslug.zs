@@ -75,7 +75,6 @@ class manjuice:hdfireball{
 			A_HDBlast(
 				128,66,16,"thermal",
 				immolateradius:frandom(96,196),random(20,90),42,
-				16,1,
 				false
 			);
 			A_SpawnChunks("HDSmokeChunk",random(2,4),6,20);

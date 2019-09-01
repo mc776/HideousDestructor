@@ -10,7 +10,6 @@ extend class HDActor{
 		double pushradius=0,double pushamount=0,double fullpushradius=0,bool pushmass=true,
 		double fragradius=0,class<HDBulletActor> fragtype="HDB_frag",double fragvariance=0.05,double fragspeedfactor=1.,
 		double immolateradius=0,int immolateamount=1,int immolatechance=100,
-		double gibradius=0,int gibamount=1, //TODO: delete these and references to them
 		bool hurtspecies=true,
 		actor source=null,
 		bool passwalls=false
@@ -20,7 +19,6 @@ extend class HDActor{
 			pushradius,pushamount,fullpushradius,pushmass,
 			fragradius,fragtype,fragvariance,fragspeedfactor,
 			immolateradius,immolateamount,immolatechance,
-			gibradius,gibamount,
 			hurtspecies,
 			source,
 			passwalls
@@ -38,7 +36,6 @@ extend class HDActor{
 		double pushradius=0,double pushamount=0,double fullpushradius=0,bool pushmass=true,
 		double fragradius=0,class<HDBulletActor> fragtype="HDB_frag",double fragvariance=0.05,double fragspeedfactor=1.,
 		double immolateradius=0,int immolateamount=1,int immolatechance=100,
-		double gibradius=0,int gibamount=1,
 		bool hurtspecies=true,
 		actor source=null,
 		bool passwalls=false
@@ -47,8 +44,7 @@ extend class HDActor{
 		int bigradius=max(
 			blastradius,
 			fragradius,
-			immolateradius,
-			gibradius
+			immolateradius
 		);
 
 		//initialize things to be used in the iterator

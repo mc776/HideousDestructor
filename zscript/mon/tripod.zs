@@ -34,8 +34,7 @@ class Roboball:SlowProjectile{
 				pushradius:256,pushamount:256,fullpushradius:96,
 //				fragradius:256,fragdamage:random(160,200),
 				immolateradius:128,immolateamount:random(3,60),
-				immolatechance:15,
-				gibradius:24,gibamount:random(1,8)*10
+				immolatechance:15
 			);
 
 			//hit map geometry

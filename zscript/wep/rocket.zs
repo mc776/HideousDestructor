@@ -99,8 +99,7 @@ class GyroGrenade:SlowProjectile{
 				fragradius:HDCONST_SPEEDOFSOUND,
 				fragvariance:(0.005*stamina),
 				immolateradius:128,immolateamount:random(3,60),
-				immolatechance:isrocket?random(1,stamina):25,
-				gibradius:16,gibamount:random(1,8)*10
+				immolatechance:isrocket?random(1,stamina):25
 			);
 			actor xpl=spawn("Gyrosploder",self.pos-(0,0,1),ALLOW_REPLACE);
 			xpl.target=target;xpl.master=master;xpl.stamina=stamina;
@@ -202,8 +201,7 @@ class HDHEAT:GyroGrenade{
 				fragradius:HDCONST_SPEEDOFSOUND,
 				fragvariance:(0.007*stamina),
 				immolateradius:128,immolateamount:random(3,60),
-				immolatechance:2,
-				gibradius:16,gibamount:random(1,8)*10
+				immolatechance:2
 			);
 			actor xpl=spawn("Gyrosploder",self.pos-(0,0,1),ALLOW_REPLACE);
 			xpl.target=target;xpl.master=master;xpl.stamina=stamina;
@@ -400,8 +398,7 @@ class DudRocket:HDUPK{
 				fragradius:HDCONST_SPEEDOFSOUND,
 				fragvariance:(0.005*stamina),
 				immolateradius:128,immolateamount:random(3,60),
-				immolatechance:random(1,25),
-				gibradius:16,gibamount:random(1,8)*10
+				immolatechance:random(1,25)
 			);
 			actor xpl=spawn("Gyrosploder",self.pos-(0,0,1),ALLOW_REPLACE);
 			xpl.target=target;xpl.master=master;xpl.stamina=stamina;

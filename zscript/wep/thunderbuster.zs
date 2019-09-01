@@ -517,8 +517,7 @@ class BeamSpot:HDActor{
 		A_HDBlast(
 			420,random(96,256),128,"SmallArms0",
 			pushradius:420,pushamount:256,
-			immolateradius:128,immolateamount:-200,immolatechance:90,
-			gibradius:64,gibamount:random(2,4)*30
+			immolateradius:128,immolateamount:-200,immolatechance:90
 		);
 		actor ltt=spawn("LingeringThunder",pos,ALLOW_REPLACE);
 		ltt.target=target;
@@ -646,8 +645,7 @@ class BeamSpotFlash:IdleDummy{
 		A_HDBlast(
 			n*2,random(1,n),n,"Electro",
 			n,-n,
-			immolateradius:n1,immolateamount:random(4,8)*(n2*-0.1),immolatechance:n,
-			gibradius:12,gibamount:random(4,n)
+			immolateradius:n1,immolateamount:random(4,8)*(n2*-0.1),immolatechance:n
 		);
 
 		pitch=frandom(80,90);
