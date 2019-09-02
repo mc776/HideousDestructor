@@ -165,24 +165,19 @@ class PainBringer:PainMonster replaces HellKnight{
 		BOS2 M 8;
 		BOS2 N 8;
 		BOS2 O -1 A_BossDeath();
-	raise:
-		BOS2 ONMLKJI 5;
-		BOS2 H 8 A_PlaySound("knight/sight",CHAN_VOICE);
-		BOS2 AAABB 3 A_Chase("NotVileEnough","NotVileEnough");
-	NotVileEnough:
-		BOS2 H 1{
-			A_StopSound(CHAN_BODY);
-			A_Die("NeedMoreVile");
-		}
-	Death.NeedMoreVile:
+		stop;
+	death.maxhpdrain:
 		BOS2 H 5 A_PlaySound("misc/gibbed",CHAN_BODY);
 		BOS2 HIJK 5;
 		BOS2 L 5 A_NoBlocking();
 		BOS2 MN 5;
 		BOS2 O -1;
-	ReallyRaise:
-		BOS2 H 5 A_PlaySound("knight/sight",CHAN_BODY);
-		goto see;
+		stop;
+	raise:
+		BOS2 ONMLKJI 5;
+		BOS2 H 8 A_PlaySound("knight/sight",CHAN_VOICE);
+		BOS2 AAABB 3 A_Chase();
+		goto checkraise;
 	}
 }
 

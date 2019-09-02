@@ -89,7 +89,10 @@ extend class HDMobBase{
 
 
 		//force death
-		if(bodydamage>sphlth)return super.damagemobj(inflictor,source,health,mod,flags,angle);
+		if(bodydamage>sphlth){
+			if(random(0,15))deathsound="";
+			return super.damagemobj(inflictor,source,health,mod,flags,angle);
+		}
 
 
 		//check for gibbing
@@ -261,3 +264,86 @@ extend class HDHandlers{
 }
 
 
+
+
+
+//a thinker that constantly bleeds
+class HDBleedingWound:Thinker{
+	bool hitvital;
+	actor bleeder;
+	int bleedrate;
+	int bleedpoints;
+	int ticker;
+	double zed;
+	enum bleednums{
+		BLEED_MAXTICS=40,
+	}
+	override void tick(){
+		if(
+			!bleedpoints
+			||!bleeder
+			||bleeder.health<1
+		){
+			destroy();
+			return;
+		}
+		if(bleeder.isfrozen())return;
+		if(ticker>0){
+			ticker--;
+			return;
+		}
+		bleedpoints--;
+		ticker=max(0,BLEED_MAXTICS-bleedrate);
+		int bleeds=(bleedrate>>4);
+		do{
+			bleeds--;
+			bool gbg;actor blood;
+			[gbg,blood]=bleeder.A_SpawnItemEx(bleeder.bloodtype,
+				frandom(-12,12),frandom(-12,12),
+				flags:SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
+			);
+			if(blood)blood.bambush=true;
+		}while(bleeds>0);
+		int bled=bleeder.damagemobj(bleeder,null,bleedrate,"bleedout",DMG_NO_PAIN|DMG_THRUSTLESS);
+		if(bleeder&&bleeder.health<1&&bleedrate<random(10,60))bleeder.deathsound="";
+	}
+	static void inflict(
+		actor bleeder,
+		int bleedpoints,
+		int bleedrate=17,
+		bool hitvital=false
+	){
+		//TODO: proper array of wounds for the player
+		if(hdplayerpawn(bleeder)){
+			let hpl=hdplayerpawn(bleeder);
+			if(hpl.countinv("SpiritualArmour")){
+				if(!random(0,7))hpl.A_TakeInventory("SpiritualArmour",1);
+				return;
+			}
+			hpl.woundcount+=bleedpoints;
+			return;
+		}
+
+		if(
+			!skill||hd_nobleed
+			||!bleeder.bshootable
+			||bleeder.bnoblood
+			||bleeder.bnoblooddecals
+			||bleeder.bnodamage
+			||bleeder.bdormant
+			||bleeder.health<1
+			||bleeder.bloodtype=="ShieldNeverBlood"
+			||(
+				hdmobbase(bleeder)
+				&&hdmobbase(bleeder).bdoesntbleed
+			)
+		)return;
+
+		let wwnd=new("HDBleedingWound");
+		wwnd.bleeder=bleeder;
+		wwnd.ticker=0;
+		wwnd.bleedrate=bleedrate;
+		if(hitvital)wwnd.bleedpoints=-1;
+		else wwnd.bleedpoints=bleedpoints;
+	}
+}
