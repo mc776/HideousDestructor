@@ -366,19 +366,16 @@ class UndeadHomeboy:HDMobMan{
 		#### U 5 canraise A_JumpIf(abs(vel.z)>=2.,"xdead");
 		wait;
 	raise:
-		#### L 4 spawn("MegaBloodSplatter",pos+(0,0,34),ALLOW_REPLACE);
+		#### L 4;
 		#### LK 6;
 		#### JIH 4;
-		goto see;
-	raisegibbed:
-		#### U 12 Spawn("MegaBloodSplatter",pos+(0,0,34),ALLOW_REPLACE);
+		goto checkraise;
+	ungib:
+		#### U 12;
 		#### T 8;
 		#### SRQ 6;
 		#### PONM 4;
-		#### L 0 A_Die("Ungibbed");
-	death.ungibbed:
-		#### HIJK 5;
-		goto dead;
+		goto checkraise;
 	}
 }
 

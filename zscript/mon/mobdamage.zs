@@ -162,7 +162,7 @@ extend class HDMobBase{
 		}
 
 		//regeneration
-		if(!(level.time&(1|2|4|8|16|32|64|128|256|512|1024)))GiveBody(1);
+		if(!(level.time&(1|2|4|8|16|32|64|128|256|512)))GiveBody(1);
 	}
 
 
@@ -204,6 +204,12 @@ extend class HDMobBase{
 
 
 	//should be placed at the start of every raise state
+	/*
+		states: raise, ungib, xxxdeath, dead, xdead
+		no special functions should be assigned to them to handle death/raise,
+		absent some very special behaviour like marine zombification.
+		raise and ungib should both terminate with goto checkraise.
+	*/
 	void AttemptRaise(){
 		//reset corpse stuff
 		let deff=getdefaultbytype(getclass());

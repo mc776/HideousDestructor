@@ -568,18 +568,12 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 	xxxdeath:
 		#### M 0 A_JumpIf(wep<0,"xxxdeath2");
 		#### M 5;
-		#### N 5{
-			spawn("MegaBloodSplatter",pos+(0,0,34),ALLOW_REPLACE);
-			A_XScream();
-		}
+		#### N 5 A_XScream();
 		#### OPQRST 5;
 		goto xdead;
 	xxxdeath2:
 		#### O 5;
-		#### P 5{
-			spawn("MegaBloodSplatter",pos+(0,0,34),ALLOW_REPLACE);
-			A_XScream();
-		}
+		#### P 5 A_XScream();
 		#### QRSTUV 5;
 		goto xdead2;
 	xdeath:
@@ -619,18 +613,12 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 		#### LK 6;
 		#### JIH 4;
 		goto see;
-	raisegibbed:
-		#### U 12 Spawn("MegaBloodSplatter",pos+(0,0,34),ALLOW_REPLACE);
+	ungib:
+		#### U 12;
 		#### T 8;
 		#### SRQ 6;
-		#### PONM 4;
-		#### L 0 A_Die("Ungibbed");
-	death.ungibbed:
-		#### H 5;
-		#### I 5;
-		#### J 5 A_NoBlocking();
-		#### K 5;
-		goto dead;
+		#### PON 4;
+		goto checkraise;
 	}
 }
 
