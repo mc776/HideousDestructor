@@ -81,8 +81,8 @@ extend class HDMobBase{
 
 
 		//make sure bodily integrity tracker is affected
-		if(bodydamage<(sphlth<<(HDMOB_GIBSHIFT+1)))bodydamage+=damage;
-
+		int sgh=sphlth+gibhealth;
+		if(bodydamage<(sgh<<(HDMOB_GIBSHIFT+1)))bodydamage+=damage;
 
 		if(hd_debug)console.printf(getclassname().." "..damage.." "..mod..", est. remain "..health-damage);
 
@@ -94,7 +94,7 @@ extend class HDMobBase{
 		){
 			if(
 				health<1
-				&&bodydamage>(sphlth<<HDMOB_GIBSHIFT)
+				&&bodydamage>(sgh<<HDMOB_GIBSHIFT)
 			){
 				bgibbed=true;
 				bshootable=false;
@@ -111,7 +111,7 @@ extend class HDMobBase{
 
 
 	enum MobDamage{
-		HDMOB_GIBSHIFT=4,
+		HDMOB_GIBSHIFT=2,
 	}
 
 

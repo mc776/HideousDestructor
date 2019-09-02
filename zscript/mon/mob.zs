@@ -21,6 +21,9 @@ class HDMobBase : HDActor{
 		radius 12;
 		gibhealth 100;
 		+dontgib
+		height 52;
+		deathheight 24;
+		burnheight 24;
 	}
 
 	override void postbeginplay(){
