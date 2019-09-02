@@ -312,7 +312,11 @@ class HDPistol:HDHandgun replaces Pistol{
 		---- A 1 bright{
 			HDFlashAlpha(64);
 			A_Light1();
-			HDBulletActor.FireBullet(self,"HDB_9",spread:2.,speedfactor:frandom(0.97,1.03));
+			let bbb=HDBulletActor.FireBullet(self,"HDB_9",spread:2.,speedfactor:frandom(0.97,1.03));
+			if(
+				frandom(0,ceilingz-floorz)<bbb.speed*0.3
+			)A_AlertMonsters(256);
+
 			invoker.weaponstatus[PISS_CHAMBER]=1;
 			A_ZoomRecoil(0.995);
 			A_MuzzleClimb(-frandom(0.4,1.2),-frandom(0.4,1.6));

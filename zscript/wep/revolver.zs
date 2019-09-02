@@ -262,7 +262,10 @@ class HDRevolver:HDHandgun{
 		invoker.weaponstatus[BUGS_CYL1]--;
 		bool masterball=cyl==BUGS_MASTERBALL;
 
-		HDBulletActor.FireBullet(self,"HDB_355",spread:1.,speedfactor:frandom(0.99,1.01));
+		let bbb=HDBulletActor.FireBullet(self,masterball?"HDB_355":"HDB_9",spread:1.,speedfactor:frandom(0.99,1.01));
+		if(
+			frandom(0,ceilingz-floorz)<bbb.speed*(masterball?0.4:0.3)
+		)A_AlertMonsters(masterball?512:256);
 
 		A_GunFlash();
 		A_Light1();
