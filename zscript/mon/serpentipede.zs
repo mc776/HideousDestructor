@@ -349,10 +349,7 @@ class Serpentipede:HDMobBase{
 	xxxdeath:
 		#### N 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
 		#### O 5 A_XScream();
-		#### O 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
-		#### P 5;
-		#### P 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
-		#### QRS 5;
+		#### PQRS 5;
 		#### T 5;
 		goto xdead;
 	xdeath:
@@ -370,12 +367,12 @@ class Serpentipede:HDMobBase{
 		#### U 5 canraise A_JumpIf(abs(vel.z)>=2,"XDead");
 		wait;
 	raise:
-		#### M 4 A_SpawnItemEx("MegaBloodSplatter",0,0,4,vel.x,vel.y,vel.z+3,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);
+		#### M 4;
 		#### ML 6;
 		#### KJI 4;
 		goto checkraise;
 	ungib:
-		#### U 6 A_SpawnItemEx("MegaBloodSplatter",0,0,4,vel.x,vel.y,vel.z+3,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);
+		#### U 6;
 		#### UT 8;
 		#### SRQ 6;
 		#### PONH 4;
