@@ -139,7 +139,10 @@ extend class HDMobBase{
 				deathticks++;
 				if(deathticks==8){
 					A_NoBlocking();
-					if(!bdontdrop)deathdrop();
+					if(!bdontdrop){
+						deathdrop();
+						if(!bhasdropped)bhasdropped=true;
+					}
 					deathticks=9;
 				}
 			}

@@ -183,13 +183,8 @@ class Serpentipede:HDMobBase{
 	virtual void A_ImpChase(){
 		hdmobai.chase(self);
 	}
-	bool hasdropped;
-	void NoBlockWepDrop(){
-		A_NoBlocking();
-		if(!hasdropped){
-			hasdropped=true;
-			if(!bfriendly)A_DropItem("HDHandgunRandomDrop");
-		}
+	override void deathdrop(){
+		if(!bfriendly)A_DropItem("HDHandgunRandomDrop");
 	}
 	vector2 leadaim1;
 	vector2 leadaim2;
@@ -338,8 +333,7 @@ class Serpentipede:HDMobBase{
 	death:
 		#### I 6 A_Gravity();
 		#### J 6 A_Scream();
-		#### K 5;
-		#### L 5 NoBlockWepDrop();
+		#### KL 5;
 	dead:
 	death.spawndead:
 		#### L 3 canraise A_JumpIf(abs(vel.z)<2,1);
@@ -357,8 +351,7 @@ class Serpentipede:HDMobBase{
 		#### N 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
 		#### O 5 A_XScream();
 		#### O 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
-		#### P 5 NoBlockWepDrop();
-		#### P 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
+		#### P 5 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
 		#### QRS 5;
 		#### T 5;
 	xdead:

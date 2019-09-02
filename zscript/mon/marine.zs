@@ -49,14 +49,13 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 	int pistolloaded;
 	bool glloaded;
 	int timesdied;
-	bool hasdropped;
 	bool jammed;
 	int wep;
 	double rocketdisttoenemy;
 	override void die(actor source,actor inflictor,int dmgflags){
 		if(
 			bfriendly
-			&&!hasdropped
+			&&!bhasdropped
 			&&!(self is "GhostMarine")
 			&&!(self is "BotBot")
 		)A_Log(string.format("\cf%s died.",nickname));
@@ -66,7 +65,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 	}
 	override void beginplay(){
 		super.beginplay();
-		hasdropped=false;
+		bhasdropped=false;
 		spread=0;
 		timesdied=0;
 		jammed=0;
@@ -213,9 +212,8 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		}
 		return super.damagemobj(inflictor,source,damage,mod,flags,angle);
 	}
-	void noblockwepdrop(){
-		A_NoBlocking();
-		if(hasdropped){
+	override void deathdrop(){
+		if(bhasdropped){
 			class<actor> dropammo="";
 			if(wep==HDMW_SMG)dropammo="HD9mMag30";
 			else if(wep==HDMW_ZM66)dropammo="HD4mMag";
@@ -227,7 +225,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 				!random(0,timesdied)&&wep==HDMW_SMG
 			)A_DropItem("HDRocketAmmo");
 		}else{
-			hasdropped=true;
+			bhasdropped=true;
 			hdweapon dropped=null;
 			if(wep==HDMW_SMG){
 				dropped=hdweapon(spawn("HDSMG",pos,ALLOW_REPLACE));
@@ -486,7 +484,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 			)setstatelabel("reload");
 		}
 		#### A 0 A_JumpIfTargetInLOS(3,120);
-		#### CD 2 A_FaceTarget(40);
+		#### CD 3 A_FaceTarget(40);
 	missile2:
 		#### A 0{
 			if(!target){
@@ -505,7 +503,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		#### A 0 A_JumpIfTargetInLOS(1,10);
 		loop;
 		#### A 0 A_FaceTarget(turnamount,turnamount);
-		#### E 1 A_SetTics(random(1,80/max(1,turnamount)));
+		#### E 1 A_SetTics(random(1,100/max(1,turnamount)));
 		#### E 0{
 			spread=turnamount*0.08;
 			A_SetTics(16/spread);
@@ -893,8 +891,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		#### H 5{bpushable=false;}
 		#### I 5 A_HDMScream();
 	deathpostscream:
-		#### J 5 noblockwepdrop();
-		#### K 5;
+		#### JK 5;
 		goto dead;
 
 	dead:
@@ -941,10 +938,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 			A_SpawnItemEx("MegaBloodSplatter",0,0,34,flags:SXF_NOCHECKPOSITION);
 			A_XScream();
 		}
-		#### Q 5{
-			A_SpawnItemEx("MegaBloodSplatter",0,0,34,flags:SXF_NOCHECKPOSITION);
-			noblockwepdrop();
-		}
+		#### Q 5 A_SpawnItemEx("MegaBloodSplatter",0,0,34,flags:SXF_NOCHECKPOSITION);
 		#### Q 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,flags:SXF_NOCHECKPOSITION);
 		#### RSTUV 5;
 	xdead:
@@ -953,13 +947,12 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 	death.raisebotch:
 	xxxdeath:
 		---- A 0 A_DeathZombieZombieDeath();
-		#### O 5 A_SpawnItemEx("MegaBloodSplatter",0,0,34,flags:SXF_NOCHECKPOSITION);
+		#### O 5;
 		#### P 5 A_XScream();
-		#### QR 5 A_SpawnItemEx("MegaBloodSplatter",0,0,34,flags:SXF_NOCHECKPOSITION);
-		#### STUV 5;
+		#### QRSTUV 5;
 		#### W -1 canraise;
 		stop;
-	raisegibbed:
+	ungib:
 		#### W 0 A_JumpIf((random(1,12)-timesdied)<5,"RaiseZombie");
 		#### WW 8 A_SpawnItemEx("MegaBloodSplatter",
 			0,0,4,vel.x,vel.y,vel.z,
@@ -968,14 +961,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		#### VUT 7;
 		#### SRQ 5;
 		#### POH 4;
-		#### I 1 A_Die("raisedrop");
-	death.raisedrop:
-		#### H 5{
-			timesdied+=4;
-			bpushable=false;
-		}
-		#### IJK 5;
-		goto dead;
+		goto checkraise;
 	raisezombie:
 		#### U 4{
 			A_UnsetShootable();
@@ -1134,7 +1120,7 @@ class UndeadRifleman:HDMarine{
 		super.postbeginplay();
 		givearmour(0.6,0.12,0.1);
 		timesdied+=random(1,3);
-		hasdropped=true;
+		bhasdropped=true;
 		speed=max(1,speed-random(0,2));
 		damagemobj(
 			self,self,
@@ -1151,7 +1137,7 @@ class DeadRifleman:HDMarine replaces DeadMarine{
 	override void postbeginplay(){
 		super.postbeginplay();
 		A_TakeInventory("HDArmourWorn");
-		hasdropped=true;
+		bhasdropped=true;
 		A_Die("spawndead");
 	}
 	states{

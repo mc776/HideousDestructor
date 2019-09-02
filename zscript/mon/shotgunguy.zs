@@ -61,7 +61,6 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 		else return obituary;
 	}
 	bool jammed;
-	bool hasdropped;
 	bool semi;
 	int gunloaded;
 	int gunspent;
@@ -70,7 +69,7 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 	double shotspread;
 	override void beginplay(){
 		super.beginplay();
-		hasdropped=0;
+		bhasdropped=0;
 
 		//-1 zm66, 0 sg, 1 ssg
 		if(!accuracy) wep=random(0,1)-random(0,1);
@@ -97,16 +96,16 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 		hdmobster.spawnmobster(self);
 		givearmour(0.12,0.12);
 	}
-	void noblockwepdrop(){
+	override void deathdrop(){
 		A_NoBlocking();
-		if(hasdropped){
+		if(bhasdropped){
 			if(!bfriendly){
 				if(wep<0)A_DropItem("HD4mMag",0,96);
 				else A_DropItem("ShellPickup",0,200);
 			}
 		}else{
 			A_DropItem("HDHandgunRandomDrop");
-			hasdropped=true;
+			bhasdropped=true;
 			hdweapon wp=null;
 			if(wep==-1){
 				wp=hdweapon(spawn("ZM66AssaultRifle",(pos.x,pos.y,pos.z+40),ALLOW_REPLACE));
@@ -559,8 +558,7 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 	death:
 		#### H 5;
 		#### I 5 A_Scream();
-		#### J 5 noblockwepdrop();
-		#### K 5;
+		#### JK 5;
 	dead:
 		#### K 3 canraise{if(abs(vel.z)<2.)frame++;}
 		#### L 5 canraise{if(abs(vel.z)>=2.)setstatelabel("dead");}
@@ -583,7 +581,6 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 			spawn("MegaBloodSplatter",pos+(0,0,34),ALLOW_REPLACE);
 			A_XScream();
 		}
-		#### O 0 noblockwepdrop();
 		#### OP 5 spawn("MegaBloodSplatter",pos+(0,0,34),ALLOW_REPLACE);
 		#### QRST 5;
 		goto xdead;
@@ -597,7 +594,6 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 			spawn("MegaBloodSplatter",pos+(0,0,34),ALLOW_REPLACE);
 			A_XScream();
 		}
-		#### Q 0 noblockwepdrop();
 		#### QR 5 spawn("MegaBloodSplatter",pos+(0,0,34),ALLOW_REPLACE);
 		#### STUV 5;
 		goto xdead2;

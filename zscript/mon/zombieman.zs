@@ -75,7 +75,6 @@ class ZombieStormtrooper:HDMobMan{
 	int user_weapon;
 	int mag;
 	int firemode; //-2 SMG; -1 semi only; 0 semi; 1 auto; 2+ burst
-	bool hasdropped;
 	bool jammed;
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -112,12 +111,11 @@ class ZombieStormtrooper:HDMobMan{
 		);
 		gg.vel+=self.vel;
 	}
-	void noblockwepdrop(){
-		A_NoBlocking();
-		if(hasdropped&&bfriendly)return;
+	override void deathdrop(){
+		if(bhasdropped&&bfriendly)return;
 		hdweapon wp=null;
 		if(firemode==-2){
-			if(!hasdropped){
+			if(!bhasdropped){
 				if(wp=hdweapon(spawn("HDSMG",pos,ALLOW_REPLACE))){
 					wp.weaponstatus[SMGS_AUTO]=random(0,2);
 					wp.weaponstatus[SMGS_MAG]=mag;
@@ -133,7 +131,7 @@ class ZombieStormtrooper:HDMobMan{
 				A_DropItem("HDFragGrenadeAmmo",0,4);
 			}
 		}else{
-			if(!hasdropped){
+			if(!bhasdropped){
 				if(wp=hdweapon(spawn("ZM66AssaultRifle",pos,ALLOW_REPLACE))){
 					wp.weaponstatus[0]=ZM66F_NOLAUNCHER|(random(0,1)*ZM66F_CHAMBER);
 					if(firemode==-1)wp.weaponstatus[0]|=ZM66F_NOFIRESELECT;
@@ -155,9 +153,9 @@ class ZombieStormtrooper:HDMobMan{
 			wp.addz(40);
 			wp.vel=vel+(frandom(-2,2),frandom(-2,2),1);
 		}
-		if(!hasdropped){
+		if(!bhasdropped){
 			A_DropItem("HDHandgunRandomDrop");
-			hasdropped=true;
+			bhasdropped=true;
 		}
 	}
 	void A_CheckFreedoomSprite(){
@@ -461,8 +459,7 @@ class ZombieStormtrooper:HDMobMan{
 	death:
 		#### H 5;
 		#### I 5 A_Scream();
-		#### J 5 noblockwepdrop();
-		#### K 5;
+		#### JK 5;
 	dead:
 		#### K 3 canraise{if(abs(vel.z)<2.)frame++;}
 		#### L 5 canraise{if(abs(vel.z)>=2.)setstatelabel("dead");}
@@ -478,7 +475,6 @@ class ZombieStormtrooper:HDMobMan{
 			spawn("MegaBloodSplatter",pos+(0,0,34),ALLOW_REPLACE);
 			A_XScream();
 		}
-		#### O 0 noblockwepdrop();
 		#### OP 5 spawn("MegaBloodSplatter",pos+(0,0,34),ALLOW_REPLACE);
 		#### QRST 5;
 		goto xdead;
