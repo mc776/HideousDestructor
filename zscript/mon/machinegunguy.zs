@@ -28,7 +28,6 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		obituary "%o met the budda-budda-budda on the street, and it killed %h.";
 		hitobituary "%o took the wrong pill.";
 	}
-	bool hasdropped;
 	bool turnleft;
 	bool superauto;
 	int thismag;
@@ -53,7 +52,6 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 			return;
 		}
 
-		//dragons, lizards, herpetology, get it?
 		int c=-2;
 		double oldangle=angle;
 		double oldpitch=pitch;
@@ -104,7 +102,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 	bool noammo(){
 		return chambers<1&&thismag<1&&mags<1;
 	}
-	void A_DragonShot(){
+	void A_VulcGuyShot(){
 		//abort if burst is over
 		if(
 			burstcount<1
@@ -128,17 +126,6 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		//shoot the bullet
 		A_PlaySound("weapons/vulcanette",randompick(CHAN_WEAPON,5,6));
 		HDBulletActor.FireBullet(self,"HDB_426",spread:2);
-/*
-		actor p=Spawn("HDBullet426",pos+(0,0,height-24),ALLOW_REPLACE);
-		if(p){
-			p.target=self;p.angle=angle;p.pitch=pitch;
-			p.vel+=(
-				frandom(-2,2),frandom(-2,2),frandom(-2,2)
-			);
-			p.speed+=10*frandom(-2,2);
-			p.vel+=vel;
-		}
-*/
 		pitch+=frandom(-0.4,0.3);angle+=frandom(-0.3,0.3);
 		burstcount--;
 		chambers--;
@@ -163,10 +150,9 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		)setstatelabel(shootstate);
 		if(bfloat||floorz>=pos.z)A_ChangeVelocity(0,frandom(-0.1,0.1)*speed,0,CVF_RELATIVE);
 	}
-	void A_VulcNoBlocking(){
-		A_NoBlocking();
-		if(!hasdropped){
-			hasdropped=true;
+	override void deathdrop(){
+		if(!bhasdropped){
+			bhasdropped=true;
 			A_DropItem("HDBattery",0,16);
 			A_DropItem("HDHandgunRandomDrop");
 			vulcanette vvv=vulcanette(spawn("vulcanette",pos+(0,0,32),ALLOW_REPLACE));
@@ -287,7 +273,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		goto shoot;
 
 	shoot:
-		CPOS F 1 bright light("SHOT") A_DragonShot();
+		CPOS F 1 bright light("SHOT") A_VulcGuyShot();
 		CPOS E 2 A_JumpIf(superauto,"shoot");
 		loop;
 	postshot:
@@ -388,10 +374,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 			A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
 			A_Scream();
 		}
-		CPOS J 5{
-			A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
-			A_VulcNoBlocking();
-		}
+		CPOS J 5 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
 		CPOS KL 5;
 		CPOS M 5;
 	dead:
@@ -416,7 +399,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 			A_XScream();
 		}
 		CPOS R 2 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
-		CPOS Q 5 A_VulcNoBlocking();
+		CPOS Q 5;
 		CPOS Q 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
 		CPOS RS 5 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
 	xdead:
@@ -428,12 +411,12 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		CPOS N 2 A_SpawnItemEx("MegaBloodSplatter",0,0,4,0,0,3,0,SXF_NOCHECKPOSITION);
 		CPOS NML 6;
 		CPOS KJIH 4;
-		goto raisecheck;
+		goto checkraise;
 	ungib:
 		CPOS T 6 A_SpawnItemEx("MegaBloodSplatter",0,0,4,0,0,3,0,SXF_NOCHECKPOSITION);
 		CPOS TS 12 A_SpawnItemEx("MegaBloodSplatter",0,0,4,0,0,3,0,SXF_NOCHECKPOSITION);
 		CPOS RQ 7;
 		CPOS POH 5;
-		goto raisecheck;
+		goto checkraise;
 	}
 }

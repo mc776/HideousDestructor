@@ -59,7 +59,6 @@ class PainLord:PainMonster replaces BaronofHell{
 			shields-=66;
 	}
 	int shields;
-	int raisesneeded;
 	enum BaronStats{
 		BE_SHIELDMAX=66,
 		BE_HPMAX=1000,
@@ -84,28 +83,22 @@ class PainLord:PainMonster replaces BaronofHell{
 		);
 
 		if(
-			!raisesneeded
-			&&!(flags&DMG_FORCED)
+			!(flags&DMG_FORCED)
 			&&health>0
 		){
 			//shields
 			[shields,damage]=hdf.gothroughshields(shields,damage,inflictor,mod,flags);
 			if(damage<1)return 0;
-		}else if(raisesneeded>0){
-			damage*=10;
-			mod="notvileenough";
 		}
 
 		return super.damagemobj(
 			inflictor,source,damage,mod,flags,angle
 		);
-
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		hdmobai.resize(self,0.95,1.05);
 		shields=BE_SHIELDMAX;
-		raisesneeded=0;
 	}
 	states{
 	spawn:
@@ -218,10 +211,7 @@ class PainLord:PainMonster replaces BaronofHell{
 		);
 		stop;
 	death:
-		---- A 0{
-			if(raisesneeded>0)setstatelabel("death.needmorevile");
-			else raisesneeded=5;
-		}
+		---- A 0{bodydamage+=666*5;}
 		---- A 0 A_Quake(2,64,0,600);
 		BOSS I 2 A_SpawnItemEx("BFGVileShard",0,0,20,10,0,8,45,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS);
 		BOSS I 2 A_SpawnItemEx("BFGVileShard",0,0,35,10,0,8,135,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS);
@@ -235,34 +225,17 @@ class PainLord:PainMonster replaces BaronofHell{
 		BOSS OOOOO 6;
 		BOSS O -1 A_BossDeath();
 		stop;
-	death.needmorevile:
+	death.maxhpdrain:
 		BOSS J 5 A_PlaySound("misc/gibbed",CHAN_BODY);
 		BOSS K 5;
 		BOSS L 5 A_NoBlocking();
 		BOSS MN 5;
 		BOSS O -1;
 	raise:
-		---- A 0{
-			if(
-				A_CheckProximity("null","LightBearer",
-					64,1,CPXF_CHECKSIGHT|CPXF_NOZ|CPXF_SETTRACER
-				)&&tracer&&tracer.bfriendly
-			)raisesneeded=0;
-			else raisesneeded--;
-			if(raisesneeded>0)damagemobj(
-				self,self,health*frandom(0.07,0.09),
-				"needmorevile",DMG_THRUSTLESS
-			);
-		}
 		BOSS ONMLKJI 5;
 		BOSS H 8;
 		BOSS AB 6{hdmobai.wander(self,true);}
-		BOSS H 0{
-			if(raisesneeded>random(0,5))damagemobj(
-				self,self,health,
-				"needmorevile",DMG_THRUSTLESS
-			);
-		}goto see;
+		goto checkraise;
 	}
 }
 

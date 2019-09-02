@@ -355,7 +355,7 @@ class SkullSpitter:HDMobBase replaces PainElemental{
 		stop;
 	raise:
 		PAIN MLKJIH 8;
-		goto see;
+		goto checkraise;
 	}
 }
 

@@ -88,6 +88,10 @@ extend class HDMobBase{
 		if(hd_debug)console.printf(getclassname().." "..damage.." "..mod..", est. remain "..health-damage);
 
 
+		//force death
+		if(bodydamage>sphlth)return super.damagemobj(inflictor,source,health,mod,flags,angle);
+
+
 		//check for gibbing
 		if(
 			findstate("xdeath",true)
