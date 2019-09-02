@@ -308,7 +308,7 @@ class HDSawPuffShitty:IdleDummy{
 class HDSawPuff:IdleDummy{
 	default{
 		+puffonactors +bloodsplatter +puffgetsowner +hittracer +nointeraction
-		damagetype "Chainsaw";decal "BulletChipSmall";
+		damagetype "cutting";decal "BulletChipSmall";
 	}
 	states{
 	spawn:
@@ -339,7 +339,7 @@ class HDSawPuff:IdleDummy{
 					tgt.muzzleclimb1.y+=random(-10,6);
 				}
 				target.A_Recoil(random(-1,2));
-				target.damagemobj(self,target,1,"chainsaw");
+				target.damagemobj(self,target,1,"cutting");
 			}
 		}stop;
 	}

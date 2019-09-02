@@ -312,9 +312,15 @@ extend class HDPlayerPawn{
 		}else if(mod=="bashing"){
 			if((damage)<spawnhealth()+random(0,20))damage=clamp(damage,1,health-7);
 			tostun+=(damage>>2);
+		}else if(mod=="cutting"){
+			//swords, chainsaw, etc.
+			damage*=(1.-(alv*0.3));
+			if(!random(0,10+alv*2))towound+=max(1,damage*0.04);
+			armr.durability-=(damage>>(1+alv));
+		}
 		}else{
 			//anything else
-			damage*=(1-(alv*0.2));
+			damage*=(1.-(alv*0.2));
 			if(!random(0,10+alv*2))towound+=max(1,damage*0.03);
 		}
 
