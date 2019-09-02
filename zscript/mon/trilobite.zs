@@ -539,7 +539,7 @@ class CaeloBite:HDMobBase replaces Cacodemon{
 		}
 		HEAD L 8 A_UnSetFloorClip;
 		HEAD KJIHG 8;
-		goto see;
+		goto checkraise;
 	}
 }
 class DeadCaeloBite:CaeloBite replaces DeadCacodemon{

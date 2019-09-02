@@ -248,16 +248,14 @@ class CombatSlug:HDMobBase replaces Fatso{
 		FATT T -1{
 			A_BossDeath();
 			balwaystelefrag=true; //not needed?
+			bodydamage+=1200;
 		}stop;
 	raise:
-		FATT ST 14 A_SpawnItemEx("MegaBloodSplatter",
-			frandom(-1,1),frandom(-1,1),frandom(10,16),
-			vel.x,vel.y,vel.z,0,SXF_NOCHECKPOSITION
-		);
+		FATT ST 14 damagemobj(self,self,1,"maxhpdrain",DMG_NO_PAIN|DMG_FORCED|DMG_NO_FACTOR);
 		FATT TSR 10;
 		FATT QPONMLK 5;
 		goto see;
-	death.notvileenough:
+	death.maxhpdrain:
 		FATT STST 14 A_SpawnItemEx("MegaBloodSplatter",
 			frandom(-1,1),frandom(-1,1),frandom(10,16),
 			vel.x,vel.y,vel.z,0,SXF_NOCHECKPOSITION

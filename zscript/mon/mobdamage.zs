@@ -88,13 +88,6 @@ extend class HDMobBase{
 		if(hd_debug)console.printf(getclassname().." "..damage.." "..mod..", est. remain "..health-damage);
 
 
-		//force death
-		if(bodydamage>sphlth){
-			if(random(0,15))deathsound="";
-			return super.damagemobj(inflictor,source,health,mod,flags,angle);
-		}
-
-
 		//check for gibbing
 		if(
 			findstate("xdeath",true)
@@ -113,6 +106,13 @@ extend class HDMobBase{
 				return super.damagemobj(inflictor,source,health,"extreme",flags,angle);
 			}
 		}
+
+		//force death even if not quite gibbing
+		if(health>0&&bodydamage>sphlth){
+			if(random(0,15))deathsound="";
+			return super.damagemobj(inflictor,source,health,mod,flags,angle);
+		}
+
 
 		return super.damagemobj(inflictor,source,damage,mod,flags,angle);
 	}
@@ -237,7 +237,7 @@ extend class HDMobBase{
 		if(!bnoshootablecorpse)bshootable=true;
 		deathsound=getdefaultbytype(getclass()).deathsound;
 
-		bodydamage=max(0,bodydamage-666);
+		bodydamage=clamp(bodydamage-666,0,((spawnhealth()+gibhealth)<<(HDMOB_GIBSHIFT+2)));
 		if(hd_debug)console.printf(getclassname().." revived with remaining damage: "..bodydamage);
 
 		resetdamagecounters();

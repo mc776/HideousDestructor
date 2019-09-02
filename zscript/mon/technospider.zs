@@ -19,7 +19,6 @@ class TechnoSpider:HDMobBase replaces Arachnotron{
 		obituary "%o was fried by the Wrath of Krang.";
 		speed 16;
 		deathheight 18;
-		dropitem "Putto",8;
 		+noblooddecals bloodtype "NotQuiteBloodSplat";
 		damagefactor "SmallArms0",0.8;
 		damagefactor "SmallArms1",0.8;
@@ -29,11 +28,17 @@ class TechnoSpider:HDMobBase replaces Arachnotron{
 		super.postbeginplay();
 		hdmobster.spawnmobster(self);
 		battery=20;
-		hasdropped=false;
 		alt=random(0,1);
 	}
+	override void deathdrop(){
+		if(!bhasdropped){
+			bhasdropped=true;
+			let mmm=HDMagAmmo.SpawnMag(self,"HDBattery",battery);
+			mmm.vel=vel+(frandom(-1,1),frandom(-1,1),1);
+			if(!random(0,31))A_DropItem("Putto");
+		}
+	}
 	int battery;
-	bool hasdropped;
 	bool alt;
 	void A_ThunderZap(){
 		if(battery<1){
@@ -171,13 +176,6 @@ class TechnoSpider:HDMobBase replaces Arachnotron{
 		BSPI J 4 A_Scream();
 		BSPI J 6 A_SpawnItemEx("MegaBloodSplatter",frandom(-10,10),frandom(-10,10),32,0,0,0,0,160,0);
 		BSPI J 10 A_SpawnItemEx("MegaBloodSplatter",frandom(-4,4),frandom(-4,4),32,0,0,0,0,160,0);
-		---- A 0{
-			if(!hasdropped){
-				hasdropped=true;
-				let mmm=HDMagAmmo.SpawnMag(self,"HDBattery",battery);
-				mmm.vel=vel+(frandom(-1,1),frandom(-1,1),1);
-			}
-		}
 		BSPI KLMN 7 A_SpawnItemEx("MegaBloodSplatter",0,0,28,0,0,0,0,160,0);
 		---- A 0 A_SpawnItemEx("MegaBloodSplatter",0,0,14,0,0,0,0,160,0);
 		BSPI O 7;
@@ -188,16 +186,12 @@ class TechnoSpider:HDMobBase replaces Arachnotron{
 		BSPI PONMLKJ 5;
 		BSPI I 8;
 		BSPI I 0 A_PlaySound("baby/sight");
-		BSPI AAABB 3 A_Chase("NotVileEnough","NotVileEnough");
-	notvileenough:
-		BSPI I 0 A_Die();
-	neededmorevile:
+		BSPI AAABB 3 A_Chase(null,null);
+		goto checkraise;
+	death.maxphdrain:
+		---- AAAAAAAAAAAAAAAAA 0 A_SpawnItemEx("BigWallChunk",frandom(-3,3),frandom(-3,3),frandom(28,34),frandom(-2,2),frandom(-2,2),frandom(2,14),0,160,0);
+		BSPI J 10;
+		BSPI KLMNO 7;
 		BSPI P -1;
-	reallyraise:
-		BSPI I 5;
-		BSPI I 0{
-			A_PlaySound("baby/sight");
-			if(!random(0,3))hasdropped=false;
-		}goto see;
 	}
 }
