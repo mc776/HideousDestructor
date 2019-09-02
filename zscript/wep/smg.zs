@@ -175,11 +175,11 @@ class HDSMG:HDWeapon{
 		SMGG B 0{
 			let bbb=HDBulletActor.FireBullet(self,"HDB_9",speedfactor:1.1);
 			if(
-				frandom(0,ceilingz-floorz)<bbb.speed*0.2
+				frandom(32,ceilingz-floorz)<bbb.speed*0.2
 			)A_AlertMonsters(200);
 
 			A_ZoomRecoil(0.995);
-			A_PlaySound("weapons/smg",CHAN_WEAPON,0.8);
+			A_PlaySound("weapons/smg",CHAN_WEAPON,0.7);
 			invoker.weaponstatus[SMGS_RATCHET]++;
 			invoker.weaponstatus[SMGS_CHAMBER]=1;
 		}
