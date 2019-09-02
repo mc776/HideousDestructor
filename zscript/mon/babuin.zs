@@ -297,27 +297,22 @@ class Babuin:HDMobBase{
 	raise:
 		#### NMLKJI 5;
 		SRG2 A 0 A_CheckFreedoomSprite();
-		goto see;
-	raisegibbed:
-		TROO U 6{
-			A_SpawnItemEx("MegaBloodSplatter",0,0,4,
-				vel.x,vel.y,vel.z+3,0,
-				SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM
-			);
-		}
+		goto checkraise;
+	ungib:
+		TROO U 6;
 		TROO UT 8;
 		TROO SRQ 6;
 		TROO PO 4;
 		SRG2 A 0 A_CheckFreedoomSprite();
-		#### H 4 A_Die("Ungibbed");
-	death.ungibbed:
-		#### I 5;
-		goto deathend;
+		goto checkraise;
 	xdeath:
-	xxxdeath:
 		TROO O 0 A_XScream();
 		TROO OPQ 4{spawn("MegaBloodSplatter",pos+(0,0,34),ALLOW_REPLACE);}
 		TROO RST 4;
+		goto xdead;
+	xxxdeath:
+		TROO O 4 A_XScream();
+		TROO PQRST 4;
 	xdead:
 		TROO T 5 canraise{
 			if(abs(vel.z)<2)frame++;

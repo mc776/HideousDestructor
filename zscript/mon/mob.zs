@@ -7,7 +7,7 @@
 class HDMobBase : HDActor{
 	int hdmobflags;
 	flagdef doesntbleed:hdmobflags,0;
-	flagdef hasdroppedgun:hdmobflags,1;
+	flagdef hasdropped:hdmobflags,1;
 	flagdef gibbed:hdmobflags,2;
 	flagdef novitalshots:hdmobflags,3;
 	flagdef hashelmet:hdmobflags,4;
@@ -15,6 +15,7 @@ class HDMobBase : HDActor{
 	flagdef biped:hdmobflags,6;
 	flagdef noshootablecorpse:hdmobflags,7;
 	flagdef playingid:hdmobflags,8;
+	flagdef dontdrop:hdmobflags,9;
 
 	default{
 		monster;

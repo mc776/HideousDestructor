@@ -26,7 +26,7 @@ class UndeadHomeboy:HDMobMan{
 		super.postbeginplay();
 		hdmobster.spawnmobster(self);
 		walkangle=angle;
-		bhasdroppedgun=false;
+		bhasdropped=false;
 		if(goal)goalpos=goal.pos;else goalpos=(0,0,0);
 		aimpoint1=(-1,-1);
 		aimpoint2=(-1,-1);
@@ -146,10 +146,10 @@ class UndeadHomeboy:HDMobMan{
 		A_NoBlocking();
 
 		//specific to undead homeboy
-		if(bhasdroppedgun){
+		if(bhasdropped){
 			A_DropItem("HD9mMag15");
 		}else{
-			bhasdroppedgun=true;
+			bhasdropped=true;
 			let ppp=HDPistol(spawn("HDPistol",(pos.xy,pos.z+40)));
 			ppp.weaponstatus[PISS_MAG]=thismag;
 			ppp.weaponstatus[PISS_CHAMBER]=chamber;

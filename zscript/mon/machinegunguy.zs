@@ -405,8 +405,8 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 			A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
 			A_XScream();
 		}
-		CPOS R 2 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
-		CPOS QRS 5 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
+		CPOS R 2;
+		CPOS QRS 5;
 		goto xdead;
 
 	xdeath:
@@ -428,17 +428,12 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		CPOS N 2 A_SpawnItemEx("MegaBloodSplatter",0,0,4,0,0,3,0,SXF_NOCHECKPOSITION);
 		CPOS NML 6;
 		CPOS KJIH 4;
-		goto see;
-	raisegibbed:
+		goto raisecheck;
+	ungib:
 		CPOS T 6 A_SpawnItemEx("MegaBloodSplatter",0,0,4,0,0,3,0,SXF_NOCHECKPOSITION);
 		CPOS TS 12 A_SpawnItemEx("MegaBloodSplatter",0,0,4,0,0,3,0,SXF_NOCHECKPOSITION);
 		CPOS RQ 7;
 		CPOS POH 5;
-		CPOS H 5 A_Die("ungibbed");
-	death.ungibbed:
-		CPOS H 5;
-		CPOS I 5 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
-		CPOS JKLM 5;
-		goto dead;
+		goto raisecheck;
 	}
 }

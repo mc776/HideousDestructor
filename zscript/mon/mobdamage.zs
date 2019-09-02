@@ -44,6 +44,7 @@ extend class HDMobBase{
 		name mod,int flags,double angle
 	){
 		int sphlth=spawnhealth();
+		bdontdrop=(inflictor==self&&mod!="bleedout");
 
 		//rapid damage stacking
 		if(pain>0)damage+=(pain>>2);
@@ -131,6 +132,7 @@ extend class HDMobBase{
 				deathticks++;
 				if(deathticks==8){
 					A_NoBlocking();
+					if(!bdontdrop)deathdrop();
 					deathticks=9;
 				}
 			}
@@ -167,6 +169,9 @@ extend class HDMobBase{
 
 
 	double liveheight;
+	virtual void deathdrop(){
+		if(hd_debug)A_Log("DROPED GNU");
+	}
 	override void die(actor source,actor inflictor,int dmgflags){
 		//retrieve actor's current height
 		liveheight=height;

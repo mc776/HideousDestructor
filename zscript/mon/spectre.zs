@@ -239,15 +239,15 @@ class NinjaPirate:HDMobBase{ //replaces Spectre{
 		stop;
 	raise:
 		SARG N 4 A_SetTranslucent(1,0);
-		TNT1 A 0 A_JumpIf(cloaked,"RaiseCloaked");
+		TNT1 A 0 A_JumpIf(cloaked,"raisecloaked");
 		SARG NMLKJI 6;
-		goto see;
+		goto checkraise;
 	raisecloaked:
 		TNT1 AAA 0 A_SpawnItemEx("HDSmoke",random(-1,1),random(-1,1),random(4,24),vel.x,vel.y,vel.z+random(1,3),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION,0);
 		SARG NNNNNN 4 A_FadeOut(0.15);
 		TNT1 A 0 A_SetTranslucent(0,0);
-		goto see;
-	raisegibbed:
+		goto checkraise;
+	ungib:
 		TROO U 6{
 			cloaked=false;
 			if(alpha<1.){
@@ -262,17 +262,17 @@ class NinjaPirate:HDMobBase{ //replaces Spectre{
 		TROO UT 8;
 		TROO SRQ 6;
 		TROO PO 4;
-		SARG H 4 A_Die("Ungibbed");
-	death.ungibbed:
-		SARG I 5{
-			bpushable=false;
-		}goto deathend;
+		goto checkraise;
 	xdeath:
-	xxxdeath:
 		TROO O 0 A_XScream();
 		TROO O 0 A_NoBlocking();
 		TROO OPQ 4 spawn("MegaBloodSplatter",pos+(0,0,34),ALLOW_REPLACE);
 		TROO RST 4;
+		goto xdead;
+	xxxdeath:
+		TROO O 0 A_XScream();
+		TROO O 4 A_NoBlocking();
+		TROO PQRST 4;
 	xdead:
 		TROO T 0 A_FadeIn(0.01);
 		TROO T 5 canraise{
