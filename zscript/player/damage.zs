@@ -177,6 +177,7 @@ extend class HDPlayerPawn{
 
 				if(hd_yolo)bledout=min(bledout+(damage<<2),666);
 				else bledout+=(damage<<2);
+				damage>>=2;
 
 				if(!(flags&DMG_FORCED))damage=min(damage,health-1);
 				if(!random(0,health)){
@@ -310,8 +311,8 @@ extend class HDPlayerPawn{
 			}
 			else if(mod=="slime"&&!random(0,99))aggravateddamage++;
 		}else if(mod=="bashing"){
-			if((damage)<spawnhealth()+random(0,20))damage=clamp(damage,1,health-7);
-			tostun+=(damage>>2);
+			tostun+=damage;
+			damage>>=2;
 		}else if(mod=="cutting"){
 			//swords, chainsaw, etc.
 			damage*=(1.-(alv*0.3));
