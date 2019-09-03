@@ -50,8 +50,7 @@ extend class HDPlayerPawn{
 			if(armr.durability<1){
 				armr.durability=0;
 				if(!random(0,3)){
-					dropinventory(armr);
-					armr=null;
+					armr.destroy();
 				}
 			}else if(armr.durability<random(2,8)){
 				//it just goes through one of the gaping holes in your armour
