@@ -176,6 +176,7 @@ extend class HDPlayerPawn{
 
 				if(hd_yolo)bledout=min(bledout+(damage<<2),666);
 				else bledout+=(damage<<2);
+				if(level.time&(1|2))return -1;
 				damage>>=2;
 
 				if(!(flags&DMG_FORCED))damage=min(damage,health-1);
