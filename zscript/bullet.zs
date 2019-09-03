@@ -1046,16 +1046,14 @@ class HDBulletActor:HDActor{
 		//proportionate to permanent wound channel
 		//stamina, pushfactor, hardness
 		double channelwidth=
-			stamina
-			*(
+			(
 				//if it doesn't bleed, it's probably rigid
 				(
 					hdmobbase(hitactor)
 					&&hdmobbase(hitactor).bdoesntbleed
-				)?0.0002:0.0001
-			)
-			*frandom(10.,10+pushfactor)
-			*(1+frandom(0.,max(0,6-hardness)))
+				)?0.0004:0.0002
+			)*stamina
+			*frandom(20.,20+pushfactor-hardness)
 		;
 		if(deepenough)bulletdie();
 		else{
@@ -1113,7 +1111,7 @@ class HDBulletActor:HDActor{
 		}
 
 		//add size of channel to damage
-		int chdmg=max(1,(int(channelwidth*(pen-(int(hitangle)>>7)))>>2));
+		int chdmg=max(1,channelwidth*max(0.1,pen-(hitangle*0.06))*0.3);
 if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channelwidth.." x "..pen.."    channel HP damage: "..chdmg);
 		bnoextremedeath=(chdmg<(max(hitactor.spawnhealth(),gibhealth)<<4));
 
