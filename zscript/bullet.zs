@@ -1031,7 +1031,6 @@ class HDBulletActor:HDActor{
 
 		bnoextremedeath=impact<(hitactor.gibhealth<<3);
 		hitactor.damagemobj(self,target,max(impact,pen*impact*0.03*hitactorresistance),"bashing",DMG_THRUSTLESS);
-		forcepain(hitactor);
 		bnoextremedeath=true;
 
 		//check if going right through the body
