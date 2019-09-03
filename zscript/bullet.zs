@@ -1113,9 +1113,9 @@ class HDBulletActor:HDActor{
 		}
 
 		//add size of channel to damage
-		int chdmg=max(1,(int(channelwidth*pen)>>3));
+		int chdmg=max(1,(int(channelwidth*(pen-(int(hitangle)>>7)))>>2));
 if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channelwidth.." x "..pen.."    channel HP damage: "..chdmg);
-		bnoextremedeath=(chdmg<(max(hitactor.spawnhealth(),gibhealth)<<3));
+		bnoextremedeath=(chdmg<(max(hitactor.spawnhealth(),gibhealth)<<4));
 
 		//cns severance
 		//small column in middle centre
