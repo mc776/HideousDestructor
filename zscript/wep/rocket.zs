@@ -198,8 +198,7 @@ class HDHEAT:GyroGrenade{
 			A_SprayDecal("BrontoScorch",16);
 			A_HDBlast(
 				pushradius:256,pushamount:128,fullpushradius:96,
-				fragradius:HDCONST_SPEEDOFSOUND,
-				fragvariance:(0.007*stamina),
+				fragradius:HDCONST_SPEEDOFSOUND,fragvariance:(0.007*stamina),
 				immolateradius:128,immolateamount:random(3,60),
 				immolatechance:2
 			);

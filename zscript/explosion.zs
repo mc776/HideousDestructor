@@ -216,11 +216,12 @@ extend class HDActor{
 					if(dist>0){
 						//determine size of arc exposed to frags
 						//https://en.wikipedia.org/wiki/Spherical_sector
-						double angcover=(abs(pitchtotop-pitchtobottom)+edgeshot*2)*0.5;
-//console.printf(string.format("%s  %f",it.getclassname(),angcover));
-						double domearea=HDCONST_TAU*angcover; //*dist
-						double blastarea=(HDCONST_TAU*2)*dist; //*dist
-						double proportionfragged=domearea/blastarea;
+						double angcover=(abs(pitchtotop-pitchtobottom)*0.5+edgeshot)*0.5;
+						double ssector_h=1-cos(angcover);
+						double proportionfragged=ssector_h/2;
+//
+console.printf(string.format(it.getclassname().."  "..angcover.." = "..proportionfragged));
+
 
 						//NOW incorporate the cover
 						proportionfragged*=losmul;
