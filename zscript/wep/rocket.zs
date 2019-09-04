@@ -197,7 +197,7 @@ class HDHEAT:GyroGrenade{
 			A_SprayDecal("BrontoScorch",16);
 			A_HDBlast(
 				pushradius:256,pushamount:128,fullpushradius:96,
-				fragradius:HDCONST_SPEEDOFSOUND,fragvariance:(0.007*stamina),
+				fragradius:1024,fragvariance:(0.007*stamina),
 				immolateradius:128,immolateamount:random(3,60),
 				immolatechance:2
 			);
@@ -393,7 +393,7 @@ class DudRocket:HDUPK{
 		---- A 0{
 			A_HDBlast(
 				pushradius:256,pushamount:128,fullpushradius:96,
-				fragradius:HDCONST_SPEEDOFSOUND-10*stamina,
+				fragradius:1024-20*stamina,
 				immolateradius:128,immolateamount:random(3,60),
 				immolatechance:random(1,25)
 			);

@@ -1069,7 +1069,7 @@ class HDBulletActor:HDActor{
 					bool gbg;actor blood;
 					[gbg,blood]=hitactor.A_SpawnItemEx(
 						hitblood,
-						hrad,0,pos.z-hitactor.pos.z,
+						hrad,0,0,
 						angle:hitactor.angleto(self),
 						flags:SXF_ABSOLUTEANGLE|SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
 					);
