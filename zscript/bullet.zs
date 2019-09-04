@@ -119,10 +119,10 @@ class HDB_wad:HDBulletActor{
 }
 class HDB_frag:HDBulletActor{
 	default{
-		pushfactor 0.8;
+		pushfactor 1.;
 		mass 30;
-		speed 400;
-		accuracy 140;
+		speed 600;
+		accuracy 100;
 		stamina 500;
 		woundhealth 5;
 	}
@@ -961,7 +961,7 @@ class HDBulletActor:HDActor{
 				//bullet leaves a hole in the webbing
 				armr.durability-=max(random(0,1),(stamina>>7));
 			}
-			else console.printf("missed the armour!");
+			else if(hd_debug)console.printf("missed the armour!");
 			if(hd_debug)console.printf(hitactor.getclassname().."  armour resistance:  "..addpenshell);
 			addpenshell*=60./mass;
 			penshell+=addpenshell;
@@ -1135,6 +1135,12 @@ if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channe
 			pen*=2;
 			channelwidth*=2;
 		}else{
+			//ONLY if no centre crit
+			//randomly hit a joint or something
+			if(
+				(!hdmobbase(hitactor)||hdmobbase(hitactor).bnorandomweakspots)
+				&&frandom(0,deemedwidth)<channelwidth*pen
+			)chdmg<<=2;
 			hitactor.damagemobj(
 				self,target,
 				chdmg,

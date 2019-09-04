@@ -139,6 +139,7 @@ class HDRL:HDWeapon{
 		}
 	}
 	override void ForceBasicAmmo(){
+		owner.A_TakeInventory("DudRocketAmmo");
 		owner.A_SetInventory("HEATAmmo",1);
 		owner.A_SetInventory("HDRocketAmmo",5);
 	}
@@ -613,6 +614,7 @@ class Blooper:HDWeapon{
 		}
 	}
 	override void ForceBasicAmmo(){
+		owner.A_TakeInventory("DudRocketAmmo");
 		owner.A_SetInventory("HDRocketAmmo",1);
 	}
 	states{

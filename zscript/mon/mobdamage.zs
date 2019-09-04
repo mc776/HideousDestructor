@@ -260,7 +260,6 @@ extend class HDMobBase{
 
 extend class HDHandlers{
 	override void WorldThingRevived(WorldEvent e){
-		console.printf(e.thing.height.." height, health "..e.thing.health);
 		let mbb=hdmobbase(e.thing);
 		if(mbb)mbb.AttemptRaise();
 	}
