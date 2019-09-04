@@ -214,22 +214,26 @@ extend class HDActor{
 				){
 					int fragshit=1400; //
 					if(dist>0){
-						//determine size of arc exposed to frags
-						//https://en.wikipedia.org/wiki/Spherical_sector
-						double angcover=(abs(pitchtotop-pitchtobottom)*0.5+edgeshot)*0.5;
-						double ssector_h=1-cos(angcover);
-						double proportionfragged=ssector_h/2;
-//
-console.printf(string.format(it.getclassname().."  "..angcover.." = "..proportionfragged));
+						//"A = 2πrh" for sector area, divided by "A = 4πr^2" for total area of sphere
+						//we're solving for r=1 so r is omitted
+						//2πh/4π = 2h/4 = h/2 = h*0.5
+						//solving for h: h+adjacent=hypotenuse
+						//sohCAHtoa: adjacent/hypotenuse=cosine
+						//therefore cos(angcover)*hypotenuse=adjacent
+						//hypotenuse-cos(angcover*hypotenuse)=h
+						//collapse into (1.-cos(angcover))*0.5
+
+						double angcover=(abs(pitchtotop-pitchtomid)+edgeshot)*0.5;
+						double proportionfragged=(1.-cos(angcover))*0.5;
 
 
 						//NOW incorporate the cover
 						proportionfragged*=losmul;
 
 						fragshit*=proportionfragged;
+//
+if(hd_debug)console.printf(it.getclassname().."  "..angcover.." = "..proportionfragged);
 					}
-
-//console.printf(string.format("%s  %i",it.getclassname(),fragshit));
 
 					//randomize count and abort if none end up hitting
 					fragshit*=frandom(0.9,1.1);
