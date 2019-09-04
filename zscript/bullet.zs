@@ -440,7 +440,6 @@ class HDBulletActor:HDActor{
 		double curspeed=distanceleft;
 		do{
 			A_FaceMovementDirection();
-
 			//update distanceleft if speed changed
 			if(curspeed>speed){
 				distanceleft-=(curspeed-speed);

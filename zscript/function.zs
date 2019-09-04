@@ -443,6 +443,12 @@ struct HDMath{
 		);
 		return lod,nam,pic,desc;
 	}
+	//basically storing a 5-bit int array in a single 32-bit int.
+	//every 32 is a 1 in the second entry, every 32*32 a 1 in the third, etc.
+	static int GetFromBase32FakeArray(int input,int slot){
+		input=(input>>(5*slot));
+		return input&(1|2|4|8|16);
+	}
 }
 struct HDF play{
 	//because this is 10 times faster than A_GiveInventory
