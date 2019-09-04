@@ -174,8 +174,8 @@ extend class HDPlayerPawn{
 					return 0;
 				}
 
-				if(hd_yolo)bledout=min(bledout+(damage<<2),666);
-				else bledout+=(damage<<2);
+				if(hd_yolo)bloodloss=min(bloodloss+(damage<<2),666);
+				else bloodloss+=(damage<<2);
 				if(level.time&(1|2))return -1;
 				damage>>=2;
 
@@ -453,7 +453,7 @@ extend class HDPlayerPawn{
 			&&health<random(-1,max((originaldamage>>3),3))
 			&&(
 				mod!="bleedout"
-				||bledout>random(2048,3072)
+				||bloodloss>random(2048,3072)
 			)
 		){
 			let plr=player;

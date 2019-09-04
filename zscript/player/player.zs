@@ -695,7 +695,7 @@ extend class HDPlayerPawn{
 		zerk=0;
 		haszerked=0;
 
-		bledout=0;
+		bloodloss=0;
 		
 		A_Capacitated();
 

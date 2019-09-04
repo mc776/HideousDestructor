@@ -196,7 +196,7 @@ class BloodBagWorn:Inventory{
 		if(!hp){destroy();return;}
 		if(!hp.beatcount&&bloodleft>0){
 			bloodleft--;
-			hp.bledout=max(0,hp.bledout-4);
+			hp.bloodloss=max(0,hp.bloodloss-4);
 			if(hp.fatigue<HDCONST_SPRINTFATIGUE)hp.fatigue++;
 		}
 		//fall off

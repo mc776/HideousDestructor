@@ -709,7 +709,7 @@ if(hd_weapondefaults.getstring()~=="convert"){
 			}
 			int err=max(0,((100-hpl.health)>>3));
 			err=random[heart](0,err);
-			healthbars[STB_BEATERSIZE-2]=clamp(18-(hpl.bledout>>7)-(err>>2),1,18);
+			healthbars[STB_BEATERSIZE-2]=clamp(18-(hpl.bloodloss>>7)-(err>>2),1,18);
 			healthbars[STB_BEATERSIZE-1]=(hpl.inpain?random[heart](1,7):1)+err+random[heart](0,(hpl.bloodpressure>>3));
 		}
 		for(int i=0;i<STB_BEATERSIZE;i++){

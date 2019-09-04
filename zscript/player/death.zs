@@ -143,7 +143,7 @@ extend class HDPlayerPawn{
 		burncount=0;
 		aggravateddamage=0;
 		stunned=0;
-		bledout=0;
+		bloodloss=0;
 	}
 }
 

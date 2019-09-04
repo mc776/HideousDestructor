@@ -23,7 +23,7 @@ extend class HDPlayerPawn{
 	int oldwoundcount;
 	int aggravateddamage;
 
-	int bledout;
+	int bloodloss;
 
 	int maxhealth(){
 		if(regenblues<0)regenblues=0;
@@ -33,7 +33,7 @@ extend class HDPlayerPawn{
 		if(burncount<0)burncount=0;
 		if(aggravateddamage<0)aggravateddamage=0;
 		if(stunned<0)stunned=0;
-		if(bledout<0)bledout=0;
+		if(bloodloss<0)bloodloss=0;
 		return max(0,100
 			+min(0,
 				-aggravateddamage
@@ -41,7 +41,7 @@ extend class HDPlayerPawn{
 				-oldwoundcount
 				-woundcount
 				-unstablewoundcount
-				-(bledout>>6)
+				-(bloodloss>>6)
 				+(stimcount>>1)
 			)
 			+max(fatigue-HDCONST_SPRINTFATIGUE,0)
@@ -113,7 +113,7 @@ extend class HDPlayerPawn{
 			beatcount--;
 			A_SetPitch(pitch-0.0005*bloodpressure,SPF_INTERPOLATE);
 		}else{
-			if(hd_debug&&bledout)console.printf("bled: "..bledout);
+			if(hd_debug&&bloodloss)console.printf("bled: "..bloodloss);
 
 			A_SetPitch(pitch+0.0005*beatmax*bloodpressure,SPF_INTERPOLATE);
 			beatmax=min(beatmax,beatcap);
@@ -132,7 +132,7 @@ extend class HDPlayerPawn{
 					damagemobj(
 						self,lastthingthatwoundedyou,dm,"bleedout",
 						DMG_THRUSTLESS
-						|(bledout>4096?DMG_FORCED:0)
+						|(bloodloss>4096?DMG_FORCED:0)
 					);
 				}
 			}
@@ -151,7 +151,7 @@ extend class HDPlayerPawn{
 			if(iszerk)beatmax=clamp(beatmax,4,14);
 			else beatmax=clamp(beatmax,HDCONST_MINHEARTTICS,35);
 
-			if(fatigue>random(0,(bledout>>6)))fatigue--;
+			if(fatigue>random(0,(bloodloss>>6)))fatigue--;
 			if(
 				beatmax<HDCONST_MINHEARTTICS+3
 				||fatigue>HDCONST_DAMAGEFATIGUE  
@@ -176,7 +176,7 @@ extend class HDPlayerPawn{
 				&&runwalksprint>0
 				&&(fm||sm)
 			){
-				fatigue+=2+max(0,(bledout>>6))+(
+				fatigue+=2+max(0,(bloodloss>>6))+(
 					countinv("WornRadsuit")?randompick(0,1,1):
 					(armourlevel==3?randompick(0,1):
 					armourlevel==1?randompick(0,0,0,1):0)
@@ -192,7 +192,7 @@ extend class HDPlayerPawn{
 			//blood pressure
 			if(
 				stimcount>0
-				&&bloodpressure<12-(bledout>>4)
+				&&bloodpressure<12-(bloodloss>>4)
 			)bloodpressure++;
 			else if(bloodpressure>0)bloodpressure--;
 
@@ -223,7 +223,7 @@ extend class HDPlayerPawn{
 					stimcount-=4;
 					regenblues--;
 				}
-				if(bledout>0)bledout-=12;
+				if(bloodloss>0)bloodloss-=12;
 
 				//heal shorter-term damage
 				if(
@@ -345,7 +345,7 @@ extend class HDPlayerPawn{
 				beatcap=clamp(beatcap+8,1,35);
 
 				//blood starts growing back
-				if(bledout>0)bledout--;
+				if(bloodloss>0)bloodloss--;
 
 				//updating beatcap (minimum heart rate)
 				if(health<40) beatcap=clamp(beatcap,1,24);
