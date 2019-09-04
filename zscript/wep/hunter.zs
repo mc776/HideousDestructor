@@ -325,7 +325,7 @@ class Hunter:HDShotgun{
 		SHTG E 0{
 			if(
 				invoker.weaponstatus[HUNTS_FIREMODE]>0
-				&&invoker.shotpower>0.91
+				&&invoker.shotpower>0.905
 			)setweaponstate("chamberauto");
 		}goto ready;
 	altfire:

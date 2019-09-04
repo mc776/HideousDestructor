@@ -372,7 +372,7 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 				return;
 			}
 
-			if(Hunter.Fire(self)<=0.91)semi=false;
+			if(Hunter.Fire(self)<=0.905)semi=false;
 		}
 		#### E 3{
 			if(semi){

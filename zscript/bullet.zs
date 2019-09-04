@@ -888,7 +888,7 @@ class HDBulletActor:HDActor{
 					//if not directly in front, increase space as you go down
 					//this isn't actually intended to reflect any particular sprite
 					int whichtick=level.time&(1|2); //0,1,2,3
-					if(hitangle<3.+whichtick*(1.-haa))return;
+					if(hitangle<4.+whichtick*(1.-haa))return;
 				}
 			}
 		}
@@ -1025,16 +1025,16 @@ class HDBulletActor:HDActor{
 			return;
 		}
 
+		//check if going right through the body
+		//it's not "deep enough", it's "too deep" now!
+		deepenough=pen<deemedwidth-0.02*hitangle;
+
 		//bullet penetrated, both impact and temp cavity do bashing
-		impact+=tinyspeedsquared*frandom(0.03,0.08)*stamina;
+		impact+=tinyspeedsquared*(deepenough?frandom(0.07,0.1):frandom(0.03,0.08))*stamina;
 
 		bnoextremedeath=impact<(hitactor.gibhealth<<3);
 		hitactor.damagemobj(self,target,max(impact,pen*impact*0.03*hitactorresistance),"bashing",DMG_THRUSTLESS);
 		bnoextremedeath=true;
-
-		//check if going right through the body
-		//it's not "deep enough", it's "too deep" now!
-		deepenough=pen<deemedwidth-0.02*hitangle;
 
 		//determine what kind of blood to use
 		class<actor>hitblood;
@@ -1134,12 +1134,6 @@ if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channe
 			pen*=2;
 			channelwidth*=2;
 		}else{
-			//ONLY if no centre crit
-			//randomly hit a joint or something
-			if(
-				(!hdmobbase(hitactor)||hdmobbase(hitactor).bnorandomweakspots)
-				&&frandom(0,deemedwidth)<channelwidth*pen
-			)chdmg<<=2;
 			hitactor.damagemobj(
 				self,target,
 				chdmg,
