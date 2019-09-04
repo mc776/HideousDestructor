@@ -120,10 +120,10 @@ class HDB_wad:HDBulletActor{
 class HDB_frag:HDBulletActor{
 	default{
 		pushfactor 1.;
-		mass 40;
+		mass 30;
 		speed 600;
 		accuracy 400;
-		stamina 500;
+		stamina 400;
 		woundhealth 5;
 	}
 	override void gunsmoke(){}
