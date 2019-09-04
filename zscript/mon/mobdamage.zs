@@ -215,6 +215,16 @@ extend class HDMobBase{
 			)
 		);
 
+		//temp incap: reset +nopain, skip death sequence
+		if(
+			bnopain
+			&&height==deathheight
+			&&findstate("falldown")
+		){
+			setstatelabel("dead");
+			bnopain=getdefaultbytype(getclass()).bnopain;
+		}
+
 		//set corpse stuff
 		bnodropoff=false;
 		bnotautoaimed=true;
