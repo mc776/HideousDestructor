@@ -370,6 +370,20 @@ class Serpentipede:HDMobBase{
 		#### SRQ 6;
 		#### PONH 4;
 		goto checkraise;
+	falldown:
+		#### H 5;
+		#### I 5 A_Scream();
+		#### JJKKL 2 A_SetSize(-1,max(deathheight,height-10));
+		#### L 2 A_SetSize(-1,deathheight);
+		#### M 10 A_KnockedDown();
+		wait;
+	standup:
+		#### LK 5;
+		#### J 0 A_Jump(200,2);
+		#### J 0 A_PlaySound(seesound,CHAN_VOICE);
+		#### JI 4 A_Recoil(-0.3);
+		#### HE 5;
+		#### A 0 A_Jump(256,"see");
 	}
 }
 

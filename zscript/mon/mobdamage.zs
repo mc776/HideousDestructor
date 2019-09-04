@@ -67,6 +67,18 @@ extend class HDMobBase{
 			}
 		}
 
+		//additional knockdown stun
+		if(
+			!bnopain
+			&&health>0
+			&&findstate("falldown")
+			&&max(stunned,damage)>random(health,(sphlth<<2))
+		){
+			bnopain=true;
+			liveheight=height;
+			setstatelabel("falldown");
+		}
+
 		//bleeding
 		if(mod=="bleedout"){
 			bloodloss+=damage;
@@ -248,6 +260,20 @@ extend class HDMobBase{
 		let aff=new("AngelFire");
 		aff.master=self;aff.ticker=0;
 	}
+
+
+	//temporary stun
+	void A_KnockedDown(){
+		vel.xy+=(frandom(-0.1,0.1),frandom(-0.1,0.1));
+		if(!random(0,3))vel.z+=frandom(0.4,1.);
+		if(stunned>0||random(0,(bodydamage>>4)))return;
+		bnopain=getdefaultbytype(getclass()).bnopain;
+		if(findstate("standup"))setstatelabel("standup");
+		else if(findstate("raise"))setstatelabel("raise");
+		else setstatelabel("see");
+	}
+
+
 	states{
 	checkraise:
 		---- A 0 damagemobj(self,self,1,"maxhpdrain",DMG_FORCED|DMG_NO_FACTOR);

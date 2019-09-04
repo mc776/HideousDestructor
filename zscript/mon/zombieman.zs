@@ -26,6 +26,22 @@ class HDMobMan:HDMobBase{
 		arw.durability=max(1,frandom(min(1.,minimum),1.)*maxdurability);
 		return arw;
 	}
+	states{
+	falldown:
+		#### H 5;
+		#### I 5 A_Scream();
+		#### JJKKK 2 A_SetSize(-1,max(deathheight,height-10));
+		#### L 0 A_SetSize(-1,deathheight);
+		#### L 10 A_KnockedDown();
+		wait;
+	standup:
+		#### K 6;
+		#### J 0 A_Jump(200,2);
+		#### J 0 A_PlaySound(seesound,CHAN_VOICE);
+		#### JI 4 A_Recoil(-0.3);
+		#### HE 6;
+		#### A 0 A_Jump(256,"see");
+	}
 }
 class shootest:HDMobMan{
 	default{+nodamage +nopain health int.MAX;}
