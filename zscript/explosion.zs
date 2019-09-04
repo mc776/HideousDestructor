@@ -95,7 +95,7 @@ extend class HDActor{
 			double pitchtomid=-atan2(difz+ithalfheight,dist2);
 			double pitchtobottom=-atan2(difz,dist2);
 			double angletomid=caller.angleto(it);
-			double edgeshot=atan2(smallerradius,dist);
+			double edgeshot=atan2(smallerradius,dist-it.radius);
 
 
 			//check how much of the actor is exposed
