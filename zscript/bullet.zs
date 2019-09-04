@@ -120,9 +120,9 @@ class HDB_wad:HDBulletActor{
 class HDB_frag:HDBulletActor{
 	default{
 		pushfactor 1.;
-		mass 30;
+		mass 40;
 		speed 600;
-		accuracy 240;
+		accuracy 400;
 		stamina 500;
 		woundhealth 5;
 	}
@@ -280,6 +280,7 @@ class HDBulletActor:HDActor{
 		+noextremedeath
 		+cannotpush
 		height 0.1;radius 0.1;
+		scale 0.3;
 		/*
 			speed: 200-1000
 			mass: in tenths of a gram
@@ -315,6 +316,12 @@ class HDBulletActor:HDActor{
 		if(distantsounder!="none"){
 			actor m=spawn(distantsounder,pos,ALLOW_REPLACE);
 			m.target=target;
+		}
+		if(hd_debug){
+			scale=(1.,1.);
+			sprite=getspriteindex("BAL1A0");
+		}else{
+			scale=(0.001,0.001)*stamina;
 		}
 	}
 	double penetration(){ //still juvenile giggling
@@ -389,8 +396,7 @@ class HDBulletActor:HDActor{
 	}
 	states{
 	spawn:
-		BAL1 A -1 nodelay A_JumpIf(!hd_debug,1);
-		BLET A -1 A_SetScale(0.3);
+		BLET A -1;
 		stop;
 	death:
 		TNT1 A 1;

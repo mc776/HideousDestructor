@@ -212,7 +212,7 @@ extend class HDActor{
 						)
 					)
 				){
-					int fragshit=1400; //
+					int fragshit=3000;//1400;
 					if(dist>0){
 						//"A = 2πrh" for sector area, divided by "A = 4πr^2" for total area of sphere
 						//we're solving for r=1 so r is omitted
@@ -223,7 +223,8 @@ extend class HDActor{
 						//hypotenuse-cos(angcover*hypotenuse)=h
 						//collapse into (1.-cos(angcover))*0.5
 
-						double angcover=(abs(pitchtotop-pitchtomid)+edgeshot)*0.5;
+						//double angcover=(abs(pitchtotop-pitchtomid)+edgeshot)*0.5;
+						double angcover=max(abs(pitchtotop-pitchtomid),edgeshot);
 						double proportionfragged=(1.-cos(angcover))*0.5;
 
 
@@ -262,7 +263,7 @@ if(hd_debug)console.printf(it.getclassname().."  "..angcover.." = "..proportionf
 
 					//limit number of frags and increase size to compensate
 					if(fragshit>20){
-						fragstamina+=(fragshit-20);
+						fragstamina+=((fragshit-20)>>3);
 						fragshit=20;
 					}
 
