@@ -122,7 +122,7 @@ class HDB_frag:HDBulletActor{
 		pushfactor 1.;
 		mass 30;
 		speed 600;
-		accuracy 100;
+		accuracy 240;
 		stamina 500;
 		woundhealth 5;
 	}
