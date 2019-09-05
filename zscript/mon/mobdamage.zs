@@ -52,6 +52,20 @@ extend class HDMobBase{
 		if(mod!="bleedout")pain+=max(1,(damage>>5));
 
 
+		//don't go into pain state while incap'd
+		if(
+			bincapacitated
+			&&health>0
+		){
+			flags|=DMG_NO_PAIN;
+			if(
+				!bnopain
+				&&random(0,255)<painchance
+				&&damage>painthreshold
+			)A_Pain();
+		}
+
+
 		//bashing
 		if(mod=="bashing"){
 			stunned+=(damage<<2);
@@ -120,8 +134,7 @@ extend class HDMobBase{
 		}
 
 		//force death even if not quite gibbing
-		if(health>0&&bodydamage>sphlth){
-			if(random(0,15))deathsound="";
+		if(health>0&&(bodydamage<<1)>sphlth){
 			return super.damagemobj(inflictor,source,health,mod,flags,angle);
 		}
 
@@ -160,6 +173,9 @@ extend class HDMobBase{
 			}
 			return;
 		}
+
+		//reset height after incap
+		if(!bincapacitated&&height<liveheight)A_SetSize(-1,min(liveheight,height+5));
 
 		//this must be done here and not AttemptRaise because reasons
 		if(bgibbed){
@@ -217,10 +233,11 @@ extend class HDMobBase{
 
 		//temp incap: reset +nopain, skip death sequence
 		if(
-			bnopain
-			&&height==deathheight
+			bincapacitated
+			&&height<=deathheight
 			&&findstate("falldown")
 		){
+			if(!random(0,7))A_Scream();
 			setstatelabel("dead");
 			bnopain=getdefaultbytype(getclass()).bnopain;
 		}
@@ -274,9 +291,12 @@ extend class HDMobBase{
 
 	//temporary stun
 	void A_KnockedDown(){
+		bincapacitated=true;
 		vel.xy+=(frandom(-0.1,0.1),frandom(-0.1,0.1));
 		if(!random(0,3))vel.z+=frandom(0.4,1.);
 		if(stunned>0||random(0,(bodydamage>>4)))return;
+		//reset stuff and get up
+		bincapacitated=false;
 		bnopain=getdefaultbytype(getclass()).bnopain;
 		if(findstate("standup"))setstatelabel("standup");
 		else if(findstate("raise"))setstatelabel("raise");

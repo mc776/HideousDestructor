@@ -199,7 +199,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		if(
 			health>0
 			&&damage>=health
-			&&damage<random(12,300-(lastinginjury<<3))
+			&&damage<random(12,300-(lastinginjury<<1))
 			&&mod!="raisedrop"
 			&&mod!="spawndead"
 			&&(
@@ -208,7 +208,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 			)
 		){
 			lastinginjury+=max((mod=="bashing"?0:1),(damage>>5));
-			damage=health-1;
+			damage=health-5;
 		}
 		return super.damagemobj(inflictor,source,damage,mod,flags,angle);
 	}

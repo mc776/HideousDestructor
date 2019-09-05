@@ -36,7 +36,7 @@ class HDMobMan:HDMobBase{
 		wait;
 	standup:
 		#### K 6;
-		#### J 0 A_Jump(200,2);
+		#### J 0 A_Jump(160,2);
 		#### J 0 A_PlaySound(seesound,CHAN_VOICE);
 		#### JI 4 A_Recoil(-0.3);
 		#### HE 6;

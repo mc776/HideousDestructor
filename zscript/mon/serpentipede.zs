@@ -379,7 +379,7 @@ class Serpentipede:HDMobBase{
 		wait;
 	standup:
 		#### LK 5;
-		#### J 0 A_Jump(200,2);
+		#### J 0 A_Jump(64,2);
 		#### J 0 A_PlaySound(seesound,CHAN_VOICE);
 		#### JI 4 A_Recoil(-0.3);
 		#### HE 5;
