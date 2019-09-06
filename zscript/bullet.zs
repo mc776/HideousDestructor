@@ -206,7 +206,8 @@ class HDB_bronto:HDBulletActor{
 			spawn("DistantRocket",pos,ALLOW_REPLACE);
 			vel.z+=10;
 			A_SpawnChunks("HDSmokeChunk",random(3,4),6,12);
-		}
+			bnointeraction=true;
+		}stop;
 	}
 }
 
