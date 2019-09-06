@@ -13,7 +13,7 @@ class Babuin:HDMobBase{
 		let hdmb=hdmobster(hdmobster.spawnmobster(self));
 		hdmb.meleethreshold=200;
 		lastpointinmap=pos;
-		bbiped=!bplayingid;
+		bbiped=bplayingid;
 	}
 	void TryLatch(){
 		if(
