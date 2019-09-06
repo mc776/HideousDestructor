@@ -69,7 +69,6 @@ class Babuin:HDMobBase{
 
 		if(!latchtarget||latchtarget==self||latchtarget.health<1){
 			latchtarget=null;
-			latchtarget=null;
 		}
 		if(latchtarget){
 			A_Face(latchtarget,0,0);
