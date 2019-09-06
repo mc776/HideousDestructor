@@ -21,6 +21,7 @@ extend class HDMobBase{
 			!bnopain
 			&&health>0
 			&&findstate("pain",true)
+			&&!instatesequence(curstate,resolvestate("falldown"))
 		)setstatelabel("pain");
 	}
 
@@ -52,20 +53,6 @@ extend class HDMobBase{
 		if(mod!="bleedout")pain+=max(1,(damage>>5));
 
 
-		//don't go into pain state while incap'd
-		if(
-			bincapacitated
-			&&health>0
-		){
-			flags|=DMG_NO_PAIN;
-			if(
-				!bnopain
-				&&random(0,255)<painchance
-				&&damage>painthreshold
-			)A_Pain();
-		}
-
-
 		//bashing
 		if(mod=="bashing"){
 			stunned+=(damage<<2);
@@ -81,14 +68,27 @@ extend class HDMobBase{
 			}
 		}
 
+
 		//additional knockdown stun
+		bincapacitated=instatesequence(curstate,resolvestate("falldown"));
 		if(
+			//check to make sure we're not already doing it
+			//if already doing so, make sure the damage never goes into painstate(
+			bincapacitated
+		){
+			flags|=DMG_NO_PAIN;
+			if(
+				!bnopain
+				&&random(0,255)<painchance
+				&&damage>painthreshold
+			)A_Pain();
+		}else if(
 			!bnopain
 			&&health>0
 			&&findstate("falldown")
 			&&max(stunned,damage)>random(health,(sphlth<<2))
 		){
-			bnopain=true;
+			bincapacitated=true;
 			liveheight=height;
 			setstatelabel("falldown");
 		}
@@ -175,7 +175,10 @@ extend class HDMobBase{
 		}
 
 		//reset height after incap
-		if(!bincapacitated&&height<liveheight)A_SetSize(-1,min(liveheight,height+5));
+		if(bincapacitated){
+			if(deathheight<height)A_SetSize(-1,max(deathheight,height-10));
+		}else if(health>0&&liveheight>height)A_SetSize(-1,min(liveheight,height*1.1));
+
 
 		//this must be done here and not AttemptRaise because reasons
 		if(bgibbed){
@@ -216,6 +219,11 @@ extend class HDMobBase{
 
 		deathticks=0;
 
+		bincapacitated=(
+			frame>=11 //"M" for serpentipede, "L" for humanoids
+		);
+
+
 		super.Die(source,inflictor,dmgflags);
 		if(!self)return;
 
@@ -234,8 +242,7 @@ extend class HDMobBase{
 		//temp incap: reset +nopain, skip death sequence
 		if(
 			bincapacitated
-			&&height<=deathheight
-			&&findstate("falldown")
+			&&!bgibbed
 		){
 			if(!random(0,7))A_Scream();
 			setstatelabel("dead");
@@ -291,13 +298,12 @@ extend class HDMobBase{
 
 	//temporary stun
 	void A_KnockedDown(){
-		bincapacitated=true;
 		vel.xy+=(frandom(-0.1,0.1),frandom(-0.1,0.1));
 		if(!random(0,3))vel.z+=frandom(0.4,1.);
 		if(stunned>0||random(0,(bodydamage>>4)))return;
 		//reset stuff and get up
-		bincapacitated=false;
 		bnopain=getdefaultbytype(getclass()).bnopain;
+		bincapacitated=false;
 		if(findstate("standup"))setstatelabel("standup");
 		else if(findstate("raise"))setstatelabel("raise");
 		else setstatelabel("see");
