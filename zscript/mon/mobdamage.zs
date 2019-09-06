@@ -184,7 +184,7 @@ extend class HDMobBase{
 		//this must be done here and not AttemptRaise because reasons
 		if(bgibbed){
 			bgibbed=false;
-			if(findstate("ungib"))setstatelabel("ungib");
+			if(findstate("ungib",true))setstatelabel("ungib");
 		}
 
 		if(stunned>0){
@@ -241,13 +241,14 @@ extend class HDMobBase{
 		);
 
 		//temp incap: reset +nopain, skip death sequence
+		bnopain=getdefaultbytype(getclass()).bnopain;
 		if(
 			bincapacitated
 			&&!bgibbed
+			&&findstate("dead",true)
 		){
 			if(!random(0,7))A_Scream();
 			setstatelabel("dead");
-			bnopain=getdefaultbytype(getclass()).bnopain;
 		}
 
 		//set corpse stuff
