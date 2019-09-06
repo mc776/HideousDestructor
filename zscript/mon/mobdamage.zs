@@ -221,7 +221,8 @@ extend class HDMobBase{
 		deathticks=0;
 
 		bincapacitated=(
-			frame>=11 //"M" for serpentipede, "L" for humanoids
+			findstate("falldown",true)
+			&&frame>=11 //"M" for serpentipede, "L" for humanoids
 		);
 
 
