@@ -76,12 +76,13 @@ extend class HDMobBase{
 			//if already doing so, make sure the damage never goes into painstate(
 			bincapacitated
 		){
-			flags|=DMG_NO_PAIN;
 			if(
 				!bnopain
-				&&random(0,255)<painchance
+				&&!(flags&DMG_NO_PAIN)
 				&&damage>painthreshold
+				&&random(0,255)<painchance
 			)A_Pain();
+			flags|=DMG_NO_PAIN;
 		}else if(
 			!bnopain
 			&&health>0
