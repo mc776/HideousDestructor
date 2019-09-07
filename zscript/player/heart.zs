@@ -1,6 +1,17 @@
 // ------------------------------------------------------------
 // The heart
 // ------------------------------------------------------------
+
+
+
+
+// *** SEARCH "TODO:"S ONCE NEW WOUNDING IS IN ***
+
+
+
+
+
+
 extend class HDPlayerPawn{
 	const HDCONST_MINHEARTTICS = 5; //35/5*60=420 beats per minute!
 	int beatcount;
@@ -66,11 +77,16 @@ extend class HDPlayerPawn{
 					if(!random(0,3)){
 						givebody(1);
 						A_SetBlend("20 0a 0f",0.4,3);
+
+
+						//TODO: delete this block once the new wounding is in
 						if(!random(0,8-zerk*0.0005)){
 							woundcount+=random(0,2);
 							if(!random(0,4))A_Pain();
 							else if(!random(0,3))aggravateddamage++;
 						}
+
+
 						if(!(player.readyweapon is "HDFist")){
 							Disarm(self);
 							A_SelectWeapon("HDFist");
@@ -125,7 +141,27 @@ extend class HDPlayerPawn{
 				A_PlaySound("misc/heart",CHAN_BODY,0.05*max(bloodpressure,22-beatmax),false,30);
 			}
 
+
+
 			//bleed
+			//TODO: delete this block once the new wounding is in
+			//needs to be replaced with the new bleed system, as follows:
+			/*
+				if(wounds.size()){
+					int tobleed=0;
+					for(int i=0;i<wounds.size();i++){
+						int addbleed=HDMath.GetFromBase32FakeArray(wounds[i],0);
+						tobleed+=random(addbleed>>1,addbleed)/bloodpressure;
+					}
+					if(tobleed>0){
+						damagemobj(
+							self,lastthingthatwoundedyou,tobleed,"bleedout",
+							DMG_THRUSTLESS
+							|(bloodloss>4096?DMG_FORCED:0)
+						);
+					}
+				}
+			*/
 			if(woundcount){
 				int dm=(random(10,woundcount)-random(0,bloodpressure))*4/10;
 				if(dm>0){
@@ -136,6 +172,9 @@ extend class HDPlayerPawn{
 					);
 				}
 			}
+
+
+
 
 			//fatigue eventually overrides zerk
 			if(fatigue>HDCONST_DAMAGEFATIGUE*1.4){
@@ -198,12 +237,18 @@ extend class HDPlayerPawn{
 
 			//don't go negatives
 			if(regenblues<0)regenblues=0;
+			if(stunned<0)stunned=0;
+			if(aggravateddamage<0)aggravateddamage=0;
+
+
+
+			//TODO: delete this block once the new wounding is in
+			//don't need the wound ones, replace burncount with burn1/2/3
 			if(woundcount<0)woundcount=0;
 			if(oldwoundcount<0)oldwoundcount=0;
 			if(unstablewoundcount<0)unstablewoundcount=0;
 			if(burncount<0)burncount=0;
-			if(aggravateddamage<0)aggravateddamage=0;
-			if(stunned<0)stunned=0;
+
 
 			//apply stims
 			if(stimcount){
@@ -225,7 +270,10 @@ extend class HDPlayerPawn{
 				}
 				if(bloodloss>0)bloodloss-=12;
 
+
 				//heal shorter-term damage
+				//TODO: delete this block once the new wounding is in
+				//call the healwound function and deplete regenblues
 				if(
 					unstablewoundcount>0
 					||woundcount>0
@@ -233,6 +281,8 @@ extend class HDPlayerPawn{
 					if(woundcount>0)woundcount--;else unstablewoundcount--;
 					regenblues--;
 				}
+
+
 			}
 
 			//every 4 beats
@@ -277,11 +327,17 @@ extend class HDPlayerPawn{
 
 				//all other magical healing
 				if(regenblues>0){
+
+
 					//heal long-term damage
+					//TODO: delete this block once the new wounding is in
+					//see the healing function
 					if(oldwoundcount>0||burncount>0||aggravateddamage>0){
 						oldwoundcount--;burncount--;aggravateddamage--;
 						regenblues--;
 					}
+
+
 					if(
 						beatcounter%60==0
 						&&!random(0,7)
@@ -328,7 +384,13 @@ extend class HDPlayerPawn{
 							break;
 						default:
 							aggravateddamage-=20;
+
+
+							//TODO: delete this block once the new wounding is in
+							//see if for(int i=0;i<10&&wounds.size();i++){wounds.pop();} works
 							woundcount-=20;
+
+
 							A_RadiusGive("health",512,
 								RGF_GIVESELF|RGF_MONSTERS|RGF_MONSTERS|
 								RGF_CUBE|RGF_NOSIGHT,
@@ -351,12 +413,15 @@ extend class HDPlayerPawn{
 				if(health<40) beatcap=clamp(beatcap,1,24);
 				else if(health<60) beatcap=clamp(beatcap,1,32);
 
+
+
+
+				//TODO: delete this block once the new wounding is in
 				//bandages come undone
 				if(unstablewoundcount && countinv("IsMoving")>random(0,12)){
 					unstablewoundcount--;
 					if(flip)oldwoundcount++;else woundcount++;
 				}
-
 				//wounds start settling
 				if(!random(0,unstablewoundcount+woundcount)){
 					if(unstablewoundcount>0){
@@ -364,6 +429,9 @@ extend class HDPlayerPawn{
 						oldwoundcount++;
 					}
 				}
+
+
+
 			}
 			if(beatcounter==120){	//every 120 beats
 				beatcounter=0;	//reset

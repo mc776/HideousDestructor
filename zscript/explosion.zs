@@ -202,14 +202,11 @@ extend class HDActor{
 				dist<=fragradius
 				&&(it.bsolid || it.bshootable || it.bvulnerable)
 			){
-				caller.A_Face(it);
 				if(
 					(
-						it.bvulnerable||(
-							it.bshootable
-							&&it.radius
-							&&it.height
-						)
+						(it.bvulnerable||it.bshootable)
+						&&it.radius
+						&&it.height
 					)
 				){
 					//imagine a ball 80mm wide

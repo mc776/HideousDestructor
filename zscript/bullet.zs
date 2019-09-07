@@ -1202,13 +1202,18 @@ if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channe
 			//anything else: puff and add bullet hole
 
 		if(max(abs(pos.x),abs(pos.y))>32000)return null;
-		double sp=speed;
+		double sp=speed*speed*mass*0.00001;
 		name pufftype="BulletPuffBig";
 		if(sp>800)pufftype="BulletPuffBig";
 		else if(sp>512)pufftype="BulletPuffMedium";
 		else pufftype="BulletPuffSmall";
-		let aaa=spawn(pufftype,pos);
-		aaa.angle=angle;aaa.pitch=pitch;
+		let aaa=HDBulletPuff(spawn("HDBulletPuff",pos));
+		if(aaa){
+			aaa.angle=angle;aaa.pitch=pitch;
+			aaa.stamina=sp*0.01;
+			aaa.scarechance=20-sp*0.001;
+			aaa.scale=(1.,1.)*(0.4+0.05*aaa.stamina);
+		}
 		return aaa;
 	}
 }

@@ -281,13 +281,15 @@ class HDBulletPuff:HDPuff{
 		if(max(abs(pos.x),abs(pos.y),abs(pos.z))>=32768){destroy();return;}
 		if(!random(0,scarechance)){
 			actor fff=spawn("idledummy",pos,ALLOW_REPLACE);
-			fff.stamina=random(60,120);
-			hdmobai.frighten(fff,256);
+			if(fff){
+				fff.stamina=random(60,120);
+				hdmobai.frighten(fff,256);
+			}
 		}
-		A_PlaySound("misc/bullethit",0,0.02*stamina*stamina);
+		int stm=stamina;
+		A_PlaySound("misc/bullethit",CHAN_BODY,volume:min(1.,0.1*stamina),pitch:0.99+stamina*0.003);
 		A_ChangeVelocity(-0.4,0,frandom(0.1,0.4),CVF_RELATIVE);
 		trymove(pos.xy+vel.xy,false);
-		int stm=stamina;
 		fadeafter=frandom(0,1);
 		scale*=frandom(0.9,1.1);
 		for(int i=0;i<stamina;i++){
