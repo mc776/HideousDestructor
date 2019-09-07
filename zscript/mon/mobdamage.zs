@@ -14,6 +14,7 @@ extend class HDMobBase{
 		damagerecoil=0;
 		bloodloss=0;
 		pain=0;
+		bincapacitated=false;
 	}
 
 	void forcepain(){
