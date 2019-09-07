@@ -287,10 +287,11 @@ class HDBulletPuff:HDPuff{
 			}
 		}
 		int stm=stamina;
-		A_PlaySound("misc/bullethit",CHAN_BODY,volume:min(1.,0.1*stamina),pitch:0.99+stamina*0.003);
+		double vol=min(1.,0.1*stm);
+		A_PlaySound("misc/bullethit",CHAN_BODY,volume:vol);
 		A_ChangeVelocity(-0.4,0,frandom(0.1,0.4),CVF_RELATIVE);
 		trymove(pos.xy+vel.xy,false);
-		fadeafter=frandom(0,1);
+		fadeafter=frandom(0,0.99);
 		scale*=frandom(0.9,1.1);
 		for(int i=0;i<stamina;i++){
 			A_SpawnParticle("gray",
