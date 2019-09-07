@@ -92,6 +92,7 @@ extend class HDMobBase{
 		){
 			bincapacitated=true;
 			setstatelabel("falldown");
+			flags|=DMG_NO_PAIN;
 		}
 
 		//bleeding
@@ -176,6 +177,7 @@ extend class HDMobBase{
 		}
 
 		//reset height after incap
+		bincapacitated=instatesequence(curstate,resolvestate("falldown"));
 		if(bincapacitated){
 			if(deathheight<height)A_SetSize(-1,max(deathheight,height-10));
 		}else if(health>0&&liveheight>height)A_SetSize(-1,min(liveheight,height*1.1));
