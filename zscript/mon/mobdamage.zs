@@ -90,7 +90,6 @@ extend class HDMobBase{
 			&&max(stunned,damage)>random(health,(sphlth<<2))
 		){
 			bincapacitated=true;
-			liveheight=height;
 			setstatelabel("falldown");
 		}
 
@@ -215,9 +214,6 @@ extend class HDMobBase{
 		if(hd_debug)A_Log("DROPED GNU");
 	}
 	override void die(actor source,actor inflictor,int dmgflags){
-		//retrieve actor's current height
-		liveheight=height;
-
 		deathticks=0;
 
 		bincapacitated=(

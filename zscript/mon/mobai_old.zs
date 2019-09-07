@@ -6,6 +6,11 @@
 struct HDMobAI play{
 	//randomize size
 	static void resize(actor caller,double minscl=0.9,double maxscl=1.,int minhealth=0){
+		let hdmbb=hdmobbase(caller);
+		if(hdmbb){
+			hdmbb.resize(minscl,maxscl,minhealth);
+			return;
+		}
 		double scl=frandom(minscl,maxscl);
 		double drad=caller.radius;double dheight=caller.height;
 		double minchkscl=max(1.,minscl+0.1);
