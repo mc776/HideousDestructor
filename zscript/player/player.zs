@@ -247,6 +247,7 @@ class HDPlayerPawn:PlayerPawn{
 	transient cvar hd_lasttip;
 	transient cvar hd_helptext;
 	transient cvar neverswitchonpickup;
+	transient cvar hd_voicepitch;
 	void cachecvars(){
 		playerinfo plr;
 		if(player)plr=player;
@@ -265,6 +266,7 @@ class HDPlayerPawn:PlayerPawn{
 		hd_usefocus=cvar.getcvar("hd_usefocus",plr);
 		hd_lasttip=cvar.getcvar("hd_lasttip",plr);
 		hd_helptext=cvar.getcvar("hd_helptext",plr);
+		hd_voicepitch=cvar.getcvar("hd_voicepitch",plr);
 		neverswitchonpickup=cvar.getcvar("neverswitchonpickup",plr);
 	}
 	override void Tick(){
@@ -286,6 +288,8 @@ class HDPlayerPawn:PlayerPawn{
 				&&specialtipalpha<1000.
 			)specialtipalpha=specialtipalpha=12.+0.08*specialtip.length();
 		}
+
+		if(hd_voicepitch)A_SoundPitch(CHAN_VOICE,clamp(hd_voicepitch.getfloat(),0.7,1.3));
 
 		//only do anything below this while the player is alive!
 		if(bkilled||health<1){
@@ -327,7 +331,6 @@ class HDPlayerPawn:PlayerPawn{
 
 
 
-
 		super.Tick();
 
 
@@ -358,6 +361,7 @@ class HDPlayerPawn:PlayerPawn{
 			if(frame==23)frame=4;
 			else if(frame==24)frame=5;
 		}
+
 
 		//prevent odd screwups that leave you unable to throw grenades or something
 		if(!countinv("HDFist"))GiveBasics();

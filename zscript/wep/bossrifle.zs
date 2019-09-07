@@ -224,8 +224,9 @@ class BossRifle:HDWeapon{
 		BARG A 1{
 			A_Gunflash();
 			invoker.weaponstatus[BOSSS_CHAMBER]=1;
-			A_PlaySound("weapons/bigrifle2",6);
-			if(!(invoker.weaponstatus[0]&BOSSF_CUSTOMCHAMBER))A_SoundPitch(6,1.1);
+			A_PlaySound("weapons/bigrifle2",6,
+				pitch:!(invoker.weaponstatus[0]&BOSSF_CUSTOMCHAMBER)?1.1:1.
+			);
 			A_AlertMonsters();
 
 			HDBulletActor.FireBullet(self,"HDB_776",

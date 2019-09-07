@@ -114,7 +114,7 @@ class SlowProjectile:HDBullet{
 				if(blockingmobj){
 					tracer=blockingmobj;
 					int idmg=speed*speed*mass*0.000005;
-					if(!bnodamage)tracer.damagemobj(self,target,idmg,"none");
+					if(!bnodamage)tracer.damagemobj(self,target,idmg,"bashing");
 					if(idmg>40)tracer.A_PlaySound("misc/bulletflesh",CHAN_BODY);
 					if(hd_debug)A_Log(String.Format("%s hit %s",getclassname(),blockingmobj.getclassname()));
 				}

@@ -74,8 +74,7 @@ class HDTree:HDActor{
 			A_SetTics(random(1,20)*10);
 			int chn=random(0,7);
 			if(random(0,7))A_PlaySound("grunt/active",chn,frandom(0.1,0.4),0,1);
-			else A_PlaySound("tree/pain",chn,frandom(0.2,1.0),0,1);
-			A_SoundPitch(chn,frandom(0.6,1.3));
+			else A_PlaySound("tree/pain",chn,frandom(0.2,1.0),0,1,pitch:frandom(0.6,1.3));
 		}loop;
 	pain:
 		---- A 1{
