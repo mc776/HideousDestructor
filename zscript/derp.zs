@@ -106,7 +106,7 @@ class DERPBot:HDUPK{
 		return atan2(vecdiff.y,vecdiff.x);
 	}
 	void A_DerpCrawlSound(int chance=50){
-		A_PlaySound("derp/crawl",CHAN_BODY);
+		A_PlaySound("derp/crawl",CHAN_BODY,pitch:1.3);
 		if(bfriendly&&!random(0,50))A_AlertMonsters(0,AMF_TARGETEMITTER);
 	}
 	void A_DerpCrawl(bool attack=true){
