@@ -304,8 +304,8 @@ class doordestroyer:hdactor{
 			holeheight=justoverthereheight-blockpoint;
 			othersector.MoveFloor(abs(holeheight),abs(blockpoint),0,-1,false,true);
 		}else{
-			double lowestsurrounding;vertex garbage;
-			[lowestsurrounding,garbage]=othersector.findlowestceilingsurrounding();
+			double lowestsurrounding;
+			lowestsurrounding=othersector.findlowestceilingsurrounding();
 			double justoverthereheight=othersector.ceilingplane.zatpoint(justoverthere);
 			blockpoint=max(
 				justoverthereheight,
@@ -317,6 +317,8 @@ class doordestroyer:hdactor{
 			holeheight=justoverthereheight-blockpoint;
 			othersector.MoveCeiling(abs(holeheight),blockpoint,0,1,false);
 		}
+
+		if(!holeheight)return false;
 
 		//replace some textures
 		textureid shwal=texman.checkfortexture("ASHWALL2",texman.type_any);
