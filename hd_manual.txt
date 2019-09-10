@@ -342,43 +342,59 @@ herptag: as iedtag.
 herpdir: Type "herp <direction> <tag>" as a shortcut alternative to "herp 3 <tag> <direction>". Useful if you only have one HERP and don't want to bother typing that extra zero.
 
 
-	CVars (host only)
+	CVars (host only) - gameplay meta
 
-hd_forceloadout: If this has been set, set this to "", "false", "0" or "none" to let everyone choose their own loadout. Set this to anything else and it becomes everyone's loadout. Takes effect on player spawn.
+hd_debug (0): Turns on some debug logging messages and displays, such as damage reports and (at level 2) bullet trails.
+
+hd_nobots (false): This causes bots to be replaced with riflemen. Can be used for coop and deathmatch. Generally far more competent, but cannot use customized loadouts and can sometimes appear in odd places.
+
+hd_nodoorbuster (false): Some weapons such as the H.E.A.T. rocket and the Brontornis can destroy small pieces of map geometry, letting you bypass tedious or impossible-to-reach areas. This can result in unpredictable or unwanted behaviour, so enabling this option will prevent such weapons from being able to affect map geometry this way. Enabling this midgame will not reverse any damage already done.
+
+hd_safelifts (true): With HD's reduced player speed and falling damage, some classic Doom lifts end up creating scenarios that resemble a superimposition of a Simone Giertz comedy routine and the deposition materials from a factory class action suit. HD automatically scales all these lifts at level start to more reasonable speeds. This may break some levels, so this option is provided. Note that the level must be restarted for the changes to take effect.
+
+hd_dirtywindows (true): Before limit-removing sourceports the only windows in Doom were wholly see-through, even if they were supposed to block absolutely everything. This can be a bit frustrating when you have no idea what your shots can or cannot go through unimpeded. This setting will overlay all of these blocking surfaces with a translucent dirt texture to make them look like a poorly cleaned window.
+
+hd_3speed (false): The frequently varying player speeds in HD do not play well with the movement prediction in network play. If you are experiencing an unusual amount of "rubber banding" while playing online, you can enable this option so that you are restricted to one of only 3 possible pre-set speeds at any time in multiplayer.
+
+
+	CVars (host only) - gameplay modes
+
+hd_forceloadout (""): If this has been set, set this to "", "false", "0" or "none" to let everyone choose their own loadout. Set this to anything else and it becomes everyone's loadout. Takes effect on player spawn.
 Default is blank. This cvar is not saved between sessions.
 
-hd_blacklist: Add some item codes to this, separated by commas. Counts will be ignored.
+hd_blacklist (""): Add some item codes to this, separated by commas. Counts will be ignored.
 You can also use the blacklist to change one type of item to another by using the right angle bracket, e.g., "bfg=thu" to replace starting BFGs with Thunder Busters or "zrk=stm" to replace berserk packs with stimpacks. Unfortunately the system is not very smart so certain shortcuts will not be affected (e.g. blacklist "z66=lib" will replace "z66 nogl" with "lib nogl", but someone with "z6a" will spawn without a rifle at all).
 Default is blank. This cvar is not saved between sessions.
 If you add the keyword "all" to your blacklist, e.g. "all,bfg" or "all,bfg=thu", all items blacklisted will have their pickups deleted from the map the moment they appear.
 
-hd_encumbrance: This is a multiplier for how much encumbrance affects you. Due to the way Doom is traditionally balanced, this defaults to 0.25, letting you carry 4 times as much as you "ought" to be able to carry. This is clamped to a minimum of 1 in deathmatch and grimdark/spooky, and a maximum of 2 in any event.
+hd_dropeverythingondeath (false): HD mostly goes with regular (GZ)Doom inventory behaviour when dying and respawning: you keep your stuff in co-op, reset your stuff in deathmatch, maybe drop an extra copy of your weapon. Enabling this cvar will cause you to drop *all* your inventory except keys, leaving a stash of loot for your opponents (or buddies) in deathmatch or, in co-op, forcing you to do a naked walk of shame back to where you'd died.
 
-hd_nobots: This causes bots to be replaced with riflemen. Can be used for coop and deathmatch. Generally far more competent, but cannot use customized loadouts and can sometimes appear in odd places.
+hd_disintegrator (false): With this on, once you hit zero hitpoints you immediately disappear. Mostly for deathmatch. Overrides YOLO mode below.
 
-hd_damagefactor: Multiply any raw damage inflicted on the player by this amount, before any other calculations (besides checking for telefrag/suicide, forced damage and god mode) are applied.
+hd_yolo (false): With this on, you will trigger the wipeout counter the first time you die, but you can't die until everyone (or, in teamplay, everyone on your team) is dead or incapacitated. Not recommended for free-for-all deathmatch.
 
-hd_nobleed: Eliminates all bleeding.
+hd_flagpole (false): See the "Flagpole" section for details.
 
-hd_killerbarrels: Sets the percentage chance that any barrel (nukage or flaming) will be a killer barrel. Default 5.
 
-hd_nodoorbuster: Some weapons such as the H.E.A.T. rocket and the Brontornis can destroy small pieces of map geometry, letting you bypass tedious or impossible-to-reach areas. This can result in unpredictable or unwanted behaviour, so enabling this option will prevent such weapons from being able to affect map geometry this way. Enabling this midgame will not reverse any damage already done. Default false.
+	CVars (host only) - difficulty modifiers
 
-hd_dropeverythingondeath: HD mostly goes with regular (GZ)Doom inventory behaviour when dying and respawning: you keep your stuff in co-op, reset your stuff in deathmatch, maybe drop an extra copy of your weapon. Enabling this cvar will cause you to drop *all* your inventory except keys, leaving a stash of loot for your opponents (or buddies) in deathmatch or, in co-op, forcing you to do a naked walk of shame back to where you'd died.  Default false.
+hd_encumbrance (0.25): This is a multiplier for how much encumbrance affects you. 0.25 is a reasonable approximation of how much you "should" be able to carry to approximate a fully equipped doomguy. This is the only difficulty modifier setting that is archived between sessions.
 
-hd_safelifts: With HD's reduced player speed and falling damage, some classic Doom lifts end up creating scenarios that resemble a superimposition of a Simone Giertz comedy routine and the deposition materials from a factory class action suit. HD automatically scales all these lifts at level start to more reasonable speeds. This may break some levels, so this option is provided. Note that the level must be restarted for the changes to take effect. Default true.
+hd_damagefactor (1.0): Multiply any raw damage inflicted on the player by this amount, before any other calculations (besides checking for telefrag/suicide, forced damage and god mode) are applied.
 
-hd_dirtywindows: Before limit-removing sourceports the only windows in Doom were wholly see-through, even if they were supposed to block absolutely everything. This can be a bit frustrating when you have no idea what your shots can or cannot go through unimpeded. This setting will overlay all of these blocking surfaces with a translucent dirt texture to make them look like a poorly cleaned window. Default true.
+hd_shardrate (0): number of ticks per shared spawning.
 
-hd_novilespam: At map start, if this is true and multiple archviles are stacked too close together, some of them will be replaced with other monsters. Default true.
+hd_nobleed (false): Eliminates all bleeding.
 
-hd_3speed: The frequently varying player speeds in HD do not play well with the movement prediction in network play. If you are experiencing an unusual amount of "rubber banding" while playing online, you can enable this option so that you are restricted to one of only 3 possible pre-set speeds at any time in multiplayer.
+hd_killerbarrels (5): The percentage chance that any barrel (nukage or flaming) will be a killer barrel.
 
-hd_debug: Turns on some debug logging messages and displays, such as damage reports and (at level 2) bullet trails. Default 0.
+hd_novilespam (true): At map start, if this is true and multiple archviles are stacked too close together, some of them will be replaced with other monsters. Default true.
+
+hd_lowspeed (true): constrain maximum sprint speed to "realistic" values and don't worry about breaking many vanilla jumping puzzles.
+
+hdskill_hardcore, hdskill_casual, hdskill_normal: Presets for the above.
 
 hd_clearscv: Resets all archived host options to their defaults.
-
-hd_yolo: With this on, you will trigger the wipeout counter the first time you die, but you can't die until everyone (or, in teamplay, everyone on your team) is dead or incapacitated. Not recommended for free-for-all deathmatch.
 
 
 	CVars (user-based)

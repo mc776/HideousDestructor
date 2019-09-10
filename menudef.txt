@@ -174,21 +174,24 @@ OptionMenu "HDOptionsMenu"{
 	StaticText " "
 	StaticText "Server Settings",1
 	Slider "Encumbrance multiplier","hd_encumbrance",0,2.,0.05,2
-	Option "Reduced damage in all skill levels","hd_lowdamage","YesNo"
-	Option "No bleeding in all skill levels","hd_nobleed","YesNo"
+	Slider "Damage multiplier","hd_damagefactor",0.3,3.,0.05,2
+	Option "No bleeding","hd_nobleed","YesNo"
 	Slider "Killer barrel spawn rate","hd_killerbarrels",0,100,5,0
-	StaticText " "
+	Slider "Spawn shard every _ tics","hd_shardrate",0,10500,210,0
 	Option "Reduce archvile spam","hd_novilespam","YesNo"
+	Option "Reduce player speed","hd_lowspeed","YesNo"
+	StaticText " "
 	Option "Cap lift speeds to safe levels","hd_safelifts","YesNo"
 	Option "Add dirty window textures","hd_dirtywindows","YesNo"
 	Option "Prevent weapons from destroying map","hd_nodoorbuster","YesNo"
 	Option "Replace bots with riflemen","hd_nobots","YesNo"
+	Option "Only 3 movement speeds in multiplayer","hd_3speed","YesNo"
 	StaticText " "
 	Option "Drop everything on death","hd_dropeverythingondeath","YesNo"
 	Option "YOLO (no respawns, no death until all incap)","hd_yolo","YesNo"
+	Option "Disintegrate without incapacitation","hd_disintegrator","YesNo"
 	Option "Flagpole mode","hd_flagpole","YesNo"
 	StaticText " "
-	Option "Only 3 movement speeds in multiplayer","hd_3speed","YesNo"
 	SafeCommand "Reset Server Settings","hd_clearscv","Really clear all server settings?"
 
 	StaticText " "
@@ -209,7 +212,7 @@ OptionMenu "HDOptionsMenu"{
 
 	StaticText " "
 	StaticText "GZDoom Bob Settings",1
-	Slider "$DSPLYMNU_MOVEBOB",	"movebob",0,1.0,0.05,2
+	Slider "$DSPLYMNU_MOVEBOB","movebob",0,1.0,0.05,2
 	Slider "$DSPLYMNU_STILLBOB","stillbob",0,1.0,0.05,2
 	Slider "$DSPLYMNU_BOBSPEED","wbobspeed",0,2.0,0.1
 	
