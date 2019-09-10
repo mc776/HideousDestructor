@@ -16,8 +16,6 @@ playerclasses="HDP_L1","HDP_L2","HDP_L3","HDP_L4","HDP_L5","HDP_L6","HDP_L7","HD
 }
 episode range{name="Hideous Firing Range" noskillmenu}
 
-
-
 adddefaultmap{
 	sucktime=0
 	aircontrol=0
@@ -34,6 +32,46 @@ map range "Firing Range"{
 	allowrespawn
 	next="range"
 }
+
+
+clearskills
+skill baby{
+	AutoUseHealth
+	AmmoFactor=2
+	DamageFactor=0.5
+	EasyBossBrain
+	SpawnFilter=Baby
+	Name="$SKILL_BABY"
+	Key="i"
+}
+skill easy{
+	EasyBossBrain
+	SpawnFilter=Easy
+	Name="$SKILL_EASY"
+	Key="h"
+}
+skill normal{
+	SpawnFilter=Normal
+	Key="h"
+	Name="$SKILL_NORMAL"
+	DefaultSkill
+}
+skill hard{
+	SpawnFilter=Hard
+	Name="$SKILL_HARD"
+	Key="u"
+}
+skill nightmare{
+	AmmoFactor=2
+	FastMonsters
+	DisableCheats
+	RespawnTime=12
+	SpawnFilter=Nightmare
+	Name="$SKILL_NIGHTMARE"
+	MustConfirm
+	Key="n"
+}
+
 
 
 include "castingcall.txt"
