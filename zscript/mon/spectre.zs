@@ -151,7 +151,7 @@ class NinjaPirate:HDMobBase{ //replaces Spectre{
 		SARG E 4 A_FaceTarget();
 		SARG F 5 A_FaceTarget();
 		SARG F 0{
-			A_CustomMeleeAttack(random(1,3)*2,"misc/bulletflesh","","SmallArms2",true);
+			A_CustomMeleeAttack(random(1,3)*2,"misc/bulletflesh","","piercing",true);
 			if(
 				(target&&distance3d(target)<50)
 				&&(random(0,3))
@@ -159,7 +159,7 @@ class NinjaPirate:HDMobBase{ //replaces Spectre{
 				setstatelabel("latch");
 			}
 		}
-		SARG GGGG 0 A_CustomMeleeAttack(random(1,3)*6,"misc/bulletflesh","","SmallArms2",true);
+		SARG GGGG 0 A_CustomMeleeAttack(random(1,18),"misc/bulletflesh","","teeth",true);
 	meleeend:
 		SARG G 10;
 		goto see;
@@ -184,7 +184,7 @@ class NinjaPirate:HDMobBase{ //replaces Spectre{
 			}
 			A_ScaleVelocity(0.2,AAPTR_TARGET);
 			A_ChangeVelocity(random(-1,1),random(-1,1),random(-1,1),0,AAPTR_TARGET);
-			A_DamageTarget(random(0,2),"smallarms0",0,"none","none",AAPTR_DEFAULT,AAPTR_DEFAULT);
+			A_DamageTarget(random(0,5),random(0,3)?"teeth":"falling",0,"none","none",AAPTR_DEFAULT,AAPTR_DEFAULT);
 		}loop;
 	pain:
 		SARG G 1 {bnopain=true;}
