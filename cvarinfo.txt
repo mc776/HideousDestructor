@@ -1,26 +1,30 @@
 server int hd_debug=0;
 
-server noarchive string hd_forceloadout="";
-server noarchive string hd_blacklist="";
+//multi meta
 server bool hd_nobots=false;
-server float hd_encumbrance=0.25;
-
-server int hd_killerbarrels=5;
 server bool hd_nodoorbuster=false;
 server bool hd_dropeverythingondeath=false;
 
+//gameplay modes
+server noarchive string hd_forceloadout="";
+server noarchive string hd_blacklist="";
+server noarchive bool hd_yolo=false;
+server noarchive bool hd_disintegrator=false;
+server noarchive bool hd_flagpole=false;
+
+//difficulty
+server noarchive int hd_killerbarrels=5;
+server noarchive int hd_shardrate=0;
+server noarchive float hd_encumbrance=0.25;
+server noarchive float hd_damagefactor=1.;
+server noarchive bool hd_nobleed=false;
+server noarchive bool hd_lowspeed=false;
+
+//combatibility
 server bool hd_safelifts=true;
 server bool hd_dirtywindows=true;
 server bool hd_novilespam=true;
-
 server bool hd_3speed=false;
-
-
-server noarchive bool hd_lowdamage=false;
-server noarchive bool hd_nobleed=false;
-server noarchive bool hd_flagpole=false;
-server noarchive bool hd_yolo=false;
-server noarchive bool hd_disintegrator=false;
 
 user bool hd_hudsprite=false;
 user bool hd_noslide=false;

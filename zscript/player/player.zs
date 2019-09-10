@@ -522,11 +522,10 @@ class HDPlayerPawn:PlayerPawn{
 		if(mustwalk||cmdleanmove||runwalksprint<0)speed=0.36;
 		else if(cansprint && runwalksprint>0){
 			//sprint
-			bool lowspeed=skill>=5;
 			if(!sm && fm>0){
-				speed=lowspeed?1.8:2.8;
+				speed=hd_lowspeed?1.8:2.8;
 				viewbob=max(viewbob,(VB_MAX*0.8));
-			}else speed=lowspeed?1.3:1.6;
+			}else speed=hd_lowspeed?1.3:1.6;
 		}
 		//cap speed depending on weapon status
 		if(weaponbusy)speed=min(speed,0.6);

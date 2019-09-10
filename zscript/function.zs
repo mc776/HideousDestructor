@@ -353,8 +353,7 @@ struct HDMath{
 	//checks encumbrance multiplier
 	//hdmath.getencumbrancemult()
 	static double GetEncumbranceMult(){
-		if(deathmatch||skill>=5)return clamp(hd_encumbrance,1.,2.);
-		return clamp(hd_encumbrance,0.,2.);
+		return clamp(skill?hd_encumbrance:hd_encumbrance*0.5,0.,2.);
 	}
 	//counts stuff
 	//HDMath.CountThinkers("IdleDummy")

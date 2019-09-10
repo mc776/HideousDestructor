@@ -12,6 +12,7 @@
 
 
 
+
 extend class HDPlayerPawn{
 	const HDCONST_MINHEARTTICS = 5; //35/5*60=420 beats per minute!
 	int beatcount;
@@ -439,13 +440,15 @@ extend class HDPlayerPawn{
 					oldwoundcount--;
 					burncount--;
 				}
-
-				//grimspawn
-				if(skill>=5)
-				for(int i=0;i<3;i++)
-				spawn("BFGVileShard",pos,ALLOW_REPLACE);
 			}
 		}
+
+		//spawn shards
+		if(
+			hd_shardrate>0
+			&&level.time>0
+			&&!(level.time%hd_shardrate)
+		)spawn("VileShard",pos);
 	}
 }
 

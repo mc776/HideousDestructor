@@ -391,7 +391,7 @@ class HDBleedingWound:Thinker{
 		}
 
 		if(
-			!skill||hd_nobleed
+			hd_nobleed
 			||!bleeder.bshootable
 			||bleeder.bnoblood
 			||bleeder.bnoblooddecals

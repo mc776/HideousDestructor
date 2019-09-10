@@ -100,7 +100,7 @@ class TauntHandler:EventHandler{
 class HDWound:Thinker{
 	static void Inflict(actor bleeder,int amount){
 		if(
-			!skill||hd_nobleed
+			hd_nobleed
 			||!bleeder.bshootable
 			||bleeder.bnoblood
 			||bleeder.bnoblooddecals

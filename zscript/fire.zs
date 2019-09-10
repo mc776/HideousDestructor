@@ -69,7 +69,7 @@ class HDFire:IdleDummy{
 			stamina=target.ApplyDamageFactor("Thermal",stamina);
 			if(target is "PlayerPawn" || target is "HDPlayerCorpse"){
 				changetid(-7677);
-				if(!skill||hd_lowdamage)stamina=max(1,stamina*0.3);
+				stamina=max(1,(!skill)?(hd_damagefactor*0.3*stamina):(hd_damagefactor*stamina));
 			}
 			if(!target.bshootable && stamina>20)stamina=20;
 		}
@@ -388,7 +388,7 @@ class Heat:Inventory{
 
 		double aang=absangle(angle,owner.angle);
 		if(aang>4.)reduce*=clamp(aang*0.4,1.,4.);
-		if((!skill||hd_lowdamage)&&owner.player)reduce*=3;
+		if((!skill)&&owner.player)reduce*=2;
 		realamount-=reduce;
 		angle=owner.angle;
 

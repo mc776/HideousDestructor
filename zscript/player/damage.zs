@@ -60,7 +60,10 @@ extend class HDPlayerPawn{
 
 
 		//factor in cheats and skills
-		if(!(flags&DMG_FORCED)){
+		if(
+			!(flags&DMG_FORCED)
+			&&damage!=TELEFRAG_DAMAGE
+		){
 			if(
 				binvulnerable||!bshootable
 				||(player&&(
@@ -70,7 +73,7 @@ extend class HDPlayerPawn{
 				A_TakeInventory("Heat");
 				return 0;
 			}
-			if(!skill||hd_lowdamage)damage=max(1,damage/3);
+			damage*=hd_damagefactor;
 		}
 
 		//credit and blame where it's due
@@ -169,7 +172,7 @@ extend class HDPlayerPawn{
 
 			bool actuallybleeding=(mod!="internal");
 			if(actuallybleeding){
-				if(!skill || hd_nobleed){
+				if(hd_nobleed){
 					woundcount=0;
 					return 0;
 				}
