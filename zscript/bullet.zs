@@ -1,7 +1,6 @@
 // ------------------------------------------------------------
 // The Bullet!
 // ------------------------------------------------------------
-
 class bltest:hdweapon{
 	default{
 		+inventory.undroppable
@@ -503,6 +502,14 @@ class HDBulletActor:HDActor{
 					sector othersector;
 					if(bres.hitsector==hitline.frontsector)othersector=hitline.backsector;
 					else othersector=hitline.frontsector;
+
+					//special stuff that guarantees no more bullet
+					if(
+						hitline.special==Line_Horizon
+					){
+						bulletdie();
+						return;
+					}
 
 					//check if the line is even blocking the bullet
 					bool isblocking=(
