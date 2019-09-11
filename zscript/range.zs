@@ -1,8 +1,11 @@
+// ------------------------------------------------------------
+// Your home away from home.
+// ------------------------------------------------------------
 class HDLoadBox:switchabledecoration{
 	default{
 		//$Category "Misc/Hideous Destructor/"
 		//$Title "Magic Ammo Box"
-		//$Sprite "AMMOA0"
+		//$Sprite "AMBXA0"
 
 		+usespecial
 		height 20;radius 20;gravity 0.8;
@@ -11,14 +14,11 @@ class HDLoadBox:switchabledecoration{
 	states{
 	active:
 	inactive:
-		AMMO A 5{
+		AMBX A 5{
 			A_PlaySound("misc/chat2",CHAN_AUTO);
 			busespecial=false;
 		}
-		OWWV AA 4{
-			vel.z+=3;
-		}
-		OWWV A 18{
+		AMBX B 18{
 			target.A_SetInventory("HDFragGrenadeAmmo",max(3,target.countinv("HDFragGrenadeAmmo")));
 			A_GiveToTarget("HDLoaded");
 			if(
@@ -29,7 +29,7 @@ class HDLoadBox:switchabledecoration{
 			target.A_PlaySound("misc/w_pkup",CHAN_AUTO);
 		}
 	spawn:
-		AMMO A -1{
+		AMBX A -1{
 			busespecial=true;
 		}
 	}

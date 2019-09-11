@@ -389,7 +389,11 @@ class HDAmBoxUnarmed:HDAmBox{
 class HDAmBoxDisarmed:HDAmBoxUnarmed{
 	states{
 	spawn:
-		OWWV A -1 nodelay{tapped=true;}
+		OWWV A -1 nodelay{
+			tapped=true;
+			if(Wads.CheckNumForName("id",0)==-1)tics=0;
+		}
+		AMBX B -1;
 		stop;
 	grab:
 		goto goodies;
