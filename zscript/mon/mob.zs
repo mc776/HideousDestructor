@@ -17,7 +17,6 @@ class HDMobBase : HDActor{
 	flagdef playingid:hdmobflags,8;
 	flagdef dontdrop:hdmobflags,9;
 	flagdef norandomweakspots:hdmobflags,10;
-	flagdef incapacitated:hdmobflags,10;
 
 	default{
 		monster;
@@ -30,10 +29,10 @@ class HDMobBase : HDActor{
 	}
 
 	override void postbeginplay(){
+		liveheight=getdefaultbytype(getclass()).height;
 		super.postbeginplay();
 		resetdamagecounters();bloodloss=0;
 		bplayingid=(Wads.CheckNumForName("id",0)!=-1);
-		liveheight=height;
 	}
 
 	override void Tick(){

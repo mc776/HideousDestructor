@@ -14,7 +14,6 @@ extend class HDMobBase{
 		damagerecoil=0;
 		bloodloss=0;
 		pain=0;
-		bincapacitated=false;
 	}
 
 	void forcepain(){
@@ -71,11 +70,10 @@ extend class HDMobBase{
 
 
 		//additional knockdown stun
-		bincapacitated=instatesequence(curstate,resolvestate("falldown"));
 		if(
 			//check to make sure we're not already doing it
-			//if already doing so, make sure the damage never goes into painstate(
-			bincapacitated
+			//if already doing so, make sure the damage never goes into painstate
+			instatesequence(curstate,resolvestate("falldown"))
 		){
 			if(
 				!bnopain
@@ -90,7 +88,6 @@ extend class HDMobBase{
 			&&findstate("falldown")
 			&&max(stunned,damage)>random(health,(sphlth<<2))
 		){
-			bincapacitated=true;
 			setstatelabel("falldown");
 			flags|=DMG_NO_PAIN;
 		}
@@ -176,11 +173,10 @@ extend class HDMobBase{
 			return;
 		}
 
-		//reset height after incap
-		bincapacitated=instatesequence(curstate,resolvestate("falldown"));
-		if(bincapacitated){
+		//set height according to incap
+		if(instatesequence(curstate,resolvestate("falldown"))){
 			if(deathheight<height)A_SetSize(-1,max(deathheight,height-10));
-		}else if(health>0&&liveheight>height)A_SetSize(-1,min(liveheight,height*1.1));
+		}else if(liveheight>height)A_SetSize(-1,min(liveheight,height*1.1));
 
 
 		//this must be done here and not AttemptRaise because reasons
@@ -219,7 +215,7 @@ extend class HDMobBase{
 	override void die(actor source,actor inflictor,int dmgflags){
 		deathticks=0;
 
-		bincapacitated=(
+		bool incapacitated=(
 			findstate("falldown",true)
 			&&frame>=11 //"M" for serpentipede, "L" for humanoids
 		);
@@ -241,9 +237,8 @@ extend class HDMobBase{
 		);
 
 		//temp incap: reset +nopain, skip death sequence
-		bnopain=getdefaultbytype(getclass()).bnopain;
 		if(
-			bincapacitated
+			incapacitated
 			&&!bgibbed
 			&&findstate("dead",true)
 		){
@@ -305,7 +300,6 @@ extend class HDMobBase{
 		if(stunned>0||random(0,(bodydamage>>4)))return;
 		//reset stuff and get up
 		bnopain=getdefaultbytype(getclass()).bnopain;
-		bincapacitated=false;
 		if(findstate("standup"))setstatelabel("standup");
 		else if(findstate("raise"))setstatelabel("raise");
 		else setstatelabel("see");
