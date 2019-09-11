@@ -105,6 +105,7 @@ class HDHandlers:EventHandler{
 class HDActor:Actor{
 	default{
 		+noblockmonst
+		renderstyle "translucent";
 	}
 	//advance to the next tic without doing anything
 	//don't actually use this, it's just for reference

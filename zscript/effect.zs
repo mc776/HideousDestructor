@@ -522,10 +522,9 @@ class HDCopyTrail:IdleDummy{
 	default{
 		+noclip +rollsprite +rollcenter +nointeraction
 		deathheight 0.6;
+		renderstyle "add";
 	}
-	states{
-	spawn:#### A -1;stop;
-	}
+	states{spawn:#### A -1;stop;}
 	override void Tick(){
 		clearinterpolation();
 		if(isfrozen())return;
@@ -554,6 +553,16 @@ extend class HDActor{
 			SXF_ABSOLUTEVELOCITY|SXF_TRANSFERTRANSLATION|SXF_NOCHECKPOSITION|
 			SXF_TRANSFERSTENCILCOL|SXF_TRANSFERPOINTERS
 		);
+	}
+}
+class HDFader:HDCopyTrail{
+	default{+rollsprite +rollcenter +noblockmap +nointeraction deathheight 0.1;}
+	override void Tick(){
+		clearinterpolation();
+		if(isfrozen()||level.time&(1|2))return;
+		setorigin(pos+vel,true);
+		alpha-=deathheight;
+		if(alpha<0)destroy();
 	}
 }
 

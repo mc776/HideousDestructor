@@ -265,6 +265,7 @@ class HDAmBox:HDUPK{
 		}stop;
 	goodies:
 		---- A 2 A_PlaySound("weapons/pocket",CHAN_VOICE);
+		AMBX B 0 A_SpawnItemEx("HDFader",flags:SXF_TRANSFERSPRITEFRAME|SXF_TRANSFERSCALE|SXF_TRANSFERRENDERSTYLE);
 		---- A 0 A_Jump(256,
 			"zeds","smgs","piss",
 			"libs","clip","rocs",
@@ -391,10 +392,7 @@ class HDAmBoxDisarmed:HDAmBoxUnarmed{
 	spawn:
 		OWWV A -1 nodelay{
 			tapped=true;
-			if(Wads.CheckNumForName("id",0)==-1)tics=0;
-		}
-		AMBX B -1;
-		stop;
+		}stop;
 	grab:
 		goto goodies;
 	}
