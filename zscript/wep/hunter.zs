@@ -54,6 +54,7 @@ class Hunter:HDShotgun{
 		super.postbeginplay();
 		tubesize=((weaponstatus[0]&HUNTF_EXPORT)?5:7);
 		if(weaponstatus[HUNTS_TUBE]>tubesize)weaponstatus[HUNTS_TUBE]=tubesize;
+		if(Wads.CheckNumForName("id",0)==-1)A_SetTranslation("FreeShell");
 	}
 	override string getobituary(actor victim,actor inflictor,name mod,bool playerattack){
 		bool sausage=true;

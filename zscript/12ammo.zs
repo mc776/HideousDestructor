@@ -36,7 +36,7 @@ class HDShellAmmo:HDAmmo{
 	}
 	states{
 	spawn:
-		SHL1 A -1;
+		SHL1 A -1 nodelay{if(Wads.CheckNumForName("id",0)==-1)A_SetTranslation("FreeShell");}
 		stop;
 	death:
 		ESHL A -1{
@@ -52,6 +52,7 @@ class HDSpentShell:Actor{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
+		if(Wads.CheckNumForName("id",0)==-1)A_SetTranslation("FreeShell");
 		if(vel==(0,0,0))A_ChangeVelocity(0.0001,0,-0.1,CVF_RELATIVE);
 	}
 	states{
@@ -119,7 +120,7 @@ class ShellBoxPickup:HDUPK{
 		hdupk.pickupsound "weapons/pocket";
 		hdupk.pickupmessage "Picked up some shotgun shells.";
 		hdupk.pickuptype "HDShellAmmo";
-		translation "160:167=80:95";
+		translation "160:167=80:105";
 	}
 	states{
 	spawn:

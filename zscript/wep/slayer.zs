@@ -127,6 +127,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 			}
 			return;
 		}
+		if(Wads.CheckNumForName("id",0)==-1)A_SetTranslation("FreeShell");
 		super.postbeginplay();
 	}
 	override double gunmass(){
