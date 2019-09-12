@@ -61,7 +61,7 @@ class ShellRandom:HDInvRandomSpawner replaces Shell{
 		dropitem "ShellPickup",256,8;
 		dropitem "HDFumbledShell",256,4;
 		dropitem "DecoPusher",200,4;
-		dropitem "BFGVileShard",200,1;
+		dropitem "BFGNecroShard",200,1;
 		dropitem "HDBattery",256,1;
 		dropitem "HD4mMag",256,1;
 		dropitem "HDAB",200,1;
@@ -91,7 +91,7 @@ class RocketBoxRandom:HDInvRandomSpawner replaces RocketBox{
 }
 class CellRandom:HDInvRandomSpawner replaces Cell{
 	default{
-		dropitem "BFGVileShard",128,1;
+		dropitem "BFGNecroShard",128,1;
 		dropitem "HD7mMag",256,3;
 		dropitem "BrontornisRound",256,2;
 		dropitem "HDBattery",256,7;
@@ -99,7 +99,7 @@ class CellRandom:HDInvRandomSpawner replaces Cell{
 }
 class CellPackReplacer:HDInvRandomSpawner replaces CellPack{
 	default{
-		dropitem "BFGVileShard",196,1;
+		dropitem "BFGNecroShard",196,1;
 		dropitem "HD7mMag",256,3;
 		dropitem "BrontornisSpawner",256,1;
 		dropitem "HDBattery",256,4;
@@ -206,7 +206,7 @@ class HDAmBox:HDUPK{
 			tapped=false;
 			switch(random(0,5)){
 			case 1:
-				A_SpawnItemEx("BFGVileShard",
+				A_SpawnItemEx("BFGNecroShard",
 					flags:SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS
 				);
 				break;
@@ -252,7 +252,7 @@ class HDAmBox:HDUPK{
 			switch(rnd){
 			case 1:
 			case 2:
-				deadtrap="BFGVileShard";
+				deadtrap="BFGNecroShard";
 				break;
 			case 3:
 				deadtrap="HDLoose9mm";
@@ -480,7 +480,7 @@ class HelmFrag:HDInvRandomSpawner replaces ArmorBonus{
 		dropitem "HDFragGrenades",72,1;
 		dropitem "HD7mMag",48,1;
 		dropitem "HD4mMag",48,1;
-		dropitem "BFGVileShard",96,1;
+		dropitem "BFGNecroShard",96,1;
 		dropitem "HDBattery",48,1;
 		dropitem "PortableStimpack",48,1;
 		dropitem "ClipBox",48,1;
@@ -492,7 +492,7 @@ class BlueFrag:HDInvRandomSpawner replaces HealthBonus{
 		dropitem "DecoPusher",96,20;
 		dropitem "BluePotion",96,2;
 		dropitem "HDFragGrenades",72,1;
-		dropitem "BFGVileShard",96,1;
+		dropitem "BFGNecroShard",96,1;
 		dropitem "HD9mMag15",48,1;
 		dropitem "HDBattery",72,1;
 		dropitem "PortableMedikit",48,1;

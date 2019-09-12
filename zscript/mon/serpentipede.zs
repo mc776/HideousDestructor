@@ -535,10 +535,10 @@ class Regentipede:Serpentipede{
 		#### AHAHAHAHAHA 4 light("HEAL");
 		goto see;
 	death:
-		---- A 0 A_SpawnItemEx("BFGVileShard",0,0,24,0,0,8,0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS,164);
+		---- A 0 A_SpawnItemEx("BFGNecroShard",0,0,24,0,0,8,0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS,164);
 		goto super::death;
 	xdeath:
-		---- A 0 A_SpawnItemEx("BFGVileShard",0,0,24,0,0,8,0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS,188);
+		---- A 0 A_SpawnItemEx("BFGNecroShard",0,0,24,0,0,8,0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS,188);
 		goto super::xdeath;
 	raise:
 		#### M 4 A_SpawnItemEx("MegaBloodSplatter",0,0,4,vel.x,vel.y,vel.z+3,0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);

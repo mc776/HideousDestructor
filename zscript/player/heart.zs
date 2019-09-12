@@ -397,7 +397,7 @@ extend class HDPlayerPawn{
 								RGF_CUBE|RGF_NOSIGHT,
 								1000
 							);
-							if(!random(0,3))spawn("BFGVileShard",pos,ALLOW_REPLACE);
+							if(!random(0,3))spawn("BFGNecroShard",pos,ALLOW_REPLACE);
 							break;
 						}
 					}
@@ -448,7 +448,7 @@ extend class HDPlayerPawn{
 			hd_shardrate>0
 			&&level.time>0
 			&&!(level.time%hd_shardrate)
-		)spawn("VileShard",pos);
+		)spawn("NecroShard",pos);
 	}
 }
 

@@ -442,7 +442,7 @@ ACTOR HDBBP
 		TNT1 A 0 A_ClearTarget
 		TNT1 A 0 A_TransferPointer(AAPTR_MASTER,AAPTR_DEFAULT,AAPTR_TARGET,AAPTR_TARGET)
 		TNT1 A 0 A_SpawnItemEx("tempshieldblack",0,0,0,0,0,0,0,SXF_NOCHECKPOSITION)
-		goto vileshards
+		goto necroshards
 	death:
 		TNT1 A 0 A_FaceTarget
 	monster:
@@ -452,7 +452,7 @@ ACTOR HDBBP
 		TNT1 A 0 A_ClearTarget
 		TNT1 A 0 A_Jump(1,"angel","imp")
 		TNT1 A 0 A_Jump(8,"knight","spectre","paine")
-		TNT1 A 0 A_Jump(16,"caco","vileshards")
+		TNT1 A 0 A_Jump(16,"caco","necroshards")
 		TNT1 A 0 A_Jump(256,"imp")
 	angel:
 		TNT1 A 0 A_SpawnItemEx("Necromancer",random(-12,12),random(-12,12),0,velx,vely,velz+random(1,8),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS)
@@ -489,21 +489,21 @@ ACTOR HDBBP
 		TNT1 A 0 A_SetTranslucent(1,1)
 		FIRE ABCDEFGH 2 BRIGHT A_FadeOut(0.1)
 		stop
-	vileshards:
+	necroshards:
 		TNT1 A 0 A_UnsetShootable
 		TNT1 A 0 A_ChangeFlag("missile",0)
 		TNT1 A 0 A_RearrangePointers(AAPTR_NULL,AAPTR_TARGET,AAPTR_DEFAULT)
 		TNT1 A 0 A_ClearTarget
 		TNT1 A 0 A_TransferPointer(AAPTR_MASTER,AAPTR_DEFAULT,AAPTR_TARGET,AAPTR_TARGET)
 		BOSF A 1 A_FadeOut(0.2)
-		TNT1 A 0 A_SpawnItemEx("VileShard",0,0,0,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_NOCHECKPOSITION)
+		TNT1 A 0 A_SpawnItemEx("NecroShard",0,0,0,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_NOCHECKPOSITION)
 		BOSF B 1 A_FadeOut(0.2)
-		TNT1 A 0 A_SpawnItemEx("VileShard",0,0,0,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_NOCHECKPOSITION)
+		TNT1 A 0 A_SpawnItemEx("NecroShard",0,0,0,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_NOCHECKPOSITION)
 		BOSF C 1 A_FadeOut(0.2)
-		TNT1 A 0 A_SpawnItemEx("VileShard",0,0,0,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_NOCHECKPOSITION)
+		TNT1 A 0 A_SpawnItemEx("NecroShard",0,0,0,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_NOCHECKPOSITION)
 		BOSF D 1 A_FadeOut(0.2)
-		TNT1 A 0 A_SpawnItemEx("VileShard",0,0,0,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_NOCHECKPOSITION)
-		TNT1 AAAA 0 A_SpawnItemEx("VileGhostShard",0,0,0,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_NOCHECKPOSITION)
+		TNT1 A 0 A_SpawnItemEx("NecroShard",0,0,0,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_NOCHECKPOSITION)
+		TNT1 AAAA 0 A_SpawnItemEx("NecroGhostShard",0,0,0,velx,vely,velz,0,SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPOINTERS|SXF_NOCHECKPOSITION)
 		stop
 	putti:
 		TNT1 A 0 A_UnsetShootable

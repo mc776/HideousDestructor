@@ -210,7 +210,7 @@ class NinjaPirate:HDMobBase{ //replaces Spectre{
 		TNT1 AAAAA 0 A_Chase(null);
 		goto see;
 	death:
-		---- A 0 A_SpawnItemEx("BFGVileShard",0,0,0,0,0,5,0,SXF_TRANSFERPOINTERS|SXF_SETMASTER,196);
+		---- A 0 A_SpawnItemEx("BFGNecroShard",0,0,0,0,0,5,0,SXF_TRANSFERPOINTERS|SXF_SETMASTER,196);
 		TNT1 A 0 A_Jump(128,2);
 		TNT1 A 0 A_JumpIf(cloaked,"DeathCloaked");
 		SARG GGG 0 A_SpawnItemEx("HDSmoke",random(-1,1),random(-1,1),random(4,24),vel.x,vel.y,vel.z+random(1,3),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION,0);

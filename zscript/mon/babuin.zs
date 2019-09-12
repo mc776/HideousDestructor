@@ -283,7 +283,7 @@ class Babuin:HDMobBase{
 			A_CheckFreedoomSprite();
 			A_Scream();
 			bpushable=false;
-			A_SpawnItemEx("BFGVileShard",flags:SXF_TRANSFERPOINTERS|SXF_SETMASTER,240);
+			A_SpawnItemEx("BFGNecroShard",flags:SXF_TRANSFERPOINTERS|SXF_SETMASTER,240);
 		}
 	deathend:
 		#### J 5 A_NoBlocking();

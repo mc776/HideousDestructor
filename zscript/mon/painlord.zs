@@ -204,7 +204,7 @@ class PainLord:PainMonster replaces BaronofHell{
 	death.telefrag:
 		TNT1 A 0 spawn("Telefog",pos,ALLOW_REPLACE);
 		TNT1 A 0 A_NoBlocking();
-		TNT1 AAAAA 0 A_SpawnItemEx("BFGVileShard",
+		TNT1 AAAAA 0 A_SpawnItemEx("BFGNecroShard",
 			frandom(-4,4),frandom(-4,4),frandom(6,24),
 			frandom(1,6),0,frandom(1,3),
 			frandom(0,360),SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_SETMASTER
@@ -213,10 +213,10 @@ class PainLord:PainMonster replaces BaronofHell{
 	death:
 		---- A 0{bodydamage+=666*5;}
 		---- A 0 A_Quake(2,64,0,600);
-		BOSS I 2 A_SpawnItemEx("BFGVileShard",0,0,20,10,0,8,45,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS);
-		BOSS I 2 A_SpawnItemEx("BFGVileShard",0,0,35,10,0,8,135,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS);
-		BOSS I 2 A_SpawnItemEx("BFGVileShard",0,0,50,10,0,8,225,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS);
-		BOSS I 2 A_SpawnItemEx("BFGVileShard",0,0,65,10,0,8,315,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS);
+		BOSS I 2 A_SpawnItemEx("BFGNecroShard",0,0,20,10,0,8,45,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS);
+		BOSS I 2 A_SpawnItemEx("BFGNecroShard",0,0,35,10,0,8,135,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS);
+		BOSS I 2 A_SpawnItemEx("BFGNecroShard",0,0,50,10,0,8,225,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS);
+		BOSS I 2 A_SpawnItemEx("BFGNecroShard",0,0,65,10,0,8,315,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS);
 		BOSS J 8 A_Scream();
 		BOSS K 8;
 		BOSS L 8 A_NoBlocking();

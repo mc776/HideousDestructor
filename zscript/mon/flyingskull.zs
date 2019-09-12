@@ -323,7 +323,7 @@ class SkullSpitter:HDMobBase replaces PainElemental{
 	death.telefrag:
 		TNT1 A 0 spawn("Telefog",pos,ALLOW_REPLACE);
 		TNT1 A 0 A_NoBlocking();
-		TNT1 AAAAAAAAAAAAA 0 A_SpawnItemEx("BFGVileShard",
+		TNT1 AAAAAAAAAAAAA 0 A_SpawnItemEx("BFGNecroShard",
 			frandom(-4,4),frandom(-4,4),frandom(6,24),
 			frandom(1,6),0,frandom(1,3),
 			frandom(0,360),SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_SETMASTER

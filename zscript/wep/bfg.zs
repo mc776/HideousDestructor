@@ -361,7 +361,7 @@ class BFG9K:HDWeapon replaces BFG9000{
 			else if(!random(0,15))A_FireProjectile("YokaiSpawner");
 		}goto harmless;
 	vile:
-		---- AAAAA 0 A_FireProjectile("BFGVileShard",random(170,190),spawnofs_xy:random(-20,20));
+		---- AAAAA 0 A_FireProjectile("BFGNecroShard",random(170,190),spawnofs_xy:random(-20,20));
 		goto batteryout;
 	harmless:
 		---- AAAAA 0 A_FireProjectile("BFGShard",random(170,190),spawnofs_xy:random(-20,20));
@@ -481,7 +481,7 @@ class BFGSpark:HDActor{
 		wait;
 	}
 }
-class BFGVileShard:Actor{
+class BFGNecroShard:Actor{
 	default{
 		+ismonster +float +nogravity +noclip +lookallaround +nofear +forcexybillboard +bright
 		radius 0;height 0;
@@ -530,7 +530,7 @@ class BFGVileShard:Actor{
 		stop;
 	}
 }
-class BFGShard:BFGVileShard{
+class BFGShard:BFGNecroShard{
 	states{
 	see2:
 		TNT1 A 0;
@@ -740,7 +740,7 @@ class BFGPuff:GreenParticleFountain{
 			}
 		}
 		BFE2 ABCDE 2 bright A_FadeOut(0.1);
-		TNT1 A 0 A_SpawnItemEx("BFGVileShard",0,0,10,10,0,0,random(0,360),SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS,254);
+		TNT1 A 0 A_SpawnItemEx("BFGNecroShard",0,0,10,10,0,0,random(0,360),SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS,254);
 		stop;
 	}
 }
