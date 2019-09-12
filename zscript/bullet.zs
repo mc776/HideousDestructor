@@ -939,18 +939,18 @@ class HDBulletActor:HDActor{
 			else hitlevel=0;
 
 			int alv=armr.mega?3:1;
-			if(!random(0,max((armr.durability>>2),3)))alv=-1; //slips through a gap
-			else if(
-				hitlevel==2
-				&&(
+			if(!random(0,max((armr.durability>>2),4)))alv=-1; //slips through a gap
+			else if(hitlevel==2){ //headshot, check for helmet
+				if(
 					hitactor is "hdplayerpawn"
 					||(
 						!!hdmb
 						&&hdmb.bhashelmet
 					)
-				)
-			)alv=randompick(0,1,random(0,alv),alv);
-			else if(hitlevel==0)alv=max(alv-randompick(0,0,0,1,1,1,1,2),0);
+				)alv=randompick(0,1,random(0,alv),alv);
+				else alv=-1;
+			}
+			else if(hitlevel==0)alv=max(alv-randompick(0,0,0,1,1,1,1,2),0); //legshot
 
 			if(alv>0){
 				addpenshell=frandom(9,11)*alv;
