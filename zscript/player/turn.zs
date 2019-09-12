@@ -1,3 +1,10 @@
+//move these somewhere sensible later
+const HDCONST_CROWNTOEYES=6.;
+const HDCONST_CROWNTOSHOULDER=18.;
+const HDCONST_SHOULDERTORADIUS=10.;
+const HDCONST_MINEYERANGE=18.;
+
+
 // ------------------------------------------------------------
 // Stuff related to player turning
 // ------------------------------------------------------------
@@ -156,11 +163,29 @@ extend class HDPlayerPawn{
 
 		//weapon collision
 		if(!(player.cheats&CF_NOCLIP2 || player.cheats&CF_NOCLIP)){
-			double highheight=height-6;
+			double highheight=height-HDCONST_CROWNTOEYES;
 			double midheight=highheight-max(1,barreldepth)*0.5;
 			double lowheight=highheight-max(1,barreldepth);
 			double testangle=angle;
 			double testpitch=pitch;
+
+
+			//check for super-collision preventing only aligned sights		
+			if(
+				!barehanded
+				&&linetrace(
+					testangle,max(barrellength,HDCONST_MINEYERANGE),testpitch,flags:TRF_NOSKY,
+					offsetz:highheight
+				)
+			){
+				nocrosshair=12;
+				hudbobrecoil1.y+=10;
+				hudbobrecoil2.y+=10;
+				hudbobrecoil3.y+=10;
+				hudbobrecoil4.y+=10;
+				highheight=max(height*0.5,height-HDCONST_CROWNTOSHOULDER);
+			}
+			barrellength-=(HDCONST_SHOULDERTORADIUS*player.crouchfactor);
 
 
 			//and now uh do stuff
