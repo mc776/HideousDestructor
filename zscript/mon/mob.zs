@@ -44,18 +44,18 @@ class HDMobBase : HDActor{
 	//randomize size
 	double hitboxscale;
 	void resize(double minscl=0.9,double maxscl=1.,int minhealth=0){
-		double scl=frandom(minscl,maxscl);
 		double drad=radius;double dheight=height;
 		double minchkscl=max(1.,minscl+0.1);
-		while(
-			//keep it smaller than the geometry
-			scl>minchkscl&&  
-			!checkmove(pos.xy,PCM_NOACTORS)
-		){
+		double scl;
+		do{
 			scl=frandom(minscl,maxscl);
 			A_SetSize(drad*scl,dheight*scl);
 			maxscl=scl; //if this has to check again, don't go so high next time
-		}
+		}while(
+			//keep it smaller than the geometry
+			scl>minchkscl&&  
+			!checkmove(pos.xy,PCM_NOACTORS)
+		);
 		health*=max(scl,1);
 		scale*=scl;
 		mass*=scl;

@@ -11,18 +11,19 @@ struct HDMobAI play{
 			hdmbb.resize(minscl,maxscl,minhealth);
 			return;
 		}
-		double scl=frandom(minscl,maxscl);
 		double drad=caller.radius;double dheight=caller.height;
 		double minchkscl=max(1.,minscl+0.1);
-		while(
-			//keep it smaller than the geometry
-			scl>minchkscl&&  
-			!caller.checkmove(caller.pos.xy,PCM_NOACTORS)
-		){
+		double scl;
+		do{
 			scl=frandom(minscl,maxscl);
 			caller.A_SetSize(drad*scl,dheight*scl);
 			maxscl=scl; //if this has to check again, don't go so high next time
 		}
+		while(
+			//keep it smaller than the geometry
+			scl>minchkscl&&  
+			!caller.checkmove(caller.pos.xy,PCM_NOACTORS)
+		);
 		caller.health*=max(scl,1);
 		caller.scale*=scl;
 		caller.mass*=scl;
