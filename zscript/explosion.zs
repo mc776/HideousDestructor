@@ -290,8 +290,8 @@ if(hd_debug)console.printf(it.getclassname().."  "..angcover.." = "..proportionf
 						if(!(tiershit&FTIER_TOP))fragtop*=0.7;
 
 						bbb.setxyz(caller.pos+(
-							rotatevector((dist2,0),fragangle),
-							it.pos.z+frandom(fragbottom,fragtop)
+							rotatevector((dist2,0),fragangle+frandom(-edgeshot,edgeshot)),
+							frandom(fragbottom,fragtop)
 						));
 						bbb.onhitactor(it,bbb.pos,vu);
 					}
