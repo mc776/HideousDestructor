@@ -156,8 +156,8 @@ extend class HDMobBase{
 			//fall down if dead
 			if(
 				!bnoshootablecorpse
-				&&height>deathheight
-			)A_SetSize(-1,max(deathheight-0.1,height-liveheight*0.06));
+				&&height>deadheight
+			)A_SetSize(-1,max(deadheight-0.1,height-liveheight*0.06));
 
 			if(deathticks<8){
 				deathticks++;
@@ -175,8 +175,8 @@ extend class HDMobBase{
 
 		//set height according to incap
 		if(instatesequence(curstate,resolvestate("falldown"))){
-			if(deathheight<height)A_SetSize(-1,max(deathheight,height-10));
-		}else if(liveheight>height)A_SetSize(-1,min(liveheight,height*1.1));
+			if(deadheight<height)A_SetSize(-1,max(deadheight,height-10));
+		}else if(liveheight!=height)A_SetSize(-1,(height+liveheight)*0.5);
 
 
 		//this must be done here and not AttemptRaise because reasons
@@ -208,7 +208,6 @@ extend class HDMobBase{
 	}
 
 
-	double liveheight;
 	virtual void deathdrop(){
 		if(hd_debug)A_Log("DROPED GNU");
 	}
@@ -251,7 +250,7 @@ extend class HDMobBase{
 		bnotautoaimed=true;
 		balwaystelefrag=true;
 		bpushable=false;
-		maxstepheight=deathheight*0.1;
+		maxstepheight=deadheight*0.1;
 
 		if(!bgibbed)bshootable=!bnoshootablecorpse;
 		else bshootable=false;
