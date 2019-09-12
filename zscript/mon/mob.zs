@@ -33,6 +33,7 @@ class HDMobBase : HDActor{
 	override void postbeginplay(){
 		liveheight=getdefaultbytype(getclass()).height;
 		deadheight=getdefaultbytype(getclass()).deathheight;
+		hitboxscale=1.;
 		super.postbeginplay();
 		resetdamagecounters();bloodloss=0;
 		bplayingid=(Wads.CheckNumForName("id",0)!=-1);
@@ -69,6 +70,9 @@ class HDMobBase : HDActor{
 		hitboxscale=scl;
 		liveheight=height;
 		deadheight=deathheight*scl;
+	}
+	override double getdeathheight(){
+		return super.getdeathheight()*hitboxscale;
 	}
 }
 
