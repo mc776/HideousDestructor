@@ -279,7 +279,7 @@ extend class HDPlayerPawn{
 			//radsuit
 			if(random(1,damage)>10){
 				A_TakeInventory("WornRadsuit");
-				A_PlaySound("imp/melee",CHAN_AUTO);
+				A_PlaySound("radsuit/rip",CHAN_AUTO);
 				damage-=5;
 				if(damage<1)return 0;
 			}

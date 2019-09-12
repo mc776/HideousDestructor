@@ -921,7 +921,7 @@ class HDBulletActor:HDActor{
 		//destroy radsuit if worn and pen above threshold
 		if(hitactor.countinv("WornRadsuit")&&pen>frandom(1,4)){
 			hitactor.A_TakeInventory("WornRadsuit");
-			hitactor.A_PlaySound("misc/fwoosh",CHAN_AUTO);
+			hitactor.A_PlaySound("radsuit/burst",CHAN_AUTO);
 		}
 
 		//apply armour if any
