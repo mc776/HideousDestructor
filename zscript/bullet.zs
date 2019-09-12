@@ -487,10 +487,6 @@ class HDBulletActor:HDActor{
 				setorigin(newpos,true);
 				distanceleft-=max(bres.distance,0.01); //safeguard against infinite loops
 			}else{
-				//the decal must be shot out from here to be reliable
-				if(bres.hittype==TRACE_HitWall)
-					A_SprayDecal(speed>400?"BulletChip":"BulletChipSmall",distanceleft+100);
-
 				newpos=bres.hitpos-vu*0.1;
 				setorigin(newpos,true);
 				distanceleft-=max(bres.distance,0.01); //safeguard against infinite loops
@@ -536,6 +532,8 @@ class HDBulletActor:HDActor{
 						hitline.activate(target,bres.side,SPAC_PCross|SPAC_AnyCross);
 						setorigin(newpos+vu*0.2,true);
 					}else{
+						A_SprayDecal(speed>400?"BulletChip":"BulletChipSmall",distanceleft+100);
+
 						//"SPAC_Impact" is so wonderfully onomatopoeic
 						//would add SPAC_Damage but it doesn't work in 4.1.3???
 						hitline.activate(target,bres.side,SPAC_Impact);
