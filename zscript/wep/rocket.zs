@@ -5,7 +5,14 @@ extend class HDWeapon{
 	int airburst;
 	action void A_FireHDGL(){
 		A_PlaySound("weapons/grenadeshot",CHAN_WEAPON);
-		let ggg=gyrogrenade(spawn("GyroGrenade",pos+(0,0,height-8),ALLOW_REPLACE));
+		let ggg=gyrogrenade(spawn("GyroGrenade",pos+(
+				0,0,HDWeapon.GetShootOffset(
+					self,invoker.barrellength,
+					invoker.barrellength-HDCONST_SHOULDERTORADIUS
+				)-2
+			),
+			ALLOW_REPLACE)
+		);
 		ggg.angle=angle;ggg.pitch=pitch-2;ggg.target=self;ggg.master=self;
 		ggg.primed=false;
 		if(invoker.airburst)ggg.airburst=max(10,abs(invoker.airburst))*HDCONST_ONEMETRE;

@@ -226,7 +226,7 @@ class ThunderBuster:HDCellWeapon{
 		//the actual call
 		ThunderBuster.ThunderZap(
 			self,
-			height-6,
+			HDWeapon.GetShootOffset(self,invoker.barrellength,invoker.barrellength-HDCONST_SHOULDERTORADIUS),
 			invoker.weaponstatus[0]&TBF_ALT,
 			battery
 		);

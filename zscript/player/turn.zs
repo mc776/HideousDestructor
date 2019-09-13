@@ -177,7 +177,7 @@ extend class HDPlayerPawn{
 				hudbobrecoil3.y+=10;
 				hudbobrecoil4.y+=10;
 				highheight=max(height*0.5,height-HDCONST_CROWNTOSHOULDER);
-			}
+			}else if(nocrosshair>0)highheight=max(height*0.5,height-HDCONST_CROWNTOSHOULDER);
 			barrellength-=(HDCONST_SHOULDERTORADIUS*player.crouchfactor);
 
 
