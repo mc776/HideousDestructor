@@ -344,7 +344,7 @@ class HDBulletActor:HDActor{
 	static HDBulletActor FireBullet(
 		actor caller,
 		class<HDBulletActor> type="HDBulletActor",
-		double zofs=999, //default: height-6
+		double zofs=999, //999=use default
 		double xyofs=0,
 		double spread=0, //range of random velocity added
 		double aimoffx=0,
@@ -352,7 +352,11 @@ class HDBulletActor:HDActor{
 		double speedfactor=0,
 		int amount=1
 	){
-		if(zofs==999)zofs=caller.height-6;
+		if(zofs==999)zofs=HDWeapon.GetShootOffset(
+			caller,caller.player
+			&&!!hdweapon(caller.player.readyweapon)
+			?hdweapon(caller.player.readyweapon).barrellength:36
+		);
 		HDBulletActor bbb=null;
 		do{
 			amount--;

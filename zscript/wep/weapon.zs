@@ -515,7 +515,7 @@ class HDWeapon:Weapon{
 		);
 		if(ltd.distance>=eyerange)return eyeheight;
 		double waistheight=caller.height*0.5;
-		if(chestrange<0)chestrange=eyerange;
+		if(chestrange<0)chestrange=eyerange-HDCONST_SHOULDERTORADIUS;
 		if(
 			caller.height>(HDCONST_CROWNTOSHOULDER*2.)
 			&&ltd.distance>=chestrange
