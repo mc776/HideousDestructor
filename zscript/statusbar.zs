@@ -156,7 +156,7 @@ class HDStatusBar:DoomStatusBar{
 				drawtip();
 				return;
 			}
-			BeginHUD(forcescaled:true);
+			BeginHUD(forcescaled:false);
 			if(state==HUD_StatusBar){
 				if(hudlevel>0)DrawCommonStuff(state);
 			}
