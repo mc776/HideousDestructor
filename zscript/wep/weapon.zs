@@ -495,6 +495,34 @@ class HDWeapon:Weapon{
 		return inpint;
 	}
 
+
+	//shoots out a line to see if the area ahead is unimpeded.
+	//if it is, the gun cannot be raised up to the eyes.
+	static double GetShootOffset(
+		actor caller,
+		double eyerange=36,
+		double chestrange=-1
+	){
+		double eyeheight=caller.height-HDCONST_CROWNTOEYES;
+		flinetracedata ltd;
+		caller.LineTrace(
+			caller.angle,
+			max(HDCONST_MINEYERANGE,eyerange),
+			caller.pitch,
+			TRF_NOSKY,
+			eyeheight,
+			data:ltd
+		);
+		if(ltd.distance>=eyerange)return eyeheight;
+		double waistheight=caller.height*0.5;
+		if(chestrange<0)chestrange=eyerange;
+		if(
+			caller.height>(HDCONST_CROWNTOSHOULDER*2.)
+			&&ltd.distance>=chestrange
+		)return caller.height-HDCONST_CROWNTOSHOULDER;
+		return waistheight;
+	}
+
 	override void postbeginplay(){
 		super.postbeginplay();
 		if(hdpickup.checkblacklist(self,refid))return;

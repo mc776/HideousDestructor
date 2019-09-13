@@ -960,7 +960,7 @@ class HDBulletActor:HDActor{
 				if(ddd>2){
 					actor p;bool q;
 					[q,p]=hitactor.A_SpawnItemEx("FragPuff",
-						0,0,0,
+						-hitactor.radius*0.6,0,pos.z-hitactor.pos.z,
 						4,0,1,
 						0,0,64
 					);

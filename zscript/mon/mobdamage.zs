@@ -2,7 +2,6 @@
 // Nice movement your objects have there.
 // Shame if they got........ damaged.
 // ------------------------------------------------------------
-
 extend class HDMobBase{
 	int stunned;
 	int bodydamage;
@@ -256,7 +255,10 @@ extend class HDMobBase{
 		else bshootable=false;
 
 		//set height
-		if(bshootable)A_SetSize(-1,liveheight);
+		if(
+			!incapacitated
+			&&bshootable
+		)A_SetSize(-1,liveheight);
 	}
 
 

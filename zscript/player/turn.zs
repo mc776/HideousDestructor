@@ -1,10 +1,3 @@
-//move these somewhere sensible later
-const HDCONST_CROWNTOEYES=6.;
-const HDCONST_CROWNTOSHOULDER=18.;
-const HDCONST_SHOULDERTORADIUS=10.;
-const HDCONST_MINEYERANGE=18.;
-
-
 // ------------------------------------------------------------
 // Stuff related to player turning
 // ------------------------------------------------------------
