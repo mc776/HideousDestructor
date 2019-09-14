@@ -536,7 +536,6 @@ class HDBulletActor:HDActor{
 						hitline.activate(target,bres.side,SPAC_PCross|SPAC_AnyCross);
 						setorigin(newpos+vu*0.2,true);
 					}else{
-						A_SprayDecal(speed>400?"BulletChip":"BulletChipSmall",distanceleft+100);
 
 						//"SPAC_Impact" is so wonderfully onomatopoeic
 						//would add SPAC_Damage but it doesn't work in 4.1.3???
@@ -660,6 +659,10 @@ class HDBulletActor:HDActor{
 	){
 		double pen=penetration();
 //TODO: MATERIALS AFFECTING PENETRATION AMOUNT
+
+		setorigin(pos-vu,false);
+		A_SprayDecal(speed>600?"BulletChip":"BulletChipSmall",4);
+		setorigin(pos+vu,false);
 
 		//inflict damage on destructibles
 		//GZDoom native first

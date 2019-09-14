@@ -34,9 +34,13 @@ class HDShellAmmo:HDAmmo{
 		}
 		super.splitpickup();
 	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		if(Wads.CheckNumForName("id",0)==-1)A_SetTranslation("FreeShell");
+	}
 	states{
 	spawn:
-		SHL1 A -1 nodelay{if(Wads.CheckNumForName("id",0)==-1)A_SetTranslation("FreeShell");}
+		SHL1 A -1;
 		stop;
 	death:
 		ESHL A -1{
