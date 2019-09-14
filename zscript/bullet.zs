@@ -838,14 +838,6 @@ class HDBulletActor:HDActor{
 		hardness=max(1,hardness-random(0,random(0,3)));
 		stamina=max(1,stamina+random(0,(stamina>>1)));
 	}
-	void forcepain(actor victim){
-		if(
-			victim
-			&&!victim.bnopain
-			&&victim.health>0
-			&&victim.findstate("pain")
-		)victim.setstatelabel("pain");
-	}
 	void onhitactor(actor hitactor,vector3 hitpos,vector3 vu){
 		if(!hitactor.bshootable)return;
 		double hitangle=absangle(angle,angleto(hitactor)); //0 is dead centre
@@ -1036,7 +1028,7 @@ class HDBulletActor:HDActor{
 			}
 
 			hitactor.damagemobj(self,target,impact,"bashing");
-			if(impact>(hitactor.spawnhealth()>>2))forcepain(hitactor);
+			if(impact>(hitactor.spawnhealth()>>2))hdmobbase.forcepain(hitactor);
 			if(hd_debug)console.printf(hitactor.getclassname().." resisted, impact:  "..impact);
 			return;
 		}
@@ -1145,7 +1137,7 @@ if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channe
 			int critdmg=(chdmg+random((stamina>>4),(stamina>>4)+(int(speed)>>6)))*(2.+pushfactor);
 			if(bnoextremedeath)critdmg=min(critdmg,hitactor.health+1);
 			hitactor.damagemobj(self,target,critdmg,"Piercing",DMG_THRUSTLESS);
-			forcepain(hitactor);
+			hdmobbase.forcepain(hitactor);
 			suckingwound=true;
 			pen*=2;
 			channelwidth*=2;

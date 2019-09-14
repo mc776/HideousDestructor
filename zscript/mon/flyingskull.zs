@@ -111,7 +111,7 @@ class FlyingSkull:HDMobBase replaces LostSoul{
 				vel.xy=rotatevector(vel.xy,frandom(120,240));
 				vel.z*=frandom(0.4,0.9)*randompick(-1,1);
 				A_PlaySound("weapons/fragknock",CHAN_BODY);
-				setstatelabel("pain");
+				forcepain(self);
 			}
 		}
 	}
@@ -131,7 +131,7 @@ class FlyingSkull:HDMobBase replaces LostSoul{
 			vel.xy=rotatevector(vel.xy,frandom(120,240));
 			vel.z*=frandom(0.4,0.9)*randompick(-1,1);
 			A_PlaySound("weapons/fragknock",CHAN_BODY);
-			setstatelabel("pain");
+			forcepain(self);
 			return;
 		}
 		//omnomnom

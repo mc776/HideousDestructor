@@ -221,13 +221,12 @@ class HDFist:HDWeapon replaces Fist{
 		//headshot lol
 		if(
 			!punchee.bnopain
-			&& punchee.health>0
-			&& !(punchee is "HDBarrel")
-			&& punchee.findstate("pain")
-			&& punchline.hitlocation.z>punchee.pos.z+punchee.height*0.75
+			&&punchee.health>0
+			&&!(punchee is "HDBarrel")
+			&&punchline.hitlocation.z>punchee.pos.z+punchee.height*0.75
 		){
 			if(hd_debug)A_Log("HEAD SHOT");
-			punchee.setstatelabel("pain");
+			hdmobbase.forcepain(punchee);
 			dmg*=frandom(1.1,1.8);
 		}
 
@@ -261,12 +260,7 @@ class HDFist:HDWeapon replaces Fist{
 		bool kzk=kicker.countinv("PowerStrength");
 		kickee.damagemobj(kicking,kicker,kzk?random(20,40):random(10,20),"bashing");
 		if(!kickee)return;
-		if(
-			kickee.findstate("pain")
-			&&!kickee.bnopain
-			&&kickee.health>0
-			&&random(0,4)
-		)kickee.setstatelabel("pain");
+		if(random(0,4))hdmobbase.forcepain(kickee);
 		vector3 kickdir=(kickee.pos-kicker.pos).unit();
 		kickee.vel=kickdir*(kzk?10:2)*kicker.mass/max(kicker.mass*0.3,kickee.mass);
 		kicker.vel-=kickdir;

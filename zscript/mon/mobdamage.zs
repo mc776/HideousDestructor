@@ -15,13 +15,16 @@ extend class HDMobBase{
 		pain=0;
 	}
 
-	void forcepain(){
+	static bool forcepain(actor caller){
 		if(
-			!bnopain
-			&&health>0
-			&&findstate("pain",true)
-			&&!instatesequence(curstate,resolvestate("falldown"))
-		)setstatelabel("pain");
+			caller.bnopain
+			||!caller.bshootable
+			||!caller.findstate("pain",true)
+			||caller.instatesequence(caller.curstate,caller.resolvestate("falldown"))
+			||caller.health<1
+		)return false;
+		caller.setstatelabel("pain");
+		return true;
 	}
 
 	//determine threshold and overall resistance to gunshots
@@ -63,7 +66,7 @@ extend class HDMobBase{
 				&&random(0,7)
 			){
 				damage=max(1,bashthreshold);
-				forcepain();
+				forcepain(self);
 			}
 		}
 

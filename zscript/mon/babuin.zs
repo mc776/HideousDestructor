@@ -243,9 +243,7 @@ class Babuin:HDMobBase{
 				latchtarget.damagemobj(
 					self,self,random(0,2),random(0,3)?"teeth":"falling"
 				);
-			}else{
-				setstatelabel("pain");
-			}
+			}else forcepain(self);
 		}loop;
 
 	missile:
