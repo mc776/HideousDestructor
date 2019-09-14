@@ -1149,9 +1149,12 @@ class DeadRifleman:HDMarine replaces DeadMarine{
 class ReallyDeadRifleman:DeadRifleman replaces GibbedMarine{
 	states{
 	death.spawndead:
+		---- A 1;
 		---- A 0{
 			A_UnsetShootable();
 			timesdied++;
+			bodydamage=2000;
+			bgibbed=true;
 		}goto xdead;
 	}
 }

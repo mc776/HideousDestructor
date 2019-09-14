@@ -61,6 +61,7 @@ class HDPlayerPawn:PlayerPawn{
 
 		height 54;radius 12;
 		mass 150;gibhealth 180;
+		deathheight 24;
 
 		player.viewheight 48;
 		player.attackzoffset 21;

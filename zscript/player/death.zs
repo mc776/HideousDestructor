@@ -160,7 +160,7 @@ extend class HDHandlers{
 class HDPlayerCorpse:HDMobMan{
 	default{
 		monster; -countkill +solid +friendly
-		height 52;radius 12;health 100;mass 160;
+		health 100;mass 160;
 	}
 	override void Tick(){
 		let ppp=hdplayerpawn(master);
@@ -175,18 +175,20 @@ class HDPlayerCorpse:HDMobMan{
 		}
 		super.Tick();
 	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		A_SetSize(-1,deathheight*2);
+	}
 	states{
 	spawn:
 		#### A -1;// nodelay A_Die();
 		PLAY A 0;
 	death:
 		#### H 10{
-			A_NoBlocking();
-			bshootable=true;
 			scale.x*=randompick(-1,1);
 		}
 		#### IJ 8;
-		#### K 3 A_SetSize(12,13);
+		#### K 3;
 	deadfall:
 		#### K 2;
 		#### LM 4 A_JumpIf(abs(vel.z)>1,"deadfall");
@@ -196,7 +198,6 @@ class HDPlayerCorpse:HDMobMan{
 		wait;
 	xdeath:
 		#### O 5{
-			A_NoBlocking();
 			A_XScream();
 			scale.x=1;
 		}
@@ -209,7 +210,7 @@ class HDPlayerCorpse:HDMobMan{
 		#### STUV 5;
 		#### W -1 canraise;
 		stop;
-	raisegibbed:
+	ungib:
 		---- A 0{
 			bnotargetswitch=false;
 			actor masbak=master;
