@@ -961,7 +961,7 @@ class HDBulletActor:HDActor{
 				//degrade and puff
 				int ddd=int(min(pen,addpenshell)*stamina)>>14;
 				if(ddd<1&&pen>addpenshell)ddd=1;
-				armr.durability-=ddd;
+				if(ddd>0)armr.durability-=ddd;
 				if(ddd>2){
 					actor p;bool q;
 					[q,p]=hitactor.A_SpawnItemEx("FragPuff",
@@ -971,6 +971,7 @@ class HDBulletActor:HDActor{
 					);
 					if(p)p.vel+=hitactor.vel;
 				}
+				if(armr.durability<1)armr.destroy();
 
 				//TODO: side effects
 			}else if(!alv){
