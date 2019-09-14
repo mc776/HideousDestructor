@@ -17,7 +17,8 @@ extend class HDMobBase{
 
 	static bool forcepain(actor caller){
 		if(
-			caller.bnopain
+			!caller
+			||caller.bnopain
 			||!caller.bshootable
 			||!caller.findstate("pain",true)
 			||caller.instatesequence(caller.curstate,caller.resolvestate("falldown"))

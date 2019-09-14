@@ -850,6 +850,12 @@ class HDBulletActor:HDActor{
 
 		//pass over shoulder, kinda
 		//intended to be somewhat bigger than the visible head on any sprite
+		bool hitactorstanding=(
+			(
+				hdmobbase(hitactor)
+				&&hitactor.height>hdmobbase(hitactor).liveheight*0.7
+			)||hitactor.height>getdefaultbytype(hitactor.getclass()).height*0.7
+		);
 		if(
 			(
 				hdplayerpawn(hitactor)
@@ -857,7 +863,7 @@ class HDBulletActor:HDActor{
 					hdmobbase(hitactor)&&hdmobbase(hitactor).bsmallhead
 				)
 			)
-			&&hitactor.height>42
+			&&hitactorstanding
 		){
 			double haa=min(
 				pos.z-hitactor.pos.z,
@@ -876,7 +882,7 @@ class HDBulletActor:HDActor{
 					hdmobbase(hitactor)&&hdmobbase(hitactor).bbiped
 				)
 			)
-			&&hitactor.height>42
+			&&hitactorstanding
 		){
 			double aat=angleto(hitactor);
 			double haa=hitactor.angle;

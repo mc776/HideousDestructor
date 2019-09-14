@@ -46,18 +46,13 @@ extend class HDPlayerPawn{
 
 		if(inflictor&&inflictor.bpiercearmor)flags|=DMG_NO_ARMOR;
 		let armr=HDArmourWorn(findinventory("HDArmourWorn"));
-		if(armr){
-			if(armr.durability<1){
-				armr.durability=0;
-				if(!random(0,3)){
-					armr.destroy();
-				}
-			}else if(armr.durability<random(2,8)){
-				//it just goes through one of the gaping holes in your armour
-				armr=null;
-			}
+		//it just goes through one of the gaping holes in your armour
+		if(
+			armr
+			&&armr.durability<random(2,8)
+		){
+			armr=null;
 		}
-
 
 		//factor in cheats and skills
 		if(
@@ -344,6 +339,12 @@ extend class HDPlayerPawn{
 			if(mod!="internal")mod="falling";
 		}
 
+
+		//check for destruction after armour depleted, not before
+		if(armr&&armr.durability<1){
+			armr.durability=0;
+			armr.destroy();
+		}
 
 		//abort if damage is less than zero
 		if(damage<0)return 0;
