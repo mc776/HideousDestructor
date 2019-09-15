@@ -129,7 +129,7 @@ class ShellBoxPickup:HDUPK{
 	states{
 	spawn:
 		SBOX A -1 nodelay{
-			if(Wads.CheckNumForName("id",0)==-1)scale*=0.6;
+			if(Wads.CheckNumForName("id",0)==-1)scale=(0.25,0.25);
 		}
 	}
 }
