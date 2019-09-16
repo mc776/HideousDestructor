@@ -1144,7 +1144,7 @@ if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channe
 			&&pen>deemedwidth*0.4
 		){
 			if(hd_debug)console.printf("CRIT!");
-			int critdmg=(chdmg+random((stamina>>4),(stamina>>4)+(int(speed)>>6)))*(2.+pushfactor);
+			int critdmg=(chdmg+random((stamina>>5),(stamina>>5)+(int(speed)>>6)))*(2.+pushfactor);
 			if(bnoextremedeath)critdmg=min(critdmg,hitactor.health+1);
 			hitactor.damagemobj(self,target,critdmg,"Piercing",DMG_THRUSTLESS);
 			hdmobbase.forcepain(hitactor);

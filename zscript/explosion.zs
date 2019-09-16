@@ -256,7 +256,6 @@ if(hd_debug)console.printf(it.getclassname().."  "..angcover.." = "..proportionf
 					bbb.traceactors.push(caller); //does this even work?
 
 					//set the base properties of the frag bullet
-					//TODO: replace with frag type parameter in this function
 					double fragpushfactor=bbb.pushfactor;
 					double fragmass=bbb.mass;
 					double fragspeed=bbb.speed*fragspeedfactor;
@@ -289,9 +288,9 @@ if(hd_debug)console.printf(it.getclassname().."  "..angcover.." = "..proportionf
 						if(!(tiershit&FTIER_BOTTOM))fragbottom=fragtop*0.3;
 						if(!(tiershit&FTIER_TOP))fragtop*=0.7;
 
-						bbb.setxyz(caller.pos+(
-							rotatevector((dist2,0),fragangle+frandom(-edgeshot,edgeshot)),
-							frandom(fragbottom,fragtop)
+						bbb.setxyz((caller.pos.xy+(
+							rotatevector((dist2,0),fragangle+frandom(-edgeshot,edgeshot))),
+							it.pos.z+frandom(fragbottom,fragtop)
 						));
 						bbb.onhitactor(it,bbb.pos,vu);
 					}
