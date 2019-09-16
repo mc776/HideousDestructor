@@ -180,7 +180,7 @@ class HDB_bronto:HDBulletActor{
 	spawn:
 		MISL A -1;
 	death:
-		TNT1 A 16{
+		TNT1 A 1{
 			A_SprayDecal("BrontoScorch",16);
 			bmissile=false;
 			vel*=0.01;
@@ -203,9 +203,9 @@ class HDB_bronto:HDBulletActor{
 			A_SpawnChunks("HDSmoke",4,1,7);
 			aaa=spawn("HDExplosion",pos,ALLOW_REPLACE);aaa.vel.z=2;
 			spawn("DistantRocket",pos,ALLOW_REPLACE);
-			vel.z+=10;
 			A_SpawnChunks("HDSmokeChunk",random(3,4),6,12);
 			bnointeraction=true;
+			vel=(0,0,0);
 		}stop;
 	}
 }

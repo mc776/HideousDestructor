@@ -275,11 +275,11 @@ if(hd_debug)console.printf(it.getclassname().."  "..angcover.." = "..proportionf
 					//resolve the impacts using the same bullet, resetting each time
 					for(int i=0;i<fragshit;i++){
 						bbb.resetrandoms();
-						bbb.mass=fragmass*(1.+frandom(-fragvariance,fragvariance));
-						bbb.pushfactor=fragpushfactor*(1.+frandom(-fragvariance,fragvariance));
-						bbb.stamina=fragstamina*(1.+frandom(-fragvariance,fragvariance));
-						bbb.accuracy=fragaccuracy*(1.+frandom(-fragvariance,fragvariance));
-						bbb.speed=fragspeed*(1.+frandom(-fragvariance,fragvariance));
+						bbb.mass=fragmass*(max(0.1,1.+frandom(-fragvariance,fragvariance)));
+						bbb.pushfactor=max(0,fragpushfactor*(1.+frandom(-fragvariance,fragvariance)));
+						bbb.stamina=fragstamina*max(0.1,1.+frandom(-fragvariance,fragvariance));
+						bbb.accuracy=max(0,fragaccuracy*(1.+frandom(-fragvariance,fragvariance)));
+						bbb.speed=fragspeed*max(0.1,1.+frandom(-fragvariance,fragvariance));
 
 						if(i>10)bbb.bbloodlessimpact=true;
 
