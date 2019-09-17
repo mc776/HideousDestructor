@@ -16,6 +16,10 @@ class SpiritualArmour:HDPickup{
 		inventory.pickupsound "misc/p_pkup";
 		scale 0.8;
 	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		if(Wads.CheckNumForName("id",0)==-1)scale.y*=0.8333;
+	}
 	action void A_PsalterReading(){
 		string ps=SpiritualArmour.FromPsalter();
 		double pstime=ps.length()*0.05;

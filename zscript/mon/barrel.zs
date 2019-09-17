@@ -523,6 +523,7 @@ class InnocentFireCan:HDFireCan{
 class BarrelGremlin:HDActor{
 	default{
 		+ismonster +countkill -solid +noblockmap
+		radius 0;height 0;
 		-shootable
 		health 1;
 	}
