@@ -149,8 +149,11 @@ class HDB_scrap:HDB_frag{
 		stamina 800;
 		woundhealth 20;
 	}
-	override double setscalefactor(){return frandom(0.6,6.);}
+	override double setscalefactor(){return frandom(0.1,10.);}
 }
+class HDB_scrapDB:HDB_frag{override double setscalefactor(){return frandom(0.1,8.);}}
+class HDB_fragRL:HDB_frag{override double setscalefactor(){return frandom(0.6,5.);}}
+class HDB_fragBronto:HDB_scrap{default{speed 300;}override double setscalefactor(){return frandom(0.8,4.);}}
 class HDB_bronto:HDBulletActor{
 	default{
 		pushfactor 0.05;
@@ -195,7 +198,7 @@ class HDB_bronto:HDBulletActor{
 			);
 			doordestroyer.destroydoor(self,128,frandom(24,36),6);
 			A_HDBlast(
-				fragradius:256,fragtype:"HDB_scrap",fragvariance:3.,
+				fragradius:256,fragtype:"HDB_fragBronto",
 				immolateradius:64,immolateamount:random(4,20),immolatechance:32,
 				source:target
 			);

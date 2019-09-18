@@ -171,7 +171,7 @@ class HDBarrel:HDMobBase replaces ExplosiveBarrel{
 		A_HDBlast(
 			random(128,256),random(128,256),0,"Balefire",
 			256,256,0,true,
-			fragradius:256,fragtype:"HDB_scrap",fragvariance:7.,
+			fragradius:256,fragtype:"HDB_scrap",
 			immolateradius:128,immolateamount:random(10,40),immolatechance:36
 		);
 	}
