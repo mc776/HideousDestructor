@@ -249,6 +249,7 @@ if(hd_debug)console.printf(it.getclassname().."  "..angcover.." = "..proportionf
 					//resolve the impacts using a single bullet
 					let bbb=hdbulletactor(spawn(fragtype,caller.pos));
 					if(!bbb)continue;
+					bbb.pitch=pitchtotop;
 					bbb.woundhealth=0;
 					bbb.setz(clamp(bbb.pos.z,bbb.floorz+1,bbb.ceilingz-1));
 					bbb.target=target;
@@ -268,8 +269,8 @@ if(hd_debug)console.printf(it.getclassname().."  "..angcover.." = "..proportionf
 						fragshit=20;
 					}
 
-					double fragangle=caller.angleto(it);
-					vector3 vu=(cos(bbb.pitch)*(cos(fragangle),sin(fragangle)),sin(bbb.pitch));
+					vector3 vu=(cos(bbb.pitch)*(cos(angletomid),sin(angletomid)),sin(bbb.pitch));
+					vector3 callerpos=caller.pos;
 
 					//resolve the impacts using the same bullet, resetting each time
 					for(int i=0;i<fragshit;i++){
@@ -287,13 +288,13 @@ if(hd_debug)console.printf(it.getclassname().."  "..angcover.." = "..proportionf
 						if(!(tiershit&FTIER_BOTTOM))fragbottom=fragtop*0.3;
 						if(!(tiershit&FTIER_TOP))fragtop*=0.7;
 
-						bbb.setorigin((caller.pos.xy+(
-							rotatevector((dist2,0),fragangle+frandom(-edgeshot,edgeshot))),
+						bbb.setxyz((callerpos.xy+(
+							rotatevector((dist2,0),angletomid+frandom(-edgeshot,edgeshot))),
 							it.pos.z+frandom(fragbottom,fragtop)
-						),false);
+						));
 						bbb.onhitactor(it,bbb.pos,vu);
 					}
-					bbb.setorigin(caller.pos,false);
+					bbb.setorigin(callerpos,false);
 					bbb.bulletdie();
 				}
 			}
