@@ -689,7 +689,7 @@ class HDBulletActor:HDActor{
 		}
 
 		//then doorbuster??? --do later, maybe
-		doordestroyer.destroydoor(self,10*pen,0.008*frandom(0,pen*pushfactor),1);
+		doordestroyer.destroydoor(self,10*pen,0.01*frandom(0,pen*pushfactor),1);
 
 
 		puff();
@@ -1139,7 +1139,7 @@ if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channe
 		double mincritheight=hitactor.height*0.6;
 		double basehitz=hitpos.z-hitactor.pos.z;
 		if(
-			hitangle<10+tinyspeedsquared*7
+			hitangle<10+frandom(0,tinyspeedsquared*7)
 			&&(
 				basehitz>mincritheight
 				||basehitz+shortpen*vu.z>mincritheight

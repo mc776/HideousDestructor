@@ -18,7 +18,7 @@ class SpiritualArmour:HDPickup{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		if(Wads.CheckNumForName("id",0)==-1)scale=(0.84,0.7);
+		if(Wads.CheckNumForName("id",0)==-1)scale=(0.6,0.5);
 	}
 	action void A_PsalterReading(){
 		string ps=SpiritualArmour.FromPsalter();
