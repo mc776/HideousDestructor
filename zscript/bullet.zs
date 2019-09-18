@@ -29,6 +29,10 @@ class bltest:hdweapon{
 	}
 	states{
 	fire:
+	hold:
+		TNT1 A 4 A_FireHDGL();
+		TNT1 A 0 A_Refire();
+		goto ready;
 		TNT1 A 0{
 			if(player.cmd.buttons&BT_USE)HDBulletActor.FireBullet(self,"HDB_bronto");
 			else HDBulletActor.FireBullet(self,"HDB_9");
