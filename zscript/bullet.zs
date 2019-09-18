@@ -687,7 +687,10 @@ class HDBulletActor:HDActor{
 			}
 			destructible.DamageSector(hitsector,self,geodmg,"SmallArms2",hitpart,pos,false);
 		}
+
 		//then doorbuster??? --do later, maybe
+		doordestroyer.destroydoor(self,10*pen,0.008*frandom(0,pen*pushfactor),1);
+
 
 		puff();
 
