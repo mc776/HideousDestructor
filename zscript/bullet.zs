@@ -135,7 +135,7 @@ class HDB_frag:HDBulletActor{
 		double scalefactor=setscalefactor();
 		pushfactor=1./scalefactor;
 		mass=max(1,getdefaultbytype(getclass()).mass*pushfactor);
-		speed*=scalefactor;
+		speed=max(1,getdefaultbytype(getclass()).speed*scalefactor);
 		accuracy=max(1,getdefaultbytype(getclass()).accuracy*scalefactor);
 		stamina=max(1,getdefaultbytype(getclass()).stamina*pushfactor);
 	}

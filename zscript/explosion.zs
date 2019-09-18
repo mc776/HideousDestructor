@@ -200,106 +200,92 @@ extend class HDActor{
 			//frag damage
 			if(!it)continue;if(
 				dist<=fragradius
-				&&(it.bsolid || it.bshootable || it.bvulnerable)
+				&&(it.bshootable||it.bvulnerable)
+				&&it.radius
+				&&it.height
 			){
-				if(
-					(
-						(it.bvulnerable||it.bshootable)
-						&&it.radius
-						&&it.height
-					)
-				){
-					//imagine a ball 80mm wide
-					//area = 4*π*(40^2) = 20106.19298297468
-					//fragments start out 4x4mm
-					//4*π*(40^2)/16 = 1257 rounded up :(
-					//for 3x3, that count goes up to 2234
-					int fragshit=2234;
-					if(dist>0){
-						//"A = 2πrh" for sector area, divided by "A = 4πr^2" for total area of sphere
-						//we're solving for r=1 so r is omitted
-						//2πh/4π = 2h/4 = h/2 = h*0.5
-						//solving for h: h+adjacent=hypotenuse
-						//sohCAHtoa: adjacent/hypotenuse=cosine
-						//therefore cos(angcover)*hypotenuse=adjacent
-						//hypotenuse-cos(angcover*hypotenuse)=h
-						//collapse into (1.-cos(angcover))*0.5
+				//imagine a ball 80mm wide
+				//area = 4*π*(40^2) = 20106.19298297468
+				//fragments start out 4x4mm
+				//4*π*(40^2)/16 = 1257 rounded up :(
+				//for 3x3, that count goes up to 2234
+				int fragshit=2234;
+				if(dist>0){
+					//"A = 2πrh" for sector area, divided by "A = 4πr^2" for total area of sphere
+					//we're solving for r=1 so r is omitted
+					//2πh/4π = 2h/4 = h/2 = h*0.5
+					//solving for h: h+adjacent=hypotenuse
+					//sohCAHtoa: adjacent/hypotenuse=cosine
+					//therefore cos(angcover)*hypotenuse=adjacent
+					//hypotenuse-cos(angcover*hypotenuse)=h
+					//collapse into (1.-cos(angcover))*0.5
 
-						//double angcover=(abs(pitchtotop-pitchtomid)+edgeshot)*0.5;
-						double angcover=max(abs(pitchtotop-pitchtomid),edgeshot);
-						double proportionfragged=(1.-cos(angcover))*0.5;
+					//double angcover=(abs(pitchtotop-pitchtomid)+edgeshot)*0.5;
+					double angcover=max(abs(pitchtotop-pitchtomid),edgeshot);
+					double proportionfragged=(1.-cos(angcover))*0.5;
 
 
-						//NOW incorporate the cover
-						proportionfragged*=losmul;
+					//NOW incorporate the cover
+					proportionfragged*=losmul;
 
-						fragshit*=proportionfragged;
+					fragshit*=proportionfragged;
 //
 if(hd_debug)console.printf(it.getclassname().."  "..angcover.." = "..proportionfragged);
-					}
-
-					//randomize count and abort if none end up hitting
-					fragshit*=frandom(0.9,1.1);
-					if(fragshit<1)continue;
-					if(hd_debug){
-						string nm;if(it.player)nm=it.player.getusername();else nm=it.getclassname();
-						console.printf(nm.." fragged "..fragshit.." times");
-					}
-
-					//resolve the impacts using a single bullet
-					let bbb=hdbulletactor(spawn(fragtype,caller.pos));
-					if(!bbb)continue;
-					bbb.pitch=pitchtotop;
-					bbb.woundhealth=0;
-					bbb.setz(clamp(bbb.pos.z,bbb.floorz+1,bbb.ceilingz-1));
-					bbb.target=target;
-					bbb.vel+=caller.vel;
-					bbb.traceactors.push(caller); //does this even work?
-
-					//set the base properties of the frag bullet
-					double fragpushfactor=bbb.pushfactor;
-					double fragmass=bbb.mass;
-					double fragspeed=bbb.speed*fragspeedfactor;
-					double fragaccuracy=bbb.accuracy;
-					double fragstamina=max(1,bbb.stamina);
-
-					//limit number of frags and increase size to compensate
-					if(fragshit>20){
-						fragstamina+=((fragshit-20)>>3);
-						fragshit=20;
-					}
-
-					vector3 vu=(cos(bbb.pitch)*(cos(angletomid),sin(angletomid)),sin(bbb.pitch));
-					vector3 callerpos=caller.pos;
-
-					//resolve the impacts using the same bullet, resetting each time
-					for(int i=0;i<fragshit;i++){
-						bbb.resetrandoms();
-						bbb.mass=max(1,fragmass*(1.+frandom(-fragvariance,fragvariance)));
-						bbb.pushfactor=max(0,fragpushfactor*(1.+frandom(-fragvariance,fragvariance)));
-						bbb.stamina=max(1,fragstamina*(1.+frandom(-fragvariance,fragvariance)));
-						bbb.accuracy=max(1,fragaccuracy*(1.+frandom(-fragvariance,fragvariance)));
-						bbb.speed=max(0.1,fragspeed*(1.+frandom(-fragvariance,fragvariance)));
-
-						if(i>10)bbb.bbloodlessimpact=true;
-
-						double fragtop=it.height;
-						double fragbottom=0;
-						if(!(tiershit&FTIER_BOTTOM))fragbottom=fragtop*0.3;
-						if(!(tiershit&FTIER_TOP))fragtop*=0.7;
-
-						bbb.setxyz((callerpos.xy+(
-							rotatevector((dist2,0),angletomid+frandom(-edgeshot,edgeshot))),
-							it.pos.z+frandom(fragbottom,fragtop)
-						));
-						bbb.onhitactor(it,bbb.pos,vu);
-					}
-					bbb.setorigin(callerpos,false);
-					bbb.bulletdie();
 				}
+
+				//randomize count and abort if none end up hitting
+				fragshit*=frandom(0.9,1.1);
+				if(fragshit<1)continue;
+				if(hd_debug){
+					string nm;if(it.player)nm=it.player.getusername();else nm=it.getclassname();
+					console.printf(nm.." fragged "..fragshit.." times");
+				}
+
+				//resolve the impacts using a single bullet
+				let bbb=hdbulletactor(spawn(fragtype,caller.pos));
+				if(!bbb)continue;
+				bbb.pitch=pitchtotop;
+				bbb.woundhealth=0;
+				bbb.setz(clamp(bbb.pos.z,bbb.floorz+1,bbb.ceilingz-1));
+				bbb.target=target;
+				bbb.vel+=caller.vel;
+				bbb.traceactors.push(caller); //does this even work?
+
+				//limit number of frags and increase size to compensate
+				int fragstamina=0;
+				if(fragshit>HDEXPL_MAXFRAGS){
+					fragstamina=(fragshit-HDEXPL_MAXFRAGS)>>3;
+					fragshit=HDEXPL_MAXFRAGS;
+				}
+
+				vector3 vu=(cos(bbb.pitch)*(cos(angletomid),sin(angletomid)),sin(bbb.pitch));
+				vector3 callerpos=caller.pos;
+
+				//resolve the impacts using the same bullet, resetting each time
+				for(int i=0;i<HDEXPL_MAXFRAGS;i++){
+					bbb.resetrandoms();
+					if(fragstamina>0)bbb.stamina+=fragstamina;
+					if(i>7)bbb.bbloodlessimpact=true;
+
+					double fragtop=it.height;
+					double fragbottom=0;
+					if(!(tiershit&FTIER_BOTTOM))fragbottom=fragtop*0.3;
+					if(!(tiershit&FTIER_TOP))fragtop*=0.7;
+
+					bbb.setxyz((callerpos.xy+(
+						rotatevector((dist2,0),angletomid+frandom(-edgeshot,edgeshot))),
+						it.pos.z+frandom(fragbottom,fragtop)
+					));
+					bbb.onhitactor(it,bbb.pos,vu);
+				}
+				bbb.setorigin(callerpos,false);
+				bbb.bulletdie();
 			}
 		}
 		//reset position
 		if(caller)caller.addz(-callerhalfheight);
+	}
+	enum ExplosionConstants{
+		HDEXPL_MAXFRAGS=20,
 	}
 }
