@@ -270,7 +270,7 @@ if(hd_debug)console.printf(it.getclassname().."  "..angcover.." = "..proportionf
 
 					double fragangle=caller.angleto(it);
 					vector3 vu=(cos(bbb.pitch)*(cos(fragangle),sin(fragangle)),sin(bbb.pitch));
-					fragradius-=it.stamina; //to be used to place the bullet, not inside target
+					fragradius-=it.radius; //to be used to place the bullet, not inside target
 
 					//resolve the impacts using the same bullet, resetting each time
 					for(int i=0;i<fragshit;i++){
