@@ -66,6 +66,11 @@ extend class HDPlayerPawn{
 				))
 			){
 				A_TakeInventory("Heat");
+				woundcount=0;
+				oldwoundcount=0;
+				unstablewoundcount=0;
+				burncount=0;
+				aggravateddamage=0;
 				return 0;
 			}
 			damage*=hd_damagefactor;
