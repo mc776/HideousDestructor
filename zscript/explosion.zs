@@ -270,7 +270,6 @@ if(hd_debug)console.printf(it.getclassname().."  "..angcover.." = "..proportionf
 
 					double fragangle=caller.angleto(it);
 					vector3 vu=(cos(bbb.pitch)*(cos(fragangle),sin(fragangle)),sin(bbb.pitch));
-					fragradius-=it.radius; //to be used to place the bullet, not inside target
 
 					//resolve the impacts using the same bullet, resetting each time
 					for(int i=0;i<fragshit;i++){
@@ -288,10 +287,10 @@ if(hd_debug)console.printf(it.getclassname().."  "..angcover.." = "..proportionf
 						if(!(tiershit&FTIER_BOTTOM))fragbottom=fragtop*0.3;
 						if(!(tiershit&FTIER_TOP))fragtop*=0.7;
 
-						bbb.setxyz((caller.pos.xy+(
+						bbb.setorigin((caller.pos.xy+(
 							rotatevector((dist2,0),fragangle+frandom(-edgeshot,edgeshot))),
 							it.pos.z+frandom(fragbottom,fragtop)
-						));
+						),false);
 						bbb.onhitactor(it,bbb.pos,vu);
 					}
 					bbb.setorigin(caller.pos,false);
