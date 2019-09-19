@@ -112,7 +112,7 @@ class GyroGrenade:SlowProjectile{
 		}else{
 			spawn("DistantRocket",pos,ALLOW_REPLACE);
 		}
-//		A_SpawnChunks("HDB_frag",180,100,700+50*stamina);
+		A_SpawnChunks("HDB_frag",180,100,700+50*stamina);
 		destroy();return;
 	}
 	states{

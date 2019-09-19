@@ -132,6 +132,7 @@ class HDActor:Actor{
 		double minvel=10,
 		double maxvel=20
 	){
+return;
 		if(
 			chunk is "WallChunk"
 		){
