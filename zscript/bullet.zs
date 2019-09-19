@@ -281,13 +281,11 @@ class HDBulletActor:HDActor{
 
 
 	default{
-//		+solid
 		+noblockmap
 		+missile
 		+noextremedeath
 		+cannotpush
 		height 0.1;radius 0.1;
-		scale 0.3;
 		/*
 			speed: 200-1000
 			mass: in tenths of a gram
