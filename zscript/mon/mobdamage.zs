@@ -136,7 +136,7 @@ extend class HDMobBase{
 		}
 
 		//force death even if not quite gibbing
-		if(health>0&&(bodydamage<<1)>sphlth){
+		if(health>0&&bodydamage>sphlth){
 			return super.damagemobj(inflictor,source,health,mod,flags,angle);
 		}
 
@@ -211,9 +211,7 @@ extend class HDMobBase{
 	}
 
 
-	virtual void deathdrop(){
-		if(hd_debug)A_Log("DROPED GNU");
-	}
+	virtual void deathdrop(){}
 	override void die(actor source,actor inflictor,int dmgflags){
 		deathticks=0;
 
