@@ -132,7 +132,8 @@ class HDActor:Actor{
 		double minvel=10,
 		double maxvel=20
 	){
-return;
+//return;
+/*
 		if(
 			chunk is "WallChunk"
 		){
@@ -144,12 +145,13 @@ return;
 				return;
 			}
 		}
+*/
 		double burstz=pos.z+height*0.5;
 		double minpch=burstz-floorz<56?9:90;
 		double maxpch=ceilingz-burstz<56?-9:-90;
 		burstz-=pos.z;
+		bool gbg;actor frg;
 		for(int i=0;i<number;i++){
-			bool gbg;actor frg;
 			double pch=frandom(minpch,maxpch);
 			double vl=frandom(minvel,maxvel);
 			[gbg,frg]=A_SpawnItemEx(

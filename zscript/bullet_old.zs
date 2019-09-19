@@ -776,7 +776,18 @@ class HDBulletDamager:Thinker{
 
 
 
-
+class spam:hdactor{
+	states{
+	spawn:
+		TNT1 A 0;
+		TNT1 A 1{
+			for(int i=0;i<18000;i++){
+				A_SpawnItemEx("HDB_frag",0,0,1,100,0,15,frandom(0,360),SXF_NOCHECKPOSITION);
+			}
+		}
+		stop;
+	}
+}
 
 
 
