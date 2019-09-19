@@ -41,7 +41,7 @@ extend class HDActor{
 		bool passwalls=false
 	){
 		//get the biggest radius
-		int bigradius=max(
+		double bigradius=max(
 			blastradius,
 			fragradius,
 			immolateradius
@@ -53,7 +53,6 @@ extend class HDActor{
 			else if(caller.master)source=caller.master;
 			else source=caller;
 		}
-		actor target=caller.target;
 
 		//do all this from the centre
 		double callerhalfheight=caller.height*0.5;
@@ -80,22 +79,13 @@ extend class HDActor{
 			double dist2=caller.distance2d(it);
 			it.addz(-ithalfheight); //reset "it"'s position
 
-			bool ontop=
-				(!dist || dist<min(it.radius,ithalfheight))?true
-				:false;
-			double divdist=ontop?1:clamp(1./dist,0.,1.);
-
-			int playerattack=0;//source&&source.player?DMG_PLAYERATTACK:0;
-
 			//some variables that will be reused
-			double biggerradius=bigradius+it.radius;
-			double smallerradius=it.radius-1;
 			double difz=it.pos.z-caller.pos.z;
 			double pitchtotop=-atan2(difz+it.height,dist2);
 			double pitchtomid=-atan2(difz+ithalfheight,dist2);
-			double pitchtobottom=-atan2(difz,dist2);
+//			double pitchtobottom=-atan2(difz,dist2); //used only once
 			double angletomid=caller.angleto(it);
-			double edgeshot=atan2(smallerradius,dist-it.radius);
+			double edgeshot=atan2(it.radius-0.1,dist-it.radius);
 
 
 			//check how much of the actor is exposed
@@ -108,6 +98,7 @@ extend class HDActor{
 				//if some of these fail, target is partially covered
 				//assumes legs that have smaller profile than upper body
 				flinetracedata blt;
+				double biggerradius=bigradius+it.radius;
 
 				caller.linetrace(angletomid,biggerradius,pitchtotop,0,
 					0, //caller is already raised by half its height for other things
@@ -149,7 +140,7 @@ extend class HDActor{
 				}
 
 				blt.hitactor=null;
-				caller.linetrace(angletomid,biggerradius,pitchtobottom,0,
+				caller.linetrace(angletomid,biggerradius,-atan2(difz,dist2),0,
 					0, //caller is already raised by half its height for other things
 					data:blt
 				);
@@ -171,13 +162,14 @@ extend class HDActor{
 				if(immolateamount<0){
 					HDF.Give(it,"Heat",-immolateamount+random(-immolatechance,immolatechance));
 				}else if(!it.countinv("ImmunityToFire")&&immolatechance>=random(1,100)*losmul){
-					if(hdactor(caller))hdactor(caller).A_Immolate(it,target,immolateamount);
+					if(hdactor(caller))hdactor(caller).A_Immolate(it,caller.target,immolateamount);
 					else HDF.Give(it,"Heat",immolateamount*2);
 				}
 			}
 			//push
 			if(!it)continue;if(dist<=pushradius && it.bshootable && !it.bdontthrust){
 				if(it.radiusdamagefactor)pushamount*=it.radiusdamagefactor;
+				double divdist=(!dist||dist<min(it.radius,ithalfheight))?1:clamp(1./dist,0.,1.);
 				vector3 push=(it.pos-caller.pos)*divdist
 					*clamp(pushamount-clamp(dist-fullpushradius,0,dist),0,pushamount);
 				if(pushmass){
@@ -195,7 +187,10 @@ extend class HDActor{
 				int dmg=(dist>fullblastradius)?
 					blastdamage-clamp(dist-fullblastradius,0,dist)
 					:blastdamage;
-				it.DamageMobj(caller,source,dmg*losmul,blastdamagetype,DMG_THRUSTLESS|playerattack);
+				it.DamageMobj(
+					caller,source,dmg*losmul,blastdamagetype,
+					DMG_THRUSTLESS|(source&&source.player?DMG_PLAYERATTACK:0)
+				);
 			}
 			//frag damage
 			if(!it)continue;if(
@@ -221,66 +216,64 @@ extend class HDActor{
 					//collapse into (1.-cos(angcover))*0.5
 
 					//double angcover=(abs(pitchtotop-pitchtomid)+edgeshot)*0.5;
-					double angcover=max(abs(pitchtotop-pitchtomid),edgeshot);
-					double proportionfragged=(1.-cos(angcover))*0.5;
+					//double angcover=max(abs(pitchtotop-pitchtomid),edgeshot);
+					double proportionfragged=(1.-cos(
+						max(abs(pitchtotop-pitchtomid),edgeshot)
+					))*0.5;
 
 
 					//NOW incorporate the cover
 					proportionfragged*=losmul;
 
 					fragshit*=proportionfragged;
-//
-if(hd_debug)console.printf(it.getclassname().."  "..angcover.." = "..proportionfragged);
 				}
 
 				//randomize count and abort if none end up hitting
 				fragshit*=frandom(0.9,1.1);
-				if(fragshit<1)continue;
-				if(hd_debug){
-					string nm;if(it.player)nm=it.player.getusername();else nm=it.getclassname();
-					console.printf(nm.." fragged "..fragshit.." times");
+				if(fragshit>0){
+					if(hd_debug){
+						string nm;if(it.player)nm=it.player.getusername();else nm=it.getclassname();
+						console.printf(nm.." fragged "..fragshit.." times");
+					}
+
+					//resolve the impacts using a single bullet
+					let bbb=hdbulletactor(spawn(fragtype,caller.pos));
+					bbb.pitch=pitchtotop;
+					bbb.setz(clamp(bbb.pos.z,bbb.floorz+1,bbb.ceilingz-1));
+					bbb.target=source;
+					bbb.traceactors.push(caller); //does this even work?
+
+					//limit number of frags and increase size to compensate
+					int fragstamina=0;
+					if(fragshit>HDEXPL_MAXFRAGS){
+						fragstamina=((fragshit-HDEXPL_MAXFRAGS)>>3);
+						fragshit=HDEXPL_MAXFRAGS;
+					}
+
+					vector3 vu=(cos(bbb.pitch)*(cos(angletomid),sin(angletomid)),sin(bbb.pitch));
+					vector3 callerpos=caller.pos;
+
+					//resolve the impacts using the same bullet, resetting each time
+					for(int i=0;i<HDEXPL_MAXFRAGS;i++){
+						if(!it)break;
+						bbb.resetrandoms();
+						if(fragstamina>0)bbb.stamina+=fragstamina;
+						if(i>7)bbb.bbloodlessimpact=true;
+
+						double fragtop=it.height;
+						double fragbottom=0;
+						if(!(tiershit&FTIER_BOTTOM))fragbottom=fragtop*0.3;
+						if(!(tiershit&FTIER_TOP))fragtop*=0.7;
+
+						bbb.setxyz((callerpos.xy+(
+							rotatevector((dist2,0),angletomid+frandom(-edgeshot,edgeshot))),
+							it.pos.z+frandom(fragbottom,fragtop)
+						));
+						bbb.onhitactor(it,bbb.pos,vu);
+					}
+					bbb.setorigin(callerpos,false);
+					bbb.bulletdie();
 				}
-
-				//resolve the impacts using a single bullet
-				let bbb=hdbulletactor(spawn(fragtype,caller.pos));
-				if(!bbb)continue;
-				bbb.pitch=pitchtotop;
-				bbb.woundhealth=0;
-				bbb.setz(clamp(bbb.pos.z,bbb.floorz+1,bbb.ceilingz-1));
-				bbb.target=target;
-				bbb.vel+=caller.vel;
-				bbb.traceactors.push(caller); //does this even work?
-
-				//limit number of frags and increase size to compensate
-				int fragstamina=0;
-				if(fragshit>HDEXPL_MAXFRAGS){
-					fragstamina=(fragshit-HDEXPL_MAXFRAGS)>>3;
-					fragshit=HDEXPL_MAXFRAGS;
-				}
-
-				vector3 vu=(cos(bbb.pitch)*(cos(angletomid),sin(angletomid)),sin(bbb.pitch));
-				vector3 callerpos=caller.pos;
-
-				//resolve the impacts using the same bullet, resetting each time
-				for(int i=0;i<HDEXPL_MAXFRAGS;i++){
-					if(!it)break;
-					bbb.resetrandoms();
-					if(fragstamina>0)bbb.stamina+=fragstamina;
-					if(i>7)bbb.bbloodlessimpact=true;
-
-					double fragtop=it.height;
-					double fragbottom=0;
-					if(!(tiershit&FTIER_BOTTOM))fragbottom=fragtop*0.3;
-					if(!(tiershit&FTIER_TOP))fragtop*=0.7;
-
-					bbb.setxyz((callerpos.xy+(
-						rotatevector((dist2,0),angletomid+frandom(-edgeshot,edgeshot))),
-						it.pos.z+frandom(fragbottom,fragtop)
-					));
-					bbb.onhitactor(it,bbb.pos,vu);
-				}
-				bbb.setorigin(callerpos,false);
-				bbb.bulletdie();
 			}
 		}
 		//reset position
