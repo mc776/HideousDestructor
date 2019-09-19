@@ -359,14 +359,6 @@ struct HDMath{
 	static double GetEncumbranceMult(){
 		return clamp(skill?hd_encumbrance:hd_encumbrance*0.5,0.,2.);
 	}
-	//counts stuff
-	//HDMath.CountThinkers("IdleDummy")
-	static int Count(name type,bool exactmatch=false){
-		int count=0;
-		thinkeriterator it=thinkeriterator.create(type);
-		while(it.Next(exact:exactmatch))count++;
-		return count;
-	}
 	//get the opposite sector of a line
 	static sector OppositeSector(line hitline,sector hitsector){
 		if(!hitline||!hitline.backsector)return null;

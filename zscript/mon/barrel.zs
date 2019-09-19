@@ -81,8 +81,9 @@ class HDBarrel:HDMobBase replaces ExplosiveBarrel{
 	}
 	void A_BarrelCheckCrowd(){
 		int bcc=0;
+		barrelexplodemarker bpm;
 		thinkeriterator bexpm=ThinkerIterator.create("BarrelExplodeMarker");
-		while(bexpm.next(true)){
+		while(bpm=barrelexplodemarker(bexpm.next(true))){
 			bcc++;
 			if(bcc>random(1,12)){
 				setstatelabel("waittoexplode");
