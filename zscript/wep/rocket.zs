@@ -107,8 +107,8 @@ class GyroGrenade:SlowProjectile{
 				immolateradius:128,immolateamount:random(3,60),
 				immolatechance:isrocket?random(1,stamina):25
 			);
-			actor xpl=spawn("Gyrosploder",self.pos-(0,0,1),ALLOW_REPLACE);
-			xpl.target=target;xpl.master=master;xpl.stamina=stamina;
+//			actor xpl=spawn("Gyrosploder",self.pos-(0,0,1),ALLOW_REPLACE);
+//			xpl.target=target;xpl.master=master;xpl.stamina=stamina;
 		}else{
 			spawn("DistantRocket",self.pos,ALLOW_REPLACE);
 		}

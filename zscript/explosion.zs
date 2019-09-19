@@ -259,19 +259,21 @@ extend class HDActor{
 					//resolve the impacts using the same bullet, resetting each time
 					for(int i=0;i<HDEXPL_MAXFRAGS&&!!it;i++){
 						bbb.resetrandoms();
-						if(fragstamina>0)bbb.stamina+=fragstamina;
-						if(i>7)bbb.bbloodlessimpact=true;
+						if(bbb.speed>=dist){
+							if(fragstamina>0)bbb.stamina+=fragstamina;
+							if(i>7)bbb.bbloodlessimpact=true;
 
-						double fragtop=it.height;
-						double fragbottom=0;
-						if(!(tiershit&FTIER_BOTTOM))fragbottom=fragtop*0.3;
-						if(!(tiershit&FTIER_TOP))fragtop*=0.7;
+							double fragtop=it.height;
+							double fragbottom=0;
+							if(!(tiershit&FTIER_BOTTOM))fragbottom=fragtop*0.3;
+							if(!(tiershit&FTIER_TOP))fragtop*=0.7;
 
-						bbb.setxyz((callerpos.xy+(
-							rotatevector((dist2,0),angletomid+frandom(-edgeshot,edgeshot))),
-							it.pos.z+frandom(fragbottom,fragtop)
-						));
-						bbb.onhitactor(it,bbb.pos,vu);
+							bbb.setxyz((callerpos.xy+(
+								rotatevector((dist2,0),angletomid+frandom(-edgeshot,edgeshot))),
+								it.pos.z+frandom(fragbottom,fragtop)
+							));
+							bbb.onhitactor(it,bbb.pos,vu);
+						}
 					}
 					bbb.setorigin(callerpos,false);
 					bbb.bulletdie();
