@@ -230,6 +230,7 @@ extend class HDActor{
 
 				//randomize count and abort if none end up hitting
 				fragshit*=frandom(0.9,1.1);
+
 				if(fragshit>0){
 					if(hd_debug){
 						string nm;if(it.player)nm=it.player.getusername();else nm=it.getclassname();
@@ -237,11 +238,14 @@ extend class HDActor{
 					}
 
 					//resolve the impacts using a single bullet
-					let bbb=hdbulletactor(spawn(fragtype,caller.pos));
-					bbb.pitch=pitchtotop;
-					bbb.setz(clamp(bbb.pos.z,bbb.floorz+1,bbb.ceilingz-1));
+					vector3 callerpos=caller.pos;
+					let bbb=hdbulletactor(spawn(fragtype,(
+							callerpos.xy,
+							clamp(callerpos.z,caller.floorz+1,caller.ceilingz-1)
+					)));
+					bbb.angle=angletomid;
+					bbb.pitch=pitchtomid;
 					bbb.target=source;
-					bbb.traceactors.push(caller); //does this even work?
 
 					//limit number of frags and increase size to compensate
 					int fragstamina=0;
@@ -251,11 +255,9 @@ extend class HDActor{
 					}
 
 					vector3 vu=(cos(bbb.pitch)*(cos(angletomid),sin(angletomid)),sin(bbb.pitch));
-					vector3 callerpos=caller.pos;
 
 					//resolve the impacts using the same bullet, resetting each time
-					for(int i=0;i<HDEXPL_MAXFRAGS;i++){
-						if(!it)break;
+					for(int i=0;i<HDEXPL_MAXFRAGS&&!!it;i++){
 						bbb.resetrandoms();
 						if(fragstamina>0)bbb.stamina+=fragstamina;
 						if(i>7)bbb.bbloodlessimpact=true;
