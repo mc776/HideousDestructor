@@ -284,6 +284,6 @@ extend class HDActor{
 		if(caller)caller.addz(-callerhalfheight);
 	}
 	enum ExplosionConstants{
-		HDEXPL_MAXFRAGS=20,
+		HDEXPL_MAXFRAGS=2,
 	}
 }
