@@ -851,11 +851,21 @@ class HDBulletActor:HDActor{
 		hardness=max(1,hardness-random(0,random(0,3)));
 		stamina=max(1,stamina+random(0,(stamina>>1)));
 	}
-	void onhitactor(actor hitactor,vector3 hitpos,vector3 vu){
+	enum HitActorFlags{
+		BLAF_DONTFRAGMENT=1,
+
+		BLAF_DEEPENOUGH=2,
+		BLAF_ALLTHEWAYTHROUGH=4,
+		BLAF_SUCKINGWOUND=8,
+		BLAF_CRITICAL=16,
+		BLAF_ISSTANDING=32,
+	}
+	void onhitactor(actor hitactor,vector3 hitpos,vector3 vu,int flags=0){
 		if(!hitactor.bshootable)return;
 		double hitangle=absangle(angle,angleto(hitactor)); //0 is dead centre
 		double pen=penetration();
 
+		let hdmb=hdmobbase(hitactor);
 
 		//because radius alone is not correct
 		double deemedwidth=hitactor.radius*frandom(1.8,2.);
@@ -863,39 +873,42 @@ class HDBulletActor:HDActor{
 
 		//pass over shoulder, kinda
 		//intended to be somewhat bigger than the visible head on any sprite
-		bool hitactorstanding=(
+		if(
 			(
 				hdmobbase(hitactor)
 				&&hitactor.height>hdmobbase(hitactor).liveheight*0.7
 			)||hitactor.height>getdefaultbytype(hitactor.getclass()).height*0.7
-		);
+		)flags|=BLAF_ISSTANDING;
 		if(
-			(
+			(flags&BLAF_ISSTANDING)
+			&&(
 				hdplayerpawn(hitactor)
 				||(
 					hdmobbase(hitactor)&&hdmobbase(hitactor).bsmallhead
 				)
 			)
-			&&hitactorstanding
 		){
-			double haa=min(
-				pos.z-hitactor.pos.z,
-				pos.z+vu.z*hitactor.radius*0.6-hitactor.pos.z
-			)/hitactor.height;
-			if(haa>0.8){
+			if(
+				0.8<
+				min(
+					pos.z-hitactor.pos.z,
+					pos.z+vu.z*hitactor.radius*0.6-hitactor.pos.z
+				)/hitactor.height
+			){
 				if(hitangle>40.)return;
 				deemedwidth*=0.6;
 			}
 		}
 		//randomly pass through putative gap between legs and feet
 		if(
-			(
+			(flags&BLAF_ISSTANDING)
+			&&(
 				hdplayerpawn(hitactor)
 				||(
-					hdmobbase(hitactor)&&hdmobbase(hitactor).bbiped
+					hdmobbase(hitactor)
+					&&hdmobbase(hitactor).bbiped
 				)
 			)
-			&&hitactorstanding
 		){
 			double aat=angleto(hitactor);
 			double haa=hitactor.angle;
@@ -922,16 +935,9 @@ class HDBulletActor:HDActor{
 
 
 		//determine bullet resistance
-		double hitactorresistance;
 		double penshell;
-		let hdmb=hdmobbase(hitactor);
-		if(hdmb){
-			hitactorresistance=hdmb.bulletresistance(hitangle);
-			penshell=hdmb.bulletshell(hitpos,hitangle);
-		}else{
-			hitactorresistance=0.6;
-			penshell=0;
-		}
+		if(hdmb)penshell=max(hdmb.bulletresistance(hitangle),hdmb.bulletshell(hitpos,hitangle));
+		else penshell=0.6;
 
 		//destroy radsuit if worn and pen above threshold
 		if(hitactor.countinv("WornRadsuit")&&pen>frandom(1,4)){
@@ -940,20 +946,15 @@ class HDBulletActor:HDActor{
 		}
 
 		//apply armour if any
-		let armr=HDArmourWorn(hitactor.findinventory("HDArmourWorn"));
-		if(armr){
+		if(hitactor.findinventory("HDArmourWorn")){
+			let armr=HDArmourWorn(hitactor.findinventory("HDArmourWorn"));
 			double hitheight=(hitpos.z-hitactor.pos.z)/hitactor.height;
 
 			double addpenshell=0;
 
-			int hitlevel;
-			if(hitheight>0.8)hitlevel=2;
-			else if(hitheight>0.4)hitlevel=1;
-			else hitlevel=0;
-
 			int alv=armr.mega?3:1;
 			if(!random(0,max((armr.durability>>2),4)))alv=-1; //slips through a gap
-			else if(hitlevel==2){ //headshot, check for helmet
+			else if(hitheight>0.8){ //headshot, check for helmet
 				if(
 					hitactor is "hdplayerpawn"
 					||(
@@ -963,7 +964,7 @@ class HDBulletActor:HDActor{
 				)alv=randompick(0,1,random(0,alv),alv);
 				else alv=-1;
 			}
-			else if(hitlevel==0)alv=max(alv-randompick(0,0,0,1,1,1,1,2),0); //legshot
+			else if(hitheight<0.4)alv=max(alv-randompick(0,0,0,1,1,1,1,2),0); //legshot
 
 			if(alv>0){
 				addpenshell=frandom(9,11)*alv;
@@ -982,8 +983,6 @@ class HDBulletActor:HDActor{
 					if(p)p.vel+=hitactor.vel;
 				}
 				if(armr.durability<1)armr.destroy();
-
-				//TODO: side effects
 			}else if(!alv){
 				//bullet leaves a hole in the webbing
 				armr.durability-=max(random(0,1),(stamina>>7));
@@ -994,29 +993,23 @@ class HDBulletActor:HDActor{
 			penshell+=addpenshell;
 		}
 
-		penshell=max(
-			0,
-			penshell,
-			hitactorresistance
-		)*(HDCONST_SPEEDOFSOUND+stamina)/(speed+accuracy)*(1.-hitangle*0.006);
+		penshell=
+			max(0,penshell)
+			*(HDCONST_SPEEDOFSOUND+stamina)
+			/(speed+accuracy)
+			*(1.-hitangle*0.006)
+		;
 
 
 		//decelerate
-		double shortpen=pen-penshell;
-		if(shortpen<0.1){
+		pen-=penshell;
+		if(pen<0.1){
 			puff();
 			bulletdie();
 			return;
 		}
-		double shortshortpen=min(shortpen,hitactor.radius*2); //used to place bullet on other side of actor
-		double sspratio=shortpen/pen;
-		if(sspratio<1.){
-			vel*=sspratio;
-			speed*=sspratio;
-		}
-		pen=shortpen;
 
-		bool deepenough=pen>deemedwidth*0.01;
+		if(pen>deemedwidth*0.01)flags|=BLAF_DEEPENOUGH;
 
 		//deform the bullet
 		hardness=max(1,hardness-random(0,random(0,3)));
@@ -1029,7 +1022,7 @@ class HDBulletActor:HDActor{
 
 		//bullet hits without penetrating
 		//abandon all damage after impact, then check ricochet
-		if(!deepenough){
+		if(!(flags&BLAF_DEEPENOUGH)){
 			//if bullet too soft and/or slow, just die
 			if(speed<32||hardness<random(1,3)||!random(0,6))bulletdie();
 
@@ -1055,13 +1048,14 @@ class HDBulletActor:HDActor{
 
 		//check if going right through the body
 		//it's not "deep enough", it's "too deep" now!
-		deepenough=pen<deemedwidth-0.02*hitangle;
+		if(pen<deemedwidth-0.02*hitangle)flags|=BLAF_DEEPENOUGH;
+		else flags&=~BLAF_DEEPENOUGH;
 
 		//bullet penetrated, both impact and temp cavity do bashing
-		impact+=tinyspeedsquared*(deepenough?frandom(0.07,0.1):frandom(0.03,0.08))*stamina;
+		impact+=tinyspeedsquared*((flags&BLAF_DEEPENOUGH)?frandom(0.07,0.1):frandom(0.03,0.08))*stamina;
 
 		bnoextremedeath=impact<(hitactor.gibhealth<<3);
-		hitactor.damagemobj(self,target,max(impact,pen*impact*0.03*hitactorresistance),"bashing",DMG_THRUSTLESS);
+		hitactor.damagemobj(self,target,max(impact,pen*impact*0.03),"bashing",DMG_THRUSTLESS);
 		bnoextremedeath=true;
 
 		//determine what kind of blood to use
@@ -1081,30 +1075,23 @@ class HDBulletActor:HDActor{
 			)*stamina
 			*frandom(20.,20+pushfactor-hardness)
 		;
-		if(deepenough)bulletdie();
+		if(flags&BLAF_DEEPENOUGH)bulletdie();
 		else{
 			channelwidth*=1.1;
 			//then spawn exit wound blood
 			if(!bbloodlessimpact){
 				double hrad=hitactor.radius*0.6;
-				for(int i=0;i<pen;i+=10){
-					bool gbg;actor blood;
-					[gbg,blood]=hitactor.A_SpawnItemEx(
-						hitblood,
-						hrad,0,pos.z-hitactor.pos.z,
-						angle:hitactor.angleto(self),
-						flags:SXF_ABSOLUTEANGLE|SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
-					);
-					if(blood){
-						blood.vel=vu*(0.6*min(pen*0.2,12))
-						+(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.4)
-						);
-						if(!i)blood.A_PlaySound(blood.seesound,CHAN_BODY);
-					}
-				}
+				bool gbg;actor blood;
+				[gbg,blood]=hitactor.A_SpawnItemEx(
+					hitblood,
+					hrad,0,pos.z-hitactor.pos.z,
+					angle:hitactor.angleto(self),
+					flags:SXF_ABSOLUTEANGLE|SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
+				);
+				if(blood)blood.vel=vu+(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.4));
 			}
 			//reduce momentum, increase tumbling, etc.
-			double totalresistance=hitactorresistance*deemedwidth;
+			double totalresistance=deemedwidth*(hdmb?hdmb.bulletresistance(hitangle):0.6);
 			angle+=frandom(-pushfactor,pushfactor)*totalresistance;
 			pitch+=frandom(-pushfactor,pushfactor)*totalresistance;
 			speed=max(0,speed-frandom(-pushfactor,pushfactor)*totalresistance*10);
@@ -1114,26 +1101,21 @@ class HDBulletActor:HDActor{
 		//major-artery incurable bleeding
 		//can't be done on "just" a graze (abs(angle,angleto(hitactor))>50)
 		//random chance depending on amount of penetration
-		bool suckingwound=frandom(0,pen)>deemedwidth;
+		if(frandom(0,pen)>deemedwidth)flags|=BLAF_SUCKINGWOUND;
 
 		//spawn entry wound blood
 		//do more if there's a sucking wound
 		if(!bbloodlessimpact){
-			for(int i=-1;i<suckingwound;i++){
-				bool gbg;actor blood;
-				[gbg,blood]=hitactor.A_SpawnItemEx(
-					hitblood,
-					-hitactor.radius*0.6,0,pos.z-hitactor.pos.z,
-					angle:angleto(hitactor),
-						flags:SXF_ABSOLUTEANGLE|SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
-				);
-				if(blood){
-					blood.vel=-vu*(0.03*min(12,impact))
-						+(frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(-0.2,0.4)
-					);
-					if(!i)blood.A_PlaySound(blood.seesound,CHAN_BODY);
-				}
-			}
+			bool gbg;actor blood;
+			[gbg,blood]=hitactor.A_SpawnItemEx(
+				hitblood,
+				-hitactor.radius*0.6,0,pos.z-hitactor.pos.z,
+				angle:angleto(hitactor),
+					flags:SXF_ABSOLUTEANGLE|SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
+			);
+			if(blood)blood.vel=-vu*(min(3,0.05*impact))
+				+(frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(-0.2,0.4)
+			);
 		}
 
 		//add size of channel to damage
@@ -1149,16 +1131,16 @@ if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channe
 			hitangle<10+frandom(0,tinyspeedsquared*7)
 			&&(
 				basehitz>mincritheight
-				||basehitz+shortpen*vu.z>mincritheight
+				||basehitz+pen*vu.z>mincritheight
 			)
 			&&pen>deemedwidth*0.4
 		){
 			if(hd_debug)console.printf("CRIT!");
 			int critdmg=(chdmg+random((stamina>>5),(stamina>>5)+(int(speed)>>6)))*(1.+pushfactor*0.3);
 			if(bnoextremedeath)critdmg=min(critdmg,hitactor.health+1);
-			hitactor.damagemobj(self,target,critdmg,"Piercing",DMG_THRUSTLESS);
 			hdmobbase.forcepain(hitactor);
-			suckingwound=true;
+			hitactor.damagemobj(self,target,critdmg,"Piercing",DMG_THRUSTLESS);
+			flags|=BLAF_SUCKINGWOUND;
 			pen*=2;
 			channelwidth*=2;
 		}else{
@@ -1171,16 +1153,13 @@ if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channe
 
 		//inflict wound
 		//note the suckingwound bool
-		hdbleedingwound.inflict(hitactor,pen,channelwidth,suckingwound);
+		hdbleedingwound.inflict(hitactor,pen,channelwidth,(flags&BLAF_SUCKINGWOUND));
 
 		//is there anything else you would like to share
 		additionaleffects(hitactor,pen,vu);
 
-		if(hitactor)tracer=hitactor;
-		setorigin(hitpos+vu*shortshortpen,true);
-
 		//fragmentation
-		if(random(0,100)<woundhealth){
+		if(!(flags&BLAF_DONTFRAGMENT)&&random(0,100)<woundhealth){
 			int fragments=clamp(random(2,(woundhealth>>4)),1,5);
 			while(fragments){
 				fragments--;
@@ -1214,6 +1193,9 @@ if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channe
 			bulletdie();
 			return;
 		}
+
+		if(hitactor)tracer=hitactor;
+		setorigin(hitpos+vu*min(pen,hitactor.radius*2),true);
 	}
 	virtual void AdditionalEffects(actor hitactor,double pen,vector3 vu){}
 	virtual actor Puff(){
