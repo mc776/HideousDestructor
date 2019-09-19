@@ -263,6 +263,7 @@ if(hd_debug)console.printf(it.getclassname().."  "..angcover.." = "..proportionf
 
 				//resolve the impacts using the same bullet, resetting each time
 				for(int i=0;i<HDEXPL_MAXFRAGS;i++){
+					if(!it)break;
 					bbb.resetrandoms();
 					if(fragstamina>0)bbb.stamina+=fragstamina;
 					if(i>7)bbb.bbloodlessimpact=true;
