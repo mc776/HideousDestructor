@@ -857,8 +857,7 @@ class HDBulletActor:HDActor{
 		BLAF_DEEPENOUGH=2,
 		BLAF_ALLTHEWAYTHROUGH=4,
 		BLAF_SUCKINGWOUND=8,
-		BLAF_CRITICAL=16,
-		BLAF_ISSTANDING=32,
+		BLAF_ISSTANDING=16,
 	}
 
 
@@ -1057,12 +1056,10 @@ class HDBulletActor:HDActor{
 		}
 
 		//check if going right through the body
-		//it's not "deep enough", it's "too deep" now!
-		if(pen<deemedwidth-0.02*hitangle)flags|=BLAF_DEEPENOUGH;
-		else flags&=~BLAF_DEEPENOUGH;
+		if(pen>deemedwidth-0.02*hitangle)flags|=BLAF_ALLTHEWAYTHROUGH;
 
 		//bullet penetrated, both impact and temp cavity do bashing
-		impact+=tinyspeedsquared*((flags&BLAF_DEEPENOUGH)?frandom(0.07,0.1):frandom(0.03,0.08))*stamina;
+		impact+=tinyspeedsquared*((flags&BLAF_ALLTHEWAYTHROUGH)?frandom(0.03,0.08)*stamina:frandom(0.07,0.1));
 
 		bnoextremedeath=impact<(hitactor.gibhealth<<3);
 		hitactor.damagemobj(self,target,max(impact,pen*impact*0.03),"bashing",DMG_THRUSTLESS);
@@ -1085,8 +1082,7 @@ class HDBulletActor:HDActor{
 			)*stamina
 			*frandom(20.,20+pushfactor-hardness)
 		;
-		if(flags&BLAF_DEEPENOUGH)bulletdie();
-		else{
+		if(flags&BLAF_ALLTHEWAYTHROUGH){
 			channelwidth*=1.1;
 			//then spawn exit wound blood
 			if(!bbloodlessimpact){
@@ -1106,7 +1102,7 @@ class HDBulletActor:HDActor{
 			pitch+=frandom(-pushfactor,pushfactor)*totalresistance;
 			speed=max(0,speed-frandom(-pushfactor,pushfactor)*totalresistance*10);
 			A_ChangeVelocity(cos(pitch)*speed,0,-sin(pitch)*speed,CVF_RELATIVE|CVF_REPLACE);
-		}
+		}else bulletdie();
 
 		//major-artery incurable bleeding
 		//can't be done on "just" a graze (abs(angle,angleto(hitactor))>50)
