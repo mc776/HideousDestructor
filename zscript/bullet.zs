@@ -860,6 +860,16 @@ class HDBulletActor:HDActor{
 		BLAF_CRITICAL=16,
 		BLAF_ISSTANDING=32,
 	}
+
+
+	//extremely simplified version for testing a crash. Useless otherwise, delete later.
+	void notonhitactor(actor hitactor,vector3 hitpos,vector3 vu,int flags=0){
+		if(!hitactor.bshootable)return;
+		double pen=penetration();
+		hitactor.damagemobj(self,target,pen,"piercing");
+		return;
+	}
+
 	void onhitactor(actor hitactor,vector3 hitpos,vector3 vu,int flags=0){
 		if(!hitactor.bshootable)return;
 		double hitangle=absangle(angle,angleto(hitactor)); //0 is dead centre
