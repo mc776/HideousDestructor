@@ -1005,7 +1005,7 @@ class HDBulletActor:HDActor{
 		penshell=
 			max(0,penshell)
 			*(HDCONST_SPEEDOFSOUND+stamina)
-			/(speed+accuracy)
+			/max(1,speed+accuracy)
 			*(1.-hitangle*0.006)
 		;
 
@@ -1097,7 +1097,7 @@ class HDBulletActor:HDActor{
 				if(blood)blood.vel=vu+(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.4));
 			}
 			//reduce momentum, increase tumbling, etc.
-			double totalresistance=deemedwidth*(hdmb?hdmb.bulletresistance(hitangle):0.6);
+			double totalresistance=deemedwidth*((!!hdmb)?hdmb.bulletresistance(hitangle):0.6);
 			angle+=frandom(-pushfactor,pushfactor)*totalresistance;
 			pitch+=frandom(-pushfactor,pushfactor)*totalresistance;
 			speed=max(0,speed-frandom(-pushfactor,pushfactor)*totalresistance*10);

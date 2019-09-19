@@ -272,7 +272,7 @@ extend class HDActor{
 								rotatevector((dist2,0),angletomid+frandom(-edgeshot,edgeshot))),
 								it.pos.z+frandom(fragbottom,fragtop)
 							));
-//							bbb.onhitactor(it,bbb.pos,vu,hdbulletactor.BLAF_DONTFRAGMENT);
+							bbb.onhitactor(it,bbb.pos,vu,hdbulletactor.BLAF_DONTFRAGMENT);
 						}
 					}
 					bbb.setorigin(callerpos,false);
