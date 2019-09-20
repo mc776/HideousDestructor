@@ -343,7 +343,7 @@ class Necromancer:HDMobBase replaces ArchVile{
 		if(
 			damage==TELEFRAG_DAMAGE
 			||mod=="mapmorph"
-		)return super.damagemobj(inflictor,source,damage,mod,flags,angle);
+		)return actor.damagemobj(inflictor,source,damage,mod,flags,angle);
 		if(
 			mod!="thermal"
 			&&mod!="balefire"
@@ -356,7 +356,7 @@ class Necromancer:HDMobBase replaces ArchVile{
 				setstatelabel("pain");
 				return 0;
 			}
-			return super.damagemobj(
+			return actor.damagemobj(
 				inflictor,source,health,
 				bfriendly?"SmallArms0":"Falling",DMG_FORCED|DMG_THRUSTLESS
 			);

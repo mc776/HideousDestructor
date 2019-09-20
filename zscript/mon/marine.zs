@@ -199,9 +199,9 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		if(
 			health>0
 			&&damage>=health
-			&&damage<random(12,300-(lastinginjury<<1))
 			&&mod!="raisedrop"
 			&&mod!="spawndead"
+			&&damage<random(12,300-(lastinginjury<<1))
 			&&(
 				(mod=="bleedout"&&random(0,12))
 				||(random(0,2))
@@ -875,12 +875,13 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		#### G 3 A_Pain();
 		#### G 0 A_Jump(100,"see");
 		#### AB 2 A_FaceTarget(50,50);
-		#### CD 3{
-			hdmobai.chase(self);
-			A_ChangeVelocity(frandom(-1,1),frandom(1,max(0,5-lastinginjury*0.1))*randompick(-1,1),0,CVF_RELATIVE);
-		}
+		#### CD 3 A_ChangeVelocity(
+			frandom(-1,1),
+			frandom(1,max(0,5-lastinginjury*0.1))*randompick(-1,1),
+			0,CVF_RELATIVE
+		);
 		#### G 0 A_CPosRefire();
-		goto missile;
+		#### E 0 A_Jump(256,"missile");
 
 	death.bleedout:
 		#### H 5{bpushable=false;}
@@ -954,22 +955,13 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		stop;
 	ungib:
 		#### W 0 A_JumpIf((random(1,12)-timesdied)<5,"RaiseZombie");
-		#### WW 8 A_SpawnItemEx("MegaBloodSplatter",
-			0,0,4,vel.x,vel.y,vel.z,
-			0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM
-		);
+		#### WW 8;
 		#### VUT 7;
 		#### SRQ 5;
 		#### POH 4;
 		goto checkraise;
 	raisezombie:
-		#### U 4{
-			A_UnsetShootable();
-			A_SpawnItemEx("MegaBloodSplatter",0,0,4,
-				vel.x,vel.y,vel.z+3,0,
-				SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM
-			);
-		}
+		#### U 4 A_UnsetShootable();
 		#### U 8;
 		#### T 4;
 		#### T 2 A_PlaySound("weapons/bigcrack",6);
@@ -985,7 +977,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		#### SRQ 6;
 		#### PONMH 4;
 		#### IJKL 4;
-		#### M 0{spawn("DeadZombieStormtrooper",pos,ALLOW_REPLACE);}
+		#### M 0 spawn("DeadZombieStormtrooper",pos,ALLOW_REPLACE);
 		stop;
 		POSS SRQPONMHIJKL 0;
 		SPOS SRQPONMHIJKL 0;
