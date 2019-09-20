@@ -137,7 +137,7 @@ class HDB_frag:HDBulletActor{
 		double scalefactor=frandom(burnheight,projectilepassheight);
 		pushfactor=1./scalefactor;
 		mass=max(1,getdefaultbytype(getclass()).mass*pushfactor);
-		speed=max(1,getdefaultbytype(getclass()).speed*scalefactor*frandom(deathheight,1.));
+		speed=max(1,getdefaultbytype(getclass()).speed*frandom(deathheight,1.));
 		accuracy=max(1,getdefaultbytype(getclass()).accuracy*scalefactor);
 		stamina=max(1,getdefaultbytype(getclass()).stamina*pushfactor);
 	}
