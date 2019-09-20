@@ -73,7 +73,7 @@ class HDStealthBaron:HDStealthPorter replaces StealthBaron{
 class HDStealthCacodemon:HDStealthPorter replaces StealthCacodemon{
 	default{
 		+float
-		hdstealthporter.spawntype "CaeloBite";
+		hdstealthporter.spawntype "Trilobite";
 	}
 }
 class HDStealthChaingunGuy:HDStealthPorter replaces StealthChaingunGuy{

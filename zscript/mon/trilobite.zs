@@ -66,7 +66,7 @@ class FooFighter:HDActor{
 				//bzz
 				if(blockingmobj){
 					if(
-						blockingmobj is "CaeloBite"
+						blockingmobj is "Trilobite"
 						&&target
 						&&target.target!=blockingmobj
 					)continue;
@@ -226,7 +226,7 @@ class Foof:HDFireball{
 					&&(
 						!tb
 						||zit==tb.target
-						||!(zit is "CaeloBite")
+						||!(zit is "Trilobite")
 					)
 				){
 					zit.damagemobj(self,tb,random(0,7),"Electro");
@@ -259,7 +259,7 @@ class Foof:HDFireball{
 	}
 }
 
-class Cacasmaball:IdleDummy{
+class Triloball:IdleDummy{
 	default{
 		+extremedeath
 		+forcexybillboard +rollsprite +rollcenter
@@ -324,7 +324,7 @@ class CacoShellBlood:BloodSplatSilent{
 		)destroy();
 	}
 }
-class CaeloBite:HDMobBase replaces Cacodemon{
+class Trilobite:HDMobBase replaces Cacodemon{
 	int charge;
 	double sweepangle;
 	default{
@@ -438,7 +438,7 @@ class CaeloBite:HDMobBase replaces Cacodemon{
 			vel.z+=frandom(0.2,1.2);
 			A_FaceTarget(30,30,flags:FAF_BOTTOM);
 			bnopain=true;
-			A_SpawnProjectile("Cacasmaball",28,0,0,CMF_AIMDIRECTION,pitch);
+			A_SpawnProjectile("Triloball",28,0,0,CMF_AIMDIRECTION,pitch);
 			if(!A_JumpIfCloser(1024,"null")&&random(0,3)){
 				charge=666;
 				A_PlaySound("caco/sight",CHAN_VOICE,1.,false,0.1);
@@ -491,7 +491,7 @@ class CaeloBite:HDMobBase replaces Cacodemon{
 			pitch+=frandom(-10,10);
 			A_PlaySound("caco/sight");
 		}
-		HEAD D 2 bright A_SpawnProjectile("Cacasmaball",28);
+		HEAD D 2 bright A_SpawnProjectile("Triloball",28);
 		HEAD DDDDDDDDDDDD 2 bright A_CacoMeleeZap();
 		HEAD C 4;
 		HEAD B 2;
@@ -542,7 +542,7 @@ class CaeloBite:HDMobBase replaces Cacodemon{
 		goto checkraise;
 	}
 }
-class DeadCaeloBite:CaeloBite replaces DeadCacodemon{
+class DeadTrilobite:Trilobite replaces DeadCacodemon{
 	override void postbeginplay(){
 		super.postbeginplay();
 		A_Die("spawndead");

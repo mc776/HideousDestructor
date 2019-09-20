@@ -119,7 +119,7 @@ class HDImpBall:HDFireball{
 				//HEAD SHOT
 				if(
 					pos.z-tracer.pos.z>tracer.height*0.8
-					&&!(tracer is "CaeloBite")
+					&&!(tracer is "Trilobite")
 					&&!(tracer is "Technorantula")
 					&&!(tracer is "TechnoSpider")
 					&&!(tracer is "SkullSpitter")
