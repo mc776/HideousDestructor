@@ -252,7 +252,7 @@ extend class HDPlayerPawn{
 				Bob(a, cmd.sidemove * bobfactor / 256., false);
 				Thrust(sidemove, a);
 			}
-			if(leanmove&&notpredicting){
+			if(!isfrozen()&&leanmove&&notpredicting){
 				bool poscmd=leanmove>0;
 				bool zrk=zerk>0;
 				if(zrk&&!random(0,63)){
