@@ -137,7 +137,7 @@ class HDB_frag:HDBulletActor{
 		double scalefactor=frandom(burnheight,projectilepassheight);
 		pushfactor=1./scalefactor;
 		mass=max(1,getdefaultbytype(getclass()).mass*pushfactor);
-		speed=max(1,speed*scalefactor*frandom(deathheight,1.));
+		speed=max(1,getdefaultbytype(getclass()).speed*scalefactor*frandom(deathheight,1.));
 		accuracy=max(1,getdefaultbytype(getclass()).accuracy*scalefactor);
 		stamina=max(1,getdefaultbytype(getclass()).stamina*pushfactor);
 	}
@@ -1163,9 +1163,6 @@ if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channe
 		//note the suckingwound bool
 		hdbleedingwound.inflict(hitactor,pen,channelwidth,(flags&BLAF_SUCKINGWOUND));
 
-		//is there anything else you would like to share
-		additionaleffects(hitactor,pen,vu);
-
 		//fragmentation
 		if(!(flags&BLAF_DONTFRAGMENT)&&random(0,100)<woundhealth){
 			int fragments=clamp(random(2,(woundhealth>>4)),1,5);
@@ -1205,7 +1202,6 @@ if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channe
 		if(hitactor)tracer=hitactor;
 		setorigin(hitpos+vu*min(pen,hitactor.radius*2),true);
 	}
-	virtual void AdditionalEffects(actor hitactor,double pen,vector3 vu){}
 	virtual actor Puff(){
 		//TODO: virtual actor puff(textureid hittex,bool reverse=false){}
 			//flesh: bloodsplat
