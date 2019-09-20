@@ -131,11 +131,12 @@ class HDB_frag:HDBulletActor{
 	}
 	override void gunsmoke(){}
 	virtual double setscalefactor(){return frandom(0.5,3.);}
+	virtual double setspeed(){return getdefaultbytype(getclass()).speed*frandom(0.2,1.);}
 	override void resetrandoms(){
 		double scalefactor=setscalefactor();
 		pushfactor=1./scalefactor;
 		mass=max(1,getdefaultbytype(getclass()).mass*pushfactor);
-		speed=max(1,getdefaultbytype(getclass()).speed*scalefactor);
+		speed=max(1,setspeed()*scalefactor);
 		accuracy=max(1,getdefaultbytype(getclass()).accuracy*scalefactor);
 		stamina=max(1,getdefaultbytype(getclass()).stamina*pushfactor);
 	}
@@ -150,6 +151,7 @@ class HDB_scrap:HDB_frag{
 		woundhealth 20;
 	}
 	override double setscalefactor(){return frandom(0.1,10.);}
+	override double setspeed(){return getdefaultbytype(getclass()).speed*frandom(0.05,1.);}
 }
 class HDB_scrapDB:HDB_frag{override double setscalefactor(){return frandom(0.1,8.);}}
 class HDB_fragRL:HDB_frag{override double setscalefactor(){return frandom(0.6,5.);}}
