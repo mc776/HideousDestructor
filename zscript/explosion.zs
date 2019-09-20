@@ -200,15 +200,15 @@ extend class HDActor{
 				&&it.height
 			){
 				//imagine a ball 80mm wide
-				//area = 4*π*(40^2) = 20106.19298297468
+				//area = 2*[tau]*(40^2) = 20106.19298297468
 				//fragments start out 4x4mm
-				//4*π*(40^2)/16 = 1257 rounded up :(
+				//2*[tau]*(40^2)/16 = 1257 rounded up :(
 				//for 3x3, that count goes up to 2234
 				int fragshit=2234;
 				if(dist>0){
-					//"A = 2πrh" for sector area, divided by "A = 4πr^2" for total area of sphere
+					//"A=[tau]rh" for sector area, divided by "A=[2tau]r^2" for total area of sphere
 					//we're solving for r=1 so r is omitted
-					//2πh/4π = 2h/4 = h/2 = h*0.5
+					//[tau]h/[2tau] = 2h/4 = h/2 = h*0.5
 					//solving for h: h+adjacent=hypotenuse
 					//sohCAHtoa: adjacent/hypotenuse=cosine
 					//therefore cos(angcover)*hypotenuse=adjacent
