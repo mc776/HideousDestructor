@@ -136,10 +136,11 @@ class HDB_frag:HDBulletActor{
 	override void resetrandoms(){
 		double scalefactor=frandom(burnheight,projectilepassheight);
 		pushfactor=1./scalefactor;
-		mass=max(1,getdefaultbytype(getclass()).mass*pushfactor);
-		speed=max(1,getdefaultbytype(getclass()).speed*frandom(deathheight,1.));
-		accuracy=max(1,getdefaultbytype(getclass()).accuracy*scalefactor);
-		stamina=max(1,getdefaultbytype(getclass()).stamina*pushfactor);
+		let gdbt=getdefaultbytype(getclass());
+		mass=max(1,gdbt.mass*pushfactor);
+		speed=max(1,gdbt.speed*frandom(deathheight,1.));
+		accuracy=max(1,gdbt.accuracy*scalefactor);
+		stamina=max(1,gdbt.stamina*pushfactor);
 	}
 }
 class HDB_scrap:HDB_frag{
