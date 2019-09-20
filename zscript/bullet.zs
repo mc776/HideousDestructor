@@ -128,15 +128,16 @@ class HDB_frag:HDBulletActor{
 		accuracy 400;
 		stamina 300;
 		woundhealth 5;
+		deathheight 0.2;	//minimum speed factor
+		burnheight 0.5;	//minimum scale factor
+		projectilepassheight 3.;	//maximum scale factor
 	}
 	override void gunsmoke(){}
-	virtual double setscalefactor(){return frandom(0.5,3.);}
-	virtual double setspeed(){return getdefaultbytype(getclass()).speed*frandom(0.2,1.);}
 	override void resetrandoms(){
-		double scalefactor=setscalefactor();
+		double scalefactor=frandom(burnheight,projectilepassheight);
 		pushfactor=1./scalefactor;
 		mass=max(1,getdefaultbytype(getclass()).mass*pushfactor);
-		speed=max(1,setspeed()*scalefactor);
+		speed=max(1,speed*scalefactor*frandom(deathheight,1.));
 		accuracy=max(1,getdefaultbytype(getclass()).accuracy*scalefactor);
 		stamina=max(1,getdefaultbytype(getclass()).stamina*pushfactor);
 	}
@@ -149,13 +150,14 @@ class HDB_scrap:HDB_frag{
 		accuracy 100;
 		stamina 800;
 		woundhealth 20;
+		deathheight 0.05;
+		burnheight 0.1;
+		projectilepassheight 10;
 	}
-	override double setscalefactor(){return frandom(0.1,10.);}
-	override double setspeed(){return getdefaultbytype(getclass()).speed*frandom(0.05,1.);}
 }
-class HDB_scrapDB:HDB_frag{override double setscalefactor(){return frandom(0.1,8.);}}
-class HDB_fragRL:HDB_frag{override double setscalefactor(){return frandom(0.6,5.);}}
-class HDB_fragBronto:HDB_scrap{default{speed 300;}override double setscalefactor(){return frandom(0.8,4.);}}
+class HDB_scrapDB:HDB_frag{default{burnheight 0.1; projectilepassheight 8.;}}
+class HDB_fragRL:HDB_frag{default{burnheight 0.6; projectilepassheight 5.;}}
+class HDB_fragBronto:HDB_scrap{default{speed 300; burnheight 0.8; projectilepassheight 4.;}}
 class HDB_bronto:HDBulletActor{
 	default{
 		pushfactor 0.05;
