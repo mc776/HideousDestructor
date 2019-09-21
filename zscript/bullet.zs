@@ -122,7 +122,6 @@ class HDB_wad:HDBulletActor{
 }
 class HDB_frag:HDBulletActor{
 	default{
-		+nofrictionbounce //skip all penetration and ricochet checks
 		pushfactor 1.;
 		mass 20;
 		speed 600;
@@ -456,7 +455,7 @@ class HDBulletActor:HDActor{
 		vector3 newpos=oldpos;
 
 		//get speed, set counter
-		int iterations=0;
+		bool doneone=false;
 		double distanceleft=vel.length();
 		double curspeed=distanceleft;
 		do{
@@ -500,11 +499,11 @@ class HDBulletActor:HDActor{
 			}else if(bres.hittype==TRACE_HitNone){
 				newpos=bres.hitpos;
 				setorigin(newpos,true);
-				distanceleft-=max(bres.distance,0.01); //safeguard against infinite loops
+				distanceleft-=max(bres.distance,10.); //safeguard against infinite loops
 			}else{
 				newpos=bres.hitpos-vu*0.1;
 				setorigin(newpos,true);
-				distanceleft-=max(bres.distance,0.01); //safeguard against infinite loops
+				distanceleft-=max(bres.distance,10.); //safeguard against infinite loops
 				if(bres.hittype==TRACE_HitWall){
 					let hitline=bres.hitline;
 					tracelines.push(hitline);
@@ -553,7 +552,7 @@ class HDBulletActor:HDActor{
 						hitline.activate(target,bres.side,SPAC_Impact);
 						HitGeometry(
 							hitline,othersector,bres.side,999+bres.tier,vu,
-							iterations?bres.distance:999
+							doneone?bres.distance:999
 						);
 					}
 				}else if(
@@ -576,7 +575,7 @@ class HDBulletActor:HDActor{
 					HitGeometry(
 						null,hitsector,0,
 						bres.hittype==TRACE_HitCeiling?SECPART_Ceiling:SECPART_Floor,
-						vu,iterations?bres.distance:999
+						vu,doneone?bres.distance:999
 					);
 				}else if(bres.hittype==TRACE_HitActor){
 					if(
@@ -588,7 +587,7 @@ class HDBulletActor:HDActor{
 					}
 				}
 			}
-			iterations++;
+			doneone=true;
 
 
 			//find points close to players and spawn crackers
@@ -710,7 +709,7 @@ class HDBulletActor:HDActor{
 		if(!self||!bmissile)return;
 
 		//everything below this should be ricochet or penetration
-		if(bnofrictionbounce||pen<1.){
+		if(pen<1.){
 			bulletdie();
 			return;
 		}
@@ -870,7 +869,6 @@ class HDBulletActor:HDActor{
 
 		BLAF_ALLTHEWAYTHROUGH=2,
 		BLAF_SUCKINGWOUND=4,
-		BLAF_ISSTANDING=8,
 	}
 	void onhitactor(actor hitactor,vector3 hitpos,vector3 vu,int flags=0){
 		if(!hitactor.bshootable)return;
@@ -891,7 +889,6 @@ class HDBulletActor:HDActor{
 				&&hitactor.height>hdmobbase(hitactor).liveheight*0.7
 			)||hitactor.height>getdefaultbytype(hitactor.getclass()).height*0.7
 		){
-			flags|=BLAF_ISSTANDING;
 			//pass over shoulder
 			//intended to be somewhat bigger than the visible head on any sprite
 			if(
@@ -1049,6 +1046,7 @@ class HDBulletActor:HDActor{
 				A_ChangeVelocity(cos(pitch)*speed,0,sin(-pitch)*speed,CVF_RELATIVE|CVF_REPLACE);
 			}
 
+
 			//apply impact damage
 			if(impact>(hitactor.spawnhealth()>>2))hdmobbase.forcepain(hitactor);
 			if(hd_debug)console.printf(hitactor.getclassname().." resisted, impact:  "..impact);
@@ -1058,7 +1056,7 @@ class HDBulletActor:HDActor{
 
 
 		//check if going right through the body
-		if(!bnofrictionbounce&&pen>deemedwidth-0.02*hitangle)flags|=BLAF_ALLTHEWAYTHROUGH;
+		if(pen>deemedwidth-0.02*hitangle)flags|=BLAF_ALLTHEWAYTHROUGH;
 
 		//both impact and temp cavity do bashing
 		impact+=tinyspeedsquared*(
