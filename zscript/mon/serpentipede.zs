@@ -151,6 +151,7 @@ class Serpentipede:HDMobBase{
 		painsound "imp/pain";
 		deathsound "imp/death";
 		activesound "imp/active";
+		hdmobbase.downedframe 12;
 		tag "$fn_imp";
 
 		damagefactor "Thermal",0.66;

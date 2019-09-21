@@ -27,6 +27,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		maxtargetrange 6000;
 		obituary "%o met the budda-budda-budda on the street, and it killed %h.";
 		hitobituary "%o took the wrong pill.";
+		hdmobbase.downedframe 12;
 	}
 	bool turnleft;
 	bool superauto;
@@ -45,6 +46,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		mags=4;
 		thismag=50;
 		bhashelmet=!bplayingid;
+		bnoincap=bplayingid;
 	}
 	void A_ScanForTargets(){
 		if(noammo()){

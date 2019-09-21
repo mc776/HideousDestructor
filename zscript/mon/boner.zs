@@ -103,6 +103,7 @@ class Boner:HDMobBase replaces Revenant{
 		+floorclip
 		+hdmobbase.smallhead
 		+hdmobbase.biped
+		hdmobbase.downedframe 15;
 		seesound "skeleton/sight";
 		painsound "skeleton/pain";
 		deathsound "skeleton/death";
@@ -188,6 +189,20 @@ class Boner:HDMobBase replaces Revenant{
 		SKEL Q 5;
 		SKEL PONML 5;
 		goto see;
+	falldown:
+		SKEL L 5;
+		SKEL M 5 A_Pain();
+		SKEL NNOOP 2 A_SetSize(-1,max(deathheight,height-10));
+		SKEL L 0 A_SetSize(-1,deathheight);
+		SKEL Q 10 A_KnockedDown();
+		wait;
+	standup:
+		SKEL P 6;
+		SKEL O 0 A_Jump(160,2);
+		SKEL O 0 A_PlaySound(seesound,CHAN_VOICE);
+		SKEL PO 4 A_Recoil(-0.3);
+		SKEL NML 4;
+		SKEL A 0 A_Jump(256,"see");
 	}
 }
 

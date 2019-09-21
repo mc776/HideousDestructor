@@ -17,6 +17,7 @@ class HDMobBase : HDActor{
 	flagdef playingid:hdmobflags,8;
 	flagdef dontdrop:hdmobflags,9;
 	flagdef norandomweakspots:hdmobflags,10;
+	flagdef noincap:hdmobflags,11;
 
 	default{
 		monster;

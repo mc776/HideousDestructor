@@ -12,6 +12,7 @@ class HDMobMan:HDMobBase{
 		speed 10;
 		+hdmobbase.smallhead
 		+hdmobbase.biped
+		hdmobbase.downedframe 11;
 	}
 	//give armour
 	hdarmourworn givearmour(double chance=1.,double megachance=0.,double minimum=0.){

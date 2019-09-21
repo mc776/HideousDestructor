@@ -8,6 +8,8 @@ extend class HDMobBase{
 	int damagerecoil;
 	int bloodloss;
 	int pain;
+	int downedframe;
+	property downedframe:downedframe;
 	void resetdamagecounters(){
 		stunned=0;
 		damagerecoil=0;
@@ -87,6 +89,7 @@ extend class HDMobBase{
 			flags|=DMG_NO_PAIN;
 		}else if(
 			!bnopain
+			&&!bnoincap
 			&&health>0
 			&&findstate("falldown")
 			&&max(stunned,damage)>random(health,(sphlth<<3))
@@ -217,7 +220,7 @@ extend class HDMobBase{
 
 		bool incapacitated=(
 			findstate("falldown",true)
-			&&frame>=11 //"M" for serpentipede, "L" for humanoids
+			&&frame>=downedframe //"M" for serpentipede, "L" for humanoids
 		);
 
 
