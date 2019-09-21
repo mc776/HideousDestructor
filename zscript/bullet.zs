@@ -29,10 +29,12 @@ class bltest:hdweapon{
 	}
 	states{
 	fire:
+/*
 	hold:
 		TNT1 A 4 A_FireHDGL();
 		TNT1 A 0 A_Refire();
 		goto ready;
+*/
 		TNT1 A 0{
 			if(player.cmd.buttons&BT_USE)HDBulletActor.FireBullet(self,"HDB_bronto");
 			else HDBulletActor.FireBullet(self,"HDB_9");
@@ -1061,11 +1063,11 @@ class HDBulletActor:HDActor{
 		//both impact and temp cavity do bashing
 		impact+=tinyspeedsquared*(
 			(flags&BLAF_ALLTHEWAYTHROUGH)?
-			frandom(0.03,0.08)*stamina:
+			frandom(0.02,0.08):
 			frandom(0.07,0.1)
-		);
+		)*stamina;
 
-		//apply impact damage
+		//apply impact/tempcav damage
 		bnoextremedeath=impact<(hitactor.gibhealth<<3);
 		hitactor.damagemobj(self,target,max(impact,pen*impact*0.03),"bashing",DMG_THRUSTLESS);
 		if(!hitactor)return;

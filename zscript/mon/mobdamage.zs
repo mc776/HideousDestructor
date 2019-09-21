@@ -89,7 +89,7 @@ extend class HDMobBase{
 			!bnopain
 			&&health>0
 			&&findstate("falldown")
-			&&max(stunned,damage)>random(health,(sphlth<<2))
+			&&max(stunned,damage)>random(health,(sphlth<<3))
 		){
 			setstatelabel("falldown");
 			flags|=DMG_NO_PAIN;
@@ -376,17 +376,6 @@ class HDBleedingWound:Thinker{
 		int bleedrate=17,
 		bool hitvital=false
 	){
-		//TODO: proper array of wounds for the player
-		if(hdplayerpawn(bleeder)){
-			let hpl=hdplayerpawn(bleeder);
-			if(hpl.countinv("SpiritualArmour")){
-				if(!random(0,7))hpl.A_TakeInventory("SpiritualArmour",1);
-				return;
-			}
-			hpl.woundcount+=bleedpoints;
-			return;
-		}
-
 		if(
 			hd_nobleed
 			||!bleeder.bshootable
@@ -401,6 +390,17 @@ class HDBleedingWound:Thinker{
 				&&hdmobbase(bleeder).bdoesntbleed
 			)
 		)return;
+
+		//TODO: proper array of wounds for the player
+		if(hdplayerpawn(bleeder)){
+			let hpl=hdplayerpawn(bleeder);
+			if(hpl.countinv("SpiritualArmour")){
+				if(!random(0,7))hpl.A_TakeInventory("SpiritualArmour",1);
+				return;
+			}
+			hpl.woundcount+=bleedpoints;
+			return;
+		}
 
 		let wwnd=new("HDBleedingWound");
 		wwnd.bleeder=bleeder;
