@@ -56,7 +56,7 @@ class HERPBot:HDUPK{
 	}
 	override void Die(actor source,actor inflictor,int dmgflags){
 		super.Die(source,inflictor,dmgflags);
-		bsolid=true;
+		if(self)bsolid=true;
 	}
 	override void Tick(){
 		if(
