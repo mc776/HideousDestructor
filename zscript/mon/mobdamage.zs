@@ -394,10 +394,6 @@ class HDBleedingWound:Thinker{
 		//TODO: proper array of wounds for the player
 		if(hdplayerpawn(bleeder)){
 			let hpl=hdplayerpawn(bleeder);
-			if(hpl.countinv("SpiritualArmour")){
-				if(!random(0,7))hpl.A_TakeInventory("SpiritualArmour",1);
-				return;
-			}
 			hpl.woundcount+=bleedpoints;
 			return;
 		}
