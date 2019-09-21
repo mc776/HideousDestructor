@@ -339,16 +339,15 @@ class HDMobster:IdleDummy{
 		hdmb.target=caller.target;
 		hdmb.bfrightened=caller.bfrightened;
 		hdmb.meleerange=caller.meleerange;
+		hdmb.firstposition=caller.pos;
+		hdmb.leftright=randompick(-1,-1,-1,-1,0,1,1);
+		hdmb.threat=null;
+		hdmb.thraidius=256;
+		hdmb.bored=0;
+		hdmb.boredthreshold=20;
+		hdmb.healablecorpse=null;
+		hdmb.changetid(123); //only used for actoriterator
 		return hdmb;
-	}
-	override void postbeginplay(){
-		super.postbeginplay();
-		firstposition=pos;
-		leftright=randompick(-1,-1,-1,-1,0,1,1);
-		threat=null;thraidius=256;
-		bored=0;boredthreshold=20;
-		healablecorpse=null;
-		changetid(123); //only used for actoriterator
 	}
 	states{
 	spawn:
@@ -380,7 +379,6 @@ class HDMobster:IdleDummy{
 						itt.bcorpse
 						&&itt.canresurrect(self,true)
 						&&canresurrect(itt,false)
-//						&&itt.findstate("raise")
 						&&!random(0,4)
 						&&abs(itt.pos.z-master.pos.z)<master.maxstepheight*2
 						&&heat.getamount(itt)<50
