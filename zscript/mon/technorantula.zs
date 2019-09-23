@@ -19,7 +19,7 @@ class Technorantula:HDMobBase replaces SpiderMastermind{
 
 		+noblooddecals
 		+nodropoff +nofear
-		bloodtype "ShieldNotBlood";
+		+noblooddecals bloodtype "NotQuiteBloodSplat";
 		maxstepheight 72;
 		maxdropoffheight 72;
 		speed 24;
@@ -37,7 +37,6 @@ class Technorantula:HDMobBase replaces SpiderMastermind{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		shields=HDSPD_SHIELDMAX;
 		let hdmb=hdmobster(hdmobster.spawnmobster(self));
 		hdmb.meleethreshold=1024;
 	}
@@ -51,35 +50,10 @@ class Technorantula:HDMobBase replaces SpiderMastermind{
 			random(-32,32),random(-32,32),random(46,96),
 			0,0,random(2,4),0,160,64
 		);
-		if(health>0&&shields<HDSPD_SHIELDMAX)shields++;
 	}
-	override int damagemobj(
-		actor inflictor,actor source,int damage,
-		name mod,int flags,double angle
-	){
-		//cheat
-		if(source==self)return 0;
-
-		//And in thy book all my members were written, which in continuance were fashioned,
-		if(damage==TELEFRAG_DAMAGE)
-			return super.damagemobj(inflictor,source,TELEFRAG_DAMAGE,"Telefrag");
-
-		//shields
-		[shields,damage]=hdf.gothroughshields(shields,damage,inflictor,mod,flags);
-
-		if(damage<1)return 0;
-//			else A_Log(string.format("Technorantula took %i damage",damage));
-		return super.damagemobj(
-			inflictor,source,damage,mod,flags,angle
-		);
-	}
-	int shields;
 	int shotchannel;
 	int shotcount;
 	double spread;
-	enum SpiderStats{
-		HDSPD_SHIELDMAX=1666,
-	}
 	states{
 	spawn:
 		SPID A 0 A_PlaySound("spider/walk",CHAN_BODY);

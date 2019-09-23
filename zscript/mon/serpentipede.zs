@@ -392,8 +392,13 @@ class Serpentipede:HDMobBase{
 // ------------------------------------------------------------
 // Healer Imp
 // ------------------------------------------------------------
-class tempshield2imp:tempshield2{
-	default{+noblooddecals bloodtype "ShieldNeverBlood";}
+class tempshieldimp:tempshield{
+	default{
+		+noblooddecals
+		bloodtype "ShieldNeverBlood";
+		radius 18;height 26;
+		stamina 10;
+	}
 }
 class ShieldImpBall:DoomImpBall{
 	default{
@@ -416,7 +421,7 @@ class ShieldImpBall:DoomImpBall{
 	){
 		if(!bmissile)return 0;
 		ExplodeMissile();
-		tempshield.spawnshield(self,"tempshield2imp",false,8);
+		tempshield.spawnshield(self,"tempshieldimp",false,8);
 		A_Scream();
 		bmissile=false;
 		setstatelabel("death");

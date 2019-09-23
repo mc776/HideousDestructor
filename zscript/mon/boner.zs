@@ -175,9 +175,7 @@ class Boner:HDMobBase replaces Revenant{
 		SKEL L 5 A_Pain();
 		goto see;
 	death:
-		TNT1 A 0 A_SpawnItemEx("tempshieldpuff",flags:SXF_NOCHECKPOSITION|SXF_SETMASTER);
 		SKEL LM 7;
-		TNT1 A 0 A_SpawnItemEx("tempshield2puff",flags:SXF_NOCHECKPOSITION|SXF_SETMASTER);
 		SKEL N 7 A_Scream();
 		SKEL O 7 A_NoBlocking();
 	dead:

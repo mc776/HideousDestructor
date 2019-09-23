@@ -247,7 +247,6 @@ class SatanRobo:HDMobBase replaces CyberDemon{
 		painthreshold 200;
 		maxtargetrange 0;
 		radiusdamagefactor 0.6;
-		bloodtype "ShieldNotBlood";
 		obituary "%o was experimented upon by a cyberdemon.";
 		minmissilechance 196;
 	}
@@ -291,19 +290,6 @@ class SatanRobo:HDMobBase replaces CyberDemon{
 			random(-32,32),random(-32,32),random(46,96),
 			0,0,random(2,4),0,160,64
 		);
-		if(health>0&&shields<HDCB_SHIELDMAX)shields+=2;
-
-		/*
-		//indicator
-		if(!master||!(master is "IdleDummy")){
-			master=spawn("IdleDummy",ALLOW_REPLACE);
-			master.sprite=GetSpriteIndex("BFE2A0");
-		}else{
-			double shieldleft=(shields*1.)/(HDCB_SHIELDMAX*1.);
-			master.scale=(shieldleft,shieldleft);master.alpha=shieldleft;
-			master.setorigin(pos+(0,0,height+20),true);
-		}
-		*/
 	}
 	override int damagemobj(
 		actor inflictor,actor source,int damage,
@@ -316,29 +302,21 @@ class SatanRobo:HDMobBase replaces CyberDemon{
 		if(damage==TELEFRAG_DAMAGE)
 			return super.damagemobj(inflictor,source,TELEFRAG_DAMAGE,"Telefrag");
 
-		//shields
-		[shields,damage]=hdf.gothroughshields(shields,damage,inflictor,mod,flags);
-
-		if(damage<1)return 0;
-//			else A_Log(string.format("cyberdemon took %i damage",damage));
 		return super.damagemobj(
 			inflictor,source,damage,mod,flags,angle
 		);
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		shields=HDCB_SHIELDMAX;
 		rockets=HDCB_ROCKETMAX;
 		shottype="Roboball";
 		if(bplayingid)launcheroffset=24;
 		hdmobster.spawnmobster(self);
 	}
 	vector2 oldaim;vector2 aimadjust;
-	int shields;
 	int rockets;
 	class<actor>shottype;
 	enum CyberStats{
-		HDCB_SHIELDMAX=2000,
 		HDCB_ROCKETMAX=99,
 	}
 	states{

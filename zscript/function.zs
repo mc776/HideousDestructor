@@ -87,7 +87,7 @@ class HDHandlers:EventHandler{
 					lll.flags&line.ML_BLOCKEVERYTHING
 					||lll.flags&line.ML_BLOCKPROJECTILE
 					||lll.flags&line.ML_BLOCKHITSCAN
-//					||lll.flags&line.ML_BLOCKING
+//					||lll.flags&line.ML_BLOCKING	//still undecided so just comment not delete
 				)
 				&&!lll.sidedef[0].gettexture(side.mid)
 				&&!lll.sidedef[1].gettexture(side.mid)
@@ -107,22 +107,6 @@ class HDActor:Actor{
 		+noblockmonst
 		renderstyle "translucent";
 	}
-	//advance to the next tic without doing anything
-	//don't actually use this, it's just for reference
-	void nexttic(){
-		if(CheckNoDelay()){
-			if(tics>0)tics--;  
-			while(!tics){
-				if(!SetState(CurState.NextState)){
-					return;
-				}
-			}
-		}
-	}
-	//decorate wrapper for HDMath.CheckLump()
-	bool CheckLump(string lumpname){
-		return HDMath.CheckLump(lumpname);
-	}
 	//"After that many drinks anyone would be blowing chunks all night!"
 	//"Chunks is the name of my dog."
 	//for frags: A_SpawnChunks("HDB_frag",42,100,700);
@@ -132,20 +116,6 @@ class HDActor:Actor{
 		double minvel=10,
 		double maxvel=20
 	){
-//return;
-/*
-		if(
-			chunk is "WallChunk"
-		){
-			int ch=0;
-			thinkeriterator chit=thinkeriterator.create(chunk,STAT_DEFAULT);
-			while(chit.Next(exact:false))ch++;
-			if(ch>500){  
-				if(hd_debug)A_Log(string.format("%i is too many chunks, %s not spawned",ch,chunk.getclassname()));
-				return;
-			}
-		}
-*/
 		double burstz=pos.z+height*0.5;
 		double minpch=burstz-floorz<56?9:90;
 		double maxpch=ceilingz-burstz<56?-9:-90;
@@ -250,17 +220,6 @@ class CheckPuff:IdleDummy{
 		stamina 1;
 	}
 }
-//mostly for doing TryMove checks to grab blockingline data
-class TMChecker:HDActor{
-	default{
-		radius 3;height 1;maxstepheight 0;
-	}
-	states{
-	spawn:
-		TNT1 A 1;
-		stop;
-	}
-}
 
 
 // Blocker to prevent shotguns from overpenetrating multiple targets
@@ -287,41 +246,22 @@ class tempshield:HDActor{
 		sss.stamina=shieldlength;
 		return sss;
 	}
+	override void Tick(){
+		if(!master||stamina<1){destroy();return;}
+		setorigin(master.pos,false);
+		stamina--;
+	}
 	states{
 	spawn:
-		TNT1 A 1 nodelay{
-			if(!master||stamina<1){destroy();return;}
-			setorigin(master.pos,false);
-			stamina--;
-		}wait;
+		TNT1 A -1;
+		stop;
 	}
 }
-class tempshield2:tempshield{
+class tempshield2:tempshield{	//imp shield ball inherits from this
 	default{
 		radius 18;height 26;
 		stamina 10;
 	}
-}
-class tempshieldyellow:tempshield{
-	default{bloodcolor "aa 99 22";}
-}
-class tempshieldgreen:tempshield{
-	default{bloodcolor "44 99 22";}
-}
-class tempshield2green:tempshield2{
-	default{bloodcolor "44 99 22";}
-}
-class tempshieldblue:tempshield{
-	default{bloodcolor "00 00 99";}
-}
-class tempshield2blue:tempshield2{
-	default{bloodcolor "00 00 99";}
-}
-class tempshieldpuff:tempshield{
-	default{+noblood}
-}
-class tempshield2puff:tempshield2{
-	default{+noblood}
 }
 
 
@@ -465,14 +405,6 @@ struct HDF play{
 		}
 		return counter;
 	}
-	//split inventory item to match pickup sprite
-	static void SplitAmmoSpawn(inventory caller,int maxunit=1){
-		while(caller.amount>maxunit){
-			caller.amount-=maxunit;
-			inventory bbb=inventory(caller.spawn(caller.getclass(),caller.pos,ALLOW_REPLACE));
-			bbb.amount=maxunit;bbb.vel=caller.vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
-		}
-	}
 	//figure out if something hit some map geometry that isn't (i.e., "sky").
 	//why is GetTexture play!?
 	static bool linetracehitsky(flinetracedata llt){
@@ -561,25 +493,6 @@ class HDRaiseWep:HDWeapon{
 				RaiseActor(rlt.hitactor,RF_NOCHECKPOSITION);
 			}else a_weaponmessage("click on something\nto raise it.",25);
 		}goto nope;
-	}
-}
-class HDRaise:CustomInventory{
-	states{
-	spawn:TNT1 A 0;stop;
-	pickup:
-		TNT1 A 0{
-			flinetracedata rlt;
-			LineTrace(
-				angle,128,pitch,
-				TRF_ALLACTORS,
-				offsetz:height-6,
-				data:rlt
-			);
-			if(rlt.hitactor){
-				a_log(rlt.hitactor.getclassname().." raised!");
-				RaiseActor(rlt.hitactor,RF_NOCHECKPOSITION);
-			}else a_log("point at something\nto raise it.",true);
-		}fail;
 	}
 }
 

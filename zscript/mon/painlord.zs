@@ -58,9 +58,7 @@ class PainLord:PainMonster replaces BaronofHell{
 			aaa.A_SkullLaunch();
 			shields-=66;
 	}
-	int shields;
 	enum BaronStats{
-		BE_SHIELDMAX=66,
 		BE_HPMAX=1000,
 		BE_OKAY=BE_HPMAX*7/10,
 		BE_BAD=BE_HPMAX*3/10,
@@ -73,32 +71,9 @@ class PainLord:PainMonster replaces BaronofHell{
 	override double bulletresistance(double hitangle){
 		return max(0,frandom(0.8,1.)-hitangle*0.008);
 	}
-	override int damagemobj(
-		actor inflictor,actor source,int damage,
-		name mod,int flags,double angle
-	){
-		if(damage==TELEFRAG_DAMAGE)return super.damagemobj(
-			inflictor,source,TELEFRAG_DAMAGE,
-			"Telefrag",DMG_THRUSTLESS|DMG_NO_PAIN
-		);
-
-		if(
-			!(flags&DMG_FORCED)
-			&&health>0
-		){
-			//shields
-			[shields,damage]=hdf.gothroughshields(shields,damage,inflictor,mod,flags);
-			if(damage<1)return 0;
-		}
-
-		return super.damagemobj(
-			inflictor,source,damage,mod,flags,angle
-		);
-	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		hdmobai.resize(self,0.95,1.05);
-		shields=BE_SHIELDMAX;
 	}
 	states{
 	spawn:
@@ -117,7 +92,6 @@ class PainLord:PainMonster replaces BaronofHell{
 		TNT1 A 0 A_AlertMonsters();
 		BOSS ABCD 6{
 			hdmobai.chase(self);
-			if(health>0&&shields<BE_SHIELDMAX)shields+=3;
 		}
 		TNT1 A 0 A_JumpIfTargetInLOS("see");
 		goto roam;
@@ -126,7 +100,6 @@ class PainLord:PainMonster replaces BaronofHell{
 		TNT1 A 0 A_JumpIfTargetInLOS("missile");
 		BOSS ABCD 8{
 			hdmobai.wander(self,true);
-			if(health>0&&shields<BE_SHIELDMAX)shields+=2;
 		}
 		loop;
 	missile:

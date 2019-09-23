@@ -244,33 +244,12 @@ class SkullSpitter:HDMobBase replaces PainElemental{
 		damagefactor "SmallArms0", 0.8;
 		damagefactor "SmallArms1", 0.9;
 		speed 3;
-		bloodtype "ShieldNotBlood";
-	}
-	int shields;
-	enum SkullSpitterStats{
-		PE_SHIELDMAX=200,
-	}
-	override int damagemobj(
-		actor inflictor,actor source,int damage,
-		name mod,int flags,double angle
-	){
-		if(damage==TELEFRAG_DAMAGE)
-			return super.damagemobj(inflictor,source,TELEFRAG_DAMAGE,"Telefrag");
-
-		//shields
-		[shields,damage]=hdf.gothroughshields(shields,damage,inflictor,mod,flags);
-
-		if(damage<1)return 0;
-		return super.damagemobj(
-			inflictor,source,damage,mod,flags,angle
-		);
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		hdmobster.spawnmobster(self);
 		hdmobai.resize(self,0.9,1.1);
 		brewing=21;
-		shields=PE_SHIELDMAX;
 	}
 	int brewing;
 	states{
@@ -280,7 +259,6 @@ class SkullSpitter:HDMobBase replaces PainElemental{
 	see:
 		PAIN AAABBBCCC 8{
 			hdmobai.chase(self);
-			if(health>0&&shields<PE_SHIELDMAX)shields+=12;
 		}loop;
 	missile:
 		PAIN ABCB 3 A_FaceTarget(10,10);

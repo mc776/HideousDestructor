@@ -10,11 +10,15 @@ extend class HDMobBase{
 	int pain;
 	int downedframe;
 	property downedframe:downedframe;
+	int shields;
+	int maxshields;
+	property shields:maxshields;
 	void resetdamagecounters(){
 		stunned=0;
 		damagerecoil=0;
 		bloodloss=0;
 		pain=0;
+		shields=maxshields;
 	}
 
 	static bool forcepain(actor caller){
@@ -49,13 +53,62 @@ extend class HDMobBase{
 		actor inflictor,actor source,int damage,
 		name mod,int flags,double angle
 	){
+		//bypass mdk
+		if(damage==TELEFRAG_DAMAGE)return super.damagemobj(
+			inflictor,source,damage,
+			"Telefrag",DMG_THRUSTLESS|DMG_NO_PAIN
+		);
+
 		int sphlth=spawnhealth();
 		bdontdrop=(inflictor==self&&mod!="bleedout");
 
 		//rapid damage stacking
 		if(pain>0)damage+=(pain>>2);
-
 		if(mod!="bleedout")pain+=max(1,(damage>>5));
+
+
+		//shields
+		if(
+			shields>0
+			&&!(flags&(DMG_NO_FACTOR|DMG_FORCED))
+			&&!(inflictor is "HDBulletActor")
+			&&mod!="bleedout"
+			&&mod!="thermal"
+			&&mod!="maxhpdrain"
+			&&mod!="internal"
+			&&mod!="falling"
+			&&mod!="holy"
+			//&&mod!="jointlock" //not used... for now
+		){
+			int blocked=min(shields>>3,damage);
+			damage-=blocked;
+
+			bool supereffective=(
+				mod=="BFGBallAttack"
+				||mod=="electro"
+				||mod=="balefire"
+			);
+
+			//deplete shields
+			if(supereffective)shields-=max((blocked<<2),1);
+			else shields-=max(blocked,1);
+
+			//spawn shield debris
+			if(!!inflictor&&!inflictor.bismonster&&!inflictor.player){
+				int shrd=max(random(0,1),damage/50);
+				for(int i=0;i<shrd;i++){
+					actor aaa=inflictor.spawn("ShieldNotBlood",inflictor.pos,ALLOW_REPLACE);
+					aaa.vel=(frandom(-3,3),frandom(-3,3),frandom(-3,3));
+				}
+			}
+
+			//abort remainder of checks, chance to flinch
+			if(damage<1){
+				if(blocked>(sphlth>>2)&&random(0,255)<painchance)forcepain(self);
+				return -1;
+			}
+		}
+
 
 
 		//bashing
@@ -208,6 +261,9 @@ extend class HDMobBase{
 				speed=frandom(0,getdefaultbytype(getclass()).speed);
 			}
 		}
+
+		//replenish shields
+		if(shields<maxshields)shields++;
 
 		//regeneration
 		if(!(level.time&(1|2|4|8|16|32|64|128|256|512)))GiveBody(1);
