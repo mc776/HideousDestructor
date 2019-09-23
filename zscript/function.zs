@@ -257,12 +257,6 @@ class tempshield:HDActor{
 		stop;
 	}
 }
-class tempshield2:tempshield{	//imp shield ball inherits from this
-	default{
-		radius 18;height 26;
-		stamina 10;
-	}
-}
 
 
 //collection of generic math functions
@@ -434,32 +428,6 @@ struct HDF play{
 				)
 			)
 		);
-	}
-	//process shields
-	//[shields,damage]=hdf.gothroughshields(shields,damage,inflictor,mod,flags);
-	static int,int GoThroughShields(int shields,int damage,actor inflictor=null,name mod="none",int flags=0){
-		if(
-			shields<1
-			||!(flags&DMG_NO_FACTOR)
-			||flags&DMG_FORCED
-			||mod=="internal"
-			||mod=="falling"
-		)return shields,damage;
-
-		int blocked=min(shields,damage,100);
-		if(blocked==damage&&!random(0,3))blocked--;
-		damage-=blocked;
-
-		shields=clamp(shields-(mod=="BFGBallAttack"?blocked*100:blocked-20),0,shields);
-
-		if(inflictor&&!inflictor.bismonster&&!inflictor.player){
-			int shrd=max(random(0,1),damage/50);
-			for(int i=0;i<shrd;i++){
-				actor aaa=inflictor.spawn("FragShard",inflictor.pos,ALLOW_REPLACE);
-				aaa.vel=(frandom(-3,3),frandom(-3,3),frandom(-3,3));
-			}
-		}
-		return shields,damage;
 	}
 }
 
