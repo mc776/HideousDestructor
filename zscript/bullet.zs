@@ -1077,8 +1077,8 @@ console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..",   "..hdmb
 		//both impact and temp cavity do bashing
 		impact+=tinyspeedsquared*(
 			(flags&BLAF_ALLTHEWAYTHROUGH)?
-			frandom(0.02,0.08):
-			frandom(0.07,0.1)
+			frandom(0.08,0.16):
+			frandom(0.06,0.2)
 		)*stamina;
 
 		//apply impact/tempcav damage
@@ -1144,7 +1144,7 @@ console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..",   "..hdmb
 		int chdmg=max(1,
 			channelwidth
 			*max(0.1,pen-(hitangle*0.06))
-			*0.3
+			*0.1
 		);
 
 		//see if the bullet may actually gib
@@ -1157,7 +1157,7 @@ console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..",   "..hdmb
 		//evaluate cns hit/critical and apply damage
 		if(
 			pen>deemedwidth*0.4
-			&&hitangle<10+frandom(0,tinyspeedsquared*7)
+			&&hitangle<12+frandom(0,tinyspeedsquared*7)
 		){
 			double mincritheight=hitactor.height*0.6;
 			double basehitz=hitpos.z-hitactor.pos.z;
