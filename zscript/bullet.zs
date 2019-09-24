@@ -141,7 +141,7 @@ class HDB_frag:HDBulletActor{
 		let gdbt=getdefaultbytype(getclass());
 		mass=max(1,gdbt.mass*pushfactor);
 		speed=max(1,gdbt.speed*frandom(deathheight,1.));
-		accuracy=max(1,gdbt.accuracy*scalefactor);
+		accuracy=max(1,gdbt.accuracy*random(0.3,1.7));
 		stamina=max(1,gdbt.stamina*pushfactor);
 	}
 }
@@ -857,15 +857,6 @@ class HDBulletActor:HDActor{
 		stamina=max(1,stamina+random(0,(stamina>>1)));
 	}
 
-
-	//extremely simplified version for testing a crash. Useless otherwise, delete later.
-	void notonhitactor(actor hitactor,vector3 hitpos,vector3 vu,int flags=0){
-		if(!hitactor.bshootable)return;
-		double pen=penetration();
-		hitactor.damagemobj(self,target,pen,"piercing");
-		return;
-	}
-
 	enum HitActorFlags{
 		BLAF_DONTFRAGMENT=1,
 
@@ -886,20 +877,22 @@ class HDBulletActor:HDActor{
 
 		//shields
 		if(hdmb&&hdmb.shields>0){
-			int bulletpower=max(1,pen*mass*0.01);
+			int bulletpower=pen*mass*0.01;
 			int depleteshield=min(bulletpower,hdmb.shields);
+console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..",   "..hdmb.shields-bulletpower.." REMAIN");
 			if(
 				depleteshield>0
 				||bulletpower<1
 			){
 				hdmb.shields-=(depleteshield<<1);
 				spawn("ShieldNeverBlood",pos,ALLOW_REPLACE);
-				double reduceproportion=double(bulletpower-depleteshield)/bulletpower;
-				speed*=reduceproportion;
-				vel*=reduceproportion;
-				if(bulletpower<=depleteshield){
+				if(!bulletpower||bulletpower<=depleteshield){
 					bulletdie();
 					return;
+				}else{
+					double reduceproportion=double(bulletpower-depleteshield)/bulletpower;
+					speed*=reduceproportion;
+					vel*=reduceproportion;
 				}
 			}
 		}
