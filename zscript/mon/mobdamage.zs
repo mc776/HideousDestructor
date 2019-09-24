@@ -262,11 +262,14 @@ extend class HDMobBase{
 			}
 		}
 
-		//replenish shields
-		if(shields<maxshields)shields++;
+		int leveltime=level.time;
+		if(!(leveltime&(1)){
+			//replenish shields
+			if(shields<maxshields)shields++;
 
-		//regeneration
-		if(!(level.time&(1|2|4|8|16|32|64|128|256|512)))GiveBody(1);
+			//regeneration
+			if(!(leveltime&(2|4|8|16|32|64|128|256|512)))GiveBody(1);
+		}
 	}
 
 
