@@ -884,6 +884,24 @@ class HDBulletActor:HDActor{
 		double deemedwidth=hitactor.radius*frandom(1.8,2.);
 
 
+		//shields
+		if(hdmb&&hdmb.shields>0){
+			int bulletpower=max(1,pen*mass*0.01);
+			int depleteshield=min(bulletpower,(hdmb.shields>>2));
+			if(depleteshield>0){
+				hdmb.shields-=(depleteshield<<1);
+				spawn("ShieldNeverBlood",pos,ALLOW_REPLACE);
+				double reduceproportion=double(bulletpower-depleteshield)/bulletpower;
+				speed*=reduceproportion;
+				vel*=reduceproportion;
+				if(bulletpower>=depleteshield){
+					bulletdie();
+					return;
+				}
+			}
+		}
+
+
 		//checks for standing character with gaps between feet and next to head
 		if(
 			(

@@ -465,3 +465,68 @@ class HDBleedingWound:Thinker{
 		else wwnd.bleedpoints=bleedpoints;
 	}
 }
+
+
+
+
+// common blood type that changes depending on shields.
+// overwrite spawn state if something other than a splat is needed.
+class HDMasterBlood:HDPuff{
+	default{
+		alpha 0.8;gravity 0.3;
+
+		hdpuff.startvelz 1.6;
+		hdpuff.fadeafter 0;
+		hdpuff.decel 0.86;
+		hdpuff.fade 0.88;
+		hdpuff.grow 0.03;
+		hdpuff.minalpha 0.03;
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		let hdmb=hdmobbase(target);
+		if(
+			hdmb
+			&&hdmb.shields>0
+		){
+			A_SetTranslucent(1,1);
+			grav=-0.6;
+			scale*=0.4;
+			setstatelabel("spawnshield");
+			bnointeraction=true;
+			return;
+		}
+		if(!bambush)A_PlaySound("misc/bulletflesh",CHAN_BODY,0.2);
+	}
+	states{
+	spawn:
+		BLUD A 0 nodelay A_SetScale(frandom(0.2,0.5));
+		BLUD ABC 4{
+			if(floorz>=pos.z){
+				bflatsprite=true;bmovewithsector=true;bnointeraction=true;
+				setz(floorz);vel=(0,0,0);
+				fade=0.97;
+			}
+		}wait;
+	spawnshield:
+		TFOG ABCDEFGHIJ 3 bright A_FadeOut(0.05);
+		stop;
+	}
+}
+//standalone puff for hitting a shield
+class ShieldSpark:IdleDummy{
+	default{
+		+forcexybillboard +rollsprite +rollcenter
+		renderstyle "add";
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		scale*=frandom(0.2,0.5);
+		roll=frandom(0,360);
+	}
+	states{
+	spawn:
+		TFOG ABCDEFGHIJ 3 bright A_FadeOut(0.08);
+		stop;
+	}
+}

@@ -27,6 +27,9 @@ class HDMobBase : HDActor{
 		height 52;
 		deathheight 24;
 		burnheight 24;
+		bloodtype "HDMasterBlood";
+		hdmobbase.shields 0;
+		hdmobbase.downedframe 11; //"K"
 	}
 
 	double liveheight;
