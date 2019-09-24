@@ -897,7 +897,7 @@ class HDBulletActor:HDActor{
 				double reduceproportion=double(bulletpower-depleteshield)/bulletpower;
 				speed*=reduceproportion;
 				vel*=reduceproportion;
-				if(bulletpower>=depleteshield){
+				if(bulletpower<=depleteshield){
 					bulletdie();
 					return;
 				}
