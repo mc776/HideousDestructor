@@ -97,7 +97,7 @@ extend class HDMobBase{
 			if(!!inflictor&&!inflictor.bismonster&&!inflictor.player){
 				int shrd=max(random(0,1),damage/50);
 				for(int i=0;i<shrd;i++){
-					actor aaa=inflictor.spawn("ShieldNotBlood",inflictor.pos,ALLOW_REPLACE);
+					actor aaa=inflictor.spawn("ShieldSpark",inflictor.pos,ALLOW_REPLACE);
 					aaa.vel=(frandom(-3,3),frandom(-3,3),frandom(-3,3));
 				}
 			}
@@ -264,7 +264,7 @@ extend class HDMobBase{
 
 		//replenish shields
 		if(shields<maxshields)shields++;
-
+A_LogInt(shields);
 		//regeneration
 		if(!(level.time&(1|2|4|8|16|32|64|128|256|512)))GiveBody(1);
 	}
@@ -424,7 +424,10 @@ class HDBleedingWound:Thinker{
 				frandom(-12,12),frandom(-12,12),
 				flags:SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
 			);
-			if(blood)blood.bambush=true;
+			if(blood){
+				blood.bambush=true;
+				blood.bmissilemore=true; //used to avoid converting to shield
+			}
 		}while(bleeds>0);
 		int bled=bleeder.damagemobj(bleeder,null,bleedrate,"bleedout",DMG_NO_PAIN|DMG_THRUSTLESS);
 		if(bleeder&&bleeder.health<1&&bleedrate<random(10,60))bleeder.deathsound="";
@@ -487,6 +490,7 @@ class HDMasterBlood:HDPuff{
 		let hdmb=hdmobbase(target);
 		if(
 			hdmb
+			&&!bmissilemore
 			&&hdmb.shields>0
 		){
 			A_SetTranslucent(1,1);
@@ -500,7 +504,6 @@ class HDMasterBlood:HDPuff{
 	}
 	states{
 	spawn:
-		BLUD A 0 nodelay A_SetScale(frandom(0.2,0.5));
 		BLUD ABC 4{
 			if(floorz>=pos.z){
 				bflatsprite=true;bmovewithsector=true;bnointeraction=true;
@@ -509,6 +512,7 @@ class HDMasterBlood:HDPuff{
 			}
 		}wait;
 	spawnshield:
+		TFOG A 0 nodelay A_SetScale(frandom(0.2,0.5));
 		TFOG ABCDEFGHIJ 3 bright A_FadeOut(0.05);
 		stop;
 	}

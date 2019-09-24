@@ -887,7 +887,7 @@ class HDBulletActor:HDActor{
 		//shields
 		if(hdmb&&hdmb.shields>0){
 			int bulletpower=max(1,pen*mass*0.01);
-			int depleteshield=min(bulletpower,(hdmb.shields>>2));
+			int depleteshield=min(bulletpower,hdmb.shields);
 			if(depleteshield>0){
 				hdmb.shields-=(depleteshield<<1);
 				spawn("ShieldNeverBlood",pos,ALLOW_REPLACE);
