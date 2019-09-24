@@ -45,7 +45,7 @@ class PainLord:PainMonster replaces BaronofHell{
 		health BE_HPMAX;
 		speed 6;
 		painchance 4;
-hdmobbase.shields 400;
+hdmobbase.shields 100;
 	}
 	void A_BaronSoul(){
 			let aaa=FlyingSkull(spawn("FlyingSkull",pos,ALLOW_REPLACE));

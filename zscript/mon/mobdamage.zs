@@ -264,7 +264,7 @@ extend class HDMobBase{
 
 		//replenish shields
 		if(shields<maxshields)shields++;
-A_LogInt(shields);
+
 		//regeneration
 		if(!(level.time&(1|2|4|8|16|32|64|128|256|512)))GiveBody(1);
 	}
