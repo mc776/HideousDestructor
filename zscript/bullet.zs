@@ -877,14 +877,14 @@ class HDBulletActor:HDActor{
 
 		//shields
 		if(hdmb&&hdmb.shields>0){
-			int bulletpower=pen*mass*0.01;
+			int bulletpower=pen*mass*0.1;
 			int depleteshield=min(bulletpower,hdmb.shields);
-console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..",   "..hdmb.shields-bulletpower.." REMAIN");
+if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..",   "..hdmb.shields-bulletpower.." REMAIN");
 			if(
 				depleteshield>0
 				||bulletpower<1
 			){
-				hdmb.shields-=(depleteshield<<1);
+				hdmb.shields-=depleteshield;
 				spawn("ShieldNeverBlood",pos,ALLOW_REPLACE);
 				if(!bulletpower||bulletpower<=depleteshield){
 					bulletdie();
