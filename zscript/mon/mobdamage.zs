@@ -318,7 +318,7 @@ extend class HDMobBase{
 		//set height
 		if(
 			!incapacitated
-			&&!noshootablecorpse
+			&&!bnoshootablecorpse
 			&&bshootable
 		)A_SetSize(-1,liveheight);
 	}
