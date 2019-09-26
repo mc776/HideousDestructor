@@ -512,7 +512,7 @@ class HDMasterBlood:HDPuff{
 			}
 		}wait;
 	spawnshield:
-		TFOG A 0 nodelay A_SetScale(frandom(0.2,0.5));
+		TFOG A 0 A_SetScale(frandom(0.2,0.5));
 		TFOG ABCDEFGHIJ 3 bright A_FadeOut(0.05);
 		stop;
 	}

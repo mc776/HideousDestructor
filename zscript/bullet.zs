@@ -141,7 +141,7 @@ class HDB_frag:HDBulletActor{
 		let gdbt=getdefaultbytype(getclass());
 		mass=max(1,gdbt.mass*pushfactor);
 		speed=max(1,gdbt.speed*frandom(deathheight,1.));
-		accuracy=max(1,gdbt.accuracy*random(0.3,1.7));
+		accuracy=max(1,gdbt.accuracy*frandom(0.3,1.7));
 		stamina=max(1,gdbt.stamina*pushfactor);
 	}
 }
