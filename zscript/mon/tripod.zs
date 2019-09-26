@@ -234,10 +234,7 @@ class SatanRobo:HDMobBase replaces CyberDemon{
 		+hdmobbase.biped
 		+hdmobbase.noshootablecorpse
 		damagefactor "Thermal", 0.5;
-		damagefactor "SmallArms0", 0.2;
-		damagefactor "SmallArms1", 0.3;
-		damagefactor "SmallArms2", 0.6;
-		damagefactor "SmallArms3", 0.9;
+		hdmobbase.shields 8000;
 		gibhealth 900;
 		health 4000;
 		mass 12000;

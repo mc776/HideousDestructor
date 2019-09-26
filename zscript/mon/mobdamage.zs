@@ -80,7 +80,7 @@ extend class HDMobBase{
 			&&mod!="holy"
 			//&&mod!="jointlock" //not used... for now
 		){
-			int blocked=min(shields>>3,damage);
+			int blocked=min(shields>>2,damage);
 			damage-=blocked;
 
 			bool supereffective=(

@@ -25,10 +25,7 @@ class Technorantula:HDMobBase replaces SpiderMastermind{
 		speed 24;
 		painchance 80;
 		damagefactor "Thermal", 0.9;
-		damagefactor "SmallArms0", 0.6;
-		damagefactor "SmallArms1", 0.7;
-		damagefactor "SmallArms2", 0.8;
-		damagefactor "SmallArms3", 0.9;
+		hdmobbase.shields 8000;
 		obituary "%o was operated upon by the spider mastermind.";
 		maxtargetrange 0;
 		health 3000;

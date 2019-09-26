@@ -118,6 +118,7 @@ class CombatSlug:HDMobBase replaces Fatso{
 		radius 28;
 		height 60;
 		damagefactor "Thermal", 0.7;
+		hdmobbase.shields 500;
 		obituary "%o was smoked by a CombatSlug.";
 		painchance 80;
 	}

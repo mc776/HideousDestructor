@@ -10,6 +10,7 @@ class NinjaPirate:HDMobBase{ //replaces Spectre{
 		monster;
 		translation "64:79=24:44";
 		damagefactor "Balefire",0.3;
+		hdmobbase.shields 120;
 		seesound "";
 		painsound "demon/pain";
 		deathsound "demon/death";

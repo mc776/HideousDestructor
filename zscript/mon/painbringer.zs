@@ -18,7 +18,7 @@ class PainBringer:PainMonster replaces HellKnight{
 
 		damagefactor "Balefire",0.3;
 		damagefactor "Thermal",0.8;
-		damagefactor "SmallArms0",0.9;
+		hdmobbase.shields 500;
 		scale 0.9;
 		speed 12;
 		meleedamage 10;

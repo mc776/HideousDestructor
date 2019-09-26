@@ -241,8 +241,7 @@ class SkullSpitter:HDMobBase replaces PainElemental{
 		pushfactor 0.3;
 		obituary "%o braved the elements.";
 		hitobituary "%o thought it was elementary that certain monsters had no melee attack.";
-		damagefactor "SmallArms0", 0.8;
-		damagefactor "SmallArms1", 0.9;
+		hdmobbase.shields 1000;
 		speed 3;
 	}
 	override void postbeginplay(){

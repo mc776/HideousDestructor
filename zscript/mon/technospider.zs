@@ -1,5 +1,5 @@
 // ------------------------------------------------------------
-// Arachnotron
+// Technospider
 // ------------------------------------------------------------
 class TechnoSpider:HDMobBase replaces Arachnotron{
 	default{
@@ -20,9 +20,7 @@ class TechnoSpider:HDMobBase replaces Arachnotron{
 		speed 16;
 		deathheight 18;
 		+noblooddecals bloodtype "NotQuiteBloodSplat";
-		damagefactor "SmallArms0",0.8;
-		damagefactor "SmallArms1",0.8;
-		damagefactor "SmallArms2",0.9;
+		hdmobbase.shields 500;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
