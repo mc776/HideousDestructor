@@ -24,7 +24,7 @@ class DERPBot:HDUPK{
 		painchance 240;painthreshold 12;
 		speed 3;
 		damagefactor "Thermal",0.7;damagefactor "Normal",0.8;
-		radius 4;height 4;deathheight 4;maxdropoffheight 4;maxstepheight 4;
+		radius 4;height 8;deathheight 8;maxdropoffheight 4;maxstepheight 4;
 		bloodcolor "22 22 22";scale 0.6;
 		health 100;mass 20;
 		maxtargetrange DERP_RANGE;
@@ -324,7 +324,6 @@ class DERPBot:HDUPK{
 	death:
 		DERP A 0{
 			DerpAlert("\cg  Operational fault.\cj Standby for repairs.");
-			pickupmessage=string.format("%s It is damaged.",pickupmessage);
 			A_PlaySound("weapons/bigcrack",CHAN_AUTO);
 			A_SpawnItemEx("HDSmoke",0,0,1, vel.x,vel.y,vel.z+1, 0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);
 			A_SpawnChunks("BigWallChunk",12);
