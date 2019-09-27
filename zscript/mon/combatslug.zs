@@ -122,6 +122,9 @@ class CombatSlug:HDMobBase replaces Fatso{
 		obituary "%o was smoked by a CombatSlug.";
 		painchance 80;
 	}
+	override string getnicename(){
+		return bplayingid?"mancubus":"combat slug";
+	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		hdmobster.spawnmobster(self);

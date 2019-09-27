@@ -32,6 +32,9 @@ class Technorantula:HDMobBase replaces SpiderMastermind{
 		radius 76;
 		radiusdamagefactor 0.8;
 	}
+	override string getnicename(){
+		return bplayingid?"spider mastermind":"large technospider";
+	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		let hdmb=hdmobster(hdmobster.spawnmobster(self));

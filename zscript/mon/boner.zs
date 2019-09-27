@@ -146,6 +146,9 @@ class Boner:HDMobBase replaces Revenant{
 			inflictor,source,damage,mod,flags,angle
 		);
 	}
+	override string getnicename(){
+		return bplayingid?"revenant":"dark soldier";
+	}
 	uint balls;
 	states{
 	spawn:

@@ -181,6 +181,9 @@ class Serpentipede:HDMobBase{
 		if(mod=="claws")return hitobituary;
 		return obituary;
 	}
+	override string getnicename(){
+		return bplayingid?"imp":"serpentipede";
+	}
 	virtual void A_ImpChase(){
 		hdmobai.chase(self);
 	}

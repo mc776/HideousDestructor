@@ -27,6 +27,9 @@ class FlyingSkull:HDMobBase replaces LostSoul{
 		renderstyle "normal";
 		maxtargetrange 245;
 	}
+	override string getnicename(){
+		return bplayingid?"lost soul":"deadflare";
+	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		A_GiveInventory("ImmunityToFire");

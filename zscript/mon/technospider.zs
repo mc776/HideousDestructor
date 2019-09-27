@@ -22,6 +22,9 @@ class TechnoSpider:HDMobBase replaces Arachnotron{
 		+noblooddecals bloodtype "NotQuiteBloodSplat";
 		hdmobbase.shields 500;
 	}
+	override string getnicename(){
+		return bplayingid?"arachnotron":"technospider";
+	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		hdmobster.spawnmobster(self);

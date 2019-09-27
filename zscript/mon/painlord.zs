@@ -6,6 +6,7 @@ class PainMonster:HDMobBase{
 		meleesound "baron/melee";
 		bloodcolor "44 99 22";
 		+hdmobbase.biped
+		species "BaronOfHell";
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -45,7 +46,7 @@ class PainLord:PainMonster replaces BaronofHell{
 		health BE_HPMAX;
 		speed 6;
 		painchance 4;
-hdmobbase.shields 2000;
+		hdmobbase.shields 2000;
 	}
 	void A_BaronSoul(){
 			let aaa=FlyingSkull(spawn("FlyingSkull",pos,ALLOW_REPLACE));
@@ -65,6 +66,9 @@ hdmobbase.shields 2000;
 		BE_BAD=BE_HPMAX*3/10,
 	}
 
+	override string getnicename(){
+		return bplayingid?"baron of Hell":"pain lord";
+	}
 
 	override double bulletshell(vector3 hitpos,double hitangle){
 		return frandom(3,12);

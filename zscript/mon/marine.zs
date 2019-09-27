@@ -113,6 +113,9 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 
 		A_SetTranslation(trnsl);
 	}
+	override string getnicename(){
+		return bplayingid?"marine":"soldier";
+	}
 	string nickname;
 	virtual string SetNickname(){
 		if(!bfriendly){

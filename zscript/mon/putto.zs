@@ -13,6 +13,7 @@ class Putto:HDMobBase{
 		+hdmobbase.doesntbleed
 		-telestomp -solid
 		species "BaronOfHell";
+		hdmobbase.nicename "putto";
 		damagefactor "Thermal", 1.2;
 		damagefactor "Balefire", 0.1;
 		health 80;

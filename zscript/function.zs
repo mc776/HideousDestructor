@@ -378,6 +378,16 @@ struct HDMath{
 		input=(input>>(5*slot));
 		return input&(1|2|4|8|16);
 	}
+	//get a nice name for any actor
+	//mostly for exceptions for players and monsters
+	static string GetName(actor named,bool nicename=true){
+		if(named.player)return named.player.getusername();
+		if(nicename){
+			if(hdpickup(named))return hdpickup(named).nicename;
+			if(hdmobbase(named))return hdmobbase(named).getnicename();
+		}
+		return named.getclassname();
+	}
 }
 struct HDF play{
 	//because this is 10 times faster than A_GiveInventory

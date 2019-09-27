@@ -28,6 +28,10 @@ class PainBringer:PainMonster replaces HellKnight{
 		stamina 0;
 	}
 
+	override string getnicename(){
+		return bplayingid?"hell knight":"pain bringer";
+	}
+
 	override double bulletshell(vector3 hitpos,double hitangle){
 		return frandom(3,7);
 	}

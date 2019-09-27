@@ -231,9 +231,7 @@ class HDFist:HDWeapon replaces Fist{
 		}
 
 		if(hd_debug){
-			string pch="";
-			if(punchee.player)pch=punchee.player.getusername();
-				else pch=punchee.getclassname();
+			string pch=HDMath.GetName(punchee,false);
 			A_Log(string.format("Punched %s for %i damage!",pch,dmg));
 		}
 		if(dmg*2>punchee.health)punchee.A_PlaySound("misc/bulletflesh",CHAN_BODY);  
@@ -371,7 +369,7 @@ class HDFist:HDWeapon replaces Fist{
 		if(grabbed.bcorpse)grbng=grbng.."corpse";
 		else if(inventory(grabbed)||hdupk(grabbed))grbng=grbng.."item";
 		else grbng=grbng.."object";
-		if(hd_debug)grbng=grbng.."\n"..grabbed.getclassname();
+		grbng=grbng.."\n"..HDMath.GetName(grabbed);
 		A_WeaponMessage(grbng.."...",3);
 
 		if(

@@ -1,7 +1,7 @@
 // ------------------------------------------------------------
 // Necromancer
 // ------------------------------------------------------------
-class BloodyHellFire:HDActor{
+class BloodyHellFire:HDMobBase{
 	default{
 		+ismonster
 		+lookallaround
@@ -26,6 +26,9 @@ class BloodyHellFire:HDActor{
 		seesound "misc/firecrkl";
 		deathsound "weapons/plasmas";
 		obituary "%o met the firepower of the necromancer.";
+	}
+	override string getnicename(){
+		return bplayingid?"archvile flame":"necromancer flame";
 	}
 	int firetimer;
 	override void postbeginplay(){
@@ -299,6 +302,9 @@ class Necromancer:HDMobBase replaces ArchVile{
 				hhh.stamina=(dist>>3)+random(10,30);
 			}
 		}
+	}
+	override string getnicename(){
+		return bplayingid?"archvile":"necromancer";
 	}
 	override void postbeginplay(){
 		super.postbeginplay();

@@ -277,6 +277,9 @@ class SatanRobo:HDMobBase replaces CyberDemon{
 			pitch+aimvert-(dist>2048?dist*0.000001:0)+(tgt?atan(10/dist):0)
 		);
 	}
+	override string getnicename(){
+		return bplayingid?"cyberdemon":"assault tripod";
+	}
 	override void tick(){
 		super.tick();
 		if(
