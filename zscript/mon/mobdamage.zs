@@ -457,7 +457,7 @@ class HDBleedingWound:Thinker{
 		//TODO: proper array of wounds for the player
 		if(hdplayerpawn(bleeder)){
 			let hpl=hdplayerpawn(bleeder);
-			hpl.woundcount+=bleedpoints;
+			hpl.woundcount+=(bleedpoints>>1);
 			return;
 		}
 
