@@ -264,35 +264,6 @@ class HDStatusBar:DoomStatusBar{
 		)return;
 
 
-
-//TEMPORARY - TO DELETE LATER
-if(hd_weapondefaults.getstring()~=="convert"){
-	int rlmode=cvar.getcvar("hd_rlmode",cplayer).getint();
-	string cdef=""
-	.."pisfiremode"..cvar.getcvar("hd_pistauto",cplayer).getint()
-	..",smgfiremode"..cvar.getcvar("hd_smgfiremode",cplayer).getint()
-	..",huntype"..cvar.getcvar("hd_huntauto",cplayer).getint()
-	..",firemode"..cvar.getcvar("hd_huntfullauto",cplayer).getint()+1
-	..",z66firemode"..cvar.getcvar("hd_zmfiremode",cplayer).getint()
-	.."zoom"..cvar.getcvar("hd_zmzoom",cplayer).getint()
-	..",vulfast"..cvar.getcvar("hd_vulcsuper",cplayer).getint()
-	..",lauzoom"..cvar.getcvar("hd_rlzoom",cplayer).getint()
-	..((rlmode==2)?"heatgrenade0":(!rlmode)?"heat0grenade":"heat0grenade0")
-	..",libauto"..cvar.getcvar("hd_libauto",cplayer).getint()
-	.."bulletdrop"..cvar.getcvar("hd_libmoa",cplayer).getint()
-	.."zoom"..cvar.getcvar("hd_libzoom",cplayer).getint()
-	.."frontreticle"..cvar.getcvar("hd_libfrontreticle",cplayer).getint()
-	.."altreticle"..cvar.getcvar("hd_libaltreticle",cplayer).getint()
-	..",thualt"..cvar.getcvar("hd_tbmode",cplayer).getint()
-	..",brozoom"..cvar.getcvar("hd_brontozoom",cplayer).getint()
-	..",bosbulletdrop"..cvar.getcvar("hd_bossmoa",cplayer).getint()
-	.."zoom"..cvar.getcvar("hd_bosszoom",cplayer).getint()
-	.."frontreticle"..cvar.getcvar("hd_bossfrontreticle",cplayer).getint()
-	.."customchamber"..cvar.getcvar("hd_bosscustomchamber",cplayer).getint()
-	;
-	console.printf("hd_weapondefaults set from old cvars:  "..cdef);
-	cvar.findcvar("hd_weapondefaults").setstring(cdef);
-}
 		//reads hd_setweapondefault and updates accordingly
 		if(hd_setweapondefault.getstring()!=""){
 			string wpdefs=cvar.getcvar("hd_weapondefaults",cplayer).getstring().makelower();
