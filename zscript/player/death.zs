@@ -159,7 +159,7 @@ extend class HDHandlers{
 //corpse substituter
 class HDPlayerCorpse:HDMobMan{
 	default{
-		monster; -countkill +solid +friendly
+		monster; -countkill +friendly +nopain
 		health 100;mass 160;
 	}
 	override void Tick(){
@@ -173,6 +173,11 @@ class HDPlayerCorpse:HDMobMan{
 			ppp.levelreset();
 			master=null;
 		}
+		if(
+			health>0
+			&&!instatesequence(curstate,resolvestate("raise"))
+			&&!instatesequence(curstate,resolvestate("ungib"))
+		)A_Die();
 		super.Tick();
 	}
 	override void postbeginplay(){
@@ -181,11 +186,16 @@ class HDPlayerCorpse:HDMobMan{
 	}
 	states{
 	spawn:
-		#### A -1;// nodelay A_Die();
+		#### A -1;
 		PLAY A 0;
 	death:
 		#### H 10{
-			scale.x*=randompick(-1,1);
+			let ppp=hdplayerpawn(master);
+			if(
+				ppp
+				&&ppp.incapacitated>(4<<2)
+			)setstatelabel("dead");
+			else scale.x*=randompick(-1,1);
 		}
 		#### IJ 8;
 		#### K 3;
@@ -204,10 +214,9 @@ class HDPlayerCorpse:HDMobMan{
 		#### PQRSTUV 5;
 		#### W -1;
 	xxxdeath:
-		#### O 5 A_SpawnItemEx("MegaBloodSplatter",0,0,34,flags:SXF_NOCHECKPOSITION);
+		#### O 5;
 		#### P 5 A_XScream();
-		#### QR 5 A_SpawnItemEx("MegaBloodSplatter",0,0,34,flags:SXF_NOCHECKPOSITION);
-		#### STUV 5;
+		#### QRSTUV 5;
 		#### W -1 canraise;
 		stop;
 	ungib:
@@ -233,6 +242,7 @@ class HDPlayerCorpse:HDMobMan{
 				SXF_TRANSFERTRANSLATION
 			);
 		}
+	falldown:
 		stop;
 	}
 }
