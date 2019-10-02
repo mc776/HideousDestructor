@@ -234,8 +234,8 @@ extend class HDMobBase{
 
 		//set height according to incap
 		if(instatesequence(curstate,resolvestate("falldown"))){
-			if(deadheight<height)A_SetSize(-1,max(deadheight,height-10));
-		}else if(liveheight!=height)A_SetSize(-1,(height+liveheight)*0.5);
+			if(deadheight<height)A_SetSize(-1,max(deadheight,height*0.99));
+		}else if(liveheight!=height)A_SetSize(-1,min(liveheight,height+liveheight*0.05));
 
 
 		//this must be done here and not AttemptRaise because reasons
