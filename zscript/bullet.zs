@@ -979,7 +979,10 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 			double addpenshell=0;
 			int alv=armr.mega?3:1;
 
-			if(!random(0,max((armr.durability>>2),4)))alv=-1; //slips through a gap
+			if(
+				(int(level.time+angle)&(1|2|4|8|16))
+				>clamp(armr.durability<<1,10,31) //slips through a gap
+			)alv=-1;
 			else if(hitheight>0.8){ //headshot, check for helmet
 				if(
 					hitactor is "hdplayerpawn"
