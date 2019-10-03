@@ -153,8 +153,8 @@ class Babuin:HDMobBase{
 		maxtargetrange 128;
 		painchance 90; pushfactor 0.2;
 		maxstepheight 32;maxdropoffheight 32;
-		seesound "demon/sight";painsound "demon/pain";
-		deathsound "demon/death";activesound "demon/active";
+		seesound "babuin/sight";painsound "babuin/pain";
+		deathsound "babuin/death";activesound "babuin/active";
 		obituary "%o was mauled by a babuin.";
 		damagefactor "Thermal",0.76;
 		hdmobbase.nicename "babuin";
@@ -224,7 +224,7 @@ class Babuin:HDMobBase{
 	melee:
 		#### E 7{
 			A_FaceTarget(0,0);
-			A_PlaySound("demon/melee");
+			A_PlaySound("babuin/bite");
 			A_Changevelocity(cos(pitch)*4,0,sin(-pitch)*4,CVF_RELATIVE);
 		}
 		#### F 6;
