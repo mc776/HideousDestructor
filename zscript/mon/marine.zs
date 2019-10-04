@@ -1571,7 +1571,10 @@ class BotBot:HDMarine{
 	vector3 oldppos;
 	override void tick(){
 		super.tick();
-		if(masterplayer<1)return;
+		if(
+			masterplayer<1
+			||health<1
+		)return;
 		actor rpp=players[masterplayer].mo;
 		if(rpp){
 			rpp.setorigin((
@@ -1650,7 +1653,7 @@ class BotBot:HDMarine{
 	}
 	int masterplayer;
 	override void postbeginplay(){
-		HDActor.postbeginplay();
+		super.postbeginplay();
 		givearmour(1.,0.12,1.);
 		if(!master){
 			for(int i=0;i<MAXPLAYERS;i++){
