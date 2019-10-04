@@ -234,6 +234,7 @@ extend class HDPlayerPawn{
 			vector2 kv=AngleToVector(angle,5);
 			for(int i=7;i;i--){
 				if(!k.TryMove(k.pos.xy+kv,true) && k.blockingmobj){
+					hasgrabbed=true;
 					let kbmo=k.blockingmobj;
 					double kbmolowerby=pos.z-kbmo.pos.z;
 					if(
