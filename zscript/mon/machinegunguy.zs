@@ -225,7 +225,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 			angle+=random(-4,4);
 		}
 		CPOS B 1 A_SetTics(random(10,40));
-		goto spawn;
+		---- A 0 setstatelabel("spawn");
 	spawnwander:
 		CPOS A 0 A_Look();
 		CPOS CD 5 A_Wander();
@@ -243,7 +243,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		}
 		CPOS AABBCCDD 3 {hdmobai.chase(self,flags:CHF_NOPOSTATTACKTURN);}
 		CPOS A 0 A_Jump(196,"see2");
-		goto scan;
+		---- A 0 setstatelabel("scan");
 	missile:
 		CPOS ABCD 3 A_TurnTowardsTarget("aim");
 		loop;
@@ -266,14 +266,13 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 	scanturn:
 		CPOS EEEEEE 3 A_ScanForTargets();
 		CPOS E 0 A_Jump(32,"scanturn","scanturn","scan");
-		goto see2;
+		---- A 0 setstatelabel("see2");
 	scanshoot:
 		CPOS E 1{
 			angle+=frandom(-2,2);
 			pitch+=frandom(-2,2);
 		}
-		goto shoot;
-
+		//fallthrough to shoot
 	shoot:
 		CPOS F 1 bright light("SHOT") A_VulcGuyShot();
 		CPOS E 2 A_JumpIf(superauto,"shoot");
@@ -288,7 +287,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		CPOS E 0 A_JumpIf(thismag<1&&mags<1,"reload");
 		CPOS E 0 A_JumpIf(target&&target.health>0&&!checksight(target),"cover");
 		CPOS E 3 A_ScanForTargets();
-		goto scan;
+		---- A 0 setstatelabel("scan");
 	cover:
 		CPOS E 0 A_JumpIf(
 			!target
@@ -322,7 +321,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 				thismag=50;
 			}
 		}
-		goto shoot;
+		---- A 0 setstatelabel("shoot");
 	chamber:
 		CPOS E 3{
 			if(chambers<5&&thismag>0){
@@ -330,7 +329,8 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 				chambers++;
 				A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
 			}
-		}goto shoot;
+		}
+		---- A 0 setstatelabel("shoot");
 
 	reload:
 		CPOS A 0{
@@ -358,16 +358,16 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 			random(9,99),"weapons/smack","","none",randompick(0,0,0,1)
 		);
 		CPOS E 2 A_JumpIfTargetInsideMeleeRange(2);
-		goto considercover;
+		---- A 0 setstatelabel("considercover");
 		CPOS E 0 A_JumpIf(target.health<random(-3,1),"see");
 		CPOS EC 2;
-		goto melee;
+		---- A 0 setstatelabel("melee");
 
 	pain:
 		CPOS G 3;
 		CPOS G 3 A_Pain();
 		CPOS G 0 A_Jump(196,"see","scan");
-		goto missile;
+		---- A 0 setstatelabel("missile");
 
 
 	death:
@@ -392,7 +392,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		}
 		CPOS R 2;
 		CPOS QRS 5;
-		goto xdead;
+		---- A 0 setstatelabel("xdead");
 
 	xdeath:
 		CPOS O 5;
@@ -413,12 +413,12 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		CPOS N 2 A_SpawnItemEx("MegaBloodSplatter",0,0,4,0,0,3,0,SXF_NOCHECKPOSITION);
 		CPOS NML 6;
 		CPOS KJIH 4;
-		goto checkraise;
+		---- A 0 setstatelabel("checkraise");
 	ungib:
 		CPOS T 6 A_SpawnItemEx("MegaBloodSplatter",0,0,4,0,0,3,0,SXF_NOCHECKPOSITION);
 		CPOS TS 12 A_SpawnItemEx("MegaBloodSplatter",0,0,4,0,0,3,0,SXF_NOCHECKPOSITION);
 		CPOS RQ 7;
 		CPOS POH 5;
-		goto checkraise;
+		---- A 0 setstatelabel("checkraise");
 	}
 }

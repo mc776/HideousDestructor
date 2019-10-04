@@ -166,17 +166,17 @@ class Boner:HDMobBase replaces Revenant{
 		SKEL H 2;
 		SKEL I 6 A_SkelFist();
 		SKEL H 4;
-		goto see;
+		---- A 0 setstatelabel("see");
 	missile:
 		SKEL II 4 A_FaceTarget();
 		SKEL J 3 bright A_SpawnProjectile("BonerBall",42,4,-24,2,4);
 		SKEL J 7 bright A_SpawnProjectile("BonerBall",42,-4,24,2,4);
 		SKEL K 12{balls=0;}
-		goto see;
+		---- A 0 setstatelabel("see");
 	pain:
 		SKEL L 5;
 		SKEL L 5 A_Pain();
-		goto see;
+		---- A 0 setstatelabel("see");
 	death:
 		SKEL LM 7;
 		SKEL N 7 A_Scream();
@@ -189,7 +189,7 @@ class Boner:HDMobBase replaces Revenant{
 	raise:
 		SKEL Q 5;
 		SKEL PONML 5;
-		goto see;
+		---- A 0 setstatelabel("see");
 	falldown:
 		SKEL L 5;
 		SKEL M 5 A_Pain();
@@ -203,7 +203,7 @@ class Boner:HDMobBase replaces Revenant{
 		SKEL O 0 A_PlaySound(seesound,CHAN_VOICE);
 		SKEL PO 4 A_Recoil(-0.3);
 		SKEL NML 4;
-		SKEL A 0 A_Jump(256,"see");
+		---- A 0 setstatelabel("see");
 	}
 }
 

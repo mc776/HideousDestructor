@@ -208,10 +208,10 @@ class Babuin:HDMobBase{
 		}
 	seechase:
 		#### AABBCCDD random(1,2){hdmobai.chase(self);}
-		goto seeend;
+		---- A 0 setstatelabel("seeend");
 	roam:
 		#### AABBCCDD random(1,3){hdmobai.wander(self,true);}
-		goto seeend;
+		---- A 0 setstatelabel("seeend");
 	seeend:
 		#### A 0{
 			if(!random(0,120)){
@@ -234,7 +234,7 @@ class Babuin:HDMobBase{
 		}
 	postmelee:
 		#### G 6;
-		goto see;
+		---- A 0 setstatelabel("see");
 
 	latched:
 		#### EF random(1,2){
@@ -251,7 +251,8 @@ class Babuin:HDMobBase{
 			A_FaceTarget(16,16);
 			A_Changevelocity(1,0,0,CVF_RELATIVE);
 			if(A_JumpIfTargetInLOS("null",20,0,128))setstatelabel("jump");
-		}goto see;
+		}
+		---- A 0 setstatelabel("see");
 	jump:
 		#### AE 3{
 			A_FaceTarget(16,16);
@@ -270,12 +271,12 @@ class Babuin:HDMobBase{
 	land:
 		#### FEH 3{vel.xy*=0.8;}
 		#### D 4{vel.xy=(0,0);}
-		goto see;
+		---- A 0 setstatelabel("see");
 	pain:
 		#### H 2 A_SetSolid();
 		#### H 6 A_Pain();
 		#### H 0 A_CheckFloor("missile");
-		goto see;
+		---- A 0 setstatelabel("see");
 	death:
 		#### I 5{
 			A_CheckFreedoomSprite();

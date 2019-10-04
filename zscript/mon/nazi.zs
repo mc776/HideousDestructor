@@ -65,7 +65,7 @@ class HoopBubble:HDMobMan replaces WolfensteinSS{
 			A_SetTics(random(30,80));
 			if(!random(0,3))A_PlaySound("grunt/active");
 		}
-		goto spawn;
+		---- A 0 setstatelabel("spawn");
 	spawnstill:
 		SSWV A 0 A_Look();
 		SSWV A 0 A_Recoil(frandom(-0.4,0.4));
@@ -76,18 +76,18 @@ class HoopBubble:HDMobMan replaces WolfensteinSS{
 		SSWV AB 5 A_SetAngle(angle+frandom(-4.,4.));
 		SSWV A 0 A_Look();
 		SSWV B 1 A_SetTics(random(10,40));
-		goto spawn;
+		---- A 0 setstatelabel("spawn");
 	spawnwander:
 		SSWV CDAB 5{
 			hdmobai.wander(self);
 			if(!random(0,72))A_PlaySound("grunt/active");
 		}
-		goto spawn;
+		---- A 0 setstatelabel("spawn");
 	see:
 		SSWV A 0 A_JumpIf(gunloaded<2,"reload");
 		SSWV ABCD 4{hdmobai.chase(self);}
 		SSWV A 0 A_JumpIfTargetInLOS("see");
-		goto roam;
+		---- A 0 setstatelabel("roam");
 	roam:
 		#### E 3 A_Jump(60,"roam2");
 		#### E 0{spread=1;}
@@ -113,13 +113,13 @@ class HoopBubble:HDMobMan replaces WolfensteinSS{
 		#### E 2 A_JumpIfTargetInLOS("missile2",40);
 		#### E 0{spread=4;}
 		#### ABCD 3{hdmobai.chase(self);}
-		goto see;
+		---- A 0 setstatelabel("see");
 	pain:
 		SSWV H 3;
 		SSWV H 3 A_Pain();
 		SSWV A 0 A_Jump(192,"see");
 		SSWV A 0 A_AlertMonsters();
-		goto see;
+		---- A 0 setstatelabel("see");
 	missile:
 		#### A 0 A_JumpIf(gunloaded<1,"reload");
 		#### A 0 A_JumpIfTargetInLOS(3,120);
@@ -146,7 +146,7 @@ class HoopBubble:HDMobMan replaces WolfensteinSS{
 	turntoaim:
 		#### E 2 A_FaceTarget(turnamount,turnamount);
 		#### A 0 A_JumpIfTargetInLOS(1);
-		goto see;
+		---- A 0 setstatelabel("see");
 		#### A 0 A_JumpIfTargetInLOS(1,10);
 		loop;
 		#### E 1{
@@ -198,7 +198,7 @@ class HoopBubble:HDMobMan replaces WolfensteinSS{
 			gunloaded+=30;
 			hdmobai.wander(self,true);
 		}
-		goto see;
+		---- A 0 setstatelabel("see");
 	melee:
 		#### D 8 A_FaceTarget();
 		#### E 4;
@@ -211,7 +211,7 @@ class HoopBubble:HDMobMan replaces WolfensteinSS{
 		#### E 4 A_FaceTarget();
 		goto missile2;
 		#### D 4;
-		goto see;
+		---- A 0 setstatelabel("see");
 	death:
 		SSWV I 5;
 		SSWV J 5 A_Scream();
@@ -226,7 +226,7 @@ class HoopBubble:HDMobMan replaces WolfensteinSS{
 		SSWV N 5;
 		SSWV O 5 A_XScream();
 		SSWV PQRSTU 5;
-		goto xdead;
+		---- A 0 setstatelabel("xdead");
 	xdeath:
 		SSWV N 5 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
 		SSWV O 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
@@ -244,12 +244,12 @@ class HoopBubble:HDMobMan replaces WolfensteinSS{
 		SSWV M 4;
 		SSWV MLK 6;
 		SSWV JIH 4;
-		goto checkraise;
+		---- A 0 setstatelabel("checkraise");
 	ungib:
 		SSWV V 4;
 		SSWV VUT 8;
 		SSWV SRQ 6;
 		SSWV PON 4;
-		goto checkraise;
+		---- A 0 setstatelabel("checkraise");
 	}
 }

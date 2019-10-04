@@ -474,7 +474,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		#### EEE 2 A_Chase(flags:CHF_DONTMOVE);
 		#### A 0 A_Jump(60,"spwander");
 		#### E 0 A_JumpIfTargetInLOS("see");
-		goto spwander;
+		---- A 0 setstatelabel("spwander");
 
 	missile:
 		#### A 0{
@@ -502,7 +502,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 	turntoaim:
 		#### E 2 A_FaceTarget(turnamount,turnamount);
 		#### A 0 A_JumpIfTargetInLOS(1);
-		goto see;
+		---- A 0 setstatelabel("see");
 		#### A 0 A_JumpIfTargetInLOS(1,10);
 		loop;
 		#### A 0 A_FaceTarget(turnamount,turnamount);
@@ -511,8 +511,8 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 			spread=turnamount*0.08;
 			A_SetTics(16/spread);
 			spread+=min(timesdied,15);
-		}goto shoot;
-
+		}
+		//fallthrough to shoot
 	shoot:
 		#### E 1{
 			if(!target||(checksight(target)&&target.health<1)){
@@ -573,7 +573,8 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 			else if(wep==HDMW_HUNTER)setstatelabel("shootsg");
 			else if(wep==HDMW_ZM66)setstatelabel("shootzm66");
 			else if(wep==HDMW_ROCKET)setstatelabel("shootrl");
-		}goto see;
+		}
+		---- A 0 setstatelabel("see");
 	shootzm66:
 		#### E 1;
 		#### E 1 A_LeadTarget1();
@@ -602,7 +603,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		#### E 2 A_AlertMonsters(0,bfriendly?AMF_TARGETEMITTER:0);
 		#### E 0 A_JumpIf(gunloaded>0&&random(0,2),"firezm66");
 		#### E 0 A_MonsterRefire(20,"see");
-		goto missile;
+		---- A 0 setstatelabel("missile");
 	shootsmg:
 		#### E 1 A_LeadTarget1();
 		#### E 1{
@@ -624,7 +625,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		);
 		#### E 0 A_JumpIf(gunloaded>0&&random(0,2),"firesmg");
 		#### E 0 A_MonsterRefire(20,"see");
-		goto missile;
+		---- A 0 setstatelabel("missile");
 	shootsg:
 		#### E 1;
 		#### E 1 A_LeadTarget1();
@@ -667,7 +668,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 			}
 		}
 		#### E 0 A_MonsterRefire(20,"see");
-		goto missile;
+		---- A 0 setstatelabel("missile");
 	shootrl:
 		#### E 2;
 		#### E 1{
@@ -691,7 +692,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 			A_PlaySound("weapons/rocklaunch",CHAN_AUTO,0.6);
 		}
 		#### E 0 A_PlaySound("weapons/huntrack",5);
-		goto see;
+		---- A 0 setstatelabel("see");
 	shootgl:
 		#### E 1{
 			if(A_CheckBlast(target))A_LeadTarget1();
@@ -709,7 +710,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		}
 		#### E 4;
 		#### E 0 A_MonsterRefire(20,"see");
-		goto missile;
+		---- A 0 setstatelabel("missile");
 
 	shootpistol:
 		#### E 1 A_LeadTarget1();
@@ -730,10 +731,10 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 			0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
 		);
 		#### E 0 A_MonsterRefire(20,"see");
-		goto missile;
+		---- A 0 setstatelabel("missile");
 	noshot:
 		#### E 6;
-		goto see;
+		---- A 0 setstatelabel("see");
 
 	unjam:
 		#### E 10;
@@ -758,7 +759,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 
 	ohforfuckssake:
 		#### E 4 A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
-		goto reload;
+		---- A 0 setstatelabel("reload");
 
 	reload:
 		#### A 0{
@@ -771,7 +772,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 				if(wep==HDMW_HUNTER)setstatelabel("reloadsg");
 				if(wep==HDMW_ROCKET)setstatelabel("reloadrl");
 			}else if(!glloaded&&wep!=HDMW_ROCKET)setstatelabel("reloadgl");
-		}goto see;
+		}---- A 0 setstatelabel("see");
 	reloadsg:
 		#### A 0 A_PlaySound("weapons/huntopen",CHAN_WEAPON);
 		#### AB 3{hdmobai.chase(self,"melee",null,true);}
@@ -786,7 +787,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 			}
 		}
 		#### A 0 A_JumpIf(gunloaded<gunmax,"reloadsgloop");
-		goto see;
+		---- A 0 setstatelabel("see");
 	reloadrl:
 		#### A 0 A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
 		#### AB 3{hdmobai.chase(self,"melee",null,true);}
@@ -801,7 +802,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 			}
 		}
 		#### A 0 A_JumpIf(gunloaded<gunmax,"reloadsgloop");
-		goto see;
+		---- A 0 setstatelabel("see");
 	reloadmag:
 		#### AB 3{hdmobai.chase(self,"melee",null,true);}
 		#### C 3{
@@ -842,7 +843,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 			)pistolloaded=15;
 			else gunloaded=gunmax;
 		}
-		goto see;
+		---- A 0 setstatelabel("see");
 	reloadgl:
 		#### A 0 A_PlaySound("weapons/grenopen",CHAN_WEAPON);
 		#### ABCD 3{hdmobai.chase(self,"melee",null,true);}
@@ -853,7 +854,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 			glloaded=1;
 		}
 		#### D 4;
-		goto see;
+		---- A 0 setstatelabel("see");
 
 	melee:
 		#### C 7 A_FaceTarget();
@@ -872,7 +873,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 			}
 			A_FaceTarget(0,0);
 			A_Recoil(-3);
-		}goto see;
+		}---- A 0 setstatelabel("see");
 	pain:
 		#### G 3;
 		#### G 3 A_Pain();
@@ -889,14 +890,14 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 	death.bleedout:
 		#### H 5{bpushable=false;}
 		#### I 5;
-		goto deathpostscream;
+		---- A 0 setstatelabel("deathpostscream");
 	death:
 		---- A 0 A_DeathZombieZombieDeath();
 		#### H 5{bpushable=false;}
 		#### I 5 A_HDMScream();
 	deathpostscream:
 		#### JK 5;
-		goto dead;
+		---- A 0 setstatelabel("dead");
 
 	dead:
 		#### K 3 canraise A_JumpIf(abs(vel.z)<2.,1);
@@ -933,7 +934,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 				deathsound="grunt/death";
 				A_PlaySound(seesound,CHAN_VOICE);
 			}
-		}goto see;
+		}---- A 0 setstatelabel("see");
 
 	xdeath:
 		---- A 0 A_DeathZombieZombieDeath();
@@ -962,7 +963,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		#### VUT 7;
 		#### SRQ 5;
 		#### POH 4;
-		goto checkraise;
+		---- A 0 setstatelabel("checkraise");
 	raisezombie:
 		#### U 4 A_UnsetShootable();
 		#### U 8;
@@ -1138,7 +1139,7 @@ class DeadRifleman:HDMarine replaces DeadMarine{
 	states{
 	death.spawndead:
 		---- A 0 givearmour(0.6,0.12,0.1);
-		goto dead;
+		---- A 0 setstatelabel("dead");
 	}
 }
 class ReallyDeadRifleman:DeadRifleman replaces GibbedMarine{
@@ -1150,7 +1151,8 @@ class ReallyDeadRifleman:DeadRifleman replaces GibbedMarine{
 			timesdied++;
 			bodydamage=2000;
 			bgibbed=true;
-		}goto xdead;
+		}
+		---- A 0 setstatelabel("xdead");
 	}
 }
 class DeadRiflemanCrouched:DeadRifleman{
@@ -1388,7 +1390,7 @@ class GhostMarine:HDMobBase{
 		}
 		#### E 6 A_SetTics(random(1,4));
 		#### A 0 A_MonsterRefire(20,"see");
-		goto missile2;
+		---- A 0 setstatelabel("missile2");
 	melee:
 		#### E 0{
 			if(!deathmatch)gonnaleave=0;
@@ -1401,7 +1403,7 @@ class GhostMarine:HDMobBase{
 			}
 		}
 		#### E 4 A_FaceTarget(0,0);
-		goto see;
+		---- A 0 setstatelabel("see");
 
 	pain:
 		#### G 4;

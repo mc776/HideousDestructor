@@ -272,13 +272,13 @@ class DERPBot:HDUPK{
 		DERP A 0 A_DerpLook(LOF_NOJUMP);
 		DERP A 2 A_DerpCrawl();
 		DERP A 0 A_DerpLook(LOF_NOJUMP);
-		goto see;
+		---- A 0 setstatelabel("see");
 	turn:
 		DERP A 1 A_DerpTurn();
 		wait;
 	noshot:
 		DERP AAAAAAAA 2 A_DerpCrawl();
-		goto see2;
+		---- A 0 setstatelabel("see2");
 	pain:
 		DERP A 20{
 			A_PlaySound("derp/crawl",CHAN_BODY);

@@ -169,7 +169,7 @@ class FlyingSkull:HDMobBase replaces LostSoul{
 	strafe:
 		SKUL A 0 A_SkullStrafe();
 		SKUL ABAB 2 bright;
-		goto see;
+		---- A 0 setstatelabel("see");
 	missile:
 		SKUL A 0 A_Jump(64,"strafe");
 		SKUL A 0 A_Jump(200,2);
@@ -188,7 +188,7 @@ class FlyingSkull:HDMobBase replaces LostSoul{
 			spitter=null;
 		}
 		SKUL E 3 A_Pain();
-		goto see;
+		---- A 0 setstatelabel("see");
 	death:
 		SKUL E 2 bright{
 			A_SetTranslucent(1,1);
@@ -268,7 +268,7 @@ class SkullSpitter:HDMobBase replaces PainElemental{
 		TNT1 A 0 A_ChangeVelocity(0.8,0,frandom(-0.4,0.4),CVF_RELATIVE);
 		TNT1 A 0 A_JumpIfTargetInLOS("missile");
 		TNT1 A 0 A_Jump(40,"missile2");
-		goto see;
+		---- A 0 setstatelabel("see");
 	missile2:
 		PAIN DE 4 A_FaceTarget(5,5);
 		PAIN F 6 A_FaceTarget(10,10);
@@ -290,16 +290,16 @@ class SkullSpitter:HDMobBase replaces PainElemental{
 				A_SpawnProjectile("ShieldImpBall");
 				shields=max(shields,shields+24);
 			}
-		}goto see;
+		}---- A 0 setstatelabel("see");
 	melee:
 		PAIN DE 4 A_FaceTarget(10,10);
 		PAIN F 6 A_FaceTarget(10,10);
 		PAIN C 12 A_CustomMeleeAttack(random(20,40));
-		goto see;
+		---- A 0 setstatelabel("see");
 	pain:
 		PAIN G 6 A_ScaleVelocity(0.6);
 		PAIN G 6 A_Pain();
-		goto missile;
+		---- A 0 setstatelabel("missile");
 	death.telefrag:
 		TNT1 A 0 spawn("Telefog",pos,ALLOW_REPLACE);
 		TNT1 A 0 A_NoBlocking();
@@ -335,7 +335,7 @@ class SkullSpitter:HDMobBase replaces PainElemental{
 		stop;
 	raise:
 		PAIN MLKJIH 8;
-		goto checkraise;
+		---- A 0 setstatelabel("checkraise");
 	}
 }
 

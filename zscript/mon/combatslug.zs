@@ -147,7 +147,7 @@ class CombatSlug:HDMobBase replaces Fatso{
 		}
 		FATT E 0 A_JumpIfTargetInLOS("raiseshoot",30);
 		FATT E 0 A_JumpIfTargetInLOS("missile");
-		goto see;
+		---- A 0 setstatelabel("see");
 	raiseshoot:
 		FATT G 4{
 			A_PlaySound("fatso/raiseguns",CHAN_VOICE);
@@ -231,11 +231,11 @@ class CombatSlug:HDMobBase replaces Fatso{
 				setstatelabel("shoot");
 			}else accuracy=0;
 		}
-		goto see;
+		---- A 0 setstatelabel("see");
 	pain:
 		FATT J 3;
 		FATT J 3 A_Pain;
-		goto see;
+		---- A 0 setstatelabel("see");
 	death:
 		FATT K 6 A_SpawnItemEx("HDExplosion",0,0,36,flags:SXF_SETTARGET);
 		FATT L 6 A_Scream();
@@ -258,7 +258,7 @@ class CombatSlug:HDMobBase replaces Fatso{
 		FATT ST 14 damagemobj(self,self,1,"maxhpdrain",DMG_NO_PAIN|DMG_FORCED|DMG_NO_FACTOR);
 		FATT TSR 10;
 		FATT QPONMLK 5;
-		goto see;
+		---- A 0 setstatelabel("see");
 	death.maxhpdrain:
 		FATT STST 14 A_SpawnItemEx("MegaBloodSplatter",
 			frandom(-1,1),frandom(-1,1),frandom(10,16),
@@ -268,3 +268,4 @@ class CombatSlug:HDMobBase replaces Fatso{
 		stop;
 	}
 }
+
