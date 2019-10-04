@@ -112,7 +112,7 @@ class NinjaPirate:HDMobBase{ //replaces Spectre{
 	seerunnin:
 		SARG ABCD 4 A_BlurChase();
 		TNT1 A 0 Cloak(randompick(0,0,0,1));
-		goto see;
+		---- A 0 setstatelabel("see");
 	seecloaked:
 		TNT1 A 0 A_JumpIfHealthLower(90,"seecloakedflee");
 		goto seecloakedchase;
@@ -146,7 +146,7 @@ class NinjaPirate:HDMobBase{ //replaces Spectre{
 		SARG G 1 A_SetTranslucent(0.6);
 		SARG G 1 A_SetTranslucent(0.8);
 		SARG G 0 A_SetTranslucent(1);
-		goto see;
+		---- A 0 setstatelabel("see");
 	melee:
 		SARG G 0 A_JumpIf(cloaked,"Uncloak");
 		SARG E 0 A_PlaySound("demon/melee");
@@ -164,7 +164,7 @@ class NinjaPirate:HDMobBase{ //replaces Spectre{
 		SARG GGGG 0 A_CustomMeleeAttack(random(1,18),"misc/bulletflesh","","teeth",true);
 	meleeend:
 		SARG G 10;
-		goto see;
+		---- A 0 setstatelabel("see");
 	latch:
 		SARG EEF 1{
 			A_FaceTarget();
@@ -210,7 +210,7 @@ class NinjaPirate:HDMobBase{ //replaces Spectre{
 		SARG G 1 A_SetTranslucent(0.4);
 		SARG G 1 A_SetTranslucent(0.2,2);
 		TNT1 AAAAA 0 A_Chase(null);
-		goto see;
+		---- A 0 setstatelabel("see");
 	death:
 		---- A 0 A_SpawnItemEx("BFGNecroShard",0,0,0,0,0,5,0,SXF_TRANSFERPOINTERS|SXF_SETMASTER,196);
 		TNT1 A 0 A_Jump(128,2);

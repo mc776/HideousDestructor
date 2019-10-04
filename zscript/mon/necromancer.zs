@@ -117,7 +117,7 @@ class BloodyHellFire:HDMobBase{
 		TNT1 A 0 A_SpawnProjectile("HeckFire",0,0,0);
 		FIRE D 0 A_SpawnProjectile("BloodyHellFireTail",0,0,0,2,0);
 		FIRE D random(1,2) A_Wander();
-		goto see;
+		---- A 0 setstatelabel("see");
 	putto:
 		TNT1 A 0 A_Playsound("vile/firestrt");
 		TNT1 AAAAA 0 A_SpawnItemEx("HDSmoke",frandom(-1,1),frandom(-1,1),frandom(1,6),frandom(-1,1),frandom(-1,1),frandom(1,3),0,SXF_ABSOLUTE);
@@ -406,7 +406,7 @@ class Necromancer:HDMobBase replaces ArchVile{
 		VILE P 0 A_CustomBulletAttack(0,0,1,1,"BloodyHellFire");
 		VILE PO 4 bright light("HELL");
 		VILE N 8 bright light("HELL");
-		goto see;
+		---- A 0 setstatelabel("see");
 	heal:
 		VILE A 0 A_ChangeNecroFlags(true);
 		VILE \\ 8 bright light("HEAL");
@@ -430,7 +430,7 @@ class Necromancer:HDMobBase replaces ArchVile{
 				A_SetTics(16);
 			}
 		}
-		goto see;
+		---- A 0 setstatelabel("see");
 	pain:
 		VILE Q 20 light("HELL")A_VilePain();
 		VILE H 0 A_JumpIf(bfriendly,"see");
@@ -454,7 +454,7 @@ class Necromancer:HDMobBase replaces ArchVile{
 		TNT1 AAAAAAAAA 0 A_Wander();
 		TNT1 A 0 A_SetTics(random(350,3500));
 		VILE F 0 A_ChangeNecroFlags(true);
-		goto see;
+		---- A 0 setstatelabel("see");
 	death:
 		VILE Q 42 bright A_VilePain();
 		VILE Q 0 A_FaceTarget();

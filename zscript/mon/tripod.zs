@@ -366,7 +366,7 @@ class SatanRobo:HDMobBase replaces CyberDemon{
 				if(health>1000)speed++;else speed--;
 				speed=clamp(speed,random(1,8),random(20,30));
 			}
-		}goto see;
+		}---- A 0 setstatelabel("see");
 	missile:
 		CYBR A 0 A_JumpIfTargetInLOS("inposition",20);
 		CYBR A 4 A_FaceTarget(40,40);
@@ -385,7 +385,7 @@ class SatanRobo:HDMobBase replaces CyberDemon{
 		CYBR E random(15,25) A_Recoil(-4);
 		CYBR E 0 A_JumpIfTargetInLOS("missile");
 		CYBR E 0 A_Jump(128,"spray");
-		goto see;
+		---- A 0 setstatelabel("see");
 	inposition:
 		CYBR E 4{
 			A_Recoil(1);
@@ -464,7 +464,7 @@ class SatanRobo:HDMobBase replaces CyberDemon{
 		CYBR E 0 A_JumpIf(health>1600,3);
 		CYBR EE 2 A_CyberGunSmoke();
 		CYBR E 17;
-		goto see;
+		---- A 0 setstatelabel("see");
 
 	death:
 		CYBR G 1 A_Pain();

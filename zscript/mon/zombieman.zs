@@ -271,7 +271,7 @@ class ZombieStormtrooper:HDMobMan{
 	turntoaim:
 		#### E 2 A_FaceTarget(turnamount,turnamount);
 		#### A 0 A_JumpIfTargetInLOS(1);
-		goto see;
+		---- A 0 setstatelabel("see");
 		#### A 0 A_JumpIfTargetInLOS(1,10);
 		loop;
 		#### E 1{
@@ -371,13 +371,13 @@ class ZombieStormtrooper:HDMobMan{
 			A_ZomFrag();
 		}
 		---- A 0 A_JumpIf(mag<1,"reload");
-		goto see;
+		---- A 0 setstatelabel("see");
 
 	jammed:
 		#### E 8;
 		#### E 0 A_Jump(128,"see");
 		#### E 4 A_PlaySound(random(0,2)?seesound:painsound,CHAN_VOICE);
-		goto see;
+		---- A 0 setstatelabel("see");
 
 	ohforfuckssake:
 		#### E 8;
@@ -441,7 +441,7 @@ class ZombieStormtrooper:HDMobMan{
 		#### E 2 A_JumpIfTargetInLOS("missile2",40);
 		#### E 0{spread=4;}
 		#### ABCD 3{hdmobai.chase(self);}
-		goto see;
+		---- A 0 setstatelabel("see");
 	melee:
 		#### C 8 A_FaceTarget();
 		#### D 4;
@@ -460,7 +460,7 @@ class ZombieStormtrooper:HDMobMan{
 		#### E 4 A_FaceTarget(10,10);
 		goto missile2;
 		#### A 4;
-		goto see;
+		---- A 0 setstatelabel("see");
 	pain:
 		#### G 2;
 		#### G 3{
@@ -473,7 +473,7 @@ class ZombieStormtrooper:HDMobMan{
 		}
 		#### ABCD 2{hdmobai.chase(self);}
 		#### G 0{bfrightened=false;}
-		goto see;
+		---- A 0 setstatelabel("see");
 	death:
 		#### H 5;
 		#### I 5 A_Scream();

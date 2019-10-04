@@ -53,7 +53,7 @@ class Putto:HDMobBase{
 		#### DABCD 1;
 		#### ABCD 2;
 		#### ABCD 3;
-		goto see;
+		---- A 0 setstatelabel("see");
 	pain:
 		#### DAB 1;
 		#### C 1 A_Recoil(4);

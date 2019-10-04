@@ -122,30 +122,30 @@ class TechnoSpider:HDMobBase replaces Arachnotron{
 	missile:
 		---- A 0 A_JumpIfTargetInLOS("shoot",15);
 		---- A 0 A_JumpIfTargetInLOS(1);
-		goto see;
+		---- A 0 setstatelabel("see");
 		---- A 0 A_PlaySound("baby/walk");
 		BSPI AA 3 A_FaceTarget(20,0);
 		---- A 0 A_JumpIfTargetInLOS("shoot",15);
 		---- A 0 A_JumpIfTargetInLOS(1);
-		goto see;
+		---- A 0 setstatelabel("see");
 		BSPI BB 3 A_FaceTarget(20,0);
 		---- A 0 A_JumpIfTargetInLOS("shoot",15);
 		---- A 0 A_JumpIfTargetInLOS(1);
-		goto see;
+		---- A 0 setstatelabel("see");
 		---- A 0 A_PlaySound("baby/walk");
 		BSPI CC 3 A_FaceTarget(20,0);
 		---- A 0 A_JumpIfTargetInLOS("shoot",15);
 		---- A 0 A_JumpIfTargetInLOS(1);
-		goto see;
+		---- A 0 setstatelabel("see");
 		BSPI DD 3 A_FaceTarget(20,0);
 		---- A 0 A_JumpIfTargetInLOS("shoot",15);
 		---- A 0 A_JumpIfTargetInLOS(1);
-		goto see;
+		---- A 0 setstatelabel("see");
 		---- A 0 A_PlaySound("baby/walk");
 		BSPI EE 3 A_FaceTarget(20,0);
 		---- A 0 A_JumpIfTargetInLOS("shoot",15);
 		---- A 0 A_JumpIfTargetInLOS(1);
-		goto see;
+		---- A 0 setstatelabel("see");
 		BSPI FF 3 A_FaceTarget(20,0);
 		loop;
 	shoot:
@@ -157,20 +157,20 @@ class TechnoSpider:HDMobBase replaces Arachnotron{
 	shootpb2:
 		BSPI GGGGGGGGGGGGG 2 bright light("PLAZMABX2")A_ThunderZap();
 		---- A 0 A_JumpIfTargetInLOS("shoot",3);
-		goto see;
+		---- A 0 setstatelabel("see");
 		---- A 0 A_Jump(48,"shootpb2");
-		goto see;
+		---- A 0 setstatelabel("see");
 	mustreload:
 		BSPI H 10 A_Pain();
 	reload:
 		BSPI A 8 A_PlaySound("baby/walk",CHAN_BODY);
 		BSPI A 20 A_PlaySound("baby/walk",CHAN_WEAPON);
 		BSPI A 0 {battery=20;}
-		goto see;
+		---- A 0 setstatelabel("see");
 	pain:
 		BSPI I 3;
 		BSPI I 3 A_Pain;
-		goto see;
+		---- A 0 setstatelabel("see");
 	death:
 		---- AAAAAAAA 0 A_SpawnItemEx("HugeWallChunk",frandom(-4,4),frandom(-4,4),frandom(28,34),frandom(-6,6),frandom(-6,6),frandom(-2,16),0,160,0);
 		---- AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 0 A_SpawnItemEx("BigWallChunk",frandom(-3,3),frandom(-3,3),frandom(28,34),frandom(-2,2),frandom(-2,2),frandom(2,14),0,160,0);

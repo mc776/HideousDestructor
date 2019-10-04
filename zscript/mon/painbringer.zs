@@ -74,7 +74,7 @@ class PainBringer:PainMonster replaces HellKnight{
 	pain:
 		BOS2 H 2;
 		BOS2 H 2 A_Pain;
-		goto see;
+		---- A 0 setstatelabel("see");
 	pain.balefire:
 		BOS2 H 3{
 			A_Recoil(0.4);
@@ -89,7 +89,7 @@ class PainBringer:PainMonster replaces HellKnight{
 		}
 		BOS2 E 0 A_JumpIfTargetInLOS("shoot",10);
 		BOS2 E 0 A_JumpIfTargetInLOS("missile");
-		goto see;
+		---- A 0 setstatelabel("see");
 	shoot:
 		BOS2 E 0{
 			if(target)targetdistance=distance3d(target);else targetdistance=0;
@@ -114,7 +114,7 @@ class PainBringer:PainMonster replaces HellKnight{
 			p.bfriendly=bfriendly;p.target=target;
 			stamina++;
 		}
-		goto see;
+		---- A 0 setstatelabel("see");
 	fireball:
 		BOS2 FE 3 A_FaceTarget(60,60);
 		BOS2 E 2{
@@ -145,7 +145,7 @@ class PainBringer:PainMonster replaces HellKnight{
 		}
 		BOS2 GF 5;
 		BOS2 A 0 A_Jump(128,"missile");
-		goto see;
+		---- A 0 setstatelabel("see");
 	melee:
 		BOS2 E 6 A_FaceTarget();
 		BOS2 F 2;
@@ -160,7 +160,7 @@ class PainBringer:PainMonster replaces HellKnight{
 			aaa.vel+=vel;
 		}
 		BOS2 F 5;
-		goto see;
+		---- A 0 setstatelabel("see");
 	death:
 		BOS2 I 8;
 		BOS2 J 8 A_Scream();

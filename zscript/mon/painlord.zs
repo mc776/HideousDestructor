@@ -113,7 +113,7 @@ class PainLord:PainMonster replaces BaronofHell{
 			if(A_JumpIfTargetInLOS("shoot",10))setstatelabel("shoot");
 		}
 		BOSS E 0 A_JumpIfTargetInLOS("missile");
-		goto see;
+		---- A 0 setstatelabel("see");
 	shoot:
 		BOSS E 0 A_AlertMonsters(0,AMF_TARGETNONPLAYER);
 		BOSS E 0 A_Jump(64,2);
@@ -142,7 +142,7 @@ class PainLord:PainMonster replaces BaronofHell{
 		BOSS H 0 bright A_SpawnProjectile("MiniBBall",66,0,24,2,7);
 		BOSS H 6 bright A_SpawnProjectile("MiniBBall",66,0,-24,2,7);
 		BOSS H 12;
-		goto see;
+		---- A 0 setstatelabel("see");
 	MissileFuckYou:
 		BOSS H 18 A_FaceTarget(20,20);
 		BOSS H 0 bright A_SpawnProjectile("BaleBall",38,0,2,0,0);
@@ -157,7 +157,7 @@ class PainLord:PainMonster replaces BaronofHell{
 			if(random(0,3))A_SpawnProjectile("BelphBall",28,0,0,2,pitch);
 			else A_BaronSoul();
 		}
-		goto see;
+		---- A 0 setstatelabel("see");
 	pain:
 		BOSS H 6 A_Pain();
 		BOSS H 3 A_Jump(116,"see","MissileSkull");
@@ -178,7 +178,7 @@ class PainLord:PainMonster replaces BaronofHell{
 		BOSS F 2;
 		BOSS G 6 A_CustomMeleeAttack(random(40,120),"baron/melee","","claws",true);
 		BOSS F 5 A_JumpIf(target&&distance3d(target)>84,"missilesweep");
-		goto see;
+		---- A 0 setstatelabel("see");
 	death.telefrag:
 		TNT1 A 0 spawn("Telefog",pos,ALLOW_REPLACE);
 		TNT1 A 0 A_NoBlocking();

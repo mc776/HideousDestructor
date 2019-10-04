@@ -298,7 +298,7 @@ class UndeadHomeboy:HDMobMan{
 		#### A 7 A_HDUnload();
 		#### BC 7 A_HDChase();
 		#### D 8 A_HDReload();
-		goto see;
+		---- A 0 setstatelabel("see");
 
 	melee:
 		#### C 8 A_FaceTarget();
@@ -310,7 +310,7 @@ class UndeadHomeboy:HDMobMan{
 		#### E 4 A_FaceTarget(10,10);
 		goto shoot;
 		#### A 4;
-		goto see;
+		---- A 0 setstatelabel("see");
 	pain:
 		#### G 2;
 		#### G 3{
@@ -333,7 +333,7 @@ class UndeadHomeboy:HDMobMan{
 		}
 		#### ABCD 2 A_HDChase();
 		#### G 0{bfrightened=false;}
-		goto see;
+		---- A 0 setstatelabel("see");
 	death:
 		#### H 5;
 		#### I 5 A_Scream();

@@ -400,11 +400,11 @@ class Trilobite:HDMobBase replaces Cacodemon{
 		}
 		HEAD F 6 A_Pain();
 		HEAD E 3;
-		goto see;
+		---- A 0 setstatelabel("see");
 	missile:
 		HEAD A 0 A_JumpIfTargetInLOS("shoot",10);
 		HEAD A 0 A_JumpIfTargetInLOS(1,flags:JLOSF_DEADNOJUMP);
-		goto see;
+		---- A 0 setstatelabel("see");
 		HEAD A 3 A_FaceTarget(40,40,flags:FAF_TOP);
 		loop;
 	shoot:
@@ -433,7 +433,7 @@ class Trilobite:HDMobBase replaces Cacodemon{
 		HEAD C 3;
 		HEAD B 3;
 		HEAD A 6{angle-=sweepangle;}
-		goto see;
+		---- A 0 setstatelabel("see");
 	bigzap:
 		HEAD B 2;
 		HEAD C 3;
@@ -486,7 +486,7 @@ class Trilobite:HDMobBase replaces Cacodemon{
 		HEAD C 6;
 		HEAD B 3;
 		HEAD A 6;
-		goto see;
+		---- A 0 setstatelabel("see");
 	melee:
 		HEAD BB 2 A_FaceTarget(40,40);
 		HEAD C 4{
@@ -499,7 +499,7 @@ class Trilobite:HDMobBase replaces Cacodemon{
 		HEAD C 4;
 		HEAD B 2;
 		HEAD A 6;
-		goto see;
+		---- A 0 setstatelabel("see");
 	death.spawndead:
 		HEAD G 0{
 			bfloatbob=false;

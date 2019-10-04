@@ -238,7 +238,7 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 		#### A 0 A_FaceTarget(15,0);
 		#### E 2 A_JumpIfTargetInLOS("missile2",40);
 		#### AABBCCDD 2{hdmobai.chase(self);}
-		goto see;
+		---- A 0 setstatelabel("see");
 
 	missile:
 		#### A 0 A_JumpIfTargetInLOS(3,120);
@@ -267,7 +267,7 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 	turntoaim:
 		#### E 2 A_FaceTarget(turnamount,turnamount);
 		#### A 0 A_JumpIfTargetInLOS(1);
-		goto see;
+		---- A 0 setstatelabel("see");
 		#### A 0 A_JumpIfTargetInLOS(1,10);
 		loop;
 		#### A 0 A_FaceTarget(turnamount,turnamount);
@@ -421,7 +421,7 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 		#### E 8;
 		#### E 0 A_Jump(128,"see");
 		#### E 4 A_PlaySound(random(0,2)?seesound:painsound,CHAN_VOICE);
-		goto see;
+		---- A 0 setstatelabel("see");
 
 	ohforfuckssake:
 		#### E 6;
@@ -487,7 +487,7 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 			A_PlaySound("weapons/sshotc",6);
 			gunloaded=2;
 		}
-		goto see;
+		---- A 0 setstatelabel("see");
 
 	reloadsg:
 		#### A 0{bfrightened=true;}
@@ -521,7 +521,7 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 		#### BBCCDD 2{hdmobai.chase(self,null,null);}
 		#### A 0 A_PlaySound("weapons/huntopen",CHAN_WEAPON);
 		#### EEE 1 A_Chase("melee","missile",CHF_DONTMOVE);
-		goto see;
+		---- A 0 setstatelabel("see");
 
 	melee:
 		#### C 6 A_FaceTarget();
@@ -541,7 +541,7 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 		#### E 3 A_FaceTarget();
 		goto missile;
 		#### A 3;
-		goto see;
+		---- A 0 setstatelabel("see");
 	pain:
 		#### G 3 A_Jump(12,1);
 		#### G 3{
@@ -554,7 +554,7 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 		}
 		#### ABCD 2{hdmobai.chase(self);}
 		#### G 0{bfrightened=false;}
-		goto see;
+		---- A 0 setstatelabel("see");
 
 	death:
 		#### H 5;
@@ -609,7 +609,7 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 		#### L 4 spawn("MegaBloodSplatter",pos+(0,0,34),ALLOW_REPLACE);
 		#### LK 6;
 		#### JIH 4;
-		goto see;
+		---- A 0 setstatelabel("see");
 	ungib:
 		#### U 12;
 		#### T 8;

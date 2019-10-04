@@ -48,7 +48,7 @@ class HDStealthPorter:Actor{
 		loop;
 	missile:
 		TNT1 A 4 A_CheckPortIn();
-		goto see;
+		---- A 0 setstatelabel("see");
 	portin:
 		TNT1 A 70 A_PlaySound(
 			getdefaultbytype(spawntype).seesound,

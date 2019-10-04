@@ -138,7 +138,7 @@ class Technorantula:HDMobBase replaces SpiderMastermind{
 		SPID # 0 A_Recoil(-1);
 		SPID FF 2 A_FaceTarget(18,40);
 		SPID # 0 A_JumpIfTargetInLOS("missile",10);
-		goto see;
+		---- A 0 setstatelabel("see");
 	aim:
 		SPID # 4{
 			shotcount=0;
@@ -171,7 +171,7 @@ class Technorantula:HDMobBase replaces SpiderMastermind{
 		SPID # 10{
 			frame=randompick(2,5);
 			A_Recoil(-1);
-		}goto see;
+		}---- A 0 setstatelabel("see");
 	guard:
 		SPID # 1 A_JumpIfTargetInLOS("shoot",20);
 		SPID # 1 A_JumpIfTargetInLOS("missile");

@@ -84,13 +84,13 @@ class Yokai:HDMobBase{
 		}
 	posthurt:
 		#### C 0 A_JumpIfCloser(random(600,666),1);
-		goto see;
+		---- A 0 setstatelabel("see");
 		#### C 0 A_MonsterRefire(0,"see");
 		#### C 0 A_JumpIfInTargetLOS("hurt",40);
 		#### C 0 A_SetScale(0.666);
 		#### CDA 1 bright;
 		#### C 0 A_JumpIfInTargetLOS("missile2",80);
-		goto see;
+		---- A 0 setstatelabel("see");
 	pain:
 		---- A 1;
 		---- A 0{
@@ -112,7 +112,7 @@ class Yokai:HDMobBase{
 			A_SetShootable();
 		}
 		PINS DABCD 1{alpha+=0.18;}
-		goto see;
+		---- A 0 setstatelabel("see");
 	death:
 		#### DABCD 1{alpha-=0.18;}
 		stop;

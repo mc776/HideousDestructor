@@ -324,7 +324,7 @@ class Serpentipede:HDMobBase{
 		#### F 2;
 		#### G 8 A_CustomMeleeAttack(random(10,30),"imp/melee","","claws",true);
 		#### F 4;
-		goto see;
+		---- A 0 setstatelabel("see");
 	pain:
 		---- A 0 A_GiveInventory("HDFireEnder",3);
 		#### H 3 {bNODROPOFF=true;}
@@ -518,7 +518,7 @@ class Regentipede:Serpentipede{
 		#### F 4;
 		#### G 8 A_SpawnProjectile("HDImpBall",(random(24,30)),0,(random(-6,6)),CMF_AIMDIRECTION,pitch);
 		#### F 5;
-		goto see;
+		---- A 0 setstatelabel("see");
 	missile2:
 		#### E 2 A_FaceTarget(0,0);
 		#### E 0 A_PlaySound("imp/sight");
@@ -534,15 +534,15 @@ class Regentipede:Serpentipede{
 		#### G 0 A_FaceTarget();
 		#### G 0 A_SpawnProjectile("ShieldImpBall",32,8,0,CMF_AIMDIRECTION,pitch);
 		#### GGFE 5;
-		goto see;
+		---- A 0 setstatelabel("see");
 	pain:
 		---- A 0 A_GiveInventory("HDFireEnder",5);
 		#### H 3;
 		#### H 3 A_Pain();
-		goto see;
+		---- A 0 setstatelabel("see");
 	heal:
 		#### AHAHAHAHAHA 4 light("HEAL");
-		goto see;
+		---- A 0 setstatelabel("see");
 	death:
 		---- A 0 A_SpawnItemEx("BFGNecroShard",0,0,24,0,0,8,0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS,164);
 		goto super::death;
@@ -589,7 +589,7 @@ class Ardentipede:Serpentipede{
 		#### ABCD 4 {
 			hdmobai.wander(self,true);
 			if(stamina>0)stamina--;
-		}goto see;
+		}---- A 0 setstatelabel("see");
 	missile:
 		---- A 0 A_JumpIf(stamina>random(5,10),"recharge");
 		---- A 0 A_JumpIf(health<random(0,200),1);
@@ -613,7 +613,7 @@ class Ardentipede:Serpentipede{
 		---- A 0 A_FaceTarget(0,0);
 		#### F 6;
 		#### G 8 A_SpawnProjectile("ArdentipedeBall",(random(30,34)),0,(random(-6,6)),CMF_AIMDIRECTION,pitch);
-		goto see;
+		---- A 0 setstatelabel("see");
 	missile2:
 		#### E 0 A_Jump(96,"Missile1");
 		#### E 0 A_Jump(16,"Missile3");
@@ -628,7 +628,7 @@ class Ardentipede:Serpentipede{
 		#### GGGGGGGG 0 A_SpawnProjectile("ArdentipedeBall2",random(29,34),6,(random(-18,18)),CMF_AIMDIRECTION,pitch+frandom(-2,4));
 		---- A 0{stamina+=5;}
 		#### GGFE 5;
-		goto see;
+		---- A 0 setstatelabel("see");
 	missile3:
 		#### E 0 A_Jump(16,"missile1");
 		#### E 0 A_Jump(32,"missile2");
