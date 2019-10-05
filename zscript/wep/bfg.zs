@@ -23,6 +23,10 @@ class BFG9K:HDWeapon replaces BFG9000{
 		return "You got the "..getnicename().."! Oh yes.";
 	}
 	override string GetNiceName(){return bplayingid?"BFG 9k":"SKAG 1337";}
+	override string getobituary(actor victim,actor inflictor,name mod,bool playerattack){
+		if(bplayingid)return "%o was smacked by %k's big green gob.";
+		return "%o just got glassed and no one leaves here till we find out %k did it!";
+	}
 	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
 	override hdweapon GetSpareWeapon(actor newowner,bool reverse,bool doselect){return GetSpareWeaponRegular(newowner,reverse,doselect);}
 	//BFG9k.Spark(self,4);
@@ -560,7 +564,6 @@ class BFGBalle:HDFireball{
 		radius 6;
 		speed 10;
 		gravity 0;
-		obituary "%o was smacked by %k's big green gob.";
 	}
 	void A_BFGBallZap(){
 		if(pos.z-floorz<12)vel.z+=1;
@@ -712,8 +715,8 @@ class BFGPuff:GreenParticleFountain{
 		+hittracer
 		renderstyle "add";
 		damagetype "BFGBallAttack";
-		obituary "%o couldn't be bothered to get away from %k's BFG.";
 		scale 0.8;
+		obituary "$OB_MPBFG_BOOM";
 	}
 	states{
 	spawn:
