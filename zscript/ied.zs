@@ -20,6 +20,7 @@ class HDIEDKit:HDPickup{
 		hdpickup.nicename "IED Kit";
 		hdpickup.refid HDLD_IEDKIT;
 		+hdpickup.multipickup
+		+forcexybillboard
 	}
 	override int getsbarnum(int flags){return botid;}
 	override void beginplay(){

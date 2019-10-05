@@ -399,12 +399,13 @@ class DudRocket:HDUPK{
 		---- A 0{
 			A_HDBlast(
 				pushradius:256,pushamount:128,fullpushradius:96,
-				fragradius:1024-20*stamina,fragtype:"HDB_fragRL",
+				fragradius:HDCONST_SPEEDOFSOUND-10*stamina,fragtype:"HDB_fragRL",
 				immolateradius:128,immolateamount:random(3,60),
-				immolatechance:random(1,25)
+				immolatechance:25
 			);
 			actor xpl=spawn("Gyrosploder",self.pos-(0,0,1),ALLOW_REPLACE);
 			xpl.target=target;xpl.master=master;xpl.stamina=stamina;
+			A_SpawnChunks("HDB_frag",180,100,700+50*stamina);
 		}stop;
 	give:
 		---- A 0 A_JumpIfInTargetInventory("DudRocketAmmo",0,3);
