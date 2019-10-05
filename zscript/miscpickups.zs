@@ -139,6 +139,7 @@ class HDAmBox:HDUPK{
 		meleerange 42;
 		radiusdamagefactor 0.5;
 		obituary "%o paid no attention to Admiral Ackbar.";
+		hdactor.nicename "ammo box";
 	}
 	bool tapped;
 	bool disarmed;
@@ -388,6 +389,9 @@ class HDAmBoxUnarmed:HDAmBox{
 	}
 }
 class HDAmBoxDisarmed:HDAmBoxUnarmed{
+	default{
+		hdactor.nicename "disarmed ammo box";
+	}
 	states{
 	spawn:
 		OWWV A -1 nodelay{
