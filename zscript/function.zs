@@ -103,10 +103,21 @@ class HDHandlers:EventHandler{
 
 //because "extend class Actor" doesn't work
 class HDActor:Actor{
+	string nicename;
+	property nicename:nicename;
+
 	default{
 		+noblockmonst
 		renderstyle "translucent";
+		hdactor.nicename "";
 	}
+
+	//get a display name
+	virtual clearscope string GetNiceName(){
+		if(nicename!="")return nicename;
+		return getclassname();
+	}
+
 	//"After that many drinks anyone would be blowing chunks all night!"
 	//"Chunks is the name of my dog."
 	//for frags: A_SpawnChunks("HDB_frag",42,100,700);
@@ -384,7 +395,8 @@ struct HDMath{
 		if(named.player)return named.player.getusername();
 		if(nicename){
 			if(hdpickup(named))return hdpickup(named).nicename;
-			if(hdmobbase(named))return hdmobbase(named).getnicename();
+			if(hdweapon(named))return hdweapon(named).getnicename();
+			if(hdactor(named))return hdactor(named).getnicename();
 		}
 		return named.getclassname();
 	}

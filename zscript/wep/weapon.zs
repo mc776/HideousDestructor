@@ -11,6 +11,7 @@ class HDWeapon:Weapon{
 	flagdef ReverseGunInertia:HDWeaponFlags,5;
 	flagdef AlwaysShowStatus:HDWeaponFlags,6;
 	flagdef DontDefaultConfigure:HDWeaponFlags,7;
+	flagdef PlayingId:HDWeaponFlags,8;
 
 	double barrellength;
 	double barrelwidth;
@@ -166,6 +167,12 @@ class HDWeapon:Weapon{
 	//because every gun should have one of these
 	action void FindRange(){
 		eventhandler.sendnetworkevent("hd_findrange",0,0,0);
+	}
+
+	//get a display name
+	virtual clearscope string GetNiceName(){
+		if(nicename!="")return nicename;
+		return getclassname();
 	}
 
 	//stops turning input
@@ -452,6 +459,7 @@ class HDWeapon:Weapon{
 		initializewepstats();
 		bobrangex*=3;bobrangey*=3;
 		bdontbob=true;
+		bplayingid=(Wads.CheckNumForName("id",0)!=-1);
 		super.beginplay();
 	}
 

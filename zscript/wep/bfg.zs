@@ -15,11 +15,14 @@ class BFG9K:HDWeapon replaces BFG9000{
 		weapon.bobspeed 1.8;
 		weapon.bobstyle "normal";
 		scale 0.7;
-		inventory.pickupmessage "You got the BFG 9k! Oh yes.";
 		hdweapon.barrelsize 32,3.5,7;
 		hdweapon.refid HDLD_BFG;
 		hdweapon.nicename "BFG 9k";
 	}
+	override string pickupmessage(){
+		return "You got the "..getnicename().."! Oh yes.";
+	}
+	override string GetNiceName(){return bplayingid?"BFG 9k":"SKAG 1337";}
 	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
 	override hdweapon GetSpareWeapon(actor newowner,bool reverse,bool doselect){return GetSpareWeaponRegular(newowner,reverse,doselect);}
 	//BFG9k.Spark(self,4);

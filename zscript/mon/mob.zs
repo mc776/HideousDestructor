@@ -19,9 +19,6 @@ class HDMobBase : HDActor{
 	flagdef norandomweakspots:hdmobflags,10;
 	flagdef noincap:hdmobflags,11;
 
-	string nicename;
-	property nicename:nicename;
-
 	default{
 		monster;
 		radius 12;
@@ -33,7 +30,6 @@ class HDMobBase : HDActor{
 		bloodtype "HDMasterBlood";
 		hdmobbase.shields 0;
 		hdmobbase.downedframe 11; //"K"
-		hdmobbase.nicename "";
 	}
 
 	double liveheight;
@@ -45,12 +41,6 @@ class HDMobBase : HDActor{
 		super.postbeginplay();
 		resetdamagecounters();bloodloss=0;
 		bplayingid=(Wads.CheckNumForName("id",0)!=-1);
-	}
-
-
-	virtual clearscope string GetNiceName(){
-		if(nicename!="")return nicename;
-		return getclassname();
 	}
 
 	override void Tick(){
