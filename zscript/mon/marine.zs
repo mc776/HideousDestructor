@@ -501,7 +501,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		}
 	turntoaim:
 		#### E 2 A_FaceTarget(turnamount,turnamount);
-		#### A 0 A_JumpIfTargetInLOS(1);
+		#### A 0 A_JumpIfTargetInLOS(2);
 		---- A 0 setstatelabel("see");
 		#### A 0 A_JumpIfTargetInLOS(1,10);
 		loop;

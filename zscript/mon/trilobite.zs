@@ -403,7 +403,7 @@ class Trilobite:HDMobBase replaces Cacodemon{
 		---- A 0 setstatelabel("see");
 	missile:
 		HEAD A 0 A_JumpIfTargetInLOS("shoot",10);
-		HEAD A 0 A_JumpIfTargetInLOS(1,flags:JLOSF_DEADNOJUMP);
+		HEAD A 0 A_JumpIfTargetInLOS(2,flags:JLOSF_DEADNOJUMP);
 		---- A 0 setstatelabel("see");
 		HEAD A 3 A_FaceTarget(40,40,flags:FAF_TOP);
 		loop;

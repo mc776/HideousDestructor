@@ -164,7 +164,7 @@ class Technorantula:HDMobBase replaces SpiderMastermind{
 			HDBulletActor.FireBullet(self,"HDB_776",zofs:32,spread:1.,aimoffx:spread,aimoffy:spread);
 		}
 		SPID G 0 A_JumpIf(shotcount>50,"stopshot");
-		SPID # 0 A_JumpIfTargetInLOS(1,20);
+		SPID # 0 A_JumpIfTargetInLOS("stopshot",20);
 		goto guard;
 	stopshot:
 		SPID G 0 A_Jump(220,"shoot");

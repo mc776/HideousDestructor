@@ -236,7 +236,7 @@ class Serpentipede:HDMobBase{
 			else if(!A_JumpIfTargetInLOS("null"))setstatelabel("see");
 		}loop;
 	missile0:
-		---- A 0 A_JumpIfTargetInLOS(1);
+		---- A 0 A_JumpIfTargetInLOS(2);
 		---- A 0 A_Jump(256,"spam");
 		#### E 0{
 			bNODROPOFF=true;

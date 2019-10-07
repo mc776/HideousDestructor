@@ -121,30 +121,30 @@ class TechnoSpider:HDMobBase replaces Arachnotron{
 
 	missile:
 		---- A 0 A_JumpIfTargetInLOS("shoot",15);
-		---- A 0 A_JumpIfTargetInLOS(1);
+		---- A 0 A_JumpIfTargetInLOS(2);
 		---- A 0 setstatelabel("see");
 		---- A 0 A_PlaySound("baby/walk");
 		BSPI AA 3 A_FaceTarget(20,0);
 		---- A 0 A_JumpIfTargetInLOS("shoot",15);
-		---- A 0 A_JumpIfTargetInLOS(1);
+		---- A 0 A_JumpIfTargetInLOS(2);
 		---- A 0 setstatelabel("see");
 		BSPI BB 3 A_FaceTarget(20,0);
 		---- A 0 A_JumpIfTargetInLOS("shoot",15);
-		---- A 0 A_JumpIfTargetInLOS(1);
+		---- A 0 A_JumpIfTargetInLOS(2);
 		---- A 0 setstatelabel("see");
 		---- A 0 A_PlaySound("baby/walk");
 		BSPI CC 3 A_FaceTarget(20,0);
 		---- A 0 A_JumpIfTargetInLOS("shoot",15);
-		---- A 0 A_JumpIfTargetInLOS(1);
+		---- A 0 A_JumpIfTargetInLOS(2);
 		---- A 0 setstatelabel("see");
 		BSPI DD 3 A_FaceTarget(20,0);
 		---- A 0 A_JumpIfTargetInLOS("shoot",15);
-		---- A 0 A_JumpIfTargetInLOS(1);
+		---- A 0 A_JumpIfTargetInLOS(2);
 		---- A 0 setstatelabel("see");
 		---- A 0 A_PlaySound("baby/walk");
 		BSPI EE 3 A_FaceTarget(20,0);
 		---- A 0 A_JumpIfTargetInLOS("shoot",15);
-		---- A 0 A_JumpIfTargetInLOS(1);
+		---- A 0 A_JumpIfTargetInLOS(2);
 		---- A 0 setstatelabel("see");
 		BSPI FF 3 A_FaceTarget(20,0);
 		loop;

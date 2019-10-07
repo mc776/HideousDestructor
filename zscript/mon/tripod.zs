@@ -397,8 +397,8 @@ class SatanRobo:HDMobBase replaces CyberDemon{
 		CYBR EE 2 A_CyberGunSmoke();
 		CYBR E 4;
 		CYBR A 0 A_AlertMonsters(0,AMF_TARGETNONPLAYER);
-		CYBR E 0 A_JumpIfTargetInLOS(1,90);
-		goto missile;
+		CYBR E 0 A_JumpIfTargetInLOS(2,90);
+		CYBR E 0 setstatelabel("missile");
 
 		CYBR E 0 A_JumpIf(health>1600,3);
 		CYBR EE 2 A_CyberGunSmoke();
