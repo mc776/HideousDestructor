@@ -163,10 +163,10 @@ class Serpentipede:HDMobBase{
 		Damage 4;
 		MeleeDamage 4;
 		PainChance 80;
-		translation "64:72=50:71";
+		translation "MediumImp";
 		meleesound "imp/melee";
-		obituary "%o was marinated by the imps.";
-		hitobituary "%o was tenderized by the imps.";
+		obituary "%o was marinated by the serpentipedes.";
+		hitobituary "%o was tenderized by the serpentipedes.";
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -178,8 +178,11 @@ class Serpentipede:HDMobBase{
 		}
 	}
 	override string GetObituary(actor victim,actor inflictor,name mod,bool playerattack){
-		if(mod=="claws")return hitobituary;
-		return obituary;
+		string ob;
+		if(mod=="claws")ob=hitobituary;
+		else ob=obituary;
+		if(bplayingid)ob.replace("serpentipede","imp");
+		return ob;
 	}
 	override string getnicename(){
 		return bplayingid?"imp":"serpentipede";
@@ -491,7 +494,7 @@ class Regentipede:Serpentipede{
 		speed 6;
 		health 120;
 		gibhealth 140;
-		translation "64:77=50:76","128:141=208:223";
+		translation "LightImp";
 		seesound "";
 		activesound "";
 		meleedamage 3;
@@ -568,7 +571,7 @@ class Ardentipede:Serpentipede{
 		//$Sprite "TROOA1"
 
 		-missilemore
-		translation "128:151=#[197,164,64]","160:167=16:47";
+		translation "MageImp";
 		speed 8;
 		health 110;
 		obituary "%o experienced the magic.";
