@@ -266,6 +266,7 @@ class HDAmBox:HDUPK{
 		}stop;
 	goodies:
 		---- A 2 A_PlaySound("weapons/pocket",CHAN_VOICE);
+		---- A 0 A_JumpIf(Wads.CheckNumForName("id",0)!=-1,2);
 		AMBX B 0 A_SpawnItemEx("HDFader",flags:SXF_TRANSFERSPRITEFRAME|SXF_TRANSFERSCALE|SXF_TRANSFERRENDERSTYLE);
 		---- A 0 A_Jump(256,
 			"zeds","smgs","piss",
