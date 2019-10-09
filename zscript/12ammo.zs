@@ -1,7 +1,7 @@
 // ------------------------------------------------------------
 // Shotgun Shells
 // ------------------------------------------------------------
-class HDShellAmmo:HDAmmo{
+class HDShellAmmo:HDRoundAmmo{
 	default{
 		+inventory.ignoreskill
 		+hdpickup.multipickup
@@ -17,22 +17,7 @@ class HDShellAmmo:HDAmmo{
 		itemsthatusethis.push("Slayer");
 	}
 	override void SplitPickup(){
-		while(amount>4){
-			let sss=hdpickup(spawn("HDShellAmmo",pos+(frandom(-1,1),frandom(-1,1),frandom(-1,1))));
-			sss.amount=4;
-			sss.vel=vel+(frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(-0.6,0.6));
-			sss.angle=angle;
-			amount-=4;
-		}
-		if(amount<1){
-			destroy();
-			return;
-		}
-		if(amount==4){
-			sprite=getspriteindex("SHELA0");
-			return;
-		}
-		super.splitpickup();
+		SplitPickupBoxableRound(4,20,"ShellBoxPickup","SHELA0");
 	}
 	override void postbeginplay(){
 		super.postbeginplay();

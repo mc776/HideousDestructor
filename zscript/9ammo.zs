@@ -1,18 +1,22 @@
 // ------------------------------------------------------------
 // 9mm Ammo
 // ------------------------------------------------------------
-class HDPistolAmmo:HDAmmo{
+class HDPistolAmmo:HDRoundAmmo{
 	default{
 		+inventory.ignoreskill
 		+cannotpush
 		+forcexybillboard
 		+rollsprite +rollcenter
 		+hdpickup.multipickup
-		scale 0.7;
+		xscale 0.7;
+		yscale 0.6;
 		inventory.pickupmessage "Picked up a 9mm round.";
 		hdpickup.refid HDLD_NINEMIL;
 		hdpickup.nicename "9mm Round";
 		hdpickup.bulk ENC_9;
+	}
+	override void SplitPickup(){
+		SplitPickupBoxableRound(10,100,"HD9mBoxPickup","TEN9A0");
 	}
 	override void GetItemsThatUseThis(){
 		itemsthatusethis.push("DERPUsable");
@@ -23,7 +27,8 @@ class HDPistolAmmo:HDAmmo{
 	}
 	states{
 	spawn:
-		PBRS A -1;
+		PRND A -1;
+		TEN9 A -1;
 	}
 }
 

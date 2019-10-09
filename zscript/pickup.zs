@@ -10,9 +10,6 @@ class GrabThinker:Thinker{
 		grabthink.picktarget=grabber;
 		grabthink.pickobj=grabee;
 	}
-	override void postbeginplay(){
-		super.postbeginplay();
-	}
 	override void ondestroy(){
 		if(pickobj)pickobj.bsolid=true;
 	}
@@ -398,6 +395,35 @@ class HDAmmo:HDPickup{
 			if(owner.countinv(itemsthatusethis[i]))return true;
 		}
 		return false;
+	}
+}
+class HDRoundAmmo:HDAmmo{
+	void SplitPickupBoxableRound(
+		int packnum,
+		int boxnum,
+		class<actor> boxtype,
+		name packsprite
+	){
+		while(amount>packnum){
+			if(amount>=boxnum){
+				actor aaa=spawn(boxtype,pos+(frandom(-1,1),frandom(-1,1),frandom(-1,1)));
+				aaa.vel=vel+(frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(-0.6,0.6));
+				aaa.angle=angle;
+				amount-=boxnum;
+			}else{
+				let sss=hdpickup(spawn(getclassname(),pos+(frandom(-1,1),frandom(-1,1),frandom(-1,1))));
+				sss.amount=packnum;
+				sss.vel=vel+(frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(-0.6,0.6));
+				sss.angle=angle;
+				amount-=packnum;
+			}
+			if(amount<1){
+				destroy();
+				return;
+			}
+		}
+		if(amount==packnum)sprite=getspriteindex(packsprite);
+		else super.SplitPickup();
 	}
 }
 

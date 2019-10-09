@@ -1,7 +1,7 @@
 // ------------------------------------------------------------
 // 7.76mm Ammo
 // ------------------------------------------------------------
-class SevenMilAmmo:HDAmmo{
+class SevenMilAmmo:HDRoundAmmo{
 	default{
 		+forcexybillboard +cannotpush
 		+inventory.ignoreskill
@@ -13,6 +13,9 @@ class SevenMilAmmo:HDAmmo{
 		hdpickup.bulk ENC_776;
 		inventory.icon "RBRSA3A7";
 	}
+	override void SplitPickup(){
+		SplitPickupBoxableRound(10,50,"HD7mBoxPickup","TEN7A0");
+	}
 	override void GetItemsThatUseThis(){
 		itemsthatusethis.push("LiberatorRifle");
 		itemsthatusethis.push("BossRifle");
@@ -21,6 +24,7 @@ class SevenMilAmmo:HDAmmo{
 	states{
 	spawn:
 		RBRS A -1;
+		TEN7 A -1;
 	}
 }
 class HD7mMag:HDMagAmmo{
