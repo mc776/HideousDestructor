@@ -11,11 +11,12 @@ class SevenMilAmmo:HDRoundAmmo{
 		hdpickup.refid HDLD_SEVNMIL;
 		hdpickup.nicename "7.76mm Round";
 		hdpickup.bulk ENC_776;
-		inventory.icon "RBRSA3A7";
+		inventory.icon "TEN7A0";
 	}
 	override void SplitPickup(){
 		SplitPickupBoxableRound(10,50,"HD7mBoxPickup","TEN7A0");
-		if(amount==10)scale.y*=0.83;
+		if(amount==10)scale.y=(0.8*0.83);
+		else scale.y=0.8;
 	}
 	override void GetItemsThatUseThis(){
 		itemsthatusethis.push("LiberatorRifle");

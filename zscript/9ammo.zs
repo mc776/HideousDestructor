@@ -14,6 +14,7 @@ class HDPistolAmmo:HDRoundAmmo{
 		hdpickup.refid HDLD_NINEMIL;
 		hdpickup.nicename "9mm Round";
 		hdpickup.bulk ENC_9;
+		inventory.icon "TEN9A0";
 	}
 	override void SplitPickup(){
 		SplitPickupBoxableRound(10,100,"HD9mBoxPickup","TEN9A0");
