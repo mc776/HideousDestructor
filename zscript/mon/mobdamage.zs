@@ -48,6 +48,22 @@ extend class HDMobBase{
 	}
 
 
+	//standard doom knockback is way too much
+	override void ApplyKickback(Actor inflictor, Actor source, int damage, double angle, Name mod, int flags){
+		if(
+			mod=="thermal"
+			||mod=="burning"
+			||mod=="balefire"
+		)return;
+		else if(mod=="piercing")damage>>=4;
+		else if(
+			mod=="bashing"
+			||mod=="electro"
+		)damage>>=1;
+		else damage>>2;
+		if(damage>0)super.ApplyKickback(inflictor,source,damage,angle,mod,flags);
+	}
+
 
 	override int damagemobj(
 		actor inflictor,actor source,int damage,
