@@ -15,6 +15,7 @@ class SevenMilAmmo:HDRoundAmmo{
 	}
 	override void SplitPickup(){
 		SplitPickupBoxableRound(10,50,"HD7mBoxPickup","TEN7A0");
+		if(amount==10)scale.y*=0.83;
 	}
 	override void GetItemsThatUseThis(){
 		itemsthatusethis.push("LiberatorRifle");
