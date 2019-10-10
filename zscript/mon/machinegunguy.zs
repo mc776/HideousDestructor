@@ -39,7 +39,6 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 	override void postbeginplay(){
 		super.postbeginplay();
 		hdmobster.spawnmobster(self);
-		givearmour(0.12,0.12);
 		chambers=5;
 		burstcount=random(4,20);
 		superauto=randompick(0,0,0,1);
@@ -47,6 +46,9 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		thismag=50;
 		bhashelmet=!bplayingid;
 		bnoincap=bplayingid;
+
+		if(bplayingid)givearmour(1.,0.06,-0.4);
+		else givearmour(1.,0.8,-0.4);
 	}
 	void A_ScanForTargets(){
 		if(noammo()){

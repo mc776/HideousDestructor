@@ -87,6 +87,7 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 			sprite=GetSpriteIndex("PLAYA1");
 			A_SetTranslation("HattedJackboot");
 			gunloaded=random(10,50);
+			givearmour(1.,0.06,-0.4);
 		}else{
 			sprite=GetSpriteIndex("SPOSA1");
 			A_SetTranslation("ShotgunGuy");
@@ -94,7 +95,6 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 		}
 		semi=randompick(0,0,1);
 		hdmobster.spawnmobster(self);
-		givearmour(0.12,0.12);
 	}
 	override void deathdrop(){
 		A_NoBlocking();

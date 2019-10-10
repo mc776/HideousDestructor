@@ -110,7 +110,6 @@ class ZombieStormtrooper:HDMobMan{
 			maxtargetrange=6000;
 		}
 		hdmobster.spawnmobster(self);
-		givearmour(0.12);
 	}
 	void A_ZomFrag(){
 		bool garbage;actor gg;
