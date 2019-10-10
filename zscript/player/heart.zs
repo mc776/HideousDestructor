@@ -333,7 +333,7 @@ extend class HDPlayerPawn{
 				if(secondflesh>0){
 					secondflesh--;
 					if(oldwoundcount>0)oldwoundcount--;
-					if(!(level.time&(1|2|4|8|16)))aggravateddamage++;
+					if(!(level.time&(1|2|4)))aggravateddamage++;
 					damagemobj(self,self,1,"staples");
 				}
 
