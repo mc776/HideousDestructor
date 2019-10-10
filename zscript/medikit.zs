@@ -287,7 +287,7 @@ class HDMedikitter:HDWoundFixer{
 			A_PlaySound("misc/bulletflesh",CHAN_BODY);
 			invoker.patchwound(1,self);
 			if(hdplayerpawn(self)){
-				hdplayerpawn(self).secondflesh+=5;
+				hdplayerpawn(self).secondflesh++;
 			}else givebody(3);
 		}goto flashend;
 	flashnail:
@@ -373,9 +373,9 @@ class HDMedikitter:HDWoundFixer{
 				itg.damagemobj(invoker,null,1,"staples",DMG_FORCED);
 
 				if(hdplayerpawn(itg)){
-					hdplayerpawn(itg).secondflesh+=5;
+					hdplayerpawn(itg).secondflesh++;
 				}else if(hdmobbase(itg)){
-					hdmobbase(itg).bodydamage-=5;
+					hdmobbase(itg).bodydamage-=3;
 				}else itg.givebody(3);
 			}
 		}goto patchupend;
