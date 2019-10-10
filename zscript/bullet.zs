@@ -191,8 +191,6 @@ class HDB_bronto:HDBulletActor{
 		}
 	}
 	states{
-	spawn:
-		MISL A -1;
 	death:
 		TNT1 A 1{
 			A_SprayDecal("BrontoScorch",16);
