@@ -109,9 +109,8 @@ class HDMedikitter:HDWoundFixer{
 
 		MEDS_SECONDFLESH=1,
 		MEDS_USEDON=2,
+		MEDS_ACCURACY=3,
 	}
-	int scanaccuracy;
-	actor scantarget;
 	override void initializewepstats(bool idfa){
 		weaponstatus[MEDS_SECONDFLESH]=MEDIKIT_MAXFLESH;
 		weaponstatus[MEDS_USEDON]=-1;
@@ -318,8 +317,30 @@ class HDMedikitter:HDWoundFixer{
 			);
 			let c=HDPlayerPawn(mediline.hitactor);
 			if(!c){
-				if(getcvar("hd_helptext"))A_WeaponMessage("Nothing to be done here.\n\nHeal thyself? (press fire)",150);
-				return resolvestate("nope");
+				//resolve where the target is not an HD player
+				if(mediline.hitactor){
+					let mb=hdmobbase(mediline.hitactor);
+					if(
+						mediline.hitactor.health<mediline.hitactor.spawnhealth()
+						||(
+							mb
+							&&mb.bodydamage>0
+						)
+					){
+						if(invoker.weaponstatus[MEDS_SECONDFLESH]<1){
+							A_WeaponMessage("You are out of Auto-Sutures.");
+							return resolvestate("nope");
+						}
+						invoker.target=c;
+						return resolvestate("applythatshit");
+					}else{
+						A_WeaponMessage("They have no injuries to treat.");
+						return resolvestate("nope");
+					}
+				}else{
+					if(getcvar("hd_helptext"))A_WeaponMessage("Nothing to be done here.\n\nHeal thyself? (press fire)",150);
+					return resolvestate("nope");
+				}
 			}
 			if(
 				c.player
@@ -397,13 +418,14 @@ class HDMedikitter:HDWoundFixer{
 	applythathotshit:
 		TNT1 A 10{
 			if(invoker.target){
-				invoker.weaponstatus[MEDS_SECONDFLESH]--;
+				int fleshgive=min(MEDIKIT_FLESHGIVE,invoker.weaponstatus[MEDS_SECONDFLESH]);
+				invoker.weaponstatus[MEDS_SECONDFLESH]-=fleshgive;
 				invoker.target.A_PlaySound("medikit/stopper",CHAN_WEAPON);
 				invoker.target.A_PlaySound("misc/bulletflesh",CHAN_BODY);
 				invoker.target.A_PlaySound("misc/smallslop",CHAN_VOICE);
 				actor a=spawn("SecondFleshBeast",invoker.target.pos,ALLOW_REPLACE);
 				a.target=invoker.target;
-				a.stamina=MEDIKIT_FLESHGIVE;
+				a.stamina=fleshgive;
 			}
 		}
 		goto nope;
@@ -429,13 +451,14 @@ class HDMedikitter:HDWoundFixer{
 			if(!(self is "HDPlayerPawn"))return;
 			if(invoker.weaponstatus[MEDS_USEDON]<0)
 				invoker.weaponstatus[MEDS_USEDON]=playernumber();
-			invoker.weaponstatus[MEDS_SECONDFLESH]--;
+			int fleshgive=min(MEDIKIT_FLESHGIVE,invoker.weaponstatus[MEDS_SECONDFLESH]);
+			invoker.weaponstatus[MEDS_SECONDFLESH]-=fleshgive;
 			A_PlaySound("medikit/stopper",CHAN_WEAPON);
 			A_PlaySound("misc/bulletflesh",CHAN_BODY);
 			A_PlaySound("misc/smallslop",CHAN_VOICE);
 			actor a=spawn("SecondFleshBeast",pos,ALLOW_REPLACE);
 			a.target=self;
-			a.stamina=MEDIKIT_FLESHGIVE;
+			a.stamina=fleshgive;
 		}
 		goto nope;
 
@@ -451,8 +474,8 @@ class HDMedikitter:HDWoundFixer{
 	diagnoseother:
 		TNT1 A 0{
 			A_WeaponMessage("\cdMedikit Auto-Diagnostic Tool engaged.\c-\n\n\ccScanning, please wait...");
-			invoker.scantarget=null;
-			invoker.scanaccuracy=0;
+			invoker.target=null;
+			invoker.weaponstatus[MEDS_ACCURACY]=0;
 		}
 		TNT1 AAAAAAAAAAAA 2{
 			flinetracedata mediline;
@@ -464,16 +487,16 @@ class HDMedikitter:HDWoundFixer{
 			let mha=mediline.hitactor;
 			if(
 				!mha
-				||(invoker.scantarget&&mha!=invoker.scantarget)
+				||(invoker.target&&mha!=invoker.target)
 			){
-				invoker.scantarget=null;
-				invoker.scanaccuracy=0;
+				invoker.target=null;
+				invoker.weaponstatus[MEDS_ACCURACY]=0;
 				return;
 			}
-			invoker.scantarget=mha;
-			invoker.scanaccuracy++;
+			invoker.target=mha;
+			invoker.weaponstatus[MEDS_ACCURACY]++;
 		}
-		TNT1 A 0 A_ScanResults(invoker.scantarget,invoker.scanaccuracy);
+		TNT1 A 0 A_ScanResults(invoker.target,invoker.weaponstatus[MEDS_ACCURACY]);
 		TNT1 A 0 A_Refire("nope");
 		goto readyend;
 
@@ -492,8 +515,8 @@ class HDMedikitter:HDWoundFixer{
 			int thrownoff=scanaccuracy-12;
 			if(!scanactor||abs(thrownoff)>10){
 				A_WeaponMessage("\caMedikit Auto-Diagnostic Tool failed.");
-				invoker.scantarget=null;
-				invoker.scanaccuracy=0;
+				invoker.target=null;
+				invoker.weaponstatus[MEDS_ACCURACY]=0;
 				return;
 			}
 			string scanactorname=HDMath.GetName(scanactor);
