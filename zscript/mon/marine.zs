@@ -458,20 +458,20 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 	spwander:
 		#### E 0 A_ClearTarget();
 		#### AA 3{hdmobai.wander(self);}
-		#### A 0 A_Chase(flags:CHF_DONTMOVE);
+		#### A 0 A_Chase("melee","missile",CHF_DONTMOVE);
 		#### BB 3{hdmobai.wander(self);}
-		#### A 0 A_Chase(flags:CHF_DONTMOVE);
+		#### A 0 A_Chase("melee","missile",CHF_DONTMOVE);
 		#### CC 3{hdmobai.wander(self);}
-		#### A 0 A_Chase(flags:CHF_DONTMOVE);
+		#### A 0 A_Chase("melee","missile",CHF_DONTMOVE);
 		#### DD 3{hdmobai.wander(self);}
 		#### E 0 A_Jump(128,"spwander");
 	spwander2:
 		#### A 0 A_Look();
 		#### A 0 A_Jump(4,"spawn");
 		#### A 0{angle+=random(-30,30);}
-		#### EEE 2 A_Chase(flags:CHF_DONTMOVE);
+		#### EEE 2 A_Chase("melee","missile",CHF_DONTMOVE);
 		#### A 0{angle+=random(-30,30);}
-		#### EEE 2 A_Chase(flags:CHF_DONTMOVE);
+		#### EEE 2 A_Chase("melee","missile",CHF_DONTMOVE);
 		#### A 0 A_Jump(60,"spwander");
 		#### E 0 A_JumpIfTargetInLOS("see");
 		---- A 0 setstatelabel("spwander");
