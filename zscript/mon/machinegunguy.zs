@@ -27,7 +27,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		maxtargetrange 6000;
 		obituary "%o met the budda-budda-budda on the street, and it killed %h.";
 		hitobituary "%o took the wrong pill.";
-		hdmobbase.downedframe 12;
+		hdmobbase.downedframe 11;
 	}
 	bool turnleft;
 	bool superauto;
