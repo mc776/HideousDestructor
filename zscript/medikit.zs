@@ -105,34 +105,36 @@ class HDMedikitter:HDWoundFixer{
 	enum MediNums{
 		MEDIKIT_FLESHGIVE=5,
 		MEDIKIT_MAXFLESH=42,
+		MEDIKIT_NOTAPLAYER=MAXPLAYERS+1,
+
 		MEDS_SECONDFLESH=1,
+		MEDS_USEDON=2,
 	}
-	actor usedon;
 	int scanaccuracy;
 	actor scantarget;
 	override void initializewepstats(bool idfa){
 		weaponstatus[MEDS_SECONDFLESH]=MEDIKIT_MAXFLESH;
-		usedon=null;
+		weaponstatus[MEDS_USEDON]=-1;
 	}
 	override double weaponbulk(){
 		return ENC_MEDIKIT;
 	}
 	override string,double getpickupsprite(){
-		return (!!usedon)?"MEDIC0":"MEDIB0",0.6;
+		return (weaponstatus[MEDS_USEDON]<0)?"MEDIB0":"MEDIC0",0.6;
 	}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
 		let ww=hdmedikitter(hdw);
 		int of=0;
 		if(
 			hpl.woundcount
-			&&(!ww.usedon||ww.usedon==hpl)
+			&&(weaponstatus[MEDS_USEDON]<0||weaponstatus[MEDS_USEDON]==hpl.playernumber())
 		){
 			of=clamp(hpl.woundcount*0.1,1,3);
 			if(hpl.flip)of=-of;
 		}
 		sb.drawwepdot(-27,-11+of,(2,6));
 		sb.drawwepdot(-25,-13+of,(6,2));
-		if(ww.usedon)sb.drawimage(
+		if(ww.weaponstatus[MEDS_USEDON]>=0)sb.drawimage(
 			"BLUDC0",(-14,-7),
 			sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_ITEM_RIGHT,
 			0.8
@@ -140,8 +142,23 @@ class HDMedikitter:HDWoundFixer{
 		int btn=hpl.player.cmd.buttons;
 		if(!(btn&BT_FIREMODE))sb.drawwepnum(ww.weaponstatus[MEDS_SECONDFLESH],MEDIKIT_MAXFLESH);
 		sb.drawnum(hpl.countinv("PortableMedikit"),-43,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+
+		int usedon=weaponstatus[MEDS_USEDON];
+		if(usedon>=0){
+			string patientname=
+			(
+				usedon<0?"---":
+				(usedon<MAXPLAYERS&&playeringame[usedon])?players[usedon].getusername():
+				"*** UNKNOWN ***"
+			);
+			sb.DrawString(sb.psmallfont,patientname,(-43,-24),
+				sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TEXT_ALIGN_CENTER,
+				Font.CR_WHITE
+			);
+		}
 	}
 	override string gethelptext(){
+		int usedon=weaponstatus[MEDS_USEDON];
 		return
 		"\cuMedikit\n"
 		..WEPHELP_RELOAD.."  Take off armour\n"
@@ -304,7 +321,11 @@ class HDMedikitter:HDWoundFixer{
 				if(getcvar("hd_helptext"))A_WeaponMessage("Nothing to be done here.\n\nHeal thyself? (press fire)",150);
 				return resolvestate("nope");
 			}
-			if(invoker.usedon&&c!=invoker.usedon){
+			if(
+				c.player
+				&&invoker.weaponstatus[MEDS_USEDON]>=0
+				&&invoker.weaponstatus[MEDS_USEDON]!=c.playernumber()
+			){
 				if(c.getcvar("hd_helptext"))c.A_Print(string.format("Get the hell away!\n\n%s is trying to stab you\n\nwith a used syringe!!!",player.getusername()));
 				if(getcvar("hd_helptext"))A_Print("Why are you attacking your teammate\n\nwith used medical equipment!?");
 			}else if(c.countinv("IsMoving")>4){
@@ -343,7 +364,10 @@ class HDMedikitter:HDWoundFixer{
 		}goto nope;
 	applythatshit:
 		TNT1 A 0{
-			if(invoker.target)invoker.usedon=invoker.target;
+			if(invoker.target){
+				if(invoker.target.player)invoker.weaponstatus[MEDS_USEDON]=invoker.target.playernumber();
+				else invoker.weaponstatus[MEDS_USEDON]=MEDIKIT_NOTAPLAYER;
+			}
 		}
 		TNT1 A 0 A_JumpIf(pressingzoom()&&pressingfiremode(),"applythathotshit");
 		TNT1 A 10{
@@ -386,7 +410,8 @@ class HDMedikitter:HDWoundFixer{
 	patchup:
 		TNT1 A 10;
 		TNT1 A 0{
-			if(!invoker.usedon)invoker.usedon=self;
+			if(invoker.weaponstatus[MEDS_USEDON]<0)
+				invoker.weaponstatus[MEDS_USEDON]=playernumber();
 			invoker.weaponstatus[MEDS_SECONDFLESH]--;
 		}
 		TNT1 A 10 A_Overlay(3,"flashnail");
@@ -402,7 +427,8 @@ class HDMedikitter:HDWoundFixer{
 		TNT1 A 6;
 		TNT1 A 8{
 			if(!(self is "HDPlayerPawn"))return;
-			invoker.usedon=self;
+			if(invoker.weaponstatus[MEDS_USEDON]<0)
+				invoker.weaponstatus[MEDS_USEDON]=playernumber();
 			invoker.weaponstatus[MEDS_SECONDFLESH]--;
 			A_PlaySound("medikit/stopper",CHAN_WEAPON);
 			A_PlaySound("misc/bulletflesh",CHAN_BODY);
@@ -453,7 +479,7 @@ class HDMedikitter:HDWoundFixer{
 
 	spawn:
 		MEDI B -1 nodelay{
-			if(invoker.usedon){
+			if(invoker.weaponstatus[MEDS_USEDON]>=0){
 				frame=2;
 				actor bbb=spawn("BloodSplatSilent",pos,ALLOW_REPLACE);
 				if(bbb)bbb.vel=vel;
@@ -470,8 +496,7 @@ class HDMedikitter:HDWoundFixer{
 				invoker.scanaccuracy=0;
 				return;
 			}
-			string scanactorname=scanactor.getclassname();
-			if(scanactor.player)scanactorname=scanactor.player.getusername();
+			string scanactorname=HDMath.GetName(scanactor);
 			let slf=HDPlayerPawn(scanactor);
 			if(!slf){
 				int scanactorhealthpercent=scanactor.health*100/scanactor.spawnhealth();
