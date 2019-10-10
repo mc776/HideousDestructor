@@ -1191,7 +1191,8 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 
 		//fragmentation
 		if(!(flags&BLAF_DONTFRAGMENT)&&random(0,100)<woundhealth){
-			int fragments=clamp(random(2,(woundhealth>>4)),1,5);
+			int fragments=clamp(random(2,(woundhealth>>3)),1,5);
+			if(hd_debug)console.printf(fragments.." fragments emerged from bullet");
 			while(fragments){
 				fragments--;
 				let bbb=HDBulletActor(spawn("HDBulletActor",pos));
