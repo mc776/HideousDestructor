@@ -138,18 +138,8 @@ class HDMedikitter:HDWoundFixer{
 			0.8
 		);
 		int btn=hpl.player.cmd.buttons;
-		if(
-			!(btn&BT_FIREMODE)
-			||(btn&BT_ZOOM)
-		){
-			sb.drawwepnum(ww.weaponstatus[MEDS_SECONDFLESH],MEDIKIT_MAXFLESH);
-			bool secondfleshing=(
-				hpl.flip
-				&&(btn&BT_ZOOM)
-				&&(btn&BT_FIREMODE)
-			);
-			sb.drawnum(hpl.countinv("PortableMedikit"),-43,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
-		}
+		if(!(btn&BT_FIREMODE))sb.drawwepnum(ww.weaponstatus[MEDS_SECONDFLESH],MEDIKIT_MAXFLESH);
+		sb.drawnum(hpl.countinv("PortableMedikit"),-43,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 	}
 	override string gethelptext(){
 		return
@@ -158,8 +148,8 @@ class HDMedikitter:HDWoundFixer{
 		..WEPHELP_INJECTOR
 		.."\n  ...while pressing:\n"
 		.."  <\cunothing"..WEPHELP_RGCOL..">  Treat wounds\n"
-		.."  "..WEPHELP_FIREMODE.."  Run diagnostic\n"
-		.."  "..WEPHELP_FIREMODE.."+"..WEPHELP_ZOOM.."  Treat burns"
+		.."  "..WEPHELP_ZOOM.."  Treat burns\n"
+		.."  "..WEPHELP_FIREMODE.."  Run diagnostic"
 		;
 	}
 	void patchwound(int amt,actor targ){
@@ -219,7 +209,7 @@ class HDMedikitter:HDWoundFixer{
 				if(hdp)hdp.gunbraced=false;
 				A_MuzzleClimb(0,5,0,5);
 			}else{
-				bool scanning=bt&BT_FIREMODE&&!(bt&BT_ZOOM);
+				bool scanning=bt&BT_FIREMODE;
 				//armour blocks everything except scan
 				if(
 					!scanning
@@ -242,10 +232,7 @@ class HDMedikitter:HDWoundFixer{
 					A_WeaponMessage("You are out of Auto-Sutures.");
 					setweaponstate("nope");
 				}
-				if(
-					bt&BT_FIREMODE
-					&&bt&BT_ZOOM
-				){
+				if(bt&BT_ZOOM){
 					//treat burns
 					let a=HDPlayerPawn(self);
 					if(a){
@@ -258,7 +245,7 @@ class HDMedikitter:HDWoundFixer{
 				}else{
 					//treat wounds
 					if(!invoker.checkwoundcount(true)){
-						A_WeaponMessage("You are not bleeding.");
+						A_WeaponMessage("You have no wounds to treat.");
 						setweaponstate("nope");
 					}else setweaponstate("patchup");
 					return;
@@ -333,12 +320,18 @@ class HDMedikitter:HDWoundFixer{
 				if(getcvar("hd_helptext"))A_WeaponMessage("Get them to take off their armour first!\n\n(\cdhd_strip\c- in the console)",100);
 				return resolvestate("nope");
 			}
-			if(!(getplayerinput(MODINPUT_BUTTONS)&BT_ALTATTACK) && c.woundcount+c.unstablewoundcount<1){
-				A_WeaponMessage("They're not bleeding.");
+			if(
+				!(getplayerinput(MODINPUT_BUTTONS)&BT_ZOOM)
+				&& c.woundcount+c.unstablewoundcount<1
+			){
+				A_WeaponMessage("They have no wounds to treat.");
 				return resolvestate("nope");
 			}
-			if(getplayerinput(MODINPUT_BUTTONS)&BT_ALTATTACK && c.burncount+c.oldwoundcount<1){
-				A_WeaponMessage("They have no lasting injuries to treat.");
+			if(
+				getplayerinput(MODINPUT_BUTTONS)&BT_ZOOM
+				&&c.burncount<1
+			){
+				A_WeaponMessage("They have no burns to treat.");
 				return resolvestate("nope");
 			}
 			if(invoker.weaponstatus[MEDS_SECONDFLESH]<1){
