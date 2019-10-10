@@ -495,9 +495,10 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 				return;
 			}
 			double dist=distance3d(target);
-			if(dist<500)turnamount=50;
-			else if(dist<1200)turnamount=30;
-			else turnamount=10;
+			if(dist<500)turnamount=20;
+			else if(dist<1200)turnamount=10;
+			else if(dist<2400)turnamount=3;
+			else turnamount=1;
 		}
 	turntoaim:
 		#### E 2 A_FaceTarget(turnamount,turnamount);
