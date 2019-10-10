@@ -24,6 +24,7 @@ extend class HDPlayerPawn{
 
 	int stimcount;
 	int regenblues;
+	int secondflesh;
 	int zerk;
 	int haszerked;
 
@@ -54,6 +55,7 @@ extend class HDPlayerPawn{
 				-woundcount
 				-unstablewoundcount
 				-(bloodloss>>6)
+				-(secondflesh>>2)
 				+(stimcount>>1)
 			)
 			+max(fatigue-HDCONST_SPRINTFATIGUE,0)
@@ -191,7 +193,7 @@ extend class HDPlayerPawn{
 			if(iszerk)beatmax=clamp(beatmax,4,14);
 			else beatmax=clamp(beatmax,HDCONST_MINHEARTTICS,35);
 
-			if(fatigue>random(0,(bloodloss>>6)))fatigue--;
+			if(fatigue>random(0,(bloodloss>>6)+secondflesh))fatigue--;
 			if(
 				beatmax<HDCONST_MINHEARTTICS+3
 				||fatigue>HDCONST_DAMAGEFATIGUE  
@@ -326,9 +328,17 @@ extend class HDPlayerPawn{
 					}
 				}
 
+
+				//second flesh heals wonds
+				if(secondflesh>0){
+					secondflesh--;
+					if(oldwoundcount>0)oldwoundcount--;
+					if(!(level.time&(1|2|4|8|16)))aggravateddamage++;
+					damagemobj(self,self,1,"staples");
+				}
+
 				//all other magical healing
 				if(regenblues>0){
-
 
 					//heal long-term damage
 					//TODO: delete this block once the new wounding is in

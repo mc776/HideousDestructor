@@ -144,6 +144,7 @@ extend class HDPlayerPawn{
 		aggravateddamage=0;
 		stunned=0;
 		bloodloss=0;
+		secondflesh=0;
 	}
 }
 

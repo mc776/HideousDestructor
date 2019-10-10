@@ -714,6 +714,14 @@ extend class HDPlayerPawn{
 		burncount=min(90,burncount-1);
 		if(!random(0,7))aggravateddamage--;
 
+		if(secondflesh>0){
+			int seconded=min(secondflesh,oldwoundcount);
+			secondflesh=0;
+			oldwoundcount-=seconded;
+			seconded=random(-100,seconded);
+			if(seconded>0)aggravateddamage+=seconded;
+		}
+
 		givebody(max(0,maxhealth()-health));
 
 		overloaded=CheckEncumbrance();

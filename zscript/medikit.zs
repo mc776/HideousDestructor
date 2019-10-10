@@ -105,15 +105,13 @@ class HDMedikitter:HDWoundFixer{
 	}
 	enum MediNums{
 		MEDIKIT_MAXFLESH=2,
-		MEDIKIT_FLESHGIVE=200,
+		MEDIKIT_FLESHGIVE=10,
 	}
-	int injectableflesh;
 	int usedpatches;
 	actor usedon;
 	int scanaccuracy;
 	actor scantarget;
 	override void beginplay(){
-		injectableflesh=MEDIKIT_MAXFLESH;
 		usedpatches=0;
 		usedon=null;
 		super.beginplay();
@@ -152,8 +150,6 @@ class HDMedikitter:HDWoundFixer{
 				&&(btn&BT_ZOOM)
 				&&(btn&BT_FIREMODE)
 			);
-			if(ww.injectableflesh==2)sb.drawwepdot(-20,-10-secondfleshing,(3,3));
-			if(ww.injectableflesh>=1)sb.drawwepdot(-16,-10-secondfleshing,(3,3));
 			sb.drawnum(hpl.countinv("PortableMedikit"),-43,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 		}
 	}
@@ -244,16 +240,15 @@ class HDMedikitter:HDWoundFixer{
 					return;
 				}
 				//act upon flesh
+				if(invoker.usedpatches>HD_MEDPATCHLIMIT){
+					A_WeaponMessage("You are out of Auto-Sutures.");
+					setweaponstate("nope");
+				}
 				if(
 					bt&BT_FIREMODE
 					&&bt&BT_ZOOM
 				){
-					//second flesh
-					if(invoker.injectableflesh<1){
-						A_WeaponMessage("You are out of Second Flesh.");
-						setweaponstate("nope");
-						return;
-					}
+					//treat burns
 					let a=HDPlayerPawn(self);
 					if(a){
 						if(a.oldwoundcount+a.burncount+a.unstablewoundcount<1){
@@ -263,11 +258,8 @@ class HDMedikitter:HDWoundFixer{
 						return;
 					}
 				}else{
-					//patch
-					if(invoker.usedpatches>HD_MEDPATCHLIMIT){
-						A_WeaponMessage("You are out of Auto-Sutures.");
-						setweaponstate("nope");
-					}else if(!invoker.checkwoundcount(true)){
+					//treat wounds
+					if(!invoker.checkwoundcount(true)){
 						A_WeaponMessage("You are not bleeding.");
 						setweaponstate("nope");
 					}else setweaponstate("patchup");
@@ -279,7 +271,7 @@ class HDMedikitter:HDWoundFixer{
 	states{
 	select:
 		TNT1 A 0{
-			if(invoker.injectableflesh<1 && invoker.usedpatches>HD_MEDPATCHLIMIT) A_SelectWeapon("SelfBandage");
+			if(invoker.usedpatches>HD_MEDPATCHLIMIT) A_SelectWeapon("SelfBandage");
 		}
 		TNT1 A 10{
 			if(!getcvar("hd_helptext")) return;
@@ -294,12 +286,14 @@ class HDMedikitter:HDWoundFixer{
 			A_PlaySound("medikit/staple",CHAN_WEAPON);
 			A_PlaySound("misc/bulletflesh",CHAN_BODY);
 			invoker.patchwound(1,self);
+			if(hdplayerpawn(self)){
+				hdplayerpawn(self).secondflesh+=5;
+			}else givebody(3);
 		}goto flashend;
 	flashnail:
 		TNT1 A 1{
 			A_PlaySound("medikit/stopper",CHAN_WEAPON);
 			A_PlaySound("misc/bulletflesh",CHAN_BODY);
-			invoker.patchwound(random(1,3),self);
 		}goto flashend;
 	flashend:
 		TNT1 A 1{
@@ -349,7 +343,7 @@ class HDMedikitter:HDWoundFixer{
 				A_WeaponMessage("They have no lasting injuries to treat.");
 				return resolvestate("nope");
 			}
-			if(getplayerinput(MODINPUT_BUTTONS)&BT_ALTATTACK && invoker.injectableflesh<1){
+			if(invoker.usedpatches>HD_MEDPATCHLIMIT){
 				A_WeaponMessage("You have no Second Flesh to apply.");
 				return resolvestate("nope");
 			}
@@ -361,31 +355,34 @@ class HDMedikitter:HDWoundFixer{
 			if(invoker.target)invoker.usedon=invoker.target;
 		}
 		TNT1 A 0 A_JumpIf(pressingzoom()&&pressingfiremode(),"applythathotshit");
-		TNT1 A 0{invoker.usedpatches++;}
-		TNT1 A 0 A_Jump(112,"applythatstaplershit");
-	applythatinjectorshit:
 		TNT1 A 10{
+			invoker.usedpatches++;
 			if(invoker.target){
 				invoker.target.A_PlaySound("medikit/stopper",CHAN_WEAPON);
 				invoker.target.A_PlaySound("misc/bulletflesh",CHAN_BODY);
-				invoker.patchwound(random(1,3),invoker.target);
 			}
-		}goto patchupend;
-	applythatstaplershit:
+		}
 		TNT1 AAAAA 3{
 			A_PlaySound("medikit/staple",CHAN_WEAPON);
-			if(invoker.target){
-				invoker.target.A_PlaySound("misc/smallslop",CHAN_BODY);
-				invoker.patchwound(1,invoker.target);
+			let itg=invoker.target;
+			if(itg){
+				itg.A_PlaySound("misc/smallslop",CHAN_BODY);
+				invoker.patchwound(1,itg);
 				if(!random(0,3))invoker.setstatelabel("patchupend");
-				invoker.target.givebody(1);
-				invoker.target.damagemobj(invoker,null,1,"staples",DMG_FORCED);
+				itg.givebody(1);
+				itg.damagemobj(invoker,null,1,"staples",DMG_FORCED);
+
+				if(hdplayerpawn(itg)){
+					hdplayerpawn(itg).secondflesh+=5;
+				}else if(hdmobbase(itg)){
+					hdmobbase(itg).bodydamage-=5;
+				}else itg.givebody(3);
 			}
 		}goto patchupend;
 	applythathotshit:
 		TNT1 A 10{
 			if(invoker.target){
-				invoker.injectableflesh--;
+				invoker.usedpatches++;
 				invoker.target.A_PlaySound("medikit/stopper",CHAN_WEAPON);
 				invoker.target.A_PlaySound("misc/bulletflesh",CHAN_BODY);
 				invoker.target.A_PlaySound("misc/smallslop",CHAN_VOICE);
@@ -401,11 +398,7 @@ class HDMedikitter:HDWoundFixer{
 			if(!invoker.usedon)invoker.usedon=self;
 			invoker.usedpatches++;
 		}
-		TNT1 A 0 A_Jump(112,"stapler");
-	injector:
-		TNT1 A 0 A_Overlay(3,"flashnail");
-		goto patchupend;
-	stapler:
+		TNT1 A 10 A_Overlay(3,"flashnail");
 		TNT1 AAAAA random(4,5){
 			A_Overlay(3,"flashstaple");
 			if(!random(0,3))invoker.setstatelabel("patchupend");
@@ -419,7 +412,7 @@ class HDMedikitter:HDWoundFixer{
 		TNT1 A 10{
 			if(!(self is "HDPlayerPawn"))return;
 			invoker.usedon=self;
-			invoker.injectableflesh--;
+			invoker.usedpatches++;
 			A_PlaySound("medikit/stopper",CHAN_WEAPON);
 			A_PlaySound("misc/bulletflesh",CHAN_BODY);
 			A_PlaySound("misc/smallslop",CHAN_VOICE);
@@ -544,7 +537,7 @@ class HDMedikitter:HDWoundFixer{
 \ccBurns: \cq%u%%",scanactorname,ww,uw,ow,bb),true);
 	}
 	override string pickupmessage(){
-		if(injectableflesh<MEDIKIT_MAXFLESH||usedpatches>0)return "Picked up a used medikit.";
+		if(usedpatches>0)return "Picked up a used medikit.";
 		return "Picked up an opened medikit.";
 	}
 }
@@ -555,27 +548,12 @@ class SecondFleshBeast:IdleDummy{
 		TNT1 A 12{target.A_Scream();}
 		TNT1 A 4{
 			let tgt=HDPlayerPawn(target);
-			if(!tgt || tgt.bkilled || stamina<1){destroy();return;}
+			if(!tgt||tgt.bkilled||stamina<1){destroy();return;}
 			if(tgt.health>10)tgt.damagemobj(tgt,tgt,min(tgt.health-10,3),"internal",DMG_NO_ARMOR);
 			tics=clamp(200-stamina,4,random(4,40));
 			if(tics<10)tgt.A_Pain();
 			tgt.stunned+=10;
-			switch(random(0,tgt.incapacitated?10:21)){
-			case 0:
-			case 1:
-				tgt.burncount--;
-				break;
-			case 2:
-			case 3:
-				tgt.oldwoundcount--;
-				break;
-			case 4:
-				if(tgt.unstablewoundcount){
-					tgt.unstablewoundcount--;
-					tgt.aggravateddamage++;
-				}
-			default:break;
-			}
+			tgt.burncount--;
 			if(!random(0,200))tgt.aggravateddamage++;
 			stamina--;
 			if(hd_debug)A_Log(string.format("aggro %i  old %i  unstable %i",tgt.aggravateddamage,tgt.oldwoundcount,tgt.unstablewoundcount));
