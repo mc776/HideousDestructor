@@ -22,8 +22,12 @@ class PortableMedikit:HDPickup{
 		stop;
 	use:
 		TNT1 A 0{
-			if(!FindInventory("HDMedikitter")){
-				A_GiveInventory("HDMedikitter");
+			if(
+				!FindInventory("HDMedikitter")
+				||player.cmd.buttons&BT_USE
+			){
+				let mdk=HDMedikitter(spawn("HDMedikitter",pos));
+				mdk.actualpickup(self,true);
 				if(A_JumpIfInventory("PortableStimpack",0,"null"))A_DropItem("PortableStimpack");
 				else A_GiveInventory("PortableStimpack");
 				if(A_JumpIfInventory("SecondBlood",0,"null"))A_DropItem("SecondBlood");
@@ -95,6 +99,8 @@ class HDWoundFixer:HDWeapon{
 	}
 }
 class HDMedikitter:HDWoundFixer{
+	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
+	override hdweapon GetSpareWeapon(actor newowner,bool reverse,bool doselect){return GetSpareWeaponRegular(newowner,reverse,doselect);}
 	default{
 		-weapon.no_auto_switch
 		+inventory.invbar
@@ -390,7 +396,7 @@ class HDMedikitter:HDWoundFixer{
 				else invoker.weaponstatus[MEDS_USEDON]=MEDIKIT_NOTAPLAYER;
 			}
 		}
-		TNT1 A 0 A_JumpIf(pressingzoom()&&pressingfiremode(),"applythathotshit");
+		TNT1 A 0 A_JumpIf(pressingzoom(),"applythathotshit");
 		TNT1 A 10{
 			invoker.weaponstatus[MEDS_SECONDFLESH]--;
 			if(invoker.target){
