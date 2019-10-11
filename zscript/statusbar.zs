@@ -584,8 +584,8 @@ class HDStatusBar:DoomStatusBar{
 				8,
 				wephelpheight,
 				s,
-				DTA_VirtualWidth,800,
-				DTA_VirtualHeight,600,
+				DTA_VirtualWidth,640,
+				DTA_VirtualHeight,480,
 				DTA_Alpha,0.8
 			);
 

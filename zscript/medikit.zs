@@ -116,6 +116,7 @@ class HDMedikitter:HDWoundFixer{
 		weapon.selectionorder 1001;
 		weapon.slotnumber 9;
 		scale 0.3;
+		hdweapon.nicename "Medikit";
 	}
 	override void initializewepstats(bool idfa){
 		weaponstatus[MEDS_SECONDFLESH]=MEDIKIT_MAXFLESH;
@@ -165,8 +166,7 @@ class HDMedikitter:HDWoundFixer{
 	override string gethelptext(){
 		int usedon=weaponstatus[MEDS_USEDON];
 		return
-		"\cuMedikit\n"
-		..WEPHELP_RELOAD.."  Take off armour\n"
+		WEPHELP_RELOAD.."  Take off armour\n"
 		..WEPHELP_INJECTOR
 		.."\n  ...while pressing:\n"
 		.."  <\cunothing"..WEPHELP_RGCOL..">  Treat wounds\n"
@@ -611,6 +611,7 @@ class SelfBandage:HDWoundFixer{
 	default{
 		weapon.selectionorder 1004;
 		weapon.slotnumber 9;
+		hdweapon.nicename "Improvised Bandaging";
 	}
 	void patchwound(int amt,actor targ){
 		let slf=HDPlayerPawn(targ);
@@ -625,7 +626,7 @@ class SelfBandage:HDWoundFixer{
 		}
 	}
 	override string,double getpickupsprite(){return "BLUDC0",1.;}
-	override string gethelptext(){return "\cuImprovised Bandaging\n"..WEPHELP_INJECTOR
+	override string gethelptext(){return WEPHELP_INJECTOR
 		.."\n"..WEPHELP_ALTRELOAD.."  Remove blood feeder"
 		..(owner.countinv("BloodBagWorn")?"":"(if any)");}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){

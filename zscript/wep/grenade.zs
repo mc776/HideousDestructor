@@ -427,6 +427,7 @@ class HDFragGrenades:HDGrenadethrower{
 	default{
 		weapon.selectionorder 1020;
 		weapon.slotnumber 0;
+		hdweapon.nicename "Fragmentation Grenades";
 		hdgrenadethrower.ammotype "HDFragGrenadeAmmo";
 		hdgrenadethrower.throwtype "HDFragGrenade";
 		hdgrenadethrower.spoontype "HDFragSpoon";
