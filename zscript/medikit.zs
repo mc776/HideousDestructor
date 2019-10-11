@@ -98,6 +98,15 @@ class HDWoundFixer:HDWeapon{
 		goto readyend;
 	}
 }
+enum MediNums{
+	MEDIKIT_FLESHGIVE=5,
+	MEDIKIT_MAXFLESH=42,
+	MEDIKIT_NOTAPLAYER=MAXPLAYERS+1,
+
+	MEDS_SECONDFLESH=1,
+	MEDS_USEDON=2,
+	MEDS_ACCURACY=3,
+}
 class HDMedikitter:HDWoundFixer{
 	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
 	override hdweapon GetSpareWeapon(actor newowner,bool reverse,bool doselect){return GetSpareWeaponRegular(newowner,reverse,doselect);}
@@ -107,15 +116,6 @@ class HDMedikitter:HDWoundFixer{
 		weapon.selectionorder 1001;
 		weapon.slotnumber 9;
 		scale 0.3;
-	}
-	enum MediNums{
-		MEDIKIT_FLESHGIVE=5,
-		MEDIKIT_MAXFLESH=42,
-		MEDIKIT_NOTAPLAYER=MAXPLAYERS+1,
-
-		MEDS_SECONDFLESH=1,
-		MEDS_USEDON=2,
-		MEDS_ACCURACY=3,
 	}
 	override void initializewepstats(bool idfa){
 		weaponstatus[MEDS_SECONDFLESH]=MEDIKIT_MAXFLESH;
