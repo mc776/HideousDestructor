@@ -153,13 +153,12 @@ class HDMedikitter:HDWoundFixer{
 		if(usedon>=0){
 			string patientname=
 			(
-				usedon<0?"---":
 				(usedon<MAXPLAYERS&&playeringame[usedon])?players[usedon].getusername():
-				"*** UNKNOWN ***"
+				"\ca*** UNKNOWN ***"
 			);
 			sb.DrawString(sb.psmallfont,patientname,(-43,-24),
 				sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TEXT_ALIGN_CENTER,
-				Font.CR_WHITE
+				Font.CR_RED
 			);
 		}
 	}
