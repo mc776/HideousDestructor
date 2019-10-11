@@ -176,16 +176,24 @@ class HDMedikitter:HDWoundFixer{
 	}
 	void patchwound(int amt,actor targ){
 		let slf=HDPlayerPawn(targ);
-		if(!slf)return;
-		if(!random(0,1)&&(slf.alpha<1||slf.bshadow))amt-=random(0,amt+1);
-		int wound=max(slf.woundcount,0);
-		int unstablewound=max(slf.unstablewoundcount,0);
-		if(wound){
-			slf.woundcount=max(0,wound-amt);
-		}else if(unstablewound){
-			slf.unstablewoundcount=max(0,unstablewound-amt);
-		}else amt=0;
-		slf.oldwoundcount+=amt;
+		if(slf){
+			if(!random(0,1)&&(slf.alpha<1||slf.bshadow))amt-=random(0,amt+1);
+			int wound=max(slf.woundcount,0);
+			int unstablewound=max(slf.unstablewoundcount,0);
+			if(wound){
+				slf.woundcount=max(0,wound-amt);
+			}else if(unstablewound){
+				slf.unstablewoundcount=max(0,unstablewound-amt);
+			}else amt=0;
+			slf.oldwoundcount+=amt;
+		}else{
+			HDBleedingWound bldw=null;
+			thinkeriterator bldit=thinkeriterator.create("HDBleedingWound");
+			while(bldw=HDBleedingWound(bldit.next())){
+				if(bldw)break;
+			}
+			if(bldw)bldw.bleedpoints=max(0,bldw.bleedpoints-amt);
+		}
 	}
 	action void A_MedikitReady(){
 		A_WeaponReady(WRF_NOFIRE|WRF_ALLOWUSER1|WRF_ALLOWUSER3);
@@ -337,7 +345,7 @@ class HDMedikitter:HDWoundFixer{
 							A_WeaponMessage("You are out of Auto-Sutures.");
 							return resolvestate("nope");
 						}
-						invoker.target=c;
+						invoker.target=mediline.hitactor;
 						return resolvestate("applythatshit");
 					}else{
 						A_WeaponMessage("They have no injuries to treat.");
@@ -416,9 +424,11 @@ class HDMedikitter:HDWoundFixer{
 
 				if(hdplayerpawn(itg)){
 					hdplayerpawn(itg).secondflesh++;
-				}else if(hdmobbase(itg)){
-					hdmobbase(itg).bodydamage-=3;
-				}else itg.givebody(3);
+				}else{
+					if(hdmobbase(itg))hdmobbase(itg).bodydamage-=3;
+					itg.givebody(3);
+					hdmobbase.forcepain(itg);
+				}
 			}
 		}goto patchupend;
 	applythathotshit:
@@ -471,7 +481,7 @@ class HDMedikitter:HDWoundFixer{
 	diagnose:
 		TNT1 A 0 A_WeaponMessage("\cdMedikit Auto-Diagnostic Tool engaged.\c-\n\n\ccScanning, please wait...");
 		TNT1 AAAAAAAAAAAA 2{
-			A_PlaySound("medikit/scan",CHAN_WEAPON,0.4);
+			A_PlaySound("medikit/scan",CHAN_WEAPON,0.5);
 			A_SetBlend("aa aa 88",0.04,1);
 		}
 		TNT1 A 0 A_ScanResults(self,12);
@@ -484,6 +494,7 @@ class HDMedikitter:HDWoundFixer{
 			invoker.weaponstatus[MEDS_ACCURACY]=0;
 		}
 		TNT1 AAAAAAAAAAAA 2{
+			A_PlaySound("medikit/scan",CHAN_WEAPON,0.4);
 			flinetracedata mediline;
 			linetrace(
 				angle,42,pitch,
