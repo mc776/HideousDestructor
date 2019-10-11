@@ -801,6 +801,7 @@ class ZM66AssaultRifle:HDWeapon{
 			weaponstatus[ZM66S_AUTO]=0;
 			weaponstatus[ZM66S_HEAT]=0;
 		}
+		if(idfa)invoker.weaponstatus[0]&=~ZM66F_CHAMBERBROKEN;
 	}
 	override void loadoutconfigure(string input){
 		int nogl=getloadoutvar(input,"nogl",1);
