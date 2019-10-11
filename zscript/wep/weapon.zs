@@ -810,6 +810,8 @@ class NullWeapon:HDWeapon{
 
 		//this needs to be longer than any "real" weapon to ensure there is enough space to raise
 		hdweapon.barrelsize 40,1,1;
+
+		hdweapon.nicename "Sprinting";
 	}
 	override inventory CreateTossable(int amount){
 		let onr=hdplayerpawn(owner);
@@ -822,8 +824,7 @@ class NullWeapon:HDWeapon{
 		return 12;
 	}
 	override string gethelptext(){
-		return "\cuSprinting\n"
-		..WEPHELP_ZOOM.."+"..WEPHELP_USE.."  Try to kick down a door\n"
+		return WEPHELP_ZOOM.."+"..WEPHELP_USE.."  Try to kick down a door\n"
 		;
 	}
 	states{
