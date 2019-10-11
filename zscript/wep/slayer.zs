@@ -22,12 +22,14 @@ class Slayer:HDShotgun replaces HDShotgun{
 		double spread=3.;
 		double speedfactor=1.2;
 		let sss=Slayer(caller.findinventory("Slayer"));
-		if(sss)choke=sss.weaponstatus[right?SLAYS_CHOKE2:SLAYS_CHOKE1];
+		if(sss){
+			choke=sss.weaponstatus[right?SLAYS_CHOKE2:SLAYS_CHOKE1];
+			sss.shotpower=shotpower;
+		}
 
 		choke=clamp(choke,0,7);
 		spread=6.5-0.5*choke;
 		speedfactor=1.+0.02857*choke;
-		sss.shotpower=shotpower;
 
 		spread*=shotpower;
 		speedfactor*=shotpower;
