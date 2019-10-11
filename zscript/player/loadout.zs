@@ -104,9 +104,9 @@ class HDWeaponSelector:Thinker{
 
 
 
-//these constants need to be defined ONLY
-//where an item needs to be selectable
-//through custom loadouts.
+//these need to be defined ONLY where an item
+//needs to be selectable through custom loadouts.
+//all in one place for ease of checking for conflicts.
 
 const HDLD_SOLDIER="sol";
 
@@ -135,6 +135,7 @@ const HDLD_GREFRAG="frg";
 
 const HDLD_STIMPAK="stm";
 const HDLD_MEDIKIT="med";
+const HDLD_FINJCTR="2fl";
 const HDLD_BERSERK="zrk";
 const HDLD_BLODPAK="bld";
 const HDLD_RADSUIT="rad";

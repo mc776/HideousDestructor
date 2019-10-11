@@ -117,6 +117,7 @@ class HDMedikitter:HDWoundFixer{
 		weapon.slotnumber 9;
 		scale 0.3;
 		hdweapon.nicename "Medikit";
+		hdweapon.refid HDLD_FINJCTR;
 	}
 	override void initializewepstats(bool idfa){
 		weaponstatus[MEDS_SECONDFLESH]=MEDIKIT_MAXFLESH;
