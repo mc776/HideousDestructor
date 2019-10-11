@@ -112,6 +112,11 @@ class HDActor:Actor{
 		hdactor.nicename "";
 	}
 
+	override void postbeginplay(){
+		super.postbeginplay();
+		nicename=getnicename();
+	}
+
 	//get a display name
 	virtual clearscope string GetNiceName(){
 		if(nicename!="")return nicename;
@@ -395,8 +400,8 @@ struct HDMath{
 		if(named.player)return named.player.getusername();
 		if(nicename){
 			if(hdpickup(named))return hdpickup(named).nicename;
-			if(hdweapon(named))return hdweapon(named).getnicename();
-			if(hdactor(named))return hdactor(named).getnicename();
+			if(hdweapon(named))return hdweapon(named).nicename;
+			if(hdactor(named))return hdactor(named).nicename;
 		}
 		return named.getclassname();
 	}

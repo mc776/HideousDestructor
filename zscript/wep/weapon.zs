@@ -460,6 +460,7 @@ class HDWeapon:Weapon{
 		bobrangex*=3;bobrangey*=3;
 		bdontbob=true;
 		bplayingid=(Wads.CheckNumForName("id",0)!=-1);
+		nicename=getnicename();
 		super.beginplay();
 	}
 
