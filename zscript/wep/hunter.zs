@@ -18,7 +18,7 @@ class Hunter:HDShotgun{
 		hdweapon.nicename "Hunter";
 	}
 	//returns the power of the load just fired
-	static double Fire(actor caller,int choke=0){
+	static double Fire(actor caller,int choke=1){
 		double spread=6.;
 		double speedfactor=1.;
 		let hhh=Hunter(caller.findinventory("Hunter"));

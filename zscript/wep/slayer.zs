@@ -17,7 +17,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 		hdweapon.nicename "Slayer";
 		hdweapon.refid HDLD_SLAYER;
 	}
-	static void Fire(actor caller,bool right,int choke=-1){
+	static void Fire(actor caller,bool right,int choke=7){
 		double shotpower=getshotpower();
 		double spread=3.;
 		double speedfactor=1.2;
