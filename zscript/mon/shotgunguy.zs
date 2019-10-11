@@ -93,7 +93,7 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 			sprite=GetSpriteIndex("SPOSA1");
 			A_SetTranslation("ShotgunGuy");
 			gunloaded=wep?random(1,2):random(3,8);
-			if(random(0,7))choke=1;else{
+			if(random(0,7))choke=(wep?(7+8*7):1);else{
 				choke=random(0,7);
 				//set second barrel
 				if(wep)choke+=8*random(0,7);
@@ -356,14 +356,14 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 				A_PlaySound("weapons/slayersingle",5);
 				gunspent=2;
 				gunloaded=0;
-				Slayer.Fire(self,0);
-				Slayer.Fire(self,1);
+				Slayer.Fire(self,0,(choke&(1|2|4)));
+				Slayer.Fire(self,1,(choke>>3));
 			}else{
 				//single barrel
 				gunspent++;
 				gunloaded--;
-				if(gunspent)Slayer.Fire(self,1);
-				else Slayer.Fire(self,0);
+				if(gunspent)Slayer.Fire(self,1,(choke>>3));
+				else Slayer.Fire(self,0,(choke&(1|2|4)));
 			}
 		}
 		#### E 1 A_SetTics(random(2,4));
@@ -381,7 +381,7 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 				return;
 			}
 
-			if(Hunter.Fire(self)<=0.905)semi=false;
+			if(Hunter.Fire(self,choke)<=0.905)semi=false;
 			gunspent=1;
 		}
 		#### E 3{

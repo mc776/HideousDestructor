@@ -23,11 +23,10 @@ class Hunter:HDShotgun{
 		double speedfactor=1.;
 		let hhh=Hunter(caller.findinventory("Hunter"));
 		if(hhh)choke=hhh.weaponstatus[HUNTS_CHOKE];
-		if(choke>0){
-			choke=min(choke,7);
-			spread=6.5-0.5*choke;
-			speedfactor=1.+0.02857*choke;
-		}
+
+		choke=clamp(choke,0,7);
+		spread=6.5-0.5*choke;
+		speedfactor=1.+0.02857*choke;
 
 		double shotpower=getshotpower();
 		spread*=shotpower;

@@ -17,17 +17,18 @@ class Slayer:HDShotgun replaces HDShotgun{
 		hdweapon.nicename "Slayer";
 		hdweapon.refid HDLD_SLAYER;
 	}
-	static void Fire(actor caller,bool right){
+	static void Fire(actor caller,bool right,int choke=-1){
 		double shotpower=getshotpower();
 		double spread=3.;
 		double speedfactor=1.2;
 		let sss=Slayer(caller.findinventory("Slayer"));
-		if(sss){
-			int choke=sss.weaponstatus[right?SLAYS_CHOKE2:SLAYS_CHOKE1];
-			spread=6.5-0.5*choke;
-			speedfactor=1.+0.02857*choke;
-			sss.shotpower=shotpower;
-		}
+		if(sss)choke=sss.weaponstatus[right?SLAYS_CHOKE2:SLAYS_CHOKE1];
+
+		choke=clamp(choke,0,7);
+		spread=6.5-0.5*choke;
+		speedfactor=1.+0.02857*choke;
+		sss.shotpower=shotpower;
+
 		spread*=shotpower;
 		speedfactor*=shotpower;
 		vector2 barreladjust=(0.8,-0.05);
