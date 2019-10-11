@@ -495,3 +495,19 @@ enum slayerstatus{
 	SLAYS_CHOKE1=6,
 	SLAYS_CHOKE2=7
 };
+
+class SlayerRandom:IdleDummy{
+	states{
+	spawn:
+		TNT1 A 0 nodelay{
+			let ggg=Slayer(spawn("Slayer",pos,ALLOW_REPLACE));
+			if(!ggg)return;
+			ggg.special=special;
+			ggg.vel=vel;
+			if(!random(0,7)){
+				ggg.weaponstatus[SLAYS_CHOKE1]=random(random(0,7),7);
+				ggg.weaponstatus[SLAYS_CHOKE2]=random(random(0,7),7);
+			}
+		}stop;
+	}
+}

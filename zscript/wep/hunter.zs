@@ -18,12 +18,13 @@ class Hunter:HDShotgun{
 		hdweapon.nicename "Hunter";
 	}
 	//returns the power of the load just fired
-	static double Fire(actor caller){
+	static double Fire(actor caller,int choke=0){
 		double spread=6.;
 		double speedfactor=1.;
 		let hhh=Hunter(caller.findinventory("Hunter"));
-		if(hhh){
-			int choke=hhh.weaponstatus[HUNTS_CHOKE];
+		if(hhh)choke=hhh.weaponstatus[HUNTS_CHOKE];
+		if(choke>0){
+			choke=min(choke,7);
 			spread=6.5-0.5*choke;
 			speedfactor=1.+0.02857*choke;
 		}
@@ -713,3 +714,26 @@ enum hunterstatus{
 	HUNTS_CHOKE=7,
 };
 
+
+class HunterRandom:IdleDummy{
+	states{
+	spawn:
+		TNT1 A 0 nodelay{
+			let ggg=Hunter(spawn("Hunter",pos,ALLOW_REPLACE));
+			if(!ggg)return;
+			ggg.special=special;
+			ggg.vel=vel;
+
+			if(!random(0,7))ggg.weaponstatus[HUNTS_CHOKE]=random(0,7);
+			if(!random(0,32)){
+				ggg.weaponstatus[0]&=~HUNTF_EXPORT;
+				ggg.weaponstatus[0]|=HUNTF_CANFULLAUTO;
+			}else if(!random(0,7)){
+				ggg.weaponstatus[0]|=HUNTF_EXPORT;
+				ggg.weaponstatus[0]&=~HUNTF_CANFULLAUTO;
+			}
+			int tubesize=((ggg.weaponstatus[0]&HUNTF_EXPORT)?5:7);
+			if(ggg.weaponstatus[HUNTS_TUBE]>tubesize)ggg.weaponstatus[HUNTS_TUBE]=ggg.tubesize;
+		}stop;
+	}
+}

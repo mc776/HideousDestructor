@@ -66,7 +66,8 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 	int gunspent;
 	int wep;
 	int turnamount;
-	double shotspread;
+	int choke; //record here because the gun should only drop once
+	double shotspread; //related to aim, NOT choke. Sorry about shitty names
 	override void beginplay(){
 		super.beginplay();
 		bhasdropped=0;
@@ -92,6 +93,11 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 			sprite=GetSpriteIndex("SPOSA1");
 			A_SetTranslation("ShotgunGuy");
 			gunloaded=wep?random(1,2):random(3,8);
+			if(random(0,7))choke=1;else{
+				choke=random(0,7);
+				//set second barrel
+				if(wep)choke+=8*random(0,7);
+			}
 		}
 		semi=randompick(0,0,1);
 		hdmobster.spawnmobster(self);
@@ -129,6 +135,7 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 				if(gunloaded>0)wp.weaponstatus[HUNTS_TUBE]=gunloaded;
 				wp.weaponstatus[SHOTS_SIDESADDLE]=random(0,12);
 				wp.weaponstatus[0]&=~HUNTF_CANFULLAUTO;
+				wp.weaponstatus[HUNTS_CHOKE]=choke;
 
 				gunloaded=8;
 			}
@@ -139,6 +146,8 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 				if(gunloaded>0)wp.weaponstatus[SLAYS_CHAMBER1]=2;
 				else if(gunspent>0)wp.weaponstatus[SLAYS_CHAMBER1]=1;
 				wp.weaponstatus[SHOTS_SIDESADDLE]=random(0,12);
+				wp.weaponstatus[SLAYS_CHOKE1]=(choke&(1|2|4));
+				wp.weaponstatus[SLAYS_CHOKE2]=(choke>>3);
 
 				gunloaded=2;
 			}
