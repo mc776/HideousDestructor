@@ -373,11 +373,12 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 			}
 
 			if(Hunter.Fire(self)<=0.905)semi=false;
+			gunspent=1;
 		}
 		#### E 3{
-			if(gunloaded>0)gunloaded--;
 			if(semi){
 				A_SetTics(0);
+				if(gunloaded>0)gunloaded--;
 				gunspent=0;
 				A_SpawnItemEx("HDSpentShell",
 					cos(pitch)*8,0,height-7-sin(pitch)*8,
@@ -402,6 +403,7 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 				A_SetTics(random(3,10));
 				A_PlaySound("weapons/huntrack",5);
 				gunspent=0;
+				if(gunloaded>0)gunloaded--;
 				A_SpawnItemEx("HDSpentShell",
 					cos(pitch)*8,0,height-7-sin(pitch)*8,
 					vel.x+cos(pitch)*cos(angle-random(86,90))*6,

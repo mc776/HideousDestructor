@@ -37,6 +37,7 @@ class HDSpentShell:Actor{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
+		if(Wads.CheckNumForName("id",0)==-1)A_SetTranslation("FreeShell");
 		if(vel==(0,0,0))A_ChangeVelocity(0.0001,0,-0.1,CVF_RELATIVE);
 	}
 	states{
