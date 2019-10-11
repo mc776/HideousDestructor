@@ -93,7 +93,7 @@ class Babuin:HDMobBase{
 			if(
 				inmap
 				&&(
-					absangle(latchtarget.angle,targangle)>random(30,180)
+					absangle(latchtarget.angle,targangle)>frandom(6,180)
 					||floorz>pos.z
 					||ceilingz<pos.z+height
 					||(
