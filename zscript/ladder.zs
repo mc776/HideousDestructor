@@ -23,10 +23,12 @@ class hdladdertop:hdactor{
 		//$Title "Ladder Top"
 		//$Sprite "LADDA0"
 
-		+missile //testing
 		+flatsprite
 		+nointeraction
-		height 1;radius 10;
+
+		height 4;radius 10;
+		maxstepheight 64;
+		maxdropoffheight 640;
 		mass int.MAX;
 	}
 	states{
@@ -45,7 +47,11 @@ class hdladdertop:hdactor{
 		for(int i=0;i<20;i++){
 
 			mvlast+=mv;
-			checkmove(mvlast,PCM_DROPOFF|PCM_NOACTORS,tm);
+			if(
+				!checkmove(mvlast,PCM_DROPOFF|PCM_NOACTORS,tm)
+				&&!!master //don't break if placed by mapper
+			)break;
+			A_UnsetSolid();
 
 			//found a place for the ladder to hang down
 			int htdiff=clamp(floorz-tm.floorz,0,LADDER_MAX);
