@@ -481,7 +481,7 @@ class HDMedikitter:HDWoundFixer{
 			a.target=self;
 			a.stamina=fleshgive;
 		}
-		goto nope;
+		goto ready;
 
 	diagnose:
 		TNT1 A 0 A_WeaponMessage("\cdMedikit Auto-Diagnostic Tool engaged.\c-\n\n\ccScanning, please wait...");
