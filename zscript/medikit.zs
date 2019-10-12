@@ -448,6 +448,11 @@ class HDMedikitter:HDWoundFixer{
 	patchup:
 		TNT1 A 10;
 		TNT1 A 0{
+			if(invoker.weaponstatus[MEDS_SECONDFLESH]<1){
+				A_WeaponMessage("You are out of Auto-Sutures.");
+				setweaponstate("nope");
+				return;
+			}
 			if(invoker.weaponstatus[MEDS_USEDON]<0)
 				invoker.weaponstatus[MEDS_USEDON]=playernumber();
 			invoker.weaponstatus[MEDS_SECONDFLESH]--;
