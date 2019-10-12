@@ -63,12 +63,14 @@ class HDBackpack:HDWeapon{
 				let gdb=getdefaultbytype((class<hdpickup>)(reff));
 				if(gdb.bfitsinbackpack){
 					nnm=gdb.gettag();
+					if(nnm==gdb.getclassname())nnm="";
 					ref=gdb.refid;
 				}
 			}else if(reff is "HDWeapon"){
 				let gdb=getdefaultbytype((class<hdweapon>)(reff));
 				if(gdb.bfitsinbackpack){
 					nnm=gdb.gettag();
+					if(nnm==gdb.getclassname())nnm="";
 					ref=gdb.refid;
 				}
 			}
