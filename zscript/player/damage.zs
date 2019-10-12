@@ -320,7 +320,7 @@ extend class HDPlayerPawn{
 			//swords, chainsaw, etc.
 			damage*=(1.-(alv*0.3));
 			if(!random(0,10+alv*2))towound+=max(1,damage*0.04);
-			armr.durability-=(damage>>(1+alv));
+			if(armr)armr.durability-=(damage>>(1+alv));
 		}else{
 			//anything else
 			damage*=(1.-(alv*0.2));

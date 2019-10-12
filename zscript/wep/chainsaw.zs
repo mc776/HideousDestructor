@@ -41,10 +41,13 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
 	override hdweapon GetSpareWeapon(actor newowner,bool reverse,bool doselect){return GetSpareWeaponRegular(newowner,reverse,doselect);}
 	override string pickupmessage(){
-		return bplayingid?"You got the chainsaw! Go find some meat!":"You got the angle grinder!";
+		return "You got the "..(bplayingid?"chainsaw":"angle grinder").."! Go find some meat!";
 	}
 	override string getobituary(actor victim,actor inflictor,name mod,bool playerattack){
-		if(Wads.CheckNumForName("id",0)==-1)return obituary; //i'll think of a grinding joke later
+		if(Wads.CheckNumForName("id",0)==-1){
+			if(!random(0,7))return "%o! Looking for meat... %k... wants %h to eat!";
+			return obituary;
+		}
 		bool clam=true;
 		for(int i=0;i<MAXPLAYERS;i++){
 			if(playeringame[i]&&(players[i].getgender()!=1)){
