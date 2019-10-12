@@ -6,6 +6,7 @@ class bltest:hdweapon{
 		+inventory.undroppable
 		weapon.slotnumber 1;
 		hdweapon.refid "blt";
+		tag "Bullet Sampler (Cheat!)";
 	}
 	override void DrawSightPicture(
 		HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl,
