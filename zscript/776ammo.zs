@@ -9,7 +9,7 @@ class SevenMilAmmo:HDRoundAmmo{
 		xscale 0.7;yscale 0.8;
 		inventory.pickupmessage "Picked up a 7.76mm round.";
 		hdpickup.refid HDLD_SEVNMIL;
-		hdpickup.nicename "7.76mm Round";
+		tag "7.76mm Round";
 		hdpickup.bulk ENC_776;
 		inventory.icon "TEN7A0";
 	}
@@ -40,7 +40,7 @@ class HD7mMag:HDMagAmmo{
 		hdmagammo.roundbulk ENC_776_LOADED;
 		hdmagammo.magbulk ENC_776MAG_EMPTY;
 		hdpickup.refid HDLD_SEVNMAG;
-		hdpickup.nicename "7.76mm Magazine";
+		tag "7.76mm Magazine";
 		inventory.pickupmessage "Picked up a 7.76mm magazine.";
 		scale 0.8;
 	}
@@ -73,7 +73,7 @@ class HD7mClip:HDMagAmmo{
 		hdmagammo.roundbulk ENC_776;
 		hdmagammo.magbulk ENC_776CLIP_EMPTY;
 		hdpickup.refid HDLD_SEVCLIP;
-		hdpickup.nicename "7.76mm Clip";
+		tag "7.76mm Clip";
 		inventory.pickupmessage "Picked up a 7.76mm clip.";
 		scale 0.6;
 	}
@@ -114,7 +114,7 @@ class SevenMilBrass:HDAmmo{
 		+hdpickup.multipickup
 		+hdpickup.cheatnogive
 		height 16;radius 8;
-		hdpickup.nicename "7.76mm Casing";
+		tag "7.76mm Casing";
 		hdpickup.refid HDLD_SEVNBRA;
 		hdpickup.bulk ENC_776B;
 		xscale 0.7;yscale 0.8;

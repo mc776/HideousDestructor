@@ -7,7 +7,7 @@ class FourMilAmmo:HDAmmo{
 		+hdpickup.cheatnogive
 		+hdpickup.multipickup
 		xscale 0.5; yscale 0.6;
-		hdpickup.nicename "4.26mm UAC Standard Round";
+		tag "4.26mm UAC Standard Round";
 		hdpickup.refid HDLD_FOURMIL;
 		hdpickup.bulk ENC_426;
 		inventory.maxamount 300;
@@ -64,7 +64,7 @@ class HD4mMag:HDMagAmmo{
 		hdmagammo.roundtype "FourMilAmmo";
 		hdmagammo.roundbulk ENC_426_LOADED;
 		hdmagammo.magbulk ENC_426MAG_EMPTY;
-		hdpickup.nicename "4.26mm UAC Standard Magazine";
+		tag "4.26mm UAC Standard Magazine";
 		hdpickup.refid HDLD_FOURMAG;
 		inventory.pickupmessage "Picked up a 4.26 UAC Standard magazine.";
 	}

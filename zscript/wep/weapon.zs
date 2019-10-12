@@ -19,8 +19,6 @@ class HDWeapon:Weapon{
 	property barrelsize:barrellength,barrelwidth,barreldepth;
 	string refid;
 	property refid:refid;
-	string nicename;
-	property nicename:nicename;
 	int weaponstatus[8];
 	int msgtimer;
 	int actualamount;
@@ -52,7 +50,7 @@ class HDWeapon:Weapon{
 		weapon.bobrangey 0.8;
 		hdweapon.barrelsize 0,0,0;
 		hdweapon.refid "";
-		hdweapon.nicename "";
+		tag "";
 	}
 	override bool getnoteleportfreeze(){return true;}
 	override bool cancollidewith(actor other,bool passive){return bmissile||HDPickerUpper(other);}
@@ -169,11 +167,6 @@ class HDWeapon:Weapon{
 		eventhandler.sendnetworkevent("hd_findrange",0,0,0);
 	}
 
-	//get a display name
-	virtual clearscope string GetNiceName(){
-		if(nicename!="")return nicename;
-		return getclassname();
-	}
 
 	//stops turning input
 	action void HijackMouse(){
@@ -381,7 +374,7 @@ class HDWeapon:Weapon{
 	action void A_SetHelpText(){
 		let hdp=hdplayerpawn(self);if(hdp){
 			string ttt=invoker.gethelptext();
-			if(ttt!="")hdp.wephelptext="\cu"..invoker.nicename.."\n"..ttt;
+			if(ttt!="")hdp.wephelptext="\cu"..invoker.gettag().."\n"..ttt;
 			else hdp.wephelptext=ttt;
 		}
 	}
@@ -460,7 +453,6 @@ class HDWeapon:Weapon{
 		bobrangex*=3;bobrangey*=3;
 		bdontbob=true;
 		bplayingid=(Wads.CheckNumForName("id",0)!=-1);
-		nicename=getnicename();
 		super.beginplay();
 	}
 
@@ -811,7 +803,7 @@ class NullWeapon:HDWeapon{
 		//this needs to be longer than any "real" weapon to ensure there is enough space to raise
 		hdweapon.barrelsize 40,1,1;
 
-		hdweapon.nicename "Sprinting";
+		tag "Sprinting";
 	}
 	override inventory CreateTossable(int amount){
 		let onr=hdplayerpawn(owner);

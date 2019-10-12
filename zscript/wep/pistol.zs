@@ -64,7 +64,7 @@ class HDPistol:HDHandgun replaces Pistol{
 		weapon.bobstyle "normal";
 		obituary "%o got capped by %k's pea shooter.";
 		inventory.pickupmessage "You got the pistol!";
-		hdweapon.nicename "Pistol";
+		tag "Pistol";
 		hdweapon.refid HDLD_PISTOL;
 		hdweapon.barrelsize 10,0.3,0.5;
 		inventory.maxamount 3;
@@ -541,7 +541,7 @@ class HDAutoPistol:HDWeaponGiver{
 		//$Sprite "PISTA0"
 		+hdweapon.fitsinbackpack
 		hdweapon.refid HDLD_PISTAUT;
-		hdweapon.nicename "Pistol (select-fire)";
+		tag "Pistol (select-fire)";
 		hdweapongiver.bulk 34;
 		hdweapongiver.weapontogive "HDPistol";
 		hdweapongiver.config "selectfire";

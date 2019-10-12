@@ -477,7 +477,7 @@ class HERPUsable:HDWeapon{
 		inventory.icon "HERPEX";
 		inventory.pickupsound "misc/w_pkup";
 		inventory.pickupmessage "Picked up a Heavy Engagement Rotary Platform robot.";
-		hdweapon.nicename "H.E.R.P. Robot";
+		tag "H.E.R.P. Robot";
 		hdweapon.refid HDLD_HERPBOT;
 		weapon.selectionorder 1015;
 	}

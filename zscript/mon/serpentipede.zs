@@ -152,7 +152,7 @@ class Serpentipede:HDMobBase{
 		deathsound "imp/death";
 		activesound "imp/active";
 		hdmobbase.downedframe 12;
-		tag "$fn_imp";
+		tag "$CC_IMP";
 
 		damagefactor "Thermal",0.66;
 		Health 100;
@@ -183,9 +183,6 @@ class Serpentipede:HDMobBase{
 		else ob=obituary;
 		if(bplayingid)ob.replace("serpentipede","imp");
 		return ob;
-	}
-	override string getnicename(){
-		return bplayingid?"imp":"serpentipede";
 	}
 	virtual void A_ImpChase(){
 		hdmobai.chase(self);

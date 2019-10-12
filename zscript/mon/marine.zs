@@ -33,8 +33,9 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		mass 150;
 		seesound "marine/sight";
 		painchance 240;
-		obituary "%o was shot up by a marine.";
-		hitobituary "%o violated a marine's personal space.";
+		obituary "$OB_MARINE";
+		hitobituary "$OB_MARINEHIT";
+		tag "$CC_MARINE";
 
 		accuracy 0; //set to hdmw_*+1
 		stamina 0; //+1 for setting
@@ -112,9 +113,6 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		else trnsl=string.format("Brown%s",trnsl);
 
 		A_SetTranslation(trnsl);
-	}
-	override string getnicename(){
-		return bplayingid?"marine":"soldier";
 	}
 	string nickname;
 	virtual string SetNickname(){
@@ -1493,7 +1491,7 @@ class SquadSummoner:HDPickup{
 		inventory.pickupsound "misc/p_pkup";
 		inventory.pickupmessage "Picked up a summoning talisman.";
 		hdpickup.bulk ENC_SQUADSUMMONER;
-		hdpickup.nicename "Summoning Talisman";
+		tag "Summoning Talisman";
 	}
 	states{
 	spawn:

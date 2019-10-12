@@ -427,7 +427,7 @@ class HDFragGrenades:HDGrenadethrower{
 	default{
 		weapon.selectionorder 1020;
 		weapon.slotnumber 0;
-		hdweapon.nicename "Fragmentation Grenades";
+		tag "Fragmentation Grenades";
 		hdgrenadethrower.ammotype "HDFragGrenadeAmmo";
 		hdgrenadethrower.throwtype "HDFragGrenade";
 		hdgrenadethrower.spoontype "HDFragSpoon";
@@ -618,7 +618,7 @@ class HDFragGrenadeAmmo:HDAmmo{
 		scale 0.3;
 		inventory.pickupmessage "Picked up a fragmentation hand grenade.";
 		inventory.pickupsound "weapons/pocket";
-		hdpickup.nicename "Fragmentation Grenades";
+		tag "Fragmentation Grenades";
 		hdpickup.refid HDLD_GREFRAG;
 		hdpickup.bulk ENC_FRAG;
 	}

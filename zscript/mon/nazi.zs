@@ -7,15 +7,12 @@ class HoopBubble:HDMobMan replaces WolfensteinSS{
 		painsound "wolfss/pain";
 		deathsound "wolfss/death";
 		activesound "wolfss/active";
-		tag "$fn_wolfss";
+		tag "$cc_wolfss";
 
 		painchance 170;
 
 		obituary "%o invoked Godwin's Law.";
 		translation "192:207=103:111","240:247=5:8";
-	}
-	override string getnicename(){
-		return bplayingid?"Waffen-SS":"sailor";
 	}
 	override void postbeginplay(){
 		super.postbeginplay();

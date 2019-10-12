@@ -14,7 +14,7 @@ class PainBringer:PainMonster replaces HellKnight{
 		deathsound "knight/death";
 		obituary "$ob_knight";
 		hitobituary "$ob_knighthit";
-		tag "$fn_hell";
+		tag "$cc_hell";
 
 		damagefactor "Balefire",0.3;
 		damagefactor "Thermal",0.8;
@@ -26,10 +26,6 @@ class PainBringer:PainMonster replaces HellKnight{
 		minmissilechance 42;
 
 		stamina 0;
-	}
-
-	override string getnicename(){
-		return bplayingid?"hell knight":"pain bringer";
 	}
 
 	override double bulletshell(vector3 hitpos,double hitangle){

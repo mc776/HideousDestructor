@@ -103,24 +103,9 @@ class HDHandlers:EventHandler{
 
 //because "extend class Actor" doesn't work
 class HDActor:Actor{
-	string nicename;
-	property nicename:nicename;
-
 	default{
 		+noblockmonst
 		renderstyle "translucent";
-		hdactor.nicename "";
-	}
-
-	override void postbeginplay(){
-		super.postbeginplay();
-		nicename=getnicename();
-	}
-
-	//get a display name
-	virtual clearscope string GetNiceName(){
-		if(nicename!="")return nicename;
-		return getclassname();
 	}
 
 	//"After that many drinks anyone would be blowing chunks all night!"
@@ -396,13 +381,10 @@ struct HDMath{
 	}
 	//get a nice name for any actor
 	//mostly for exceptions for players and monsters
-	static string GetName(actor named,bool nicename=true){
+	static string GetName(actor named){
 		if(named.player)return named.player.getusername();
-		if(nicename){
-			if(hdpickup(named))return hdpickup(named).nicename;
-			if(hdweapon(named))return hdweapon(named).nicename;
-			if(hdactor(named))return hdactor(named).nicename;
-		}
+		string tagname=named.gettag();
+		if(tagname!="")return tagname;
 		return named.getclassname();
 	}
 }

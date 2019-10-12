@@ -15,7 +15,7 @@ class Technorantula:HDMobBase replaces SpiderMastermind{
 		painsound "spider/pain";
 		deathsound "spider/death";
 		activesound "spider/active";
-		tag "$fn_spider";
+		tag "$cc_spider";
 
 		+noblooddecals
 		+nodropoff +nofear
@@ -31,9 +31,6 @@ class Technorantula:HDMobBase replaces SpiderMastermind{
 		health 3000;
 		radius 76;
 		radiusdamagefactor 0.8;
-	}
-	override string getnicename(){
-		return bplayingid?"spider mastermind":"large technospider";
 	}
 	override void postbeginplay(){
 		super.postbeginplay();

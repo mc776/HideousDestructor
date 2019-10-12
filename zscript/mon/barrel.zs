@@ -32,7 +32,7 @@ class HDBarrel:HDMobBase replaces ExplosiveBarrel{
 
 		hdbarrel.musthavegremlin 0; //0 random, -1 never, 1 always
 		hdbarrel.lighttype "HDBarrelLight";
-		hdactor.nicename "barrel";
+		tag "barrel";
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -235,7 +235,7 @@ class HDFireCan:HDBarrel replaces BurningBarrel{
 		attacksound "vile/firestrt";
 		missiletype "BarrelFlame";
 		hdbarrel.lighttype "HDFireCanLight";
-		hdactor.nicename "burning barrel";
+		tag "burning barrel";
 	}
 	override void A_BarrelAttack(){
 		A_FaceTarget(0,0);

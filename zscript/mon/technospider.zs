@@ -14,16 +14,13 @@ class TechnoSpider:HDMobBase replaces Arachnotron{
 		painsound "baby/pain";
 		deathsound "baby/death";
 		activesound "baby/active";
-		tag "$fn_arach";
+		tag "$cc_arach";
 		+dontharmspecies +missilemore
 		obituary "%o was fried by the Wrath of Krang.";
 		speed 16;
 		deathheight 18;
 		+noblooddecals bloodtype "NotQuiteBloodSplat";
 		hdmobbase.shields 500;
-	}
-	override string getnicename(){
-		return bplayingid?"arachnotron":"technospider";
 	}
 	override void postbeginplay(){
 		super.postbeginplay();

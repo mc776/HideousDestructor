@@ -29,7 +29,7 @@ class HDBackpack:HDWeapon{
 		inventory.pickupmessage "Picked up a backpack to help fill your life with ammo!";
 		inventory.pickupsound "weapons/pocket";
 
-		hdweapon.nicename "Backpack";
+		tag "Backpack";
 		hdweapon.refid HDLD_BACKPAK;
 	}
 	override void DropOneAmmo(int amt){
@@ -62,13 +62,13 @@ class HDBackpack:HDWeapon{
 			if(reff is "HDPickup"){
 				let gdb=getdefaultbytype((class<hdpickup>)(reff));
 				if(gdb.bfitsinbackpack){
-					nnm=gdb.nicename;
+					nnm=gdb.gettag();
 					ref=gdb.refid;
 				}
 			}else if(reff is "HDWeapon"){
 				let gdb=getdefaultbytype((class<hdweapon>)(reff));
 				if(gdb.bfitsinbackpack){
-					nnm=gdb.nicename;
+					nnm=gdb.gettag();
 					ref=gdb.refid;
 				}
 			}

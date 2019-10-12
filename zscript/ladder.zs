@@ -336,7 +336,7 @@ class PortableLadder:HDPickup{
 		height 20;radius 8;
 		hdpickup.bulk ENC_LADDER;
 		hdpickup.refid HDLD_LADDER;
-		hdpickup.nicename "Ladder";
+		tag "Ladder";
 	}
 	states{
 	spawn:

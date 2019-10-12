@@ -33,7 +33,7 @@ class PainLord:PainMonster replaces BaronofHell{
 		activesound "baron/active";
 		obituary "$ob_baron";
 		hitobituary "$ob_baronhit";
-		tag "$fn_baron";
+		tag "$CC_BARON";
 
 		+missilemore +seeinvisible +dontharmspecies
 		maxtargetrange 65536;
@@ -64,10 +64,6 @@ class PainLord:PainMonster replaces BaronofHell{
 		BE_HPMAX=1000,
 		BE_OKAY=BE_HPMAX*7/10,
 		BE_BAD=BE_HPMAX*3/10,
-	}
-
-	override string getnicename(){
-		return bplayingid?"baron of Hell":"pain lord";
 	}
 
 	override double bulletshell(vector3 hitpos,double hitangle){

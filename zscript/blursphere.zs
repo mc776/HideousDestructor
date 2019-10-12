@@ -277,7 +277,7 @@ class ShellShade:ZombieStormtrooper{
 		renderstyle "Fuzzy";
 		health 900;
 		stencilcolor "04 00 06";
-		hdactor.nicename "shell-shade";
+		tag "shell-shade";
 	}
 	override void postbeginplay(){
 		user_weapon=1;

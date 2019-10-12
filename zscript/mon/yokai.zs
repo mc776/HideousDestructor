@@ -13,7 +13,7 @@ class Yokai:HDMobBase{
 		+hdmobbase.noshootablecorpse
 		height 42;radius 10;
 		renderstyle "Add";
-		hdactor.nicename "yokai";
+		tag "yokai";
 		maxtargetrange 666;health 66;
 		bloodtype "IdleDummy";
 		obituary "%o watched a yokai.";

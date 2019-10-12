@@ -35,7 +35,7 @@ class PortableRadsuit:HDPickup replaces RadSuit{
 		inventory.pickupsound "weapons/pocket";
 		inventory.icon "SUITB0";
 		hdpickup.bulk ENC_RADSUIT;
-		hdpickup.nicename "Environment Suit";
+		tag "Environment Suit";
 		hdpickup.refid HDLD_RADSUIT;
 	}
 	override void DetachFromOwner(){
@@ -125,7 +125,7 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 		inventory.icon "PVISA0";
 		scale 0.5;
 		hdpickup.bulk ENC_LITEAMP;
-		hdpickup.nicename "Lite-Amp Goggles";
+		tag "Lite-Amp Goggles";
 		hdpickup.refid HDLD_LITEAMP;
 	}
 	int spent;bool worn;

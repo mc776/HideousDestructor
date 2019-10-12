@@ -9,7 +9,7 @@ class HDBattery:HDMagAmmo{
 
 		hdmagammo.maxperunit 20;
 		hdmagammo.roundtype "";
-		hdpickup.nicename "Batteries";
+		tag "Batteries";
 		hdpickup.refid HDLD_BATTERY;
 		hdpickup.bulk ENC_BATTERY;
 		hdmagammo.magbulk ENC_BATTERY;

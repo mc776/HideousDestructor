@@ -15,7 +15,7 @@ class ThunderBuster:HDCellWeapon{
 		obituary "%o was roasted by %k's particle splatter.";
 		hdweapon.barrelsize 28,1.6,3;
 		hdweapon.refid HDLD_THUNDER;
-		hdweapon.nicename "Thunder Buster";
+		tag "Thunder Buster";
 	}
 	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
 	override hdweapon GetSpareWeapon(actor newowner,bool reverse,bool doselect){return GetSpareWeaponRegular(newowner,reverse,doselect);}

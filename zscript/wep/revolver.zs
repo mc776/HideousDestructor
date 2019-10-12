@@ -16,7 +16,7 @@ class HDRevolver:HDHandgun{
 		weapon.bobstyle "normal";
 		obituary "%o got capped by %k's six-pea shooter.";
 		inventory.pickupmessage "You got the revolver!";
-		hdweapon.nicename "Revolver";
+		tag "Revolver";
 		hdweapon.refid HDLD_REVOLVER;
 		hdweapon.barrelsize 6,0.3,0.5; //physically longer than auto but can shoot at contact
 	}
@@ -614,7 +614,7 @@ class HDRevolverAmmo:HDPistolAmmo{
 		yscale 0.85;
 		inventory.pickupmessage "Picked up a .355 round.";
 		hdpickup.refid HDLD_355;
-		hdpickup.nicename ".355 Round";
+		tag ".355 Round";
 		hdpickup.bulk ENC_355;
 	}
 	override void GetItemsThatUseThis(){

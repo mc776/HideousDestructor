@@ -17,7 +17,7 @@ class SoldierExtras:HDPickup{
 	default{
 		-hdpickup.fitsinbackpack
 		hdpickup.refid HDLD_SOLDIER;
-		hdpickup.nicename "Elite Soldier Kit";
+		tag "Elite Soldier Kit";
 	}
 	states{
 	pickup:
@@ -539,11 +539,11 @@ class LoadoutItemList:CustomInventory{
 				string nnm="";
 				if(reff is "HDPickup"){
 					let gdb=getdefaultbytype((class<hdpickup>)(reff));
-					nnm=gdb.nicename;if(nnm=="")nnm=gdb.getclassname();
+					nnm=gdb.gettag();if(nnm=="")nnm=gdb.getclassname();
 					ref=gdb.refid;
 				}else if(reff is "HDWeapon"){
 					let gdb=getdefaultbytype((class<hdweapon>)(reff));
-					nnm=gdb.nicename;if(nnm=="")nnm=gdb.getclassname();
+					nnm=gdb.gettag();if(nnm=="")nnm=gdb.getclassname();
 					ref=gdb.refid;
 				}
 				if(ref!=""){

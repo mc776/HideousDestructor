@@ -15,7 +15,7 @@ class Hunter:HDShotgun{
 		inventory.pickupmessage "You got the pump-action shotgun!";
 		hdweapon.barrelsize 30,0.5,2;
 		hdweapon.refid HDLD_HUNTER;
-		hdweapon.nicename "Hunter";
+		tag "Hunter";
 	}
 	//returns the power of the load just fired
 	static double Fire(actor caller,int choke=1){

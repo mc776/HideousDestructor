@@ -25,7 +25,7 @@ class BossRifle:HDWeapon{
 		Obituary "%o sure showed %k who was the boss!";
 		hdweapon.barrelsize 40,1,2;
 		hdweapon.refid HDLD_BOSS;
-		hdweapon.nicename "Boss Rifle";
+		tag "Boss Rifle";
 		inventory.maxamount 3; //1 use user setting; 2 custom chamber; 3 regular
 	}
 	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}

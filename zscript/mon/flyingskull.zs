@@ -10,7 +10,7 @@ class FlyingSkull:HDMobBase replaces LostSoul{
 		attacksound "skull/melee";
 		painsound "skull/pain";
 		deathsound "skull/death";
-		tag "$fn_lost";
+		tag "$cc_lost";
 
 		+noblood +pushable -floorclip +avoidmelee
 		+bright
@@ -26,9 +26,6 @@ class FlyingSkull:HDMobBase replaces LostSoul{
 		alpha 1.0;
 		renderstyle "normal";
 		maxtargetrange 245;
-	}
-	override string getnicename(){
-		return bplayingid?"lost soul":"deadflare";
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -238,7 +235,7 @@ class SkullSpitter:HDMobBase replaces PainElemental{
 		painsound "pain/pain";
 		deathsound "pain/death";
 		activesound "pain/active";
-		tag "$fn_pain";
+		tag "$cc_pain";
 
 		+pushable
 		pushfactor 0.3;

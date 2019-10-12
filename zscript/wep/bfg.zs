@@ -17,12 +17,11 @@ class BFG9K:HDWeapon replaces BFG9000{
 		scale 0.7;
 		hdweapon.barrelsize 32,3.5,7;
 		hdweapon.refid HDLD_BFG;
-		hdweapon.nicename "BFG 9k";
+		tag "$TAG_BFG9000";
 	}
 	override string pickupmessage(){
-		return "You got the "..getnicename().."! Oh yes.";
+		return "You got the "..gettag().."! Oh yes.";
 	}
-	override string GetNiceName(){return bplayingid?"BFG 9k":"SKAG 1337";}
 	override string getobituary(actor victim,actor inflictor,name mod,bool playerattack){
 		if(bplayingid)return "%o was smacked by %k's big green gob.";
 		return "%o just got glassed and no one leaves here till we find out %k did it!";

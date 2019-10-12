@@ -111,7 +111,7 @@ class CombatSlug:HDMobBase replaces Fatso{
 		painsound "fatso/pain";
 		deathsound "fatso/death";
 		activesound "fatso/active";
-		tag "$fn_mancu";
+		tag "$cc_mancu";
 
 		+dontharmspecies
 		deathheight 20;
@@ -121,9 +121,6 @@ class CombatSlug:HDMobBase replaces Fatso{
 		hdmobbase.shields 500;
 		obituary "%o was smoked by a CombatSlug.";
 		painchance 80;
-	}
-	override string getnicename(){
-		return bplayingid?"mancubus":"combat slug";
 	}
 	override void postbeginplay(){
 		super.postbeginplay();

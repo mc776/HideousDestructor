@@ -223,7 +223,6 @@ class HDPickup:CustomInventory{
 	int maxunitamount;
 	property maxunitamount:maxunitamount;
 	string refid;property refid:refid;
-	string nicename;property nicename:nicename;
 	default{
 		+solid
 		+inventory.invbar +inventory.persistentpower
@@ -240,7 +239,6 @@ class HDPickup:CustomInventory{
 
 		hdpickup.bulk 0;
 		hdpickup.refid "";
-		hdpickup.nicename "";
 
 		radius 8; height 10; scale 0.8;
 		inventory.pickupsound "weapons/pocket";

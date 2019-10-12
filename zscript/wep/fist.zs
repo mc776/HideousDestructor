@@ -25,7 +25,7 @@ class HDFist:HDWeapon replaces Fist{
 		weapon.bobrangex 0.1;
 		weapon.bobrangey 0.5;
 		weapon.slotnumber 1;
-		hdweapon.nicename "Fists";
+		tag "Fists";
 		hdweapon.refid HDLD_FIST;
 	}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
@@ -231,7 +231,7 @@ class HDFist:HDWeapon replaces Fist{
 		}
 
 		if(hd_debug){
-			string pch=HDMath.GetName(punchee,false);
+			string pch=punchee.getclassname();
 			A_Log(string.format("Punched %s for %i damage!",pch,dmg));
 		}
 		if(dmg*2>punchee.health)punchee.A_PlaySound("misc/bulletflesh",CHAN_BODY);  

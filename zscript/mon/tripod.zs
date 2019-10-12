@@ -225,7 +225,7 @@ class SatanRobo:HDMobBase replaces CyberDemon{
 		painsound "cyber/pain";
 		deathsound "cyber/death";
 		activesound "cyber/active";
-		tag "$fn_cyber";
+		tag "$CC_CYBER";
 
 		+avoidmelee +nofear +seeinvisible +nodropoff
 		-noradiusdmg
@@ -276,9 +276,6 @@ class SatanRobo:HDMobBase replaces CyberDemon{
 			CMF_AIMDIRECTION|CMF_SAVEPITCH,
 			pitch+aimvert-(dist>2048?dist*0.000001:0)+(tgt?atan(10/dist):0)
 		);
-	}
-	override string getnicename(){
-		return bplayingid?"cyberdemon":"assault tripod";
 	}
 	override void tick(){
 		super.tick();

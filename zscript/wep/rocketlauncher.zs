@@ -15,7 +15,7 @@ class HDRL:HDWeapon{
 		obituary "%o rode %k's rocket.";
 		hdweapon.barrelsize 32,3.1,5;
 		hdweapon.refid HDLD_LAUNCHR;
-		hdweapon.nicename "Rocket Launcher";
+		tag "Rocket Launcher";
 		inventory.maxamount 4; //1 use user setting; 2 HEAT; 3 regular; 4 grenade
 	}
 	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
@@ -564,7 +564,7 @@ class Blooper:HDWeapon{
 		inventory.pickupmessage "You got the grenade launcher!";
 		obituary "%o was blooped by %k.";
 		hdweapon.barrelsize 24,1.6,3;
-		hdweapon.nicename "Grenade Launcher";
+		tag "Grenade Launcher";
 		hdweapon.refid HDLD_BLOOPER;
 	}
 	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}

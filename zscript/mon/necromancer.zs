@@ -26,9 +26,7 @@ class BloodyHellFire:HDMobBase{
 		seesound "misc/firecrkl";
 		deathsound "weapons/plasmas";
 		obituary "%o met the firepower of the necromancer.";
-	}
-	override string getnicename(){
-		return bplayingid?"archvile flame":"necromancer flame";
+		tag "$CC_FLAME";
 	}
 	int firetimer;
 	override void postbeginplay(){
@@ -229,7 +227,7 @@ class Necromancer:HDMobBase replaces ArchVile{
 		activesound "vile/active";
 		meleesound "vile/stop";
 		obituary "$OB_VILE";
-		tag "$FN_ARCH";
+		tag "$CC_ARCH";
 		
 		+shadow
 		+nofear
@@ -302,9 +300,6 @@ class Necromancer:HDMobBase replaces ArchVile{
 				hhh.stamina=(dist>>3)+random(10,30);
 			}
 		}
-	}
-	override string getnicename(){
-		return bplayingid?"archvile":"necromancer";
 	}
 	override void postbeginplay(){
 		super.postbeginplay();

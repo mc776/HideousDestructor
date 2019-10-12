@@ -338,7 +338,7 @@ class Trilobite:HDMobBase replaces Cacodemon{
 		deathsound "caco/death";
 		activesound "caco/active";
 		hitobituary "$ob_cacohit";
-		tag "$fn_caco";
+		tag "$cc_caco";
 
 		+noblooddecals
 		+pushable
@@ -376,9 +376,6 @@ class Trilobite:HDMobBase replaces Cacodemon{
 	}
 	override bool CanResurrect(actor other,bool passive){
 		return !passive||tics<0;
-	}
-	override string getnicename(){
-		return bplayingid?"cacodemon":"trilobite";
 	}
 	states{
 	spawn:

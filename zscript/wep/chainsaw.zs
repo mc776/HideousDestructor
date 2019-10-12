@@ -36,14 +36,13 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 		obituary "%o got cut by %k.";
 		hdweapon.barrelsize 26,1,2;
 		hdweapon.refid HDLD_CHAINSW;
-		hdweapon.nicename "Chainsaw";
+		tag "$TAG_CHAINSAW";
 	}
 	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
 	override hdweapon GetSpareWeapon(actor newowner,bool reverse,bool doselect){return GetSpareWeaponRegular(newowner,reverse,doselect);}
 	override string pickupmessage(){
 		return bplayingid?"You got the chainsaw! Go find some meat!":"You got the angle grinder!";
 	}
-	override string GetNiceName(){return bplayingid?"chainsaw":"angle grinder";}
 	override string getobituary(actor victim,actor inflictor,name mod,bool playerattack){
 		if(Wads.CheckNumForName("id",0)==-1)return obituary; //i'll think of a grinding joke later
 		bool clam=true;

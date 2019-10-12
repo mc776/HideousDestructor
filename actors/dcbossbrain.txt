@@ -398,7 +398,7 @@ ACTOR HDBBE : BossEye replaces BossEye
 		loop
 	Death:
 		TNT1 A 0 A_KillChildren
-		TNT1 A 1 A_TakeFromTarget("HasKilledTyrant",1)
+		TNT1 A 1 A_TakeInventory("HasKilledTyrant",1,AAPTR_TARGET)
 		stop
 	}
 }

@@ -17,7 +17,7 @@ class HDIEDKit:HDPickup{
 		inventory.pickupmessage "Picked up an IED kit.";
 		height 4;radius 4;scale 0.5;
 		hdpickup.bulk ENC_IEDKIT;
-		hdpickup.nicename "IED Kit";
+		tag "IED Kit";
 		hdpickup.refid HDLD_IEDKIT;
 		+hdpickup.multipickup
 		+forcexybillboard

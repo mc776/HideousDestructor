@@ -109,7 +109,7 @@ class Boner:HDMobBase replaces Revenant{
 		deathsound "skeleton/death";
 		activesound "skeleton/active";
 		meleesound "skeleton/melee";
-		tag "$fn_reven";
+		tag "$CC_REVEN";
 
 		+noblooddecals
 		-longmeleerange
@@ -145,9 +145,6 @@ class Boner:HDMobBase replaces Revenant{
 		return super.damagemobj(
 			inflictor,source,damage,mod,flags,angle
 		);
-	}
-	override string getnicename(){
-		return bplayingid?"revenant":"dark soldier";
 	}
 	uint balls;
 	states{

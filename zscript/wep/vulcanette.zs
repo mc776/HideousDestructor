@@ -65,7 +65,7 @@ class Vulcanette:HDWeapon{
 		obituary "%o met the budda-budda-budda on the street, and %k killed %h.";
 		hdweapon.barrelsize 30,3,4;
 		hdweapon.refid HDLD_VULCETT;
-		hdweapon.nicename "Vulcanette";
+		tag "Vulcanette";
 	}
 	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
 	override hdweapon GetSpareWeapon(actor newowner,bool reverse,bool doselect){return GetSpareWeaponRegular(newowner,reverse,doselect);}

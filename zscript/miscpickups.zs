@@ -139,7 +139,7 @@ class HDAmBox:HDUPK{
 		meleerange 42;
 		radiusdamagefactor 0.5;
 		obituary "%o paid no attention to Admiral Ackbar.";
-		hdactor.nicename "ammo box";
+		tag "ammo box";
 	}
 	bool tapped;
 	bool disarmed;
@@ -391,7 +391,7 @@ class HDAmBoxUnarmed:HDAmBox{
 }
 class HDAmBoxDisarmed:HDAmBoxUnarmed{
 	default{
-		hdactor.nicename "disarmed ammo box";
+		tag "disarmed ammo box";
 	}
 	states{
 	spawn:
@@ -719,7 +719,7 @@ class MapLoadoutGiver:HDPickup{
 	default{
 		-hdpickup.fitsinbackpack
 		hdpickup.refid HDLD_MAP;
-		hdpickup.nicename "Map";
+		tag "Map";
 	}
 	states{
 	spawn:TNT1 A 0;stop;
@@ -733,7 +733,7 @@ class KeyLoadoutGiver:HDPickup{
 		-hdpickup.fitsinbackpack
 		inventory.maxamount 7;
 		hdpickup.refid HDLD_KEY;
-		hdpickup.nicename "Keys";
+		tag "Keys";
 	}
 	states{
 	spawn:TNT1 A 0;stop;

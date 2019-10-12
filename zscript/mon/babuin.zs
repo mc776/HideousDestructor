@@ -157,7 +157,7 @@ class Babuin:HDMobBase{
 		deathsound "babuin/death";activesound "babuin/active";
 		obituary "%o was mauled by a babuin.";
 		damagefactor "Thermal",0.76;
-		hdactor.nicename "babuin";
+		tag "babuin";
 	}
 	states{
 	spawn:

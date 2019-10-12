@@ -47,19 +47,19 @@ class HDLoadoutMenu:GenericMenu{
 					if(ref.refid!=""){
 						string lrefid=ref.refid.makelower();
 						refids.push(lrefid);
-						nicenames.push(ref.nicename);
+						nicenames.push(ref.gettag());
 						if(!(jp%5))reflist=reflist.."\n";jp++;
-						reflist=reflist.."\n\cy"..ref.refid.."\cj   "..ref.nicename;
+						reflist=reflist.."\n\cy"..ref.refid.."\cj   "..ref.gettag();
 					}
 				}else{
 					let ref=getdefaultbytype((class<hdweapon>)(reff));
 					if(ref.refid!=""){
 						string lrefid=ref.refid.makelower();
 						refids.push(lrefid);
-						nicenames.push(ref.nicename);
+						nicenames.push(ref.gettag());
 						if(!(jw%5))reflist="\n"..reflist;jw++;
-						if(ref.bwimpy_weapon)reflist=reflist.."\n\cy"..ref.refid.."\cj   "..ref.nicename;
-						else reflist="\n\cx"..ref.refid.."\cj   "..ref.nicename..reflist;
+						if(ref.bwimpy_weapon)reflist=reflist.."\n\cy"..ref.refid.."\cj   "..ref.gettag();
+						else reflist="\n\cx"..ref.refid.."\cj   "..ref.gettag()..reflist;
 					}
 				}
 			}

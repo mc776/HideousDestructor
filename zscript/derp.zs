@@ -350,7 +350,7 @@ class DERPDEAD:DERPUsable{
 		inventory.pickupmessage "Picked up a Defence, Engagement, Reconnaissance and Patrol robot. It is damaged.";
 		hdpickup.bulk ENC_DERP;
 		hdpickup.refid "";
-		hdpickup.nicename "D.E.R.P. (broken)";
+		tag "D.E.R.P. (broken)";
 	}
 	override bool isused(){return false;}
 	states{
@@ -390,7 +390,7 @@ class DERPUsable:HDPickup{
 		inventory.pickupsound "derp/crawl";
 		translation 0;
 		hdpickup.bulk ENC_DERP;
-		hdpickup.nicename "D.E.R.P. Robot";
+		tag "D.E.R.P. Robot";
 		hdpickup.refid HDLD_DERPBOT;
 	}
 	override int getsbarnum(int flags){return botid;}
