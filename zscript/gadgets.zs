@@ -155,6 +155,7 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 	}
 	int getbrokenness(int index=0){return NITEVIS_MAXBROKENNESS-(mags[index]%NITEVIS_CYCLEUNIT);}
 	int setbrokenness(int newamt,int index=0,bool relative=false){
+		if(amount!=mags.size())syncamount();
 		int brk=getbrokenness(index);
 		mags[index]-=brk;
 		if(relative)newamt+=brk;
