@@ -357,7 +357,7 @@ class HDBullet:HDActor{
 						&&hitactor.bshootable
 						&&!hitactor.bnodamage
 						&&!hdp
-					)hdwound.inflict(hitactor,
+					)hdbleedingwound.inflict(hitactor,
 						random((mass>>6),dmg)
 					);
 				}else{

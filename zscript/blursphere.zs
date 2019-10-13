@@ -168,7 +168,7 @@ class HDBlurSphere:HDPickup{
 					fff.stamina=nub?166:13*level;
 					fff.master=self;
 				}else if(random(0,6-level)<1){
-					HDWound.Inflict(itt,13*level);
+					HDBleedingWound.Inflict(itt,13*level);
 				}
 			}
 			if(monsters.size()){

@@ -320,7 +320,7 @@ class HDSawPuff:IdleDummy{
 			}
 			if(tracer){
 				if(tracer.bnoblood)spawn("BulletPuffMedium",pos,ALLOW_REPLACE);
-				else hdwound.inflict(tracer,random(1,7));
+				else hdbleedingwound.inflict(tracer,random(1,7));
 			}
 		}stop;
 	crash:
