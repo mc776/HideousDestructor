@@ -643,6 +643,7 @@ class GreenSphere:BlueSphere replaces Invulnerabilitysphere{
 		radius 12;
 	}
 	override bool used(actor user){
+		if(health<1)return false;
 		user.A_GiveInventory("HDInvuln");
 		user.A_Quake(3,26,0,220,"none");
 		blockthingsiterator itt=blockthingsiterator.create(user,256);
