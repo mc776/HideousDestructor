@@ -159,7 +159,7 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 		int brk=getbrokenness(index);
 		mags[index]-=brk;
 		if(relative)newamt+=brk;
-		brk=clamp(newamt,0,NITEVIS_MAXBROKENNESS);
+		brk=clamp(400-newamt,0,NITEVIS_MAXBROKENNESS);
 		mags[index]+=brk;
 		return brk;
 	}
