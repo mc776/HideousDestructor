@@ -119,8 +119,6 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 		//$Title "Light Amp"
 		//$Sprite "PVISB0"
 
-		inventory.maxamount 1;
-		inventory.interhubamount 1;
 		inventory.pickupmessage "Light amplification visor.";
 		inventory.icon "PVISA0";
 		scale 0.5;
