@@ -153,15 +153,18 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 		else amplitude=frandom(-NITEVIS_MAX,NITEVIS_MAX);
 		lastcvaramplitude=amplitude;
 	}
-	int getbrokenness(int index=0){return NITEVIS_MAXBROKENNESS-(mags[index]%NITEVIS_CYCLEUNIT);}
-	int setbrokenness(int newamt,int index=0,bool relative=false){
+	int getintegrity(int index=0){return (mags[index]%NITEVIS_CYCLEUNIT);}
+	int setintegrity(int newamt,int index=0,bool relative=false){
 		if(amount!=mags.size())syncamount();
-		int brk=getbrokenness(index);
-		mags[index]-=brk;
-		if(relative)newamt+=brk;
-		brk=clamp(400-newamt,0,NITEVIS_MAXBROKENNESS);
-		mags[index]+=brk;
-		return brk;
+		int integrity=getintegrity(index);
+		mags[index]-=integrity;
+
+		if(relative)integrity+=newamt;
+		else integrity=newamt;
+
+		integrity=clamp(integrity,0,NITEVIS_MAXINTEGRITY);
+		mags[index]+=integrity;
+		return integrity;
 	}
 	override void DoEffect(){
 		super.DoEffect();
@@ -194,7 +197,7 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 
 			int chargedamount=mags[0];
 
-//console.printf(chargedamount.."   "..NITEVIS_MAXBROKENNESS-(chargedamount%NITEVIS_CYCLEUNIT));
+//console.printf(chargedamount.."   "..NITEVIS_MAXINTEGRITY-(chargedamount%NITEVIS_CYCLEUNIT));
 
 			if(
 				worn
@@ -238,7 +241,7 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 				}
 
 				//flicker
-				int brokenness=NITEVIS_MAXBROKENNESS-(mags[0]%NITEVIS_CYCLEUNIT);
+				int brokenness=NITEVIS_MAXINTEGRITY-(mags[0]%NITEVIS_CYCLEUNIT);
 				if(brokenness>0&&!random[rand1](0,max(0,chargedamount*chargedamount-brokenness))){
 					if(oldliteamp){
 						owner.player.fixedcolormap=-1;
@@ -261,11 +264,11 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 	}
 	enum NiteVis{
 		NITEVIS_MAX=100,
-		NITEVIS_MAXBROKENNESS=400,
-		NITEVIS_CYCLEUNIT=NITEVIS_MAXBROKENNESS+1,
+		NITEVIS_MAXINTEGRITY=400,
+		NITEVIS_CYCLEUNIT=NITEVIS_MAXINTEGRITY+1,
 		NITEVIS_BATCYCLE=20000,
 		NITEVIS_MAGMAXCHARGE=NITEVIS_CYCLEUNIT*NITEVIS_BATCYCLE,
-		NITEVIS_MAGMAX=NITEVIS_MAGMAXCHARGE+NITEVIS_MAXBROKENNESS,
+		NITEVIS_MAGMAX=NITEVIS_MAGMAXCHARGE+NITEVIS_MAXINTEGRITY,
 	}
 	states{
 	spawn:
@@ -281,6 +284,8 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 				invoker.amplitude=-invoker.amplitude;
 			}else if(cmd&BT_USER3){
 				invoker.firsttolast();
+invoker.setintegrity(-5,0,true);
+
 				int amt=invoker.mags[0];
 				A_Log("Goggles at "..amt*100/NITEVIS_MAGMAXCHARGE.."% charge and "..((amt%NITEVIS_CYCLEUNIT)>>2).."% integrity.",true);
 			}else{
