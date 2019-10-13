@@ -470,6 +470,7 @@ class HDFist:HDWeapon replaces Fist{
 		goto nope;
 	firemode:
 	grab:
+		TNT1 A 0 A_ClearGrabbing();
 		TNT1 A 0 A_CheckGender("grab2");
 	grab2:
 		#### A 1 offset(0,52);
