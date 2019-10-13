@@ -153,13 +153,13 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 		else amplitude=frandom(-NITEVIS_MAX,NITEVIS_MAX);
 		lastcvaramplitude=amplitude;
 	}
-	int getbrokenness(){return NITEVIS_MAXBROKENNESS-(mags[0]%NITEVIS_CYCLEUNIT);}
-	int setbrokenness(int newamt,bool relative=false){
-		int brk=NITEVIS_MAXBROKENNESS-(mags[0]%NITEVIS_CYCLEUNIT);
-		mags[0]-=brk;
+	int getbrokenness(int index=0){return NITEVIS_MAXBROKENNESS-(mags[index]%NITEVIS_CYCLEUNIT);}
+	int setbrokenness(int newamt,int index=0,bool relative=false){
+		int brk=getbrokenness(index);
+		mags[index]-=brk;
 		if(relative)newamt+=brk;
 		brk=clamp(newamt,0,NITEVIS_MAXBROKENNESS);
-		mags[0]+=brk;
+		mags[index]+=brk;
 		return brk;
 	}
 	override void DoEffect(){
