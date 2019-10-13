@@ -38,7 +38,7 @@ class bltest:hdweapon{
 */
 		TNT1 A 0{
 			if(player.cmd.buttons&BT_USE)HDBulletActor.FireBullet(self,"HDB_bronto");
-			else HDBulletActor.FireBullet(self,"kekb");
+			else HDBulletActor.FireBullet(self,"HDB_9");
 		}goto nope;
 	altfire:
 		TNT1 A 0{
