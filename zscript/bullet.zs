@@ -1287,5 +1287,6 @@ class SubsonicTrail:SupersonicTrail{
 
 
 
-//#include "zscript/bullet_old.zs"
+//
+#include "zscript/bullet_old.zs"
 
