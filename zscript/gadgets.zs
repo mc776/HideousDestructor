@@ -113,23 +113,23 @@ class PortableRadsuit:HDPickup replaces RadSuit{
 //-------------------------------------------------
 // Light Amplification Visor
 //-------------------------------------------------
-class PortableLiteAmp:HDPickup replaces Infrared{
+class PortableLiteAmp:HDMagAmmo replaces Infrared{
 	default{
 		//$Category "Gear/Hideous Destructor/Supplies"
 		//$Title "Light Amp"
 		//$Sprite "PVISB0"
 
-		inventory.maxamount 1;
-		inventory.interhubamount 1;
+		+inventory.invbar
 		inventory.pickupmessage "Light amplification visor.";
 		inventory.icon "PVISA0";
 		scale 0.5;
 		hdpickup.bulk ENC_LITEAMP;
 		tag "Lite-Amp Goggles";
 		hdpickup.refid HDLD_LITEAMP;
+
+		hdmagammo.maxperunit NITEVIS_MAGMAX;
 	}
-	int spent;bool worn;
-	int brokenness; //400=totally broken
+	bool worn;
 	PointLight nozerolight;
 	override double getbulk(){return bulk;}
 	override void DetachFromOwner(){
@@ -145,6 +145,8 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 	}
 	double amplitude;
 	double lastcvaramplitude;
+	int brokenness;
+	override bool isused(){return true;}
 	override int getsbarnum(int flags){return amplitude;}
 	override void AttachToOwner(actor other){
 		super.AttachToOwner(other);
@@ -159,28 +161,10 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 				(sv_cheats||!multiplayer)
 				&&cvar.getcvar("hd_nv",owner.player).getfloat()==999.
 			);
-			if(
-				worn
-				&&!owner.countinv("PowerInvisibility")
-				&&(!oldliteamp||owner.player.fixedcolormap<0||owner.player.fixedcolormap==5)
-			){
 
-				//check if totally drained
-				if(HDMagAmmo.NothingLoaded(owner,"HDBattery")){
-					owner.A_SetBlend("01 00 00",0.8,16);
-					worn=false;
-					return;
-				}
-
-				//update amplitude if player has set in the console
-				double thiscvaramplitude=cvar.getcvar("hd_nv",owner.player).getfloat();
-				if(thiscvaramplitude!=lastcvaramplitude){
-					lastcvaramplitude=thiscvaramplitude;
-					amplitude=thiscvaramplitude;
-				}
-
-				let bbb=HDBattery(owner.findinventory("HDBattery"));
-
+			//charge
+			let bbb=HDBattery(owner.findinventory("HDBattery"));
+			if(bbb){
 				//get the lowest non-empty
 				int bbbindex=bbb.mags.size()-1;
 				int bbblowest=20;
@@ -193,12 +177,41 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 						bbblowest=bbb.mags[i];
 					}
 				}
-				int bbbi=bbb.mags[bbbindex];
+				if(mags[0]<NITEVIS_MAGMAXCHARGE){
+					mags[0]+=NITEVIS_CYCLEUNIT;
+					if(!random[rand1](0,(NITEVIS_BATCYCLE>>1)))bbb.mags[bbbindex]--;
+				}
+			}
 
+			int chargedamount=mags[0];
+
+//console.printf(chargedamount.."   "..400-(chargedamount%NITEVIS_CYCLEUNIT));
+
+			if(
+				worn
+				&&!owner.countinv("PowerInvisibility")
+				&&(!oldliteamp||owner.player.fixedcolormap<0||owner.player.fixedcolormap==5)
+			){
+
+				//check if totally drained
+				if(chargedamount<NITEVIS_CYCLEUNIT){
+					owner.A_SetBlend("01 00 00",0.8,16);
+					worn=false;
+					return;
+				}
+
+				int spent=0;
+
+				//update amplitude if player has set in the console
+				double thiscvaramplitude=cvar.getcvar("hd_nv",owner.player).getfloat();
+				if(thiscvaramplitude!=lastcvaramplitude){
+					lastcvaramplitude=thiscvaramplitude;
+					amplitude=thiscvaramplitude;
+				}
 
 				//actual goggle effect
 				owner.player.fov=min(owner.player.fov,90);
-				double nv=min(bbbi*(NITEVIS_MAX/20.),NITEVIS_MAX);
+				double nv=min(chargedamount*(NITEVIS_MAX/20.),NITEVIS_MAX);
 				if(!nv){
 					if(thiscvaramplitude<0)amplitude=-0.00001;
 					return;
@@ -210,13 +223,14 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 					Shader.SetEnabled(owner.player,"NiteVis",false);
 				}else{
 					nv=clamp(amplitude,-nv,nv);
-					spent+=max(1,nv*0.1);
+					spent+=max(1,abs(nv*0.1));
 					Shader.SetEnabled(owner.player,"NiteVis",true);
 					Shader.SetUniform1f(owner.player,"NiteVis","exposure",nv);
 				}
 
 				//flicker
-				if(brokenness>0&&!random[rand1](0,max(0,bbbi*bbbi-brokenness))){
+				brokenness=max(brokenness,400-(mags[0]%NITEVIS_CYCLEUNIT));
+				if(brokenness>0&&!random[rand1](0,max(0,chargedamount*chargedamount-brokenness))){
 					if(oldliteamp){
 						owner.player.fixedcolormap=-1;
 						owner.player.fixedlightlevel=-1;
@@ -225,10 +239,7 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 				}
 
 				//drain
-				if(spent>NITEVIS_BATCYCLE){
-					bbb.mags[bbbindex]=max(0,bbbi-1);
-					spent=0;
-				}
+				if(!(level.time&(1|2|4|8|16|32)))mags[0]-=NITEVIS_CYCLEUNIT*spent;
 
 			}else{
 				if(oldliteamp){
@@ -240,8 +251,12 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 		}
 	}
 	enum NiteVis{
-		NITEVIS_BATCYCLE=20000,
 		NITEVIS_MAX=100,
+		NITEVIS_MAXBROKENNESS=400,
+		NITEVIS_CYCLEUNIT=NITEVIS_MAXBROKENNESS+1,
+		NITEVIS_BATCYCLE=20000,
+		NITEVIS_MAGMAXCHARGE=NITEVIS_CYCLEUNIT*NITEVIS_BATCYCLE,
+		NITEVIS_MAGMAX=NITEVIS_MAGMAXCHARGE+NITEVIS_MAXBROKENNESS,
 	}
 	states{
 	spawn:
@@ -255,11 +270,16 @@ class PortableLiteAmp:HDPickup replaces Infrared{
 				invoker.amplitude=invoker.amplitude<0?-plitude:plitude;
 			}else if(cmd&BT_ZOOM){
 				invoker.amplitude=-invoker.amplitude;
+			}else if(cmd&BT_USER3){
+				invoker.firsttolast();
+				int amt=invoker.mags[0];
+				A_Log("Goggles at "..amt*100/NITEVIS_MAGMAXCHARGE.."% charge and "..((amt%NITEVIS_CYCLEUNIT)>>2).."% integrity.",true);
 			}else{
 				A_SetBlend("01 00 00",0.8,16);
-				if(HDMagAmmo.NothingLoaded(self,"HDBattery")){
+				if(HDMagAmmo.NothingLoaded(self,"PortableLiteAmp")){
 					A_Log("No power for lite-amp. Need at least 1 battery on you.",true);
 					invoker.worn=false;
+					return;
 				}
 				if(invoker.worn)invoker.worn=false;else{
 					invoker.worn=true;
