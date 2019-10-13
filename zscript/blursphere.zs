@@ -273,7 +273,9 @@ class ShellShade:ZombieStormtrooper{
 		//$Title "Shellshade"
 		//$Sprite "POSSA1"
 
-		+shadow -solid
+		+shadow -solid +noblood
+		+hdmobbase.noincap
+		hdmobbase.shields 666;
 		renderstyle "Fuzzy";
 		health 900;
 		stencilcolor "04 00 06";
@@ -290,26 +292,52 @@ class ShellShade:ZombieStormtrooper{
 		scale=bshootable?(1.,1.):(0.98,0.98);
 		binvisible=bshootable?false:true;
 	}
+	override int damagemobj(
+		actor inflictor,actor source,int damage,
+		name mod,int flags,double angle
+	){
+		if(
+			mod=="holy"
+			||(
+				mod!="bleedout"
+				&&source
+				&&source.countinv("SpiritualArmour")
+				&&!source.countinv("HDBlurSphere")
+			)
+		){
+			bnoblood=false;
+			forcepain(self);
+			A_PlaySound("marine/death",CHAN_VOICE);
+			shields>>=1;
+		}
+		int dmg=super.damagemobj(
+			inflictor,source,damage,mod,flags,angle
+		);
+		if(bnoblood)stunned=0;
+		return dmg;
+	}
+	override void deathdrop(){
+		A_NoBlocking();
+		A_DropItem("ZM66Regular");
+		bnointeraction=true;
+		for(int i=0;i<10;i++){A_SpawnItemEx("HDSmoke",
+			frandom(-12,12),frandom(-12,12),frandom(4,36),
+			flags:SXF_NOCHECKPOSITION
+		);}
+		DistantQuaker.Quake(self,
+			6,100,16384,10,256,512,128
+		);
+		vel=(0,0,0);
+	}
 	states{
 	death:
 	xdeath:
-		POSS G 5{
-			A_NoBlocking();
-			A_DropItem("ZM66Regular");
-			bnointeraction=true;
-			for(int i=0;i<10;i++){A_SpawnItemEx("HDSmoke",
-				frandom(-12,12),frandom(-12,12),frandom(4,36),
-				flags:SXF_NOCHECKPOSITION
-			);}
-			DistantQuaker.Quake(self,
-				6,100,16384,10,256,512,128
-			);
-			vel=(0,0,0);
-		}
+		POSS G 5;
 		TNT1 AAAAAAAAAAAAAAAAAAAAAAAAAAA
 			random(1,3) A_PlaySound("marine/death",random(1,6),frandom(0.3,1.),false,0.1);
 		TNT1 A 35;
 		TNT1 A 0 A_DropItem("HDBlurSphere");
+	xxxdeath:
 		stop;
 	}
 }
