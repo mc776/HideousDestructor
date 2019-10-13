@@ -781,7 +781,7 @@ class SelfBandage:HDWoundFixer{
 		TNT1 A 0{
 			actor a;int b;
 			[a,b]=LineAttack(angle,42,pitch,0,"none",
-				"NewBulletMovePuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT
+				"CheckPuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT
 			);
 			let c=HDPlayerPawn(a.tracer);
 			if(!c){

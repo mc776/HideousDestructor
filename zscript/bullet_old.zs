@@ -1,12 +1,10 @@
 // ------------------------------------------------------------
-// The Bullet! (old)
+// The Bullet! (unused, kept for potential future reference only)
 // ------------------------------------------------------------
 class HDBullet:HDActor{
-	/*
-		special usages:
-		accuracy: hardness/pointiness.
-		woundhealth: "extra" damage from frangibility, etc.
-	*/
+	// accuracy: hardness/pointiness.
+	// woundhealth: "extra" damage from frangibility, etc.
+
 	double grav;
 	double oneoverspeed;
 	double speedsquared;
@@ -624,42 +622,6 @@ class NewBulletMovePuff:CheckPuff{
 		+skyexplode //important!
 	}
 }
-class SupersonicTrail:IdleDummy{
-	states{
-	spawn:
-		TNT1 A 10;stop;
-	}
-	override void postbeginplay(){
-		if(
-			frandom(0,ceilingz-floorz)<128
-		)A_AlertMonsters();
-		A_PlaySound("weapons/bulletcrack",CHAN_AUTO,0.32);
-	}
-}
-class SupersonicTrailBig:SupersonicTrail{
-	override void postbeginplay(){
-		A_AlertMonsters();
-		A_PlaySound("weapons/bulletcrack",CHAN_AUTO,0.64);
-	}
-}
-class SupersonicTrailSmall:SupersonicTrail{
-	override void postbeginplay(){
-		if(
-			frandom(0,ceilingz-floorz)<64
-		)A_AlertMonsters();
-		A_PlaySound("weapons/bulletcrack",0,0.1);
-	}
-}
-class SubsonicTrail:SupersonicTrail{
-	override void postbeginplay(){
-		if(
-			frandom(0,ceilingz-floorz)<32
-		)A_AlertMonsters();
-		A_PlaySound("weapons/subfwoosh",0,0.03);
-	}
-}
-
-
 
 
 //consolidates bullet damage done in the same tic
@@ -801,6 +763,15 @@ class HDBullet9:HDBullet{
 		speed 420;
 		accuracy 4;
 		woundhealth 3;
+	}
+}
+class HDBullet355:HDBullet{
+	default{
+		pushfactor 0.4;
+		mass 1570;
+		speed 440;
+		accuracy 4;
+		woundhealth 4;
 	}
 }
 class HDBullet426:HDBullet{

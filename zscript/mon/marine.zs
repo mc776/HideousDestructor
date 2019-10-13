@@ -378,7 +378,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		if(userocket&&mmm is "GyroGrenade")gyrogrenade(mmm).isrocket=true;
 		else userocket=false;
 
-		if(!(mmm is "HDBullet")&&!(mmm is "SlowProjectile"))mmm.A_ChangeVelocity(
+		if(!(mmm is "SlowProjectile"))mmm.A_ChangeVelocity(
 			mmm.speed*cos(mmm.pitch),0,mmm.speed*sin(mmm.pitch),CVF_RELATIVE
 		);
 		return mmm;

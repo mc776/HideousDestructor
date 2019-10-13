@@ -552,7 +552,7 @@ class DeadTrilobite:Trilobite replaces DeadCacodemon{
 
 
 
-class kekb:HDBullet{
+class kekb:HDBulletActor{
 	default{
 		+bright +nogravity +rollcenter +rollsprite
 		renderstyle "add";
@@ -560,6 +560,16 @@ class kekb:HDBullet{
 		translation 2;
 		height 4;radius 3;
 		missileheight 2;
+	}
+	override void HitGeometry(
+		line hitline,
+		sector hitsector,
+		int hitside,
+		int hitpart,
+		vector3 vu,
+		double lastdist
+	){
+		bulletdie();
 	}
 	vector3 oldpos;
 	override void Tick(){

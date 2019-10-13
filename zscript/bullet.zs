@@ -38,7 +38,7 @@ class bltest:hdweapon{
 */
 		TNT1 A 0{
 			if(player.cmd.buttons&BT_USE)HDBulletActor.FireBullet(self,"HDB_bronto");
-			else HDBulletActor.FireBullet(self,"HDB_9");
+			else HDBulletActor.FireBullet(self,"kekb");
 		}goto nope;
 	altfire:
 		TNT1 A 0{
@@ -660,7 +660,7 @@ class HDBulletActor:HDActor{
 	}
 	//when a bullet hits a flat or wall
 	//add 999 to "hitpart" to use the tier # instead
-	void HitGeometry(
+	virtual void HitGeometry(
 		line hitline,
 		sector hitsector,
 		int hitside,
@@ -1249,6 +1249,43 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 }
 
 
+//trail actors for flyby sounds
+class SupersonicTrail:IdleDummy{
+	states{
+	spawn:
+		TNT1 A 10;stop;
+	}
+	override void postbeginplay(){
+		if(
+			frandom(0,ceilingz-floorz)<128
+		)A_AlertMonsters();
+		A_PlaySound("weapons/bulletcrack",CHAN_AUTO,0.32);
+	}
+}
+class SupersonicTrailBig:SupersonicTrail{
+	override void postbeginplay(){
+		A_AlertMonsters();
+		A_PlaySound("weapons/bulletcrack",CHAN_AUTO,0.64);
+	}
+}
+class SupersonicTrailSmall:SupersonicTrail{
+	override void postbeginplay(){
+		if(
+			frandom(0,ceilingz-floorz)<64
+		)A_AlertMonsters();
+		A_PlaySound("weapons/bulletcrack",0,0.1);
+	}
+}
+class SubsonicTrail:SupersonicTrail{
+	override void postbeginplay(){
+		if(
+			frandom(0,ceilingz-floorz)<32
+		)A_AlertMonsters();
+		A_PlaySound("weapons/subfwoosh",0,0.03);
+	}
+}
 
-#include "zscript/bullet_old.zs"
+
+
+//#include "zscript/bullet_old.zs"
 

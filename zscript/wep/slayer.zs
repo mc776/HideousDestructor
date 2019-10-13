@@ -51,7 +51,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 		}
 		if(
 			sausage
-			&&inflictor is "HDBullet"
+			&&inflictor is "HDBulletActor"
 		)return "%o doubled over from the turgid size of %k's hot, manly lead.";
 		return obituary;
 	}

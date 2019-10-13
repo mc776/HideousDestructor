@@ -598,15 +598,6 @@ enum DeinovolverStats{
 	BUGF_RIGHTHANDED=1,
 	BUGF_COCKED=2,
 }
-class HDBullet355:HDBullet{
-	default{
-		pushfactor 0.4;
-		mass 1570;
-		speed 440;
-		accuracy 4;
-		woundhealth 4;
-	}
-}
 class HDSpent355:HDSpent9mm{default{yscale 0.85;}}
 class HDRevolverAmmo:HDPistolAmmo{
 	default{
