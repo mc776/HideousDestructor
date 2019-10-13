@@ -241,13 +241,17 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 				}
 
 				//flicker
-				int brokenness=NITEVIS_MAXINTEGRITY-(mags[0]%NITEVIS_CYCLEUNIT);
-				if(brokenness>0&&!random[rand1](0,max(0,chargedamount*chargedamount-brokenness))){
-					if(oldliteamp){
-						owner.player.fixedcolormap=-1;
-						owner.player.fixedlightlevel=-1;
+				int integrity=(mags[0]%NITEVIS_CYCLEUNIT);
+				if(integrity<NITEVIS_MAXINTEGRITY){
+					int bkn=(integrity)+(chargedamount>>17)-abs(nv);
+					A_LogInt(bkn);
+					if(!random[rand1](0,max(0,random[rand1](1,bkn)))){
+						if(oldliteamp){
+							owner.player.fixedcolormap=-1;
+							owner.player.fixedlightlevel=-1;
+						}
+						Shader.SetEnabled(owner.player,"NiteVis",false);
 					}
-					Shader.SetEnabled(owner.player,"NiteVis",false);
 				}
 
 				//drain
@@ -284,8 +288,6 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 				invoker.amplitude=-invoker.amplitude;
 			}else if(cmd&BT_USER3){
 				invoker.firsttolast();
-invoker.setintegrity(-5,0,true);
-
 				int amt=invoker.mags[0];
 				A_Log("Goggles at "..amt*100/NITEVIS_MAGMAXCHARGE.."% charge and "..((amt%NITEVIS_CYCLEUNIT)>>2).."% integrity.",true);
 			}else{
