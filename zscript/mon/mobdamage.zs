@@ -161,7 +161,7 @@ extend class HDMobBase{
 			&&!bnoincap
 			&&health>0
 			&&findstate("falldown")
-			&&max(stunned,damage)>random(health,(sphlth<<3))
+			&&max(stunned,damage)>random(health,(sphlth<<4))
 		){
 			setstatelabel("falldown");
 			flags|=DMG_NO_PAIN;
