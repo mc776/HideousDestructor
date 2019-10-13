@@ -145,7 +145,6 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 	}
 	double amplitude;
 	double lastcvaramplitude;
-	int brokenness;
 	override bool isused(){return true;}
 	override int getsbarnum(int flags){return amplitude;}
 	override void AttachToOwner(actor other){
@@ -153,6 +152,15 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 		if(owner&&owner.player)amplitude=cvar.getcvar("hd_nv",owner.player).getfloat();
 		else amplitude=frandom(-NITEVIS_MAX,NITEVIS_MAX);
 		lastcvaramplitude=amplitude;
+	}
+	int getbrokenness(){return NITEVIS_MAXBROKENNESS-(mags[0]%NITEVIS_CYCLEUNIT);}
+	int setbrokenness(int newamt,bool relative=false){
+		int brk=NITEVIS_MAXBROKENNESS-(mags[0]%NITEVIS_CYCLEUNIT);
+		mags[0]-=brk;
+		if(relative)newamt+=brk;
+		brk=clamp(newamt,0,NITEVIS_MAXBROKENNESS);
+		mags[0]+=brk;
+		return brk;
 	}
 	override void DoEffect(){
 		super.DoEffect();
@@ -185,7 +193,7 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 
 			int chargedamount=mags[0];
 
-//console.printf(chargedamount.."   "..400-(chargedamount%NITEVIS_CYCLEUNIT));
+//console.printf(chargedamount.."   "..NITEVIS_MAXBROKENNESS-(chargedamount%NITEVIS_CYCLEUNIT));
 
 			if(
 				worn
@@ -229,7 +237,7 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 				}
 
 				//flicker
-				brokenness=max(brokenness,400-(mags[0]%NITEVIS_CYCLEUNIT));
+				int brokenness=NITEVIS_MAXBROKENNESS-(mags[0]%NITEVIS_CYCLEUNIT);
 				if(brokenness>0&&!random[rand1](0,max(0,chargedamount*chargedamount-brokenness))){
 					if(oldliteamp){
 						owner.player.fixedcolormap=-1;
