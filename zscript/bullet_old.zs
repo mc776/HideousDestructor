@@ -1,24 +1,6 @@
 // ------------------------------------------------------------
 // The Bullet! (old)
 // ------------------------------------------------------------
-
-//testing performance when spamming
-class HDBulletb:PlasmaBall replaces PlasmaBall{
-	override void postbeginplay(){
-		if(!hd_debug){super.postbeginplay();return;}
-		for (int i=14;i;i--){
-			A_SpawnItemEx("HDBullet",0,0,0,vel.x+frandom(-1,1),vel.y+frandom(-1,1),vel.z+frandom(-1,1),0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_ABSOLUTEMOMENTUM);
-		}
-		destroy();
-	}
-}
-
-
-
-//keep it simple: 1 of this = 1 unit of radius
-class BulletResistance:InventoryFlag{default{inventory.maxamount 100;}}
-
-
 class HDBullet:HDActor{
 	/*
 		special usages:
@@ -260,7 +242,6 @@ class HDBullet:HDActor{
 			bool pierce=false;
 			double hitresistance=(
 				min(64,hitactor.radius)*frandom(crit?0.5:0.7,1.1)
-				+hitactor.countinv("BulletResistance")*frandom(crit?0.7:0.4,1.1)
 			);
 			double netpenetration=penetration/hitresistance;
 //A_LogFloat(hitresistance);

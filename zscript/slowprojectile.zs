@@ -3,8 +3,7 @@
 // Because "fast" means something else entirely
 // For reference, the rocket can go up to just under 400
 // ------------------------------------------------------------
-
-class SlowProjectile:HDBullet{
+class SlowProjectile:HDActor{
 	/*
 		special usages:
 		woundhealth: extra damage other than raw impact.
@@ -14,14 +13,23 @@ class SlowProjectile:HDBullet{
 	int airburst;
 	bool primed;
 	double skyz;
+
+
+	double grav;
+	bool inthesky;
+	vector3 skypos;
+
 	default{
+		projectile; -nogravity
+		+noextremedeath +cannotpush +hittracer +forcexybillboard
 		+bloodlessimpact -noteleport +forcexybillboard
 		+notelestomp
-//		missiletype "BulletTail"; //testing and random eye candy
 
 		radius 1.;height 1.;
-		missileheight 8; projectilekickback 20; damagetype "SmallArms0";
+		missileheight 8; projectilekickback 20; damagetype "Bashing";
 		speed 18;
+
+//		missiletype "BulletTail"; //testing and random eye candy
 	}
 	override void PostBeginPlay(){
 		HDActor.PostBeginPlay();
@@ -31,6 +39,26 @@ class SlowProjectile:HDBullet{
 		divrad=radius*1.9;
 		if(target)master=target;
 		distancetravelled=0;
+	}
+	void LongArmWobble(){
+		let hdp=hdplayerpawn(target);
+		if(hdp&&hdp.scopecamera){
+			pitch+=deltaangle(hdp.pitch,hdp.scopecamera.pitch);
+			angle+=deltaangle(hdp.angle,hdp.scopecamera.angle);
+		}else if(countinv("IsMoving",AAPTR_TARGET)>=10){
+			pitch+=frandom(-2,2);
+			angle+=frandom(-1,1);
+		}
+	}
+	virtual void Gunsmoke(){
+		actor gs;
+		double j=cos(pitch);
+		vector3 vk=(j*cos(angle),j*sin(angle),-sin(pitch));
+		j=max(1,speed*min(mass,100)*0.00001);
+		for(int i=0;i<j;i++){
+			gs=spawn("HDGunSmoke",pos+i*vk,ALLOW_REPLACE);
+			gs.pitch=pitch;gs.angle=angle;gs.vel=vk*j;
+		}
 	}
 	override void Tick(){
 		if(isfrozen())return;
@@ -201,8 +229,10 @@ class SlowProjectile:HDBullet{
 			if(target && !master) master=target;target=null;
 		}
 	death:
-		BAL1 BCD 4;
-		stop;
+		TNT1 A 4{
+			bnointeraction=true;
+			bmissile=false;
+		}stop;
 	}
 }
 class BulletTail:IdleDummy{
