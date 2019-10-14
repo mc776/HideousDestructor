@@ -1019,7 +1019,12 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 			if(hd_debug)console.printf(hitactor.getclassname().."  armour resistance:  "..addpenshell);
 			penshell+=addpenshell;
 
-			if(penshell>pen&&hitactor.health>0)hitactor.vel+=vu*0.01*hitheight*mass;
+			if(penshell>pen&&hitactor.health>0){
+				hitactor.vel+=vu*0.01*hitheight*mass;
+				if(hdplayerpawn(hitactor)){
+					hdplayerpawn(hitactor).hudbobrecoil2+=(frandom(-3.,3.),frandom(1.5,3.))*0.01*hitheight*mass;
+				}
+			}
 		}
 
 		if(penshell<=0)penshell=0;
