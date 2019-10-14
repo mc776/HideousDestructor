@@ -16,6 +16,7 @@ class Hunter:HDShotgun{
 		hdweapon.barrelsize 30,0.5,2;
 		hdweapon.refid HDLD_HUNTER;
 		tag "Hunter";
+		obituary "$OB_MPSHOTGUN";
 	}
 	//returns the power of the load just fired
 	static double Fire(actor caller,int choke=1){
@@ -54,21 +55,6 @@ class Hunter:HDShotgun{
 		super.postbeginplay();
 		tubesize=((weaponstatus[0]&HUNTF_EXPORT)?5:7);
 		if(weaponstatus[HUNTS_TUBE]>tubesize)weaponstatus[HUNTS_TUBE]=tubesize;
-	}
-	override string getobituary(actor victim,actor inflictor,name mod,bool playerattack){
-		bool sausage=true;
-		for(int i=0;i<MAXPLAYERS;i++){
-			if(playeringame[i]&&(players[i].getgender()!=0)){
-				sausage=false;
-				break;
-			}
-		}
-		if(
-			sausage
-			&&!(weaponstatus[HUNTS_FIREMODE]<1) //"pumped"
-			&&inflictor is "HDBulletActor" //"brutally!" "full!" - not just bleeding!
-		)return "%o was brutally pumped full of %k's hot, manly lead.";
-		return obituary;
 	}
 	override string pickupmessage(){
 		if(weaponstatus[0]&HUNTF_CANFULLAUTO)return string.format("%s You notice some tool marks near the fire selector...",super.pickupmessage());

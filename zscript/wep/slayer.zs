@@ -9,7 +9,8 @@ class Slayer:HDShotgun replaces HDShotgun{
 
 		weapon.selectionorder 30;
 		weapon.slotnumber 3;
-		inventory.pickupmessage "You got the double-barreled shotgun!";
+		inventory.pickupmessage "$GOTSHOTGUN2";
+		obituary "$OB_MPSSHOTGUN";
 		weapon.bobrangex 0.18;
 		weapon.bobrangey 0.7;
 		scale 0.6;
@@ -40,20 +41,6 @@ class Slayer:HDShotgun replaces HDShotgun{
 			spread:spread,aimoffx:barreladjust.y,speedfactor:speedfactor,amount:7
 		);
 		p.spawn("DistantShotgun",p.pos,ALLOW_REPLACE);
-	}
-	override string getobituary(actor victim,actor inflictor,name mod,bool playerattack){
-		bool sausage=true;
-		for(int i=0;i<MAXPLAYERS;i++){
-			if(playeringame[i]&&(players[i].getgender()!=0)){
-				sausage=false;
-				break;
-			}
-		}
-		if(
-			sausage
-			&&inflictor is "HDBulletActor"
-		)return "%o doubled over from the turgid size of %k's hot, manly lead.";
-		return obituary;
 	}
 	override string,double getpickupsprite(){return "SLAY"..getpickupframe().."0",1.;}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){

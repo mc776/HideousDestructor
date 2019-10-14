@@ -33,32 +33,15 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 		weapon.bobspeed 2.1;
 		weapon.kickback 2;
 		scale 0.4;
-		obituary "%o got cut by %k.";
 		hdweapon.barrelsize 26,1,2;
 		hdweapon.refid HDLD_CHAINSW;
 		tag "$TAG_CHAINSAW";
+		obituary "$OB_MPCHAINSAW";
 	}
 	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
 	override hdweapon GetSpareWeapon(actor newowner,bool reverse,bool doselect){return GetSpareWeaponRegular(newowner,reverse,doselect);}
 	override string pickupmessage(){
-		return "You got the "..(bplayingid?"chainsaw":"angle grinder").."! Go find some meat!";
-	}
-	override string getobituary(actor victim,actor inflictor,name mod,bool playerattack){
-		if(Wads.CheckNumForName("id",0)==-1){
-			if(!random(0,7))return "%o! Looking for meat... %k... wants %h to eat!";
-			return obituary;
-		}
-		bool clam=true;
-		for(int i=0;i<MAXPLAYERS;i++){
-			if(playeringame[i]&&(players[i].getgender()!=1)){
-				clam=false;
-				break;
-			}
-		}
-		if(
-			clam
-		)return "%o was chewed up in the teeth of %k's extremely eager beaver.";
-		return obituary;
+		return "You got the "..gettag().."! Go find some meat!";
 	}
 	override string,double getpickupsprite(){return "CSAWA0",0.7;}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){

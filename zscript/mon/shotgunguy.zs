@@ -29,7 +29,7 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 		painsound "shotguy/pain";
 		deathsound "shotguy/death";
 		activesound "shotguy/active";
-		tag "$fn_shotgun";
+		tag "jackboot";
 
 		speed 10;
 		decal "BulletScratch";
@@ -42,23 +42,6 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 		//placeholder
 		obituary "%o was shot up by the Tyrant's jack-booted thugs.";
 		hitobituary "%o was beaten up by the Tyrant's jack-booted thugs.";
-	}
-	override string getobituary(actor victim,actor inflictor,name mod,bool playerattack){
-		bool sausage=true;
-		for(int i=0;i<MAXPLAYERS;i++){
-			if(playeringame[i]&&(players[i].getgender()!=0)){
-				sausage=false;
-				break;
-			}
-		}
-		if(
-			sausage
-			&&!wep //"pumped"
-			&&inflictor is "HDBulletActor" //"brutally!" "full!" - not just bleeding!
-			&&!random(0,4) //novelty value
-		)return "%o was brutally pumped full of a shotgun sergeant's hot, manly lead.";
-		else if(inflictor==self) return hitobituary;
-		else return obituary;
 	}
 	bool jammed;
 	bool semi;
