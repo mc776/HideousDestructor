@@ -1018,6 +1018,8 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 			else if(hd_debug)console.printf("missed the armour!");
 			if(hd_debug)console.printf(hitactor.getclassname().."  armour resistance:  "..addpenshell);
 			penshell+=addpenshell;
+
+			if(penshell>pen&&hitactor.health>0)hitactor.vel+=vu*0.01*hitheight*mass;
 		}
 
 		if(penshell<=0)penshell=0;
