@@ -1023,7 +1023,7 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 				hitactor.vel+=vu*0.01*hitheight*mass;
 				if(hdplayerpawn(hitactor)){
 					hdplayerpawn(hitactor).hudbobrecoil2+=(frandom(-3.,3.),frandom(1.5,3.))*0.01*hitheight*mass;
-				}
+				}else if(random(0,255)<hitactor.painchance) hdmobbase.forcepain(hitactor);
 			}
 		}
 
