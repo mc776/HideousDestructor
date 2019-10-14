@@ -978,11 +978,7 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 			double addpenshell=0;
 			int alv=armr.mega?3:1;
 
-			if(
-				(int(level.time+angle)&(1|2|4|8|16))
-				>clamp(armr.durability<<1,10,31) //slips through a gap
-			)alv=-1;
-			else if(hitheight>0.8){ //headshot, check for helmet
+			if(hitheight>0.8){ //headshot, check for helmet
 				if(
 					hitactor is "hdplayerpawn"
 					||(
@@ -992,9 +988,18 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 				)alv=randompick(0,1,random(0,alv),alv);
 				else alv=-1;
 			}
+			else if(
+				//slips through a gap
+				(int(level.time+angle)&(1|2|4|8|16))
+				>clamp(armr.durability<<1,10,31)
+			){
+				alv=-1;
+				pen*=0.6;
+			}
 			else if(hitheight<0.4)alv=max(alv-randompick(0,0,0,1,1,1,1,2),0); //legshot
 
 			if(alv>0){
+				//bullet hits armour
 				addpenshell=frandom(9,11)*alv;
 
 				//degrade and puff
@@ -1016,13 +1021,14 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 				armr.durability-=max(random(0,1),(stamina>>7));
 			}
 			else if(hd_debug)console.printf("missed the armour!");
+
 			if(hd_debug)console.printf(hitactor.getclassname().."  armour resistance:  "..addpenshell);
 			penshell+=addpenshell;
 
 			if(penshell>pen&&hitactor.health>0){
 				hitactor.vel+=vu*0.01*hitheight*mass;
 				if(hdplayerpawn(hitactor)){
-					hdplayerpawn(hitactor).hudbobrecoil2+=(frandom(-3.,3.),frandom(1.5,3.))*0.01*hitheight*mass;
+					hdplayerpawn(hitactor).hudbobrecoil2+=(frandom(-5.,5.),frandom(2.5,4.))*0.01*hitheight*mass;
 				}else if(random(0,255)<hitactor.painchance) hdmobbase.forcepain(hitactor);
 			}
 		}
