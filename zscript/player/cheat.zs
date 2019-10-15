@@ -52,7 +52,7 @@ extend class HDPlayerPawn{
 				if(!type)continue;
 				if(
 					!getdefaultbytype((class<HDPickup>)(type)).bcheatnogive
-					&&getdefaultbytype((class<HDAmmo>)(type)).gettag()!=""
+					&&getdefaultbytype((class<HDAmmo>)(type)).refid!=""
 				){
 					let ammoitem=hdpickup(findinventory(type));
 					if(!ammoitem)ammoitem=hdpickup(GiveInventoryType(type));
