@@ -140,7 +140,7 @@ class HDBlurSphere:HDPickup{
 			}
 			if(hdp.woundcount>random(0,level)){
 				hdp.woundcount--;
-				hdp.oldwoundcount++;
+				hdp.unstablewoundcount++;
 			}
 		}
 

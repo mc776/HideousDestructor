@@ -266,7 +266,7 @@ class HDMedikitter:HDWoundFixer{
 					//treat burns
 					let a=HDPlayerPawn(self);
 					if(a){
-						if(a.oldwoundcount<1&&a.burncount<1){
+						if(a.burncount<1){
 							A_WeaponMessage("You have no burns to treat.");
 							setweaponstate("nope");
 						}else setweaponstate("patchburns");
