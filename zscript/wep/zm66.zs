@@ -384,6 +384,7 @@ class ZM66AssaultRifle:HDWeapon{
 				return;
 			}
 			if(!invoker.weaponstatus[ZM66S_AUTO])A_SetTics(1);
+			else if(invoker.weaponstatus[ZM66S_AUTO]>4)setweaponstate("nope");
 			else if(invoker.weaponstatus[ZM66S_AUTO]>1)A_SetTics(0);
 			A_WeaponReady(WRF_NOFIRE); //not WRF_NONE: switch to drop during cookoff
 		}
