@@ -276,7 +276,7 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 	}
 	states{
 	spawn:
-		PVIS B -1;
+		PVIS A -1;
 	use:
 		TNT1 A 0{
 			int cmd=player.cmd.buttons;
