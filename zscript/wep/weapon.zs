@@ -409,7 +409,7 @@ class HDWeapon:Weapon{
 		}
 		if(!self)return;
 		if(!silent){
-			other.A_Log(string.format("\cg%s",pickupmessage()),true);
+			other.A_Log(string.format("\cg"..pickupmessage()),true);
 			other.A_PlaySound(pickupsound,CHAN_AUTO);
 		}
 		attachtoowner(other);

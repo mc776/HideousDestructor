@@ -9,7 +9,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 
 		weapon.selectionorder 30;
 		weapon.slotnumber 3;
-		inventory.pickupmessage "$GOTSHOTGUN2";
+		inventory.pickupmessage "You got the double-barreled shotgun!";
 		obituary "$OB_MPSSHOTGUN";
 		weapon.bobrangex 0.18;
 		weapon.bobrangey 0.7;
