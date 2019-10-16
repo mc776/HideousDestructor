@@ -286,8 +286,8 @@ extend class HDPlayerPawn{
 				//second flesh heals wonds
 				if(secondflesh>0){
 					secondflesh--;
-					if(oldwoundcount>0)oldwoundcount--;
-					if(!(level.time&(1|2|4)))aggravateddamage++;
+					if(oldwoundcount>0&&random(0,2))oldwoundcount--;
+					if(!random(0,47))aggravateddamage++;
 					damagemobj(self,self,1,"staples");
 				}
 
