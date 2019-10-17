@@ -254,6 +254,7 @@ class Serpentipede:HDMobBase{
 			leadaim1=(angle,pitch);
 		}
 		#### E 0{
+			if(!target)return;
 			A_FaceTarget(20,40);
 			leadaim2=(angle,pitch);
 			leadaim1=(deltaangle(leadaim1.x,leadaim2.x),deltaangle(leadaim2.y,leadaim1.y));
