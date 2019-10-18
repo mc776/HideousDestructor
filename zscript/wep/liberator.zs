@@ -941,6 +941,9 @@ class LiberatorRifle:AutoReloadingThingy{
 	}
 	override void loadoutconfigure(string input){
 		int nogl=getloadoutvar(input,"nogl",1);
+		//disable launchers if rocket grenades blacklisted
+		string blacklist=hd_blacklist;
+		if(blacklist.IndexOf(HDLD_BLOOPER)>=0)nogl=1;
 		if(!nogl){
 			weaponstatus[0]&=~LIBF_NOLAUNCHER;
 		}else if(nogl>0){
