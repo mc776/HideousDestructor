@@ -1016,6 +1016,7 @@ class HERPController:HDWeapon{
 		+weapon.wimpy_weapon
 		inventory.icon "HERPA5";
 		weapon.selectionorder 1013;
+		tag "H.E.R.P. Interface";
 	}
 	array<herpbot> herps;
 	herpbot UpdateHerps(bool resetindex=true){
@@ -1081,11 +1082,11 @@ class HERPController:HDWeapon{
 		bool connected=(herpcam.bmissileevenmore);
 		bool turnedon=(herpcam.bmissilemore);
 		if(connected)return
-		WEPHELP_FIREMODE.."  Hold to pilot\n"
-		..WEPHELP_FIRESHOOT
+		WEPHELP_FIREMODE.."  Hold to pilot and:\n"
+		.."  "..WEPHELP_FIRESHOOT
+		..WEPHELP_ALTRELOAD.."  Set home angle\n"
 		..WEPHELP_ALTFIRE.."  Turn "..(turnedon?"Off":"On").."\n"
 		..WEPHELP_RELOAD.."  Disconnect manual mode\n"
-		..WEPHELP_ALTRELOAD.."  Set home angle\n"
 		..WEPHELP_DROP.."  Next H.E.R.P."
 		;
 		return
@@ -1185,11 +1186,6 @@ class HERPController:HDWeapon{
 				if(justpressed(BT_RELOAD)){
 					ddd.setstatelabel("inputabort");
 				}else if(bt&BT_FIREMODE){
-					if(justpressed(BT_USER1)){
-						ddd.startangle=ddd.angle;
-						ddd.herpbeep();
-						A_Log("Home angle set.",true);
-					}
 					if(
 						bt&BT_ATTACK
 						&&!invoker.weaponstatus[HERPS_TIMER]
@@ -1211,6 +1207,11 @@ class HERPController:HDWeapon{
 						player.cmd.sidemove*=-1;
 					}
 					hijackmouse();
+				}
+				if(justpressed(BT_USER1)){
+					ddd.startangle=ddd.angle;
+					ddd.herpbeep();
+					A_Log("Home angle set.",true);
 				}
 			}else if(justpressed(BT_RELOAD)){
 				ddd.setstatelabel("inputwaiting");
