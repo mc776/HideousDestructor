@@ -613,7 +613,10 @@ class HERPUsable:HDWeapon{
 		loop;
 	directfire:
 		HERG A 2{
-			if(invoker.weaponstatus[HERP_BATTERY]<1)return;
+			if(invoker.weaponstatus[HERP_BATTERY]<1){
+				setweaponstate("directfail");
+				return;
+			}
 
 			//check ammo and which mag
 			int curmag=0;
