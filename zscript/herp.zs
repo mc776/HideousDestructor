@@ -600,7 +600,7 @@ class HERPUsable:HDWeapon{
 					if(
 						curmag>0
 						&&curmag<100
-						&&!random(0,7)
+						&&!random(0,15)
 					)invoker.weaponstatus[whichmag]+=100;
 				}
 				if(!gunbraced()&&pitch<10)A_MuzzleClimb(frandom(-0.1,0.1),frandom(0.,0.1));
