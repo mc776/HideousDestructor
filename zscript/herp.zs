@@ -343,7 +343,7 @@ class HERPBot:HDUPK{
 			if(health>0){
 				double turn=clamp(deltaangle(angle,startangle),-24,24);
 				if(turn){
-					A_PlaySound("derp/crawl",CHAN_BODY,0.6);
+					A_PlaySound("herp/crawl",CHAN_BODY,0.6);
 					angle+=turn;
 					A_SetTics(5);
 				}
@@ -570,6 +570,7 @@ class HERPUsable:HDWeapon{
 
 	//for manual carry-firing
 	raisetofire:
+		TNT1 A 8 A_PlaySound("herp/crawl",CHAN_WEAPON,1.);
 		HERG A 1 offset(0,80) A_PlaySound("herp/beepready",CHAN_WEAPON);
 		HERG A 1 offset(0,60) A_WeaponMessage("");
 		HERG A 1 offset(0,50){
@@ -625,14 +626,14 @@ class HERPUsable:HDWeapon{
 				}
 			}
 			if(!whichmag){
-				setweaponstate("nope");
+				setweaponstate("directfail");
 				return;
 			}
 			//if jailbroken mag, randomly fail
 			if(curmag>100){
 				if(!random(0,3)){	
 					A_PlaySound("herp/beepready",CHAN_WEAPON);
-					setweaponstate("nope");
+					setweaponstate("directfail");
 					return;
 				}
 			}
@@ -661,12 +662,17 @@ class HERPUsable:HDWeapon{
 				frandom(-0.8,0.8),frandom(-1.6,0.8)
 			);
 		}stop;
+	directfail:
+		HERG # 1 A_WeaponReady(WRF_NONE);
+		HERG # 0 A_JumpIf(pressingfire(),"directfail");
+		goto readytofire;
 	lowerfromfire:
 		HERG A 1 offset(0,34) A_PlaySound("herp/beepready",CHAN_WEAPON);
 		HERG A 1 offset(0,40);
 		HERG A 1 offset(0,50);
 		HERG A 1 offset(0,60);
 		HERG A 1 offset(0,80);
+		TNT1 A 1 A_PlaySound("herp/crawl",CHAN_WEAPON,1.);
 		goto select;
 	}
 	action void Message(string msg){
