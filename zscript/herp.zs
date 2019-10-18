@@ -488,6 +488,7 @@ class HERPUsable:HDWeapon{
 		if(weaponstatus[1]>=0)amt+=3.6;
 		if(weaponstatus[2]>=0)amt+=3.6;
 		if(weaponstatus[3]>=0)amt+=3.6;
+		if(owner&&owner.player.cmd.buttons&BT_ZOOM)amt*=frandom(3,4);
 		return amt;
 	}
 	override double weaponbulk(){
@@ -495,6 +496,7 @@ class HERPUsable:HDWeapon{
 		for(int i=1;i<4;i++){
 			if(weaponstatus[i]>=0)enc+=max(ENC_426MAG*0.2,weaponstatus[i]*ENC_426*0.8);
 		}
+		if(owner&&owner.player.cmd.buttons&BT_ZOOM)enc*=2;
 		return enc;
 	}
 	override int getsbarnum(int flags){return weaponstatus[HERP_BOTID];}
@@ -508,7 +510,6 @@ class HERPUsable:HDWeapon{
 	select:
 		TNT1 A 0{
 			invoker.weaponstatus[HERP_YOFS]=100;
-
 			invoker.barrellength=0;
 			invoker.barrelwidth=0;
 			invoker.barreldepth=0;
@@ -586,6 +587,21 @@ class HERPUsable:HDWeapon{
 			if(pressingzoom()){
 				if(pressingfire()){
 					setweaponstate("directfire");
+
+					//randomly corrupt the data due to jostling
+					int whichmag=0;int curmag=0;
+					for(int i=1;i<=3;i++){
+						if((invoker.weaponstatus[i]%100)>0){
+							curmag=invoker.weaponstatus[i];
+							whichmag=i;
+							break;
+						}
+					}
+					if(
+						curmag>0
+						&&curmag<100
+						&&!random(0,7)
+					)invoker.weaponstatus[whichmag]+=100;
 				}
 			}else{
 				setweaponstate("lowerfromfire");
@@ -613,12 +629,13 @@ class HERPUsable:HDWeapon{
 			}
 			//if jailbroken mag, randomly fail
 			if(curmag>100){
-				if(!random(0,7)){	
+				if(!random(0,3)){	
 					A_PlaySound("herp/beepready",CHAN_WEAPON);
 					setweaponstate("nope");
 					return;
 				}
 			}
+
 			//deplete ammo and fire
 			invoker.weaponstatus[whichmag]--;				
 			A_Overlay(PSP_FLASH,"directflash");
@@ -630,7 +647,10 @@ class HERPUsable:HDWeapon{
 		HERF B 1 bright{
 			if(Player.GetPSprite(PSP_WEAPON).frame==0)Player.GetPSprite(PSP_FLASH).frame=0;
 			HDFlashAlpha(-16);
-			HDBulletActor.FireBullet(self,"HDB_426",zofs:height-12,aimoffx:frandom(-0.6,0.6),aimoffy:frandom(-1.,1.));
+			HDBulletActor.FireBullet(
+				self,"HDB_426",zofs:height-12,
+				spread:1
+			);
 			A_PlaySound("weapons/rifle",CHAN_WEAPON);
 			A_ZoomRecoil(max(0.95,1.-0.05*min(invoker.weaponstatus[ZM66S_AUTO],3)));
 			A_MuzzleClimb(
