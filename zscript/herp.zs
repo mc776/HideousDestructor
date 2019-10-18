@@ -612,7 +612,7 @@ class HERPUsable:HDWeapon{
 		HERG A 0 A_ReadyEnd();
 		loop;
 	directfire:
-		HERG AB 3{
+		HERG A 2{
 			if(invoker.weaponstatus[HERP_BATTERY]<1)return;
 
 			//check ammo and which mag
@@ -642,12 +642,11 @@ class HERPUsable:HDWeapon{
 			invoker.weaponstatus[whichmag]--;				
 			A_Overlay(PSP_FLASH,"directflash");
 		}
+		HERG B 2;
 		HERG A 0 A_Refire("directfire");
 		goto readytofire;
 	directflash:
-		HERF A 0;
-		HERF B 1 bright{
-			if(Player.GetPSprite(PSP_WEAPON).frame==0)Player.GetPSprite(PSP_FLASH).frame=0;
+		HERF A 1 bright{
 			HDFlashAlpha(-16);
 			HDBulletActor.FireBullet(
 				self,"HDB_426",zofs:height-12,
