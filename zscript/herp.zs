@@ -31,7 +31,7 @@ class HERPBot:HDUPK{
 		+ismonster +noblockmonst +friendly +standstill +nofear
 		+shootable +ghost +noblood +dontgib
 		+missilemore //on/off
-		height 12;radius 10;mass 400;health 200;
+		height 9;radius 7;mass 400;health 200;
 		damagefactor "Thermal",0.7;damagefactor "SmallArms3",0.8;
 		obituary "%o went HERP.";
 		hdupk.pickupmessage ""; //just use the spawned one
@@ -508,7 +508,13 @@ class HERPUsable:HDWeapon{
 	select:
 		TNT1 A 0{
 			invoker.weaponstatus[HERP_YOFS]=100;
-			invoker.barrellength=25;invoker.barrelwidth=3;invoker.barreldepth=3;
+
+			invoker.barrellength=0;
+			invoker.barrelwidth=0;
+			invoker.barreldepth=0;
+			invoker.bobspeed=2.4;
+			invoker.bobrangex=0.2;
+			invoker.bobrangey=0.8;
 		}
 		TNT1 A 0 A_WeaponMessage("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHold \cdUse\cu while hitting \cdAlt. Reload\nto unload battery.\n\nHold \cdUse\cu while hitting \cdUnload\nto remove partially-spent mags.\n\nHold \cdFiremode\cu to change BotID, \cdAltfire\cu to toggle on/off.\n\nPress \cdFire\cu to deploy.",3500);
 		goto super::select;
@@ -565,7 +571,14 @@ class HERPUsable:HDWeapon{
 	raisetofire:
 		HERG A 1 offset(0,80) A_PlaySound("herp/beepready",CHAN_WEAPON);
 		HERG A 1 offset(0,60) A_WeaponMessage("");
-		HERG A 1 offset(0,50){invoker.barrellength=25;invoker.barrelwidth=3;invoker.barreldepth=3;}
+		HERG A 1 offset(0,50){
+			invoker.barrellength=25;
+			invoker.barrelwidth=3;
+			invoker.barreldepth=3;
+			invoker.bobrangex=3.7;
+			invoker.bobrangey=3.6;
+			invoker.bobspeed=2.6;
+		}
 		HERG A 1 offset(0,40);
 		HERG A 1 offset(0,34);
 	readytofire:
@@ -621,10 +634,10 @@ class HERPUsable:HDWeapon{
 			A_PlaySound("weapons/rifle",CHAN_WEAPON);
 			A_ZoomRecoil(max(0.95,1.-0.05*min(invoker.weaponstatus[ZM66S_AUTO],3)));
 			A_MuzzleClimb(
-				frandom(0.1,0.1),frandom(0.1,0.1),
-				frandom(-0.2,0.2),frandom(-0.2,0.2),
-				frandom(-0.2,0.2),frandom(-0.3,0.3),
-				frandom(-0.4,0.4),frandom(-0.4,0.4)
+				frandom(-0.2,0.2),frandom(-0.4,0.2),
+				frandom(-0.4,0.4),frandom(-0.6,0.4),
+				frandom(-0.4,0.4),frandom(-1.,0.6),
+				frandom(-0.8,0.8),frandom(-1.6,0.8)
 			);
 		}stop;
 	lowerfromfire:
