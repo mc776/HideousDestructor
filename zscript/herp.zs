@@ -506,7 +506,10 @@ class HERPUsable:HDWeapon{
 	}
 	states{
 	select:
-		TNT1 A 0{invoker.weaponstatus[HERP_YOFS]=100;}
+		TNT1 A 0{
+			invoker.weaponstatus[HERP_YOFS]=100;
+			invoker.barrellength=25;invoker.barrelwidth=3;invoker.barreldepth=3;
+		}
 		TNT1 A 0 A_WeaponMessage("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHold \cdUse\cu while hitting \cdAlt. Reload\nto unload battery.\n\nHold \cdUse\cu while hitting \cdUnload\nto remove partially-spent mags.\n\nHold \cdFiremode\cu to change BotID, \cdAltfire\cu to toggle on/off.\n\nPress \cdFire\cu to deploy.",3500);
 		goto super::select;
 	ready:
@@ -562,7 +565,7 @@ class HERPUsable:HDWeapon{
 	raisetofire:
 		HERG A 1 offset(0,80) A_PlaySound("herp/beepready",CHAN_WEAPON);
 		HERG A 1 offset(0,60) A_WeaponMessage("");
-		HERG A 1 offset(0,50);
+		HERG A 1 offset(0,50){invoker.barrellength=25;invoker.barrelwidth=3;invoker.barreldepth=3;}
 		HERG A 1 offset(0,40);
 		HERG A 1 offset(0,34);
 	readytofire:
@@ -614,7 +617,7 @@ class HERPUsable:HDWeapon{
 		HERF B 1 bright{
 			if(Player.GetPSprite(PSP_WEAPON).frame==0)Player.GetPSprite(PSP_FLASH).frame=0;
 			HDFlashAlpha(-16);
-			HDBulletActor.FireBullet(self,"HDB_426",aimoffx:frandom(-0.6,0.6),aimoffy:frandom(-1.,1.));
+			HDBulletActor.FireBullet(self,"HDB_426",zofs:height-12,aimoffx:frandom(-0.6,0.6),aimoffy:frandom(-1.,1.));
 			A_PlaySound("weapons/rifle",CHAN_WEAPON);
 			A_ZoomRecoil(max(0.95,1.-0.05*min(invoker.weaponstatus[ZM66S_AUTO],3)));
 			A_MuzzleClimb(
