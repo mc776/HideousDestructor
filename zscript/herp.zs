@@ -576,9 +576,9 @@ class HERPUsable:HDWeapon{
 			invoker.barrellength=25;
 			invoker.barrelwidth=3;
 			invoker.barreldepth=3;
-			invoker.bobrangex=3.7;
-			invoker.bobrangey=3.6;
-			invoker.bobspeed=2.6;
+			invoker.bobrangex=8.2;
+			invoker.bobrangey=4.6;
+			invoker.bobspeed=5.6;
 		}
 		HERG A 1 offset(0,40);
 		HERG A 1 offset(0,34);
@@ -603,6 +603,7 @@ class HERPUsable:HDWeapon{
 						&&!random(0,7)
 					)invoker.weaponstatus[whichmag]+=100;
 				}
+				if(!gunbraced()&&pitch<10)A_MuzzleClimb(frandom(-0.1,0.1),frandom(0.,0.1));
 			}else{
 				setweaponstate("lowerfromfire");
 			}
