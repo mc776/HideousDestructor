@@ -510,6 +510,7 @@ class HERPUsable:HDWeapon{
 		TNT1 A 0 A_WeaponMessage("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHold \cdUse\cu while hitting \cdAlt. Reload\nto unload battery.\n\nHold \cdUse\cu while hitting \cdUnload\nto remove partially-spent mags.\n\nHold \cdFiremode\cu to change BotID, \cdAltfire\cu to toggle on/off.\n\nPress \cdFire\cu to deploy.",3500);
 		goto super::select;
 	ready:
+		TNT1 A 0 A_JumpIf(pressingzoom(),"raisetofire");
 		TNT1 A 1 A_HERPWeaponReady();
 		goto readyend;
 	user3:
@@ -556,6 +557,80 @@ class HERPUsable:HDWeapon{
 	spawn:
 		HERP A -1;
 		stop;
+
+	//for manual carry-firing
+	raisetofire:
+		HERG A 1 offset(0,80) A_PlaySound("herp/beepready",CHAN_WEAPON);
+		HERG A 1 offset(0,60) A_WeaponMessage("");
+		HERG A 1 offset(0,50);
+		HERG A 1 offset(0,40);
+		HERG A 1 offset(0,34);
+	readytofire:
+		HERG A 1{
+			if(pressingzoom()){
+				if(pressingfire()){
+					setweaponstate("directfire");
+				}
+			}else{
+				setweaponstate("lowerfromfire");
+			}
+		}
+		HERG A 0 A_ReadyEnd();
+		loop;
+	directfire:
+		HERG AB 3{
+			if(invoker.weaponstatus[HERP_BATTERY]<1)return;
+
+			//check ammo and which mag
+			int curmag=0;
+			int whichmag=0;
+			for(int i=1;i<=3;i++){
+				if((invoker.weaponstatus[i]%100)>0){
+					curmag=invoker.weaponstatus[i];
+					whichmag=i;
+					break;
+				}
+			}
+			if(!whichmag){
+				setweaponstate("nope");
+				return;
+			}
+			//if jailbroken mag, randomly fail
+			if(curmag>100){
+				if(!random(0,7)){	
+					A_PlaySound("herp/beepready",CHAN_WEAPON);
+					setweaponstate("nope");
+					return;
+				}
+			}
+			//deplete ammo and fire
+			invoker.weaponstatus[whichmag]--;				
+			A_Overlay(PSP_FLASH,"directflash");
+		}
+		HERG A 0 A_Refire("directfire");
+		goto readytofire;
+	directflash:
+		HERF A 0;
+		HERF B 1 bright{
+			if(Player.GetPSprite(PSP_WEAPON).frame==0)Player.GetPSprite(PSP_FLASH).frame=0;
+			HDFlashAlpha(-16);
+			HDBulletActor.FireBullet(self,"HDB_426",aimoffx:frandom(-0.6,0.6),aimoffy:frandom(-1.,1.));
+			A_PlaySound("weapons/rifle",CHAN_WEAPON);
+			A_ZoomRecoil(max(0.95,1.-0.05*min(invoker.weaponstatus[ZM66S_AUTO],3)));
+			A_MuzzleClimb(
+				frandom(0.1,0.1),frandom(0.1,0.1),
+				frandom(-0.2,0.2),frandom(-0.2,0.2),
+				frandom(-0.2,0.2),frandom(-0.3,0.3),
+				frandom(-0.4,0.4),frandom(-0.4,0.4)
+			);
+		}stop;
+	lowerfromfire:
+		HERG A 1 offset(0,34) A_PlaySound("herp/beepready",CHAN_WEAPON);
+		HERG A 1 offset(0,40);
+		HERG A 1 offset(0,50);
+		HERG A 1 offset(0,60);
+		HERG A 1 offset(0,80);
+		goto select;
 	}
 	action void Message(string msg){
 		A_Log("\cd[HERP]\cj  "..msg,true);
@@ -671,6 +746,7 @@ class HERPUsable:HDWeapon{
 	}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
 		if(hdw.amount<1)return;
+		if(sb.cplayer.cmd.buttons&BT_ZOOM)return;
 		int batt=hdw.weaponstatus[4];
 		int yofs=weaponstatus[HERP_YOFS];
 		if(yofs<70){
@@ -728,7 +804,8 @@ class HERPUsable:HDWeapon{
 		..WEPHELP_ALTRELOAD.."  Reload battery\n"
 		..WEPHELP_UNLOAD.."  Unload mag\n"
 		..WEPHELP_USE.."+"..WEPHELP_ALTRELOAD.."  Unload battery\n"
-		..WEPHELP_USE.."+"..WEPHELP_UNLOAD.."  Unload partial mag"
+		..WEPHELP_USE.."+"..WEPHELP_UNLOAD.."  Unload partial mag\n"
+		..WEPHELP_ZOOM.."  Manual firing"
 		;
 	}
 	override void consolidate(){
