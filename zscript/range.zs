@@ -58,7 +58,7 @@ class TargetBarrel:Actor{
 		//$Sprite "BEXPB0"
 
 		+nevertarget +shootable +quicktoretaliate +float +nogravity +nodamage +noblood
-		height 34;radius 16;mass 25;painchance 256;speed 2;
+		height 28;radius 10;mass 25;painchance 256;speed 2;
 	}
 	//3.7.1 does not allow painstates with +nodamage.
 	override int damagemobj(
