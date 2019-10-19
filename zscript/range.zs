@@ -110,7 +110,9 @@ class PunchDummy:HDActor{
 		//$Sprite "BEXPB0"
 
 		+noblood +shootable +ghost
-		height 50;radius 12;health TELEFRAG_DAMAGE;
+		height 54;radius 12;health TELEFRAG_DAMAGE;
+		xscale 1.22;
+		yscale 1.69;
 		translation "0:255=%[0,0,0]:[1.7,1.3,0.4]";
 	}
 	override int damagemobj(
@@ -139,7 +141,7 @@ class PunchDummy:HDActor{
 	states{
 	spawn:
 	pain:
-		BEXP B -1 nodelay{scale.y=1.4;}
+		BEXP B -1;
 	}
 }
 

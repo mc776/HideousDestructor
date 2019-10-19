@@ -91,7 +91,33 @@ class HDTree:HDActor{
 		goto spawn2;
 	}
 }
-
+class HDBigTree:HDTree replaces BigTree{
+	default{
+		+shootable +nodamage +dontthrust
+		+forceybillboard +rollsprite
+		+dontthrust
+		painchance 48;
+		radius 27; height 68;
+	}
+	states{
+	spawn:
+		TRE2 A 0 nodelay{
+			if(Wads.CheckNumForName("id",0)==-1)A_SetSize(14,64);
+			A_Resize(frandom(0.8,1.2),frandom(0.8,1.2));
+		}
+		goto spawn2;
+	}
+}
+class HDTorchTree:HDTree replaces TorchTree{
+	default{
+		radius 10; height 50;
+	}
+	states{
+	spawn:
+		TRE1 A 0 nodelay A_Resize(frandom(0.9,1.6),frandom(0.6,1.6));
+		goto spawn2;
+	}
+}
 
 
 
@@ -147,7 +173,7 @@ class HDTechLamp2:TechLamp2 replaces TechLamp2{
 
 
 class HDTechPillar:TechPillar replaces TechPillar{
-	default{+dontthrust +shootable +nodamage +noblood +forceybillboard mass 2000;}
+	default{+dontthrust +shootable +nodamage +noblood +forceybillboard mass 2000;radius 10;}
 }
 
 

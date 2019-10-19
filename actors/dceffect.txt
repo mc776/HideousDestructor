@@ -90,27 +90,6 @@ actor HDStalagmite:Stalagmite replaces Stalagmite{
 		stop
 	}
 }
-actor HDBigTree:HDTree replaces BigTree{
-	+shootable +nodamage +dontthrust
-	+forceybillboard +rollsprite
-	+dontthrust
-	mass MAXINT
-	painchance 48
-	radius 32 height 100
-	states{
-	spawn:
-		TRE2 A 0 nodelay A_Resize(frandom(0.8,1.2),frandom(0.8,1.2))
-		goto spawn2
-	}
-}
-actor HDTorchTree:HDTree replaces TorchTree{
-	radius 20 height 54
-	states{
-	spawn:
-		TRE1 A 0 nodelay A_Resize(frandom(0.9,1.6),frandom(0.6,1.6))
-		goto spawn2
-	}
-}
 actor HDStalagtite:HDTree replaces Stalagtite{
 	radius 20 height 36
 	states{
