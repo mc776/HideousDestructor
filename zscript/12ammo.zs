@@ -25,6 +25,7 @@ class HDShellAmmo:HDRoundAmmo{
 		stop;
 	death:
 		ESHL A -1{
+			if(Wads.CheckNumForName("id",0)==-1)A_SetTranslation("FreeShell");
 			frame=randompick(0,0,0,0,4,4,4,4,2,2,5);
 		}stop;
 	}
