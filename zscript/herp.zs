@@ -579,7 +579,7 @@ class HERPUsable:HDWeapon{
 			invoker.barreldepth=3;
 			invoker.bobrangex=8.2;
 			invoker.bobrangey=4.6;
-			invoker.bobspeed=5.6;
+			invoker.bobspeed=2.8;
 		}
 		HERG A 1 offset(0,40);
 		HERG A 1 offset(0,34);
@@ -791,7 +791,7 @@ class HERPUsable:HDWeapon{
 	}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
 		if(hdw.amount<1)return;
-		if(sb.cplayer.cmd.buttons&BT_ZOOM)return;
+		if(sb.cplayer.cmd.buttons&BT_ZOOM||hdw.barrellength>0)return;
 		int batt=hdw.weaponstatus[4];
 		int yofs=weaponstatus[HERP_YOFS];
 		if(yofs<70){
