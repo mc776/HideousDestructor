@@ -290,7 +290,7 @@ class HERPBot:HDUPK{
 			A_PlaySound("weapons/rifle",CHAN_WEAPON);
 			HDBulletActor.FireBullet(self,"HDB_426",zofs:6,spread:1);
 		}
-		HERP A 2{
+		HERP C 2{
 			angle-=frandom(0.4,1.);
 			pitch-=frandom(0.8,1.3);
 			if(bfriendly)A_AlertMonsters(0,AMF_TARGETEMITTER);
@@ -790,8 +790,11 @@ class HERPUsable:HDWeapon{
 		return;
 	}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
-		if(hdw.amount<1)return;
-		if(sb.cplayer.cmd.buttons&BT_ZOOM||hdw.barrellength>0)return;
+		if(
+			hpl.player.cmd.buttons&BT_ZOOM
+			||hdw.amount<1
+			||hdw.barrellength>0
+		)return;
 		int batt=hdw.weaponstatus[4];
 		int yofs=weaponstatus[HERP_YOFS];
 		if(yofs<70){
