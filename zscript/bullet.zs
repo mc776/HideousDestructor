@@ -991,12 +991,13 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 			else if(
 				//slips through a gap
 				(int(level.time+angle)&(1|2|4|8|16))
-				>clamp(armr.durability<<1,10,31)
+				>clamp(armr.durability<<2,10,64)
 			){
 				alv=-1;
 				pen*=0.6;
 			}
-			else if(hitheight<0.4)alv=max(alv-randompick(0,0,0,1,1,1,1,2),0); //legshot
+			else if(hitheight<0.4)alv=max(alv-randompick(0,0,0,0,1,1,1,2),0); //legshot
+
 
 			if(alv>0){
 				//bullet hits armour
