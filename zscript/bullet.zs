@@ -1209,7 +1209,7 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 				fragments--;
 				let bbb=HDBulletActor(spawn("HDBulletActor",pos));
 				bbb.target=target;
-				bbb.bincombat=true;
+				bbb.bincombat=false;
 				double newspeed;
 				speed*=0.8;
 				if(!fragments){
