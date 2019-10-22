@@ -190,7 +190,10 @@ class HDMedikitter:HDWoundFixer{
 			HDBleedingWound bldw=null;
 			thinkeriterator bldit=thinkeriterator.create("HDBleedingWound");
 			while(bldw=HDBleedingWound(bldit.next())){
-				if(bldw)break;
+				if(
+					bldw
+					&&bldw.bleeder==targ
+				)break;
 			}
 			if(bldw)bldw.bleedpoints=max(0,bldw.bleedpoints-amt);
 		}
@@ -300,7 +303,6 @@ class HDMedikitter:HDWoundFixer{
 		TNT1 A 1{
 			A_PlaySound("medikit/staple",CHAN_WEAPON);
 			A_PlaySound("misc/bulletflesh",CHAN_BODY);
-			invoker.patchwound(1,self);
 			if(hdplayerpawn(self)){
 				hdplayerpawn(self).secondflesh++;
 			}else givebody(3);
@@ -417,7 +419,6 @@ class HDMedikitter:HDWoundFixer{
 			let itg=invoker.target;
 			if(itg){
 				itg.A_PlaySound("misc/smallslop",CHAN_BODY);
-				invoker.patchwound(1,itg);
 				if(!random(0,3))invoker.setstatelabel("patchupend");
 				itg.givebody(1);
 				itg.damagemobj(invoker,null,1,"staples",DMG_FORCED);
@@ -463,7 +464,10 @@ class HDMedikitter:HDWoundFixer{
 			if(!random(0,3))invoker.setstatelabel("patchupend");
 		}goto patchupend;
 	patchupend:
-		TNT1 A 10;
+		TNT1 A 10{
+			let itg=invoker.target;
+			if(itg)invoker.patchwound(1,itg);
+		}
 		TNT1 A 0 A_ClearRefire();
 		goto ready;
 	patchburns:
@@ -629,7 +633,7 @@ class SelfBandage:HDWoundFixer{
 		weapon.slotnumber 9;
 		tag "Improvised Bandaging";
 	}
-	void patchwound(int amt,actor targ){
+	void bandagewound(int amt,actor targ){
 		let slf=HDPlayerPawn(targ);
 		if(!slf)return;
 		if(!random(0,2)&&(slf.alpha<1||slf.bshadow))amt-=random(0,amt+1);
@@ -768,7 +772,7 @@ class SelfBandage:HDWoundFixer{
 		TNT1 A 0 A_Jump(42,2);
 		TNT1 A 0 A_JumpIfInventory("HDArmourWorn",1,2);
 		TNT1 A 4 A_Jump(100,2,3);
-		TNT1 A 0 {invoker.patchwound(random(1,3),self);}
+		TNT1 A 0 {invoker.bandagewound(random(1,3),self);}
 		TNT1 A 0 A_MuzzleClimb(frandom(-2.4,2.4),frandom(-2.4,2.4));
 		TNT1 A 0 A_Refire("try2");
 		goto ready;
@@ -812,7 +816,7 @@ class SelfBandage:HDWoundFixer{
 					return;
 				}
 				invoker.target.A_PlaySound("weapons/pocket",CHAN_BODY);
-				invoker.patchwound(random(3,5),invoker.target);
+				invoker.bandagewound(random(3,5),invoker.target);
 			}
 		}goto ready;
 
