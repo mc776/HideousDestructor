@@ -501,8 +501,9 @@ extend class HDPlayerPawn{
 				if(bloodpressure<100)bloodpressure+=20;
 				if(beatmax>12)beatmax=max(beatmax-randompick(10,20),8);
 				A_SetBlend("00 00 00",0.8,40,"00 00 00");
+				double jerkamt=(stimcount>8)?2.:4.;
 				A_MuzzleClimb(
-					(frandom(-4,4),frandom(-4,4)),
+					(frandom(-jerkamt,jerkamt),frandom(-jerkamt,jerkamt)),
 					(0,0),(0,0),(0,0)
 				);
 				A_TakeInventory("PowerFrightener");
