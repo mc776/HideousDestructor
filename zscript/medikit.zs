@@ -460,6 +460,7 @@ class HDMedikitter:HDWoundFixer{
 		}
 		TNT1 A 10 A_Overlay(3,"flashnail");
 		TNT1 AAAAA random(4,5){
+			invoker.target=self;
 			A_Overlay(3,"flashstaple");
 			if(!random(0,3))invoker.setstatelabel("patchupend");
 		}goto patchupend;
