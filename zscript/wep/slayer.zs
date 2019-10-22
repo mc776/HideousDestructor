@@ -243,7 +243,9 @@ class Slayer:HDShotgun replaces HDShotgun{
 		TNT1 A 1{
 			A_Light0();
 			double shotpower=invoker.shotpower;
-			A_MuzzleClimb(0.6*shotpower,-3.*shotpower,0.6*shotpower,-3.*shotpower);
+			double mlt=(invoker.bplayingid?0.6:-0.6)*shotpower;
+			double mlt2=-3.*shotpower;
+			A_MuzzleClimb(mlt,mlt2,mlt,mlt2);
 		}goto flasheither;
 	recoil:
 		#### K 1;
