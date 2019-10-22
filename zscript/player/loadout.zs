@@ -340,6 +340,7 @@ extend class HDPlayerPawn{
 			array<string>blist;blist.clear();
 			A_Log("Some items in your loadout may have been blacklisted from this game and removed or substituted at start: "..blacklist,true);
 			blacklist.split(blist,",");
+/*
 			for(int i=0;i<blist.size();i++){
 				string blisti=blist[i];
 				if(blisti.length()>=3){
@@ -349,6 +350,7 @@ extend class HDPlayerPawn{
 					}else loadinput.replace(blisti.left(3),"fis");
 				}
 			}
+*/
 		}
 
 
@@ -750,5 +752,7 @@ class InsurgentLoadout:Inventory{
 		destroy();
 	}
 }
+
+
 
 
