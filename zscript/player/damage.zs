@@ -188,9 +188,7 @@ extend class HDPlayerPawn{
 					if(!(level.time%4))bloodpressure--;
 				}
 				if(damage<health)source=null;
-			}
 
-			if(mod=="bleedout"){
 				if(
 					!waterlevel
 					&&!checkliquidtexture()
