@@ -179,15 +179,6 @@ extend class HDPlayerPawn{
 
 				if(hd_yolo)bloodloss=min(bloodloss+(damage<<2),666);
 				else bloodloss+=(damage<<2);
-				if(level.time&(1|2))return -1;
-				damage>>=2;
-
-				if(!(flags&DMG_FORCED))damage=min(damage,health-1);
-				if(!random(0,health)){
-					beatcap--;
-					if(!(level.time%4))bloodpressure--;
-				}
-				if(damage<health)source=null;
 
 				if(
 					!waterlevel
@@ -202,6 +193,16 @@ extend class HDPlayerPawn{
 						);
 					}
 				}
+
+				if(level.time&(1|2))return -1;
+				damage>>=2;
+
+				if(!(flags&DMG_FORCED))damage=min(damage,health-1);
+				if(!random(0,health)){
+					beatcap--;
+					if(!(level.time%4))bloodpressure--;
+				}
+				if(damage<health)source=null;
 			}
 		}else if(
 			mod=="thermal"||
