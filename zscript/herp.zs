@@ -258,7 +258,7 @@ class HERPBot:HDUPK{
 	aim:
 		HERP A 2 A_FaceTarget(2.,2.,0,0,FAF_TOP,-4);
 	shoot:
-		HERP B 1 bright light("SHOT"){
+		HERP B 2 bright light("SHOT"){
 			int currammo=ammo[0];
 			if(
 				(
