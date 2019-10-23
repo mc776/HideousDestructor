@@ -98,7 +98,7 @@ class HDBossBrain:HDMobBase{
 	){
 		if(!bshootable)return -1;
 		if(
-			bfriendly
+			!bincombat
 			||damage==TELEFRAG_DAMAGE
 		){
 			bshootable=false;
@@ -132,7 +132,7 @@ class HDBossBrain:HDMobBase{
 		return -1;
 	}
 	void A_SpawnWaveSpot(){
-		if(bfriendly||accuracy>stamina)return;
+		if(!bincombat||accuracy>stamina)return;
 		accuracy++;
 		int bbstamina=0;
 		if(!target){
@@ -155,6 +155,9 @@ class HDBossBrain:HDMobBase{
 		while(bpm=bossbrainspawnsource(bexpm.next(true))){
 			bpm.setstatelabel("awaken");
 		}
+	}
+	default{
+		+incombat	//testing
 	}
 	states{
 	spawn:
