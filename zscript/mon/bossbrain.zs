@@ -220,6 +220,89 @@ class SkullSpitted:SkullSpitter{
 
 
 
+class HDBossEye:HDMobBase{
+	array<string> messages;
+	string remainingmessage;
+	int messageticker;
+	override void postbeginplay(){
+		super.postbeginplay();
+		remainingmessage="";
+		messageticker=-1;
+
+		hdbossbrain bpm;
+		thinkeriterator bexpm=ThinkerIterator.create("hdbossbrain");
+		while(bpm=hdbossbrain(bexpm.next(true))){
+			bpm.bincombat=true;
+		}
+
+		string allmessages=Wads.ReadLump(Wads.FindLump("bbtalk"));
+		allmessages.split(messages,"\n");
+		if(messages[0]=="---")messages.delete(0);
+		for(int i=0;i<messages.size();i++){
+			if(
+				messages[i]==""
+				||messages[i].left(2)=="//"
+			){
+				messages.delete(i);
+				i--;
+			}
+		}
+	}
+	//set the next message to play
+	//the bossbrain should be finding the bosseye and calling this from its damagemobj
+		/*
+		hdbosseye bpm;
+		thinkeriterator bexpm=ThinkerIterator.create("hdbosseye");
+		while(bpm=hdbosseye(bexpm.next(true))){
+			bpm.setmessage();
+			break;
+		}
+		*/
+	void setmessage(){
+		int msgsize=messages.size();
+		if(!msgsize)return;
+		msgsize=random(0,msgsize-1);
+		remainingmessage=messages[msgsize];
+		messages.delete(msgsize);
+	}
+	override void tick(){
+		super.tick();
+
+		//see if there's a message to be played
+		//countdown to next part of message
+		if(
+			!messageticker
+			&&remainingmessage!=""
+		){
+			int nextpipe=remainingmessage.indexof("|");
+			string thismessage;
+			if(nextpipe<0){
+				thismessage=remainingmessage;
+				remainingmessage="";
+			}else{
+				thismessage=remainingmessage.left(nextpipe);
+				remainingmessage=remainingmessage.mid(nextpipe+1);
+			}
+			thismessage.replace("/","\n");
+			double messecs=max(2.,thismessage.length()*0.08);
+			A_PrintBold(thismessage,messecs,"BIGFONT");
+			messageticker+=messecs*35;
+		}else if(messageticker>0)messageticker--;
+	}
+	default{
+		-solid -shootable +noblockmap
+	}
+	states{
+	spawn:
+		TNT1 A 10 A_Look();
+		wait;
+	see:
+		TNT1 A -1;
+		stop;
+	}
+}
+
+
 
 
 
