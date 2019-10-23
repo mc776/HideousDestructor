@@ -222,6 +222,7 @@ class SkullSpitted:SkullSpitter{
 
 class HDBossEye:HDMobBase{
 	array<string> messages;
+	array<string> intromessages;
 	string remainingmessage;
 	int messageticker;
 	override void postbeginplay(){
@@ -229,13 +230,32 @@ class HDBossEye:HDMobBase{
 		remainingmessage="";
 		messageticker=-1;
 
+		//set brain to know this is a real boss and not just a pistol start hack
+		bool foundbrain=false;
 		hdbossbrain bpm;
 		thinkeriterator bexpm=ThinkerIterator.create("hdbossbrain");
 		while(bpm=hdbossbrain(bexpm.next(true))){
 			bpm.bincombat=true;
+			foundbrain=true;
+		}
+		if(!foundbrain){
+			let bpm=spawn("hdbossbrain",pos);
+			bpm.bincombat=true;
 		}
 
 		string allmessages=Wads.ReadLump(Wads.FindLump("bbtalk"));
+
+		//set up array of intros
+		int dashpos=allmessages.indexof("---");
+		if(dashpos<0){
+			intromessages.clear();
+		}else{
+			string intros=allmessages.left(dashpos);
+			intros.split(intromessages,"\n");
+			allmessages=allmessages.mid(dashpos+3);
+		}
+
+		//set up array of messages
 		allmessages.split(messages,"\n");
 		if(messages[0]=="---")messages.delete(0);
 		for(int i=0;i<messages.size();i++){
@@ -265,6 +285,15 @@ class HDBossEye:HDMobBase{
 		remainingmessage=messages[msgsize];
 		messages.delete(msgsize);
 	}
+	void playintro(){
+		int msgsize=intromessages.size();
+		if(!msgsize)return;
+		msgsize=random(0,msgsize-1);
+		string thismessage=messages[msgsize];
+		double messecs=max(2.,thismessage.length()*0.08);
+		A_PrintBold(thismessage,messecs,"BIGFONT");
+		messages.delete(msgsize);
+	}
 	override void tick(){
 		super.tick();
 
@@ -290,14 +319,14 @@ class HDBossEye:HDMobBase{
 		}else if(messageticker>0)messageticker--;
 	}
 	default{
-		-solid -shootable +noblockmap
+		-solid -shootable +noblockmap +lookallaround
 	}
 	states{
 	spawn:
 		TNT1 A 10 A_Look();
 		wait;
 	see:
-		TNT1 A -1;
+		TNT1 A -1 playintro();
 		stop;
 	}
 }
