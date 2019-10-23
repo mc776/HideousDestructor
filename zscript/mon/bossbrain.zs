@@ -155,6 +155,12 @@ class HDBossBrain:HDMobBase{
 		while(bpm=bossbrainspawnsource(bexpm.next(true))){
 			bpm.setstatelabel("awaken");
 		}
+		hdbosseye bbe;
+		thinkeriterator bbem=ThinkerIterator.create("hdbosseye");
+		while(bbe=hdbosseye(bbem.next(true))){
+			bbe.setmessage();
+			break;
+		}
 	}
 	default{
 		+incombat	//testing
@@ -270,20 +276,13 @@ class HDBossEye:HDMobBase{
 	}
 	//set the next message to play
 	//the bossbrain should be finding the bosseye and calling this from its damagemobj
-		/*
-		hdbosseye bpm;
-		thinkeriterator bexpm=ThinkerIterator.create("hdbosseye");
-		while(bpm=hdbosseye(bexpm.next(true))){
-			bpm.setmessage();
-			break;
-		}
-		*/
 	void setmessage(){
 		int msgsize=messages.size();
 		if(!msgsize)return;
 		msgsize=random(0,msgsize-1);
 		remainingmessage=messages[msgsize];
 		messages.delete(msgsize);
+		messageticker=0;
 	}
 	void playintro(){
 		int msgsize=intromessages.size();
@@ -303,18 +302,18 @@ class HDBossEye:HDMobBase{
 			!messageticker
 			&&remainingmessage!=""
 		){
-			int nextpipe=remainingmessage.indexof("|");
+			int nextpause=remainingmessage.indexof("_");
 			string thismessage;
-			if(nextpipe<0){
+			if(nextpause<0){
 				thismessage=remainingmessage;
 				remainingmessage="";
 			}else{
-				thismessage=remainingmessage.left(nextpipe);
-				remainingmessage=remainingmessage.mid(nextpipe+1);
+				thismessage=remainingmessage.left(nextpause);
+				remainingmessage=remainingmessage.mid(nextpause+1);
 			}
-			thismessage.replace("/","\n");
+			thismessage.replace("/","\n\n\cj");
 			double messecs=max(2.,thismessage.length()*0.08);
-			A_PrintBold(thismessage,messecs,"BIGFONT");
+			A_PrintBold("\cj"..thismessage,messecs,"BIGFONT");
 			messageticker+=messecs*35;
 		}else if(messageticker>0)messageticker--;
 	}
