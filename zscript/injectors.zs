@@ -67,6 +67,7 @@ class SpentStim:SpentZerk{
 		SYRG A 0 nodelay A_JumpIf(Wads.CheckNumForName("id",0)==-1,1);
 		goto spawn2;
 		STIM A 0 A_SetScale(0.37,0.37);
+		STIM A 0 A_SetTranslation("FreeStimSpent");
 		goto spawn2;
 		death:
 		---- A -1{

@@ -1,35 +1,6 @@
-
-
-class Babstre:RandomSpawner{
-	default{
-		+ismonster
-		dropitem "Babuin",256,12;
-		dropitem "SpecBabuin",256,3;
-		dropitem "NinjaPirate",256,1;
-	}
-}
-class PainLinger:RandomSpawner{
-	default{
-		+ismonster
-		dropitem "PainLord",256,1;
-		dropitem "PainBringer",256,4;
-	}
-}
-class SkullSpitted:SkullSpitter{
-	override void postbeginplay(){
-		super.postbeginplay();
-		for(int i=0;i<5;i++){
-			A_SpawnItemEx(
-				"FlyingSkull",
-				50,0,frandom(0,10),
-				0,0,0,
-				frandom(0,360),
-				SXF_TRANSFERPOINTERS|SXF_SETMASTER,
-				32
-			);
-		}
-	}
-}
+// ------------------------------------------------------------
+// The Tyrant
+// ------------------------------------------------------------
 class bossbrainspawnsource:hdactor{
 	static void SpawnCluster(actor caller,vector3 pos){
 		let bbs=bossbrainspawnsource(spawn("bossbrainspawnsource",pos));
@@ -100,7 +71,6 @@ class bossbrainspawnsource:hdactor{
 		+noblockmap
 		bossbrainspawnsource.spawntype "ImpSpawner";
 		accuracy 10;
-		stamina 100;
 		speed 16;
 		maxstepheight 128;
 		maxdropoffheight 128;
@@ -126,6 +96,15 @@ class HDBossBrain:HDMobBase{
 		actor inflictor,actor source,int damage,
 		name mod,int flags,double angle
 	){
+		if(!bshootable)return -1;
+		if(
+			bfriendly
+			||damage==TELEFRAG_DAMAGE
+		){
+			bshootable=false;
+			setstatelabel("deathfade");
+			return -1;
+		}
 		forcepain(self);
 		bshootable=false;
 		while(accuracy<stamina)A_SpawnWaveSpot();
@@ -139,26 +118,35 @@ class HDBossBrain:HDMobBase{
 				&&players[i].mo.health>0
 			){
 				let pmo=players[i].mo;
-				pmo.vel+=(pmo.pos-pos).unit()*20;
+				pmo.vel+=(pmo.pos-pos).unit()*7;
 			}
 		}
+
+		DistantQuaker.Quake(
+			self,4,120,8192,10,
+			HDCONST_SPEEDOFSOUND,
+			HDCONST_MINDISTANTSOUND*2,
+			HDCONST_MINDISTANTSOUND*4
+		);
 
 		return -1;
 	}
 	void A_SpawnWaveSpot(){
-		if(accuracy>stamina)return;
+		if(bfriendly||accuracy>stamina)return;
 		accuracy++;
+		int bbstamina=0;
 		if(!target){
 			for(int i=0;i<MAXPLAYERS;i++){
 				if(playeringame[i]){
 					target=players[i].mo;
-					break;
+					bbstamina+=50;
 				}
 			}
 		}
 		if(target){
 			let bbs=spawn("bossbrainspawnsource",target.pos);
 			bbs.target=target;bbs.master=self;
+			bbs.stamina=bbstamina;
 		}
 	}
 	void A_SpawnWave(){
@@ -170,15 +158,59 @@ class HDBossBrain:HDMobBase{
 	}
 	states{
 	spawn:
-		TNT1 A 140 A_SpawnWaveSpot();
+		BBRN A 140 A_SpawnWaveSpot();
 		wait;
 	pain:
-		TNT1 A 10;
-		MISL B 70 A_Pain();
-		TNT1 A 0 A_SpawnWave();
-		TNT1 A 0 A_SetShootable();
+		MISL B 10;
+		BBRN B 70 A_Pain();
+		---- A 70 A_SpawnWave();
+		---- A 0 A_SetShootable();
 		goto spawn;
+	death:
+	deathfade:
+		BBRN B 7;
+		BBRN B 20 A_Scream();
+		BBRN BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB 1{binvisible=!binvisible;}
+		TNT1 A 0 A_BrainDie();
+		TNT1 A 10;
+		TNT1 A 0 A_SetShootable();
+		TNT1 A 0 SetStateLabel("spawn");
+		stop;
 	}
 }
 
 
+
+
+//randomspawners for the tyrant waves
+
+class Babstre:RandomSpawner{
+	default{
+		+ismonster
+		dropitem "Babuin",256,12;
+		dropitem "SpecBabuin",256,3;
+		dropitem "NinjaPirate",256,1;
+	}
+}
+class PainLinger:RandomSpawner{
+	default{
+		+ismonster
+		dropitem "PainLord",256,1;
+		dropitem "PainBringer",256,4;
+	}
+}
+class SkullSpitted:SkullSpitter{
+	override void postbeginplay(){
+		super.postbeginplay();
+		for(int i=0;i<5;i++){
+			A_SpawnItemEx(
+				"FlyingSkull",
+				50,0,frandom(0,10),
+				0,0,0,
+				frandom(0,360),
+				SXF_TRANSFERPOINTERS|SXF_SETMASTER,
+				32
+			);
+		}
+	}
+}
