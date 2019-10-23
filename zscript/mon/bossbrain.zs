@@ -96,7 +96,11 @@ class HDBossBrain:HDMobBase{
 		actor inflictor,actor source,int damage,
 		name mod,int flags,double angle
 	){
-		if(!bshootable)return -1;
+		if(
+			!bshootable
+			||!source
+			||source.master==self
+		)return -1;
 		if(
 			!bincombat
 			||damage==TELEFRAG_DAMAGE
@@ -105,21 +109,36 @@ class HDBossBrain:HDMobBase{
 			setstatelabel("deathfade");
 			return -1;
 		}
-		forcepain(self);
+
 		bshootable=false;
-		while(accuracy<stamina)A_SpawnWaveSpot();
 		stamina++;
 		accuracy=0;
 
+		int maxhp=skill+2;
+
 		for(int i=0;i<MAXPLAYERS;i++){
+			if(!playeringame[i])continue;
+			maxhp++;
 			if(
-				playeringame[i]
-				&&players[i].mo
+				players[i].mo
 				&&players[i].mo.health>0
 			){
 				let pmo=players[i].mo;
 				pmo.vel+=(pmo.pos-pos).unit()*7;
+				pmo.vel.z+=3;
 			}
+		}
+
+		if(stamina>maxhp){
+			setstatelabel("death");
+			hdbosseye bbe;
+			thinkeriterator bbem=ThinkerIterator.create("hdbosseye");
+			while(bbe=hdbosseye(bbem.next(true))){
+				bbe.remainingmessage="";
+			}
+		}else{
+			setstatelabel("pain");
+			while(accuracy<stamina)A_SpawnWaveSpot();
 		}
 
 		DistantQuaker.Quake(
@@ -163,7 +182,7 @@ class HDBossBrain:HDMobBase{
 		}
 	}
 	default{
-		+incombat	//testing
+		+noblood
 	}
 	states{
 	spawn:
@@ -176,6 +195,15 @@ class HDBossBrain:HDMobBase{
 		---- A 0 A_SetShootable();
 		goto spawn;
 	death:
+		BBRN B 100;
+		BBRN A 100{
+			hdbosseye bbe;
+			thinkeriterator bbem=ThinkerIterator.create("hdbosseye");
+			while(bbe=hdbosseye(bbem.next(true))){
+				bbe.playintro();
+				break;
+			}
+		}
 	deathfade:
 		BBRN B 7;
 		BBRN B 20 A_Scream();
@@ -258,6 +286,15 @@ class HDBossEye:HDMobBase{
 		}else{
 			string intros=allmessages.left(dashpos);
 			intros.split(intromessages,"\n");
+			for(int i=0;i<intromessages.size();i++){
+				if(
+					intromessages[i]==""
+					||intromessages[i].left(2)=="//"
+				){
+					intromessages.delete(i);
+					i--;
+				}
+			}
 			allmessages=allmessages.mid(dashpos+3);
 		}
 
@@ -280,18 +317,20 @@ class HDBossEye:HDMobBase{
 		int msgsize=messages.size();
 		if(!msgsize)return;
 		msgsize=random(0,msgsize-1);
-		remainingmessage=messages[msgsize];
+		if(remainingmessage=="")remainingmessage=messages[msgsize];
+		else remainingmessage=remainingmessage.."__"..messages[msgsize];
 		messages.delete(msgsize);
-		messageticker=0;
+		messageticker=1;
 	}
 	void playintro(){
 		int msgsize=intromessages.size();
 		if(!msgsize)return;
 		msgsize=random(0,msgsize-1);
-		string thismessage=messages[msgsize];
+		string thismessage=intromessages[msgsize];
+		thismessage.replace("/","\n\n\cj");
 		double messecs=max(2.,thismessage.length()*0.08);
-		A_PrintBold(thismessage,messecs,"BIGFONT");
-		messages.delete(msgsize);
+		A_PrintBold("\cj"..thismessage,messecs,"BIGFONT");
+		intromessages.delete(msgsize);
 	}
 	override void tick(){
 		super.tick();
