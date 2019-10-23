@@ -38,9 +38,9 @@ class PortableStimpack:HDInjectorMaker{
 		STIM A -1;
 	}
 }
-class SpentStim:HDDebris{
+class SpentZerk:HDDebris{
 	default{
-		translation "176:191=80:95";
+		translation "112:127=107:111";
 		xscale 0.32;yscale 0.28;radius 3;height 3;
 		bouncesound "misc/fragknock";bouncefactor 0.8;
 	}
@@ -58,9 +58,22 @@ class SpentStim:HDDebris{
 		}stop;
 	}
 }
-class SpentZerk:SpentStim{
+class SpentStim:SpentZerk{
 	default{
-		translation "112:127=107:111";
+		translation "176:191=80:95";
+	}
+	states{
+	spawn:
+		SYRG A 0 nodelay A_JumpIf(Wads.CheckNumForName("id",0)==-1,1);
+		goto spawn2;
+		STIM A 0 A_SetScale(0.37,0.37);
+		goto spawn2;
+		death:
+		---- A -1{
+			if(Wads.CheckNumForName("id",0)!=-1)roll=0;
+			else if(abs(roll)<20)roll+=40;
+			if(!random(0,1))scale.x*=-1;
+		}stop;
 	}
 }
 class SpentBottle:SpentStim{
