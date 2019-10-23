@@ -200,7 +200,7 @@ class BloodBagWorn:Inventory{
 			if(hp.fatigue<HDCONST_SPRINTFATIGUE)hp.fatigue++;
 		}
 		//fall off
-		if(hp.inpain>0&&bloodleft<random(-20,31))hp.dropinventory(self);
+		if(hp.inpain>0&&bloodleft<random(-20,5))hp.dropinventory(self);
 	}
 	states{
 	spawn:
