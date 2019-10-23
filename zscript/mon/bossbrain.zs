@@ -242,8 +242,12 @@ class ZomZom:ZombieMan{
 		double totarg=angleto(target);
 		double diff=deltaangle(angle,totarg);
 		if(abs(diff)<max(0.1,threshold)){
+			decidetoaim();
 			setstatelabel("aim");
 		}else angle+=threshold*frandom(0.6,1.6);
+	}
+	virtual void decidetoaim(){
+		bhittarget=!random(0,5);
 	}
 	virtual void A_AimAtTarget(
 		double threshold=1.,
@@ -265,7 +269,10 @@ class ZomZom:ZombieMan{
 		threshold*=1000./dist;
 
 		double diff=deltaangle(angle,totarg);
-		if(abs(diff)>frandom(0.001,threshold)){
+		if(abs(diff)>max(threshold,30)){
+			setstatelabel("turntoshoot");
+			return;
+		}else if(abs(diff)>frandom(0.001,threshold)){
 			angle+=clamp(diff,-threshold,threshold)*frandom(0.6,1.6);
 			return;
 		}
@@ -324,7 +331,7 @@ class ZomZom:ZombieMan{
 		loop;
 	aim:
 		#### E 3 A_AimAtTarget(
-			threshold:(random(0,7)?10.:1.),
+			threshold:(bhittarget?1.:10.),
 			projectilespeed:getdefaultbytype("HDB_9").speed,
 			projectilegravity:getgravity()
 		);
