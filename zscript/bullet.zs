@@ -177,9 +177,40 @@ class HDB_bronto:HDBulletActor{
 		obituary "%o played %k's cannon.";
 	}
 	override actor Puff(){
+		if(max(abs(pos.x),abs(pos.y))>=32768)return null;
 		setorigin(pos-(2*(cos(angle),sin(angle)),0),false);
-		bulletdie();
+
+		A_SprayDecal("BrontoScorch",16);
+		vel*=0.01;
+		if(tracer){ //warhead damage
+			int dmg=random(1000,1200);
+			vector3 hitpoint=vel.unit()*tracer.radius;
+			vector3 tracmid=(tracer.pos.xy,tracer.pos.z+tracer.height*0.618);
+			dmg*=1.-((hitpoint-tracmid).length()/tracer.radius);
+			tracer.damagemobj(
+				self,target,
+				dmg,
+				"Piercing",DMG_THRUSTLESS
+			);
+		}
+		doordestroyer.destroydoor(self,128,frandom(24,36),6);
+		A_HDBlast(
+			fragradius:256,fragtype:"HDB_fragBronto",
+			immolateradius:64,immolateamount:random(4,20),immolatechance:32,
+			source:target
+		);
+		DistantQuaker.Quake(self,3,35,256,12);
+		actor aaa=Spawn("WallChunker",pos,ALLOW_REPLACE);
+		A_SpawnChunks("BigWallChunk",20,4,20);
+		A_SpawnChunks("HDSmoke",4,1,7);
+		aaa=spawn("HDExplosion",pos,ALLOW_REPLACE);aaa.vel.z=2;
+		spawn("DistantRocket",pos,ALLOW_REPLACE);
+		A_SpawnChunks("HDSmokeChunk",random(3,4),6,12);
+
 		bmissile=false;
+		bnointeraction=true;
+		vel=(0,0,0);
+		setstatelabel("death");
 		return null;
 	}
 	override void postbeginplay(){
@@ -190,41 +221,6 @@ class HDB_bronto:HDBulletActor{
 				SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS
 			);
 		}
-	}
-	states{
-	death:
-		TNT1 A 1{
-			A_SprayDecal("BrontoScorch",16);
-			vel*=0.01;
-			if(tracer){ //warhead damage
-				int dmg=random(1000,1200);
-				vector3 hitpoint=vel.unit()*tracer.radius;
-				vector3 tracmid=(tracer.pos.xy,tracer.pos.z+tracer.height*0.618);
-				dmg*=1.-((hitpoint-tracmid).length()/tracer.radius);
-				tracer.damagemobj(
-					self,target,
-					dmg,
-					"Piercing",DMG_THRUSTLESS
-				);
-			}
-			doordestroyer.destroydoor(self,128,frandom(24,36),6);
-			A_HDBlast(
-				fragradius:256,fragtype:"HDB_fragBronto",
-				immolateradius:64,immolateamount:random(4,20),immolatechance:32,
-				source:target
-			);
-			DistantQuaker.Quake(self,3,35,256,12);
-
-			if(max(abs(pos.x),abs(pos.y))>=32768)return;
-			actor aaa=Spawn("WallChunker",pos,ALLOW_REPLACE);
-			A_SpawnChunks("BigWallChunk",20,4,20);
-			A_SpawnChunks("HDSmoke",4,1,7);
-			aaa=spawn("HDExplosion",pos,ALLOW_REPLACE);aaa.vel.z=2;
-			spawn("DistantRocket",pos,ALLOW_REPLACE);
-			A_SpawnChunks("HDSmokeChunk",random(3,4),6,12);
-			bnointeraction=true;
-			vel=(0,0,0);
-		}stop;
 	}
 }
 
