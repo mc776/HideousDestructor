@@ -195,13 +195,18 @@ class HDB_bronto:HDBulletActor{
 	death:
 		TNT1 A 1{
 			A_SprayDecal("BrontoScorch",16);
-			bmissile=false;
 			vel*=0.01;
-			if(tracer)tracer.damagemobj( //warhead damage
-				self,target,
-				random(12,24)*60,
-				"SmallArms3",DMG_THRUSTLESS
-			);
+			if(tracer){ //warhead damage
+				int dmg=random(1000,1200);
+				vector3 hitpoint=vel.unit()*tracer.radius;
+				vector3 tracmid=(tracer.pos.xy,tracer.pos.z+tracer.height*0.618);
+				dmg*=1.-((hitpoint-tracmid).length()/tracer.radius);
+				tracer.damagemobj(
+					self,target,
+					dmg,
+					"Piercing",DMG_THRUSTLESS
+				);
+			}
 			doordestroyer.destroydoor(self,128,frandom(24,36),6);
 			A_HDBlast(
 				fragradius:256,fragtype:"HDB_fragBronto",
