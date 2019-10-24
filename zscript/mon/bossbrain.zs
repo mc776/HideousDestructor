@@ -213,19 +213,20 @@ class HDBossBrain:HDMobBase replaces BossBrain{
 		array<actor> spots;spots.clear();
 		bosstarget bpm;
 		thinkeriterator bexpm=ThinkerIterator.create("bosstarget");
-		while(bpm=bosstarget(bexpm.next(true))){
-			spots.push(actor(bpm));
-		}
-		int bbstamina=25+paintimes*8;
+		int bbstamina=30+paintimes*8;
 		for(int i=0;i<MAXPLAYERS;i++){
 			if(playeringame[i]){
-				bbstamina+=15+paintimes;
+				bbstamina+=10+paintimes;
 				let pmo=players[i].mo;
 				if(pmo&&pmo.health>0)spots.push(pmo);
 			}
 		}
+		while(bpm=bosstarget(bexpm.next(true))){
+			spots.push(actor(bpm));
+		}
 		for(int i=0;i<3;i++){
-			bossbrainspawnsource.SpawnCluster(self,spots[random(0,spots.size()-1)].pos,bbstamina);
+			int which=random(0,random(0,spots.size()-1));
+			bossbrainspawnsource.SpawnCluster(self,spots[which].pos,bbstamina);
 		}
 		hdbosseye bbe;
 		thinkeriterator bbem=ThinkerIterator.create("hdbosseye");
