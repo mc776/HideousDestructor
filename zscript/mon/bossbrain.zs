@@ -2,16 +2,21 @@
 // The Tyrant
 // ------------------------------------------------------------
 class bossbrainspawnsource:hdactor{
-	static void SpawnCluster(actor caller,vector3 pos){
+	static void SpawnCluster(actor caller,vector3 pos,int stamina){
 		let bbs=bossbrainspawnsource(spawn("bossbrainspawnsource",pos));
 		bbs.master=caller;
 		bbs.target=caller.target;
-		bbs.stamina=caller.stamina;
+		bbs.stamina=stamina;
 		int rnd=random(0,11);
 		switch(rnd){
 		case 0:
-			bbs.accuracy=200;
-			bbs.spawntype="Necromancer";
+			if(!random(0,5)){
+				bbs.accuracy=200;
+				bbs.spawntype="Necromancer";
+			}else{
+				bbs.accuracy=100;
+				bbs.spawntype="SkullSpitted";
+			}
 			break;
 		case 1:
 			bbs.accuracy=50;
@@ -22,7 +27,7 @@ class bossbrainspawnsource:hdactor{
 			bbs.spawntype="Trilobite";
 			break;
 		case 3:
-			bbs.accuracy=70;
+			bbs.accuracy=100;
 			bbs.spawntype="SkullSpitted";
 			break;
 		case 4:
@@ -30,11 +35,11 @@ class bossbrainspawnsource:hdactor{
 			bbs.spawntype="Babstre";
 			break;
 		case 5:
-			bbs.accuracy=6;
+			bbs.accuracy=12;
 			bbs.spawntype="Putto";
 			break;
 		case 6:
-			bbs.accuracy=6;
+			bbs.accuracy=16;
 			bbs.spawntype="Yokai";
 			break;
 		case 7:
@@ -55,11 +60,17 @@ class bossbrainspawnsource:hdactor{
 			break;
 		}
 	}
-	void A_SpawnMonsterType(){
-		setz(floorz);
-		spawn("TeleFog",pos,ALLOW_REPLACE);
+	enum BossSpawnFlags{
+		BOSF_NOFLOOR=1,
+		BOSF_NOTELE=2,
+		BOSF_USEANGLE=4,
+	}
+	void A_SpawnMonsterType(int flags=0){
+		if(!(flags&BOSF_NOFLOOR))setz(floorz);
+		if(!(flags&BOSF_NOTELE))spawn("TeleFog",pos,ALLOW_REPLACE);
 		let bbs=spawn(spawntype,pos,ALLOW_REPLACE);
 		bbs.master=master;bbs.target=target;
+		if(flags&BOSF_USEANGLE)bbs.angle=angle;else bbs.angle=frandom(0,360);
 		stamina-=accuracy;
 		if(stamina<1)destroy();
 	}
@@ -81,37 +92,76 @@ class bossbrainspawnsource:hdactor{
 	spawn:
 		TNT1 A 0 nodelay setz(floorz);
 		TNT1 AAAA 0 A_Wander();
-		TNT1 A -1;
-		stop;
-	awaken:
 		FIRE ABCDCDCDBCDEDCDEDCBCDEDCBCD 1 bright;
 		FIRE EFGH 2 bright A_FadeOut(0.2);
 	place:
-		TNT1 AAAA 0 A_Wander();
+		TNT1 AAAAAA 0 A_Wander();
 		TNT1 A 1 A_SpawnMonsterType();
 		loop;
 	}
 }
-class HDBossTarget:bossbrainspawnsource replaces BossTarget{
+class HDBossCube:bossbrainspawnsource{
 	default{
-		stamina 30;
+		projectile; -ismonster
+		-noblockmap +shootable
+		scale 0.666;
+		radius 4;
+		height 4;
+		stamina 16;
+		health 1;
+		damagefunction (TELEFRAG_DAMAGE);
+		projectilekickback 0;
+		renderstyle "normal";
+	}
+	override int damagemobj(
+		actor inflictor,actor source,int damage,
+		name mod,int flags,double angle
+	){
+		setstatelabel("pain");
+		bshootable=false;
+		return -1;
 	}
 	states{
 	spawn:
-		TNT1 A 0 nodelay setz(floorz);
-		TNT1 AAAA 0 A_Wander();
-		goto awaken;
+		BOSF A 0 nodelay A_PlaySound("brain/spit",CHAN_BODY,1,false,0.1);
+		BOSF ABCD 3;
+		BOSF A 0 A_SetSize(11,24);
+	spawn2:
+		BOSF ABCD 3;
+		loop;
+	pain:
+		TNT1 AAAAA 0 A_SpawnItemEx("NecroShard",
+			0,0,frandom(0,6),10,0,vel.z,flags:SXF_NOCHECKPOSITION
+		);
+		TNT1 A 0 A_SpawnItemEx("NecroGhostShard",
+			0,0,frandom(0,6),10,0,vel.z,flags:SXF_TRANSFERPOINTERS|SXF_NOCHECKPOSITION
+		);
+		TNT1 A 0 spawn("HDExplosion",pos,ALLOW_REPLACE);
+		stop;
+	death:
+		TNT1 A 0{
+			bshootable=true;
+			if(target)master=target.master;
+			if(master)target=master.target;
+			A_SetRenderStyle(1.,STYLE_Add);
+			scale=(1.,1.);
+		}
+		TNT1 A 0 A_SpawnMonsterType(BOSF_NOFLOOR|BOSF_NOTELE|BOSF_USEANGLE);
+		FIRE ABCDCDCDBCDEDCDEDCBCDEDCBCD 1 bright;
+		FIRE EFGH 2 bright A_FadeOut(0.2);
+		stop;
 	}
 }
 class HDBossBrain:HDMobBase replaces BossBrain{
+	int paintimes;
 	override int damagemobj(
 		actor inflictor,actor source,int damage,
 		name mod,int flags,double angle
 	){
 		if(
 			!bshootable
-			||!source
-			||source.master==self
+			||(!source&&damage<TELEFRAG_DAMAGE)
+			||(source&&source.master==self)
 		)return -1;
 		if(
 			!bincombat
@@ -123,8 +173,7 @@ class HDBossBrain:HDMobBase replaces BossBrain{
 		}
 
 		bshootable=false;
-		stamina++;
-		accuracy=0;
+		paintimes++;
 
 		int maxhp=skill+2;
 
@@ -140,8 +189,7 @@ class HDBossBrain:HDMobBase replaces BossBrain{
 				pmo.vel.z+=3;
 			}
 		}
-
-		if(stamina>maxhp){
+		if(paintimes>maxhp){
 			setstatelabel("death");
 			hdbosseye bbe;
 			thinkeriterator bbem=ThinkerIterator.create("hdbosseye");
@@ -150,7 +198,6 @@ class HDBossBrain:HDMobBase replaces BossBrain{
 			}
 		}else{
 			setstatelabel("pain");
-			while(accuracy<stamina)A_SpawnWaveSpot();
 		}
 
 		DistantQuaker.Quake(
@@ -162,25 +209,23 @@ class HDBossBrain:HDMobBase replaces BossBrain{
 
 		return -1;
 	}
-	void A_SpawnWaveSpot(){
-		if(!bincombat||accuracy>stamina)return;
-		accuracy++;
-		int bbstamina=0;
-		if(!target){
-			for(int i=0;i<MAXPLAYERS;i++){
-				if(playeringame[i]){
-					target=players[i].mo;
-					bbstamina+=50;
-				}
+	void A_SpawnWave(){
+		array<actor> spots;spots.clear();
+		bosstarget bpm;
+		thinkeriterator bexpm=ThinkerIterator.create("bosstarget");
+		while(bpm=bosstarget(bexpm.next(true))){
+			spots.push(actor(bpm));
+		}
+		int bbstamina=50;
+		for(int i=0;i<MAXPLAYERS;i++){
+			if(playeringame[i]){
+				bbstamina+=40;
+				let pmo=players[i].mo;
+				if(pmo&&pmo.health>0)spots.push(pmo);
 			}
 		}
-		if(target)bossbrainspawnsource.SpawnCluster(self,target.pos);
-	}
-	void A_SpawnWave(){
-		bossbrainspawnsource bpm;
-		thinkeriterator bexpm=ThinkerIterator.create("bossbrainspawnsource");
-		while(bpm=bossbrainspawnsource(bexpm.next(true))){
-			bpm.setstatelabel("awaken");
+		for(int i=0;i<paintimes;i++){
+			bossbrainspawnsource.SpawnCluster(self,spots[random(0,spots.size()-1)].pos,bbstamina);
 		}
 		hdbosseye bbe;
 		thinkeriterator bbem=ThinkerIterator.create("hdbosseye");
@@ -192,9 +237,9 @@ class HDBossBrain:HDMobBase replaces BossBrain{
 	void A_DeathQuake(bool scream=true){
 		if(scream)A_BrainPain();
 		DistantQuaker.Quake(
-			self,random(3,6),120,16384,10,
+			self,random(4,7),120,16384,10,
 			HDCONST_SPEEDOFSOUND,
-			HDCONST_MINDISTANTSOUND*2,
+			16384,
 			HDCONST_MINDISTANTSOUND*4
 		);
 	}
@@ -203,14 +248,18 @@ class HDBossBrain:HDMobBase replaces BossBrain{
 		+vulnerable
 		+oldradiusdmg
 	}
+	override void postbeginplay(){
+		paintimes=0;
+		super.postbeginplay();
+	}
 	states{
 	spawn:
-		BBRN A 140 A_SpawnWaveSpot();
+		BBRN A -1;
 		wait;
 	pain:
 		TNT1 AAAAAAAAAAAAAAAA 0 A_SpawnItemEx("TyrantWallSplodeDelayed",
 			frandom(100,140),frandom(-30,30),frandom(64,82),
-			frandom(20,30),0,frandom(-4,4),
+			frandom(4,20),0,frandom(-4,4),
 			frandom(-1,1),SXF_NOCHECKPOSITION
 		);
 		MISL B 10;
@@ -272,9 +321,9 @@ class HDBossBrain:HDMobBase replaces BossBrain{
 		);
 		BBRN A 0{
 			DistantQuaker.Quake(
-				self,6,700,16384,10,
+				self,8,700,16384,10,
 				HDCONST_SPEEDOFSOUND,
-				HDCONST_MINDISTANTSOUND*2,
+				16384,
 				HDCONST_MINDISTANTSOUND*4
 			);
 		}
@@ -323,6 +372,7 @@ class TyrantWallSplode:HDExplosion{
 	states{
 	spawn:
 		TNT1 A 0 nodelay{
+			scale*=frandom(1.3,2.);
 			A_PlaySound ("world/explode",0,1.0,0,0.8);
 			setz(frandom(floorz,ceilingz));
 		}
@@ -342,7 +392,7 @@ class TyrantWallSplodeDelayed:HDExplosion{
 
 
 
-class HDBossEye:HDMobBase replaces BossEye{
+class HDBossEye:HDActor replaces BossEye{
 	array<string> messages;
 	array<string> intromessages;
 	string remainingmessage;
@@ -359,12 +409,14 @@ class HDBossEye:HDMobBase replaces BossEye{
 		while(bpm=hdbossbrain(bexpm.next(true))){
 			bpm.bincombat=true;
 			bpm.angle=bpm.angleto(self);
+			if(!foundbrain)master=bpm;
 			foundbrain=true;
 		}
 		if(!foundbrain){
 			let bpm=spawn("hdbossbrain",pos);
 			bpm.bincombat=true;
 			bpm.angle=bpm.angleto(self);
+			master=bpm;
 		}
 
 		string allmessages=Wads.ReadLump(Wads.FindLump("bbtalk"));
@@ -425,13 +477,21 @@ class HDBossEye:HDMobBase replaces BossEye{
 	override void tick(){
 		super.tick();
 
+		//harass the player if they're doing too well
+		if(
+			!(level.time&(1|2|4|8|16|32|64|128|256|512|1024))
+			&&target
+			&&target.health>70
+			&&checksight(target)
+		)setstatelabel("missile");
+
 		//see if there's a message to be played
 		//countdown to next part of message
 		if(
 			!messageticker
 			&&remainingmessage!=""
 		){
-			int nextpause=remainingmessage.indexof("_");
+			int nextpause=remainingmessage.indexof("|");
 			string thismessage;
 			if(nextpause<0){
 				thismessage=remainingmessage;
@@ -442,19 +502,36 @@ class HDBossEye:HDMobBase replaces BossEye{
 			}
 			thismessage.replace("/","\n\n\cj");
 			double messecs=max(2.,thismessage.length()*0.08);
-			A_PrintBold("\cj"..thismessage,messecs,"BIGFONT");
+			if(
+				thismessage!=""
+				&&thismessage!=" "
+			)A_PrintBold("\cj"..thismessage,messecs,"BIGFONT");
 			messageticker+=messecs*35;
 		}else if(messageticker>0)messageticker--;
 	}
 	default{
-		-solid -shootable +noblockmap +lookallaround
+		-solid -shootable +noblockmap +lookallaround +nointeraction
+		maxtargetrange 8192;
+	}
+	void A_ShootCube(){
+		if(!target||!checksight(target))return;
+		let ccc=spawn("HDBossCube",(pos.xy+angletovector(angleto(target),120),pos.z+3));
+		ccc.target=self;ccc.master=master;
+		ccc.vel=((target.pos-pos).unit()+(frandom(-0.1,0.1),frandom(-0.1,0.1),frandom(-0.1,0.1)))*8;
+		ccc.A_FaceMovementDirection();
 	}
 	states{
 	spawn:
 		TNT1 A 10 A_Look();
 		wait;
 	see:
+		TNT1 A 15 A_BrainAwake();
+		TNT1 AAAAA 8 A_ShootCube();
 		TNT1 A -1 playintro();
+		stop;
+	missile:
+		TNT1 AAA 12 A_ShootCube();
+		TNT1 A -1;
 		stop;
 	}
 }

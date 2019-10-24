@@ -191,13 +191,13 @@ class ThunderBuster:HDCellWeapon{
 			){
 				//dry actor - ping damage and continue
 				if(!random(0,5))(lingeringthunder.zap(hitactor,hitactor,caller,40,true));
-				hitactor.damagemobj(null,caller,1,"Electro",dmgflags);
 				hdf.give(hitactor,"Heat",(basedmg>>1));
+				hitactor.damagemobj(null,caller,1,"Electro",dmgflags);
 			}else{
 				//wet actor
 				if(!random(0,7))(lingeringthunder.zap(hitactor,hitactor,caller,(basedmg<<1),true));
-				hitactor.damagemobj(null,caller,basedmg,"Electro",dmgflags);
 				hdf.give(hitactor,"Heat",(basedmg<<1));
+				hitactor.damagemobj(null,caller,basedmg,"Electro",dmgflags);
 				actor sss=spawn("HDGunsmoke",tlt.hitlocation,ALLOW_REPLACE);
 				sss.vel=(0,0,1)-tlt.hitdir;
 				return;
