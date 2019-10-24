@@ -225,6 +225,7 @@ class HDBossBrain:HDMobBase replaces BossBrain{
 			spots.push(actor(bpm));
 		}
 		for(int i=0;i<3;i++){
+			if(!spots.size())break;
 			int which=random(0,random(0,spots.size()-1));
 			bossbrainspawnsource.SpawnCluster(self,spots[which].pos,bbstamina);
 		}
