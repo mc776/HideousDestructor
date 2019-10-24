@@ -519,6 +519,12 @@ class HDBossEye:HDActor replaces BossEye{
 		ccc.target=self;ccc.master=master;
 		ccc.vel=((target.pos-pos).unit()+(frandom(-0.1,0.1),frandom(-0.1,0.1),frandom(-0.1,0.1)))*8;
 		ccc.A_FaceMovementDirection();
+
+		bfg9k bpm;
+		thinkeriterator bexpm=ThinkerIterator.create("bfg9k");
+		while(bpm=bfg9k(bexpm.next(true))){
+			bpm.InitializeWepStats(true);
+		}
 	}
 	states{
 	spawn:

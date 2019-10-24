@@ -1,7 +1,7 @@
 // ------------------------------------------------------------
 // BFG9k
 // ------------------------------------------------------------
-class BFG9K:HDWeapon replaces BFG9000{
+class BFG9K:HDCellWeapon replaces BFG9000{
 	default{
 		//$Category "Weapons/Hideous Destructor"
 		//$Title "BFG 9k"
