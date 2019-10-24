@@ -376,7 +376,11 @@ class TyrantWallSplode:HDExplosion{
 			A_PlaySound ("world/explode",0,1.0,0,0.8);
 			setz(frandom(floorz,ceilingz));
 		}
-		TNT1 AA 0 A_SpawnItemEx("HDSmokeChunk", 0,0,0,vel.x+frandom(-12,12),vel.y+frandom(-12,12),vel.z+frandom(4,16),0,160,192);
+		TNT1 AA 0 A_SpawnItemEx("HDSmokeChunk",
+			0,0,0,
+			vel.x+frandom(-12,12),vel.y+frandom(-12,12),vel.z+frandom(4,16),
+			0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_ABSOLUTEMOMENTUM,96
+		);
 		TNT1 AAAAA 0 A_SpawnItemEx("HDSmoke",frandom(-24,24),frandom(-24,24),frandom(0,12));
 		MISL BCDD 3 bright A_FadeOut (0.2);
 		stop;
