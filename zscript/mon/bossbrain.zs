@@ -216,15 +216,15 @@ class HDBossBrain:HDMobBase replaces BossBrain{
 		while(bpm=bosstarget(bexpm.next(true))){
 			spots.push(actor(bpm));
 		}
-		int bbstamina=50;
+		int bbstamina=paintimes*30;
 		for(int i=0;i<MAXPLAYERS;i++){
 			if(playeringame[i]){
-				bbstamina+=40;
+				bbstamina+=20;
 				let pmo=players[i].mo;
 				if(pmo&&pmo.health>0)spots.push(pmo);
 			}
 		}
-		for(int i=0;i<paintimes;i++){
+		for(int i=0;i<3;i++){
 			bossbrainspawnsource.SpawnCluster(self,spots[random(0,spots.size()-1)].pos,bbstamina);
 		}
 		hdbosseye bbe;
