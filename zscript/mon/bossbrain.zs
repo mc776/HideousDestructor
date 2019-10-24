@@ -91,7 +91,18 @@ class bossbrainspawnsource:hdactor{
 		loop;
 	}
 }
-class HDBossBrain:HDMobBase{
+class HDBossTarget:bossbrainspawnsource replaces BossTarget{
+	default{
+		stamina 30;
+	}
+	states{
+	spawn:
+		TNT1 A 0 nodelay setz(floorz);
+		TNT1 AAAA 0 A_Wander();
+		goto awaken;
+	}
+}
+class HDBossBrain:HDMobBase replaces BossBrain{
 	override int damagemobj(
 		actor inflictor,actor source,int damage,
 		name mod,int flags,double angle
@@ -181,22 +192,58 @@ class HDBossBrain:HDMobBase{
 			break;
 		}
 	}
+	void A_DeathQuake(bool scream=true){
+		if(scream)A_BrainPain();
+		DistantQuaker.Quake(
+			self,random(3,6),120,16384,10,
+			HDCONST_SPEEDOFSOUND,
+			HDCONST_MINDISTANTSOUND*2,
+			HDCONST_MINDISTANTSOUND*4
+		);
+	}
 	default{
 		+noblood
+		+vulnerable
+		+oldradiusdmg
 	}
 	states{
 	spawn:
 		BBRN A 140 A_SpawnWaveSpot();
 		wait;
 	pain:
+		TNT1 AAAAAAAAAAAAAAAA 0 A_SpawnItemEx("TyrantWallSplodeDelayed",
+			frandom(100,140),frandom(-30,30),frandom(64,82),
+			frandom(20,30),0,frandom(-4,4),
+			frandom(-1,1),SXF_NOCHECKPOSITION
+		);
 		MISL B 10;
-		BBRN B 70 A_Pain();
+		BBRN B 70 A_BrainPain();
 		---- A 70 A_SpawnWave();
 		---- A 0 A_SetShootable();
 		goto spawn;
 	death:
+		MISL B 10;
+		BBRN B 70 A_BrainPain();
 		BBRN B 100;
-		BBRN A 100{
+
+		TNT1 AAAAAAA 0 A_SpawnItemEx("TyrantWallSplode",
+			frandom(100,140),frandom(-30,30),frandom(64,82),
+			frandom(20,30),0,frandom(-4,4),
+			frandom(-2,2),SXF_NOCHECKPOSITION
+		);
+
+		BBRN A 20{
+			A_DeathQuake(false);
+			for(int i=0;i<MAXPLAYERS;i++){
+				if(playeringame[i]&&players[i].mo)
+					players[i].mo.A_GiveInventory("PowerFrightener");
+			}
+		}
+		BBRN B 50 A_DeathQuake();
+		BBRN B 40 A_DeathQuake();
+		BBRN B 30 A_DeathQuake();
+		BBRN B 20 A_DeathQuake();
+		BBRN A 3{
 			hdbosseye bbe;
 			thinkeriterator bbem=ThinkerIterator.create("hdbosseye");
 			while(bbe=hdbosseye(bbem.next(true))){
@@ -204,6 +251,52 @@ class HDBossBrain:HDMobBase{
 				break;
 			}
 		}
+		BBRN BBBBB 10 A_DeathQuake();
+		BBRN BBBB 6 A_BrainPain();
+
+	xdeath:
+		BBRN BBBBBB 3 A_BrainPain();
+		TNT1 AAAAAAAAAAAAAAAA 0 A_SpawnItemEx("TyrantWallSplode",
+			frandom(100,140),frandom(-30,30),frandom(64,82),
+			frandom(20,30),0,frandom(-4,4),
+			frandom(-2,2),SXF_NOCHECKPOSITION
+		);
+		TNT1 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 0 A_SpawnItemEx("TyrantWallSplode",
+			frandom(100,340),frandom(-100,100),frandom(-100,156),
+			frandom(12,24),0,frandom(-4,4),
+			frandom(-2,2),SXF_NOCHECKPOSITION
+		);
+		BBRN A 0 A_DeathQuake(false);
+		BBRN A 0 A_PlaySound("brain/death",CHAN_BODY,1.0,false,ATTN_NONE);
+		BBRN AAAAAAAA 3 A_SpawnItemEx("TyrantWallSplode",
+			frandom(300,440),frandom(-300,300),frandom(-200,200),
+			frandom(12,24),0,frandom(-4,4),
+			frandom(-2,2),SXF_NOCHECKPOSITION
+		);
+		TNT1 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 0 A_SpawnItemEx("TyrantWallSplode",
+			frandom(100,240),frandom(-600,600),frandom(-300,300),
+			frandom(10,20),0,frandom(-2,2),
+			frandom(-2,2),SXF_NOCHECKPOSITION
+		);
+		BBRN AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 1 A_SpawnItemEx("TyrantWallSplode",
+			frandom(100,240),frandom(-500,500),frandom(-300,300),
+			frandom(10,20),0,frandom(-2,2),
+			frandom(-1,1),SXF_NOCHECKPOSITION
+		);
+		BBRN AAAAAAAAAAAAAAAAA 2 A_SpawnItemEx("HDBBWallExplosion",
+			random(100,240),random(-500,500),random(-300,300),
+			random(10,20),0,random(-2,2),
+			frandom(-1,1),SXF_NOCHECKPOSITION
+		);
+		BBRN A 0 A_BrainDie();
+		BBRN AAAAAAAAAAA 6 A_SpawnItemEx("HDBBWallExplosion",
+			random(100,240),random(-500,500),random(-300,300),
+			random(10,20),0,random(-2,2),
+			frandom(-3,3),SXF_NOCHECKPOSITION,72
+		);
+		BBRN A -1;
+		stop;
+
 	deathfade:
 		BBRN B 7;
 		BBRN B 20 A_Scream();
@@ -217,44 +310,31 @@ class HDBossBrain:HDMobBase{
 }
 
 
-
-
-//randomspawners for the tyrant waves
-
-class Babstre:RandomSpawner{
-	default{
-		+ismonster
-		dropitem "Babuin",256,12;
-		dropitem "SpecBabuin",256,3;
-		dropitem "NinjaPirate",256,1;
-	}
-}
-class PainLinger:RandomSpawner{
-	default{
-		+ismonster
-		dropitem "PainLord",256,1;
-		dropitem "PainBringer",256,4;
-	}
-}
-class SkullSpitted:SkullSpitter{
-	override void postbeginplay(){
-		super.postbeginplay();
-		for(int i=0;i<5;i++){
-			A_SpawnItemEx(
-				"FlyingSkull",
-				50,0,frandom(0,10),
-				0,0,0,
-				frandom(0,360),
-				SXF_TRANSFERPOINTERS|SXF_SETMASTER,
-				32
-			);
+//explosion effects
+class TyrantWallSplode:HDExplosion{
+	states{
+	spawn:
+		TNT1 A 0 nodelay{
+			A_PlaySound ("world/explode",0,1.0,0,0.8);
+			setz(frandom(floorz,ceilingz));
 		}
+		TNT1 AA 0 A_SpawnItemEx("HDSmokeChunk", 0,0,0,vel.x+frandom(-12,12),vel.y+frandom(-12,12),vel.z+frandom(4,16),0,160,192);
+		TNT1 AAAAA 0 A_SpawnItemEx("HDSmoke",frandom(-24,24),frandom(-24,24),frandom(0,12));
+		MISL BCDD 3 bright A_FadeOut (0.2);
+		stop;
+	}
+}
+class TyrantWallSplodeDelayed:HDExplosion{
+	states{
+	spawn:
+		TNT1 A 1 nodelay A_SetTics(random(3,20));
+		goto super::spawn;
 	}
 }
 
 
 
-class HDBossEye:HDMobBase{
+class HDBossEye:HDMobBase replaces BossEye{
 	array<string> messages;
 	array<string> intromessages;
 	string remainingmessage;
@@ -366,6 +446,39 @@ class HDBossEye:HDMobBase{
 	see:
 		TNT1 A -1 playintro();
 		stop;
+	}
+}
+
+
+//randomspawners for the tyrant waves
+class Babstre:RandomSpawner{
+	default{
+		+ismonster
+		dropitem "Babuin",256,12;
+		dropitem "SpecBabuin",256,3;
+		dropitem "NinjaPirate",256,1;
+	}
+}
+class PainLinger:RandomSpawner{
+	default{
+		+ismonster
+		dropitem "PainLord",256,1;
+		dropitem "PainBringer",256,4;
+	}
+}
+class SkullSpitted:SkullSpitter{
+	override void postbeginplay(){
+		super.postbeginplay();
+		for(int i=0;i<5;i++){
+			A_SpawnItemEx(
+				"FlyingSkull",
+				50,0,frandom(0,10),
+				0,0,0,
+				frandom(0,360),
+				SXF_TRANSFERPOINTERS|SXF_SETMASTER,
+				32
+			);
+		}
 	}
 }
 

@@ -1456,11 +1456,11 @@ class GhostGyroGrenade:GyroGrenade{
 			random(-7,7),random(-7,7),random(4,18),
 			random(0,360),160
 		);
-		TNT1 AA 0 A_SpawnItemEx("HDBBWTH",
+		TNT1 AA 0 A_SpawnItemEx("HDExplosion",
 			random(-1,1),random(-1,1),2,
 			flags:SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS
 		);
-		TNT1 A 2 A_SpawnItemEx("HDBBWTH",zvel:2,
+		TNT1 A 2 A_SpawnItemEx("HDExplosion",zvel:2,
 			flags:SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS
 		);
 		TNT1 AAA 0 A_SpawnItemEx("HDSmoke",
