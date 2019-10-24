@@ -6,8 +6,9 @@ class bossbrainspawnsource:hdactor{
 		let bbs=bossbrainspawnsource(spawn("bossbrainspawnsource",pos));
 		bbs.master=caller;
 		bbs.target=caller.target;
-		bbs.stamina=caller.health<<2;
-		switch(random(0,11)){
+		bbs.stamina=caller.stamina;
+		int rnd=random(0,11);
+		switch(rnd){
 		case 0:
 			bbs.accuracy=200;
 			bbs.spawntype="Necromancer";
@@ -173,11 +174,7 @@ class HDBossBrain:HDMobBase replaces BossBrain{
 				}
 			}
 		}
-		if(target){
-			let bbs=spawn("bossbrainspawnsource",target.pos);
-			bbs.target=target;bbs.master=self;
-			bbs.stamina=bbstamina;
-		}
+		if(target)bossbrainspawnsource.SpawnCluster(self,target.pos);
 	}
 	void A_SpawnWave(){
 		bossbrainspawnsource bpm;
@@ -273,23 +270,34 @@ class HDBossBrain:HDMobBase replaces BossBrain{
 			frandom(12,24),0,frandom(-4,4),
 			frandom(-2,2),SXF_NOCHECKPOSITION
 		);
-		TNT1 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 0 A_SpawnItemEx("TyrantWallSplode",
-			frandom(100,240),frandom(-600,600),frandom(-300,300),
-			frandom(10,20),0,frandom(-2,2),
-			frandom(-2,2),SXF_NOCHECKPOSITION
-		);
+		BBRN A 0{
+			DistantQuaker.Quake(
+				self,6,700,16384,10,
+				HDCONST_SPEEDOFSOUND,
+				HDCONST_MINDISTANTSOUND*2,
+				HDCONST_MINDISTANTSOUND*4
+			);
+		}
+		BBRN AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 1{
+			A_SetTics(randompick(0,0,0,1));
+			A_SpawnItemEx("TyrantWallSplode",
+				frandom(100,240),frandom(-600,600),frandom(-300,300),
+				frandom(10,20),0,frandom(-2,2),
+				frandom(-2,2),SXF_NOCHECKPOSITION
+			);
+		}
 		BBRN AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 1 A_SpawnItemEx("TyrantWallSplode",
 			frandom(100,240),frandom(-500,500),frandom(-300,300),
 			frandom(10,20),0,frandom(-2,2),
 			frandom(-1,1),SXF_NOCHECKPOSITION
 		);
-		BBRN AAAAAAAAAAAAAAAAA 2 A_SpawnItemEx("HDBBWallExplosion",
+		BBRN AAAAAAAAAAAAAAAAA 2 A_SpawnItemEx("TyrantWallSplode",
 			random(100,240),random(-500,500),random(-300,300),
 			random(10,20),0,random(-2,2),
 			frandom(-1,1),SXF_NOCHECKPOSITION
 		);
 		BBRN A 0 A_BrainDie();
-		BBRN AAAAAAAAAAA 6 A_SpawnItemEx("HDBBWallExplosion",
+		BBRN AAAAAAAAAAA 6 A_SpawnItemEx("TyrantWallSplode",
 			random(100,240),random(-500,500),random(-300,300),
 			random(10,20),0,random(-2,2),
 			frandom(-3,3),SXF_NOCHECKPOSITION,72
@@ -350,11 +358,13 @@ class HDBossEye:HDMobBase replaces BossEye{
 		thinkeriterator bexpm=ThinkerIterator.create("hdbossbrain");
 		while(bpm=hdbossbrain(bexpm.next(true))){
 			bpm.bincombat=true;
+			bpm.angle=bpm.angleto(self);
 			foundbrain=true;
 		}
 		if(!foundbrain){
 			let bpm=spawn("hdbossbrain",pos);
 			bpm.bincombat=true;
+			bpm.angle=bpm.angleto(self);
 		}
 
 		string allmessages=Wads.ReadLump(Wads.FindLump("bbtalk"));
