@@ -216,10 +216,10 @@ class HDBossBrain:HDMobBase replaces BossBrain{
 		while(bpm=bosstarget(bexpm.next(true))){
 			spots.push(actor(bpm));
 		}
-		int bbstamina=paintimes*30;
+		int bbstamina=25+paintimes*8;
 		for(int i=0;i<MAXPLAYERS;i++){
 			if(playeringame[i]){
-				bbstamina+=20;
+				bbstamina+=15+paintimes;
 				let pmo=players[i].mo;
 				if(pmo&&pmo.health>0)spots.push(pmo);
 			}
