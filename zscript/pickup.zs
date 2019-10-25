@@ -319,7 +319,7 @@ class HDPickup:CustomInventory{
 			gotpickedup=true;
 		}else{
 			gotpickedup=trypickup(other);
-			destroy();
+			if(gotpickedup)destroy();
 		}
 		if(gotpickedup){
 			other.A_PlaySound(pickupsound,CHAN_AUTO);
