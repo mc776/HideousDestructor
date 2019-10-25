@@ -181,7 +181,8 @@ class HDB_bronto:HDBulletActor{
 		setorigin(pos-(2*(cos(angle),sin(angle)),0),false);
 
 		A_SprayDecal("BrontoScorch",16);
-		vel*=0.01;
+		if(vel==(0,0,0))A_ChangeVelocity(cos(pitch),0,-sin(pitch),CVF_RELATIVE|CVF_REPLACE);
+		else vel*=0.01;
 		if(tracer){ //warhead damage
 			int dmg=random(1000,1200);
 			vector3 hitpoint=vel.unit()*tracer.radius;
@@ -210,8 +211,13 @@ class HDB_bronto:HDBulletActor{
 		bmissile=false;
 		bnointeraction=true;
 		vel=(0,0,0);
-		setstatelabel("death");
+		if(!instatesequence(curstate,findstate("death")))setstatelabel("death");
 		return null;
+	}
+	override void onhitactor(actor hitactor,vector3 hitpos,vector3 vu,int flags){
+		double spbak=speed;
+		super.onhitactor(hitactor,hitpos,vu,flags);
+		if(spbak-speed>10)puff();
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -221,6 +227,11 @@ class HDB_bronto:HDBulletActor{
 				SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS
 			);
 		}
+	}
+	states{
+	death:
+		TNT1 A 0{if(tracer)puff();}
+		goto super::death;
 	}
 }
 
@@ -337,28 +348,13 @@ class HDBulletActor:HDActor{
 		}
 	}
 	double penetration(){ //still juvenile giggling
-		double pen;
-
-/*
-		pen=
-			clamp(speed*0.02,0,((hardness*mass)>>2))
-			+(
-				mass
-				+double(accuracy)/max(1,stamina)
-			)*0.16
-		;
-		if(pushfactor>0)pen/=(1.+pushfactor*2.);
-		if(stamina<100)pen*=stamina*0.01;
-*/
-
-		pen=
+		double pen=
 			(20+hardness)*(8000+accuracy)*(60+mass)*(4000+speed)/max(1,500+stamina)*0.00000025
 		;
 		if(pushfactor>0)pen/=(1.+pushfactor*2.);
-		if(stamina>1000)pen/=(1000+stamina*0.01);
 
 
-		if(hd_debug>1)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
+		if(hd_debug>1)console.printf(getclassname().." penetration:  "..pen.."   "..pos.x..","..pos.y);
 		return pen;
 	}
 	override bool cancollidewith(actor other,bool passive){
@@ -473,6 +469,8 @@ class HDBulletActor:HDActor{
 		double curspeed=distanceleft;
 		do{
 			A_FaceMovementDirection();
+			tracer=null;
+
 			//update distanceleft if speed changed
 			if(curspeed>speed){
 				distanceleft-=(curspeed-speed);
@@ -874,7 +872,7 @@ class HDBulletActor:HDActor{
 		BLAF_ALLTHEWAYTHROUGH=2,
 		BLAF_SUCKINGWOUND=4,
 	}
-	void onhitactor(actor hitactor,vector3 hitpos,vector3 vu,int flags=0){
+	virtual void onhitactor(actor hitactor,vector3 hitpos,vector3 vu,int flags=0){
 		if(!hitactor.bshootable)return;
 		tracer=hitactor;
 		double hitangle=absangle(angle,angleto(hitactor)); //0 is dead centre
@@ -1157,15 +1155,16 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 			)*stamina
 			*frandom(20.,20+pushfactor-hardness)
 		;
-		if(flags&BLAF_ALLTHEWAYTHROUGH){
-			channelwidth*=1.1;
-			//reduce momentum, increase tumbling, etc.
-			double totalresistance=deemedwidth*((!!hdmb)?hdmb.bulletresistance(hitangle):0.6);
-			angle+=frandom(-pushfactor,pushfactor)*totalresistance;
-			pitch+=frandom(-pushfactor,pushfactor)*totalresistance;
-			speed=max(0,speed-frandom(-pushfactor,pushfactor)*totalresistance*10);
-			A_ChangeVelocity(cos(pitch)*speed,0,-sin(pitch)*speed,CVF_RELATIVE|CVF_REPLACE);
-		}else bulletdie();
+
+		//reduce momentum, increase tumbling, etc.
+		double totalresistance=deemedwidth*((!!hdmb)?hdmb.bulletresistance(hitangle):0.6);
+		angle+=frandom(-pushfactor,pushfactor)*totalresistance;
+		pitch+=frandom(-pushfactor,pushfactor)*totalresistance;
+		speed=max(0,speed-frandom(0,pushfactor)*totalresistance*10);
+		A_ChangeVelocity(cos(pitch)*speed,0,-sin(pitch)*speed,CVF_RELATIVE|CVF_REPLACE);
+
+		if(flags&BLAF_ALLTHEWAYTHROUGH)channelwidth*=1.1;
+		else bulletdie();
 
 
 		//add size of channel to damage
