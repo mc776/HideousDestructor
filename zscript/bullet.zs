@@ -337,7 +337,10 @@ class HDBulletActor:HDActor{
 		}
 	}
 	double penetration(){ //still juvenile giggling
-		double pen=
+		double pen;
+
+/*
+		pen=
 			clamp(speed*0.02,0,((hardness*mass)>>2))
 			+(
 				mass
@@ -346,6 +349,14 @@ class HDBulletActor:HDActor{
 		;
 		if(pushfactor>0)pen/=(1.+pushfactor*2.);
 		if(stamina<100)pen*=stamina*0.01;
+*/
+
+		pen=
+			(20+hardness)*(8000+accuracy)*(60+mass)*(4000+speed)/max(1,500+stamina)*0.00000025
+		;
+		if(pushfactor>0)pen/=(1.+pushfactor*2.);
+		if(stamina>1000)pen/=(1000+stamina*0.01);
+
 
 		if(hd_debug>1)console.printf("penetration:  "..pen.."   "..pos.x..","..pos.y);
 		return pen;
