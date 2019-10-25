@@ -989,6 +989,18 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 			double addpenshell=0;
 			int alv=armr.mega?3:1;
 
+			//poorer armour on legs and head
+			//otherwise assume full coverage
+			if(
+				(
+					int(level.time+angle)&(1|2|4|8|16)
+					>max(armr.durability<<2,16)
+				)&&(
+					hitheight>0.8
+					||hitheight<0.4
+				)
+			)alv-=randompick(0,0,0,1,1,2);
+/*
 			if(hitheight>0.8){ //headshot, check for helmet
 				if(
 					!!hdp
@@ -1008,6 +1020,7 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 				pen*=0.6;
 			}
 			else if(hitheight<0.4)alv-=randompick(0,0,0,0,1,1,1,2); //legshot
+*/
 
 
 			if(alv>0){
