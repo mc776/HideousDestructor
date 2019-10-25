@@ -309,7 +309,7 @@ class HDPickup:CustomInventory{
 			return;
 		}
 		name gcn=getclassname();
-		int maxtake=HDMath.MaxInv(other,gcn)-other.countinv(gcn);
+		int maxtake=min(amount,HDMath.MaxInv(other,gcn)-other.countinv(gcn));
 		if(maxtake<1)return;
 
 		other.A_PlaySound(pickupsound,CHAN_AUTO);
