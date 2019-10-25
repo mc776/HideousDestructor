@@ -27,6 +27,7 @@ class GrabThinker:Thinker{
 			pickobj.bsolid=false;
 		}else{
 			let pt=hdpickup(pickobj);if(pt)pt.bisbeingpickedup=false;
+			let mt=hdmagammo(pickobj);
 			let wt=hdweapon(pickobj);
 			let ht=hdupk(pickobj);
 			let tt=inventory(pickobj);
@@ -88,13 +89,37 @@ class GrabThinker:Thinker{
 					!pt
 					||pt.bulk>0
 					||(
-						hdmagammo(pickobj)&&(
-							hdmagammo(pickobj).magbulk>0
-							||hdmagammo(pickobj).roundbulk>0
+						mt&&(
+							mt.magbulk>0
+							||mt.roundbulk>0
 						)
 					)
 				)
 			){
+				//make one last check for mags
+				//do a single 1:1 switch with the lowest mag
+				if(mt){
+					name gcn=mt.getclassname();
+					let alreadygot=HDMagAmmo(picktarget.findinventory(gcn));
+					if(alreadygot){
+						alreadygot.syncamount();
+						int thismag=mt.mags[0];
+						bool thisisbetter=false;
+						for(int i=0;!thisisbetter&&i<alreadygot.amount;i++){
+							if(thismag>alreadygot.mags[i])thisisbetter=true;
+						}
+						if(thisisbetter){
+							alreadygot.LowestToLast();
+							if(hd_debug)alreadygot.logamounts();
+							picktarget.A_DropInventory(gcn,1);
+							if(cvar.getcvar("hd_helptext",picktarget.player).getbool())picktarget.A_Log("Discarding inferior mag to make room.",true);
+							mt.actualpickup(picktarget);
+							destroy();
+							return;
+						}
+					}
+				}
+
 				if(cvar.getcvar("hd_helptext",picktarget.player).getbool())picktarget.A_Log("No room in pockets.",true);
 				destroy();
 				return;
