@@ -19,6 +19,10 @@ class HDShellAmmo:HDRoundAmmo{
 	override void SplitPickup(){
 		SplitPickupBoxableRound(4,20,"ShellBoxPickup","SHELA0");
 	}
+	override string pickupmessage(){
+		if(amount>1)return "Picked up some shotgun shells.";
+		return super.pickupmessage();
+	}
 	states{
 	spawn:
 		SHL1 A -1;

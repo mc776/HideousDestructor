@@ -317,7 +317,10 @@ class HDPickup:CustomInventory{
 			amount-=maxtake;
 			HDF.Give(other,gcn,maxtake);
 			gotpickedup=true;
-		}else gotpickedup=trypickup(other);
+		}else{
+			gotpickedup=trypickup(other);
+			destroy();
+		}
 		if(gotpickedup){
 			other.A_PlaySound(pickupsound,CHAN_AUTO);
 			other.A_Log(string.format("\cg%s",pickupmessage()),true);
