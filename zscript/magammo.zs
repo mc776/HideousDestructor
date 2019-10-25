@@ -270,13 +270,20 @@ class HDMagAmmo:HDAmmo{
 		//you're only ever picking up one at a time
 		let alreadygot=HDMagAmmo(other.findinventory(gcn));
 		if(alreadygot){
+			let hpt=hdplayerpawn(other);
 			alreadygot.syncamount();
 			while(
 				alreadygot.amount>=alreadygot.maxamount
 				||(
-					hdplayerpawn(picktarget)
-					&&hdplayerpawn(picktarget).maxpocketspace-hdplayerpawn(picktarget).itemenc
-						<(magbulk+roundbulk*mags[0])
+					hpt&&(
+						(
+							hpt.hd_maglimit.getint()>0
+							&&alreadygot.amount>=hpt.hd_maglimit.getint()
+						)||(
+							hpt.maxpocketspace-hpt.itemenc
+							<(magbulk+roundbulk*mags[0])
+						)
+					)
 				)
 			){
 				int thismag=mags[0];
@@ -284,10 +291,14 @@ class HDMagAmmo:HDAmmo{
 				for(int i=0;!thisisbetter&&i<alreadygot.amount;i++){
 					if(thismag>alreadygot.mags[i])thisisbetter=true;
 				}
-				if(!thisisbetter)return;
+				if(!thisisbetter){
+					if(hpt&&hpt.hd_helptext.getbool()&&hpt.hd_maglimit.getint()>0)hpt.A_Log("hd_maglimit "..hpt.hd_maglimit.getint().." exceeded.",true);
+					return;
+				}
 				alreadygot.LowestToLast();
 				if(hd_debug)alreadygot.logamounts();
 				other.A_DropInventory(gcn,1);
+				if(hpt&&hpt.hd_helptext.getbool())hpt.A_Log("hd_maglimit "..hpt.hd_maglimit.getint().." exceeded, discarding inferior mag to make room.",true);
 			}
 		}
 

@@ -249,6 +249,7 @@ class HDPlayerPawn:PlayerPawn{
 	transient cvar hd_helptext;
 	transient cvar neverswitchonpickup;
 	transient cvar hd_voicepitch;
+	transient cvar hd_maglimit;
 	void cachecvars(){
 		playerinfo plr;
 		if(player)plr=player;
@@ -268,6 +269,7 @@ class HDPlayerPawn:PlayerPawn{
 		hd_lasttip=cvar.getcvar("hd_lasttip",plr);
 		hd_helptext=cvar.getcvar("hd_helptext",plr);
 		hd_voicepitch=cvar.getcvar("hd_voicepitch",plr);
+		hd_maglimit=cvar.getcvar("hd_maglimit",plr);
 		neverswitchonpickup=cvar.getcvar("neverswitchonpickup",plr);
 	}
 	override void Tick(){
