@@ -116,6 +116,7 @@ class MagManager:HDWeapon{
 	override string gethelptext(){
 		return
 		WEPHELP_FIRE.."/"..WEPHELP_ALTFIRE.."  Previous/Next mag/clip\n"
+		..WEPHELP_ALTRELOAD.."  Select lowest unselected\n"
 		..WEPHELP_RELOAD.."/"..WEPHELP_UNLOAD.."  Insert/Remove round\n"
 		..WEPHELP_FIREMODE.."+"..WEPHELP_FIRE.."/"..WEPHELP_ALTFIRE.."  Previous/Next item type\n"
 		..WEPHELP_FIREMODE.."+"..WEPHELP_RELOAD.."/"..WEPHELP_UNLOAD.."  Insert/Remove from backpack\n"
@@ -184,7 +185,23 @@ class MagManager:HDWeapon{
 	}
 	action void LowestToLast(){
 		if(!GetMags())return;
-		invoker.thismag.LowestToLast();
+//		invoker.thismag.LowestToLast();
+
+		let m=invoker.thismag;
+		int magsize=m.mags.size()-1;
+		int which=-1;
+		int lowest=m.maxperunit;
+		for(int i=0;i<magsize;i++){
+			if(m.mags[i]<lowest){
+				which=i;
+				lowest=m.mags[i];
+			}
+		}
+		if(which>=0){
+			m.mags.delete(which);
+			m.mags.push(lowest);
+		}
+
 		invoker.UpdateText();
 	}
 	void UpdateText(){
