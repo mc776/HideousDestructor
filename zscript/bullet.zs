@@ -879,6 +879,7 @@ class HDBulletActor:HDActor{
 		double pen=penetration();
 
 		let hdmb=hdmobbase(hitactor);
+		let hdp=hdplayerpawn(hitactor);
 
 		//because radius alone is not correct
 		double deemedwidth=hitactor.radius*frandom(1.8,2.);
@@ -910,17 +911,17 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 		//checks for standing character with gaps between feet and next to head
 		if(
 			(
-				hdmobbase(hitactor)
-				&&hitactor.height>hdmobbase(hitactor).liveheight*0.7
+				hdmb
+				&&hitactor.height>hdmb.liveheight*0.7
 			)||hitactor.height>getdefaultbytype(hitactor.getclass()).height*0.7
 		){
 			//pass over shoulder
 			//intended to be somewhat bigger than the visible head on any sprite
 			if(
 				(
-					hdplayerpawn(hitactor)
+					hdp
 					||(
-						hdmobbase(hitactor)&&hdmobbase(hitactor).bsmallhead
+						hdmb&&hdmb.bsmallhead
 					)
 				)&&(
 					0.8<
@@ -936,10 +937,10 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 			//randomly pass through putative gap between legs and feet
 			if(
 				(
-					hdplayerpawn(hitactor)
+					hdp
 					||(
-						hdmobbase(hitactor)
-						&&hdmobbase(hitactor).bbiped
+						hdmb
+						&&hdmb.bbiped
 					)
 				)
 			){
@@ -990,12 +991,12 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 
 			if(hitheight>0.8){ //headshot, check for helmet
 				if(
-					hitactor is "hdplayerpawn"
+					!!hdp
 					||(
 						!!hdmb
 						&&hdmb.bhashelmet
 					)
-				)alv=randompick(0,1,random(0,alv),alv);
+				)alv=randompick(1,random(0,alv),alv);
 				else alv=-1;
 			}
 			else if(
@@ -1006,12 +1007,12 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 				alv=-1;
 				pen*=0.6;
 			}
-			else if(hitheight<0.4)alv=max(alv-randompick(0,0,0,0,1,1,1,2),0); //legshot
+			else if(hitheight<0.4)alv-=randompick(0,0,0,0,1,1,1,2); //legshot
 
 
 			if(alv>0){
 				//bullet hits armour
-				addpenshell=frandom(9,11)*alv;
+				addpenshell=frandom(9,12)*alv;
 
 				//degrade and puff
 				int ddd=int(min(pen,addpenshell)*stamina)>>14;
@@ -1036,10 +1037,15 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 			if(hd_debug)console.printf(hitactor.getclassname().."  armour resistance:  "..addpenshell);
 			penshell+=addpenshell;
 
-			if(penshell>pen&&hitactor.health>0){
+			if(
+				penshell>pen
+				&&hitactor.health>0
+				&&hitactor.height>hitactor.radius*2
+			){
 				hitactor.vel+=vu*0.01*hitheight*mass;
-				if(hdplayerpawn(hitactor)){
-					hdplayerpawn(hitactor).hudbobrecoil2+=(frandom(-5.,5.),frandom(2.5,4.))*0.01*hitheight*mass;
+				if(hdp){
+					hdp.hudbobrecoil2+=(frandom(-5.,5.),frandom(2.5,4.))*0.01*hitheight*mass;
+					hdp.playrunning();
 				}else if(random(0,255)<hitactor.painchance) hdmobbase.forcepain(hitactor);
 			}
 		}
