@@ -304,27 +304,21 @@ class HDPickup:CustomInventory{
 		if(!other)other=picktarget;
 		if(!other)return;
 		if(heat.getamount(self)>50)return;
-		name gcn=getclassname();
-		int maxtake=HDMath.MaxInv(other,gcn)-other.countinv(gcn);
 		if(balwayspickup){
 			inventory.touch(other);
 			return;
-		}else if(maxtake<1){
-			return;
 		}
+		name gcn=getclassname();
+		int maxtake=HDMath.MaxInv(other,gcn)-other.countinv(gcn);
+		if(maxtake<1)return;
+
+		other.A_PlaySound(pickupsound,CHAN_AUTO);
+		other.A_Log(string.format("\cg%s",pickupmessage()),true);
+
 		bool gotpickedup=false;
-		if(maxtake<amount){
-			amount-=maxtake;
-			HDF.Give(other,gcn,maxtake);
-			gotpickedup=true;
-		}else{
-			gotpickedup=trypickup(other);
-			if(gotpickedup)destroy();
-		}
-		if(gotpickedup){
-			other.A_PlaySound(pickupsound,CHAN_AUTO);
-			other.A_Log(string.format("\cg%s",pickupmessage()),true);
-		}
+		HDF.Give(other,gcn,maxtake);
+		if(maxtake<amount)amount-=maxtake;
+		else destroy();
 	}
 
 	//delete once no longer needed
