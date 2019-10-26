@@ -1044,16 +1044,11 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 		if(penshell<=0)penshell=0;
 		else penshell*=1.-frandom(0,hitangle*0.004);
 
-A_Log(pen.."    -"..penshell.."    = "..pen-penshell.."     "..hitactor.gettag());
+		//if(hd_debug)
+		A_Log("Armour: "..pen.."    -"..penshell.."    = "..pen-penshell.."     "..hdmath.getname(hitactor));
 
 		//apply final armour and abort if totally blocked
 		pen-=penshell;
-		if(pen<0.1){
-			hitactor.damagemobj(self,target,(mass>>4)+pen*0.3,"bashing");
-			puff();
-			bulletdie();
-			return;
-		}
 
 		//deform the bullet
 		hardness=max(1,hardness-random(0,random(0,3)));
