@@ -986,29 +986,24 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 			let armr=HDArmourWorn(hitactor.findinventory("HDArmourWorn"));
 			double hitheight=(hitpos.z-hitactor.pos.z)/hitactor.height;
 
-			double addpenshell=0;
-			int alv=armr.mega?3:1;
+			double addpenshell=armr.mega?30:10;
 
 			//poorer armour on legs and head
 			//sometimes slip through a gap
 			int crackseed=int(level.time+angle)&(1|2|4|8|16|32);
-			if(
-				crackseed>clamp(armr.durability,2,8)
-				&&(
-					hitheight>0.8
-					||hitheight<0.4
-				)
-			){
-				alv-=randompick(1,1,2);
+			if(hitheight>0.8){
+				addpenshell*=frandom(0,1.);
+			}else if(hitheight<0.4){
+				if(crackseed>clamp(armr.durability,1,8))
+					addpenshell*=frandom(frandom(0,0.5),1.);
 			}else if(
 				crackseed>max(armr.durability,8)
 			){
-				alv-=randompick(0,0,0,1,1,2);
+				addpenshell*=frandom(0.8,1.1);
 			}
 
-			if(alv>0){
+			if(addpenshell>0){
 				//bullet hits armour
-				addpenshell=frandom(9,11)*alv;
 
 				//degrade and puff
 				int ddd=int(min(pen,addpenshell)*stamina)>>14;
@@ -1024,7 +1019,7 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 					if(p)p.vel+=hitactor.vel;
 				}
 				if(armr.durability<1)armr.destroy();
-			}else if(!alv){
+			}else if(addpenshell>-0.5){
 				//bullet leaves a hole in the webbing
 				armr.durability-=max(random(0,1),(stamina>>7));
 			}
@@ -1043,16 +1038,18 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 					hdp.hudbobrecoil2+=(frandom(-5.,5.),frandom(2.5,4.))*0.01*hitheight*mass;
 					hdp.playrunning();
 				}else if(random(0,255)<hitactor.painchance) hdmobbase.forcepain(hitactor);
-				hitactor.damagemobj(self,target,mass>>4,"bashing");
 			}
 		}
 
 		if(penshell<=0)penshell=0;
-		else penshell*=1.-frandom(0,hitangle*0.01);
+		else penshell*=1.-frandom(0,hitangle*0.004);
+
+A_Log(pen.."    -"..penshell.."    = "..pen-penshell.."     "..hitactor.gettag());
 
 		//apply final armour and abort if totally blocked
 		pen-=penshell;
 		if(pen<0.1){
+			hitactor.damagemobj(self,target,(mass>>4)+pen*0.3,"bashing");
 			puff();
 			bulletdie();
 			return;
