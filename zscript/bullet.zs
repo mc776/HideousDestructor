@@ -990,38 +990,21 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 			int alv=armr.mega?3:1;
 
 			//poorer armour on legs and head
-			//otherwise assume full coverage
+			//sometimes slip through a gap
+			int crackseed=int(level.time+angle)&(1|2|4|8|16|32);
 			if(
-				(
-					int(level.time+angle)&(1|2|4|8|16)
-					>max(armr.durability<<2,16)
-				)&&(
+				crackseed>clamp(armr.durability,2,8)
+				&&(
 					hitheight>0.8
 					||hitheight<0.4
 				)
-			)alv-=randompick(0,0,0,1,1,2);
-/*
-			if(hitheight>0.8){ //headshot, check for helmet
-				if(
-					!!hdp
-					||(
-						!!hdmb
-						&&hdmb.bhashelmet
-					)
-				)alv=randompick(1,random(0,alv),alv);
-				else alv=-1;
-			}
-			else if(
-				//slips through a gap
-				(int(level.time+angle)&(1|2|4|8|16))
-				>clamp(armr.durability<<2,10,64)
 			){
-				alv=-1;
-				pen*=0.6;
+				alv-=randompick(1,1,2);
+			}else if(
+				crackseed>max(armr.durability,8)
+			){
+				alv-=randompick(0,0,0,1,1,2);
 			}
-			else if(hitheight<0.4)alv-=randompick(0,0,0,0,1,1,1,2); //legshot
-*/
-
 
 			if(alv>0){
 				//bullet hits armour
@@ -1060,6 +1043,7 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 					hdp.hudbobrecoil2+=(frandom(-5.,5.),frandom(2.5,4.))*0.01*hitheight*mass;
 					hdp.playrunning();
 				}else if(random(0,255)<hitactor.painchance) hdmobbase.forcepain(hitactor);
+				hitactor.damagemobj(self,target,mass>>4,"bashing");
 			}
 		}
 
