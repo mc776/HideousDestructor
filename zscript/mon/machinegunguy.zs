@@ -48,7 +48,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		bnoincap=bplayingid;
 
 		if(bplayingid)givearmour(1.,0.06,-0.4);
-		else givearmour(1.,0.8,-0.4);
+		else givearmour(1.,0.2,-0.4);
 	}
 	void A_ScanForTargets(){
 		if(noammo()){
