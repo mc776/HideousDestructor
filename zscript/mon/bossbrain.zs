@@ -466,7 +466,7 @@ class HDBossEye:HDActor replaces BossEye{
 		if(!msgsize)return;
 		msgsize=random(0,msgsize-1);
 		if(remainingmessage=="")remainingmessage=messages[msgsize];
-		else remainingmessage=remainingmessage.."__"..messages[msgsize];
+		else remainingmessage=remainingmessage.."||"..messages[msgsize];
 		messages.delete(msgsize);
 		messageticker=1;
 	}
