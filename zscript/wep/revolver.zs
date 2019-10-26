@@ -612,7 +612,7 @@ class HDRevolverAmmo:HDPistolAmmo{
 		itemsthatusethis.push("HDRevolver");
 	}
 	override void SplitPickup(){
-		SplitPickupBoxableRound(10,72,"HD355BoxPickup","TEN9A0");
+		SplitPickupBoxableRound(10,72,"HD355BoxPickup","TEN9A0","PRNDA0");
 	}
 }
 class HD355BoxPickup:HDUPK{

@@ -22,7 +22,7 @@ class AutoReloadingThingy:HDWeapon{
 		if(!totalbrass||totalpowder<4)return;
 		int canmake=min(totalbrass,totalpowder/4);
 		//matter is being lost in this exchange. if you have a backpack you WILL have space.
-		int onpspace=getdefaultbytype("SevenMilAmmo").maxamount-owner.countinv("SevenMilAmmo");
+		int onpspace=hdmath.maxinv(owner,"SevenMilAmmo")-owner.countinv("SevenMilAmmo");
 		if(!bp)canmake=min(canmake,onpspace);
 
 		//evaluate amounts

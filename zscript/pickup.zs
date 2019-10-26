@@ -75,26 +75,8 @@ class GrabThinker:Thinker{
 			//check for pocket space
 			if(
 				!wt
-				&&hdplayerpawn(picktarget)
-				&&hdplayerpawn(picktarget).itemenc*hdmath.getencumbrancemult()
-					>hdplayerpawn(picktarget).maxpocketspace
-				&&(
-					!tt
-					||(
-						!tt.balwayspickup
-						&&picktarget.countinv(pickobj.getclassname())
-					)
-				)
-				&&(
-					!pt
-					||pt.bulk>0
-					||(
-						mt&&(
-							mt.magbulk>0
-							||mt.roundbulk>0
-						)
-					)
-				)
+				&&!tt.balwayspickup
+				&&hdmath.maxinv(picktarget,tt.getclassname())<=picktarget.countinv(tt.getclassname())
 			){
 				//make one last check for mags
 				//do a single 1:1 switch with the lowest mag
@@ -317,8 +299,10 @@ class HDPickup:CustomInventory{
 
 		bool gotpickedup=false;
 		HDF.Give(other,gcn,maxtake);
-		if(maxtake<amount)amount-=maxtake;
-		else destroy();
+		if(maxtake<amount){
+			amount-=maxtake;
+			SplitPickup();
+		}else destroy();
 	}
 
 	//delete once no longer needed
@@ -422,7 +406,8 @@ class HDRoundAmmo:HDAmmo{
 		int packnum,
 		int boxnum,
 		class<actor> boxtype,
-		name packsprite
+		name packsprite,
+		name singlesprite
 	){
 		while(amount>packnum){
 			if(amount>=boxnum){
@@ -444,6 +429,7 @@ class HDRoundAmmo:HDAmmo{
 		}
 		if(amount==packnum)sprite=getspriteindex(packsprite);
 		else super.SplitPickup();
+		if(amount==1)sprite=getspriteindex(singlesprite);
 	}
 }
 
@@ -542,34 +528,21 @@ class HDUPK:HDActor{
 		}
 
 		//check effective maxamount and take as appropriate
-		int maxtake=getdefaultbytype(pickuptype).maxamount;
+		int maxtake=min(amount,hdmath.maxinv(picktarget,pickuptype)-picktarget.countinv(pickuptype));
 		let hdpk=(class<hdpickup>)(pickuptype);
 		let hdp=hdplayerpawn(picktarget);
-		if(hdp&&hdpk){
-			double defunitbulk=getdefaultbytype(hdpk).bulk;
-			let hdpm=(class<hdmagammo>)(pickuptype);
-			if(hdpm){
-				let hdpmdef=getdefaultbytype(hdpm);
-				defunitbulk=max(defunitbulk,hdpmdef.magbulk+hdpmdef.roundbulk*hdpmdef.maxperunit);
-			}
-			double divamt=defunitbulk*hdmath.getencumbrancemult();
-			if(!divamt)maxtake=int.MAX;
-			else maxtake=min(maxtake,
-				(hdp.maxpocketspace-hdp.itemenc*hdmath.getencumbrancemult())
-				/divamt
-			);
-		}
-		int increase=amount;
-		increase=min(maxtake,amount);
-		if(heat.getamount(self)>50)increase=0;
-		if(increase<1){ //didn't pick any up
+		if(
+			maxtake<1
+			||heat.getamount(self)>50
+		){
+			//didn't pick any up
 			setstatelabel("spawn");
 			return;
 		}
 		picktarget.A_PlaySound(pickupsound,5);
 		picktarget.A_Log(string.format("\cg%s",pickupmessage),true);
-		HDF.Give(picktarget,pickuptype,increase);
-		amount-=increase;
+		HDF.Give(picktarget,pickuptype,maxtake);
+		amount-=maxtake;
 		if(amount>0){ //only picked some up  
 			setstatelabel("spawn");
 			return;

@@ -273,17 +273,11 @@ class HDMagAmmo:HDAmmo{
 			let hpt=hdplayerpawn(other);
 			alreadygot.syncamount();
 			while(
-				alreadygot.amount>=alreadygot.maxamount
+				alreadygot.amount>=hdmath.maxinv(other,gcn)
 				||(
-					hpt&&(
-						(
-							hpt.hd_maglimit.getint()>0
-							&&alreadygot.amount>=hpt.hd_maglimit.getint()
-						)||(
-							hpt.maxpocketspace-hpt.itemenc
-							<(magbulk+roundbulk*mags[0])*hdmath.getencumbrancemult()
-						)
-					)
+					hpt
+					&&hpt.hd_maglimit.getint()>0
+					&&alreadygot.amount>=hpt.hd_maglimit.getint()
 				)
 			){
 				int thismag=mags[0];
@@ -292,7 +286,10 @@ class HDMagAmmo:HDAmmo{
 					if(thismag>alreadygot.mags[i])thisisbetter=true;
 				}
 				if(!thisisbetter){
-					if(hpt&&hpt.hd_helptext.getbool()&&hpt.hd_maglimit.getint()>0)hpt.A_Log("hd_maglimit "..hpt.hd_maglimit.getint().." exceeded.",true);
+					if(hpt&&hpt.hd_helptext.getbool()){
+						if(hpt.hd_maglimit.getint()>0)hpt.A_Log("hd_maglimit "..hpt.hd_maglimit.getint().." exceeded.",true);
+						else hpt.A_Log("No room in pockets.",true);
+					}
 					return;
 				}
 				alreadygot.LowestToLast();

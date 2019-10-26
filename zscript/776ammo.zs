@@ -14,7 +14,7 @@ class SevenMilAmmo:HDRoundAmmo{
 		inventory.icon "TEN7A0";
 	}
 	override void SplitPickup(){
-		SplitPickupBoxableRound(10,50,"HD7mBoxPickup","TEN7A0");
+		SplitPickupBoxableRound(10,50,"HD7mBoxPickup","TEN7A0","RBRSA0");
 		if(amount==10)scale.y=(0.8*0.83);
 		else scale.y=0.8;
 	}

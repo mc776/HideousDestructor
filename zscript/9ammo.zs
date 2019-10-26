@@ -17,7 +17,7 @@ class HDPistolAmmo:HDRoundAmmo{
 		inventory.icon "TEN9A0";
 	}
 	override void SplitPickup(){
-		SplitPickupBoxableRound(10,100,"HD9mBoxPickup","TEN9A0");
+		SplitPickupBoxableRound(10,100,"HD9mBoxPickup","TEN9A0","PRNDA0");
 	}
 	override void GetItemsThatUseThis(){
 		itemsthatusethis.push("DERPUsable");

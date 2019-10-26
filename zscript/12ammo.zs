@@ -17,7 +17,7 @@ class HDShellAmmo:HDRoundAmmo{
 		itemsthatusethis.push("Slayer");
 	}
 	override void SplitPickup(){
-		SplitPickupBoxableRound(4,20,"ShellBoxPickup","SHELA0");
+		SplitPickupBoxableRound(4,20,"ShellBoxPickup","SHELA0","SHL1A0");
 	}
 	override string pickupmessage(){
 		if(amount>1)return "Picked up some shotgun shells.";
