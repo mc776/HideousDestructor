@@ -1064,11 +1064,7 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 		}
 
 		if(penshell<=0)penshell=0;
-		else penshell*=
-			(HDCONST_SPEEDOFSOUND+stamina)
-			/max(1,speed+accuracy)
-			*(1.-hitangle*0.006)
-		;
+		else penshell*=(1.5-hitangle*0.004);
 
 		//apply final armour and abort if totally blocked
 		pen-=penshell;
