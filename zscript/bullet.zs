@@ -981,10 +981,12 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 		if(hdmb)penshell=max(hdmb.bulletresistance(hitangle),hdmb.bulletshell(hitpos,hitangle));
 		else penshell=0.6;
 
+		bool hitactoristall=hitactor.height>hitactor.radius*2;
+
 		//apply armour if any
 		if(hitactor.findinventory("HDArmourWorn")){
 			let armr=HDArmourWorn(hitactor.findinventory("HDArmourWorn"));
-			double hitheight=(hitpos.z-hitactor.pos.z)/hitactor.height;
+			double hitheight=hitactoristall?((hitpos.z-hitactor.pos.z)/hitactor.height):0.5;
 
 			double addpenshell=armr.mega?30:10;
 
@@ -992,6 +994,12 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 			//sometimes slip through a gap
 			int crackseed=int(level.time+angle)&(1|2|4|8|16|32);
 			if(hitheight>0.8){
+				//face?
+				if(
+					crackseed>clamp(armr.durability,1,3)
+					&&absangle(angle,hitactor.angle)>177
+					&&abs(pitch)<10
+				)addpenshell*=frandom(0.1,0.9);else
 				//head: thinner material required
 				addpenshell=min(addpenshell,frandom(10,20));
 			}else if(hitheight<0.4){
@@ -1034,7 +1042,7 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 			if(
 				penshell>pen
 				&&hitactor.health>0
-				&&hitactor.height>hitactor.radius*2
+				&&hitactoristall
 			){
 				hitactor.vel+=vu*0.01*hitheight*mass;
 				if(hdp){
@@ -1047,8 +1055,7 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 		if(penshell<=0)penshell=0;
 		else penshell*=1.-frandom(0,hitangle*0.004);
 
-		//if(hd_debug)
-		A_Log("Armour: "..pen.."    -"..penshell.."    = "..pen-penshell.."     "..hdmath.getname(hitactor));
+		if(hd_debug)A_Log("Armour: "..pen.."    -"..penshell.."    = "..pen-penshell.."     "..hdmath.getname(hitactor));
 
 		//apply final armour and abort if totally blocked
 		pen-=penshell;
