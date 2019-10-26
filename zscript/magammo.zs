@@ -281,7 +281,7 @@ class HDMagAmmo:HDAmmo{
 							&&alreadygot.amount>=hpt.hd_maglimit.getint()
 						)||(
 							hpt.maxpocketspace-hpt.itemenc
-							<(magbulk+roundbulk*mags[0])
+							<(magbulk+roundbulk*mags[0])*hdmath.getencumbrancemult()
 						)
 					)
 				)
