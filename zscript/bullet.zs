@@ -994,14 +994,16 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 			//sometimes slip through a gap
 			int crackseed=int(level.time+angle)&(1|2|4|8|16|32);
 			if(hitheight>0.8){
-				//face?
-				if(
-					crackseed>clamp(armr.durability,1,3)
-					&&absangle(angle,hitactor.angle)>177
-					&&abs(pitch)<10
-				)addpenshell*=frandom(0.1,0.9);else
-				//head: thinner material required
-				addpenshell=min(addpenshell,frandom(10,20));
+				if(hdmb&&!hdmb.bhashelmet)addpenshell=-1;else{
+					//face?
+					if(
+						crackseed>clamp(armr.durability,1,3)
+						&&absangle(angle,hitactor.angle)>177
+						&&abs(pitch)<10
+					)addpenshell*=frandom(0.1,0.9);else
+					//head: thinner material required
+					addpenshell=min(addpenshell,frandom(10,20));
+				}
 			}else if(hitheight<0.4){
 				//legs: gaps and thinner (but not that much thinner) material
 				if(crackseed>clamp(armr.durability,1,8))
