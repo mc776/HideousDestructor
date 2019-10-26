@@ -588,7 +588,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 			gunspent=min(gunloaded,randompick(1,1,1,1,1,3));
 		}
 	firezm66:
-		#### FYY 1 bright light("SHOT"){
+		#### FFF 1 bright light("SHOT"){
 			if(gunloaded<1||gunspent<1)setstatelabel("firezm66end");
 			gunloaded--;gunspent--;
 			A_PlaySound("weapons/rifle",CHAN_WEAPON);
