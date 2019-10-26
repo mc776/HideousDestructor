@@ -1025,7 +1025,7 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 
 			if(alv>0){
 				//bullet hits armour
-				addpenshell=frandom(9,12)*alv;
+				addpenshell=frandom(9,11)*alv;
 
 				//degrade and puff
 				int ddd=int(min(pen,addpenshell)*stamina)>>14;
@@ -1064,7 +1064,7 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 		}
 
 		if(penshell<=0)penshell=0;
-		else penshell*=(1.5-hitangle*0.004);
+		else penshell*=1.-frandom(0,hitangle*0.01);
 
 		//apply final armour and abort if totally blocked
 		pen-=penshell;
