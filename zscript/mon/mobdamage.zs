@@ -29,6 +29,7 @@ extend class HDMobBase{
 			||!caller.findstate("pain",true)
 			||caller.instatesequence(caller.curstate,caller.resolvestate("falldown"))
 			||caller.health<1
+			||(hdplayerpawn(caller)&&hdplayerpawn(caller).incapacitated>0)
 		)return false;
 		caller.setstatelabel("pain");
 		return true;
