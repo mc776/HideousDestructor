@@ -121,7 +121,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 			return nickname;
 		}
 		array<string>mnamebases;mnamebases.clear();
-		string mmmn=Wads.ReadLump(Wads.FindLump("marinenames"));
+		string mmmn=Wads.ReadLump(Wads.CheckNumForName("marinenames",0));
 		mmmn=mmmn.left(mmmn.indexof("\n---"));
 		mmmn.split(mnamebases,"\n");
 
@@ -151,7 +151,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 
 		if(!random(0,3)){
 			array<string>titles;titles.clear();
-			string titleset=Wads.ReadLump(Wads.FindLump("marinenames"));
+			string titleset=Wads.ReadLump(Wads.CheckNumForName("marinenames",0));
 			titleset=titleset.mid(titleset.indexof("\n---")+5);
 			titleset=titleset.left(titleset.indexof("\n---"));
 			titleset.split(titles,"\n");
@@ -168,7 +168,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		else if(!random(0,16))nickname.makelower();
 		if(!random(0,7)){
 			array<string>titles;titles.clear();
-			string titleset=Wads.ReadLump(Wads.FindLump("marinenames"));
+			string titleset=Wads.ReadLump(Wads.CheckNumForName("marinenames",0));
 			titleset=titleset.mid(titleset.indexof("\n---")+5);
 			titleset=titleset.mid(titleset.indexof("\n---")+5);
 			if(titleset!=""){

@@ -435,7 +435,7 @@ class HDWeapon:Weapon{
 		){
 			int i=-1,counter=0;
 			do{
-				i=wads.findLump(regsprite,i+1,1);
+				i=wads.CheckNumForName(regsprite,i+1,wads.ns_sprites);
 				counter++;
 			}until (i<0);
 			if(counter<=2)needspritefix=true; //original + textures replacement = 2

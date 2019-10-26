@@ -50,7 +50,7 @@ class SpiritualArmour:HDPickup{
 	}
 
 	static string FromPsalter(){
-		string psss=Wads.ReadLump(Wads.FindLump("psalms"));
+		string psss=Wads.ReadLump(Wads.CheckNumForName("psalms",0));
 		array<string> pss;pss.clear();
 		psss.split(pss,"Psalm ");
 		pss.delete(0); //don't get anything before "Psalm 1:1"

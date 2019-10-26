@@ -425,7 +425,7 @@ class HDBossEye:HDActor replaces BossEye{
 			master=bpm;
 		}
 
-		string allmessages=Wads.ReadLump(Wads.FindLump("bbtalk"));
+		string allmessages=Wads.ReadLump(Wads.CheckNumForName("bbtalk",0));
 
 		//set up array of intros
 		int dashpos=allmessages.indexof("---");
