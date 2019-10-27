@@ -242,7 +242,7 @@ class HDPickup:CustomInventory{
 		-hdpickup.isbeingpickedup
 
 		inventory.interhubamount int.MAX;
-		inventory.maxamount int.MAX;
+		inventory.maxamount 1000;
 
 		hdpickup.bulk 0;
 		hdpickup.refid "";
@@ -268,13 +268,29 @@ class HDPickup:CustomInventory{
 		}
 		return iii;
 	}
-	virtual int effectivemaxamount(){
-		if(!bulk)return maxamount;
-		double gdpsp;
-		if(hdplayerpawn(owner))gdpsp=hdplayerpawn(owner).maxpocketspace;
-		else gdpsp=getdefaultbytype("hdplayerpawn").maxpocketspace;
-		return max(1,gdpsp/bulk);
+
+	//these functions are responsible for capping a player's inventory.
+	//DO NOT attempt to use anything not here!
+	static double MaxPocketSpace(actor caller){
+		let hdp=hdplayerpawn(caller);
+		if(hdp)return hdp.maxpocketspace;
+		return HD_MAXPOCKETSPACE;
 	}
+	static double PocketSpaceTaken(actor caller){
+		double itemenc=0;
+		for(inventory hdww=caller.inv;hdww!=null;hdww=hdww.inv){
+			let hdp=hdpickup(hdww);
+			if(hdp)itemenc+=abs(hdp.getbulk());
+		}
+		return itemenc*hdmath.getencumbrancemult();
+	}
+	static int MaxGive(actor caller,class<inventory> type,double unitbulk){
+		unitbulk*=hdmath.getencumbrancemult();
+		if(unitbulk<=0)return getdefaultbytype(type).maxamount-caller.countinv(type);
+		double spaceleft=HDPickup.MaxPocketSpace(caller)-HDPickup.PocketSpaceTaken(caller);
+		return spaceleft/unitbulk;
+	}
+
 
 	override void doeffect(){
 		if(!amount)destroy();
@@ -326,8 +342,6 @@ class HDPickup:CustomInventory{
 		GotoSpawn();
 	}
 	override void postbeginplay(){
-		maxamount=min(maxamount,effectivemaxamount());
-		if(maxunitamount<0)maxunitamount=abs(getdefaultbytype(getclass()).amount);
 		itemsthatusethis.clear();
 		GetItemsThatUseThis();
 		super.postbeginplay();
@@ -432,6 +446,7 @@ class HDRoundAmmo:HDAmmo{
 		if(amount==1)sprite=getspriteindex(singlesprite);
 	}
 }
+
 
 
 

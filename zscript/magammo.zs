@@ -14,6 +14,8 @@ class HDMagAmmo:HDAmmo{
 		hdmagammo.roundbulk 0;
 		hdmagammo.magbulk 0;
 		hdmagammo.mustshowinmagmanager false;
+
+		inventory.maxamount 50;
 	}
 	override double getbulk(){
 		double result=magbulk+roundbulk;
@@ -24,14 +26,6 @@ class HDMagAmmo:HDAmmo{
 			result+=magbulk+roundbulk*mags[i];
 		}
 		return result;
-	}
-	override int effectivemaxamount(){
-		double unitbulk=max(bulk,(roundbulk*maxperunit*0.6)+magbulk);
-		if(!unitbulk)return maxamount;
-		double gdpsp;
-		if(hdplayerpawn(owner))gdpsp=hdplayerpawn(owner).maxpocketspace;
-		else gdpsp=getdefaultbytype("hdplayerpawn").maxpocketspace;
-		return max(1,gdpsp/unitbulk);
 	}
 
 	//add mag amount or size as appropriate

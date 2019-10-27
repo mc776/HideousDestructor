@@ -438,7 +438,7 @@ extend class HDPlayerPawn{
 				);
 				let iii=hdpickup(findinventory(reff.getclassname()));
 				if(iii){
-					iii.amount=min(iii.amount,iii.effectivemaxamount());
+					iii.amount=min(iii.amount,iii.maxamount);
 					if(hdmagammo(iii))hdmagammo(iii).syncamount();
 				}
 			}
@@ -682,7 +682,7 @@ class InsurgentLoadout:Inventory{
 			//give some random ammo for the new weapon
 			if(ammoforwep){
 				let afwinv=hdpickup(owner.giveinventorytype(ammoforwep));
-				afwinv.amount=random(1,afwinv.effectivemaxamount()>>3);
+				afwinv.amount=random(1,afwinv.maxamount>>3);
 				let afwmag=hdmagammo(afwinv);
 				if(afwmag)afwmag.syncamount();
 			}
@@ -712,7 +712,7 @@ class InsurgentLoadout:Inventory{
 			let thisitem=HDPickup(owner.GiveInventoryType(thisclass));
 			if(thisitem){
 				if(hd_debug)A_Log("insurgent input: "..thisclass);
-				thisitem.amount=random(1,max(1,thisitem.effectivemaxamount()>>3));
+				thisitem.amount=random(1,max(1,thisitem.maxamount>>3));
 				if(hdmagammo(thisitem))hdmagammo(thisitem).syncamount();
 				if(hd_debug)A_Log(thisitem.getclassname().."  "..thisitem.amount);
 			}else{
