@@ -616,6 +616,7 @@ class HDFragGrenadeAmmo:HDAmmo{
 		inventory.icon "FRAGA0";
 		inventory.amount 1;
 		scale 0.3;
+		inventory.maxamount 50;
 		inventory.pickupmessage "Picked up a fragmentation hand grenade.";
 		inventory.pickupsound "weapons/pocket";
 		tag "Fragmentation Grenades";
