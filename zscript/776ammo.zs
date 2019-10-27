@@ -76,7 +76,7 @@ class HD7mClip:HDMagAmmo{
 		tag "7.76mm Clip";
 		inventory.pickupmessage "Picked up a 7.76mm clip.";
 		scale 0.6;
-		inventory.maxamount 100;
+		inventory.maxamount 1000;
 	}
 	override string,string,name,double getmagsprite(int thismagamt){
 		string magsprite;
