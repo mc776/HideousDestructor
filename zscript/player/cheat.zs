@@ -56,7 +56,7 @@ extend class HDPlayerPawn{
 				){
 					let ammoitem=hdpickup(findinventory(type));
 					if(!ammoitem)ammoitem=hdpickup(GiveInventoryType(type));
-					ammoitem.amount=max(1,ammoitem.amount,ammoitem.maxamount);
+					ammoitem.amount=ammoitem.maxamount;
 					let magammoitem=hdmagammo(ammoitem);
 					if(magammoitem)magammoitem.maxcheat();
 				}
