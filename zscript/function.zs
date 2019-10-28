@@ -268,26 +268,6 @@ struct HDMath{
 	static bool CheckLump(string lumpname){
 		return Wads.CheckNumForName(lumpname,wads.ns_sprites,-1,false)>=0;
 	}
-	//[deprecated] return the maximum capacity for this actor and this inventory
-	static int MaxInv(actor holder,class<inventory> inv){
-		if(holder.findinventory(inv))return holder.findinventory(inv).maxamount;
-		else if((class<hdpickup>)(inv)){
-			double gdpsp;
-			if(hdplayerpawn(holder))gdpsp=hdplayerpawn(holder).maxpocketspace;
-			else gdpsp=getdefaultbytype("hdplayerpawn").maxpocketspace;
-			let mag=(class<hdmagammo>)(inv);
-			if(mag){
-				let minvv=getdefaultbytype((class<hdmagammo>)(inv));
-				double unitbulk=(minvv.roundbulk*minvv.maxperunit*0.6)+minvv.magbulk;
-				return unitbulk?max(1,gdpsp/unitbulk):int.MAX;
-			}else{
-				let invv=getdefaultbytype((class<hdpickup>)(inv));
-				double bulk=invv.bulk;
-				return bulk?max(1,gdpsp/bulk):int.MAX;
-			}
-		}
-		return getdefaultbytype(inv).maxamount;
-	}
 	//checks encumbrance multiplier
 	//hdmath.getencumbrancemult()
 	static double GetEncumbranceMult(){
