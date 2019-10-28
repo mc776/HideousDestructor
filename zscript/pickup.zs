@@ -582,11 +582,11 @@ class HDUPK:HDActor{
 
 		//check effective maxamount and take as appropriate
 		let mt=(class<hdmagammo>)(pickuptype);
-		int maxtake=hdpickup.maxgive(
+		int maxtake=min(amount,hdpickup.maxgive(
 			picktarget,pickuptype,
 			mt?getdefaultbytype(mt).maxperunit+getdefaultbytype(mt).roundbulk+getdefaultbytype(mt).magbulk
 			:getdefaultbytype(pickuptype).bulk
-		);
+		));
 		let hdp=hdplayerpawn(picktarget);
 		if(
 			maxtake<1
