@@ -90,9 +90,16 @@ class GrabThinker:Thinker{
 						)<1
 					)||(
 						mt
-						&&hdpt
-						&&hdpt.hd_maglimit.getint()>0
-						&&picktarget.countinv(mt.getclassname())>=hdpt.hd_maglimit.getint()
+						&&(
+							(
+								picktarget.player
+								&&picktarget.player.cmd.buttons&BT_FIREMODE
+							)||(
+								hdpt
+								&&hdpt.hd_maglimit.getint()>0
+								&&hdpt.countinv(mt.getclassname())>=hdpt.hd_maglimit.getint()
+							)
+						)
 					)
 				)
 			){
