@@ -1,6 +1,14 @@
 // ------------------------------------------------------------
 // Prototype weapon
 // ------------------------------------------------------------
+enum HDWeaponFlagsets{
+	WRF_ALL=WRF_ALLOWRELOAD|WRF_ALLOWZOOM|WRF_ALLOWUSER1|WRF_ALLOWUSER2|WRF_ALLOWUSER3|WRF_ALLOWUSER4,
+	WRF_NONE=WRF_NOFIRE|WRF_DISABLESWITCH,
+	BT_ALTFIRE=BT_ALTATTACK,
+	BT_ALTRELOAD=BT_USER1,
+	BT_FIREMODE=BT_USER2,
+	BT_UNLOAD=BT_USER4,
+}
 class HDWeapon:Weapon{
 	int HDWeaponFlags;
 	flagdef DropTranslation:HDWeaponFlags,0;
@@ -23,14 +31,6 @@ class HDWeapon:Weapon{
 	int msgtimer;
 	int actualamount;
 	string wepmsg;
-	enum HDWeaponFlagsets{
-		WRF_ALL=WRF_ALLOWRELOAD|WRF_ALLOWZOOM|WRF_ALLOWUSER1|WRF_ALLOWUSER2|WRF_ALLOWUSER3|WRF_ALLOWUSER4,
-		WRF_NONE=WRF_NOFIRE|WRF_DISABLESWITCH,
-		BT_ALTFIRE=BT_ALTATTACK,
-		BT_ALTRELOAD=BT_USER1,
-		BT_FIREMODE=BT_USER2,
-		BT_UNLOAD=BT_USER4,
-	}
 	default{
 		+solid
 		+weapon.ammo_optional +weapon.alt_ammo_optional +weapon.noalert +weapon.noautoaim
