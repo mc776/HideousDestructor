@@ -77,6 +77,12 @@ class GrabThinker:Thinker{
 			if(
 				!tt.balwayspickup
 				&&(
+					!hdarmour(pt)
+					||(
+						!picktarget.countinv("HDArmourWorn")
+						&&(player.cmd.buttons&BT_USE)
+					)
+				)&&(
 					(
 						pt
 						&&HDPickup.MaxGive(picktarget,pt.getclass(),
@@ -340,7 +346,7 @@ class HDPickup:CustomInventory{
 			return;
 		}
 		name gcn=getclassname();
-		int maxtake=HDPickup.MaxGive(other,gcn,getbulk());
+		int maxtake=min(amount,HDPickup.MaxGive(other,gcn,getbulk()));
 		if(maxtake<1)return;
 
 		other.A_PlaySound(pickupsound,CHAN_AUTO);
