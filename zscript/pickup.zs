@@ -80,7 +80,8 @@ class GrabThinker:Thinker{
 					!hdarmour(pt)
 					||(
 						!picktarget.countinv("HDArmourWorn")
-						&&(player.cmd.buttons&BT_USE)
+						&&picktarget.player
+						&&picktarget.player.cmd.buttons&BT_USE
 					)
 				)&&(
 					(
@@ -99,7 +100,7 @@ class GrabThinker:Thinker{
 						&&(
 							(
 								picktarget.player
-								&&picktarget.player.cmd.buttons&BT_FIREMODE
+								&&picktarget.player.cmd.buttons&BT_USER2
 							)||(
 								hdpt
 								&&hdpt.hd_maglimit.getint()>0
