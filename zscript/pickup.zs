@@ -74,9 +74,21 @@ class GrabThinker:Thinker{
 
 			//check for pocket space
 			if(
-				!wt
-				&&!tt.balwayspickup
-				&&hdmath.maxinv(picktarget,tt.getclassname())<=picktarget.countinv(tt.getclassname())
+				!tt.balwayspickup
+				&&(
+					(
+						pt
+						&&HDPickup.MaxGive(picktarget,pt.getclass(),
+							mt?mt.getbulk():pt.bulk
+						)<1
+					)||(
+						ht
+						&&ht.pickuptype!="none"
+						&&HDPickup.MaxGive(picktarget,pt.getclass(),
+							getdefaultbytype(ht.pickuptype).bulk
+						)<1
+					)
+				)
 			){
 				//make one last check for mags
 				//do a single 1:1 switch with the lowest mag
@@ -463,7 +475,7 @@ class HDUPK:HDActor{
 	flagdef MultiPickup:HDUPKFlags,0;
 
 	actor picktarget;
-	class<inventory> pickuptype;
+	class<hdpickup> pickuptype;
 	string pickupmessage;
 	sound pickupsound;
 	int maxunitamount;
@@ -543,8 +555,12 @@ class HDUPK:HDActor{
 		}
 
 		//check effective maxamount and take as appropriate
-		int maxtake=min(amount,hdmath.maxinv(picktarget,pickuptype)-picktarget.countinv(pickuptype));
-		let hdpk=(class<hdpickup>)(pickuptype);
+		let mt=(class<hdmagammo>)(pickuptype);
+		int maxtake=hdpickup.maxgive(
+			picktarget,pickuptype,
+			mt?getdefaultbytype(mt).maxperunit+getdefaultbytype(mt).roundbulk+getdefaultbytype(mt).magbulk
+			:getdefaultbytype(pickuptype).bulk
+		);
 		let hdp=hdplayerpawn(picktarget);
 		if(
 			maxtake<1
