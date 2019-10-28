@@ -627,7 +627,7 @@ class Hunter:HDShotgun{
 	unloadloopend:
 		SHTG C 6 offset(1,41);
 		SHTG C 3 offset(1,42){
-			int rmm=ammocap("HDShellAmmo")-countinv("HDShellAmmo");
+			int rmm=HDPickup.MaxGive(self,"HDShellAmmo",ENC_SHELL);
 			if(rmm>0){
 				A_PlaySound("weapons/pocket");
 				A_SetTics(8);

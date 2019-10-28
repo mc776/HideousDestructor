@@ -71,11 +71,6 @@ class HDWeapon:Weapon{
 		if(bdroptranslation)translation=oldowner.translation;
 		super.detachfromowner();
 	}
-	//wrapper for HDMath.MaxInv because we're gonna need this a lot
-	action int AmmoCap(class<inventory> inv){
-if(hd_debug)console.printf("Delete AmmoCap");
-		return 9999999999999999999;// HDMath.MaxInv(self,inv);
-	}
 	//wrapper for checking if gun is braced
 	action bool gunbraced(){
 		return hdplayerpawn(self)&&hdplayerpawn(self).gunbraced;

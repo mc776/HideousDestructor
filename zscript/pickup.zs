@@ -314,7 +314,7 @@ class HDPickup:CustomInventory{
 		unitbulk*=hdmath.getencumbrancemult();
 		if(unitbulk<=0)return getdefaultbytype(type).maxamount-caller.countinv(type);
 		double spaceleft=HDPickup.MaxPocketSpace(caller)-HDPickup.PocketSpaceTaken(caller);
-		return spaceleft/unitbulk;
+		return min(getdefaultbytype(type).maxamount-caller.countinv(type),spaceleft/unitbulk);
 	}
 
 
@@ -333,7 +333,7 @@ class HDPickup:CustomInventory{
 			return;
 		}
 		name gcn=getclassname();
-		int maxtake=min(amount,HDMath.MaxInv(other,gcn)-other.countinv(gcn));
+		int maxtake=HDPickup.MaxGive(other,gcn,getbulk());
 		if(maxtake<1)return;
 
 		other.A_PlaySound(pickupsound,CHAN_AUTO);

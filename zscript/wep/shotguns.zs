@@ -44,10 +44,9 @@ class HDShotgun:HDWeapon{
 		int uamt=clamp(invoker.weaponstatus[slot],0,4);
 		if(!uamt)return;
 		invoker.weaponstatus[slot]-=uamt;
-		int maxpocket=min(uamt,ammocap("HDShellAmmo")-countinv("HDShellAmmo"));
+		int maxpocket=min(uamt,HDPickup.MaxGive(self,"HDShellAmmo",ENC_SHELL));
 		if(maxpocket>0&&pressingunload()){
 			A_SetTics(16);
-//			A_WeaponReady(WRF_NONE);
 			uamt-=maxpocket;
 			A_GiveInventory("HDShellAmmo",maxpocket);
 		}
@@ -59,7 +58,7 @@ class HDShotgun:HDWeapon{
 		if(hhh){
 			int totake=min(
 				hhh.weaponstatus[SHOTS_SIDESADDLE],
-				AmmoCap("HDShellAmmo")-countinv("HDShellAmmo"),
+				HDPickup.MaxGive(self,"HDShellAmmo",ENC_SHELL),
 				4
 			);
 			if(totake>0){

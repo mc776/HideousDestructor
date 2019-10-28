@@ -134,6 +134,7 @@ extend class HDPlayerPawn{
 		}
 
 
+
 		double carrymax=
 			400+
 			(zerk>0?100:0)+
@@ -141,6 +142,12 @@ extend class HDPlayerPawn{
 			stimcount*2
 		;
 		enc=weaponenc+weaponencsel+itemenc+bpenc;
+
+
+		//if you're somehow carrying more than pocket space allows
+		double overpocket=HDPickup.PocketSpaceTaken(self)/maxpocketspace;
+		if(overpocket>1.)carrymax/=overpocket;
+
 
 		//include encumbrance multiplier before outputting final
 		return enc*hdmath.getencumbrancemult()/carrymax;

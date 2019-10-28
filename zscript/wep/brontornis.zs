@@ -103,7 +103,7 @@ class Brontornis:HDWeapon{
 		let br=hpl.findinventory("BrontornisRound");
 		sb.drawwepnum(
 			br.amount,
-			int(HD_MAXPOCKETSPACE/ENC_BRONTOSHELL)
+			(HD_MAXPOCKETSPACE/ENC_BRONTOSHELL)
 		);
 	}
 	override string gethelptext(){
