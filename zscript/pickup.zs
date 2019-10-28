@@ -76,13 +76,11 @@ class GrabThinker:Thinker{
 			let hdpt=hdplayerpawn(picktarget);
 			if(
 				!tt.balwayspickup
-				&&(
-					!hdarmour(pt)
-					||(
-						!picktarget.countinv("HDArmourWorn")
-						&&picktarget.player
-						&&picktarget.player.cmd.buttons&BT_USE
-					)
+				&&!(
+					hdarmour(pt)
+					&&picktarget.countinv("HDArmourWorn")
+					&&picktarget.player
+					&&picktarget.player.cmd.buttons&BT_USE
 				)&&(
 					(
 						pt
