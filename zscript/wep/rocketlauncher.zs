@@ -589,7 +589,7 @@ class Blooper:HDWeapon{
 		);
 		sb.drawwepnum(
 			hpl.countinv("HDRocketAmmo"),
-			(ENC_ROCKET/HD_MAXPOCKETSPACE)
+			(HD_MAXPOCKETSPACE/ENC_ROCKET)
 		);
 	}
 	override string gethelptext(){
