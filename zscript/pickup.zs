@@ -78,9 +78,9 @@ class GrabThinker:Thinker{
 				!tt.balwayspickup
 				&&!(
 					hdarmour(pt)
-					&&picktarget.countinv("HDArmourWorn")
 					&&picktarget.player
 					&&picktarget.player.cmd.buttons&BT_USE
+					&&!picktarget.countinv("HDArmourWorn")
 				)&&(
 					(
 						pt
