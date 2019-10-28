@@ -154,7 +154,7 @@ class HDArmour:HDMagAmmo{
 			destroy();
 			return;
 		}
-		//one megaarmour = 2 armour for maxinv purposes
+		//one megaarmour = 2 regular armour
 		if(aaa){
 			int totalbulk=(durability>=1000)?2:1;
 			for(int i=0;i<aaa.mags.size();i++){

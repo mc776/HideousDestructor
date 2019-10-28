@@ -7,11 +7,11 @@ extend class HDStatusBar{
 		if(hdw)hdw.DrawHUDStuff(self,hdw,hpl);else{
 			if(cplayer.readyweapon.ammotype1)drawwepnum(
 				hpl.countinv(cplayer.readyweapon.ammotype1),
-				hdmath.maxinv(hpl,cplayer.readyweapon.ammotype1)
+				getdefaultbytype(w.ammotype1).maxamount
 			);
 			if(cplayer.readyweapon.ammotype2)drawwepnum(
 				hpl.countinv(cplayer.readyweapon.ammotype2),
-				hdmath.maxinv(hpl,cplayer.readyweapon.ammotype2),
+				getdefaultbytype(w.ammotype2).maxamount,
 				posy:-10
 			);
 		}

@@ -124,9 +124,8 @@ class HD4mMag:HDMagAmmo{
 				return false;
 			}
 		}
-		int totake=random(1,min(
-			mags[mindex],
-			HDMath.MaxInv(owner,"FourMilAmmo")-owner.countinv("FourMilAmmo"))
+		int totake=min(random(1,24),mags[mindex],
+			HDPickup.MaxGive(owner,"FourMilAmmo",roundbulk)
 		);
 		HDF.Give(owner,roundtype,totake);
 		owner.A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);

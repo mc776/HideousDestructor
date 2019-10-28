@@ -260,38 +260,7 @@ class HDMagAmmo:HDAmmo{
 		if(!other)other=picktarget;
 		if(!other)return;
 		name gcn=getclassname();
-
-		//you're only ever picking up one at a time
-		let alreadygot=HDMagAmmo(other.findinventory(gcn));
-		if(alreadygot){
-			let hpt=hdplayerpawn(other);
-			alreadygot.syncamount();
-			while(
-				alreadygot.amount>=hdmath.maxinv(other,gcn)
-				||(
-					hpt
-					&&hpt.hd_maglimit.getint()>0
-					&&alreadygot.amount>=hpt.hd_maglimit.getint()
-				)
-			){
-				int thismag=mags[0];
-				bool thisisbetter=false;
-				for(int i=0;!thisisbetter&&i<alreadygot.amount;i++){
-					if(thismag>alreadygot.mags[i])thisisbetter=true;
-				}
-				if(!thisisbetter){
-					if(hpt&&hpt.hd_helptext.getbool()){
-						if(hpt.hd_maglimit.getint()>0)hpt.A_Log("hd_maglimit "..hpt.hd_maglimit.getint().." exceeded.",true);
-						else hpt.A_Log("No room in pockets.",true);
-					}
-					return;
-				}
-				alreadygot.LowestToLast();
-				if(hd_debug)alreadygot.logamounts();
-				other.A_DropInventory(gcn,1);
-				if(hpt&&hpt.hd_helptext.getbool())hpt.A_Log("hd_maglimit "..hpt.hd_maglimit.getint().." exceeded, discarding inferior mag to make room.",true);
-			}
-		}
+		if(HDPickup.MaxGive(other,gcn,getbulk())<1)return;
 
 		//misc. effects
 		other.A_PlaySound(pickupsound,CHAN_AUTO);

@@ -73,7 +73,8 @@ class HDWeapon:Weapon{
 	}
 	//wrapper for HDMath.MaxInv because we're gonna need this a lot
 	action int AmmoCap(class<inventory> inv){
-		return HDMath.MaxInv(self,inv);
+if(hd_debug)console.printf("Delete AmmoCap");
+		return 9999999999999999999;// HDMath.MaxInv(self,inv);
 	}
 	//wrapper for checking if gun is braced
 	action bool gunbraced(){

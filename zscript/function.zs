@@ -268,8 +268,7 @@ struct HDMath{
 	static bool CheckLump(string lumpname){
 		return Wads.CheckNumForName(lumpname,wads.ns_sprites,-1,false)>=0;
 	}
-	//return the maximum capacity for this actor and this inventory
-	//HDMath.MaxInv(self,"FourMilAmmo")
+	//[deprecated] return the maximum capacity for this actor and this inventory
 	static int MaxInv(actor holder,class<inventory> inv){
 		if(holder.findinventory(inv))return holder.findinventory(inv).maxamount;
 		else if((class<hdpickup>)(inv)){

@@ -73,6 +73,7 @@ class GrabThinker:Thinker{
 			}
 
 			//check for pocket space
+			let hdpt=hdplayerpawn(picktarget);
 			if(
 				!tt.balwayspickup
 				&&(
@@ -87,6 +88,11 @@ class GrabThinker:Thinker{
 						&&HDPickup.MaxGive(picktarget,pt.getclass(),
 							getdefaultbytype(ht.pickuptype).bulk
 						)<1
+					)||(
+						mt
+						&&hdpt
+						&&hdpt.hd_maglimit.getint()>0
+						&&picktarget.countinv(mt.getclassname())>=hdpt.hd_maglimit.getint()
 					)
 				)
 			){
@@ -108,6 +114,14 @@ class GrabThinker:Thinker{
 							picktarget.A_DropInventory(gcn,1);
 							if(cvar.getcvar("hd_helptext",picktarget.player).getbool())picktarget.A_Log("Discarding inferior mag to make room.",true);
 							mt.actualpickup(picktarget);
+							destroy();
+							return;
+						}else if(
+							hdpt
+							&&hdpt.hd_maglimit.getint()>0
+							&&hdpt.hd_maglimit.getint()<hdpt.countinv(mt.getclassname())
+						){
+							if(cvar.getcvar("hd_helptext",picktarget.player).getbool())picktarget.A_Log("hd_maglimit "..hdpt.hd_maglimit.getint().." exceeded.",true);
 							destroy();
 							return;
 						}
