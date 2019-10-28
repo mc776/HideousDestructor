@@ -146,7 +146,29 @@ extend class HDPlayerPawn{
 
 		//if you're somehow carrying more than pocket space allows
 		double overpocket=HDPickup.PocketSpaceTaken(self)/maxpocketspace;
-		if(overpocket>1.)carrymax/=overpocket;
+		if(overpocket>1.){
+			carrymax/=overpocket;
+			//just randomly shake off stuff until you can move again
+			if(
+				player
+				&&(
+					player.cmd.buttons&BT_SPEED
+					||player.cmd.buttons&BT_JUMP
+				)
+			){
+				muzzleclimb3=(frandom(-5,5),frandom(-5,5));
+				muzzleclimb4=(frandom(-5,5),frandom(-5,5));
+				for(inventory hdww=inv;hdww!=null;hdww=hdww.inv){
+					let hdp=hdpickup(hdww);
+					if(
+						hdp
+						&&!WornRadsuit(hdp) //just in case
+						&&!HDArmourWorn(hdp)
+						&&(!PortableLiteAmp(hdp)||!PortableLiteAmp(hdp).worn)
+					)DropInventory(hdp,random(0,hdp.amount));
+				}
+			}
+		}
 
 
 		//include encumbrance multiplier before outputting final
