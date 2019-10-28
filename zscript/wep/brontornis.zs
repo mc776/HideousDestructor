@@ -100,9 +100,8 @@ class Brontornis:HDWeapon{
 			sb.drawnum(hpl.countinv("BrontornisRound"),-45,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 		}
 		if(hdw.weaponstatus[BRONS_CHAMBER]>1)sb.drawwepdot(-16,-10,(5,3));
-		let br=hpl.findinventory("BrontornisRound");
 		sb.drawwepnum(
-			br.amount,
+			hpl.countinv("BrontornisRound"),
 			(HD_MAXPOCKETSPACE/ENC_BRONTOSHELL)
 		);
 	}
