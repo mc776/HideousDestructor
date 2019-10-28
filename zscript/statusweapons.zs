@@ -24,10 +24,10 @@ extend class HDStatusBar{
 		);
 	}
 	void drawwepnum(int value,double mxval,int posx=-16,int posy=-6,bool alwaysprecise=false){
-		if(!mxval)return;
 		int maxvalue=int(mxval);
-			//the only purpose for this not being int is so I can enter double constants into this argument
-			//and not get truncation warnings that I have no need for here
+		if(!maxvalue)return;
+			//the only purpose for this not being int is so I can enter double constants
+			//into this argument and not get truncation warnings that I have no need for here
 		hdplayerpawn cp=hdplayerpawn(cplayer.mo);if(!cp)return;
 		drawimage(
 			"GREENPXL",
