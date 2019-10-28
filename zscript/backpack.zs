@@ -506,7 +506,6 @@ class HDBackpack:HDWeapon{
 		if(tempamounts.size()<1)return 1;
 		int ticks=0;
 		let hdp=hdplayerpawn(owner);
-		if(trytopocket&&hdp&&hdp.itemenc*hdmath.getencumbrancemult()>=hdp.maxpocketspace)trytopocket=false;
 		let wepth=(class<hdweapon>)(invclasses[which]);
 		let thisclass=(class<hdpickup>)(invclasses[which]);
 		if(wepth){
@@ -527,14 +526,24 @@ class HDBackpack:HDWeapon{
 		if(thisclass){
 			int thisamt=max(0,tempamounts[0].toint());
 			bool multipi=getdefaultbytype(thisclass).bmultipickup;
-			if(thisclass is "HDMagAmmo"){
+
+			let mt=(class<HDMagAmmo>)(thisclass);
+			if(
+				owner.A_JumpIfInventory(thisclass,0,"null")
+				||HDPickup.MaxGive(owner,thisclass,
+					mt?(getdefaultbytype(mt).roundbulk*getdefaultbytype(mt).maxperunit+getdefaultbytype(mt).magbulk)
+					:getdefaultbytype(thisclass).bulk
+				)<1
+			)trytopocket=false;
+
+			if(mt){
 				if(trytopocket)HDMagAmmo.GiveMag(owner,thisclass,thisamt);
 				else HDMagAmmo.SpawnMag(owner,thisclass,thisamt);
 				tempamounts.delete(0);
 			}else{
 				basicpickup=true;
 				thisamt--;
-				if(!trytopocket||A_JumpIfInventory(thisclass,0,"null")){
+				if(!trytopocket){
 					int moar=0;
 					if(multipi&&thisamt>0)moar=min(random(10,50),thisamt);
 					let iii=inventory(spawn(thisclass,owner.pos+(0,0,owner.height-20),ALLOW_REPLACE));
@@ -772,7 +781,7 @@ extend class HDBackpack{
 						cfi.amount=0;
 					}
 					if(cfi){
-						cfi.maxamount=int.MAX;
+						cfi.maxamount=max(cfi.maxamount,originalamount+bpamt);
 						cfi.amount+=bpamt;
 					}
 				}

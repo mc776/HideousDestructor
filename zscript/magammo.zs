@@ -15,7 +15,7 @@ class HDMagAmmo:HDAmmo{
 		hdmagammo.magbulk 0;
 		hdmagammo.mustshowinmagmanager false;
 
-		inventory.maxamount 50;
+		inventory.maxamount 100;
 	}
 	override double getbulk(){
 		double result=magbulk+roundbulk;
