@@ -167,7 +167,7 @@ extend class HDPlayerPawn{
 						&&!WornRadsuit(hdp) //just in case
 						&&!HDArmourWorn(hdp)
 						&&(!PortableLiteAmp(hdp)||!PortableLiteAmp(hdp).worn)
-					)DropInventory(hdp,random(0,hdp.amount>>3));
+					)DropInventory(hdp,random(0,max(1,hdp.amount>>3)));
 				}
 			}
 		}
