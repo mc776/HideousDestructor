@@ -1020,7 +1020,7 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 				//bullet hits armour
 
 				//degrade and puff
-				int ddd=int(min(pen,addpenshell)*stamina)>>14;
+				int ddd=random(-1,(int(min(pen,addpenshell)*stamina)>>12));
 				if(ddd<1&&pen>addpenshell)ddd=1;
 				if(ddd>0)armr.durability-=ddd;
 				if(ddd>2){
@@ -1047,7 +1047,7 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 				&&hitactor.health>0
 				&&hitactoristall
 			){
-				hitactor.vel+=vu*0.01*hitheight*mass;
+				hitactor.vel+=vu*0.001*hitheight*mass;
 				if(hdp){
 					hdp.hudbobrecoil2+=(frandom(-5.,5.),frandom(2.5,4.))*0.01*hitheight*mass;
 					hdp.playrunning();
