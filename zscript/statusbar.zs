@@ -508,7 +508,7 @@ class HDStatusBar:DoomStatusBar{
 
 			//encumbrance
 			if(hpl.enc){
-				double itemenc=hpl.itemenc*hd_encumbrance;
+				double pocketenc=hpl.pocketenc*hd_encumbrance;
 				drawstring(
 					mAmountFont,formatnumber(hpl.enc),
 					(8,mxht),DI_TEXT_ALIGN_LEFT|DI_SCREEN_LEFT_BOTTOM,
@@ -518,7 +518,7 @@ class HDStatusBar:DoomStatusBar{
 					"GREENPXL",
 					(4,mxht+5),
 					DI_SCREEN_LEFT_BOTTOM|DI_TRANSLATABLE|DI_ITEM_LEFT,
-					1,scale:(1.,min(hpl.maxpocketspace,itemenc)*20/hpl.maxpocketspace)
+					1,scale:(1.,min(hpl.maxpocketspace,pocketenc)*20/hpl.maxpocketspace)
 				);
 				drawimage(
 					"BLETA0",
@@ -532,7 +532,7 @@ class HDStatusBar:DoomStatusBar{
 					DI_SCREEN_LEFT_BOTTOM|DI_TRANSLATABLE|DI_ITEM_LEFT,
 					0.4,scale:(1.,20.)
 				);
-				bool blargh=hpl.flip&&itemenc>hpl.maxpocketspace;
+				bool blargh=hpl.flip&&pocketenc>hpl.maxpocketspace;
 				drawimage(
 					blargh?"YELOPXL":"BLETA0",
 					(4,mxht-(20-5)),

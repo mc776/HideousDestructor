@@ -322,15 +322,15 @@ class HDPickup:CustomInventory{
 		return HD_MAXPOCKETSPACE;
 	}
 	static double PocketSpaceTaken(actor caller){
-		double itemenc=0;
+		double pocketenc=0;
 		for(inventory hdww=caller.inv;hdww!=null;hdww=hdww.inv){
 			let hdp=hdpickup(hdww);
 			if(
 				hdp
 				&&!hdp.bnotinpockets
-			)itemenc+=abs(hdp.getbulk());
+			)pocketenc+=abs(hdp.getbulk());
 		}
-		return itemenc*hdmath.getencumbrancemult();
+		return pocketenc*hdmath.getencumbrancemult();
 	}
 	static int MaxGive(actor caller,class<inventory> type,double unitbulk){
 		unitbulk*=hdmath.getencumbrancemult();

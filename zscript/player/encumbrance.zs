@@ -71,6 +71,7 @@ const HD_MAXPOCKETSPACE=600.;
 extend class HDPlayerPawn{
 	double enc;
 	double itemenc;
+	double pocketenc;
 	double maxpocketspace;property maxpocketspace:maxpocketspace;
 	double CheckEncumbrance(){
 		if(!player)return 0;
@@ -145,7 +146,8 @@ extend class HDPlayerPawn{
 
 
 		//if you're somehow carrying more than pocket space allows
-		double overpocket=HDPickup.PocketSpaceTaken(self)/maxpocketspace;
+		pocketenc=HDPickup.PocketSpaceTaken(self);
+		double overpocket=pocketenc/maxpocketspace;
 		if(overpocket>1.){
 			carrymax/=overpocket;
 			//just randomly shake off stuff until you can move again
