@@ -74,6 +74,15 @@ class GrabThinker:Thinker{
 
 			//check for pocket space
 			let hdpt=hdplayerpawn(picktarget);
+			bool maglimited=
+				hdpt
+				&&hdpt.hd_maglimit.getint()>0
+				&&hdpt.countinv(mt.getclassname())>=hdpt.hd_maglimit.getint()
+			;
+			bool holdingfiremode=
+				picktarget.player
+				&&picktarget.player.cmd.buttons&BT_FIREMODE
+			;
 			if(
 				!tt.balwayspickup
 				&&!(
@@ -96,14 +105,8 @@ class GrabThinker:Thinker{
 					)||(
 						mt
 						&&(
-							(
-								picktarget.player
-								&&picktarget.player.cmd.buttons&BT_USER2
-							)||(
-								hdpt
-								&&hdpt.hd_maglimit.getint()>0
-								&&hdpt.countinv(mt.getclassname())>=hdpt.hd_maglimit.getint()
-							)
+							holdingfiremode
+							||maglimited
 						)
 					)
 				)
@@ -128,12 +131,14 @@ class GrabThinker:Thinker{
 							mt.actualpickup(picktarget);
 							destroy();
 							return;
-						}else if(
-							hdpt
-							&&hdpt.hd_maglimit.getint()>0
-							&&hdpt.hd_maglimit.getint()<hdpt.countinv(mt.getclassname())
-						){
-							if(cvar.getcvar("hd_helptext",picktarget.player).getbool())picktarget.A_Log("hd_maglimit "..hdpt.hd_maglimit.getint().." exceeded.",true);
+						}else{
+							if(cvar.getcvar("hd_helptext",picktarget.player).getbool()){
+								if(maglimited){
+									picktarget.A_Log("hd_maglimit "..hdpt.hd_maglimit.getint().." exceeded.",true);
+								}else if(holdingfiremode){
+									picktarget.A_Log("Firemode held but target mag not better. Swap aborted.",true);
+								}
+							}
 							destroy();
 							return;
 						}
