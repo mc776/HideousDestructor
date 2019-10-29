@@ -385,12 +385,28 @@ class HDWeapon:Weapon{
 	//for picking up
 	override void touch(actor toucher){}
 	virtual void actualpickup(actor other,bool silent=false){
-		let oldwep=hdweapon(other.findinventory(getclassname()));
+		let gcn=getclassname();
+		let oldwep=hdweapon(other.findinventory(gcn));
 		if(
 			oldwep
 			&&hdplayerpawn(other)
 			&&hdplayerpawn(other).neverswitchonpickup.getbool()
 		){
+			if(!silent){
+				other.A_Log(string.format("\cg"..pickupmessage()),true);
+				other.A_PlaySound(pickupsound,CHAN_AUTO);
+			}
+			//provide some feedback that the player has picked up extra weapons
+			if(hdplayerpawn(other).hd_helptext.getbool()){
+				int wepcount=1;
+				let spw=spareweapons(other.findinventory("spareweapons"));
+				if(spw){
+					for(int i=0;i<spw.weapontype.size();i++){
+						if(spw.weapontype[i]==gcn)wepcount++;
+					}
+				}
+				other.A_Log("\caThis is your "..gettag().." number "..wepcount..".",true);
+			}
 			addspareweapon(other);
 			return;
 		}
