@@ -849,7 +849,7 @@ class HDStatusBar:DoomStatusBar{
 			int count=wepspritecounts[i];
 			if(count>1)drawstring(
 				psmallfont,count.."x",
-				(xofs-2,yofsfinal-3),
+				(xofs-(rt?10:2),yofsfinal-3),
 				(rt?DI_SCREEN_RIGHT_BOTTOM:DI_SCREEN_LEFT_BOTTOM)|
 				(rt?DI_ITEM_RIGHT:DI_ITEM_LEFT)|DI_ITEM_BOTTOM|DI_TEXT_ALIGN_LEFT,
 				Font.CR_DARKGRAY
