@@ -8,6 +8,7 @@ class HDArmour:HDMagAmmo{
 	default{
 		+inventory.invbar
 		+hdpickup.cheatnogive
+		+hdpickup.notinpockets
 		inventory.amount 1;
 		inventory.maxamount 3;
 		hdmagammo.maxperunit (HDCONST_BATTLEARMOUR+1000);
@@ -194,6 +195,7 @@ class HDArmourWorn:HDPickup{
 	default{
 		-inventory.invbar
 		-hdpickup.fitsinbackpack
+		+hdpickup.notinpockets
 		HDArmourworn.ismega false;
 		inventory.maxamount 1;
 		tag "Garrison Armour";

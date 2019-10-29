@@ -93,6 +93,7 @@ class GrabThinker:Thinker{
 				)&&(
 					(
 						pt
+						&&!pt.bnotinpockets
 						&&HDPickup.MaxGive(picktarget,pt.getclass(),
 							mt?mt.getbulk():pt.bulk
 						)<1
@@ -266,6 +267,7 @@ class HDPickup:CustomInventory{
 	flagdef IsBeingPickedUp:HDPickupFlags,3;
 	flagdef CheatNoGive:HDPickupFlags,4;
 	flagdef MustShowInMagManager:HDPickupFlags,5;
+	flagdef NotInPockets:HDPickupFlags,6;
 
 	actor picktarget;
 	double bulk;
@@ -323,7 +325,10 @@ class HDPickup:CustomInventory{
 		double itemenc=0;
 		for(inventory hdww=caller.inv;hdww!=null;hdww=hdww.inv){
 			let hdp=hdpickup(hdww);
-			if(hdp)itemenc+=abs(hdp.getbulk());
+			if(
+				hdp
+				&&!hdp.bnotinpockets
+			)itemenc+=abs(hdp.getbulk());
 		}
 		return itemenc*hdmath.getencumbrancemult();
 	}
