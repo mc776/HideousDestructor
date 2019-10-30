@@ -132,6 +132,11 @@ class HDIED:DudRocket{
 				&&!hitactor.bnevertarget
 				&&(hitactor.bismonster||hitactor.player)
 				&&(!hitactor.player||!(hitactor.player.cheats&CF_NOTARGET))
+				&&(
+					!master
+					||!checksight(master)
+					||distance3d(master)>256
+				)
 			){
 				tracer=hitactor;
 				setstatelabel("detonate");
@@ -244,7 +249,7 @@ extend class HDHandlers{
 					badcommand=false;
 					if(
 						ied.checksight(ppp)&&
-						ied.distance3d(ppp)<512
+						ied.distance3d(ppp)<256
 					){
 						ppp.A_Log(string.format("\cd[IED] \crERROR:\cj IED at [%i,%i] in range of user \crNOT\cj activated.",ied.pos.x,ied.pos.y),true);
 					}else{
