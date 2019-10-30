@@ -151,6 +151,7 @@ class Serpentipede:HDMobBase{
 		painsound "imp/pain";
 		deathsound "imp/death";
 		activesound "imp/active";
+		meleesound "imp/melee";
 		hdmobbase.downedframe 12;
 		tag "$CC_IMP";
 
@@ -164,7 +165,6 @@ class Serpentipede:HDMobBase{
 		MeleeDamage 4;
 		PainChance 80;
 		translation "MediumImp";
-		meleesound "imp/melee";
 		obituary "%o was marinated by the serpentipedes.";
 		hitobituary "%o was tenderized by the serpentipedes.";
 	}
@@ -220,7 +220,7 @@ class Serpentipede:HDMobBase{
 		#### A 0 A_SetAngle(angle+random(-4,4));
 		#### A 1 A_SetTics(random(1,3));
 		---- A 0 A_Jump(216,2);
-		---- A 0 A_PlaySound("imp/active");
+		---- A 0 A_PlaySound(activesound);
 		#### A 0 A_JumpIf(bambush,"spawn0");
 		#### A 0 A_Jump(32,"spawn2");
 		loop;
@@ -310,7 +310,7 @@ class Serpentipede:HDMobBase{
 		---- A 0 A_Jump(256,2);
 		---- A 0 A_FaceTarget(40,80);
 		#### E 2;
-		#### E 0 A_PlaySound("imp/sight");
+		#### E 0 A_PlaySound(seesound);
 		#### EEEEE 2 A_SpawnItemEx("ReverseImpBallTail",4,24,random(31,33),1,0,0,0,160);
 		#### E 2;
 		#### F 2;
@@ -323,7 +323,7 @@ class Serpentipede:HDMobBase{
 	melee:
 		#### EE 4 A_FaceTarget();
 		#### F 2;
-		#### G 8 A_CustomMeleeAttack(random(10,30),"imp/melee","","claws",true);
+		#### G 8 A_CustomMeleeAttack(random(10,30),meleesound,"","claws",true);
 		#### F 4;
 		---- A 0 setstatelabel("see");
 	pain:
@@ -522,7 +522,7 @@ class Regentipede:Serpentipede{
 		---- A 0 setstatelabel("see");
 	missile2:
 		#### E 2 A_FaceTarget(0,0);
-		#### E 0 A_PlaySound("imp/sight");
+		#### E 0 A_PlaySound(seesound);
 		#### EEEEE 2 A_SpawnItemEx("ReverseImpBallTail",3,19,random(24,30),1,0,0,0,160);
 		---- A 0 A_JumpIfTargetInLOS(2);
 		---- A 0 A_Jump(256,2);
@@ -619,7 +619,7 @@ class Ardentipede:Serpentipede{
 		#### E 0 A_Jump(96,"Missile1");
 		#### E 0 A_Jump(16,"Missile3");
 		#### E 2 A_FaceTarget(0,0);
-		#### E 2 A_PlaySound("imp/sight");
+		#### E 2 A_PlaySound(seesound);
 		#### EEEEEEE 2 A_SpawnItemEx("ReverseImpBallTail",random(3,5),random(23,25),random(31,33),1,0,0,0,160);
 		---- A 0 A_JumpIfTargetInLOS(2);
 		---- A 0 A_Jump(256,2);

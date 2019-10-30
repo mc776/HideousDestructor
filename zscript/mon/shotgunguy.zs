@@ -173,7 +173,7 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 			A_Recoil(frandom(-0.4,0.4));
 			A_SetTics(random(30,80));
 		}
-		#### A 0 A_PlaySound("grunt/active",CHAN_VOICE);
+		#### A 0 A_PlaySound(activesound,CHAN_VOICE);
 		---- A 0 setstatelabel("spawn2");
 	spawnstill:
 		#### C 0{
@@ -183,14 +183,14 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 		#### CD 5{angle+=random(-4,4);}
 		#### A 0{
 			A_Look();
-			if(!random(0,15))A_PlaySound("grunt/active",CHAN_VOICE);
+			if(!random(0,15))A_PlaySound(activesound,CHAN_VOICE);
 		}
 		#### AB 5{angle+=random(-4,4);}
 		#### B 1 A_SetTics(random(10,40));
 		---- A 0 setstatelabel("spawn2");
 	spawnwander:
 		#### CD 5{hdmobai.wander(self,false);}
-		#### A 0{if(!random(0,15))A_PlaySound("grunt/active",CHAN_VOICE);}
+		#### A 0{if(!random(0,15))A_PlaySound(activesound,CHAN_VOICE);}
 		#### AB 5{hdmobai.wander(self,false);}
 		#### A 0 A_Jump(64,"spawn2");
 		loop;

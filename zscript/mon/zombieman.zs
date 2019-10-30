@@ -206,7 +206,7 @@ class ZombieStormtrooper:HDMobMan{
 		#### G 1{
 			A_Recoil(frandom(-0.4,0.4));
 			A_SetTics(random(30,80));
-			if(!random(0,7))A_PlaySound("grunt/active");
+			if(!random(0,7))A_PlaySound(activesound);
 		}
 		#### A 0 A_Jump(256,"spawn2");
 	spawnswitch:
@@ -218,7 +218,7 @@ class ZombieStormtrooper:HDMobMan{
 		#### CD 5 A_SetAngle(angle+random(-4,4));
 		#### A 0{
 			A_Look();
-			if(!random(0,127))A_PlaySound("grunt/active");
+			if(!random(0,127))A_PlaySound(activesound);
 		}
 		#### AB 5 A_SetAngle(angle+random(-4,4));
 		#### B 1 A_SetTics(random(10,40));
@@ -226,7 +226,7 @@ class ZombieStormtrooper:HDMobMan{
 	spawnwander:
 		#### CDAB 5{hdmobai.wander(self,false);}
 		#### A 0{
-			if(!random(0,127))A_PlaySound("grunt/active");
+			if(!random(0,127))A_PlaySound(activesound);
 		}
 		#### A 0 A_Jump(64,"spawn2");
 		loop;
@@ -333,7 +333,7 @@ class ZombieStormtrooper:HDMobMan{
 		//fallthrough to postshot
 	postshot:
 		#### E 5{
-			if(!random(0,127))A_PlaySound("grunt/active");
+			if(!random(0,127))A_PlaySound(activesound);
 			if(mag<1){
 				setstatelabel("reload");
 				return;
@@ -359,7 +359,7 @@ class ZombieStormtrooper:HDMobMan{
 		loop;
 
 	frag:
-		---- A 10 A_PlaySound("grunt/sight",CHAN_VOICE);
+		---- A 10 A_PlaySound(seesound,CHAN_VOICE);
 		---- A 20{
 			A_PlaySound("weapons/pocket",CHAN_WEAPON);
 			A_FaceTarget(0,0);

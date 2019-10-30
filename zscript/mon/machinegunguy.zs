@@ -212,7 +212,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 			A_Look();
 			if(!random(0,8))A_Recoil(random(-1,1)*0.4);
 			A_SetTics(random(10,30));
-			if(!random(0,8))A_PlaySound("grunt/active",CHAN_VOICE);
+			if(!random(0,8))A_PlaySound(activesound,CHAN_VOICE);
 		}wait;
 	spawnstill:
 		CPOS C 0 A_Jump(128,"scan","scan","spawnwander");
@@ -223,7 +223,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		CPOS CD 5{angle+=random(-4,4);}
 		CPOS AB 5{
 			A_Look();
-			if(!random(0,15))A_PlaySound("grunt/active",CHAN_VOICE);
+			if(!random(0,15))A_PlaySound(activesound,CHAN_VOICE);
 			angle+=random(-4,4);
 		}
 		CPOS B 1 A_SetTics(random(10,40));
@@ -233,7 +233,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		CPOS CD 5 A_Wander();
 		CPOS AB 5{
 			A_Look();
-			if(!random(0,15))A_PlaySound("grunt/active",CHAN_VOICE);
+			if(!random(0,15))A_PlaySound(activesound,CHAN_VOICE);
 			A_Wander();
 		}
 		CPOS A 0 A_Jump(196,"spawn");
