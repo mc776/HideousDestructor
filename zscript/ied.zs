@@ -42,13 +42,14 @@ class HDIEDKit:HDPickup{
 			}
 
 			A_TakeInventory(which,1,TIF_NOTAKEINFINITE);
-			[bripper,target]=A_SpawnItemEx("HDIED",0,0,height-12,
+			actor ied;
+			[bripper,ied]=A_SpawnItemEx("HDIED",0,0,height-12,
 				vel.x,vel.y,vel.z,0,
 				SXF_SETMASTER|SXF_NOCHECKPOSITION|
 				SXF_ABSOLUTEMOMENTUM|SXF_TRANSFERPITCH
 			);
-			HDIED(target).botid=invoker.botid;
-			target.A_ChangeVelocity(4*cos(pitch),0,4*sin(-pitch),CVF_RELATIVE);
+			HDIED(ied).botid=invoker.botid;
+			ied.A_ChangeVelocity(4*cos(pitch),0,4*sin(-pitch),CVF_RELATIVE);
 		}fail;
 	}
 }
@@ -71,8 +72,9 @@ class HDIED:DudRocket{
 		//mm: actively scanning
 		-missilemore
 
-		-missile +friendly +lookallaround +nosplashalert
+		-missile +friendly +lookallaround +nosplashalert +ambush
 		-pushable +shootable +noblood +nodamage
+		+ismonster
 		height 7;radius 4;
 		painchance 256;maxtargetrange 96;
 		obituary "%o was blown up by an anonymous %k.";
@@ -117,6 +119,26 @@ class HDIED:DudRocket{
 			}
 		}else bmissilemore=user_startmode>-1; //map-placed should be seeking
 	}
+	void A_IEDScan(){
+		if(!bmissilemore)return;
+		blockthingsiterator itt=blockthingsiterator.create(self,maxtargetrange);
+		while(itt.Next()){
+			actor hitactor=itt.thing;
+			if(
+				hitactor
+				&&isHostile(hitactor)
+				&&hitactor.bshootable
+				&&!hitactor.bnotarget
+				&&!hitactor.bnevertarget
+				&&(hitactor.bismonster||hitactor.player)
+				&&(!hitactor.player||!(hitactor.player.cheats&CF_NOTARGET))
+			){
+				tracer=hitactor;
+				setstatelabel("detonate");
+				return;
+			}
+		}
+	}
 	states{
 	spawn:
 		IEDS A 0 nodelay A_JumpIf(!bmissilemore,"idle");
@@ -125,12 +147,10 @@ class HDIED:DudRocket{
 		IEDS ABABABABABABAB 2;
 		IEDS ABABAB 1;
 	idle:
-		IEDS A 10{
-			if(bmissilemore)A_LookEx(LOF_NOSOUNDCHECK,0,96.0,0,360,"melee");
-			A_ClearTarget();
-		}
+		IEDS A 10 A_IEDScan();
 		IEDS C 10 A_JumpIf(!bmissilemore,"idle");
 		loop;
+	see:
 	melee:
 		IEDS A 0;
 		goto detonate;
