@@ -398,7 +398,7 @@ class HDWeapon:Weapon{
 			}
 			//provide some feedback that the player has picked up extra weapons
 			if(hdplayerpawn(other).hd_helptext.getbool()){
-				int wepcount=1;
+				int wepcount=2; //current plus the one that's GOING to be added
 				let spw=spareweapons(other.findinventory("spareweapons"));
 				if(spw){
 					for(int i=0;i<spw.weapontype.size();i++){
