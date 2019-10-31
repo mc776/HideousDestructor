@@ -172,7 +172,7 @@ class HDPickerUpper:Actor{
 		radius 2;
 	}
 	override bool cancollidewith(actor other,bool passive){
-		return (inventory(other)||hdupk(other));
+		return (!passive&&(inventory(other)||hdupk(other)));
 	}
 }
 
