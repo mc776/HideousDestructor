@@ -387,14 +387,30 @@ class HDWeapon:Weapon{
 	virtual void actualpickup(actor other,bool silent=false){
 		let gcn=getclassname();
 		let oldwep=hdweapon(other.findinventory(gcn));
+		let hdp=hdplayerpawn(other);
 		if(
 			oldwep
-			&&hdplayerpawn(other)
-			&&hdplayerpawn(other).neverswitchonpickup.getbool()
+			&&hdp
+			&&hdp.neverswitchonpickup.getbool()
 		){
 			if(!silent){
 				other.A_Log(string.format("\cg"..pickupmessage()),true);
 				other.A_PlaySound(pickupsound,CHAN_AUTO);
+				//provide some feedback that the player has picked up extra weapons
+				if(
+					hdp
+					&&hdp.hd_helptext.getbool()
+					&&level.time>10
+				){
+					int wepcount=2; //both current and target
+					let spw=spareweapons(hdp.findinventory("spareweapons"));
+					if(spw){
+						for(int i=0;i<spw.weapontype.size();i++){
+							if(spw.weapontype[i]==gcn)wepcount++;
+						}
+					}
+					hdp.A_Log("\caThis is your "..gettag().." number "..wepcount..".",true);
+				}
 			}
 			addspareweapon(other);
 			return;
@@ -997,23 +1013,6 @@ extend class HDWeapon{
 		mwt.weaponstatus5.insert(0,weaponstatus[5]);
 		mwt.weaponstatus6.insert(0,weaponstatus[6]);
 		mwt.weaponstatus7.insert(0,weaponstatus[7]);
-
-		//provide some feedback that the player has picked up extra weapons
-		if(
-			hdp
-			&&hdp.hd_helptext.getbool()
-			&&level.time>10
-		){
-			let gcn=getclassname();
-			int wepcount=1;
-			let spw=spareweapons(hdp.findinventory("spareweapons"));
-			if(spw){
-				for(int i=0;i<spw.weapontype.size();i++){
-					if(spw.weapontype[i]==gcn)wepcount++;
-				}
-			}
-			hdp.A_Log("\caThis is your "..gettag().." number "..wepcount..".",true);
-		}
 
 		destroy();
 		return true;
