@@ -8,6 +8,13 @@ class HDInjectorMaker:HDMagAmmo{
 	default{
 		+inventory.invbar
 	}
+	override inventory CreateTossable(int amount){
+		bool lastone=amount==1;
+		let ttt=super.createtossable(amount);
+		console.printf(" "..amount);
+		if(lastone)destroy();
+		return ttt;
+	}
 	states{
 	use:
 		TNT1 A 0{
