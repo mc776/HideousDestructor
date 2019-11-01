@@ -110,7 +110,7 @@ For non-weapons, yy, aa, etc. are the quantity of the item. For weapons, the num
 
 <description> is completely optional and must be placed at the very end.
 
-Items are separated by commas, and the spaces are optional. If you only want one of a given item, you may also omit the number (e.g. "bos,710,7mm20" for a Boss, a single 10-round 7.76mm clip and 20 loose 7.76mm rounds).
+Items are separated by commas, spaces optional. If you only want one of a given item, you may also omit the number (e.g. "bos,710,7mm20" for a Boss, a single 10-round 7.76mm clip and 20 loose 7.76mm rounds).
 
 NOTE: Due to technical reasons spaces *must* be omitted from loadout strings if they're being set via the "+set" method at the command line.
 
@@ -137,7 +137,7 @@ The syntax is as follows:
 
 where xxx is the item code, yyyy/aaaa are the variable names and zz/bb are the values assigned to them.
 
-Spaces are optional but the variable name must be written in full. If you do not assign a value it will default to 1 (i.e., true for a boolean value). A value less than zero means to use the default. "true"/"false"/"t"/"f" will be internally translated to 1 and 0.
+Spaces are optional/prohibited as with the rest of the loadout but the variable name must be written in full. If you do not assign a value it will default to 1 (i.e., true for a boolean value). A value less than zero means to use the default. "true"/"false"/"t"/"f" will be internally translated to 1 and 0. *[Modders note: this is why you should never have a variable name starting with "t" or "f".]*
 
 You can have multiple weapons of the same type configured in the same way or in different ways, e.g., "z66, z66 3 nogl semi" will give you a main and 3 emergency backup plinkers for your mouse problem.
 
@@ -180,7 +180,7 @@ Tap fire/altfire to switch between mags one at a time; if you do this while Zoom
 
 Reload/Unload while holding Fire Mode will take mags in and out of your backpack if you have one.
 
-### Aiming and Turning
+### Aiming and turning
 
 If you are standing still, press and hold Use or Zoom to reduce your mouse sensitivity (and enable the scope if hd_noscope is set to true).
 
@@ -302,7 +302,7 @@ Logs the distance of the object or map geometry you're pointing at.
 
 * `herptag`: as `iedtag`.
 
-* `herpdir`: Type `herp <direction> <tag>` as a shortcut alternative to `herp 3 <tag> <direction>`. Useful if you only have one HERP and don't want to bother typing that extra zero.
+* `herpdir`: Type `herpdir <direction> <tag>` as a shortcut alternative to `herp 3 <tag> <direction>`. Useful if you only have one HERP and don't want to bother typing that extra zero.
 
 ### CVars (host only) - gameplay meta
 
@@ -883,7 +883,7 @@ Default weapon slot: 3
 Loadout code: sla
 * lchoke, rchoke - 0-7, 0 skeet, 7 full
 
-Accurate, ergonomic and compact, deceptively primitive yet rugged enough to withstand anything the bad guys might ever think to throw at you, the ambidextrously designed Calvary Arms SL41 "Slayer" side-by-side is an instant classic among big game hunters throughout the solar system. Big, armoured, bipedal game.
+Accurate, ergonomic and compact, deceptively primitive yet rugged enough to withstand anything the bad guys might ever think to throw at you, the ambidextrously designed Calvary Arms SL41 "Slayer" side-by-side is an instant classic among big game hunters throughout the solar system. Big, bipedal game.
 
 Instructions: Each of fire and altfire represents the trigger for one barrel. You can fire them in as rapid a succession as you want, even simultaneously.
 
@@ -1100,7 +1100,7 @@ Instructions: Point, shoot, kill. Adjust for range in the rare event it is neces
 
 To ensure operator safety and comfort, the Brontornis cannon should only be fired from a secure position.
 
-Protip: While it is too wide to penetrate walls effectively, the Brontornis shell is hard and can overpenetrate softer targets. Line them up.
+Protip: While it is too wide to penetrate walls effectively without detonating, the Brontornis shell is hard enough to overpenetrate softer targets. Line them up.
 
 ### Bolt-Action Rifle
 GZDoom actor names: `BossRifle`
@@ -1110,10 +1110,10 @@ GZDoom ammo actor names: `HD7mClip`, `SevenMilAmmo`
 Default weapon slot: 8
 
 Loadout codes: bos
-* customchamber - 0/1, whether to use the "good" version
+* customchamber - 0/1, whether to use the reduced-jam customization
 * frontreticle - 0/1, whether to scale the crosshair with zoom
 * bulletdrop - 0-600, amount of compensation for bullet drop
-* zoom - ??-60, 10x the resulting FOV in degrees
+* zoom - 5-60, 10x the resulting FOV in degrees
 
 The Mk. IV Boss rifle is a deadly accurate weapon. Its long barrel, tighter reinforced chamber and manual action allow much greater muzzle velocity than an identical load in the Liberator. Its traditional action and extremely tight trigger allow pinpoint accuracy. The Boss rifle requires clean ammunition to prevent jamming. Good luck!
 
@@ -1158,9 +1158,9 @@ IED: Suppose you had some string and gum in your pocket. And a hand grenade. To 
 
 Protip: You can "fling" a hand grenade by turning as you let go, giving it the momentum of your turning movement - just like throwing a Pokéball (albeit without the curveballs). It is strongly recommended that you practice this on the range before attempting it in combat.
 
-NOTE TO MAPPERS: Please see "tripwires.txt" in the ZScript folder under actor name "TrippingFrag" for customizing individually placed tripwire grenades.
-
 ## VIII. MONSTERS
+
+*[NOTE TO MAPPERS: Please see check the individual ZScript files for customizing individually placed enemies.]*
 
 ### Undead Homeboy
 GZDoom actor name: `UndeadHomeboy`
@@ -1178,8 +1178,6 @@ Twisted and corrupted by the daemoniac energies now uncontrollably pouring into 
 
 Protip: They dish out a lot more than they can take, so the one that kills you is rarely the one you see. Check all exits early and often and don't be shy about deploying your DERP bot.
 
-NOTE TO MAPPERS: Please see "zombieman.txt" in the ZScript folder (and "pistolguy.txt" in the Freedoom filter ZScript folder) for customizing individually placed zombies.
-
 ### Jack-Booted Thug
 GZDoom actor name: `Jackboot`, `UndeadJackbootman`
 
@@ -1192,7 +1190,7 @@ Protip: If caught standing in the open, you can sometimes time your duck perfect
 ### Machine Gunner
 GZDoom actor name: VulcanetteGuy
 
-"He's like a bear. He's like a big shaved bear that hates people." Hyped up on ultra-violent theology and a permanent slow-drip zerk implant, the Tyrant's crimson-clad vampiric elite infantry are strong enough to wield a Vulcanette one-handed.
+*"He's like a bear. He's like a big shaved bear that hates people."* Hyped up on ultra-violent theology and a permanent slow-drip zerk implant, the Tyrant's crimson-clad vampiric elite infantry are strong enough to wield a Vulcanette one-handed.
 
 Protip: When you run for cover, the machine gunner's typical first reaction is to wait where he's shooting until you come back out, but he doesn't have much patience or empathy. See if you can find a way behind him.
 
