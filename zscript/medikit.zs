@@ -91,9 +91,10 @@ class HDWoundFixer:HDWeapon{
 	}
 	states{
 	reload:
-		TNT1 A 14{
-			A_DropInventory("HDArmourWorn");
+		TNT1 A 4{
+			if(player&&!(player.oldbuttons&BT_RELOAD))A_DropInventory("HDArmourWorn");
 			A_ClearRefire();
+			setweaponstate("nope");
 		}
 		goto readyend;
 	}
@@ -203,10 +204,10 @@ class HDMedikitter:HDWoundFixer{
 		if(!player)return;
 		int bt=player.cmd.buttons;
 
-		//take off armour
+		//don't do the other stuff if holding reload
+		//LET THE RELOAD STATE HANDLE EVERYTHING ELSE
 		if(bt&BT_RELOAD){
-			A_DropInventory("HDArmourWorn");
-			setweaponstate("nope");
+			setweaponstate("reload");
 			return;
 		}
 
