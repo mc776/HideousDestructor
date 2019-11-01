@@ -479,8 +479,7 @@ extend class HDPlayerPawn{
 		if(
 			pwep
 			&&pwep.owner==victim //onplayerdrop might change this
-			&&!(pwep is "HDGrenadeThrower")
-			&&!(pwep is "HDFist")
+			&&!pwep.bdontdisarm
 		){
 			victim.DropInventory(pwep);
 		}

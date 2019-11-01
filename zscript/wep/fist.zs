@@ -16,6 +16,7 @@ class HDFist:HDWeapon replaces Fist{
 	default{
 		+WEAPON.MELEEWEAPON +WEAPON.NOALERT +WEAPON.NO_AUTO_SWITCH
 		+forcepain
+		+hdweapon.dontdisarm
 		obituary "%o made %k take the kid gloves off.";
 		attacksound "*fist";
 		weapon.selectionorder 100;

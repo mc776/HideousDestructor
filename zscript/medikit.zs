@@ -631,6 +631,7 @@ class SecondFleshBeast:IdleDummy{
 
 class SelfBandage:HDWoundFixer{
 	default{
+		+hdweapon.dontdisarm
 		weapon.selectionorder 1004;
 		weapon.slotnumber 9;
 		tag "Improvised Bandaging";

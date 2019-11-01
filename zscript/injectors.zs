@@ -7,12 +7,7 @@ class HDInjectorMaker:HDMagAmmo{
 	override bool IsUsed(){return true;}
 	default{
 		+inventory.invbar
-	}
-	override inventory CreateTossable(int amount){
-		bool lastone=amount==self.amount;
-		let ttt=super.createtossable(amount);
-		if(lastone)destroy();
-		return ttt;
+		+hdweapon.dontdisarm
 	}
 	states{
 	use:
