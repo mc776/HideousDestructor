@@ -7,7 +7,6 @@ class HDInjectorMaker:HDMagAmmo{
 	override bool IsUsed(){return true;}
 	default{
 		+inventory.invbar
-		+hdweapon.dontdisarm
 	}
 	override inventory CreateTossable(int amount){
 		bool lastone=amount==self.amount;
@@ -144,6 +143,7 @@ class HDStimpacker:HDWoundFixer{
 	override string,double getpickupsprite(){return "STIMA0",1.;}
 	override string gethelptext(){return "\cuStimpack\n"..WEPHELP_INJECTOR;}
 	default{
+		+hdweapon.dontdisarm
 		hdstimpacker.injecttype "InjectStimDummy";
 		hdstimpacker.spentinjecttype "SpentStim";
 		hdstimpacker.inventorytype "PortableStimpack";
