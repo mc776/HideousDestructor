@@ -185,8 +185,7 @@ extend class HDMobBase{
 		int sgh=sphlth+gibhealth;
 		if(bodydamage<(sgh<<(HDMOB_GIBSHIFT+1)))bodydamage+=damage;
 
-		//if(hd_debug)
-		console.printf(getclassname().." "..damage.." "..mod..", est. remain "..health-damage);
+		if(hd_debug)console.printf(getclassname().." "..damage.." "..mod..", est. remain "..health-damage);
 
 
 		//check for gibbing
