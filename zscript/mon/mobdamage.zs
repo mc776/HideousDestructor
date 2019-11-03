@@ -97,9 +97,8 @@ extend class HDMobBase{
 			&&mod!="holy"
 			//&&mod!="jointlock" //not used... for now
 		){
-			int blocked=min(shields>>2,damage);
+			int blocked=min(shields>>2,damage,512);
 			damage-=blocked;
-
 			bool supereffective=(
 				mod=="BFGBallAttack"
 				||mod=="electro"
@@ -186,7 +185,8 @@ extend class HDMobBase{
 		int sgh=sphlth+gibhealth;
 		if(bodydamage<(sgh<<(HDMOB_GIBSHIFT+1)))bodydamage+=damage;
 
-		if(hd_debug)console.printf(getclassname().." "..damage.." "..mod..", est. remain "..health-damage);
+		//if(hd_debug)
+		console.printf(getclassname().." "..damage.." "..mod..", est. remain "..health-damage);
 
 
 		//check for gibbing

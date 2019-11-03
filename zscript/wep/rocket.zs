@@ -86,16 +86,14 @@ class GyroGrenade:SlowProjectile{
 		//NOTE: basic impact damage calculation is ALREADY in base SlowProjectile!
 		if(blockingobject){
 			int dmgg=random(32,128);
-			name dmggtp="SmallArms2";
 			if(primed&&isrocket){
 				double dangle=absangle(angle,angleto(blockingobject));
 				if(dangle<20){
 					dmgg+=random(200,600);
-					if(hd_Debug)A_Log("CRIT!");
-					dmggtp="SmallArms3";
+					if(hd_debug)A_Log("CRIT!");
 				}else if(dangle<40)dmgg+=random(100,400);
 			}
-			blockingobject.damagemobj(self,target,dmgg,dmggtp);
+			blockingobject.damagemobj(self,target,dmgg,"Piercing");
 		}
 
 		//explosion
@@ -181,21 +179,18 @@ class HDHEAT:GyroGrenade{
 	override void ExplodeSlowMissile(line blockingline,actor blockingobject){
 		if(max(abs(skypos.x),abs(skypos.y))>=32768){destroy();return;}
 		bmissile=false;
-
 		//bounce
 		//nothing here - HEAT will always explode
 
 		//damage
 		if(blockingobject){
 			int dmgg=random(70,240);
-			name dmggtp="SmallArms3";
 			double dangle=absangle(angle,angleto(blockingobject));
 			if(dangle<20){
 				dmgg+=random(2000,4000);
 				if(hd_Debug)A_Log("CRIT!");
 			}else if(dangle<40)dmgg+=random(200,1200);
-			else dmggtp="SmallArms2";
-			blockingobject.damagemobj(self,target,dmgg,dmggtp);
+			blockingobject.damagemobj(self,target,dmgg,"Piercing");
 		}else doordestroyer.destroydoor(self);
 
 		//explosion
