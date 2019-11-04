@@ -247,9 +247,9 @@ class HDPlayerPawn:PlayerPawn{
 	transient cvar hd_usefocus;
 	transient cvar hd_lasttip;
 	transient cvar hd_helptext;
-	transient cvar neverswitchonpickup;
 	transient cvar hd_voicepitch;
 	transient cvar hd_maglimit;
+	transient cvar neverswitchonpickup;
 	void cachecvars(){
 		playerinfo plr;
 		if(player)plr=player;

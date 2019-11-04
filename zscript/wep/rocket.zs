@@ -188,7 +188,7 @@ class HDHEAT:GyroGrenade{
 			double dangle=absangle(angle,angleto(blockingobject));
 			if(dangle<20){
 				dmgg+=random(2000,4000);
-				if(hd_Debug)A_Log("CRIT!");
+				if(hd_debug)A_Log("CRIT!");
 			}else if(dangle<40)dmgg+=random(200,1200);
 			blockingobject.damagemobj(self,target,dmgg,"Piercing");
 		}else doordestroyer.destroydoor(self);

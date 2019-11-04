@@ -12,6 +12,7 @@ extend class HDStatusBar{
 		);
 	}
 	virtual void DrawHDXHair(hdplayerpawn hpl){
+		if(!crosshairon.getint())return;
 		int nscp=hd_noscope.getint();
 		if(
 			!(cplayer.cmd.buttons&(BT_USE|BT_ZOOM))
