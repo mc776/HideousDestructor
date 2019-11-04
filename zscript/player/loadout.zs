@@ -391,6 +391,13 @@ extend class HDPlayerPawn{
 			}
 			class<actor> reff=allactorclasses[whichitemclass[i]];
 			if(reff is "HDWeapon"){
+				if(
+					getdefaultbytype((class<HDWeapon>)(reff)).bdebugonly
+					&&hd_debug<=0
+				){
+					A_Log("\caLoadout code \"\cx"..whichitem[i].."\ca\" ("..getdefaultbytype(reff).gettag()..") can only be used in debug mode.",true);
+					continue;
+				}
 				if(!i){
 					if(reff is "HDWeaponGiver"){
 						let greff=getdefaultbytype((class<HDWeaponGiver>)(reff)).weapontogive;

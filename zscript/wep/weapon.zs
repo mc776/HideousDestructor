@@ -21,6 +21,7 @@ class HDWeapon:Weapon{
 	flagdef DontDefaultConfigure:HDWeaponFlags,7;
 	flagdef PlayingId:HDWeaponFlags,8;
 	flagdef DontDisarm:HDWeaponFlags,9;
+	flagdef DebugOnly:HDWeaponFlags,10;
 
 	double barrellength;
 	double barrelwidth;

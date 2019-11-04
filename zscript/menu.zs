@@ -56,13 +56,26 @@ class HDLoadoutMenu:GenericMenu{
 					}
 				}else{
 					let ref=getdefaultbytype((class<hdweapon>)(reff));
-					if(ref.refid!=""){
+					if(
+						ref.refid!=""
+						&&(
+							!ref.bdebugonly
+							||hd_debug>0
+						)
+					){
 						string lrefid=ref.refid.makelower();
 						refids.push(lrefid);
 						nicenames.push(ref.gettag());
 						if(!(jw%5))reflist="\n"..reflist;jw++;
-						if(ref.bwimpy_weapon)reflist=reflist.."\n\cy"..ref.refid.."\cj   "..ref.gettag();
-						else reflist="\n\cx"..ref.refid.."\cj   "..ref.gettag()..reflist;
+
+						//determine colour
+						string refidcol="\n\c"..(ref.bdebugonly?"u":(ref.bwimpy_weapon?"y":"x"));
+
+						//treat wimpy weapons as inventory items
+						if(ref.bwimpy_weapon)
+							reflist=reflist..refidcol..ref.refid.."\cj   "..ref.gettag();
+						else
+							reflist=refidcol..ref.refid.."\cj   "..ref.gettag()..reflist;
 					}
 				}
 			}
