@@ -109,6 +109,7 @@ class HDB_00:HDBulletActor{
 		accuracy 200;
 		stamina 838;
 		woundhealth 3;
+		hdbulletactor.hardness 5;
 		// hdbulletactor.distantsounder "DoubleDistantRifle"; //don't enable this here
 	}
 }
