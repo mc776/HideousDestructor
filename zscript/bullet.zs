@@ -104,7 +104,7 @@ class HDB_355:HDBulletActor{
 class HDB_00:HDBulletActor{
 	default{
 		pushfactor 0.5;
-		mass 35;
+		mass 25;
 		speed 720;
 		accuracy 200;
 		stamina 838;
