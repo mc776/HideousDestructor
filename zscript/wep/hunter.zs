@@ -34,7 +34,7 @@ class Hunter:HDShotgun{
 		speedfactor*=shotpower;
 		HDBulletActor.FireBullet(caller,"HDB_wad");
 		let p=HDBulletActor.FireBullet(caller,"HDB_00",
-			spread:spread,speedfactor:speedfactor,amount:7
+			spread:spread,speedfactor:speedfactor,amount:10
 		);
 		p.spawn("DistantShotgun",p.pos,ALLOW_REPLACE);
 		caller.A_PlaySound("weapons/hunter",CHAN_WEAPON);
