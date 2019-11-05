@@ -204,7 +204,7 @@ class UndeadHomeboy:HDMobMan{
 		painsound "grunt/pain";
 		deathsound "grunt/death";
 		activesound "grunt/active";
-		tag "$fn_zombie";
+		tag "$cc_zombie";
 
 		radius 10;
 		speed 12;

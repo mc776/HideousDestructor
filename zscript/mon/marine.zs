@@ -1491,7 +1491,7 @@ class SquadSummoner:HDPickup{
 		inventory.pickupsound "misc/p_pkup";
 		inventory.pickupmessage "Picked up a summoning talisman.";
 		hdpickup.bulk ENC_SQUADSUMMONER;
-		tag "Summoning Talisman";
+		tag "summoning talisman";
 	}
 	states{
 	spawn:

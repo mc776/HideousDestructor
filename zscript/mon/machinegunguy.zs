@@ -19,7 +19,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		painsound "chainguy/pain";
 		deathsound "chainguy/death";
 		activesound "chainguy/active";
-		tag "$fn_heavy";
+		tag "$cc_heavy";
 
 		health 120;
 		speed 9;

@@ -78,7 +78,7 @@ class ZombieStormtrooper:HDMobMan{
 		painsound "grunt/pain";
 		deathsound "grunt/death";
 		activesound "grunt/active";
-		tag "$fn_zombie";
+		tag "$cc_zombie";
 
 		translation "58:66=128:136","214:223=141:148","176:191=24:47","16:34=68:79";
 		speed 8;
