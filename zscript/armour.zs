@@ -13,7 +13,7 @@ class HDArmour:HDMagAmmo{
 		inventory.maxamount 3;
 		hdmagammo.maxperunit (HDCONST_BATTLEARMOUR+1000);
 		hdmagammo.magbulk ENC_GARRISONARMOUR;
-		tag "Armour";
+		tag "armour";
 		inventory.icon "ARMSB0";
 		inventory.pickupmessage "Picked up the security armour.";
 	}
@@ -198,7 +198,7 @@ class HDArmourWorn:HDPickup{
 		+hdpickup.notinpockets
 		HDArmourworn.ismega false;
 		inventory.maxamount 1;
-		tag "Garrison Armour";
+		tag "garrison armour";
 	}
 	override void beginplay(){
 		durability=mega?HDCONST_BATTLEARMOUR:HDCONST_GARRISONARMOUR;
@@ -258,7 +258,7 @@ class BattleArmour:HDPickupGiver replaces BlueArmor{
 		hdpickupgiver.pickuptogive "HDArmour";
 		hdpickup.bulk ENC_BATTLEARMOUR;
 		hdpickup.refid HDLD_ARMB;
-		tag "Battle Armour (spare)";
+		tag "battle armour (spare)";
 		inventory.pickupmessage "Picked up the battle armour.";
 	}
 	override void configureactualpickup(){
@@ -277,7 +277,7 @@ class GarrisonArmour:BattleArmour replaces GreenArmor{
 		inventory.icon "ARMSA0";
 		hdpickup.bulk ENC_GARRISONARMOUR;
 		hdpickup.refid HDLD_ARMG;
-		tag "Garrison Armour (spare)";
+		tag "garrison armour (spare)";
 		inventory.pickupmessage "Picked up the garrison armour.";
 	}
 }
@@ -288,7 +288,7 @@ class BattleArmourWorn:HDPickup{
 		+missilemore
 		-hdpickup.fitsinbackpack
 		hdpickup.refid HDLD_ARWB;
-		tag "Battle Armour";
+		tag "battle armour";
 		inventory.maxamount 1;
 	}
 	override void postbeginplay(){
@@ -308,7 +308,7 @@ class GarrisonArmourWorn:BattleArmourWorn{
 		-hdpickup.fitsinbackpack
 		inventory.icon "ARMCB0";
 		hdpickup.refid HDLD_ARWG;
-		tag "Garrison Armour";
+		tag "garrison armour";
 	}
 }
 

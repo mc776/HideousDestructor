@@ -34,7 +34,7 @@ class PortableStimpack:HDInjectorMaker{
 		inventory.pickupmessage "Picked up a stimpack.";
 		inventory.icon "PSTIA0";
 		hdpickup.bulk ENC_STIMPACK;
-		tag "Stimpack";
+		tag "stimpack";
 		hdpickup.refid HDLD_STIMPAK;
 		species "HealingItem";
 		hdinjectormaker.injectortype "HDStimpacker";
@@ -312,7 +312,7 @@ class PortableBerserkPack:hdinjectormaker{
 		inventory.icon "PPSTA0";
 		scale 0.3;
 		hdpickup.bulk ENC_STIMPACK;
-		tag "Berserk Pack";
+		tag "berserk pack";
 		hdpickup.refid HDLD_BERSERK;
 		species "HealingItem";
 		hdinjectormaker.injectortype "HDBerserker";
@@ -387,7 +387,7 @@ class BluePotion:hdinjectormaker{
 		inventory.pickupsound "potion/swish";
 		inventory.icon "PBONA0";
 		scale 0.3;
-		tag "Healing Potion";
+		tag "healing potion";
 		hdmagammo.maxperunit 12;
 		hdmagammo.magbulk ENC_BLUEPOTION*0.7;
 		hdmagammo.roundbulk ENC_BLUEPOTION*0.04;

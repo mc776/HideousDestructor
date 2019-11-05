@@ -18,7 +18,7 @@ class ZM66AssaultRifle:HDWeapon{
 		weapon.bobrangey 0.9;
 		obituary "%o was assaulted by %k.";
 		hdweapon.refid HDLD_ZM66GL;
-		tag "ZM66 Assault Rifle";
+		tag "ZM66 assault rifle";
 		inventory.icon "RIGLA0";
 	}
 	override void tick(){
@@ -870,7 +870,7 @@ class ZM66Semi:HDWeaponGiver{
 		//$Sprite "RIFSA0"
 		+hdweapon.fitsinbackpack
 		hdweapon.refid HDLD_ZM66SMI;
-		tag "ZM66 Assault Rifle (Semi only)";
+		tag "ZM66 assault rifle (semi only)";
 		hdweapongiver.bulk (90.+(ENC_426MAG_LOADED+50.*ENC_426_LOADED));
 		hdweapongiver.weapontogive "ZM66AssaultRifle";
 		hdweapongiver.weprefid HDLD_ZM66GL;
@@ -884,7 +884,7 @@ class ZM66Regular:ZM66Semi{
 		//$Title "ZM66 Rifle (No GL)"
 		//$Sprite "RIFLA0"
 		hdweapon.refid HDLD_ZM66AUT;
-		tag "ZM66 Assault Rifle (No GL)";
+		tag "ZM66 assault rifle (no GL)";
 		hdweapongiver.config "noglsemi0";
 		inventory.icon "RIFLA0";
 	}
@@ -895,7 +895,7 @@ class ZM66Irregular:ZM66Semi{
 		//$Title "ZM66 Rifle (Semi GL)"
 		//$Sprite "RIGSA0"
 		hdweapon.refid HDLD_ZM66SGL;
-		tag "ZM66 Assault Rifle (Semi GL)";
+		tag "ZM66 assault rifle (semi with GL)";
 		hdweapongiver.config "nogl0semi";
 		inventory.icon "RIGSA0";
 	}

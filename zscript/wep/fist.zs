@@ -26,7 +26,7 @@ class HDFist:HDWeapon replaces Fist{
 		weapon.bobrangex 0.1;
 		weapon.bobrangey 0.5;
 		weapon.slotnumber 1;
-		tag "Fists";
+		tag "fists";
 		hdweapon.refid HDLD_FIST;
 	}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){

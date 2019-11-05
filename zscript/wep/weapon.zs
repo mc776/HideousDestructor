@@ -822,7 +822,7 @@ class NullWeapon:HDWeapon{
 		//this needs to be longer than any "real" weapon to ensure there is enough space to raise
 		hdweapon.barrelsize 40,1,1;
 
-		tag "Sprinting";
+		tag "sprinting";
 	}
 	override inventory CreateTossable(int amount){
 		let onr=hdplayerpawn(owner);

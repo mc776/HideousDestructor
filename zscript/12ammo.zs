@@ -7,7 +7,7 @@ class HDShellAmmo:HDRoundAmmo{
 		+hdpickup.multipickup
 		inventory.pickupmessage "Picked up a shotgun shell.";
 		scale 0.3;
-		tag "Shotgun Shells";
+		tag "shotgun shells";
 		hdpickup.refid HDLD_SHOTSHL;
 		hdpickup.bulk ENC_SHELL;
 		inventory.icon "SHELA0";

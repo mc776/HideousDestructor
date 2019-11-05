@@ -285,7 +285,7 @@ class HDRocketAmmo:HDAmmo replaces RocketAmmo{
 
 		inventory.pickupmessage "Picked up a rocket grenade.";
 		scale 0.33;
-		tag "Rocket Grenade";
+		tag "rocket grenade";
 		hdpickup.refid HDLD_ROCKETS;
 		hdpickup.bulk ENC_ROCKET;
 		inventory.maxamount (60+40); //never forget
@@ -321,7 +321,7 @@ class HEATAmmo:HDAmmo{
 		+inventory.ignoreskill
 		inventory.maxamount (60+40); //never forget
 		inventory.pickupmessage "Picked up a H.E.A.T. round.";
-		tag "H.E.A.T. Rocket";
+		tag "H.E.A.T. rocket";
 		hdpickup.refid HDLD_HEATRKT;
 		hdpickup.bulk ENC_HEATROCKET;
 		xscale 0.24;
@@ -344,7 +344,7 @@ class DudRocketAmmo:HDAmmo{
 		inventory.maxamount (60+40); //never forget
 		radius 2;height 2;
 		scale 0.33;
-		tag "Dud Rocket";
+		tag "dud rocket";
 		hdpickup.bulk ENC_ROCKET;
 	}
 	override void GetItemsThatUseThis(){

@@ -720,7 +720,7 @@ class MapLoadoutGiver:HDPickup{
 	default{
 		-hdpickup.fitsinbackpack
 		hdpickup.refid HDLD_MAP;
-		tag "Map";
+		tag "local area map";
 	}
 	states{
 	spawn:TNT1 A 0;stop;
@@ -734,7 +734,7 @@ class KeyLoadoutGiver:HDPickup{
 		-hdpickup.fitsinbackpack
 		inventory.maxamount 7;
 		hdpickup.refid HDLD_KEY;
-		tag "Keys";
+		tag "keys";
 	}
 	states{
 	spawn:TNT1 A 0;stop;

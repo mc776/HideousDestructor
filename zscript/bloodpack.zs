@@ -12,7 +12,7 @@ class SecondBlood:HDInjectorMaker{
 		inventory.pickupmessage "Picked up a synthblood pack.";
 		inventory.icon "PBLDA0";
 		hdpickup.bulk ENC_STIMPACK*2;
-		tag "Synthetic Blood";
+		tag "synthetic blood";
 		hdpickup.refid HDLD_BLODPAK;
 		species "HealingItem";
 		hdinjectormaker.injectortype "SecondBloodSticker";

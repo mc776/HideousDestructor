@@ -413,7 +413,7 @@ class DoorBuster:HDPickup{
 		+inventory.invbar
 		hdpickup.bulk ENC_DOORBUSTER;
 		hdpickup.refid HDLD_DOORBUS;
-		tag "Door Buster";
+		tag "door buster";
 		inventory.pickupmessage "Picked up a Door Buster.";
 		inventory.icon "BGRNA3A7";
 		scale 0.6;

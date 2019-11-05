@@ -12,7 +12,7 @@ class PortableMedikit:HDPickup{
 		inventory.icon "PMEDA0";
 		scale 0.4;
 		hdpickup.bulk ENC_MEDIKIT;
-		tag "Medikit";
+		tag "medikit";
 		hdpickup.refid HDLD_MEDIKIT;
 		species "HealingItem";
 	}
@@ -117,7 +117,7 @@ class HDMedikitter:HDWoundFixer{
 		weapon.selectionorder 1001;
 		weapon.slotnumber 9;
 		scale 0.3;
-		tag "Medikit";
+		tag "Second Flesh applicator";
 		hdweapon.refid HDLD_FINJCTR;
 	}
 	override void initializewepstats(bool idfa){
@@ -634,7 +634,7 @@ class SelfBandage:HDWoundFixer{
 		+hdweapon.dontdisarm
 		weapon.selectionorder 1004;
 		weapon.slotnumber 9;
-		tag "Improvised Bandaging";
+		tag "improvised bandaging";
 	}
 	void bandagewound(int amt,actor targ){
 		let slf=HDPlayerPawn(targ);

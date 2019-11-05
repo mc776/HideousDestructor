@@ -428,7 +428,7 @@ class HDFragGrenades:HDGrenadethrower{
 	default{
 		weapon.selectionorder 1020;
 		weapon.slotnumber 0;
-		tag "Fragmentation Grenades";
+		tag "fragmentation grenades";
 		hdgrenadethrower.ammotype "HDFragGrenadeAmmo";
 		hdgrenadethrower.throwtype "HDFragGrenade";
 		hdgrenadethrower.spoontype "HDFragSpoon";
@@ -620,7 +620,7 @@ class HDFragGrenadeAmmo:HDAmmo{
 		inventory.maxamount 50;
 		inventory.pickupmessage "Picked up a fragmentation hand grenade.";
 		inventory.pickupsound "weapons/pocket";
-		tag "Fragmentation Grenades";
+		tag "fragmentation grenades";
 		hdpickup.refid HDLD_GREFRAG;
 		hdpickup.bulk ENC_FRAG;
 	}

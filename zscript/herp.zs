@@ -477,7 +477,7 @@ class HERPUsable:HDWeapon{
 		inventory.icon "HERPEX";
 		inventory.pickupsound "misc/w_pkup";
 		inventory.pickupmessage "Picked up a Heavy Engagement Rotary Platform robot.";
-		tag "H.E.R.P. Robot";
+		tag "H.E.R.P. robot";
 		hdweapon.refid HDLD_HERPBOT;
 		weapon.selectionorder 1015;
 	}
@@ -1022,7 +1022,7 @@ class HERPController:HDWeapon{
 		+weapon.wimpy_weapon
 		inventory.icon "HERPA5";
 		weapon.selectionorder 1013;
-		tag "H.E.R.P. Interface";
+		tag "H.E.R.P. interface";
 	}
 	array<herpbot> herps;
 	herpbot UpdateHerps(bool resetindex=true){

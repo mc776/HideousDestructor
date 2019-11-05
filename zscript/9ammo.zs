@@ -12,7 +12,7 @@ class HDPistolAmmo:HDRoundAmmo{
 		yscale 0.6;
 		inventory.pickupmessage "Picked up a 9mm round.";
 		hdpickup.refid HDLD_NINEMIL;
-		tag "9mm Round";
+		tag "9mm round";
 		hdpickup.bulk ENC_9;
 		inventory.icon "TEN9A0";
 	}
@@ -43,7 +43,7 @@ class HD9mMag15:HDMagAmmo{
 		hdmagammo.roundtype "HDPistolAmmo";
 		hdmagammo.roundbulk ENC_9_LOADED;
 		hdmagammo.magbulk ENC_9MAG_EMPTY;
-		tag "9mm Pistol Magazine";
+		tag "9mm pistol magazine";
 		inventory.pickupmessage "Picked up a pistol magazine.";
 		hdpickup.refid HDLD_NIMAG15;
 	}
@@ -75,7 +75,7 @@ class HD9mMag30:HD9mMag15{
 
 		hdmagammo.maxperunit 30;
 		hdmagammo.magbulk ENC_9MAG30_EMPTY;
-		tag "9mm SMG Magazine";
+		tag "9mm SMG magazine";
 		inventory.pickupmessage "Picked up an SMG magazine.";
 		hdpickup.refid HDLD_NIMAG30;
 	}

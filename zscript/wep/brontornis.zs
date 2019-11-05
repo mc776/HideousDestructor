@@ -45,7 +45,7 @@ class BrontornisRound:HDAmmo{
 	default{
 		+inventory.ignoreskill
 		inventory.pickupmessage "Picked up a bolt.";
-		tag "Brontornis Shell";
+		tag "Brontornis shell";
 		hdpickup.refid HDLD_BROBOLT;
 		hdpickup.bulk ENC_BRONTOSHELL;
 		scale 0.3;
@@ -77,7 +77,7 @@ class Brontornis:HDWeapon{
 		inventory.pickupmessage "You got the Brontornis!";
 		obituary "%o was terrorized by %k's Brontornis cannon.";
 		hdweapon.barrelsize 24,1,2;
-		tag "Brontornis Cannon";
+		tag "Brontornis cannon";
 		hdweapon.refid HDLD_BRONTO;
 	}
 	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}

@@ -35,7 +35,7 @@ class PortableRadsuit:HDPickup replaces RadSuit{
 		inventory.pickupsound "weapons/pocket";
 		inventory.icon "SUITB0";
 		hdpickup.bulk ENC_RADSUIT;
-		tag "Environment Suit";
+		tag "environment suit";
 		hdpickup.refid HDLD_RADSUIT;
 	}
 	override void DetachFromOwner(){
@@ -124,7 +124,7 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 		inventory.icon "PVISA0";
 		scale 0.5;
 		hdpickup.bulk ENC_LITEAMP;
-		tag "Lite-Amp Goggles";
+		tag "light amplification visor";
 		hdpickup.refid HDLD_LITEAMP;
 
 		hdmagammo.maxperunit NITEVIS_MAGMAX;

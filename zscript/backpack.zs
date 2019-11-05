@@ -29,7 +29,7 @@ class HDBackpack:HDWeapon{
 		inventory.pickupmessage "Picked up a backpack to help fill your life with ammo!";
 		inventory.pickupsound "weapons/pocket";
 
-		tag "Backpack";
+		tag "backpack";
 		hdweapon.refid HDLD_BACKPAK;
 	}
 	override void DropOneAmmo(int amt){

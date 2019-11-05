@@ -117,7 +117,7 @@ class AutoReloader:AutoReloadingThingy{
 		inventory.pickupmessage "You got the 7.76 reloading machine!";
 		scale 0.5;
 		hdweapon.refid HDLD_776RL;
-		tag "7.76mm Auto-Reloader";
+		tag "7.76mm reloading device";
 	}
 	override double gunmass(){return 0;}
 	override double weaponbulk(){
@@ -212,7 +212,7 @@ class LiberatorRifle:AutoReloadingThingy{
 		scale 0.7;
 		obituary "%o was liberated by %k.";
 		hdweapon.refid HDLD_LIBGL;
-		tag "Liberator Battle Rifle";
+		tag "Liberator battle rifle";
 		inventory.icon "BRFLB0";
 	}
 	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
@@ -1009,7 +1009,7 @@ class LiberatorNoGL:HDWeaponGiver{
 		//$Sprite "BRFLA0"
 		+hdweapon.fitsinbackpack
 		hdweapon.refid HDLD_LIBNOGL;
-		tag "Liberator Rifle (no GL)";
+		tag "Liberator rifle (no GL)";
 		hdweapongiver.bulk (100.+(ENC_776MAG_LOADED+30.*ENC_776_LOADED));
 		hdweapongiver.weapontogive "LiberatorRifle";
 		hdweapongiver.weprefid HDLD_LIBGL;
@@ -1024,7 +1024,7 @@ class LiberatorNoBullpup:HDWeaponGiver{
 		//$Title "Liberator (Classic)"
 		//$Sprite "BRLLB0"
 		hdweapon.refid HDLD_LIBNOBP;
-		tag "Liberator Rifle (Classic)";
+		tag "Liberator rifle (classic)";
 		hdweapongiver.bulk (145.+(ENC_776MAG_LOADED+30.*ENC_776_LOADED)+ENC_ROCKETLOADED);
 		hdweapongiver.weapontogive "LiberatorRifle";
 		hdweapongiver.weprefid HDLD_LIBGL;
@@ -1038,7 +1038,7 @@ class LiberatorNoBullpupNoGL:HDWeaponGiver{
 		//$Title "Liberator (Classic no GL)"
 		//$Sprite "BRLLA0"
 		hdweapon.refid HDLD_LIBNOBPNOGL;
-		tag "Liberator Rifle (Classic no GL)";
+		tag "Liberator rifle (classic no GL)";
 		hdweapongiver.bulk (120.+(ENC_776MAG_LOADED+30.*ENC_776_LOADED));
 		hdweapongiver.weapontogive "LiberatorRifle";
 		hdweapongiver.weprefid HDLD_LIBGL;
