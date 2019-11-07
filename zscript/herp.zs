@@ -792,9 +792,6 @@ class HERPUsable:HDWeapon{
 		return;
 	}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
-		if(
-			sb.cplayer.cmd.buttons&BT_ZOOM
-		)return;
 		int batt=hdw.weaponstatus[4];
 		int yofs=weaponstatus[HERP_YOFS];
 		if(yofs<70){
