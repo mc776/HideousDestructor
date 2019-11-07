@@ -646,6 +646,7 @@ class HERPUsable:HDWeapon{
 			A_Overlay(PSP_FLASH,"directflash");
 		}
 		HERG B 2;
+		HERG A 0 A_JumpIf(!pressingzoom(),"lowerfromfire");
 		HERG A 0 A_Refire("directfire");
 		goto readytofire;
 	directflash:
@@ -669,12 +670,13 @@ class HERPUsable:HDWeapon{
 		HERG # 0 A_JumpIf(pressingfire(),"directfail");
 		goto readytofire;
 	lowerfromfire:
-		HERG A 1 offset(0,34) A_PlaySound("herp/beepready",CHAN_WEAPON);
-		HERG A 1 offset(0,40);
+		HERG A 1 offset(0,34) A_ClearRefire();
+		HERG A 1 offset(0,40) A_PlaySound("herp/beepready",CHAN_WEAPON);
 		HERG A 1 offset(0,50);
 		HERG A 1 offset(0,60);
 		HERG A 1 offset(0,80);
 		TNT1 A 1 A_PlaySound("herp/crawl",CHAN_WEAPON,1.);
+		TNT1 A 1 A_JumpIf(pressingfire()||pressingaltfire(),"nope");
 		goto select;
 	}
 	action void Message(string msg){
@@ -792,8 +794,6 @@ class HERPUsable:HDWeapon{
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
 		if(
 			sb.cplayer.cmd.buttons&BT_ZOOM
-			||hdw.amount<1
-			||hdw.barrellength>0
 		)return;
 		int batt=hdw.weaponstatus[4];
 		int yofs=weaponstatus[HERP_YOFS];
