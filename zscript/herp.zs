@@ -506,17 +506,18 @@ class HERPUsable:HDWeapon{
 		weaponstatus[2]=51;
 		weaponstatus[3]=51;
 	}
+	action void A_ResetBarrelSize(){
+		invoker.weaponstatus[HERP_YOFS]=100;
+		invoker.barrellength=0;
+		invoker.barrelwidth=0;
+		invoker.barreldepth=0;
+		invoker.bobspeed=2.4;
+		invoker.bobrangex=0.2;
+		invoker.bobrangey=0.8;
+	}
 	states{
 	select:
-		TNT1 A 0{
-			invoker.weaponstatus[HERP_YOFS]=100;
-			invoker.barrellength=0;
-			invoker.barrelwidth=0;
-			invoker.barreldepth=0;
-			invoker.bobspeed=2.4;
-			invoker.bobrangex=0.2;
-			invoker.bobrangey=0.8;
-		}
+		TNT1 A 0 A_ResetBarrelSize();
 		TNT1 A 0 A_WeaponMessage("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHold \cdUse\cu while hitting \cdAlt. Reload\nto unload battery.\n\nHold \cdUse\cu while hitting \cdUnload\nto remove partially-spent mags.\n\nHold \cdFiremode\cu to change BotID, \cdAltfire\cu to toggle on/off.\n\nPress \cdFire\cu to deploy.",3500);
 		goto super::select;
 	ready:
@@ -674,7 +675,7 @@ class HERPUsable:HDWeapon{
 		HERG A 1 offset(0,40) A_PlaySound("herp/beepready",CHAN_WEAPON);
 		HERG A 1 offset(0,50);
 		HERG A 1 offset(0,60);
-		HERG A 1 offset(0,80);
+		HERG A 1 offset(0,80)A_ResetBarrelSize();
 		TNT1 A 1 A_PlaySound("herp/crawl",CHAN_WEAPON,1.);
 		TNT1 A 1 A_JumpIf(pressingfire()||pressingaltfire(),"nope");
 		goto select;
@@ -792,6 +793,9 @@ class HERPUsable:HDWeapon{
 		return;
 	}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
+return;
+		if(barrellength>0)return;
+
 		int batt=hdw.weaponstatus[4];
 		int yofs=weaponstatus[HERP_YOFS];
 		if(yofs<70){
