@@ -791,7 +791,7 @@ class HERPUsable:HDWeapon{
 	}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
 		if(
-			hpl.player.cmd.buttons&BT_ZOOM
+			sb.cplayer.cmd.buttons&BT_ZOOM
 			||hdw.amount<1
 			||hdw.barrellength>0
 		)return;
