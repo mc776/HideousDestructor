@@ -688,10 +688,17 @@ class InsurgentLoadout:Inventory{
 			}
 			//give some random ammo for the new weapon
 			if(ammoforwep){
-				let afwinv=hdpickup(owner.giveinventorytype(ammoforwep));
-				afwinv.amount=random(1,afwinv.maxamount>>3);
-				let afwmag=hdmagammo(afwinv);
-				if(afwmag)afwmag.syncamount();
+				let thisinv=hdpickup(owner.giveinventorytype(ammoforwep));
+
+				let thismag=hdmagammo(thisinv);
+				if(thismag)thismag.syncamount();
+
+				int thismax=max(1,HDPickup.MaxGive(owner,thisinv.getclass(),
+					thismag?thismag.getbulk():thisinv.bulk
+				));
+
+				thisinv.amount=random(1,max(1,thismax>>2));
+				if(thismag)thismag.syncamount();
 			}
 		}
 		//give random other gear
@@ -717,17 +724,29 @@ class InsurgentLoadout:Inventory{
 		for(int i=0;i<imax;i++){
 			let thisclass=supplies[random(0,smax)];
 			let thisitem=HDPickup(owner.GiveInventoryType(thisclass));
+			int thismax=1;
 			if(thisitem){
 				if(hd_debug)A_Log("insurgent input: "..thisclass);
-				thisitem.amount=random(1,max(1,thisitem.maxamount>>3));
-				if(hdmagammo(thisitem))hdmagammo(thisitem).syncamount();
+				let thismag=hdmagammo(thisitem);
+				if(thismag)thismag.syncamount();
+
+				thismax=max(1,HDPickup.MaxGive(owner,thisitem.getclass(),
+					thismag?thismag.getbulk():thisitem.bulk
+				));
+
+				thisitem.amount=random(1,max(1,thismax>>2));
+				if(thismag)thismag.syncamount();
 				if(hd_debug)A_Log(thisitem.getclassname().."  "..thisitem.amount);
 			}else{
 				let thiswitem=HDWeapon(owner.GiveInventoryType(thisclass));
 				if(thiswitem){
 					if(hd_debug)A_Log("insurgent input: "..thisclass);
-					thiswitem.amount=random(1,max(1,thiswitem.maxamount>>3));
-					if(hdmagammo(thiswitem))hdmagammo(thiswitem).syncamount();
+
+					let wb=thiswitem.weaponbulk();
+					if(wb)thismax=max(1,HD_MAXPOCKETSPACE/wb);
+					else thismax=thiswitem.maxamount>>3;
+
+					thiswitem.amount=random(1,max(1,thismax>>2));
 					if(hd_debug)A_Log(thiswitem.getclassname().."  "..thiswitem.amount);
 				}
 			}
@@ -738,7 +757,10 @@ class InsurgentLoadout:Inventory{
 			armourstored.syncamount();
 			bool nomega=armourstored.amount>2;
 			for(int i=0;i<armourstored.amount;i++){
-				if(!nomega&&!random(0,12)){
+				if(
+					!nomega
+					&&!random(0,12)
+				){
 					armourstored.mags[i]=random(1001,1000+HDCONST_BATTLEARMOUR);
 				}else{
 					armourstored.mags[i]=random(1,HDCONST_GARRISONARMOUR);
@@ -748,7 +770,9 @@ class InsurgentLoadout:Inventory{
 		let armourworn=HDArmourWorn(owner.findinventory("HDArmourWorn"));
 		if(armourworn){
 			armourworn.mega=!random(0,12);
-			armourworn.durability=random(1,armourworn.mega?HDCONST_BATTLEARMOUR:HDCONST_GARRISONARMOUR);
+			armourworn.durability=random(1,
+				armourworn.mega?HDCONST_BATTLEARMOUR:HDCONST_GARRISONARMOUR
+			);
 		}
 
 		let bp=hdbackpack(owner.findinventory("HDBackpack"));
