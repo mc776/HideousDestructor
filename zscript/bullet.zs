@@ -1000,7 +1000,7 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 					//face?
 					if(
 						crackseed>clamp(armr.durability,1,3)
-						&&absangle(angle,hitactor.angle)>177
+						&&absangle(angle,hitactor.angle)>(180.-5.)
 						&&pitch>-20
 						&&pitch<7
 					)addpenshell*=frandom(0.1,0.9);else
