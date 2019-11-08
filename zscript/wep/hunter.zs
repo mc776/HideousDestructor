@@ -443,11 +443,8 @@ class Hunter:HDShotgun{
 	altreload:
 	reloadfrompockets:
 		SHTG A 0{
-			int ppp=countinv("HDShellAmmo");
-			if(ppp<1)setweaponstate("nope");
-				else if(ppp<1)
-					invoker.weaponstatus[0]&=~HUNTF_FROMPOCKETS;
-				else invoker.weaponstatus[0]|=HUNTF_FROMPOCKETS;
+			if(!countinv("HDShellAmmo"))setweaponstate("nope");
+			else invoker.weaponstatus[0]|=HUNTF_FROMPOCKETS;
 		}goto startreload;
 	reload:
 	reloadfromsidesaddles:
