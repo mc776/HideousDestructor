@@ -515,6 +515,14 @@ class HERPUsable:HDWeapon{
 		invoker.bobrangex=0.2;
 		invoker.bobrangey=0.8;
 	}
+	action void A_RaiseBarrelSize(){
+		invoker.barrellength=25;
+		invoker.barrelwidth=3;
+		invoker.barreldepth=3;
+		invoker.bobrangex=8.2;
+		invoker.bobrangey=4.6;
+		invoker.bobspeed=2.8;
+	}
 	states{
 	select:
 		TNT1 A 0 A_ResetBarrelSize();
@@ -574,14 +582,7 @@ class HERPUsable:HDWeapon{
 		TNT1 A 8 A_PlaySound("herp/crawl",CHAN_WEAPON,1.);
 		HERG A 1 offset(0,80) A_PlaySound("herp/beepready",CHAN_WEAPON);
 		HERG A 1 offset(0,60) A_WeaponMessage("");
-		HERG A 1 offset(0,50){
-			invoker.barrellength=25;
-			invoker.barrelwidth=3;
-			invoker.barreldepth=3;
-			invoker.bobrangex=8.2;
-			invoker.bobrangey=4.6;
-			invoker.bobspeed=2.8;
-		}
+		HERG A 1 offset(0,50) A_RaiseBarrelSize();
 		HERG A 1 offset(0,40);
 		HERG A 1 offset(0,34);
 	readytofire:
@@ -602,10 +603,10 @@ class HERPUsable:HDWeapon{
 					if(
 						curmag>0
 						&&curmag<100
-						&&!random(0,15)
+&&vel.xy!=(0,0)&&!(level.time%512)//						&&!random(0,15)
 					)invoker.weaponstatus[whichmag]+=100;
 				}
-				if(!gunbraced()&&pitch<10)A_MuzzleClimb(frandom(-0.1,0.1),frandom(0.,0.1));
+//				if(!gunbraced()&&pitch<10)A_MuzzleClimb(frandom(-0.1,0.1),frandom(0.,0.1));
 			}else{
 				setweaponstate("lowerfromfire");
 			}
