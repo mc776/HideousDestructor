@@ -98,39 +98,42 @@ extend class HDPlayerPawn{
 		if(!hd_nozoomlean)cachecvars();
 
 		//set up leaning
-		double leanamt=leaned?(10./(3+checkencumbrance())):0;
-		if(
-			hdweapon(player.readyweapon)
-		){
-			leanamt*=8./max(8.,hdweapon(player.readyweapon).gunmass());
-		}
 		int leanmove=0;
-		if(
-			cmdleanmove&HDCMD_LEFT
-			&&(
-				leaned<=0
-				||cmdleanmove&HDCMD_RIGHT
-			)
-		)leanmove--;
-		if(
-			cmdleanmove&HDCMD_RIGHT
-			&&(
-				leaned>=0
-				||cmdleanmove&HDCMD_LEFT
-			)
-		)leanmove++;
-		if(
-			!leanmove&&(
-				cmdleanmove&HDCMD_STRAFE
-				||(
-					cmd.buttons&BT_ZOOM
-					&&!hd_nozoomlean.getbool()
+		double leanamt=leaned?(10./(3+checkencumbrance())):0;
+		if(notpredicting){
+			if(
+				hdweapon(player.readyweapon)
+			){
+				leanamt*=8./max(8.,hdweapon(player.readyweapon).gunmass());
+			}
+			if(
+				cmdleanmove&HDCMD_LEFT
+				&&(
+					leaned<=0
+					||cmdleanmove&HDCMD_RIGHT
 				)
-			)
-		){
-			if(cmd.sidemove<0&&leaned<=0)leanmove--;
-			if(cmd.sidemove>0&&leaned>=0)leanmove++;
-			cmd.sidemove=0;
+			)leanmove--;
+			if(
+				cmdleanmove&HDCMD_RIGHT
+				&&(
+					leaned>=0
+					||cmdleanmove&HDCMD_LEFT
+				)
+			)leanmove++;
+			if(
+				!leanmove
+				&&(
+					cmdleanmove&HDCMD_STRAFE
+					||(
+						cmd.buttons&BT_ZOOM
+						&&!hd_nozoomlean.getbool()
+					)
+				)
+			){
+				if(cmd.sidemove<0&&leaned<=0)leanmove--;
+				if(cmd.sidemove>0&&leaned>=0)leanmove++;
+				cmd.sidemove=0;
+			}
 		}
 
 

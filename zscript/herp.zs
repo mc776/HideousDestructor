@@ -507,21 +507,21 @@ class HERPUsable:HDWeapon{
 		weaponstatus[3]=51;
 	}
 	action void A_ResetBarrelSize(){
-//		invoker.weaponstatus[HERP_YOFS]=100;
-//		invoker.barrellength=0;
-//		invoker.barrelwidth=0;
-//		invoker.barreldepth=0;
-//		invoker.bobspeed=2.4;
-//		invoker.bobrangex=0.2;
-//		invoker.bobrangey=0.8;
+		invoker.weaponstatus[HERP_YOFS]=100;
+		invoker.barrellength=0;
+		invoker.barrelwidth=0;
+		invoker.barreldepth=0;
+		invoker.bobspeed=2.4;
+		invoker.bobrangex=0.2;
+		invoker.bobrangey=0.8;
 	}
 	action void A_RaiseBarrelSize(){
-//		invoker.barrellength=25;
-//		invoker.barrelwidth=3;
-//		invoker.barreldepth=3;
-//		invoker.bobrangex=8.2;
-//		invoker.bobrangey=4.6;
-//		invoker.bobspeed=2.8;
+		invoker.barrellength=25;
+		invoker.barrelwidth=3;
+		invoker.barreldepth=3;
+		invoker.bobrangex=8.2;
+		invoker.bobrangey=4.6;
+		invoker.bobspeed=2.8;
 	}
 	states{
 	select:
@@ -603,10 +603,10 @@ class HERPUsable:HDWeapon{
 					if(
 						curmag>0
 						&&curmag<100
-&&vel.xy!=(0,0)&&!(level.time%512)//						&&!random(0,15)
+						&&!random(0,15)
 					)invoker.weaponstatus[whichmag]+=100;
 				}
-//				if(!gunbraced()&&pitch<10)A_MuzzleClimb(frandom(-0.1,0.1),frandom(0.,0.1));
+				if(pitch<10&&!gunbraced())A_MuzzleClimb(frandom(-0.1,0.1),frandom(0.,0.1));
 			}else{
 				setweaponstate("lowerfromfire");
 			}
@@ -658,14 +658,12 @@ class HERPUsable:HDWeapon{
 			);
 			A_PlaySound("weapons/rifle",CHAN_WEAPON);
 			A_ZoomRecoil(max(0.95,1.-0.05*min(invoker.weaponstatus[ZM66S_AUTO],3)));
-/*
 			A_MuzzleClimb(
 				frandom(-0.2,0.2),frandom(-0.4,0.2),
 				frandom(-0.4,0.4),frandom(-0.6,0.4),
 				frandom(-0.4,0.4),frandom(-1.,0.6),
 				frandom(-0.8,0.8),frandom(-1.6,0.8)
 			);
-*/
 		}stop;
 	directfail:
 		HERG # 1 A_WeaponReady(WRF_NONE);
