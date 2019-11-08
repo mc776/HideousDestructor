@@ -636,11 +636,9 @@ class HERPUsable:HDWeapon{
 			}
 			//if jailbroken mag, randomly fail
 			if(curmag>100){
-				if(!random(0,3)){	
-					A_PlaySound("herp/beepready",CHAN_WEAPON);
-					setweaponstate("directfail");
-					return;
-				}
+				A_PlaySound("herp/beepready",CHAN_WEAPON);
+				setweaponstate("directfail");
+				return;
 			}
 
 			//deplete ammo and fire
@@ -660,12 +658,14 @@ class HERPUsable:HDWeapon{
 			);
 			A_PlaySound("weapons/rifle",CHAN_WEAPON);
 			A_ZoomRecoil(max(0.95,1.-0.05*min(invoker.weaponstatus[ZM66S_AUTO],3)));
+/*
 			A_MuzzleClimb(
 				frandom(-0.2,0.2),frandom(-0.4,0.2),
 				frandom(-0.4,0.4),frandom(-0.6,0.4),
 				frandom(-0.4,0.4),frandom(-1.,0.6),
 				frandom(-0.8,0.8),frandom(-1.6,0.8)
 			);
+*/
 		}stop;
 	directfail:
 		HERG # 1 A_WeaponReady(WRF_NONE);
@@ -794,7 +794,6 @@ class HERPUsable:HDWeapon{
 		return;
 	}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
-return;
 		if(barrellength>0)return;
 
 		int batt=hdw.weaponstatus[4];
