@@ -507,18 +507,18 @@ class HERPUsable:HDWeapon{
 		weaponstatus[3]=51;
 	}
 	action void A_ResetBarrelSize(){
-		invoker.weaponstatus[HERP_YOFS]=100;
-		invoker.barrellength=0;
-		invoker.barrelwidth=0;
-		invoker.barreldepth=0;
+//		invoker.weaponstatus[HERP_YOFS]=100;
+//		invoker.barrellength=0;
+//		invoker.barrelwidth=0;
+//		invoker.barreldepth=0;
 //		invoker.bobspeed=2.4;
 //		invoker.bobrangex=0.2;
 //		invoker.bobrangey=0.8;
 	}
 	action void A_RaiseBarrelSize(){
-		invoker.barrellength=25;
-		invoker.barrelwidth=3;
-		invoker.barreldepth=3;
+//		invoker.barrellength=25;
+//		invoker.barrelwidth=3;
+//		invoker.barreldepth=3;
 //		invoker.bobrangex=8.2;
 //		invoker.bobrangey=4.6;
 //		invoker.bobspeed=2.8;
