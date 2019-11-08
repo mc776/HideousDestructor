@@ -511,17 +511,17 @@ class HERPUsable:HDWeapon{
 		invoker.barrellength=0;
 		invoker.barrelwidth=0;
 		invoker.barreldepth=0;
-		invoker.bobspeed=2.4;
-		invoker.bobrangex=0.2;
-		invoker.bobrangey=0.8;
+//		invoker.bobspeed=2.4;
+//		invoker.bobrangex=0.2;
+//		invoker.bobrangey=0.8;
 	}
 	action void A_RaiseBarrelSize(){
 		invoker.barrellength=25;
 		invoker.barrelwidth=3;
 		invoker.barreldepth=3;
-		invoker.bobrangex=8.2;
-		invoker.bobrangey=4.6;
-		invoker.bobspeed=2.8;
+//		invoker.bobrangex=8.2;
+//		invoker.bobrangey=4.6;
+//		invoker.bobspeed=2.8;
 	}
 	states{
 	select:
