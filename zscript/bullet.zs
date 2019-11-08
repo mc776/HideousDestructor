@@ -1002,7 +1002,7 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 						crackseed>clamp(armr.durability,1,3)
 						&&absangle(angle,hitactor.angle)>177
 						&&pitch>-20
-						&&pitch<3
+						&&pitch<7
 					)addpenshell*=frandom(0.1,0.9);else
 					//head: thinner material required
 					addpenshell=min(addpenshell,frandom(10,20));
