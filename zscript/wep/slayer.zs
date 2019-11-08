@@ -373,8 +373,8 @@ class Slayer:HDShotgun replaces HDShotgun{
 		#### B 2 offset(0,46);
 		#### B 1 offset(0,42);
 		#### K 2 offset(0,42) A_PlaySound("weapons/sshotc",CHAN_WEAPON);
-		#### A 2;
-		goto ready;
+		#### A 1;
+		goto nope;
 
 	reloadss:
 		#### A 0 A_JumpIf(invoker.weaponstatus[SHOTS_SIDESADDLE]>=12,"nope");
