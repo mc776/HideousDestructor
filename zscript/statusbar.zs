@@ -195,7 +195,7 @@ class HDStatusBar:DoomStatusBar{
 		);
 
 		//mugshot
-		DrawTexture(GetMugShot(5,Mugshot.CUSTOM,mug),(6,-14),DI_BOTTOMLEFT,alpha:blurred?0.2:1.,scale:(0.8333,1.1));
+		DrawTexture(GetMugShot(5,Mugshot.CUSTOM,mug),(6,-14),DI_BOTTOMLEFT,alpha:blurred?0.2:1.);
 
 		//heartbeat/playercolour tracker
 		if(hpl && hpl.beatmax){
@@ -255,7 +255,7 @@ class HDStatusBar:DoomStatusBar{
 		);
 	}
 	void DrawFullScreenStuff(){
-		DrawTexture(GetMugShot(5,Mugshot.CUSTOM,mug),(0,-14),DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM,alpha:blurred?0.2:1.,scale:(0.8333,1.));
+		DrawTexture(GetMugShot(5,Mugshot.CUSTOM,mug),(0,-14),DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM,alpha:blurred?0.2:1.);
 	}
 	void DrawAlwaysStuff(){
 		if(
