@@ -471,6 +471,9 @@ class HDRoundAmmo:HDAmmo{
 		name packsprite,
 		name singlesprite
 	){
+		//abort if death state - ejected shell uses this
+		if(curstate==resolvestate("death"))return;
+
 		while(amount>packnum){
 			if(amount>=boxnum){
 				actor aaa=spawn(boxtype,pos+(frandom(-1,1),frandom(-1,1),frandom(-1,1)));
