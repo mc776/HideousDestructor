@@ -132,8 +132,10 @@ class HDActor:Actor{
 				frandom(0,360),
 				SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH|SXF_TRANSFERPOINTERS
 			);
-			frg.vel+=vel;
-			frg.bincombat=true; //work around hack that normally lets HDBulletActor out
+			if(gbg){
+				frg.vel+=vel;
+				if(HDBulletActor(frg))frg.bincombat=true; //work around hack that normally lets HDBulletActor out
+			}
 		}
 	}
 	//roughly equivalent to CacoZapper

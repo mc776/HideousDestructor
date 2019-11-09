@@ -662,7 +662,11 @@ class HDBulletActor:HDActor{
 
 		//force disappearance if stuck
 		//not a fix but a workaround
-		if(oldpos==pos)bulletdie();
+		if(
+			abs(oldpos.x-pos.x)<1
+			&&abs(oldpos.y-pos.y)<1
+			&&abs(oldpos.z-pos.z)<1
+		)bulletdie();
 	}
 	//set to full stop, unflag as missile, death state
 	void bulletdie(){

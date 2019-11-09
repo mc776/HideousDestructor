@@ -228,8 +228,9 @@ class HDAmBox:HDUPK{
 				A_PlaySound("weapons/pistol",CHAN_VOICE);
 				break;
 			case 4:
-				A_SpawnItemEx("HDFragGrenade",0,0,10,1,0,3,
-					0,SXF_NOCHECKPOSITION|SXF_SETTARGET
+				A_SpawnItemEx("HDFragGrenade",
+					0,0,10,1,0,3,
+					0,SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS
 				);
 				A_SpawnItemEx("HDFragSpoon",0,0,10,
 					random(3,6),0,random(8,16),
