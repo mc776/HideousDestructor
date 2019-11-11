@@ -3,6 +3,7 @@
 // ------------------------------------------------------------
 extend class HDHandlers{
 	void PlayDead(hdplayerpawn ppp){
+		if(!ppp||ppp.incapacitated>0)return;
 		ppp.A_Incapacitated(hdplayerpawn.HDINCAP_FAKING);
 	}
 }
