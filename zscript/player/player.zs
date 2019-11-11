@@ -74,7 +74,7 @@ class HDPlayerPawn:PlayerPawn{
 		player.crouchsprite "PLYC";
 
 		hdplayerpawn.loadout "";
-		hdplayerpawn.maxpocketspace HD_MAXPOCKETSPACE;
+		hdplayerpawn.maxpocketspace HDCONST_MAXPOCKETSPACE;
 		player.startitem "CustomLoadoutGiver";
 	}
 	override bool cancollidewith(actor other,bool passive){

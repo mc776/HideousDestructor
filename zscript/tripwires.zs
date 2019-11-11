@@ -38,7 +38,7 @@ class Tripwire:HDWeapon{
 		}
 		sb.drawwepnum(
 			hpl.countinv("HDFragGrenadeAmmo"),
-			(ENC_FRAG/HD_MAXPOCKETSPACE)
+			(ENC_FRAG/HDCONST_MAXPOCKETSPACE)
 		);
 		sb.drawwepnum(hdw.weaponstatus[FRAGS_FORCE],50,posy:-10,alwaysprecise:true);
 		if(!(hdw.weaponstatus[0]&FRAGF_SPOONOFF)){

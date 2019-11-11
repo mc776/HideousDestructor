@@ -319,7 +319,7 @@ class HDPickup:CustomInventory{
 	static double MaxPocketSpace(actor caller){
 		let hdp=hdplayerpawn(caller);
 		if(hdp)return hdp.maxpocketspace;
-		return HD_MAXPOCKETSPACE;
+		return HDCONST_MAXPOCKETSPACE;
 	}
 	static double PocketSpaceTaken(actor caller){
 		double pocketenc=0;

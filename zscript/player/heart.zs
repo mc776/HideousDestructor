@@ -1,6 +1,7 @@
 // ------------------------------------------------------------
 // The heart
 // ------------------------------------------------------------
+const HDCONST_MAXBLOODLOSS=4096;
 extend class HDPlayerPawn{
 	const HDCONST_MINHEARTTICS=5; //35/5*60=420 beats per minute!
 	int beatcount;
@@ -135,7 +136,7 @@ extend class HDPlayerPawn{
 					damagemobj(
 						self,lastthingthatwoundedyou,dm,"bleedout",
 						DMG_THRUSTLESS
-						|(bloodloss>4096?DMG_FORCED:0)
+						|(bloodloss>HDCONST_MAXBLOODLOSS?DMG_FORCED:0)
 					);
 				}
 			}

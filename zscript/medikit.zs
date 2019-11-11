@@ -572,6 +572,7 @@ class HDMedikitter:HDWoundFixer{
 			int ww=slf.woundcount;
 			int ow=slf.oldwoundcount;
 			int bb=slf.burncount;
+			int bl=slf.bloodloss/HDCONST_MAXBLOODLOSS;
 			int ag=slf.aggravateddamage*0.2+countinv("IsMoving")+abs(thrownoff);
 			int wg=random(-thrownoff,thrownoff);
 			if(ww||uw)wg+=2;
@@ -580,6 +581,7 @@ class HDMedikitter:HDWoundFixer{
 			bb=max(bb+random(-ag,ag),0);
 			uw=max(uw+random(-wg,wg),0);
 			ww=max(ww+random(-wg,wg),0);
+			bl=max(bl+random(-wg,wg),0);
 			A_WeaponMessage(string.format("Medikit Auto-Diagnostic complete.
 
 			Status report:
@@ -592,16 +594,20 @@ class HDMedikitter:HDWoundFixer{
 			\ccWounds already treated: \cd%u%%
 			\ccBurns: \cq%u%%
 
+			\ccBlood loss: \ca%u%%
+
 			\cu(all numbers are based on %% of minimum
 			\cuconsidered to be lethal in all situations.)",
-			scanactorname,ww,uw,ow,bb),210);
+			scanactorname,ww,uw,ow,bb,bl),210);
 
 			A_Log(string.format("Medikit Auto-Diagnostic:
 \ccPatient: \cy%s
 \ccOpen wounds: \cg%u%%
 \ccWounds temporarily bandaged: \ca%u%%
 \ccWounds already treated: \cd%u%%
-\ccBurns: \cq%u%%",scanactorname,ww,uw,ow,bb),true);
+\ccBurns: \cq%u%%
+\ccBlood loss: \ca%u%%"
+,scanactorname,ww,uw,ow,bb,bl),true);
 	}
 	override string pickupmessage(){
 		if(weaponstatus[MEDS_SECONDFLESH]<MEDIKIT_MAXFLESH)return "Picked up a used medikit.";

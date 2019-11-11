@@ -102,7 +102,7 @@ class Brontornis:HDWeapon{
 		if(hdw.weaponstatus[BRONS_CHAMBER]>1)sb.drawwepdot(-16,-10,(5,3));
 		sb.drawwepnum(
 			hpl.countinv("BrontornisRound"),
-			(HD_MAXPOCKETSPACE/ENC_BRONTOSHELL)
+			(HDCONST_MAXPOCKETSPACE/ENC_BRONTOSHELL)
 		);
 	}
 	override string gethelptext(){

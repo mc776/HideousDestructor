@@ -65,7 +65,7 @@ const ENC_HERP=125;
 const ENC_DOORBUSTER=ENC_HEATROCKET;
 
 
-const HD_MAXPOCKETSPACE=600.;
+const HDCONST_MAXPOCKETSPACE=600.;
 
 
 extend class HDPlayerPawn{
