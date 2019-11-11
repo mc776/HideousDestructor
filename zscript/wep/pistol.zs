@@ -515,7 +515,7 @@ class HDPistol:HDHandgun replaces Pistol{
 			weaponstatus[0]|=PISF_SELECTFIRE;
 		}
 		if(weaponstatus[0]&PISF_SELECTFIRE){
-			int firemode=getloadoutvar(input,"auto",1);
+			int firemode=getloadoutvar(input,"firemode",1);
 			if(!firemode)weaponstatus[0]&=~PISF_FIREMODE;
 			else if(firemode>0)weaponstatus[0]|=PISF_FIREMODE;
 		}

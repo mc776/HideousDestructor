@@ -578,6 +578,47 @@ class HDWeapon:Weapon{
 		invoker.wepmsg="";invoker.msgtimer=0;
 		if(gotodzero)setweaponstate("deselect0");
 	}
+
+
+	//nothing to see here, go away
+	action void A_UnmakeLevel(int times=1){HDWeapon.UnmakeLevel(times);}
+	static void UnmakeLevel(int times=1){
+		for(int k=0;k<times;k++){
+			sector thissector=level.sectors[random(0,level.sectors.size()-1)];
+			int dir=frandom(-3,3);
+			double zatpoint=thissector.floorplane.ZAtPoint(thissector.centerspot);
+			thissector.MoveFloor(dir,zatpoint,0,zatpoint>0?-1:1,false);
+			dir=frandom(-3,3);
+			zatpoint=thissector.ceilingplane.ZAtPoint(thissector.centerspot);
+			thissector.MoveCeiling(dir,zatpoint,0,zatpoint>0?-1:1,false);
+			thissector.changelightlevel(random(-random(3,4),3));
+			//then maybe add some textures
+			textureid shwal;
+			switch(random(0,4)){
+			case 1:
+				shwal=texman.checkfortexture("WALL63_2",texman.type_any);break;
+			case 2:
+				shwal=texman.checkfortexture("W94_1",texman.type_any);break;
+			case 3:
+				shwal=texman.checkfortexture("FIREBLU1",texman.type_any);break;
+			case 4:
+				shwal=texman.checkfortexture("SNAK"..random(7,8).."_1",texman.type_any);break;
+			default:
+				shwal=texman.checkfortexture("ASHWALL2",texman.type_any);break;
+			}
+			for(int i=0;i<thissector.lines.size();i++){
+				line lnn=thissector.lines[i];
+				for(int j=0;j<2;j++){
+					if(!lnn.sidedef[j])continue;
+					if(!lnn.sidedef[j].GetTexture(side.top))lnn.sidedef[j].SetTexture(side.top,shwal);
+					if(!lnn.sidedef[j].GetTexture(side.bottom))lnn.sidedef[j].SetTexture(side.bottom,shwal);
+				}
+			}
+		}
+	}
+
+
+
 	states{
 	spawn:
 		TNT1 A 0;

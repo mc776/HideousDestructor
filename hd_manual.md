@@ -137,7 +137,7 @@ The syntax is as follows:
 
 where xxx is the item code, yyyy/aaaa are the variable names and zz/bb are the values assigned to them.
 
-Spaces are optional/prohibited as with the rest of the loadout but the variable name must be written in full. If you do not assign a value it will default to 1 (i.e., true for a boolean value). A value less than zero means to use the default. "true"/"false"/"t"/"f" will be internally translated to 1 and 0. *[Modders note: this is why you should never have a variable name starting with "t" or "f".]*
+Spaces are optional/prohibited as with the rest of the loadout but the variable name must be written in full. If you do not assign a value it will default to 1 (i.e., true for a boolean value). A value less than zero means to use the default.
 
 You can have multiple weapons of the same type configured in the same way or in different ways, e.g., "z66, z66 3 nogl semi" will give you a main and 3 emergency backup plinkers for your mouse problem.
 
