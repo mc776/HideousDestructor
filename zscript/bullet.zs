@@ -453,11 +453,6 @@ class HDBulletActor:HDActor{
 		}
 		if(bnointeraction)bnointeraction=false;
 
-		if(vel.xy==(0,0)&&abs(vel.z)<64){
-			bulletdie();
-			return;
-		}
-
 		hdbullettracer blt=HDBulletTracer(new("HDBulletTracer"));
 		if(!blt)return;
 		blt.bullet=hdbulletactor(self);
@@ -660,8 +655,13 @@ class HDBulletActor:HDActor{
 			CVF_RELATIVE
 		);
 
-		//force disappearance if stuck
-		//not a fix but a workaround
+		//sometimes bullets will freeze (or at least move imperceptibly slowly)
+		//and not react to gravity or anything until touched.
+		//i've never been able to isolate the cause of this.
+		//this forces a bullet to die if its net movement is less than 1 in all cardinal directions.
+		//(note: if a bullet is shot straight up and hangs perfectly still for a tick,
+		//it's almost certainly "in the sky" and the below code would not be executed.
+		//also consider grav acceleration: 32 speed straight up from height 0: +32+30+27+23+18+12+5-3..)
 		if(
 			abs(oldpos.x-pos.x)<1
 			&&abs(oldpos.y-pos.y)<1
