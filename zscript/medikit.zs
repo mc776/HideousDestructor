@@ -290,7 +290,7 @@ class HDMedikitter:HDWoundFixer{
 	states{
 	select:
 		TNT1 A 0{
-			if(invoker.weaponstatus[MEDS_SECONDFLESH]<1) A_SelectWeapon("SelfBandage");
+			if(invoker.weaponstatus[MEDS_SECONDFLESH]<1)A_SelectWeapon("SelfBandage");
 		}
 		TNT1 A 10{
 			if(!getcvar("hd_helptext")) return;
@@ -572,7 +572,7 @@ class HDMedikitter:HDWoundFixer{
 			int ww=slf.woundcount;
 			int ow=slf.oldwoundcount;
 			int bb=slf.burncount;
-			int bl=slf.bloodloss*100/HDCONST_MAXBLOODLOSS;
+			int bl=slf.bloodloss*100/HDCONST_BLOODBAGAMOUNT;
 			int ag=slf.aggravateddamage*0.2+countinv("IsMoving")+abs(thrownoff);
 			int wg=random(-thrownoff,thrownoff);
 			if(ww||uw)wg+=2;
@@ -594,10 +594,9 @@ class HDMedikitter:HDWoundFixer{
 			\ccWounds already treated: \cd%u%%
 			\ccBurns: \cq%u%%
 
-			\ccBlood loss: \ca%u%%
+			\ccBlood loss: \ca%u%% \cctransfusion units
 
-			\cu(all numbers are based on %% of minimum
-			\cuconsidered to be lethal in all situations.)",
+			\cu(%% is of total generally considered to be lethal except where noted.)",
 			scanactorname,ww,uw,ow,bb,bl),210);
 
 			A_Log(string.format("Medikit Auto-Diagnostic:

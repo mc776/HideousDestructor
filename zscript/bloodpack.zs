@@ -160,6 +160,7 @@ class SecondBloodSticker:HDWoundFixer{
 		SBS_INJECTCOUNTER=1,
 	}
 }
+const HDCONST_BLOODBAGAMOUNT=256;
 class BloodBagWorn:Inventory{
 	int bloodleft;
 	default{
@@ -171,7 +172,7 @@ class BloodBagWorn:Inventory{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		bloodleft=256;
+		bloodleft=HDCONST_BLOODBAGAMOUNT;
 	}
 	override void touch(actor toucher){}
 	override inventory createtossable(int amount){
