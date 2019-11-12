@@ -395,7 +395,8 @@ class HDWeapon:Weapon{
 			&&hdp
 			&&hdp.neverswitchonpickup.getbool()
 		){
-			if(!silent){
+			bool asw=addspareweapon(other);
+			if(asw&&!silent&&!!self){
 				other.A_Log(string.format("\cg"..pickupmessage()),true);
 				other.A_PlaySound(pickupsound,CHAN_AUTO);
 				//provide some feedback that the player has picked up extra weapons
@@ -404,7 +405,7 @@ class HDWeapon:Weapon{
 					&&hdp.hd_helptext.getbool()
 					&&level.time>10
 				){
-					int wepcount=2; //both current and target
+					int wepcount=1; //both current and target
 					let spw=spareweapons(hdp.findinventory("spareweapons"));
 					if(spw){
 						for(int i=0;i<spw.weapontype.size();i++){
@@ -414,7 +415,6 @@ class HDWeapon:Weapon{
 					hdp.A_Log("\caThis is your "..gettag().." number "..wepcount..".",true);
 				}
 			}
-			addspareweapon(other);
 			return;
 		}
 		if(
