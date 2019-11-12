@@ -572,7 +572,7 @@ class HDMedikitter:HDWoundFixer{
 			int ww=slf.woundcount;
 			int ow=slf.oldwoundcount;
 			int bb=slf.burncount;
-			double bl=slf.bloodloss/(HDCONST_BLOODBAGAMOUNT<<2);
+			double bl=double(slf.bloodloss)/(HDCONST_BLOODBAGAMOUNT<<2);
 			int ag=slf.aggravateddamage*0.2+countinv("IsMoving")+abs(thrownoff);
 			int wg=random(-thrownoff,thrownoff);
 			if(ww||uw)wg+=2;
@@ -605,7 +605,7 @@ class HDMedikitter:HDWoundFixer{
 \ccWounds temporarily bandaged: \ca%u%%
 \ccWounds already treated: \cd%u%%
 \ccBurns: \cq%u%%
-\ccBlood loss: \ca%u units"
+\ccBlood loss: \ca%.1f units"
 ,scanactorname,ww,uw,ow,bb,bl),true);
 	}
 	override string pickupmessage(){
