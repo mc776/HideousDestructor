@@ -1,10 +1,8 @@
 // ------------------------------------------------------------
 // The Bullet!
 // ------------------------------------------------------------
-class bltest:hdweapon{
+class bltest:HDCheatWep{
 	default{
-		+inventory.undroppable
-		+hdweapon.debugonly
 		weapon.slotnumber 1;
 		hdweapon.refid "blt";
 		tag "Bullet Sampler (Cheat!)";
