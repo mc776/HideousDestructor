@@ -365,7 +365,7 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 				return;
 			}
 
-			if(Hunter.Fire(self,choke)<=0.905)semi=false;
+			if(Hunter.Fire(self,choke)<=Hunter.HUNTER_MINSHOTPOWER)semi=false;
 			gunspent=1;
 		}
 		#### E 3{

@@ -40,6 +40,7 @@ class Hunter:HDShotgun{
 		caller.A_PlaySound("weapons/hunter",CHAN_WEAPON);
 		return shotpower;
 	}
+	const HUNTER_MINSHOTPOWER=0.901;
 	action void A_FireHunter(){
 		double shotpower=invoker.Fire(self);
 		A_GunFlash();
@@ -311,7 +312,7 @@ class Hunter:HDShotgun{
 		SHTG E 0{
 			if(
 				invoker.weaponstatus[HUNTS_FIREMODE]>0
-				&&invoker.shotpower>0.905
+				&&invoker.shotpower>HUNTER_MINSHOTPOWER
 			)setweaponstate("chamberauto");
 		}goto ready;
 	altfire:
