@@ -572,7 +572,7 @@ class HDMedikitter:HDWoundFixer{
 			int ww=slf.woundcount;
 			int ow=slf.oldwoundcount;
 			int bb=slf.burncount;
-			int bl=slf.bloodloss/HDCONST_MAXBLOODLOSS;
+			int bl=slf.bloodloss*100/HDCONST_MAXBLOODLOSS;
 			int ag=slf.aggravateddamage*0.2+countinv("IsMoving")+abs(thrownoff);
 			int wg=random(-thrownoff,thrownoff);
 			if(ww||uw)wg+=2;
