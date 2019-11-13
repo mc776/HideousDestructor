@@ -436,11 +436,19 @@ struct HDF play{
 
 
 //debug thingy
-class HDRaiseWep:HDWeapon{
+class HDCheatWep:HDWeapon{
 	default{
+		+inventory.undroppable
 		-weapon.no_auto_switch
 		+weapon.cheatnotweapon
+		+hdweapon.debugonly
+	}
+}
+class HDRaiseWep:HDCheatWep{
+	default{
 		weapon.slotnumber 0;
+		hdweapon.refid "rvv";
+		tag "Monster Reviver (Cheat!)";
 	}
 	states{
 	ready:

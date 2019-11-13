@@ -69,7 +69,7 @@ class HDShotgun:HDWeapon{
 	}
 	//not all loads are equal
 	double shotpower;
-	static clearscope double getshotpower(){return frandom(0.9,1.05);}
+	static double getshotpower(){return frandom(0.9,1.05);}
 	override void DetachFromOwner(){
 		if(handshells>0){
 			if(owner)owner.A_DropItem("HDShellAmmo",handshells);
