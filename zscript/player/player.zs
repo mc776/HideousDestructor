@@ -332,11 +332,13 @@ class HDPlayerPawn:PlayerPawn{
 			}
 		}
 
+		double beforetickheight=height;
 
 
 		super.Tick();
 
 
+		A_SetSize(-1,beforetickheight);
 
 		HeartTicker(fm,sm,input);
 		if(inpain>0)inpain--;

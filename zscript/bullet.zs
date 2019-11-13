@@ -990,7 +990,23 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 		bool hitactoristall=hitactor.height>hitactor.radius*2;
 
 		//apply armour if any
-		if(hitactor.findinventory("HDArmourWorn")){
+		if(
+			hitactor.findinventory("HDArmourWorn")
+			&&!(
+				//if standing right over an incap'd victim, bypass armour
+				pitch>80
+				&&(
+					(hdp&&hdp.incapacitated)
+					||(
+						hdmb
+						&&hdmb.frame>=hdmb.downedframe
+						&&hdmb.instatesequence(hdmb.curstate,hdmb.resolvestate("falldown"))
+					)
+				)
+				&&!!target
+				&&abs(target.pos.z-pos.z)<target.height
+			)
+		){
 			let armr=HDArmourWorn(hitactor.findinventory("HDArmourWorn"));
 			double hitheight=hitactoristall?((hitpos.z-hitactor.pos.z)/hitactor.height):0.5;
 
