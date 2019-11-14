@@ -94,15 +94,10 @@ extend class HDPlayerPawn{
 			if(
 				(!inflictor||!inflictor.bnoextremedeath)
 				&&(-health>gibhealth||aggravateddamage>40)
-			)playercorpse.setstatelabel("forcexdeath");
-			else{
-				if(!silentdeath){
-					A_PlayerScream();
-				}
-			}
+			)A_Die("extreme");
+			else if(!silentdeath)A_PlayerScream();
 		}
 
-		//THE BUG IS FIXED
 		super.die(source,inflictor,dmgflags,MeansOfDeath);
 	}
 	bool alldown(){
@@ -177,10 +172,7 @@ class HDPlayerCorpse:HDMobMan{
 			health>0
 			&&!instatesequence(curstate,resolvestate("raise"))
 			&&!instatesequence(curstate,resolvestate("ungib"))
-		){
-			if(instatesequence(curstate,resolvestate("forcexdeath")))A_Die("extreme");
-			else A_Die();
-		}
+		)A_Die();
 	}
 	states{
 	spawn:
