@@ -15,6 +15,13 @@ extend class HDPlayerPawn{
 			}
 		}else pitch=clamp(pitch,player.minpitch,player.maxpitch);
 	}
+	override void CalcHeight(){
+		if(
+			incapacitated
+			||CheckFrozen()
+		)return;
+		super.CalcHeight();
+	}
 	override void CheckCrouch(bool totallyfrozen){}
 	void CrouchCheck(){
 		if(CheckFrozen())return;
