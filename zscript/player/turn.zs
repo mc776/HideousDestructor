@@ -330,6 +330,7 @@ extend class HDPlayerPawn{
 
 
 
+
 		//feet angle
 		double fac=deltaangle(feetangle,angle);
 		if(abs(fac)>(player.crouchfactor<0.7?30:50)){
@@ -354,7 +355,11 @@ extend class HDPlayerPawn{
 
 		//move pivot point a little behind the player's view
 		anglechange=deltaangle(angle,lastangle);
-		if(!teleported && player.onground && floorz==pos.z){
+		if(
+			!teleported
+			&&player.onground
+			&&floorz==pos.z
+		){
 			bool ongun=gunbraced&&!barehanded&&isFocussing;
 			if(abs(anglechange)>(ongun?0.05:0.7)){
 				int dir=90;

@@ -506,12 +506,9 @@ extend class HDPlayerPawn{
 				);
 				A_TakeInventory("PowerFrightener");
 			}
-			if(incapacitated){
-				A_Pain();
-				setstatelabel("spawn");
-			}
+			if(incapacitated)frame=clamp(6+abs(incapacitated>>2),6,11);
 		}
-		#### G 3 A_Pain();
+		---- A 3 A_Pain();
 		---- A 0 setstatelabel("spawn");
 	pain.slime:
 		#### G 3{

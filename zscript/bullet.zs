@@ -1068,7 +1068,10 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 				&&hitactoristall
 			){
 				hitactor.vel+=vu*0.001*hitheight*mass;
-				if(hdp){
+				if(
+					hdp
+					&&!hdp.incapacitated
+				){
 					hdp.hudbobrecoil2+=(frandom(-5.,5.),frandom(2.5,4.))*0.01*hitheight*mass;
 					hdp.playrunning();
 				}else if(random(0,255)<hitactor.painchance) hdmobbase.forcepain(hitactor);
