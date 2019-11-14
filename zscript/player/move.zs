@@ -17,8 +17,8 @@ extend class HDPlayerPawn{
 	}
 	override void CalcHeight(){
 		if(
-			incapacitated
-			||CheckFrozen()
+			CheckFrozen()
+			||(incapacitated&&health>0)
 		)return;
 		super.CalcHeight();
 	}
