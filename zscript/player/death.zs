@@ -90,14 +90,12 @@ extend class HDPlayerPawn{
 			)playercorpse.sprite=GetSpriteIndex("PLYCA0");
 				else playercorpse.sprite=GetSpriteIndex("PLAYA0");
 			playercorpse.translation=translation;
-			playercorpse.A_SetSize(12,52);
 
 			if(
 				(!inflictor||!inflictor.bnoextremedeath)
 				&&(-health>gibhealth||aggravateddamage>40)
-			)playercorpse.A_Die("extreme");
+			)playercorpse.setstatelabel("forcexdeath");
 			else{
-				playercorpse.A_Die(MeansOfDeath);
 				if(!silentdeath){
 					A_PlayerScream();
 				}
@@ -164,6 +162,7 @@ class HDPlayerCorpse:HDMobMan{
 		health 100;mass 160;
 	}
 	override void Tick(){
+		super.Tick();
 		let ppp=hdplayerpawn(master);
 		if(
 			ppp
@@ -178,17 +177,17 @@ class HDPlayerCorpse:HDMobMan{
 			health>0
 			&&!instatesequence(curstate,resolvestate("raise"))
 			&&!instatesequence(curstate,resolvestate("ungib"))
-		)A_Die();
-		super.Tick();
-	}
-	override void postbeginplay(){
-		super.postbeginplay();
-		A_SetSize(-1,deathheight*2);
+		){
+			if(instatesequence(curstate,resolvestate("forcexdeath")))A_Die("extreme");
+			else A_Die();
+		}
 	}
 	states{
 	spawn:
 		#### A -1;
 		PLAY A 0;
+	forcexdeath:
+		#### A -1;
 	death:
 		#### H 10{
 			let ppp=hdplayerpawn(master);
