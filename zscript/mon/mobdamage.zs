@@ -21,14 +21,22 @@ extend class HDMobBase{
 		shields=maxshields;
 	}
 
+	static bool indontpainsequence(actor caller){
+		state curstate=caller.curstate;
+		return
+		caller.instatesequence(curstate,caller.resolvestate("raise"))
+		||caller.instatesequence(curstate,caller.resolvestate("ungib"))
+		||caller.instatesequence(curstate,caller.resolvestate("falldown"))
+		;
+	}
 	static bool forcepain(actor caller){
 		if(
 			!caller
 			||caller.bnopain
 			||!caller.bshootable
 			||!caller.findstate("pain",true)
-			||caller.instatesequence(caller.curstate,caller.resolvestate("falldown"))
 			||caller.health<1
+			||!hdmobbase.indontpainsequence(caller)
 			||(hdplayerpawn(caller)&&hdplayerpawn(caller).incapacitated>0)
 		)return false;
 		caller.setstatelabel("pain");
@@ -83,6 +91,7 @@ extend class HDMobBase{
 		if(pain>0)damage+=(pain>>2);
 		if(mod!="bleedout")pain+=max(1,(damage>>5));
 
+		if(indontpainsequence(self))flags|=DMG_NO_PAIN;
 
 		//shields
 		if(
@@ -120,7 +129,11 @@ extend class HDMobBase{
 
 			//abort remainder of checks, chance to flinch
 			if(damage<1){
-				if(blocked>(sphlth>>2)&&random(0,255)<painchance)forcepain(self);
+				if(
+					!(flags&DMG_NO_PAIN)
+					&&blocked>(sphlth>>2)
+					&&random(0,255)<painchance
+				)forcepain(self);
 				return -1;
 			}
 		}
@@ -138,7 +151,7 @@ extend class HDMobBase{
 				&&random(0,7)
 			){
 				damage=max(1,bashthreshold);
-				forcepain(self);
+				if(!(flags&DMG_NO_PAIN))forcepain(self);
 			}
 		}
 
