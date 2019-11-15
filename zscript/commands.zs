@@ -37,6 +37,8 @@ extend class HDHandlers{
 		else if(e.name~=="doorbuster")SetDB(ppp,e.args[0],e.args[1]);
 		else if(e.name~=="doorbustertag")SetDB(ppp,-abs(e.args[0]));
 
+		else if(e.name~=="clearweaponspecial")ClearWeaponSpecial(ppp);
+
 		else if(
 			e.name~=="teamspawn"
 			&&teamplay&&deathmatch

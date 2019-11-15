@@ -324,6 +324,11 @@ extend class HDHandlers{
 		if(ppp.findinventory("HDBlurSphere"))
 			HDBlursphere(ppp.findinventory("HDBlurSphere")).intensity=-200;
 	}
+	void ClearWeaponSpecial(hdplayerpawn ppp){
+		if(!ppp.player)return;
+		let www=hdweapon(ppp.player.readyweapon);
+		if(www)www.special=0;
+	}
 }
 class DelayedTaunter:IdleDummy{
 	states{
