@@ -284,6 +284,9 @@ Logs the distance of the object or map geometry you're pointing at.
 
 * `hd_clearcvs`: Resets all archived CVars (other than loadout cvars) to their defaults.
 
+* `clearweaponspecial`: Sets the special of your currently held weapon to 0. The purpose is for some maps where a special cutscene or event is played when you pick up a certain weapon, but the mapper never considered that the player might be repeatedly dropping and picking back up the weapon so what should have been a one-time thing ends up playing every time you do a bit of complicated inventory management.
+
+
 * `teamspawn`: In team deathmatch, any member of a team can type `teamspawn 666` in the console to set their own current position as the team spawnpoint. Similarly, any member of a team can type `teamspawn -1` or `teamspawn 999` to clear the team spawnpoint and resume respawning in random places. This is intended to allow your team to establish a well-fortified camping ground to cause as much grief to the opposing team as possible.
 
 * `hd_doomguy` (cheat): This command, available anytime and not considered a cheat, will set you back to the good old naked marine with a pistol and 50 bullets.
