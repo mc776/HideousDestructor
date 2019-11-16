@@ -94,7 +94,7 @@ extend class HDPlayerPawn{
 			if(
 				(!inflictor||!inflictor.bnoextremedeath)
 				&&(-health>gibhealth||aggravateddamage>40)
-			)A_Die("extreme");
+			)playercorpse.A_Die("extreme");
 			else if(!silentdeath)A_PlayerScream();
 		}
 
