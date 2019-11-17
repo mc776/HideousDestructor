@@ -78,7 +78,7 @@ extend class HDPlayerPawn{
 		if(player.attacker is "HDFire")player.attacker=player.attacker.master;
 
 
-		bool crouched=(!incapacitated)&&height<40;
+		bool crouched=player&&player.crouchfactor<0.7;//(!incapacitated)&&height<40;
 
 		if(hd_disintegrator){
 			A_SpawnItemEx("Telefog",0,0,0,vel.x,vel.y,vel.z,0,SXF_ABSOLUTEMOMENTUM);
@@ -238,5 +238,4 @@ class HDPlayerCorpse:HDMobMan{
 		stop;
 	}
 }
-
 

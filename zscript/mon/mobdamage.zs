@@ -21,13 +21,13 @@ extend class HDMobBase{
 		shields=maxshields;
 	}
 
-	static bool indontpainsequence(actor caller){
+	static bool inpainablesequence(actor caller){
 		state curstate=caller.curstate;
-		return
-		caller.instatesequence(curstate,caller.resolvestate("raise"))
-		||caller.instatesequence(curstate,caller.resolvestate("ungib"))
-		||caller.instatesequence(curstate,caller.resolvestate("falldown"))
-		;
+		return (
+			!caller.instatesequence(curstate,caller.resolvestate("falldown"))
+			&&!caller.instatesequence(curstate,caller.resolvestate("raise"))
+			&&!caller.instatesequence(curstate,caller.resolvestate("ungib"))
+		);
 	}
 	static bool forcepain(actor caller){
 		if(
@@ -36,7 +36,7 @@ extend class HDMobBase{
 			||!caller.bshootable
 			||!caller.findstate("pain",true)
 			||caller.health<1
-			||!hdmobbase.indontpainsequence(caller)
+			||!hdmobbase.inpainablesequence(caller)
 			||(hdplayerpawn(caller)&&hdplayerpawn(caller).incapacitated>0)
 		)return false;
 		caller.setstatelabel("pain");
@@ -91,7 +91,7 @@ extend class HDMobBase{
 		if(pain>0)damage+=(pain>>2);
 		if(mod!="bleedout")pain+=max(1,(damage>>5));
 
-		if(indontpainsequence(self))flags|=DMG_NO_PAIN;
+		if(!inpainablesequence(self))flags|=DMG_NO_PAIN;
 
 		//shields
 		if(
