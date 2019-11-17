@@ -142,10 +142,7 @@ class UndeadHomeboy:HDMobMan{
 		if(thismag>0)thismag--;
 		else chamber=0;
 	}
-	virtual void A_HDNoBlocking(){
-		A_NoBlocking();
-
-		//specific to undead homeboy
+	override void deathdrop(){
 		if(bhasdropped){
 			A_DropItem("HD9mMag15");
 		}else{
@@ -337,7 +334,7 @@ class UndeadHomeboy:HDMobMan{
 	death:
 		#### H 5;
 		#### I 5 A_Scream();
-		#### J 5 A_HDNoBlocking();
+		#### J 5 A_NoBlocking();
 		#### K 5;
 	dead:
 		#### K 3 canraise{if(abs(vel.z)<2.)frame++;}
@@ -357,7 +354,7 @@ class UndeadHomeboy:HDMobMan{
 			spawn("MegaBloodSplatter",pos+(0,0,34),ALLOW_REPLACE);
 			A_XScream();
 		}
-		#### O 0 A_HDNoBlocking();
+		#### O 0 A_NoBlocking();
 		#### OP 5 spawn("MegaBloodSplatter",pos+(0,0,34),ALLOW_REPLACE);
 		#### QRST 5;
 		goto xdead;
