@@ -289,9 +289,6 @@ class HDMedikitter:HDWoundFixer{
 	}
 	states{
 	select:
-		TNT1 A 0{
-			if(invoker.weaponstatus[MEDS_SECONDFLESH]<1)A_SelectWeapon("SelfBandage");
-		}
 		TNT1 A 10{
 			if(!getcvar("hd_helptext")) return;
 			A_WeaponMessage("\cg+++ \cjMEDIKIT \cg+++\c-\n\n\nPress and hold Fire\nto patch yourself up.",175);
