@@ -332,7 +332,18 @@ class HDMedikitter:HDWoundFixer{
 			let c=HDPlayerPawn(mediline.hitactor);
 			if(!c){
 				//resolve where the target is not an HD player
-				if(mediline.hitactor){
+				if(
+					mediline.hitactor
+					&&mediline.hitactor.bsolid
+					&&!mediline.hitactor.bnoblood
+					&&(
+						mediline.hitactor.bloodtype=="HDMasterBlood"
+						||mediline.hitactor.bloodtype=="Blood"
+					)
+					&&(
+						mediline.hitactor is "HDMobMan"
+					)
+				){
 					let mb=hdmobbase(mediline.hitactor);
 					if(
 						mediline.hitactor.health<mediline.hitactor.spawnhealth()
