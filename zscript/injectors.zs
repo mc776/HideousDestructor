@@ -8,12 +8,6 @@ class HDInjectorMaker:HDMagAmmo{
 	default{
 		+inventory.invbar
 	}
-	override inventory CreateTossable(int amount){
-		bool lastone=amount==self.amount;
-		let ttt=super.createtossable(amount);
-		if(lastone)destroy();
-		return ttt;
-	}
 	states{
 	use:
 		TNT1 A 0{
@@ -152,6 +146,14 @@ class HDStimpacker:HDWoundFixer{
 		hdwoundfixer.injectoricon "STIMA0";
 		hdwoundfixer.injectortype "PortableStimpack";
 	}
+	action void A_TakeInjector(){
+		let mmm=HDMagAmmo(findinventory(invoker.inventorytype));
+		if(mmm){
+			mmm.amount--;
+			if(mmm.amount<1)mmm.destroy();
+			else if(mmm.mags.size())mmm.mags.pop();
+		}
+	}
 	states{
 	spawn:
 		TNT1 A 1;
@@ -192,7 +194,7 @@ class HDStimpacker:HDWoundFixer{
 		}goto nope;
 	inject:
 		TNT1 A 1{
-			A_TakeInventory(invoker.inventorytype,1);
+			A_TakeInjector();
 			A_SetBlend("7a 3a 18",0.1,4);
 			A_SetPitch(pitch+2,SPF_INTERPOLATE);
 			A_PlaySound("*usemeds",CHAN_VOICE);
@@ -260,7 +262,7 @@ class HDStimpacker:HDWoundFixer{
 				return resolvestate("nope");
 			}else{
 				//and now...
-				A_TakeInventory(invoker.inventorytype,1);
+				A_TakeInjector();
 				c.A_PlaySound("*usemeds",CHAN_VOICE);
 				c.A_SetBlend("7a 3a 18",0.1,4);
 				actor a=spawn(invoker.injecttype,c.pos,ALLOW_REPLACE);
