@@ -318,7 +318,7 @@ class ZM66AssaultRifle:HDWeapon{
 	fire:
 		RIFG A 2{
 			if(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_GLMODE)setweaponstate("firefrag");
-			else if(invoker.weaponstatus[ZM66S_AUTO])A_SetTics(3);
+			else if(invoker.weaponstatus[ZM66S_AUTO]>0)A_SetTics(3);
 		}goto shootgun;
 	hold:
 		RIFG A 0 A_JumpIf(invoker.weaponstatus[0]&ZM66F_GLMODE,"FireFrag");
