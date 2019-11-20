@@ -448,7 +448,7 @@ class HDRaiseWep:HDCheatWep{
 	default{
 		weapon.slotnumber 0;
 		hdweapon.refid "rvv";
-		tag "Monster Reviver (Cheat!)";
+		tag "monster reviver (cheat!)";
 	}
 	states{
 	ready:

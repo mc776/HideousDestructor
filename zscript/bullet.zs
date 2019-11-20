@@ -5,7 +5,7 @@ class bltest:HDCheatWep{
 	default{
 		weapon.slotnumber 1;
 		hdweapon.refid "blt";
-		tag "Bullet Sampler (Cheat!)";
+		tag "bullet sampler (cheat!)";
 	}
 	override void DrawSightPicture(
 		HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl,

@@ -17,7 +17,7 @@ class SoldierExtras:HDPickup{
 	default{
 		-hdpickup.fitsinbackpack
 		hdpickup.refid HDLD_SOLDIER;
-		tag "Elite Soldier Kit";
+		tag "elite soldier kit";
 	}
 	states{
 	pickup:
