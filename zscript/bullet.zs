@@ -687,7 +687,7 @@ class HDBulletActor:HDActor{
 		//(take these fancy todos with a grain of salt - we may be reaching computational limits)
 
 		setorigin(pos-vu,false);
-		A_SprayDecal(speed>600?"BulletChip":"BulletChipSmall",4);
+		if(pen>1)A_SprayDecal(speed>600?"BulletChip":"BulletChipSmall",4);
 		setorigin(pos+vu,false);
 
 		//inflict damage on destructibles
