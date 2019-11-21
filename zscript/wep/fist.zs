@@ -370,7 +370,7 @@ class HDFist:HDWeapon replaces Fist{
 		if(grabbed.bcorpse)grbng=grbng.."corpse";
 		else if(inventory(grabbed)||hdupk(grabbed))grbng=grbng.."item";
 		else grbng=grbng.."object";
-		grbng=grbng.."\n"..HDMath.GetName(grabbed);
+		if(hd_debug>0)grbng=grbng.."\n"..HDMath.GetName(grabbed);
 		A_WeaponMessage(grbng.."...",3);
 
 		if(
