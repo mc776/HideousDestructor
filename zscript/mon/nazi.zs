@@ -17,23 +17,20 @@ class HoopBubble:HDMobMan replaces WolfensteinSS{
 	override void postbeginplay(){
 		super.postbeginplay();
 		hdmobster.spawnmobster(self);
-		hasdropped=false;
 		gunloaded=31;
 		if(!bplayingid){
 			scale=(0.81,0.81);
 		}
 		givearmour(1.);
 	}
-	bool hasdropped;
 	double spread;
 	double turnamount;
 	int gunloaded;
-	void noblockwepdrop(){
-		A_NoBlocking();
+	override void deathdrop(){
 		hdweapon wp=null;
-		if(!hasdropped){
+		if(!bhasdropped){
 			A_DropItem("HDHandgunRandomDrop");
-			hasdropped=true;
+			bhasdropped=true;
 			if(wp=hdweapon(spawn("HDSMG",pos,ALLOW_REPLACE))){
 				wp.weaponstatus[SMGS_AUTO]=2;
 				wp.weaponstatus[SMGS_MAG]=random(0,30);
@@ -212,8 +209,7 @@ class HoopBubble:HDMobMan replaces WolfensteinSS{
 	death:
 		SSWV I 5;
 		SSWV J 5 A_Scream();
-		SSWV K 5 noblockwepdrop();
-		SSWV L 5;
+		SSWV KL 5;
 	dead:
 		SSWV L 3 canraise A_JumpIf(abs(vel.z)<2,1);
 		loop;
@@ -228,8 +224,7 @@ class HoopBubble:HDMobMan replaces WolfensteinSS{
 		SSWV N 5 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
 		SSWV O 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
 		SSWV O 5 A_XScream();
-		SSWV P 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
-		SSWV P 5 noblockwepdrop();
+		SSWV P 5 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
 		SSWV Q 0 A_SpawnItemEx("MegaBloodSplatter",0,0,34,0,0,0,0,160);
 		SSWV QRSTU 5;
 	xdead:
