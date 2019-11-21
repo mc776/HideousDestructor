@@ -33,6 +33,7 @@ class HDIEDKit:HDPickup{
 		stop;
 	use:
 		TNT1 A 0{
+			if(invoker.amount<1)return;
 			class<inventory> which="";
 			if(countinv("DudRocketAmmo"))which="DudRocketAmmo";
 			else if(countinv("HDRocketAmmo"))which="HDRocketAmmo";
@@ -50,6 +51,11 @@ class HDIEDKit:HDPickup{
 			);
 			HDIED(ied).botid=invoker.botid;
 			ied.A_ChangeVelocity(4*cos(pitch),0,4*sin(-pitch),CVF_RELATIVE);
+
+			if(
+				!sv_infiniteammo
+				||invoker.amount>1
+			)invoker.amount--;
 		}fail;
 	}
 }
@@ -99,7 +105,6 @@ class HDIED:DudRocket{
 	override void postbeginplay(){
 		super.postbeginplay();
 		if(master){
-			master.A_TakeInventory("HDIEDKit",1,TIF_NOTAKEINFINITE);
 			ChangeTid(HDIED_TID);
 			if(master.player){
 				if(cvar.getcvar("hd_autoactivateied",master.player).getbool()){
