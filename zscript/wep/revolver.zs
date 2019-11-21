@@ -369,7 +369,12 @@ class HDRevolver:HDHandgun{
 				let spw=SpareWeapons(findinventory("SpareWeapons"));
 				for(int i=0;i<spw.weapontype.size();i++){
 					if(spw.weapontype[i]==invoker.getclassname()){
-						spw.weaponstatus0[i]&=~BUGF_COCKED;
+						string spw2=spw.weaponstatus[i];
+						string spw1=spw2.left(spw2.indexof(","));
+						spw2=spw2.mid(spw2.indexof(","));
+						int stat0=spw1.toint();
+						stat0&=~BUGF_COCKED;
+						spw.weaponstatus[i]=stat0..spw2;
 					}
 				}
 			}

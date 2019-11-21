@@ -29,7 +29,7 @@ class HDWeapon:Weapon{
 	property barrelsize:barrellength,barrelwidth,barreldepth;
 	string refid;
 	property refid:refid;
-	int weaponstatus[8];
+	int weaponstatus[HDWEP_STATUSSLOTS];
 	int msgtimer;
 	int actualamount;
 	string wepmsg;
@@ -466,7 +466,7 @@ class HDWeapon:Weapon{
 	//because weapons don't use proper "ammo" anymore for loaded items
 	virtual void InitializeWepStats(bool idfa=false){}
 	override void beginplay(){
-		for(int i=0;i<8;i++)weaponstatus[i]=0;
+		for(int i=0;i<HDWEP_STATUSSLOTS;i++)weaponstatus[i]=0;
 		msgtimer=0;wepmsg="";
 		initializewepstats();
 		bobrangex*=3;bobrangey*=3;
@@ -912,15 +912,7 @@ class NullWeapon:HDWeapon{
 class SpareWeapons:HDPickup{
 	array<double> weaponbulk;
 	array<string> weapontype;
-	array<int> weaponstatus0;
-	array<int> weaponstatus1;
-	array<int> weaponstatus2;
-	array<int> weaponstatus3;
-	array<int> weaponstatus4;
-	array<int> weaponstatus5;
-	array<int> weaponstatus6;
-	array<int> weaponstatus7;
-	array<string> weaponmisc;
+	array<string> weaponstatus;
 	default{
 		+nointeraction
 		-inventory.invbar
@@ -940,24 +932,14 @@ class SpareWeapons:HDPickup{
 		while(weapontype.size()){
 			let newwep=hdweapon(spawn(weapontype[0],(owner.pos.xy,owner.pos.z+owner.height*0.6)));
 			weapontype.delete(0);
-			newwep.weaponstatus[0]=weaponstatus0[0];
-			weaponstatus0.delete(0);
-			newwep.weaponstatus[1]=weaponstatus1[0];
-			weaponstatus1.delete(0);
-			newwep.weaponstatus[2]=weaponstatus2[0];
-			weaponstatus2.delete(0);
-			newwep.weaponstatus[3]=weaponstatus3[0];
-			weaponstatus3.delete(0);
-			newwep.weaponstatus[4]=weaponstatus4[0];
-			weaponstatus4.delete(0);
-			newwep.weaponstatus[5]=weaponstatus5[0];
-			weaponstatus5.delete(0);
-			newwep.weaponstatus[6]=weaponstatus6[0];
-			weaponstatus6.delete(0);
-			newwep.weaponstatus[7]=weaponstatus7[0];
-			weaponstatus7.delete(0);
-			newwep.ApplySpareWeaponMisc(weaponmisc[0]);
-			weaponmisc.delete(0);
+
+			array<string> wepstat;
+			weaponstatus[0].split(wepstat,",");
+			for(int i=0;i<wepstat.size();i++){
+				newwep.weaponstatus[i]=wepstat[i].toint();
+			}
+			weaponstatus.delete(0);
+
 			weaponbulk.delete(0);
 			newwep.vel+=owner.vel+(frandom(-1,1),frandom(-1,1),frandom(0,2));
 			newwep.angle=owner.angle;
@@ -1013,8 +995,6 @@ class WeaponStashSwitcher:HDWeapon{
 extend class HDWeapon{
 	//override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
 	//override hdweapon GetSpareWeapon(actor newowner,bool reverse,bool doselect){return GetSpareWeaponRegular(newowner,reverse,doselect);}
-	virtual string AddSpareWeaponMisc(actor newowner){return "";}
-	virtual void ApplySpareWeaponMisc(string input){}
 	virtual bool AddSpareWeapon(actor newowner){return false;}
 	bool AddSpareWeaponRegular(actor newowner){
 		double wbulk=weaponbulk();
@@ -1035,27 +1015,16 @@ extend class HDWeapon{
 			mwt.amount=1;
 			mwt.weaponbulk.clear();
 			mwt.weapontype.clear();
-			mwt.weaponmisc.clear();
-			mwt.weaponstatus0.clear();
-			mwt.weaponstatus1.clear();
-			mwt.weaponstatus2.clear();
-			mwt.weaponstatus3.clear();
-			mwt.weaponstatus4.clear();
-			mwt.weaponstatus5.clear();
-			mwt.weaponstatus6.clear();
-			mwt.weaponstatus7.clear();
+			mwt.weaponstatus.clear();
 		}
 		mwt.weaponbulk.insert(0,wbulk);
 		mwt.weapontype.insert(0,getclassname());
-		mwt.weaponmisc.insert(0,addspareweaponmisc(newowner));
-		mwt.weaponstatus0.insert(0,weaponstatus[0]);
-		mwt.weaponstatus1.insert(0,weaponstatus[1]);
-		mwt.weaponstatus2.insert(0,weaponstatus[2]);
-		mwt.weaponstatus3.insert(0,weaponstatus[3]);
-		mwt.weaponstatus4.insert(0,weaponstatus[4]);
-		mwt.weaponstatus5.insert(0,weaponstatus[5]);
-		mwt.weaponstatus6.insert(0,weaponstatus[6]);
-		mwt.weaponstatus7.insert(0,weaponstatus[7]);
+
+		string wepstat=""..weaponstatus[0];
+		for(int i=1;i<HDWEP_STATUSSLOTS;i++){
+			wepstat=wepstat..","..weaponstatus[i];
+		}
+		mwt.weaponstatus.insert(0,wepstat);
 
 		destroy();
 		return true;
@@ -1087,28 +1056,21 @@ extend class HDWeapon{
 		if(!newwep)return null;
 		newwep.bdontdefaultconfigure=true;
 		mwt.weapontype.delete(getindex);
-		newwep.weaponstatus[0]=mwt.weaponstatus0[getindex];
-		mwt.weaponstatus0.delete(getindex);
-		newwep.weaponstatus[1]=mwt.weaponstatus1[getindex];
-		mwt.weaponstatus1.delete(getindex);
-		newwep.weaponstatus[2]=mwt.weaponstatus2[getindex];
-		mwt.weaponstatus2.delete(getindex);
-		newwep.weaponstatus[3]=mwt.weaponstatus3[getindex];
-		mwt.weaponstatus3.delete(getindex);
-		newwep.weaponstatus[4]=mwt.weaponstatus4[getindex];
-		mwt.weaponstatus4.delete(getindex);
-		newwep.weaponstatus[5]=mwt.weaponstatus5[getindex];
-		mwt.weaponstatus5.delete(getindex);
-		newwep.weaponstatus[6]=mwt.weaponstatus6[getindex];
-		mwt.weaponstatus6.delete(getindex);
-		newwep.weaponstatus[7]=mwt.weaponstatus7[getindex];
-		mwt.weaponstatus7.delete(getindex);
-		newwep.ApplySpareWeaponMisc(mwt.weaponmisc[getindex]);
-		mwt.weaponmisc.delete(getindex);
+
+		array<string> wepstat;
+		mwt.weaponstatus[getindex].split(wepstat,",");
+		for(int i=0;i<wepstat.size();i++){
+			newwep.weaponstatus[i]=wepstat[i].toint();
+		}
+		mwt.weaponstatus.delete(getindex);
+
 		mwt.weaponbulk.delete(getindex);
 		if(doselect)HDWeaponSelector.Select(newowner,newwep.getclassname(),max(4,newwep.gunmass()));
 		return newwep;
 	}
+}
+enum HDWepConsts{
+	HDWEP_STATUSSLOTS=8,
 }
 
 

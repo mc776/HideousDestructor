@@ -172,7 +172,7 @@ class HDBackpack:HDWeapon{
 			}else if(((class<hdweapon>)(reff))){
 				amounts[i].split(theseamounts," ");
 				for(int j=0;j<theseamounts.size();j++){
-					if(!((j+1)%9))blk+=theseamounts[j].toint();
+					if(!((j+1)%(HDWEP_STATUSSLOTS+1)))blk+=theseamounts[j].toint();
 				}
 			}else if(((class<hdpickup>)(reff))){
 				let classref=((class<hdpickup>)(reff));
@@ -205,7 +205,7 @@ class HDBackpack:HDWeapon{
 		if(wep||mag){
 			array<string>amts;
 			amounts[thisindex].split(amts," ");
-			if(wep)return amts.size()/9;
+			if(wep)return amts.size()/(HDWEP_STATUSSLOTS+1);
 			else return amts.size();
 		}
 		return amounts[thisindex].toint();
@@ -255,7 +255,7 @@ class HDBackpack:HDWeapon{
 		}else if((HDWeapon)(item)){
 			array<string> wepstatus;
 			amounts[which].split(wepstatus," ");
-			if(wepstatus.size()>=9){
+			if(wepstatus.size()>=(HDWEP_STATUSSLOTS+1)){
 				if((HDPistol)(item)){
 					specicon=(wepstatus[0].toint()&PISF_SELECTFIRE)?"PISTC0":"PISTA0";
 				}else if((ZM66AssaultRifle)(item)){
@@ -444,15 +444,11 @@ class HDBackpack:HDWeapon{
 				return 1;
 			}
 			if(wep.owner)wep=HDWeapon(owner.dropinventory(wep));
-			string newwep=
-				wep.weaponstatus[0].." "..
-				wep.weaponstatus[1].." "..
-				wep.weaponstatus[2].." "..
-				wep.weaponstatus[3].." "..
-				wep.weaponstatus[4].." "..
-				wep.weaponstatus[5].." "..
-				wep.weaponstatus[6].." "..
-				wep.weaponstatus[7].." "..
+			string newwep=""..wep.weaponstatus[0];
+			for(int i=1;i<HDWEP_STATUSSLOTS;i++){
+				newwep=newwep.." "..wep.weaponstatus[i];
+			}
+			newwep=newwep.." "..
 				int(wep.weaponbulk())..
 				(amounts[index]==""?"":" ");
 			amounts[index]=newwep..amounts[index];
@@ -511,7 +507,7 @@ class HDBackpack:HDWeapon{
 		if(wepth){
 			let newp=HDWeapon(spawn(wepth,owner.pos+(0,0,owner.height-12),ALLOW_REPLACE));
 			newp.angle=owner.angle;newp.A_ChangeVelocity(1,1,1,CVF_RELATIVE);
-			for(int i=0;i<9;i++){
+			for(int i=0;i<(HDWEP_STATUSSLOTS+1);i++){
 				if(i<newp.weaponstatus.size())newp.weaponstatus[i]=tempamounts[0].toint();
 				tempamounts.delete(0);
 			}

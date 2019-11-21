@@ -23,30 +23,17 @@ class HDHandgun:HDWeapon{
 			return;
 		}
 		A_WeaponBusy();
-		int bk=mwt.weaponstatus0[pistindex];
-		mwt.weaponstatus0[pistindex]=invoker.weaponstatus[0];
-		invoker.weaponstatus[0]=bk;
-		bk=mwt.weaponstatus1[pistindex];
-		mwt.weaponstatus1[pistindex]=invoker.weaponstatus[1];
-		invoker.weaponstatus[1]=bk;
-		bk=mwt.weaponstatus2[pistindex];
-		mwt.weaponstatus2[pistindex]=invoker.weaponstatus[2];
-		invoker.weaponstatus[2]=bk;
-		bk=mwt.weaponstatus3[pistindex];
-		mwt.weaponstatus3[pistindex]=invoker.weaponstatus[3];
-		invoker.weaponstatus[3]=bk;
-		bk=mwt.weaponstatus4[pistindex];
-		mwt.weaponstatus4[pistindex]=invoker.weaponstatus[4];
-		invoker.weaponstatus[4]=bk;
-		bk=mwt.weaponstatus5[pistindex];
-		mwt.weaponstatus5[pistindex]=invoker.weaponstatus[5];
-		invoker.weaponstatus[5]=bk;
-		bk=mwt.weaponstatus6[pistindex];
-		mwt.weaponstatus6[pistindex]=invoker.weaponstatus[6];
-		invoker.weaponstatus[6]=bk;
-		bk=mwt.weaponstatus7[pistindex];
-		mwt.weaponstatus7[pistindex]=invoker.weaponstatus[7];
-		invoker.weaponstatus[7]=bk;
+
+		array<string> wepstat;
+		string wepstat2="";
+		mwt.weaponstatus[0].split(wepstat,",");
+		for(int i=0;i<wepstat.size();i++){
+			if(i)wepstat2=wepstat2..",";
+			wepstat2=wepstat2..invoker.weaponstatus[i];
+			invoker.weaponstatus[i]=wepstat[i].toint();
+		}
+		mwt.weaponstatus[pistindex]=wepstat2;
+
 		invoker.wronghand=!invoker.wronghand;
 	}
 }
