@@ -40,10 +40,10 @@ class HDShotgun:HDWeapon{
 			}
 		}
 	}
-	action void A_UnloadSideSaddle(int slot){
-		int uamt=clamp(invoker.weaponstatus[slot],0,4);
+	action void A_UnloadSideSaddle(){
+		int uamt=clamp(invoker.weaponstatus[SHOTS_SIDESADDLE],0,4);
 		if(!uamt)return;
-		invoker.weaponstatus[slot]-=uamt;
+		invoker.weaponstatus[SHOTS_SIDESADDLE]-=uamt;
 		int maxpocket=min(uamt,HDPickup.MaxGive(self,"HDShellAmmo",ENC_SHELL));
 		if(maxpocket>0&&pressingunload()){
 			A_SetTics(16);

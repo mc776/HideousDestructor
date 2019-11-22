@@ -416,7 +416,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 		#### A 1 offset(3,36);
 	unloadssloop1:
 		#### A 4 offset(4,36);
-		#### A 2 offset(5,37) A_UnloadSideSaddle(SHOTS_SIDESADDLE);
+		#### A 2 offset(5,37) A_UnloadSideSaddle();
 		#### A 3 offset(4,36){	//decide whether to loop
 			if(
 				invoker.weaponstatus[SHOTS_SIDESADDLE]>0

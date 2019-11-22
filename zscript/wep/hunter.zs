@@ -546,7 +546,7 @@ class Hunter:HDShotgun{
 		SHTG A 1 offset(3,36);
 	unloadSSLoop1:
 		SHTG A 4 offset(4,36);
-		SHTG A 2 offset(5,37) A_UnloadSideSaddle(SHOTS_SIDESADDLE);
+		SHTG A 2 offset(5,37) A_UnloadSideSaddle();
 		SHTG A 3 offset(4,36){	//decide whether to loop
 			if(
 				PressingReload()
