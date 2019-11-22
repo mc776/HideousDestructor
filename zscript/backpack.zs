@@ -492,6 +492,13 @@ class HDBackpack:HDWeapon{
 			)
 		);
 	}
+	//configure from loadout
+	//syntax: bak item1. item2. item3 (basically use dots instead of commas)
+	override void loadoutconfigure(string input){
+		input.replace(".",",");
+		if(hd_debug&&!!owner)owner.A_Log("Backpack Loadout: "..input);
+		initializeamount(input);
+	}
 	//generic code for removing from backpack
 	int RemoveFromBackpack(int which=-1,bool trytopocket=true){
 		if(which<0||which>=invclasses.size())which=index;

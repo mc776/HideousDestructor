@@ -285,7 +285,23 @@ class HDLoadoutMenu:GenericMenu{
 					string refid=items[i].left(3);
 					if(refid=="")continue;
 					if(refid~=="bak"){
-						inbp=true;
+						ttl=ttl..(i?"\n":"").."1 x    backpack";
+						array<string> bakitems;
+						string baklist=items[i].mid(3);
+						baklist.split(bakitems,".");
+
+						for(int bi=0;bi<bakitems.size();bi++){
+							string brefid=bakitems[bi].left(3);
+							if(brefid!=""){
+								int whichindex=refids.find(brefid);
+								string thisname;
+								if(whichindex>=refids.size())thisname="\ca ? ? ?\cj";
+								else thisname=nicenames[whichindex];
+								int howmany=max((bakitems[bi].mid(3,bakitems[bi].length())).toint(10),1);
+								ttl=ttl..(i?"\n  ":"  ")..howmany.." x    "..thisname;
+							}
+						}
+
 						continue;
 					}
 					int whichindex=refids.find(refid);

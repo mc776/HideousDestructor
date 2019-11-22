@@ -453,6 +453,7 @@ extend class HDPlayerPawn{
 
 		//attend to backpack and contents
 		if(loadinput.indexof("-")>=0){
+			A_Log("Warning: deprecated loadout code for backpack. This may not be supported in future versions of Hideous Destructor.",true);
 			if(hd_debug)A_Log("Backpack Loadout: "..loadlist[1]);
 			A_GiveInventory("HDBackpack");
 			hdbackpack(findinventory("HDBackpack")).initializeamount(loadlist[1]);

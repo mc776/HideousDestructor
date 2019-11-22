@@ -1,3 +1,6 @@
+// ------------------------------------------------------------
+// Helpful? tips???
+// ------------------------------------------------------------
 extend class hdplayerpawn{
 	double specialtipalpha;
 	string specialtip;

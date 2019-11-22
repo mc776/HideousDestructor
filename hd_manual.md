@@ -100,7 +100,7 @@ Each of these is a string that you can configure to add your loadout. What is av
 
 The syntax is as follows:
 
-    <pic>#<name>: xxx yy, zzz aa - bbb cc, ddd ee /<description>
+    <pic>#<name>: xxx yy, zzz aa, bbb cc /<description>
 
 where xxx and zzz are 3-character codes referring to an item.
 
@@ -116,7 +116,7 @@ NOTE: Due to technical reasons spaces *must* be omitted from loadout strings if 
 
 The first item is the weapon you pull out at start. If the first item is not a weapon, you start with your hands free. If you want to start with a weapon and nothing else, but do not want it drawn at start, use the code for fists ("fis") at the start of your loadout.
 
-The "-" marks where the loadout information on your person ends and the loadout information for the contents of your backpack begins.
+Sometimes you'll find a "-" in a loadout. This is an older way of setting backpack contents: it implicitly gives you a backpack, then all items listed after it are stored in that backpack.
 
 The loadout system will detect items from mods for HD like Ugly as Sin. (modding note: it must inherit from "HDPickup" or "HDWeapon" and have a unique "refid" defined and "fitsinbackpack" set to true if it is to be placed in a backpack.) To see a list of all items in the currently loaded session, type "give loadoutitemlist" in the console.
 
@@ -541,6 +541,10 @@ Some items can be picked up and saved for later, as described below.
   GZDoom actor name: `HDBackpack`
 
   Use from inventory to bring it up. Fire and altfire select your item; hold fire mode to momentarily use your pitch input instead. Reload places one unit of the selected item type into it, unload takes it out. Mash the Zoom key to dump out all the contents of the backpack. The drop-one key works to remove ammo from your own inventory in case you want to make a little more space.
+
+  To load items into a backpack, after the "bak" code type in your items as you normally would, but separate them with "." instead of ",". Use "," as usual to mark the end of your backpack contents definition.
+
+  "z66, bak z66 nogl. z66 nogl semi, stm", for instance, will give you a ZM66 in hand, two more in your backpack, and a stimpack in your pocket.
 
 * **Defence, Engagement, Reconnaissance and Patrol Robot**
 
