@@ -481,6 +481,7 @@ class HDBleedingWound:Thinker{
 				hdmobbase(bleeder)
 				&&hdmobbase(bleeder).bdoesntbleed
 			)
+			||bleeder.findinventory("SpiritualArmour")
 		)return;
 
 		//TODO: proper array of wounds for the player
