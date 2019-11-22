@@ -693,9 +693,8 @@ enum hunterstatus{
 	HUNTS_CHAMBER=2,
 	//3 is for side saddles
 	HUNTS_TUBE=4,
-	HUNTS_HEAT=5,
-	HUNTS_HAND=6,
-	HUNTS_CHOKE=7,
+	HUNTS_HAND=5,
+	HUNTS_CHOKE=6,
 };
 
 
