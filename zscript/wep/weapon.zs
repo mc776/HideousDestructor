@@ -1070,7 +1070,7 @@ extend class HDWeapon{
 	}
 }
 enum HDWepConsts{
-	HDWEP_STATUSSLOTS=8,
+	HDWEP_STATUSSLOTS=32,
 }
 
 
