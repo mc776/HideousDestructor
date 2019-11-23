@@ -55,7 +55,8 @@ class HDMobBase : HDActor{
 	//randomize size
 	double hitboxscale;
 	void resize(double minscl=0.9,double maxscl=1.,int minhealth=0){
-		double drad=radius;double dheight=height;
+		double drad=radius;
+		double dheight=height;
 		double minchkscl=max(1.,minscl+0.1);
 		double scl;
 		do{
@@ -64,10 +65,10 @@ class HDMobBase : HDActor{
 			maxscl=scl; //if this has to check again, don't go so high next time
 		}while(
 			//keep it smaller than the geometry
-			scl>minchkscl&&  
-			!checkmove(pos.xy,PCM_NOACTORS)
+			scl>minchkscl
+			&&!checkmove(pos.xy,PCM_NOACTORS)
 		);
-		health*=max(scl,1);
+		A_SetHealth(health*max(scl,1));
 		scale*=scl;
 		mass*=scl;
 		speed*=scl;

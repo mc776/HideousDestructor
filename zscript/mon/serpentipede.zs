@@ -171,11 +171,12 @@ class Serpentipede:HDMobBase{
 	override void postbeginplay(){
 		super.postbeginplay();
 		hdmobster.spawnmobster(self);
-		hdmobai.resize(self,0.8,1.1);
 		if(bplayingid){
 			bsmallhead=true;
 			bbiped=true;
+			A_SetSize(13,54);
 		}
+		resize(0.8,1.1);
 	}
 	override string GetObituary(actor victim,actor inflictor,name mod,bool playerattack){
 		string ob;
@@ -205,17 +206,6 @@ class Serpentipede:HDMobBase{
 	spawn:
 		TROO A 0;
 	spawn0:
-		---- A 0{
-			if(countinv("Clip")<1){
-				A_GiveInventory("Clip",1);
-				A_SetScale(scale.x*frandom(0.9,1.1));
-				A_SetSize(radius*scale.x,height*scale.y);
-				mass*=scale.x;
-				if(scale.x>1.0){
-					A_SetHealth(health*scale.x);
-				}
-			}
-		}
 		#### AAABBCCCDD 8 A_Look();
 		#### A 0 A_SetAngle(angle+random(-4,4));
 		#### A 1 A_SetTics(random(1,3));
@@ -501,7 +491,7 @@ class Regentipede:Serpentipede{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		hdmobai.resize(self,0.6,0.85);
+		resize(0.6,0.85);
 	}
 	override void A_ImpChase(){
 		hdmobai.chase(self,flags:CHF_RESURRECT);
@@ -577,7 +567,7 @@ class Ardentipede:Serpentipede{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		hdmobai.resize(self,0.9,1.2);
+		resize(0.9,1.2);
 	}
 	override void tick(){
 		super.tick();
