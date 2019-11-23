@@ -434,6 +434,28 @@ class HDBackpack:HDWeapon{
 		if(newindex>=invclasses.size())return 1;
 		index=newindex;
 		UpdateMessage(newindex);
+
+		//handle certain specific wearables
+		if(
+			!!owner
+			&&pkup.amount<2
+			&&(
+				(
+					pkup is "PortableRadsuit"
+					&&!!owner.findinventory("WornRadsuit")
+				)||(
+					pkup is "PortableLiteAmp"
+					&&PortableLiteAmp(pkup).worn
+				)
+			)
+		){
+			if(
+				owner.player
+				&&!(owner.player.oldbuttons&BT_RELOAD)
+			)owner.A_Log("Take it off first.",true);
+			return 1;
+		}
+
 		if(wep){
 			if(wep is "HDBackpack"&&HDBackpack(wep).bulk>0){
 				if(owner)owner.A_Log("Empty this backpack first.",true);

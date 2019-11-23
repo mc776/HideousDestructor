@@ -39,9 +39,19 @@ class PortableRadsuit:HDPickup replaces RadSuit{
 		hdpickup.refid HDLD_RADSUIT;
 	}
 	override void DetachFromOwner(){
-		owner.A_TakeInventory("WornRadsuit");
+		owner.A_TakeInventory("PortableRadsuit");
 		target=owner;
 		super.DetachFromOwner();
+	}
+	override inventory CreateTossable(){
+		if(
+			amount<2
+			&&owner.findinventory("WornRadsuit")
+		){
+			owner.UseInventory(self);
+			return null;
+		}
+		return super.CreateTossable();
 	}
 	override void actualpickup(actor user){
 		HDF.TransferFire(self,user);
