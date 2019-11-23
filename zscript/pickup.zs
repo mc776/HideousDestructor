@@ -182,7 +182,7 @@ extend class HDPlayerPawn{
 		if(!hasgrabbed){
 			actor grabbed=null;
 
-			//get an antenna
+			//get a pickerupper
 			hdpickerupper hdpu=null;
 			ThinkerIterator hdpuf=ThinkerIterator.Create("HDPickerUpper");
 			while(hdpu=HDPickerUpper(hdpuf.Next())){
