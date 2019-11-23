@@ -588,24 +588,7 @@ class HERPUsable:HDWeapon{
 	readytofire:
 		HERG A 1{
 			if(pressingzoom()){
-				if(pressingfire()){
-					setweaponstate("directfire");
-
-					//randomly corrupt the data due to jostling
-					int whichmag=0;int curmag=0;
-					for(int i=1;i<=3;i++){
-						if((invoker.weaponstatus[i]%100)>0){
-							curmag=invoker.weaponstatus[i];
-							whichmag=i;
-							break;
-						}
-					}
-					if(
-						curmag>0
-						&&curmag<100
-						&&!random(0,15)
-					)invoker.weaponstatus[whichmag]+=100;
-				}
+				if(pressingfire())setweaponstate("directfire");
 				if(pitch<10&&!gunbraced())A_MuzzleClimb(frandom(-0.1,0.1),frandom(0.,0.1));
 			}else{
 				setweaponstate("lowerfromfire");
@@ -619,30 +602,39 @@ class HERPUsable:HDWeapon{
 				setweaponstate("directfail");
 				return;
 			}
+			int currammo=invoker.weaponstatus[1];
 
-			//check ammo and which mag
-			int curmag=0;
-			int whichmag=0;
-			for(int i=1;i<=3;i++){
-				if((invoker.weaponstatus[i]%100)>0){
-					curmag=invoker.weaponstatus[i];
-					whichmag=i;
-					break;
-				}
+			//check ammo and cycle mag if necessary
+			if(
+				!currammo
+				||currammo>100
+			){
+				let mmm=hd4mmag(spawn("hd4mmag",(pos.xy,pos.z+height-20)));
+				mmm.mags.clear();mmm.mags.push(max(0,currammo));
+				double angloff=angle+100;
+				mmm.vel=(cos(angloff),sin(angloff),1)*frandom(0.7,1.3)+vel;
+				invoker.weaponstatus[1]=-1;
 			}
-			if(!whichmag){
-				setweaponstate("directfail");
-				return;
-			}
-			//if jailbroken mag, randomly fail
-			if(curmag>100){
-				A_PlaySound("herp/beepready",CHAN_WEAPON);
-				setweaponstate("directfail");
+			if(
+				invoker.weaponstatus[1]<0
+			){
+				invoker.weaponstatus[1]=invoker.weaponstatus[2];
+				invoker.weaponstatus[2]=invoker.weaponstatus[3];
+				invoker.weaponstatus[3]=-1;
+
+				int curmag=invoker.weaponstatus[1];
+				if(
+					curmag>0
+					&&curmag<51
+					&&!random(0,15)
+				)invoker.weaponstatus[1]+=100;
+
 				return;
 			}
 
 			//deplete ammo and fire
-			invoker.weaponstatus[whichmag]--;				
+			if(invoker.weaponstatus[1]==51)invoker.weaponstatus[1]=49;
+			else invoker.weaponstatus[1]--;				
 			A_Overlay(PSP_FLASH,"directflash");
 		}
 		HERG B 2;
@@ -792,9 +784,25 @@ class HERPUsable:HDWeapon{
 		return;
 	}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
+		int batt=hdw.weaponstatus[4];
+
+		//bottom status bar
+		for(int i=2;i<4;i++){
+			if(hdw.weaponstatus[i]>=0)sb.drawwepdot(-8-i*4,-13,(3,2));
+		}
+		sb.drawwepnum(hdw.weaponstatus[1]%100,50,posy:-10);
+		sb.drawwepcounter(hdw.weaponstatus[0]&HERPF_STARTOFF,
+			-28,-16,"STBURAUT","blank"
+		);
+
+		if(!batt)sb.drawstring(
+			sb.mamountfont,"00000",(-16,-8),
+			sb.DI_TEXT_ALIGN_RIGHT|sb.DI_TRANSLATABLE|sb.DI_SCREEN_CENTER_BOTTOM,
+			Font.CR_DARKGRAY
+		);else if(batt>0)sb.drawwepnum(batt,20);
+
 		if(barrellength>0)return;
 
-		int batt=hdw.weaponstatus[4];
 		int yofs=weaponstatus[HERP_YOFS];
 		if(yofs<70){
 			vector2 bob=hpl.hudbob*0.2;
@@ -825,22 +833,6 @@ class HERPUsable:HDWeapon{
 				);
 			}
 		}
-
-		//bottom status bar
-		for(int i=2;i<4;i++){
-			if(hdw.weaponstatus[i]>=0)sb.drawwepdot(-8-i*4,-13,(3,2));
-		}
-		int magone=hdw.weaponstatus[1];
-		sb.drawwepnum(magone<100?magone:magone-100,50,posy:-10);
-		sb.drawwepcounter(hdw.weaponstatus[0]&HERPF_STARTOFF,
-			-28,-16,"STBURAUT","blank"
-		);
-
-		if(!batt)sb.drawstring(
-			sb.mamountfont,"00000",(-16,-8),
-			sb.DI_TEXT_ALIGN_RIGHT|sb.DI_TRANSLATABLE|sb.DI_SCREEN_CENTER_BOTTOM,
-			Font.CR_DARKGRAY
-		);else if(batt>0)sb.drawwepnum(batt,20);
 	}
 	override string gethelptext(){
 		return
@@ -1203,7 +1195,7 @@ class HERPController:HDWeapon{
 					int ptch=player.cmd.pitch>>6;
 					if(yaw||ptch){
 						ddd.A_PlaySound("derp/crawl",CHAN_BODY);
-						ddd.pitch=clamp(ddd.pitch-clamp(ptch,-10,10),-90,60);
+						ddd.pitch=clamp(ddd.pitch-clamp(ptch,-10,10),-60,60);
 						ddd.angle+=clamp(yaw,-DERP_MAXTICTURN,DERP_MAXTICTURN);
 					}
 					if(player.cmd.sidemove){
