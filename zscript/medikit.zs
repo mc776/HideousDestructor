@@ -265,6 +265,7 @@ class HDMedikitter:HDWoundFixer{
 				if(invoker.weaponstatus[MEDS_SECONDFLESH]<1){
 					A_WeaponMessage("You are out of Auto-Sutures.");
 					setweaponstate("nope");
+					return;
 				}
 				if(bt&BT_ZOOM){
 					//treat burns
@@ -389,7 +390,8 @@ class HDMedikitter:HDWoundFixer{
 			}
 			if(
 				!(getplayerinput(MODINPUT_BUTTONS)&BT_ZOOM)
-				&& c.woundcount+c.unstablewoundcount<1
+				&&c.woundcount<1
+				&&c.unstablewoundcount<1
 			){
 				A_WeaponMessage("They have no wounds to treat.");
 				return resolvestate("nope");
