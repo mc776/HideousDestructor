@@ -247,37 +247,6 @@ class Necromancer:HDMobBase replaces ArchVile{
 		painchance 0;
 		health TELEFRAG_DAMAGE;
 	}
-	int hitsleft;
-	void A_VilePain(){
-		Spawn("DistantRocket",pos,ALLOW_REPLACE);
-		A_SpawnItemEx("SpawnFire",0,0,28,flags:SXF_NOCHECKPOSITION);
-		A_Explode(46,196);
-		A_Quake(3,36,0,360);
-		A_AlertMonsters();
-		A_Pain();
-		for(int i=0;i<3;i++)A_SpawnItemEx("BFGNecroShard",
-			0,0,42,flags:SXF_SETMASTER|SXF_TRANSFERPOINTERS
-		);
-	}
-	void A_ChangeNecroFlags(bool attacking){
-		if(!attacking){
-			A_UnSetShootable();
-			A_UnSetSolid();
-			bnofear=false;
-			bfrightened=true;
-			maxstepheight=1024;
-			maxdropoffheight=1024;
-			A_SetRenderStyle(1.,STYLE_Add);
-		}else{
-			A_SetShootable();
-			A_SetSolid();
-			bnofear=true;
-			bfrightened=false;
-			maxstepheight=getdefaultbytype(getclass()).maxstepheight;
-			maxdropoffheight=getdefaultbytype(getclass()).maxdropoffheight;
-			A_SetRenderStyle(1.,STYLE_Normal);
-		}
-	}
 	static void A_MassHeal(actor caller){
 		actor aaa;
 		blockthingsiterator it=blockthingsiterator.create(caller,256);
@@ -337,6 +306,26 @@ class Necromancer:HDMobBase replaces ArchVile{
 		A_GiveInventory("ImmunityToFire");
 		hitsleft=bfriendly?7:6;
 	}
+	int hitsleft;
+	void A_ChangeNecroFlags(bool attacking){
+		if(!attacking){
+			A_UnSetShootable();
+			A_UnSetSolid();
+			bnofear=false;
+			bfrightened=true;
+			maxstepheight=1024;
+			maxdropoffheight=1024;
+			A_SetRenderStyle(1.,STYLE_Add);
+		}else{
+			A_SetShootable();
+			A_SetSolid();
+			bnofear=true;
+			bfrightened=false;
+			maxstepheight=getdefaultbytype(getclass()).maxstepheight;
+			maxdropoffheight=getdefaultbytype(getclass()).maxdropoffheight;
+			A_SetRenderStyle(1.,STYLE_Normal);
+		}
+	}
 	override int damagemobj(
 		actor inflictor,actor source,int damage,
 		name mod,int flags,double angle
@@ -351,18 +340,26 @@ class Necromancer:HDMobBase replaces ArchVile{
 			&&damage>random(0,bfriendly?333:166)
 		){
 			if(hitsleft>0){
-				bshootable=false;
 				hitsleft--;
+				bshootable=false;
 				if(!bfriendly)A_ChangeNecroFlags(false);
+
 				setstatelabel("pain");
-				return 0;
-			}
-			return actor.damagemobj(
+				spawn("DistantRocket",pos,ALLOW_REPLACE);
+				A_SpawnItemEx("SpawnFire",0,0,28,flags:SXF_NOCHECKPOSITION);
+				A_Explode(46,196);
+				A_Quake(3,36,0,360);
+				A_AlertMonsters();
+				A_Pain();
+				for(int i=0;i<3;i++)A_SpawnItemEx("BFGNecroShard",
+					0,0,42,flags:SXF_SETMASTER|SXF_TRANSFERPOINTERS
+				);
+			}else return actor.damagemobj(
 				inflictor,source,health,
-				bfriendly?"SmallArms0":"Falling",DMG_FORCED|DMG_THRUSTLESS
+				mod,DMG_FORCED|DMG_THRUSTLESS
 			);
 		}
-		return 0;
+		return -1;
 	}
 	states{
 	spawn:
@@ -427,7 +424,7 @@ class Necromancer:HDMobBase replaces ArchVile{
 		}
 		---- A 0 setstatelabel("see");
 	pain:
-		VILE Q 20 light("HELL")A_VilePain();
+		VILE Q 20 light("HELL");
 		VILE H 0 A_JumpIf(bfriendly,"see");
 	pained:
 		VILE A 1 A_Chase(null,null);
@@ -447,11 +444,12 @@ class Necromancer:HDMobBase replaces ArchVile{
 		VILE F 0 A_JumpIf(alpha<0.1,1);
 		loop;
 		TNT1 AAAAAAAAA 0 A_Wander();
-		TNT1 A 0 A_SetTics(random(350,3500));
+		TNT1 A 0 A_SetTics(29);//random(350,3500));
 		VILE F 0 A_ChangeNecroFlags(true);
 		---- A 0 setstatelabel("see");
 	death:
-		VILE Q 42 bright A_VilePain();
+		VILE Q 0 A_ChangeNecroFlags(false);
+		VILE Q 42 bright A_Pain();
 		VILE Q 0 A_FaceTarget();
 		VILE Q 0 A_Quake(2,40,0,768,0);
 		VILE G 6 bright light("HELL") A_SetTranslucent(0.8,1);
