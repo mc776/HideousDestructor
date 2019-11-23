@@ -67,7 +67,6 @@ class HDStatusBar:DoomStatusBar{
 	transient cvar hd_xhscale;
 	transient cvar hd_weapondefaults; //TEMPORARY - TO DELETE LATER
 	transient cvar hd_setweapondefault;
-	transient cvar crosshairon;
 
 	override void Tick(){
 		if(!hd_mugshot){
@@ -79,7 +78,6 @@ class HDStatusBar:DoomStatusBar{
 			hd_xhscale=cvar.getcvar("hd_xhscale",cplayer);
 			hd_weapondefaults=cvar.getcvar("hd_weapondefaults",cplayer); //TEMPORARY - TO DELETE LATER
 			hd_setweapondefault=cvar.getcvar("hd_setweapondefault",cplayer);
-			crosshairon=cvar.getcvar("crosshairon",cplayer);
 		}
 		super.tick();
 		hpl=hdplayerpawn(cplayer.mo);
