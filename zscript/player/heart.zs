@@ -402,7 +402,7 @@ extend class HDPlayerPawn{
 			hd_shardrate>0
 			&&level.time>0
 			&&!(level.time%hd_shardrate)
-		)spawn("NecroShard",pos);
+		)spawn("BFGNecroShard",pos);
 	}
 }
 
