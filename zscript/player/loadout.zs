@@ -406,7 +406,11 @@ extend class HDPlayerPawn{
 						firstwep=reff.getclassname();
 					}
 				}
-				int thismany=clamp(howmany[i].toint(),1,40);
+
+				int thismany;
+				if(getdefaultbytype((class<hdweapon>)(reff)).bignoreloadoutamount)thismany=1;
+				else thismany=clamp(howmany[i].toint(),1,40);
+
 				while(thismany>0){
 					thismany--;
 					hdweapon newwep;

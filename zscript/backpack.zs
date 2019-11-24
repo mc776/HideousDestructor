@@ -24,6 +24,7 @@ class HDBackpack:HDWeapon{
 		+hdweapon.droptranslation
 		+hdweapon.fitsinbackpack
 		+hdweapon.alwaysshowstatus
+		+hdweapon.ignoreloadoutamount
 		weapon.selectionorder 1010;
 		inventory.icon "BPAKA0";
 		inventory.pickupmessage "Picked up a backpack to help fill your life with ammo!";
