@@ -445,9 +445,6 @@ class HDBackpack:HDWeapon{
 				(
 					pkup is "PortableRadsuit"
 					&&!!owner.findinventory("WornRadsuit")
-				)||(
-					pkup is "PortableLiteAmp"
-					&&PortableLiteAmp(pkup).worn
 				)
 			)
 		){
