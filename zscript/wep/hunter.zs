@@ -358,9 +358,9 @@ class Hunter:HDShotgun{
 		}
 		loop;
 	rackreload:
-		SHTG F 1 offset(-1,35);
+		SHTG F 1 offset(-1,35) A_WeaponBusy(true);
 		SHTG F 2 offset(-2,37);
-		SHTG F 4 offset(-3,40) A_WeaponBusy(false);
+		SHTG F 4 offset(-3,40);
 		SHTG F 1 offset(-4,42) A_GrabShells(1,true,true);
 		SHTG F 0 A_JumpIf(!(invoker.weaponstatus[0]&HUNTF_FROMPOCKETS),"rackloadone");
 		SHTG F 6 offset(-5,43);
@@ -373,7 +373,6 @@ class Hunter:HDShotgun{
 			invoker.weaponstatus[HUNTS_CHAMBER]=2;
 			invoker.handshells--;
 			EmptyHand(careful:true);
-			A_WeaponBusy(false);
 		}
 		SHTG F 5 offset(-4,41);
 		SHTG F 4 offset(-4,40) A_JumpIf(invoker.handshells>0,"rackloadone");
@@ -382,12 +381,13 @@ class Hunter:HDShotgun{
 		SHTG F 1 offset(-3,39);
 		SHTG F 1 offset(-2,37);
 		SHTG F 1 offset(-1,34);
+		SHTG F 0 A_WeaponBusy(false);
 		goto racked;
 
 	rackunload:
-		SHTG F 1 offset(-1,35);
+		SHTG F 1 offset(-1,35) A_WeaponBusy(true);
 		SHTG F 2 offset(-2,37);
-		SHTG F 4 offset(-3,40) A_WeaponBusy(false);
+		SHTG F 4 offset(-3,40);
 		SHTG F 1 offset(-4,42);
 		SHTG F 2 offset(-4,41);
 		SHTG F 3 offset(-4,40){
@@ -404,7 +404,6 @@ class Hunter:HDShotgun{
 				0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPITCH
 			);
 			if(chm)A_PlaySound("weapons/huntreload",CHAN_WEAPON);
-			A_WeaponBusy(false);
 		}
 		SHTG F 5 offset(-4,41);
 		SHTG F 4 offset(-4,40) A_JumpIf(invoker.handshells>0,"rackloadone");
