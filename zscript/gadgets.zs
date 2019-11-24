@@ -143,14 +143,15 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 	PointLight nozerolight;
 	override double getbulk(){return bulk;}
 	override void DetachFromOwner(){
-		worn=false;
 		if(owner&&owner.player){
 			if(cvar.getcvar("hd_nv",owner.player).getfloat()==999.){
 				if(owner.player.fixedcolormap==5)owner.player.fixedcolormap=-1;
 				owner.player.fixedlightlevel=-1;
 			}
 			Shader.SetEnabled(owner.player,"NiteVis",false);
+			if(worn)owner.A_SetBlend("01 00 00",0.8,16);
 		}
+		worn=false;
 		super.DetachFromOwner();
 	}
 	double amplitude;
