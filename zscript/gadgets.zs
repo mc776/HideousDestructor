@@ -57,6 +57,9 @@ class PortableRadsuit:HDPickup replaces RadSuit{
 		HDF.TransferFire(self,user);
 		super.actualpickup(user);
 	}
+	override void DoEffect(){
+		bfitsinbackpack=(amount>1||!owner||!owner.findinventory("WornRadsuit"));
+	}
 	states{
 	spawn:
 		SUIT A 1;
