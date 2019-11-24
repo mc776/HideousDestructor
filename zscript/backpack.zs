@@ -438,6 +438,7 @@ class HDBackpack:HDWeapon{
 		//handle certain specific wearables
 		if(
 			!!owner
+			&&!!pkup
 			&&pkup.amount<2
 			&&(
 				(

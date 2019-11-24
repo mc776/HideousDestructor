@@ -81,7 +81,7 @@ class DoomguyLoadout:InvReset{
 		destroy();
 	}
 }
-//wait 1 tick and then select a weapon
+//wait a moment and then select a weapon
 //used to override default to fist on weapon removal
 class HDWeaponSelector:Thinker{
 	actor other;
