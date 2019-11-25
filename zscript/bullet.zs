@@ -1136,7 +1136,7 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 
 		//apply impact/tempcav damage
 		bnoextremedeath=impact<(hitactor.gibhealth<<3);
-		hitactor.damagemobj(self,target,max(impact,pen*impact*0.03),"bashing",DMG_THRUSTLESS);
+		hitactor.damagemobj(self,target,max(impact,pen*impact*0.03)*frandom(0.2,1),"bashing",DMG_THRUSTLESS);
 		if(!hitactor)return;
 		bnoextremedeath=true;
 
