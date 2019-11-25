@@ -429,8 +429,12 @@ class HDPlayerPawn:PlayerPawn{
 			&&max(abs(vel.x),abs(vel.y))>frandom(5,7)
 			&&absangle(angle,hdmath.angleto((0,0),vel.xy))>15-fallvel
 		){
-			damagemobj(self,self,random(1,3),"falling");
-			if(random(1,fallvel)>5)Disarm(self);
+			int dmg=damagemobj(self,self,random(1,3),"falling");
+			if(dmg>0){
+				if(random(1,fallvel)>5)Disarm(self);
+				A_Pain();
+			}
+			A_PlaySound("*land",CHAN_BODY);
 			A_Incapacitated();
 		}
 
