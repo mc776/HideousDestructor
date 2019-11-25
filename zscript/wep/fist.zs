@@ -282,10 +282,7 @@ class HDFist:HDWeapon replaces Fist{
 				height-18,
 				data:glt
 			);
-			if(
-				!glt.hitactor
-				||!glt.hitactor.cancollidewith(self,true)
-			){
+			if(!glt.hitactor){
 				A_ClearGrabbing();
 				return;
 			}
