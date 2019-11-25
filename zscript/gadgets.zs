@@ -447,7 +447,12 @@ hdweapon.refid "hvr";
 			A_ClearRefire();
 			if(!random(0,20))invoker.weaponstatus[HOVERPODS_BATTERY]--;
 			double rawthrust=0.0004*min(invoker.weaponstatus[HOVERPODS_BATTERY],5);
-			vel.z+=max(0,(1024+floorz-pos.z)*rawthrust);
+			vel.z+=max(0,(1024+floorz-pos.z)*
+				(
+					(hdplayerpawn(self)&&hdplayerpawn(self).overloaded>1)?
+					(rawthrust/(hdplayerpawn(self).overloaded*0.2+1))
+				:rawthrust)
+			);
 			if(pressingaltfire())A_ChangeVelocity(0.1,0,-0.2,CVF_RELATIVE);
 			int chn=(level.time&(1|2));
 			for(int i=0;i<4;i++){
