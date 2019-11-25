@@ -424,10 +424,10 @@ class HDPlayerPawn:PlayerPawn{
 
 		//trip if running down too fast
 		if(
-			fallvel>5
+			vel.z<-5
 			&&zerk<20
-			&&max(abs(vel.x),abs(vel.y))>frandom(5,7)
-			&&absangle(angle,hdmath.angleto((0,0),vel.xy))>15-fallvel
+			&&max(abs(vel.x),abs(vel.y))>frandom(7,12)
+			&&absangle(angle,hdmath.angleto((0,0),vel.xy))>10-fallvel
 		){
 			int dmg=damagemobj(self,self,random(1,3),"falling");
 			if(dmg>0){
