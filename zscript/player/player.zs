@@ -421,6 +421,19 @@ class HDPlayerPawn:PlayerPawn{
 				if(random(1,fallvel)>7)Disarm(self);
 			}
 		}
+
+		//trip if running down too fast
+		if(
+			fallvel>5
+			&&zerk<20
+			&&max(abs(vel.x),abs(vel.y))>frandom(5,7)
+			&&absangle(angle,hdmath.angleto((0,0),vel.xy))>15-fallvel
+		){
+			damagemobj(self,self,random(1,3),"falling");
+			if(random(1,fallvel)>5)Disarm(self);
+			A_Incapacitated();
+		}
+
 		stunned=max(stunned-1,0);
 
 
