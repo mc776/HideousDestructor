@@ -299,17 +299,18 @@ extend class HDPlayerPawn{
 			if(health<90)givebody(1);
 			damage=1;
 		}else if(
-			mod=="staples"||
-			mod=="falling"||
-			mod=="drowning"||
-			mod=="slime"
+			mod=="staples"
+			||mod=="falling"
+			||mod=="drowning"
+			||mod=="slime"
 		){
 			//noarmour
 			flags|=DMG_NO_ARMOR;
 
 			if(mod=="falling"){
 				if(!source)return -1; //ignore regular fall damage
-				else tostun+=damage*random(20,25);
+				tostun+=damage*random(30,40);
+				damage>>=2;
 			}
 			else if(mod=="slime"&&!random(0,99))aggravateddamage++;
 		}else if(mod=="bashing"){
@@ -458,8 +459,10 @@ extend class HDPlayerPawn{
 			health>0
 			&&player
 			&&incapacitated<1
-			&&health<random(-1,max((originaldamage>>3),3))
 			&&(
+				health<random(-1,max((originaldamage>>3),3))
+				||tostun>(health<<1)
+			)&&(
 				mod!="bleedout"
 				||bloodloss>random(2048,3072)
 			)
