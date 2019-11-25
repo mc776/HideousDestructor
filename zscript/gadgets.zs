@@ -356,7 +356,7 @@ class VisorLight:PointLight{
 //-------------------------------------------------
 // We have no room for parachutes.
 //-------------------------------------------------
-class HoverDevice:HDWeapon{
+class HoverDevice:HDCellWeapon{
 	default{
 		tag "personal hover device";
 		hdweapon.barrelsize 20,12,12;
@@ -407,9 +407,9 @@ hdweapon.refid "hvr";
 	pods:
 		TNT1 A 1 A_Pods();
 		wait;
-	select:
+	select0:
 		TNT1 A 0 A_Overlay(10,"pods");
-		goto super::select;
+		goto super::select0;
 	ready:
 		TNT1 A 1 A_WeaponReady(WRF_ALLOWRELOAD|WRF_ALLOWUSER3|WRF_ALLOWUSER4);
 		wait;
@@ -481,7 +481,11 @@ hdweapon.refid "hvr";
 				double thrustamt=max(0,(1024+it.pos.z-pos.z)*rawthrust)*10/it.mass;
 				it.vel+=(it.pos-pos).unit()*thrustamt;
 				it.A_GiveInventory("Heat",thrustamt*frandom(1,30));
-				it.damagemobj(invoker,self,thrustamt*30,"Bashing");
+				if(!random(0,10)){
+					HDActor.ArcZap(it);
+					it.damagemobj(invoker,self,thrustamt*frandom(10,40),"Electro");
+				}
+				if(it)it.damagemobj(invoker,self,thrustamt*frandom(5,30),"Bashing");
 			}
 		}
 		TNT1 A 0 A_JumpIf(pressingfire()||pressingaltfire(),"hold");
