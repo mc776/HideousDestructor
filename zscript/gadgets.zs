@@ -348,3 +348,172 @@ class VisorLight:PointLight{
 
 
 
+
+
+
+
+
+//-------------------------------------------------
+// We have no room for parachutes.
+//-------------------------------------------------
+class HoverDevice:HDWeapon{
+	default{
+		tag "personal hover device";
+		hdweapon.barrelsize 20,12,12;
+		inventory.pickupmessage "You got the hover device!";
+		+inventory.invbar
++hdweapon.debugonly
+hdweapon.refid "hvr";
+	}
+	override double weaponbulk(){
+		return 500+(weaponstatus[HOVERPODS_BATTERY]>=0?ENC_BATTERY_LOADED:0);
+	}
+	actor pods[4];
+	action void A_Pods(){
+		for(int i=0;i<4;i++){
+			if(!invoker.pods[i]){
+				invoker.pods[i]=spawn("HoverPod",pos);
+				invoker.pods[i].angle=90*i+45;
+				invoker.pods[i].master=self;
+			}
+		}
+	}
+	override string gethelptext(){
+		return
+		WEPHELP_FIRE.."  Ascend\n"
+		..WEPHELP_ALTFIRE.."  Forwards\n"
+		..WEPHELP_RELOADRELOAD
+		..WEPHELP_UNLOADUNLOAD
+		;
+	}
+	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
+		if(sb.hudlevel==1){
+			sb.drawbattery(-54,-4,sb.DI_SCREEN_CENTER_BOTTOM,reloadorder:true);
+			sb.drawnum(hpl.countinv("HDBattery"),-46,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+		}
+		if(!hdw.weaponstatus[1])sb.drawstring(
+			sb.mamountfont,"00000",(-16,-9),sb.DI_TEXT_ALIGN_RIGHT|
+			sb.DI_TRANSLATABLE|sb.DI_SCREEN_CENTER_BOTTOM,
+			Font.CR_DARKGRAY
+		);else if(hdw.weaponstatus[1]>0)sb.drawwepnum(hdw.weaponstatus[1],20);
+	}
+	override void InitializeWepStats(bool idfa){
+		weaponstatus[HOVERPODS_BATTERY]=20;
+	}
+	states{
+	spawn:
+		ROCK A -1;
+		stop;
+	pods:
+		TNT1 A 1 A_Pods();
+		wait;
+	select:
+		TNT1 A 0 A_Overlay(10,"pods");
+		goto super::select;
+	ready:
+		TNT1 A 1 A_WeaponReady(WRF_ALLOWRELOAD|WRF_ALLOWUSER3|WRF_ALLOWUSER4);
+		wait;
+
+	user4:
+	unload:
+		TNT1 A 20{
+			int bat=invoker.weaponstatus[HOVERPODS_BATTERY];
+			if(bat<0){
+				setweaponstate("nope");
+				return;
+			}
+			if(pressingunload())invoker.weaponstatus[0]|=HOVERPODF_UNLOADONLY;
+			else invoker.weaponstatus[0]&=~HOVERPODF_UNLOADONLY;
+
+			HDMagAmmo.SpawnMag(self,"HDBattery",bat);
+			invoker.weaponstatus[HOVERPODS_BATTERY]=-1;
+		}
+		TNT1 A 0 A_JumpIf(invoker.weaponstatus[0]&HOVERPODF_UNLOADONLY,"nope");
+	reload:
+		TNT1 A 20 A_JumpIf(invoker.weaponstatus[HOVERPODS_BATTERY]>=0,"unload");
+		TNT1 A 10{
+			let mmm=hdmagammo(findinventory("HDBattery"));
+			if(!mmm||mmm.amount<1){setweaponstate("nope");return;}
+			invoker.weaponstatus[HOVERPODS_BATTERY]=mmm.TakeMag(true);
+		}
+		goto nope;
+
+	altfire:
+	althold:
+	fire:
+	hold:
+		TNT1 A 1{
+			if(invoker.weaponstatus[HOVERPODS_BATTERY]<1)return;
+			A_ClearRefire();
+			if(!random(0,20))invoker.weaponstatus[HOVERPODS_BATTERY]--;
+			double rawthrust=0.0004*min(invoker.weaponstatus[HOVERPODS_BATTERY],5);
+			vel.z+=max(0,(1024+floorz-pos.z)*rawthrust);
+			if(pressingaltfire())A_ChangeVelocity(0.1,0,-0.2,CVF_RELATIVE);
+			int chn=(level.time&(1|2));
+			for(int i=0;i<4;i++){
+				if(!!invoker.pods[i]){
+					let aaa=invoker.pods[i];
+					aaa.A_PlaySound(!chn?"world/explode":"misc/fwoosh",chn,pitch:1+0.2*chn);
+					if(!chn){
+						let bbb=spawn("HDExplosion",(aaa.pos.xy,aaa.pos.z-20),ALLOW_REPLACE);
+						bbb.vel.z-=20;
+						bbb.vel.xy+=angletovector(aaa.angle+angle,6);
+					}
+				}
+			}
+			if(!chn)A_AlertMonsters();
+
+			blockthingsiterator itt=blockthingsiterator.create(self,128);
+			while(itt.Next()){
+				actor it=itt.thing;
+				if(
+					it.bdontthrust
+					||it==self
+					||(!it.bsolid&&!it.bshootable)
+					||!it.mass
+					||it.pos.z>pos.z
+				)continue;
+				double thrustamt=max(0,(1024+it.pos.z-pos.z)*rawthrust)*10/it.mass;
+				it.vel+=(it.pos-pos).unit()*thrustamt;
+				it.A_GiveInventory("Heat",thrustamt*frandom(1,30));
+				it.damagemobj(invoker,self,thrustamt*30,"Bashing");
+			}
+		}
+		TNT1 A 0 A_JumpIf(pressingfire()||pressingaltfire(),"hold");
+		goto nope;
+	}
+}
+const HOVERPOD_DIST=16.;
+enum HoverNums{
+	HOVERPODS_BATTERY=1,
+
+	HOVERPODF_UNLOADONLY=1,
+}
+class HoverPod:Actor{
+	default{
+		-solid
+		+nogravity
+		+nointeraction
+		+forceybillboard
+		height 8;
+		radius 4;
+	}
+	states{
+	spawn:
+		ROCK A 1 nodelay{
+			if(
+				master
+				&&master.player
+				&&(master.player.readyweapon is "HoverDevice")
+			){
+				double podz=master.pos.z+master.height-20;
+				setorigin((master.pos.xy+
+					angletovector(angle+master.angle,HOVERPOD_DIST),
+				podz),true);
+			}else{
+				destroy();
+			}
+		}
+		wait;
+	}
+}

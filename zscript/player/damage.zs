@@ -309,8 +309,8 @@ extend class HDPlayerPawn{
 
 			if(mod=="falling"){
 				if(!source)return -1; //ignore regular fall damage
-				tostun+=damage*random(30,40);
-				damage>>=2;
+				tostun+=damage*random(20,30);
+				damage>>=1;
 			}
 			else if(mod=="slime"&&!random(0,99))aggravateddamage++;
 		}else if(mod=="bashing"){
