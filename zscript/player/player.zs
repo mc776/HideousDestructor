@@ -421,26 +421,6 @@ class HDPlayerPawn:PlayerPawn{
 				if(random(1,fallvel)>7)Disarm(self);
 			}
 		}
-
-		//trip if running down too fast
-		if(
-			vel.z<-5
-			&&zerk<20
-			&&max(abs(vel.x),abs(vel.y))>frandom(7,12)
-			&&(
-				max(abs(vel.x),abs(vel.y))>9
-				||absangle(angle,hdmath.angleto((0,0),vel.xy))>10-fallvel
-			)
-		){
-			int dmg=damagemobj(self,self,random(1,3),"falling");
-			if(dmg>0){
-				if(random(1,fallvel)>5)Disarm(self);
-				A_Pain();
-			}
-			A_PlaySound("*land",CHAN_BODY);
-			A_Incapacitated();
-		}
-
 		stunned=max(stunned-1,0);
 
 
