@@ -114,9 +114,10 @@ extend class HDPlayerPawn{
 			if(
 				playeringame[i]
 				&&players[i].mo
-				&&players[i].mo.health>0
+				&&players[i].mo.health>HDCONST_MINSTANDHEALTH
 				&&hdplayerpawn(players[i].mo)
 				&&hdplayerpawn(players[i].mo).incapacitated<1
+				&&hdplayerpawn(players[i].mo).incaptimer>10
 				&&(
 					!teamplay
 					||players[i].getteam()==player.getteam()

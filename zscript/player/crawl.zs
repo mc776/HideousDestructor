@@ -7,6 +7,7 @@ extend class HDHandlers{
 		ppp.A_Incapacitated(hdplayerpawn.HDINCAP_FAKING);
 	}
 }
+const HDCONST_MINSTANDHEALTH=12;
 extend class HDPlayerPawn{
 	int incapacitated;
 	int incaptimer;
@@ -71,8 +72,8 @@ extend class HDPlayerPawn{
 		}
 		if(
 			incaptimer>0
-			&&health>12
-			&&health<15
+			&&health>HDCONST_MINSTANDHEALTH
+			&&health<HDCONST_MINSTANDHEALTH+3
 		){
 			damagemobj(null,null,min(5,health-10),"maxhpdrain");
 		}
@@ -243,7 +244,7 @@ class HDIncapWeapon:SelfBandage{
 	altfire:
 	althold:
 		TNT1 A 0 A_JumpIf(invoker.weaponstatus[0]&INCF_PINOUT,"holdfrag");
-		TNT1 A 10 A_JumpIf(health<12&&!random(0,7),"nope");
+		TNT1 A 10 A_JumpIf(health<HDCONST_MINSTANDHEALTH&&!random(0,7),"nope");
 		TNT1 A 20 A_PlaySound("weapons/pocket",CHAN_WEAPON);
 		TNT1 A 0 A_JumpIf(!countinv(invoker.inventorytype),"fumbleforsomething");
 		TNT1 A 0 A_JumpIf(invoker.inventorytype=="HDFragGrenadeAmmo","pullpin");
@@ -272,7 +273,7 @@ class HDIncapWeapon:SelfBandage{
 		}
 		goto nope;
 	pullpin:
-		TNT1 A 3 A_JumpIf(health<12&&!random(0,4),"readyend");
+		TNT1 A 3 A_JumpIf(health<HDCONST_MINSTANDHEALTH&&!random(0,4),"readyend");
 		TNT1 A 0{
 			if(!countinv(invoker.inventorytype))return;
 			invoker.weaponstatus[0]|=INCF_PINOUT;
@@ -292,7 +293,7 @@ class HDIncapWeapon:SelfBandage{
 		goto readyend;
 	pinbackin:
 		TNT1 A 10;
-		TNT1 A 0 A_JumpIf(health<12&&!random(0,2),"holdfrag");
+		TNT1 A 0 A_JumpIf(health<HDCONST_MINSTANDHEALTH&&!random(0,2),"holdfrag");
 		TNT1 A 20{
 			A_PlaySound("weapons/fragpinout",CHAN_WEAPON);
 			invoker.weaponstatus[0]&=~INCF_PINOUT;
