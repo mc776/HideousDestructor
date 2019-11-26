@@ -94,7 +94,6 @@ class HDWoundFixer:HDWeapon{
 		TNT1 A 4{
 			if(player&&!(player.oldbuttons&BT_RELOAD))A_DropInventory("HDArmourWorn");
 			A_ClearRefire();
-			setweaponstate("nope");
 		}
 		goto readyend;
 	}
