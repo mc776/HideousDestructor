@@ -58,7 +58,7 @@ extend class HDPlayerPawn{
 		speed=0.02;
 		userange=20;
 		if(
-			health>13
+			health>HDCONST_MINSTANDHEALTH+1
 			&&incapacitated>0
 			&&incaptimer<1
 			&&(

@@ -523,7 +523,7 @@ class RedSphere:HDInvRandomSpawner replaces BlurSphere{
 		dropitem "BluePotion",256,2;
 	}
 }
-class BlueSphere:HDActor replaces Soulsphere{
+class BlueSphere:HDUPK replaces Soulsphere{
 	default{
 		//$Category "Items/Hideous Destructor/Magic"
 		//$Title "Soul Sphere"
@@ -534,32 +534,32 @@ class BlueSphere:HDActor replaces Soulsphere{
 		scale 0.8;
 		stamina 777;
 	}
-	override bool used(actor user){
-		if(bmissileevenmore)return false;
-		bmissileevenmore=true;
+	override void A_HDUPKGive(){
+		if(!picktarget||bnointeraction)return;
+		bnointeraction=true;
 		PlantBit.SpawnPlants(self,70,144);
-		let hdp=hdplayerpawn(user);
+		let hdp=hdplayerpawn(picktarget);
 		if(hdp)hdp.regenblues+=stamina;
-		else user.givebody(stamina);
-		setstatelabel("grab");
-		return true;
+		else picktarget.givebody(stamina);
+		setstatelabel("fadeout");
 	}
 	states{
 	spawn:
 		SOUL ABCDCB random(2,7) bright light("SOULSPHERE");
 		loop;
-	grab:
+	fadeout:
 		---- A 0{
-			vel.z++;
+			vel.z=0.6;
 			gravity=0;
 			A_PlaySound("misc/p_pkup",CHAN_BODY);
 		}
 		---- A 1 bright{
+			vel.xy*=0.6;
 			A_SetScale(scale.x*1.01);
-			A_FadeOut(0.1);
+			A_FadeOut(0.06);
 			A_SpawnItemEx("HDGunSmoke",
-				frandom(-4,4),frandom(-4,4),frandom(6,24),
-				frandom(-1,1),frandom(-1,1),1,frandom(0,360),
+				frandom(-1,1),0,frandom(3,6),
+				frandom(-1,1),0,1,frandom(0,360),
 				SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM|SXF_ABSOLUTEPOSITION
 			);
 		}wait;
@@ -643,29 +643,28 @@ class GreenSphere:BlueSphere replaces Invulnerabilitysphere{
 		height 12;
 		radius 12;
 	}
-	override bool used(actor user){
-		if(health<1)return false;
-		user.A_GiveInventory("HDInvuln");
-		user.A_Quake(3,26,0,220,"none");
-		blockthingsiterator itt=blockthingsiterator.create(user,256);
+	override void A_HDUPKGive(){
+		if(bnointeraction||health<1||!picktarget)return;
+		bnointeraction=true;
+		picktarget.A_GiveInventory("HDInvuln");
+		picktarget.A_Quake(3,26,0,220,"none");
+		blockthingsiterator itt=blockthingsiterator.create(picktarget,256);
 		while(itt.Next()){
-			A_Immolate(itt.thing,user,76);
+			A_Immolate(itt.thing,picktarget,76);
 		}
-
 		for(int i=45;i<360;i+=90){
-			user.A_SpawnItemEx("HDExplosion",
-				4,-4,20,user.vel.x,user.vel.y,user.vel.z+1,i,
+			picktarget.A_SpawnItemEx("HDExplosion",
+				4,-4,20,picktarget.vel.x,picktarget.vel.y,picktarget.vel.z+1,i,
 				SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS|SXF_ABSOLUTEMOMENTUM
 			);
-			user.A_SpawnItemEx("HDSmokeChunk",0,0,0,
-				user.vel.x+frandom(-12,12),
-				user.vel.y+random(-12,12),
-				user.vel.z+frandom(4,16),
+			picktarget.A_SpawnItemEx("HDSmokeChunk",0,0,0,
+				picktarget.vel.x+frandom(-12,12),
+				picktarget.vel.y+random(-12,12),
+				picktarget.vel.z+frandom(4,16),
 				0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM
 			);
 		}
 		destroy();
-		return true;
 	}
 	states{
 	spawn:
@@ -673,11 +672,14 @@ class GreenSphere:BlueSphere replaces Invulnerabilitysphere{
 		loop;
 	death.telefrag:
 		TNT1 A 0{
-			if(target)used(target);
-			else setstatelabel("death");
+			if(target){
+				picktarget=target;
+				A_HDUPKGive();
+			}else setstatelabel("death");
 		}stop;
 	death:
 		TNT1 A 0{
+			A_CallSpecial(special,args[0],args[1],args[2],args[3],args[4]);
 			for(int i=45;i<360;i+=90){
 				A_SpawnItemEx("HDExplosion",
 					4,-4,20,vel.x,vel.y,vel.z+1,i,
