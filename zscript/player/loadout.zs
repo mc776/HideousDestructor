@@ -143,6 +143,7 @@ const HDLD_LITEAMP="lit";
 const HDLD_LADDER= "lad";
 const HDLD_DOORBUS="dbs";
 const HDLD_IEDKIT= "ied";
+const HDLD_JETPACK="jet";
 const HDLD_BACKPAK="bak";
 
 const HDLD_KEY=    "key";

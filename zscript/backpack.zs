@@ -19,7 +19,8 @@ class HDBackpack:HDWeapon{
 		//$Title "Backpack"
 		//$Sprite "BPAKA0"
 
-		+inventory.invbar +weapon.wimpy_weapon
+		+inventory.invbar
+		+weapon.wimpy_weapon
 		+weapon.no_auto_switch
 		+hdweapon.droptranslation
 		+hdweapon.fitsinbackpack

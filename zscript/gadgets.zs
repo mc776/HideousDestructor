@@ -357,22 +357,22 @@ class VisorLight:PointLight{
 //-------------------------------------------------
 // We have no room for parachutes.
 //-------------------------------------------------
-class HoverDevice:HDCellWeapon{
+class HDJetPack:HDCellWeapon{
 	default{
-		tag "personal hover device";
-		hdweapon.barrelsize 20,12,12;
-		inventory.pickupmessage "You got the hover device!";
+		tag "jetpack";
+		hdweapon.barrelsize 22,24,14;
+		inventory.pickupmessage "You got the jetpack!";
 		+inventory.invbar
 		+hdweapon.dontnull
-+hdweapon.debugonly
-hdweapon.refid "hvr";
+		+weapon.wimpy_weapon
+		hdweapon.refid HDLD_JETPACK;
 	}
 	override double weaponbulk(){
-		return 500+(weaponstatus[HOVERPODS_BATTERY]>=0?ENC_BATTERY_LOADED:0);
+		return 500+(weaponstatus[JETPACKS_BATTERY]>=0?ENC_BATTERY_LOADED:0);
 	}
 	actor pods[4];
 	action void A_Pods(){
-		bool podson=invoker.weaponstatus[0]&HOVERPODF_ON;
+		bool podson=invoker.weaponstatus[0]&JETPACKF_ON;
 		for(int i=0;i<4;i++){
 			if(!invoker.pods[i]){
 				invoker.pods[i]=spawn("HoverPod",pos);
@@ -382,12 +382,12 @@ hdweapon.refid "hvr";
 			if(podson)invoker.pods[i].A_PlaySound("misc/fwoosh",((level.time&(1|2))+i)%4,0.2,pitch:1.6+0.2*(level.time&(1|2)));
 		}
 		if(podson){
-			if(invoker.weaponstatus[HOVERPODS_BATTERYCOUNTER]>HOVERPOD_COUNTERMAX){
-				invoker.weaponstatus[HOVERPODS_BATTERY]--;
-				invoker.weaponstatus[HOVERPODS_BATTERYCOUNTER]=0;
-			}else invoker.weaponstatus[HOVERPODS_BATTERYCOUNTER]++;
+			if(invoker.weaponstatus[JETPACKS_BATTERYCOUNTER]>JETPACK_COUNTERMAX){
+				invoker.weaponstatus[JETPACKS_BATTERY]--;
+				invoker.weaponstatus[JETPACKS_BATTERYCOUNTER]=0;
+			}else invoker.weaponstatus[JETPACKS_BATTERYCOUNTER]++;
 		}
-		if(invoker.weaponstatus[HOVERPODS_BATTERY]<1)invoker.weaponstatus[0]&=~HOVERPODF_ON;
+		if(invoker.weaponstatus[JETPACKS_BATTERY]<1)invoker.weaponstatus[0]&=~JETPACKF_ON;
 	}
 	override string gethelptext(){
 		return
@@ -410,8 +410,8 @@ hdweapon.refid "hvr";
 		);else if(hdw.weaponstatus[1]>0)sb.drawwepnum(hdw.weaponstatus[1],20);
 	}
 	override void InitializeWepStats(bool idfa){
-		weaponstatus[HOVERPODS_BATTERY]=20;
-		weaponstatus[HOVERPODS_BATTERYCOUNTER]=0;
+		weaponstatus[JETPACKS_BATTERY]=20;
+		weaponstatus[JETPACKS_BATTERYCOUNTER]=0;
 	}
 	states{
 	spawn:
@@ -424,7 +424,7 @@ hdweapon.refid "hvr";
 		TNT1 A 0 A_Overlay(10,"pods");
 		goto super::select0;
 	deselect0:
-		TNT1 A 0{invoker.weaponstatus[0]&=~HOVERPODF_ON;}
+		TNT1 A 0{invoker.weaponstatus[0]&=~JETPACKF_ON;}
 		goto super::deselect0;
 	ready:
 		TNT1 A 1 A_WeaponReady(WRF_ALLOWRELOAD|WRF_ALLOWUSER2|WRF_ALLOWUSER3|WRF_ALLOWUSER4);
@@ -433,35 +433,35 @@ hdweapon.refid "hvr";
 	user4:
 	unload:
 		TNT1 A 20{
-			int bat=invoker.weaponstatus[HOVERPODS_BATTERY];
+			int bat=invoker.weaponstatus[JETPACKS_BATTERY];
 			if(bat<0){
 				setweaponstate("nope");
 				return;
 			}
-			if(pressingunload())invoker.weaponstatus[0]|=HOVERPODF_UNLOADONLY;
-			else invoker.weaponstatus[0]&=~HOVERPODF_UNLOADONLY;
+			if(pressingunload())invoker.weaponstatus[0]|=JETPACKF_UNLOADONLY;
+			else invoker.weaponstatus[0]&=~JETPACKF_UNLOADONLY;
 
 			HDMagAmmo.SpawnMag(self,"HDBattery",bat);
-			invoker.weaponstatus[HOVERPODS_BATTERY]=-1;
+			invoker.weaponstatus[JETPACKS_BATTERY]=-1;
 		}
-		TNT1 A 0 A_JumpIf(invoker.weaponstatus[0]&HOVERPODF_UNLOADONLY,"nope");
+		TNT1 A 0 A_JumpIf(invoker.weaponstatus[0]&JETPACKF_UNLOADONLY,"nope");
 	reload:
-		TNT1 A 20 A_JumpIf(invoker.weaponstatus[HOVERPODS_BATTERY]>=0,"unload");
+		TNT1 A 20 A_JumpIf(invoker.weaponstatus[JETPACKS_BATTERY]>=0,"unload");
 		TNT1 A 10{
 			let mmm=hdmagammo(findinventory("HDBattery"));
 			if(!mmm||mmm.amount<1){setweaponstate("nope");return;}
-			invoker.weaponstatus[HOVERPODS_BATTERY]=mmm.TakeMag(true);
+			invoker.weaponstatus[JETPACKS_BATTERY]=mmm.TakeMag(true);
 		}
 		goto nope;
 
 	firemode:
-		TNT1 A 0 A_JumpIf(invoker.weaponstatus[0]&HOVERPODF_ON,"turnoff");
+		TNT1 A 0 A_JumpIf(invoker.weaponstatus[0]&JETPACKF_ON,"turnoff");
 	turnon:
 		TNT1 A 10 A_PlaySound("weapons/vulcanup",CHAN_WEAPON);
-		TNT1 A 0{invoker.weaponstatus[0]|=HOVERPODF_ON;}
+		TNT1 A 0{invoker.weaponstatus[0]|=JETPACKF_ON;}
 		goto readyend;
 	turnoff:
-		TNT1 A 0{invoker.weaponstatus[0]&=~HOVERPODF_ON;}
+		TNT1 A 0{invoker.weaponstatus[0]&=~JETPACKF_ON;}
 		goto nope;
 
 	altfire:
@@ -469,17 +469,17 @@ hdweapon.refid "hvr";
 	fire:
 	hold:
 		TNT1 A 1{
-			if(invoker.weaponstatus[HOVERPODS_BATTERY]<1)return;
-			if(!(invoker.weaponstatus[0]&HOVERPODF_ON)){
+			if(invoker.weaponstatus[JETPACKS_BATTERY]<1)return;
+			if(!(invoker.weaponstatus[0]&JETPACKF_ON)){
 				setweaponstate("turnon");
 				return;
 			}
 			A_ClearRefire();
-			if(invoker.weaponstatus[HOVERPODS_BATTERYCOUNTER]>HOVERPOD_COUNTERMAX){
-				invoker.weaponstatus[HOVERPODS_BATTERY]--;
-				invoker.weaponstatus[HOVERPODS_BATTERYCOUNTER]=0;
-			}else invoker.weaponstatus[HOVERPODS_BATTERYCOUNTER]+=HOVERPOD_COUNTERUSE;
-			double rawthrust=0.0004*min(invoker.weaponstatus[HOVERPODS_BATTERY],5);
+			if(invoker.weaponstatus[JETPACKS_BATTERYCOUNTER]>JETPACK_COUNTERMAX){
+				invoker.weaponstatus[JETPACKS_BATTERY]--;
+				invoker.weaponstatus[JETPACKS_BATTERYCOUNTER]=0;
+			}else invoker.weaponstatus[JETPACKS_BATTERYCOUNTER]+=JETPACK_COUNTERUSE;
+			double rawthrust=0.0004*min(invoker.weaponstatus[JETPACKS_BATTERY],5);
 			vel.z+=max(0,(1024+floorz-pos.z)*
 				(
 					(hdplayerpawn(self)&&hdplayerpawn(self).overloaded>1)?
@@ -529,16 +529,16 @@ hdweapon.refid "hvr";
 		goto nope;
 	}
 }
-const HOVERPOD_DIST=16.;
+const JETPACK_DIST=16.;
 enum HoverNums{
-	HOVERPODS_BATTERY=1,
-	HOVERPODS_BATTERYCOUNTER=2,
+	JETPACKS_BATTERY=1,
+	JETPACKS_BATTERYCOUNTER=2,
 
-	HOVERPODF_UNLOADONLY=1,
-	HOVERPODF_ON=2,
+	JETPACKF_UNLOADONLY=1,
+	JETPACKF_ON=2,
 
-	HOVERPOD_COUNTERMAX=10000,
-	HOVERPOD_COUNTERUSE=HOVERPOD_COUNTERMAX/20,
+	JETPACK_COUNTERMAX=10000,
+	JETPACK_COUNTERUSE=JETPACK_COUNTERMAX/20,
 }
 class HoverPod:Actor{
 	default{
@@ -555,12 +555,12 @@ class HoverPod:Actor{
 			if(
 				master
 				&&master.player
-				&&(master.player.readyweapon is "HoverDevice")
+				&&(master.player.readyweapon is "HDJetPack")
 			){
 				double podz=master.pos.z+master.height-20;
-				if(hdweapon(master.player.readyweapon).weaponstatus[0]&HOVERPODF_ON)podz+=frandom(-0.5,0.5);
+				if(hdweapon(master.player.readyweapon).weaponstatus[0]&JETPACKF_ON)podz+=frandom(-0.5,0.5);
 				setorigin((master.pos.xy+
-					angletovector(angle+master.angle,HOVERPOD_DIST),
+					angletovector(angle+master.angle,JETPACK_DIST),
 				podz),true);
 			}else{
 				destroy();
