@@ -360,7 +360,11 @@ class HDMobster:IdleDummy{
 				destroy();return;
 			}
 			bfriendly=master.bfriendly;
-			if(bfriendly)return;
+			if(
+				bfriendly
+				||master.instatesequence(master.curstate,master.resolvestate("falldown"))
+				||master.instatesequence(master.curstate,master.resolvestate("pain"))
+			)return;
 			if(master.health<1){
 				threat=null;
 				return;
