@@ -381,12 +381,19 @@ hdweapon.refid "hvr";
 			}
 			if(podson)invoker.pods[i].A_PlaySound("misc/fwoosh",((level.time&(1|2))+i)%4,0.2,pitch:1.6+0.2*(level.time&(1|2)));
 		}
+		if(podson){
+			if(invoker.weaponstatus[HOVERPODS_BATTERYCOUNTER]>HOVERPOD_COUNTERMAX){
+				invoker.weaponstatus[HOVERPODS_BATTERY]--;
+				invoker.weaponstatus[HOVERPODS_BATTERYCOUNTER]=0;
+			}else invoker.weaponstatus[HOVERPODS_BATTERYCOUNTER]++;
+		}
 		if(invoker.weaponstatus[HOVERPODS_BATTERY]<1)invoker.weaponstatus[0]&=~HOVERPODF_ON;
 	}
 	override string gethelptext(){
 		return
 		WEPHELP_FIRE.."  Ascend\n"
 		..WEPHELP_ALTFIRE.."  Forwards\n"
+		..WEPHELP_FIREMODE.."  On/Off\n"
 		..WEPHELP_RELOADRELOAD
 		..WEPHELP_UNLOADUNLOAD
 		;
@@ -468,10 +475,10 @@ hdweapon.refid "hvr";
 				return;
 			}
 			A_ClearRefire();
-			if(invoker.weaponstatus[HOVERPODS_BATTERYCOUNTER]>20){
+			if(invoker.weaponstatus[HOVERPODS_BATTERYCOUNTER]>HOVERPOD_COUNTERMAX){
 				invoker.weaponstatus[HOVERPODS_BATTERY]--;
 				invoker.weaponstatus[HOVERPODS_BATTERYCOUNTER]=0;
-			}else invoker.weaponstatus[HOVERPODS_BATTERYCOUNTER]++;
+			}else invoker.weaponstatus[HOVERPODS_BATTERYCOUNTER]+=HOVERPOD_COUNTERUSE;
 			double rawthrust=0.0004*min(invoker.weaponstatus[HOVERPODS_BATTERY],5);
 			vel.z+=max(0,(1024+floorz-pos.z)*
 				(
@@ -529,6 +536,9 @@ enum HoverNums{
 
 	HOVERPODF_UNLOADONLY=1,
 	HOVERPODF_ON=2,
+
+	HOVERPOD_COUNTERMAX=10000,
+	HOVERPOD_COUNTERUSE=HOVERPOD_COUNTERMAX/20,
 }
 class HoverPod:Actor{
 	default{
