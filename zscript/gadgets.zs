@@ -399,6 +399,7 @@ hdweapon.refid "hvr";
 	}
 	override void InitializeWepStats(bool idfa){
 		weaponstatus[HOVERPODS_BATTERY]=20;
+		stamina=0;
 	}
 	states{
 	spawn:
@@ -445,7 +446,10 @@ hdweapon.refid "hvr";
 		TNT1 A 1{
 			if(invoker.weaponstatus[HOVERPODS_BATTERY]<1)return;
 			A_ClearRefire();
-			if(!random(0,20))invoker.weaponstatus[HOVERPODS_BATTERY]--;
+			if(invoker.stamina>20){
+				invoker.weaponstatus[HOVERPODS_BATTERY]--;
+				invoker.stamina=0;
+			}else invoker.stamina++;
 			double rawthrust=0.0004*min(invoker.weaponstatus[HOVERPODS_BATTERY],5);
 			vel.z+=max(0,(1024+floorz-pos.z)*
 				(
@@ -454,6 +458,10 @@ hdweapon.refid "hvr";
 				:rawthrust)
 			);
 			if(pressingaltfire())A_ChangeVelocity(0.1,0,-0.2,CVF_RELATIVE);
+			else if(vel.xy!=(0,0)){
+				vel.x-=min(0.1,abs(vel.x));
+				vel.y-=min(0.1,abs(vel.y));
+			}
 			int chn=(level.time&(1|2));
 			for(int i=0;i<4;i++){
 				if(!!invoker.pods[i]){
