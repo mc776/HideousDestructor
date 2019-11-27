@@ -91,7 +91,7 @@ class HDWoundFixer:HDWeapon{
 	}
 	//used for injectors
 	action void A_TakeInjector(class<inventory> injectortype){
-		let mmm=HDMagAmmo(findinventory(invoker.inventorytype));
+		let mmm=HDMagAmmo(findinventory(injectortype));
 		if(mmm){
 			mmm.amount--;
 			if(mmm.amount<1)mmm.destroy();
