@@ -363,6 +363,7 @@ class HoverDevice:HDCellWeapon{
 		hdweapon.barrelsize 20,12,12;
 		inventory.pickupmessage "You got the hover device!";
 		+inventory.invbar
+		+hdweapon.dontnull
 +hdweapon.debugonly
 hdweapon.refid "hvr";
 	}

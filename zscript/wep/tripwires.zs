@@ -23,6 +23,8 @@ class Tripwire:HDWeapon{
 	class<weapon> weptype;
 	property weptype:weptype;
 	default{
+		+hdweapon.dontnull
+
 		//adding the frag grenade defaults here to prevent needless crashes
 		weapon.selectionorder 1021;
 		tripwire.ammotype "HDFragGrenadeAmmo";

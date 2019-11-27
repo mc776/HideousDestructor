@@ -431,13 +431,10 @@ class HDPlayerPawn:PlayerPawn{
 		else runwalksprint=-1;
 
 		//check if hands free
-		if(
-			(player.readyweapon is "HDFist")
-			||(player.readyweapon is "HDFragGrenades")
-			||(player.readyweapon is "HoverDevice")
-			||(player.readyweapon is "NullWeapon")
-			||(player.readyweapon is "Tripwire")
-		)barehanded=true;else barehanded=false;
+		barehanded=(
+			hdweapon(player.readyweapon)
+			&&hdweapon(player.readyweapon).bdontnull
+		);
 
 		//reduce stepheight if crouched
 		if(height<40 && !barehanded) maxstepheight=12;

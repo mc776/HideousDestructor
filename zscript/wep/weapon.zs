@@ -23,6 +23,7 @@ class HDWeapon:Weapon{
 	flagdef DontDisarm:HDWeaponFlags,9;
 	flagdef DebugOnly:HDWeaponFlags,10;
 	flagdef IgnoreLoadoutAmount:HDWeaponFlags,11;
+	flagdef DontNull:HDWeaponFlags,12;
 
 	double barrellength;
 	double barrelwidth;
@@ -860,6 +861,7 @@ class NullWeapon:HDWeapon{
 		+nointeraction
 		+weapon.noalert
 		+inventory.untossable
+		+hdweapon.dontnull
 
 		//this needs to be longer than any "real" weapon to ensure there is enough space to raise
 		hdweapon.barrelsize 40,1,1;

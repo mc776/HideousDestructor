@@ -13,6 +13,7 @@ class HDGrenadeThrower:HDWeapon{
 	default{
 		+weapon.no_auto_switch +weapon.noalert +weapon.wimpy_weapon
 		+hdweapon.dontdisarm
+		+hdweapon.dontnull
 		weapon.bobstyle "Alpha";
 		weapon.bobspeed 2.5;weapon.bobrangex 0.1;weapon.bobrangey 0.5;
 
