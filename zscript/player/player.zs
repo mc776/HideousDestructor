@@ -434,6 +434,7 @@ class HDPlayerPawn:PlayerPawn{
 		if(
 			(player.readyweapon is "HDFist")
 			||(player.readyweapon is "HDFragGrenades")
+			||(player.readyweapon is "HoverDevice")
 			||(player.readyweapon is "NullWeapon")
 			||(player.readyweapon is "Tripwire")
 		)barehanded=true;else barehanded=false;

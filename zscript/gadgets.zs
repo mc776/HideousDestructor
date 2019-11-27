@@ -370,13 +370,16 @@ hdweapon.refid "hvr";
 	}
 	actor pods[4];
 	action void A_Pods(){
+		bool podson=invoker.weaponstatus[0]&HOVERPODF_ON;
 		for(int i=0;i<4;i++){
 			if(!invoker.pods[i]){
 				invoker.pods[i]=spawn("HoverPod",pos);
 				invoker.pods[i].angle=90*i+45;
 				invoker.pods[i].master=self;
 			}
+			if(podson)invoker.pods[i].A_PlaySound("misc/fwoosh",((level.time&(1|2))+i)%4,0.2,pitch:1.6+0.2*(level.time&(1|2)));
 		}
+		if(invoker.weaponstatus[HOVERPODS_BATTERY]<1)invoker.weaponstatus[0]&=~HOVERPODF_ON;
 	}
 	override string gethelptext(){
 		return
@@ -399,7 +402,7 @@ hdweapon.refid "hvr";
 	}
 	override void InitializeWepStats(bool idfa){
 		weaponstatus[HOVERPODS_BATTERY]=20;
-		stamina=0;
+		weaponstatus[HOVERPODS_BATTERYCOUNTER]=0;
 	}
 	states{
 	spawn:
@@ -411,8 +414,11 @@ hdweapon.refid "hvr";
 	select0:
 		TNT1 A 0 A_Overlay(10,"pods");
 		goto super::select0;
+	deselect0:
+		TNT1 A 0{invoker.weaponstatus[0]&=~HOVERPODF_ON;}
+		goto super::deselect0;
 	ready:
-		TNT1 A 1 A_WeaponReady(WRF_ALLOWRELOAD|WRF_ALLOWUSER3|WRF_ALLOWUSER4);
+		TNT1 A 1 A_WeaponReady(WRF_ALLOWRELOAD|WRF_ALLOWUSER2|WRF_ALLOWUSER3|WRF_ALLOWUSER4);
 		wait;
 
 	user4:
@@ -439,17 +445,31 @@ hdweapon.refid "hvr";
 		}
 		goto nope;
 
+	firemode:
+		TNT1 A 0 A_JumpIf(invoker.weaponstatus[0]&HOVERPODF_ON,"turnoff");
+	turnon:
+		TNT1 A 10 A_PlaySound("weapons/vulcanup",CHAN_WEAPON);
+		TNT1 A 0{invoker.weaponstatus[0]|=HOVERPODF_ON;}
+		goto readyend;
+	turnoff:
+		TNT1 A 0{invoker.weaponstatus[0]&=~HOVERPODF_ON;}
+		goto nope;
+
 	altfire:
 	althold:
 	fire:
 	hold:
 		TNT1 A 1{
 			if(invoker.weaponstatus[HOVERPODS_BATTERY]<1)return;
+			if(!(invoker.weaponstatus[0]&HOVERPODF_ON)){
+				setweaponstate("turnon");
+				return;
+			}
 			A_ClearRefire();
-			if(invoker.stamina>20){
+			if(invoker.weaponstatus[HOVERPODS_BATTERYCOUNTER]>20){
 				invoker.weaponstatus[HOVERPODS_BATTERY]--;
-				invoker.stamina=0;
-			}else invoker.stamina++;
+				invoker.weaponstatus[HOVERPODS_BATTERYCOUNTER]=0;
+			}else invoker.weaponstatus[HOVERPODS_BATTERYCOUNTER]++;
 			double rawthrust=0.0004*min(invoker.weaponstatus[HOVERPODS_BATTERY],5);
 			vel.z+=max(0,(1024+floorz-pos.z)*
 				(
@@ -459,8 +479,8 @@ hdweapon.refid "hvr";
 			);
 			if(pressingaltfire())A_ChangeVelocity(0.1,0,-0.2,CVF_RELATIVE);
 			else if(vel.xy!=(0,0)){
-				vel.x-=min(0.1,abs(vel.x));
-				vel.y-=min(0.1,abs(vel.y));
+				if(vel.x>0)vel.x-=min(0.1,vel.x);else vel.x-=max(-0.1,vel.x);
+				if(vel.y>0)vel.y-=min(0.1,vel.y);else vel.y-=max(-0.1,vel.y);
 			}
 			int chn=(level.time&(1|2));
 			for(int i=0;i<4;i++){
@@ -503,8 +523,10 @@ hdweapon.refid "hvr";
 const HOVERPOD_DIST=16.;
 enum HoverNums{
 	HOVERPODS_BATTERY=1,
+	HOVERPODS_BATTERYCOUNTER=2,
 
 	HOVERPODF_UNLOADONLY=1,
+	HOVERPODF_ON=2,
 }
 class HoverPod:Actor{
 	default{
@@ -524,6 +546,7 @@ class HoverPod:Actor{
 				&&(master.player.readyweapon is "HoverDevice")
 			){
 				double podz=master.pos.z+master.height-20;
+				if(hdweapon(master.player.readyweapon).weaponstatus[0]&HOVERPODF_ON)podz+=frandom(-0.5,0.5);
 				setorigin((master.pos.xy+
 					angletovector(angle+master.angle,HOVERPOD_DIST),
 				podz),true);
