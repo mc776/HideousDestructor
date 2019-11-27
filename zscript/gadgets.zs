@@ -421,7 +421,7 @@ hdweapon.refid "hvr";
 		goto super::deselect0;
 	ready:
 		TNT1 A 1 A_WeaponReady(WRF_ALLOWRELOAD|WRF_ALLOWUSER2|WRF_ALLOWUSER3|WRF_ALLOWUSER4);
-		wait;
+		goto readyend;
 
 	user4:
 	unload:
