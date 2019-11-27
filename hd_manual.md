@@ -440,6 +440,7 @@ Some items can be picked up and saved for later, as described below.
 * **Stimpack**
 
   GZDoom actor name: `PortableStimpack`
+  Loadout code: `stm`
 
   Use one of these to kickstart your system, decreasing your recovery time while slowing down your bleeding.
 
@@ -448,6 +449,7 @@ Some items can be picked up and saved for later, as described below.
 * **Medikit**
 
   GZDoom actor name: `PortableMedikit`
+  Loadout code: `med`
 
   Weapon slot: 9
 
@@ -476,6 +478,7 @@ Some items can be picked up and saved for later, as described below.
 * **Synthetic Blood**
 
   GZDoom actor name: `SecondBlood`
+  Loadout code: `bld`
 
   Weapon slot: n/a
 
@@ -490,6 +493,7 @@ Some items can be picked up and saved for later, as described below.
 * **Berserk Pack**
 
   GZDoom actor name: `PortableBerserkPack`
+  Loadout code: `zrk`
 
   Its original "on-label" use was to save someone going into shock or cardiac arrest, though it was found that sometimes it made things worse after it wore off.
 
@@ -498,6 +502,7 @@ Some items can be picked up and saved for later, as described below.
 * **Light Amplification Visor**
 
   GZDoom actor name: `PortableLiteAmp`
+  Loadout code: `lit`
 
   Use to turn on and off. Requires at least one operational battery in your inventory to charge.
 
@@ -513,6 +518,7 @@ Some items can be picked up and saved for later, as described below.
 * **Ladder**
 
   GZdoom actor name: `PortableLadder`
+  Loadout code: `lad`
 
   Use while on a ledge (above or below) to deploy.
 
@@ -531,6 +537,7 @@ Some items can be picked up and saved for later, as described below.
 * **Radiation Shielding Suit**
 
   GZDoom actor name: `PortableRadSuit`
+  Loadout code: `rad`
 
   Doubles as a fire retardant suit. Lasts until damaged.
 
@@ -539,6 +546,7 @@ Some items can be picked up and saved for later, as described below.
 * **Backpack*
 
   GZDoom actor name: `HDBackpack`
+  Loadout code: `bak`
 
   Use from inventory to bring it up. Fire and altfire select your item; hold fire mode to momentarily use your pitch input instead. Reload places one unit of the selected item type into it, unload takes it out. Mash the Zoom key to dump out all the contents of the backpack. The drop-one key works to remove ammo from your own inventory in case you want to make a little more space.
 
@@ -549,6 +557,7 @@ Some items can be picked up and saved for later, as described below.
 * **Defence, Engagement, Reconnaissance and Patrol Robot**
 
   GZDoom actor name: `DERPBot`
+  Loadout code: `drp`
 
   The gun that runs around killing people by itself! Basically a pistol wired to a webcam and treads, made of bullets, aggression and shitty programmer art. They can't climb and run out of ammo quickly, but you can pick them back up anytime as you would an ordinary item for later redeployment. Takes one pistol mag to deploy, and any unused ammo is recovered on pickup.
 
@@ -584,6 +593,7 @@ Some items can be picked up and saved for later, as described below.
 * **Heavy Engagement Rotary Platform Robot**
 
   GZDoom actor name: `HERPBot`
+  Loadout code: `hrp`
 
   In the wake of the stunning success of the D.E.R.P. project, the Brojira Robotics and Human Development Foundation soon secured a second grant from the Israeli military to build a scaled-up version for high-accuracy automated targeting in heavy urban engagements. This was met with some setbacks early on in the project when it was discovered that Brojira's CEO at the time, Dr. Branson Icke, had supported a local mayoral candidate in his hometown eight years before whose platform included "ending the politically correct war on Christmas by passing a bylaw that every mall Santa shall be a real Santa with HIS beard and HIS wife Mrs. Claus who is a woman". A great and terrible media cycle ensued and Dr. Icke, one of the chief coders and designers behind the original D.E.R.P. project, was forced to resign from all further positions with Brojira, and the H.E.R.P. project was substantially completed without his guidance and programming virtuosity. The resulting product remains functional, if a bit bloated, slow and unwieldy.
 
@@ -621,6 +631,7 @@ Some items can be picked up and saved for later, as described below.
 * **Door Buster**
 
   GZDoom actor name: `DoorBuster`
+  Loadout code: `dbs`
 
   Some military-grade demolition charges, because doors are a social construct.
 
@@ -637,6 +648,7 @@ Some items can be picked up and saved for later, as described below.
 * **IED Kit*
 
   GZDoom actor name: `HDIEDKit`
+  Loadout code: `ied`
 
   The OpenTerror Working Group's brief lifespan included what turned out to be an ingenious adaptation of the Heckler & Mok Short-Range Reduced-Arc Hybrid Rocket Grenade for securing a building against certain passing threats. The open-source schematics have allowed numerous aftermarket companies to develop the Simple Idiotproof Improvised Explosive Device Kit for various military, police and private security contracts long after the original inventors were captured, tortured and their remains presumably disposed of in an undisclosed location by various government and other\* agencies.
 
@@ -665,6 +677,7 @@ Some items can be picked up and saved for later, as described below.
 * **7.76mm Reloading Device**
 
   GZDoom actor name: `AutoReloader`
+  Loadout code: `rld`
 
   Your ZM66 tactical reloads will leave you with a lot of unreliable caseless powder and lead and primers. Firing the Liberator leaves a lot of cases without powder or lead. The reuse of a partial 4.26mm UAC Standard mag is illegal, but really, the worst Volt UAC's impious counsel can do is drag you in front of The Honourable Mr. Justice Rotting-Head-On-A-Stick and his clerk Mrs. Caco, and as a natural person you don't recognize their jurisdiction. If you have this device, you will be assumed to figure out what to do in the downtime between levels.
 
