@@ -254,7 +254,7 @@ class HDStimpacker:HDWoundFixer{
 				return resolvestate("nope");
 			}else{
 				//and now...
-				A_TakeInjector();
+				A_TakeInjector(invoker.inventorytype);
 				c.A_PlaySound("*usemeds",CHAN_VOICE);
 				c.A_SetBlend("7a 3a 18",0.1,4);
 				actor a=spawn(invoker.injecttype,c.pos,ALLOW_REPLACE);
