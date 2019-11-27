@@ -268,7 +268,7 @@ class HDIncapWeapon:SelfBandage{
 			actor a=spawn(invoker.spentinjecttype,pos+(0,0,height-8),ALLOW_REPLACE);
 			a.angle=angle;a.vel=vel;a.A_ChangeVelocity(3,1,2,CVF_RELATIVE);
 			a.A_PlaySound("weapons/grenopen",CHAN_WEAPON);
-			A_TakeInventory(invoker.inventorytype,1);
+			A_TakeInjector(invoker.inventorytype);
 			invoker.inventorytype="";
 		}
 		goto nope;

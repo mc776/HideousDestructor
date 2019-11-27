@@ -146,14 +146,6 @@ class HDStimpacker:HDWoundFixer{
 		hdwoundfixer.injectoricon "STIMA0";
 		hdwoundfixer.injectortype "PortableStimpack";
 	}
-	action void A_TakeInjector(){
-		let mmm=HDMagAmmo(findinventory(invoker.inventorytype));
-		if(mmm){
-			mmm.amount--;
-			if(mmm.amount<1)mmm.destroy();
-			else if(mmm.mags.size())mmm.mags.pop();
-		}
-	}
 	states{
 	spawn:
 		TNT1 A 1;
@@ -194,7 +186,7 @@ class HDStimpacker:HDWoundFixer{
 		}goto nope;
 	inject:
 		TNT1 A 1{
-			A_TakeInjector();
+			A_TakeInjector(invoker.inventorytype);
 			A_SetBlend("7a 3a 18",0.1,4);
 			A_SetPitch(pitch+2,SPF_INTERPOLATE);
 			A_PlaySound("*usemeds",CHAN_VOICE);

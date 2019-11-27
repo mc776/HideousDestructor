@@ -89,6 +89,15 @@ class HDWoundFixer:HDWeapon{
 	override void DropOneAmmo(int amt){
 		DropMeds(owner,clamp(amt,1,10));
 	}
+	//used for injectors
+	action void A_TakeInjector(class<inventory> injectortype){
+		let mmm=HDMagAmmo(findinventory(invoker.inventorytype));
+		if(mmm){
+			mmm.amount--;
+			if(mmm.amount<1)mmm.destroy();
+			else if(mmm.mags.size())mmm.mags.pop();
+		}
+	}
 	states{
 	reload:
 		TNT1 A 4{
