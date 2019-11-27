@@ -58,7 +58,8 @@ class PortableRadsuit:HDPickup replaces RadSuit{
 		super.actualpickup(user);
 	}
 	override void DoEffect(){
-		bfitsinbackpack=(amount>1||!owner||!owner.findinventory("WornRadsuit"));
+		bfitsinbackpack=(amount!=1||!owner||!owner.findinventory("WornRadsuit"));
+		super.doeffect();
 	}
 	states{
 	spawn:
@@ -181,7 +182,6 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 		return integrity;
 	}
 	override void DoEffect(){
-		super.DoEffect();
 		if(owner && owner.player){
 			bool oldliteamp=(
 				(sv_cheats||!multiplayer)
@@ -279,6 +279,7 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 				Shader.SetEnabled(owner.player,"NiteVis",false);
 			}
 		}
+		super.DoEffect();
 	}
 	enum NiteVis{
 		NITEVIS_MAX=100,
