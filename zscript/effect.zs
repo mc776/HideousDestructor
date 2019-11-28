@@ -473,6 +473,7 @@ class HDExplosion:IdleDummy{
 	default{
 		+forcexybillboard +bright
 		alpha 0.9;renderstyle "add";
+		deathsound "world/explode";
 	}
 	states{
 	spawn:
@@ -480,7 +481,7 @@ class HDExplosion:IdleDummy{
 		MISL B 0 nodelay{
 			if(max(abs(pos.x),abs(pos.y),abs(pos.z))>=32768){destroy();return;}
 			vel.z+=4;
-			A_PlaySound("world/explode");
+			A_PlaySound(deathsound,CHAN_BODY);
 			let xxx=spawn("HDExplosionLight",pos);
 			xxx.target=self;
 		}

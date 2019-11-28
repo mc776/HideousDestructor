@@ -499,6 +499,7 @@ class HDJetPack:HDCellWeapon{
 						let bbb=spawn("HDExplosion",(aaa.pos.xy,aaa.pos.z-20),ALLOW_REPLACE);
 						bbb.vel.z-=20;
 						bbb.vel.xy+=angletovector(aaa.angle+angle,6);
+						bbb.deathsound="jetpack/bang";
 					}
 				}
 			}
