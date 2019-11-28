@@ -182,104 +182,103 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 		return integrity;
 	}
 	override void DoEffect(){
-		if(owner && owner.player){
-			bool oldliteamp=(
-				(sv_cheats||!multiplayer)
-				&&cvar.getcvar("hd_nv",owner.player).getfloat()==999.
-			);
+		super.DoEffect();
+		if(!self||!owner||!owner.player)return;
+		bool oldliteamp=(
+			(sv_cheats||!multiplayer)
+			&&cvar.getcvar("hd_nv",owner.player).getfloat()==999.
+		);
 
-			//charge
-			let bbb=HDBattery(owner.findinventory("HDBattery"));
-			if(bbb){
-				//get the lowest non-empty
-				int bbbindex=bbb.mags.size()-1;
-				int bbblowest=20;
-				for(int i=bbbindex;i>=0;i--){
-					if(
-						bbb.mags[i]>0
-						&&bbb.mags[i]<bbblowest
-					){
-						bbbindex=i;
-						bbblowest=bbb.mags[i];
-					}
-				}
-				if(mags[0]<NITEVIS_MAGMAXCHARGE){
-					mags[0]+=NITEVIS_CYCLEUNIT;
-					if(!random[rand1](0,(NITEVIS_BATCYCLE>>1)))bbb.mags[bbbindex]--;
+		//charge
+		let bbb=HDBattery(owner.findinventory("HDBattery"));
+		if(bbb){
+			//get the lowest non-empty
+			int bbbindex=bbb.mags.size()-1;
+			int bbblowest=20;
+			for(int i=bbbindex;i>=0;i--){
+				if(
+					bbb.mags[i]>0
+					&&bbb.mags[i]<bbblowest
+				){
+					bbbindex=i;
+					bbblowest=bbb.mags[i];
 				}
 			}
+			if(mags[0]<NITEVIS_MAGMAXCHARGE){
+				mags[0]+=NITEVIS_CYCLEUNIT;
+				if(!random[rand1](0,(NITEVIS_BATCYCLE>>1)))bbb.mags[bbbindex]--;
+			}
+		}
 
-			int chargedamount=mags[0];
+		int chargedamount=mags[0];
 
 //console.printf(chargedamount.."   "..NITEVIS_MAXINTEGRITY-(chargedamount%NITEVIS_CYCLEUNIT));
 
-			if(
-				worn
-				&&!owner.countinv("PowerInvisibility")
-				&&(!oldliteamp||owner.player.fixedcolormap<0||owner.player.fixedcolormap==5)
-			){
+		if(
+			worn
+			&&!owner.countinv("PowerInvisibility")
+			&&(!oldliteamp||owner.player.fixedcolormap<0||owner.player.fixedcolormap==5)
+		){
 
-				//check if totally drained
-				if(chargedamount<NITEVIS_CYCLEUNIT){
-					owner.A_SetBlend("01 00 00",0.8,16);
-					worn=false;
-					return;
-				}
-
-				int spent=0;
-
-				//update amplitude if player has set in the console
-				double thiscvaramplitude=cvar.getcvar("hd_nv",owner.player).getfloat();
-				if(thiscvaramplitude!=lastcvaramplitude){
-					lastcvaramplitude=thiscvaramplitude;
-					amplitude=thiscvaramplitude;
-				}
-
-				//actual goggle effect
-				owner.player.fov=min(owner.player.fov,90);
-				double nv=min(chargedamount*(NITEVIS_MAX/20.),NITEVIS_MAX);
-				if(!nv){
-					if(thiscvaramplitude<0)amplitude=-0.00001;
-					return;
-				}
-				if(oldliteamp){
-					spent+=(NITEVIS_MAX/10);
-					owner.player.fixedcolormap=5;
-					owner.player.fixedlightlevel=1;
-					Shader.SetEnabled(owner.player,"NiteVis",false);
-				}else{
-					nv=clamp(amplitude,-nv,nv);
-					spent+=max(1,abs(nv*0.1));
-					Shader.SetEnabled(owner.player,"NiteVis",true);
-					Shader.SetUniform1f(owner.player,"NiteVis","exposure",nv);
-				}
-
-				//flicker
-				int integrity=(mags[0]%NITEVIS_CYCLEUNIT);
-				if(integrity<NITEVIS_MAXINTEGRITY){
-					int bkn=(integrity)+(chargedamount>>17)-abs(nv);
-					A_LogInt(bkn);
-					if(!random[rand1](0,max(0,random[rand1](1,bkn)))){
-						if(oldliteamp){
-							owner.player.fixedcolormap=-1;
-							owner.player.fixedlightlevel=-1;
-						}
-						Shader.SetEnabled(owner.player,"NiteVis",false);
-					}
-				}
-
-				//drain
-				if(!(level.time&(1|2|4|8|16|32)))mags[0]-=NITEVIS_CYCLEUNIT*spent;
-
-			}else{
-				if(oldliteamp){
-					if(owner.player.fixedcolormap==5)owner.player.fixedcolormap=-1;
-					owner.player.fixedlightlevel=-1;
-				}
-				Shader.SetEnabled(owner.player,"NiteVis",false);
+			//check if totally drained
+			if(chargedamount<NITEVIS_CYCLEUNIT){
+				owner.A_SetBlend("01 00 00",0.8,16);
+				worn=false;
+				return;
 			}
+
+			int spent=0;
+
+			//update amplitude if player has set in the console
+			double thiscvaramplitude=cvar.getcvar("hd_nv",owner.player).getfloat();
+			if(thiscvaramplitude!=lastcvaramplitude){
+				lastcvaramplitude=thiscvaramplitude;
+				amplitude=thiscvaramplitude;
+			}
+
+			//actual goggle effect
+			owner.player.fov=min(owner.player.fov,90);
+			double nv=min(chargedamount*(NITEVIS_MAX/20.),NITEVIS_MAX);
+			if(!nv){
+				if(thiscvaramplitude<0)amplitude=-0.00001;
+				return;
+			}
+			if(oldliteamp){
+				spent+=(NITEVIS_MAX/10);
+				owner.player.fixedcolormap=5;
+				owner.player.fixedlightlevel=1;
+				Shader.SetEnabled(owner.player,"NiteVis",false);
+			}else{
+				nv=clamp(amplitude,-nv,nv);
+				spent+=max(1,abs(nv*0.1));
+				Shader.SetEnabled(owner.player,"NiteVis",true);
+				Shader.SetUniform1f(owner.player,"NiteVis","exposure",nv);
+			}
+
+			//flicker
+			int integrity=(mags[0]%NITEVIS_CYCLEUNIT);
+			if(integrity<NITEVIS_MAXINTEGRITY){
+				int bkn=(integrity)+(chargedamount>>17)-abs(nv);
+				A_LogInt(bkn);
+				if(!random[rand1](0,max(0,random[rand1](1,bkn)))){
+					if(oldliteamp){
+						owner.player.fixedcolormap=-1;
+						owner.player.fixedlightlevel=-1;
+					}
+					Shader.SetEnabled(owner.player,"NiteVis",false);
+				}
+			}
+
+			//drain
+			if(!(level.time&(1|2|4|8|16|32)))mags[0]-=NITEVIS_CYCLEUNIT*spent;
+
+		}else{
+			if(oldliteamp){
+				if(owner.player.fixedcolormap==5)owner.player.fixedcolormap=-1;
+				owner.player.fixedlightlevel=-1;
+			}
+			Shader.SetEnabled(owner.player,"NiteVis",false);
 		}
-		super.DoEffect();
 	}
 	enum NiteVis{
 		NITEVIS_MAX=100,
