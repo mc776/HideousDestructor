@@ -770,7 +770,7 @@ GZDoom actor name: `HDFist`
 
 Default weapon slot: 1
 
-Loadout code: fis
+Loadout code: `fis`
 
 Punching people and things.
 
@@ -814,7 +814,7 @@ GZDoom ammo actor names: `HD9mMag15`, `HDPistolAmmo`
 
 Default weapon slot: 2
 
-Loadout codes: pis
+Loadout codes: `pis`
 * selectfire - 0/1, whether it has a fire selector enabled
 * firemode - 0/1, semi/auto, subject to the above
 
@@ -829,7 +829,7 @@ Alternate reload lets you swap to the other pistol in your other hand, if you ha
 ### Revolver
 GZDoom actor name: `HDRevolver`
 
-Loadout code: rev
+Loadout code: `rev`
 
 Compact and ergonomic, the Buger Blue Deinonychus makes for an excellent and stylish everyday civilian carry. The Deinonychus can take 9mm Parumpudicum in a pinch but is chambered for the more powerful .355 Masterball.
 
@@ -848,7 +848,7 @@ GZDoom ammo actor names: `HD9mMag30`, `HDPistolAmmo`
 
 Default weapon slot: 2
 
-Loadout codes: smg
+Loadout codes: `smg`
 * firemode - 0-2, semi/burst/auto
 
 The Heckler and Mok MP-46 heavy automatic pistol - nicknamed the "Sexy Manly Guy" in reference to a rather untimely scandal involving one of the company's directors (then a senator) who was supervising the development, an 18-year-old male intern, allegations of insider trading, an unidentified leather object found with some early prototype drawings and some saucy emails revealed during a deposition - fills that niche where a rifle is too noisy and unwieldy, a shotgun is too bulky and lethal, and a pistol just can't hit fast or far enough. Mostly bought by collectors and casing-loving hipsters, as well as law enforcement looking for a weapon with less kick and noise than the ZM66 but better suppressive capability (both tactical and PR-strategic) for use while keeping us all safe from alleged drug dealers and their alleged drug money.
@@ -866,7 +866,7 @@ GZDoom ammo actor names: `HDShellAmmo`
 
 Default weapon slot: 3
 
-Loadout codes: hun
+Loadout codes: `hun`
 * type - 0-2, export/regular/hacked
 * firemode - 0-2, pump/semi/auto, subject to the above
 * choke - 0-7, 0 skeet, 7 full
@@ -900,7 +900,7 @@ GZDoom ammo actor names: `HDShellAmmo`
 
 Default weapon slot: 3
 
-Loadout code: sla
+Loadout code: `sla`
 * lchoke, rchoke - 0-7, 0 skeet, 7 full
 
 Accurate, ergonomic and compact, deceptively primitive yet rugged enough to withstand anything the bad guys might ever think to throw at you, the ambidextrously designed Calvary Arms SL41 "Slayer" side-by-side is an instant classic among big game hunters throughout the solar system. Big, bipedal game.
@@ -922,7 +922,7 @@ GZDoom ammo actor names: `HD4mMag`, `HDRocketAmmo`
 
 Default weapon slot: 4
 
-Loadout codes: z66
+Loadout codes: `z66`
 * nogl - 0/1, whether it has a launcher
 * semi - 0/1, whether it has a fire selector enabled
 * firemode - 0-2, semi/auto/burst
@@ -959,7 +959,7 @@ GZDoom ammo actor names: `HD4mMag`
 
 Default weapon slot: 4
 
-Loadout codes: vul
+Loadout codes: `vul`
 * fast - 0/1, whether to start in "fuller auto" mode
 * zoom - 16-70, 10x the resulting FOV in degrees
 
@@ -984,7 +984,7 @@ GZDoom ammo actor names: `HDRocketAmmo`, `HEATAmmo`
 
 Default weapon slot: 5
 
-Loadout codes: lau
+Loadout codes: `lau`
 * zoom - 0/1, which sight comes up first
 * heat - 0/1, whether you start with a H.E.A.T. loaded
 * grenade - 0/1, whether you start in grenade mode
@@ -1014,7 +1014,7 @@ GZDoom ammo actor names: `HDRocketAmmo`
 
 Default weapon slot: 5
 
-Loadout code: blo
+Loadout code: `blo`
 
 Eventually demand for a simpler, more portable weapon compatible with the new standard Short-Range Reduced-Arc Hybrid Rocket Grenade resulted in the production of a much simpler weapon from previous centuries. Name and all, it seems.
 
@@ -1029,7 +1029,7 @@ GZDoom ammo actor names: `HDBattery`
 
 Default weapon slot: 6
 
-Loadout codes: thu
+Loadout codes: `thu`
 * alt - 0/1, whether to start in spray fire mode
 
 In recent years Heckler & Mok were going through their typical occasional experimental infantry energy weapons research kick. Their latest casualty of common sense is the Atmospheric Mk.XI "Thunder Buster", an adaptation of the big phased particle beam cannons found in large Bishop-class high-orbital patrollers. It is indeed a fine and powerful weapon, but nonetheless based on something shooting through space at massive inanimate objects with highly predictable trajectories. For want of any commercial application they sold the specs to the UAC, at an exorbitantly inflated price if one were to include a portion that was ostensibly part of a settlement amid accusations of corporate espionage and stealing of trade secrets in UAC's old, officially scrapped Martian weapons project.
@@ -1049,7 +1049,7 @@ GZDoom ammo actor names: `HD7mMag`, `SevenMilAmmo`
 
 Default weapon slot: 6
 
-Loadout codes: lib
+Loadout codes: `lib`
 * nogl - 0/1, whether it has a launcher
 * nobp - 0/1, whether it is bullpup
 * altreticle - 0/1, whether to use the glowing crosshair
@@ -1077,7 +1077,7 @@ GZDoom ammo actor names: `HDBattery`
 
 Default weapon slot: 7
 
-Loadout code: bfg
+Loadout code: `bfg`
 
 Tapping into the eldritch power of the Ancients using adaptive-AI computer-assisted spacetime magick, AGM was in competition with multiple factions in race to perfect the Botis field glyph, a device that could have made them the single biggest player in the energy market for centuries.
 
@@ -1110,7 +1110,7 @@ GZDoom ammo actor names: `BrontornisRound`
 
 Default weapon slot: 7
 
-Loadout codes: bro
+Loadout codes: `bro`
 * zoom - 0/1, which sight comes up first
 
 The Freeley "Brontornis" series Mk.VII Ultralight Cannon was one of the candidates for the military's Urban Artillery project, ultimately losing out to Heckler & Mok's bid for its versatility and wide-area firepower. It fires a heavy, non-self-propelled 35mm hi-ex anti-materiel/incendiary round (colloquially known as a "bolt") that can punch through most hard targets while remaining highly effective at decisively neutralizing soft targets (colloquially known as "gibbing people").
@@ -1129,7 +1129,7 @@ GZDoom ammo actor names: `HD7mClip`, `SevenMilAmmo`
 
 Default weapon slot: 8
 
-Loadout codes: bos
+Loadout codes: `bos`
 * customchamber - 0/1, whether to use the reduced-jam customization
 * frontreticle - 0/1, whether to scale the crosshair with zoom
 * bulletdrop - 0-600, amount of compensation for bullet drop
@@ -1162,7 +1162,7 @@ GZDoom ammo actor names: `HDFragGrenadeAmmo`
 
 Default weapon slot: 0
 
-Loadout code: frg (ammo only)
+Loadout code: `frg` (ammo only)
 
 The M67.1A fragmentation grenade hasn't changed much from its predecessors over the years. Pull the pin, drop the spoon, chuck it in a window, roll it along the floor, it blows up, everyone left standing is happy.
 
