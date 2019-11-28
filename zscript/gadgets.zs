@@ -378,7 +378,7 @@ class HDJetPack:HDCellWeapon{
 				invoker.pods[i].angle=90*i+45;
 				invoker.pods[i].master=self;
 			}
-			if(podson)invoker.pods[i].A_PlaySound("misc/fwoosh",((level.time&(1|2))+i)%4,0.2,pitch:1.6+0.2*(level.time&(1|2)));
+			if(podson)invoker.pods[i].A_PlaySound("jetpack/fwoosh",((level.time&(1|2))+i)%4,0.2,pitch:1.6+0.2*(level.time&(1|2)));
 		}
 		if(podson){
 			if(invoker.weaponstatus[JETPACKS_BATTERYCOUNTER]>JETPACK_COUNTERMAX){
@@ -456,7 +456,7 @@ class HDJetPack:HDCellWeapon{
 	firemode:
 		TNT1 A 0 A_JumpIf(invoker.weaponstatus[0]&JETPACKF_ON,"turnoff");
 	turnon:
-		TNT1 A 10 A_PlaySound("weapons/vulcanup",CHAN_WEAPON);
+		TNT1 A 10 A_PlaySound("jetpack/on",CHAN_WEAPON);
 		TNT1 A 0{invoker.weaponstatus[0]|=JETPACKF_ON;}
 		goto readyend;
 	turnoff:
@@ -494,7 +494,7 @@ class HDJetPack:HDCellWeapon{
 			for(int i=0;i<4;i++){
 				if(!!invoker.pods[i]){
 					let aaa=invoker.pods[i];
-					aaa.A_PlaySound(!chn?"world/explode":"misc/fwoosh",chn,pitch:1+0.2*chn);
+					aaa.A_PlaySound(!chn?"jetpack/bang":"jetpack/fwoosh",chn,pitch:1+0.2*chn);
 					if(!chn){
 						let bbb=spawn("HDExplosion",(aaa.pos.xy,aaa.pos.z-20),ALLOW_REPLACE);
 						bbb.vel.z-=20;
