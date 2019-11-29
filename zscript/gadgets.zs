@@ -414,16 +414,20 @@ class HDJetPack:HDCellWeapon{
 	}
 	states{
 	spawn:
-		ROCK A -1;
+		JPAK A -1;
 		stop;
 	pods:
 		TNT1 A 1 A_Pods();
 		wait;
 	select0:
 		TNT1 A 0 A_Overlay(10,"pods");
+		TNT1 A 12 A_PlaySound("jetpack/wear",CHAN_WEAPON);
 		goto super::select0;
 	deselect0:
-		TNT1 A 0{invoker.weaponstatus[0]&=~JETPACKF_ON;}
+		TNT1 A 14{
+			invoker.weaponstatus[0]&=~JETPACKF_ON;
+			A_PlaySound("jetpack/wear",CHAN_WEAPON);
+		}
 		goto super::deselect0;
 	ready:
 		TNT1 A 1 A_WeaponReady(WRF_ALLOWRELOAD|WRF_ALLOWUSER2|WRF_ALLOWUSER3|WRF_ALLOWUSER4);
@@ -551,13 +555,13 @@ class HoverPod:Actor{
 	}
 	states{
 	spawn:
-		ROCK A 1 nodelay{
+		JPOD A 1 nodelay{
 			if(
 				master
 				&&master.player
 				&&(master.player.readyweapon is "HDJetPack")
 			){
-				double podz=master.pos.z+master.height-20;
+				double podz=master.pos.z+master.height-30;
 				if(hdweapon(master.player.readyweapon).weaponstatus[0]&JETPACKF_ON)podz+=frandom(-0.5,0.5);
 				setorigin((master.pos.xy+
 					angletovector(angle+master.angle,JETPACK_DIST),

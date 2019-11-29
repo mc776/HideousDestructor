@@ -683,6 +683,15 @@ Some items can be picked up and saved for later, as described below.
 
   During a level, however: ensure you have at least 4 loose 4.26mm rounds (for the primers and powder), brass, and bullets on your person (not backpack), then hold Use and hit Unload. Stand back at least 4 feet as the method is not perfect. Grabbing the device back will stop the process. You can make up to seven at a time.
 
+* **Ion-Jet Light Infantry Atmospheric Landing Craft**
+
+  GZDoom actor name: `HDJetpack`
+  Loadout code: `jet`
+
+  Many missions require a drop into hostile territory that a larger craft may not be able to reach and a parachute may be impractical. For some of these stealth may be optional, or at least deferred.
+
+  Press Fire to thrust upwards, Altfire to thrust upwards and slightly forwards. Firemode turns off and on to save battery or warm up for a quick deployment.
+
 * **Relic of the Ancients**
 
   GZDoom actor name: `SquadSummoner`
