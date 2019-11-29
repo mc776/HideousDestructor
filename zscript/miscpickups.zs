@@ -521,6 +521,7 @@ class RedSphere:HDInvRandomSpawner replaces BlurSphere{
 		dropitem "HDBlurSphere",256,1;
 		dropitem "GarrisonArmour",256,2;
 		dropitem "BluePotion",256,2;
+		dropitem "HDJetpack",256,1;
 	}
 }
 class BlueSphere:HDUPK replaces Soulsphere{
