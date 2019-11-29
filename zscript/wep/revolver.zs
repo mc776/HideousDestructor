@@ -42,7 +42,7 @@ class HDRevolver:HDHandgun{
 			sb.drawnum(hpl.countinv("HDRevolverAmmo"),-44,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			int ninemil=hpl.countinv("HDPistolAmmo");
 			if(ninemil>0){
-				sb.drawimage("PBRSA0",(-64,-10),sb.DI_SCREEN_CENTER_BOTTOM,scale:(2.1,2.1));
+				sb.drawimage("PRNDA0",(-64,-10),sb.DI_SCREEN_CENTER_BOTTOM,scale:(2.1,2.1));
 				sb.drawnum(ninemil,-60,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
 		}
