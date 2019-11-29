@@ -77,6 +77,7 @@ class bonerball:hdactor{
 			A_SprayDecal("Scorch",10);
 			bmissile=false;
 			bnointeraction=true;
+			A_Scream();
 		}
 		TNT1 AAAAAAAAAAA 0 A_SpawnItemEx("BigWallChunk",random(-4,4),random(-4,4),random(2,14),oldvel.x+random(-6,6),oldvel.y+random(-6,6),oldvel.z+random(-4,18),random(0,360),SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS);
 		TNT1 AA 0 A_SpawnItemEx("HDSmokeChunk",random(-4,4),random(-4,4),random(2,14),oldvel.x+random(-6,6),oldvel.y+random(-6,6),oldvel.z+random(-4,18),random(0,360),SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS,160);
