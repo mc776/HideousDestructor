@@ -1251,7 +1251,7 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 				bbb.target=target;
 				bbb.bincombat=false;
 				double newspeed;
-				speed*=0.8;
+				speed*=0.6;
 				if(!fragments){
 					bbb.mass=mass;
 					newspeed=speed;
