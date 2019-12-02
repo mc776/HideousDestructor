@@ -113,12 +113,17 @@ extend class HDPlayerPawn{
 		if(mod=="slime")A_GiveInventory("Heat",damage*frandom(2.3,2.7));
 		if(countinv("PowerIronFeet"))A_GiveInventory("WornRadsuit");
 		let radsuit=wornradsuit(findinventory("WornRadsuit"));
-		if(radsuit&&!(flags&DMG_NO_ARMOR)){
+		if(
+			radsuit
+			&&!(flags&DMG_NO_ARMOR)
+		){
 			radsuit.stamina+=random(1,damage);
 			if(mod=="slime"){
-				if(damage>10 && radsuit.stamina>2100){
-					A_TakeInventory("WornRadsuit");
-					A_PlaySound("radsuit/burst",CHAN_AUTO);
+				if(
+					damage>10
+					&&radsuit.stamina>2100
+				){
+					destroyradsuit();
 				}else if(damage>random(10,50)){
 					damage=1;
 				}else return 0;
@@ -220,8 +225,7 @@ extend class HDPlayerPawn{
 				if(damage<random(0,6))return 0;else{
 					damage*=0.4;
 					if(radsuit.stamina>2100){
-						A_TakeInventory("WornRadsuit");
-						A_PlaySound("misc/fwoosh",CHAN_AUTO);
+						destroyradsuit();
 					}else if(damage<4)mod="slime";
 				}
 			}
@@ -249,8 +253,7 @@ extend class HDPlayerPawn{
 			//electrocuted
 			if(radsuit){
 				if(damage<100)return 0;
-				A_TakeInventory("WornRadsuit");
-				A_PlaySound("misc/fwoosh",CHAN_AUTO);
+				destroyradsuit();
 				damage*=0.8;
 			}
 			toburn+=max(damage*frandom(0.2,0.5),random(0,1));
@@ -277,8 +280,7 @@ extend class HDPlayerPawn{
 
 			//radsuit
 			if(random(1,damage)>10){
-				A_TakeInventory("WornRadsuit");
-				A_PlaySound("radsuit/rip",CHAN_AUTO);
+				destroyradsuit();
 				damage-=5;
 				if(damage<1)return 0;
 			}
@@ -321,10 +323,12 @@ extend class HDPlayerPawn{
 			damage*=(1.-(alv*0.3));
 			if(!random(0,10+alv*2))towound+=max(1,damage*0.04);
 			if(armr)armr.durability-=(damage>>(1+alv));
+			if(damage>random(5,30))destroyradsuit();
 		}else{
 			//anything else
 			damage*=(1.-(alv*0.2));
 			if(!random(0,10+alv*2))towound+=max(1,damage*0.03);
+			if(towound>random(4,20))destroyradsuit();
 		}
 
 
@@ -472,6 +476,13 @@ extend class HDPlayerPawn{
 		}
 
 		return finaldmg;
+	}
+	void DestroyRadsuit(){
+		if(!!findinventory("WornRadsuit")){
+			A_TakeInventory("WornRadsuit");
+			A_TakeInventory("PowerIronFeet");
+			A_PlaySound("radsuit/burst",CHAN_AUTO);
+		}
 	}
 	//disarm
 	static void Disarm(actor victim){
