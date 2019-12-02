@@ -566,7 +566,22 @@ class BlueSphere:HDUPK replaces Soulsphere{
 		}wait;
 	}
 }
+class BrownSphere:BlueSphere replaces Megasphere{
+		//$Category "Items/Hideous Destructor/Magic"
+		//$Title "Megasphere"
+		//$Sprite "MEGAA0"
 
+	override void A_HDUPKGive(){
+		if(!picktarget||bnointeraction)return;
+		picktarget.A_GiveInventory("SpiritualArmour",1);
+		super.A_HDUPKGive();
+	}
+	states{
+	spawn:
+		MEGA ABCD random(2,7) bright;
+		loop;
+	}
+}
 class PlantBit:IdleDummy{
 	default{
 		+movewithsector
@@ -609,24 +624,6 @@ class PlantBit:IdleDummy{
 			velx:frandom(-0.1,0.1),vely:frandom(-0.1,0.1),velz:frandom(-0.2,0.4)
 		);
 		stop;
-	}
-}
-
-
-class BrownSphere:BlueSphere replaces Megasphere{
-		//$Category "Items/Hideous Destructor/Magic"
-		//$Title "Megasphere"
-		//$Sprite "MEGAA0"
-
-	override bool used(actor user){
-		if(!super.used(user))return false;
-		user.A_GiveInventory("SpiritualArmour",1);
-		return true;
-	}
-	states{
-	spawn:
-		MEGA ABCD random(2,7) bright;
-		loop;
 	}
 }
 class GreenSphere:BlueSphere replaces Invulnerabilitysphere{

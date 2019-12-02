@@ -105,7 +105,6 @@ class doordestroyer:hdactor{
 				offsetz:ofsz
 			);
 		}
-
 		if(hd_nodoorbuster)return false;
 
 		//figure out if it hit above or below
