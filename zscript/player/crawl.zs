@@ -14,7 +14,10 @@ extend class HDPlayerPawn{
 	inventory invselbak;
 	void IncapacitatedCheck(){
 		if(!incapacitated)return;
-		if(incaptimer>0)incaptimer--;
+		if(incaptimer>0){
+			incaptimer--;
+			muzzleclimb1.y+=(level.time&1)?-1:1;
+		}
 
 		if(incapacitated>0){
 			A_SetSize(radius,max(16,height-3));
