@@ -516,6 +516,7 @@ class HDBackpack:HDWeapon{
 		let thisclass=(class<hdpickup>)(invclasses[which]);
 		if(wepth){
 			let newp=HDWeapon(spawn(wepth,owner.pos+(0,0,owner.height-12),ALLOW_REPLACE));
+			newp.bdontdefaultconfigure=true;
 			newp.angle=owner.angle;newp.A_ChangeVelocity(1,1,1,CVF_RELATIVE);
 			for(int i=0;i<(HDWEP_STATUSSLOTS+1);i++){
 				if(i<newp.weaponstatus.size())newp.weaponstatus[i]=tempamounts[0].toint();
