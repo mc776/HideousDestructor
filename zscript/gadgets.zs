@@ -490,8 +490,8 @@ class HDJetPack:HDCellWeapon{
 				invoker.weaponstatus[JETPACKS_BATTERY]--;
 				invoker.weaponstatus[JETPACKS_BATTERYCOUNTER]=0;
 			}else invoker.weaponstatus[JETPACKS_BATTERYCOUNTER]+=JETPACK_COUNTERUSE;
-			double rawthrust=0.00001*min(invoker.weaponstatus[JETPACKS_BATTERY],5);
-			vel.z+=max(300*rawthrust,(32000+floorz-pos.z)*
+			double rawthrust=0.000024*min(invoker.weaponstatus[JETPACKS_BATTERY],5);
+			vel.z+=max(300*rawthrust,(16384+floorz-pos.z)*
 				(
 					(hdplayerpawn(self)&&hdplayerpawn(self).overloaded>1)?
 					(rawthrust/(hdplayerpawn(self).overloaded*0.2+1))
