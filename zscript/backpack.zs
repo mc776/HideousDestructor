@@ -63,18 +63,26 @@ class HDBackpack:HDWeapon{
 			string nnm="";
 			if(reff is "HDPickup"){
 				let gdb=getdefaultbytype((class<hdpickup>)(reff));
-				if(gdb.bfitsinbackpack){
+				if(
+					!HDArmourWorn(gdb)
+				){
 					nnm=gdb.gettag();
-					if(nnm==gdb.getclassname())nnm="";
+//					if(nnm==gdb.getclassname())nnm="";
 					ref=gdb.refid;
 				}
 			}else if(reff is "HDWeapon"){
 				let gdb=getdefaultbytype((class<hdweapon>)(reff));
-				if(gdb.bfitsinbackpack){
+				if(
+					!gdb.bdontnull
+					&&!HDWoundFixer(gdb)
+					&&!HDCheatWep(gdb)
+					&&!MagManager(gdb)
+				){
 					nnm=gdb.gettag();
-					if(nnm==gdb.getclassname())nnm="";
+//					if(nnm==gdb.getclassname())nnm="";
 					ref=gdb.refid;
 				}
+console.printf(nnm);
 			}
 			if(nnm!=""){
 				invclasses.push(reff.getclassname());
@@ -365,10 +373,10 @@ class HDBackpack:HDWeapon{
 				&&havenone(index)
 				&&(
 					!owner.countinv(invclasses[index])
-					||(
-						hdweapon(owner.findinventory(invclasses[index]))
-						&&!hdweapon(owner.findinventory(invclasses[index])).bfitsinbackpack
-					)
+//					||(
+//						hdweapon(owner.findinventory(invclasses[index]))
+//						&&!hdweapon(owner.findinventory(invclasses[index])).bfitsinbackpack
+//					)
 				)
 			);
 		}else if(max(0-num,num-nnsiz)<maxindex){
@@ -388,7 +396,7 @@ class HDBackpack:HDWeapon{
 					owner.countinv(invclasses[plusi])
 					&&(
 						!hdweapon(owner.findinventory(invclasses[plusi]))
-						||hdweapon(owner.findinventory(invclasses[plusi])).bfitsinbackpack
+//						||hdweapon(owner.findinventory(invclasses[plusi])).bfitsinbackpack
 					)
 				)
 			){
@@ -404,7 +412,7 @@ class HDBackpack:HDWeapon{
 					owner.countinv(invclasses[plusi])
 					&&(
 						!hdweapon(owner.findinventory(invclasses[plusi]))
-						||hdweapon(owner.findinventory(invclasses[plusi])).bfitsinbackpack
+//						||hdweapon(owner.findinventory(invclasses[plusi])).bfitsinbackpack
 					)
 				)
 			){
@@ -428,10 +436,10 @@ class HDBackpack:HDWeapon{
 		let mag=HDMagAmmo(item);
 		let pkup=HDPickup(item);
 		if(!wep&&!pkup)return 1;
-		if(
-			(wep&&!wep.bfitsinbackpack)
-			||(pkup&&!pkup.bfitsinbackpack)
-		)return 1;
+//		if(
+//			(wep&&!wep.bfitsinbackpack)
+//			||(pkup&&!pkup.bfitsinbackpack)
+//		)return 1;
 		int newindex=invclasses.find(item.getclassname());
 		if(newindex>=invclasses.size())return 1;
 		index=newindex;

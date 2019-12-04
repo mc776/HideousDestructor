@@ -16,6 +16,7 @@ class WornRadsuit:InventoryFlag{
 	override void DetachFromOwner(){
 		owner.A_TakeInventory("PortableRadsuit",1);
 		owner.A_PlaySound("weapons/pocket",CHAN_AUTO);
+		owner.A_SetBlend("00 00 00",1,6,"00 00 00");
 		let onr=HDPlayerPawn(self);
 		if(onr)onr.stunned+=60;
 		super.DetachFromOwner();
@@ -40,6 +41,7 @@ class PortableRadsuit:HDPickup replaces RadSuit{
 	}
 	override void DetachFromOwner(){
 		owner.A_TakeInventory("PortableRadsuit");
+		owner.A_TakeInventory("WornRadsuit");
 		target=owner;
 		super.DetachFromOwner();
 	}
