@@ -413,6 +413,32 @@ class HDPlayerPawn:PlayerPawn{
 
 		//"falling" damage
 		int fallvel=teleported?0:(lastvel-vel).length();
+
+		if(fallvel>8){
+			//check collision with shootables
+			double zbak=pos.z;
+			addz(lastvel.z);
+			blockingmobj=null;
+			if(
+				!checkmove(pos.xy+lastvel.xy,PCM_NOLINES)
+				&&blockingmobj
+			){
+				let bmob=blockingmobj;
+				if(
+					!bmob.bdontthrust
+					&&bmob.mass>0
+					&&bmob.mass<1000
+				){
+					bmob.A_PlaySound("weapons/smack",CHAN_BODY);
+					A_PlaySound("weapons/smack",CHAN_BODY);
+					bmob.vel+=lastvel*90/bmob.mass;
+					vel+=lastvel*0.05;
+					bmob.damagemobj(self,self,random(fallvel,fallvel<<3),"bashing");
+				}
+			}
+			setz(zbak);
+		}
+
 		if(fallvel>10){
 			if(barehanded)fallvel-=4;
 			if(fallvel<=15)A_PlaySound("weapons/smack",CHAN_AUTO,0.4);

@@ -1008,7 +1008,7 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 			let armr=HDArmourWorn(hitactor.findinventory("HDArmourWorn"));
 			double hitheight=hitactoristall?((hitpos.z-hitactor.pos.z)/hitactor.height):0.5;
 
-			double addpenshell=armr.mega?30:10;
+			double addpenshell=armr.mega?30:(10+max(0,((armr.durability-128)>>3)));
 
 			//poorer armour on legs and head
 			//sometimes slip through a gap
