@@ -6,6 +6,7 @@ class HDStatusBar:DoomStatusBar{
 	int hudusetimer;
 	int healthbars[STB_BEATERSIZE];
 	hudfont psmallfont;
+	hudfont pnewsmallfont;
 	hdplayerpawn hpl;
 	bool blurred;
 	string mug;
@@ -17,6 +18,7 @@ class HDStatusBar:DoomStatusBar{
 		//Create the font used for the fullscreen HUD
 		Font fnt = "HUDFONT_DOOM";
 		pSmallFont=HUDFont.Create("SmallFont");
+		pNewSmallFont=HUDFont.Create("NewSmallFont");
 		mHUDFont = HUDFont.Create(fnt,fnt.GetCharWidth("0"),true,1,1);
 		fnt = "INDEXFONT_DOOM";
 		mIndexFont = HUDFont.Create(fnt,fnt.GetCharWidth("0"),true);

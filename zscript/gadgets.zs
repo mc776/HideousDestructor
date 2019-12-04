@@ -407,6 +407,14 @@ class HDJetPack:HDCellWeapon{
 			sb.DI_TRANSLATABLE|sb.DI_SCREEN_CENTER_BOTTOM,
 			Font.CR_DARKGRAY
 		);else if(hdw.weaponstatus[1]>0)sb.drawwepnum(hdw.weaponstatus[1],20);
+
+		string velmsg="velocity:  ";
+		if(hd_debug)velmsg=velmsg..owner.vel.z;
+		else velmsg=velmsg..owner.vel.z/HDCONST_ONEMETRE*TICRATE.." m/s";
+		sb.drawstring(sb.pnewsmallfont,velmsg,
+			(0,24),sb.DI_TEXT_ALIGN_LEFT|sb.DI_SCREEN_LEFT_TOP,
+			abs(owner.vel.z)>10?font.CR_RED:font.CR_WHITE
+		);
 	}
 	override void InitializeWepStats(bool idfa){
 		weaponstatus[JETPACKS_BATTERY]=20;
@@ -482,8 +490,8 @@ class HDJetPack:HDCellWeapon{
 				invoker.weaponstatus[JETPACKS_BATTERY]--;
 				invoker.weaponstatus[JETPACKS_BATTERYCOUNTER]=0;
 			}else invoker.weaponstatus[JETPACKS_BATTERYCOUNTER]+=JETPACK_COUNTERUSE;
-			double rawthrust=0.0004*min(invoker.weaponstatus[JETPACKS_BATTERY],5);
-			vel.z+=max(0,(1024+floorz-pos.z)*
+			double rawthrust=0.00001*min(invoker.weaponstatus[JETPACKS_BATTERY],5);
+			vel.z+=max(300*rawthrust,(32000+floorz-pos.z)*
 				(
 					(hdplayerpawn(self)&&hdplayerpawn(self).overloaded>1)?
 					(rawthrust/(hdplayerpawn(self).overloaded*0.2+1))
@@ -541,8 +549,8 @@ enum HoverNums{
 	JETPACKF_UNLOADONLY=1,
 	JETPACKF_ON=2,
 
-	JETPACK_COUNTERMAX=10000,
-	JETPACK_COUNTERUSE=JETPACK_COUNTERMAX/20,
+	JETPACK_COUNTERMAX=100000,
+	JETPACK_COUNTERUSE=JETPACK_COUNTERMAX/80,
 }
 class HoverPod:Actor{
 	default{

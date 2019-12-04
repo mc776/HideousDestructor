@@ -407,6 +407,10 @@ class HDPlayerPawn:PlayerPawn{
 		if((fm||sm)&&runwalksprint>=0&&vel!=(0,0,0))A_GiveInventory("IsMoving");
 
 
+		//terminal velocity
+		if(vel.z<-64)vel.z+=getgravity()*1.1;
+
+
 		//"falling" damage
 		int fallvel=teleported?0:(lastvel-vel).length();
 		if(fallvel>10){
