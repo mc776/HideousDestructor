@@ -500,6 +500,20 @@ class HDBleedingWound:Thinker{
 	}
 }
 
+//inventory hack to allow Decorate-only mods to cause HD bleeding
+//you can't give over 999 bleedpoints in one go
+//e.g. 24010 = 10 bleedpoints at a rate of 24
+//multiples of 1000 are counted as bleedrate
+class HDWoundInventory:Inventory{
+	default{inventory.maxamount int.MAX;}
+	override void AttachToOwner(actor other){
+		if(amount<1000)HDBleedingWound.Inflict(other,amount);
+		else{
+			HDBleedingWound.Inflict(other,amount%1000,amount/1000);
+		}
+		destroy();
+	}
+}
 
 
 
