@@ -48,7 +48,7 @@ class hdladdertop:hdactor{
 
 			mvlast+=mv;
 			if(
-				!checkmove(mvlast,PCM_DROPOFF|PCM_NOACTORS,tm)
+				!checkmove(mvlast,PCM_NOACTORS,tm)
 				&&!!master //don't break if placed by mapper
 			)break;
 			A_UnsetSolid();
@@ -107,8 +107,8 @@ class hdladdertop:hdactor{
 		destroy();
 	}
 }
-const LADDER_MAX=800.;
 const LADDER_SECTIONLENGTH=12.;
+const LADDER_MAX=LADDER_SECTIONLENGTH*67.;
 const LADDER_SECTIONS=LADDER_MAX/LADDER_SECTIONLENGTH;
 
 
@@ -171,6 +171,8 @@ class hdladderbottom:hdactor{
 				target.pos.z+LADDER_MAX
 			)
 		);
+
+		A_SetSize(-1,min(LADDER_MAX,target.pos.z-pos.z)+32);
 
 		if(currentuser){
 			if(currentuser.health<1){disengageladder(false);return;}
