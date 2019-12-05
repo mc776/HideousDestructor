@@ -78,10 +78,7 @@ class HDBackpack:HDWeapon{
 				}
 			}else if(reff is "HDWeapon"){
 				let gdb=getdefaultbytype((class<hdweapon>)(reff));
-				if(
-					gdb.bfitsinbackpack
-					&&!gdb.binterfaceonly
-				){
+				if(gdb.bfitsinbackpack){
 					nnm=gdb.gettag();
 					if(nnm==gdb.getclassname())nnm="";
 					ref=gdb.refid;

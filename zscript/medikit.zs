@@ -46,7 +46,7 @@ class PortableMedikit:HDPickup{
 class HDWoundFixer:HDWeapon{
 	default{
 		+weapon.wimpy_weapon +weapon.no_auto_switch +weapon.cheatnotweapon
-		+hdweapon.interfaceonly
+		+nointeraction
 		hdwoundfixer.injectoricon "TNT1A0";
 	}
 	int checkwoundcount(bool checkunstable=false){
@@ -123,7 +123,7 @@ class HDMedikitter:HDWoundFixer{
 	default{
 		-weapon.no_auto_switch
 		+inventory.invbar
-		-hdweapon.interfaceonly
+		-nointeraction
 		weapon.selectionorder 1001;
 		weapon.slotnumber 9;
 		scale 0.3;

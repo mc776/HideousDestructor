@@ -418,7 +418,7 @@ class DERPUsable:HDPickup{
 class DERPDeployer:HDWeapon{
 	default{
 		+weapon.wimpy_weapon +weapon.no_auto_switch +weapon.cheatnotweapon
-		+hdweapon.interfaceonly
+		+nointeraction
 		hdweapon.barrelsize 0,0,0;
 		weapon.selectionorder 1014;
 	}
@@ -787,7 +787,7 @@ class DERPController:HDWeapon{
 	default{
 		+inventory.invbar
 		+weapon.wimpy_weapon
-		+hdweapon.interfaceonly
+		+nointeraction
 		inventory.icon "DERPA5";
 		weapon.selectionorder 1012;
 	}

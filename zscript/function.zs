@@ -442,7 +442,7 @@ class HDCheatWep:HDWeapon{
 		-weapon.no_auto_switch
 		+weapon.cheatnotweapon
 		+hdweapon.debugonly
-		+hdweapon.interfaceonly
+		+nointeraction
 	}
 }
 class HDRaiseWep:HDCheatWep{

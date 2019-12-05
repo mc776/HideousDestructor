@@ -6,7 +6,7 @@ class MagManager:HDWeapon{
 		+weapon.wimpy_weapon
 		+weapon.no_auto_switch
 		+hdweapon.alwaysshowstatus
-		+hdweapon.interfaceonly
+		+nointeraction
 		weapon.selectionorder 1011;
 	}
 	int which;

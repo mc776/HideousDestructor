@@ -1011,7 +1011,7 @@ class HERPController:HDWeapon{
 	default{
 		+inventory.invbar
 		+weapon.wimpy_weapon
-		+hdweapon.interfaceonly
+		+nointeraction
 		inventory.icon "HERPA5";
 		weapon.selectionorder 1013;
 		tag "H.E.R.P. interface";
