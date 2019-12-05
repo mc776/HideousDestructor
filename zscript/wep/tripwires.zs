@@ -24,6 +24,7 @@ class Tripwire:HDWeapon{
 	property weptype:weptype;
 	default{
 		+hdweapon.dontnull
+		+hdweapon.interfaceonly
 
 		//adding the frag grenade defaults here to prevent needless crashes
 		weapon.selectionorder 1021;

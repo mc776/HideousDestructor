@@ -70,7 +70,10 @@ class HDBackpack:HDWeapon{
 				}
 			}else if(reff is "HDWeapon"){
 				let gdb=getdefaultbytype((class<hdweapon>)(reff));
-				if(gdb.bfitsinbackpack){
+				if(
+					gdb.bfitsinbackpack
+					&&!gdb.binterfaceonly
+				){
 					nnm=gdb.gettag();
 					if(nnm==gdb.getclassname())nnm="";
 					ref=gdb.refid;
@@ -120,7 +123,6 @@ class HDBackpack:HDWeapon{
 						if(wep){
 							hdweapon(iii).loadoutconfigure(weapondefaults);
 							hdweapon(iii).loadoutconfigure(howmany[i]);
-							A_Log(howmany[i].."  "..hdweapon(iii).bfitsinbackpack);
 						}
 						itemtobackpack(iii);
 					}

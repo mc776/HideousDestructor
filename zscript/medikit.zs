@@ -46,6 +46,7 @@ class PortableMedikit:HDPickup{
 class HDWoundFixer:HDWeapon{
 	default{
 		+weapon.wimpy_weapon +weapon.no_auto_switch +weapon.cheatnotweapon
+		+hdweapon.interfaceonly
 		hdwoundfixer.injectoricon "TNT1A0";
 	}
 	int checkwoundcount(bool checkunstable=false){

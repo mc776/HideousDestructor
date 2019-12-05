@@ -22,8 +22,9 @@ class HDWeapon:Weapon{
 	flagdef PlayingId:HDWeaponFlags,8;
 	flagdef DontDisarm:HDWeaponFlags,9;
 	flagdef DebugOnly:HDWeaponFlags,10;
-	flagdef IgnoreLoadoutAmount:HDWeaponFlags,11;
+	flagdef IgnoreLoadoutAmount:HDWeaponFlags,11; //so "bak 450 10. z66 nogl" gives 1 backpack
 	flagdef DontNull:HDWeaponFlags,12;
+	flagdef InterfaceOnly:HDWeaponFlags,13; //i.e., rather than a discrete object on its own
 
 	double barrellength;
 	double barrelwidth;
@@ -862,6 +863,7 @@ class NullWeapon:HDWeapon{
 		+weapon.noalert
 		+inventory.untossable
 		+hdweapon.dontnull
+		+hdweapon.interfaceonly
 
 		//this needs to be longer than any "real" weapon to ensure there is enough space to raise
 		hdweapon.barrelsize 40,1,1;
@@ -973,6 +975,7 @@ class WeaponStashSwitcher:HDWeapon{
 	default{
 		+weapon.wimpy_weapon
 		+weapon.cheatnotweapon
+		+hdweapon.interfaceonly
 	}
 	hdweapon thisweapon;
 	states{
