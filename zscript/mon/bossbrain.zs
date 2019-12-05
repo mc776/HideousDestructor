@@ -213,10 +213,10 @@ class HDBossBrain:HDMobBase replaces BossBrain{
 		array<actor> spots;spots.clear();
 		bosstarget bpm;
 		thinkeriterator bexpm=ThinkerIterator.create("bosstarget");
-		int bbstamina=30+paintimes*8;
+		int bbstamina=20+paintimes*6;
 		for(int i=0;i<MAXPLAYERS;i++){
 			if(playeringame[i]){
-				bbstamina+=10+paintimes;
+				bbstamina+=6+paintimes;
 				let pmo=players[i].mo;
 				if(pmo&&pmo.health>0)spots.push(pmo);
 			}
