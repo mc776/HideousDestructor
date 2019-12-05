@@ -168,7 +168,7 @@ class HERPBot:HDUPK{
 				&&!hitactor.bnevertarget
 				&&(hitactor.bismonster||hitactor.player)
 				&&(!hitactor.player||!(hitactor.player.cheats&CF_NOTARGET))
-				&&hitactor.health>random(random(0,99)?0:-2,20)
+				&&hitactor.health>random((hitactor.vel==(0,0,0)&&random(0,99))?0:-2,20)
 			){
 				target=hitactor;
 				setstatelabel("ready");
