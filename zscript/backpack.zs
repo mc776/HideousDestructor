@@ -59,8 +59,13 @@ class HDBackpack:HDWeapon{
 		invclasses.clear();
 		for(int i=0;i<allactorclasses.size();i++){
 			class<actor> reff=allactorclasses[i];
+			if(!(reff is "Inventory"))continue;
+			let invd=getdefaultbytype((class<inventory>)(reff));
 			if(
-				getdefaultbytype(reff).bnointeraction
+				!invd
+				||invd.bnointeraction
+				||invd.bundroppable
+				||invd.buntossable
 			)continue;
 			string ref="";
 			string nnm="";
