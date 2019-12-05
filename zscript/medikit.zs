@@ -123,6 +123,7 @@ class HDMedikitter:HDWoundFixer{
 	default{
 		-weapon.no_auto_switch
 		+inventory.invbar
+		-hdweapon.interfaceonly
 		weapon.selectionorder 1001;
 		weapon.slotnumber 9;
 		scale 0.3;
