@@ -59,6 +59,9 @@ class HDBackpack:HDWeapon{
 		invclasses.clear();
 		for(int i=0;i<allactorclasses.size();i++){
 			class<actor> reff=allactorclasses[i];
+			if(
+				getdefaultbytype(reff).bnointeraction
+			)continue;
 			string ref="";
 			string nnm="";
 			if(reff is "HDPickup"){
