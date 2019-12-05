@@ -35,84 +35,8 @@ class MagManager:HDWeapon{
 		}
 	}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
-		let thismag=magmanager(hdw).thismag;
 		if(!thismag||thismag.mags.size()<1)return;
-		int countermaxx=thismag.mags.size();
-		int countermax=countermaxx-1;
-
-		double scl=2.;
-		string magsprite="";
-		string roundsprite="";
-		name roundtype="";
-
-		int howmanylines=countermax/5;
-		int linecounter=countermax%5;
-		if(linecounter<0)linecounter=4;
-
-		int offx=-64-18*howmanylines;
-		int offy=80;
-		for(int i=0;i<countermaxx;i++){
-
-			bool imax=i==countermax;
-			if(imax){
-				offx=-6;
-				offy=50;
-			}else if(
-				linecounter<1
-			){
-				howmanylines--;
-				offx=-64-18*howmanylines;
-				offy=80;
-				linecounter=4;
-			}else{
-				if(i>0){
-					offx+=2;
-					offy-=9;
-				}
-				linecounter--;
-			}
-
-			int thismagamt=thismag.mags[i];
-			string magsprite="";
-			[magsprite,roundsprite,roundtype,scl]=thismag.getmagsprite(thismagamt);
-
-			sb.drawimage(magsprite,(offx,offy),
-				sb.DI_SCREEN_CENTER|sb.DI_ITEM_RIGHT_TOP,
-				scale:(scl,scl)*(imax?1.6:1.)
-			);
-			sb.drawstring(
-				imax?sb.pSmallFont:sb.mamountfont,sb.FormatNumber(thismag.mags[i]),
-				(offx+2,offy),sb.DI_SCREEN_CENTER|sb.DI_TEXT_ALIGN_LEFT,
-				imax?font.CR_SAPPHIRE:font.CR_BROWN
-			);
-		}
-
-		if(roundsprite!=""){
-			bool helptext=cvar.getcvar("hd_helptext",hpl.player).getbool();
-			offx+=40;
-			if(roundsprite=="CELPA0"){
-				scl=0.4;
-				let battt=HDBattery(thismag).chargemode;
-				string batts="uNone";
-				if(battt==hdbattery.BATT_CHARGEMAX)batts="eAuto";
-				else if(battt==hdbattery.BATT_CHARGETOP)batts="ySelected";
-				sb.drawstrings(
-					sb.pSmallFont,string.format("%s\c%s%s",helptext?"Charging: ":"",batts,helptext?"\n(\cqReload\cu to cycle)":""),
-					(offx+2,offy),sb.DI_SCREEN_CENTER|sb.DI_TEXT_ALIGN_LEFT
-				);
-			}else{
-				scl=1.6;
-				sb.drawstring(
-					sb.pSmallFont,sb.FormatNumber(hpl.countinv(roundtype)),
-					(offx+2,offy),sb.DI_SCREEN_CENTER|sb.DI_TEXT_ALIGN_LEFT,
-					font.CR_BROWN
-				);
-			}
-			sb.drawimage(roundsprite,(offx,offy),
-				sb.DI_SCREEN_CENTER|sb.DI_ITEM_RIGHT_TOP,
-				scale:(scl,scl)
-			);
-		}
+		thismag.DrawHUDStuff(sb,self,hpl);
 	}
 	override string gethelptext(){
 		return

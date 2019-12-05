@@ -336,7 +336,7 @@ class HDPickup:CustomInventory{
 		unitbulk*=hdmath.getencumbrancemult();
 		if(unitbulk<=0)return getdefaultbytype(type).maxamount-caller.countinv(type);
 		double spaceleft=HDPickup.MaxPocketSpace(caller)-HDPickup.PocketSpaceTaken(caller);
-		return min(getdefaultbytype(type).maxamount-caller.countinv(type),spaceleft/unitbulk);
+		return max(0,min(getdefaultbytype(type).maxamount-caller.countinv(type),spaceleft/unitbulk));
 	}
 
 

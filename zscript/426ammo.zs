@@ -98,6 +98,10 @@ class HD4mMag:HDMagAmmo{
 		else magsprite="ZMAGC0";
 		return magsprite,"RBRSBRN","FourMilAmmo",2.;
 	}
+	override int GetMagHudCount(int input){
+		if(input==51)return 50;
+		return input;
+	}
 	bool DirtyMagsOnly(){
 		if(mags.size()!=amount)return false;
 		for(int i=0;i<amount;i++){
