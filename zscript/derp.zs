@@ -788,6 +788,7 @@ class DERPController:HDWeapon{
 		+inventory.invbar
 		+weapon.wimpy_weapon
 		+nointeraction
+		+hdweapon.droptranslation
 		inventory.icon "DERPA5";
 		weapon.selectionorder 1012;
 	}
