@@ -49,7 +49,8 @@ class bltest:HDCheatWep{
 		}goto nope;
 	user2:
 		TNT1 A 0{
-			HDBulletActor.FireBullet(self,"HDB_00",spread:6,amount:7);
+			HDBulletActor.FireBullet(self,"HDB_50");
+//			HDBulletActor.FireBullet(self,"HDB_00",spread:6,amount:7);
 		}goto nope;
 	}
 }
@@ -1148,7 +1149,7 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 
 		//apply impact/tempcav damage
 		bnoextremedeath=impact<(hitactor.gibhealth<<3);
-		hitactor.damagemobj(self,target,max(impact,pen*impact*0.03)*frandom(0.2,1+stamina*0.001),"bashing",DMG_THRUSTLESS);
+		hitactor.damagemobj(self,target,max(impact,pen*impact*0.03)*frandom(0.2,1+stamina*0.0003),"bashing",DMG_THRUSTLESS);
 		if(!hitactor)return;
 		bnoextremedeath=true;
 
@@ -1193,6 +1194,7 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 				)?0.0004:0.0002
 			)*stamina
 			*frandom(20.,20+pushfactor-hardness)
+			+stamina*frandom(0.0005,0.005)
 		;
 
 		//reduce momentum, increase tumbling, etc.
