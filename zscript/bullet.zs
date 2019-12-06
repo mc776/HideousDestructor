@@ -53,6 +53,18 @@ class bltest:HDCheatWep{
 		}goto nope;
 	}
 }
+class HDB_50:HDBulletActor{
+	default{
+		pushfactor 0.4;
+		mass 420;
+		speed 1100;
+		accuracy 666;
+		stamina 1270;
+		woundhealth 10;
+		hdbulletactor.hardness 3;
+		hdbulletactor.distantsounder "DoubleDistantRifle";
+	}
+}
 class HDB_426:HDBulletActor{
 	default{
 		pushfactor 0.4;
@@ -1136,7 +1148,7 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 
 		//apply impact/tempcav damage
 		bnoextremedeath=impact<(hitactor.gibhealth<<3);
-		hitactor.damagemobj(self,target,max(impact,pen*impact*0.03)*frandom(0.2,1),"bashing",DMG_THRUSTLESS);
+		hitactor.damagemobj(self,target,max(impact,pen*impact*0.03)*frandom(0.2,1+stamina*0.001),"bashing",DMG_THRUSTLESS);
 		if(!hitactor)return;
 		bnoextremedeath=true;
 
@@ -1190,7 +1202,7 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 		speed=max(0,speed-frandom(0,pushfactor)*totalresistance*10);
 		A_ChangeVelocity(cos(pitch)*speed,0,-sin(pitch)*speed,CVF_RELATIVE|CVF_REPLACE);
 
-		if(flags&BLAF_ALLTHEWAYTHROUGH)channelwidth*=1.1;
+		if(flags&BLAF_ALLTHEWAYTHROUGH)channelwidth*=1.2;
 		else bulletdie();
 
 
