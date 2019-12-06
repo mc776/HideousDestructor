@@ -142,7 +142,7 @@ class LiberatorEmptyMag:IdleDummy{
 class HDSpent7mm:HDUPK{
 	override void postbeginplay(){
 		super.postbeginplay();
-		A_ChangeVelocity(random(-3,3),frandom(-0.4,0.4),0,CVF_RELATIVE);
+		A_ChangeVelocity(frandom(-3,3),frandom(-0.4,0.4),0,CVF_RELATIVE);
 	}
 	default{
 		+missile
