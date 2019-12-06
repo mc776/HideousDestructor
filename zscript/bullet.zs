@@ -1226,7 +1226,7 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 		//evaluate cns hit/critical and apply damage
 		if(
 			pen>deemedwidth*0.4
-			&&hitangle<12+frandom(0,tinyspeedsquared*7)
+			&&hitangle<12+frandom(0,tinyspeedsquared*7+stamina*0.001)
 		){
 			double mincritheight=hitactor.height*0.6;
 			double basehitz=hitpos.z-hitactor.pos.z;
