@@ -12,6 +12,7 @@ class HDBlurSphere:HDPickup{
 		//$Title "Blur Sphere"
 		//$Sprite "PINSA0"
 
+		+inventory.alwayspickup
 		inventory.maxamount 9;
 		inventory.interhubamount 1;
 		inventory.pickupmessage "So precious in your sight.";
@@ -21,17 +22,6 @@ class HDBlurSphere:HDPickup{
 	}
 	int intensity;int xp;int level;bool worn;
 	int randticker[4];double randtickerfloat;
-	override void tick(){
-		super.tick();
-		double frnd=frandom[blur](0.93,1.04);
-		scale=(0.3,0.3)*frnd;
-		alpha=0.9*frnd;
-		randticker[0]=random(0,3);
-		randticker[1]=random(8,25);
-		randticker[2]=random(0,40+level);
-		randticker[3]=random(0,BLUR_LEVELUP);
-		randtickerfloat=frandom(0.,1.);
-	}
 	override void ownerdied(){
 		buntossable=false;
 		owner.DropInventory(self);
@@ -66,6 +56,17 @@ class HDBlurSphere:HDPickup{
 	enum blurstats{
 		BLUR_LEVELUP=3500,
 		BLUR_LEVELCAP=13,
+	}
+	override void tick(){
+		super.tick();
+		double frnd=frandom[blur](0.93,1.04);
+		scale=(0.3,0.3)*frnd;
+		alpha=0.9*frnd;
+		randticker[0]=random(0,3);
+		randticker[1]=random(8,25);
+		randticker[2]=random(0,40+level);
+		randticker[3]=random(0,BLUR_LEVELUP);
+		randtickerfloat=frandom(0.,1.);
 	}
 	override void DoEffect(){
 		if(
@@ -143,6 +144,8 @@ class HDBlurSphere:HDPickup{
 				hdp.unstablewoundcount++;
 			}
 		}
+
+		if(xp<1)return;
 
 		//power.
 		if(!(xp%666)){
