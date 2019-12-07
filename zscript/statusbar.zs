@@ -539,7 +539,7 @@ class HDStatusBar:DoomStatusBar{
 					blargh?"YELOPXL":"BLETA0",
 					(4,mxht-(20-5)),
 					DI_SCREEN_LEFT_BOTTOM|DI_TRANSLATABLE|DI_ITEM_LEFT|DI_ITEM_TOP,
-					0.4,scale:(1.,blargh?3.:1.)
+					1.,scale:(1.,blargh?3.:1.)
 				);
 			}
 

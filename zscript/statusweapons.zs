@@ -29,19 +29,26 @@ extend class HDStatusBar{
 			//the only purpose for this not being int is so I can enter double constants
 			//into this argument and not get truncation warnings that I have no need for here
 		hdplayerpawn cp=hdplayerpawn(cplayer.mo);if(!cp)return;
+		double valx=
+			!alwaysprecise&&(
+				hudlevel==1
+				||cplayer.buttons&BT_ATTACK
+				||cplayer.buttons&BT_ALTATTACK
+			)
+			?max(((value*6/maxvalue)<<2),(value>0)):
+			(value*24/maxvalue)
+		;
 		drawimage(
 			"GREENPXL",
 			(posx,posy),
 			DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE|DI_ITEM_RIGHT,
-			1,scale:(
-				!alwaysprecise&&(
-					hudlevel==1
-					||cplayer.buttons&BT_ATTACK
-					||cplayer.buttons&BT_ALTATTACK
-				)
-				?max(((value*6/maxvalue)<<2),(value>0)):
-				(value*24/maxvalue)
-			,2)
+			1,scale:(min(24,valx),2)
+		);
+		if(valx>24)drawimage(
+			"YELOPXL",
+			(posx-24,posy),
+			DI_SCREEN_CENTER_BOTTOM|DI_ITEM_RIGHT,
+			1,scale:(1,2)
 		);
 	}
 	//"" means ignore this value and move on to the next check.
