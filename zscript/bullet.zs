@@ -321,7 +321,7 @@ class HDBulletActor:HDActor{
 			speed: 200-1000
 			mass: in tenths of a gram
 			pushfactor: 0.05-5.0 - imagine it being horizontal speed blowing in the wind
-			accuracy: 0,200,200-700 - angle of outline from perpendicular, round deemed to be 20
+			accuracy: 0,200,200-700 - angle of outline from perpendicular, round deemed to be 200
 			stamina: 900, 776, 426, you get the idea
 			hardness: 1-5 - 1=pure lead, 5=steel (NOTE: this setting's bullets are (Teflon-coated) steel by default; will implement lead casts "later")
 		*/

@@ -13,6 +13,7 @@
 * Hold the run/walk key to sprint. Use run/walk toggle to switch from walk and run.
 * Hold the use/open door key to view all inventory and available weapon functions.
 
+
 ***
 
 **CONTENTS**
