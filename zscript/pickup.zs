@@ -45,6 +45,9 @@ class GrabThinker:Thinker{
 				pickobj.args[3],pickobj.args[4]
 			);
 
+			//I can't think of any situation where a pickup's special is designed to be triggered twice
+			pickobj.special=0;
+
 			vector2 shiftpk=actor.rotatevector((frandom(-0.4,-0.8),frandom(0.8,1.1)),picktarget.angle);
 			pickobj.vel.xy+=shiftpk;
 			pickobj.setorigin((pickobj.pos.xy+shiftpk,pickobj.pos.z),true);
