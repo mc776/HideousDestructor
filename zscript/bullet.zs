@@ -1142,7 +1142,6 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 
 		//both impact and temp cavity do bashing
 		double stmass=(stamina+mass)*0.5;
-		A_Log(stmass.."      "..stamina);
 
 		impact+=tinyspeedsquared*(
 			(flags&BLAF_ALLTHEWAYTHROUGH)?

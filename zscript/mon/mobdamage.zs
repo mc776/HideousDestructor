@@ -139,7 +139,6 @@ extend class HDMobBase{
 		}
 
 
-
 		//bashing
 		if(mod=="bashing"){
 			stunned+=(damage<<2);
@@ -182,7 +181,7 @@ extend class HDMobBase{
 
 		//bleeding
 		if(mod=="bleedout"){
-			bloodloss+=damage;
+			bloodloss+=max(0,damage);
 			if(!(bloodloss&(1|2|4|8))){
 				bodydamage++;
 			}
@@ -433,6 +432,7 @@ class HDBleedingWound:Thinker{
 	override void tick(){
 		if(
 			!bleedpoints
+			||bleedrate<1
 			||!bleeder
 			||bleeder.health<1
 		){
