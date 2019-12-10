@@ -237,6 +237,7 @@ class Necromancer:HDMobBase replaces ArchVile{
 		+floorclip
 		+hdmobbase.doesntbleed
 		+hdmobbase.biped;
+		+nopain
 		radius 16;
 		height 56;
 		scale 0.8;
