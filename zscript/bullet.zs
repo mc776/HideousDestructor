@@ -362,7 +362,7 @@ class HDBulletActor:HDActor{
 	}
 	double penetration(){ //still juvenile giggling
 		double pen=
-			(20+hardness)*(8000+accuracy)*(60+mass)*(4000+speed)/max(1,500+stamina)*0.00000025
+			(25+hardness)*(8000+accuracy)*(30+mass)*(4000+speed)/max(1,200+stamina)*0.00000021
 		;
 		if(pushfactor>0)pen/=(1.+pushfactor*2.);
 
@@ -1141,7 +1141,7 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 		if(pen>deemedwidth-0.02*hitangle)flags|=BLAF_ALLTHEWAYTHROUGH;
 
 		//both impact and temp cavity do bashing
-		double stmass=(stamina+mass)*0.5;
+		double stmass=(stamina+stamina+mass)*0.3;
 
 		impact+=tinyspeedsquared*(
 			(flags&BLAF_ALLTHEWAYTHROUGH)?
@@ -1151,7 +1151,7 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 
 		//apply impact/tempcav damage
 		bnoextremedeath=impact<(hitactor.gibhealth<<3);
-		hitactor.damagemobj(self,target,max(impact,pen*impact*0.03)*frandom(0.2,1+stmass*0.0003),"bashing",DMG_THRUSTLESS);
+		hitactor.damagemobj(self,target,max(impact,pen*impact*0.03)*(frandom(0.2,1)+stmass*0.0003),"bashing",DMG_THRUSTLESS);
 		if(!hitactor)return;
 		bnoextremedeath=true;
 
