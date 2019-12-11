@@ -1554,17 +1554,22 @@ class BotBot:HDMarine{
 			else damage*=teamdamage;
 		}
 
-		int dmmm=super.damagemobj(
+		lastmod=mod;
+		return super.damagemobj(
 			inflictor,source,damage,mod,flags,angle
 		);
-		if(health<1&&masterplayer>=0){
+	}
+	name lastmod;
+	override void Die(actor source,actor inflictor,int dmgflags){
+		super.Die(source,inflictor,dmgflags);
+		if(masterplayer>=0){
 			actor rpp=players[masterplayer].mo;
 			if(rpp){
 				rpp.A_SetShootable();
-				rpp.damagemobj(inflictor,source,rpp.health,mod,flags|DMG_FORCED);
+				rpp.damagemobj(inflictor,source,rpp.health,lastmod,dmgflags|DMG_FORCED);
+				rpp.A_UnsetShootable();
 			}
 		}
-		return dmmm;
 	}
 	int warptimer;
 	int unseen;

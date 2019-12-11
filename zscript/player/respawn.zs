@@ -125,6 +125,12 @@ class HDSpectator:PlayerPawn{
 		player.viewheight 1;player.attackzoffset 0;
 		height 32;radius 16;
 	}
+	override int damagemobj(
+		actor inflictor,actor source,int damage,
+		name mod,int flags,double angle
+	){
+		return super.damagemobj(inflictor,source,damage,mod,flags,angle);
+	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		setz(min(floorz+64,ceilingz-4));
