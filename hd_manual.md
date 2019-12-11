@@ -371,6 +371,8 @@ Logs the distance of the object or map geometry you're pointing at.
 
 * `hd_hudsprite` (false): Displays your current weapon as a pickup sprite graphic inside your HUD, Ghost Recon-style. Always on when `r_drawplayersprites` is off.
 
+* `hd_hudstyle` (0): Normally the "fullscreen" hud gives you the mugshot while the "status bar" hud one screenblock below gives you no mugshot. Set this to 1 or 2 to force it to always or never use the mugshot respectively.
+
 * `hd_noscope` (0): Many weapons have an optic sight that is represented as a sight picture just below HD's regular sight picture crosshair. By default, this always appears when the main sight picture is visible. Set to 1 to show only while the full HUD is visible or Zoom is pressed. Set to 2 to show only while Zoom is pressed.
 
 * `hd_sightbob` (true): HD's sight crosshairs by default will bob as the player moves. This can sometimes be useful for making trick shots, but for many it is more distracting than anything else. Turn this off to hide the entire thing when you're moving above a certain threshold. Note that your scope angle will still follow the bob which is still used to calculate the trajectory of your shot.

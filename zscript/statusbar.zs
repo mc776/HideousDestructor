@@ -62,6 +62,7 @@ class HDStatusBar:DoomStatusBar{
 
 	//cache some cvars
 	transient cvar hd_mugshot;
+	transient cvar hd_hudstyle;
 	transient cvar hd_hudusedelay;
 	transient cvar hd_noscope;
 	transient cvar hd_sightbob;
@@ -73,6 +74,7 @@ class HDStatusBar:DoomStatusBar{
 	override void Tick(){
 		if(!hd_mugshot){
 			hd_mugshot=cvar.getcvar("hd_mugshot",cplayer);
+			hd_hudstyle=cvar.getcvar("hd_hudstyle",cplayer);
 			hd_hudusedelay=cvar.getcvar("hd_hudusedelay",cplayer);
 			hd_noscope=cvar.getcvar("hd_noscope",cplayer);
 			hd_sightbob=cvar.getcvar("hd_sightbob",cplayer);
@@ -159,13 +161,19 @@ class HDStatusBar:DoomStatusBar{
 				return;
 			}
 			BeginHUD(forcescaled:false);
-			if(state==HUD_StatusBar){
-				if(hudlevel>0)DrawCommonStuff(state);
-			}
-			else if(state==HUD_Fullscreen){
+
+			bool usemughud=(
+				hd_hudstyle.getint()==1
+				||(
+					state==HUD_Fullscreen
+					&&!hd_hudstyle.getint()
+				)
+			);
+
+			if(state<=HUD_Fullscreen){
 				if(hudlevel>0){
-					DrawCommonStuff(state);
-					DrawFullScreenStuff();
+					DrawCommonStuff(usemughud);
+					if(usemughud)DrawFullScreenStuff();
 				}
 			}
 			else{
@@ -255,7 +263,11 @@ class HDStatusBar:DoomStatusBar{
 		);
 	}
 	void DrawFullScreenStuff(){
-		DrawTexture(GetMugShot(5,Mugshot.CUSTOM,mug),(0,-14),DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM,alpha:blurred?0.2:1.);
+		DrawTexture(
+			GetMugShot(5,Mugshot.CUSTOM,mug),(0,-14),
+			DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM,
+			alpha:blurred?0.2:1.
+		);
 	}
 	void DrawAlwaysStuff(){
 		if(
@@ -395,7 +407,7 @@ class HDStatusBar:DoomStatusBar{
 			wrapwidth:300
 		);
 	}
-	void DrawCommonStuff(int state){
+	void DrawCommonStuff(bool usemughud){
 		let cp=HDPlayerPawn(CPlayer.mo);
 		if(!cp)return;
 
@@ -488,7 +500,7 @@ class HDStatusBar:DoomStatusBar{
 
 		//armour
 		DrawArmour(
-			state==HUD_Fullscreen?((hudlevel==1?-85:-55),-4):(0,-mIndexFont.mFont.GetHeight()*2),
+			usemughud?((hudlevel==1?-85:-55),-4):(0,-mIndexFont.mFont.GetHeight()*2),
 			DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM
 		);
 
