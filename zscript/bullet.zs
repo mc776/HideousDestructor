@@ -1021,7 +1021,7 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 			let armr=HDArmourWorn(hitactor.findinventory("HDArmourWorn"));
 			double hitheight=hitactoristall?((hitpos.z-hitactor.pos.z)/hitactor.height):0.5;
 
-			double addpenshell=armr.mega?30:(10+max(0,((armr.durability-128)>>3)));
+			double addpenshell=armr.mega?30:(10+max(0,((armr.durability-120)>>3)));
 
 			//poorer armour on legs and head
 			//sometimes slip through a gap
@@ -1141,17 +1141,15 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 		if(pen>deemedwidth-0.02*hitangle)flags|=BLAF_ALLTHEWAYTHROUGH;
 
 		//both impact and temp cavity do bashing
-		double stmass=(stamina+stamina+mass)*0.3;
-
 		impact+=tinyspeedsquared*(
 			(flags&BLAF_ALLTHEWAYTHROUGH)?
 			frandom(0.08,0.16):
 			frandom(0.06,0.2)
-		)*stmass;
+		)*stamina;
 
 		//apply impact/tempcav damage
 		bnoextremedeath=impact<(hitactor.gibhealth<<3);
-		hitactor.damagemobj(self,target,max(impact,pen*impact*0.03)*(frandom(0.2,1)+stmass*0.0003),"bashing",DMG_THRUSTLESS);
+		hitactor.damagemobj(self,target,max(impact,pen*impact*0.03)*(frandom(0.2,1)+stamina*0.0003),"bashing",DMG_THRUSTLESS);
 		if(!hitactor)return;
 		bnoextremedeath=true;
 
