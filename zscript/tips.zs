@@ -30,7 +30,6 @@ extend class hdplayerpawn{
 			"Hit the \cdDrop One\cu key or use the \cdhd_dropone\cu command\nto drop a single unit of each ammo type used by your current weapon.",
 			"If you don't want the diving action when you hit \cdCrouch\cd while running,\nset \cdhd_noslide\cu to true.",
 			"If you don't want \cdZoom\cu to make you lean,\nset \cdhd_nozoomlean\cu to true.",
-			"If you want multiples of the same weapon in your loadout,\nthey must be entered in multiple instances, e.g. \"lib,lna\".",
 
 			"Set \cdfraglimit\cu to 100+ to enable HD's elimination mode.\nIn co-op, a positive fraglimit under 100\nalso serves as a lives limit.",
 			"Turn on \cdhd_yolo\cu in co-op for a one-life mode where\nyou don't die until all players have been incapacitated.",
@@ -39,7 +38,9 @@ extend class hdplayerpawn{
 
 			"To remote activate a switch or door,\ntype \cdderp 555\cu to stick a D.E.R.P. on to it,\nthen \cdderp 556\cu to make it flick the switch.",
 			"Hold \cdZoom\cu and/or \cdUse\cu when you use the goggles to set the amplitude.\nBoth together decrements; \cdUse\cu alone increments.\n\cdZoom\cu alone toggles red/green mode.",
-			"While \cdhd_yolo\cu is on, you can reset someone's permanent damage using\nthe Rite of the Once-Mortal. Check the manual for details."
+			"While \cdhd_yolo\cu is on, you can reset someone's permanent damage using\nthe Rite of the Once-Mortal. Check the manual for details.",
+
+			"Zombies never surrender!\nCheck downed monsters to see\nif they're still twitching."
 		};
 		int newtip;
 		int lasttip=cvar.getcvar("hd_lasttip",player).getint();
