@@ -29,6 +29,7 @@ enum vulcstatus{
 	VULCS_HEAT=4,
 	VULCS_BREAKCHANCE=5,
 	VULCS_CHANNEL=6,
+	VULCS_PERMADAMAGE=7,
 
 	/*
 		For counting mags in VULCS_MAGS.
@@ -89,7 +90,7 @@ class Vulcanette:HDWeapon{
 	override inventory createtossable(){
 		let ctt=vulcanette(super.createtossable());
 		if(!ctt)return null;
-		if(ctt.bmissile)ctt.weaponstatus[VULCS_BREAKCHANCE]+=random(10,50);
+		if(ctt.bmissile)ctt.weaponstatus[VULCS_BREAKCHANCE]+=random(0,70);
 		return ctt;
 	}
 
@@ -274,14 +275,13 @@ class Vulcanette:HDWeapon{
 			);
 		}
 	}
-	int permadamage;
 	override void consolidate(){
 		CheckBFGCharge(VULCS_BATTERY);
 		if(weaponstatus[VULCS_BREAKCHANCE]>0){
 			int bc=weaponstatus[VULCS_BREAKCHANCE];
-			if(bc>permadamage)permadamage+=max(1,bc>>7);
+			if(bc>weaponstatus[VULCS_PERMADAMAGE])weaponstatus[VULCS_PERMADAMAGE]+=max(1,bc>>7);
 			int oldbc=bc;
-			weaponstatus[VULCS_BREAKCHANCE]=random(bc*2/3,bc)+permadamage;
+			weaponstatus[VULCS_BREAKCHANCE]=random(bc*2/3,bc)+weaponstatus[VULCS_PERMADAMAGE];
 			if(!owner)return;
 			string msg="You try to unwarp some of the parts of your Vulcanette";
 			if(bc>oldbc)msg=msg..", but only made things worse.";
@@ -732,8 +732,8 @@ class Vulcanette:HDWeapon{
 			!(invoker.weaponstatus[0]&VULCF_CHAMBER1)
 			||invoker.weaponstatus[0]&VULCF_BROKEN1
 		){
-			if(invoker.weaponstatus[0]&VULCF_BROKEN1)invoker.weaponstatus[VULCS_BREAKCHANCE]+=random(0,15);
-			else if(!random(0,63))invoker.weaponstatus[VULCS_BREAKCHANCE]++;
+			if(invoker.weaponstatus[0]&VULCF_BROKEN1)invoker.weaponstatus[VULCS_BREAKCHANCE]+=random(0,7);
+			else if(!random(0,127))invoker.weaponstatus[VULCS_BREAKCHANCE]++;
 			if(hd_debug)A_Log("Break chance: "..invoker.weaponstatus[VULCS_BREAKCHANCE]);
 			return;
 		}
