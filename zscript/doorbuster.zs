@@ -504,8 +504,16 @@ class DoorBusterPlanted:HDUPK{
 	void A_DBStuck(){
 		if(
 			!stuckline
-			||ceilingz<pos.z
+			||ceilingz<pos.z+height
 			||floorz>pos.z
+			||(
+				stucktier==1
+				&&stuckbacksector.ceilingplane.zatpoint(stuckpoint)+stuckheight+height>ceilingz
+			)
+			||(
+				stucktier==-1
+				&&stuckbacksector.floorplane.zatpoint(stuckpoint)+stuckheight<floorz
+			)
 		){
 			if(!stuckline)setstatelabel("death");
 			else setstatelabel("unstucknow");
