@@ -432,11 +432,13 @@ class TrippingGrenade:HDUPK{
 			ggg.A_PlaySound("tripwire/fragpain");
 			actor hhh=spawn(spoontype,pos,ALLOW_REPLACE);
 			hhh.vel=ggg.vel*2;
+			bshootable=false;
 			destroy();return -1;
 		}else if(!random(0,4)){
 			if(tracer)tracer.destroy();
 			actor aaa=spawn(droptype,pos,ALLOW_REPLACE);
 			aaa.vel=vel;
+			bshootable=false;
 			destroy();return -1;
 		}else setstatelabel("spawn");
 		return -1;
