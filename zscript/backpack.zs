@@ -1,6 +1,7 @@
 // ------------------------------------------------------------
 // Backpack
 // ------------------------------------------------------------
+const HDCONST_BPMAX=1000;
 class HDBackpack:HDWeapon{
 	int index;
 
@@ -37,7 +38,7 @@ class HDBackpack:HDWeapon{
 		tag "backpack";
 		hdweapon.refid HDLD_BACKPAK;
 
-		hdbackpack.maxcapacity 1000;
+		hdbackpack.maxcapacity HDCONST_BPMAX;
 	}
 	override void DropOneAmmo(int amt){
 		if(owner){
