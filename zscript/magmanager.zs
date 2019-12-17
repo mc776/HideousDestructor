@@ -235,7 +235,7 @@ class MagManager:HDWeapon{
 		if(!mg)return;
 		let gdbt=getdefaultbytype((class<hdmagammo>)(type));
 		double minspace=gdbt.magbulk+gdbt.roundbulk*gdbt.maxperunit;
-		if(HDCONST_BPMAX-bp.bulk<minspace)return;
+		if(bp.maxcapacity-bp.bulk<minspace)return;
 		int which=bp.invclasses.find(type);
 		string newamts=bp.amounts[which];
 		newamts=newamts..(newamts==""?"":" ")..mg.mags[mg.mags.size()-1];

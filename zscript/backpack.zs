@@ -1,7 +1,6 @@
 // ------------------------------------------------------------
 // Backpack
 // ------------------------------------------------------------
-const HDCONST_BPMAX=1000;
 class HDBackpack:HDWeapon{
 	int index;
 
@@ -13,6 +12,9 @@ class HDBackpack:HDWeapon{
 	//because the last time I tried nested dynamic arrays it did not work.
 	//"10" for 10 rounds/medikits/whatever; "0 10 20" for 3 mags
 	//"0 0 0 0 0 0 0 0 0" for a single weapon: first # is bulk
+
+	double maxcapacity;
+	property maxcapacity:maxcapacity;
 
 	default{
 		//$Category "Items/Hideous Destructor/Gear"
@@ -27,12 +29,15 @@ class HDBackpack:HDWeapon{
 		+hdweapon.alwaysshowstatus
 		+hdweapon.ignoreloadoutamount
 		weapon.selectionorder 1010;
+
 		inventory.icon "BPAKA0";
 		inventory.pickupmessage "Picked up a backpack to help fill your life with ammo!";
 		inventory.pickupsound "weapons/pocket";
 
 		tag "backpack";
 		hdweapon.refid HDLD_BACKPAK;
+
+		hdbackpack.maxcapacity 1000;
 	}
 	override void DropOneAmmo(int amt){
 		if(owner){
@@ -52,8 +57,14 @@ class HDBackpack:HDWeapon{
 
 	int bpindex;
 	int maxindex;
+	void UpdateCapacity(){
+		maxcapacity=getdefaultbytype(getclass()).maxcapacity/max(hd_encumbrance,0.01);
+	}
 	override void InitializeWepStats(bool idfa){
 		if(idfa)return;
+
+		UpdateCapacity();
+
 		nicenames.clear();
 		refids.clear();
 		invclasses.clear();
@@ -144,7 +155,7 @@ class HDBackpack:HDWeapon{
 				let iii=spawn(invclasses[refindex],pos,ALLOW_REPLACE);
 				if(iii){
 					iii.destroy();
-					double bulkmax=(HDCONST_BPMAX-bulk)/max(1,getdefaultbytype(pkup).bulk);
+					double bulkmax=(maxcapacity-bulk)/max(1,getdefaultbytype(pkup).bulk);
 					int addamt=max(1,min(bulkmax,howmanyi));
 					if(addamt>0){
 						int amt=amounts[refindex].toint(10);
@@ -358,6 +369,8 @@ class HDBackpack:HDWeapon{
 	}
 	void UpdateMessage(int num){
 		if(!owner)return;
+		UpdateCapacity();
+
 		//set index as necessary
 		int nnsiz=nicenames.size();
 		if(num==index)weaponbulk();
@@ -449,7 +462,7 @@ class HDBackpack:HDWeapon{
 				if(owner)owner.A_Log("Empty this backpack first.",true);
 				return 1;
 			}
-			if(wep.weaponbulk()+bulk>HDCONST_BPMAX){
+			if(wep.weaponbulk()+bulk>maxcapacity){
 				if(owner)owner.A_Log("Your backpack is too full.",true);
 				return 1;
 			}
@@ -471,7 +484,7 @@ class HDBackpack:HDWeapon{
 			UpdateMessage(index);
 			return 12;
 		}else if(mag){
-			if(mag.magbulk+bulk>HDCONST_BPMAX){
+			if(mag.magbulk+bulk>maxcapacity){
 				if(owner)owner.A_Log("Your backpack is too full.",true);
 				return 1;
 			}
@@ -480,7 +493,7 @@ class HDBackpack:HDWeapon{
 			else amounts[index]=tookmag.." "..amounts[index];
 		}else{
 			int units=item.owner?1:item.amount;
-			if(pkup.bulk*units+bulk>HDCONST_BPMAX){
+			if(pkup.bulk*units+bulk>maxcapacity){
 				if(owner)owner.A_Log("Your backpack is too full.",true);
 				return 1;
 			}
@@ -688,7 +701,7 @@ extend class HDBackpack{
 				howmany=min(
 					random(1,random(1,20)),
 					getdefaultbytype(mag).maxamount,
-					HDCONST_BPMAX/(
+					maxcapacity/(
 						max(1.,getdefaultbytype(mag).roundbulk)
 						*max(1.,getdefaultbytype(mag).magbulk)
 						*5.
@@ -708,7 +721,7 @@ extend class HDBackpack{
 					howmany=min(
 						random(1,getdefaultbytype(pkup).bmultipickup?random(1,80):random(1,random(1,20))),
 						getdefaultbytype(pkup).maxamount,
-						HDCONST_BPMAX/(max(1.,getdefaultbytype(pkup).bulk)*5.)
+						maxcapacity/(max(1.,getdefaultbytype(pkup).bulk)*5.)
 					);
 					if(
 						getdefaultbytype(pkup).refid==""
