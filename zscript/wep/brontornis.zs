@@ -195,6 +195,23 @@ class Brontornis:HDWeapon{
 		BLSF A 1 bright{
 			HDFlashAlpha(0,true);
 			A_Light1();
+
+			if(gunbraced())A_GiveInventory("IsMoving",2);
+			else A_GiveInventory("IsMoving",7);
+			if(!binvulnerable
+				&&(
+					countinv("IsMoving")>6
+					||floorz<pos.z
+				)
+			){
+				givebody(max(0,11-health));
+				damagemobj(invoker,self,10,"bashing");
+				A_GiveInventory("IsMoving",5);
+				A_ChangeVelocity(
+					cos(pitch)*-frandom(2,4),0,sin(pitch)*frandom(2,4),
+					CVF_RELATIVE
+				);
+			}
 		}
 		TNT1 A 2{
 			A_ZoomRecoil(0.5);
@@ -203,7 +220,6 @@ class Brontornis:HDWeapon{
 		TNT1 A 0{
 			int recoilside=randompick(-1,1);
 			if(gunbraced()){
-				A_GiveInventory("IsMoving",2);
 				hdplayerpawn(self).gunbraced=false;
 				A_ChangeVelocity(
 					cos(pitch)*-frandom(0.8,1.4),0,
@@ -220,7 +236,6 @@ class Brontornis:HDWeapon{
 					sin(pitch)*frandom(1.8,3.2),
 					CVF_RELATIVE
 				);
-				A_GiveInventory("IsMoving",7);
 				A_MuzzleClimb(
 					recoilside*5,-frandom(5.,13.),
 					recoilside*5,-frandom(5.,13.)
@@ -229,20 +244,6 @@ class Brontornis:HDWeapon{
 					recoilside*5,-frandom(5.,13.),
 					recoilside*5,-frandom(5.,13.),
 					wepdot:true
-				);
-			}
-			if(!binvulnerable
-				&&(
-					countinv("IsMoving")>6
-					||floorz<pos.z
-				)
-			){
-				givebody(max(0,11-health));
-				damagemobj(invoker,self,10,"bashing");
-				A_GiveInventory("IsMoving",5);
-				A_ChangeVelocity(
-					cos(pitch)*-frandom(2,4),0,sin(pitch)*frandom(2,4),
-					CVF_RELATIVE
 				);
 			}
 		}
