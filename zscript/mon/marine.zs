@@ -1482,7 +1482,6 @@ class SquadSummoner:HDPickup{
 		//$Title "Summoning Talisman"
 		//$Sprite "PRIFA0"
 
-		+inventory.fancypickupsound
 		+forcexybillboard
 		-hdpickup.droptranslation
 		inventory.maxamount 7;
