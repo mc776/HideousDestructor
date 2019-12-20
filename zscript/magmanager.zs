@@ -96,11 +96,13 @@ class MagManager:HDWeapon{
 		if(!GetMags())return;
 		invoker.thismag.Insert();
 		invoker.UpdateText();
+		A_SetTics(invoker.thismag.inserttime);
 	}
 	action void Extract(){
 		if(!GetMags())return;
 		invoker.thismag.Extract();
 		invoker.UpdateText();
+		A_SetTics(invoker.thismag.extracttime);
 	}
 	action void LastToFirst(bool forwards=true){
 		if(!GetMags())return;
@@ -199,10 +201,10 @@ class MagManager:HDWeapon{
 		TNT1 A 1 LastToFirst();
 		goto nope;
 	reload:
-		TNT1 A 8 Insert();
+		TNT1 A 1 Insert();
 		goto readyend;
 	unload:
-		TNT1 A 4 Extract();
+		TNT1 A 1 Extract();
 		goto readyend;
 	altreload:
 		TNT1 A 0 LowestToLast();

@@ -64,6 +64,7 @@ class HD4mMag:HDMagAmmo{
 		hdmagammo.roundtype "FourMilAmmo";
 		hdmagammo.roundbulk ENC_426_LOADED;
 		hdmagammo.magbulk ENC_426MAG_EMPTY;
+
 		tag "4.26mm UAC Standard magazine";
 		hdpickup.refid HDLD_FOURMAG;
 		inventory.pickupmessage "Picked up a 4.26 UAC Standard magazine.";
@@ -121,9 +122,11 @@ class HD4mMag:HDMagAmmo{
 			if(sealtimer<1){
 				owner.A_Log(string.format("%s\nDo you really want to do that?",HDCONST_426MAGMSG),true);
 				sealtimer=10;
+				extracttime=9;
 				return false;
 			}else{
 				mags[mindex]=50;
+				extracttime=12;
 				owner.A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
 				return false;
 			}

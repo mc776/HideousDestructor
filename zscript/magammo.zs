@@ -4,6 +4,8 @@
 class HDMagAmmo:HDAmmo{
 	array<int> mags; //or clips or batteries, whatever
 	int maxperunit;property maxperunit:maxperunit;
+	int inserttime;property inserttime:inserttime;
+	int extracttime;property extracttime:extracttime;
 	class<inventory> roundtype;property roundtype:roundtype;
 	double roundbulk;property roundbulk:roundbulk;
 	double magbulk;property magbulk:magbulk;
@@ -14,6 +16,9 @@ class HDMagAmmo:HDAmmo{
 		hdmagammo.roundbulk 0;
 		hdmagammo.magbulk 0;
 		hdmagammo.mustshowinmagmanager false;
+
+		hdmagammo.inserttime 8;
+		hdmagammo.extracttime 4;
 
 		inventory.maxamount 100;
 	}
