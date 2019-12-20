@@ -287,7 +287,7 @@ class HERPBot:HDUPK{
 				ammo[0]=49;
 			}else ammo[0]--;
 
-			A_PlaySound("weapons/rifle",CHAN_WEAPON);
+			A_PlaySound("herp/shoot",CHAN_WEAPON);
 			HDBulletActor.FireBullet(self,"HDB_426",zofs:6,spread:1);
 		}
 		HERP C 2{
