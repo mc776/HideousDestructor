@@ -190,15 +190,7 @@ class HDBlurSphere:HDPickup{
 		//precious.
 		if(randticker[3]<level){
 			if(!(xp%3)){
-				sound snd[7];
-				snd[0]="imp/sight";
-				snd[1]="grunt/sight";
-				snd[2]="grunt/active";
-				snd[3]="demon/active";
-				snd[4]="world/riflefar";
-				snd[5]="world/rocketfar";
-				snd[6]="misc/gibbed";
-				owner.A_PlaySound(snd[clamp(randtickerfloat*snd.size(),0,snd.size()-1)],
+				owner.A_PlaySound("blursphere/hallu"..int(clamp(randtickerfloat*7,0,6)),
 					CHAN_VOICE,randtickerfloat*0.3+0.3,false,8
 				);
 			}

@@ -648,7 +648,7 @@ class HERPUsable:HDWeapon{
 				self,"HDB_426",zofs:height-12,
 				spread:1
 			);
-			A_PlaySound("weapons/rifle",CHAN_WEAPON);
+			A_PlaySound("herp/shoot",CHAN_WEAPON);
 			A_ZoomRecoil(max(0.95,1.-0.05*min(invoker.weaponstatus[ZM66S_AUTO],3)));
 			A_MuzzleClimb(
 				frandom(-0.2,0.2),frandom(-0.4,0.2),
