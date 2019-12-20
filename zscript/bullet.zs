@@ -728,7 +728,7 @@ class HDBulletActor:HDActor{
 		}
 
 		//then doorbuster
-		doordestroyer.destroydoor(self,10*pen*0.01*stamina,frandom(stamina*0.0006,pen*0.00005*stamina),1);
+		doordestroyer.destroydoor(self,10*pen*0.001*stamina,frandom(stamina*0.0006,pen*0.00005*stamina),1);
 
 
 		puff();
