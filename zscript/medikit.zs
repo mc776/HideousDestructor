@@ -725,8 +725,7 @@ class SelfBandage:HDWoundFixer{
 		}
 	hold:
 	lower:
-		TNT1 A 0 A_JumpIf(pitch<45,1);
-		goto try;
+		TNT1 A 0 A_JumpIf(pitch>45,"try");
 		TNT1 A 1 A_SetPitch(max(90,pitch+6),SPF_INTERPOLATE);
 		TNT1 A 0 A_JumpIfInventory("IsMoving",4,"abort");
 		TNT1 A 0 A_Refire("lower");

@@ -229,6 +229,9 @@ class HDIncapWeapon:SelfBandage{
 			A_SetHelpText();
 		}
 		goto readyend;
+	try2:
+		TNT1 A 0 A_SetTics(max(0,random(0,100-health)));
+		goto super::try2;
 	firemode:
 		TNT1 A 1{
 			int yofs=max(4,invoker.weaponstatus[INCS_YOFS]*3/2);
