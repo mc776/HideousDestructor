@@ -172,6 +172,7 @@ extend class HDMobBase{
 			!bnopain
 			&&!bnoincap
 			&&health>0
+			&&health<(spawnhealth()>>2)
 			&&findstate("falldown")
 			&&max(stunned,damage)>random(health,(sphlth<<4))
 		){

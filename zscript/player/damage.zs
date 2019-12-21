@@ -465,15 +465,12 @@ extend class HDPlayerPawn{
 			&&incapacitated<1
 			&&(
 				health<random(-1,max((originaldamage>>3),3))
-				||tostun>(health<<1)
+				||tostun>(health<<2)
 			)&&(
 				mod!="bleedout"
 				||bloodloss>random(2048,3072)
 			)
-		){
-			let plr=player;
-			A_Incapacitated((originaldamage>10)?HDINCAP_SCREAM:0,originaldamage<<3);
-		}
+		)A_Incapacitated((originaldamage>10)?HDINCAP_SCREAM:0,originaldamage<<3);
 
 		return finaldmg;
 	}
