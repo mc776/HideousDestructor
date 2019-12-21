@@ -368,8 +368,12 @@ class DERPDEAD:DERPUsable{
 			&&!owner.A_JumpIfInventory("DERPUsable",0,"null")
 		){
 			HDF.Give(owner,"DERPUsable");
-			owner.A_Log("You manage to put together one (more) functioning D.E.R.P. robot.",true);
-			amount-=random(1,2);
+			int deplete=randompick(1,1,2);
+			string msg="You manage to put together one (more) functioning D.E.R.P. robot";
+			if(deplete>1)msg=msg.." from two broken ones.";
+			else msg=msg..".";
+			amount-=deplete;
+			owner.A_Log(msg,true);
 			if(amount<1)destroy();
 		}
 	}
