@@ -10,7 +10,7 @@ class FourMilAmmo:HDAmmo{
 		tag "4.26mm UAC Standard round";
 		hdpickup.refid HDLD_FOURMIL;
 		hdpickup.bulk ENC_426;
-		inventory.maxamount 300;
+//		inventory.maxamount 300;
 		inventory.icon "RCLSA3A7";
 	}
 	override string pickupmessage(){
