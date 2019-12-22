@@ -481,6 +481,10 @@ class HERPUsable:HDWeapon{
 		hdweapon.refid HDLD_HERPBOT;
 		weapon.selectionorder 1015;
 	}
+	override string pickupmessage(){
+		if(weaponstatus[0]&HERPF_BROKEN)return super.pickupmessage().." It is damaged.";
+		return super.pickupmessage();
+	}
 	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
 	override hdweapon GetSpareWeapon(actor newowner,bool reverse,bool doselect){return GetSpareWeaponRegular(newowner,reverse,doselect);}
 	override double gunmass(){
