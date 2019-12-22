@@ -882,6 +882,38 @@ class HERPUsable:HDWeapon{
 				}
 			}
 		}
+		let spw=spareweapons(owner.findinventory("spareweapons"));
+		if(spw){
+			int fixbonus=0;
+			for(int i=0;i<spw.weapontype.size();i++){
+				if(spw.weapontype[i]!=getclassname())continue;
+				array<string>wpst;wpst.clear();
+				spw.weaponstatus[i].split(wpst,",");
+				int wpstint=wpst[0].toint();
+				if(
+					wpstint&HERPF_BROKEN
+				){
+					if(!random(0,max(0,7-fixbonus))){
+						if(fixbonus>0)fixbonus--;
+						wpstint&=~HERPF_BROKEN;
+						owner.A_Log("You repair one of your broken H.E.R.P.s.",true);
+						string newwepstat=spw.weaponstatus[i];
+						newwepstat=wpstint..newwepstat.mid(newwepstat.indexof(","));
+						spw.weaponstatus[i]=newwepstat;
+					}else if(!random(0,7)){
+						//delete
+						fixbonus++;
+						spw.weaponbulk.delete(i);
+						spw.weapontype.delete(i);
+						spw.weaponstatus.delete(i);
+						owner.A_Log("You destroy one of your broken H.E.R.P.s in your repair efforts.",true);
+						//go back to start
+						i=0;
+						continue;
+					}
+				}
+			}
+		}
 		if(!random(0,7)){
 			weaponstatus[0]&=~HERPF_BROKEN;
 			owner.A_Log("You manage some improvised field repairs to your H.E.R.P. robot.",true);
