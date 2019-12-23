@@ -104,13 +104,13 @@ extend class HDPlayerPawn{
 				vel.z=3;
 			}
 			else if(
-				!stunned
-				&&(
+				(
 					fatigue<HDCONST_SPRINTFATIGUE
 					||zerk
 					||cansprint
 				)
 				&&!MantleCheck()
+				&&!stunned
 				&&!(oldinput & BT_JUMP)
 			){
 				double jumppower=jumppower();

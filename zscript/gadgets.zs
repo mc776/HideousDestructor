@@ -430,8 +430,11 @@ class HDJetPack:HDCellWeapon{
 		TNT1 A 1 A_Pods();
 		wait;
 	select0:
-		TNT1 A 0 A_Overlay(10,"pods");
-		TNT1 A 12 A_PlaySound("jetpack/wear",CHAN_WEAPON);
+		TNT1 A 12{
+			invoker.weaponstatus[0]&=~JETPACKF_ON;
+			A_Overlay(10,"pods");
+			A_PlaySound("jetpack/wear",CHAN_WEAPON);
+		}
 		goto super::select0;
 	deselect0:
 		TNT1 A 14{
