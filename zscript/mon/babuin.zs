@@ -17,7 +17,8 @@ class Babuin:HDMobBase{
 	}
 	void TryLatch(){
 		if(
-			!target
+			health<1
+			||!target
 			||target==self
 			||target.health<1
 			||distance2d(target)-target.radius-radius>12
