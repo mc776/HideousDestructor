@@ -344,6 +344,7 @@ class HDBulletActor:HDActor{
 			gs=spawn("HDGunSmoke",pos+i*vk,ALLOW_REPLACE);
 			gs.pitch=pitch;gs.angle=angle;gs.vel=vk*j;
 		}
+		vel*=100; //fuck you
 	}
 	override void postbeginplay(){
 		resetrandoms();
