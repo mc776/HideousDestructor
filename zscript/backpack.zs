@@ -740,8 +740,8 @@ extend class HDBackpack{
 	}
 
 
-	//go through all backpacked items and call their respective Consolidate()s
 	override void Consolidate(){
+		//go through all backpacked items and call their respective Consolidate()s
 		for(int i=0;i<invclasses.size();i++){
 			if(havenone(i))continue;
 			let type=(class<hdpickup>)(invclasses[i]);
@@ -773,6 +773,10 @@ extend class HDBackpack{
 
 			thisinv.maxamount=maxinvbak;
 		}
+
+		//arbitrary hard-code: repair H.E.R.P.s even if all of them have been backpacked.
+		//wanted: sane way to give weapons the same unpack-consolidate-repack treatment.
+		if(!owner.findinventory("HERPUsable"))herpusable.backpackrepairs(owner,self);
 	}
 
 	//increase maxamount by backpackamount
