@@ -852,43 +852,45 @@ class HERPUsable:HDWeapon{
 		;
 	}
 	override void consolidate(){
-		if(
-			!(weaponstatus[0]&HERPF_BROKEN)
-			||!owner
-		)return;
+		int fixbonus=0;
+		if(!owner)return;
 		let bp=hdbackpack(owner.findinventory("HDBackpack"));
 		if(bp){
 			int herpindex=bp.invclasses.find(getclassname());
 			if(herpindex<bp.invclasses.size()){
 				array<string> inbp;
 				bp.amounts[herpindex].split(inbp," ");
-				for(int i=0;i<inbp.size();i+=9){
-					if(
-						inbp[i].toint()&HERPF_BROKEN
-						&&!random(0,4)
-					){
-						//delete those entries
-						for(int j=0;j<9;j++){
-							inbp.delete(i);
+				for(int i=0;i<inbp.size();i+=(HDWEP_STATUSSLOTS+1)){
+					int inbpi=inbp[i].toint();
+					if(inbpi&HERPF_BROKEN){
+						if(!random(0,7-fixbonus)){
+							//fix
+							inbpi&=~HERPF_BROKEN;
+							inbp[i]=""..inbpi;
+							if(fixbonus>0)fixbonus--;
+							owner.A_Log("You repair one of the broken H.E.R.P.s in your backpack.",true);
+						}else if(!random(0,7)){
+							fixbonus++;
+							//delete and restart
+							for(int j=0;j<(HDWEP_STATUSSLOTS+1);j++){
+								inbp.delete(i);
+							}
+							i=0;
+							owner.A_Log("You destroy one of the broken H.E.R.P.s in your backpack in your repair efforts.",true);
 						}
-						string inbps="";
-						while(inbp.size()){
-							inbps=inbps..inbp[0];
-							inbp.delete(0);
-							if(inbp.size())inbps=inbps.." ";
-						}
-						bp.amounts[herpindex]=inbps;
-						bp.updatemessage(bp.index);
-						weaponstatus[0]&=~HERPF_BROKEN;
-						owner.A_Log("You cannibalize some parts from the H.E.R.P.s your backpack to fix the one you were using.",true);
-						return;
 					}
 				}
+				string replaceamts="";
+				for(int i=0;i<inbp.size();i++){
+					if(i)replaceamts=replaceamts.." "..inbp[i];
+					else replaceamts=inbp[i];
+				}
+				bp.amounts[herpindex]=replaceamts;
+				bp.updatemessage(bp.index);
 			}
 		}
 		let spw=spareweapons(owner.findinventory("spareweapons"));
 		if(spw){
-			int fixbonus=0;
 			for(int i=0;i<spw.weapontype.size();i++){
 				if(spw.weapontype[i]!=getclassname())continue;
 				array<string>wpst;wpst.clear();
@@ -918,7 +920,10 @@ class HERPUsable:HDWeapon{
 				}
 			}
 		}
-		if(!random(0,7)){
+		if(
+			(weaponstatus[0]&HERPF_BROKEN)
+			&&!random(0,7-fixbonus)
+		){
 			weaponstatus[0]&=~HERPF_BROKEN;
 			owner.A_Log("You manage some improvised field repairs to your H.E.R.P. robot.",true);
 		}
