@@ -1141,15 +1141,18 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 		if(pen>deemedwidth-0.02*hitangle)flags|=BLAF_ALLTHEWAYTHROUGH;
 
 		//both impact and temp cavity do bashing
-		impact+=tinyspeedsquared*(
+		impact+=speed*speed*(
 			(flags&BLAF_ALLTHEWAYTHROUGH)?
-			frandom(0.08,0.16):
-			frandom(0.06,0.2)
-		)*stamina;
+			0.00004:
+			0.00005
+		);
+		
+		double shockbash=max(impact,impact*min(pen,deemedwidth))*(frandom(0.2,0.25)+stamina*0.00001);
+if(hd_debug)console.printf("     "..shockbash.." temp cav dmg");
 
 		//apply impact/tempcav damage
 		bnoextremedeath=impact<(hitactor.gibhealth<<3);
-		hitactor.damagemobj(self,target,max(impact,pen*impact*0.03)*(frandom(0.2,1)+stamina*0.0003),"bashing",DMG_THRUSTLESS);
+		hitactor.damagemobj(self,target,shockbash,"bashing",DMG_THRUSTLESS);
 		if(!hitactor)return;
 		bnoextremedeath=true;
 
