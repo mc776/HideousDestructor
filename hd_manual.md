@@ -862,6 +862,7 @@ Default weapon slot: 2
 
 Loadout codes: `smg`
 * firemode - 0-2, semi/burst/auto
+* fireswitch - 0-3, default/semi only/semi-burst/semi-full
 
 The Heckler and Mok MP-46 heavy automatic pistol - nicknamed the "Sexy Manly Guy" in reference to a rather untimely scandal involving one of the company's directors (then a senator) who was supervising the development, an 18-year-old male intern, allegations of insider trading, an unidentified leather object found with some early prototype drawings and some saucy emails revealed during a deposition - fills that niche where a rifle is too noisy and unwieldy, a shotgun is too bulky and lethal, and a pistol just can't hit fast or far enough. Mostly bought by collectors and casing-loving hipsters, as well as law enforcement looking for a weapon with less kick and noise than the ZM66 but better suppressive capability (both tactical and PR-strategic) for use while keeping us all safe from alleged drug dealers and their alleged drug money.
 

@@ -41,6 +41,23 @@ class HDSMG:HDWeapon{
 			else owner.A_DropInventory("HD9mMag30",amt);
 		}
 	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		if(weaponstatus[SMGS_AUTO]>0){
+		switch(weaponstatus[SMGS_SWITCHTYPE]){
+		case 1:
+			weaponstatus[SMGS_AUTO]=0;
+			break;
+		case 2:
+			weaponstatus[SMGS_AUTO]=1;
+			break;
+		case 3:
+			weaponstatus[SMGS_AUTO]=2;
+			break;
+		default:
+			break;
+		}}
+	}
 	override void ForceBasicAmmo(){
 		owner.A_TakeInventory("HDPistolAmmo");
 		owner.A_TakeInventory("HD9mMag30");
@@ -64,7 +81,7 @@ class HDSMG:HDWeapon{
 			);
 			sb.drawnum(hpl.countinv("HD9mMag30"),-43,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 		}
-		sb.drawwepcounter(hdw.weaponstatus[SMGS_AUTO],
+		if(weaponstatus[SMGS_SWITCHTYPE]!=1)sb.drawwepcounter(hdw.weaponstatus[SMGS_AUTO],
 			-22,-10,"RBRSA3A7","STBURAUT","STFULAUT"
 		);
 		sb.drawwepnum(hdw.weaponstatus[SMGS_MAG],30);
@@ -136,9 +153,16 @@ class HDSMG:HDWeapon{
 	user2:
 	firemode:
 		---- A 1{
+			int canaut=invoker.weaponstatus[SMGS_SWITCHTYPE];
+			if(canaut==1){
+				invoker.weaponstatus[SMGS_AUTO]=0;
+				return;
+			}
+			int maxmode=(canaut>0)?(canaut-1):2;
 			int aut=invoker.weaponstatus[SMGS_AUTO];
-			if(aut>=2)invoker.weaponstatus[SMGS_AUTO]=0;
+			if(aut>=maxmode)invoker.weaponstatus[SMGS_AUTO]=0;
 			else if(aut<0)invoker.weaponstatus[SMGS_AUTO]=0;
+			else if(canaut>0)invoker.weaponstatus[SMGS_AUTO]=maxmode;
 			else invoker.weaponstatus[SMGS_AUTO]++;
 		}goto nope;
 	fire:
@@ -321,15 +345,23 @@ class HDSMG:HDWeapon{
 	}
 	override void loadoutconfigure(string input){
 		int firemode=getloadoutvar(input,"firemode",1);
-		if(firemode>0)weaponstatus[SMGS_AUTO]=clamp(firemode,0,2);
+		if(firemode>=0)weaponstatus[SMGS_AUTO]=clamp(firemode,0,2);
+
+		int fireswitch=getloadoutvar(input,"fireswitch",1);
+		if(fireswitch>0)weaponstatus[SMGS_SWITCHTYPE]=clamp(fireswitch,0,3);
 	}
 }
 enum smgstatus{
 	SMGF_JUSTUNLOAD=1,
+
+	SMGN_SEMIONLY=1,
+	SMGN_BURSTONLY=2,
+	SMGN_FULLONLY=3,
 
 	SMGS_FLAGS=0,
 	SMGS_MAG=1,
 	SMGS_CHAMBER=2, //0 empty, 1 spent, 2 loaded
 	SMGS_AUTO=3, //0 semi, 1 burst, 2 auto
 	SMGS_RATCHET=4,
+	SMGS_SWITCHTYPE=5,
 };
