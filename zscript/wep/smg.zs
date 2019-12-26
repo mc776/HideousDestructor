@@ -142,7 +142,7 @@ class HDSMG:HDWeapon{
 			else invoker.weaponstatus[SMGS_AUTO]++;
 		}goto nope;
 	fire:
-		SMGG A 1;
+		SMGG A 0;
 	fire2:
 		SMGG B 1{
 			if(invoker.weaponstatus[SMGS_CHAMBER]==2){
@@ -175,7 +175,7 @@ class HDSMG:HDWeapon{
 		SMGG B 0{
 			let bbb=HDBulletActor.FireBullet(self,"HDB_9",speedfactor:1.1);
 			if(
-				frandom(32,ceilingz-floorz)<bbb.speed*0.2
+				frandom(16,ceilingz-floorz)<bbb.speed*0.1
 			)A_AlertMonsters(200);
 
 			A_ZoomRecoil(0.995);
@@ -187,7 +187,7 @@ class HDSMG:HDWeapon{
 			HDFlashAlpha(-200);
 			A_Light1();
 		}
-		TNT1 A 0 A_MuzzleClimb(-frandom(0.4,0.6),-frandom(0.5,0.8),-frandom(0.4,0.6),-frandom(0.5,0.8));
+		TNT1 A 0 A_MuzzleClimb(-frandom(0.34,0.4),-frandom(0.5,0.6),-frandom(0.34,0.4),-frandom(0.5,0.6));
 		goto lightdone;
 
 
