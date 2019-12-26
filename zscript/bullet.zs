@@ -382,7 +382,8 @@ class HDBulletActor:HDActor{
 		double aimoffx=0,
 		double aimoffy=0,
 		double speedfactor=0,
-		int amount=1
+		int amount=1,
+		class<actor>distantsounder=null
 	){
 		if(zofs==999)zofs=HDWeapon.GetShootOffset(
 			caller,caller.player
@@ -393,6 +394,7 @@ class HDBulletActor:HDActor{
 		do{
 			amount--;
 			bbb=HDBulletActor(spawn(type,(caller.pos.x,caller.pos.y,caller.pos.z+zofs)));
+			if(distantsounder!=null)bbb.distantsounder=distantsounder;
 			if(xyofs)bbb.setorigin(bbb.pos+(sin(caller.angle)*xyofs,cos(caller.angle)*xyofs,0),false);
 
 			if(speedfactor>0)bbb.speed*=speedfactor;
