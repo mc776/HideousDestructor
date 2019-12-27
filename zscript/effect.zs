@@ -627,6 +627,8 @@ class DistantNoisemaker:IdleDummy{
 class DistantRifle:DistantDummy{
 	default{deathsound "world/riflefar";mass 18;}
 }
+class DistantHERP:DistantRifle{default{deathsound "world/herpfar";}}
+class DistantVulc:DistantRifle{default{deathsound "world/vulcfar";}}
 class DistantShotgun:DistantDummy{
 	default{deathsound "world/shotgunfar";mass 34;}
 }

@@ -760,7 +760,8 @@ class Vulcanette:HDWeapon{
 
 		int heat=min(50,invoker.weaponstatus[VULCS_HEAT]);
 		HDBulletActor.FireBullet(self,"HDB_426",zofs:height-8,
-			spread:heat>20?heat*0.1:0
+			spread:heat>20?heat*0.1:0,
+			distantsounder:"DistantVulc"
 		);
 /*
 		actor b=spawn("HDBullet426",pos+(0,0,height-8),ALLOW_REPLACE);

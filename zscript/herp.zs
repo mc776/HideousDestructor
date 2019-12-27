@@ -288,7 +288,7 @@ class HERPBot:HDUPK{
 			}else ammo[0]--;
 
 			A_PlaySound("herp/shoot",CHAN_WEAPON);
-			HDBulletActor.FireBullet(self,"HDB_426",zofs:6,spread:1);
+			HDBulletActor.FireBullet(self,"HDB_426",zofs:6,spread:1,distantsounder:"DistantHERP");
 		}
 		HERP C 2{
 			angle-=frandom(0.4,1.);
@@ -650,7 +650,8 @@ class HERPUsable:HDWeapon{
 			HDFlashAlpha(-16);
 			HDBulletActor.FireBullet(
 				self,"HDB_426",zofs:height-12,
-				spread:1
+				spread:1,
+				distantsounder:"DistantHERP"
 			);
 			A_PlaySound("herp/shoot",CHAN_WEAPON);
 			A_ZoomRecoil(max(0.95,1.-0.05*min(invoker.weaponstatus[ZM66S_AUTO],3)));
