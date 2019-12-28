@@ -13,5 +13,5 @@ If you are downloading the release, just load the .pk7 the same way you do a .pk
 
 Make sure you have keys bound for speed, crouch, reload, zoom, and user1 through 4.
 
-hd_manual.txt contains the full manual.
+hd_manual.md contains the full manual.
 hd.txt contains a draft of the relevant information for any future archival in /idgames.
