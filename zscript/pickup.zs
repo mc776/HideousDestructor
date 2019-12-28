@@ -79,6 +79,7 @@ class GrabThinker:Thinker{
 			let hdpt=hdplayerpawn(picktarget);
 			bool maglimited=
 				hdpt
+				&&mt
 				&&hdpt.hd_maglimit.getint()>0
 				&&hdpt.countinv(mt.getclassname())>=hdpt.hd_maglimit.getint()
 			;
