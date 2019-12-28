@@ -100,22 +100,36 @@ class HDSMG:HDWeapon{
 		HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl,
 		bool sightbob,vector2 bob,double fov,bool scopeview,actor hpc,string whichdot
 	){
-		int cx,cy,cw,ch;
-		[cx,cy,cw,ch]=screen.GetClipRect();
-		sb.SetClipRect(
-			-16+bob.x,-4+bob.y,32,16,
-			sb.DI_SCREEN_CENTER
-		);
-		vector2 bobb=bob*3;
-		bobb.y=clamp(bobb.y,-8,8);
-		sb.drawimage(
-			"frntsite",(0,0)+bobb,sb.DI_SCREEN_CENTER|sb.DI_ITEM_TOP,
-			alpha:0.9
-		);
-		sb.SetClipRect(cx,cy,cw,ch);
-		sb.drawimage(
-			"backsite",(0,0)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_TOP
-		);
+		if(weaponstatus[0]&SMGF_REFLEXSIGHT){
+			double dotoff=max(abs(bob.x),abs(bob.y));
+			if(dotoff<10){
+				sb.drawimage(
+					whichdot,(0,0)+bob*1.6,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
+					alpha:0.8-dotoff*0.04,scale:(1.6,1.6)
+				);
+			}
+			sb.drawimage(
+				"xh25",(0,0)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
+				scale:(2.,2.)
+			);
+		}else{
+			int cx,cy,cw,ch;
+			[cx,cy,cw,ch]=screen.GetClipRect();
+			sb.SetClipRect(
+				-16+bob.x,-4+bob.y,32,16,
+				sb.DI_SCREEN_CENTER
+			);
+			vector2 bobb=bob*3;
+			bobb.y=clamp(bobb.y,-8,8);
+			sb.drawimage(
+				"frntsite",(0,0)+bobb,sb.DI_SCREEN_CENTER|sb.DI_ITEM_TOP,
+				alpha:0.9
+			);
+			sb.SetClipRect(cx,cy,cw,ch);
+			sb.drawimage(
+				"backsite",(0,0)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_TOP
+			);
+		}
 	}
 	states{
 	select0:
@@ -211,7 +225,7 @@ class HDSMG:HDWeapon{
 			HDFlashAlpha(-200);
 			A_Light1();
 		}
-		TNT1 A 0 A_MuzzleClimb(-frandom(0.34,0.4),-frandom(0.5,0.6),-frandom(0.34,0.4),-frandom(0.5,0.6));
+		TNT1 A 0 A_MuzzleClimb(-frandom(0.2,0.24),-frandom(0.3,0.36),-frandom(0.2,0.24),-frandom(0.3,0.36));
 		goto lightdone;
 
 
@@ -347,12 +361,16 @@ class HDSMG:HDWeapon{
 		int firemode=getloadoutvar(input,"firemode",1);
 		if(firemode>=0)weaponstatus[SMGS_AUTO]=clamp(firemode,0,2);
 
+		firemode=getloadoutvar(input,"reflexsight",1);
+		if(firemode>0)weaponstatus[0]|=SMGF_REFLEXSIGHT;
+
 		int fireswitch=getloadoutvar(input,"fireswitch",1);
 		if(fireswitch>0)weaponstatus[SMGS_SWITCHTYPE]=clamp(fireswitch,0,3);
 	}
 }
 enum smgstatus{
 	SMGF_JUSTUNLOAD=1,
+	SMGF_REFLEXSIGHT=2,
 
 	SMGN_SEMIONLY=1,
 	SMGN_BURSTONLY=2,
