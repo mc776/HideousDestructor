@@ -58,6 +58,12 @@ HD makes use of all canonical Doom keys plus all built-in GZDoom weapon keys. Ma
 
 With that done, you're ready to begin.
 
+### Compatibility notes
+
+Hideous Destructor uses many advanced GZDoom features. If GZDoom has fixed some unusual vanilla behaviour, HD will typically rely on that fix, and if GZDoom has not, HD will often supply its own fix. Please turn off all vanilla compatibility flags to be sure.
+
+In particular, "Use Doom code for hitscan attacks" will cause all headshots to miss.
+
 ### The bleeding system
 
 When you get hit in HD, the injury is recorded in addition to your hitpoint loss.
