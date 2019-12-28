@@ -40,11 +40,16 @@ extend class hdplayerpawn{
 			"Hold \cdZoom\cu and/or \cdUse\cu when you use the goggles to set the amplitude.\nBoth together decrements; \cdUse\cu alone increments.\n\cdZoom\cu alone toggles red/green mode.",
 			"While \cdhd_yolo\cu is on, you can reset someone's permanent damage using\nthe Rite of the Once-Mortal. Check the manual for details.",
 
-			"Zombies never surrender!\nCheck downed monsters to see\nif they're still twitching."
+			"Zombies never surrender!\nCheck downed monsters to see\nif they're still twitching.",
+
+			"If a map contains a mandatory drop that is harmless\nin vanilla but absolutely cannot be survived in HD,\nit is socially acceptable to cheat past it with \cdiddqd\cu or \cdfly\cu."
 		};
 		int newtip;
 		int lasttip=cvar.getcvar("hd_lasttip",player).getint();
 		do{newtip=random(0,specialtips.size()-1);}while(newtip==lasttip);
+
+//		newtip=specialtips.size()-1;
+
 		hd_lasttip.setint(newtip);
 		specialtip="\crTIP: \cu"..specialtips[newtip];
 		specialtipalpha=1001.;
