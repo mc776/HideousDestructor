@@ -11,7 +11,7 @@ extend class hdplayerpawn{
 			||!hd_helptext.getbool()
 		)return;
 		static const string specialtips[]={
-			"Read the manual!\n(open the pk7 with 7Zip and look for \cdhd_manual.txt\cu)",
+			"Read the manual!\n(open the pk7 with 7Zip and look for \cdhd_manual.md\cu)",
 			"Hold \cdUse\cu to check what options are available for a given weapon.",
 			"Make sure you bind keys for \cdall weapon \"User\" buttons\cu\n\cdDrop Weapon\cu, \cdZoom\cu and \cdReload\cu!",
 			"Check the menu for additional keybinds unique to HD!",
