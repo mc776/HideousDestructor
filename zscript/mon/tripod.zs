@@ -60,7 +60,7 @@ class Roboball:SlowProjectile{
 			A_PlaySound("weapons/rocklaunch",CHAN_AUTO,0.6);
 			A_ChangeVelocity(thrust.x,0,thrust.y,CVF_RELATIVE);
 		}else{
-			bnogravity=false;
+			bnogravity=false; //+nogravity is automatically set and causes all subsequent GetGravity() to return 0
 			setstatelabel("spawn3");
 		}
 	}
