@@ -8,7 +8,7 @@ class Roboball:SlowProjectile{
 		speed 72;
 		radius 5;height 15;
 		missileheight 4;
-		gravity 0;
+		gravity 0.0000001;
 		decal "Scorch";
 		seesound "weapons/rocklf";
 		scale 0.6;
@@ -67,7 +67,7 @@ class Roboball:SlowProjectile{
 	spawn:
 		TNT1 A 0 nodelay{
 			A_PlaySound("weapons/rocklf",CHAN_VOICE);
-			fuel=100;
+			fuel=1.00;
 			thrust=(cos(pitch),-sin(pitch))*10;
 		}
 	spawn2:
@@ -77,8 +77,8 @@ class Roboball:SlowProjectile{
 		MISL A 1 light("ROCKET"){
 			if(grav>=1.)A_SetTics(-1);
 			else{
-				gravity+=level.gravity*cursector.gravity*(0.1*0.00125); //GetGravity() always returns 0
-				grav=gravity;
+				gravity+=0.1;
+				grav=getgravity();
 			}
 		}
 		wait;
