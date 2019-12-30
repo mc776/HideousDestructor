@@ -8,7 +8,7 @@ class Roboball:SlowProjectile{
 		speed 72;
 		radius 5;height 15;
 		missileheight 4;
-		gravity 0.0000001;
+		gravity 0;
 		decal "Scorch";
 		seesound "weapons/rocklf";
 		scale 0.6;
@@ -59,7 +59,10 @@ class Roboball:SlowProjectile{
 			fuel--;
 			A_PlaySound("weapons/rocklaunch",CHAN_AUTO,0.6);
 			A_ChangeVelocity(thrust.x,0,thrust.y,CVF_RELATIVE);
-		}else setstatelabel("spawn3");
+		}else{
+			bnogravity=false;
+			setstatelabel("spawn3");
+		}
 	}
 	int fuel;
 	vector2 thrust;
@@ -67,7 +70,7 @@ class Roboball:SlowProjectile{
 	spawn:
 		TNT1 A 0 nodelay{
 			A_PlaySound("weapons/rocklf",CHAN_VOICE);
-			fuel=1.00;
+			fuel=100;
 			thrust=(cos(pitch),-sin(pitch))*10;
 		}
 	spawn2:
