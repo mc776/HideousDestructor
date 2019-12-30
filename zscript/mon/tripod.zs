@@ -32,7 +32,6 @@ class Roboball:SlowProjectile{
 			A_HDBlast(
 				blastradius:512,blastdamage:random(128,256),fullblastradius:96,
 				pushradius:256,pushamount:256,fullpushradius:96,
-//				fragradius:256,fragdamage:random(160,200),
 				immolateradius:128,immolateamount:random(3,60),
 				immolatechance:15
 			);
@@ -75,9 +74,13 @@ class Roboball:SlowProjectile{
 		MISL A 2 light("ROCKET") A_SatanRoboRocketThrust();
 		loop;
 	spawn3:
-		MISL A 3 light("ROCKET"){gravity=0.4;grav=getgravity();}
-		MISL A 2 light("ROCKET"){gravity=0.8;grav=getgravity();}
-		MISL A -1{gravity=1.;grav=getgravity();}
+		MISL A 1 light("ROCKET"){
+			if(grav>=1.)A_SetTics(-1);
+			else{
+				gravity+=level.gravity*cursector.gravity*(0.1*0.00125); //GetGravity() always returns 0
+				grav=gravity;
+			}
+		}
 		wait;
 	death:
 		TNT1 A 1{
