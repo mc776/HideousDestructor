@@ -1071,6 +1071,7 @@ Default weapon slot: 6
 Loadout codes: `lib`
 * nogl - 0/1, whether it has a launcher
 * nobp - 0/1, whether it is bullpup
+* semi - 0/1, whether it is semi-auto only or has a fire selector
 * altreticle - 0/1, whether to use the glowing crosshair
 * frontreticle - 0/1, whether to scale the crosshair with zoom
 * firemode - 0/1, whether you start in full auto

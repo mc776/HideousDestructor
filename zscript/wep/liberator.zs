@@ -291,12 +291,14 @@ class LiberatorRifle:AutoReloadingThingy{
 				sb.drawnum(hpl.countinv("HDRocketAmmo"),-56,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
 			}
 		}
-		string llba="RBRSA3A7";
-		if(hdw.weaponstatus[0]&LIBF_FULLAUTO)llba="STFULAUT";
-		sb.drawimage(
-			llba,(-22,-10),
-			sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TRANSLATABLE|sb.DI_ITEM_RIGHT
-		);
+		if(!(hdw.weaponstatus[0]&LIBF_NOAUTO)){
+			string llba="RBRSA3A7";
+			if(hdw.weaponstatus[0]&LIBF_FULLAUTO)llba="STFULAUT";
+			sb.drawimage(
+				llba,(-22,-10),
+				sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TRANSLATABLE|sb.DI_ITEM_RIGHT
+			);
+		}
 		if(hdw.weaponstatus[0]&LIBF_GRENADELOADED)sb.drawwepdot(-16,-13,(4,2.6));
 		int lod=max(hdw.weaponstatus[LIBS_MAG],0);
 		sb.drawwepnum(lod,30);
@@ -557,6 +559,7 @@ class LiberatorRifle:AutoReloadingThingy{
 			if(
 				invoker.weaponstatus[0]&LIBF_GRENADEMODE
 				||!(invoker.weaponstatus[0]&LIBF_FULLAUTO)
+				||(invoker.weaponstatus[0]&LIBF_NOAUTO)
 				||invoker.weaponstatus[LIBS_CHAMBER]!=2
 			)setweaponstate("nope");
 		}goto shoot;
@@ -630,7 +633,7 @@ class LiberatorRifle:AutoReloadingThingy{
 	firemode:
 		---- A 0{
 			if(invoker.weaponstatus[0]&LIBF_GRENADEMODE)setweaponstate("abadjust");
-			else invoker.weaponstatus[0]^=LIBF_FULLAUTO;
+			else if(!(invoker.weaponstatus[0]&LIBF_NOAUTO))invoker.weaponstatus[0]^=LIBF_FULLAUTO;
 		}goto nope;
 
 
@@ -903,14 +906,14 @@ class LiberatorRifle:AutoReloadingThingy{
 		goto nope;
 
 	spawn:
-		BRFL ABCD -1 nodelay{
+		BRFL ABCDEFGH -1 nodelay{
 			if(invoker.weaponstatus[0]&LIBF_NOBULLPUP){
 				sprite=getspriteindex("BRLLA0");
 			}
-			// A: -g +m
-			// B: +g +m
-			// C: -g -m
-			// D: +g -m
+			// A: -g +m +a
+			// B: +g +m +a
+			// C: -g -m +a
+			// D: +g -m +a
 			if(invoker.weaponstatus[0]&LIBF_NOLAUNCHER){
 				if(invoker.weaponstatus[LIBS_MAG]<0)frame=2;
 				else frame=0;
@@ -918,13 +921,20 @@ class LiberatorRifle:AutoReloadingThingy{
 				if(invoker.weaponstatus[LIBS_MAG]<0)frame=3;
 				else frame=1;
 			}
+
+			// E: -g +m -a
+			// F: +g +m -a
+			// G: -g -m -a
+			// H: +g -m -a
+			if(invoker.weaponstatus[0]&LIBF_NOAUTO)frame+=4;
+
 			if(
 				invoker.makinground
 				&&invoker.brass>0
 				&&invoker.powders>=3
 			)setstatelabel("chug");
 		}
-		BRLL ABCD -1;
+		BRLL ABCDEFGH -1;
 		stop;
 	}
 	override void InitializeWepStats(bool idfa){
@@ -976,8 +986,14 @@ class LiberatorRifle:AutoReloadingThingy{
 			clamp(zoom,6,70);
 
 		int firemode=getloadoutvar(input,"firemode",1);
-		if(!firemode)weaponstatus[0]&=~LIBF_FULLAUTO;
-		else if(firemode>0)weaponstatus[0]|=LIBF_FULLAUTO;
+		if(firemode>0)weaponstatus[0]|=LIBF_FULLAUTO;
+		else weaponstatus[0]&=~LIBF_FULLAUTO;
+
+		int semi=getloadoutvar(input,"semi",1);
+		if(semi>0){
+			weaponstatus[0]|=LIBF_NOAUTO;
+			weaponstatus[0]&=~LIBF_FULLAUTO;
+		}else weaponstatus[0]&=~LIBF_NOAUTO;
 	}
 }
 enum liberatorstatus{
@@ -990,6 +1006,7 @@ enum liberatorstatus{
 	LIBF_GRENADEMODE=128,
 	LIBF_UNLOADONLY=256,
 	LIBF_NOBULLPUP=512,
+	LIBF_NOAUTO=1024,
 
 	LIBS_FLAGS=0,
 	LIBS_CHAMBER=1,
