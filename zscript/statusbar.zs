@@ -181,6 +181,12 @@ class HDStatusBar:DoomStatusBar{
 				if(www&&www.balwaysshowstatus)drawweaponstatus(www);
 			}
 		}
+
+		if(hpl.countinv("WornRadsuit"))drawimage(
+			"DRKGRNPX",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
+			alpha:0.6,scale:(1000,600)
+		);
+
 		if(idmypos)drawmypos();
 	}
 	void DrawAutomapStuff(){
@@ -374,10 +380,6 @@ class HDStatusBar:DoomStatusBar{
 
 		SetSize(0,320,200);
 		BeginHUD(forcescaled:true);
-		if(hpl.countinv("WornRadsuit"))drawimage(
-			"DRKGRNPX",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-			alpha:0.6,scale:(1000,600)
-		);
 
 
 		//draw the goggles when they do something.

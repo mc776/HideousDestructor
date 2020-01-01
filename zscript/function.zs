@@ -290,6 +290,12 @@ struct HDMath{
 		if(hitline.backsector==hitsector)return hitline.frontsector;
 		return hitline.backsector;
 	}
+	//calculate whether 2 actors are approaching each other
+	static double IsApproaching(actor a1,actor a2){
+		vector3 veldif=a1.vel-a2.vel;
+		vector3 posdif=a1.pos-a2.pos;
+		return (veldif dot posdif)<0;
+	}
 	//calculate the speed at which 2 actors are moving towards each other
 	static double TowardsEachOther(actor a1, actor a2){
 		vector3 oldpos1=a1.pos;
