@@ -942,8 +942,10 @@ class LiberatorRifle:AutoReloadingThingy{
 		weaponstatus[LIBS_MAG]=30;
 		weaponstatus[LIBS_CHAMBER]=2;
 		if(!idfa && !owner){
-			if(randompick(0,0,1))weaponstatus[0]|=LIBF_FRONTRETICLE;
-			if(randompick(0,0,1))weaponstatus[0]|=LIBF_ALTRETICLE;
+			if(!random(0,2))weaponstatus[0]|=LIBF_FRONTRETICLE;
+			if(!random(0,2))weaponstatus[0]|=LIBF_ALTRETICLE;
+			if(!random(0,4))weaponstatus[0]|=LIBF_NOBULLPUP;
+			if(!random(0,6))weaponstatus[0]|=LIBF_NOAUTO;
 			weaponstatus[LIBS_ZOOM]=30;
 			weaponstatus[LIBS_HEAT]=0;
 			weaponstatus[LIBS_DROPADJUST]=160;

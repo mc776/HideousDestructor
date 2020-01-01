@@ -355,7 +355,13 @@ class HDSMG:HDWeapon{
 		weaponstatus[0]=0;
 		weaponstatus[SMGS_MAG]=30;
 		weaponstatus[SMGS_CHAMBER]=2;
-		if(!idfa)weaponstatus[SMGS_AUTO]=0;
+		if(!idfa){
+			weaponstatus[SMGS_AUTO]=0;
+			if(!owner){
+				if(!random(0,2))weaponstatus[0]|=SMGF_REFLEXSIGHT;
+				if(!random(0,2))weaponstatus[SMGS_SWITCHTYPE]=random(0,3);
+			}
+		}
 	}
 	override void loadoutconfigure(string input){
 		int firemode=getloadoutvar(input,"firemode",1);
