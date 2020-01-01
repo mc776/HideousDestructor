@@ -488,6 +488,7 @@ class Regentipede:Serpentipede{
 		meleedamage 3;
 		obituary "%o could feel the schadenfreude.";
 		hitobituary "%o said I want a second opinion, so the imps said okay you're ugly too.";
+		tag "$CC_IMPH";
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -564,6 +565,7 @@ class Ardentipede:Serpentipede{
 		health 110;
 		obituary "%o experienced the magic.";
 		hitobituary "%o experienced ALL the magic.";
+		tag "$CC_IMPM";
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
