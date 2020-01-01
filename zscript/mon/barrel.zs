@@ -12,7 +12,7 @@ class HDBarrel:HDMobBase replaces ExplosiveBarrel{
 		//$Sprite "BAR1A0"
 
 		+solid +shootable
-		+activatemcross +canpass +nodropoff +pushable
+		+activatemcross +canpass +nodropoff
 		+fixmapthingpos +dontgib
 		+hdmobbase.doesntbleed
 		-ismonster
@@ -20,7 +20,7 @@ class HDBarrel:HDMobBase replaces ExplosiveBarrel{
 		damagefactor "Thermal",1.2;
 		damagefactor "Balefire",0.1;
 		radius 11;height 34;
-		health 100;mass 100;gibhealth 200;
+		health 100;mass 200;gibhealth 200;
 		painchance 256;
 		pushfactor 0.1;
 		deathsound "world/barrelx";
