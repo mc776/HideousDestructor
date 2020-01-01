@@ -52,7 +52,7 @@ class ClipBoxPickup2:IdleDummy{
 		A_SpawnItemEx("HD9mMag30",flags:SXF_NOCHECKPOSITION);
 		if(random(0,2))A_SpawnItemEx("HDFragGrenadeAmmo",-3,-3,flags:SXF_NOCHECKPOSITION);
 		if(random(0,2))A_SpawnItemEx("HD9mMag30",3,3,flags:SXF_NOCHECKPOSITION);
-		A_SpawnItemEx("HDSMG",1,1,flags:SXF_NOCHECKPOSITION);
+		A_SpawnItemEx("HDSMGRandom",1,1,flags:SXF_NOCHECKPOSITION);
 		destroy();
 	}
 }

@@ -941,11 +941,7 @@ class LiberatorRifle:AutoReloadingThingy{
 		weaponstatus[LIBS_FLAGS]|=LIBF_GRENADELOADED;
 		weaponstatus[LIBS_MAG]=30;
 		weaponstatus[LIBS_CHAMBER]=2;
-		if(!idfa && !owner){
-			if(!random(0,2))weaponstatus[0]|=LIBF_FRONTRETICLE;
-			if(!random(0,2))weaponstatus[0]|=LIBF_ALTRETICLE;
-			if(!random(0,4))weaponstatus[0]|=LIBF_NOBULLPUP;
-			if(!random(0,6))weaponstatus[0]|=LIBF_NOAUTO;
+		if(!idfa&&!owner){
 			weaponstatus[LIBS_ZOOM]=30;
 			weaponstatus[LIBS_HEAT]=0;
 			weaponstatus[LIBS_DROPADJUST]=160;
@@ -1074,8 +1070,12 @@ class LiberatorRandom:IdleDummy{
 			if(!lll)return;
 			lll.special=special;
 			lll.vel=vel;
-			if(!random(0,2))lll.weaponstatus[0]|=LIBF_NOBULLPUP;
-			if(!random(0,3))lll.weaponstatus[0]|=LIBF_NOLAUNCHER;
+			if(!random(0,2))lll.weaponstatus[0]|=LIBF_FRONTRETICLE;
+			if(!random(0,2))lll.weaponstatus[0]|=LIBF_ALTRETICLE;
+			if(!random(0,2))lll.weaponstatus[0]|=LIBF_NOLAUNCHER;
+			if(!random(0,3))lll.weaponstatus[0]|=LIBF_NOBULLPUP;
+			if(!random(0,5))lll.weaponstatus[0]|=LIBF_NOAUTO;
+
 			if(lll.weaponstatus[0]&LIBF_NOLAUNCHER){
 				spawn("HD7mMag",pos+(7,0,0),ALLOW_REPLACE);
 				spawn("HD7mMag",pos+(5,0,0),ALLOW_REPLACE);
