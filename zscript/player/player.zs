@@ -694,10 +694,15 @@ extend class HDHandlers{
 	override void PlayerEntered(PlayerEvent e){
 		let p=HDPlayerPawn(players[e.PlayerNumber].mo);
 		if(p){
-			p.levelreset();
-			hdlivescounter.get();
+			//do NOT put anything here that must be done for everyone at the very start of the game!
+			//Players 5-8 will not work.
+
 			if(deathmatch)p.spawn("TeleFog",p.pos,ALLOW_REPLACE);
 
+			p.levelreset();  //reset if changing levels
+			hdlivescounter.get();  //only needs to be done once
+
+			//replace bot if changing levels
 			if(
 				hd_nobots
 				&&players[e.PlayerNumber].bot
