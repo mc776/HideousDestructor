@@ -357,7 +357,8 @@ class HDSMG:HDWeapon{
 
 
 	spawn:
-		SMGN A -1 nodelay{
+		TNT1 A 1;
+		SMGN A -1{
 			if(invoker.weaponstatus[SMGS_MAG]<0)frame=1;
 			if(
 				!invoker.bplayingid
@@ -368,10 +369,8 @@ class HDSMG:HDWeapon{
 		stop;
 	}
 	override void initializewepstats(bool idfa){
-		weaponstatus[0]=0;
 		weaponstatus[SMGS_MAG]=30;
 		weaponstatus[SMGS_CHAMBER]=2;
-		if(!idfa)weaponstatus[SMGS_AUTO]=0;
 	}
 	override void loadoutconfigure(string input){
 		int firemode=getloadoutvar(input,"firemode",1);
