@@ -133,8 +133,8 @@ class HDSMG:HDWeapon{
 	}
 	action void A_CheckReflexSight(){
 		if(
-			!invoker.bplayingid
-			&&invoker.weaponstatus[0]&SMGF_REFLEXSIGHT
+			invoker.weaponstatus[0]&SMGF_REFLEXSIGHT
+			&&TexMan.CheckForTexture("SMSGA0",TexMan.Type_Sprite).Exists()
 		)Player.GetPSprite(PSP_WEAPON).sprite=getspriteindex("SMSGA0");
 		else Player.GetPSprite(PSP_WEAPON).sprite=getspriteindex("SMGGA0");
 	}
@@ -361,8 +361,8 @@ class HDSMG:HDWeapon{
 		SMGN A -1{
 			if(invoker.weaponstatus[SMGS_MAG]<0)frame=1;
 			if(
-				!invoker.bplayingid
-				&&invoker.weaponstatus[0]&SMGF_REFLEXSIGHT
+				invoker.weaponstatus[0]&SMGF_REFLEXSIGHT
+				&&TexMan.CheckForTexture("SMSNA0",TexMan.Type_Sprite).Exists()
 			)invoker.tics=0;
 		}
 		SMSN # -1;
