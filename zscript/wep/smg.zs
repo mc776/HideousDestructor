@@ -363,7 +363,7 @@ class HDSMG:HDWeapon{
 			if(
 				invoker.weaponstatus[0]&SMGF_REFLEXSIGHT
 				&&TexMan.CheckForTexture("SMSNA0",TexMan.Type_Sprite).Exists()
-			)invoker.tics=0;
+			)invoker.sprite=getspriteindex("SMSNA0");
 		}
 		SMSN # -1;
 		stop;
