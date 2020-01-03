@@ -360,6 +360,26 @@ class HDWeapon:Weapon{
 				}
 			}
 		}
+		//also deal with spares, no smoke because lazy
+		if(owner){
+			let spw=spareweapons(owner.findinventory("spareweapons"));
+			if(spw){
+				string gcn=getclassname();
+				for(int i=0;i<spw.weapontype.size();i++){
+					if(spw.weapontype[i]==gcn){
+						array<string> wepstat;
+						spw.weaponstatus[0].split(wepstat,",");
+						if(wepstat[ref].toint()>0)wepstat[ref]=""..(wepstat[ref].toint()-1);
+						string newwepstat="";
+						for(int j=0;j<wepstat.size();j++){
+							if(j)newwepstat=newwepstat..",";
+							newwepstat=newwepstat..wepstat[j];
+						}
+						spw.weaponstatus[i]=newwepstat;
+					}
+				}
+			}
+		}
 	}
 	//interface stuff
 	virtual clearscope string,double getpickupsprite(){return "",1.;}
