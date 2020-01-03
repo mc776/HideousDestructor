@@ -230,7 +230,7 @@ class ZM66AssaultRifle:HDWeapon{
 	action bool brokenround(){
 		if(!(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBERBROKEN)){
 			int hht=invoker.weaponstatus[ZM66S_HEAT];
-			if(hht>300)invoker.weaponstatus[ZM66S_BORESTRETCHED]++;
+			if(hht>240)invoker.weaponstatus[ZM66S_BORESTRETCHED]++;
 			hht*=hht;hht>>=10;
 			int rnd=
 				(invoker.owner?1:10)
@@ -301,7 +301,7 @@ class ZM66AssaultRifle:HDWeapon{
 
 			//shoot the bullet
 			//copypaste any changes to spawnshoot as well!
-			double brnd=invoker.weaponstatus[ZM66S_HEAT]*0.01;
+			double brnd=max(invoker.weaponstatus[ZM66S_HEAT],invoker.weaponstatus[ZM66S_BORESTRETCHED])*0.01;
 			HDBulletActor.FireBullet(self,"HDB_426",
 				spread:brnd>1.2?brnd:0
 			);
