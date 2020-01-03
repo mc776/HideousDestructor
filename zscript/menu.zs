@@ -376,7 +376,7 @@ class HDLoadoutMenu:GenericMenu{
 		);
 		vcurs+=BigFont.GetHeight()+NewSmallFont.GetHeight()*0.5;
 
-		hs="\cgSyntax:   \cazzzz#aaaa:xxx n, yyy n - yyy n\n\cazzzz\cu name (optional)   \caaaaa\cu preview picture (optional)\n\caxxx\cu starting weapon   \cayyy\cu anything else\n\can\cu number given\cu (optional, default 1)\n\ca-\cu begin backpack settings (use \cabak\cu for empty)\n\camap\cu for map   \cakey\cu for keys (bitflag BYR)\n\n\cdENTER\cu save   \cdESC\cu clear changes   \cdCtrl+R\cu reset";
+		hs="\cgSyntax:   \cazzzz#aaaa:xxx n, yyy n, bak yyy n. yyy n\n\cazzzz\cu preview picture (optional)   \caaaaa\cu name (optional)\n\caxxx\cu starting weapon   \cayyy\cu anything else\n\can\cu number given\cu (optional, default 1)\n\cabak\cu begin backpack settings\n\camap\cu for map   \cakey\cu for keys (bitflag BYR)\n\n\cdENTER\cu save   \cdESC\cu clear changes   \cdCtrl+R\cu reset";
 		screen.DrawText(NewSmallFont,
 			OptionMenuSettings.mFontColor,
 			(screen.GetWidth() - NewSmallFont.StringWidth(hs) * CleanXfac_1) / 2,

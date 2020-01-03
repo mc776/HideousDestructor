@@ -340,24 +340,21 @@ struct HDMath{
 			if(sls<col)col=-1;
 		}
 
-		string pic;if(pnd<0)pic="";else pic=input.left(pnd);
-		string nam;if(col<0)nam="";else nam=input.left(col);
-		string desc;if(sls<0)desc="";else desc=input.mid(sls+1);
-		if(nam!="")pic.replace(nam,"");	//delete these !="" checks later, it's a GZ bug that's been fixed
-		pic.replace("#","");
-		pic.replace(":","");
-		if(pic!="")nam.replace(pic,"");
-		nam.replace("#","");
-		nam.replace(":","");
-		desc.replace("/","");
-
+		string pic=input.left(pnd);
+		string nam=input.left(col);
 		string lod=input;
-		if(pic!="")lod.replace(pic,"");
-		if(nam!="")lod.replace(nam,"");
-		if(desc!="")lod.replace(desc,"");
-		lod.replace("#","");
-		lod.replace(":","");
-		lod.replace("/","");
+		string desc="";
+
+		if(sls>-1){
+			desc=input.mid(sls+1);
+			lod.remove(sls,int.Max);
+		}
+
+		if(col>-1){
+			if(pnd>-1)nam.remove(0,pnd+1);
+			lod.remove(0,col+1);
+		}else if(pnd>-1)lod.remove(0,pnd+1);
+
 		if(!keepspaces)lod.replace(" ","");
 		lod=lod.makelower();
 
