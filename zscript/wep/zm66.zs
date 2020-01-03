@@ -227,6 +227,17 @@ class ZM66AssaultRifle:HDWeapon{
 			owner.A_SetInventory("HDRocketAmmo",1);
 		}
 	}
+	action bool A_CheckCookoff(){
+		if(
+			invoker.weaponstatus[ZM66S_HEAT]>HDCONST_ZM66COOKOFF      
+			&&!(invoker.weaponstatus[0]&ZM66F_CHAMBERBROKEN)
+			&&invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBER
+		){
+			setweaponstate("cookoff");
+			return true;
+		}
+		return false;
+	}
 	action bool brokenround(){
 		if(!(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBERBROKEN)){
 			int hht=invoker.weaponstatus[ZM66S_HEAT];
@@ -245,14 +256,8 @@ class ZM66AssaultRifle:HDWeapon{
 	states{
 	ready:
 		RIFG A 1{
-			if(
-				invoker.weaponstatus[ZM66S_HEAT]>HDCONST_ZM66COOKOFF    
-				&&invoker.weaponstatus[0]&ZM66F_CHAMBER
-				&&!(invoker.weaponstatus[0]&ZM66F_CHAMBERBROKEN)
-			){
-				setweaponstate("cookoff");
-				return;
-			}else if(pressingzoom())A_ZoomAdjust(ZM66S_ZOOM,16,70);
+			if(A_CheckCookoff())return;
+			if(pressingzoom())A_ZoomAdjust(ZM66S_ZOOM,16,70);
 			else A_WeaponReady(WRF_ALL);
 			if(invoker.weaponstatus[ZM66S_AUTO]>2)invoker.weaponstatus[ZM66S_AUTO]=2;  
 		}goto readyend;
@@ -331,12 +336,7 @@ class ZM66AssaultRifle:HDWeapon{
 		RIFG A 0 A_JumpIf(invoker.weaponstatus[ZM66S_AUTO],"shootgun");
 	althold:
 		---- A 1{
-			if(
-				invoker.weaponstatus[ZM66S_HEAT]>HDCONST_ZM66COOKOFF      
-				&&!(invoker.weaponstatus[0]&ZM66F_CHAMBERBROKEN)
-				&&invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBER
-			)setweaponstate("cookoff");
-			else A_WeaponReady(WRF_NOFIRE);
+			if(!A_CheckCookoff())A_WeaponReady(WRF_NOFIRE);
 		}
 		---- A 0 A_Refire();
 		goto ready;
@@ -389,11 +389,7 @@ class ZM66AssaultRifle:HDWeapon{
 			}
 			A_WeaponReady(WRF_NOFIRE); //not WRF_NONE: switch to drop during cookoff
 		}
-		RIFG B 0 A_JumpIf(
-			invoker.weaponstatus[ZM66S_HEAT]>HDCONST_ZM66COOKOFF    
-			&&invoker.weaponstatus[0]&ZM66F_CHAMBER
-			&&!(invoker.weaponstatus[0]&ZM66F_CHAMBERBROKEN)
-		,"cookoff");
+		RIFG B 0 A_CheckCookoff();
 		RIFG B 0 A_JumpIf(invoker.weaponstatus[ZM66S_AUTO]<1,"nope");
 		RIFG B 0 A_JumpIf(invoker.weaponstatus[ZM66S_AUTO]>4,"nope");
 		RIFG B 2 A_JumpIf(invoker.weaponstatus[ZM66S_AUTO]>1,1);
@@ -412,7 +408,7 @@ class ZM66AssaultRifle:HDWeapon{
 			A_ClearRefire();
 			if(
 				(invoker.weaponstatus[ZM66S_MAG]>=0)	//something to detach
-				&&(PressingReload()||PressingUnload())	//trying to detach
+				&&(justpressed(BT_RELOAD)||justpressed(BT_UNLOAD))	//trying to detach
 			){
 				A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
 				A_PlaySound("weapons/rifleload",5);
@@ -592,7 +588,7 @@ class ZM66AssaultRifle:HDWeapon{
 				invoker.weaponstatus[ZM66S_FLAGS]|=ZM66F_CHAMBER;
 				brokenround();
 			}else setweaponstate("reloadend");
-			A_WeaponBusy();
+			if(!A_CheckCookoff())A_WeaponBusy();
 		}
 		goto nope;
 		RIFG B 4 offset(-14,45);
@@ -601,6 +597,7 @@ class ZM66AssaultRifle:HDWeapon{
 	reloadend:
 		RIFG B 2 offset(-11,39);
 		RIFG A 1 offset(-8,37) A_MuzzleClimb(frandom(0.2,-2.4),frandom(0.2,-1.4));
+		RIFG A 0 A_CheckCookoff();
 		RIFG A 1 offset(-3,34);
 		RIFG A 1 offset(0,33);
 		goto nope;
