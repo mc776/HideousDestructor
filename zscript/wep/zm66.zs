@@ -230,10 +230,12 @@ class ZM66AssaultRifle:HDWeapon{
 	action bool brokenround(){
 		if(!(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBERBROKEN)){
 			int hht=invoker.weaponstatus[ZM66S_HEAT];
+			if(hht>300)invoker.weaponstatus[ZM66S_BORESTRETCHED]++;
 			hht*=hht;hht>>=10;
 			int rnd=
 				(invoker.owner?1:10)
 				+max(invoker.weaponstatus[ZM66S_AUTO],hht)
+				+invoker.weaponstatus[ZM66S_BORESTRETCHED]
 				+(invoker.weaponstatus[ZM66S_MAG]>100?10:0);
 			if(random(0,2000)<rnd){
 				invoker.weaponstatus[ZM66S_FLAGS]|=ZM66F_CHAMBERBROKEN;
