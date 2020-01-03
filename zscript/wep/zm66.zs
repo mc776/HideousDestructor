@@ -229,9 +229,11 @@ class ZM66AssaultRifle:HDWeapon{
 	}
 	action bool brokenround(){
 		if(!(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBERBROKEN)){
+			int hht=invoker.weaponstatus[ZM66S_HEAT];
+			hht*=hht;hht>>=10;
 			int rnd=
 				(invoker.owner?1:10)
-				+(invoker.weaponstatus[ZM66S_AUTO])
+				+max(invoker.weaponstatus[ZM66S_AUTO],hht)
 				+(invoker.weaponstatus[ZM66S_MAG]>100?10:0);
 			if(random(0,2000)<rnd){
 				invoker.weaponstatus[ZM66S_FLAGS]|=ZM66F_CHAMBERBROKEN;
@@ -299,7 +301,7 @@ class ZM66AssaultRifle:HDWeapon{
 			//copypaste any changes to spawnshoot as well!
 			double brnd=invoker.weaponstatus[ZM66S_HEAT]*0.01;
 			HDBulletActor.FireBullet(self,"HDB_426",
-				spread:brnd>1.2?invoker.weaponstatus[ZM66S_HEAT]*0.1:0
+				spread:brnd>1.2?brnd:0
 			);
 
 			A_MuzzleClimb(
