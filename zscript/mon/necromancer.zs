@@ -246,7 +246,7 @@ class Necromancer:HDMobBase replaces ArchVile{
 		damagetype "Thermal";
 		speed 14;
 		painchance 0;
-		health TELEFRAG_DAMAGE;
+		health 1000;
 	}
 	static void A_MassHeal(actor caller){
 		actor aaa;
