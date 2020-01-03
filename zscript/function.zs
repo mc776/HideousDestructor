@@ -350,12 +350,9 @@ struct HDMath{
 			lod.remove(sls,int.Max);
 		}
 
-		if(pnd<col){
+		if(col>-1){
 			if(pnd>-1)nam.remove(0,pnd+1);
 			lod.remove(0,col+1);
-		}else if(col<pnd){
-			if(col>-1)pic.remove(0,col+1);
-			lod.remove(0,pnd+1);
 		}
 
 		if(!keepspaces)lod.replace(" ","");
