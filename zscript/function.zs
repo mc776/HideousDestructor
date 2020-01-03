@@ -345,7 +345,7 @@ struct HDMath{
 		string lod=input;
 		string desc="";
 
-		if(sls>-1) {
+		if(sls>-1){
 			desc=input.mid(sls+1);
 			lod.remove(sls,int.Max);
 		}
@@ -353,7 +353,7 @@ struct HDMath{
 		if(col>-1){
 			if(pnd>-1)nam.remove(0,pnd+1);
 			lod.remove(0,col+1);
-		}
+		}else if(pnd>-1)lod.remove(0,pnd+1);
 
 		if(!keepspaces)lod.replace(" ","");
 		lod=lod.makelower();
