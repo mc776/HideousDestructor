@@ -340,8 +340,8 @@ struct HDMath{
 			if(sls<col)col=-1;
 		}
 
-		string pic=input.left(pnd);
-		string nam=input.left(col);
+		string pic=""; if(pnd>-1)pic=input.left(pnd);
+		string nam=""; if(col>-1)nam=input.left(col);
 		string lod=input;
 		string desc="";
 
