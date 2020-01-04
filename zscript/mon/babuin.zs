@@ -328,6 +328,7 @@ class SpecBabuin:Babuin{
 
 		renderstyle "fuzzy";
 		dropitem "HDBlurSphere",1;
+		tag "cloaked babuin";
 	}
 	states{
 	see:
