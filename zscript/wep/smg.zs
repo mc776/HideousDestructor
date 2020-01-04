@@ -20,6 +20,7 @@ class HDSMG:HDWeapon{
 		hdweapon.barrelsize 26,0.5,1;
 		hdweapon.refid HDLD_SMG;
 		tag "SMG";
+		inventory.icon "SMGNA0";
 	}
 	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
 	override hdweapon GetSpareWeapon(actor newowner,bool reverse,bool doselect){return GetSpareWeaponRegular(newowner,reverse,doselect);}
