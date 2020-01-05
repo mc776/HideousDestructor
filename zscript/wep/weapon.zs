@@ -970,8 +970,18 @@ class SpareWeapons:HDPickup{
 		}
 		return null;
 	}
-	//shortcut for changing a single value in a stowed weapon
-	void ChangeWeaponValue(int wepindex,int statslot,int newvalue){
+	//shortcut for changing values in a stowed weapon
+	void ChangeWeaponValue(
+		int wepindex,
+		int statslot,int newvalue,
+		int statslot2=-1,int newvalue2=-1,
+		int statslot3=-1,int newvalue3=-1,
+		int statslot4=-1,int newvalue4=-1,
+		int statslot5=-1,int newvalue5=-1,
+		int statslot6=-1,int newvalue6=-1,
+		int statslot7=-1,int newvalue7=-1,
+		int statslot8=-1,int newvalue8=-1
+	){
 		if(weaponstatus.size()<=wepindex)return;
 		array<string> wepstat;
 		string wepstat2="";
@@ -979,6 +989,13 @@ class SpareWeapons:HDPickup{
 		for(int i=0;i<wepstat.size();i++){
 			if(i)wepstat2=wepstat2..",";
 			if(i==statslot)wepstat2=wepstat2..newvalue;
+			else if(i==statslot2)wepstat2=wepstat2..newvalue2;
+			else if(i==statslot3)wepstat2=wepstat2..newvalue3;
+			else if(i==statslot4)wepstat2=wepstat2..newvalue4;
+			else if(i==statslot5)wepstat2=wepstat2..newvalue5;
+			else if(i==statslot6)wepstat2=wepstat2..newvalue6;
+			else if(i==statslot7)wepstat2=wepstat2..newvalue7;
+			else if(i==statslot8)wepstat2=wepstat2..newvalue8;
 			else wepstat2=wepstat2..wepstat[i];
 		}
 		weaponstatus[wepindex]=wepstat2;
