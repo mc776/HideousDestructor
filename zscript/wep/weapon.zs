@@ -970,6 +970,19 @@ class SpareWeapons:HDPickup{
 		}
 		return null;
 	}
+	//shortcut for changing a single value in a stowed weapon
+	void ChangeWeaponValue(int wepindex,int statslot,int newvalue){
+		if(weaponstatus.size()<=wepindex)return;
+		array<string> wepstat;
+		string wepstat2="";
+		weaponstatus[wepindex].split(wepstat,",");
+		for(int i=0;i<wepstat.size();i++){
+			if(i)wepstat2=wepstat2..",";
+			if(i==statslot)wepstat2=wepstat2..newvalue;
+			else wepstat2=wepstat2..wepstat[i];
+		}
+		weaponstatus[wepindex]=wepstat2;
+	}
 	states{
 	spawn:
 		TNT1 A 1;
