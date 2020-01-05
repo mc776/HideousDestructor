@@ -26,7 +26,7 @@ class HDHandgun:HDWeapon{
 
 		array<string> wepstat;
 		string wepstat2="";
-		mwt.weaponstatus[0].split(wepstat,",");
+		mwt.weaponstatus[pistindex].split(wepstat,",");
 		for(int i=0;i<wepstat.size();i++){
 			if(i)wepstat2=wepstat2..",";
 			wepstat2=wepstat2..invoker.weaponstatus[i];
@@ -402,20 +402,13 @@ class HDPistol:HDHandgun replaces Pistol{
 		goto ready;
 
 	user1:
+	altreload:
 	swappistols:
 		---- A 0 A_SwapHandguns();
 		---- A 0{
 			bool id=(Wads.CheckNumForName("id",0)!=-1);
 			bool offhand=invoker.wronghand;
-			bool lefthanded=(
-				(
-					id
-					&&!offhand
-				)||(
-					!id
-					&&offhand
-				)
-			);
+			bool lefthanded=(id!=offhand);
 			if(lefthanded){
 				A_Overlay(1025,"raiseleft");
 				A_Overlay(1026,"lowerright");
