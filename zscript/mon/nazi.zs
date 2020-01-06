@@ -57,7 +57,7 @@ class HoopBubble:HDMobMan replaces WolfensteinSS{
 		SSWV H 1{
 			A_Recoil(frandom(-0.4,0.4));
 			A_SetTics(random(30,80));
-			if(!random(0,3))A_PlaySound("grunt/active");
+			if(!random(0,3))A_StartSound("grunt/active",CHAN_VOICE);
 		}
 		---- A 0 setstatelabel("spawn");
 	spawnstill:
@@ -66,7 +66,7 @@ class HoopBubble:HDMobMan replaces WolfensteinSS{
 		SSWV CD 5 A_SetAngle(angle+frandom(-4.,4.));
 		SSWV A 0 A_Look();
 		SSWV A 0 A_Jump(192,2);
-		SSWV A 0 A_PlaySound("grunt/active");
+		SSWV A 0 A_StartSound("grunt/active",CHAN_VOICE);
 		SSWV AB 5 A_SetAngle(angle+frandom(-4.,4.));
 		SSWV A 0 A_Look();
 		SSWV B 1 A_SetTics(random(10,40));
@@ -74,7 +74,7 @@ class HoopBubble:HDMobMan replaces WolfensteinSS{
 	spawnwander:
 		SSWV CDAB 5{
 			hdmobai.wander(self);
-			if(!random(0,72))A_PlaySound("grunt/active");
+			if(!random(0,72))A_StartSound("grunt/active",CHAN_VOICE);
 		}
 		---- A 0 setstatelabel("spawn");
 	see:
@@ -157,7 +157,7 @@ class HoopBubble:HDMobMan replaces WolfensteinSS{
 			}
 			pitch+=frandom(0,spread)-frandom(0,spread);
 			angle+=frandom(0,spread)-frandom(0,spread);
-			A_PlaySound("weapons/pistol",CHAN_WEAPON);
+			A_StartSound("weapons/pistol",CHAN_WEAPON);
 			HDBulletActor.FireBullet(self,"HDB_9",speedfactor:1.1);
 			A_SpawnItemEx("HDSpent9mm",
 				cos(pitch)*10,0,height-8-sin(pitch)*10,
@@ -178,17 +178,17 @@ class HoopBubble:HDMobMan replaces WolfensteinSS{
 	reload:
 		SSWV A 3{hdmobai.chase(self,"melee",null,true);}
 		SSWV B 4{
-			A_PlaySound("weapons/rifleclick2");
+			A_StartSound("weapons/rifleclick2",8);
 			if(gunloaded>=0)A_SpawnProjectile("HDSMGEmptyMag",38,0,random(90,120));
 			gunloaded=-1;
 		}
 		SSWV CD 3{hdmobai.chase(self,"melee",null,true);}
 		SSWV E 4{
-			A_PlaySound("weapons/rifleload");
+			A_StartSound("weapons/rifleload",8);
 			hdmobai.wander(self,true);
 		}
 		SSWV F 3{
-			A_PlaySound("weapons/rifleclick2");
+			A_StartSound("weapons/rifleclick2",8);
 			gunloaded+=30;
 			hdmobai.wander(self,true);
 		}

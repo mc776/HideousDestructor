@@ -128,7 +128,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		if(chambers<1)setstatelabel("chamber");
 
 		//shoot the bullet
-		A_PlaySound("weapons/vulcanette",randompick(CHAN_WEAPON,5,6));
+		A_StartSound("weapons/vulcanette",CHAN_WEAPON,CHANF_OVERLAP);
 		HDBulletActor.FireBullet(self,"HDB_426",spread:2,distantsounder:"DistantVulc");
 		pitch+=frandom(-0.4,0.3);angle+=frandom(-0.3,0.3);
 		burstcount--;
@@ -138,7 +138,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		if(chambers<5 && thismag){
 			thismag--;
 			chambers++;
-			A_PlaySound("weapons/rifleclick2",CHAN_BODY);
+			A_StartSound("weapons/rifleclick2",8);
 		}
 	}
 	void A_TurnTowardsTarget(
@@ -212,7 +212,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 			A_Look();
 			if(!random(0,8))A_Recoil(random(-1,1)*0.4);
 			A_SetTics(random(10,30));
-			if(!random(0,8))A_PlaySound(activesound,CHAN_VOICE);
+			if(!random(0,8))A_StartSound(activesound,CHAN_VOICE);
 		}wait;
 	spawnstill:
 		CPOS C 0 A_Jump(128,"scan","scan","spawnwander");
@@ -223,7 +223,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		CPOS CD 5{angle+=random(-4,4);}
 		CPOS AB 5{
 			A_Look();
-			if(!random(0,15))A_PlaySound(activesound,CHAN_VOICE);
+			if(!random(0,15))A_StartSound(activesound,CHAN_VOICE);
 			angle+=random(-4,4);
 		}
 		CPOS B 1 A_SetTics(random(10,40));
@@ -233,7 +233,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		CPOS CD 5 A_Wander();
 		CPOS AB 5{
 			A_Look();
-			if(!random(0,15))A_PlaySound(activesound,CHAN_VOICE);
+			if(!random(0,15))A_StartSound(activesound,CHAN_VOICE);
 			A_Wander();
 		}
 		CPOS A 0 A_Jump(196,"spawn");
@@ -312,7 +312,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 	shuntmag:
 		CPOS E 1;
 		CPOS E 3{
-			A_PlaySound("weapons/vulcshunt",CHAN_WEAPON);
+			A_StartSound("weapons/vulcshunt",8);
 			if(thismag>=0){
 				actor mmm=HDMagAmmo.SpawnMag(self,"HD4mMag",0);
 				mmm.A_ChangeVelocity(3,frandom(-3,2),frandom(0,-2),CVF_RELATIVE|CVF_REPLACE);
@@ -329,7 +329,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 			if(chambers<5&&thismag>0){
 				thismag--;
 				chambers++;
-				A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
+				A_StartSound("weapons/rifleclick2",8,CHANF_OVERLAP);
 			}
 		}
 		---- A 0 setstatelabel("shoot");
@@ -341,15 +341,15 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 		}
 		CPOS AABBCCDD 3 A_Chase(null,null);
 	loadamag:
-		CPOS E 9 A_PlaySound("weapons/pocket",CHAN_WEAPON);
-		CPOS E 7 A_PlaySound("weapons/rifleload");
+		CPOS E 9 A_StartSound("weapons/pocket",9);
+		CPOS E 7 A_StartSound("weapons/rifleload",8);
 		CPOS E 10{
 			if(thismag<0)thismag=50;
 			else if(mags<4)mags++;
 			else{
 				setstatelabel("see2");
 				return;
-			}A_PlaySound("weapons/rifleclick2");
+			}A_StartSound("weapons/rifleclick2",8);
 		}loop;
 
 	melee:

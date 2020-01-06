@@ -64,7 +64,7 @@ class HDBarrel:HDMobBase replaces ExplosiveBarrel{
 		if(floorz!=pos.z)return;
 		A_FaceTarget();
 		angle+=random(-135,135);
-		A_PlaySound("barrel/walk",CHAN_BODY);
+		A_StartSound("barrel/walk",CHAN_BODY);
 		vel.xy+=(cos(angle),sin(angle))*5;
 		setstatelabel("inertjiggle");
 	}
@@ -75,7 +75,7 @@ class HDBarrel:HDMobBase replaces ExplosiveBarrel{
 			&&HDMobAI.TryShoot(self,32,128,9,9)
 		){
 			A_FaceTarget(0,0);
-			A_PlaySound(attacksound,CHAN_WEAPON);
+			A_StartSound(attacksound,CHAN_WEAPON);
 			A_SpawnProjectile("BaleBall",40,flags:CMF_AIMDIRECTION);
 		}
 		setstatelabel("inertjiggle");
@@ -99,7 +99,7 @@ class HDBarrel:HDMobBase replaces ExplosiveBarrel{
 	pain:
 		#### B 1 A_Pain();
 	inertjiggle:
-		#### B 1 A_PlaySound("misc/bloodchunks",CHAN_VOICE);
+		#### B 1 A_StartSound("misc/bloodchunks",CHAN_VOICE,CHANF_OVERLAP);
 		#### ABABAABBAAABBB 1;
 		---- A 0 A_Jump(256,"spawn");
 	death:
@@ -144,7 +144,7 @@ class HDBarrel:HDMobBase replaces ExplosiveBarrel{
 			A_SpawnChunks("HDSmokeChunk",random(2,5),7,16);
 			A_Scream();
 			DistantQuaker.Quake(self,6,42,512,10);
-			A_PlaySound("world/explode");
+			A_StartSound("world/explode");
 			Spawn("DistantRocket",self.pos,ALLOW_REPLACE);
 		}
 		BEXP EEEEEEE 0 A_SpawnItemEx ("HDSmoke", random(-6,6),random(-6,6),random(12,32), vel.x+random(-1,1),vel.y+random(-1,1),vel.z+random(1,2), 0,168);
@@ -165,7 +165,7 @@ class HDBarrel:HDMobBase replaces ExplosiveBarrel{
 			if(!random(0,2)) A_SpawnChunks("HDSmokeChunk",1,2,12);
 		}
 		POB1 A -1{
-			A_PlaySound("vile/firestrt",CHAN_AUTO,0.4);
+			A_StartSound("vile/firestrt",CHAN_AUTO,volume:0.4);
 			A_SpawnChunks("HDSmoke",8,4,12);
 		}stop;
 	}
@@ -247,7 +247,7 @@ class HDFireCan:HDBarrel replaces BurningBarrel{
 				setstatelabel("flamethrow");
 				return;
 			}else{
-				A_PlaySound(attacksound);
+				A_StartSound(attacksound);
 				A_SpawnProjectile("BarrelFlame",40,flags:CMF_AIMDIRECTION);
 			}
 		}
@@ -255,7 +255,7 @@ class HDFireCan:HDBarrel replaces BurningBarrel{
 			//move
 			A_FaceTarget();
 			angle+=random(-135,135);
-			A_PlaySound("barrel/walk");
+			A_StartSound("barrel/walk");
 			vel.xy+=(cos(angle),sin(angle))*5;
 		}
 		setstatelabel("inertjiggle");
@@ -267,7 +267,7 @@ class HDFireCan:HDBarrel replaces BurningBarrel{
 			fireticker++;
 			if(fireticker<6) return;
 			fireticker=0;
-			A_PlaySound("misc/firecrkl",0,0.04);
+			A_StartSound("misc/firecrkl",volume:0.04);
 			actor a=spawn("HDSmoke",pos+(0,0,32),ALLOW_REPLACE);
 			a.vel=vel+(frandom(-1,1),frandom(-1,1),frandom(3,6));
 		}
@@ -285,7 +285,7 @@ class HDFireCan:HDBarrel replaces BurningBarrel{
 		loop;
 	flamethrow:
 		FCAN ABABABAB 2 bright{
-			A_PlaySound("misc/firecrkl");
+			A_StartSound("misc/firecrkl");
 			A_SpawnProjectile("BarrelFlame2",40,flags:CMF_AIMDIRECTION);
 		}
 		FCAN A 0 A_Jump(256,"spawn");
@@ -296,7 +296,7 @@ class HDFireCan:HDBarrel replaces BurningBarrel{
 		}
 		POB1 A -1{
 			A_SetRenderstyle(1,Style_Normal);
-			A_PlaySound("vile/firestrt",CHAN_AUTO,0.4);
+			A_StartSound("vile/firestrt",CHAN_AUTO,volume:0.4);
 			if(!random(0,4))A_HDBlast(
 				random(12,128),random(2,4),64,"Balefire"
 			);
@@ -328,7 +328,7 @@ class BarrelFlame2:HDFireball{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		A_PlaySound("misc/firecrkl",CHAN_BODY,0.8,true);
+		A_StartSound("misc/firecrkl",CHAN_BODY,CHANF_LOOP,0.8);
 	}
 	states{
 	spawn:
@@ -365,7 +365,7 @@ class BarrelFlame:HDFireball{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		A_PlaySound("misc/firecrkl",CHAN_BODY,0.8,true);
+		A_StartSound("misc/firecrkl",CHAN_BODY,CHANF_LOOP,0.8);
 	}
 	states{
 	spawn:
@@ -382,7 +382,7 @@ class BarrelFlame:HDFireball{
 				if(target)a.target=target.target;a.master=target;
 				a=spawn("HDSmoke",pos,ALLOW_REPLACE);
 				a.vel.z+=2;
-				a.A_PlaySound("vile/firestrt",0,0.6);
+				a.A_StartSound("vile/firestrt",volume:0.6);
 				destroy();
 				return;
 			}
@@ -410,7 +410,7 @@ class BarrelFireCrawler:HDActor{
 		scale.x*=randompick(-1,1)*frandom(0.8,1.2);
 		scale.y*=frandom(0.8,1.2);
 		A_GiveInventory("HDFireEnder",999); //do not set the fire on fire
-		A_PlaySound("misc/firecrkl",CHAN_BODY,0.6,true);
+		A_StartSound("misc/firecrkl",CHAN_BODY,CHANF_LOOP,0.6);
 	}
 	states{
 	spawn:
@@ -462,7 +462,7 @@ class BarrelFireCrawler:HDActor{
 		}stop;
 	death.burnout:
 		FIRE A 0{
-			A_PlaySound("misc/firecrkl",CHAN_BODY,1.0,false);
+			A_StartSound("misc/firecrkl",CHAN_BODY);
 			A_NoBlocking();
 		}
 		FIRE CDEFGH 2{

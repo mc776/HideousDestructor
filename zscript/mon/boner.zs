@@ -27,11 +27,11 @@ class bonerball:hdactor{
 	states{
 	spawn:
 		TNT1 A 0;
-		TNT1 A 0 A_PlaySound("skeleton/attack",CHAN_VOICE);
+		TNT1 A 0 A_StartSound("skeleton/attack",CHAN_VOICE);
 	spawn2:
 		FATB AB 2 bright;
 		TNT1 A 0{
-			A_PlaySound("world/rocketfar",CHAN_BODY,0.4);
+			A_StartSound("world/rocketfar",CHAN_BODY,volume:0.4);
 			oldvel=vel;
 			if(A_JumpIfTargetInLOS("spawn",0,JLOSF_CHECKTRACER)){
 				A_ScaleVelocity(0.9);
@@ -198,7 +198,7 @@ class Boner:HDMobBase replaces Revenant{
 	standup:
 		SKEL P 6;
 		SKEL O 0 A_Jump(160,2);
-		SKEL O 0 A_PlaySound(seesound,CHAN_VOICE);
+		SKEL O 0 A_StartSound(seesound,CHAN_VOICE);
 		SKEL PO 4 A_Recoil(-0.3);
 		SKEL NML 4;
 		---- A 0 setstatelabel("see");

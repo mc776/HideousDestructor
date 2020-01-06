@@ -123,7 +123,7 @@ class HDBossCube:bossbrainspawnsource{
 	}
 	states{
 	spawn:
-		BOSF A 0 nodelay A_PlaySound("brain/spit",CHAN_BODY,1,false,0.1);
+		BOSF A 0 nodelay A_StartSound("brain/spit",CHAN_BODY,attenuation:0.1);
 		BOSF ABCD 3;
 		BOSF A 0 A_SetSize(11,24);
 	spawn2:
@@ -315,7 +315,7 @@ class HDBossBrain:HDMobBase replaces BossBrain{
 			frandom(-2,2),SXF_NOCHECKPOSITION
 		);
 		BBRN A 0 A_DeathQuake(false);
-		BBRN A 0 A_PlaySound("brain/death",CHAN_BODY,1.0,false,ATTN_NONE);
+		BBRN A 0 A_StartSound("brain/death",CHAN_BODY,attenuation:ATTN_NONE);
 		BBRN AAAAAAAA 3 A_SpawnItemEx("TyrantWallSplode",
 			frandom(300,440),frandom(-300,300),frandom(-200,200),
 			frandom(12,24),0,frandom(-4,4),
@@ -375,7 +375,7 @@ class TyrantWallSplode:HDExplosion{
 	spawn:
 		TNT1 A 0 nodelay{
 			scale*=frandom(1.3,2.);
-			A_PlaySound ("world/explode",0,1.0,0,0.8);
+			A_StartSound("world/explode",CHAN_AUTO,attenuation:0.8);
 			setz(frandom(floorz,ceilingz));
 		}
 		TNT1 AA 0 A_SpawnItemEx("HDSmokeChunk",

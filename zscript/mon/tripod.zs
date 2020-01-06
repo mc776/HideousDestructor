@@ -57,7 +57,7 @@ class Roboball:SlowProjectile{
 	void A_SatanRoboRocketThrust(){
 		if(fuel>0){
 			fuel--;
-			A_PlaySound("weapons/rocklaunch",CHAN_AUTO,0.6);
+			A_StartSound("weapons/rocklaunch",CHAN_AUTO,CHANF_OVERLAP,0.6);
 			A_ChangeVelocity(thrust.x,0,thrust.y,CVF_RELATIVE);
 		}else{
 			bnogravity=false; //+nogravity is automatically set and causes all subsequent GetGravity() to return 0
@@ -69,7 +69,7 @@ class Roboball:SlowProjectile{
 	states{
 	spawn:
 		TNT1 A 0 nodelay{
-			A_PlaySound("weapons/rocklf",CHAN_VOICE);
+			A_StartSound("weapons/rocklf",CHAN_VOICE);
 			fuel=100;
 			thrust=(cos(pitch),-sin(pitch))*10;
 		}
@@ -92,7 +92,7 @@ class Roboball:SlowProjectile{
 				actor xp=spawn("HDExplosion",pos+(frandom(-2,2),frandom(-2,2),frandom(-2,2)),ALLOW_REPLACE);
 				xp.vel.z=frandom(1,3);
 			}
-			A_PlaySound("world/explode");
+			A_StartSound("world/explode");
 			spawn("DistantRocket",pos,ALLOW_REPLACE);
 			DistantQuaker.Quake(self,4,35,512,10);
 		}
@@ -157,7 +157,7 @@ class Satanball:HDFireball{
 	death:
 		BFE1 A 1 bright{
 			spawn("HDSmoke",pos,ALLOW_REPLACE);
-			A_PlaySound("weapons/bfgx",CHAN_BODY,0.4);
+			A_StartSound("weapons/bfgx",CHAN_BODY,volume:0.4);
 			damagetype="thermal";
 			bextremedeath=false;
 			A_Explode(64,64);
@@ -269,7 +269,7 @@ class SatanRobo:HDMobBase replaces CyberDemon{
 		if(target)aimadjust*=distance3d(target)*0.0005;
 	}
 	void A_SatanRoboAttack(double spread=0.,double aimhorz=0.,double aimvert=0.){
-		A_PlaySound("weapons/bronto",CHAN_WEAPON);
+		A_StartSound("weapons/bronto",CHAN_WEAPON);
 		if(shottype=="Roboball")spawn("DistantShotgun",pos,ALLOW_REPLACE);
 		if(spread){
 			aimhorz=frandom(-spread,spread);
@@ -330,10 +330,10 @@ class SatanRobo:HDMobBase replaces CyberDemon{
 		}
 	spawn2:
 		CYBR CDDAA 6{hdmobai.wander(self);}
-		CYBR B 0 A_PlaySound("spider/walk");
+		CYBR B 0 A_StartSound("spider/walk",15);
 		CYBR BB 6{hdmobai.wander(self);}
 		CYBR C 6{
-			A_PlaySound("cyber/hoof");
+			A_StartSound("cyber/hoof",15);
 			hdmobai.wander(self);
 		}
 		CYBR C 0 A_Jump(32,"spawn");
@@ -348,11 +348,11 @@ class SatanRobo:HDMobBase replaces CyberDemon{
 			hdmobai.chase(self);
 		}
 		CYBR B 5{
-			A_PlaySound("spider/walk",5);
+			A_StartSound("spider/walk",15);
 			hdmobai.chase(self);
 		}
 		CYBR C 5{
-			A_PlaySound("cyber/hoof",6);
+			A_StartSound("cyber/hoof",16);
 			hdmobai.chase(self);
 		}
 		CYBR DD 2{
@@ -375,13 +375,13 @@ class SatanRobo:HDMobBase replaces CyberDemon{
 		CYBR A 4 A_FaceTarget(40,40);
 		CYBR B 4{
 			A_FaceTarget(40,40);
-			A_PlaySound("spider/walk",5);
+			A_StartSound("spider/walk",15);
 			A_Recoil(-4);
 		}
 		CYBR C 0 A_JumpIfTargetInLOS("inposition",20);
 		CYBR C 4{
 			A_FaceTarget(40,40);
-			A_PlaySound("cyber/hoof",6);
+			A_StartSound("cyber/hoof",16);
 			A_Recoil(-4);
 		}
 		CYBR D 4 A_FaceTarget(40,40);
@@ -478,12 +478,12 @@ class SatanRobo:HDMobBase replaces CyberDemon{
 		CYBR A 0{
 			A_FaceTarget(40,0);
 			A_SetAngle(angle+random(-10,10));
-			A_PlaySound("spider/walk",5);
+			A_StartSound("spider/walk",15);
 		}
 		CYBR BB 6 A_Recoil(-2);
 		CYBR C 12{
 			A_FaceTarget(40,0);
-			A_PlaySound("cyber/hoof",6);
+			A_StartSound("cyber/hoof",16);
 		}
 		CYBR A 0{
 			A_FaceTarget(40,0);
@@ -500,7 +500,7 @@ class SatanRobo:HDMobBase replaces CyberDemon{
 				vel.x+random(-6,6),vel.y+random(-6,6),vel.z+random(3,12),
 				0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM,144
 			);
-			A_PlaySound("cyber/hoof",6);
+			A_StartSound("cyber/hoof",16);
 		}
 		CYBR D 0 A_SpawnItemEx("HDExplosionBoss",
 			random(-12,12),random(-12,12),random(60,64),
@@ -509,9 +509,9 @@ class SatanRobo:HDMobBase replaces CyberDemon{
 		CYBR A 5{
 			A_FaceTarget(40,0);
 			angle+=random(-10,10);
-			A_PlaySound("cyber/hoof");
+			A_StartSound("cyber/hoof",16);
 		}
-		CYBR B 6 A_PlaySound("spider/walk");
+		CYBR B 6 A_StartSound("spider/walk",15);
 		CYBR B 6{
 			A_SpawnItemEx("HDExplosionBoss",
 				random(-26,26),random(-26,26),random(60,64),
@@ -526,7 +526,7 @@ class SatanRobo:HDMobBase replaces CyberDemon{
 		CYBR C 16{
 			A_FaceTarget(40,0);
 			angle+=random(-10,10);
-			A_PlaySound("cyber/hoof",6);
+			A_StartSound("cyber/hoof",16);
 		}
 		CYBR DD 6 A_Recoil(-2);
 		CYBR D 6 A_SpawnItemEx("HDExplosionBoss",
@@ -541,7 +541,7 @@ class SatanRobo:HDMobBase replaces CyberDemon{
 		CYBR B 0{
 			A_FaceTarget(40,0);
 			angle+=random(-10,10);
-			A_PlaySound("spider/walk",5);
+			A_StartSound("spider/walk",15);
 		}
 		CYBR BB 6 A_Recoil(-1);
 		CYBR C 24{
@@ -549,10 +549,10 @@ class SatanRobo:HDMobBase replaces CyberDemon{
 				random(-26,26),random(-26,26),random(70,88),
 				random(-1,1),random(-1,1),random(1,3)
 			);
-			A_PlaySound("cyber/hoof",6);
+			A_StartSound("cyber/hoof",16);
 		}
 		CYBR E 14{
-			A_PlaySound("spider/walk",5);
+			A_StartSound("spider/walk",15);
 		}
 		CYBR EEEE 6 A_FaceTarget(10,0);
 		CYBR FF 0 A_SpawnItemEx("HDSmoke",54,-24,52,
@@ -744,7 +744,7 @@ class CyberRemains:Actor{
 			random(-1,1),random(-1,1),0,
 			0,SXF_NOCHECKPOSITION
 		);
-		---- A 0 A_PlaySound("misc/firecrkl",1,1.0-(smokelag*0.005));
+		---- A 0 A_StartSound("misc/firecrkl",CHAN_AUTO,volume:1.0-(smokelag*0.005));
 		---- AAA 0 A_SpawnItemEx("HDFlameRed",
 			random(-66,66),random(-56,56),random(12,14),
 			random(-1,1),random(-1,1),random(1,3),

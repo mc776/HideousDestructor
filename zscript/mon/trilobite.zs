@@ -76,7 +76,7 @@ class FooFighter:HDActor{
 					blockingmobj.DamageMobj(self,target,random(1,3),"Electro");
 					blockingmobj.painchance=pcbak;
 
-					A_PlaySound("caco/ballcrack",CHAN_WEAPON);
+					A_StartSound("caco/ballcrack",CHAN_WEAPON);
 					while(random(0,2))A_SpawnParticle("white",
 						SPF_RELATIVE|SPF_FULLBRIGHT,35,frandom(4,8),0,
 						frandom(-4,4),frandom(-4,4),frandom(0,4),
@@ -102,9 +102,9 @@ class FooFighter:HDActor{
 					hurtspecies:false
 				);
 				spawn("distantrifle",pos,ALLOW_REPLACE);
-				A_PlaySound("caco/bigexplode",CHAN_VOICE);
-				A_PlaySound("caco/ballecho",CHAN_BODY);
-				A_PlaySound("caco/bigcrack",5);
+				A_StartSound("caco/bigexplode",CHAN_VOICE);
+				A_StartSound("caco/ballecho",CHAN_BODY);
+				A_StartSound("caco/bigcrack",5);
 
 				A_SetSize(radius*2,height*1.4);
 				if(
@@ -210,7 +210,7 @@ class Foof:HDFireball{
 	}
 	void ZapSomething(){
 		roll=frandom(0,360);
-		A_PlaySound("misc/arczap",CHAN_BODY);
+		A_StartSound("misc/arczap",CHAN_BODY);
 		blockthingsiterator it=blockthingsiterator.create(self,72);
 		actor tb=target;
 		actor zit=null;
@@ -250,7 +250,7 @@ class Foof:HDFireball{
 		loop;
 	death:
 		BAL2 C 0 A_SprayDecal("CacoScorch",radius*2);
-		BAL2 C 0 A_PlaySound("misc/fwoosh",5);
+		BAL2 C 0 A_StartSound("misc/fwoosh",5);
 		BAL2 CCCDDDEEE 1 light("BAKAPOST1") ZapSomething();
 	death2:
 		BAL2 E 0 ZapSomething();
@@ -289,7 +289,7 @@ class Triloball:IdleDummy{
 	states{
 	spawn:
 		BAL2 A 40 bright light("BAKAPOST1") nodelay{
-			A_PlaySound("caco/charge",CHAN_AUTO,1,0,1);
+			A_StartSound("caco/charge",CHAN_AUTO,attenuation:1.);
 			theight=target.height*0.6;
 		}stop;
 	}
@@ -316,7 +316,7 @@ class CacoChunk:WallChunk{
 class CacoShellBlood:BloodSplatSilent{
 	override void postbeginplay(){
 		bloodsplatsilent.postbeginplay();
-		A_PlaySound("misc/bulletflesh",0,0.02);
+		A_StartSound("misc/bulletflesh",volume:0.02);
 		A_SpawnChunks("CacoChunk",random(1,7),1,7);
 		if(
 			!target //HOW THE FUCK.
@@ -361,7 +361,7 @@ class Trilobite:HDMobBase replaces Cacodemon{
 		hdmb.meleethreshold=0;
 	}
 	void A_CacoCorpseZap(){
-		A_PlaySound("misc/arczap",0,0.3,0,2);
+		A_StartSound("misc/arczap",volume:0.3,attenuation:2.);
 		A_CustomRailgun((random(1,4)),0,"","blueviolet",
 			RGF_SILENT|RGF_NOPIERCING|RGF_FULLbright|RGF_CENTERZ,
 			0,4000,"HDArcPuff",180,180,random(60,160),18,1.4,1.5
@@ -441,13 +441,13 @@ class Trilobite:HDMobBase replaces Cacodemon{
 			A_SpawnProjectile("Triloball",28,0,0,CMF_AIMDIRECTION,pitch);
 			if(!A_JumpIfCloser(1024,"null")&&random(0,3)){
 				charge=666;
-				A_PlaySound("caco/sight",CHAN_VOICE,1.,false,0.1);
+				A_StartSound("caco/sight",CHAN_VOICE,volume:1.,attenuation:0.1);
 				A_FaceTarget(2,8,FAF_BOTTOM);
-			}else A_PlaySound("caco/sight",CHAN_VOICE);
+			}else A_StartSound("caco/sight",CHAN_VOICE);
 		}
 		HEAD D 24{
 			spawn("DistantShotgun",pos,ALLOW_REPLACE);
-			A_PlaySound("caco/bigshot",CHAN_WEAPON);
+			A_StartSound("caco/bigshot",CHAN_WEAPON);
 			A_ChangeVelocity(-cos(pitch)*3,0,sin(pitch),CVF_RELATIVE);
 			if(charge==666){
 				A_FaceTarget(0.5,2.,FAF_BOTTOM);
@@ -489,7 +489,7 @@ class Trilobite:HDMobBase replaces Cacodemon{
 		HEAD C 4{
 			angle+=frandom(-10,10);
 			pitch+=frandom(-10,10);
-			A_PlaySound("caco/sight");
+			A_StartSound("caco/sight");
 		}
 		HEAD D 2 bright A_SpawnProjectile("Triloball",28);
 		HEAD DDDDDDDDDDDD 2 bright A_CacoMeleeZap();
@@ -506,7 +506,7 @@ class Trilobite:HDMobBase replaces Cacodemon{
 		HEAD F 3{
 			bfloatbob=false;
 			bnogravity=false;
-			A_PlaySound(seesound,CHAN_VOICE);
+			A_StartSound(seesound,CHAN_VOICE);
 		}
 		HEAD GH 3;
 		HEAD H 2 A_JumpIf(vel.z>=0,"deadsplatting");
@@ -519,7 +519,7 @@ class Trilobite:HDMobBase replaces Cacodemon{
 		HEAD LLLLL 2 light("PLAZMABX1") A_CacoCorpseZap();
 	deadzapping:
 		HEAD L 1 light("PLAZMABX1") A_SetTics(random(1,4));
-		HEAD L 0 A_PlaySound("misc/arczap",0,0.6,0,2);
+		HEAD L 0 A_StartSound("misc/arczap",volume:0.6,attenuation:2.);
 		HEAD L 1{
 			A_CustomRailgun ((random(4,8)),random(-12,12),"","azure",
 				RGF_SILENT|RGF_FULLBRIGHT,

@@ -44,7 +44,7 @@ struct HDMobAI play{
 	){
 		caller.A_LookEx(flags,minseedist,maxseedist,maxheardist,fov,label);
 		if(!caller.bambush)caller.angle+=random(-10,10);
-		if(!random(0,soundchance))caller.A_PlaySound(caller.activesound);
+		if(!random(0,soundchance))caller.A_StartSound(caller.activesound,CHAN_VOICE);
 	}
 
 	//check if shot is clear

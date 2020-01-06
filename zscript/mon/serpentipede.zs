@@ -11,7 +11,7 @@ class ImpBallTail:BlackParticleFountain{
 	}
 	states{
 	spawn:
-		BAL1 BC 2 bright A_PlaySound("misc/firecrkl",0,0.2,0,4);
+		BAL1 BC 2 bright A_StartSound("misc/firecrkl",volume:0.2,attenuation:4.);
 	death:
 		BAL1 DDEE 2 bright A_FadeOut(0.2);
 		stop;
@@ -210,7 +210,7 @@ class Serpentipede:HDMobBase{
 		#### A 0 A_SetAngle(angle+random(-4,4));
 		#### A 1 A_SetTics(random(1,3));
 		---- A 0 A_Jump(216,2);
-		---- A 0 A_PlaySound(activesound);
+		---- A 0 A_StartSound(activesound,CHAN_VOICE);
 		#### A 0 A_JumpIf(bambush,"spawn0");
 		#### A 0 A_Jump(32,"spawn2");
 		loop;
@@ -300,7 +300,7 @@ class Serpentipede:HDMobBase{
 		---- A 0 A_Jump(256,2);
 		---- A 0 A_FaceTarget(40,80);
 		#### E 2;
-		#### E 0 A_PlaySound(seesound);
+		#### E 0 A_StartSound(seesound,CHAN_VOICE);
 		#### EEEEE 2 A_SpawnItemEx("ReverseImpBallTail",4,24,random(31,33),1,0,0,0,160);
 		#### E 2;
 		#### F 2;
@@ -375,7 +375,7 @@ class Serpentipede:HDMobBase{
 	standup:
 		#### LK 5;
 		#### J 0 A_Jump(64,2);
-		#### J 0 A_PlaySound(seesound,CHAN_VOICE);
+		#### J 0 A_StartSound(seesound,CHAN_VOICE);
 		#### JI 4 A_Recoil(-0.3);
 		#### HE 5;
 		#### A 0 A_Jump(256,"see");
@@ -425,7 +425,7 @@ class ShieldImpBall:DoomImpBall{
 	states{
 	spawn:
 		BAL1 A 0 nodelay{
-			A_PlaySound("imp/attack",CHAN_VOICE);
+			A_StartSound("imp/attack",CHAN_VOICE);
 			savedvel=vel.xy;
 		}
 		BAL1 ABABAB 2 bright;
@@ -513,7 +513,7 @@ class Regentipede:Serpentipede{
 		---- A 0 setstatelabel("see");
 	missile2:
 		#### E 2 A_FaceTarget(0,0);
-		#### E 0 A_PlaySound(seesound);
+		#### E 0 A_StartSound(seesound,CHAN_VOICE);
 		#### EEEEE 2 A_SpawnItemEx("ReverseImpBallTail",3,19,random(24,30),1,0,0,0,160);
 		---- A 0 A_JumpIfTargetInLOS(2);
 		---- A 0 A_Jump(256,2);
@@ -611,7 +611,7 @@ class Ardentipede:Serpentipede{
 		#### E 0 A_Jump(96,"Missile1");
 		#### E 0 A_Jump(16,"Missile3");
 		#### E 2 A_FaceTarget(0,0);
-		#### E 2 A_PlaySound(seesound);
+		#### E 2 A_StartSound(seesound,CHAN_VOICE);
 		#### EEEEEEE 2 A_SpawnItemEx("ReverseImpBallTail",random(3,5),random(23,25),random(31,33),1,0,0,0,160);
 		---- A 0 A_JumpIfTargetInLOS(2);
 		---- A 0 A_Jump(256,2);

@@ -172,7 +172,7 @@ class Babuin:HDMobBase{
 		}
 		#### A 0{
 			if(!random(0,5))setstatelabel("spawnsniff");
-			else if(!random(0,9))A_PlaySound(activesound,CHAN_VOICE);
+			else if(!random(0,9))A_StartSound(activesound,CHAN_VOICE);
 		}loop;
 	spawnsniff:
 		#### A 0{blookallaround=true;}
@@ -182,7 +182,7 @@ class Babuin:HDMobBase{
 		}
 		#### F 2{
 			angle+=frandom(-20,20);
-			if(!random(0,9))A_PlaySound(activesound,CHAN_VOICE);
+			if(!random(0,9))A_StartSound(activesound,CHAN_VOICE);
 		}
 		#### FFF 2 A_Look();
 		#### A 0{
@@ -216,7 +216,7 @@ class Babuin:HDMobBase{
 	seeend:
 		#### A 0{
 			if(!random(0,120)){
-				A_PlaySound(seesound,CHAN_VOICE);
+				A_StartSound(seesound,CHAN_VOICE);
 				A_AlertMonsters();
 			}
 			givebody(random(2,12));
@@ -225,7 +225,7 @@ class Babuin:HDMobBase{
 	melee:
 		#### E 7{
 			A_FaceTarget(0,0);
-			A_PlaySound("babuin/bite");
+			A_StartSound("babuin/bite",CHAN_VOICE);
 			A_Changevelocity(cos(pitch)*4,0,sin(-pitch)*4,CVF_RELATIVE);
 		}
 		#### F 6;
@@ -261,7 +261,7 @@ class Babuin:HDMobBase{
 		}
 		#### E 2{
 			A_FaceTarget(6,6);
-			A_PlaySound("babuin/sight");
+			A_StartSound("babuin/sight",CHAN_VOICE);
 		}
 		#### E 0 A_ChangeVelocity(cos(pitch)*16,0,sin(-pitch)*16+random(3,8),CVF_RELATIVE);
 	fly:

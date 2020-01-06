@@ -54,14 +54,14 @@ class PainBringer:PainMonster replaces HellKnight{
 			if(bambush)setstatelabel("spawn");
 			else{
 				A_SetTics(random(1,3));
-				if(!random(0,5))A_PlaySound("knight/active",CHAN_VOICE);
+				if(!random(0,5))A_StartSound("knight/active",CHAN_VOICE);
 				if(!random(0,5))setstatelabel("spwander");
 			}
 		}loop;
 	see:
 		BOS2 A 0{
 			if(!random(0,127)){
-				A_PlaySound(seesound,CHAN_VOICE);
+				A_StartSound(seesound,CHAN_VOICE);
 				A_AlertMonsters();
 			}
 		}
@@ -98,7 +98,7 @@ class PainBringer:PainMonster replaces HellKnight{
 			}
 		}goto fireball;
 	putto:
-		BOS2 E 6 A_PlaySound("knight/sight",CHAN_VOICE);
+		BOS2 E 6 A_StartSound("knight/sight",CHAN_VOICE);
 		BOS2 E 4 A_FaceTarget(10,10);
 		BOS2 E 2;
 		BOS2 F 5;
@@ -167,7 +167,7 @@ class PainBringer:PainMonster replaces HellKnight{
 		BOS2 O -1 A_BossDeath();
 		stop;
 	death.maxhpdrain:
-		BOS2 H 5 A_PlaySound("misc/gibbed",CHAN_BODY);
+		BOS2 H 5 A_StartSound("misc/gibbed",CHAN_BODY);
 		BOS2 HIJK 5;
 		BOS2 L 5 A_NoBlocking();
 		BOS2 MN 5;
@@ -175,7 +175,7 @@ class PainBringer:PainMonster replaces HellKnight{
 		stop;
 	raise:
 		BOS2 ONMLKJI 5;
-		BOS2 H 8 A_PlaySound("knight/sight",CHAN_VOICE);
+		BOS2 H 8 A_StartSound("knight/sight",CHAN_VOICE);
 		BOS2 AAABB 3 A_Chase();
 		goto checkraise;
 	}

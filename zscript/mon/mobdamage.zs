@@ -546,7 +546,7 @@ class HDMasterBlood:HDPuff{
 			bnointeraction=true;
 			return;
 		}
-		if(!bambush)A_PlaySound("misc/bulletflesh",CHAN_BODY,0.2);
+		if(!bambush)A_StartSound("misc/bulletflesh",CHAN_BODY,volume:0.2);
 	}
 	states{
 	spawn:

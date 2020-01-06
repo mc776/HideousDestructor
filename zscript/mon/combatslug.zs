@@ -78,7 +78,7 @@ class manjuice:hdfireball{
 				false
 			);
 			A_SpawnChunks("HDSmokeChunk",random(2,4),6,20);
-			A_PlaySound("misc/fwoosh",CHAN_WEAPON);
+			A_StartSound("misc/fwoosh",CHAN_WEAPON);
 			scale=(0.9*randompick(-1,1),0.9);
 		}
 		MISL BBBB 1{
@@ -147,7 +147,7 @@ class CombatSlug:HDMobBase replaces Fatso{
 		---- A 0 setstatelabel("see");
 	raiseshoot:
 		FATT G 4{
-			A_PlaySound("fatso/raiseguns",CHAN_VOICE);
+			A_StartSound("fatso/raiseguns",CHAN_VOICE);
 			A_FaceTarget(40,40);
 		}
 		FATT G 4 A_FaceTarget(20,20);
@@ -187,7 +187,7 @@ class CombatSlug:HDMobBase replaces Fatso{
 			angle+=leadoffset.x;pitch+=leadoffset.y;
 		}
 		FATT H 10 bright{
-			A_PlaySound("weapons/bronto",CHAN_WEAPON);
+			A_StartSound("weapons/bronto",CHAN_WEAPON);
 
 			hdmobai.DropAdjust(self,"ManJuice");
 

@@ -52,7 +52,7 @@ class FlyingSkull:HDMobBase replaces LostSoul{
 		hdmobai.chase(self);
 		vel.z+=frandom(-0.3,0.3);
 		if(!random(0,64)&&!A_JumpIfTargetInLOS("null")){
-			A_PlaySound("skull/melee",CHAN_VOICE);
+			A_StartSound("skull/melee",CHAN_VOICE);
 		}
 	}
 	void A_SkullStrafe(){
@@ -62,7 +62,7 @@ class FlyingSkull:HDMobBase replaces LostSoul{
 	}
 	void A_SkullLaunch(){
 		latched=null;
-		A_PlaySound("skull/melee",CHAN_VOICE);
+		A_StartSound("skull/melee",CHAN_VOICE);
 		spawn("HDSmoke",pos,ALLOW_REPLACE);
 		A_FaceTarget(16,16);
 		A_ChangeVelocity(cos(pitch)*20,0,-sin(pitch)*20,CVF_RELATIVE);
@@ -110,7 +110,7 @@ class FlyingSkull:HDMobBase replaces LostSoul{
 			if(bounce){
 				vel.xy=rotatevector(vel.xy,frandom(120,240));
 				vel.z*=frandom(0.4,0.9)*randompick(-1,1);
-				A_PlaySound("weapons/fragknock",CHAN_BODY);
+				A_StartSound("weapons/fragknock",CHAN_BODY);
 				forcepain(self);
 			}
 		}
@@ -130,7 +130,7 @@ class FlyingSkull:HDMobBase replaces LostSoul{
 			latched=null;
 			vel.xy=rotatevector(vel.xy,frandom(120,240));
 			vel.z*=frandom(0.4,0.9)*randompick(-1,1);
-			A_PlaySound("weapons/fragknock",CHAN_BODY);
+			A_StartSound("weapons/fragknock",CHAN_BODY);
 			forcepain(self);
 			return;
 		}
@@ -158,7 +158,7 @@ class FlyingSkull:HDMobBase replaces LostSoul{
 		SKUL AB 6{hdmobai.wander(self);}
 		SKUL A 0 A_Jump(12,1);
 		loop;
-		SKUL A 0 A_PlaySound("skull/melee");
+		SKUL A 0 A_StartSound("skull/melee",CHAN_VOICE);
 		loop;
 	see:
 		SKUL AB 3 A_SkullChase();

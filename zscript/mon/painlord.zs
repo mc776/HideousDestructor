@@ -87,7 +87,7 @@ class PainLord:PainMonster replaces BaronofHell{
 		BOSS DD 8 A_Look();
 		BOSS D 1 A_SetTics(random(1,16));
 		TNT1 A 0 A_Jump(216,"spawn");
-		TNT1 A 0 A_PlaySound("baron/active");
+		TNT1 A 0 A_StartSound("baron/active",CHAN_VOICE);
 		loop;
 	see:
 		TNT1 A 0 A_AlertMonsters();
@@ -200,7 +200,7 @@ class PainLord:PainMonster replaces BaronofHell{
 		BOSS O -1 A_BossDeath();
 		stop;
 	death.maxhpdrain:
-		BOSS J 5 A_PlaySound("misc/gibbed",CHAN_BODY);
+		BOSS J 5 A_StartSound("misc/gibbed",CHAN_BODY);
 		BOSS K 5;
 		BOSS L 5 A_NoBlocking();
 		BOSS MN 5;
@@ -261,7 +261,7 @@ class MiniBBallTail:HDActor{
 	states{
 	spawn:
 		BAL7 E 2 bright A_FadeOut(0.2);
-		TNT1 A 0 A_PlaySound("baron/ballhum",0,0.4,0,6);
+		TNT1 A 0 A_StartSound("baron/ballhum",volume:0.4,attenuation:6.);
 		loop;
 	}
 }

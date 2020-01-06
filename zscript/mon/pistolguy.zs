@@ -134,7 +134,7 @@ class UndeadHomeboy:HDMobMan{
 		angle+=frandom(0,spread)-frandom(0,spread);
 		HDBulletActor.FireBullet(self,"HDB_9",spread:2.,speedfactor:frandom(0.97,1.03));
 
-		A_PlaySound("weapons/pistol",CHAN_WEAPON);
+		A_StartSound("weapons/pistol",CHAN_WEAPON);
 		pitch+=frandom(-0.4,0.3);
 		angle+=frandom(-0.4,0.4);
 
@@ -166,7 +166,7 @@ class UndeadHomeboy:HDMobMan{
 			);
 			hdmagammo(aaa).mags.clear();
 			hdmagammo(aaa).mags.push(thismag);
-			A_PlaySound("weapons/pismagclick",CHAN_WEAPON);
+			A_StartSound("weapons/pismagclick",8);
 		}
 		thismag=-1;
 	}
@@ -178,7 +178,7 @@ class UndeadHomeboy:HDMobMan{
 			chamber=2;
 			thismag--;
 		}
-		A_PlaySound("weapons/pismagclick",CHAN_WEAPON);
+		A_StartSound("weapons/pismagclick",8);
 		return true;
 	}
 
@@ -233,7 +233,7 @@ class UndeadHomeboy:HDMobMan{
 		#### G 1{
 			A_Recoil(frandom(-0.4,0.4));
 			A_SetTics(random(30,80));
-			if(!random(0,7))A_PlaySound("grunt/active");
+			if(!random(0,7))A_StartSound("grunt/active",CHAN_VOICE);
 		}
 		#### A 0 A_Jump(256,"spawn");
 	spawnswitch:
@@ -245,7 +245,7 @@ class UndeadHomeboy:HDMobMan{
 		#### CD 5 A_SetAngle(angle+random(-4,4));
 		#### A 0{
 			A_Look();
-			if(!random(0,127))A_PlaySound("grunt/active");
+			if(!random(0,127))A_StartSound("grunt/active",CHAN_VOICE);
 		}
 		#### AB 5 A_SetAngle(angle+random(-4,4));
 		#### B 1 A_SetTics(random(10,40));
@@ -253,7 +253,7 @@ class UndeadHomeboy:HDMobMan{
 	spawnwander:
 		#### CDAB 5 A_HDWander();
 		#### A 0{
-			if(!random(0,127))A_PlaySound("grunt/active");
+			if(!random(0,127))A_StartSound("grunt/active",CHAN_VOICE);
 		}
 		#### A 0 A_Jump(64,"spawn");
 		loop;

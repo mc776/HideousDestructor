@@ -39,7 +39,7 @@ class HDMobMan:HDMobBase{
 	standup:
 		#### K 6;
 		#### J 0 A_Jump(160,2);
-		#### J 0 A_PlaySound(seesound,CHAN_VOICE);
+		#### J 0 A_StartSound(seesound,CHAN_VOICE);
 		#### JI 4 A_Recoil(-0.3);
 		#### HE 6;
 		#### A 0 A_Jump(256,"see");
@@ -206,7 +206,7 @@ class ZombieStormtrooper:HDMobMan{
 		#### G 1{
 			A_Recoil(frandom(-0.4,0.4));
 			A_SetTics(random(30,80));
-			if(!random(0,7))A_PlaySound(activesound);
+			if(!random(0,7))A_StartSound(activesound,CHAN_VOICE);
 		}
 		#### A 0 A_Jump(256,"spawn2");
 	spawnswitch:
@@ -218,7 +218,7 @@ class ZombieStormtrooper:HDMobMan{
 		#### CD 5 A_SetAngle(angle+random(-4,4));
 		#### A 0{
 			A_Look();
-			if(!random(0,127))A_PlaySound(activesound);
+			if(!random(0,127))A_StartSound(activesound,CHAN_VOICE);
 		}
 		#### AB 5 A_SetAngle(angle+random(-4,4));
 		#### B 1 A_SetTics(random(10,40));
@@ -226,7 +226,7 @@ class ZombieStormtrooper:HDMobMan{
 	spawnwander:
 		#### CDAB 5{hdmobai.wander(self,false);}
 		#### A 0{
-			if(!random(0,127))A_PlaySound(activesound);
+			if(!random(0,127))A_StartSound(activesound,CHAN_VOICE);
 		}
 		#### A 0 A_Jump(64,"spawn2");
 		loop;
@@ -289,7 +289,7 @@ class ZombieStormtrooper:HDMobMan{
 			if(firemode==-2){
 				pitch+=frandom(0,spread)-frandom(0,spread);
 				angle+=frandom(0,spread)-frandom(0,spread);
-				A_PlaySound("weapons/smg",CHAN_WEAPON);
+				A_StartSound("weapons/smg",CHAN_WEAPON);
 				HDBulletActor.FireBullet(self,"HDB_9",speedfactor:1.1);
 				A_SpawnItemEx("HDSpent9mm",
 					cos(pitch)*10,0,height-8-sin(pitch)*10,
@@ -299,11 +299,11 @@ class ZombieStormtrooper:HDMobMan{
 			}else{
 				pitch+=frandom(-spread,spread);
 				angle+=frandom(-spread,spread);
-				A_PlaySound("weapons/rifle",CHAN_WEAPON);
+				A_StartSound("weapons/rifle",CHAN_WEAPON);
 				HDBulletActor.FireBullet(self,"HDB_426");
 				if(random(0,2000)<firemode){
 					jammed=true;
-					A_PlaySound("weapons/rifleclick",5);
+					A_StartSound("weapons/rifleclick",5);
 					setstatelabel("jammed");
 				}
 			}
@@ -333,7 +333,7 @@ class ZombieStormtrooper:HDMobMan{
 		//fallthrough to postshot
 	postshot:
 		#### E 5{
-			if(!random(0,127))A_PlaySound(activesound);
+			if(!random(0,127))A_StartSound(activesound,CHAN_VOICE);
 			if(mag<1){
 				setstatelabel("reload");
 				return;
@@ -359,9 +359,9 @@ class ZombieStormtrooper:HDMobMan{
 		loop;
 
 	frag:
-		---- A 10 A_PlaySound(seesound,CHAN_VOICE);
+		---- A 10 A_StartSound(seesound,CHAN_VOICE);
 		---- A 20{
-			A_PlaySound("weapons/pocket",CHAN_WEAPON);
+			A_StartSound("weapons/pocket",CHAN_WEAPON);
 			A_FaceTarget(0,0);
 			pitch-=random(10,50);
 		}
@@ -375,28 +375,28 @@ class ZombieStormtrooper:HDMobMan{
 	jammed:
 		#### E 8;
 		#### E 0 A_Jump(128,"see");
-		#### E 4 A_PlaySound(random(0,2)?seesound:painsound,CHAN_VOICE);
+		#### E 4 A_StartSound(random(0,2)?seesound:painsound,CHAN_VOICE);
 		---- A 0 setstatelabel("see");
 
 	ohforfuckssake:
 		#### E 8;
 	reload:
 		---- A 4{
-			A_PlaySound("weapons/rifleclick2");
+			A_StartSound("weapons/rifleclick2");
 			bfrightened=true;
 		}
 		#### AA 1{hdmobai.chase(self,"melee",null);}
 		#### A 0{
-			A_PlaySound("weapons/rifleload");
+			A_StartSound("weapons/rifleload");
 			name emptymag="HD4mMag";
 			if(firemode==-2)emptymag="HD9mMag30";
 			HDMagAmmo.SpawnMag(self,emptymag,0);
 		}
 		#### BCD 2 {hdmobai.chase(self,"melee",null);}
-		#### E 12 A_PlaySound("weapons/pocket");
-		#### E 8 A_PlaySound("weapons/rifleload");
+		#### E 12 A_StartSound("weapons/pocket",8);
+		#### E 8 A_StartSound("weapons/rifleload",9);
 		#### E 2{
-			A_PlaySound("weapons/rifleclick2");
+			A_StartSound("weapons/rifleclick2",8);
 			if(firemode==-2)mag=30;else mag=50;
 			bfrightened=false;
 		}
@@ -452,7 +452,7 @@ class ZombieStormtrooper:HDMobMan{
 				if(!random(0,5))A_SpawnItemEx("HDSmokeChunk",12,0,height-12,4,frandom(-2,2),frandom(2,4));
 				A_SpawnItemEx("BulletPuffBig",12,0,42,1,0,1);
 				jammed=false;
-				A_PlaySound("weapons/rifleclick",5);
+				A_StartSound("weapons/rifleclick",8);
 			}
 		}
 		#### E 3 A_JumpIfCloser(64,2);
