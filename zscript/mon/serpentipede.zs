@@ -83,11 +83,11 @@ class HDImpBall:HDFireball{
 		inittangle=tracer.angle;
 		inittz=tracer.pos.z;
 
-		if(dmg){
-			tracer.damagemobj(self,target,dmg/10,"Thermal");
-			tracer.A_GiveInventory("Heat",dmg);
-		}
 		setorigin((pos+(tracer.pos-initpos))*0.5,true);
+		if(dmg){
+			tracer.A_GiveInventory("Heat",dmg);
+			tracer.damagemobj(self,target,dmg/10,"Thermal");
+		}
 	}
 	states{
 	spawn:
