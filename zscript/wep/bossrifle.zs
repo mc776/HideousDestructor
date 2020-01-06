@@ -224,7 +224,7 @@ class BossRifle:HDWeapon{
 		BARG A 1{
 			A_Gunflash();
 			invoker.weaponstatus[BOSSS_CHAMBER]=1;
-			A_PlaySound("weapons/bigrifle2",6,
+			A_StartSound("weapons/bigrifle2",CHAN_WEAPON,CHANF_OVERLAP,
 				pitch:!(invoker.weaponstatus[0]&BOSSF_CUSTOMCHAMBER)?1.1:1.
 			);
 			A_AlertMonsters();
@@ -296,7 +296,7 @@ class BossRifle:HDWeapon{
 			return resolvestate("altholdend");
 		}
 	altholdend:
-		BARG E 0 A_PlaySound("weapons/boltfwd",CHAN_WEAPON);
+		BARG E 0 A_StartSound("weapons/boltfwd",8);
 		BARG DC 2 A_WeaponReady(WRF_NOFIRE);
 		BARG B 1 offset(2,36){
 			A_WeaponReady(WRF_NOFIRE);
@@ -307,13 +307,13 @@ class BossRifle:HDWeapon{
 		BARG E 1 offset(2,36) A_ClearRefire();
 		BARG E 1 offset(3,38);
 		BARG E 1 offset(5,42);
-		BARG E 1 offset(8,48) A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		BARG E 1 offset(8,48) A_StartSound("weapons/pocket",9);
 		BARG E 1 offset(9,52) A_MuzzleClimb(frandom(-0.2,0.2),0.2,frandom(-0.2,0.2),0.2,frandom(-0.2,0.2),0.2);
 		BARG E 2 offset(8,60);
 		BARG E 2 offset(7,72);
-		TNT1 A 18 A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		TNT1 A 18 A_StartSound("weapons/pocket",9);
 		TNT1 A 4{
-			A_PlaySound("weapons/bossload",CHAN_WEAPON,0.7);
+			A_StartSound("weapons/bossload",8,volume:0.7);
 			if(invoker.weaponstatus[0]&BOSSF_UNLOADONLY){
 				int chm=invoker.weaponstatus[BOSSS_CHAMBER];
 				invoker.weaponstatus[BOSSS_CHAMBER]=0;
@@ -339,14 +339,14 @@ class BossRifle:HDWeapon{
 		BARG E 1 offset(2,36) A_ClearRefire();
 		BARG E 1 offset(3,38);
 		BARG E 1 offset(5,42) A_Log("Looking inside that chamber...",true);
-		BARG E 1 offset(8,48) A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		BARG E 1 offset(8,48) A_StartSound("weapons/pocket",9);
 		BARG E 1 offset(7,52) A_MuzzleClimb(frandom(-0.2,0.2),0.2,frandom(-0.2,0.2),0.2,frandom(-0.2,0.2),0.2);
-		TNT1 A 3 A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		TNT1 A 3 A_StartSound("weapons/pocket",10);
 		TNT1 AAAA 4 A_MuzzleClimb(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2));
-		TNT1 A 3 A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		TNT1 A 3 A_StartSound("weapons/pocket",9);
 		TNT1 AAAA 4 A_MuzzleClimb(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.2));
 		TNT1 A 40{
-			A_PlaySound("weapons/pocket",CHAN_WEAPON);
+			A_StartSound("weapons/pocket",9);
 			int amt=invoker.weaponstatus[BOSSS_GRIME];
 			string amts="There doesn't seem to be much. ";
 			if(amt>40)amts="What the FUCK. ";
@@ -388,7 +388,7 @@ class BossRifle:HDWeapon{
 			else if(chm<3)invoker.weaponstatus[BOSSS_CHAMBER]+=2;
 		}
 	jamderp:
-		BARG A 0 A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
+		BARG A 0 A_StartSound("weapons/rifleclick",8,CHANF_OVERLAP);
 		BARG D 1 offset(4,38);
 		BARG D 2 offset(2,36);
 		BARG D 2 offset(4,38)A_MuzzleClimb(frandom(-0.5,0.6),frandom(-0.3,0.6));
@@ -417,7 +417,7 @@ class BossRifle:HDWeapon{
 					-frandom(0.6,1.3),-frandom(0.6,1.3)
 				);
 				setweaponstate("jamderp");
-			}else A_PlaySound("weapons/boltback",CHAN_WEAPON);
+			}else A_StartSound("weapons/boltback",8);
 		}
 		BARG D 2 offset(6,42)A_JumpIf(invoker.weaponstatus[0]&BOSSF_CUSTOMCHAMBER,1);
 		BARG D 1 offset(6,42){
@@ -464,11 +464,11 @@ class BossRifle:HDWeapon{
 		BARG A 1 offset(2,36);
 		BARG A 1 offset(4,40);
 		BARG A 2 offset(8,42){
-			A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
+			A_StartSound("weapons/rifleclick2",8,CHANF_OVERLAP,0.9,pitch:0.95);
 			A_MuzzleClimb(-frandom(0.4,0.8),frandom(0.4,1.4));
 		}
 		BARG A 4 offset(14,46){
-			A_PlaySound("weapons/rifleload",CHAN_WEAPON);
+			A_StartSound("weapons/rifleload",8,CHANF_OVERLAP);
 			A_MuzzleClimb(-frandom(0.4,0.8),frandom(0.4,1.4));
 		}
 		BARG A 0{
@@ -494,7 +494,7 @@ class BossRifle:HDWeapon{
 			}else{
 				A_TakeInventory("SevenMilAmmo",hnd,TIF_NOTAKEINFINITE);
 				invoker.weaponstatus[BOSSS_HAND]=hnd;
-				A_PlaySound("weapons/pocket",CHAN_WEAPON);
+				A_StartSound("weapons/pocket",9);
 			}
 		}
 	loadone:
@@ -502,7 +502,7 @@ class BossRifle:HDWeapon{
 		BARG A 4 offset(14,46){
 			invoker.weaponstatus[BOSSS_HAND]--;
 			invoker.weaponstatus[BOSSS_MAG]++;
-			A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
+			A_StartSound("weapons/rifleclick2",8);
 		}loop;
 	loadhandnext:
 		BARG A 8 offset(16,48){
@@ -513,14 +513,14 @@ class BossRifle:HDWeapon{
 				PressingZoom()||
 				!countinv("SevenMilAmmo")	//don't strip clips automatically
 			)setweaponstate("reloaddone");
-			else A_PlaySound("weapons/pocket");
+			else A_StartSound("weapons/pocket",9);
 		}goto loadhandloop;
 	loadclip:
-		BARG AA 4 offset(16,50) A_PlaySound("weapons/rifleclick2");
-		BARG AA 3 offset(17,52) A_PlaySound("weapons/rifleclick2");
-		BARG AAAAAA 2 offset(16,50) A_PlaySound("weapons/rifleclick2");
+		BARG AA 4 offset(16,50) A_StartSound("weapons/rifleclick2",8);
+		BARG AA 3 offset(17,52) A_StartSound("weapons/rifleclick2",8,pitch:1.01);
+		BARG AAAAAA 2 offset(16,50) A_StartSound("weapons/rifleclick2",8,CHANF_OVERLAP,pitch:1.02);
 		BARG A 4 offset(14,46){
-			A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
+			A_StartSound("weapons/rifleclick",CHAN_WEAPON);
 			let ccc=hdmagammo(findinventory("HD7mClip"));
 			if(ccc){
 				ccc.addamag(0);
@@ -538,17 +538,17 @@ class BossRifle:HDWeapon{
 		BARG A 1 offset(4,40);
 		BARG A 2 offset(8,42){
 			A_MuzzleClimb(-frandom(0.4,0.8),frandom(0.4,1.4));
-			A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
+			A_StartSound("weapons/rifleclick2",8);
 		}
 		BARG A 4 offset (14,46){
 			A_MuzzleClimb(-frandom(0.4,0.8),frandom(0.4,1.4));
-			A_PlaySound("weapons/rifleload",CHAN_WEAPON);
+			A_StartSound("weapons/rifleload",8);
 		}
 	unloadloop:
 		BARG A 4 offset(3,41){
 			if(invoker.weaponstatus[BOSSS_MAG]<1)setweaponstate("unloaddone");
 			else{
-				A_PlaySound("weapons/rifleclick2");
+				A_StartSound("weapons/rifleclick2",8);
 				invoker.weaponstatus[BOSSS_MAG]--;
 				if(A_JumpIfInventory("SevenMilAmmo",0,"null")){
 					A_SpawnItemEx(
@@ -574,7 +574,7 @@ class BossRifle:HDWeapon{
 	unloaddone:
 		BARG A 2 offset(2,42);
 		BARG A 3 offset(3,41);
-		BARG A 1 offset(4,40) A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
+		BARG A 1 offset(4,40) A_StartSound("weapons/rifleclick",8);
 		BARG A 1 offset(2,36);
 		BARG A 1 offset(0,34);
 		goto ready;

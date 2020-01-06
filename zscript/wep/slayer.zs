@@ -197,7 +197,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 		SH2F A 1 bright{
 			A_Light2();
 			HDFlashAlpha(64,false,overlayid());
-			A_PlaySound("weapons/slayersingle",6);
+			A_StartSound("weapons/slayersingle",CHAN_WEAPON,CHANF_OVERLAP);
 			A_ZoomRecoil(0.9);
 			invoker.weaponstatus[SLAYS_CHAMBER1]=1;
 
@@ -212,7 +212,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 		SH2F B 1 bright{
 			A_Light2();
 			HDFlashAlpha(64,false,overlayid());
-			A_PlaySound("weapons/slayersingle",6);
+			A_StartSound("weapons/slayersingle",CHAN_WEAPON,CHANF_OVERLAP);
 			A_ZoomRecoil(0.9);
 			invoker.weaponstatus[SLAYS_CHAMBER2]=1;
 
@@ -231,8 +231,8 @@ class Slayer:HDShotgun replaces HDShotgun{
 		SH2F C 1 bright{
 			A_Light2();
 			HDFlashAlpha(128);
-			A_PlaySound("weapons/slayersingle",5);
-			A_PlaySound("weapons/slayersingle",6);
+			A_StartSound("weapons/slayersingle",CHAN_WEAPON,CHANF_OVERLAP);
+			A_StartSound("weapons/slayersingle",CHAN_WEAPON,CHANF_OVERLAP);
 			A_ZoomRecoil(0.7);
 			invoker.weaponstatus[SLAYS_CHAMBER1]=1;
 			invoker.weaponstatus[SLAYS_CHAMBER2]=1;
@@ -282,7 +282,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 		#### K 2 offset(0,34) EmptyHand();
 		#### K 1 offset(0,40);
 		#### K 3 offset(0,46);
-		#### K 5 offset(0,47) A_PlaySound("weapons/sshoto",CHAN_AUTO);
+		#### K 5 offset(0,47) A_StartSound("weapons/sshoto",8);
 		#### B 4 offset(0,46) A_MuzzleClimb(
 			frandom(0.6,1.2),frandom(0.6,1.2),
 			frandom(0.6,1.2),frandom(0.6,1.2),
@@ -325,7 +325,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 
 			//play animation to search pockets as appropriate
 			if(invoker.weaponstatus[0]&SLAYF_FROMPOCKETS)
-				A_PlaySound("weapons/pocket",CHAN_WEAPON);
+				A_StartSound("weapons/pocket",9);
 				else setweaponstate("reloadnopocket");
 		}
 		#### C 4 offset(2,35);
@@ -362,17 +362,17 @@ class Slayer:HDShotgun replaces HDShotgun{
 				ssh--;
 			}
 		}
-		TNT1 A 4 A_PlaySound("weapons/sshotl",CHAN_WEAPON);
+		TNT1 A 4 A_StartSound("weapons/sshotl",8);
 		SH2G B 2 offset(0,46);
 		#### B 1 offset(0,42);
-		#### K 2 offset(0,42) A_PlaySound("weapons/sshotc",CHAN_WEAPON);
+		#### K 2 offset(0,42) A_StartSound("weapons/sshotc",8);
 		#### A 2;
 		goto ready;
 	unloadend:
-		SH2G C 5 A_PlaySound("weapons/sshotl",CHAN_WEAPON);
+		SH2G C 5 A_StartSound("weapons/sshotl",8,CHANF_OVERLAP);
 		#### B 2 offset(0,46);
 		#### B 1 offset(0,42);
-		#### K 2 offset(0,42) A_PlaySound("weapons/sshotc",CHAN_WEAPON);
+		#### K 2 offset(0,42) A_StartSound("weapons/sshotc",8);
 		#### A 1;
 		goto nope;
 
@@ -383,7 +383,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 		#### A 3 offset(3,36);
 	reloadssrestart:
 		#### A 6 offset(3,35);
-		#### A 9 offset(4,34) A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		#### A 9 offset(4,34) A_StartSound("weapons/pocket",9);
 	reloadssloop1:
 		#### A 0{
 			if(invoker.weaponstatus[SHOTS_SIDESADDLE]>=12)setweaponstate("reloadssend");
@@ -438,7 +438,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 	cannibalize:
 		#### A 0 EmptyHand();
 		#### A 2 offset(0,36) A_JumpIf(!countinv("Hunter"),"nope");
-		#### A 2 offset(0,40) A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		#### A 2 offset(0,40) A_StartSound("weapons/pocket",9);
 		#### A 8 offset(0,42);
 		#### A 8 offset(0,44);
 		#### A 8 offset(0,42);

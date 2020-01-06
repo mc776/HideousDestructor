@@ -50,7 +50,7 @@ class HDShotgun:HDWeapon{
 			uamt-=maxpocket;
 			A_GiveInventory("HDShellAmmo",maxpocket);
 		}
-		A_PlaySound("weapons/pocket");
+		A_StartSound("weapons/pocket",9);
 		EmptyHand(uamt);
 	}
 	action void A_CannibalizeOtherShotgun(){
@@ -81,7 +81,7 @@ class HDShotgun:HDWeapon{
 	override void failedpickupunload(){
 		int sss=weaponstatus[SHOTS_SIDESADDLE];
 		if(sss<1)return;
-		A_PlaySound("weapons/pocket",5);
+		A_StartSound("weapons/pocket",9);
 		int dropamt=min(sss,4);
 		A_DropItem("HDShellAmmo",dropamt);
 		weaponstatus[SHOTS_SIDESADDLE]-=dropamt;

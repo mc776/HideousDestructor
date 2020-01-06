@@ -28,7 +28,7 @@ enum vulcstatus{
 	VULCS_ZOOM=3,
 	VULCS_HEAT=4,
 	VULCS_BREAKCHANCE=5,
-	VULCS_CHANNEL=6,
+	//6 is unused, used to be for setting channel
 	VULCS_PERMADAMAGE=7,
 
 	/*

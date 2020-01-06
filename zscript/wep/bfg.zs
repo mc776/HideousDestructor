@@ -112,17 +112,17 @@ class BFG9K:HDCellWeapon replaces BFG9000{
 			A_WeaponBusy();
 			if(invoker.weaponstatus[0]&BFGF_STRAPPED){
 				A_SetTics(6);
-				A_PlaySound("weapons/bfgclick",CHAN_WEAPON);
+				A_StartSound("weapons/bfgclick",8);
 			}
 		}
 		#### AA 1 A_Lower(3);
 		#### AAA 1 A_Lower(5);
 		#### AA 2 A_Lower(3);
 		#### A 4{
-			A_PlaySound("weapons/bfglock",5);
+			A_StartSound("weapons/bfglock",8);
 			if(!(invoker.weaponstatus[0]&BFGF_STRAPPED)){
 				A_SetTics(6);
-				A_PlaySound("weapons/bfgclick",CHAN_WEAPON);
+				A_StartSound("weapons/bfgclick",8,CHANF_OVERLAP);
 			}
 			A_SetBlend("00 00 00",1,6,"00 00 00");
 			invoker.weaponstatus[0]^=BFGF_STRAPPED;
@@ -217,7 +217,7 @@ class BFG9K:HDCellWeapon replaces BFG9000{
 				if(health>16)damagemobj(invoker,self,1,"internal");    
 			}
 			A_WeaponBusy(false);
-			A_PlaySound("weapons/bfgcharge",5);
+			A_StartSound("weapons/bfgcharge",CHAN_WEAPON);
 			BFG9k.Spark(self,1,height-10);
 			A_WeaponReady(WRF_NOFIRE);
 		}
@@ -230,7 +230,7 @@ class BFG9K:HDCellWeapon replaces BFG9000{
 	chargeend:
 		#### B 2{
 			BFG9k.Spark(self,1,height-10);
-			A_PlaySound("weapons/bfgcharge",invoker.weaponstatus[BFGS_TIMER]>6?CHAN_AUTO:5);    
+			A_StartSound("weapons/bfgcharge",(invoker.weaponstatus[BFGS_TIMER]>6)?CHAN_AUTO:CHAN_WEAPON);
 			A_WeaponReady(WRF_ALLOWRELOAD|WRF_NOFIRE|WRF_DISABLESWITCH);
 			A_SetTics(max(1,6-invoker.weaponstatus[BFGS_TIMER]*0.3));
 			invoker.weaponstatus[BFGS_TIMER]++;
@@ -244,12 +244,12 @@ class BFG9K:HDCellWeapon replaces BFG9000{
 			invoker.weaponstatus[BFGS_TIMER]=0;
 			invoker.weaponstatus[0]|=BFGF_CRITICAL;
 			invoker.weaponstatus[BFGS_CRITTIMER]=15;
-			A_PlaySound("weapons/bfgf",CHAN_WEAPON);
+			A_StartSound("weapons/bfgf",CHAN_WEAPON);
 			A_GiveInventory("PowerFrightener");
 		}
 		#### B 3{
 			invoker.weaponstatus[BFGS_CRITTIMER]--;
-			A_PlaySound("weapons/bfgcharge",random(5,6));
+			A_StartSound("weapons/bfgcharge",random(9005,9007));
 			BFG9k.Spark(self,1,height-10);
 			if(invoker.weaponstatus[BFGS_CRITTIMER]<1){
 				invoker.weaponstatus[BFGS_CRITTIMER]=0;
@@ -264,7 +264,7 @@ class BFG9K:HDCellWeapon replaces BFG9000{
 		}
 		#### B 2{
 			A_ZoomRecoil(0.2);
-			A_PlaySound("weapons/bfgfwoosh",CHAN_AUTO);
+			A_StartSound("weapons/bfgfwoosh",CHAN_WEAPON,CHANF_OVERLAP);
 			A_GiveInventory("PowerFrightener",1);
 
 			invoker.weaponstatus[BFGS_CHARGE]=0;
@@ -345,11 +345,11 @@ class BFG9K:HDCellWeapon replaces BFG9000{
 		#### C 2 offset(0,38) A_MuzzleClimb(-frandom(1.2,2.4),frandom(1.2,2.4));
 		#### C 4 offset(0,40){
 			A_MuzzleClimb(-frandom(1.2,2.4),frandom(1.2,2.4));
-			A_PlaySound("weapons/bfgclick2");
+			A_StartSound("weapons/bfgclick2",8);
 		}
 		#### C 2 offset(0,42){
 			A_MuzzleClimb(-frandom(1.2,2.4),frandom(1.2,2.4));
-			A_PlaySound("weapons/bfgopen");
+			A_StartSound("weapons/bfgopen",8);
 			if(invoker.weaponstatus[BFGS_BATTERY]>=0){    
 				HDMagAmmo.SpawnMag(self,"HDBattery",invoker.weaponstatus[BFGS_BATTERY]);
 				A_SetTics(4);
@@ -375,11 +375,11 @@ class BFG9K:HDCellWeapon replaces BFG9000{
 	batteryout:
 		#### C 4 offset(0,42){
 			if(invoker.weaponstatus[BFGS_LOADTYPE]==-1)setweaponstate("reload3");
-			else A_PlaySound("weapons/pocket");
+			else A_StartSound("weapons/pocket",9);
 		}
 		#### C 12;
-		#### C 12 offset(0,42)A_PlaySound("weapons/bfgbattout");
-		#### C 10 offset(0,36)A_PlaySound("weapons/bfgbattpop");
+		#### C 12 offset(0,42)A_StartSound("weapons/bfgbattout",8);
+		#### C 10 offset(0,36)A_StartSound("weapons/bfgbattpop",8);
 		#### C 0{
 			let mmm=hdmagammo(findinventory("HDBattery"));
 			if(!mmm||mmm.amount<1){setweaponstate("reload3");return;}
@@ -391,8 +391,8 @@ class BFG9K:HDCellWeapon replaces BFG9000{
 			}
 		}
 	reload3:
-		#### C 12 offset(0,38) A_PlaySound("weapons/bfgopen");
-		#### C 16 offset(0,37) A_PlaySound("weapons/bfgclick2");
+		#### C 12 offset(0,38) A_StartSound("weapons/bfgopen",8);
+		#### C 16 offset(0,37) A_StartSound("weapons/bfgclick2",8);
 		#### C 2 offset(0,38);
 		#### C 2 offset(0,36);
 		#### A 2 offset(0,34);
@@ -410,7 +410,7 @@ class BFG9K:HDCellWeapon replaces BFG9000{
 	bwahahahaha:
 		BFUG A 3{
 			invoker.weaponstatus[BFGS_CRITTIMER]--;
-			A_PlaySound("weapons/bfgcharge",CHAN_AUTO);
+			A_StartSound("weapons/bfgcharge",CHAN_AUTO);
 			BFG9k.Spark(self,1,6);
 			if(invoker.weaponstatus[BFGS_CRITTIMER]<1){
 				invoker.weaponstatus[BFGS_CRITTIMER]=0;
@@ -421,7 +421,7 @@ class BFG9K:HDCellWeapon replaces BFG9000{
 	heh:
 		BFUG A 8;
 		BFUG A 4{
-			invoker.A_PlaySound("weapons/bfgfwoosh",CHAN_AUTO);
+			invoker.A_StartSound("weapons/bfgfwoosh",CHAN_AUTO);
 			invoker.weaponstatus[0]&=~BFGF_CRITICAL; //DO NOT DELETE THIS
 			invoker.weaponstatus[BFGS_CHARGE]=0;invoker.weaponstatus[BFGS_BATTERY]=0;
 
@@ -721,7 +721,7 @@ class BFGPuff:GreenParticleFountain{
 	spawn:
 		BFE2 A 1 bright nodelay{
 			if(target)target=target.target;
-			A_PlaySound("misc/bfgrail",5);
+			A_StartSound("misc/bfgrail",9005);
 		}
 		BFE2 A 3 bright{
 			A_Explode(random(196,320),320,0);

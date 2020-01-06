@@ -103,7 +103,7 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 			);
 		}else{
 			drainprob*=4;
-			A_PlaySound("weapons/sawidle",CHAN_WEAPON);
+			A_StartSound("weapons/sawidle",CHAN_WEAPON);
 			sawpuff="HDSawPufShitty";
 			A_SetTics(random(3,6));
 			A_MuzzleClimb(
@@ -119,9 +119,9 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 			LineAttack(angle,48,pitch,max(0,dmg),"Chainsaw","HDSawPuff",
 				LAF_OVERRIDEZ|LAF_ISMELEEATTACK,victim:t,offsetz:height-20
 			);
-			if(t.linetarget)A_PlaySound("weapons/sawhit",CHAN_WEAPON);
+			if(t.linetarget)A_StartSound("weapons/sawhit",CHAN_WEAPON);
 			else{
-				A_PlaySound("weapons/sawfull",CHAN_WEAPON);
+				A_StartSound("weapons/sawfull",CHAN_WEAPON);
 				if(dmg>6){
 					doordestroyer.destroydoor(
 						self,dmg*10,dmg*0.003,48,height-20,
@@ -144,12 +144,12 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 			if(invoker.weaponstatus[CSAWS_INERTIA]>0)invoker.weaponstatus[CSAWS_INERTIA]--;
 			if((invoker.weaponstatus[CSAWS_INERTIA]>4)&&(invoker.weaponstatus[CSAWS_BATTERY]>4)){
 				A_SetTics(2);
-				A_PlaySound("weapons/sawfull",CHAN_WEAPON);
+				A_StartSound("weapons/sawfull",CHAN_WEAPON);
 			}else if((invoker.weaponstatus[CSAWS_INERTIA]>1)&&(invoker.weaponstatus[CSAWS_BATTERY]>2)){
-				A_PlaySound("weapons/sawidle",CHAN_WEAPON);
+				A_StartSound("weapons/sawidle",CHAN_WEAPON);
 			}else{
 				A_SetTics(random(2,4));
-				A_PlaySound("weapons/sawidle",CHAN_WEAPON);
+				A_StartSound("weapons/sawidle",CHAN_WEAPON);
 			}
 			A_WeaponReady(WRF_NOSECONDARY);
 		}goto readyend;
@@ -197,9 +197,9 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 		BEVG A 2 offset(0,52);
 		BEVG A 3 offset(2,62);
 		BEVG A 4 offset(4,74);
-		BEVG A 7 offset(6,78)A_PlaySound("weapons/csawopen",CHAN_WEAPON);
+		BEVG A 7 offset(6,78)A_StartSound("weapons/csawopen",8);
 		BEVG A 0{
-			A_PlaySound("weapons/csawload",CHAN_WEAPON);
+			A_StartSound("weapons/csawload",8,CHANF_OVERLAP);
 			if(
 				!PressingUnload()&&!PressingReload()
 			){
@@ -217,7 +217,7 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 		BEVG A 6 offset(7,80){
 			if(invoker.weaponstatus[CSAWS_BATTERY]>=0){
 				HDMagAmmo.GiveMag(self,"HDBattery",invoker.weaponstatus[CSAWS_BATTERY]);
-				A_PlaySound("weapons/pocket");
+				A_StartSound("weapons/pocket",9);
 				A_MuzzleClimb(
 					randompick(-1,1)*frandom(-0.3,-1.2),
 					randompick(-1,1)*frandom(0.3,1.8)
@@ -225,7 +225,7 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 			}
 			invoker.weaponstatus[CSAWS_BATTERY]=-1;
 		}
-		BEVG A 7 offset(6,81) A_PlaySound("weapons/pocket");
+		BEVG A 7 offset(6,81) A_StartSound("weapons/pocket",9);
 		goto magout;
 
 	magout:
@@ -235,7 +235,7 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 			randompick(-1,1)*frandom(-0.3,-1.2),
 			randompick(-1,1)*frandom(0.3,0.8)
 		);
-		BEVG A 2 offset(6,78) A_PlaySound("weapons/pocket");
+		BEVG A 2 offset(6,78) A_StartSound("weapons/pocket",9);
 		BEVG AA 5 offset(5,76) A_MuzzleClimb(
 			randompick(-1,1)*frandom(-0.3,-1.2),
 			randompick(-1,1)*frandom(0.3,0.8)
@@ -246,7 +246,7 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 		}
 	reloadend:
 		BEVG A 6 offset(5,72);
-		BEVG A 5 offset(4,74)A_PlaySound("weapons/csawclose",CHAN_WEAPON);
+		BEVG A 5 offset(4,74)A_StartSound("weapons/csawclose",8);
 		BEVG A 4 offset(2,62);
 		BEVG A 3 offset(0,52);
 		BEVG A 4 offset(0,44);
@@ -281,10 +281,10 @@ class HDSawPuffShitty:IdleDummy{
 	states{
 	spawn:
 	death:
-		TNT1 A 10 A_PlaySound("weapons/csawtouch",0,0.4);
+		TNT1 A 10 A_StartSound("weapons/csawtouch",volume:0.4);
 		stop;
 	xdeath:
-		TNT1 A 10 A_PlaySound("weapons/csawbleh",0,0.4);
+		TNT1 A 10 A_StartSound("weapons/csawbleh",volume:0.4);
 		stop;
 	}
 }
