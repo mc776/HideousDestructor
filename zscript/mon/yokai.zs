@@ -67,7 +67,7 @@ class Yokai:HDMobBase{
 				return;
 			}
 
-			A_PlaySound("putto/sight",CHAN_AUTO,1,0,0.9);
+			A_StartSound("putto/sight",CHAN_AUTO,0,1.,0.9);
 			A_SetScale(0.666);
 			GiveBody(4);
 			if(!target)return;
@@ -95,7 +95,7 @@ class Yokai:HDMobBase{
 		---- A 1;
 		---- A 0{
 			bfrightened=true;
-			A_PlaySound("putto/sight");
+			A_StartSound("putto/sight");
 			A_SetTranslucent(1,1);
 			A_UnsetShootable();
 		}

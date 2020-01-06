@@ -53,7 +53,7 @@ class Technorantula:HDMobBase replaces SpiderMastermind{
 	double spread;
 	states{
 	spawn:
-		SPID A 0 A_PlaySound("spider/walk",CHAN_BODY);
+		SPID A 0 A_StartSound("spider/walk",CHAN_BODY);
 		SPID AABBC 4{hdmobai.wander(self);}
 	spawn2:
 		SPID C 1 A_Recoil(1);
@@ -63,7 +63,7 @@ class Technorantula:HDMobBase replaces SpiderMastermind{
 			if(!random(0,12))setstatelabel("spawn3");
 		}wait;
 	spawn3:
-		SPID # 0 A_PlaySound("spider/walk",CHAN_BODY);
+		SPID # 0 A_StartSound("spider/walk",CHAN_BODY);
 		SPID DDEEF 4{hdmobai.wander(self);}
 	spawn4: 
 		SPID F 1 A_Recoil(1);
@@ -73,22 +73,22 @@ class Technorantula:HDMobBase replaces SpiderMastermind{
 			if(!random(0,12))setstatelabel("spawn");
 		}wait;
 	see:
-		SPID A 0 A_PlaySound("spider/walk",CHAN_BODY);
+		SPID A 0 A_StartSound("spider/walk",CHAN_BODY);
 		SPID AAABBB 2{hdmobai.chase(self);}
-		SPID C 0 A_PlaySound("spider/walk",CHAN_BODY);
+		SPID C 0 A_StartSound("spider/walk",CHAN_BODY);
 		SPID CCCDDD 2{hdmobai.chase(self);}
-		SPID E 0 A_PlaySound("spider/walk",CHAN_BODY);
+		SPID E 0 A_StartSound("spider/walk",CHAN_BODY);
 		SPID EEEFFF 2{hdmobai.chase(self);}
 		SPID A 0 A_JumpIfTargetInLOS("see");
 	roam:
-		SPID # 0 A_PlaySound("spider/walk",CHAN_BODY);
+		SPID # 0 A_StartSound("spider/walk",CHAN_BODY);
 		SPID AABB 3{hdmobai.wander(self,true);}
-		SPID # 0 A_PlaySound("spider/walk",CHAN_BODY);
+		SPID # 0 A_StartSound("spider/walk",CHAN_BODY);
 		SPID CC 3{hdmobai.wander(self,true);}
 		SPID # 0 A_Jump(48,"roamc");
 	roam2:
 		SPID DD 3{hdmobai.wander(self,true);}
-		SPID # 0 A_PlaySound("spider/walk",CHAN_BODY);
+		SPID # 0 A_StartSound("spider/walk",CHAN_BODY);
 		SPID EEFF 3{hdmobai.wander(self,true);}
 		SPID # 0 A_Jump(48,"roamf");
 		SPID # 0 A_JumpIfTargetInLOS("see");
@@ -101,7 +101,7 @@ class Technorantula:HDMobBase replaces SpiderMastermind{
 		SPID CCCCCC 1 A_Chase("missile","missile",CHF_DONTMOVE);
 		SPID # 0 A_Jump(48,1);
 		loop;
-		SPID # 0 A_PlaySound("spider/walk",CHAN_BODY);
+		SPID # 0 A_StartSound("spider/walk",CHAN_BODY);
 		goto roam2;
 	roamf:
 		SPID # 0 A_Recoil(-1);
@@ -113,7 +113,7 @@ class Technorantula:HDMobBase replaces SpiderMastermind{
 		loop;
 	missile:
 		SPID # 0{
-			A_PlaySound("spider/walk",CHAN_BODY);
+			A_StartSound("spider/walk",CHAN_BODY);
 			shotcount=0;
 		}
 		SPID # 0 A_JumpIfTargetInLOS("aim",10);
@@ -121,14 +121,14 @@ class Technorantula:HDMobBase replaces SpiderMastermind{
 		SPID AA 2 A_FaceTarget(18,40);
 		SPID # 0 A_Recoil(-1);
 		SPID BB 2 A_FaceTarget(18,40);
-		SPID # 0 A_PlaySound("spider/walk",CHAN_BODY);
+		SPID # 0 A_StartSound("spider/walk",CHAN_BODY);
 		SPID # 0 A_Recoil(-1);
 		SPID CC 2 A_FaceTarget(18,40);
 		SPID # 0 A_JumpIfTargetInLOS("aim",10);
 		SPID # 0 A_Recoil(-1);
 		SPID DD 2 A_FaceTarget(18,40);
 		SPID # 0 A_JumpIfTargetInLOS("aim",10);
-		SPID # 0 A_PlaySound("spider/walk",CHAN_BODY);
+		SPID # 0 A_StartSound("spider/walk",CHAN_BODY);
 		SPID # 0 A_Recoil(-1);
 		SPID EE 2 A_FaceTarget(18,40);
 		SPID # 0 A_JumpIfTargetInLOS("aim",10);
@@ -154,10 +154,7 @@ class Technorantula:HDMobBase replaces SpiderMastermind{
 		}
 	shoot:
 		SPID GHGHGH 2 bright{
-			if(shotchannel>6)shotchannel=4;else shotchannel=max(4,shotchannel+1);
-			shotcount++;
-			A_PlaySound("weapons/bigrifle",shotchannel);
-
+			A_StartSound("weapons/bigrifle",CHAN_WEAPON,CHANF_OVERLAP);
 			HDBulletActor.FireBullet(self,"HDB_776",zofs:32,spread:1.,aimoffx:spread,aimoffy:spread);
 		}
 		SPID G 0 A_JumpIf(shotcount>50,"stopshot");

@@ -51,7 +51,7 @@ class BloodyHellFire:HDMobBase{
 		TNT1 A 0 A_Jump(256,"spawn2");
 		TNT1 AAAAAAA random(4,6) A_SpawnItemEx("HDSmoke",frandom(-1,1),frandom(-1,1),frandom(1,6),frandom(-1,1),frandom(-1,1),frandom(1,3),0,SXF_ABSOLUTE);
 		TNT1 AAAAAAA random(1,4) A_SpawnItemEx("HDSmoke",frandom(-1,1),frandom(-1,1),frandom(1,6),frandom(-1,1),frandom(-1,1),frandom(1,3),0,SXF_ABSOLUTE);
-		TNT1 A 0 A_Playsound("vile/firestrt",6);
+		TNT1 A 0 A_StartSound("vile/firestrt",0);
 		TNT1 A 0 A_SetShootable();
 		TNT1 A 0 A_SpawnItemEx("NecroFireLight",flags:SXF_SETTARGET);
 		TNT1 AAAAA 0 A_SpawnItemEx("HDSmoke",frandom(-1,1),frandom(-1,1),frandom(1,6),frandom(-1,1),frandom(-1,1),frandom(1,3),0,SXF_ABSOLUTE);
@@ -62,7 +62,7 @@ class BloodyHellFire:HDMobBase{
 	see:
 		TNT1 A 0{
 			A_SetScale(randompick(-1,1)*frandom(0.8,1.2),frandom(0.8,1.2));
-			A_Playsound("misc/firecrkl");
+			A_StartSound("misc/firecrkl");
 			if(firetimer<1)setstatelabel("detonate");
 			else firetimer--;
 		}
@@ -117,7 +117,7 @@ class BloodyHellFire:HDMobBase{
 		FIRE D random(1,2) A_Wander();
 		---- A 0 setstatelabel("see");
 	putto:
-		TNT1 A 0 A_Playsound("vile/firestrt");
+		TNT1 A 0 A_StartSound("vile/firestrt");
 		TNT1 AAAAA 0 A_SpawnItemEx("HDSmoke",frandom(-1,1),frandom(-1,1),frandom(1,6),frandom(-1,1),frandom(-1,1),frandom(1,3),0,SXF_ABSOLUTE);
 		TNT1 AA 0 A_SpawnItemEx("Putto",flags:SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS);
 		stop;
@@ -202,7 +202,7 @@ class HeckFire:HDActor{
 		FIRE ABAB random(1,2) A_SeekerMissile(2,4);
 	see:
 		FIRE A 0 A_Setscale(randompick(-1,1)*frandom(0.8,1.2),frandom(0.8,1.2));
-		FIRE A random(1,2) A_Playsound("misc/firecrkl");
+		FIRE A random(1,2) A_StartSound("misc/firecrkl");
 		FIRE B random(1,2) A_NoGravity();
 		FIRE A 0 A_Setscale(randompick(-1,1)*frandom(0.8,1.2),frandom(0.8,1.2));
 		FIRE ABAB random(1,2) A_SeekerMissile(4,8);
@@ -475,7 +475,7 @@ class Necromancer:HDMobBase replaces ArchVile{
 		VILE Q 0 A_SpawnItemEx("NecroDeathLight",flags:SXF_SETTARGET);
 		VILE Q 0 A_SpawnItem("spawnFire",0.1,28,0,0);
 		TNT1 AA 0 Spawn("DistantRocket",pos,ALLOW_REPLACE);
-		VILE Q 0 A_PlaySound("weapons/rocklx",CHAN_WEAPON);
+		VILE Q 0 A_StartSound("weapons/rocklx",CHAN_WEAPON);
 		VILE Q 0 A_Explode(72,196);
 		VILE Q 6 bright light("HELL") A_Scream();
 		VILE Q 14 bright light("HELL") A_Quake(8,14,0,768,0);

@@ -48,7 +48,7 @@ class Putto:HDMobBase{
 	missile:
 		#### AB 3;
 		#### CDA 2;
-		#### B 1 A_PlaySound("putto/spit",CHAN_WEAPON);
+		#### B 1 A_StartSound("putto/spit",CHAN_WEAPON);
 		#### C 1 A_SpawnProjectile("BaleBall",16);
 		#### DABCD 1;
 		#### ABCD 2;

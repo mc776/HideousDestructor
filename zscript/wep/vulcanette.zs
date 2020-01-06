@@ -337,7 +337,7 @@ class Vulcanette:HDWeapon{
 			if(pressingzoom())A_ZoomAdjust(VULCS_ZOOM,16,70);
 			else if(justpressed(BT_FIREMODE|BT_ALTFIRE)){
 				invoker.weaponstatus[0]^=VULCF_FAST;
-				A_PlaySound("weapons/fmswitch",7,0.4);
+				A_StartSound("weapons/fmswitch",CHAN_WEAPON,CHANF_OVERLAP,0.4);
 				A_SetHelpText();
 				A_WeaponReady(WRF_NONE);
 			}else A_WeaponReady(WRF_ALL);
@@ -407,7 +407,7 @@ class Vulcanette:HDWeapon{
 		GTLG A 0{
 			if(invoker.getmagcount(0)<2){
 				VulcNextMag();
-				A_PlaySound("weapons/vulcshunt",CHAN_BODY);
+				A_StartSound("weapons/vulcshunt",CHAN_WEAPON,CHANF_OVERLAP);
 			}
 		}goto hold;
 	spindown:
@@ -492,12 +492,12 @@ class Vulcanette:HDWeapon{
 	lowertoopen:
 		GTLG A 2 offset(0,36);
 		GTLG A 2 offset(4,38){
-			A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
+			A_StartSound("weapons/rifleclick2",CHAN_WEAPON);
 			A_MuzzleClimb(-frandom(1.2,1.8),-frandom(1.8,2.4));
 		}
-		GTLG A 6 offset(9,41)A_PlaySound("weapons/pocket",CHAN_AUTO);
-		GTLG A 8 offset(12,43)A_PlaySound("weapons/vulcopen1",CHAN_WEAPON);
-		GTLG A 5 offset(10,41)A_PlaySound("weapons/vulcopen2",CHAN_AUTO);
+		GTLG A 6 offset(9,41)A_StartSound("weapons/pocket",CHAN_WEAPON);
+		GTLG A 8 offset(12,43)A_StartSound("weapons/vulcopen1",CHAN_WEAPON,CHANF_OVERLAP);
+		GTLG A 5 offset(10,41)A_StartSound("weapons/vulcopen2",CHAN_WEAPON,CHANF_OVERLAP);
 		GTLG A 0{
 			if(invoker.weaponstatus[0]&VULCF_LOADCELL)setweaponstate("uncell");
 			else if(invoker.weaponstatus[0]&VULCF_JUSTUNLOAD)setweaponstate("unmag");
@@ -517,7 +517,7 @@ class Vulcanette:HDWeapon{
 				HDMagAmmo.SpawnMag(self,"HDBattery",btt);
 				
 			}else{
-				A_PlaySound("weapons/pocket",CHAN_WEAPON);
+				A_StartSound("weapons/pocket",CHAN_WEAPON);
 				HDMagAmmo.GiveMag(self,"HDBattery",btt);
 			}
 		}goto cellout;
@@ -539,7 +539,7 @@ class Vulcanette:HDWeapon{
 
 	unchamber:
 		GTLG B 4{
-			A_PlaySound("weapons/vulcextract",CHAN_AUTO,0.3);
+			A_StartSound("weapons/vulcextract",CHAN_AUTO,CHANF_DEFAULT,0.3);
 			VulcNextRound();
 		}GTLG A 4;
 		GTLG A 0 A_JumpIf(PressingUnload(),"unchamber");
@@ -560,7 +560,7 @@ class Vulcanette:HDWeapon{
 			if(
 				!invoker.weaponstatus[0]&VULCF_JUSTUNLOAD
 			)setweaponstate("loadmag");
-			A_PlaySound("weapons/rifleload");
+			A_StartSound("weapons/rifleload");
 			A_MuzzleClimb(-frandom(1.2,1.8),-frandom(1.8,2.4));
 		}
 	//remove mag #2 first, #1 only if out of options
@@ -581,7 +581,7 @@ class Vulcanette:HDWeapon{
 			for(int i=0;i<5;i++){
 				invoker.setmagcount(i,invoker.getmagcount(i+1));
 			}
-			A_PlaySound("weapons/vulcshunt",CHAN_BODY);
+			A_StartSound("weapons/vulcshunt",CHAN_WEAPON,CHANF_OVERLAP);
 		}
 		GTLG AB 2 A_MuzzleClimb(-frandom(0.4,0.6),frandom(0.4,0.6));
 		goto ready;
@@ -625,7 +625,7 @@ class Vulcanette:HDWeapon{
 			}
 		}goto reloadend;
 	pocketmag:
-		GTLG A 0 A_PlaySound("weapons/pocket");
+		GTLG A 0 A_StartSound("weapons/pocket");
 		GTLG AA 6 A_MuzzleClimb(frandom(0.4,0.6),-frandom(0.4,0.6));
 		goto mag1out;
 	mag1out:
@@ -634,7 +634,7 @@ class Vulcanette:HDWeapon{
 			for(int i=starti;i<5;i++){
 				invoker.setmagcount(i,invoker.getmagcount(i+1));
 			}
-			A_PlaySound("weapons/vulcshunt",CHAN_BODY);
+			A_StartSound("weapons/vulcshunt",CHAN_WEAPON,CHANF_OVERLAP);
 		}
 		GTLG AB 2 A_MuzzleClimb(-frandom(0.4,0.6),frandom(0.4,0.6));
 		GTLG A 6{
@@ -645,7 +645,7 @@ class Vulcanette:HDWeapon{
 
 	loadmag:
 		//pick the first empty slot and fill that
-		GTLG A 0 A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		GTLG A 0 A_StartSound("weapons/pocket");
 		GTLG AA 6 A_MuzzleClimb(-frandom(0.4,0.6),frandom(-0.4,0.4));
 		GTLG A 6 offset(10,41){
 			if(HDMagAmmo.NothingLoaded(self,"HD4mMag")){setweaponstate("reloadend");return;}
@@ -666,7 +666,7 @@ class Vulcanette:HDWeapon{
 			//REMEMBER: IN THE VULC, ADD ONE
 			if(lod<51){
 				if(!random(0,7)){
-					A_PlaySound("weapons/vulcforcemag",CHAN_WEAPON);
+					A_StartSound("weapons/vulcforcemag",CHAN_WEAPON,CHANF_OVERLAP);
 					lod=min(0,lod-random(0,1));
 					A_Log(HDCONST_426MAGMSG,true);
 				}
@@ -676,7 +676,7 @@ class Vulcanette:HDWeapon{
 			A_MuzzleClimb(-frandom(0.4,0.8),-frandom(0.5,0.7));
 		}
 		GTLG A 8 offset(9,38){
-			A_PlaySound("weapons/rifleclick");
+			A_StartSound("weapons/rifleclick",CHAN_WEAPON,CHANF_OVERLAP);
 			A_MuzzleClimb(
 				-frandom(0.2,0.8),-frandom(0.2,0.3)
 				-frandom(0.2,0.8),-frandom(0.2,0.3)
@@ -743,13 +743,7 @@ class Vulcanette:HDWeapon{
 		}
 
 		if(flash2)A_GunFlash("flash2");else A_GunFlash("flash");
-
-		if(invoker.weaponstatus[0]&VULCF_FAST){
-			if(invoker.weaponstatus[VULCS_CHANNEL]>7)invoker.weaponstatus[VULCS_CHANNEL]=4;  
-			else if(invoker.weaponstatus[VULCS_CHANNEL]==1)invoker.weaponstatus[VULCS_CHANNEL]=5;
-			else invoker.weaponstatus[VULCS_CHANNEL]++;
-		}else invoker.weaponstatus[VULCS_CHANNEL]=CHAN_WEAPON;
-		A_PlaySound("weapons/vulcanette",invoker.weaponstatus[VULCS_CHANNEL]);
+		A_StartSound("weapons/vulcanette",CHAN_WEAPON,CHANF_OVERLAP);
 
 		int cm=countinv("IsMoving");if(
 			invoker.weaponstatus[0]&VULCF_FAST
@@ -847,7 +841,7 @@ class Vulcanette:HDWeapon{
 		//figure out what's in the mag and load it to the final chamber
 		int inmag=invoker.getmagcount(0);
 		if(inmag>1){
-			A_PlaySound("weapons/vulcchamber",CHAN_BODY);
+			A_StartSound("weapons/vulcchamber",CHAN_WEAPON,CHANF_OVERLAP);
 			invoker.weaponstatus[0]|=VULCF_CHAMBER5;
 			if(random(0,2000)<=
 				1+(invoker.weaponstatus[0]&VULCF_DIRTYMAG?(invoker.weaponstatus[0]&VULCF_FAST?13:9):0)
