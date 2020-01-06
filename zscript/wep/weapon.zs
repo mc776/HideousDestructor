@@ -264,7 +264,7 @@ class HDWeapon:Weapon{
 				)
 				&&!random(0,511)
 			){
-				onr.A_PlaySound(random(0,5)?"*xdeath":"*taunt",CHAN_VOICE);
+				onr.A_StartSound(random(0,5)?"*xdeath":"*taunt",CHAN_VOICE);
 				onr.A_AlertMonsters();
 				onr.dropinventory(self);
 			}
@@ -283,7 +283,7 @@ class HDWeapon:Weapon{
 			tracer.damagemobj(self,target,dmg,"Bashing");
 			if(hd_debug)A_Log(tracer.getclassname().." hit for "..dmg.." damage with thrown "..getclassname());
 		}
-		A_PlaySound("weapons/smack",CHAN_BODY,min(0.5,dmg*0.02));
+		A_StartSound("weapons/smack",CHAN_BODY,CHANF_OVERLAP,min(0.5,dmg*0.02));
 		setstatelabel("spawn");
 	}
 
@@ -420,7 +420,7 @@ class HDWeapon:Weapon{
 			bool asw=addspareweapon(other);
 			if(asw&&!silent&&!!self){
 				other.A_Log(string.format("\cg"..pickupmessage()),true);
-				other.A_PlaySound(pickupsound,CHAN_AUTO);
+				other.A_StartSound(pickupsound,CHAN_AUTO);
 				//provide some feedback that the player has picked up extra weapons
 				if(
 					hdp
@@ -451,7 +451,7 @@ class HDWeapon:Weapon{
 		if(!self)return;
 		if(!silent){
 			other.A_Log(string.format("\cg"..pickupmessage()),true);
-			other.A_PlaySound(pickupsound,CHAN_AUTO);
+			other.A_StartSound(pickupsound,CHAN_AUTO);
 		}
 		attachtoowner(other);
 	}
@@ -460,8 +460,8 @@ class HDWeapon:Weapon{
 	virtual void failedpickupunload(){}
 	void failedpickupunloadmag(int magslot,class<hdmagammo> type){
 		if(weaponstatus[magslot]<0)return;
-		A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
-		A_PlaySound("weapons/rifleload",5);
+		A_StartSound("weapons/rifleclick2",8);
+		A_StartSound("weapons/rifleload",8,CHANF_OVERLAP);
 		HDMagAmmo.SpawnMag(self,type,weaponstatus[magslot]);
 		weaponstatus[magslot]=-1;
 		setstatelabel("spawn");

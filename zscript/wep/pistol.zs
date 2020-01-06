@@ -221,7 +221,7 @@ class HDPistol:HDHandgun replaces Pistol{
 		#### B 3 offset(0,34);
 		#### C 4 offset(0,37){
 			A_MuzzleClimb(frandom(0.4,0.5),-frandom(0.6,0.8));
-			A_PlaySound("weapons/pismagclick",CHAN_WEAPON);
+			A_StartSound("weapons/pismagclick",8);
 			int psch=invoker.weaponstatus[PISS_CHAMBER];
 			invoker.weaponstatus[PISS_CHAMBER]=0;
 			if(psch==2){
@@ -272,7 +272,7 @@ class HDPistol:HDHandgun replaces Pistol{
 			);
 			invoker.weaponstatus[PISS_CHAMBER]=0;
 			if(invoker.weaponstatus[PISS_MAG]<1){
-				A_PlaySound("weapons/pistoldry",7,0.9);
+				A_StartSound("weapons/pistoldry",8,CHANF_OVERLAP,0.9);
 				setweaponstate("nope");
 			}
 		}
@@ -308,7 +308,7 @@ class HDPistol:HDHandgun replaces Pistol{
 			A_ZoomRecoil(0.995);
 			A_MuzzleClimb(-frandom(0.4,1.2),-frandom(0.4,1.6));
 		}
-		---- A 0 A_PlaySound("weapons/pistol",CHAN_WEAPON,1.0);
+		---- A 0 A_StartSound("weapons/pistol",CHAN_WEAPON);
 		---- A 0 A_Light0();
 		stop;
 	unload:
@@ -318,14 +318,14 @@ class HDPistol:HDHandgun replaces Pistol{
 		}goto chamber_manual;
 	loadchamber:
 		---- A 0 A_JumpIf(invoker.weaponstatus[PISS_CHAMBER]>0,"nope");
-		---- A 1 offset(0,34) A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		---- A 1 offset(0,34) A_StartSound("weapons/pocket",9);
 		---- A 1 offset(2,36);
 		#### C 3 offset(5,40);
 		#### C 6 offset(4,39){
 			if(countinv("HDPistolAmmo")){
 				A_TakeInventory("HDPistolAmmo",1,TIF_NOTAKEINFINITE);
 				invoker.weaponstatus[PISS_CHAMBER]=2;
-				A_PlaySound("weapons/pischamber1",CHAN_WEAPON);
+				A_StartSound("weapons/pischamber1",8);
 			}
 		}
 		#### B 3 offset(2,36);
@@ -344,7 +344,7 @@ class HDPistol:HDHandgun replaces Pistol{
 		---- A 1 offset(0,34) A_SetCrosshair(21);
 		---- A 1 offset(1,38);
 		---- A 2 offset(2,42);
-		---- A 3 offset(3,46) A_PlaySound("weapons/pismagclick",CHAN_WEAPON);
+		---- A 3 offset(3,46) A_StartSound("weapons/pismagclick",8,CHANF_OVERLAP);
 		---- A 0{
 			int pmg=invoker.weaponstatus[PISS_MAG];
 			invoker.weaponstatus[PISS_MAG]=-1;
@@ -358,7 +358,7 @@ class HDPistol:HDHandgun replaces Pistol{
 			}
 			else{
 				HDMagAmmo.GiveMag(self,"HD9mMag15",pmg);
-				A_PlaySound("weapons/pocket",CHAN_WEAPON);
+				A_StartSound("weapons/pocket",9);
 				setweaponstate("pocketmag");
 			}
 		}
@@ -373,14 +373,14 @@ class HDPistol:HDHandgun replaces Pistol{
 
 	loadmag:
 		---- A 4 offset(0,46) A_MuzzleClimb(frandom(-0.2,0.8),frandom(-0.2,0.4));
-		---- A 0 A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		---- A 0 A_StartSound("weapons/pocket",9);
 		---- A 5 offset(0,46) A_MuzzleClimb(frandom(-0.2,0.8),frandom(-0.2,0.4));
 		---- A 3;
 		---- A 0{
 			let mmm=hdmagammo(findinventory("HD9mMag15"));
 			if(mmm){
 				invoker.weaponstatus[PISS_MAG]=mmm.TakeMag(true);
-				A_PlaySound("weapons/pismagclick",CHAN_BODY);
+				A_StartSound("weapons/pismagclick",8);
 			}
 			if(
 				invoker.weaponstatus[PISS_CHAMBER]<1
@@ -390,7 +390,7 @@ class HDPistol:HDHandgun replaces Pistol{
 				invoker.weaponstatus[PISS_MAG]--;
 			}else setweaponstate("reloadend");
 		}
-		#### A 3 offset(0,48) A_PlaySound("weapons/pischamber2",CHAN_WEAPON);
+		#### A 3 offset(0,48) A_StartSound("weapons/pischamber2",8,CHANF_OVERLAP);
 		#### A 2 offset(0,45);
 		goto reloadend;
 	reloadend:

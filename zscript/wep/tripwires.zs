@@ -90,7 +90,7 @@ class Tripwire:HDWeapon{
 	deselect0:
 		TNT1 A 10{
 			UndoAll();
-			A_PlaySound("weapons/pocket",CHAN_WEAPON);
+			A_StartSound("weapons/pocket",9);
 			if(countinv("NulledWeapon"))A_SetTics(0);
 		}goto super::deselect0;
 	select:
@@ -99,7 +99,7 @@ class Tripwire:HDWeapon{
 				if(getcvar("hd_helptext"))A_Print("No grenades.");
 				A_SelectWeapon("HDFist");
 			}else if(getcvar("hd_helptext"))A_WeaponMessage("\cp\--- \cqTRIPWIRES \cp---\c-\n\n\nHit fire to set one end of the line,\n\nthen hit fire again to plant the grenade.\nby human hands.\n\nMove carefully.");
-			A_PlaySound("weapons/pocket",CHAN_WEAPON);
+			A_StartSound("weapons/pocket",9);
 			if(countinv("NulledWeapon"))A_SetTics(0);
 		}goto super::select;
 	ready:
@@ -135,13 +135,13 @@ class Tripwire:HDWeapon{
 			if(!invoker.gumspot){
 				actor aaa=spawn("GumAndString",gumline.hitlocation-gumline.hitdir*0.6,ALLOW_REPLACE);
 				aaa.target=self;aaa.master=self;aaa.angle=angle;
-				aaa.A_PlaySound("tripwire/gumsplat",CHAN_BODY);
+				aaa.A_StartSound("tripwire/gumsplat",CHAN_BODY);
 				invoker.gumspot=aaa;
 				A_Log("Wire end secured. Now to set the grenade...",true);
 			}else{
 				actor aaa=spawn(invoker.throwtype,gumline.hitlocation-gumline.hitdir*2,ALLOW_REPLACE);
 				aaa.target=self;aaa.master=self;aaa.angle=angle;
-				aaa.A_PlaySound("tripwire/fragclick",CHAN_BODY);
+				aaa.A_StartSound("tripwire/fragclick",CHAN_BODY);
 				invoker.grenade=aaa;
 				invoker.gumspot.tracer=invoker.grenade;
 				invoker.grenade.tracer=invoker.gumspot;
@@ -310,20 +310,20 @@ class GumAndString:IdleDummy{
 		actor hhh=trc.spawn(trc.spoontype,trc.pos,ALLOW_REPLACE);
 		hhh.vel=ggg.vel*5;
 		ggg.vel*=3;ggg.vel.z++;
-		ggg.A_PlaySound("weapons/fragpinout");
+		ggg.A_StartSound("weapons/fragpinout",8);
 		ggg.vel+=(vvx,vvy,vvz);
 		hhh.vel+=(vvx,vvy,vvz);
 		if(tracer)tracer.destroy();
 		destroy();
 	}
 	void ForceAbort(){
-		A_PlaySound("tripwire/break");
+		A_StartSound("tripwire/break",CHAN_AUTO);
 		let trc=trippinggrenade(tracer);
 		if(trc){
 			actor trcr=spawn(trc.rollertype,trc.pos,ALLOW_REPLACE);
-			trcr.A_PlaySound("tripwire/break");
+			trcr.A_StartSound("tripwire/break",CHAN_AUTO);
 			trc.destroy();
-		}else if(master)master.A_PlaySound("tripwire/break");
+		}else if(master)master.A_StartSound("tripwire/break",CHAN_AUTO);
 		if(master)master.A_Log("Welp, there goes that one. Try again?",true);
 		destroy();
 	}
@@ -429,7 +429,7 @@ class TrippingGrenade:HDUPK{
 				ggg.vel=(tracer.pos-ggg.pos).unit()*3+(0,0,1);
 				tracer.destroy();
 			}else ggg.vel=(random(-1,1),random(-1,1),1);
-			ggg.A_PlaySound("tripwire/fragpain");
+			ggg.A_StartSound("tripwire/fragpain",CHAN_AUTO);
 			actor hhh=spawn(spoontype,pos,ALLOW_REPLACE);
 			hhh.vel=ggg.vel*2;
 			bshootable=false;

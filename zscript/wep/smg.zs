@@ -227,7 +227,7 @@ class HDSMG:HDWeapon{
 			)A_AlertMonsters(200);
 
 			A_ZoomRecoil(0.995);
-			A_PlaySound("weapons/smg",CHAN_WEAPON,0.7);
+			A_StartSound("weapons/smg",CHAN_WEAPON,volume:0.7);
 			invoker.weaponstatus[SMGS_RATCHET]++;
 			invoker.weaponstatus[SMGS_CHAMBER]=1;
 		}
@@ -253,14 +253,14 @@ class HDSMG:HDWeapon{
 	loadchamber:
 		---- A 0 A_JumpIf(invoker.weaponstatus[SMGS_CHAMBER]>0,"nope");
 		---- A 0 A_JumpIf(!countinv("HDPistolAmmo"),"nope");
-		---- A 1 offset(0,34) A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		---- A 1 offset(0,34) A_StartSound("weapons/pocket",9);
 		---- A 1 offset(2,36);
 		#### B 1 offset(5,40);
 		#### B 4 offset(4,39){
 			if(countinv("HDPistolAmmo")){
 				A_TakeInventory("HDPistolAmmo",1,TIF_NOTAKEINFINITE);
 				invoker.weaponstatus[SMGS_CHAMBER]=2;
-				A_PlaySound("weapons/smgchamber",CHAN_WEAPON);
+				A_StartSound("weapons/smgchamber",8);
 			}
 		}
 		#### B 7 offset(5,37);
@@ -292,10 +292,10 @@ class HDSMG:HDWeapon{
 		#### A 1 offset(0,34) A_SetCrosshair(21);
 		#### A 1 offset(5,38);
 		#### A 1 offset(10,42);
-		#### B 2 offset(20,46) A_PlaySound("weapons/smgmagclick",CHAN_WEAPON);
+		#### B 2 offset(20,46) A_StartSound("weapons/smgmagclick",8);
 		#### B 4 offset(30,52){
 			A_MuzzleClimb(0.3,0.4);
-			A_PlaySound("weapons/smgmagmove",CHAN_WEAPON);
+			A_StartSound("weapons/smgmagmove",8,CHANF_OVERLAP);
 		}
 		#### B 0{
 			int magamt=invoker.weaponstatus[SMGS_MAG];
@@ -312,7 +312,7 @@ class HDSMG:HDWeapon{
 				setweaponstate("magout");
 			}else{
 				HDMagAmmo.GiveMag(self,"HD9mMag30",magamt);
-				A_PlaySound("weapons/pocket",CHAN_WEAPON);
+				A_StartSound("weapons/pocket",9);
 				setweaponstate("pocketmag");
 			}
 		}
@@ -325,7 +325,7 @@ class HDSMG:HDWeapon{
 		}
 
 	loadmag:
-		#### B 0 A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		#### B 0 A_StartSound("weapons/pocket",9);
 		#### B 6 offset(34,54) A_MuzzleClimb(frandom(0.2,-0.8),frandom(-0.2,0.4));
 		#### B 7 offset(34,52) A_MuzzleClimb(frandom(0.2,-0.8),frandom(-0.2,0.4));
 		#### B 10 offset(32,50);
@@ -333,7 +333,7 @@ class HDSMG:HDWeapon{
 			let mmm=hdmagammo(findinventory("HD9mMag30"));
 			if(mmm){
 				invoker.weaponstatus[SMGS_MAG]=mmm.TakeMag(true);
-				A_PlaySound("weapons/smgmagclick",CHAN_BODY);
+				A_StartSound("weapons/smgmagclick",8,CHANF_OVERLAP);
 			}
 			if(
 				invoker.weaponstatus[SMGS_MAG]<1
@@ -345,7 +345,7 @@ class HDSMG:HDWeapon{
 			invoker.weaponstatus[SMGS_MAG]--;
 			invoker.weaponstatus[SMGS_CHAMBER]=2;
 		}
-		#### B 4 offset(32,49) A_PlaySound("weapons/smgchamber",CHAN_WEAPON);
+		#### B 4 offset(32,49) A_StartSound("weapons/smgchamber",8,CHANF_OVERLAP);
 
 	reloadend:
 		#### B 3 offset(30,52);

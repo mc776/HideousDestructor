@@ -179,9 +179,9 @@ class Brontornis:HDWeapon{
 				return;
 			}
 			A_GunFlash();
-			A_PlaySound("weapons/bronto",CHAN_WEAPON);
-			A_PlaySound("weapons/bronto",6);
-			A_PlaySound("weapons/bronto2",7);
+			A_StartSound("weapons/bronto",CHAN_WEAPON);
+			A_StartSound("weapons/bronto",CHAN_WEAPON,CHANF_OVERLAP);
+			A_StartSound("weapons/bronto2",CHAN_WEAPON,CHANF_OVERLAP);
 			let tb=HDBulletActor.FireBullet(
 				self,"HDB_bronto",
 				aimoffy:(invoker.weaponstatus[0]&BRONF_ZOOM)?-2:0
@@ -267,7 +267,7 @@ class Brontornis:HDWeapon{
 			-frandom(0.5,0.6),frandom(0.5,0.6),
 			-frandom(0.5,0.6),frandom(0.5,0.6)
 		);
-		BLSG B 3 A_PlaySound("weapons/brontunload",CHAN_WEAPON);
+		BLSG B 3 A_StartSound("weapons/brontunload",8);
 		BLSG BBBBBBBB 0{invoker.drainheat(BRONS_HEAT,12);}
 		BLSG B 12 offset(0,34){
 			int chm=invoker.weaponstatus[BRONS_CHAMBER];
@@ -277,14 +277,14 @@ class Brontornis:HDWeapon{
 				return;
 			}
 
-			A_PlaySound("weapons/brontoload",CHAN_AUTO);
+			A_StartSound("weapons/brontoload",8,CHANF_OVERLAP);
 			if(chm>1){
 				if(
 					PressingUnload()
 					&&!A_JumpIfInventory("BrontornisRound",0,"null")
 				){
 					A_SetTics(18);
-					A_PlaySound("weapons/pocket");
+					A_StartSound("weapons/pocket",9);
 					A_GiveInventory("BrontornisRound");
 				}
 				else A_SpawnItemEx("BrontornisRound",
@@ -305,7 +305,7 @@ class Brontornis:HDWeapon{
 			}
 		}
 		BLSG B 1 offset(0,36) A_JumpIf(invoker.weaponstatus[0]&BRONF_JUSTUNLOAD,"reloadend");
-		BLSG B 1 offset(0,41) A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		BLSG B 1 offset(0,41) A_StartSound("weapons/pocket",9);
 		BLSG B 1 offset(0,38);
 		BLSG B 3 offset(0,36);
 		BLSG B 3 offset(0,34);
@@ -313,16 +313,16 @@ class Brontornis:HDWeapon{
 		BLSG B 4 offset(0,34){
 			invoker.weaponstatus[BRONS_CHAMBER]=2;
 			A_TakeInventory("BrontornisRound",1,TIF_NOTAKEINFINITE);
-			A_PlaySound("weapons/brontoload",CHAN_WEAPON);
+			A_StartSound("weapons/brontoload",8);
 		}
 		BLSG B 6 offset(0,33);
 	reloadend:
 		BLSG B 6 offset(0,34);
-		BLSG B 2 offset(0,34) A_PlaySound("weapons/brontunload",CHAN_WEAPON);
+		BLSG B 2 offset(0,34) A_StartSound("weapons/brontunload",8);
 		BLSG B 1 offset(0,36);
 		BLSG B 1 offset(0,34);
 		BLSG BA 4;
-		BLSG A 0 A_PlaySound("weapons/brontoclose",CHAN_WEAPON);
+		BLSG A 0 A_StartSound("weapons/brontoclose",8);
 		goto ready;
 
 	spawn:

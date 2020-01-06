@@ -237,7 +237,7 @@ class HDFist:HDWeapon replaces Fist{
 			string pch=punchee.getclassname();
 			A_Log(string.format("Punched %s for %i damage!",pch,dmg));
 		}
-		if(dmg*2>punchee.health)punchee.A_PlaySound("misc/bulletflesh",CHAN_BODY);  
+		if(dmg*2>punchee.health)punchee.A_StartSound("misc/bulletflesh",CHAN_AUTO);
 		punchee.damagemobj(self,self,dmg,"SmallArms0");
 
 		if(!punchee)invoker.targethealth=0;else{
@@ -257,7 +257,7 @@ class HDFist:HDWeapon replaces Fist{
 		hdp.overloaded=overloaded;
 	}
 	static void kick(actor kicker,actor kickee,actor kicking){
-		kickee.A_PlaySound("weapons/smack",CHAN_BODY);
+		kickee.A_StartSound("weapons/smack",CHAN_AUTO);
 		bool kzk=kicker.countinv("PowerStrength");
 		kickee.damagemobj(kicking,kicker,kzk?random(20,40):random(10,20),"bashing");
 		if(!kickee)return;

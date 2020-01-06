@@ -124,7 +124,7 @@ class HDGrenadeThrower:HDWeapon{
 			if(wepstat&FRAGF_SPOONOFF)TossGrenade(true);
 			else{
 				if(wepstat&FRAGF_PINOUT){
-					owner.A_PlaySound("weapons/fragpinout",CHAN_WEAPON);
+					owner.A_StartSound("weapons/fragpinout",8);
 					weaponstatus[0]&=~FRAGF_PINOUT;
 				}
 				if(
@@ -167,7 +167,7 @@ class HDGrenadeThrower:HDWeapon{
 		invoker.weaponstatus[FRAGS_REALLYPULL]=0;
 		invoker.weaponstatus[0]|=(FRAGF_PINOUT|FRAGF_INHAND);
 		A_TakeInventory(invoker.grenadeammotype,1,TIF_NOTAKEINFINITE);
-		A_PlaySound("weapons/fragpinout",CHAN_WEAPON);
+		A_StartSound("weapons/fragpinout",8);
 	}
 	//drop the spoon
 	action void A_StartCooking(){
@@ -192,7 +192,7 @@ class HDGrenadeThrower:HDWeapon{
 			wepmsg="\cgThe fuze is lit!\n\n\n\n\cgRemember to throw!";
 			msgtimer=100;
 		}
-		owner.A_PlaySound("weapons/fragspoonoff",0,1,0,20);
+		owner.A_StartSound("weapons/fragspoonoff",8,attenuation:20);
 	}
 	//we need to start from the inventory itself so it can go into DoEffect
 	action void A_TossGrenade(bool oshit=false){
@@ -452,7 +452,7 @@ class HDFragGrenadeRoller:HDActor{
 	}
 	override bool used(actor user){
 		angle=user.angle;
-		A_PlaySound(bouncesound);
+		A_StartSound(bouncesound);
 		if(hdplayerpawn(user)&&hdplayerpawn(user).incapacitated)A_ChangeVelocity(4,0,1,CVF_RELATIVE);
 		else A_ChangeVelocity(12,0,4,CVF_RELATIVE);
 		return true;
@@ -464,8 +464,8 @@ class HDFragGrenadeRoller:HDActor{
 		}
 	spawn2:
 		#### BCD 2{
-			if(abs(vel.z-keeprolling.z)>10)A_PlaySound("misc/fragknock",CHAN_BODY);
-			else if(floorz>=pos.z)A_PlaySound("misc/fragroll");
+			if(abs(vel.z-keeprolling.z)>10)A_StartSound("misc/fragknock",CHAN_BODY);
+			else if(floorz>=pos.z)A_StartSound("misc/fragroll");
 			keeprolling=vel;
 			if(abs(vel.x)<0.4 && abs(vel.y)<0.4) setstatelabel("death");
 		}loop;
@@ -477,7 +477,7 @@ class HDFragGrenadeRoller:HDActor{
 	death:
 		---- A 2{
 			if(abs(vel.z-keeprolling.z)>3){
-				A_PlaySound("misc/fragknock",CHAN_BODY);
+				A_StartSound("misc/fragknock",CHAN_BODY);
 				keeprolling=vel;
 			}
 			if(abs(vel.x)>0.4 || abs(vel.y)>0.4) setstatelabel("spawn");
@@ -490,7 +490,7 @@ class HDFragGrenadeRoller:HDActor{
 				fragradius:1024
 			);
 			DistantQuaker.Quake(self,4,35,512,10);
-			A_PlaySound("world/explode",1,7);
+			A_StartSound("world/explode",CHAN_AUTO);
 			A_AlertMonsters();
 			actor xpl=spawn("WallChunker",self.pos-(0,0,1),ALLOW_REPLACE);
 				xpl.target=target;xpl.master=master;xpl.stamina=stamina;
@@ -587,7 +587,7 @@ class HDFragGrenade:SlowProjectile{
 			gr.fuze=self.fuze;
 			gr.vel=self.keeprolling;
 			gr.keeprolling=self.keeprolling;
-			gr.A_PlaySound("misc/fragknock",CHAN_BODY);
+			gr.A_StartSound("misc/fragknock",CHAN_BODY);
 			HDMobAI.Frighten(gr,512);
 		}stop;
 	}
@@ -599,7 +599,7 @@ class HDFragSpoon:HDDebris{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		A_PlaySound("weapons/grenopen",0,2);
+		A_StartSound("weapons/grenopen",CHAN_VOICE);
 	}
 	states{
 	spawn:
