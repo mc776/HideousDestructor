@@ -478,7 +478,7 @@ extend class HDPlayerPawn{
 		if(!!findinventory("WornRadsuit")){
 			A_TakeInventory("WornRadsuit");
 			A_TakeInventory("PowerIronFeet");
-			A_PlaySound("radsuit/burst",CHAN_AUTO);
+			A_StartSound("radsuit/burst",CHAN_AUTO);
 		}
 	}
 	//disarm

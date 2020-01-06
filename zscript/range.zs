@@ -15,7 +15,7 @@ class HDLoadBox:switchabledecoration{
 	active:
 	inactive:
 		AMBX A 5{
-			A_PlaySound("misc/chat2",CHAN_AUTO);
+			A_StartSound("misc/chat2",CHAN_AUTO);
 			busespecial=false;
 		}
 		AMBX B 18{
@@ -26,7 +26,7 @@ class HDLoadBox:switchabledecoration{
 				&&target.countinv("HDRL")
 			)A_GiveToTarget("HEATAmmo");
 			target.A_Print("Weapons reloaded.");
-			target.A_PlaySound("misc/w_pkup",CHAN_AUTO);
+			target.A_StartSound("misc/w_pkup",CHAN_AUTO);
 		}
 	spawn:
 		AMBX A -1{
@@ -98,7 +98,7 @@ class TargetBarrel:Actor{
 		BEXP B 10{
 			vel.z*=-0.3;
 			bnogravity=true;
-			A_PlaySound("weapons/smack");
+			A_StartSound("weapons/smack");
 		}goto spawn;
 	}
 }
@@ -128,13 +128,13 @@ class PunchDummy:HDActor{
 			string d="u";
 			if(damage>100){
 				d="x";
-				A_PlaySound("misc/p_pkup",CHAN_WEAPON,attenuation:0.6);
+				A_StartSound("misc/p_pkup",CHAN_WEAPON,attenuation:0.6);
 			}else if(damage>60)d="y";
 			else if(damage>30)d="g";
 			if(!hd_debug&&source)source.A_Log(
 				string.format("\ccPunched for \c%s%i\cc damage!",d,damage)
 			,true);
-			A_PlaySound("misc/punch",random(1,6));
+			A_StartSound("misc/punch",CHAN_AUTO);
 		}
 		return 0; //indestructible
 	}
@@ -144,8 +144,5 @@ class PunchDummy:HDActor{
 		BEXP B -1;
 	}
 }
-
-
-
 
 

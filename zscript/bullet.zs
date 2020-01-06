@@ -991,7 +991,7 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 		//destroy radsuit if worn and pen above threshold
 		if(hitactor.countinv("WornRadsuit")&&pen>frandom(1,4)){
 			hitactor.A_TakeInventory("WornRadsuit");
-			hitactor.A_PlaySound("radsuit/burst",CHAN_AUTO);
+			hitactor.A_StartSound("radsuit/burst",CHAN_AUTO,CHANF_OVERLAP);
 		}
 
 
@@ -1331,13 +1331,13 @@ class SupersonicTrail:IdleDummy{
 		if(
 			frandom(0,ceilingz-floorz)<128
 		)A_AlertMonsters();
-		A_PlaySound("weapons/bulletcrack",CHAN_AUTO,0.32);
+		A_StartSound("weapons/bulletcrack",CHAN_AUTO,volume:0.32);
 	}
 }
 class SupersonicTrailBig:SupersonicTrail{
 	override void postbeginplay(){
 		A_AlertMonsters();
-		A_PlaySound("weapons/bulletcrack",CHAN_AUTO,0.64);
+		A_StartSound("weapons/bulletcrack",CHAN_AUTO,volume:0.64);
 	}
 }
 class SupersonicTrailSmall:SupersonicTrail{
@@ -1345,7 +1345,7 @@ class SupersonicTrailSmall:SupersonicTrail{
 		if(
 			frandom(0,ceilingz-floorz)<64
 		)A_AlertMonsters();
-		A_PlaySound("weapons/bulletcrack",0,0.1);
+		A_StartSound("weapons/bulletcrack",CHAN_AUTO,volume:0.1);
 	}
 }
 class SubsonicTrail:SupersonicTrail{
@@ -1353,7 +1353,7 @@ class SubsonicTrail:SupersonicTrail{
 		if(
 			frandom(0,ceilingz-floorz)<32
 		)A_AlertMonsters();
-		A_PlaySound("weapons/subfwoosh",0,0.03);
+		A_StartSound("weapons/subfwoosh",CHAN_AUTO,volume:0.03);
 	}
 }
 

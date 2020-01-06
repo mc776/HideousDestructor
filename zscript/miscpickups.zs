@@ -202,7 +202,7 @@ class HDAmBox:HDUPK{
 		stop;
 	death:
 	trapped:
-		---- A 3 A_PlaySound("misc/boxtrapped",CHAN_WEAPON);
+		---- A 3 A_StartSound("misc/boxtrapped",CHAN_WEAPON);
 		---- A 0{
 			tapped=false;
 			switch(random(0,5)){
@@ -225,7 +225,7 @@ class HDAmBox:HDUPK{
 					random(-1,-3),random(-1,1),random(-3,-4),
 					0,SXF_NOCHECKPOSITION|SXF_SETTARGET
 				);
-				A_PlaySound("weapons/pistol",CHAN_VOICE);
+				A_StartSound("weapons/pistol",CHAN_VOICE);
 				break;
 			case 4:
 				A_SpawnItemEx("HDFragGrenade",
@@ -266,7 +266,7 @@ class HDAmBox:HDUPK{
 			A_SpawnItemEx("HDAmBoxDisarmed",0,0,1,flags:SXF_NOCHECKPOSITION);
 		}stop;
 	goodies:
-		---- A 2 A_PlaySound("weapons/pocket",CHAN_VOICE);
+		---- A 2 A_StartSound("weapons/pocket",CHAN_VOICE);
 		---- A 0 A_JumpIf(Wads.CheckNumForName("id",0)!=-1,2);
 		AMBX B 0 A_SpawnItemEx("HDFader",flags:SXF_TRANSFERSPRITEFRAME|SXF_TRANSFERSCALE|SXF_TRANSFERRENDERSTYLE);
 		---- A 0 A_Jump(256,
@@ -286,7 +286,7 @@ class HDAmBox:HDUPK{
 		shel: ---- AAAAA 0 A_DropItem("ShellPickup");stop;
 		ieds: ---- AAA 0 A_DropItem("HDIEDKits");stop;
 	brokengoodies:
-		---- A 0 A_PlaySound("weapons/plasmax",CHAN_VOICE);
+		---- A 0 A_StartSound("weapons/plasmax",CHAN_VOICE);
 		---- A 0 A_DropStuff("HDSmokeChunk",random(0,6));
 		---- AAA 0 A_SpawnItemEx("HDSmoke",
 			frandom(-1,1),frandom(-1,1),frandom(-1,1),
@@ -552,7 +552,7 @@ class BlueSphere:HDUPK replaces Soulsphere{
 		---- A 0{
 			vel.z=0.6;
 			gravity=0;
-			A_PlaySound("misc/p_pkup",CHAN_BODY);
+			A_StartSound("misc/p_pkup",CHAN_BODY);
 		}
 		---- A 1 bright{
 			vel.xy*=0.6;
@@ -817,7 +817,7 @@ class HDRedKey:HDUPKAlwaysGive replaces RedCard{
 	give:
 	beep:
 		---- A 0{
-			A_PlaySound("misc/i_pkup",0,1,0,0);
+			A_StartSound("misc/i_pkup",12,CHANF_LOCAL);
 		}goto spawn1;
 	}
 }
@@ -864,7 +864,7 @@ class HDRedSkull:HDUPK replaces RedSkull{
 		loop;
 	effect:
 		#### ABAB 1 bright;
-		---- A 0 A_PlaySound("brain/cube",0,1,0,0);
+		---- A 0 A_StartSound("brain/cube",666,CHANF_LOCAL);
 		---- A 0 A_DamageTarget(1);
 		#### ##### 1 A_SpawnItemEx("HDSmoke",0,0,0,random(4,0),random(-2,2),random(1,3),0,SXF_NOCHECKPOSITION);
 		---- A 0{
@@ -906,7 +906,7 @@ class HDMap:HDUPKAlwaysGive replaces Allmap{
 	}
 	states{
 	give:
-		PMAP A 0 A_PlaySound("misc/i_pkup",0,1,0,0);
+		PMAP A 0 A_StartSound("misc/i_pkup",12,CHANF_LOCAL);
 	//fallthrough to spawn
 	spawn:
 		PMAP A 0 nodelay A_Jump(256,"a","b","c","d");

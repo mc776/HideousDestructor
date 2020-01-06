@@ -137,7 +137,7 @@ class HDFire:IdleDummy{
 			),false);
 			actor sp=spawn("HDFlameRed",pos,ALLOW_REPLACE);
 			sp.vel+=target.vel+(frandom(-2,2),frandom(-2,2),frandom(-1,3));
-			A_PlaySound("misc/firecrkl",CHAN_AUTO,0.4,0,6);
+			A_StartSound("misc/firecrkl",CHAN_AUTO,volume:0.4,attenuation:6.);
 
 			//check if player
 			let tgt=HDPlayerPawn(target);
@@ -325,7 +325,7 @@ class Heat:Inventory{
 					heatlight.args[3]=min(realamount*0.1,256);
 				}
 				aaa.target=owner;
-				aaa.A_PlaySound("misc/firecrkl",CHAN_BODY,clamp(realamount*0.001,0,0.2));
+				aaa.A_StartSound("misc/firecrkl",CHAN_BODY,volume:clamp(realamount*0.001,0,0.2));
 			}
 		}
 

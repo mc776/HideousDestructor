@@ -362,7 +362,7 @@ class HDPickup:CustomInventory{
 		int maxtake=min(amount,HDPickup.MaxGive(other,gcn,getbulk()));
 		if(maxtake<1)return;
 
-		other.A_PlaySound(pickupsound,CHAN_AUTO);
+		other.A_StartSound(pickupsound,CHAN_AUTO);
 		other.A_Log(string.format("\cg%s",pickupmessage()),true);
 
 		bool gotpickedup=false;
@@ -564,7 +564,7 @@ class HDUPK:HDActor{
 			target=picktarget;
 			setstatelabel("give");
 			if(!bdestroyed)return;
-			picktarget.A_PlaySound(pickupsound,5);
+			picktarget.A_StartSound(pickupsound,5);
 			if(pickupmessage!="")picktarget.A_Log(string.format("\cg%s",pickupmessage),true);
 			return;
 		}
@@ -613,7 +613,7 @@ class HDUPK:HDActor{
 			setstatelabel("spawn");
 			return;
 		}
-		picktarget.A_PlaySound(pickupsound,5);
+		picktarget.A_StartSound(pickupsound,5);
 		picktarget.A_Log(string.format("\cg%s",pickupmessage),true);
 		HDF.Give(picktarget,pickuptype,maxtake);
 		amount-=maxtake;

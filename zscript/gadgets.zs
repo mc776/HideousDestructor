@@ -15,7 +15,7 @@ class WornRadsuit:InventoryFlag{
 	}
 	override void DetachFromOwner(){
 		owner.A_TakeInventory("PortableRadsuit",1);
-		owner.A_PlaySound("weapons/pocket",CHAN_AUTO);
+		owner.A_StartSound("weapons/pocket",9,CHANF_OVERLAP);
 		owner.A_SetBlend("00 00 00",1,6,"00 00 00");
 		let onr=HDPlayerPawn(self);
 		if(onr)onr.stunned+=60;
@@ -72,7 +72,7 @@ class PortableRadsuit:HDPickup replaces RadSuit{
 		}
 	use:
 		TNT1 A 0{
-			A_PlaySound("weapons/pocket");
+			A_StartSound("weapons/pocket",CHAN_BODY,CHANF_OVERLAP);
 			if(countinv("HDBackpack")){
 				A_DropInventory("HDBackpack");
 				return;
@@ -85,7 +85,7 @@ class PortableRadsuit:HDPickup replaces RadSuit{
 				int fff=HDF.TransferFire(self,self);
 				if(fff){
 					if(random(1,fff)>30){
-						A_PlaySound("misc/fwoosh",CHAN_AUTO);
+						A_StartSound("misc/fwoosh",CHAN_AUTO);
 						A_TakeInventory("PortableRadsuit",1);
 						return;
 					}else{
@@ -380,7 +380,7 @@ class HDJetPack:HDCellWeapon{
 				invoker.pods[i].angle=90*i+45;
 				invoker.pods[i].master=self;
 			}
-			if(podson)invoker.pods[i].A_PlaySound("jetpack/fwoosh",((level.time&(1|2))+i)%4,0.2,pitch:1.6+0.2*(level.time&(1|2)));
+			if(podson)invoker.pods[i].A_StartSound("jetpack/fwoosh",CHAN_AUTO,CHANF_DEFAULT,0.2,pitch:1.6+0.2*(level.time&(1|2)));
 		}
 		if(podson){
 			if(invoker.weaponstatus[JETPACKS_BATTERYCOUNTER]>JETPACK_COUNTERMAX){
@@ -433,13 +433,13 @@ class HDJetPack:HDCellWeapon{
 		TNT1 A 12{
 			invoker.weaponstatus[0]&=~JETPACKF_ON;
 			A_Overlay(10,"pods");
-			A_PlaySound("jetpack/wear",CHAN_WEAPON);
+			A_StartSound("jetpack/wear",CHAN_WEAPON);
 		}
 		goto super::select0;
 	deselect0:
 		TNT1 A 14{
 			invoker.weaponstatus[0]&=~JETPACKF_ON;
-			A_PlaySound("jetpack/wear",CHAN_WEAPON);
+			A_StartSound("jetpack/wear",CHAN_WEAPON);
 		}
 		goto super::deselect0;
 	ready:
@@ -473,7 +473,7 @@ class HDJetPack:HDCellWeapon{
 	firemode:
 		TNT1 A 0 A_JumpIf(invoker.weaponstatus[0]&JETPACKF_ON,"turnoff");
 	turnon:
-		TNT1 A 10 A_PlaySound("jetpack/on",CHAN_WEAPON);
+		TNT1 A 10 A_StartSound("jetpack/on",CHAN_WEAPON);
 		TNT1 A 0{invoker.weaponstatus[0]|=JETPACKF_ON;}
 		goto readyend;
 	turnoff:
@@ -511,7 +511,7 @@ class HDJetPack:HDCellWeapon{
 			for(int i=0;i<4;i++){
 				if(!!invoker.pods[i]){
 					let aaa=invoker.pods[i];
-					aaa.A_PlaySound(!chn?"jetpack/bang":"jetpack/fwoosh",chn,pitch:1+0.2*chn);
+					aaa.A_StartSound(!chn?"jetpack/bang":"jetpack/fwoosh",chn,pitch:1+0.2*chn);
 					if(!chn){
 						let bbb=spawn("HDExplosion",(aaa.pos.xy,aaa.pos.z-20),ALLOW_REPLACE);
 						bbb.vel.z-=20;

@@ -197,7 +197,7 @@ class HDMagAmmo:HDAmmo{
 			||owner.A_JumpIfInventory(roundtype,0,"null")
 		)return false;
 		HDF.Give(owner,roundtype,1);
-		owner.A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
+		owner.A_StartSound("weapons/rifleclick2",8,CHANF_OVERLAP);
 		mags[mags.size()-1]--;
 		return true;
 	}
@@ -209,7 +209,7 @@ class HDMagAmmo:HDAmmo{
 			||!owner.countinv(roundtype)
 		)return false;
 		owner.A_TakeInventory(roundtype,1,TIF_NOTAKEINFINITE);
-		owner.A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
+		owner.A_StartSound("weapons/rifleclick2",8,CHANF_OVERLAP);
 		mags[mags.size()-1]++;
 		return true;
 	}
@@ -268,7 +268,7 @@ class HDMagAmmo:HDAmmo{
 		if(HDPickup.MaxGive(other,gcn,getbulk())<1)return;
 
 		//misc. effects
-		other.A_PlaySound(pickupsound,CHAN_AUTO);
+		other.A_StartSound(pickupsound,CHAN_AUTO);
 		other.A_Log(string.format("\cg%s",pickupmessage()),true);
 
 		//if no information, give max, otherwise use own array info

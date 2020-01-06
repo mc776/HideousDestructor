@@ -37,7 +37,7 @@ class PortableMedikit:HDPickup{
 				A_Log("You pull out the medikit you've already unwrapped.",true);
 			}
 			if(!hdplayerpawn(self)||!hdplayerpawn(self).incapacitated)A_SelectWeapon("HDMedikitter");
-			A_PlaySound("weapons/pocket",CHAN_WEAPON);
+			A_StartSound("weapons/pocket",9);
 		}
 		fail;
 	}
@@ -310,16 +310,16 @@ class HDMedikitter:HDWoundFixer{
 		goto readyend;
 	flashstaple:
 		TNT1 A 1{
-			A_PlaySound("medikit/staple",CHAN_WEAPON);
-			A_PlaySound("misc/bulletflesh",CHAN_BODY);
+			A_StartSound("medikit/staple",CHAN_WEAPON);
+			A_StartSound("misc/bulletflesh",CHAN_BODY,CHANF_OVERLAP);
 			if(hdplayerpawn(self)){
 				hdplayerpawn(self).secondflesh++;
 			}else givebody(3);
 		}goto flashend;
 	flashnail:
 		TNT1 A 1{
-			A_PlaySound("medikit/stopper",CHAN_WEAPON);
-			A_PlaySound("misc/bulletflesh",CHAN_BODY);
+			A_StartSound("medikit/stopper",CHAN_WEAPON,CHANF_OVERLAP);
+			A_StartSound("misc/bulletflesh",CHAN_BODY,CHANF_OVERLAP);
 		}goto flashend;
 	flashend:
 		TNT1 A 1{
@@ -431,15 +431,15 @@ class HDMedikitter:HDWoundFixer{
 		TNT1 A 10{
 			invoker.weaponstatus[MEDS_SECONDFLESH]--;
 			if(invoker.target){
-				invoker.target.A_PlaySound("medikit/stopper",CHAN_WEAPON);
-				invoker.target.A_PlaySound("misc/bulletflesh",CHAN_BODY);
+				invoker.target.A_StartSound("medikit/stopper",CHAN_WEAPON,CHANF_OVERLAP);
+				invoker.target.A_StartSound("misc/bulletflesh",CHAN_BODY,CHANF_OVERLAP);
 			}
 		}
 		TNT1 AAAAA 3{
-			A_PlaySound("medikit/staple",CHAN_WEAPON);
+			A_StartSound("medikit/staple",CHAN_WEAPON);
 			let itg=invoker.target;
 			if(itg){
-				itg.A_PlaySound("misc/smallslop",CHAN_BODY);
+				itg.A_StartSound("misc/smallslop",CHAN_BODY,CHANF_OVERLAP);
 				if(!random(0,3))invoker.setstatelabel("patchupend");
 				itg.givebody(1);
 				itg.damagemobj(invoker,null,1,"staples",DMG_FORCED);
@@ -458,9 +458,9 @@ class HDMedikitter:HDWoundFixer{
 			if(invoker.target){
 				int fleshgive=min(MEDIKIT_FLESHGIVE,invoker.weaponstatus[MEDS_SECONDFLESH]);
 				invoker.weaponstatus[MEDS_SECONDFLESH]-=fleshgive;
-				invoker.target.A_PlaySound("medikit/stopper",CHAN_WEAPON);
-				invoker.target.A_PlaySound("misc/bulletflesh",CHAN_BODY);
-				invoker.target.A_PlaySound("misc/smallslop",CHAN_VOICE);
+				invoker.target.A_StartSound("medikit/stopper",CHAN_WEAPON);
+				invoker.target.A_StartSound("misc/bulletflesh",CHAN_BODY,CHANF_OVERLAP);
+				invoker.target.A_StartSound("misc/smallslop",CHAN_BODY,CHANF_OVERLAP);
 				actor a=spawn("SecondFleshBeast",invoker.target.pos,ALLOW_REPLACE);
 				a.target=invoker.target;
 				a.stamina=fleshgive;
@@ -500,9 +500,9 @@ class HDMedikitter:HDWoundFixer{
 				invoker.weaponstatus[MEDS_USEDON]=playernumber();
 			int fleshgive=min(MEDIKIT_FLESHGIVE,invoker.weaponstatus[MEDS_SECONDFLESH]);
 			invoker.weaponstatus[MEDS_SECONDFLESH]-=fleshgive;
-			A_PlaySound("medikit/stopper",CHAN_WEAPON);
-			A_PlaySound("misc/bulletflesh",CHAN_BODY);
-			A_PlaySound("misc/smallslop",CHAN_VOICE);
+			A_StartSound("medikit/stopper",CHAN_WEAPON);
+			A_StartSound("misc/bulletflesh",CHAN_BODY,CHANF_OVERLAP);
+			A_StartSound("misc/smallslop",CHAN_BODY,CHANF_OVERLAP);
 			actor a=spawn("SecondFleshBeast",pos,ALLOW_REPLACE);
 			a.target=self;
 			a.stamina=fleshgive;
@@ -512,7 +512,7 @@ class HDMedikitter:HDWoundFixer{
 	diagnose:
 		TNT1 A 0 A_WeaponMessage("\cdMedikit Auto-Diagnostic Tool engaged.\c-\n\n\ccScanning, please wait...");
 		TNT1 AAAAAAAAAAAA 2{
-			A_PlaySound("medikit/scan",CHAN_WEAPON,0.5);
+			A_StartSound("medikit/scan",CHAN_WEAPON,volume:0.5);
 			A_SetBlend("aa aa 88",0.04,1);
 		}
 		TNT1 A 0 A_ScanResults(self,12);
@@ -525,7 +525,7 @@ class HDMedikitter:HDWoundFixer{
 			invoker.weaponstatus[MEDS_ACCURACY]=0;
 		}
 		TNT1 AAAAAAAAAAAA 2{
-			A_PlaySound("medikit/scan",CHAN_WEAPON,0.4);
+			A_StartSound("medikit/scan",CHAN_WEAPON,volume:0.4);
 			flinetracedata mediline;
 			linetrace(
 				angle,42,pitch,
@@ -559,67 +559,67 @@ class HDMedikitter:HDWoundFixer{
 		}wait;
 	}
 	action void A_ScanResults(actor scanactor,int scanaccuracy){
-			A_PlaySound("medikit/done",CHAN_WEAPON);
-			int thrownoff=scanaccuracy-12;
-			if(!scanactor||abs(thrownoff)>10){
-				A_WeaponMessage("\caMedikit Auto-Diagnostic Tool failed.");
-				invoker.target=null;
-				invoker.weaponstatus[MEDS_ACCURACY]=0;
-				return;
-			}
-			string scanactorname=HDMath.GetName(scanactor);
-			let slf=HDPlayerPawn(scanactor);
-			if(!slf){
-				int scanactorhealthpercent=scanactor.health*100/scanactor.spawnhealth();
-				A_WeaponMessage(string.format("Medikit Auto-Diagnostic complete.
-
-				Status report:
-
-				\ccPatient: \cy%s
-
-				\ccOverall Health: \cg%u%%
-
-				\cu(all numbers are based on %% of minimum
-				\cuconsidered to be lethal in all situations.)",
-				scanactorname,scanactorhealthpercent+random(-thrownoff,thrownoff)),210);
-
-				A_Log(string.format("Medikit Auto-Diagnostic:
-\ccPatient: \cy%s
-\ccOverall Health: \cg%u%%",scanactorname,scanactorhealthpercent),true);
-				return;
-			}
-			int uw=slf.unstablewoundcount;
-			int ww=slf.woundcount;
-			int ow=slf.oldwoundcount;
-			int bb=slf.burncount;
-			double bl=double(slf.bloodloss)/(HDCONST_BLOODBAGAMOUNT<<2);
-			int ag=slf.aggravateddamage*0.2+countinv("IsMoving")+abs(thrownoff);
-			int wg=random(-thrownoff,thrownoff);
-			if(ww||uw)wg+=2;
-			if(countinv("HDArmourWorn"))wg+=5;
-			ow=max(ow+random(-ag,ag),0);
-			bb=max(bb+random(-ag,ag),0);
-			uw=max(uw+random(-wg,wg),0);
-			ww=max(ww+random(-wg,wg),0);
-			bl=max(bl+random(-wg,wg),0);
+		A_StartSound("medikit/done",CHAN_WEAPON);
+		int thrownoff=scanaccuracy-12;
+		if(!scanactor||abs(thrownoff)>10){
+			A_WeaponMessage("\caMedikit Auto-Diagnostic Tool failed.");
+			invoker.target=null;
+			invoker.weaponstatus[MEDS_ACCURACY]=0;
+			return;
+		}
+		string scanactorname=HDMath.GetName(scanactor);
+		let slf=HDPlayerPawn(scanactor);
+		if(!slf){
+			int scanactorhealthpercent=scanactor.health*100/scanactor.spawnhealth();
 			A_WeaponMessage(string.format("Medikit Auto-Diagnostic complete.
 
 			Status report:
 
 			\ccPatient: \cy%s
 
-			\ccOpen wounds: \cg%u%%
+			\ccOverall Health: \cg%u%%
 
-			\ccWounds temporarily bandaged: \ca%u%%
-			\ccWounds already treated: \cd%u%%
-			\ccBurns: \cq%u%%
-
-			\ccBlood loss: \ca%.1f \cctransfusion units
-
-			\cu(%% is of total generally considered to be lethal except where noted.)",
-			scanactorname,ww,uw,ow,bb,bl),210);
+			\cu(all numbers are based on %% of minimum
+			\cuconsidered to be lethal in all situations.)",
+			scanactorname,scanactorhealthpercent+random(-thrownoff,thrownoff)),210);
 
 			A_Log(string.format("Medikit Auto-Diagnostic:
+\ccPatient: \cy%s
+\ccOverall Health: \cg%u%%",scanactorname,scanactorhealthpercent),true);
+			return;
+		}
+		int uw=slf.unstablewoundcount;
+		int ww=slf.woundcount;
+		int ow=slf.oldwoundcount;
+		int bb=slf.burncount;
+		double bl=double(slf.bloodloss)/(HDCONST_BLOODBAGAMOUNT<<2);
+		int ag=slf.aggravateddamage*0.2+countinv("IsMoving")+abs(thrownoff);
+		int wg=random(-thrownoff,thrownoff);
+		if(ww||uw)wg+=2;
+		if(countinv("HDArmourWorn"))wg+=5;
+		ow=max(ow+random(-ag,ag),0);
+		bb=max(bb+random(-ag,ag),0);
+		uw=max(uw+random(-wg,wg),0);
+		ww=max(ww+random(-wg,wg),0);
+		bl=max(bl+random(-wg,wg),0);
+		A_WeaponMessage(string.format("Medikit Auto-Diagnostic complete.
+
+		Status report:
+
+		\ccPatient: \cy%s
+
+		\ccOpen wounds: \cg%u%%
+
+		\ccWounds temporarily bandaged: \ca%u%%
+		\ccWounds already treated: \cd%u%%
+		\ccBurns: \cq%u%%
+
+		\ccBlood loss: \ca%.1f \cctransfusion units
+
+		\cu(%% is of total generally considered to be lethal except where noted.)",
+		scanactorname,ww,uw,ow,bb,bl),210);
+
+		A_Log(string.format("Medikit Auto-Diagnostic:
 \ccPatient: \cy%s
 \ccOpen wounds: \cg%u%%
 \ccWounds temporarily bandaged: \ca%u%%
@@ -746,11 +746,11 @@ class SelfBandage:HDWoundFixer{
 		}
 		TNT1 A random(1,3) A_Jump(32,2,4);
 		TNT1 A 0 A_Jump(256,2);
-		TNT1 A random(1,3) A_PlaySound("*usefail",CHAN_VOICE);
+		TNT1 A random(1,3) A_StartSound("*usefail",CHAN_VOICE);
 		TNT1 A 0 A_Jump(256,2);
-		TNT1 A random(1,3) A_PlaySound("*grunt",CHAN_VOICE);
+		TNT1 A random(1,3) A_StartSound("*grunt",CHAN_VOICE);
 		TNT1 A 0 A_Jump(200,2);
-		TNT1 A 0 A_PlaySound("bandage/rip",CHAN_WEAPON,0.4);
+		TNT1 A 0 A_StartSound("bandage/rip",CHAN_WEAPON,CHANF_OVERLAP,0.4);
 		TNT1 A 0 A_Refire("try4");
 		goto ready;
 	try3:
@@ -759,7 +759,7 @@ class SelfBandage:HDWoundFixer{
 			if(hdplayerpawn(self))hdplayerpawn(self).fatigue+=2;
 		}
 		TNT1 A 0 A_Jump(200,2);
-		TNT1 A 0 A_PlaySound("bandage/rustle");
+		TNT1 A 0 A_StartSound("bandage/rustle",CHAN_BODY,CHANF_OVERLAP);
 		TNT1 A random(10,20);
 		TNT1 A 0 A_JumpIfInventory("IsMoving",4,"abort");
 		TNT1 A 0 A_Refire("try4");
@@ -773,9 +773,9 @@ class SelfBandage:HDWoundFixer{
 			if(hdplayerpawn(self))hdplayerpawn(self).fatigue+=2;
 		}
 		TNT1 A 0 A_Jump(240,2);
-		TNT1 A random(1,3) A_PlaySound("*grunt",CHAN_VOICE);
+		TNT1 A random(1,3) A_StartSound("*grunt",CHAN_VOICE);
 		TNT1 A 0 A_Jump(140,2);
-		TNT1 A 0 A_PlaySound("bandage/rustle");
+		TNT1 A 0 A_StartSound("bandage/rustle",CHAN_BODY,CHANF_OVERLAP);
 		TNT1 A random(10,20);
 		TNT1 A 0 A_JumpIfInventory("IsMoving",4,"abort");
 		TNT1 A 0 A_Refire("try5");
@@ -786,10 +786,10 @@ class SelfBandage:HDWoundFixer{
 		TNT1 A 0 A_Jump(12,"try3");
 		TNT1 A 0 A_Jump(16,"try4");
 		TNT1 A 0 A_Jump(80,2);
-		TNT1 A 0 A_PlaySound("bandage/rustle");
+		TNT1 A 0 A_StartSound("bandage/rustle",CHAN_BODY);
 		TNT1 A random(10,20);
 		TNT1 A 0 A_Jump(80,2);
-		TNT1 A 0 A_PlaySound("weapons/pocket");
+		TNT1 A 0 A_StartSound("weapons/pocket",9);
 		TNT1 A random(10,20);
 		TNT1 A 0 A_JumpIfInventory("IsMoving",4,"abort");
 		TNT1 A 0 A_JumpIf(invoker.checkwoundcount(),2);
@@ -839,21 +839,21 @@ class SelfBandage:HDWoundFixer{
 		TNT1 A random(7,14){
 			if(invoker.target){
 				if(random(0,2)){
-					if(!random(0,2))invoker.target.A_PlaySound("bandage/rustle",CHAN_BODY);
+					if(!random(0,2))invoker.target.A_StartSound("bandage/rustle",CHAN_BODY);
 					return;
 				}
-				invoker.target.A_PlaySound("weapons/pocket",CHAN_BODY);
+				invoker.target.A_StartSound("weapons/pocket",CHAN_BODY,CHANF_OVERLAP);
 				invoker.bandagewound(random(3,5),invoker.target);
 			}
 		}goto ready;
 
 	altreload:
-		TNT1 A 0 A_PlaySound("weapons/pocket",CHAN_BODY);
+		TNT1 A 0 A_StartSound("weapons/pocket",9);
 		TNT1 A 15 A_JumpIf(!countinv("BloodBagWorn")||countinv("WornRadsuit"),"nope");
 		TNT1 A 10{
 			A_SetBlend("7a 3a 18",0.1,4);
 			A_SetPitch(pitch+2,SPF_INTERPOLATE);
-			A_PlaySound("*usemeds",CHAN_VOICE);
+			A_StartSound("*usemeds",CHAN_VOICE);
 			A_DropInventory("BloodBagWorn");
 		}
 		goto nope;

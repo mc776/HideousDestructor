@@ -244,14 +244,14 @@ class HDIncapWeapon:SelfBandage{
 		TNT1 A 0 A_JumpIf(pressingfiremode(),"firemode");
 		goto readyend;
 	fumbleforsomething:
-		TNT1 A 20 A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		TNT1 A 20 A_StartSound("weapons/pocket",CHAN_WEAPON);
 		TNT1 A 0 A_PickInventoryType();
 		goto nope;
 	altfire:
 	althold:
 		TNT1 A 0 A_JumpIf(invoker.weaponstatus[0]&INCF_PINOUT,"holdfrag");
 		TNT1 A 10 A_JumpIf(health<HDCONST_MINSTANDHEALTH&&!random(0,7),"nope");
-		TNT1 A 20 A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		TNT1 A 20 A_StartSound("weapons/pocket",CHAN_WEAPON);
 		TNT1 A 0 A_JumpIf(!countinv(invoker.inventorytype),"fumbleforsomething");
 		TNT1 A 0 A_JumpIf(invoker.inventorytype=="HDFragGrenadeAmmo","pullpin");
 		TNT1 A 0 A_JumpIf(
@@ -263,8 +263,8 @@ class HDIncapWeapon:SelfBandage{
 		TNT1 A 1{
 			A_SetBlend("7a 3a 18",0.1,4);
 			A_SetPitch(pitch+2,SPF_INTERPOLATE);
-			A_PlaySound("*usemeds",CHAN_VOICE);
-			A_PlaySound("misc/bulletflesh",CHAN_WEAPON);
+			A_StartSound("*usemeds",CHAN_VOICE);
+			A_StartSound("misc/bulletflesh",CHAN_WEAPON,CHANF_OVERLAP);
 			actor a=spawn(invoker.injecttype,pos,ALLOW_REPLACE);
 			a.accuracy=40;a.target=self;
 		}
@@ -273,7 +273,7 @@ class HDIncapWeapon:SelfBandage{
 		TNT1 A 0{
 			actor a=spawn(invoker.spentinjecttype,pos+(0,0,height-8),ALLOW_REPLACE);
 			a.angle=angle;a.vel=vel;a.A_ChangeVelocity(3,1,2,CVF_RELATIVE);
-			a.A_PlaySound("weapons/grenopen",CHAN_WEAPON);
+			a.A_StartSound("weapons/grenopen",CHAN_WEAPON,CHANF_OVERLAP);
 			A_TakeInjector(invoker.inventorytype);
 			invoker.inventorytype="";
 		}
@@ -283,7 +283,7 @@ class HDIncapWeapon:SelfBandage{
 		TNT1 A 0{
 			if(!countinv(invoker.inventorytype))return;
 			invoker.weaponstatus[0]|=INCF_PINOUT;
-			A_PlaySound("weapons/fragpinout",CHAN_WEAPON);
+			A_StartSound("weapons/fragpinout",CHAN_WEAPON,CHANF_OVERLAP);
 			A_TakeInventory(invoker.inventorytype,1);
 		}
 		//fallthrough
@@ -301,7 +301,7 @@ class HDIncapWeapon:SelfBandage{
 		TNT1 A 10;
 		TNT1 A 0 A_JumpIf(health<HDCONST_MINSTANDHEALTH&&!random(0,2),"holdfrag");
 		TNT1 A 20{
-			A_PlaySound("weapons/fragpinout",CHAN_WEAPON);
+			A_StartSound("weapons/fragpinout",CHAN_WEAPON);
 			invoker.weaponstatus[0]&=~INCF_PINOUT;
 			A_GiveInventory("HDFragGrenadeAmmo",1);
 		}

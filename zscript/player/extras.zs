@@ -210,7 +210,7 @@ extend class HDPlayerPawn{
 			if(!random(0,db?3:6))woundcount++;
 			A_MuzzleClimb((0,-1),(0,-1),(0,-1),(0,-1));
 			A_ChangeVelocity(-kickback,0,0,CVF_RELATIVE);
-			A_PlaySound("*fist",CHAN_BODY);
+			A_StartSound("*fist",CHAN_BODY,CHANF_OVERLAP);
 			LineAttack(angle,48,pitch,0,"none",
 				zk?"BulletPuffBig":"BulletPuffMedium",
 				flags:LAF_OVERRIDEZ,
@@ -250,7 +250,7 @@ extend class HDPlayerPawn{
 							int forc=80;if(zerk>0)forc*=3;
 							corpsekicktimer=20+unstablewoundcount*0.5;
 							kbmo.vel+=(kv.x,kv.y,4)*forc/kbmo.mass;
-							kbmo.A_PlaySound("misc/punch");
+							kbmo.A_StartSound("misc/punch",CHAN_BODY,CHANF_OVERLAP);
 							kbmo.A_DropInventory("HDArmourWorn");
 							kicked=true;
 						}
@@ -268,7 +268,7 @@ extend class HDPlayerPawn{
 						double forc=0.4;if(zerk>0)forc=1.2;
 						corpsekicktimer=20+unstablewoundcount*0.6;
 						vel-=(kv.x,kv.y,4)*forc;
-						kbmo.A_PlaySound("misc/punch");
+						kbmo.A_StartSound("misc/punch",CHAN_BODY,CHANF_OVERLAP);
 						kicked=true;
 					}
 					break;
@@ -294,7 +294,7 @@ class TauntHandler:EventHandler{
 			e.name~=="taunt"
 			&&ppp.health>0 //delete if you want corpses taunting the enemy
 		){
-			ppp.A_PlaySound("*taunt",CHAN_VOICE);
+			ppp.A_StartSound("*taunt",CHAN_VOICE);
 			ppp.A_TakeInventory("powerfrightener");
 			ppp.A_AlertMonsters();
 		}
@@ -316,7 +316,7 @@ extend class HDHandlers{
 		if(hd_debug)ppp.A_Log(string.format("(%.2f DU%s)",c,c==1?"":"s"),true);
 	}
 	void Taunt(hdplayerpawn ppp){
-		ppp.A_PlaySound("*taunt",CHAN_VOICE);
+		ppp.A_StartSound("*taunt",CHAN_VOICE);
 		ppp.A_TakeInventory("powerfrightener");
 		ppp.A_SpawnItemEx("DelayedTaunter",12,0,ppp.height-6,
 			flags:SXF_NOCHECKPOSITION|SXF_SETTARGET

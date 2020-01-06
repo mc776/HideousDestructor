@@ -103,12 +103,12 @@ class HERPBot:HDUPK{
 		lll.pitch=-60;
 	}
 	void herpbeep(string snd="herp/beep",double vol=1.){
-		A_PlaySound(snd,CHAN_VOICE);
+		A_StartSound(snd,CHAN_VOICE);
 		if(
 			master
 			&&master.player
 			&&master.player.readyweapon is "HERPController"
-		)master.A_PlaySound(snd,CHAN_WEAPON,0.4);
+		)master.A_StartSound(snd,CHAN_WEAPON,volume:0.4);
 	}
 	void message(string msg){
 		if(!master)return;
@@ -253,7 +253,7 @@ class HERPBot:HDUPK{
 
 
 	ready:
-		HERP A 7 A_PlaySound("weapons/vulcanup",CHAN_BODY);
+		HERP A 7 A_StartSound("weapons/vulcanup",CHAN_BODY,CHANF_OVERLAP);
 		HERP AAA 1 herpbeep("herp/beepready");
 	aim:
 		HERP A 2 A_FaceTarget(2.,2.,0,0,FAF_TOP,-4);
@@ -287,7 +287,7 @@ class HERPBot:HDUPK{
 				ammo[0]=49;
 			}else ammo[0]--;
 
-			A_PlaySound("herp/shoot",CHAN_WEAPON);
+			A_StartSound("herp/shoot",CHAN_WEAPON,CHANF_OVERLAP);
 			HDBulletActor.FireBullet(self,"HDB_426",zofs:6,spread:1,distantsounder:"DistantHERP");
 		}
 		HERP C 2{
@@ -321,7 +321,7 @@ class HERPBot:HDUPK{
 				||(nextmag>100&&!random(0,3))
 			){
 				message("Operational fault. Please check your manual for proper maintenance. (ERR-42392-41A) Cartridge empty. Shutting down...");
-				A_PlaySound("weapons/vulcandown");
+				A_StartSound("weapons/vulcandown",8,CHANF_OVERLAP);
 				setstatelabel("off");
 			}else{
 				int currammo=ammo[0];
@@ -343,7 +343,7 @@ class HERPBot:HDUPK{
 			if(health>0){
 				double turn=clamp(deltaangle(angle,startangle),-24,24);
 				if(turn){
-					A_PlaySound("herp/crawl",CHAN_BODY,0.6);
+					A_StartSound("herp/crawl",CHAN_BODY,volume:0.6);
 					angle+=turn;
 					A_SetTics(5);
 				}
@@ -383,14 +383,14 @@ class HERPBot:HDUPK{
 				ammo[2]=min(ammo[2],0);
 			}
 			A_NoBlocking();
-			A_PlaySound("world/shotgunfar",CHAN_BODY,0.4);
+			A_StartSound("world/shotgunfar",CHAN_BODY,CHANF_OVERLAP,0.4);
 		}
-		HERP A 1 A_PlaySound("weapons/bigcrack",5);
-		HERP A 1 A_PlaySound("weapons/bigcrack",6);
-		HERP A 1 A_PlaySound("weapons/bigcrack",7);
+		HERP A 1 A_StartSound("weapons/bigcrack",15);
+		HERP A 1 A_StartSound("weapons/bigcrack",16);
+		HERP A 1 A_StartSound("weapons/bigcrack",17);
 		HERP AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 0 A_SpawnItemEx("HugeWallChunk",random(-6,6),random(-6,6),random(0,6), vel.x+random(-6,6),vel.y+random(-6,6),vel.z+random(1,8),0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);
 		HERP A 0{
-			A_PlaySound("weapons/vulcandown",CHAN_WEAPON);
+			A_StartSound("weapons/vulcandown",CHAN_WEAPON,CHANF_OVERLAP);
 			string yay="";
 			switch(random(0,8)){
 			case 0:
@@ -554,7 +554,7 @@ class HERPUsable:HDWeapon{
 		goto reloadend;
 	reload:
 		TNT1 A 0 A_JumpIf(HD4mMag.NothingLoaded(self,"HD4mMag"),"nope");
-		TNT1 A 14 A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		TNT1 A 14 A_StartSound("weapons/pocket",9);
 		TNT1 A 5 A_LoadMag();
 		goto reloadend;
 
@@ -572,7 +572,7 @@ class HERPUsable:HDWeapon{
 		TNT1 A 5 A_UnloadBattery();
 		TNT1 A 0 A_JumpIf(invoker.weaponstatus[0]&HERPF_UNLOADONLY,"reloadend");
 	reloadbattery:
-		TNT1 A 14 A_PlaySound("weapons/pocket",CHAN_WEAPON);
+		TNT1 A 14 A_StartSound("weapons/pocket",9);
 		TNT1 A 5 A_LoadBattery();
 	reloadend:
 		TNT1 A 6;
@@ -583,8 +583,8 @@ class HERPUsable:HDWeapon{
 
 	//for manual carry-firing
 	raisetofire:
-		TNT1 A 8 A_PlaySound("herp/crawl",CHAN_WEAPON,1.);
-		HERG A 1 offset(0,80) A_PlaySound("herp/beepready",CHAN_WEAPON);
+		TNT1 A 8 A_StartSound("herp/crawl",8,CHANF_OVERLAP,1.);
+		HERG A 1 offset(0,80) A_StartSound("herp/beepready",8,CHANF_OVERLAP);
 		HERG A 1 offset(0,60) A_WeaponMessage("");
 		HERG A 1 offset(0,50) A_RaiseBarrelSize();
 		HERG A 1 offset(0,40);
@@ -653,7 +653,7 @@ class HERPUsable:HDWeapon{
 				spread:1,
 				distantsounder:"DistantHERP"
 			);
-			A_PlaySound("herp/shoot",CHAN_WEAPON);
+			A_StartSound("herp/shoot",CHAN_WEAPON,CHANF_OVERLAP);
 			A_ZoomRecoil(max(0.95,1.-0.05*min(invoker.weaponstatus[ZM66S_AUTO],3)));
 			A_MuzzleClimb(
 				frandom(-0.2,0.2),frandom(-0.4,0.2),
@@ -668,11 +668,11 @@ class HERPUsable:HDWeapon{
 		goto readytofire;
 	lowerfromfire:
 		HERG A 1 offset(0,34) A_ClearRefire();
-		HERG A 1 offset(0,40) A_PlaySound("herp/beepready",CHAN_WEAPON);
+		HERG A 1 offset(0,40) A_StartSound("herp/beepready",8);
 		HERG A 1 offset(0,50);
 		HERG A 1 offset(0,60);
 		HERG A 1 offset(0,80)A_ResetBarrelSize();
-		TNT1 A 1 A_PlaySound("herp/crawl",CHAN_WEAPON,1.);
+		TNT1 A 1 A_StartSound("herp/crawl",8);
 		TNT1 A 1 A_JumpIf(pressingfire()||pressingaltfire(),"nope");
 		goto select;
 	}
@@ -699,7 +699,7 @@ class HERPUsable:HDWeapon{
 				invoker.weaponstatus[i]=-1;
 				if(pressingunload()||pressingreload()){
 					HD4mMag.GiveMag(self,"HD4mMag",thismag);
-					A_PlaySound("weapons/pocket",CHAN_WEAPON);
+					A_StartSound("weapons/pocket",9);
 					A_SetTics(20);
 				}else HD4mMag.SpawnMag(self,"HD4mMag",thismag);
 				break;
@@ -712,14 +712,14 @@ class HERPUsable:HDWeapon{
 		if(!batt)return;
 		int toload=batt.takemag(true);
 		invoker.weaponstatus[4]=toload;
-		A_PlaySound("weapons/vulcopen1",CHAN_WEAPON);
+		A_StartSound("weapons/vulcopen1",8,CHANF_OVERLAP);
 	}
 	action void A_UnloadBattery(){
 		int batt=invoker.weaponstatus[4];
 		if(batt<0)return;
 		if(pressingunload()||pressingreload()){
 			HDBattery.GiveMag(self,"HDBattery",batt);
-			A_PlaySound("weapons/pocket",CHAN_WEAPON);
+			A_StartSound("weapons/pocket",9);
 			A_SetTics(20);
 		}else HDBattery.SpawnMag(self,"HDBattery",batt);
 		invoker.weaponstatus[4]=-1;
@@ -744,7 +744,7 @@ class HERPUsable:HDWeapon{
 			);
 		}else if(justpressed(BT_ALTATTACK)){
 			invoker.weaponstatus[0]^=HERPF_STARTOFF;
-			A_PlaySound("weapons/fmswitch",CHAN_WEAPON);
+			A_StartSound("weapons/fmswitch",8,CHANF_OVERLAP);
 		}else A_WeaponReady(WRF_NOFIRE|WRF_ALLOWRELOAD|WRF_ALLOWUSER1|WRF_ALLOWUSER3|WRF_ALLOWUSER4);
 	}
 	action bool A_CheckFail(){
@@ -770,7 +770,7 @@ class HERPUsable:HDWeapon{
 			0,SXF_NOCHECKPOSITION|SXF_TRANSFERTRANSLATION
 			|SXF_TRANSFERPOINTERS|SXF_SETMASTER
 		);
-		hhh.A_PlaySound("misc/w_pkup",5);
+		hhh.A_StartSound("misc/w_pkup",5);
 		hhh.changetid(HERP_TID);
 		hhh.vel+=vel;hhh.angle=angle;
 		let hhhh=HERPBot(hhh);
@@ -1240,12 +1240,12 @@ class HERPController:HDWeapon{
 					int yaw=player.cmd.yaw>>6;
 					int ptch=player.cmd.pitch>>6;
 					if(yaw||ptch){
-						ddd.A_PlaySound("derp/crawl",CHAN_BODY);
+						ddd.A_StartSound("derp/crawl",CHAN_BODY);
 						ddd.pitch=clamp(ddd.pitch-clamp(ptch,-10,10),-60,60);
 						ddd.angle+=clamp(yaw,-DERP_MAXTICTURN,DERP_MAXTICTURN);
 					}
 					if(player.cmd.sidemove){
-						ddd.A_PlaySound("derp/crawl",CHAN_BODY);
+						ddd.A_StartSound("derp/crawl",CHAN_BODY);
 						ddd.angle+=player.cmd.sidemove<0?10:-10;
 						player.cmd.sidemove*=-1;
 					}

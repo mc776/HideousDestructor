@@ -127,7 +127,7 @@ class HD4mMag:HDMagAmmo{
 			}else{
 				mags[mindex]=50;
 				extracttime=12;
-				owner.A_PlaySound("weapons/rifleclick",CHAN_WEAPON);
+				owner.A_StartSound("weapons/rifleclick",CHAN_WEAPON,CHANF_OVERLAP);
 				return false;
 			}
 		}
@@ -135,8 +135,8 @@ class HD4mMag:HDMagAmmo{
 			HDPickup.MaxGive(owner,"FourMilAmmo",roundbulk)
 		);
 		HDF.Give(owner,roundtype,totake);
-		owner.A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
-		owner.A_PlaySound("weapons/rockreload",CHAN_BODY,0.4);
+		owner.A_StartSound("weapons/rifleclick2",CHAN_WEAPON);
+		owner.A_StartSound("weapons/rockreload",CHAN_WEAPON,CHANF_OVERLAP,0.4);
 		mags[mindex]-=totake;
 		return true;
 	}
@@ -147,16 +147,16 @@ class HD4mMag:HDMagAmmo{
 			||!owner.countinv(roundtype)
 		)return false;
 		owner.A_TakeInventory(roundtype,1,TIF_NOTAKEINFINITE);
-		owner.A_PlaySound("weapons/rifleclick2",CHAN_WEAPON);
+		owner.A_StartSound("weapons/rifleclick2",8);
 		if(random(0,80)<=breakchance){
-			owner.A_PlaySound("weapons/bigcrack",CHAN_BODY);
+			owner.A_StartSound("weapons/bigcrack",8,CHANF_OVERLAP);
 			owner.A_SpawnItemEx("HDSmokeChunk",12,0,owner.height-12,4,frandom(-2,2),frandom(2,4));
 			owner.damagemobj(self,owner,1,"Thermal",DMG_NO_ARMOR);
 			breakchance=min(breakchance+25,80);
 			return false;
 		}
 		breakchance=max(breakchance,24);
-		owner.A_PlaySound("weapons/pocket",CHAN_BODY,frandom(0.1,0.6));
+		owner.A_StartSound("weapons/pocket",9,volume:frandom(0.1,0.6));
 		mags[mags.size()-1]++;
 		return true;
 	}

@@ -311,7 +311,7 @@ extend class HDPlayerPawn{
 			if(muzzleblocked>=4){  
 				muzzlehit=false;
 			}else if(!muzzlehit){
-				if(hitsnd)A_PlaySound("weapons/guntouch",CHAN_AUTO,0.6);
+				if(hitsnd)A_StartSound("weapons/guntouch",8,CHANF_OVERLAP,0.6);
 				muzzlehit=true;
 				gunbraced=true;
 			}

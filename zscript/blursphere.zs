@@ -36,7 +36,7 @@ class HDBlurSphere:HDPickup{
 			if(!invoker.worn){
 				invoker.worn=true;
 				HDF.Give(self,"BlurTaint",1);
-				A_PlaySound("imp/sight2",CHAN_BODY,frandom(0.3,0.5),false,8);
+				A_StartSound("imp/sight2",CHAN_BODY,CHANF_OVERLAP,frandom(0.3,0.5),attenuation:8.);
 				invoker.level=min(13,invoker.level+invoker.xp/BLUR_LEVELUP);
 				invoker.xp%=BLUR_LEVELUP;
 				invoker.stamina=clamp(invoker.level+random(-2,2),0,10);
@@ -49,7 +49,7 @@ class HDBlurSphere:HDPickup{
 				}
 			}else{
 				invoker.worn=false;
-				A_PlaySound("imp/sight1",CHAN_BODY,frandom(0.3,0.5),false,8);
+				A_StartSound("imp/sight1",CHAN_BODY,CHANF_OVERLAP,frandom(0.3,0.5),attenuation:8.);
 			}
 		}fail;
 	}
@@ -190,8 +190,8 @@ class HDBlurSphere:HDPickup{
 		//precious.
 		if(randticker[3]<level){
 			if(!(xp%3)){
-				owner.A_PlaySound("blursphere/hallu"..int(clamp(randtickerfloat*7,0,6)),
-					CHAN_VOICE,randtickerfloat*0.3+0.3,false,8
+				owner.A_StartSound("blursphere/hallu"..int(clamp(randtickerfloat*7,0,6)),
+					CHAN_VOICE,CHANF_OVERLAP|CHANF_LOCAL,randtickerfloat*0.3+0.3
 				);
 			}
 			if(!(xp%5)){
@@ -228,7 +228,7 @@ class HDBlurSphere:HDPickup{
 			owner.damagemobj(self,owner,random(1,level),"balefire");
 		}
 		intensity=0;
-		owner.A_PlaySound("imp/sight1",CHAN_BODY,frandom(0.3,0.5),false,8);
+		owner.A_StartSound("imp/sight1",CHAN_BODY,volume:frandom(0.3,0.5),attenuation:8.);
 		super.detachfromowner();
 	}
 }
@@ -302,7 +302,7 @@ class ShellShade:ZombieStormtrooper{
 		){
 			bnoblood=false;
 			forcepain(self);
-			A_PlaySound("marine/death",CHAN_VOICE);
+			A_StartSound("marine/death",CHAN_VOICE);
 			shields>>=1;
 		}
 		int dmg=super.damagemobj(
@@ -329,7 +329,7 @@ class ShellShade:ZombieStormtrooper{
 	xdeath:
 		POSS G 5;
 		TNT1 AAAAAAAAAAAAAAAAAAAAAAAAAAA
-			random(1,3) A_PlaySound("marine/death",random(1,6),frandom(0.3,1.),false,0.1);
+			random(1,3) A_StartSound("marine/death",random(8,24),volume:frandom(0.3,1.),attenuation:0.1,pitch:frandom(0.98,1.01));
 		TNT1 A 35;
 		TNT1 A 0 A_DropItem("HDBlurSphere");
 	xxxdeath:

@@ -647,7 +647,7 @@ class HDBackpack:HDWeapon{
 		}
 	select0:
 		TNT1 A 10{
-			A_PlaySound("weapons/pocket",CHAN_WEAPON);
+			A_StartSound("weapons/pocket",CHAN_WEAPON);
 			if(invoker.bulk>(HDBPC_CAPACITY*0.7))A_SetTics(20);
 			invoker.index=clamp(invoker.index,0,invoker.maxindex);
 			if(invoker.havenone(invoker.index))invoker.updatemessage(invoker.index+1);

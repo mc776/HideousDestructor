@@ -127,7 +127,7 @@ extend class HDPlayerPawn{
 			if(bloodpressure>5||health<30||beatmax<20){
 				double bp=0.05*bloodpressure;
 				if(beatmax<15||health<30)bp*=2;
-				A_PlaySound("misc/heart",CHAN_BODY,0.05*max(bloodpressure,22-beatmax),false,30);
+				A_StartSound("misc/heart",7778,CHANF_LOCAL,0.05*max(bloodpressure,22-beatmax));
 			}
 
 			if(woundcount){
@@ -272,12 +272,12 @@ extend class HDPlayerPawn{
 					else muzzledrift+=(frandom(-2,2),frandom(-3,2));
 					if(!random(0,2)){
 						int stupid=random(1,100);
-						if(stupid<30)A_PlaySound("*grunt",CHAN_VOICE);
-						else if(stupid<50)A_PlaySound("*pain",CHAN_VOICE);
-						else if(stupid<70)A_PlaySound("*death",CHAN_VOICE);
-						else if(stupid<90)A_PlaySound("*xdeath",CHAN_VOICE);
+						if(stupid<30)A_StartSound("*grunt",CHAN_VOICE);
+						else if(stupid<50)A_StartSound("*pain",CHAN_VOICE);
+						else if(stupid<70)A_StartSound("*death",CHAN_VOICE);
+						else if(stupid<90)A_StartSound("*xdeath",CHAN_VOICE);
 						else if(stupid<100){
-							A_PlaySound("*taunt",CHAN_VOICE);
+							A_StartSound("*taunt",CHAN_VOICE);
 							A_AlertMonsters();
 						}
 					}

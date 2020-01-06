@@ -152,7 +152,7 @@ class HDIED:DudRocket{
 	states{
 	spawn:
 		IEDS A 0 nodelay A_JumpIf(!bmissilemore,"idle");
-		IEDS C 35 A_PlaySound("ied/beep");
+		IEDS C 35 A_StartSound("ied/beep",CHAN_VOICE);
 		IEDS CBCBC 4;
 		IEDS ABABABABABABAB 2;
 		IEDS ABABAB 1;

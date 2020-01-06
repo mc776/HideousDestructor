@@ -49,7 +49,7 @@ class SecondBloodSticker:HDWoundFixer{
 		goto super::select;
 	altreload:
 	unload:
-		TNT1 A 0 A_PlaySound("weapons/pocket",CHAN_BODY);
+		TNT1 A 0 A_StartSound("weapons/pocket",CHAN_BODY);
 		TNT1 A 15 A_JumpIf(!countinv("BloodBagWorn")||countinv("WornRadsuit"),"nope");
 		TNT1 A 10{
 			A_DropInventory("BloodBagWorn");
@@ -72,8 +72,8 @@ class SecondBloodSticker:HDWoundFixer{
 	fire:
 	altfire:
 		TNT1 A 0 A_JumpIf(!countinv("SecondBlood"),"nope");
-		TNT1 A 10 A_PlaySound("bloodpack/open");
-		TNT1 AAA 8 A_PlaySound("bloodpack/shake",CHAN_WEAPON);
+		TNT1 A 10 A_StartSound("bloodpack/open",CHAN_WEAPON);
+		TNT1 AAA 8 A_StartSound("bloodpack/shake",CHAN_WEAPON,CHANF_OVERLAP);
 		TNT1 A 4;
 		TNT1 A 0 A_Refire();
 		goto ready;
@@ -145,7 +145,7 @@ class SecondBloodSticker:HDWoundFixer{
 			if(invoker.weaponstatus[SBS_INJECTCOUNTER]>30){
 				A_TakeInventory("SecondBlood",1);
 				patient.A_GiveInventory("BloodBagWorn");
-				A_PlaySound("bloodbag/inject",CHAN_WEAPON);
+				A_StartSound("bloodbag/inject",CHAN_WEAPON,CHANF_OVERLAP);
 				A_SetBlend("7a 3a 18",0.1,4);
 				A_SetPitch(pitch+2,SPF_INTERPOLATE);
 				hdweaponselector.select(self,"HDFist");

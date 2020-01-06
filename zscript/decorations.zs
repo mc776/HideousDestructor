@@ -72,17 +72,16 @@ class HDTree:HDActor{
 	spawn3:
 		---- A 1{
 			A_SetTics(random(1,20)*10);
-			int chn=random(0,7);
-			if(random(0,7))A_PlaySound("grunt/active",chn,frandom(0.1,0.4),0,1);
-			else A_PlaySound("tree/pain",chn,frandom(0.2,1.0),0,1,pitch:frandom(0.6,1.3));
+			int chn=random(0,12);
+			if(random(0,7))A_StartSound("grunt/active",chn,volume:frandom(0.1,0.4),attenuation:1.);
+			else A_StartSound("tree/pain",chn,volume:frandom(0.2,1.0),attenuation:1.,pitch:frandom(0.6,1.3));
 		}loop;
 	pain:
 		---- A 1{
 			for(int i=0;i<7;i++){
 				A_StopSound(i);
 			}
-			A_PlaySound("tree/pain",0,1.0,0,1);
-			A_SoundPitch(0,frandom(0.9,1.3));
+			A_StartSound("tree/pain",CHAN_AUTO,attenuation:1.,pitch:frandom(0.9,1.3));
 			A_Immolate(self,self,random(1,10)*8);
 			bnopain=true;
 			A_SetTics(random(1,10)*40);

@@ -88,7 +88,7 @@ class hdladdertop:hdactor{
 
 				//only complete if start or within throwable range, else abort
 				if(!master)return;
-				A_PlaySound("misc/ladder");
+				A_StartSound("misc/ladder");
 				if(pos.z-master.pos.z<108){
 					master.A_Log(string.format("You hang up a ladder.%s",master.getcvar("hd_helptext")?" Use the ladder to climb.":""),true);
 					master.A_TakeInventory("PortableLadder",1);
@@ -102,7 +102,7 @@ class hdladdertop:hdactor{
 			master.A_Log("Can't hang a ladder here.",true);
 		}else{
 			actor hdl=spawn("PortableLadder",pos,ALLOW_REPLACE);
-			hdl.A_PlaySound("misc/ladder");
+			hdl.A_StartSound("misc/ladder");
 		}
 		destroy();
 	}
@@ -205,7 +205,7 @@ class hdladderbottom:hdactor{
 						){
 							currentuser.A_Log("Ladder taken up.",true);
 							actor hdl=spawn("PortableLadder",target.pos,ALLOW_REPLACE);
-							hdl.A_PlaySound("misc/ladder");
+							hdl.A_StartSound("misc/ladder");
 							hdl.translation=translation;
 							target.destroy();
 							if(self)destroy();
@@ -293,7 +293,7 @@ class hdladderbottom:hdactor{
 							currentuser.A_Log("Ladder taken down.",true);
 
 							actor hdl=spawn("PortableLadder",target.pos,ALLOW_REPLACE);
-							hdl.A_PlaySound("misc/ladder");
+							hdl.A_StartSound("misc/ladder");
 							hdl.vel.xy=vl.xy*2;
 							hdl.translation=translation;
 

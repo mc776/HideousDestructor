@@ -169,12 +169,12 @@ class HDArmour:HDMagAmmo{
 		aaa.mags.insert(0,durability);
 		aaa.mags.pop();
 		aaa.checkmega();
-		other.A_PlaySound(pickupsound,CHAN_AUTO);
+		other.A_StartSound(pickupsound,CHAN_AUTO);
 		other.A_Log(string.format("\cg%s",pickupmessage()),true);
 	}
 	static void ArmourChangeEffect(actor owner){
 		owner.A_SetBlend("00 00 00",1,6,"00 00 00");
-		owner.A_PlaySound("weapons/pocket",CHAN_BODY);
+		owner.A_StartSound("weapons/pocket",CHAN_BODY);
 		owner.A_ChangeVelocity(0,0,2);
 		let onr=HDPlayerPawn(owner);
 		if(onr)onr.stunned+=90;

@@ -142,7 +142,7 @@ class SlowProjectile:HDActor{
 				if(blockingmobj){
 					tracer=blockingmobj;
 					int idmg=speed*speed*mass*0.000005;
-					if(idmg>40)tracer.A_PlaySound("misc/bulletflesh",CHAN_BODY);
+					if(idmg>40)tracer.A_StartSound("misc/bulletflesh",CHAN_AUTO);
 					if(hd_debug)A_Log(String.Format("%s hit %s",getclassname(),blockingmobj.getclassname()));
 					if(!bnodamage)tracer.damagemobj(self,target,idmg,"bashing");
 				}
@@ -218,7 +218,7 @@ class SlowProjectile:HDActor{
 		if(max(abs(pos.x),abs(pos.y))>=32768){destroy();return;}
 		actor a=spawn("IdleDummy",pos,ALLOW_REPLACE);
 		a.stamina=10;
-		a.A_PlaySound(speed>50?"misc/punch":"misc/fragknock",CHAN_AUTO);
+		a.A_StartSound(speed>50?"misc/punch":"misc/fragknock",CHAN_AUTO);
 		explodemissile(blockingline,null);
 	}
 	states{

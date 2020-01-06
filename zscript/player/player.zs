@@ -153,7 +153,7 @@ class HDPlayerPawn:PlayerPawn{
 					}
 				}
 			}
-			if(gunbraced)A_PlaySound("weapons/guntouch",CHAN_BODY,0.3);
+			if(gunbraced)A_StartSound("weapons/guntouch",8,CHANF_OVERLAP,0.3);
 		}
 	}
 	void A_CheckSeeState(){
@@ -429,8 +429,8 @@ class HDPlayerPawn:PlayerPawn{
 					&&bmob.mass>0
 					&&bmob.mass<1000
 				){
-					bmob.A_PlaySound("weapons/smack",CHAN_BODY);
-					A_PlaySound("weapons/smack",CHAN_BODY);
+					bmob.A_StartSound("weapons/smack",CHAN_AUTO,CHANF_OVERLAP);
+					A_StartSound("weapons/smack",CHAN_AUTO,CHANF_OVERLAP);
 					bmob.vel+=lastvel*90/bmob.mass;
 					vel+=lastvel*0.05;
 					bmob.damagemobj(self,self,random(fallvel,fallvel<<3),"bashing");
@@ -441,9 +441,9 @@ class HDPlayerPawn:PlayerPawn{
 
 		if(fallvel>10){
 			if(barehanded)fallvel-=4;
-			if(fallvel<=15)A_PlaySound("weapons/smack",CHAN_AUTO,0.4);
+			if(fallvel<=15)A_StartSound("weapons/smack",CHAN_AUTO,volume:0.4);
 			else{
-				A_PlaySound("weapons/smack",CHAN_AUTO);
+				A_StartSound("weapons/smack",CHAN_AUTO);
 				if(countinv("PowerStrength"))fallvel/=2;
 				int fdmg=random(fallvel*2,fallvel*3);
 				damagemobj(self,self,fdmg,"falling");

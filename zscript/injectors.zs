@@ -189,8 +189,8 @@ class HDStimpacker:HDWoundFixer{
 			A_TakeInjector(invoker.inventorytype);
 			A_SetBlend("7a 3a 18",0.1,4);
 			A_SetPitch(pitch+2,SPF_INTERPOLATE);
-			A_PlaySound("*usemeds",CHAN_VOICE);
-			A_PlaySound("misc/bulletflesh",CHAN_WEAPON);
+			A_StartSound("*usemeds",CHAN_VOICE);
+			A_StartSound("misc/bulletflesh",CHAN_WEAPON);
 			actor a=spawn(invoker.injecttype,pos,ALLOW_REPLACE);
 			a.accuracy=40;a.target=self;
 		}
@@ -199,7 +199,7 @@ class HDStimpacker:HDWoundFixer{
 		TNT1 A 0{
 			actor a=spawn(invoker.spentinjecttype,pos+(0,0,height-8),ALLOW_REPLACE);
 			a.angle=angle;a.vel=vel;a.A_ChangeVelocity(3,1,2,CVF_RELATIVE);
-			a.A_PlaySound("weapons/grenopen",CHAN_VOICE);
+			a.A_StartSound("weapons/grenopen",8);
 		}
 		goto injectedhold;
 	altfire:
@@ -255,7 +255,7 @@ class HDStimpacker:HDWoundFixer{
 			}else{
 				//and now...
 				A_TakeInjector(invoker.inventorytype);
-				c.A_PlaySound("*usemeds",CHAN_VOICE);
+				c.A_StartSound("*usemeds",CHAN_VOICE);
 				c.A_SetBlend("7a 3a 18",0.1,4);
 				actor a=spawn(invoker.injecttype,c.pos,ALLOW_REPLACE);
 				a.accuracy=40;a.target=c;
@@ -267,7 +267,7 @@ class HDStimpacker:HDWoundFixer{
 		TNT1 A 0{
 			actor a=spawn(invoker.spentinjecttype,pos+(0,0,height-8),ALLOW_REPLACE);
 			a.angle=angle;a.vel=vel;a.A_ChangeVelocity(-2,1,4,CVF_RELATIVE);
-			A_PlaySound("weapons/grenopen",CHAN_VOICE);
+			A_StartSound("weapons/grenopen",CHAN_VOICE);
 		}
 	injectedhold:
 		TNT1 A 1 A_ClearRefire();
@@ -350,11 +350,11 @@ class InjectZerkDummy:InjectStimDummy{
 		}
 		TNT1 A 1{
 			if(tg.zerk<666){
-				tg.A_PlaySound("*xdeath",CHAN_VOICE);
+				tg.A_StartSound("*xdeath",CHAN_VOICE);
 				HDPlayerPawn.Disarm(self);
 				tg.A_SelectWeapon("HDFist");
 			}else{
-				tg.A_PlaySound("*pain",CHAN_VOICE);
+				tg.A_StartSound("*pain",CHAN_VOICE);
 			}
 			tg.A_GiveInventory("PowerStrength");
 			tg.zerk+=4100;
@@ -402,11 +402,11 @@ class BluePotion:hdinjectormaker{
 		)return false;
 		mags[0]--;
 		mags[lowindex]++;
-		owner.A_PlaySound("potion/swish",CHAN_WEAPON);
+		owner.A_StartSound("potion/swish",8);
 		if(mags[0]<1){
 			mags.delete(0);
 			amount--;
-			owner.A_PlaySound("potion/open",CHAN_VOICE);
+			owner.A_StartSound("potion/open",CHAN_WEAPON);
 			actor a=owner.spawn("SpentBottle",owner.pos+(0,0,owner.height-4),ALLOW_REPLACE);
 			a.angle=owner.angle+2;a.vel=owner.vel;a.A_ChangeVelocity(3,1,4,CVF_RELATIVE);
 			a=owner.spawn("SpentCork",owner.pos+(0,0,owner.height-4),ALLOW_REPLACE);
@@ -433,8 +433,8 @@ class BluePotion:hdinjectormaker{
 				invoker.mags[i]=invoker.mags[i+1];
 			}
 			invoker.mags[limamt]=firstbak;
-			A_PlaySound("potion/swish",CHAN_WEAPON,0.5);
-			A_PlaySound("weapons/pocket",6,0.3);
+			A_StartSound("potion/swish",CHAN_WEAPON,CHANF_OVERLAP,0.5);
+			A_StartSound("weapons/pocket",9,volume:0.3);
 		}fail;
 	spawn:
 		BON1 ABCDCB 2 light("HEALTHPOTION") A_SetTics(random(1,3));
@@ -468,7 +468,7 @@ class HDBlueBottler:HDWoundFixer{
 				if(getcvar("hd_helptext"))A_WeaponMessage("No potion.");
 				A_SelectWeapon("HDFist");
 			}else if(getcvar("hd_helptext"))A_WeaponMessage("\ct\(\(\( \cnPOTION \ct\)\)\)\c-\n\n\nNot made\nby human hands.\n\nBeware.");
-			A_PlaySound("potion/swish",CHAN_WEAPON);
+			A_StartSound("potion/swish",8,CHANF_OVERLAP);
 		}
 		goto super::select;
 	deselecthold:
@@ -490,10 +490,10 @@ class HDBlueBottler:HDWoundFixer{
 		}
 		TNT1 A 4 A_WeaponReady(WRF_NOFIRE);
 		TNT1 A 1{
-			A_PlaySound("potion/open",CHAN_WEAPON);
+			A_StartSound("potion/open",CHAN_WEAPON);
 			A_Refire();
 		}
-		TNT1 A 0 A_PlaySound("potion/swish",CHAN_WEAPON);
+		TNT1 A 0 A_StartSound("potion/swish",8);
 		goto nope;
 	hold:
 		TNT1 A 1;
@@ -512,7 +512,7 @@ class HDBlueBottler:HDWoundFixer{
 				A_Refire("inject");
 			}
 		}
-		TNT1 A 0 A_PlaySound("potion/away",CHAN_WEAPON,0.4);
+		TNT1 A 0 A_StartSound("potion/away",CHAN_WEAPON,volume:0.4);
 		goto nope;
 	inject:
 		TNT1 A 7{
@@ -523,7 +523,7 @@ class HDBlueBottler:HDWoundFixer{
 			}
 			bp.mags[0]--;
 			A_SetPitch(pitch-2,SPF_INTERPOLATE);
-			A_PlaySound("potion/chug",CHAN_VOICE);
+			A_StartSound("potion/chug",CHAN_VOICE);
 			let onr=HDPlayerPawn(self);
 			if(onr)onr.regenblues+=12;
 		}
@@ -536,13 +536,13 @@ class HDBlueBottler:HDWoundFixer{
 			let bp=BluePotion(findinventory("BluePotion"));
 			if(!bp){setweaponstate("nope");return;}
 			if(bp.mags.size()&&bp.mags[0]>0){
-				A_PlaySound("potion/away",CHAN_WEAPON,0.4);
+				A_StartSound("potion/away",CHAN_WEAPON,volume:0.4);
 				setweaponstate("nope");
 				return;
 			}
 			bp.mags.delete(0);
 			bp.amount--;
-			A_PlaySound("potion/open",CHAN_VOICE);
+			A_StartSound("potion/open",8);
 			actor a=spawn("SpentBottle",pos+(0,0,height-4),ALLOW_REPLACE);
 			a.angle=angle+2;a.vel=vel;a.A_ChangeVelocity(3,1,4,CVF_RELATIVE);
 			a=spawn("SpentCork",pos+(0,0,height-4),ALLOW_REPLACE);

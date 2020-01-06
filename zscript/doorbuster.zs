@@ -440,7 +440,7 @@ class DoorBuster:HDPickup{
 		}
 		ddd.botid=invoker.botid;
 		ddd.ChangeTid(HDDB_TID);
-		ddd.A_PlaySound("doorbuster/stick",CHAN_BODY);
+		ddd.A_StartSound("doorbuster/stick",CHAN_BODY);
 		ddd.stuckline=dlt.hitline;
 		ddd.angle=angle;
 		ddd.translation=translation;
@@ -531,17 +531,17 @@ class DoorBusterPlanted:HDUPK{
 		BGRN A 1 A_DBStuck();
 		loop;
 	unstucknow:
-		---- A 2 A_PlaySound("misc/fragknock",5);
+		---- A 2 A_StartSound("misc/fragknock",CHAN_AUTO);
 		---- A 1{
 			actor dbs=spawn("DoorBuster",pos,ALLOW_REPLACE);
 			dbs.angle=angle;dbs.translation=translation;
 			dbs.A_ChangeVelocity(1,0,0,CVF_RELATIVE);
 			A_SpawnChunks("BigWallChunk",15);
-			A_PlaySound("weapons/bigcrack",4);
+			A_StartSound("weapons/bigcrack",CHAN_AUTO);
 		}
 		stop;
 	death:
-		---- A 2 A_PlaySound("misc/fragknock",5);
+		---- A 2 A_StartSound("misc/fragknock",CHAN_AUTO);
 		---- A 1{
 			bnointeraction=true;
 			int boost=min(accuracy*accuracy,256);
@@ -556,8 +556,8 @@ class DoorBusterPlanted:HDUPK{
 			}else{
 				dbs.A_ChangeVelocity(-20,frandom(-4,4),frandom(-4,4),CVF_RELATIVE);
 			}
-			A_PlaySound("weapons/bigcrack",4);
-			A_PlaySound("word/explode",CHAN_VOICE);
+			A_StartSound("weapons/bigcrack",CHAN_AUTO);
+			A_StartSound("word/explode",CHAN_VOICE);
 
 			target=master;
 			A_AlertMonsters();

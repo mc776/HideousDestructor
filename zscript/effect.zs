@@ -44,7 +44,7 @@ class HDDebris:HDActor{
 		for(int i=0;i<fracamount;i++){
 			addz(frac.z,true);
 			if(keeptrymove&&!trymove(pos.xy+frac.xy,true,true)){
-				A_PlaySound(bouncesound,CHAN_BODY);
+				A_StartSound(bouncesound);
 				if(blockingmobj){
 					vel*=-bouncefactor;
 				}else if(blockingline){
@@ -63,7 +63,7 @@ class HDDebris:HDActor{
 			onfloor
 			||ceilingz<=pos.z //most debris actors are negligible height
 		){
-			A_PlaySound(bouncesound,CHAN_BODY);
+			A_StartSound(bouncesound);
 			vel.xy=rotatevector(vel.xy,frandom(-0.1,0.1)*abs(vel.z))*bouncefactor;
 			vel.z*=-bouncefactor;
 		}
@@ -106,7 +106,7 @@ class WallChunk:HDDebris{
 		bwallsprite=randompick(0,0,0,1); //+wallsprite crashes software
 		roll=random(0,3)*90;
 		flip=random(1,4);
-		if(!random(0,9))A_PlaySound("misc/wallchunks");
+		if(!random(0,9))A_StartSound("misc/wallchunks");
 		frame=random(0,3);
 	}
 	void A_Dust(){
@@ -173,7 +173,7 @@ class HDSmokeChunk:HDDebris{
 			0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION
 		);
 		TNT1 A 0{
-			A_PlaySound("misc/firecrkl",0,0.4,0,3);
+			A_StartSound("misc/firecrkl",volume:0.4,attenuation:0,3);
 			accuracy++;
 			if(accuracy>=9)setstatelabel("death");
 		}
@@ -288,7 +288,7 @@ class HDBulletPuff:HDPuff{
 		}
 		int stm=stamina;
 		double vol=min(1.,0.1*stm);
-		A_PlaySound("misc/bullethit",CHAN_BODY,volume:vol);
+		A_StartSound("misc/bullethit",CHAN_BODY,CHANF_OVERLAP,vol);
 		A_ChangeVelocity(-0.4,0,frandom(0.1,0.4),CVF_RELATIVE);
 		trymove(pos.xy+vel.xy,false);
 		fadeafter=frandom(0,0.99);
@@ -481,7 +481,7 @@ class HDExplosion:IdleDummy{
 		MISL B 0 nodelay{
 			if(max(abs(pos.x),abs(pos.y),abs(pos.z))>=32768){destroy();return;}
 			vel.z+=4;
-			A_PlaySound(deathsound,CHAN_BODY);
+			A_StartSound(deathsound,CHAN_BODY);
 			let xxx=spawn("HDExplosionLight",pos);
 			xxx.target=self;
 		}
@@ -613,8 +613,8 @@ class DistantNoisemaker:IdleDummy{
 			){
 				destroy();return;
 			}
-			A_PlaySound(deathsound,CHAN_VOICE,1,0,24);
-			if(bmissilemore)A_PlaySound(deathsound,CHAN_WEAPON,1,0,24);
+			A_StartSound(deathsound,CHAN_VOICE,attenuation:24);
+			if(bmissilemore)A_StartSound(deathsound,CHAN_WEAPON,attenuation:24);
 		}
 		TNT1 A 1{
 			if(target && mass>0){
@@ -698,7 +698,7 @@ class DistantQuaker:IdleDummy{
 		TNT1 A 0{
 			if(max(abs(pos.x),abs(pos.y),abs(pos.z))>32000)return;
 			if(wave){
-				A_PlaySound("weapons/subfwoosh",CHAN_AUTO,0.1*intensity);
+				A_StartSound("weapons/subfwoosh",CHAN_AUTO,volume:0.1*intensity);
 				if(target && target.pos.z<target.floorz+8)
 					A_QuakeEx(0,0,intensity,mass,0,16,deathsound,
 					QF_SCALEDOWN|QF_WAVE,0,0,frequency,0,mass*0.62);
@@ -749,14 +749,14 @@ class BloodSplat:BloodSplatSilent replaces Blood{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		if(!bambush)A_PlaySound(seesound,CHAN_BODY,0.2);
+		if(!bambush)A_StartSound(seesound,CHAN_BODY,CHANF_OVERLAP,0.2);
 	}
 }
 class BloodSplattest:BloodSplat replaces BloodSplatter{}
 class NotQuiteBloodSplat:BloodSplat{
 	override void postbeginplay(){
 		super.postbeginplay();
-		A_PlaySound("misc/bulletflesh",0,0.02);
+		A_StartSound("misc/bulletflesh",CHAN_BODY,CHANF_OVERLAP,0.02);
 		actor p=spawn("PenePuff",pos,ALLOW_REPLACE);
 		p.target=target;p.master=master;p.vel=vel*0.3;
 		scale*=frandom(0.2,0.5);
@@ -777,7 +777,7 @@ class ShieldNotBlood:NotQuiteBloodSplat{
 			bnointeraction=true;
 			return;
 		}
-		A_PlaySound("misc/bulletflesh",0,0.02);
+		A_StartSound("misc/bulletflesh",CHAN_AUTO,volume:0.02);
 		actor p=spawn("PenePuff",pos,ALLOW_REPLACE);
 		p.target=target;p.master=master;p.vel=vel*0.3;
 		scale*=frandom(0.2,0.5);
@@ -892,7 +892,7 @@ class TeleFog:IdleDummy replaces TeleportFog{
 	override void postbeginplay(){
 		actor.postbeginplay();
 		scale.x*=randompick(-1,1);
-		A_PlaySound("misc/teleport");
+		A_StartSound("misc/teleport");
 	}
 	states{
 	spawn:

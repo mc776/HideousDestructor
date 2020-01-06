@@ -45,7 +45,7 @@ class DERPBot:HDUPK{
 			return false;
 		}
 		if(face){
-			A_PlaySound("derp/crawl");
+			A_StartSound("derp/crawl");
 			A_FaceTarget(2,2,FAF_TOP);
 		}
 		flinetracedata dlt;
@@ -60,7 +60,7 @@ class DERPBot:HDUPK{
 		if(master)master.A_Log(string.format("\cd[DERP]  %s",msg),true);
 	}
 	void DerpShot(){
-		A_PlaySound("weapons/pistol",CHAN_WEAPON);
+		A_StartSound("weapons/pistol",CHAN_WEAPON);
 		if(!random(0,11)){
 			if(bfriendly)A_AlertMonsters(0,AMF_TARGETEMITTER);
 			else A_AlertMonsters();
@@ -106,7 +106,7 @@ class DERPBot:HDUPK{
 		return atan2(vecdiff.y,vecdiff.x);
 	}
 	void A_DerpCrawlSound(int chance=50){
-		A_PlaySound("derp/crawl",CHAN_BODY,pitch:1.3);
+		A_StartSound("derp/crawl",CHAN_BODY,pitch:1.3);
 		if(bfriendly&&!random(0,50))A_AlertMonsters(0,AMF_TARGETEMITTER);
 	}
 	void A_DerpCrawl(bool attack=true){
@@ -207,9 +207,9 @@ class DERPBot:HDUPK{
 		wait;
 	unstuck:
 		DERP A 2 A_JumpIf(!stuckline,"unstucknow");
-		DERP A 4 A_PlaySound("derp/crawl",6);
+		DERP A 4 A_StartSound("derp/crawl",16);
 	unstucknow:
-		DERP A 2 A_PlaySound("misc/fragknock",5);
+		DERP A 2 A_StartSound("misc/fragknock",15);
 		DERP A 10{
 			if(stuckline){
 				bool exiting=
@@ -229,18 +229,18 @@ class DERPBot:HDUPK{
 			spawn("FragPuff",pos,ALLOW_REPLACE);
 			bnogravity=false;
 			A_ChangeVelocity(3,0,2,CVF_RELATIVE);
-			A_PlaySound("weapons/bigcrack",4);
+			A_StartSound("weapons/bigcrack",14);
 		}goto spawn2;
 	give:
 		DERP A 0{
 			stuckline=null;bnogravity=false;
 			if(cmd!=DERP_AMBUSH){
-				A_PlaySound("weapons/rifleclick2",CHAN_AUTO);
+				A_StartSound("weapons/rifleclick2",CHAN_AUTO);
 				cmd=DERP_AMBUSH;
 			}
 
 			if(ammo>=0){
-				target.A_PlaySound("weapons/rifleclick",CHAN_AUTO);
+				target.A_StartSound("weapons/rifleclick",CHAN_AUTO);
 				let mmm=HDMagAmmo.SpawnMag(target,"HD9mMag15",ammo);
 				if(mmm)grabthinker.grab(target,mmm);
 			}
@@ -281,14 +281,14 @@ class DERPBot:HDUPK{
 		---- A 0 setstatelabel("see2");
 	pain:
 		DERP A 20{
-			A_PlaySound("derp/crawl",CHAN_BODY);
+			A_StartSound("derp/crawl",CHAN_BODY);
 			angle+=randompick(1,-1)*random(2,8)*10;
 			pitch-=random(10,20);
 			vel.z+=2;
 		}
 	missile:
 	ready:
-		DERP A 0 A_PlaySound("derp/crawl",CHAN_BODY,0.6);
+		DERP A 0 A_StartSound("derp/crawl",CHAN_BODY,volume:0.6);
 		DERP AAA 1 A_FaceTarget(20,20,0,0,FAF_TOP,-4);
 		DERP A 0 A_JumpIf(cmd==DERP_AMBUSH,"spawn");
 		DERP A 0 A_JumpIfTargetInLOS(1,1);
@@ -324,7 +324,7 @@ class DERPBot:HDUPK{
 	death:
 		DERP A 0{
 			DerpAlert("\cg  Operational fault.\cj Standby for repairs.");
-			A_PlaySound("weapons/bigcrack",CHAN_AUTO);
+			A_StartSound("weapons/bigcrack",CHAN_VOICE);
 			A_SpawnItemEx("HDSmoke",0,0,1, vel.x,vel.y,vel.z+1, 0,SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM);
 			A_SpawnChunks("BigWallChunk",12);
 		}
@@ -522,14 +522,14 @@ class DERPDeployer:HDWeapon{
 		TNT1 AAAA 1 A_AddOffset(9);
 		TNT1 AAAA 1 A_AddOffset(20);
 		TNT1 A 0 A_JumpIf(!pressingfire()&&!pressingunload(),"ready");
-		TNT1 A 4 A_PlaySound("weapons/pismagclick",CHAN_WEAPON);
-		TNT1 A 2 A_PlaySound("derp/crawl",CHAN_WEAPON);
+		TNT1 A 4 A_StartSound("weapons/pismagclick",CHAN_WEAPON);
+		TNT1 A 2 A_StartSound("derp/crawl",CHAN_WEAPON,CHANF_OVERLAP);
 		TNT1 A 0{
 			//in case someone drops all their shit mid-sequence
 			if(
 				!countinv("DERPUsable")
 			){
-				A_PlaySound("weapons/pismagclick",CHAN_WEAPON);
+				A_StartSound("weapons/pismagclick",CHAN_WEAPON,CHANF_OVERLAP);
 				A_WeaponMessage("No D.E.R.P.!",30);
 				A_SelectWeapon("HDFist");
 				return;
@@ -573,7 +573,7 @@ class DERPDeployer:HDWeapon{
 			let mmm=HDMagAmmo(findinventory("HD9mMag15"));
 			if(mmm&&!pressingunload()){
 				derp.ammo=mmm.TakeMag(true);
-				A_PlaySound("weapons/pismagclick",CHAN_WEAPON);
+				A_StartSound("weapons/pismagclick",CHAN_WEAPON,CHANF_OVERLAP);
 			}else derp.ammo=-1;
 			DERPController.GiveController(self);
 
@@ -642,7 +642,7 @@ extend class HDHandlers{
 			}
 			if(tag)ddd.botid=abs(tag);else ddd.botid=dpu.botid;
 			ppp.A_TakeInventory("DERPUsable",1);
-			ddd.A_PlaySound("misc/bulletflesh",CHAN_BODY);
+			ddd.A_StartSound("misc/bulletflesh",CHAN_BODY,CHANF_OVERLAP);
 			ddd.stuckline=dlt.hitline;
 			ddd.bnogravity=true;
 			ddd.angle=ppp.angle-180;
@@ -991,7 +991,7 @@ class DERPController:HDWeapon{
 					if(yaw)moved=true;
 				}
 				if(player.cmd.sidemove){
-					ddd.A_PlaySound("derp/crawl",CHAN_BODY);
+					ddd.A_StartSound("derp/crawl",CHAN_BODY);
 					ddd.A_DerpCrawlSound(150);
 					ddd.angle+=player.cmd.sidemove<0?10:-10;
 					player.cmd.sidemove*=-1;
