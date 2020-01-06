@@ -68,8 +68,8 @@ actor HDStalagtite:HDTree replaces Stalagtite{
 	spawn3:
 		"----" A 1{
 			A_SetTics(random(1,3)*40);
-			if(random(0,7)){A_PlaySound("grunt/active",random(0,7),frandom(0.1,0.4),0,1);}
-			else{A_PlaySound("tree/pain",random(0,7),frandom(0.2,1.0),0,1);}
+			if(random(0,7)){A_StartSound("grunt/active",random(0,24),frandom(0.1,0.4),0,1);}
+			else{A_StartSound("tree/pain",random(0,24),frandom(0.2,1.0),0,1);}
 		}loop
 	}
 }

@@ -25,7 +25,7 @@ actor HDExplosionBoss:HDExplosion{
 	death:
 		MISL B 0 nodelay{
 			A_ChangeVelocity(0,0,4);
-			A_PlaySound("world/explode");
+			A_StartSound("world/explode");
 			A_Countdown();
 			A_Explode(140,random(112,256),0);
 		}
