@@ -1466,7 +1466,7 @@ class GhostGyroGrenade:GyroGrenade{
 		);
 		TNT1 A 21{
 			A_AlertMonsters();
-			spawn("DistantRocket",pos,ALLOW_REPLACE);
+			DistantNoise.Make(self,"world/rocketfar");
 			A_Quake(2,21,0,200,"none");
 		}stop;
 	}

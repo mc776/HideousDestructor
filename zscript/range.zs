@@ -87,7 +87,7 @@ class TargetBarrel:Actor{
 		}
 		TNT1 A 0{
 			bnopain=0;
-			spawn("DistantRocket",pos,ALLOW_REPLACE);
+			DistantNoise.Make(self,"world/rocketfar");
 		}
 	pain2:
 		BEXP B 1{

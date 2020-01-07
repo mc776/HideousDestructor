@@ -45,9 +45,7 @@ class Roboball:SlowProjectile{
 				bmissilemore=true;
 				if(blockingline)doordestroyer.destroydoor(self,200,frandom(24,48),6);
 			}
-		}else{
-			spawn("DistantRocket",self.pos,ALLOW_REPLACE);
-		}
+		}else DistantNoise.Make(self,"world/rocketfar");
 		A_SpawnChunks("HDB_frag",240,300,900);
 
 		//destroy();return;
@@ -93,7 +91,7 @@ class Roboball:SlowProjectile{
 				xp.vel.z=frandom(1,3);
 			}
 			A_StartSound("world/explode");
-			spawn("DistantRocket",pos,ALLOW_REPLACE);
+			DistantNoise.Make(self,"world/rocketfar");
 			DistantQuaker.Quake(self,4,35,512,10);
 		}
 		TNT1 A 0 A_SpawnChunks("HDSmokeChunk",random(3,4),2,8);
@@ -270,7 +268,7 @@ class SatanRobo:HDMobBase replaces CyberDemon{
 	}
 	void A_SatanRoboAttack(double spread=0.,double aimhorz=0.,double aimvert=0.){
 		A_StartSound("weapons/bronto",CHAN_WEAPON);
-		if(shottype=="Roboball")spawn("DistantShotgun",pos,ALLOW_REPLACE);
+		if(shottype=="Roboball")DistantNoise.Make(self,"world/shotgunfar");
 		if(spread){
 			aimhorz=frandom(-spread,spread);
 			aimvert=frandom(-spread,spread);

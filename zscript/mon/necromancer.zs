@@ -346,7 +346,7 @@ class Necromancer:HDMobBase replaces ArchVile{
 				if(!bfriendly)A_ChangeNecroFlags(false);
 
 				setstatelabel("pain");
-				spawn("DistantRocket",pos,ALLOW_REPLACE);
+				DistantNoise.Make(self,"world/rocketfar");
 				A_SpawnItemEx("SpawnFire",0,0,28,flags:SXF_NOCHECKPOSITION);
 				A_Explode(46,196);
 				A_Quake(3,36,0,360);
@@ -472,12 +472,14 @@ class Necromancer:HDMobBase replaces ArchVile{
 		VILE Q 0 A_Quake(6,8,0,768,0);
 		VILE GGG 2 bright light("HELL")A_Pain();
 	xdeath:
-		VILE Q 0 A_SpawnItemEx("NecroDeathLight",flags:SXF_SETTARGET);
-		VILE Q 0 A_SpawnItem("spawnFire",0.1,28,0,0);
-		TNT1 AA 0 Spawn("DistantRocket",pos,ALLOW_REPLACE);
-		VILE Q 0 A_StartSound("weapons/rocklx",CHAN_WEAPON);
-		VILE Q 0 A_Explode(72,196);
-		VILE Q 6 bright light("HELL") A_Scream();
+		VILE Q 6 bright light("HELL"){
+			A_Explode(72,196);
+			A_StartSound("weapons/rocklx",CHAN_WEAPON);
+			A_SpawnItemEx("NecroDeathLight",flags:SXF_SETTARGET);
+			A_SpawnItem("spawnFire",0.1,28,0,0);
+			A_Scream();
+			DistantNoise.Make(self,"world/rocketfar",2.);
+		}
 		VILE Q 14 bright light("HELL") A_Quake(8,14,0,768,0);
 		VILE Q 0 A_SpawnItemEx("SpawnFire",0,0,30,flags:SXF_ABSOLUTE);
 		VILE Q 0 A_SpawnItemEx("SpawnFire",0,0,28,flags:SXF_ABSOLUTE);

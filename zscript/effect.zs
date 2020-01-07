@@ -578,7 +578,7 @@ class HDFader:HDCopyTrail{
 
 
 //thinker used to generate distant sound
-//DistantNoise.Make(self,"weapons/shotgunfar");
+//DistantNoise.Make(self,"world/rocketfar");
 class DistantNoise:Thinker{
 	sound distantsound;
 	int distances[MAXPLAYERS];

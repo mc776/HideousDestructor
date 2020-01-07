@@ -656,7 +656,7 @@ class BFGBalle:HDFireball{
 			DistantQuaker.Quake(self,
 				6,100,16384,10,256,512,128
 			);
-			A_SpawnItemEx("DistantBFG");
+			DistantNoise.Make(self,"world/bfgfar");
 		}
 		TNT1 AAAAA 0 A_SpawnItemEx("HDSmokeChunk",random(-2,0),random(-3,3),random(-2,2),random(-5,0),random(-5,5),random(0,5),random(100,260),SXF_TRANSFERPOINTERS|SXF_NOCHECKPOSITION,16);
 		TNT1 AAAAA 0 A_SpawnItemEx("BFGBallRemains",-1,0,-12,0,0,0,SXF_TRANSFERPOINTERS|SXF_NOCHECKPOSITION,16);

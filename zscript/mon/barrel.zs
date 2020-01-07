@@ -145,7 +145,7 @@ class HDBarrel:HDMobBase replaces ExplosiveBarrel{
 			A_Scream();
 			DistantQuaker.Quake(self,6,42,512,10);
 			A_StartSound("world/explode");
-			Spawn("DistantRocket",self.pos,ALLOW_REPLACE);
+			DistantNoise.Make(self,"world/rocketfar");
 		}
 		BEXP EEEEEEE 0 A_SpawnItemEx ("HDSmoke", random(-6,6),random(-6,6),random(12,32), vel.x+random(-1,1),vel.y+random(-1,1),vel.z+random(1,2), 0,168);
 		BEXP EEE 2 bright A_FadeOut(0.3);
