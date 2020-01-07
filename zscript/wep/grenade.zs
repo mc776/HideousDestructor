@@ -498,7 +498,7 @@ class HDFragGrenadeRoller:HDActor{
 				xpl.target=target;xpl.master=master;xpl.stamina=stamina;
 			A_SpawnChunks("BigWallChunk",14,4,12);
 			A_SpawnChunks("HDB_frag",360,300,900);
-			spawn("DistantRocket",pos,ALLOW_REPLACE);
+			distantnoise.make(self,"world/rocketfar");
 		}
 		stop;
 	}
@@ -559,7 +559,7 @@ class HDFragGrenade:SlowProjectile{
 			super.tick();
 		}else{
 			if(inthesky){
-				spawn("DistantRocket",pos,ALLOW_REPLACE);
+				distantnoise.make(self,"world/rocketfar");
 				A_SpawnChunks("HDB_frag",360,300,900);
 				destroy();return;
 			}

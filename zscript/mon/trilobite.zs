@@ -101,7 +101,7 @@ class FooFighter:HDActor{
 					immolateradius:72,immolateamount:random(30,80),immolatechance:40,
 					hurtspecies:false
 				);
-				spawn("distantrifle",pos,ALLOW_REPLACE);
+				distantnoise.make(self,"caco/bigexplodefar");
 				A_StartSound("caco/bigexplode",CHAN_VOICE);
 				A_StartSound("caco/ballecho",CHAN_BODY);
 				A_StartSound("caco/bigcrack",5);
@@ -446,7 +446,7 @@ class Trilobite:HDMobBase replaces Cacodemon{
 			}else A_StartSound("caco/sight",CHAN_VOICE);
 		}
 		HEAD D 24{
-			spawn("DistantShotgun",pos,ALLOW_REPLACE);
+			distantnoise.make(self,"caco/bigexplodefar2");
 			A_StartSound("caco/bigshot",CHAN_WEAPON);
 			A_ChangeVelocity(-cos(pitch)*3,0,sin(pitch),CVF_RELATIVE);
 			if(charge==666){
@@ -608,14 +608,14 @@ class kekb:HDBulletActor{
 			immolateradius:256,immolateamount:-200,immolatechance:90
 		);
 		A_SprayDecal("BusterScorch",14);
-		spawn("DistantRocket",pos,ALLOW_REPLACE);
-		spawn("DoubleDistantShotgun",pos,ALLOW_REPLACE);
+		distantnoise.make(self,"world/rocketfar");
+		distantnoise.make(self,"caco/bigexplodefar2",2.);
 		DistantQuaker.Quake(self,
 			5,50,2048,8,128,256,256
 		);
 
 		//check floor and ceiling and spawn more debris
-		spawn("DistantRocket",pos,ALLOW_REPLACE);
+		distantnoise.make(self,"world/rocketfar");
 		for(int i=0;i<3;i++)A_SpawnItemEx("WallChunker",
 			frandom(-4,4),frandom(-4,4),-4,
 			flags:SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS

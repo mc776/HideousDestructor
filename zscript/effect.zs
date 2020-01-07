@@ -2,6 +2,15 @@
 //   Misc. effects
 // ------------------------------------------------------------
 
+//channel constants
+enum HDSoundChannels{
+	CHAN_WEAPONBODY=8,  //for weapon sounds that are not the gun firing
+	CHAN_POCKETS=9,  //for pocket sounds in reloading, etc.
+	CHAN_ARCZAP=69420,  //electrical zapping arc noises
+	CHAN_DISTANT=4047,  //distant gunfire sounds
+}
+
+
 //debris actor: simplified physics, just bounce until dead and lie still, +noblockmap
 //basically we just need to account for conveyors and platforms
 class HDDebris:HDActor{
@@ -567,6 +576,63 @@ class HDFader:HDCopyTrail{
 	}
 }
 
+
+//thinker used to generate distant sound
+//DistantNoise.Make(self,"weapons/shotgunfar");
+class DistantNoise:Thinker{
+	sound distantsound;
+	int distances[MAXPLAYERS];
+	int ticker;
+	double volume,volume2;
+	static void Make(
+		actor source,
+		sound distantsound,
+		double volume=1.
+	){
+		DistantNoise dnt=new("DistantNoise");
+		dnt.ticker=0;
+		dnt.distantsound=distantsound;
+		dnt.volume=min(1.,volume);
+		dnt.volume2=clamp(volume-1.,0,1.);
+		for(int i=0;i<MAXPLAYERS;i++){
+			if(
+				playeringame[i]
+				&&!!players[i].mo
+			){
+				dnt.distances[i]=players[i].mo.distance3d(source)/HDCONST_SPEEDOFSOUND;
+			}else dnt.distances[i]=-1;
+		}
+	}
+	override void Tick(){
+		if(level.isfrozen())return;
+		int playersleft=0;
+		for(int i=0;i<MAXPLAYERS;i++){
+			if(distances[i]<0)continue;
+			if(
+				!!players[i].mo
+			){
+				playersleft++;
+				if(distances[i]==ticker){
+					distances[i]=-1;
+					players[i].mo.A_StartSound(
+						distantsound,CHAN_DISTANT,
+						CHANF_OVERLAP|CHANF_LOCAL,
+						volume
+					);
+					if(volume2)players[i].mo.A_StartSound(
+						distantsound,CHAN_DISTANT,
+						CHANF_OVERLAP|CHANF_LOCAL,
+						volume2
+					);
+				}
+			}
+		}
+		if(playersleft)ticker++;
+		else destroy();
+	}
+}
+
+//old
 //distant noise generator designed to imitate speed of sound
 //generates a noisemaker for each player with its own delay based on distance
 //special usages: deathsound=sound to make; mass=length of the sound

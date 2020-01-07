@@ -108,7 +108,7 @@ class GyroGrenade:SlowProjectile{
 			actor xpl=spawn("Gyrosploder",pos-(0,0,1),ALLOW_REPLACE);
 			xpl.target=target;xpl.master=master;xpl.stamina=stamina;
 		}else{
-			spawn("DistantRocket",pos,ALLOW_REPLACE);
+			distantnoise.make(self,"world/rocketfar");
 		}
 		A_SpawnChunks("HDB_frag",180,100,700+50*stamina);
 		destroy();return;
@@ -204,7 +204,7 @@ class HDHEAT:GyroGrenade{
 			);
 			actor xpl=spawn("Gyrosploder",self.pos-(0,0,1),ALLOW_REPLACE);
 			xpl.target=target;xpl.master=master;xpl.stamina=stamina;
-		}else{spawn("DistantRocket",self.pos,ALLOW_REPLACE);}
+		}else distantnoise.make(self,"world/rocketfar");
 		A_SpawnChunks("HDB_frag",80,100,600);
 
 		destroy();return;
@@ -226,7 +226,7 @@ class Gyrosploder:HDActor{
 	override void postbeginplay(){
 		super.postbeginplay();
 		A_ChangeVelocity(1,0,0,CVF_RELATIVE);
-		A_SpawnItemEx("DistantRocket",flags:SXF_NOCHECKPOSITION);
+		distantnoise.make(self,"world/rocketfar");
 	}
 	states{
 	death:

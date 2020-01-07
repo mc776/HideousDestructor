@@ -160,7 +160,7 @@ class HDArcPuff:HDActor{
 	}
 	states{
 	spawn:
-		TNT1 A 5 A_StartSound("misc/arczap",69420,CHANF_OVERLAP,volume:0.1,attenuation:0.4);
+		TNT1 A 5 A_StartSound("misc/arczap",CHAN_ARCZAP,CHANF_OVERLAP,volume:0.1,attenuation:0.4);
 		stop;
 	}
 }
