@@ -61,7 +61,6 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 			&&!(self is "BotBot")
 		)A_Log(string.format("\cf%s died.",nickname));
 		timesdied++;
-		bpushable=false;
 		super.die(source,inflictor,dmgflags);
 	}
 	override void beginplay(){
@@ -70,7 +69,6 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		spread=0;
 		timesdied=0;
 		jammed=0;
-		if(bfriendly)bpushable=true;
 
 		//weapon
 		pistolloaded=15;
@@ -887,12 +885,11 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		#### E 0 A_Jump(256,"missile");
 
 	death.bleedout:
-		#### H 5{bpushable=false;}
-		#### I 5;
+		#### HI 5;
 		---- A 0 setstatelabel("deathpostscream");
 	death:
 		---- A 0 A_DeathZombieZombieDeath();
-		#### H 5{bpushable=false;}
+		#### H 5;
 		#### I 5 A_HDMScream();
 	deathpostscream:
 		#### JK 5;
@@ -909,7 +906,6 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 
 			lastinginjury=random(0,(lastinginjury>>3));
 			A_SetSolid();
-			if(bfriendly)bpushable=true;
 		}
 		#### MMK 7 A_SpawnItemEx("MegaBloodSplatter",0,0,4,
 			vel.x,vel.y,vel.z,0,
@@ -1331,7 +1327,7 @@ class GhostMarine:HDMobBase{
 	}
 	default{
 		+noblooddecals
-		+shootable +noblockmonst +ghost +shadow -solid -pushable
+		+shootable +noblockmonst +ghost +shadow -solid
 		+nopain +nofear +seeinvisible +nodamage +nonshootable
 		+noclip
 		+frightening
