@@ -583,17 +583,19 @@ class DistantNoise:Thinker{
 	sound distantsound;
 	int distances[MAXPLAYERS];
 	int ticker;
-	double volume,volume2;
+	double volume,volume2,pitch;
 	static void Make(
 		actor source,
 		sound distantsound,
-		double volume=1.
+		double volume=1.,
+		double pitch=1.
 	){
 		DistantNoise dnt=new("DistantNoise");
 		dnt.ticker=0;
 		dnt.distantsound=distantsound;
 		dnt.volume=min(1.,volume);
 		dnt.volume2=clamp(volume-1.,0,1.);
+		dnt.pitch=pitch;
 		for(int i=0;i<MAXPLAYERS;i++){
 			if(
 				playeringame[i]
@@ -617,12 +619,12 @@ class DistantNoise:Thinker{
 					players[i].mo.A_StartSound(
 						distantsound,CHAN_DISTANT,
 						CHANF_OVERLAP|CHANF_LOCAL,
-						volume
+						volume,pitch:pitch
 					);
 					if(volume2)players[i].mo.A_StartSound(
 						distantsound,CHAN_DISTANT,
 						CHANF_OVERLAP|CHANF_LOCAL,
-						volume2
+						volume2,pitch:pitch
 					);
 				}
 			}
