@@ -435,6 +435,7 @@ class HDFragGrenades:HDGrenadethrower{
 		hdgrenadethrower.throwtype "HDFragGrenade";
 		hdgrenadethrower.spoontype "HDFragSpoon";
 		hdgrenadethrower.wiretype "Tripwire";
+		inventory.icon "FRAGA0";
 	}
 }
 class HDFragGrenadeRoller:HDActor{
