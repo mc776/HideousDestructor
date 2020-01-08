@@ -129,7 +129,7 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 
 		//shoot the bullet
 		A_StartSound("weapons/vulcanette",CHAN_WEAPON,CHANF_OVERLAP);
-		HDBulletActor.FireBullet(self,"HDB_426",spread:2,distantsounder:"DistantVulc");
+		HDBulletActor.FireBullet(self,"HDB_426",spread:2,distantsound:"world/vulcfar");
 		pitch+=frandom(-0.4,0.3);angle+=frandom(-0.3,0.3);
 		burstcount--;
 		chambers--;

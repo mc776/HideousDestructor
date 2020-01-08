@@ -40,7 +40,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 		let p=HDBulletActor.FireBullet(caller,"HDB_00",xyofs:barreladjust.x,
 			spread:spread,aimoffx:barreladjust.y,speedfactor:speedfactor,amount:10
 		);
-		p.spawn("DistantShotgun",p.pos,ALLOW_REPLACE);
+		distantnoise.make(p,"world/shotgunfar");
 	}
 	override string,double getpickupsprite(){return "SLAY"..getpickupframe().."0",1.;}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){

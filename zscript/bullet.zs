@@ -63,7 +63,8 @@ class HDB_50:HDBulletActor{
 		stamina 1270;
 		woundhealth 10;
 		hdbulletactor.hardness 3;
-		hdbulletactor.distantsounder "DoubleDistantRifle";
+		hdbulletactor.distantsound "world/riflefar";
+		hdbulletactor.distantsoundvol 3.;
 	}
 }
 class HDB_426:HDBulletActor{
@@ -75,7 +76,7 @@ class HDB_426:HDBulletActor{
 		stamina 426;
 		woundhealth 40;
 		hdbulletactor.hardness 2;
-		hdbulletactor.distantsounder "DistantRifle";
+		hdbulletactor.distantsound "world/riflefar";
 	}
 }
 class HDB_776:HDBulletActor{
@@ -87,7 +88,8 @@ class HDB_776:HDBulletActor{
 		stamina 776;
 		woundhealth 5;
 		hdbulletactor.hardness 4;
-		hdbulletactor.distantsounder "DoubleDistantRifle";
+		hdbulletactor.distantsound "world/riflefar";
+		hdbulletactor.distantsoundvol 2.;
 	}
 }
 class HDB_9:HDBulletActor{
@@ -121,7 +123,6 @@ class HDB_00:HDBulletActor{
 		stamina 838;
 		woundhealth 3;
 		hdbulletactor.hardness 5;
-		// hdbulletactor.distantsounder "DoubleDistantRifle"; //don't enable this here
 	}
 }
 class HDB_wad:HDBulletActor{
@@ -183,7 +184,8 @@ class HDB_bronto:HDBulletActor{
 		accuracy 600;
 		stamina 3700;
 
-		hdbulletactor.distantsounder "DoubleDistantShotgun";
+		hdbulletactor.distantsound "world/shotgunfar";
+		hdbulletactor.distantsoundvol 2.;
 		missiletype "HDGunsmoke";
 		scale 0.08;translation "128:151=%[1,1,1]:[0.2,0.2,0.2]";
 		seesound "weapons/riflecrack";
@@ -218,7 +220,7 @@ class HDB_bronto:HDBulletActor{
 		A_SpawnChunks("BigWallChunk",20,4,20);
 		A_SpawnChunks("HDSmoke",4,1,7);
 		aaa=spawn("HDExplosion",pos,ALLOW_REPLACE);aaa.vel.z=2;
-		spawn("DistantRocket",pos,ALLOW_REPLACE);
+		distantnoise.make(aaa,"world/rocketfar");
 		A_SpawnChunks("HDSmokeChunk",random(3,4),6,12);
 
 		bmissile=false;
@@ -297,8 +299,12 @@ class HDBulletActor:HDActor{
 	int hardness;
 	property hardness:hardness;
 
-	class<actor> distantsounder;
-	property distantsounder:distantsounder;
+	sound distantsound;
+	property distantsound:distantsound;
+	double distantsoundvol;
+	property distantsoundvol:distantsoundvol;
+	double distantsoundpitch;
+	property distantsoundpitch:distantsoundpitch;
 
 	enum BulletConsts{
 		BULLET_TERMINALVELOCITY=-277,
@@ -325,7 +331,9 @@ class HDBulletActor:HDActor{
 			stamina: 900, 776, 426, you get the idea
 			hardness: 1-5 - 1=pure lead, 5=steel (NOTE: this setting's bullets are (Teflon-coated) steel by default; will implement lead casts "later")
 		*/
-		hdbulletactor.distantsounder "none";
+		hdbulletactor.distantsound "";
+		hdbulletactor.distantsoundvol 1.;
+		hdbulletactor.distantsoundpitch 1.;
 		hdbulletactor.hardness 5;
 		pushfactor 0.05;
 		mass 160;
@@ -349,10 +357,7 @@ class HDBulletActor:HDActor{
 		resetrandoms();
 		super.postbeginplay();
 		gunsmoke();
-		if(distantsounder!="none"){
-			actor m=spawn(distantsounder,pos,ALLOW_REPLACE);
-			m.target=target;
-		}
+		if(distantsound!="")distantnoise.make(self,distantsound,distantsoundvol,distantsoundpitch);
 		if(hd_debug){
 			scale=(1.,1.);
 			sprite=getspriteindex("BAL1A0");
@@ -383,7 +388,9 @@ class HDBulletActor:HDActor{
 		double aimoffy=0,
 		double speedfactor=0,
 		int amount=1,
-		class<actor>distantsounder=null
+		sound distantsound="",
+		double distantsoundvol=1.,
+		double distantsoundpitch=1.
 	){
 		if(zofs==999)zofs=HDWeapon.GetShootOffset(
 			caller,caller.player
@@ -394,7 +401,12 @@ class HDBulletActor:HDActor{
 		do{
 			amount--;
 			bbb=HDBulletActor(spawn(type,(caller.pos.x,caller.pos.y,caller.pos.z+zofs)));
-			if(distantsounder!=null)bbb.distantsounder=distantsounder;
+			if(bbb.distantsound==""){
+				bbb.distantsound=distantsound;
+				bbb.distantsoundvol=distantsoundvol;
+				bbb.distantsoundpitch=distantsoundpitch;
+			}
+			if(distantsound!="")distantnoise.make(caller,distantsound,distantsoundvol);
 			if(xyofs)bbb.setorigin(bbb.pos+(sin(caller.angle)*xyofs,cos(caller.angle)*xyofs,0),false);
 
 			if(speedfactor>0)bbb.speed*=speedfactor;

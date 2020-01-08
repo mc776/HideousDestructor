@@ -583,7 +583,7 @@ class DistantNoise:Thinker{
 	sound distantsound;
 	int distances[MAXPLAYERS];
 	int ticker;
-	double volume,volume2,pitch;
+	double volume,pitch;
 	static void Make(
 		actor source,
 		sound distantsound,
@@ -593,8 +593,7 @@ class DistantNoise:Thinker{
 		DistantNoise dnt=new("DistantNoise");
 		dnt.ticker=0;
 		dnt.distantsound=distantsound;
-		dnt.volume=min(1.,volume);
-		dnt.volume2=clamp(volume-1.,0,1.);
+		dnt.volume=clamp(0.,volume,5.);
 		dnt.pitch=pitch;
 		for(int i=0;i<MAXPLAYERS;i++){
 			if(
@@ -616,16 +615,15 @@ class DistantNoise:Thinker{
 				playersleft++;
 				if(distances[i]==ticker){
 					distances[i]=-1;
-					players[i].mo.A_StartSound(
-						distantsound,CHAN_DISTANT,
-						CHANF_OVERLAP|CHANF_LOCAL,
-						volume,pitch:pitch
-					);
-					if(volume2)players[i].mo.A_StartSound(
-						distantsound,CHAN_DISTANT,
-						CHANF_OVERLAP|CHANF_LOCAL,
-						volume2,pitch:pitch
-					);
+					while(volume>0){
+						players[i].mo.A_StartSound(
+							distantsound,CHAN_DISTANT,
+							CHANF_OVERLAP|CHANF_LOCAL,
+							min(1.,volume),  //if we ever stop needing this clamp, delete the loop
+							pitch:pitch
+						);
+						volume-=1.;
+					}
 				}
 			}
 		}
@@ -634,84 +632,6 @@ class DistantNoise:Thinker{
 	}
 }
 
-//old
-//distant noise generator designed to imitate speed of sound
-//generates a noisemaker for each player with its own delay based on distance
-//special usages: deathsound=sound to make; mass=length of the sound
-class DistantDummy:IdleDummy{
-	default{
-		deathsound "world/riflefar";mass 20;
-	}
-	double dist;
-	states{
-	spawn:
-		TNT1 A 0 nodelay{
-			if(target)A_AlertMonsters();
-			for(int i=0;i<MAXPLAYERS;i++){
-				if((playeringame[i])&&(players[i].mo)){
-					dist=distance3d(players[i].mo);
-					if(dist>HDCONST_MINDISTANTSOUND){ //don't bother if too close
-						actor id=spawn("DistantNoisemaker",pos,ALLOW_REPLACE);
-						if(id){
-							id.target=players[i].mo;
-							id.deathsound=self.deathsound;
-							id.stamina=dist/HDCONST_SPEEDOFSOUND;
-							id.mass=self.mass;
-							id.bmissilemore=self.bmissilemore;
-						}
-					}
-				}
-			}
-		}stop;
-	}
-}
-class DistantNoisemaker:IdleDummy{
-	default{
-		mass 20;
-		deathsound "world/riflefar";
-	}
-	states{
-	spawn:
-		TNT1 A 1 nodelay A_SetTics(stamina);
-		TNT1 A 0{
-			if(
-				abs(pos.x)>30000
-				||abs(pos.y)>30000
-				||abs(pos.z)>30000
-			){
-				destroy();return;
-			}
-			A_StartSound(deathsound,CHAN_VOICE,attenuation:24);
-			if(bmissilemore)A_StartSound(deathsound,CHAN_WEAPON,attenuation:24);
-		}
-		TNT1 A 1{
-			if(target && mass>0){
-				self.mass--;
-				setxyz(target.pos);
-			}else{destroy();return;}
-		}wait;
-	}
-}
-class DistantRifle:DistantDummy{
-	default{deathsound "world/riflefar";mass 18;}
-}
-class DistantHERP:DistantRifle{default{deathsound "world/herpfar";}}
-class DistantVulc:DistantRifle{default{deathsound "world/vulcfar";}}
-class DistantShotgun:DistantDummy{
-	default{deathsound "world/shotgunfar";mass 34;}
-}
-class DistantRocket:DistantDummy{
-	default{deathsound "world/rocketfar";mass 21;}
-}
-class DistantBFG:DistantDummy{
-	default{deathsound "world/bfgfar";mass 44;}
-}
-class DoubleDistantRifle:DistantRifle{
-	default{+missilemore}
-}
-class DoubleDistantShotgun:DistantShotgun{ //USED FOR BRONTORNIS, DO NOT DELETE
-	default{+missilemore}
-}
 
 
 //Quake effect affecting each player differently depending on distance
@@ -979,3 +899,85 @@ class TeleFog:IdleDummy replaces TeleportFog{
 }
 
 
+
+
+
+
+
+//deprecated, delete later
+
+//distant noise generator designed to imitate speed of sound
+//generates a noisemaker for each player with its own delay based on distance
+//special usages: deathsound=sound to make; mass=length of the sound
+class DistantDummy:IdleDummy{
+	default{
+		deathsound "world/riflefar";mass 20;
+	}
+	double dist;
+	states{
+	spawn:
+		TNT1 A 0 nodelay{
+			console.printf("DistantDummy is deprecated. Please use DistantNoise.Make() instead.");
+			if(target)A_AlertMonsters();
+			for(int i=0;i<MAXPLAYERS;i++){
+				if((playeringame[i])&&(players[i].mo)){
+					dist=distance3d(players[i].mo);
+					if(dist>HDCONST_MINDISTANTSOUND){ //don't bother if too close
+						actor id=spawn("DistantNoisemaker",pos,ALLOW_REPLACE);
+						if(id){
+							id.target=players[i].mo;
+							id.deathsound=self.deathsound;
+							id.stamina=dist/HDCONST_SPEEDOFSOUND;
+							id.mass=self.mass;
+							id.bmissilemore=self.bmissilemore;
+						}
+					}
+				}
+			}
+		}stop;
+	}
+}
+class DistantNoisemaker:IdleDummy{
+	default{
+		mass 20;
+		deathsound "world/riflefar";
+	}
+	states{
+	spawn:
+		TNT1 A 1 nodelay A_SetTics(stamina);
+		TNT1 A 0{
+			if(
+				abs(pos.x)>30000
+				||abs(pos.y)>30000
+				||abs(pos.z)>30000
+			){
+				destroy();return;
+			}
+			A_StartSound(deathsound,CHAN_VOICE,attenuation:24);
+			if(bmissilemore)A_StartSound(deathsound,CHAN_WEAPON,attenuation:24);
+		}
+		TNT1 A 1{
+			if(target && mass>0){
+				self.mass--;
+				setxyz(target.pos);
+			}else{destroy();return;}
+		}wait;
+	}
+}
+class DistantRifle:DistantDummy{
+	default{deathsound "world/riflefar";mass 18;}
+}
+class DistantHERP:DistantRifle{default{deathsound "world/herpfar";}}
+class DistantVulc:DistantRifle{default{deathsound "world/vulcfar";}}
+class DistantShotgun:DistantDummy{
+	default{deathsound "world/shotgunfar";mass 34;}
+}
+class DistantRocket:DistantDummy{
+	default{deathsound "world/rocketfar";mass 21;}
+}
+class DistantBFG:DistantDummy{
+	default{deathsound "world/bfgfar";mass 44;}
+}
+class DoubleDistantRifle:DistantRifle{
+	default{+missilemore}
+}

@@ -36,7 +36,7 @@ class Hunter:HDShotgun{
 		let p=HDBulletActor.FireBullet(caller,"HDB_00",
 			spread:spread,speedfactor:speedfactor,amount:10
 		);
-		p.spawn("DistantShotgun",p.pos,ALLOW_REPLACE);
+		distantnoise.make(p,"world/shotgunfar");
 		caller.A_StartSound("weapons/hunter",CHAN_WEAPON);
 		return shotpower;
 	}
