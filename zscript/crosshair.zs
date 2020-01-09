@@ -55,7 +55,6 @@ extend class HDStatusBar{
 		actor hpc=hpl.scopecamera;
 		int cpbt=cplayer.cmd.buttons;
 
-		bob*=scl;
 		bool scopeview=!!hpc&&(
 			!nscp
 			||cpbt&BT_ZOOM
