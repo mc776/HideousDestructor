@@ -516,22 +516,27 @@ class BossRifle:HDWeapon{
 			else A_StartSound("weapons/pocket",9);
 		}goto loadhandloop;
 	loadclip:
-		BARG AA 4 offset(16,50) A_StartSound("weapons/rifleclick2",8);
-		BARG AA 3 offset(17,52) A_StartSound("weapons/rifleclick2",8,pitch:1.01);
-		BARG AAAAAA 2 offset(16,50) A_StartSound("weapons/rifleclick2",8,CHANF_OVERLAP,pitch:1.02);
-		BARG A 4 offset(14,46){
+		BARG A 4 offset(16,50) A_StartSound("weapons/rifleclick2",8);
+		BARG AAA 3 offset(17,52) A_StartSound("weapons/rifleclick2",8,pitch:1.01);
+		BARG AAA 2 offset(16,50) A_StartSound("weapons/rifleclick2",8,CHANF_OVERLAP,pitch:1.02);
+		BARG AAA 1 offset(15,48) A_StartSound("weapons/rifleclick2",8,CHANF_OVERLAP,pitch:1.02);
+		BARG A 2 offset(14,46){
 			A_StartSound("weapons/rifleclick",CHAN_WEAPON);
 			let ccc=hdmagammo(findinventory("HD7mClip"));
 			if(ccc){
-				ccc.addamag(0);
 				invoker.weaponstatus[BOSSS_MAG]=ccc.TakeMag(true);
+				if(pressingreload()){
+					ccc.addamag(0);
+					A_SetTics(10);
+					A_StartSound("weapons/pocket",CHAN_POCKETS);
+				}else HDMagAmmo.SpawnMag(self,"HD7mClip",0);
 			}
 		}goto reloaddone;
 	reloaddone:
 		BARG A 1 offset(4,40);
 		BARG A 1 offset(2,36);
 		BARG A 1 offset(0,34);
-		goto ready;
+		goto nope;
 	unload:
 		BARG A 1 offset(0,34);
 		BARG A 1 offset(2,36);

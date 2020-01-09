@@ -166,8 +166,8 @@ class HDMagAmmo:HDAmmo{
 	//mostly for unloads
 	static actor SpawnMag(actor giver,class<inventory> type,int giveamt){
 		if(giveamt<0)return null;
-		let mmm=HDMagAmmo(giver.spawn(type,giver.pos,ALLOW_REPLACE));
-		mmm.addz(giver.height-12);mmm.angle=giver.angle;
+		let mmm=HDMagAmmo(giver.spawn(type,(giver.pos.xy,giver.pos.z+giver.height-12),ALLOW_REPLACE));
+		mmm.angle=giver.angle;
 		mmm.A_ChangeVelocity(2,0,-1,CVF_RELATIVE);
 		mmm.vel+=giver.vel;
 		mmm.amount=0;
