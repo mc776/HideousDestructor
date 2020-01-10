@@ -970,6 +970,14 @@ class SpareWeapons:HDPickup{
 		}
 		return null;
 	}
+	//retrieve the int from one specific slot from one specific weapon index
+	int GetWeaponValue(int wepindex,int statusslot){
+		if(weaponstatus.size()<=wepindex)return -1;
+		array<string> wepstat;
+		string wepstat2="";
+		weaponstatus[wepindex].split(wepstat,",");
+		return wepstat[statusslot].toint();
+	}
 	//shortcut for changing values in a stowed weapon
 	void ChangeWeaponValue(
 		int wepindex,
