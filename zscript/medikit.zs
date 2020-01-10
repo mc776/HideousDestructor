@@ -116,6 +116,7 @@ enum MediNums{
 	MEDS_SECONDFLESH=1,
 	MEDS_USEDON=2,
 	MEDS_ACCURACY=3,
+	MEDS_BLOOD=4,
 }
 class HDMedikitter:HDWoundFixer{
 	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
@@ -312,6 +313,7 @@ class HDMedikitter:HDWoundFixer{
 		TNT1 A 1{
 			A_StartSound("medikit/staple",CHAN_WEAPON);
 			A_StartSound("misc/bulletflesh",CHAN_BODY,CHANF_OVERLAP);
+			invoker.weaponstatus[MEDS_BLOOD]+=random(0,2);
 			if(hdplayerpawn(self)){
 				hdplayerpawn(self).secondflesh++;
 			}else givebody(3);
@@ -320,6 +322,7 @@ class HDMedikitter:HDWoundFixer{
 		TNT1 A 1{
 			A_StartSound("medikit/stopper",CHAN_WEAPON,CHANF_OVERLAP);
 			A_StartSound("misc/bulletflesh",CHAN_BODY,CHANF_OVERLAP);
+			invoker.weaponstatus[MEDS_BLOOD]+=random(1,2);
 		}goto flashend;
 	flashend:
 		TNT1 A 1{
@@ -437,6 +440,7 @@ class HDMedikitter:HDWoundFixer{
 		}
 		TNT1 AAAAA 3{
 			A_StartSound("medikit/staple",CHAN_WEAPON);
+			invoker.weaponstatus[MEDS_BLOOD]+=random(0,1);
 			let itg=invoker.target;
 			if(itg){
 				itg.A_StartSound("misc/smallslop",CHAN_BODY,CHANF_OVERLAP);
@@ -456,6 +460,7 @@ class HDMedikitter:HDWoundFixer{
 	applythathotshit:
 		TNT1 A 10{
 			if(invoker.target){
+				invoker.weaponstatus[MEDS_BLOOD]+=random(1,2);
 				int fleshgive=min(MEDIKIT_FLESHGIVE,invoker.weaponstatus[MEDS_SECONDFLESH]);
 				invoker.weaponstatus[MEDS_SECONDFLESH]-=fleshgive;
 				invoker.target.A_StartSound("medikit/stopper",CHAN_WEAPON);
@@ -550,11 +555,16 @@ class HDMedikitter:HDWoundFixer{
 
 	spawn:
 		MEDI B -1 nodelay{
-			if(invoker.weaponstatus[MEDS_USEDON]>=0){
+			if(
+				invoker.weaponstatus[MEDS_USEDON]>=0
+			){
 				frame=2;
-				actor bbb=spawn("BloodSplatSilent",pos,ALLOW_REPLACE);
-				if(bbb)bbb.vel=vel;
-				tics=random(10,600);
+				if(invoker.weaponstatus[MEDS_BLOOD]>0){
+					actor bbb=spawn("BloodSplatSilent",pos,ALLOW_REPLACE);
+					if(bbb)bbb.vel=vel;
+					tics=random(10,500-invoker.weaponstatus[MEDS_BLOOD]);
+					invoker.weaponstatus[MEDS_BLOOD]--;
+				}
 			}
 		}wait;
 	}
