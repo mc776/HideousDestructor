@@ -927,7 +927,7 @@ class HERPUsable:HDWeapon{
 		if(spw){
 			for(int i=0;i<spw.weapontype.size();i++){
 				if(
-					spw.weapontype[i]=="HERPUsable"
+					spw.weapontype[i]==getclassname()
 					&&spw.GetWeaponValue(i,0)&HERPF_BROKEN
 				){
 					if(spareindex==-1)spareindex=i;
@@ -948,6 +948,7 @@ class HERPUsable:HDWeapon{
 				spw.weaponbulk.delete(spareindex);
 				spw.weapontype.delete(spareindex);
 				spw.weaponstatus.delete(spareindex);
+				owner.A_Log("Another H.E.R.P. was cannibalized for parts.",true);
 			}
 		}else owner.A_StartSound("herp/repairtry",CHAN_WEAPONBODY,CHANF_OVERLAP,
 			volume:frandom(0.6,1.),pitch:frandom(0.7,1.4)
