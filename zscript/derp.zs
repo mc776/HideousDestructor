@@ -464,6 +464,94 @@ class DERPUsable:HDWeapon{
 	action void A_AddOffset(int ofs){
 		invoker.weaponstatus[DERPS_USEOFFS]+=ofs;
 	}
+
+
+	static int backpackrepairs(actor owner,hdbackpack bp){
+		if(!owner||!bp)return 0;
+		int derpindex=bp.invclasses.find("derpusable");
+		int fixbonus=0;
+		if(derpindex<bp.invclasses.size()){
+			array<string> inbp;
+			bp.amounts[derpindex].split(inbp," ");
+			for(int i=0;i<inbp.size();i+=(HDWEP_STATUSSLOTS+1)){
+				int inbpi=inbp[i].toint();
+				if(inbpi&DERPF_BROKEN){
+					if(!random(0,6-fixbonus)){
+						//fix
+						inbpi&=~DERPF_BROKEN;
+						inbp[i]=""..inbpi;
+						if(fixbonus>0)fixbonus--;
+						owner.A_Log("You repair one of the broken D.E.R.P.s in your backpack.",true);
+					}else if(!random(0,6)){
+						fixbonus++;
+						//delete and restart
+						for(int j=0;j<(HDWEP_STATUSSLOTS+1);j++){
+							inbp.delete(i);
+						}
+						i=0;
+						owner.A_Log("You destroy one of the broken D.E.R.P.s in your backpack in your repair efforts.",true);
+					}
+				}
+			}
+			string replaceamts="";
+			for(int i=0;i<inbp.size();i++){
+				if(i)replaceamts=replaceamts.." "..inbp[i];
+				else replaceamts=inbp[i];
+			}
+			bp.amounts[derpindex]=replaceamts;
+			bp.updatemessage(bp.index);
+		}
+		return fixbonus;
+	}
+	override void consolidate(){
+		if(!owner)return;
+		int fixbonus=backpackrepairs(owner,hdbackpack(owner.findinventory("HDBackpack")));
+		let spw=spareweapons(owner.findinventory("spareweapons"));
+		if(spw){
+			for(int i=0;i<spw.weapontype.size();i++){
+				if(spw.weapontype[i]!=getclassname())continue;
+				array<string>wpst;wpst.clear();
+				spw.weaponstatus[i].split(wpst,",");
+				int wpstint=wpst[0].toint();
+				if(
+					wpstint&DERPF_BROKEN
+				){
+					if(!random(0,max(0,6-fixbonus))){
+						if(fixbonus>0)fixbonus--;
+						wpstint&=~DERPF_BROKEN;
+						owner.A_Log("You repair one of your broken D.E.R.P.s.",true);
+						string newwepstat=spw.weaponstatus[i];
+						newwepstat=wpstint..newwepstat.mid(newwepstat.indexof(","));
+						spw.weaponstatus[i]=newwepstat;
+					}else if(!random(0,6)){
+						//delete
+						fixbonus++;
+						spw.weaponbulk.delete(i);
+						spw.weapontype.delete(i);
+						spw.weaponstatus.delete(i);
+						owner.A_Log("You destroy one of your broken D.E.R.P.s in your repair efforts.",true);
+						//go back to start
+						i=0;
+						continue;
+					}
+				}
+			}
+		}
+		if(
+			(weaponstatus[0]&DERPF_BROKEN)
+			&&!random(0,7-fixbonus)
+		){
+			weaponstatus[0]&=~DERPF_BROKEN;
+			owner.A_Log("You manage some improvised field repairs to your D.E.R.P. robot.",true);
+		}
+	}
+	override void DropOneAmmo(int amt){
+		if(owner){
+			amt=clamp(amt,1,10);
+			if(owner.countinv("HDPistolAmmo"))owner.A_DropInventory("HDPistolAmmo",amt*15);
+			else owner.A_DropInventory("HD9mMag15",amt);
+		}
+	}
 	override void ForceBasicAmmo(){
 		owner.A_TakeInventory("HDPistolAmmo");
 		owner.A_TakeInventory("HD9mMag30");

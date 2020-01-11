@@ -774,9 +774,10 @@ extend class HDBackpack{
 			thisinv.maxamount=maxinvbak;
 		}
 
-		//arbitrary hard-code: repair H.E.R.P.s even if all of them have been backpacked.
+		//arbitrary hard-code: repair *E.R.P.s even if all of them have been backpacked.
 		//wanted: sane way to give weapons the same unpack-consolidate-repack treatment.
 		if(!owner.findinventory("HERPUsable"))herpusable.backpackrepairs(owner,self);
+		if(!owner.findinventory("DERPUsable"))derpusable.backpackrepairs(owner,self);
 	}
 
 	//increase maxamount by backpackamount
