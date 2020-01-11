@@ -779,7 +779,11 @@ extend class HDPlayerPawn{
 		}
 
 		A_GiveInventory("PowerFrightener",1);
-		ConsolidateAmmo();
+		if(
+			player
+			&&player
+			&&cvar.getcvar("hd_consolidate",player).getbool()
+		)ConsolidateAmmo();
 
 		if(player){
 			Shader.SetEnabled(player,"NiteVis",false);

@@ -413,6 +413,8 @@ Logs the distance of the object or map geometry you're pointing at.
 
 * `hd_maglimit` (0): This limits the number of mags you can pick up before you reach your actual encumbrance limit. You can set this temporarily to rapidly pick up/swap out a pile of mags until you have the fullest ones. 0 means no limit. Alternatively, you can hold Firemode while attempting to pick up a mag to force swapping mode.
 
+* `hd_consolidate` (true): By default, when you change maps you are assume to do some inventory management including consolidating all your mags to concentrate everything in as few mags as possible, and attempting to repair robots (and cannibalizing some broken ones in the process). Disable this option if you prefer to manage all this yourself.
+
 * `hd_clearucv`: Resets all archived user options to their defaults.
 
 ### CVars (user-based): weapon default options
