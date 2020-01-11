@@ -433,12 +433,29 @@ class DERPUsable:HDWeapon{
 			sb.psmallfont,mode,(0,54)+bob,
 			sb.DI_TEXT_ALIGN_CENTER|sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER
 		);
+
+
+		if(sb.hudlevel==1){
+			int nextmagloaded=sb.GetNextLoadMag(hdmagammo(hpl.findinventory("HD9mMag15")));
+			if(nextmagloaded>=15){
+				sb.drawimage("CLP2NORM",(-46,-3),sb.DI_SCREEN_CENTER_BOTTOM,scale:(1,1));
+			}else if(nextmagloaded<1){
+				sb.drawimage("CLP2EMPTY",(-46,-3),sb.DI_SCREEN_CENTER_BOTTOM,alpha:nextmagloaded?0.6:1.,scale:(1,1));
+			}else sb.drawbar(
+				"CLP2NORM","CLP2GREY",
+				nextmagloaded,15,
+				(-46,-3),-1,
+				sb.SHADER_VERT,sb.DI_SCREEN_CENTER_BOTTOM
+			);
+			sb.drawnum(hpl.countinv("HD9mMag15"),-43,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+		}
+		sb.drawwepnum(hdw.weaponstatus[DERPS_AMMO],15);
 	}
 	override string gethelptext(){
 		return
 		WEPHELP_FIRE.."  Deploy\n"
 		..WEPHELP_ALTFIRE.."  Cycle modes\n"
-		..WEPHELP_FIREMODE.."+"..WEPHELP_UPDOWN.."  Set BotID"
+		..WEPHELP_FIREMODE.."+"..WEPHELP_UPDOWN.."  Set BotID\n"
 		..WEPHELP_RELOADRELOAD
 		..WEPHELP_UNLOADUNLOAD
 		;
@@ -548,6 +565,7 @@ class DERPUsable:HDWeapon{
 				HDMagAmmo.SpawnMag(self,"HD9mMag15",ammount);
 				setweaponstate("nope");
 			}
+			invoker.weaponstatus[DERPS_AMMO]=-1;
 		}
 		TNT1 A 20 A_StartSound("weapons/pocket",CHAN_POCKETS);
 		goto nope;
