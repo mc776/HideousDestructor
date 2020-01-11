@@ -9,7 +9,7 @@ enum DerpConst{
 	DERP_PATROL=3,
 	DERP_RANGE=320,
 
-	DERPS_MODESEL=1,
+	DERPS_MODE=1,
 	DERPS_USEOFFS=2,
 	DERPS_AMMO=3,
 	DERPS_BOTID=4,
@@ -246,6 +246,7 @@ class DERPBot:HDUPK{
 	give:
 		DERP A 0{
 			stuckline=null;bnogravity=false;
+			oldcmd=cmd;
 			if(cmd!=DERP_AMBUSH){
 				A_StartSound("weapons/rifleclick2",CHAN_AUTO);
 				cmd=DERP_AMBUSH;
@@ -254,6 +255,7 @@ class DERPBot:HDUPK{
 			if(ddd){
 				ddd.weaponstatus[DERPS_AMMO]=ammo;
 				ddd.weaponstatus[DERPS_BOTID]=botid;
+				ddd.weaponstatus[DERPS_MODE]=oldcmd;
 				if(health<1)ddd.weaponstatus[0]|=DERPF_BROKEN;
 				ddd.translation=self.translation;
 				grabthinker.grab(target,ddd);
@@ -377,12 +379,12 @@ class DERPUsable:HDWeapon{
 	override void InitializeWepStats(bool idfa){
 		weaponstatus[DERPS_BOTID]=1;
 		weaponstatus[DERPS_AMMO]=15;
-		weaponstatus[DERPS_MODESEL]=1;
+		weaponstatus[DERPS_MODE]=DERP_TURRET;
 		if(idfa)weaponstatus[0]&=~DERPF_BROKEN;
 	}
 	override void loadoutconfigure(string input){
 		int mode=getloadoutvar(input,"mode",1);
-		if(mode>0)weaponstatus[DERPS_MODESEL]=clamp(mode,1,3);
+		if(mode>0)weaponstatus[DERPS_MODE]=clamp(mode,1,3);
 	}
 	override double weaponbulk(){
 		int mgg=weaponstatus[DERPS_AMMO];
@@ -412,7 +414,7 @@ class DERPUsable:HDWeapon{
 
 		if(ofs>30)return;
 
-		int mno=hdw.weaponstatus[DERPS_MODESEL];
+		int mno=hdw.weaponstatus[DERPS_MODE];
 		string mode;
 		if(mno==DERP_TURRET)mode="\caTURRET";
 		else if(mno==DERP_AMBUSH)mode="\ccAMBUSH";
@@ -559,7 +561,11 @@ class DERPUsable:HDWeapon{
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
-		if(owner&&owner.player)weaponstatus[DERPS_MODESEL]=cvar.getcvar("hd_derpmode",owner.player).getint();
+		if(
+			owner
+			&&owner.player
+			&&owner.getage()<5
+		)weaponstatus[DERPS_MODE]=cvar.getcvar("hd_derpmode",owner.player).getint();
 	}
 	states{
 	spawn:
@@ -595,11 +601,11 @@ class DERPUsable:HDWeapon{
 				}
 			}
 			if(justpressed(BT_ALTATTACK)){
-				int mode=invoker.weaponstatus[DERPS_MODESEL];
+				int mode=invoker.weaponstatus[DERPS_MODE];
 				if(pressinguse())mode--;else mode++;
 				if(mode<1)mode=3;
 				else if(mode>3)mode=1;
-				invoker.weaponstatus[DERPS_MODESEL]=mode;
+				invoker.weaponstatus[DERPS_MODE]=mode;
 				return;
 			}
 			A_WeaponReady(WRF_NOFIRE|WRF_ALLOWRELOAD|WRF_ALLOWUSER4);
@@ -639,7 +645,7 @@ class DERPUsable:HDWeapon{
 			);
 			let derp=derpbot(a);
 			derp.vel+=vel;
-			derp.cmd=invoker.weaponstatus[DERPS_MODESEL];
+			derp.cmd=invoker.weaponstatus[DERPS_MODE];
 			derp.botid=invoker.weaponstatus[DERPS_BOTID];
 			derp.ammo=invoker.weaponstatus[DERPS_AMMO];
 
