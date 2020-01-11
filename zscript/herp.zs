@@ -909,6 +909,7 @@ class HERPUsable:HDWeapon{
 
 	action void A_RepairAttempt(){
 		if(!invoker.RepairAttempt())return;
+		if(!(invoker.weaponstatus[0]&HERPF_BROKEN))A_SetHelpText();
 		A_MuzzleClimb(
 			frandom(-1.,1.),frandom(-1.,1.),
 			frandom(-1.,1.),frandom(-1.,1.),

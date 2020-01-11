@@ -453,7 +453,8 @@ class DERPUsable:HDWeapon{
 	}
 	override string gethelptext(){
 		return
-		WEPHELP_FIRE.."  Deploy\n"
+		((weaponstatus[0]&DERPF_BROKEN)?
+		(WEPHELP_FIRE.."+"..WEPHELP_RELOAD.."  Repair\n"):(WEPHELP_FIRE.."  Deploy\n"))
 		..WEPHELP_ALTFIRE.."  Cycle modes\n"
 		..WEPHELP_FIREMODE.."+"..WEPHELP_UPDOWN.."  Set BotID\n"
 		..WEPHELP_RELOADRELOAD
@@ -615,6 +616,7 @@ class DERPUsable:HDWeapon{
 			}
 			if(!random(0,failchance)){
 				invoker.weaponstatus[0]&=~DERPF_BROKEN;
+				A_SetHelpText();
 				A_StartSound("derp/repair",CHAN_WEAPON);
 				A_Log("You bring your H.E.R.P. back into working condition.",true);
 				//destroy one spare
