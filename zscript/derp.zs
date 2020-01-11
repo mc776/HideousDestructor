@@ -523,6 +523,11 @@ class DERPUsable:HDWeapon{
 		TNT1 A 4 A_StartSound("weapons/pismagclick",CHAN_WEAPON);
 		TNT1 A 2 A_StartSound("derp/crawl",CHAN_WEAPON,CHANF_OVERLAP);
 		TNT1 A 0{
+			if(invoker.weaponstatus[0]&DERPF_BROKEN){
+				setweaponstate("readytorepair");
+				return;
+			}
+
 			//stick it to a door
 			if(pressingzoom()){
 				int cid=countinv("DERPUsable");
@@ -578,6 +583,62 @@ class DERPUsable:HDWeapon{
 			invoker.weaponstatus[DERPS_AMMO]=HDMagAmmo(findinventory("HD9mMag15")).TakeMag(true);
 		}
 		goto nope;
+
+
+	readytorepair:
+		TNT1 A 1{
+			if(!pressingfire())setweaponstate("nope");
+			else if(justpressed(BT_RELOAD)){
+				if(invoker.weaponstatus[DERPS_AMMO]>=0){
+					A_Log("Remove magazine before attempting repairs.",true);
+				}else setweaponstate("repairbash");
+			}
+		}
+		wait;
+	repairbash:
+		TNT1 A 5{
+			int failchance=40;
+			int spareindex=-1;
+			//find spares, whether to cannibalize or copy
+			let spw=spareweapons(findinventory("spareweapons"));
+			if(spw){
+				for(int i=0;i<spw.weapontype.size();i++){
+					if(
+						spw.weapontype[i]==getclassname()
+						&&spw.GetWeaponValue(i,0)&DERPF_BROKEN
+					){
+						if(spareindex==-1)spareindex=i;
+						failchance=min(10,failchance-7);
+						break;
+					}
+				}
+			}
+			if(!random(0,failchance)){
+				invoker.weaponstatus[0]&=~DERPF_BROKEN;
+				A_StartSound("derp/repair",CHAN_WEAPON);
+				A_Log("You bring your H.E.R.P. back into working condition.",true);
+				//destroy one spare
+				if(
+					spareindex>=0
+					&&!random(0,2)
+				){
+					spw.weaponbulk.delete(spareindex);
+					spw.weapontype.delete(spareindex);
+					spw.weaponstatus.delete(spareindex);
+					A_Log("Another D.E.R.P. was cannibalized for parts.",true);
+				}
+			}else A_StartSound("derp/repairtry",CHAN_WEAPONBODY,CHANF_OVERLAP,
+				volume:frandom(0.6,1.),pitch:frandom(1.2,1.4)
+			);
+			A_MuzzleClimb(
+				frandom(-1.,1.),frandom(-1.,1.),
+				frandom(-1.,1.),frandom(-1.,1.),
+				frandom(-1.,1.),frandom(-1.,1.),
+				frandom(-1.,1.),frandom(0.,1.)
+			);
+		}
+		TNT1 A 0 A_JumpIf(!(invoker.weaponstatus[0]&DERPF_BROKEN),"nope");
+		goto readytorepair;
 	}
 }
 

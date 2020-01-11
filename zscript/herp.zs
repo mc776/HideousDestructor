@@ -678,8 +678,6 @@ class HERPUsable:HDWeapon{
 
 
 
-	lowertorepair:
-		TNT1 A 0;
 	readytorepair:
 		TNT1 A 1{
 			if(!pressingfire())setweaponstate("nope");
@@ -772,7 +770,7 @@ class HERPUsable:HDWeapon{
 	}
 	action void A_DeployHERP(){
 		if(invoker.weaponstatus[0]&HERPF_BROKEN){
-			setweaponstate("lowertorepair");
+			setweaponstate("readytorepair");
 			return;
 		}
 		if(invoker.weaponstatus[4]<1){
