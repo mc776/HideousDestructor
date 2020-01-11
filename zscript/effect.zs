@@ -182,7 +182,7 @@ class HDSmokeChunk:HDDebris{
 			0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION
 		);
 		TNT1 A 0{
-			A_StartSound("misc/firecrkl",volume:0.4,attenuation:0,3);
+			A_StartSound("misc/firecrkl",volume:0.4,attenuation:0.3);
 			accuracy++;
 			if(accuracy>=9)setstatelabel("death");
 		}
