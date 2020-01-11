@@ -572,7 +572,7 @@ Some items can be picked up and saved for later, as described below.
 
   The gun that runs around killing people by itself! Basically a pistol wired to a webcam and treads, made of bullets, aggression and shitty programmer art. They can't climb and run out of ammo quickly, but you can pick them back up anytime as you would an ordinary item for later redeployment. Takes one pistol mag to deploy, and any unused ammo is recovered on pickup.
 
-  If it breaks, you will not be able to use it again until you start a new level.
+  If it breaks, unload the mag, then hold fire and tap reload to try to repair it.
 
   The DERP can be programmed to one of several behaviours. Type the following into the console, or `derp <number shown>`, to set what mode it will engage in at any time.
 
@@ -636,6 +636,8 @@ Some items can be picked up and saved for later, as described below.
   * Hit Throw Weapon to cycle to the next HERP, if you have multiple robots deployed.
   * Hit Alt. Reload to set the HERP's home angle to the current angle.
   * Hold Firemode to directly control the HERP. Fire shoots the gun.
+
+  If it breaks, unload the battery, then hold fire and tap reload to try to repair it.
 
   In a pinch, the H.E.R.P. can be fired as a crude personal defence automated weapon.
 
