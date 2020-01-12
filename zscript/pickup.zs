@@ -192,8 +192,10 @@ extend class HDPlayerPawn{
 			while(hdpu=HDPickerUpper(hdpuf.Next())){
 				if(hdpu.master==self)break;
 			}
-			if(!hdpu||hdpu.master!=self)hdpu=HDPickerUpper(spawn("HDPickerUpper",pos,ALLOW_REPLACE));
-			hdpu.master=self;
+			if(!hdpu||hdpu.master!=self){
+				hdpu=HDPickerUpper(spawn("HDPickerUpper",pos,ALLOW_REPLACE));
+				hdpu.master=self;
+			}
 
 			double cp=cos(pitch+3);
 			vector3 pudir=2*(cp*cos(angle),cp*sin(angle),-sin(pitch+3));
@@ -202,8 +204,9 @@ extend class HDPlayerPawn{
 			for(int i=0;i<putimes;i++){
 				hdpu.setorigin(hdpu.pos+pudir,false);
 				if(
-					!hdpu.checkmove(hdpu.pos.xy,PCM_DROPOFF|PCM_NOLINES)
+					!hdpu.checkmove(hdpu.pos.xy,PCM_NOLINES)
 					&&hdpu.blockingmobj
+					&&abs(hdpu.pos.z-hdpu.blockingmobj.pos.z)<putimes
 				){
 					grabbed=hdpu.blockingmobj;
 
