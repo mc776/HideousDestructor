@@ -154,10 +154,10 @@ class HDB_frag:HDBulletActor{
 		double scalefactor=frandom(burnheight,projectilepassheight);
 		pushfactor=1./scalefactor;
 		let gdbt=getdefaultbytype(getclass());
-		mass=max(1,gdbt.mass*pushfactor);
+		mass=max(1,int(gdbt.mass*pushfactor));
 		speed=max(1,gdbt.speed*frandom(deathheight,1.));
-		accuracy=max(1,gdbt.accuracy*frandom(0.3,1.7));
-		stamina=max(1,gdbt.stamina*pushfactor);
+		accuracy=max(1,int(gdbt.accuracy*frandom(0.3,1.7)));
+		stamina=max(1,int(gdbt.stamina*pushfactor));
 	}
 }
 class HDB_scrap:HDB_frag{
@@ -202,7 +202,7 @@ class HDB_bronto:HDBulletActor{
 			int dmg=random(1000,1200);
 			vector3 hitpoint=vel.unit()*tracer.radius;
 			vector3 tracmid=(tracer.pos.xy,tracer.pos.z+tracer.height*0.618);
-			dmg*=1.-((hitpoint-tracmid).length()/tracer.radius);
+			dmg=int(1.-((hitpoint-tracmid).length()/tracer.radius)*dmg);
 			tracer.damagemobj(
 				self,target,
 				dmg,

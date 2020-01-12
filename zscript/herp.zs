@@ -226,7 +226,7 @@ class HERPBot:HDUPK{
 			}
 			herpbeep("herp/beep");
 			message("Establishing connection...");
-			A_SetTics(random(10,min(350,0.3*distance3d(master))));
+			A_SetTics(random(10,min(350,int(0.3*distance3d(master)))));
 		}
 		HERP A 20{
 			if(master){

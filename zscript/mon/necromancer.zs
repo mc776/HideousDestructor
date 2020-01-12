@@ -168,7 +168,7 @@ class NecroFireLight:PointLight{
 			if(!triggered){
 				args[3]=128;
 				triggered=true;
-			}else args[3]*=frandom(0.8,1.);
+			}else args[3]=int(frandom(0.8,1.)*args[3]);
 		}
 		else args[3]=random(50,72);
 	}
@@ -258,11 +258,11 @@ class Necromancer:HDMobBase replaces ArchVile{
 				&&aaa.findstate("raise")
 				&&aaa.checksight(caller)
 			){
-				int dist=max(
+				int dist=int(max(
 					abs(aaa.pos.x-caller.pos.x),
 					abs(aaa.pos.y-caller.pos.y),
 					abs(aaa.pos.z-caller.pos.z)
-				);
+				));
 				actor hhh=spawn("HDRaiser",aaa.pos,ALLOW_REPLACE);
 				hhh.bfriendly=caller.bfriendly;
 				hhh.master=aaa;
@@ -525,7 +525,7 @@ class NecroDeathLight:PointLight{
 	override void tick(){
 		if(isfrozen())return;
 		if(!target||target.bnointeraction){destroy();return;}
-		args[3]=target.alpha*randompick(1,3,7)*random(12,16);
+		args[3]=int(target.alpha*randompick(1,3,7)*frandom(12,16));
 		setorigin(target.pos,true);
 	}
 }

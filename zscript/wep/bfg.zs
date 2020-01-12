@@ -30,7 +30,7 @@ class BFG9K:HDCellWeapon replaces BFG9000{
 	override hdweapon GetSpareWeapon(actor newowner,bool reverse,bool doselect){return GetSpareWeaponRegular(newowner,reverse,doselect);}
 	//BFG9k.Spark(self,4);
 	//BFG9k.Spark(self,4,height-10);
-	static void Spark(actor caller,int sparks=1,int sparkheight=10){
+	static void Spark(actor caller,int sparks=1,double sparkheight=10){
 		actor a;vector3 spot;
 		vector3 origin=caller.pos+(0,0,sparkheight);
 		double spp;double spa;
@@ -232,7 +232,7 @@ class BFG9K:HDCellWeapon replaces BFG9000{
 			BFG9k.Spark(self,1,height-10);
 			A_StartSound("weapons/bfgcharge",(invoker.weaponstatus[BFGS_TIMER]>6)?CHAN_AUTO:CHAN_WEAPON);
 			A_WeaponReady(WRF_ALLOWRELOAD|WRF_NOFIRE|WRF_DISABLESWITCH);
-			A_SetTics(max(1,6-invoker.weaponstatus[BFGS_TIMER]*0.3));
+			A_SetTics(max(1,6-int(invoker.weaponstatus[BFGS_TIMER]*0.3)));
 			invoker.weaponstatus[BFGS_TIMER]++;
 		}
 		#### B 0{

@@ -156,8 +156,8 @@ class Tripwire:HDWeapon{
 }
 class GumAndString:IdleDummy{
 	bool trapisset;
-	int stringlength;
-	vector3 ddd;int bbb;float ii;
+	double stringlength;
+	vector3 ddd;double bbb;float ii;
 	sector stuckto;
 	double stucktoheight;
 	int stucktier;

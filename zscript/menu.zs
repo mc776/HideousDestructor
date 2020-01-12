@@ -374,7 +374,7 @@ class HDLoadoutMenu:GenericMenu{
 			vcurs,
 			hs,DTA_CleanNoMove_1,true
 		);
-		vcurs+=BigFont.GetHeight()+NewSmallFont.GetHeight()*0.5;
+		vcurs+=BigFont.GetHeight()+(NewSmallFont.GetHeight()>>1);
 
 		hs="\cgSyntax:   \cazzzz#aaaa:xxx n, yyy n, bak yyy n. yyy n\n\cazzzz\cu preview picture (optional)   \caaaaa\cu name (optional)\n\caxxx\cu starting weapon   \cayyy\cu anything else\n\can\cu number given\cu (optional, default 1)\n\cabak\cu begin backpack settings\n\camap\cu for map   \cakey\cu for keys (bitflag BYR)\n\n\cdENTER\cu save   \cdESC\cu clear changes   \cdCtrl+R\cu reset";
 		screen.DrawText(NewSmallFont,
@@ -387,7 +387,7 @@ class HDLoadoutMenu:GenericMenu{
 
 		string ws=workingstring;
 		int tempcursx=cursx;
-		int maxwidth=screen.GetWidth()*0.6/(SmallFont.StringWidth("_")*CleanXfac_1);
+		int maxwidth=(screen.GetWidth()*3/5)/(SmallFont.StringWidth("_")*CleanXfac_1);
 		int halfmaxwidth=maxwidth/2;
 		int addarrows=0;
 		int textstart=0;
@@ -651,8 +651,8 @@ class HDNewGameLoadoutMenu:HDLoadoutMenu{
 		if(ws=="")ws="<nothing>";
 
 		int tempcursx=cursx;
-		int maxwidth=screen.GetWidth()*0.6/(SmallFont.StringWidth("_")*CleanXfac_1);
-		int halfmaxwidth=maxwidth/2;
+		int maxwidth=(screen.GetWidth()*3/5)/(SmallFont.StringWidth("_")*CleanXfac_1);
+		int halfmaxwidth=(maxwidth>>1);
 		int addarrows=0;
 		int textstart=0;
 		int textend=ws.length();

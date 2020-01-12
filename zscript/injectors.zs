@@ -284,7 +284,7 @@ class InjectStimDummy:IdleDummy{
 		TNT1 A 6 nodelay{
 			tg=HDPlayerPawn(target);
 			if(!tg||tg.bkilled){destroy();return;}
-			if(tg.zerk)tg.aggravateddamage+=ceil(accuracy*0.01*random(1,3));
+			if(tg.zerk)tg.aggravateddamage+=int(ceil(accuracy*0.01*random(1,3)));
 		}
 		TNT1 A 1{
 			if(target.bkilled||accuracy<1){destroy();return;}
@@ -359,7 +359,7 @@ class InjectZerkDummy:InjectStimDummy{
 			tg.A_GiveInventory("PowerStrength");
 			tg.zerk+=4100;
 			tg.haszerked++;
-			if(tg.stimcount)tg.aggravateddamage+=ceil(tg.stimcount*0.05*random(1,3));
+			if(tg.stimcount)tg.aggravateddamage+=int(ceil(tg.stimcount*0.05*random(1,3)));
 			else tg.aggravateddamage++;
 		}stop;
 	}

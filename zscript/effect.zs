@@ -688,11 +688,15 @@ class DistantQuaker:IdleDummy{
 			if(wave){
 				A_StartSound("weapons/subfwoosh",CHAN_AUTO,volume:0.1*intensity);
 				if(target && target.pos.z<target.floorz+8)
-					A_QuakeEx(0,0,intensity,mass,0,16,deathsound,
-					QF_SCALEDOWN|QF_WAVE,0,0,frequency,0,mass*0.62);
+					A_QuakeEx(
+						0,0,intensity,mass,0,16,deathsound,
+						QF_SCALEDOWN|QF_WAVE,0,0,frequency,0,int(mass*0.62)
+					);
 			}else{
-				A_QuakeEx(intensity*2,intensity*2,intensity*2,mass,0,16,deathsound,
-				QF_SCALEDOWN,highpoint:mass*0.62);
+				A_QuakeEx(
+					intensity*2,intensity*2,intensity*2,mass,0,16,deathsound,
+					QF_SCALEDOWN,highpoint:int(mass*0.62)
+				);
 			}
 		}
 		TNT1 A 1{
@@ -927,7 +931,7 @@ class DistantDummy:IdleDummy{
 						if(id){
 							id.target=players[i].mo;
 							id.deathsound=self.deathsound;
-							id.stamina=dist/HDCONST_SPEEDOFSOUND;
+							id.stamina=int(dist/HDCONST_SPEEDOFSOUND);
 							id.mass=self.mass;
 							id.bmissilemore=self.bmissilemore;
 						}

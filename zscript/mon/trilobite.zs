@@ -51,7 +51,7 @@ class FooFighter:HDActor{
 
 		//apply movement and collision
 		speed=vel.xy.length();
-		int times=max(1,speed/radius);
+		int times=int(max(1,speed/radius));
 		vector3 frac=(times==1)?vel:(vel/times);
 		fcheckposition tm;
 		for(int i=0;i<times;i++){

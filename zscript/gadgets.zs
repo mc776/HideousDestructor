@@ -534,12 +534,12 @@ class HDJetPack:HDCellWeapon{
 				)continue;
 				double thrustamt=max(0,(1024+it.pos.z-pos.z)*rawthrust)*10/it.mass;
 				it.vel+=(it.pos-pos).unit()*thrustamt;
-				it.A_GiveInventory("Heat",thrustamt*frandom(1,30));
+				it.A_GiveInventory("Heat",int(thrustamt*frandom(1,30)));
 				if(!random(0,10)){
 					HDActor.ArcZap(it);
-					it.damagemobj(invoker,self,thrustamt*frandom(10,40),"Electro");
+					it.damagemobj(invoker,self,int(thrustamt*frandom(10,40)),"Electro");
 				}
-				if(it)it.damagemobj(invoker,self,thrustamt*frandom(5,30),"Bashing");
+				if(it)it.damagemobj(invoker,self,int(thrustamt*frandom(5,30)),"Bashing");
 			}
 		}
 		TNT1 A 0 A_JumpIf(pressingfire()||pressingaltfire(),"hold");

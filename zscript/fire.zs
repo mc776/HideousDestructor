@@ -58,7 +58,7 @@ extend class HDActor{
 }
 //fire actor
 class HDFire:IdleDummy{
-	int halfrad;int minz;int maxz;int lastheight;
+	double halfrad,minz,maxz,lastheight;
 	default{
 		+bloodlessimpact
 		obituary "%o was burned by %k.";
@@ -107,7 +107,7 @@ class HDFire:IdleDummy{
 				return;
 			}
 			setorigin(target.pos,false);
-			A_SetTics(clamp(random(3,30-stamina*0.1),2,12));
+			A_SetTics(clamp(random(3,int(30-stamina*0.1)),2,12));
 			if(stamina<=0 || target.countinv("HDFireEnder")){
 				A_TakeFromTarget("HDFireEnder");
 				spawn("HDSmoke",pos,ALLOW_REPLACE);
@@ -131,9 +131,9 @@ class HDFire:IdleDummy{
 
 			//position and spawn flame
 			setorigin(pos+(
-					random(-halfrad,halfrad),
-					random(-halfrad,halfrad),
-					random(minz,maxz)
+					frandom(-halfrad,halfrad),
+					frandom(-halfrad,halfrad),
+					frandom(minz,maxz)
 			),false);
 			actor sp=spawn("HDFlameRed",pos,ALLOW_REPLACE);
 			sp.vel+=target.vel+(frandom(-2,2),frandom(-2,2),frandom(-1,3));

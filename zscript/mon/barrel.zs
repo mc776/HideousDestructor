@@ -431,7 +431,7 @@ class BarrelFireCrawler:HDActor{
 		loop;
 	melee:
 		FIRE A 0{
-			if(target) A_Immolate(target,master,random(24,48)*scale.x);
+			if(target)A_Immolate(target,master,int(frandom(24,48)*scale.x));
 			A_Die("burnout");
 		}goto death;
 	pain.thermal:

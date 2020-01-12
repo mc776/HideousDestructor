@@ -70,12 +70,12 @@ class HDImpBall:HDFireball{
 	void A_ImpSquirt(){
 		roll=frandom(0,360);alpha*=0.96;scale*=frandom(1.,0.96);
 		if(!tracer)return;
-		int diff=max(
+		double diff=max(
 			absangle(initangleto,angleto(tracer)),
 			absangle(inittangle,tracer.angle),
 			abs(inittz-tracer.pos.z)*0.05
 		);
-		int dmg=max(0,10-diff/10);
+		int dmg=int(max(0,10-diff*0.1));
 		if(!tracer.player)tracer.angle+=randompick(-10,10);
 
 		//do it again

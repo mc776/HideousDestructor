@@ -68,9 +68,9 @@ class HDMobBase : HDActor{
 			scl>minchkscl
 			&&!checkmove(pos.xy,PCM_NOACTORS)
 		);
-		A_SetHealth(health*max(scl,1));
+		A_SetHealth(int(health*max(scl,1)));
 		scale*=scl;
-		mass*=scl;
+		mass=int(scl*mass);
 		speed*=scl;
 		meleerange*=scl;
 

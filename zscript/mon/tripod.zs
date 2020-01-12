@@ -407,7 +407,7 @@ class SatanRobo:HDMobBase replaces CyberDemon{
 		CYBR E 0 A_JumpIf(health>1600,3);
 		CYBR EE 2 A_CyberGunSmoke();
 		CYBR E 0 A_JumpIf(!target,"fireend");
-		CYBR E 4 A_SetTics(target?clamp(distance2d(target)*0.0003,4,random(4,24)):4);
+		CYBR E 4 A_SetTics(target?clamp(int(distance2d(target)*0.0003),4,random(4,24)):4);
 		CYBR E 0 A_JumpIf(!target,"fireend");
 		CYBR A 0{
 			double dist=distance3d(target);

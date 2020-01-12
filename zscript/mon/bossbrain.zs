@@ -512,7 +512,7 @@ class HDBossEye:HDActor replaces BossEye{
 				thismessage!=""
 				&&thismessage!=" "
 			)A_PrintBold("\cj"..thismessage,messecs,"BIGFONT");
-			messageticker+=messecs*35;
+			messageticker+=int(messecs*35);
 		}else if(messageticker>0)messageticker--;
 	}
 	default{

@@ -147,7 +147,7 @@ class Technorantula:HDMobBase replaces SpiderMastermind{
 			A_FaceTarget(8,8);
 			A_Recoil(2);
 			double dist=target?distance3d(target):1000;
-			A_SetTics(clamp(dist*0.002,4,16));
+			A_SetTics(clamp(int(dist*0.002),4,16));
 			spread=22./max(dist*0.012,1);
 			pitch-=dist*0.00002;
 			shotcount=0;

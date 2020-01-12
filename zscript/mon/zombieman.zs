@@ -25,7 +25,7 @@ class HDMobMan:HDMobBase{
 			arw.mega=true;
 			maxdurability=HDCONST_BATTLEARMOUR;
 		}else maxdurability=HDCONST_GARRISONARMOUR;
-		arw.durability=max(1,frandom(min(1.,minimum),1.)*maxdurability);
+		arw.durability=int(max(1,frandom(min(1.,minimum),1.)*maxdurability));
 		return arw;
 	}
 	states{
@@ -275,7 +275,7 @@ class ZombieStormtrooper:HDMobMan{
 		loop;
 		#### E 1{
 			A_FaceTarget(turnamount,turnamount);
-			A_SetTics(random(1,120/clamp(turnamount,1,turnamount+1)+4));
+			A_SetTics(random(1,int(120/clamp(turnamount,1,turnamount+1)+4)));
 			spread=frandom(0.12,0.27)*turnamount;
 		}
 		#### A 0 A_Jump(256,"shoot");

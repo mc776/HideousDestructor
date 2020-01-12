@@ -31,7 +31,7 @@ class Babuin:HDMobBase{
 				rotatevector(pos.xy-latchtarget.pos.xy,-latchtarget.angle).unit()
 				*(latchtarget.radius+radius)
 			;
-			latchpos.z=random(8,latchtarget.height-12);
+			latchpos.z=frandom(8,latchtarget.height-12);
 			targangle=latchtarget.angle;
 			latchforce=min(0.4,mass*0.02/max(1,latchtarget.mass));
 			lastpos=pos;

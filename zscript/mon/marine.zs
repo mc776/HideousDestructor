@@ -503,10 +503,10 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		#### A 0 A_JumpIfTargetInLOS(1,10);
 		loop;
 		#### A 0 A_FaceTarget(turnamount,turnamount);
-		#### E 1 A_SetTics(random(1,100/max(1,turnamount)));
+		#### E 1 A_SetTics(random(1,int(100/max(1,turnamount))));
 		#### E 0{
 			spread=turnamount*0.08;
-			A_SetTics(16/spread);
+			A_SetTics(int(16/spread));
 			spread+=min(timesdied,15);
 		}
 		//fallthrough to shoot
@@ -520,7 +520,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 			A_FaceTarget(0,0); //can't lead without this
 			double dist=distance3d(target);
 
-			int settics=clamp(dist*0.002,0,30);
+			int settics=clamp(int(dist*0.002),0,30);
 			if(lastinginjury>0)settics+=random(0,min(lastinginjury,(35*5)));
 			A_SetTics(settics);
 		}
@@ -1546,7 +1546,7 @@ class BotBot:HDMarine{
 			)
 		){
 			if(!teamdamage)return 0;
-			else damage*=teamdamage;
+			else damage=int(damage*teamdamage);
 		}
 
 		lastmod=mod;

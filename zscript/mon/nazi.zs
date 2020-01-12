@@ -145,7 +145,7 @@ class HoopBubble:HDMobMan replaces WolfensteinSS{
 		loop;
 		#### E 1{
 			A_FaceTarget(turnamount,turnamount);
-			A_SetTics(random(1,100/clamp(turnamount,1,turnamount+1)+4));
+			A_SetTics(random(1,int(100/clamp(turnamount,1,turnamount+1)+4)));
 			spread=frandom(0.06,0.27)*turnamount;
 		}
 		#### A 0 A_Jump(256,"shoot");

@@ -127,7 +127,7 @@ class HDElectricLampLight:PointLight{
 		args[0]=140;
 		args[1]=164;
 		args[2]=196;
-		args[3]=32+target.height;
+		args[3]=32+int(target.height);
 		args[4]=0;
 	}
 	override void Tick(){
