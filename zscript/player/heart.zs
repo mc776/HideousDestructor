@@ -57,11 +57,18 @@ extend class HDPlayerPawn{
 		int ismv=countinv("IsMoving");
 		bool iszerk=(zerk>0);
 
+
 		//zerk!!!!
-		if(zerk){
+		if(
+			zerk
+			&&bloodloss<HDCONST_MAXBLOODLOSS
+		){
 			if(iszerk){
 				zerk=max(zerk-1,0);
-				if(zerk>5000){
+				if(zerk>8000){
+					damagemobj(self,self,random(1,10),"bashing");
+					aggravateddamage+=random(0,5);
+				}else if(zerk>5000){
 					zerk--;
 					stunned=10;
 					angle+=random(-2,2);pitch+=random(-2,2);
