@@ -173,7 +173,7 @@ class ThunderBuster:HDCellWeapon{
 			return;
 		}
 
-		int basedmg=max(0,20-tlt.distance*(1./50.));
+		int basedmg=int(max(0,20-tlt.distance*(1./50.)));
 		int dmgflags=caller&&caller.player?DMG_PLAYERATTACK:0; //don't know why the player damagemobj doesn't work
 
 		//wet actor
@@ -546,7 +546,7 @@ class BeamSpot:HDActor{
 		while(master=it.Next()){
 			double dist=master.distance3d(self)*0.01;
 			if(master && dist<8){
-				stamina+=21-dist;
+				stamina+=int(21-dist);
 				if(master!=self)beamspots.push(master);
 				if(master.stamina>21)master.setstatelabel("glow");
 				else master.setstatelabel("spawn2");
@@ -634,9 +634,9 @@ class BeamSpotFlash:IdleDummy{
 		alpha=scale.y+0.3;
 		vel=(frandom(-1,1),frandom(-1,1),frandom(1,3));
 
-		double n=max(impactcloseness*0.03,2);
-		double n1=n*0.6;
-		double n2=n*0.4;
+		int n=int(max(impactcloseness*0.03,2));
+		int n1=n*3/5;
+		int n2=n*2/5;
 		if(tracer){
 			HDF.Give(tracer,"Heat",n);
 			int dmgflags=target&&target.player?DMG_PLAYERATTACK:0;
@@ -645,13 +645,13 @@ class BeamSpotFlash:IdleDummy{
 		A_HDBlast(
 			n*2,random(1,n),n,"Electro",
 			n,-n,
-			immolateradius:n1,immolateamount:random(4,8)*(n2*-0.1),immolatechance:n
+			immolateradius:n1,immolateamount:random(4,8)*n2/-10,immolatechance:n
 		);
 
 		pitch=frandom(80,90);
 		angle=frandom(0,360);
 		A_SpawnItemEx("BeamSpotFlashLight",flags:SXF_NOCHECKPOSITION|SXF_SETTARGET);
-		A_SpawnChunks("HDGunSmoke",clamp(n2*0.6,4,7),3,6);
+		A_SpawnChunks("HDGunSmoke",clamp(n2*3/5,4,7),3,6);
 		A_StartSound("weapons/plasmaf");
 		A_AlertMonsters();
 	}
@@ -716,7 +716,7 @@ class LingeringThunder:IdleDummy{
 			Zap(self,self,target,stamina,true);
 			a_setsize(oldrad,height);
 		}
-		A_SetTics(max(1,min(random(4,24),sqrt(startingstamina-stamina))));
+		A_SetTics(max(1,min(random(4,24),int(sqrt(startingstamina-stamina)))));
 	}
 	static int Zap(actor victim,actor inflictor,actor source,int baseamount,bool nodmg=false){
 		//create arc
@@ -730,7 +730,7 @@ class LingeringThunder:IdleDummy{
 		for(int i=1;i<4;i++){
 			vector3 pastnode=nodes[i-1];
 			vector3 particlepos=nodes[i]-pastnode;
-			int iterations=particlepos.length();
+			int iterations=int(particlepos.length());
 			vector3 particlemove=particlepos/iterations;
 			particlepos=pastnode-victim.pos;
 			for(int i=0;i<iterations;i++){
