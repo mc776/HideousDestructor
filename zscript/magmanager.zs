@@ -64,7 +64,7 @@ class MagManager:HDWeapon{
 		if(!mmm)return;
 		let what=mmm.roundtype;
 		if(!what)return;
-		int howmany=min(max(1,getdefaultbytype((class<hdpickup>)(mmm.roundtype)).bulk?HDCONST_MAXPOCKETSPACE/getdefaultbytype((class<hdpickup>)(mmm.roundtype)).bulk*0.2:1),owner.countinv(what),100);
+		int howmany=int(min(max(1,getdefaultbytype((class<hdpickup>)(mmm.roundtype)).bulk?HDCONST_MAXPOCKETSPACE/getdefaultbytype((class<hdpickup>)(mmm.roundtype)).bulk*0.2:1),owner.countinv(what),100));
 		if(!howmany)return;
 		owner.A_DropInventory(what,howmany);
 	}

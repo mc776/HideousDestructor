@@ -24,9 +24,9 @@ struct HDMobAI play{
 			scl>minchkscl&&  
 			!caller.checkmove(caller.pos.xy,PCM_NOACTORS)
 		);
-		caller.health*=max(scl,1);
+		caller.health=int(max(scl,1)*caller.health);
 		caller.scale*=scl;
-		caller.mass*=scl;
+		caller.mass=int(scl*caller.mass);
 		caller.speed*=scl;
 		caller.meleerange*=scl;
 	}
@@ -270,7 +270,7 @@ struct HDMobAI play{
 		if(!gravity)gravity=getdefaultbytype(missiletype).gravity;
 		double spd=getdefaultbytype(missiletype).speed*speedmult;
 		if(getdefaultbytype(missiletype).gravity&&dist>spd){    
-			int ticstotake=dist/spd;
+			int ticstotake=int(dist/spd);
 			int dropamt=0;
 			for(int i=1;i<=ticstotake;i++){
 				dropamt+=i;

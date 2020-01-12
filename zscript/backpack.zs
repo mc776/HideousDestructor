@@ -157,7 +157,7 @@ class HDBackpack:HDWeapon{
 				if(iii){
 					iii.destroy();
 					double bulkmax=(maxcapacity-bulk)/max(1,getdefaultbytype(pkup).bulk);
-					int addamt=max(1,min(bulkmax,howmanyi));
+					int addamt=int(max(1,min(bulkmax,howmanyi)));
 					if(addamt>0){
 						int amt=amounts[refindex].toint(10);
 						amounts[refindex]=""..amt+addamt;
@@ -699,7 +699,7 @@ extend class HDBackpack{
 				else if(hdpickupgiver(iii))itemtobackpack(hdpickupgiver(iii).actualitem);
 				else itemtobackpack(iii);
 			}else if(mag){
-				howmany=min(
+				howmany=int(min(
 					random(1,random(1,20)),
 					getdefaultbytype(mag).maxamount,
 					maxcapacity/(
@@ -707,7 +707,7 @@ extend class HDBackpack{
 						*max(1.,getdefaultbytype(mag).magbulk)
 						*5.
 					)
-				);
+				));
 				for(int j=0;j<howmany;j++){
 					inventory iii=inventory(spawn(mag,pos,ALLOW_REPLACE));
 					if(iii){
@@ -719,11 +719,11 @@ extend class HDBackpack{
 				let iii=spawn(pkup,pos,ALLOW_REPLACE);
 				if(iii){
 					iii.destroy();
-					howmany=min(
+					howmany=int(min(
 						random(1,getdefaultbytype(pkup).bmultipickup?random(1,80):random(1,random(1,20))),
 						getdefaultbytype(pkup).maxamount,
 						maxcapacity/(max(1.,getdefaultbytype(pkup).bulk)*5.)
-					);
+					));
 					if(
 						getdefaultbytype(pkup).refid==""
 					){

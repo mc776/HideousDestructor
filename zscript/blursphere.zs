@@ -211,7 +211,7 @@ class HDBlurSphere:HDPickup{
 				msg[12]="Precious.";
 				msg[13]="Precious.";
 				msg[14]="Precious.";
-				owner.A_Log(msg[clamp(randtickerfloat*msg.size(),0,msg.size()-1)],true);
+				owner.A_Log(msg[int(clamp(randtickerfloat*msg.size(),0,msg.size()-1))],true);
 			}
 			if(!(xp%7)){
 				hdplayerpawn(owner).aggravateddamage++;

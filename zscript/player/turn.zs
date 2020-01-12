@@ -369,7 +369,7 @@ extend class HDPlayerPawn{
 				)dir=-90;
 				trymove(self.pos.xy-(cos(angle+dir),sin(angle+dir))*(ongun?0.3:0.6),false);
 			}
-			int ptchch=clamp(abs(pitchchange),0,10); //THE CLAMP IS A BANDAID
+			double ptchch=clamp(abs(pitchchange),0,10); //THE CLAMP IS A BANDAID
 			if(ptchch>1 && -30<pitch<30){  
 				trymove(pos.xy-(cos(angle)*ptchch,sin(angle)*ptchch)*0.1,false);
 				PlayRunning();

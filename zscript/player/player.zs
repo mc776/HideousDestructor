@@ -412,7 +412,7 @@ class HDPlayerPawn:PlayerPawn{
 
 
 		//"falling" damage
-		int fallvel=teleported?0:(lastvel-vel).length();
+		double fallvel=teleported?0:(lastvel-vel).length();
 
 		if(fallvel>8){
 			//check collision with shootables
@@ -433,7 +433,7 @@ class HDPlayerPawn:PlayerPawn{
 					A_StartSound("weapons/smack",CHAN_AUTO,CHANF_OVERLAP);
 					bmob.vel+=lastvel*90/bmob.mass;
 					vel+=lastvel*0.05;
-					bmob.damagemobj(self,self,random(fallvel,fallvel<<3),"bashing");
+					bmob.damagemobj(self,self,int(fallvel*frandom(1,8)),"bashing");
 				}
 			}
 			setz(zbak);
@@ -445,10 +445,10 @@ class HDPlayerPawn:PlayerPawn{
 			else{
 				A_StartSound("weapons/smack",CHAN_AUTO);
 				if(countinv("PowerStrength"))fallvel/=2;
-				int fdmg=random(fallvel*2,fallvel*3);
+				int fdmg=int(fallvel*frandom(2,3));
 				damagemobj(self,self,fdmg,"falling");
-				beatmax-=fallvel/2;
-				if(random(1,fallvel)>7)Disarm(self);
+				beatmax-=(fdmg>>1);
+				if(frandom(1,fallvel)>7)Disarm(self);
 			}
 		}
 		stunned=max(stunned-1,0);
@@ -642,7 +642,7 @@ class HDPlayerPawn:PlayerPawn{
 		else nocrosshair--;
 
 		//check use key
-		UseButtonCheck(input,fm,sm);
+		UseButtonCheck(input);
 
 		//this must be at the end since it needs to overwrite a lot of what has just happened
 		IncapacitatedCheck();

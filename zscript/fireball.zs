@@ -55,7 +55,7 @@ class HDFireballTail:IdleDummy{
 class HDFireball:HDActor{
 	vector3 oldvel;
 	vector3 frac;
-	int fracc;
+	double fracc;
 	double seekspeed;
 	double zat;
 	double grav;

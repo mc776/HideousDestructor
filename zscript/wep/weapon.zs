@@ -100,8 +100,7 @@ class HDWeapon:Weapon{
 		if(noalpha){
 			A_OverlayAlpha(layer,1.);
 		}else{
-			int lg=cursector.lightlevel-variance*frandom(0.6,1.);
-			fa=1.-(lg*0.003);
+			fa=1.-((cursector.lightlevel-variance*frandom(0.6,1.))*0.003);
 			A_OverlayAlpha(layer,fa);
 		}
 		if(noalpha||fa>0.1)setstatelabel("melee");
@@ -607,10 +606,10 @@ class HDWeapon:Weapon{
 	static void UnmakeLevel(int times=1){
 		for(int k=0;k<times;k++){
 			sector thissector=level.sectors[random(0,level.sectors.size()-1)];
-			int dir=frandom(-3,3);
+			int dir=random(-3,3);
 			double zatpoint=thissector.floorplane.ZAtPoint(thissector.centerspot);
 			thissector.MoveFloor(dir,zatpoint,0,zatpoint>0?-1:1,false);
-			dir=frandom(-3,3);
+			dir=random(-3,3);
 			zatpoint=thissector.ceilingplane.ZAtPoint(thissector.centerspot);
 			thissector.MoveCeiling(dir,zatpoint,0,zatpoint>0?-1:1,false);
 			thissector.changelightlevel(random(-random(3,4),3));
@@ -1127,7 +1126,7 @@ extend class HDWeapon{
 		mwt.weaponstatus.delete(getindex);
 
 		mwt.weaponbulk.delete(getindex);
-		if(doselect)HDWeaponSelector.Select(newowner,newwep.getclassname(),max(4,newwep.gunmass()));
+		if(doselect)HDWeaponSelector.Select(newowner,newwep.getclassname(),max(4,int(newwep.gunmass())));
 		return newwep;
 	}
 }

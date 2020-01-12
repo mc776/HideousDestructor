@@ -266,7 +266,7 @@ class Vulcanette:HDWeapon{
 				"zm66scop",(0,scaledyoffset)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
 				scale:(0.8,0.8)
 			);
-			sb.drawnum(degree*10,
+			sb.drawnum(int(degree*10),
 				3+bob.x,73+bob.y,sb.DI_SCREEN_CENTER,Font.CR_BLACK
 			);
 			sb.drawimage(

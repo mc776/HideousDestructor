@@ -54,7 +54,7 @@ class hdladdertop:hdactor{
 			A_UnsetSolid();
 
 			//found a place for the ladder to hang down
-			int htdiff=clamp(floorz-tm.floorz,0,LADDER_MAX);
+			double htdiff=clamp(floorz-tm.floorz,0,LADDER_MAX);
 			if(
 				htdiff
 			){

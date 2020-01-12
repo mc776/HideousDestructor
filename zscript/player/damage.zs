@@ -73,7 +73,7 @@ extend class HDPlayerPawn{
 				aggravateddamage=0;
 				return 0;
 			}
-			damage*=hd_damagefactor;
+			damage=int(damage*hd_damagefactor);
 		}
 
 		//credit and blame where it's due
@@ -110,7 +110,7 @@ extend class HDPlayerPawn{
 		if(mod=="fire"&&!inflictor)mod="slime";
 
 		//radsuit
-		if(mod=="slime")A_GiveInventory("Heat",damage*frandom(2.3,2.7));
+		if(mod=="slime")A_GiveInventory("Heat",int(damage*frandom(2.3,2.7)));
 		if(countinv("PowerIronFeet"))A_GiveInventory("WornRadsuit");
 		let radsuit=wornradsuit(findinventory("WornRadsuit"));
 		if(
@@ -224,7 +224,7 @@ extend class HDPlayerPawn{
 			if(radsuit){
 				radsuit.stamina+=random(1,damage);
 				if(damage<random(0,6))return 0;else{
-					damage*=0.4;
+					damage=int(damage*0.4);
 					if(radsuit.stamina>2100){
 						destroyradsuit();
 					}else if(damage<4)mod="slime";
@@ -233,18 +233,18 @@ extend class HDPlayerPawn{
 			if(armr&&random(0,5)){
 				if(alv==3){
 					damage-=30;
-					if(!random(0,200-damage))armr.durability-=max(0,damage*0.2);
+					if(!random(0,200-damage))armr.durability-=max(0,damage/5);
 				}
 				else if(alv==1){
 					damage-=30;
-					if(!random(0,220-damage))armr.durability-=max(0,damage*0.1);
+					if(!random(0,220-damage))armr.durability-=max(0,damage/10);
 				}
 			}
 			if(damage<=1){
 				damage=1;
 				if(!random(0,27))toburn++;
-			}else toburn+=max(damage*frandom(0.1,0.6),random(0,1));
-			if(!random(0,30+alv*3))towound+=max(1,damage*0.03);
+			}else toburn+=int(max(damage*frandom(0.1,0.6),random(0,1)));
+			if(!random(0,30+alv*3))towound+=max(1,damage*3/100);
 		}else if(
 			mod=="electro"||
 			mod=="electrical"||
@@ -255,10 +255,10 @@ extend class HDPlayerPawn{
 			if(radsuit){
 				if(damage<100)return 0;
 				destroyradsuit();
-				damage*=0.8;
+				damage=int(damage*0.8);
 			}
-			toburn+=max(damage*frandom(0.2,0.5),random(0,1));
-			if(!random(0,35))towound+=max(1,damage*0.05);
+			toburn+=int(max(damage*frandom(0.2,0.5),random(0,1)));
+			if(!random(0,35))towound+=max(1,damage/20);
 			if(!random(0,1))tostun+=damage;
 		}else if(
 			mod=="balefire"||
@@ -266,8 +266,8 @@ extend class HDPlayerPawn{
 			mod=="unholy"
 		){
 			//balefired
-			toburn+=damage*frandom(0.6,1.1);
-			if(!random(0,1+alv))towound+=max(1,damage*0.06);
+			toburn+=int(damage*frandom(0.6,1.1));
+			if(!random(0,1+alv))towound+=max(1,damage*6/100);
 			if(random(1,50)<damage*tmd)aggravateddamage++;
 			A_AlertMonsters();
 		}else if(
@@ -294,7 +294,7 @@ extend class HDPlayerPawn{
 				if(!random(0,mod=="teeth"?12:36))aggravateddamage++;
 				if(random(1,15)<damage)towound++;
 			}
-			tostun+=damage*frandom(0,0.6);
+			tostun+=int(damage*frandom(0,0.6));
 		}else if(
 			mod=="GhostSquadAttack"
 		){
@@ -321,14 +321,14 @@ extend class HDPlayerPawn{
 			damage>>=2;
 		}else if(mod=="cutting"){
 			//swords, chainsaw, etc.
-			damage*=(1.-(alv*0.3));
-			if(!random(0,10+alv*2))towound+=max(1,damage*0.04);
+			damage=int(damage*(1.-(alv*0.3)));
+			if(!random(0,10+alv*2))towound+=max(1,damage*4/100);
 			if(armr)armr.durability-=(damage>>(1+alv));
 			if(damage>random(5,30))destroyradsuit();
 		}else{
 			//anything else
-			damage*=(1.-(alv*0.2));
-			if(!random(0,10+alv*2))towound+=max(1,damage*0.03);
+			damage=int(damage*(1.-(alv*0.2)));
+			if(!random(0,10+alv*2))towound+=max(1,damage*3/100);
 			if(towound>random(4,20))destroyradsuit();
 		}
 
@@ -366,8 +366,8 @@ extend class HDPlayerPawn{
 
 		//add to wounds and burns after team damage multiplier
 		//(super.damagemobj() takes care of the actual damage amount)
-		towound*=tmd;
-		toburn*=tmd;
+		towound=int(towound*tmd);
+		toburn=int(toburn*tmd);
 		if(towound){
 			lastthingthatwoundedyou=source;
 			woundcount+=towound;

@@ -163,7 +163,7 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 	double amplitude;
 	double lastcvaramplitude;
 	override bool isused(){return true;}
-	override int getsbarnum(int flags){return amplitude;}
+	override int getsbarnum(int flags){return int(amplitude);}
 	override void AttachToOwner(actor other){
 		super.AttachToOwner(other);
 		if(owner&&owner.player)amplitude=cvar.getcvar("hd_nv",owner.player).getfloat();
@@ -252,7 +252,7 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 				Shader.SetEnabled(owner.player,"NiteVis",false);
 			}else{
 				nv=clamp(amplitude,-nv,nv);
-				spent+=max(1,abs(nv*0.1));
+				spent+=int(max(1,abs(nv*0.1)));
 				Shader.SetEnabled(owner.player,"NiteVis",true);
 				Shader.SetUniform1f(owner.player,"NiteVis","exposure",nv);
 			}
@@ -260,7 +260,7 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 			//flicker
 			int integrity=(mags[0]%NITEVIS_CYCLEUNIT);
 			if(integrity<NITEVIS_MAXINTEGRITY){
-				int bkn=(integrity)+(chargedamount>>17)-abs(nv);
+				int bkn=integrity+(chargedamount>>17)-abs(int(nv));
 				A_LogInt(bkn);
 				if(!random[rand1](0,max(0,random[rand1](1,bkn)))){
 					if(oldliteamp){

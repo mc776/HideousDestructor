@@ -343,7 +343,7 @@ class HDPickup:CustomInventory{
 		unitbulk*=hdmath.getencumbrancemult();
 		if(unitbulk<=0)return getdefaultbytype(type).maxamount-caller.countinv(type);
 		double spaceleft=HDPickup.MaxPocketSpace(caller)-HDPickup.PocketSpaceTaken(caller);
-		return max(0,min(getdefaultbytype(type).maxamount-caller.countinv(type),spaceleft/unitbulk));
+		return int(max(0,min(getdefaultbytype(type).maxamount-caller.countinv(type),spaceleft/unitbulk)));
 	}
 
 
@@ -589,7 +589,7 @@ class HDUPK:HDActor{
 				}
 				int maxtake;
 				defunitbulk*=hdmath.getencumbrancemult();
-				if(!defunitbulk)maxtake=int.MAX;else maxtake=(bp.maxcapacity-bp.bulk)/defunitbulk;
+				if(!defunitbulk)maxtake=int.MAX;else maxtake=int((bp.maxcapacity-bp.bulk)/defunitbulk);
 				int increase=min(maxtake,amount);
 				amount-=increase;
 				bp.amounts[bpindex]=""..(bp.amounts[bpindex].toint()+increase);

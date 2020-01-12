@@ -77,7 +77,7 @@ extend class HDPlayerPawn{
 						givebody(1);
 						A_SetBlend("20 0a 0f",0.4,3);
 
-						if(!random(0,8-zerk*0.0005)){
+						if(!random(0,int(8-zerk*0.0005))){
 							woundcount+=random(0,2);
 							if(!random(0,4))A_Pain();
 							else if(!random(0,3))aggravateddamage++;
@@ -101,7 +101,7 @@ extend class HDPlayerPawn{
 					}
 				}else{
 					givebody(1);
-					if(stunned)stunned*=0.8;
+					if(stunned)stunned=stunned*4/5;
 					if(!zerk){
 						A_SetBlend("20 0a 0f",0.8,35);
 						A_TakeInventory("PowerStrength");

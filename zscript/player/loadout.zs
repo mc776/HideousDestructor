@@ -749,7 +749,7 @@ class InsurgentLoadout:Inventory{
 					if(hd_debug)A_Log("insurgent input: "..thisclass);
 
 					let wb=thiswitem.weaponbulk();
-					if(wb)thismax=max(1,HDCONST_MAXPOCKETSPACE/wb);
+					if(wb)thismax=int(max(1,HDCONST_MAXPOCKETSPACE/wb));
 					else thismax=thiswitem.maxamount>>3;
 
 					thiswitem.amount=random(1,max(1,thismax>>2));

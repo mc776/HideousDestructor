@@ -148,7 +148,7 @@ class HDMedikitter:HDWoundFixer{
 			hpl.woundcount
 			&&(weaponstatus[MEDS_USEDON]<0||weaponstatus[MEDS_USEDON]==hpl.playernumber())
 		){
-			of=clamp(hpl.woundcount*0.1,1,3);
+			of=clamp(int(hpl.woundcount*0.1),1,3);
 			if(hpl.flip)of=-of;
 		}
 		sb.drawwepdot(-27,-11+of,(2,6));
@@ -603,7 +603,7 @@ class HDMedikitter:HDWoundFixer{
 		int ow=slf.oldwoundcount;
 		int bb=slf.burncount;
 		double bl=double(slf.bloodloss)/(HDCONST_BLOODBAGAMOUNT<<2);
-		int ag=slf.aggravateddamage*0.2+countinv("IsMoving")+abs(thrownoff);
+		int ag=int(slf.aggravateddamage*0.2+countinv("IsMoving")+abs(thrownoff));
 		int wg=random(-thrownoff,thrownoff);
 		if(ww||uw)wg+=2;
 		if(countinv("HDArmourWorn"))wg+=5;
@@ -695,7 +695,7 @@ class SelfBandage:HDWoundFixer{
 				sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_ITEM_RIGHT,
 				0.6
 			);
-			of=clamp(hpl.woundcount*0.2,1,3);
+			of=clamp(int(hpl.woundcount*0.2),1,3);
 			if(hpl.flip)of=-of;
 		}
 		sb.drawwepdot(-22,-8+of,(2,10));

@@ -316,9 +316,8 @@ struct HDMath{
 		return atan2(this.z-that.z,(this.xy-that.xy).length());
 	}
 	//return a string indicating a rough cardinal direction
-	static string CardinalDirection(int angle){
-		angle%=360;
-		if(angle<0)angle+=360;
+	static string CardinalDirection(double angle){
+		angle=actor.deltaangle(0,angle);
 		if(angle>=22&&angle<=66)return("northeast");
 		else if(angle>=67&&angle<=113)return("north");
 		else if(angle>=114&&angle<=158)return("northwest");

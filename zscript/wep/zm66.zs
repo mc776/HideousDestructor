@@ -180,7 +180,7 @@ class ZM66AssaultRifle:HDWeapon{
 					"zm66scop",(0,scaledyoffset)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
 					scale:(0.82,0.82)
 				);
-				sb.drawnum(degree*10,
+				sb.drawnum(int(degree*10),
 					3+bob.x,74+bob.y,sb.DI_SCREEN_CENTER,Font.CR_BLACK
 				);
 				sb.drawimage(

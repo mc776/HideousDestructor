@@ -920,7 +920,7 @@ extend class HDHandlers{
 					ppp.A_Log(string.format("\cd[DERP] \cjtag #\cx%i \cjreporting in at [\cx%i\cj,\cx%i\cj] with %s",derp.botid,derp.pos.x,derp.pos.y,ammo>0?string.format("\cy%i\cj bullets left!",derp.ammo):"\crno ammo left!\cj Help!"),true);
 				}
 				if(goalset){
-					derp.movestamina=20-(level.vec2diff(derp.pos.xy,derp.goalpoint)).length()/derp.speed;
+					derp.movestamina=int(20-(level.vec2diff(derp.pos.xy,derp.goalpoint)).length()/derp.speed);
 					derp.goalangle=derp.angletogoal();
 					derp.setstatelabel("turn");
 				}

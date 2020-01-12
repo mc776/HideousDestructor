@@ -94,7 +94,7 @@ class HDFist:HDWeapon replaces Fist{
 			player.findPSprite(layer).sprite=gnd;
 		}
 	}
-	action void HDPunch(int dmg){
+	action void HDPunch(double dmg){
 		flinetracedata punchline;
 		bool punchy=linetrace(
 			angle,48,pitch,
@@ -238,7 +238,7 @@ class HDFist:HDWeapon replaces Fist{
 			A_Log(string.format("Punched %s for %i damage!",pch,dmg));
 		}
 		if(dmg*2>punchee.health)punchee.A_StartSound("misc/bulletflesh",CHAN_AUTO);
-		punchee.damagemobj(self,self,dmg,"SmallArms0");
+		punchee.damagemobj(self,self,int(dmg),"SmallArms0");
 
 		if(!punchee)invoker.targethealth=0;else{
 			invoker.targethealth=punchee.health;
@@ -320,7 +320,7 @@ class HDFist:HDWeapon replaces Fist{
 		if(resisting){
 			vel+=(frandom(-1,1),frandom(-1,1),frandom(-1,1));
 			let grabbedmass=grabbed.mass;
-			if(random(grabbedmass*0.1,grabbedmass)>random(mass*0.6,mass*(zerk?5:1))){
+			if(frandom(grabbedmass*0.1,grabbedmass)>frandom(mass*0.6,mass*(zerk?5:1))){
 				vector2 thrustforce=(cos(angle),sin(angle))*frandom(0.,2.);
 				grabbed.vel.xy+=thrustforce*min(mass/grabbed.mass,1.);
 				vel.xy-=thrustforce;

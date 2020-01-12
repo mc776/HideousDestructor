@@ -1089,7 +1089,7 @@ extend class HDHandlers{
 					}else{
 						badcommand=false;
 						affected++;
-						int anet=(herp.startangle+achange)%360;
+						int anet=int((herp.startangle+achange))%360;
 						if(anet<0)anet+=360;
 						herp.startangle=anet;
 						herp.setstatelabel("off");

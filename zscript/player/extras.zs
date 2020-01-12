@@ -177,7 +177,7 @@ extend class HDPlayerPawn{
 
 
 	//all use button stuff other than normal using should go here
-	virtual void UseButtonCheck(int input,int fm,int sm){
+	virtual void UseButtonCheck(int input){
 		if(corpsekicktimer>0)corpsekicktimer--;
 		if(!(input&BT_USE)){
 			bpickup=false;
@@ -195,7 +195,7 @@ extend class HDPlayerPawn{
 			&&linetrace(angle,42,pitch,flags:TRF_THRUACTORS,offsetz:height*0.4)
 		){
 			hasgrabbed=true;
-			corpsekicktimer=20+unstablewoundcount*0.5;
+			corpsekicktimer=20+(unstablewoundcount>>1);
 			stunned+=25;
 			bool zk=zerk>0;
 			double kickback=zk?1:4;
@@ -248,7 +248,7 @@ extend class HDPlayerPawn{
 					){
 						if(!(oldinput&BT_USE)){
 							int forc=80;if(zerk>0)forc*=3;
-							corpsekicktimer=20+unstablewoundcount*0.5;
+							corpsekicktimer=20+(unstablewoundcount>>1);
 							kbmo.vel+=(kv.x,kv.y,4)*forc/kbmo.mass;
 							kbmo.A_StartSound("misc/punch",CHAN_BODY,CHANF_OVERLAP);
 							kbmo.A_DropInventory("HDArmourWorn");
@@ -261,12 +261,12 @@ extend class HDPlayerPawn{
 							&&!isteammate(kbmo)
 						)
 					){
-						corpsekicktimer=17+unstablewoundcount*0.5;
+						corpsekicktimer=17+(unstablewoundcount>>1);
 						kicked=true;
 						HDFist.kick(self,kbmo,k);
 					}else{
 						double forc=0.4;if(zerk>0)forc=1.2;
-						corpsekicktimer=20+unstablewoundcount*0.6;
+						corpsekicktimer=20+unstablewoundcount*3/5;
 						vel-=(kv.x,kv.y,4)*forc;
 						kbmo.A_StartSound("misc/punch",CHAN_BODY,CHANF_OVERLAP);
 						kicked=true;
