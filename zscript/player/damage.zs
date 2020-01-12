@@ -188,6 +188,7 @@ extend class HDPlayerPawn{
 				if(
 					!waterlevel
 					&&!checkliquidtexture()
+					&&bloodloss<HDCONST_MAXBLOODLOSS*1.4
 				){
 					for(int i=0;i<damage;i+=2){
 						a_spawnitemex("HDBloodTrailFloor",
