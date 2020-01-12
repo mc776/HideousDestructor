@@ -419,11 +419,11 @@ class Hunter:HDShotgun{
 		SHTG A 0 A_ClearRefire();
 		goto ready;
 	playsgco:
-		TNT1 A 8 A_StartSound("weapons/huntrackup",8,CHANF_OVERLAP);
+		TNT1 A 8 A_StartSound("weapons/huntrackup",8);
 		TNT1 A 0 A_StopSound(8);
 		stop;
 	playsgco2:
-		TNT1 A 8 A_StartSound("weapons/huntrackdown",8,CHANF_OVERLAP);
+		TNT1 A 8 A_StartSound("weapons/huntrackdown",8);
 		TNT1 A 0 A_StopSound(8);
 		stop;
 	chamberauto:
@@ -479,7 +479,7 @@ class Hunter:HDShotgun{
 		SHTG C 0 A_JumpIf(invoker.weaponstatus[0]&HUNTF_FROMPOCKETS,"reloadpocket");
 	reloadfast:
 		SHTG C 4 offset(0,40) A_GrabShells(3,false);
-		SHTG C 3 offset(0,42);
+		SHTG C 3 offset(0,42) A_StartSound("weapons/pocket",9,volume:0.4);
 		SHTG C 3 offset(0,41);
 		goto reloadashell;
 	reloadpocket:
@@ -491,7 +491,7 @@ class Hunter:HDShotgun{
 		SHTG C 6 offset(0,40);
 		goto reloadashell;
 	reloadashell:
-		SHTG C 2 offset(0,36)A_StartSound("weapons/huntreload",8,CHANF_OVERLAP);
+		SHTG C 2 offset(0,36);
 		SHTG C 4 offset(0,34)A_LoadTubeFromHand();
 		SHTG CCCCCC 1 offset(0,33){
 			if(
