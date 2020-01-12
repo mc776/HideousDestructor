@@ -367,7 +367,7 @@ class HDWeapon:Weapon{
 				for(int i=0;i<spw.weapontype.size();i++){
 					if(spw.weapontype[i]==gcn){
 						array<string> wepstat;
-						spw.weaponstatus[0].split(wepstat,",");
+						spw.weaponstatus[i].split(wepstat,",");
 						if(wepstat[ref].toint()>0)wepstat[ref]=""..(wepstat[ref].toint()-1);
 						string newwepstat="";
 						for(int j=0;j<wepstat.size();j++){
@@ -1083,7 +1083,8 @@ extend class HDWeapon{
 
 		string wepstat=""..weaponstatus[0];
 		for(int i=1;i<HDWEP_STATUSSLOTS;i++){
-			wepstat=wepstat..","..weaponstatus[i];
+			if(!i)wepstat=""..weaponstatus[i];
+			else wepstat=wepstat..","..weaponstatus[i];
 		}
 		mwt.weaponstatus.insert(0,wepstat);
 
@@ -1116,17 +1117,19 @@ extend class HDWeapon{
 		let newwep=hdweapon(newowner.giveinventorytype(getclassname()));
 		if(!newwep)return null;
 		newwep.bdontdefaultconfigure=true;
-		mwt.weapontype.delete(getindex);
 
 		array<string> wepstat;
 		mwt.weaponstatus[getindex].split(wepstat,",");
 		for(int i=0;i<wepstat.size();i++){
 			newwep.weaponstatus[i]=wepstat[i].toint();
 		}
-		mwt.weaponstatus.delete(getindex);
 
-		mwt.weaponbulk.delete(getindex);
 		if(doselect)HDWeaponSelector.Select(newowner,newwep.getclassname(),max(4,int(newwep.gunmass())));
+
+		mwt.weaponstatus.delete(getindex);
+		mwt.weaponbulk.delete(getindex);
+		mwt.weapontype.delete(getindex);
+
 		return newwep;
 	}
 }
