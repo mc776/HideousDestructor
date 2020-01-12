@@ -15,7 +15,7 @@ enum HDSoundChannels{
 //basically we just need to account for conveyors and platforms
 class HDDebris:HDActor{
 	bool stopped;
-	int grav;
+	double grav;
 	double wdth;
 	double minrollspeed;
 	default{
@@ -47,7 +47,7 @@ class HDDebris:HDActor{
 		}
 
 		double velxylength=vel.xy.length();
-		int fracamount=max(1,velxylength/radius);
+		int fracamount=int(max(1,velxylength/radius));
 		vector3 frac=vel/fracamount;
 		bool keeptrymove=true;
 		for(int i=0;i<fracamount;i++){
@@ -300,7 +300,6 @@ class HDBulletPuff:HDPuff{
 		A_StartSound("misc/bullethit",CHAN_BODY,CHANF_OVERLAP,vol);
 		A_ChangeVelocity(-0.4,0,frandom(0.1,0.4),CVF_RELATIVE);
 		trymove(pos.xy+vel.xy,false);
-		fadeafter=frandom(0,0.99);
 		scale*=frandom(0.9,1.1);
 		for(int i=0;i<stamina;i++){
 			A_SpawnParticle("gray",
@@ -430,7 +429,7 @@ class HDRedFireLight:PointLight{
 	}
 	override void tick(){
 		if(!target||args[3]<1){destroy();return;}
-		args[3]*=frandom(0.8,1.09);
+		args[3]=int(frandom(0.8,1.09)*args[3]);
 		setorigin(target.pos,true);
 	}
 }
@@ -519,7 +518,7 @@ class HDExplosionLight:PointLight{
 		args[4]=0;
 	}
 	override void tick(){
-		args[3]*=frandom(0.3,0.4);
+		args[3]=int(frandom(0.3,0.4)*args[3]);
 		if(args[3]<1)destroy();
 	}
 }
@@ -600,7 +599,7 @@ class DistantNoise:Thinker{
 				playeringame[i]
 				&&!!players[i].mo
 			){
-				dnt.distances[i]=players[i].mo.distance3d(source)/HDCONST_SPEEDOFSOUND;
+				dnt.distances[i]=int(players[i].mo.distance3d(source)/HDCONST_SPEEDOFSOUND);
 			}else dnt.distances[i]=-1;
 		}
 	}
@@ -657,7 +656,7 @@ class DistantQuaker:IdleDummy{
 			||caller.ceilingz-caller.floorz>HDCONST_MINDISTANTSOUND
 		){
 			intensity=clamp(intensity-1,1,9);
-			duration*=0.9;
+			duration=int(0.9*duration);
 		}
 		double dist;
 		for(int i=0;i<MAXPLAYERS;i++){
@@ -667,11 +666,11 @@ class DistantQuaker:IdleDummy{
 					let it=DistantQuaker(caller.spawn("DistantQuaker",players[i].mo.pos,ALLOW_REPLACE));
 					if(it){
 						if(dist<=dropoffrate)it.intensity=intensity;
-							else it.intensity=clamp(intensity-floor(dist/dropoffrate),1,9);
+							else it.intensity=int(clamp(intensity-floor(dist/dropoffrate),1,9));
 						if(dist>minwaveradius)it.wave=true;else it.wave=false;  
 						if(it.intensity<3)it.deathsound="null";
 							else it.deathsound="world/quake";
-						it.stamina=floor(dist/speed);
+						it.stamina=int(dist/speed);
 						it.mass=duration;
 						it.frequency=frequency;
 						it.target=players[i].mo;

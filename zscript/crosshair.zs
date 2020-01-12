@@ -49,7 +49,7 @@ extend class HDStatusBar{
 
 		//all weapon sights go here
 		double scl=fov/(90.*clamp(hd_xhscale.getfloat(),0.1,3.0)); //broken as of 4.0.0
-		SetSize(0,400*scl,250*scl);
+		SetSize(0,int(400*scl),int(250*scl));
 		BeginHUD(forcescaled:true);
 
 		actor hpc=hpl.scopecamera;

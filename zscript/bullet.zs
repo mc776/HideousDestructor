@@ -640,7 +640,7 @@ class HDBulletActor:HDActor{
 				if(cracker!=""){
 					vector3 crackbak=pos;
 					vector3 crackinterval=vu*BULLET_CRACKINTERVAL;
-					int j=max(1,bres.distance*(1./BULLET_CRACKINTERVAL));
+					int j=int(max(1,bres.distance*(1./BULLET_CRACKINTERVAL)));
 					for(int i=0;i<j;i++){
 						setxyz(crackbak+crackinterval*i);
 						if(hd_debug>1)A_SpawnParticle("yellow",SPF_RELVEL|SPF_RELANG,
@@ -918,7 +918,7 @@ class HDBulletActor:HDActor{
 
 		//shields
 		if(hdmb&&hdmb.shields>0){
-			int bulletpower=pen*mass*0.1;
+			int bulletpower=int(pen*mass*0.1);
 			int depleteshield=min(bulletpower,hdmb.shields);
 if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..",   "..hdmb.shields-bulletpower.." REMAIN");
 			if(
@@ -1146,7 +1146,7 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 			//apply impact damage
 			if(impact>(hitactor.spawnhealth()>>2))hdmobbase.forcepain(hitactor);
 			if(hd_debug)console.printf(hitactor.getclassname().." resisted, impact:  "..impact);
-			hitactor.damagemobj(self,target,impact,"bashing");
+			hitactor.damagemobj(self,target,int(impact),"bashing");
 			return;
 		}
 
@@ -1166,7 +1166,7 @@ if(hd_debug)console.printf("     "..shockbash.." temp cav dmg");
 
 		//apply impact/tempcav damage
 		bnoextremedeath=impact<(hitactor.gibhealth<<3);
-		hitactor.damagemobj(self,target,shockbash,"bashing",DMG_THRUSTLESS);
+		hitactor.damagemobj(self,target,int(shockbash),"bashing",DMG_THRUSTLESS);
 		if(!hitactor)return;
 		bnoextremedeath=true;
 
@@ -1226,11 +1226,11 @@ if(hd_debug)console.printf("     "..shockbash.." temp cav dmg");
 
 
 		//add size of channel to damage
-		int chdmg=max(1,
+		int chdmg=int(max(1,
 			channelwidth
 			*max(0.1,pen-(hitangle*0.06))
 			*0.1
-		);
+		));
 
 		//see if the bullet may actually gib
 		bnoextremedeath=(chdmg<(max(hitactor.spawnhealth(),gibhealth)<<4));
@@ -1238,7 +1238,7 @@ if(hd_debug)console.printf("     "..shockbash.." temp cav dmg");
 
 		//inflict wound
 		if(target&&hitactor.isteammate(target))channelwidth*=teamdamage;
-		if(channelwidth>0)hdbleedingwound.inflict(hitactor,pen,channelwidth,(flags&BLAF_SUCKINGWOUND));
+		if(channelwidth>0)hdbleedingwound.inflict(hitactor,int(pen),int(channelwidth),(flags&BLAF_SUCKINGWOUND));
 
 		//evaluate cns hit/critical and apply damage
 		if(
@@ -1252,10 +1252,10 @@ if(hd_debug)console.printf("     "..shockbash.." temp cav dmg");
 				||basehitz+pen*vu.z>mincritheight
 			){
 				if(hd_debug)console.printf("CRIT!");
-				int critdmg=
+				int critdmg=int(
 					(chdmg+random((stamina>>5),(stamina>>5)+(int(speed)>>6)))
 					*(1.+pushfactor*0.3)
-				;
+				);
 				if(bnoextremedeath)critdmg=min(critdmg,hitactor.health+1);
 				flags|=BLAF_SUCKINGWOUND;
 				pen*=2;
@@ -1324,8 +1324,8 @@ if(hd_debug)console.printf("     "..shockbash.." temp cav dmg");
 		let aaa=HDBulletPuff(spawn("HDBulletPuff",pos));
 		if(aaa){
 			aaa.angle=angle;aaa.pitch=pitch;
-			aaa.stamina=sp*0.01;
-			aaa.scarechance=20-sp*0.001;
+			aaa.stamina=int(sp*0.01);
+			aaa.scarechance=20-int(sp*0.001);
 			aaa.scale=(1.,1.)*(0.4+0.05*aaa.stamina);
 		}
 		return aaa;

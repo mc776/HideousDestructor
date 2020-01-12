@@ -386,7 +386,7 @@ class HDStatusBar:DoomStatusBar{
 		let hdla=portableliteamp(hpl.findinventory("PortableLiteAmp"));
 		if(hdla && hdla.worn){
 			//can we do these calculations once somewhere else?
-			int gogheight=screen.getheight()*(1.9*90.)/cplayer.fov;
+			int gogheight=int(screen.getheight()*(1.9*90.)/cplayer.fov);
 			int gogwidth=screen.getwidth()*gogheight/screen.getheight();
 			int gogoffsx=-((gogwidth-screen.getwidth())>>1);
 			int gogoffsy=-((gogheight-screen.getheight())>>1);
@@ -526,7 +526,7 @@ class HDStatusBar:DoomStatusBar{
 			if(hpl.enc){
 				double pocketenc=hpl.pocketenc*hd_encumbrance;
 				drawstring(
-					mAmountFont,formatnumber(hpl.enc),
+					mAmountFont,formatnumber(int(hpl.enc)),
 					(8,mxht),DI_TEXT_ALIGN_LEFT|DI_SCREEN_LEFT_BOTTOM,
 					hpl.overloaded<1.2?Font.CR_OLIVE:hpl.overloaded>2.?Font.CR_RED:Font.CR_GOLD
 				);

@@ -140,7 +140,7 @@ class HDActor:Actor{
 	}
 	//roughly equivalent to CacoZapper
 	static void ArcZap(actor caller){
-		caller.A_CustomRailgun((random(4,8)),frandom(-12,12),"","azure",
+		caller.A_CustomRailgun((random(4,8)),random(-12,12),"","azure",
 			RGF_SILENT|RGF_FULLBRIGHT,
 			1,4000,"HDArcPuff",180,180,frandom(32,128),4,0.4,0.6
 		);

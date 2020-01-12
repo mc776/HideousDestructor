@@ -112,7 +112,7 @@ class SlowProjectile:HDActor{
 		speed=vel.length();
 		vector3 posbak=pos;
 
-		int count=max(2,speed*divrad);
+		int count=int(max(2,speed*divrad));
 		vector3 frac=vel/count;
 		double speedfrac=speed/count;
 		for(int i=0;i<count;i++){
@@ -141,7 +141,7 @@ class SlowProjectile:HDActor{
 				if(!target)target=master;
 				if(blockingmobj){
 					tracer=blockingmobj;
-					int idmg=speed*speed*mass*0.000005;
+					int idmg=int(speed*speed*mass*0.000005);
 					if(idmg>40)tracer.A_StartSound("misc/bulletflesh",CHAN_AUTO);
 					if(hd_debug)A_Log(String.Format("%s hit %s",getclassname(),blockingmobj.getclassname()));
 					if(!bnodamage)tracer.damagemobj(self,target,idmg,"bashing");

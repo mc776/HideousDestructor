@@ -69,7 +69,7 @@ class HDFire:IdleDummy{
 			stamina=target.ApplyDamageFactor("Thermal",stamina);
 			if(target is "PlayerPawn" || target is "HDPlayerCorpse"){
 				changetid(-7677);
-				stamina=max(1,(!skill)?(hd_damagefactor*0.3*stamina):(hd_damagefactor*stamina));
+				stamina=int(max(1,(!skill)?(hd_damagefactor*0.3*stamina):(hd_damagefactor*stamina)));
 			}
 			if(!target.bshootable && stamina>20)stamina=20;
 		}
@@ -322,7 +322,7 @@ class Heat:Inventory{
 					heatlight.args[0]=200;
 					heatlight.args[1]=150;
 					heatlight.args[2]=90;
-					heatlight.args[3]=min(realamount*0.1,256);
+					heatlight.args[3]=int(min(realamount*0.1,256));
 				}
 				aaa.target=owner;
 				aaa.A_StartSound("misc/firecrkl",CHAN_BODY,volume:clamp(realamount*0.001,0,0.2));
@@ -341,7 +341,7 @@ class Heat:Inventory{
 				&&(frandom(0.,1.)<dmgamt)
 			)dmgamt=1.;
 			setxyz(owner.pos);
-			owner.damagemobj(self,self,dmgamt,"thermal",DMG_NO_ARMOR|DMG_THRUSTLESS);
+			owner.damagemobj(self,self,int(dmgamt),"thermal",DMG_NO_ARMOR|DMG_THRUSTLESS);
 			if(!owner){destroy();return;}
 		}
 
@@ -416,7 +416,7 @@ class HDFireLight:PointLight{
 			args[2]=0;
 			args[3]=0;
 		}
-		else args[3]*=frandom(0.9,0.99);
+		else args[3]=int(frandom(0.9,0.99)*args[3]);
 	}
 }
 

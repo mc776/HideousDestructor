@@ -18,7 +18,7 @@ class doordestroyer:hdactor{
 	override void postbeginplay(){
 		super.postbeginplay();
 		vector2 vvv=(v2pos-v1pos);
-		llit=max(1,llength/10); //see chunkspeed
+		llit=int(max(1,llength/10)); //see chunkspeed
 		vfrac=vvv/llit;
 	}
 	override bool cancollidewith(actor other,bool passive){
@@ -99,7 +99,7 @@ class doordestroyer:hdactor{
 		if(!dlt.hitactor){
 			caller.lineattack(
 				angle,range,pitch,
-				maxwidth*maxdepth,
+				int(maxwidth*maxdepth),
 				"SmallArms3","CheckPuff",
 				flags:LAF_OVERRIDEZ|LAF_NORANDOMPUFFZ|LAF_NOIMPACTDECAL,
 				offsetz:ofsz

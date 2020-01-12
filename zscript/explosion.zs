@@ -183,12 +183,13 @@ extend class HDActor{
 			}
 			//blast damage
 			if(!it)continue;if(dist<=blastradius && (it.bshootable||it.bvulnerable)){
-				if(it.radiusdamagefactor)blastdamage*=it.radiusdamagefactor;
-				int dmg=(dist>fullblastradius)?
+				if(it.radiusdamagefactor)blastdamage=int(it.radiusdamagefactor*blastdamage);
+				int dmg=int((dist>fullblastradius)?
 					blastdamage-clamp(dist-fullblastradius,0,dist)
-					:blastdamage;
+					:blastdamage
+				);
 				it.DamageMobj(
-					caller,source,dmg*losmul,blastdamagetype,
+					caller,source,int(dmg*losmul),blastdamagetype,
 					DMG_THRUSTLESS|(source&&source.player?DMG_PLAYERATTACK:0)
 				);
 			}
@@ -225,11 +226,11 @@ extend class HDActor{
 					//NOW incorporate the cover
 					proportionfragged*=losmul;
 
-					fragshit*=proportionfragged;
+					fragshit=int(proportionfragged*fragshit);
 				}
 
 				//randomize count and abort if none end up hitting
-				fragshit*=frandom(0.9,1.1);
+				fragshit=int(frandom(0.9,1.1)*fragshit);
 
 				if(fragshit>0){
 					if(hd_debug){
