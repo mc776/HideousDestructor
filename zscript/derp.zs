@@ -416,7 +416,8 @@ class DERPUsable:HDWeapon{
 
 		int mno=hdw.weaponstatus[DERPS_MODE];
 		string mode;
-		if(mno==DERP_TURRET)mode="\caTURRET";
+		if(hdw.weaponstatus[0]&DERPF_BROKEN)mode="\cm<broken>";
+		else if(mno==DERP_TURRET)mode="\caTURRET";
 		else if(mno==DERP_AMBUSH)mode="\ccAMBUSH";
 		else if(mno==DERP_PATROL)mode="\cgPATROL";
 		sb.drawstring(
@@ -429,7 +430,7 @@ class DERPUsable:HDWeapon{
 			sb.DI_TEXT_ALIGN_CENTER|sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER
 		);
 
-		if(weaponstatus[DERPS_AMMO]<0)mode="<no mag>";
+		if(weaponstatus[DERPS_AMMO]<0)mode="\cm<no mag>";
 		else mode="Mag:  "..weaponstatus[DERPS_AMMO];
 		sb.drawstring(
 			sb.psmallfont,mode,(0,54)+bob,
