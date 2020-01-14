@@ -214,10 +214,11 @@ class doordestroyer:hdactor{
 			double ydif=abs(othersector.lines[i].v1.p.y-centerspot.y);
 			if(ydif>maxradius)maxradius=ydif;
 		}
-		if(maxradius*2.>maxwidth)return false;
+//		if(maxradius*2.>maxwidth)return false;
 
 
 		double damageinflicted=maxdepth*frandom(8,12)/maxradius;
+		if(maxradius*2.>maxwidth)damageinflicted/=max(1.,maxradius-(0.5*maxwidth));
 
 
 		//damage bonus if you can blast right through that spot
