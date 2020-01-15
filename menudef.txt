@@ -131,48 +131,6 @@ ListMenu "MainMenu"{
 		TextItem "$MNU_QUITGAME","q","QuitMenu"
 	}
 }
-//copypasting this entire stupid thing just to change one word, lol
-//might as well remove autoaim option since it's totally irrelevant in hd
-ListMenu "PlayerMenu"{
-	StaticTextCentered 160,6,"$MNU_PLAYERSETUP"
-	Font "SmallFont"
-	Linespacing 14
-	Position 48, 36
-	IfGame(Doom, Strife, Chex){
-		PlayerNameBox "$PLYRMNU_NAME",0,"Playerbox"
-		Selector "-", -16, -1
-	}
-	IfGame(Heretic, Hexen){
-		PlayerNameBox "$PLYRMNU_NAME",5,"Playerbox"
-		Selector "-", -16, 1
-	}
-	IfGame(Doom, Heretic, Strife, Chex){
-		MouseWindow 0,220
-		PlayerDisplay 220,80,"20 00 00","80 00 40",1,"PlayerDisplay"
-	}
-	IfGame(Hexen){
-		MouseWindow 0,220
-		PlayerDisplay 220,80,"00 07 00","40 53 40",1,"PlayerDisplay"
-	}
-	ValueText "$PLYRMNU_TEAM","Team"
-	ValueText "$PLYRMNU_PLAYERCOLOR","Color"
-	Linespacing 10
-	Slider "$PLYRMNU_RED","Red",0,255,16
-	Slider "$PLYRMNU_GREEN","Green",0,255,16
-	Linespacing 14
-	Slider "$PLYRMNU_BLUE","Blue",0,255,16
-//	ValueText "$PLYRMNU_PLAYERCLASS","Class"
-//	ValueText "$PLYRMNU_PLAYERSKIN","Skin"
-	ValueText "$PLYRMNU_PLAYERGENDER","Gender","Gender"
-//	Slider "$PLYRMNU_AUTOAIM", "Autoaim", 0, 35, 1
-	ValueText "$PLYRMNU_SWITCHONPICKUP", "Switch", "OffOn"
-	ValueText "$PLYRMNU_ALWAYSRUN", "AlwaysRun", "OnOff"
-
-	Linespacing 10
-	Font "SmallFont","Red","Brick"
-	TextItem "Customize Loadout...","L","HDLoadoutMenu"
-	Class "PlayerMenu"
-}
 
 OptionMenu "HDOptionsMenu"{
 	Title "HIDEOUS DESTRUCTOR OPTIONS"

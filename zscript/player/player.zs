@@ -70,7 +70,7 @@ class HDPlayerPawn:PlayerPawn{
 		player.colorrange 112,127;
 		maxstepheight 24;
 		player.gruntspeed 16.0;
-		player.displayname "Marine";
+		player.displayname "Operator";
 		player.crouchsprite "PLYC";
 
 		hdplayerpawn.loadout "";
