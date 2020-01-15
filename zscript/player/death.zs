@@ -85,11 +85,9 @@ extend class HDPlayerPawn{
 		}else{
 			playercorpse=spawn("HDPlayerCorpse",pos,ALLOW_REPLACE);
 			playercorpse.vel=vel;playercorpse.master=self;
-			if(
-				crouched
-			)playercorpse.sprite=GetSpriteIndex("PLYCA0");
-				else playercorpse.sprite=GetSpriteIndex("PLAYA0");
+
 			playercorpse.translation=translation;
+			playercorpse.sprite=sprite;
 
 			if(
 				(!inflictor||!inflictor.bnoextremedeath)
