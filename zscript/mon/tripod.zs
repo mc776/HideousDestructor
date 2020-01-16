@@ -43,7 +43,7 @@ class Roboball:SlowProjectile{
 				ceilingz-height<=pos.z
 			){
 				bmissilemore=true;
-				if(blockingline)doordestroyer.destroydoor(self,200,frandom(24,48),6);
+				if(blockingline)doordestroyer.destroydoor(self,200,frandom(24,48),6,dedicated:true);
 			}
 		}else DistantNoise.Make(self,"world/rocketfar");
 		A_SpawnChunks("HDB_frag",240,300,900);

@@ -191,7 +191,7 @@ class HDHEAT:GyroGrenade{
 				if(hd_debug)A_Log("CRIT!");
 			}else if(dangle<40)dmgg+=random(200,1200);
 			blockingobject.damagemobj(self,target,dmgg,"Piercing");
-		}else doordestroyer.destroydoor(self);
+		}else doordestroyer.destroydoor(self,dedicated:true);
 
 		//explosion
 		if(!inthesky){

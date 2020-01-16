@@ -81,7 +81,8 @@ class doordestroyer:hdactor{
 		actor caller,
 		double maxwidth=140,double maxdepth=32,
 		double range=0,double ofsz=-1,
-		double angle=361,double pitch=99
+		double angle=361,double pitch=99,
+		bool dedicated=false
 	){
 		if(!range)range=max(4,caller.radius*2);
 		if(ofsz<0)ofsz=caller.height*0.5;
@@ -105,7 +106,13 @@ class doordestroyer:hdactor{
 				offsetz:ofsz
 			);
 		}
-		if(hd_nodoorbuster)return false;
+		if(
+			hd_nodoorbuster==1
+			||(
+				!dedicated
+				&&hd_nodoorbuster>1
+			)
+		)return false;
 
 		//figure out if it hit above or below
 		//0 top, 1 middle, 2 bottom - same as dlt.linepart
@@ -389,13 +396,6 @@ class doordestroyer:hdactor{
 		return true;
 	}
 }
-class doorball:doomimpball{
-	states{
-	death:
-		BAL1 C 0{if(doordestroyer.destroydoor(self))A_Log("Ding dong, motherfucker!");}
-		goto super::death;
-	}
-}
 
 
 
@@ -546,7 +546,7 @@ class DoorBusterPlanted:HDUPK{
 		---- A 1{
 			bnointeraction=true;
 			int boost=min(accuracy*accuracy,256);
-			bool busted=doordestroyer.destroydoor(self,140+boost,32+boost);
+			bool busted=doordestroyer.destroydoor(self,140+boost,32+boost,dedicated:true);
 
 			A_SprayDecal(busted?"Scorch":"BrontoScorch",16);
 

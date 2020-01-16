@@ -320,7 +320,7 @@ Logs the distance of the object or map geometry you're pointing at.
 
 * `hd_nobots` (false): This causes bots to be replaced with riflemen. Can be used for coop and deathmatch. Generally far more competent, but cannot use customized loadouts and can sometimes appear in odd places.
 
-* `hd_nodoorbuster` (false): Some weapons such as the H.E.A.T. rocket and the Brontornis can destroy small pieces of map geometry, letting you bypass tedious or impossible-to-reach areas. This can result in unpredictable or unwanted behaviour, so enabling this option will prevent such weapons from being able to affect map geometry this way. Enabling this midgame will not reverse any damage already done.
+* `hd_nodoorbuster` (0): Weapons can destroy small pieces of map geometry, letting you bypass tedious or impossible-to-reach areas. This can result in unpredictable or unwanted behaviour, so enabling this option will prevent such weapons from being able to affect map geometry this way. Set to 1 to disable all such behaviour, and set to 2 to enable only for dedicated anti-materiel weapons such as the door buster, the H.E.A.T., the Brontornis and the assault tripod's rockets. Changing this midgame will not reverse any damage already done.
 
 * `hd_safelifts` (true): With HD's reduced player speed and falling damage, some classic Doom lifts end up creating scenarios that resemble a superimposition of a Simone Giertz comedy routine and the deposition materials from a factory class action suit. HD automatically scales all these lifts at level start to more reasonable speeds. This may break some levels, so this option is provided. Note that the level must be restarted for the changes to take effect.
 

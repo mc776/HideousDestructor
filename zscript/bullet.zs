@@ -209,7 +209,7 @@ class HDB_bronto:HDBulletActor{
 				"Piercing",DMG_THRUSTLESS
 			);
 		}
-		doordestroyer.destroydoor(self,128,frandom(24,36),6);
+		doordestroyer.destroydoor(self,128,frandom(24,36),6,dedicated:true);
 		A_HDBlast(
 			fragradius:256,fragtype:"HDB_fragBronto",
 			immolateradius:64,immolateamount:random(4,20),immolatechance:32,
