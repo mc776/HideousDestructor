@@ -655,23 +655,25 @@ class Hunter:HDShotgun{
 	}
 	override void loadoutconfigure(string input){
 		int type=getloadoutvar(input,"type",1);
-		if(type<0||type>2)type=1;
-		switch(type){
-		case 0:
-			weaponstatus[0]|=HUNTF_EXPORT;
-			weaponstatus[0]&=~HUNTF_CANFULLAUTO;
-			break;
-		case 1:
-			weaponstatus[0]&=~HUNTF_EXPORT;
-			weaponstatus[0]&=~HUNTF_CANFULLAUTO;
-			break;
-		case 2:
-			weaponstatus[0]&=~HUNTF_EXPORT;
-			weaponstatus[0]|=HUNTF_CANFULLAUTO;
-			break;
-		default:
-			break;
+		if(type>0){
+			switch(type){
+			case 0:
+				weaponstatus[0]|=HUNTF_EXPORT;
+				weaponstatus[0]&=~HUNTF_CANFULLAUTO;
+				break;
+			case 1:
+				weaponstatus[0]&=~HUNTF_EXPORT;
+				weaponstatus[0]&=~HUNTF_CANFULLAUTO;
+				break;
+			case 2:
+				weaponstatus[0]&=~HUNTF_EXPORT;
+				weaponstatus[0]|=HUNTF_CANFULLAUTO;
+				break;
+			default:
+				break;
+			}
 		}
+		if(type<0||type>2)type=1;
 		int firemode=getloadoutvar(input,"firemode",1);
 		if(firemode>=0)weaponstatus[HUNTS_FIREMODE]=clamp(firemode,0,type);
 		int choke=min(getloadoutvar(input,"choke",1),7);
