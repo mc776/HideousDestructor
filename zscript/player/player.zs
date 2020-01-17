@@ -58,6 +58,7 @@ class HDPlayerPawn:PlayerPawn{
 		+forceybillboard //zoom actor will fuck up otherwise
 
 		+nomenu
+		+noskin
 
 		height 54;radius 12;
 		mass 150;gibhealth 180;
@@ -356,13 +357,6 @@ class HDPlayerPawn:PlayerPawn{
 			crouchsprite=getspriteindex("PLYCA1");
 			if(player.crouchfactor<0.75)sprite=crouchsprite;
 			else sprite=getspriteindex("PLAYA1");
-		}
-		//that stupid ef/xy thing
-		if(
-			sprite==crouchsprite
-		){
-			if(frame==23)frame=4;
-			else if(frame==24)frame=5;
 		}
 
 
