@@ -18,6 +18,7 @@ extend class HDHandlers{
 
 		else if(alive&&e.name~=="hd_lean")Lean(ppp,e.args[0]);
 		else if(alive&&e.name~=="hd_taunt")Taunt(ppp);
+		else if(alive&&e.name~=="hd_showskins")ShowSkins(ppp);
 		else if(alive&&e.name~=="hd_findrange")FindRange(ppp);
 		else if(alive&&e.name~=="hd_purge")PurgeUselessAmmo(ppp);
 		else if(alive&&e.name~=="hd_dropone")DropOne(ppp,ppp.player,e.args[0]);

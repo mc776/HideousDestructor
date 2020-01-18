@@ -108,6 +108,21 @@ extend class HDPlayerPawn{
 		}
 	}
 }
+extend class HDHandlers{
+	void ShowSkins(hdplayerpawn ppp){
+		string bbb="Available player skins (classname, soundclass (if any), mugshot (if any)):";
+		for(int i=0;i<allactorclasses.size();i++){
+			if(allactorclasses[i] is "HDSkin"){
+				let aac=getdefaultbytype((class<hdskin>)(allactorclasses[i]));
+				bbb=bbb.."\n  "..aac.getclassname()
+				.."  "..aac.soundclass
+				.."  "..aac.mug;
+				
+			}
+		}
+		ppp.A_Log(bbb,true);
+	}
+}
 
 //base skin actor
 class HDSkin:Actor{
@@ -124,6 +139,8 @@ class HDSkin:Actor{
 	property medsound:medsound;
 	string mug;
 	property mug:mug;
+	string soundclass;
+	property soundclass:soundclass;
 	default{
 		hdskin.tauntsound "*taunt";
 		hdskin.xdeathsound "*xdeath";
@@ -132,7 +149,8 @@ class HDSkin:Actor{
 		hdskin.medsound "*usemeds";
 		deathsound "*death";
 		painsound "*pain";
-		hdskin.mug "STC";
+		hdskin.mug "<none>";
+		hdskin.soundclass "<none>";
 	}
 	states{
 	spawn:PLAY A 0;stop;
@@ -149,6 +167,7 @@ class HDSampleCustomSkin:HDSkin{
 		hdskin.gruntsound "player/oldfdguy/grunt";
 		hdskin.landsound "player/oldfdguy/land";
 		hdskin.medsound "player/oldfdguy/meds";
+		hdskin.soundclass "oldfdguy";
 		deathsound "player/oldfdguy/death";
 		painsound "player/oldfdguy/pain";
 		hdskin.mug "FDF";
@@ -170,20 +189,10 @@ class HDZombieSkin:HDSkin{
 		hdskin.medsound "player/hdguy/meds";
 		deathsound "grunt/death";
 		painsound "grunt/pain";
-		hdskin.mug "STC";
 	}
 	states{
-	spawn:crouch:QGUY A -1;stop;
+	spawn:crouch:POSS A -1;stop;
 	}
 }
 
-
-class qguy:actor{
-	states{
-	spawn:
-		QGUY A 10;
-		PLAY A 10;
-		loop;
-	}
-}
 
