@@ -283,24 +283,6 @@ extend class HDPlayerPawn{
 }
 
 
-class TauntHandler:EventHandler{
-	override void NetworkProcess(ConsoleEvent e){
-
-		//check to ensure the acting player can taunt
-		let ppp = playerpawn(players[e.player].mo);
-		if(!ppp) return;
-
-		if(
-			e.name~=="taunt"
-			&&ppp.health>0 //delete if you want corpses taunting the enemy
-		){
-			ppp.A_StartSound("*taunt",CHAN_VOICE);
-			ppp.A_TakeInventory("powerfrightener");
-			ppp.A_AlertMonsters();
-		}
-	}
-}
-
 
 extend class HDHandlers{
 	void FindRange(hdplayerpawn ppp){
@@ -316,7 +298,7 @@ extend class HDHandlers{
 		if(hd_debug)ppp.A_Log(string.format("(%.2f DU%s)",c,c==1?"":"s"),true);
 	}
 	void Taunt(hdplayerpawn ppp){
-		ppp.A_StartSound("*taunt",CHAN_VOICE);
+		ppp.A_StartSound(ppp.tauntsound,CHAN_VOICE);
 		ppp.A_TakeInventory("powerfrightener");
 		ppp.A_SpawnItemEx("DelayedTaunter",12,0,ppp.height-6,
 			flags:SXF_NOCHECKPOSITION|SXF_SETTARGET

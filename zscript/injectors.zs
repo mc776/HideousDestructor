@@ -189,7 +189,8 @@ class HDStimpacker:HDWoundFixer{
 			A_TakeInjector(invoker.inventorytype);
 			A_SetBlend("7a 3a 18",0.1,4);
 			A_SetPitch(pitch+2,SPF_INTERPOLATE);
-			A_StartSound("*usemeds",CHAN_VOICE);
+			if(hdplayerpawn(self))A_StartSound(hdplayerpawn(self).medsound,CHAN_VOICE);
+			else A_StartSound("*usemeds",CHAN_VOICE);
 			A_StartSound("misc/bulletflesh",CHAN_WEAPON);
 			actor a=spawn(invoker.injecttype,pos,ALLOW_REPLACE);
 			a.accuracy=40;a.target=self;
@@ -255,7 +256,8 @@ class HDStimpacker:HDWoundFixer{
 			}else{
 				//and now...
 				A_TakeInjector(invoker.inventorytype);
-				c.A_StartSound("*usemeds",CHAN_VOICE);
+				if(hdplayerpawn(c))c.A_StartSound(hdplayerpawn(c).medsound,CHAN_VOICE);
+				else c.A_StartSound("*usemeds",CHAN_VOICE);
 				c.A_SetBlend("7a 3a 18",0.1,4);
 				actor a=spawn(invoker.injecttype,c.pos,ALLOW_REPLACE);
 				a.accuracy=40;a.target=c;
@@ -350,11 +352,13 @@ class InjectZerkDummy:InjectStimDummy{
 		}
 		TNT1 A 1{
 			if(tg.zerk<666){
-				tg.A_StartSound("*xdeath",CHAN_VOICE);
+				if(hdplayerpawn(tg))tg.A_StartSound(hdplayerpawn(tg).xdeathsound,CHAN_VOICE);
+				else tg.A_StartSound("*xdeath",CHAN_VOICE);
 				HDPlayerPawn.Disarm(self);
 				tg.A_SelectWeapon("HDFist");
 			}else{
-				tg.A_StartSound("*pain",CHAN_VOICE);
+				if(hdplayerpawn(tg))tg.A_StartSound(hdplayerpawn(tg).painsound,CHAN_VOICE);
+				else tg.A_StartSound("*pain",CHAN_VOICE);
 			}
 			tg.A_GiveInventory("PowerStrength");
 			tg.zerk+=4100;

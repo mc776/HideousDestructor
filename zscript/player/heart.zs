@@ -102,6 +102,7 @@ extend class HDPlayerPawn{
 				}else{
 					givebody(1);
 					if(stunned)stunned=stunned*4/5;
+					if(incaptimer)incaptimer=incaptimer*14/15;
 					if(!zerk){
 						A_SetBlend("20 0a 0f",0.8,35);
 						A_TakeInventory("PowerStrength");
@@ -279,12 +280,12 @@ extend class HDPlayerPawn{
 					else muzzledrift+=(frandom(-2,2),frandom(-3,2));
 					if(!random(0,2)){
 						int stupid=random(1,100);
-						if(stupid<30)A_StartSound("*grunt",CHAN_VOICE);
-						else if(stupid<50)A_StartSound("*pain",CHAN_VOICE);
-						else if(stupid<70)A_StartSound("*death",CHAN_VOICE);
-						else if(stupid<90)A_StartSound("*xdeath",CHAN_VOICE);
+						if(stupid<30)A_StartSound(gruntsound,CHAN_VOICE);
+						else if(stupid<50)A_StartSound(painsound,CHAN_VOICE);
+						else if(stupid<70)A_StartSound(deathsound,CHAN_VOICE);
+						else if(stupid<90)A_StartSound(xdeathsound,CHAN_VOICE);
 						else if(stupid<100){
-							A_StartSound("*taunt",CHAN_VOICE);
+							A_StartSound(tauntsound,CHAN_VOICE);
 							A_AlertMonsters();
 						}
 					}

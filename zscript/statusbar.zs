@@ -124,16 +124,6 @@ class HDStatusBar:DoomStatusBar{
 
 		blurred=hpl.bshadow&&hpl.countinv("HDBlurSphere");
 
-		int mugnum=hd_mugshot.getint();
-		if(mugnum<0)mugnum=cplayer.getgender();
-		switch(mugnum){
-			case 0:mug="STF";break;
-			case 1:mug="SFF";break;
-			case 2:mug="STC";break;
-			case 3:mug="STC";break;
-			default:mug="STC";break;
-		}
-
 		//all the hud use timer determinations go here
 		if(cplayer.buttons&BT_USE)hudusetimer++;
 		else hudusetimer=0;
@@ -209,7 +199,7 @@ class HDStatusBar:DoomStatusBar{
 		);
 
 		//mugshot
-		DrawTexture(GetMugShot(5,Mugshot.CUSTOM,mug),(6,-14),DI_BOTTOMLEFT,alpha:blurred?0.2:1.);
+		DrawTexture(GetMugShot(5,Mugshot.CUSTOM,hpl.mugshot),(6,-14),DI_BOTTOMLEFT,alpha:blurred?0.2:1.);
 
 		//heartbeat/playercolour tracker
 		if(hpl && hpl.beatmax){
@@ -270,7 +260,7 @@ class HDStatusBar:DoomStatusBar{
 	}
 	void DrawFullScreenStuff(){
 		DrawTexture(
-			GetMugShot(5,Mugshot.CUSTOM,mug),(0,-14),
+			GetMugShot(5,Mugshot.CUSTOM,hpl.mugshot),(0,-14),
 			DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM,
 			alpha:blurred?0.2:1.
 		);

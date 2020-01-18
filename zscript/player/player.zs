@@ -70,7 +70,7 @@ class HDPlayerPawn:PlayerPawn{
 		player.jumpz 0;
 		player.colorrange 112,127;
 		maxstepheight 24;
-		player.gruntspeed 16.0;
+		player.gruntspeed 99999999999.0;
 		player.displayname "Operator";
 		player.crouchsprite "PLYC";
 
@@ -89,6 +89,8 @@ class HDPlayerPawn:PlayerPawn{
 	override void PostBeginPlay(){
 		super.PostBeginPlay();
 		cachecvars();
+
+		standsprite=sprite;
 
 		lastpos=pos;
 		lastvel=vel;
@@ -250,6 +252,7 @@ class HDPlayerPawn:PlayerPawn{
 	transient cvar hd_helptext;
 	transient cvar hd_voicepitch;
 	transient cvar hd_maglimit;
+	transient cvar hd_skin;
 	transient cvar neverswitchonpickup;
 	void cachecvars(){
 		playerinfo plr;
@@ -271,6 +274,7 @@ class HDPlayerPawn:PlayerPawn{
 		hd_helptext=cvar.getcvar("hd_helptext",plr);
 		hd_voicepitch=cvar.getcvar("hd_voicepitch",plr);
 		hd_maglimit=cvar.getcvar("hd_maglimit",plr);
+		hd_skin=cvar.getcvar("hd_skin",plr);
 		neverswitchonpickup=cvar.getcvar("neverswitchonpickup",plr);
 	}
 	override void Tick(){
@@ -344,20 +348,7 @@ class HDPlayerPawn:PlayerPawn{
 		if(!player||!player.mo||player.mo!=self){super.tick();return;} //that xkcd xorg graph, but with morphing
 
 
-		//female player sprites
-		if(
-			player.getgender()==1
-			&&wads.checknumforname("PLYFA1",wads.ns_sprites,-1,false)>=0
-		){
-			if(wads.checknumforname("PLFCA1",wads.ns_sprites,-1,false)>=0)
-			crouchsprite=getspriteindex("PLFCA1");
-			if(player.crouchfactor<0.75)sprite=crouchsprite;
-			else sprite=getspriteindex("PLYFA1");
-		}else{
-			crouchsprite=getspriteindex("PLYCA1");
-			if(player.crouchfactor<0.75)sprite=crouchsprite;
-			else sprite=getspriteindex("PLAYA1");
-		}
+		ApplyUserSkin();
 
 
 		//prevent odd screwups that leave you unable to throw grenades or something
