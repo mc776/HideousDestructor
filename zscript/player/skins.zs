@@ -5,6 +5,7 @@ extend class HDPlayerPawn{
 	string lastskin;
 	string mugshot;
 	int standsprite;
+	vector2 skinscale;
 	sound
 		tauntsound,
 		xdeathsound,
@@ -30,10 +31,8 @@ extend class HDPlayerPawn{
 		)return;
 
 		//apply sprite
-		if(player.crouchfactor<0.75){
-			sprite=crouchsprite;
-			if(standsprite==crouchsprite)scale.y=player.crouchfactor;
-		}else sprite=standsprite;
+		if(player.crouchfactor<0.75)sprite=crouchsprite;else sprite=standsprite;
+		if(standsprite==crouchsprite)scale.y=skinscale.y*player.crouchfactor;
 
 		//retrieve values from cvar
 		string skinput=hd_skin.getstring();
@@ -73,9 +72,11 @@ extend class HDPlayerPawn{
 		//set the sprites
 		let defskinclass=getdefaultbytype(skinclass);
 		let dds=defskinclass.spawnstate;
-		if(dds!=null)standsprite=dds.sprite;
+		standsprite=dds.sprite;
 		dds=defskinclass.resolvestate("crouch");
-		if(dds!=null)crouchsprite=dds.sprite;
+		crouchsprite=dds.sprite;
+		skinscale=defskinclass.scale;
+		scale=skinscale;
 
 		//test if this sound exists
 		//otherwise you can cheat by defining an invalid name to get a silent character
