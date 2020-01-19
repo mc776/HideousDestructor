@@ -85,6 +85,7 @@ extend class HDPlayerPawn{
 		}else{
 			playercorpse=spawn("HDPlayerCorpse",pos,ALLOW_REPLACE);
 			playercorpse.vel=vel;playercorpse.master=self;
+			if(player)playercorpse.settag(player.getusername());
 
 			playercorpse.translation=translation;
 			playercorpse.sprite=sprite;
@@ -154,6 +155,7 @@ class HDPlayerCorpse:HDMobMan{
 	default{
 		monster; -countkill +friendly +nopain
 		health 100;mass 160;
+		tag "$CC_MARINE";
 	}
 	override void Tick(){
 		super.Tick();
