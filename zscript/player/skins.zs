@@ -112,7 +112,10 @@ extend class HDHandlers{
 	void ShowSkins(hdplayerpawn ppp){
 		string bbb="Available player skins (classname, soundclass (if any), mugshot (if any)):";
 		for(int i=0;i<allactorclasses.size();i++){
-			if(allactorclasses[i] is "HDSkin"){
+			if(
+				allactorclasses[i] is "HDSkin"
+				&&allactorclasses[i]!="HDSkin"
+			){
 				let aac=getdefaultbytype((class<hdskin>)(allactorclasses[i]));
 				bbb=bbb.."\n  "..aac.getclassname()
 				.."  "..aac.soundclass
@@ -158,26 +161,6 @@ class HDSkin:Actor{
 	}
 }
 
-//example syntax for a custom skin
-//assets not included
-class HDSampleCustomSkin:HDSkin{
-	default{
-		hdskin.tauntsound "player/oldfdguy/taunt";
-		hdskin.xdeathsound "player/oldfdguy/xdeath";
-		hdskin.gruntsound "player/oldfdguy/grunt";
-		hdskin.landsound "player/oldfdguy/land";
-		hdskin.medsound "player/oldfdguy/meds";
-		hdskin.soundclass "oldfdguy";
-		deathsound "player/oldfdguy/death";
-		painsound "player/oldfdguy/pain";
-		hdskin.mug "FDF";
-	}
-	states{
-	spawn:FRED A 0;stop;
-	crouch:FREC A 0;stop;
-	}
-}
-
 
 //test
 class HDZombieSkin:HDSkin{
@@ -191,8 +174,40 @@ class HDZombieSkin:HDSkin{
 		painsound "grunt/pain";
 	}
 	states{
-	spawn:crouch:POSS A -1;stop;
+	spawn:crouch:POSS A 0;stop;
 	}
 }
 
+
+
+/*
+//example syntax for a custom skin
+//assets not included
+class HDQuakeSkin:HDSkin{
+	default{
+		hdskin.tauntsound "player/quakeguy/taunt";
+		hdskin.xdeathsound "player/quakeguy/xdeath";
+		hdskin.gruntsound "player/quakeguy/grunt";
+		hdskin.landsound "player/quakeguy/land";
+		hdskin.medsound "player/quakeguy/meds";
+		hdskin.soundclass "quakeguy";
+		deathsound "player/quakeguy/death";
+		painsound "player/quakeguy/pain";
+		//hdskin.mug "QGF";
+	}
+	states{
+	spawn:QGUY A 0;stop;
+	crouch:QGUY A 0;stop;
+	}
+}
+
+//and a SNDINFO
+player/quakeguy/taunt   dstauntm
+player/quakeguy/xdeath  dsqdiehi
+player/quakeguy/grunt   dsqnoway
+player/quakeguy/land    dsland
+player/quakeguy/meds    dsqpain
+player/quakeguy/death   dsqdeth
+player/quakeguy/pain    dsqpain
+*/
 
