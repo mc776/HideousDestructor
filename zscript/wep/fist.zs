@@ -452,8 +452,8 @@ class HDFist:HDWeapon replaces Fist{
 		goto kick;
 	lunge:
 		TNT1 A 0 A_Lunge();
-		TNT1 AA 1{
-			if(countinv("PowerStrength"))A_Recoil(-random(12,24));
+		TNT1 AAAA 1{
+			if(countinv("PowerStrength"))A_Recoil(-random(6,12));
 		}
 		TNT1 A 1 A_Recoil(-4);
 	kick:
