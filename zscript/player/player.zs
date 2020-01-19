@@ -91,6 +91,7 @@ class HDPlayerPawn:PlayerPawn{
 		cachecvars();
 
 		standsprite=sprite;
+		if(player)ApplyUserSkin(true);
 
 		lastpos=pos;
 		lastvel=vel;

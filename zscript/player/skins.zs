@@ -36,7 +36,7 @@ extend class HDPlayerPawn{
 
 		//retrieve values from cvar
 		string skinput=hd_skin.getstring();
-		if(skinput==lastskin)return;
+		if(!forced&&skinput==lastskin)return;
 		lastskin=skinput;  //update old for future comparisons
 
 		skinput=skinput.makelower();
@@ -106,6 +106,9 @@ extend class HDPlayerPawn{
 
 		//set the mugshot
 		if(
+			TexMan.CheckForTexture(defskinclass.mug.."st00",TexMan.Type_Any).Exists()
+		)mugshot=defskinclass.mug;
+		else if(
 			TexMan.CheckForTexture(skinname[HDSKIN_MUG].."st00",TexMan.Type_Any).Exists()
 		)mugshot=skinname[HDSKIN_MUG];
 		else switch(player.getgender()){
@@ -179,6 +182,7 @@ class HDZombieSkin:HDSkin{
 		hdskin.medsound "player/hdguy/meds";
 		deathsound "grunt/death";
 		painsound "grunt/pain";
+		hdskin.mug "STC";
 	}
 	states{
 	spawn:crouch:POSS A 0;stop;

@@ -520,7 +520,7 @@ extend class HDPlayerPawn{
 			}
 			if(incapacitated)frame=clamp(6+abs(incapacitated>>2),6,11);
 		}
-		---- A 3 A_Pain();
+		---- A 3 A_StartSound(painsound,CHAN_VOICE);
 		---- A 0 setstatelabel("spawn");
 	pain.slime:
 		#### G 3{

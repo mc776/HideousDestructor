@@ -37,7 +37,8 @@ class FlickChunk:FastProjectile{
 			A_Scream();
 		}
 		TNT1 A 0{
-			if(tracer&&tracer.health>0&&(tracer.player||!random(0,3)))tracer.A_Pain();
+			if(tracer&&tracer.health>0&&(tracer.player||!random(0,3)))
+				tracer.A_StartSound(tracer.painsound,CHAN_VOICE);
 		}
 		TNT1 A random(0,32);
 		TNT1 A 0{if(!random(0,tracer?2:10))A_AlertMonsters(32);}
