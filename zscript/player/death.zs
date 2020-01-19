@@ -88,13 +88,14 @@ extend class HDPlayerPawn{
 			if(player)playercorpse.settag(player.getusername());
 
 			playercorpse.translation=translation;
+			ApplyUserSkin(true);
 			playercorpse.sprite=sprite;
 
 			if(
 				(!inflictor||!inflictor.bnoextremedeath)
 				&&(-health>gibhealth||aggravateddamage>40)
 			)playercorpse.A_Die("extreme");
-			else if(!silentdeath)A_PlayerScream();
+			else if(!silentdeath)A_StartSound(deathsound,CHAN_VOICE);
 		}
 
 		super.die(source,inflictor,dmgflags,MeansOfDeath);
@@ -177,7 +178,7 @@ class HDPlayerCorpse:HDMobMan{
 	}
 	states{
 	spawn:
-		#### A -1;
+		#### AA -1;
 		PLAY A 0;
 	forcexdeath:
 		#### A -1;

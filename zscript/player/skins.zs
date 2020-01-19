@@ -20,13 +20,19 @@ extend class HDPlayerPawn{
 		HDSKIN_MUG=2,
 	}
 	//to be called in the ticker
-	void ApplyUserSkin(){
-		if(!player||!hd_skin)return;
+	void ApplyUserSkin(bool forced=false){
+		if(
+			!forced
+			&&(
+				!player
+				||!hd_skin
+			)
+		)return;
 
 		//apply sprite
 		if(player.crouchfactor<0.75){
+			sprite=crouchsprite;
 			if(standsprite==crouchsprite)scale.y=player.crouchfactor;
-			else sprite=crouchsprite;
 		}else sprite=standsprite;
 
 		//retrieve values from cvar
