@@ -133,6 +133,7 @@ extend class HDHandlers{
 				
 			}
 		}
+		bbb=bbb.."\nType 'hd_skin \"\"' in the console to reset.";
 		ppp.A_Log(bbb,true);
 	}
 }
@@ -173,7 +174,7 @@ class HDSkin:Actor{
 
 
 //test
-class HDZombieSkin:HDSkin{
+class HDTestSkin:HDSkin{
 	default{
 		hdskin.tauntsound "grunt/sight";
 		hdskin.xdeathsound "grunt/death3";
