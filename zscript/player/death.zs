@@ -217,12 +217,13 @@ class HDPlayerCorpse:HDMobMan{
 		---- A 0{
 			bnotargetswitch=false;
 			actor masbak=master;
-			A_SpawnItemEx("ReallyDeadRifleman",flags:
-				SXF_NOCHECKPOSITION|
-				SXF_TRANSFERPOINTERS|
-				SXF_TRANSFERTRANSLATION|
-				SXF_ISMASTER
-			);
+			actor aaa=spawn("ReallyDeadRifleman",pos);
+			aaa.angle=angle;
+			aaa.translation=translation;
+			aaa.master=master;
+			aaa.target=target;
+			aaa.sprite=sprite;
+			master=aaa;
 			A_RaiseMaster(RF_NOCHECKPOSITION|RF_TRANSFERFRIENDLINESS);
 			master.master=masbak;
 		}
@@ -230,11 +231,12 @@ class HDPlayerCorpse:HDMobMan{
 	raise:
 		#### MLKJIH 5;
 		---- A 0{
-			A_SpawnItemEx("UndeadRifleman",flags:
-				SXF_NOCHECKPOSITION|
-				SXF_TRANSFERPOINTERS|
-				SXF_TRANSFERTRANSLATION
-			);
+			actor aaa=spawn("UndeadRifleman",pos);
+			aaa.angle=angle;
+			aaa.translation=translation;
+			aaa.master=master;
+			aaa.target=target;
+			aaa.sprite=sprite;
 		}
 	falldown:
 		stop;
