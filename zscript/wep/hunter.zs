@@ -655,7 +655,7 @@ class Hunter:HDShotgun{
 	}
 	override void loadoutconfigure(string input){
 		int type=getloadoutvar(input,"type",1);
-		if(type>0){
+		if(type>=0){
 			switch(type){
 			case 0:
 				weaponstatus[0]|=HUNTF_EXPORT;
