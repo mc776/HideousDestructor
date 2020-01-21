@@ -276,9 +276,9 @@ class LiberatorRifle:AutoReloadingThingy{
 		if(sb.hudlevel==1){
 			int nextmagloaded=sb.GetNextLoadMag(hdmagammo(hpl.findinventory("HD7mMag")));
 			if(nextmagloaded>=30){
-				sb.drawimage("RMAGA0",(-46,-3),sb.DI_SCREEN_CENTER_BOTTOM,scale:(1.6,1.6));
+				sb.drawimage("RMAGNORM",(-46,-3),sb.DI_SCREEN_CENTER_BOTTOM);
 			}else if(nextmagloaded<1){
-				sb.drawimage("RMAGB0",(-46,-3),sb.DI_SCREEN_CENTER_BOTTOM,alpha:nextmagloaded?0.6:1.,scale:(1.6,1.6));
+				sb.drawimage("RMAGEMPTY",(-46,-3),sb.DI_SCREEN_CENTER_BOTTOM,alpha:nextmagloaded?0.6:1.);
 			}else sb.drawbar(
 				"RMAGNORM","RMAGGREY",
 				nextmagloaded,30,
