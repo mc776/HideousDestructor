@@ -106,11 +106,11 @@ extend class HDPlayerPawn{
 
 		//set the mugshot
 		if(
-			TexMan.CheckForTexture(defskinclass.mug.."st00",TexMan.Type_Any).Exists()
-		)mugshot=defskinclass.mug;
-		else if(
 			TexMan.CheckForTexture(skinname[HDSKIN_MUG].."st00",TexMan.Type_Any).Exists()
 		)mugshot=skinname[HDSKIN_MUG];
+		else if(
+			TexMan.CheckForTexture(defskinclass.mug.."st00",TexMan.Type_Any).Exists()
+		)mugshot=defskinclass.mug;
 		else switch(player.getgender()){
 			case 0:mugshot="STF";break;
 			case 1:mugshot="SFF";break;
