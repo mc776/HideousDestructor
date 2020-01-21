@@ -760,7 +760,7 @@ extend class HDBackpack{
 			if(type is "HDMagAmmo"){
 				let thismags=hdmagammo(thisinv);
 				string ibp="";
-				for(int i=0;i<inbackpack;i++){
+				for(int j=0;j<inbackpack;j++){
 					ibp=ibp..(ibp==""?"":" ")..thismags.mags[0];
 					thismags.mags.delete(0);
 					thismags.amount--;
