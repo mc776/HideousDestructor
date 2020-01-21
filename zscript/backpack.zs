@@ -761,8 +761,9 @@ extend class HDBackpack{
 				let thismags=hdmagammo(thisinv);
 				string ibp="";
 				for(int j=0;j<inbackpack;j++){
-					ibp=ibp..(ibp==""?"":" ")..thismags.mags[0];
-					thismags.mags.delete(0);
+					int thismagindex=thismags.size()-1; //replace with "0" to reverse order
+					ibp=ibp..(ibp==""?"":" ")..thismags.mags[thismagindex];
+					thismags.mags.delete(thismagindex); //don't "pop" in case i want to reverse
 					thismags.amount--;
 				}
 				amounts[i]=ibp;
