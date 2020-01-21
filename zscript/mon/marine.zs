@@ -184,6 +184,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 	virtual void A_HDMScream(){
 		A_Scream();
 	}
+	int givensprite;
 	override void postbeginplay(){
 		super.postbeginplay();
 		hdmobster.spawnmobster(self);
@@ -405,7 +406,8 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 	bool checkedin;
 	states{
 	spawn:
-		PLAY A 0;
+		PLAY A 0{sprite=givensprite;}
+		#### A 0{givensprite=sprite;}
 		#### AA 4{hdmobai.wander(self);}
 		#### A 0 A_Look();
 		#### BB 4{hdmobai.wander(self);}

@@ -905,7 +905,7 @@ Loadout codes: `hun`
 
 The DiFranco SPOS-E28 scattergun is easily the most widespread firearm in known space. Formerly marketed as the "Man-Hunter" before the liberals got the name banned in eleven states after a spate of shooting sprees, the Hunter's reliability, (relative) safety while firing in pressurized quarters, and ability to take just about any ammo given to it are unsurpassed by any current weapon. Also good for home defence and hunting big game - up close.
 
-A made-for-export "Sportsman" edition exists with a slimmer mag profile and action dedicated entirely to manual chambering.
+A made-for-export "Sportsman" edition exists with a lighter fully-loaded mag and action dedicated entirely to manual chambering.
 
 The Tyrant has been strangely fond of this weapon and has armed most of his zombies with it; while officially Metallian Holdings Ltd. (DiFranco's parent company) denies any dealings with the Tyrant or any of his known dealers, or in the alternative at least having ever profited from such transactions, or in the further alternative having ever received any such funds from DiFranco, unofficially we all know there's no such thing as bad publicity.
 

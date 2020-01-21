@@ -217,12 +217,14 @@ class HDPlayerCorpse:HDMobMan{
 		---- A 0{
 			bnotargetswitch=false;
 			actor masbak=master;
-			actor aaa=spawn("ReallyDeadRifleman",pos);
+			let aaa=HDMarine(spawn("ReallyDeadRifleman",pos));
 			aaa.angle=angle;
 			aaa.translation=translation;
 			aaa.master=master;
 			aaa.target=target;
 			aaa.sprite=sprite;
+			aaa.givensprite=sprite;
+			aaa.bfriendly=bfriendly;
 			master=aaa;
 			A_RaiseMaster(RF_NOCHECKPOSITION|RF_TRANSFERFRIENDLINESS);
 			master.master=masbak;
@@ -231,12 +233,14 @@ class HDPlayerCorpse:HDMobMan{
 	raise:
 		#### MLKJIH 5;
 		---- A 0{
-			actor aaa=spawn("UndeadRifleman",pos);
+			let aaa=HDMarine(spawn("UndeadRifleman",pos));
 			aaa.angle=angle;
 			aaa.translation=translation;
 			aaa.master=master;
 			aaa.target=target;
 			aaa.sprite=sprite;
+			aaa.givensprite=sprite;
+			aaa.bfriendly=bfriendly;
 		}
 	falldown:
 		stop;
