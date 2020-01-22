@@ -1132,6 +1132,17 @@ extend class HDWeapon{
 
 		return newwep;
 	}
+	static int GetActualAmount(actor caller,name wepclass){
+		let www=hdweapon(caller.findinventory(wepclass));
+		if(!www)return 0;
+		int wepcount=max(1,www.amount);
+		let spw=spareweapons(caller.findinventory("SpareWeapons"));
+		if(!spw)return wepcount;
+		for(int i=0;i<spw.weapontype.size();i++){
+			if(spw.weapontype[i]==wepclass)wepcount++;
+		}
+		return wepcount;
+	}
 }
 enum HDWepConsts{
 	HDWEP_STATUSSLOTS=32,

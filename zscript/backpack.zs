@@ -435,7 +435,9 @@ class HDBackpack:HDWeapon{
 		}
 		let thisinv=(class<inventory>)(invclasses[index]);
 		selectedinbackpack=getamount(thisinv);
-		selectedininventory=owner.countinv(thisinv);
+
+		if(thisinv is "HDWeapon")selectedininventory=hdweapon.getactualamount(owner,thisinv.getclassname());
+		else selectedininventory=owner.countinv(thisinv);
 
 		//display selected item name and amounts carried
 		wepmsg="\cs[] [] [] \cbBackpack \cs[] [] []\nfiremode=fast scroll  unload/reload=take/insert\n\n"
