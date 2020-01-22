@@ -345,7 +345,12 @@ class Necromancer:HDMobBase replaces ArchVile{
 				bshootable=false;
 				if(!bfriendly)A_ChangeNecroFlags(false);
 
-				setstatelabel("pain");
+				if(bfriendly||target)setstatelabel("pain");
+				else{
+					setstatelabel("painedandgone");
+					DistantNoise.Make(self,painsound);
+				}
+
 				DistantNoise.Make(self,"world/rocketfar");
 				A_SpawnItemEx("SpawnFire",0,0,28,flags:SXF_NOCHECKPOSITION);
 				A_Explode(46,196);
@@ -364,6 +369,7 @@ class Necromancer:HDMobBase replaces ArchVile{
 	}
 	states{
 	spawn:
+		VILE A 0 A_JumpIf(!bshootable,"painedandgone");
 		VILE AB 10 A_Look;
 		loop;
 	see:
@@ -442,8 +448,9 @@ class Necromancer:HDMobBase replaces ArchVile{
 		VILE F 1 A_Chase(null,null,CHF_RESURRECT);
 		VILE AA 0 A_Chase(null,null,CHF_RESURRECT);
 		VILE F 0 A_SetTranslucent(alpha-0.2,1);
-		VILE F 0 A_JumpIf(alpha<0.1,1);
+		VILE F 0 A_JumpIf(alpha<0.1,"painedandgone");
 		loop;
+	painedandgone:
 		TNT1 AAAAAAAAA 0 A_Wander();
 		TNT1 A 0 A_SetTics(random(350,3500));
 		VILE F 0 A_ChangeNecroFlags(true);
