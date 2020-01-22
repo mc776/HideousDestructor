@@ -51,12 +51,6 @@ class Hunter:HDShotgun{
 		invoker.weaponstatus[HUNTS_CHAMBER]=1;
 		invoker.shotpower=shotpower;
 	}
-	int tubesize;
-	override void postbeginplay(){
-		super.postbeginplay();
-		tubesize=((weaponstatus[0]&HUNTF_EXPORT)?5:7);
-		if(weaponstatus[HUNTS_TUBE]>tubesize)weaponstatus[HUNTS_TUBE]=tubesize;
-	}
 	override string pickupmessage(){
 		if(weaponstatus[0]&HUNTF_CANFULLAUTO)return string.format("%s You notice some tool marks near the fire selector...",super.pickupmessage());
 		else if(weaponstatus[0]&HUNTF_EXPORT)return string.format("%s Where is the fire selector on this thing!?",super.pickupmessage());
@@ -80,7 +74,7 @@ class Hunter:HDShotgun{
 		if(!(hdw.weaponstatus[0]&HUNTF_EXPORT))sb.drawwepcounter(hdw.weaponstatus[HUNTS_FIREMODE],
 			-26,-12,"blank","RBRSA3A7","STFULAUT"
 		);
-		sb.drawwepnum(hdw.weaponstatus[HUNTS_TUBE],tubesize,posy:-7);
+		sb.drawwepnum(hdw.weaponstatus[HUNTS_TUBE],hdw.weaponstatus[HUNTS_TUBESIZE],posy:-7);
 		for(int i=hdw.weaponstatus[SHOTS_SIDESADDLE];i>0;i--){
 			sb.drawwepdot(-15-i*2,-2,(1,3));
 		}
@@ -182,7 +176,7 @@ class Hunter:HDShotgun{
 			!hand
 			||(
 				invoker.weaponstatus[HUNTS_CHAMBER]>0
-				&&invoker.weaponstatus[HUNTS_TUBE]>=invoker.tubesize
+				&&invoker.weaponstatus[HUNTS_TUBE]>=invoker.weaponstatus[HUNTS_TUBESIZE]
 			)
 		){
 			EmptyHand();
@@ -198,7 +192,7 @@ class Hunter:HDShotgun{
 		bool fromsidesaddles=!(invoker.weaponstatus[0]&HUNTF_FROMPOCKETS);
 		int toload=min(
 			fromsidesaddles?invoker.weaponstatus[SHOTS_SIDESADDLE]:countinv("HDShellAmmo"),
-			alwaysone?1:(invoker.tubesize-invoker.weaponstatus[HUNTS_TUBE]),
+			alwaysone?1:(invoker.weaponstatus[HUNTS_TUBESIZE]-invoker.weaponstatus[HUNTS_TUBE]),
 			max(1,health/22),
 			maxhand
 		);
@@ -459,7 +453,7 @@ class Hunter:HDShotgun{
 	startreload:
 		SHTG A 1{
 			if(
-				invoker.weaponstatus[HUNTS_TUBE]>=invoker.tubesize
+				invoker.weaponstatus[HUNTS_TUBE]>=invoker.weaponstatus[HUNTS_TUBESIZE]
 			){
 				if(
 					invoker.weaponstatus[SHOTS_SIDESADDLE]<12
@@ -506,7 +500,7 @@ class Hunter:HDShotgun{
 			else invoker.weaponstatus[0]&=~HUNTF_HOLDING;
 
 			if(
-				invoker.weaponstatus[HUNTS_TUBE]>=invoker.tubesize
+				invoker.weaponstatus[HUNTS_TUBE]>=invoker.weaponstatus[HUNTS_TUBESIZE]
 				||(
 					invoker.handshells<1&&(
 						invoker.weaponstatus[0]&HUNTF_FROMPOCKETS
@@ -648,7 +642,7 @@ class Hunter:HDShotgun{
 	}
 	override void InitializeWepStats(bool idfa){
 		weaponstatus[HUNTS_CHAMBER]=2;
-		weaponstatus[HUNTS_TUBE]=idfa?tubesize:7;
+		weaponstatus[HUNTS_TUBE]=idfa?weaponstatus[HUNTS_TUBESIZE]:7;
 		weaponstatus[SHOTS_SIDESADDLE]=12;
 		if(!idfa)weaponstatus[HUNTS_CHOKE]=1;
 		handshells=0;
@@ -678,6 +672,10 @@ class Hunter:HDShotgun{
 		if(firemode>=0)weaponstatus[HUNTS_FIREMODE]=clamp(firemode,0,type);
 		int choke=min(getloadoutvar(input,"choke",1),7);
 		if(choke>=0)weaponstatus[HUNTS_CHOKE]=choke;
+
+		int tubesize=((weaponstatus[0]&HUNTF_EXPORT)?5:7);
+		if(weaponstatus[HUNTS_TUBE]>tubesize)weaponstatus[HUNTS_TUBE]=tubesize;
+		weaponstatus[HUNTS_TUBESIZE]=tubesize;
 	}
 }
 enum hunterstatus{
@@ -693,8 +691,9 @@ enum hunterstatus{
 	HUNTS_CHAMBER=2,
 	//3 is for side saddles
 	HUNTS_TUBE=4,
-	HUNTS_HAND=5,
-	HUNTS_CHOKE=6,
+	HUNTS_TUBESIZE=5,
+	HUNTS_HAND=6,
+	HUNTS_CHOKE=7,
 };
 
 
@@ -716,7 +715,8 @@ class HunterRandom:IdleDummy{
 				ggg.weaponstatus[0]&=~HUNTF_CANFULLAUTO;
 			}
 			int tubesize=((ggg.weaponstatus[0]&HUNTF_EXPORT)?5:7);
-			if(ggg.weaponstatus[HUNTS_TUBE]>tubesize)ggg.weaponstatus[HUNTS_TUBE]=ggg.tubesize;
+			if(ggg.weaponstatus[HUNTS_TUBE]>tubesize)ggg.weaponstatus[HUNTS_TUBE]=tubesize;
+			ggg.weaponstatus[HUNTS_TUBESIZE]=tubesize;
 		}stop;
 	}
 }
