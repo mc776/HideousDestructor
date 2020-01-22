@@ -65,6 +65,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 	}
 	override void beginplay(){
 		super.beginplay();
+		givensprite=getspriteindex("PLAYA1");
 		bhasdropped=false;
 		spread=0;
 		timesdied=0;
@@ -407,7 +408,6 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 	states{
 	spawn:
 		PLAY A 0{sprite=givensprite;}
-		#### A 0{givensprite=sprite;}
 		#### AA 4{hdmobai.wander(self);}
 		#### A 0 A_Look();
 		#### BB 4{hdmobai.wander(self);}
