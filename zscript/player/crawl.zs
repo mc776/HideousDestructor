@@ -124,7 +124,7 @@ extend class HDPlayerPawn{
 			&&health<10
 		)GiveBody(7);
 		incapacitated=1;
-		incaptimer=incaptime;
+		incaptimer=max(incaptimer,incaptime);
 		setstatelabel("spawn");
 	}
 	enum IncapFlags{
