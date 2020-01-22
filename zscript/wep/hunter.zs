@@ -642,9 +642,12 @@ class Hunter:HDShotgun{
 	}
 	override void InitializeWepStats(bool idfa){
 		weaponstatus[HUNTS_CHAMBER]=2;
-		weaponstatus[HUNTS_TUBE]=idfa?weaponstatus[HUNTS_TUBESIZE]:7;
+		if(!idfa){
+			weaponstatus[HUNTS_TUBESIZE]=7;
+			weaponstatus[HUNTS_CHOKE]=1;
+		}
+		weaponstatus[HUNTS_TUBE]=weaponstatus[HUNTS_TUBESIZE];
 		weaponstatus[SHOTS_SIDESADDLE]=12;
-		if(!idfa)weaponstatus[HUNTS_CHOKE]=1;
 		handshells=0;
 	}
 	override void loadoutconfigure(string input){
