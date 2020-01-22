@@ -545,7 +545,10 @@ class HDBackpack:HDWeapon{
 				if(i<newp.weaponstatus.size())newp.weaponstatus[i]=tempamounts[0].toint();
 				tempamounts.delete(0);
 			}
-			if(trytopocket&&owner.countinv(wepth)<getdefaultbytype(wepth).maxamount){
+			if(
+				trytopocket
+				&&newp.bfitsinbackpack
+			){
 				newp.actualpickup(owner);
 				ticks=12;
 			}else{
