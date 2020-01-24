@@ -84,15 +84,30 @@ class HDFist:HDWeapon replaces Fist{
 			targethealth=0;
 		}
 	}
-	action void A_CheckGender(statelabel st,int layer=PSP_WEAPON){
-		if(player){
-			int gnd=player.getgender();
-			if(!gnd)gnd=getspriteindex("PUNGA0");
-			else if(gnd==1)gnd=getspriteindex("PUNFA0");
-			else if(gnd==2)gnd=getspriteindex("PUNFA0");
-			else gnd=getspriteindex("PUNCA0");
-			player.findPSprite(layer).sprite=gnd;
+	action void A_CheckFistSprite(statelabel st,int layer=PSP_WEAPON){
+		if(!player)return;
+		bool usegender=false;
+		int fspr;
+		let hpl=hdplayerpawn(self);
+		if(!hpl)usegender=true;else{
+			fspr=hpl.fistsprite;  //set the fist sprite
+			if(fspr<0){
+				//if no valid fist sprite indicated, use mugshot
+				string mugshot=hpl.mugshot;
+				if(mugshot~=="STF")fspr=getspriteindex("PUNGA0");
+				else if(mugshot~=="SFF")fspr=getspriteindex("PUNFA0");
+				else if(mugshot~=="STC")fspr=getspriteindex("PUNCA0");
+				else usegender=true;  //if mugshot is not determinative, use gender
+			}
 		}
+		if(usegender){
+			int gnd=player.getgender();
+			if(!gnd)fspr=getspriteindex("PUNGA0");
+			else if(gnd==1)fspr=getspriteindex("PUNFA0");
+			else if(gnd==2)fspr=getspriteindex("PUNFA0");
+			else fspr=getspriteindex("PUNCA0");
+		}
+		player.findPSprite(layer).sprite=fspr;
 	}
 	action void HDPunch(double dmg){
 		flinetracedata punchline;
@@ -406,7 +421,7 @@ class HDFist:HDWeapon replaces Fist{
 			invoker.washolding=false;
 		}goto readyend;
 	reload:
-		TNT1 A 0 A_CheckGender("flick");
+		TNT1 A 0 A_CheckFistSprite("flick");
 	flick:
 		#### A 1 offset(0,50) A_Lunge();
 		#### A 1 offset(0,36);
@@ -423,7 +438,7 @@ class HDFist:HDWeapon replaces Fist{
 	fire:
 	hold:
 	althold:
-		TNT1 A 0 A_CheckGender("startfire");
+		TNT1 A 0 A_CheckFistSprite("startfire");
 	startfire:
 		#### A 0 A_JumpIfInventory("PowerStrength",1,"zerkpunch");
 		goto punch;
@@ -474,7 +489,7 @@ class HDFist:HDWeapon replaces Fist{
 	firemode:
 	grab:
 		TNT1 A 0 A_ClearGrabbing();
-		TNT1 A 0 A_CheckGender("grab2");
+		TNT1 A 0 A_CheckFistSprite("grab2");
 	grab2:
 		#### A 1 offset(0,52);
 		#### A 1 offset(0,32);

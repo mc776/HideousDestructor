@@ -6,6 +6,7 @@ extend class HDPlayerPawn{
 	string lastskin;
 	string mugshot;
 	int standsprite;
+	int fistsprite;
 	vector2 skinscale;
 	sound
 		tauntsound,
@@ -20,6 +21,7 @@ extend class HDPlayerPawn{
 		HDSKIN_SPRITE=0,
 		HDSKIN_VOICE=1,
 		HDSKIN_MUG=2,
+		HDSKIN_FIST=3,
 	}
 	//to be called in the ticker
 	void ApplyUserSkin(bool forced=false){
@@ -49,7 +51,7 @@ extend class HDPlayerPawn{
 		skinput.split(skinname,",");
 
 		//I'd rather do this than to spam up everything below with null checks
-		while(skinname.size()<3){
+		while(skinname.size()<4){
 			skinname.push("");
 		}
 
@@ -78,6 +80,17 @@ extend class HDPlayerPawn{
 		crouchsprite=dds.sprite;
 		skinscale=defskinclass.scale;
 		scale=skinscale;
+
+		//set the fist sprites
+		if(skinname[HDSKIN_FIST].length()==4)skinname[HDSKIN_FIST]=skinname[HDSKIN_FIST].."A0";
+		fistsprite=getspriteindex(skinname[HDSKIN_FIST]);
+		if(
+			fistsprite<0
+			&&skinclass!="HDSkin"  //don't use HDSkin itself
+		){
+			dds=defskinclass.resolvestate("fist");
+			fistsprite=dds.sprite;
+		}
 
 		//test if this sound exists
 		//otherwise you can cheat by defining an invalid name to get a silent character
@@ -166,6 +179,7 @@ class HDSkin:Actor{
 	states{
 	spawn:PLAY A 0;stop;
 	crouch:PLYC A 0;stop;
+	fist:TNT1 A 0;stop;
 	}
 }
 
@@ -184,6 +198,7 @@ class HDTestSkin:HDSkin{
 	}
 	states{
 	spawn:crouch:POSS A 0;stop;
+	fist:PUNC A 0;stop;
 	}
 }
 
@@ -207,6 +222,7 @@ class HDQuakeSkin:HDSkin{
 	states{
 	spawn:QGUY A 0;stop;
 	crouch:QGUY A 0;stop;
+	fist:PUNG A 0;stop;
 	}
 }
 
