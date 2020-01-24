@@ -790,6 +790,10 @@ extend class HDHandlers{
 		else if(cmd==555){
 			let dpu=DERPUsable(ppp.findinventory("DERPUsable"));
 			if(!dpu)return;
+			if(dpu.weaponstatus[0]&DERPF_BROKEN){
+				ppp.A_Log(string.format("\cd[DERP]  \cuIt's broken."),true);
+				return;
+			}
 			flinetracedata dlt;
 			ppp.linetrace(
 				ppp.angle,48,ppp.pitch,flags:TRF_THRUACTORS,
@@ -813,7 +817,7 @@ extend class HDHandlers{
 			ddd.angle=ppp.angle-180;
 			ddd.translation=ppp.translation;
 			ddd.master=ppp;
-			ddd.ammo=-1;
+			ddd.ammo=dpu.weaponstatus[DERPS_AMMO];
 			if(!dlt.hitline.backsector){
 				ddd.stuckheight=ddd.pos.z;
 				ddd.stucktier=0;
