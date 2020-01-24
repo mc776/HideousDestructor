@@ -84,11 +84,9 @@ extend class HDPlayerPawn{
 		//set the fist sprites
 		if(skinname[HDSKIN_FIST].length()==4)skinname[HDSKIN_FIST]=skinname[HDSKIN_FIST].."A0";
 		fistsprite=getspriteindex(skinname[HDSKIN_FIST]);
-		if(
-			fistsprite<0
-			&&skinclass!="HDSkin"  //don't use HDSkin itself
-		){
+		if(fistsprite<0){
 			dds=defskinclass.resolvestate("fist");
+			if(dds.sprite!=getspriteindex("SHTFA0"))  //this is the default for HDSkin
 			fistsprite=dds.sprite;
 		}
 
@@ -179,7 +177,7 @@ class HDSkin:Actor{
 	states{
 	spawn:PLAY A 0;stop;
 	crouch:PLYC A 0;stop;
-	fist:TNT1 A 0;stop;
+	fist:SHTF A 0;stop;  //intentional garbage value
 	}
 }
 
