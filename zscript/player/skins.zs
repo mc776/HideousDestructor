@@ -1,7 +1,7 @@
 // ------------------------------------------------------------
 // Custom skin system
 // ------------------------------------------------------------
-const HDMUGSHOT_DEFAULT="*mug";
+const HDMUGSHOT_DEFAULT="*";
 extend class HDPlayerPawn{
 	string lastskin;
 	string mugshot;
