@@ -388,14 +388,16 @@ Logs the distance of the object or map geometry you're pointing at.
 * `hd_crosshair` (0): This affects which image is displayed on the ZM66, Vulcanette and Liberator reflex sights. This is applied on a per-user basis and you will not need to set this every time you pick up a new gun. If you want to modify these, the lumps to replace are "riflsit1" through "riflsit5".
 
 * `hd_skin` (""): Hideous Destructor cannot use Doom Legacy-style skins. Instead, it uses its own completely independent system.
-To set a skin, type "hd_skin aaaa,bbbb,ccc", where:
- aaaa = the class name of the skin actor;
- bbbb = the sound class name the skin is using; and
- ccc = the 3-letter identifier for the mugshot.
+To set a skin, type "hd_skin aaaaa,bbbbb,ccc,dddd", where:
+ aaaaa = the class name of the skin actor;
+ bbbbb = the sound class name the skin is using;
+ ccc = the 3-letter identifier for the mugshot; and
+ dddd = the 4-letter sprite identifier for the fist sprite.
 Leave an item blank but keep the comma in order to use the default (i.e., the default skin, or the default sound class or mugshot for the skin indicated).
 Type `hd_showskins` for your available options.
 To reset everything to default, type `hd_skin ""`.
 In addition to any custom skins you may load, you can use soundclasses "hdguy", "hdgal" and "hdbot", and mugshots "STF","SFF" and "STC".
+The fist sprite is determined in priority: the explicit sprite name in hd_skin; if that is invalid, then the fist given in the skin actor definition; if none is given, then if you are using any of the 3 standard mugshots it will use the default for that; and if that is not given then it will be based on the gender setting.
 
 * `hd_voicepitch` (1.0): This lets you change the speed of the samples that play for your character's voice, allowing distinct audio cues for each person in multiplayer. Clamped between 0.7 and 1.3.
 
