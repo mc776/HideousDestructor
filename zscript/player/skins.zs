@@ -1,6 +1,7 @@
 // ------------------------------------------------------------
 // Custom skin system
 // ------------------------------------------------------------
+const HDMUGSHOT_DEFAULT="*mug";
 extend class HDPlayerPawn{
 	string lastskin;
 	string mugshot;
@@ -111,11 +112,7 @@ extend class HDPlayerPawn{
 		else if(
 			TexMan.CheckForTexture(defskinclass.mug.."st00",TexMan.Type_Any).Exists()
 		)mugshot=defskinclass.mug;
-		else switch(player.getgender()){
-			case 0:mugshot="STF";break;
-			case 1:mugshot="SFF";break;
-			default:mugshot="STC";break;
-		}
+		else mugshot=HDMUGSHOT_DEFAULT;
 	}
 }
 extend class HDHandlers{

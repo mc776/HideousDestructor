@@ -199,7 +199,7 @@ class HDStatusBar:DoomStatusBar{
 		);
 
 		//mugshot
-		DrawTexture(GetMugShot(5,Mugshot.CUSTOM,hpl.mugshot),(6,-14),DI_BOTTOMLEFT,alpha:blurred?0.2:1.);
+		DrawTexture(GetMugShot(5,Mugshot.CUSTOM,getmug(hpl.mugshot)),(6,-14),DI_BOTTOMLEFT,alpha:blurred?0.2:1.);
 
 		//heartbeat/playercolour tracker
 		if(hpl && hpl.beatmax){
@@ -260,10 +260,17 @@ class HDStatusBar:DoomStatusBar{
 	}
 	void DrawFullScreenStuff(){
 		DrawTexture(
-			GetMugShot(5,Mugshot.CUSTOM,hpl.mugshot),(0,-14),
+			GetMugShot(5,Mugshot.CUSTOM,getmug(hpl.mugshot)),(0,-14),
 			DI_ITEM_CENTER_BOTTOM|DI_SCREEN_CENTER_BOTTOM,
 			alpha:blurred?0.2:1.
 		);
+	}
+	string getmug(string mugshot){
+		if(mugshot==HDMUGSHOT_DEFAULT)switch(cplayer.getgender()){
+			case 0:return "STF";
+			case 1:return "SFF";
+			default:return "STC";
+		}else return mugshot;
 	}
 	void DrawAlwaysStuff(){
 		if(
