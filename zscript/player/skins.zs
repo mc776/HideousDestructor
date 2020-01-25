@@ -33,6 +33,9 @@ extend class HDPlayerPawn{
 			)
 		)return;
 
+		//voodoo dolls don't have direct access to cvars
+		if(player.mo!=self)hd_skin=CVar.GetCVar("hd_skin",player);
+
 		//apply sprite
 		if(player.crouchfactor<0.75)sprite=crouchsprite;else sprite=standsprite;
 		if(standsprite==crouchsprite)scale.y=skinscale.y*player.crouchfactor;
