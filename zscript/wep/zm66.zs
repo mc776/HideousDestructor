@@ -389,10 +389,10 @@ class ZM66AssaultRifle:HDWeapon{
 			}
 			A_WeaponReady(WRF_NOFIRE); //not WRF_NONE: switch to drop during cookoff
 		}
-		RIFG B 0 A_CheckCookoff();
 		RIFG B 0 A_JumpIf(invoker.weaponstatus[ZM66S_AUTO]<1,"nope");
 		RIFG B 0 A_JumpIf(invoker.weaponstatus[ZM66S_AUTO]>4,"nope");
-		RIFG B 2 A_JumpIf(invoker.weaponstatus[ZM66S_AUTO]>1,1);
+		RIFG B 2 A_JumpIf(invoker.weaponstatus[ZM66S_AUTO]>1,2);
+		RIFG B 0 A_CheckCookoff();
 		RIFG B 0 A_Refire();
 		goto ready;
 
