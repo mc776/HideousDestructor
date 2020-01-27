@@ -74,11 +74,8 @@ extend class HDPlayerPawn{
 		if(player){
 			let www=hdweapon(player.readyweapon);
 			if(www)www.OnPlayerDrop();
+			if(player.attacker is "HDFire")player.attacker=player.attacker.master;
 		}
-		if(player.attacker is "HDFire")player.attacker=player.attacker.master;
-
-
-		bool crouched=player&&player.crouchfactor<0.7;//(!incapacitated)&&height<40;
 
 		if(hd_disintegrator){
 			A_SpawnItemEx("Telefog",0,0,0,vel.x,vel.y,vel.z,0,SXF_ABSOLUTEMOMENTUM);

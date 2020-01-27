@@ -25,16 +25,11 @@ extend class HDPlayerPawn{
 	}
 	//to be called in the ticker
 	void ApplyUserSkin(bool forced=false){
-		if(
-			!forced
-			&&(
-				!player
-				||!hd_skin
-			)
-		)return;
+		if(!player)return;
 
 		//voodoo dolls don't have direct access to cvars
 		if(player.mo!=self)hd_skin=CVar.GetCVar("hd_skin",player);
+		if(!hd_skin)return; //this shouldn't happen
 
 		//apply sprite
 		if(player.crouchfactor<0.75)sprite=crouchsprite;else sprite=standsprite;
