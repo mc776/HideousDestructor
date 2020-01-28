@@ -298,9 +298,7 @@ extend class HDPlayerPawn{
 		}else if(
 			mod=="GhostSquadAttack"
 		){
-			//what to do here?
-			if(health<90)givebody(1);
-			damage=1;
+			//do nothing here, rely on GhostMarine.A_GhostShot
 		}else if(
 			mod=="staples"
 			||mod=="falling"
