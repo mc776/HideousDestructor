@@ -1160,13 +1160,13 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 			0.00004:
 			0.00005
 		);
-		
-		double shockbash=max(impact,impact*min(pen,deemedwidth))*(frandom(0.2,0.25)+stamina*0.00001);
-if(hd_debug)console.printf("     "..shockbash.." temp cav dmg");
+
+		int shockbash=int(max(impact,impact*min(pen,deemedwidth))*(frandom(0.2,0.25)+stamina*0.00001));
+		if(hd_debug)console.printf("     "..shockbash.." temp cav dmg");
 
 		//apply impact/tempcav damage
 		bnoextremedeath=impact<(hitactor.gibhealth<<3);
-		hitactor.damagemobj(self,target,int(shockbash),"bashing",DMG_THRUSTLESS);
+		hitactor.damagemobj(self,target,shockbash,"bashing",DMG_THRUSTLESS);
 		if(!hitactor)return;
 		bnoextremedeath=true;
 
@@ -1174,7 +1174,8 @@ if(hd_debug)console.printf("     "..shockbash.." temp cav dmg");
 		//spawn entry and exit wound blood
 		if(!bbloodlessimpact){
 			class<actor>hitblood;
-			if(hitactor.bnoblood)hitblood="FragPuff";else hitblood=hitactor.bloodtype;
+			bool noblood=hitactor.bnoblood;
+			if(noblood)hitblood="FragPuff";else hitblood=hitactor.bloodtype;
 			double ath=angleto(hitactor);
 			double zdif=pos.z-hitactor.pos.z;
 			bool gbg;actor blood;
@@ -1187,6 +1188,7 @@ if(hd_debug)console.printf("     "..shockbash.." temp cav dmg");
 			if(blood)blood.vel=-vu*(min(3,0.05*impact))
 				+(frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(-0.2,0.4)
 			);
+			if(!noblood)TraceBleedAngle((shockbash>>3),angle+180,-pitch);
 			if(flags&BLAF_ALLTHEWAYTHROUGH){
 				[gbg,blood]=hitactor.A_SpawnItemEx(
 					hitblood,
@@ -1195,6 +1197,7 @@ if(hd_debug)console.printf("     "..shockbash.." temp cav dmg");
 					flags:SXF_ABSOLUTEANGLE|SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
 				);
 				if(blood)blood.vel=vu+(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.4));
+				if(!noblood)TraceBleedAngle((shockbash>>3),angle,pitch);
 			}
 		}
 
