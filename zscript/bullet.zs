@@ -1188,7 +1188,7 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 			if(blood)blood.vel=-vu*(min(3,0.05*impact))
 				+(frandom(-0.6,0.6),frandom(-0.6,0.6),frandom(-0.2,0.4)
 			);
-			if(!noblood)TraceBleedAngle((shockbash>>3),angle+180,-pitch);
+			if(!noblood)hitactor.TraceBleedAngle((shockbash>>3),angle+180,-pitch);
 			if(flags&BLAF_ALLTHEWAYTHROUGH){
 				[gbg,blood]=hitactor.A_SpawnItemEx(
 					hitblood,
@@ -1197,7 +1197,7 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 					flags:SXF_ABSOLUTEANGLE|SXF_USEBLOODCOLOR|SXF_NOCHECKPOSITION
 				);
 				if(blood)blood.vel=vu+(frandom(-0.2,0.2),frandom(-0.2,0.2),frandom(-0.2,0.4));
-				if(!noblood)TraceBleedAngle((shockbash>>3),angle,pitch);
+				if(!noblood)hitactor.TraceBleedAngle((shockbash>>3),angle,pitch);
 			}
 		}
 
