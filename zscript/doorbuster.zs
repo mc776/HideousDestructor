@@ -264,7 +264,7 @@ class doordestroyer:hdactor{
 		//see if we're going to kill or damage
 		bool blowitup=false;
 		if(buttecracked.counter+damageinflicted>2.)blowitup=true;
-		else{
+		else if(damageinflicted>0.1){  //must deal at least 1% damage to count
 			buttecracked.counter+=damageinflicted*0.1;
 			if(buttecracked.counter>1.)blowitup=true;
 		}
