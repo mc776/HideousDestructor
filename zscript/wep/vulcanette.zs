@@ -368,7 +368,6 @@ class Vulcanette:HDWeapon{
 			//check speed and then shoot
 			if(
 				invoker.weaponstatus[0]&VULCF_FAST
-				&&invoker.weaponstatus[0]&VULCF_CHAMBER1
 				&&invoker.weaponstatus[VULCS_BATTERY]>=4
 				&&invoker.weaponstatus[VULCS_BREAKCHANCE]<random(100,5000)
 			){
@@ -387,7 +386,6 @@ class Vulcanette:HDWeapon{
 			//check speed and then shoot
 			if(
 				invoker.weaponstatus[0]&VULCF_SPINNINGFAST
-				&&invoker.weaponstatus[0]&VULCF_CHAMBER1
 			){
 				A_SetTics(1);
 				VulcShoot(true);
