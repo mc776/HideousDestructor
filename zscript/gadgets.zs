@@ -185,7 +185,7 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 	}
 	void UndoFullbright(){
 		if(!owner||!owner.player)return;
-		if(owner.player.fixedcolormap==5)owner.player.fixedcolormap=NOFIXEDCOLORMAP;
+		if(owner.player.fixedcolormap==5)owner.player.fixedcolormap=playerinfo.NOFIXEDCOLORMAP;
 		owner.player.fixedlightlevel=-1;
 	}
 	override void DoEffect(){
