@@ -152,7 +152,7 @@ class HDBlurSphere:HDPickup{
 			bool nub=!level&&xp<1066;
 			if(nub||!random(0,15))owner.A_Log("You feel power growing in you.",true);
 			blockthingsiterator it=blockthingsiterator.create(owner,512);
-			array<actor>monsters;
+			array<actor>monsters;monsters.clear();
 			while(it.next()){
 				actor itt=it.thing;
 				if(

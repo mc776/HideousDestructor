@@ -55,7 +55,7 @@ extend class HDPlayerPawn{
 		else deathcounter=1;
 
 		if(hd_dropeverythingondeath){
-			array<inventory> keys;
+			array<inventory> keys;keys.clear();
 			for(inventory item=inv;item!=null;item=item.inv){
 				if(item is "Key"){
 					keys.push(item);

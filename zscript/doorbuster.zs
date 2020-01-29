@@ -652,7 +652,7 @@ extend class HDHandlers{
 		}
 		let dbbb=DoorBuster(ppp.findinventory("DoorBuster"));
 		int botid=dbbb?dbbb.botid:1;
-		array<doorbusterplanted> detonating;
+		array<doorbusterplanted> detonating;detonating.clear();
 		if(cmd!=999&&cmd!=123){
 			ppp.A_Log(string.format("DoorBuster Command format:\n\cu db <option> <tag number> \n\cjOptions:\n 999 = DETONATE\n 123 = QUERY\n -n = set tag number\n\cj  tag number on next deployment: \cy%i",botid),true);
 		}
