@@ -302,7 +302,8 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 			int cmd=player.cmd.buttons;
 			if(cmd&BT_USE){
 				double am=cmd&BT_ZOOM?-5:5;
-				double plitude=max(0,(am+abs(invoker.amplitude))%NITEVIS_MAX);
+				double plitude=max(0,(am+abs(invoker.amplitude)));
+				if(plitude>NITEVIS_MAX)plitude-=NITEVIS_MAX;
 				invoker.amplitude=invoker.amplitude<0?-plitude:plitude;
 			}else if(cmd&BT_ZOOM){
 				invoker.amplitude=-invoker.amplitude;
