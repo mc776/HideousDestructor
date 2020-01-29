@@ -45,7 +45,7 @@ extend class HDPlayerPawn{
 		skinput.replace("none","");
 		skinput.replace("default","");
 
-		array<string> skinname;
+		array<string> skinname;skinname.clear();
 		skinput.split(skinname,",");
 
 		//I'd rather do this than to spam up everything below with null checks
