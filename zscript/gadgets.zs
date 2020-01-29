@@ -183,6 +183,11 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 		mags[index]+=integrity;
 		return integrity;
 	}
+	void UndoFullbright(){
+		if(!owner||!owner.player)return;
+		if(owner.player.fixedcolormap==5)owner.player.fixedcolormap=NOFIXEDCOLORMAP;
+		owner.player.fixedlightlevel=-1;
+	}
 	override void DoEffect(){
 		super.DoEffect();
 		if(!self||!owner||!owner.player)return;
@@ -219,7 +224,11 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 		if(
 			worn
 			&&!owner.countinv("PowerInvisibility")
-			&&(!oldliteamp||owner.player.fixedcolormap<0||owner.player.fixedcolormap==5)
+			&&(
+				!oldliteamp
+				||owner.player.fixedcolormap==5
+				||owner.player.fixedcolormap<0
+			)
 		){
 
 			//check if totally drained
@@ -251,6 +260,7 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 				owner.player.fixedlightlevel=1;
 				Shader.SetEnabled(owner.player,"NiteVis",false);
 			}else{
+				UndoFullbright();
 				nv=clamp(amplitude,-nv,nv);
 				spent+=int(max(1,abs(nv*0.1)));
 				Shader.SetEnabled(owner.player,"NiteVis",true);
@@ -263,10 +273,7 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 				int bkn=integrity+(chargedamount>>17)-abs(int(nv));
 				A_LogInt(bkn);
 				if(!random[rand1](0,max(0,random[rand1](1,bkn)))){
-					if(oldliteamp){
-						owner.player.fixedcolormap=-1;
-						owner.player.fixedlightlevel=-1;
-					}
+					UndoFullbright();
 					Shader.SetEnabled(owner.player,"NiteVis",false);
 				}
 			}
@@ -275,10 +282,7 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 			if(!(level.time&(1|2|4|8|16|32)))mags[0]-=NITEVIS_CYCLEUNIT*spent;
 
 		}else{
-			if(oldliteamp){
-				if(owner.player.fixedcolormap==5)owner.player.fixedcolormap=-1;
-				owner.player.fixedlightlevel=-1;
-			}
+			UndoFullbright();
 			Shader.SetEnabled(owner.player,"NiteVis",false);
 		}
 	}
