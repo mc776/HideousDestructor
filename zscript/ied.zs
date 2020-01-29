@@ -142,6 +142,7 @@ class HDIED:DudRocket{
 					||!checksight(master)
 					||distance3d(master)>256
 				)
+				&&checksight(hitactor)
 			){
 				tracer=hitactor;
 				setstatelabel("detonate");
