@@ -1,7 +1,13 @@
 // ------------------------------------------------------------
 // Because sometimes, things get caught in map geometry.
 // ------------------------------------------------------------
-class SectorDamageCounter:IdleDummy{double counter;}
+class SectorDamageCounter:IdleDummy{
+	double counter;
+	override void tick(){
+		super.tick();
+		if(!isfrozen()&&accuracy>0)accuracy--;
+	}
+}
 class doordestroyer:hdactor{
 	default{
 		+solid +nogravity +dontgib +ghost
@@ -213,18 +219,21 @@ class doordestroyer:hdactor{
 
 		//see how big the sector is
 		vector2 centerspot=othersector.centerspot;
-		double maxradius=0;
 		int othersectorlinecount=othersector.lines.size();
+		vector2 maxradco=(0,0);
 		for(int i=0;i<othersectorlinecount;i++){
 			double xdif=abs(othersector.lines[i].v1.p.x-centerspot.x);
-			if(xdif>maxradius)maxradius=xdif;
+			if(xdif>maxradco.x)maxradco.x=xdif;
 			double ydif=abs(othersector.lines[i].v1.p.y-centerspot.y);
-			if(ydif>maxradius)maxradius=ydif;
+			if(ydif>maxradco.y)maxradco.y=ydif;
 		}
-//		if(maxradius*2.>maxwidth)return false;
+		double maxradius=(maxradco.x+maxradco.y)*0.5;
+
+		//abort if this would suddenly completely alter the level in stupid ways
+		if(max(maxradco.x,maxradco.y)>1024)return false;
 
 
-		double damageinflicted=maxdepth*frandom(8,12)/maxradius;
+		double damageinflicted=maxdepth*frandom(5,8)/maxradius;
 		if(maxradius*2.>maxwidth)damageinflicted/=max(1.,maxradius-(0.5*maxwidth));
 
 
@@ -264,10 +273,13 @@ class doordestroyer:hdactor{
 		//see if we're going to kill or damage
 		bool blowitup=false;
 		if(buttecracked.counter+damageinflicted>2.)blowitup=true;
-		else if(damageinflicted>0.1){  //must deal at least 1% damage to count
+		else if(
+			damageinflicted>(buttecracked.accuracy>0?0.02:0.1)  //must deal at least x% damage to count
+		){
 			buttecracked.counter+=damageinflicted*0.1;
 			if(buttecracked.counter>1.)blowitup=true;
 		}
+		buttecracked.accuracy=3;
 		if(hd_debug)caller.A_Log("Sector damage factor:  "..buttecracked.counter);
 
 		if(!blowitup){
@@ -298,8 +310,7 @@ class doordestroyer:hdactor{
 		bool floornotdoor=whichflat==2; //may revise this later
 		othersector.flags|=sector.SECF_SILENTMOVE;
 		if(floornotdoor){
-			double lowestsurrounding;vertex garbage;
-			[lowestsurrounding,garbage]=othersector.findlowestfloorsurrounding();
+			double lowestsurrounding=othersector.findlowestfloorsurrounding();
 			double justoverthereheight=othersector.floorplane.zatpoint(justoverthere);
 			blockpoint=min(
 				justoverthereheight,
@@ -311,8 +322,7 @@ class doordestroyer:hdactor{
 			holeheight=justoverthereheight-blockpoint;
 			othersector.MoveFloor(abs(holeheight),abs(blockpoint),0,-1,false,true);
 		}else{
-			double lowestsurrounding;
-			lowestsurrounding=othersector.findlowestceilingsurrounding();
+			double lowestsurrounding=othersector.findlowestceilingsurrounding();
 			double justoverthereheight=othersector.ceilingplane.zatpoint(justoverthere);
 			blockpoint=max(
 				justoverthereheight,
