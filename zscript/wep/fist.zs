@@ -100,12 +100,12 @@ class HDFist:HDWeapon replaces Fist{
 				else usegender=true;  //if mugshot is not determinative, use gender
 			}
 		}
-		if(usegender){
-			int gnd=player.getgender();
-			if(!gnd)fspr=getspriteindex("PUNGA0");
-			else if(gnd==1)fspr=getspriteindex("PUNFA0");
-			else if(gnd==2)fspr=getspriteindex("PUNFA0");
-			else fspr=getspriteindex("PUNCA0");
+		if(usegender)switch(player.getgender()){
+			case 0:fspr=getspriteindex("PUNGA0");break;
+			case 1:fspr=getspriteindex("PUNFA0");break;
+			case 2:fspr=getspriteindex("PUNFA0");break;
+			case 3:fspr=getspriteindex("PUNCA0");break;
+			default:fspr=getspriteindex("PUNCA0");break;
 		}
 		player.findPSprite(layer).sprite=fspr;
 	}
