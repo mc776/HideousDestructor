@@ -84,8 +84,8 @@ extend class HDPlayerPawn{
 		fistsprite=getspriteindex(skinname[HDSKIN_FIST]);
 		if(fistsprite<0){
 			dds=defskinclass.resolvestate("fist");
-			if(dds.sprite!=getspriteindex("SHTFA0"))  //this is the default for HDSkin
-			fistsprite=dds.sprite;
+			if(dds.sprite==getspriteindex("SHTFA0"))fistsprite=-1;  //this is the default for HDSkin
+			else fistsprite=dds.sprite;
 		}
 
 		//test if this sound exists
