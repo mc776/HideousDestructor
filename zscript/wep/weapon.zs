@@ -296,7 +296,11 @@ class HDWeapon:Weapon{
 			A_WeaponReady(WRF_ALL);
 			return;
 		}
-		int inputamt=player.cmd.pitch>>7;
+		int inputamt=player.cmd.pitch;
+		if(inputamt){
+			if(abs(inputamt)<(1<<7))inputamt=clamp(inputamt,-1,1);
+			else inputamt>>=7;
+		}
 		inputamt+=(justpressed(BT_ATTACK)?1:justpressed(BT_ALTATTACK)?-1:0);
 		HijackMouse();
 		invoker.weaponstatus[slot]=clamp(
