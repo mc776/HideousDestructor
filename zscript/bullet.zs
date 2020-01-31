@@ -456,7 +456,9 @@ class HDBulletActor:HDActor{
 		if(isfrozen())return;
 //if(getage()%17)return;
 		if(abs(pos.x)>32000||abs(pos.y)>32000){destroy();return;}
-		if(!bmissile){
+		if(
+			!bmissile
+		){
 			super.tick();
 			return;
 		}
@@ -477,6 +479,11 @@ class HDBulletActor:HDActor{
 			return;
 		}
 		if(bnointeraction)bnointeraction=false;
+
+		if(vel==(0,0,0)){
+			vel.z-=getgravity()*0.01;
+			return;
+		}
 
 		hdbullettracer blt=HDBulletTracer(new("HDBulletTracer"));
 		if(!blt)return;
