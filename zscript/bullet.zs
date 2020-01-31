@@ -481,7 +481,7 @@ class HDBulletActor:HDActor{
 		if(bnointeraction)bnointeraction=false;
 
 		if(vel==(0,0,0)){
-			vel.z-=getgravity()*0.01;
+			vel.z-=max(0.01,getgravity()*0.01);
 			return;
 		}
 
