@@ -551,10 +551,7 @@ class HDCopyTrail:IdleDummy{
 }
 extend class HDActor{
 	void A_Trail(double spread=0.6){
-		vector3 v;
-		v=(random(-10,10),random(-10,10),random(-10,10));
-		if(v==(0,0,0)) v.z=1;
-		v=v.unit();
+		vector3 v=(frandom(-1,1),frandom(-1,1),frandom(-1,1));
 		A_SpawnItemEx("HDCopyTrail",
 			0,0,0,vel.x+v.x,vel.y+v.y,vel.z+v.z,0,
 			SXF_TRANSFERALPHA|SXF_TRANSFERRENDERSTYLE|SXF_TRANSFERSCALE|
