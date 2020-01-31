@@ -24,7 +24,7 @@ extend class HDWeapon{
 		if(justpressed(BT_ATTACK))cab=-1;
 		else if(justpressed(BT_ALTATTACK))cab=1;
 		else if(player.cmd.pitch){
-			cab=(-player.cmd.pitch>>5);
+			cab=(-player.cmd.pitch>>9);
 			HijackMouse();
 		}
 		int abb=invoker.airburst+cab;
