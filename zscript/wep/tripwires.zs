@@ -371,7 +371,7 @@ class TrippingGrenade:HDUPK{
 			if(gum.hittype!=Trace_HitNone){
 				tracer=spawn("GumAndString",gum.hitlocation-gum.hitdir*0.4,ALLOW_REPLACE);
 				tracer.tracer=self;
-				tracer.A_Face(self,0,0);
+				tracer.angle=angle;tracer.pitch=pitch;
 			}
 			angle+=180;pitch=-pitch;
 		}
