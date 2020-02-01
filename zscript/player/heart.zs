@@ -316,6 +316,8 @@ extend class HDPlayerPawn{
 					){
 						A_Log("You feel power coming out of you.",true);
 						regenblues-=20;
+						incaptimer=min(0,incaptimer);
+						stunned=20;
 						plantbit.spawnplants(self,33,144);
 						switch(random(0,3)){
 						case 0:
