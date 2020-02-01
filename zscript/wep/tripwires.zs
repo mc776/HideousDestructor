@@ -382,6 +382,13 @@ class TrippingGrenade:HDUPK{
 		//and now to find some shit
 		flinetracedata flt;
 		linetrace(angle,radius*HDCONST_SQRTTWO+0.1,pitch,flags:TRF_THRUACTORS,data:flt);
+
+		//let it drop if not actually touching a wall
+		if(!flt.hitline){
+			ongrab(self);
+			return;
+		}
+
 		sector othersector=hdmath.oppositesector(flt.hitline,flt.hitsector);
 
 		if(othersector){
