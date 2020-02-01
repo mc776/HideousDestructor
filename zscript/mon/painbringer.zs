@@ -18,12 +18,12 @@ class PainBringer:PainMonster replaces HellKnight{
 
 		damagefactor "Balefire",0.3;
 		damagefactor "Thermal",0.8;
-		hdmobbase.shields 500;
+		hdmobbase.shields 300;
 		scale 0.9;
 		speed 12;
 		meleedamage 10;
 		meleerange 56;
-		minmissilechance 42;
+		minmissilechance 64;
 
 		stamina 0;
 	}
@@ -112,7 +112,7 @@ class PainBringer:PainMonster replaces HellKnight{
 		}
 		---- A 0 setstatelabel("see");
 	fireball:
-		BOS2 FE 3 A_FaceTarget(60,60);
+		BOS2 FFE 3 A_FaceTarget(45,45);
 		BOS2 E 2{
 			A_FaceTarget(6,6);
 			targetingangle=angle;targetingpitch=pitch;
@@ -135,7 +135,7 @@ class PainBringer:PainMonster replaces HellKnight{
 			actor aaa;int bbb;
 			[bbb,aaa]=A_SpawnItemEx("BaleBall",
 				0,0,32,
-				cos(pitch)*25,0,-sin(pitch)*25
+				cos(pitch)*15,0,-sin(pitch)*15
 			);
 			aaa.vel+=vel;aaa.tracer=target;
 		}
