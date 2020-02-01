@@ -381,7 +381,7 @@ class TrippingGrenade:HDUPK{
 
 		//and now to find some shit
 		flinetracedata flt;
-		linetrace(angle,1,pitch,flags:TRF_THRUACTORS,data:flt);
+		linetrace(angle,radius*HDCONST_SQRTTWO+0.1,pitch,flags:TRF_THRUACTORS,data:flt);
 		sector othersector=hdmath.oppositesector(flt.hitline,flt.hitsector);
 
 		if(othersector){
