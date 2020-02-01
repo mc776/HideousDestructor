@@ -118,9 +118,11 @@ class Boner:HDMobBase replaces Revenant{
 		speed 14;
 		mass 200;
 		health 250;
+		hdmobbase.shields 200;
 		obituary "%o was bagged by a boner.";
 		hitobituary "%o was slapped by a boner.";
 		damagefactor "Thermal",1.1;
+		damagefactor "Piercing",0.7;
 		damagefactor "SmallArms0",0.9;
 		damagefactor "SmallArms1",0.9;
 		damagefactor "SmallArms2",0.8;
