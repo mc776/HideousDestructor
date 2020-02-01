@@ -120,7 +120,7 @@ class PainBringer:PainMonster replaces HellKnight{
 		BOS2 E 3{
 			A_FaceTarget(6,6);
 
-			if(target&&targetdistance<(25*35*7)){
+			if(target&&targetdistance<(18*35*7)){
 				double adj=targetdistance*frandom(0.008,0.032);
 				angle+=deltaangle(targetingangle,angle)*adj;
 				if(target.bfloat)pitch+=deltaangle(targetingpitch,pitch)*adj;
@@ -135,7 +135,7 @@ class PainBringer:PainMonster replaces HellKnight{
 			actor aaa;int bbb;
 			[bbb,aaa]=A_SpawnItemEx("BaleBall",
 				0,0,32,
-				cos(pitch)*15,0,-sin(pitch)*15
+				cos(pitch)*18,0,-sin(pitch)*18
 			);
 			aaa.vel+=vel;aaa.tracer=target;
 		}
