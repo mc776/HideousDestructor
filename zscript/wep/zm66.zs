@@ -893,7 +893,6 @@ class ZM66Irregular:ZM66Semi{
 		//$Category "Weapons/Hideous Destructor"
 		//$Title "ZM66 Rifle (Semi GL)"
 		//$Sprite "RIGSA0"
-		hdweapon.refid "z6g";
 		tag "ZM66 assault rifle (semi with GL)";
 		hdweapongiver.config "nogl0semi";
 		inventory.icon "RIGSA0";
