@@ -519,7 +519,6 @@ class HDAutoPistol:HDWeaponGiver{
 		//$Category "Weapons/Hideous Destructor"
 		//$Title "Pistol (select-fire)"
 		//$Sprite "PISTA0"
-		+hdweapon.fitsinbackpack
 		tag "pistol (select-fire)";
 		hdweapongiver.bulk 34;
 		hdweapongiver.weapontogive "HDPistol";

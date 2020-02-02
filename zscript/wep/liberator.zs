@@ -1019,7 +1019,6 @@ class LiberatorNoGL:HDWeaponGiver{
 		//$Category "Weapons/Hideous Destructor"
 		//$Title "Liberator (no GL)"
 		//$Sprite "BRFLA0"
-		+hdweapon.fitsinbackpack
 		tag "Liberator rifle (no GL)";
 		hdweapongiver.bulk (100.+(ENC_776MAG_LOADED+30.*ENC_776_LOADED));
 		hdweapongiver.weapontogive "LiberatorRifle";

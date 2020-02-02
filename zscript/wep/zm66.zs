@@ -869,7 +869,6 @@ class ZM66Semi:HDWeaponGiver{
 		//$Category "Weapons/Hideous Destructor"
 		//$Title "ZM66 Rifle (Semi)"
 		//$Sprite "RIFSA0"
-		+hdweapon.fitsinbackpack
 		tag "ZM66 assault rifle (semi only)";
 		hdweapongiver.bulk (90.+(ENC_426MAG_LOADED+50.*ENC_426_LOADED));
 		hdweapongiver.weapontogive "ZM66AssaultRifle";

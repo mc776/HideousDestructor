@@ -222,7 +222,7 @@ class HDPickupGiver:HDPickup{
 		destroy();
 	}
 }
-class HDWeaponGiver:HDWeapon{
+class HDWeaponGiver:Inventory{
 	class<hdweapon> weapontogive;
 	property weapontogive:weapontogive;
 	string weprefid;
@@ -278,7 +278,6 @@ class HDWeaponGiver:HDWeapon{
 		if(
 			owner
 			&&owner.player
-			&&owner.player.readyweapon==self
 			&&actualweapon is "HDWeapon"
 		){
 			let wp=actualweapon.getclassname();
