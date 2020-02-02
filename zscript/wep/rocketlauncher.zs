@@ -770,6 +770,8 @@ class RocketBigPickup:HDUPK{
 
 		scale 0.5;
 		hdupk.pickupmessage "Picked up a box of rockets.";
+		hdupk.pickuptype "HDRocketAmmo";
+		hdupk.amount 5;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -780,13 +782,6 @@ class RocketBigPickup:HDUPK{
 	states{
 	spawn:
 		BROK A -1;
-	give:
-		---- A 0 A_JumpIfInTargetInventory("HDRocketAmmo",0,"spawn");
-		---- A 0 A_GiveToTarget("HDRocketAmmo",1);
-		---- A 0 A_GiveInventory("HDRocketAmmo",1);
-		---- A 0 A_JumpIfInventory("HDRocketAmmo",5,1);
-		loop;
-		TNT1 A 0;
 		stop;
 	}
 }
