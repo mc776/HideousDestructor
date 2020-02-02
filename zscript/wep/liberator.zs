@@ -211,7 +211,7 @@ class LiberatorRifle:AutoReloadingThingy{
 		weapon.bobrangey 0.9;
 		scale 0.7;
 		obituary "%o was liberated by %k.";
-		hdweapon.refid HDLD_LIBGL;
+		hdweapon.refid HDLD_LIB;
 		tag "Liberator battle rifle";
 		inventory.icon "BRFLB0";
 	}
@@ -223,15 +223,12 @@ class LiberatorRifle:AutoReloadingThingy{
 			barrelwidth=0.7;
 			barreldepth=1.2;
 			weaponstatus[0]&=~(LIBF_GRENADEMODE|LIBF_GRENADELOADED);
-			refid=HDLD_LIBNOGL;
 		}else{
 			barrelwidth=1;
 			barreldepth=3;
 		}
 		if(weaponstatus[0]&LIBF_NOBULLPUP){
 			barrellength=32;
-			if(weaponstatus[0]&LIBF_NOLAUNCHER)refid=HDLD_LIBNOBPNOGL;
-			else refid=HDLD_LIBNOBP;
 			bfitsinbackpack=false;
 		}else{
 			barrellength=27;
@@ -1023,11 +1020,10 @@ class LiberatorNoGL:HDWeaponGiver{
 		//$Title "Liberator (no GL)"
 		//$Sprite "BRFLA0"
 		+hdweapon.fitsinbackpack
-		hdweapon.refid HDLD_LIBNOGL;
 		tag "Liberator rifle (no GL)";
 		hdweapongiver.bulk (100.+(ENC_776MAG_LOADED+30.*ENC_776_LOADED));
 		hdweapongiver.weapontogive "LiberatorRifle";
-		hdweapongiver.weprefid HDLD_LIBGL;
+		hdweapongiver.weprefid HDLD_LIB;
 		hdweapongiver.config "noglnobp0";
 		inventory.icon "BRFLA0";
 	}
@@ -1038,11 +1034,9 @@ class LiberatorNoBullpup:HDWeaponGiver{
 		//$Category "Weapons/Hideous Destructor"
 		//$Title "Liberator (Classic)"
 		//$Sprite "BRLLB0"
-		hdweapon.refid HDLD_LIBNOBP;
 		tag "Liberator rifle (classic)";
 		hdweapongiver.bulk (145.+(ENC_776MAG_LOADED+30.*ENC_776_LOADED)+ENC_ROCKETLOADED);
 		hdweapongiver.weapontogive "LiberatorRifle";
-		hdweapongiver.weprefid HDLD_LIBGL;
 		hdweapongiver.config "nogl0nobp";
 		inventory.icon "BRLLB0";
 	}
@@ -1052,11 +1046,9 @@ class LiberatorNoBullpupNoGL:HDWeaponGiver{
 		//$Category "Weapons/Hideous Destructor"
 		//$Title "Liberator (Classic no GL)"
 		//$Sprite "BRLLA0"
-		hdweapon.refid HDLD_LIBNOBPNOGL;
 		tag "Liberator rifle (classic no GL)";
 		hdweapongiver.bulk (120.+(ENC_776MAG_LOADED+30.*ENC_776_LOADED));
 		hdweapongiver.weapontogive "LiberatorRifle";
-		hdweapongiver.weprefid HDLD_LIBGL;
 		hdweapongiver.config "noglnobp";
 		inventory.icon "BRLLA0";
 	}
