@@ -44,6 +44,7 @@ class HDPistol:HDHandgun replaces Pistol{
 		scale 0.63;
 		weapon.selectionorder 50;
 		weapon.slotnumber 2;
+		weapon.slotpriority 2;
 		weapon.kickback 30;
 		weapon.bobrangex 0.1;
 		weapon.bobrangey 0.6;

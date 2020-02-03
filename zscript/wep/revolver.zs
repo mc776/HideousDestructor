@@ -9,6 +9,7 @@ class HDRevolver:HDHandgun{
 		scale 0.5;
 		weapon.selectionorder 49;
 		weapon.slotnumber 2;
+		weapon.slotpriority 3;
 		weapon.kickback 30;
 		weapon.bobrangex 0.1;
 		weapon.bobrangey 0.6;
@@ -387,9 +388,9 @@ class HDRevolver:HDHandgun{
 			A_Overlay(BUGS_OVRCYL+BUGS_CYL6,"round6");
 		}
 		---- A 1 A_Raise();
-		---- A 1 A_Raise(50);
-		---- A 1 A_Raise(50);
-		---- A 1 A_Raise(34);
+		---- A 1 A_Raise(40);
+		---- A 1 A_Raise(40);
+		---- A 1 A_Raise(25);
 		---- A 1 A_Raise(20);
 		wait;
 	deselect0:

@@ -11,6 +11,7 @@ class HDSMG:HDWeapon{
 		obituary "%o was soaked by %k's pea stream.";
 		weapon.selectionorder 24;
 		weapon.slotnumber 2;
+		weapon.slotpriority 1;
 		weapon.kickback 30;
 		weapon.bobrangex 0.3;
 		weapon.bobrangey 0.6;
