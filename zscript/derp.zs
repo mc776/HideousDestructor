@@ -43,6 +43,7 @@ class DERPBot:HDUPK{
 		hdupk.pickupsound "derp/crawl";
 		hdupk.pickupmessage ""; //let the pickup do this
 		obituary "%o went derp.";
+		tag "D.E.R.P. robot";
 	}
 	override bool cancollidewith(actor other,bool passive){return other.bmissile||HDPickerUpper(other)||DERPBot(other);}
 	bool DerpTargetCheck(bool face=false){

@@ -36,6 +36,7 @@ class HERPBot:HDUPK{
 		obituary "%o went HERP.";
 		hdupk.pickupmessage ""; //just use the spawned one
 		hdupk.pickupsound "";
+		tag "H.E.R.P. robot";
 		scale 0.8;
 	}
 
