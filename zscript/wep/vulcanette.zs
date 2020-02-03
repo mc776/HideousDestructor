@@ -58,6 +58,7 @@ class Vulcanette:HDWeapon{
 		inventory.pickupmessage "You got the Vulcanette!";
 		weapon.selectionorder 40;
 		weapon.slotnumber 4;
+		weapon.slotpriority 1;
 		weapon.kickback 24;
 		weapon.bobrangex 1.4;
 		weapon.bobrangey 3.5;

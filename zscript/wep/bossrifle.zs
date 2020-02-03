@@ -15,6 +15,7 @@ class BossRifleSpawner:IdleDummy{
 class BossRifle:HDWeapon{
 	default{
 		weapon.slotnumber 8;
+		weapon.slotpriority 1;
 		weapon.kickback 15;
 		weapon.selectionorder 80;
 		inventory.pickupSound "misc/w_pkup";

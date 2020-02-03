@@ -27,6 +27,7 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 		+hdweapon.fitsinbackpack
 		weapon.selectionorder 90;
 		weapon.slotnumber 1;
+		weapon.slotpriority 1;
 		weapon.bobstyle "Alpha";
 		weapon.bobrangex 0.3;
 		weapon.bobrangey 1.4;

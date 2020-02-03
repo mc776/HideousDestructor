@@ -28,6 +28,7 @@ class HDFist:HDWeapon replaces Fist{
 		weapon.bobrangex 0.1;
 		weapon.bobrangey 0.5;
 		weapon.slotnumber 1;
+		weapon.slotpriority 2;
 		tag "fists";
 		hdweapon.refid HDLD_FIST;
 	}

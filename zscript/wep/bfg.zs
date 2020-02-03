@@ -9,6 +9,7 @@ class BFG9K:HDCellWeapon replaces BFG9000{
 
 		weapon.selectionorder 91;
 		weapon.slotnumber 7;
+		weapon.slotpriority 1;
 		weapon.kickback 200;
 		weapon.bobrangex 0.4;
 		weapon.bobrangey 1.1;

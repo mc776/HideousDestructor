@@ -70,6 +70,7 @@ class Brontornis:HDWeapon{
 		+hdweapon.fitsinbackpack
 		weapon.selectionorder 60;
 		weapon.slotnumber 7;
+		weapon.slotpriority 2;
 		weapon.kickback 100;
 		weapon.bobrangex 0.21;
 		weapon.bobrangey 0.86;

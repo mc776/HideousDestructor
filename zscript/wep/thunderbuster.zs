@@ -9,6 +9,7 @@ class ThunderBuster:HDCellWeapon{
 
 		weapon.selectionorder 70;
 		weapon.slotnumber 6;
+		weapon.slotpriority 1;
 		weapon.ammouse 1;
 		scale 0.6;
 		inventory.pickupmessage "You got the particle beam gun!";

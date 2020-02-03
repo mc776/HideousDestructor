@@ -11,6 +11,7 @@ class ZM66AssaultRifle:HDWeapon{
 		+hdweapon.fitsinbackpack
 		weapon.selectionorder 20;
 		weapon.slotnumber 4;
+		weapon.slotpriority 2;
 		inventory.pickupsound "misc/w_pkup";
 		inventory.pickupmessage "You got the assault rifle!";
 		scale 0.7;

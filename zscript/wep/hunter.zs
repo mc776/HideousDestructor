@@ -9,6 +9,7 @@ class Hunter:HDShotgun{
 
 		weapon.selectionorder 31;
 		weapon.slotnumber 3;
+		weapon.slotpriority 1;
 		weapon.bobrangex 0.21;
 		weapon.bobrangey 0.86;
 		scale 0.6;

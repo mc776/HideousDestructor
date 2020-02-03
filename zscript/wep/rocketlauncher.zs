@@ -10,6 +10,7 @@ class HDRL:HDWeapon{
 		+weapon.explosive
 		weapon.selectionorder 92;
 		weapon.slotnumber 5;
+		weapon.slotpriority 1;
 		scale 0.6;
 		inventory.pickupmessage "You got the rocket launcher!";
 		obituary "%o rode %k's rocket.";
@@ -560,6 +561,7 @@ class Blooper:HDWeapon{
 		+hdweapon.fitsinbackpack
 		weapon.selectionorder 93;
 		weapon.slotnumber 5;
+		weapon.slotpriority 1;
 		scale 0.6;
 		inventory.pickupmessage "You got the grenade launcher!";
 		obituary "%o was blooped by %k.";

@@ -203,6 +203,7 @@ class LiberatorRifle:AutoReloadingThingy{
 
 		+hdweapon.fitsinbackpack
 		weapon.slotnumber 6;
+		weapon.slotpriority 2;
 		weapon.kickback 20;
 		weapon.selectionorder 27;
 		inventory.pickupsound "misc/w_pkup";
