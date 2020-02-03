@@ -88,4 +88,46 @@ extend class HDPlayerPawn{
 	override void CheatTake(string name, int amount){
 		if(!cheatgivestatusailments(name,-amount))super.cheattake(name,amount);
 	}
+
+
+	//lets you specify configurations when giving a weapon
+	void CheckGiveCheat(){
+		string giveconfig=hd_give.getstring();
+		if(
+			(deathmatch&&!sv_cheats)
+			||giveconfig==""
+		)return;
+		hd_give.setstring("");
+		let giverefid=giveconfig.left(3);
+		giveconfig=giveconfig.mid(3);
+		giveconfig.replace(",","");
+		giveconfig.replace(" ","");
+		giveconfig=giveconfig.makelower();
+		bool found=false;
+		for(int i=0;i<allactorclasses.size();i++){
+			let hpk=((class<hdpickup>)(allactorclasses[i]));
+			if(
+				hpk
+				&&getdefaultbytype(hpk).refid~==giverefid
+			){
+				A_GiveInventory(hpk,giveconfig.toint());
+				found=true;
+				break;
+			}
+			let hpw=((class<hdweapon>)(allactorclasses[i]));
+			if(
+				hpw
+				&&getdefaultbytype(hpw).refid~==giverefid
+			){
+				let www=hdweapon(spawn(hpw,pos));
+A_Log(www.getclassname());
+				www.bdontdefaultconfigure=true;
+				www.loadoutconfigure(giveconfig);
+				www.actualpickup(self);
+				found=true;
+				break;
+			}
+		}
+		if(!found)A_Log("hd_give: code \""..giverefid.."\" not found.",true);
+	}
 }

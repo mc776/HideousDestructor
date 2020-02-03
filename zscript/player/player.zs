@@ -254,6 +254,7 @@ class HDPlayerPawn:PlayerPawn{
 	transient cvar hd_voicepitch;
 	transient cvar hd_maglimit;
 	transient cvar hd_skin;
+	transient cvar hd_give;
 	transient cvar neverswitchonpickup;
 	void cachecvars(){
 		playerinfo plr;
@@ -276,6 +277,7 @@ class HDPlayerPawn:PlayerPawn{
 		hd_voicepitch=cvar.getcvar("hd_voicepitch",plr);
 		hd_maglimit=cvar.getcvar("hd_maglimit",plr);
 		hd_skin=cvar.getcvar("hd_skin",plr);
+		hd_give=cvar.getcvar("hd_give",plr);
 		neverswitchonpickup=cvar.getcvar("neverswitchonpickup",plr);
 	}
 	override void Tick(){
@@ -284,6 +286,9 @@ class HDPlayerPawn:PlayerPawn{
 
 		//cache cvars as necessary
 		if(!hd_nozoomlean)cachecvars();
+
+		//check some cvars that are used to pass string commands
+		CheckGiveCheat();
 
 		lastpos=pos;
 
