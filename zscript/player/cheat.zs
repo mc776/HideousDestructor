@@ -93,11 +93,9 @@ extend class HDPlayerPawn{
 	//lets you specify configurations when giving a weapon
 	void CheckGiveCheat(){
 		string giveconfig=hd_give.getstring();
-		if(
-			(deathmatch&&!sv_cheats)
-			||giveconfig==""
-		)return;
+		if(giveconfig=="")return;
 		hd_give.setstring("");
+		if(deathmatch&&!sv_cheats)return;
 		let giverefid=giveconfig.left(3);
 		giveconfig=giveconfig.mid(3);
 		giveconfig.replace(",","");
@@ -120,7 +118,6 @@ extend class HDPlayerPawn{
 				&&getdefaultbytype(hpw).refid~==giverefid
 			){
 				let www=hdweapon(spawn(hpw,pos));
-A_Log(www.getclassname());
 				www.bdontdefaultconfigure=true;
 				www.loadoutconfigure(giveconfig);
 				www.actualpickup(self);
