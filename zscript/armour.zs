@@ -142,8 +142,7 @@ class HDArmour:HDMagAmmo{
 		//put on the armour right away
 		if(
 			other.player&&other.player.cmd.buttons&BT_USE
-			&&!other.countinv("HDArmourWorn")
-			&&!other.countinv("HDBackpack")
+			&&HDPlayerPawn.CheckStrip(other,STRIP_ARMOUR,false)
 		){
 			HDArmour.ArmourChangeEffect(other);
 			let worn=HDArmourWorn(other.GiveInventoryType("HDArmourWorn"));
@@ -207,7 +206,10 @@ class HDArmourWorn:HDPickup{
 	override double getbulk(){
 		return mega?(ENC_BATTLEARMOUR*0.1):(ENC_GARRISONARMOUR*0.1);
 	}
-	override inventory createtossable(int amount){
+	override inventory CreateTossable(int amount){
+		if(!HDPlayerPawn.CheckStrip(owner,STRIP_ARMOUR))return null;
+
+		//armour sometimes crumbles into dust
 		if(durability<random(1,3)){
 			for(int i=0;i<10;i++){
 				actor aaa=spawn("WallChunk",owner.pos+(0,0,owner.height-24),ALLOW_REPLACE);
@@ -219,14 +221,8 @@ class HDArmourWorn:HDPickup{
 			destroy();
 			return null;
 		}
-		if(owner.countinv("HDBackpack")){
-			owner.A_DropInventory("HDBackpack");
-			return null;
-		}
-		if(owner.countinv("WornRadsuit")){
-			owner.A_DropInventory("WornRadsuit");
-			return null;
-		}
+
+		//finally actually take off the armour
 		HDArmour.ArmourChangeEffect(owner);
 		let tossed=HDArmour(owner.spawn("HDArmour",
 			(owner.pos.x,owner.pos.y,owner.pos.z+owner.height-20),

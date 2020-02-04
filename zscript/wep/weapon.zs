@@ -92,6 +92,7 @@ class HDWeapon:Weapon{
 			&&hdweapon(onr.player.readyweapon).bweaponbusy
 		);
 	}
+	virtual bool IsBeingWorn(){return false;}
 	//use this to set flash translucency and make it additive
 	action void HDFlashAlpha(int variance=0,bool noalpha=false,int layer=PSP_FLASH){
 		A_OverlayFlags(layer,PSPF_ALPHA|PSPF_ADDBOB|PSPF_RENDERSTYLE,true);

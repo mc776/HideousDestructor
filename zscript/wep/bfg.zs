@@ -43,6 +43,7 @@ class BFG9K:HDCellWeapon replaces BFG9000{
 			a.vel+=caller.vel*0.9-spot*0.03;
 		}
 	}
+	override bool IsBeingWorn(){return weaponstatus[0]&BFGF_STRAPPED;}
 	override void OnPlayerDrop(){
 		if(
 			weaponstatus[BFGS_CRITTIMER]>0

@@ -1,4 +1,56 @@
 //-------------------------------------------------
+// Miscellaneous Gear
+//-------------------------------------------------
+
+//put your socks on before your shoes.
+//any wearable gadget should be added to this function.
+//see backpack for the minimum setup required.
+extend class HDPlayerPawn{
+	//returns whether the selected layer can be removed
+	static bool CheckStrip(
+		actor caller,
+		int which,
+		bool remove=true
+	){
+		class<inventory> invclasses[4];
+		invclasses[STRIP_ARMOUR]="HDArmourWorn";
+		invclasses[STRIP_RADSUIT]="WornRadsuit";
+		invclasses[STRIP_BACKPACK]="HDBackpack";
+		invclasses[STRIP_JETPACK]="HDJetpack";
+
+		if(which>=invclasses.size())return true;
+
+		inventory preventory=null;
+		for(int i=invclasses.size()-1;i>which;i--){
+			if(caller.findinventory(invclasses[i])){
+				preventory=caller.findinventory(invclasses[i]);
+				if(
+					hdweapon(preventory)
+					&&!hdweapon(preventory).isbeingworn()
+				){
+					preventory=null;
+				}else break;
+			}
+		}
+		if(preventory){
+			if(remove){
+				caller.dropinventory(preventory);
+				caller.A_Log("Removing "..preventory.gettag().." first.",true);
+			}
+			return false;
+		}
+		return true;
+	}
+}
+enum StripArmourLevels{
+	STRIP_ARMOUR=0,
+	STRIP_RADSUIT=1,
+	STRIP_BACKPACK=2,
+	STRIP_JETPACK=3,
+}
+
+
+//-------------------------------------------------
 // Environment/Radiation Suit
 //-------------------------------------------------
 class WornRadsuit:InventoryFlag{
@@ -72,13 +124,8 @@ class PortableRadsuit:HDPickup replaces RadSuit{
 		}
 	use:
 		TNT1 A 0{
-			A_StartSound("weapons/pocket",CHAN_BODY,CHANF_OVERLAP);
-			if(countinv("HDBackpack")){
-				A_DropInventory("HDBackpack");
-				return;
-			}
-			A_SetBlend("00 00 00",1,6,"00 00 00");
-			A_ChangeVelocity(0,0,2);
+			if(!HDPlayerPawn.CheckStrip(self,STRIP_RADSUIT))return;
+			HDArmour.ArmourChangeEffect(self);
 			let onr=HDPlayerPawn(self);
 			if(onr)onr.stunned+=60;
 			if(!countinv("WornRadsuit")){
@@ -375,6 +422,15 @@ class HDJetPack:HDCellWeapon{
 	}
 	override double weaponbulk(){
 		return 500+(weaponstatus[JETPACKS_BATTERY]>=0?ENC_BATTERY_LOADED:0);
+	}
+	override bool IsBeingWorn(){return owner&&owner.player&&owner.player.readyweapon==self;}
+	override inventory CreateTossable(int amount){
+		if(!player||player.readyweapon!=self)return super.createtossable(amount);
+
+		if(!HDPlayerPawn.CheckStrip(owner,STRIP_JETPACK))return null;
+
+		HDArmour.ArmourChangeEffect(owner);
+		return super.createtossable(amount);
 	}
 	actor pods[4];
 	action void A_Pods(){

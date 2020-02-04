@@ -55,6 +55,12 @@ class HDBackpack:HDWeapon{
 			)updatemessage(index+1);
 		}
 	}
+	override inventory CreateTossable(int amount){
+		if(!player||player.readyweapon!=self)return super.createtossable(amount);
+		if(!HDPlayerPawn.CheckStrip(owner,STRIP_BACKPACK))return null;
+		return super.createtossable(amount);
+	}
+	override bool IsBeingWorn(){return true;}
 
 	int bpindex;
 	int maxindex;
