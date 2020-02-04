@@ -44,18 +44,21 @@ class BFG9K:HDCellWeapon replaces BFG9000{
 		}
 	}
 	override bool IsBeingWorn(){return weaponstatus[0]&BFGF_STRAPPED;}
-	override void OnPlayerDrop(){
+	override inventory CreateTossable(int amount){
 		if(
-			weaponstatus[BFGS_CRITTIMER]>0
+			weaponstatus[0]&BFGF_STRAPPED
+			&&weaponstatus[BFGS_CRITTIMER]<1
 		){
-			buntossable=false;
-			if(owner)owner.DropInventory(self);
+			if(
+				owner
+				&&owner.player
+			)owner.player.setpsprite(PSP_WEAPON,findstate("togglestrap"));
+			return null;
 		}
+		return super.CreateTossable(amount);
 	}
 	override void doeffect(){
 		if(hdplayerpawn(owner)){
-			if(weaponstatus[0]&BFGF_STRAPPED&&(owner&&owner.health>0))buntossable=true;    
-			else buntossable=false;
 			if(
 				owner.player&&owner.player.readyweapon==self&&
 				!(hdplayerpawn(owner).gunbraced)&&
@@ -128,8 +131,6 @@ class BFG9K:HDCellWeapon replaces BFG9000{
 			}
 			A_SetBlend("00 00 00",1,6,"00 00 00");
 			invoker.weaponstatus[0]^=BFGF_STRAPPED;
-			if(invoker.buntossable)invoker.buntossable=false;
-				else invoker.buntossable=true;
 		}
 		#### AA 2 A_Raise(3);
 		#### AAA 1 A_Raise(5);

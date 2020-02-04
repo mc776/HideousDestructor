@@ -12,11 +12,12 @@ extend class HDPlayerPawn{
 		int which,
 		bool remove=true
 	){
-		class<inventory> invclasses[4];
+		class<inventory> invclasses[5];
 		invclasses[STRIP_ARMOUR]="HDArmourWorn";
 		invclasses[STRIP_RADSUIT]="WornRadsuit";
 		invclasses[STRIP_BACKPACK]="HDBackpack";
 		invclasses[STRIP_JETPACK]="HDJetpack";
+		invclasses[STRIP_BFG]="BFG9k";
 
 		if(which>=invclasses.size())return true;
 
@@ -47,6 +48,7 @@ enum StripArmourLevels{
 	STRIP_RADSUIT=1,
 	STRIP_BACKPACK=2,
 	STRIP_JETPACK=3,
+	STRIP_BFG=4,
 }
 
 
