@@ -102,7 +102,7 @@ class HDWoundFixer:HDWeapon{
 	states{
 	reload:
 		TNT1 A 4{
-			if(player&&!(player.oldbuttons&BT_RELOAD))A_DropInventory("HDArmourWorn");
+			if(player&&!(player.oldbuttons&BT_RELOAD))HDPlayerPawn.CheckStrip(self,-1);
 			A_ClearRefire();
 		}
 		goto readyend;
