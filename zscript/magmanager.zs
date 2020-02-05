@@ -374,7 +374,7 @@ class PickupManager:HDWeapon{
 					if(abs(inputamt)<(1<<7))inputamt=clamp(inputamt,-1,1);
 					else inputamt>>=7;
 				}
-				invoker.weaponstatus[PMSS_DROPAMT]=clamp(invoker.weaponstatus[PMSS_DROPAMT]+inputamt,1,9999);
+				invoker.weaponstatus[PMSS_DROPAMT]=clamp(invoker.weaponstatus[PMSS_DROPAMT]+inputamt,1,invoker.thisitem?invoker.thisitem.amount:1);
 				hijackmouse();
 			}
 			UpdateText();
