@@ -375,7 +375,7 @@ extend class HDMobBase{
 		if(!bnoshootablecorpse)bshootable=true;
 		deathsound=getdefaultbytype(getclass()).deathsound;
 
-		bodydamage=clamp(bodydamage-666,0,((spawnhealth()+gibhealth)<<(HDMOB_GIBSHIFT+2)));
+		bodydamage=clamp(bodydamage-200,0,((spawnhealth()+gibhealth)<<(HDMOB_GIBSHIFT+2)));
 		if(hd_debug)console.printf(getclassname().." revived with remaining damage: "..bodydamage);
 
 		resetdamagecounters();
