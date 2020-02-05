@@ -293,6 +293,8 @@ class PickupManager:HDWeapon{
 			hdpickup(item)
 			&&!hdpickup(item).bnevershowinpickupmanager
 			&&!item.bnointeraction
+			&&!item.bundroppable
+			&&!item.buntossable
 		;
 	}
 	action void nextitem(){invoker.cycleitem();}
