@@ -275,6 +275,7 @@ class HDPickup:CustomInventory{
 	flagdef CheatNoGive:HDPickupFlags,4;
 	flagdef MustShowInMagManager:HDPickupFlags,5;
 	flagdef NotInPockets:HDPickupFlags,6;
+	flagdef NeverShowInPickupManager:HDPickupFlags,7;
 
 	actor picktarget;
 	double bulk;

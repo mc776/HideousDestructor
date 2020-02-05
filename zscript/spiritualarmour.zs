@@ -9,6 +9,7 @@ class SpiritualArmour:HDPickup{
 
 		+inventory.alwayspickup
 		+inventory.undroppable
+		+hdpickup.nevershowinpickupmanager
 		-inventory.invbar
 		inventory.pickupmessage "Picked up an armour bonus.";
 		inventory.amount 1;

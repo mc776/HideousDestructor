@@ -291,7 +291,8 @@ class PickupManager:HDWeapon{
 	bool ismanageable(inventory item){
 		return
 			hdpickup(item)
-			&&!hdarmourworn(item)
+			&&!hdpickup(item).bnevershowinpickupmanager
+			&&!item.bnointeraction
 		;
 	}
 	action void nextitem(){invoker.cycleitem();}

@@ -942,6 +942,7 @@ class SpareWeapons:HDPickup{
 	array<string> weaponstatus;
 	default{
 		+nointeraction
+		+hdpickup.nevershowinpickupmanager
 		-inventory.invbar
 		hdpickup.bulk 0;
 	}

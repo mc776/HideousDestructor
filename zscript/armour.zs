@@ -195,6 +195,7 @@ class HDArmourWorn:HDPickup{
 		-inventory.invbar
 		-hdpickup.fitsinbackpack
 		+hdpickup.notinpockets
+		+hdpickup.nevershowinpickupmanager
 		HDArmourworn.ismega false;
 		inventory.maxamount 1;
 		tag "garrison armour";
