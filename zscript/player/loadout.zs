@@ -9,6 +9,7 @@ extend class HDPlayerPawn{
 		A_GiveInventory("SelfBandage");
 		A_GiveInventory("HDFragGrenades");
 		A_GiveInventory("MagManager");
+		A_GiveInventory("PickupManager");
 	}
 }
 

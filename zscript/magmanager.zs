@@ -172,7 +172,6 @@ class MagManager:HDWeapon{
 		}goto super::select;
 	user3:
 		TNT1 A 0 A_JumpIf(player.oldbuttons&BT_USER3,"nope");
-		TNT1 A 0 A_GiveInventory("PickupManager");
 		TNT1 A 0 A_SelectWeapon("PickupManager");
 		TNT1 A 0 A_WeaponReady(WRF_NONE);
 		goto nope;
@@ -386,7 +385,6 @@ class PickupManager:HDWeapon{
 		}goto readyend;
 	user3:
 		TNT1 A 0 A_JumpIf(player.oldbuttons&BT_USER3,"nope");
-		TNT1 A 0 A_GiveInventory("MagManager");
 		TNT1 A 0 A_SelectWeapon("MagManager");
 		TNT1 A 0 A_WeaponReady(WRF_NONE);
 		goto nope;
