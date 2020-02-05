@@ -294,29 +294,28 @@ class PickupManager:HDWeapon{
 			&&!hdarmourworn(item)
 		;
 	}
-	action void nextitem(bool forward=true){
-		hdpickup thisitem=invoker.thisitem;
+	action void nextitem(){invoker.cycleitem();}
+	action void previtem(){invoker.cycleitem(false);}
+	void cycleitem(bool forward=true){
 		int thisindex=0;
 		array<hdpickup> items;items.clear();
-		for(inventory item=inv;item!=null;item=!item?null:item.inv){
-			if(invoker.ismanageable(item))items.push(hdpickup(item));
+		for(inventory item=owner.inv;item!=null;item=!item?null:item.inv){
+			if(ismanageable(item))items.push(hdpickup(item));
 			if(item==thisitem)thisindex=items.size();  //already returns the next index not the current
 		}
 		if(!forward)thisindex-=2;  //get previous rather than next
 		if(items.size()<1){
-			invoker.thisitem=null;
-			UpdateText();
+			thisitem=null;
 			return;
 		}
 		if(forward){
-			if(thisindex<items.size())invoker.thisitem=items[thisindex];
-			else invoker.thisitem=items[0];
+			if(thisindex<items.size())thisitem=items[thisindex];
+			else thisitem=items[0];
 		}else{
-			if(thisindex<0)invoker.thisitem=items[items.size()-1];
-			else invoker.thisitem=items[thisindex];
+			if(thisindex<0)thisitem=items[items.size()-1];
+			else thisitem=items[thisindex];
 		}
-		invoker.weaponstatus[PMSS_DROPAMT]=1;
-		UpdateText();
+		weaponstatus[PMSS_DROPAMT]=1;
 	}
 	action void UpdateText(){
 		let thisitem=invoker.thisitem;
@@ -331,7 +330,7 @@ class PickupManager:HDWeapon{
 			amt=weaponstatus[PMSS_DROPAMT];
 			bool droppedall=owner.countinv(itemtype)<=amt;
 			owner.A_DropInventory(itemtype,amt);
-			if(droppedall)getfirstitem();
+			if(droppedall)cycleitem();
 		}
 	}
 	override inventory CreateTossable(int amount){
@@ -363,14 +362,12 @@ class PickupManager:HDWeapon{
 		if(!idfa)weaponstatus[PMSS_DROPAMT]=1;
 	}
 	states{
-	select:
-		TNT1 A 0{if(!invoker.thisitem)nextitem();}
-		goto super::select;
 	ready:
 		TNT1 A 1{
+			if(!invoker.thisitem||invoker.thisitem.owner!=self)invoker.getfirstitem();
 			A_WeaponReady(WRF_NOFIRE|WRF_ALLOWUSER3);
 			if(justpressed(BT_ATTACK))nextitem();
-			else if(justpressed(BT_ALTATTACK))nextitem(false);
+			else if(justpressed(BT_ALTATTACK))previtem();
 			else if(pressingzoom()){
 				int inputamt=player.cmd.pitch;
 				if(inputamt){
