@@ -396,6 +396,7 @@ class HDPlayerPawn:PlayerPawn{
 		);
 		HDWeapon.SetBusy(self,weaponbusy);
 		if((fm||sm)&&runwalksprint>=0&&vel!=(0,0,0))A_GiveInventory("IsMoving");
+		if(striptime>0)striptime--;
 
 
 		//terminal velocity

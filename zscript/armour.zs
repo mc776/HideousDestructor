@@ -53,25 +53,17 @@ class HDArmour:HDMagAmmo{
 			invoker.syncamount();
 			return;
 		}
+
 		//strip intervening items on doubleclick
-		string dropfirst="";
-		if(countinv("HDBackpack"))dropfirst="HDBackpack";
-		else if(countinv("WornRadsuit"))dropfirst="WornRadsuit";
-		else if(countinv("HDArmourWorn"))dropfirst="HDArmourWorn";
-		if(dropfirst!=""){
-			if(invoker.cooldown)A_DropInventory(dropfirst);
-			else{
-				invoker.cooldown=10;
-				A_Log(string.format(
-					"Take off your %s first!%s",
-					dropfirst=="HDBackpack"?"backpack":
-					dropfirst=="WornRadsuit"?"environment suit":
-					"current armour",
-					helptext?" (double-tap to do this)":""
-				),true);
-			}
+		if(
+			invoker.cooldown<1
+			&&!HDPlayerPawn.CheckStrip(self,-1,false)
+		){
+			invoker.cooldown=10;
 			return;
 		}
+		if(!HDPlayerPawn.CheckStrip(self,-1))return;
+
 		//and finally put on the actual armour
 		HDArmour.ArmourChangeEffect(self);
 		let worn=HDArmourWorn(GiveInventoryType("HDArmourWorn"));
@@ -142,7 +134,7 @@ class HDArmour:HDMagAmmo{
 		//put on the armour right away
 		if(
 			other.player&&other.player.cmd.buttons&BT_USE
-			&&HDPlayerPawn.CheckStrip(other,STRIP_ARMOUR,false)
+			&&HDPlayerPawn.CheckStrip(other,-1,false)
 		){
 			HDArmour.ArmourChangeEffect(other);
 			let worn=HDArmourWorn(other.GiveInventoryType("HDArmourWorn"));

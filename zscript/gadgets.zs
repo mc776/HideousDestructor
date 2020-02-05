@@ -7,6 +7,7 @@
 //see backpack for the minimum setup required.
 extend class HDPlayerPawn{
 	//returns whether the selected layer can be removed
+	int striptime;
 	static bool CheckStrip(
 		actor caller,
 		int which,
@@ -20,6 +21,9 @@ extend class HDPlayerPawn{
 		invclasses[STRIP_BFG]="BFG9k";
 
 		if(which>=invclasses.size())return true;
+
+		let hdp=hdplayerpawn(caller);
+		if(hdp&&hdp.striptime>0)return false;
 
 		inventory preventory=null;
 		for(int i=invclasses.size()-1;i>which;i--){
@@ -37,6 +41,7 @@ extend class HDPlayerPawn{
 			if(remove){
 				caller.dropinventory(preventory);
 				caller.A_Log("Removing "..preventory.gettag().." first.",true);
+				if(hdp)hdp.striptime=25;
 			}
 			return false;
 		}

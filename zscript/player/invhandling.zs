@@ -41,5 +41,10 @@ extend class HDHandlers{
 		if(cw)cw.DropOneAmmo(amt);
 		else PurgeUselessAmmo(ppp);
 	}
+	//strips armour
+	void ChangeArmour(hdplayerpawn ppp){
+		let inva=ppp.findinventory("HDArmour");
+		if(ppp.CheckStrip(ppp,-1)&&inva)ppp.UseInventory(inva);
+	}
 }
 

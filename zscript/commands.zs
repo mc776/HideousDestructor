@@ -25,7 +25,7 @@ extend class HDHandlers{
 		else if(alive&&e.name~=="checkin")HDMarine.CallCheckIn(ppp);
 		else if(alive&&e.name~=="hd_playdead")PlayDead(ppp);
 
-		else if(e.name~=="hd_strip")ppp.CheckStrip(ppp,-1);
+		else if(e.name~=="hd_strip")ChangeArmour(ppp);
 
 		else if(alive&&e.name~=="ied")SetIED(ppp,e.args[0],e.args[1]);
 		else if(e.name~=="iedtag")SetIED(ppp,-abs(e.args[0]),0);
