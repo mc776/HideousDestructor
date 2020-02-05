@@ -195,6 +195,11 @@ class HDArmourWorn:HDPickup{
 	override void beginplay(){
 		durability=mega?HDCONST_BATTLEARMOUR:HDCONST_GARRISONARMOUR;
 		super.beginplay();
+		if(mega)settag("battle armour");
+	}
+	override void postbeginplay(){
+		super.postbeginplay();
+		if(mega)settag("battle armour");
 	}
 	override double getbulk(){
 		return mega?(ENC_BATTLEARMOUR*0.1):(ENC_GARRISONARMOUR*0.1);
