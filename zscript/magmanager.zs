@@ -46,6 +46,7 @@ class MagManager:HDWeapon{
 		..WEPHELP_FIREMODE.."+"..WEPHELP_FIRE.."/"..WEPHELP_ALTFIRE.."  Previous/Next item type\n"
 		..WEPHELP_FIREMODE.."+"..WEPHELP_RELOAD.."/"..WEPHELP_UNLOAD.."  Insert/Remove from backpack\n"
 		..WEPHELP_FIREMODE.."+"..WEPHELP_DROP.."  Drop lowest mag\n"
+		..WEPHELP_USER3.."  Generic item manager\n"
 		;
 	}
 	override inventory createtossable(int amt){
@@ -144,7 +145,6 @@ class MagManager:HDWeapon{
 	spawn:
 		TNT1 A 0;
 		stop;
-	user3:
 	nope:
 		---- A 1{
 			A_WeaponMessage(invoker.uitext);
@@ -170,6 +170,12 @@ class MagManager:HDWeapon{
 			if(!invoker.thismag)NextMagType();
 			invoker.UpdateText();
 		}goto super::select;
+	user3:
+		TNT1 A 0 A_JumpIf(player.oldbuttons&BT_USER3,"nope");
+		TNT1 A 0 A_GiveInventory("PickupManager");
+		TNT1 A 0 A_SelectWeapon("PickupManager");
+		TNT1 A 0 A_WeaponReady(WRF_NONE);
+		goto nope;
 	ready:
 		TNT1 A 1{
 			int bt=player.cmd.buttons;
@@ -248,3 +254,118 @@ class MagManager:HDWeapon{
 	}
 }
 
+
+
+
+
+
+// ------------------------------------------------------------
+// Generic item manager
+// ------------------------------------------------------------
+class PickupManager:HDWeapon{
+	default{
+		+weapon.wimpy_weapon
+		+weapon.no_auto_switch
+		+hdweapon.alwaysshowstatus
+		+nointeraction
+		weapon.selectionorder 1012;
+	}
+	override string gethelptext(){
+		return
+		WEPHELP_FIRE.."/"..WEPHELP_ALTFIRE.."  Previous/Next item\n"
+		..WEPHELP_DROP.."  Drop item\n"
+		..WEPHELP_USER3.."  Mag manager\n"
+		;
+	}
+	hdpickup thisitem;
+	string uitext;
+	void getfirstitem(){
+		if(!owner)return;
+		for(inventory item=owner.inv;item!=null;item=!item?null:item.inv){
+			if(hdpickup(item)){
+				thisitem=hdpickup(item);
+				return;
+			}
+		}
+	}
+	action void nextitem(bool forward=true){
+		hdpickup thisitem=invoker.thisitem;
+		int thisindex=0;
+		array<hdpickup> items;items.clear();
+		for(inventory item=inv;item!=null;item=!item?null:item.inv){
+			if(hdpickup(item)&&!hdarmourworn(item))items.push(hdpickup(item));
+			if(item==thisitem)thisindex=items.size();  //already returns the next index not the current
+		}
+		if(!forward)thisindex-=2;  //get previous rather than next
+		if(items.size()<1){
+			invoker.thisitem=null;
+			UpdateText();
+			return;
+		}
+		if(forward){
+			if(thisindex<items.size())invoker.thisitem=items[thisindex];
+			else invoker.thisitem=items[0];
+		}else{
+			if(thisindex<0)invoker.thisitem=items[items.size()-1];
+			else invoker.thisitem=items[thisindex];
+		}
+		UpdateText();
+	}
+	action void UpdateText(){
+		let thisitem=invoker.thisitem;
+		invoker.uitext=string.format("\cy\\\\\\\cfItem Manager\cy///\n\n\n\n\n\n\n\n\n\cj%s",thisitem?(
+			thisitem.gettag().."\n\cm("..thisitem.getclassname()..")\n\n\ca"..thisitem.amount
+		):"No item selected.");
+	}
+	override void DropOneAmmo(int amt){
+		if(owner&&thisitem){
+			string itemtype=thisitem.getclassname();
+			owner.A_DropInventory(itemtype,max(1,amt));
+			if(!owner.countinv(itemtype))getfirstitem();
+		}
+	}
+	override inventory CreateTossable(int amount){
+		DropOneAmmo(amount);
+		return null;
+	}
+	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
+		let item=thisitem;
+		if(thisitem){
+			let ddi=item.icon;
+			if(!ddi){
+				let dds=item.spawnstate;
+				if(dds!=null)ddi=dds.GetSpriteTexture(0);
+			}
+			if(ddi){
+				vector2 dds=texman.getscaledsize(ddi);
+				vector2 ddv=(1.,1.);
+				if(min(dds.x,dds.y)<8.){
+					ddv*=(8./min(dds.x,dds.y));
+				}
+				sb.drawtexture(ddi,(0,-smallfont.getheight()*4),
+					sb.DI_ITEM_CENTER|sb.DI_SCREEN_CENTER,
+					scale:ddv
+				);
+			}
+		}
+	}
+	states{
+	select:
+		TNT1 A 0{if(!invoker.thisitem)nextitem();}
+		goto super::select;
+	ready:
+		TNT1 A 1{
+			A_WeaponReady(WRF_NOFIRE|WRF_ALLOWUSER3);
+			if(justpressed(BT_ATTACK))nextitem();
+			else if(justpressed(BT_ALTATTACK))nextitem(false);
+			UpdateText();
+			A_WeaponMessage(invoker.uitext);
+		}loop;
+	user3:
+		TNT1 A 0 A_JumpIf(player.oldbuttons&BT_USER3,"nope");
+		TNT1 A 0 A_GiveInventory("MagManager");
+		TNT1 A 0 A_SelectWeapon("MagManager");
+		TNT1 A 0 A_WeaponReady(WRF_NONE);
+		goto nope;
+	}
+}
