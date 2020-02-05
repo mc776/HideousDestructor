@@ -187,6 +187,8 @@ Tap fire/altfire to switch between mags one at a time; if you do this while Zoom
 
 Reload/Unload while holding Fire Mode will take mags in and out of your backpack if you have one.
 
+Hitting the User3 key while already in the mag manager will give you the generic item manager. This just lets you review items and drop specific numbers of them without going to the console.
+
 ### Aiming and turning
 
 If you are standing still, press and hold Use or Zoom to reduce your mouse sensitivity (and enable the scope if hd_noscope is set to true).
@@ -314,6 +316,8 @@ Logs the distance of the object or map geometry you're pointing at.
 * `herptag`: as `iedtag`.
 
 * `herpdir`: Type `herpdir <direction> <tag>` as a shortcut alternative to `herp 3 <tag> <direction>`. Useful if you only have one HERP and don't want to bother typing that extra zero.
+
+* `db`: Type `db <option> <tag>` in the console to command your deployed door busters. Options are `999` to detonate, `123` to query, and `-n` (or `dbtag`) to set the tag for the next door buster.
 
 ### CVars (host only) - gameplay meta
 

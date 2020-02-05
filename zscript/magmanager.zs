@@ -274,6 +274,7 @@ class PickupManager:HDWeapon{
 		return
 		WEPHELP_FIRE.."/"..WEPHELP_ALTFIRE.."  Previous/Next item\n"
 		..WEPHELP_DROP.."  Drop item\n"
+		..WEPHELP_ZOOM.."+"..WEPHELP_UPDOWN.."  Adjust amount per drop\n"
 		..WEPHELP_USER3.."  Mag manager\n"
 		;
 	}
