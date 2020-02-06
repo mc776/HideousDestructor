@@ -323,7 +323,7 @@ class PickupManager:HDWeapon{
 	action void UpdateText(){
 		let thisitem=invoker.thisitem;
 		invoker.uitext=string.format("\cy\\\\\\\cfItem Manager\cy///\n\n\n\n\n\n\n\n\n\cj%s",thisitem?(
-			thisitem.gettag().."\n\cm("..thisitem.getclassname()..")\n\n\cx"..thisitem.amount
+			thisitem.gettag().."\n\cm( "..thisitem.getclassname().." )\n\n\cx"..thisitem.amount
 			.."\n\n\n\caOn drop: "..invoker.weaponstatus[PMSS_DROPAMT]
 		):"No item selected.");
 	}
