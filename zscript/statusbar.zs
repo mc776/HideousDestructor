@@ -211,9 +211,9 @@ class HDStatusBar:DoomStatusBar{
 		}
 		//health
 		if(hd_debug)drawstring(
-			mAmountFont,FormatNumber(CPlayer.mo.health),
+			pnewsmallfont,FormatNumber(CPlayer.mo.health),
 			(34,-24),DI_BOTTOMLEFT|DI_TEXT_ALIGN_CENTER,
-			cplayer.mo.health>70?Font.CR_OLIVE:(cplayer.mo.health>33?Font.CR_GOLD:Font.CR_RED)
+			cplayer.mo.health>70?Font.CR_OLIVE:(cplayer.mo.health>33?Font.CR_GOLD:Font.CR_RED),scale:(0.5,0.5)
 		);else DrawHealthTicker((40,-24),DI_BOTTOMLEFT);
 
 		//armour
@@ -225,9 +225,9 @@ class HDStatusBar:DoomStatusBar{
 		if(hpl.countinv("BloodBagWorn")){
 			drawimage("PBLDA0",(8,134),DI_TOPLEFT,scale:(0.6,0.6));
 			drawstring(
-				mAmountFont,FormatNumber(BloodBagWorn(hpl.findinventory("BloodBagWorn")).bloodleft),
+				pnewsmallfont,FormatNumber(BloodBagWorn(hpl.findinventory("BloodBagWorn")).bloodleft),
 				(14,136),DI_TOPLEFT|DI_TEXT_ALIGN_RIGHT,
-				Font.CR_RED
+				Font.CR_RED,scale:(0.5,0.5)
 			);
 		}
 
@@ -466,17 +466,17 @@ class HDStatusBar:DoomStatusBar{
 				"PBLDA0",(68,-10),DI_SCREEN_CENTER_BOTTOM|DI_ITEM_CENTER_BOTTOM,scale:(0.6,0.6)
 			);
 			if(hudlevel==2)drawstring(
-				mAmountFont,FormatNumber(BloodBagWorn(hpl.findinventory("BloodBagWorn")).bloodleft),
-				(72,-10),DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_RED
+				pnewsmallfont,FormatNumber(BloodBagWorn(hpl.findinventory("BloodBagWorn")).bloodleft),
+				(72,-10),DI_SCREEN_CENTER_BOTTOM|DI_TEXT_ALIGN_RIGHT,Font.CR_RED,scale:(0.5,0.5)
 			);
 		}
 
 
 		//health
 		if(hd_debug)drawstring(
-			mAmountFont,FormatNumber(hpl.health),
+			pnewsmallfont,FormatNumber(hpl.health),
 			(0,mxht),DI_TEXT_ALIGN_CENTER|DI_SCREEN_CENTER_BOTTOM,
-			hpl.health>70?Font.CR_OLIVE:(hpl.health>33?Font.CR_GOLD:Font.CR_RED)
+			hpl.health>70?Font.CR_OLIVE:(hpl.health>33?Font.CR_GOLD:Font.CR_RED),scale:(0.5,0.5)
 		);else DrawHealthTicker();
 
 
@@ -523,9 +523,9 @@ class HDStatusBar:DoomStatusBar{
 			if(hpl.enc){
 				double pocketenc=hpl.pocketenc*hd_encumbrance;
 				drawstring(
-					mAmountFont,formatnumber(int(hpl.enc)),
+					pnewsmallfont,formatnumber(int(hpl.enc)),
 					(8,mxht),DI_TEXT_ALIGN_LEFT|DI_SCREEN_LEFT_BOTTOM,
-					hpl.overloaded<1.2?Font.CR_OLIVE:hpl.overloaded>2.?Font.CR_RED:Font.CR_GOLD
+					hpl.overloaded<1.2?Font.CR_OLIVE:hpl.overloaded>2.?Font.CR_RED:Font.CR_GOLD,scale:(0.5,0.5)
 				);
 				drawimage(
 					"GREENPXL",
@@ -652,9 +652,9 @@ class HDStatusBar:DoomStatusBar{
 		double alpha=1.
 	){
 		drawstring(
-			mAmountFont,formatnumber(num),
+			pnewsmallfont,formatnumber(num),
 			(xpos,ypos),flags|DI_TEXT_ALIGN_RIGHT,
-			fnt,alpha
+			fnt,alpha,scale:(0.4,0.4)
 		);
 	}
 	void DrawStrings(
@@ -741,9 +741,9 @@ class HDStatusBar:DoomStatusBar{
 				flags
 			);
 			drawstring(
-				mamountfont,FormatNumber(armour.durability),
+				pnewsmallfont,FormatNumber(armour.durability),
 				armourcoords+(10,-7),flags|DI_ITEM_CENTER|DI_TEXT_ALIGN_RIGHT,
-				Font.CR_BLACK
+				Font.CR_DARKGRAY,scale:(0.4,0.4)
 			);
 		}
 	}
@@ -765,20 +765,20 @@ class HDStatusBar:DoomStatusBar{
 			if(pivs){
 				int pivsi=pivs.getsbarnum();
 				if(pivsi!=-1000000)drawstring(
-					mAmountFont,FormatNumber(pivsi),
-					(numposx,numposy-7),flags|DI_TEXT_ALIGN_RIGHT,Font.CR_SAPPHIRE
+					pnewsmallfont,FormatNumber(pivsi),
+					(numposx,numposy-7),flags|DI_TEXT_ALIGN_RIGHT,Font.CR_SAPPHIRE,scale:(0.5,0.5)
 				);
 			}else if(piws){
 				int piwsi=piws.getsbarnum();
 				if(piwsi!=-1000000)drawstring(
-					mAmountFont,FormatNumber(piwsi),
-					(numposx,numposy-7),flags|DI_TEXT_ALIGN_RIGHT,Font.CR_SAPPHIRE
+					pnewsmallfont,FormatNumber(piwsi),
+					(numposx,numposy-7),flags|DI_TEXT_ALIGN_RIGHT,Font.CR_SAPPHIRE,scale:(0.5,0.5)
 				);
 			}
 
 			int invamt=hdweapon(ivs)?hdweapon(ivs).actualamount:ivs.amount;
-			drawstring(mAmountFont,FormatNumber(invamt),
-				(numposx,numposy),flags|DI_TEXT_ALIGN_RIGHT,Font.CR_OLIVE
+			drawstring(pnewsmallfont,FormatNumber(invamt),
+				(numposx,numposy),flags|DI_TEXT_ALIGN_RIGHT,Font.CR_OLIVE,scale:(0.5,0.5)
 			);
 		}
 	}
@@ -885,10 +885,10 @@ class HDStatusBar:DoomStatusBar{
 				scale:(ammoscales[i],ammoscales[i])
 			);
 			drawstring(
-				mamountfont,""..count,
+				pnewsmallfont,""..count,
 				(-6-(ii%SBAR_MAXAMMOCOLS)*16,mxht-(ii/SBAR_MAXAMMOCOLS)*SBAR_AMMOROW),
 				DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM|DI_TEXT_ALIGN_RIGHT,
-				Font.CR_OLIVE
+				Font.CR_OLIVE,scale:(0.4,0.4)
 			);
 			ii++;
 		}
