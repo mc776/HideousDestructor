@@ -62,7 +62,7 @@ class Hunter:HDShotgun{
 		if(sb.hudlevel==1){
 			sb.drawimage("SHL1A0",(-47,-10),basestatusbar.DI_SCREEN_CENTER_BOTTOM);
 			sb.drawnum(hpl.countinv("HDShellAmmo"),-46,-8,
-				basestatusbar.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK
+				basestatusbar.DI_SCREEN_CENTER_BOTTOM
 			);
 		}
 		if(hdw.weaponstatus[HUNTS_CHAMBER]>1){

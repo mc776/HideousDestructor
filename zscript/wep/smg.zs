@@ -81,7 +81,7 @@ class HDSMG:HDWeapon{
 				(-46,-3),-1,
 				sb.SHADER_VERT,sb.DI_SCREEN_CENTER_BOTTOM
 			);
-			sb.drawnum(hpl.countinv("HD9mMag30"),-43,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+			sb.drawnum(hpl.countinv("HD9mMag30"),-43,-8,sb.DI_SCREEN_CENTER_BOTTOM);
 		}
 		if(weaponstatus[SMGS_SWITCHTYPE]!=1)sb.drawwepcounter(hdw.weaponstatus[SMGS_AUTO],
 			-22,-10,"RBRSA3A7","STBURAUT","STFULAUT"

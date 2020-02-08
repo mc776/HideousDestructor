@@ -91,10 +91,10 @@ class ZM66AssaultRifle:HDWeapon{
 				(-46,-3),-1,
 				sb.SHADER_VERT,sb.DI_SCREEN_CENTER_BOTTOM
 			);
-			sb.drawnum(hpl.countinv("HD4mMag"),-43,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+			sb.drawnum(hpl.countinv("HD4mMag"),-43,-8,sb.DI_SCREEN_CENTER_BOTTOM);
 			if(!(hdw.weaponstatus[0]&ZM66F_NOLAUNCHER)){
 				sb.drawimage("ROQPA0",(-62,-4),sb.DI_SCREEN_CENTER_BOTTOM,scale:(0.6,0.6));
-				sb.drawnum(hpl.countinv("HDRocketAmmo"),-56,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+				sb.drawnum(hpl.countinv("HDRocketAmmo"),-56,-8,sb.DI_SCREEN_CENTER_BOTTOM);
 			}
 		}
 

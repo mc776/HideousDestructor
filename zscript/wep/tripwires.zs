@@ -37,7 +37,7 @@ class Tripwire:HDWeapon{
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
 		if(sb.hudlevel==1){
 			sb.drawimage("FRAGA0",(-52,-4),sb.DI_SCREEN_CENTER_BOTTOM,scale:(0.6,0.6));
-			sb.drawnum(hpl.countinv("HDFragGrenadeAmmo"),-45,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+			sb.drawnum(hpl.countinv("HDFragGrenadeAmmo"),-45,-8,sb.DI_SCREEN_CENTER_BOTTOM);
 		}
 		sb.drawwepnum(
 			hpl.countinv("HDFragGrenadeAmmo"),

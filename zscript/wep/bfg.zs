@@ -78,7 +78,7 @@ class BFG9K:HDCellWeapon replaces BFG9000{
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
 		if(sb.hudlevel==1){
 			sb.drawbattery(-54,-4,sb.DI_SCREEN_CENTER_BOTTOM,reloadorder:true);
-			sb.drawnum(hpl.countinv("HDBattery"),-46,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+			sb.drawnum(hpl.countinv("HDBattery"),-46,-8,sb.DI_SCREEN_CENTER_BOTTOM);
 		}
 		int bffb=hdw.weaponstatus[BFGS_BATTERY];
 		if(bffb>0)sb.drawwepnum(bffb,20,posy:-10);

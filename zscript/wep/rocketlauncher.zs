@@ -40,8 +40,8 @@ class HDRL:HDWeapon{
 		if(sb.hudlevel==1){
 			sb.drawimage("ROQPA0",(-47,-4),sb.DI_SCREEN_CENTER_BOTTOM,scale:(0.6,0.6));
 			sb.drawimage("ROCKA0",(-58,-4),sb.DI_SCREEN_CENTER_BOTTOM,scale:(0.6,0.6));
-			sb.drawnum(hpl.countinv("HDRocketAmmo"),-41,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
-			sb.drawnum(hpl.countinv("HEATAmmo"),-54,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+			sb.drawnum(hpl.countinv("HDRocketAmmo"),-41,-8,sb.DI_SCREEN_CENTER_BOTTOM);
+			sb.drawnum(hpl.countinv("HEATAmmo"),-54,-8,sb.DI_SCREEN_CENTER_BOTTOM);
 		}
 		int ab=hdw.airburst;
 		if(
@@ -581,7 +581,7 @@ class Blooper:HDWeapon{
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
 		if(sb.hudlevel==1){
 			sb.drawimage("ROQPA0",(-52,-4),sb.DI_SCREEN_CENTER_BOTTOM,scale:(0.6,0.6));
-			sb.drawnum(hpl.countinv("HDRocketAmmo"),-45,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+			sb.drawnum(hpl.countinv("HDRocketAmmo"),-45,-8,sb.DI_SCREEN_CENTER_BOTTOM);
 		}
 		if(hdw.weaponstatus[0]&BLOPF_LOADED)sb.drawwepdot(-16,-10,(5,3));
 		int ab=hdw.airburst;

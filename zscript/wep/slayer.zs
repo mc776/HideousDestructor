@@ -47,7 +47,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
 		if(sb.hudlevel==1){
 			sb.drawimage("SHL1A0",(-47,-10),sb.DI_SCREEN_CENTER_BOTTOM);
-			sb.drawnum(hpl.countinv("HDShellAmmo"),-46,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+			sb.drawnum(hpl.countinv("HDShellAmmo"),-46,-8,sb.DI_SCREEN_CENTER_BOTTOM);
 		}
 		int loffs=-28;int rofs=-16;
 		if(hdw.weaponstatus[0]&SLAYF_DOUBLE){

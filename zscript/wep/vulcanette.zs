@@ -170,8 +170,8 @@ class Vulcanette:HDWeapon{
 				sb.SHADER_VERT,sb.DI_SCREEN_CENTER_BOTTOM
 			);
 			sb.drawbattery(-64,-4,sb.DI_SCREEN_CENTER_BOTTOM,reloadorder:true);
-			sb.drawnum(hpl.countinv("HD4mMag"),-43,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
-			sb.drawnum(hpl.countinv("HDBattery"),-56,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+			sb.drawnum(hpl.countinv("HD4mMag"),-43,-8,sb.DI_SCREEN_CENTER_BOTTOM);
+			sb.drawnum(hpl.countinv("HDBattery"),-56,-8,sb.DI_SCREEN_CENTER_BOTTOM);
 		}
 		bool bat=hdw.weaponstatus[VULCS_BATTERY]>0;
 		int mags=hdw.weaponstatus[VULCS_MAGS];

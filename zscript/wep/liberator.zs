@@ -283,10 +283,10 @@ class LiberatorRifle:AutoReloadingThingy{
 				(-46,-3),-1,
 				sb.SHADER_VERT,sb.DI_SCREEN_CENTER_BOTTOM
 			);
-			sb.drawnum(hpl.countinv("HD7mMag"),-43,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+			sb.drawnum(hpl.countinv("HD7mMag"),-43,-8,sb.DI_SCREEN_CENTER_BOTTOM);
 			if(!(hdw.weaponstatus[0]&LIBF_NOLAUNCHER)){
 				sb.drawimage("ROQPA0",(-62,-4),sb.DI_SCREEN_CENTER_BOTTOM,scale:(0.6,0.6));
-				sb.drawnum(hpl.countinv("HDRocketAmmo"),-56,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+				sb.drawnum(hpl.countinv("HDRocketAmmo"),-56,-8,sb.DI_SCREEN_CENTER_BOTTOM);
 			}
 		}
 		if(!(hdw.weaponstatus[0]&LIBF_NOAUTO)){

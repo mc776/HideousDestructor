@@ -40,11 +40,11 @@ class HDRevolver:HDHandgun{
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
 		if(sb.hudlevel==1){
 			sb.drawimage("PRNDA0",(-47,-10),sb.DI_SCREEN_CENTER_BOTTOM,scale:(2.1,2.55));
-			sb.drawnum(hpl.countinv("HDRevolverAmmo"),-44,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+			sb.drawnum(hpl.countinv("HDRevolverAmmo"),-44,-8,sb.DI_SCREEN_CENTER_BOTTOM);
 			int ninemil=hpl.countinv("HDPistolAmmo");
 			if(ninemil>0){
 				sb.drawimage("PRNDA0",(-64,-10),sb.DI_SCREEN_CENTER_BOTTOM,scale:(2.1,2.1));
-				sb.drawnum(ninemil,-60,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+				sb.drawnum(ninemil,-60,-8,sb.DI_SCREEN_CENTER_BOTTOM);
 			}
 		}
 		int plf=hpl.player.getpsprite(PSP_WEAPON).frame;

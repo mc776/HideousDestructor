@@ -80,7 +80,7 @@ class BossRifle:HDWeapon{
 			}else if(nextmagloaded<9){
 				sb.drawimage("RCLPB0",(-58,-3),sb.DI_SCREEN_CENTER_BOTTOM,scale:(1.6,1.6));
 			}else sb.drawimage("RCLPA0",(-58,-3),sb.DI_SCREEN_CENTER_BOTTOM,scale:(1.6,1.6));
-			sb.drawnum(hpl.countinv("HD7mClip"),-45,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+			sb.drawnum(hpl.countinv("HD7mClip"),-45,-8,sb.DI_SCREEN_CENTER_BOTTOM);
 		}
 		sb.drawwepnum(hdw.weaponstatus[BOSSS_MAG],10);
 		sb.drawwepcounter(hdw.weaponstatus[BOSSS_CHAMBER],

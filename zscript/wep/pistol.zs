@@ -91,7 +91,7 @@ class HDPistol:HDHandgun replaces Pistol{
 				(-46,-3),-1,
 				sb.SHADER_VERT,sb.DI_SCREEN_CENTER_BOTTOM
 			);
-			sb.drawnum(hpl.countinv("HD9mMag15"),-43,-8,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_BLACK);
+			sb.drawnum(hpl.countinv("HD9mMag15"),-43,-8,sb.DI_SCREEN_CENTER_BOTTOM);
 		}
 		if(hdw.weaponstatus[0]&PISF_SELECTFIRE)sb.drawwepcounter(hdw.weaponstatus[0]&PISF_FIREMODE,
 			-22,-10,"RBRSA3A7","STFULAUT"
