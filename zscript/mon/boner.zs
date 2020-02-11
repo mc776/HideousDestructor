@@ -1,7 +1,7 @@
 // ------------------------------------------------------------
 // Revenant
 // ------------------------------------------------------------
-class bonerball:hdactor{
+class bonerball:slowprojectile{
 	default{
 		projectile;
 		+rockettrail
@@ -22,6 +22,11 @@ class bonerball:hdactor{
 		speed 2;
 		damagefactor(5);
 		damagetype "SmallArms2";
+		spriteangle 180;
+	}
+	override void Tick(){
+		super.Tick();
+		bspriteangle=(vel dot vel)<200;
 	}
 	vector3 oldvel;
 	states{
@@ -33,7 +38,8 @@ class bonerball:hdactor{
 		TNT1 A 0{
 			A_StartSound("world/rocketfar",CHAN_BODY,volume:0.4);
 			oldvel=vel;
-			if(A_JumpIfTargetInLOS("spawn",0,JLOSF_CHECKTRACER)){
+			bool targlos=A_JumpIfTargetInLOS("spawn",0,JLOSF_CHECKTRACER);
+			if(targlos){
 				A_ScaleVelocity(0.9);
 				A_FaceTracer(45,45,0,0,FAF_TOP,-height);
 				A_SetPitch(pitch+frandom(-1,1));
@@ -44,7 +50,7 @@ class bonerball:hdactor{
 				A_SetAngle(angle+frandom(-20,20));
 			}
 			if(
-				A_JumpIfTargetInLOS("spawn",1,JLOSF_CHECKTRACER)
+				targlos
 				&&(tracer&&distance3d(tracer)<96)
 			)A_ChangeVelocity(Cos(Pitch)*5,0,Sin(-Pitch)*5,CVF_RELATIVE);
 			else A_ChangeVelocity(Cos(Pitch)*2,0,Sin(-Pitch)*2,CVF_RELATIVE);
@@ -54,20 +60,31 @@ class bonerball:hdactor{
 	bounce:
 		FATB A 0 A_JumpIf(
 			stamina>3
-			||(vel==(0,0,0))
+			||(oldvel==(0,0,0))
 			||!target
 			||target.health<1
 			||!target.checksight(self)
 			||(
-				!checkmove(pos.xy+vel.xy)
+				!checkmove(pos.xy+oldvel.xy)
 				&&blockingmobj
 				&&blockingmobj==tracer
 			)
-		,"death");
-		FATB A 0{vel.z+=5;stamina++;}
+		,"realdeath");
+		FATB A 1 bright{
+			vel.z+=5;
+			stamina++;
+			bshootable=true;
+			double frangle=frandom(160,200);
+			angle+=frangle;
+			setorigin(pos-oldvel,true);
+			A_ChangeVelocity(Cos(Pitch)*5,0,Sin(-Pitch)*5,CVF_RELATIVE);
+		}
+		FATB B 1 bright{bmissile=true;}
 		FATB ABABABAB 1 bright{vel.z--;}
 		goto spawn2;
 	death:
+		---- A 0 A_JumpIf(stamina<4,"bounce");
+	realdeath:
 		---- A 0{
 			if(blockingmobj){
 				A_Immolate(blockingmobj,target,random(20,40));
