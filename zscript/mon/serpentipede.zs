@@ -40,7 +40,8 @@ class HDImpBallTail:HDFireballTail{
 	}
 	states{
 	spawn:
-		BAL1 CDE 5{
+		//BAL1 CDE 5{
+		RSMK ABC 5{
 			roll+=10;
 			scale.x*=randompick(-1,1);
 		}loop;
