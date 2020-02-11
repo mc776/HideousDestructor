@@ -479,13 +479,13 @@ Some items can be picked up and saved for later, as described below.
 
   Weapon slot: 9
 
-  The staple (no pun intended) bit of safety equipment once prevention has failed. You will find in each sealed package:
+  The staple bit of safety equipment once prevention has failed. You will find in each sealed package:
 
   1. One (1) Second Flesh(tm) Human Biotic Rapid Growth Medium Auto-Suture Syringe; and
   1. One (1) Second Blood(tm) Wearable Mobile IV Feed. (Ingredient list can be compiled for personal research use only under various open licences and non-expiring government patents.)
   1. One (1) stimpack;
 
-  To use item 1, inject the device into the wound and hold down the trigger. The pressurized syringe will extend to the end of the wound (or the exit as appropriate) and starts shooting out strands of Second Flesh(tm) that pull together the flesh and then fuse with it rapidly, and continue to apply and seal while retracting back to the application point. The fusing will continue to take effect over time and may result in some discomfort.
+  To use item 1, inject the device into the wound and hold down the trigger. The pressurized syringe will extend to the end of the wound (or the exit as appropriate) and start shooting out strands of Second Flesh(tm) that pull together the flesh and then fuse with it rapidly, and continue to apply and seal while retracting back to the application point. The fusing will continue to take effect over time and may result in some discomfort.
 
   Controls:
 
@@ -546,7 +546,7 @@ Some items can be picked up and saved for later, as described below.
   GZdoom actor name: `PortableLadder`
   Loadout code: `lad`
 
-  Use while on a ledge (above or below) to deploy.
+  Use while facing a ledge (above or below) to deploy.
 
   From below, stand as close to the ledge as possible and look right into the wall.
 
@@ -585,9 +585,9 @@ Some items can be picked up and saved for later, as described below.
   GZDoom actor name: `DERPBot`
   Loadout code: `drp`
 
-  The gun that runs around killing people by itself! Basically a pistol wired to a webcam and treads, made of bullets, aggression and shitty programmer art. They can't climb and run out of ammo quickly, but you can pick them back up anytime as you would an ordinary item for later redeployment. Takes one pistol mag to deploy, and any unused ammo is recovered on pickup.
+  The gun that runs around killing people by itself! Basically a pistol wired to a webcam and treads, made of bullets, aggression and shitty programmer art. They can't climb and run out of ammo quickly, but you can pick them back up anytime as you would an ordinary item for later redeployment.
 
-  If it breaks, unload the mag, then hold fire and tap reload to try to repair it.
+  If it breaks, unload the mag, then hold fire and mash reload to try to repair it.
 
   The DERP can be programmed to one of several behaviours. Type the following into the console, or `derp <number shown>`, to set what mode it will engage in at any time.
 
@@ -652,7 +652,7 @@ Some items can be picked up and saved for later, as described below.
   * Hit Alt. Reload to set the HERP's home angle to the current angle.
   * Hold Firemode to directly control the HERP. Fire shoots the gun.
 
-  If it breaks, unload the battery, then hold fire and tap reload to try to repair it.
+  If it breaks, unload the battery, then hold fire and mash reload to try to repair it.
 
   In a pinch, the H.E.R.P. can be fired as a crude personal defence automated weapon.
 
