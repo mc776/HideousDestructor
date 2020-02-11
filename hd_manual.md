@@ -485,7 +485,7 @@ Some items can be picked up and saved for later, as described below.
   1. One (1) Second Blood(tm) Wearable Mobile IV Feed. (Ingredient list can be compiled for personal research use only under various open licences and non-expiring government patents.)
   1. One (1) stimpack;
 
-  To use item 1, inject the device into the wound and hold down the trigger. The pressurized syringe will extend to the end of the wound (or the exit as appropriate) and startsshooting out strands of Second Flesh(tm) that pull together the flesh and then fuse with it rapidly, and continue to apply and seal while retracting back to the application point. The fusing will continue to take effect over time and may result in some discomfort.
+  To use item 1, inject the device into the wound and hold down the trigger. The pressurized syringe will extend to the end of the wound (or the exit as appropriate) and starts shooting out strands of Second Flesh(tm) that pull together the flesh and then fuse with it rapidly, and continue to apply and seal while retracting back to the application point. The fusing will continue to take effect over time and may result in some discomfort.
 
   Controls:
 
@@ -546,7 +546,7 @@ Some items can be picked up and saved for later, as described below.
   GZdoom actor name: `PortableLadder`
   Loadout code: `lad`
 
-  Use while on a ledge (above or below) to deploy.
+  Use while facing a ledge (above or below) to deploy.
 
   From below, stand as close to the ledge as possible and look right into the wall.
 
@@ -569,7 +569,7 @@ Some items can be picked up and saved for later, as described below.
 
   Protip: The suit heats up pretty fast. Keep moving to keep it from stewing in its own gases and igniting.
 
-* **Backpack*
+* **Backpack**
 
   GZDoom actor name: `HDBackpack`
   Loadout code: `bak`
@@ -585,7 +585,7 @@ Some items can be picked up and saved for later, as described below.
   GZDoom actor name: `DERPBot`
   Loadout code: `drp`
 
-  The gun that runs around killing people by itself! Basically a pistol wired to a webcam and treads, made of bullets, aggression and shitty programmer art. They can't climb and run out of ammo quickly, but you can pick them back up anytime as you would an ordinary item for later redeployment. Takes one pistol mag to deploy, and any unused ammo is recovered on pickup.
+  The gun that runs around killing people by itself! Basically a pistol wired to a webcam and treads, made of bullets, aggression and shitty programmer art. They can't climb and run out of ammo quickly, but you can pick them back up anytime as you would an ordinary item for later redeployment.
 
   If it breaks, unload the mag, then hold fire and tap reload to try to repair it.
 
