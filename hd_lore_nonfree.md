@@ -22,7 +22,7 @@ The basic infantryman's weapon of the 22nd century. ...
 ### BFG
 An attempt to merge conventional human technology with the power of the Anomalies before the invasion of Phobos, the Botis Field Glyph, Mark 9 was part a greater work that would have made the Universal Anthroposoterium Cybernetics Group the single biggest player in the energy market for centuries.
 
-Unluckily for them, the proposed energy source caused the rout of civilization and the massacre of mankind - with the resulting lawsuits likely to result in a slightly smaller profit than imagined. Luckily for you, the weaponized "Kurz" version of the device is just small enough for one space marine to carry and deliver the horror the horror back to the enemy.
+Unluckily for them, the proposed energy source caused the rout of civilization and the massacre of mankind - with the resulting lawsuits likely to result in a slightly smaller profit than imagined. Luckily for you, the weaponized "Kurz" version of the device is just small enough for one space marine to carry and deliver the horror the back to the enemy.
 
 Background: The BFG works by drawing into itself the unexplained energies of the Anomalies. According to the UAC's internal documents\*, the Botis fields were discovered by Dr. Graf Botis in a freak particle beam weapons testing accident on Mars, while Deimos was directly overhead. The field appeared to generate some kind of plasma-like or energy-like substance that seemed to behave alternately like a gas and a subatomic particle. Unable to properly characterize it, it was mentioned in Dr. Botis' notes as "Gretchenfrage" as a placeholder pending further study. (This was shortened in later notes to "Frage" and eventually "Frag" in common anglophone parlance.)
 
