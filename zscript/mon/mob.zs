@@ -24,6 +24,7 @@ class HDMobBase : HDActor{
 		radius 12;
 		gibhealth 100;
 		+dontgib
+		-noblockmonst  //set true in HDActor, set false again in some monsters explicitly
 		height 52;
 		deathheight 24;
 		burnheight 24;
