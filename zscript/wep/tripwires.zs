@@ -383,8 +383,12 @@ class TrippingGrenade:HDUPK{
 		flinetracedata flt;
 		linetrace(angle,radius*HDCONST_SQRTTWO+0.1,pitch,flags:TRF_THRUACTORS,data:flt);
 
-		//let it drop if not actually touching a wall
-		if(!flt.hitline){
+		//let it drop if neither planted by player nor actually touching a wall
+		//used to prevent mappers from accidentally leaving things hovering in the air
+		if(
+			!flt.hitline
+			&&!target
+		){
 			ongrab(self);
 			return;
 		}
