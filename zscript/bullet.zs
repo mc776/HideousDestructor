@@ -375,6 +375,9 @@ class HDBulletActor:HDActor{
 		if(hd_debug>1)console.printf(getclassname().." penetration:  "..pen.."   "..pos.x..","..pos.y);
 		return pen;
 	}
+	void ApplyDeceleration(){
+		vel*=min(1.,1.-pushfactor*0.001);
+	}
 	void ApplyGravity(){
 		if(vel.z>BULLET_TERMINALVELOCITY)vel.z-=max(0.001,getgravity());
 	}
@@ -485,7 +488,7 @@ class HDBulletActor:HDActor{
 			}
 			bnointeraction=true;
 			setorigin(pos+vel,false);
-			vel*=min(1.,1.-pushfactor*0.001);
+			ApplyDeceleration();
 			vel.z-=getgravity();
 			return;
 		}
@@ -544,7 +547,7 @@ class HDBulletActor:HDActor{
 
 			if(bres.hittype==TRACE_HasHitSky){
 				setorigin(pos+vel,true);
-				vel*=min(1.,1.-pushfactor*0.001);
+				ApplyDeceleration();
 				ApplyGravity();
 				return;
 			}else if(bres.hittype==TRACE_HitNone){
@@ -697,7 +700,7 @@ class HDBulletActor:HDActor{
 			frandom(-pushfactor,pushfactor)
 		);
 		//reduce momentum
-		vel*=min(1.,1.-pushfactor*0.001);
+		ApplyDeceleration();
 		ApplyGravity();
 
 		//sometimes bullets will freeze (or at least move imperceptibly slowly)
