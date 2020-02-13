@@ -307,7 +307,6 @@ class HDBulletActor:HDActor{
 	property distantsoundpitch:distantsoundpitch;
 
 	enum BulletConsts{
-		BULLET_TERMINALVELOCITY=-277,
 		BULLET_CRACKINTERVAL=64,
 
 		BLT_HITTOP=1,
@@ -315,6 +314,7 @@ class HDBulletActor:HDActor{
 		BLT_HITMIDDLE=3,
 		BLT_HITONESIDED=4,
 	}
+	const BULLET_TERMINALVELOCITY=-277.;
 
 
 	default{
@@ -374,6 +374,9 @@ class HDBulletActor:HDActor{
 
 		if(hd_debug>1)console.printf(getclassname().." penetration:  "..pen.."   "..pos.x..","..pos.y);
 		return pen;
+	}
+	void ApplyGravity(){
+		if(vel.z>BULLET_TERMINALVELOCITY)vel.z-=max(0.001,getgravity());
 	}
 	override bool cancollidewith(actor other,bool passive){
 		return !passive;
@@ -472,9 +475,17 @@ class HDBulletActor:HDActor{
 			ceilingz<pos.z
 			&&ceilingz-pos.z<vel.z
 		){
+			if(
+				!(level.time&(1|2|4|8|16|32|64|128))
+				&&(vel.xy dot vel.xy < 64.)
+				&&!level.ispointinlevel(pos)
+			){
+				destroy();
+				return;
+			}
 			bnointeraction=true;
 			setorigin(pos+vel,false);
-			vel-=vel.unit()*pushfactor;
+			vel*=min(1.,1.-pushfactor*0.001);
 			vel.z-=getgravity();
 			return;
 		}
@@ -533,8 +544,8 @@ class HDBulletActor:HDActor{
 
 			if(bres.hittype==TRACE_HasHitSky){
 				setorigin(pos+vel,true);
-				vel-=vel.unit()*pushfactor;
-				vel.z-=getgravity();
+				vel*=min(1.,1.-pushfactor*0.001);
+				ApplyGravity();
 				return;
 			}else if(bres.hittype==TRACE_HitNone){
 				newpos=bres.hitpos;
@@ -680,12 +691,14 @@ class HDBulletActor:HDActor{
 		blt.destroy();
 
 		//update velocity
-		A_ChangeVelocity(
+		vel+=(
 			frandom(-pushfactor,pushfactor),
 			frandom(-pushfactor,pushfactor),
-			-getgravity(),
-			CVF_RELATIVE
+			frandom(-pushfactor,pushfactor)
 		);
+		//reduce momentum
+		vel*=min(1.,1.-pushfactor*0.001);
+		ApplyGravity();
 
 		//sometimes bullets will freeze (or at least move imperceptibly slowly)
 		//and not react to gravity or anything until touched.
@@ -1248,7 +1261,9 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 
 		//inflict wound
 		if(target&&hitactor.isteammate(target))channelwidth*=teamdamage;
-		if(channelwidth>0)hdbleedingwound.inflict(hitactor,int(pen),int(channelwidth),(flags&BLAF_SUCKINGWOUND));
+		if(channelwidth>0)hdbleedingwound.inflict(
+			hitactor,int(pen),int(channelwidth),(flags&BLAF_SUCKINGWOUND)
+		);
 
 		//evaluate cns hit/critical and apply damage
 		if(
