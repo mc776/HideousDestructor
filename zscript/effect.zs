@@ -214,7 +214,8 @@ class HDPuff:HDActor{
 	property startvelz:startvelz;
 	default{
 		+puffgetsowner +hittracer
-		+noblockmap -solid +cannotpush +nointeraction
+		+noblockmap -solid +cannotpush
+//		+nointeraction
 		+rollsprite +rollcenter +forcexybillboard
 		height 0;radius 0;renderstyle "translucent";gravity 0.1;
 
