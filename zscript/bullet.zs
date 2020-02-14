@@ -293,6 +293,8 @@ class HDBulletActor:HDActor{
 	array<actor> traceactors;
 	array<sector> tracesectors;
 
+	vector3 realpos;
+
 	int hdbulletflags;
 	flagdef neverricochet:hdbulletflags,0;
 
@@ -356,6 +358,7 @@ class HDBulletActor:HDActor{
 	override void postbeginplay(){
 		resetrandoms();
 		super.postbeginplay();
+		realpos=pos;
 		gunsmoke();
 		if(distantsound!="")distantnoise.make(self,distantsound,distantsoundvol,distantsoundpitch);
 		if(hd_debug){
@@ -372,7 +375,7 @@ class HDBulletActor:HDActor{
 		if(pushfactor>0)pen/=(1.+pushfactor*2.);
 
 
-		if(hd_debug>1)console.printf(getclassname().." penetration:  "..pen.."   "..pos.x..","..pos.y);
+		if(hd_debug>1)console.printf(getclassname().." penetration:  "..pen.."   "..realpos.x..","..realpos.y);
 		return pen;
 	}
 	void ApplyDeceleration(){
@@ -461,7 +464,7 @@ class HDBulletActor:HDActor{
 	override void tick(){
 		if(isfrozen())return;
 //if(getage()%17)return;
-		if(abs(pos.x)>32000||abs(pos.y)>32000){destroy();return;}
+		if(abs(realpos.x)>32000||abs(realpos.y)>32000){destroy();return;}
 		if(
 			!bmissile
 		){
@@ -469,14 +472,24 @@ class HDBulletActor:HDActor{
 			return;
 		}
 
+		//update position but keep within the sector
+		if(realpos.xy!=pos.xy)setorigin((
+			realpos.xy,
+			clamp(
+				realpos.z,
+				getzat(realpos.x,realpos.y,flags:GZF_ABSOLUTEPOS),
+				getzat(realpos.x,realpos.y,flags:GZF_ABSOLUTEPOS|GZF_CEILING)
+			)
+		),true);
+
 		tracelines.clear();
 		traceactors.clear();
 		tracesectors.clear();
 
 		//if in the sky
 		if(
-			ceilingz<pos.z
-			&&ceilingz-pos.z<vel.z
+			ceilingz<realpos.z
+			&&ceilingz-realpos.z<vel.z
 		){
 			if(
 				!(level.time&(1|2|4|8|16|32|64|128))
@@ -487,16 +500,12 @@ class HDBulletActor:HDActor{
 				return;
 			}
 			bnointeraction=true;
-			RenderStyle=STYLE_None;
-			setorigin(pos+vel,false);
+			realpos+=vel;
 			ApplyDeceleration();
 			vel.z-=getgravity();
 			return;
 		}
-		if(bnointeraction){
-			bnointeraction=false;
-			RenderStyle=getdefaultbytype(getclassname()).renderstyle;
-		}
+		if(bnointeraction)bnointeraction=false;
 
 		if(vel==(0,0,0)){
 			vel.z-=max(0.01,getgravity()*0.01);
@@ -507,7 +516,7 @@ class HDBulletActor:HDActor{
 		if(!blt)return;
 		blt.bullet=hdbulletactor(self);
 		blt.shooter=target;
-		vector3 oldpos=pos;
+		vector3 oldpos=realpos;
 		vector3 newpos=oldpos;
 
 		//get speed, set counter
@@ -527,7 +536,7 @@ class HDBulletActor:HDActor{
 			double cosp=cos(pitch);
 			vector3 vu=vel.unit();
 			blt.trace(
-				pos,
+				realpos,
 				cursector,
 				vu,
 				distanceleft,
@@ -550,19 +559,21 @@ class HDBulletActor:HDActor{
 
 
 			if(bres.hittype==TRACE_HasHitSky){
-				setorigin(pos+vel,true);
+				realpos+=vel;
 				ApplyDeceleration();
 				ApplyGravity();
 				return;
 			}else if(bres.hittype==TRACE_HitNone){
 				newpos=bres.hitpos;
-				setorigin(newpos,true);
+				realpos=newpos;
 				distanceleft-=max(bres.distance,10.); //safeguard against infinite loops
 			}else{
 				newpos=bres.hitpos-vu*0.1;
-				setorigin(newpos,true);
+				realpos=newpos;
 				distanceleft-=max(bres.distance,10.); //safeguard against infinite loops
 				if(bres.hittype==TRACE_HitWall){
+					setorigin(realpos,true);  //needed for bulletdie and checkmove
+
 					let hitline=bres.hitline;
 					tracelines.push(hitline);
 
@@ -602,7 +613,7 @@ class HDBulletActor:HDActor{
 					//if not blocking, pass through and continue
 					if(!isblocking){
 						hitline.activate(target,bres.side,SPAC_PCross|SPAC_AnyCross);
-						setorigin(newpos+vu*0.2,true);
+						realpos+=vu*0.2;
 					}else{
 
 						//"SPAC_Impact" is so wonderfully onomatopoeic
@@ -630,12 +641,14 @@ class HDBulletActor:HDActor{
 						)
 					)continue;
 
+					setorigin(realpos,true);
 					HitGeometry(
 						null,hitsector,0,
 						bres.hittype==TRACE_HitCeiling?SECPART_Ceiling:SECPART_Floor,
 						vu,doneone?bres.distance:999
 					);
 				}else if(bres.hittype==TRACE_HitActor){
+					setorigin(realpos,true);
 					if(
 						bincombat
 						||bres.hitactor!=target
@@ -663,7 +676,7 @@ class HDBulletActor:HDActor{
 					cracker="SubsonicTrail";
 				}
 				if(cracker!=""){
-					vector3 crackbak=pos;
+					vector3 crackbak=realpos;
 					vector3 crackinterval=vu*BULLET_CRACKINTERVAL;
 					int j=int(max(1,bres.distance*(1./BULLET_CRACKINTERVAL)));
 					for(int i=0;i<j;i++){
@@ -715,9 +728,9 @@ class HDBulletActor:HDActor{
 		//it's almost certainly "in the sky" and the below code would not be executed.
 		//also consider grav acceleration: 32 speed straight up from height 0: +32+30+27+23+18+12+5-3..)
 		if(
-			abs(oldpos.x-pos.x)<1
-			&&abs(oldpos.y-pos.y)<1
-			&&abs(oldpos.z-pos.z)<1
+			abs(oldpos.x-realpos.x)<1
+			&&abs(oldpos.y-realpos.y)<1
+			&&abs(oldpos.z-realpos.z)<1
 		)bulletdie();
 	}
 	//set to full stop, unflag as missile, death state
