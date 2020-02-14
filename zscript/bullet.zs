@@ -487,7 +487,7 @@ class HDBulletActor:HDActor{
 				return;
 			}
 			bnointeraction=true;
-			binvisible=true;
+			RenderStyle=STYLE_None;
 			setorigin(pos+vel,false);
 			ApplyDeceleration();
 			vel.z-=getgravity();
@@ -495,7 +495,7 @@ class HDBulletActor:HDActor{
 		}
 		if(bnointeraction){
 			bnointeraction=false;
-			binvisible=false;
+			RenderStyle=getdefaultbytype(getclassname()).renderstyle;
 		}
 
 		if(vel==(0,0,0)){
