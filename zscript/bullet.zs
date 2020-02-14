@@ -499,13 +499,13 @@ class HDBulletActor:HDActor{
 				destroy();
 				return;
 			}
-			bnointeraction=true;
+//			bnointeraction=true;
 			realpos+=vel;
 			ApplyDeceleration();
 			vel.z-=getgravity();
 			return;
 		}
-		if(bnointeraction)bnointeraction=false;
+//		if(bnointeraction)bnointeraction=false;
 
 		if(vel==(0,0,0)){
 			vel.z-=max(0.01,getgravity()*0.01);
