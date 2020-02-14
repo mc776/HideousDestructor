@@ -487,12 +487,16 @@ class HDBulletActor:HDActor{
 				return;
 			}
 			bnointeraction=true;
+			binvisible=true;
 			setorigin(pos+vel,false);
 			ApplyDeceleration();
 			vel.z-=getgravity();
 			return;
 		}
-		if(bnointeraction)bnointeraction=false;
+		if(bnointeraction){
+			bnointeraction=false;
+			binvisible=false;
+		}
 
 		if(vel==(0,0,0)){
 			vel.z-=max(0.01,getgravity()*0.01);
