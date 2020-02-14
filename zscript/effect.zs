@@ -215,7 +215,7 @@ class HDPuff:HDActor{
 	default{
 		+puffgetsowner +hittracer
 		+noblockmap -solid +cannotpush
-//		+nointeraction
+		+nointeraction
 		+rollsprite +rollcenter +forcexybillboard
 		height 0;radius 0;renderstyle "translucent";gravity 0.1;
 
