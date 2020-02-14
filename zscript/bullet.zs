@@ -478,7 +478,7 @@ class HDBulletActor:HDActor{
 			clamp(
 				realpos.z,
 				getzat(realpos.x,realpos.y,flags:GZF_ABSOLUTEPOS),
-				getzat(realpos.x,realpos.y,flags:GZF_ABSOLUTEPOS|GZF_CEILING)
+				getzat(realpos.x,realpos.y,flags:GZF_ABSOLUTEPOS|GZF_CEILING)-height
 			)
 		),true);
 
