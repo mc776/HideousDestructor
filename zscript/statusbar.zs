@@ -521,7 +521,7 @@ class HDStatusBar:DoomStatusBar{
 
 			//encumbrance
 			if(hpl.enc){
-				double pocketenc=hpl.pocketenc*hd_encumbrance;
+				double pocketenc=hpl.pocketenc;
 				drawstring(
 					pnewsmallfont,formatnumber(int(hpl.enc)),
 					(8,mxht),DI_TEXT_ALIGN_LEFT|DI_SCREEN_LEFT_BOTTOM,
