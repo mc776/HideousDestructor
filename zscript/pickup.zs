@@ -342,9 +342,10 @@ class HDPickup:CustomInventory{
 	}
 	static int MaxGive(actor caller,class<inventory> type,double unitbulk){
 		unitbulk*=hdmath.getencumbrancemult();
-		if(unitbulk<=0)return getdefaultbytype(type).maxamount-caller.countinv(type);
+		int absmax=getdefaultbytype(type).maxamount-caller.countinv(type);
+		if(unitbulk<=0)return absmax;
 		double spaceleft=HDPickup.MaxPocketSpace(caller)-HDPickup.PocketSpaceTaken(caller);
-		return int(max(0,min(getdefaultbytype(type).maxamount-caller.countinv(type),spaceleft/unitbulk)));
+		return int(clamp(absmax,0,spaceleft/unitbulk));
 	}
 
 
