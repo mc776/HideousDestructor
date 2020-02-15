@@ -472,11 +472,10 @@ class HDBulletActor:HDActor{
 			return;
 		}
 
-/*
 		//update position but keep within the sector
 		if(
 			realpos.xy!=pos.xy
-			&&level.ispointinlevel(realpos)
+//			&&level.ispointinlevel(realpos)
 		)setorigin((
 			realpos.xy,
 			clamp(
@@ -485,7 +484,6 @@ class HDBulletActor:HDActor{
 				getzat(realpos.x,realpos.y,flags:GZF_ABSOLUTEPOS|GZF_CEILING)-height
 			)
 		),true);
-*/
 
 		tracelines.clear();
 		traceactors.clear();
@@ -505,12 +503,16 @@ class HDBulletActor:HDActor{
 				return;
 			}
 			bnointeraction=true;
+			binvisible=true;
 			realpos+=vel;
 			ApplyDeceleration();
 			vel.z-=getgravity();
 			return;
 		}
-		if(bnointeraction)bnointeraction=false;
+		if(bnointeraction){
+			bnointeraction=false;
+			binvisible=false;
+		}
 
 		if(vel==(0,0,0)){
 			vel.z-=max(0.01,getgravity()*0.01);
