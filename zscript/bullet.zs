@@ -681,17 +681,20 @@ class HDBulletActor:HDActor{
 					cracker="SubsonicTrail";
 				}
 				if(cracker!=""){
-					vector3 crackbak=realpos;
+					vector3 crackpos=realpos;
 					vector3 crackinterval=vu*BULLET_CRACKINTERVAL;
 					int j=int(max(1,bres.distance*(1./BULLET_CRACKINTERVAL)));
 					for(int i=0;i<j;i++){
-						setxyz(crackbak+crackinterval*i);
+						crackpos+=crackinterval*i;
 						if(hd_debug>1)A_SpawnParticle("yellow",SPF_RELVEL|SPF_RELANG,
 							size:12,
+							xoff:crackpos.x-pos.x,
+							yoff:crackpos.y-pos.y,
+							zoff:crackpos.z-pos.z,
 							velx:speed*cos(pitch)*0.001,
 							velz:-speed*sin(pitch)*0.001
 						);
-						if(missilename)spawn(missilename,pos,ALLOW_REPLACE);
+						if(missilename)spawn(missilename,crackpos,ALLOW_REPLACE);
 						bool gotplayer=false;
 						for(int k=0;!gotplayer && k<MAXPLAYERS;k++){
 							if(playeringame[k] && players[k].mo){
@@ -699,12 +702,11 @@ class HDBulletActor:HDActor{
 									distance3d(players[k].mo)<256
 								){
 									gotplayer=true;
-									spawn(cracker,pos,ALLOW_REPLACE);
+									spawn(cracker,crackpos,ALLOW_REPLACE);
 								}
 							}
 						}
 					}
-					setxyz(crackbak);
 				}
 			}
 		}while(
