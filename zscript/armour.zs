@@ -9,6 +9,7 @@ class HDArmour:HDMagAmmo{
 		+inventory.invbar
 		+hdpickup.cheatnogive
 		+hdpickup.notinpockets
+		+inventory.isarmor
 		inventory.amount 1;
 		inventory.maxamount 3;
 		hdmagammo.maxperunit (HDCONST_BATTLEARMOUR+1000);
@@ -188,6 +189,7 @@ class HDArmourWorn:HDPickup{
 		-hdpickup.fitsinbackpack
 		+hdpickup.notinpockets
 		+hdpickup.nevershowinpickupmanager
+		+inventory.isarmor
 		HDArmourworn.ismega false;
 		inventory.maxamount 1;
 		tag "garrison armour";
@@ -248,6 +250,7 @@ class BattleArmour:HDPickupGiver replaces BlueArmor{
 		//$Sprite "ARMCA0"
 		+missilemore
 		+hdpickup.fitsinbackpack
+		+inventory.isarmor
 		inventory.icon "ARMCA0";
 		hdpickupgiver.pickuptogive "HDArmour";
 		hdpickup.bulk ENC_BATTLEARMOUR;
@@ -281,6 +284,7 @@ class BattleArmourWorn:HDPickup{
 	default{
 		+missilemore
 		-hdpickup.fitsinbackpack
+		+inventory.isarmor
 		hdpickup.refid HDLD_ARWB;
 		tag "battle armour";
 		inventory.maxamount 1;

@@ -58,6 +58,14 @@ extend class HDPlayerPawn{
 		bool iszerk=(zerk>0);
 
 
+		//force sv_nohealth
+		if(deathmatch&&sv_nohealth){
+			zerk=0;
+			stimcount=0;
+			regenblues=0;
+		}
+
+
 		//zerk!!!!
 		if(
 			zerk

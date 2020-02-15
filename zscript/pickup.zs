@@ -399,6 +399,19 @@ class HDPickup:CustomInventory{
 		GotoSpawn();
 	}
 	override void postbeginplay(){
+
+		//don't spawn if certain dmflags
+		if(
+			deathmatch  //sv_noarmor/health normally does nothing outside dm
+			&&(
+				(sv_noarmor&&bisarmor)
+				||(sv_nohealth&&bishealth)
+			)
+		){
+			destroy();
+			return;
+		}
+
 		itemsthatusethis.clear();
 		GetItemsThatUseThis();
 		super.postbeginplay();

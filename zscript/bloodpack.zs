@@ -14,7 +14,7 @@ class SecondBlood:HDInjectorMaker{
 		hdpickup.bulk ENC_STIMPACK*2;
 		tag "synthetic blood";
 		hdpickup.refid HDLD_BLODPAK;
-		species "HealingItem";
+		+inventory.ishealth
 		hdinjectormaker.injectortype "SecondBloodSticker";
 	}
 	states{

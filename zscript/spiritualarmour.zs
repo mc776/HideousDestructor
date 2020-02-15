@@ -11,6 +11,7 @@ class SpiritualArmour:HDPickup{
 		+inventory.undroppable
 		+hdpickup.nevershowinpickupmanager
 		-inventory.invbar
+		+inventory.isarmor
 		inventory.pickupmessage "Picked up an armour bonus.";
 		inventory.amount 1;
 		inventory.maxamount 3;

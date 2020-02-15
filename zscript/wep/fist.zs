@@ -57,7 +57,7 @@ class HDFist:HDWeapon replaces Fist{
 			if(
 				inventory(item)
 				&&item.binvbar
-				&&item.species!="HealingItem"
+				&&!item.bishealth
 			){
 				items.push(item);
 			}

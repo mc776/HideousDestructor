@@ -30,7 +30,7 @@ class PortableStimpack:HDInjectorMaker{
 		hdpickup.bulk ENC_STIMPACK;
 		tag "stimpack";
 		hdpickup.refid HDLD_STIMPAK;
-		species "HealingItem";
+		+inventory.ishealth
 		hdinjectormaker.injectortype "HDStimpacker";
 	}
 	states{
@@ -310,7 +310,7 @@ class PortableBerserkPack:hdinjectormaker{
 		hdpickup.bulk ENC_STIMPACK;
 		tag "berserk pack";
 		hdpickup.refid HDLD_BERSERK;
-		species "HealingItem";
+		+inventory.ishealth
 		hdinjectormaker.injectortype "HDBerserker";
 	}
 	states{
@@ -389,7 +389,7 @@ class BluePotion:hdinjectormaker{
 		hdmagammo.maxperunit 12;
 		hdmagammo.magbulk ENC_BLUEPOTION*0.7;
 		hdmagammo.roundbulk ENC_BLUEPOTION*0.04;
-		species "HealingItem";
+		+inventory.ishealth
 		hdinjectormaker.injectortype "HDBlueBottler";
 	}
 	override string,string,name,double getmagsprite(int thismagamt){

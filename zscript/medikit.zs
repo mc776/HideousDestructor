@@ -14,7 +14,7 @@ class PortableMedikit:HDPickup{
 		hdpickup.bulk ENC_MEDIKIT;
 		tag "medikit";
 		hdpickup.refid HDLD_MEDIKIT;
-		species "HealingItem";
+		+inventory.ishealth
 	}
 	states{
 	spawn:
@@ -62,7 +62,7 @@ class HDWoundFixer:HDWeapon{
 		array<inventory> items;items.clear();
 		for(inventory item=caller.inv;item!=null;item=!item?null:item.inv){
 			if(
-				item.species=="HealingItem"
+				item.bishealth
 			){
 				items.push(item);
 			}

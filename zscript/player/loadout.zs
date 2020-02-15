@@ -385,6 +385,16 @@ extend class HDPlayerPawn{
 				continue;
 			}
 			class<actor> reff=allactorclasses[whichitemclass[i]];
+
+			//don't spawn if certain dmflags
+			if(
+				deathmatch  //sv_noarmor/health normally does nothing outside dm
+				&&(
+					(sv_noarmor&&getdefaultbytype((class<inventory>)(reff)).bisarmor)
+					||(sv_nohealth&&getdefaultbytype((class<inventory>)(reff)).bishealth)
+				)
+			)continue;
+
 			if(reff is "HDWeapon"){
 				if(
 					getdefaultbytype((class<HDWeapon>)(reff)).bdebugonly
