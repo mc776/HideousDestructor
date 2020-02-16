@@ -363,7 +363,7 @@ class HDFist:HDWeapon replaces Fist{
 		//drag
 		double mindist=grabbed.radius+radius;
 
-		double dragfactor=min(0.8,0.8*mass/grabbed.mass)*speed;
+		double dragfactor=min(0.8,0.8*speed*mass/grabbed.mass);
 		usercmd cmd=player.cmd;
 		int fm=cmd.forwardmove>0?1:cmd.forwardmove<0?-1:0;
 		int sm=cmd.sidemove>0?1:cmd.sidemove<0?-1:0;
