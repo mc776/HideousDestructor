@@ -654,7 +654,7 @@ class HDStatusBar:DoomStatusBar{
 		drawstring(
 			pnewsmallfont,formatnumber(num),
 			(xpos,ypos),flags|DI_TEXT_ALIGN_RIGHT,
-			fnt,alpha,scale:(0.4,0.4)
+			fnt,alpha,scale:(0.5,0.5)
 		);
 	}
 	void DrawStrings(
@@ -743,7 +743,7 @@ class HDStatusBar:DoomStatusBar{
 			drawstring(
 				pnewsmallfont,FormatNumber(armour.durability),
 				armourcoords+(10,-7),flags|DI_ITEM_CENTER|DI_TEXT_ALIGN_RIGHT,
-				Font.CR_DARKGRAY,scale:(0.4,0.4)
+				Font.CR_DARKGRAY,scale:(0.5,0.5)
 			);
 		}
 	}
@@ -888,7 +888,7 @@ class HDStatusBar:DoomStatusBar{
 				pnewsmallfont,""..count,
 				(-6-(ii%SBAR_MAXAMMOCOLS)*16,mxht-(ii/SBAR_MAXAMMOCOLS)*SBAR_AMMOROW),
 				DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM|DI_TEXT_ALIGN_RIGHT,
-				Font.CR_OLIVE,scale:(0.4,0.4)
+				Font.CR_OLIVE,scale:(0.5,0.5)
 			);
 			ii++;
 		}
