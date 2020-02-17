@@ -778,13 +778,7 @@ class LiberatorRifle:AutoReloadingThingy{
 
 	reloaddone:
 		BRFG B 1 offset (4,40);
-		BRFG A 1 offset (2,36){
-			if(
-				invoker.weaponstatus[LIBS_CHAMBER]!=2
-				&&invoker.weaponstatus[LIBS_MAG]>0  
-			)A_Chamber();
-		}
-		BRFG A 1 offset (0,34);
+		BRFG A 1 offset (2,34);
 		goto nope;
 
 

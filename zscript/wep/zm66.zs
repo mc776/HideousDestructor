@@ -362,7 +362,7 @@ class ZM66AssaultRifle:HDWeapon{
 				setweaponstate("nope");
 			}else if(!(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBER)){
 				//no shot but can chamber
-				setweaponstate("chamber_premanual");
+				setweaponstate("chamber_manual");
 			}else{
 				A_GunFlash();
 				A_WeaponReady(WRF_NONE);
@@ -418,12 +418,6 @@ class ZM66AssaultRifle:HDWeapon{
 			setweaponstate("shootgun");
 		}
 
-
-	chamber_premanual:
-		RIFG A 1 offset(0,33);
-		RIFG A 1 offset(-3,34);
-		RIFG A 1 offset(-8,37);
-		goto chamber_manual;
 
 	user3:
 		RIFG A 0 A_MagManager("HD4mMag");
@@ -535,7 +529,7 @@ class ZM66AssaultRifle:HDWeapon{
 			}
 			invoker.weaponstatus[ZM66S_MAG]=zmag.TakeMag(true);
 			A_StartSound("weapons/rifleclick2",CHAN_WEAPON);
-		}goto chamber_manual;
+		}goto reloadend;
 	loadmagdirty:
 		RIFG B 0{
 			if(PressingReload())invoker.weaponstatus[0]|=ZM66F_STILLPRESSINGRELOAD;
@@ -574,8 +568,18 @@ class ZM66AssaultRifle:HDWeapon{
 		}
 		RIFG A 4 offset(-17,49);
 		goto chamber_manual;
+
+	reloadend:
+		RIFG B 2 offset(-11,39);
+		RIFG A 1 offset(-8,37) A_MuzzleClimb(frandom(0.2,-2.4),frandom(0.2,-1.4));
+		RIFG A 0 A_CheckCookoff();
+		RIFG A 1 offset(-3,34);
+		RIFG A 1 offset(0,33);
+		goto nope;
+
 	chamber_manual:
-		RIFG A 4 offset(-15,43){
+		RIFG A 3 offset(-1,36)A_WeaponBusy();
+		RIFG B 4 offset(-3,42){
 			if(!invoker.weaponstatus[ZM66S_MAG]%100)invoker.weaponstatus[ZM66S_MAG]=0;
 			if(
 				!(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBER)
@@ -587,19 +591,10 @@ class ZM66AssaultRifle:HDWeapon{
 				else invoker.weaponstatus[ZM66S_MAG]--;
 				invoker.weaponstatus[ZM66S_FLAGS]|=ZM66F_CHAMBER;
 				brokenround();
-			}else setweaponstate("reloadend");
-			if(!A_CheckCookoff())A_WeaponBusy();
+			}else setweaponstate("nope");
 		}
-		goto nope;
-		RIFG B 4 offset(-14,45);
-		goto reloadend;
-
-	reloadend:
-		RIFG B 2 offset(-11,39);
-		RIFG A 1 offset(-8,37) A_MuzzleClimb(frandom(0.2,-2.4),frandom(0.2,-1.4));
-		RIFG A 0 A_CheckCookoff();
-		RIFG A 1 offset(-3,34);
-		RIFG A 1 offset(0,33);
+		RIFG A 2 offset(-1,36);
+		RIFG A 0 offset(0,34);
 		goto nope;
 
 
@@ -784,8 +779,8 @@ class ZM66AssaultRifle:HDWeapon{
 			angle+=frandom(2,-7);
 			pitch+=frandom(-4,4);
 		}
-		#### B 2{
-			if(invoker.weaponstatus[ZM66S_AUTO]>1)A_SetTics(0);  
+		#### B 0{
+//			if(invoker.weaponstatus[ZM66S_AUTO]>1)A_SetTics(0);  
 			invoker.weaponstatus[0]&=~(ZM66F_CHAMBER|ZM66F_CHAMBERBROKEN);
 			if(invoker.weaponstatus[ZM66S_MAG]%100>0){  
 				invoker.weaponstatus[ZM66S_MAG]--;
