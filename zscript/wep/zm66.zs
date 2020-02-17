@@ -377,7 +377,7 @@ class ZM66AssaultRifle:HDWeapon{
 			}
 			if(invoker.weaponstatus[ZM66S_MAG]%100>0){  
 				if(invoker.weaponstatus[ZM66S_MAG]==51)invoker.weaponstatus[ZM66S_MAG]=50;
-//				invoker.weaponstatus[ZM66S_MAG]--;
+				invoker.weaponstatus[ZM66S_MAG]--;
 				invoker.weaponstatus[ZM66S_FLAGS]|=ZM66F_CHAMBER;
 			}else{
 				invoker.weaponstatus[ZM66S_MAG]=min(invoker.weaponstatus[ZM66S_MAG],0);
@@ -791,10 +791,10 @@ class ZM66AssaultRifle:HDWeapon{
 			pitch+=frandom(-4,4);
 		}
 		#### B 0{
-//			if(invoker.weaponstatus[ZM66S_AUTO]>1)A_SetTics(0);  
+//			if(invoker.weaponstatus[ZM66S_AUTO]>1)A_SetTics(0);
 			invoker.weaponstatus[0]&=~(ZM66F_CHAMBER|ZM66F_CHAMBERBROKEN);
 			if(invoker.weaponstatus[ZM66S_MAG]%100>0){
-//				invoker.weaponstatus[ZM66S_MAG]--;
+				invoker.weaponstatus[ZM66S_MAG]--;
 				invoker.weaponstatus[0]|=ZM66F_CHAMBER;
 				brokenround();
 			}
