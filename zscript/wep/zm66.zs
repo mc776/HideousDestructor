@@ -377,7 +377,7 @@ class ZM66AssaultRifle:HDWeapon{
 			}
 			if(invoker.weaponstatus[ZM66S_MAG]%100>0){  
 				if(invoker.weaponstatus[ZM66S_MAG]==51)invoker.weaponstatus[ZM66S_MAG]=50;
-				invoker.weaponstatus[ZM66S_MAG]--;
+//				invoker.weaponstatus[ZM66S_MAG]--;
 				invoker.weaponstatus[ZM66S_FLAGS]|=ZM66F_CHAMBER;
 			}else{
 				invoker.weaponstatus[ZM66S_MAG]=min(invoker.weaponstatus[ZM66S_MAG],0);
@@ -755,10 +755,8 @@ class ZM66AssaultRifle:HDWeapon{
 			if(
 				invoker.weaponstatus[0]&ZM66F_CHAMBER
 				&&!(invoker.weaponstatus[0]&ZM66F_CHAMBERBROKEN)
-				&&invoker.weaponstatus[ZM66S_HEAT]>HDCONST_ZM66COOKOFF  
-			){
-				setstatelabel("spawnshoot");
-			}
+				&&invoker.weaponstatus[ZM66S_HEAT]>HDCONST_ZM66COOKOFF
+			)setstatelabel("spawnshoot");
 		}
 	spawnshoot:
 		#### C 1 bright light("SHOT"){
@@ -769,11 +767,24 @@ class ZM66AssaultRifle:HDWeapon{
 			//shoot the bullet
 			//copy any changes to flash as well!
 			double brnd=invoker.weaponstatus[ZM66S_HEAT]*0.01;
-			HDBulletActor.FireBullet(self,"HDB_426",
+			let bbb=HDBulletActor.FireBullet(self,"HDB_426",
 				spread:brnd>1.2?invoker.weaponstatus[ZM66S_HEAT]*0.1:0
 			);
 
-			A_ChangeVelocity(frandom(-0.4,0.1),frandom(-0.1,0.08),1,CVF_RELATIVE);
+			//if overlapping owner, treat owner as shooter
+			let targ=invoker.target;
+			if(
+				targ
+				&&abs(targ.pos.x-invoker.pos.x)<=targ.radius
+				&&abs(targ.pos.y-invoker.pos.y)<=targ.radius
+			){
+				bbb.target=targ;
+			}
+			A_ChangeVelocity(
+				frandom(-0.4,0.1)*cos(pitch),
+				frandom(-0.1,0.08),
+				sin(pitch)+frandom(-1.,1.),CVF_RELATIVE
+			);
 			A_StartSound("weapons/rifle",CHAN_VOICE);
 			invoker.weaponstatus[ZM66S_HEAT]+=random(3,5);
 			angle+=frandom(2,-7);
@@ -782,12 +793,20 @@ class ZM66AssaultRifle:HDWeapon{
 		#### B 0{
 //			if(invoker.weaponstatus[ZM66S_AUTO]>1)A_SetTics(0);  
 			invoker.weaponstatus[0]&=~(ZM66F_CHAMBER|ZM66F_CHAMBERBROKEN);
-			if(invoker.weaponstatus[ZM66S_MAG]%100>0){  
-				invoker.weaponstatus[ZM66S_MAG]--;
+			if(invoker.weaponstatus[ZM66S_MAG]%100>0){
+//				invoker.weaponstatus[ZM66S_MAG]--;
 				invoker.weaponstatus[0]|=ZM66F_CHAMBER;
 				brokenround();
 			}
 		}goto spawn2;
+	}
+
+	override inventory CreateTossable(int amt){
+		let owner=self.owner;
+		let zzz=zm66assaultrifle(super.createtossable());
+		if(!zzz)return null;
+		zzz.target=owner;
+		return zzz;
 	}
 
 	override void InitializeWepStats(bool idfa){
