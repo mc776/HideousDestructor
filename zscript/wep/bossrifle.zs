@@ -476,7 +476,7 @@ class BossRifle:HDWeapon{
 			int mg=invoker.weaponstatus[BOSSS_MAG];
 			if(mg==10)setweaponstate("reloaddone");
 			else if(
-				mg<1
+				!countinv("SevenMilAmmo")
 				&&!HDMagAmmo.NothingLoaded(self,"HD7mClip")
 			)setweaponstate("loadclip");
 		}
@@ -517,12 +517,42 @@ class BossRifle:HDWeapon{
 			else A_StartSound("weapons/pocket",9);
 		}goto loadhandloop;
 	loadclip:
+		BARG A 0 A_JumpIf(invoker.weaponstatus[BOSSS_MAG]>9,"reloaddone");
+		BARG A 0 A_JumpIf(invoker.weaponstatus[BOSSS_MAG]<1,"loadwholeclip");
+		BARG A 3 offset(16,50){
+			A_StartSound("weapons/rifleclick2",CHAN_WEAPONBODY);
+			let ccc=hdmagammo(findinventory("HD7mClip"));
+			if(ccc){
+				//find the last mag that has anything in it and load from that
+				int magindex=-1;
+				for(int i=ccc.mags.size()-1;i>=0;i--){
+					if(ccc.mags[i]>0){
+						magindex=i;
+						break;
+					}
+				}
+				if(magindex<0){
+					setweaponstate("reloaddone");
+					return;
+				}
+				invoker.weaponstatus[BOSSS_MAG]++;
+				ccc.mags[magindex]--;
+			}
+		}
+		BARG A 5 offset(16,52) A_JumpIf(
+			PressingReload()||
+			PressingFire()||
+			PressingAltFire()||
+			PressingZoom()
+		,"reloaddone");
+		loop;
+	loadwholeclip:
 		BARG A 4 offset(16,50) A_StartSound("weapons/rifleclick2",8);
 		BARG AAA 3 offset(17,52) A_StartSound("weapons/rifleclick2",8,pitch:1.01);
 		BARG AAA 2 offset(16,50) A_StartSound("weapons/rifleclick2",8,CHANF_OVERLAP,pitch:1.02);
 		BARG AAA 1 offset(15,48) A_StartSound("weapons/rifleclick2",8,CHANF_OVERLAP,pitch:1.02);
 		BARG A 2 offset(14,46){
-			A_StartSound("weapons/rifleclick",CHAN_WEAPON);
+			A_StartSound("weapons/rifleclick",CHAN_WEAPONBODY);
 			let ccc=hdmagammo(findinventory("HD7mClip"));
 			if(ccc){
 				invoker.weaponstatus[BOSSS_MAG]=ccc.TakeMag(true);
