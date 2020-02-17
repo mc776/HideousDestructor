@@ -474,7 +474,7 @@ class HDBackpack:HDWeapon{
 				if(owner)owner.A_Log("Empty this backpack first.",true);
 				return 1;
 			}
-			if(wep.weaponbulk()+bulk>maxcapacity){
+			if(floor(wep.weaponbulk()+bulk)>maxcapacity){
 				if(owner)owner.A_Log("Your backpack is too full.",true);
 				return 1;
 			}
@@ -497,9 +497,11 @@ class HDBackpack:HDWeapon{
 			return 12;
 		}else if(mag){
 			if(
-				mag.magbulk
-				+mag.roundbulk*(mag.mags.size()?mag.mags[mag.mags.size()-1]:mag.maxperunit)
-				+bulk
+				floor(
+					mag.magbulk
+					+mag.roundbulk*(mag.mags.size()?mag.mags[mag.mags.size()-1]:mag.maxperunit)
+					+bulk
+				)
 				>maxcapacity
 			){
 				if(owner)owner.A_Log("Your backpack is too full.",true);
@@ -510,7 +512,7 @@ class HDBackpack:HDWeapon{
 			else amounts[index]=tookmag.." "..amounts[index];
 		}else{
 			int units=item.owner?1:item.amount;
-			if(pkup.bulk*units+bulk>maxcapacity){
+			if(floor(pkup.bulk*units+bulk)>maxcapacity){
 				if(owner)owner.A_Log("Your backpack is too full.",true);
 				return 1;
 			}
