@@ -210,15 +210,14 @@ class HDPistol:HDHandgun replaces Pistol{
 			)setweaponstate("chamber_manual");
 		}goto nope;
 	chamber_manual:
-		---- A 0{
-			if(
-				!(invoker.weaponstatus[0]&PISF_JUSTUNLOAD)
-				&&(
-					invoker.weaponstatus[PISS_CHAMBER]==2
-					||invoker.weaponstatus[PISS_MAG]<1
-				)
-			)setweaponstate("nope");
-		}
+		---- A 0 A_JumpIf(
+			!(invoker.weaponstatus[0]&PISF_JUSTUNLOAD)
+			&&(
+				invoker.weaponstatus[PISS_CHAMBER]==2
+				||invoker.weaponstatus[PISS_MAG]<1
+			)
+			,"nope"
+		);
 		#### B 3 offset(0,34);
 		#### C 4 offset(0,37){
 			A_MuzzleClimb(frandom(0.4,0.5),-frandom(0.6,0.8));
@@ -240,8 +239,7 @@ class HDPistol:HDHandgun replaces Pistol{
 			}
 		}
 		#### B 3 offset(0,35);
-		#### B 0 A_ReFire();
-		goto ready;
+		goto nope;
 	althold:
 	hold:
 		goto nope;
@@ -391,8 +389,7 @@ class HDPistol:HDHandgun replaces Pistol{
 		---- A 1 offset(2,42);
 		---- A 1 offset(2,38);
 		---- A 1 offset(1,34);
-		---- A 0 A_JumpIf(pressingreload()||pressingunload(),"nope");
-		goto ready;
+		goto chamber_manual;
 
 	user1:
 	altreload:

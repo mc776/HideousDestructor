@@ -574,10 +574,10 @@ class ZM66AssaultRifle:HDWeapon{
 		RIFG A 1 offset(-8,37) A_MuzzleClimb(frandom(0.2,-2.4),frandom(0.2,-1.4));
 		RIFG A 0 A_CheckCookoff();
 		RIFG A 1 offset(-3,34);
-		RIFG A 1 offset(0,33);
-		goto nope;
+		goto chamber_manual;
 
 	chamber_manual:
+		RIFG A 0 A_JumpIf(invoker.weaponstatus[ZM66S_FLAGS]&ZM66F_CHAMBER,"nope");
 		RIFG A 3 offset(-1,36)A_WeaponBusy();
 		RIFG B 4 offset(-3,42){
 			if(!invoker.weaponstatus[ZM66S_MAG]%100)invoker.weaponstatus[ZM66S_MAG]=0;

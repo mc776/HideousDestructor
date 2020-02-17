@@ -346,7 +346,7 @@ class HDSMG:HDWeapon{
 		#### A 1 offset(10,42);
 		#### A 1 offset(5,38);
 		#### A 1 offset(0,34);
-		goto nope;
+		goto chamber_manual;
 
 	chamber_manual:
 		#### A 0 A_JumpIf(

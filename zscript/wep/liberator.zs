@@ -779,7 +779,7 @@ class LiberatorRifle:AutoReloadingThingy{
 	reloaddone:
 		BRFG B 1 offset (4,40);
 		BRFG A 1 offset (2,34);
-		goto nope;
+		goto chamber_manual;
 
 
 	altfire:
