@@ -161,6 +161,7 @@ class HDSMG:HDWeapon{
 		---- A 0 A_MagManager("HD9mMag30");
 		goto ready;
 	altfire:
+		goto chamber_manual;
 	althold:
 		goto nope;
 	hold:
@@ -194,12 +195,8 @@ class HDSMG:HDWeapon{
 		#### A 0;
 	fire2:
 		#### B 1{
-			if(invoker.weaponstatus[SMGS_CHAMBER]==2){
-				A_GunFlash();
-			}else{
-				if(invoker.weaponstatus[SMGS_MAG]>0)setweaponstate("chamber_manual");
-				else setweaponstate("nope");
-			}
+			if(invoker.weaponstatus[SMGS_CHAMBER]==2)A_GunFlash();
+			else setweaponstate("chamber_manual");
 		}
 		#### A 1;
 		#### A 0{
@@ -341,7 +338,7 @@ class HDSMG:HDWeapon{
 				||invoker.weaponstatus[SMGS_CHAMBER]>0
 			)setweaponstate("reloadend");
 		}
-goto reloadend;
+		goto reloadend;
 
 	reloadend:
 		#### B 3 offset(30,52);
@@ -352,6 +349,10 @@ goto reloadend;
 		goto nope;
 
 	chamber_manual:
+		#### A 0 A_JumpIf(
+			invoker.weaponstatus[SMGS_MAG]<1
+			||invoker.weaponstatus[SMGS_CHAMBER]==2
+		,"nope");
 		#### B 2 offset(3,32){
 			A_WeaponBusy();
 			invoker.weaponstatus[SMGS_MAG]--;
