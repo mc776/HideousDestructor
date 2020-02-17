@@ -493,7 +493,12 @@ class HDBackpack:HDWeapon{
 			UpdateMessage(index);
 			return 12;
 		}else if(mag){
-			if(mag.magbulk+bulk>maxcapacity){
+			if(
+				mag.magbulk
+				+mag.roundbulk*(mag.mags.size()?mag.mags[mag.mags.size()-1]:mag.maxperunit)
+				+bulk
+				>maxcapacity
+			){
 				if(owner)owner.A_Log("Your backpack is too full.",true);
 				return 1;
 			}
