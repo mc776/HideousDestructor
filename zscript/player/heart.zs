@@ -87,7 +87,7 @@ extend class HDPlayerPawn{
 
 						if(!random(0,int(8-zerk*0.0005))){
 							woundcount+=random(0,2);
-							if(!random(0,4))A_Pain();
+							if(!random(0,4))A_StartSound(painsound,CHAN_VOICE);
 							else if(!random(0,3))aggravateddamage++;
 						}
 
@@ -114,7 +114,7 @@ extend class HDPlayerPawn{
 					if(!zerk){
 						A_SetBlend("20 0a 0f",0.8,35);
 						A_TakeInventory("PowerStrength");
-						A_Pain();
+						A_StartSound(painsound,CHAN_VOICE);
 						zerk-=700*max(1,haszerked);
 						haszerked=0;
 						if(!random(0,4))aggravateddamage+=random(1,3);
@@ -204,7 +204,7 @@ extend class HDPlayerPawn{
 				if(!stimcount && !zerk && fatigue>=HDCONST_SPRINTFATIGUE){
 					fatigue+=20;
 					stunned+=400;
-					A_Pain();
+					A_StartSound(painsound,CHAN_VOICE);
 				}
 				if(!random(0,35))bloodpressure++;
 			}
@@ -357,7 +357,7 @@ extend class HDPlayerPawn{
 									&&ffffren.spawnhealth()<400
 								){
 									ffffren.bfriendly=true;
-									ffffren.A_Pain();
+									ffffren.A_StartSound(ffffren.painsound,CHAN_VOICE);
 									plantbit.spawnplants(ffffren,1,0);
 									regenblues-=2;
 									if(!random(0,3))break;
