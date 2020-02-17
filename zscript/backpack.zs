@@ -633,6 +633,7 @@ class HDBackpack:HDWeapon{
 		else if(justpressed(BT_ALTATTACK))invoker.UpdateMessage(invoker.index+1);
 		else if(pressingreload()&&countinv(invoker.invclasses[invoker.index])){
 			ttt=invoker.ItemToBackpack(findinventory(invoker.invclasses[invoker.index]));
+			if(ttt==1)setweaponstate("nope");
 		}else if(pressingunload()){
 			ttt=invoker.RemoveFromBackpack(invoker.index,true);
 		}else if(pressing(BT_ALTRELOAD)){
@@ -648,6 +649,7 @@ class HDBackpack:HDWeapon{
 			A_WeaponMessage(invoker.wepmsg,ttt+1);
 			A_SetTics(max(1,ttt));
 		}else A_SetTics(ttt);
+
 		A_WeaponReady(
 			WRF_NOFIRE|WRF_ALLOWUSER3
 			|((player.cmd.buttons&(BT_RELOAD|BT_UNLOAD|BT_USE))?WRF_DISABLESWITCH:0)
