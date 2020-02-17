@@ -197,7 +197,7 @@ class HDPlayerPawn:PlayerPawn{
 	}
 	states{
 	spawn:
-		PLAY A 4;
+		PLAY A 4 nodelay ApplyUserSkin();
 	spawn2:
 		#### E 5;
 		---- A 0 A_TakeInventory("IsMoving");
