@@ -389,7 +389,8 @@ class HDPistol:HDHandgun replaces Pistol{
 		---- A 1 offset(2,42);
 		---- A 1 offset(2,38);
 		---- A 1 offset(1,34);
-		goto chamber_manual;
+		---- A 0 A_JumpIf(!(invoker.weaponstatus[0]&PISF_JUSTUNLOAD),"chamber_manual");
+		goto nope;
 
 	user1:
 	altreload:
