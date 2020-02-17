@@ -302,6 +302,9 @@ class HDBackpack:HDWeapon{
 				}else if((HDSMG)(item)){
 					specicon=(wepstatus[SMGS_MAG].toint()<0)?"SMGNB0":"SMGNA0";
 				}
+			}else if(owner&&owner.findinventory(item.getclassname())){
+				let www=HDWeapon(owner.findinventory(item.getclassname()));
+				specicon=www.getpickupsprite();
 			}
 		}
 		if(specicon!="")ddi=texman.checkfortexture(specicon,texman.type_any);
