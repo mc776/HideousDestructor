@@ -526,7 +526,7 @@ extend class HDPlayerPawn{
 			if(beatmax>20)beatmax=max(beatmax-2,18);
 			A_SetBlend("00 00 00",0.8,40,"00 00 00");
 		}
-		#### G 3 A_Pain();
+		#### G 3 A_StartSound(painsound,CHAN_VOICE);
 		---- A 0 setstatelabel("spawn");
 	}
 }
