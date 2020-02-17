@@ -150,7 +150,10 @@ class GrabThinker:Thinker{
 					}
 				}
 
-				if(cvar.getcvar("hd_helptext",picktarget.player).getbool())picktarget.A_Log("No room in pockets.",true);
+				if(cvar.getcvar("hd_helptext",picktarget.player).getbool()){
+					picktarget.A_Log("No room in pockets.",true);
+					if(hdpt)hdpt.hasgrabbed=true;
+				}
 				destroy();
 				return;
 			}
