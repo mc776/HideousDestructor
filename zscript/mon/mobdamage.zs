@@ -340,6 +340,7 @@ extend class HDMobBase{
 		balwaystelefrag=true;
 		bpushable=false;
 		maxstepheight=deadheight*0.1;
+		shields=0;
 
 		if(!bgibbed)bshootable=!bnoshootablecorpse;
 		else bshootable=false;
