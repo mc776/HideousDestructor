@@ -1014,7 +1014,9 @@ When the active mag has run out, the Vulcanette will automatically cycle the nex
 
 Use the alternate reload key to load a cell. One cell will provide for about 2000 rounds' worth of shots.
 
-Protip: The Vulcanette is by far the most mechanically complicated weapon in the game. Overheating parts under undue stress and dirt may result in damage that cannot be field repaired even between maps.
+Protip: The Vulcanette is by far the most mechanically complicated weapon in the game. Overheating parts under undue stress and dirt may result in damage that cannot be field repaired.
+
+Some misaligned parts may be readjusted on the field with some effort. Hold Zoom and Unload to do this, which will empty your weapon first. Let go periodically to inspect your work.
 
 ### Rocket Launcher
 GZDoom actor name: `HDRL`

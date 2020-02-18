@@ -219,6 +219,7 @@ class Vulcanette:HDWeapon{
 		..WEPHELP_ALTRELOAD.."  Reload battery\n"
 		..WEPHELP_FIREMODE.."  Switch to "..(weaponstatus[0]&VULCF_FAST?"2100":"700").." RPM\n"
 		..WEPHELP_ZOOM.."+"..WEPHELP_FIREMODE.."+"..WEPHELP_UPDOWN.."  Zoom\n"
+		..WEPHELP_ZOOM.."+"..WEPHELP_UNLOAD.."  Repair\n"
 		..WEPHELP_MAGMANAGER
 		..WEPHELP_UNLOADUNLOAD
 		;
@@ -497,6 +498,14 @@ class Vulcanette:HDWeapon{
 		GTLG A 6 offset(9,41)A_StartSound("weapons/pocket",CHAN_WEAPON);
 		GTLG A 8 offset(12,43)A_StartSound("weapons/vulcopen1",CHAN_WEAPON,CHANF_OVERLAP);
 		GTLG A 5 offset(10,41)A_StartSound("weapons/vulcopen2",CHAN_WEAPON,CHANF_OVERLAP);
+		GTLG A 0 A_JumpIf(
+			!(invoker.weaponstatus[0]&(VULCF_CHAMBER1|VULCF_CHAMBER2|VULCF_CHAMBER3|VULCF_CHAMBER4|VULCF_CHAMBER5))
+			&&!(invoker.weaponstatus[0]&(VULCF_BROKEN1|VULCF_BROKEN2|VULCF_BROKEN3|VULCF_BROKEN4|VULCF_BROKEN5))
+			&&invoker.weaponstatus[VULCS_BATTERY]<0
+			&&invoker.weaponstatus[VULCS_MAGS]<1
+			&&pressingzoom()
+			,"openforrepair"
+		);
 		GTLG A 0{
 			if(invoker.weaponstatus[0]&VULCF_LOADCELL)setweaponstate("uncell");
 			else if(invoker.weaponstatus[0]&VULCF_JUSTUNLOAD)setweaponstate("unmag");
@@ -701,6 +710,65 @@ class Vulcanette:HDWeapon{
 	user3:
 		VULC A 0 A_MagManager("HD4mMag");
 		goto ready;
+
+
+	openforrepair:
+		GTLG A 0{
+			let bbb=invoker.weaponstatus[VULCS_BREAKCHANCE];
+			string msg="decent in there.";
+			if(bbb>400)msg="ready for scrap, to be honest.";
+			if(bbb>150)msg="pretty bad.";
+			if(bbb>40)msg="like it needs some repairs.";
+			else if(bbb>0)msg="like it could use a tune-up.";
+			A_Log("This Vulcanette looks "..msg,true);
+			A_WeaponBusy();
+		}
+	readytorepair:
+		GTLG A 1 offset(11,42){
+			if(
+				invoker.weaponstatus[VULCS_BREAKCHANCE]<1
+				||!pressingzoom()
+			){
+				setweaponstate("reloadend");
+				return;
+			}
+			if(
+				pressingfire()
+				||pressingunload()
+			){
+				if(
+					!random(0,63)
+					&&invoker.weaponstatus[VULCS_BREAKCHANCE]>0
+				){
+					invoker.weaponstatus[VULCS_BREAKCHANCE]--;
+					A_StartSound("weapons/vulcfix",CHAN_WEAPONBODY,CHANF_OVERLAP);
+				}else if(!random(0,95))invoker.weaponstatus[VULCS_PERMADAMAGE]++;
+				if(hd_debug)A_Log("Break chance: "..invoker.weaponstatus[VULCS_BREAKCHANCE],true);
+				switch(random(0,4)){
+				case 1:setweaponstate("tryfix1");break;
+				case 2:setweaponstate("tryfix2");break;
+				default:setweaponstate("tryfix0");break;
+				}
+			}
+		}wait;
+	tryfix0:
+		GTLG B 4 offset(10,43)A_StartSound("weapons/vulctryfix",CHAN_WEAPONBODY,CHANF_OVERLAP);
+		GTLG A 10 offset(11,42)A_MuzzleClimb(0.3,0.3,-0.3,-0.3,0.3,0.3,-0.3,-0.3);
+		goto readytorepair;
+	tryfix1:
+		GTLG B 0 A_MuzzleClimb(1,1,-1,-1,1,1,-1,-1);
+		GTLG B 2 offset(10,43)A_StartSound("weapons/vulcbelt",CHAN_WEAPONBODY,CHANF_OVERLAP);
+		GTLG AABBAABABABAABBAABBBAAAA 1 offset(11,44);
+		goto readytorepair;
+	tryfix2:
+		GTLG B 4 offset(11,43)A_MuzzleClimb(frandom(-1,1),frandom(-1,1),frandom(-1,1),frandom(-1,1),frandom(-1,1),frandom(-1,1),frandom(-1,1),frandom(-1,1));
+		GTLG B 10 offset(12,43)A_StartSound("weapons/vulctryfix2",CHAN_WEAPONBODY,CHANF_OVERLAP);
+		GTLG A 10 offset(13,45)A_MuzzleClimb(frandom(-1,1),frandom(-1,1),frandom(-1,1),frandom(-1,1),frandom(-1,1),frandom(-1,1),frandom(-1,1),frandom(-1,1));
+		GTLG B 15 offset(14,47)A_MuzzleClimb(frandom(-1,1),frandom(-1,1),frandom(-1,1),frandom(-1,1),frandom(-1,1),frandom(-1,1),frandom(-1,1),frandom(-1,1));
+		GTLG BA 3 offset(12,44)A_StartSound("weapons/vulctryfix2",CHAN_WEAPONBODY,CHANF_OVERLAP);
+		GTLG B 10 offset(12,43);
+		goto readytorepair;
+
 
 	spawn:
 		VULC A -1;
