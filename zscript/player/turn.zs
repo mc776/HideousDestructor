@@ -357,6 +357,7 @@ extend class HDPlayerPawn{
 		anglechange=deltaangle(angle,lastangle);
 		if(
 			!teleported
+			&&!incapacitated
 			&&player.onground
 			&&floorz==pos.z
 		){
