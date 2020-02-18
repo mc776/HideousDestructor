@@ -737,16 +737,18 @@ class Vulcanette:HDWeapon{
 				||pressingunload()
 			){
 				if(
-					!random(0,63)
+					!random(0,23)
 					&&invoker.weaponstatus[VULCS_BREAKCHANCE]>0
 				){
 					invoker.weaponstatus[VULCS_BREAKCHANCE]--;
 					A_StartSound("weapons/vulcfix",CHAN_WEAPONBODY,CHANF_OVERLAP);
+					VulcRepairMsg();
 				}else if(!random(0,95))invoker.weaponstatus[VULCS_PERMADAMAGE]++;
 				if(hd_debug)A_Log("Break chance: "..invoker.weaponstatus[VULCS_BREAKCHANCE],true);
 				switch(random(0,4)){
 				case 1:setweaponstate("tryfix1");break;
 				case 2:setweaponstate("tryfix2");break;
+				case 3:setweaponstate("tryfix3");break;
 				default:setweaponstate("tryfix0");break;
 				}
 			}
@@ -767,6 +769,18 @@ class Vulcanette:HDWeapon{
 		GTLG B 15 offset(14,47)A_MuzzleClimb(frandom(-1,1),frandom(-1,1),frandom(-1,1),frandom(-1,1),frandom(-1,1),frandom(-1,1),frandom(-1,1),frandom(-1,1));
 		GTLG BA 3 offset(12,44)A_StartSound("weapons/vulctryfix2",CHAN_WEAPONBODY,CHANF_OVERLAP);
 		GTLG B 10 offset(12,43);
+		goto readytorepair;
+	tryfix3:
+		GTLG B 0 A_MuzzleClimb(1,1,-1,-1,1,1,-1,-1);
+		GTLG B 1 offset(11,45);
+		GTLG B 1 offset(11,48)A_StartSound("weapons/vulctryfix1",CHAN_WEAPONBODY,CHANF_OVERLAP);
+		GTLG B 2 offset(12,54);
+		GTLG B 0 A_MuzzleClimb(1,1,-1,-1,1,1,-1,-1);
+		GTLG B 4 offset(15,58);
+		GTLG B 3 offset(14,56);
+		GTLG B 2 offset(12,52);
+		GTLG B 1 offset(11,50);
+		GTLG B 1 offset(10,48);
 		goto readytorepair;
 
 
@@ -915,6 +929,27 @@ class Vulcanette:HDWeapon{
 			)invoker.weaponstatus[0]|=VULCF_BROKEN5;
 			invoker.setmagcount(0,inmag-1);
 		}
+	}
+
+	action void VulcRepairMsg(){
+		static const string vordinals[]={"first","second","third","fourth","fifth"};
+		static const string vverbs[]={"remove some","buff out","realign","secure","grease","grab a spare part to replace","suspect a problem with","forcibly un-warp","reassemble"};
+		static const string vdebris[]={"debris","grease","dust","steel filings","powder","blood","pus","hair","dead insects","blueberry jam","cheese puff powder","tiny Bosses"};
+		static const string vpart[]={"crank shaft","main gear","magazine feeder","mag scanner head","barrel shroud","cylinder","cylinder feed port","motor power feed","CPU auxiliary power turbine","misfire ejector lug"};
+		static const string vpart2[]={"barrel feed port","chamber","extractor","extruder","barrel feed port seal","barrel","transfer gear","firing pin","safety scanner"};
+
+		string msg="You ";
+		if(!random(0,3))msg=msg.."attempt to ";
+		int which=random(0,vverbs.size()-1);
+		msg=msg..vverbs[which].." ";
+		if(!which)msg=msg..vdebris[abs(random(1,vdebris.size())-random(1,vdebris.size()))].." from ";
+		msg=msg.."the ";
+
+		which=random(0,vpart.size());
+		if(which==vpart.size())msg=msg..vordinals[random(0,4)].." "..vpart2[random(0,vpart2.size()-1)];
+		else msg=msg..vpart[which];
+
+		A_Log(msg..".",true);
 	}
 }
 
