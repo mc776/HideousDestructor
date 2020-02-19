@@ -16,7 +16,7 @@ class HDArmour:HDMagAmmo{
 		hdmagammo.magbulk ENC_GARRISONARMOUR;
 		tag "armour";
 		inventory.icon "ARMSB0";
-		inventory.pickupmessage "Picked up the security armour.";
+		inventory.pickupmessage "Picked up the garrison armour.";
 	}
 	bool mega;
 	int cooldown;
@@ -77,7 +77,7 @@ class HDArmour:HDMagAmmo{
 		invoker.mags.delete(0);
 
 		if(helptext){
-			string blah=string.format("You put on the %s armour. ",worn.mega?"combat":"security");
+			string blah=string.format("You put on the %s armour. ",worn.mega?"battle":"garrison");
 			double qual=double(worn.durability)/(worn.mega?HDCONST_BATTLEARMOUR:HDCONST_GARRISONARMOUR);
 			if(qual<0.1)A_Log(blah.."Just don't get hit.",true);
 			else if(qual<0.3)A_Log(blah.."You cover your shameful nakedness with your filthy rags.",true);
