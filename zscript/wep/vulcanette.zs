@@ -717,8 +717,8 @@ class Vulcanette:HDWeapon{
 			let bbb=invoker.weaponstatus[VULCS_BREAKCHANCE];
 			string msg="decent in there.";
 			if(bbb>400)msg="ready for scrap, to be honest.";
-			if(bbb>150)msg="pretty bad.";
-			if(bbb>40)msg="like it needs some repairs.";
+			else if(bbb>150)msg="pretty bad.";
+			else if(bbb>40)msg="like it needs some repairs.";
 			else if(bbb>0)msg="like it could use a tune-up.";
 			A_Log("This Vulcanette looks "..msg,true);
 			A_WeaponBusy();
