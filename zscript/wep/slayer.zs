@@ -7,6 +7,7 @@ class Slayer:HDShotgun replaces HDShotgun{
 		//$Title "Slayer"
 		//$Sprite "SLAYA0"
 
+		+hdweapon.fitsinbackpack
 		weapon.selectionorder 30;
 		weapon.slotnumber 3;
 		weapon.slotpriority 2;
