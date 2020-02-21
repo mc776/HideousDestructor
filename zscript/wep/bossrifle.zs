@@ -630,7 +630,7 @@ class BossRifle:HDWeapon{
 			if(random(0,20))weaponstatus[0]&=~BOSSF_CUSTOMCHAMBER;
 				else weaponstatus[0]|=BOSSF_CUSTOMCHAMBER;
 			weaponstatus[BOSSS_ZOOM]=20;
-			weaponstatus[BOSSS_DROPADJUST]=113;
+			weaponstatus[BOSSS_DROPADJUST]=160;
 		}
 	}
 	override void loadoutconfigure(string input){
