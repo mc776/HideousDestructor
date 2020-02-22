@@ -255,7 +255,6 @@ class HDPlayerPawn:PlayerPawn{
 	transient cvar hd_maglimit;
 	transient cvar hd_skin;
 	transient cvar hd_give;
-	transient cvar hd_myloadout;
 	transient cvar neverswitchonpickup;
 	void cachecvars(){
 		playerinfo plr;
@@ -279,7 +278,6 @@ class HDPlayerPawn:PlayerPawn{
 		hd_maglimit=cvar.getcvar("hd_maglimit",plr);
 		hd_skin=cvar.getcvar("hd_skin",plr);
 		hd_give=cvar.getcvar("hd_give",plr);
-		hd_myloadout=cvar.getcvar("hd_myloadout",plr);
 		neverswitchonpickup=cvar.getcvar("neverswitchonpickup",plr);
 	}
 	override void Tick(){

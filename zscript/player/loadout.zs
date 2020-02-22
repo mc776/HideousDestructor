@@ -316,7 +316,7 @@ extend class HDPlayerPawn{
 			loadinput=hd_forceloadout;
 			A_Log("Loadout settings forced by administrator:  "..hd_forceloadout,true);
 		}else{
-			string myloadout=hd_myloadout.getstring();
+			string myloadout=cvar.getcvar("hd_myloadout",player).getstring();
 			if(
 			myloadout!=""
 			&&myloadout!="0"
