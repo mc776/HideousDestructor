@@ -134,7 +134,7 @@ The standard soldier kit "sol" provides garrison armour, a pistol, 3 frags, a DE
 Some shortcuts:
 * "doomguy": Fully tac-loaded pistol with 2 extra mags and 4 loose rounds (total 50 shots)
 * "insurgent": Weighted randomization.
-* "hd_loadout*": Only relevant for hd_forceloadout, this forces everyone to use whatever they've set for the loadout number placed where the star is.
+* "hd_loadout*": Only relevant for hd_my/forceloadout, this forces everyone to use whatever they've set for the loadout number placed where the star is.
 
 ### Customizing your weapons
 
@@ -377,6 +377,8 @@ Logs the distance of the object or map geometry you're pointing at.
 * `hd_clearscv`: Resets all archived host options to their defaults.
 
 ### CVars (user-based)
+
+* `hd_myloadout` (""): Like `hd_forceloadout` but only for yourself. If this has been set, set this to "", "false", "0" or "none" to use your regularly chosen loadout. Set this to anything else and it becomes your loadout.
 
 * `hd_helptext` (true): Some events generate text messages on your screen that remind you of certain non-obvious events. By setting this cvar to zero, you turn those reminders off. At your own risk.
 

@@ -311,9 +311,22 @@ extend class HDPlayerPawn{
 			&&hd_forceloadout!="0"
 			&&hd_forceloadout!="false"
 			&&hd_forceloadout!="none"
+			&&hd_forceloadout!="''"
 		){
 			loadinput=hd_forceloadout;
 			A_Log("Loadout settings forced by administrator:  "..hd_forceloadout,true);
+		}else{
+			string myloadout=hd_myloadout.getstring();
+			if(
+			myloadout!=""
+			&&myloadout!="0"
+			&&myloadout!="false"
+			&&myloadout!="none"
+			&&myloadout!="''"
+			){
+				loadinput=myloadout;
+				A_Log("Temporary loadout set through myloadout:  "..myloadout,true);
+			}
 		}
 		if(loadinput.left(3)~=="hd_"){
 			loadinput=cvar.getcvar(loadinput,player).getstring();

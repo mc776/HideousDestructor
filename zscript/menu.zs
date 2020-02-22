@@ -132,6 +132,7 @@ class HDLoadoutMenu:GenericMenu{
 			if(different)savechanges();
 			else{
 				cvar.findcvar("playerclass").setstring("Loadout "..cursy);
+				cvar.findcvar("hd_myloadout").setstring("");
 				statustext("\cxLoadout set to number "..cursy..".");
 			}
 			break;
