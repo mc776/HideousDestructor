@@ -158,6 +158,10 @@ class DERPBot:HDUPK{
 				movestamina=0;
 			}
 		}else goalangle=999;
+		if(moved&&stuckline){
+			setstatelabel("unstucknow");
+			return;
+		}
 		if(goalangle!=999)setstatelabel("Turn");
 	}
 	void A_DerpTurn(){
