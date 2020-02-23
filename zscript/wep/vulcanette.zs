@@ -933,7 +933,7 @@ class Vulcanette:HDWeapon{
 
 	action void VulcRepairMsg(){
 		static const string vordinals[]={"first","second","third","fourth","fifth"};
-		static const string vverbs[]={"remove some","buff out","realign","secure","grease","grab a spare part to replace","suspect a problem with","forcibly un-warp","reassemble"};
+		static const string vverbs[]={"remove some","buff out","realign","secure","grease","grab a spare part to replace","fiddle around and eventually suspect a problem with","forcibly un-warp","reassemble"};
 		static const string vdebris[]={"debris","grease","dust","steel filings","powder","blood","pus","hair","dead insects","blueberry jam","cheese puff powder","tiny Bosses"};
 		static const string vpart[]={"crank shaft","main gear","magazine feeder","mag scanner head","barrel shroud","cylinder","cylinder feed port","motor power feed","CPU auxiliary power turbine","misfire ejector lug"};
 		static const string vpart2[]={"barrel feed port","chamber","extractor","extruder","barrel feed port seal","barrel","transfer gear","firing pin","safety scanner"};
