@@ -627,7 +627,7 @@ class BossRifle:HDWeapon{
 		if(!owner){
 			if(randompick(0,0,1))weaponstatus[0]&=~BOSSF_FRONTRETICLE;
 				else weaponstatus[0]|=BOSSF_FRONTRETICLE;
-			if(random(0,20))weaponstatus[0]&=~BOSSF_CUSTOMCHAMBER;
+			if(random(0,3))weaponstatus[0]&=~BOSSF_CUSTOMCHAMBER;
 				else weaponstatus[0]|=BOSSF_CUSTOMCHAMBER;
 			weaponstatus[BOSSS_ZOOM]=20;
 			weaponstatus[BOSSS_DROPADJUST]=160;
