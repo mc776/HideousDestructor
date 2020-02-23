@@ -299,9 +299,9 @@ class BossRifle:HDWeapon{
 	altholdend:
 		BARG E 0 A_StartSound("weapons/boltfwd",8);
 		BARG DC 2 A_WeaponReady(WRF_NOFIRE);
-		BARG B 1 offset(2,36){
+		BARG B 3 offset(2,36){
 			A_WeaponReady(WRF_NOFIRE);
-			A_SetTics((invoker.weaponstatus[0]&BOSSF_CUSTOMCHAMBER)?1:3);
+			if(invoker.weaponstatus[0]&BOSSF_CUSTOMCHAMBER)A_SetTics(1);
 		}
 		goto ready;
 	loadchamber:
