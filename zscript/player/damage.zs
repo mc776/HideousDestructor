@@ -201,12 +201,12 @@ extend class HDPlayerPawn{
 				}
 
 				if(level.time&(1|2))return -1;
-				damage>>=2;
-
-				if(!(flags&DMG_FORCED))damage=min(damage,health-1);
-				if(!random(0,health)){
-					beatcap--;
-					if(!(level.time%4))bloodpressure--;
+				if(bloodloss<HDCONST_MAXBLOODLOSS){
+					if(!(flags&DMG_FORCED))damage=clamp(damage>>2,1,health-1);
+					if(!random(0,health)){
+						beatcap--;
+						if(!(level.time%4))bloodpressure--;
+					}
 				}
 				if(damage<health)source=null;
 			}
