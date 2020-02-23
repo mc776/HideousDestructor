@@ -1291,7 +1291,7 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 		//inflict wound
 		if(target&&hitactor.isteammate(target))channelwidth*=teamdamage;
 		if(channelwidth>0)hdbleedingwound.inflict(
-			hitactor,int(pen),int(channelwidth),(flags&BLAF_SUCKINGWOUND)
+			hitactor,int(pen),int(channelwidth),(flags&BLAF_SUCKINGWOUND),source:target
 		);
 
 		//evaluate cns hit/critical and apply damage

@@ -424,6 +424,7 @@ extend class HDHandlers{
 class HDBleedingWound:Thinker{
 	bool hitvital;
 	actor bleeder;
+	actor source;
 	int bleedrate;
 	int bleedpoints;
 	int ticker;
@@ -461,14 +462,15 @@ class HDBleedingWound:Thinker{
 				blood.bmissilemore=true; //used to avoid converting to shield
 			}
 		}while(bleeds>0);
-		int bled=bleeder.damagemobj(bleeder,null,bleedrate,"bleedout",DMG_NO_PAIN|DMG_THRUSTLESS);
+		int bled=bleeder.damagemobj(bleeder,source,bleedrate,"bleedout",DMG_NO_PAIN|DMG_THRUSTLESS);
 		if(bleeder&&bleeder.health<1&&bleedrate<random(10,60))bleeder.deathsound="";
 	}
 	static void inflict(
 		actor bleeder,
 		int bleedpoints,
 		int bleedrate=17,
-		bool hitvital=false
+		bool hitvital=false,
+		actor source=null
 	){
 		if(
 			hd_nobleed
@@ -497,6 +499,7 @@ class HDBleedingWound:Thinker{
 		wwnd.bleeder=bleeder;
 		wwnd.ticker=0;
 		wwnd.bleedrate=bleedrate;
+		wwnd.source=source;
 		if(hitvital)wwnd.bleedpoints=-1;
 		else wwnd.bleedpoints=bleedpoints;
 	}
