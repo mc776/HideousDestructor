@@ -569,7 +569,7 @@ class HDBulletActor:HDActor{
 				realpos+=vel;
 				ApplyDeceleration();
 				ApplyGravity();
-				return;
+				newpos=bres.hitpos; //used to spawn crackers later
 			}else if(bres.hittype==TRACE_HitNone){
 				newpos=bres.hitpos;
 				realpos=newpos;
@@ -683,7 +683,7 @@ class HDBulletActor:HDActor{
 					cracker="SubsonicTrail";
 				}
 				if(cracker!=""){
-					vector3 crackpos=realpos;
+					vector3 crackpos=newpos;
 					vector3 crackinterval=vu*BULLET_CRACKINTERVAL;
 					int j=int(max(1,bres.distance*(1./BULLET_CRACKINTERVAL)));
 					for(int i=0;i<j;i++){
@@ -700,8 +700,9 @@ class HDBulletActor:HDActor{
 						bool gotplayer=false;
 						for(int k=0;!gotplayer && k<MAXPLAYERS;k++){
 							if(playeringame[k] && players[k].mo){
+								vector3 vvv=players[k].mo.pos-crackpos;  //vec3offset is wrong; portals don't work
 								if(
-									distance3d(players[k].mo)<256
+									(vvv dot vvv)<(256*256)
 								){
 									gotplayer=true;
 									spawn(cracker,crackpos,ALLOW_REPLACE);
