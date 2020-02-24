@@ -687,7 +687,7 @@ class HDBulletActor:HDActor{
 					vector3 crackinterval=vu*BULLET_CRACKINTERVAL;
 					int j=int(max(1,bres.distance*(1./BULLET_CRACKINTERVAL)));
 					for(int i=0;i<j;i++){
-						crackpos+=crackinterval*i;
+						crackpos-=crackinterval;
 						if(hd_debug>1)A_SpawnParticle("yellow",SPF_RELVEL|SPF_RELANG,
 							size:12,
 							xoff:crackpos.x-pos.x,
