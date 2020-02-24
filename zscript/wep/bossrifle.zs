@@ -461,6 +461,12 @@ class BossRifle:HDWeapon{
 		BARG E 0 A_Refire("althold");
 		goto altholdend;
 	reload:
+		---- A 0{invoker.weaponstatus[0]&=~BOSSF_DONTUSECLIPS;}
+		goto reloadstart;
+	altreload:
+		---- A 0{invoker.weaponstatus[0]|=BOSSF_DONTUSECLIPS;}
+		goto reloadstart;
+	reloadstart:
 		BARG A 1 offset(0,34);
 		BARG A 1 offset(2,36);
 		BARG A 1 offset(4,40);
@@ -475,9 +481,12 @@ class BossRifle:HDWeapon{
 		BARG A 0{
 			int mg=invoker.weaponstatus[BOSSS_MAG];
 			if(mg==10)setweaponstate("reloaddone");
+			else if(invoker.weaponstatus[0]&BOSSF_DONTUSECLIPS)setweaponstate("loadhand");
 			else if(
-				!countinv("SevenMilAmmo")
-				&&!HDMagAmmo.NothingLoaded(self,"HD7mClip")
+				(
+					mg<1
+					||!countinv("SevenMilAmmo")
+				)&&!HDMagAmmo.NothingLoaded(self,"HD7mClip")
 			)setweaponstate("loadclip");
 		}
 	loadhand:
@@ -518,9 +527,7 @@ class BossRifle:HDWeapon{
 		}goto loadhandloop;
 	loadclip:
 		BARG A 0 A_JumpIf(invoker.weaponstatus[BOSSS_MAG]>9,"reloaddone");
-		BARG A 0 A_JumpIf(invoker.weaponstatus[BOSSS_MAG]<1,"loadwholeclip");
 		BARG A 3 offset(16,50){
-			A_StartSound("weapons/rifleclick2",CHAN_WEAPONBODY);
 			let ccc=hdmagammo(findinventory("HD7mClip"));
 			if(ccc){
 				//find the last mag that has anything in it and load from that
@@ -535,6 +542,18 @@ class BossRifle:HDWeapon{
 					setweaponstate("reloaddone");
 					return;
 				}
+
+				//load the whole clip at once if possible
+				if(
+					ccc.mags[magindex]>=10
+					&&invoker.weaponstatus[BOSSS_MAG]<1
+				){
+					setweaponstate("loadwholeclip");
+					return;
+				}
+
+				//strip one round and load it
+				A_StartSound("weapons/rifleclick2",CHAN_WEAPONBODY);
 				invoker.weaponstatus[BOSSS_MAG]++;
 				ccc.mags[magindex]--;
 			}
@@ -656,6 +675,7 @@ enum bossstatus{
 	BOSSF_FRONTRETICLE=1,
 	BOSSF_CUSTOMCHAMBER=2,
 	BOSSF_UNLOADONLY=4,
+	BOSSF_DONTUSECLIPS=8,
 
 	BOSSS_CHAMBER=1, //0=nothing, 1=brass, 2=loaded, 3/4=jammed brass/round
 	BOSSS_MAG=2,
