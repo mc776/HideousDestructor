@@ -1183,7 +1183,7 @@ The Mk. IV Boss rifle is a deadly accurate weapon. Its long barrel, tighter rein
 
 Instructions: Point, shoot, hope it dies. Altfire works the bolt, similar to the Hunter's pump. DO NOT SHORT STROKE.
 
-Clip reload is only available to fill the entire mag, for reasons.
+Hit alternate reload to insist on using only loose rounds to reload; reload will prioritize clips first.
 
 Hit the user3 button to load and unload clips.
 
