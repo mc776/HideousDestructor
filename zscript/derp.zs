@@ -623,7 +623,7 @@ class DERPUsable:HDWeapon{
 		TNT1 A 0 A_JumpIf(!pressingfire(),"ready");
 		TNT1 A 4 A_StartSound("weapons/pismagclick",CHAN_WEAPON);
 		TNT1 A 2 A_StartSound("derp/crawl",CHAN_WEAPON,CHANF_OVERLAP);
-		TNT1 A 0{
+		TNT1 A 1{
 			if(invoker.weaponstatus[0]&DERPF_BROKEN){
 				setweaponstate("readytorepair");
 				return;
@@ -631,16 +631,11 @@ class DERPUsable:HDWeapon{
 
 			//stick it to a door
 			if(pressingzoom()){
+				let slf=self;
 				int cid=countinv("DERPUsable");
 				let hhh=hdhandlers(eventhandler.find("hdhandlers"));
 				hhh.SetDERP(hdplayerpawn(self),555,invoker.weaponstatus[DERPS_BOTID],0);
-				if(cid==countinv("DERPUsable")){
-					setweaponstate("nope");
-					return;
-				}else{
-					A_SelectWeapon("HDFist");
-					return;
-				}
+				return;
 			}
 
 			actor a;int b;
@@ -815,7 +810,6 @@ extend class HDHandlers{
 				return;
 			}
 			ddd.botid=tag?abs(tag):dpu.weaponstatus[DERPS_BOTID];
-			ppp.A_TakeInventory("DERPUsable",1);
 			ddd.A_StartSound("misc/bulletflesh",CHAN_BODY,CHANF_OVERLAP);
 			ddd.stuckline=dlt.hitline;
 			ddd.bnogravity=true;
@@ -845,6 +839,8 @@ extend class HDHandlers{
 				}
 			}
 			DERPController.GiveController(ppp);
+			ppp.dropinventory(dpu);
+			dpu.destroy();
 			return;
 		}
 		actoriterator it=level.createactoriterator(DERP_TID,"DERPBot");
