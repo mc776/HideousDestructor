@@ -582,11 +582,6 @@ class DERPUsable:HDWeapon{
 		goto super::select;
 	ready:
 		TNT1 A 1{
-			if(!countinv("DERPUsable")){
-				A_SelectWeapon("HDFist");
-				A_WeaponReady(WRF_NOFIRE);
-				return;
-			}
 			if(pressinguser3()){
 				A_MagManager("HD9mMag15");
 				return;
@@ -631,7 +626,6 @@ class DERPUsable:HDWeapon{
 
 			//stick it to a door
 			if(pressingzoom()){
-				let slf=self;
 				int cid=countinv("DERPUsable");
 				let hhh=hdhandlers(eventhandler.find("hdhandlers"));
 				hhh.SetDERP(hdplayerpawn(self),555,invoker.weaponstatus[DERPS_BOTID],0);
