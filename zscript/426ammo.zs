@@ -132,9 +132,9 @@ class HD4mMag:HDMagAmmo{
 			}
 		}
 		int totake=min(random(1,24),mags[mindex]);
-		if(totake<HDPickup.MaxGive(owner,"FourMilAmmo",roundbulk))HDF.Give(owner,roundtype,totake);
+		if(totake<HDPickup.MaxGive(owner,roundtype,roundbulk))HDF.Give(owner,roundtype,totake);
 		else{
-			let mmm=FourMilAmmo(owner.spawn("FourMilAmmo",(owner.pos.xy,owner.pos.z+owner.height-12),ALLOW_REPLACE));
+			let mmm=FourMilAmmo(owner.spawn(roundtype,(owner.pos.xy,owner.pos.z+owner.height-12),ALLOW_REPLACE));
 			mmm.angle=owner.angle;
 			mmm.A_ChangeVelocity(2,0,-1,CVF_RELATIVE);
 			mmm.vel+=owner.vel;
