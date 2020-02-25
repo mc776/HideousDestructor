@@ -118,7 +118,7 @@ class HD4mMag:HDMagAmmo{
 			||mags[mindex]<1
 			||owner.A_JumpIfInventory(roundtype,0,"null")
 		)return false;
-		if(mags[mindex]>=51){
+		if(mags[mindex]==51){
 			if(sealtimer<1){
 				owner.A_Log(string.format("%s\nDo you really want to do that?",HDCONST_426MAGMSG),true);
 				sealtimer=10;
@@ -131,10 +131,15 @@ class HD4mMag:HDMagAmmo{
 				return false;
 			}
 		}
-		int totake=min(random(1,24),mags[mindex],
-			HDPickup.MaxGive(owner,"FourMilAmmo",roundbulk)
-		);
-		HDF.Give(owner,roundtype,totake);
+		int totake=min(random(1,24),mags[mindex]);
+		if(totake<HDPickup.MaxGive(owner,"FourMilAmmo",roundbulk))HDF.Give(owner,roundtype,totake);
+		else{
+			let mmm=FourMilAmmo(owner.spawn("FourMilAmmo",(owner.pos.xy,owner.pos.z+owner.height-12),ALLOW_REPLACE));
+			mmm.angle=owner.angle;
+			mmm.A_ChangeVelocity(2,0,-1,CVF_RELATIVE);
+			mmm.vel+=owner.vel;
+			mmm.amount=totake;
+		}
 		owner.A_StartSound("weapons/rifleclick2",CHAN_WEAPON);
 		owner.A_StartSound("weapons/rockreload",CHAN_WEAPON,CHANF_OVERLAP,0.4);
 		mags[mindex]-=totake;
