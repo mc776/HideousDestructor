@@ -802,7 +802,7 @@ class HERPUsable:HDWeapon{
 		A_GiveInventory("HERPController");
 		HERPController(findinventory("HERPController")).UpdateHerps(false);
 		dropinventory(invoker);
-		invoker.goawayanddie();
+		invoker.destroy();
 		return;
 	}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
