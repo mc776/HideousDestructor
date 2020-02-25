@@ -60,7 +60,7 @@ class HD4mMag:HDMagAmmo{
 		//$Title "4.26mm UAC Standard Mag"
 		//$Sprite "CLIPB0"
 
-		hdmagammo.maxperunit 51;
+		hdmagammo.maxperunit 51;  //NOTE: *only* the guns do the "+100 for dirty mag" thing
 		hdmagammo.roundtype "FourMilAmmo";
 		hdmagammo.roundbulk ENC_426_LOADED;
 		hdmagammo.magbulk ENC_426MAG_EMPTY;
@@ -165,12 +165,12 @@ class HD4mMag:HDMagAmmo{
 		if(amount<2)return;
 		int totalrounds=0;
 		for(int i=0;i<amount;i++){
-			if(mags[i]>=50)continue;
-			totalrounds+=mags[i];
+			if(mags[i]==51)continue;
+			totalrounds+=mags[i]%50;
 			mags[i]=0; //keep the empties, do NOT call clear()!
 		}
 		for(int i=0;i<amount;i++){
-			if(mags[i]>=50)continue;
+			if(mags[i]==51)continue;
 			int toinsert=int(min(50,totalrounds)*frandom(0.9,1.));
 			mags[i]=toinsert;
 			totalrounds-=toinsert;
@@ -180,7 +180,9 @@ class HD4mMag:HDMagAmmo{
 	states(actor){
 	spawn:
 		ZMAG AB -1 nodelay{
-			if(mags[0]<51)frame=1;
+			int mmm=mags[0];
+			if(mmm>51)mags[0]=mmm%50;
+			if(mmm<51)frame=1;
 		}stop;
 	spawnempty:
 		ZMAG C -1{

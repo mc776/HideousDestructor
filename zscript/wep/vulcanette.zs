@@ -606,10 +606,12 @@ class Vulcanette:HDWeapon{
 				!PressingUnload()
 				&&!PressingReload()
 			){
-				HDMagAmmo.SpawnMag(self,"HD4mMag",mg-1);
+				if(mg==52)HDMagAmmo.SpawnMag(self,"HD4mMag",51);
+				else HDMagAmmo.SpawnMag(self,"HD4mMag",(mg-1)%50);
 				setweaponstate("mag1out");
 			}else{
-				HDMagAmmo.GiveMag(self,"HD4mMag",mg-1);
+				if(mg==52)HDMagAmmo.GiveMag(self,"HD4mMag",51);
+				else HDMagAmmo.GiveMag(self,"HD4mMag",(mg-1)%50);
 				setweaponstate("pocketmag");
 			}
 		}goto mag1out;
@@ -625,10 +627,12 @@ class Vulcanette:HDWeapon{
 				!PressingUnload()
 				&&!PressingReload()
 			){
-				HDMagAmmo.SpawnMag(self,"HD4mMag",mg-1);
+				if(mg==52)HDMagAmmo.SpawnMag(self,"HD4mMag",51);
+				else HDMagAmmo.SpawnMag(self,"HD4mMag",(mg-1)%50);
 				setweaponstate("mag1out"); //this really is mag1 not mag0
 			}else{
-				HDMagAmmo.GiveMag(self,"HD4mMag",mg-1);
+				if(mg==52)HDMagAmmo.GiveMag(self,"HD4mMag",51);
+				else HDMagAmmo.GiveMag(self,"HD4mMag",(mg-1)%50);
 				setweaponstate("pocketmag");
 			}
 		}goto reloadend;
