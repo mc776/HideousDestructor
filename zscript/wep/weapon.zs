@@ -1151,7 +1151,9 @@ extend class HDWeapon{
 	}
 }
 enum HDWepConsts{
+	HDWEP_FLAGS=0,
 	HDWEP_STATUSSLOTS=32,
+	HDWEP_MODFLAGS=HDWEP_STATUSSLOTS-1,
 }
 
 
