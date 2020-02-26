@@ -906,6 +906,7 @@ class HDBulletActor:HDActor{
 			if(dopenetrate){
 				//warp forwards to that distance
 				setorigin(pendest,true);
+				realpos=pendest;
 
 				//do a REGULAR ACTOR linetrace
 				angle-=180;pitch=-pitch;
@@ -926,8 +927,8 @@ class HDBulletActor:HDActor{
 
 				if(penlt.hittype==TRACE_HitActor){
 					//if it hits an actor, affect that actor
-					traceactors.push(penlt.hitactor);
 					onhitactor(penlt.hitactor,penlt.hitlocation,vu);
+					if(penlt.hitactor)traceactors.push(penlt.hitactor);
 				}
 
 				//reduce momentum, increase tumbling, etc.
