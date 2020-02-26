@@ -222,7 +222,7 @@ class Vulcanette:HDWeapon{
 		..WEPHELP_ZOOM.."+"..WEPHELP_UNLOAD.."  Repair\n"
 		..WEPHELP_MAGMANAGER
 		..WEPHELP_UNLOADUNLOAD
-		..WEPHELP_USE.."+"..WEPHELP_UNLOAD.."  Unload battery\n"
+		..WEPHELP_USE.."+"..WEPHELP_UNLOAD.."  or  "..WEPHELP_USE.."+"..WEPHELP_ALTRELOAD.."  Unload battery\n"
 		;
 	}
 	override void DrawSightPicture(
