@@ -19,16 +19,19 @@ class HDBattery:HDMagAmmo{
 		scale 0.4;
 	}
 	enum BatteryChargeModes{
-		BATT_DONTCHARGE=0,
-		BATT_CHARGEMAX=1,
-		BATT_CHARGETOP=2,
+		BATT_UNDEFINED=0,
+		BATT_DONTCHARGE=1,
+		BATT_CHARGEMAX=2,
+		BATT_CHARGETOP=3,
+		BATT_CHARGEDEFAULT=BATT_CHARGETOP;
 	}
 	int ticker;
 	int lastamount;
 	int chargemode;
 	override void doeffect(){
 		//testingdoeffect();return;
-		if(!chargemode){
+		if(chargemode==BATT_UNDEFINED)chargemode=BATT_CHARGEDEFAULT;
+		if(chargemode==BATT_DONTCHARGE){
 			super.doeffect();
 			return;
 		}
@@ -45,7 +48,7 @@ class HDBattery:HDMagAmmo{
 	override bool Extract(){return false;}
 	override bool Insert(){
 		chargemode++;
-		if(chargemode>BATT_CHARGETOP)chargemode=0;
+		if(chargemode>BATT_CHARGETOP)chargemode=BATT_DONTCHARGE;
 		return false;
 	}
 	bool BFGChargeable(){
