@@ -100,7 +100,8 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 				wp=hdweapon(spawn("ZM66AssaultRifle",(pos.x,pos.y,pos.z+40),ALLOW_REPLACE));
 				wp.weaponstatus[0]=
 					ZM66F_NOLAUNCHER|(randompick(0,1,1,1,1)*ZM66F_CHAMBER);
-				wp.weaponstatus[ZM66S_MAG]=gunloaded;
+				if(gunloaded>=50)wp.weaponstatus[ZM66S_MAG]=51;
+				else wp.weaponstatus[ZM66S_MAG]=gunloaded;
 				wp.weaponstatus[ZM66S_AUTO]=2;
 				wp.weaponstatus[ZM66S_ZOOM]=random(16,70);
 				if(jammed||!random(0,7))wp.weaponstatus[0]|=ZM66F_CHAMBERBROKEN;
