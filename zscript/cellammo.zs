@@ -22,8 +22,8 @@ class HDBattery:HDMagAmmo{
 		BATT_UNDEFINED=0,
 		BATT_DONTCHARGE=1,
 		BATT_CHARGEMAX=2,
-		BATT_CHARGETOP=3,
-		BATT_CHARGEDEFAULT=BATT_CHARGETOP,
+		BATT_CHARGESELECTED=3,
+		BATT_CHARGEDEFAULT=BATT_CHARGEMAX,
 	}
 	int ticker;
 	int lastamount;
@@ -40,7 +40,7 @@ class HDBattery:HDMagAmmo{
 			lastamount=amount;
 		}else if(ticker>350){
 			ticker=0;
-			ChargeBattery(1,chargemode==BATT_CHARGETOP);
+			ChargeBattery(1,chargemode==BATT_CHARGESELECTED);
 		}else ticker++;
 		super.doeffect();
 	}
@@ -48,7 +48,7 @@ class HDBattery:HDMagAmmo{
 	override bool Extract(){return false;}
 	override bool Insert(){
 		chargemode++;
-		if(chargemode>BATT_CHARGETOP)chargemode=BATT_DONTCHARGE;
+		if(chargemode>BATT_CHARGESELECTED)chargemode=BATT_DONTCHARGE;
 		return false;
 	}
 	bool BFGChargeable(){
@@ -120,7 +120,7 @@ class HDBattery:HDMagAmmo{
 			||biggestamt>=20
 			||biggestindex==smallestindex
 		){
-			if(chargemode==BATT_CHARGETOP){
+			if(chargemode==BATT_CHARGESELECTED){
 				if(biggestamt>=20){
 					owner.A_Log("Battery configuration error: full battery selected. Rerouting.");
 				}else if(
@@ -165,7 +165,7 @@ class HDBattery:HDMagAmmo{
 		let battt=chargemode;
 		string batts="uNone";
 		if(battt==hdbattery.BATT_CHARGEMAX)batts="eAuto";
-		else if(battt==hdbattery.BATT_CHARGETOP)batts="ySelected";
+		else if(battt==hdbattery.BATT_CHARGESELECTED)batts="ySelected";
 		sb.drawstrings(
 			sb.pSmallFont,string.format("%s\c%s%s",helptext?"Charging: ":"",batts,helptext?"\n(\cqReload\cu to cycle)":""),
 			(offx+2,offy),sb.DI_SCREEN_CENTER|sb.DI_TEXT_ALIGN_LEFT
