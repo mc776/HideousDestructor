@@ -241,10 +241,10 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 				dropped=hdweapon(spawn("ZM66AssaultRifle",pos,ALLOW_REPLACE));
 				if(gunloaded){
 					dropped.weaponstatus[ZM66S_MAG]=gunloaded-1;
-					dropped.weaponstatus[0]=ZM66F_CHAMBER;
+					dropped.weaponstatus[0]|=ZM66F_CHAMBER;
 				}else{
 					dropped.weaponstatus[ZM66S_MAG]=0;
-					dropped.weaponstatus[0]=0;
+					dropped.weaponstatus[0]&=~ZM66F_CHAMBER;
 				}
 				if(jammed||!random(0,15))dropped.weaponstatus[0]|=ZM66F_CHAMBERBROKEN;
 				if(glloaded)dropped.weaponstatus[0]|=ZM66F_GRENADELOADED;
