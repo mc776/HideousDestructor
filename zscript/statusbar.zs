@@ -901,7 +901,7 @@ class HDStatusBar:DoomStatusBar{
 		if(bttc&&bttc.mags.size()>0){
 			if(bttc.chargemode){
 				if(bttc.chargemode==HDBattery.BATT_CHARGEMAX)drawimage("CELPA0",(posx+2,posy+6),flags:flags,scale:(0.3,0.3));
-				else if(bttc.chargemode==HDBattery.BATT_CHARGETOP)drawimage("CELPA0",(posx,posy+4),flags:flags,scale:(0.3,0.3));
+				else if(bttc.chargemode==HDBattery.BATT_CHARGESELECTED)drawimage("CELPA0",(posx,posy+4),flags:flags,scale:(0.3,0.3));
 			}
 			int amt;
 			if(reloadorder){
