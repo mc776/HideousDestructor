@@ -153,7 +153,7 @@ class ZombieStormtrooper:HDMobMan{
 					wp.weaponstatus[0]=ZM66F_NOLAUNCHER|(random(0,1)*ZM66F_CHAMBER);
 					if(firemode==-1)wp.weaponstatus[0]|=ZM66F_NOFIRESELECT;
 
-					if(mag==50)wp.weaponstatus[ZM66S_MAG]=51;
+					if(mag>=50)wp.weaponstatus[ZM66S_MAG]=51;
 					else wp.weaponstatus[ZM66S_MAG]=mag;
 
 					wp.weaponstatus[ZM66S_ZOOM]=random(16,70);
