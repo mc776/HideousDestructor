@@ -461,15 +461,24 @@ class Vulcanette:HDWeapon{
 	altreload:
 	cellreload:
 		GTLG A 0{
+			int batt=invoker.weaponstatus[VULCS_BATTERY];
 			if(
-				//abort if full battery loaded or no spares
-				invoker.weaponstatus[VULCS_BATTERY]>=20    
-				||!countinv("HDBattery")
-			)setweaponstate("nope");else{
+				player.cmd.buttons&BT_USE
+			){
+				invoker.weaponstatus[0]|=VULCF_JUSTUNLOAD;
+				invoker.weaponstatus[0]|=VULCF_LOADCELL;
+				setweaponstate("lowertoopen");
+				return;
+			}else if(
+				batt<20
+				&&countinv("HDBattery")
+			){
 				invoker.weaponstatus[0]&=~VULCF_JUSTUNLOAD;
 				invoker.weaponstatus[0]|=VULCF_LOADCELL;
 				setweaponstate("lowertoopen");
+				return;
 			}
+			setweaponstate("nope");
 		}
 	unload:
 		GTLG A 0{
