@@ -222,6 +222,7 @@ class Vulcanette:HDWeapon{
 		..WEPHELP_ZOOM.."+"..WEPHELP_UNLOAD.."  Repair\n"
 		..WEPHELP_MAGMANAGER
 		..WEPHELP_UNLOADUNLOAD
+		..WEPHELP_USE.."+"..WEPHELP_UNLOAD.."  Unload battery\n"
 		;
 	}
 	override void DrawSightPicture(
@@ -472,7 +473,8 @@ class Vulcanette:HDWeapon{
 		}
 	unload:
 		GTLG A 0{
-			invoker.weaponstatus[0]&=~VULCF_LOADCELL;
+			if(player.cmd.buttons&BT_USE)invoker.weaponstatus[0]|=VULCF_LOADCELL;
+			else invoker.weaponstatus[0]&=~VULCF_LOADCELL;
 			invoker.weaponstatus[0]|=VULCF_JUSTUNLOAD;
 			setweaponstate("lowertoopen");
 		}
