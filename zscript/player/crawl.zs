@@ -220,8 +220,8 @@ class HDIncapWeapon:SelfBandage{
 	}
 	states{
 	select:
-		TNT1 A 0 A_Raise();
-		wait;
+		TNT1 A 30;
+		goto nope;
 	ready:
 		TNT1 A 0 A_WeaponReady(WRF_ALLOWUSER2|WRF_ALLOWRELOAD|WRF_DISABLESWITCH);
 		TNT1 A 1{
