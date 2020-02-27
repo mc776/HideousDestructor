@@ -118,16 +118,16 @@ class hdladderbottom:hdactor{
 		height 56;radius 10;
 		mass int.MAX;
 	}
-	actor currentuser;
-	double currentuserz;
+	actor users[MAXPLAYERS];
 	override bool used(actor user){
 		double upz=user.pos.z;
 		if(
 			upz>target.pos.z+24  
 			||upz+user.height*1.3<pos.z
 		)return false;
-		if(currentuser){
-			disengageladder();
+		int usernum=user.playernumber();
+		if(users[usernum]){
+			disengageladder(usernum);
 			return false;
 		}
 
@@ -147,23 +147,29 @@ class hdladderbottom:hdactor{
 			}
 		}
 
-		currentuser=user;
-		currentuser.vel.z+=1;
-		currentuserz=user.pos.z;
-		currentuser.A_Log(string.format("You climb the ladder.%s",user.getcvar("hd_helptext")?" Use again or jump to disengage; crouch and jump to pull down the ladder with you.":""),true);
+		users[user.playernumber()]=user;
+		user.vel.z+=1;
+		user.A_Log(string.format("You climb the ladder.%s",user.getcvar("hd_helptext")?" Use again or jump to disengage; crouch and jump to pull down the ladder with you.":""),true);
 		return true;
 	}
-	void disengageladder(bool message=true){
+	void disengageladder(int usernum,bool message=true){
+		actor currentuser=users[usernum];
 		if(!currentuser)return;
 		if(playerpawn(currentuser))playerpawn(currentuser).viewbob=1.;
 		if(message)currentuser.A_Log("Ladder disengaged.",true);
-		currentuser=null;
+		users[usernum]=null;
 	}
 	override void ondestroy(){
-		if(playerpawn(currentuser))playerpawn(currentuser).viewbob=1.;
+		for(int i=0;i<MAXPLAYERS;i++){
+			actor currentuser=users[i];
+			if(playerpawn(currentuser))playerpawn(currentuser).viewbob=1.;
+		}
 		super.ondestroy();
 	}
 	override void tick(){
+		actor currentuser;
+		double currentuserz;
+
 		if(!target){destroy();return;}
 		setz(
 			clamp(floorz,
@@ -174,8 +180,11 @@ class hdladderbottom:hdactor{
 
 		A_SetSize(-1,min(LADDER_MAX,target.pos.z-pos.z)+32);
 
-		if(currentuser){
-			if(currentuser.health<1){disengageladder(false);return;}
+		for(int usernum=0; usernum<MAXPLAYERS; usernum++){
+			currentuser=users[usernum];
+
+			if(!currentuser)continue;
+			if(currentuser.health<1){disengageladder(usernum,false);continue;}
 
 
 			//check if facing the ladder
@@ -209,8 +218,8 @@ class hdladderbottom:hdactor{
 							hdl.translation=translation;
 							target.destroy();
 							if(self)destroy();
-						}else disengageladder();
-						return;
+						}else disengageladder(usernum);
+						continue;
 					}
 					if(currentuser.floorz<currentuser.pos.z){
 						double fm=currentuser.player.cmd.forwardmove*0.000125;
@@ -237,7 +246,7 @@ class hdladderbottom:hdactor{
 						min(currentuser.pos.z,target.pos.z+24)
 					),true);
 				}
-				return;
+				continue;
 			}
 			if(distance2d(currentuser)<3.)currentuser.A_ChangeVelocity(-1,0,0,CVF_RELATIVE);
 			currentuser.vel.xy*=0.7;
@@ -301,12 +310,12 @@ class hdladderbottom:hdactor{
 
 							target.destroy();
 							if(self)destroy();
-							return;
-						}else disengageladder();
-					}else if(!facing&&bt&BT_USE)disengageladder();
+							continue;
+						}else disengageladder(usernum);
+					}else if(!facing&&bt&BT_USE)disengageladder(usernum);
 				}
 			}
-			if(!currentuser)return;
+			if(!currentuser)continue;
 
 			currentuserz=max(currentuserz,pos.z-currentuser.height*1.3);
 			currentuserz=min(currentuserz,currentuser.ceilingz-currentuser.height);
