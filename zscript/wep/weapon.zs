@@ -1056,7 +1056,8 @@ class WeaponStashSwitcher:HDWeapon{
 			invoker.thisweapon=null;
 		}
 		TNT1 A 1 A_SelectWeapon("HDFist");
-		goto readyend;
+		TNT1 A 1 A_WeaponReady(WRF_NOFIRE);
+		wait;
 	}
 }
 extend class HDWeapon{
