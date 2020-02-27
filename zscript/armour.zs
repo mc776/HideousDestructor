@@ -22,11 +22,12 @@ class HDArmour:HDMagAmmo{
 	int cooldown;
 	override bool isused(){return true;}
 	override int getsbarnum(int flags){
-		if(mags.size()<1)return -1000000;
-		return mags[0]%1000;
+		int ms=mags.size()-1;
+		if(ms<0)return -1000000;
+		return mags[ms]%1000;
 	}
 	override string pickupmessage(){
-		if(mags[0]>=1000)return "Picked up the battle armour!";
+		if(mags[mags.size()-1]>=1000)return "Picked up the battle armour!";
 		return super.pickupmessage();
 	}
 	//because it can intentionally go over the maxperunit amount
@@ -46,11 +47,11 @@ class HDArmour:HDMagAmmo{
 	action void A_WearArmour(){
 		bool helptext=cvar.getcvar("hd_helptext",player).getbool();
 		invoker.syncamount();
-		int dbl=invoker.mags[0];
+		int dbl=invoker.mags[invoker.mags.size()-1];
 		//if holding use, cycle to next armour
 		if(player.cmd.buttons&BT_USE){
-			invoker.mags.push(dbl);
-			invoker.mags.delete(0);
+			invoker.mags.insert(0,dbl);
+			invoker.mags.pop();
 			invoker.syncamount();
 			return;
 		}
@@ -74,7 +75,7 @@ class HDArmour:HDMagAmmo{
 		}
 		worn.durability=dbl;
 		invoker.amount--;
-		invoker.mags.delete(0);
+		invoker.mags.pop();
 
 		if(helptext){
 			string blah=string.format("You put on the %s armour. ",worn.mega?"battle":"garrison");
@@ -107,7 +108,7 @@ class HDArmour:HDMagAmmo{
 		return sct;
 	}
 	void checkmega(){
-		mega=mags.size()&&mags[0]>1000;
+		mega=mags.size()&&mags[mags.size()-1]>1000;
 		icon=texman.checkfortexture(mega?"ARMCB0":"ARMSB0",TexMan.Type_MiscPatch);
 	}
 	override void beginplay(){
@@ -130,7 +131,7 @@ class HDArmour:HDMagAmmo{
 	override void actualpickup(actor other){
 		cooldown=0;
 		if(!other)return;
-		int durability=mags[0];
+		int durability=mags[mags.size()-1];
 		HDArmour aaa=HDArmour(other.findinventory("HDArmour"));
 		//put on the armour right away
 		if(
