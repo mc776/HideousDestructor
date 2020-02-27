@@ -453,6 +453,37 @@ class HDPickup:CustomInventory{
 		return false;
 	}
 
+
+	//like A_DropItem but you can set the amount
+	static inventory DropItem(
+		actor caller,
+		class<inventory> itemtype,
+		int amt,
+		bool pickup=false
+	){
+		let mmm=inventory(
+			caller.spawn(itemtype,
+				(caller.pos.xy,caller.pos.z+max(0,caller.height-12)),
+			ALLOW_REPLACE)
+		);
+		mmm.angle=caller.angle;
+		mmm.A_ChangeVelocity(2,0,-1,CVF_RELATIVE);
+		mmm.vel+=caller.vel;
+		let mmmm=HDMagAmmo(mmm);
+		if(mmmm){
+			mmmm.amount=0;
+			mmmm.mags.clear();
+			mmmm.AddAMag(amt);
+		}
+		else mmm.amount=amt;
+		if(pickup){
+			let ppp=HDPickup(mmm);
+			if(ppp)ppp.actualpickup(caller);
+			else ppp.touch(caller);
+		}
+		return mmm;
+	}
+
 	states{
 	use:
 		TNT1 A 0;

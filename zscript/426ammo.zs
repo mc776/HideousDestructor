@@ -19,22 +19,22 @@ class FourMilAmmo:HDAmmo{
 		pms.appendformat("\nNOTE:  %s",HDCONST_426MAGMSG);
 		return pms;
 	}
-	override void postbeginplay(){
-		super.postbeginplay();
-		if(owner)return;
-		if(amount==1)return;
-		int amm=min(amount,random(21,50));
+	override void splitpickup(){
+		int amm=min(amount,random(4,26));
 		while(amount>amm){
-			int ld=min(amount,random(21,50));
+			int ld=min(amount,random(4,26));
 			actor a=spawn("FourMilAmmo",pos);
 			a.vel+=vel+(frandom(-1,1),frandom(-1,1),frandom(-1,1));
 			a.angle=frandom(0,360);
 			inventory(a).amount=ld;
 			amount-=ld;
-		}if(amount<1){
+		}
+		if(amount<1){
 			destroy();
 			return;
 		}
+		scale.y=getdefaultbytype(getclass()).scale.y*max(1.,amount*0.3);
+		if(amount>1)frame=1;
 	}
 	override void GetItemsThatUseThis(){
 		itemsthatusethis.push("HERPUsable");
@@ -45,12 +45,7 @@ class FourMilAmmo:HDAmmo{
 	}
 	states(actor){
 	spawn:
-		RCLS A -1 nodelay{
-			if(amount>1){
-				scale.y*=max(0.333,amount*0.1);
-				frame=1;
-			}
-		}
+		RCLS A -1;
 		stop;
 	}
 }
@@ -133,13 +128,7 @@ class HD4mMag:HDMagAmmo{
 		}
 		int totake=min(random(1,24),mags[mindex]);
 		if(totake<HDPickup.MaxGive(owner,roundtype,roundbulk))HDF.Give(owner,roundtype,totake);
-		else{
-			let mmm=FourMilAmmo(owner.spawn(roundtype,(owner.pos.xy,owner.pos.z+owner.height-12),ALLOW_REPLACE));
-			mmm.angle=owner.angle;
-			mmm.A_ChangeVelocity(2,0,-1,CVF_RELATIVE);
-			mmm.vel+=owner.vel;
-			mmm.amount=totake;
-		}
+		else HDPickup.DropItem(owner,roundtype,totake);
 		owner.A_StartSound("weapons/rifleclick2",CHAN_WEAPON);
 		owner.A_StartSound("weapons/rockreload",CHAN_WEAPON,CHANF_OVERLAP,0.4);
 		mags[mindex]-=totake;

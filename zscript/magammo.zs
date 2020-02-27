@@ -196,13 +196,7 @@ class HDMagAmmo:HDAmmo{
 			||mags[mags.size()-1]<1
 		)return false;
 		if(HDPickup.MaxGive(owner,roundtype,roundbulk)>=1)HDF.Give(owner,roundtype,1);
-		else{
-			let mmm=inventory(owner.spawn(roundtype,(owner.pos.xy,owner.pos.z+owner.height-12),ALLOW_REPLACE));
-			mmm.angle=owner.angle;
-			mmm.A_ChangeVelocity(2,0,-1,CVF_RELATIVE);
-			mmm.vel+=owner.vel;
-			mmm.amount=1;
-		}
+		else HDPickup.DropItem(owner,roundtype,1);
 		owner.A_StartSound("weapons/rifleclick2",8,CHANF_OVERLAP);
 		mags[mags.size()-1]--;
 		return true;
