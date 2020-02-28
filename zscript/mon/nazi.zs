@@ -211,9 +211,9 @@ class HoopBubble:HDMobMan replaces WolfensteinSS{
 		SSWV J 5 A_Scream();
 		SSWV KL 5;
 	dead:
-		SSWV L 3 canraise A_JumpIf(abs(vel.z)<2,1);
+		SSWV L 3 A_JumpIf(abs(vel.z)<2,1);
 		loop;
-		SSWV M 5 A_JumpIf(abs(vel.z)>=2,"dead");
+		SSWV M 5 canraise A_JumpIf(abs(vel.z)>=2,"dead");
 		loop;
 	xxxdeath:
 		SSWV N 5;
