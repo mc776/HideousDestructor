@@ -183,7 +183,7 @@ class hdladderbottom:hdactor{
 		for(int usernum=0; usernum<MAXPLAYERS; usernum++){
 			currentuser=users[usernum];
 
-			if(!currentuser)continue;
+			if(!currentuser||!target)continue;
 			if(currentuser.health<1){disengageladder(usernum,false);continue;}
 
 
