@@ -664,7 +664,7 @@ class ScopeCamera:IdleDummy{
 			destroy();
 			return;
 		}
-		A_SetAngle(hpl.angle-hpl.hudbob.x*0.27,SPF_INTERPOLATE);
+		A_SetAngle(hpl.angle-hpl.hudbob.x*0.54,SPF_INTERPOLATE);
 		A_SetPitch(hpl.pitch+hpl.hudbob.y*0.27,SPF_INTERPOLATE);
 		A_SetRoll(hpl.roll);
 		vector2 fwd=angletovector(angle,2);
