@@ -5,6 +5,7 @@ const HDCONST_SPRINTMAXHEARTRATE=20;
 const HDCONST_SPRINTFATIGUE=30;
 const HDCONST_WALKFATIGUE=40;
 const HDCONST_DAMAGEFATIGUE=80;
+const HDCONST_PLAYERHEIGHT=54;
 class HDPlayerPawn:PlayerPawn{
 	vector3 lastpos;vector3 lastvel;double lastheight;
 	bool teleported;
@@ -60,7 +61,7 @@ class HDPlayerPawn:PlayerPawn{
 		+nomenu
 		+noskin
 
-		height 54;radius 12;
+		height HDCONST_PLAYERHEIGHT;radius 12;
 		mass 150;gibhealth 180;
 		deathheight 24;
 
@@ -667,14 +668,16 @@ class ScopeCamera:IdleDummy{
 		A_SetAngle(hpl.angle-hpl.hudbob.x*0.54,SPF_INTERPOLATE);
 		A_SetPitch(hpl.pitch+hpl.hudbob.y*0.27,SPF_INTERPOLATE);
 		A_SetRoll(hpl.roll);
-		vector2 fwd=angletovector(angle,2);
+		vector2 fwd=angletovector(angle,0.3);
+
+		double cf=(!!hpl.player)?hpl.player.viewheight:HDCONST_PLAYERHEIGHT-6;
 
 		if(abs(pitch)>89)setxyz(hpl.pos+(
 			fwd*max(0.5,cos(pitch))*2,
-			sin(-pitch)*6+hpl.height-4
+			sin(-pitch)*6+hpl.player.viewheight
 		));else setxyz(hpl.pos+(
 			fwd*cos(pitch)*6,
-			sin(-pitch)*6+hpl.height-4
+			sin(-pitch)*6+hpl.player.viewheight
 		));
 	}
 }
