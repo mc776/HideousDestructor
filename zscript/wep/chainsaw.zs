@@ -118,7 +118,11 @@ class Lumberjack:HDWeapon replaces Chainsaw{
 			A_AlertMonsters();
 			ftranslatedlinetarget t;
 			LineAttack(angle,48,pitch,max(0,dmg),"Chainsaw","HDSawPuff",
-				LAF_OVERRIDEZ|LAF_ISMELEEATTACK,victim:t,offsetz:height-20
+				LAF_OVERRIDEZ|LAF_ISMELEEATTACK,victim:t,
+				offsetz:HDWeapon.GetShootOffset(
+					self,invoker.barrellength,
+					invoker.barrellength-HDCONST_SHOULDERTORADIUS
+				)-6
 			);
 			if(t.linetarget)A_StartSound("weapons/sawhit",CHAN_WEAPON);
 			else{

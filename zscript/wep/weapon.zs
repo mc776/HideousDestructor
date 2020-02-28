@@ -549,7 +549,10 @@ class HDWeapon:Weapon{
 		double eyerange=36,
 		double chestrange=-1
 	){
-		double eyeheight=caller.height-HDCONST_CROWNTOEYES;
+		double eyeheight;
+		if(caller.player)eyeheight=caller.player.viewheight-3;
+		else eyeheight=caller.height-HDCONST_CROWNTOEYES;
+
 		flinetracedata ltd;
 		caller.LineTrace(
 			caller.angle,

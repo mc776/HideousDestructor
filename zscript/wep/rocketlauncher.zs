@@ -203,7 +203,13 @@ class HDRL:HDWeapon{
 			}else{
 				//shoot a rocket
 				if(chm>1){
-					rkt=gyrogrenade(spawn("HDHEAT",pos+(0,0,height-8),ALLOW_REPLACE));
+					rkt=gyrogrenade(spawn("HDHEAT",(
+						pos.xy,
+						pos.z+HDWeapon.GetShootOffset(
+							self,invoker.barrellength,
+							invoker.barrellength-HDCONST_SHOULDERTORADIUS
+						)
+					),ALLOW_REPLACE));
 					A_ChangeVelocity(cos(pitch),0,sin(pitch),CVF_RELATIVE);
 				}else rkt=gyrogrenade(spawn("GyroGrenade",pos+(0,0,height-8),ALLOW_REPLACE));
 				invoker.weaponstatus[RLS_SMOKE]+=50;
