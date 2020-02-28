@@ -104,9 +104,9 @@ class HDSMG:HDWeapon{
 	){
 		if(weaponstatus[0]&SMGF_REFLEXSIGHT){
 			double dotoff=max(abs(bob.x),abs(bob.y));
-			if(dotoff<10){
+			if(dotoff<4){
 				sb.drawimage(
-					whichdot,(0,0)+bob*1.6,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
+					whichdot,(0,0)+bob*3,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
 					alpha:0.8-dotoff*0.04,scale:(1.6,1.6)
 				);
 			}

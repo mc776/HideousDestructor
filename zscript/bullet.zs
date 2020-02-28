@@ -14,7 +14,7 @@ class bltest:HDCheatWep{
 		double dotoff=max(abs(bob.x),abs(bob.y));
 		if(dotoff<10){
 			sb.drawimage(
-				"riflsit3",(0,0)+bob*1.6,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
+				"riflsit3",(0,0)+bob*3,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
 				alpha:0.8-dotoff*0.04,scale:(0.8,0.8)
 			);
 		}

@@ -148,9 +148,9 @@ class ZM66AssaultRifle:HDWeapon{
 		if(hdw.weaponstatus[0]&ZM66F_GLMODE)sb.drawgrenadeladder(hdw.airburst,bob);
 		else{
 			double dotoff=max(abs(bob.x),abs(bob.y));
-			if(dotoff<20){
+			if(dotoff<6){
 				sb.drawimage(
-					whichdot,(0,0)+bob*1.6,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
+					whichdot,(0,0)+bob*3,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
 					alpha:0.8-dotoff*0.04
 				);
 			}

@@ -70,7 +70,7 @@ class ThunderBuster:HDCellWeapon{
 			-16+bob.x,-4+bob.y,32,16,
 			sb.DI_SCREEN_CENTER
 		);
-		vector2 bobb=bob*2;
+		vector2 bobb=bob*3;
 		bobb.y=clamp(bobb.y,-8,8);
 		sb.drawimage(
 			"frntsite",(0,0)+bobb,sb.DI_SCREEN_CENTER|sb.DI_ITEM_TOP,
@@ -100,7 +100,7 @@ class ThunderBuster:HDCellWeapon{
 				"tbwindow",(0,scaledyoffset)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
 				scale:(1,1)
 			);
-			bobb*=3.7;
+			bobb*=3;
 			double dotoff=max(abs(bobb.x),abs(bobb.y));
 			if(dotoff<40)sb.drawimage(
 				"redpxl",(0,scaledyoffset)+bobb,sb.DI_SCREEN_CENTER|sb.DI_ITEM_TOP,
