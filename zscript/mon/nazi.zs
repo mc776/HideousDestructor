@@ -157,7 +157,7 @@ class HoopBubble:HDMobMan replaces WolfensteinSS{
 			}
 			pitch+=frandom(0,spread)-frandom(0,spread);
 			angle+=frandom(0,spread)-frandom(0,spread);
-			A_StartSound("weapons/pistol",CHAN_WEAPON);
+			A_StartSound("weapons/smg",CHAN_WEAPON);
 			HDBulletActor.FireBullet(self,"HDB_9",speedfactor:1.1);
 			A_SpawnItemEx("HDSpent9mm",
 				cos(pitch)*10,0,height-8-sin(pitch)*10,
