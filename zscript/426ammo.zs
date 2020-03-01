@@ -159,13 +159,13 @@ class HD4mMag:HDMagAmmo{
 		if(amount<2)return;
 		int totalrounds=0;
 		for(int i=0;i<amount;i++){
-			if(mags[i]==51)continue;
+			if(mags[i]>=50)continue;
 			totalrounds+=mags[i]%50;
 			mags[i]=0; //keep the empties, do NOT call clear()!
 		}
 		totalrounds=int(totalrounds*frandom(0.9,1.));
 		for(int i=0;i<amount;i++){
-			if(mags[i]==51)continue;
+			if(mags[i]>=50)continue;
 			int toinsert=clamp(totalrounds,mags[i],50);
 			mags[i]=toinsert;
 			totalrounds-=toinsert;
