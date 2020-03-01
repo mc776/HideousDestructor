@@ -531,12 +531,12 @@ class BossRifle:HDWeapon{
 			let ccc=hdmagammo(findinventory("HD7mClip"));
 			if(ccc){
 				//find the last mag that has anything in it and load from that
+				bool fullmag=false;
 				int magindex=-1;
 				for(int i=ccc.mags.size()-1;i>=0;i--){
-					if(ccc.mags[i]>0){
-						magindex=i;
-						break;
-					}
+					if(ccc.mags[i]>=10)fullmag=true;
+					if(magindex<0&&ccc.mags[i]>0)magindex=i;
+					if(fullmag&&magindex>0)break;
 				}
 				if(magindex<0){
 					setweaponstate("reloaddone");
@@ -545,7 +545,7 @@ class BossRifle:HDWeapon{
 
 				//load the whole clip at once if possible
 				if(
-					ccc.mags[magindex]>=10
+					fullmag
 					&&invoker.weaponstatus[BOSSS_MAG]<1
 				){
 					setweaponstate("loadwholeclip");
