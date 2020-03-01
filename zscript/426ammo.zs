@@ -158,11 +158,14 @@ class HD4mMag:HDMagAmmo{
 		SyncAmount();
 		if(amount<2)return;
 		int totalrounds=0;
+		int howmanymags=0;
 		for(int i=0;i<amount;i++){
 			if(mags[i]>=50)continue;
+			howmanymags++;
 			totalrounds+=mags[i]%50;
 			mags[i]=0; //keep the empties, do NOT call clear()!
 		}
+		if(howmanymags<2)return;
 		totalrounds=int(totalrounds*frandom(0.9,1.));
 		for(int i=0;i<amount;i++){
 			if(mags[i]>=50)continue;
