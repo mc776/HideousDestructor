@@ -498,6 +498,7 @@ class SlayerRandom:IdleDummy{
 			if(!ggg)return;
 			ggg.special=special;
 			ggg.vel=vel;
+			for(int i=0;i<5;i++)ggg.args[i]=args[i];
 			if(!random(0,7)){
 				ggg.weaponstatus[SLAYS_CHOKE1]=random(random(0,7),7);
 				ggg.weaponstatus[SLAYS_CHOKE2]=random(random(0,7),7);

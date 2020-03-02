@@ -1056,6 +1056,7 @@ class LiberatorRandom:IdleDummy{
 			if(!lll)return;
 			lll.special=special;
 			lll.vel=vel;
+			for(int i=0;i<5;i++)lll.args[i]=args[i];
 			if(!random(0,2))lll.weaponstatus[0]|=LIBF_FRONTRETICLE;
 			if(!random(0,2))lll.weaponstatus[0]|=LIBF_ALTRETICLE;
 			if(!random(0,2))lll.weaponstatus[0]|=LIBF_NOLAUNCHER;
