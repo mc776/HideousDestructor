@@ -414,6 +414,7 @@ class HDSMGRandom:IdleDummy{
 			if(!lll)return;
 			lll.special=special;
 			lll.vel=vel;
+			for(int i=0;i<5;i++)lll.args[i]=args[i];
 			if(!random(0,2))lll.weaponstatus[0]|=SMGF_REFLEXSIGHT;
 			if(!random(0,2))lll.weaponstatus[SMGS_SWITCHTYPE]=random(0,3);
 		}stop;

@@ -709,6 +709,7 @@ class HunterRandom:IdleDummy{
 			if(!ggg)return;
 			ggg.special=special;
 			ggg.vel=vel;
+			for(int i=0;i<5;i++)ggg.args[i]=args[i];
 
 			if(!random(0,7))ggg.weaponstatus[HUNTS_CHOKE]=random(0,7);
 			if(!random(0,32)){
