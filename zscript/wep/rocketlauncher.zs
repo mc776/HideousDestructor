@@ -794,3 +794,18 @@ class RocketBigPickup:HDUPK{
 	}
 }
 
+class BloopMapPickup:IdleDummy{
+	states{
+	spawn:
+		TNT1 A 0 nodelay{
+			let wep=Blooper(spawn("Blooper",pos,ALLOW_REPLACE));
+			if(!wep)return;
+			wep.special=special;
+			wep.vel=vel;
+			for(int i=0;i<5;i++)wep.args[i]=args[i];
+
+			A_SpawnItemEx("RocketBigPickup",3);
+			A_SpawnItemEx("HDRocketAmmo",5);
+		}stop;
+	}
+}
