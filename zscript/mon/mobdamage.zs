@@ -27,6 +27,7 @@ extend class HDMobBase{
 			!caller.instatesequence(curstate,caller.resolvestate("falldown"))
 			&&!caller.instatesequence(curstate,caller.resolvestate("raise"))
 			&&!caller.instatesequence(curstate,caller.resolvestate("ungib"))
+			&&!caller.instatesequence(curstate,caller.resolvestate("death"))
 		);
 	}
 	static bool forcepain(actor caller){
