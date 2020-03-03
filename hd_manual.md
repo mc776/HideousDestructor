@@ -474,6 +474,8 @@ Some items can be picked up and saved for later, as described below.
 
   DANGER: DO NOT OVERDOSE.
 
+  Using a stimpack on an NPC does not affect performance except to mitigate stunning.
+
 * **Medikit**
 
   GZDoom actor name: `PortableMedikit`
@@ -526,6 +528,8 @@ Some items can be picked up and saved for later, as described below.
   Its original "on-label" use was to save someone going into shock or cardiac arrest, though it was found that sometimes it made things worse after it wore off.
 
   When you've got more monsters than time to reload, this thing is a godsend. The burst of strength also lets you carry heavy weapons more efficiently. The effect only lasts a short while, so use it while you've got it!
+
+  Berserk packs cannot be used on NPCs.
 
 * **Light Amplification Visor**
 

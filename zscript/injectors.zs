@@ -224,6 +224,24 @@ class HDStimpacker:HDWoundFixer{
 			);
 			let c=HDPlayerPawn(injectorline.hitactor);
 			if(!c){
+				let ccc=HDMobMan(injectorline.hitactor);
+				if(
+					ccc
+					&&invoker.getclassname()=="HDStimpacker"
+				){
+					if(
+						ccc.stunned<100
+						||ccc.health<10
+					){
+						if(helptext)A_WeaponMessage("They don't need it.",2);
+						return resolvestate("nope");
+					}
+					A_TakeInjector(invoker.inventorytype);
+					ccc.A_StartSound(ccc.painsound,CHAN_VOICE);
+					ccc.stunned=max(0,ccc.stunned>>1);
+					if(!countinv(invoker.inventorytype))return resolvestate("deselecthold");
+					return resolvestate("injected");
+				}
 				if(helptext)A_WeaponMessage("Nothing to be done here.\n\nStimulate thyself? (press fire)",2);
 				return resolvestate("nope");
 			}else if(c.countinv("IsMoving")>4){
@@ -256,8 +274,7 @@ class HDStimpacker:HDWoundFixer{
 			}else{
 				//and now...
 				A_TakeInjector(invoker.inventorytype);
-				if(hdplayerpawn(c))c.A_StartSound(hdplayerpawn(c).medsound,CHAN_VOICE);
-				else c.A_StartSound("*usemeds",CHAN_VOICE);
+				c.A_StartSound(hdplayerpawn(c).medsound,CHAN_VOICE);
 				c.A_SetBlend("7a 3a 18",0.1,4);
 				actor a=spawn(invoker.injecttype,c.pos,ALLOW_REPLACE);
 				a.accuracy=40;a.target=c;
