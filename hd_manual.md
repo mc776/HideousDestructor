@@ -566,6 +566,8 @@ Some items can be picked up and saved for later, as described below.
 
   To remove the ladder, get onto the ladder and attempt to jump while crouching.
 
+  If you're having trouble climbing over the ledge at the top of a ladder, try to circlestrafe *around* the bracket rather than trying to climb straight over it - pretend you're getting out of the pool and that thing is really slipperty and wet.
+
 * **Radiation Shielding Suit**
 
   GZDoom actor name: `PortableRadSuit`
