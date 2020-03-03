@@ -58,18 +58,6 @@ actor RLReplaces:HDInvRandomSpawner replaces RocketLauncher{
 	dropitem "BloopMapPickup" 256 1
 	dropitem "HDRL" 256 4
 }
-actor BloopMapPickup{
-	+weaponspawn
-	states{
-	spawn:
-		TNT1 A 0 nodelay{
-			A_SpawnItemEx("Blooper");
-			A_SpawnItemEx("RocketBigPickup",3);
-			A_SpawnItemEx("HDRocketAmmo",5);
-		}stop
-	}
-}
-
 
 actor HelpScreen:ActionItem{
 	states{
