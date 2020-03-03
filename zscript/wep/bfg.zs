@@ -52,6 +52,7 @@ class BFG9K:HDCellWeapon replaces BFG9000{
 			if(
 				owner
 				&&owner.player
+				&&owner.player.readyweapon==self
 			)owner.player.setpsprite(PSP_WEAPON,findstate("togglestrap"));
 			return null;
 		}
