@@ -263,6 +263,9 @@ class HDGrenadeThrower:HDWeapon{
 		FRGG B 1 A_Raise(32);
 		wait;
 	selectinstant:
+		TNT1 A 0 A_JumpIf(pressingfire()||pressingaltfire(),2);
+		TNT1 A 1 A_WeaponReady(WRF_NOFIRE);
+		loop;
 		TNT1 A 0 A_SelectWeapon("HDFist");
 		TNT1 A 1 A_WeaponReady(WRF_NOFIRE);
 		wait;
@@ -275,7 +278,6 @@ class HDGrenadeThrower:HDWeapon{
 		---- A 1 A_Lower(72);
 		wait;
 	deselectinstant:
-		TNT1 A 0 A_SelectWeapon("HDFist");
 		TNT1 A 0 A_Lower(999);
 		wait;
 	ready:

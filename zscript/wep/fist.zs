@@ -85,6 +85,12 @@ class HDFist:HDWeapon replaces Fist{
 			targethealth=0;
 		}
 	}
+	action void A_DontFreedoomFrameB(){
+		if(
+			Wads.CheckNumForName("freedoom",0)!=-1
+			&&player.findPSprite(PSP_WEAPON).sprite==getspriteindex("PUNGA0")
+		)player.findPSprite(PSP_WEAPON).frame++;
+	}
 	action void A_CheckFistSprite(statelabel st,int layer=PSP_WEAPON){
 		if(!player)return;
 		bool usegender=false;
@@ -444,10 +450,11 @@ class HDFist:HDWeapon replaces Fist{
 		#### A 0 A_JumpIfInventory("PowerStrength",1,"zerkpunch");
 		goto punch;
 	punch:
-		#### B 1 offset(0,32);
+		#### B 1 offset(0,32) A_DontFreedoomFrameB();
 		#### D 0 HDPunch(12);
 		#### D 6;
-		#### CB 3;
+		#### C 3;
+		#### B 3 A_DontFreedoomFrameB();
 		TNT1 A 3;
 		TNT1 A 0 A_JumpIf(pressingaltfire(),"altfire");
 		TNT1 A 1 A_ReFire();
