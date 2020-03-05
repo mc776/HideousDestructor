@@ -41,8 +41,8 @@ class ThunderBuster:HDCellWeapon{
 				"STBURAUT",(-28,-10),
 				sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TRANSLATABLE|sb.DI_ITEM_RIGHT
 			);
-			sb.drawnum(2000/HDCONST_ONEMETRE,-16,-14,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_GRAY);
-		}else sb.drawnum(hdw.weaponstatus[TBS_MAXRANGEDISPLAY],-16,-14,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_GRAY);
+			sb.drawnum(2000/HDCONST_ONEMETRE,-16,-17,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_GRAY);
+		}else sb.drawnum(hdw.weaponstatus[TBS_MAXRANGEDISPLAY],-16,-17,sb.DI_SCREEN_CENTER_BOTTOM,font.CR_GRAY);
 		int bat=hdw.weaponstatus[TBS_BATTERY];
 		if(bat>0)sb.drawwepnum(bat,20);
 		else if(!bat)sb.drawstring(
