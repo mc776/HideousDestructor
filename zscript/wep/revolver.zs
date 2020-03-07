@@ -128,7 +128,7 @@ class HDRevolver:HDHandgun{
 		weaponstatus[BUGS_CYL6]=BUGS_MASTERBALL;
 	}
 
-	action void A_CheckRevolverHand(){
+	action bool HoldingRightHanded(){
 		bool righthanded=invoker.wronghand;
 		righthanded=
 		(
@@ -138,6 +138,10 @@ class HDRevolver:HDHandgun{
 			!righthanded
 			&&Wads.CheckNumForName("id",0)==-1
 		);
+		return righthanded;
+	}
+	action void A_CheckRevolverHand(){
+		bool righthanded=HoldingRightHanded();
 		if(righthanded)player.getpsprite(PSP_WEAPON).sprite=getspriteindex("RRVGA0");
 		else player.getpsprite(PSP_WEAPON).sprite=getspriteindex("REVGA0");
 	}
