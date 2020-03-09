@@ -674,10 +674,10 @@ class ScopeCamera:IdleDummy{
 
 		if(abs(pitch)>89)setxyz(hpl.pos+(
 			fwd*max(0.5,cos(pitch))*2,
-			sin(-pitch)*6+hpl.player.viewheight
+			sin(-pitch)*6+cf
 		));else setxyz(hpl.pos+(
 			fwd*cos(pitch)*6,
-			sin(-pitch)*6+hpl.player.viewheight
+			sin(-pitch)*6+cf
 		));
 	}
 }
