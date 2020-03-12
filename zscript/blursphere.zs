@@ -16,7 +16,7 @@ class HDBlurSphere:HDPickup{
 		inventory.maxamount 9;
 		inventory.interhubamount 1;
 		inventory.pickupmessage "So precious in your sight.";
-		inventory.pickupsound "misc/casing";
+		inventory.pickupsound "blursphere/pickup";
 		inventory.icon "PINSA0";
 		scale 0.3;
 	}
@@ -36,7 +36,7 @@ class HDBlurSphere:HDPickup{
 			if(!invoker.worn){
 				invoker.worn=true;
 				HDF.Give(self,"BlurTaint",1);
-				A_StartSound("imp/sight2",CHAN_BODY,CHANF_OVERLAP,frandom(0.3,0.5),attenuation:8.);
+				A_StartSound("blursphere/use",CHAN_BODY,CHANF_OVERLAP,frandom(0.3,0.5),attenuation:8.);
 				invoker.level=min(13,invoker.level+invoker.xp/BLUR_LEVELUP);
 				invoker.xp%=BLUR_LEVELUP;
 				invoker.stamina=clamp(invoker.level+random(-2,2),0,10);
@@ -49,7 +49,7 @@ class HDBlurSphere:HDPickup{
 				}
 			}else{
 				invoker.worn=false;
-				A_StartSound("imp/sight1",CHAN_BODY,CHANF_OVERLAP,frandom(0.3,0.5),attenuation:8.);
+				A_StartSound("blursphere/unuse",CHAN_BODY,CHANF_OVERLAP,frandom(0.3,0.5),attenuation:8.);
 			}
 		}fail;
 	}
@@ -228,7 +228,7 @@ class HDBlurSphere:HDPickup{
 			owner.damagemobj(self,owner,random(1,level),"balefire");
 		}
 		intensity=0;
-		owner.A_StartSound("imp/sight1",CHAN_BODY,volume:frandom(0.3,0.5),attenuation:8.);
+		owner.A_StartSound("blursphere/unuse",CHAN_BODY,volume:frandom(0.3,0.5),attenuation:8.);
 		super.detachfromowner();
 	}
 }
