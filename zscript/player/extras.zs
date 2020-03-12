@@ -186,6 +186,9 @@ extend class HDPlayerPawn{
 		if(oldinput&BT_ATTACK)hasgrabbed=true;
 		else if(!(oldinput&BT_USE))hasgrabbed=false;
 
+		//check here because we still need the above pickup checks when incap'd
+		if(incapacitated)return;
+
 		//door kicking
 		if(
 			input&BT_SPEED

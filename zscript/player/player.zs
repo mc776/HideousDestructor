@@ -380,7 +380,6 @@ class HDPlayerPawn:PlayerPawn{
 		if(!incapacitated){
 			JumpCheck(fm,sm);
 			CrouchCheck();
-			UseButtonCheck(input);
 		}
 
 		//prevent some support exploits
@@ -634,6 +633,9 @@ class HDPlayerPawn:PlayerPawn{
 			||countinv("PowerInvulnerable")
 		)nocrosshair=12;
 		else nocrosshair--;
+
+
+		UseButtonCheck(input);
 
 
 		//this must be at the end since it needs to overwrite a lot of what has just happened
