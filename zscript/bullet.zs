@@ -1376,8 +1376,10 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 		name pufftype="BulletPuffBig";
 		if(sp>800)pufftype="BulletPuffBig";
 		else if(sp>512)pufftype="BulletPuffMedium";
-		else pufftype="BulletPuffSmall";
-		let aaa=HDBulletPuff(spawn("HDBulletPuff",pos));
+		else if(sp>100)pufftype="BulletPuffSmall";
+		else if(sp>50)pufftype="FragPuff";
+		else return null;
+		let aaa=HDBulletPuff(spawn(pufftype,pos));
 		if(aaa){
 			aaa.angle=angle;aaa.pitch=pitch;
 			aaa.stamina=int(sp*0.01);
