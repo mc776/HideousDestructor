@@ -5,10 +5,15 @@ class BossRifleSpawner:IdleDummy{
 	states{
 	spawn:
 		TNT1 A 0 nodelay{
-			A_SpawnItemEx("HD7mClip",0,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
+			A_SpawnItemEx("HD7mClip",-3,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
 			A_SpawnItemEx("HD7mClip",3,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
 			A_SpawnItemEx("HD7mClip",1,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
-			A_SpawnItemEx("BossRifle",-3,0,0,0,0,0,0,SXF_NOCHECKPOSITION);
+
+			let ggg=BossRifle(spawn("BossRifle",pos,ALLOW_REPLACE));
+			if(!ggg)return;
+			ggg.special=special;
+			ggg.vel=vel;
+			for(int i=0;i<5;i++)ggg.args[i]=args[i];
 		}stop;
 	}
 }
