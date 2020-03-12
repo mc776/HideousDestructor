@@ -129,7 +129,7 @@ class HDB_wad:HDBulletActor{
 	default{
 		pushfactor 1000.;
 		mass 12;
-		speed 700; //presumably most energy is transferred to the shot
+		speed 400; //presumably most energy is transferred to the shot
 		accuracy 0;
 		stamina 1860;
 		woundhealth 5;
