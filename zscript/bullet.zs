@@ -127,7 +127,7 @@ class HDB_00:HDBulletActor{
 }
 class HDB_wad:HDBulletActor{
 	default{
-		pushfactor 10.;
+		pushfactor 100.;
 		mass 12;
 		speed 700; //presumably most energy is transferred to the shot
 		accuracy 0;
