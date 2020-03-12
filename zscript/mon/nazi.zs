@@ -44,7 +44,7 @@ class HoopBubble:HDMobMan replaces WolfensteinSS{
 	}
 	states{
 	spawn:
-		SSWV EE 1{
+		SSWV FF 1{
 			A_Look();
 			A_Recoil(frandom(-0.1,0.1));
 			A_SetTics(random(10,40));
@@ -54,7 +54,7 @@ class HoopBubble:HDMobMan replaces WolfensteinSS{
 		SSWV B 8 A_Recoil(frandom(-0.2,0.2));
 		loop;
 	spawnstretch:
-		SSWV H 1{
+		SSWV E 1{
 			A_Recoil(frandom(-0.4,0.4));
 			A_SetTics(random(30,80));
 			if(!random(0,3))A_StartSound("grunt/active",CHAN_VOICE);
@@ -138,12 +138,12 @@ class HoopBubble:HDMobMan replaces WolfensteinSS{
 			else turnamount=10;
 		}goto turntoaim;
 	turntoaim:
-		#### E 2 A_FaceTarget(turnamount,turnamount);
+		#### F 2 A_FaceTarget(turnamount,turnamount);
 		#### A 0 A_JumpIfTargetInLOS(2);
 		---- A 0 setstatelabel("see");
 		#### A 0 A_JumpIfTargetInLOS(1,10);
 		loop;
-		#### E 1{
+		#### F 1{
 			A_FaceTarget(turnamount,turnamount);
 			A_SetTics(random(1,int(100/clamp(turnamount,1,turnamount+1)+4)));
 			spread=frandom(0.06,0.27)*turnamount;
