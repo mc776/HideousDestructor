@@ -127,9 +127,9 @@ class HDB_00:HDBulletActor{
 }
 class HDB_wad:HDBulletActor{
 	default{
-		pushfactor 1000.;
+		pushfactor 10.;
 		mass 12;
-		speed 400; //presumably most energy is transferred to the shot
+		speed 300; //presumably most energy is transferred to the shot
 		accuracy 0;
 		stamina 1860;
 		woundhealth 5;
@@ -1373,13 +1373,8 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 
 		if(max(abs(pos.x),abs(pos.y))>32000)return null;
 		double sp=speed*speed*mass*0.00001;
-		name pufftype="BulletPuffBig";
-		if(sp>800)pufftype="BulletPuffBig";
-		else if(sp>512)pufftype="BulletPuffMedium";
-		else if(sp>100)pufftype="BulletPuffSmall";
-		else if(sp>50)pufftype="FragPuff";
-		else return null;
-		let aaa=HDBulletPuff(spawn(pufftype,pos));
+		if(sp<50)return null;
+		let aaa=HDBulletPuff(spawn("HDBulletPuff",pos));
 		if(aaa){
 			aaa.angle=angle;aaa.pitch=pitch;
 			aaa.stamina=int(sp*0.01);
