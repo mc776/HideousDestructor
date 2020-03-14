@@ -358,7 +358,7 @@ Logs the distance of the object or map geometry you're pointing at.
 
 ### CVars (host only) - difficulty modifiers
 
-* `hd_encumbrance` (0.25): This is a multiplier for how much encumbrance affects you. 0.25 is a reasonable approximation of how much you "should" be able to carry to approximate a fully equipped doomguy. This is the only difficulty modifier setting that is archived between sessions.
+* `hd_encumbrance` (1.0): This is a multiplier for how much encumbrance affects you.
 
 * `hd_damagefactor` (1.0): Multiply any raw damage inflicted on the player by this amount, before any other calculations (besides checking for telefrag/suicide, forced damage and god mode) are applied.
 
