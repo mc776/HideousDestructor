@@ -230,7 +230,11 @@ class doordestroyer:hdactor{
 		double maxradius=(maxradco.x+maxradco.y)*0.5;
 
 		//abort if this would suddenly completely alter the level in stupid ways
-		if(max(maxradco.x,maxradco.y)>1024)return false;
+		if(max(maxradco.x,maxradco.y)>1024){
+			//some arbitrary feedback
+			if(dedicated)DistantQuaker.Quake(caller,6,30,512,30);
+			return false;
+		}
 
 
 		double damageinflicted=maxdepth*frandom(5,8)/maxradius;
