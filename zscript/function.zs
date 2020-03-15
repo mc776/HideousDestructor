@@ -282,7 +282,7 @@ struct HDMath{
 	//checks encumbrance multiplier
 	//hdmath.getencumbrancemult()
 	static double GetEncumbranceMult(){
-		return clamp(skill?hd_encumbrance:hd_encumbrance*0.5,0.,2.);
+		return max(skill?hd_encumbrance:hd_encumbrance*0.5,0.);
 	}
 	//get the opposite sector of a line
 	static sector OppositeSector(line hitline,sector hitsector){
