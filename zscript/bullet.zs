@@ -200,9 +200,14 @@ class HDB_bronto:HDBulletActor{
 		else vel*=0.01;
 		if(tracer){ //warhead damage
 			int dmg=random(1000,1200);
-			vector3 hitpoint=vel.unit()*tracer.radius;
+
+			//find the point at which it would pierce the middle
+			vector3 hitpoint=pos+vel.unit()*tracer.radius;
+
+			//find the "heart" point on the victim
 			vector3 tracmid=(tracer.pos.xy,tracer.pos.z+tracer.height*0.618);
-			dmg=int(1.-((hitpoint-tracmid).length()/tracer.radius)*dmg);
+
+			dmg=int((1.-((hitpoint-tracmid).length()/tracer.radius))*dmg);
 			tracer.damagemobj(
 				self,target,
 				dmg,
