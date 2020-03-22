@@ -221,7 +221,7 @@ class HDPistol:HDHandgun replaces Pistol{
 		#### B 3 offset(0,34);
 		#### C 4 offset(0,37){
 			A_MuzzleClimb(frandom(0.4,0.5),-frandom(0.6,0.8));
-			A_StartSound("weapons/pismagclick",8);
+			A_StartSound("weapons/pischamber2",8);
 			int psch=invoker.weaponstatus[PISS_CHAMBER];
 			invoker.weaponstatus[PISS_CHAMBER]=0;
 			if(psch==2){
