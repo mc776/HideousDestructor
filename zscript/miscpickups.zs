@@ -153,7 +153,8 @@ class HDAmBox:HDUPK{
 	}
 	void TryDisarm(actor user){
 		if(
-			!user
+			bnointeraction
+			||!user
 			||user.countinv("IsMoving")
 		)return;
 		if(tapped){
@@ -371,7 +372,8 @@ class HDAmBox:HDUPK{
 			frandom(-1,1),frandom(-1,1),frandom(3,4),
 			0,0,frandom(0,2),0,SXF_NOCHECKPOSITION
 		);
-		---- AAAAAA random(1,8) ArcZap(self);
+		TNT1 A 0{bnointeraction=true;}
+		TNT1 AAAAAA random(1,8) ArcZap(self);
 		stop;
 	brokenshel:
 		---- A 0 A_DropItem("ShellPickup");
