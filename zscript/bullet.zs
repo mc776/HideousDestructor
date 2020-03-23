@@ -649,17 +649,23 @@ class HDBulletActor:HDActor{
 					sector hitsector=bres.hitsector;
 					tracesectors.push(hitsector);
 
+					setorigin(realpos,true);
 					if(
 						(
-							(bres.hittype==TRACE_HitCeiling)
-							&&(hitsector.gettexture(hitsector.ceiling)==skyflatnum)
+							bres.hittype==TRACE_HitCeiling
+							&&(
+								hitsector.gettexture(hitsector.ceiling)==skyflatnum
+								||ceilingz>pos.z+0.1
+							)
 						)||(
-							(bres.hittype==TRACE_HitFloor)
-							&&(hitsector.gettexture(hitsector.floor)==skyflatnum)
+							bres.hittype==TRACE_HitFloor
+							&&(
+								hitsector.gettexture(hitsector.floor)==skyflatnum
+								||floorz<pos.z-0.1
+							)
 						)
 					)continue;
 
-					setorigin(realpos,true);
 					HitGeometry(
 						null,hitsector,0,
 						bres.hittype==TRACE_HitCeiling?SECPART_Ceiling:SECPART_Floor,
