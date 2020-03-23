@@ -605,8 +605,14 @@ class HDBulletActor:HDActor{
 					//check if the line is even blocking the bullet
 					bool isblocking=(
 						!(hitline.flags&line.ML_TWOSIDED) //one-sided
-						||hitline.flags&line.ML_BLOCKHITSCAN
-						||hitline.flags&line.ML_BLOCKPROJECTILE //maybe? they'll penetrate anyway
+						||(
+							//these barriers are not even paper thin
+							(
+								hitline.flags&line.ML_BLOCKHITSCAN
+								||hitline.flags&line.ML_BLOCKPROJECTILE
+							)
+							&&penetration()<5
+						)
 						//||hitline.flags&line.ML_BLOCKING //too many of these arbitrarily restrict the player
 						//||hitline.flags&line.ML_BLOCKEVERYTHING //not the fences on the range!
 						//||bres.tier==TIER_FFloor //3d floor - does not work as of 4.2.0
