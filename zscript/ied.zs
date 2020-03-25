@@ -240,28 +240,13 @@ extend class HDHandlers{
 			){
 				if(iedcmd==999){
 					badcommand=false;
-					if(
-						ied.checksight(ppp)&&
-						ied.distance3d(ppp)<512
-					){
-						ppp.A_Log(string.format("\cd[IED] \crERROR:\cj IED at [%i,%i] in range of user \crNOT\cj detonated.",ied.pos.x,ied.pos.y),true);
-					}
-					else{
-						ied.setstatelabel("detonate");
-						affected++;
-					}
+					ied.setstatelabel("detonate");
+					affected++;
 				}
 				else if(iedcmd==1){
 					badcommand=false;
-					if(
-						ied.checksight(ppp)&&
-						ied.distance3d(ppp)<256
-					){
-						ppp.A_Log(string.format("\cd[IED] \crERROR:\cj IED at [%i,%i] in range of user \crNOT\cj activated.",ied.pos.x,ied.pos.y),true);
-					}else{
-						ied.bmissilemore=true;
-						affected++;
-					}
+					ied.bmissilemore=true;
+					affected++;
 				}
 				else if(iedcmd==2){
 					badcommand=false;

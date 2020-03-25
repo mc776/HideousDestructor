@@ -690,7 +690,7 @@ Some items can be picked up and saved for later, as described below.
 
   \* *A lawsuit against Heckler & Mok by the families was dismissed with costs after an eighteen-day motion was heard. The families settled for an undisclosed amount and were never heard from again.*
 
-  To activate the IED, make sure you have at least one IED kit and one live or dud rocket. (You can pick duds up from any botched grenade launch assuming they don't spontaneously detonate on you first.) The IED takes 5 seconds to come online, during which you may decide to flee. They will generally not target friendlies. An IED may be picked up and its components reused; the disarming process, however, ruins the rocket grenade such that it can no longer be launched and is only good for planting another IED.
+  To activate the IED, make sure you have at least one IED kit and one live or dud rocket. (You can pick duds up from any botched grenade launch assuming they don't spontaneously detonate on you first.) The IED's active mode takes 5 seconds to come online, during which you may decide to flee. They will generally not target friendlies. An IED may be picked up and its components reused; the disarming process, however, ruins the rocket grenade such that it can no longer be launched and is only good for planting another IED.
 
   You can manipulate your IEDs from the console.
 
