@@ -223,6 +223,7 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 		if(owner&&owner.player)amplitude=cvar.getcvar("hd_nv",owner.player).getfloat();
 		else amplitude=frandom(-NITEVIS_MAX,NITEVIS_MAX);
 		lastcvaramplitude=amplitude;
+		syncamount();
 	}
 	int getintegrity(int index=0){return (mags[index]%NITEVIS_CYCLEUNIT);}
 	int setintegrity(int newamt,int index=0,bool relative=false){
