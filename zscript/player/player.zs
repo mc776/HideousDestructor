@@ -550,6 +550,7 @@ class HDPlayerPawn:PlayerPawn{
 				speed=hd_lowspeed?1.8:2.8;
 				viewbob=max(viewbob,(VB_MAX*0.8));
 			}else speed=hd_lowspeed?1.3:1.6;
+			if(hd_lowspeed)speed-=armourlevel*0.05;
 		}
 		//cap speed depending on weapon status
 		if(weaponbusy)speed=min(speed,0.6);
