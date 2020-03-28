@@ -109,7 +109,7 @@ class HDBossCube:bossbrainspawnsource{
 		height 4;
 		stamina 16;
 		health 1;
-		damagefunction (TELEFRAG_DAMAGE);
+		damagefunction(TELEFRAG_DAMAGE);
 		projectilekickback 0;
 		renderstyle "normal";
 	}
@@ -152,6 +152,8 @@ class HDBossCube:bossbrainspawnsource{
 		stop;
 	}
 }
+
+
 class HDBossBrain:HDMobBase replaces BossBrain{
 	int paintimes;
 	override int damagemobj(
@@ -169,7 +171,8 @@ class HDBossBrain:HDMobBase replaces BossBrain{
 		){
 			bshootable=false;
 			setstatelabel("deathfade");
-			return -1;
+			//return -1;
+			return super.damagemobj(inflictor,source,health,"instafade",flags,angle);
 		}
 
 		bshootable=false;
@@ -189,8 +192,10 @@ class HDBossBrain:HDMobBase replaces BossBrain{
 				pmo.vel.z+=3;
 			}
 		}
+		int returnvalue=-1;
 		if(paintimes>maxhp){
-			setstatelabel("death");
+			//setstatelabel("death");
+			returnvalue=super.damagemobj(inflictor,source,health,mod,flags,angle);
 			hdbosseye bbe;
 			thinkeriterator bbem=ThinkerIterator.create("hdbosseye");
 			while(bbe=hdbosseye(bbem.next(true))){
@@ -207,7 +212,7 @@ class HDBossBrain:HDMobBase replaces BossBrain{
 			HDCONST_MINDISTANTSOUND*4
 		);
 
-		return -1;
+		return returnvalue;
 	}
 	void A_SpawnWave(){
 		array<actor> spots;spots.clear();
@@ -356,6 +361,7 @@ class HDBossBrain:HDMobBase replaces BossBrain{
 		BBRN A -1;
 		stop;
 
+	death.instafade:
 	deathfade:
 		BBRN B 7;
 		BBRN B 20 A_Scream();
