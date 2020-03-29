@@ -679,6 +679,7 @@ class GreenSphere:BlueSphere replaces Invulnerabilitysphere{
 		}stop;
 	death:
 		TNT1 A 1{
+			spawn("LightBearer",pos,ALLOW_REPLACE);
 			A_CallSpecial(special,args[0],args[1],args[2],args[3],args[4]);
 			for(int i=45;i<360;i+=90){
 				A_SpawnItemEx("HDExplosion",
@@ -694,7 +695,6 @@ class GreenSphere:BlueSphere replaces Invulnerabilitysphere{
 			}
 			A_Quake(3,26,0,220,"none");
 		}
-		TNT1 A 0 spawn("LightBearer",pos,ALLOW_REPLACE);
 		TNT1 AAAAA 2 A_SpawnItemEx("HDSmoke",
 			frandom(-4,4),frandom(-4,4),frandom(1,4),
 			flags:SXF_NOCHECKPOSITION|SXF_ABSOLUTEMOMENTUM

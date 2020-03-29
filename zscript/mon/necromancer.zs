@@ -271,6 +271,10 @@ class Necromancer:HDMobBase replaces ArchVile{
 			}
 		}
 	}
+	override void beginplay(){
+		hitsleft=bfriendly?7:6;
+		super.beginplay();
+	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		if(
@@ -281,8 +285,6 @@ class Necromancer:HDMobBase replaces ArchVile{
 			A_Die("mapmorph");
 			return;
 		}
-
-		bsmallhead=bplayingid;
 
 		//spawn shards instead if no archvile sprites
 		if(Wads.CheckNumForName("VILER0",wads.ns_sprites,-1,false)<0){
@@ -300,12 +302,13 @@ class Necromancer:HDMobBase replaces ArchVile{
 			return;
 		}
 
+		bsmallhead=bplayingid;
+
 		nickname=LightBearer.randomname();
 
 		hdmobster.spawnmobster(self);
 		HDMobAI.Resize(self,0.8,1.3);
 		A_GiveInventory("ImmunityToFire");
-		hitsleft=bfriendly?7:6;
 	}
 	int hitsleft;
 	void A_ChangeNecroFlags(bool attacking){
