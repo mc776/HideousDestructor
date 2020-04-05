@@ -687,7 +687,7 @@ class HDWeapon:Weapon{
 		---- A 1 A_WeaponOffset(0,-4,WOF_ADD);
 		---- A 1 A_WeaponOffset(0,1,WOF_ADD);
 		---- A 1 A_WeaponOffset(0,2,WOF_ADD);
-		---- A 1 A_Raise(0);
+		---- A 1 A_Raise();
 		wait;
 	deselect0big:
 		---- A 0 A_JumpIfInventory("NulledWeapon",1,"deselect1big");
@@ -716,7 +716,7 @@ class HDWeapon:Weapon{
 		---- A 1 A_WeaponOffset(0,-4,WOF_ADD);
 		---- A 1 A_WeaponOffset(0,1,WOF_ADD);
 		---- A 1 A_WeaponOffset(0,2,WOF_ADD);
-		---- A 1 A_Raise(0);
+		---- A 1 A_Raise();
 		wait;
 	select0small:
 		---- A 1 A_JumpIfInventory("NulledWeapon",1,"select1small");

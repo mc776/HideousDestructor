@@ -88,10 +88,22 @@ extend class HDPlayerPawn{
 		hudbobrecoil2+=apch*0.2;
 		hudbobrecoil3+=apch*0.4;
 		hudbobrecoil4+=apch*0.6;
-		if(wp&&!wp.bweaponbusy){
-			double hdbbx=(hudbobrecoil1.x+hudbob.x)*0.3;
-			double hdbby=max(0,(hudbobrecoil1.y+hudbob.y)*0.3);
-			A_WeaponOffset(hdbbx,hdbby+WEAPONTOP,WOF_INTERPOLATE);
+		if(wp){
+			if(!wp.bweaponbusy){
+				double hdbbx=(hudbobrecoil1.x+hudbob.x)*0.3;
+				double hdbby=max(0,(hudbobrecoil1.y+hudbob.y)*0.3);
+				A_WeaponOffset(hdbbx,hdbby+WEAPONTOP,WOF_INTERPOLATE);
+			}else if(
+				player.getpsprite(PSP_WEAPON).y<WEAPONTOP-1
+			){
+				A_WeaponOffset(
+					player.getpsprite(PSP_WEAPON).x,
+					max(player.getpsprite(PSP_WEAPON).y,WEAPONTOP-1),
+					WOF_INTERPOLATE
+				);
+				stunned+=8;
+				bobcounter=69;
+			}
 		}
 
 
