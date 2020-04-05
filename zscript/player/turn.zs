@@ -94,11 +94,11 @@ extend class HDPlayerPawn{
 				double hdbby=max(0,(hudbobrecoil1.y+hudbob.y)*0.3);
 				A_WeaponOffset(hdbbx,hdbby+WEAPONTOP,WOF_INTERPOLATE);
 			}else if(
-				player.getpsprite(PSP_WEAPON).y<WEAPONTOP-1
+				player.getpsprite(PSP_WEAPON).y<WEAPONTOP
 			){
 				A_WeaponOffset(
 					player.getpsprite(PSP_WEAPON).x,
-					max(player.getpsprite(PSP_WEAPON).y,WEAPONTOP-1),
+					max(player.getpsprite(PSP_WEAPON).y,WEAPONTOP),
 					WOF_INTERPOLATE
 				);
 				stunned+=8;
