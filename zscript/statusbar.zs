@@ -496,7 +496,7 @@ class HDStatusBar:DoomStatusBar{
 		//heartbeat/playercolour tracker
 		if(hpl.beatmax){
 			float cpb=hpl.beatcount*1./hpl.beatmax;
-			fill(color(255,sbcolour.r,sbcolour.g,sbcolour.b),-12,-6-cpb*2,3,-(3+hpl.bloodpressure*0.2), DI_SCREEN_CENTER_BOTTOM);
+			drawrect(-12,-6-cpb*2,3,-(3+hpl.bloodpressure*0.2), DI_SCREEN_CENTER_BOTTOM);
 		}
 
 		//armour
@@ -646,6 +646,13 @@ class HDStatusBar:DoomStatusBar{
 				DTA_Alpha,spectipalpha
 			);
 		}
+	}
+	void drawrect(
+		double posx,double posy,
+		double width,double height,
+		int flags=DI_SCREEN_CENTER_BOTTOM
+	){
+		fill(color(255,sbcolour.r,sbcolour.g,sbcolour.b),posx,posy,width,height,flags);
 	}
 	void drawnum(
 		int num,double xpos,double ypos,
