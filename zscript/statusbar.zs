@@ -529,30 +529,33 @@ class HDStatusBar:DoomStatusBar{
 					(8,mxht),DI_TEXT_ALIGN_LEFT|DI_SCREEN_LEFT_BOTTOM,
 					hpl.overloaded<1.2?Font.CR_OLIVE:hpl.overloaded>2.?Font.CR_RED:Font.CR_GOLD,scale:(0.5,0.5)
 				);
-				drawimage(
-					"GREENPXL",
-					(4,mxht+5),
-					DI_SCREEN_LEFT_BOTTOM|DI_TRANSLATABLE|DI_ITEM_LEFT,
-					1,scale:(1.,min(hpl.maxpocketspace,pocketenc)*20/hpl.maxpocketspace)
+				int encbarheight=mxht+5;
+				fill(
+					color(128,96,96,96),
+					4,encbarheight,1,-1,
+					DI_SCREEN_LEFT_BOTTOM|DI_ITEM_LEFT
 				);
-				drawimage(
-					"BLETA0",
-					(5,mxht+5),
-					DI_SCREEN_LEFT_BOTTOM|DI_TRANSLATABLE|DI_ITEM_LEFT,
-					0.4,scale:(1.,20.)
+				fill(
+					color(128,96,96,96),
+					5,encbarheight,1,-20,
+					DI_SCREEN_LEFT_BOTTOM|DI_ITEM_LEFT
 				);
-				drawimage(
-					"BLETA0",
-					(3,mxht+5),
-					DI_SCREEN_LEFT_BOTTOM|DI_TRANSLATABLE|DI_ITEM_LEFT,
-					0.4,scale:(1.,20.)
+				fill(
+					color(128,96,96,96),
+					3,encbarheight,1,-20,
+					DI_SCREEN_LEFT_BOTTOM|DI_ITEM_LEFT
 				);
-				bool blargh=hpl.flip&&pocketenc>hpl.maxpocketspace;
-				drawimage(
-					blargh?"YELOPXL":"BLETA0",
-					(4,mxht-(20-5)),
-					DI_SCREEN_LEFT_BOTTOM|DI_TRANSLATABLE|DI_ITEM_LEFT|DI_ITEM_TOP,
-					1.,scale:(1.,blargh?3.:1.)
+				encbarheight--;
+				drawrect(
+					4,encbarheight,1,
+					-min(hpl.maxpocketspace,pocketenc)*19/hpl.maxpocketspace,
+					DI_SCREEN_LEFT_BOTTOM|DI_ITEM_LEFT
+				);
+				bool overenc=hpl.flip&&pocketenc>hpl.maxpocketspace;
+				fill(
+					overenc?color(255,216,194,42):color(128,96,96,96),
+					4,encbarheight-19,1,overenc?3:1,
+					DI_SCREEN_LEFT_BOTTOM|DI_ITEM_LEFT
 				);
 			}
 
