@@ -11,6 +11,7 @@ class HDStatusBar:DoomStatusBar{
 	bool blurred;
 	string mug;
 	int bigitemyofs;
+	color sbcolour;
 	override void Init(){
 		BaseStatusBar.Init();
 		SetSize(0,320,200);
@@ -70,6 +71,7 @@ class HDStatusBar:DoomStatusBar{
 	transient cvar hd_xhscale;
 	transient cvar hd_weapondefaults; //TEMPORARY - TO DELETE LATER
 	transient cvar hd_setweapondefault;
+	transient cvar playercolour;
 
 	override void Tick(){
 		if(!hd_mugshot){
@@ -82,6 +84,7 @@ class HDStatusBar:DoomStatusBar{
 			hd_xhscale=cvar.getcvar("hd_xhscale",cplayer);
 			hd_weapondefaults=cvar.getcvar("hd_weapondefaults",cplayer); //TEMPORARY - TO DELETE LATER
 			hd_setweapondefault=cvar.getcvar("hd_setweapondefault",cplayer);
+			playercolour=cvar.getcvar("color",cplayer);
 		}
 		super.tick();
 		hpl=hdplayerpawn(cplayer.mo);
@@ -89,6 +92,8 @@ class HDStatusBar:DoomStatusBar{
 			!cplayer
 			||!hpl
 		)return;
+
+		sbcolour=playercolour.GetString();
 
 		wepsprites.clear();wepspritescales.clear();wepspriteofs.clear();wepspritecounts.clear();
 		for(inventory item=cplayer.mo.inv;item!=null;item=item.inv){
@@ -491,10 +496,7 @@ class HDStatusBar:DoomStatusBar{
 		//heartbeat/playercolour tracker
 		if(hpl.beatmax){
 			float cpb=hpl.beatcount*1./hpl.beatmax;
-			drawimage(
-				"GREENPXL",(-10,-6-cpb*2),DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE,
-				cpb,scale:(3,3+hpl.bloodpressure*0.03)
-			);
+			fill(color(255,sbcolour.r,sbcolour.g,sbcolour.b),-12,-6-cpb*2,3,-(3+hpl.bloodpressure*0.2), DI_SCREEN_CENTER_BOTTOM);
 		}
 
 		//armour
