@@ -209,9 +209,10 @@ class HDStatusBar:DoomStatusBar{
 		//heartbeat/playercolour tracker
 		if(hpl && hpl.beatmax){
 			float cpb=hpl.beatcount*1./hpl.beatmax;
-			drawimage(
-				"GREENPXL",(32,-24-cpb*3),DI_BOTTOMLEFT|DI_TRANSLATABLE,
-				cpb,scale:(4,4+hpl.bloodpressure*0.05)
+			drawrect(
+				32,-24-cpb*3,
+				4,-(4+hpl.bloodpressure*0.05),
+				DI_BOTTOMLEFT
 			);
 		}
 		//health
@@ -629,10 +630,7 @@ class HDStatusBar:DoomStatusBar{
 		drawtip();
 
 		//debug centre line
-		if(hd_debug)drawimage(
-			"GREENPXL",(0,0),DI_SCREEN_CENTER_BOTTOM,
-			0.06,scale:(0.6,100)
-		);
+		if(hd_debug)fill(color(96,24,96,18),-0.3,0,0.6,100, DI_SCREEN_CENTER);
 
 	}
 	void drawtip(){
@@ -710,11 +708,15 @@ class HDStatusBar:DoomStatusBar{
 			healthbars[STB_BEATERSIZE-1]=(hpl.inpain?random[heart](1,7):1)+err+random[heart](0,(hpl.bloodpressure>>3));
 		}
 		for(int i=0;i<STB_BEATERSIZE;i++){
-			drawimage(
-				(cp.health>70?"GREENPXL":cp.health>33?"YELOPXL":"REDPXL"),
-				drawpos+(i-(STB_BEATERSIZE>>2),0),
-				flags|DI_ITEM_CENTER|(cp.health>70?DI_TRANSLATABLE:0),
-				scale:(0.8,healthbars[i]*0.6)
+			fill(
+				(
+					cp.health>70?color(255,sbcolour.r,sbcolour.g,sbcolour.b)
+					:cp.health>33?color(255,224,200,0)
+					:color(255,128,0,0)
+				),
+				drawpos.x+i-(STB_BEATERSIZE>>2),drawpos.y-healthbars[i]*0.3,
+				0.8,healthbars[i]*0.6,
+				flags|DI_ITEM_CENTER|(cp.health>70?DI_TRANSLATABLE:0)
 			);
 		}
 	}
