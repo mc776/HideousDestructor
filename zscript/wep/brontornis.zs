@@ -100,7 +100,7 @@ class Brontornis:HDWeapon{
 			sb.drawimage("BROCA0",(-48,-10),sb.DI_SCREEN_CENTER_BOTTOM,scale:(0.7,0.7));
 			sb.drawnum(hpl.countinv("BrontornisRound"),-45,-8,sb.DI_SCREEN_CENTER_BOTTOM);
 		}
-		if(hdw.weaponstatus[BRONS_CHAMBER]>1)sb.drawwepdot(-16,-10,(5,3));
+		if(hdw.weaponstatus[BRONS_CHAMBER]>1)sb.drawrect(-21,-13,5,3);
 		sb.drawwepnum(
 			hpl.countinv("BrontornisRound"),
 			(HDCONST_MAXPOCKETSPACE/ENC_BRONTOSHELL)
