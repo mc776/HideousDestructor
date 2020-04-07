@@ -38,16 +38,14 @@ extend class HDStatusBar{
 			?max(((value*6/maxvalue)<<2),(value>0)):
 			(value*24/maxvalue)
 		;
-		drawimage(
-			"GREENPXL",
-			(posx,posy),
-			DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE|DI_ITEM_RIGHT,
-			1,scale:(min(24,valx),2)
+		drawrect(
+			posx,posy,
+			max(-24,-valx),-2
 		);
 		if(valx>24)fill(
 			color(255,240,230,40),
-			posx-25,posy-2,
-			1,2,
+			posx-24,posy,
+			-1,-2,
 			DI_SCREEN_CENTER_BOTTOM|DI_ITEM_RIGHT
 		);
 	}

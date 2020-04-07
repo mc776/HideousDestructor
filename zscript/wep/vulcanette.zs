@@ -175,16 +175,12 @@ class Vulcanette:HDWeapon{
 		}
 		bool bat=hdw.weaponstatus[VULCS_BATTERY]>0;
 		int mags=hdw.weaponstatus[VULCS_MAGS];
-		for(int i=1;i<5;i++){
+		for(int i=0;i<5;i++){
 			if(
 				mags>magmultindex[i]
 				||(!i&&mags>0)
-			)sb.drawwepdot(-16-i*4,-13,(3,2));
-			if(bat&&hdw.weaponstatus[0]&chamberflag[i])sb.drawimage(
-				"GREENPXL",(-14,-15+i*2),
-				sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TRANSLATABLE|sb.DI_ITEM_RIGHT,
-				1,(4,1)
-			);
+			)sb.drawrect(-19-i*4,-15,3,2);
+			if(bat&&hdw.weaponstatus[0]&chamberflag[i])sb.drawrect(-15,-14+i*2,1,1);
 		}
 		sb.drawwepnum(
 			(hdw.weaponstatus[VULCS_MAGS]%VULC_MAGBASE)-1,
