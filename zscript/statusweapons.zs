@@ -16,13 +16,6 @@ extend class HDStatusBar{
 			);
 		}
 	}
-	void drawwepdot(int posx,int posy,vector2 dotscale=(3.,3.)){
-		drawimage(
-			"GREENPXL",(posx,posy),
-			DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE|DI_ITEM_RIGHT,
-			1,scale:dotscale
-		);
-	}
 	void drawwepnum(int value,double mxval,int posx=-16,int posy=-6,bool alwaysprecise=false){
 		int maxvalue=int(mxval);
 		if(!maxvalue)return;

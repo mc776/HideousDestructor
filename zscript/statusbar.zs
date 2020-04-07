@@ -494,7 +494,7 @@ class HDStatusBar:DoomStatusBar{
 		//heartbeat/playercolour tracker
 		if(hpl.beatmax){
 			float cpb=hpl.beatcount*1./hpl.beatmax;
-			drawrect(-12,-6-cpb*2,3,-(3+hpl.bloodpressure*0.1), DI_SCREEN_CENTER_BOTTOM);
+			drawrect(-12,-6-cpb*2,3,-(3+hpl.bloodpressure*0.05), DI_SCREEN_CENTER_BOTTOM);
 		}
 
 		//armour

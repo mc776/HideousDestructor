@@ -87,7 +87,7 @@ class HDSMG:HDWeapon{
 			-22,-10,"RBRSA3A7","STBURAUT","STFULAUT"
 		);
 		sb.drawwepnum(hdw.weaponstatus[SMGS_MAG],30);
-		if(hdw.weaponstatus[SMGS_CHAMBER]==2)sb.drawwepdot(-16,-10,(3,1));
+		if(hdw.weaponstatus[SMGS_CHAMBER]==2)sb.drawrect(-19,-11,3,1);
 	}
 	override string gethelptext(){
 		return

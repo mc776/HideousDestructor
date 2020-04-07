@@ -89,9 +89,9 @@ class BFG9K:HDCellWeapon replaces BFG9000{
 			Font.CR_DARKGRAY
 		);
 		if(hdw.weaponstatus[0]&BFGF_STRAPPED){
-			sb.drawwepdot(-16,-16,(10,1));
-			sb.drawwepdot(-16,-19,(8,1));
-			sb.drawwepdot(-16,-22,(5,1));
+			sb.drawrect(-26,-17,10,1);
+			sb.drawrect(-24,-20,8,1);
+			sb.drawrect(-21,-23,5,1);
 		}
 		sb.drawwepnum(hdw.weaponstatus[BFGS_CHARGE],20);
 	}

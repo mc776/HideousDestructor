@@ -151,8 +151,8 @@ class HDMedikitter:HDWoundFixer{
 			of=clamp(int(hpl.woundcount*0.1),1,3);
 			if(hpl.flip)of=-of;
 		}
-		sb.drawwepdot(-27,-11+of,(2,6));
-		sb.drawwepdot(-25,-13+of,(6,2));
+		sb.drawrect(-29,-17+of,2,6);
+		sb.drawrect(-31,-15+of,6,2);
 		if(ww.weaponstatus[MEDS_USEDON]>=0)sb.drawimage(
 			"BLUDC0",(-14,-7),
 			sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_ITEM_RIGHT,
@@ -698,8 +698,8 @@ class SelfBandage:HDWoundFixer{
 			of=clamp(int(hpl.woundcount*0.2),1,3);
 			if(hpl.flip)of=-of;
 		}
-		sb.drawwepdot(-22,-8+of,(2,10));
-		sb.drawwepdot(-17,-12+of,(12,2));
+		sb.drawrect(-24,-18+of,2,10);
+		sb.drawrect(-29,-14+of,12,2);
 	}
 	override inventory CreateTossable(int amount){
 		DropMeds(owner,0);

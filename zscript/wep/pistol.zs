@@ -97,7 +97,7 @@ class HDPistol:HDHandgun replaces Pistol{
 			-22,-10,"RBRSA3A7","STFULAUT"
 		);
 		sb.drawwepnum(hdw.weaponstatus[PISS_MAG],15);
-		if(hdw.weaponstatus[PISS_CHAMBER]==2)sb.drawwepdot(-16,-10,(3,1));
+		if(hdw.weaponstatus[PISS_CHAMBER]==2)sb.drawrect(-19,-11,3,1);
 	}
 	override string gethelptext(){
 		return

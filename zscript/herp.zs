@@ -810,7 +810,7 @@ class HERPUsable:HDWeapon{
 
 		//bottom status bar
 		for(int i=2;i<4;i++){
-			if(hdw.weaponstatus[i]>=0)sb.drawwepdot(-8-i*4,-13,(3,2));
+			if(hdw.weaponstatus[i]>=0)sb.drawrect(-11-i*4,-15,3,2);
 		}
 		sb.drawwepnum(hdw.weaponstatus[1]%100,50,posy:-10);
 		sb.drawwepcounter(hdw.weaponstatus[0]&HERPF_STARTOFF,
