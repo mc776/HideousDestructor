@@ -49,26 +49,26 @@ class HDRL:HDWeapon{
 			!(hdw.weaponstatus[0]&RLF_GRENADEMODE)
 		){
 			if(hdw.weaponstatus[RLS_CHAMBER]>1){
-				sb.drawwepdot(-19,-13,(3,2));
-				sb.drawwepdot(-16,-13,(2,2));
-				sb.drawwepdot(-22,-11,(4,6));
-				sb.drawwepdot(-26,-12,(4,4));
+				sb.drawrect(-22,-15,3,2);
+				sb.drawrect(-18,-15,2,2);
+				sb.drawrect(-26,-17,4,6);
+				sb.drawrect(-30,-16,4,4);
 			}else{
-				sb.drawwepdot(-19,-12,(3,1));
-				sb.drawwepdot(-16,-12,(2,1));
-				sb.drawwepdot(-22,-11,(4,3));
+				sb.drawrect(-22,-13,3,1);
+				sb.drawrect(-18,-13,2,1);
+				sb.drawrect(-26,-14,4,3);
 			}
 		}else{
-			sb.drawwepdot(-22,-26+min(16,ab/10),(4,1));
-			sb.drawwepdot(-22,-10,(1,16));
-			sb.drawwepdot(-24,-10,(1,16));
+			sb.drawrect(-26,-27+min(16,ab/10),4,1);
+			sb.drawrect(-23,-26,1,16);
+			sb.drawrect(-25,-26,1,16);
 		}
 		sb.drawnum(ab,
 			-32,-15,sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TEXT_ALIGN_RIGHT,
 			ab?Font.CR_WHITE:Font.CR_DARKGRAY
 		);
 		sb.drawwepnum(hdw.weaponstatus[RLS_MAG],6);
-		if(hdw.weaponstatus[RLS_CHAMBER]>0)sb.drawwepdot(-16,-10,(3,1));
+		if(hdw.weaponstatus[RLS_CHAMBER]>0)sb.drawrect(-19,-11,3,1);
 	}
 	override string gethelptext(){
 		return
@@ -589,7 +589,7 @@ class Blooper:HDWeapon{
 			sb.drawimage("ROQPA0",(-52,-4),sb.DI_SCREEN_CENTER_BOTTOM,scale:(0.6,0.6));
 			sb.drawnum(hpl.countinv("HDRocketAmmo"),-45,-8,sb.DI_SCREEN_CENTER_BOTTOM);
 		}
-		if(hdw.weaponstatus[0]&BLOPF_LOADED)sb.drawwepdot(-16,-10,(5,3));
+		if(hdw.weaponstatus[0]&BLOPF_LOADED)sb.drawrect(-21,-13,5,3);
 		int ab=hdw.airburst;
 		sb.drawnum(ab,
 			-28,-15,sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TEXT_ALIGN_RIGHT,
@@ -599,9 +599,9 @@ class Blooper:HDWeapon{
 			hpl.countinv("HDRocketAmmo"),
 			(HDCONST_MAXPOCKETSPACE/ENC_ROCKET)
 		);
-		sb.drawwepdot(-22,-26+min(16,ab/10),(4,1));
-		sb.drawwepdot(-22,-10,(1,16));
-		sb.drawwepdot(-24,-10,(1,16));
+		sb.drawrect(-26,-27+min(16,ab/10),4,1);
+		sb.drawrect(-23,-26,1,16);
+		sb.drawrect(-25,-26,1,16);
 	}
 	override string gethelptext(){
 		return

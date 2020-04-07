@@ -297,11 +297,11 @@ class LiberatorRifle:AutoReloadingThingy{
 				sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TRANSLATABLE|sb.DI_ITEM_RIGHT
 			);
 		}
-		if(hdw.weaponstatus[0]&LIBF_GRENADELOADED)sb.drawwepdot(-16,-13,(4,2.6));
+		if(hdw.weaponstatus[0]&LIBF_GRENADELOADED)sb.drawrect(-20,-15.6,4,2.6);
 		int lod=max(hdw.weaponstatus[LIBS_MAG],0);
 		sb.drawwepnum(lod,30);
 		if(hdw.weaponstatus[LIBS_CHAMBER]==2){
-			sb.drawwepdot(-16,-10,(3,1));
+			sb.drawrect(-19,-11,3,1);
 			lod++;
 		}
 		if(hdw.weaponstatus[0]&LIBF_GRENADEMODE){
@@ -310,9 +310,9 @@ class LiberatorRifle:AutoReloadingThingy{
 				-30,-22,sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TEXT_ALIGN_RIGHT,
 				ab?Font.CR_WHITE:Font.CR_DARKGRAY
 			);
-			sb.drawwepdot(-30,-42+min(16,ab/10),(4,1));
-			sb.drawwepdot(-30,-26,(1,16));
-			sb.drawwepdot(-32,-26,(1,16));
+			sb.drawrect(-34,-43+min(16,ab/10),4,1);
+			sb.drawrect(-31,-42,1,16);
+			sb.drawrect(-33,-42,1,16);
 		}
 	}
 	override string gethelptext(){

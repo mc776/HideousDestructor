@@ -57,8 +57,8 @@ class HDGrenadeThrower:HDWeapon{
 		);
 		sb.drawwepnum(hdw.weaponstatus[FRAGS_FORCE],50,posy:-10,alwaysprecise:true);
 		if(!(hdw.weaponstatus[0]&FRAGF_SPOONOFF)){
-			sb.drawwepdot(-16,-15,(5,4));
-			if(!(hdw.weaponstatus[0]&FRAGF_PINOUT))sb.drawwepdot(-22,-16,(3,2));
+			sb.drawrect(-21,-19,5,4);
+			if(!(hdw.weaponstatus[0]&FRAGF_PINOUT))sb.drawrect(-25,-18,3,2);
 		}else{
 			int timer=hdw.weaponstatus[FRAGS_TIMER];
 			if(timer%3)sb.drawwepnum(140-timer,140,posy:-15,alwaysprecise:true);
