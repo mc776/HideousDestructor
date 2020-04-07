@@ -177,10 +177,7 @@ class HDStatusBar:DoomStatusBar{
 			}
 		}
 
-		if(hpl.countinv("WornRadsuit"))drawimage(
-			"DRKGRNPX",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
-			alpha:0.6,scale:(1000,600)
-		);
+		if(hpl.countinv("WornRadsuit"))fill(color(160,10,40,14),0,0,800,600);
 
 		if(idmypos)drawmypos();
 	}

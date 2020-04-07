@@ -49,23 +49,26 @@ class HDRevolver:HDHandgun{
 		}
 		int plf=hpl.player.getpsprite(PSP_WEAPON).frame;
 		for(int i=BUGS_CYL1;i<=BUGS_CYL6;i++){
-			string which=(hdw.weaponstatus[i]>0)?"YELOPXL":"DRKGRNPX";
 			double drawangle=i*(360./6.)-150;
 			vector2 cylpos;
 			if(plf==4){
 				drawangle-=45.;
-				cylpos=(-28,-12);
+				cylpos=(-28,-14);
 			}else if(cylinderopen){
 				drawangle-=90;
-				cylpos=(-32,-8);
+				cylpos=(-32,-12);
 			}else{
-				cylpos=(-20,-16);
+				cylpos=(-20,-20);
 			}
 			vector2 drawpos=cylpos+(cos(drawangle),sin(drawangle))*5;
-			sb.drawimage(
-				which,drawpos,
-				sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TRANSLATABLE|sb.DI_ITEM_RIGHT,
-				1,scale:(3,3)
+			sb.fill(
+				hdw.weaponstatus[i]>0?
+				color(255,240,230,40)
+				:color(200,30,26,24),
+				drawpos.x,
+				drawpos.y,
+				3,3,
+				sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_ITEM_RIGHT
 			);
 		}
 	}

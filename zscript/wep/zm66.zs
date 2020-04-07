@@ -180,12 +180,10 @@ class ZM66AssaultRifle:HDWeapon{
 					"zm66scop",(0,scaledyoffset)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
 					scale:(0.82,0.82)
 				);
-				sb.drawnum(int(degree*10),
-					3+bob.x,74+bob.y,sb.DI_SCREEN_CENTER,Font.CR_BLACK
-				);
-				sb.drawimage(
-					"BLETA0",(0,78)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
-					alpha:0.6,scale:(1.3,1.3)
+				sb.drawstring(
+					sb.mAmountFont,string.format("%.1f",degree),
+					(6+bob.x,74+bob.y),sb.DI_SCREEN_CENTER|sb.DI_TEXT_ALIGN_RIGHT,
+					Font.CR_BLACK
 				);
 			}
 		}

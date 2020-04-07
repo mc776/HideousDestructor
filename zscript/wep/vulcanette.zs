@@ -269,12 +269,10 @@ class Vulcanette:HDWeapon{
 				"zm66scop",(0,scaledyoffset)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
 				scale:(0.8,0.8)
 			);
-			sb.drawnum(int(degree*10),
-				3+bob.x,73+bob.y,sb.DI_SCREEN_CENTER,Font.CR_BLACK
-			);
-			sb.drawimage(
-				"BLETA0",(0,77)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
-				alpha:0.6,scale:(1.3,1.3)
+			sb.drawstring(
+				sb.mAmountFont,string.format("%.1f",degree),
+				(6+bob.x,73+bob.y),sb.DI_SCREEN_CENTER|sb.DI_TEXT_ALIGN_RIGHT,
+				Font.CR_BLACK
 			);
 		}
 	}
