@@ -179,12 +179,12 @@ class Vulcanette:HDWeapon{
 			if(
 				mags>magmultindex[i]
 				||(!i&&mags>0)
-			)sb.drawrect(-19-i*4,-15,3,2);
+			)sb.drawrect(-19-i*4,-14,3,2);
 			if(bat&&hdw.weaponstatus[0]&chamberflag[i])sb.drawrect(-15,-14+i*2,1,1);
 		}
 		sb.drawwepnum(
 			(hdw.weaponstatus[VULCS_MAGS]%VULC_MAGBASE)-1,
-			50,posy:-10
+			50,posy:-9
 		);
 		sb.drawwepcounter(hdw.weaponstatus[0]&VULCF_FAST,
 			-28,-16,"blank","STFULAUT"
