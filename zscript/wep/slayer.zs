@@ -50,25 +50,25 @@ class Slayer:HDShotgun replaces HDShotgun{
 			sb.drawimage("SHL1A0",(-47,-10),sb.DI_SCREEN_CENTER_BOTTOM);
 			sb.drawnum(hpl.countinv("HDShellAmmo"),-46,-8,sb.DI_SCREEN_CENTER_BOTTOM);
 		}
-		int loffs=-28;int rofs=-16;
+		int loffs=-31;int rofs=-18;
 		if(hdw.weaponstatus[0]&SLAYF_DOUBLE){
-			loffs=-24;rofs=-20;
+			loffs=-27;rofs=-23;
 			sb.drawimage("STBURAUT",(-23,-17),sb.DI_SCREEN_CENTER_BOTTOM);
 		}
 		if(hdw.weaponstatus[SLAYS_CHAMBER1]>1){
-			sb.drawwepdot(loffs,-10,(3,5));
-			sb.drawwepdot(loffs,-7,(3,2));
+			sb.drawrect(loffs,-15,3,5);
+			sb.drawrect(loffs,-9,3,2);
 		}else if(hdw.weaponstatus[SLAYS_CHAMBER1]>0){
-			sb.drawwepdot(loffs,-7,(3,2));
+			sb.drawrect(loffs,-9,3,2);
 		}
 		if(hdw.weaponstatus[SLAYS_CHAMBER2]>1){
-			sb.drawwepdot(rofs,-10,(3,5));
-			sb.drawwepdot(rofs,-7,(3,2));
+			sb.drawrect(rofs,-15,3,5);
+			sb.drawrect(rofs,-9,3,2);
 		}else if(hdw.weaponstatus[SLAYS_CHAMBER2]>0){
-			sb.drawwepdot(rofs,-7,(3,2));
+			sb.drawrect(rofs,-9,3,2);
 		}
 		for(int i=hdw.weaponstatus[SHOTS_SIDESADDLE];i>0;i--){
-			sb.drawwepdot(-10-i*2,-2,(1,3));
+			sb.drawrect(-11-i*2,-5,1,3);
 		}
 	}
 	override string gethelptext(){

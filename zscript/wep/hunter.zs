@@ -66,18 +66,18 @@ class Hunter:HDShotgun{
 			);
 		}
 		if(hdw.weaponstatus[HUNTS_CHAMBER]>1){
-			sb.drawwepdot(-19,-11,(5,3));
-			sb.drawwepdot(-16,-11,(2,3));
+			sb.drawrect(-24,-14,5,3);
+			sb.drawrect(-18,-14,2,3);
 		}
 		else if(hdw.weaponstatus[HUNTS_CHAMBER]>0){
-			sb.drawwepdot(-16,-11,(2,3));
+			sb.drawrect(-18,-14,2,3);
 		}
 		if(!(hdw.weaponstatus[0]&HUNTF_EXPORT))sb.drawwepcounter(hdw.weaponstatus[HUNTS_FIREMODE],
 			-26,-12,"blank","RBRSA3A7","STFULAUT"
 		);
 		sb.drawwepnum(hdw.weaponstatus[HUNTS_TUBE],hdw.weaponstatus[HUNTS_TUBESIZE],posy:-7);
 		for(int i=hdw.weaponstatus[SHOTS_SIDESADDLE];i>0;i--){
-			sb.drawwepdot(-15-i*2,-2,(1,3));
+			sb.drawrect(-16-i*2,-5,1,3);
 		}
 	}
 	override string gethelptext(){
