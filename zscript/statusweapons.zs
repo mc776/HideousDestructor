@@ -44,11 +44,11 @@ extend class HDStatusBar{
 			DI_SCREEN_CENTER_BOTTOM|DI_TRANSLATABLE|DI_ITEM_RIGHT,
 			1,scale:(min(24,valx),2)
 		);
-		if(valx>24)drawimage(
-			"YELOPXL",
-			(posx-24,posy),
-			DI_SCREEN_CENTER_BOTTOM|DI_ITEM_RIGHT,
-			1,scale:(1,2)
+		if(valx>24)fill(
+			color(255,240,230,40),
+			posx-25,posy-2,
+			1,2,
+			DI_SCREEN_CENTER_BOTTOM|DI_ITEM_RIGHT
 		);
 	}
 	//"" means ignore this value and move on to the next check.
