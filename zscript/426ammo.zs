@@ -59,6 +59,7 @@ class HD4mMag:HDMagAmmo{
 		hdmagammo.roundtype "FourMilAmmo";
 		hdmagammo.roundbulk ENC_426_LOADED;
 		hdmagammo.magbulk ENC_426MAG_EMPTY;
+		hdmagammo.extracttime 8;
 
 		tag "4.26mm UAC Standard magazine";
 		hdpickup.refid HDLD_FOURMAG;
