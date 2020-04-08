@@ -125,7 +125,7 @@ class HD4mMag:HDMagAmmo{
 				owner.A_StartSound("weapons/rifleclick",CHAN_WEAPON,CHANF_OVERLAP);
 				return false;
 			}
-		}else extracttime=getdefaultbytype(getclassname()).extracttime;
+		}else extracttime=getdefaultbytype(getclass()).extracttime;
 		int totake=min(random(1,24),mags[mindex]);
 		if(totake<HDPickup.MaxGive(owner,roundtype,roundbulk))HDF.Give(owner,roundtype,totake);
 		else HDPickup.DropItem(owner,roundtype,totake);
