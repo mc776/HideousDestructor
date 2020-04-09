@@ -656,7 +656,8 @@ class HDStatusBar:DoomStatusBar{
 	){
 		fill(color(255,sbcolour.r,sbcolour.g,sbcolour.b),posx,posy,width,height,flags);
 	}
-	deprecated ("4.3.3d","Use drawrect() instead") void drawwepdot(int posx,int posy,vector2 dotscale=(3.,3.)){
+	//deprecated, please use drawrect instead
+	void drawwepdot(int posx,int posy,vector2 dotscale=(3.,3.)){
 		drawrect(posx-dotscale.x,posy-dotscale.y,dotscale.x,dotscale.y);
 	}
 	void drawnum(
