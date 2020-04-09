@@ -266,7 +266,7 @@ class tempshield:HDActor{
 struct HDMath{
 	//deprecated function, DO NOT USE
 	//kept here to keep too much stuff from breaking the moment 4.2.4a comes out)
-	static int MaxInv(actor holder,class<inventory> inv){
+	static deprecated("4.2.4a","Use HDPickup.MaxGive() instead") int MaxInv(actor holder,class<inventory> inv){
 		console.printf("HDMath.MaxInv() is now deprecated as of HD 4.2.4a. Its contents have been stripped to return only the item's maxamount. Please use HDPickup.MaxGive() instead, which returns actual space left in pockets rather than a theoretical maximum.");
 		if(holder.findinventory(inv))return holder.findinventory(inv).maxamount;
 		return getdefaultbytype(inv).maxamount;

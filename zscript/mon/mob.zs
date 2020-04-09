@@ -87,10 +87,7 @@ class HDMobBase : HDActor{
 
 
 
-
-
-//below this, only deprecated code
-
+//someday I will have the time, motivation and organization to update this
 
 #include "zscript/mon/mobai_old.zs"
 
