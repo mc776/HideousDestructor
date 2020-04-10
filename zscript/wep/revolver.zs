@@ -53,14 +53,23 @@ class HDRevolver:HDHandgun{
 			vector2 cylpos;
 			if(plf==4){
 				drawangle-=45.;
-				cylpos=(-28,-14);
+				cylpos=(-30,-14);
 			}else if(cylinderopen){
 				drawangle-=90;
-				cylpos=(-32,-12);
+				cylpos=(-34,-12);
 			}else{
-				cylpos=(-20,-20);
+				cylpos=(-22,-20);
 			}
-			vector2 drawpos=cylpos+(cos(drawangle),sin(drawangle))*5;
+			double cdrngl=cos(drawangle);
+			double sdrngl=sin(drawangle);
+			if(
+				!cylinderopen
+				&&sb.hud_aspectscale.getbool()
+			){
+				cdrngl*=1.1;
+				sdrngl*=(1./1.1);
+			}
+			vector2 drawpos=cylpos+(cdrngl,sdrngl)*5;
 			sb.fill(
 				hdw.weaponstatus[i]>0?
 				color(255,240,230,40)

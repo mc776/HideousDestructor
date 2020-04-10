@@ -72,6 +72,7 @@ class HDStatusBar:DoomStatusBar{
 	transient cvar hd_weapondefaults; //TEMPORARY - TO DELETE LATER
 	transient cvar hd_setweapondefault;
 	transient cvar playercolour;
+	transient cvar hud_aspectscale;
 
 	override void Tick(){
 		if(!hd_mugshot){
@@ -84,6 +85,7 @@ class HDStatusBar:DoomStatusBar{
 			hd_xhscale=cvar.getcvar("hd_xhscale",cplayer);
 			hd_weapondefaults=cvar.getcvar("hd_weapondefaults",cplayer); //TEMPORARY - TO DELETE LATER
 			hd_setweapondefault=cvar.getcvar("hd_setweapondefault",cplayer);
+			hud_aspectscale=cvar.getcvar("hud_aspectscale",cplayer);
 			playercolour=cvar.getcvar("color",cplayer);
 		}
 		super.tick();
