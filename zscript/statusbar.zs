@@ -717,8 +717,8 @@ class HDStatusBar:DoomStatusBar{
 			fill(
 				(
 					cp.health>70?color(alf,sbcolour.r,sbcolour.g,sbcolour.b)
-					:cp.health>33?color(alf,224,200,0)
-					:color(alf,128,0,0)
+					:cp.health>33?color(alf,240,210,10)
+					:color(alf,220,0,0)
 				),
 				drawpos.x+i-(STB_BEATERSIZE>>2),drawpos.y-healthbars[i]*0.3,
 				0.8,healthbars[i]*0.6,
