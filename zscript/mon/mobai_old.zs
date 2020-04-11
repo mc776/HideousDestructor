@@ -412,7 +412,10 @@ class HDMobster:IdleDummy{
 
 			//decide where to place goal
 			target=master.target;
-			if(threat){
+			if(
+				threat
+				&&checksight(threat)
+			){
 				bored=0;
 				master.bfrightened=true;
 				master.goal=self;master.bchasegoal=true;
