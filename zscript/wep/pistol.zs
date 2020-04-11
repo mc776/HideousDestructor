@@ -104,7 +104,8 @@ class HDPistol:HDHandgun replaces Pistol{
 		WEPHELP_FIRESHOOT
 		..((weaponstatus[0]&PISF_SELECTFIRE)?(WEPHELP_FIREMODE.."  Semi/Auto\n"):"")
 		..WEPHELP_ALTRELOAD.."  Quick-Swap (if available)\n"
-		..WEPHELP_RELOADRELOAD
+		..WEPHELP_RELOAD.."  Reload mag\n"
+		..WEPHELP_USE.."+"..WEPHELP_RELOAD.."  Reload chamber\n"
 		..WEPHELP_MAGMANAGER
 		..WEPHELP_UNLOADUNLOAD
 		;
@@ -334,8 +335,16 @@ class HDPistol:HDHandgun replaces Pistol{
 		---- A 0{
 			invoker.weaponstatus[0]&=~PISF_JUSTUNLOAD;
 			if(invoker.weaponstatus[PISS_MAG]>=15)setweaponstate("nope");
-			else if(HDMagAmmo.NothingLoaded(self,"HD9mMag15")){
-				if(countinv("HDPistolAmmo"))setweaponstate("loadchamber");
+			else if(
+				invoker.weaponstatus[SMGS_MAG]<0
+				&&(
+					pressinguse()
+					||HDMagAmmo.NothingLoaded(self,"HD9mMag15")
+				)
+			){
+				if(
+					countinv("HDPistolAmmo")
+				)setweaponstate("loadchamber");
 				else setweaponstate("nope");
 			}
 		}goto unmag;

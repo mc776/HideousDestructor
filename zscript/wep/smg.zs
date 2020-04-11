@@ -92,7 +92,8 @@ class HDSMG:HDWeapon{
 	override string gethelptext(){
 		return
 		WEPHELP_FIRESHOOT
-		..WEPHELP_RELOAD.."  Reload\n"
+		..WEPHELP_RELOAD.."  Reload mag\n"
+		..WEPHELP_USE.."+"..WEPHELP_RELOAD.."  Reload chamber\n"
 		..WEPHELP_FIREMODE.."  Semi/Burst/Auto\n"
 		..WEPHELP_MAGMANAGER
 		..WEPHELP_UNLOADUNLOAD
@@ -278,10 +279,15 @@ class HDSMG:HDWeapon{
 		#### A 0{
 			invoker.weaponstatus[0]&=~SMGF_JUSTUNLOAD;
 			if(invoker.weaponstatus[SMGS_MAG]>=30)setweaponstate("nope");
-			else if(HDMagAmmo.NothingLoaded(self,"HD9mMag30")){
+			else if(
+				invoker.weaponstatus[SMGS_MAG]<0
+				&&(
+					pressinguse()
+					||HDMagAmmo.NothingLoaded(self,"HD9mMag30")
+				)
+			){
 				if(
-					invoker.weaponstatus[SMGS_MAG]<0
-					&&countinv("HDPistolAmmo")
+					countinv("HDPistolAmmo")
 				)setweaponstate("loadchamber");
 				else setweaponstate("nope");
 			}

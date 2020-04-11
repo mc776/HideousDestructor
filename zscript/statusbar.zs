@@ -208,10 +208,12 @@ class HDStatusBar:DoomStatusBar{
 		//heartbeat/playercolour tracker
 		if(hpl && hpl.beatmax){
 			float cpb=hpl.beatcount*1./hpl.beatmax;
+			float ysc=-(4+hpl.bloodpressure*0.05);
+			if(!hud_aspectscale.getbool())ysc*=1.2;
 			fill(
 				color(int(cpb*255),sbcolour.r,sbcolour.g,sbcolour.b),
 				32,-24-cpb*3,
-				4,-(4+hpl.bloodpressure*0.05),
+				4,ysc,
 				DI_BOTTOMLEFT
 			);
 		}
@@ -497,9 +499,11 @@ class HDStatusBar:DoomStatusBar{
 		//heartbeat/playercolour tracker
 		if(hpl.beatmax){
 			float cpb=hpl.beatcount*1./hpl.beatmax;
+			float ysc=-(3+hpl.bloodpressure*0.05);
+			if(!hud_aspectscale.getbool())ysc*=1.2;
 			fill(
 				color(int(cpb*255),sbcolour.r,sbcolour.g,sbcolour.b),
-				-12,-6-cpb*2,3,-(3+hpl.bloodpressure*0.05), DI_SCREEN_CENTER_BOTTOM
+				-12,-6-cpb*2,3,ysc, DI_SCREEN_CENTER_BOTTOM
 			);
 		}
 
