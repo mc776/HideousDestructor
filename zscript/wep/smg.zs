@@ -254,17 +254,24 @@ class HDSMG:HDWeapon{
 		---- A 0 A_JumpIf(!countinv("HDPistolAmmo"),"nope");
 		---- A 1 offset(0,34) A_StartSound("weapons/pocket",9);
 		---- A 1 offset(2,36);
-		#### B 1 offset(5,40);
-		#### B 4 offset(4,39){
+		---- A 1 offset(2,44);
+		#### B 1 offset(5,58);
+		#### B 2 offset(7,70);
+		#### B 6 offset(8,80);
+		#### A 10 offset(8,87){
 			if(countinv("HDPistolAmmo")){
 				A_TakeInventory("HDPistolAmmo",1,TIF_NOTAKEINFINITE);
 				invoker.weaponstatus[SMGS_CHAMBER]=2;
 				A_StartSound("weapons/smgchamber",8);
-			}
+			}else A_SetTics(4);
 		}
-		#### B 7 offset(5,37);
-		#### B 1 offset(2,36);
-		#### A 1 offset(0,34);
+		#### A 3 offset(9,76);
+		---- A 2 offset(5,70);
+		---- A 1 offset(5,64);
+		---- A 1 offset(5,52);
+		---- A 1 offset(5,42);
+		---- A 1 offset(2,36);
+		---- A 2 offset(0,34);
 		goto nope;
 	user4:
 	unload:
