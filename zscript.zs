@@ -1,3 +1,5 @@
+// HD's main ZScript lump.
+
 version "4.3"
 
 const HDCONST_TAU = 6.2831853;
@@ -100,6 +102,7 @@ const HDCONST_MINEYERANGE=18.;
 #include "zscript/wep/pistol.zs"
 #include "zscript/wep/fist.zs"
 
+
 #include "zscript/wep/tripwires.zs"
 #include "zscript/wep/grenade.zs"
 
@@ -148,4 +151,8 @@ const HDCONST_MINEYERANGE=18.;
 #include "zscript/menu.zs"
 
 
+
+
+//move along, nothing to see here
+#include "zscript/wep/newshotguns.zs"
 
