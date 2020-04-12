@@ -14,10 +14,10 @@ class HDShellClasses:Actor{
 		super.PostBeginPlay();
 
 		//test
-		NewHDShellAmmo.FireShell(self,0,32,7);
-		NewHDShellAmmo.FireShell(players[0].mo,1,32,7);
-		NewHDShellAmmo.FireShell(self,2,32,7);
-		NewHDShellAmmo.FireShell(self,3,32,7);
+		FireShell(self,0,32,7);
+		FireShell(players[0].mo,1,32,7);
+		FireShell(self,2,32,7);
+		FireShell(self,3,32,7);
 	}
 	void init(){
 		classnames.clear();
@@ -68,16 +68,22 @@ class HDShellClasses:Actor{
 		return total;
 	}
 
-	//grab one instance of the class
-	static NewHDShellAmmo GetShellAmmo(int which){
+	//convert the number given to the shell class name
+	//HDShellClasses.IntToName(_)
+	static string IntToName(int which){
 		HDShellClasses hdsc=null;
 		thinkeriterator hdscit=thinkeriterator.create("HDShellClasses");
 		while(hdsc=HDShellClasses(hdscit.next())){
 			if(hdsc)break;
 		}
 		if(!hdsc)hdsc=HDShellClasses(spawn("HDShellClasses",(0,0,0)));//new("hdlivescounter");
-		hdsc.init();
-		string thisclassname=hdsc.classnames[which];
+		if(!hdsc.classnames.size())hdsc.init();
+		return hdsc.classnames[clamp(which,0,hdsc.classnames.size()-1)];
+	}
+
+	//grab one instance of the class
+	static NewHDShellAmmo GetShellAmmo(int which){
+		string thisclassname=IntToName(which);
 		NewHDShellAmmo nsa=null;
 		thinkeriterator nsait=thinkeriterator.create("NewHDShellAmmo");
 		while(nsa=NewHDShellAmmo(nsait.next())){
@@ -85,6 +91,27 @@ class HDShellClasses:Actor{
 		}
 		if(!nsa)nsa=NewHDShellAmmo(spawn(thisclassname,(31000,31000,0)));
 		return nsa;
+	}
+
+	//grab one instance of the class and execute its virtual Fire function
+	static void FireShell(
+		actor shooter,
+		int which,
+		double barrellength,
+		double choke,
+		double xyoffset=0,
+		double zoffset=-999,
+		double angleoffset=0,
+		double pitchoffset=0
+	){
+		if(zoffset==-999){
+			if(shooter.player)zoffset=shooter.player.viewheight-3;
+			else zoffset=shooter.height-HDCONST_CROWNTOEYES;
+		}
+		NewHDShellAmmo saa=GetShellAmmo(which);
+		if(saa){
+			saa.Fire(shooter,barrellength,choke,xyoffset,zoffset,angleoffset,pitchoffset);
+		}
 	}
 }
 
@@ -119,27 +146,6 @@ class NewHDShellAmmo:HDRoundAmmo{
 			if(Wads.CheckNumForName("id",0)==-1)A_SetTranslation("FreeShell");
 			frame=randompick(0,0,0,0,4,4,4,4,2,2,5);
 		}stop;
-	}
-
-
-	static void FireShell(
-		actor shooter,
-		int which,
-		double barrellength,
-		double choke,
-		double xyoffset=0,
-		double zoffset=-999,
-		double angleoffset=0,
-		double pitchoffset=0
-	){
-		if(zoffset==-999){
-			if(shooter.player)zoffset=shooter.player.viewheight-3;
-			else zoffset=shooter.height-HDCONST_CROWNTOEYES;
-		}
-		NewHDShellAmmo saa=HDShellClasses.GetShellAmmo(which);
-		if(saa){
-			saa.Fire(shooter,barrellength,choke,xyoffset,zoffset,angleoffset,pitchoffset);
-		}
 	}
 
 	//this is the function to override for the actual shot
