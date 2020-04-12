@@ -78,7 +78,8 @@ class HDShellClasses:Actor{
 		}
 		if(!hdsc)hdsc=HDShellClasses(spawn("HDShellClasses",(0,0,0)));//new("hdlivescounter");
 		if(!hdsc.classnames.size())hdsc.init();
-		return hdsc.classnames[clamp(which,0,hdsc.classnames.size()-1)];
+		if(which<0||which>=hdsc.classnames.size())return "NewHDShellAmmo";
+		return hdsc.classnames[which];
 	}
 
 	//grab one instance of the class
@@ -199,9 +200,9 @@ class HDNewShotgun:HDWeapon{
 		if(!owner)caller=self;
 		for(int i=0;i<handshells.size();i++){
 			int hss=handshells[i];
-			if(hss>0){
-				handshells[i]=0;
-				let shellclassname=HDShellAmmo.getshellclassname(hss);
+			if(hss>=0){
+				handshells[i]=-1;
+				let shellclassname=HDShellClasses.IntToName(hss);
 				HDPickup.DropItem(caller,shellclassname,1);
 			}
 		}
@@ -229,12 +230,7 @@ class HDNewShotgun:HDWeapon{
 	override void DropOneAmmo(int amt){
 		if(owner){
 			amt=clamp(amt,1,10)*4;
-			let hhh=hdhandlers(eventhandler.find("hdhandlers"));
-			if(hhh){
-				for(int i=1;i<hhh.shellclassnames.size();i++){
-					owner.A_DropInventory(hhh.shellclassnames[i],amt);
-				}
-			}
+			owner.A_DropInventory(HDShellClasses.IntToName(weaponstatus[SGNS_SELECTEDTYPE]),amt);
 		}
 	}
 	override void ForceBasicAmmo(){
