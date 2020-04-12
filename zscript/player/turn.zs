@@ -101,7 +101,6 @@ extend class HDPlayerPawn{
 					max(player.getpsprite(PSP_WEAPON).y,WEAPONTOP),
 					WOF_INTERPOLATE
 				);
-				stunned+=8;
 				bobcounter=69;
 			}
 		}
