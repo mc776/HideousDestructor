@@ -285,19 +285,20 @@ class HDSMG:HDWeapon{
 	reload:
 		#### A 0{
 			invoker.weaponstatus[0]&=~SMGF_JUSTUNLOAD;
+			bool nomags=HDMagAmmo.NothingLoaded(self,"HD9mMag30");
 			if(invoker.weaponstatus[SMGS_MAG]>=30)setweaponstate("nope");
 			else if(
 				invoker.weaponstatus[SMGS_MAG]<0
 				&&(
 					pressinguse()
-					||HDMagAmmo.NothingLoaded(self,"HD9mMag30")
+					||nomags
 				)
 			){
 				if(
 					countinv("HDPistolAmmo")
 				)setweaponstate("loadchamber");
 				else setweaponstate("nope");
-			}
+			}else if(nomags)setweaponstate("nope");
 		}goto unmag;
 	unmag:
 		#### A 1 offset(0,34) A_SetCrosshair(21);

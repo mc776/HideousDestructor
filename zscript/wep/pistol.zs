@@ -343,19 +343,20 @@ class HDPistol:HDHandgun replaces Pistol{
 	reload:
 		---- A 0{
 			invoker.weaponstatus[0]&=~PISF_JUSTUNLOAD;
+			bool nomags=HDMagAmmo.NothingLoaded(self,"HD9mMag15");
 			if(invoker.weaponstatus[PISS_MAG]>=15)setweaponstate("nope");
 			else if(
-				invoker.weaponstatus[SMGS_MAG]<0
+				invoker.weaponstatus[PISS_MAG]<0
 				&&(
 					pressinguse()
-					||HDMagAmmo.NothingLoaded(self,"HD9mMag15")
+					||nomags
 				)
 			){
 				if(
 					countinv("HDPistolAmmo")
 				)setweaponstate("loadchamber");
 				else setweaponstate("nope");
-			}
+			}else if(nomags)setweaponstate("nope");
 		}goto unmag;
 	unmag:
 		---- A 1 offset(0,34) A_SetCrosshair(21);
