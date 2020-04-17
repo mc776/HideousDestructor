@@ -248,7 +248,7 @@ class HDMedikitter:HDWoundFixer{
 					return;
 				}
 			}
-			if(pitch<80){
+			if(pitch<min(player.maxpitch,80)){
 				//move downwards
 				let hdp=hdplayerpawn(self);
 				if(hdp)hdp.gunbraced=false;
