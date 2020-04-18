@@ -710,7 +710,8 @@ class WildBackpack:IdleDummy replaces Backpack{
 extend class HDBackpack{
 	void RandomContents(){
 		if(hd_debug)A_Log("\n*  Backpack:  *");
-		for(int i=0;i<5;i++){
+		int bpit=max(1,int(5*hd_encumbrance));
+		for(int i=0;i<bpit;i++){
 			int thisitem=random(1,invclasses.size())-1;
 			let wep=(class<hdweapon>)(invclasses[thisitem]);
 			let pkup=(class<hdpickup>)(invclasses[thisitem]);
