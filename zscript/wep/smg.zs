@@ -288,7 +288,7 @@ class HDSMG:HDWeapon{
 			bool nomags=HDMagAmmo.NothingLoaded(self,"HD9mMag30");
 			if(invoker.weaponstatus[SMGS_MAG]>=30)setweaponstate("nope");
 			else if(
-				invoker.weaponstatus[SMGS_MAG]<0
+				invoker.weaponstatus[SMGS_MAG]<1
 				&&(
 					pressinguse()
 					||nomags

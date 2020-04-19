@@ -346,7 +346,7 @@ class HDPistol:HDHandgun replaces Pistol{
 			bool nomags=HDMagAmmo.NothingLoaded(self,"HD9mMag15");
 			if(invoker.weaponstatus[PISS_MAG]>=15)setweaponstate("nope");
 			else if(
-				invoker.weaponstatus[PISS_MAG]<0
+				invoker.weaponstatus[PISS_MAG]<1
 				&&(
 					pressinguse()
 					||nomags
