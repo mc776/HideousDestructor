@@ -414,7 +414,7 @@ class HDBulletActor:HDActor{
 		HDBulletActor bbb=null;
 		do{
 			amount--;
-			bbb=HDBulletActor(spawn(type,(caller.pos.x,caller.pos.y,caller.pos.z+zofs)));
+			bbb=HDBulletActor(spawn(type,(caller.pos.x,caller.pos.y,caller.pos.z+zofs),ALLOW_REPLACE));
 			if(bbb.distantsound==""){
 				bbb.distantsound=distantsound;
 				bbb.distantsoundvol=distantsoundvol;
