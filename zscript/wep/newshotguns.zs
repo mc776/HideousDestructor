@@ -212,15 +212,13 @@ class HDNewShotgun:HDWeapon{
 	}
 
 	override void failedpickupunload(){
-		let hhh=hdhandlers(eventhandler.find("hdhandlers"));
-		if(!hhh)return;
 		int dropped=0;
 		for(int i=SGNS_SSSTART;i<=SGNS_SSEND;i++){
 			if(dropped>=4)break;
 			int which=weaponstatus[i];
 			if(which>0){
 				dropped++;
-				HDPickup.DropItem(self,hhh.shellclassnames[which],amt);
+				HDPickup.DropItem(self,HDShellClasses.IntToName(which),amt);
 			}
 			weaponstatus[i]=0;
 		}
