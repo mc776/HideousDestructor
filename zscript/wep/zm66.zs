@@ -160,22 +160,26 @@ class ZM66AssaultRifle:HDWeapon{
 			if(scopeview){
 				double degree=(hdw.weaponstatus[ZM66S_ZOOM])*0.1;
 				texman.setcameratotexture(hpc,"HDXHCAM3",degree);
-				sb.drawimage(
-					"HDXHCAM3",(0,scaledyoffset)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
-					scale:(0.31,0.31)
-				);
-				int scaledwidth=57;
-				int cx,cy,cw,ch;
-				[cx,cy,cw,ch]=screen.GetClipRect();
-				sb.SetClipRect(
-					-28+bob.x,19+bob.y,scaledwidth,scaledwidth,
-					sb.DI_SCREEN_CENTER
-				);
-				sb.drawimage(
-					"scophole",(0,scaledyoffset)+bob*3,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
-					scale:(0.78,0.78)
-				);
-				sb.SetClipRect(cx,cy,cw,ch);
+
+				TextureID scope = TexMan.CheckForTexture("HDXHCAM3", TexMan.Type_Any);
+				TextureID scopehole = TexMan.CheckForTexture("scophole", TexMan.Type_Any);
+
+				// these values are hardcoded to my 1920x1080 screen and hud / scope
+				// scale but should represent the idea well enough
+				DrawCircle(
+					scope,
+					120,
+					(960,775)+bob * 6);
+
+				// this is commented out as the scope hole texture is too small
+				// when drawn at native resolution, and I haven't figured
+				// out how shape2D stuff is scaled.
+				// It shows working proof of concept however.
+				/*DrawCircle(
+					scopehole,
+					180,
+					(960,775)+bob * 6);*/
+
 				sb.drawimage(
 					"zm66scop",(0,scaledyoffset)+bob,sb.DI_SCREEN_CENTER|sb.DI_ITEM_CENTER,
 					scale:(0.82,0.82)
@@ -188,6 +192,34 @@ class ZM66AssaultRifle:HDWeapon{
 			}
 		}
 	}
+
+	// rad = radius of circle (using half width of texture is recommended)
+	// verts describes how detailed the circle of the scope is
+	// more verts = higher resolution circle but higher performance cost
+	ui void DrawCircle(TextureID id, double rad, Vector2 pos, uint verts = 32)
+    {
+        Shape2D circle = new("Shape2D");
+
+		double angStep = 360 / verts;
+		double ang;
+		for (uint i = 0; i < verts; ++i)
+		{
+			double c = cos(ang);
+			double s = sin(ang);
+
+			circle.PushCoord(((c+1)/2, (s+1)/2));
+
+			if (i+2 < verts)
+				circle.PushTriangle(0, i+1, i+2);
+
+			circle.PushVertex((c*rad + pos.x, s*rad + pos.y));
+
+			ang += angStep;
+		}
+
+		Screen.DrawShape(id, false, circle);
+    }
+
 	override double weaponbulk(){
 		double blx=90;
 		if(!(weaponstatus[0]&ZM66F_NOLAUNCHER)){
