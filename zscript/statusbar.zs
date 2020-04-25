@@ -71,7 +71,6 @@ class HDStatusBar:DoomStatusBar{
 	transient cvar hd_xhscale;
 	transient cvar hd_weapondefaults; //TEMPORARY - TO DELETE LATER
 	transient cvar hd_setweapondefault;
-	transient cvar playercolour;
 	transient cvar hud_aspectscale;
 
 	override void Tick(){
@@ -86,7 +85,6 @@ class HDStatusBar:DoomStatusBar{
 			hd_weapondefaults=cvar.getcvar("hd_weapondefaults",cplayer); //TEMPORARY - TO DELETE LATER
 			hd_setweapondefault=cvar.getcvar("hd_setweapondefault",cplayer);
 			hud_aspectscale=cvar.getcvar("hud_aspectscale",cplayer);
-			playercolour=cvar.getcvar("color",cplayer);
 		}
 		super.tick();
 		hpl=hdplayerpawn(cplayer.mo);
@@ -95,7 +93,7 @@ class HDStatusBar:DoomStatusBar{
 			||!hpl
 		)return;
 
-		sbcolour=playercolour.GetString();
+		sbcolour=cplayer.GetDisplayColor();
 
 		wepsprites.clear();wepspritescales.clear();wepspriteofs.clear();wepspritecounts.clear();
 		for(inventory item=cplayer.mo.inv;item!=null;item=item.inv){
