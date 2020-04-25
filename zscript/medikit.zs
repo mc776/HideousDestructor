@@ -611,7 +611,7 @@ class HDMedikitter:HDWoundFixer{
 		bb=max(bb+random(-ag,ag),0);
 		uw=max(uw+random(-wg,wg),0);
 		ww=max(ww+random(-wg,wg),0);
-		bl=max(bl+random(-wg,wg),0);
+		bl=max(bl+frandom(-wg,wg),0);
 		A_WeaponMessage(string.format("Medikit Auto-Diagnostic complete.
 
 		Status report:
