@@ -4,7 +4,6 @@
 
 
 
-
 //a thinker to remember which number corresponds to which shell class
 //class HDShellClasses:Thinker{
 class HDShellClasses:Actor{
@@ -24,6 +23,7 @@ class HDShellClasses:Actor{
 		for(int i=0;i<allactorclasses.size();i++){
 			if(
 				allactorclasses[i] is "NewHDShellAmmo"
+				&&allactorclasses[i]!="NewHDShellAmmo"
 			){
 				string ccc=allactorclasses[i].getclassname();
 				int bbs=bytesum(ccc,true);
@@ -57,6 +57,13 @@ class HDShellClasses:Actor{
 				}
 			}
 		}
+		classnames.insert(0,"NewHDShellAmmo");
+
+		if(hd_debug){
+			string classlist="Shotgun shell types available:  ";
+			for(int i=0;i<classnames.size();i++)classlist=classlist.." "..classnames[i];
+			console.printf(classlist);
+		}
 	}
 	static int bytesum(string input,bool forcelower=false){
 		if(forcelower)input=input.makelower();
@@ -75,10 +82,24 @@ class HDShellClasses:Actor{
 		while(hdsc=HDShellClasses(hdscit.next())){
 			if(hdsc)break;
 		}
-		if(!hdsc)hdsc=HDShellClasses(spawn("HDShellClasses",(0,0,0)));//new("hdlivescounter");
+		if(!hdsc)hdsc=HDShellClasses(spawn("HDShellClasses",(0,0,0)));//new("HDShellClasses");
 		if(!hdsc.classnames.size())hdsc.init();
 		if(which<0||which>=hdsc.classnames.size())return "NewHDShellAmmo";
 		return hdsc.classnames[which];
+	}
+
+	//HDShellClasses.NameToInt(_)
+	static int NameToInt(name which){
+		HDShellClasses hdsc=null;
+		thinkeriterator hdscit=thinkeriterator.create("HDShellClasses");
+		while(hdsc=HDShellClasses(hdscit.next())){
+			if(hdsc)break;
+		}
+		if(!hdsc)hdsc=HDShellClasses(spawn("HDShellClasses",(0,0,0)));//new("HDShellClasses");
+		if(!hdsc.classnames.size())hdsc.init();
+		int res=hdsc.classnames.find(which);
+		if(res==hdsc.classnames.size())return 0;
+		return res;
 	}
 
 	//grab one instance of the class
@@ -94,6 +115,7 @@ class HDShellClasses:Actor{
 	}
 
 	//grab one instance of the class and execute its virtual Fire function
+	//NewHDShellAmmo.FireShell(...);
 	static void FireShell(
 		actor shooter,
 		int which,
@@ -161,6 +183,8 @@ class NewHDShellAmmo:HDRoundAmmo{
 		console.printf(getclassname().."  "..shooter.gettag());
 	}
 }
+
+//test, delete later
 class NewHDShellAmmo2:NewHDShellAmmo{}
 class NewHDShellAmmo3:NewHDShellAmmo{}
 class NewHDShellAmmo4:NewHDShellAmmo{}
@@ -172,7 +196,6 @@ class NewHDShellAmmo5:NewHDShellAmmo{}
 
 
 
-/*
 
 
 // ------------------------------------------------------------
@@ -218,7 +241,7 @@ class HDNewShotgun:HDWeapon{
 			int which=weaponstatus[i];
 			if(which>0){
 				dropped++;
-				HDPickup.DropItem(self,HDShellClasses.IntToName(which),amt);
+				HDPickup.DropItem(self,HDShellClasses.IntToName(which),1);
 			}
 			weaponstatus[i]=0;
 		}
@@ -231,12 +254,9 @@ class HDNewShotgun:HDWeapon{
 		}
 	}
 	override void ForceBasicAmmo(){
-		let hhh=hdhandlers(eventhandler.find("hdhandlers"));
-		if(hhh){
-			for(int i=1;i<hhh.shellclassnames.size();i++){
-				owner.A_SetInventory(hhh.shellclassnames[i],20);
-			}
-		}
+		let ccc=HDShellClasses.IntToName(0);
+		owner.A_TakeInventory(ccc);
+		owner.A_GiveInventory(ccc,20);
 	}
 	clearscope string getpickupframe(){
 		int ssh=0;
@@ -252,8 +272,7 @@ class HDNewShotgun:HDWeapon{
 		return "G";
 	}
 
-
-	action double A_FireHDShotgun(
+	action void A_FireHDShotgun(
 		int chamberslot,
 		int choke,
 		int barrellength,
@@ -264,40 +283,20 @@ class HDNewShotgun:HDWeapon{
 			double aimoffx=0,
 			double aimoffy=0
 	){
-		int shelltypeindex=invoker.weaponstatus[chamberslot];
-		if(shelltypeindex<1)return 0;
-		double shotpower=0;
-		let shellclass=hdhandlers.getshellclass(shelltypeindex);
-
-		//if a reference actor already exists, just use that, otherwise spawn a dummy
-		hdshellammo hhh=hdshellammo(findinventory(shellclass));
-		bool dummyspawn;
-		if(!hhh){
-			hhh=HDShellAmmo(spawn(shellclass,(-32000,-32000,-32000)));
-			dummyspawn=true;
-		}else dummyspawn=false;
-		//call the fire function and destroy the dummy if present
-		if(hhh){
-			shotpower=hhh.FireShell(
-				self,
-				choke,
-				barrellength,
-					zofs,
-					xyofs,
-					spread,
-					aimoffx,
-					aimoffy
-			);
-			if(dummyspawn)hhh.destroy();
-		}
-
-		//replace chamber with spent
-		invoker.weaponstatus[chamberslot]=-shelltypeindex;
-
-		//shotpower used for recoil and cycling
-		return shotpower;
+		HDShellClasses.FireShell(
+			self,
+			invoker.weaponstatus[chamberslot],
+			barrellength,
+			choke,
+			xyofs,
+			zofs,
+			aimoffx,
+			aimoffy
+		);
 	}
 
+
+/*
 
 	//sidesaddle management
 	string sstext;
@@ -454,6 +453,8 @@ extend class HDMobMan{
 		//shotpower used for recoil and cycling
 		return shotpower;
 	}
+
+*/
 }
 
 
@@ -463,7 +464,7 @@ enum newhdshottystatus{
 	SGNS_SSSTART=1,
 	SGNS_SSEND=12,  //SGNS_SSSTART+12-1
 	SGNS_SELECTEDTYPE=13,  //SGNS_SSEND+1
-};
+}
 
 
 //TODO: move to respective weapon ZS files
@@ -483,7 +484,7 @@ enum newslayerstatus{
 	SGN2S_BARRELLENGTH1=20,
 	SGN2S_BARRELLENGTH2=21,
 //TODO: ADD BARRELLENGTH TO INITIALIZEWEPSTATS (32)
-};
+}
 enum newhunterstatus{
 	SGN1F_CANFULLAUTO=1,
 	SGN1F_JAMMED=2,
@@ -506,7 +507,7 @@ enum newhunterstatus{
 
 	SGN1_TUBELONG=7,
 	SGN1_TUBESHORT=4,
-};
+}
 
 
 
@@ -514,7 +515,7 @@ enum newhunterstatus{
 
 
 
-
+/*
 //TODO: move this to shellammo.zs
 extend class HDShellAmmo{
 	class<actor> emptytype;
@@ -562,24 +563,7 @@ extend class HDShellAmmo{
 		caller.A_StartSound("weapons/hunter",CHAN_WEAPON,CHANF_OVERLAP);
 		return shotpower;
 	}
-
-	//functions for translating between number and classname
-	static string getshellclassname(int which){
-		let hhh=hdhandlers(eventhandler.find("hdhandlers"));
-		if(!hhh)return "HDShellAmmo";
-		which=abs(which);
-		if(which>=hhh.shellclassnames.size())return "HDShellAmmo";
-		return hhh.shellclassnames[which];
-	}
-	static int getshellclassnum(name which){
-		let hhh=hdhandlers(eventhandler.find("hdhandlers"));
-		if(!hhh)return -1;
-		for(int i=1;i<hhh.shellclassnames.size();i++){
-			if(which~==hhh.shellclassnames[i])return i;
-		}
-		return -1;
-	}
 }
-
-
 */
+
+
