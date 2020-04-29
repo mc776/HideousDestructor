@@ -34,6 +34,7 @@ extend class HDPlayerPawn{
 					case -1:
 						//start losing sequence
 						hdlivescounter.checkendgame();
+						break;
 					case 1:
 						respawndelay--;
 						break;
@@ -41,7 +42,7 @@ extend class HDPlayerPawn{
 						respawndelay=HDCONST_POFDELAY;
 						break;
 					}
-					A_Log("Friend wait time: "..respawndelay,!player.bot);
+					A_Log(player.getusername().." friend wait time: "..respawndelay,!player.bot);
 				}
 			}else if(hd_pof){
 				player.cmd.buttons|=BT_USE;
@@ -147,8 +148,8 @@ extend class HDPlayerPawn{
 			if(ppp.health>0){
 				everyonedead=false;
 				if(
-					checksight(ppp)
-					&&distance3d(ppp)>256
+					!checksight(ppp)
+					||distance3d(ppp)>256
 				){
 					someoneoutside=true;
 					break;
