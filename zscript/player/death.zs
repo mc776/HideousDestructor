@@ -29,7 +29,7 @@ extend class HDPlayerPawn{
 			){
 				player.attacker=null;
 				player.cmd.buttons&=~BT_USE;
-				if(!(level.time&(1|2|4|8|16|32))){
+				if(!(level.time&(1|2|4|8|16))){
 					switch(CheckPoF()){
 					case -1:
 						//start losing sequence

@@ -26,8 +26,11 @@ extend class HDHandlers{
 			hde.incaptimer=140;
 			hde.incapacitated=20;
 			hde.damagemobj(null,null,hde.health-10,"maxhpdrain",DMG_FORCED);
+			hde.stunned=700;
+			hde.bloodloss=500;
 			hde.setorigin(corpsepos[e.playernumber],false);
 			hde.angle=(corpsepos[e.playernumber].z%1.)*1000;
+			hde.pitch=80;
 			return;
 		}
 
