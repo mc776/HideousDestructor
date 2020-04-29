@@ -351,7 +351,7 @@ Logs the distance of the object or map geometry you're pointing at.
 
 * `hd_disintegrator` (false): With this on, once you hit zero hitpoints you immediately disappear. Mostly for deathmatch.
 
-* `hd_pof` (false): Stands for "Power of Friendship". When this cvar is turned on outside of FFA deathmatch, you can't respawn until all living allied players are in sight and within range. Once you do respawn, you will be raised on the spot subject to a brief moment of incapacitation.
+* `hd_pof` (false): Stands for "Power of Friendship". When this cvar is turned on outside of deathmatch, you can't respawn until all living allied players are in sight and within range. Once you do respawn, you will be raised on the spot subject to a brief moment of incapacitation.
 
 * `hd_flagpole` (false): See the "Flagpole" section for details.
 

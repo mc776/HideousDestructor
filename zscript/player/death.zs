@@ -84,7 +84,12 @@ extend class HDPlayerPawn{
 		)deathcounter=145;
 		else deathcounter=1;
 
-		if(hd_pof)respawndelay=HDCONST_POFDELAY;else respawndelay=0;
+		if(hd_pof){
+			if(deathmatch){
+				cvar.findcvar("hd_pof").setbool(false);
+				respawndelay=0;
+			}else respawndelay=HDCONST_POFDELAY;
+		}else respawndelay=0;
 
 		if(hd_dropeverythingondeath){
 			array<inventory> keys;keys.clear();
@@ -137,13 +142,7 @@ extend class HDPlayerPawn{
 		bool everyonedead=true;
 		bool someoneoutside=false;
 		for(int i=0;i<MAXPLAYERS;i++){
-			if(
-				!playeringame[i]
-				||(
-					teamplay
-					&&players[i].getteam()!=player.getteam()
-				)
-			)continue;
+			if(!playeringame[i])continue;
 			let ppp=players[i].mo;
 			if(
 				ppp
