@@ -32,13 +32,12 @@ extend class hdplayerpawn{
 			"If you don't want \cdZoom\cu to make you lean,\nset \cdhd_nozoomlean\cu to true.",
 
 			"Set \cdfraglimit\cu to 100+ to enable HD's elimination mode.\nIn co-op, a positive fraglimit under 100\nalso serves as a lives limit.",
-			"Turn on \cdhd_yolo\cu in co-op for a one-life mode where\nyou don't die until all players have been incapacitated.",
+			"Turn on \cdhd_pof\cu in co-op or teamplay for a one-life mode where\nyou can only be raised in the presence of all living teammates.",
 			"Turn on \cdhd_flagpole\cu in multiplayer to create an objective!\n(Move AWAY from the flagpole to program the flag.)",
 			"Turn on \cdhd_nobots\cu to cause the bots to be replaced by HD marines.",
 
 			"To remote activate a switch or door,\ntype \cdderp 555\cu to stick a D.E.R.P. on to it,\nthen \cdderp 556\cu to make it flick the switch.",
 			"Hold \cdZoom\cu and/or \cdUse\cu when you use the goggles to set the amplitude.\nBoth together decrements; \cdUse\cu alone increments.\n\cdZoom\cu alone toggles red/green mode.",
-			"While \cdhd_yolo\cu is on, you can reset someone's permanent damage using\nthe Rite of the Once-Mortal. Check the manual for details.",
 
 			"Zombies never surrender!\nCheck downed monsters to see\nif they're still twitching.",
 

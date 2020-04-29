@@ -16,9 +16,20 @@ extend class HDPlayerPawn{
 
 //respawn event
 extend class HDHandlers{
+	vector3 corpsepos[MAXPLAYERS];
 	override void PlayerRespawned(PlayerEvent e){
 		let hde=HDPlayerPawn(players[e.playernumber].mo);
 		if(!hde)return;
+
+		//revived with the Power of Friendship
+		if(hd_pof){
+			hde.incaptimer=140;
+			hde.incapacitated=20;
+			hde.damagemobj(null,null,hde.health-10,"maxhpdrain",DMG_FORCED);
+			hde.setorigin(corpsepos[e.playernumber],false);
+			hde.angle=(corpsepos[e.playernumber].z%1.)*1000;
+			return;
+		}
 
 		//replenish ammo to mitigate spawncamping
 		if(!hd_dropeverythingondeath){

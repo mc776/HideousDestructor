@@ -140,68 +140,6 @@ class HDFist:HDWeapon replaces Fist{
 		actor punchee=punchline.hitactor;
 
 
-		//the Rite of the Once-Mortal (YOLO mode only)
-		//hold Zoom+Use on a downed player while all non-incapacitated players are present
-		//everyone's permanent damage is traded for a few points of agg
-		if(
-			hd_yolo
-			&&player.cmd.buttons&BT_ZOOM
-			&&player.cmd.buttons&BT_USE
-			&&hdplayerpawn(punchee)
-			&&(
-				!deathmatch
-				||punchee.isteammate(self)
-			)
-		){
-			let hdpch=hdplayerpawn(punchee);
-			bool dotherite=hdpch.maxhealth()<50;
-			if(dotherite){
-				for(int i=0;i<MAXPLAYERS;i++){
-					if(
-						!playeringame[i]
-						||!players[i].mo
-						||players[i].mo.health<1
-					)continue;
-					let hdp=hdplayerpawn(players[i].mo);
-					if(
-						hdp
-						&&(hdp.incapacitated&&hdp.health>15)
-						&&(
-							hdp.distance3d(self)<256
-							||!checksight(hdp)
-						)
-					){
-						A_Log("You must gather your party before performing the Rite of the Once-Mortal.");
-						dotherite=false;
-					}
-				}
-			}
-			if(dotherite){
-				for(int i=0;i<MAXPLAYERS;i++){
-					if(
-						!playeringame[i]
-						||!players[i].mo
-						||players[i].mo.health<1
-					)continue;
-					let hdp=hdplayerpawn(players[i].mo);
-					if(!hdp)continue;
-					hdp.healthreset();
-					hdp.damagemobj(null,null,hdp.health-1,"maxhpdrain");
-					if(hdp==hdpch){
-						hdp.aggravateddamage=10;
-						hdp.stunned=1400;
-					}else{
-						hdp.aggravateddamage=min(hdp.aggravateddamage+3,12);
-						hdp.stunned=1000;
-					}
-				}
-				A_Log("The Rite of the Once-Mortal is complete.");
-				return;
-			}
-		}
-
-
-
 		//charge!
 		if(invoker.flicked)dmg*=1.5;
 		else dmg+=HDMath.TowardsEachOther(self,punchee)*2;

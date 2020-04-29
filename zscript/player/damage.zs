@@ -182,8 +182,7 @@ extend class HDPlayerPawn{
 					return 0;
 				}
 
-				if(hd_yolo)bloodloss=min(bloodloss+(damage<<2),666);
-				else bloodloss+=(damage<<2);
+				bloodloss+=(damage<<2);
 
 				if(
 					!waterlevel
@@ -406,9 +405,7 @@ extend class HDPlayerPawn{
 		if(
 			damage>=health
 		){
-			if(hd_yolo&&!alldown()){
-				damage=min(health-1,damage);
-			}else if(
+			if(
 				mod!="internal"
 				&&mod!="bleedout"
 				&&mod!="invisiblebleedout"

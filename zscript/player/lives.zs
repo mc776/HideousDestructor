@@ -124,8 +124,11 @@ class HDLivesCounter:Thinker{
 	static bool wiped(int playernum,bool checkspawned=false){
 		return(
 			(
-				hd_yolo
-				&&hdlivescounter.owndeaths(playernum)>0
+				hd_pof
+				&&(
+					!hdplayerpawn(players[playernum].mo)
+					||players[playernum].mo.health<1
+				)
 			)||(
 				hdlivescounter.livesmode()
 				&&hdlivescounter.owndeaths(playernum)>fraglimit%100
@@ -159,7 +162,7 @@ class HDLivesCounter:Thinker{
 	}
 	//check endgame
 	static int checkendgame(bool checkonly=false){
-		if(!hd_yolo&&!hdlivescounter.livesmode())return false;
+		if(!hdlivescounter.livesmode())return false;
 		let hdlc=hdlivescounter.get();
 		int endgametype=0;
 		int survivorindex=-1;

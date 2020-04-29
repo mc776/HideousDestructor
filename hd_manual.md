@@ -349,9 +349,9 @@ Logs the distance of the object or map geometry you're pointing at.
 
 * `hd_dropeverythingondeath` (false): HD mostly goes with regular (GZ)Doom inventory behaviour when dying and respawning: you keep your stuff in co-op, reset your stuff in deathmatch, maybe drop an extra copy of your weapon. Enabling this cvar will cause you to drop *all* your inventory except keys, leaving a stash of loot for your opponents (or buddies) in deathmatch or, in co-op, forcing you to do a naked walk of shame back to where you'd died.
 
-* `hd_disintegrator` (false): With this on, once you hit zero hitpoints you immediately disappear. Mostly for deathmatch. Overrides YOLO mode below.
+* `hd_disintegrator` (false): With this on, once you hit zero hitpoints you immediately disappear. Mostly for deathmatch.
 
-* `hd_yolo` (false): With this on, you will trigger the wipeout counter the first time you die, but you can't die until everyone (or, in teamplay, everyone on your team) is dead or incapacitated. Not recommended for free-for-all deathmatch.
+* `hd_pof` (false): Stands for "Power of Friendship". When this cvar is turned on outside of FFA deathmatch, you can't respawn until all living allied players are in sight and within range. Once you do respawn, you will be raised on the spot subject to a brief moment of incapacitation.
 
 * `hd_flagpole` (false): See the "Flagpole" section for details.
 
@@ -828,14 +828,6 @@ The unload button lets you flick a small piece of debris in the direction you ar
 Hold Firemode to grab something and possibly drag it along. It has some limited use in combat, and is mostly for dragging bodies and objects to more convenient places.
 
 Hold Zoom and try to drop your fist "weapon" as a shortcut for dropping all your miscellaneous usable items (D.E.R.P., radsuit, etc.). If you do not have any of those, you will drop your meds instead.
-
-The fist can also be invoked to perform the Rite of the Once-Mortal, a magic spell that only takes effect while hd_yolo is on. To perform:
-
- * Find a player whose max health has gone down below 50.
- * Move away anything that might pose a hazard for anyone who cannot defend themselves for the next 3-5 minutes.
- * Get all non-incapacitated players in a group together right next to you.
- * While holding Use and Zoom, punch the target player.
- * Take some time to recover.
 
 Protip: Punching damage responds to the way you are turning at the time your fist connects. A good left hook or uppercut to the head can knock out a zombie in one punch. In any event, headshots are generally good for knocking someone about to keep them from hitting back. (Their not hitting back is not guaranteed.)
 
