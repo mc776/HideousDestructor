@@ -57,7 +57,7 @@ class HDLivesCounter:Thinker{
 			endgametypecounter++;
 			if(
 				endgametypecounter>endgametypecounternext
-				&&checkendgame(true)
+				&&(hd_pof||checkendgame(true))
 			){
 				if(!deathmatch)level.nextmap=level.mapname;
 				Exit_Normal(0);

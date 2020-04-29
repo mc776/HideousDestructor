@@ -33,7 +33,8 @@ extend class HDPlayerPawn{
 					switch(CheckPoF()){
 					case -1:
 						//start losing sequence
-						hdlivescounter.checkendgame();
+						let hhh=hdlivescounter.get();
+						if(hhh.endgametypecounter<-35)hhh.startendgameticker(hdlivescounter.HDEND_WIPE);
 						break;
 					case 1:
 						respawndelay--;
@@ -144,8 +145,10 @@ extend class HDPlayerPawn{
 				)
 			)continue;
 			let ppp=players[i].mo;
-			if(!ppp)continue;
-			if(ppp.health>0){
+			if(
+				ppp
+				&&ppp.health>0
+			){
 				everyonedead=false;
 				if(
 					!checksight(ppp)
