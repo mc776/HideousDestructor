@@ -29,7 +29,7 @@ extend class HDPlayerPawn{
 			){
 				player.attacker=null;
 				player.cmd.buttons&=~BT_USE;
-				if(!(level.time&(1|2|4|8|16))){
+				if(!(level.time&(1|2|4|8|16|32))){
 					switch(CheckPoF()){
 					case -1:
 						//start losing sequence
@@ -38,12 +38,12 @@ extend class HDPlayerPawn{
 						break;
 					case 1:
 						respawndelay--;
+						A_Log(player.getusername().." friend wait time: "..respawndelay,!player.bot);
 						break;
 					default:
 						respawndelay=HDCONST_POFDELAY;
 						break;
 					}
-					A_Log(player.getusername().." friend wait time: "..respawndelay,!player.bot);
 				}
 			}else if(hd_pof){
 				player.cmd.buttons|=BT_USE;
@@ -177,7 +177,7 @@ extend class HDPlayerPawn{
 }
 
 enum HDPlayerDeath{
-	HDCONST_POFDELAY=10,
+	HDCONST_POFDELAY=11,
 }
 
 
