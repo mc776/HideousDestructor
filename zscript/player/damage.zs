@@ -316,7 +316,10 @@ extend class HDPlayerPawn{
 		}else if(mod=="bashing"){
 			tostun+=damage;
 			damage>>=2;
-		}else if(mod=="cutting"){
+		}else if(
+			mod=="cutting"
+			||mod=="slashing"
+		){
 			//swords, chainsaw, etc.
 			damage=int(damage*(1.-(alv*0.3)));
 			if(!random(0,10+alv*2))towound+=max(1,damage*4/100);
@@ -327,6 +330,10 @@ extend class HDPlayerPawn{
 			damage=int(damage*(1.-(alv*0.2)));
 			if(!random(0,10+alv*2))towound+=max(1,damage*3/100);
 			if(towound>random(4,20))destroyradsuit();
+			if(
+				armr
+				&&mod!="piercing" //bullets do their own thing
+			)armr.durability-=(damage>>random(2,6));
 		}
 
 
