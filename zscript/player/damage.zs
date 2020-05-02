@@ -333,7 +333,7 @@ extend class HDPlayerPawn{
 			if(
 				armr
 				&&mod!="piercing" //bullets do their own thing
-			)armr.durability-=(damage>>random(2,6));
+			)armr.durability-=(damage>>random(1,5));
 		}
 
 
