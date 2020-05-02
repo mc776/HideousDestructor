@@ -419,7 +419,7 @@ extend class HDHandlers{
 
 
 
-
+class bbb:baronofhell{}
 
 //a thinker that constantly bleeds
 class HDBleedingWound:Thinker{
@@ -463,6 +463,9 @@ class HDBleedingWound:Thinker{
 				blood.bmissilemore=true; //used to avoid converting to shield
 			}
 		}while(bleeds>0);
+
+		if(!HDMobBase(bleeder))bleedrate=max(1,bleedrate>>(random(1,2)));
+
 		int bled=bleeder.damagemobj(bleeder,source,bleedrate,"bleedout",DMG_NO_PAIN|DMG_THRUSTLESS);
 		if(bleeder&&bleeder.health<1&&bleedrate<random(10,60))bleeder.deathsound="";
 	}

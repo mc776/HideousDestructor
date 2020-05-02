@@ -1232,6 +1232,11 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 		int shockbash=int(max(impact,impact*min(pen,deemedwidth))*(frandom(0.2,0.25)+stamina*0.00001));
 		if(hd_debug)console.printf("     "..shockbash.." temp cav dmg");
 
+		if(
+			!HDMobBase(hitactor)
+			&&!HDPlayerPawn(hitactor)
+		)shockbash>>=3;
+
 		//apply impact/tempcav damage
 		bnoextremedeath=impact<(hitactor.gibhealth<<3);
 		hitactor.damagemobj(self,target,shockbash,"bashing",DMG_THRUSTLESS);
