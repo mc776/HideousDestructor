@@ -25,6 +25,8 @@ class hdladdertop:hdactor{
 
 		+flatsprite
 		+nointeraction
+		+notrigger
+		+blockasplayer
 
 		height 4;radius 10;
 		maxstepheight 64;
@@ -33,11 +35,12 @@ class hdladdertop:hdactor{
 	}
 	states{
 	spawn:
-		LADD A 1 nodelay{setz(getzat()+4);}
+		LADD A 1 nodelay setz(getzat()+4);
 		wait;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
+		A_SpawnParticle("darkred",0,10);
 		pitch=18;
 		bmissile=false;master=target;
 		setz(floorz);
@@ -46,12 +49,13 @@ class hdladdertop:hdactor{
 		vector2 mv=angletovector(angle,2);
 		for(int i=0;i<20;i++){
 
-			mvlast+=mv;
 			if(
-				!checkmove(mvlast,PCM_NOACTORS,tm)
-				&&!!master //don't break if placed by mapper
+				!!master //don't break if placed by mapper
+				&&!checkmove(mvlast,PCM_NOACTORS,tm)
 			)break;
+
 			A_UnsetSolid();
+			mvlast+=mv;
 
 			//found a place for the ladder to hang down
 			double htdiff=clamp(floorz-tm.floorz,0,LADDER_MAX);
@@ -363,12 +367,12 @@ class PortableLadder:HDPickup{
 		TNT1 A 0{
 			actor aaa;int bbb;
 			[bbb,aaa]=A_SpawnItemEx(
-				"HDLadderTop",16*cos(pitch),0,48-16*sin(pitch),
+				"HDLadderTop",18*cos(pitch),0,48-18*sin(pitch),
 				flags:SXF_NOCHECKPOSITION|SXF_SETTARGET
 			);if(!aaa)return;
 
-			//only face player if above player's height - otherwise why not just mantle?
-			if(aaa.floorz>pos.z+height){  
+			//only face player if above player's stepheight
+			if(aaa.floorz>pos.z+maxstepheight){  
 				aaa.angle+=180;
 			}
 		}fail;
