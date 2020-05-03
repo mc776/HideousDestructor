@@ -296,25 +296,26 @@ class HDNewShotgun:HDWeapon{
 	}
 
 
-/*
-
 	//sidesaddle management
 	string sstext;
 	int ssindex;
 	void UpdateSSText(){
 		string stext="";
 		for(int i=SGNS_SSSTART;i<=SGNS_SSEND;i++){
+			class<HDShellAmmo> shc=HDShellClasses.IntToName(weaponstatus[i]);
 			stext=stext..((i==ssindex)?">  ":"   ");
+
 			if(weaponstatus[i]<1)stext=stext.."< empty >";
-			else stext=stext..getdefaultbytype(getshellclass(weaponstatus[i])).gettag();
+			else stext=stext..getdefaultbytype(shc).gettag();
 			stext=stext.."\n";
+
 			//one more bit of white space
 			if(i==(SGNS_SSSTART+5))stext=stext.."\n";
 		}
 		sstext=stext;
 	}
 	action void A_SideSaddleReady(){
-		if(pressingfiremode){
+		if(pressingfiremode()){
 			setweaponstate("ssmanend");
 			return;
 		}
@@ -338,17 +339,18 @@ class HDNewShotgun:HDWeapon{
 			justpressed(BT_RELOAD)
 			&&!invoker.weaponstatus[ssindex]
 		){
-			let gsc=getshellclass(invoker.weaponstatus[SGNS_SELECTEDTYPE]);
-			let igsc=findinventory(gsc);
-			if(igsc){
+			int seltype=invoker.weaponstatus[SGNS_SELECTEDTYPE];
+			class<HDShellAmmo> gsc=HDShellClasses.IntToName(seltype);
+			if(countinv(gsc)){
 				A_TakeInventory(gsc,1);
-				invoker.weaponstatus[ssindex]=hdhandlers.getshellclassnum(gsc);
+				invoker.weaponstatus[ssindex]=seltype;
 			}
 		}else if(
 			justpressed(BT_UNLOAD)
 			&&invoker.weaponstatus[ssindex]
 		){
-			A_GiveInventory(getshellclass(invoker.weaponstatus[ssindex]),1);
+			class<HDShellAmmo> gsc=HDShellClasses.IntToName(invoker.weaponstatus[ssindex]);
+			A_GiveInventory(gsc,1);
 			invoker.weaponstatus[ssindex]=0;
 		}
 	}
@@ -366,38 +368,7 @@ class HDNewShotgun:HDWeapon{
 }
 
 
-
-
-//recording the shell classes in HDHandlers to be used by any actor
-//(the alternative is to keep a full copy for every shotgun, shotgun guy and marine - bad!)
-extend class HDHandlers{
-	array<string> shellclassnames;
-	array<string> shelltags;
-	void populateshellclasses(){
-		shellclassnames.clear();
-		shelltags.clear();
-
-		//position 0 can't be inverted, don't use it
-		shellclassnames.push("");
-		shelltags.push("nothing");
-
-		for(int i=0;i<allactorclasses.size();i++){
-			if(
-				(class<HDShellAmmo>)(allactorclasses[i])
-			){
-				if(allactorclasses[i]=="HDShellAmmo"){
-					shellclassnames.insert(0,allactorclasses[i].getclassname());
-					shelltags.insert(0,getdefaultbytype(allactorclasses[i].getclassname()).gettag());
-				}else{
-					shellclassnames.push(allactorclasses[i].getclassname());
-					shelltags.push(allactorclasses[i].gettag());
-				}
-			}
-		}
-	}
-}
-
-
+/*
 
 
 
@@ -453,9 +424,8 @@ extend class HDMobMan{
 		//shotpower used for recoil and cycling
 		return shotpower;
 	}
-
-*/
 }
+*/
 
 
 
