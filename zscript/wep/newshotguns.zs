@@ -115,7 +115,7 @@ class HDShellClasses:Actor{
 	}
 
 	//grab one instance of the class and execute its virtual Fire function
-	//NewHDShellAmmo.FireShell(...);
+	//HDShellClasses.FireShell(...);
 	static void FireShell(
 		actor shooter,
 		int which,
@@ -368,7 +368,6 @@ class HDNewShotgun:HDWeapon{
 }
 
 
-/*
 
 
 
@@ -379,8 +378,8 @@ extend class HDMobMan{
 	int barrellength[2];
 	bool rifledshotgun;
 	//A_FireHDNPCShotgun(loadedshells[0],chokes[0],barrellength[0],rifledshotgun,xyofs:SLAYER_BARRELOFFLEFT,aimoffx:SLAYER_BARRELTILTLEFT);	//A_FireHDNPCShotgun(loadedshells[1],chokes[1],barrellength[1],rifledshotgun,xyofs:SLAYER_BARRELOFFRIGHT,aimoffx:SLAYER_BARRELTILTRIGHT);
-	//bool chambered=A_FireHDNPCShotgun(loadedshells[0],chokes[0],barrellength[0],rifledshotgun)>HUNTER_MINSHOTPOWER;
-	virtual double A_FireHDNPCShotgun(
+	//A_FireHDNPCShotgun(loadedshells[0],chokes[0],barrellength[0],rifledshotgun);
+	virtual void A_FireHDNPCShotgun(
 		int chamberslot,
 		int choke,
 		int barrellength,
@@ -392,40 +391,23 @@ extend class HDMobMan{
 			double aimoffy=0
 	){
 		int shelltypeindex=loadedshells[chamberslot];
-		if(shelltypeindex<1)return 0;
-		double shotpower=0;
-		let shellclass=hdhandlers.getshellclass(shelltypeindex);
+		if(shelltypeindex<1)shelltypeindex=0;
 
-		//if a reference actor already exists, just use that, otherwise spawn a dummy
-		hdshellammo hhh=hdshellammo(findinventory(shellclass));
-		bool dummyspawn;
-		if(!hhh){
-			hhh=HDShellAmmo(spawn(shellclass,(-32000,-32000,-32000)));
-			dummyspawn=true;
-		}else dummyspawn=false;
-		//call the fire function and destroy the dummy if present
-		if(hhh){
-			shotpower=hhh.FireShell(
-				self,
-				choke,
-				barrellength,
-					zofs,
-					xyofs,
-					spread,
-					aimoffx,
-					aimoffy
-			);
-			if(dummyspawn)hhh.destroy();
-		}
+		HDShellClasses.FireShell(
+			self,
+			chamberslot,
+			barrellength,
+			choke,
+			xyofs,
+			zofs,
+			aimoffx,
+			aimoffy
+		);
 
 		//replace chamber with spent
 		loadedshells[chamberslot]=-shelltypeindex;
-
-		//shotpower used for recoil and cycling
-		return shotpower;
 	}
 }
-*/
 
 
 
@@ -486,6 +468,9 @@ enum newhunterstatus{
 
 
 /*
+
+original attempt, broken, just steal the shot code itself
+
 //TODO: move this to shellammo.zs
 extend class HDShellAmmo{
 	class<actor> emptytype;
