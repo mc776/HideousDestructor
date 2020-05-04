@@ -187,10 +187,10 @@ class NewHDShellAmmo:HDRoundAmmo{
 }
 
 //test, delete later
-class NewHDShellAmmo2:NewHDShellAmmo{}
-class NewHDShellAmmo3:NewHDShellAmmo{}
-class NewHDShellAmmo4:NewHDShellAmmo{}
-class NewHDShellAmmo5:NewHDShellAmmo{}
+class NewHDShellAmmo2:NewHDShellAmmo{default{tag "Shell2";}}
+class NewHDShellAmmo3:NewHDShellAmmo{default{tag "Shell3";}}
+class NewHDShellAmmo4:NewHDShellAmmo{default{tag "Shell4";}}
+class NewHDShellAmmo5:NewHDShellAmmo{default{tag "Shell5";}}
 
 
 
@@ -306,15 +306,21 @@ weapon.slotnumber 3;
 		for(int i=SGNS_SSSTART;i<=SGNS_SSEND;i++){
 			string shc=HDShellClasses.IntToName(weaponstatus[i]);
 
-			if(weaponstatus[i]<0)stext=stext.."\ca< empty >";
+			if(weaponstatus[i]<0)stext=stext..((i==ssindex)?"\ca":"").."< empty >";
 			else stext=stext..((i==ssindex)?"\cx":"")..getdefaultbytype(((class<actor>)(shc))).gettag();
 			stext=stext.."\n";
 
 			//one more bit of white space
 			if(i==(SGNS_SSSTART+5))stext=stext.."\n";
 		}
-		string shnam=HDShellClasses.IntToName(weaponstatus[SGNS_SELECTEDTYPE]);
-		if(owner)shnam=shnam.."  "..owner.countinv(shnam);
+		string shcl=HDShellClasses.IntToName(weaponstatus[SGNS_SELECTEDTYPE]);
+		string shnam=getdefaultbytype(
+			(
+				(class<actor>)
+				(shcl)
+			)
+		).gettag();
+		if(owner)shnam=shnam.."  "..owner.countinv(shcl);
 		stext=stext.."\n\nSelected: "..shnam;
 		sstext=stext;
 	}
