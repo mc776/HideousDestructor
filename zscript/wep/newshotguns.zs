@@ -339,7 +339,7 @@ weapon.slotnumber 3;
 			return;
 		}
 		if(btns&BT_USER3){
-			A_GiveInventory("MagManager");
+			A_SetInventory("MagManager",1);
 			A_SelectWeapon("MagManager");
 			return;
 		}

@@ -44,6 +44,7 @@ class HDFist:HDWeapon replaces Fist{
 		..WEPHELP_FIREMODE.."   Grab/Drag\n"
 		..WEPHELP_UNLOAD.."   Distracting projectile\n"
 		..WEPHELP_ZOOM.."+"..WEPHELP_DROP.."   Drop misc. items\n"
+		..WEPHELP_DROPONE.."   Drop 1 of selected item\n"
 		;
 	}
 	override inventory CreateTossable(int amount){
@@ -76,6 +77,15 @@ class HDFist:HDWeapon replaces Fist{
 		}
 		owner.angle=aang;
 		return null;
+	}
+	override void DropOneAmmo(int amt){
+		let hdp=hdplayerpawn(owner);
+		if(
+			hdp
+			&&hdp.invsel
+		){
+			owner.A_DropInventory(hdp.invsel.getclassname(),1);
+		}
 	}
 	override void DoEffect(){
 		super.DoEffect();

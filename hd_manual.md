@@ -829,6 +829,8 @@ Hold Firemode to grab something and possibly drag it along. It has some limited 
 
 Hold Zoom and try to drop your fist "weapon" as a shortcut for dropping all your miscellaneous usable items (D.E.R.P., radsuit, etc.). If you do not have any of those, you will drop your meds instead.
 
+Hit Drop One to drop a single instance of the usable item you have selected.
+
 Protip: Punching damage responds to the way you are turning at the time your fist connects. A good left hook or uppercut to the head can knock out a zombie in one punch. In any event, headshots are generally good for knocking someone about to keep them from hitting back. (Their not hitting back is not guaranteed.)
 
 ### Chainsaw
