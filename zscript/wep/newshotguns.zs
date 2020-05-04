@@ -140,12 +140,15 @@ class HDShellClasses:Thinker{
 }
 
 class NewHDShellAmmo:HDRoundAmmo{
+	string namecolour;
+	property namecolour:namecolour;
 	default{
 		+inventory.ignoreskill
 		+hdpickup.multipickup
 		inventory.pickupmessage "Picked up a shotgun shell.";
 		scale 0.3;
 		tag "shotgun shells";
+		NewHDShellAmmo.namecolour "r";
 		hdpickup.refid HDLD_SHOTSHL;
 		hdpickup.bulk ENC_SHELL;
 		inventory.icon "SHELA0";
@@ -187,6 +190,7 @@ class NewHDShellAmmo:HDRoundAmmo{
 }
 
 //test, delete later
+class NewHDShellAmmoSlug:NewHDShellAmmo{default{tag "Shotgun Slugs";NewHDShellAmmo.namecolour "n";}}
 class NewHDShellAmmo2:NewHDShellAmmo{default{tag "Shell2";}}
 class NewHDShellAmmo3:NewHDShellAmmo{default{tag "Shell3";}}
 class NewHDShellAmmo4:NewHDShellAmmo{default{tag "Shell4";}}
@@ -302,26 +306,28 @@ weapon.slotnumber 3;
 	string sstext;
 	int ssindex;
 	void UpdateSSText(){
-		string stext="";
+		string stext="Side saddles for "..gettag().."\n\n";
 		for(int i=SGNS_SSSTART;i<=SGNS_SSEND;i++){
 			string shc=HDShellClasses.IntToName(weaponstatus[i]);
 
 			if(weaponstatus[i]<0)stext=stext..((i==ssindex)?"\ca":"").."< empty >";
-			else stext=stext..((i==ssindex)?"\cx":"")..getdefaultbytype(((class<actor>)(shc))).gettag();
+			else{
+				let shd=getdefaultbytype(((class<NewHDShellAmmo>)(shc)));
+				stext=stext.."\c"..((i==ssindex)?"x":shd.namecolour)..shd.gettag();
+			}
 			stext=stext.."\n";
 
 			//one more bit of white space
 			if(i==(SGNS_SSSTART+5))stext=stext.."\n";
 		}
 		string shcl=HDShellClasses.IntToName(weaponstatus[SGNS_SELECTEDTYPE]);
-		string shnam=getdefaultbytype(
-			(
-				(class<actor>)
+		let shdb=getdefaultbytype((
+				(class<NewHDShellAmmo>)
 				(shcl)
-			)
-		).gettag();
+		));
+		string shnam=shdb.gettag();
 		if(owner)shnam=shnam.."  "..owner.countinv(shcl);
-		stext=stext.."\n\nSelected: "..shnam;
+		stext=stext.."\n\nSelected: \c"..shdb.namecolour..shnam;
 		sstext=stext;
 	}
 	action void A_SideSaddleReady(){
@@ -350,9 +356,10 @@ weapon.slotnumber 3;
 		if(
 			justpressed(BT_USER1)
 		){
-			int seldex=invoker.weaponstatus[SGNS_SELECTEDTYPE]+1;
+			int seldex=invoker.weaponstatus[SGNS_SELECTEDTYPE];
+			if(btns&BT_USE)seldex--;else seldex++;
 			if(seldex>=HDShellClasses.NumberOfClasses())seldex=0;
-			//else if(seldex<0)seldex=HDShellClasses.NumberOfClasses()-1;
+			else if(seldex<0)seldex=HDShellClasses.NumberOfClasses()-1;
 			invoker.weaponstatus[SGNS_SELECTEDTYPE]=seldex;
 		}else if(
 			justpressed(BT_RELOAD)
@@ -380,7 +387,7 @@ weapon.slotnumber 3;
 ready:
 	ssmanready:
 		TNT1 A 0{
-			invoker.ssindex=0;
+			invoker.ssindex=SGNS_SSSTART;
 			invoker.UpdateSSText();
 		}
 		TNT1 A 1 A_SideSaddleReady();
