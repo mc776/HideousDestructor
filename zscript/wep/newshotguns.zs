@@ -5,18 +5,8 @@
 
 
 //a thinker to remember which number corresponds to which shell class
-//class HDShellClasses:Thinker{
-class HDShellClasses:Actor{
+class HDShellClasses:Thinker{
 	array<string> classnames;
-	override void PostBeginPlay(){
-		super.PostBeginPlay();
-
-		//test
-		FireShell(self,0,32,7);
-		FireShell(players[0].mo,1,32,7);
-		FireShell(self,2,32,7);
-		FireShell(self,3,32,7);
-	}
 	void init(){
 		classnames.clear();
 		array<int> bytesums;bytesums.clear();
@@ -82,7 +72,7 @@ class HDShellClasses:Actor{
 		while(hdsc=HDShellClasses(hdscit.next())){
 			if(hdsc)break;
 		}
-		if(!hdsc)hdsc=HDShellClasses(spawn("HDShellClasses",(0,0,0)));//new("HDShellClasses");
+		if(!hdsc)hdsc=new("HDShellClasses");
 		if(!hdsc.classnames.size())hdsc.init();
 		if(which<0||which>=hdsc.classnames.size())return "NewHDShellAmmo";
 		return hdsc.classnames[which];
@@ -95,11 +85,23 @@ class HDShellClasses:Actor{
 		while(hdsc=HDShellClasses(hdscit.next())){
 			if(hdsc)break;
 		}
-		if(!hdsc)hdsc=HDShellClasses(spawn("HDShellClasses",(0,0,0)));//new("HDShellClasses");
+		if(!hdsc)hdsc=new("HDShellClasses");
 		if(!hdsc.classnames.size())hdsc.init();
 		int res=hdsc.classnames.find(which);
 		if(res==hdsc.classnames.size())return 0;
 		return res;
+	}
+
+	//HDShellClasses.NumberOfClasses()
+	static int NumberOfClasses(){
+		HDShellClasses hdsc=null;
+		thinkeriterator hdscit=thinkeriterator.create("HDShellClasses");
+		while(hdsc=HDShellClasses(hdscit.next())){
+			if(hdsc)break;
+		}
+		if(!hdsc)hdsc=new("HDShellClasses");
+		if(!hdsc.classnames.size())hdsc.init();
+		return hdsc.classnames.size();
 	}
 
 	//grab one instance of the class
@@ -110,7 +112,7 @@ class HDShellClasses:Actor{
 		while(nsa=NewHDShellAmmo(nsait.next())){
 			if(nsa&&nsa.getclassname()==thisclassname)break;
 		}
-		if(!nsa)nsa=NewHDShellAmmo(spawn(thisclassname,(31000,31000,0)));
+		if(!nsa)nsa=NewHDShellAmmo(actor.spawn(thisclassname,(31000,31000,0)));
 		return nsa;
 	}
 
@@ -196,8 +198,6 @@ class NewHDShellAmmo5:NewHDShellAmmo{}
 
 
 
-
-
 // ------------------------------------------------------------
 // Shotgun (Common)
 // ------------------------------------------------------------
@@ -205,6 +205,8 @@ class HDNewShotgun:HDWeapon{
 	default{
 		+weapon.cheatnotweapon
 		+hdweapon.debugonly
+hdweapon.refid "sg2";
+weapon.slotnumber 3;
 
 		weapon.bobrangex 0.21;
 		weapon.bobrangey 0.86;
@@ -302,29 +304,33 @@ class HDNewShotgun:HDWeapon{
 	void UpdateSSText(){
 		string stext="";
 		for(int i=SGNS_SSSTART;i<=SGNS_SSEND;i++){
-			class<HDShellAmmo> shc=HDShellClasses.IntToName(weaponstatus[i]);
-			stext=stext..((i==ssindex)?">  ":"   ");
+			string shc=HDShellClasses.IntToName(weaponstatus[i]);
 
-			if(weaponstatus[i]<1)stext=stext.."< empty >";
-			else stext=stext..getdefaultbytype(shc).gettag();
+			if(weaponstatus[i]<0)stext=stext.."\ca< empty >";
+			else stext=stext..((i==ssindex)?"\cx":"")..getdefaultbytype(((class<actor>)(shc))).gettag();
 			stext=stext.."\n";
 
 			//one more bit of white space
 			if(i==(SGNS_SSSTART+5))stext=stext.."\n";
 		}
+		string shnam=HDShellClasses.IntToName(weaponstatus[SGNS_SELECTEDTYPE]);
+		if(owner)shnam=shnam.."  "..owner.countinv(shnam);
+		stext=stext.."\n\nSelected: "..shnam;
 		sstext=stext;
 	}
 	action void A_SideSaddleReady(){
-		if(pressingfiremode()){
+		int btns=player.cmd.buttons;
+		if(btns)invoker.UpdateSSText();
+
+		if(btns&BT_FIREMODE){
 			setweaponstate("ssmanend");
 			return;
 		}
-		if(justpressed(BT_USER3)){
+		if(btns&BT_USER3){
 			A_GiveInventory("MagManager");
 			A_SelectWeapon("MagManager");
 			return;
 		}
-
 		A_WeaponReady(WRF_NOFIRE);
 		A_WeaponMessage(invoker.sstext,3);
 
@@ -336,31 +342,43 @@ class HDNewShotgun:HDWeapon{
 		invoker.ssindex=ssindex;
 
 		if(
+			justpressed(BT_USER1)
+		){
+			int seldex=invoker.weaponstatus[SGNS_SELECTEDTYPE]+1;
+			if(seldex>=HDShellClasses.NumberOfClasses())seldex=0;
+			//else if(seldex<0)seldex=HDShellClasses.NumberOfClasses()-1;
+			invoker.weaponstatus[SGNS_SELECTEDTYPE]=seldex;
+		}else if(
 			justpressed(BT_RELOAD)
-			&&!invoker.weaponstatus[ssindex]
+			&&invoker.weaponstatus[ssindex]<0
 		){
 			int seltype=invoker.weaponstatus[SGNS_SELECTEDTYPE];
-			class<HDShellAmmo> gsc=HDShellClasses.IntToName(seltype);
+			string gsc=HDShellClasses.IntToName(seltype);
 			if(countinv(gsc)){
 				A_TakeInventory(gsc,1);
 				invoker.weaponstatus[ssindex]=seltype;
 			}
 		}else if(
 			justpressed(BT_UNLOAD)
-			&&invoker.weaponstatus[ssindex]
+			&&invoker.weaponstatus[ssindex]>=0
 		){
-			class<HDShellAmmo> gsc=HDShellClasses.IntToName(invoker.weaponstatus[ssindex]);
+			string gsc=HDShellClasses.IntToName(invoker.weaponstatus[ssindex]);
 			A_GiveInventory(gsc,1);
-			invoker.weaponstatus[ssindex]=0;
+			invoker.weaponstatus[ssindex]=-1;
 		}
 	}
 
 
 	states{
 	//shotgun
+ready:
 	ssmanready:
+		TNT1 A 0{
+			invoker.ssindex=0;
+			invoker.UpdateSSText();
+		}
 		TNT1 A 1 A_SideSaddleReady();
-		loop;
+		wait;
 	ssmanend:
 		TNT1 A 0;
 		goto nope;
