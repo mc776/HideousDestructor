@@ -91,16 +91,11 @@ class HDIED:DudRocket{
 	){
 		if(
 			!random(0,7)
-			||(!random(0,3)&&(
-				mod=="SmallArms0"
-				||mod=="SmallArms1"
-				||mod=="SmallArms2"
-				||mod=="SmallArms3"
-			))
+			||(mod=="Piercing"&&!random(0,3))
 		){
 			setstatelabel("destroy");
 		}
-		return 0;
+		return -1;
 	}
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -131,18 +126,19 @@ class HDIED:DudRocket{
 			actor hitactor=itt.thing;
 			if(
 				hitactor
-				&&isHostile(hitactor)
 				&&hitactor.bshootable
 				&&!hitactor.bnotarget
 				&&!hitactor.bnevertarget
 				&&(hitactor.bismonster||hitactor.player)
 				&&(!hitactor.player||!(hitactor.player.cheats&CF_NOTARGET))
+				&&hitactor.health>0
+				&&isHostile(hitactor)
+				&&checksight(hitactor)
 				&&(
 					!master
 					||!checksight(master)
 					||distance3d(master)>256
 				)
-				&&checksight(hitactor)
 			){
 				tracer=hitactor;
 				setstatelabel("detonate");
@@ -161,10 +157,6 @@ class HDIED:DudRocket{
 		IEDS A 10 A_IEDScan();
 		IEDS C 10 A_JumpIf(!bmissilemore,"idle");
 		loop;
-	see:
-	melee:
-		IEDS A 0;
-		goto detonate;
 	detonate:
 		IEDS A 1{
 			bshootable=false;
