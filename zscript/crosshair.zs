@@ -38,7 +38,7 @@ extend class HDStatusBar{
 
 
 		//multiple weapons use this
-		string whichdot="redpxl";
+		string whichdot="riflsit0";
 		int whichdotthough=hd_crosshair.getint();
 		switch(whichdotthough){
 			case 1:case 2:case 3:case 4:case 5:
