@@ -820,7 +820,7 @@ class HDRedKey:HDUPKAlwaysGive replaces RedCard{
 	grab:
 		---- A 0{
 			if(target)angle=angleto(target);
-			A_StartSound("misc/i_pkup",12,CHANF_LOCAL);
+			A_StartSound("misc/i_pkup",12);
 		}goto spawn1;
 	}
 }
