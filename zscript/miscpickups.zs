@@ -773,15 +773,13 @@ class HDKeyLight:PointLight{
 	override void tick(){
 		if(!target)destroy();
 		else{
-			args[3]=(target.frame)?16:0;
+			args[3]=(target.frame)?0:8;
 			setorigin(target.pos,true);
 		}
 	}
 }
 class HDRedKey:HDUPKAlwaysGive replaces RedCard{
 	default{
-		+flatsprite
-		scale 0.4;
 		hdupkalwaysgive.toallplayers "RedCard";
 		hdupkalwaysgive.msgtoall "\crRED\c- local area clearance code downloaded.";
 	}
@@ -819,6 +817,7 @@ class HDRedKey:HDUPKAlwaysGive replaces RedCard{
 		loop;
 	give:
 	beep:
+	grab:
 		---- A 0{
 			if(target)angle=angleto(target);
 			A_StartSound("misc/i_pkup",12,CHANF_LOCAL);
