@@ -219,6 +219,19 @@ class HDIncapWeapon:SelfBandage{
 		;
 	}
 	states{
+	nope:
+		---- A 1{
+			A_ClearRefire();
+			if(invoker.bweaponbusy){
+				let ppp=hdplayerpawn(self);
+				if(!ppp)return;
+				double hdbbx=(ppp.hudbobrecoil1.x+ppp.hudbob.x)*0.5;
+				double hdbby=max(0,(ppp.hudbobrecoil1.y+ppp.hudbob.y)*0.5+invoker.bobrangey*2);
+				A_WeaponOffset(hdbbx,hdbby+WEAPONTOP,WOF_INTERPOLATE);
+			}
+		}
+		---- A 0 A_JumpIf(!!player.cmd.buttons,"nope");
+		---- A 0 A_Jump(256,"ready");
 	select:
 		TNT1 A 30;
 		goto nope;

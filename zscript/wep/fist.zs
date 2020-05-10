@@ -367,6 +367,14 @@ class HDFist:HDWeapon replaces Fist{
 		goto nope;
 	ready:
 		TNT1 A 1{
+			if(
+				hdplayerpawn(self)
+				&&hdplayerpawn(self).incapacitated
+			){
+				A_SetInventory("HDIncapWeapon",1);
+				A_SelectWeapon("HDIncapWeapon");
+				return;
+			}
 			if(invoker.washolding&&pressingfire()){
 				setweaponstate("nope");
 				return;
