@@ -143,6 +143,7 @@ class NewHDShellAmmo:HDRoundAmmo{
 	string namecolour;
 	property namecolour:namecolour;
 	default{
+-hdpickup.fitsinbackpack  //delete this later
 		+inventory.ignoreskill
 		+hdpickup.multipickup
 		inventory.pickupmessage "Picked up a shotgun shell.";
