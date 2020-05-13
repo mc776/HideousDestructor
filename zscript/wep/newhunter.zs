@@ -219,6 +219,8 @@ class NewHunter:HDShotgun{
 		if(which)invoker.weaponstatus[0]|=HUNTF_ALTHOLDING;
 		else invoker.weaponstatus[0]&=~HUNTF_ALTHOLDING;
 	}
+
+
 	states{
 	select0:
 		SHTG A 0;
