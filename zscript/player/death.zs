@@ -196,6 +196,9 @@ class HDPlayerCorpse:HDMobMan{
 		health 100;mass 160;
 		tag "$CC_MARINE";
 	}
+	override bool CanResurrect(actor other,bool passive){
+		return !hd_pof;
+	}
 	override void Tick(){
 		super.Tick();
 		let ppp=hdplayerpawn(master);
