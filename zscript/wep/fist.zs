@@ -373,6 +373,7 @@ class HDFist:HDWeapon replaces Fist{
 			){
 				A_SetInventory("HDIncapWeapon",1);
 				A_SelectWeapon("HDIncapWeapon");
+				A_WeaponReady(WRF_NONE);
 				return;
 			}
 			if(invoker.washolding&&pressingfire()){
