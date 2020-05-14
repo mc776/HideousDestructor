@@ -31,6 +31,7 @@ extend class HDHandlers{
 			hde.setorigin(corpsepos[e.playernumber],false);
 			hde.angle=(corpsepos[e.playernumber].z%1.)*1000;
 			hde.pitch=80;
+			if(hd_disintegrator)hde.spawn("TeleFog",hde.pos,ALLOW_REPLACE);
 			return;
 		}
 
