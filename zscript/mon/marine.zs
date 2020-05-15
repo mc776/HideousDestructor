@@ -1683,12 +1683,11 @@ class BotBot:HDMarine{
 			painsound="marineb/pain";
 			deathsound="marineb/death";
 		}
+
+		nickname=players[masterplayer].getusername();
 	}
 	//nick should be the player's nick
-	override string SetNickname(){
-		if(!master)return super.setnickname();
-		return players[masterplayer].getusername();
-	}
+	override string SetNickname(){return gettag();}
 	//don't do anything, let the playerpawn do the reporting instead
 	override void HDMCheckIn(){}
 }

@@ -375,6 +375,7 @@ struct HDMath{
 	//mostly for exceptions for players and monsters
 	static string GetName(actor named){
 		if(named.player)return named.player.getusername();
+		if(hdmarine(named))return hdmarine(named).nickname;
 		string tagname=named.gettag();
 		if(tagname!="")return tagname;
 		return named.getclassname();
