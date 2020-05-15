@@ -785,7 +785,6 @@ class HDRedKey:HDUPKAlwaysGive replaces RedCard{
 	}
 	override void PostBeginPlay(){
 		super.PostBeginPlay();
-		pitch=-170;
 		actor lite=spawn("HDKeyLight",pos,ALLOW_REPLACE);
 		lite.target=self;
 		if(sprite==getspriteindex("YKEYA0")){

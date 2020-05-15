@@ -227,7 +227,11 @@ class HDMedikitter:HDWoundFixer{
 
 		//use on someone else
 		if(bt&BT_ALTATTACK){
-			if(invoker.weaponstatus[MEDS_SECONDFLESH]<1){
+			if(
+				(bt&BT_FIREMODE)
+				&&!(bt&BT_ZOOM)
+			)setweaponstate("diagnoseother");
+			else if(invoker.weaponstatus[MEDS_SECONDFLESH]<1){
 				A_WeaponMessage("You are out of Auto-Sutures.");
 				setweaponstate("nope");
 			}else setweaponstate("fireother");
