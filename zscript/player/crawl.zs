@@ -25,19 +25,20 @@ extend class HDPlayerPawn{
 				A_SetInventory("HDIncapWeapon",1);
 				if(player&&player.readyweapon){
 					if(
-						player.cmd.buttons&(
-							BT_ATTACK|BT_ALTATTACK|BT_RELOAD|BT_ZOOM
-							|BT_USER1|BT_USER2|BT_USER3|BT_USER4
-						)||(
-							hdweapon(player.readyweapon)
-							&&hdweapon(player.readyweapon).bweaponbusy
+						!HDFist(player.readyweapon)&&(
+							player.cmd.buttons&(
+								BT_ATTACK|BT_ALTATTACK|BT_RELOAD|BT_ZOOM
+								|BT_USER1|BT_USER2|BT_USER3|BT_USER4
+							)||(
+								hdweapon(player.readyweapon)
+								&&hdweapon(player.readyweapon).bweaponbusy
+							)
 						)
 					)DropInventory(player.readyweapon);
 					else player.setpsprite(PSP_WEAPON,player.readyweapon.findstate("deselect"));
 				}
-			}else{
-				A_SelectWeapon("HDIncapWeapon");
 			}
+			A_SelectWeapon("HDIncapWeapon");
 		}else{
 			A_SetSize(radius,min(48,height+3));
 		}

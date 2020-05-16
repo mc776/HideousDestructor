@@ -572,7 +572,6 @@ class HDPlayerPawn:PlayerPawn{
 			else speed=0.36;
 		}
 
-
 		//special hud bobbing
 		double bobvel=max((mustwalk&&vel.xy!=(0,0))?1:0,abs(vel.x),abs(vel.y))*viewbob;
 		let pr=weapon(player.readyweapon);
