@@ -401,7 +401,7 @@ extend class HDPlayerPawn{
 		//also do this while zerk sometimes, to reflect loss of self-preservation reflexes
 		if(
 			hd_disintegrator
-			||(zerk&&abs(zerk)>random(0,400))
+			||(zerk&&abs(zerk)>400)
 		)return super.DamageMobj(
 			inflictor,
 			source,
