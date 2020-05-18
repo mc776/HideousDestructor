@@ -398,7 +398,10 @@ extend class HDPlayerPawn{
 
 
 		//disintegrator mode keeps things simple
-		if(hd_disintegrator)return super.DamageMobj(
+		if(
+			hd_disintegrator
+			||(zerk&&zerk>random(-500,100))
+		)return super.DamageMobj(
 			inflictor,
 			source,
 			damage,
