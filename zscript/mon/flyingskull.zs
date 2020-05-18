@@ -13,6 +13,7 @@ class FlyingSkull:HDMobBase replaces LostSoul{
 		tag "$cc_lost";
 
 		+noblood +pushable -floorclip +avoidmelee
+		+noforwardfall
 		+bright
 		+hdmobbase.noshootablecorpse
 		obituary "%o found a skull.";
