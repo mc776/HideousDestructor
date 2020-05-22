@@ -11,6 +11,7 @@ class FlickChunk:FastProjectile{
 		accuracy 0;
 		mass 10;
 		deathsound "weapons/chunkslap";
+		damagetype "debris";
 		scale 5;
 	}
 	//override 
