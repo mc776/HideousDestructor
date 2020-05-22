@@ -12,7 +12,7 @@ extend class HDPlayerPawn{
 		tauntsound,
 		xdeathsound,
 		gruntsound,
-		landsound,
+		landsound,  //currently unused
 		medsound;
 		//painsound
 		//deathsound
