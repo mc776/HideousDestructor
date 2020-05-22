@@ -265,7 +265,7 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 		#### A 0 A_JumpIfTargetInLOS(1,10);
 		loop;
 		#### A 0 A_FaceTarget(turnamount,turnamount);
-		#### E 1 A_SetTics(random(1,100/clamp(1,turnamount,turnamount+1)));
+		#### E 1 A_SetTics(random(1,100/clamp(1,turnamount,turnamount+1)+2));
 		#### E 0{
 			if(
 				gunloaded<1
@@ -273,7 +273,7 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 				setstatelabel("ohforfuckssake");
 				return;
 			}
-			shotspread=frandom(turnamount*0.07,turnamount*0.22);
+			shotspread=frandom(0.07,0.27)*turnamount;
 			setstatelabel("shoot");
 		}
 	shoot:
