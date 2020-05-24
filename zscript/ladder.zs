@@ -148,20 +148,7 @@ class hdladderbottom:hdactor{
 		}
 
 		//check if user can reach
-		double dst=distance2d(user)*HDCONST_SQRTTWO;
-		vector2 check2d=user.vec2to(self);
-		for(int i=0;i<6;i++){ //12*6=72
-			if(
-				abs(pos.x-user.pos.x)<16
-				&&abs(pos.y-user.pos.y)<16
-			)break;
-			if(!checkmove(
-				pos.xy+check2d*i,
-				PCM_DROPOFF
-			)){
-				return false;
-			}
-		}
+		if(distance2d(user)>16)return false;
 
 		users[user.playernumber()]=user;
 		user.vel.z+=1;
