@@ -175,11 +175,12 @@ class HDPickerUpper:Actor{
 	default{
 		+solid
 		+nogravity
+		+noblockmap
 		height 2;
 		radius 2;
 	}
 	override bool cancollidewith(actor other,bool passive){
-		return (!passive&&(inventory(other)||hdupk(other)));
+		return inventory(other)||hdupk(other);
 	}
 }
 
