@@ -694,6 +694,7 @@ extend class HDHandlers{
 			//Players 5-8 will not work.
 
 			if(deathmatch)p.spawn("TeleFog",p.pos,ALLOW_REPLACE);
+			else p.btelestomp=false;
 
 			p.levelreset();  //reset if changing levels
 			hdlivescounter.get();  //only needs to be done once
