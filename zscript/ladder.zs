@@ -115,6 +115,18 @@ const LADDER_SECTIONLENGTH=12.;
 const LADDER_MAX=LADDER_SECTIONLENGTH*67.;
 const LADDER_SECTIONS=LADDER_MAX/LADDER_SECTIONLENGTH;
 
+class HDLadderProxy:HDActor{
+	default{
+		+nogravity +invisible
+		height 56;radius 10;
+		mass int.MAX;
+	}
+	override bool used(actor user){
+		if(master) return master.used(user);
+		else destroy();
+		return false;
+	}
+}
 
 class hdladderbottom:hdactor{
 	default{
