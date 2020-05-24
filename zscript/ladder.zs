@@ -175,6 +175,16 @@ class hdladderbottom:hdactor{
 		if(message)currentuser.A_Log("Ladder disengaged.",true);
 		users[usernum]=null;
 	}
+	override void postbeginplay(){
+		if(CurSector.GetPortalType(Sector.Floor)==SectorPortal.TYPE_LINKEDPORTAL){
+			SectorPortal portal=Level.SectorPortals[CurSector.Portals[Sector.Floor]];
+
+			vector3 newPos=(pos.xy+portal.mDisplacement, 0);
+			newPos.z=portal.mDestination.FloorPlane.ZAtPoint(newPos.xy);
+
+			HDLadderProxy(Spawn("HDLadderProxy",newPos,ALLOW_REPLACE)).master=self;
+		}
+	}
 	override void ondestroy(){
 		for(int i=0;i<MAXPLAYERS;i++){
 			actor currentuser=users[i];
