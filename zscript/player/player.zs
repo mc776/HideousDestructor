@@ -211,6 +211,7 @@ class HDPlayerPawn:PlayerPawn{
 		PLAY ABCD 4;
 		loop;
 	see0:
+		---- A 0{btelestomp=true;}
 		---- A 0 A_CheckSeeState();
 		#### ABCD 4;
 		goto spawn;
@@ -694,7 +695,6 @@ extend class HDHandlers{
 			//Players 5-8 will not work.
 
 			if(deathmatch)p.spawn("TeleFog",p.pos,ALLOW_REPLACE);
-			else p.btelestomp=false;
 
 			p.levelreset();  //reset if changing levels
 			hdlivescounter.get();  //only needs to be done once
@@ -719,6 +719,8 @@ extend class HDPlayerPawn{
 		lastheight=height;
 		lastangle=angle;
 		lastpitch=pitch;
+
+		btelestomp=false;
 
 		incapacitated=0;
 		incaptimer=0;
