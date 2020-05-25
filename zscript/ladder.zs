@@ -92,8 +92,8 @@ class hdladdertop:hdactor{
 
 				//only complete if start or within throwable range, else abort
 				if(!master)return;
-				A_StartSound("misc/ladder");
 				if(pos.z-master.pos.z<108){
+					A_StartSound("misc/ladder");
 					master.A_Log(string.format("You hang up a ladder.%s",master.getcvar("hd_helptext")?" Use the ladder to climb.":""),true);
 					master.A_TakeInventory("PortableLadder",1);
 					return;
