@@ -50,8 +50,8 @@ class hdladdertop:hdactor{
 		for(int i=0;i<20;i++){
 
 			if(
-				!!master //don't break if placed by mapper
-				&&!checkmove(mvlast,PCM_NOACTORS,tm)
+				!checkmove(mvlast,PCM_NOACTORS,tm)
+				&&!!master //don't break if placed by mapper
 			)break;
 
 			A_UnsetSolid();
@@ -92,8 +92,8 @@ class hdladdertop:hdactor{
 
 				//only complete if start or within throwable range, else abort
 				if(!master)return;
-				A_StartSound("misc/ladder");
 				if(pos.z-master.pos.z<108){
+					A_StartSound("misc/ladder");
 					master.A_Log(string.format("You hang up a ladder.%s",master.getcvar("hd_helptext")?" Use the ladder to climb.":""),true);
 					master.A_TakeInventory("PortableLadder",1);
 					return;
@@ -115,6 +115,18 @@ const LADDER_SECTIONLENGTH=12.;
 const LADDER_MAX=LADDER_SECTIONLENGTH*67.;
 const LADDER_SECTIONS=LADDER_MAX/LADDER_SECTIONLENGTH;
 
+class HDLadderProxy:HDActor{
+	default{
+		+nogravity +invisible
+		height 56;radius 10;
+		mass int.MAX;
+	}
+	override bool used(actor user){
+		if(master) return master.used(user);
+		else destroy();
+		return false;
+	}
+}
 
 class hdladderbottom:hdactor{
 	default{
@@ -136,20 +148,7 @@ class hdladderbottom:hdactor{
 		}
 
 		//check if user can reach
-		double dst=distance2d(user)*HDCONST_SQRTTWO;
-		vector2 check2d=user.vec2to(self);
-		for(int i=0;i<6;i++){ //12*6=72
-			if(
-				abs(pos.x-user.pos.x)<16
-				&&abs(pos.y-user.pos.y)<16
-			)break;
-			if(!checkmove(
-				pos.xy+check2d*i,
-				PCM_DROPOFF
-			)){
-				return false;
-			}
-		}
+		if(distance2d(user)>16)return false;
 
 		users[user.playernumber()]=user;
 		user.vel.z+=1;
@@ -162,6 +161,16 @@ class hdladderbottom:hdactor{
 		if(playerpawn(currentuser))playerpawn(currentuser).viewbob=1.;
 		if(message)currentuser.A_Log("Ladder disengaged.",true);
 		users[usernum]=null;
+	}
+	override void postbeginplay(){
+		if(CurSector.GetPortalType(Sector.Floor)==SectorPortal.TYPE_LINKEDPORTAL){
+			SectorPortal portal=Level.SectorPortals[CurSector.Portals[Sector.Floor]];
+
+			vector3 newPos=(pos.xy+portal.mDisplacement, 0);
+			newPos.z=portal.mDestination.FloorPlane.ZAtPoint(newPos.xy);
+
+			HDLadderProxy(Spawn("HDLadderProxy",newPos,ALLOW_REPLACE)).master=self;
+		}
 	}
 	override void ondestroy(){
 		for(int i=0;i<MAXPLAYERS;i++){
@@ -237,7 +246,8 @@ class hdladderbottom:hdactor{
 					}
 				}
 				if(target.distance2d(currentuser)>40){  
-					vector2 tp=pos.xy;
+					//account for sector portal offset
+					vector2 tp=currentuser.pos.xy-vec2to(currentuser);
 					currentuser.setorigin((
 						clamp(currentuser.pos.x,
 							tp.x-40,
@@ -293,7 +303,7 @@ class hdladderbottom:hdactor{
 				if(bt){
 					if(bt&BT_JUMP){
 						vector3 vl=(
-							(currentuser.pos.xy-pos.xy).unit()*3,
+							vec2to(currentuser).unit()*3,
 							4
 						);
 						if(currentuser.countinv("PowerStrength"))vl*=2.2;
@@ -321,16 +331,17 @@ class hdladderbottom:hdactor{
 			}
 			if(!currentuser)continue;
 
+			vector2 relativepos=currentuser.pos.xy-vec2to(currentuser);
 			currentuserz=max(currentuserz,pos.z-currentuser.height*1.3);
 			currentuserz=min(currentuserz,currentuser.ceilingz-currentuser.height);
 			currentuser.setorigin((
 				clamp(currentuser.pos.x,
-					pos.x-16,
-					pos.x+16
+					relativepos.x-16,
+					relativepos.x+16
 				),
 				clamp(currentuser.pos.y,
-					pos.y-16,
-					pos.y+16
+					relativepos.y-16,
+					relativepos.y+16
 				),
 				currentuserz
 			),true);
