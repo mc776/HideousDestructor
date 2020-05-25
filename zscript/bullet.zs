@@ -389,9 +389,6 @@ class HDBulletActor:HDActor{
 	void ApplyGravity(){
 		if(vel.z>BULLET_TERMINALVELOCITY)vel.z-=max(0.001,getgravity());
 	}
-	override bool cancollidewith(actor other,bool passive){
-		return !passive;
-	}
 	static HDBulletActor FireBullet(
 		actor caller,
 		class<HDBulletActor> type="HDBulletActor",
