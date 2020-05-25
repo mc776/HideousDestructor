@@ -50,8 +50,8 @@ class hdladdertop:hdactor{
 		for(int i=0;i<20;i++){
 
 			if(
-				!!master //don't break if placed by mapper
-				&&!checkmove(mvlast,PCM_NOACTORS,tm)
+				!checkmove(mvlast,PCM_NOACTORS,tm)
+				&&!!master //don't break if placed by mapper
 			)break;
 
 			A_UnsetSolid();
