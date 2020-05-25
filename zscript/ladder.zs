@@ -246,7 +246,8 @@ class hdladderbottom:hdactor{
 					}
 				}
 				if(target.distance2d(currentuser)>40){  
-					vector2 tp=pos.xy;
+					//account for sector portal offset
+					vector2 tp=currentuser.pos.xy-vec2to(currentuser);
 					currentuser.setorigin((
 						clamp(currentuser.pos.x,
 							tp.x-40,
@@ -302,7 +303,7 @@ class hdladderbottom:hdactor{
 				if(bt){
 					if(bt&BT_JUMP){
 						vector3 vl=(
-							(currentuser.pos.xy-pos.xy).unit()*3,
+							vec2to(currentuser).unit()*3,
 							4
 						);
 						if(currentuser.countinv("PowerStrength"))vl*=2.2;
@@ -330,16 +331,17 @@ class hdladderbottom:hdactor{
 			}
 			if(!currentuser)continue;
 
+			vector2 relativepos=currentuser.pos.xy-vec2to(currentuser);
 			currentuserz=max(currentuserz,pos.z-currentuser.height*1.3);
 			currentuserz=min(currentuserz,currentuser.ceilingz-currentuser.height);
 			currentuser.setorigin((
 				clamp(currentuser.pos.x,
-					pos.x-16,
-					pos.x+16
+					relativepos.x-16,
+					relativepos.x+16
 				),
 				clamp(currentuser.pos.y,
-					pos.y-16,
-					pos.y+16
+					relativepos.y-16,
+					relativepos.y+16
 				),
 				currentuserz
 			),true);
