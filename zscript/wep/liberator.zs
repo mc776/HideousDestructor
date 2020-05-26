@@ -168,7 +168,7 @@ class AutoReloader:AutoReloadingThingy{
 		TNT1 A 0 A_Lower(999);
 		wait;
 	ready:
-		TNT1 A 1 A_WeaponReady(WRF_ALLOWUSER4);
+		TNT1 A 1 A_WeaponReady(WRF_ALLOWUSER3|WRF_ALLOWUSER4);
 		goto readyend;
 	fire:
 		TNT1 A 0 A_CheckChug();
@@ -176,6 +176,13 @@ class AutoReloader:AutoReloadingThingy{
 	hold:
 		TNT1 A 1;
 		TNT1 A 0 A_Refire("hold");
+		goto ready;
+	user3:
+		---- A 0{
+			if(countinv("HD7mMag"))A_MagManager("HD7mMag");
+			else if(countinv("HD7mClip"))A_MagManager("HD7mMag");
+			else A_SelectWeapon("PickupManager");
+		}
 		goto ready;
 	user4:
 	unload:
