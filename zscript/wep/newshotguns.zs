@@ -236,6 +236,47 @@ weapon.slotnumber 3;
 			}
 		}
 	}
+	action bool A_GrabShells(int maxhand=3,bool settics=false,bool alwaysone=false){
+		if(maxhand>0)EmptyHand();else maxhand=abs(maxhand);
+		bool fromsidesaddles=!(invoker.weaponstatus[0]&HUNTF_FROMPOCKETS);
+		if(fromsidesaddles){
+			//grab 3 shells from side saddles
+		}else{
+			//use selected type
+			int typeint=invoker.weaponstatus[SGNS_SELECTEDTYPE];
+			string typename=HDShellClasses.IntToName(typeint);
+			toload=min(toload,countinv(typename));
+			A_TakeInventory(typename,toload);
+			for(int i=0;i<toload;i++){
+				handshells[i]=typeint;
+			}
+		}
+		toload=min(toload,max(1,health>>2));
+		if(toload<1)return false;
+
+		//old shit below, replace
+		invoker.handshells=toload;
+		if(fromsidesaddles){
+			invoker.weaponstatus[SHOTS_SIDESADDLE]-=toload;
+			if(settics)A_SetTics(2);
+			A_StartSound("weapons/pocket",8,CHANF_OVERLAP,0.4);
+			A_MuzzleClimb(
+				frandom(0.1,0.15),frandom(0.05,0.08),
+				frandom(0.1,0.15),frandom(0.05,0.08)
+			);
+		}else{
+			A_TakeInventory("HDShellAmmo",toload,TIF_NOTAKEINFINITE);
+			if(settics)A_SetTics(7);
+			A_StartSound("weapons/pocket",9);
+			A_MuzzleClimb(
+				frandom(0.1,0.15),frandom(0.2,0.4),
+				frandom(0.2,0.25),frandom(0.3,0.4),
+				frandom(0.1,0.35),frandom(0.3,0.4),
+				frandom(0.1,0.15),frandom(0.2,0.4)
+			);
+		}
+		return true;
+	}
 	override void DetachFromOwner(){
 		EmptyHand();
 		super.detachfromowner();
@@ -303,7 +344,7 @@ weapon.slotnumber 3;
 	}
 
 
-	//sidesaddle management
+	//sidesaddle management interface
 	string sstext;
 	int ssindex;
 	void UpdateSSText(){
@@ -485,9 +526,8 @@ enum newhunterstatus{
 	SGN1S_FIREMODE=22,
 	SGN1S_TUBE=23,
 	SGN1S_TUBESIZE=24,
-	SGN1S_HAND=25,
-	SGN1S_CHOKE=26,
-	SGN1S_BARRELLENGTH=27,
+	SGN1S_CHOKE=25,
+	SGN1S_BARRELLENGTH=26,
 
 	SGN1_TUBELONG=7,
 	SGN1_TUBESHORT=4,
