@@ -146,7 +146,7 @@ class HERPBot:HDUPK{
 			//shoot a line out
 			flinetracedata hlt;
 			linetrace(
-				angle,4096,c,
+				angle,4096,c+pitch,
 				flags:TRF_NOSKY,
 				offsetz:9.5,
 				data:hlt
