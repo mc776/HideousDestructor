@@ -2,6 +2,29 @@
 // Custom skin system
 // ------------------------------------------------------------
 const HDMUGSHOT_DEFAULT="*";
+extend class HDWeapon{
+	enum skinsoundtype{
+		SKINSOUND_TAUNT=0,
+		SKINSOUND_XDEATH=0,
+		SKINSOUND_GRUNT=0,
+		SKINSOUND_LAND=0,
+		SKINSOUND_MEDS=0,
+	}
+	action void A_PlaySkinSound(int which,sound fallback,int channel=CHAN_VOICE,int flags=0){
+		let ppp=hdplayerpawn(self);
+		sound sss;
+		if(ppp)switch(which){
+		case SKINSOUND_TAUNT:sss=ppp.tauntsound;break;
+		case SKINSOUND_XDEATH:sss=ppp.xdeathsound;break;
+		case SKINSOUND_GRUNT:sss=ppp.gruntsound;break;
+		case SKINSOUND_LAND:sss=ppp.landsound;break;
+		case SKINSOUND_MEDS:sss=ppp.medsound;break;
+		default:return;
+		}
+		else sss=fallback;
+		A_StartSound(sss,channel,flags);
+	}
+}
 extend class HDPlayerPawn{
 	string lastskin;
 	string mugshot;

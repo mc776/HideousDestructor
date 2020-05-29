@@ -657,7 +657,7 @@ class SecondFleshBeast:IdleDummy{
 			if(!tgt||tgt.bkilled||stamina<1){destroy();return;}
 			if(tgt.health>10)tgt.damagemobj(tgt,tgt,min(tgt.health-10,3),"internal",DMG_NO_ARMOR);
 			tics=clamp(200-stamina,4,random(4,40));
-			if(tics<10)tgt.A_Pain();
+			if(tics<10)tgt.A_StartSound(tgt.painsound,CHAN_VOICE);
 			tgt.stunned+=10;
 			tgt.burncount--;
 			if(!random(0,200))tgt.aggravateddamage++;
@@ -760,9 +760,9 @@ class SelfBandage:HDWoundFixer{
 		}
 		TNT1 A random(1,3) A_Jump(32,2,4);
 		TNT1 A 0 A_Jump(256,2);
-		TNT1 A random(1,3) A_StartSound("*usefail",CHAN_VOICE);
+		TNT1 A random(1,3) A_PlaySkinSound(SKINSOUND_GRUNT,"*usefail");
 		TNT1 A 0 A_Jump(256,2);
-		TNT1 A random(1,3) A_StartSound("*grunt",CHAN_VOICE);
+		TNT1 A random(1,3) A_PlaySkinSound(SKINSOUND_GRUNT,"*grunt");
 		TNT1 A 0 A_Jump(200,2);
 		TNT1 A 0 A_StartSound("bandage/rip",CHAN_WEAPON,CHANF_OVERLAP,0.4);
 		TNT1 A 0 A_Refire("try4");
@@ -787,7 +787,7 @@ class SelfBandage:HDWoundFixer{
 			if(hdplayerpawn(self))hdplayerpawn(self).fatigue+=2;
 		}
 		TNT1 A 0 A_Jump(240,2);
-		TNT1 A random(1,3) A_StartSound("*grunt",CHAN_VOICE);
+		TNT1 A random(1,3) A_PlaySkinSound(SKINSOUND_GRUNT,"*grunt");
 		TNT1 A 0 A_Jump(140,2);
 		TNT1 A 0 A_StartSound("bandage/rustle",CHAN_BODY,CHANF_OVERLAP);
 		TNT1 A random(10,20);
@@ -867,7 +867,7 @@ class SelfBandage:HDWoundFixer{
 		TNT1 A 10{
 			A_SetBlend("7a 3a 18",0.1,4);
 			A_SetPitch(pitch+2,SPF_INTERPOLATE);
-			A_StartSound("*usemeds",CHAN_VOICE);
+			A_PlaySkinSound(SKINSOUND_MEDS,"*usemeds");
 			A_DropInventory("BloodBagWorn");
 		}
 		goto nope;

@@ -24,6 +24,8 @@ const HDCONST_MINEYERANGE=18.;
 
 #include "zscript/function.zs"
 
+#include "zscript/wep/weapon.zs"
+
 #include "zscript/commands.zs"
 
 #include "zscript/statusbar.zs"
@@ -62,7 +64,6 @@ const HDCONST_MINEYERANGE=18.;
 
 #include "zscript/explosion.zs"
 #include "zscript/fireball.zs"
-#include "zscript/wep/weapon.zs"
 
 #include "zscript/medikit.zs"
 #include "zscript/injectors.zs"
