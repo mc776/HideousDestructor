@@ -9,7 +9,7 @@ class Babuin:HDMobBase{
 	double latchforce;
 	override void postbeginplay(){
 		super.postbeginplay();
-		hdmobai.resize(self,0.9,1.1);
+		resize(0.9,1.1);
 		let hdmb=hdmobster(hdmobster.spawnmobster(self));
 		hdmb.meleethreshold=200;
 		lastpointinmap=pos;
