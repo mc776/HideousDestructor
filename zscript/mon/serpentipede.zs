@@ -161,6 +161,7 @@ class Serpentipede:HDMobBase{
 		gibhealth 100;
 		Radius 14;
 		Height 56;
+		deathheight 15;
 		Speed 12;
 		Damage 4;
 		MeleeDamage 4;
