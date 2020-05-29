@@ -277,7 +277,7 @@ class HDIncapWeapon:SelfBandage{
 		TNT1 A 1{
 			A_SetBlend("7a 3a 18",0.1,4);
 			A_SetPitch(pitch+2,SPF_INTERPOLATE);
-			A_StartSound("*usemeds",CHAN_VOICE);
+			A_PlaySkinSound(SKINSOUND_MEDS,"*usemeds");
 			A_StartSound("misc/bulletflesh",CHAN_WEAPON,CHANF_OVERLAP);
 			actor a=spawn(invoker.injecttype,pos,ALLOW_REPLACE);
 			a.accuracy=40;a.target=self;
