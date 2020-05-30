@@ -33,7 +33,10 @@ extend class HDPlayerPawn{
 			//because spawn telefrags are bullshit
 			if(
 				source.player
-				&&source.getage()<10
+				&&(
+					level.time<35
+					||source.getage()<10
+				)
 			){
 				return -1;
 			}
