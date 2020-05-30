@@ -35,7 +35,7 @@ extend class HDPlayerPawn{
 				source.player
 				&&source.getage()<10
 			){
-				return 0;
+				return -1;
 			}
 
 			if(source==self){

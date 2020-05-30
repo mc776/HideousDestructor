@@ -50,7 +50,6 @@ class HDPlayerPawn:PlayerPawn{
 
 	default{
 		+interpolateangles
-		-telestomp
 		telefogsourcetype "";
 		telefogdesttype "";
 
@@ -109,7 +108,6 @@ class HDPlayerPawn:PlayerPawn{
 		A_TakeInventory("NullWeapon");
 
 		A_SetTeleFog("TeleportFog","TeleportFog");
-		btelestomp=true;
 
 		hdlivescounter.updatefragcounts(hdlivescounter.get());
 		showgametip();
@@ -211,7 +209,6 @@ class HDPlayerPawn:PlayerPawn{
 		PLAY ABCD 4;
 		loop;
 	see0:
-		---- A 0{btelestomp=true;}
 		---- A 0 A_CheckSeeState();
 		#### ABCD 4;
 		goto spawn;
@@ -719,8 +716,6 @@ extend class HDPlayerPawn{
 		lastheight=height;
 		lastangle=angle;
 		lastpitch=pitch;
-
-		btelestomp=false;
 
 		incapacitated=0;
 		incaptimer=0;
