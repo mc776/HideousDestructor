@@ -171,7 +171,6 @@ class HDBossBrain:HDMobBase replaces BossBrain{
 		){
 			bshootable=false;
 			setstatelabel("deathfade");
-			//return -1;
 			return super.damagemobj(inflictor,source,health,"instafade",flags,angle);
 		}
 
@@ -194,13 +193,14 @@ class HDBossBrain:HDMobBase replaces BossBrain{
 		}
 		int returnvalue=-1;
 		if(paintimes>maxhp){
-			//setstatelabel("death");
-			returnvalue=super.damagemobj(inflictor,source,health,mod,flags,angle);
 			hdbosseye bbe;
 			thinkeriterator bbem=ThinkerIterator.create("hdbosseye");
 			while(bbe=hdbosseye(bbem.next(true))){
 				bbe.remainingmessage="";
 			}
+			//setstatelabel("death");
+			bshootable=true;
+			returnvalue=super.damagemobj(inflictor,source,health,mod,flags|DMG_NO_FACTOR|DMG_NO_PAIN,angle);
 		}else{
 			setstatelabel("pain");
 		}
@@ -272,7 +272,7 @@ class HDBossBrain:HDMobBase replaces BossBrain{
 		MISL B 10;
 		BBRN B 70 A_BrainPain();
 		---- A 70 A_SpawnWave();
-		---- A 0 A_SetShootable();
+		---- A 0{bshootable=true;}
 		goto spawn;
 	death:
 		MISL B 10;
