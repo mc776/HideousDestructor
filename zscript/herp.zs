@@ -45,6 +45,7 @@ class HERPBot:HDUPK{
 	int ammo[3]; //the mag being used: -1-51, -1 no mag, 0 empty, 51 sealed, >100  dirty
 	int battery; //the battery, -1-20
 	double startangle;
+	double startpitch;
 	bool scanright;
 	int botid;
 
@@ -73,6 +74,7 @@ class HERPBot:HDUPK{
 	override void postbeginplay(){
 		super.postbeginplay();
 		startangle=angle;
+		startpitch=pitch;
 		scanright=false;
 		if(!master){
 			ammo[0]=51;
@@ -188,6 +190,11 @@ class HERPBot:HDUPK{
 			if(chg<0)scanright=true;
 			else scanright=false;
 			setstatelabel("postbeep");
+		}
+
+		//drift back into home pitch
+		if(pitch!=startpitch){
+			pitch+=clamp(startpitch-pitch,-2,2);
 		}
 	}
 	actor A_SpawnPickup(){
@@ -1330,6 +1337,7 @@ class HERPController:HDWeapon{
 						ddd.A_StartSound("derp/crawl",CHAN_BODY);
 						ddd.pitch=clamp(ddd.pitch-clamp(ptch,-10,10),-60,60);
 						ddd.angle+=clamp(yaw,-DERP_MAXTICTURN,DERP_MAXTICTURN);
+						ddd.startpitch=ddd.pitch;
 					}
 					if(player.cmd.sidemove){
 						ddd.A_StartSound("derp/crawl",CHAN_BODY);
