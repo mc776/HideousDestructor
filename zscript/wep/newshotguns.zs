@@ -237,27 +237,21 @@ weapon.slotnumber 3;
 		}
 	}
 	action bool A_GrabShells(int maxhand=3,bool settics=false,bool alwaysone=false){
-		if(maxhand>0)EmptyHand();else maxhand=abs(maxhand);
+		if(maxhand>0)invoker.EmptyHand();else maxhand=abs(maxhand);
 		bool fromsidesaddles=!(invoker.weaponstatus[0]&HUNTF_FROMPOCKETS);
+		int toload=min(3,max(1,health>>2));
 		if(fromsidesaddles){
 			//grab 3 shells from side saddles
-		}else{
-			//use selected type
-			int typeint=invoker.weaponstatus[SGNS_SELECTEDTYPE];
-			string typename=HDShellClasses.IntToName(typeint);
-			toload=min(toload,countinv(typename));
-			A_TakeInventory(typename,toload);
-			for(int i=0;i<toload;i++){
-				handshells[i]=typeint;
+			int shellsgrabbed=0;
+			for(int i=SGNS_SSSTART;i<=SGNS_SSEND;i++){
+				int wsi=invoker.weaponstatus[i];
+				if(wsi>=0){
+					invoker.weaponstatus[i]=-1;
+					invoker.handshells[shellsgrabbed]=wsi;
+					if(shellsgrabbed>=2)break;
+					shellsgrabbed++;
+				}
 			}
-		}
-		toload=min(toload,max(1,health>>2));
-		if(toload<1)return false;
-
-		//old shit below, replace
-		invoker.handshells=toload;
-		if(fromsidesaddles){
-			invoker.weaponstatus[SHOTS_SIDESADDLE]-=toload;
 			if(settics)A_SetTics(2);
 			A_StartSound("weapons/pocket",8,CHANF_OVERLAP,0.4);
 			A_MuzzleClimb(
@@ -265,7 +259,14 @@ weapon.slotnumber 3;
 				frandom(0.1,0.15),frandom(0.05,0.08)
 			);
 		}else{
-			A_TakeInventory("HDShellAmmo",toload,TIF_NOTAKEINFINITE);
+			//use selected type
+			int typeint=invoker.weaponstatus[SGNS_SELECTEDTYPE];
+			string typename=HDShellClasses.IntToName(typeint);
+			toload=min(toload,countinv(typename));
+			A_TakeInventory(typename,toload);
+			for(int i=0;i<toload;i++){
+				invoker.handshells[i]=typeint;
+			}
 			if(settics)A_SetTics(7);
 			A_StartSound("weapons/pocket",9);
 			A_MuzzleClimb(
@@ -275,7 +276,7 @@ weapon.slotnumber 3;
 				frandom(0.1,0.15),frandom(0.2,0.4)
 			);
 		}
-		return true;
+		return toload>=1;
 	}
 	override void DetachFromOwner(){
 		EmptyHand();
