@@ -1,7 +1,7 @@
 // ------------------------------------------------------------
 // A 12-gauge pump for protection
 // ------------------------------------------------------------
-class NewHunter:HDShotgun{
+class NewHunter:HDNewShotgun{
 	default{
 		//$Category "Weapons/Hideous Destructor"
 		//$Title "Hunter"

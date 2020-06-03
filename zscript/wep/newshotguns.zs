@@ -236,9 +236,22 @@ weapon.slotnumber 3;
 			}
 		}
 	}
+	action void A_CheckPocketSaddles(){
+		bool anysaddles=false;
+		for(int i=SGNS_SSSTART;i<=SGNS_SSEND;i++){
+			if(invoker.weaponstatus[i]>=0){
+				anysaddles=true;
+				break;
+			}
+		}
+		if(!anysaddles)invoker.weaponstatus[0]|=SGN1F_FROMPOCKETS;
+
+		string typename=HDShellClasses.IntToName(invoker.weaponstatus[SGNS_SELECTEDTYPE]);
+		if(!countinv(typename))invoker.weaponstatus[0]&=~SGN1F_FROMPOCKETS;
+	}
 	action bool A_GrabShells(int maxhand=3,bool settics=false,bool alwaysone=false){
 		if(maxhand>0)invoker.EmptyHand();else maxhand=abs(maxhand);
-		bool fromsidesaddles=!(invoker.weaponstatus[0]&HUNTF_FROMPOCKETS);
+		bool fromsidesaddles=!(invoker.weaponstatus[0]&SGN1F_FROMPOCKETS);
 		int toload=min(3,max(1,health>>2));
 		if(fromsidesaddles){
 			//grab 3 shells from side saddles
