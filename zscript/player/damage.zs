@@ -34,7 +34,8 @@ extend class HDPlayerPawn{
 			if(
 				source.player
 				&&(
-					level.time<35
+					!deathmatch
+					||level.time<35
 					||source.getage()<10
 				)
 			){
