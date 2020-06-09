@@ -32,8 +32,8 @@ extend class HDPlayerPawn{
 		){
 			//because spawn telefrags are bullshit
 			if(
-				source.player
-				&&self.player
+				(source.player&&source.player.mo==source)
+				&&(self.player&&self.player.mo==self)
 				&&(
 					!deathmatch
 					||level.time<35
