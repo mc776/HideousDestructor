@@ -164,7 +164,8 @@ class HDWeapon:Weapon{
 	//activate a laser rangefinder
 	//because every gun should have one of these
 	action void FindRange(){
-		eventhandler.sendnetworkevent("hd_findrange",0,0,0);
+		let hdp=hdplayerpawn(self);
+		if(hdp)HDHandlers.FindRange(hdp);
 	}
 
 
