@@ -238,18 +238,9 @@ class MagManager:HDWeapon{
 	action void PutIntoBackpack(name type){
 		let bp=hdbackpack(findinventory("HDBackpack"));
 		if(!bp)return;
-		let mg=HDMagAmmo(findinventory(type));
-		if(!mg)return;
-		let gdbt=getdefaultbytype((class<hdmagammo>)(type));
-		double minspace=gdbt.magbulk+gdbt.roundbulk*gdbt.maxperunit;
-		if(bp.maxcapacity-bp.bulk<minspace)return;
-		int which=bp.invclasses.find(type);
-		string newamts=bp.amounts[which];
-		newamts=newamts..(newamts==""?"":" ")..mg.mags[mg.mags.size()-1];
-		mg.mags.pop();
-		mg.amount--;
-		bp.amounts[which]=newamts;
-		bp.updatemessage(which);
+		let iv=inventory(findinventory(type));
+		if(!iv)return;
+		bp.ItemToBackpack(iv);
 	}
 }
 
