@@ -288,7 +288,7 @@ extend class HDPlayerPawn{
 
 
 extend class HDHandlers{
-	void FindRange(hdplayerpawn ppp){
+	static void FindRange(hdplayerpawn ppp){
 		flinetracedata frt;
 		ppp.linetrace(
 			ppp.angle,65536,ppp.pitch,flags:TRF_NOSKY,
