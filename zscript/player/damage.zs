@@ -14,7 +14,7 @@ extend class HDPlayerPawn{
 		//"You have to be aware of recursively called code pointers in death states.
 		//It can easily happen that Actor A dies, calling function B in its death state,
 		//which in turn nukes the data which is being checked in DamageMobj."
-		if(!self || health<1)return damage;
+		if(!self || health<1 || damage<1)return damage;
 
 		int originaldamage=damage;
 
