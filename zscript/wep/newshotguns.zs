@@ -608,4 +608,3 @@ extend class HDShellAmmo{
 */
 
 
-//#include "zscript/wep/newhunter.zs"
