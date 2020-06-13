@@ -122,12 +122,12 @@ class HDBattery:HDMagAmmo{
 		){
 			if(chargemode==BATT_CHARGESELECTED){
 				if(biggestamt>=20){
-					owner.A_Log("Battery configuration error: full battery selected. Rerouting.");
+					owner.A_Log("Battery configuration error: full battery selected. Rerouting.",true);
 				}else if(
 					biggestindex==smallestindex
 					&&biggestindex==maxindex
 				){
-					owner.A_Log("Battery configuration error: lowest battery selected. Rerouting.");
+					owner.A_Log("Battery configuration error: lowest battery selected. Rerouting.",true);
 				}
 				chargemode=BATT_CHARGEMAX;
 			}
