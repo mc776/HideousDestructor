@@ -30,8 +30,13 @@ extend class HDPlayerPawn{
 			damage==TELEFRAG_DAMAGE
 			&&source
 		){
+			if(source==self){
+				flags|=DMG_FORCED;
+				A_TakeInventory("SpiritualArmour");
+			}
+
 			//because spawn telefrags are bullshit
-			if(
+			else if(
 				(source.player&&source.player.mo==source)
 				&&(self.player&&self.player.mo==self)
 				&&(
@@ -41,11 +46,6 @@ extend class HDPlayerPawn{
 				)
 			){
 				return -1;
-			}
-
-			if(source==self){
-				flags|=DMG_FORCED;
-				A_TakeInventory("SpiritualArmour");
 			}
 		}
 
