@@ -326,7 +326,7 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 			int integrity=(mags[0]%NITEVIS_CYCLEUNIT);
 			if(integrity<NITEVIS_MAXINTEGRITY){
 				int bkn=integrity+(chargedamount>>17)-abs(int(nv));
-				A_LogInt(bkn);
+//				A_LogInt(bkn);
 				if(!random[rand1](0,max(0,random[rand1](1,bkn)))){
 					UndoFullbright();
 					Shader.SetEnabled(owner.player,"NiteVis",false);
