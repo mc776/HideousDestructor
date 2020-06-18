@@ -390,6 +390,8 @@ class DERPUsable:HDWeapon{
 	override void loadoutconfigure(string input){
 		int mode=getloadoutvar(input,"mode",1);
 		if(mode>0)weaponstatus[DERPS_MODE]=clamp(mode,1,3);
+		mode=getloadoutvar(input,"unloaded",1);
+		if(mode>0)weaponstatus[DERPS_AMMO]=-1;
 	}
 	override double weaponbulk(){
 		int mgg=weaponstatus[DERPS_AMMO];
