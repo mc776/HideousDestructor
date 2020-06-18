@@ -592,6 +592,8 @@ Some items can be picked up and saved for later, as described below.
 
   GZDoom actor name: `DERPBot`
   Loadout code: `drp`
+  * mode - 1-3, turret/ambush/patrol
+  * unloaded - 0/1, whether it comes without ammo loaded or if it's just a switch-hitting camera
 
   The gun that runs around killing people by itself! Basically a pistol wired to a webcam and treads, made of bullets, aggression and shitty programmer art. They can't climb and run out of ammo quickly, but you can pick them back up anytime as you would an ordinary item for later redeployment.
 
