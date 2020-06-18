@@ -65,7 +65,7 @@ extend class HDPlayerPawn{
 					if(!(player.cheats & CF_PREDICTING))deathcounter++;
 				}
 				if(playercorpse){
-					playercorpse.setorigin((pos.xy-playercorpse.angletovector(angle),pos.z),true);
+					setorigin((playercorpse.pos.xy+angletovector(angle),pos.z),true);
 				}
 			}
 		}
@@ -130,6 +130,8 @@ extend class HDPlayerPawn{
 				&&(-health>gibhealth||aggravateddamage>40)
 			)playercorpse.A_Die("extreme");
 			else if(!silentdeath)A_StartSound(deathsound,CHAN_VOICE);
+
+			bsolid=false;
 		}
 
 		super.die(source,inflictor,dmgflags,MeansOfDeath);

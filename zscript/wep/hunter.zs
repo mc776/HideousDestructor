@@ -725,3 +725,4 @@ class HunterRandom:IdleDummy{
 		}stop;
 	}
 }
+
