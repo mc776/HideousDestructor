@@ -38,7 +38,7 @@ extend class HDPlayerPawn{
 						break;
 					case 1:
 						respawndelay--;
-						A_Log(player.getusername().." friend wait time: "..respawndelay,!player.bot);
+						A_Log(player.getusername().." friend wait time: "..respawndelay);
 						break;
 					default:
 						respawndelay=HDCONST_POFDELAY;
