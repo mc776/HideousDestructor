@@ -352,6 +352,7 @@ class PickupManager:HDWeapon{
 				);
 			}
 		}
+		sb.beginhud(forcescaled:false);
 	}
 	override void InitializeWepStats(bool idfa){
 		if(!idfa)weaponstatus[PMSS_DROPAMT]=1;
