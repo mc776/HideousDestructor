@@ -238,7 +238,7 @@ class HDStatusBar:DoomStatusBar{
 		}
 
 		//guns
-		drawselectedweapon(-100,-24,DI_BOTTOMRIGHT);
+		drawselectedweapon(-80,-60,DI_BOTTOMRIGHT);
 
 		drawammocounters(-18);
 		drawweaponstash(true,-48);
