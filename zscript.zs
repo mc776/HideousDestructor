@@ -1,6 +1,6 @@
 // HD's main ZScript lump.
 
-version "4.4"
+version "4.3"
 
 const HDCONST_TAU = 6.2831853;
 const HDCONST_SQRTTWO = 1.41421356;
