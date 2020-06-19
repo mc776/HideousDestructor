@@ -177,7 +177,7 @@ class HDStatusBar:DoomStatusBar{
 			}
 		}
 
-		if(hpl.countinv("WornRadsuit"))fill(color(160,10,40,14),0,0,800,600);
+		if(hpl.countinv("WornRadsuit"))fill(color(160,10,40,14),0,0,screen.getwidth(),screen.getheight());
 
 		if(idmypos)drawmypos();
 	}
