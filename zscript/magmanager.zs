@@ -36,7 +36,9 @@ class MagManager:HDWeapon{
 	}
 	override void DrawHUDStuff(HDStatusBar sb,HDWeapon hdw,HDPlayerPawn hpl){
 		if(!thismag||thismag.mags.size()<1)return;
+		sb.beginhud(forcescaled:true);
 		thismag.DrawHUDStuff(sb,self,hpl);
+		sb.beginhud(forcescaled:false);
 	}
 	override string gethelptext(){
 		return
