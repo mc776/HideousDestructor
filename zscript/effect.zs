@@ -309,8 +309,6 @@ class HDBulletPuff:HDPuff{
 				frandom(-0.4,0.4)*stm,frandom(-0.4,0.4)*stm,frandom(0.4,1.2)*stm,
 				frandom(-0.1,0.1),frandom(-0.1,0.1),-1.
 			);
-//			actor ch=spawn(missilename,self.pos,ALLOW_REPLACE);
-//			ch.vel=self.vel+(random(-stm,stm),random(-stm,stm),random(-2,12));
 		}
 	}
 	states{
@@ -363,6 +361,9 @@ class HDSmoke:HDPuff{
 	}
 	states{
 	spawn:
+		TNT1 A 0 nodelay A_CheckProximity("spawn2","HDSmoke",256,7,CPXF_LESSOREQUAL|CPXF_NOZ);
+		stop;
+	spawn2:
 		RSMK A 4;RSMK A 0 A_SetScale(scale.y*2);
 		---- BCD -1{frame=random(1,3);}wait;
 	}
@@ -413,7 +414,6 @@ class HDFlameRed:HDPuff{
 			A_SetTranslucent(0.6,0);
 			scale=(1.2,1.2);gravity=0.1;
 		}
-		//PUF2 C -1{frame=random(0,3);}//
 		RSMK CD -1{frame=random(0,3);}
 		wait;
 	}
@@ -458,15 +458,7 @@ class HDFlameRedBig:HDActor{
 	states{
 	spawn:
 		FIR7 ABABABABABAB 1 A_FlameFade();
-		RSMK A 0{
-			scale*=2;
-			scale.x=scale.y;
-			addz(12*scale.y);
-			roll=frandom(0,360);
-			A_SetRenderstyle(0.6,STYLE_Translucent);
-			vel.z+=2;
-		}
-		#### AAAAAAAAAAA 3 A_SmokeFade();
+		FIR7 A 0 spawn("HDSmoke",(pos.x,pos.y,pos.z+36*scale.y),ALLOW_REPLACE);
 		stop;
 	}
 }
