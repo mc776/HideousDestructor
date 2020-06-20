@@ -361,7 +361,7 @@ class HDSmoke:HDPuff{
 	}
 	states{
 	spawn:
-		TNT1 A 0 nodelay A_CheckProximity("spawn2","HDSmoke",256,7,CPXF_LESSOREQUAL|CPXF_NOZ);
+		TNT1 A 0 nodelay A_CheckProximity("spawn2","HDSmoke",64,4,CPXF_LESSOREQUAL);
 		stop;
 	spawn2:
 		RSMK A 4;RSMK A 0 A_SetScale(scale.y*2);
@@ -403,6 +403,8 @@ class HDFlameRed:HDPuff{
 	spawn:
 		BAL1 A 0 nodelay A_SpawnItemEx("HDRedFireLight",flags:SXF_SETTARGET);
 		BAL1 ABCDE 1;
+		TNT1 A 0 nodelay A_CheckProximity("death","HDFlameRed",64,4,CPXF_LESSOREQUAL);
+		stop;
 	death:
 		TNT1 A 0{
 			grow=0.01;
