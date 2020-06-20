@@ -1,21 +1,6 @@
 // ------------------------------------------------------------
 // Mancu, mancu very much.
 // ------------------------------------------------------------
-class manjuicetrail:hdfireballtail{
-	default{
-		renderstyle "translucent";
-		deathheight 0.9;
-		gravity 0;
-	}
-	states{
-	spawn:
-		RSMK ABC -1{
-			roll=random(0,360);
-			scale.x*=randompick(-1,1);
-		}wait;
-	}
-}
-
 class manjuicelight:PointLight{
 	override void postbeginplay(){
 		super.postbeginplay();
@@ -44,7 +29,7 @@ class manjuiceburner:PersistentDamager{
 }
 class manjuice:hdfireball{
 	default{
-		missiletype "manjuicetrail";
+		missiletype "HDSmoke";
 		damagetype "thermal";
 		activesound "misc/firecrkl";
 		decal "scorch";
