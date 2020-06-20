@@ -132,6 +132,8 @@ extend class HDPlayerPawn{
 			else if(!silentdeath)A_StartSound(deathsound,CHAN_VOICE);
 
 			bsolid=false;
+			bshootable=false;
+			bnointeraction=true;
 		}
 
 		super.die(source,inflictor,dmgflags,MeansOfDeath);
