@@ -100,6 +100,19 @@ class HDFire:IdleDummy{
 				target.target=master;
 				if(stamina>20)stamina=20;
 			}
+
+			//check if player
+			let tgt=HDPlayerPawn(target);
+			if(tgt){
+				if(tgt.playercorpse){
+					target=tgt.playercorpse;
+				}
+				A_AlertMonsters();
+				A_TakeFromTarget("PowerFrightener");
+				A_GiveToTarget("IsMoving",4);
+				HDWeapon.SetBusy(target);
+			}else stamina-=3; //monsters assumed to be trying to douse
+
 			int wlvl=target.waterlevel;
 			if(wlvl>1){
 				destroy();
@@ -139,20 +152,8 @@ class HDFire:IdleDummy{
 			sp.vel+=target.vel+(frandom(-2,2),frandom(-2,2),frandom(-1,3));
 			A_StartSound("misc/firecrkl",CHAN_AUTO,volume:0.4,attenuation:6.);
 
-			//check if player
-			let tgt=HDPlayerPawn(target);
-			if(tgt){
-				if(tgt.playercorpse){
-					target=tgt.playercorpse;
-				}
-				A_AlertMonsters();
-				A_TakeFromTarget("PowerFrightener");
-				A_GiveToTarget("IsMoving",4);
-				HDWeapon.SetBusy(target);
-			}else stamina-=3; //monsters assumed to be trying to douse
-			//damage the target
+			//heat up the target
 			target.A_GiveInventory("Heat",clamp(stamina,20,random(20,80)));
-//			target.damagemobj(self,master,randompick(0,0,0,1),"Thermal",flags:DMG_NO_FACTOR);
 		}
 		wait;
 	}
