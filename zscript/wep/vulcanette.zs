@@ -213,7 +213,7 @@ class Vulcanette:HDWeapon{
 		WEPHELP_FIRESHOOT
 		..WEPHELP_RELOAD.."  Reload mags\n"
 		..WEPHELP_ALTRELOAD.."  Reload battery\n"
-		..WEPHELP_FIREMODE.."  Switch to "..(weaponstatus[0]&VULCF_FAST?"2100":"700").." RPM\n"
+		..WEPHELP_FIREMODE.."  Switch to "..(weaponstatus[0]&VULCF_FAST?"700":"2100").." RPM\n"
 		..WEPHELP_ZOOM.."+"..WEPHELP_FIREMODE.."+"..WEPHELP_UPDOWN.."  Zoom\n"
 		..WEPHELP_ZOOM.."+"..WEPHELP_UNLOAD.."  Repair\n"
 		..WEPHELP_MAGMANAGER
