@@ -195,23 +195,12 @@ class HDBlurSphere:HDPickup{
 				);
 			}
 			if(!(xp%5)){
-				string msg[15];
-				msg[0]=string.format("Out of sync with: %i",randticker[0]+1);
-				msg[1]="Error: no such actor \"HDPlayer\" exists. Execution may abort!";
-				msg[2]="\cd[DERP] \cjEngaging hostile.";
-				msg[3]="Memory allocation error: recovered segfault at address 00x6f24ff.";
-				msg[4]="rendering error";
-				msg[5]="Noise.";
-				msg[6]="hello";
-				msg[7]="I hate you.";
-				msg[8]="This is worthless.";
-				msg[9]="it hurts";
-				msg[10]="error";
-				msg[11]="Precious.";
-				msg[12]="Precious.";
-				msg[13]="Precious.";
-				msg[14]="Precious.";
-				owner.A_Log(msg[int(clamp(randtickerfloat*msg.size(),0,msg.size()-1))],true);
+				array<string>msgs;msgs.clear();
+				string msg=Wads.ReadLump(Wads.CheckNumForName("blurspheretexts",0));
+				msg.split(msgs,"\n");
+				msg=msgs[int(clamp(randtickerfloat*msgs.size(),0,msgs.size()-1))];
+				if(msg=="Out of sync with: ")msg=msg..randticker[0]+1;
+				owner.A_Log(msg,true);
 			}
 			if(!(xp%7)){
 				hdplayerpawn(owner).aggravateddamage++;
