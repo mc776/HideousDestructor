@@ -65,12 +65,20 @@ extend class HDPlayerPawn{
 					if(!(player.cheats & CF_PREDICTING))deathcounter++;
 				}
 				if(playercorpse){
-					setorigin((playercorpse.pos.xy+angletovector(angle),pos.z),true);
+					setorigin((playercorpse.pos.xy+angletovector(angle)*3,pos.z),true);
 				}
 			}
 		}
 		if(hd_disintegrator)A_SetBlend("00 00 00",1.,10);
+
+		vel=(0,0,0);
+		viewbob=0;
+
+		double oldangle=angle;
+		double oldpitch=pitch;
 		super.DeathThink();
+		angle=oldangle;
+		pitch=min(oldpitch+1,45);
 	}
 	override void Die(actor source,actor inflictor,int dmgflags,name MeansOfDeath){
 

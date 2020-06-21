@@ -101,6 +101,8 @@ class HDFire:IdleDummy{
 				if(stamina>20)stamina=20;
 			}
 
+			setorigin(target.pos,false);
+
 			//check if player
 			let tgt=HDPlayerPawn(target);
 			if(tgt){
@@ -119,7 +121,6 @@ class HDFire:IdleDummy{
 				if(wlvl<2)spawn("HDSmoke",pos,ALLOW_REPLACE);
 				return;
 			}
-			setorigin(target.pos,false);
 			A_SetTics(clamp(random(3,int(30-stamina*0.1)),2,12));
 			if(stamina<=0 || target.countinv("HDFireEnder")){
 				A_TakeFromTarget("HDFireEnder");
