@@ -38,7 +38,7 @@ class doordestroyer:hdactor{
 		for(int i=0;i<llit;i++){
 			for(int j=0;j<numpercolumn;j++){
 				actor aaa=spawn(chunktype,(
-					(v1pos+vfrac*i)+(frandom(-3,3),frandom(-3,3)),
+					(v1pos+vfrac*i)+(frandom(-vfrac.x,vfrac.x),frandom(-vfrac.y,vfrac.y)),
 					frandom(bottom,top)
 				),ALLOW_REPLACE);
 				aaa.vel.xy=rotatevector(

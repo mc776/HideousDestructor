@@ -403,7 +403,7 @@ class HDFlameRed:HDPuff{
 	spawn:
 		BAL1 A 0 nodelay A_SpawnItemEx("HDRedFireLight",flags:SXF_SETTARGET);
 		BAL1 ABCDE 1;
-		TNT1 A 0 nodelay A_CheckProximity("death","HDFlameRed",64,4,CPXF_LESSOREQUAL);
+		TNT1 A 0 A_CheckProximity("death","HDFlameRed",64,4,CPXF_LESSOREQUAL);
 		stop;
 	death:
 		TNT1 A 0{
