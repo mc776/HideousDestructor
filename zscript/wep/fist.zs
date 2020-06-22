@@ -257,7 +257,8 @@ class HDFist:HDWeapon replaces Fist{
 
 		//don't allow drag if standing on top of the thing being dragged
 		if(
-			!(pos.z-(grabbed.pos.z+grabbed.height))
+			pos.z-floorz>10
+			&&!(pos.z-(grabbed.pos.z+grabbed.height))
 			&&max(
 				abs(pos.x-grabbed.pos.x),
 				abs(pos.y-grabbed.pos.y)
