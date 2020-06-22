@@ -951,7 +951,7 @@ class LiberatorRifle:AutoReloadingThingy{
 		stop;
 	}
 	override void InitializeWepStats(bool idfa){
-		weaponstatus[LIBS_FLAGS]|=LIBF_GRENADELOADED;
+		if(!(weaponstatus[0]&LIBF_NOLAUNCHER))weaponstatus[0]|=LIBF_GRENADELOADED;
 		weaponstatus[LIBS_MAG]=30;
 		weaponstatus[LIBS_CHAMBER]=2;
 		if(!idfa&&!owner){

@@ -809,7 +809,7 @@ class ZM66AssaultRifle:HDWeapon{
 	}
 
 	override void InitializeWepStats(bool idfa){
-		weaponstatus[ZM66S_FLAGS]|=ZM66F_GRENADELOADED;
+		if(!(weaponstatus[0]&ZM66F_NOLAUNCHER))weaponstatus[0]|=ZM66F_GRENADELOADED;
 		weaponstatus[ZM66S_MAG]=51;
 		if(!idfa && !owner){
 			weaponstatus[ZM66S_ZOOM]=30;
