@@ -47,9 +47,9 @@ extend class HDPlayerPawn{
 				}
 			}else if(hd_pof){
 				player.cmd.buttons|=BT_USE;
-				if(playercorpse)playercorpse.destroy();
 				let hhh=hdhandlers(eventhandler.find("hdhandlers"));
 				hhh.corpsepos[playernumber()]=(pos.xy,floor(pos.z)+0.001*angle);
+				if(playercorpse)playercorpse.destroy();
 			}
 
 			if(!player.bot){

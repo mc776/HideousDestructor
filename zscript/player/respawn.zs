@@ -32,6 +32,13 @@ extend class HDHandlers{
 			hde.angle=(corpsepos[e.playernumber].z%1.)*1000;
 			hde.pitch=80;
 			if(hd_disintegrator)hde.spawn("TeleFog",hde.pos,ALLOW_REPLACE);
+
+			//For some reason the player, only in PoF where they burned to death,
+			//will be given a lethal amount of heat upon respawn.
+			//I have no idea what causes this.
+			//Until the source is discovered here is a gross hack.
+			hde.A_GiveInventory("heat",1);
+			heat(hde.findinventory("heat")).realamount=-999;
 			return;
 		}
 
