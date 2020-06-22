@@ -254,6 +254,16 @@ class HDFist:HDWeapon replaces Fist{
 			invoker.grabangle=grabangle;
 			invoker.grabbed=grbd;
 		}
+
+		//don't allow drag if standing on top of the thing being dragged
+		if(
+			!(pos.z-(grabbed.pos.z+grabbed.height))
+			&&max(
+				abs(pos.x-grabbed.pos.x),
+				abs(pos.y-grabbed.pos.y)
+			)<radius+grabbed.radius
+		)return;
+
 		bool resisting=(
 			(
 				grabbed.bismonster
