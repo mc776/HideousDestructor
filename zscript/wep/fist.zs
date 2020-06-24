@@ -19,7 +19,7 @@ class HDFist:HDWeapon replaces Fist{
 		+hdweapon.dontdisarm
 		+hdweapon.dontnull
 		+nointeraction
-		obituary "%o made %k take the kid gloves off.";
+		obituary "%o was knocked out by %k.";
 		attacksound "*fist";
 		weapon.selectionorder 100;
 		weapon.kickback 120;
