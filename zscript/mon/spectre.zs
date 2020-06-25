@@ -283,13 +283,14 @@ class NinjaPirate:HDMobBase{ //replaces Spectre{
 	}
 }
 class DeadRingerNinjaPirate:HDActor{
-	default{-solid}
+	default{
+		+nointeraction
+	}
 	states{
 	spawn:
 		TNT1 A 0 A_SetTranslucent(1);
-		SARG J 8;
-		SARG KLM 4;
-		SARG N 350;
+		SARG JJJJJJJJKKKKLLLLMMMM 1 {vel*=0.8;}
+		SARG N 350 {vel=(0,0,0);}
 		SARG N 20 A_FadeOut(0.1);
 		wait;
 	}
