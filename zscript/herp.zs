@@ -1286,10 +1286,7 @@ class HERPController:HDWeapon{
 	}
 	states{
 	select:
-		TNT1 A 10{
-			invoker.weaponstatus[HERPS_TIMER]=3;
-			if(getcvar("hd_helptext"))A_WeaponMessage("\cd/// \ccH.E.R.P. \cd\\\\\\\c-\n\n\n\cdDrop\cu cycles through H.E.R.P.s. \cdReload\cu toggles input mode.\n\n\cdAlt. Reload\cu sets home angle.\n\nHold \cdFiremode\cu to control.\n\cdFire\cu to shoot.",215);
-		}
+		TNT1 A 10;
 		goto super::select;
 	ready:
 		TNT1 A 1{
