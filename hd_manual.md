@@ -403,7 +403,7 @@ To set a skin, type "hd_skin aaaaa,bbbbb,ccc,dddd", where:
 Leave an item blank but keep the comma in order to use the default (i.e., the default skin, or the default sound class or mugshot for the skin indicated).
 Type `hd_showskins` for your available options.
 To reset everything to default, type `hd_skin ""`.
-In addition to any custom skins you may load, you can use soundclasses "hdguy", "hdgal" and "hdbot", and mugshots "STF","SFF" and "STC".
+In addition to any custom skins you may load, you can use soundclasses "hdguy", "hdgal" and "hdbot", and mugshots "STF","SFF" and "STC". (MODDING NOTE: a skin's sounds must have consistent unique sound "player/____/..." definitions to work correctly, as HD will look for the sound alias based on the name you give it, *not* the actor class name!)
 The fist sprite is determined in priority: the explicit sprite name in hd_skin; if that is invalid, then the fist given in the skin actor definition; if none is given, then if you are using any of the 3 standard mugshots it will use the default for that; and if that is not given then it will be based on the gender setting.
 
 * `hd_voicepitch` (1.0): This lets you change the speed of the samples that play for your character's voice, allowing distinct audio cues for each person in multiplayer. Clamped between 0.7 and 1.3.
