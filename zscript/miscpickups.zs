@@ -758,8 +758,10 @@ class HDUPKAlwaysGive:HDUPK{
 		hdupkalwaysgive.msgtoall "";
 	}
 	override void OnGrab(actor grabber){
+		//this must be called again when using a grab state
 		A_CallSpecial(special,args[0],args[1],args[2],args[3],args[4]);
 		special=0;
+
 		if(toallplayers!=""){
 			for(int i=0;i<MAXPLAYERS;i++){
 				if(playeringame[i]&&players[i].mo){
@@ -857,8 +859,6 @@ class HDRedSkull:HDUPK replaces RedSkull{
 		hdupk.pickupmessage "\crRED\c-, the way of the blood shed for you in vain.";
 	}
 	override void ongrab(actor grabber){
-		A_CallSpecial(special,args[0],args[1],args[2],args[3],args[4]);
-		special=0;
 		target=grabber;
 		grabber.A_GiveInventory(missilename);
 		setstatelabel("effect");
