@@ -912,11 +912,7 @@ class HDMap:HDUPKAlwaysGive replaces Allmap{
 	}
 	states{
 	give:
-		PMAP A 0{
-			A_StartSound("misc/i_pkup",12,CHANF_LOCAL);
-			A_CallSpecial(special,args[0],args[1],args[2],args[3],args[4]);
-			special=0;
-		}
+		PMAP A 0 A_StartSound("misc/i_pkup",12,CHANF_LOCAL);
 	//fallthrough to spawn
 	spawn:
 		PMAP A 0 nodelay A_Jump(256,"a","b","c","d");
