@@ -1059,11 +1059,7 @@ class DERPController:HDWeapon{
 	}
 	states{
 	select:
-		TNT1 A 10{
-			invoker.weaponstatus[DRPCS_TIMER]=3;
-			if(!getcvar("hd_helptext"))return;
-			A_WeaponMessage("\cf/// \cdD.E.R.P. \cf\\\\\\\c-\n\n\nDrop cycles through D.E.R.P.s, Reload modes.\n\nHold Firemode to control.\nFire shoot, Altfire forward, Use backward.\n\n\nAlt. Reload to re-ping all deployed D.E.R.P.s",175);
-		}
+		TNT1 A 10{invoker.weaponstatus[DRPCS_TIMER]=3;}
 		goto super::select;
 	ready:
 		TNT1 A 1{
