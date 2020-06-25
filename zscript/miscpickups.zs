@@ -758,6 +758,8 @@ class HDUPKAlwaysGive:HDUPK{
 		hdupkalwaysgive.msgtoall "";
 	}
 	override void OnGrab(actor grabber){
+		A_CallSpecial(special,args[0],args[1],args[2],args[3],args[4]);
+		special=0;
 		if(toallplayers!=""){
 			for(int i=0;i<MAXPLAYERS;i++){
 				if(playeringame[i]&&players[i].mo){
@@ -855,6 +857,8 @@ class HDRedSkull:HDUPK replaces RedSkull{
 		hdupk.pickupmessage "\crRED\c-, the way of the blood shed for you in vain.";
 	}
 	override void ongrab(actor grabber){
+		A_CallSpecial(special,args[0],args[1],args[2],args[3],args[4]);
+		special=0;
 		target=grabber;
 		grabber.A_GiveInventory(missilename);
 		setstatelabel("effect");
@@ -908,7 +912,11 @@ class HDMap:HDUPKAlwaysGive replaces Allmap{
 	}
 	states{
 	give:
-		PMAP A 0 A_StartSound("misc/i_pkup",12,CHANF_LOCAL);
+		PMAP A 0{
+			A_StartSound("misc/i_pkup",12,CHANF_LOCAL);
+			A_CallSpecial(special,args[0],args[1],args[2],args[3],args[4]);
+			special=0;
+		}
 	//fallthrough to spawn
 	spawn:
 		PMAP A 0 nodelay A_Jump(256,"a","b","c","d");
