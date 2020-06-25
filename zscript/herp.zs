@@ -538,7 +538,6 @@ class HERPUsable:HDWeapon{
 	states{
 	select:
 		TNT1 A 0 A_ResetBarrelSize();
-		TNT1 A 0 A_WeaponMessage("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHold \cdUse\cu while hitting \cdAlt. Reload\nto unload battery.\n\nHold \cdUse\cu while hitting \cdUnload\nto remove partially-spent mags.\n\nHold \cdFiremode\cu to change BotID, \cdAltfire\cu to toggle on/off.\n\nPress \cdFire\cu to deploy.",3500);
 		goto super::select;
 	ready:
 		TNT1 A 0 A_JumpIf(pressingzoom(),"raisetofire");
@@ -593,7 +592,7 @@ class HERPUsable:HDWeapon{
 	raisetofire:
 		TNT1 A 8 A_StartSound("herp/crawl",8,CHANF_OVERLAP,1.);
 		HERG A 1 offset(0,80) A_StartSound("herp/beepready",8,CHANF_OVERLAP);
-		HERG A 1 offset(0,60) A_WeaponMessage("");
+		HERG A 1 offset(0,60);
 		HERG A 1 offset(0,50) A_RaiseBarrelSize();
 		HERG A 1 offset(0,40);
 		HERG A 1 offset(0,34);
