@@ -32,12 +32,16 @@ class BloodyHellFire:HDMobBase{
 	override void postbeginplay(){
 		super.postbeginplay();
 		A_GiveInventory("ImmunityToFire");
+
+		//the fire is spawned through A_CustomBulletAttack,
+		//so at this point the target is the necromancer not the real target.
 		if(target){
 			master=target;
 			target=master.target;
 			bfriendly=master.bfriendly;
 			if(
 				pos.z>floorz+40
+				||!target
 				||target.countinv("ImmunityToFire")
 			){
 				setstatelabel("putto");
