@@ -198,7 +198,7 @@ class HDFist:HDWeapon replaces Fist{
 			A_Log(string.format("Punched %s for %i damage!",pch,dmg));
 		}
 		if(dmg*2>punchee.health)punchee.A_StartSound("misc/bulletflesh",CHAN_AUTO);
-		punchee.damagemobj(self,self,int(dmg),"bashing");
+		punchee.damagemobj(self,self,int(dmg));
 
 		if(!punchee)invoker.targethealth=0;else{
 			invoker.targethealth=punchee.health;
@@ -400,7 +400,7 @@ class HDFist:HDWeapon replaces Fist{
 		goto punch;
 	punch:
 		#### B 1 offset(0,32) A_DontFreedoomFrameB();
-		#### D 0 HDPunch(18);
+		#### D 0 HDPunch(12);
 		#### D 6;
 		#### C 3;
 		#### B 3 A_DontFreedoomFrameB();
@@ -410,7 +410,7 @@ class HDFist:HDWeapon replaces Fist{
 		goto ready;
 	zerkpunch:
 		#### D 0 A_Recoil(-1);
-		#### D 0 HDPunch(invoker.flicked?160:140);
+		#### D 0 HDPunch(invoker.flicked?140:100);
 		#### D 3;
 		#### CB 1;
 		TNT1 A 5;
