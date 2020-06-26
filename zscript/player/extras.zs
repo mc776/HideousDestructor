@@ -299,6 +299,14 @@ extend class HDHandlers{
 		double b=c/HDCONST_ONEMETRE;
 		ppp.A_Log(string.format("\cd[\cuRF\cd]\cj \cf%.2f\cj metre%s",b,b==1?"":"s"),true);
 		if(hd_debug)ppp.A_Log(string.format("("..(ppp.player?ppp.player.getusername():"something").." measured %.2f DU%s)",c,c==1?"":"s"),true);
+
+		if(
+			ppp.player
+			&&ppp.player.cmd.buttons&BT_USE
+		){
+			let hdw=HDWeapon(ppp.player.readyweapon);
+			if(hdw)hdw.airburst=b;
+		}
 	}
 	void Taunt(hdplayerpawn ppp){
 		ppp.A_StartSound(ppp.tauntsound,CHAN_VOICE);
