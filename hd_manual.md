@@ -275,6 +275,8 @@ Default key: none
 
 Logs the distance of the object or map geometry you're pointing at.
 
+If you hold use while hitting your rangefinder key, the grenade/rocket launcher on your selected weapon (if any) will use that distance.
+
 ## IV. COMMANDS AND CVARS
 
 ### Commands
