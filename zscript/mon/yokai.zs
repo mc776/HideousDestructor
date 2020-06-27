@@ -1,6 +1,10 @@
 // ------------------------------------------------------------
 // Yokai
 // ------------------------------------------------------------
+class NullPuff:Actor{
+	default{+nointeraction}
+	states{spawn:TNT1 A 0;stop;}
+}
 class Yokai:HDMobBase{
 	default{
 		//$Category "Monsters/Hideous Destructor"
@@ -16,7 +20,7 @@ class Yokai:HDMobBase{
 		renderstyle "Add";
 		tag "yokai";
 		maxtargetrange 666;health 66;
-		bloodtype "IdleDummy";
+		bloodtype "NullPuff";
 		obituary "%o watched a yokai.";
 		translation "176:191=29:47","192:207=160:167","240:247=188:191";
 		speed 4;
