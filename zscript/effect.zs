@@ -806,6 +806,7 @@ class MegaBloodSplatter:IdleDummy{
 				b.translation=self.translation;
 			}
 		}
+		destroy();
 	}
 }
 class HDBloodTrailFloor:IdleDummy{

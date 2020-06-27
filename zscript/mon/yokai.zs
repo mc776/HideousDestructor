@@ -1,10 +1,6 @@
 // ------------------------------------------------------------
 // Yokai
 // ------------------------------------------------------------
-class NullPuff:Actor{
-	default{+nointeraction}
-	states{spawn:TNT1 A 0;stop;}
-}
 class Yokai:HDMobBase{
 	default{
 		//$Category "Monsters/Hideous Destructor"

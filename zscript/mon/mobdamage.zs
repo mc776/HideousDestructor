@@ -589,3 +589,9 @@ class ShieldSpark:IdleDummy{
 		stop;
 	}
 }
+
+//dummy item when you don't want anything coming out for blood or puffs
+class NullPuff:Actor{
+	default{+nointeraction}
+	states{spawn:TNT1 A 0;stop;}
+}

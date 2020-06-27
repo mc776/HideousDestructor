@@ -1340,7 +1340,7 @@ class GhostMarine:HDMobBase{
 		health 200000000;
 		gibhealth 500;
 		renderstyle "add";
-		bloodtype "idledummy";
+		bloodtype "NullPuff";
 		seesound "imp/sight";
 		height 52;
 		radius 7;
