@@ -198,7 +198,7 @@ class HDFist:HDWeapon replaces Fist{
 			A_Log(string.format("Punched %s for %i damage!",pch,dmg));
 		}
 		if(dmg*2>punchee.health)punchee.A_StartSound("misc/bulletflesh",CHAN_AUTO);
-		punchee.damagemobj(self,self,int(dmg),"SmallArms0");
+		punchee.damagemobj(self,self,int(dmg),"melee");
 
 		if(!punchee)invoker.targethealth=0;else{
 			invoker.targethealth=punchee.health;

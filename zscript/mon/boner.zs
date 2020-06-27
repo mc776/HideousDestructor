@@ -83,7 +83,7 @@ class bonerball:slowprojectile{
 		FATB ABABABAB 1 bright{vel.z--;}
 		goto spawn2;
 	death:
-		---- A 0 A_JumpIf(stamina<4,"bounce");
+		---- A 0 A_JumpIf(health>0&&stamina<4,"bounce");
 	realdeath:
 		---- A 0{
 			if(blockingmobj){
