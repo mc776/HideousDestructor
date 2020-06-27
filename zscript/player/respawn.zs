@@ -11,6 +11,15 @@ extend class HDPlayerPawn{
 		A_Log(string.format("Bot %s replaced with rifleman.",player.getusername()));
 		A_Morph("HDBotSpectator",int.MAX,MRF_FULLHEALTH,"CheckPuff","CheckPuff");
 	}
+
+
+	override void GiveDefaultInventory(){
+		super.GiveDefaultInventory();
+
+		//because when called on map this usually implies resetting other stuff
+		//would be nice to make this conditional on the level change actually resetting health, but oh well
+		healthreset();
+	}
 }
 
 
