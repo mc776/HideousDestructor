@@ -41,7 +41,7 @@ class SoldierExtras:HDPickup{
 
 //reset inventory
 class InvReset:Inventory{
-	void ReallyClearInventory(actor resetee,bool keepkeys=false){
+	static void ReallyClearInventory(actor resetee,bool keepkeys=false){
 		for(inventory item=resetee.inv;item!=null;item=!item?null:item.inv){
 			if(
 				(!keepkeys||!(item is "Key"))
@@ -52,7 +52,7 @@ class InvReset:Inventory{
 		}
 		resetee.ClearInventory();
 	}
-	void GiveStartItems(actor resetee){
+	static void GiveStartItems(actor resetee){
 		//now get all the "dropitems" (i.e. player's startitems) and give them
 		let drop=getdefaultbytype(resetee.getclass()).getdropitems();
 		if(drop){

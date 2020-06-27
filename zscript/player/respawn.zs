@@ -14,14 +14,13 @@ extend class HDPlayerPawn{
 
 
 	override void GiveDefaultInventory(){
+		InvReset.ReallyClearInventory(self);
+		InvReset.GiveStartItems(self);
 //		super.GiveDefaultInventory();
 
 		//because when called on map this usually implies resetting other stuff
 		//would be nice to make this conditional on the level change actually resetting health, but oh well
 		healthreset();
-
-		//screw it, using my own
-		A_GiveInventory("InvReset");
 	}
 }
 

@@ -305,7 +305,7 @@ extend class HDHandlers{
 			&&ppp.player.cmd.buttons&BT_USE
 		){
 			let hdw=HDWeapon(ppp.player.readyweapon);
-			if(hdw)hdw.airburst=b;
+			if(hdw)hdw.airburst=int(b);
 		}
 	}
 	void Taunt(hdplayerpawn ppp){
