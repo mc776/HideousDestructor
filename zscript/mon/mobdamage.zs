@@ -476,7 +476,6 @@ class HDBleedingWound:Thinker{
 		bool hitvital=false,
 		actor source=null
 	){
-console.printf("\cy"..bleedpoints);
 		if(
 			hd_nobleed
 			||!bleeder.bshootable
