@@ -771,7 +771,7 @@ extend class HDWeapon{
 		)chargeable=true;
 		if(!chargeable&&owner.findinventory("HDBattery")){
 			let batts=HDBattery(owner.findinventory("HDBattery"));
-			for(int i=0;i<amount;i++){
+			for(int i=0;i<batts.amount;i++){
 				if(batts.mags[i]>=BFGC_MINCHARGE){
 					chargeable=true;
 					break;
