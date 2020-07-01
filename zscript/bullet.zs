@@ -1310,7 +1310,7 @@ if(hd_debug)console.printf("BLOCKED  "..depleteshield.."    OF  "..bulletpower..
 		if(hd_debug)console.printf(hitactor.getclassname().."  wound channel:  "..channelwidth.." x "..pen.."    channel HP damage: "..chdmg);
 
 		//inflict wound
-		if(target&&hitactor.isteammate(target))channelwidth*=teamdamage;
+		if(multiplayer&&target&&hitactor.isteammate(target))channelwidth*=teamdamage;
 		if(channelwidth>0)hdbleedingwound.inflict(
 			hitactor,int(pen),int(channelwidth),(flags&BLAF_SUCKINGWOUND),source:target
 		);

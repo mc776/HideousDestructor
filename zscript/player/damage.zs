@@ -337,7 +337,7 @@ extend class HDPlayerPawn{
 			if(towound>random(4,20))destroyradsuit();
 			if(
 				armr
-				&&mod!="piercing" //bullets do their own thing
+				&&mod!="piercing" //bullets do their own thing to armour
 			)armr.durability-=max(0,damage>>random(1,5));
 		}
 
