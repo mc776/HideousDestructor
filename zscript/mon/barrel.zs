@@ -15,6 +15,7 @@ class HDBarrel:HDMobBase replaces ExplosiveBarrel{
 		+activatemcross +canpass +nodropoff
 		+fixmapthingpos +dontgib
 		+hdmobbase.doesntbleed
+		-countkill
 		-ismonster
 		+hdmobbase.noshootablecorpse
 		damagefactor "Thermal",1.2;
