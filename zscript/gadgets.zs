@@ -115,8 +115,16 @@ class PortableRadsuit:HDPickup replaces RadSuit{
 		return super.CreateTossable();
 	}
 	override void actualpickup(actor user){
-		HDF.TransferFire(self,user);
 		super.actualpickup(user);
+		//put on the radsuit right away
+		if(
+			user.player&&user.player.cmd.buttons&BT_USE
+			&&HDPlayerPawn.CheckStrip(user,STRIP_RADSUIT,false)
+		){
+			inventory slf=user.findinventory(getclass());
+			HDF.TransferFire(slf,user);
+			user.UseInventory(slf);
+		}
 	}
 	override void DoEffect(){
 		bfitsinbackpack=(amount!=1||!owner||!owner.findinventory("WornRadsuit"));
@@ -490,6 +498,17 @@ class HDJetPack:HDCellWeapon{
 	override void InitializeWepStats(bool idfa){
 		weaponstatus[JETPACKS_BATTERY]=20;
 		weaponstatus[JETPACKS_BATTERYCOUNTER]=0;
+	}
+	override void actualpickup(actor user){
+		super.actualpickup(user);
+		//put on the jetpack right away
+		if(
+			user.player&&user.player.cmd.buttons&BT_USE
+			&&HDPlayerPawn.CheckStrip(user,STRIP_JETPACK,false)
+		){
+			inventory slf=user.findinventory(getclass());
+			user.UseInventory(slf);
+		}
 	}
 	states{
 	spawn:
