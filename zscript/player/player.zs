@@ -442,7 +442,7 @@ class HDPlayerPawn:PlayerPawn{
 				if(frandom(1,fallvel)>7)Disarm(self);
 			}
 		}
-		stunned=max(stunned-1,0);
+		if(stunned>0)stunned--;
 
 
 		//see if player is intentionally walking, running or sprinting
