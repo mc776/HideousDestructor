@@ -323,19 +323,22 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 				owner.player.fixedlightlevel=1;
 				Shader.SetEnabled(owner.player,"NiteVis",false);
 			}else{
+				SetNVGPreset();
 				UndoFullbright();
 				nv=clamp(amplitude,-nv,nv);
 				spent+=int(max(1,abs(nv*0.1)));
 				Shader.SetEnabled(owner.player,"NiteVis",true);
 				Shader.SetUniform1f(owner.player,"NiteVis","exposure",nv);
-				Shader.SetUniform1i(owner.player,"NiteVis","u_resfactor",4); // 4 = 1/4th screen resolution
-				Shader.SetUniform1i(owner.player,"NiteVis","u_hscan",1); // horizontal scanlines
-				Shader.SetUniform1i(owner.player,"NiteVis","u_vscan",0); // vertical scanlines
-				Shader.SetUniform1f(owner.player,"NiteVis","u_scanstrength",0.25); // 0 = none, 1 = stupid thicc
-				Shader.SetUniform1i(owner.player,"NiteVis","u_posterize",16); //color banding levels
-				Shader.SetUniform3f(owner.player,"NiteVis","u_posfilter",(0.0,1.0,0.0)); // positive color (will be normalized)
-				Shader.SetUniform3f(owner.player,"NiteVis","u_negfilter",(1.0,0.0,0.0)); // negative color filter (will be normalized)
-				Shader.SetUniform1f(owner.player,"NiteVis","u_whiteclip",0.25); // 1.0 = white, 0.0 = filter color
+				Shader.SetUniform1f(owner.player,"NiteVis","timer",level.maptime);
+				Shader.SetUniform1i(owner.player,"NiteVis","u_resfactor",resfactor);
+				Shader.SetUniform1i(owner.player,"NiteVis","u_hscan",hscan);
+				Shader.SetUniform1i(owner.player,"NiteVis","u_vscan",vscan);
+				Shader.SetUniform1f(owner.player,"NiteVis","u_scanstrength",scanstrength);
+				Shader.SetUniform1i(owner.player,"NiteVis","u_posterize",posterize);
+				Shader.SetUniform3f(owner.player,"NiteVis","u_posfilter",posfilter);
+				//Shader.SetUniform3f(owner.player,"NiteVis","u_negfilter",negfilter);
+				Shader.SetUniform1f(owner.player,"NiteVis","u_whiteclip",whiteclip);
+				Shader.SetUniform1f(owner.player,"NiteVis","u_desat",desat);
 			}
 
 			//flicker
@@ -374,7 +377,7 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 			if(cmd&BT_USE){
 				double am=cmd&BT_ZOOM?-5:5;
 				double plitude=max(0,(am+abs(invoker.amplitude)));
-				if(plitude>NITEVIS_MAX)plitude-=NITEVIS_MAX;
+				if(plitude>NITEVIS_MAX)plitude-=(NITEVIS_MAX+5);
 				invoker.amplitude=invoker.amplitude<0?-plitude:plitude;
 			}else if(cmd&BT_ZOOM){
 				invoker.amplitude=-invoker.amplitude;
@@ -419,7 +422,34 @@ class VisorLight:PointLight{
 		setorigin((target.pos.xy,target.pos.z+target.height-6),true);
 	}
 }
+extend class PortableLiteAmp {
+	transient CVar NVGPreset;
+	int preset;
+	int resfactor,hscan,vscan,posterize;
+	double scanstrength,whiteclip,desat;
+	vector3 posfilter,negfilter;
 
+	void SetNVGPreset() {
+		if (!NVGPreset) NVGPreset = CVar.GetCVar("hd_nv_preset",owner.player);
+		int preset = NVGPreset.GetInt();
+		switch (preset) {
+			case 0: // Hideous Green
+				resfactor=4;hscan=1;vscan=0;scanstrength=0.25;posterize=24;posfilter=(0,1,0);whiteclip=0.25;desat=0.0;break;
+			case 1: // Hideous Red
+				resfactor=4;hscan=1;vscan=0;scanstrength=0.25;posterize=24;posfilter=(1,0,0);whiteclip=0.25;desat=0.0;break;
+			case 2: // Classic Green
+				resfactor=1;hscan=0;vscan=0;scanstrength=0.0;posterize=32;posfilter=(0.25,1,0.25);whiteclip=0.75;desat=0.0;break;
+			case 3: // Digital Green
+				resfactor=3;hscan=1;vscan=1;scanstrength=0.05;posterize=16;posfilter=(0.25,1,0.25);whiteclip=0.75;desat=0.0;break;
+			case 4: // Modern Warfare
+				resfactor=1;hscan=0;vscan=0;scanstrength=0.0;posterize=256;posfilter=(0.0,1,0.75);whiteclip=0.9;desat=0.0;break;
+			case 5: // Truecolor
+				resfactor=3;hscan=1;vscan=0;scanstrength=0.1;posterize=32;posfilter=(1.0,0.8,0.8);whiteclip=1.0;desat=0.5;break;
+			case 6: // White Phosphor
+				resfactor=3;hscan=1;vscan=0;scanstrength=0.1;posterize=32;posfilter=(0.75,0.75,1.0);whiteclip=0.8;desat=0.0;break;
+		}
+	}
+}
 
 
 

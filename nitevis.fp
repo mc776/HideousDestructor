@@ -34,9 +34,11 @@ int posterize = u_posterize;
 // Filter colors are normalized so don't worry about unbalanced values
 // All zeros means greyscale / monochrome filter
 // Whiteclip is how white the brightest areas are. This can be negative.
+// Desat is the pre-filter monochromacity of the colors (usually this should be zero)
 vec3 posfilter = normalize(u_posfilter); // primary NVG color (positive exposure)
 vec3 negfilter = normalize(u_negfilter); // secondary NVG color (negative exposure)
 float whiteclip = u_whiteclip;
+float desat = u_desat;
 
 // ----------------------------------- //
 // USER CONFIGURABLE VALUES STOP HERE  //
@@ -60,14 +62,8 @@ void main(){
 	vec3 color  = texture(InputTexture, res).rgb;
 
 	// Desaturate and multiply
-	color = mix(vec3(dot(color.rgb, vec3(0.56, 0.3, 0.14))), color.rgb, 0.0);
+	color = mix(vec3(dot(color.rgb, vec3(0.56, 0.3, 0.14))), color.rgb, desat);
 	color = atan(atan(color * exp)); // amplify by HD's original formula
-
-	// Clamp
-	color = vec3(
-		clamp(color.r, 0.0, 1.0),
-		clamp(color.g, 0.0, 1.0),
-		clamp(color.b, 0.0, 1.0));
 
 	// Posterize
 	color *= posterize;
@@ -76,6 +72,12 @@ void main(){
 		int(color.g),
 		int(color.b));
 	color /= posterize;
+
+	// Clamp
+	color = vec3(
+		clamp(color.r, 0.0, 1.0),
+		clamp(color.g, 0.0, 1.0),
+		clamp(color.b, 0.0, 1.0));
 
 	// Filter channels for preferred color
 	if (exposure > 0) { color *= clamp(posfilter + (color * whiteclip), 0.0, 1.0); }
