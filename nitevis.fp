@@ -9,7 +9,6 @@
 //
 // zlib License: https://opensource.org/licenses/Zlib
 // Original source: https://gist.github.com/caligari87/daa5b127a3bc522794eb050067b5a95e
-// Exposure graphs: https://www.desmos.com/calculator/ms97x55pci
 
 // ------------------------ //
 // USER CONFIGURABLE VALUES //
@@ -21,10 +20,10 @@
 int resfactor = u_resfactor;
 
 // Enable horizontal and/or vertical scanlines
-// Increase scanstrength divisor for thinner scanlines
+// scanstrength is thickness of lines (0 = none, 1.0 = stupid thicc)
 bool hscan = bool(u_hscan);
 bool vscan = bool(u_vscan);
-float scanstrength = resfactor / u_scanstrength;
+float scanstrength = u_scanstrength * (resfactor * 4.0);
 
 // Posterization / palette filter
 // This sets number of color levels
@@ -45,10 +44,8 @@ float whiteclip = u_whiteclip;
 
 // Custom nitevision shader for HD by Caligari87
 void main(){
-	// Uniforms from script
-	float exp = abs(exposure);
-	float expcurve = 3.0 * ((150.0 - abs(exposure)) / 125.0);
-	exp = exp / expcurve;
+	// copy exposure uniform
+	float exp = max(abs(exposure), 1);
 
 	// Limit resfactor
 	resfactor = max(resfactor, 1);
@@ -64,7 +61,7 @@ void main(){
 
 	// Desaturate and multiply
 	color = mix(vec3(dot(color.rgb, vec3(0.56, 0.3, 0.14))), color.rgb, 0.0);
-	color *= max(exp, 1.0);
+	color = atan(atan(color * exp)); // amplify by HD's original formula
 
 	// Clamp
 	color = vec3(

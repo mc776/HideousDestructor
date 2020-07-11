@@ -328,14 +328,14 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 				spent+=int(max(1,abs(nv*0.1)));
 				Shader.SetEnabled(owner.player,"NiteVis",true);
 				Shader.SetUniform1f(owner.player,"NiteVis","exposure",nv);
-				Shader.SetUniform1i(owner.player,"NiteVis","u_resfactor",4);
-				Shader.SetUniform1i(owner.player,"NiteVis","u_hscan",1);
-				Shader.SetUniform1i(owner.player,"NiteVis","u_vscan",0);
-				Shader.SetUniform1f(owner.player,"NiteVis","u_scanstrength",1.0);
-				Shader.SetUniform1i(owner.player,"NiteVis","u_posterize",16);
-				Shader.SetUniform3f(owner.player,"NiteVis","u_posfilter",(0.0,1.0,0.0));
-				Shader.SetUniform3f(owner.player,"NiteVis","u_negfilter",(1.0,0.0,0.0));
-				Shader.SetUniform1f(owner.player,"NiteVis","u_whiteclip",0.1);
+				Shader.SetUniform1i(owner.player,"NiteVis","u_resfactor",4); // 4 = 1/4th screen resolution
+				Shader.SetUniform1i(owner.player,"NiteVis","u_hscan",1); // horizontal scanlines
+				Shader.SetUniform1i(owner.player,"NiteVis","u_vscan",0); // vertical scanlines
+				Shader.SetUniform1f(owner.player,"NiteVis","u_scanstrength",0.25); // 0 = none, 1 = stupid thicc
+				Shader.SetUniform1i(owner.player,"NiteVis","u_posterize",16); //color banding levels
+				Shader.SetUniform3f(owner.player,"NiteVis","u_posfilter",(0.0,1.0,0.0)); // positive color (will be normalized)
+				Shader.SetUniform3f(owner.player,"NiteVis","u_negfilter",(1.0,0.0,0.0)); // negative color filter (will be normalized)
+				Shader.SetUniform1f(owner.player,"NiteVis","u_whiteclip",0.25); // 1.0 = white, 0.0 = filter color
 			}
 
 			//flicker
