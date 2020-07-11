@@ -464,6 +464,8 @@ As editing these can get a bit involved, you might want to use your preferred te
 
 To pick up an item, use it as you would use a door or switch, or hold Use and look towards it. Even if you do not pick it up, you will bring it towards yourself, so this can also be done to quickly get an unwanted item out of the way of another (or an actual door or switch) that you do want.
 
+For items that can be worn, such as armour and radsuits, if you continue holding Use as the final pickup registers you will automatically put on the item if you are able to. To avoid this, make sure you just *tap* Use to pick the item up.
+
 Armour comes in two levels: "Garrison" as standard military use, and "Battle" for your more refined, higher-budget militarized-police/unaccountable non-state-actor corporate "civilian" work. Battle armour mitigates the most damage, while garrison armour lasts longer generally and restricts less movement.
 
 Supernatural health bonuses (potions, soul spheres, megaspheres) are stored and gradually "leak" into your system whenever you are injured, allowing recovery from nearly anything that does not immediately kill you.
