@@ -13,30 +13,31 @@
 
 // ------------------------ //
 // USER CONFIGURABLE VALUES //
+// u_name = script uniforms //
 // ------------------------ //
 
 // Resolution reduction
 // 4 = 1/4th screen resolution
-int resfactor = 4;
+int resfactor = u_resfactor;
 
 // Enable horizontal and/or vertical scanlines
 // Increase scanstrength divisor for thinner scanlines
-bool hscan = true;
-bool vscan = false;
-float scanstrength = resfactor / 1.0;
+bool hscan = bool(u_hscan);
+bool vscan = bool(u_vscan);
+float scanstrength = resfactor / u_scanstrength;
 
 // Posterization / palette filter
 // This sets number of color levels
-int posterize = 16;
+int posterize = u_posterize;
 
 // Color filter
 // Values are the relative strengths of the RGB channels
 // Filter colors are normalized so don't worry about unbalanced values
 // All zeros means greyscale / monochrome filter
 // Whiteclip is how white the brightest areas are. This can be negative.
-vec3 posfilter = normalize(vec3(0.0, 1.0, 0.0)); // primary NVG color (positive exposure)
-vec3 negfilter = normalize(vec3(1.0, 0.0, 0.0)); // secondary NVG color (negative exposure)
-float whiteclip = 0.1;
+vec3 posfilter = normalize(u_posfilter); // primary NVG color (positive exposure)
+vec3 negfilter = normalize(u_negfilter); // secondary NVG color (negative exposure)
+float whiteclip = u_whiteclip;
 
 // ----------------------------------- //
 // USER CONFIGURABLE VALUES STOP HERE  //
