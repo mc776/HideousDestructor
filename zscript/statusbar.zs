@@ -374,34 +374,34 @@ class HDStatusBar:DoomStatusBar{
 					"DUSTA0",(0,0),DI_SCREEN_CENTER|DI_ITEM_CENTER,
 					alpha:0.01*lv,scale:(1000,600)
 				);
-				return;
 			}
-		}
+		}else{
 
-		//draw the crosshair.
-		if(hpl.health>0)DrawHDXHair(hpl);
+			//draw the crosshair
+			if(hpl.health>0)DrawHDXHair(hpl);
 
-		SetSize(0,320,200);
-		BeginHUD(forcescaled:true);
+			SetSize(0,320,200);
+			BeginHUD(forcescaled:true);
 
 
-		//draw the goggles when they do something.
-		let hdla=portableliteamp(hpl.findinventory("PortableLiteAmp"));
-		if(hdla && hdla.worn){
-			//can we do these calculations once somewhere else?
-			int gogheight=int(screen.getheight()*(1.9*90.)/cplayer.fov);
-			int gogwidth=screen.getwidth()*gogheight/screen.getheight();
-			int gogoffsx=-((gogwidth-screen.getwidth())>>1);
-			int gogoffsy=-((gogheight-screen.getheight())>>1);
+			//draw the goggles when they do something.
+			let hdla=portableliteamp(hpl.findinventory("PortableLiteAmp"));
+			if(hdla && hdla.worn){
+				//can we do these calculations once somewhere else?
+				int gogheight=int(screen.getheight()*(1.9*90.)/cplayer.fov);
+				int gogwidth=screen.getwidth()*gogheight/screen.getheight();
+				int gogoffsx=-((gogwidth-screen.getwidth())>>1);
+				int gogoffsy=-((gogheight-screen.getheight())>>1);
 
-			screen.drawtexture(
-				texman.checkfortexture("gogmask",texman.type_any),
-				true,
-				gogoffsx-(int(hpl.hudbob.x)),
-				gogoffsy-(int(hpl.hudbob.y)),
-				DTA_DestWidth,gogwidth,DTA_DestHeight,gogheight,
-				true
-			);
+				screen.drawtexture(
+					texman.checkfortexture("gogmask",texman.type_any),
+					true,
+					gogoffsx-(int(hpl.hudbob.x)),
+					gogoffsy-(int(hpl.hudbob.y)),
+					DTA_DestWidth,gogwidth,DTA_DestHeight,gogheight,
+					true
+				);
+			}
 		}
 
 		//draw information text for selected weapon
