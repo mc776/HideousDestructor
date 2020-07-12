@@ -417,6 +417,8 @@ In addition to any custom skins you may load, you can use soundclasses "hdguy", 
 
   You can also set it to 999 to get the vanilla Doom behaviour where the renderer just omits lighting reduction. This is considered a cheat in multiplayer.
 
+* `hd_nv_style` (0): This sets the rendering style for your light amplification visor. Values range from 0 through 4. Some of these are better than others but do not affect battery use.
+
 * `hd_hudusedelay` (12): This is how many tics (1/35 of a second) you must hold Use before the full HUD shows up with all the ammo counts and compass (and scope view if hd_noscope is set to 1). Minimum delay is 12. If you set the value over 100, the digits preceding the tens place will be parsed as the delay before even the partial HUD appears, e.g., a value of 1212 means an all-or-nothing with no partial HUD while 120 means you can quickly hit Use to check your vitals and hold much longer to get everything.
 
 * `hd_autostrip` (false): If enabled, you automatically take off your armour just by holding Fire while using the medikit, as opposed to getting a message telling you to hit Reload instead.
