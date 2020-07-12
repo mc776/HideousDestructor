@@ -30,6 +30,13 @@ OptionValue "Autoaim"{
 	5, "Very high"
 	6, "Always"
 }
+OptionValue "NVGStyle"{
+	0, "Hideous (green/red)"
+	1, "Analog (green/amber)"
+	2, "Digital (green/amber)"
+	3, "Modern (blue-green/white)"
+	4, "Truecolor (red/green"
+}
 
 
 OptionValue "DoorBuster"{
@@ -162,7 +169,7 @@ OptionMenu "HDOptionsMenu"{
 	Slider "$DSPLYMNU_MOVEBOB","movebob",0,1.0,0.05,2
 	Slider "$DSPLYMNU_STILLBOB","stillbob",0,1.0,0.05,2
 	Slider "$DSPLYMNU_BOBSPEED","wbobspeed",0,2.0,0.1
-	
+
 	StaticText " "
 	StaticText "User Personal Gear Settings",1
 	Submenu "Set Custom Loadout...","HDLoadoutMenu"
@@ -170,7 +177,8 @@ OptionMenu "HDOptionsMenu"{
 	Option "DERP mode","hd_derpmode","DERPModes"
 	Option "IEDs start active","hd_autoactivateied","YesNo"
 	Option "Reflex sight image","hd_crosshair","ReflexReticle"
-	Slider "Night vision (negative=red)","hd_nv",-100,100,1,0
+	Slider "Night vision brightness","hd_nv",0,100,1,0
+	Option "Night vision style","hd_nv_style","NVGStyle"
 	SafeCommand "Reset Weapon Settings","hd_clearwepcv","Really clear all weapon settings?"
 }
 

@@ -68,7 +68,7 @@ class WornRadsuit:InventoryFlag{
 		if(rrr)owner.useinventory(rrr);else destroy();
 		return null;
 	}
-	override void attachtoowner(actor owner){	
+	override void attachtoowner(actor owner){
 		if(!owner.countinv("PortableRadsuit"))owner.A_GiveInventory("PortableRadsuit");
 		super.attachtoowner(owner);
 	}
@@ -323,11 +323,22 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 				owner.player.fixedlightlevel=1;
 				Shader.SetEnabled(owner.player,"NiteVis",false);
 			}else{
+				SetNVGStyle();
 				UndoFullbright();
 				nv=clamp(amplitude,-nv,nv);
 				spent+=int(max(1,abs(nv*0.1)));
 				Shader.SetEnabled(owner.player,"NiteVis",true);
 				Shader.SetUniform1f(owner.player,"NiteVis","exposure",nv);
+				Shader.SetUniform1f(owner.player,"NiteVis","timer",level.maptime);
+				Shader.SetUniform1i(owner.player,"NiteVis","u_resfactor",resfactor);
+				Shader.SetUniform1i(owner.player,"NiteVis","u_hscan",hscan);
+				Shader.SetUniform1i(owner.player,"NiteVis","u_vscan",vscan);
+				Shader.SetUniform1f(owner.player,"NiteVis","u_scanstrength",scanstrength);
+				Shader.SetUniform1i(owner.player,"NiteVis","u_posterize",posterize);
+				Shader.SetUniform3f(owner.player,"NiteVis","u_posfilter",posfilter);
+				Shader.SetUniform3f(owner.player,"NiteVis","u_negfilter",negfilter);
+				Shader.SetUniform1f(owner.player,"NiteVis","u_whiteclip",whiteclip);
+				Shader.SetUniform1f(owner.player,"NiteVis","u_desat",desat);
 			}
 
 			//flicker
@@ -366,7 +377,7 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 			if(cmd&BT_USE){
 				double am=cmd&BT_ZOOM?-5:5;
 				double plitude=max(0,(am+abs(invoker.amplitude)));
-				if(plitude>NITEVIS_MAX)plitude-=NITEVIS_MAX;
+				if(plitude>NITEVIS_MAX)plitude-=(NITEVIS_MAX+5);
 				invoker.amplitude=invoker.amplitude<0?-plitude:plitude;
 			}else if(cmd&BT_ZOOM){
 				invoker.amplitude=-invoker.amplitude;
@@ -411,7 +422,30 @@ class VisorLight:PointLight{
 		setorigin((target.pos.xy,target.pos.z+target.height-6),true);
 	}
 }
+extend class PortableLiteAmp {
+	transient CVar NVGStyle;
+	int style;
+	int resfactor,hscan,vscan,posterize;
+	double scanstrength,whiteclip,desat;
+	vector3 posfilter,negfilter;
 
+	void SetNVGStyle() {
+		if (!NVGStyle) NVGStyle = CVar.GetCVar("hd_nv_style",owner.player);
+		int style = NVGStyle.GetInt();
+		switch (style) {
+			case 0: // Hideous (green/red)
+				resfactor=4;hscan=1;vscan=0;scanstrength=0.25;posterize=24;posfilter=(0,1,0);negfilter=(1,0,0);whiteclip=0.25;desat=0.0;break;
+			case 1: // Analog (green/amber)
+				resfactor=5;hscan=1;vscan=0;scanstrength=0.1;posterize=256;posfilter=(0.25,1.0,0.25);negfilter=(1.0,1.0,0.25);whiteclip=0.75;desat=0.0;break;
+			case 2: // Digital (green/amber)
+				resfactor=4;hscan=1;vscan=1;scanstrength=0.05;posterize=16;posfilter=(0.1,1.0,0.1);negfilter=(1.0,1.0,0.1);whiteclip=0.9;desat=0.0;break;
+			case 3: // Modern (blue-green/white)
+				resfactor=3;hscan=0;vscan=0;scanstrength=0.0;posterize=256;posfilter=(0.0,1.0,0.75);negfilter=(0.65,0.65,1.0);whiteclip=0.8;desat=0.0;break;
+			case 4: // Truecolor
+				resfactor=3;hscan=0;vscan=0;scanstrength=0.0;posterize=256;posfilter=(1.0,0.5,0.5);negfilter=(0.5,1.0,0.5);whiteclip=1.0;desat=0.5;break;
+		}
+	}
+}
 
 
 
