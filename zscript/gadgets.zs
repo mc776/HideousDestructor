@@ -323,7 +323,7 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 				owner.player.fixedlightlevel=1;
 				Shader.SetEnabled(owner.player,"NiteVis",false);
 			}else{
-				SetNVGPreset();
+				SetNVGStyle();
 				UndoFullbright();
 				nv=clamp(amplitude,-nv,nv);
 				spent+=int(max(1,abs(nv*0.1)));
@@ -336,7 +336,7 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 				Shader.SetUniform1f(owner.player,"NiteVis","u_scanstrength",scanstrength);
 				Shader.SetUniform1i(owner.player,"NiteVis","u_posterize",posterize);
 				Shader.SetUniform3f(owner.player,"NiteVis","u_posfilter",posfilter);
-				//Shader.SetUniform3f(owner.player,"NiteVis","u_negfilter",negfilter);
+				Shader.SetUniform3f(owner.player,"NiteVis","u_negfilter",negfilter);
 				Shader.SetUniform1f(owner.player,"NiteVis","u_whiteclip",whiteclip);
 				Shader.SetUniform1f(owner.player,"NiteVis","u_desat",desat);
 			}
@@ -423,30 +423,26 @@ class VisorLight:PointLight{
 	}
 }
 extend class PortableLiteAmp {
-	transient CVar NVGPreset;
-	int preset;
+	transient CVar NVGStyle;
+	int style;
 	int resfactor,hscan,vscan,posterize;
 	double scanstrength,whiteclip,desat;
 	vector3 posfilter,negfilter;
 
-	void SetNVGPreset() {
-		if (!NVGPreset) NVGPreset = CVar.GetCVar("hd_nv_preset",owner.player);
-		int preset = NVGPreset.GetInt();
-		switch (preset) {
-			case 0: // Hideous Green
-				resfactor=4;hscan=1;vscan=0;scanstrength=0.25;posterize=24;posfilter=(0,1,0);whiteclip=0.25;desat=0.0;break;
-			case 1: // Hideous Red
-				resfactor=4;hscan=1;vscan=0;scanstrength=0.25;posterize=24;posfilter=(1,0,0);whiteclip=0.25;desat=0.0;break;
-			case 2: // Classic Green
-				resfactor=1;hscan=0;vscan=0;scanstrength=0.0;posterize=32;posfilter=(0.25,1,0.25);whiteclip=0.75;desat=0.0;break;
-			case 3: // Digital Green
-				resfactor=3;hscan=1;vscan=1;scanstrength=0.05;posterize=16;posfilter=(0.25,1,0.25);whiteclip=0.75;desat=0.0;break;
-			case 4: // Modern Warfare
-				resfactor=1;hscan=0;vscan=0;scanstrength=0.0;posterize=256;posfilter=(0.0,1,0.75);whiteclip=0.9;desat=0.0;break;
-			case 5: // Truecolor
-				resfactor=3;hscan=1;vscan=0;scanstrength=0.1;posterize=32;posfilter=(1.0,0.8,0.8);whiteclip=1.0;desat=0.5;break;
-			case 6: // White Phosphor
-				resfactor=3;hscan=1;vscan=0;scanstrength=0.1;posterize=32;posfilter=(0.75,0.75,1.0);whiteclip=0.8;desat=0.0;break;
+	void SetNVGStyle() {
+		if (!NVGStyle) NVGStyle = CVar.GetCVar("hd_nv_style",owner.player);
+		int style = NVGStyle.GetInt();
+		switch (style) {
+			case 0: // Hideous (green/red)
+				resfactor=4;hscan=1;vscan=0;scanstrength=0.25;posterize=24;posfilter=(0,1,0);negfilter=(1,0,0);whiteclip=0.25;desat=0.0;break;
+			case 1: // Analog (green/amber)
+				resfactor=5;hscan=1;vscan=0;scanstrength=0.1;posterize=256;posfilter=(0.25,1.0,0.25);negfilter=(1.0,1.0,0.25);whiteclip=0.75;desat=0.0;break;
+			case 2: // Digital (green/amber)
+				resfactor=4;hscan=1;vscan=1;scanstrength=0.05;posterize=16;posfilter=(0.1,1.0,0.1);negfilter=(1.0,1.0,0.1);whiteclip=0.9;desat=0.0;break;
+			case 3: // Modern (blue-green/white)
+				resfactor=3;hscan=0;vscan=0;scanstrength=0.0;posterize=256;posfilter=(0.0,1.0,0.75);negfilter=(0.65,0.65,1.0);whiteclip=0.8;desat=0.0;break;
+			case 4: // Truecolor
+				resfactor=3;hscan=0;vscan=0;scanstrength=0.0;posterize=256;posfilter=(1.0,0.5,0.5);negfilter=(0.5,1.0,0.5);whiteclip=1.0;desat=0.5;break;
 		}
 	}
 }

@@ -30,14 +30,12 @@ OptionValue "Autoaim"{
 	5, "Very high"
 	6, "Always"
 }
-OptionValue "NVGPreset"{
-	0, "Hideous Green"
-	1, "Hideous Red"
-	2, "Classic Green"
-	3, "Digital Green"
-	4, "Modern Warfare"
-	5, "Truecolor"
-	6, "White Phosphor"
+OptionValue "NVGStyle"{
+	0, "Hideous (green/red)"
+	1, "Analog (green/amber)"
+	2, "Digital (green/amber)"
+	3, "Modern (blue-green/white)"
+	4, "Truecolor (red/green"
 }
 
 
@@ -180,7 +178,7 @@ OptionMenu "HDOptionsMenu"{
 	Option "IEDs start active","hd_autoactivateied","YesNo"
 	Option "Reflex sight image","hd_crosshair","ReflexReticle"
 	Slider "Night vision brightness","hd_nv",0,100,1,0
-	Option "Night vision style","hd_nv_preset","NVGPreset"
+	Option "Night vision style","hd_nv_style","NVGStyle"
 	SafeCommand "Reset Weapon Settings","hd_clearwepcv","Really clear all weapon settings?"
 }
 
