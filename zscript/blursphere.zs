@@ -116,7 +116,16 @@ class HDBlurSphere:HDPickup{
 				data:medusagaze
 			);
 			actor aaa=medusagaze.hitactor;
-			if(aaa&&aaa.bismonster){
+			if(
+				aaa
+				&&(
+					aaa.bismonster
+					||aaa.player
+				)&&(
+					!hdmobbase(aaa)
+					||hdmobbase(aaa).bnoblurgaze
+				)
+			){
 				aaa.A_ClearTarget();
 				aaa.A_ClearSoundTarget();
 				HDF.Give(aaa,"Heat",random(1,level+3));
