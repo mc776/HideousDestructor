@@ -163,24 +163,18 @@ class HDChainReplacer:RandomSpawner replaces ChaingunGuy{
 			if(!vvv)return;
 			vvv.vel=vel;vvv.angle=angle;
 			vvv.A_ChangeVelocity(1,0,2,CVF_RELATIVE);
-			for(int i=0;i<5;i++){
-				if(!i){
-					vvv.setmagcount(i,thismag);
-				}else if(mags>0){
-					vvv.setmagcount(i,VULC_MAG_FULLSEALED);
+			vvv.weaponstatus[VULCS_MAG1]=thismag;
+			for(int i=VULCS_MAG2;i<=VULCS_MAG5;i++){
+				if(mags>0){
+					vvv.weaponstatus[i]=51;
 					mags--;
-				}else vvv.setmagcount(i,0);
-				vvv.weaponstatus[0]|=VULCF_CHAMBER1;
-				vvv.weaponstatus[0]|=VULCF_CHAMBER2;
-				vvv.weaponstatus[0]|=VULCF_CHAMBER3;
-				vvv.weaponstatus[0]|=VULCF_CHAMBER4;
-				vvv.weaponstatus[0]|=VULCF_CHAMBER5;
-				if(!random(0,3))vvv.weaponstatus[0]&=VULCF_BROKEN1;
-				if(!random(0,3))vvv.weaponstatus[0]&=VULCF_BROKEN2;
-				if(!random(0,3))vvv.weaponstatus[0]&=VULCF_BROKEN3;
-				if(!random(0,3))vvv.weaponstatus[0]&=VULCF_BROKEN4;
-				if(!random(0,3))vvv.weaponstatus[0]&=VULCF_BROKEN5;
+				}else vvv.weaponstatus[i]=-1;
 			}
+			vvv.weaponstatus[VULCS_CHAMBER1]=(!random(0,3))?2:1;
+			vvv.weaponstatus[VULCS_CHAMBER2]=(!random(0,3))?2:1;
+			vvv.weaponstatus[VULCS_CHAMBER3]=(!random(0,3))?2:1;
+			vvv.weaponstatus[VULCS_CHAMBER4]=(!random(0,3))?2:1;
+			vvv.weaponstatus[VULCS_CHAMBER5]=(!random(0,3))?2:1;
 			if(superauto)vvv.weaponstatus[0]|=VULCF_FAST;
 			vvv.weaponstatus[VULCS_BATTERY]=random(1,20);
 			vvv.weaponstatus[VULCS_BREAKCHANCE]=random(0,random(1,500));
