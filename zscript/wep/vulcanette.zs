@@ -567,7 +567,7 @@ class Vulcanette:HDWeapon{
 			int mg=invoker.weaponstatus[VULCS_MAG1];
 			invoker.weaponstatus[VULCS_MAG1]=-1;
 			if(mg<0){
-				setweaponstate("mag1out");
+				setweaponstate("mag2out");
 				return;
 			}
 			if(
@@ -575,7 +575,7 @@ class Vulcanette:HDWeapon{
 				&&!PressingReload()
 			){
 				HDMagAmmo.SpawnMag(self,"HD4mMag",mg);
-				setweaponstate("mag1out");
+				setweaponstate("mag2out");
 			}else{
 				HDMagAmmo.GiveMag(self,"HD4mMag",mg);
 				setweaponstate("pocketmag");
@@ -584,7 +584,7 @@ class Vulcanette:HDWeapon{
 	pocketmag:
 		GTLG A 0 A_StartSound("weapons/pocket");
 		GTLG AA 6 A_MuzzleClimb(frandom(0.4,0.6),-frandom(0.4,0.6));
-		goto mag1out;
+		goto mag2out;
 	mag2out:
 		GTLG A 1{
 			int starti=(invoker.weaponstatus[VULCS_MAG1]>=0)?VULCS_MAG2:VULCS_MAG1;
