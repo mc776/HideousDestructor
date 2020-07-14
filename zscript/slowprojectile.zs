@@ -144,75 +144,79 @@ class SlowProjectile:HDActor{
 					actor hitactor=blockingmobj;
 					tracer=hitactor;
 					int idmg=int(speed*speed*mass*frandom(0.00001,0.00002));
-					if(idmg>40)tracer.A_StartSound("misc/bulletflesh",CHAN_AUTO);
-					if(hd_debug)A_Log(String.Format("%s hit %s",getclassname(),blockingmobj.getclassname()));
-					if(!bnodamage){
 
-						let hdmb=HDMobBase(hitactor);
-						let hdp=HDPlayerPawn(hitactor);
-						//this is basically copypasted from bullet
-						//checks for standing character with gaps between feet and next to head
+					let hdmb=HDMobBase(hitactor);
+					let hdp=HDPlayerPawn(hitactor);
+					//this is basically copypasted from bullet
+					//checks for standing character with gaps between feet and next to head
+					if(
+						(
+							hdmb
+							&&hdmb.height>hdmb.liveheight*0.7
+						)||hitactor.height>getdefaultbytype(hitactor.getclass()).height*0.7
+					){
+						double hitangle=absangle(angleto(hitactor),angle);
+						vector3 vu=vel.unit();
+
+						//headshot/pass over shoulder
+						//intended to be somewhat bigger than the visible head on any sprite
 						if(
 							(
-								hdmb
-								&&hdmb.height>hdmb.liveheight*0.7
-							)||hitactor.height>getdefaultbytype(hitactor.getclass()).height*0.7
-						){
-							double hitangle=absangle(angleto(hitactor),angle);
-							vector3 vu=vel.unit();
-
-							//headshot/pass over shoulder
-							//intended to be somewhat bigger than the visible head on any sprite
-							if(
-								(
-									hdp
-									||(
-										hdmb&&hdmb.bsmallhead
-									)
-								)&&(
-									0.8<
-									min(
-										pos.z-hitactor.pos.z,
-										pos.z+vu.z*hitactor.radius*0.6-hitactor.pos.z
-									)/hitactor.height
+								hdp
+								||(
+									hdmb&&hdmb.bsmallhead
 								)
-							){
-								if(hitangle>40.)keepgoing=true;
-								idmg*=3;
-							}
-							//randomly pass through putative gap between legs and feet
-							if(
-								(
-									hdp
-									||(
-										hdmb
-										&&hdmb.bbiped
-									)
-								)
-							){
-								double aat=angleto(hitactor);
-								double haa=hitactor.angle;
-								aat=min(absangle(aat,haa),absangle(aat,haa+180));
-
-								haa=max(
+							)&&(
+								0.8<
+								min(
 									pos.z-hitactor.pos.z,
-									pos.z+vu.z*hitactor.radius-hitactor.pos.z
-								)/hitactor.height;
+									pos.z+vu.z*hitactor.radius*0.6-hitactor.pos.z
+								)/hitactor.height
+							)
+						){
+							if(hitangle>40.)keepgoing=true;
+							else idmg*=3;
+						}
+						//randomly pass through putative gap between legs and feet
+						if(
+							(
+								hdp
+								||(
+									hdmb
+									&&hdmb.bbiped
+								)
+							)
+						){
+							double aat=angleto(hitactor);
+							double haa=hitactor.angle;
+							aat=min(absangle(aat,haa),absangle(aat,haa+180));
 
-								//do the rest only if the shot is low enough
-								if(haa<0.35){
-									//if directly in front or behind, assume the space exists
-									if(aat<7.){
-										if(hitangle<7.)keepgoing=true;
-									}else{
-										//if not directly in front, increase space as you go down
-										//this isn't actually intended to reflect any particular sprite
-										int whichtick=level.time&(1|2); //0,1,2,3
-										if(hitangle<4.+whichtick*(1.-haa))keepgoing=true;
-									}
+							haa=max(
+								pos.z-hitactor.pos.z,
+								pos.z+vu.z*hitactor.radius-hitactor.pos.z
+							)/hitactor.height;
+
+							//do the rest only if the shot is low enough
+							if(haa<0.35){
+								//if directly in front or behind, assume the space exists
+								if(aat<7.){
+									if(hitangle<7.)keepgoing=true;
+								}else{
+									//if not directly in front, increase space as you go down
+									//this isn't actually intended to reflect any particular sprite
+									int whichtick=level.time&(1|2); //0,1,2,3
+									if(hitangle<4.+whichtick*(1.-haa))keepgoing=true;
 								}
 							}
 						}
+					}
+
+					if(
+						!keepgoing
+						&&!bnodamage
+					){
+						if(idmg>40)tracer.A_StartSound("misc/bulletflesh",CHAN_AUTO);
+						if(hd_debug)A_Log(String.Format("%s hit %s",getclassname(),blockingmobj.getclassname()));
 
 						hitactor.damagemobj(self,target,idmg,"bashing");
 					}
