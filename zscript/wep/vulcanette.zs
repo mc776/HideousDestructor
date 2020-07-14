@@ -7,46 +7,25 @@ enum vulcstatus{
 	VULCF_JUSTUNLOAD=4,
 	VULCF_LOADCELL=8,
 
-	VULCF_CHAMBER1=16,
-	VULCF_CHAMBER2=32,
-	VULCF_CHAMBER3=64,
-	VULCF_CHAMBER4=128,
-	VULCF_CHAMBER5=256,
-	VULCF_ALLCHAMBERED=VULCF_CHAMBER1|VULCF_CHAMBER2|VULCF_CHAMBER3|VULCF_CHAMBER4|VULCF_CHAMBER5,
-	VULCF_BROKEN1=512,
-	VULCF_BROKEN2=1024,
-	VULCF_BROKEN3=2048,
-	VULCF_BROKEN4=4096,
-	VULCF_BROKEN5=8192,
-	VULCF_ALLBROKEN=VULCF_BROKEN1|VULCF_BROKEN2|VULCF_BROKEN3|VULCF_BROKEN4|VULCF_BROKEN5,
-	VULCF_ALLCHAMBER1=VULCF_CHAMBER1|VULCF_BROKEN1,
+	VULCF_DIRTYMAG=16,
 
-	VULCF_DIRTYMAG=16384,
+	VULCS_MAG1=1,
+	VULCS_MAG2=2,
+	VULCS_MAG3=3,
+	VULCS_MAG4=4,
+	VULCS_MAG5=5,
 
-	VULCS_MAGS=1,
-	VULCS_BATTERY=2,
-	VULCS_ZOOM=3,
-	VULCS_HEAT=4,
-	VULCS_BREAKCHANCE=5,
-	//6 is unused, used to be for setting channel
-	VULCS_PERMADAMAGE=7,
+	VULCS_CHAMBER1=6,
+	VULCS_CHAMBER2=7,
+	VULCS_CHAMBER3=8,
+	VULCS_CHAMBER4=9,
+	VULCS_CHAMBER5=10,
 
-	/*
-		For counting mags in VULCS_MAGS.
-		After each multiple of VULC_MAGBASE:
-		0=unloaded, 1=empty, 51=full but seal broken, 52=full and sealed.
-		So the first mag is 52, the second mag is 2756, etc.
-		Or, in "base 53": 52, 5200, ...
-		(I originally tried using base 100 but int.MAX is under 3 billion whereas we'd need 5.3 billion for this.)
-	*/
-	VULC_MAGBASE=53,
-	VULC_MAG_FULLSEALED=VULC_MAGBASE-1,
-	VULC_MAGS_MAX=
-		(VULC_MAGBASE*VULC_MAGBASE*VULC_MAGBASE*VULC_MAGBASE*VULC_MAG_FULLSEALED)
-		+(VULC_MAGBASE*VULC_MAGBASE*VULC_MAGBASE*VULC_MAG_FULLSEALED)
-		+(VULC_MAGBASE*VULC_MAGBASE*VULC_MAG_FULLSEALED)
-		+(VULC_MAGBASE*VULC_MAG_FULLSEALED)
-		+VULC_MAG_FULLSEALED,
+	VULCS_BATTERY=11,
+	VULCS_ZOOM=12,
+	VULCS_HEAT=13,
+	VULCS_BREAKCHANCE=14,
+	VULCS_PERMADAMAGE=15,
 };
 class Vulcanette:HDWeapon{
 	default{
@@ -74,14 +53,14 @@ class Vulcanette:HDWeapon{
 	override string pickupmessage(){
 		string msg=super.pickupmessage();
 		int bc=weaponstatus[VULCS_BREAKCHANCE];
-		if(!bc)msg=msg.." It's coward killing time!";
-		else if(bc>500)msg=msg.." that might be salvaged for ammo.";
-		else if(bc>200)msg=msg.." in dire need of repair.";
-		else if(bc>100)msg=msg..". It has seen better days.";
 		if(bc>100){
 			msg.replace("!","");
 			msg.replace("the","a");
 		}
+		if(!bc)msg=msg.." It's coward killing time!";
+		else if(bc>500)msg=msg.." that might be salvaged for ammo.";
+		else if(bc>200)msg=msg.." in dire need of repair.";
+		else if(bc>100)msg=msg..". It has seen better days.";
 		return msg;
 	}
 	override void tick(){
@@ -95,63 +74,18 @@ class Vulcanette:HDWeapon{
 		return ctt;
 	}
 
-	//translate the number from and to the internal stored data in the vulc.
-	//REMEMBER: 1 = EMPTY, 2 = ONE SHOT LEFT, 52 = FIFTY PLUS SEAL
-	static const int magmultindex[]={
-		1,
-		VULC_MAGBASE,
-		VULC_MAGBASE*VULC_MAGBASE,
-		VULC_MAGBASE*VULC_MAGBASE*VULC_MAGBASE,
-		VULC_MAGBASE*VULC_MAGBASE*VULC_MAGBASE*VULC_MAGBASE,
-		VULC_MAGBASE*VULC_MAGBASE*VULC_MAGBASE*VULC_MAGBASE*VULC_MAGBASE
-	};
-	static const int chamberflag[]={
-		VULCF_CHAMBER1,
-		VULCF_CHAMBER2,
-		VULCF_CHAMBER3,
-		VULCF_CHAMBER4,
-		VULCF_CHAMBER5
-	};
-	int getmagcount(int which){
-		if(which>4||which<0)return 0;
-		return (weaponstatus[VULCS_MAGS]/magmultindex[which])%VULC_MAGBASE;
-	}
-	int setmagcount(int which,int count){
-		if(which>4||which<0)return 0;
-		count=clamp(count,0,VULC_MAG_FULLSEALED);
-		int res=weaponstatus[VULCS_MAGS];
-		int mags[5];
-		int returntotal=0;
-		for(int i=0;i<5;i++){
-			if(i==which)mags[i]=count;
-			else mags[i]=getmagcount(i);
-			for(int j=0;j<i;j++){
-				mags[i]*=VULC_MAGBASE;
-			}
-			returntotal+=mags[i];
-		}
-		weaponstatus[VULCS_MAGS]=returntotal;
-		return returntotal;
-	}
 	override double gunmass(){
 		double amt=12+weaponstatus[VULCS_BATTERY]<0?0:1;
-		int mags=weaponstatus[VULCS_MAGS];
-		for(int i=0;i<5;i++){
-			if(
-				mags>magmultindex[i]
-				||(!i&&mags>0)
-			)amt+=3.6;
+		for(int i=VULCS_MAG1;i<=VULCS_MAG5;i++){
+			if(weaponstatus[i]>=0)amt+=3.6;
 		}
 		return amt;
 	}
 	override double weaponbulk(){
 		double blx=200+(weaponstatus[VULCS_BATTERY]>=0?ENC_BATTERY_LOADED:0);
-		int mags=weaponstatus[VULCS_MAGS];
-		for(int i=0;i<5;i++){
-			if(
-				mags>magmultindex[i]
-				||(!i&&mags>0)
-			)blx+=ENC_426MAG_LOADED+(ENC_426_LOADED*getmagcount(i));
+		for(int i=VULCS_MAG1;i<=VULCS_MAG5;i++){
+			int wsi=weaponstatus[i];
+			if(wsi>=0)blx+=ENC_426_LOADED*wsi+ENC_426MAG_LOADED;
 		}
 		return blx;
 	}
@@ -174,16 +108,12 @@ class Vulcanette:HDWeapon{
 			sb.drawnum(hpl.countinv("HDBattery"),-56,-8,sb.DI_SCREEN_CENTER_BOTTOM);
 		}
 		bool bat=hdw.weaponstatus[VULCS_BATTERY]>0;
-		int mags=hdw.weaponstatus[VULCS_MAGS];
 		for(int i=0;i<5;i++){
-			if(
-				mags>magmultindex[i]
-				||(!i&&mags>0)
-			)sb.drawrect(-19-i*4,-14,3,2);
-			if(bat&&hdw.weaponstatus[0]&chamberflag[i])sb.drawrect(-15,-14+i*2,1,1);
+			if(hdw.weaponstatus[VULCS_MAG1+i]>=0)sb.drawrect(-19-i*4,-14,3,2);
+			if(hdw.weaponstatus[VULCS_CHAMBER1+i]>=0)sb.drawrect(-15-i*4,-14,3,2);
 		}
 		sb.drawwepnum(
-			(hdw.weaponstatus[VULCS_MAGS]%VULC_MAGBASE)-1,
+			hdw.weaponstatus[VULCS_MAG1],
 			50,posy:-9
 		);
 		sb.drawwepcounter(hdw.weaponstatus[0]&VULCF_FAST,
@@ -192,7 +122,7 @@ class Vulcanette:HDWeapon{
 		if(bat){
 			int lod;
 			if(hdw.weaponstatus[0]&VULCF_DIRTYMAG)lod=random[shitgun](10,99);
-			else lod=clamp((mags%VULC_MAGBASE)-1,0,50);
+			else lod=hdw.weaponstatus[VULCS_MAG1];
 			sb.drawnum(lod,-20,-22,
 				sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TEXT_ALIGN_RIGHT,Font.CR_RED
 			);
@@ -400,7 +330,7 @@ class Vulcanette:HDWeapon{
 		}goto spindown;
 	holdswap:
 		GTLG A 0{
-			if(invoker.getmagcount(0)<2){
+			if(invoker.weaponstatus[VULCS_MAG1]<1){
 				VulcNextMag();
 				A_StartSound("weapons/vulcshunt",CHAN_WEAPON,CHANF_OVERLAP);
 			}
@@ -440,11 +370,11 @@ class Vulcanette:HDWeapon{
 			if(
 				//abort if all mag slots taken or no spare ammo
 				(
-					invoker.weaponstatus[VULCS_MAGS]>invoker.magmultindex[0]
-					&&invoker.weaponstatus[VULCS_MAGS]>invoker.magmultindex[1]
-					&&invoker.weaponstatus[VULCS_MAGS]>invoker.magmultindex[2]
-					&&invoker.weaponstatus[VULCS_MAGS]>invoker.magmultindex[3]
-					&&invoker.weaponstatus[VULCS_MAGS]>invoker.magmultindex[4]
+					invoker.weaponstatus[VULCS_MAG1]>=0
+					&&invoker.weaponstatus[VULCS_MAG2]>=0
+					&&invoker.weaponstatus[VULCS_MAG3]>=0
+					&&invoker.weaponstatus[VULCS_MAG4]>=0
+					&&invoker.weaponstatus[VULCS_MAG5]>=0
 				)
 				||!countinv("HD4mMag")
 			)setweaponstate("nope");else{
@@ -504,10 +434,17 @@ class Vulcanette:HDWeapon{
 		GTLG A 8 offset(12,43)A_StartSound("weapons/vulcopen1",CHAN_WEAPON,CHANF_OVERLAP);
 		GTLG A 5 offset(10,41)A_StartSound("weapons/vulcopen2",CHAN_WEAPON,CHANF_OVERLAP);
 		GTLG A 0 A_JumpIf(
-			!(invoker.weaponstatus[0]&(VULCF_CHAMBER1|VULCF_CHAMBER2|VULCF_CHAMBER3|VULCF_CHAMBER4|VULCF_CHAMBER5))
-			&&!(invoker.weaponstatus[0]&(VULCF_BROKEN1|VULCF_BROKEN2|VULCF_BROKEN3|VULCF_BROKEN4|VULCF_BROKEN5))
+			invoker.weaponstatus[VULCS_CHAMBER1]<1
+			&&invoker.weaponstatus[VULCS_CHAMBER2]<1
+			&&invoker.weaponstatus[VULCS_CHAMBER3]<1
+			&&invoker.weaponstatus[VULCS_CHAMBER4]<1
+			&&invoker.weaponstatus[VULCS_CHAMBER5]<1
 			&&invoker.weaponstatus[VULCS_BATTERY]<0
-			&&invoker.weaponstatus[VULCS_MAGS]<1
+			&&invoker.weaponstatus[VULCS_MAG1]<0
+			&&invoker.weaponstatus[VULCS_MAG2]<0
+			&&invoker.weaponstatus[VULCS_MAG3]<0
+			&&invoker.weaponstatus[VULCS_MAG4]<0
+			&&invoker.weaponstatus[VULCS_MAG5]<0
 			&&pressingzoom()
 			,"openforrepair"
 		);
@@ -561,7 +498,13 @@ class Vulcanette:HDWeapon{
 		//if no mags, remove battery
 		//if not even battery, remove rounds from chambers
 		GTLG A 0{
-			if(invoker.weaponstatus[VULCS_MAGS]<1){
+			if(
+				invoker.weaponstatus[VULCS_MAG1]<0
+				&&invoker.weaponstatus[VULCS_MAG2]<0
+				&&invoker.weaponstatus[VULCS_MAG3]<0
+				&&invoker.weaponstatus[VULCS_MAG4]<0
+				&&invoker.weaponstatus[VULCS_MAG5]<0
+			){
 				if(invoker.weaponstatus[VULCS_BATTERY]>=0)setweaponstate("cellunload");    
 				else setweaponstate("unchamber");
 			}
@@ -579,52 +522,51 @@ class Vulcanette:HDWeapon{
 	//remove mag #2 first, #1 only if out of options
 	unmagpick:
 		GTLG A 0{
-			if(invoker.getmagcount(1)>0)setweaponstate("unmag1");    
+			if(invoker.weaponstatus[VULCS_MAG2]>=0)setweaponstate("unmag1");    
 			else if(
-				invoker.getmagcount(2)>0
-				||invoker.getmagcount(3)>0
-				||invoker.getmagcount(4)>0  
+				invoker.weaponstatus[VULCS_MAG3]>=0
+				||invoker.weaponstatus[VULCS_MAG4]>=0
+				||invoker.weaponstatus[VULCS_MAG5]>=0
 			)setweaponstate("unmagshunt");
 			else if(
-				invoker.getmagcount(0)>0    
-			)setweaponstate("unmag0");
+				invoker.weaponstatus[VULCS_MAG1]>0    
+			)setweaponstate("unmag1");
 		}goto reloadend;
 	unmagshunt:
 		GTLG A 0{
-			for(int i=0;i<5;i++){
-				invoker.setmagcount(i,invoker.getmagcount(i+1));
+			for(int i=VULCS_MAG1;i<VULCS_MAG5;i++){
+				invoker.weaponstatus[i]=invoker.weaponstatus[i+1];
 			}
+			invoker.weaponstatus[VULCS_MAG5]=-1;
 			A_StartSound("weapons/vulcshunt",CHAN_WEAPON,CHANF_OVERLAP);
 		}
 		GTLG AB 2 A_MuzzleClimb(-frandom(0.4,0.6),frandom(0.4,0.6));
 		goto ready;
 
-	unmag1:
+	unmag2:
 		VULC A 0{
-			int mg=invoker.getmagcount(1);
-			invoker.setmagcount(1,0);
-			if(mg<1){
-				setweaponstate("mag1out");
+			int mg=invoker.weaponstatus[VULCS_MAG2];
+			invoker.weaponstatus[VULCS_MAG2]=-1;
+			if(mg<0){
+				setweaponstate("mag2out");
 				return;
 			}
 			if(
 				!PressingUnload()
 				&&!PressingReload()
 			){
-				if(mg==52)HDMagAmmo.SpawnMag(self,"HD4mMag",51);
-				else HDMagAmmo.SpawnMag(self,"HD4mMag",(mg-1)%50);
-				setweaponstate("mag1out");
+				HDMagAmmo.SpawnMag(self,"HD4mMag",mg);
+				setweaponstate("mag2out");
 			}else{
-				if(mg==52)HDMagAmmo.GiveMag(self,"HD4mMag",51);
-				else HDMagAmmo.GiveMag(self,"HD4mMag",(mg-1)%50);
+				HDMagAmmo.GiveMag(self,"HD4mMag",mg);
 				setweaponstate("pocketmag");
 			}
-		}goto mag1out;
-	unmag0:
+		}goto mag2out;
+	unmag1:
 		VULC A 0{
-			int mg=invoker.getmagcount(0);
-			invoker.setmagcount(0,0);
-			if(mg<1){
+			int mg=invoker.weaponstatus[VULCS_MAG1];
+			invoker.weaponstatus[VULCS_MAG1]=-1;
+			if(mg<0){
 				setweaponstate("mag1out");
 				return;
 			}
@@ -632,12 +574,10 @@ class Vulcanette:HDWeapon{
 				!PressingUnload()
 				&&!PressingReload()
 			){
-				if(mg==52)HDMagAmmo.SpawnMag(self,"HD4mMag",51);
-				else HDMagAmmo.SpawnMag(self,"HD4mMag",(mg-1)%50);
-				setweaponstate("mag1out"); //this really is mag1 not mag0
+				HDMagAmmo.SpawnMag(self,"HD4mMag",mg);
+				setweaponstate("mag1out");
 			}else{
-				if(mg==52)HDMagAmmo.GiveMag(self,"HD4mMag",51);
-				else HDMagAmmo.GiveMag(self,"HD4mMag",(mg-1)%50);
+				HDMagAmmo.GiveMag(self,"HD4mMag",mg);
 				setweaponstate("pocketmag");
 			}
 		}goto reloadend;
@@ -645,20 +585,18 @@ class Vulcanette:HDWeapon{
 		GTLG A 0 A_StartSound("weapons/pocket");
 		GTLG AA 6 A_MuzzleClimb(frandom(0.4,0.6),-frandom(0.4,0.6));
 		goto mag1out;
-	mag1out:
+	mag2out:
 		GTLG A 1{
-			int starti=(invoker.getmagcount(0)>0)?1:0;
-			for(int i=starti;i<5;i++){
-				invoker.setmagcount(i,invoker.getmagcount(i+1));
+			int starti=(invoker.weaponstatus[VULCS_MAG1]>=0)?VULCS_MAG2:VULCS_MAG1;
+			for(int i=starti;i<VULCS_MAG5;i++){
+				invoker.weaponstatus[i]=invoker.weaponstatus[i+1];
 			}
+			invoker.weaponstatus[VULCS_MAG5]=-1;
 			A_StartSound("weapons/vulcshunt",CHAN_WEAPON,CHANF_OVERLAP);
 		}
 		GTLG AB 2 A_MuzzleClimb(-frandom(0.4,0.6),frandom(0.4,0.6));
-		GTLG A 6{
-			if(
-				invoker.weaponstatus[VULCS_MAGS]<VULC_MAGBASE
-			)setweaponstate("reloadend");
-		}goto unmag1;
+		GTLG A 6 A_JumpIf(invoker.weaponstatus[VULCS_MAG1]<51,"reloadend");
+		goto unmag1;
 
 	loadmag:
 		//pick the first empty slot and fill that
@@ -669,8 +607,8 @@ class Vulcanette:HDWeapon{
 			int lod=HDMagAmmo(findinventory("HD4mMag")).TakeMag(true);
 
 			int magslot=-1;
-			for(int i=0;i<5;i++){
-				if(invoker.getmagcount(i)<1){
+			for(int i=VULCS_MAG1;i<VULCS_MAG5;i++){
+				if(invoker.weaponstatus[i]<0){
 					magslot=i;
 					break;
 				}
@@ -680,15 +618,14 @@ class Vulcanette:HDWeapon{
 				return;
 			}
 
-			//REMEMBER: IN THE VULC, ADD ONE
 			if(lod<51){
 				if(!random(0,7)){
 					A_StartSound("weapons/vulcforcemag",CHAN_WEAPON,CHANF_OVERLAP);
 					lod=min(0,lod-random(0,1));
 					A_Log(HDCONST_426MAGMSG,true);
 				}
-				invoker.setmagcount(magslot,lod+1);
-			}else invoker.setmagcount(magslot,VULC_MAG_FULLSEALED);
+			}
+			invoker.weaponstatus[magslot]=lod;
 
 			A_MuzzleClimb(-frandom(0.4,0.8),-frandom(0.5,0.7));
 		}
@@ -707,11 +644,11 @@ class Vulcanette:HDWeapon{
 					||PressingFire()
 					||!countinv("HD4mMag")
 				)||(
-					invoker.getmagcount(0)>0
-					&&invoker.getmagcount(1)>0
-					&&invoker.getmagcount(2)>0
-					&&invoker.getmagcount(3)>0
-					&&invoker.getmagcount(4)>0
+					invoker.weaponstatus[VULCS_MAG1]>=0
+					&&invoker.weaponstatus[VULCS_MAG2]>=0
+					&&invoker.weaponstatus[VULCS_MAG3]>=0
+					&&invoker.weaponstatus[VULCS_MAG4]>=0
+					&&invoker.weaponstatus[VULCS_MAG5]>=0
 				)
 			)setweaponstate("reloadend");
 		}goto loadmag;
@@ -801,9 +738,17 @@ class Vulcanette:HDWeapon{
 	override void InitializeWepStats(bool idfa){
 		weaponstatus[VULCS_BATTERY]=20;
 		weaponstatus[VULCS_ZOOM]=30;
-		weaponstatus[VULCS_MAGS]=VULC_MAGS_MAX;
-		if(idfa)weaponstatus[0]|=VULCF_ALLCHAMBERED;
-		weaponstatus[0]&=~VULCF_ALLBROKEN;
+		weaponstatus[VULCS_MAG1]=51;
+		weaponstatus[VULCS_MAG2]=51;
+		weaponstatus[VULCS_MAG3]=51;
+		weaponstatus[VULCS_MAG4]=51;
+		weaponstatus[VULCS_MAG5]=51;
+		int chm=idfa?1:0;
+		weaponstatus[VULCS_CHAMBER1]=chm;
+		weaponstatus[VULCS_CHAMBER2]=chm;
+		weaponstatus[VULCS_CHAMBER3]=chm;
+		weaponstatus[VULCS_CHAMBER4]=chm;
+		weaponstatus[VULCS_CHAMBER5]=chm;
 	}
 	override void loadoutconfigure(string input){
 		int fast=getloadoutvar(input,"fast",1);
@@ -818,12 +763,10 @@ class Vulcanette:HDWeapon{
 	//move this somewhere sensible
 	action void VulcShoot(bool flash2=false){
 		invoker.weaponstatus[VULCS_BREAKCHANCE]+=random(0,random(0,invoker.weaponstatus[VULCS_HEAT]/256));
-		if(
-			!(invoker.weaponstatus[0]&VULCF_CHAMBER1)
-			||invoker.weaponstatus[0]&VULCF_BROKEN1
-		){
-			if(invoker.weaponstatus[0]&VULCF_BROKEN1)invoker.weaponstatus[VULCS_BREAKCHANCE]+=random(0,7);
-			else if(!random(0,127))invoker.weaponstatus[VULCS_BREAKCHANCE]++;
+		int ccc=invoker.weaponstatus[VULCS_CHAMBER1];
+		if(ccc>0){
+			if(ccc>1)invoker.weaponstatus[VULCS_BREAKCHANCE]+=random(0,7);
+			else if(!random(0,255))invoker.weaponstatus[VULCS_BREAKCHANCE]++;
 			if(hd_debug)A_Log("Break chance: "..invoker.weaponstatus[VULCS_BREAKCHANCE]);
 			return;
 		}
@@ -847,23 +790,18 @@ class Vulcanette:HDWeapon{
 			spread:heat>20?heat*0.1:0,
 			distantsound:"world/vulcfar"
 		);
-/*
-		actor b=spawn("HDBullet426",pos+(0,0,height-8),ALLOW_REPLACE);
-		b.target=self;b.vel+=vel;b.angle=angle+offx;b.pitch=pitch+offy;
-		if(heat>20)b.vel+=(frandom(-heat,heat),frandom(-heat,heat),frandom(-heat,heat))*0.1;    
-*/
 		invoker.weaponstatus[VULCS_HEAT]+=2;
 
 		if(random(0,8192)<min(10,heat))invoker.weaponstatus[VULCS_BATTERY]++;
 
-		invoker.weaponstatus[0]&=~VULCF_ALLCHAMBER1;
+		invoker.weaponstatus[VULCS_CHAMBER1]=0;
 	}
 	action void VulcNextMag(){
-		int thismag=invoker.getmagcount(0);
-		if(thismag>0){
+		int thismag=invoker.weaponstatus[VULCS_MAG1];
+		if(thismag>=0){
 			double cp=cos(pitch);double ca=cos(angle+60);
 			double sp=sin(pitch);double sa=sin(angle+60);
-			actor mmm=HDMagAmmo.SpawnMag(self,"HD4mMag",thismag-1);
+			actor mmm=HDMagAmmo.SpawnMag(self,"HD4mMag",thismag);
 			mmm.setorigin(pos+(
 				cp*ca*16,
 				cp*sa*16,
@@ -875,21 +813,16 @@ class Vulcanette:HDWeapon{
 				sp
 			);
 		}
-		for(int i=0;i<5;i++){
-			invoker.setmagcount(i,invoker.getmagcount(i+1));
+		for(int i=VULCS_MAG1;i<VULCS_MAG5;i++){
+			invoker.weaponstatus[i]=invoker.weaponstatus[i+1];
 		}
-		int intothismag=invoker.getmagcount(0);
-		if(intothismag&&intothismag!=VULC_MAG_FULLSEALED){
-			invoker.weaponstatus[0]|=VULCF_DIRTYMAG;
-		}
+		invoker.weaponstatus[VULCS_MAG5]=-1;
 	}
 	action void VulcNextRound(){
-		if(
-			invoker.weaponstatus[0]&VULCF_CHAMBER1
-			||invoker.weaponstatus[0]&VULCF_BROKEN1
-		){
+		int thisch=invoker.weaponstatus[VULCS_CHAMBER1];
+		if(thisch>0){
 			//spit out a misfired, wasted or broken round
-			if(invoker.weaponstatus[0]&VULCF_BROKEN1){
+			if(thisch>1){
 				for(int i=0;i<5;i++){
 					A_SpawnItemEx("TinyWallChunk",3,0,height-18,
 						random(4,7),random(-2,2),random(-2,1),
@@ -906,37 +839,26 @@ class Vulcanette:HDWeapon{
 		}
 
 		//cycle all chambers
-		invoker.weaponstatus[0]&=~VULCF_ALLCHAMBER1;
-		if(invoker.weaponstatus[0]&VULCF_BROKEN2)invoker.weaponstatus[0]|=VULCF_BROKEN1;
-		else if(invoker.weaponstatus[0]&VULCF_CHAMBER2)invoker.weaponstatus[0]|=VULCF_CHAMBER1;
-
-		invoker.weaponstatus[0]&=~(VULCF_BROKEN2|VULCF_CHAMBER2);
-		if(invoker.weaponstatus[0]&VULCF_BROKEN3)invoker.weaponstatus[0]|=VULCF_BROKEN2;
-		else if(invoker.weaponstatus[0]&VULCF_CHAMBER3)invoker.weaponstatus[0]|=VULCF_CHAMBER2;
-
-		invoker.weaponstatus[0]&=~(VULCF_BROKEN3|VULCF_CHAMBER3);
-		if(invoker.weaponstatus[0]&VULCF_BROKEN4)invoker.weaponstatus[0]|=VULCF_BROKEN3;
-		else if(invoker.weaponstatus[0]&VULCF_CHAMBER4)invoker.weaponstatus[0]|=VULCF_CHAMBER3;
-
-		invoker.weaponstatus[0]&=~(VULCF_BROKEN4|VULCF_CHAMBER4);
-		if(invoker.weaponstatus[0]&VULCF_BROKEN5)invoker.weaponstatus[0]|=VULCF_BROKEN4;
-		else if(invoker.weaponstatus[0]&VULCF_CHAMBER5)invoker.weaponstatus[0]|=VULCF_CHAMBER4;
-
-		invoker.weaponstatus[0]&=~(VULCF_CHAMBER5|VULCF_BROKEN5);
-		if(invoker.getmagcount(0)==VULC_MAG_FULLSEALED){
-			invoker.setmagcount(0,50); //open the seal
-			invoker.weaponstatus[0]&=~VULCF_DIRTYMAG;
+		for(int i=VULCS_MAG1;i<VULCS_CHAMBER5;i++){
+			invoker.weaponstatus[i]=invoker.weaponstatus[i+1];
 		}
 
-		//figure out what's in the mag and load it to the final chamber
-		int inmag=invoker.getmagcount(0);
-		if(inmag>1){
+		//check if mag is clean
+		int inmag=invoker.weaponstatus[VULCS_MAG1];
+		if(inmag==51){
+			invoker.weaponstatus[VULCS_MAG1]=50; //open the seal
+			invoker.weaponstatus[0]&=~VULCF_DIRTYMAG;
+			inmag=50;
+		}else invoker.weaponstatus[0]|=VULCF_DIRTYMAG;
+
+		//extract a round from the mag
+		if(inmag>0){
+			invoker.weaponstatus[VULCS_MAG1]--;
 			A_StartSound("weapons/vulcchamber",CHAN_WEAPON,CHANF_OVERLAP);
-			invoker.weaponstatus[0]|=VULCF_CHAMBER5;
 			if(random(0,2000)<=
 				1+(invoker.weaponstatus[0]&VULCF_DIRTYMAG?(invoker.weaponstatus[0]&VULCF_FAST?13:9):0)
-			)invoker.weaponstatus[0]|=VULCF_BROKEN5;
-			invoker.setmagcount(0,inmag-1);
+			)invoker.weaponstatus[VULCS_CHAMBER5]=2;
+			else invoker.weaponstatus[VULCS_CHAMBER5]=1;
 		}
 	}
 
