@@ -117,6 +117,7 @@ class SlowProjectile:HDActor{
 		double speedfrac=speed/count;
 		for(int i=0;i<count;i++){
 			if(!TryMove(pos.xy+frac.xy,true,true,tm)){
+				bool keepgoing=false;
 
 				//hack to prevent exploding on lower sky
 				let l=tm.ceilingline;
@@ -160,7 +161,7 @@ class SlowProjectile:HDActor{
 							double hitangle=absangle(angleto(hitactor),angle);
 							vector3 vu=vel.unit();
 
-							//pass over shoulder
+							//headshot/pass over shoulder
 							//intended to be somewhat bigger than the visible head on any sprite
 							if(
 								(
@@ -176,7 +177,7 @@ class SlowProjectile:HDActor{
 									)/hitactor.height
 								)
 							){
-								if(hitangle>40.)return;
+								if(hitangle>40.)keepgoing=true;
 								idmg*=3;
 							}
 							//randomly pass through putative gap between legs and feet
@@ -202,12 +203,12 @@ class SlowProjectile:HDActor{
 								if(haa<0.35){
 									//if directly in front or behind, assume the space exists
 									if(aat<7.){
-										if(hitangle<7.)return;
+										if(hitangle<7.)keepgoing=true;
 									}else{
 										//if not directly in front, increase space as you go down
 										//this isn't actually intended to reflect any particular sprite
 										int whichtick=level.time&(1|2); //0,1,2,3
-										if(hitangle<4.+whichtick*(1.-haa))return;
+										if(hitangle<4.+whichtick*(1.-haa))keepgoing=true;
 									}
 								}
 							}
@@ -216,8 +217,10 @@ class SlowProjectile:HDActor{
 						hitactor.damagemobj(self,target,idmg,"bashing");
 					}
 				}
-				explodeslowmissile(blockingline,blockingmobj);
-				return;
+				if(!keepgoing){
+					explodeslowmissile(blockingline,blockingmobj);
+					return;
+				}
 			}
 			CheckPortalTransition();
 
