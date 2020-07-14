@@ -110,7 +110,7 @@ class Vulcanette:HDWeapon{
 		bool bat=hdw.weaponstatus[VULCS_BATTERY]>0;
 		for(int i=0;i<5;i++){
 			if(hdw.weaponstatus[VULCS_MAG1+i]>=0)sb.drawrect(-19-i*4,-14,3,2);
-			if(hdw.weaponstatus[VULCS_CHAMBER1+i]>=0)sb.drawrect(-15-i*4,-14,3,2);
+			if(hdw.weaponstatus[VULCS_CHAMBER1+i]>0)sb.drawrect(-15,-14+i*2,1,1);
 		}
 		sb.drawwepnum(
 			hdw.weaponstatus[VULCS_MAG1],
@@ -120,10 +120,9 @@ class Vulcanette:HDWeapon{
 			-28,-16,"blank","STFULAUT"
 		);
 		if(bat){
-			int lod;
-			if(hdw.weaponstatus[0]&VULCF_DIRTYMAG)lod=random[shitgun](10,99);
-			else lod=hdw.weaponstatus[VULCS_MAG1];
-			sb.drawnum(lod,-20,-22,
+			int lod=hdw.weaponstatus[VULCS_MAG1];
+			if(lod>=0&&hdw.weaponstatus[0]&VULCF_DIRTYMAG)lod=random[shitgun](10,99);
+			if(lod>=0)sb.drawnum(lod,-20,-22,
 				sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TEXT_ALIGN_RIGHT,Font.CR_RED
 			);
 			sb.drawwepnum(hdw.weaponstatus[VULCS_BATTERY],20);
@@ -537,6 +536,7 @@ class Vulcanette:HDWeapon{
 			for(int i=VULCS_MAG1;i<VULCS_MAG5;i++){
 				invoker.weaponstatus[i]=invoker.weaponstatus[i+1];
 			}
+			if(invoker.weaponstatus[VULCS_MAG1]<51)invoker.weaponstatus[0]|=VULCF_DIRTYMAG;
 			invoker.weaponstatus[VULCS_MAG5]=-1;
 			A_StartSound("weapons/vulcshunt",CHAN_WEAPON,CHANF_OVERLAP);
 		}
@@ -591,6 +591,7 @@ class Vulcanette:HDWeapon{
 			for(int i=starti;i<VULCS_MAG5;i++){
 				invoker.weaponstatus[i]=invoker.weaponstatus[i+1];
 			}
+			if(invoker.weaponstatus[VULCS_MAG1]<51)invoker.weaponstatus[0]|=VULCF_DIRTYMAG;
 			invoker.weaponstatus[VULCS_MAG5]=-1;
 			A_StartSound("weapons/vulcshunt",CHAN_WEAPON,CHANF_OVERLAP);
 		}
@@ -623,6 +624,7 @@ class Vulcanette:HDWeapon{
 					A_StartSound("weapons/vulcforcemag",CHAN_WEAPON,CHANF_OVERLAP);
 					lod=min(0,lod-random(0,1));
 					A_Log(HDCONST_426MAGMSG,true);
+					if(magslot==VULCS_MAG1)invoker.weaponstatus[0]|=VULCF_DIRTYMAG;
 				}
 			}
 			invoker.weaponstatus[magslot]=lod;
@@ -749,6 +751,7 @@ class Vulcanette:HDWeapon{
 		weaponstatus[VULCS_CHAMBER3]=chm;
 		weaponstatus[VULCS_CHAMBER4]=chm;
 		weaponstatus[VULCS_CHAMBER5]=chm;
+		weaponstatus[0]&=~VULCF_DIRTYMAG;
 	}
 	override void loadoutconfigure(string input){
 		int fast=getloadoutvar(input,"fast",1);
@@ -763,17 +766,20 @@ class Vulcanette:HDWeapon{
 	//move this somewhere sensible
 	action void VulcShoot(bool flash2=false){
 		invoker.weaponstatus[VULCS_BREAKCHANCE]+=random(0,random(0,invoker.weaponstatus[VULCS_HEAT]/256));
+
 		int ccc=invoker.weaponstatus[VULCS_CHAMBER1];
-		if(ccc>0){
-			if(ccc>1)invoker.weaponstatus[VULCS_BREAKCHANCE]+=random(0,7);
-			else if(!random(0,255))invoker.weaponstatus[VULCS_BREAKCHANCE]++;
+		if(ccc<1)return;
+		if(ccc>1){
+			invoker.weaponstatus[VULCS_BREAKCHANCE]+=random(0,7);
 			if(hd_debug)A_Log("Break chance: "..invoker.weaponstatus[VULCS_BREAKCHANCE]);
 			return;
 		}
+
 		if(random(random(1,500),5000)<invoker.weaponstatus[VULCS_BREAKCHANCE]){
 			setweaponstate("nope");
 			return;
 		}
+		if(!random(0,255))invoker.weaponstatus[VULCS_BREAKCHANCE]++;
 
 		if(flash2)A_GunFlash("flash2");else A_GunFlash("flash");
 		A_StartSound("weapons/vulcanette",CHAN_WEAPON,CHANF_OVERLAP);
@@ -796,28 +802,6 @@ class Vulcanette:HDWeapon{
 
 		invoker.weaponstatus[VULCS_CHAMBER1]=0;
 	}
-	action void VulcNextMag(){
-		int thismag=invoker.weaponstatus[VULCS_MAG1];
-		if(thismag>=0){
-			double cp=cos(pitch);double ca=cos(angle+60);
-			double sp=sin(pitch);double sa=sin(angle+60);
-			actor mmm=HDMagAmmo.SpawnMag(self,"HD4mMag",thismag);
-			mmm.setorigin(pos+(
-				cp*ca*16,
-				cp*sa*16,
-				height-12-12*sp
-			),false);
-			mmm.vel=vel+(
-				cp*cos(angle+random(55,65)),
-				cp*sin(angle+random(55,65)),
-				sp
-			);
-		}
-		for(int i=VULCS_MAG1;i<VULCS_MAG5;i++){
-			invoker.weaponstatus[i]=invoker.weaponstatus[i+1];
-		}
-		invoker.weaponstatus[VULCS_MAG5]=-1;
-	}
 	action void VulcNextRound(){
 		int thisch=invoker.weaponstatus[VULCS_CHAMBER1];
 		if(thisch>0){
@@ -839,7 +823,7 @@ class Vulcanette:HDWeapon{
 		}
 
 		//cycle all chambers
-		for(int i=VULCS_MAG1;i<VULCS_CHAMBER5;i++){
+		for(int i=VULCS_CHAMBER1;i<VULCS_CHAMBER5;i++){
 			invoker.weaponstatus[i]=invoker.weaponstatus[i+1];
 		}
 
@@ -849,7 +833,7 @@ class Vulcanette:HDWeapon{
 			invoker.weaponstatus[VULCS_MAG1]=50; //open the seal
 			invoker.weaponstatus[0]&=~VULCF_DIRTYMAG;
 			inmag=50;
-		}else invoker.weaponstatus[0]|=VULCF_DIRTYMAG;
+		}
 
 		//extract a round from the mag
 		if(inmag>0){
@@ -859,7 +843,31 @@ class Vulcanette:HDWeapon{
 				1+(invoker.weaponstatus[0]&VULCF_DIRTYMAG?(invoker.weaponstatus[0]&VULCF_FAST?13:9):0)
 			)invoker.weaponstatus[VULCS_CHAMBER5]=2;
 			else invoker.weaponstatus[VULCS_CHAMBER5]=1;
+		}else invoker.weaponstatus[VULCS_CHAMBER5]=0;
+	}
+	action void VulcNextMag(){
+		int thismag=invoker.weaponstatus[VULCS_MAG1];
+		if(thismag>=0){
+			double cp=cos(pitch);double ca=cos(angle+60);
+			double sp=sin(pitch);double sa=sin(angle+60);
+			actor mmm=HDMagAmmo.SpawnMag(self,"HD4mMag",thismag);
+			mmm.setorigin(pos+(
+				cp*ca*16,
+				cp*sa*16,
+				height-12-12*sp
+			),false);
+			mmm.vel=vel+(
+				cp*cos(angle+random(55,65)),
+				cp*sin(angle+random(55,65)),
+				sp
+			);
 		}
+		for(int i=VULCS_MAG1;i<VULCS_MAG5;i++){
+			invoker.weaponstatus[i]=invoker.weaponstatus[i+1];
+		}
+		invoker.weaponstatus[VULCS_MAG5]=-1;
+
+		if(invoker.weaponstatus[VULCS_MAG1]<51)invoker.weaponstatus[0]|=VULCF_DIRTYMAG;
 	}
 
 	action void VulcRepairMsg(){
