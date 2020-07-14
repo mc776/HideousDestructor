@@ -153,7 +153,7 @@ class BFG9K:HDCellWeapon replaces BFG9000{
 			A_WeaponReady(WRF_ALL);
 		}goto readyend;
 	select0:
-		B9KG A 0{if(!countinv("NulledWeapon")invoker.weaponstatus[0]&=~BFGF_STRAPPED;}
+		B9KG A 0{if(!countinv("NulledWeapon"))invoker.weaponstatus[0]&=~BFGF_STRAPPED;}
 		BFGG C 0 A_CheckIdSprite("B9KGA0","BFGGA0");
 		goto select0bfg;
 	deselect0:
