@@ -71,7 +71,7 @@ extend class HDPlayerPawn{
 				||(zerk>500&&!random(0,255))
 			)
 		){
-			scale.y=1.;
+			scale.y=skinscale.y;
 			incapacitated=-((11-6)<<2);
 		}
 		if(
