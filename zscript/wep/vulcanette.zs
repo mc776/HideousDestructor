@@ -109,7 +109,7 @@ class Vulcanette:HDWeapon{
 		}
 		bool bat=hdw.weaponstatus[VULCS_BATTERY]>0;
 		for(int i=0;i<5;i++){
-			if(hdw.weaponstatus[VULCS_MAG1+i]>=0)sb.drawrect(-19-i*4,-14,3,2);
+			if(i>0&&hdw.weaponstatus[VULCS_MAG1+i]>=0)sb.drawrect(-19-i*4,-14,3,2);
 			if(hdw.weaponstatus[VULCS_CHAMBER1+i]>0)sb.drawrect(-15,-14+i*2,1,1);
 		}
 		sb.drawwepnum(
@@ -120,7 +120,7 @@ class Vulcanette:HDWeapon{
 			-28,-16,"blank","STFULAUT"
 		);
 		if(bat){
-			int lod=hdw.weaponstatus[VULCS_MAG1];
+			int lod=min(50,hdw.weaponstatus[VULCS_MAG1]);
 			if(lod>=0&&hdw.weaponstatus[0]&VULCF_DIRTYMAG)lod=random[shitgun](10,99);
 			if(lod>=0)sb.drawnum(lod,-20,-22,
 				sb.DI_SCREEN_CENTER_BOTTOM|sb.DI_TEXT_ALIGN_RIGHT,Font.CR_RED
@@ -608,7 +608,7 @@ class Vulcanette:HDWeapon{
 			int lod=HDMagAmmo(findinventory("HD4mMag")).TakeMag(true);
 
 			int magslot=-1;
-			for(int i=VULCS_MAG1;i<VULCS_MAG5;i++){
+			for(int i=VULCS_MAG1;i<=VULCS_MAG5;i++){
 				if(invoker.weaponstatus[i]<0){
 					magslot=i;
 					break;
@@ -622,11 +622,11 @@ class Vulcanette:HDWeapon{
 			if(lod<51){
 				if(!random(0,7)){
 					A_StartSound("weapons/vulcforcemag",CHAN_WEAPON,CHANF_OVERLAP);
-					lod=min(0,lod-random(0,1));
+					lod=max(0,lod-random(0,1));
 					A_Log(HDCONST_426MAGMSG,true);
 					if(magslot==VULCS_MAG1)invoker.weaponstatus[0]|=VULCF_DIRTYMAG;
 				}
-			}
+			}else if(magslot==VULCS_MAG1)invoker.weaponstatus[0]&=~VULCF_DIRTYMAG;
 			invoker.weaponstatus[magslot]=lod;
 
 			A_MuzzleClimb(-frandom(0.4,0.8),-frandom(0.5,0.7));
