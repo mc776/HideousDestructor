@@ -521,22 +521,21 @@ class Vulcanette:HDWeapon{
 	//remove mag #2 first, #1 only if out of options
 	unmagpick:
 		GTLG A 0{
-			if(invoker.weaponstatus[VULCS_MAG2]>=0)setweaponstate("unmag1");    
+			if(invoker.weaponstatus[VULCS_MAG2]>=0)setweaponstate("unmag2");
 			else if(
 				invoker.weaponstatus[VULCS_MAG3]>=0
 				||invoker.weaponstatus[VULCS_MAG4]>=0
 				||invoker.weaponstatus[VULCS_MAG5]>=0
 			)setweaponstate("unmagshunt");
 			else if(
-				invoker.weaponstatus[VULCS_MAG1]>0    
+				invoker.weaponstatus[VULCS_MAG1]>=0    
 			)setweaponstate("unmag1");
 		}goto reloadend;
 	unmagshunt:
 		GTLG A 0{
-			for(int i=VULCS_MAG1;i<VULCS_MAG5;i++){
+			for(int i=VULCS_MAG2;i<VULCS_MAG5;i++){
 				invoker.weaponstatus[i]=invoker.weaponstatus[i+1];
 			}
-			if(invoker.weaponstatus[VULCS_MAG1]<51)invoker.weaponstatus[0]|=VULCF_DIRTYMAG;
 			invoker.weaponstatus[VULCS_MAG5]=-1;
 			A_StartSound("weapons/vulcshunt",CHAN_WEAPON,CHANF_OVERLAP);
 		}
@@ -567,7 +566,7 @@ class Vulcanette:HDWeapon{
 			int mg=invoker.weaponstatus[VULCS_MAG1];
 			invoker.weaponstatus[VULCS_MAG1]=-1;
 			if(mg<0){
-				setweaponstate("mag2out");
+				setweaponstate("reloadend");
 				return;
 			}
 			if(
@@ -587,17 +586,15 @@ class Vulcanette:HDWeapon{
 		goto mag2out;
 	mag2out:
 		GTLG A 1{
-			int starti=(invoker.weaponstatus[VULCS_MAG1]>=0)?VULCS_MAG2:VULCS_MAG1;
-			for(int i=starti;i<VULCS_MAG5;i++){
+			for(int i=VULCS_MAG2;i<VULCS_MAG5;i++){
 				invoker.weaponstatus[i]=invoker.weaponstatus[i+1];
 			}
-			if(invoker.weaponstatus[VULCS_MAG1]<51)invoker.weaponstatus[0]|=VULCF_DIRTYMAG;
 			invoker.weaponstatus[VULCS_MAG5]=-1;
 			A_StartSound("weapons/vulcshunt",CHAN_WEAPON,CHANF_OVERLAP);
 		}
 		GTLG AB 2 A_MuzzleClimb(-frandom(0.4,0.6),frandom(0.4,0.6));
-		GTLG A 6 A_JumpIf(invoker.weaponstatus[VULCS_MAG1]<51,"reloadend");
-		goto unmag1;
+		GTLG A 6 A_JumpIf(invoker.weaponstatus[VULCS_MAG2]<0,"reloadend");
+		goto unmag2;
 
 	loadmag:
 		//pick the first empty slot and fill that
