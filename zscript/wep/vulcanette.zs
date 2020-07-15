@@ -483,6 +483,7 @@ class Vulcanette:HDWeapon{
 		GTLG A 3 offset(9,41);
 		GTLG A 2 offset(6,38);
 		GTLG A 3 offset(2,34);
+		GTLG A 0 A_JumpIf(pressingreload()||pressingunload(),"nope");
 		goto ready;
 
 
