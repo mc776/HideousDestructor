@@ -123,7 +123,7 @@ class HDBlurSphere:HDPickup{
 					||aaa.player
 				)&&(
 					!hdmobbase(aaa)
-					||hdmobbase(aaa).bnoblurgaze
+					||!hdmobbase(aaa).bnoblurgaze
 				)
 			){
 				aaa.A_ClearTarget();
