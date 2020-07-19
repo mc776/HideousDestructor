@@ -513,7 +513,7 @@ class HDWeapon:Weapon{
 		return weapondefaults;
 	}
 	//apply config from owner's hd_weapondefaults cvar
-	void defaultconfigure(playerinfo whichplayer,string weapondefaults="cvar"){
+	virtual void defaultconfigure(playerinfo whichplayer,string weapondefaults="cvar"){
 		bdontdefaultconfigure=true;
 		if(!whichplayer)return;
 		if(weapondefaults=="cvar")weapondefaults=hdweapon.getdefaultcvar(whichplayer);

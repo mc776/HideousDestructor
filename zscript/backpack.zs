@@ -112,6 +112,15 @@ class HDBackpack:HDWeapon{
 		bpindex=invclasses.find(getclassname());
 		maxindex=invclasses.size()-1;
 	}
+	string storeweapondefaults;
+	override void defaultconfigure(playerinfo whichplayer,string weapondefaults){
+		if(whichplayer)weapondefaults=hdweapon.getdefaultcvar(whichplayer);
+		else storeweapondefaults="";
+		if(weapondefaults=="")return;
+		weapondefaults.replace(" ","");
+		weapondefaults.makelower();
+		storeweapondefaults=weapondefaults;
+	}
 	void initializeamount(string loadlist){
 		array<string> whichitem;whichitem.clear();
 		array<string> howmany;howmany.clear();
@@ -121,8 +130,9 @@ class HDBackpack:HDWeapon{
 			howmany.push((whichitem[i].mid(3,whichitem[i].length())));
 			whichitem[i]=whichitem[i].left(3);
 		}
-		string weapondefaults="";
-		if(owner&&owner.player)weapondefaults=hdweapon.getdefaultcvar(owner.player);
+
+		string weapondefaults=storeweapondefaults;
+
 		for(int i=0;i<whichitem.size();i++){
 			string ref=whichitem[i].makelower();
 			if(ref=="")continue;

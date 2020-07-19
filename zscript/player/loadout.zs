@@ -444,19 +444,23 @@ extend class HDPlayerPawn{
 					if(newwep){
 						//clear any randomized garbage
 						newwep.weaponstatus[0]=0;
+
 						//apply the default based on user cvar first
 						newwep.defaultconfigure(player);
+
 						//now apply the loadout input to overwrite the defaults
 						string wepinput=howmany[i];
 						wepinput.replace(" ","");
 						wepinput=wepinput.makelower();
 						newwep.loadoutconfigure(wepinput);
+
 						//the only way I know to force the weapongiver to go last: make it go again
 						if(reff is "HDWeaponGiver"){
 							let hdwgreff=(class<hdweapongiver>)(reff);
 							let gdhdwgreff=getdefaultbytype(hdwgreff);
 							newwep.loadoutconfigure(gdhdwgreff.config);
 						}
+
 						newwep.actualpickup(self,true);
 					}
 				}
