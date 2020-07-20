@@ -337,6 +337,7 @@ extend class HDMobBase{
 
 		//set corpse stuff
 		bnodropoff=false;
+		bnoblockmonst=false;
 		bnotautoaimed=true;
 		balwaystelefrag=true;
 		bpushable=false;
@@ -366,6 +367,7 @@ extend class HDMobBase{
 		//reset corpse stuff
 		let deff=getdefaultbytype(getclass());
 		bnodropoff=deff.bnodropoff;
+		bnoblockmonst=deff.bnoblockmonst;
 		bfloatbob=deff.bfloatbob;
 		maxstepheight=deff.maxstepheight;
 		bnotautoaimed=deff.bnotautoaimed;
