@@ -398,7 +398,8 @@ class HDSMG:HDWeapon{
 		if(firemode>=0)weaponstatus[SMGS_AUTO]=clamp(firemode,0,2);
 
 		firemode=getloadoutvar(input,"reflexsight",1);
-		if(firemode>0)weaponstatus[0]|=SMGF_REFLEXSIGHT;
+		if(!firemode)weaponstatus[0]&=~SMGF_REFLEXSIGHT;
+		else if(firemode>0)weaponstatus[0]|=SMGF_REFLEXSIGHT;
 
 		int fireswitch=getloadoutvar(input,"fireswitch",1);
 		if(fireswitch>0)weaponstatus[SMGS_SWITCHTYPE]=clamp(fireswitch,0,3);
