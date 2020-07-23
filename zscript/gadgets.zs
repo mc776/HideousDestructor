@@ -435,7 +435,7 @@ extend class PortableLiteAmp {
 		int style = NVGStyle.GetInt();
 		switch (style) {
 			case 0: // Hideous (green/red)
-				resfactor=1;hscan=1;vscan=0;scanfactor=4;scanstrength=0.25;posterize=24;posfilter=(0,1,0);negfilter=(1,0,0);whiteclip=0.25;desat=0.0;break;
+				resfactor=1;hscan=1;vscan=0;scanfactor=6;scanstrength=0.1;posterize=24;posfilter=(0,1,0);negfilter=(1,0,0);whiteclip=0.25;desat=0.0;break;
 			case 1: // Analog (green/amber)
 				resfactor=5;hscan=1;vscan=0;scanfactor=resfactor;scanstrength=0.1;posterize=256;posfilter=(0.25,1.0,0.25);negfilter=(1.0,1.0,0.25);whiteclip=0.75;desat=0.0;break;
 			case 2: // Digital (green/amber)
