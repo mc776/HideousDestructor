@@ -451,9 +451,7 @@ class Trilobite:HDMobBase replaces Cacodemon{
 			A_ChangeVelocity(-cos(pitch)*3,0,sin(pitch),CVF_RELATIVE);
 			if(charge==666){
 				A_FaceTarget(0.5,2.,FAF_BOTTOM);
-				actor bll=spawn("KekB",pos,ALLOW_REPLACE);
-				bll.target=self;bll.pitch=pitch;bll.angle=angle;
-				bll.vel+=vel;
+				HDBulletActor.FireBullet(self,"KekB",32);
 			}else{
 				A_CustomRailgun(random(100,200),50,"","azure",
 					RGF_SILENT|RGF_NOPIERCING|RGF_FULLBRIGHT,
