@@ -311,7 +311,7 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 			}
 
 			//actual goggle effect
-			owner.player.fov=min(owner.player.fov,90);
+			owner.player.fov=max(30,min(owner.player.fov,90));
 			double nv=min(chargedamount*(NITEVIS_MAX/20.),NITEVIS_MAX);
 			if(!nv){
 				if(thiscvaramplitude<0)amplitude=-0.00001;

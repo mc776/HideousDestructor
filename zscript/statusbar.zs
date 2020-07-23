@@ -388,7 +388,7 @@ class HDStatusBar:DoomStatusBar{
 			let hdla=portableliteamp(hpl.findinventory("PortableLiteAmp"));
 			if(hdla && hdla.worn){
 				//can we do these calculations once somewhere else?
-				int gogheight=int(screen.getheight()*(1.9*90.)/cplayer.fov);
+				int gogheight=int(screen.getheight()*(1.6*90.)/cplayer.fov);
 				int gogwidth=screen.getwidth()*gogheight/screen.getheight();
 				int gogoffsx=-((gogwidth-screen.getwidth())>>1);
 				int gogoffsy=-((gogheight-screen.getheight())>>1);
