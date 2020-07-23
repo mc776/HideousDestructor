@@ -23,7 +23,8 @@ int resfactor = u_resfactor;
 // scanstrength is thickness of lines (0 = none, 1.0 = stupid thicc)
 bool hscan = bool(u_hscan);
 bool vscan = bool(u_vscan);
-float scanstrength = u_scanstrength * (resfactor * 4.0);
+int scanfactor = u_scanfactor;
+float scanstrength = u_scanstrength * (u_scanfactor * 4.0);
 
 // Posterization / palette filter
 // This sets number of color levels
@@ -84,10 +85,9 @@ void main(){
 	if (exposure < 0) { color *= clamp(negfilter + (color * whiteclip), 0.0, 1.0); }
 
 	// Scanlines
-	// No scanlines at native resolution
-	if (resfactor > 1) {
-		color *= 1 - int(hscan) * pow((1.0/float(resfactor)) * mod(TexCoord.y * textureSize(InputTexture,0).y, resfactor), resfactor / scanstrength);
-		color *= 1 - int(vscan) * pow((1.0/float(resfactor)) * mod(TexCoord.x * textureSize(InputTexture,0).x, resfactor), resfactor / scanstrength);
+	if (scanfactor > 1) {
+		color *= 1 - int(hscan) * pow((1.0/float(scanfactor)) * mod(TexCoord.y * textureSize(InputTexture,0).y, scanfactor), scanfactor / scanstrength);
+		color *= 1 - int(vscan) * pow((1.0/float(scanfactor)) * mod(TexCoord.x * textureSize(InputTexture,0).x, scanfactor), scanfactor / scanstrength);
 	}
 
 	// Output

@@ -333,6 +333,7 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 				Shader.SetUniform1i(owner.player,"NiteVis","u_resfactor",resfactor);
 				Shader.SetUniform1i(owner.player,"NiteVis","u_hscan",hscan);
 				Shader.SetUniform1i(owner.player,"NiteVis","u_vscan",vscan);
+				Shader.SetUniform1i(owner.player,"NiteVis","u_scanfactor",scanfactor);
 				Shader.SetUniform1f(owner.player,"NiteVis","u_scanstrength",scanstrength);
 				Shader.SetUniform1i(owner.player,"NiteVis","u_posterize",posterize);
 				Shader.SetUniform3f(owner.player,"NiteVis","u_posfilter",posfilter);
@@ -425,7 +426,7 @@ class VisorLight:PointLight{
 extend class PortableLiteAmp {
 	transient CVar NVGStyle;
 	int style;
-	int resfactor,hscan,vscan,posterize;
+	int resfactor,scanfactor,hscan,vscan,posterize;
 	double scanstrength,whiteclip,desat;
 	vector3 posfilter,negfilter;
 
@@ -434,15 +435,15 @@ extend class PortableLiteAmp {
 		int style = NVGStyle.GetInt();
 		switch (style) {
 			case 0: // Hideous (green/red)
-				resfactor=4;hscan=1;vscan=0;scanstrength=0.25;posterize=24;posfilter=(0,1,0);negfilter=(1,0,0);whiteclip=0.25;desat=0.0;break;
+				resfactor=1;hscan=1;vscan=0;scanfactor=6;scanstrength=0.1;posterize=24;posfilter=(0,1,0);negfilter=(1,0,0);whiteclip=0.25;desat=0.0;break;
 			case 1: // Analog (green/amber)
-				resfactor=5;hscan=1;vscan=0;scanstrength=0.1;posterize=256;posfilter=(0.25,1.0,0.25);negfilter=(1.0,1.0,0.25);whiteclip=0.75;desat=0.0;break;
+				resfactor=5;hscan=1;vscan=0;scanfactor=resfactor;scanstrength=0.1;posterize=256;posfilter=(0.25,1.0,0.25);negfilter=(1.0,1.0,0.25);whiteclip=0.75;desat=0.0;break;
 			case 2: // Digital (green/amber)
-				resfactor=4;hscan=1;vscan=1;scanstrength=0.05;posterize=16;posfilter=(0.1,1.0,0.1);negfilter=(1.0,1.0,0.1);whiteclip=0.9;desat=0.0;break;
+				resfactor=4;hscan=1;vscan=1;scanfactor=resfactor;scanstrength=0.05;posterize=16;posfilter=(0.1,1.0,0.1);negfilter=(1.0,1.0,0.1);whiteclip=0.9;desat=0.0;break;
 			case 3: // Modern (blue-green/white)
-				resfactor=3;hscan=0;vscan=0;scanstrength=0.0;posterize=256;posfilter=(0.0,1.0,0.75);negfilter=(0.65,0.65,1.0);whiteclip=0.8;desat=0.0;break;
+				resfactor=3;hscan=0;vscan=0;scanfactor=resfactor;scanstrength=0.0;posterize=256;posfilter=(0.0,1.0,0.75);negfilter=(0.65,0.65,1.0);whiteclip=0.8;desat=0.0;break;
 			case 4: // Truecolor
-				resfactor=3;hscan=0;vscan=0;scanstrength=0.0;posterize=256;posfilter=(1.0,0.5,0.5);negfilter=(0.5,1.0,0.5);whiteclip=1.0;desat=0.5;break;
+				resfactor=3;hscan=0;vscan=0;scanfactor=resfactor;scanstrength=0.0;posterize=256;posfilter=(1.0,0.5,0.5);negfilter=(0.5,1.0,0.5);whiteclip=1.0;desat=0.5;break;
 		}
 	}
 }
