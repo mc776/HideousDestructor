@@ -58,6 +58,18 @@ class BFG9K:HDCellWeapon replaces BFG9000{
 		}
 		return super.CreateTossable(amount);
 	}
+	override void tick(){
+		super.tick();
+		if(
+			owner
+			&&owner.health<1
+			&&weaponstatus[0]&BFGF_CRITICAL
+		){
+			weaponstatus[0]&=~BFGF_STRAPPED;
+			owner.A_DropInventory(getclass());
+			return;
+		}
+	}
 	override void doeffect(){
 		if(hdplayerpawn(owner)){
 			if(
