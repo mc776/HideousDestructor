@@ -228,8 +228,13 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 	override int getsbarnum(int flags){return int(amplitude);}
 	override void AttachToOwner(actor other){
 		super.AttachToOwner(other);
-		if(owner&&owner.player)amplitude=cvar.getcvar("hd_nv",owner.player).getfloat();
-		else amplitude=frandom(-NITEVIS_MAX,NITEVIS_MAX);
+		if(owner&&owner.player){
+			let cvv=cvar.getcvar("hd_nv",owner.player);
+			double cvf=clamp(cvv.getfloat(),0,NITEVIS_MAX);
+			amplitude=cvf;
+			if(cvf!=cvv.getfloat())cvv.setfloat(cvf);
+		}
+		else amplitude=frandom(0,NITEVIS_MAX);
 		lastcvaramplitude=amplitude;
 		syncamount();
 	}
