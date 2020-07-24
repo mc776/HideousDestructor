@@ -50,8 +50,9 @@ void main(){
 	// copy exposure uniform
 	float exp = max(abs(exposure), 1);
 
-	// Limit resfactor
+	// Limit resfactor and scanfactor
 	resfactor = max(resfactor, 1);
+	scanfactor = max(scanfactor, 1);
 
 	// Downsample coordinate system
 	vec2 res = TexCoord;
