@@ -98,44 +98,51 @@ class HideousShotgunGuy:HDMobMan replaces ShotgunGuy{
 			hdweapon wp=null;
 			if(wep==-1){
 				wp=hdweapon(spawn("ZM66AssaultRifle",(pos.x,pos.y,pos.z+40),ALLOW_REPLACE));
-				wp.weaponstatus[0]=
-					ZM66F_NOLAUNCHER|(randompick(0,1,1,1,1)*ZM66F_CHAMBER);
-				if(gunloaded>=50)wp.weaponstatus[ZM66S_MAG]=51;
-				else wp.weaponstatus[ZM66S_MAG]=gunloaded;
-				wp.weaponstatus[ZM66S_AUTO]=2;
-				wp.weaponstatus[ZM66S_ZOOM]=random(16,70);
-				if(jammed||!random(0,7))wp.weaponstatus[0]|=ZM66F_CHAMBERBROKEN;
+				if (wp) {
+					wp.weaponstatus[0]=
+						ZM66F_NOLAUNCHER|(randompick(0,1,1,1,1)*ZM66F_CHAMBER);
+					if(gunloaded>=50)wp.weaponstatus[ZM66S_MAG]=51;
+					else wp.weaponstatus[ZM66S_MAG]=gunloaded;
+					wp.weaponstatus[ZM66S_AUTO]=2;
+					wp.weaponstatus[ZM66S_ZOOM]=random(16,70);
+					if(jammed||!random(0,7))wp.weaponstatus[0]|=ZM66F_CHAMBERBROKEN;
 
-				gunloaded=50;
+					gunloaded=50;
+				}
 			}
 			if(wep==0){
 				wp=hdweapon(spawn("Hunter",(pos.x,pos.y,pos.z+40),ALLOW_REPLACE));
-				wp.weaponstatus[HUNTS_FIREMODE]=semi?1:0;
-				if(gunspent)wp.weaponstatus[HUNTS_CHAMBER]=1;
-				else if(gunloaded>0){
-					wp.weaponstatus[HUNTS_CHAMBER]=2;
-					gunloaded--;
+				if (wp) {
+					wp.weaponstatus[HUNTS_FIREMODE]=semi?1:0;
+					if(gunspent)wp.weaponstatus[HUNTS_CHAMBER]=1;
+					else if(gunloaded>0){
+						wp.weaponstatus[HUNTS_CHAMBER]=2;
+						gunloaded--;
+					}
+					if(gunloaded>0)wp.weaponstatus[HUNTS_TUBE]=gunloaded;
+					wp.weaponstatus[SHOTS_SIDESADDLE]=random(0,12);
+					wp.weaponstatus[0]&=~HUNTF_CANFULLAUTO;
+					wp.weaponstatus[HUNTS_CHOKE]=choke;
+					gunloaded=8;
 				}
-				if(gunloaded>0)wp.weaponstatus[HUNTS_TUBE]=gunloaded;
-				wp.weaponstatus[SHOTS_SIDESADDLE]=random(0,12);
-				wp.weaponstatus[0]&=~HUNTF_CANFULLAUTO;
-				wp.weaponstatus[HUNTS_CHOKE]=choke;
-
-				gunloaded=8;
 			}
 			if(wep==1){
 				wp=hdweapon(spawn("Slayer",(pos.x,pos.y,pos.z+40),ALLOW_REPLACE));
-				if(gunloaded==2)wp.weaponstatus[SLAYS_CHAMBER2]=2;
-				else if(gunspent==2)wp.weaponstatus[SLAYS_CHAMBER2]=1;
-				if(gunloaded>0)wp.weaponstatus[SLAYS_CHAMBER1]=2;
-				else if(gunspent>0)wp.weaponstatus[SLAYS_CHAMBER1]=1;
-				wp.weaponstatus[SHOTS_SIDESADDLE]=random(0,12);
-				wp.weaponstatus[SLAYS_CHOKE1]=(choke&(1|2|4));
-				wp.weaponstatus[SLAYS_CHOKE2]=(choke>>3);
+				if (wp) {
+					if(gunloaded==2)wp.weaponstatus[SLAYS_CHAMBER2]=2;
+					else if(gunspent==2)wp.weaponstatus[SLAYS_CHAMBER2]=1;
+					if(gunloaded>0)wp.weaponstatus[SLAYS_CHAMBER1]=2;
+					else if(gunspent>0)wp.weaponstatus[SLAYS_CHAMBER1]=1;
+					wp.weaponstatus[SHOTS_SIDESADDLE]=random(0,12);
+					wp.weaponstatus[SLAYS_CHOKE1]=(choke&(1|2|4));
+					wp.weaponstatus[SLAYS_CHOKE2]=(choke>>3);
 
-				gunloaded=2;
+					gunloaded=2;
+				}
 			}
-			wp.vel=vel+(frandom(-2,2),frandom(-2,2),1);
+			if (wp) {
+				wp.vel=vel+(frandom(-2,2),frandom(-2,2),1);
+			}
 		}
 		gunspent=0;
 		if(wep==-1){
