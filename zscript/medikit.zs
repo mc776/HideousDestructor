@@ -677,14 +677,34 @@ class SelfBandage:HDWoundFixer{
 	}
 	void bandagewound(int amt,actor targ){
 		let slf=HDPlayerPawn(targ);
-		if(!slf)return;
-		if(!random(0,2)&&(slf.alpha<1||slf.bshadow))amt-=random(0,amt+1);
-		int wound=max(slf.woundcount,0);
-		amt=min(amt,wound);
-		if(wound){
+		if(slf){
+			if(!random(0,2)&&(slf.alpha<1||slf.bshadow))amt-=random(0,amt+1);
+			int wound=max(slf.woundcount,0);
 			amt=min(amt,wound);
-			slf.woundcount-=amt;
-			slf.unstablewoundcount+=amt;
+			if(wound){
+				amt=min(amt,wound);
+				slf.woundcount-=amt;
+				slf.unstablewoundcount+=amt;
+			}
+		}else{
+			HDBleedingWound bldw=null;
+			thinkeriterator bldit=thinkeriterator.create("HDBleedingWound");
+			while(bldw=HDBleedingWound(bldit.next())){
+				if(
+					bldw
+					&&bldw.bleeder==targ
+				)break;
+			}
+			if(bldw)bldw.bleedpoints=max(0,bldw.bleedpoints-amt);
+			if(
+				(!bldw||bldw.bleedpoints<1)
+				&&owner
+				&&owner!=targ
+			){
+				wepmsg="There is no wound to treat.";
+				msgtimer=70;
+				if(owner.player)owner.player.setpsprite(PSP_WEAPON,findstate("nope"));
+			}
 		}
 	}
 	override string,double getpickupsprite(){return "BLUDC0",1.;}
@@ -828,17 +848,22 @@ class SelfBandage:HDWoundFixer{
 			[a,b]=LineAttack(angle,42,pitch,0,"none",
 				"CheckPuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT
 			);
-			let c=HDPlayerPawn(a.tracer);
-			if(!c){
+			let c=a.tracer;
+			if(
+				!c
+				||!c.bshootable
+				||c.health<1
+			){
 				A_WeaponMessage("Nothing to be done here.\n\nHeal thyself?");
 				return resolvestate("nope");
 			}
+			let hdp=HDPlayerPawn(c);
 			if(c.countinv("IsMoving")>4){
 				c.A_Print(string.format("Stop squirming!\n\n%s is trying to bandage you\n\nnot bugger you...",player.getusername()));
 				A_WeaponMessage("You'll need them to stay still...");
 				return resolvestate("nope");
 			}
-			if(c.woundcount<1){
+			if(hdp&&hdp.woundcount<1){
 				A_WeaponMessage("They're not bleeding.");
 				return resolvestate("nope");
 			}
