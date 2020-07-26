@@ -263,10 +263,9 @@ class Heat:Inventory{
 		if(hdp){
 			inversevolumeratio=baseinversevolumeratio;
 			int al=hdp.armourlevel;
-			if(al==1){
-				inversevolumeratio*=0.4;
-				amount=max(0,amount-5);
-			}else if(al==3)inversevolumeratio*=0.6;
+			if(al==1)inversevolumeratio*=0.4;
+			else if(al==3)inversevolumeratio*=0.6;
+
 			if(
 				hdp.health<1&&
 				hdp.playercorpse
