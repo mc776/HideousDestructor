@@ -849,11 +849,7 @@ class SelfBandage:HDWoundFixer{
 				"CheckPuff",flags:LAF_NORANDOMPUFFZ|LAF_NOINTERACT
 			);
 			let c=a.tracer;
-			if(
-				!c
-				||!c.bshootable
-				||c.health<1
-			){
+			if(!HDBleedingWound.canbleed(c,true)){
 				A_WeaponMessage("Nothing to be done here.\n\nHeal thyself?");
 				return resolvestate("nope");
 			}

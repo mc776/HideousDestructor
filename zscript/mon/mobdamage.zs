@@ -471,6 +471,29 @@ class HDBleedingWound:Thinker{
 		int bled=bleeder.damagemobj(bleeder,source,bleedrate,"bleedout",DMG_NO_PAIN|DMG_THRUSTLESS);
 		if(bleeder&&bleeder.health<1&&bleedrate<random(10,60))bleeder.deathsound="";
 	}
+	static bool canbleed(actor b,bool checkbandage=false){
+		return(
+			!hd_nobleed
+			&&!!b
+			&&b.bshootable
+			&&!b.bnoblood
+			&&!b.bnoblooddecals
+			&&!b.bnodamage
+			&&!b.bdormant
+			&&b.health>0
+			&&b.bloodtype!="ShieldNeverBlood"
+			&&(
+				!hdmobbase(b)
+				||!hdmobbase(b).bdoesntbleed
+			)
+			&&(
+				!checkbandage
+				||(
+					!b.findinventory("SpiritualArmour")
+				)
+			)
+		);
+	}
 	static void inflict(
 		actor bleeder,
 		int bleedpoints,
@@ -478,21 +501,7 @@ class HDBleedingWound:Thinker{
 		bool hitvital=false,
 		actor source=null
 	){
-		if(
-			hd_nobleed
-			||!bleeder.bshootable
-			||bleeder.bnoblood
-			||bleeder.bnoblooddecals
-			||bleeder.bnodamage
-			||bleeder.bdormant
-			||bleeder.health<1
-			||bleeder.bloodtype=="ShieldNeverBlood"
-			||(
-				hdmobbase(bleeder)
-				&&hdmobbase(bleeder).bdoesntbleed
-			)
-			||bleeder.findinventory("SpiritualArmour")
-		)return;
+		if(!HDBleedingWound.canbleed(bleeder))return;
 
 		//TODO: proper array of wounds for the player
 		if(hdplayerpawn(bleeder)){
