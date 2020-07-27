@@ -132,6 +132,7 @@ extend class HDPlayerPawn{
 			playercorpse.translation=translation;
 			ApplyUserSkin(true);
 			playercorpse.sprite=sprite;
+			playercorpse.scale=skinscale;
 
 			if(
 				(!inflictor||!inflictor.bnoextremedeath)
