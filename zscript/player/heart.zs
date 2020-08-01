@@ -335,6 +335,8 @@ extend class HDPlayerPawn{
 								actor rezzz=rezz.thing;
 								if(
 									canresurrect(rezzz,false)
+									&&!ffffren.bboss
+									&&ffffren.spawnhealth()<400
 								){
 									RaiseActor(rezzz,RF_NOCHECKPOSITION);
 									rezzz.bfriendly=true;
@@ -353,6 +355,7 @@ extend class HDPlayerPawn{
 								if(
 									ffffren.bismonster
 									&&!ffffren.bfriendly
+									&&!ffffren.bboss
 									&&ffffren.health>0
 									&&ffffren.spawnhealth()<400
 								){
