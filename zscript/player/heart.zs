@@ -335,8 +335,8 @@ extend class HDPlayerPawn{
 								actor rezzz=rezz.thing;
 								if(
 									canresurrect(rezzz,false)
-									&&!ffffren.bboss
-									&&ffffren.spawnhealth()<400
+									&&!rezzz.bboss
+									&&rezzz.spawnhealth()<400
 								){
 									RaiseActor(rezzz,RF_NOCHECKPOSITION);
 									rezzz.bfriendly=true;
