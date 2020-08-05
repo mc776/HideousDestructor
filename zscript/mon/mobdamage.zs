@@ -7,6 +7,8 @@ extend class HDMobBase{
 	int bodydamage;
 	int damagerecoil;
 	int bloodloss;
+	int maxbloodloss;
+	property maxbloodloss:maxbloodloss;
 	int pain;
 	int downedframe;
 	property downedframe:downedframe;
@@ -187,8 +189,13 @@ extend class HDMobBase{
 			if(!(bloodloss&(1|2|4|8))){
 				bodydamage++;
 			}
-			if(hd_debug)console.printf(getclassname().." bleed "..damage..", est. remain "..sphlth-bloodloss);
-			if(bloodloss<sphlth)return 1;
+
+			//if a custom blood capacity is specified, use that instead of health
+			int blhlth=maxbloodloss;
+			if(blhlth<0)blhlth=sphlth;
+
+			if(hd_debug)console.printf(getclassname().." bleed "..damage..", est. remain "..blhlth-bloodloss);
+			if(bloodloss<blhlth)return 1;
 			return super.damagemobj(
 				inflictor,source,random(damage,health),mod,DMG_NO_PAIN|DMG_THRUSTLESS,angle
 			);
