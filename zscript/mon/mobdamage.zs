@@ -192,7 +192,7 @@ extend class HDMobBase{
 
 			//if a custom blood capacity is specified, use that instead of health
 			int blhlth=maxbloodloss;
-			if(blhlth<0)blhlth=sphlth;
+			if(blhlth<1)blhlth=sphlth;
 
 			if(hd_debug)console.printf(getclassname().." bleed "..damage..", est. remain "..blhlth-bloodloss);
 			if(bloodloss<blhlth)return 1;
