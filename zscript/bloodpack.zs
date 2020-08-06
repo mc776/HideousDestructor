@@ -67,7 +67,7 @@ class SecondBloodSticker:HDWoundFixer{
 				invoker.goawayanddie();
 			}
 		}
-		TNT1 A 1 A_WeaponReady(WRF_ALLOWRELOAD|WRF_ALLOWUSER1|WRF_ALLOWUSER4);
+		TNT1 A 1 A_WeaponReady(WRF_ALLOWRELOAD|WRF_ALLOWUSER1|WRF_ALLOWUSER3|WRF_ALLOWUSER4);
 		goto readyend;
 	fire:
 	altfire:
