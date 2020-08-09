@@ -19,7 +19,7 @@ class HDPlayerPawn:PlayerPawn{
 	hdweapon lastweapon;
 	bool barehanded;
 	bool gunbraced;
-	
+
 	double overloaded;
 
 	bool mustwalk;bool cansprint;
@@ -667,17 +667,14 @@ class ScopeCamera:IdleDummy{
 		A_SetAngle(hpl.angle-hpl.hudbob.x*0.54,SPF_INTERPOLATE);
 		A_SetPitch(hpl.pitch+hpl.hudbob.y*0.27,SPF_INTERPOLATE);
 		A_SetRoll(hpl.roll);
-		vector2 fwd=angletovector(angle,0.3);
 
 		double cf=(!!hpl.player)?hpl.player.viewheight:HDCONST_PLAYERHEIGHT-6;
 
-		if(abs(pitch)>89)setxyz(hpl.pos+(
-			fwd*max(0.5,cos(pitch))*2,
-			sin(-pitch)*6+cf
-		));else setxyz(hpl.pos+(
-			fwd*cos(pitch)*6,
-			sin(-pitch)*6+cf
-		));
+		vector3 newpos = hpl.vec3Angle(
+			2 * cos(-hpl.pitch),
+			hpl.angle,
+			2 * sin(-hpl.pitch) + cf);
+		SetOrigin(newpos, true);
 	}
 }
 
@@ -729,7 +726,7 @@ extend class HDPlayerPawn{
 		haszerked=0;
 
 		bloodloss=0;
-		
+
 		A_Capacitated();
 
 		feetangle=angle;
