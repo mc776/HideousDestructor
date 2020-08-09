@@ -152,9 +152,3 @@ const HDCONST_MINEYERANGE=18.;
 #include "zscript/menu.zs"
 
 
-
-
-//move along, nothing to see here
-//#include "zscript/wep/newshotguns.zs"
-//#include "zscript/wep/newhunter.zs"
-
