@@ -671,9 +671,9 @@ class ScopeCamera:IdleDummy{
 		double cf=(!!hpl.player)?hpl.player.viewheight:HDCONST_PLAYERHEIGHT-6;
 
 		vector3 newpos = hpl.vec3Angle(
-			2 * cos(-hpl.pitch),
+			1 * cos(-hpl.pitch) + 1 * abs(sin(-hpl.pitch)),
 			hpl.angle,
-			2 * sin(-hpl.pitch) + cf);
+			1 * sin(-hpl.pitch) + cf);
 		SetOrigin(newpos, true);
 	}
 }
