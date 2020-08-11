@@ -97,7 +97,6 @@ class GrabThinker:Thinker{
 				)&&(
 					(
 						pt
-						&&!pt.bnotinpockets
 						&&HDPickup.MaxGive(picktarget,pt.getclass(),
 							mt?mt.getbulk():pt.bulk
 						)<1
@@ -116,7 +115,7 @@ class GrabThinker:Thinker{
 					)
 				)
 			){
-				//make one last check for mags
+				//make one last check for mag switch before aborting
 				//do a single 1:1 switch with the lowest mag
 				if(mt){
 					name gcn=mt.getclassname();
@@ -349,7 +348,17 @@ class HDPickup:CustomInventory{
 		int absmax=getdefaultbytype(type).maxamount-caller.countinv(type);
 		if(unitbulk<=0)return absmax;
 		double spaceleft=HDPickup.MaxPocketSpace(caller)-HDPickup.PocketSpaceTaken(caller);
-		return int(clamp(absmax,0,spaceleft/unitbulk));
+		int mg=int(clamp(absmax,0,spaceleft/unitbulk));
+		if(
+			mg<1
+			&&(class<hdpickup>)(type)
+			&&getdefaultbytype((class<hdpickup>)(type)).bnotinpockets
+			&&(
+				!hdplayerpawn(caller)
+				||hdplayerpawn(caller).checkencumbrance()<30.
+			)
+		)mg=1;
+		return mg;
 	}
 
 
