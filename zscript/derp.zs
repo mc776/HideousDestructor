@@ -380,7 +380,11 @@ class DERPUsable:HDWeapon{
 	}
 	override bool AddSpareWeapon(actor newowner){return AddSpareWeaponRegular(newowner);}
 	override hdweapon GetSpareWeapon(actor newowner,bool reverse,bool doselect){return GetSpareWeaponRegular(newowner,reverse,doselect);}
-	override int getsbarnum(int flags){return weaponstatus[DERPS_BOTID];}
+	override int getsbarnum(int flags){
+		let ssbb=HDStatusBar(statusbar);
+		if(ssbb&&weaponstatus[0]&DERPF_BROKEN)ssbb.savedcolour=Font.CR_DARKGRAY;
+		return weaponstatus[DERPS_BOTID];
+	}
 	override void InitializeWepStats(bool idfa){
 		weaponstatus[DERPS_BOTID]=1;
 		weaponstatus[DERPS_AMMO]=15;
