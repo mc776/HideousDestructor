@@ -184,6 +184,18 @@ class HDBackpack:HDWeapon{
 		}
 	}
 
+
+	override int getsbarnum(){
+		int pct=int(bulk*100/maxcapacity);
+		let ssbb=HDStatusBar(statusbar);
+		if(ssbb){
+			if(pct>80)ssbb.savedcolour=Font.CR_RED;
+			else if(pct>60)ssbb.savedcolour=Font.CR_YELLOW;
+			else if(pct>0)ssbb.savedcolour=Font.CR_WHITE;
+		}
+		return pct;
+	}
+
 	double bulk;
 	override double weaponbulk(){
 		double blk=0;
