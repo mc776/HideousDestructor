@@ -351,6 +351,7 @@ class HDPickup:CustomInventory{
 		int mg=int(clamp(absmax,0,spaceleft/unitbulk));
 		if(
 			mg<1
+			&&absmax>0
 			&&(class<hdpickup>)(type)
 			&&getdefaultbytype((class<hdpickup>)(type)).bnotinpockets
 			&&(
