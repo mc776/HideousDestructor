@@ -511,7 +511,11 @@ class HERPUsable:HDWeapon{
 		if(owner&&owner.player.cmd.buttons&BT_ZOOM)enc*=2;
 		return enc;
 	}
-	override int getsbarnum(int flags){return weaponstatus[HERP_BOTID];}
+	override int getsbarnum(int flags){
+		let ssbb=HDStatusBar(statusbar);
+		if(ssbb&&weaponstatus[0]&HERPF_BROKEN)ssbb.savedcolour=Font.CR_DARKGRAY;
+		return weaponstatus[HERP_BOTID];
+	}
 	override void InitializeWepStats(bool idfa){
 		weaponstatus[HERP_BATTERY]=20;
 		weaponstatus[1]=51;
