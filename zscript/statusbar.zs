@@ -771,6 +771,7 @@ class HDStatusBar:DoomStatusBar{
 			);
 		}
 	}
+	color savedcolour;
 	void DrawInvSel(int posx,int posy,int numposx,int numposy,int flags){
 		if(CPlayer.mo.InvSel){
 			inventory ivs=cplayer.mo.invsel;
@@ -786,17 +787,18 @@ class HDStatusBar:DoomStatusBar{
 
 			let pivs=HDPickup(ivs);
 			let piws=HDWeapon(ivs);
+			savedcolour=Font.CR_SAPPHIRE;
 			if(pivs){
 				int pivsi=pivs.getsbarnum();
 				if(pivsi!=-1000000)drawstring(
 					pnewsmallfont,FormatNumber(pivsi),
-					(numposx,numposy-7),flags|DI_TEXT_ALIGN_RIGHT,Font.CR_SAPPHIRE,scale:(0.5,0.5)
+					(numposx,numposy-7),flags|DI_TEXT_ALIGN_RIGHT,savedcolour,scale:(0.5,0.5)
 				);
 			}else if(piws){
 				int piwsi=piws.getsbarnum();
 				if(piwsi!=-1000000)drawstring(
 					pnewsmallfont,FormatNumber(piwsi),
-					(numposx,numposy-7),flags|DI_TEXT_ALIGN_RIGHT,Font.CR_SAPPHIRE,scale:(0.5,0.5)
+					(numposx,numposy-7),flags|DI_TEXT_ALIGN_RIGHT,savedcolour,scale:(0.5,0.5)
 				);
 			}
 
