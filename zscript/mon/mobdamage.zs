@@ -495,9 +495,7 @@ class HDBleedingWound:Thinker{
 			)
 			&&(
 				checkbandage
-				||(
-					!b.findinventory("SpiritualArmour")
-				)
+				||!b.findinventory("SpiritualArmour")
 			)
 		);
 	}
