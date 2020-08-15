@@ -344,7 +344,7 @@ extend class HDMobBase{
 
 		//set corpse stuff
 		bnodropoff=false;
-		bnoblockmonst=false;
+		bnoblockmonst=true;
 		bnotautoaimed=true;
 		balwaystelefrag=true;
 		bpushable=false;
