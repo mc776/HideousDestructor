@@ -257,7 +257,7 @@ class HDPlayerCorpse:HDMobMan{
 	xdeath:
 		#### O 5{
 			A_XScream();
-			scale.x=1;
+			scale.x=abs(scale.x);
 		}
 		#### PQRSTUV 5;
 		#### W -1;
