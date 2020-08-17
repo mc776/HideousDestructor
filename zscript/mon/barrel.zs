@@ -533,11 +533,10 @@ class BarrelGremlin:HDActor{
 	}
 	bool hasmoved;
 	void A_GremlinHunt(){
-		if(!master){
-			destroy();
-			return;
-		}
-		if(master.health<1){
+		if(
+			!master
+			||master.health<1
+		){
 			bshootable=true;
 			A_Die();
 			return;
