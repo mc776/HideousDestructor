@@ -249,7 +249,7 @@ class Heat:Inventory{
 		baseinversevolumeratio=HEATNUM_DEFAULTVOLUME/max(0.000001,volume);
 		inversevolumeratio=baseinversevolumeratio;
 		volumeratio=1/baseinversevolumeratio;
-		burnoutthreshold=max(user.gibhealth,user.spawnhealth(),100);
+		burnoutthreshold=max(0,(user.gibhealth+user.spawnhealth())<<hdmobbase.HDMOB_GIBSHIFT);
 		A_SetSize(owner.radius,owner.height);
 		heatlight=HDFireLight(spawn("HDFireLight",pos,ALLOW_REPLACE));
 		heatlight.target=owner;hdfirelight(heatlight).heattarget=self;
@@ -296,6 +296,12 @@ class Heat:Inventory{
 			&&owner.bshootable
 			&&!owner.bnodamage
 			&&!owner.countinv("ImmunityToFire")
+			&&(
+				(
+					!hdmobbase(owner)
+					&&getage()<burnoutthreshold
+				)||hdmobbase(owner).bodydamage<burnoutthreshold
+			)
 		){
 			if(owner.bshootable){
 				realamount+=frandom(1.2,3.0);
