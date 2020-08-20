@@ -296,12 +296,7 @@ class Heat:Inventory{
 			&&owner.bshootable
 			&&!owner.bnodamage
 			&&!owner.countinv("ImmunityToFire")
-			&&(
-				(
-					!hdmobbase(owner)
-					&&getage()<burnoutthreshold
-				)||hdmobbase(owner).bodydamage<burnoutthreshold
-			)
+			&&burnoutthreshold>(hdmobbase(owner)?hdmobbase(owner).bodydamage:getage())
 		){
 			if(owner.bshootable){
 				realamount+=frandom(1.2,3.0);
