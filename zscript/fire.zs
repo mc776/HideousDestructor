@@ -399,7 +399,7 @@ class Heat:Inventory{
 		if(!owner){destroy();return;}
 
 		//cooldown
-		double reduce=inversevolumeratio*max(realamount*0.001,1.);
+		double reduce=inversevolumeratio*max(realamount*0.003,1.);
 		if(owner.vel dot owner.vel > 4)reduce*=1.6;
 
 		if(owner.waterlevel>2)reduce*=10;
