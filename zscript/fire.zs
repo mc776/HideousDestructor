@@ -235,6 +235,7 @@ class Heat:Inventory{
 	states{spawn:TNT1 A 0;stop;}
 	default{
 		+inventory.untossable //for some reason this works without it
+		+inventory.keepdepleted
 		inventory.amount 1;
 		inventory.maxamount 9999999;
 		obituary "%o was too hot to handle.";
@@ -250,7 +251,7 @@ class Heat:Inventory{
 		baseinversevolumeratio=HEATNUM_DEFAULTVOLUME/max(0.000001,volume);
 		inversevolumeratio=baseinversevolumeratio;
 		volumeratio=1/baseinversevolumeratio;
-		burnoutthreshold=max(100,(int(user.mass*(user.radius+user.height))+(user.gibhealth))>>2);
+		burnoutthreshold=max(20,((int(user.mass*(user.radius+user.height))+(user.gibhealth))>>4)+100);
 		A_SetSize(owner.radius,owner.height);
 		heatlight=HDFireLight(spawn("HDFireLight",pos,ALLOW_REPLACE));
 		heatlight.target=owner;hdfirelight(heatlight).heattarget=self;
@@ -260,7 +261,11 @@ class Heat:Inventory{
 		if(!owner.player&&isfrozen())return;
 
 		//reset burnout if raised
-		if(owner.health>=owner.spawnhealth())burnouttimer=0;
+		if(
+			owner.bismonster
+			&&!owner.bcorpse
+			&&owner.health>=owner.spawnhealth()
+		)burnouttimer=0;
 
 		//make adjustments based on armour and player status
 		let hdp=hdplayerpawn(owner);
@@ -310,7 +315,7 @@ class Heat:Inventory{
 				if(
 					owner is "PersistentDamager"
 					||realamount<600
-					||burnouttimer>((burnoutthreshold*3)>>2)
+					||burnouttimer>((burnoutthreshold*7)>>3)
 				){
 					burnouttimer++;
 					aaa=spawn("HDFlameRed",owner.pos+(
