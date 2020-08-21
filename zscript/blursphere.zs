@@ -15,7 +15,7 @@ class HDBlurSphere:HDPickup{
 		+inventory.alwayspickup
 		inventory.maxamount 9;
 		inventory.interhubamount 1;
-		inventory.pickupmessage "So precious in your sight.";
+		inventory.pickupmessage "$BS_PKUP";
 		inventory.pickupsound "blursphere/pickup";
 		inventory.icon "PINSA0";
 		scale 0.3;
@@ -213,7 +213,7 @@ class HDBlurSphere:HDPickup{
 			}
 			if(!(xp%7)){
 				hdplayerpawn(owner).aggravateddamage++;
-				if(!randticker[0])owner.A_Log("Precious.",true);
+				if(!randticker[0])owner.A_Log("$BS_PRECIOUS",true);
 			}
 		}
 		if(level>=BLUR_LEVELCAP&&xp>666)xp=0;
