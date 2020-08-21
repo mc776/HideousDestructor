@@ -251,7 +251,7 @@ class Heat:Inventory{
 		baseinversevolumeratio=HEATNUM_DEFAULTVOLUME/max(0.000001,volume);
 		inversevolumeratio=baseinversevolumeratio;
 		volumeratio=1/baseinversevolumeratio;
-		burnoutthreshold=max(20,((int(user.mass*(user.radius+user.height))+(user.gibhealth))>>4)+100);
+		burnoutthreshold=max(40,((int(user.mass*(user.radius+user.height))+(user.gibhealth))>>5)+300);
 		A_SetSize(owner.radius,owner.height);
 		heatlight=HDFireLight(spawn("HDFireLight",pos,ALLOW_REPLACE));
 		heatlight.target=owner;hdfirelight(heatlight).heattarget=self;
@@ -342,6 +342,12 @@ class Heat:Inventory{
 				aaa.A_StartSound("misc/firecrkl",CHAN_BODY,volume:clamp(realamount*0.001,0,0.2));
 			}
 		}
+
+		//reset timer so charred remains can be reignited
+		else if(
+			burnouttimer>=burnoutthreshold
+			&&realamount<100
+		)burnouttimer=random((burnoutthreshold*3)>>2,burnoutthreshold);
 
 		//damage
 		if(
