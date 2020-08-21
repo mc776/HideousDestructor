@@ -226,6 +226,7 @@ class Heat:Inventory{
 	double baseinversevolumeratio;
 	double realamount;
 	int burnoutthreshold;
+	int burnouttimer;
 	actor heatfield;
 	actor heatlight;
 	enum HeatNumbers{
@@ -296,7 +297,7 @@ class Heat:Inventory{
 			&&owner.bshootable
 			&&!owner.bnodamage
 			&&!owner.countinv("ImmunityToFire")
-			&&burnoutthreshold>(hdmobbase(owner)?hdmobbase(owner).bodydamage:getage())
+			&&burnoutthreshold>(hdmobbase(owner)?burnouttimer
 		){
 			if(owner.bshootable){
 				realamount+=frandom(1.2,3.0);
@@ -307,12 +308,14 @@ class Heat:Inventory{
 					owner is "PersistentDamager"
 					||realamount<600
 				){
+					burnouttimer++;
 					aaa=spawn("HDFlameRed",owner.pos+(
 						frandom(-radius,radius),
 						frandom(-radius,radius),
 						frandom(2,owner.height)
 					),ALLOW_REPLACE);
 				}else{
+					burnouttimer+=2;
 					aaa=spawn("HDFlameRedBig",owner.pos+(
 						frandom(-radius,radius)*0.6,
 						frandom(-radius,radius)*0.6,
