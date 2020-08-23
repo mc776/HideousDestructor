@@ -397,13 +397,9 @@ class HDMobster:IdleDummy{
 							master.A_Face(itt);
 							master.setstatelabel("heal");
 
-							actor masbak=master.master;
-							master.master=itt;
-							master.A_RaiseMaster(
-								RF_TRANSFERFRIENDLINESS
-								|RF_NOCHECKPOSITION
-							);
-							master.master=masbak;
+							RaiseActor(itt,RF_NOCHECKPOSITION);
+							itt.bfriendly=master.bfriendly;
+							itt.master=master;
 						}
 						break;
 					}
