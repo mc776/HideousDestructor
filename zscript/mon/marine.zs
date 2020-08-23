@@ -915,9 +915,12 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		);
 		#### JHE 4;
 		#### H 0{
-			scale.x=1;
+			scale.x=abs(scale.x);
 			if(!random(0,15+timesdied))return;
-			else if(!random(0,10-timesdied))A_Die("raisebotch");
+			else if(!random(0,10-timesdied))damagemobj(
+				null,null,health+(gibhealth)<<2,
+				"raisebotch",DMG_FORCED|DMG_NO_ARMOR
+			);
 			else{
 				speed=max(1,speed-random(0,1));
 				damagemobj(
@@ -948,15 +951,11 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		stop;
 	death.raisebotch:
 	xxxdeath:
-		---- A 0{
-			bodydamage=666;
-			A_DeathZombieZombieDeath();
-		}
+		---- A 0 A_DeathZombieZombieDeath();
 		#### O 5;
 		#### P 5 A_XScream();
 		#### QRSTUV 5;
-		#### W -1 canraise;
-		stop;
+		goto xdead;
 	ungib:
 		#### W 0 A_JumpIf((random(1,12)-timesdied)<5,"RaiseZombie");
 		#### WW 8;
