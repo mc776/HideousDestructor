@@ -948,7 +948,10 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 		stop;
 	death.raisebotch:
 	xxxdeath:
-		---- A 0 A_DeathZombieZombieDeath();
+		---- A 0{
+			bodydamage=666;
+			A_DeathZombieZombieDeath();
+		}
 		#### O 5;
 		#### P 5 A_XScream();
 		#### QRSTUV 5;

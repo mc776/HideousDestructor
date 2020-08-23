@@ -325,6 +325,7 @@ class AngelFire:Thinker{
 //actor that sets monster's goal
 class HDMobster:IdleDummy{
 	vector3 firstposition;
+	actor subject;
 	actor threat;
 	double thraidius;
 	int leftright;
@@ -335,7 +336,7 @@ class HDMobster:IdleDummy{
 	}
 	static hdmobster SpawnMobster(actor caller){
 		let hdmb=hdmobster(spawn("HDMobster",caller.pos,ALLOW_REPLACE));
-		hdmb.master=caller;
+		hdmb.subject=caller;
 		hdmb.target=caller.target;
 		hdmb.bfrightened=caller.bfrightened;
 		hdmb.meleerange=caller.meleerange;
@@ -353,19 +354,19 @@ class HDMobster:IdleDummy{
 	spawn:
 		TNT1 A random(17,30){
 			if(
-				!master
+				!subject
 				//abort if something else is setting the goal, e.g. a level script
-				||(master.goal&&master.goal!=self)
+				||(subject.goal&&subject.goal!=self)
 			){
 				destroy();return;
 			}
-			bfriendly=master.bfriendly;
+			bfriendly=subject.bfriendly;
 			if(
 				bfriendly
-				||master.instatesequence(master.curstate,master.resolvestate("falldown"))
-				||master.instatesequence(master.curstate,master.resolvestate("pain"))
+				||subject.instatesequence(subject.curstate,subject.resolvestate("falldown"))
+				||subject.instatesequence(subject.curstate,subject.resolvestate("pain"))
 			)return;
-			if(master.health<1){
+			if(subject.health<1){
 				threat=null;
 				return;
 			}
@@ -373,10 +374,10 @@ class HDMobster:IdleDummy{
 			//see if this is a healer
 			if(!random(0,14))healablecorpse=null;
 			if(
-				master.findstate("heal")
+				subject.findstate("heal")
 				&&!threat
 			){
-				blockthingsiterator it=blockthingsiterator.create(master,256);
+				blockthingsiterator it=blockthingsiterator.create(subject,256);
 				while(it.next()){
 					actor itt=it.thing;
 					if(
@@ -384,22 +385,22 @@ class HDMobster:IdleDummy{
 						&&itt.canresurrect(self,true)
 						&&canresurrect(itt,false)
 						&&!random(0,4)
-						&&abs(itt.pos.z-master.pos.z)<master.maxstepheight*2
+						&&abs(itt.pos.z-subject.pos.z)<subject.maxstepheight*2
 						&&heat.getamount(itt)<50
-						&&itt.checksight(master)
+						&&itt.checksight(subject)
 					){
 						healablecorpse=itt;
 						if(
-							itt.distance3d(master)<
-							(itt.radius+master.radius+12)*HDCONST_SQRTTWO
+							itt.distance3d(subject)<
+							(itt.radius+subject.radius+12)*HDCONST_SQRTTWO
 						){
-							itt.target=master.target;
-							master.A_Face(itt);
-							master.setstatelabel("heal");
+							itt.target=subject.target;
+							subject.A_Face(itt);
+							subject.setstatelabel("heal");
 
 							RaiseActor(itt,RF_NOCHECKPOSITION);
-							itt.bfriendly=master.bfriendly;
-							itt.master=master;
+							itt.bfriendly=subject.bfriendly;
+							itt.master=subject;
 						}
 						break;
 					}
@@ -407,33 +408,33 @@ class HDMobster:IdleDummy{
 			}
 
 			//decide where to place goal
-			target=master.target;
+			target=subject.target;
 			if(threat){
 				bored=0;
-				master.bfrightened=true;
-				master.goal=self;master.bchasegoal=true;
-				setorigin(master.pos+(master.pos-threat.pos)
+				subject.bfrightened=true;
+				subject.goal=self;subject.bchasegoal=true;
+				setorigin(subject.pos+(subject.pos-threat.pos)
 					+(random(-128,128),random(-128,128),0),false);
 				A_SetTics(tics*4);
 				if(
-					!master.checksight(threat)
-					||master.distance3d(threat)>thraidius  
+					!subject.checksight(threat)
+					||subject.distance3d(threat)>thraidius  
 				)threat=null;
 			}else if(healablecorpse){
-				master.bfrightened=bfrightened;
-				master.goal=self;master.bchasegoal=true;
+				subject.bfrightened=bfrightened;
+				subject.goal=self;subject.bchasegoal=true;
 				setorigin(healablecorpse.pos,true);
 			}else if(target){
-				master.bfrightened=bfrightened;
-				master.goal=self;master.bchasegoal=true;
+				subject.bfrightened=bfrightened;
+				subject.goal=self;subject.bchasegoal=true;
 				//chase target directly, or occasionaly randomize general direction
 				if(
 					target.health>0  
-					&&master.checksight(target)
+					&&subject.checksight(target)
 				){
-					vector2 mpo=master.pos.xy;
+					vector2 mpo=subject.pos.xy;
 					double mth=meleethreshold;
-					vector2 tpo=master.target.pos.xy;
+					vector2 tpo=subject.target.pos.xy;
 					if(
 						(!mth||mth<distance3d(target))
 						&&!random(0,7)
@@ -444,29 +445,29 @@ class HDMobster:IdleDummy{
 						);
 						tpo+=flank;
 					}
-					setorigin((tpo,master.target.pos.z+master.target.height),false);
+					setorigin((tpo,subject.target.pos.z+subject.target.height),false);
 					bored=0;
 				}else if(!random(0,15)){
 					setorigin((
-						master.pos.xy
-						+rotatevector(pos.xy-master.pos.xy
+						subject.pos.xy
+						+rotatevector(pos.xy-subject.pos.xy
 							+(random(-512,512),random(-512,512)),
 							random(60,120)*
 							(leftright+randompick(1,1,1,1,-1,-1,0))
 						)
-					,master.pos.z),false);
+					,subject.pos.z),false);
 					bored++;
 				}
-				if(bored>boredthreshold||(master.bfriendly&&!random(0,99))){
+				if(bored>boredthreshold||(subject.bfriendly&&!random(0,99))){
 					bored=0;
-					master.goal=null;master.bchasegoal=false;
-					A_ClearTarget();master.A_ClearTarget();
-					if(master.findstate("idle"))master.setstatelabel("idle");
-					else master.setstatelabel("spawn");
+					subject.goal=null;subject.bchasegoal=false;
+					A_ClearTarget();subject.A_ClearTarget();
+					if(subject.findstate("idle"))subject.setstatelabel("idle");
+					else subject.setstatelabel("spawn");
 				}
 			}else{
-				master.goal=null;master.bchasegoal=false;
-				master.A_ClearTarget();
+				subject.goal=null;subject.bchasegoal=false;
+				subject.A_ClearTarget();
 				setorigin(firstposition,false); //go back to start
 			}
 		}wait;
