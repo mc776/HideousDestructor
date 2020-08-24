@@ -120,7 +120,7 @@ class SevenMilBrass:HDAmmo{
 		hdpickup.bulk ENC_776B;
 		xscale 0.7;yscale 0.8;
 		inventory.pickupmessage "Picked up some brass.";
-		inventory.icon "RBRSA0";
+		inventory.icon "RBRSA3A7";
 	}
 	override void GetItemsThatUseThis(){
 		itemsthatusethis.push("LiberatorRifle");
