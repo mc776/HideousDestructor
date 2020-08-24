@@ -162,12 +162,17 @@ class HDBossBrain:HDMobBase replaces BossBrain{
 	){
 		if(
 			!bshootable
-			||(!source&&damage<TELEFRAG_DAMAGE)
+			||(
+				!source
+				&&damage<TELEFRAG_DAMAGE
+				&&mod!="crush"
+			)
 			||(source&&source.master==self)
 		)return -1;
 		if(
 			!bincombat
 			||damage==TELEFRAG_DAMAGE
+			||mod=="crush"
 		){
 			bshootable=false;
 			setstatelabel("deathfade");
