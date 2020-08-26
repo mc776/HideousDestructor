@@ -301,8 +301,32 @@ extend class HDMobBase{
 
 		//replenish shields
 		if(shields<maxshields)shields++;
-		if(shields==0){shields=2;console.printf("unbroke!");}
-		if(shields==1){shields=-350;console.printf("broke!");}
+		if(shields==0){
+			shields=2;console.printf("unbroke!");
+			for(int i=0;i<10;i++){
+				vector3 rpos=pos+(
+					random(-radius,radius),
+					random(-radius,radius),
+					random(0,height)
+				);
+				actor spk=actor.spawn("ShieldSpark",rpos,ALLOW_REPLACE);
+				vector3 sv = spk.Vec3To(self);
+				sv.z += height/2;
+				spk.vel=(sv/50);
+			}
+		}
+		if(shields==1){
+			shields=-350;console.printf("broke!");
+			for(int i=0;i<10;i++){
+				vector3 rpos=pos+(
+					random(-radius,radius),
+					random(-radius,radius),
+					random(0,height)
+				);
+				actor spk=actor.spawn("ShieldSpark",rpos,ALLOW_REPLACE);
+				spk.vel=(frandom(-2,2),frandom(-2,2),frandom(-2,2))+vel;
+			}
+		}
 		console.printf(""..shields);
 
 		//regeneration
