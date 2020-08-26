@@ -301,6 +301,9 @@ extend class HDMobBase{
 
 		//replenish shields
 		if(shields<maxshields)shields++;
+		if(shields==0){shields=5;console.printf("unbroke!");}
+		if(shields>0&&shields<5){shields=-175;console.printf("broke!");}
+		console.printf(""..shields);
 
 		//regeneration
 		if(!(level.time&(1|2|4|8|16|32|64|128|256|512)))GiveBody(1);
