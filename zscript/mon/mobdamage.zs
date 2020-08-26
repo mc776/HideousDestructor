@@ -299,10 +299,11 @@ extend class HDMobBase{
 			}
 		}
 
-		//replenish shields
+		//replenish shields and handle breaking/unbreaking
 		if(shields<maxshields)shields++;
 		if(shields==0){
-			shields=2;console.printf("unbroke!");
+			if(hd_debug)console.printf(getclassname().." shield restored!");
+			shields=2;
 			for(int i=0;i<10;i++){
 				vector3 rpos=pos+(
 					random(-radius,radius),
@@ -316,7 +317,8 @@ extend class HDMobBase{
 			}
 		}
 		if(shields==1){
-			shields=-350;console.printf("broke!");
+			if(hd_debug)console.printf(getclassname().." shield broke to "..-(maxshields/2).."!");
+			shields=-(maxshields/2);
 			for(int i=0;i<10;i++){
 				vector3 rpos=pos+(
 					random(-radius,radius),
@@ -327,7 +329,6 @@ extend class HDMobBase{
 				spk.vel=(frandom(-2,2),frandom(-2,2),frandom(-2,2))+vel;
 			}
 		}
-		console.printf(""..shields);
 
 		//regeneration
 		if(!(level.time&(1|2|4|8|16|32|64|128|256|512)))GiveBody(1);
