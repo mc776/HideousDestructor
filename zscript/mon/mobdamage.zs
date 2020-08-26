@@ -317,8 +317,8 @@ extend class HDMobBase{
 			}
 		}
 		if(shields==1){
-			if(hd_debug)console.printf(getclassname().." shield broke to "..-(maxshields/2).."!");
-			shields=-(maxshields/2);
+			if(hd_debug)console.printf(getclassname().." shield broke to "..-(maxshields*0.125).."!");
+			shields=-(maxshields*0.125);
 			for(int i=0;i<10;i++){
 				vector3 rpos=pos+(
 					random(-radius,radius),
