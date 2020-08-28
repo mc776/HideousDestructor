@@ -299,8 +299,38 @@ extend class HDMobBase{
 			}
 		}
 
-		//replenish shields
+		//replenish shields and handle breaking/unbreaking
 		if(shields<maxshields)shields++;
+		if(shields==0){
+			if(hd_debug)console.printf(getclassname().." shield restored!");
+			A_StartSound("misc/mobshield", CHAN_BODY, CHANF_OVERLAP, 0.75);
+			shields=2;
+			for(int i=0;i<10;i++){
+				vector3 rpos=pos+(
+					random(-radius,radius),
+					random(-radius,radius),
+					random(0,height)
+				);
+				actor spk=actor.spawn("ShieldSpark",rpos,ALLOW_REPLACE);
+				vector3 sv = spk.Vec3To(self);
+				sv.z += height/2;
+				spk.vel=(sv/50);
+			}
+		}
+		if(shields==1){
+			if(hd_debug)console.printf(getclassname().." shield broke to "..-(maxshields*0.125).."!");
+			A_StartSound("misc/mobshield", CHAN_BODY, CHANF_OVERLAP, 0.75);
+			shields=-(maxshields*0.125);
+			for(int i=0;i<10;i++){
+				vector3 rpos=pos+(
+					random(-radius,radius),
+					random(-radius,radius),
+					random(0,height)
+				);
+				actor spk=actor.spawn("ShieldSpark",rpos,ALLOW_REPLACE);
+				spk.vel=(frandom(-2,2),frandom(-2,2),frandom(-2,2))+vel;
+			}
+		}
 
 		//regeneration
 		if(!(level.time&(1|2|4|8|16|32|64|128|256|512)))GiveBody(1);
