@@ -191,6 +191,7 @@ class PortableRadsuit:HDPickup replaces RadSuit{
 //-------------------------------------------------
 // Light Amplification Visor
 //-------------------------------------------------
+const HD_NVGCOLORMAP=99999;
 class PortableLiteAmp:HDMagAmmo replaces Infrared{
 	default{
 		//$Category "Gear/Hideous Destructor/Supplies"
@@ -213,7 +214,7 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 	override void DetachFromOwner(){
 		if(owner&&owner.player){
 			if(cvar.getcvar("hd_nv",owner.player).getfloat()==999.){
-				if(owner.player.fixedcolormap==5)owner.player.fixedcolormap=-1;
+				if(owner.player.fixedcolormap==HD_NVGCOLORMAP)owner.player.fixedcolormap=playerinfo.NOFIXEDCOLORMAP;
 				owner.player.fixedlightlevel=-1;
 			}
 			Shader.SetEnabled(owner.player,"NiteVis",false);
@@ -253,7 +254,7 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 	}
 	void UndoFullbright(){
 		if(!owner||!owner.player)return;
-		if(owner.player.fixedcolormap==5)owner.player.fixedcolormap=playerinfo.NOFIXEDCOLORMAP;
+		if(owner.player.fixedcolormap==HD_NVGCOLORMAP)owner.player.fixedcolormap=playerinfo.NOFIXEDCOLORMAP;
 		owner.player.fixedlightlevel=-1;
 	}
 	override void DoEffect(){
@@ -294,7 +295,7 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 			&&!owner.countinv("PowerInvisibility")
 			&&(
 				!oldliteamp
-				||owner.player.fixedcolormap==5
+				||owner.player.fixedcolormap==HD_NVGCOLORMAP
 				||owner.player.fixedcolormap<0
 			)
 		){
@@ -324,7 +325,7 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 			}
 			if(oldliteamp){
 				spent+=(NITEVIS_MAX/10);
-				owner.player.fixedcolormap=5;
+				owner.player.fixedcolormap=HD_NVGCOLORMAP;
 				owner.player.fixedlightlevel=1;
 				Shader.SetEnabled(owner.player,"NiteVis",false);
 			}else{
