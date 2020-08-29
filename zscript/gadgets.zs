@@ -191,7 +191,7 @@ class PortableRadsuit:HDPickup replaces RadSuit{
 //-------------------------------------------------
 // Light Amplification Visor
 //-------------------------------------------------
-const HD_NVGCOLORMAP=99999;
+const HD_INVULNCOLORMAP=0;
 class PortableLiteAmp:HDMagAmmo replaces Infrared{
 	default{
 		//$Category "Gear/Hideous Destructor/Supplies"
@@ -213,10 +213,7 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 	override double getbulk(){return bulk;}
 	override void DetachFromOwner(){
 		if(owner&&owner.player){
-			if(cvar.getcvar("hd_nv",owner.player).getfloat()==999.){
-				if(owner.player.fixedcolormap==HD_NVGCOLORMAP)owner.player.fixedcolormap=playerinfo.NOFIXEDCOLORMAP;
-				owner.player.fixedlightlevel=-1;
-			}
+			UndoFullbright();
 			Shader.SetEnabled(owner.player,"NiteVis",false);
 			if(worn)owner.A_SetBlend("01 00 00",0.8,16);
 		}
@@ -252,9 +249,15 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 		mags[index]+=integrity;
 		return integrity;
 	}
+	void DoFullbright(){
+		if(!owner||!owner.player)return;
+		if(owner.player.fixedcolormap!=HD_INVULNCOLORMAP)owner.player.fixedcolormap=playerinfo.NUMCOLORMAPS+1;
+		owner.player.fixedlightlevel=1;
+		Shader.SetEnabled(owner.player,"NiteVis",false);
+	}
 	void UndoFullbright(){
 		if(!owner||!owner.player)return;
-		if(owner.player.fixedcolormap==HD_NVGCOLORMAP)owner.player.fixedcolormap=playerinfo.NOFIXEDCOLORMAP;
+		if(owner.player.fixedcolormap!=HD_INVULNCOLORMAP)owner.player.fixedcolormap=playerinfo.NOFIXEDCOLORMAP;
 		owner.player.fixedlightlevel=-1;
 	}
 	override void DoEffect(){
@@ -293,11 +296,6 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 		if(
 			worn
 			&&!owner.countinv("PowerInvisibility")
-			&&(
-				!oldliteamp
-				||owner.player.fixedcolormap==HD_NVGCOLORMAP
-				||owner.player.fixedcolormap<0
-			)
 		){
 
 			//check if totally drained
@@ -325,9 +323,7 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 			}
 			if(oldliteamp){
 				spent+=(NITEVIS_MAX/10);
-				owner.player.fixedcolormap=HD_NVGCOLORMAP;
-				owner.player.fixedlightlevel=1;
-				Shader.SetEnabled(owner.player,"NiteVis",false);
+				DoFullbright();
 			}else{
 				SetNVGStyle();
 				UndoFullbright();
