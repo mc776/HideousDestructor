@@ -191,7 +191,6 @@ class PortableRadsuit:HDPickup replaces RadSuit{
 //-------------------------------------------------
 // Light Amplification Visor
 //-------------------------------------------------
-const HD_INVULNCOLORMAP=0;
 class PortableLiteAmp:HDMagAmmo replaces Infrared{
 	default{
 		//$Category "Gear/Hideous Destructor/Supplies"
@@ -251,13 +250,13 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 	}
 	void DoFullbright(){
 		if(!owner||!owner.player)return;
-		if(owner.player.fixedcolormap!=HD_INVULNCOLORMAP)owner.player.fixedcolormap=playerinfo.NUMCOLORMAPS+1;
+		if(owner.player.fixedcolormap!=NITEVIS_INVULNCOLORMAP)owner.player.fixedcolormap=playerinfo.NUMCOLORMAPS+1;
 		owner.player.fixedlightlevel=1;
 		Shader.SetEnabled(owner.player,"NiteVis",false);
 	}
 	void UndoFullbright(){
 		if(!owner||!owner.player)return;
-		if(owner.player.fixedcolormap!=HD_INVULNCOLORMAP)owner.player.fixedcolormap=playerinfo.NOFIXEDCOLORMAP;
+		if(owner.player.fixedcolormap!=NITEVIS_INVULNCOLORMAP)owner.player.fixedcolormap=playerinfo.NOFIXEDCOLORMAP;
 		owner.player.fixedlightlevel=-1;
 	}
 	override void DoEffect(){
@@ -369,6 +368,7 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 		NITEVIS_BATCYCLE=20000,
 		NITEVIS_MAGMAXCHARGE=NITEVIS_CYCLEUNIT*NITEVIS_BATCYCLE,
 		NITEVIS_MAGMAX=NITEVIS_MAGMAXCHARGE+NITEVIS_MAXINTEGRITY,
+		NITEVIS_INVULNCOLORMAP=0,
 	}
 	states{
 	spawn:
