@@ -732,6 +732,9 @@ extend class HDPlayerPawn{
 		feetangle=angle;
 		hasgrabbed=false;
 
+		//heat presists after zero value, so it must be destroyed
+		let hhh=findinventory("Heat");if(hhh)hhh.destroy();
+
 		oldwoundcount+=woundcount+unstablewoundcount;
 		woundcount=0;
 		unstablewoundcount=0;
