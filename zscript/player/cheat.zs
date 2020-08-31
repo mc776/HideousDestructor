@@ -95,7 +95,7 @@ extend class HDPlayerPawn{
 		string giveconfig=hd_give.getstring();
 		if(giveconfig=="")return;
 		hd_give.setstring("");
-		if(deathmatch&&!sv_cheats)return;
+		if(multiplayer&&!sv_cheats)return;
 		let giverefid=giveconfig.left(3);
 		giveconfig=giveconfig.mid(3);
 		giveconfig.replace(",","");
