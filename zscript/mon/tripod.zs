@@ -138,7 +138,7 @@ class Satanball:HDFireball{
 			stamina++;
 			actor tgt=target.target;
 			if(getage()>144){
-				vel+=(frandom(-1,1),frandom(-1,1),frandom(-1,1));
+				vel+=(frandom(-0.3,0.3),frandom(-0.3,0.3),frandom(0.1,-0.3));
 				return;
 			}
 			if(tgt&&checksight(tgt)){
