@@ -319,9 +319,10 @@ extend class HDMobBase{
 				}
 			}
 			else if(shields==1){
-				if(hd_debug)console.printf(getclassname().." shield broke to "..-(maxshields*0.125).."!");
+				int downto=int(-maxshields*0.125);
+				shields=downto;
+				if(hd_debug)console.printf(getclassname().." shield broke to "..downto.."!");
 				A_StartSound("misc/mobshieldx", CHAN_BODY, CHANF_OVERLAP, 0.75);
-				shields=-(maxshields*0.125);
 				for(int i=0;i<10;i++){
 					vector3 rpos=pos+(
 						random(-radius,radius),
