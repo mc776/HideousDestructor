@@ -304,7 +304,7 @@ extend class HDMobBase{
 		if (maxshields>0) {
 			if(shields==0){
 				if(hd_debug)console.printf(getclassname().." shield restored!");
-				A_StartSound("misc/mobshield", CHAN_BODY, CHANF_OVERLAP, 0.75);
+				A_StartSound("misc/mobshieldf", CHAN_BODY, CHANF_OVERLAP, 0.75);
 				shields=2;
 				for(int i=0;i<10;i++){
 					vector3 rpos=pos+(
@@ -320,7 +320,7 @@ extend class HDMobBase{
 			}
 			else if(shields==1){
 				if(hd_debug)console.printf(getclassname().." shield broke to "..-(maxshields*0.125).."!");
-				A_StartSound("misc/mobshield", CHAN_BODY, CHANF_OVERLAP, 0.75);
+				A_StartSound("misc/mobshieldx", CHAN_BODY, CHANF_OVERLAP, 0.75);
 				shields=-(maxshields*0.125);
 				for(int i=0;i<10;i++){
 					vector3 rpos=pos+(
