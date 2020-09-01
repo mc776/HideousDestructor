@@ -56,7 +56,10 @@ class Roboball:SlowProjectile{
 		if(fuel>0){
 			fuel--;
 			A_StartSound("weapons/rocklaunch",CHAN_AUTO,CHANF_OVERLAP,0.6);
-			A_ChangeVelocity(thrust.x,0,thrust.y,CVF_RELATIVE);
+			if(
+				abs(vel.x)<500
+				&&abs(vel.y)<500
+			)A_ChangeVelocity(thrust.x,0,thrust.y,CVF_RELATIVE);
 		}else{
 			bnogravity=false; //+nogravity is automatically set and causes all subsequent GetGravity() to return 0
 			setstatelabel("spawn3");
@@ -137,10 +140,7 @@ class Satanball:HDFireball{
 			if(stamina>40||!target||target.health<1)return;  
 			stamina++;
 			actor tgt=target.target;
-			if(getage()>144){
-				vel+=(frandom(-0.3,0.3),frandom(-0.3,0.3),frandom(0.1,-0.3));
-				return;
-			}
+			if(getage()>144)vel+=(frandom(-0.3,0.3),frandom(-0.3,0.3),frandom(0.1,-0.3));
 			if(tgt&&checksight(tgt)){
 				vel*=0.92;
 				vel+=(tgt.pos-pos+tgt.vel*10+(0,0,tgt.height)).unit()*10;
