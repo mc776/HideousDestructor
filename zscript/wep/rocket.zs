@@ -95,7 +95,7 @@ class GyroGrenade:SlowProjectile{
 				}else if(dangle<40)dmgg+=random(100,400);
 			}
 			blockingobject.damagemobj(self,target,dmgg,"Piercing");
-		}
+		}else doordestroyer.destroydoor(self,69,frandom(4,20),2);
 
 		//explosion
 		if(!inthesky){
