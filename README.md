@@ -15,3 +15,7 @@ Make sure you have keys bound for speed, crouch, reload, zoom, and user1 through
 
 hd_manual.md contains the full manual.
 hd.txt contains a draft of the relevant information for any future archival in /idgames.
+
+For more info, stop by at:
+Accensus' HD site: https://accensi.gitlab.io/hdportal/
+The thread on the ZDoom forums: https://forum.zdoom.org/viewtopic.php?f=43&t=12973
