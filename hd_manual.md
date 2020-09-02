@@ -569,9 +569,9 @@ Some items can be picked up and saved for later, as described below.
 
   Press use to engage the ladder. To disengage, do any of the following:
 
-  - press jump at any time (which will also give you a horizontal boost away from the ladder).
-  - press use again while turned away from it, or while directly facing it.
-  - press speed while standing about on the top ledge from which you have hung the ladder.
+  - press Jump at any time (which will also give you a horizontal boost away from the ladder).
+  - press Use again while turned away from it, or while directly facing it.
+  - press Speed while standing about on the top ledge from which you have hung the ladder.
 
   To remove the ladder, get onto the ladder and attempt to jump while crouching.
 
