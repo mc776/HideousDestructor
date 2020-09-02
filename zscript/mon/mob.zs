@@ -15,10 +15,11 @@ class HDMobBase : HDActor{
 	flagdef biped:hdmobflags,6;
 	flagdef noshootablecorpse:hdmobflags,7;
 	flagdef playingid:hdmobflags,8;
-	flagdef dontdrop:hdmobflags,9;
+	flagdef dontdrop:hdmobflags,9;  //this is for incap dropping not item droping
 	flagdef norandomweakspots:hdmobflags,10;
 	flagdef noincap:hdmobflags,11;
 	flagdef noblurgaze:hdmobflags,12;
+	flagdef dontdropitems:hdmobflags,13;  //only works with deathdrop()
 
 	default{
 		monster;
