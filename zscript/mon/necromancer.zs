@@ -615,7 +615,7 @@ class NecroGhost:HDActor{
 		loop;
 	birth:
 		TNT1 A 20 A_Warp(AAPTR_TARGET,0,0,32,0,WARPF_NOCHECKPOSITION);
-		TNT1 A 80 A_Quake(1,40,0,512,"vile/active");
+		TNT1 A 80 A_Quake(1,40,0,512,"vile/curse");
 		TNT1 AAAAAA 0 A_SpawnItemEx("NecroGhostShard",flags:SXF_TRANSFERPOINTERS|SXF_NOCHECKPOSITION);
 		TNT1 A 40;
 		TNT1 A 1{Necromancer.A_MassHeal(self);}
