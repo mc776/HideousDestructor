@@ -53,7 +53,7 @@ class FlyingSkull:HDMobBase replaces LostSoul{
 		hdmobai.chase(self);
 		vel.z+=frandom(-0.3,0.3);
 		if(!random(0,64)&&!A_JumpIfTargetInLOS("null")){
-			A_StartSound("skull/melee",CHAN_VOICE);
+			A_StartSound("skull/activescream",CHAN_VOICE);
 		}
 	}
 	void A_SkullStrafe(){
@@ -159,7 +159,7 @@ class FlyingSkull:HDMobBase replaces LostSoul{
 		SKUL AB 6{hdmobai.wander(self);}
 		SKUL A 0 A_Jump(12,1);
 		loop;
-		SKUL A 0 A_StartSound("skull/melee",CHAN_VOICE);
+		SKUL A 0 A_StartSound("skull/idlescream",CHAN_VOICE);
 		loop;
 	see:
 		SKUL AB 3 A_SkullChase();
