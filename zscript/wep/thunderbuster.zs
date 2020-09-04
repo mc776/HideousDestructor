@@ -7,6 +7,7 @@ class ThunderBuster:HDCellWeapon{
 		//$Title "Thunder Buster"
 		//$Sprite "PLASA0"
 
+		+hdweapon.fitsinbackpack
 		weapon.selectionorder 70;
 		weapon.slotnumber 6;
 		weapon.slotpriority 1;
