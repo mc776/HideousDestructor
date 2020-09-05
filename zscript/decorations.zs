@@ -148,14 +148,21 @@ class HDTechLamp:TechLamp replaces TechLamp{
 	default{+dontthrust +shootable +nodamage +noblood +forceybillboard radius 6;
 		height 69;
 	}
-	states{spawn:TNT1 A 0;goto super::spawn;} //bypass the "has no frames" check
+	states{
+	spawn: //bypass the "has no frames" check
+		TNT1 A 0;
+		goto super::spawn;
+	becolumn:
+		COLU A -1 bright;
+		stop;
+	}
 	override void postbeginplay(){
 		super.postbeginplay();
 		//used in the range, so gotta check
 		if(!texman.checkfortexture("TLMPA0",texman.type_sprite).isvalid()){
-			spawn("HDColumn",pos,ALLOW_REPLACE);
-			destroy();
-			return;
+			let hdc=getdefaultbytype("HDColumn");
+			A_SetSize(hdc.radius,hdc.height);
+			setstatelabel("becolumn");
 		}
 		A_SpawnItemEx("HDElectricLampLight",SXF_SETTARGET);
 	}
