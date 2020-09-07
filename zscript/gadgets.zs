@@ -282,7 +282,10 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 					bbblowest=bbb.mags[i];
 				}
 			}
-			if(mags[0]<NITEVIS_MAGMAXCHARGE){
+			if(
+				mags[0]<NITEVIS_MAGMAXCHARGE
+				&&bbb.mags[bbbindex]>0
+			){
 				mags[0]+=NITEVIS_CYCLEUNIT;
 				if(!random[rand1](0,(NITEVIS_BATCYCLE>>1)))bbb.mags[bbbindex]--;
 			}
