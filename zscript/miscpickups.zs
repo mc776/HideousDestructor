@@ -330,7 +330,6 @@ class HDAmBox:HDUPK{
 			frandom(-1,1),frandom(-1,1),frandom(-1,1),
 			0,0,frandom(0,2),0,SXF_NOCHECKPOSITION
 		);
-		goto brokenmisc;
 		---- A 0 A_Jump(256,
 			"brokenmisc",
 			"brokenzeds","brokensmgs","brokenpiss",
