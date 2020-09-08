@@ -301,7 +301,7 @@ class HDMagAmmo:HDAmmo{
 	override void SplitPickup(){
 		SyncAmount();
 		while(amount>1){
-			let aaa=HDMagAmmo(spawn(getclassname(),pos,ALLOW_REPLACE));
+			let aaa=HDMagAmmo(spawn(getclassname(),(pos.xy+(frandom(-5,5),frandom(-5,5)),pos.z),ALLOW_REPLACE));
 			aaa.amount=1;amount--;
 			aaa.mags.clear();
 			aaa.mags.push(takemag(false));
