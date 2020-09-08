@@ -525,14 +525,14 @@ class BeamSpot:HDActor{
 		ltt.target=target;
 
 		A_SprayDecal("BusterScorch",14);
-		DistantNoise.Make(self,"world/rocketfar");
-		DistantNoise.Make(self,"world/shotgunfar",2.);
+		DistantNoise.Make(self,"world/tbfar");
+		DistantNoise.Make(self,"world/tbfar2",2.);
 		DistantQuaker.Quake(self,
 			5,50,2048,8,128,256,256
 		);
 
 		//check floor and ceiling and spawn more debris
-		DistantNoise.Make(self,"world/rocketfar");
+		DistantNoise.Make(self,"world/tbfar");
 		for(int i=0;i<3;i++)A_SpawnItemEx("WallChunker",
 			frandom(-4,4),frandom(-4,4),-4,
 			flags:SXF_NOCHECKPOSITION|SXF_TRANSFERPOINTERS
