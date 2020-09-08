@@ -330,11 +330,33 @@ class HDAmBox:HDUPK{
 			frandom(-1,1),frandom(-1,1),frandom(-1,1),
 			0,0,frandom(0,2),0,SXF_NOCHECKPOSITION
 		);
+		goto brokenmisc;
 		---- A 0 A_Jump(256,
+			"brokenmisc",
 			"brokenzeds","brokensmgs","brokenpiss",
 			"brokenlibs","brokenclip","brokenrocs",
 			"brokenbron","brokencell","brokenshel"
 		);
+	brokenmisc:
+		---- A 0{
+			maxcapacity*=0.2;
+			SpawnContents();
+		}
+		---- AAAAAAA 0 A_SpawnItemEx("HugeWallChunk",
+			frandom(-3,3),frandom(-3,3),frandom(1,8),
+			frandom(-10,10),frandom(-10,10),frandom(-3,8),
+			0,SXF_NOCHECKPOSITION
+		);
+		---- AAA 0 A_SpawnItemEx("HDSmokeChunk",
+			frandom(-10,10),frandom(-10,10),frandom(1,10),
+			frandom(-4,4),frandom(-4,4),frandom(0,2),
+			0,SXF_NOCHECKPOSITION,24
+		);
+		---- A 0 A_SpawnItemEx("HDExplosion",
+			frandom(-1,1),frandom(-1,1),frandom(3,4),
+			0,0,frandom(0,2),0,SXF_NOCHECKPOSITION,32
+		);
+		stop;
 	brokenzeds:
 		---- A 0 A_DropItem("HD4mMag");
 		---- AAA 0 A_DropItem("HD4mmMagEmpty");
