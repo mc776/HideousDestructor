@@ -198,10 +198,10 @@ class HDAmBox:HDUPK{
 	virtual void SpawnContents(){
 		array<string> invclasses;invclasses.clear();
 
-		//arbitrarily add more 4mm
-		//makes up for the lack of loose rounds
+		//arbitrarily add more common canonical classes that don't have mag or don't have loose
 		invclasses.push("HD4mMag");
 		invclasses.push("HD4mMag");
+		invclasses.push("HDShellAmmo");
 
 		//retrieve list of HDAmmo items
 		for(int i=0;i<allactorclasses.size();i++){
