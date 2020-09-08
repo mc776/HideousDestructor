@@ -273,6 +273,11 @@ class ShellShade:ZombieStormtrooper{
 		health 900;
 		stencilcolor "04 00 06";
 		tag "shell-shade";
+
+		seesound "shellshade/sight";
+		activesound "shellshade/active";
+		painsound "shellshade/pain";
+		deathsound "shellshade/death";
 	}
 	override void postbeginplay(){
 		user_weapon=1;
@@ -300,7 +305,7 @@ class ShellShade:ZombieStormtrooper{
 		){
 			bnoblood=false;
 			forcepain(self);
-			A_StartSound("marine/death",CHAN_VOICE);
+			A_Scream();
 			shields>>=1;
 		}
 		int dmg=super.damagemobj(
@@ -327,7 +332,7 @@ class ShellShade:ZombieStormtrooper{
 	xdeath:
 		POSS G 5;
 		TNT1 AAAAAAAAAAAAAAAAAAAAAAAAAAA
-			random(1,3) A_StartSound("marine/death",random(8,24),volume:frandom(0.3,1.),attenuation:0.1,pitch:frandom(0.98,1.01));
+			random(1,3) A_StartSound(deathsound,random(8,24),volume:frandom(0.3,1.),attenuation:0.1,pitch:frandom(0.98,1.01));
 		TNT1 A 35;
 		TNT1 A 0 A_DropItem("HDBlurSphere");
 	xxxdeath:

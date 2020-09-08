@@ -929,9 +929,9 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 					"balefire",
 					DMG_NO_PAIN|DMG_NO_FACTOR|DMG_THRUSTLESS
 				);
-				seesound="grunt/sight";
-				painsound="grunt/pain";
-				deathsound="grunt/death";
+				seesound="freshgrunt/sight";
+				painsound="freshgrunt/pain";
+				deathsound="freshgrunt/death";
 				A_StartSound(seesound,CHAN_VOICE);
 			}
 		}---- A 0 setstatelabel("see");
@@ -1123,9 +1123,9 @@ class UndeadRifleman:HDMarine{
 			"balefire",
 			DMG_NO_PAIN|DMG_NO_FACTOR|DMG_THRUSTLESS
 		);
-		seesound="grunt/sight";
-		painsound="grunt/pain";
-		deathsound="grunt/death";
+		seesound="freshgrunt/sight";
+		painsound="freshgrunt/pain";
+		deathsound="freshgrunt/death";
 	}
 }
 class DeadRifleman:HDMarine replaces DeadMarine{
