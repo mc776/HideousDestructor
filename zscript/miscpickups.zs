@@ -198,6 +198,11 @@ class HDAmBox:HDUPK{
 	virtual void SpawnContents(){
 		array<string> invclasses;invclasses.clear();
 
+		//arbitrarily add more 4mm
+		//makes up for the lack of loose rounds
+		invclasses.push("HD4mMag");
+		invclasses.push("HD4mMag");
+
 		//retrieve list of HDAmmo items
 		for(int i=0;i<allactorclasses.size();i++){
 			let iic=(class<HDAmmo>)(allactorclasses[i]);
