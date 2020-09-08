@@ -606,14 +606,16 @@ class DistantNoise:Thinker{
 				playersleft++;
 				if(distances[i]==ticker){
 					distances[i]=-1;
-					while(volume>0){
+					//for volumes greater than 1, play the sound on top of itself until spent
+					double thisvol=volume;
+					while(thisvol>0){
 						players[i].mo.A_StartSound(
 							distantsound,CHAN_DISTANT,
 							CHANF_OVERLAP|CHANF_LOCAL,
-							min(1.,volume),  //if we ever stop needing this clamp, delete the loop
+							min(1.,thisvol),  //if we ever stop needing this clamp, delete the loop
 							pitch:pitch
 						);
-						volume-=1.;
+						thisvol-=1.;
 					}
 				}
 			}
