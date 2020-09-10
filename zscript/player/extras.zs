@@ -171,7 +171,6 @@ extend class HDPlayerPawn{
 			double slidemult=1.;
 			let hdw=HDWeapon(player.readyweapon);
 			if(hdw)slidemult=max(1.,0.1*hdw.gunmass());
-			A_LogFloat(slidemult);
 
 			if(fmm<0){
 				A_MuzzleClimb(
