@@ -223,6 +223,9 @@ class FlyingSkull:HDMobBase replaces LostSoul{
 // ------------------------------------------------------------
 // Pain Elemental
 // ------------------------------------------------------------
+class ShieldSkullBall:ShieldImpBall{
+	default{speed 26;}
+}
 class SkullSpitter:HDMobBase replaces PainElemental{
 	default{
 		radius 24;
@@ -249,7 +252,6 @@ class SkullSpitter:HDMobBase replaces PainElemental{
 		super.postbeginplay();
 		hdmobster.spawnmobster(self);
 		hdmobai.resize(self,0.9,1.1);
-		brewing=21;
 	}
 	int brewing;
 	states{
@@ -257,38 +259,46 @@ class SkullSpitter:HDMobBase replaces PainElemental{
 		PAIN A 10 A_Look;
 		loop;
 	see:
-		PAIN AAABBBCCC 8{
+		PAIN AAABBBCCC 5{
 			hdmobai.chase(self);
 		}loop;
 	missile:
-		PAIN ABCB 3 A_FaceTarget(10,10);
 		TNT1 A 0 A_JumpIfTargetInLOS("missile2",20);
+		PAIN ABCB 3 A_FaceTarget(10,10);
 		TNT1 A 0 A_ChangeVelocity(0.8,0,frandom(-0.4,0.4),CVF_RELATIVE);
 		TNT1 A 0 A_JumpIfTargetInLOS("missile");
 		TNT1 A 0 A_Jump(40,"missile2");
 		---- A 0 setstatelabel("see");
 	missile2:
-		PAIN DE 4 A_FaceTarget(5,5);
-		PAIN F 6 A_FaceTarget(10,10);
-		PAIN C 12{
-			if(brewing>20){
-				let aaa=FlyingSkull(spawn("FlyingSkull",pos,ALLOW_REPLACE));
-				aaa.addz(32);
-				aaa.master=self;
-				aaa.target=target;
-				aaa.angle=angle;
-				aaa.pitch=pitch;
-				aaa.spitter=self;
-				aaa.vel=vel;
-				aaa.A_SkullLaunch();
-				brewing=0;
-				shields-=66;
-			}else{
-				brewing++;
-				A_SpawnProjectile("ShieldImpBall");
-				shields=max(shields,shields+24);
-			}
-		}---- A 0 setstatelabel("see");
+		PAIN DDE 2 A_FaceTarget(5,5);
+		PAIN F 3 A_FaceTarget(10,10);
+		PAIN F 0 A_JumpIf(brewing>0,"missile2a");
+		PAIN F 6{
+			let aaa=FlyingSkull(spawn("FlyingSkull",pos,ALLOW_REPLACE));
+			aaa.addz(32);
+			aaa.master=self;
+			aaa.target=target;
+			aaa.angle=angle;
+			aaa.pitch=pitch;
+			aaa.spitter=self;
+			aaa.vel=vel;
+			aaa.A_SkullLaunch();
+			brewing=4;
+			shields-=66;
+		}
+		goto missileend;
+	missile2a:
+		PAIN F 6{
+			brewing--;
+			A_SpawnProjectile("ShieldSkullBall",flags:CMF_AIMDIRECTION,pitch:pitch);
+			shields=max(shields,shields+24);
+			vel.z+=frandom(0.2,2.);
+		}
+		PAIN F 4 A_SpawnProjectile("ShieldSkullBall",flags:CMF_AIMDIRECTION,pitch:pitch);
+		PAIN F 3 A_SpawnProjectile("ShieldImpBall",flags:CMF_AIMDIRECTION,pitch:pitch);
+	missileend:
+		PAIN ED 3;
+		---- A 0 setstatelabel("see");
 	melee:
 		PAIN DE 4 A_FaceTarget(10,10);
 		PAIN F 6 A_FaceTarget(10,10);
