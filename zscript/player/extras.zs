@@ -167,10 +167,36 @@ extend class HDPlayerPawn{
 			fatigue++;
 			stunned+=30;
 			smm*=-0.3;
-			if(fmm<0)A_MuzzleClimb((smm*1.2,-5.2),(smm,-4.),(smm,-2.),(smm*0.8,-1.));
-			else if(fmm>0){
-				A_MuzzleClimb((smm*1.2,7.2),(smm,4.),(smm,2.),(smm*0.8,1.));
+
+			double slidemult=1.;
+			let hdw=HDWeapon(player.readyweapon);
+			if(hdw)slidemult=max(1.,0.1*hdw.gunmass());
+			A_LogFloat(slidemult);
+
+			if(fmm<0){
+				A_MuzzleClimb(
+					(smm*1.2,-5.2)*slidemult,
+					(smm,-4.)*slidemult,
+					(smm,-2.)*slidemult,
+					(smm*0.8,-1.)*slidemult
+				);
+				if(slidemult>1.7)totallyblocked=true;
+			}else if(fmm>0){
+				A_MuzzleClimb(
+					(smm*1.2,7.2)*slidemult,
+					(smm,4.)*slidemult,
+					(smm,2.)*slidemult,
+					(smm*0.8,1.)*slidemult
+				);
 				totallyblocked=true;
+			}else{
+				A_MuzzleClimb(
+					(smm*0.6,-2.)*slidemult,
+					(smm,-1.)*slidemult,
+					(smm,-0.3)*slidemult,
+					(smm*0.3,-0.2)*slidemult
+				);
+				if(slidemult>1.4)totallyblocked=true;
 			}
 		}
 	}
