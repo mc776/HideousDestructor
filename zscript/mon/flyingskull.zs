@@ -271,7 +271,7 @@ class SkullSpitter:HDMobBase replaces PainElemental{
 		---- A 0 setstatelabel("see");
 	missile2:
 		PAIN DDE 2 A_FaceTarget(5,5);
-		PAIN F 3 A_FaceTarget(10,10);
+		PAIN F 3 A_FaceTarget(5,5);
 		PAIN F 0 A_JumpIf(brewing>0,"missile2a");
 		PAIN F 6{
 			let aaa=FlyingSkull(spawn("FlyingSkull",pos,ALLOW_REPLACE));
@@ -305,9 +305,12 @@ class SkullSpitter:HDMobBase replaces PainElemental{
 		PAIN C 12 A_CustomMeleeAttack(random(20,40));
 		---- A 0 setstatelabel("see");
 	pain:
-		PAIN G 6 A_ScaleVelocity(0.6);
+		PAIN G 6{
+			A_ScaleVelocity(0.6);
+			brewing--;
+		}
 		PAIN G 6 A_Pain();
-		---- A 0 setstatelabel("missile");
+		---- A 0 setstatelabel("missile2");
 	death.telefrag:
 		TNT1 A 0 spawn("Telefog",pos,ALLOW_REPLACE);
 		TNT1 A 0 A_NoBlocking();
