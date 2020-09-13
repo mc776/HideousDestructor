@@ -104,7 +104,7 @@ class HDWeaponSelector:Thinker{
 
 
 
-
+//refids.
 //these need to be defined ONLY where an item
 //needs to be selectable through custom loadouts.
 //all in one place for ease of checking for conflicts.
@@ -121,7 +121,7 @@ const HDLD_SEVNMIL="7mm";
 const HDLD_SEVNMAG="730";
 const HDLD_SEVCLIP="710";
 //const HDLD_SEVNBUL="7bl";
-//const HDLD_SEVNBRA="7br";
+const HDLD_SEVNBRA="7br";
 const HDLD_776RL=  "7rl";
 
 const HDLD_FOURMIL="4mm";

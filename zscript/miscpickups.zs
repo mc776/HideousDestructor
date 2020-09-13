@@ -212,8 +212,8 @@ class HDAmBox:HDUPK{
 				iid
 				&&iid.bfitsinbackpack
 				&&!iid.binvbar
+				&&!iid.bcheatnogive
 				&&iid.refid!=""
-				&&!FourMilAmmo(iid) //why does bare 4mm even have a refid!??!
 				&&(
 					(
 						(class<HDMagAmmo>)(iic)
