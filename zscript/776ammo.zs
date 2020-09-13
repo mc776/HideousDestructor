@@ -116,7 +116,7 @@ class SevenMilBrass:HDAmmo{
 		+hdpickup.cheatnogive
 		height 16;radius 8;
 		tag "7.76mm casing";
-		hdpickup.refid HDLD_SEVNBRA;
+//		hdpickup.refid HDLD_SEVNBRA;
 		hdpickup.bulk ENC_776B;
 		xscale 0.7;yscale 0.8;
 		inventory.pickupmessage "Picked up some brass.";

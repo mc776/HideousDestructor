@@ -121,7 +121,7 @@ const HDLD_SEVNMIL="7mm";
 const HDLD_SEVNMAG="730";
 const HDLD_SEVCLIP="710";
 //const HDLD_SEVNBUL="7bl";
-const HDLD_SEVNBRA="7br";
+//const HDLD_SEVNBRA="7br";
 const HDLD_776RL=  "7rl";
 
 const HDLD_FOURMIL="4mm";
