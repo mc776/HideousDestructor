@@ -60,18 +60,24 @@ class BFG9K:HDCellWeapon replaces BFG9000{
 	}
 	override void tick(){
 		super.tick();
+
+		if(!owner)return;
 		if(
-			owner
-			&&owner.health<1
+			owner.health<1
 			&&weaponstatus[0]&BFGF_CRITICAL
 		){
 			weaponstatus[0]&=~BFGF_STRAPPED;
 			owner.A_DropInventory(getclass());
 			return;
 		}
+		if(
+			!owner.player
+			||owner.player.readyweapon!=self
+		)weaponstatus[0]&=~BFGF_STRAPPED;
 	}
 	override void doeffect(){
 		if(hdplayerpawn(owner)){
+			//droop downwards
 			if(
 				owner.player&&owner.player.readyweapon==self&&
 				!(hdplayerpawn(owner).gunbraced)&&
