@@ -823,8 +823,11 @@ class HERPUsable:HDWeapon{
 			if(hdw.weaponstatus[i]>=0)sb.drawrect(-11-i*4,-15,3,2);
 		}
 		sb.drawwepnum(hdw.weaponstatus[1]%100,50,posy:-10);
-		sb.drawwepcounter(hdw.weaponstatus[0]&HERPF_STARTOFF,
-			-28,-16,"STBURAUT","blank"
+		bool herpon=!(hdw.weaponstatus[0]&HERPF_STARTOFF);
+		sb.drawstring(
+			sb.pnewsmallfont,herpon?"ON":"OFF",(-30,-30),
+			sb.DI_TEXT_ALIGN_RIGHT|sb.DI_TRANSLATABLE|sb.DI_SCREEN_CENTER_BOTTOM,
+			herpon?Font.CR_GREEN:Font.CR_DARKRED
 		);
 
 		if(!batt)sb.drawstring(
