@@ -25,7 +25,7 @@ class NinjaPirate:HDMobBase{ //replaces Spectre{
 		meleethreshold 512;
 		maxdropoffheight 48;
 		maxstepheight 48;
-		speed 14;
+		speed 16;
 		mass 300;
 		damage 8;
 		//obituary "%o died.";
@@ -50,14 +50,35 @@ class NinjaPirate:HDMobBase{ //replaces Spectre{
 		A_SpawnItemEx("NinjaPirateBlurA",frandom(-2,2),frandom(-2,2),frandom(-2,2),flags:SXF_TRANSFERSPRITEFRAME);
 	}
 	void A_BlurChase(){
+		speed=getdefaultbytype(getclass()).speed;
 		hdmobai.chase(self);
 		A_SpawnItemEx("NinjaPirateBlurA",frandom(-2,2),frandom(-2,2),frandom(-2,2),flags:SXF_TRANSFERSPRITEFRAME);
+	}
+	void A_CloakedChase(){
+		bfrightened=health<90;
+		frame=(level.time&(1|2|4|8))>>2;
+		if(!(level.time&3)){
+			A_SetTranslucent(!random(0,3),2);
+			if(!(level.time&4))GiveBody(1);
+		}
+		bshootable=alpha||random(0,15);
+		speed=(bshootable&&alpha)?5:getdefaultbytype(getclass()).speed;
+		A_Chase("melee",flags:CHF_NIGHTMAREFAST);
+		if(
+			!random(0,15)
+			&&health>160
+			&&(
+				!target
+				||!checksight(target)
+			)
+		)setstatelabel("uncloak");
 	}
 	void A_Uncloak(){
 		for(int i=0;i<3;i++)A_SpawnItemEx("HDSmoke",frandom(-1,1),frandom(-1,1),frandom(4,24),vel.x,vel.y,vel.z+frandom(1,3),0,SXF_ABSOLUTEMOMENTUM|SXF_NOCHECKPOSITION,0);
 		cloaked=false;
 		bfrightened=false;
 		bsolid=true;
+		bshootable=true;
 		bnopain=false;
 		bshadow=false;
 		bnotarget=false;
@@ -114,30 +135,8 @@ class NinjaPirate:HDMobBase{ //replaces Spectre{
 		TNT1 A 0 Cloak(randompick(0,0,0,1));
 		---- A 0 setstatelabel("see");
 	seecloaked:
-		TNT1 A 0 A_JumpIfHealthLower(90,"seecloakedflee");
-		goto seecloakedchase;
-	seecloakedflee:
-		TNT1 A 0{bfrightened=true;}
-		TNT1 AAA 1 A_Chase(null,flags:CHF_NOPLAYACTIVE|CHF_NIGHTMAREFAST);
-		goto seecloaked2;
-	seecloakedchase:
-		TNT1 A 0 {bfrightened=false;}
-		TNT1 A 1 A_Chase("melee",flags:CHF_NIGHTMAREFAST);
-		TNT1 A 0 A_Jump(8,2);
-		TNT1 A 0 A_JumpIfCloser(600,"seecloaked2");
-		TNT1 A 0 A_SetTranslucent(1,2);
-		TNT1 A 0 A_Jump(22,"flicker");
-		goto seecloaked2;
-	seecloaked2:
-		TNT1 A 0 A_JumpIfInTargetLOS("seecloaked");
-		TNT1 A 0 A_JumpIfHealthLower(160,"seecloaked");
-		TNT1 A 0 A_Jump(4,"Uncloak");
-		goto seecloaked;
-	flicker:
-		SARG A 3{
-			frame=random(0,3);
-			A_Chase("melee",flags:CHF_NOPLAYACTIVE|CHF_NIGHTMAREFAST);
-		}goto seecloaked2;
+		SARG A 1 A_CloakedChase();
+		loop;
 	uncloak:
 		SARG G 0 A_Uncloak();
 		SARG G 0 A_SetTranslucent(0,0);
