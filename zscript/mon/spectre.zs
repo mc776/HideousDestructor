@@ -58,7 +58,8 @@ class NinjaPirate:HDMobBase{ //replaces Spectre{
 		bfrightened=health<90;
 		frame=(level.time&(1|2|4|8))>>2;
 		if(!(level.time&3)){
-			A_SetTranslucent(!random(0,3),2);
+			alpha=!random(0,7);
+			A_SetTranslucent(alpha,alpha?2:0);
 			if(!(level.time&4))GiveBody(1);
 		}
 		bshootable=alpha||random(0,15);
