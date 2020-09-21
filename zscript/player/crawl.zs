@@ -269,8 +269,11 @@ class HDIncapWeapon:SelfBandage{
 		TNT1 A 0 A_JumpIf(!countinv(invoker.inventorytype),"fumbleforsomething");
 		TNT1 A 0 A_JumpIf(invoker.inventorytype=="HDFragGrenadeAmmo","pullpin");
 		TNT1 A 0 A_JumpIf(
-			invoker.inventorytype=="PortableStimpack"
-			||invoker.inventorytype=="PortableBerserkpack"
+			!countinv("WornRadsuit")
+			&&(
+				invoker.inventorytype=="PortableStimpack"
+				||invoker.inventorytype=="PortableBerserkpack"
+			)
 			,"injectstim");
 		goto nope;
 	injectstim:

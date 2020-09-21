@@ -244,6 +244,9 @@ class HDStimpacker:HDWoundFixer{
 				}
 				if(helptext)A_WeaponMessage("Nothing to be done here.\n\nStimulate thyself? (press fire)",2);
 				return resolvestate("nope");
+			}else if(c.countinv("WornRadsuit")){
+				if(helptext)A_WeaponMessage("You'll need them to take off their environment suit...");
+				return resolvestate("nope");
 			}else if(c.countinv("IsMoving")>4){
 				bool chelptext=c.getcvar("hd_helptext");
 				if(c.stimcount){
