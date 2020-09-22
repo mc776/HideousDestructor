@@ -450,7 +450,9 @@ class ZombieStormtrooper:HDMobMan{
 			);
 			if(jammed&&!random(0,32)){
 				if(!random(0,5))A_SpawnItemEx("HDSmokeChunk",12,0,height-12,4,frandom(-2,2),frandom(2,4));
-				A_SpawnItemEx("BulletPuffBig",12,0,42,1,0,1);
+				for(int i=0;i<5;i++)A_SpawnItemEx("FourMilChunk",0,0,20,
+					random(4,7),random(-2,2),random(-2,1),0,SXF_NOCHECKPOSITION
+				);
 				jammed=false;
 				A_StartSound("weapons/rifleclick",8);
 			}
