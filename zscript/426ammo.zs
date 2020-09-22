@@ -137,7 +137,8 @@ class HD4mMag:HDMagAmmo{
 	override bool Insert(){
 		SyncAmount();
 		if(
-			mags[mags.size()-1]>=50
+			mags.size()<1
+			||mags[mags.size()-1]>=50
 			||!owner.countinv(roundtype)
 		)return false;
 		owner.A_TakeInventory(roundtype,1,TIF_NOTAKEINFINITE);
