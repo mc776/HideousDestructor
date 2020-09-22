@@ -936,6 +936,7 @@ class ZM66Random:IdleDummy{
 }
 
 
+//just for testing cookoff effects
 class ZM66CookOff:Inventory{
 	override void AttachToOwner(actor other){
 		let zzz=ZM66AssaultRifle(other.findinventory("ZM66AssaultRifle"));
