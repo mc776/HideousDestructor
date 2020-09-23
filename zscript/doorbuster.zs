@@ -150,6 +150,14 @@ class doordestroyer:hdactor{
 						return false;
 					}
 
+					//destroying polyobjs turns out to be too unpredictable
+					//like, "empty space sometimes turns into impassable void" unpredictable
+					//so just abort
+					DistantQuaker.Quake(caller,6,30,512,30);
+					return false;
+
+
+					//begin old destruction code
 
 					//spawn the DD actor for debris only
 					for(int i=0;i<3;i++){
