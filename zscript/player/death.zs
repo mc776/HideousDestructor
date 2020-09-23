@@ -65,7 +65,7 @@ extend class HDPlayerPawn{
 					if(!(player.cheats & CF_PREDICTING))deathcounter++;
 				}
 				if(playercorpse){
-					setorigin((playercorpse.pos.xy+angletovector(angle)*3,pos.z),true);
+					setorigin((playercorpse.pos.xy+angletovector(angle)*3,playercorpse.pos.z),true);
 				}
 			}
 		}
