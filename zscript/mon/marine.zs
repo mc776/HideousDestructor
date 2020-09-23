@@ -641,7 +641,7 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 				&&!random(0,2)
 			){
 				double ddd=max(distance2d(target),radius);
-				double ppp=frandom(20,30)*100/ddd;
+				double ppp=frandom(10,25)*100/ddd;
 				pitch+=random(0,2)?ppp:-ppp;
 			}
 		}
