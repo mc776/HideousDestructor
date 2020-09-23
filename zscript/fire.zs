@@ -191,6 +191,7 @@ class PersistentDamager:HDActor{
 					ccc.bnodamage
 					||!ccc.bshootable
 					||ccc.pos.z<pos.z-ccc.height
+					||!ccc.checksight(self)  //hope this doesn't bog things down too much
 				)continue;
 				stamina--;
 				if(damagetype=="Thermal")HDF.Give(ccc,"Heat",stamina*10);
