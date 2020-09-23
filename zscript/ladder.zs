@@ -131,7 +131,7 @@ class HDLadderProxy:HDActor{
 class hdladderbottom:hdactor{
 	default{
 		+nogravity +flatsprite
-		height 56;radius 10;
+		height 56;radius 14;
 		mass int.MAX;
 	}
 	actor users[MAXPLAYERS];
