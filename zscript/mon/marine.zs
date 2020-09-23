@@ -632,6 +632,18 @@ class HDMarine:HDMobMan replaces ScriptedMarine{
 			class<actor> mn="HDB_00";
 			A_LeadTarget2(shotspeed:getdefaultbytype(mn).speed,adjusttics:1);
 			hdmobai.DropAdjust(self,mn);
+
+			//aim for head or legs
+			if(
+				target
+				&&target.countinv("HDArmourWorn")
+				&&abs(pitch)<45
+				&&!random(0,2)
+			){
+				double ddd=max(distance2d(target),radius);
+				double ppp=frandom(20,30)*100/ddd;
+				pitch+=random(0,2)?ppp:-ppp;
+			}
 		}
 		#### F 1 bright light("SHOT"){
 			gunloaded--;
