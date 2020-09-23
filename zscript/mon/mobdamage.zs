@@ -230,6 +230,17 @@ extend class HDMobBase{
 
 		//force death even if not quite gibbing
 		if(health>0&&bodydamage>sphlth){
+
+			//force use maxhpdrain when anti-revive deaths should be in play
+			//prevents e.g. burning baron corpse spawning shards over and over again
+			if(
+				instatesequence(curstate,resolvestate("death"))
+				||instatesequence(curstate,resolvestate("dead"))
+				||instatesequence(curstate,resolvestate("xdeath"))
+				||instatesequence(curstate,resolvestate("raise"))
+				||instatesequence(curstate,resolvestate("ungib"))
+			)mod="maxhpdrain";
+
 			return super.damagemobj(inflictor,source,health,mod,flags,angle);
 		}
 
@@ -461,7 +472,6 @@ extend class HDHandlers{
 
 
 
-class bbb:baronofhell{}
 
 //a thinker that constantly bleeds
 class HDBleedingWound:Thinker{
