@@ -118,7 +118,8 @@ class PortableRadsuit:HDPickup replaces RadSuit{
 		super.actualpickup(user);
 		//put on the radsuit right away
 		if(
-			user.player&&user.player.cmd.buttons&BT_USE
+			!user.findinventory("WornRadsuit")
+			&&user.player&&user.player.cmd.buttons&BT_USE
 			&&HDPlayerPawn.CheckStrip(user,STRIP_RADSUIT,false)
 		){
 			inventory slf=user.findinventory(getclass());
