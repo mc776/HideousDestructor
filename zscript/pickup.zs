@@ -385,11 +385,17 @@ class HDPickup:CustomInventory{
 		other.A_Log(string.format("\cg%s",pickupmessage()),true);
 
 		bool gotpickedup=false;
-		HDF.Give(other,gcn,maxtake);
 		if(maxtake<amount){
+			HDF.Give(other,gcn,maxtake);
 			amount-=maxtake;
 			SplitPickup();
-		}else destroy();
+		}else{
+			if(!other.findinventory(getclass()))attachtoowner(other);
+			else{
+				HDF.Give(other,gcn,maxtake);
+				destroy();
+			}
+		}
 	}
 
 	//delete once no longer needed
