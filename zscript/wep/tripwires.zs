@@ -433,6 +433,7 @@ class TrippingGrenade:HDUPK{
 		actor inflictor,actor source,int damage,
 		name mod,int flags,double angle
 	){
+		if(bnointeraction)return -1; //this should not be necessary
 		if(!random(0,9)){
 			actor ggg=spawn(rollertype,pos,ALLOW_REPLACE);
 			ggg.target=target;
@@ -444,12 +445,14 @@ class TrippingGrenade:HDUPK{
 			actor hhh=spawn(spoontype,pos,ALLOW_REPLACE);
 			hhh.vel=ggg.vel*2;
 			bshootable=false;
+			bnointeraction=true;
 			destroy();return -1;
 		}else if(!random(0,4)){
 			if(tracer)tracer.destroy();
 			actor aaa=spawn(droptype,pos,ALLOW_REPLACE);
 			aaa.vel=vel;
 			bshootable=false;
+			bnointeraction=true;
 			destroy();return -1;
 		}else setstatelabel("spawn");
 		return -1;
