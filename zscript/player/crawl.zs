@@ -231,8 +231,21 @@ class HDIncapWeapon:SelfBandage{
 				A_WeaponOffset(hdbbx,hdbby+WEAPONTOP,WOF_INTERPOLATE);
 			}
 		}
-		---- A 0 A_JumpIf(!!player.cmd.buttons,"nope");
-		---- A 0 A_Jump(256,"ready");
+		---- A 0{
+			int inp=player.cmd.buttons;
+			if(
+					inp&BT_ATTACK||
+					inp&BT_ALTATTACK||
+					inp&BT_RELOAD||
+					inp&BT_ZOOM||
+					inp&BT_USER1||
+					inp&BT_USER2||
+					inp&BT_USER3||
+					inp&BT_USER4||
+					inp&BT_JUMP
+			)setweaponstate("nope");
+			else setweaponstate("ready");
+		}
 	select:
 		TNT1 A 30;
 		goto nope;
