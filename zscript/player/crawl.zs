@@ -232,18 +232,17 @@ class HDIncapWeapon:SelfBandage{
 			}
 		}
 		---- A 0{
-			int inp=player.cmd.buttons;
-			if(
-					inp&BT_ATTACK||
-					inp&BT_ALTATTACK||
-					inp&BT_RELOAD||
-					inp&BT_ZOOM||
-					inp&BT_USER1||
-					inp&BT_USER2||
-					inp&BT_USER3||
-					inp&BT_USER4||
-					inp&BT_JUMP
-			)setweaponstate("nope");
+			if(player.cmd.buttons&(
+					BT_ATTACK|
+					BT_ALTATTACK|
+					BT_RELOAD|
+					BT_ZOOM|
+					BT_USER1|
+					BT_USER2|
+					BT_USER3|
+					BT_USER4|
+					BT_JUMP
+			))setweaponstate("nope");
 			else setweaponstate("ready");
 		}
 	select:

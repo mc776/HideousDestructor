@@ -257,9 +257,11 @@ class HDWeapon:Weapon{
 				&&!onr.barehanded
 				&&onr.zerk
 				&&(
-					onr.player.cmd.buttons&BT_ATTACK
-					||onr.player.cmd.buttons&BT_ALTATTACK
-					||onr.player.cmd.buttons&BT_ZOOM
+					onr.player.cmd.buttons&(
+						BT_ATTACK
+						|BT_ALTATTACK
+						|BT_ZOOM
+					)
 					||bweaponbusy
 					||onr.vel.xy==(0,0)
 				)
