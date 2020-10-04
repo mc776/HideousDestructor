@@ -107,9 +107,10 @@ class HDArmour:HDMagAmmo{
 		if(self)checkmega();
 		return sct;
 	}
-	void checkmega(){
+	bool checkmega(){
 		mega=mags.size()&&mags[mags.size()-1]>1000;
 		icon=texman.checkfortexture(mega?"ARMCB0":"ARMSB0",TexMan.Type_MiscPatch);
+		return mega;
 	}
 	override void beginplay(){
 		cooldown=0;

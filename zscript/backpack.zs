@@ -518,14 +518,14 @@ class HDBackpack:HDWeapon{
 			UpdateMessage(index);
 			return 12;
 		}else if(mag){
-			if(
-				floor(
-					mag.magbulk
-					+mag.roundbulk*(mag.mags.size()?mag.mags[mag.mags.size()-1]:mag.maxperunit)
-					+bulk
-				)
-				>maxcapacity
-			){
+			double thisbulk;
+			if(HDArmour(mag)){
+				thisbulk=HDArmour(mag).checkmega()?ENC_BATTLEARMOUR:ENC_GARRISONARMOUR;
+			}else thisbulk=floor(
+				mag.magbulk
+				+mag.roundbulk*(mag.mags.size()?mag.mags[mag.mags.size()-1]:mag.maxperunit)
+			);
+			if(thisbulk+bulk>maxcapacity){
 				if(owner)owner.A_Log("Your backpack is too full.",true);
 				return 1;
 			}
