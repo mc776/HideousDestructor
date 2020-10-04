@@ -20,7 +20,6 @@ class HDFist:HDWeapon replaces Fist{
 		+hdweapon.dontnull
 		+nointeraction
 		obituary "%o was knocked out by %k.";
-		attacksound "*fist";
 		weapon.selectionorder 100;
 		weapon.kickback 120;
 		weapon.bobstyle "Alpha";
