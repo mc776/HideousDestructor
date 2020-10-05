@@ -412,8 +412,8 @@ class HDRevolver:HDHandgun{
 	deselect0:
 		REVG A 0 A_CheckRevolverHand();
 		#### D 0 A_JumpIf(!invoker.cylinderopen,"deselect0a");
-		REVG E 2;
-		REVG A 0 A_CloseCylinder();
+		REVG F 1 A_CloseCylinder();
+		REVG E 1;
 		REVG A 0 A_CheckRevolverHand();
 		goto deselect0a;
 	deselect0a:
@@ -468,8 +468,8 @@ class HDRevolver:HDHandgun{
 		#### C 0 A_JumpIf(!(invoker.weaponstatus[0]&BUGF_COCKED),3);
 		#### B 2 offset(0,35)A_CockHammer(false);
 		#### A 2 offset(0,33);
-		#### A 0 A_JumpIf(player.getpsprite(PSP_WEAPON).sprite!=getspriteindex("RRVGA0"),"openslow");
-		REVG E 3 A_OpenCylinder();
+		#### A 1 A_JumpIf(player.getpsprite(PSP_WEAPON).sprite!=getspriteindex("RRVGA0"),"openslow");
+		REVG E 2 A_OpenCylinder();
 		goto readyopen;
 	openslow:
 		REVG A 1 offset(2,39);
