@@ -814,7 +814,13 @@ class HDStatusBar:DoomStatusBar{
 		inventory item;
 		array<inventory> items;items.clear();
 		for(item=cplayer.mo.inv;item!=NULL;item=item.inv){
-			if(!item||!item.binvbar)continue;
+			if(
+				!item
+				||(
+					!item.binvbar
+					&&item!=cplayer.mo.invsel
+				)
+			)continue;
 			items.push(item);
 			if(item==cplayer.mo.invsel)thisindex=i;
 
