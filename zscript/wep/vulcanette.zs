@@ -784,6 +784,7 @@ class Vulcanette:HDWeapon{
 
 		if(flash2)A_GunFlash("flash2");else A_GunFlash("flash");
 		A_StartSound("weapons/vulcanette",CHAN_WEAPON,CHANF_OVERLAP);
+		A_AlertMonsters();
 
 		int cm=countinv("IsMoving");if(
 			invoker.weaponstatus[0]&VULCF_FAST
