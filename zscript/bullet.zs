@@ -360,6 +360,14 @@ class HDBulletActor:HDActor{
 			gs.pitch=pitch;gs.angle=angle;gs.vel=vk*j;
 		}
 	}
+	virtual name GetBulletDecal(
+		double bulletspeed,
+		line hitline,
+		int hitpart,
+		bool exithole
+	){
+		return bulletspeed>(exithole?400:600)?"BulletChip":"BulletChipSmall";
+	}
 	override void postbeginplay(){
 		resetrandoms();
 		super.postbeginplay();
@@ -778,7 +786,7 @@ class HDBulletActor:HDActor{
 		//(take these fancy todos with a grain of salt - we may be reaching computational limits)
 
 		setorigin(pos-vu,false);
-		if(pen>1)A_SprayDecal(speed>600?"BulletChip":"BulletChipSmall",4);
+		if(pen>1)A_SprayDecal(GetBulletDecal(speed,hitline,hitpart,false),4);
 		setorigin(pos+vu,false);
 
 		//inflict damage on destructibles
@@ -936,7 +944,7 @@ class HDBulletActor:HDActor{
 				//move to emergence point and spray a decal
 				setorigin(pendest+vu*0.3,true);
 				puff();
-				A_SprayDecal(speed>400?"BulletChip":"BulletChipSmall");
+				A_SprayDecal(GetBulletDecal(speed,hitline,hitpart,true));
 				angle+=180;pitch=-pitch;
 
 				if(penlt.hittype==TRACE_HitActor){
