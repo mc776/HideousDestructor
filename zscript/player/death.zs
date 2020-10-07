@@ -69,6 +69,23 @@ extend class HDPlayerPawn{
 				}
 			}
 		}
+
+		if(hd_dropeverythingondeath){
+			array<inventory> keys;keys.clear();
+			for(inventory item=inv;item!=null;item=item.inv){
+				if(item is "Key"){
+					keys.push(item);
+					item.detachfromowner();
+				}else if(item is "HDPickup"||item is "HDWeapon"){
+					DropInventory(item);
+				}
+				if(!item||item.owner!=self)item=inv;
+			}
+			for(int i=0;i<keys.size();i++){
+				keys[i].attachtoowner(self);
+			}
+		}
+
 		if(hd_disintegrator)A_SetBlend("00 00 00",1.,10);
 
 		vel=(0,0,0);
@@ -98,22 +115,6 @@ extend class HDPlayerPawn{
 				respawndelay=0;
 			}else respawndelay=HDCONST_POFDELAY;
 		}else respawndelay=0;
-
-		if(hd_dropeverythingondeath){
-			array<inventory> keys;keys.clear();
-			for(inventory item=inv;item!=null;item=item.inv){
-				if(item is "Key"){
-					keys.push(item);
-					item.detachfromowner();
-				}else if(item is "HDPickup"||item is "HDWeapon"){
-					DropInventory(item);
-				}
-				if(!item||item.owner!=self)item=inv;
-			}
-			for(int i=0;i<keys.size();i++){
-				keys[i].attachtoowner(self);
-			}
-		}
 
 
 		if(player){
