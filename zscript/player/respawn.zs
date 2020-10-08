@@ -51,6 +51,9 @@ extend class HDHandlers{
 			return;
 		}
 
+		//force clear heat
+		A_TakeInventory("Heat");
+
 		//replenish ammo to mitigate spawncamping
 		if(!hd_dropeverythingondeath){
 			for(inventory hdww=hde.inv;hdww!=null;hdww=hdww.inv){
