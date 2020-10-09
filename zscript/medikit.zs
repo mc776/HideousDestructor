@@ -167,6 +167,7 @@ class HDMedikitter:HDWoundFixer{
 			string patientname=
 			(
 				(usedon<MAXPLAYERS&&playeringame[usedon])?players[usedon].getusername():
+				target?"\ce"..target.gettag():
 				"\ca*** UNKNOWN ***"
 			);
 			sb.DrawString(sb.psmallfont,patientname,(-43,-24),
