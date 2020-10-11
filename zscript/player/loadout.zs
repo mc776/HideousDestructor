@@ -50,7 +50,7 @@ class InvReset:Inventory{
 				item=resetee.inv;
 			}
 		}
-		resetee.ClearInventory();
+//		resetee.ClearInventory();
 	}
 	static void GiveStartItems(actor resetee){
 		//now get all the "dropitems" (i.e. player's startitems) and give them
