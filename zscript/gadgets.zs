@@ -210,7 +210,6 @@ class PortableLiteAmp:HDMagAmmo replaces Infrared{
 	}
 	bool worn;
 	PointLight nozerolight;
-	override double getbulk(){return bulk;}
 	override void DetachFromOwner(){
 		if(owner&&owner.player){
 			UndoFullbright();
