@@ -66,9 +66,6 @@ ListMenu "MainMenu"{
 	IfGame(Doom,Chex){
 		StaticPatch 94,2,"M_DOOM"
 		Position 97, 72
-		IfOption(ReadThis){
-			Position 97, 64
-		}
 	}
 	IfGame(Strife){
 		StaticPatch 84,2,"M_STRIFE"
@@ -88,9 +85,9 @@ ListMenu "MainMenu"{
 	}
 	IfGame(Doom,Strife,Chex){
 		PatchItem "M_NGAME","n","HDNewGameLoadoutMenu"
-			TextItem "HD Loadouts","o","HDLoadoutMenu"
+//			TextItem "HD Loadouts","o","HDLoadoutMenu"
 			TextItem "HD Options","o","HDOptionsMenu"
-			TextItem "HD Controls","o","HDControlsMenu"
+//			TextItem "HD Controls","o","HDControlsMenu"
 		ifOption(SwapMenu){
 			PatchItem "M_LOADG","l","LoadGameMenu"
 			PatchItem "M_SAVEG","s","SaveGameMenu"
@@ -99,9 +96,6 @@ ListMenu "MainMenu"{
 			PatchItem "M_OPTION","o", "OptionsMenu"
 			PatchItem "M_LOADG", "l", "LoadGameMenu"
 			PatchItem "M_SAVEG", "s", "SaveGameMenu"
-		}
-		ifOption(ReadThis){
-			PatchItem "M_RDTHIS","r","ReadThisMenu"
 		}
 		PatchItem "M_QUITG","q","QuitMenu"
 	}
@@ -117,12 +111,13 @@ ListMenu "MainMenu"{
 OptionMenu "HDOptionsMenu"{
 	Title "HIDEOUS DESTRUCTOR OPTIONS"
 	StaticText " "
-	StaticText "Server Settings",1
+	Submenu "Loadout Editor","HDLoadoutMenu"
+	Submenu "Configure HD Controls","HDControlsMenu"
 	StaticText " "
-	StaticText "Playstyle Presets",1
-	Command "Casual", hdskill_casual
-	Command "Normal", hdskill_normal
-	Command "Hardcore", hdskill_hardcore
+	StaticText "Server Settings",1
+	Command "Server Preset: Casual", hdskill_casual
+	Command "Server Preset: Normal", hdskill_normal
+	Command "Server Preset: Hardcore", hdskill_hardcore
 	StaticText " "
 	Slider "Encumbrance multiplier","hd_encumbrance",0,2.,0.05,2
 	Slider "Damage multiplier","hd_damagefactor",0.3,3.,0.05,2
@@ -173,8 +168,6 @@ OptionMenu "HDOptionsMenu"{
 
 	StaticText " "
 	StaticText "User Personal Gear Settings",1
-	Submenu "Set Custom Loadout...","HDLoadoutMenu"
-	StaticText " "
 	Option "DERP mode","hd_derpmode","DERPModes"
 	Option "IEDs start active","hd_autoactivateied","YesNo"
 	Option "Reflex sight image","hd_crosshair","ReflexReticle"
