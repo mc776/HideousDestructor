@@ -5,7 +5,7 @@ class Yokai:HDMobBase{
 	default{
 		//$Category "Monsters/Hideous Destructor"
 		//$Title "Yokai"
-		//$Sprite "PINSA0"
+		//$Sprite "YOKAA0"
 
 		monster;
 		+nodamagethrust +noblooddecals +nogravity +floatbob -solid
@@ -18,7 +18,6 @@ class Yokai:HDMobBase{
 		maxtargetrange 666;health 66;
 		bloodtype "NullPuff";
 		obituary "%o watched a yokai.";
-		translation "176:191=29:47","192:207=160:167","240:247=188:191";
 		speed 4;
 	}
 	override void postbeginplay(){
@@ -35,7 +34,7 @@ class Yokai:HDMobBase{
 	}
 	states{
 	spawn:
-		PINS ABCD 6 A_Look();
+		YOKA ABCD 6 A_Look();
 		loop;
 	see:
 		#### AABBCCDD 2{
